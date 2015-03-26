@@ -61,7 +61,7 @@ public class WorldSettings extends Configuration
 
 	private static WorldSettings instance;
 	private final List<Integer> storageCellDims = new ArrayList<Integer>();
-	private final File aeFolder;
+	private final File spawnDataFolder;
 	private final CompassService compass;
 	private final PlayerMappings mappings;
 	private final Map<GridStorageSearch, WeakReference<GridStorageSearch>> loadedStorage = new WeakHashMap<GridStorageSearch, WeakReference<GridStorageSearch>>();
@@ -70,8 +70,8 @@ public class WorldSettings extends Configuration
 
 	public WorldSettings( File aeFolder )
 	{
-		super( new File( aeFolder.getPath() + File.separatorChar + "settings.cfg" ) );
-		this.aeFolder = aeFolder;
+		super( new File( aeFolder.getPath(), "settings.cfg" ) );
+		this.spawnDataFolder = new File( aeFolder, SPAWNDATA_FOLDER );
 		this.compass = new CompassService( aeFolder );
 
 		for ( int dimID : this.get( "DimensionManager", "StorageCells", new int[0] ).getIntList() )
@@ -101,7 +101,7 @@ public class WorldSettings extends Configuration
 		{
 			File world = DimensionManager.getCurrentSaveRootDirectory();
 
-			File aeBaseFolder = new File( world.getPath() + File.separatorChar + "AE2" );
+			File aeBaseFolder = new File( world.getPath(), "AE2" );
 
 			if ( !aeBaseFolder.isDirectory() && !aeBaseFolder.mkdir() )
 			{
@@ -161,7 +161,7 @@ public class WorldSettings extends Configuration
 			throw new RuntimeException( "Invalid Request" );
 
 		NBTTagCompound data = null;
-		File file = new File( this.aeFolder, SPAWNDATA_FOLDER + File.separatorChar + dim + '_' + ( chunkX >> 4 ) + '_' + ( chunkZ >> 4 ) + ".dat" );
+		File file = new File( this.spawnDataFolder, dim + '_' + ( chunkX >> 4 ) + '_' + ( chunkZ >> 4 ) + ".dat" );
 
 		if ( file.isFile() )
 		{
@@ -227,7 +227,7 @@ public class WorldSettings extends Configuration
 		if ( !Thread.holdsLock( WorldSettings.class ) )
 			throw new RuntimeException( "Invalid Request" );
 
-		File file = new File( this.aeFolder, SPAWNDATA_FOLDER + File.separatorChar + dim + '_' + ( chunkX >> 4 ) + '_' + ( chunkZ >> 4 ) + ".dat" );
+		File file = new File( this.spawnDataFolder, dim + '_' + ( chunkX >> 4 ) + '_' + ( chunkZ >> 4 ) + ".dat" );
 		FileOutputStream fileOutputStream = null;
 
 		try

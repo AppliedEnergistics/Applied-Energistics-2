@@ -185,6 +185,6 @@ public class CompassRegion
 				AELog.info( "Failed to create AE2/compass/" );
 		}
 
-		return new File( folder + File.separatorChar + this.world + '_' + this.low_x + '_' + this.low_z + ".dat" );
+		return new File( folder, this.world + '_' + this.low_x + '_' + this.low_z + ".dat" );
 	}
 }
