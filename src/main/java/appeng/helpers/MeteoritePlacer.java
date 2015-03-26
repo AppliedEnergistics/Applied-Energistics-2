@@ -657,7 +657,7 @@ public class MeteoritePlacer
 		{
 			this.put( w, x, y, z, this.skychest );
 			TileEntity te = w.getTileEntity( x, y, z );
-			if ( te != null && te instanceof IInventory )
+			if ( te instanceof IInventory )
 			{
 				InventoryAdaptor ap = InventoryAdaptor.getAdaptor( te, ForgeDirection.UP );
 

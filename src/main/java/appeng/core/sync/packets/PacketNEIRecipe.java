@@ -93,7 +93,7 @@ public class PacketNEIRecipe extends AppEngPacket
 		EntityPlayerMP pmp = ( EntityPlayerMP ) player;
 		Container con = pmp.openContainer;
 
-		if ( con != null && con instanceof IContainerCraftingPacket )
+		if ( con instanceof IContainerCraftingPacket )
 		{
 			IContainerCraftingPacket cct = ( IContainerCraftingPacket ) con;
 			IGridNode node = cct.getNetworkNode();
