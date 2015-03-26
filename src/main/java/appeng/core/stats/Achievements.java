@@ -130,7 +130,7 @@ public enum Achievements
 		return this.stat;
 	}
 
-	private Achievements( int x, int y, AEColoredItemDefinition which, AchievementType type )
+	Achievements( int x, int y, AEColoredItemDefinition which, AchievementType type )
 	{
 		this.stack = (which != null) ? which.stack( AEColor.Transparent, 1 ) : null;
 		this.type = type;
@@ -138,7 +138,7 @@ public enum Achievements
 		this.y = y;
 	}
 
-	private Achievements( int x, int y, AEItemDefinition which, AchievementType type )
+	Achievements( int x, int y, AEItemDefinition which, AchievementType type )
 	{
 		this.stack = (which != null) ? which.stack( 1 ) : null;
 		this.type = type;
@@ -146,7 +146,7 @@ public enum Achievements
 		this.y = y;
 	}
 
-	private Achievements( int x, int y, ItemStack which, AchievementType type )
+	Achievements( int x, int y, ItemStack which, AchievementType type )
 	{
 		this.stack = which;
 		this.type = type;

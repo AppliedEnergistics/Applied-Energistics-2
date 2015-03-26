@@ -18,9 +18,6 @@
 
 package appeng.core.sync;
 
-import static appeng.core.sync.GuiHostType.ITEM;
-import static appeng.core.sync.GuiHostType.ITEM_OR_WORLD;
-import static appeng.core.sync.GuiHostType.WORLD;
 
 import java.lang.reflect.Constructor;
 
@@ -118,6 +115,10 @@ import appeng.tile.storage.TileIOPort;
 import appeng.tile.storage.TileSkyChest;
 import appeng.util.Platform;
 
+import static appeng.core.sync.GuiHostType.ITEM;
+import static appeng.core.sync.GuiHostType.ITEM_OR_WORLD;
+import static appeng.core.sync.GuiHostType.WORLD;
+
 public enum GuiBridge implements IGuiHandler
 {
 	GUI_Handler(),
@@ -195,7 +196,7 @@ public enum GuiBridge implements IGuiHandler
 	private GuiHostType type;
 	private SecurityPermissions requiredPermission;
 
-	private GuiBridge() {
+	GuiBridge() {
 		this.Tile = null;
 		this.Gui = null;
 		this.Container = null;
@@ -219,14 +220,14 @@ public enum GuiBridge implements IGuiHandler
 		}
 	}
 
-	private GuiBridge(Class _Container, SecurityPermissions requiredPermission) {
+	GuiBridge( Class _Container, SecurityPermissions requiredPermission ) {
 		this.requiredPermission = requiredPermission;
 		this.Container = _Container;
 		this.Tile = null;
 		this.getGui();
 	}
 
-	private GuiBridge(Class _Container, Class _Tile, GuiHostType type, SecurityPermissions requiredPermission) {
+	GuiBridge( Class _Container, Class _Tile, GuiHostType type, SecurityPermissions requiredPermission ) {
 		this.requiredPermission = requiredPermission;
 		this.Container = _Container;
 		this.type = type;

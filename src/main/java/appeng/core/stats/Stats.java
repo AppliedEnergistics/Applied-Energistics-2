@@ -47,7 +47,7 @@ public enum Stats
 		return this.stat;
 	}
 
-	private Stats() {
+	Stats() {
 	}
 
 	public void addToPlayer(EntityPlayer player, int howMany)

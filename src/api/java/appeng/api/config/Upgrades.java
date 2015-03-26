@@ -46,7 +46,7 @@ public enum Upgrades
 	public final int myTier;
 	public final HashMap<ItemStack, Integer> supportedMax = new HashMap<ItemStack, Integer>();
 
-	private Upgrades( int tier )
+	Upgrades( int tier )
 	{
 		this.myTier = tier;
 	}

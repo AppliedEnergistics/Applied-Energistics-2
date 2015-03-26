@@ -32,7 +32,7 @@ public enum PowerUnits
 	RF("gui.appliedenergistics2.units.thermalexpansion"), // ThermalExpansion - Redstone Flux
 	MK("gui.appliedenergistics2.units.mekanism"); // Mekanism - Joules
 
-	private PowerUnits(String un) {
+	PowerUnits( String un ) {
 		this.unlocalizedName = un;
 	}
 

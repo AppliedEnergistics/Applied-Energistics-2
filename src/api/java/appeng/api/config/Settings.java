@@ -62,7 +62,7 @@ public enum Settings
 		return this.values;
 	}
 
-	private Settings( EnumSet set )
+	Settings( EnumSet set )
 	{
 		if ( set == null || set.isEmpty() )
 			throw new RuntimeException( "Invalid configuration." );
