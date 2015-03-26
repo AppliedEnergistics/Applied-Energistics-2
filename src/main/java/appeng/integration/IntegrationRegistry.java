@@ -19,6 +19,7 @@
 package appeng.integration;
 
 
+import java.util.Collection;
 import java.util.LinkedList;
 
 import cpw.mods.fml.relauncher.FMLLaunchHandler;
@@ -29,7 +30,7 @@ public enum IntegrationRegistry
 {
 	INSTANCE;
 
-	private final LinkedList<IntegrationNode> modules = new LinkedList<IntegrationNode>();
+	private final Collection<IntegrationNode> modules = new LinkedList<IntegrationNode>();
 
 	public void add( IntegrationType type )
 	{
@@ -59,19 +60,20 @@ public enum IntegrationRegistry
 
 	public String getStatus()
 	{
-		String out = null;
+		final StringBuilder builder = new StringBuilder( this.modules.size() * 3 );
 
 		for ( IntegrationNode node : this.modules )
 		{
-			String str = node.shortName + ":" + ( node.state == IntegrationStage.FAILED ? "OFF" : "ON" );
+			if ( builder.length() != 0 )
+			{
+				builder.append( ", " );
+			}
 
-			if ( out == null )
-				out = str;
-			else
-				out += ", " + str;
+			final String integrationState = node.shortName + ":" + ( node.state == IntegrationStage.FAILED ? "OFF" : "ON" );
+			builder.append( integrationState );
 		}
 
-		return out;
+		return builder.toString();
 	}
 
 	public boolean isEnabled( IntegrationType name )
