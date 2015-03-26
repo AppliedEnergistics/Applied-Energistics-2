@@ -176,7 +176,8 @@ public class TileSecurity extends AENetworkTile implements ITerminalHost, IAEApp
 		{
 			NBTTagCompound it = new NBTTagCompound();
 			ais.getItemStack().writeToNBT( it );
-			storedItems.setTag( String.valueOf( offset++ ), it );
+			storedItems.setTag( String.valueOf( offset ), it );
+			offset++;
 		}
 
 		data.setTag( "storedItems", storedItems );

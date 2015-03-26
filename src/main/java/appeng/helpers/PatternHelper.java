@@ -232,12 +232,18 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 		int offset = 0;
 		this.condensedInputs = new IAEItemStack[tmpInputs.size()];
 		for (IAEItemStack io : tmpInputs.values())
-			this.condensedInputs[offset++] = io;
+		{
+			this.condensedInputs[offset] = io;
+			offset++;
+		}
 
 		offset = 0;
 		this.condensedOutputs = new IAEItemStack[tmpOutputs.size()];
 		for (IAEItemStack io : tmpOutputs.values())
-			this.condensedOutputs[offset++] = io;
+		{
+			this.condensedOutputs[offset] = io;
+			offset++;
+		}
 	}
 
 	@Override

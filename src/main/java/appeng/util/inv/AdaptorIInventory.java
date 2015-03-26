@@ -326,7 +326,8 @@ public class AdaptorIInventory extends InventoryAdaptor
 			this.is.isExtractable = AdaptorIInventory.this.canRemoveStackFromSlot( this.x, iss );
 			this.is.setItemStack( iss );
 
-			this.is.slot = this.x++;
+			this.is.slot = this.x;
+			this.x++;
 			return this.is;
 		}
 

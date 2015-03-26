@@ -44,7 +44,9 @@ public class NonNullArrayIterator<E> implements Iterator<E>
 	@Override
 	public E next()
 	{
-		return this.g[this.offset++];
+		E result = this.g[this.offset];
+		this.offset++;
+		return result;
 	}
 
 	@Override

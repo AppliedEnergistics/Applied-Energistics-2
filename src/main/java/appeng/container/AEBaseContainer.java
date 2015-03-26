@@ -172,7 +172,8 @@ public abstract class AEBaseContainer extends Container
 				int page = 0;
 				for (byte[] packet : miniPackets)
 				{
-					PacketPartialItem ppi = new PacketPartialItem( page++, miniPackets.size(), packet );
+					PacketPartialItem ppi = new PacketPartialItem( page, miniPackets.size(), packet );
+					page++;
 					NetworkHandler.instance.sendToServer( ppi );
 				}
 			}

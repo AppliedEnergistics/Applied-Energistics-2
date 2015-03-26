@@ -68,9 +68,10 @@ public class VibrantFX extends EntityFX
 		// this.moveEntity(this.motionX, this.motionY, this.motionZ);
 		this.particleScale *= 0.95;
 
-		if ( this.particleMaxAge-- <= 0 || this.particleScale < 0.1 )
+		if ( this.particleMaxAge <= 0 || this.particleScale < 0.1 )
 		{
 			this.setDead();
 		}
+		this.particleMaxAge--;
 	}
 }

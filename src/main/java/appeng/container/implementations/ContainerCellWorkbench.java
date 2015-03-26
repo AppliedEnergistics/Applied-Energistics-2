@@ -223,7 +223,10 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 
 		for (int w = 0; w < 7; w++)
 			for (int z = 0; z < 9; z++)
-				this.addSlotToContainer( new SlotFakeTypeOnly( inv, offset++, x + z * 18, y + w * 18 ) );
+			{
+				this.addSlotToContainer( new SlotFakeTypeOnly( inv, offset, x + z * 18, y + w * 18 ) );
+				offset++;
+			}
 
 		for (int zz = 0; zz < 3; zz++)
 			for (int z = 0; z < 8; z++)

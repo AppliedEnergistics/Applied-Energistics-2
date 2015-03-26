@@ -48,8 +48,9 @@ final public class EntityFloatingItem extends EntityItem
 		if ( !this.isDead && this.parent.isDead )
 			this.setDead();
 
-		if ( this.superDeath++ > 100 )
+		if ( this.superDeath > 100 )
 			this.setDead();
+		this.superDeath++;
 
 		this.age = ageStatic;
 	}

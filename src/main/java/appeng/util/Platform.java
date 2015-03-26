@@ -245,8 +245,9 @@ public class Platform
 		int pos = 0;
 		for (Object g : valList)
 		{
-			if ( pos++ == pLoc )
+			if ( pos == pLoc )
 				return (T) g;
+			pos++;
 		}
 
 		return null;
@@ -297,8 +298,9 @@ public class Platform
 		int pos = 0;
 		for (Object g : valList)
 		{
-			if ( pos++ == pLoc )
+			if ( pos == pLoc )
 				return (T) g;
+			pos++;
 		}
 
 		return null;
@@ -992,8 +994,12 @@ public class Platform
 	{
 		int index = RANDOM_GENERATOR.nextInt( outs.size() );
 		Iterator<T> i = outs.iterator();
-		while (i.hasNext() && index-- > 0)
+		while (i.hasNext() && index > 0)
+		{
+			index--;
 			i.next();
+		}
+		index--;
 		if ( i.hasNext() )
 			return i.next();
 		return null; // wtf?
@@ -1524,7 +1530,8 @@ public class Platform
 
 					for (Integer Side : sides)
 					{
-						int c = (Side << (offset++ % 8)) ^ (1 << dir.ordinal());
+						int c = (Side << ( offset % 8)) ^ (1 << dir.ordinal());
+						offset++;
 						hash = c + (hash << 6) + (hash << 16) - hash;
 					}
 				}

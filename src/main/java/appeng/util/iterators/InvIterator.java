@@ -45,7 +45,9 @@ public class InvIterator implements Iterator<ItemStack>
 	@Override
 	public ItemStack next()
 	{
-		return this.inv.getStackInSlot( this.x++ );
+		ItemStack result = this.inv.getStackInSlot( this.x );
+		this.x++;
+		return result;
 	}
 
 	@Override

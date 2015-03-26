@@ -39,7 +39,9 @@ public class ChainedIterator<T> implements Iterator<T>
 	@Override
 	public T next()
 	{
-		return this.list[this.offset++];
+		T result = this.list[this.offset];
+		this.offset++;
+		return result;
 	}
 
 	@Override

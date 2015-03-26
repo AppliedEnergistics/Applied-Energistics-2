@@ -325,7 +325,7 @@ public class CraftingJob implements Runnable, ICraftingJob
 
 	public void handlePausing() throws InterruptedException
 	{
-		if ( this.incTime++ > 100 )
+		if ( this.incTime > 100 )
 		{
 			this.incTime = 0;
 
@@ -354,6 +354,7 @@ public class CraftingJob implements Runnable, ICraftingJob
 			if ( Thread.interrupted() )
 				throw new InterruptedException();
 		}
+		this.incTime++;
 	}
 
 	private void log(String string)

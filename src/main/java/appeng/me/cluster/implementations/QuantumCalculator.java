@@ -89,7 +89,8 @@ public class QuantumCalculator extends MBCalculator
 							flags = (byte) (this.tqb.corner | num);
 						else
 							flags = num;
-						c.Ring[ringNum++] = te;
+						c.Ring[ringNum] = te;
+						ringNum++;
 					}
 
 					te.updateStatus( c, flags, true );

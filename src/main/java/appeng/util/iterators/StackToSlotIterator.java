@@ -44,7 +44,8 @@ public class StackToSlotIterator implements Iterator<ItemSlot>
 	@Override
 	public ItemSlot next()
 	{
-		this.iss.slot = this.x++;
+		this.iss.slot = this.x;
+		this.x++;
 		this.iss.setItemStack( this.is.next() );
 		return this.iss;
 	}

@@ -45,7 +45,9 @@ public class AEInvIterator implements Iterator<IAEItemStack>
 	@Override
 	public IAEItemStack next()
 	{
-		return this.inv.getAEStackInSlot( this.x++ );
+		IAEItemStack result = this.inv.getAEStackInSlot( this.x );
+		this.x++;
+		return result;
 	}
 
 	@Override

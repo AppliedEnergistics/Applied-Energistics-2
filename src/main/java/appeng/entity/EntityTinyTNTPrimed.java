@@ -91,7 +91,7 @@ final public class EntityTinyTNTPrimed extends EntityTNTPrimed implements IEntit
 			this.setDead();
 		}
 
-		if ( this.fuse-- <= 0 )
+		if ( this.fuse <= 0 )
 		{
 			this.setDead();
 
@@ -104,6 +104,7 @@ final public class EntityTinyTNTPrimed extends EntityTNTPrimed implements IEntit
 		{
 			this.worldObj.spawnParticle( "smoke", this.posX, this.posY, this.posZ, 0.0D, 0.0D, 0.0D );
 		}
+		this.fuse--;
 	}
 
 	// override :P

@@ -32,9 +32,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.WeakHashMap;
 
-import com.google.common.base.Optional;
-import com.mojang.authlib.GameProfile;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
@@ -43,6 +40,9 @@ import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
+
+import com.google.common.base.Optional;
+import com.mojang.authlib.GameProfile;
 
 import appeng.api.util.WorldCoord;
 import appeng.core.sync.network.NetworkHandler;
@@ -402,7 +402,8 @@ public class WorldSettings extends Configuration
 
 	private long nextGridStorage()
 	{
-		long r = this.lastGridStorage++;
+		long r = this.lastGridStorage;
+		this.lastGridStorage++;
 		this.get( "Counters", "lastGridStorage", this.lastGridStorage ).set( Long.toString( this.lastGridStorage ) );
 		return r;
 	}
@@ -444,7 +445,8 @@ public class WorldSettings extends Configuration
 
 	private long nextPlayer()
 	{
-		long r = this.lastPlayer++;
+		long r = this.lastPlayer;
+		this.lastPlayer++;
 		this.get( "Counters", "lastPlayer", this.lastPlayer ).set( this.lastPlayer );
 		return r;
 	}

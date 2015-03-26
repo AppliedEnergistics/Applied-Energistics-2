@@ -50,7 +50,8 @@ public class IMEAdaptorIterator implements Iterator<ItemSlot>
 	@Override
 	public ItemSlot next()
 	{
-		this.slot.slot = this.offset++;
+		this.slot.slot = this.offset;
+		this.offset++;
 		this.slot.isExtractable=true;
 
 		if ( this.parent.maxSlots < this.offset )

@@ -91,11 +91,13 @@ public class RenderBlockCraftingCPUMonitor extends RenderBlockCraftingCPU
 		int spin = 0;
 
 		int max = 5;
-		while (walrus != cmt.getUp() && max-- > 0)
+		while (walrus != cmt.getUp() && max > 0)
 		{
+			max--;
 			spin++;
 			walrus = Platform.rotateAround( walrus, side );
 		}
+		max--;
 
 		GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS );
 		GL11.glTranslated( side.offsetX * 0.69, side.offsetY * 0.69, side.offsetZ * 0.69 );

@@ -60,11 +60,12 @@ final public class EntityChargedQuartz extends AEBaseEntityItem
 		if ( !AEConfig.instance.isFeatureEnabled( AEFeature.inWorldFluix ) )
 			return;
 
-		if ( Platform.isClient() && this.delay++ > 30 && AEConfig.instance.enableEffects )
+		if ( Platform.isClient() && this.delay > 30 && AEConfig.instance.enableEffects )
 		{
 			CommonHelper.proxy.spawnEffect( EffectType.Lightning, this.worldObj, this.posX, this.posY, this.posZ, null );
 			this.delay = 0;
 		}
+		this.delay++;
 
 		int j = MathHelper.floor_double( this.posX );
 		int i = MathHelper.floor_double( this.posY );

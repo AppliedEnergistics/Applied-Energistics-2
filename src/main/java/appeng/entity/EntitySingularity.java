@@ -118,7 +118,8 @@ final public class EntitySingularity extends AEBaseEntityItem
 
 								ItemStack Output = AEApi.instance().materials().materialQESingularity.stack( 2 );
 								NBTTagCompound cmp = Platform.openNbtData( Output );
-								cmp.setLong( "freq", ( new Date() ).getTime() * 100 + ( randTickSeed++ ) % 100 );
+								cmp.setLong( "freq", ( new Date() ).getTime() * 100 + ( randTickSeed ) % 100 );
+								randTickSeed++;
 								item.stackSize--;
 
 								this.worldObj.spawnEntityInWorld( new EntitySingularity( this.worldObj, this.posX, this.posY, this.posZ, Output ) );

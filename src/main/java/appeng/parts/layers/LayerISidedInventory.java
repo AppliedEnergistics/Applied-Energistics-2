@@ -103,7 +103,9 @@ public class LayerISidedInventory extends LayerBase implements ISidedInventory
 				for (int cSlot = 0; cSlot < slotCount; cSlot++)
 				{
 					cSidesList[cSlot] = offsetForLayer;
-					slots.set( offsetForLayer++, new InvSot( sides, offsetForPart++ ) );
+					slots.set( offsetForLayer, new InvSot( sides, offsetForPart ) );
+					offsetForLayer++;
+					offsetForPart++;
 				}
 			}
 		}
