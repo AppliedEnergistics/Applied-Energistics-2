@@ -56,7 +56,7 @@ public interface AEItemDefinition
 	ItemStack stack(int stackSize);
 
 	/**
-	 * Compare {@link ItemStack} with this {@link AEItemDefinition}
+	 * Compare {@link ItemStack} with this
 	 *
 	 * @param comparableItem compared item
 	 * @return true if the item stack is a matching item.

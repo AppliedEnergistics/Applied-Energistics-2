@@ -73,7 +73,7 @@ public interface IMEInventoryHandler<StackType extends IAEStack> extends IMEInve
 	 *
 	 * @return the slot index for the cell that this represents in the storage unit, the method on the
 	 *         {@link ICellContainer} will be called with this value, only trust the return value of this method if you
-	 *         are the implementer of the {@link IMEInventoryHandler}.
+	 *         are the implementer of this.
 	 */
 	public int getSlot();
 

@@ -48,7 +48,7 @@ public class PlayerStatsRegistration
 	private final boolean isAchievementFeatureEnabled;
 
 	/**
-	 * Constructs a {@link appeng.core.stats.PlayerStatsRegistration} with an {@link cpw.mods.fml.common.eventhandler.EventBus} and {@link appeng.core.AEConfig}.
+	 * Constructs this with an {@link cpw.mods.fml.common.eventhandler.EventBus} and {@link appeng.core.AEConfig}.
 	 *
 	 * @param bus    {@see #bus}
 	 * @param config {@link appeng.core.AEConfig} which is used to determine if the {@link appeng.core.features.AEFeature#Achievements} is enabled
