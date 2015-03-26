@@ -19,6 +19,8 @@
 package appeng.client.gui.widgets;
 
 
+import java.util.regex.Pattern;
+
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.Minecraft;
@@ -30,6 +32,7 @@ import appeng.client.texture.ExtraBlockTextures;
 
 public class GuiToggleButton extends GuiButton implements ITooltip
 {
+	private static final Pattern PATTERN_NEW_LINE = Pattern.compile( "\\n", Pattern.LITERAL );
 	private final int iconIdxOn;
 	private final int iconIdxOff;
 
@@ -94,7 +97,7 @@ public class GuiToggleButton extends GuiButton implements ITooltip
 			if ( value == null || value.isEmpty() )
 				value = this.displayHint;
 
-			value = value.replace( "\\n", "\n" );
+			value = PATTERN_NEW_LINE.matcher( value ).replaceAll( "\n" );
 			StringBuilder sb = new StringBuilder( value );
 
 			int i = sb.lastIndexOf( "\n" );

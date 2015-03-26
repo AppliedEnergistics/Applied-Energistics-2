@@ -20,6 +20,7 @@ package appeng.core.features;
 
 
 import java.util.EnumSet;
+import java.util.regex.Pattern;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockStairs;
@@ -43,6 +44,10 @@ import appeng.util.Platform;
 
 public class AEFeatureHandler implements AEItemDefinition
 {
+
+	private static final Pattern PATTERN_ITEM_MULTI_PART = Pattern.compile( "ItemMultiPart", Pattern.LITERAL );
+	private static final Pattern PATTERN_ITEM_MULTI_MATERIAL = Pattern.compile( "ItemMultiMaterial", Pattern.LITERAL );
+	private static final Pattern PATTERN_QUARTZ = Pattern.compile( "Quartz", Pattern.LITERAL );
 
 	private final EnumSet<AEFeature> features;
 
@@ -149,9 +154,9 @@ public class AEFeatureHandler implements AEItemDefinition
 		String name = o.getSimpleName();
 
 		if ( name.startsWith( "ItemMultiPart" ) )
-			name = name.replace( "ItemMultiPart", "ItemPart" );
+			name = PATTERN_ITEM_MULTI_PART.matcher( name ).replaceAll( "ItemPart" );
 		else if ( name.startsWith( "ItemMultiMaterial" ) )
-			name = name.replace( "ItemMultiMaterial", "ItemMaterial" );
+			name = PATTERN_ITEM_MULTI_MATERIAL.matcher( name ).replaceAll( "ItemMaterial" );
 
 		if ( subName != null )
 		{
@@ -161,9 +166,9 @@ public class AEFeatureHandler implements AEItemDefinition
 				return "ItemPart.P2PTunnel";
 
 			if ( subName.equals( "CertusQuartzTools" ) )
-				return name.replace( "Quartz", "CertusQuartz" );
+				return PATTERN_QUARTZ.matcher( name ).replaceAll( "CertusQuartz" );
 			if ( subName.equals( "NetherQuartzTools" ) )
-				return name.replace( "Quartz", "NetherQuartz" );
+				return PATTERN_QUARTZ.matcher( name ).replaceAll( "NetherQuartz" );
 
 			name += '.' + subName;
 		}

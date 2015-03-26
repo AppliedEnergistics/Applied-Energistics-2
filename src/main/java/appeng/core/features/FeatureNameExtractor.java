@@ -19,11 +19,17 @@
 package appeng.core.features;
 
 
+import java.util.regex.Pattern;
+
 import com.google.common.base.Optional;
 
 
 public class FeatureNameExtractor
 {
+	private static final Pattern PATTERN_ITEM_MULTI_PART = Pattern.compile( "ItemMultiPart", Pattern.LITERAL );
+	private static final Pattern PATTERN_ITEM_MULTI_MATERIAL = Pattern.compile( "ItemMultiMaterial", Pattern.LITERAL );
+	private static final Pattern PATTERN_QUARTZ = Pattern.compile( "Quartz", Pattern.LITERAL );
+
 	private final Class<?> clazz;
 	private final Optional<String> subName;
 
@@ -39,11 +45,11 @@ public class FeatureNameExtractor
 
 		if ( name.startsWith( "ItemMultiPart" ) )
 		{
-			name = name.replace( "ItemMultiPart", "ItemPart" );
+			name = PATTERN_ITEM_MULTI_PART.matcher( name ).replaceAll( "ItemPart" );
 		}
 		else if ( name.startsWith( "ItemMultiMaterial" ) )
 		{
-			name = name.replace( "ItemMultiMaterial", "ItemMaterial" );
+			name = PATTERN_ITEM_MULTI_MATERIAL.matcher( name ).replaceAll( "ItemMaterial" );
 		}
 
 		if ( this.subName.isPresent() )
@@ -57,11 +63,11 @@ public class FeatureNameExtractor
 			}
 			else if ( subName.equals( "CertusQuartzTools" ) )
 			{
-				return name.replace( "Quartz", "CertusQuartz" );
+				return PATTERN_QUARTZ.matcher( name ).replaceAll( "CertusQuartz" );
 			}
 			else if ( subName.equals( "NetherQuartzTools" ) )
 			{
-				return name.replace( "Quartz", "NetherQuartz" );
+				return PATTERN_QUARTZ.matcher( name ).replaceAll( "NetherQuartz" );
 			}
 
 			name += '.' + subName;

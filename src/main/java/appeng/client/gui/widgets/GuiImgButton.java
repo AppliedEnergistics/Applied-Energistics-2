@@ -54,6 +54,7 @@ import appeng.core.localization.ButtonToolTips;
 public class GuiImgButton extends GuiButton implements ITooltip
 {
 	private static final Pattern COMPILE = Pattern.compile( "%s" );
+	private static final Pattern PATTERN_NEW_LINE = Pattern.compile( "\\n", Pattern.LITERAL );
 	private static Map<EnumPair, ButtonAppearance> appearances;
 	private final Enum buttonSetting;
 	public boolean halfSize = false;
@@ -281,7 +282,7 @@ public class GuiImgButton extends GuiButton implements ITooltip
 			if ( this.fillVar != null )
 				value = COMPILE.matcher( value ).replaceFirst( this.fillVar );
 
-			value = value.replace( "\\n", "\n" );
+			value = PATTERN_NEW_LINE.matcher( value ).replaceAll( "\n" );
 			StringBuilder sb = new StringBuilder( value );
 
 			int i = sb.lastIndexOf( "\n" );
