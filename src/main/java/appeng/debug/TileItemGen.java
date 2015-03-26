@@ -33,7 +33,7 @@ import appeng.tile.AEBaseTile;
 public class TileItemGen extends AEBaseTile implements IInventory
 {
 
-	public static final Queue<ItemStack> POSSIBLE_ITEMS = new LinkedList<ItemStack>();
+	private static final Queue<ItemStack> POSSIBLE_ITEMS = new LinkedList<ItemStack>();
 
 	public TileItemGen() {
 		if ( POSSIBLE_ITEMS.isEmpty() )

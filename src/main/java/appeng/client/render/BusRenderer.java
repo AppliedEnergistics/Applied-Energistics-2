@@ -19,6 +19,7 @@
 package appeng.client.render;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import org.lwjgl.opengl.GL11;
 
@@ -48,7 +49,7 @@ public class BusRenderer implements IItemRenderer
 	public static final BusRenderer INSTANCE = new BusRenderer();
 
 	public final RenderBlocksWorkaround renderer = new RenderBlocksWorkaround();
-	public static final HashMap<Integer, IPart> RENDER_PART = new HashMap<Integer, IPart>();
+	private static final Map<Integer, IPart> RENDER_PART = new HashMap<Integer, IPart>();
 
 	public IPart getRenderer(ItemStack is, IPartItem c)
 	{

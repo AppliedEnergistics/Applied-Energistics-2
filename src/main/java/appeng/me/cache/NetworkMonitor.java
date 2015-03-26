@@ -19,6 +19,7 @@
 package appeng.me.cache;
 
 import java.util.Collection;
+import java.util.Deque;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map.Entry;
@@ -64,7 +65,7 @@ public class NetworkMonitor<T extends IAEStack<T>> extends MEMonitorHandler<T>
 		this.myChannel = chan;
 	}
 
-	final static public LinkedList DEPTH = new LinkedList();
+	private final static Deque<NetworkMonitor<?>> DEPTH = new LinkedList<NetworkMonitor<?>>();
 
 	@Override
 	protected void postChangesToListeners(Iterable<T> changes, BaseActionSource src)
@@ -113,7 +114,7 @@ public class NetworkMonitor<T extends IAEStack<T>> extends MEMonitorHandler<T>
 			}
 		}
 
-		Object last = DEPTH.pop();
+		NetworkMonitor<?> last = DEPTH.pop();
 		if ( last != this )
 			throw new RuntimeException( "Invalid Access to Networked Storage API detected." );
 	}
