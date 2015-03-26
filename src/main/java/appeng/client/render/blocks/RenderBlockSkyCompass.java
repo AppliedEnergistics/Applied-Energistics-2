@@ -118,7 +118,7 @@ public class RenderBlockSkyCompass extends BaseBlockRender
 			{
 				if ( cr.spin )
 				{
-					now = now % 100000;
+					now %= 100000;
 					this.model.renderAll( (now / 50000.0f) * (float) Math.PI * 500.0f );
 				}
 				else
@@ -139,14 +139,14 @@ public class RenderBlockSkyCompass extends BaseBlockRender
 			}
 			else
 			{
-				now = now % 1000000;
+				now %= 1000000;
 				this.model.renderAll( (now / 500000.0f) * (float) Math.PI * 500.0f );
 			}
 
 		}
 		else
 		{
-			now = now % 100000;
+			now %= 100000;
 			this.model.renderAll( (now / 50000.0f) * (float) Math.PI * 500.0f );
 		}
 
@@ -195,7 +195,7 @@ public class RenderBlockSkyCompass extends BaseBlockRender
 		{
 			if ( cr.spin )
 			{
-				now = now % 100000;
+				now %= 100000;
 				this.model.renderAll( (now / 50000.0f) * (float) Math.PI * 500.0f );
 			}
 			else
@@ -204,7 +204,7 @@ public class RenderBlockSkyCompass extends BaseBlockRender
 		}
 		else
 		{
-			now = now % 1000000;
+			now %= 1000000;
 			this.model.renderAll( (now / 500000.0f) * (float) Math.PI * 500.0f );
 		}
 

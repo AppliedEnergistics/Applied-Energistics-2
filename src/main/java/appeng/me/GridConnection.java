@@ -240,7 +240,7 @@ public class GridConnection implements IGridConnection, IPathItem
 	{
 		if ( this.getUsedChannels() != this.getLastUsedChannels() )
 		{
-			this.channelData = ( this.channelData & 0xff );
+			this.channelData &= 0xff;
 			this.channelData |= this.channelData << 8;
 
 			if ( this.sideA.getInternalGrid() != null )

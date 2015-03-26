@@ -81,8 +81,8 @@ public class CompassRegion
 	{
 		if ( this.hasFile )
 		{
-			cx = cx & 0x3FF;
-			cz = cz & 0x3FF;
+			cx &= 0x3FF;
+			cz &= 0x3FF;
 
 			int val = this.read( cx, cz );
 			if ( val != 0 )

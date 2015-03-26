@@ -114,7 +114,7 @@ public class ContainerSecurity extends ContainerMEMonitorable implements IAEAppE
 			IBiometricCard bc = (IBiometricCard) a.getItem();
 
 			for (SecurityPermissions sp : bc.getPermissions( a ))
-				this.security = this.security | (1 << sp.ordinal());
+				this.security |= ( 1 << sp.ordinal() );
 		}
 
 		this.updatePowerStatus();

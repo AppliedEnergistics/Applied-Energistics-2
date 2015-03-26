@@ -147,7 +147,7 @@ public class TickManagerCache implements ITickManager
 		this.awake.put( node, tt );
 
 		// configure sort.
-		tt.lastTick = tt.lastTick - tt.request.maxTickRate;
+		tt.lastTick -= tt.request.maxTickRate;
 		tt.current_rate = tt.request.minTickRate;
 
 		// prevent dupes and tick build up.

@@ -173,7 +173,7 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 		int viewStart = 0;// myScrollBar.getCurrentScroll() * 5;
 		int viewEnd = viewStart + 5 * 4;
 
-		String ToolTip = "";
+		String toolTip = "";
 		int toolPosX = 0;
 		int toolPosY = 0;
 
@@ -199,11 +199,11 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 
 				if ( this.tooltip == z - viewStart )
 				{
-					ToolTip = Platform.getItemDisplayName( this.repo.getItem( z ) );
+					toolTip = Platform.getItemDisplayName( this.repo.getItem( z ) );
 
-					ToolTip = ToolTip + ( '\n' + GuiText.Installed.getLocal() + ": " + (refStack.getStackSize()));
+					toolTip += ( '\n' + GuiText.Installed.getLocal() + ": " + ( refStack.getStackSize() ) );
 					if ( refStack.getCountRequestable() > 0 )
-						ToolTip = ToolTip + ( '\n' + GuiText.EnergyDrain.getLocal() + ": " + Platform.formatPowerLong( refStack.getCountRequestable(), true ));
+						toolTip += ( '\n' + GuiText.EnergyDrain.getLocal() + ": " + Platform.formatPowerLong( refStack.getCountRequestable(), true ) );
 
 					toolPosX = x * sectionLength + xo + sectionLength - 8;
 					toolPosY = y * 18 + yo;
@@ -222,10 +222,10 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 
 		}
 
-		if ( this.tooltip >= 0 && ToolTip.length() > 0 )
+		if ( this.tooltip >= 0 && toolTip.length() > 0 )
 		{
 			GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS );
-			this.drawTooltip( toolPosX, toolPosY + 10, 0, ToolTip );
+			this.drawTooltip( toolPosX, toolPosY + 10, 0, toolTip );
 			GL11.glPopAttrib();
 		}
 

@@ -465,12 +465,12 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 						if ( !Worked )
 							i.onItemUse( is, player, w, x, y, z, side.getOpposite().ordinal(), side.offsetX, side.offsetY, side.offsetZ );
 
-						maxStorage = maxStorage - is.stackSize;
+						maxStorage -= is.stackSize;
 					}
 					else
 					{
 						i.onItemUse( is, player, w, x, y, z, side.getOpposite().ordinal(), side.offsetX, side.offsetY, side.offsetZ );
-						maxStorage = maxStorage - is.stackSize;
+						maxStorage -= is.stackSize;
 					}
 				}
 				else

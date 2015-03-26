@@ -361,7 +361,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	public void markForUpdate()
 	{
 		if ( this.renderFragment > 0 )
-			this.renderFragment = this.renderFragment | 1;
+			this.renderFragment |= 1;
 		else
 		{
 			// TODO: Optimize Network Load

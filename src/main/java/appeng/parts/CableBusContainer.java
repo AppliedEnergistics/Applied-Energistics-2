@@ -584,7 +584,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 			IPart p = this.getPart( ForgeDirection.getOrientation( x ) );
 			if ( p != null )
 			{
-				sides = sides | (1 << x);
+				sides |= ( 1 << x );
 			}
 		}
 

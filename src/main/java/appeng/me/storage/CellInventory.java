@@ -338,7 +338,8 @@ public class CellInventory implements ICellInventory
 
 	private void updateItemCount(long delta)
 	{
-		this.tagCompound.setInteger( ITEM_COUNT_TAG, this.storedItemCount = (int) (this.storedItemCount + delta) );
+		this.storedItemCount += delta;
+		this.tagCompound.setInteger( ITEM_COUNT_TAG, this.storedItemCount );
 	}
 
 	@Override

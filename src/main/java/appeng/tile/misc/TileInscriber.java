@@ -137,7 +137,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 		for (int num = 0; num < this.inv.getSizeInventory(); num++)
 		{
 			if ( this.inv.getStackInSlot( num ) != null )
-				slot = slot | (1 << num);
+				slot |= ( 1 << num );
 		}
 
 		data.writeByte( slot );
@@ -408,7 +408,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 					src.extractAEPower( powerConsumption, Actionable.MODULATE, PowerMultiplier.CONFIG );
 
 					if ( this.processingTime == 0 )
-						this.processingTime = this.processingTime + speedFactor;
+						this.processingTime += speedFactor;
 					else
 						this.processingTime += TicksSinceLastCall * speedFactor;
 				}

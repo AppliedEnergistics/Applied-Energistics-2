@@ -59,8 +59,8 @@ public class CompassReader
 	private CompassRegion getRegion(int cx, int cz)
 	{
 		long pos = cx >> 10;
-		pos = pos << 32;
-		pos = pos | (cz >> 10);
+		pos <<= 32;
+		pos |= ( cz >> 10 );
 
 		CompassRegion cr = this.regions.get( pos );
 		if ( cr == null )

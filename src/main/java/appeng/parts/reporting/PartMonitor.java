@@ -161,13 +161,13 @@ public class PartMonitor extends AEBasePart implements IPartMonitor, IPowerChann
 		try
 		{
 			if ( this.proxy.getEnergy().isNetworkPowered() )
-				this.clientFlags = this.clientFlags | this.POWERED_FLAG;
+				this.clientFlags |= this.POWERED_FLAG;
 
 			if ( this.proxy.getPath().isNetworkBooting() )
-				this.clientFlags = this.clientFlags | this.BOOTING_FLAG;
+				this.clientFlags |= this.BOOTING_FLAG;
 
 			if ( this.proxy.getNode().meetsChannelRequirements() )
-				this.clientFlags = this.clientFlags | this.CHANNEL_FLAG;
+				this.clientFlags |= this.CHANNEL_FLAG;
 		}
 		catch (GridAccessException e)
 		{
