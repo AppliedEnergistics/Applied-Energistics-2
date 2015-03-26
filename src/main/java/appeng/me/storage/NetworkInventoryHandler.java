@@ -25,7 +25,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.NavigableMap;
 import java.util.TreeMap;
-import java.util.concurrent.ConcurrentSkipListMap;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
