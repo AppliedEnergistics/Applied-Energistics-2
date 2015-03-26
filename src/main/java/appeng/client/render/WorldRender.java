@@ -35,7 +35,7 @@ import appeng.block.AEBaseBlock;
 import appeng.core.AELog;
 
 @SideOnly(Side.CLIENT)
-public class WorldRender implements ISimpleBlockRenderingHandler
+public final class WorldRender implements ISimpleBlockRenderingHandler
 {
 
 	private final RenderBlocks renderer = new RenderBlocks();

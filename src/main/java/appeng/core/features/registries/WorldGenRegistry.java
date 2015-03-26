@@ -25,7 +25,7 @@ import net.minecraft.world.WorldProvider;
 
 import appeng.api.features.IWorldGen;
 
-public class WorldGenRegistry implements IWorldGen
+public final class WorldGenRegistry implements IWorldGen
 {
 
 	private static class TypeSet

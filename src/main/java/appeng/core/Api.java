@@ -39,7 +39,7 @@ import appeng.me.GridConnection;
 import appeng.me.GridNode;
 import appeng.util.Platform;
 
-public class Api implements IAppEngApi
+public final class Api implements IAppEngApi
 {
 
 	public static final Api INSTANCE = new Api();
