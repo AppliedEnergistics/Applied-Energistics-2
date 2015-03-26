@@ -34,7 +34,7 @@ public enum Commands
 		return this.name();
 	}
 
-	private Commands(int level, ISubCommand w) {
+	Commands( int level, ISubCommand w ) {
 		this.level = level;
 		this.command = w;
 	}

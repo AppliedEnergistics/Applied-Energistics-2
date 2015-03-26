@@ -49,7 +49,7 @@ public enum ExtraItemTextures
 		return this.name;
 	}
 
-	private ExtraItemTextures(String name) {
+	ExtraItemTextures( String name ) {
 		this.name = name;
 	}
 

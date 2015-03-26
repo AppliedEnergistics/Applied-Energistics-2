@@ -111,7 +111,7 @@ public enum ExtraBlockTextures
 		return this.name;
 	}
 
-	private ExtraBlockTextures(String name) {
+	ExtraBlockTextures( String name ) {
 		this.name = name;
 	}
 

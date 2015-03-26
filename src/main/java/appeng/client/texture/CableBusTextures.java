@@ -101,7 +101,7 @@ public enum CableBusTextures
 		return this.name;
 	}
 
-	private CableBusTextures(String name) {
+	CableBusTextures( String name ) {
 		this.name = name;
 	}
 

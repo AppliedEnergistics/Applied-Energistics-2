@@ -50,7 +50,7 @@ public enum TickRates
 	public int min;
 	public int max;
 
-	private TickRates(int min, int max) {
+	TickRates( int min, int max ) {
 		this.min = min;
 		this.max = max;
 	}

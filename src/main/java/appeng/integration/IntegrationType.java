@@ -66,7 +66,7 @@ public enum IntegrationType
 	public final String dspName;
 	public final String modID;
 
-	private IntegrationType(IntegrationSide side, String Name, String modid) {
+	IntegrationType( IntegrationSide side, String Name, String modid ) {
 		this.side = side;
 		this.dspName = Name;
 		this.modID = modid;

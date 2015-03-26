@@ -43,7 +43,7 @@ public enum StorageChannel
 
 	public final Class<? extends IAEStack> type;
 
-	private StorageChannel( Class<? extends IAEStack> t ) {
+	StorageChannel( Class<? extends IAEStack> t ) {
 		this.type = t;
 	}
 

@@ -61,7 +61,7 @@ public class SlotRestrictedInput extends AppEngSlot
 
 		public final int IIcon;
 
-		private PlacableItemType(int o) {
+		PlacableItemType( int o ) {
 			this.IIcon = o;
 		}
 	}

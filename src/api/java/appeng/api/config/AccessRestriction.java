@@ -29,7 +29,7 @@ public enum AccessRestriction
 
 	private final int permissionBit;
 
-	private AccessRestriction(int v) {
+	AccessRestriction( int v ) {
 		this.permissionBit = v;
 	}
 

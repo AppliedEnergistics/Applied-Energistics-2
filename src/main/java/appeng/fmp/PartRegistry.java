@@ -40,7 +40,7 @@ public enum PartRegistry
 		return this.name;
 	}
 
-	private PartRegistry(String name, Class<? extends AEBaseBlock> blk, Class<? extends TMultiPart> part) {
+	PartRegistry( String name, Class<? extends AEBaseBlock> blk, Class<? extends TMultiPart> part ) {
 		this.name = name;
 		this.blk = blk;
 		this.part = part;
