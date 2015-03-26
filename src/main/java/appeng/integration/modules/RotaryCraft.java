@@ -18,15 +18,17 @@
 
 package appeng.integration.modules;
 
+
 import appeng.integration.BaseModule;
+
 
 public class RotaryCraft extends BaseModule
 {
-
 	public static RotaryCraft instance;
 
-	public RotaryCraft() {
-		this.testClassExistence( Reika.RotaryCraft.API.ShaftPowerReceiver.class );
+	public RotaryCraft()
+	{
+		this.testClassExistence( Reika.RotaryCraft.API.Power.ShaftPowerReceiver.class );
 	}
 
 	@Override
@@ -40,5 +42,4 @@ public class RotaryCraft extends BaseModule
 	{
 
 	}
-
 }

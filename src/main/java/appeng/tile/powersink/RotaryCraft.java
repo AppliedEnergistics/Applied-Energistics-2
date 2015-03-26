@@ -20,7 +20,7 @@ package appeng.tile.powersink;
 
 import net.minecraftforge.common.util.ForgeDirection;
 
-import Reika.RotaryCraft.API.ShaftPowerReceiver;
+import Reika.RotaryCraft.API.Power.ShaftPowerReceiver;
 
 import appeng.api.config.PowerUnits;
 import appeng.tile.TileEvent;
@@ -80,25 +80,6 @@ public abstract class RotaryCraft extends IC2 implements ShaftPowerReceiver
 	final public void setIORenderAlpha(int io)
 	{
 		this.alpha = io;
-	}
-
-
-	@Override
-	final public int getMachineX()
-	{
-		return this.xCoord;
-	}
-
-	@Override
-	final public int getMachineY()
-	{
-		return this.yCoord;
-	}
-
-	@Override
-	final public int getMachineZ()
-	{
-		return this.zCoord;
 	}
 
 	@Override
