@@ -47,6 +47,7 @@ public class OreHelper
 	 */
 	private final LoadingCache<String, List<ItemStack>> oreDictCache = CacheBuilder
 			.newBuilder().build( new CacheLoader<String, List<ItemStack>>(){
+				@Override
 				public List<ItemStack> load( String oreName )
 				{
 					return OreDictionary.getOres( oreName );
