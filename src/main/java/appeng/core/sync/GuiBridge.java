@@ -20,7 +20,6 @@ package appeng.core.sync;
 
 
 import java.lang.reflect.Constructor;
-import java.util.regex.Pattern;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -191,8 +190,6 @@ public enum GuiBridge implements IGuiHandler
 
 	GUI_CRAFTING_STATUS(ContainerCraftingStatus.class, ITerminalHost.class, ITEM_OR_WORLD, SecurityPermissions.CRAFT);
 
-	private static final Pattern PATTERN_PRE_CONTAINER = Pattern.compile( ".Container", Pattern.LITERAL );
-	private static final Pattern PATTERN_POST_CONTAINER = Pattern.compile( "container." );
 	private final Class Tile;
 	private Class Gui;
 	private final Class Container;
@@ -214,14 +211,13 @@ public enum GuiBridge implements IGuiHandler
 		if ( Platform.isClient() )
 		{
 			final String start = this.Container.getName();
-			final String guiClassPostReplaced = PATTERN_POST_CONTAINER.matcher( start ).replaceFirst( "client.gui." );
-			final String guiClassPreReplaced = PATTERN_PRE_CONTAINER.matcher( guiClassPostReplaced ).replaceAll( ".Gui" );
+			String guiClass = start.replaceFirst( "container.", "client.gui." ).replace( ".Container", ".Gui" );
 
-			if ( start.equals( guiClassPreReplaced ) )
+			if ( start.equals( guiClass ) )
 				throw new RuntimeException( "Unable to find gui class" );
-			this.Gui = ReflectionHelper.getClass( this.getClass().getClassLoader(), guiClassPreReplaced );
+			this.Gui = ReflectionHelper.getClass( this.getClass().getClassLoader(), guiClass );
 			if ( this.Gui == null )
-				throw new RuntimeException( "Cannot Load class: " + guiClassPreReplaced );
+				throw new RuntimeException( "Cannot Load class: " + guiClass );
 		}
 	}
 
