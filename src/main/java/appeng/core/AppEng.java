@@ -37,8 +37,9 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 
 import com.google.common.base.Stopwatch;
 
-import appeng.core.crash.CrashEnhancement;
 import appeng.core.crash.CrashInfo;
+import appeng.core.crash.IntegrationCrashEnhancement;
+import appeng.core.crash.ModCrashEnhancement;
 import appeng.core.features.AEFeature;
 import appeng.core.sync.GuiBridge;
 import appeng.core.sync.network.NetworkHandler;
@@ -79,7 +80,7 @@ public class AppEng
 
 		this.imcHandler = new IMCHandler();
 
-		FMLCommonHandler.instance().registerCrashCallable( new CrashEnhancement( CrashInfo.MOD_VERSION ) );
+		FMLCommonHandler.instance().registerCrashCallable( new ModCrashEnhancement( CrashInfo.MOD_VERSION ) );
 	}
 
 	public final File getConfigDirectory()
@@ -167,7 +168,7 @@ public class AppEng
 
 		Registration.INSTANCE.postInit( event );
 		IntegrationRegistry.INSTANCE.postInit();
-		FMLCommonHandler.instance().registerCrashCallable( new CrashEnhancement( CrashInfo.INTEGRATION ) );
+		FMLCommonHandler.instance().registerCrashCallable( new IntegrationCrashEnhancement() );
 
 		CommonHelper.proxy.postInit();
 		AEConfig.instance.save();

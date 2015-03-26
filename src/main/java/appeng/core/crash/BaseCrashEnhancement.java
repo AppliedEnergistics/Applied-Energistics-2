@@ -21,52 +21,27 @@ package appeng.core.crash;
 
 import cpw.mods.fml.common.ICrashCallable;
 
-import appeng.core.AEConfig;
-import appeng.integration.IntegrationRegistry;
 
-
-public class CrashEnhancement implements ICrashCallable
+abstract class BaseCrashEnhancement implements ICrashCallable
 {
-
 	private final String name;
 	private final String value;
 
-	private final String ModVersion = AEConfig.CHANNEL + ' ' + AEConfig.VERSION + " for Forge " + // WHAT?
-	net.minecraftforge.common.ForgeVersion.majorVersion + '.' // majorVersion
-			+ net.minecraftforge.common.ForgeVersion.minorVersion + '.' // minorVersion
-			+ net.minecraftforge.common.ForgeVersion.revisionVersion + '.' // revisionVersion
-			+ net.minecraftforge.common.ForgeVersion.buildVersion;
-
-	public CrashEnhancement( CrashInfo Output )
+	public BaseCrashEnhancement( String name, String value )
 	{
-
-		if ( Output == CrashInfo.MOD_VERSION )
-		{
-			this.name = "AE2 Version";
-			this.value = this.ModVersion;
-		}
-		else if ( Output == CrashInfo.INTEGRATION )
-		{
-			this.name = "AE2 Integration";
-			this.value = IntegrationRegistry.INSTANCE.getStatus();
-		}
-		else
-		{
-			this.name = "AE2_UNKNOWN";
-			this.value = "UNKNOWN_VALUE";
-		}
+		this.name = name;
+		this.value = value;
 	}
 
 	@Override
-	public String call() throws Exception
+	public final String call() throws Exception
 	{
 		return this.value;
 	}
 
 	@Override
-	public String getLabel()
+	public final String getLabel()
 	{
 		return this.name;
 	}
-
 }
