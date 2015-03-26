@@ -433,7 +433,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 		if ( this instanceof ISegmentedInventory )
 		{
 			IInventory inv = ((ISegmentedInventory) this).getInventoryByName( "config" );
-			if ( inv != null && inv instanceof AppEngInternalAEInventory )
+			if ( inv instanceof AppEngInternalAEInventory )
 			{
 				AppEngInternalAEInventory target = (AppEngInternalAEInventory) inv;
 				AppEngInternalAEInventory tmp = new AppEngInternalAEInventory( null, target.getSizeInventory() );
@@ -477,7 +477,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 		if ( this instanceof ISegmentedInventory )
 		{
 			IInventory inv = ((ISegmentedInventory) this).getInventoryByName( "config" );
-			if ( inv != null && inv instanceof AppEngInternalAEInventory )
+			if ( inv instanceof AppEngInternalAEInventory )
 			{
 				((AppEngInternalAEInventory) inv).writeToNBT( output, "config" );
 			}

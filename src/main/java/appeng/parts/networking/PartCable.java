@@ -880,7 +880,7 @@ public class PartCable extends AEBasePart implements IPartCable
 		for ( ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS )
 		{
 			IPart p = this.getHost().getPart( dir );
-			if ( p != null && p instanceof IGridHost )
+			if ( p instanceof IGridHost )
 			{
 				IGridHost igh = ( IGridHost ) p;
 				AECableType type = igh.getCableConnectionType( dir.getOpposite() );

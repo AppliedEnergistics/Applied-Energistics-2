@@ -331,7 +331,7 @@ public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradea
 		}
 
 		IInventory inv = this.getInventoryByName( "config" );
-		if ( inv != null && inv instanceof AppEngInternalAEInventory )
+		if ( inv instanceof AppEngInternalAEInventory )
 		{
 			AppEngInternalAEInventory target = (AppEngInternalAEInventory) inv;
 			AppEngInternalAEInventory tmp = new AppEngInternalAEInventory( null, target.getSizeInventory() );
@@ -362,7 +362,7 @@ public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradea
 		}
 
 		IInventory inv = this.getInventoryByName( "config" );
-		if ( inv != null && inv instanceof AppEngInternalAEInventory )
+		if ( inv instanceof AppEngInternalAEInventory )
 		{
 			((AppEngInternalAEInventory) inv).writeToNBT( output, "config" );
 		}

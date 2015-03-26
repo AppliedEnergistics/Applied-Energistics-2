@@ -796,7 +796,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 	public AECableType getCableConnectionType(ForgeDirection dir)
 	{
 		IPart part = this.getPart( dir );
-		if ( part != null && part instanceof IGridHost )
+		if ( part instanceof IGridHost )
 		{
 			AECableType t = ((IGridHost) part).getCableConnectionType( dir );
 			if ( t != null && t != AECableType.NONE )
@@ -1009,7 +1009,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 		for (ForgeDirection d : ForgeDirection.values())
 		{
 			IPart p = this.getPart( d );
-			if ( p != null && p instanceof IGridHost )
+			if ( p instanceof IGridHost )
 				((IGridHost) p).securityBreak();
 		}
 	}
