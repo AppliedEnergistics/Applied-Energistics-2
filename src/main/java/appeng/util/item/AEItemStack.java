@@ -75,7 +75,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 		this.setCountRequestable( is.getCountRequestable() );
 	}
 
-	protected AEItemStack(ItemStack is) {
+	private AEItemStack( ItemStack is ) {
 		if ( is == null )
 			throw new RuntimeException( "Invalid Itemstack." );
 

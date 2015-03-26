@@ -43,7 +43,7 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 
 	public int myHash;
 	Fluid fluid;
-	protected IAETagCompound tagCompound;
+	private IAETagCompound tagCompound;
 
 	@Override
 	public String toString()
@@ -83,7 +83,7 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 		this.myHash = is.myHash;
 	}
 
-	protected AEFluidStack(FluidStack is) {
+	private AEFluidStack( FluidStack is ) {
 		if ( is == null )
 			throw new RuntimeException( "Invalid Itemstack." );
 
