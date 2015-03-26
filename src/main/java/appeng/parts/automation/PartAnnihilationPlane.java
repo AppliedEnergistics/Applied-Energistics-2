@@ -83,7 +83,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 	public TickRateModulation call() throws Exception
 	{
 		this.breaking = false;
-		return this.breakblock( true );
+		return this.breakBlock( true );
 	}
 
 	@Override
@@ -244,7 +244,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 		this.getHost().markForUpdate();
 	}
 
-	public TickRateModulation breakblock( boolean modulate )
+	public TickRateModulation breakBlock( boolean modulate )
 	{
 		if ( this.isAccepting && this.proxy.isActive() )
 		{
@@ -419,7 +419,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 		}
 
 		this.isAccepting = true;
-		return this.breakblock( false );
+		return this.breakBlock( false );
 	}
 
 	/**

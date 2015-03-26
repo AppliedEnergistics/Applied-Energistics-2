@@ -23,9 +23,9 @@
 
 package appeng.api.util;
 
-import net.minecraft.nbt.NBTTagCompound;
-
 import java.util.Set;
+
+import net.minecraft.nbt.NBTTagCompound;
 
 /**
  * Used to adjust settings on an object,
@@ -70,9 +70,9 @@ public interface IConfigManager
 	/**
 	 * write all settings to the NBT Tag so they can be read later.
 	 *
-	 * @param dest to be written nbt tag
+	 * @param destination to be written nbt tag
 	 */
-	void writeToNBT(NBTTagCompound dest);
+	void writeToNBT(NBTTagCompound destination);
 
 	/**
 	 * Only works after settings have been registered

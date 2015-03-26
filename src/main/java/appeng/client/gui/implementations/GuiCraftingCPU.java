@@ -25,13 +25,13 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.google.common.base.Joiner;
-
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
+
+import com.google.common.base.Joiner;
 
 import appeng.api.AEApi;
 import appeng.api.config.SortDir;
@@ -328,10 +328,10 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 
 				if ( AEConfig.instance.useColoredCraftingStatus && ( active || scheduled ) )
 				{
-					int bgcol = ( active ? AEColor.Green.blackVariant : AEColor.Yellow.blackVariant ) | 0x5A000000;
+					int bgColor = ( active ? AEColor.Green.blackVariant : AEColor.Yellow.blackVariant ) | 0x5A000000;
 					int startX = (x * (1 + sectionLength) + xo) * 2;
 					int startY = ((y * offY + yo) - 3) * 2;
-					drawRect( startX, startY, startX + (sectionLength * 2), startY + (offY * 2) - 2, bgcol);
+					drawRect( startX, startY, startX + (sectionLength * 2), startY + (offY * 2) - 2, bgColor);
 				}
 
 				int negY = ((lines - 1) * 5) / 2;

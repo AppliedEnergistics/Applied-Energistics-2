@@ -78,15 +78,15 @@ public class ConfigManager implements IConfigManager
 	/**
 	 * save all settings using config manager.
 	 *
-	 * @param tagCompound to be written to compound
+	 * @param destination to be written to compound
 	 */
 	@Override
-	public void writeToNBT(NBTTagCompound tagCompound)
+	public void writeToNBT(NBTTagCompound destination )
 	{
 
 		for (Enum e : this.Settings.keySet())
 		{
-			tagCompound.setString( e.name(), this.Settings.get( e ).toString() );
+			destination.setString( e.name(), this.Settings.get( e ).toString() );
 		}
 
 	}

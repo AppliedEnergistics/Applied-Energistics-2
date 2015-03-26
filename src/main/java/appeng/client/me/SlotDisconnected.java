@@ -39,7 +39,7 @@ public class SlotDisconnected extends AppEngSlot
 	@Override
 	public ItemStack getDisplayStack()
 	{
-		if ( Platform.isClient() )// && (which == PlaceableItemType.ENCODED_PATTERN) )
+		if ( Platform.isClient() )
 		{
 			ItemStack is = super.getStack();
 			if ( is != null && is.getItem() instanceof ItemEncodedPattern )
