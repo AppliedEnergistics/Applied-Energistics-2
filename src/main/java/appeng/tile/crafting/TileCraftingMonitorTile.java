@@ -129,7 +129,7 @@ public class TileCraftingMonitorTile extends TileCraftingTile implements IColora
 	@Override
 	public boolean requiresTESR()
 	{
-		return this.getJobProgress() != null;
+		return this.dspPlay != null;
 	}
 
 	@Override

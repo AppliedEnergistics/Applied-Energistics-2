@@ -84,7 +84,7 @@ public class QuantumCluster implements ILocatable, IAECluster
 		QuantumCluster qc = (QuantumCluster) AEApi.instance().registries().locatable().getLocatableBy( qe );
 		if ( qc != null )
 		{
-			World theWorld = qc.getCenter().getWorldObj();
+			World theWorld = qc.center.getWorldObj();
 			if ( !qc.isDestroyed )
 			{
 				Chunk c = theWorld.getChunkFromBlockCoords( qc.center.xCoord, qc.center.zCoord );
@@ -225,7 +225,7 @@ public class QuantumCluster implements ILocatable, IAECluster
 			this.registered = false;
 		}
 
-		if ( this.getLocatableSerial() != 0 )
+		if ( this.thisSide != 0 )
 		{
 			this.updateStatus( true );
 			MinecraftForge.EVENT_BUS.post( new LocatableEventAnnounce( this, LocatableEvent.Unregister ) );
@@ -260,7 +260,7 @@ public class QuantumCluster implements ILocatable, IAECluster
 
 	public boolean hasQES()
 	{
-		return this.getLocatableSerial() != 0;
+		return this.thisSide != 0;
 	}
 
 	private IGridNode getNode()

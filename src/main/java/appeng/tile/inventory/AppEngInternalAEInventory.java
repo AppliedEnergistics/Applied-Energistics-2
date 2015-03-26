@@ -44,7 +44,7 @@ public class AppEngInternalAEInventory implements IInventory, Iterable<ItemStack
 
 	public boolean isEmpty()
 	{
-		for (int x = 0; x < this.getSizeInventory(); x++)
+		for (int x = 0; x < this.size; x++)
 			if ( this.getStackInSlot( x ) != null )
 				return false;
 		return true;

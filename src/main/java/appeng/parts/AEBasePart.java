@@ -231,9 +231,9 @@ public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradea
 
 	protected AEColor getColor()
 	{
-		if ( this.getHost() == null )
+		if ( this.host == null )
 			return AEColor.Transparent;
-		return this.getHost().getColor();
+		return this.host.getColor();
 	}
 
 	@Override

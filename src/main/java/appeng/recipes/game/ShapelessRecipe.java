@@ -163,7 +163,7 @@ public class ShapelessRecipe implements IRecipe, IRecipeBakeable
 		try
 		{
 			this.disable = false;
-			for (Object o : this.getInput())
+			for (Object o : this.input )
 			{
 				if ( o instanceof IIngredient )
 					((IIngredient) o).bake();

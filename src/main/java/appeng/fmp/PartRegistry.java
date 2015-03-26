@@ -67,7 +67,9 @@ public enum PartRegistry
 		for (PartRegistry pr : values())
 		{
 			if ( pr.equals( c ) )
-				return pr.getName();
+			{
+				return pr.name;
+			}
 		}
 		throw new RuntimeException( "Invalid PartName" );
 	}

@@ -818,7 +818,7 @@ public abstract class AEBaseContainer extends Container
 		}
 
 		// get target item.
-		IAEItemStack slotItem = this.getTargetStack();
+		IAEItemStack slotItem = this.clientRequestedTargetItem;
 
 		switch (action)
 		{

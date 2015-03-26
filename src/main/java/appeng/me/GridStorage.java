@@ -154,7 +154,7 @@ public class GridStorage implements IGridStorage
 
 	public void remove()
 	{
-		WorldSettings.getInstance().destroyGridStorage( this.getID() );
+		WorldSettings.getInstance().destroyGridStorage( this.myID );
 	}
 
 }

@@ -126,7 +126,7 @@ public class SlotCraftingTerm extends AppEngCraftingSlot
 						{
 							super.onPickupFromSlot( p, is );
 							// actually necessary to cleanup this case...
-							p.openContainer.onCraftMatrixChanged( this.getCraftingMatrix() );
+							p.openContainer.onCraftMatrixChanged( this.craftInv );
 							return request;
 						}
 					}
@@ -157,7 +157,7 @@ public class SlotCraftingTerm extends AppEngCraftingSlot
 			}
 
 			// shouldn't be necessary...
-			p.openContainer.onCraftMatrixChanged( this.getCraftingMatrix() );
+			p.openContainer.onCraftMatrixChanged( this.craftInv );
 
 			return is;
 		}
@@ -178,10 +178,12 @@ public class SlotCraftingTerm extends AppEngCraftingSlot
 		if ( Platform.isServer() )
 		{
 			// set new items onto the crafting table...
-			for ( int x = 0; x < this.getCraftingMatrix().getSizeInventory(); x++ )
+			for ( int x = 0; x < this.craftInv.getSizeInventory(); x++ )
 			{
-				if ( this.getCraftingMatrix().getStackInSlot( x ) == null )
-					this.getCraftingMatrix().setInventorySlotContents( x, set[x] );
+				if ( this.craftInv.getStackInSlot( x ) == null )
+				{
+					this.craftInv.setInventorySlotContents( x, set[x] );
+				}
 				else if ( set[x] != null )
 				{
 					// eek! put it back!

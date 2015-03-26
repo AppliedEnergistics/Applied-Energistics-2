@@ -63,9 +63,11 @@ public class PortableCellViewer extends MEMonitorHandler<IAEItemStack> implement
 		amt = usePowerMultiplier.multiply( amt );
 
 		if ( mode == Actionable.SIMULATE )
-			return usePowerMultiplier.divide( Math.min( amt, this.ips.getAECurrentPower( this.getItemStack() ) ) );
+		{
+			return usePowerMultiplier.divide( Math.min( amt, this.ips.getAECurrentPower( this.target ) ) );
+		}
 
-		return usePowerMultiplier.divide( this.ips.extractAEPower( this.getItemStack(), amt ) );
+		return usePowerMultiplier.divide( this.ips.extractAEPower( this.target, amt ) );
 	}
 
 	@Override

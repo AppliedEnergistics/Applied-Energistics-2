@@ -280,8 +280,10 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost
 		if ( this.wth != null && this.effectiveItem != null )
 		{
 			if ( mode == Actionable.SIMULATE )
-				return this.wth.hasPower( this.myPlayer, amt, this.getItemStack() ) ? amt : 0;
-			return this.wth.usePower( this.myPlayer, amt, this.getItemStack() ) ? amt : 0;
+			{
+				return this.wth.hasPower( this.myPlayer, amt, this.effectiveItem ) ? amt : 0;
+			}
+			return this.wth.usePower( this.myPlayer, amt, this.effectiveItem ) ? amt : 0;
 		}
 		return 0.0;
 	}

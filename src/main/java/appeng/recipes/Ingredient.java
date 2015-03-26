@@ -209,7 +209,7 @@ public class Ingredient implements IIngredient
 			}
 
 			if ( set.length == 0 )
-				throw new MissingIngredientError( this.getItemName() + " - ore dictionary could not be resolved to any items." );
+				throw new MissingIngredientError( this.itemName + " - ore dictionary could not be resolved to any items." );
 
 			return set;
 		}

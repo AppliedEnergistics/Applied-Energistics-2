@@ -46,7 +46,7 @@ public class PartPatternTerminal extends PartTerminal
 	public void writeToNBT(NBTTagCompound data)
 	{
 		super.writeToNBT( data );
-		data.setBoolean( "craftingMode", this.isCraftingRecipe() );
+		data.setBoolean( "craftingMode", this.craftingMode );
 		this.pattern.writeToNBT( data, "pattern" );
 		this.output.writeToNBT( data, "outputList" );
 		this.crafting.writeToNBT( data, "craftingGrid" );
@@ -157,7 +157,7 @@ public class PartPatternTerminal extends PartTerminal
 
 	private void fixCraftingRecipes()
 	{
-		if ( this.isCraftingRecipe() )
+		if ( this.craftingMode )
 		{
 			for (int x = 0; x < this.crafting.getSizeInventory(); x++)
 			{

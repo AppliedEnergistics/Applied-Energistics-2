@@ -41,7 +41,7 @@ public class CraftingLinkNexus
 
 	public boolean isDead(IGrid g, CraftingGridCache craftingGridCache)
 	{
-		if ( this.isCanceled() || this.isDone() )
+		if ( this.canceled || this.done )
 			return true;
 
 		if ( this.req == null || this.cpu == null )

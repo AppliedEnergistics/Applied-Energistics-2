@@ -18,14 +18,15 @@
 
 package appeng.crafting;
 
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.concurrent.TimeUnit;
 
-import com.google.common.base.Stopwatch;
-
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
+
+import com.google.common.base.Stopwatch;
 
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
@@ -177,7 +178,7 @@ public class CraftingJob implements Runnable, ICraftingJob
 					AELog.crafting( s + " * " + ti.times + " = " + (ti.perOp * ti.times) );
 				}
 
-				AELog.crafting( "------------- " + this.getByteTotal() + "b real" + timer.elapsed( TimeUnit.MILLISECONDS ) + "ms" );
+				AELog.crafting( "------------- " + this.bytes + "b real" + timer.elapsed( TimeUnit.MILLISECONDS ) + "ms" );
 				// if ( mode == Actionable.MODULATE )
 				// craftingInventory.moveItemsToStorage( storage );
 			}
@@ -203,7 +204,7 @@ public class CraftingJob implements Runnable, ICraftingJob
 						AELog.crafting( s + " * " + ti.times + " = " + (ti.perOp * ti.times) );
 					}
 
-					AELog.crafting( "------------- " + this.getByteTotal() + "b simulate" + timer.elapsed( TimeUnit.MILLISECONDS ) + "ms" );
+					AELog.crafting( "------------- " + this.bytes + "b simulate" + timer.elapsed( TimeUnit.MILLISECONDS ) + "ms" );
 				}
 				catch (CraftBranchFailure e1)
 				{
@@ -292,7 +293,7 @@ public class CraftingJob implements Runnable, ICraftingJob
 
 		synchronized (this.monitor)
 		{
-			if ( this.isDone() )
+			if ( this.done )
 				return false;
 
 			this.watch.reset();

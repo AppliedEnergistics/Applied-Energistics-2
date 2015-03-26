@@ -253,7 +253,7 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 			ByteArrayOutputStream bytes = new ByteArrayOutputStream();
 			DataOutputStream data = new DataOutputStream( bytes );
 
-			CompressedStreamTools.write( (NBTTagCompound) this.getTagCompound(), data );
+			CompressedStreamTools.write( (NBTTagCompound) this.tagCompound, data );
 
 			byte[] tagBytes = bytes.toByteArray();
 			int size = tagBytes.length;
@@ -328,12 +328,12 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 	{
 		if ( st instanceof FluidStack )
 		{
-			return ((FluidStack) st).getFluid() == this.getFluid();
+			return ((FluidStack) st).getFluid() == this.fluid;
 		}
 
 		if ( st instanceof IAEFluidStack )
 		{
-			return ((IAEFluidStack) st).getFluid() == this.getFluid();
+			return ((IAEFluidStack) st).getFluid() == this.fluid;
 		}
 
 		return false;

@@ -96,8 +96,8 @@ public class MEInventoryHandler<T extends IAEStack<T>> implements IMEInventoryHa
 	{
 		this.myAccess = myAccess;
 		this.cachedAccessRestriction = this.myAccess.restrictPermissions( this.internal.getAccess() );
-		this.hasReadAccess = this.getAccess().hasPermission( AccessRestriction.READ );
-		this.hasWriteAccess = this.getAccess().hasPermission( AccessRestriction.WRITE );
+		this.hasReadAccess = this.cachedAccessRestriction.hasPermission( AccessRestriction.READ );
+		this.hasWriteAccess = this.cachedAccessRestriction.hasPermission( AccessRestriction.WRITE );
 	}
 
 	public IPartitionList<T> getPartitionList()

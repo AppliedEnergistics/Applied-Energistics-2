@@ -34,7 +34,7 @@ public abstract class AEStack<StackType extends IAEStack> implements IAEStack<St
 	@Override
 	public boolean isMeaningful()
 	{
-		return this.stackSize != 0 || this.getCountRequestable() > 0 || this.isCraftable();
+		return this.stackSize != 0 || this.countRequestable > 0 || this.isCraftable;
 	}
 
 	@Override
@@ -167,7 +167,7 @@ public abstract class AEStack<StackType extends IAEStack> implements IAEStack<St
 	@Override
 	public void writeToPacket(ByteBuf i) throws IOException
 	{
-		byte mask = (byte) (this.getType( 0 ) | (this.getType( this.stackSize ) << 2) | (this.getType( this.getCountRequestable() ) << 4) | ((byte) (this.isCraftable ? 1 : 0) << 6) | (this.hasTagCompound() ? 1
+		byte mask = (byte) (this.getType( 0 ) | (this.getType( this.stackSize ) << 2) | (this.getType( this.countRequestable ) << 4) | ((byte) (this.isCraftable ? 1 : 0) << 6) | (this.hasTagCompound() ? 1
 				: 0) << 7);
 
 		i.writeByte( mask );
@@ -177,7 +177,7 @@ public abstract class AEStack<StackType extends IAEStack> implements IAEStack<St
 
 		// putPacketValue( i, priority );
 		this.putPacketValue( i, this.stackSize );
-		this.putPacketValue( i, this.getCountRequestable() );
+		this.putPacketValue( i, this.countRequestable );
 	}
 
 }
