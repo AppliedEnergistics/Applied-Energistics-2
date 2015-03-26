@@ -198,7 +198,7 @@ public class OreHelper
 			StringBuilder builder = new StringBuilder();
 			builder.append( "ItemRef [ref=" ).append( this.ref.getUnlocalizedName() )
 					.append( ", damage=" ).append( this.damage ).append( ", hash=" )
-					.append( this.hash ).append( "]" );
+					.append( this.hash ).append( ']' );
 			return builder.toString();
 		}
 
