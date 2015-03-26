@@ -195,11 +195,7 @@ public class OreHelper
 		@Override
 		public String toString()
 		{
-			StringBuilder builder = new StringBuilder();
-			builder.append( "ItemRef [ref=" ).append( this.ref.getUnlocalizedName() )
-					.append( ", damage=" ).append( this.damage ).append( ", hash=" )
-					.append( this.hash ).append( ']' );
-			return builder.toString();
+			return "ItemRef [ref=" + this.ref.getUnlocalizedName() + ", damage=" + this.damage + ", hash=" + this.hash + ']';
 		}
 
 	}
