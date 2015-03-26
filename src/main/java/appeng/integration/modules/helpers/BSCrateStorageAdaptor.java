@@ -66,7 +66,7 @@ public class BSCrateStorageAdaptor extends InventoryAdaptor
 		{
 			ItemStack f = Platform.cloneItemStack( target );
 			f.stackSize = amount;
-			return cs.extractItems( f, amount );
+			return this.cs.extractItems( f, amount );
 		}
 
 		return null;

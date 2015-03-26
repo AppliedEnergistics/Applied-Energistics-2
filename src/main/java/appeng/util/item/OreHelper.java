@@ -82,7 +82,7 @@ public class OreHelper
 					continue;
 				}
 
-				for ( ItemStack oreItem : oreDictCache.getUnchecked( ore ) )
+				for ( ItemStack oreItem : this.oreDictCache.getUnchecked( ore ) )
 				{
 					if ( OreDictionary.itemMatches( oreItem, ItemStack, false ) )
 					{
@@ -141,7 +141,7 @@ public class OreHelper
 
 		for ( String oreName : a.getEquivalents() )
 		{
-			for ( ItemStack oreItem : oreDictCache.getUnchecked( oreName ) )
+			for ( ItemStack oreItem : this.oreDictCache.getUnchecked( oreName ) )
 			{
 				if ( OreDictionary.itemMatches( oreItem, o, false ) )
 					return true;
@@ -153,7 +153,7 @@ public class OreHelper
 
 	public List<ItemStack> getCachedOres( String oreName )
 	{
-		return oreDictCache.getUnchecked( oreName );
+		return this.oreDictCache.getUnchecked( oreName );
 	}
 
 	private static class ItemRef
@@ -196,9 +196,9 @@ public class OreHelper
 		public String toString()
 		{
 			StringBuilder builder = new StringBuilder();
-			builder.append( "ItemRef [ref=" ).append( ref.getUnlocalizedName() )
-					.append( ", damage=" ).append( damage ).append( ", hash=" )
-					.append( hash ).append( "]" );
+			builder.append( "ItemRef [ref=" ).append( this.ref.getUnlocalizedName() )
+					.append( ", damage=" ).append( this.damage ).append( ", hash=" )
+					.append( this.hash ).append( "]" );
 			return builder.toString();
 		}
 

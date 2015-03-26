@@ -122,7 +122,7 @@ public class MEInventoryHandler<T extends IAEStack<T>> implements IMEInventoryHa
 	@Override
 	public T extractItems( T request, Actionable type, BaseActionSource src )
 	{
-		if ( !hasReadAccess )
+		if ( !this.hasReadAccess )
 			return null;
 
 		return this.internal.extractItems( request, type, src );
@@ -131,7 +131,7 @@ public class MEInventoryHandler<T extends IAEStack<T>> implements IMEInventoryHa
 	@Override
 	public IItemList<T> getAvailableItems( IItemList<T> out )
 	{
-		if ( !hasReadAccess )
+		if ( !this.hasReadAccess )
 			return out;
 
 		return this.internal.getAvailableItems( out );
@@ -160,7 +160,7 @@ public class MEInventoryHandler<T extends IAEStack<T>> implements IMEInventoryHa
 	@Override
 	public boolean canAccept( T input )
 	{
-		if ( !hasWriteAccess )
+		if ( !this.hasWriteAccess )
 			return false;
 
 		if ( this.myWhitelist == IncludeExclude.BLACKLIST && this.myPartitionList.isListed( input ) )
