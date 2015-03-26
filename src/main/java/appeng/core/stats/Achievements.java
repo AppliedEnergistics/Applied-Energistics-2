@@ -109,7 +109,8 @@ public enum Achievements
 
 	public final ItemStack stack;
 	public final AchievementType type;
-	private final int x, y;
+	private final int x;
+	private final int y;
 
 	private Achievement parent;
 	private Achievement stat;

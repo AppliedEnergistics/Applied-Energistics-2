@@ -59,7 +59,9 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 		this.upgradeable = te;
 
 		World w = null;
-		int xCoord = 0, yCoord = 0, zCoord = 0;
+		int xCoord = 0;
+		int yCoord = 0;
+		int zCoord = 0;
 
 		if ( te instanceof TileEntity )
 		{

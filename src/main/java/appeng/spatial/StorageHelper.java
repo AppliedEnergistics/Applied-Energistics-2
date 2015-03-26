@@ -158,7 +158,8 @@ public class StorageHelper
 	 */
 	public Entity teleportEntity(Entity entity, TelDestination link)
 	{
-		WorldServer oldWorld, newWorld;
+		WorldServer oldWorld;
+		WorldServer newWorld;
 		EntityPlayerMP player;
 
 		try

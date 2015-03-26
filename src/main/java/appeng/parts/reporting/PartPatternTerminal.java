@@ -80,7 +80,9 @@ public class PartPatternTerminal extends PartTerminal
 	@Override
 	public GuiBridge getGui( EntityPlayer p )
 	{
-		int x = (int) p.posX, y = (int) p.posY, z = (int) p.posZ;
+		int x = (int) p.posX;
+		int y = (int) p.posY;
+		int z = (int) p.posZ;
 		if ( this.getHost().getTile() != null )
 		{
 			x = this.tile.xCoord;

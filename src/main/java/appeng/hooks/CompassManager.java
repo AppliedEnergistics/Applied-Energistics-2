@@ -35,7 +35,9 @@ public class CompassManager
 		final int hash;
 
 		final long attunement;
-		final int cx, cdy, cz;
+		final int cx;
+		final int cdy;
+		final int cz;
 
 		public CompassRequest(long attunement, int x, int y, int z) {
 			this.attunement = attunement;

@@ -46,7 +46,11 @@ public class GuiSecurity extends GuiMEMonitorable
 		this.standardSize = this.xSize;
 	}
 
-	GuiToggleButton inject, extract, craft, build, security;
+	GuiToggleButton inject;
+	GuiToggleButton extract;
+	GuiToggleButton craft;
+	GuiToggleButton build;
+	GuiToggleButton security;
 
 	@Override
 	public void initGui()

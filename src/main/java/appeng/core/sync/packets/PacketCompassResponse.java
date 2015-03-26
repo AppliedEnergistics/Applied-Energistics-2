@@ -32,7 +32,9 @@ public class PacketCompassResponse extends AppEngPacket
 {
 
 	final public long attunement;
-	final public int cx, cz, cdy;
+	final public int cx;
+	final public int cz;
+	final public int cdy;
 
 	public CompassResult cr;
 

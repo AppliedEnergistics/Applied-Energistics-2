@@ -32,7 +32,10 @@ import appeng.parts.PartPlacement;
 public class PacketPartPlacement extends AppEngPacket
 {
 
-	int x, y, z, face;
+	int x;
+	int y;
+	int z;
+	int face;
 	float eyeHeight;
 
 	// automatic.

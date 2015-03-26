@@ -313,7 +313,8 @@ public class MeteoritePlacer
 
 		int verticalBits = 0;
 
-		final int cx, cz;
+		final int cx;
+		final int cz;
 
 		public ChunkOnly(World w, int cx, int cz) {
 			super( w );

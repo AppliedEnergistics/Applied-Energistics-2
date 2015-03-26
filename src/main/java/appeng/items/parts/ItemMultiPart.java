@@ -253,7 +253,9 @@ public class ItemMultiPart extends AEBaseItem implements IPartItem, IItemGroup
 	@Override
 	public String getUnlocalizedGroupName(Set<ItemStack> others, ItemStack is)
 	{
-		boolean importBus = false, exportBus = false, group = false;
+		boolean importBus = false;
+		boolean exportBus = false;
+		boolean group = false;
 
 		PartType u = this.getTypeByStack( is );
 

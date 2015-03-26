@@ -32,7 +32,8 @@ public class Splotch
 		this.color = col;
 		this.lumen = lit;
 
-		double x, y;
+		double x;
+		double y;
 
 		if ( side == ForgeDirection.SOUTH || side == ForgeDirection.NORTH )
 		{

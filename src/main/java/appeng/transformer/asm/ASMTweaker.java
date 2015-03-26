@@ -20,9 +20,6 @@ package appeng.transformer.asm;
 
 import java.util.Iterator;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
-
 import org.apache.logging.log4j.Level;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
@@ -38,6 +35,9 @@ import net.minecraft.launchwrapper.IClassTransformer;
 
 import cpw.mods.fml.relauncher.FMLRelaunchLog;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+
 public class ASMTweaker implements IClassTransformer
 {
 
@@ -49,7 +49,8 @@ public class ASMTweaker implements IClassTransformer
 			this.desc = desc;
 		}
 
-		final String name, desc;
+		final String name;
+		final String desc;
 
 	}
 

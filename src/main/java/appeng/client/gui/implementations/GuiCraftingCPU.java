@@ -309,7 +309,8 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 				IAEItemStack pendingStack = this.pending.findPrecise( refStack );
 
 				int lines = 0;
-				boolean active = false, scheduled = false;
+				boolean active = false;
+				boolean scheduled = false;
 
 				if ( stored != null && stored.getStackSize() > 0 )
 				{

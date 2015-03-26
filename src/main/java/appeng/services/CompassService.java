@@ -45,7 +45,8 @@ public class CompassService implements ThreadFactory
 
 		public final World world;
 
-		public final int chunkX, chunkZ;
+		public final int chunkX;
+		public final int chunkZ;
 		public final int doubleChunkY; // 32 blocks instead of 16.
 		public final boolean value;
 

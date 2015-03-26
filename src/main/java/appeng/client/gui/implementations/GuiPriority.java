@@ -51,8 +51,14 @@ public class GuiPriority extends AEBaseGui
 	GuiNumberBox priority;
 	GuiTabButton originalGuiBtn;
 
-	GuiButton plus1, plus10, plus100, plus1000;
-	GuiButton minus1, minus10, minus100, minus1000;
+	GuiButton plus1;
+	GuiButton plus10;
+	GuiButton plus100;
+	GuiButton plus1000;
+	GuiButton minus1;
+	GuiButton minus10;
+	GuiButton minus100;
+	GuiButton minus1000;
 
 	GuiBridge OriginalGui;
 

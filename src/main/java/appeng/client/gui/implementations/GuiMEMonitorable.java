@@ -97,7 +97,8 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 	GuiImgButton SortByBox;
 	GuiImgButton SortDirBox;
 
-	GuiImgButton searchBoxSettings, terminalStyleBox;
+	GuiImgButton searchBoxSettings;
+	GuiImgButton terminalStyleBox;
 	final boolean viewCell;
 
 	final ItemStack[] myCurrentViewCells = new ItemStack[5];

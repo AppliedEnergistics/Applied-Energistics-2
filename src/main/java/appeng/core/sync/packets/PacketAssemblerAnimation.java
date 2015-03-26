@@ -38,7 +38,9 @@ import appeng.util.item.AEItemStack;
 public class PacketAssemblerAnimation extends AppEngPacket
 {
 
-	final public int x, y, z;
+	final public int x;
+	final public int y;
+	final public int z;
 	final public byte rate;
 	final public IAEItemStack is;
 

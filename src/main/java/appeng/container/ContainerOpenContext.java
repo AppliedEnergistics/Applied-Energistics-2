@@ -28,7 +28,9 @@ public class ContainerOpenContext
 {
 
 	public World w;
-	public int x, y, z;
+	public int x;
+	public int y;
+	public int z;
 	public ForgeDirection side;
 	final public boolean isItem;
 

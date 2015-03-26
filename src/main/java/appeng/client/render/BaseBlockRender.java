@@ -606,9 +606,15 @@ public class BaseBlockRender
 	{
 		Tessellator tess = Tessellator.instance;
 
-		double offsetX = 0.0, offsetY = 0.0, offsetZ = 0.0;
-		double layerAX = 0.0, layerAY = 0.0, layerAZ = 0.0;
-		double layerBX = 0.0, layerBY = 0.0, layerBZ = 0.0;
+		double offsetX = 0.0;
+		double offsetY = 0.0;
+		double offsetZ = 0.0;
+		double layerAX = 0.0;
+		double layerAY = 0.0;
+		double layerAZ = 0.0;
+		double layerBX = 0.0;
+		double layerBY = 0.0;
+		double layerBZ = 0.0;
 
 		boolean flip = false;
 		switch (orientation)

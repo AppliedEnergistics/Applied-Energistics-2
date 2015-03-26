@@ -52,7 +52,7 @@ public class PartCraftingTerminal extends PartTerminal
 	@Override
 	public void getDrops(List<ItemStack> drops, boolean wrenched)
 	{
-		super.getDrops(drops, wrenched);
+		super.getDrops( drops, wrenched );
 
 		for (ItemStack is : this.craftingGrid)
 			if ( is != null )
@@ -70,7 +70,9 @@ public class PartCraftingTerminal extends PartTerminal
 	@Override
 	public GuiBridge getGui( EntityPlayer p )
 	{
-		int x = (int) p.posX, y = (int) p.posY, z = (int) p.posZ;
+		int x = (int) p.posX;
+		int y = (int) p.posY;
+		int z = (int) p.posZ;
 		if ( this.getHost().getTile() != null )
 		{
 			x = this.tile.xCoord;

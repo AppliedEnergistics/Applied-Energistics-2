@@ -45,7 +45,9 @@ public class CableRenderHelper
 
 	private void setSide(ForgeDirection s)
 	{
-		ForgeDirection ax, ay, az;
+		ForgeDirection ax;
+		ForgeDirection ay;
+		ForgeDirection az;
 
 		switch (s)
 		{
@@ -205,7 +207,9 @@ public class CableRenderHelper
 			IPart part = cableBusContainer.getPart( s );
 			if ( part != null )
 			{
-				ForgeDirection ax, ay, az;
+				ForgeDirection ax;
+				ForgeDirection ay;
+				ForgeDirection az;
 
 				switch (s)
 				{

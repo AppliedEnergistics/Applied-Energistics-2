@@ -327,7 +327,9 @@ public class Platform
 		if ( isClient() )
 			return;
 
-		int x = (int) p.posX, y = (int) p.posY, z = (int) p.posZ;
+		int x = (int) p.posX;
+		int y = (int) p.posY;
+		int z = (int) p.posZ;
 		if ( tile != null )
 		{
 			x = tile.xCoord;
@@ -1602,7 +1604,8 @@ public class Platform
 
 	public static void configurePlayer(EntityPlayer player, ForgeDirection side, TileEntity tile)
 	{
-		float pitch = 0.0f, yaw = 0.0f;
+		float pitch = 0.0f;
+		float yaw = 0.0f;
 		player.yOffset = 1.8f;
 
 		switch (side)

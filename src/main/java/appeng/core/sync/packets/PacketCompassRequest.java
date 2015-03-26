@@ -35,7 +35,9 @@ public class PacketCompassRequest extends AppEngPacket implements ICompassCallba
 {
 
 	final public long attunement;
-	final public int cx, cz, cdy;
+	final public int cx;
+	final public int cz;
+	final public int cdy;
 
 	EntityPlayer talkBackTo;
 
