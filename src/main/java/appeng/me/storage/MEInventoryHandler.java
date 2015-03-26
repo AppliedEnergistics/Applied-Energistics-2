@@ -60,10 +60,10 @@ public class MEInventoryHandler<T extends IAEStack<T>> implements IMEInventoryHa
 
 		this.monitor = this.internal instanceof IMEMonitor ? ( IMEMonitor<T> ) this.internal : null;
 
-		this.setPriority( 0 );
-		this.setWhitelist( IncludeExclude.WHITELIST );
+		this.myPriority = 0;
+		this.myWhitelist = IncludeExclude.WHITELIST;
 		this.setBaseAccess( AccessRestriction.READ_WRITE );
-		this.setPartitionList( new DefaultPriorityList<T>() );
+		this.myPartitionList = new DefaultPriorityList<T>();
 	}
 
 	@Override
