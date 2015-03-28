@@ -29,7 +29,7 @@ import appeng.transformer.annotations.Integration.Interface;
 import appeng.transformer.annotations.Integration.Method;
 import appeng.util.Platform;
 
-@Interface(iname = "RotaryCraft", iface = "Reika.RotaryCraft.API.ShaftPowerReceiver")
+@Interface(iname = "RotaryCraft", iface = "Reika.RotaryCraft.API.Power.ShaftPowerReceiver")
 public abstract class RotaryCraft extends IC2 implements ShaftPowerReceiver
 {
 
