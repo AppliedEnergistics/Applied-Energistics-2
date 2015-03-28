@@ -36,7 +36,6 @@ import net.minecraftforge.fluids.IFluidHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-import appeng.api.config.TunnelType;
 import appeng.me.GridAccessException;
 
 public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFluidHandler
@@ -44,12 +43,6 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 
 	private final static FluidTankInfo[] ACTIVE_TANK = new FluidTankInfo[] { new FluidTankInfo( null, 10000 ) };
 	private final static FluidTankInfo[] INACTIVE_TANK = new FluidTankInfo[] { new FluidTankInfo( null, 0 ) };
-
-	@Override
-	public TunnelType getTunnelType()
-	{
-		return TunnelType.FLUID;
-	}
 
 	public PartP2PLiquids(ItemStack is) {
 		super( is );

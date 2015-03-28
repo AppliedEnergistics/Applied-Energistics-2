@@ -30,7 +30,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import appeng.api.AEApi;
-import appeng.api.config.TunnelType;
 import appeng.api.exceptions.FailedConnection;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNode;
@@ -50,12 +49,6 @@ import appeng.me.helpers.AENetworkProxy;
 
 public class PartP2PTunnelME extends PartP2PTunnel<PartP2PTunnelME> implements IGridTickable
 {
-
-	@Override
-	public TunnelType getTunnelType()
-	{
-		return TunnelType.ME;
-	}
 
 	final AENetworkProxy outerProxy = new AENetworkProxy( this, "outer", null, true );
 	public final Connections connection = new Connections( this );

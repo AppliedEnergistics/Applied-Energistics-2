@@ -20,6 +20,7 @@ package appeng.core.sync;
 
 
 import java.lang.reflect.Constructor;
+import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -32,9 +33,12 @@ import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.common.network.IGuiHandler;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 
+import com.google.common.collect.Lists;
+
 import appeng.api.AEApi;
 import appeng.api.config.SecurityPermissions;
-import appeng.api.definitions.Materials;
+import appeng.api.definitions.IComparableDefinition;
+import appeng.api.definitions.IMaterials;
 import appeng.api.exceptions.AppEngException;
 import appeng.api.features.IWirelessTermHandler;
 import appeng.api.implementations.IUpgradeableHost;
@@ -273,12 +277,8 @@ public enum GuiBridge implements IGuiHandler
 					{
 						ItemStack is = ((Slot) so).getStack();
 
-						Materials m = AEApi.instance().materials();
-						if ( m.materialLogicProcessorPress.sameAsStack( is ) || m.materialEngProcessorPress.sameAsStack( is )
-								|| m.materialCalcProcessorPress.sameAsStack( is ) || m.materialSiliconPress.sameAsStack( is ) )
-						{
-							Achievements.Presses.addToPlayer( inventory.player );
-						}
+						final IMaterials materials = AEApi.instance().definitions().materials();
+						this.addPressAchievementToPlayer( is, materials, inventory.player );
 					}
 				}
 			}
@@ -288,6 +288,26 @@ public enum GuiBridge implements IGuiHandler
 		catch (Throwable t)
 		{
 			throw new RuntimeException( t );
+		}
+	}
+
+	private void addPressAchievementToPlayer( ItemStack newItem, IMaterials possibleMaterials, EntityPlayer player )
+	{
+		final IComparableDefinition logic = possibleMaterials.logicProcessorPress();
+		final IComparableDefinition eng = possibleMaterials.engProcessorPress();
+		final IComparableDefinition calc = possibleMaterials.calcProcessorPress();
+		final IComparableDefinition silicon = possibleMaterials.siliconPress();
+
+		final List<IComparableDefinition> presses = Lists.newArrayList( logic, eng, calc, silicon );
+
+		for ( IComparableDefinition press : presses )
+		{
+			if ( press.isSameAs( newItem ) )
+			{
+				Achievements.Presses.addToPlayer( player );
+
+				return;
+			}
 		}
 	}
 

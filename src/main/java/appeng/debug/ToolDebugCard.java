@@ -18,9 +18,12 @@
 
 package appeng.debug;
 
+
 import java.util.EnumSet;
 import java.util.HashSet;
+import java.util.Set;
 
+import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -48,24 +51,16 @@ import appeng.parts.p2p.PartP2PTunnel;
 import appeng.tile.networking.TileController;
 import appeng.util.Platform;
 
+
 public class ToolDebugCard extends AEBaseItem
 {
-
-	public ToolDebugCard() {
-		super( ToolDebugCard.class );
+	public ToolDebugCard()
+	{
 		this.setFeature( EnumSet.of( AEFeature.UnsupportedDeveloperTools, AEFeature.Creative ) );
 	}
 
-	public String timeMeasurement(long nanos)
-	{
-		long ms = nanos / 100000;
-		if ( nanos <= 100000 )
-			return nanos + "ns";
-		return (ms / 10.0f) + "ms";
-	}
-
 	@Override
-	public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
+	public boolean onItemUseFirst( ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ )
 	{
 		if ( Platform.isClient() )
 			return false;
@@ -75,7 +70,7 @@ public class ToolDebugCard extends AEBaseItem
 			int grids = 0;
 			int totalNodes = 0;
 
-			for (Grid g : TickHandler.INSTANCE.getGridList())
+			for ( Grid g : TickHandler.INSTANCE.getGridList() )
 			{
 				grids++;
 				totalNodes += g.getNodes().size();
@@ -90,7 +85,7 @@ public class ToolDebugCard extends AEBaseItem
 
 			if ( te instanceof IGridHost )
 			{
-				GridNode node = (GridNode) ((IGridHost) te).getGridNode( ForgeDirection.getOrientation( side ) );
+				GridNode node = (GridNode) ( (IGridHost) te ).getGridNode( ForgeDirection.getOrientation( side ) );
 				if ( node != null )
 				{
 					Grid g = node.getInternalGrid();
@@ -103,14 +98,15 @@ public class ToolDebugCard extends AEBaseItem
 					{
 						int length = 0;
 
-						HashSet<IGridNode> next = new HashSet<IGridNode>();
+						Set<IGridNode> next = new HashSet<IGridNode>();
 						next.add( node );
 
 						int maxLength = 10000;
 
-						outer: while ( ! next.isEmpty() )
+						outer:
+						while ( !next.isEmpty() )
 						{
-							HashSet<IGridNode> current = next;
+							Iterable<IGridNode> current = next;
 							next = new HashSet<IGridNode>();
 
 							for ( IGridNode n : current )
@@ -133,15 +129,15 @@ public class ToolDebugCard extends AEBaseItem
 
 					if ( center.getMachine() instanceof PartP2PTunnel )
 					{
-						this.outputMsg( player, "Freq: " + ((PartP2PTunnel) center.getMachine()).freq );
+						this.outputMsg( player, "Freq: " + ( (PartP2PTunnel) center.getMachine() ).freq );
 					}
 
 					TickManagerCache tmc = g.getCache( ITickManager.class );
-					for (Class c : g.getMachineClasses())
+					for ( Class<? extends IGridHost> c : g.getMachineClasses() )
 					{
 						int o = 0;
 						long nanos = 0;
-						for (IGridNode oj : g.getMachines( c ))
+						for ( IGridNode oj : g.getMachines( c ) )
 						{
 							o++;
 							nanos += tmc.getAvgNanoTime( oj );
@@ -165,13 +161,13 @@ public class ToolDebugCard extends AEBaseItem
 
 			if ( te instanceof IPartHost )
 			{
-				IPart center = ((IPartHost) te).getPart( ForgeDirection.UNKNOWN );
-				((IPartHost) te).markForUpdate();
+				IPart center = ( (IPartHost) te ).getPart( ForgeDirection.UNKNOWN );
+				( (IPartHost) te ).markForUpdate();
 				if ( center != null )
 				{
 					GridNode n = (GridNode) center.getGridNode();
 					this.outputMsg( player, "Node Channels: " + n.usedChannels() );
-					for (IGridConnection gc : n.getConnections())
+					for ( IGridConnection gc : n.getConnections() )
 					{
 						ForgeDirection fd = gc.getDirection( n );
 						if ( fd != ForgeDirection.UNKNOWN )
@@ -187,7 +183,7 @@ public class ToolDebugCard extends AEBaseItem
 
 				if ( te instanceof IGridHost )
 				{
-					IGridNode node = ((IGridHost) te).getGridNode( ForgeDirection.getOrientation( side ) );
+					IGridNode node = ( (IGridHost) te ).getGridNode( ForgeDirection.getOrientation( side ) );
 					if ( node != null && node.getGrid() != null )
 					{
 						IEnergyGrid eg = node.getGrid().getCache( IEnergyGrid.class );
@@ -199,9 +195,16 @@ public class ToolDebugCard extends AEBaseItem
 		return true;
 	}
 
-	private void outputMsg(EntityPlayer player, String string)
+	private void outputMsg( ICommandSender player, String string )
 	{
 		player.addChatMessage( new ChatComponentText( string ) );
 	}
 
+	public String timeMeasurement( long nanos )
+	{
+		long ms = nanos / 100000;
+		if ( nanos <= 100000 )
+			return nanos + "ns";
+		return ( ms / 10.0f ) + "ms";
+	}
 }

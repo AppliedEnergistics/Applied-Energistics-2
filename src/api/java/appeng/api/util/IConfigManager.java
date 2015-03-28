@@ -23,9 +23,13 @@
 
 package appeng.api.util;
 
+
 import java.util.Set;
 
 import net.minecraft.nbt.NBTTagCompound;
+
+import appeng.api.config.Settings;
+
 
 /**
  * Used to adjust settings on an object,
@@ -40,7 +44,7 @@ public interface IConfigManager
 	 *
 	 * @return enum set of settings
 	 */
-	Set<Enum> getSettings();
+	Set<Settings> getSettings();
 
 	/**
 	 * used to initialize the configuration manager, should be called for all settings.
@@ -48,7 +52,7 @@ public interface IConfigManager
 	 * @param settingName name of setting
 	 * @param defaultValue default value of setting
 	 */
-	void registerSetting(Enum settingName, Enum defaultValue);
+	void registerSetting(Settings settingName, Enum<?> defaultValue);
 
 	/**
 	 * Get Value of a particular setting
@@ -56,7 +60,7 @@ public interface IConfigManager
 	 * @param settingName name of setting
 	 * @return value of setting
 	 */
-	Enum getSetting(Enum settingName);
+	Enum<?> getSetting(Settings settingName);
 
 	/**
 	 * Change setting
@@ -65,7 +69,7 @@ public interface IConfigManager
 	 * @param newValue  new value for setting
 	 * @return changed setting
 	 */
-	Enum putSetting(Enum settingName, Enum newValue);
+	Enum<?> putSetting(Settings settingName, Enum<?> newValue);
 
 	/**
 	 * write all settings to the NBT Tag so they can be read later.

@@ -18,51 +18,31 @@
 
 package appeng.core.features;
 
-import net.minecraft.block.Block;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.IBlockAccess;
 
-import appeng.api.util.AEItemDefinition;
+import com.google.common.base.Optional;
 
-public class NullItemDefinition implements AEItemDefinition
+import appeng.api.definitions.ITileDefinition;
+import appeng.block.AEBaseBlock;
+
+
+public final class TileDefinition extends BlockDefinition implements ITileDefinition
 {
+	private final AEBaseBlock block;
 
-	@Override
-	public Block block()
+	public TileDefinition( AEBaseBlock block, ActivityState state )
 	{
-		return null;
+		super( block, state );
+
+		this.block = block;
 	}
 
 	@Override
-	public Item item()
+	public Optional<? extends Class<? extends TileEntity>> maybeEntity()
 	{
-		return null;
-	}
+		final Class<? extends TileEntity> entity = this.block.getTileEntityClass();
 
-	@Override
-	public Class<? extends TileEntity> entity()
-	{
-		return null;
+		return Optional.of( entity );
 	}
-
-	@Override
-	public ItemStack stack(int stackSize)
-	{
-		return null;
-	}
-
-	@Override
-	public boolean sameAsStack(ItemStack comparableItem)
-	{
-		return false;
-	}
-
-	@Override
-	public boolean sameAsBlock(IBlockAccess world, int x, int y, int z)
-	{
-		return false;
-	}
-
 }

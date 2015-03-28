@@ -23,8 +23,6 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
-import com.google.common.base.Optional;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -33,6 +31,8 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+
+import com.google.common.base.Optional;
 
 import appeng.api.AEApi;
 import appeng.api.config.FuzzyMode;
@@ -61,9 +61,8 @@ public class ToolPortableCell extends AEBasePoweredItem implements IStorageCell,
 {
 	public ToolPortableCell()
 	{
-		super( ToolPortableCell.class, Optional.<String> absent() );
+		super( AEConfig.instance.portableCellBattery, Optional.<String> absent() );
 		this.setFeature( EnumSet.of( AEFeature.PortableCell, AEFeature.StorageCells, AEFeature.PoweredTools ) );
-		this.maxStoredPower = AEConfig.instance.portableCellBattery;
 	}
 
 	@SideOnly(Side.CLIENT)

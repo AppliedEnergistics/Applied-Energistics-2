@@ -23,15 +23,17 @@
 
 package appeng.api.parts;
 
-import appeng.api.util.AEColor;
-import appeng.api.util.DimensionalCoord;
+
+import java.util.Set;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import java.util.Set;
+import appeng.api.util.AEColor;
+import appeng.api.util.DimensionalCoord;
 
 /**
  * Implemented on AE's TileEntity or AE's FMP Part.

@@ -18,8 +18,10 @@
 
 package appeng.services;
 
+
 import java.io.File;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -35,10 +37,147 @@ import appeng.api.util.DimensionalCoord;
 import appeng.services.compass.CompassReader;
 import appeng.services.compass.ICompassCallback;
 
+
 public class CompassService implements ThreadFactory
 {
+	private static final int CHUNK_SIZE = 16;
+	private final Map<World, CompassReader> worldSet = new HashMap<World, CompassReader>();
+	private final ExecutorService executor;
+	private final File rootFolder;
+	private int jobSize = 0;
 
-	int jobSize = 0;
+	public CompassService( File aEFolder )
+	{
+		this.rootFolder = aEFolder;
+		this.executor = Executors.newSingleThreadExecutor( this );
+		this.jobSize = 0;
+	}
+
+	public Future<?> getCompassDirection( DimensionalCoord coord, int maxRange, ICompassCallback cc )
+	{
+		this.jobSize++;
+		return this.executor.submit( new CMDirectionRequest( coord, maxRange, cc ) );
+	}
+
+	public int jobSize()
+	{
+		return this.jobSize;
+	}
+
+	public void cleanUp()
+	{
+		for ( CompassReader cr : this.worldSet.values() )
+			cr.close();
+	}
+
+	public void updateArea( World w, int chunkX, int chunkZ )
+	{
+		int x = chunkX << 4;
+		int z = chunkZ << 4;
+
+		this.updateArea( w, x, CHUNK_SIZE, z );
+		this.updateArea( w, x, CHUNK_SIZE + 32, z );
+		this.updateArea( w, x, CHUNK_SIZE + 64, z );
+		this.updateArea( w, x, CHUNK_SIZE + 96, z );
+
+		this.updateArea( w, x, CHUNK_SIZE + 128, z );
+		this.updateArea( w, x, CHUNK_SIZE + 160, z );
+		this.updateArea( w, x, CHUNK_SIZE + 192, z );
+		this.updateArea( w, x, CHUNK_SIZE + 224, z );
+	}
+
+	public Future<?> updateArea( World w, int x, int y, int z )
+	{
+		this.jobSize++;
+
+		int cx = x >> 4;
+		int cdy = y >> 5;
+		int cz = z >> 4;
+
+		int low_y = cdy << 5;
+		int hi_y = low_y + 32;
+
+		// lower level...
+		Chunk c = w.getChunkFromBlockCoords( x, z );
+
+		for ( Block skyStoneBlock : AEApi.instance().definitions().blocks().skyStone().maybeBlock().asSet() )
+		{
+			for ( int i = 0; i < CHUNK_SIZE; i++ )
+			{
+				for ( int j = 0; j < CHUNK_SIZE; j++ )
+				{
+					for ( int k = low_y; k < hi_y; k++ )
+					{
+						Block blk = c.getBlock( i, k, j );
+						if ( blk == skyStoneBlock && c.getBlockMetadata( i, k, j ) == 0 )
+						{
+							return this.executor.submit( new CMUpdatePost( w, cx, cz, cdy, true ) );
+						}
+					}
+				}
+			}
+		}
+
+		return this.executor.submit( new CMUpdatePost( w, cx, cz, cdy, false ) );
+	}
+
+	private CompassReader getReader( World w )
+	{
+		CompassReader cr = this.worldSet.get( w );
+
+		if ( cr == null )
+		{
+			cr = new CompassReader( w.provider.dimensionId, this.rootFolder );
+			this.worldSet.put( w, cr );
+		}
+
+		return cr;
+	}
+
+	private int dist( int ax, int az, int bx, int bz )
+	{
+		int up = ( bz - az ) * CHUNK_SIZE;
+		int side = ( bx - ax ) * CHUNK_SIZE;
+
+		return up * up + side * side;
+	}
+
+	private double rad( int ax, int az, int bx, int bz )
+	{
+		int up = bz - az;
+		int side = bx - ax;
+
+		return Math.atan2( -up, side ) - Math.PI / 2.0;
+	}
+
+	public void kill()
+	{
+		this.executor.shutdown();
+
+		try
+		{
+			this.executor.awaitTermination( 6, TimeUnit.MINUTES );
+			this.jobSize = 0;
+
+			for ( CompassReader cr : this.worldSet.values() )
+			{
+				cr.close();
+			}
+
+			this.worldSet.clear();
+		}
+		catch ( InterruptedException e )
+		{
+			// wrap this up..
+		}
+	}
+
+	@Override
+	public Thread newThread( Runnable job )
+	{
+		return new Thread( job, "AE Compass Service" );
+	}
+
 
 	private class CMUpdatePost implements Runnable
 	{
@@ -50,7 +189,8 @@ public class CompassService implements ThreadFactory
 		public final int doubleChunkY; // 32 blocks instead of 16.
 		public final boolean value;
 
-		public CMUpdatePost(World w, int cx, int cz, int dcy, boolean val) {
+		public CMUpdatePost( World w, int cx, int cz, int dcy, boolean val )
+		{
 			this.world = w;
 			this.chunkX = cx;
 			this.doubleChunkY = dcy;
@@ -69,8 +209,8 @@ public class CompassService implements ThreadFactory
 			if ( CompassService.this.jobSize() < 2 )
 				CompassService.this.cleanUp();
 		}
-
 	}
+
 
 	private class CMDirectionRequest implements Runnable
 	{
@@ -79,7 +219,8 @@ public class CompassService implements ThreadFactory
 		public final DimensionalCoord coord;
 		public final ICompassCallback callback;
 
-		public CMDirectionRequest(DimensionalCoord coord, int getMaxRange, ICompassCallback cc) {
+		public CMDirectionRequest( DimensionalCoord coord, int getMaxRange, ICompassCallback cc )
+		{
 			this.coord = coord;
 			this.maxRange = getMaxRange;
 			this.callback = cc;
@@ -107,7 +248,7 @@ public class CompassService implements ThreadFactory
 			}
 
 			// spiral outward...
-			for (int offset = 1; offset < this.maxRange; offset++)
+			for ( int offset = 1; offset < this.maxRange; offset++ )
 			{
 				int minX = cx - offset;
 				int minZ = cz - offset;
@@ -118,7 +259,7 @@ public class CompassService implements ThreadFactory
 				int chosen_x = cx;
 				int chosen_z = cz;
 
-				for (int z = minZ; z <= maxZ; z++)
+				for ( int z = minZ; z <= maxZ; z++ )
 				{
 					if ( cr.hasBeacon( minX, z ) )
 					{
@@ -143,7 +284,7 @@ public class CompassService implements ThreadFactory
 					}
 				}
 
-				for (int x = minX + 1; x < maxX; x++)
+				for ( int x = minX + 1; x < maxX; x++ )
 				{
 					if ( cr.hasBeacon( x, minZ ) )
 					{
@@ -185,140 +326,5 @@ public class CompassService implements ThreadFactory
 			if ( CompassService.this.jobSize() < 2 )
 				CompassService.this.cleanUp();
 		}
-	}
-
-	public Future<?> getCompassDirection(DimensionalCoord coord, int maxRange, ICompassCallback cc)
-	{
-		this.jobSize++;
-		return this.executor.submit( new CMDirectionRequest( coord, maxRange, cc ) );
-	}
-
-	public int jobSize()
-	{
-		return this.jobSize;
-	}
-
-	public void cleanUp()
-	{
-		for (CompassReader cr : this.worldSet.values())
-			cr.close();
-	}
-
-	public void updateArea(World w, int chunkX, int chunkZ)
-	{
-		int x = chunkX << 4;
-		int z = chunkZ << 4;
-
-		this.updateArea( w, x, 16, z );
-		this.updateArea( w, x, 16 + 32, z );
-		this.updateArea( w, x, 16 + 64, z );
-		this.updateArea( w, x, 16 + 96, z );
-
-		this.updateArea( w, x, 16 + 128, z );
-		this.updateArea( w, x, 16 + 160, z );
-		this.updateArea( w, x, 16 + 192, z );
-		this.updateArea( w, x, 16 + 224, z );
-	}
-
-	public Future<?> updateArea(World w, int x, int y, int z)
-	{
-		this.jobSize++;
-
-		int cx = x >> 4;
-		int cdy = y >> 5;
-		int cz = z >> 4;
-
-		int low_y = cdy << 5;
-		int hi_y = low_y + 32;
-
-		Block skystone = AEApi.instance().blocks().blockSkyStone.block();
-
-		// lower level...
-		Chunk c = w.getChunkFromBlockCoords( x, z );
-
-		for (int i = 0; i < 16; i++)
-		{
-			for (int j = 0; j < 16; j++)
-			{
-				for (int k = low_y; k < hi_y; k++)
-				{
-					Block blk = c.getBlock( i, k, j );
-					if ( blk == skystone && c.getBlockMetadata( i, k, j ) == 0 )
-					{
-						return this.executor.submit( new CMUpdatePost( w, cx, cz, cdy, true ) );
-					}
-				}
-			}
-		}
-
-		return this.executor.submit( new CMUpdatePost( w, cx, cz, cdy, false ) );
-	}
-
-	final HashMap<World, CompassReader> worldSet = new HashMap<World, CompassReader>();
-	final ExecutorService executor;
-
-	final File rootFolder;
-
-	public CompassService(File aEFolder) {
-		this.rootFolder = aEFolder;
-		this.executor = Executors.newSingleThreadExecutor( this );
-		this.jobSize = 0;
-	}
-
-	private CompassReader getReader(World w)
-	{
-		CompassReader cr = this.worldSet.get( w );
-
-		if ( cr == null )
-		{
-			cr = new CompassReader( w.provider.dimensionId, this.rootFolder );
-			this.worldSet.put( w, cr );
-		}
-
-		return cr;
-	}
-
-	private int dist(int ax, int az, int bx, int bz)
-	{
-		int up = (bz - az) * 16;
-		int side = (bx - ax) * 16;
-
-		return up * up + side * side;
-	}
-
-	private double rad(int ax, int az, int bx, int bz)
-	{
-		int up = bz - az;
-		int side = bx - ax;
-
-		return Math.atan2( -up, side ) - Math.PI / 2.0;
-	}
-
-	public void kill()
-	{
-		this.executor.shutdown();
-
-		try
-		{
-			this.executor.awaitTermination( 6, TimeUnit.MINUTES );
-			this.jobSize = 0;
-
-			for (CompassReader cr : this.worldSet.values())
-			{
-				cr.close();
-			}
-
-			this.worldSet.clear();
-		}
-		catch (InterruptedException e)
-		{
-			// wrap this up..
-		}
-	}
-
-	@Override
-	public Thread newThread(Runnable job)
-	{
-		return new Thread( job, "AE Compass Service" );
 	}
 }

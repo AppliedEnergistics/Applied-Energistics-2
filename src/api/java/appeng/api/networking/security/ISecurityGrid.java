@@ -23,7 +23,9 @@
 
 package appeng.api.networking.security;
 
+
 import net.minecraft.entity.player.EntityPlayer;
+
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGridCache;
 

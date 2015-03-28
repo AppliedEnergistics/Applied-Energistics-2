@@ -33,16 +33,20 @@ import appeng.api.networking.security.PlayerSource;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.client.texture.CableBusTextures;
+import appeng.helpers.Reflected;
 import appeng.me.GridAccessException;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 
+
 public class PartConversionMonitor extends PartStorageMonitor
 {
+	@Reflected
+	public PartConversionMonitor( ItemStack is )
+	{
+		super( is );
 
-	public PartConversionMonitor(ItemStack is) {
-		super( PartConversionMonitor.class, is );
 		this.frontBright = CableBusTextures.PartConversionMonitor_Bright;
 		this.frontColored = CableBusTextures.PartConversionMonitor_Colored;
 		this.frontDark = CableBusTextures.PartConversionMonitor_Dark;
@@ -50,7 +54,7 @@ public class PartConversionMonitor extends PartStorageMonitor
 	}
 
 	@Override
-	public boolean onPartShiftActivate(EntityPlayer player, Vec3 pos)
+	public boolean onPartShiftActivate( EntityPlayer player, Vec3 pos )
 	{
 		if ( Platform.isClient() )
 			return true;
@@ -67,7 +71,7 @@ public class PartConversionMonitor extends PartStorageMonitor
 		if ( item == null && this.getDisplayed() != null )
 		{
 			ModeB = true;
-			item = ((IAEItemStack) this.getDisplayed()).getItemStack();
+			item = ( (IAEItemStack) this.getDisplayed() ).getItemStack();
 		}
 
 		if ( item != null )
@@ -83,7 +87,7 @@ public class PartConversionMonitor extends PartStorageMonitor
 
 				if ( ModeB )
 				{
-					for (int x = 0; x < player.inventory.getSizeInventory(); x++)
+					for ( int x = 0; x < player.inventory.getSizeInventory(); x++ )
 					{
 						ItemStack targetStack = player.inventory.getStackInSlot( x );
 						if ( input.equals( targetStack ) )
@@ -101,7 +105,7 @@ public class PartConversionMonitor extends PartStorageMonitor
 					player.inventory.setInventorySlotContents( player.inventory.currentItem, failedToInsert == null ? null : failedToInsert.getItemStack() );
 				}
 			}
-			catch (GridAccessException e)
+			catch ( GridAccessException e )
 			{
 				// :P
 			}
@@ -110,7 +114,7 @@ public class PartConversionMonitor extends PartStorageMonitor
 	}
 
 	@Override
-	protected void extractItem(EntityPlayer player)
+	protected void extractItem( EntityPlayer player )
 	{
 		IAEItemStack input = (IAEItemStack) this.getDisplayed();
 		if ( input != null )
@@ -143,11 +147,10 @@ public class PartConversionMonitor extends PartStorageMonitor
 						player.openContainer.detectAndSendChanges();
 				}
 			}
-			catch (GridAccessException e)
+			catch ( GridAccessException e )
 			{
 				// :P
 			}
 		}
 	}
-
 }

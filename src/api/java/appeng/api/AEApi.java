@@ -23,39 +23,46 @@
 
 package appeng.api;
 
+
+import appeng.api.exceptions.CouldNotAccessCoreAPI;
+
+
 /**
- *
  * Entry point for api.
  *
  * Available IMCs:
- *
  */
-public class AEApi
+public enum AEApi
 {
+	;
+	private static final String CORE_API_PATH = "appeng.core.Api";
+	private static final String API_INSTANCE_NAME = "INSTANCE";
 
-	static private IAppEngApi api = null;
+	private static IAppEngApi instance = null;
 
 	/**
 	 * API Entry Point.
 	 *
-	 * @return the {@link IAppEngApi} or null if the INSTANCE could not be retrieved
+	 * @return the {@link IAppEngApi}
+	 *
+	 * @throws CouldNotAccessCoreAPI if the INSTANCE could not be retrieved
 	 */
 	public static IAppEngApi instance()
+
 	{
-		if ( api == null )
+		if ( instance == null )
 		{
 			try
 			{
-				Class c = Class.forName( "appeng.core.Api" );
-				api = (IAppEngApi) c.getField( "INSTANCE" ).get( c );
+				Class<?> c = Class.forName( CORE_API_PATH );
+				instance = (IAppEngApi) c.getField( API_INSTANCE_NAME ).get( c );
 			}
-			catch (Throwable e)
+			catch ( Throwable e )
 			{
-				return null;
+				throw new CouldNotAccessCoreAPI( "Either core API was not in " + CORE_API_PATH + " or " + API_INSTANCE_NAME + " was not accessible" );
 			}
 		}
 
-		return api;
+		return instance;
 	}
-
 }

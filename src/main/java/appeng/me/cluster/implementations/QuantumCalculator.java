@@ -18,16 +18,19 @@
 
 package appeng.me.cluster.implementations;
 
+import net.minecraft.block.Block;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import appeng.api.AEApi;
+import appeng.api.definitions.IBlockDefinition;
+import appeng.api.definitions.IBlocks;
 import appeng.api.util.WorldCoord;
 import appeng.me.cluster.IAECluster;
 import appeng.me.cluster.IAEMultiBlock;
 import appeng.me.cluster.MBCalculator;
 import appeng.tile.qnb.TileQuantumBridge;
-import appeng.util.Platform;
 
 public class QuantumCalculator extends MBCalculator
 {
@@ -75,7 +78,7 @@ public class QuantumCalculator extends MBCalculator
 				{
 					TileQuantumBridge te = (TileQuantumBridge) w.getTileEntity( x, y, z );
 
-					byte flags = 0;
+					byte flags;
 
 					num++;
 					if ( num == 5 )
@@ -130,21 +133,34 @@ public class QuantumCalculator extends MBCalculator
 						return false;
 
 					num++;
+					final IBlocks blocks = AEApi.instance().definitions().blocks();
 					if ( num == 5 )
 					{
-						if ( !Platform.blockAtLocationIs( w, x, y, z, AEApi.instance().blocks().blockQuantumLink ) )
+						if ( !this.isBlockAtLocation( w, x, y, z, blocks.quantumLink() ) )
+						{
 							return false;
+						}
 					}
 					else
 					{
-						if ( !Platform.blockAtLocationIs( w, x, y, z, AEApi.instance().blocks().blockQuantumRing ) )
+						if ( !this.isBlockAtLocation( w, x, y, z, blocks.quantumRing() ) )
+						{
 							return false;
+						}
 					}
-
 				}
 			}
 		}
 		return true;
 	}
 
+	private boolean isBlockAtLocation( IBlockAccess w, int x, int y, int z, IBlockDefinition def )
+	{
+		for ( Block block : def.maybeBlock().asSet() )
+		{
+			return block == w.getBlock( x, y, z );
+		}
+
+		return false;
+	}
 }

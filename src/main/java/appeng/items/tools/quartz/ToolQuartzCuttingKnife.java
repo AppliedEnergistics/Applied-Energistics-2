@@ -21,12 +21,12 @@ package appeng.items.tools.quartz;
 
 import java.util.EnumSet;
 
-import com.google.common.base.Optional;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+
+import com.google.common.base.Optional;
 
 import appeng.api.implementations.guiobjects.IGuiItem;
 import appeng.api.implementations.guiobjects.IGuiItemObject;
@@ -39,14 +39,14 @@ import appeng.util.Platform;
 
 public class ToolQuartzCuttingKnife extends AEBaseItem implements IGuiItem
 {
+	private final AEFeature type;
 
-	final AEFeature type;
-
-	public ToolQuartzCuttingKnife( AEFeature Type )
+	public ToolQuartzCuttingKnife( AEFeature type )
 	{
-		super( ToolQuartzCuttingKnife.class, Optional.of( Type.name() ) );
+		super( Optional.of( type.name() ) );
 
-		this.setFeature( EnumSet.of( this.type = Type, AEFeature.QuartzKnife ) );
+		this.type = type;
+		this.setFeature( EnumSet.of( type, AEFeature.QuartzKnife ) );
 		this.setMaxDamage( 50 );
 		this.setMaxStackSize( 1 );
 	}

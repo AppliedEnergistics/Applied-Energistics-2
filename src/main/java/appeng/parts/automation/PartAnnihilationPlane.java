@@ -69,14 +69,13 @@ import appeng.util.item.AEItemStack;
 
 public class PartAnnihilationPlane extends PartBasicState implements IGridTickable, Callable<TickRateModulation>
 {
-
-	private boolean isAccepting = true;
 	private final BaseActionSource mySrc = new MachineSource( this );
+	private boolean isAccepting = true;
 	private boolean breaking = false;
 
 	public PartAnnihilationPlane( ItemStack is )
 	{
-		super( PartAnnihilationPlane.class, is );
+		super( is );
 	}
 
 	@Override
@@ -90,9 +89,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 	@SideOnly( Side.CLIENT )
 	public void renderInventory( IPartRenderHelper rh, RenderBlocks renderer )
 	{
-		rh.setTexture( CableBusTextures.PartPlaneSides.getIcon(), CableBusTextures.PartPlaneSides.getIcon(),
-				CableBusTextures.PartTransitionPlaneBack.getIcon(), this.is.getIconIndex(), CableBusTextures.PartPlaneSides.getIcon(),
-				CableBusTextures.PartPlaneSides.getIcon() );
+		rh.setTexture( CableBusTextures.PartPlaneSides.getIcon(), CableBusTextures.PartPlaneSides.getIcon(), CableBusTextures.PartTransitionPlaneBack.getIcon(), this.is.getIconIndex(), CableBusTextures.PartPlaneSides.getIcon(), CableBusTextures.PartPlaneSides.getIcon() );
 
 		rh.setBounds( 1, 1, 15, 15, 15, 16 );
 		rh.renderInventoryBox( renderer );
@@ -138,16 +135,12 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 		final boolean isActive = ( this.clientFlags & ( this.POWERED_FLAG | this.CHANNEL_FLAG ) ) == ( this.POWERED_FLAG | this.CHANNEL_FLAG );
 
 		this.renderCache = rh.useSimplifiedRendering( x, y, z, this, this.renderCache );
-		rh.setTexture( CableBusTextures.PartPlaneSides.getIcon(), CableBusTextures.PartPlaneSides.getIcon(),
-				CableBusTextures.PartTransitionPlaneBack.getIcon(), isActive ? CableBusTextures.BlockAnnihilationPlaneOn.getIcon() : this.is.getIconIndex(),
-				CableBusTextures.PartPlaneSides.getIcon(), CableBusTextures.PartPlaneSides.getIcon() );
+		rh.setTexture( CableBusTextures.PartPlaneSides.getIcon(), CableBusTextures.PartPlaneSides.getIcon(), CableBusTextures.PartTransitionPlaneBack.getIcon(), isActive ? CableBusTextures.BlockAnnihilationPlaneOn.getIcon() : this.is.getIconIndex(), CableBusTextures.PartPlaneSides.getIcon(), CableBusTextures.PartPlaneSides.getIcon() );
 
 		rh.setBounds( minX, minY, 15, maxX, maxY, 16 );
 		rh.renderBlock( x, y, z, renderer );
 
-		rh.setTexture( CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartMonitorSidesStatus.getIcon(),
-				CableBusTextures.PartTransitionPlaneBack.getIcon(), isActive ? CableBusTextures.BlockAnnihilationPlaneOn.getIcon() : this.is.getIconIndex(),
-				CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartMonitorSidesStatus.getIcon() );
+		rh.setTexture( CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartTransitionPlaneBack.getIcon(), isActive ? CableBusTextures.BlockAnnihilationPlaneOn.getIcon() : this.is.getIconIndex(), CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartMonitorSidesStatus.getIcon() );
 
 		rh.setBounds( 5, 5, 14, 11, 11, 15 );
 		rh.renderBlock( x, y, z, renderer );
@@ -159,10 +152,85 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 	{
 		if ( blockTileEntity instanceof IPartHost )
 		{
-			final IPart p = ( ( IPartHost ) blockTileEntity ).getPart( side );
+			final IPart p = ( (IPartHost) blockTileEntity ).getPart( side );
 			return p instanceof PartAnnihilationPlane;
 		}
 		return false;
+	}
+
+	@Override
+	public void onNeighborChanged()
+	{
+		this.isAccepting = true;
+		try
+		{
+			this.proxy.getTick().alertDevice( this.proxy.getNode() );
+		}
+		catch ( final GridAccessException e )
+		{
+			// :P
+		}
+	}
+
+	@Override
+	public void onEntityCollision( Entity entity )
+	{
+		if ( this.isAccepting && entity instanceof EntityItem && !entity.isDead && Platform.isServer() && this.proxy.isActive() )
+		{
+			boolean capture = false;
+
+			switch ( this.side )
+			{
+				case DOWN:
+				case UP:
+					if ( entity.posX > this.tile.xCoord && entity.posX < this.tile.xCoord + 1 )
+					{
+						if ( entity.posZ > this.tile.zCoord && entity.posZ < this.tile.zCoord + 1 )
+						{
+							if ( ( entity.posY > this.tile.yCoord + 0.9 && this.side == ForgeDirection.UP ) || ( entity.posY < this.tile.yCoord + 0.1 && this.side == ForgeDirection.DOWN ) )
+							{
+								capture = true;
+							}
+						}
+					}
+					break;
+				case SOUTH:
+				case NORTH:
+					if ( entity.posX > this.tile.xCoord && entity.posX < this.tile.xCoord + 1 )
+					{
+						if ( entity.posY > this.tile.yCoord && entity.posY < this.tile.yCoord + 1 )
+						{
+							if ( ( entity.posZ > this.tile.zCoord + 0.9 && this.side == ForgeDirection.SOUTH ) || ( entity.posZ < this.tile.zCoord + 0.1 && this.side == ForgeDirection.NORTH ) )
+							{
+								capture = true;
+							}
+						}
+					}
+					break;
+				case EAST:
+				case WEST:
+					if ( entity.posZ > this.tile.zCoord && entity.posZ < this.tile.zCoord + 1 )
+					{
+						if ( entity.posY > this.tile.yCoord && entity.posY < this.tile.yCoord + 1 )
+						{
+							if ( ( entity.posX > this.tile.xCoord + 0.9 && this.side == ForgeDirection.EAST ) || ( entity.posX < this.tile.xCoord + 0.1 && this.side == ForgeDirection.WEST ) )
+							{
+								capture = true;
+							}
+						}
+					}
+					break;
+				default:
+					// umm?
+					break;
+			}
+
+			if ( capture )
+			{
+				ServerHelper.proxy.sendToAllNearExcept( null, this.tile.xCoord, this.tile.yCoord, this.tile.zCoord, 64, this.tile.getWorldObj(), new PacketTransitionEffect( entity.posX, entity.posY, entity.posZ, this.side, false ) );
+				this.storeEntityItem( (EntityItem) entity );
+			}
+		}
 	}
 
 	@Override
@@ -228,6 +296,61 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 		return this.isAccepting;
 	}
 
+	/**
+	 * Stores an {@link EntityItem} inside the network and either marks it as dead or sets it to the leftover stackSize.
+	 *
+	 * @param entityItem {@link EntityItem} to store
+	 */
+	private void storeEntityItem( EntityItem entityItem )
+	{
+		if ( !entityItem.isDead )
+		{
+			this.storeItemStack( entityItem.getEntityItem() );
+			entityItem.setDead();
+		}
+	}
+
+	/**
+	 * Stores an {@link ItemStack} inside the network.
+	 *
+	 * @param item {@link ItemStack} to store
+	 */
+	private void storeItemStack( ItemStack item )
+	{
+		final IAEItemStack itemToStore = AEItemStack.create( item );
+		try
+		{
+			final IStorageGrid storage = this.proxy.getStorage();
+			final IEnergyGrid energy = this.proxy.getEnergy();
+			final IAEItemStack overflow = Platform.poweredInsert( energy, storage.getItemInventory(), itemToStore, this.mySrc );
+
+			this.spawnOverflowItemStack( overflow );
+
+			this.isAccepting = overflow == null;
+		}
+		catch ( final GridAccessException e1 )
+		{
+			// :P
+		}
+	}
+
+	private void spawnOverflowItemStack( IAEItemStack overflow )
+	{
+		if ( overflow == null )
+		{
+			return;
+		}
+
+		final TileEntity tileEntity = this.getTile();
+		final WorldServer world = (WorldServer) tileEntity.getWorldObj();
+
+		final int x = tileEntity.xCoord + this.side.offsetX;
+		final int y = tileEntity.yCoord + this.side.offsetY;
+		final int z = tileEntity.zCoord + this.side.offsetZ;
+
+		Platform.spawnDrops( world, x, y, z, Lists.newArrayList( overflow.getItemStack() ) );
+	}
+
 	@Override
 	@MENetworkEventSubscribe
 	public void chanRender( MENetworkChannelsChanged c )
@@ -251,7 +374,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 			try
 			{
 				final TileEntity te = this.getTile();
-				final WorldServer w = ( WorldServer ) te.getWorldObj();
+				final WorldServer w = (WorldServer) te.getWorldObj();
 
 				final int x = te.xCoord + this.side.offsetX;
 				final int y = te.yCoord + this.side.offsetY;
@@ -262,8 +385,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 				final IEnergyGrid energy = this.proxy.getEnergy();
 
 				final Material mat = blk.getMaterial();
-				final boolean ignore = mat == Material.air || mat == Material.lava || mat == Material.water || mat.isLiquid() || blk == Blocks.bedrock
-						|| blk == Blocks.end_portal || blk == Blocks.end_portal_frame || blk == Blocks.command_block;
+				final boolean ignore = mat == Material.air || mat == Material.lava || mat == Material.water || mat.isLiquid() || blk == Blocks.bedrock || blk == Blocks.end_portal || blk == Blocks.end_portal_frame || blk == Blocks.command_block;
 
 				if ( !ignore && !w.isAirBlock( x, y, z ) && w.blockExists( x, y, z ) && w.canMineBlock( Platform.getPlayer( w ), x, y, z ) )
 				{
@@ -294,7 +416,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 								{
 									if ( ei instanceof EntityItem )
 									{
-										final EntityItem entityItem = ( EntityItem ) ei;
+										final EntityItem entityItem = (EntityItem) ei;
 										this.storeEntityItem( entityItem );
 									}
 								}
@@ -333,85 +455,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 	}
 
 	@Override
-	public void onNeighborChanged()
-	{
-		this.isAccepting = true;
-		try
-		{
-			this.proxy.getTick().alertDevice( this.proxy.getNode() );
-		}
-		catch ( final GridAccessException e )
-		{
-			// :P
-		}
-	}
-
-	@Override
-	public void onEntityCollision( Entity entity )
-	{
-		if ( this.isAccepting && entity instanceof EntityItem && !entity.isDead && Platform.isServer() && this.proxy.isActive() )
-		{
-			boolean capture = false;
-
-			switch ( this.side )
-			{
-				case DOWN:
-				case UP:
-					if ( entity.posX > this.tile.xCoord && entity.posX < this.tile.xCoord + 1 )
-					{
-						if ( entity.posZ > this.tile.zCoord && entity.posZ < this.tile.zCoord + 1 )
-						{
-							if ( ( entity.posY > this.tile.yCoord + 0.9 && this.side == ForgeDirection.UP ) || ( entity.posY < this.tile.yCoord + 0.1 && this.side == ForgeDirection.DOWN ) )
-							{
-								capture = true;
-							}
-						}
-					}
-					break;
-				case SOUTH:
-				case NORTH:
-					if ( entity.posX > this.tile.xCoord && entity.posX < this.tile.xCoord + 1 )
-					{
-						if ( entity.posY > this.tile.yCoord && entity.posY < this.tile.yCoord + 1 )
-						{
-							if ( ( entity.posZ > this.tile.zCoord + 0.9 && this.side == ForgeDirection.SOUTH )
-									|| ( entity.posZ < this.tile.zCoord + 0.1 && this.side == ForgeDirection.NORTH ) )
-							{
-								capture = true;
-							}
-						}
-					}
-					break;
-				case EAST:
-				case WEST:
-					if ( entity.posZ > this.tile.zCoord && entity.posZ < this.tile.zCoord + 1 )
-					{
-						if ( entity.posY > this.tile.yCoord && entity.posY < this.tile.yCoord + 1 )
-						{
-							if ( ( entity.posX > this.tile.xCoord + 0.9 && this.side == ForgeDirection.EAST )
-									|| ( entity.posX < this.tile.xCoord + 0.1 && this.side == ForgeDirection.WEST ) )
-							{
-								capture = true;
-							}
-						}
-					}
-					break;
-				default:
-					// umm?
-					break;
-			}
-
-			if ( capture )
-			{
-				ServerHelper.proxy.sendToAllNearExcept( null, this.tile.xCoord, this.tile.yCoord, this.tile.zCoord, 64, this.tile.getWorldObj(),
-						new PacketTransitionEffect( entity.posX, entity.posY, entity.posZ, this.side, false ) );
-				this.storeEntityItem( ( EntityItem ) entity );
-			}
-		}
-	}
-
-	@Override
-	public TickRateModulation tickingRequest( IGridNode node, int TicksSinceLastCall )
+	public TickRateModulation tickingRequest( IGridNode node, int ticksSinceLastCall )
 	{
 		if ( this.breaking )
 		{
@@ -428,6 +472,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 	 * It also sets isAccepting to false, if the item can not be stored.
 	 *
 	 * @param itemStacks an array of {@link ItemStack} to test
+	 *
 	 * @return true, if the network can store at least a single item of all drops or no drops are reported
 	 */
 	private boolean canStoreItemStacks( ItemStack[] itemStacks )
@@ -456,63 +501,4 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 		this.isAccepting = canStore;
 		return canStore;
 	}
-
-	/**
-	 * Stores an {@link ItemStack} inside the network.
-	 *
-	 * @param item {@link ItemStack} to store
-	 * @return null or leftover {@link IAEItemStack}
-	 */
-	private boolean storeItemStack( ItemStack item )
-	{
-		final IAEItemStack itemToStore = AEItemStack.create( item );
-		try
-		{
-			final IStorageGrid storage = this.proxy.getStorage();
-			final IEnergyGrid energy = this.proxy.getEnergy();
-			final IAEItemStack overflow = Platform.poweredInsert( energy, storage.getItemInventory(), itemToStore, this.mySrc );
-
-			this.spawnOverflowItemStack( overflow );
-
-			this.isAccepting = overflow == null;
-			return overflow == null || item.stackSize < overflow.getStackSize();
-		}
-		catch ( final GridAccessException e1 )
-		{
-			// :P
-		}
-		return false;
-	}
-
-	/**
-	 * Stores an {@link EntityItem} inside the network and either marks it as dead or sets it to the leftover stackSize.
-	 *
-	 * @param entityItem {@link EntityItem} to store
-	 */
-	private void storeEntityItem( EntityItem entityItem )
-	{
-		if ( !entityItem.isDead )
-		{
-			this.storeItemStack( entityItem.getEntityItem() );
-			entityItem.setDead();
-		}
-	}
-
-	private void spawnOverflowItemStack( IAEItemStack overflow )
-	{
-		if ( overflow == null )
-		{
-			return;
-		}
-
-		final TileEntity tileEntity = this.getTile();
-		final WorldServer world = ( WorldServer ) tileEntity.getWorldObj();
-
-		final int x = tileEntity.xCoord + this.side.offsetX;
-		final int y = tileEntity.yCoord + this.side.offsetY;
-		final int z = tileEntity.zCoord + this.side.offsetZ;
-
-		Platform.spawnDrops( world, x, y, z, Lists.newArrayList( overflow.getItemStack() ) );
-	}
-
 }

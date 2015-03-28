@@ -23,9 +23,11 @@
 
 package appeng.api.networking.crafting;
 
+
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.storage.IBaseMonitor;
 import appeng.api.storage.data.IAEItemStack;
+
 
 public interface ICraftingCPU extends IBaseMonitor<IAEItemStack>
 {
@@ -54,5 +56,4 @@ public interface ICraftingCPU extends IBaseMonitor<IAEItemStack>
 	 * @return an empty string or the name of the cpu.
 	 */
 	String getName();
-
 }

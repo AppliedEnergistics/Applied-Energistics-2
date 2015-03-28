@@ -28,6 +28,7 @@ import java.util.List;
 
 import net.minecraft.item.ItemStack;
 
+
 /**
  * Lets you manipulate Grinder Recipes, by adding or editing existing ones.
  */
@@ -56,30 +57,30 @@ public interface IGrinderRegistry
 	 * @param in input
 	 * @param out output
 	 * @param optional optional output
-	 * @param chance chance to get the optional output within 0.0 - 1.0
-	 * @param turns amount of turns to turn the input into the outputs
+	 * @param chance   chance to get the optional output within 0.0 - 1.0
+	 * @param turns    amount of turns to turn the input into the outputs
 	 */
-	void addRecipe(ItemStack in, ItemStack out, ItemStack optional, float chance, int turns);
+	void addRecipe( ItemStack in, ItemStack out, ItemStack optional, float chance, int turns );
 
 	/**
 	 * add a new recipe with optional outputs, duplicates will not be added.
-	 *
+	 * 
 	 * @param in input
 	 * @param out output
 	 * @param optional optional output
 	 * @param chance chance to get the optional output within 0.0 - 1.0
 	 * @param optional2 second optional output
-	 * @param chance2 chance to get the second optional output within 0.0 - 1.0
-	 * @param turns amount of turns to turn the input into the outputs
+	 * @param chance2   chance to get the second optional output within 0.0 - 1.0
+	 * @param turns     amount of turns to turn the input into the outputs
 	 */
-	void addRecipe(ItemStack in, ItemStack out, ItemStack optional, float chance, ItemStack optional2, float chance2, int turns);
+	void addRecipe( ItemStack in, ItemStack out, ItemStack optional, float chance, ItemStack optional2, float chance2, int turns );
 
 	/**
 	 * Searches for a recipe for a given input, and returns it.
 	 *
 	 * @param input input
+	 *
 	 * @return identified recipe or null
 	 */
 	IGrinderEntry getRecipeForInput( ItemStack input );
-
 }

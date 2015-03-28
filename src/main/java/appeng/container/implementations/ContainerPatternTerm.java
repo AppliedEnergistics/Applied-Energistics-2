@@ -39,6 +39,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
+import appeng.api.definitions.IDefinitions;
 import appeng.api.networking.security.MachineSource;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.ITerminalHost;
@@ -218,7 +219,11 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 				this.patternSlotIN.putStack( null );
 
 			// add a new encoded pattern.
-			this.patternSlotOUT.putStack( output = AEApi.instance().items().itemEncodedPattern.stack( 1 ) );
+			for ( ItemStack encodedPatternStack : AEApi.instance().definitions().items().encodedPattern().maybeStack( 1 ).asSet() )
+			{
+				output = encodedPatternStack;
+				this.patternSlotOUT.putStack( output );
+			}
 		}
 
 		// encode the slot.
@@ -303,7 +308,12 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 		if ( output == null )
 			return false;
 
-		return AEApi.instance().items().itemEncodedPattern.sameAsStack( output ) || AEApi.instance().materials().materialBlankPattern.sameAsStack( output );
+		final IDefinitions definitions = AEApi.instance().definitions();
+
+		boolean isPattern = definitions.items().encodedPattern().isSameAs( output );
+		isPattern |= definitions.materials().blankPattern().isSameAs( output );
+
+		return isPattern;
 	}
 
 	@Override

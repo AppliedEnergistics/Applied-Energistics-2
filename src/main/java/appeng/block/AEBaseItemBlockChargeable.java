@@ -30,10 +30,11 @@ import net.minecraft.nbt.NBTTagCompound;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.PowerUnits;
+import appeng.api.definitions.IBlockDefinition;
 import appeng.api.implementations.items.IAEItemPowerStorage;
+import appeng.core.Api;
 import appeng.core.localization.GuiText;
 import appeng.util.Platform;
 
@@ -66,11 +67,21 @@ public class AEBaseItemBlockChargeable extends AEBaseItemBlock implements IAEIte
 
 	private double getMaxEnergyCapacity()
 	{
-		Block blk = Block.getBlockFromItem( this );
-		if ( blk == AEApi.instance().blocks().blockEnergyCell.block() )
-			return 200000;
-		else
-			return 8 * 200000;
+		Block blockID = Block.getBlockFromItem( this );
+		final IBlockDefinition energyCell = Api.INSTANCE.definitions().blocks().energyCell();
+		for ( Block block : energyCell.maybeBlock().asSet() )
+		{
+			if ( blockID == block )
+			{
+				return 200000;
+			}
+			else
+			{
+				return 8 * 200000;
+			}
+		}
+
+		return 0;
 	}
 
 	private double getInternal(ItemStack is)

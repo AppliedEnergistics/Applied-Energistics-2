@@ -23,11 +23,13 @@
 
 package appeng.api.storage;
 
+
 import appeng.api.AEApi;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
+
 
 public enum StorageChannel
 {
@@ -43,11 +45,13 @@ public enum StorageChannel
 
 	public final Class<? extends IAEStack> type;
 
-	StorageChannel( Class<? extends IAEStack> t ) {
+	StorageChannel( Class<? extends IAEStack> t ) 
+	{
 		this.type = t;
 	}
 
-	public IItemList createList() {
+	public IItemList createList()
+	{
 		if ( this == ITEMS )
 			return AEApi.instance().storage().createItemList();
 		else

@@ -30,15 +30,20 @@ import java.util.Map.Entry;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 import cpw.mods.fml.common.LoaderState;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.GameRegistry.UniqueIdentifier;
 
+import com.google.common.base.Optional;
 import com.google.common.collect.HashMultimap;
 
 import appeng.api.AEApi;
+import appeng.api.definitions.IBlocks;
+import appeng.api.definitions.IDefinitions;
+import appeng.api.definitions.IItems;
 import appeng.api.exceptions.MissingIngredientError;
 import appeng.api.exceptions.RecipeError;
 import appeng.api.exceptions.RegistrationError;
@@ -258,7 +263,17 @@ public class RecipeHandler implements IRecipeHandler
 		if ( !id.modId.equals( AppEng.MOD_ID ) && !id.modId.equals( "minecraft" ) )
 			throw new RecipeError( "Not applicable for website" );
 
-		if ( is.getItem() == AEApi.instance().items().itemCrystalSeed.item() )
+		final IDefinitions definitions = AEApi.instance().definitions();
+		final IItems items = definitions.items();
+		final IBlocks blocks = definitions.blocks();
+
+		final Optional<Item> maybeCrystalSeedItem = items.crystalSeed().maybeItem();
+		final Optional<Item> maybeSkyStoneItem = blocks.skyStone().maybeItem();
+		final Optional<Item> maybeCraftingStorageItem = blocks.craftingStorage1k().maybeItem();
+		final Optional<Item> maybeCraftingUnitItem = blocks.craftingUnit().maybeItem();
+		final Optional<Item> maybeSkyChestItem = blocks.skyChest().maybeItem();
+
+		if ( maybeCrystalSeedItem.isPresent() && is.getItem() == maybeCrystalSeedItem.get() )
 		{
 			int dmg = is.getItemDamage();
 			if ( dmg < ItemCrystalSeed.Nether )
@@ -268,7 +283,7 @@ public class RecipeHandler implements IRecipeHandler
 			else if ( dmg < ItemCrystalSeed.END )
 				realName += ".Fluix";
 		}
-		else if ( is.getItem() == AEApi.instance().blocks().blockSkyStone.item() )
+		else if ( maybeSkyStoneItem.isPresent() && is.getItem() == maybeSkyStoneItem.get() )
 		{
 			switch (is.getItemDamage())
 			{
@@ -284,7 +299,7 @@ public class RecipeHandler implements IRecipeHandler
 			default:
 			}
 		}
-		else if ( is.getItem() == AEApi.instance().blocks().blockCraftingStorage1k.item() )
+		else if ( maybeCraftingStorageItem.isPresent() && is.getItem() == maybeCraftingStorageItem.get() )
 		{
 			switch (is.getItemDamage())
 			{
@@ -300,7 +315,7 @@ public class RecipeHandler implements IRecipeHandler
 			default:
 			}
 		}
-		else if ( is.getItem() == AEApi.instance().blocks().blockCraftingUnit.item() )
+		else if ( maybeCraftingUnitItem.isPresent() && is.getItem() == maybeCraftingUnitItem.get() )
 		{
 			switch (is.getItemDamage())
 			{
@@ -310,7 +325,7 @@ public class RecipeHandler implements IRecipeHandler
 			default:
 			}
 		}
-		else if ( is.getItem() == AEApi.instance().blocks().blockSkyChest.item() )
+		else if ( maybeSkyChestItem.isPresent() && is.getItem() == maybeSkyChestItem.get() )
 		{
 			switch (is.getItemDamage())
 			{

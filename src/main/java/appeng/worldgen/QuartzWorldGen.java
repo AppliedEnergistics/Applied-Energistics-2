@@ -16,7 +16,8 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.hooks;
+package appeng.worldgen;
+
 
 import java.util.Random;
 
@@ -29,38 +30,40 @@ import net.minecraft.world.gen.feature.WorldGenMinable;
 import cpw.mods.fml.common.IWorldGenerator;
 
 import appeng.api.AEApi;
+import appeng.api.definitions.IBlockDefinition;
+import appeng.api.definitions.IBlocks;
 import appeng.api.features.IWorldGen.WorldGenType;
 import appeng.core.AEConfig;
 import appeng.core.features.registries.WorldGenRegistry;
 
+
 final public class QuartzWorldGen implements IWorldGenerator
 {
+	private final WorldGenMinable oreNormal;
+	private final WorldGenMinable oreCharged;
 
-	final WorldGenMinable oreNormal;
-	final WorldGenMinable oreCharged;
+	public QuartzWorldGen()
+	{
+		final IBlocks blocks = AEApi.instance().definitions().blocks();
+		final IBlockDefinition oreDefinition = blocks.quartzOre();
+		final IBlockDefinition chargedDefinition = blocks.quartzOreCharged();
 
-	public QuartzWorldGen() {
-		Block normal = AEApi.instance().blocks().blockQuartzOre.block();
-		Block charged = AEApi.instance().blocks().blockQuartzOreCharged.block();
+		final Block ore = oreDefinition.maybeBlock().orNull();
+		final Block charged = chargedDefinition.maybeBlock().orNull();
 
-		if ( normal != null && charged != null )
-		{
-			this.oreNormal = new WorldGenMinable( normal, 0, AEConfig.instance.quartzOresPerCluster, Blocks.stone );
-			this.oreCharged = new WorldGenMinable( charged, 0, AEConfig.instance.quartzOresPerCluster, Blocks.stone );
-		}
-		else
-			this.oreNormal = this.oreCharged = null;
+		this.oreNormal = new WorldGenMinable( ore, 0, AEConfig.instance.quartzOresPerCluster, Blocks.stone );
+		this.oreCharged = new WorldGenMinable( charged, 0, AEConfig.instance.quartzOresPerCluster, Blocks.stone );
 	}
 
 	@Override
-	public void generate(Random r, int chunkX, int chunkZ, World w, IChunkProvider chunkGenerator, IChunkProvider chunkProvider)
+	public void generate( Random r, int chunkX, int chunkZ, World w, IChunkProvider chunkGenerator, IChunkProvider chunkProvider )
 	{
 		int seaLevel = w.provider.getAverageGroundLevel() + 1;
 
 		if ( seaLevel < 20 )
 		{
-			int x = (chunkX << 4) + 8;
-			int z = (chunkZ << 4) + 8;
+			int x = ( chunkX << 4 ) + 8;
+			int z = ( chunkZ << 4 ) + 8;
 			seaLevel = w.getHeightValue( x, z );
 		}
 
@@ -70,7 +73,7 @@ final public class QuartzWorldGen implements IWorldGenerator
 		double oreDepthMultiplier = AEConfig.instance.quartzOresClusterAmount * seaLevel / 64;
 		int scale = (int) Math.round( r.nextGaussian() * Math.sqrt( oreDepthMultiplier ) + oreDepthMultiplier );
 
-		for (int x = 0; x < (r.nextBoolean() ? scale * 2 : scale) / 2; ++x)
+		for ( int x = 0; x < ( r.nextBoolean() ? scale * 2 : scale ) / 2; ++x )
 		{
 			boolean isCharged = r.nextFloat() > AEConfig.instance.spawnChargedChance;
 			WorldGenMinable whichOre = isCharged ? this.oreCharged : this.oreNormal;
@@ -83,6 +86,5 @@ final public class QuartzWorldGen implements IWorldGenerator
 				whichOre.generate( w, r, cx, cy, cz );
 			}
 		}
-
 	}
 }

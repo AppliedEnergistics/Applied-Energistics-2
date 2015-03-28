@@ -40,6 +40,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import appeng.api.config.FuzzyMode;
 import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IAETagCompound;
 import appeng.util.Platform;
 
@@ -113,13 +114,14 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 		this.def.isOre = OreHelper.INSTANCE.isOre( is );
 	}
 
-	public static AEItemStack create(Object a)
+	public static AEItemStack create( ItemStack stack )
 	{
-		if ( a instanceof ItemStack )
-			return new AEItemStack( (ItemStack) a );
-		if ( a instanceof IAEItemStack )
-			((IAEItemStack) a).copy();
-		return null;
+		return new AEItemStack( stack );
+	}
+
+	public static IAEStack<IAEItemStack> create( IAEStack<IAEItemStack> stack )
+	{
+		return stack.copy();
 	}
 
 	@Override

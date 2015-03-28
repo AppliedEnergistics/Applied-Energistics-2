@@ -221,13 +221,13 @@ public class PartMonitor extends AEBasePart implements IPartMonitor, IPowerChann
 			return false;
 		}
 	}
-
+	
 	public PartMonitor(ItemStack is) {
-		this( PartMonitor.class, is, false );
+		this( is, false );
 	}
 
-	protected PartMonitor(Class c, ItemStack is, boolean requireChannel) {
-		super( c, is );
+	protected PartMonitor(ItemStack is, boolean requireChannel) {
+		super( is );
 
 		if ( requireChannel )
 		{

@@ -22,11 +22,11 @@ package appeng.items;
 import java.util.EnumSet;
 import java.util.List;
 
-import com.google.common.base.Optional;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+
+import com.google.common.base.Optional;
 
 import appeng.core.features.AEFeature;
 import appeng.core.features.FeatureNameExtractor;
@@ -35,22 +35,22 @@ import appeng.core.features.IFeatureHandler;
 import appeng.core.features.ItemFeatureHandler;
 
 
-public class AEBaseItem extends Item implements IAEFeature
+public abstract class AEBaseItem extends Item implements IAEFeature
 {
 	private final String fullName;
 	private final Optional<String> subName;
 	private IFeatureHandler feature;
 
-	public AEBaseItem( Class c )
+	public AEBaseItem()
 	{
-		this( c, Optional.<String> absent() );
-		this.canRepair = false;
+		this( Optional.<String> absent() );
+		this.setNoRepair();
 	}
 
-	public AEBaseItem( Class<?> c, Optional<String> subName )
+	public AEBaseItem( Optional<String> subName )
 	{
 		this.subName = subName;
-		this.fullName = new FeatureNameExtractor( c, subName ).get();
+		this.fullName = new FeatureNameExtractor( this.getClass(), subName ).get();
 	}
 
 	@Override

@@ -53,7 +53,7 @@ public class PartQuartzFiber extends AEBasePart implements IEnergyGridProvider
 	final AENetworkProxy outerProxy = new AENetworkProxy( this, "outer", this.proxy.getMachineRepresentation(), true );
 
 	public PartQuartzFiber(ItemStack is) {
-		super( PartQuartzFiber.class, is );
+		super( is );
 		this.proxy.setIdlePowerUsage( 0 );
 		this.proxy.setFlags( GridFlags.CANNOT_CARRY );
 		this.outerProxy.setIdlePowerUsage( 0 );

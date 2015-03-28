@@ -27,21 +27,24 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
+import com.google.common.base.Optional;
 import mods.immibis.core.api.multipart.ICoverSystem;
 import mods.immibis.core.api.multipart.IMultipartTile;
 import mods.immibis.core.api.multipart.IPartContainer;
 
 import appeng.api.AEApi;
+import appeng.api.definitions.IBlockDefinition;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartItem;
 import appeng.core.AELog;
+import appeng.helpers.Reflected;
 import appeng.integration.BaseModule;
 import appeng.integration.abstraction.IImmibisMicroblocks;
 
 
 public class ImmibisMicroblocks extends BaseModule implements IImmibisMicroblocks
 {
-
+	@Reflected
 	public static ImmibisMicroblocks INSTANCE;
 
 	private boolean canConvertTiles = false;
@@ -102,19 +105,28 @@ public class ImmibisMicroblocks extends BaseModule implements IImmibisMicroblock
 
 		if ( te instanceof IMultipartTile && this.canConvertTiles && isPartItem )
 		{
-			final Block blk = AEApi.instance().blocks().blockMultiPart.block();
-			final ItemStack what = AEApi.instance().blocks().blockMultiPart.stack( 1 );
+			final IBlockDefinition multiPart = AEApi.instance().definitions().blocks().multiPart();
+			final Optional<Block> maybeMultiPartBlock = multiPart.maybeBlock();
+			final Optional<ItemStack> maybeMultiPartStack = multiPart.maybeStack( 1 );
 
-			try
+			final boolean multiPartPresent = maybeMultiPartBlock.isPresent() && maybeMultiPartStack.isPresent();
+
+			if ( multiPartPresent )
 			{
-				// ItemStack.class, EntityPlayer.class, World.class,
-				// int.class, int.class, int.class, int.class, Block.class, int.class );
-				this.mergeIntoMicroblockContainer.invoke( null, what, player, w, x, y, z, side, blk, 0 );
-			}
-			catch ( Throwable e )
-			{
-				this.canConvertTiles = false;
-				return null;
+				final Block multiPartBlock = maybeMultiPartBlock.get();
+				final ItemStack multiPartStack = maybeMultiPartStack.get();
+
+				try
+				{
+					// ItemStack.class, EntityPlayer.class, World.class,
+					// int.class, int.class, int.class, int.class, Block.class, int.class );
+					this.mergeIntoMicroblockContainer.invoke( null, multiPartStack, player, w, x, y, z, side, multiPartBlock, 0 );
+				}
+				catch ( Throwable e )
+				{
+					this.canConvertTiles = false;
+					return null;
+				}
 			}
 		}
 

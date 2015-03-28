@@ -18,6 +18,7 @@
 
 package appeng.parts.networking;
 
+
 import java.util.EnumSet;
 
 import org.lwjgl.opengl.GL11;
@@ -42,33 +43,32 @@ import appeng.api.parts.IPartRenderHelper;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.client.texture.OffsetIcon;
+import appeng.helpers.Reflected;
 import appeng.util.Platform;
+
 
 public class PartCableCovered extends PartCable
 {
+	@Reflected
+	public PartCableCovered( ItemStack is )
+	{
+		super( is );
+	}
 
 	@MENetworkEventSubscribe
-	public void channelUpdated(MENetworkChannelsChanged c)
+	public void channelUpdated( MENetworkChannelsChanged c )
 	{
 		this.getHost().markForUpdate();
 	}
 
 	@MENetworkEventSubscribe
-	public void powerRender(MENetworkPowerStatusChange c)
+	public void powerRender( MENetworkPowerStatusChange c )
 	{
 		this.getHost().markForUpdate();
-	}
-
-	public PartCableCovered(Class c, ItemStack is) {
-		super( c, is );
-	}
-
-	public PartCableCovered(ItemStack is) {
-		this( PartCableCovered.class, is );
 	}
 
 	@Override
-	public IIcon getTexture(AEColor c)
+	public IIcon getTexture( AEColor c )
 	{
 		return this.getCoveredTexture( c );
 	}
@@ -80,7 +80,7 @@ public class PartCableCovered extends PartCable
 	}
 
 	@Override
-	public void getBoxes(IPartCollisionHelper bch)
+	public void getBoxes( IPartCollisionHelper bch )
 	{
 		bch.addBox( 5.0, 5.0, 5.0, 11.0, 11.0, 11.0 );
 
@@ -93,36 +93,36 @@ public class PartCableCovered extends PartCable
 				this.connections.clear();
 		}
 
-		for (ForgeDirection of : this.connections)
+		for ( ForgeDirection of : this.connections )
 		{
-			switch (of)
+			switch ( of )
 			{
-			case DOWN:
-				bch.addBox( 5.0, 0.0, 5.0, 11.0, 5.0, 11.0 );
-				break;
-			case EAST:
-				bch.addBox( 11.0, 5.0, 5.0, 16.0, 11.0, 11.0 );
-				break;
-			case NORTH:
-				bch.addBox( 5.0, 5.0, 0.0, 11.0, 11.0, 5.0 );
-				break;
-			case SOUTH:
-				bch.addBox( 5.0, 5.0, 11.0, 11.0, 11.0, 16.0 );
-				break;
-			case UP:
-				bch.addBox( 5.0, 11.0, 5.0, 11.0, 16.0, 11.0 );
-				break;
-			case WEST:
-				bch.addBox( 0.0, 5.0, 5.0, 5.0, 11.0, 11.0 );
-				break;
-			default:
+				case DOWN:
+					bch.addBox( 5.0, 0.0, 5.0, 11.0, 5.0, 11.0 );
+					break;
+				case EAST:
+					bch.addBox( 11.0, 5.0, 5.0, 16.0, 11.0, 11.0 );
+					break;
+				case NORTH:
+					bch.addBox( 5.0, 5.0, 0.0, 11.0, 11.0, 5.0 );
+					break;
+				case SOUTH:
+					bch.addBox( 5.0, 5.0, 11.0, 11.0, 11.0, 16.0 );
+					break;
+				case UP:
+					bch.addBox( 5.0, 11.0, 5.0, 11.0, 16.0, 11.0 );
+					break;
+				case WEST:
+					bch.addBox( 0.0, 5.0, 5.0, 5.0, 11.0, 11.0 );
+					break;
+				default:
 			}
 		}
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
-	public void renderInventory(IPartRenderHelper rh, RenderBlocks renderer)
+	@SideOnly( Side.CLIENT )
+	public void renderInventory( IPartRenderHelper rh, RenderBlocks renderer )
 	{
 		GL11.glTranslated( -0.0, -0.0, 0.3 );
 
@@ -132,7 +132,7 @@ public class PartCableCovered extends PartCable
 
 		OffsetIcon main = new OffsetIcon( this.getTexture( this.getCableColor() ), offU, offV );
 
-		for (ForgeDirection side : EnumSet.of( ForgeDirection.UP, ForgeDirection.DOWN ))
+		for ( ForgeDirection side : EnumSet.of( ForgeDirection.UP, ForgeDirection.DOWN ) )
 		{
 			rh.renderInventoryFace( main, side, renderer );
 		}
@@ -141,14 +141,14 @@ public class PartCableCovered extends PartCable
 		offV = 0;
 		main = new OffsetIcon( this.getTexture( this.getCableColor() ), offU, offV );
 
-		for (ForgeDirection side : EnumSet.of( ForgeDirection.EAST, ForgeDirection.WEST ))
+		for ( ForgeDirection side : EnumSet.of( ForgeDirection.EAST, ForgeDirection.WEST ) )
 		{
 			rh.renderInventoryFace( main, side, renderer );
 		}
 
 		main = new OffsetIcon( this.getTexture( this.getCableColor() ), 0, 0 );
 
-		for (ForgeDirection side : EnumSet.of( ForgeDirection.SOUTH, ForgeDirection.NORTH ))
+		for ( ForgeDirection side : EnumSet.of( ForgeDirection.SOUTH, ForgeDirection.NORTH ) )
 		{
 			rh.renderInventoryFace( main, side, renderer );
 		}
@@ -157,8 +157,8 @@ public class PartCableCovered extends PartCable
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
-	public void renderStatic(int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer)
+	@SideOnly( Side.CLIENT )
+	public void renderStatic( int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer )
 	{
 		this.renderCache = rh.useSimplifiedRendering( x, y, z, this, this.renderCache );
 		rh.setTexture( this.getTexture( this.getCableColor() ) );
@@ -167,7 +167,7 @@ public class PartCableCovered extends PartCable
 
 		boolean hasBuses = false;
 		IPartHost ph = this.getHost();
-		for (ForgeDirection of : EnumSet.complementOf( this.connections ))
+		for ( ForgeDirection of : EnumSet.complementOf( this.connections ) )
 		{
 			IPart bp = ph.getPart( of );
 			if ( bp instanceof IGridHost )
@@ -181,28 +181,28 @@ public class PartCableCovered extends PartCable
 				int len = bp.cableConnectionRenderTo();
 				if ( len < 8 )
 				{
-					switch (of)
+					switch ( of )
 					{
-					case DOWN:
-						rh.setBounds( 6, len, 6, 10, 5, 10 );
-						break;
-					case EAST:
-						rh.setBounds( 11, 6, 6, 16 - len, 10, 10 );
-						break;
-					case NORTH:
-						rh.setBounds( 6, 6, len, 10, 10, 5 );
-						break;
-					case SOUTH:
-						rh.setBounds( 6, 6, 11, 10, 10, 16 - len );
-						break;
-					case UP:
-						rh.setBounds( 6, 11, 6, 10, 16 - len, 10 );
-						break;
-					case WEST:
-						rh.setBounds( len, 6, 6, 5, 10, 10 );
-						break;
-					default:
-						continue;
+						case DOWN:
+							rh.setBounds( 6, len, 6, 10, 5, 10 );
+							break;
+						case EAST:
+							rh.setBounds( 11, 6, 6, 16 - len, 10, 10 );
+							break;
+						case NORTH:
+							rh.setBounds( 6, 6, len, 10, 10, 5 );
+							break;
+						case SOUTH:
+							rh.setBounds( 6, 6, 11, 10, 10, 16 - len );
+							break;
+						case UP:
+							rh.setBounds( 6, 11, 6, 10, 16 - len, 10 );
+							break;
+						case WEST:
+							rh.setBounds( len, 6, 6, 5, 10, 10 );
+							break;
+						default:
+							continue;
 					}
 					rh.renderBlock( x, y, z, renderer );
 				}
@@ -211,7 +211,7 @@ public class PartCableCovered extends PartCable
 
 		if ( sides.size() != 2 || !this.nonLinear( sides ) || hasBuses )
 		{
-			for (ForgeDirection of : this.connections)
+			for ( ForgeDirection of : this.connections )
 			{
 				this.renderCoveredConnection( x, y, z, rh, renderer, this.channelsOnSide[of.ordinal()], of );
 			}
@@ -224,29 +224,29 @@ public class PartCableCovered extends PartCable
 		{
 			IIcon def = this.getTexture( this.getCableColor() );
 			IIcon off = new OffsetIcon( def, 0, -12 );
-			for (ForgeDirection of : this.connections)
+			for ( ForgeDirection of : this.connections )
 			{
-				switch (of)
+				switch ( of )
 				{
-				case DOWN:
-				case UP:
-					rh.setTexture( def, def, off, off, off, off );
-					renderer.setRenderBounds( 5 / 16.0, 0, 5 / 16.0, 11 / 16.0, 16 / 16.0, 11 / 16.0 );
-					break;
-				case EAST:
-				case WEST:
-					rh.setTexture( off, off, off, off, def, def );
-					renderer.uvRotateEast = renderer.uvRotateWest = 1;
-					renderer.uvRotateBottom = renderer.uvRotateTop = 1;
-					renderer.setRenderBounds( 0, 5 / 16.0, 5 / 16.0, 16 / 16.0, 11 / 16.0, 11 / 16.0 );
-					break;
-				case NORTH:
-				case SOUTH:
-					rh.setTexture( off, off, def, def, off, off );
-					renderer.uvRotateNorth = renderer.uvRotateSouth = 1;
-					renderer.setRenderBounds( 5 / 16.0, 5 / 16.0, 0, 11 / 16.0, 11 / 16.0, 16 / 16.0 );
-					break;
-				default:
+					case DOWN:
+					case UP:
+						rh.setTexture( def, def, off, off, off, off );
+						renderer.setRenderBounds( 5 / 16.0, 0, 5 / 16.0, 11 / 16.0, 16 / 16.0, 11 / 16.0 );
+						break;
+					case EAST:
+					case WEST:
+						rh.setTexture( off, off, off, off, def, def );
+						renderer.uvRotateEast = renderer.uvRotateWest = 1;
+						renderer.uvRotateBottom = renderer.uvRotateTop = 1;
+						renderer.setRenderBounds( 0, 5 / 16.0, 5 / 16.0, 16 / 16.0, 11 / 16.0, 11 / 16.0 );
+						break;
+					case NORTH:
+					case SOUTH:
+						rh.setTexture( off, off, def, def, off, off );
+						renderer.uvRotateNorth = renderer.uvRotateSouth = 1;
+						renderer.setRenderBounds( 5 / 16.0, 5 / 16.0, 0, 11 / 16.0, 11 / 16.0, 16 / 16.0 );
+						break;
+					default:
 				}
 			}
 
@@ -256,5 +256,4 @@ public class PartCableCovered extends PartCable
 		renderer.uvRotateBottom = renderer.uvRotateEast = renderer.uvRotateNorth = renderer.uvRotateSouth = renderer.uvRotateTop = renderer.uvRotateWest = 0;
 		rh.setTexture( null );
 	}
-
 }

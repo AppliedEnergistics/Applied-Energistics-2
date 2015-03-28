@@ -25,6 +25,9 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 
 import appeng.api.AEApi;
+import appeng.api.definitions.IBlocks;
+import appeng.api.definitions.IDefinitions;
+import appeng.api.definitions.IParts;
 import appeng.client.gui.AEBaseGui;
 import appeng.client.gui.widgets.GuiNumberBox;
 import appeng.client.gui.widgets.GuiTabButton;
@@ -88,44 +91,68 @@ public class GuiPriority extends AEBaseGui
 
 		ItemStack myIcon = null;
 		Object target = ((AEBaseContainer) this.inventorySlots).getTarget();
+		final IDefinitions definitions = AEApi.instance().definitions();
+		final IParts parts = definitions.parts();
+		final IBlocks blocks = definitions.blocks();
 
 		if ( target instanceof PartStorageBus )
 		{
-			myIcon = AEApi.instance().parts().partStorageBus.stack( 1 );
+			for ( ItemStack storageBusStack :parts.storageBus().maybeStack( 1 ).asSet() )
+			{
+				myIcon = storageBusStack;
+			}
 			this.OriginalGui = GuiBridge.GUI_STORAGEBUS;
 		}
 
 		if ( target instanceof PartFormationPlane )
 		{
-			myIcon = AEApi.instance().parts().partFormationPlane.stack( 1 );
+			for ( ItemStack formationPlaneStack : parts.formationPlane().maybeStack( 1 ).asSet() )
+			{
+				myIcon = formationPlaneStack;
+			}
 			this.OriginalGui = GuiBridge.GUI_FORMATION_PLANE;
 		}
 
 		if ( target instanceof TileDrive )
 		{
-			myIcon = AEApi.instance().blocks().blockDrive.stack( 1 );
+			for ( ItemStack driveStack : blocks.drive().maybeStack( 1 ).asSet() )
+			{
+				myIcon = driveStack;
+			}
+
 			this.OriginalGui = GuiBridge.GUI_DRIVE;
 		}
 
 		if ( target instanceof TileChest )
 		{
-			myIcon = AEApi.instance().blocks().blockChest.stack( 1 );
+			for ( ItemStack chestStack : blocks.chest().maybeStack( 1 ).asSet() )
+			{
+				myIcon = chestStack;
+			}
+
 			this.OriginalGui = GuiBridge.GUI_CHEST;
 		}
 
 		if ( target instanceof TileInterface )
 		{
-			myIcon = AEApi.instance().blocks().blockInterface.stack( 1 );
+			for ( ItemStack interfaceStack : blocks.iface().maybeStack( 1 ).asSet() )
+			{
+				myIcon = interfaceStack;
+			}
+
 			this.OriginalGui = GuiBridge.GUI_INTERFACE;
 		}
 
 		if ( target instanceof PartInterface )
 		{
-			myIcon = AEApi.instance().parts().partInterface.stack( 1 );
+			for ( ItemStack interfaceStack : parts.iface().maybeStack( 1 ).asSet() )
+			{
+				myIcon = interfaceStack;
+			}
 			this.OriginalGui = GuiBridge.GUI_INTERFACE;
 		}
 
-		if ( this.OriginalGui != null )
+		if ( this.OriginalGui != null && myIcon != null )
 			this.buttonList.add( this.originalGuiBtn = new GuiTabButton( this.guiLeft + 154, this.guiTop, myIcon, myIcon.getDisplayName(), itemRender ) );
 
 		this.priority = new GuiNumberBox( this.fontRendererObj, this.guiLeft + 62, this.guiTop + 57, 59, this.fontRendererObj.FONT_HEIGHT, Long.class );
@@ -158,27 +185,27 @@ public class GuiPriority extends AEBaseGui
 	{
 		try
 		{
-			String Out = this.priority.getText();
+			String out = this.priority.getText();
 
-			boolean Fixed = false;
-			while (Out.startsWith( "0" ) && Out.length() > 1)
+			boolean fixed = false;
+			while (out.startsWith( "0" ) && out.length() > 1)
 			{
-				Out = Out.substring( 1 );
-				Fixed = true;
+				out = out.substring( 1 );
+				fixed = true;
 			}
 
-			if ( Fixed )
-				this.priority.setText( Out );
+			if ( fixed )
+				this.priority.setText( out );
 
-			if ( Out.length() == 0 )
-				Out = "0";
+			if ( out.length() == 0 )
+				out = "0";
 
-			long result = Long.parseLong( Out );
+			long result = Long.parseLong( out );
 			result += i;
 
-			this.priority.setText( Out = Long.toString( result ) );
+			this.priority.setText( out = Long.toString( result ) );
 
-			NetworkHandler.instance.sendToServer( new PacketValueConfig( "PriorityHost.Priority", Out ) );
+			NetworkHandler.instance.sendToServer( new PacketValueConfig( "PriorityHost.Priority", out ) );
 		}
 		catch(NumberFormatException e )
 		{
@@ -201,22 +228,22 @@ public class GuiPriority extends AEBaseGui
 			{
 				try
 				{
-					String Out = this.priority.getText();
+					String out = this.priority.getText();
 
-					boolean Fixed = false;
-					while (Out.startsWith( "0" ) && Out.length() > 1)
+					boolean fixed = false;
+					while (out.startsWith( "0" ) && out.length() > 1)
 					{
-						Out = Out.substring( 1 );
-						Fixed = true;
+						out = out.substring( 1 );
+						fixed = true;
 					}
 
-					if ( Fixed )
-						this.priority.setText( Out );
+					if ( fixed )
+						this.priority.setText( out );
 
-					if ( Out.length() == 0 )
-						Out = "0";
+					if ( out.length() == 0 )
+						out = "0";
 
-					NetworkHandler.instance.sendToServer( new PacketValueConfig( "PriorityHost.Priority", Out ) );
+					NetworkHandler.instance.sendToServer( new PacketValueConfig( "PriorityHost.Priority", out ) );
 				}
 				catch (IOException e)
 				{

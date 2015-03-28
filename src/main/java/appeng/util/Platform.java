@@ -69,7 +69,6 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.StatCollector;
 import net.minecraft.util.Vec3;
-import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.Chunk;
@@ -95,6 +94,9 @@ import appeng.api.config.PowerUnits;
 import appeng.api.config.SearchBoxMode;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.SortOrder;
+import appeng.api.definitions.IItemDefinition;
+import appeng.api.definitions.IMaterials;
+import appeng.api.definitions.IParts;
 import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.api.implementations.items.IAEWrench;
 import appeng.api.implementations.tiles.ITileStorageMonitorable;
@@ -118,7 +120,6 @@ import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IAETagCompound;
 import appeng.api.storage.data.IItemList;
 import appeng.api.util.AEColor;
-import appeng.api.util.AEItemDefinition;
 import appeng.api.util.DimensionalCoord;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
@@ -1007,10 +1008,7 @@ public class Platform
 		return null; // wtf?
 	}
 
-	public static boolean blockAtLocationIs(IBlockAccess w, int x, int y, int z, AEItemDefinition def)
-	{
-		return def.block() == w.getBlock( x, y, z );
-	}
+
 
 	public static ForgeDirection rotateAround(ForgeDirection forward, ForgeDirection axis)
 	{
@@ -1134,9 +1132,9 @@ public class Platform
 		return false;
 	}
 
-	public static boolean isSameItem(ItemStack ol, ItemStack op)
+	public static boolean isSameItem(ItemStack left, ItemStack right)
 	{
-		return ol != null && op != null && ol.isItemEqual( op );
+		return left != null && right != null && left.isItemEqual( right );
 	}
 
 	public static ItemStack cloneItemStack(ItemStack a)
@@ -1765,7 +1763,11 @@ public class Platform
 			return false;
 
 		if ( type == AEFeature.CertusQuartzTools )
-			return AEApi.instance().materials().materialCertusQuartzCrystal.sameAsStack( b );
+		{
+			final IItemDefinition certusQuartzCrystal = AEApi.instance().definitions().materials().certusQuartzCrystal();
+
+			return certusQuartzCrystal.isSameAs( b );
+		}
 
 		if ( type == AEFeature.NetherQuartzTools )
 			return Items.quartz == b.getItem();
@@ -1775,19 +1777,29 @@ public class Platform
 
 	public static Object findPreferred(ItemStack[] is)
 	{
+		final IParts parts = AEApi.instance().definitions().parts();
+
 		for (ItemStack stack : is)
 		{
-			if ( AEApi.instance().parts().partCableGlass.sameAs( AEColor.Transparent, stack ) )
+			if ( parts.cableGlass().sameAs( AEColor.Transparent, stack ) )
+			{
 				return stack;
+			}
 
-			if ( AEApi.instance().parts().partCableCovered.sameAs( AEColor.Transparent, stack ) )
+			if ( parts.cableCovered().sameAs( AEColor.Transparent, stack ) )
+			{
 				return stack;
+			}
 
-			if ( AEApi.instance().parts().partCableSmart.sameAs( AEColor.Transparent, stack ) )
+			if ( parts.cableSmart().sameAs( AEColor.Transparent, stack ) )
+			{
 				return stack;
+			}
 
-			if ( AEApi.instance().parts().partCableDense.sameAs( AEColor.Transparent, stack ) )
+			if ( parts.cableDense().sameAs( AEColor.Transparent, stack ) )
+			{
 				return stack;
+			}
 		}
 
 		return is;
@@ -1875,8 +1887,12 @@ public class Platform
 
 	public static boolean isRecipePrioritized(ItemStack what)
 	{
-		return AEApi.instance().materials().materialPurifiedCertusQuartzCrystal.sameAsStack( what )
-				|| AEApi.instance().materials().materialPurifiedFluixCrystal.sameAsStack( what )
-				|| AEApi.instance().materials().materialPurifiedNetherQuartzCrystal.sameAsStack( what );
+		final IMaterials materials = AEApi.instance().definitions().materials();
+
+		boolean isPurified = materials.purifiedCertusQuartzCrystal().isSameAs( what );
+		isPurified |= materials.purifiedFluixCrystal().isSameAs( what );
+		isPurified |= materials.purifiedNetherQuartzCrystal().isSameAs( what );
+
+		return isPurified;
 	}
 }

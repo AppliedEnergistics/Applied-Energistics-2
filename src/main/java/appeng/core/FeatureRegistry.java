@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -16,28 +16,26 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.core.features;
+package appeng.core;
 
 
-import net.minecraft.tileentity.TileEntity;
+import java.util.HashSet;
+import java.util.Set;
 
-import appeng.block.AEBaseBlock;
+import appeng.core.features.IAEFeature;
 
 
-public class AEBlockDefinition extends BlockDefinition
+public final class FeatureRegistry
 {
-	private final AEBaseBlock block;
+	private final Set<IAEFeature> registry = new HashSet<IAEFeature>();
 
-	public AEBlockDefinition( AEBaseBlock block, boolean enabled )
+	public void addFeature( IAEFeature feature )
 	{
-		super( block, enabled );
-
-		this.block = block;
+		this.registry.add( feature );
 	}
 
-	@Override
-	public Class<? extends TileEntity> entity()
+	public Set<IAEFeature> getRegisteredFeatures()
 	{
-		return this.block.getTileEntityClass();
+		return this.registry;
 	}
 }

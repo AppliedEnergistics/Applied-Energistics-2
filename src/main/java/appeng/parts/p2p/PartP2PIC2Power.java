@@ -31,9 +31,6 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 import appeng.api.config.PowerUnits;
-import appeng.api.config.TunnelType;
-import appeng.core.AppEng;
-import appeng.integration.IntegrationType;
 import appeng.me.GridAccessException;
 import appeng.me.cache.helpers.TunnelCollection;
 import appeng.transformer.annotations.Integration.Interface;
@@ -45,17 +42,8 @@ import appeng.util.Platform;
 public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements ic2.api.energy.tile.IEnergySink, ic2.api.energy.tile.IEnergySource
 {
 
-	@Override
-	public TunnelType getTunnelType()
-	{
-		return TunnelType.IC2_POWER;
-	}
-
 	public PartP2PIC2Power(ItemStack is) {
 		super( is );
-
-		if ( !AppEng.instance.isIntegrationEnabled( IntegrationType.IC2 ) )
-			throw new RuntimeException( "IC2 Not installed!" );
 	}
 
 	// two packet buffering...

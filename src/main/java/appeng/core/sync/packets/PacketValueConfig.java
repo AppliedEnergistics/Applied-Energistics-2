@@ -34,6 +34,7 @@ import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 
 import appeng.api.config.FuzzyMode;
+import appeng.api.config.Settings;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.client.gui.implementations.GuiCraftingCPU;
@@ -183,11 +184,11 @@ public class PacketValueConfig extends AppEngPacket
 		{
 			IConfigManager cm = ((IConfigurableObject) c).getConfigManager();
 
-			for (Enum e : cm.getSettings())
+			for (Settings e : cm.getSettings())
 			{
 				if ( e.name().equals( this.Name ) )
 				{
-					Enum def = cm.getSetting( e );
+					Enum<?> def = cm.getSetting( e );
 
 					try
 					{
@@ -228,11 +229,11 @@ public class PacketValueConfig extends AppEngPacket
 		{
 			IConfigManager cm = ((IConfigurableObject) c).getConfigManager();
 
-			for (Enum e : cm.getSettings())
+			for (Settings e : cm.getSettings())
 			{
 				if ( e.name().equals( this.Name ) )
 				{
-					Enum def = cm.getSetting( e );
+					Enum<?> def = cm.getSetting( e );
 
 					try
 					{

@@ -29,6 +29,7 @@ import net.minecraft.item.ItemStack;
 import appeng.api.config.AccessRestriction;
 import appeng.api.networking.energy.IAEPowerStorage;
 
+
 /**
  * Basically the same as {@link IAEPowerStorage}, but for items.
  */
@@ -48,6 +49,7 @@ public interface IAEItemPowerStorage
 	 * return it.
 	 *
 	 * @param amt to be extracted power from device
+	 *
 	 * @return what it could extract
 	 */
 	double extractAEPower( ItemStack is, double amt );
@@ -69,5 +71,4 @@ public interface IAEItemPowerStorage
 	 * @return access restriction of network
 	 */
 	AccessRestriction getPowerFlow( ItemStack is );
-
 }

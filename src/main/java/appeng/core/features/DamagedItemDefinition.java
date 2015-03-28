@@ -18,60 +18,53 @@
 
 package appeng.core.features;
 
-import net.minecraft.block.Block;
+
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockAccess;
 
-import appeng.api.util.AEItemDefinition;
+import com.google.common.base.Optional;
 
-public class DamagedItemDefinition implements AEItemDefinition
+import appeng.api.definitions.IItemDefinition;
+
+
+public final class DamagedItemDefinition implements IItemDefinition
 {
+	private final IStackSrc source;
 
-	final IStackSrc src;
-
-	public DamagedItemDefinition(IStackSrc is) {
-		this.src = is;
+	public DamagedItemDefinition( IStackSrc source )
+	{
+		this.source = source;
 	}
 
 	@Override
-	public Block block()
+	public Optional<Item> maybeItem()
 	{
-		return null;
+		final Item item = this.source.getItem();
+
+		return Optional.fromNullable( item );
 	}
 
 	@Override
-	public Item item()
+	public Optional<ItemStack> maybeStack( int stackSize )
 	{
-		return this.src.getItem();
+		final ItemStack stack = this.source.stack( stackSize );
+
+		return Optional.fromNullable( stack );
 	}
 
 	@Override
-	public Class<? extends TileEntity> entity()
+	public boolean isSameAs( ItemStack comparableStack )
 	{
-		return null;
-	}
-
-	@Override
-	public ItemStack stack(int stackSize)
-	{
-		return this.src.stack( stackSize );
-	}
-
-	@Override
-	public boolean sameAsStack(ItemStack comparableItem)
-	{
-		if ( comparableItem == null )
+		if ( comparableStack == null )
 			return false;
 
-		return comparableItem.getItem() == this.src.getItem() && comparableItem.getItemDamage() == this.src.getDamage();
+		return comparableStack.getItem() == this.source.getItem() && comparableStack.getItemDamage() == this.source.getDamage();
 	}
 
 	@Override
-	public boolean sameAsBlock(IBlockAccess world, int x, int y, int z)
+	public boolean isSameAs( IBlockAccess world, int x, int y, int z )
 	{
 		return false;
 	}
-
 }

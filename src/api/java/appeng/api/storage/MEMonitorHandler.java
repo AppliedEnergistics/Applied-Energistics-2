@@ -23,16 +23,18 @@
 
 package appeng.api.storage;
 
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map.Entry;
+
+import com.google.common.collect.ImmutableList;
+
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
-import com.google.common.collect.ImmutableList;
-
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map.Entry;
 
 /**
  * Common implementation of a simple class that monitors injection/extraction of a inventory to send events to a list of

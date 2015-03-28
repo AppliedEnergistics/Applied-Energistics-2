@@ -25,9 +25,13 @@ package appeng.api.config;
 
 
 import java.util.HashMap;
+import java.util.Map;
 
 import net.minecraft.item.ItemStack;
 
+import com.google.common.base.Optional;
+
+import appeng.api.definitions.IItemDefinition;
 import appeng.api.util.AEItemDefinition;
 
 
@@ -43,39 +47,84 @@ public enum Upgrades
 	 */
 	FUZZY( 1 ), SPEED( 1 ), INVERTER( 1 );
 
-	public final int myTier;
-	public final HashMap<ItemStack, Integer> supportedMax = new HashMap<ItemStack, Integer>();
+	/**
+	 * @deprecated use {@link Upgrades#getTier()}
+	 */
+	@Deprecated
+	public final int tier;
+
+	/**
+	 * @deprecated use {@link Upgrades#getSupported()}
+	 */
+	@Deprecated
+	private final Map<ItemStack, Integer> supportedMax = new HashMap<ItemStack, Integer>();
 
 	Upgrades( int tier )
 	{
-		this.myTier = tier;
+		this.tier = tier;
 	}
 
 	/**
 	 * @return list of Items/Blocks that support this upgrade, and how many it supports.
 	 */
-	public HashMap<ItemStack, Integer> getSupported()
+	public Map<ItemStack, Integer> getSupported()
 	{
 		return this.supportedMax;
 	}
 
-
-
-	public void registerItem( AEItemDefinition myItem, int maxSupported )
+	/**
+	 * Registers a specific amount of this upgrade into a specific machine
+	 *
+	 * @param item machine in which this upgrade can be installed
+	 * @param maxSupported amount how many upgrades can be installed
+	 */
+	public void registerItem( IItemDefinition item, int maxSupported )
 	{
-		if ( myItem != null )
+		final Optional<ItemStack> maybeStack = item.maybeStack( 1 );
+		for ( ItemStack stack : maybeStack.asSet() )
 		{
-			final ItemStack stack = myItem.stack( 1 );
-
 			this.registerItem( stack, maxSupported );
 		}
 	}
 
+	/**
+	 * Registers a specific amount of this upgrade into a specific machine
+	 *
+	 * @param item machine in which this upgrade can be installed
+	 * @param maxSupported amount how many upgrades can be installed
+	 *
+	 * @deprecated use {@link Upgrades#registerItem(IItemDefinition, int)}
+	 */
+	@Deprecated
+	public void registerItem( AEItemDefinition item, int maxSupported )
+	{
+		if ( item != null )
+		{
+			final ItemStack stack = item.stack( 1 );
+
+			if ( stack != null )
+			{
+				this.registerItem( stack, maxSupported );
+			}
+		}
+	}
+
+	/**
+	 * Registers a specific amount of this upgrade into a specific machine
+	 *
+	 * @param stack machine in which this upgrade can be installed
+	 * @param maxSupported amount how many upgrades can be installed
+	 */
 	public void registerItem( ItemStack stack, int maxSupported )
 	{
 		if ( stack != null )
 		{
 			this.supportedMax.put( stack, maxSupported );
 		}
+	}
+
+	public int getTier()
+	{
+		return this.tier;
 	}
 }

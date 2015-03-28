@@ -19,12 +19,11 @@
 package appeng.items.tools.powered.powersink;
 
 
-import com.google.common.base.Optional;
-
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
+import com.google.common.base.Optional;
 import ic2.api.item.IElectricItemManager;
 import ic2.api.item.ISpecialElectricItem;
 
@@ -36,12 +35,11 @@ import appeng.transformer.annotations.Integration.Method;
 
 @InterfaceList( value = { @Interface( iface = "ic2.api.item.ISpecialElectricItem", iname = "IC2" ),
 		@Interface( iface = "ic2.api.item.IElectricItemManager", iname = "IC2" ) } )
-public class IC2 extends AERootPoweredItem implements IElectricItemManager, ISpecialElectricItem
+public abstract class IC2 extends AERootPoweredItem implements IElectricItemManager, ISpecialElectricItem
 {
-
-	public IC2( Class c, Optional<String> subName )
+	public IC2( double powerCapacity, Optional<String> subName )
 	{
-		super( c, subName );
+		super( powerCapacity, subName );
 	}
 
 	@Override

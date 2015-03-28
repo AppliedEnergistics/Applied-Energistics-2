@@ -22,12 +22,14 @@ import org.lwjgl.input.Mouse;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.item.ItemStack;
 
 import appeng.api.AEApi;
 import appeng.api.config.FullnessMode;
 import appeng.api.config.OperationMode;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
+import appeng.api.definitions.IDefinitions;
 import appeng.client.gui.widgets.GuiImgButton;
 import appeng.container.implementations.ContainerIOPort;
 import appeng.core.localization.GuiText;
@@ -50,8 +52,18 @@ public class GuiIOPort extends GuiUpgradeable
 	public void drawBG(int offsetX, int offsetY, int mouseX, int mouseY)
 	{
 		super.drawBG( offsetX, offsetY, mouseX, mouseY );
-		this.drawItem( offsetX + 66 - 8, offsetY + 17, AEApi.instance().items().itemCell1k.stack( 1 ) );
-		this.drawItem( offsetX + 94 + 8, offsetY + 17, AEApi.instance().blocks().blockDrive.stack( 1 ) );
+
+		final IDefinitions definitions = AEApi.instance().definitions();
+
+		for ( ItemStack cell1kStack : definitions.items().cell1k().maybeStack( 1 ).asSet() )
+		{
+			this.drawItem( offsetX + 66 - 8, offsetY + 17, cell1kStack );
+		}
+
+		for ( ItemStack driveStack : definitions.blocks().drive().maybeStack( 1 ).asSet() )
+		{
+			this.drawItem( offsetX + 94 + 8, offsetY + 17, driveStack );
+		}
 	}
 
 	@Override

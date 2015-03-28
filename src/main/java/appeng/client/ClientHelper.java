@@ -18,9 +18,6 @@
 
 package appeng.client;
 
-import static net.minecraftforge.client.IItemRenderer.ItemRenderType.ENTITY;
-import static net.minecraftforge.client.IItemRenderer.ItemRendererHelper.BLOCK_3D;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -85,6 +82,9 @@ import appeng.hooks.TickHandler.PlayerColor;
 import appeng.server.ServerHelper;
 import appeng.transformer.MissingCoreMod;
 import appeng.util.Platform;
+
+import static net.minecraftforge.client.IItemRenderer.ItemRenderType.ENTITY;
+import static net.minecraftforge.client.IItemRenderer.ItemRendererHelper.BLOCK_3D;
 
 public class ClientHelper extends ServerHelper
 {
@@ -290,7 +290,7 @@ public class ClientHelper extends ServerHelper
 	public void bindTileEntitySpecialRenderer(Class tile, AEBaseBlock blk)
 	{
 		BaseBlockRender bbr = blk.getRendererInstance().rendererInstance;
-		if ( bbr.hasTESR && tile != null )
+		if ( bbr.hasTESR() && tile != null )
 			ClientRegistry.bindTileEntitySpecialRenderer( tile, new TESRWrapper( bbr ) );
 	}
 

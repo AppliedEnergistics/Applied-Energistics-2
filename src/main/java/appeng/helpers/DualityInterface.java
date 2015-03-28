@@ -18,14 +18,13 @@
 
 package appeng.helpers;
 
+
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-
-import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.block.Block;
 import net.minecraft.inventory.IInventory;
@@ -40,6 +39,8 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+
+import com.google.common.collect.ImmutableSet;
 
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
@@ -79,6 +80,7 @@ import appeng.me.helpers.AENetworkProxy;
 import appeng.me.storage.MEMonitorIInventory;
 import appeng.me.storage.MEMonitorPassThrough;
 import appeng.me.storage.NullInventory;
+import appeng.parts.automation.StackUpgradeInventory;
 import appeng.parts.automation.UpgradeInventory;
 import appeng.tile.inventory.AppEngInternalAEInventory;
 import appeng.tile.inventory.AppEngInternalInventory;
@@ -217,7 +219,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		this.gridProxy = networkProxy;
 		this.gridProxy.setFlags( GridFlags.REQUIRE_CHANNEL );
 
-		this.upgrades = new UpgradeInventory( this.gridProxy.getMachineRepresentation(), this, 1 );
+		this.upgrades = new StackUpgradeInventory( this.gridProxy.getMachineRepresentation(), this, 1 );
 		this.cm.registerSetting( Settings.BLOCK, YesNo.NO );
 		this.cm.registerSetting( Settings.INTERFACE_TERMINAL, YesNo.YES );
 

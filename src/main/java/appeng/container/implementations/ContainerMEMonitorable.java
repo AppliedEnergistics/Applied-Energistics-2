@@ -163,10 +163,10 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 			if ( this.monitor != this.host.getItemInventory() )
 				this.isContainerValid = false;
 
-			for (Enum set : this.serverCM.getSettings())
+			for (Settings set : this.serverCM.getSettings())
 			{
-				Enum sideLocal = this.serverCM.getSetting( set );
-				Enum sideRemote = this.clientCM.getSetting( set );
+				Enum<?> sideLocal = this.serverCM.getSetting( set );
+				Enum<?> sideRemote = this.clientCM.getSetting( set );
 
 				if ( sideLocal != sideRemote )
 				{

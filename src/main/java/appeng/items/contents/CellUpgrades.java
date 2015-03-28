@@ -18,18 +18,20 @@
 
 package appeng.items.contents;
 
+
 import net.minecraft.item.ItemStack;
 
-import appeng.parts.automation.UpgradeInventory;
+import appeng.parts.automation.StackUpgradeInventory;
 import appeng.util.Platform;
 
-public class CellUpgrades extends UpgradeInventory
-{
 
+public final class CellUpgrades extends StackUpgradeInventory
+{
 	final ItemStack is;
 
-	public CellUpgrades(ItemStack is, int upgrades) {
-		super( is.getItem(), null, upgrades );
+	public CellUpgrades( ItemStack is, int upgrades )
+	{
+		super( is, null, upgrades );
 		this.is = is;
 		this.readFromNBT( Platform.openNbtData( is ), "upgrades" );
 	}
@@ -39,5 +41,4 @@ public class CellUpgrades extends UpgradeInventory
 	{
 		this.writeToNBT( Platform.openNbtData( this.is ), "upgrades" );
 	}
-
 }

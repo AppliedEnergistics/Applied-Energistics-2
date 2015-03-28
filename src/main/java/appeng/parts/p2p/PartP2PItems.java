@@ -37,7 +37,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 import buildcraft.api.transport.IPipeConnection;
 import buildcraft.api.transport.IPipeTile.PipeType;
 
-import appeng.api.config.TunnelType;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.events.MENetworkBootingStatusChange;
 import appeng.api.networking.events.MENetworkChannelsChanged;
@@ -63,12 +62,6 @@ import appeng.util.inv.WrapperMCISidedInventory;
 @Interface(iface = "buildcraft.api.transport.IPipeConnection", iname = "BC")
 public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeConnection, ISidedInventory, IGridTickable
 {
-
-	@Override
-	public TunnelType getTunnelType()
-	{
-		return TunnelType.ITEM;
-	}
 
 	public PartP2PItems(ItemStack is) {
 		super( is );

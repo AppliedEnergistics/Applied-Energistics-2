@@ -23,7 +23,9 @@
 
 package appeng.api.implementations.tiles;
 
+
 import net.minecraft.inventory.IInventory;
+
 
 public interface ISegmentedInventory
 {
@@ -33,8 +35,8 @@ public interface ISegmentedInventory
 	 * them a real inventories will result in duplication.
 	 *
 	 * @param name inventory name
+	 *
 	 * @return inventory with inventory name
 	 */
-	IInventory getInventoryByName(String name);
-
+	IInventory getInventoryByName( String name );
 }

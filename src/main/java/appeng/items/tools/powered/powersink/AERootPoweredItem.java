@@ -22,13 +22,13 @@ package appeng.items.tools.powered.powersink;
 import java.text.MessageFormat;
 import java.util.List;
 
-import com.google.common.base.Optional;
-
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+
+import com.google.common.base.Optional;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.PowerUnits;
@@ -38,18 +38,19 @@ import appeng.items.AEBaseItem;
 import appeng.util.Platform;
 
 
-public class AERootPoweredItem extends AEBaseItem implements IAEItemPowerStorage
+public abstract class AERootPoweredItem extends AEBaseItem implements IAEItemPowerStorage
 {
+	private static final String POWER_NBT_KEY = "internalCurrentPower";
+	private final double powerCapacity;
 
-	final String EnergyVar = "internalCurrentPower";
-	public double maxStoredPower = 200000;
-
-	public AERootPoweredItem( Class c, Optional<String> subName )
+	public AERootPoweredItem( double powerCapacity, Optional<String> subName )
 	{
-		super( c, subName );
+		super( subName );
 		this.setMaxDamage( 32 );
 		this.hasSubtypes = false;
 		this.setFull3D();
+
+		this.powerCapacity = powerCapacity;
 	}
 
 	@Override
@@ -148,7 +149,7 @@ public class AERootPoweredItem extends AEBaseItem implements IAEItemPowerStorage
 	{
 		NBTTagCompound data = Platform.openNbtData( is );
 
-		double currentStorage = data.getDouble( this.EnergyVar );
+		double currentStorage = data.getDouble( this.POWER_NBT_KEY );
 		double maxStorage = this.getAEMaxPower( is );
 
 		switch ( op )
@@ -158,19 +159,19 @@ public class AERootPoweredItem extends AEBaseItem implements IAEItemPowerStorage
 				if ( currentStorage > maxStorage )
 				{
 					double diff = currentStorage - maxStorage;
-					data.setDouble( this.EnergyVar, maxStorage );
+					data.setDouble( this.POWER_NBT_KEY, maxStorage );
 					return diff;
 				}
-				data.setDouble( this.EnergyVar, currentStorage );
+				data.setDouble( this.POWER_NBT_KEY, currentStorage );
 				return 0;
 			case EXTRACT:
 				if ( currentStorage > adjustment )
 				{
 					currentStorage -= adjustment;
-					data.setDouble( this.EnergyVar, currentStorage );
+					data.setDouble( this.POWER_NBT_KEY, currentStorage );
 					return adjustment;
 				}
-				data.setDouble( this.EnergyVar, 0 );
+				data.setDouble( this.POWER_NBT_KEY, 0 );
 				return currentStorage;
 			default:
 				break;
@@ -182,7 +183,7 @@ public class AERootPoweredItem extends AEBaseItem implements IAEItemPowerStorage
 	@Override
 	public double getAEMaxPower( ItemStack is )
 	{
-		return this.maxStoredPower;
+		return this.powerCapacity;
 	}
 
 	@Override

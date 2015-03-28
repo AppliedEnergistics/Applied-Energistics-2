@@ -23,7 +23,9 @@
 
 package appeng.api.networking.security;
 
+
 import net.minecraft.entity.player.EntityPlayer;
+
 
 public class PlayerSource extends BaseActionSource
 {
@@ -37,9 +39,9 @@ public class PlayerSource extends BaseActionSource
 		return true;
 	}
 
-	public PlayerSource(EntityPlayer p, IActionHost v) {
+	public PlayerSource( EntityPlayer p, IActionHost v )
+	{
 		this.player = p;
 		this.via = v;
 	}
-
 }

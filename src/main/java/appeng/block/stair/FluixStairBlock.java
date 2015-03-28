@@ -31,6 +31,6 @@ public class FluixStairBlock extends AEBaseStairBlock
 {
 	public FluixStairBlock( Block block )
 	{
-		super( block, 0, EnumSet.of( AEFeature.Core ) );
+		super( block, 0, EnumSet.of( AEFeature.DecorativeQuartzBlocks ) );
 	}
 }

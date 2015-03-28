@@ -45,6 +45,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 import appeng.api.AEApi;
 import appeng.api.config.Upgrades;
+import appeng.api.definitions.IDefinitions;
 import appeng.api.implementations.IUpgradeableHost;
 import appeng.api.implementations.items.IMemoryCard;
 import appeng.api.implementations.items.MemoryCardMessages;
@@ -70,7 +71,7 @@ import appeng.tile.inventory.AppEngInternalAEInventory;
 import appeng.util.Platform;
 import appeng.util.SettingsFrom;
 
-public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradeableHost, ICustomNameObject
+public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradeableHost, ICustomNameObject
 {
 
 	protected ISimplifiedBundle renderCache = null;
@@ -82,7 +83,7 @@ public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradea
 
 	protected final ItemStack is;
 
-	public AEBasePart(Class c, ItemStack is) {
+	public AEBasePart(ItemStack is) {
 		this.is = is;
 		this.proxy = new AENetworkProxy( this, "part", is, this instanceof PartCable );
 		this.proxy.setValidSides( EnumSet.noneOf( ForgeDirection.class ) );
@@ -386,8 +387,14 @@ public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradea
 			ItemStack is = this.getItemStack( PartItemStack.Network );
 
 			// Blocks and parts share the same soul!
-			if ( AEApi.instance().parts().partInterface.sameAsStack( is ) )
-				is = AEApi.instance().blocks().blockInterface.stack( 1 );
+			final IDefinitions definitions = AEApi.instance().definitions();
+			if ( definitions.parts().iface().isSameAs( is ) )
+			{
+				for ( ItemStack iface : definitions.blocks().iface().maybeStack( 1 ).asSet() )
+				{
+					is = iface;
+				}
+			}
 
 			String name = is.getUnlocalizedName();
 
