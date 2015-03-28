@@ -57,8 +57,8 @@ dependencies {
     compile(group: 'api', name: 'railcraft', version: "${config.api_railcraft_version}")
     compile(group: 'api', name: 'rblocks', version: "${config.api_rblocks_version}")
     compile(group: 'api', name: 'rf', version: "${config.api_rf_version}")
-    compile(group: 'api', name: 'rotarycraft', version: "${config.api_rotarycraft_version}")
     compile "appeng:Waila:${config.api_waila_version}:api"
+    compile "appeng:RotaryCraft:${config.api_rotarycraft_version}:api"
 
     testCompile "junit:junit:4.11"
 }
