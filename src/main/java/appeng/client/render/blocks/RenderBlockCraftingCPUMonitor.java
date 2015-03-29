@@ -38,9 +38,12 @@ import appeng.core.AELog;
 import appeng.tile.AEBaseTile;
 import appeng.tile.crafting.TileCraftingMonitorTile;
 import appeng.util.Platform;
+import appeng.util.ReadableNumberConverter;
+
 
 public class RenderBlockCraftingCPUMonitor extends RenderBlockCraftingCPU
 {
+	private static final ReadableNumberConverter NUMBER_CONVERTER = ReadableNumberConverter.INSTANCE;
 
 	public RenderBlockCraftingCPUMonitor() {
 		super( true, 20 );
@@ -173,22 +176,13 @@ public class RenderBlockCraftingCPUMonitor extends RenderBlockCraftingCPU
 		GL11.glTranslatef( 0.0f, 0.14f, -0.24f );
 		GL11.glScalef( 1.0f / 62.0f, 1.0f / 62.0f, 1.0f / 62.0f );
 
-		long qty = ais.getStackSize();
-		if ( qty > 999999999999L )
-			qty = 999999999999L;
-
-		String msg = Long.toString( qty );
-		if ( qty > 1000000000 )
-			msg = Long.toString( qty / 1000000000 ) + 'B';
-		else if ( qty > 1000000 )
-			msg = Long.toString( qty / 1000000 ) + 'M';
-		else if ( qty > 9999 )
-			msg = Long.toString( qty / 1000 ) + 'K';
+		final long stackSize = ais.getStackSize();
+		final String renderedStackSize = NUMBER_CONVERTER.toHumanReadableForm( stackSize );
 
 		FontRenderer fr = Minecraft.getMinecraft().fontRenderer;
-		int width = fr.getStringWidth( msg );
+		int width = fr.getStringWidth( renderedStackSize );
 		GL11.glTranslatef( -0.5f * width, 0.0f, -1.0f );
-		fr.drawString( msg, 0, 0, 0 );
+		fr.drawString( renderedStackSize, 0, 0, 0 );
 
 		GL11.glPopAttrib();
 	}
