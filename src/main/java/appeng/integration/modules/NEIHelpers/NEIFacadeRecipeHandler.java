@@ -53,7 +53,7 @@ public class NEIFacadeRecipeHandler extends TemplateRecipeHandler
 	{
 		final IDefinitions definitions = AEApi.instance().definitions();
 
-		this.facade = (ItemFacade) definitions.items().facade();
+		this.facade = (ItemFacade) definitions.items().facade().maybeItem().get();
 		this.anchorDefinition = definitions.parts().cableAnchor();
 	}
 
