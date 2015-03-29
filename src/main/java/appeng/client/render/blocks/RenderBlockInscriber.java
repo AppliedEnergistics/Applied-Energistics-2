@@ -102,6 +102,7 @@ public class RenderBlockInscriber extends BaseBlockRender
 		BlockInscriber blk = (BlockInscriber) block;
 
 		IOrientable te = this.getOrientable( block, world, x, y, z );
+		if ( te == null ) return false;
 
 		ForgeDirection fdy = te.getUp();
 		ForgeDirection fdz = te.getForward();
