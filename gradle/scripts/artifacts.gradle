@@ -27,13 +27,13 @@ task devJar(type: Jar) {
 }
 
 task apiJar(type: Jar) {
+    from sourceSets.api.java
+    include "appeng/api/**"
 
-    from(sourceSets.api.java) {
-        include "appeng/api/**"
-    }
+    from sourceSets.main.output
+    include "appeng/api/**"
 
     classifier = 'api'
-
 }
 
 artifacts {
