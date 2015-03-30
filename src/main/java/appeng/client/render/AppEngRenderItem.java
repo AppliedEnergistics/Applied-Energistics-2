@@ -29,42 +29,28 @@ import net.minecraft.item.ItemStack;
 
 import appeng.api.storage.data.IAEItemStack;
 import appeng.core.AEConfig;
+import appeng.util.ReadableNumberConverter;
+
 
 public class AppEngRenderItem extends RenderItem
 {
+	private static final ReadableNumberConverter NUMBER_CONVERTER = ReadableNumberConverter.INSTANCE;
 
 	public IAEItemStack aeStack;
 
-	private void renderQuad(Tessellator par1Tessellator, int par2, int par3, int par4, int par5, int par6)
-	{
-		par1Tessellator.startDrawingQuads();
-		par1Tessellator.setColorOpaque_I( par6 );
-		par1Tessellator.addVertex( par2, par3, 0.0D );
-		par1Tessellator.addVertex( par2, par3 + par5, 0.0D );
-		par1Tessellator.addVertex( par2 + par4, par3 + par5, 0.0D );
-		par1Tessellator.addVertex( par2 + par4, par3, 0.0D );
-		par1Tessellator.draw();
-	}
-
 	@Override
-	public void renderItemOverlayIntoGUI(FontRenderer par1FontRenderer, TextureManager par2RenderEngine, ItemStack par3ItemStack, int par4, int par5)
+	public void renderItemOverlayIntoGUI( FontRenderer fontRenderer, TextureManager textureManager, ItemStack is, int par4, int par5, String par6Str )
 	{
-		this.renderItemOverlayIntoGUI( par1FontRenderer, par2RenderEngine, par3ItemStack, par4, par5, null );
-	}
-
-	@Override
-	public void renderItemOverlayIntoGUI(FontRenderer par1FontRenderer, TextureManager par2RenderEngine, ItemStack is, int par4, int par5, String par6Str)
-	{
-		if ( is != null )
+		if( is != null )
 		{
 			float scaleFactor = AEConfig.instance.useTerminalUseLargeFont() ? 0.85f : 0.5f;
 			float inverseScaleFactor = 1.0f / scaleFactor;
 			int offset = AEConfig.instance.useTerminalUseLargeFont() ? 0 : -1;
 
-			boolean unicodeFlag = par1FontRenderer.getUnicodeFlag();
-			par1FontRenderer.setUnicodeFlag( false );
+			boolean unicodeFlag = fontRenderer.getUnicodeFlag();
+			fontRenderer.setUnicodeFlag( false );
 
-			if ( is.getItem().showDurabilityBar( is ) )
+			if( is.getItem().showDurabilityBar( is ) )
 			{
 				double health = is.getItem().getDurabilityForDisplay( is );
 				int j1 = (int) Math.round( 13.0D - health * 13.0D );
@@ -76,7 +62,7 @@ public class AppEngRenderItem extends RenderItem
 				GL11.glDisable( GL11.GL_BLEND );
 				Tessellator tessellator = Tessellator.instance;
 				int l = 255 - k << 16 | k << 8;
-				int i1 = (255 - k) / 4 << 16 | 16128;
+				int i1 = ( 255 - k ) / 4 << 16 | 16128;
 				this.renderQuad( tessellator, par4 + 2, par5 + 13, 13, 2, 0 );
 				this.renderQuad( tessellator, par4 + 2, par5 + 13, 12, 1, i1 );
 				this.renderQuad( tessellator, par4 + 2, par5 + 13, j1, 1, l );
@@ -87,84 +73,62 @@ public class AppEngRenderItem extends RenderItem
 				GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
 			}
 
-			if ( is.stackSize == 0 )
+			if( is.stackSize == 0 )
 			{
-				String var6 = AEConfig.instance.useTerminalUseLargeFont() ? "+" : "Craft";
+				String craftLabelText = AEConfig.instance.useTerminalUseLargeFont() ? "+" : "Craft";
 				GL11.glDisable( GL11.GL_LIGHTING );
 				GL11.glDisable( GL11.GL_DEPTH_TEST );
 				GL11.glPushMatrix();
 				GL11.glScaled( scaleFactor, scaleFactor, scaleFactor );
-				int X = (int) (((float) par4 + offset + 16.0f - par1FontRenderer.getStringWidth( var6 ) * scaleFactor) * inverseScaleFactor);
-				int Y = (int) (((float) par5 + offset + 16.0f - 7.0f * scaleFactor) * inverseScaleFactor);
-				par1FontRenderer.drawStringWithShadow( var6, X, Y, 16777215 );
+				int X = (int) ( ( (float) par4 + offset + 16.0f - fontRenderer.getStringWidth( craftLabelText ) * scaleFactor ) * inverseScaleFactor );
+				int Y = (int) ( ( (float) par5 + offset + 16.0f - 7.0f * scaleFactor ) * inverseScaleFactor );
+				fontRenderer.drawStringWithShadow( craftLabelText, X, Y, 16777215 );
 				GL11.glPopMatrix();
 				GL11.glEnable( GL11.GL_LIGHTING );
 				GL11.glEnable( GL11.GL_DEPTH_TEST );
 			}
 
 			long amount = this.aeStack != null ? this.aeStack.getStackSize() : is.stackSize;
-			amount = Math.max( amount, 999999999999L );
-
-			if ( amount != 0 )
+			if( amount != 0 )
 			{
-				String var6 = String.valueOf( Math.abs( amount ) );
-
-				if ( AEConfig.instance.useTerminalUseLargeFont() )
-				{
-					if ( amount > 999999999 )
-					{
-						var6 = String.valueOf( ( int ) Math.floor( amount / 1000000000.0 ) ) + 'B';
-					}
-					else if ( amount > 99999999 )
-					{
-						var6 = "." + (int) Math.floor( amount / 100000000.0 ) + 'B';
-					}
-					else if ( amount > 999999 )
-					{
-						var6 = String.valueOf( ( int ) Math.floor( amount / 1000000.0 ) ) + 'M';
-					}
-					else if ( amount > 99999 )
-					{
-						var6 = "." + (int) Math.floor( amount / 100000.0 ) + 'M';
-					}
-					else if ( amount > 999 )
-					{
-						var6 = String.valueOf( ( int ) Math.floor( amount / 1000.0 ) ) + 'K';
-					}
-				}
-				else
-				{
-					if ( amount > 999999999 )
-					{
-						var6 = String.valueOf( ( int ) Math.floor( amount / 1000000000.0 ) ) + 'B';
-					}
-					else if ( amount > 999999999 )
-					{
-						var6 = String.valueOf( ( int ) Math.floor( amount / 1000000000.0 ) ) + 'B';
-					}
-					else if ( amount > 999999 )
-					{
-						var6 = String.valueOf( ( int ) Math.floor( amount / 1000000.0 ) ) + 'M';
-					}
-					else if ( amount > 9999 )
-					{
-						var6 = String.valueOf( ( int ) Math.floor( amount / 1000.0 ) ) + 'K';
-					}
-				}
+				final String stackSize = this.getToBeRenderedStackSize( amount );
 
 				GL11.glDisable( GL11.GL_LIGHTING );
 				GL11.glDisable( GL11.GL_DEPTH_TEST );
 				GL11.glPushMatrix();
 				GL11.glScaled( scaleFactor, scaleFactor, scaleFactor );
-				int X = (int) (((float) par4 + offset + 16.0f - par1FontRenderer.getStringWidth( var6 ) * scaleFactor) * inverseScaleFactor);
-				int Y = (int) (((float) par5 + offset + 16.0f - 7.0f * scaleFactor) * inverseScaleFactor);
-				par1FontRenderer.drawStringWithShadow( var6, X, Y, 16777215 );
+				int X = (int) ( ( (float) par4 + offset + 16.0f - fontRenderer.getStringWidth( stackSize ) * scaleFactor ) * inverseScaleFactor );
+				int Y = (int) ( ( (float) par5 + offset + 16.0f - 7.0f * scaleFactor ) * inverseScaleFactor );
+				fontRenderer.drawStringWithShadow( stackSize, X, Y, 16777215 );
 				GL11.glPopMatrix();
 				GL11.glEnable( GL11.GL_LIGHTING );
 				GL11.glEnable( GL11.GL_DEPTH_TEST );
 			}
 
-			par1FontRenderer.setUnicodeFlag( unicodeFlag );
+			fontRenderer.setUnicodeFlag( unicodeFlag );
 		}
+	}
+
+	private String getToBeRenderedStackSize( long originalSize )
+	{
+		if( AEConfig.instance.useTerminalUseLargeFont() )
+		{
+			return NUMBER_CONVERTER.toShortHumanReadableForm( originalSize );
+		}
+		else
+		{
+			return NUMBER_CONVERTER.toHumanReadableForm( originalSize );
+		}
+	}
+
+	private void renderQuad( Tessellator par1Tessellator, int par2, int par3, int par4, int par5, int par6 )
+	{
+		par1Tessellator.startDrawingQuads();
+		par1Tessellator.setColorOpaque_I( par6 );
+		par1Tessellator.addVertex( par2, par3, 0.0D );
+		par1Tessellator.addVertex( par2, par3 + par5, 0.0D );
+		par1Tessellator.addVertex( par2 + par4, par3 + par5, 0.0D );
+		par1Tessellator.addVertex( par2 + par4, par3, 0.0D );
+		par1Tessellator.draw();
 	}
 }
