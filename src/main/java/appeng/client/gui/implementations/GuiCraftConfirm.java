@@ -26,14 +26,14 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.google.common.base.Joiner;
-
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
+
+import com.google.common.base.Joiner;
 
 import appeng.api.AEApi;
 import appeng.api.storage.ITerminalHost;
@@ -69,6 +69,8 @@ public class GuiCraftConfirm extends AEBaseGui
 
 	GuiBridge OriginalGui;
 
+	private final GuiScrollbar scrollbar;
+
 	boolean isAutoStart()
 	{
 		return ((ContainerCraftConfirm) this.inventorySlots).autoStart;
@@ -83,7 +85,8 @@ public class GuiCraftConfirm extends AEBaseGui
 		super( new ContainerCraftConfirm( inventoryPlayer, te ) );
 		this.xSize = 238;
 		this.ySize = 206;
-		this.myScrollBar = new GuiScrollbar();
+		this.scrollbar = new GuiScrollbar();
+		super.setScrollBar( new GuiScrollbar() );
 
 		this.ccc = (ContainerCraftConfirm) this.inventorySlots;
 
@@ -294,8 +297,8 @@ public class GuiCraftConfirm extends AEBaseGui
 	{
 		int size = this.visual.size();
 
-		this.myScrollBar.setTop( 19 ).setLeft( 218 ).setHeight( 114 );
-		this.myScrollBar.setRange( 0, (size + 2) / 3 - this.rows, 1 );
+		this.scrollbar.setTop( 19 ).setLeft( 218 ).setHeight( 114 );
+		this.scrollbar.setRange( 0, (size + 2) / 3 - this.rows, 1 );
 	}
 
 	@Override
@@ -322,7 +325,7 @@ public class GuiCraftConfirm extends AEBaseGui
 	int tooltip = -1;
 
 	@Override
-	public void drawScreen(int mouse_x, int mouse_y, float btn)
+	public void drawScreen(int mouseX, int mouseY, float btn)
 	{
 		this.updateCPUButtonText();
 
@@ -343,9 +346,9 @@ public class GuiCraftConfirm extends AEBaseGui
 			int minX = gx + 9 + x * 67;
 			int minY = gy + 22 + y * offY;
 
-			if ( minX < mouse_x && minX + 67 > mouse_x )
+			if ( minX < mouseX && minX + 67 > mouseX )
 			{
-				if ( minY < mouse_y && minY + offY - 2 > mouse_y )
+				if ( minY < mouseY && minY + offY - 2 > mouseY )
 				{
 					this.tooltip = z;
 					break;
@@ -362,7 +365,7 @@ public class GuiCraftConfirm extends AEBaseGui
 			}
 		}
 
-		super.drawScreen( mouse_x, mouse_y, btn );
+		super.drawScreen( mouseX, mouseY, btn );
 	}
 
 	@Override
@@ -390,7 +393,7 @@ public class GuiCraftConfirm extends AEBaseGui
 		int y = 0;
 		int xo = 9;
 		int yo = 22;
-		int viewStart = this.myScrollBar.getCurrentScroll() * 3;
+		int viewStart = this.scrollbar.getCurrentScroll() * 3;
 		int viewEnd = viewStart + 3 * this.rows;
 
 		String dspToolTip = "";

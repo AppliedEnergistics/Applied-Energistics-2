@@ -104,6 +104,8 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 	final ItemStack[] myCurrentViewCells = new ItemStack[5];
 	final ContainerMEMonitorable monitorableContainer;
 
+	private final GuiScrollbar scrollbar;
+
 	public GuiMEMonitorable(InventoryPlayer inventoryPlayer, ITerminalHost te) {
 		this( inventoryPlayer, te, new ContainerMEMonitorable( inventoryPlayer, te ) );
 	}
@@ -111,8 +113,10 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 	public GuiMEMonitorable(InventoryPlayer inventoryPlayer, ITerminalHost te, ContainerMEMonitorable c) {
 
 		super( c );
-		this.myScrollBar = new GuiScrollbar();
-		this.repo = new ItemRepo( this.myScrollBar, this );
+
+		this.scrollbar = new GuiScrollbar();
+		super.setScrollBar( this.scrollbar );
+		this.repo = new ItemRepo( this.scrollbar, this );
 
 		this.xSize = 185;
 		this.ySize = 204;
@@ -150,8 +154,8 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 
 	private void setScrollBar()
 	{
-		this.myScrollBar.setTop( 18 ).setLeft( 175 ).setHeight( this.rows * 18 - 2 );
-		this.myScrollBar.setRange( 0, (this.repo.size() + this.perRow - 1) / this.perRow - this.rows, Math.max( 1, this.rows / 6 ) );
+		this.scrollbar.setTop( 18 ).setLeft( 175 ).setHeight( this.rows * 18 - 2 );
+		this.scrollbar.setRange( 0, (this.repo.size() + this.perRow - 1) / this.perRow - this.rows, Math.max( 1, this.rows / 6 ) );
 	}
 
 	public void re_init()

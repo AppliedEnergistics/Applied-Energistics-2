@@ -54,12 +54,16 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 
 	final int rows = 4;
 
+	private final GuiScrollbar scrollbar;
+
 	public GuiNetworkStatus(InventoryPlayer inventoryPlayer, INetworkTool te) {
 		super( new ContainerNetworkStatus( inventoryPlayer, te ) );
 		this.ySize = 153;
 		this.xSize = 195;
-		this.myScrollBar = new GuiScrollbar();
-		this.repo = new ItemRepo( this.myScrollBar, this );
+
+		this.scrollbar = new GuiScrollbar();
+		this.setScrollBar( this.scrollbar );
+		this.repo = new ItemRepo( this.scrollbar, this );
 		this.repo.rowSize = 5;
 	}
 
@@ -100,8 +104,9 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 	private void setScrollBar()
 	{
 		int size = this.repo.size();
-		this.myScrollBar.setTop( 39 ).setLeft( 175 ).setHeight( 78 );
-		this.myScrollBar.setRange( 0, (size + 4) / 5 - this.rows, 1 );
+
+		this.scrollbar.setTop( 39 ).setLeft( 175 ).setHeight( 78 );
+		this.scrollbar.setRange( 0, ( size + 4 ) / 5 - this.rows, 1 );
 	}
 
 	@Override
@@ -114,7 +119,7 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 	int tooltip = -1;
 
 	@Override
-	public void drawScreen(int mouse_x, int mouse_y, float btn)
+	public void drawScreen(int mouseX, int mouseY, float btn)
 	{
 		int x = 0;
 		int y = 0;
@@ -129,9 +134,9 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 			int minX = gx + 14 + x * 31;
 			int minY = gy + 41 + y * 18;
 
-			if ( minX < mouse_x && minX + 28 > mouse_x )
+			if ( minX < mouseX && minX + 28 > mouseX )
 			{
-				if ( minY < mouse_y && minY + 20 > mouse_y )
+				if ( minY < mouseY && minY + 20 > mouseY )
 				{
 					this.tooltip = z;
 					break;
@@ -148,7 +153,7 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 			}
 		}
 
-		super.drawScreen( mouse_x, mouse_y, btn );
+		super.drawScreen( mouseX, mouseY, btn );
 	}
 
 	@Override
@@ -170,7 +175,7 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 		int y = 0;
 		int xo = 12;
 		int yo = 42;
-		int viewStart = 0;// myScrollBar.getCurrentScroll() * 5;
+		int viewStart = 0;// scrollBar.getCurrentScroll() * 5;
 		int viewEnd = viewStart + 5 * 4;
 
 		String toolTip = "";
