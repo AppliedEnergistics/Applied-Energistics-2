@@ -22,9 +22,7 @@ package appeng.block;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
-
-import com.google.common.base.Optional;
-import com.google.common.collect.Lists;
+import javax.annotation.Nullable;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
@@ -55,6 +53,9 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+
+import com.google.common.base.Optional;
+import com.google.common.collect.Lists;
 
 import appeng.api.implementations.items.IMemoryCard;
 import appeng.api.implementations.items.MemoryCardMessages;
@@ -97,11 +98,13 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	@SideOnly( Side.CLIENT )
 	BlockRenderInfo renderInfo;
 	private IFeatureHandler handler;
+
+	@Nullable
 	private Class<? extends TileEntity> tileEntityType = null;
 
 	protected AEBaseBlock( Class<? extends AEBaseBlock> c, Material mat )
 	{
-		this( c, mat, Optional.<String> absent() );
+		this( c, mat, Optional.<String>absent() );
 		this.setLightOpacity( 255 );
 		this.setLightLevel( 0 );
 		this.setHardness( 2.2F );
@@ -113,17 +116,23 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	{
 		super( mat );
 
-		if ( mat == AEGlassMaterial.INSTANCE || mat == Material.glass )
+		if( mat == AEGlassMaterial.INSTANCE || mat == Material.glass )
 			this.setStepSound( Block.soundTypeGlass );
-		else if ( mat == Material.rock )
+		else if( mat == Material.rock )
 			this.setStepSound( Block.soundTypeStone );
-		else if ( mat == Material.wood )
+		else if( mat == Material.wood )
 			this.setStepSound( Block.soundTypeWood );
 		else
 			this.setStepSound( Block.soundTypeMetal );
 
 		this.featureFullName = new FeatureNameExtractor( c, subName ).get();
 		this.featureSubName = subName;
+	}
+
+	// update Block value.
+	private void setTileProvider( boolean b )
+	{
+		ReflectionHelper.setPrivateValue( Block.class, this, b, "isTileProvider" );
 	}
 
 	@Override
@@ -139,6 +148,28 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 		info.updateIcons( i, i, i, i, i, i );
 	}
 
+	@SideOnly( Side.CLIENT )
+	public BlockRenderInfo getRendererInstance()
+	{
+		if( this.renderInfo != null )
+			return this.renderInfo;
+
+		try
+		{
+			return this.renderInfo = new BlockRenderInfo( this.getRenderer().newInstance() );
+		}
+		catch( Throwable t )
+		{
+			throw new RuntimeException( t );
+		}
+	}
+
+	@SideOnly( Side.CLIENT )
+	protected Class<? extends BaseBlockRender> getRenderer()
+	{
+		return BaseBlockRender.class;
+	}
+
 	public IIcon unmappedGetIcon( IBlockAccess w, int x, int y, int z, int s )
 	{
 		return super.getIcon( w, x, y, z, s );
@@ -146,16 +177,17 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 
 	protected void setTileEntity( Class<? extends TileEntity> c )
 	{
+		this.tileEntityType = c;
+
 		AEBaseTile.registerTileItem( c, new ItemStackSrc( this, 0 ) );
-		GameRegistry.registerTileEntity( this.tileEntityType = c, this.featureFullName );
+		GameRegistry.registerTileEntity( this.tileEntityType, this.featureFullName );
 		this.isInventory = IInventory.class.isAssignableFrom( c );
 		this.setTileProvider( this.hasBlockTileEntity() );
 	}
 
-	// update Block value.
-	private void setTileProvider( boolean b )
+	public boolean hasBlockTileEntity()
 	{
-		ReflectionHelper.setPrivateValue( Block.class, this, b, "isTileProvider" );
+		return this.tileEntityType != null;
 	}
 
 	protected void setFeature( EnumSet<AEFeature> f )
@@ -203,7 +235,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	@SideOnly( Side.CLIENT )
 	public IIcon getIcon( int direction, int metadata )
 	{
-		if ( this.renderIcon != null )
+		if( this.renderIcon != null )
 			return this.renderIcon;
 
 		return this.getRendererInstance().getTexture( ForgeDirection.getOrientation( direction ) );
@@ -216,20 +248,20 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	{
 		ICustomCollision collisionHandler = null;
 
-		if ( this instanceof ICustomCollision )
-			collisionHandler = ( ICustomCollision ) this;
+		if( this instanceof ICustomCollision )
+			collisionHandler = (ICustomCollision) this;
 		else
 		{
 			AEBaseTile te = this.getTileEntity( w, x, y, z );
-			if ( te instanceof ICustomCollision )
-				collisionHandler = ( ICustomCollision ) te;
+			if( te instanceof ICustomCollision )
+				collisionHandler = (ICustomCollision) te;
 		}
 
-		if ( collisionHandler != null && bb != null )
+		if( collisionHandler != null && bb != null )
 		{
 			List<AxisAlignedBB> tmp = new ArrayList<AxisAlignedBB>();
 			collisionHandler.addCollidingBlockToList( w, x, y, z, bb, tmp, e );
-			for ( AxisAlignedBB b : tmp )
+			for( AxisAlignedBB b : tmp )
 			{
 				b.minX += x;
 				b.minY += y;
@@ -237,7 +269,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 				b.maxX += x;
 				b.maxY += y;
 				b.maxZ += z;
-				if ( bb.intersectsWith( b ) )
+				if( bb.intersectsWith( b ) )
 					out.add( b );
 			}
 		}
@@ -252,18 +284,18 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 		ICustomCollision collisionHandler = null;
 		AxisAlignedBB b = null;
 
-		if ( this instanceof ICustomCollision )
-			collisionHandler = ( ICustomCollision ) this;
+		if( this instanceof ICustomCollision )
+			collisionHandler = (ICustomCollision) this;
 		else
 		{
 			AEBaseTile te = this.getTileEntity( w, x, y, z );
-			if ( te instanceof ICustomCollision )
-				collisionHandler = ( ICustomCollision ) te;
+			if( te instanceof ICustomCollision )
+				collisionHandler = (ICustomCollision) te;
 		}
 
-		if ( collisionHandler != null )
+		if( collisionHandler != null )
 		{
-			if ( Platform.isClient() )
+			if( Platform.isClient() )
 			{
 				EntityPlayer player = Minecraft.getMinecraft().thePlayer;
 				LookDirection ld = Platform.getPlayerRay( player, Platform.getEyeOffset( player ) );
@@ -273,22 +305,22 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 
 				double lastDist = 0;
 
-				for ( AxisAlignedBB bb : bbs )
+				for( AxisAlignedBB bb : bbs )
 				{
-					this.setBlockBounds( ( float ) bb.minX, ( float ) bb.minY, ( float ) bb.minZ, ( float ) bb.maxX, ( float ) bb.maxY, ( float ) bb.maxZ );
+					this.setBlockBounds( (float) bb.minX, (float) bb.minY, (float) bb.minZ, (float) bb.maxX, (float) bb.maxY, (float) bb.maxZ );
 
 					MovingObjectPosition r = super.collisionRayTrace( w, x, y, z, ld.a, ld.b );
 
 					this.setBlockBounds( 0, 0, 0, 1, 1, 1 );
 
-					if ( r != null )
+					if( r != null )
 					{
 						double xLen = ( ld.a.xCoord - r.hitVec.xCoord );
 						double yLen = ( ld.a.yCoord - r.hitVec.yCoord );
 						double zLen = ( ld.a.zCoord - r.hitVec.zCoord );
 
 						double thisDist = xLen * xLen + yLen * yLen + zLen * zLen;
-						if ( br == null || lastDist > thisDist )
+						if( br == null || lastDist > thisDist )
 						{
 							lastDist = thisDist;
 							br = bb;
@@ -296,16 +328,16 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 					}
 				}
 
-				if ( br != null )
+				if( br != null )
 				{
 					br.setBounds( br.minX + x, br.minY + y, br.minZ + z, br.maxX + x, br.maxY + y, br.maxZ + z );
 					return br;
 				}
 			}
 
-			for ( AxisAlignedBB bx : collisionHandler.getSelectedBoundingBoxesFromPool( w, x, y, z, null, false ) )
+			for( AxisAlignedBB bx : collisionHandler.getSelectedBoundingBoxesFromPool( w, x, y, z, null, false ) )
 			{
-				if ( b == null )
+				if( b == null )
 					b = bx;
 				else
 				{
@@ -338,38 +370,38 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	{
 		ICustomCollision collisionHandler = null;
 
-		if ( this instanceof ICustomCollision )
-			collisionHandler = ( ICustomCollision ) this;
+		if( this instanceof ICustomCollision )
+			collisionHandler = (ICustomCollision) this;
 		else
 		{
 			AEBaseTile te = this.getTileEntity( w, x, y, z );
-			if ( te instanceof ICustomCollision )
-				collisionHandler = ( ICustomCollision ) te;
+			if( te instanceof ICustomCollision )
+				collisionHandler = (ICustomCollision) te;
 		}
 
-		if ( collisionHandler != null )
+		if( collisionHandler != null )
 		{
 			Iterable<AxisAlignedBB> bbs = collisionHandler.getSelectedBoundingBoxesFromPool( w, x, y, z, null, true );
 			MovingObjectPosition br = null;
 
 			double lastDist = 0;
 
-			for ( AxisAlignedBB bb : bbs )
+			for( AxisAlignedBB bb : bbs )
 			{
-				this.setBlockBounds( ( float ) bb.minX, ( float ) bb.minY, ( float ) bb.minZ, ( float ) bb.maxX, ( float ) bb.maxY, ( float ) bb.maxZ );
+				this.setBlockBounds( (float) bb.minX, (float) bb.minY, (float) bb.minZ, (float) bb.maxX, (float) bb.maxY, (float) bb.maxZ );
 
 				MovingObjectPosition r = super.collisionRayTrace( w, x, y, z, a, b );
 
 				this.setBlockBounds( 0, 0, 0, 1, 1, 1 );
 
-				if ( r != null )
+				if( r != null )
 				{
 					double xLen = ( a.xCoord - r.hitVec.xCoord );
 					double yLen = ( a.yCoord - r.hitVec.yCoord );
 					double zLen = ( a.zCoord - r.hitVec.zCoord );
 
 					double thisDist = xLen * xLen + yLen * yLen + zLen * zLen;
-					if ( br == null || lastDist > thisDist )
+					if( br == null || lastDist > thisDist )
 					{
 						lastDist = thisDist;
 						br = r;
@@ -377,7 +409,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 				}
 			}
 
-			if ( br != null )
+			if( br != null )
 			{
 				return br;
 			}
@@ -391,37 +423,37 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	@Override
 	final public boolean onBlockActivated( World w, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ )
 	{
-		if ( player != null )
+		if( player != null )
 		{
 			ItemStack is = player.inventory.getCurrentItem();
-			if ( is != null )
+			if( is != null )
 			{
-				if ( Platform.isWrench( player, is, x, y, z ) && player.isSneaking() )
+				if( Platform.isWrench( player, is, x, y, z ) && player.isSneaking() )
 				{
 					Block id = w.getBlock( x, y, z );
-					if ( id != null )
+					if( id != null )
 					{
 						AEBaseTile tile = this.getTileEntity( w, x, y, z );
 						ItemStack[] drops = Platform.getBlockDrops( w, x, y, z );
 
-						if ( tile == null )
+						if( tile == null )
 							return false;
 
-						if ( tile instanceof TileCableBus || tile instanceof TileSkyChest )
+						if( tile instanceof TileCableBus || tile instanceof TileSkyChest )
 							return false;
 
 						ItemStack op = new ItemStack( this );
-						for ( ItemStack ol : drops )
+						for( ItemStack ol : drops )
 						{
-							if ( Platform.isSameItemType( ol, op ) )
+							if( Platform.isSameItemType( ol, op ) )
 							{
 								NBTTagCompound tag = tile.downloadSettings( SettingsFrom.DISMANTLE_ITEM );
-								if ( tag != null )
+								if( tag != null )
 									ol.setTagCompound( tag );
 							}
 						}
 
-						if ( id.removedByPlayer( w, player, x, y, z, false ) )
+						if( id.removedByPlayer( w, player, x, y, z, false ) )
 						{
 							List<ItemStack> l = Lists.newArrayList( drops );
 							Platform.spawnDrops( w, x, y, z, l );
@@ -431,17 +463,17 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 					return false;
 				}
 
-				if ( is.getItem() instanceof IMemoryCard && !( this instanceof BlockCableBus ) )
+				if( is.getItem() instanceof IMemoryCard && !( this instanceof BlockCableBus ) )
 				{
-					IMemoryCard memoryCard = ( IMemoryCard ) is.getItem();
-					if ( player.isSneaking() )
+					IMemoryCard memoryCard = (IMemoryCard) is.getItem();
+					if( player.isSneaking() )
 					{
 						AEBaseTile t = this.getTileEntity( w, x, y, z );
-						if ( t != null )
+						if( t != null )
 						{
 							String name = this.getUnlocalizedName();
 							NBTTagCompound data = t.downloadSettings( SettingsFrom.MEMORY_CARD );
-							if ( data != null )
+							if( data != null )
 							{
 								memoryCard.setMemoryCardContents( is, name, data );
 								memoryCard.notifyUser( player, MemoryCardMessages.SETTINGS_SAVED );
@@ -453,7 +485,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 					{
 						String name = memoryCard.getSettingsName( is );
 						NBTTagCompound data = memoryCard.getData( is );
-						if ( this.getUnlocalizedName().equals( name ) )
+						if( this.getUnlocalizedName().equals( name ) )
 						{
 							AEBaseTile t = this.getTileEntity( w, x, y, z );
 							t.uploadSettings( SettingsFrom.MEMORY_CARD, data );
@@ -478,11 +510,11 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	@Override
 	public void onBlockPlacedBy( World w, int x, int y, int z, EntityLivingBase player, ItemStack is )
 	{
-		if ( is.hasDisplayName() )
+		if( is.hasDisplayName() )
 		{
 			TileEntity te = this.getTileEntity( w, x, y, z );
-			if ( te instanceof AEBaseTile )
-				( ( AEBaseTile ) w.getTileEntity( x, y, z ) ).setName( is.getDisplayName() );
+			if( te instanceof AEBaseTile )
+				( (AEBaseTile) w.getTileEntity( x, y, z ) ).setName( is.getDisplayName() );
 		}
 	}
 
@@ -504,8 +536,8 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	public int getComparatorInputOverride( World w, int x, int y, int z, int s )
 	{
 		TileEntity te = this.getTileEntity( w, x, y, z );
-		if ( te instanceof IInventory )
-			return Container.calcRedstoneFromInventory( ( IInventory ) te );
+		if( te instanceof IInventory )
+			return Container.calcRedstoneFromInventory( (IInventory) te );
 		return 0;
 	}
 
@@ -544,18 +576,18 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	{
 		IOrientable rotatable = null;
 
-		if ( this.hasBlockTileEntity() )
+		if( this.hasBlockTileEntity() )
 		{
-			rotatable = ( AEBaseTile ) this.getTileEntity( w, x, y, z );
+			rotatable = (AEBaseTile) this.getTileEntity( w, x, y, z );
 		}
-		else if ( this instanceof IOrientableBlock )
+		else if( this instanceof IOrientableBlock )
 		{
-			rotatable = ( ( IOrientableBlock ) this ).getOrientable( w, x, y, z );
+			rotatable = ( (IOrientableBlock) this ).getOrientable( w, x, y, z );
 		}
 
-		if ( rotatable != null && rotatable.canBeRotated() )
+		if( rotatable != null && rotatable.canBeRotated() )
 		{
-			if ( this.hasCustomRotation() )
+			if( this.hasCustomRotation() )
 			{
 				this.customRotateBlock( rotatable, axis );
 				return true;
@@ -565,12 +597,12 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 				ForgeDirection forward = rotatable.getForward();
 				ForgeDirection up = rotatable.getUp();
 
-				for ( int rs = 0; rs < 4; rs++ )
+				for( int rs = 0; rs < 4; rs++ )
 				{
 					forward = Platform.rotateAround( forward, axis );
 					up = Platform.rotateAround( up, axis );
 
-					if ( this.isValidOrientation( w, x, y, z, forward, up ) )
+					if( this.isValidOrientation( w, x, y, z, forward, up ) )
 					{
 						rotatable.setOrientation( forward, up );
 						return true;
@@ -600,10 +632,10 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	@Override
 	final public ForgeDirection[] getValidRotations( World w, int x, int y, int z )
 	{
-		if ( this.hasBlockTileEntity() )
+		if( this.hasBlockTileEntity() )
 		{
 			AEBaseTile obj = this.getTileEntity( w, x, y, z );
-			if ( obj != null && obj.canBeRotated() )
+			if( obj != null && obj.canBeRotated() )
 			{
 				return ForgeDirection.VALID_DIRECTIONS;
 			}
@@ -617,13 +649,13 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	{
 		TileEntity te = this.getTileEntity( world, x, y, z );
 
-		if ( te instanceof IColorableTile )
+		if( te instanceof IColorableTile )
 		{
-			IColorableTile ct = ( IColorableTile ) te;
+			IColorableTile ct = (IColorableTile) te;
 			AEColor c = ct.getColor();
 			AEColor newColor = AEColor.values()[colour];
 
-			if ( c != newColor )
+			if( c != newColor )
 			{
 				ct.recolourBlock( side, newColor, null );
 				return true;
@@ -635,53 +667,30 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	}
 
 	@SideOnly( Side.CLIENT )
-	public BlockRenderInfo getRendererInstance()
-	{
-		if ( this.renderInfo != null )
-			return this.renderInfo;
-
-		try
-		{
-			return this.renderInfo = new BlockRenderInfo( this.getRenderer().newInstance() );
-		}
-		catch ( Throwable t )
-		{
-			throw new RuntimeException( t );
-		}
-	}
-
-	@SideOnly( Side.CLIENT )
 	private FlippableIcon optionalIcon( IIconRegister ir, String Name, IIcon substitute )
 	{
 		// if the input is an flippable IIcon find the original.
-		while ( substitute instanceof FlippableIcon )
-			substitute = ( ( FlippableIcon ) substitute ).getOriginal();
+		while( substitute instanceof FlippableIcon )
+			substitute = ( (FlippableIcon) substitute ).getOriginal();
 
-		if ( substitute != null )
+		if( substitute != null )
 		{
 			try
 			{
 				ResourceLocation resLoc = new ResourceLocation( Name );
-				resLoc = new ResourceLocation( resLoc.getResourceDomain(), String.format( "%s/%s%s", "textures/blocks",
-						resLoc.getResourcePath(), ".png" ) );
+				resLoc = new ResourceLocation( resLoc.getResourceDomain(), String.format( "%s/%s%s", "textures/blocks", resLoc.getResourcePath(), ".png" ) );
 
 				IResource res = Minecraft.getMinecraft().getResourceManager().getResource( resLoc );
-				if ( res != null )
+				if( res != null )
 					return new FlippableIcon( ir.registerIcon( Name ) );
 			}
-			catch ( Throwable e )
+			catch( Throwable e )
 			{
 				return new FlippableIcon( substitute );
 			}
 		}
 
 		return new FlippableIcon( ir.registerIcon( Name ) );
-	}
-
-	@SideOnly( Side.CLIENT )
-	protected Class<? extends BaseBlockRender> getRenderer()
-	{
-		return BaseBlockRender.class;
 	}
 
 	@SideOnly( Side.CLIENT )
@@ -694,16 +703,16 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	{
 		IOrientable ori = null;
 
-		if ( this.hasBlockTileEntity() )
+		if( this.hasBlockTileEntity() )
 		{
-			ori = ( AEBaseTile ) this.getTileEntity( w, x, y, z );
+			ori = (AEBaseTile) this.getTileEntity( w, x, y, z );
 		}
-		else if ( this instanceof IOrientableBlock )
+		else if( this instanceof IOrientableBlock )
 		{
-			ori = ( ( IOrientableBlock ) this ).getOrientable( w, x, y, z );
+			ori = ( (IOrientableBlock) this ).getOrientable( w, x, y, z );
 		}
 
-		if ( ori != null && ori.canBeRotated() )
+		if( ori != null && ori.canBeRotated() )
 		{
 			return this.mapRotation( ori, ForgeDirection.getOrientation( s ) ).ordinal();
 		}
@@ -711,19 +720,15 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 		return s;
 	}
 
-	public boolean hasBlockTileEntity()
-	{
-		return this.tileEntityType != null;
-	}
-
+	@Nullable
 	public <T extends TileEntity> T getTileEntity( IBlockAccess w, int x, int y, int z )
 	{
-		if ( !this.hasBlockTileEntity() )
+		if( !this.hasBlockTileEntity() )
 			return null;
 
 		TileEntity te = w.getTileEntity( x, y, z );
-		if ( this.tileEntityType.isInstance( te ) )
-			return ( T ) te;
+		if( this.tileEntityType.isInstance( te ) )
+			return (T) te;
 
 		return null;
 	}
@@ -741,30 +746,30 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 		ForgeDirection up = ori.getUp();
 		ForgeDirection west = ForgeDirection.UNKNOWN;
 
-		if ( forward == null || up == null )
+		if( forward == null || up == null )
 			return dir;
 
 		int west_x = forward.offsetY * up.offsetZ - forward.offsetZ * up.offsetY;
 		int west_y = forward.offsetZ * up.offsetX - forward.offsetX * up.offsetZ;
 		int west_z = forward.offsetX * up.offsetY - forward.offsetY * up.offsetX;
 
-		for ( ForgeDirection dx : ForgeDirection.VALID_DIRECTIONS )
-			if ( dx.offsetX == west_x && dx.offsetY == west_y && dx.offsetZ == west_z )
+		for( ForgeDirection dx : ForgeDirection.VALID_DIRECTIONS )
+			if( dx.offsetX == west_x && dx.offsetY == west_y && dx.offsetZ == west_z )
 				west = dx;
 
-		if ( dir == forward )
+		if( dir == forward )
 			return ForgeDirection.SOUTH;
-		if ( dir == forward.getOpposite() )
+		if( dir == forward.getOpposite() )
 			return ForgeDirection.NORTH;
 
-		if ( dir == up )
+		if( dir == up )
 			return ForgeDirection.UP;
-		if ( dir == up.getOpposite() )
+		if( dir == up.getOpposite() )
 			return ForgeDirection.DOWN;
 
-		if ( dir == west )
+		if( dir == west )
 			return ForgeDirection.WEST;
-		if ( dir == west.getOpposite() )
+		if( dir == west.getOpposite() )
 			return ForgeDirection.EAST;
 
 		return ForgeDirection.UNKNOWN;
@@ -784,17 +789,24 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	@Override
 	final public TileEntity createNewTileEntity( World var1, int var2 )
 	{
-		if ( this.hasBlockTileEntity() )
+		if( this.hasBlockTileEntity() )
 		{
 			try
 			{
 				return this.tileEntityType.newInstance();
 			}
-			catch ( Throwable e )
+			catch( InstantiationException e )
 			{
+				e.printStackTrace();
+				throw new RuntimeException( e );
+			}
+			catch( IllegalAccessException e )
+			{
+				e.printStackTrace();
 				throw new RuntimeException( e );
 			}
 		}
+
 		return null;
 	}
 
@@ -802,10 +814,10 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	public void breakBlock( World w, int x, int y, int z, Block a, int b )
 	{
 		AEBaseTile te = this.getTileEntity( w, x, y, z );
-		if ( te != null )
+		if( te != null )
 		{
 			ArrayList<ItemStack> drops = new ArrayList<ItemStack>();
-			if ( te.dropItems() )
+			if( te.dropItems() )
 				te.getDrops( w, x, y, z, drops );
 			else
 				te.getNoDrops( w, x, y, z, drops );
@@ -815,7 +827,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 		}
 
 		super.breakBlock( w, x, y, z, a, b );
-		if ( te != null )
+		if( te != null )
 			w.setTileEntity( x, y, z, null );
 	}
 

@@ -57,8 +57,8 @@ public class AppEngRenderItem extends RenderItem
 	{
 		if ( is != null )
 		{
-			float ScaleFactor = AEConfig.instance.useTerminalUseLargeFont() ? 0.85f : 0.5f;
-			float RScaleFactor = 1.0f / ScaleFactor;
+			float scaleFactor = AEConfig.instance.useTerminalUseLargeFont() ? 0.85f : 0.5f;
+			float inverseScaleFactor = 1.0f / scaleFactor;
 			int offset = AEConfig.instance.useTerminalUseLargeFont() ? 0 : -1;
 
 			boolean unicodeFlag = par1FontRenderer.getUnicodeFlag();
@@ -93,9 +93,9 @@ public class AppEngRenderItem extends RenderItem
 				GL11.glDisable( GL11.GL_LIGHTING );
 				GL11.glDisable( GL11.GL_DEPTH_TEST );
 				GL11.glPushMatrix();
-				GL11.glScaled( ScaleFactor, ScaleFactor, ScaleFactor );
-				int X = (int) (((float) par4 + offset + 16.0f - par1FontRenderer.getStringWidth( var6 ) * ScaleFactor) * RScaleFactor);
-				int Y = (int) (((float) par5 + offset + 16.0f - 7.0f * ScaleFactor) * RScaleFactor);
+				GL11.glScaled( scaleFactor, scaleFactor, scaleFactor );
+				int X = (int) (((float) par4 + offset + 16.0f - par1FontRenderer.getStringWidth( var6 ) * scaleFactor) * inverseScaleFactor);
+				int Y = (int) (((float) par5 + offset + 16.0f - 7.0f * scaleFactor) * inverseScaleFactor);
 				par1FontRenderer.drawStringWithShadow( var6, X, Y, 16777215 );
 				GL11.glPopMatrix();
 				GL11.glEnable( GL11.GL_LIGHTING );
@@ -103,8 +103,7 @@ public class AppEngRenderItem extends RenderItem
 			}
 
 			long amount = this.aeStack != null ? this.aeStack.getStackSize() : is.stackSize;
-			if ( amount > 999999999999L )
-				amount = 999999999999L;
+			amount = Math.max( amount, 999999999999L );
 
 			if ( amount != 0 )
 			{
@@ -156,9 +155,9 @@ public class AppEngRenderItem extends RenderItem
 				GL11.glDisable( GL11.GL_LIGHTING );
 				GL11.glDisable( GL11.GL_DEPTH_TEST );
 				GL11.glPushMatrix();
-				GL11.glScaled( ScaleFactor, ScaleFactor, ScaleFactor );
-				int X = (int) (((float) par4 + offset + 16.0f - par1FontRenderer.getStringWidth( var6 ) * ScaleFactor) * RScaleFactor);
-				int Y = (int) (((float) par5 + offset + 16.0f - 7.0f * ScaleFactor) * RScaleFactor);
+				GL11.glScaled( scaleFactor, scaleFactor, scaleFactor );
+				int X = (int) (((float) par4 + offset + 16.0f - par1FontRenderer.getStringWidth( var6 ) * scaleFactor) * inverseScaleFactor);
+				int Y = (int) (((float) par5 + offset + 16.0f - 7.0f * scaleFactor) * inverseScaleFactor);
 				par1FontRenderer.drawStringWithShadow( var6, X, Y, 16777215 );
 				GL11.glPopMatrix();
 				GL11.glEnable( GL11.GL_LIGHTING );

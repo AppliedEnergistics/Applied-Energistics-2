@@ -21,6 +21,7 @@ package appeng.tile.storage;
 
 import java.util.ArrayList;
 
+import net.minecraft.block.Block;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -114,7 +115,8 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 		this.mySrc = new MachineSource( this );
 		this.lastRedstoneState = YesNo.UNDECIDED;
 
-		this.upgrades = new BlockUpgradeInventory( this.getBlockType(), this, 3 );
+		final Block ioPortBlock = AEApi.instance().definitions().blocks().iOPort().maybeBlock().get();
+		this.upgrades = new BlockUpgradeInventory( ioPortBlock, this, 3 );
 	}
 
 	@TileEvent( TileEventType.WORLD_NBT_WRITE )

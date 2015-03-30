@@ -67,6 +67,8 @@ public class RenderMEChest extends BaseBlockRender
 		TileChest sp = imb.getTileEntity( world, x, y, z );
 		renderer.setRenderBounds( 0, 0, 0, 1, 1, 1 );
 
+		if ( sp == null ) return false;
+
 		ForgeDirection up = sp.getUp();
 		ForgeDirection forward = sp.getForward();
 		ForgeDirection west = Platform.crossProduct( forward, up );

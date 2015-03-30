@@ -40,10 +40,9 @@ public class RenderBlockInterface extends BaseBlockRender
 	public boolean renderInWorld(AEBaseBlock block, IBlockAccess world, int x, int y, int z, RenderBlocks renderer)
 	{
 		TileInterface ti = block.getTileEntity( world, x, y, z );
-
 		BlockRenderInfo info = block.getRendererInstance();
 
-		if ( ti.getForward() != ForgeDirection.UNKNOWN )
+		if ( ti != null && ti.getForward() != ForgeDirection.UNKNOWN )
 		{
 			IIcon side = ExtraBlockTextures.BlockInterfaceAlternateArrow.getIcon();
 			info.setTemporaryRenderIcons( ExtraBlockTextures.BlockInterfaceAlternate.getIcon(), block.getIcon( 0, 0 ), side, side, side, side );

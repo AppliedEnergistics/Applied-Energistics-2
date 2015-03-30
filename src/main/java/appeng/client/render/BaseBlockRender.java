@@ -22,6 +22,8 @@ package appeng.client.render;
 import java.nio.FloatBuffer;
 import java.util.EnumSet;
 
+import javax.annotation.Nullable;
+
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 
@@ -432,6 +434,7 @@ public class BaseBlockRender
 		renderer.uvRotateBottom = renderer.uvRotateEast = renderer.uvRotateNorth = renderer.uvRotateSouth = renderer.uvRotateTop = renderer.uvRotateWest = 0;
 	}
 
+	@Nullable
 	public IOrientable getOrientable( AEBaseBlock block, IBlockAccess w, int x, int y, int z )
 	{
 		if ( block.hasBlockTileEntity() )
