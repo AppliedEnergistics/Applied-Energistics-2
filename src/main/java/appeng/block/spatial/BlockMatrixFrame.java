@@ -29,6 +29,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
@@ -77,6 +78,12 @@ public class BlockMatrixFrame extends AEBaseBlock implements ICustomCollision
 	public boolean canEntityDestroy(IBlockAccess world, int x, int y, int z, Entity entity)
 	{
 		return false;
+	}
+
+	@Override
+	public void onBlockExploded(World world, int x, int y, int z, Explosion explosion)
+	{
+		// Don't explode.
 	}
 
 	@Override
