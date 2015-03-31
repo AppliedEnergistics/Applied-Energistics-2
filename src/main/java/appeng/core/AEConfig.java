@@ -85,6 +85,10 @@ public class AEConfig extends Configuration implements IConfigurableObject, ICon
 	private double WirelessBoosterRangeMultiplier = 1;
 	private double WirelessBoosterExp = 1.5;
 
+	public boolean timeDilationEnabled = false;
+	public double timeDilationTimePerTick = 2d;
+	public int timeDilationGridSizeMultiplier = 32;
+
 	public double wireless_getDrainRate(double range)
 	{
 		return this.WirelessTerminalDrainMultiplier * range;
@@ -286,6 +290,26 @@ public class AEConfig extends Configuration implements IConfigurableObject, ICon
 		this.colorApplicatorBattery = this.get( "battery", "colorApplicator", this.colorApplicatorBattery ).getInt( this.colorApplicatorBattery );
 		this.matterCannonBattery = this.get( "battery", "matterCannon", this.matterCannonBattery ).getInt( this.matterCannonBattery );
 
+
+		// Time Dilation config
+		this.addCustomCategoryComment(
+				"timedilation",
+				"(Experimental) Time dilation will slow down the dynamic tick rate of components when exceed a time limit." );
+
+		final Property configTiDi = this.get( "timedilation", "enabled", this.timeDilationEnabled );
+		final Property configTiDiTime = this.get( "timedilation", "timePerTick", this.timeDilationTimePerTick );
+		final Property configTiDiMultiplier = this.get( "timedilation", "sizeMultiplier", this.timeDilationGridSizeMultiplier );
+
+		configTiDi.comment = "Enable time dilation, default is false";
+		configTiDiTime.comment = "Base time for each network. This is no hard limit, only a guideline to queue the component at a later time. It will also never tick slower than the configured maximum tickrate.";
+		configTiDiMultiplier.comment = "A bonus multiplier based on the number of components in a network. Formula: timePerTick * networkSize / multiplier";
+
+		this.timeDilationEnabled = configTiDi.getBoolean(this.timeDilationEnabled );
+		this.timeDilationTimePerTick = configTiDiTime.getDouble( this.timeDilationTimePerTick );
+		this.timeDilationGridSizeMultiplier = configTiDiMultiplier.getInt( this.timeDilationGridSizeMultiplier );
+
+
+		// client sync
 		this.clientSync();
 
 		for (AEFeature feature : AEFeature.values())
