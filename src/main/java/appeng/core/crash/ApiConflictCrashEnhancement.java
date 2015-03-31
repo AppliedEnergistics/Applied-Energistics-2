@@ -19,19 +19,27 @@
 package appeng.core.crash;
 
 
-import appeng.core.AEConfig;
+import javax.annotation.Nonnull;
+
+import com.google.common.base.Function;
+import com.google.common.base.Optional;
 
 
-public class ModCrashEnhancement extends BaseCrashEnhancement
+public class ApiConflictCrashEnhancement extends BaseCrashEnhancement
 {
-	private static final String MOD_VERSION = AEConfig.CHANNEL + ' ' + AEConfig.VERSION + " for Forge " + // WHAT?
-	net.minecraftforge.common.ForgeVersion.majorVersion + '.' // majorVersion
-			+ net.minecraftforge.common.ForgeVersion.minorVersion + '.' // minorVersion
-			+ net.minecraftforge.common.ForgeVersion.revisionVersion + '.' // revisionVersion
-			+ net.minecraftforge.common.ForgeVersion.buildVersion;
 
-	public ModCrashEnhancement( final CrashInfo output )
+	private static final Function<String, String> TRANSFORM_CONFLICTING_MOD = new Function<String, String>()
 	{
-		super( "AE2 Version", MOD_VERSION );
+		@Override
+		public String apply( @Nonnull String modContainer )
+		{
+			return ", Conflict: " + modContainer;
+		}
+	};
+
+	public ApiConflictCrashEnhancement( boolean state, Optional<String> apiConflict )
+	{
+		super( "AE2 API", "Conflict Check: " + state + apiConflict.transform( TRANSFORM_CONFLICTING_MOD ).or( "" ) );
 	}
+
 }

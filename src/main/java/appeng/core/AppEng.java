@@ -21,8 +21,10 @@ package appeng.core;
 
 import java.io.File;
 import java.util.concurrent.TimeUnit;
+
 import javax.annotation.Nonnull;
 
+import com.google.common.base.Optional;
 import com.google.common.base.Stopwatch;
 
 import net.minecraftforge.common.config.Configuration;
@@ -31,6 +33,8 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
+import cpw.mods.fml.common.ModAPIManager;
+import cpw.mods.fml.common.ModContainer;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLInterModComms;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
@@ -40,6 +44,8 @@ import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 
+import appeng.core.api.ApiConflictException;
+import appeng.core.crash.ApiConflictCrashEnhancement;
 import appeng.core.crash.CrashInfo;
 import appeng.core.crash.IntegrationCrashEnhancement;
 import appeng.core.crash.ModCrashEnhancement;
@@ -65,6 +71,7 @@ public final class AppEng
 {
 	public static final String MOD_ID = "appliedenergistics2";
 	public static final String MOD_NAME = "Applied Energistics 2";
+	public static final String API_ID = "appliedenergistics2|API";
 	public static final String MOD_DEPENDENCIES =
 			// a few mods, AE should load after, probably.
 			// required-after:AppliedEnergistics2API|all;
@@ -97,6 +104,8 @@ public final class AppEng
 	 */
 	private ExportConfig exportConfig;
 
+	private Optional<String> apiConflict = Optional.absent();
+
 	AppEng()
 	{
 		FMLCommonHandler.instance().registerCrashCallable( new ModCrashEnhancement( CrashInfo.MOD_VERSION ) );
@@ -126,6 +135,7 @@ public final class AppEng
 		}
 
 		final Stopwatch watch = Stopwatch.createStarted();
+
 		this.configDirectory = new File( event.getModConfigurationDirectory().getPath(), "AppliedEnergistics2" );
 		this.recipeDirectory = new File( this.configDirectory, "recipes" );
 
@@ -140,6 +150,8 @@ public final class AppEng
 		final VersionCheckerConfig versionCheckerConfig = new VersionCheckerConfig( versionFile );
 		this.customRecipeConfig = new CustomRecipeForgeConfiguration( recipeConfiguration );
 		this.exportConfig = new ForgeExportConfig( recipeConfiguration );
+
+		this.checkForApiConflicts();
 
 		AELog.info( "Pre Initialization ( started )" );
 
@@ -205,6 +217,7 @@ public final class AppEng
 		this.registration.postInit( event );
 		IntegrationRegistry.INSTANCE.postInit();
 		FMLCommonHandler.instance().registerCrashCallable( new IntegrationCrashEnhancement() );
+		FMLCommonHandler.instance().registerCrashCallable( new ApiConflictCrashEnhancement( AEConfig.instance.isFeatureEnabled( AEFeature.ApiConflictCheck ), this.apiConflict ) );
 
 		CommonHelper.proxy.postInit();
 		AEConfig.instance.save();
@@ -240,5 +253,49 @@ public final class AppEng
 	private void serverStarting( final FMLServerStartingEvent evt )
 	{
 		evt.registerServerCommand( new AECommand( evt.getServer() ) );
+	}
+
+	/**
+	 * Checks if AE2 and the API are provided by the same source.
+	 *
+	 * This is either the same jar or directory in case of indev.
+	 */
+	private void checkForApiConflicts()
+	{
+		final ModAPIManager apiManager = ModAPIManager.INSTANCE;
+		if( apiManager.hasAPI( API_ID ) )
+		{
+			final ModContainer aeContainer = FMLCommonHandler.instance().findContainerFor( MOD_ID );
+			ModContainer aeApiContainer = null;
+
+			final Iterable<? extends ModContainer> apiList = apiManager.getAPIList();
+			for( final ModContainer container : apiList )
+			{
+				if( API_ID.equals( container.getModId() ) )
+				{
+					aeApiContainer = container;
+					break;
+				}
+			}
+
+			final File ae2Source = aeContainer.getSource();
+
+			// known to be null due to apiManager.hasAPI( API_ID )
+			// but forge does not provide a direct access to a specific API...
+			@SuppressWarnings( "null" )
+			final File ae2ApiSource = aeApiContainer.getSource();
+
+			if( !ae2Source.equals( ae2ApiSource ) )
+			{
+				final String offendingModArchive = aeApiContainer.getSource().getName();
+				this.apiConflict = Optional.of( offendingModArchive );
+
+				if( AEConfig.instance.isFeatureEnabled( AEFeature.ApiConflictCheck ) )
+				{
+					throw new ApiConflictException( String.format( "Another mod in file [%s] is already providing the AE2 API. Please resolve it as it might cause issues. You can disable this by setting 'features > misc > ApiConflictCheck' inside the AE2 config to false at your own risk.", offendingModArchive ) );
+				}
+			}
+		}
+
 	}
 }

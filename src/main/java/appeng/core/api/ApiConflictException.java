@@ -16,22 +16,17 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.core.crash;
+package appeng.core.api;
 
 
-import appeng.core.AEConfig;
-
-
-public class ModCrashEnhancement extends BaseCrashEnhancement
+public class ApiConflictException extends RuntimeException
 {
-	private static final String MOD_VERSION = AEConfig.CHANNEL + ' ' + AEConfig.VERSION + " for Forge " + // WHAT?
-	net.minecraftforge.common.ForgeVersion.majorVersion + '.' // majorVersion
-			+ net.minecraftforge.common.ForgeVersion.minorVersion + '.' // minorVersion
-			+ net.minecraftforge.common.ForgeVersion.revisionVersion + '.' // revisionVersion
-			+ net.minecraftforge.common.ForgeVersion.buildVersion;
 
-	public ModCrashEnhancement( final CrashInfo output )
+	private static final long serialVersionUID = -2678606528548790136L;
+
+	public ApiConflictException( String string )
 	{
-		super( "AE2 Version", MOD_VERSION );
+		super( string );
 	}
+
 }

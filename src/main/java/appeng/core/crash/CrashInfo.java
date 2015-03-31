@@ -21,5 +21,5 @@ package appeng.core.crash;
 
 public enum CrashInfo
 {
-	MOD_VERSION, INTEGRATION
+	MOD_VERSION, INTEGRATION, API_CONFLICT
 }

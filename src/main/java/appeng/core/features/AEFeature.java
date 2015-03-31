@@ -122,6 +122,7 @@ public enum AEFeature
 	CraftingLog( Constants.CATEGORY_MISC, false ),
 	LightDetector( Constants.CATEGORY_MISC ),
 	DebugLogging( Constants.CATEGORY_MISC, false ),
+	ApiConflictCheck( Constants.CATEGORY_MISC, true ),
 
 	EnableFacadeCrafting( Constants.CATEGORY_CRAFTING ),
 	InWorldSingularity( Constants.CATEGORY_CRAFTING ),
