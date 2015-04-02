@@ -36,6 +36,8 @@ public class ItemDefinition implements IItemDefinition
 
 	public ItemDefinition( Item item, ActivityState state )
 	{
+		assert item != null;
+
 		this.item = item;
 		this.enabled = state == ActivityState.Enabled;
 	}

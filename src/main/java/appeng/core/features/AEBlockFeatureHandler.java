@@ -21,13 +21,12 @@ package appeng.core.features;
 
 import java.util.EnumSet;
 
-import cpw.mods.fml.common.registry.GameRegistry;
-
 import com.google.common.base.Optional;
+
+import cpw.mods.fml.common.registry.GameRegistry;
 
 import appeng.api.definitions.ITileDefinition;
 import appeng.block.AEBaseBlock;
-import appeng.block.AEBaseItemBlock;
 import appeng.core.CommonHelper;
 import appeng.core.CreativeTab;
 import appeng.util.Platform;
@@ -77,9 +76,13 @@ public final class AEBlockFeatureHandler implements IFeatureHandler
 				CommonHelper.proxy.bindTileEntitySpecialRenderer( this.featured.getTileEntityClass(), this.featured );
 			}
 
-			Class<? extends AEBaseItemBlock> itemBlockClass = this.featured.getItemBlockClass();
+			// Class<? extends AEBaseItemBlock> itemBlockClass = this.featured.getItemBlockClass();
 
-			GameRegistry.registerBlock( this.featured, itemBlockClass, "tile." + name );
+			final String registryName = "tile." + name;
+
+			// Bypass the forge magic with null to register our own itemblock later.
+			GameRegistry.registerBlock( this.featured, null, registryName );
+			GameRegistry.registerItem( this.definition.maybeItem().get(), registryName );
 		}
 	}
 }
