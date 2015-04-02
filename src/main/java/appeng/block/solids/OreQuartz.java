@@ -18,6 +18,7 @@
 
 package appeng.block.solids;
 
+
 import java.util.EnumSet;
 import java.util.Random;
 
@@ -38,13 +39,15 @@ import appeng.client.render.BaseBlockRender;
 import appeng.client.render.blocks.RenderQuartzOre;
 import appeng.core.features.AEFeature;
 
+
 public class OreQuartz extends AEBaseBlock
 {
 	private int boostBrightnessLow;
 	private int boostBrightnessHigh;
 	private boolean enhanceBrightness;
 
-	public OreQuartz(Class<? extends OreQuartz> self) {
+	public OreQuartz( Class<? extends OreQuartz> self )
+	{
 		super( self, Material.rock );
 		this.setFeature( EnumSet.of( AEFeature.Core ) );
 		this.setHardness( 3.0F );
@@ -67,7 +70,7 @@ public class OreQuartz extends AEBaseBlock
 	}
 
 	@Override
-	public int getMixedBrightnessForBlock(IBlockAccess par1iBlockAccess, int par2, int par3, int par4)
+	public int getMixedBrightnessForBlock( IBlockAccess par1iBlockAccess, int par2, int par3, int par4 )
 	{
 		int j1 = super.getMixedBrightnessForBlock( par1iBlockAccess, par2, par3, par4 );
 		if ( this.enhanceBrightness )
@@ -90,13 +93,14 @@ public class OreQuartz extends AEBaseBlock
 		return j1;
 	}
 
-	public OreQuartz() {
+	public OreQuartz()
+	{
 		this( OreQuartz.class );
 	}
 
 	@Nullable
 	@Override
-	public Item getItemDropped(int id, Random rand, int meta)
+	public Item getItemDropped( int id, Random rand, int meta )
 	{
 		for ( Item crystalItem : AEApi.instance().definitions().materials().certusQuartzCrystal().maybeItem().asSet() )
 		{
@@ -107,7 +111,7 @@ public class OreQuartz extends AEBaseBlock
 	}
 
 	@Override
-	public int damageDropped(int id)
+	public int damageDropped( int id )
 	{
 		for ( ItemStack crystalStack : AEApi.instance().definitions().materials().certusQuartzCrystal().maybeStack( 1 ).asSet() )
 		{
@@ -118,13 +122,13 @@ public class OreQuartz extends AEBaseBlock
 	}
 
 	@Override
-	public int quantityDropped(Random rand)
+	public int quantityDropped( Random rand )
 	{
 		return 1 + rand.nextInt( 2 );
 	}
 
 	@Override
-	public int quantityDroppedWithBonus(int fortune, Random rand)
+	public int quantityDroppedWithBonus( int fortune, Random rand )
 	{
 		if ( fortune > 0 && Item.getItemFromBlock( this ) != this.getItemDropped( 0, rand, fortune ) )
 		{
@@ -135,7 +139,7 @@ public class OreQuartz extends AEBaseBlock
 				j = 0;
 			}
 
-			return this.quantityDropped( rand ) * (j + 1);
+			return this.quantityDropped( rand ) * ( j + 1 );
 		}
 		else
 		{
@@ -144,7 +148,7 @@ public class OreQuartz extends AEBaseBlock
 	}
 
 	@Override
-	public void dropBlockAsItemWithChance(World w, int x, int y, int z, int blockID, float something, int meta)
+	public void dropBlockAsItemWithChance( World w, int x, int y, int z, int blockID, float something, int meta )
 	{
 		super.dropBlockAsItemWithChance( w, x, y, z, blockID, something, meta );
 
