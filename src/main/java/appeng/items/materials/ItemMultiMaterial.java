@@ -85,9 +85,9 @@ public class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, 
 	}
 
 	@Override
-	public void addCheckedInformation( ItemStack stack, EntityPlayer player, List<String> lines, boolean displayAdditionalInformation )
+	public void addCheckedInformation( ItemStack stack, EntityPlayer player, List<String> lines, boolean displayMoreInfo )
 	{
-		super.addCheckedInformation( stack, player, lines, displayAdditionalInformation );
+		super.addCheckedInformation( stack, player, lines, displayMoreInfo );
 
 		MaterialType mt = this.getTypeByStack( stack );
 		if( mt == null )

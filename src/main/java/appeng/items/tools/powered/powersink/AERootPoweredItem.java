@@ -54,7 +54,7 @@ public abstract class AERootPoweredItem extends AEBaseItem implements IAEItemPow
 	}
 
 	@Override
-	public void addCheckedInformation( ItemStack stack, EntityPlayer player, List<String> lines, boolean displayAdditionalInformation )
+	public void addCheckedInformation( ItemStack stack, EntityPlayer player, List<String> lines, boolean displayMoreInfo )
 	{
 		NBTTagCompound tag = stack.getTagCompound();
 		double internalCurrentPower = 0;

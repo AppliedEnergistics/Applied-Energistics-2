@@ -95,9 +95,9 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 	}
 
 	@Override
-	public void addCheckedInformation( ItemStack stack, EntityPlayer player, List<String> lines, boolean displayAdditionalInformation )
+	public void addCheckedInformation( ItemStack stack, EntityPlayer player, List<String> lines, boolean displayMoreInfo )
 	{
-		super.addCheckedInformation( stack, player, lines, displayAdditionalInformation );
+		super.addCheckedInformation( stack, player, lines, displayMoreInfo );
 
 		IMEInventory<IAEItemStack> cdi = AEApi.instance().registries().cell().getCellInventory( stack, null, StorageChannel.ITEMS );
 
@@ -477,6 +477,12 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 
 	@Override
 	public int BytePerType( ItemStack cell )
+	{
+		return 8;
+	}
+
+	@Override
+	public int getBytesPerType( ItemStack cellItem )
 	{
 		return 8;
 	}

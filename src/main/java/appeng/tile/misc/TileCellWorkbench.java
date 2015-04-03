@@ -48,7 +48,7 @@ public class TileCellWorkbench extends AEBaseTile implements IUpgradeableHost, I
 
 	final AppEngInternalInventory cell = new AppEngInternalInventory( this, 1 );
 	final AppEngInternalAEInventory config = new AppEngInternalAEInventory( this, 63 );
-	final ConfigManager cm = new ConfigManager( this );
+	final ConfigManager manager = new ConfigManager( this );
 
 	IInventory cacheUpgrades = null;
 	IInventory cacheConfig = null;
@@ -56,7 +56,7 @@ public class TileCellWorkbench extends AEBaseTile implements IUpgradeableHost, I
 
 	public TileCellWorkbench()
 	{
-		this.cm.registerSetting( Settings.COPY_MODE, CopyMode.CLEAR_ON_REMOVE );
+		this.manager.registerSetting( Settings.COPY_MODE, CopyMode.CLEAR_ON_REMOVE );
 		this.cell.enableClientEvents = true;
 	}
 
@@ -97,7 +97,7 @@ public class TileCellWorkbench extends AEBaseTile implements IUpgradeableHost, I
 	{
 		this.cell.writeToNBT( data, "cell" );
 		this.config.writeToNBT( data, "config" );
-		this.cm.writeToNBT( data );
+		this.manager.writeToNBT( data );
 	}
 
 	@TileEvent( TileEventType.WORLD_NBT_READ )
@@ -105,7 +105,7 @@ public class TileCellWorkbench extends AEBaseTile implements IUpgradeableHost, I
 	{
 		this.cell.readFromNBT( data, "cell" );
 		this.config.readFromNBT( data, "config" );
-		this.cm.readFromNBT( data );
+		this.manager.readFromNBT( data );
 	}
 
 	@Override
@@ -136,13 +136,13 @@ public class TileCellWorkbench extends AEBaseTile implements IUpgradeableHost, I
 			this.cacheUpgrades = null;
 			this.cacheConfig = null;
 
-			IInventory c = this.getCellConfigInventory();
-			if( c != null )
+			IInventory configInventory = this.getCellConfigInventory();
+			if( configInventory != null )
 			{
 				boolean cellHasConfig = false;
-				for( int x = 0; x < c.getSizeInventory(); x++ )
+				for( int x = 0; x < configInventory.getSizeInventory(); x++ )
 				{
-					if( c.getStackInSlot( x ) != null )
+					if( configInventory.getStackInSlot( x ) != null )
 					{
 						cellHasConfig = true;
 						break;
@@ -152,17 +152,17 @@ public class TileCellWorkbench extends AEBaseTile implements IUpgradeableHost, I
 				if( cellHasConfig )
 				{
 					for( int x = 0; x < this.config.getSizeInventory(); x++ )
-						this.config.setInventorySlotContents( x, c.getStackInSlot( x ) );
+						this.config.setInventorySlotContents( x, configInventory.getStackInSlot( x ) );
 				}
 				else
 				{
 					for( int x = 0; x < this.config.getSizeInventory(); x++ )
-						c.setInventorySlotContents( x, this.config.getStackInSlot( x ) );
+						configInventory.setInventorySlotContents( x, this.config.getStackInSlot( x ) );
 
-					c.markDirty();
+					configInventory.markDirty();
 				}
 			}
-			else if( this.cm.getSetting( Settings.COPY_MODE ) == CopyMode.CLEAR_ON_REMOVE )
+			else if( this.manager.getSetting( Settings.COPY_MODE ) == CopyMode.CLEAR_ON_REMOVE )
 			{
 				for( int x = 0; x < this.config.getSizeInventory(); x++ )
 					this.config.setInventorySlotContents( x, null );
@@ -185,7 +185,7 @@ public class TileCellWorkbench extends AEBaseTile implements IUpgradeableHost, I
 		}
 	}
 
-	public IInventory getCellConfigInventory()
+	private IInventory getCellConfigInventory()
 	{
 		if( this.cacheConfig == null )
 		{
@@ -201,7 +201,7 @@ public class TileCellWorkbench extends AEBaseTile implements IUpgradeableHost, I
 			if( inv == null )
 				return null;
 
-			return this.cacheConfig = inv;
+			this.cacheConfig = inv;
 		}
 		return this.cacheConfig;
 	}
@@ -218,7 +218,7 @@ public class TileCellWorkbench extends AEBaseTile implements IUpgradeableHost, I
 	@Override
 	public IConfigManager getConfigManager()
 	{
-		return this.cm;
+		return this.manager;
 	}
 
 	@Override

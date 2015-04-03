@@ -73,9 +73,9 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 	}
 
 	@Override
-	public void addCheckedInformation( ItemStack stack, EntityPlayer player, List<String> lines, boolean displayAdditionalInformation )
+	public void addCheckedInformation( ItemStack stack, EntityPlayer player, List<String> lines, boolean displayMoreInfo )
 	{
-		super.addCheckedInformation( stack, player, lines, displayAdditionalInformation );
+		super.addCheckedInformation( stack, player, lines, displayMoreInfo );
 
 		if( stack.hasTagCompound() )
 		{

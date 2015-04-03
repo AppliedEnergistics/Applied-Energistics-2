@@ -49,15 +49,13 @@ import appeng.util.iterators.NullIterator;
 
 public class ContainerCellWorkbench extends ContainerUpgradeable
 {
-
-	final TileCellWorkbench workBench;
-	final AppEngNullInventory ni = new AppEngNullInventory();
+	private final TileCellWorkbench workBench;
+	private final AppEngNullInventory nullInventory = new AppEngNullInventory();
 	@GuiSync( 2 )
 	public CopyMode copyMode = CopyMode.CLEAR_ON_REMOVE;
-	IInventory UpgradeInventoryWrapper;
-	ItemStack prevStack = null;
-	int lastUpgrades = 0;
-	ItemStack LastCell;
+	private ItemStack prevStack = null;
+	private int lastUpgrades = 0;
+	private ItemStack LastCell;
 
 	public ContainerCellWorkbench( InventoryPlayer ip, TileCellWorkbench te )
 	{
@@ -99,7 +97,7 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 		this.addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.WORKBENCH_CELL, cell, 0, 152, 8, this.invPlayer ) );
 
 		IInventory inv = this.upgradeable.getInventoryByName( "config" );
-		this.UpgradeInventoryWrapper = new Upgrades();// Platform.isServer() ? new Upgrades() : new AppEngInternalInventory(
+		IInventory upgradeInventory = new Upgrades();
 		// null, 3 * 8 );
 
 		for( int w = 0; w < 7; w++ )
@@ -113,7 +111,7 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 			for( int z = 0; z < 8; z++ )
 			{
 				int iSLot = zz * 8 + z;
-				this.addSlotToContainer( new OptionalSlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, this.UpgradeInventoryWrapper, this, iSLot, 187 + zz * 18, 8 + 18 * z, iSLot, this.invPlayer ) );
+				this.addSlotToContainer( new OptionalSlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgradeInventory, this, iSLot, 187 + zz * 18, 8 + 18 * z, iSLot, this.invPlayer ) );
 			}
 		/*
 		 * if ( supportCapacity() ) { for (int w = 0; w < 2; w++) for (int z = 0; z < 9; z++) addSlotToContainer( new
@@ -134,7 +132,7 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 		if( this.prevStack != is )
 		{
 			this.prevStack = is;
-			return this.lastUpgrades = this.getCellUpgradeInventory().getSizeInventory();
+			this.lastUpgrades = this.getCellUpgradeInventory().getSizeInventory();
 		}
 		return this.lastUpgrades;
 	}
@@ -180,8 +178,9 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 
 	public IInventory getCellUpgradeInventory()
 	{
-		IInventory ri = this.workBench.getCellUpgradeInventory();
-		return ri == null ? this.ni : ri;
+		final IInventory upgradeInventory = this.workBench.getCellUpgradeInventory();
+
+		return upgradeInventory == null ? this.nullInventory : upgradeInventory;
 	}
 
 	@Override
@@ -237,7 +236,7 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 		this.detectAndSendChanges();
 	}
 
-	class Upgrades implements IInventory
+	private class Upgrades implements IInventory
 	{
 
 		@Override

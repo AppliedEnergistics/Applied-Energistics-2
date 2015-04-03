@@ -38,6 +38,7 @@ import appeng.api.config.IncludeExclude;
 import appeng.api.exceptions.MissingDefinition;
 import appeng.api.implementations.items.IItemGroup;
 import appeng.api.implementations.items.IStorageCell;
+import appeng.api.implementations.items.IUpgradeModule;
 import appeng.api.storage.ICellInventory;
 import appeng.api.storage.ICellInventoryHandler;
 import appeng.api.storage.IMEInventoryHandler;
@@ -55,12 +56,12 @@ import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 
 
-public class ItemBasicStorageCell extends AEBaseItem implements IStorageCell, IItemGroup
+public final class ItemBasicStorageCell extends AEBaseItem implements IStorageCell, IItemGroup
 {
-	final MaterialType component;
-	final int totalBytes;
-	final int perType;
-	final double idleDrain;
+	private final MaterialType component;
+	private final int totalBytes;
+	private final int perType;
+	private final double idleDrain;
 
 	public ItemBasicStorageCell( MaterialType whichCell, int kilobytes )
 	{
@@ -96,9 +97,9 @@ public class ItemBasicStorageCell extends AEBaseItem implements IStorageCell, II
 	}
 
 	@Override
-	public void addCheckedInformation( ItemStack stack, EntityPlayer player, List<String> lines, boolean displayAdditionalInformation )
+	public void addCheckedInformation( ItemStack stack, EntityPlayer player, List<String> lines, boolean displayMoreInfo )
 	{
-		IMEInventoryHandler inventory = AEApi.instance().registries().cell().getCellInventory( stack, null, StorageChannel.ITEMS );
+		IMEInventoryHandler<?> inventory = AEApi.instance().registries().cell().getCellInventory( stack, null, StorageChannel.ITEMS );
 
 		if( inventory instanceof ICellInventoryHandler )
 		{
@@ -113,12 +114,12 @@ public class ItemBasicStorageCell extends AEBaseItem implements IStorageCell, II
 
 				if( handler.isPreformatted() )
 				{
-					String List = ( handler.getIncludeExcludeMode() == IncludeExclude.WHITELIST ? GuiText.Included : GuiText.Excluded ).getLocal();
+					String list = ( handler.getIncludeExcludeMode() == IncludeExclude.WHITELIST ? GuiText.Included : GuiText.Excluded ).getLocal();
 
 					if( handler.isFuzzy() )
-						lines.add( GuiText.Partitioned.getLocal() + " - " + List + ' ' + GuiText.Fuzzy.getLocal() );
+						lines.add( GuiText.Partitioned.getLocal() + " - " + list + ' ' + GuiText.Fuzzy.getLocal() );
 					else
-						lines.add( GuiText.Partitioned.getLocal() + " - " + List + ' ' + GuiText.Precise.getLocal() );
+						lines.add( GuiText.Partitioned.getLocal() + " - " + list + ' ' + GuiText.Precise.getLocal() );
 				}
 			}
 		}
@@ -132,6 +133,12 @@ public class ItemBasicStorageCell extends AEBaseItem implements IStorageCell, II
 
 	@Override
 	public int BytePerType( ItemStack cell )
+	{
+		return this.perType;
+	}
+
+	@Override
+	public int getBytesPerType( ItemStack cellItem )
 	{
 		return this.perType;
 	}
@@ -234,10 +241,24 @@ public class ItemBasicStorageCell extends AEBaseItem implements IStorageCell, II
 				{
 					playerInventory.setInventorySlotContents( playerInventory.currentItem, null );
 
+					// drop core
 					ItemStack extraB = ia.addItems( this.component.stack( 1 ) );
 					if( extraB != null )
 						player.dropPlayerItemWithRandomChoice( extraB, false );
 
+					// drop upgrades
+					final IInventory upgradesInventory = this.getUpgradesInventory( stack );
+					for( int upgradeIndex = 0; upgradeIndex < upgradesInventory.getSizeInventory(); upgradeIndex++ )
+					{
+						final ItemStack upgradeStack = upgradesInventory.getStackInSlot( upgradeIndex );
+						final ItemStack leftStack = ia.addItems( upgradeStack );
+						if( leftStack != null && upgradeStack.getItem() instanceof IUpgradeModule )
+						{
+							player.dropPlayerItemWithRandomChoice( upgradeStack, false );
+						}
+					}
+
+					// drop empty storage cell case
 					for( ItemStack storageCellStack : AEApi.instance().definitions().materials().emptyStorageCell().maybeStack( 1 ).asSet() )
 					{
 						final ItemStack extraA = ia.addItems( storageCellStack );
