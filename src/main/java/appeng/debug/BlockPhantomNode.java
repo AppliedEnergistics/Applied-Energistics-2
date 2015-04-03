@@ -36,8 +36,8 @@ public class BlockPhantomNode extends AEBaseBlock
 	public BlockPhantomNode()
 	{
 		super( BlockPhantomNode.class, Material.iron );
-		this.setFeature( EnumSet.of( AEFeature.UnsupportedDeveloperTools, AEFeature.Creative ) );
 		this.setTileEntity( TilePhantomNode.class );
+		this.setFeature( EnumSet.of( AEFeature.UnsupportedDeveloperTools, AEFeature.Creative ) );
 	}
 
 	@Override

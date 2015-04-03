@@ -47,11 +47,11 @@ public class BlockCrank extends AEBaseBlock
 	public BlockCrank()
 	{
 		super( BlockCrank.class, Material.wood );
-		this.setFeature( EnumSet.of( AEFeature.GrindStone ) );
 		this.setTileEntity( TileCrank.class );
 		this.setLightOpacity( 0 );
 		this.setHarvestLevel( "axe", 0 );
 		this.isFullSize = this.isOpaque = false;
+		this.setFeature( EnumSet.of( AEFeature.GrindStone ) );
 	}
 
 	@Override

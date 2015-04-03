@@ -41,10 +41,10 @@ public class BlockInscriber extends AEBaseBlock
 	public BlockInscriber()
 	{
 		super( BlockInscriber.class, Material.iron );
-		this.setFeature( EnumSet.of( AEFeature.Inscriber ) );
 		this.setTileEntity( TileInscriber.class );
 		this.setLightOpacity( 2 );
 		this.isFullSize = this.isOpaque = false;
+		this.setFeature( EnumSet.of( AEFeature.Inscriber ) );
 	}
 
 	@Override

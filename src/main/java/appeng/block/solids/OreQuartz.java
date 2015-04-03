@@ -53,12 +53,12 @@ public class OreQuartz extends AEBaseBlock
 	public OreQuartz( Class<? extends OreQuartz> self )
 	{
 		super( self, Material.rock );
-		this.setFeature( EnumSet.of( AEFeature.Core ) );
 		this.setHardness( 3.0F );
 		this.setResistance( 5.0F );
 		this.boostBrightnessLow = 0;
 		this.boostBrightnessHigh = 1;
 		this.enhanceBrightness = false;
+		this.setFeature( EnumSet.of( AEFeature.Core ) );
 	}
 
 	@Override

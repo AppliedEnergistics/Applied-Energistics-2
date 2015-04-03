@@ -50,11 +50,11 @@ public class BlockPaint extends AEBaseBlock
 	public BlockPaint()
 	{
 		super( BlockPaint.class, new MaterialLiquid( MapColor.airColor ) );
-		this.setFeature( EnumSet.of( AEFeature.PaintBalls ) );
 		this.setTileEntity( TilePaint.class );
 		this.setLightOpacity( 0 );
 		this.isFullSize = false;
 		this.isOpaque = false;
+		this.setFeature( EnumSet.of( AEFeature.PaintBalls ) );
 	}
 
 	@Override

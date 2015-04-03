@@ -46,10 +46,10 @@ public class BlockMolecularAssembler extends AEBaseBlock
 	public BlockMolecularAssembler()
 	{
 		super( BlockMolecularAssembler.class, Material.iron );
-		this.setFeature( EnumSet.of( AEFeature.MolecularAssembler ) );
 		this.setTileEntity( TileMolecularAssembler.class );
 		this.isOpaque = false;
 		this.lightOpacity = 1;
+		this.setFeature( EnumSet.of( AEFeature.MolecularAssembler ) );
 	}
 
 	@Override

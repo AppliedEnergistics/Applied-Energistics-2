@@ -53,8 +53,8 @@ public class BlockQuartzGrowthAccelerator extends AEBaseBlock implements IOrient
 	{
 		super( BlockQuartzGrowthAccelerator.class, Material.rock );
 		this.setStepSound( Block.soundTypeMetal );
-		this.setFeature( EnumSet.of( AEFeature.Core ) );
 		this.setTileEntity( TileQuartzGrowthAccelerator.class );
+		this.setFeature( EnumSet.of( AEFeature.Core ) );
 	}
 
 	@Override
