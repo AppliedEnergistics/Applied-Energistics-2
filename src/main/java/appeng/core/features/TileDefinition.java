@@ -34,6 +34,7 @@ public final class TileDefinition extends BlockDefinition implements ITileDefini
 	public TileDefinition( AEBaseBlock block, ActivityState state )
 	{
 		super( block, state );
+		assert !block.hasBlockTileEntity() || block.getTileEntityClass() != null;
 
 		this.block = block;
 	}
