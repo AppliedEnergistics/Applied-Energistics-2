@@ -40,11 +40,8 @@ import appeng.tile.crafting.TileCraftingMonitorTile;
 
 public class BlockCraftingMonitor extends BlockCraftingUnit
 {
-
 	public BlockCraftingMonitor()
 	{
-		super( BlockCraftingMonitor.class );
-
 		this.setTileEntity( TileCraftingMonitorTile.class );
 	}
 

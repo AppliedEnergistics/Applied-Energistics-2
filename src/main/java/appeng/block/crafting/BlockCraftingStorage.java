@@ -37,8 +37,6 @@ public class BlockCraftingStorage extends BlockCraftingUnit
 {
 	public BlockCraftingStorage()
 	{
-		super( BlockCraftingStorage.class );
-
 		this.setTileEntity( TileCraftingStorageTile.class );
 	}
 

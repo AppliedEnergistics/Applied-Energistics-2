@@ -38,7 +38,8 @@ public class BlockCondenser extends AEBaseBlock
 
 	public BlockCondenser()
 	{
-		super( BlockCondenser.class, Material.iron );
+		super( Material.iron );
+
 		this.setTileEntity( TileCondenser.class );
 		this.setFeature( EnumSet.of( AEFeature.Core ) );
 	}

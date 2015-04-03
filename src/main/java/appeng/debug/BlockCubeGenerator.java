@@ -35,7 +35,7 @@ public class BlockCubeGenerator extends AEBaseBlock
 
 	public BlockCubeGenerator()
 	{
-		super( BlockCubeGenerator.class, Material.iron );
+		super( Material.iron );
 		this.setTileEntity( TileCubeGenerator.class );
 		this.setFeature( EnumSet.of( AEFeature.UnsupportedDeveloperTools, AEFeature.Creative ) );
 	}
@@ -43,7 +43,6 @@ public class BlockCubeGenerator extends AEBaseBlock
 	@Override
 	public boolean onActivated( World w, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ )
 	{
-
 		TileCubeGenerator tcg = this.getTileEntity( w, x, y, z );
 		if( tcg != null )
 		{

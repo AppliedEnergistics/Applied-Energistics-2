@@ -51,19 +51,15 @@ import appeng.helpers.MetaRotation;
 
 public class BlockQuartzTorch extends AEBaseBlock implements IOrientableBlock, ICustomCollision
 {
-
 	public BlockQuartzTorch()
 	{
-		this( BlockQuartzTorch.class );
-		this.setLightLevel( 0.9375F );
-		this.setFeature( EnumSet.of( AEFeature.DecorativeLights ) );
-	}
+		super( Material.circuits );
 
-	protected BlockQuartzTorch( Class which )
-	{
-		super( which, Material.circuits );
+		this.setFeature( EnumSet.of( AEFeature.DecorativeLights ) );
+		this.setLightLevel( 0.9375F );
 		this.setLightOpacity( 0 );
-		this.isFullSize = this.isOpaque = false;
+		this.isFullSize = false;
+		this.isOpaque = false;
 	}
 
 	@Override

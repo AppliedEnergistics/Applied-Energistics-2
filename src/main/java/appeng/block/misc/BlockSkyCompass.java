@@ -49,7 +49,7 @@ public class BlockSkyCompass extends AEBaseBlock implements ICustomCollision
 
 	public BlockSkyCompass()
 	{
-		super( BlockSkyCompass.class, Material.iron );
+		super( Material.iron );
 		this.setTileEntity( TileSkyCompass.class );
 		this.isOpaque = this.isFullSize = false;
 		this.lightOpacity = 0;

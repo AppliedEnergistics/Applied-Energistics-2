@@ -54,7 +54,8 @@ public class BlockCharger extends AEBaseBlock implements ICustomCollision
 
 	public BlockCharger()
 	{
-		super( BlockCharger.class, Material.iron );
+		super( Material.iron );
+
 		this.setTileEntity( TileCharger.class );
 		this.setLightOpacity( 2 );
 		this.isFullSize = this.isOpaque = false;

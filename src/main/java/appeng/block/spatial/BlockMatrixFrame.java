@@ -49,7 +49,7 @@ public class BlockMatrixFrame extends AEBaseBlock implements ICustomCollision
 
 	public BlockMatrixFrame()
 	{
-		super( BlockMatrixFrame.class, Material.anvil );
+		super( Material.anvil );
 		this.setResistance( 6000000.0F );
 		this.setBlockUnbreakable();
 		this.setLightOpacity( 0 );

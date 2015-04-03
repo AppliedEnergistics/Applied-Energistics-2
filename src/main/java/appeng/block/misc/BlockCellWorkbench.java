@@ -38,7 +38,8 @@ public class BlockCellWorkbench extends AEBaseBlock
 
 	public BlockCellWorkbench()
 	{
-		super( BlockCellWorkbench.class, Material.iron );
+		super( Material.iron );
+
 		this.setTileEntity( TileCellWorkbench.class );
 		this.setFeature( EnumSet.of( AEFeature.StorageCells ) );
 	}

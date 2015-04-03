@@ -44,7 +44,7 @@ public class BlockChest extends AEBaseBlock
 
 	public BlockChest()
 	{
-		super( BlockChest.class, Material.iron );
+		super( Material.iron );
 		this.setTileEntity( TileChest.class );
 		this.setFeature( EnumSet.of( AEFeature.StorageCells, AEFeature.MEChest ) );
 	}
