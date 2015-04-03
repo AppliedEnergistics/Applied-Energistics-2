@@ -29,13 +29,13 @@ import cpw.mods.fml.common.event.FMLInterModComms;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.AppEng;
-import appeng.services.version.github.FormattedRelease;
-import appeng.services.version.github.ReleaseFetcher;
 import appeng.services.version.ModVersionFetcher;
 import appeng.services.version.Version;
 import appeng.services.version.VersionCheckerConfig;
 import appeng.services.version.VersionFetcher;
 import appeng.services.version.VersionParser;
+import appeng.services.version.github.FormattedRelease;
+import appeng.services.version.github.ReleaseFetcher;
 
 
 /**
@@ -91,12 +91,12 @@ public final class VersionChecker implements Runnable
 	/**
 	 * checks if enough time since last check has expired
 	 *
-	 * @param nowInMs now in milli seconds
+	 * @param nowInMs           now in milli seconds
 	 * @param lastAfterInterval last version check including the interval defined in the config
 	 */
 	private void processInterval( long nowInMs, long lastAfterInterval )
 	{
-		if ( nowInMs > lastAfterInterval )
+		if( nowInMs > lastAfterInterval )
 		{
 			final String rawModVersion = AEConfig.VERSION;
 			final VersionParser parser = new VersionParser();
@@ -118,7 +118,7 @@ public final class VersionChecker implements Runnable
 	 * Checks if the retrieved version is newer as the current mod version.
 	 * Will notify player if config is enabled.
 	 *
-	 * @param modVersion version of mod
+	 * @param modVersion    version of mod
 	 * @param githubRelease release retrieved through github
 	 */
 	private void processVersions( Version modVersion, FormattedRelease githubRelease )
@@ -127,15 +127,15 @@ public final class VersionChecker implements Runnable
 		final String modFormatted = modVersion.formatted();
 		final String ghFormatted = githubVersion.formatted();
 
-		if ( githubVersion.isNewerAs( modVersion ) )
+		if( githubVersion.isNewerAs( modVersion ) )
 		{
 			final String changelog = githubRelease.changelog();
 
-			if ( this.config.shouldNotifyPlayer() )
+			if( this.config.shouldNotifyPlayer() )
 			{
 				AELog.info( "Newer version is available: " + ghFormatted + " (found) > " + modFormatted + " (current)" );
 
-				if ( this.config.shouldPostChangelog() )
+				if( this.config.shouldPostChangelog() )
 				{
 					AELog.info( "Changelog: " + changelog );
 				}
@@ -145,7 +145,7 @@ public final class VersionChecker implements Runnable
 		}
 		else
 		{
-			AELog.info( "No newer version is available: " + ghFormatted + "(found) < " + modFormatted + " (current)");
+			AELog.info( "No newer version is available: " + ghFormatted + "(found) < " + modFormatted + " (current)" );
 		}
 	}
 
@@ -153,12 +153,12 @@ public final class VersionChecker implements Runnable
 	 * Checks if the version checker mod is installed and handles it depending on that information
 	 *
 	 * @param modFormatted mod version formatted as rv2-beta-8
-	 * @param ghFormatted retrieved github version formatted as rv2-beta-8
-	 * @param changelog retrieved github changelog
+	 * @param ghFormatted  retrieved github version formatted as rv2-beta-8
+	 * @param changelog    retrieved github changelog
 	 */
 	private void interactWithVersionCheckerMod( String modFormatted, String ghFormatted, String changelog )
 	{
-		if ( Loader.isModLoaded( "VersionChecker" ) )
+		if( Loader.isModLoaded( "VersionChecker" ) )
 		{
 			final NBTTagCompound versionInf = new NBTTagCompound();
 			versionInf.setString( "modDisplayName", AppEng.MOD_NAME );
@@ -167,7 +167,7 @@ public final class VersionChecker implements Runnable
 			versionInf.setString( "updateUrl", "http://ae-mod.info/builds/appliedenergistics2-" + ghFormatted + ".jar" );
 			versionInf.setBoolean( "isDirectLink", true );
 
-			if ( !changelog.isEmpty() )
+			if( !changelog.isEmpty() )
 			{
 				versionInf.setString( "changeLog", changelog );
 			}

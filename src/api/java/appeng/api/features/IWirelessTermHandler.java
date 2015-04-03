@@ -45,11 +45,11 @@ public interface IWirelessTermHandler extends INetworkEncodable
 
 	/**
 	 * use an amount of power, in AE units
-	 * 
-	 * @param amount
-	 *            is in AE units ( 5 per MJ ), if you return false, the item should be dead and return false for
-	 *            hasPower
-	 * @param is wireless terminal
+	 *
+	 * @param amount is in AE units ( 5 per MJ ), if you return false, the item should be dead and return false for
+	 *               hasPower
+	 * @param is     wireless terminal
+	 *
 	 * @return true if wireless terminal uses power
 	 */
 	boolean usePower( EntityPlayer player, double amount, ItemStack is );

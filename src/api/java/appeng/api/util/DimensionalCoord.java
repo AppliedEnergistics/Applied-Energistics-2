@@ -64,9 +64,10 @@ public class DimensionalCoord extends WorldCoord
 		return new DimensionalCoord( this );
 	}
 
-	public boolean isEqual( DimensionalCoord c )
+	@Override
+	public int hashCode()
 	{
-		return this.x == c.x && this.y == c.y && this.z == c.z && c.w == this.w;
+		return super.hashCode() ^ this.dimId;
 	}
 
 	@Override
@@ -75,21 +76,20 @@ public class DimensionalCoord extends WorldCoord
 		return obj instanceof DimensionalCoord && this.isEqual( (DimensionalCoord) obj );
 	}
 
-	@Override
-	public int hashCode()
+	public boolean isEqual( DimensionalCoord c )
 	{
-		return super.hashCode() ^ this.dimId;
-	}
-
-	public boolean isInWorld( World world )
-	{
-		return this.w == world;
+		return this.x == c.x && this.y == c.y && this.z == c.z && c.w == this.w;
 	}
 
 	@Override
 	public String toString()
 	{
 		return "dimension=" + this.dimId + ", " + super.toString();
+	}
+
+	public boolean isInWorld( World world )
+	{
+		return this.w == world;
 	}
 
 	public World getWorld()

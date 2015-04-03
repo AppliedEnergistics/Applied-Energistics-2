@@ -51,7 +51,7 @@ public class StandardWorld implements IMeteoriteWorld
 	@Override
 	public int getBlockMetadata( int x, int y, int z )
 	{
-		if ( this.range( x, y, z ) )
+		if( this.range( x, y, z ) )
 			return this.w.getBlockMetadata( x, y, z );
 		return 0;
 	}
@@ -59,7 +59,7 @@ public class StandardWorld implements IMeteoriteWorld
 	@Override
 	public Block getBlock( int x, int y, int z )
 	{
-		if ( this.range( x, y, z ) )
+		if( this.range( x, y, z ) )
 			return this.w.getBlock( x, y, z );
 		return Platform.AIR;
 	}
@@ -67,7 +67,7 @@ public class StandardWorld implements IMeteoriteWorld
 	@Override
 	public boolean canBlockSeeTheSky( int x, int y, int z )
 	{
-		if ( this.range( x, y, z ) )
+		if( this.range( x, y, z ) )
 			return this.w.canBlockSeeTheSky( x, y, z );
 		return false;
 	}
@@ -75,7 +75,7 @@ public class StandardWorld implements IMeteoriteWorld
 	@Override
 	public TileEntity getTileEntity( int x, int y, int z )
 	{
-		if ( this.range( x, y, z ) )
+		if( this.range( x, y, z ) )
 			return this.w.getTileEntity( x, y, z );
 		return null;
 	}
@@ -89,14 +89,14 @@ public class StandardWorld implements IMeteoriteWorld
 	@Override
 	public void setBlock( int x, int y, int z, Block blk )
 	{
-		if ( this.range( x, y, z ) )
+		if( this.range( x, y, z ) )
 			this.w.setBlock( x, y, z, blk );
 	}
 
 	@Override
 	public void setBlock( int x, int y, int z, Block blk, int metadata, int flags )
 	{
-		if ( this.range( x, y, z ) )
+		if( this.range( x, y, z ) )
 			this.w.setBlock( x, y, z, blk, metadata, flags );
 	}
 

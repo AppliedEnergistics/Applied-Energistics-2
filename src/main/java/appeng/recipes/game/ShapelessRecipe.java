@@ -18,6 +18,7 @@
 
 package appeng.recipes.game;
 
+
 import java.util.ArrayList;
 
 import net.minecraft.inventory.InventoryCrafting;
@@ -30,31 +31,27 @@ import appeng.api.exceptions.MissingIngredientError;
 import appeng.api.exceptions.RegistrationError;
 import appeng.api.recipes.IIngredient;
 
+
 public class ShapelessRecipe implements IRecipe, IRecipeBakeable
 {
 
-	private ItemStack output = null;
 	private final ArrayList<Object> input = new ArrayList<Object>();
+	private ItemStack output = null;
 	private boolean disable = false;
 
-	public boolean isEnabled()
-	{
-		return !this.disable;
-	}
-
-	public ShapelessRecipe(ItemStack result, Object... recipe)
+	public ShapelessRecipe( ItemStack result, Object... recipe )
 	{
 		this.output = result.copy();
-		for (Object in : recipe)
+		for( Object in : recipe )
 		{
-			if ( in instanceof IIngredient )
+			if( in instanceof IIngredient )
 			{
 				this.input.add( in );
 			}
 			else
 			{
 				StringBuilder ret = new StringBuilder( "Invalid shapeless ore recipe: " );
-				for (Object tmp : recipe)
+				for( Object tmp : recipe )
 				{
 					ret.append( tmp ).append( ", " );
 				}
@@ -62,6 +59,75 @@ public class ShapelessRecipe implements IRecipe, IRecipeBakeable
 				throw new RuntimeException( ret.toString() );
 			}
 		}
+	}
+
+	public boolean isEnabled()
+	{
+		return !this.disable;
+	}
+
+	@SuppressWarnings( "unchecked" )
+	@Override
+	public boolean matches( InventoryCrafting var1, World world )
+	{
+		if( this.disable )
+			return false;
+
+		ArrayList<Object> required = new ArrayList<Object>( this.input );
+
+		for( int x = 0; x < var1.getSizeInventory(); x++ )
+		{
+			ItemStack slot = var1.getStackInSlot( x );
+
+			if( slot != null )
+			{
+				boolean inRecipe = false;
+
+				for( Object next : required )
+				{
+					boolean match = false;
+
+					if( next instanceof IIngredient )
+					{
+						try
+						{
+							for( ItemStack item : ( (IIngredient) next ).getItemStackSet() )
+							{
+								match = match || this.checkItemEquals( item, slot );
+							}
+						}
+						catch( RegistrationError e )
+						{
+							// :P
+						}
+						catch( MissingIngredientError e )
+						{
+							// :P
+						}
+					}
+
+					if( match )
+					{
+						inRecipe = true;
+						required.remove( next );
+						break;
+					}
+				}
+
+				if( !inRecipe )
+				{
+					return false;
+				}
+			}
+		}
+
+		return required.isEmpty();
+	}
+
+	@Override
+	public ItemStack getCraftingResult( InventoryCrafting var1 )
+	{
+		return this.output.copy();
 	}
 
 	@Override
@@ -76,74 +142,9 @@ public class ShapelessRecipe implements IRecipe, IRecipeBakeable
 		return this.output;
 	}
 
-	@Override
-	public ItemStack getCraftingResult(InventoryCrafting var1)
+	private boolean checkItemEquals( ItemStack target, ItemStack input )
 	{
-		return this.output.copy();
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public boolean matches(InventoryCrafting var1, World world)
-	{
-		if ( this.disable )
-			return false;
-
-		ArrayList<Object> required = new ArrayList<Object>( this.input );
-
-		for (int x = 0; x < var1.getSizeInventory(); x++)
-		{
-			ItemStack slot = var1.getStackInSlot( x );
-
-			if ( slot != null )
-			{
-				boolean inRecipe = false;
-
-				for (Object next : required)
-				{
-					boolean match = false;
-
-					if ( next instanceof IIngredient )
-					{
-						try
-						{
-							for (ItemStack item : ((IIngredient) next).getItemStackSet())
-							{
-								match = match || this.checkItemEquals( item, slot );
-							}
-						}
-						catch (RegistrationError e)
-						{
-							// :P
-						}
-						catch (MissingIngredientError e)
-						{
-							// :P
-						}
-					}
-
-					if ( match )
-					{
-						inRecipe = true;
-						required.remove( next );
-						break;
-					}
-				}
-
-				if ( !inRecipe )
-				{
-					return false;
-				}
-			}
-		}
-
-		return required.isEmpty();
-	}
-
-	private boolean checkItemEquals(ItemStack target, ItemStack input)
-	{
-		return (target.getItem() == input.getItem() && (target.getItemDamage() == OreDictionary.WILDCARD_VALUE || target.getItemDamage() == input
-				.getItemDamage()));
+		return ( target.getItem() == input.getItem() && ( target.getItemDamage() == OreDictionary.WILDCARD_VALUE || target.getItemDamage() == input.getItemDamage() ) );
 	}
 
 	/**
@@ -163,13 +164,13 @@ public class ShapelessRecipe implements IRecipe, IRecipeBakeable
 		try
 		{
 			this.disable = false;
-			for (Object o : this.input )
+			for( Object o : this.input )
 			{
-				if ( o instanceof IIngredient )
-					((IIngredient) o).bake();
+				if( o instanceof IIngredient )
+					( (IIngredient) o ).bake();
 			}
 		}
-		catch (MissingIngredientError e)
+		catch( MissingIngredientError e )
 		{
 			this.disable = true;
 		}

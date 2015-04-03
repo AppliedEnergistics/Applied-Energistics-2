@@ -18,6 +18,7 @@
 
 package appeng.core.sync.packets;
 
+
 import java.io.IOException;
 
 import io.netty.buffer.ByteBuf;
@@ -35,6 +36,7 @@ import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.util.item.AEItemStack;
 
+
 public class PacketAssemblerAnimation extends AppEngPacket
 {
 
@@ -45,7 +47,8 @@ public class PacketAssemblerAnimation extends AppEngPacket
 	final public IAEItemStack is;
 
 	// automatic.
-	public PacketAssemblerAnimation(ByteBuf stream) throws IOException {
+	public PacketAssemblerAnimation( ByteBuf stream ) throws IOException
+	{
 		this.x = stream.readInt();
 		this.y = stream.readInt();
 		this.z = stream.readInt();
@@ -53,19 +56,9 @@ public class PacketAssemblerAnimation extends AppEngPacket
 		this.is = AEItemStack.loadItemStackFromPacket( stream );
 	}
 
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void clientPacketData(INetworkInfo network, AppEngPacket packet, EntityPlayer player)
-	{
-		double d0 = 0.5d;// + ((double) (Platform.getRandomFloat() - 0.5F) * 0.26D);
-		double d1 = 0.5d;// + ((double) (Platform.getRandomFloat() - 0.5F) * 0.26D);
-		double d2 = 0.5d;// + ((double) (Platform.getRandomFloat() - 0.5F) * 0.26D);
-
-		CommonHelper.proxy.spawnEffect( EffectType.Assembler, player.getEntityWorld(), this.x + d0, this.y + d1, this.z + d2, this );
-	}
-
 	// api
-	public PacketAssemblerAnimation(int x, int y, int z, byte rate, IAEItemStack is) throws IOException {
+	public PacketAssemblerAnimation( int x, int y, int z, byte rate, IAEItemStack is ) throws IOException
+	{
 
 		ByteBuf data = Unpooled.buffer();
 
@@ -78,5 +71,16 @@ public class PacketAssemblerAnimation extends AppEngPacket
 		this.is = is;
 
 		this.configureWrite( data );
+	}
+
+	@Override
+	@SideOnly( Side.CLIENT )
+	public void clientPacketData( INetworkInfo network, AppEngPacket packet, EntityPlayer player )
+	{
+		double d0 = 0.5d;// + ((double) (Platform.getRandomFloat() - 0.5F) * 0.26D);
+		double d1 = 0.5d;// + ((double) (Platform.getRandomFloat() - 0.5F) * 0.26D);
+		double d2 = 0.5d;// + ((double) (Platform.getRandomFloat() - 0.5F) * 0.26D);
+
+		CommonHelper.proxy.spawnEffect( EffectType.Assembler, player.getEntityWorld(), this.x + d0, this.y + d1, this.z + d2, this );
 	}
 }

@@ -53,7 +53,7 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 	{
 		this.setFeature( EnumSet.of( AEFeature.Patterns ) );
 		this.setMaxStackSize( 1 );
-		if ( Platform.isClient() )
+		if( Platform.isClient() )
 			MinecraftForgeClient.registerItemRenderer( this, new ItemEncodedPatternRenderer() );
 	}
 
@@ -73,18 +73,18 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 
 	private boolean clearPattern( ItemStack stack, EntityPlayer player )
 	{
-		if ( player.isSneaking() )
+		if( player.isSneaking() )
 		{
-			if ( Platform.isClient() )
+			if( Platform.isClient() )
 				return false;
 
 			InventoryPlayer inv = player.inventory;
 
-			for ( int s = 0; s < player.inventory.getSizeInventory(); s++ )
+			for( int s = 0; s < player.inventory.getSizeInventory(); s++ )
 			{
-				if ( inv.getStackInSlot( s ) == stack )
+				if( inv.getStackInSlot( s ) == stack )
 				{
-					for ( ItemStack blankPattern : AEApi.instance().definitions().materials().blankPattern().maybeStack( stack.stackSize ).asSet() )
+					for( ItemStack blankPattern : AEApi.instance().definitions().materials().blankPattern().maybeStack( stack.stackSize ).asSet() )
 					{
 						inv.setInventorySlotContents( s, blankPattern );
 					}
@@ -102,7 +102,7 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 	{
 		ICraftingPatternDetails details = this.getPatternForItem( stack, player.worldObj );
 
-		if ( details == null )
+		if( details == null )
 		{
 			lines.add( EnumChatFormatting.RED + GuiText.InvalidPattern.getLocal() );
 			return;
@@ -118,9 +118,9 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 		String with = GuiText.With.getLocal() + ": ";
 
 		boolean first = true;
-		for ( IAEItemStack anOut : out )
+		for( IAEItemStack anOut : out )
 		{
-			if ( anOut == null )
+			if( anOut == null )
 			{
 				continue;
 			}
@@ -130,9 +130,9 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 		}
 
 		first = true;
-		for ( IAEItemStack anIn : in )
+		for( IAEItemStack anIn : in )
 		{
-			if ( anIn == null )
+			if( anIn == null )
 			{
 				continue;
 			}
@@ -149,7 +149,7 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 		{
 			return new PatternHelper( is, w );
 		}
-		catch ( Throwable t )
+		catch( Throwable t )
 		{
 			return null;
 		}
@@ -158,16 +158,16 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 	public ItemStack getOutput( ItemStack item )
 	{
 		ItemStack out = SIMPLE_CACHE.get( item );
-		if ( out != null )
+		if( out != null )
 			return out;
 
 		World w = CommonHelper.proxy.getWorld();
-		if ( w == null )
+		if( w == null )
 			return null;
 
 		ICraftingPatternDetails details = this.getPatternForItem( item, w );
 
-		if ( details == null )
+		if( details == null )
 			return null;
 
 		SIMPLE_CACHE.put( item, out = details.getCondensedOutputs()[0].getItemStack() );

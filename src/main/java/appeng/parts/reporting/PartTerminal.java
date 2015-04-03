@@ -71,8 +71,8 @@ public class PartTerminal extends PartMonitor implements ITerminalHost, IConfigM
 	{
 		super.getDrops( drops, wrenched );
 
-		for ( ItemStack is : this.viewCell )
-			if ( is != null )
+		for( ItemStack is : this.viewCell )
+			if( is != null )
 				drops.add( is );
 	}
 
@@ -80,14 +80,6 @@ public class PartTerminal extends PartMonitor implements ITerminalHost, IConfigM
 	public IConfigManager getConfigManager()
 	{
 		return this.cm;
-	}
-
-	@Override
-	public void writeToNBT( NBTTagCompound data )
-	{
-		super.writeToNBT( data );
-		this.cm.writeToNBT( data );
-		this.viewCell.writeToNBT( data, "viewCell" );
 	}
 
 	@Override
@@ -99,13 +91,21 @@ public class PartTerminal extends PartMonitor implements ITerminalHost, IConfigM
 	}
 
 	@Override
+	public void writeToNBT( NBTTagCompound data )
+	{
+		super.writeToNBT( data );
+		this.cm.writeToNBT( data );
+		this.viewCell.writeToNBT( data, "viewCell" );
+	}
+
+	@Override
 	public boolean onPartActivate( EntityPlayer player, Vec3 pos )
 	{
-		if ( !super.onPartActivate( player, pos ) )
+		if( !super.onPartActivate( player, pos ) )
 		{
-			if ( !player.isSneaking() )
+			if( !player.isSneaking() )
 			{
-				if ( Platform.isClient() )
+				if( Platform.isClient() )
 					return true;
 
 				Platform.openGUI( player, this.getHost().getTile(), this.side, this.getGui( player ) );
@@ -128,7 +128,7 @@ public class PartTerminal extends PartMonitor implements ITerminalHost, IConfigM
 		{
 			return this.proxy.getStorage().getItemInventory();
 		}
-		catch ( GridAccessException e )
+		catch( GridAccessException e )
 		{
 			// err nope?
 		}
@@ -142,7 +142,7 @@ public class PartTerminal extends PartMonitor implements ITerminalHost, IConfigM
 		{
 			return this.proxy.getStorage().getFluidInventory();
 		}
-		catch ( GridAccessException e )
+		catch( GridAccessException e )
 		{
 			// err nope?
 		}

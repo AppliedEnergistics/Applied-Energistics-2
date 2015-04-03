@@ -83,13 +83,6 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 	}
 
 	@Override
-	public void writeToNBT( NBTTagCompound extra )
-	{
-		super.writeToNBT( extra );
-		this.cratingTracker.writeToNBT( extra );
-	}
-
-	@Override
 	public void readFromNBT( NBTTagCompound extra )
 	{
 		super.readFromNBT( extra );
@@ -97,15 +90,22 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 	}
 
 	@Override
+	public void writeToNBT( NBTTagCompound extra )
+	{
+		super.writeToNBT( extra );
+		this.cratingTracker.writeToNBT( extra );
+	}
+
+	@Override
 	TickRateModulation doBusWork()
 	{
-		if ( !this.proxy.isActive() )
+		if( !this.proxy.isActive() )
 			return TickRateModulation.IDLE;
 
 		this.itemToSend = 1;
 		this.didSomething = false;
 
-		switch ( this.getInstalledUpgrades( Upgrades.SPEED ) )
+		switch( this.getInstalledUpgrades( Upgrades.SPEED ) )
 		{
 			default:
 			case 0:
@@ -133,43 +133,52 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 			ICraftingGrid cg = this.proxy.getCrafting();
 			FuzzyMode fzMode = (FuzzyMode) this.getConfigManager().getSetting( Settings.FUZZY_MODE );
 
-			if ( d != null )
+			if( d != null )
 			{
-				for ( int x = 0; x < this.availableSlots() && this.itemToSend > 0; x++ )
+				for( int x = 0; x < this.availableSlots() && this.itemToSend > 0; x++ )
 				{
 					IAEItemStack ais = this.config.getAEStackInSlot( x );
-					if ( ais == null || this.itemToSend <= 0 || this.craftOnly() )
+					if( ais == null || this.itemToSend <= 0 || this.craftOnly() )
 					{
-						if ( this.isCraftingEnabled() )
+						if( this.isCraftingEnabled() )
 							this.didSomething = this.cratingTracker.handleCrafting( x, this.itemToSend, ais, d, this.getTile().getWorldObj(), this.proxy.getGrid(), cg, this.mySrc ) || this.didSomething;
 						continue;
 					}
 
 					long before = this.itemToSend;
 
-					if ( this.getInstalledUpgrades( Upgrades.FUZZY ) > 0 )
+					if( this.getInstalledUpgrades( Upgrades.FUZZY ) > 0 )
 					{
-						for ( IAEItemStack o : ImmutableList.copyOf( inv.getStorageList().findFuzzy( ais, fzMode ) ) )
+						for( IAEItemStack o : ImmutableList.copyOf( inv.getStorageList().findFuzzy( ais, fzMode ) ) )
 						{
 							this.pushItemIntoTarget( d, energy, inv, o );
-							if ( this.itemToSend <= 0 )
+							if( this.itemToSend <= 0 )
 								break;
 						}
 					}
 					else
 						this.pushItemIntoTarget( d, energy, inv, ais );
 
-					if ( this.itemToSend == before && this.isCraftingEnabled() )
+					if( this.itemToSend == before && this.isCraftingEnabled() )
 						this.didSomething = this.cratingTracker.handleCrafting( x, this.itemToSend, ais, d, this.getTile().getWorldObj(), this.proxy.getGrid(), cg, this.mySrc ) || this.didSomething;
 				}
 			}
 		}
-		catch ( GridAccessException e )
+		catch( GridAccessException e )
 		{
 			// :P
 		}
 
 		return this.didSomething ? TickRateModulation.FASTER : TickRateModulation.SLOWER;
+	}
+
+	@Override
+	public void getBoxes( IPartCollisionHelper bch )
+	{
+		bch.addBox( 4, 4, 12, 12, 12, 14 );
+		bch.addBox( 5, 5, 14, 11, 11, 15 );
+		bch.addBox( 6, 6, 15, 10, 10, 16 );
+		bch.addBox( 6, 6, 11, 10, 10, 12 );
 	}
 
 	@Override
@@ -214,15 +223,6 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 	}
 
 	@Override
-	public void getBoxes( IPartCollisionHelper bch )
-	{
-		bch.addBox( 4, 4, 12, 12, 12, 14 );
-		bch.addBox( 5, 5, 14, 11, 11, 15 );
-		bch.addBox( 6, 6, 15, 10, 10, 16 );
-		bch.addBox( 6, 6, 11, 10, 10, 12 );
-	}
-
-	@Override
 	public int cableConnectionRenderTo()
 	{
 		return 5;
@@ -231,9 +231,9 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 	@Override
 	public boolean onPartActivate( EntityPlayer player, Vec3 pos )
 	{
-		if ( !player.isSneaking() )
+		if( !player.isSneaking() )
 		{
-			if ( Platform.isClient() )
+			if( Platform.isClient() )
 				return true;
 
 			Platform.openGUI( player, this.getHost().getTile(), this.side, GuiBridge.GUI_BUS );
@@ -244,9 +244,9 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 	}
 
 	@Override
-	public RedstoneMode getRSMode()
+	public TickingRequest getTickingRequest( IGridNode node )
 	{
-		return (RedstoneMode) this.getConfigManager().getSetting( Settings.REDSTONE_CONTROLLED );
+		return new TickingRequest( TickRates.ExportBus.min, TickRates.ExportBus.max, this.isSleeping(), false );
 	}
 
 	@Override
@@ -256,9 +256,9 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 	}
 
 	@Override
-	public TickingRequest getTickingRequest( IGridNode node )
+	public RedstoneMode getRSMode()
 	{
-		return new TickingRequest( TickRates.ExportBus.min, TickRates.ExportBus.max, this.isSleeping(), false );
+		return (RedstoneMode) this.getConfigManager().getSetting( Settings.REDSTONE_CONTROLLED );
 	}
 
 	@Override
@@ -285,18 +285,18 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 		ItemStack o = d.simulateAdd( is );
 		long canFit = o == null ? this.itemToSend : this.itemToSend - o.stackSize;
 
-		if ( canFit > 0 )
+		if( canFit > 0 )
 		{
 			ais = ais.copy();
 			ais.setStackSize( canFit );
 			IAEItemStack itemsToAdd = Platform.poweredExtraction( energy, inv, ais, this.mySrc );
 
-			if ( itemsToAdd != null )
+			if( itemsToAdd != null )
 			{
 				this.itemToSend -= itemsToAdd.getStackSize();
 
 				ItemStack failed = d.addItems( itemsToAdd.getItemStack() );
-				if ( failed != null )
+				if( failed != null )
 				{
 					ais.setStackSize( failed.stackSize );
 					inv.injectItems( ais, Actionable.MODULATE, this.mySrc );
@@ -320,20 +320,20 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 
 		try
 		{
-			if ( d != null && this.proxy.isActive() )
+			if( d != null && this.proxy.isActive() )
 			{
 				IEnergyGrid energy = this.proxy.getEnergy();
 
 				double power = items.getStackSize();
-				if ( energy.extractAEPower( power, mode, PowerMultiplier.CONFIG ) > power - 0.01 )
+				if( energy.extractAEPower( power, mode, PowerMultiplier.CONFIG ) > power - 0.01 )
 				{
-					if ( mode == Actionable.MODULATE )
+					if( mode == Actionable.MODULATE )
 						return AEItemStack.create( d.addItems( items.getItemStack() ) );
 					return AEItemStack.create( d.simulateAdd( items.getItemStack() ) );
 				}
 			}
 		}
-		catch ( GridAccessException e )
+		catch( GridAccessException e )
 		{
 			AELog.error( e );
 		}

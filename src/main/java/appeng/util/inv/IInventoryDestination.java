@@ -18,11 +18,12 @@
 
 package appeng.util.inv;
 
+
 import net.minecraft.item.ItemStack;
+
 
 public interface IInventoryDestination
 {
 
 	boolean canInsert( ItemStack stack );
-
 }

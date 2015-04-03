@@ -18,6 +18,7 @@
 
 package appeng.container.implementations;
 
+
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -28,23 +29,25 @@ import appeng.container.guisync.GuiSync;
 import appeng.container.slot.SlotRestrictedInput;
 import appeng.util.Platform;
 
+
 public class ContainerNetworkTool extends AEBaseContainer
 {
 
 	final INetworkTool toolInv;
 
-	@GuiSync(1)
+	@GuiSync( 1 )
 	public boolean facadeMode;
 
-	public ContainerNetworkTool(InventoryPlayer ip, INetworkTool te) {
+	public ContainerNetworkTool( InventoryPlayer ip, INetworkTool te )
+	{
 		super( ip, null, null );
 		this.toolInv = te;
 
 		this.lockPlayerInventorySlot( ip.currentItem );
 
-		for (int y = 0; y < 3; y++)
-			for (int x = 0; x < 3; x++)
-				this.addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, te, y * 3 + x, 80 - 18 + x * 18, 37 - 18 + y * 18, this.invPlayer )) );
+		for( int y = 0; y < 3; y++ )
+			for( int x = 0; x < 3; x++ )
+				this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, te, y * 3 + x, 80 - 18 + x * 18, 37 - 18 + y * 18, this.invPlayer ) ) );
 
 		this.bindPlayerInventory( ip, 0, 166 - /* height of player inventory */82 );
 	}
@@ -61,11 +64,11 @@ public class ContainerNetworkTool extends AEBaseContainer
 	{
 		ItemStack currentItem = this.getPlayerInv().getCurrentItem();
 
-		if ( currentItem != this.toolInv.getItemStack() )
+		if( currentItem != this.toolInv.getItemStack() )
 		{
-			if ( currentItem != null )
+			if( currentItem != null )
 			{
-				if ( Platform.isSameItem( this.toolInv.getItemStack(), currentItem ) )
+				if( Platform.isSameItem( this.toolInv.getItemStack(), currentItem ) )
 				{
 					this.getPlayerInv().setInventorySlotContents( this.getPlayerInv().currentItem, this.toolInv.getItemStack() );
 				}
@@ -76,7 +79,7 @@ public class ContainerNetworkTool extends AEBaseContainer
 				this.isContainerValid = false;
 		}
 
-		if ( this.isContainerValid )
+		if( this.isContainerValid )
 		{
 			NBTTagCompound data = Platform.openNbtData( currentItem );
 			this.facadeMode = data.getBoolean( "hideFacades" );

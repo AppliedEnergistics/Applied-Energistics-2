@@ -18,6 +18,7 @@
 
 package appeng.core.sync.packets;
 
+
 import java.io.IOException;
 
 import io.netty.buffer.ByteBuf;
@@ -34,6 +35,7 @@ import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.util.item.AEItemStack;
 
+
 public class PacketPatternSlot extends AppEngPacket
 {
 
@@ -43,51 +45,31 @@ public class PacketPatternSlot extends AppEngPacket
 
 	final public boolean shift;
 
-	public IAEItemStack readItem(ByteBuf stream) throws IOException
-	{
-		boolean hasItem = stream.readBoolean();
-
-		if ( hasItem )
-			return AEItemStack.loadItemStackFromPacket( stream );
-
-		return null;
-	}
-
 	// automatic.
-	public PacketPatternSlot(ByteBuf stream) throws IOException {
+	public PacketPatternSlot( ByteBuf stream ) throws IOException
+	{
 
 		this.shift = stream.readBoolean();
 
 		this.slotItem = this.readItem( stream );
 
-		for (int x = 0; x < 9; x++)
+		for( int x = 0; x < 9; x++ )
 			this.pattern[x] = this.readItem( stream );
 	}
 
-	@Override
-	public void serverPacketData(INetworkInfo manager, AppEngPacket packet, EntityPlayer player)
+	public IAEItemStack readItem( ByteBuf stream ) throws IOException
 	{
-		EntityPlayerMP sender = (EntityPlayerMP) player;
-		if ( sender.openContainer instanceof ContainerPatternTerm )
-		{
-			ContainerPatternTerm patternTerminal = (ContainerPatternTerm) sender.openContainer;
-			patternTerminal.craftOrGetItem( this );
-		}
-	}
+		boolean hasItem = stream.readBoolean();
 
-	private void writeItem(IAEItemStack slotItem, ByteBuf data) throws IOException
-	{
-		if ( slotItem == null )
-			data.writeBoolean( false );
-		else
-		{
-			data.writeBoolean( true );
-			slotItem.writeToPacket( data );
-		}
+		if( hasItem )
+			return AEItemStack.loadItemStackFromPacket( stream );
+
+		return null;
 	}
 
 	// api
-	public PacketPatternSlot(IInventory pat, IAEItemStack slotItem, boolean shift) throws IOException {
+	public PacketPatternSlot( IInventory pat, IAEItemStack slotItem, boolean shift ) throws IOException
+	{
 
 		this.slotItem = slotItem;
 		this.shift = shift;
@@ -99,7 +81,7 @@ public class PacketPatternSlot extends AppEngPacket
 		data.writeBoolean( shift );
 
 		this.writeItem( slotItem, data );
-		for (int x = 0; x < 9; x++)
+		for( int x = 0; x < 9; x++ )
 		{
 			this.pattern[x] = AEApi.instance().storage().createItemStack( pat.getStackInSlot( x ) );
 			this.writeItem( this.pattern[x], data );
@@ -108,4 +90,25 @@ public class PacketPatternSlot extends AppEngPacket
 		this.configureWrite( data );
 	}
 
+	private void writeItem( IAEItemStack slotItem, ByteBuf data ) throws IOException
+	{
+		if( slotItem == null )
+			data.writeBoolean( false );
+		else
+		{
+			data.writeBoolean( true );
+			slotItem.writeToPacket( data );
+		}
+	}
+
+	@Override
+	public void serverPacketData( INetworkInfo manager, AppEngPacket packet, EntityPlayer player )
+	{
+		EntityPlayerMP sender = (EntityPlayerMP) player;
+		if( sender.openContainer instanceof ContainerPatternTerm )
+		{
+			ContainerPatternTerm patternTerminal = (ContainerPatternTerm) sender.openContainer;
+			patternTerminal.craftOrGetItem( this );
+		}
+	}
 }

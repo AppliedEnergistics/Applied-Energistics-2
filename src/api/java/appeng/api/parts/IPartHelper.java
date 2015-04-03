@@ -23,9 +23,11 @@
 
 package appeng.api.parts;
 
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+
 
 public interface IPartHelper
 {
@@ -54,28 +56,29 @@ public interface IPartHelper
 	 * implement that interface on a part get implement it.
 	 *
 	 * @return true on success, false on failure, usually a error will be logged
-	 *         as well.
+	 * as well.
 	 */
-	boolean registerNewLayer(String string, String layerInterface);
+	boolean registerNewLayer( String string, String layerInterface );
 
 	/**
 	 * Register IBusItem with renderer
 	 */
-	void setItemBusRenderer(IPartItem i);
+	void setItemBusRenderer( IPartItem i );
 
 	/**
 	 * use in use item, to try and place a IBusItem
 	 *
-	 * @param is ItemStack of an item which implements {@link IPartItem}
-	 * @param x x pos of part
-	 * @param y y pos of part
-	 * @param z z pos of part
-	 * @param side side which the part should be on
+	 * @param is     ItemStack of an item which implements {@link IPartItem}
+	 * @param x      x pos of part
+	 * @param y      y pos of part
+	 * @param z      z pos of part
+	 * @param side   side which the part should be on
 	 * @param player player placing part
-	 * @param world part in world
+	 * @param world  part in world
+	 *
 	 * @return true if placing was successful
 	 */
-	boolean placeBus(ItemStack is, int x, int y, int z, int side, EntityPlayer player, World world);
+	boolean placeBus( ItemStack is, int x, int y, int z, int side, EntityPlayer player, World world );
 
 	/**
 	 * @return the render mode

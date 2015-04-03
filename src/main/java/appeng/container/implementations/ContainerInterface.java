@@ -18,6 +18,7 @@
 
 package appeng.container.implementations;
 
+
 import net.minecraft.entity.player.InventoryPlayer;
 
 import appeng.api.config.SecurityPermissions;
@@ -31,31 +32,32 @@ import appeng.container.slot.SlotRestrictedInput;
 import appeng.helpers.DualityInterface;
 import appeng.helpers.IInterfaceHost;
 
+
 public class ContainerInterface extends ContainerUpgradeable
 {
 
 	final DualityInterface myDuality;
 
-	@GuiSync(3)
+	@GuiSync( 3 )
 	public YesNo bMode = YesNo.NO;
 
-	@GuiSync(4)
+	@GuiSync( 4 )
 	public YesNo iTermMode = YesNo.YES;
 
-	public ContainerInterface(InventoryPlayer ip, IInterfaceHost te) {
+	public ContainerInterface( InventoryPlayer ip, IInterfaceHost te )
+	{
 		super( ip, te.getInterfaceDuality().getHost() );
 
 		this.myDuality = te.getInterfaceDuality();
 
-		for (int x = 0; x < 9; x++)
+		for( int x = 0; x < 9; x++ )
 			this.addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.ENCODED_PATTERN, this.myDuality.getPatterns(), x, 8 + 18 * x, 90 + 7, this.invPlayer ) );
 
-		for (int x = 0; x < 8; x++)
+		for( int x = 0; x < 8; x++ )
 			this.addSlotToContainer( new SlotFake( this.myDuality.getConfig(), x, 17 + 18 * x, 35 ) );
 
-		for (int x = 0; x < 8; x++)
+		for( int x = 0; x < 8; x++ )
 			this.addSlotToContainer( new SlotNormal( this.myDuality.getStorage(), x, 17 + 18 * x, 35 + 18 ) );
-
 	}
 
 	@Override
@@ -71,13 +73,6 @@ public class ContainerInterface extends ContainerUpgradeable
 	}
 
 	@Override
-	protected void loadSettingsFromHost(IConfigManager cm)
-	{
-		this.bMode = (YesNo) cm.getSetting( Settings.BLOCK );
-		this.iTermMode = (YesNo) cm.getSetting( Settings.INTERFACE_TERMINAL );
-	}
-
-	@Override
 	public int availableUpgrades()
 	{
 		return 1;
@@ -88,5 +83,12 @@ public class ContainerInterface extends ContainerUpgradeable
 	{
 		this.verifyPermissions( SecurityPermissions.BUILD, false );
 		super.detectAndSendChanges();
+	}
+
+	@Override
+	protected void loadSettingsFromHost( IConfigManager cm )
+	{
+		this.bMode = (YesNo) cm.getSetting( Settings.BLOCK );
+		this.iTermMode = (YesNo) cm.getSetting( Settings.INTERFACE_TERMINAL );
 	}
 }

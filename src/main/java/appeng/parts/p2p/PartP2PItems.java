@@ -18,6 +18,7 @@
 
 package appeng.parts.p2p;
 
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -59,45 +60,89 @@ import appeng.util.inv.WrapperBCPipe;
 import appeng.util.inv.WrapperChainedInventory;
 import appeng.util.inv.WrapperMCISidedInventory;
 
-@Interface(iface = "buildcraft.api.transport.IPipeConnection", iname = "BC")
+
+@Interface( iface = "buildcraft.api.transport.IPipeConnection", iname = "BC" )
 public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeConnection, ISidedInventory, IGridTickable
 {
 
-	public PartP2PItems(ItemStack is) {
-		super( is );
-	}
-
+	final LinkedList<IInventory> which = new LinkedList<IInventory>();
 	int oldSize = 0;
 	boolean requested;
 	IInventory cachedInv;
 
-	final LinkedList<IInventory> which = new LinkedList<IInventory>();
+	public PartP2PItems( ItemStack is )
+	{
+		super( is );
+	}
+
+	@Override
+	public void onNeighborChanged()
+	{
+		this.cachedInv = null;
+		PartP2PItems input = this.getInput();
+		if( input != null && this.output )
+			input.onTunnelNetworkChange();
+	}
+
+	IInventory getDestination()
+	{
+		this.requested = true;
+
+		if( this.cachedInv != null )
+			return this.cachedInv;
+
+		List<IInventory> outs = new LinkedList<IInventory>();
+		TunnelCollection<PartP2PItems> itemTunnels;
+
+		try
+		{
+			itemTunnels = this.getOutputs();
+		}
+		catch( GridAccessException e )
+		{
+			return new AppEngNullInventory();
+		}
+
+		for( PartP2PItems t : itemTunnels )
+		{
+			IInventory inv = t.getOutputInv();
+			if( inv != null )
+			{
+				if( Platform.getRandomInt() % 2 == 0 )
+					outs.add( inv );
+				else
+					outs.add( 0, inv );
+			}
+		}
+
+		return this.cachedInv = new WrapperChainedInventory( outs );
+	}
 
 	IInventory getOutputInv()
 	{
 		IInventory output = null;
 
-		if ( this.proxy.isActive() )
+		if( this.proxy.isActive() )
 		{
 			TileEntity te = this.tile.getWorldObj().getTileEntity( this.tile.xCoord + this.side.offsetX, this.tile.yCoord + this.side.offsetY, this.tile.zCoord + this.side.offsetZ );
 
-			if ( this.which.contains( this ) )
+			if( this.which.contains( this ) )
 				return null;
 
 			this.which.add( this );
 
-			if ( AppEng.instance.isIntegrationEnabled( IntegrationType.BC ) )
+			if( AppEng.instance.isIntegrationEnabled( IntegrationType.BC ) )
 			{
 				IBC buildcraft = (IBC) AppEng.instance.getIntegration( IntegrationType.BC );
-				if ( buildcraft != null )
+				if( buildcraft != null )
 				{
-					if ( buildcraft.isPipe( te, this.side.getOpposite() ) )
+					if( buildcraft.isPipe( te, this.side.getOpposite() ) )
 					{
 						try
 						{
 							output = new WrapperBCPipe( te, this.side.getOpposite() );
 						}
-						catch (Throwable ignore)
+						catch( Throwable ignore )
 						{
 						}
 					}
@@ -110,17 +155,17 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 			 * WrapperTEPipe( te, side.getOpposite() ); } catch (Throwable ignore) { } } } }
 			 */
 
-			if ( output == null )
+			if( output == null )
 			{
-				if ( te instanceof TileEntityChest )
+				if( te instanceof TileEntityChest )
 				{
 					output = Platform.GetChestInv( te );
 				}
-				else if ( te instanceof ISidedInventory )
+				else if( te instanceof ISidedInventory )
 				{
 					output = new WrapperMCISidedInventory( (ISidedInventory) te, this.side.getOpposite() );
 				}
-				else if ( te instanceof IInventory )
+				else if( te instanceof IInventory )
 				{
 					output = (IInventory) te;
 				}
@@ -133,75 +178,32 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 	}
 
 	@Override
-	public void onNeighborChanged()
-	{
-		this.cachedInv = null;
-		PartP2PItems input = this.getInput();
-		if ( input != null && this.output )
-			input.onTunnelNetworkChange();
-	}
-
-	@Override
-	public TickingRequest getTickingRequest(IGridNode node)
+	public TickingRequest getTickingRequest( IGridNode node )
 	{
 		return new TickingRequest( TickRates.ItemTunnel.min, TickRates.ItemTunnel.max, false, false );
 	}
 
 	@Override
-	public TickRateModulation tickingRequest(IGridNode node, int TicksSinceLastCall)
+	public TickRateModulation tickingRequest( IGridNode node, int TicksSinceLastCall )
 	{
 		boolean wasReq = this.requested;
 
-		if ( this.requested && this.cachedInv != null )
-			((WrapperChainedInventory) this.cachedInv).cycleOrder();
+		if( this.requested && this.cachedInv != null )
+			( (WrapperChainedInventory) this.cachedInv ).cycleOrder();
 
 		this.requested = false;
 		return wasReq ? TickRateModulation.FASTER : TickRateModulation.SLOWER;
 	}
 
-	IInventory getDestination()
-	{
-		this.requested = true;
-
-		if ( this.cachedInv != null )
-			return this.cachedInv;
-
-		List<IInventory> outs = new LinkedList<IInventory>();
-		TunnelCollection<PartP2PItems> itemTunnels;
-
-		try
-		{
-			itemTunnels = this.getOutputs();
-		}
-		catch (GridAccessException e)
-		{
-			return new AppEngNullInventory();
-		}
-
-		for (PartP2PItems t : itemTunnels)
-		{
-			IInventory inv = t.getOutputInv();
-			if ( inv != null )
-			{
-				if ( Platform.getRandomInt() % 2 == 0 )
-					outs.add( inv );
-				else
-					outs.add( 0, inv );
-			}
-		}
-
-		return this.cachedInv = new WrapperChainedInventory( outs );
-	}
-
 	@MENetworkEventSubscribe
-	public void changeStateA(MENetworkBootingStatusChange bs)
+	public void changeStateA( MENetworkBootingStatusChange bs )
 	{
-		if ( !this.output )
+		if( !this.output )
 		{
 			this.cachedInv = null;
 			int olderSize = this.oldSize;
 			this.oldSize = this.getDestination().getSizeInventory();
-			if ( olderSize != this.oldSize )
+			if( olderSize != this.oldSize )
 			{
 				this.getHost().notifyNeighbors();
 			}
@@ -209,14 +211,14 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 	}
 
 	@MENetworkEventSubscribe
-	public void changeStateB(MENetworkChannelsChanged bs)
+	public void changeStateB( MENetworkChannelsChanged bs )
 	{
-		if ( !this.output )
+		if( !this.output )
 		{
 			this.cachedInv = null;
 			int olderSize = this.oldSize;
 			this.oldSize = this.getDestination().getSizeInventory();
-			if ( olderSize != this.oldSize )
+			if( olderSize != this.oldSize )
 			{
 				this.getHost().notifyNeighbors();
 			}
@@ -224,14 +226,14 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 	}
 
 	@MENetworkEventSubscribe
-	public void changeStateC(MENetworkPowerStatusChange bs)
+	public void changeStateC( MENetworkPowerStatusChange bs )
 	{
-		if ( !this.output )
+		if( !this.output )
 		{
 			this.cachedInv = null;
 			int olderSize = this.oldSize;
 			this.oldSize = this.getDestination().getSizeInventory();
-			if ( olderSize != this.oldSize )
+			if( olderSize != this.oldSize )
 			{
 				this.getHost().notifyNeighbors();
 			}
@@ -239,14 +241,21 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 	}
 
 	@Override
+	@SideOnly( Side.CLIENT )
+	public IIcon getTypeTexture()
+	{
+		return Blocks.hopper.getBlockTextureFromSide( 0 );
+	}
+
+	@Override
 	public void onTunnelNetworkChange()
 	{
-		if ( !this.output )
+		if( !this.output )
 		{
 			this.cachedInv = null;
 			int olderSize = this.oldSize;
 			this.oldSize = this.getDestination().getSizeInventory();
-			if ( olderSize != this.oldSize )
+			if( olderSize != this.oldSize )
 			{
 				this.getHost().notifyNeighbors();
 			}
@@ -254,16 +263,18 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 		else
 		{
 			PartP2PItems input = this.getInput();
-			if ( input != null )
+			if( input != null )
 				input.getHost().notifyNeighbors();
 		}
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
-	public IIcon getTypeTexture()
+	public int[] getAccessibleSlotsFromSide( int var1 )
 	{
-		return Blocks.hopper.getBlockTextureFromSide( 0 );
+		int[] slots = new int[this.getSizeInventory()];
+		for( int x = 0; x < this.getSizeInventory(); x++ )
+			slots[x] = x;
+		return slots;
 	}
 
 	@Override
@@ -273,25 +284,25 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 	}
 
 	@Override
-	public ItemStack getStackInSlot(int i)
+	public ItemStack getStackInSlot( int i )
 	{
 		return this.getDestination().getStackInSlot( i );
 	}
 
 	@Override
-	public ItemStack decrStackSize(int i, int j)
+	public ItemStack decrStackSize( int i, int j )
 	{
 		return this.getDestination().decrStackSize( i, j );
 	}
 
 	@Override
-	public ItemStack getStackInSlotOnClosing(int i)
+	public ItemStack getStackInSlotOnClosing( int i )
 	{
 		return null;
 	}
 
 	@Override
-	public void setInventorySlotContents(int i, ItemStack itemstack)
+	public void setInventorySlotContents( int i, ItemStack itemstack )
 	{
 		this.getDestination().setInventorySlotContents( i, itemstack );
 	}
@@ -315,6 +326,18 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 	}
 
 	@Override
+	public void markDirty()
+	{
+		// eh?
+	}
+
+	@Override
+	public boolean isUseableByPlayer( EntityPlayer entityplayer )
+	{
+		return false;
+	}
+
+	@Override
 	public void openInventory()
 	{
 	}
@@ -325,18 +348,21 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 	}
 
 	@Override
-	public boolean isItemValidForSlot(int i, net.minecraft.item.ItemStack itemstack)
+	public boolean isItemValidForSlot( int i, net.minecraft.item.ItemStack itemstack )
 	{
 		return this.getDestination().isItemValidForSlot( i, itemstack );
 	}
 
 	@Override
-	public int[] getAccessibleSlotsFromSide(int var1)
+	public boolean canInsertItem( int i, ItemStack itemstack, int j )
 	{
-		int[] slots = new int[this.getSizeInventory()];
-		for (int x = 0; x < this.getSizeInventory(); x++)
-			slots[x] = x;
-		return slots;
+		return this.getDestination().isItemValidForSlot( i, itemstack );
+	}
+
+	@Override
+	public boolean canExtractItem( int i, ItemStack itemstack, int j )
+	{
+		return false;
 	}
 
 	public float getPowerDrainPerTick()
@@ -345,34 +371,9 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 	}
 
 	@Override
-	public boolean canInsertItem(int i, ItemStack itemstack, int j)
-	{
-		return this.getDestination().isItemValidForSlot( i, itemstack );
-	}
-
-	@Override
-	public boolean canExtractItem(int i, ItemStack itemstack, int j)
-	{
-		return false;
-	}
-
-	@Override
-	public boolean isUseableByPlayer(EntityPlayer entityplayer)
-	{
-		return false;
-	}
-
-	@Override
-	@Method(iname = "BC")
-	public ConnectOverride overridePipeConnection(PipeType type, ForgeDirection with)
+	@Method( iname = "BC" )
+	public ConnectOverride overridePipeConnection( PipeType type, ForgeDirection with )
 	{
 		return this.side == with && type == PipeType.ITEM ? ConnectOverride.CONNECT : ConnectOverride.DEFAULT;
 	}
-
-	@Override
-	public void markDirty()
-	{
-		// eh?
-	}
-
 }

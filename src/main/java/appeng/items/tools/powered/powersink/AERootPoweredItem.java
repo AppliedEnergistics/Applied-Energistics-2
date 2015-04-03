@@ -60,16 +60,14 @@ public abstract class AERootPoweredItem extends AEBaseItem implements IAEItemPow
 		double internalCurrentPower = 0;
 		double internalMaxPower = this.getAEMaxPower( stack );
 
-		if ( tag != null )
+		if( tag != null )
 		{
 			internalCurrentPower = tag.getDouble( "internalCurrentPower" );
 		}
 
 		double percent = internalCurrentPower / internalMaxPower;
 
-		lines.add( GuiText.StoredEnergy.getLocal() + ':' + MessageFormat.format( " {0,number,#} ", internalCurrentPower )
-				+ Platform.gui_localize( PowerUnits.AE.unlocalizedName ) + " - " + MessageFormat.format( " {0,number,#.##%} ", percent ) );
-
+		lines.add( GuiText.StoredEnergy.getLocal() + ':' + MessageFormat.format( " {0,number,#} ", internalCurrentPower ) + Platform.gui_localize( PowerUnits.AE.unlocalizedName ) + " - " + MessageFormat.format( " {0,number,#.##%} ", percent ) );
 	}
 
 	@Override
@@ -114,15 +112,50 @@ public abstract class AERootPoweredItem extends AEBaseItem implements IAEItemPow
 
 	}
 
+	private double getInternalBattery( ItemStack is, batteryOperation op, double adjustment )
+	{
+		NBTTagCompound data = Platform.openNbtData( is );
+
+		double currentStorage = data.getDouble( this.POWER_NBT_KEY );
+		double maxStorage = this.getAEMaxPower( is );
+
+		switch( op )
+		{
+			case INJECT:
+				currentStorage += adjustment;
+				if( currentStorage > maxStorage )
+				{
+					double diff = currentStorage - maxStorage;
+					data.setDouble( this.POWER_NBT_KEY, maxStorage );
+					return diff;
+				}
+				data.setDouble( this.POWER_NBT_KEY, currentStorage );
+				return 0;
+			case EXTRACT:
+				if( currentStorage > adjustment )
+				{
+					currentStorage -= adjustment;
+					data.setDouble( this.POWER_NBT_KEY, currentStorage );
+					return adjustment;
+				}
+				data.setDouble( this.POWER_NBT_KEY, 0 );
+				return currentStorage;
+			default:
+				break;
+		}
+
+		return currentStorage;
+	}
+
 	/**
 	 * inject external
 	 */
 	double injectExternalPower( PowerUnits input, ItemStack is, double amount, boolean simulate )
 	{
-		if ( simulate )
+		if( simulate )
 		{
-			int requiredEU = ( int ) PowerUnits.AE.convertTo( PowerUnits.EU, this.getAEMaxPower( is ) - this.getAECurrentPower( is ) );
-			if ( amount < requiredEU )
+			int requiredEU = (int) PowerUnits.AE.convertTo( PowerUnits.EU, this.getAEMaxPower( is ) - this.getAECurrentPower( is ) );
+			if( amount < requiredEU )
 				return 0;
 			return amount - requiredEU;
 		}
@@ -143,41 +176,6 @@ public abstract class AERootPoweredItem extends AEBaseItem implements IAEItemPow
 	public double extractAEPower( ItemStack is, double amt )
 	{
 		return this.getInternalBattery( is, batteryOperation.EXTRACT, amt );
-	}
-
-	private double getInternalBattery( ItemStack is, batteryOperation op, double adjustment )
-	{
-		NBTTagCompound data = Platform.openNbtData( is );
-
-		double currentStorage = data.getDouble( this.POWER_NBT_KEY );
-		double maxStorage = this.getAEMaxPower( is );
-
-		switch ( op )
-		{
-			case INJECT:
-				currentStorage += adjustment;
-				if ( currentStorage > maxStorage )
-				{
-					double diff = currentStorage - maxStorage;
-					data.setDouble( this.POWER_NBT_KEY, maxStorage );
-					return diff;
-				}
-				data.setDouble( this.POWER_NBT_KEY, currentStorage );
-				return 0;
-			case EXTRACT:
-				if ( currentStorage > adjustment )
-				{
-					currentStorage -= adjustment;
-					data.setDouble( this.POWER_NBT_KEY, currentStorage );
-					return adjustment;
-				}
-				data.setDouble( this.POWER_NBT_KEY, 0 );
-				return currentStorage;
-			default:
-				break;
-		}
-
-		return currentStorage;
 	}
 
 	@Override
@@ -202,5 +200,4 @@ public abstract class AERootPoweredItem extends AEBaseItem implements IAEItemPow
 	{
 		STORAGE, INJECT, EXTRACT
 	}
-
 }

@@ -52,12 +52,12 @@ public class ToolReplicatorCard extends AEBaseItem
 	@Override
 	public boolean onItemUseFirst( ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ )
 	{
-		if ( Platform.isClient() )
+		if( Platform.isClient() )
 			return false;
 
-		if ( player.isSneaking() )
+		if( player.isSneaking() )
 		{
-			if ( world.getTileEntity( x, y, z ) instanceof IGridHost )
+			if( world.getTileEntity( x, y, z ) instanceof IGridHost )
 			{
 				NBTTagCompound tag = new NBTTagCompound();
 				tag.setInteger( "x", x );
@@ -73,7 +73,7 @@ public class ToolReplicatorCard extends AEBaseItem
 		else
 		{
 			NBTTagCompound ish = stack.getTagCompound();
-			if ( ish != null )
+			if( ish != null )
 			{
 				int src_x = ish.getInteger( "x" );
 				int src_y = ish.getInteger( "y" );
@@ -83,19 +83,19 @@ public class ToolReplicatorCard extends AEBaseItem
 				World src_w = DimensionManager.getWorld( dimid );
 
 				TileEntity te = src_w.getTileEntity( src_x, src_y, src_z );
-				if ( te instanceof IGridHost )
+				if( te instanceof IGridHost )
 				{
 					IGridHost gh = (IGridHost) te;
 					ForgeDirection sideOff = ForgeDirection.getOrientation( src_side );
 					ForgeDirection currentSideOff = ForgeDirection.getOrientation( side );
 					IGridNode n = gh.getGridNode( sideOff );
-					if ( n != null )
+					if( n != null )
 					{
 						IGrid g = n.getGrid();
-						if ( g != null )
+						if( g != null )
 						{
 							ISpatialCache sc = g.getCache( ISpatialCache.class );
-							if ( sc.isValidRegion() )
+							if( sc.isValidRegion() )
 							{
 								DimensionalCoord min = sc.getMin();
 								DimensionalCoord max = sc.getMax();
@@ -116,15 +116,15 @@ public class ToolReplicatorCard extends AEBaseItem
 								int scale_y = max.y - min.y;
 								int scale_z = max.z - min.z;
 
-								for ( int i = 1; i < scale_x; i++ )
-									for ( int j = 1; j < scale_y; j++ )
-										for ( int k = 1; k < scale_z; k++ )
+								for( int i = 1; i < scale_x; i++ )
+									for( int j = 1; j < scale_y; j++ )
+										for( int k = 1; k < scale_z; k++ )
 										{
 											Block blk = src_w.getBlock( min_x + i, min_y + j, min_z + k );
 											int meta = src_w.getBlockMetadata( min_x + i, min_y + j, min_z + k );
 											world.setBlock( i + rel_x, j + rel_y, k + rel_z, blk, meta, 4 );
 
-											if ( blk != null && blk.hasTileEntity( meta ) )
+											if( blk != null && blk.hasTileEntity( meta ) )
 											{
 												TileEntity ote = src_w.getTileEntity( min_x + i, min_y + j, min_z + k );
 												TileEntity nte = blk.createTileEntity( world, meta );

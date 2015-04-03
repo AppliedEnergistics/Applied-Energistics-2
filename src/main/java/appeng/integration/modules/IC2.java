@@ -18,6 +18,7 @@
 
 package appeng.integration.modules;
 
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.MinecraftForge;
@@ -31,12 +32,14 @@ import appeng.api.features.IP2PTunnelRegistry;
 import appeng.integration.BaseModule;
 import appeng.integration.abstraction.IIC2;
 
+
 public class IC2 extends BaseModule implements IIC2
 {
 
 	public static IC2 instance;
 
-	public IC2() {
+	public IC2()
+	{
 		this.testClassExistence( IEnergyTile.class );
 	}
 
@@ -66,27 +69,26 @@ public class IC2 extends BaseModule implements IIC2
 	}
 
 	@Override
-	public void maceratorRecipe(ItemStack in, ItemStack out)
-	{
-		ic2.api.recipe.Recipes.macerator.addRecipe( new RecipeInputItemStack( in, in.stackSize ), null, out );
-	}
-
-	@Override
-	public void addToEnergyNet(TileEntity appEngTile)
+	public void addToEnergyNet( TileEntity appEngTile )
 	{
 		MinecraftForge.EVENT_BUS.post( new ic2.api.energy.event.EnergyTileLoadEvent( (IEnergyTile) appEngTile ) );
 	}
 
 	@Override
-	public void removeFromEnergyNet(TileEntity appEngTile)
+	public void removeFromEnergyNet( TileEntity appEngTile )
 	{
 		MinecraftForge.EVENT_BUS.post( new ic2.api.energy.event.EnergyTileUnloadEvent( (IEnergyTile) appEngTile ) );
 	}
 
 	@Override
-	public ItemStack getItem(String name)
+	public ItemStack getItem( String name )
 	{
 		return ic2.api.item.IC2Items.getItem( name );
 	}
 
+	@Override
+	public void maceratorRecipe( ItemStack in, ItemStack out )
+	{
+		ic2.api.recipe.Recipes.macerator.addRecipe( new RecipeInputItemStack( in, in.stackSize ), null, out );
+	}
 }

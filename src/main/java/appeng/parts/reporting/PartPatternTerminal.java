@@ -57,19 +57,9 @@ public class PartPatternTerminal extends PartTerminal
 	@Override
 	public void getDrops( List<ItemStack> drops, boolean wrenched )
 	{
-		for ( ItemStack is : this.pattern )
-			if ( is != null )
+		for( ItemStack is : this.pattern )
+			if( is != null )
 				drops.add( is );
-	}
-
-	@Override
-	public void writeToNBT( NBTTagCompound data )
-	{
-		super.writeToNBT( data );
-		data.setBoolean( "craftingMode", this.craftingMode );
-		this.pattern.writeToNBT( data, "pattern" );
-		this.output.writeToNBT( data, "outputList" );
-		this.crafting.writeToNBT( data, "craftingGrid" );
 	}
 
 	@Override
@@ -83,19 +73,29 @@ public class PartPatternTerminal extends PartTerminal
 	}
 
 	@Override
+	public void writeToNBT( NBTTagCompound data )
+	{
+		super.writeToNBT( data );
+		data.setBoolean( "craftingMode", this.craftingMode );
+		this.pattern.writeToNBT( data, "pattern" );
+		this.output.writeToNBT( data, "outputList" );
+		this.crafting.writeToNBT( data, "craftingGrid" );
+	}
+
+	@Override
 	public GuiBridge getGui( EntityPlayer p )
 	{
 		int x = (int) p.posX;
 		int y = (int) p.posY;
 		int z = (int) p.posZ;
-		if ( this.getHost().getTile() != null )
+		if( this.getHost().getTile() != null )
 		{
 			x = this.tile.xCoord;
 			y = this.tile.yCoord;
 			z = this.tile.zCoord;
 		}
 
-		if ( GuiBridge.GUI_PATTERN_TERMINAL.hasPermissions( this.getHost().getTile(), x, y, z, this.side, p ) )
+		if( GuiBridge.GUI_PATTERN_TERMINAL.hasPermissions( this.getHost().getTile(), x, y, z, this.side, p ) )
 			return GuiBridge.GUI_PATTERN_TERMINAL;
 		return GuiBridge.GUI_ME;
 	}
@@ -103,24 +103,24 @@ public class PartPatternTerminal extends PartTerminal
 	@Override
 	public void onChangeInventory( IInventory inv, int slot, InvOperation mc, ItemStack removedStack, ItemStack newStack )
 	{
-		if ( inv == this.pattern && slot == 1 )
+		if( inv == this.pattern && slot == 1 )
 		{
 			ItemStack is = this.pattern.getStackInSlot( 1 );
-			if ( is != null && is.getItem() instanceof ICraftingPatternItem )
+			if( is != null && is.getItem() instanceof ICraftingPatternItem )
 			{
 				ICraftingPatternItem pattern = (ICraftingPatternItem) is.getItem();
 				ICraftingPatternDetails details = pattern.getPatternForItem( is, this.getHost().getTile().getWorldObj() );
-				if ( details != null )
+				if( details != null )
 				{
 					this.setCraftingRecipe( details.isCraftable() );
 
-					for ( int x = 0; x < this.crafting.getSizeInventory() && x < details.getInputs().length; x++ )
+					for( int x = 0; x < this.crafting.getSizeInventory() && x < details.getInputs().length; x++ )
 					{
 						IAEItemStack item = details.getInputs()[x];
 						this.crafting.setInventorySlotContents( x, item == null ? null : item.getItemStack() );
 					}
 
-					for ( int x = 0; x < this.output.getSizeInventory() && x < details.getOutputs().length; x++ )
+					for( int x = 0; x < this.output.getSizeInventory() && x < details.getOutputs().length; x++ )
 					{
 						IAEItemStack item = details.getOutputs()[x];
 						this.output.setInventorySlotContents( x, item == null ? null : item.getItemStack() );
@@ -128,7 +128,7 @@ public class PartPatternTerminal extends PartTerminal
 				}
 			}
 		}
-		else if ( inv == this.crafting )
+		else if( inv == this.crafting )
 		{
 			this.fixCraftingRecipes();
 		}
@@ -138,12 +138,12 @@ public class PartPatternTerminal extends PartTerminal
 
 	private void fixCraftingRecipes()
 	{
-		if ( this.craftingMode )
+		if( this.craftingMode )
 		{
-			for ( int x = 0; x < this.crafting.getSizeInventory(); x++ )
+			for( int x = 0; x < this.crafting.getSizeInventory(); x++ )
 			{
 				ItemStack is = this.crafting.getStackInSlot( x );
-				if ( is != null )
+				if( is != null )
 					is.stackSize = 1;
 			}
 		}
@@ -163,13 +163,13 @@ public class PartPatternTerminal extends PartTerminal
 	@Override
 	public IInventory getInventoryByName( String name )
 	{
-		if ( name.equals( "crafting" ) )
+		if( name.equals( "crafting" ) )
 			return this.crafting;
 
-		if ( name.equals( "output" ) )
+		if( name.equals( "output" ) )
 			return this.output;
 
-		if ( name.equals( "pattern" ) )
+		if( name.equals( "pattern" ) )
 			return this.pattern;
 
 		return super.getInventoryByName( name );

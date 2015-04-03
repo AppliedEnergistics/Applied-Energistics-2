@@ -46,11 +46,11 @@ public class BSCrate implements IMEInventory<IAEItemStack>
 	@Override
 	public IAEItemStack injectItems( IAEItemStack input, Actionable mode, BaseActionSource src )
 	{
-		if ( mode == Actionable.SIMULATE )
+		if( mode == Actionable.SIMULATE )
 			return null;
 
 		ItemStack failed = this.crateStorage.insertItems( input.getItemStack() );
-		if ( failed == null )
+		if( failed == null )
 			return null;
 		input.setStackSize( failed.stackSize );
 		return input;
@@ -59,7 +59,7 @@ public class BSCrate implements IMEInventory<IAEItemStack>
 	@Override
 	public IAEItemStack extractItems( IAEItemStack request, Actionable mode, BaseActionSource src )
 	{
-		if ( mode == Actionable.SIMULATE )
+		if( mode == Actionable.SIMULATE )
 		{
 			int howMany = this.crateStorage.getItemCount( request.getItemStack() );
 			return howMany > request.getStackSize() ? request : request.copy().setStackSize( howMany );
@@ -72,7 +72,7 @@ public class BSCrate implements IMEInventory<IAEItemStack>
 	@Override
 	public IItemList getAvailableItems( IItemList out )
 	{
-		for ( ItemStack is : this.crateStorage.getContents() )
+		for( ItemStack is : this.crateStorage.getContents() )
 		{
 			out.add( AEItemStack.create( is ) );
 		}

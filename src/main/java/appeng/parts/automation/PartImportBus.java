@@ -77,13 +77,21 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 	@Override
 	public boolean canInsert( ItemStack stack )
 	{
-		if ( stack == null || stack.getItem() == null )
+		if( stack == null || stack.getItem() == null )
 			return false;
 
 		IAEItemStack out = this.destination.injectItems( this.lastItemChecked = AEApi.instance().storage().createItemStack( stack ), Actionable.SIMULATE, this.source );
-		if ( out == null )
+		if( out == null )
 			return true;
 		return out.getStackSize() != stack.stackSize;
+	}
+
+	@Override
+	public void getBoxes( IPartCollisionHelper bch )
+	{
+		bch.addBox( 6, 6, 11, 10, 10, 13 );
+		bch.addBox( 5, 5, 13, 11, 11, 14 );
+		bch.addBox( 4, 4, 14, 12, 12, 16 );
 	}
 
 	@Override
@@ -126,14 +134,6 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 	}
 
 	@Override
-	public void getBoxes( IPartCollisionHelper bch )
-	{
-		bch.addBox( 6, 6, 11, 10, 10, 13 );
-		bch.addBox( 5, 5, 13, 11, 11, 14 );
-		bch.addBox( 4, 4, 14, 12, 12, 16 );
-	}
-
-	@Override
 	public int cableConnectionRenderTo()
 	{
 		return 5;
@@ -142,9 +142,9 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 	@Override
 	public boolean onPartActivate( EntityPlayer player, Vec3 pos )
 	{
-		if ( !player.isSneaking() )
+		if( !player.isSneaking() )
 		{
-			if ( Platform.isClient() )
+			if( Platform.isClient() )
 				return true;
 
 			Platform.openGUI( player, this.getHost().getTile(), this.side, GuiBridge.GUI_BUS );
@@ -169,7 +169,7 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 	@Override
 	TickRateModulation doBusWork()
 	{
-		if ( !this.proxy.isActive() )
+		if( !this.proxy.isActive() )
 			return TickRateModulation.IDLE;
 
 		this.worked = false;
@@ -177,11 +177,11 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 		InventoryAdaptor myAdaptor = this.getHandler();
 		FuzzyMode fzMode = (FuzzyMode) this.getConfigManager().getSetting( Settings.FUZZY_MODE );
 
-		if ( myAdaptor != null )
+		if( myAdaptor != null )
 		{
 			try
 			{
-				switch ( this.getInstalledUpgrades( Upgrades.SPEED ) )
+				switch( this.getInstalledUpgrades( Upgrades.SPEED ) )
 				{
 					default:
 					case 0:
@@ -206,30 +206,30 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 				IEnergyGrid energy = this.proxy.getEnergy();
 
 				boolean Configured = false;
-				for ( int x = 0; x < this.availableSlots(); x++ )
+				for( int x = 0; x < this.availableSlots(); x++ )
 				{
 					IAEItemStack ais = this.config.getAEStackInSlot( x );
-					if ( ais != null && this.itemToSend > 0 )
+					if( ais != null && this.itemToSend > 0 )
 					{
 						Configured = true;
-						while ( this.itemToSend > 0 )
+						while( this.itemToSend > 0 )
 						{
-							if ( this.importStuff( myAdaptor, ais, inv, energy, fzMode ) )
+							if( this.importStuff( myAdaptor, ais, inv, energy, fzMode ) )
 								break;
 						}
 					}
 				}
 
-				if ( !Configured )
+				if( !Configured )
 				{
-					while ( this.itemToSend > 0 )
+					while( this.itemToSend > 0 )
 					{
-						if ( this.importStuff( myAdaptor, null, inv, energy, fzMode ) )
+						if( this.importStuff( myAdaptor, null, inv, energy, fzMode ) )
 							break;
 					}
 				}
 			}
-			catch ( GridAccessException e )
+			catch( GridAccessException e )
 			{
 				// :3
 			}
@@ -244,28 +244,28 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 	{
 		int toSend = this.itemToSend;
 
-		if ( toSend > 64 )
+		if( toSend > 64 )
 			toSend = 64;
 
 		ItemStack newItems;
-		if ( this.getInstalledUpgrades( Upgrades.FUZZY ) > 0 )
+		if( this.getInstalledUpgrades( Upgrades.FUZZY ) > 0 )
 			newItems = myAdaptor.removeSimilarItems( toSend, whatToImport == null ? null : whatToImport.getItemStack(), fzMode, this.configDestination( inv ) );
 		else
 			newItems = myAdaptor.removeItems( toSend, whatToImport == null ? null : whatToImport.getItemStack(), this.configDestination( inv ) );
 
-		if ( newItems != null )
+		if( newItems != null )
 		{
 			newItems.stackSize = (int) ( Math.min( newItems.stackSize, energy.extractAEPower( newItems.stackSize, Actionable.SIMULATE, PowerMultiplier.CONFIG ) ) + 0.01 );
 			this.itemToSend -= newItems.stackSize;
 
-			if ( this.lastItemChecked == null || !this.lastItemChecked.isSameType( newItems ) )
+			if( this.lastItemChecked == null || !this.lastItemChecked.isSameType( newItems ) )
 				this.lastItemChecked = AEApi.instance().storage().createItemStack( newItems );
 			else
 				this.lastItemChecked.setStackSize( newItems.stackSize );
 
 			IAEItemStack failed = Platform.poweredInsert( energy, this.destination, this.lastItemChecked, this.source );
 			// destination.injectItems( lastItemChecked, Actionable.MODULATE );
-			if ( failed != null )
+			if( failed != null )
 			{
 				myAdaptor.addItems( failed.getItemStack() );
 				return true;
@@ -286,14 +286,14 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 	}
 
 	@Override
-	public RedstoneMode getRSMode()
-	{
-		return (RedstoneMode) this.getConfigManager().getSetting( Settings.REDSTONE_CONTROLLED );
-	}
-
-	@Override
 	protected boolean isSleeping()
 	{
 		return this.getHandler() == null || super.isSleeping();
+	}
+
+	@Override
+	public RedstoneMode getRSMode()
+	{
+		return (RedstoneMode) this.getConfigManager().getSetting( Settings.REDSTONE_CONTROLLED );
 	}
 }

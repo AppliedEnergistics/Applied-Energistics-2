@@ -49,7 +49,7 @@ public final class ReleaseFetcher
 
 			return latestFitRelease;
 		}
-		catch ( Exception e )
+		catch( Exception e )
 		{
 			AELog.error( e );
 
@@ -68,14 +68,14 @@ public final class ReleaseFetcher
 		final Channel level = Channel.valueOf( levelInConfig );
 		final int levelOrdinal = level.ordinal();
 
-		for ( Release release : releases )
+		for( Release release : releases )
 		{
 			final String rawVersion = release.tag_name;
 			final String changelog = release.body;
 
 			final Version version = this.parser.parse( rawVersion );
 
-			if ( version.channel().ordinal() >= levelOrdinal )
+			if( version.channel().ordinal() >= levelOrdinal )
 			{
 				return new DefaultFormattedRelease( version, changelog );
 			}

@@ -49,15 +49,15 @@ public class AETileEventHandler
 		{
 			this.method.invoke( tile );
 		}
-		catch ( IllegalAccessException e )
+		catch( IllegalAccessException e )
 		{
 			throw new RuntimeException( e );
 		}
-		catch ( IllegalArgumentException e )
+		catch( IllegalArgumentException e )
 		{
 			throw new RuntimeException( e );
 		}
-		catch ( InvocationTargetException e )
+		catch( InvocationTargetException e )
 		{
 			throw new RuntimeException( e );
 		}
@@ -70,15 +70,15 @@ public class AETileEventHandler
 		{
 			this.method.invoke( tile, data );
 		}
-		catch ( IllegalAccessException e )
+		catch( IllegalAccessException e )
 		{
 			throw new RuntimeException( e );
 		}
-		catch ( IllegalArgumentException e )
+		catch( IllegalArgumentException e )
 		{
 			throw new RuntimeException( e );
 		}
-		catch ( InvocationTargetException e )
+		catch( InvocationTargetException e )
 		{
 			throw new RuntimeException( e );
 		}
@@ -91,15 +91,15 @@ public class AETileEventHandler
 		{
 			this.method.invoke( tile, data );
 		}
-		catch ( IllegalAccessException e )
+		catch( IllegalAccessException e )
 		{
 			throw new RuntimeException( e );
 		}
-		catch ( IllegalArgumentException e )
+		catch( IllegalArgumentException e )
 		{
 			throw new RuntimeException( e );
 		}
-		catch ( InvocationTargetException e )
+		catch( InvocationTargetException e )
 		{
 			throw new RuntimeException( e );
 		}
@@ -112,25 +112,27 @@ public class AETileEventHandler
 		{
 			this.method.invoke( tile, data );
 		}
-		catch ( IllegalAccessException e )
+		catch( IllegalAccessException e )
 		{
 			throw new RuntimeException( e );
 		}
-		catch ( IllegalArgumentException e )
+		catch( IllegalArgumentException e )
 		{
 			throw new RuntimeException( e );
 		}
-		catch ( InvocationTargetException e )
+		catch( InvocationTargetException e )
 		{
 			throw new RuntimeException( e );
 		}
 	}
 
 	// NETWORK
+
 	/**
 	 * returning true from this method, will update the block's render
 	 *
 	 * @param data data of stream
+	 *
 	 * @return true of method could be invoked
 	 */
 	@SideOnly( Side.CLIENT )
@@ -138,20 +140,19 @@ public class AETileEventHandler
 	{
 		try
 		{
-			return ( Boolean ) this.method.invoke( tile, data );
+			return (Boolean) this.method.invoke( tile, data );
 		}
-		catch ( IllegalAccessException e )
+		catch( IllegalAccessException e )
 		{
 			throw new RuntimeException( e );
 		}
-		catch ( IllegalArgumentException e )
+		catch( IllegalArgumentException e )
 		{
 			throw new RuntimeException( e );
 		}
-		catch ( InvocationTargetException e )
+		catch( InvocationTargetException e )
 		{
 			throw new RuntimeException( e );
 		}
 	}
-
 }

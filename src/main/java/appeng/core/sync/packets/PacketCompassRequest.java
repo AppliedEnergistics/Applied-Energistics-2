@@ -18,6 +18,7 @@
 
 package appeng.core.sync.packets;
 
+
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
@@ -31,6 +32,7 @@ import appeng.core.sync.network.INetworkInfo;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.services.compass.ICompassCallback;
 
+
 public class PacketCompassRequest extends AppEngPacket implements ICompassCallback
 {
 
@@ -42,30 +44,17 @@ public class PacketCompassRequest extends AppEngPacket implements ICompassCallba
 	EntityPlayer talkBackTo;
 
 	// automatic.
-	public PacketCompassRequest(ByteBuf stream) {
+	public PacketCompassRequest( ByteBuf stream )
+	{
 		this.attunement = stream.readLong();
 		this.cx = stream.readInt();
 		this.cz = stream.readInt();
 		this.cdy = stream.readInt();
 	}
 
-	@Override
-	public void calculatedDirection(boolean hasResult, boolean spin, double radians, double dist)
-	{
-		NetworkHandler.instance.sendTo( new PacketCompassResponse( this, hasResult, spin, radians ), (EntityPlayerMP) this.talkBackTo );
-	}
-
-	@Override
-	public void serverPacketData(INetworkInfo manager, AppEngPacket packet, EntityPlayer player)
-	{
-		this.talkBackTo = player;
-
-		DimensionalCoord loc = new DimensionalCoord( player.worldObj, this.cx << 4, this.cdy << 5, this.cz << 4 );
-		WorldSettings.getInstance().getCompass().getCompassDirection( loc, 174, this );
-	}
-
 	// api
-	public PacketCompassRequest(long attunement, int cx, int cz, int cdy) {
+	public PacketCompassRequest( long attunement, int cx, int cz, int cdy )
+	{
 
 		ByteBuf data = Unpooled.buffer();
 
@@ -76,6 +65,20 @@ public class PacketCompassRequest extends AppEngPacket implements ICompassCallba
 		data.writeInt( this.cdy = cdy );
 
 		this.configureWrite( data );
+	}
 
+	@Override
+	public void calculatedDirection( boolean hasResult, boolean spin, double radians, double dist )
+	{
+		NetworkHandler.instance.sendTo( new PacketCompassResponse( this, hasResult, spin, radians ), (EntityPlayerMP) this.talkBackTo );
+	}
+
+	@Override
+	public void serverPacketData( INetworkInfo manager, AppEngPacket packet, EntityPlayer player )
+	{
+		this.talkBackTo = player;
+
+		DimensionalCoord loc = new DimensionalCoord( player.worldObj, this.cx << 4, this.cdy << 5, this.cz << 4 );
+		WorldSettings.getInstance().getCompass().getCompassDirection( loc, 174, this );
 	}
 }

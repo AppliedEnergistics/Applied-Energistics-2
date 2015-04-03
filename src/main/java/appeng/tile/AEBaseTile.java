@@ -18,6 +18,7 @@
 
 package appeng.tile;
 
+
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -55,20 +56,21 @@ import appeng.tile.inventory.AppEngInternalAEInventory;
 import appeng.util.Platform;
 import appeng.util.SettingsFrom;
 
+
 public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, ICustomNameObject
 {
 
+	public static final ThreadLocal<WeakReference<AEBaseTile>> DROP_NO_ITEMS = new ThreadLocal<WeakReference<AEBaseTile>>();
 	static private final HashMap<Class, EnumMap<TileEventType, List<AETileEventHandler>>> HANDLERS = new HashMap<Class, EnumMap<TileEventType, List<AETileEventHandler>>>();
 	static private final HashMap<Class, ItemStackSrc> ITEM_STACKS = new HashMap<Class, ItemStackSrc>();
-
+	public int renderFragment = 0;
+	public String customName;
 	private ForgeDirection forward = ForgeDirection.UNKNOWN;
 	private ForgeDirection up = ForgeDirection.UNKNOWN;
 
-	public static final ThreadLocal<WeakReference<AEBaseTile>> DROP_NO_ITEMS = new ThreadLocal<WeakReference<AEBaseTile>>();
-
-	public void disableDrops()
+	static public void registerTileItem( Class c, ItemStackSrc wat )
 	{
-		DROP_NO_ITEMS.set( new WeakReference<AEBaseTile>( this ) );
+		ITEM_STACKS.put( c, wat );
 	}
 
 	public boolean dropItems()
@@ -76,9 +78,6 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 		WeakReference<AEBaseTile> what = DROP_NO_ITEMS.get();
 		return what == null || what.get() != this;
 	}
-
-	public int renderFragment = 0;
-	public String customName;
 
 	public boolean notLoaded()
 	{
@@ -90,60 +89,104 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 		return this;
 	}
 
-	static public void registerTileItem(Class c, ItemStackSrc wat)
-	{
-		ITEM_STACKS.put( c, wat );
-	}
-
-	protected ItemStack getItemFromTile(Object obj)
+	protected ItemStack getItemFromTile( Object obj )
 	{
 		ItemStackSrc src = ITEM_STACKS.get( obj.getClass() );
-		if ( src == null )
+		if( src == null )
 			return null;
 		return src.stack( 1 );
 	}
 
-	protected boolean hasHandlerFor(TileEventType type)
+	final public void Tick()
 	{
-		List<AETileEventHandler> list = this.getHandlerListFor( type );
-		return list != null && !list.isEmpty();
+
 	}
 
-	protected List<AETileEventHandler> getHandlerListFor(TileEventType type)
+	/**
+	 * for dormant chunk cache.
+	 */
+	public void onChunkLoad()
 	{
-		Class clz = this.getClass();
-		EnumMap<TileEventType, List<AETileEventHandler>> handlerSet = HANDLERS.get( clz );
+		if( this.isInvalid() )
+			this.validate();
+	}
 
-		if ( handlerSet == null )
+	@Override
+	// NOTE: WAS FINAL, changed for Immibis
+	final public void readFromNBT( NBTTagCompound data )
+	{
+		super.readFromNBT( data );
+
+		if( data.hasKey( "customName" ) )
+			this.customName = data.getString( "customName" );
+		else
+			this.customName = null;
+
+		try
 		{
-			HANDLERS.put( clz, handlerSet = new EnumMap<TileEventType, List<AETileEventHandler>>( TileEventType.class ) );
-
-			for (Method m : clz.getMethods())
+			if( this.canBeRotated() )
 			{
-				TileEvent te = m.getAnnotation( TileEvent.class );
-				if ( te != null )
-				{
-					this.addHandler( handlerSet, te.value(), m );
-				}
+				this.forward = ForgeDirection.valueOf( data.getString( "orientation_forward" ) );
+				this.up = ForgeDirection.valueOf( data.getString( "orientation_up" ) );
 			}
 		}
+		catch( IllegalArgumentException ignored )
+		{
+		}
 
-		List<AETileEventHandler> list = handlerSet.get( type );
-
-		if ( list == null )
-			handlerSet.put( type, list = new LinkedList<AETileEventHandler>() );
-
-		return list;
+		for( AETileEventHandler h : this.getHandlerListFor( TileEventType.WORLD_NBT_READ ) )
+		{
+			h.readFromNBT( this, data );
+		}
 	}
 
-	private void addHandler(EnumMap<TileEventType, List<AETileEventHandler>> handlerSet, TileEventType value, Method m)
+	@Override
+	// NOTE: WAS FINAL, changed for Immibis
+	final public void writeToNBT( NBTTagCompound data )
 	{
-		List<AETileEventHandler> list = handlerSet.get( value );
+		super.writeToNBT( data );
 
-		if ( list == null )
-			handlerSet.put( value, list = new ArrayList<AETileEventHandler>() );
+		if( this.canBeRotated() )
+		{
+			data.setString( "orientation_forward", this.forward.name() );
+			data.setString( "orientation_up", this.up.name() );
+		}
 
-		list.add( new AETileEventHandler( m, value ) );
+		if( this.customName != null )
+			data.setString( "customName", this.customName );
+
+		for( AETileEventHandler h : this.getHandlerListFor( TileEventType.WORLD_NBT_WRITE ) )
+			h.writeToNBT( this, data );
+	}
+
+	@Override
+	final public void updateEntity()
+	{
+		for( AETileEventHandler h : this.getHandlerListFor( TileEventType.TICK ) )
+			h.Tick( this );
+	}
+
+	@Override
+	public Packet getDescriptionPacket()
+	{
+		NBTTagCompound data = new NBTTagCompound();
+
+		ByteBuf stream = Unpooled.buffer();
+
+		try
+		{
+			this.writeToStream( stream );
+			if( stream.readableBytes() == 0 )
+				return null;
+		}
+		catch( Throwable t )
+		{
+			AELog.error( t );
+		}
+
+		stream.capacity( stream.readableBytes() );
+		data.setByteArray( "X", stream.array() );
+		return new S35PacketUpdateTileEntity( this.xCoord, this.yCoord, this.zCoord, 64, data );
 	}
 
 	@Override
@@ -152,109 +195,39 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 		return this.hasHandlerFor( TileEventType.TICK );
 	}
 
-	final public void Tick()
+	protected boolean hasHandlerFor( TileEventType type )
 	{
-
+		List<AETileEventHandler> list = this.getHandlerListFor( type );
+		return list != null && !list.isEmpty();
 	}
 
 	@Override
-	final public void updateEntity()
+	public void onDataPacket( NetworkManager net, S35PacketUpdateTileEntity pkt )
 	{
-		for (AETileEventHandler h : this.getHandlerListFor( TileEventType.TICK ))
-			h.Tick( this );
+		// / pkt.actionType
+		if( pkt.func_148853_f() == 64 )
+		{
+			ByteBuf stream = Unpooled.copiedBuffer( pkt.func_148857_g().getByteArray( "X" ) );
+			if( this.readFromStream( stream ) )
+				this.markForUpdate();
+		}
 	}
 
 	@Override
 	public void onChunkUnload()
 	{
-		if ( !this.isInvalid() )
+		if( !this.isInvalid() )
 			this.invalidate();
 	}
 
-	/**
-	 * for dormant chunk cache.
-	 */
-	public void onChunkLoad()
-	{
-		if ( this.isInvalid() )
-			this.validate();
-	}
-
-	@Override
-	// NOTE: WAS FINAL, changed for Immibis
-	final public void writeToNBT(NBTTagCompound data)
-	{
-		super.writeToNBT( data );
-
-		if ( this.canBeRotated() )
-		{
-			data.setString( "orientation_forward", this.forward.name() );
-			data.setString( "orientation_up", this.up.name() );
-		}
-
-		if ( this.customName != null )
-			data.setString( "customName", this.customName );
-
-		for (AETileEventHandler h : this.getHandlerListFor( TileEventType.WORLD_NBT_WRITE ))
-			h.writeToNBT( this, data );
-	}
-
-	@Override
-	// NOTE: WAS FINAL, changed for Immibis
-	final public void readFromNBT(NBTTagCompound data)
-	{
-		super.readFromNBT( data );
-
-		if ( data.hasKey( "customName" ) )
-			this.customName = data.getString( "customName" );
-		else
-			this.customName = null;
-
-		try
-		{
-			if ( this.canBeRotated() )
-			{
-				this.forward = ForgeDirection.valueOf( data.getString( "orientation_forward" ) );
-				this.up = ForgeDirection.valueOf( data.getString( "orientation_up" ) );
-			}
-		}
-		catch (IllegalArgumentException ignored)
-		{
-		}
-
-		for (AETileEventHandler h : this.getHandlerListFor( TileEventType.WORLD_NBT_READ ))
-		{
-			h.readFromNBT( this, data );
-		}
-	}
-
-	final public void writeToStream(ByteBuf data)
-	{
-		try
-		{
-			if ( this.canBeRotated() )
-			{
-				byte orientation = (byte) ((this.up.ordinal() << 3) | this.forward.ordinal());
-				data.writeByte( orientation );
-			}
-
-			for (AETileEventHandler h : this.getHandlerListFor( TileEventType.NETWORK_WRITE ))
-				h.writeToStream( this, data );
-		}
-		catch (Throwable t)
-		{
-			AELog.error( t );
-		}
-	}
-
-	final public boolean readFromStream(ByteBuf data)
+	final public boolean readFromStream( ByteBuf data )
 	{
 		boolean output = false;
 
 		try
 		{
 
-			if ( this.canBeRotated() )
+			if( this.canBeRotated() )
 			{
 				ForgeDirection old_Forward = this.forward;
 				ForgeDirection old_Up = this.up;
@@ -267,20 +240,54 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 			}
 
 			this.renderFragment = 100;
-			for (AETileEventHandler h : this.getHandlerListFor( TileEventType.NETWORK_READ ))
-				if ( h.readFromStream( this, data ) )
+			for( AETileEventHandler h : this.getHandlerListFor( TileEventType.NETWORK_READ ) )
+				if( h.readFromStream( this, data ) )
 					output = true;
 
-			if ( (this.renderFragment & 1) == 1 )
+			if( ( this.renderFragment & 1 ) == 1 )
 				output = true;
 			this.renderFragment = 0;
 		}
-		catch (Throwable t)
+		catch( Throwable t )
 		{
 			AELog.error( t );
 		}
 
 		return output;
+	}
+
+	public void markForUpdate()
+	{
+		if( this.renderFragment > 0 )
+			this.renderFragment |= 1;
+		else
+		{
+			// TODO: Optimize Network Load
+			if( this.worldObj != null )
+			{
+				AELog.blockUpdate( this.xCoord, this.yCoord, this.zCoord, this );
+				this.worldObj.markBlockForUpdate( this.xCoord, this.yCoord, this.zCoord );
+			}
+		}
+	}
+
+	final public void writeToStream( ByteBuf data )
+	{
+		try
+		{
+			if( this.canBeRotated() )
+			{
+				byte orientation = (byte) ( ( this.up.ordinal() << 3 ) | this.forward.ordinal() );
+				data.writeByte( orientation );
+			}
+
+			for( AETileEventHandler h : this.getHandlerListFor( TileEventType.NETWORK_WRITE ) )
+				h.writeToStream( this, data );
+		}
+		catch( Throwable t )
+		{
+			AELog.error( t );
+		}
 	}
 
 	/**
@@ -292,6 +299,43 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	public boolean canBeRotated()
 	{
 		return true;
+	}
+
+	protected List<AETileEventHandler> getHandlerListFor( TileEventType type )
+	{
+		Class clz = this.getClass();
+		EnumMap<TileEventType, List<AETileEventHandler>> handlerSet = HANDLERS.get( clz );
+
+		if( handlerSet == null )
+		{
+			HANDLERS.put( clz, handlerSet = new EnumMap<TileEventType, List<AETileEventHandler>>( TileEventType.class ) );
+
+			for( Method m : clz.getMethods() )
+			{
+				TileEvent te = m.getAnnotation( TileEvent.class );
+				if( te != null )
+				{
+					this.addHandler( handlerSet, te.value(), m );
+				}
+			}
+		}
+
+		List<AETileEventHandler> list = handlerSet.get( type );
+
+		if( list == null )
+			handlerSet.put( type, list = new LinkedList<AETileEventHandler>() );
+
+		return list;
+	}
+
+	private void addHandler( EnumMap<TileEventType, List<AETileEventHandler>> handlerSet, TileEventType value, Method m )
+	{
+		List<AETileEventHandler> list = handlerSet.get( value );
+
+		if( list == null )
+			handlerSet.put( value, list = new ArrayList<AETileEventHandler>() );
+
+		list.add( new AETileEventHandler( m, value ) );
 	}
 
 	@Override
@@ -307,7 +351,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	}
 
 	@Override
-	public void setOrientation(ForgeDirection inForward, ForgeDirection inUp)
+	public void setOrientation( ForgeDirection inForward, ForgeDirection inUp )
 	{
 		this.forward = inForward;
 		this.up = inUp;
@@ -315,60 +359,45 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 		Platform.notifyBlocksOfNeighbors( this.worldObj, this.xCoord, this.yCoord, this.zCoord );
 	}
 
-	public void onPlacement(ItemStack stack, EntityPlayer player, int side)
+	public void onPlacement( ItemStack stack, EntityPlayer player, int side )
 	{
-		if ( stack.hasTagCompound() )
+		if( stack.hasTagCompound() )
 		{
 			this.uploadSettings( SettingsFrom.DISMANTLE_ITEM, stack.getTagCompound() );
 		}
 	}
 
-	@Override
-	public Packet getDescriptionPacket()
+	/**
+	 * depending on the from, different settings will be accepted, don't call this with null
+	 *
+	 * @param from     source of settings
+	 * @param compound compound of source
+	 */
+	public void uploadSettings( SettingsFrom from, NBTTagCompound compound )
 	{
-		NBTTagCompound data = new NBTTagCompound();
-
-		ByteBuf stream = Unpooled.buffer();
-
-		try
+		if( compound != null && this instanceof IConfigurableObject )
 		{
-			this.writeToStream( stream );
-			if ( stream.readableBytes() == 0 )
-				return null;
-		}
-		catch (Throwable t)
-		{
-			AELog.error( t );
+			IConfigManager cm = ( (IConfigurableObject) this ).getConfigManager();
+			if( cm != null )
+				cm.readFromNBT( compound );
 		}
 
-		stream.capacity( stream.readableBytes() );
-		data.setByteArray( "X", stream.array() );
-		return new S35PacketUpdateTileEntity( this.xCoord, this.yCoord, this.zCoord, 64, data );
-	}
-
-	@Override
-	public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt)
-	{
-		// / pkt.actionType
-		if ( pkt.func_148853_f() == 64 )
+		if( this instanceof IPriorityHost )
 		{
-			ByteBuf stream = Unpooled.copiedBuffer( pkt.func_148857_g().getByteArray( "X" ) );
-			if ( this.readFromStream( stream ) )
-				this.markForUpdate();
+			IPriorityHost pHost = (IPriorityHost) this;
+			pHost.setPriority( compound.getInteger( "priority" ) );
 		}
-	}
 
-	public void markForUpdate()
-	{
-		if ( this.renderFragment > 0 )
-			this.renderFragment |= 1;
-		else
+		if( this instanceof ISegmentedInventory )
 		{
-			// TODO: Optimize Network Load
-			if ( this.worldObj != null )
+			IInventory inv = ( (ISegmentedInventory) this ).getInventoryByName( "config" );
+			if( inv instanceof AppEngInternalAEInventory )
 			{
-				AELog.blockUpdate( this.xCoord, this.yCoord, this.zCoord, this );
-				this.worldObj.markBlockForUpdate( this.xCoord, this.yCoord, this.zCoord );
+				AppEngInternalAEInventory target = (AppEngInternalAEInventory) inv;
+				AppEngInternalAEInventory tmp = new AppEngInternalAEInventory( null, target.getSizeInventory() );
+				tmp.readFromNBT( compound, "config" );
+				for( int x = 0; x < tmp.getSizeInventory(); x++ )
+					target.setInventorySlotContents( x, tmp.getStackInSlot( x ) );
 			}
 		}
 	}
@@ -376,30 +405,29 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	/**
 	 * returns the contents of the tile entity, into the world, defaults to dropping everything in the inventory.
 	 *
-	 * @param w world
-	 * @param x x pos of tile entity
-	 * @param y y pos of tile entity
-	 * @param z z pos of tile entity
+	 * @param w     world
+	 * @param x     x pos of tile entity
+	 * @param y     y pos of tile entity
+	 * @param z     z pos of tile entity
 	 * @param drops drops of tile entity
 	 */
 	@Override
-	public void getDrops(World w, int x, int y, int z, ArrayList<ItemStack> drops)
+	public void getDrops( World w, int x, int y, int z, ArrayList<ItemStack> drops )
 	{
-		if ( this instanceof IInventory )
+		if( this instanceof IInventory )
 		{
 			IInventory inv = (IInventory) this;
 
-			for (int l = 0; l < inv.getSizeInventory(); l++)
+			for( int l = 0; l < inv.getSizeInventory(); l++ )
 			{
 				ItemStack is = inv.getStackInSlot( l );
-				if ( is != null )
+				if( is != null )
 					drops.add( is );
 			}
 		}
-
 	}
 
-	public void getNoDrops(World w, int x, int y, int z, ArrayList<ItemStack> drops)
+	public void getNoDrops( World w, int x, int y, int z, ArrayList<ItemStack> drops )
 	{
 
 	}
@@ -410,101 +438,46 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	}
 
 	/**
-	 * depending on the from, different settings will be accepted, don't call this with null
-	 *
-	 * @param from source of settings
-	 * @param compound compound of source
-	 */
-	public void uploadSettings(SettingsFrom from, NBTTagCompound compound)
-	{
-		if ( compound != null && this instanceof IConfigurableObject )
-		{
-			IConfigManager cm = ((IConfigurableObject) this).getConfigManager();
-			if ( cm != null )
-				cm.readFromNBT( compound );
-		}
-
-		if ( this instanceof IPriorityHost )
-		{
-			IPriorityHost pHost = (IPriorityHost) this;
-			pHost.setPriority( compound.getInteger( "priority" ) );
-		}
-
-		if ( this instanceof ISegmentedInventory )
-		{
-			IInventory inv = ((ISegmentedInventory) this).getInventoryByName( "config" );
-			if ( inv instanceof AppEngInternalAEInventory )
-			{
-				AppEngInternalAEInventory target = (AppEngInternalAEInventory) inv;
-				AppEngInternalAEInventory tmp = new AppEngInternalAEInventory( null, target.getSizeInventory() );
-				tmp.readFromNBT( compound, "config" );
-				for (int x = 0; x < tmp.getSizeInventory(); x++)
-					target.setInventorySlotContents( x, tmp.getStackInSlot( x ) );
-			}
-		}
-	}
-
-	/**
 	 * null means nothing to store...
 	 *
 	 * @param from source of settings
+	 *
 	 * @return compound of source
 	 */
-	public NBTTagCompound downloadSettings(SettingsFrom from)
+	public NBTTagCompound downloadSettings( SettingsFrom from )
 	{
 		NBTTagCompound output = new NBTTagCompound();
 
-		if ( this.hasCustomName() )
+		if( this.hasCustomName() )
 		{
 			NBTTagCompound dsp = new NBTTagCompound();
 			dsp.setString( "Name", this.getCustomName() );
 			output.setTag( "display", dsp );
 		}
 
-		if ( this instanceof IConfigurableObject )
+		if( this instanceof IConfigurableObject )
 		{
-			IConfigManager cm = ((IConfigurableObject) this).getConfigManager();
-			if ( cm != null )
+			IConfigManager cm = ( (IConfigurableObject) this ).getConfigManager();
+			if( cm != null )
 				cm.writeToNBT( output );
 		}
 
-		if ( this instanceof IPriorityHost )
+		if( this instanceof IPriorityHost )
 		{
 			IPriorityHost pHost = (IPriorityHost) this;
 			output.setInteger( "priority", pHost.getPriority() );
 		}
 
-		if ( this instanceof ISegmentedInventory )
+		if( this instanceof ISegmentedInventory )
 		{
-			IInventory inv = ((ISegmentedInventory) this).getInventoryByName( "config" );
-			if ( inv instanceof AppEngInternalAEInventory )
+			IInventory inv = ( (ISegmentedInventory) this ).getInventoryByName( "config" );
+			if( inv instanceof AppEngInternalAEInventory )
 			{
-				((AppEngInternalAEInventory) inv).writeToNBT( output, "config" );
+				( (AppEngInternalAEInventory) inv ).writeToNBT( output, "config" );
 			}
 		}
 
 		return output.hasNoTags() ? null : output;
-	}
-
-	public void securityBreak()
-	{
-		this.worldObj.func_147480_a( this.xCoord, this.yCoord, this.zCoord, true );
-		this.disableDrops();
-	}
-
-	public void saveChanges()
-	{
-		super.markDirty();
-	}
-
-	public boolean requiresTESR()
-	{
-		return false;
-	}
-
-	public void setName(String name)
-	{
-		this.customName = name;
 	}
 
 	@Override
@@ -519,4 +492,29 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 		return this.customName != null && this.customName.length() > 0;
 	}
 
+	public void securityBreak()
+	{
+		this.worldObj.func_147480_a( this.xCoord, this.yCoord, this.zCoord, true );
+		this.disableDrops();
+	}
+
+	public void disableDrops()
+	{
+		DROP_NO_ITEMS.set( new WeakReference<AEBaseTile>( this ) );
+	}
+
+	public void saveChanges()
+	{
+		super.markDirty();
+	}
+
+	public boolean requiresTESR()
+	{
+		return false;
+	}
+
+	public void setName( String name )
+	{
+		this.customName = name;
+	}
 }

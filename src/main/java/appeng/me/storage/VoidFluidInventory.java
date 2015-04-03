@@ -42,18 +42,12 @@ public class VoidFluidInventory implements IMEInventoryHandler<IAEFluidStack>
 	@Override
 	public IAEFluidStack injectItems( IAEFluidStack input, Actionable mode, BaseActionSource src )
 	{
-		if ( mode == Actionable.SIMULATE )
+		if( mode == Actionable.SIMULATE )
 			return null;
 
-		if ( input != null )
+		if( input != null )
 			this.target.addPower( input.getStackSize() / 1000.0 );
 		return null;
-	}
-
-	@Override
-	public StorageChannel getChannel()
-	{
-		return StorageChannel.FLUIDS;
 	}
 
 	@Override
@@ -66,6 +60,12 @@ public class VoidFluidInventory implements IMEInventoryHandler<IAEFluidStack>
 	public IItemList<IAEFluidStack> getAvailableItems( IItemList out )
 	{
 		return out;
+	}
+
+	@Override
+	public StorageChannel getChannel()
+	{
+		return StorageChannel.FLUIDS;
 	}
 
 	@Override
@@ -103,5 +103,4 @@ public class VoidFluidInventory implements IMEInventoryHandler<IAEFluidStack>
 	{
 		return i == 2;
 	}
-
 }

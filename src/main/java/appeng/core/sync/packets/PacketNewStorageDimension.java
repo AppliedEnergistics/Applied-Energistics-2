@@ -18,6 +18,7 @@
 
 package appeng.core.sync.packets;
 
+
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
@@ -31,33 +32,20 @@ import appeng.core.AEConfig;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
 
+
 public class PacketNewStorageDimension extends AppEngPacket
 {
 
 	final int newDim;
 
 	// automatic.
-	public PacketNewStorageDimension(ByteBuf stream)
+	public PacketNewStorageDimension( ByteBuf stream )
 	{
 		this.newDim = stream.readInt();
 	}
 
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void clientPacketData(INetworkInfo network, AppEngPacket packet, EntityPlayer player)
-	{
-		try
-		{
-			DimensionManager.registerDimension( this.newDim, AEConfig.instance.storageProviderID );
-		}
-		catch (IllegalArgumentException iae)
-		{
-			// ok!
-		}
-	}
-
 	// api
-	public PacketNewStorageDimension(int newDim)
+	public PacketNewStorageDimension( int newDim )
 	{
 		this.newDim = newDim;
 
@@ -69,4 +57,17 @@ public class PacketNewStorageDimension extends AppEngPacket
 		this.configureWrite( data );
 	}
 
+	@Override
+	@SideOnly( Side.CLIENT )
+	public void clientPacketData( INetworkInfo network, AppEngPacket packet, EntityPlayer player )
+	{
+		try
+		{
+			DimensionManager.registerDimension( this.newDim, AEConfig.instance.storageProviderID );
+		}
+		catch( IllegalArgumentException iae )
+		{
+			// ok!
+		}
+	}
 }

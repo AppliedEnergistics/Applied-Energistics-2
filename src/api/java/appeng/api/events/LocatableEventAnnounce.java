@@ -31,18 +31,11 @@ import appeng.api.features.ILocatable;
 
 /**
  * Input Event:
- * 
+ *
  * Used to Notify the Location Registry of objects, and their availability.
  */
 public class LocatableEventAnnounce extends Event
 {
-
-	public enum LocatableEvent
-	{
-		Register, // Adds the locatable to the registry
-		Unregister // Removes the locatable from the registry
-	}
-
 
 	final public ILocatable target;
 	final public LocatableEvent change;
@@ -51,5 +44,11 @@ public class LocatableEventAnnounce extends Event
 	{
 		this.target = o;
 		this.change = ev;
+	}
+
+	public enum LocatableEvent
+	{
+		Register, // Adds the locatable to the registry
+		Unregister // Removes the locatable from the registry
 	}
 }

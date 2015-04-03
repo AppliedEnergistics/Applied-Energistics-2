@@ -28,7 +28,9 @@ msg.setDouble( "weight", 32.0 );
 FMLInterModComms.sendMessage( "appliedenergistics2", "add-mattercannon-ammo", msg );
 
  */
+
 package appeng.core.api.imc;
+
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -37,6 +39,7 @@ import cpw.mods.fml.common.event.FMLInterModComms.IMCMessage;
 
 import appeng.api.AEApi;
 import appeng.core.api.IIMCProcessor;
+
 
 public class IMCMatterCannon implements IIMCProcessor
 {
@@ -50,7 +53,7 @@ public class IMCMatterCannon implements IIMCProcessor
 		ItemStack ammo = ItemStack.loadItemStackFromNBT( item );
 		double weight = msg.getDouble( "weight" );
 
-		if ( ammo == null )
+		if( ammo == null )
 			throw new RuntimeException( "invalid item" );
 
 		AEApi.instance().registries().matterCannon().registerAmmo( ammo, weight );

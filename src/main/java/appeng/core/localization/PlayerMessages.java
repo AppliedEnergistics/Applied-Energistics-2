@@ -18,8 +18,10 @@
 
 package appeng.core.localization;
 
+
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.IChatComponent;
+
 
 public enum PlayerMessages
 {
@@ -30,14 +32,14 @@ public enum PlayerMessages
 	CommunicationError, OutOfRange, DeviceNotPowered, DeviceNotWirelessTerminal, DeviceNotLinked, StationCanNotBeLocated,
 	SettingCleared,;
 
-	String getName()
-	{
-		return "chat.appliedenergistics2." + this.toString();
-	}
-
 	public IChatComponent get()
 	{
 		return new ChatComponentTranslation( this.getName() );
+	}
+
+	String getName()
+	{
+		return "chat.appliedenergistics2." + this.toString();
 	}
 
 }

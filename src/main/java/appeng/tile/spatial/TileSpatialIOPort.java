@@ -18,6 +18,7 @@
 
 package appeng.tile.spatial;
 
+
 import java.util.concurrent.Callable;
 
 import net.minecraft.inventory.IInventory;
@@ -47,6 +48,7 @@ import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.tile.inventory.InvOperation;
 import appeng.util.Platform;
 
+
 public class TileSpatialIOPort extends AENetworkInvTile implements Callable
 {
 
@@ -54,52 +56,63 @@ public class TileSpatialIOPort extends AENetworkInvTile implements Callable
 	final AppEngInternalInventory inv = new AppEngInternalInventory( this, 2 );
 	YesNo lastRedstoneState = YesNo.UNDECIDED;
 
-	@TileEvent(TileEventType.WORLD_NBT_WRITE)
-	public void writeToNBT_TileSpatialIOPort(NBTTagCompound data)
+	public TileSpatialIOPort()
+	{
+		this.gridProxy.setFlags( GridFlags.REQUIRE_CHANNEL );
+	}
+
+	@TileEvent( TileEventType.WORLD_NBT_WRITE )
+	public void writeToNBT_TileSpatialIOPort( NBTTagCompound data )
 	{
 		data.setInteger( "lastRedstoneState", this.lastRedstoneState.ordinal() );
 	}
 
-	@TileEvent(TileEventType.WORLD_NBT_READ)
-	public void readFromNBT_TileSpatialIOPort(NBTTagCompound data)
+	@TileEvent( TileEventType.WORLD_NBT_READ )
+	public void readFromNBT_TileSpatialIOPort( NBTTagCompound data )
 	{
-		if ( data.hasKey( "lastRedstoneState" ) )
+		if( data.hasKey( "lastRedstoneState" ) )
 			this.lastRedstoneState = YesNo.values()[data.getInteger( "lastRedstoneState" )];
-	}
-
-	public TileSpatialIOPort() {
-		this.gridProxy.setFlags( GridFlags.REQUIRE_CHANNEL );
-	}
-
-	public void updateRedstoneState()
-	{
-		YesNo currentState = this.worldObj.isBlockIndirectlyGettingPowered( this.xCoord, this.yCoord, this.zCoord ) ? YesNo.YES : YesNo.NO;
-		if ( this.lastRedstoneState != currentState )
-		{
-			this.lastRedstoneState = currentState;
-			if ( this.lastRedstoneState == YesNo.YES )
-				this.triggerTransition();
-		}
 	}
 
 	public boolean getRedstoneState()
 	{
-		if ( this.lastRedstoneState == YesNo.UNDECIDED )
+		if( this.lastRedstoneState == YesNo.UNDECIDED )
 			this.updateRedstoneState();
 
 		return this.lastRedstoneState == YesNo.YES;
 	}
 
+	public void updateRedstoneState()
+	{
+		YesNo currentState = this.worldObj.isBlockIndirectlyGettingPowered( this.xCoord, this.yCoord, this.zCoord ) ? YesNo.YES : YesNo.NO;
+		if( this.lastRedstoneState != currentState )
+		{
+			this.lastRedstoneState = currentState;
+			if( this.lastRedstoneState == YesNo.YES )
+				this.triggerTransition();
+		}
+	}
+
 	private void triggerTransition()
 	{
-		if ( Platform.isServer() )
+		if( Platform.isServer() )
 		{
 			ItemStack cell = this.getStackInSlot( 0 );
-			if ( this.isSpatialCell( cell ) )
+			if( this.isSpatialCell( cell ) )
 			{
 				TickHandler.INSTANCE.addCallable( null, this );// this needs to be cross world synced.
 			}
 		}
+	}
+
+	private boolean isSpatialCell( ItemStack cell )
+	{
+		if( cell != null && cell.getItem() instanceof ISpatialStorageCell )
+		{
+			ISpatialStorageCell sc = (ISpatialStorageCell) cell.getItem();
+			return sc != null && sc.isSpatialStorage( cell );
+		}
+		return false;
 	}
 
 	@Override
@@ -107,7 +120,7 @@ public class TileSpatialIOPort extends AENetworkInvTile implements Callable
 	{
 
 		ItemStack cell = this.getStackInSlot( 0 );
-		if ( this.isSpatialCell( cell ) && this.getStackInSlot( 1 ) == null )
+		if( this.isSpatialCell( cell ) && this.getStackInSlot( 1 ) == null )
 		{
 			IGrid gi = this.gridProxy.getGrid();
 			IEnergyGrid energy = this.gridProxy.getEnergy();
@@ -115,17 +128,17 @@ public class TileSpatialIOPort extends AENetworkInvTile implements Callable
 			ISpatialStorageCell sc = (ISpatialStorageCell) cell.getItem();
 
 			SpatialPylonCache spc = gi.getCache( ISpatialCache.class );
-			if ( spc.hasRegion() && spc.isValidRegion() )
+			if( spc.hasRegion() && spc.isValidRegion() )
 			{
 				double req = spc.requiredPower();
 				double pr = energy.extractAEPower( req, Actionable.SIMULATE, PowerMultiplier.CONFIG );
-				if ( Math.abs( pr - req ) < req * 0.001 )
+				if( Math.abs( pr - req ) < req * 0.001 )
 				{
 					MENetworkEvent res = gi.postEvent( new MENetworkSpatialEvent( this, req ) );
-					if ( !res.isCanceled() )
+					if( !res.isCanceled() )
 					{
 						TransitionResult tr = sc.doSpatialTransition( cell, this.worldObj, spc.getMin(), spc.getMax(), true );
-						if ( tr.success )
+						if( tr.success )
 						{
 							energy.extractAEPower( req, Actionable.MODULATE, PowerMultiplier.CONFIG );
 							this.setInventorySlotContents( 0, null );
@@ -140,7 +153,7 @@ public class TileSpatialIOPort extends AENetworkInvTile implements Callable
 	}
 
 	@Override
-	public AECableType getCableConnectionType(ForgeDirection dir)
+	public AECableType getCableConnectionType( ForgeDirection dir )
 	{
 		return AECableType.SMART;
 	}
@@ -158,43 +171,32 @@ public class TileSpatialIOPort extends AENetworkInvTile implements Callable
 	}
 
 	@Override
-	public boolean isItemValidForSlot(int i, ItemStack itemstack)
+	public boolean isItemValidForSlot( int i, ItemStack itemstack )
 	{
-		return (i == 0 && this.isSpatialCell( itemstack ));
-	}
-
-	private boolean isSpatialCell(ItemStack cell)
-	{
-		if ( cell != null && cell.getItem() instanceof ISpatialStorageCell )
-		{
-			ISpatialStorageCell sc = (ISpatialStorageCell) cell.getItem();
-			return sc != null && sc.isSpatialStorage( cell );
-		}
-		return false;
+		return ( i == 0 && this.isSpatialCell( itemstack ) );
 	}
 
 	@Override
-	public boolean canInsertItem(int slotIndex, ItemStack insertingItem, int side )
+	public void onChangeInventory( IInventory inv, int slot, InvOperation mc, ItemStack removed, ItemStack added )
+	{
+
+	}
+
+	@Override
+	public boolean canInsertItem( int slotIndex, ItemStack insertingItem, int side )
 	{
 		return this.isItemValidForSlot( slotIndex, insertingItem );
 	}
 
 	@Override
-	public boolean canExtractItem(int slotIndex, ItemStack extractedItem, int side )
+	public boolean canExtractItem( int slotIndex, ItemStack extractedItem, int side )
 	{
 		return slotIndex == 1;
 	}
 
 	@Override
-	public void onChangeInventory(IInventory inv, int slot, InvOperation mc, ItemStack removed, ItemStack added)
-	{
-
-	}
-
-	@Override
-	public int[] getAccessibleSlotsBySide(ForgeDirection side)
+	public int[] getAccessibleSlotsBySide( ForgeDirection side )
 	{
 		return this.sides;
 	}
-
 }

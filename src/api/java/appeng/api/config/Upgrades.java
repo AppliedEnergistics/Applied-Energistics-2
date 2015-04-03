@@ -75,13 +75,13 @@ public enum Upgrades
 	/**
 	 * Registers a specific amount of this upgrade into a specific machine
 	 *
-	 * @param item machine in which this upgrade can be installed
+	 * @param item         machine in which this upgrade can be installed
 	 * @param maxSupported amount how many upgrades can be installed
 	 */
 	public void registerItem( IItemDefinition item, int maxSupported )
 	{
 		final Optional<ItemStack> maybeStack = item.maybeStack( 1 );
-		for ( ItemStack stack : maybeStack.asSet() )
+		for( ItemStack stack : maybeStack.asSet() )
 		{
 			this.registerItem( stack, maxSupported );
 		}
@@ -90,7 +90,21 @@ public enum Upgrades
 	/**
 	 * Registers a specific amount of this upgrade into a specific machine
 	 *
-	 * @param item machine in which this upgrade can be installed
+	 * @param stack        machine in which this upgrade can be installed
+	 * @param maxSupported amount how many upgrades can be installed
+	 */
+	public void registerItem( ItemStack stack, int maxSupported )
+	{
+		if( stack != null )
+		{
+			this.supportedMax.put( stack, maxSupported );
+		}
+	}
+
+	/**
+	 * Registers a specific amount of this upgrade into a specific machine
+	 *
+	 * @param item         machine in which this upgrade can be installed
 	 * @param maxSupported amount how many upgrades can be installed
 	 *
 	 * @deprecated use {@link Upgrades#registerItem(IItemDefinition, int)}
@@ -98,28 +112,14 @@ public enum Upgrades
 	@Deprecated
 	public void registerItem( AEItemDefinition item, int maxSupported )
 	{
-		if ( item != null )
+		if( item != null )
 		{
 			final ItemStack stack = item.stack( 1 );
 
-			if ( stack != null )
+			if( stack != null )
 			{
 				this.registerItem( stack, maxSupported );
 			}
-		}
-	}
-
-	/**
-	 * Registers a specific amount of this upgrade into a specific machine
-	 *
-	 * @param stack machine in which this upgrade can be installed
-	 * @param maxSupported amount how many upgrades can be installed
-	 */
-	public void registerItem( ItemStack stack, int maxSupported )
-	{
-		if ( stack != null )
-		{
-			this.supportedMax.put( stack, maxSupported );
 		}
 	}
 

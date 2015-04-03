@@ -55,7 +55,7 @@ public class Grid implements IGrid
 		this.pivot = center;
 
 		Map<Class<? extends IGridCache>, IGridCache> myCaches = AEApi.instance().registries().gridCache().createCacheInstance( this );
-		for ( Entry<Class<? extends IGridCache>, IGridCache> c : myCaches.entrySet() )
+		for( Entry<Class<? extends IGridCache>, IGridCache> c : myCaches.entrySet() )
 		{
 			Class<? extends IGridCache> key = c.getKey();
 			IGridCache value = c.getValue();
@@ -94,14 +94,14 @@ public class Grid implements IGrid
 	public int size()
 	{
 		int out = 0;
-		for ( Collection<?> x : this.machines.values() )
+		for( Collection<?> x : this.machines.values() )
 			out += x.size();
 		return out;
 	}
 
 	public void remove( GridNode gridNode )
 	{
-		for ( IGridCache c : this.caches.values() )
+		for( IGridCache c : this.caches.values() )
 		{
 			IGridHost machine = gridNode.getMachine();
 			c.removeNode( gridNode, machine );
@@ -109,16 +109,16 @@ public class Grid implements IGrid
 
 		Class<? extends IGridHost> machineClass = gridNode.getMachineClass();
 		Set<IGridNode> nodes = this.machines.get( machineClass );
-		if ( nodes != null )
+		if( nodes != null )
 			nodes.remove( gridNode );
 
 		gridNode.setGridStorage( null );
 
-		if ( this.pivot == gridNode )
+		if( this.pivot == gridNode )
 		{
 			Iterator<IGridNode> n = this.getNodes().iterator();
-			if ( n.hasNext() )
-				this.pivot = ( GridNode ) n.next();
+			if( n.hasNext() )
+				this.pivot = (GridNode) n.next();
 			else
 			{
 				this.pivot = null;
@@ -133,7 +133,7 @@ public class Grid implements IGrid
 		Class<? extends IGridHost> mClass = gridNode.getMachineClass();
 
 		MachineSet nodes = this.machines.get( mClass );
-		if ( nodes == null )
+		if( nodes == null )
 		{
 			nodes = new MachineSet( mClass );
 			this.machines.put( mClass, nodes );
@@ -141,41 +141,41 @@ public class Grid implements IGrid
 		}
 
 		// handle loading grid storages.
-		if ( gridNode.getGridStorage() != null )
+		if( gridNode.getGridStorage() != null )
 		{
 			GridStorage gs = gridNode.getGridStorage();
 			IGrid grid = gs.getGrid();
 
-			if ( grid == null )
+			if( grid == null )
 			{
 				this.myStorage = gs;
 				this.myStorage.setGrid( this );
 
-				for ( IGridCache gc : this.caches.values() )
+				for( IGridCache gc : this.caches.values() )
 					gc.onJoin( this.myStorage );
 			}
-			else if ( grid != this )
+			else if( grid != this )
 			{
-				if ( this.myStorage == null )
+				if( this.myStorage == null )
 				{
 					this.myStorage = WorldSettings.getInstance().getNewGridStorage();
 					this.myStorage.setGrid( this );
 				}
 
 				IGridStorage tmp = new GridStorage();
-				if ( !gs.hasDivided( this.myStorage ) )
+				if( !gs.hasDivided( this.myStorage ) )
 				{
 					gs.addDivided( this.myStorage );
 
-					for ( IGridCache gc : ( ( Grid ) grid ).caches.values() )
+					for( IGridCache gc : ( (Grid) grid ).caches.values() )
 						gc.onSplit( tmp );
 
-					for ( IGridCache gc : this.caches.values() )
+					for( IGridCache gc : this.caches.values() )
 						gc.onJoin( tmp );
 				}
 			}
 		}
-		else if ( this.myStorage == null )
+		else if( this.myStorage == null )
 		{
 			this.myStorage = WorldSettings.getInstance().getNewGridStorage();
 			this.myStorage.setGrid( this );
@@ -187,7 +187,7 @@ public class Grid implements IGrid
 		// track node.
 		nodes.add( gridNode );
 
-		for ( IGridCache cache : this.caches.values() )
+		for( IGridCache cache : this.caches.values() )
 		{
 			IGridHost machine = gridNode.getMachine();
 			cache.addNode( gridNode, machine );
@@ -201,7 +201,7 @@ public class Grid implements IGrid
 	@SuppressWarnings( "unchecked" )
 	public <C extends IGridCache> C getCache( Class<? extends IGridCache> iface )
 	{
-		return ( C ) this.caches.get( iface ).myCache;
+		return (C) this.caches.get( iface ).myCache;
 	}
 
 	@Override
@@ -213,7 +213,7 @@ public class Grid implements IGrid
 	@Override
 	public MENetworkEvent postEventTo( IGridNode node, MENetworkEvent ev )
 	{
-		return this.eventBus.postEventTo( this, ( GridNode ) node, ev );
+		return this.eventBus.postEventTo( this, (GridNode) node, ev );
 	}
 
 	@Override
@@ -228,7 +228,7 @@ public class Grid implements IGrid
 	public IMachineSet getMachines( Class<? extends IGridHost> c )
 	{
 		MachineSet s = this.machines.get( c );
-		if ( s == null )
+		if( s == null )
 			return new MachineSet( c );
 		return s;
 	}
@@ -258,17 +258,17 @@ public class Grid implements IGrid
 
 	public void update()
 	{
-		for ( IGridCache gc : this.caches.values() )
+		for( IGridCache gc : this.caches.values() )
 		{
 			// are there any nodes left?
-			if ( this.pivot != null )
+			if( this.pivot != null )
 				gc.onUpdateTick();
 		}
 	}
 
 	public void saveState()
 	{
-		for ( IGridCache c : this.caches.values() )
+		for( IGridCache c : this.caches.values() )
 		{
 			c.populateGridStorage( this.myStorage );
 		}

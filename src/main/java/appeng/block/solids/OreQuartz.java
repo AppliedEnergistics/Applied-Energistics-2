@@ -21,7 +21,6 @@ package appeng.block.solids;
 
 import java.util.EnumSet;
 import java.util.Random;
-
 import javax.annotation.Nullable;
 
 import net.minecraft.block.material.Material;
@@ -46,6 +45,11 @@ public class OreQuartz extends AEBaseBlock
 	private int boostBrightnessHigh;
 	private boolean enhanceBrightness;
 
+	public OreQuartz()
+	{
+		this( OreQuartz.class );
+	}
+
 	public OreQuartz( Class<? extends OreQuartz> self )
 	{
 		super( self, Material.rock );
@@ -58,26 +62,26 @@ public class OreQuartz extends AEBaseBlock
 	}
 
 	@Override
-	public void postInit()
-	{
-		OreDictionary.registerOre( "oreCertusQuartz", new ItemStack( this ) );
-	}
-
-	@Override
 	protected Class<? extends BaseBlockRender> getRenderer()
 	{
 		return RenderQuartzOre.class;
 	}
 
 	@Override
+	public void postInit()
+	{
+		OreDictionary.registerOre( "oreCertusQuartz", new ItemStack( this ) );
+	}
+
+	@Override
 	public int getMixedBrightnessForBlock( IBlockAccess par1iBlockAccess, int par2, int par3, int par4 )
 	{
 		int j1 = super.getMixedBrightnessForBlock( par1iBlockAccess, par2, par3, par4 );
-		if ( this.enhanceBrightness )
+		if( this.enhanceBrightness )
 		{
 			j1 = Math.max( j1 >> 20, j1 >> 4 );
 
-			if ( j1 > 4 )
+			if( j1 > 4 )
 			{
 				j1 += this.boostBrightnessHigh;
 			}
@@ -86,39 +90,11 @@ public class OreQuartz extends AEBaseBlock
 				j1 += this.boostBrightnessLow;
 			}
 
-			if ( j1 > 15 )
+			if( j1 > 15 )
 				j1 = 15;
 			return j1 << 20 | j1 << 4;
 		}
 		return j1;
-	}
-
-	public OreQuartz()
-	{
-		this( OreQuartz.class );
-	}
-
-	@Nullable
-	@Override
-	public Item getItemDropped( int id, Random rand, int meta )
-	{
-		for ( Item crystalItem : AEApi.instance().definitions().materials().certusQuartzCrystal().maybeItem().asSet() )
-		{
-			return crystalItem;
-		}
-
-		throw new MissingDefinition( "Tried to access certus quartz crystal, even though they are disabled" );
-	}
-
-	@Override
-	public int damageDropped( int id )
-	{
-		for ( ItemStack crystalStack : AEApi.instance().definitions().materials().certusQuartzCrystal().maybeStack( 1 ).asSet() )
-		{
-			return crystalStack.getItemDamage();
-		}
-
-		throw new MissingDefinition( "Tried to access certus quartz crystal, even though they are disabled" );
 	}
 
 	@Override
@@ -127,14 +103,50 @@ public class OreQuartz extends AEBaseBlock
 		return 1 + rand.nextInt( 2 );
 	}
 
+	@Nullable
+	@Override
+	public Item getItemDropped( int id, Random rand, int meta )
+	{
+		for( Item crystalItem : AEApi.instance().definitions().materials().certusQuartzCrystal().maybeItem().asSet() )
+		{
+			return crystalItem;
+		}
+
+		throw new MissingDefinition( "Tried to access certus quartz crystal, even though they are disabled" );
+	}
+
+	@Override
+	public void dropBlockAsItemWithChance( World w, int x, int y, int z, int blockID, float something, int meta )
+	{
+		super.dropBlockAsItemWithChance( w, x, y, z, blockID, something, meta );
+
+		if( this.getItemDropped( blockID, w.rand, meta ) != Item.getItemFromBlock( this ) )
+		{
+			int xp = MathHelper.getRandomIntegerInRange( w.rand, 2, 5 );
+
+			this.dropXpOnBlockBreak( w, x, y, z, xp );
+		}
+	}
+
+	@Override
+	public int damageDropped( int id )
+	{
+		for( ItemStack crystalStack : AEApi.instance().definitions().materials().certusQuartzCrystal().maybeStack( 1 ).asSet() )
+		{
+			return crystalStack.getItemDamage();
+		}
+
+		throw new MissingDefinition( "Tried to access certus quartz crystal, even though they are disabled" );
+	}
+
 	@Override
 	public int quantityDroppedWithBonus( int fortune, Random rand )
 	{
-		if ( fortune > 0 && Item.getItemFromBlock( this ) != this.getItemDropped( 0, rand, fortune ) )
+		if( fortune > 0 && Item.getItemFromBlock( this ) != this.getItemDropped( 0, rand, fortune ) )
 		{
 			int j = rand.nextInt( fortune + 2 ) - 1;
 
-			if ( j < 0 )
+			if( j < 0 )
 			{
 				j = 0;
 			}
@@ -144,19 +156,6 @@ public class OreQuartz extends AEBaseBlock
 		else
 		{
 			return this.quantityDropped( rand );
-		}
-	}
-
-	@Override
-	public void dropBlockAsItemWithChance( World w, int x, int y, int z, int blockID, float something, int meta )
-	{
-		super.dropBlockAsItemWithChance( w, x, y, z, blockID, something, meta );
-
-		if ( this.getItemDropped( blockID, w.rand, meta ) != Item.getItemFromBlock( this ) )
-		{
-			int xp = MathHelper.getRandomIntegerInRange( w.rand, 2, 5 );
-
-			this.dropXpOnBlockBreak( w, x, y, z, xp );
 		}
 	}
 

@@ -26,8 +26,9 @@ package appeng.api.parts;
 
 import net.minecraft.item.ItemStack;
 
-
 //@formatter:off
+
+
 /**
  * This is a pretty basic requirement, once you implement the interface, and createPartFromItemStack
  *
@@ -51,7 +52,6 @@ import net.minecraft.item.ItemStack;
  * }
  * </code>
  * </pre>
- *
  */
 public interface IPartItem
 {

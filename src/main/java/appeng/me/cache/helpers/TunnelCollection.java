@@ -18,11 +18,13 @@
 
 package appeng.me.cache.helpers;
 
+
 import java.util.Collection;
 import java.util.Iterator;
 
 import appeng.parts.p2p.PartP2PTunnel;
 import appeng.util.iterators.NullIterator;
+
 
 public class TunnelCollection<T extends PartP2PTunnel> implements Iterable<T>
 {
@@ -30,20 +32,13 @@ public class TunnelCollection<T extends PartP2PTunnel> implements Iterable<T>
 	final Class clz;
 	Collection<T> tunnelSources;
 
-	public TunnelCollection(Collection<T> src, Class c) {
+	public TunnelCollection( Collection<T> src, Class c )
+	{
 		this.tunnelSources = src;
 		this.clz = c;
 	}
 
-	@Override
-	public Iterator<T> iterator()
-	{
-		if ( this.tunnelSources == null )
-			return new NullIterator<T>();
-		return new TunnelIterator<T>( this.tunnelSources, this.clz );
-	}
-
-	public void setSource(Collection<T> c)
+	public void setSource( Collection<T> c )
 	{
 		this.tunnelSources = c;
 	}
@@ -53,7 +48,15 @@ public class TunnelCollection<T extends PartP2PTunnel> implements Iterable<T>
 		return !this.iterator().hasNext();
 	}
 
-	public boolean matches(Class<? extends PartP2PTunnel> c)
+	@Override
+	public Iterator<T> iterator()
+	{
+		if( this.tunnelSources == null )
+			return new NullIterator<T>();
+		return new TunnelIterator<T>( this.tunnelSources, this.clz );
+	}
+
+	public boolean matches( Class<? extends PartP2PTunnel> c )
 	{
 		return this.clz == c;
 	}

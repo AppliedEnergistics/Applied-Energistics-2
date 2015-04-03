@@ -18,6 +18,7 @@
 
 package appeng.container.implementations;
 
+
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.world.World;
@@ -33,15 +34,16 @@ import appeng.container.AEBaseContainer;
 import appeng.container.slot.SlotInaccessible;
 import appeng.tile.inventory.AppEngInternalInventory;
 
+
 public class ContainerCraftAmount extends AEBaseContainer
 {
 
-	final ITerminalHost priHost;
-
-	public IAEItemStack whatToMake;
 	public final Slot craftingItem;
+	final ITerminalHost priHost;
+	public IAEItemStack whatToMake;
 
-	public ContainerCraftAmount(InventoryPlayer ip, ITerminalHost te) {
+	public ContainerCraftAmount( InventoryPlayer ip, ITerminalHost te )
+	{
 		super( ip, te );
 		this.priHost = te;
 
@@ -58,7 +60,7 @@ public class ContainerCraftAmount extends AEBaseContainer
 
 	public IGrid getGrid()
 	{
-		IActionHost h = ((IActionHost) this.getTarget());
+		IActionHost h = ( (IActionHost) this.getTarget() );
 		return h.getActionableNode().getGrid();
 	}
 
@@ -71,5 +73,4 @@ public class ContainerCraftAmount extends AEBaseContainer
 	{
 		return new PlayerSource( this.getPlayerInv().player, (IActionHost) this.getTarget() );
 	}
-
 }

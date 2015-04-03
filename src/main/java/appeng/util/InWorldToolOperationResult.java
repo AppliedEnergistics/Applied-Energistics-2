@@ -18,6 +18,7 @@
 
 package appeng.util;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,24 +26,43 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockAir;
 import net.minecraft.item.ItemStack;
 
+
 public class InWorldToolOperationResult
 {
 
 	public final ItemStack BlockItem;
 	public final List<ItemStack> Drops;
 
-	public static InWorldToolOperationResult getBlockOperationResult(ItemStack[] items)
+	public InWorldToolOperationResult()
+	{
+		this.BlockItem = null;
+		this.Drops = null;
+	}
+
+	public InWorldToolOperationResult( ItemStack block, List<ItemStack> drops )
+	{
+		this.BlockItem = block;
+		this.Drops = drops;
+	}
+
+	public InWorldToolOperationResult( ItemStack block )
+	{
+		this.BlockItem = block;
+		this.Drops = null;
+	}
+
+	public static InWorldToolOperationResult getBlockOperationResult( ItemStack[] items )
 	{
 		List<ItemStack> temp = new ArrayList<ItemStack>();
 		ItemStack b = null;
 
-		for (ItemStack l : items)
+		for( ItemStack l : items )
 		{
-			if ( b == null )
+			if( b == null )
 			{
 				Block bl = Block.getBlockFromItem( l.getItem() );
 
-				if ( bl != null && !(bl instanceof BlockAir) )
+				if( bl != null && !( bl instanceof BlockAir ) )
 				{
 					b = l;
 					continue;
@@ -53,20 +73,5 @@ public class InWorldToolOperationResult
 		}
 
 		return new InWorldToolOperationResult( b, temp );
-	}
-
-	public InWorldToolOperationResult() {
-		this.BlockItem = null;
-		this.Drops = null;
-	}
-
-	public InWorldToolOperationResult(ItemStack block, List<ItemStack> drops) {
-		this.BlockItem = block;
-		this.Drops = drops;
-	}
-
-	public InWorldToolOperationResult(ItemStack block) {
-		this.BlockItem = block;
-		this.Drops = null;
 	}
 }

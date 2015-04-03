@@ -64,7 +64,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 	{
 		this.setFeature( EnumSet.of( AEFeature.Facades ) );
 		this.setHasSubtypes( true );
-		if ( Platform.isClient() )
+		if( Platform.isClient() )
 			MinecraftForgeClient.registerItemRenderer( this, BusRenderer.INSTANCE );
 	}
 
@@ -87,12 +87,12 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 		try
 		{
 			ItemStack in = this.getTextureItem( is );
-			if ( in != null )
+			if( in != null )
 			{
 				return super.getItemStackDisplayName( is ) + " - " + in.getDisplayName();
 			}
 		}
-		catch ( Throwable ignored )
+		catch( Throwable ignored )
 		{
 
 		}
@@ -107,69 +107,12 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 		list.addAll( this.subTypes );
 	}
 
-	@Override
-	public FacadePart createPartFromItemStack( ItemStack is, ForgeDirection side )
-	{
-		ItemStack in = this.getTextureItem( is );
-		if ( in != null )
-			return new FacadePart( is, side );
-		return null;
-	}
-
-	@Override
-	public ItemStack getTextureItem( ItemStack is )
-	{
-		Block blk = this.getBlock( is );
-		if ( blk != null )
-			return new ItemStack( blk, 1, this.getMeta( is ) );
-		return null;
-	}
-
-	@Override
-	public int getMeta( ItemStack is )
-	{
-		NBTTagCompound data = is.getTagCompound();
-		if ( data != null )
-		{
-			int[] blk = data.getIntArray( "x" );
-			if ( blk != null && blk.length == 2 )
-				return blk[1];
-		}
-		return 0;
-	}
-
-	@Override
-	public Block getBlock( ItemStack is )
-	{
-		NBTTagCompound data = is.getTagCompound();
-		if ( data != null )
-		{
-			if ( data.hasKey( "modid" ) && data.hasKey( "itemname" ) )
-			{
-				return GameRegistry.findBlock( data.getString( "modid" ), data.getString( "itemname" ) );
-			}
-			else
-			{
-				int[] blk = data.getIntArray( "x" );
-				if ( blk != null && blk.length == 2 )
-					return Block.getBlockById( blk[0] );
-			}
-		}
-		return Blocks.glass;
-	}
-
-	public List<ItemStack> getFacades()
-	{
-		this.calculateSubTypes();
-		return this.subTypes;
-	}
-
 	private void calculateSubTypes()
 	{
-		if ( this.subTypes == null )
+		if( this.subTypes == null )
 		{
 			this.subTypes = new ArrayList<ItemStack>();
-			for ( Object blk : Block.blockRegistry )
+			for( Object blk : Block.blockRegistry )
 			{
 				Block b = (Block) blk;
 				try
@@ -178,31 +121,31 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 
 					List<ItemStack> tmpList = new ArrayList<ItemStack>();
 					b.getSubBlocks( item, b.getCreativeTabToDisplayOn(), tmpList );
-					for ( ItemStack l : tmpList )
+					for( ItemStack l : tmpList )
 					{
 						ItemStack facade = this.createFacadeForItem( l, false );
-						if ( facade != null )
+						if( facade != null )
 							this.subTypes.add( facade );
 					}
 				}
-				catch ( Throwable t )
+				catch( Throwable t )
 				{
 					// just absorb..
 				}
 			}
 
-			if ( FacadeConfig.instance.hasChanged() )
+			if( FacadeConfig.instance.hasChanged() )
 				FacadeConfig.instance.save();
 		}
 	}
 
 	public ItemStack createFacadeForItem( ItemStack l, boolean returnItem )
 	{
-		if ( l == null )
+		if( l == null )
 			return null;
 
 		Block b = Block.getBlockFromItem( l.getItem() );
-		if ( b == null || l.hasTagCompound() )
+		if( b == null || l.hasTagCompound() )
 			return null;
 
 		int metadata = l.getItem().getMetadata( l.getItemDamage() );
@@ -212,9 +155,9 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 		boolean disableOre = b instanceof OreQuartz;
 
 		boolean defaultValue = ( b.isOpaqueCube() && !b.getTickRandomly() && !hasTile && !disableOre ) || enableGlass;
-		if ( FacadeConfig.instance.checkEnabled( b, metadata, defaultValue ) )
+		if( FacadeConfig.instance.checkEnabled( b, metadata, defaultValue ) )
 		{
-			if ( returnItem )
+			if( returnItem )
 				return l;
 
 			ItemStack is = new ItemStack( this );
@@ -232,17 +175,74 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 		return null;
 	}
 
+	@Override
+	public FacadePart createPartFromItemStack( ItemStack is, ForgeDirection side )
+	{
+		ItemStack in = this.getTextureItem( is );
+		if( in != null )
+			return new FacadePart( is, side );
+		return null;
+	}
+
+	@Override
+	public ItemStack getTextureItem( ItemStack is )
+	{
+		Block blk = this.getBlock( is );
+		if( blk != null )
+			return new ItemStack( blk, 1, this.getMeta( is ) );
+		return null;
+	}
+
+	@Override
+	public int getMeta( ItemStack is )
+	{
+		NBTTagCompound data = is.getTagCompound();
+		if( data != null )
+		{
+			int[] blk = data.getIntArray( "x" );
+			if( blk != null && blk.length == 2 )
+				return blk[1];
+		}
+		return 0;
+	}
+
+	@Override
+	public Block getBlock( ItemStack is )
+	{
+		NBTTagCompound data = is.getTagCompound();
+		if( data != null )
+		{
+			if( data.hasKey( "modid" ) && data.hasKey( "itemname" ) )
+			{
+				return GameRegistry.findBlock( data.getString( "modid" ), data.getString( "itemname" ) );
+			}
+			else
+			{
+				int[] blk = data.getIntArray( "x" );
+				if( blk != null && blk.length == 2 )
+					return Block.getBlockById( blk[0] );
+			}
+		}
+		return Blocks.glass;
+	}
+
+	public List<ItemStack> getFacades()
+	{
+		this.calculateSubTypes();
+		return this.subTypes;
+	}
+
 	public ItemStack getCreativeTabIcon()
 	{
 		this.calculateSubTypes();
-		if ( this.subTypes.isEmpty() )
+		if( this.subTypes.isEmpty() )
 			return new ItemStack( Items.cake );
 		return this.subTypes.get( 0 );
 	}
 
 	public ItemStack createFromIDs( int[] ids )
 	{
-		for ( ItemStack facadeStack : AEApi.instance().definitions().items().facade().maybeStack( 1 ).asSet() )
+		for( ItemStack facadeStack : AEApi.instance().definitions().items().facade().maybeStack( 1 ).asSet() )
 		{
 			NBTTagCompound facadeTag = new NBTTagCompound();
 			facadeTag.setIntArray( "x", ids.clone() );
@@ -259,11 +259,11 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 	{
 		ItemStack out = this.getTextureItem( is );
 
-		if ( out == null || out.getItem() == null )
+		if( out == null || out.getItem() == null )
 			return false;
 
 		Block blk = Block.getBlockFromItem( out.getItem() );
-		if ( blk != null && blk.canRenderInPass( 1 ) )
+		if( blk != null && blk.canRenderInPass( 1 ) )
 			return true;
 
 		return false;

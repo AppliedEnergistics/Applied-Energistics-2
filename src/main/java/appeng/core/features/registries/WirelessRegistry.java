@@ -34,50 +34,52 @@ import appeng.core.localization.PlayerMessages;
 import appeng.core.sync.GuiBridge;
 import appeng.util.Platform;
 
+
 public final class WirelessRegistry implements IWirelessTermRegistry
 {
 	private final List<IWirelessTermHandler> handlers;
 
-	public WirelessRegistry() {
+	public WirelessRegistry()
+	{
 		this.handlers = new ArrayList<IWirelessTermHandler>();
 	}
 
 	@Override
-	public void registerWirelessHandler(IWirelessTermHandler handler)
+	public void registerWirelessHandler( IWirelessTermHandler handler )
 	{
-		if ( handler != null )
+		if( handler != null )
 			this.handlers.add( handler );
 	}
 
 	@Override
-	public boolean isWirelessTerminal(ItemStack is)
+	public boolean isWirelessTerminal( ItemStack is )
 	{
-		for (IWirelessTermHandler h : this.handlers)
+		for( IWirelessTermHandler h : this.handlers )
 		{
-			if ( h.canHandle( is ) )
+			if( h.canHandle( is ) )
 				return true;
 		}
 		return false;
 	}
 
 	@Override
-	public IWirelessTermHandler getWirelessTerminalHandler(ItemStack is)
+	public IWirelessTermHandler getWirelessTerminalHandler( ItemStack is )
 	{
-		for (IWirelessTermHandler h : this.handlers)
+		for( IWirelessTermHandler h : this.handlers )
 		{
-			if ( h.canHandle( is ) )
+			if( h.canHandle( is ) )
 				return h;
 		}
 		return null;
 	}
 
 	@Override
-	public void openWirelessTerminalGui(ItemStack item, World w, EntityPlayer player)
+	public void openWirelessTerminalGui( ItemStack item, World w, EntityPlayer player )
 	{
-		if ( Platform.isClient() )
+		if( Platform.isClient() )
 			return;
 
-		if ( !this.isWirelessTerminal( item ) )
+		if( !this.isWirelessTerminal( item ) )
 		{
 			player.addChatMessage( PlayerMessages.DeviceNotWirelessTerminal.get() );
 			return;
@@ -85,7 +87,7 @@ public final class WirelessRegistry implements IWirelessTermRegistry
 
 		final IWirelessTermHandler handler = this.getWirelessTerminalHandler( item );
 		final String unparsedKey = handler.getEncryptionKey( item );
-		if ( unparsedKey.length() == 0 )
+		if( unparsedKey.length() == 0 )
 		{
 			player.addChatMessage( PlayerMessages.DeviceNotLinked.get() );
 			return;
@@ -93,19 +95,17 @@ public final class WirelessRegistry implements IWirelessTermRegistry
 
 		final long parsedKey = Long.parseLong( unparsedKey );
 		final ILocatable securityStation = AEApi.instance().registries().locatable().getLocatableBy( parsedKey );
-		if ( securityStation == null )
+		if( securityStation == null )
 		{
 			player.addChatMessage( PlayerMessages.StationCanNotBeLocated.get() );
 			return;
 		}
 
-		if ( handler.hasPower( player, 0.5, item ) )
+		if( handler.hasPower( player, 0.5, item ) )
 		{
 			Platform.openGUI( player, null, null, GuiBridge.GUI_WIRELESS_TERM );
 		}
 		else
 			player.addChatMessage( PlayerMessages.DeviceNotPowered.get() );
-
 	}
-
 }

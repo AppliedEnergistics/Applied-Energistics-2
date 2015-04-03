@@ -61,15 +61,8 @@ public class ToolPortableCell extends AEBasePoweredItem implements IStorageCell,
 {
 	public ToolPortableCell()
 	{
-		super( AEConfig.instance.portableCellBattery, Optional.<String> absent() );
+		super( AEConfig.instance.portableCellBattery, Optional.<String>absent() );
 		this.setFeature( EnumSet.of( AEFeature.PortableCell, AEFeature.StorageCells, AEFeature.PoweredTools ) );
-	}
-
-	@SideOnly(Side.CLIENT)
-	@Override
-	public boolean isFull3D()
-	{
-		return false;
 	}
 
 	@Override
@@ -79,6 +72,13 @@ public class ToolPortableCell extends AEBasePoweredItem implements IStorageCell,
 		return item;
 	}
 
+	@SideOnly( Side.CLIENT )
+	@Override
+	public boolean isFull3D()
+	{
+		return false;
+	}
+
 	@Override
 	public void addCheckedInformation( ItemStack stack, EntityPlayer player, List<String> lines, boolean displayAdditionalInformation )
 	{
@@ -86,10 +86,10 @@ public class ToolPortableCell extends AEBasePoweredItem implements IStorageCell,
 
 		IMEInventory<IAEItemStack> cdi = AEApi.instance().registries().cell().getCellInventory( stack, null, StorageChannel.ITEMS );
 
-		if ( cdi instanceof CellInventoryHandler )
+		if( cdi instanceof CellInventoryHandler )
 		{
-			ICellInventory cd = ( ( ICellInventoryHandler ) cdi ).getCellInv();
-			if ( cd != null )
+			ICellInventory cd = ( (ICellInventoryHandler) cdi ).getCellInv();
+			if( cd != null )
 			{
 				lines.add( cd.getUsedBytes() + " " + GuiText.Of.getLocal() + ' ' + cd.getTotalBytes() + ' ' + GuiText.BytesUsed.getLocal() );
 				lines.add( cd.getStoredItemTypes() + " " + GuiText.Of.getLocal() + ' ' + cd.getTotalItemTypes() + ' ' + GuiText.Types.getLocal() );
@@ -171,7 +171,7 @@ public class ToolPortableCell extends AEBasePoweredItem implements IStorageCell,
 		{
 			return FuzzyMode.valueOf( fz );
 		}
-		catch ( Throwable t )
+		catch( Throwable t )
 		{
 			return FuzzyMode.IGNORE_ALL;
 		}

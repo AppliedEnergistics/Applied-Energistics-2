@@ -57,13 +57,13 @@ public final class ChargerWailaDataProvider extends BaseWailaDataProvider
 	public List<String> getWailaBody( ItemStack itemStack, List<String> currentToolTip, IWailaDataAccessor accessor, IWailaConfigHandler config )
 	{
 		final TileEntity te = accessor.getTileEntity();
-		if ( te instanceof TileCharger )
+		if( te instanceof TileCharger )
 		{
-			final TileCharger charger = ( TileCharger ) te;
+			final TileCharger charger = (TileCharger) te;
 			final IInventory chargerInventory = charger.getInternalInventory();
 			final ItemStack chargingItem = chargerInventory.getStackInSlot( 0 );
 
-			if ( chargingItem != null )
+			if( chargingItem != null )
 			{
 				final String currentInventory = chargingItem.getDisplayName();
 				final EntityPlayer player = accessor.getPlayer();

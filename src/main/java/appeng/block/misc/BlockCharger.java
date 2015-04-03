@@ -48,33 +48,17 @@ import appeng.tile.AEBaseTile;
 import appeng.tile.misc.TileCharger;
 import appeng.util.Platform;
 
+
 public class BlockCharger extends AEBaseBlock implements ICustomCollision
 {
 
-	public BlockCharger() {
+	public BlockCharger()
+	{
 		super( BlockCharger.class, Material.iron );
 		this.setFeature( EnumSet.of( AEFeature.Core ) );
 		this.setTileEntity( TileCharger.class );
 		this.setLightOpacity( 2 );
 		this.isFullSize = this.isOpaque = false;
-	}
-
-	@Override
-	public boolean onActivated(World w, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
-	{
-		if ( player.isSneaking() )
-			return false;
-
-		if ( Platform.isServer() )
-		{
-			TileCharger tc = this.getTileEntity( w, x, y, z );
-			if ( tc != null )
-			{
-				tc.activate( player );
-			}
-		}
-
-		return true;
 	}
 
 	@Override
@@ -84,29 +68,47 @@ public class BlockCharger extends AEBaseBlock implements ICustomCollision
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
-	public void randomDisplayTick(World w, int x, int y, int z, Random r)
+	public boolean onActivated( World w, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ )
 	{
-		if ( !AEConfig.instance.enableEffects )
+		if( player.isSneaking() )
+			return false;
+
+		if( Platform.isServer() )
+		{
+			TileCharger tc = this.getTileEntity( w, x, y, z );
+			if( tc != null )
+			{
+				tc.activate( player );
+			}
+		}
+
+		return true;
+	}
+
+	@Override
+	@SideOnly( Side.CLIENT )
+	public void randomDisplayTick( World w, int x, int y, int z, Random r )
+	{
+		if( !AEConfig.instance.enableEffects )
 			return;
 
-		if ( r.nextFloat() < 0.98 )
+		if( r.nextFloat() < 0.98 )
 			return;
 
 		AEBaseTile tile = this.getTileEntity( w, x, y, z );
-		if ( tile instanceof TileCharger )
+		if( tile instanceof TileCharger )
 		{
 			TileCharger tc = (TileCharger) tile;
 
-			if ( AEApi.instance().definitions().materials().certusQuartzCrystalCharged().isSameAs( tc.getStackInSlot( 0 ) ) )
+			if( AEApi.instance().definitions().materials().certusQuartzCrystalCharged().isSameAs( tc.getStackInSlot( 0 ) ) )
 			{
 				double xOff = 0.0;
 				double yOff = 0.0;
 				double zOff = 0.0;
 
-				for (int bolts = 0; bolts < 3; bolts++)
+				for( int bolts = 0; bolts < 3; bolts++ )
 				{
-					if ( CommonHelper.proxy.shouldAddParticles( r ) )
+					if( CommonHelper.proxy.shouldAddParticles( r ) )
 					{
 						LightningFX fx = new LightningFX( w, xOff + 0.5 + x, yOff + 0.5 + y, zOff + 0.5 + z, 0.0D, 0.0D, 0.0D );
 						Minecraft.getMinecraft().effectRenderer.addEffect( fx );
@@ -117,54 +119,54 @@ public class BlockCharger extends AEBaseBlock implements ICustomCollision
 	}
 
 	@Override
-	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool(World w, int x, int y, int z, Entity e, boolean isVisual)
+	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool( World w, int x, int y, int z, Entity e, boolean isVisual )
 	{
 		TileCharger tile = this.getTileEntity( w, x, y, z );
-		if ( tile != null )
+		if( tile != null )
 		{
 			double twoPixels = 2.0 / 16.0;
 			ForgeDirection up = tile.getUp();
 			ForgeDirection forward = tile.getForward();
 			AxisAlignedBB bb = AxisAlignedBB.getBoundingBox( twoPixels, twoPixels, twoPixels, 1.0 - twoPixels, 1.0 - twoPixels, 1.0 - twoPixels );
 
-			if ( up.offsetX != 0 )
+			if( up.offsetX != 0 )
 			{
 				bb.minX = 0;
 				bb.maxX = 1;
 			}
-			if ( up.offsetY != 0 )
+			if( up.offsetY != 0 )
 			{
 				bb.minY = 0;
 				bb.maxY = 1;
 			}
-			if ( up.offsetZ != 0 )
+			if( up.offsetZ != 0 )
 			{
 				bb.minZ = 0;
 				bb.maxZ = 1;
 			}
 
-			switch (forward)
+			switch( forward )
 			{
-			case DOWN:
-				bb.maxY = 1;
-				break;
-			case UP:
-				bb.minY = 0;
-				break;
-			case NORTH:
-				bb.maxZ = 1;
-				break;
-			case SOUTH:
-				bb.minZ = 0;
-				break;
-			case EAST:
-				bb.minX = 0;
-				break;
-			case WEST:
-				bb.maxX = 1;
-				break;
-			default:
-				break;
+				case DOWN:
+					bb.maxY = 1;
+					break;
+				case UP:
+					bb.minY = 0;
+					break;
+				case NORTH:
+					bb.maxZ = 1;
+					break;
+				case SOUTH:
+					bb.minZ = 0;
+					break;
+				case EAST:
+					bb.minX = 0;
+					break;
+				case WEST:
+					bb.maxX = 1;
+					break;
+				default:
+					break;
 			}
 
 			return Collections.singletonList( bb );
@@ -173,7 +175,7 @@ public class BlockCharger extends AEBaseBlock implements ICustomCollision
 	}
 
 	@Override
-	public void addCollidingBlockToList(World w, int x, int y, int z, AxisAlignedBB bb, List<AxisAlignedBB> out, Entity e)
+	public void addCollidingBlockToList( World w, int x, int y, int z, AxisAlignedBB bb, List<AxisAlignedBB> out, Entity e )
 	{
 		out.add( AxisAlignedBB.getBoundingBox( 0.0, 0.0, 0.0, 1.0, 1.0, 1.0 ) );
 	}

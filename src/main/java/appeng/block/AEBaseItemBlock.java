@@ -18,6 +18,7 @@
 
 package appeng.block;
 
+
 import java.util.List;
 
 import net.minecraft.block.Block;
@@ -42,71 +43,78 @@ import appeng.me.helpers.IGridProxyable;
 import appeng.tile.AEBaseTile;
 import appeng.util.Platform;
 
+
 public class AEBaseItemBlock extends ItemBlock
 {
 
 	final AEBaseBlock blockType;
 
-	public AEBaseItemBlock(Block id)
+	public AEBaseItemBlock( Block id )
 	{
 		super( id );
 		this.blockType = (AEBaseBlock) id;
 		this.hasSubtypes = this.blockType.hasSubtypes;
 
-		if ( Platform.isClient() )
+		if( Platform.isClient() )
 			MinecraftForgeClient.registerItemRenderer( this, ItemRenderer.INSTANCE );
 	}
 
 	@Override
-	public int getMetadata(int dmg)
+	public int getMetadata( int dmg )
 	{
-		if ( this.hasSubtypes )
+		if( this.hasSubtypes )
 			return dmg;
 		return 0;
 	}
 
 	@Override
-	public String getUnlocalizedName(ItemStack is)
-	{
-		return this.blockType.getUnlocalizedName( is );
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	@SuppressWarnings("unchecked")
-	public final void addInformation(ItemStack itemStack, EntityPlayer player, List toolTip, boolean advancedTooltips)
+	@SideOnly( Side.CLIENT )
+	@SuppressWarnings( "unchecked" )
+	public final void addInformation( ItemStack itemStack, EntityPlayer player, List toolTip, boolean advancedTooltips )
 	{
 		this.addCheckedInformation( itemStack, player, toolTip, advancedTooltips );
 	}
 
-	@SideOnly(Side.CLIENT)
-	public void addCheckedInformation(ItemStack itemStack, EntityPlayer player, List<String> toolTip, boolean advancedToolTips)
+	@SideOnly( Side.CLIENT )
+	public void addCheckedInformation( ItemStack itemStack, EntityPlayer player, List<String> toolTip, boolean advancedToolTips )
 	{
 		this.blockType.addInformation( itemStack, player, toolTip, advancedToolTips );
 	}
 
 	@Override
-	public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World w, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int metadata)
+	public boolean isBookEnchantable( ItemStack itemstack1, ItemStack itemstack2 )
+	{
+		return false;
+	}
+
+	@Override
+	public String getUnlocalizedName( ItemStack is )
+	{
+		return this.blockType.getUnlocalizedName( is );
+	}
+
+	@Override
+	public boolean placeBlockAt( ItemStack stack, EntityPlayer player, World w, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int metadata )
 	{
 		ForgeDirection up = ForgeDirection.UNKNOWN;
 		ForgeDirection forward = ForgeDirection.UNKNOWN;
 
 		IOrientable ori = null;
 
-		if ( this.blockType.hasBlockTileEntity() )
+		if( this.blockType.hasBlockTileEntity() )
 		{
-			if ( this.blockType instanceof BlockLightDetector )
+			if( this.blockType instanceof BlockLightDetector )
 			{
 				up = ForgeDirection.getOrientation( side );
-				if ( up == ForgeDirection.UP || up == ForgeDirection.DOWN )
+				if( up == ForgeDirection.UP || up == ForgeDirection.DOWN )
 					forward = ForgeDirection.SOUTH;
 				else
 					forward = ForgeDirection.UP;
 			}
-			else if ( this.blockType instanceof BlockWireless || this.blockType instanceof BlockSkyCompass )
+			else if( this.blockType instanceof BlockWireless || this.blockType instanceof BlockSkyCompass )
 			{
 				forward = ForgeDirection.getOrientation( side );
-				if ( forward == ForgeDirection.UP || forward == ForgeDirection.DOWN )
+				if( forward == ForgeDirection.UP || forward == ForgeDirection.DOWN )
 					up = ForgeDirection.SOUTH;
 				else
 					up = ForgeDirection.UP;
@@ -115,31 +123,31 @@ public class AEBaseItemBlock extends ItemBlock
 			{
 				up = ForgeDirection.UP;
 
-				byte rotation = (byte) (MathHelper.floor_double( (player.rotationYaw * 4F) / 360F + 2.5D ) & 3);
+				byte rotation = (byte) ( MathHelper.floor_double( ( player.rotationYaw * 4F ) / 360F + 2.5D ) & 3 );
 
-				switch (rotation)
+				switch( rotation )
 				{
-				default:
-				case 0:
-					forward = ForgeDirection.SOUTH;
-					break;
-				case 1:
-					forward = ForgeDirection.WEST;
-					break;
-				case 2:
-					forward = ForgeDirection.NORTH;
-					break;
-				case 3:
-					forward = ForgeDirection.EAST;
-					break;
+					default:
+					case 0:
+						forward = ForgeDirection.SOUTH;
+						break;
+					case 1:
+						forward = ForgeDirection.WEST;
+						break;
+					case 2:
+						forward = ForgeDirection.NORTH;
+						break;
+					case 3:
+						forward = ForgeDirection.EAST;
+						break;
 				}
 
-				if ( player.rotationPitch > 65 )
+				if( player.rotationPitch > 65 )
 				{
 					up = forward.getOpposite();
 					forward = ForgeDirection.UP;
 				}
-				else if ( player.rotationPitch < -65 )
+				else if( player.rotationPitch < -65 )
 				{
 					up = forward.getOpposite();
 					forward = ForgeDirection.DOWN;
@@ -147,45 +155,45 @@ public class AEBaseItemBlock extends ItemBlock
 			}
 		}
 
-		if ( this.blockType instanceof IOrientableBlock )
+		if( this.blockType instanceof IOrientableBlock )
 		{
-			ori = ((IOrientableBlock) this.blockType).getOrientable( w, x, y, z );
+			ori = ( (IOrientableBlock) this.blockType ).getOrientable( w, x, y, z );
 			up = ForgeDirection.getOrientation( side );
 			forward = ForgeDirection.SOUTH;
-			if ( up.offsetY == 0 )
+			if( up.offsetY == 0 )
 				forward = ForgeDirection.UP;
 
 			ori.setOrientation( forward, up );
 		}
 
-		if ( !this.blockType.isValidOrientation( w, x, y, z, forward, up ) )
+		if( !this.blockType.isValidOrientation( w, x, y, z, forward, up ) )
 			return false;
 
-		if ( super.placeBlockAt( stack, player, w, x, y, z, side, hitX, hitY, hitZ, metadata ) )
+		if( super.placeBlockAt( stack, player, w, x, y, z, side, hitX, hitY, hitZ, metadata ) )
 		{
-			if ( this.blockType.hasBlockTileEntity() && !(this.blockType instanceof BlockLightDetector) )
+			if( this.blockType.hasBlockTileEntity() && !( this.blockType instanceof BlockLightDetector ) )
 			{
 				AEBaseTile tile = this.blockType.getTileEntity( w, x, y, z );
 				ori = tile;
 
-				if ( tile == null )
+				if( tile == null )
 					return true;
 
-				if ( ori.canBeRotated() && !this.blockType.hasCustomRotation() )
+				if( ori.canBeRotated() && !this.blockType.hasCustomRotation() )
 				{
-					if ( ori.getForward() == null || ori.getUp() == null || // null
+					if( ori.getForward() == null || ori.getUp() == null || // null
 							tile.getForward() == ForgeDirection.UNKNOWN || ori.getUp() == ForgeDirection.UNKNOWN )
 						ori.setOrientation( forward, up );
 				}
 
-				if ( tile instanceof IGridProxyable )
+				if( tile instanceof IGridProxyable )
 				{
-					((IGridProxyable) tile).getProxy().setOwner( player );
+					( (IGridProxyable) tile ).getProxy().setOwner( player );
 				}
 
 				tile.onPlacement( stack, player, side );
 			}
-			else if ( this.blockType instanceof IOrientableBlock )
+			else if( this.blockType instanceof IOrientableBlock )
 			{
 				ori.setOrientation( forward, up );
 			}
@@ -194,11 +202,4 @@ public class AEBaseItemBlock extends ItemBlock
 		}
 		return false;
 	}
-
-	@Override
-	public boolean isBookEnchantable(ItemStack itemstack1, ItemStack itemstack2)
-	{
-		return false;
-	}
-
 }

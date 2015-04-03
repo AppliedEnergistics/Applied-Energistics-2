@@ -66,13 +66,13 @@ public abstract class UpgradeInventory extends AppEngInternalInventory implement
 	@Override
 	public boolean isItemValidForSlot( int i, ItemStack itemstack )
 	{
-		if ( itemstack == null )
+		if( itemstack == null )
 			return false;
 		Item it = itemstack.getItem();
-		if ( it instanceof IUpgradeModule )
+		if( it instanceof IUpgradeModule )
 		{
 			Upgrades u = ( (IUpgradeModule) it ).getType( itemstack );
-			if ( u != null )
+			if( u != null )
 			{
 				return this.getInstalledUpgrades( u ) < this.getMaxInstalled( u );
 			}
@@ -82,10 +82,10 @@ public abstract class UpgradeInventory extends AppEngInternalInventory implement
 
 	public int getInstalledUpgrades( Upgrades u )
 	{
-		if ( !this.cached )
+		if( !this.cached )
 			this.updateUpgradeInfo();
 
-		switch ( u )
+		switch( u )
 		{
 			case CAPACITY:
 				return this.capacityUpgrades;
@@ -111,13 +111,13 @@ public abstract class UpgradeInventory extends AppEngInternalInventory implement
 		this.cached = true;
 		this.inverterUpgrades = this.capacityUpgrades = this.redstoneUpgrades = this.speedUpgrades = this.fuzzyUpgrades = this.craftingUpgrades = 0;
 
-		for ( ItemStack is : this )
+		for( ItemStack is : this )
 		{
-			if ( is == null || is.getItem() == null || !( is.getItem() instanceof IUpgradeModule ) )
+			if( is == null || is.getItem() == null || !( is.getItem() instanceof IUpgradeModule ) )
 				continue;
 
 			Upgrades myUpgrade = ( (IUpgradeModule) is.getItem() ).getType( is );
-			switch ( myUpgrade )
+			switch( myUpgrade )
 			{
 				case CAPACITY:
 					this.capacityUpgrades++;
@@ -167,7 +167,7 @@ public abstract class UpgradeInventory extends AppEngInternalInventory implement
 	public void onChangeInventory( IInventory inv, int slot, InvOperation mc, ItemStack removedStack, ItemStack newStack )
 	{
 		this.cached = false;
-		if ( this.parent != null && Platform.isServer() )
+		if( this.parent != null && Platform.isServer() )
 			this.parent.onChangeInventory( inv, slot, mc, removedStack, newStack );
 	}
 }

@@ -38,7 +38,8 @@ public class PlayerDifferentiator
 	 * - dead
 	 * - fake
 	 *
- 	 * @param player to be checked player
+	 * @param player to be checked player
+	 *
 	 * @return true if {@param player} is not a real player
 	 */
 	public boolean isNoPlayer( EntityPlayer player )

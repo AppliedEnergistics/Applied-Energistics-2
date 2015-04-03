@@ -18,6 +18,7 @@
 
 package appeng.parts.layers;
 
+
 import net.minecraftforge.common.util.ForgeDirection;
 
 import cofh.api.energy.IEnergyConnection;
@@ -33,53 +34,52 @@ public class LayerIEnergyHandler extends LayerBase implements IEnergyHandler
 {
 
 	@Override
-	public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate)
+	public int receiveEnergy( ForgeDirection from, int maxReceive, boolean simulate )
 	{
 		IPart part = this.getPart( from );
-		if ( part instanceof IEnergyReceiver )
-			return ((IEnergyReceiver) part).receiveEnergy( from, maxReceive, simulate );
+		if( part instanceof IEnergyReceiver )
+			return ( (IEnergyReceiver) part ).receiveEnergy( from, maxReceive, simulate );
 
 		return 0;
 	}
 
 	@Override
-	public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate)
+	public int extractEnergy( ForgeDirection from, int maxExtract, boolean simulate )
 	{
 		IPart part = this.getPart( from );
-		if ( part instanceof IEnergyProvider )
-			return ((IEnergyProvider) part).extractEnergy( from, maxExtract, simulate );
+		if( part instanceof IEnergyProvider )
+			return ( (IEnergyProvider) part ).extractEnergy( from, maxExtract, simulate );
 
 		return 0;
 	}
 
 	@Override
-	public int getEnergyStored(ForgeDirection from)
+	public int getEnergyStored( ForgeDirection from )
 	{
 		IPart part = this.getPart( from );
-		if ( part instanceof IEnergyProvider )
-			return ((IEnergyProvider) part).getEnergyStored( from );
+		if( part instanceof IEnergyProvider )
+			return ( (IEnergyProvider) part ).getEnergyStored( from );
 
 		return 0;
 	}
 
 	@Override
-	public int getMaxEnergyStored(ForgeDirection from)
+	public int getMaxEnergyStored( ForgeDirection from )
 	{
 		IPart part = this.getPart( from );
-		if ( part instanceof IEnergyProvider )
-			return ((IEnergyProvider) part).getMaxEnergyStored( from );
+		if( part instanceof IEnergyProvider )
+			return ( (IEnergyProvider) part ).getMaxEnergyStored( from );
 
 		return 0;
 	}
 
 	@Override
-	public boolean canConnectEnergy(ForgeDirection from)
+	public boolean canConnectEnergy( ForgeDirection from )
 	{
 		IPart part = this.getPart( from );
-		if ( part instanceof IEnergyConnection )
-			return ((IEnergyConnection) part).canConnectEnergy( from );
+		if( part instanceof IEnergyConnection )
+			return ( (IEnergyConnection) part ).canConnectEnergy( from );
 
 		return false;
 	}
-
 }

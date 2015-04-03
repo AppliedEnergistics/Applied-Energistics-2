@@ -46,15 +46,17 @@ import appeng.core.AEConfig;
 import appeng.core.localization.GuiText;
 import appeng.util.Platform;
 
+
 public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 {
 
 	final ItemRepo repo;
-	GuiImgButton units;
-
 	final int rows = 4;
+	GuiImgButton units;
+	int tooltip = -1;
 
-	public GuiNetworkStatus(InventoryPlayer inventoryPlayer, INetworkTool te) {
+	public GuiNetworkStatus( InventoryPlayer inventoryPlayer, INetworkTool te )
+	{
 		super( new ContainerNetworkStatus( inventoryPlayer, te ) );
 		this.ySize = 153;
 		this.xSize = 195;
@@ -64,13 +66,13 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 	}
 
 	@Override
-	protected void actionPerformed(GuiButton btn)
+	protected void actionPerformed( GuiButton btn )
 	{
 		super.actionPerformed( btn );
 
 		boolean backwards = Mouse.isButtonDown( 1 );
 
-		if ( btn == this.units )
+		if( btn == this.units )
 		{
 			AEConfig.instance.nextPowerUnit( backwards );
 			this.units.set( AEConfig.instance.selectedPowerUnit() );
@@ -86,62 +88,34 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 		this.buttonList.add( this.units );
 	}
 
-	public void postUpdate(List<IAEItemStack> list)
-	{
-		this.repo.clear();
-
-		for (IAEItemStack is : list)
-			this.repo.postUpdate( is );
-
-		this.repo.updateView();
-		this.setScrollBar();
-	}
-
-	private void setScrollBar()
-	{
-		int size = this.repo.size();
-		this.myScrollBar.setTop( 39 ).setLeft( 175 ).setHeight( 78 );
-		this.myScrollBar.setRange( 0, (size + 4) / 5 - this.rows, 1 );
-	}
-
 	@Override
-	public void drawBG(int offsetX, int offsetY, int mouseX, int mouseY)
-	{
-		this.bindTexture( "guis/networkstatus.png" );
-		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize );
-	}
-
-	int tooltip = -1;
-
-	@Override
-	public void drawScreen(int mouse_x, int mouse_y, float btn)
+	public void drawScreen( int mouse_x, int mouse_y, float btn )
 	{
 		int x = 0;
 		int y = 0;
 
-		int gx = (this.width - this.xSize) / 2;
-		int gy = (this.height - this.ySize) / 2;
+		int gx = ( this.width - this.xSize ) / 2;
+		int gy = ( this.height - this.ySize ) / 2;
 
 		this.tooltip = -1;
 
-		for (int z = 0; z <= 4 * 5; z++)
+		for( int z = 0; z <= 4 * 5; z++ )
 		{
 			int minX = gx + 14 + x * 31;
 			int minY = gy + 41 + y * 18;
 
-			if ( minX < mouse_x && minX + 28 > mouse_x )
+			if( minX < mouse_x && minX + 28 > mouse_x )
 			{
-				if ( minY < mouse_y && minY + 20 > mouse_y )
+				if( minY < mouse_y && minY + 20 > mouse_y )
 				{
 					this.tooltip = z;
 					break;
 				}
-
 			}
 
 			x++;
 
-			if ( x > 4 )
+			if( x > 4 )
 			{
 				y++;
 				x = 0;
@@ -152,7 +126,7 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 	}
 
 	@Override
-	public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY)
+	public void drawFG( int offsetX, int offsetY, int mouseX, int mouseY )
 	{
 		ContainerNetworkStatus ns = (ContainerNetworkStatus) this.inventorySlots;
 
@@ -177,32 +151,31 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 		int toolPosX = 0;
 		int toolPosY = 0;
 
-		for (int z = viewStart; z < Math.min( viewEnd, this.repo.size() ); z++)
+		for( int z = viewStart; z < Math.min( viewEnd, this.repo.size() ); z++ )
 		{
 			IAEItemStack refStack = this.repo.getReferenceItem( z );
-			if ( refStack != null )
+			if( refStack != null )
 			{
 				GL11.glPushMatrix();
 				GL11.glScaled( 0.5, 0.5, 0.5 );
 
 				String str = Long.toString( refStack.getStackSize() );
-				if ( refStack.getStackSize() >= 10000 )
+				if( refStack.getStackSize() >= 10000 )
 					str = Long.toString( refStack.getStackSize() / 1000 ) + 'k';
 
 				int w = this.fontRendererObj.getStringWidth( str );
-				this.fontRendererObj.drawString( str, (int) ((x * sectionLength + xo + sectionLength - 19 - (w * 0.5)) * 2), (y * 18 + yo + 6) * 2,
-						4210752 );
+				this.fontRendererObj.drawString( str, (int) ( ( x * sectionLength + xo + sectionLength - 19 - ( w * 0.5 ) ) * 2 ), ( y * 18 + yo + 6 ) * 2, 4210752 );
 
 				GL11.glPopMatrix();
 				int posX = x * sectionLength + xo + sectionLength - 18;
 				int posY = y * 18 + yo;
 
-				if ( this.tooltip == z - viewStart )
+				if( this.tooltip == z - viewStart )
 				{
 					toolTip = Platform.getItemDisplayName( this.repo.getItem( z ) );
 
 					toolTip += ( '\n' + GuiText.Installed.getLocal() + ": " + ( refStack.getStackSize() ) );
-					if ( refStack.getCountRequestable() > 0 )
+					if( refStack.getCountRequestable() > 0 )
 						toolTip += ( '\n' + GuiText.EnergyDrain.getLocal() + ": " + Platform.formatPowerLong( refStack.getCountRequestable(), true ) );
 
 					toolPosX = x * sectionLength + xo + sectionLength - 8;
@@ -213,31 +186,54 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 
 				x++;
 
-				if ( x > 4 )
+				if( x > 4 )
 				{
 					y++;
 					x = 0;
 				}
 			}
-
 		}
 
-		if ( this.tooltip >= 0 && toolTip.length() > 0 )
+		if( this.tooltip >= 0 && toolTip.length() > 0 )
 		{
 			GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS );
 			this.drawTooltip( toolPosX, toolPosY + 10, 0, toolTip );
 			GL11.glPopAttrib();
 		}
+	}
 
+	@Override
+	public void drawBG( int offsetX, int offsetY, int mouseX, int mouseY )
+	{
+		this.bindTexture( "guis/networkstatus.png" );
+		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize );
+	}
+
+	public void postUpdate( List<IAEItemStack> list )
+	{
+		this.repo.clear();
+
+		for( IAEItemStack is : list )
+			this.repo.postUpdate( is );
+
+		this.repo.updateView();
+		this.setScrollBar();
+	}
+
+	private void setScrollBar()
+	{
+		int size = this.repo.size();
+		this.myScrollBar.setTop( 39 ).setLeft( 175 ).setHeight( 78 );
+		this.myScrollBar.setRange( 0, ( size + 4 ) / 5 - this.rows, 1 );
 	}
 
 	// @Override - NEI
-	public List<String> handleItemTooltip(ItemStack stack, int mouseX, int mouseY, List<String> currentToolTip)
+	public List<String> handleItemTooltip( ItemStack stack, int mouseX, int mouseY, List<String> currentToolTip )
 	{
-		if ( stack != null )
+		if( stack != null )
 		{
 			Slot s = this.getSlot( mouseX, mouseY );
-			if ( s instanceof SlotME )
+			if( s instanceof SlotME )
 			{
 				IAEItemStack myStack = null;
 
@@ -246,15 +242,14 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 					SlotME theSlotField = (SlotME) s;
 					myStack = theSlotField.getAEStack();
 				}
-				catch (Throwable ignore)
+				catch( Throwable ignore )
 				{
 				}
 
-				if ( myStack != null )
+				if( myStack != null )
 				{
-					while (currentToolTip.size() > 1)
+					while( currentToolTip.size() > 1 )
 						currentToolTip.remove( 1 );
-
 				}
 			}
 		}
@@ -262,10 +257,10 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 	}
 
 	// Vanilla version...
-	protected void drawItemStackTooltip(ItemStack stack, int x, int y)
+	protected void drawItemStackTooltip( ItemStack stack, int x, int y )
 	{
 		Slot s = this.getSlot( x, y );
-		if ( s instanceof SlotME && stack != null )
+		if( s instanceof SlotME && stack != null )
 		{
 			IAEItemStack myStack = null;
 
@@ -274,18 +269,18 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 				SlotME theSlotField = (SlotME) s;
 				myStack = theSlotField.getAEStack();
 			}
-			catch (Throwable ignore)
+			catch( Throwable ignore )
 			{
 			}
 
-			if ( myStack != null )
+			if( myStack != null )
 			{
 				List currentToolTip = stack.getTooltip( this.mc.thePlayer, this.mc.gameSettings.advancedItemTooltips );
 
-				while (currentToolTip.size() > 1)
+				while( currentToolTip.size() > 1 )
 					currentToolTip.remove( 1 );
 
-				currentToolTip.add( GuiText.Installed.getLocal() + ": " + (myStack.getStackSize()) );
+				currentToolTip.add( GuiText.Installed.getLocal() + ": " + ( myStack.getStackSize() ) );
 				currentToolTip.add( GuiText.EnergyDrain.getLocal() + ": " + Platform.formatPowerLong( myStack.getCountRequestable(), true ) );
 
 				this.drawTooltip( x, y, 0, join( currentToolTip, "\n" ) );

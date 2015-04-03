@@ -109,6 +109,17 @@ public class AppEngRenderItem extends RenderItem
 		}
 	}
 
+	private void renderQuad( Tessellator par1Tessellator, int par2, int par3, int par4, int par5, int par6 )
+	{
+		par1Tessellator.startDrawingQuads();
+		par1Tessellator.setColorOpaque_I( par6 );
+		par1Tessellator.addVertex( par2, par3, 0.0D );
+		par1Tessellator.addVertex( par2, par3 + par5, 0.0D );
+		par1Tessellator.addVertex( par2 + par4, par3 + par5, 0.0D );
+		par1Tessellator.addVertex( par2 + par4, par3, 0.0D );
+		par1Tessellator.draw();
+	}
+
 	private String getToBeRenderedStackSize( long originalSize )
 	{
 		if( AEConfig.instance.useTerminalUseLargeFont() )
@@ -119,16 +130,5 @@ public class AppEngRenderItem extends RenderItem
 		{
 			return NUMBER_CONVERTER.toHumanReadableForm( originalSize );
 		}
-	}
-
-	private void renderQuad( Tessellator par1Tessellator, int par2, int par3, int par4, int par5, int par6 )
-	{
-		par1Tessellator.startDrawingQuads();
-		par1Tessellator.setColorOpaque_I( par6 );
-		par1Tessellator.addVertex( par2, par3, 0.0D );
-		par1Tessellator.addVertex( par2, par3 + par5, 0.0D );
-		par1Tessellator.addVertex( par2 + par4, par3 + par5, 0.0D );
-		par1Tessellator.addVertex( par2 + par4, par3, 0.0D );
-		par1Tessellator.draw();
 	}
 }

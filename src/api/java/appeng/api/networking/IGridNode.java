@@ -33,14 +33,13 @@ import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.IAppEngApi;
 import appeng.api.util.IReadOnlyCollection;
 
+
 /**
- *
  * Gives you a view into your Nodes connections and information.
  *
  * updateState, getGrid, destroy are required to implement a proper IGridHost.
  *
  * Don't Implement; Acquire from {@link IAppEngApi}.createGridNode
- *
  */
 public interface IGridNode
 {
@@ -51,7 +50,7 @@ public interface IGridNode
 	 *
 	 * @param visitor visitor
 	 */
-	void beginVisit(IGridVisitor visitor);
+	void beginVisit( IGridVisitor visitor );
 
 	/**
 	 * inform the node that your IGridBlock has changed its internal state, and force the node to update.
@@ -61,7 +60,6 @@ public interface IGridNode
 	 *
 	 * If your entity is not in the world, or if you IGridHost returns a different node for the same side you will
 	 * likely crash the game.
-	 *
 	 */
 	void updateState();
 
@@ -91,7 +89,6 @@ public interface IGridNode
 	World getWorld();
 
 	/**
-	 *
 	 * @return a set of the connected sides, UNKNOWN represents an invisible connection
 	 */
 	EnumSet<ForgeDirection> getConnectedSides();
@@ -122,23 +119,23 @@ public interface IGridNode
 	 *
 	 * Important: You must call this before updateState.
 	 *
-	 * @param name nbt name
+	 * @param name     nbt name
 	 * @param nodeData to be loaded data
 	 */
-	void loadFromNBT(String name, NBTTagCompound nodeData);
+	void loadFromNBT( String name, NBTTagCompound nodeData );
 
 	/**
 	 * this should be called for each node you maintain, you can save all your nodes to the same tag with different
 	 * names, if you fail to complete the load / save procedure, network state may be lost between game load/saves.
 	 *
-	 * @param name nbt name
+	 * @param name     nbt name
 	 * @param nodeData to be saved data
 	 */
-	void saveToNBT(String name, NBTTagCompound nodeData);
+	void saveToNBT( String name, NBTTagCompound nodeData );
 
 	/**
 	 * @return if the node's channel requirements are currently met, use this for display purposes, use isActive for
-	 *         status.
+	 * status.
 	 */
 	boolean meetsChannelRequirements();
 
@@ -146,9 +143,15 @@ public interface IGridNode
 	 * see if this node has a certain flag
 	 *
 	 * @param flag flags
+	 *
 	 * @return true if has flag
 	 */
-	boolean hasFlag(GridFlags flag);
+	boolean hasFlag( GridFlags flag );
+
+	/**
+	 * @return the ownerID this represents the person who placed the node.
+	 */
+	int getPlayerID();
 
 	/**
 	 * tell the node who was responsible for placing it, failure to do this may result in in-compatibility with the
@@ -156,11 +159,5 @@ public interface IGridNode
 	 *
 	 * @param playerID new player id
 	 */
-	void setPlayerID(int playerID);
-
-	/**
-	 * @return the ownerID this represents the person who placed the node.
-	 */
-	int getPlayerID();
-
+	void setPlayerID( int playerID );
 }

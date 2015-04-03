@@ -23,9 +23,11 @@
 
 package appeng.api.networking.energy;
 
+
 import appeng.api.config.Actionable;
 import appeng.api.networking.IGridCache;
 import appeng.api.networking.events.MENetworkPowerStatusChange;
+
 
 /**
  * AE's Power system.
@@ -40,7 +42,7 @@ public interface IEnergyGrid extends IGridCache, IEnergySource, IEnergyGridProvi
 
 	/**
 	 * @return the average power drain over the past 10 ticks, includes idle usage during this time, and all use of
-	 *         extractPower.
+	 * extractPower.
 	 */
 	double getAvgPowerUsage();
 
@@ -72,10 +74,9 @@ public interface IEnergyGrid extends IGridCache, IEnergySource, IEnergyGridProvi
 	 * Another important note, is that if a network that had overflow is deleted, its power is gone, this is one of the
 	 * reasons why keeping overflow to a minimum is important.
 	 *
-	 * @param amt
-	 *            power to inject into the network
-	 * @param mode
-	 *            should the action be simulated or performed?
+	 * @param amt  power to inject into the network
+	 * @param mode should the action be simulated or performed?
+	 *
 	 * @return the amount of power that the network has OVER the limit.
 	 */
 	double injectPower( double amt, Actionable mode );
@@ -101,5 +102,4 @@ public interface IEnergyGrid extends IGridCache, IEnergySource, IEnergyGridProvi
 	 * @return Amount of power required to charge the grid, in AE.
 	 */
 	double getEnergyDemand( double maxRequired );
-
 }

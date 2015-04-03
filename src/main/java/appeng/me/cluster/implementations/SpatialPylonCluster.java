@@ -18,6 +18,7 @@
 
 package appeng.me.cluster.implementations;
 
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -27,43 +28,39 @@ import appeng.api.util.DimensionalCoord;
 import appeng.me.cluster.IAECluster;
 import appeng.tile.spatial.TileSpatialPylon;
 
+
 public class SpatialPylonCluster implements IAECluster
 {
 
-	public enum Axis
-	{
-		X, Y, Z, UNFORMED
-	}
-
 	final public DimensionalCoord min;
 	final public DimensionalCoord max;
+	final List<TileSpatialPylon> line = new ArrayList<TileSpatialPylon>();
 	public boolean isDestroyed = false;
 
 	public Axis currentAxis = Axis.UNFORMED;
-
-	final List<TileSpatialPylon> line = new ArrayList<TileSpatialPylon>();
 	public boolean isValid;
 	public boolean hasPower;
 	public boolean hasChannel;
 
-	public SpatialPylonCluster(DimensionalCoord _min, DimensionalCoord _max) {
+	public SpatialPylonCluster( DimensionalCoord _min, DimensionalCoord _max )
+	{
 		this.min = _min.copy();
 		this.max = _max.copy();
 
-		if ( this.min.x != this.max.x )
+		if( this.min.x != this.max.x )
 			this.currentAxis = Axis.X;
-		else if ( this.min.y != this.max.y )
+		else if( this.min.y != this.max.y )
 			this.currentAxis = Axis.Y;
-		else if ( this.min.z != this.max.z )
+		else if( this.min.z != this.max.z )
 			this.currentAxis = Axis.Z;
 		else
 			this.currentAxis = Axis.UNFORMED;
 	}
 
 	@Override
-	public void updateStatus(boolean updateGrid)
+	public void updateStatus( boolean updateGrid )
 	{
-		for (TileSpatialPylon r : this.line)
+		for( TileSpatialPylon r : this.line )
 		{
 			r.recalculateDisplay();
 		}
@@ -73,20 +70,14 @@ public class SpatialPylonCluster implements IAECluster
 	public void destroy()
 	{
 
-		if ( this.isDestroyed )
+		if( this.isDestroyed )
 			return;
 		this.isDestroyed = true;
 
-		for (TileSpatialPylon r : this.line)
+		for( TileSpatialPylon r : this.line )
 		{
 			r.updateStatus( null );
 		}
-
-	}
-
-	public int tileCount()
-	{
-		return this.line.size();
 	}
 
 	@Override
@@ -95,4 +86,13 @@ public class SpatialPylonCluster implements IAECluster
 		return (Iterator) this.line.iterator();
 	}
 
+	public int tileCount()
+	{
+		return this.line.size();
+	}
+
+	public enum Axis
+	{
+		X, Y, Z, UNFORMED
+	}
 }

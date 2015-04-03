@@ -51,10 +51,12 @@ import appeng.helpers.ICustomCollision;
 import appeng.tile.storage.TileSkyChest;
 import appeng.util.Platform;
 
+
 public class BlockSkyChest extends AEBaseBlock implements ICustomCollision
 {
 
-	public BlockSkyChest() {
+	public BlockSkyChest()
+	{
 		super( BlockSkyChest.class, Material.rock );
 		this.setFeature( EnumSet.of( AEFeature.Core, AEFeature.SkyStoneChests ) );
 		this.setTileEntity( TileSkyChest.class );
@@ -66,29 +68,9 @@ public class BlockSkyChest extends AEBaseBlock implements ICustomCollision
 	}
 
 	@Override
-	public String getUnlocalizedName(ItemStack is)
+	public int damageDropped( int metadata )
 	{
-		if ( is.getItemDamage() == 1 )
-			return this.getUnlocalizedName() + ".Block";
-
-		return this.getUnlocalizedName();
-	}
-
-	@Override
-	public int damageDropped(int metadata) {
 		return metadata;
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public IIcon getIcon(int direction, int metadata)
-	{
-		for ( Block skyStoneBlock : AEApi.instance().definitions().blocks().skyStone().maybeBlock().asSet() )
-		{
-			return skyStoneBlock.getIcon( direction, metadata );
-		}
-
-		return Blocks.stone.getIcon( direction, metadata );
 	}
 
 	@Override
@@ -101,8 +83,40 @@ public class BlockSkyChest extends AEBaseBlock implements ICustomCollision
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
-	public void getCheckedSubBlocks(Item item, CreativeTabs tabs, List<ItemStack> itemStacks)
+	protected Class<? extends BaseBlockRender> getRenderer()
+	{
+		return RenderBlockSkyChest.class;
+	}
+
+	@Override
+	@SideOnly( Side.CLIENT )
+	public IIcon getIcon( int direction, int metadata )
+	{
+		for( Block skyStoneBlock : AEApi.instance().definitions().blocks().skyStone().maybeBlock().asSet() )
+		{
+			return skyStoneBlock.getIcon( direction, metadata );
+		}
+
+		return Blocks.stone.getIcon( direction, metadata );
+	}
+
+	@Override
+	public boolean onActivated( World w, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ )
+	{
+		if( Platform.isServer() )
+			Platform.openGUI( player, this.getTileEntity( w, x, y, z ), ForgeDirection.getOrientation( side ), GuiBridge.GUI_SKYCHEST );
+
+		return true;
+	}
+
+	@Override
+	public void registerBlockIcons( IIconRegister iconRegistry )
+	{
+	}
+
+	@Override
+	@SideOnly( Side.CLIENT )
+	public void getCheckedSubBlocks( Item item, CreativeTabs tabs, List<ItemStack> itemStacks )
 	{
 		super.getCheckedSubBlocks( item, tabs, itemStacks );
 
@@ -110,28 +124,22 @@ public class BlockSkyChest extends AEBaseBlock implements ICustomCollision
 	}
 
 	@Override
-	public boolean onActivated(World w, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
+	public String getUnlocalizedName( ItemStack is )
 	{
-		if ( Platform.isServer() )
-			Platform.openGUI( player, this.getTileEntity( w, x, y, z ), ForgeDirection.getOrientation( side ), GuiBridge.GUI_SKYCHEST );
+		if( is.getItemDamage() == 1 )
+			return this.getUnlocalizedName() + ".Block";
 
-		return true;
+		return this.getUnlocalizedName();
 	}
 
 	@Override
-	protected Class<? extends BaseBlockRender> getRenderer()
-	{
-		return RenderBlockSkyChest.class;
-	}
-
-	@Override
-	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool(World w, int x, int y, int z, Entity e, boolean isVisual)
+	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool( World w, int x, int y, int z, Entity e, boolean isVisual )
 	{
 		TileSkyChest sk = this.getTileEntity( w, x, y, z );
 		double sc = 0.06;
 		ForgeDirection o = ForgeDirection.UNKNOWN;
 
-		if ( sk != null )
+		if( sk != null )
 			o = sk.getUp();
 
 		double X = o.offsetX == 0 ? 0.06 : 0.0;
@@ -142,13 +150,8 @@ public class BlockSkyChest extends AEBaseBlock implements ICustomCollision
 	}
 
 	@Override
-	public void addCollidingBlockToList(World w, int x, int y, int z, AxisAlignedBB bb, List<AxisAlignedBB> out, Entity e)
+	public void addCollidingBlockToList( World w, int x, int y, int z, AxisAlignedBB bb, List<AxisAlignedBB> out, Entity e )
 	{
 		out.add( AxisAlignedBB.getBoundingBox( 0.05, 0.05, 0.05, 0.95, 0.95, 0.95 ) );
-	}
-
-	@Override
-	public void registerBlockIcons(IIconRegister iconRegistry)
-	{
 	}
 }

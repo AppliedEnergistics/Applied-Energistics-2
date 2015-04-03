@@ -69,16 +69,16 @@ public class PacketNEIRecipe extends AppEngPacket
 		ByteArrayInputStream bytes = new ByteArrayInputStream( stream.array() );
 		bytes.skip( stream.readerIndex() );
 		NBTTagCompound comp = CompressedStreamTools.readCompressed( bytes );
-		if ( comp != null )
+		if( comp != null )
 		{
 			this.recipe = new ItemStack[9][];
-			for ( int x = 0; x < this.recipe.length; x++ )
+			for( int x = 0; x < this.recipe.length; x++ )
 			{
 				NBTTagList list = comp.getTagList( "#" + x, 10 );
-				if ( list.tagCount() > 0 )
+				if( list.tagCount() > 0 )
 				{
 					this.recipe[x] = new ItemStack[list.tagCount()];
-					for ( int y = 0; y < list.tagCount(); y++ )
+					for( int y = 0; y < list.tagCount(); y++ )
 					{
 						this.recipe[x][y] = ItemStack.loadItemStackFromNBT( list.getCompoundTagAt( y ) );
 					}
@@ -87,20 +87,36 @@ public class PacketNEIRecipe extends AppEngPacket
 		}
 	}
 
+	// api
+	public PacketNEIRecipe( NBTTagCompound recipe ) throws IOException
+	{
+		ByteBuf data = Unpooled.buffer();
+
+		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+		DataOutputStream outputStream = new DataOutputStream( bytes );
+
+		data.writeInt( this.getPacketID() );
+
+		CompressedStreamTools.writeCompressed( recipe, outputStream );
+		data.writeBytes( bytes.toByteArray() );
+
+		this.configureWrite( data );
+	}
+
 	@Override
 	public void serverPacketData( INetworkInfo manager, AppEngPacket packet, EntityPlayer player )
 	{
-		EntityPlayerMP pmp = ( EntityPlayerMP ) player;
+		EntityPlayerMP pmp = (EntityPlayerMP) player;
 		Container con = pmp.openContainer;
 
-		if ( con instanceof IContainerCraftingPacket )
+		if( con instanceof IContainerCraftingPacket )
 		{
-			IContainerCraftingPacket cct = ( IContainerCraftingPacket ) con;
+			IContainerCraftingPacket cct = (IContainerCraftingPacket) con;
 			IGridNode node = cct.getNetworkNode();
-			if ( node != null )
+			if( node != null )
 			{
 				IGrid grid = node.getGrid();
-				if ( grid == null )
+				if( grid == null )
 					return;
 
 				IStorageGrid inv = grid.getCache( IStorageGrid.class );
@@ -111,12 +127,12 @@ public class PacketNEIRecipe extends AppEngPacket
 
 				Actionable realForFake = cct.useRealItems() ? Actionable.MODULATE : Actionable.SIMULATE;
 
-				if ( inv != null && this.recipe != null && security != null )
+				if( inv != null && this.recipe != null && security != null )
 				{
 					InventoryCrafting testInv = new InventoryCrafting( new ContainerNull(), 3, 3 );
-					for ( int x = 0; x < 9; x++ )
+					for( int x = 0; x < 9; x++ )
 					{
-						if ( this.recipe[x] != null && this.recipe[x].length > 0 )
+						if( this.recipe[x] != null && this.recipe[x].length > 0 )
 						{
 							testInv.setInventorySlotContents( x, this.recipe[x][0] );
 						}
@@ -124,35 +140,34 @@ public class PacketNEIRecipe extends AppEngPacket
 
 					IRecipe r = Platform.findMatchingRecipe( testInv, pmp.worldObj );
 
-					if ( r != null && security.hasPermission( player, SecurityPermissions.EXTRACT ) )
+					if( r != null && security.hasPermission( player, SecurityPermissions.EXTRACT ) )
 					{
 						ItemStack is = r.getCraftingResult( testInv );
 
-						if ( is != null )
+						if( is != null )
 						{
 							IMEMonitor<IAEItemStack> storage = inv.getItemInventory();
 							IItemList all = storage.getStorageList();
 							IPartitionList<IAEItemStack> filter = ItemViewCell.createFilter( cct.getViewCells() );
 
-							for ( int x = 0; x < craftMatrix.getSizeInventory(); x++ )
+							for( int x = 0; x < craftMatrix.getSizeInventory(); x++ )
 							{
 								ItemStack PatternItem = testInv.getStackInSlot( x );
 
 								ItemStack currentItem = craftMatrix.getStackInSlot( x );
-								if ( currentItem != null )
+								if( currentItem != null )
 								{
 									testInv.setInventorySlotContents( x, currentItem );
 									ItemStack newItemStack = r.matches( testInv, pmp.worldObj ) ? r.getCraftingResult( testInv ) : null;
 									testInv.setInventorySlotContents( x, PatternItem );
 
-									if ( newItemStack == null || !Platform.isSameItemPrecise( newItemStack, is ) )
+									if( newItemStack == null || !Platform.isSameItemPrecise( newItemStack, is ) )
 									{
 										IAEItemStack in = AEItemStack.create( currentItem );
-										if ( in != null )
+										if( in != null )
 										{
-											IAEItemStack out = realForFake == Actionable.SIMULATE ? null : Platform.poweredInsert( energy, storage, in,
-													cct.getSource() );
-											if ( out != null )
+											IAEItemStack out = realForFake == Actionable.SIMULATE ? null : Platform.poweredInsert( energy, storage, in, cct.getSource() );
+											if( out != null )
 												craftMatrix.setInventorySlotContents( x, out.getItemStack() );
 											else
 												craftMatrix.setInventorySlotContents( x, null );
@@ -163,26 +178,25 @@ public class PacketNEIRecipe extends AppEngPacket
 								}
 
 								// True if we need to fetch an item for the recipe
-								if ( PatternItem != null && currentItem == null )
+								if( PatternItem != null && currentItem == null )
 								{
 									// Grab from network by recipe
-									ItemStack whichItem = Platform.extractItemsByRecipe( energy, cct.getSource(), storage, player.worldObj, r, is, testInv,
-											PatternItem, x, all, realForFake, filter );
+									ItemStack whichItem = Platform.extractItemsByRecipe( energy, cct.getSource(), storage, player.worldObj, r, is, testInv, PatternItem, x, all, realForFake, filter );
 
 									// If that doesn't get it, grab exact items from network (?)
 									// TODO see if this code is necessary
-									if ( whichItem == null )
+									if( whichItem == null )
 									{
-										for ( int y = 0; y < this.recipe[x].length; y++ )
+										for( int y = 0; y < this.recipe[x].length; y++ )
 										{
 											IAEItemStack request = AEItemStack.create( this.recipe[x][y] );
-											if ( request != null )
+											if( request != null )
 											{
-												if ( filter == null || filter.isListed( request ) )
+												if( filter == null || filter.isListed( request ) )
 												{
 													request.setStackSize( 1 );
 													IAEItemStack out = Platform.poweredExtraction( energy, storage, request, cct.getSource() );
-													if ( out != null )
+													if( out != null )
 													{
 														whichItem = out.getItemStack();
 														break;
@@ -193,18 +207,18 @@ public class PacketNEIRecipe extends AppEngPacket
 									}
 
 									// If that doesn't work, grab from the player's inventory
-									if ( whichItem == null && playerInventory != null )
+									if( whichItem == null && playerInventory != null )
 									{
-										for ( int y = 0; y < this.recipe[x].length; y++ )
+										for( int y = 0; y < this.recipe[x].length; y++ )
 										{
 											ItemStack playerItemStack = null;
-											for ( int i = 0; i < playerInventory.getSizeInventory(); i++ )
+											for( int i = 0; i < playerInventory.getSizeInventory(); i++ )
 											{
 												// check if the item in slot y matches the required item.
 												playerItemStack = playerInventory.getStackInSlot( i );
-												if ( playerItemStack != null && this.recipe[x][y] != null && playerItemStack.getItem() == this.recipe[x][y].getItem() )
+												if( playerItemStack != null && this.recipe[x][y] != null && playerItemStack.getItem() == this.recipe[x][y].getItem() )
 												{
-													if ( realForFake == Actionable.SIMULATE )
+													if( realForFake == Actionable.SIMULATE )
 													{
 														whichItem = playerInventory.getStackInSlot( i ).copy();
 														whichItem.stackSize = 1;
@@ -228,21 +242,5 @@ public class PacketNEIRecipe extends AppEngPacket
 				}
 			}
 		}
-	}
-
-	// api
-	public PacketNEIRecipe( NBTTagCompound recipe ) throws IOException
-	{
-		ByteBuf data = Unpooled.buffer();
-
-		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-		DataOutputStream outputStream = new DataOutputStream( bytes );
-
-		data.writeInt( this.getPacketID() );
-
-		CompressedStreamTools.writeCompressed( recipe, outputStream );
-		data.writeBytes( bytes.toByteArray() );
-
-		this.configureWrite( data );
 	}
 }

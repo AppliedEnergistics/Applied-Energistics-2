@@ -18,7 +18,9 @@
 
 package appeng.tile.networking;
 
+
 import appeng.block.networking.BlockCableBus;
+
 
 public class TileCableBusTESR extends TileCableBus
 {
@@ -26,7 +28,7 @@ public class TileCableBusTESR extends TileCableBus
 	@Override
 	protected void updateTileSetting()
 	{
-		if ( !this.cb.requiresDynamicRender )
+		if( !this.cb.requiresDynamicRender )
 		{
 			TileCableBus tcb;
 			try
@@ -35,11 +37,10 @@ public class TileCableBusTESR extends TileCableBus
 				tcb.copyFrom( this );
 				this.getWorldObj().setTileEntity( this.xCoord, this.yCoord, this.zCoord, tcb );
 			}
-			catch (Throwable ignored)
+			catch( Throwable ignored )
 			{
 
 			}
 		}
 	}
-
 }

@@ -64,7 +64,7 @@ public class PartDarkMonitor extends PartMonitor
 		rh.setBounds( 2, 2, 14, 14, 14, 16 );
 		rh.renderBlock( x, y, z, renderer );
 
-		if ( this.getLightLevel() > 0 )
+		if( this.getLightLevel() > 0 )
 		{
 			int l = 13;
 			Tessellator.instance.setBrightness( l << 20 | l << 4 );

@@ -53,10 +53,9 @@ public abstract class PartSharedItemBus extends PartUpgradeable implements IGrid
 	}
 
 	@Override
-	public void writeToNBT( net.minecraft.nbt.NBTTagCompound extra )
+	public void upgradesChanged()
 	{
-		super.writeToNBT( extra );
-		this.config.writeToNBT( extra, "config" );
+		this.updateState();
 	}
 
 	@Override
@@ -67,30 +66,31 @@ public abstract class PartSharedItemBus extends PartUpgradeable implements IGrid
 	}
 
 	@Override
-	public IInventory getInventoryByName( String name )
+	public void writeToNBT( net.minecraft.nbt.NBTTagCompound extra )
 	{
-		if ( name.equals( "config" ) )
-			return this.config;
-
-		return super.getInventoryByName( name );
+		super.writeToNBT( extra );
+		this.config.writeToNBT( extra, "config" );
 	}
 
 	@Override
-	public void upgradesChanged()
+	public IInventory getInventoryByName( String name )
 	{
-		this.updateState();
+		if( name.equals( "config" ) )
+			return this.config;
+
+		return super.getInventoryByName( name );
 	}
 
 	private void updateState()
 	{
 		try
 		{
-			if ( !this.isSleeping() )
+			if( !this.isSleeping() )
 				this.proxy.getTick().wakeDevice( this.proxy.getNode() );
 			else
 				this.proxy.getTick().sleepDevice( this.proxy.getNode() );
 		}
-		catch ( GridAccessException e )
+		catch( GridAccessException e )
 		{
 			// :P
 		}
@@ -103,7 +103,7 @@ public abstract class PartSharedItemBus extends PartUpgradeable implements IGrid
 
 		int newAdaptorHash = Platform.generateTileHash( target );
 
-		if ( this.adaptorHash == newAdaptorHash && newAdaptorHash != 0 )
+		if( this.adaptorHash == newAdaptorHash && newAdaptorHash != 0 )
 			return this.adaptor;
 
 		this.adaptorHash = newAdaptorHash;
@@ -116,7 +116,7 @@ public abstract class PartSharedItemBus extends PartUpgradeable implements IGrid
 	{
 		World w = self.getWorldObj();
 
-		if ( w.getChunkProvider().chunkExists( x >> 4, z >> 4 ) )
+		if( w.getChunkProvider().chunkExists( x >> 4, z >> 4 ) )
 		{
 			return w.getTileEntity( x, y, z );
 		}
@@ -128,10 +128,10 @@ public abstract class PartSharedItemBus extends PartUpgradeable implements IGrid
 	public void onNeighborChanged()
 	{
 		this.updateState();
-		if ( this.lastRedstone != this.host.hasRedstone( this.side ) )
+		if( this.lastRedstone != this.host.hasRedstone( this.side ) )
 		{
 			this.lastRedstone = !this.lastRedstone;
-			if ( this.lastRedstone && this.getRSMode() == RedstoneMode.SIGNAL_PULSE )
+			if( this.lastRedstone && this.getRSMode() == RedstoneMode.SIGNAL_PULSE )
 				this.doBusWork();
 		}
 	}

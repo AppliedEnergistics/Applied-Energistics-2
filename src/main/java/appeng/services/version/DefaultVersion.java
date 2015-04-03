@@ -20,12 +20,12 @@ public final class DefaultVersion extends BaseVersion
 	@Override
 	public boolean isNewerAs( Version maybeOlder )
 	{
-		if ( this.revision() > maybeOlder.revision() )
+		if( this.revision() > maybeOlder.revision() )
 		{
 			return true;
 		}
 
-		if ( this.channel().compareTo( maybeOlder.channel() ) > 0 )
+		if( this.channel().compareTo( maybeOlder.channel() ) > 0 )
 		{
 			return true;
 		}

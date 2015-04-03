@@ -29,6 +29,7 @@ import net.minecraft.item.ItemStack;
 
 import appeng.api.config.FuzzyMode;
 
+
 public interface ICellWorkbenchItem
 {
 
@@ -36,9 +37,10 @@ public interface ICellWorkbenchItem
 	 * if this return false, the item will not be treated as a cell, and cannot be inserted into the work bench.
 	 *
 	 * @param is item
+	 *
 	 * @return true if the item should be editable in the cell workbench.
 	 */
-	boolean isEditable(ItemStack is);
+	boolean isEditable( ItemStack is );
 
 	/**
 	 * used to edit the upgrade slots on your cell, should have a capacity of 0-24, you are also responsible for
@@ -46,7 +48,7 @@ public interface ICellWorkbenchItem
 	 *
 	 * onInventoryChange will be called when saving is needed.
 	 */
-	IInventory getUpgradesInventory(ItemStack is);
+	IInventory getUpgradesInventory( ItemStack is );
 
 	/**
 	 * Used to extract, or mirror the contents of the work bench onto the cell.
@@ -55,16 +57,15 @@ public interface ICellWorkbenchItem
 	 *
 	 * onInventoryChange will be called when saving is needed.
 	 */
-	IInventory getConfigInventory(ItemStack is);
+	IInventory getConfigInventory( ItemStack is );
 
 	/**
 	 * @return the current fuzzy status.
 	 */
-	FuzzyMode getFuzzyMode(ItemStack is);
+	FuzzyMode getFuzzyMode( ItemStack is );
 
 	/**
 	 * sets the setting on the cell.
 	 */
-	void setFuzzyMode(ItemStack is, FuzzyMode fzMode);
-
+	void setFuzzyMode( ItemStack is, FuzzyMode fzMode );
 }

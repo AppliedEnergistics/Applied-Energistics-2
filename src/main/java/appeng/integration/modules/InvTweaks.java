@@ -18,6 +18,7 @@
 
 package appeng.integration.modules;
 
+
 import net.minecraft.item.ItemStack;
 
 import cpw.mods.fml.common.Loader;
@@ -26,6 +27,7 @@ import invtweaks.api.InvTweaksAPI;
 
 import appeng.integration.BaseModule;
 import appeng.integration.abstraction.IInvTweaks;
+
 
 public class InvTweaks extends BaseModule implements IInvTweaks
 {
@@ -43,12 +45,12 @@ public class InvTweaks extends BaseModule implements IInvTweaks
 	@Override
 	public void postInit()
 	{
-		if ( api == null )
+		if( api == null )
 			throw new RuntimeException( "InvTweaks API Instance Failed." );
 	}
 
 	@Override
-	public int compareItems(ItemStack i, ItemStack j)
+	public int compareItems( ItemStack i, ItemStack j )
 	{
 		return api.compareItems( i, j );
 	}

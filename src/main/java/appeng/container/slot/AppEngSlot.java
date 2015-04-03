@@ -18,6 +18,7 @@
 
 package appeng.container.slot;
 
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
@@ -26,17 +27,26 @@ import net.minecraft.item.ItemStack;
 import appeng.container.AEBaseContainer;
 import appeng.tile.inventory.AppEngInternalInventory;
 
+
 public class AppEngSlot extends Slot
 {
 
-	public enum hasCalculatedValidness
-	{
-		NotAvailable, Valid, Invalid
-	}
-
+	public final int defX;
+	public final int defY;
 	public boolean isDraggable = true;
 	public boolean isPlayerSide = false;
 	public AEBaseContainer myContainer = null;
+	public int IIcon = -1;
+	public hasCalculatedValidness isValid;
+	public boolean isDisplay = false;
+
+	public AppEngSlot( IInventory inv, int idx, int x, int y )
+	{
+		super( inv, idx, x, y );
+		this.defX = x;
+		this.defY = y;
+		this.isValid = hasCalculatedValidness.NotAvailable;
+	}
 
 	public Slot setNotDraggable()
 	{
@@ -50,74 +60,9 @@ public class AppEngSlot extends Slot
 		return this;
 	}
 
-	public int IIcon = -1;
-	public hasCalculatedValidness isValid;
-	public final int defX;
-	public final int defY;
-
-	@Override
-	public boolean func_111238_b()
-	{
-		return this.isEnabled();
-	}
-
-	public boolean isEnabled()
-	{
-		return true;
-	}
-
 	public String getTooltip()
 	{
 		return null;
-	}
-
-	@Override
-	public void onSlotChanged()
-	{
-		if ( this.inventory instanceof AppEngInternalInventory )
-			((AppEngInternalInventory) this.inventory).markDirty( this.getSlotIndex() );
-		else
-			super.onSlotChanged();
-
-		this.isValid = hasCalculatedValidness.NotAvailable;
-	}
-
-	public AppEngSlot(IInventory inv, int idx, int x, int y) {
-		super( inv, idx, x, y );
-		this.defX = x;
-		this.defY = y;
-		this.isValid = hasCalculatedValidness.NotAvailable;
-	}
-
-	public boolean isDisplay = false;
-
-	@Override
-	public ItemStack getStack()
-	{
-		if ( !this.isEnabled() )
-			return null;
-
-		if ( this.inventory.getSizeInventory() <= this.getSlotIndex() )
-			return null;
-
-		if ( this.isDisplay )
-		{
-			this.isDisplay = false;
-			return this.getDisplayStack();
-		}
-		return super.getStack();
-	}
-
-	@Override
-	public void putStack(ItemStack par1ItemStack)
-	{
-		if ( this.isEnabled() )
-		{
-			super.putStack( par1ItemStack );
-
-			if ( this.myContainer != null )
-				this.myContainer.onSlotChange( this );
-		}
 	}
 
 	public void clearStack()
@@ -126,24 +71,75 @@ public class AppEngSlot extends Slot
 	}
 
 	@Override
-	public boolean canTakeStack(EntityPlayer par1EntityPlayer)
+	public boolean isItemValid( ItemStack par1ItemStack )
 	{
-		if ( this.isEnabled() )
+		if( this.isEnabled() )
+			return super.isItemValid( par1ItemStack );
+		return false;
+	}
+
+	@Override
+	public ItemStack getStack()
+	{
+		if( !this.isEnabled() )
+			return null;
+
+		if( this.inventory.getSizeInventory() <= this.getSlotIndex() )
+			return null;
+
+		if( this.isDisplay )
+		{
+			this.isDisplay = false;
+			return this.getDisplayStack();
+		}
+		return super.getStack();
+	}
+
+	@Override
+	public void putStack( ItemStack par1ItemStack )
+	{
+		if( this.isEnabled() )
+		{
+			super.putStack( par1ItemStack );
+
+			if( this.myContainer != null )
+				this.myContainer.onSlotChange( this );
+		}
+	}
+
+	@Override
+	public void onSlotChanged()
+	{
+		if( this.inventory instanceof AppEngInternalInventory )
+			( (AppEngInternalInventory) this.inventory ).markDirty( this.getSlotIndex() );
+		else
+			super.onSlotChanged();
+
+		this.isValid = hasCalculatedValidness.NotAvailable;
+	}
+
+	@Override
+	public boolean canTakeStack( EntityPlayer par1EntityPlayer )
+	{
+		if( this.isEnabled() )
 			return super.canTakeStack( par1EntityPlayer );
 		return false;
 	}
 
 	@Override
-	public boolean isItemValid(ItemStack par1ItemStack)
+	public boolean func_111238_b()
 	{
-		if ( this.isEnabled() )
-			return super.isItemValid( par1ItemStack );
-		return false;
+		return this.isEnabled();
 	}
 
 	public ItemStack getDisplayStack()
 	{
 		return super.getStack();
+	}
+
+	public boolean isEnabled()
+	{
+		return true;
 	}
 
 	public float getOpacityOfIcon()
@@ -171,4 +167,8 @@ public class AppEngSlot extends Slot
 		return this.isEnabled();
 	}
 
+	public enum hasCalculatedValidness
+	{
+		NotAvailable, Valid, Invalid
+	}
 }

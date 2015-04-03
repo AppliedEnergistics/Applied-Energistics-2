@@ -18,6 +18,7 @@
 
 package appeng.client.gui.implementations;
 
+
 import org.lwjgl.input.Mouse;
 
 import net.minecraft.client.gui.GuiButton;
@@ -37,6 +38,7 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketConfigButton;
 import appeng.parts.automation.PartImportBus;
 
+
 public class GuiUpgradeable extends AEBaseGui
 {
 
@@ -47,17 +49,24 @@ public class GuiUpgradeable extends AEBaseGui
 	GuiImgButton fuzzyMode;
 	GuiImgButton craftMode;
 
-	public GuiUpgradeable(InventoryPlayer inventoryPlayer, IUpgradeableHost te) {
+	public GuiUpgradeable( InventoryPlayer inventoryPlayer, IUpgradeableHost te )
+	{
 		this( new ContainerUpgradeable( inventoryPlayer, te ) );
 	}
 
-	public GuiUpgradeable(ContainerUpgradeable te) {
+	public GuiUpgradeable( ContainerUpgradeable te )
+	{
 		super( te );
 		this.cvb = te;
 
 		this.bc = (IUpgradeableHost) te.getTarget();
 		this.xSize = this.hasToolbox() ? 246 : 211;
 		this.ySize = 184;
+	}
+
+	protected boolean hasToolbox()
+	{
+		return ( (ContainerUpgradeable) this.inventorySlots ).hasToolbox();
 	}
 
 	@Override
@@ -79,43 +88,42 @@ public class GuiUpgradeable extends AEBaseGui
 	}
 
 	@Override
-	protected void actionPerformed(GuiButton btn)
+	public void drawFG( int offsetX, int offsetY, int mouseX, int mouseY )
 	{
-		super.actionPerformed( btn );
+		this.fontRendererObj.drawString( this.getGuiDisplayName( this.getName().getLocal() ), 8, 6, 4210752 );
+		this.fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
 
-		boolean backwards = Mouse.isButtonDown( 1 );
+		if( this.redstoneMode != null )
+			this.redstoneMode.set( this.cvb.rsMode );
 
-		if ( btn == this.redstoneMode )
-			NetworkHandler.instance.sendToServer( new PacketConfigButton( this.redstoneMode.getSetting(), backwards ) );
+		if( this.fuzzyMode != null )
+			this.fuzzyMode.set( this.cvb.fzMode );
 
-		if ( btn == this.craftMode )
-			NetworkHandler.instance.sendToServer( new PacketConfigButton( this.craftMode.getSetting(), backwards ) );
-
-		if ( btn == this.fuzzyMode )
-			NetworkHandler.instance.sendToServer( new PacketConfigButton( this.fuzzyMode.getSetting(), backwards ) );
-	}
-
-	protected boolean hasToolbox()
-	{
-		return ((ContainerUpgradeable) this.inventorySlots).hasToolbox();
+		if( this.craftMode != null )
+			this.craftMode.set( this.cvb.cMode );
 	}
 
 	@Override
-	public void drawBG(int offsetX, int offsetY, int mouseX, int mouseY)
+	public void drawBG( int offsetX, int offsetY, int mouseX, int mouseY )
 	{
 		this.handleButtonVisibility();
 
 		this.bindTexture( this.getBackground() );
 		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, 211 - 34, this.ySize );
-		if ( this.drawUpgrades() )
+		if( this.drawUpgrades() )
 			this.drawTexturedModalRect( offsetX + 177, offsetY, 177, 0, 35, 14 + this.cvb.availableUpgrades() * 18 );
-		if ( this.hasToolbox() )
+		if( this.hasToolbox() )
 			this.drawTexturedModalRect( offsetX + 178, offsetY + this.ySize - 90, 178, this.ySize - 90, 68, 68 );
 	}
 
-	protected boolean drawUpgrades()
+	protected void handleButtonVisibility()
 	{
-		return true;
+		if( this.redstoneMode != null )
+			this.redstoneMode.setVisibility( this.bc.getInstalledUpgrades( Upgrades.REDSTONE ) > 0 );
+		if( this.fuzzyMode != null )
+			this.fuzzyMode.setVisibility( this.bc.getInstalledUpgrades( Upgrades.FUZZY ) > 0 );
+		if( this.craftMode != null )
+			this.craftMode.setVisibility( this.bc.getInstalledUpgrades( Upgrades.CRAFTING ) > 0 );
 	}
 
 	protected String getBackground()
@@ -123,30 +131,9 @@ public class GuiUpgradeable extends AEBaseGui
 		return "guis/bus.png";
 	}
 
-	protected void handleButtonVisibility()
+	protected boolean drawUpgrades()
 	{
-		if ( this.redstoneMode != null )
-			this.redstoneMode.setVisibility( this.bc.getInstalledUpgrades( Upgrades.REDSTONE ) > 0 );
-		if ( this.fuzzyMode != null )
-			this.fuzzyMode.setVisibility( this.bc.getInstalledUpgrades( Upgrades.FUZZY ) > 0 );
-		if ( this.craftMode != null )
-			this.craftMode.setVisibility( this.bc.getInstalledUpgrades( Upgrades.CRAFTING ) > 0 );
-	}
-
-	@Override
-	public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY)
-	{
-		this.fontRendererObj.drawString( this.getGuiDisplayName( this.getName().getLocal() ), 8, 6, 4210752 );
-		this.fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
-
-		if ( this.redstoneMode != null )
-			this.redstoneMode.set( this.cvb.rsMode );
-
-		if ( this.fuzzyMode != null )
-			this.fuzzyMode.set( this.cvb.fzMode );
-
-		if ( this.craftMode != null )
-			this.craftMode.set( this.cvb.cMode );
+		return true;
 	}
 
 	protected GuiText getName()
@@ -154,4 +141,20 @@ public class GuiUpgradeable extends AEBaseGui
 		return this.bc instanceof PartImportBus ? GuiText.ImportBus : GuiText.ExportBus;
 	}
 
+	@Override
+	protected void actionPerformed( GuiButton btn )
+	{
+		super.actionPerformed( btn );
+
+		boolean backwards = Mouse.isButtonDown( 1 );
+
+		if( btn == this.redstoneMode )
+			NetworkHandler.instance.sendToServer( new PacketConfigButton( this.redstoneMode.getSetting(), backwards ) );
+
+		if( btn == this.craftMode )
+			NetworkHandler.instance.sendToServer( new PacketConfigButton( this.craftMode.getSetting(), backwards ) );
+
+		if( btn == this.fuzzyMode )
+			NetworkHandler.instance.sendToServer( new PacketConfigButton( this.fuzzyMode.getSetting(), backwards ) );
+	}
 }

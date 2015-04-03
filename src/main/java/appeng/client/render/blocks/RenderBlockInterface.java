@@ -18,6 +18,7 @@
 
 package appeng.client.render.blocks;
 
+
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
@@ -29,20 +30,22 @@ import appeng.client.render.BlockRenderInfo;
 import appeng.client.texture.ExtraBlockTextures;
 import appeng.tile.misc.TileInterface;
 
+
 public class RenderBlockInterface extends BaseBlockRender
 {
 
-	public RenderBlockInterface() {
+	public RenderBlockInterface()
+	{
 		super( false, 20 );
 	}
 
 	@Override
-	public boolean renderInWorld(AEBaseBlock block, IBlockAccess world, int x, int y, int z, RenderBlocks renderer)
+	public boolean renderInWorld( AEBaseBlock block, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
 	{
 		TileInterface ti = block.getTileEntity( world, x, y, z );
 		BlockRenderInfo info = block.getRendererInstance();
 
-		if ( ti != null && ti.getForward() != ForgeDirection.UNKNOWN )
+		if( ti != null && ti.getForward() != ForgeDirection.UNKNOWN )
 		{
 			IIcon side = ExtraBlockTextures.BlockInterfaceAlternateArrow.getIcon();
 			info.setTemporaryRenderIcons( ExtraBlockTextures.BlockInterfaceAlternate.getIcon(), block.getIcon( 0, 0 ), side, side, side, side );

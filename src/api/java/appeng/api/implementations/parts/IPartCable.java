@@ -70,7 +70,7 @@ public interface IPartCable extends IPart, IGridHost
 
 	/**
 	 * Change sides on the cables node.
-	 * 
+	 *
 	 * Called by AE, do not invoke.
 	 *
 	 * @param sides sides of cable

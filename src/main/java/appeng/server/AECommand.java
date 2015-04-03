@@ -18,20 +18,38 @@
 
 package appeng.server;
 
-import com.google.common.base.Joiner;
 
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.server.MinecraftServer;
 
+import com.google.common.base.Joiner;
+
+
 public class AECommand extends CommandBase
 {
 
 	final MinecraftServer srv;
 
-	public AECommand(MinecraftServer server) {
+	public AECommand( MinecraftServer server )
+	{
 		this.srv = server;
+	}
+
+	@Override
+	public int getRequiredPermissionLevel()
+	{
+		return 0;
+	}
+
+	/**
+	 * wtf?
+	 */
+	@Override
+	public int compareTo( Object arg0 )
+	{
+		return 1;
 	}
 
 	@Override
@@ -41,44 +59,38 @@ public class AECommand extends CommandBase
 	}
 
 	@Override
-	public String getCommandUsage(ICommandSender icommandsender)
+	public String getCommandUsage( ICommandSender icommandsender )
 	{
 		return "commands.ae2.usage";
 	}
 
 	@Override
-	public int getRequiredPermissionLevel()
+	public void processCommand( ICommandSender sender, String[] args )
 	{
-		return 0;
-	}
-
-	@Override
-	public void processCommand(ICommandSender sender, String[] args)
-	{
-		if ( args.length == 0 )
+		if( args.length == 0 )
 		{
 			throw new WrongUsageException( "commands.ae2.usage" );
 		}
-		else if ( "help".equals( args[0] ) )
+		else if( "help".equals( args[0] ) )
 		{
 			try
 			{
-				if ( args.length > 1 )
+				if( args.length > 1 )
 				{
 					Commands c = Commands.valueOf( args[1] );
 					throw new WrongUsageException( c.command.getHelp( this.srv ) );
 				}
 			}
-			catch ( WrongUsageException wrong )
+			catch( WrongUsageException wrong )
 			{
 				throw wrong;
 			}
-			catch (Throwable er)
+			catch( Throwable er )
 			{
 				throw new WrongUsageException( "commands.ae2.usage" );
 			}
 		}
-		else if ( "list".equals( args[0] ) )
+		else if( "list".equals( args[0] ) )
 		{
 			throw new WrongUsageException( Joiner.on( ", " ).join( Commands.values() ) );
 		}
@@ -87,28 +99,19 @@ public class AECommand extends CommandBase
 			try
 			{
 				Commands c = Commands.valueOf( args[0] );
-				if ( sender.canCommandSenderUseCommand( c.level, this.getCommandName() ) )
+				if( sender.canCommandSenderUseCommand( c.level, this.getCommandName() ) )
 					c.command.call( this.srv, args, sender );
 				else
 					throw new WrongUsageException( "commands.ae2.permissions" );
 			}
-			catch ( WrongUsageException wrong )
+			catch( WrongUsageException wrong )
 			{
 				throw wrong;
 			}
-			catch (Throwable er)
+			catch( Throwable er )
 			{
 				throw new WrongUsageException( "commands.ae2.usage" );
 			}
 		}
-	}
-
-	/**
-	 * wtf?
-	 */
-	@Override
-	public int compareTo(Object arg0)
-	{
-		return 1;
 	}
 }

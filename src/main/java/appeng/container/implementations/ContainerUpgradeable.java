@@ -46,16 +46,23 @@ import appeng.items.tools.ToolNetworkTool;
 import appeng.parts.automation.PartExportBus;
 import appeng.util.Platform;
 
+
 public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSlotHost
 {
 
 	final IUpgradeableHost upgradeable;
-
+	@GuiSync( 0 )
+	public RedstoneMode rsMode = RedstoneMode.IGNORE;
+	@GuiSync( 1 )
+	public FuzzyMode fzMode = FuzzyMode.IGNORE_ALL;
+	@GuiSync( 5 )
+	public YesNo cMode = YesNo.NO;
 	int tbSlot;
 	NetworkToolViewer tbInventory;
 
-	public ContainerUpgradeable(InventoryPlayer ip, IUpgradeableHost te) {
-		super( ip, (TileEntity) (te instanceof TileEntity ? te : null), (IPart) (te instanceof IPart ? te : null) );
+	public ContainerUpgradeable( InventoryPlayer ip, IUpgradeableHost te )
+	{
+		super( ip, (TileEntity) ( te instanceof TileEntity ? te : null ), (IPart) ( te instanceof IPart ? te : null ) );
 		this.upgradeable = te;
 
 		World w = null;
@@ -63,7 +70,7 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 		int yCoord = 0;
 		int zCoord = 0;
 
-		if ( te instanceof TileEntity )
+		if( te instanceof TileEntity )
 		{
 			TileEntity myTile = (TileEntity) te;
 			w = myTile.getWorldObj();
@@ -72,7 +79,7 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 			zCoord = myTile.zCoord;
 		}
 
-		if ( te instanceof IPart )
+		if( te instanceof IPart )
 		{
 			TileEntity mk = te.getTile();
 			w = mk.getWorldObj();
@@ -82,24 +89,23 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 		}
 
 		IInventory pi = this.getPlayerInv();
-		for (int x = 0; x < pi.getSizeInventory(); x++)
+		for( int x = 0; x < pi.getSizeInventory(); x++ )
 		{
 			ItemStack pii = pi.getStackInSlot( x );
-			if ( pii != null && pii.getItem() instanceof ToolNetworkTool )
+			if( pii != null && pii.getItem() instanceof ToolNetworkTool )
 			{
 				this.lockPlayerInventorySlot( x );
 				this.tbSlot = x;
-				this.tbInventory = (NetworkToolViewer) ((ToolNetworkTool) pii.getItem()).getGuiObject( pii, w, xCoord, yCoord, zCoord );
+				this.tbInventory = (NetworkToolViewer) ( (ToolNetworkTool) pii.getItem() ).getGuiObject( pii, w, xCoord, yCoord, zCoord );
 				break;
 			}
 		}
 
-		if ( this.hasToolbox() )
+		if( this.hasToolbox() )
 		{
-			for (int v = 0; v < 3; v++)
-				for (int u = 0; u < 3; u++)
-					this.addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, this.tbInventory, u + v * 3, 186 + u * 18, this.getHeight() - 82 + v * 18,
-							this.invPlayer )).setPlayerSide() );
+			for( int v = 0; v < 3; v++ )
+				for( int u = 0; u < 3; u++ )
+					this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, this.tbInventory, u + v * 3, 186 + u * 18, this.getHeight() - 82 + v * 18, this.invPlayer ) ).setPlayerSide() );
 		}
 
 		this.setupConfig();
@@ -107,17 +113,14 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 		this.bindPlayerInventory( ip, 0, this.getHeight() - /* height of player inventory */82 );
 	}
 
-	protected void setupUpgrades()
+	public boolean hasToolbox()
 	{
-		IInventory upgrades = this.upgradeable.getInventoryByName( "upgrades" );
-		if ( this.availableUpgrades() > 0 )
-			this.addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 0, 187, 8, this.invPlayer )).setNotDraggable() );
-		if ( this.availableUpgrades() > 1 )
-			this.addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 1, 187, 8 + 18, this.invPlayer )).setNotDraggable() );
-		if ( this.availableUpgrades() > 2 )
-			this.addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 2, 187, 8 + 18 * 2, this.invPlayer )).setNotDraggable() );
-		if ( this.availableUpgrades() > 3 )
-			this.addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 3, 187, 8 + 18 * 3, this.invPlayer )).setNotDraggable() );
+		return this.tbInventory != null;
+	}
+
+	protected int getHeight()
+	{
+		return 184;
 	}
 
 	protected void setupConfig()
@@ -129,7 +132,7 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 		IInventory inv = this.upgradeable.getInventoryByName( "config" );
 		this.addSlotToContainer( new SlotFakeTypeOnly( inv, 0, x, y ) );
 
-		if ( this.supportCapacity() )
+		if( this.supportCapacity() )
 		{
 			this.addSlotToContainer( new OptionalSlotFakeTypeOnly( inv, this, 1, x, y, -1, 0, 1 ) );
 			this.addSlotToContainer( new OptionalSlotFakeTypeOnly( inv, this, 2, x, y, 1, 0, 1 ) );
@@ -143,14 +146,17 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 		}
 	}
 
-	protected int getHeight()
+	protected void setupUpgrades()
 	{
-		return 184;
-	}
-
-	public int availableUpgrades()
-	{
-		return 4;
+		IInventory upgrades = this.upgradeable.getInventoryByName( "upgrades" );
+		if( this.availableUpgrades() > 0 )
+			this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 0, 187, 8, this.invPlayer ) ).setNotDraggable() );
+		if( this.availableUpgrades() > 1 )
+			this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 1, 187, 8 + 18, this.invPlayer ) ).setNotDraggable() );
+		if( this.availableUpgrades() > 2 )
+			this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 2, 187, 8 + 18 * 2, this.invPlayer ) ).setNotDraggable() );
+		if( this.availableUpgrades() > 3 )
+			this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 3, 187, 8 + 18 * 3, this.invPlayer ) ).setNotDraggable() );
 	}
 
 	protected boolean supportCapacity()
@@ -158,26 +164,56 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 		return true;
 	}
 
-	@GuiSync(0)
-	public RedstoneMode rsMode = RedstoneMode.IGNORE;
+	public int availableUpgrades()
+	{
+		return 4;
+	}
 
-	@GuiSync(1)
-	public FuzzyMode fzMode = FuzzyMode.IGNORE_ALL;
+	@Override
+	public void detectAndSendChanges()
+	{
+		this.verifyPermissions( SecurityPermissions.BUILD, false );
 
-	@GuiSync(5)
-	public YesNo cMode = YesNo.NO;
+		if( Platform.isServer() )
+		{
+			IConfigManager cm = this.upgradeable.getConfigManager();
+			this.loadSettingsFromHost( cm );
+		}
+
+		this.checkToolbox();
+
+		for( Object o : this.inventorySlots )
+		{
+			if( o instanceof OptionalSlotFake )
+			{
+				OptionalSlotFake fs = (OptionalSlotFake) o;
+				if( !fs.isEnabled() && fs.getDisplayStack() != null )
+					fs.clearStack();
+			}
+		}
+
+		this.standardDetectAndSendChanges();
+	}
+
+	protected void loadSettingsFromHost( IConfigManager cm )
+	{
+		this.fzMode = (FuzzyMode) cm.getSetting( Settings.FUZZY_MODE );
+		this.rsMode = (RedstoneMode) cm.getSetting( Settings.REDSTONE_CONTROLLED );
+		if( this.upgradeable instanceof PartExportBus )
+			this.cMode = (YesNo) cm.getSetting( Settings.CRAFT_ONLY );
+	}
 
 	public void checkToolbox()
 	{
-		if ( this.hasToolbox() )
+		if( this.hasToolbox() )
 		{
 			ItemStack currentItem = this.getPlayerInv().getStackInSlot( this.tbSlot );
 
-			if ( currentItem != this.tbInventory.getItemStack() )
+			if( currentItem != this.tbInventory.getItemStack() )
 			{
-				if ( currentItem != null )
+				if( currentItem != null )
 				{
-					if ( Platform.isSameItem( this.tbInventory.getItemStack(), currentItem ) )
+					if( Platform.isSameItem( this.tbInventory.getItemStack(), currentItem ) )
 						this.getPlayerInv().setInventorySlotContents( this.tbSlot, this.tbInventory.getItemStack() );
 					else
 						this.isContainerValid = false;
@@ -188,61 +224,21 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 		}
 	}
 
-	@Override
-	public void detectAndSendChanges()
-	{
-		this.verifyPermissions( SecurityPermissions.BUILD, false );
-
-		if ( Platform.isServer() )
-		{
-			IConfigManager cm = this.upgradeable.getConfigManager();
-			this.loadSettingsFromHost( cm );
-		}
-
-		this.checkToolbox();
-
-		for (Object o : this.inventorySlots)
-		{
-			if ( o instanceof OptionalSlotFake )
-			{
-				OptionalSlotFake fs = (OptionalSlotFake) o;
-				if ( !fs.isEnabled() && fs.getDisplayStack() != null )
-					fs.clearStack();
-			}
-		}
-
-		this.standardDetectAndSendChanges();
-	}
-
-	protected void loadSettingsFromHost(IConfigManager cm)
-	{
-		this.fzMode = (FuzzyMode) cm.getSetting( Settings.FUZZY_MODE );
-		this.rsMode = (RedstoneMode) cm.getSetting( Settings.REDSTONE_CONTROLLED );
-		if ( this.upgradeable instanceof PartExportBus )
-			this.cMode = (YesNo) cm.getSetting( Settings.CRAFT_ONLY );
-	}
-
 	protected void standardDetectAndSendChanges()
 	{
 		super.detectAndSendChanges();
 	}
 
-	public boolean hasToolbox()
-	{
-		return this.tbInventory != null;
-	}
-
 	@Override
-	public boolean isSlotEnabled(int idx)
+	public boolean isSlotEnabled( int idx )
 	{
 		int upgrades = this.upgradeable.getInstalledUpgrades( Upgrades.CAPACITY );
 
-		if ( idx == 1 && upgrades > 0 )
+		if( idx == 1 && upgrades > 0 )
 			return true;
-		if ( idx == 2 && upgrades > 1 )
+		if( idx == 2 && upgrades > 1 )
 			return true;
 
 		return false;
 	}
-
 }

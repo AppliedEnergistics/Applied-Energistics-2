@@ -48,7 +48,7 @@ public class GridNodeCollection implements IReadOnlyCollection<IGridNode>
 	{
 		int size = 0;
 
-		for ( Set<IGridNode> o : this.machines.values() )
+		for( Set<IGridNode> o : this.machines.values() )
 			size += o.size();
 
 		return size;
@@ -57,8 +57,8 @@ public class GridNodeCollection implements IReadOnlyCollection<IGridNode>
 	@Override
 	public boolean isEmpty()
 	{
-		for ( Set<IGridNode> o : this.machines.values() )
-			if ( !o.isEmpty() )
+		for( Set<IGridNode> o : this.machines.values() )
+			if( !o.isEmpty() )
 				return false;
 
 		return true;
@@ -69,9 +69,9 @@ public class GridNodeCollection implements IReadOnlyCollection<IGridNode>
 	{
 		final boolean doesContainNode;
 
-		if ( maybeGridNode instanceof IGridNode )
+		if( maybeGridNode instanceof IGridNode )
 		{
-			final IGridNode node = ( IGridNode ) maybeGridNode;
+			final IGridNode node = (IGridNode) maybeGridNode;
 			IGridHost machine = node.getMachine();
 			Class<? extends IGridHost> machineClass = machine.getClass();
 

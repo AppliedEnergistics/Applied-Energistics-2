@@ -41,37 +41,37 @@ public class ClassInstantiation<T>
 	public Optional<T> get()
 	{
 		@SuppressWarnings( "unchecked" )
-		Constructor<T>[] constructors = ( Constructor<T>[] ) this.template.getConstructors();
+		Constructor<T>[] constructors = (Constructor<T>[]) this.template.getConstructors();
 
-		for ( Constructor<T> constructor : constructors )
+		for( Constructor<T> constructor : constructors )
 		{
 			Class<?>[] paramTypes = constructor.getParameterTypes();
-			if ( paramTypes.length == this.args.length )
+			if( paramTypes.length == this.args.length )
 			{
 				boolean valid = true;
 
-				for ( int idx = 0; idx < paramTypes.length; idx++ )
+				for( int idx = 0; idx < paramTypes.length; idx++ )
 				{
 					Class<?> cz = this.args[idx].getClass();
-					if ( !this.isClassMatch( paramTypes[idx], cz, this.args[idx] ) )
+					if( !this.isClassMatch( paramTypes[idx], cz, this.args[idx] ) )
 						valid = false;
 				}
 
-				if ( valid )
+				if( valid )
 				{
 					try
 					{
 						return Optional.of( constructor.newInstance( this.args ) );
 					}
-					catch ( InstantiationException e )
+					catch( InstantiationException e )
 					{
 						e.printStackTrace();
 					}
-					catch ( IllegalAccessException e )
+					catch( IllegalAccessException e )
 					{
 						e.printStackTrace();
 					}
-					catch ( InvocationTargetException e )
+					catch( InvocationTargetException e )
 					{
 						e.printStackTrace();
 					}
@@ -85,7 +85,7 @@ public class ClassInstantiation<T>
 
 	private boolean isClassMatch( Class<?> expected, Class<?> got, Object value )
 	{
-		if ( value == null && !expected.isPrimitive() )
+		if( value == null && !expected.isPrimitive() )
 			return true;
 
 		expected = this.condense( expected, Boolean.class, Character.class, Byte.class, Short.class, Integer.class, Long.class, Float.class, Double.class );
@@ -96,16 +96,16 @@ public class ClassInstantiation<T>
 
 	private Class<?> condense( Class<?> expected, Class<?>... wrappers )
 	{
-		if ( expected.isPrimitive() )
+		if( expected.isPrimitive() )
 		{
-			for ( Class clz : wrappers )
+			for( Class clz : wrappers )
 			{
 				try
 				{
-					if ( expected == clz.getField( "TYPE" ).get( null ) )
+					if( expected == clz.getField( "TYPE" ).get( null ) )
 						return clz;
 				}
-				catch ( Throwable t )
+				catch( Throwable t )
 				{
 					AELog.error( t );
 				}

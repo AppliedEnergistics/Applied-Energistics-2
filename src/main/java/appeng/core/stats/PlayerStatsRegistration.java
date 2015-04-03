@@ -64,7 +64,7 @@ public class PlayerStatsRegistration
 	 */
 	public void registerAchievementHandlers()
 	{
-		if ( this.isAchievementFeatureEnabled )
+		if( this.isAchievementFeatureEnabled )
 		{
 			final PlayerDifferentiator differentiator = new PlayerDifferentiator();
 			final AchievementCraftingHandler craftingHandler = new AchievementCraftingHandler( differentiator );
@@ -80,12 +80,12 @@ public class PlayerStatsRegistration
 	 */
 	public void registerAchievements()
 	{
-		if ( this.isAchievementFeatureEnabled )
+		if( this.isAchievementFeatureEnabled )
 		{
 			final AchievementHierarchy hierarchy = new AchievementHierarchy();
 			hierarchy.registerAchievementHierarchy();
 
-			for ( Stats s : Stats.values() )
+			for( Stats s : Stats.values() )
 				s.getStat();
 
 			/**
@@ -93,10 +93,10 @@ public class PlayerStatsRegistration
 			 */
 			ArrayList<Achievement> list = new ArrayList<Achievement>();
 
-			for ( Achievements a : Achievements.values() )
+			for( Achievements a : Achievements.values() )
 			{
 				Achievement ach = a.getAchievement();
-				if ( ach != null )
+				if( ach != null )
 					list.add( ach );
 			}
 

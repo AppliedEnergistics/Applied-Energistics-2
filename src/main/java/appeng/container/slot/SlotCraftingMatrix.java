@@ -18,24 +18,21 @@
 
 package appeng.container.slot;
 
+
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+
 
 public class SlotCraftingMatrix extends AppEngSlot
 {
 
 	final Container c;
 
-	public SlotCraftingMatrix(Container c, IInventory par1iInventory, int par2, int par3, int par4) {
+	public SlotCraftingMatrix( Container c, IInventory par1iInventory, int par2, int par3, int par4 )
+	{
 		super( par1iInventory, par2, par3, par4 );
 		this.c = c;
-	}
-
-	@Override
-	public boolean isPlayerSide()
-	{
-		return true;
 	}
 
 	@Override
@@ -46,18 +43,23 @@ public class SlotCraftingMatrix extends AppEngSlot
 	}
 
 	@Override
-	public ItemStack decrStackSize(int par1)
-	{
-		ItemStack is = super.decrStackSize( par1 );
-		this.c.onCraftMatrixChanged( this.inventory );
-		return is;
-	}
-
-	@Override
-	public void putStack(ItemStack par1ItemStack)
+	public void putStack( ItemStack par1ItemStack )
 	{
 		super.putStack( par1ItemStack );
 		this.c.onCraftMatrixChanged( this.inventory );
 	}
 
+	@Override
+	public boolean isPlayerSide()
+	{
+		return true;
+	}
+
+	@Override
+	public ItemStack decrStackSize( int par1 )
+	{
+		ItemStack is = super.decrStackSize( par1 );
+		this.c.onCraftMatrixChanged( this.inventory );
+		return is;
+	}
 }

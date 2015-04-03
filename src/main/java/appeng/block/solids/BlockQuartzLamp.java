@@ -18,6 +18,7 @@
 
 package appeng.block.solids;
 
+
 import java.util.EnumSet;
 import java.util.Random;
 
@@ -32,10 +33,12 @@ import appeng.core.AEConfig;
 import appeng.core.CommonHelper;
 import appeng.core.features.AEFeature;
 
+
 public class BlockQuartzLamp extends BlockQuartzGlass
 {
 
-	public BlockQuartzLamp() {
+	public BlockQuartzLamp()
+	{
 		super( BlockQuartzLamp.class );
 		this.setFeature( EnumSet.of( AEFeature.DecorativeQuartzBlocks, AEFeature.DecorativeLights ) );
 		this.setLightLevel( 1.0f );
@@ -43,22 +46,21 @@ public class BlockQuartzLamp extends BlockQuartzGlass
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
-	public void randomDisplayTick(World w, int x, int y, int z, Random r)
+	@SideOnly( Side.CLIENT )
+	public void randomDisplayTick( World w, int x, int y, int z, Random r )
 	{
-		if ( !AEConfig.instance.enableEffects )
+		if( !AEConfig.instance.enableEffects )
 			return;
 
-		if ( CommonHelper.proxy.shouldAddParticles( r ) )
+		if( CommonHelper.proxy.shouldAddParticles( r ) )
 		{
-			double d0 = (r.nextFloat() - 0.5F) * 0.96D;
-			double d1 = (r.nextFloat() - 0.5F) * 0.96D;
-			double d2 = (r.nextFloat() - 0.5F) * 0.96D;
+			double d0 = ( r.nextFloat() - 0.5F ) * 0.96D;
+			double d1 = ( r.nextFloat() - 0.5F ) * 0.96D;
+			double d2 = ( r.nextFloat() - 0.5F ) * 0.96D;
 
 			VibrantFX fx = new VibrantFX( w, 0.5 + x + d0, 0.5 + y + d1, 0.5 + z + d2, 0.0D, 0.0D, 0.0D );
 
 			Minecraft.getMinecraft().effectRenderer.addEffect( fx );
 		}
 	}
-
 }

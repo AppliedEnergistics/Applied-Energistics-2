@@ -57,8 +57,8 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 
 	public boolean isEmpty()
 	{
-		for (int x = 0; x < this.size; x++)
-			if ( this.getStackInSlot( x ) != null )
+		for( int x = 0; x < this.size; x++ )
+			if( this.getStackInSlot( x ) != null )
 				return false;
 		return true;
 	}
@@ -78,12 +78,12 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 	@Override
 	public ItemStack decrStackSize( int slot, int qty )
 	{
-		if ( this.inv[slot] != null )
+		if( this.inv[slot] != null )
 		{
 			ItemStack split = this.getStackInSlot( slot );
 			ItemStack ns = null;
 
-			if ( qty >= split.stackSize )
+			if( qty >= split.stackSize )
 			{
 				ns = this.inv[slot];
 				this.inv[slot] = null;
@@ -91,7 +91,7 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 			else
 				ns = split.splitStack( qty );
 
-			if ( this.te != null && this.eventsEnabled() )
+			if( this.te != null && this.eventsEnabled() )
 			{
 				this.te.onChangeInventory( this, slot, InvOperation.decreaseStackSize, ns, null );
 			}
@@ -120,20 +120,20 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 		ItemStack oldStack = this.inv[slot];
 		this.inv[slot] = newItemStack;
 
-		if ( this.te != null && this.eventsEnabled() )
+		if( this.te != null && this.eventsEnabled() )
 		{
 			ItemStack removed = oldStack;
 			ItemStack added = newItemStack;
 
-			if ( oldStack != null && newItemStack != null && Platform.isSameItem( oldStack, newItemStack ) )
+			if( oldStack != null && newItemStack != null && Platform.isSameItem( oldStack, newItemStack ) )
 			{
-				if ( oldStack.stackSize > newItemStack.stackSize )
+				if( oldStack.stackSize > newItemStack.stackSize )
 				{
 					removed = removed.copy();
 					removed.stackSize -= newItemStack.stackSize;
 					added = null;
 				}
-				else if ( oldStack.stackSize < newItemStack.stackSize )
+				else if( oldStack.stackSize < newItemStack.stackSize )
 				{
 					added = added.copy();
 					added.stackSize -= oldStack.stackSize;
@@ -172,7 +172,7 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 	@Override
 	public void markDirty()
 	{
-		if ( this.te != null && this.eventsEnabled() )
+		if( this.te != null && this.eventsEnabled() )
 		{
 			this.te.onChangeInventory( this, -1, InvOperation.markDirty, null, null );
 		}
@@ -208,7 +208,7 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 	// for guis...
 	public void markDirty( int slotIndex )
 	{
-		if ( this.te != null && this.eventsEnabled() )
+		if( this.te != null && this.eventsEnabled() )
 		{
 			this.te.onChangeInventory( this, slotIndex, InvOperation.markDirty, null, null );
 		}
@@ -223,20 +223,20 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 
 	public void writeToNBT( NBTTagCompound target )
 	{
-		for ( int x = 0; x < this.size; x++ )
+		for( int x = 0; x < this.size; x++ )
 		{
 			try
 			{
 				NBTTagCompound c = new NBTTagCompound();
 
-				if ( this.inv[x] != null )
+				if( this.inv[x] != null )
 				{
 					this.inv[x].writeToNBT( c );
 				}
 
 				target.setTag( "#" + x, c );
 			}
-			catch ( Exception ignored )
+			catch( Exception ignored )
 			{
 			}
 		}
@@ -245,22 +245,22 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 	public void readFromNBT( NBTTagCompound data, String name )
 	{
 		NBTTagCompound c = data.getCompoundTag( name );
-		if ( c != null )
+		if( c != null )
 			this.readFromNBT( c );
 	}
 
 	public void readFromNBT( NBTTagCompound target )
 	{
-		for ( int x = 0; x < this.size; x++ )
+		for( int x = 0; x < this.size; x++ )
 		{
 			try
 			{
 				NBTTagCompound c = target.getCompoundTag( "#" + x );
 
-				if ( c != null )
+				if( c != null )
 					this.inv[x] = ItemStack.loadItemStackFromNBT( c );
 			}
-			catch ( Exception e )
+			catch( Exception e )
 			{
 				AELog.error( e );
 			}

@@ -18,6 +18,7 @@
 
 package appeng.me.storage;
 
+
 import net.minecraft.item.ItemStack;
 
 import appeng.api.config.Actionable;
@@ -27,6 +28,7 @@ import appeng.api.storage.ICellHandler;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.data.IAEStack;
 
+
 public class DriveWatcher<T extends IAEStack<T>> extends MEInventoryHandler<T>
 {
 
@@ -35,7 +37,8 @@ public class DriveWatcher<T extends IAEStack<T>> extends MEInventoryHandler<T>
 	final ICellHandler handler;
 	final IChestOrDrive cord;
 
-	public DriveWatcher(IMEInventory<T> i, ItemStack is, ICellHandler han, IChestOrDrive cod) {
+	public DriveWatcher( IMEInventory<T> i, ItemStack is, ICellHandler han, IChestOrDrive cod )
+	{
 		super( i, i.getChannel() );
 		this.is = is;
 		this.handler = han;
@@ -43,17 +46,17 @@ public class DriveWatcher<T extends IAEStack<T>> extends MEInventoryHandler<T>
 	}
 
 	@Override
-	public T injectItems(T input, Actionable type, BaseActionSource src)
+	public T injectItems( T input, Actionable type, BaseActionSource src )
 	{
 		long size = input.getStackSize();
 
 		T a = super.injectItems( input, type, src );
 
-		if ( a == null || a.getStackSize() != size )
+		if( a == null || a.getStackSize() != size )
 		{
 			int newStatus = this.handler.getStatusForCell( this.is, this.getInternal() );
 
-			if ( newStatus != this.oldStatus )
+			if( newStatus != this.oldStatus )
 			{
 				this.cord.blinkCell( this.getSlot() );
 			}
@@ -63,15 +66,15 @@ public class DriveWatcher<T extends IAEStack<T>> extends MEInventoryHandler<T>
 	}
 
 	@Override
-	public T extractItems(T request, Actionable type, BaseActionSource src)
+	public T extractItems( T request, Actionable type, BaseActionSource src )
 	{
 		T a = super.extractItems( request, type, src );
 
-		if ( a != null )
+		if( a != null )
 		{
 			int newStatus = this.handler.getStatusForCell( this.is, this.getInternal() );
 
-			if ( newStatus != this.oldStatus )
+			if( newStatus != this.oldStatus )
 			{
 				this.cord.blinkCell( this.getSlot() );
 			}

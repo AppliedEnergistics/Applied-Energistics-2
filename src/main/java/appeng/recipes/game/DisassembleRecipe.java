@@ -80,31 +80,31 @@ public class DisassembleRecipe implements IRecipe
 	{
 		ItemStack hasCell = null;
 
-		for ( int x = 0; x < inv.getSizeInventory(); x++ )
+		for( int x = 0; x < inv.getSizeInventory(); x++ )
 		{
 			ItemStack is = inv.getStackInSlot( x );
-			if ( is != null )
+			if( is != null )
 			{
-				if ( hasCell != null )
+				if( hasCell != null )
 					return null;
 
 				hasCell = this.getCellOutput( is );
 
 				// make sure the storage cell is empty...
-				if ( hasCell != null )
+				if( hasCell != null )
 				{
 					IMEInventory<IAEItemStack> cellInv = AEApi.instance().registries().cell().getCellInventory( is, null, StorageChannel.ITEMS );
-					if ( cellInv != null )
+					if( cellInv != null )
 					{
 						IItemList<IAEItemStack> list = cellInv.getAvailableItems( StorageChannel.ITEMS.createList() );
-						if ( !list.isEmpty() )
+						if( !list.isEmpty() )
 							return null;
 					}
 				}
 
 				hasCell = this.getNonCellOutput( is );
 
-				if ( hasCell == null )
+				if( hasCell == null )
 					return null;
 			}
 		}
@@ -114,9 +114,9 @@ public class DisassembleRecipe implements IRecipe
 
 	private ItemStack getCellOutput( ItemStack compared )
 	{
-		for ( Map.Entry<IItemDefinition, IItemDefinition> entry : this.cellMappings.entrySet() )
+		for( Map.Entry<IItemDefinition, IItemDefinition> entry : this.cellMappings.entrySet() )
 		{
-			if ( entry.getKey().isSameAs( compared ) )
+			if( entry.getKey().isSameAs( compared ) )
 			{
 				return entry.getValue().maybeStack( 1 ).get();
 			}
@@ -127,9 +127,9 @@ public class DisassembleRecipe implements IRecipe
 
 	private ItemStack getNonCellOutput( ItemStack compared )
 	{
-		for ( Map.Entry<IItemDefinition, IItemDefinition> entry : this.nonCellMappings.entrySet() )
+		for( Map.Entry<IItemDefinition, IItemDefinition> entry : this.nonCellMappings.entrySet() )
 		{
-			if ( entry.getKey().isSameAs( compared ) )
+			if( entry.getKey().isSameAs( compared ) )
 			{
 				return entry.getValue().maybeStack( 1 ).get();
 			}

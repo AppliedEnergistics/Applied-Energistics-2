@@ -18,6 +18,7 @@
 
 package appeng.entity;
 
+
 import io.netty.buffer.ByteBuf;
 
 import net.minecraft.block.Block;
@@ -42,15 +43,18 @@ import appeng.core.sync.packets.PacketMockExplosion;
 import appeng.helpers.Reflected;
 import appeng.util.Platform;
 
+
 final public class EntityTinyTNTPrimed extends EntityTNTPrimed implements IEntityAdditionalSpawnData
 {
 	@Reflected
-	public EntityTinyTNTPrimed(World w) {
+	public EntityTinyTNTPrimed( World w )
+	{
 		super( w );
 		this.setSize( 0.35F, 0.35F );
 	}
 
-	public EntityTinyTNTPrimed(World w, double x, double y, double z, EntityLivingBase igniter) {
+	public EntityTinyTNTPrimed( World w, double x, double y, double z, EntityLivingBase igniter )
+	{
 		super( w, x, y, z, igniter );
 		this.setSize( 0.55F, 0.55F );
 		this.yOffset = this.height / 2.0F;
@@ -73,16 +77,16 @@ final public class EntityTinyTNTPrimed extends EntityTNTPrimed implements IEntit
 		this.motionY *= 0.9800000190734863D;
 		this.motionZ *= 0.9800000190734863D;
 
-		if ( this.onGround )
+		if( this.onGround )
 		{
 			this.motionX *= 0.699999988079071D;
 			this.motionZ *= 0.699999988079071D;
 			this.motionY *= -0.5D;
 		}
 
-		if ( this.isInWater() && Platform.isServer() ) // put out the fuse.
+		if( this.isInWater() && Platform.isServer() ) // put out the fuse.
 		{
-			for ( ItemStack tntStack : AEApi.instance().definitions().blocks().tinyTNT().maybeStack( 1 ).asSet() )
+			for( ItemStack tntStack : AEApi.instance().definitions().blocks().tinyTNT().maybeStack( 1 ).asSet() )
 			{
 				final EntityItem item = new EntityItem( this.worldObj, this.posX, this.posY, this.posZ, tntStack );
 
@@ -98,11 +102,11 @@ final public class EntityTinyTNTPrimed extends EntityTNTPrimed implements IEntit
 			}
 		}
 
-		if ( this.fuse <= 0 )
+		if( this.fuse <= 0 )
 		{
 			this.setDead();
 
-			if ( !this.worldObj.isRemote )
+			if( !this.worldObj.isRemote )
 			{
 				this.explode();
 			}
@@ -117,49 +121,45 @@ final public class EntityTinyTNTPrimed extends EntityTNTPrimed implements IEntit
 	// override :P
 	void explode()
 	{
-		this.worldObj.playSoundEffect( this.posX, this.posY, this.posZ, "random.explode", 4.0F,
-				(1.0F + (this.worldObj.rand.nextFloat() - this.worldObj.rand.nextFloat()) * 0.2F) * 32.9F );
+		this.worldObj.playSoundEffect( this.posX, this.posY, this.posZ, "random.explode", 4.0F, ( 1.0F + ( this.worldObj.rand.nextFloat() - this.worldObj.rand.nextFloat() ) * 0.2F ) * 32.9F );
 
-		if ( this.isInWater() )
+		if( this.isInWater() )
 		{
 			return;
 		}
 
-		for (Object e : this.worldObj.getEntitiesWithinAABBExcludingEntity( this,
-				AxisAlignedBB.getBoundingBox( this.posX - 1.5, this.posY - 1.5f, this.posZ - 1.5, this.posX + 1.5, this.posY + 1.5, this.posZ + 1.5 ) ))
+		for( Object e : this.worldObj.getEntitiesWithinAABBExcludingEntity( this, AxisAlignedBB.getBoundingBox( this.posX - 1.5, this.posY - 1.5f, this.posZ - 1.5, this.posX + 1.5, this.posY + 1.5, this.posZ + 1.5 ) ) )
 		{
-			if ( e instanceof Entity )
+			if( e instanceof Entity )
 			{
-				((Entity) e).attackEntityFrom( DamageSource.setExplosionSource( null ), 6 );
+				( (Entity) e ).attackEntityFrom( DamageSource.setExplosionSource( null ), 6 );
 			}
-
 		}
 
-		if ( AEConfig.instance.isFeatureEnabled( AEFeature.TinyTNTBlockDamage ) )
+		if( AEConfig.instance.isFeatureEnabled( AEFeature.TinyTNTBlockDamage ) )
 		{
 			this.posY -= 0.25;
 			Explosion ex = new Explosion( this.worldObj, this, this.posX, this.posY, this.posZ, 0.2f );
 
-			for (int x = (int) (this.posX - 2); x <= this.posX + 2; x++)
+			for( int x = (int) ( this.posX - 2 ); x <= this.posX + 2; x++ )
 			{
-				for (int y = (int) (this.posY - 2); y <= this.posY + 2; y++)
+				for( int y = (int) ( this.posY - 2 ); y <= this.posY + 2; y++ )
 				{
-					for (int z = (int) (this.posZ - 2); z <= this.posZ + 2; z++)
+					for( int z = (int) ( this.posZ - 2 ); z <= this.posZ + 2; z++ )
 					{
 						Block block = this.worldObj.getBlock( x, y, z );
-						if ( block != null && !block.isAir( this.worldObj, x, y, z ) )
+						if( block != null && !block.isAir( this.worldObj, x, y, z ) )
 						{
-							float strength = (float) (2.3f - (((x + 0.5f) - this.posX) * ((x + 0.5f) - this.posX) + ((y + 0.5f) - this.posY) * ((y + 0.5f) - this.posY) + ((z + 0.5f) - this.posZ)
-									* ((z + 0.5f) - this.posZ)));
+							float strength = (float) ( 2.3f - ( ( ( x + 0.5f ) - this.posX ) * ( ( x + 0.5f ) - this.posX ) + ( ( y + 0.5f ) - this.posY ) * ( ( y + 0.5f ) - this.posY ) + ( ( z + 0.5f ) - this.posZ ) * ( ( z + 0.5f ) - this.posZ ) ) );
 
 							float resistance = block.getExplosionResistance( this, this.worldObj, x, y, z, this.posX, this.posY, this.posZ );
-							strength -= (resistance + 0.3F) * 0.11f;
+							strength -= ( resistance + 0.3F ) * 0.11f;
 
-							if ( strength > 0.01 )
+							if( strength > 0.01 )
 							{
-								if ( block.getMaterial() != Material.air )
+								if( block.getMaterial() != Material.air )
 								{
-									if ( block.canDropFromExplosion( ex ) )
+									if( block.canDropFromExplosion( ex ) )
 									{
 										block.dropBlockAsItemWithChance( this.worldObj, x, y, z, this.worldObj.getBlockMetadata( x, y, z ), 1.0F / 1.0f, 0 );
 									}
@@ -167,7 +167,6 @@ final public class EntityTinyTNTPrimed extends EntityTNTPrimed implements IEntit
 									block.onBlockExploded( this.worldObj, x, y, z, ex );
 								}
 							}
-
 						}
 					}
 				}
@@ -178,15 +177,14 @@ final public class EntityTinyTNTPrimed extends EntityTNTPrimed implements IEntit
 	}
 
 	@Override
-	public void writeSpawnData(ByteBuf data)
+	public void writeSpawnData( ByteBuf data )
 	{
 		data.writeByte( this.fuse );
 	}
 
 	@Override
-	public void readSpawnData(ByteBuf data)
+	public void readSpawnData( ByteBuf data )
 	{
 		this.fuse = data.readByte();
 	}
-
 }

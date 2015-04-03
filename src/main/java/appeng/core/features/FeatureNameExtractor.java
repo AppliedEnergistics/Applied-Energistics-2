@@ -43,29 +43,29 @@ public class FeatureNameExtractor
 	{
 		String name = this.clazz.getSimpleName();
 
-		if ( name.startsWith( "ItemMultiPart" ) )
+		if( name.startsWith( "ItemMultiPart" ) )
 		{
 			name = PATTERN_ITEM_MULTI_PART.matcher( name ).replaceAll( "ItemPart" );
 		}
-		else if ( name.startsWith( "ItemMultiMaterial" ) )
+		else if( name.startsWith( "ItemMultiMaterial" ) )
 		{
 			name = PATTERN_ITEM_MULTI_MATERIAL.matcher( name ).replaceAll( "ItemMaterial" );
 		}
 
-		if ( this.subName.isPresent() )
+		if( this.subName.isPresent() )
 		{
 			final String subName = this.subName.get();
 			// simple hack to allow me to do get nice names for these without
 			// mode code outside of AEBaseItem
-			if ( subName.startsWith( "P2PTunnel" ) )
+			if( subName.startsWith( "P2PTunnel" ) )
 			{
 				return "ItemPart.P2PTunnel";
 			}
-			else if ( subName.equals( "CertusQuartzTools" ) )
+			else if( subName.equals( "CertusQuartzTools" ) )
 			{
 				return PATTERN_QUARTZ.matcher( name ).replaceAll( "CertusQuartz" );
 			}
-			else if ( subName.equals( "NetherQuartzTools" ) )
+			else if( subName.equals( "NetherQuartzTools" ) )
 			{
 				return PATTERN_QUARTZ.matcher( name ).replaceAll( "NetherQuartz" );
 			}

@@ -85,7 +85,7 @@ public final class GrinderRecipeManager implements IGrinderRegistry, IOreListene
 	@Override
 	public void addRecipe( ItemStack in, ItemStack out, int cost )
 	{
-		if ( in == null || out == null )
+		if( in == null || out == null )
 		{
 			this.log( "Invalid Grinder Recipe Specified." );
 			return;
@@ -98,7 +98,7 @@ public final class GrinderRecipeManager implements IGrinderRegistry, IOreListene
 	@Override
 	public void addRecipe( ItemStack in, ItemStack out, ItemStack optional, float chance, int cost )
 	{
-		if ( in == null || ( optional == null && out == null ) )
+		if( in == null || ( optional == null && out == null ) )
 		{
 			this.log( "Invalid Grinder Recipe Specified." );
 			return;
@@ -111,7 +111,7 @@ public final class GrinderRecipeManager implements IGrinderRegistry, IOreListene
 	@Override
 	public void addRecipe( ItemStack in, ItemStack out, ItemStack optional, float chance, ItemStack optional2, float chance2, int cost )
 	{
-		if ( in == null || ( optional == null && out == null && optional2 == null ) )
+		if( in == null || ( optional == null && out == null && optional2 == null ) )
 		{
 			this.log( "Invalid Grinder Recipe Specified." );
 			return;
@@ -123,8 +123,8 @@ public final class GrinderRecipeManager implements IGrinderRegistry, IOreListene
 
 	private void injectRecipe( AppEngGrinderRecipe appEngGrinderRecipe )
 	{
-		for ( IGrinderEntry gr : this.recipes )
-			if ( Platform.isSameItemPrecise( gr.getInput(), appEngGrinderRecipe.getInput() ) )
+		for( IGrinderEntry gr : this.recipes )
+			if( Platform.isSameItemPrecise( gr.getInput(), appEngGrinderRecipe.getInput() ) )
 				return;
 
 		this.recipes.add( appEngGrinderRecipe );
@@ -132,7 +132,7 @@ public final class GrinderRecipeManager implements IGrinderRegistry, IOreListene
 
 	private ItemStack copy( ItemStack is )
 	{
-		if ( is != null )
+		if( is != null )
 			return is.copy();
 		return null;
 	}
@@ -141,11 +141,11 @@ public final class GrinderRecipeManager implements IGrinderRegistry, IOreListene
 	public IGrinderEntry getRecipeForInput( ItemStack input )
 	{
 		this.log( "Looking up recipe for " + Platform.getItemDisplayName( input ) );
-		if ( input != null )
+		if( input != null )
 		{
-			for ( IGrinderEntry r : this.recipes )
+			for( IGrinderEntry r : this.recipes )
 			{
-				if ( Platform.isSameItem( input, r.getInput() ) )
+				if( Platform.isSameItem( input, r.getInput() ) )
 				{
 					this.log( "Recipe for " + input.getUnlocalizedName() + " found " + Platform.getItemDisplayName( r.getOutput() ) );
 					return r;
@@ -165,28 +165,28 @@ public final class GrinderRecipeManager implements IGrinderRegistry, IOreListene
 
 	private int getDustToOreRatio( String name )
 	{
-		if ( name.equals( "Obsidian" ) )
+		if( name.equals( "Obsidian" ) )
 			return 1;
-		if ( name.equals( "Charcoal" ) )
+		if( name.equals( "Charcoal" ) )
 			return 1;
-		if ( name.equals( "Coal" ) )
+		if( name.equals( "Coal" ) )
 			return 1;
 		return 2;
 	}
 
 	private void addOre( String name, ItemStack item )
 	{
-		if ( item == null )
+		if( item == null )
 			return;
 		this.log( "Adding Ore - " + name + " : " + Platform.getItemDisplayName( item ) );
 
 		this.ores.put( item, name );
 
-		if ( this.dusts.containsKey( name ) )
+		if( this.dusts.containsKey( name ) )
 		{
 			ItemStack is = this.dusts.get( name ).copy();
 			int ratio = this.getDustToOreRatio( name );
-			if ( ratio > 1 )
+			if( ratio > 1 )
 			{
 				ItemStack extra = is.copy();
 				extra.stackSize = ratio - 1;
@@ -199,13 +199,13 @@ public final class GrinderRecipeManager implements IGrinderRegistry, IOreListene
 
 	private void addIngot( String name, ItemStack item )
 	{
-		if ( item == null )
+		if( item == null )
 			return;
 		this.log( "Adding Ingot - " + name + " : " + Platform.getItemDisplayName( item ) );
 
 		this.ingots.put( item, name );
 
-		if ( this.dusts.containsKey( name ) )
+		if( this.dusts.containsKey( name ) )
 		{
 			this.addRecipe( item, this.dusts.get( name ), 4 );
 		}
@@ -213,9 +213,9 @@ public final class GrinderRecipeManager implements IGrinderRegistry, IOreListene
 
 	private void addDust( String name, ItemStack item )
 	{
-		if ( item == null )
+		if( item == null )
 			return;
-		if ( this.dusts.containsKey( name ) )
+		if( this.dusts.containsKey( name ) )
 		{
 			this.log( "Rejecting Dust - " + name + " : " + Platform.getItemDisplayName( item ) );
 			return;
@@ -225,13 +225,13 @@ public final class GrinderRecipeManager implements IGrinderRegistry, IOreListene
 
 		this.dusts.put( name, item );
 
-		for ( Entry<ItemStack, String> d : this.ores.entrySet() )
-			if ( name.equals( d.getValue() ) )
+		for( Entry<ItemStack, String> d : this.ores.entrySet() )
+			if( name.equals( d.getValue() ) )
 			{
 				ItemStack is = item.copy();
 				is.stackSize = 1;
 				int ratio = this.getDustToOreRatio( name );
-				if ( ratio > 1 )
+				if( ratio > 1 )
 				{
 					ItemStack extra = is.copy();
 					extra.stackSize = ratio - 1;
@@ -241,27 +241,27 @@ public final class GrinderRecipeManager implements IGrinderRegistry, IOreListene
 					this.addRecipe( d.getKey(), is, 8 );
 			}
 
-		for ( Entry<ItemStack, String> d : this.ingots.entrySet() )
-			if ( name.equals( d.getValue() ) )
+		for( Entry<ItemStack, String> d : this.ingots.entrySet() )
+			if( name.equals( d.getValue() ) )
 				this.addRecipe( d.getKey(), item, 4 );
 	}
 
 	@Override
 	public void oreRegistered( String name, ItemStack item )
 	{
-		if ( name.startsWith( "ore" ) || name.startsWith( "crystal" ) || name.startsWith( "gem" ) || name.startsWith( "ingot" ) || name.startsWith( "dust" ) )
+		if( name.startsWith( "ore" ) || name.startsWith( "crystal" ) || name.startsWith( "gem" ) || name.startsWith( "ingot" ) || name.startsWith( "dust" ) )
 		{
-			for ( String ore : AEConfig.instance.grinderOres )
+			for( String ore : AEConfig.instance.grinderOres )
 			{
-				if ( name.equals( "ore" + ore ) )
+				if( name.equals( "ore" + ore ) )
 				{
 					this.addOre( ore, item );
 				}
-				else if ( name.equals( "crystal" + ore ) || name.equals( "ingot" + ore ) || name.equals( "gem" + ore ) )
+				else if( name.equals( "crystal" + ore ) || name.equals( "ingot" + ore ) || name.equals( "gem" + ore ) )
 				{
 					this.addIngot( ore, item );
 				}
-				else if ( name.equals( "dust" + ore ) )
+				else if( name.equals( "dust" + ore ) )
 				{
 					this.addDust( ore, item );
 				}

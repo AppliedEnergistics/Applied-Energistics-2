@@ -18,20 +18,23 @@
 
 package appeng.util.prioitylist;
 
+
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
+
 
 public class PrecisePriorityList<T extends IAEStack<T>> implements IPartitionList<T>
 {
 
 	final IItemList<T> list;
 
-	public PrecisePriorityList(IItemList<T> in) {
+	public PrecisePriorityList( IItemList<T> in )
+	{
 		this.list = in;
 	}
 
 	@Override
-	public boolean isListed(T input)
+	public boolean isListed( T input )
 	{
 		return this.list.findPrecise( input ) != null;
 	}
@@ -47,5 +50,4 @@ public class PrecisePriorityList<T extends IAEStack<T>> implements IPartitionLis
 	{
 		return this.list;
 	}
-
 }

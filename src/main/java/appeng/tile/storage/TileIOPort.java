@@ -231,6 +231,21 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 	}
 
 	@Override
+	public IInventory getInternalInventory()
+	{
+		return this.cells;
+	}
+
+	@Override
+	public void onChangeInventory( IInventory inv, int slot, InvOperation mc, ItemStack removed, ItemStack added )
+	{
+		if( this.cells == inv )
+		{
+			this.updateTask();
+		}
+	}
+
+	@Override
 	public boolean canInsertItem( int slotIndex, ItemStack insertingItem, int side )
 	{
 		for( int inputSlotIndex : this.input )
@@ -256,21 +271,6 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 		}
 
 		return false;
-	}
-
-	@Override
-	public IInventory getInternalInventory()
-	{
-		return this.cells;
-	}
-
-	@Override
-	public void onChangeInventory( IInventory inv, int slot, InvOperation mc, ItemStack removed, ItemStack added )
-	{
-		if( this.cells == inv )
-		{
-			this.updateTask();
-		}
 	}
 
 	@Override

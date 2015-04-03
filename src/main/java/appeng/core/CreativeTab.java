@@ -65,9 +65,9 @@ public final class CreativeTab extends CreativeTabs
 
 	private ItemStack findFirst( IItemDefinition... choices )
 	{
-		for ( IItemDefinition definition : choices )
+		for( IItemDefinition definition : choices )
 		{
-			for ( ItemStack definitionStack : definition.maybeStack( 1 ).asSet() )
+			for( ItemStack definitionStack : definition.maybeStack( 1 ).asSet() )
 			{
 				return definitionStack;
 			}

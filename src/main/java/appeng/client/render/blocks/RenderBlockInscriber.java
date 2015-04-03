@@ -18,6 +18,7 @@
 
 package appeng.client.render.blocks;
 
+
 import java.util.EnumSet;
 
 import org.lwjgl.opengl.GL11;
@@ -46,15 +47,17 @@ import appeng.tile.AEBaseTile;
 import appeng.tile.misc.TileInscriber;
 import appeng.util.Platform;
 
+
 public class RenderBlockInscriber extends BaseBlockRender
 {
 
-	public RenderBlockInscriber() {
+	public RenderBlockInscriber()
+	{
 		super( true, 30 );
 	}
 
 	@Override
-	public void renderInventory(AEBaseBlock blk, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj)
+	public void renderInventory( AEBaseBlock blk, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj )
 	{
 		Tessellator tess = Tessellator.instance;
 
@@ -95,14 +98,15 @@ public class RenderBlockInscriber extends BaseBlockRender
 	}
 
 	@Override
-	public boolean renderInWorld(AEBaseBlock block, IBlockAccess world, int x, int y, int z, RenderBlocks renderer)
+	public boolean renderInWorld( AEBaseBlock block, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
 	{
 		this.preRenderInWorld( block, world, x, y, z, renderer );
 
 		BlockInscriber blk = (BlockInscriber) block;
 
 		IOrientable te = this.getOrientable( block, world, x, y, z );
-		if ( te == null ) return false;
+		if( te == null )
+			return false;
 
 		ForgeDirection fdy = te.getUp();
 		ForgeDirection fdz = te.getForward();
@@ -137,7 +141,7 @@ public class RenderBlockInscriber extends BaseBlockRender
 	}
 
 	@Override
-	public void renderTile(AEBaseBlock block, AEBaseTile tile, Tessellator tess, double x, double y, double z, float f, RenderBlocks renderer)
+	public void renderTile( AEBaseBlock block, AEBaseTile tile, Tessellator tess, double x, double y, double z, float f, RenderBlocks renderer )
 	{
 		TileInscriber inv = (TileInscriber) tile;
 
@@ -163,19 +167,19 @@ public class RenderBlockInscriber extends BaseBlockRender
 		float base = 0.4f;
 
 		long absoluteProgress = 0;
-		if ( inv.smash )
+		if( inv.smash )
 		{
 			long currentTime = System.currentTimeMillis();
 			absoluteProgress = currentTime - inv.clientStart;
-			if ( absoluteProgress > 800 )
+			if( absoluteProgress > 800 )
 				inv.smash = false;
 		}
 
 		float relativeProgress = absoluteProgress % 800 / 400.0f;
 		float progress = relativeProgress;
 
-		if ( progress > 1.0f )
-			progress = 1.0f - (progress - 1.0f);
+		if( progress > 1.0f )
+			progress = 1.0f - ( progress - 1.0f );
 		press -= progress / 5.0f;
 
 		IIcon ic = ExtraBlockTextures.BlockInscriberInside.getIcon();
@@ -189,8 +193,8 @@ public class RenderBlockInscriber extends BaseBlockRender
 
 		tess.addVertexWithUV( TwoPx, middle + press, 1.0 - TwoPx, ic.getInterpolatedU( 2 ), ic.getInterpolatedV( 3 ) );
 		tess.addVertexWithUV( 1.0 - TwoPx, middle + press, 1.0 - TwoPx, ic.getInterpolatedU( 14 ), ic.getInterpolatedV( 3 ) );
-		tess.addVertexWithUV( 1.0 - TwoPx, middle + base, 1.0 - TwoPx, ic.getInterpolatedU( 14 ), ic.getInterpolatedV( 3 - 16 * (press - base) ) );
-		tess.addVertexWithUV( TwoPx, middle + base, 1.0 - TwoPx, ic.getInterpolatedU( 2 ), ic.getInterpolatedV( 3 - 16 * (press - base) ) );
+		tess.addVertexWithUV( 1.0 - TwoPx, middle + base, 1.0 - TwoPx, ic.getInterpolatedU( 14 ), ic.getInterpolatedV( 3 - 16 * ( press - base ) ) );
+		tess.addVertexWithUV( TwoPx, middle + base, 1.0 - TwoPx, ic.getInterpolatedU( 2 ), ic.getInterpolatedV( 3 - 16 * ( press - base ) ) );
 
 		middle -= 2.0f * 0.02f;
 		tess.addVertexWithUV( 1.0 - TwoPx, middle - press, TwoPx, ic.getInterpolatedU( 2 ), ic.getInterpolatedV( 2 ) );
@@ -200,29 +204,29 @@ public class RenderBlockInscriber extends BaseBlockRender
 
 		tess.addVertexWithUV( 1.0 - TwoPx, middle - press, 1.0 - TwoPx, ic.getInterpolatedU( 2 ), ic.getInterpolatedV( 3 ) );
 		tess.addVertexWithUV( TwoPx, middle - press, 1.0 - TwoPx, ic.getInterpolatedU( 14 ), ic.getInterpolatedV( 3 ) );
-		tess.addVertexWithUV( TwoPx, middle - base, 1.0 - TwoPx, ic.getInterpolatedU( 14 ), ic.getInterpolatedV( 3 - 16 * (press - base) ) );
-		tess.addVertexWithUV( 1.0 - TwoPx, middle + -base, 1.0 - TwoPx, ic.getInterpolatedU( 2 ), ic.getInterpolatedV( 3 - 16 * (press - base) ) );
+		tess.addVertexWithUV( TwoPx, middle - base, 1.0 - TwoPx, ic.getInterpolatedU( 14 ), ic.getInterpolatedV( 3 - 16 * ( press - base ) ) );
+		tess.addVertexWithUV( 1.0 - TwoPx, middle + -base, 1.0 - TwoPx, ic.getInterpolatedU( 2 ), ic.getInterpolatedV( 3 - 16 * ( press - base ) ) );
 
 		tess.draw();
 
 		GL11.glPopMatrix();
 
 		int items = 0;
-		if ( inv.getStackInSlot( 0 ) != null )
+		if( inv.getStackInSlot( 0 ) != null )
 			items++;
-		if ( inv.getStackInSlot( 1 ) != null )
+		if( inv.getStackInSlot( 1 ) != null )
 			items++;
-		if ( inv.getStackInSlot( 2 ) != null )
+		if( inv.getStackInSlot( 2 ) != null )
 			items++;
 
-		if ( relativeProgress > 1.0f || items == 0 )
+		if( relativeProgress > 1.0f || items == 0 )
 		{
 			ItemStack is = inv.getStackInSlot( 3 );
 
-			if ( is == null )
+			if( is == null )
 			{
 				InscriberRecipe ir = inv.getTask();
-				if ( ir != null )
+				if( ir != null )
 					is = ir.output.copy();
 			}
 
@@ -234,13 +238,11 @@ public class RenderBlockInscriber extends BaseBlockRender
 			this.renderItem( inv.getStackInSlot( 1 ), -press, block, tile, tess, x, y, z, f, renderer );
 			this.renderItem( inv.getStackInSlot( 2 ), 0.0f, block, tile, tess, x, y, z, f, renderer );
 		}
-
 	}
 
-	public void renderItem(ItemStack sis, float o, AEBaseBlock block, AEBaseTile tile, Tessellator tess, double x, double y, double z, float f,
-			RenderBlocks renderer)
+	public void renderItem( ItemStack sis, float o, AEBaseBlock block, AEBaseTile tile, Tessellator tess, double x, double y, double z, float f, RenderBlocks renderer )
 	{
-		if ( sis != null )
+		if( sis != null )
 		{
 			sis = sis.copy();
 			GL11.glPushMatrix();
@@ -253,7 +255,7 @@ public class RenderBlockInscriber extends BaseBlockRender
 				GL11.glScalef( 1.0f, 1.0f, 1.0f );
 
 				Block blk = Block.getBlockFromItem( sis.getItem() );
-				if ( sis.getItemSpriteNumber() == 0 && block != null && RenderBlocks.renderItemIn3d( blk.getRenderType() ) )
+				if( sis.getItemSpriteNumber() == 0 && block != null && RenderBlocks.renderItemIn3d( blk.getRenderType() ) )
 				{
 					GL11.glRotatef( 25.0f, 1.0f, 0.0f, 0.0f );
 					GL11.glRotatef( 15.0f, 0.0f, 1.0f, 0.0f );
@@ -275,7 +277,7 @@ public class RenderBlockInscriber extends BaseBlockRender
 
 				this.doRenderItem( sis, tile );
 			}
-			catch (Exception err)
+			catch( Exception err )
 			{
 				AELog.error( err );
 			}
@@ -283,5 +285,4 @@ public class RenderBlockInscriber extends BaseBlockRender
 			GL11.glPopMatrix();
 		}
 	}
-
 }

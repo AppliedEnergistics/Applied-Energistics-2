@@ -18,6 +18,7 @@
 
 package appeng.me.cache;
 
+
 import java.util.Collection;
 import java.util.Deque;
 import java.util.Iterator;
@@ -34,94 +35,42 @@ import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.me.storage.ItemWatcher;
 
+
 public class NetworkMonitor<T extends IAEStack<T>> extends MEMonitorHandler<T>
 {
 
+	private final static Deque<NetworkMonitor<?>> DEPTH = new LinkedList<NetworkMonitor<?>>();
 	final private GridStorageCache myGridCache;
 	final private StorageChannel myChannel;
-
 	boolean sendEvent = false;
+
+	public NetworkMonitor( GridStorageCache cache, StorageChannel chan )
+	{
+		super( null, chan );
+		this.myGridCache = cache;
+		this.myChannel = chan;
+	}
 
 	public void forceUpdate()
 	{
 		this.hasChanged = true;
 
 		Iterator<Entry<IMEMonitorHandlerReceiver<T>, Object>> i = this.getListeners();
-		while (i.hasNext())
+		while( i.hasNext() )
 		{
 			Entry<IMEMonitorHandlerReceiver<T>, Object> o = i.next();
 			IMEMonitorHandlerReceiver<T> receiver = o.getKey();
 
-			if ( receiver.isValid( o.getValue() ) )
+			if( receiver.isValid( o.getValue() ) )
 				receiver.onListUpdate();
 			else
 				i.remove();
 		}
 	}
 
-	public NetworkMonitor(GridStorageCache cache, StorageChannel chan) {
-		super( null, chan );
-		this.myGridCache = cache;
-		this.myChannel = chan;
-	}
-
-	private final static Deque<NetworkMonitor<?>> DEPTH = new LinkedList<NetworkMonitor<?>>();
-
-	@Override
-	protected void postChangesToListeners(Iterable<T> changes, BaseActionSource src)
-	{
-		this.postChange( true, changes, src );
-	}
-
-	protected void postChange(boolean Add, Iterable<T> changes, BaseActionSource src)
-	{
-		if ( DEPTH.contains( this ) )
-			return;
-
-		DEPTH.push( this );
-
-		this.sendEvent = true;
-		this.notifyListenersOfChange( changes, src );
-
-		IItemList<T> myStorageList = this.getStorageList();
-
-		for (T changedItem : changes)
-		{
-			T difference = changedItem;
-
-			if ( !Add && changedItem != null )
-				(difference = changedItem.copy()).setStackSize( -changedItem.getStackSize() );
-
-			if ( this.myGridCache.interestManager.containsKey( changedItem ) )
-			{
-				Collection<ItemWatcher> list = this.myGridCache.interestManager.get( changedItem );
-				if ( !list.isEmpty() )
-				{
-					IAEStack fullStack = myStorageList.findPrecise( changedItem );
-					if ( fullStack == null )
-					{
-						fullStack = changedItem.copy();
-						fullStack.setStackSize( 0 );
-					}
-
-					this.myGridCache.interestManager.enableTransactions();
-
-					for (ItemWatcher iw : list)
-						iw.getHost().onStackChange( myStorageList, fullStack, difference, src, this.getChannel() );
-
-					this.myGridCache.interestManager.disableTransactions();
-				}
-			}
-		}
-
-		final NetworkMonitor<?> last = DEPTH.pop();
-		if ( last != this )
-			throw new RuntimeException( "Invalid Access to Networked Storage API detected." );
-	}
-
 	public void onTick()
 	{
-		if ( this.sendEvent )
+		if( this.sendEvent )
 		{
 			this.sendEvent = false;
 			this.myGridCache.myGrid.postEvent( new MENetworkStorageEvent( this, this.myChannel ) );
@@ -131,15 +80,66 @@ public class NetworkMonitor<T extends IAEStack<T>> extends MEMonitorHandler<T>
 	@Override
 	protected IMEInventoryHandler getHandler()
 	{
-		switch (this.myChannel)
+		switch( this.myChannel )
 		{
-		case ITEMS:
-			return this.myGridCache.getItemInventoryHandler();
-		case FLUIDS:
-			return this.myGridCache.getFluidInventoryHandler();
-		default:
+			case ITEMS:
+				return this.myGridCache.getItemInventoryHandler();
+			case FLUIDS:
+				return this.myGridCache.getFluidInventoryHandler();
+			default:
 		}
 		return null;
 	}
 
+	@Override
+	protected void postChangesToListeners( Iterable<T> changes, BaseActionSource src )
+	{
+		this.postChange( true, changes, src );
+	}
+
+	protected void postChange( boolean Add, Iterable<T> changes, BaseActionSource src )
+	{
+		if( DEPTH.contains( this ) )
+			return;
+
+		DEPTH.push( this );
+
+		this.sendEvent = true;
+		this.notifyListenersOfChange( changes, src );
+
+		IItemList<T> myStorageList = this.getStorageList();
+
+		for( T changedItem : changes )
+		{
+			T difference = changedItem;
+
+			if( !Add && changedItem != null )
+				( difference = changedItem.copy() ).setStackSize( -changedItem.getStackSize() );
+
+			if( this.myGridCache.interestManager.containsKey( changedItem ) )
+			{
+				Collection<ItemWatcher> list = this.myGridCache.interestManager.get( changedItem );
+				if( !list.isEmpty() )
+				{
+					IAEStack fullStack = myStorageList.findPrecise( changedItem );
+					if( fullStack == null )
+					{
+						fullStack = changedItem.copy();
+						fullStack.setStackSize( 0 );
+					}
+
+					this.myGridCache.interestManager.enableTransactions();
+
+					for( ItemWatcher iw : list )
+						iw.getHost().onStackChange( myStorageList, fullStack, difference, src, this.getChannel() );
+
+					this.myGridCache.interestManager.disableTransactions();
+				}
+			}
+		}
+
+		final NetworkMonitor<?> last = DEPTH.pop();
+		if( last != this )
+			throw new RuntimeException( "Invalid Access to Networked Storage API detected." );
+	}
 }

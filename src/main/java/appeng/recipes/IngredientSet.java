@@ -18,6 +18,7 @@
 
 package appeng.recipes;
 
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -29,31 +30,20 @@ import appeng.api.exceptions.RegistrationError;
 import appeng.api.recipes.IIngredient;
 import appeng.api.recipes.ResolverResultSet;
 
+
 public class IngredientSet implements IIngredient
 {
 
 	final int qty = 0;
 	final String name;
 	final List<ItemStack> items;
+	final boolean isInside = false;
 	ItemStack[] baked;
 
-	public IngredientSet(ResolverResultSet rr) {
+	public IngredientSet( ResolverResultSet rr )
+	{
 		this.name = rr.name;
 		this.items = rr.results;
-	}
-
-	final boolean isInside = false;
-
-	@Override
-	public int getDamageValue()
-	{
-		return OreDictionary.WILDCARD_VALUE;
-	}
-
-	@Override
-	public String getItemName()
-	{
-		return this.name;
 	}
 
 	@Override
@@ -65,34 +55,22 @@ public class IngredientSet implements IIngredient
 	@Override
 	public ItemStack[] getItemStackSet() throws RegistrationError, MissingIngredientError
 	{
-		if ( this.baked != null )
+		if( this.baked != null )
 			return this.baked;
 
-		if ( this.isInside )
+		if( this.isInside )
 			return new ItemStack[0];
 
 		List<ItemStack> out = new LinkedList<ItemStack>();
 		out.addAll( this.items );
 
-		if ( out.size() == 0 )
+		if( out.size() == 0 )
 			throw new MissingIngredientError( this.toString() + " - group could not be resolved to any items." );
 
-		for (ItemStack is : out)
+		for( ItemStack is : out )
 			is.stackSize = this.qty;
 
 		return out.toArray( new ItemStack[out.size()] );
-	}
-
-	@Override
-	public String getNameSpace()
-	{
-		return "";
-	}
-
-	@Override
-	public int getQty()
-	{
-		return 0;
 	}
 
 	@Override
@@ -102,10 +80,33 @@ public class IngredientSet implements IIngredient
 	}
 
 	@Override
+	public String getNameSpace()
+	{
+		return "";
+	}
+
+	@Override
+	public String getItemName()
+	{
+		return this.name;
+	}
+
+	@Override
+	public int getDamageValue()
+	{
+		return OreDictionary.WILDCARD_VALUE;
+	}
+
+	@Override
+	public int getQty()
+	{
+		return 0;
+	}
+
+	@Override
 	public void bake() throws RegistrationError, MissingIngredientError
 	{
 		this.baked = null;
 		this.baked = this.getItemStackSet();
 	}
-
 }

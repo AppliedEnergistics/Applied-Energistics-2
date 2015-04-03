@@ -18,10 +18,12 @@
 
 package appeng.tile.misc;
 
+
 import appeng.tile.AEBaseTile;
 import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
 import appeng.util.Platform;
+
 
 public class TileLightDetector extends AEBaseTile
 {
@@ -34,11 +36,11 @@ public class TileLightDetector extends AEBaseTile
 		return this.lastLight > 0;
 	}
 
-	@TileEvent(TileEventType.TICK)
+	@TileEvent( TileEventType.TICK )
 	public void Tick_TileLightDetector()
 	{
 		this.lastCheck++;
-		if ( this.lastCheck > 30 )
+		if( this.lastCheck > 30 )
 		{
 			this.lastCheck = 0;
 			this.updateLight();
@@ -49,7 +51,7 @@ public class TileLightDetector extends AEBaseTile
 	{
 		int val = this.worldObj.getBlockLightValue( this.xCoord, this.yCoord, this.zCoord );
 
-		if ( this.lastLight != val )
+		if( this.lastLight != val )
 		{
 			this.lastLight = val;
 			Platform.notifyBlocksOfNeighbors( this.worldObj, this.xCoord, this.yCoord, this.zCoord );
@@ -61,5 +63,4 @@ public class TileLightDetector extends AEBaseTile
 	{
 		return false;
 	}
-
 }

@@ -18,6 +18,7 @@
 
 package appeng.container.implementations;
 
+
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -33,6 +34,7 @@ import appeng.recipes.handlers.Inscribe.InscriberRecipe;
 import appeng.tile.misc.TileInscriber;
 import appeng.util.Platform;
 
+
 public class ContainerInscriber extends ContainerUpgradeable implements IProgressProvider
 {
 
@@ -42,13 +44,13 @@ public class ContainerInscriber extends ContainerUpgradeable implements IProgres
 	final Slot middle;
 	final Slot bottom;
 
-	@GuiSync(2)
+	@GuiSync( 2 )
 	public int maxProcessingTime = -1;
 
-	@GuiSync(3)
+	@GuiSync( 3 )
 	public int processingTime = -1;
 
-	public ContainerInscriber(InventoryPlayer ip, TileInscriber te)
+	public ContainerInscriber( InventoryPlayer ip, TileInscriber te )
 	{
 		super( ip, te );
 		this.ti = te;
@@ -60,7 +62,6 @@ public class ContainerInscriber extends ContainerUpgradeable implements IProgres
 		this.addSlotToContainer( new SlotOutput( this.ti, 3, 113, 40, -1 ) );
 
 		this.bindPlayerInventory( ip, 0, this.getHeight() - /* height of player inventory */82 );
-
 	}
 
 	@Override
@@ -70,9 +71,11 @@ public class ContainerInscriber extends ContainerUpgradeable implements IProgres
 	}
 
 	@Override
-	public int availableUpgrades()
+	/**
+	 * Overridden super.setupConfig to prevent setting up the fake slots
+	 */ protected void setupConfig()
 	{
-		return 3;
+		this.setupUpgrades();
 	}
 
 	@Override
@@ -82,92 +85,9 @@ public class ContainerInscriber extends ContainerUpgradeable implements IProgres
 	}
 
 	@Override
-	/**
-	 * Overridden super.setupConfig to prevent setting up the fake slots
-	 */
-	protected void setupConfig()
+	public int availableUpgrades()
 	{
-		this.setupUpgrades();
-	}
-
-	@Override
-	public boolean isValidForSlot(Slot s, ItemStack is)
-	{
-		ItemStack PlateA = this.ti.getStackInSlot( 0 );
-		ItemStack PlateB = this.ti.getStackInSlot( 1 );
-
-		if ( s == this.middle )
-		{
-			for (ItemStack i : Inscribe.PLATES )
-			{
-				if ( Platform.isSameItemPrecise( i, is ) )
-					return false;
-			}
-
-			boolean matches = false;
-			boolean found = false;
-
-			for (InscriberRecipe i : Inscribe.RECIPES )
-			{
-				boolean matchA = (PlateA == null && i.plateA == null) || (Platform.isSameItemPrecise( PlateA, i.plateA )) && // and...
-						(PlateB == null && i.plateB == null) | (Platform.isSameItemPrecise( PlateB, i.plateB ));
-
-				boolean matchB = (PlateB == null && i.plateA == null) || (Platform.isSameItemPrecise( PlateB, i.plateA )) && // and...
-						(PlateA == null && i.plateB == null) | (Platform.isSameItemPrecise( PlateA, i.plateB ));
-
-				if ( matchA || matchB )
-				{
-					matches = true;
-					for (ItemStack option : i.imprintable)
-					{
-						if ( Platform.isSameItemPrecise( is, option ) )
-							found = true;
-					}
-
-				}
-			}
-
-			if ( matches && !found )
-				return false;
-		}
-
-		if ( (s == this.top && PlateB != null) || (s == this.bottom && PlateA != null) )
-		{
-			boolean isValid = false;
-			ItemStack otherSlot = null;
-			if ( s == this.top )
-				otherSlot = this.bottom.getStack();
-			else
-				otherSlot = this.top.getStack();
-
-			// name presses
-			final IItemDefinition namePress = AEApi.instance().definitions().materials().namePress();
-			if ( namePress.isSameAs( otherSlot ) )
-			{
-				return namePress.isSameAs( is );
-			}
-
-			// everything else
-			for (InscriberRecipe i : Inscribe.RECIPES )
-			{
-				if ( Platform.isSameItemPrecise( i.plateA, otherSlot ) )
-				{
-					isValid = Platform.isSameItemPrecise( is, i.plateB );
-				}
-				else if ( Platform.isSameItemPrecise( i.plateB, otherSlot ) )
-				{
-					isValid = Platform.isSameItemPrecise( is, i.plateA );
-				}
-
-				if ( isValid )
-					break;
-			}
-
-			if ( !isValid )
-				return false;
-		}
-
-		return true;
+		return 3;
 	}
 
 	@Override
@@ -175,11 +95,90 @@ public class ContainerInscriber extends ContainerUpgradeable implements IProgres
 	{
 		this.standardDetectAndSendChanges();
 
-		if ( Platform.isServer() )
+		if( Platform.isServer() )
 		{
 			this.maxProcessingTime = this.ti.maxProcessingTime;
 			this.processingTime = this.ti.processingTime;
 		}
+	}
+
+	@Override
+	public boolean isValidForSlot( Slot s, ItemStack is )
+	{
+		ItemStack PlateA = this.ti.getStackInSlot( 0 );
+		ItemStack PlateB = this.ti.getStackInSlot( 1 );
+
+		if( s == this.middle )
+		{
+			for( ItemStack i : Inscribe.PLATES )
+			{
+				if( Platform.isSameItemPrecise( i, is ) )
+					return false;
+			}
+
+			boolean matches = false;
+			boolean found = false;
+
+			for( InscriberRecipe i : Inscribe.RECIPES )
+			{
+				boolean matchA = ( PlateA == null && i.plateA == null ) || ( Platform.isSameItemPrecise( PlateA, i.plateA ) ) && // and...
+						( PlateB == null && i.plateB == null ) | ( Platform.isSameItemPrecise( PlateB, i.plateB ) );
+
+				boolean matchB = ( PlateB == null && i.plateA == null ) || ( Platform.isSameItemPrecise( PlateB, i.plateA ) ) && // and...
+						( PlateA == null && i.plateB == null ) | ( Platform.isSameItemPrecise( PlateA, i.plateB ) );
+
+				if( matchA || matchB )
+				{
+					matches = true;
+					for( ItemStack option : i.imprintable )
+					{
+						if( Platform.isSameItemPrecise( is, option ) )
+							found = true;
+					}
+				}
+			}
+
+			if( matches && !found )
+				return false;
+		}
+
+		if( ( s == this.top && PlateB != null ) || ( s == this.bottom && PlateA != null ) )
+		{
+			boolean isValid = false;
+			ItemStack otherSlot = null;
+			if( s == this.top )
+				otherSlot = this.bottom.getStack();
+			else
+				otherSlot = this.top.getStack();
+
+			// name presses
+			final IItemDefinition namePress = AEApi.instance().definitions().materials().namePress();
+			if( namePress.isSameAs( otherSlot ) )
+			{
+				return namePress.isSameAs( is );
+			}
+
+			// everything else
+			for( InscriberRecipe i : Inscribe.RECIPES )
+			{
+				if( Platform.isSameItemPrecise( i.plateA, otherSlot ) )
+				{
+					isValid = Platform.isSameItemPrecise( is, i.plateB );
+				}
+				else if( Platform.isSameItemPrecise( i.plateB, otherSlot ) )
+				{
+					isValid = Platform.isSameItemPrecise( is, i.plateA );
+				}
+
+				if( isValid )
+					break;
+			}
+
+			if( !isValid )
+				return false;
+		}
+
+		return true;
 	}
 
 	@Override

@@ -18,6 +18,7 @@
 
 package appeng.integration.modules;
 
+
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -26,15 +27,39 @@ import rblocks.api.IOrientable;
 import appeng.integration.BaseModule;
 import appeng.integration.abstraction.IRB;
 
+
 public class RB extends BaseModule implements IRB
 {
+
+	public static RB instance;
+
+	@Override
+	public void init() throws Throwable
+	{
+		this.testClassExistence( IOrientable.class );
+	}
+
+	@Override
+	public void postInit()
+	{
+
+	}
+
+	@Override
+	public appeng.api.util.IOrientable getOrientable( TileEntity te )
+	{
+		if( te instanceof IOrientable )
+			return new RBWrapper( (IOrientable) te );
+		return null;
+	}
 
 	private class RBWrapper implements appeng.api.util.IOrientable
 	{
 
 		final private IOrientable internal;
 
-		public RBWrapper(IOrientable ww) {
+		public RBWrapper( IOrientable ww )
+		{
 			this.internal = ww;
 		}
 
@@ -57,33 +82,9 @@ public class RB extends BaseModule implements IRB
 		}
 
 		@Override
-		public void setOrientation(ForgeDirection Forward, ForgeDirection Up)
+		public void setOrientation( ForgeDirection Forward, ForgeDirection Up )
 		{
 			this.internal.setOrientation( Forward, Up );
 		}
-
 	}
-
-	public static RB instance;
-
-	@Override
-	public void init() throws Throwable
-	{
-		this.testClassExistence( IOrientable.class );
-	}
-
-	@Override
-	public void postInit()
-	{
-
-	}
-
-	@Override
-	public appeng.api.util.IOrientable getOrientable(TileEntity te)
-	{
-		if ( te instanceof IOrientable )
-			return new RBWrapper( (IOrientable) te );
-		return null;
-	}
-
 }

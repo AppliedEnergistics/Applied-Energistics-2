@@ -49,7 +49,9 @@ msg.setInteger( "turns", 8 );
 FMLInterModComms.sendMessage( "appliedenergistics2", "add-grindable", msg );
 
  */
+
 package appeng.core.api.imc;
+
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -58,6 +60,7 @@ import cpw.mods.fml.common.event.FMLInterModComms.IMCMessage;
 
 import appeng.api.AEApi;
 import appeng.core.api.IIMCProcessor;
+
 
 public class IMCGrinder implements IIMCProcessor
 {
@@ -73,18 +76,18 @@ public class IMCGrinder implements IIMCProcessor
 
 		int turns = msg.getInteger( "turns" );
 
-		if ( in == null )
+		if( in == null )
 			throw new RuntimeException( "invalid input" );
 
-		if ( out == null )
+		if( out == null )
 			throw new RuntimeException( "invalid output" );
 
-		if ( msg.hasKey( "optional" ) )
+		if( msg.hasKey( "optional" ) )
 		{
 			NBTTagCompound optionalTag = (NBTTagCompound) msg.getTag( "optional" );
 			ItemStack optional = ItemStack.loadItemStackFromNBT( optionalTag );
 
-			if ( optional == null )
+			if( optional == null )
 				throw new RuntimeException( "invalid optional" );
 
 			float chance = msg.getFloat( "chance" );

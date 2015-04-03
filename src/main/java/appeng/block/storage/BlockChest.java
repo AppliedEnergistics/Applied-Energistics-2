@@ -18,6 +18,7 @@
 
 package appeng.block.storage;
 
+
 import java.util.EnumSet;
 
 import net.minecraft.block.material.Material;
@@ -37,10 +38,12 @@ import appeng.core.sync.GuiBridge;
 import appeng.tile.storage.TileChest;
 import appeng.util.Platform;
 
+
 public class BlockChest extends AEBaseBlock
 {
 
-	public BlockChest() {
+	public BlockChest()
+	{
 		super( BlockChest.class, Material.iron );
 		this.setFeature( EnumSet.of( AEFeature.StorageCells, AEFeature.MEChest ) );
 		this.setTileEntity( TileChest.class );
@@ -53,22 +56,22 @@ public class BlockChest extends AEBaseBlock
 	}
 
 	@Override
-	public boolean onActivated(World w, int x, int y, int z, EntityPlayer p, int side, float hitX, float hitY, float hitZ)
+	public boolean onActivated( World w, int x, int y, int z, EntityPlayer p, int side, float hitX, float hitY, float hitZ )
 	{
 		TileChest tg = this.getTileEntity( w, x, y, z );
-		if ( tg != null && !p.isSneaking() )
+		if( tg != null && !p.isSneaking() )
 		{
-			if ( Platform.isClient() )
+			if( Platform.isClient() )
 				return true;
 
-			if ( side != tg.getUp().ordinal() )
+			if( side != tg.getUp().ordinal() )
 			{
 				Platform.openGUI( p, tg, ForgeDirection.getOrientation( side ), GuiBridge.GUI_CHEST );
 			}
 			else
 			{
 				ItemStack cell = tg.getStackInSlot( 1 );
-				if ( cell != null )
+				if( cell != null )
 				{
 					ICellHandler ch = AEApi.instance().registries().cell().getHandler( cell );
 

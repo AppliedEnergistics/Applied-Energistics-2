@@ -45,8 +45,8 @@ public interface IGrinderRegistry
 	/**
 	 * add a new recipe the easy way, in &#8594; out, how many turns., duplicates will not be added.
 	 *
-	 * @param in input
-	 * @param out output
+	 * @param in    input
+	 * @param out   output
 	 * @param turns amount of turns to turn the input into the output
 	 */
 	void addRecipe( ItemStack in, ItemStack out, int turns );
@@ -54,8 +54,8 @@ public interface IGrinderRegistry
 	/**
 	 * add a new recipe with optional outputs, duplicates will not be added.
 	 *
-	 * @param in input
-	 * @param out output
+	 * @param in       input
+	 * @param out      output
 	 * @param optional optional output
 	 * @param chance   chance to get the optional output within 0.0 - 1.0
 	 * @param turns    amount of turns to turn the input into the outputs
@@ -64,11 +64,11 @@ public interface IGrinderRegistry
 
 	/**
 	 * add a new recipe with optional outputs, duplicates will not be added.
-	 * 
-	 * @param in input
-	 * @param out output
-	 * @param optional optional output
-	 * @param chance chance to get the optional output within 0.0 - 1.0
+	 *
+	 * @param in        input
+	 * @param out       output
+	 * @param optional  optional output
+	 * @param chance    chance to get the optional output within 0.0 - 1.0
 	 * @param optional2 second optional output
 	 * @param chance2   chance to get the second optional output within 0.0 - 1.0
 	 * @param turns     amount of turns to turn the input into the outputs

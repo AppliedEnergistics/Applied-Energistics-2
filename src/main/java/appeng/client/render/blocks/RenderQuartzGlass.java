@@ -18,6 +18,7 @@
 
 package appeng.client.render.blocks;
 
+
 import java.util.Random;
 
 import net.minecraft.client.renderer.RenderBlocks;
@@ -32,117 +33,27 @@ import appeng.client.render.BaseBlockRender;
 import appeng.client.texture.ExtraBlockTextures;
 import appeng.client.texture.OffsetIcon;
 
+
 public class RenderQuartzGlass extends BaseBlockRender
 {
 
 	static byte[][][] offsets;
 
-	public RenderQuartzGlass() {
+	public RenderQuartzGlass()
+	{
 		super( false, 0 );
-		if ( offsets == null )
+		if( offsets == null )
 		{
 			Random r = new Random( 924 );
 			offsets = new byte[10][10][10];
-			for (int x = 0; x < 10; x++)
-				for (int y = 0; y < 10; y++)
+			for( int x = 0; x < 10; x++ )
+				for( int y = 0; y < 10; y++ )
 					r.nextBytes( offsets[x][y] );
 		}
 	}
 
-	boolean isFlush(AEBaseBlock imb, IBlockAccess world, int x, int y, int z)
-	{
-		return this.isGlass( imb, world, x, y, z );
-	}
-
-	boolean isGlass(AEBaseBlock imb, IBlockAccess world, int x, int y, int z)
-	{
-		return this.isQuartzGlass( world, x, y, z ) || this.isVibrantQuartzGlass( world, x, y, z );
-	}
-
-	private boolean isQuartzGlass( IBlockAccess world, int x, int y, int z )
-	{
-		return AEApi.instance().definitions().blocks().quartzGlass().isSameAs( world, x, y, z );
-	}
-
-	private boolean isVibrantQuartzGlass( IBlockAccess world, int x, int y, int z )
-	{
-		return AEApi.instance().definitions().blocks().quartzVibrantGlass().isSameAs( world, x, y, z );
-	}
-
-	void renderEdge(AEBaseBlock imb, IBlockAccess world, int x, int y, int z, RenderBlocks renderer, ForgeDirection side, ForgeDirection direction)
-	{
-		if ( !this.isFlush( imb, world, x + side.offsetX, y + side.offsetY, z + side.offsetZ ) )
-		{
-			if ( !this.isFlush( imb, world, x + direction.offsetX, y + direction.offsetY, z + direction.offsetZ ) )
-			{
-				float minX = 0.5f + (side.offsetX + direction.offsetX) / 2.0f;
-				float minY = 0.5f + (side.offsetY + direction.offsetY) / 2.0f;
-				float minZ = 0.5f + (side.offsetZ + direction.offsetZ) / 2.0f;
-				float maxX = 0.5f + (side.offsetX + direction.offsetX) / 2.0f;
-				float maxY = 0.5f + (side.offsetY + direction.offsetY) / 2.0f;
-				float maxZ = 0.5f + (side.offsetZ + direction.offsetZ) / 2.0f;
-
-				if ( 0 == side.offsetX && 0 == direction.offsetX )
-				{
-					minX = 0.0f;
-					maxX = 1.0f;
-				}
-				if ( 0 == side.offsetY && 0 == direction.offsetY )
-				{
-					minY = 0.0f;
-					maxY = 1.0f;
-				}
-				if ( 0 == side.offsetZ && 0 == direction.offsetZ )
-				{
-					minZ = 0.0f;
-					maxZ = 1.0f;
-				}
-
-				if ( maxX <= 0.001f )
-					maxX += 0.9f / 16.0f;
-				if ( maxY <= 0.001f )
-					maxY += 0.9f / 16.0f;
-				if ( maxZ <= 0.001f )
-					maxZ += 0.9f / 16.0f;
-
-				if ( minX >= 0.999f )
-					minX -= 0.9f / 16.0f;
-				if ( minY >= 0.999f )
-					minY -= 0.9f / 16.0f;
-				if ( minZ >= 0.999f )
-					minZ -= 0.9f / 16.0f;
-
-				renderer.setRenderBounds( minX, minY, minZ, maxX, maxY, maxZ );
-
-				switch (side)
-				{
-				case WEST:
-					renderer.renderFaceXNeg( imb, x, y, z, ExtraBlockTextures.GlassFrame.getIcon() );
-					break;
-				case EAST:
-					renderer.renderFaceXPos( imb, x, y, z, ExtraBlockTextures.GlassFrame.getIcon() );
-					break;
-				case NORTH:
-					renderer.renderFaceZNeg( imb, x, y, z, ExtraBlockTextures.GlassFrame.getIcon() );
-					break;
-				case SOUTH:
-					renderer.renderFaceZPos( imb, x, y, z, ExtraBlockTextures.GlassFrame.getIcon() );
-					break;
-				case DOWN:
-					renderer.renderFaceYNeg( imb, x, y, z, ExtraBlockTextures.GlassFrame.getIcon() );
-					break;
-				case UP:
-					renderer.renderFaceYPos( imb, x, y, z, ExtraBlockTextures.GlassFrame.getIcon() );
-					break;
-				default:
-					break;
-				}
-			}
-		}
-	}
-
 	@Override
-	public void renderInventory(AEBaseBlock block, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj)
+	public void renderInventory( AEBaseBlock block, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj )
 	{
 		renderer.overrideBlockTexture = ExtraBlockTextures.GlassFrame.getIcon();
 		super.renderInventory( block, is, renderer, type, obj );
@@ -151,7 +62,7 @@ public class RenderQuartzGlass extends BaseBlockRender
 	}
 
 	@Override
-	public boolean renderInWorld(AEBaseBlock imb, IBlockAccess world, int x, int y, int z, RenderBlocks renderer)
+	public boolean renderInWorld( AEBaseBlock imb, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
 	{
 		renderer.setRenderBounds( 0, 0, 0, 1, 1, 1 );
 
@@ -162,20 +73,20 @@ public class RenderQuartzGlass extends BaseBlockRender
 		int u = offsets[cx][cy][cz] % 4;
 		int v = offsets[9 - cx][9 - cy][9 - cz] % 4;
 
-		switch (Math.abs( (offsets[cx][cy][cz] + (x + y + z)) % 4 ))
+		switch( Math.abs( ( offsets[cx][cy][cz] + ( x + y + z ) ) % 4 ) )
 		{
-		case 0:
-			renderer.overrideBlockTexture = new OffsetIcon( imb.getIcon( 0, 0 ), u / 2, v / 2 );
-			break;
-		case 1:
-			renderer.overrideBlockTexture = new OffsetIcon( ExtraBlockTextures.BlockQuartzGlassB.getIcon(), u / 2, v / 2 );
-			break;
-		case 2:
-			renderer.overrideBlockTexture = new OffsetIcon( ExtraBlockTextures.BlockQuartzGlassC.getIcon(), u, v );
-			break;
-		case 3:
-			renderer.overrideBlockTexture = new OffsetIcon( ExtraBlockTextures.BlockQuartzGlassD.getIcon(), u, v );
-			break;
+			case 0:
+				renderer.overrideBlockTexture = new OffsetIcon( imb.getIcon( 0, 0 ), u / 2, v / 2 );
+				break;
+			case 1:
+				renderer.overrideBlockTexture = new OffsetIcon( ExtraBlockTextures.BlockQuartzGlassB.getIcon(), u / 2, v / 2 );
+				break;
+			case 2:
+				renderer.overrideBlockTexture = new OffsetIcon( ExtraBlockTextures.BlockQuartzGlassC.getIcon(), u, v );
+				break;
+			case 3:
+				renderer.overrideBlockTexture = new OffsetIcon( ExtraBlockTextures.BlockQuartzGlassD.getIcon(), u, v );
+				break;
 		}
 
 		boolean result = renderer.renderStandardBlock( imb, x, y, z );
@@ -214,4 +125,95 @@ public class RenderQuartzGlass extends BaseBlockRender
 		return result;
 	}
 
+	void renderEdge( AEBaseBlock imb, IBlockAccess world, int x, int y, int z, RenderBlocks renderer, ForgeDirection side, ForgeDirection direction )
+	{
+		if( !this.isFlush( imb, world, x + side.offsetX, y + side.offsetY, z + side.offsetZ ) )
+		{
+			if( !this.isFlush( imb, world, x + direction.offsetX, y + direction.offsetY, z + direction.offsetZ ) )
+			{
+				float minX = 0.5f + ( side.offsetX + direction.offsetX ) / 2.0f;
+				float minY = 0.5f + ( side.offsetY + direction.offsetY ) / 2.0f;
+				float minZ = 0.5f + ( side.offsetZ + direction.offsetZ ) / 2.0f;
+				float maxX = 0.5f + ( side.offsetX + direction.offsetX ) / 2.0f;
+				float maxY = 0.5f + ( side.offsetY + direction.offsetY ) / 2.0f;
+				float maxZ = 0.5f + ( side.offsetZ + direction.offsetZ ) / 2.0f;
+
+				if( 0 == side.offsetX && 0 == direction.offsetX )
+				{
+					minX = 0.0f;
+					maxX = 1.0f;
+				}
+				if( 0 == side.offsetY && 0 == direction.offsetY )
+				{
+					minY = 0.0f;
+					maxY = 1.0f;
+				}
+				if( 0 == side.offsetZ && 0 == direction.offsetZ )
+				{
+					minZ = 0.0f;
+					maxZ = 1.0f;
+				}
+
+				if( maxX <= 0.001f )
+					maxX += 0.9f / 16.0f;
+				if( maxY <= 0.001f )
+					maxY += 0.9f / 16.0f;
+				if( maxZ <= 0.001f )
+					maxZ += 0.9f / 16.0f;
+
+				if( minX >= 0.999f )
+					minX -= 0.9f / 16.0f;
+				if( minY >= 0.999f )
+					minY -= 0.9f / 16.0f;
+				if( minZ >= 0.999f )
+					minZ -= 0.9f / 16.0f;
+
+				renderer.setRenderBounds( minX, minY, minZ, maxX, maxY, maxZ );
+
+				switch( side )
+				{
+					case WEST:
+						renderer.renderFaceXNeg( imb, x, y, z, ExtraBlockTextures.GlassFrame.getIcon() );
+						break;
+					case EAST:
+						renderer.renderFaceXPos( imb, x, y, z, ExtraBlockTextures.GlassFrame.getIcon() );
+						break;
+					case NORTH:
+						renderer.renderFaceZNeg( imb, x, y, z, ExtraBlockTextures.GlassFrame.getIcon() );
+						break;
+					case SOUTH:
+						renderer.renderFaceZPos( imb, x, y, z, ExtraBlockTextures.GlassFrame.getIcon() );
+						break;
+					case DOWN:
+						renderer.renderFaceYNeg( imb, x, y, z, ExtraBlockTextures.GlassFrame.getIcon() );
+						break;
+					case UP:
+						renderer.renderFaceYPos( imb, x, y, z, ExtraBlockTextures.GlassFrame.getIcon() );
+						break;
+					default:
+						break;
+				}
+			}
+		}
+	}
+
+	boolean isFlush( AEBaseBlock imb, IBlockAccess world, int x, int y, int z )
+	{
+		return this.isGlass( imb, world, x, y, z );
+	}
+
+	boolean isGlass( AEBaseBlock imb, IBlockAccess world, int x, int y, int z )
+	{
+		return this.isQuartzGlass( world, x, y, z ) || this.isVibrantQuartzGlass( world, x, y, z );
+	}
+
+	private boolean isQuartzGlass( IBlockAccess world, int x, int y, int z )
+	{
+		return AEApi.instance().definitions().blocks().quartzGlass().isSameAs( world, x, y, z );
+	}
+
+	private boolean isVibrantQuartzGlass( IBlockAccess world, int x, int y, int z )
+	{
+		return AEApi.instance().definitions().blocks().quartzVibrantGlass().isSameAs( world, x, y, z );
+	}
 }

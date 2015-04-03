@@ -18,6 +18,7 @@
 
 package appeng.core.sync.packets;
 
+
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
@@ -27,6 +28,7 @@ import appeng.container.AEBaseContainer;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
 
+
 public class PacketPartialItem extends AppEngPacket
 {
 
@@ -34,34 +36,34 @@ public class PacketPartialItem extends AppEngPacket
 	final byte[] data;
 
 	// automatic.
-	public PacketPartialItem(ByteBuf stream)
+	public PacketPartialItem( ByteBuf stream )
 	{
 		this.pageNum = stream.readShort();
 		stream.readBytes( this.data = new byte[stream.readableBytes()] );
 	}
 
-	@Override
-	public void serverPacketData(INetworkInfo manager, AppEngPacket packet, EntityPlayer player)
-	{
-		if ( player.openContainer instanceof AEBaseContainer )
-		{
-			((AEBaseContainer) player.openContainer).postPartial( this );
-		}
-	}
-
 	// api
-	public PacketPartialItem(int page, int maxPages, byte[] buf)
+	public PacketPartialItem( int page, int maxPages, byte[] buf )
 	{
 
 		ByteBuf data = Unpooled.buffer();
 
-		this.pageNum = (short) (page | (maxPages << 8));
+		this.pageNum = (short) ( page | ( maxPages << 8 ) );
 		this.data = buf;
 		data.writeInt( this.getPacketID() );
 		data.writeShort( this.pageNum );
 		data.writeBytes( buf );
 
 		this.configureWrite( data );
+	}
+
+	@Override
+	public void serverPacketData( INetworkInfo manager, AppEngPacket packet, EntityPlayer player )
+	{
+		if( player.openContainer instanceof AEBaseContainer )
+		{
+			( (AEBaseContainer) player.openContainer ).postPartial( this );
+		}
 	}
 
 	public int getPageCount()
@@ -74,7 +76,7 @@ public class PacketPartialItem extends AppEngPacket
 		return this.data.length;
 	}
 
-	public int write(byte[] buffer, int cursor)
+	public int write( byte[] buffer, int cursor )
 	{
 		System.arraycopy( this.data, 0, buffer, cursor, this.data.length );
 		return cursor + this.data.length;

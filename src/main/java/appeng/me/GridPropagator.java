@@ -35,8 +35,8 @@ public class GridPropagator implements IGridVisitor
 	@Override
 	public boolean visitNode( IGridNode n )
 	{
-		GridNode gn = ( GridNode ) n;
-		if ( gn.getMyGrid() != this.g || this.g.getPivot() == n )
+		GridNode gn = (GridNode) n;
+		if( gn.getMyGrid() != this.g || this.g.getPivot() == n )
 		{
 			gn.setGrid( this.g );
 

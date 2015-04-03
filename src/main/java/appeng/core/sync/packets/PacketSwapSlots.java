@@ -18,6 +18,7 @@
 
 package appeng.core.sync.packets;
 
+
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
@@ -27,6 +28,7 @@ import appeng.container.AEBaseContainer;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
 
+
 public class PacketSwapSlots extends AppEngPacket
 {
 
@@ -34,23 +36,14 @@ public class PacketSwapSlots extends AppEngPacket
 	final int slotB;
 
 	// automatic.
-	public PacketSwapSlots(ByteBuf stream)
+	public PacketSwapSlots( ByteBuf stream )
 	{
 		this.slotA = stream.readInt();
 		this.slotB = stream.readInt();
 	}
 
-	@Override
-	public void serverPacketData(INetworkInfo manager, AppEngPacket packet, EntityPlayer player)
-	{
-		if ( player != null && player.openContainer instanceof AEBaseContainer )
-		{
-			((AEBaseContainer) player.openContainer).swapSlotContents( this.slotA, this.slotB );
-		}
-	}
-
 	// api
-	public PacketSwapSlots(int slotA, int slotB)
+	public PacketSwapSlots( int slotA, int slotB )
 	{
 		ByteBuf data = Unpooled.buffer();
 
@@ -59,5 +52,14 @@ public class PacketSwapSlots extends AppEngPacket
 		data.writeInt( this.slotB = slotB );
 
 		this.configureWrite( data );
+	}
+
+	@Override
+	public void serverPacketData( INetworkInfo manager, AppEngPacket packet, EntityPlayer player )
+	{
+		if( player != null && player.openContainer instanceof AEBaseContainer )
+		{
+			( (AEBaseContainer) player.openContainer ).swapSlotContents( this.slotA, this.slotB );
+		}
 	}
 }

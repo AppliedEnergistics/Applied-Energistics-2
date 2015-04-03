@@ -30,6 +30,7 @@ import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.storage.data.IAEItemStack;
 
+
 public interface ICraftingRequester extends IActionHost
 {
 
@@ -46,16 +47,16 @@ public interface ICraftingRequester extends IActionHost
 	 * be returned.
 	 *
 	 * @param items item
-	 * @param mode action mode
+	 * @param mode  action mode
+	 *
 	 * @return unwanted item
 	 */
-	IAEItemStack injectCraftedItems(ICraftingLink link, IAEItemStack items, Actionable mode);
+	IAEItemStack injectCraftedItems( ICraftingLink link, IAEItemStack items, Actionable mode );
 
 	/**
 	 * called when the job changes from in progress, to either complete, or canceled.
 	 *
 	 * after this call the crafting link is "dead" and should be discarded.
 	 */
-	void jobStateChange(ICraftingLink link);
-
+	void jobStateChange( ICraftingLink link );
 }

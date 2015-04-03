@@ -18,6 +18,7 @@
 
 package appeng.helpers;
 
+
 import io.netty.buffer.ByteBuf;
 
 import net.minecraft.util.Vec3;
@@ -25,23 +26,30 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import appeng.api.util.AEColor;
 
+
 public class Splotch
 {
 
-	public Splotch(AEColor col, boolean lit, ForgeDirection side, Vec3 Pos) {
+	final public ForgeDirection side;
+	final public boolean lumen;
+	final public AEColor color;
+	final private int pos;
+
+	public Splotch( AEColor col, boolean lit, ForgeDirection side, Vec3 Pos )
+	{
 		this.color = col;
 		this.lumen = lit;
 
 		double x;
 		double y;
 
-		if ( side == ForgeDirection.SOUTH || side == ForgeDirection.NORTH )
+		if( side == ForgeDirection.SOUTH || side == ForgeDirection.NORTH )
 		{
 			x = Pos.xCoord;
 			y = Pos.yCoord;
 		}
 
-		else if ( side == ForgeDirection.UP || side == ForgeDirection.DOWN )
+		else if( side == ForgeDirection.UP || side == ForgeDirection.DOWN )
 		{
 			x = Pos.xCoord;
 			y = Pos.zCoord;
@@ -53,48 +61,44 @@ public class Splotch
 			y = Pos.zCoord;
 		}
 
-		int a = (int) (x * 0xF);
-		int b = (int) (y * 0xF);
-		this.pos = a | (b << 4);
+		int a = (int) ( x * 0xF );
+		int b = (int) ( y * 0xF );
+		this.pos = a | ( b << 4 );
 
 		this.side = side;
 	}
 
-	public Splotch(ByteBuf data) {
+	public Splotch( ByteBuf data )
+	{
 
 		this.pos = data.readByte();
 		int val = data.readByte();
 
 		this.side = ForgeDirection.getOrientation( val & 0x07 );
-		this.color = AEColor.values()[(val >> 3) & 0x0F];
-		this.lumen = ((val >> 7) & 0x01) > 0;
+		this.color = AEColor.values()[( val >> 3 ) & 0x0F];
+		this.lumen = ( ( val >> 7 ) & 0x01 ) > 0;
 	}
 
-	public void writeToStream(ByteBuf stream)
+	public void writeToStream( ByteBuf stream )
 	{
 		stream.writeByte( this.pos );
-		int val = this.side.ordinal() | (this.color.ordinal() << 3) | (this.lumen ? 0x80 : 0x00);
+		int val = this.side.ordinal() | ( this.color.ordinal() << 3 ) | ( this.lumen ? 0x80 : 0x00 );
 		stream.writeByte( val );
 	}
 
-	final private int pos;
-	final public ForgeDirection side;
-	final public boolean lumen;
-	final public AEColor color;
-
 	public float x()
 	{
-		return (this.pos & 0x0f) / 15.0f;
+		return ( this.pos & 0x0f ) / 15.0f;
 	}
 
 	public float y()
 	{
-		return ((this.pos >> 4) & 0x0f) / 15.0f;
+		return ( ( this.pos >> 4 ) & 0x0f ) / 15.0f;
 	}
 
 	public int getSeed()
 	{
-		int val = this.side.ordinal() | (this.color.ordinal() << 3) | (this.lumen ? 0x80 : 0x00);
+		int val = this.side.ordinal() | ( this.color.ordinal() << 3 ) | ( this.lumen ? 0x80 : 0x00 );
 		return Math.abs( this.pos + val );
 	}
 }

@@ -92,6 +92,7 @@ public final class DefinitionConverter
 		}
 	}
 
+
 	private static class AEItem extends AEComparable
 	{
 		private final IItemDefinition definition;
@@ -118,6 +119,7 @@ public final class DefinitionConverter
 		}
 	}
 
+
 	private static class AEBlock extends AEItem
 	{
 		private final IBlockDefinition definition;
@@ -137,6 +139,7 @@ public final class DefinitionConverter
 		}
 	}
 
+
 	private static class AETile extends AEBlock
 	{
 		private final ITileDefinition definition;
@@ -155,6 +158,4 @@ public final class DefinitionConverter
 			return this.definition.maybeEntity().orNull();
 		}
 	}
-
-
 }

@@ -23,10 +23,12 @@
 
 package appeng.api.storage;
 
+
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
+
 
 /**
  * AE's Equivalent to IInventory, used to reading contents, and manipulating contents of ME Inventories.
@@ -45,8 +47,9 @@ public interface IMEInventory<StackType extends IAEStack>
 	 * Store new items, or simulate the addition of new items into the ME Inventory.
 	 *
 	 * @param input item to add.
-	 * @param type action type
-	 * @param src action source
+	 * @param type  action type
+	 * @param src   action source
+	 *
 	 * @return returns the number of items not added.
 	 */
 	StackType injectItems( StackType input, Actionable type, BaseActionSource src );
@@ -54,10 +57,9 @@ public interface IMEInventory<StackType extends IAEStack>
 	/**
 	 * Extract the specified item from the ME Inventory
 	 *
-	 * @param request
-	 *            item to request ( with stack size. )
-	 * @param mode
-	 *            simulate, or perform action?
+	 * @param request item to request ( with stack size. )
+	 * @param mode    simulate, or perform action?
+	 *
 	 * @return returns the number of items extracted, null
 	 */
 	StackType extractItems( StackType request, Actionable mode, BaseActionSource src );
@@ -65,8 +67,8 @@ public interface IMEInventory<StackType extends IAEStack>
 	/**
 	 * request a full report of all available items, storage.
 	 *
-	 * @param out
-	 *            the IItemList the results will be written too
+	 * @param out the IItemList the results will be written too
+	 *
 	 * @return returns same list that was passed in, is passed out
 	 */
 	IItemList<StackType> getAvailableItems( IItemList<StackType> out );
@@ -75,5 +77,4 @@ public interface IMEInventory<StackType extends IAEStack>
 	 * @return the type of channel your handler should be part of
 	 */
 	StorageChannel getChannel();
-
 }

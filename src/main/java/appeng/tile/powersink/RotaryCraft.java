@@ -18,6 +18,7 @@
 
 package appeng.tile.powersink;
 
+
 import net.minecraftforge.common.util.ForgeDirection;
 
 import Reika.RotaryCraft.API.Power.ShaftPowerReceiver;
@@ -29,7 +30,8 @@ import appeng.transformer.annotations.Integration.Interface;
 import appeng.transformer.annotations.Integration.Method;
 import appeng.util.Platform;
 
-@Interface(iname = "RotaryCraft", iface = "Reika.RotaryCraft.API.Power.ShaftPowerReceiver")
+
+@Interface( iname = "RotaryCraft", iface = "Reika.RotaryCraft.API.Power.ShaftPowerReceiver" )
 public abstract class RotaryCraft extends IC2 implements ShaftPowerReceiver
 {
 
@@ -38,11 +40,11 @@ public abstract class RotaryCraft extends IC2 implements ShaftPowerReceiver
 	private long power = 0;
 	private int alpha = 0;
 
-	@TileEvent(TileEventType.TICK)
-	@Method(iname = "RotaryCraft")
+	@TileEvent( TileEventType.TICK )
+	@Method( iname = "RotaryCraft" )
 	public void Tick_RotaryCraft()
 	{
-		if ( this.worldObj != null && !this.worldObj.isRemote && this.power > 0 )
+		if( this.worldObj != null && !this.worldObj.isRemote && this.power > 0 )
 			this.injectExternalPower( PowerUnits.WA, this.power );
 	}
 
@@ -77,56 +79,18 @@ public abstract class RotaryCraft extends IC2 implements ShaftPowerReceiver
 	}
 
 	@Override
-	final public void setIORenderAlpha(int io)
+	final public void setIORenderAlpha( int io )
 	{
 		this.alpha = io;
 	}
 
 	@Override
-	final public void setOmega(int o)
+	final public void setPower( long p )
 	{
-		this.omega = o;
-	}
-
-	@Override
-	final public void setTorque(int t)
-	{
-		this.torque = t;
-	}
-
-	@Override
-	final public void setPower(long p)
-	{
-		if ( Platform.isClient() )
+		if( Platform.isClient() )
 			return;
 
 		this.power = p;
-	}
-
-	final public boolean canReadFromBlock(int x, int y, int z)
-	{
-		ForgeDirection side = ForgeDirection.UNKNOWN;
-
-		if ( x == this.xCoord - 1 )
-			side = ForgeDirection.WEST;
-		else if ( x == this.xCoord + 1 )
-			side = ForgeDirection.EAST;
-		else if ( z == this.zCoord - 1 )
-			side = ForgeDirection.NORTH;
-		else if ( z == this.zCoord + 1 )
-			side = ForgeDirection.SOUTH;
-		else if ( y == this.yCoord - 1 )
-			side = ForgeDirection.DOWN;
-		else if ( y == this.yCoord + 1 )
-			side = ForgeDirection.UP;
-
-		return this.getPowerSides().contains( side );
-	}
-
-	@Override
-	final public boolean isReceiving()
-	{
-		return true;
 	}
 
 	@Override
@@ -138,15 +102,52 @@ public abstract class RotaryCraft extends IC2 implements ShaftPowerReceiver
 	}
 
 	@Override
-	final public boolean canReadFrom(ForgeDirection side)
+	final public void setTorque( int t )
+	{
+		this.torque = t;
+	}
+
+	@Override
+	final public void setOmega( int o )
+	{
+		this.omega = o;
+	}
+
+	final public boolean canReadFromBlock( int x, int y, int z )
+	{
+		ForgeDirection side = ForgeDirection.UNKNOWN;
+
+		if( x == this.xCoord - 1 )
+			side = ForgeDirection.WEST;
+		else if( x == this.xCoord + 1 )
+			side = ForgeDirection.EAST;
+		else if( z == this.zCoord - 1 )
+			side = ForgeDirection.NORTH;
+		else if( z == this.zCoord + 1 )
+			side = ForgeDirection.SOUTH;
+		else if( y == this.yCoord - 1 )
+			side = ForgeDirection.DOWN;
+		else if( y == this.yCoord + 1 )
+			side = ForgeDirection.UP;
+
+		return this.getPowerSides().contains( side );
+	}
+
+	@Override
+	final public boolean canReadFrom( ForgeDirection side )
 	{
 		return this.getPowerSides().contains( side );
 	}
 
 	@Override
-	final public int getMinTorque(int available)
+	final public boolean isReceiving()
+	{
+		return true;
+	}
+
+	@Override
+	final public int getMinTorque( int available )
 	{
 		return 0;
 	}
-
 }

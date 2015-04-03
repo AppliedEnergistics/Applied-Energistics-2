@@ -18,27 +18,30 @@
 
 package appeng.integration.modules.BCHelpers;
 
+
 import java.util.ArrayList;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import buildcraft.api.blueprints.IBuilderContext;
+import buildcraft.api.blueprints.SchematicTile;
+
 import appeng.api.util.ICommonTile;
 import appeng.tile.AEBaseTile;
 import appeng.util.Platform;
-import buildcraft.api.blueprints.IBuilderContext;
-import buildcraft.api.blueprints.SchematicTile;
+
 
 public class AEGenericSchematicTile extends SchematicTile
 {
 
 	@Override
-	public void storeRequirements(IBuilderContext context, int x, int y, int z)
+	public void storeRequirements( IBuilderContext context, int x, int y, int z )
 	{
 		TileEntity tile = context.world().getTileEntity( x, y, z );
 		ArrayList<ItemStack> list = new ArrayList<ItemStack>();
-		if ( tile instanceof AEBaseTile )
+		if( tile instanceof AEBaseTile )
 		{
 			ICommonTile tcb = (AEBaseTile) tile;
 			tcb.getDrops( tile.getWorldObj(), tile.xCoord, tile.yCoord, tile.zCoord, list );
@@ -48,14 +51,14 @@ public class AEGenericSchematicTile extends SchematicTile
 	}
 
 	@Override
-	public void rotateLeft(IBuilderContext context)
+	public void rotateLeft( IBuilderContext context )
 	{
-		if ( this.tileNBT.hasKey( "orientation_forward" ) && this.tileNBT.hasKey( "orientation_up" ) )
+		if( this.tileNBT.hasKey( "orientation_forward" ) && this.tileNBT.hasKey( "orientation_up" ) )
 		{
 			String forward = this.tileNBT.getString( "orientation_forward" );
 			String up = this.tileNBT.getString( "orientation_up" );
 
-			if ( forward != null && up != null )
+			if( forward != null && up != null )
 			{
 				try
 				{
@@ -68,12 +71,11 @@ public class AEGenericSchematicTile extends SchematicTile
 					this.tileNBT.setString( "orientation_forward", fdForward.name() );
 					this.tileNBT.setString( "orientation_up", fdUp.name() );
 				}
-				catch (Throwable ignored)
+				catch( Throwable ignored )
 				{
 
 				}
 			}
 		}
 	}
-
 }

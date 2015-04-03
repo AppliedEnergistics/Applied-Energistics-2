@@ -18,6 +18,7 @@
 
 package appeng.block.misc;
 
+
 import java.util.EnumSet;
 import java.util.Random;
 
@@ -37,10 +38,12 @@ import appeng.tile.AEBaseTile;
 import appeng.tile.misc.TileVibrationChamber;
 import appeng.util.Platform;
 
+
 public class BlockVibrationChamber extends AEBaseBlock
 {
 
-	public BlockVibrationChamber() {
+	public BlockVibrationChamber()
+	{
 		super( BlockVibrationChamber.class, Material.iron );
 		this.setFeature( EnumSet.of( AEFeature.PowerGen ) );
 		this.setTileEntity( TileVibrationChamber.class );
@@ -48,15 +51,29 @@ public class BlockVibrationChamber extends AEBaseBlock
 	}
 
 	@Override
-	public boolean onActivated(World w, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
+	public IIcon getIcon( IBlockAccess w, int x, int y, int z, int s )
 	{
-		if ( player.isSneaking() )
+		IIcon ico = super.getIcon( w, x, y, z, s );
+		TileVibrationChamber tvc = this.getTileEntity( w, x, y, z );
+
+		if( tvc != null && tvc.isOn && ico == this.getRendererInstance().getTexture( ForgeDirection.SOUTH ) )
+		{
+			return ExtraBlockTextures.BlockVibrationChamberFrontOn.getIcon();
+		}
+
+		return ico;
+	}
+
+	@Override
+	public boolean onActivated( World w, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ )
+	{
+		if( player.isSneaking() )
 			return false;
 
-		if ( Platform.isServer() )
+		if( Platform.isServer() )
 		{
 			TileVibrationChamber tc = this.getTileEntity( w, x, y, z );
-			if ( tc != null && !player.isSneaking() )
+			if( tc != null && !player.isSneaking() )
 			{
 				Platform.openGUI( player, tc, ForgeDirection.getOrientation( side ), GuiBridge.GUI_VIBRATION_CHAMBER );
 				return true;
@@ -67,30 +84,16 @@ public class BlockVibrationChamber extends AEBaseBlock
 	}
 
 	@Override
-	public IIcon getIcon(IBlockAccess w, int x, int y, int z, int s)
+	public void randomDisplayTick( World w, int x, int y, int z, Random r )
 	{
-		IIcon ico = super.getIcon( w, x, y, z, s );
-		TileVibrationChamber tvc = this.getTileEntity( w, x, y, z );
-
-		if ( tvc != null && tvc.isOn && ico == this.getRendererInstance().getTexture( ForgeDirection.SOUTH ) )
-		{
-			return ExtraBlockTextures.BlockVibrationChamberFrontOn.getIcon();
-		}
-
-		return ico;
-	}
-
-	@Override
-	public void randomDisplayTick(World w, int x, int y, int z, Random r)
-	{
-		if ( !AEConfig.instance.enableEffects )
+		if( !AEConfig.instance.enableEffects )
 			return;
 
 		AEBaseTile tile = this.getTileEntity( w, x, y, z );
-		if ( tile instanceof TileVibrationChamber )
+		if( tile instanceof TileVibrationChamber )
 		{
 			TileVibrationChamber tc = (TileVibrationChamber) tile;
-			if ( tc.isOn )
+			if( tc.isOn )
 			{
 				float f1 = x + 0.5F;
 				float f2 = y + 0.5F;
@@ -110,18 +113,17 @@ public class BlockVibrationChamber extends AEBaseBlock
 				float ox = r.nextFloat();
 				float oy = r.nextFloat() * 0.2f;
 
-				f1 += up.offsetX * (-0.3 + oy);
-				f2 += up.offsetY * (-0.3 + oy);
-				f3 += up.offsetZ * (-0.3 + oy);
+				f1 += up.offsetX * ( -0.3 + oy );
+				f2 += up.offsetY * ( -0.3 + oy );
+				f3 += up.offsetZ * ( -0.3 + oy );
 
-				f1 += west_x * (0.3 * ox - 0.15);
-				f2 += west_y * (0.3 * ox - 0.15);
-				f3 += west_z * (0.3 * ox - 0.15);
+				f1 += west_x * ( 0.3 * ox - 0.15 );
+				f2 += west_y * ( 0.3 * ox - 0.15 );
+				f3 += west_z * ( 0.3 * ox - 0.15 );
 
 				w.spawnParticle( "smoke", f1, f2, f3, 0.0D, 0.0D, 0.0D );
 				w.spawnParticle( "flame", f1, f2, f3, 0.0D, 0.0D, 0.0D );
 			}
 		}
 	}
-
 }

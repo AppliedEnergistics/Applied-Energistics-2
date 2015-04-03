@@ -21,7 +21,6 @@ package appeng.client.render;
 
 import java.nio.FloatBuffer;
 import java.util.EnumSet;
-
 import javax.annotation.Nullable;
 
 import org.lwjgl.BufferUtils;
@@ -287,9 +286,9 @@ public class BaseBlockRender
 		Tessellator tess = Tessellator.instance;
 
 		BlockRenderInfo info = block.getRendererInstance();
-		if ( info.isValid() )
+		if( info.isValid() )
 		{
-			if ( block.hasSubtypes() )
+			if( block.hasSubtypes() )
 				block.setRenderStateByMeta( item.getItemDamage() );
 
 			renderer.uvRotateBottom = info.getTexture( ForgeDirection.DOWN ).setFlip( getOrientation( ForgeDirection.DOWN, ForgeDirection.SOUTH, ForgeDirection.UP ) );
@@ -304,7 +303,7 @@ public class BaseBlockRender
 
 		this.renderInvBlock( EnumSet.allOf( ForgeDirection.class ), block, item, tess, 0xffffff, renderer );
 
-		if ( block.hasSubtypes() )
+		if( block.hasSubtypes() )
 			info.setTemporaryRenderIcon( null );
 
 		renderer.uvRotateBottom = renderer.uvRotateEast = renderer.uvRotateNorth = renderer.uvRotateSouth = renderer.uvRotateTop = renderer.uvRotateWest = 0;
@@ -312,7 +311,7 @@ public class BaseBlockRender
 
 	static public int getOrientation( ForgeDirection in, ForgeDirection forward, ForgeDirection up )
 	{
-		if ( in == null || in == ForgeDirection.UNKNOWN // 1
+		if( in == null || in == ForgeDirection.UNKNOWN // 1
 				|| forward == null || forward == ForgeDirection.UNKNOWN // 2
 				|| up == null || up == ForgeDirection.UNKNOWN )
 			return 0;
@@ -326,14 +325,14 @@ public class BaseBlockRender
 
 	public void renderInvBlock( EnumSet<ForgeDirection> sides, AEBaseBlock block, ItemStack item, Tessellator tess, int color, RenderBlocks renderer )
 	{
-		if ( Platform.isDrawing( tess ) )
+		if( Platform.isDrawing( tess ) )
 			tess.draw();
 
 		int meta = 0;
-		if ( block != null && block.hasSubtypes() && item != null )
+		if( block != null && block.hasSubtypes() && item != null )
 			meta = item.getItemDamage();
 
-		if ( sides.contains( ForgeDirection.DOWN ) )
+		if( sides.contains( ForgeDirection.DOWN ) )
 		{
 			tess.startDrawingQuads();
 			tess.setNormal( 0.0F, -1.0F, 0.0F );
@@ -342,7 +341,7 @@ public class BaseBlockRender
 			tess.draw();
 		}
 
-		if ( sides.contains( ForgeDirection.UP ) )
+		if( sides.contains( ForgeDirection.UP ) )
 		{
 			tess.startDrawingQuads();
 			tess.setNormal( 0.0F, 1.0F, 0.0F );
@@ -351,7 +350,7 @@ public class BaseBlockRender
 			tess.draw();
 		}
 
-		if ( sides.contains( ForgeDirection.NORTH ) )
+		if( sides.contains( ForgeDirection.NORTH ) )
 		{
 			tess.startDrawingQuads();
 			tess.setNormal( 0.0F, 0.0F, -1.0F );
@@ -360,7 +359,7 @@ public class BaseBlockRender
 			tess.draw();
 		}
 
-		if ( sides.contains( ForgeDirection.SOUTH ) )
+		if( sides.contains( ForgeDirection.SOUTH ) )
 		{
 			tess.startDrawingQuads();
 			tess.setNormal( 0.0F, 0.0F, 1.0F );
@@ -369,7 +368,7 @@ public class BaseBlockRender
 			tess.draw();
 		}
 
-		if ( sides.contains( ForgeDirection.WEST ) )
+		if( sides.contains( ForgeDirection.WEST ) )
 		{
 			tess.startDrawingQuads();
 			tess.setNormal( -1.0F, 0.0F, 0.0F );
@@ -378,7 +377,7 @@ public class BaseBlockRender
 			tess.draw();
 		}
 
-		if ( sides.contains( ForgeDirection.EAST ) )
+		if( sides.contains( ForgeDirection.EAST ) )
 		{
 			tess.startDrawingQuads();
 			tess.setNormal( 1.0F, 0.0F, 0.0F );
@@ -390,8 +389,8 @@ public class BaseBlockRender
 
 	public IIcon firstNotNull( IIcon... s )
 	{
-		for ( IIcon o : s )
-			if ( o != null )
+		for( IIcon o : s )
+			if( o != null )
 				return o;
 		return ExtraBlockTextures.getMissing();
 	}
@@ -413,7 +412,7 @@ public class BaseBlockRender
 
 		BlockRenderInfo info = block.getRendererInstance();
 		IOrientable te = this.getOrientable( block, world, x, y, z );
-		if ( te != null )
+		if( te != null )
 		{
 			forward = te.getForward();
 			up = te.getUp();
@@ -437,9 +436,9 @@ public class BaseBlockRender
 	@Nullable
 	public IOrientable getOrientable( AEBaseBlock block, IBlockAccess w, int x, int y, int z )
 	{
-		if ( block.hasBlockTileEntity() )
+		if( block.hasBlockTileEntity() )
 			return (AEBaseTile) block.getTileEntity( w, x, y, z );
-		else if ( block instanceof IOrientableBlock )
+		else if( block instanceof IOrientableBlock )
 			return ( (IOrientableBlock) block ).getOrientable( w, x, y, z );
 		return null;
 	}
@@ -472,19 +471,19 @@ public class BaseBlockRender
 		double bY = maxX * x.offsetY + maxY * y.offsetY + maxZ * z.offsetY;
 		double bZ = maxX * x.offsetZ + maxY * y.offsetZ + maxZ * z.offsetZ;
 
-		if ( x.offsetX + y.offsetX + z.offsetX < 0 )
+		if( x.offsetX + y.offsetX + z.offsetX < 0 )
 		{
 			aX += 1;
 			bX += 1;
 		}
 
-		if ( x.offsetY + y.offsetY + z.offsetY < 0 )
+		if( x.offsetY + y.offsetY + z.offsetY < 0 )
 		{
 			aY += 1;
 			bY += 1;
 		}
 
-		if ( x.offsetZ + y.offsetZ + z.offsetZ < 0 )
+		if( x.offsetZ + y.offsetZ + z.offsetZ < 0 )
 		{
 			aZ += 1;
 			bZ += 1;
@@ -514,7 +513,7 @@ public class BaseBlockRender
 		double layerBZ = 0.0;
 
 		boolean flip = false;
-		switch ( orientation )
+		switch( orientation )
 		{
 			case NORTH:
 
@@ -594,7 +593,7 @@ public class BaseBlockRender
 	@SideOnly( Side.CLIENT )
 	private void renderFace( Tessellator tess, double offsetX, double offsetY, double offsetZ, double ax, double ay, double az, double bx, double by, double bz, double ua, double ub, double va, double vb, IIcon ico, boolean flip )
 	{
-		if ( flip )
+		if( flip )
 		{
 			tess.addVertexWithUV( offsetX + ax * ua + bx * va, offsetY + ay * ua + by * va, offsetZ + az * ua + bz * va, ico.getInterpolatedU( ua * 16.0 ), ico.getInterpolatedV( va * 16.0 ) );
 			tess.addVertexWithUV( offsetX + ax * ua + bx * vb, offsetY + ay * ua + by * vb, offsetZ + az * ua + bz * vb, ico.getInterpolatedU( ua * 16.0 ), ico.getInterpolatedV( vb * 16.0 ) );
@@ -613,7 +612,7 @@ public class BaseBlockRender
 	@SideOnly( Side.CLIENT )
 	protected void renderFace( int x, int y, int z, Block block, IIcon ico, RenderBlocks renderer, ForgeDirection orientation )
 	{
-		switch ( orientation )
+		switch( orientation )
 		{
 			case NORTH:
 				renderer.renderFaceZNeg( block, x, y, z, ico );
@@ -663,10 +662,10 @@ public class BaseBlockRender
 
 	private double mapFaceUV( int offset, int uv )
 	{
-		if ( offset == 0 )
+		if( offset == 0 )
 			return 0;
 
-		if ( offset > 0 )
+		if( offset > 0 )
 			return uv / 16.0;
 
 		return ( 16.0 - uv ) / 16.0;
@@ -684,7 +683,7 @@ public class BaseBlockRender
 		Minecraft.getMinecraft().getTextureManager().bindTexture( TextureMap.locationBlocksTexture );
 		RenderHelper.disableStandardItemLighting();
 
-		if ( Minecraft.isAmbientOcclusionEnabled() )
+		if( Minecraft.isAmbientOcclusionEnabled() )
 			GL11.glShadeModel( GL11.GL_SMOOTH );
 		else
 			GL11.glShadeModel( GL11.GL_FLAT );
@@ -707,12 +706,12 @@ public class BaseBlockRender
 
 	protected void applyTESRRotation( double x, double y, double z, ForgeDirection forward, ForgeDirection up )
 	{
-		if ( forward != null && up != null )
+		if( forward != null && up != null )
 		{
-			if ( forward == ForgeDirection.UNKNOWN )
+			if( forward == ForgeDirection.UNKNOWN )
 				forward = ForgeDirection.SOUTH;
 
-			if ( up == ForgeDirection.UNKNOWN )
+			if( up == ForgeDirection.UNKNOWN )
 				up = ForgeDirection.UP;
 
 			ForgeDirection west = Platform.crossProduct( forward, up );
@@ -749,7 +748,7 @@ public class BaseBlockRender
 
 	public void doRenderItem( ItemStack itemstack, TileEntity par1EntityItemFrame )
 	{
-		if ( itemstack != null )
+		if( itemstack != null )
 		{
 			EntityItem entityitem = new EntityItem( par1EntityItemFrame.getWorldObj(), 0.0D, 0.0D, 0.0D, itemstack );
 			entityitem.getEntityItem().stackSize = 1;

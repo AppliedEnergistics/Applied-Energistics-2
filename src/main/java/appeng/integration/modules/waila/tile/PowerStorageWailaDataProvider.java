@@ -77,17 +77,17 @@ public final class PowerStorageWailaDataProvider extends BaseWailaDataProvider
 	public List<String> getWailaBody( ItemStack itemStack, List<String> currentToolTip, IWailaDataAccessor accessor, IWailaConfigHandler config )
 	{
 		final TileEntity te = accessor.getTileEntity();
-		if ( te instanceof IAEPowerStorage )
+		if( te instanceof IAEPowerStorage )
 		{
-			final IAEPowerStorage storage = ( IAEPowerStorage ) te;
+			final IAEPowerStorage storage = (IAEPowerStorage) te;
 
 			final double maxPower = storage.getAEMaxPower();
-			if ( maxPower > 0 )
+			if( maxPower > 0 )
 			{
 				final NBTTagCompound tag = accessor.getNBTData();
 
 				final long internalCurrentPower = this.getInternalCurrentPower( tag, te );
-				final long internalMaxPower = ( long ) ( 100 * maxPower );
+				final long internalMaxPower = (long) ( 100 * maxPower );
 
 				final String formatCurrentPower = Platform.formatPowerLong( internalCurrentPower, false );
 				final String formatMaxPower = Platform.formatPowerLong( internalMaxPower, false );
@@ -119,13 +119,13 @@ public final class PowerStorageWailaDataProvider extends BaseWailaDataProvider
 	@Override
 	public NBTTagCompound getNBTData( EntityPlayerMP player, TileEntity te, NBTTagCompound tag, World world, int x, int y, int z )
 	{
-		if ( te instanceof IAEPowerStorage )
+		if( te instanceof IAEPowerStorage )
 		{
-			final IAEPowerStorage storage = ( IAEPowerStorage ) te;
+			final IAEPowerStorage storage = (IAEPowerStorage) te;
 
-			if ( storage.getAEMaxPower() > 0 )
+			if( storage.getAEMaxPower() > 0 )
 			{
-				final long internalCurrentPower = ( long ) ( 100 * storage.getAECurrentPower() );
+				final long internalCurrentPower = (long) ( 100 * storage.getAECurrentPower() );
 
 				tag.setLong( ID_CURRENT_POWER, internalCurrentPower );
 			}
@@ -150,12 +150,12 @@ public final class PowerStorageWailaDataProvider extends BaseWailaDataProvider
 	{
 		final long internalCurrentPower;
 
-		if ( tag.hasKey( ID_CURRENT_POWER ) )
+		if( tag.hasKey( ID_CURRENT_POWER ) )
 		{
 			internalCurrentPower = tag.getLong( ID_CURRENT_POWER );
 			this.cache.put( te, internalCurrentPower );
 		}
-		else if ( this.cache.containsKey( te ) )
+		else if( this.cache.containsKey( te ) )
 		{
 			internalCurrentPower = this.cache.get( te );
 		}

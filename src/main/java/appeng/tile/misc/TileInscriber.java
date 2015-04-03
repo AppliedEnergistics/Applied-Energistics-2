@@ -129,15 +129,15 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 		boolean oldSmash = this.smash;
 		boolean newSmash = ( slot & 64 ) == 64;
 
-		if ( oldSmash != newSmash && newSmash )
+		if( oldSmash != newSmash && newSmash )
 		{
 			this.smash = true;
 			this.clientStart = System.currentTimeMillis();
 		}
 
-		for ( int num = 0; num < this.inv.getSizeInventory(); num++ )
+		for( int num = 0; num < this.inv.getSizeInventory(); num++ )
 		{
-			if ( ( slot & ( 1 << num ) ) > 0 )
+			if( ( slot & ( 1 << num ) ) > 0 )
 				this.inv.setInventorySlotContents( num, AEItemStack.loadItemStackFromPacket( data ).getItemStack() );
 			else
 				this.inv.setInventorySlotContents( num, null );
@@ -151,16 +151,16 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 	{
 		int slot = this.smash ? 64 : 0;
 
-		for ( int num = 0; num < this.inv.getSizeInventory(); num++ )
+		for( int num = 0; num < this.inv.getSizeInventory(); num++ )
 		{
-			if ( this.inv.getStackInSlot( num ) != null )
+			if( this.inv.getStackInSlot( num ) != null )
 				slot |= ( 1 << num );
 		}
 
 		data.writeByte( slot );
-		for ( int num = 0; num < this.inv.getSizeInventory(); num++ )
+		for( int num = 0; num < this.inv.getSizeInventory(); num++ )
 		{
-			if ( ( slot & ( 1 << num ) ) > 0 )
+			if( ( slot & ( 1 << num ) ) > 0 )
 			{
 				AEItemStack st = AEItemStack.create( this.inv.getStackInSlot( num ) );
 				st.writeToPacket( data );
@@ -181,10 +181,10 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 	{
 		super.getDrops( w, x, y, z, drops );
 
-		for ( int h = 0; h < this.upgrades.getSizeInventory(); h++ )
+		for( int h = 0; h < this.upgrades.getSizeInventory(); h++ )
 		{
 			ItemStack is = this.upgrades.getStackInSlot( h );
-			if ( is != null )
+			if( is != null )
 				drops.add( is );
 		}
 	}
@@ -196,6 +196,12 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 	}
 
 	@Override
+	public IInventory getInternalInventory()
+	{
+		return this.inv;
+	}
+
+	@Override
 	public int getInventoryStackLimit()
 	{
 		return 1;
@@ -204,18 +210,18 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 	@Override
 	public boolean isItemValidForSlot( int i, ItemStack itemstack )
 	{
-		if ( this.smash )
+		if( this.smash )
 			return false;
 
-		if ( i == 0 || i == 1 )
+		if( i == 0 || i == 1 )
 		{
-			if ( AEApi.instance().definitions().materials().namePress().isSameAs( itemstack ) )
+			if( AEApi.instance().definitions().materials().namePress().isSameAs( itemstack ) )
 			{
 				return true;
 			}
 
-			for ( ItemStack s : Inscribe.PLATES )
-				if ( Platform.isSameItemPrecise( s, itemstack ) )
+			for( ItemStack s : Inscribe.PLATES )
+				if( Platform.isSameItemPrecise( s, itemstack ) )
 					return true;
 		}
 
@@ -223,49 +229,43 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 	}
 
 	@Override
-	public boolean canExtractItem(int slotIndex, ItemStack extractedItem, int side )
-	{
-		if ( this.smash )
-			return false;
-
-		return slotIndex == 0 || slotIndex == 1 || slotIndex == 3;
-	}
-
-	@Override
-	public IInventory getInternalInventory()
-	{
-		return this.inv;
-	}
-
-	@Override
 	public void onChangeInventory( IInventory inv, int slot, InvOperation mc, ItemStack removed, ItemStack added )
 	{
 		try
 		{
-			if ( mc != InvOperation.markDirty )
+			if( mc != InvOperation.markDirty )
 			{
-				if ( slot != 3 )
+				if( slot != 3 )
 					this.processingTime = 0;
 
-				if ( !this.smash )
+				if( !this.smash )
 					this.markForUpdate();
 
 				this.gridProxy.getTick().wakeDevice( this.gridProxy.getNode() );
 			}
 		}
-		catch ( GridAccessException e )
+		catch( GridAccessException e )
 		{
 			// :P
 		}
 	}
 
 	@Override
+	public boolean canExtractItem( int slotIndex, ItemStack extractedItem, int side )
+	{
+		if( this.smash )
+			return false;
+
+		return slotIndex == 0 || slotIndex == 1 || slotIndex == 3;
+	}
+
+	@Override
 	public int[] getAccessibleSlotsBySide( ForgeDirection d )
 	{
-		if ( d == ForgeDirection.UP )
+		if( d == ForgeDirection.UP )
 			return this.top;
 
-		if ( d == ForgeDirection.DOWN )
+		if( d == ForgeDirection.DOWN )
 			return this.bottom;
 
 		return this.sides;
@@ -279,7 +279,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 
 	private boolean hasWork()
 	{
-		if ( this.getTask() != null )
+		if( this.getTask() != null )
 			return true;
 
 		this.processingTime = 0;
@@ -292,35 +292,35 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 		ItemStack plateB = this.getStackInSlot( 1 );
 		ItemStack renamedItem = this.getStackInSlot( 2 );
 
-		if ( plateA != null && plateA.stackSize > 1 )
+		if( plateA != null && plateA.stackSize > 1 )
 			return null;
 
-		if ( plateB != null && plateB.stackSize > 1 )
+		if( plateB != null && plateB.stackSize > 1 )
 			return null;
 
-		if ( renamedItem != null && renamedItem.stackSize > 1 )
+		if( renamedItem != null && renamedItem.stackSize > 1 )
 			return null;
 
 		final IComparableDefinition namePress = AEApi.instance().definitions().materials().namePress();
 		boolean isNameA = namePress.isSameAs( plateA );
 		boolean isNameB = namePress.isSameAs( plateB );
 
-		if ( ( isNameA || isNameB ) && ( isNameA || plateA == null ) && ( isNameB || plateB == null ) )
+		if( ( isNameA || isNameB ) && ( isNameA || plateA == null ) && ( isNameB || plateB == null ) )
 		{
-			if ( renamedItem != null )
+			if( renamedItem != null )
 			{
 				String name = "";
 
-				if ( plateA != null )
+				if( plateA != null )
 				{
 					NBTTagCompound tag = Platform.openNbtData( plateA );
 					name += tag.getString( "InscribeName" );
 				}
 
-				if ( plateB != null )
+				if( plateB != null )
 				{
 					NBTTagCompound tag = Platform.openNbtData( plateB );
-					if ( name.length() > 0 )
+					if( name.length() > 0 )
 						name += " ";
 					name += tag.getString( "InscribeName" );
 				}
@@ -332,7 +332,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 				NBTTagCompound display = tag.getCompoundTag( "display" );
 				tag.setTag( "display", display );
 
-				if ( name.length() > 0 )
+				if( name.length() > 0 )
 					display.setString( "Name", name );
 				else
 					display.removeTag( "Name" );
@@ -341,7 +341,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 			}
 		}
 
-		for ( InscriberRecipe i : Inscribe.RECIPES )
+		for( InscriberRecipe i : Inscribe.RECIPES )
 		{
 
 			boolean matchA = ( plateA == null && i.plateA == null ) || ( Platform.isSameItemPrecise( plateA, i.plateA ) ) && // and...
@@ -350,11 +350,11 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 			boolean matchB = ( plateB == null && i.plateA == null ) || ( Platform.isSameItemPrecise( plateB, i.plateA ) ) && // and...
 					( plateA == null && i.plateB == null ) | ( Platform.isSameItemPrecise( plateA, i.plateB ) );
 
-			if ( matchA || matchB )
+			if( matchA || matchB )
 			{
-				for ( ItemStack option : i.imprintable )
+				for( ItemStack option : i.imprintable )
 				{
-					if ( Platform.isSameItemPrecise( option, this.getStackInSlot( 2 ) ) )
+					if( Platform.isSameItemPrecise( option, this.getStackInSlot( 2 ) ) )
 						return i;
 				}
 			}
@@ -365,23 +365,23 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 	@Override
 	public TickRateModulation tickingRequest( IGridNode node, int TicksSinceLastCall )
 	{
-		if ( this.smash )
+		if( this.smash )
 		{
 
 			this.finalStep++;
-			if ( this.finalStep == 8 )
+			if( this.finalStep == 8 )
 			{
 
 				InscriberRecipe out = this.getTask();
-				if ( out != null )
+				if( out != null )
 				{
 					ItemStack is = out.output.copy();
 					InventoryAdaptor ad = InventoryAdaptor.getAdaptor( new WrapperInventoryRange( this.inv, 3, 1, true ), ForgeDirection.UNKNOWN );
 
-					if ( ad.addItems( is ) == null )
+					if( ad.addItems( is ) == null )
 					{
 						this.processingTime = 0;
-						if ( out.usePlates )
+						if( out.usePlates )
 						{
 							this.setInventorySlotContents( 0, null );
 							this.setInventorySlotContents( 1, null );
@@ -392,7 +392,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 
 				this.markDirty();
 			}
-			else if ( this.finalStep == 16 )
+			else if( this.finalStep == 16 )
 			{
 				this.finalStep = 0;
 				this.smash = false;
@@ -413,36 +413,36 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 				double powerThreshold = powerConsumption - 0.01;
 				double powerReq = this.extractAEPower( powerConsumption, Actionable.SIMULATE, PowerMultiplier.CONFIG );
 
-				if ( powerReq <= powerThreshold )
+				if( powerReq <= powerThreshold )
 				{
 					src = eg;
 					powerReq = eg.extractAEPower( powerConsumption, Actionable.SIMULATE, PowerMultiplier.CONFIG );
 				}
 
-				if ( powerReq > powerThreshold )
+				if( powerReq > powerThreshold )
 				{
 					src.extractAEPower( powerConsumption, Actionable.MODULATE, PowerMultiplier.CONFIG );
 
-					if ( this.processingTime == 0 )
+					if( this.processingTime == 0 )
 						this.processingTime += speedFactor;
 					else
 						this.processingTime += TicksSinceLastCall * speedFactor;
 				}
 			}
-			catch ( GridAccessException e )
+			catch( GridAccessException e )
 			{
 				// :P
 			}
 
-			if ( this.processingTime > this.maxProcessingTime )
+			if( this.processingTime > this.maxProcessingTime )
 			{
 				this.processingTime = this.maxProcessingTime;
 				InscriberRecipe out = this.getTask();
-				if ( out != null )
+				if( out != null )
 				{
 					ItemStack is = out.output.copy();
 					InventoryAdaptor ad = InventoryAdaptor.getAdaptor( new WrapperInventoryRange( this.inv, 3, 1, true ), ForgeDirection.UNKNOWN );
-					if ( ad.simulateAdd( is ) == null )
+					if( ad.simulateAdd( is ) == null )
 					{
 						this.smash = true;
 						this.finalStep = 0;
@@ -464,10 +464,10 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 	@Override
 	public IInventory getInventoryByName( String name )
 	{
-		if ( name.equals( "inv" ) )
+		if( name.equals( "inv" ) )
 			return this.inv;
 
-		if ( name.equals( "upgrades" ) )
+		if( name.equals( "upgrades" ) )
 			return this.upgrades;
 
 		return null;

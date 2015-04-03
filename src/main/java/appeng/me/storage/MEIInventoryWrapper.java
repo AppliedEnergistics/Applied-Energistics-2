@@ -18,6 +18,7 @@
 
 package appeng.me.storage;
 
+
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 
@@ -31,64 +32,60 @@ import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 
+
 public class MEIInventoryWrapper implements IMEInventory<IAEItemStack>
 {
 
 	protected final IInventory target;
 	protected final InventoryAdaptor adaptor;
 
-	public MEIInventoryWrapper(IInventory m, InventoryAdaptor ia) {
+	public MEIInventoryWrapper( IInventory m, InventoryAdaptor ia )
+	{
 		this.target = m;
 		this.adaptor = ia;
 	}
 
 	@Override
-	public StorageChannel getChannel()
-	{
-		return StorageChannel.ITEMS;
-	}
-
-	@Override
-	public IAEItemStack injectItems(IAEItemStack iox, Actionable mode, BaseActionSource src)
+	public IAEItemStack injectItems( IAEItemStack iox, Actionable mode, BaseActionSource src )
 	{
 		ItemStack input = iox.getItemStack();
 
-		if ( this.adaptor != null )
+		if( this.adaptor != null )
 		{
 			ItemStack is = mode == Actionable.SIMULATE ? this.adaptor.simulateAdd( input ) : this.adaptor.addItems( input );
-			if ( is == null )
+			if( is == null )
 				return null;
 			return AEItemStack.create( is );
 		}
 
 		ItemStack out = Platform.cloneItemStack( input );
 
-		if ( mode == Actionable.MODULATE ) // absolutely no need for a first run in simulate mode.
+		if( mode == Actionable.MODULATE ) // absolutely no need for a first run in simulate mode.
 		{
-			for (int x = 0; x < this.target.getSizeInventory(); x++)
+			for( int x = 0; x < this.target.getSizeInventory(); x++ )
 			{
 				ItemStack t = this.target.getStackInSlot( x );
 
-				if ( Platform.isSameItem( t, input ) )
+				if( Platform.isSameItem( t, input ) )
 				{
 					int oriStack = t.stackSize;
 					t.stackSize += out.stackSize;
 
 					this.target.setInventorySlotContents( x, t );
 
-					if ( t.stackSize > this.target.getInventoryStackLimit() )
+					if( t.stackSize > this.target.getInventoryStackLimit() )
 					{
 						t.stackSize = this.target.getInventoryStackLimit();
 					}
 
-					if ( t.stackSize > t.getMaxStackSize() )
+					if( t.stackSize > t.getMaxStackSize() )
 					{
 						t.stackSize = t.getMaxStackSize();
 					}
 
 					out.stackSize -= t.stackSize - oriStack;
 
-					if ( out.stackSize <= 0 )
+					if( out.stackSize <= 0 )
 					{
 						return null;
 					}
@@ -96,25 +93,25 @@ public class MEIInventoryWrapper implements IMEInventory<IAEItemStack>
 			}
 		}
 
-		for (int x = 0; x < this.target.getSizeInventory(); x++)
+		for( int x = 0; x < this.target.getSizeInventory(); x++ )
 		{
 			ItemStack t = this.target.getStackInSlot( x );
 
-			if ( t == null )
+			if( t == null )
 			{
 				t = Platform.cloneItemStack( input );
 				t.stackSize = out.stackSize;
 
-				if ( t.stackSize > this.target.getInventoryStackLimit() )
+				if( t.stackSize > this.target.getInventoryStackLimit() )
 				{
 					t.stackSize = this.target.getInventoryStackLimit();
 				}
 
 				out.stackSize -= t.stackSize;
-				if ( mode == Actionable.MODULATE )
+				if( mode == Actionable.MODULATE )
 					this.target.setInventorySlotContents( x, t );
 
-				if ( out.stackSize <= 0 )
+				if( out.stackSize <= 0 )
 				{
 					return null;
 				}
@@ -125,21 +122,21 @@ public class MEIInventoryWrapper implements IMEInventory<IAEItemStack>
 	}
 
 	@Override
-	public IAEItemStack extractItems(IAEItemStack request, Actionable mode, BaseActionSource src)
+	public IAEItemStack extractItems( IAEItemStack request, Actionable mode, BaseActionSource src )
 	{
 		ItemStack Gathered = null;
 		ItemStack Req = request.getItemStack();
 
 		int request_stackSize = Req.stackSize;
 
-		if ( request_stackSize > Req.getMaxStackSize() )
+		if( request_stackSize > Req.getMaxStackSize() )
 		{
 			request_stackSize = Req.getMaxStackSize();
 		}
 
 		Req.stackSize = request_stackSize;
 
-		if ( this.adaptor != null )
+		if( this.adaptor != null )
 		{
 			Gathered = this.adaptor.removeItems( Req.stackSize, Req, null );
 		}
@@ -149,22 +146,22 @@ public class MEIInventoryWrapper implements IMEInventory<IAEItemStack>
 			Gathered.stackSize = 0;
 
 			// try to find matching inventories that already have it...
-			for (int x = 0; x < this.target.getSizeInventory(); x++)
+			for( int x = 0; x < this.target.getSizeInventory(); x++ )
 			{
 				ItemStack sub = this.target.getStackInSlot( x );
 
-				if ( Platform.isSameItem( sub, Req ) )
+				if( Platform.isSameItem( sub, Req ) )
 				{
 					int reqNum = Req.stackSize;
 
-					if ( reqNum > sub.stackSize )
+					if( reqNum > sub.stackSize )
 					{
 						reqNum = Req.stackSize;
 					}
 
 					ItemStack retrieved = null;
 
-					if ( sub.stackSize < Req.stackSize )
+					if( sub.stackSize < Req.stackSize )
 					{
 						retrieved = Platform.cloneItemStack( sub );
 						sub.stackSize = 0;
@@ -174,38 +171,37 @@ public class MEIInventoryWrapper implements IMEInventory<IAEItemStack>
 						retrieved = sub.splitStack( Req.stackSize );
 					}
 
-					if ( sub.stackSize <= 0 )
+					if( sub.stackSize <= 0 )
 						this.target.setInventorySlotContents( x, null );
 					else
 						this.target.setInventorySlotContents( x, sub );
 
-					if ( retrieved != null )
+					if( retrieved != null )
 					{
 						Gathered.stackSize += retrieved.stackSize;
 						Req.stackSize -= retrieved.stackSize;
 					}
 
-					if ( request_stackSize == Gathered.stackSize )
+					if( request_stackSize == Gathered.stackSize )
 					{
 						return AEItemStack.create( Gathered );
 					}
 				}
 			}
 
-			if ( Gathered.stackSize == 0 )
+			if( Gathered.stackSize == 0 )
 			{
 				return null;
 			}
-
 		}
 
 		return AEItemStack.create( Gathered );
 	}
 
 	@Override
-	public IItemList<IAEItemStack> getAvailableItems(IItemList<IAEItemStack> out)
+	public IItemList<IAEItemStack> getAvailableItems( IItemList<IAEItemStack> out )
 	{
-		for (int x = 0; x < this.target.getSizeInventory(); x++)
+		for( int x = 0; x < this.target.getSizeInventory(); x++ )
 		{
 			out.addStorage( AEItemStack.create( this.target.getStackInSlot( x ) ) );
 		}
@@ -213,4 +209,9 @@ public class MEIInventoryWrapper implements IMEInventory<IAEItemStack>
 		return out;
 	}
 
+	@Override
+	public StorageChannel getChannel()
+	{
+		return StorageChannel.ITEMS;
+	}
 }

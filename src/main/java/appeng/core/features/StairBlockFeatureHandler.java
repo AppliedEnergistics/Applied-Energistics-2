@@ -63,7 +63,7 @@ public class StairBlockFeatureHandler implements IFeatureHandler
 	@Override
 	public final void register()
 	{
-		if ( this.enabled )
+		if( this.enabled )
 		{
 			String name = this.extractor.get();
 			this.stairs.setCreativeTab( CreativeTab.instance );

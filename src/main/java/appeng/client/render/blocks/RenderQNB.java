@@ -18,6 +18,7 @@
 
 package appeng.client.render.blocks;
 
+
 import java.util.Collection;
 import java.util.EnumSet;
 
@@ -41,61 +42,12 @@ import appeng.client.render.BaseBlockRender;
 import appeng.client.texture.ExtraBlockTextures;
 import appeng.tile.qnb.TileQuantumBridge;
 
+
 public class RenderQNB extends BaseBlockRender
 {
 
-	public void renderCableAt(double thickness, IBlockAccess world, int x, int y, int z, AEBaseBlock block, RenderBlocks renderer, IIcon texture, double pull,
-			Collection<ForgeDirection> connections)
-	{
-		block.getRendererInstance().setTemporaryRenderIcon( texture );
-
-		if ( connections.contains( ForgeDirection.UNKNOWN ) )
-		{
-			renderer.setRenderBounds( 0.5D - thickness, 0.5D - thickness, 0.5D - thickness, 0.5D + thickness, 0.5D + thickness, 0.5D + thickness );
-			renderer.renderStandardBlock( block, x, y, z );
-		}
-
-		if ( connections.contains( ForgeDirection.WEST ) )
-		{
-			renderer.setRenderBounds( 0.0D, 0.5D - thickness, 0.5D - thickness, 0.5D - thickness - pull, 0.5D + thickness, 0.5D + thickness );
-			renderer.renderStandardBlock( block, x, y, z );
-		}
-
-		if ( connections.contains( ForgeDirection.EAST ) )
-		{
-			renderer.setRenderBounds( 0.5D + thickness + pull, 0.5D - thickness, 0.5D - thickness, 1.0D, 0.5D + thickness, 0.5D + thickness );
-			renderer.renderStandardBlock( block, x, y, z );
-		}
-
-		if ( connections.contains( ForgeDirection.NORTH ) )
-		{
-			renderer.setRenderBounds( 0.5D - thickness, 0.5D - thickness, 0.0D, 0.5D + thickness, 0.5D + thickness, 0.5D - thickness - pull );
-			renderer.renderStandardBlock( block, x, y, z );
-		}
-
-		if ( connections.contains( ForgeDirection.SOUTH ) )
-		{
-			renderer.setRenderBounds( 0.5D - thickness, 0.5D - thickness, 0.5D + thickness + pull, 0.5D + thickness, 0.5D + thickness, 1.0D );
-			renderer.renderStandardBlock( block, x, y, z );
-		}
-
-		if ( connections.contains( ForgeDirection.DOWN ) )
-		{
-			renderer.setRenderBounds( 0.5D - thickness, 0.0D, 0.5D - thickness, 0.5D + thickness, 0.5D - thickness - pull, 0.5D + thickness );
-			renderer.renderStandardBlock( block, x, y, z );
-		}
-
-		if ( connections.contains( ForgeDirection.UP ) )
-		{
-			renderer.setRenderBounds( 0.5D - thickness, 0.5D + thickness + pull, 0.5D - thickness, 0.5D + thickness, 1.0D, 0.5D + thickness );
-			renderer.renderStandardBlock( block, x, y, z );
-		}
-
-		block.getRendererInstance().setTemporaryRenderIcon( null );
-	}
-
 	@Override
-	public void renderInventory(AEBaseBlock block, ItemStack item, RenderBlocks renderer, ItemRenderType type, Object[] obj)
+	public void renderInventory( AEBaseBlock block, ItemStack item, RenderBlocks renderer, ItemRenderType type, Object[] obj )
 	{
 		float minPx = 2.0f / 16.0f;
 		float maxPx = 14.0f / 16.0f;
@@ -105,10 +57,10 @@ public class RenderQNB extends BaseBlockRender
 	}
 
 	@Override
-	public boolean renderInWorld(AEBaseBlock block, IBlockAccess world, int x, int y, int z, RenderBlocks renderer)
+	public boolean renderInWorld( AEBaseBlock block, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
 	{
 		TileQuantumBridge tqb = block.getTileEntity( world, x, y, z );
-		if ( tqb == null )
+		if( tqb == null )
 			return false;
 
 		renderer.renderAllFaces = true;
@@ -117,11 +69,11 @@ public class RenderQNB extends BaseBlockRender
 		final IBlocks blocks = definitions.blocks();
 		final IParts parts = definitions.parts();
 
-		for ( Block linkBlock : blocks.quantumLink().maybeBlock().asSet() )
+		for( Block linkBlock : blocks.quantumLink().maybeBlock().asSet() )
 		{
-			if ( tqb.getBlockType() == linkBlock )
+			if( tqb.getBlockType() == linkBlock )
 			{
-				if ( tqb.isFormed() )
+				if( tqb.isFormed() )
 				{
 					EnumSet<ForgeDirection> sides = tqb.getConnections();
 
@@ -139,18 +91,17 @@ public class RenderQNB extends BaseBlockRender
 			}
 			else
 			{
-				if ( !tqb.isFormed() )
+				if( !tqb.isFormed() )
 				{
 					float renderMin = 2.0f / 16.0f;
 					float renderMax = 14.0f / 16.0f;
 					renderer.setRenderBounds( renderMin, renderMin, renderMin, renderMax, renderMax, renderMax );
 					renderer.renderStandardBlock( block, x, y, z );
 				}
-				else if ( tqb.isCorner() )
+				else if( tqb.isCorner() )
 				{
 					Item transCoveredCable = parts.cableCovered().item( AEColor.Transparent );
-					this.renderCableAt( 0.188D, world, x, y, z, block, renderer, transCoveredCable.getIconIndex( parts.cableCovered().stack( AEColor.Transparent, 1 ) ), 0.05D,
-							tqb.getConnections() );
+					this.renderCableAt( 0.188D, world, x, y, z, block, renderer, transCoveredCable.getIconIndex( parts.cableCovered().stack( AEColor.Transparent, 1 ) ), 0.05D, tqb.getConnections() );
 
 					float renderMin = 4.0f / 16.0f;
 					float renderMax = 12.0f / 16.0f;
@@ -158,7 +109,7 @@ public class RenderQNB extends BaseBlockRender
 					renderer.setRenderBounds( renderMin, renderMin, renderMin, renderMax, renderMax, renderMax );
 					renderer.renderStandardBlock( block, x, y, z );
 
-					if ( tqb.isPowered() )
+					if( tqb.isPowered() )
 					{
 
 						renderMin = 3.9f / 16.0f;
@@ -168,9 +119,8 @@ public class RenderQNB extends BaseBlockRender
 						int bn = 15;
 						Tessellator.instance.setColorOpaque_F( 1.0F, 1.0F, 1.0F );
 						Tessellator.instance.setBrightness( bn << 20 | bn << 4 );
-						for (ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+						for( ForgeDirection side : ForgeDirection.VALID_DIRECTIONS )
 							this.renderFace( x, y, z, block, ExtraBlockTextures.BlockQRingCornerLight.getIcon(), renderer, side );
-
 					}
 				}
 				else
@@ -186,7 +136,7 @@ public class RenderQNB extends BaseBlockRender
 					renderer.setRenderBounds( renderMin, renderMin, 0, renderMax, renderMax, 1 );
 					renderer.renderStandardBlock( block, x, y, z );
 
-					if ( tqb.isPowered() )
+					if( tqb.isPowered() )
 					{
 						renderMin = -0.01f / 16.0f;
 						renderMax = 16.01f / 16.0f;
@@ -195,7 +145,7 @@ public class RenderQNB extends BaseBlockRender
 						int bn = 15;
 						Tessellator.instance.setColorOpaque_F( 1.0F, 1.0F, 1.0F );
 						Tessellator.instance.setBrightness( bn << 20 | bn << 4 );
-						for (ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+						for( ForgeDirection side : ForgeDirection.VALID_DIRECTIONS )
 							this.renderFace( x, y, z, block, ExtraBlockTextures.BlockQRingEdgeLight.getIcon(), renderer, side );
 					}
 				}
@@ -204,5 +154,54 @@ public class RenderQNB extends BaseBlockRender
 
 		renderer.renderAllFaces = false;
 		return true;
+	}
+
+	public void renderCableAt( double thickness, IBlockAccess world, int x, int y, int z, AEBaseBlock block, RenderBlocks renderer, IIcon texture, double pull, Collection<ForgeDirection> connections )
+	{
+		block.getRendererInstance().setTemporaryRenderIcon( texture );
+
+		if( connections.contains( ForgeDirection.UNKNOWN ) )
+		{
+			renderer.setRenderBounds( 0.5D - thickness, 0.5D - thickness, 0.5D - thickness, 0.5D + thickness, 0.5D + thickness, 0.5D + thickness );
+			renderer.renderStandardBlock( block, x, y, z );
+		}
+
+		if( connections.contains( ForgeDirection.WEST ) )
+		{
+			renderer.setRenderBounds( 0.0D, 0.5D - thickness, 0.5D - thickness, 0.5D - thickness - pull, 0.5D + thickness, 0.5D + thickness );
+			renderer.renderStandardBlock( block, x, y, z );
+		}
+
+		if( connections.contains( ForgeDirection.EAST ) )
+		{
+			renderer.setRenderBounds( 0.5D + thickness + pull, 0.5D - thickness, 0.5D - thickness, 1.0D, 0.5D + thickness, 0.5D + thickness );
+			renderer.renderStandardBlock( block, x, y, z );
+		}
+
+		if( connections.contains( ForgeDirection.NORTH ) )
+		{
+			renderer.setRenderBounds( 0.5D - thickness, 0.5D - thickness, 0.0D, 0.5D + thickness, 0.5D + thickness, 0.5D - thickness - pull );
+			renderer.renderStandardBlock( block, x, y, z );
+		}
+
+		if( connections.contains( ForgeDirection.SOUTH ) )
+		{
+			renderer.setRenderBounds( 0.5D - thickness, 0.5D - thickness, 0.5D + thickness + pull, 0.5D + thickness, 0.5D + thickness, 1.0D );
+			renderer.renderStandardBlock( block, x, y, z );
+		}
+
+		if( connections.contains( ForgeDirection.DOWN ) )
+		{
+			renderer.setRenderBounds( 0.5D - thickness, 0.0D, 0.5D - thickness, 0.5D + thickness, 0.5D - thickness - pull, 0.5D + thickness );
+			renderer.renderStandardBlock( block, x, y, z );
+		}
+
+		if( connections.contains( ForgeDirection.UP ) )
+		{
+			renderer.setRenderBounds( 0.5D - thickness, 0.5D + thickness + pull, 0.5D - thickness, 0.5D + thickness, 1.0D, 0.5D + thickness );
+			renderer.renderStandardBlock( block, x, y, z );
+		}
+
+		block.getRendererInstance().setTemporaryRenderIcon( null );
 	}
 }

@@ -34,17 +34,17 @@ public interface IRecipeHandlerRegistry
 
 	/**
 	 * Add a new Recipe Handler to the parser.
-	 * 
+	 *
 	 * MUST BE CALLED IN PRE-INIT
-	 * 
-	 * @param name name of crafthandler
+	 *
+	 * @param name    name of crafthandler
 	 * @param handler class of crafthandler
 	 */
 	void addNewCraftHandler( String name, Class<? extends ICraftHandler> handler );
 
 	/**
 	 * Add a new resolver to the parser.
-	 * 
+	 *
 	 * MUST BE CALLED IN PRE-INIT
 	 *
 	 * @param sir sub item resolver

@@ -18,6 +18,7 @@
 
 package appeng.integration;
 
+
 public enum IntegrationStage
 {
 

@@ -34,10 +34,10 @@ import appeng.api.storage.data.IAEItemStack;
  * Any item which implements this can be treated as an IMEInventory via
  * Util.getCell / Util.isCell It automatically handles the internals and NBT
  * data, which is both nice, and bad for you!
- * 
+ *
  * Good cause it means you don't have to do anything, bad because you have
  * little to no control over it.
- * 
+ *
  * The standard AE implementation only provides 1-63 Types
  */
 public interface IStorageCell extends ICellWorkbenchItem
@@ -76,8 +76,8 @@ public interface IStorageCell extends ICellWorkbenchItem
 	 * Allows you to fine tune which items are allowed on a given cell, if you
 	 * don't care, just return false; As the handler for this type of cell is
 	 * still the default cells, the normal AE black list is also applied.
-	 * 
-	 * @param cellItem item
+	 *
+	 * @param cellItem          item
 	 * @param requestedAddition requested addition
 	 *
 	 * @return true to preventAdditionOfItem

@@ -18,21 +18,23 @@
 
 package appeng.entity;
 
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
+
 final public class EntityFloatingItem extends EntityItem
 {
 
 	public static int ageStatic = 0;
-
-	int superDeath = 0;
 	private final Entity parent;
+	int superDeath = 0;
 	float progress = 0;
 
-	public EntityFloatingItem(Entity parent, World p_i1710_1_, double p_i1710_2_, double p_i1710_4_, double p_i1710_6_, ItemStack p_i1710_8_) {
+	public EntityFloatingItem( Entity parent, World p_i1710_1_, double p_i1710_2_, double p_i1710_4_, double p_i1710_6_, ItemStack p_i1710_8_ )
+	{
 		super( p_i1710_1_, p_i1710_2_, p_i1710_4_, p_i1710_6_, p_i1710_8_ );
 		this.motionX = this.motionY = this.motionZ = 0.0d;
 		this.hoverStart = 0.5f;
@@ -45,21 +47,20 @@ final public class EntityFloatingItem extends EntityItem
 	@Override
 	public void onUpdate()
 	{
-		if ( !this.isDead && this.parent.isDead )
+		if( !this.isDead && this.parent.isDead )
 			this.setDead();
 
-		if ( this.superDeath > 100 )
+		if( this.superDeath > 100 )
 			this.setDead();
 		this.superDeath++;
 
 		this.age = ageStatic;
 	}
 
-	public void setProgress(float progress)
+	public void setProgress( float progress )
 	{
 		this.progress = progress;
-		if ( this.progress > 0.99 )
+		if( this.progress > 0.99 )
 			this.setDead();
 	}
-
 }

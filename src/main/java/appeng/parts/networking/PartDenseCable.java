@@ -72,17 +72,6 @@ public class PartDenseCable extends PartCable
 	}
 
 	@Override
-	public IIcon getTexture( AEColor c )
-	{
-		if ( c == AEColor.Transparent )
-		{
-			return AEApi.instance().definitions().parts().cableSmart().stack( AEColor.Transparent, 1 ).getIconIndex();
-		}
-
-		return this.getSmartTexture( c );
-	}
-
-	@Override
 	public AECableType getCableConnectionType()
 	{
 		return AECableType.DENSE;
@@ -97,20 +86,20 @@ public class PartDenseCable extends PartCable
 
 		bch.addBox( min, min, min, max, max, max );
 
-		if ( Platform.isServer() )
+		if( Platform.isServer() )
 		{
 			IGridNode n = this.getGridNode();
-			if ( n != null )
+			if( n != null )
 				this.connections = n.getConnectedSides();
 			else
 				this.connections.clear();
 		}
 
-		for ( ForgeDirection of : this.connections )
+		for( ForgeDirection of : this.connections )
 		{
-			if ( this.isDense( of ) )
+			if( this.isDense( of ) )
 			{
-				switch ( of )
+				switch( of )
 				{
 					case DOWN:
 						bch.addBox( min, 0.0, min, max, min, max );
@@ -135,7 +124,7 @@ public class PartDenseCable extends PartCable
 			}
 			else
 			{
-				switch ( of )
+				switch( of )
 				{
 					case DOWN:
 						bch.addBox( 5.0, 0.0, 5.0, 11.0, 5.0, 11.0 );
@@ -175,7 +164,7 @@ public class PartDenseCable extends PartCable
 		OffsetIcon ch1 = new OffsetIcon( this.getChannelTex( 4, false ).getIcon(), offU, offV );
 		OffsetIcon ch2 = new OffsetIcon( this.getChannelTex( 4, true ).getIcon(), offU, offV );
 
-		for ( ForgeDirection side : EnumSet.of( ForgeDirection.UP, ForgeDirection.DOWN ) )
+		for( ForgeDirection side : EnumSet.of( ForgeDirection.UP, ForgeDirection.DOWN ) )
 		{
 			rh.renderInventoryFace( main, side, renderer );
 			rh.renderInventoryFace( ch1, side, renderer );
@@ -188,7 +177,7 @@ public class PartDenseCable extends PartCable
 		ch1 = new OffsetIcon( this.getChannelTex( 4, false ).getIcon(), offU, offV );
 		ch2 = new OffsetIcon( this.getChannelTex( 4, true ).getIcon(), offU, offV );
 
-		for ( ForgeDirection side : EnumSet.of( ForgeDirection.EAST, ForgeDirection.WEST ) )
+		for( ForgeDirection side : EnumSet.of( ForgeDirection.EAST, ForgeDirection.WEST ) )
 		{
 			rh.renderInventoryFace( main, side, renderer );
 			rh.renderInventoryFace( ch1, side, renderer );
@@ -199,7 +188,7 @@ public class PartDenseCable extends PartCable
 		ch1 = new OffsetIcon( this.getChannelTex( 4, false ).getIcon(), 0, 0 );
 		ch2 = new OffsetIcon( this.getChannelTex( 4, true ).getIcon(), 0, 0 );
 
-		for ( ForgeDirection side : EnumSet.of( ForgeDirection.SOUTH, ForgeDirection.NORTH ) )
+		for( ForgeDirection side : EnumSet.of( ForgeDirection.SOUTH, ForgeDirection.NORTH ) )
 		{
 			rh.renderInventoryFace( main, side, renderer );
 			rh.renderInventoryFace( ch1, side, renderer );
@@ -207,6 +196,17 @@ public class PartDenseCable extends PartCable
 		}
 
 		rh.setTexture( null );
+	}
+
+	@Override
+	public IIcon getTexture( AEColor c )
+	{
+		if( c == AEColor.Transparent )
+		{
+			return AEApi.instance().definitions().parts().cableSmart().stack( AEColor.Transparent, 1 ).getIconIndex();
+		}
+
+		return this.getSmartTexture( c );
 	}
 
 	@Override
@@ -219,19 +219,19 @@ public class PartDenseCable extends PartCable
 		EnumSet<ForgeDirection> sides = this.connections.clone();
 
 		boolean hasBuses = false;
-		for ( ForgeDirection of : this.connections )
+		for( ForgeDirection of : this.connections )
 		{
-			if ( !this.isDense( of ) )
+			if( !this.isDense( of ) )
 				hasBuses = true;
 		}
 
-		if ( sides.size() != 2 || !this.nonLinear( sides ) || hasBuses )
+		if( sides.size() != 2 || !this.nonLinear( sides ) || hasBuses )
 		{
-			for ( ForgeDirection of : this.connections )
+			for( ForgeDirection of : this.connections )
 			{
-				if ( this.isDense( of ) )
+				if( this.isDense( of ) )
 					this.renderDenseConnection( x, y, z, rh, renderer, this.channelsOnSide[of.ordinal()], of );
-				else if ( this.isSmart( of ) )
+				else if( this.isSmart( of ) )
 					this.renderSmartConnection( x, y, z, rh, renderer, this.channelsOnSide[of.ordinal()], of );
 				else
 					this.renderCoveredConnection( x, y, z, rh, renderer, this.channelsOnSide[of.ordinal()], of );
@@ -245,7 +245,7 @@ public class PartDenseCable extends PartCable
 		{
 			ForgeDirection selectedSide = ForgeDirection.UNKNOWN;
 
-			for ( ForgeDirection of : this.connections )
+			for( ForgeDirection of : this.connections )
 			{
 				selectedSide = of;
 				break;
@@ -261,7 +261,7 @@ public class PartDenseCable extends PartCable
 			IIcon secondIcon = new TaughtIcon( this.getChannelTex( channels, true ).getIcon(), -0.2f );
 			IIcon secondOffset = new OffsetIcon( secondIcon, 0, -12 );
 
-			switch ( selectedSide )
+			switch( selectedSide )
 			{
 				case DOWN:
 				case UP:
@@ -387,12 +387,12 @@ public class PartDenseCable extends PartCable
 		 */
 
 		rh.setFacesToRender( EnumSet.complementOf( EnumSet.of( of, of.getOpposite() ) ) );
-		if ( ghh != null && partHost != null && ghh.getCableConnectionType( of ) != AECableType.GLASS && partHost.getColor() != AEColor.Transparent && partHost.getPart( of.getOpposite() ) == null )
+		if( ghh != null && partHost != null && ghh.getCableConnectionType( of ) != AECableType.GLASS && partHost.getColor() != AEColor.Transparent && partHost.getPart( of.getOpposite() ) == null )
 			rh.setTexture( this.getTexture( myColor = partHost.getColor() ) );
 		else
 			rh.setTexture( this.getTexture( this.getCableColor() ) );
 
-		switch ( of )
+		switch( of )
 		{
 			case DOWN:
 				rh.setBounds( 4, 0, 4, 12, 5, 12 );
@@ -419,7 +419,7 @@ public class PartDenseCable extends PartCable
 		rh.renderBlock( x, y, z, renderer );
 
 		rh.setFacesToRender( EnumSet.allOf( ForgeDirection.class ) );
-		if ( !isGlass )
+		if( !isGlass )
 		{
 			this.setSmartConnectionRotations( of, renderer );
 
@@ -442,7 +442,7 @@ public class PartDenseCable extends PartCable
 	private boolean isSmart( ForgeDirection of )
 	{
 		TileEntity te = this.tile.getWorldObj().getTileEntity( this.tile.xCoord + of.offsetX, this.tile.yCoord + of.offsetY, this.tile.zCoord + of.offsetZ );
-		if ( te instanceof IGridHost )
+		if( te instanceof IGridHost )
 		{
 			AECableType t = ( (IGridHost) te ).getCableConnectionType( of.getOpposite() );
 			return t == AECableType.SMART;
@@ -452,7 +452,7 @@ public class PartDenseCable extends PartCable
 
 	private IIcon getDenseTexture( AEColor c )
 	{
-		switch ( c )
+		switch( c )
 		{
 			case Black:
 				return CableBusTextures.MEDense_Black.getIcon();
@@ -495,7 +495,7 @@ public class PartDenseCable extends PartCable
 	private boolean isDense( ForgeDirection of )
 	{
 		TileEntity te = this.tile.getWorldObj().getTileEntity( this.tile.xCoord + of.offsetX, this.tile.yCoord + of.offsetY, this.tile.zCoord + of.offsetZ );
-		if ( te instanceof IGridHost )
+		if( te instanceof IGridHost )
 		{
 			AECableType t = ( (IGridHost) te ).getCableConnectionType( of.getOpposite() );
 			return t == AECableType.DENSE;

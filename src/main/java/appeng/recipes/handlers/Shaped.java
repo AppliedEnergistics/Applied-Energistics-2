@@ -36,29 +36,29 @@ import appeng.recipes.RecipeHandler;
 import appeng.recipes.game.ShapedRecipe;
 import appeng.util.Platform;
 
+
 public class Shaped implements ICraftHandler, IWebsiteSerializer
 {
 
+	List<List<IIngredient>> inputs;
+	IIngredient output;
 	private int rows;
 	private int cols;
 
-	List<List<IIngredient>> inputs;
-	IIngredient output;
-
 	@Override
-	public void setup(List<List<IIngredient>> input, List<List<IIngredient>> output) throws RecipeError
+	public void setup( List<List<IIngredient>> input, List<List<IIngredient>> output ) throws RecipeError
 	{
-		if ( output.size() == 1 && output.get( 0 ).size() == 1 )
+		if( output.size() == 1 && output.get( 0 ).size() == 1 )
 		{
 			this.rows = input.size();
-			if ( this.rows > 0 && input.size() <= 3 )
+			if( this.rows > 0 && input.size() <= 3 )
 			{
 				this.cols = input.get( 0 ).size();
-				if ( this.cols <= 3 && this.cols >= 1 )
+				if( this.cols <= 3 && this.cols >= 1 )
 				{
-					for (List<IIngredient> anInput : input)
+					for( List<IIngredient> anInput : input )
 					{
-						if ( anInput.size() != this.cols )
+						if( anInput.size() != this.cols )
 						{
 							throw new RecipeError( "all rows in a shaped crafting recipe must contain the same number of ingredients." );
 						}
@@ -83,12 +83,12 @@ public class Shaped implements ICraftHandler, IWebsiteSerializer
 		char first = 'A';
 		List<Object> args = new ArrayList<Object>();
 
-		for (int y = 0; y < this.rows; y++)
+		for( int y = 0; y < this.rows; y++ )
 		{
 			StringBuilder row = new StringBuilder();
-			for (int x = 0; x < this.cols; x++)
+			for( int x = 0; x < this.cols; x++ )
 			{
-				if ( this.inputs.get( y ).get( x ).isAir() )
+				if( this.inputs.get( y ).get( x ).isAir() )
 					row.append( ' ' );
 				else
 				{
@@ -108,7 +108,7 @@ public class Shaped implements ICraftHandler, IWebsiteSerializer
 		{
 			GameRegistry.addRecipe( new ShapedRecipe( outIS, args.toArray( new Object[args.size()] ) ) );
 		}
-		catch (Throwable e)
+		catch( Throwable e )
 		{
 			AELog.error( e );
 			throw new RegistrationError( "Error while adding shaped recipe." );
@@ -116,44 +116,44 @@ public class Shaped implements ICraftHandler, IWebsiteSerializer
 	}
 
 	@Override
-	public boolean canCraft(ItemStack reqOutput) throws RegistrationError, MissingIngredientError
+	public String getPattern( RecipeHandler h )
 	{
-		for (int y = 0; y < this.rows; y++)
-			for (int x = 0; x < this.cols; x++)
+		String o = "shaped " + this.output.getQty() + ' ' + this.cols + 'x' + this.rows + '\n';
+
+		o += h.getName( this.output ) + '\n';
+
+		for( int y = 0; y < this.rows; y++ )
+			for( int x = 0; x < this.cols; x++ )
 			{
 				IIngredient i = this.inputs.get( y ).get( x );
 
-				if ( !i.isAir() )
+				if( i.isAir() )
+					o += "air" + ( x + 1 == this.cols ? "\n" : " " );
+				else
+					o += h.getName( i ) + ( x + 1 == this.cols ? "\n" : " " );
+			}
+
+		return o.trim();
+	}
+
+	@Override
+	public boolean canCraft( ItemStack reqOutput ) throws RegistrationError, MissingIngredientError
+	{
+		for( int y = 0; y < this.rows; y++ )
+			for( int x = 0; x < this.cols; x++ )
+			{
+				IIngredient i = this.inputs.get( y ).get( x );
+
+				if( !i.isAir() )
 				{
-					for ( ItemStack r : i.getItemStackSet() )
+					for( ItemStack r : i.getItemStackSet() )
 					{
-						if ( Platform.isSameItemPrecise( r, reqOutput) )
+						if( Platform.isSameItemPrecise( r, reqOutput ) )
 							return false;
 					}
 				}
 			}
 
 		return Platform.isSameItemPrecise( this.output.getItemStack(), reqOutput );
-	}
-
-	@Override
-	public String getPattern(RecipeHandler h)
-	{
-		String o = "shaped " + this.output.getQty() + ' ' + this.cols + 'x' + this.rows + '\n';
-
-		o += h.getName( this.output ) + '\n';
-
-		for (int y = 0; y < this.rows; y++)
-			for (int x = 0; x < this.cols; x++)
-			{
-				IIngredient i = this.inputs.get( y ).get( x );
-
-				if ( i.isAir() )
-					o += "air" + (x + 1 == this.cols ? "\n" : " ");
-				else
-					o += h.getName( i ) + (x + 1 == this.cols ? "\n" : " ");
-			}
-
-		return o.trim();
 	}
 }

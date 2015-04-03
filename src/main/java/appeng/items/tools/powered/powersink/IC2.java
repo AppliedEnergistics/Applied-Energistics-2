@@ -33,8 +33,7 @@ import appeng.transformer.annotations.Integration.InterfaceList;
 import appeng.transformer.annotations.Integration.Method;
 
 
-@InterfaceList( value = { @Interface( iface = "ic2.api.item.ISpecialElectricItem", iname = "IC2" ),
-		@Interface( iface = "ic2.api.item.IElectricItemManager", iname = "IC2" ) } )
+@InterfaceList( value = { @Interface( iface = "ic2.api.item.ISpecialElectricItem", iname = "IC2" ), @Interface( iface = "ic2.api.item.IElectricItemManager", iname = "IC2" ) } )
 public abstract class IC2 extends AERootPoweredItem implements IElectricItemManager, ISpecialElectricItem
 {
 	public IC2( double powerCapacity, Optional<String> subName )
@@ -48,10 +47,10 @@ public abstract class IC2 extends AERootPoweredItem implements IElectricItemMana
 		double addedAmt = amount;
 		double limit = this.getTransferLimit( is );
 
-		if ( !ignoreTransferLimit && amount > limit )
+		if( !ignoreTransferLimit && amount > limit )
 			addedAmt = limit;
 
-		return addedAmt - ( ( int ) this.injectExternalPower( PowerUnits.EU, is, addedAmt, simulate ) );
+		return addedAmt - ( (int) this.injectExternalPower( PowerUnits.EU, is, addedAmt, simulate ) );
 	}
 
 	@Override
@@ -63,7 +62,7 @@ public abstract class IC2 extends AERootPoweredItem implements IElectricItemMana
 	@Override
 	public double getCharge( ItemStack is )
 	{
-		return ( int ) PowerUnits.AE.convertTo( PowerUnits.EU, this.getAECurrentPower( is ) );
+		return (int) PowerUnits.AE.convertTo( PowerUnits.EU, this.getAECurrentPower( is ) );
 	}
 
 	@Override
@@ -75,7 +74,7 @@ public abstract class IC2 extends AERootPoweredItem implements IElectricItemMana
 	@Override
 	public boolean use( ItemStack is, double amount, EntityLivingBase entity )
 	{
-		if ( this.canUse( is, amount ) )
+		if( this.canUse( is, amount ) )
 		{
 			// use the power..
 			this.extractAEPower( is, PowerUnits.EU.convertTo( PowerUnits.AE, amount ) );
@@ -138,5 +137,4 @@ public abstract class IC2 extends AERootPoweredItem implements IElectricItemMana
 	{
 		return this;
 	}
-
 }

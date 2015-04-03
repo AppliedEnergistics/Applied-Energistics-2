@@ -18,6 +18,7 @@
 
 package appeng.container.implementations;
 
+
 import net.minecraft.entity.player.InventoryPlayer;
 
 import appeng.container.AEBaseContainer;
@@ -26,12 +27,14 @@ import appeng.container.slot.SlotOutput;
 import appeng.container.slot.SlotRestrictedInput;
 import appeng.tile.grindstone.TileGrinder;
 
+
 public class ContainerGrinder extends AEBaseContainer
 {
 
 	final TileGrinder grinder;
 
-	public ContainerGrinder(InventoryPlayer ip, TileGrinder grinder) {
+	public ContainerGrinder( InventoryPlayer ip, TileGrinder grinder )
+	{
 		super( ip, grinder, null );
 		this.grinder = grinder;
 
@@ -47,5 +50,4 @@ public class ContainerGrinder extends AEBaseContainer
 
 		this.bindPlayerInventory( ip, 0, 176 - /* height of player inventory */82 );
 	}
-
 }

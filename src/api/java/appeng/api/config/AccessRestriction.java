@@ -30,7 +30,8 @@ public enum AccessRestriction
 
 	private final int permissionBit;
 
-	AccessRestriction( int v ) {
+	AccessRestriction( int v )
+	{
 		this.permissionBit = v;
 	}
 
@@ -44,19 +45,9 @@ public enum AccessRestriction
 		return this.getPermByBit( this.permissionBit & ar.permissionBit );
 	}
 
-	public AccessRestriction addPermissions( AccessRestriction ar )
-	{
-		return this.getPermByBit( this.permissionBit | ar.permissionBit );
-	}
-
-	public AccessRestriction removePermissions( AccessRestriction ar )
-	{
-		return this.getPermByBit( this.permissionBit & ( ~ar.permissionBit ) );
-	}
-
 	private AccessRestriction getPermByBit( int bit )
 	{
-		switch ( bit )
+		switch( bit )
 		{
 			default:
 			case 0:
@@ -68,5 +59,15 @@ public enum AccessRestriction
 			case 3:
 				return READ_WRITE;
 		}
+	}
+
+	public AccessRestriction addPermissions( AccessRestriction ar )
+	{
+		return this.getPermByBit( this.permissionBit | ar.permissionBit );
+	}
+
+	public AccessRestriction removePermissions( AccessRestriction ar )
+	{
+		return this.getPermByBit( this.permissionBit & ( ~ar.permissionBit ) );
 	}
 }

@@ -23,7 +23,9 @@
 
 package appeng.api.util;
 
+
 import net.minecraftforge.common.util.ForgeDirection;
+
 
 /**
  * Nearly all of AE's Tile Entities implement IOrientable.
@@ -52,9 +54,9 @@ public interface IOrientable
 
 	/**
 	 * Update the orientation
+	 *
 	 * @param Forward new forward direction
-	 * @param Up new upwards direction
+	 * @param Up      new upwards direction
 	 */
-	void setOrientation(ForgeDirection Forward, ForgeDirection Up);
-
+	void setOrientation( ForgeDirection Forward, ForgeDirection Up );
 }

@@ -37,57 +37,45 @@ import appeng.items.misc.ItemEncodedPattern;
 import appeng.tile.crafting.TileMolecularAssembler;
 import appeng.util.Platform;
 
+
 public class ContainerMAC extends ContainerUpgradeable implements IProgressProvider
 {
 
-	final TileMolecularAssembler tma;
 	private static final int MAX_CRAFT_PROGRESS = 100;
+	final TileMolecularAssembler tma;
+	@GuiSync( 4 )
+	public int craftProgress = 0;
 
-	public ContainerMAC(InventoryPlayer ip, TileMolecularAssembler te)
+	public ContainerMAC( InventoryPlayer ip, TileMolecularAssembler te )
 	{
 		super( ip, te );
 		this.tma = te;
 	}
 
-	@Override
-	public int availableUpgrades()
+	public boolean isValidItemForSlot( int slotIndex, ItemStack i )
 	{
-		return 5;
+		IInventory mac = this.upgradeable.getInventoryByName( "mac" );
+
+		ItemStack is = mac.getStackInSlot( 10 );
+		if( is == null )
+			return false;
+
+		if( is.getItem() instanceof ItemEncodedPattern )
+		{
+			World w = this.getTileEntity().getWorldObj();
+			ItemEncodedPattern iep = (ItemEncodedPattern) is.getItem();
+			ICraftingPatternDetails ph = iep.getPatternForItem( is, w );
+			if( ph.isCraftable() )
+				return ph.isValidItemForSlot( slotIndex, i, w );
+		}
+
+		return false;
 	}
 
 	@Override
 	protected int getHeight()
 	{
 		return 197;
-	}
-
-	@Override
-	protected boolean supportCapacity()
-	{
-		return false;
-	}
-
-	@GuiSync(4)
-	public int craftProgress = 0;
-
-	public boolean isValidItemForSlot(int slotIndex, ItemStack i)
-	{
-		IInventory mac = this.upgradeable.getInventoryByName( "mac" );
-
-		ItemStack is = mac.getStackInSlot( 10 );
-		if ( is == null )
-			return false;
-
-		if ( is.getItem() instanceof ItemEncodedPattern )
-		{
-			World w = this.getTileEntity().getWorldObj();
-			ItemEncodedPattern iep = (ItemEncodedPattern) is.getItem();
-			ICraftingPatternDetails ph = iep.getPatternForItem( is, w );
-			if ( ph.isCraftable() )
-				return ph.isValidItemForSlot( slotIndex, i, w );
-		}
-
-		return false;
 	}
 
 	@Override
@@ -98,8 +86,8 @@ public class ContainerMAC extends ContainerUpgradeable implements IProgressProvi
 
 		IInventory mac = this.upgradeable.getInventoryByName( "mac" );
 
-		for (int y = 0; y < 3; y++)
-			for (int x = 0; x < 3; x++)
+		for( int y = 0; y < 3; y++ )
+			for( int x = 0; x < 3; x++ )
 			{
 				SlotMACPattern s = new SlotMACPattern( this, mac, x + y * 3, offX + x * 18, offY + y * 18 );
 				this.addSlotToContainer( s );
@@ -115,16 +103,23 @@ public class ContainerMAC extends ContainerUpgradeable implements IProgressProvi
 		offY = 17;
 
 		IInventory upgrades = this.upgradeable.getInventoryByName( "upgrades" );
-		this.addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 0, 187, 8, this.invPlayer ))
-				.setNotDraggable() );
-		this.addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 1, 187, 8 + 18, this.invPlayer ))
-				.setNotDraggable() );
-		this.addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 2, 187, 8 + 18 * 2, this.invPlayer ))
-				.setNotDraggable() );
-		this.addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 3, 187, 8 + 18 * 3, this.invPlayer ))
-				.setNotDraggable() );
-		this.addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 4, 187, 8 + 18 * 4, this.invPlayer ))
-				.setNotDraggable() );
+		this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 0, 187, 8, this.invPlayer ) ).setNotDraggable() );
+		this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 1, 187, 8 + 18, this.invPlayer ) ).setNotDraggable() );
+		this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 2, 187, 8 + 18 * 2, this.invPlayer ) ).setNotDraggable() );
+		this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 3, 187, 8 + 18 * 3, this.invPlayer ) ).setNotDraggable() );
+		this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 4, 187, 8 + 18 * 4, this.invPlayer ) ).setNotDraggable() );
+	}
+
+	@Override
+	protected boolean supportCapacity()
+	{
+		return false;
+	}
+
+	@Override
+	public int availableUpgrades()
+	{
+		return 5;
 	}
 
 	@Override
@@ -132,7 +127,7 @@ public class ContainerMAC extends ContainerUpgradeable implements IProgressProvi
 	{
 		this.verifyPermissions( SecurityPermissions.BUILD, false );
 
-		if ( Platform.isServer() )
+		if( Platform.isServer() )
 		{
 			this.rsMode = (RedstoneMode) this.upgradeable.getConfigManager().getSetting( Settings.REDSTONE_CONTROLLED );
 		}
@@ -153,5 +148,4 @@ public class ContainerMAC extends ContainerUpgradeable implements IProgressProvi
 	{
 		return MAX_CRAFT_PROGRESS;
 	}
-
 }

@@ -18,9 +18,9 @@
 
 package appeng.client.gui.widgets;
 
+
 /**
  * AEBaseGui controlled Tooltip Interface.
- *
  */
 public interface ITooltip
 {
@@ -64,5 +64,4 @@ public interface ITooltip
 	 * @return true if button being drawn
 	 */
 	boolean isVisible();
-
 }

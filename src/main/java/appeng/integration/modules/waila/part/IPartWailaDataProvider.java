@@ -47,5 +47,5 @@ public interface IPartWailaDataProvider
 
 	List<String> getWailaTail( IPart part, List<String> currentToolTip, IWailaDataAccessor accessor, IWailaConfigHandler config );
 
-	NBTTagCompound getNBTData(EntityPlayerMP player, IPart part, TileEntity te, NBTTagCompound tag, World world, int x, int y, int z);
+	NBTTagCompound getNBTData( EntityPlayerMP player, IPart part, TileEntity te, NBTTagCompound tag, World world, int x, int y, int z );
 }

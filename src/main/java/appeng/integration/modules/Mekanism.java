@@ -18,6 +18,7 @@
 
 package appeng.integration.modules;
 
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -25,6 +26,7 @@ import cpw.mods.fml.common.event.FMLInterModComms;
 
 import appeng.integration.BaseModule;
 import appeng.integration.abstraction.IMekanism;
+
 
 public final class Mekanism extends BaseModule implements IMekanism
 {
@@ -44,7 +46,7 @@ public final class Mekanism extends BaseModule implements IMekanism
 	}
 
 	@Override
-	public void addCrusherRecipe(ItemStack in, ItemStack out)
+	public void addCrusherRecipe( ItemStack in, ItemStack out )
 	{
 		final NBTTagCompound sendTag = this.convertToSimpleRecipe( in, out );
 
@@ -52,7 +54,7 @@ public final class Mekanism extends BaseModule implements IMekanism
 	}
 
 	@Override
-	public void addEnrichmentChamberRecipe(ItemStack in, ItemStack out)
+	public void addEnrichmentChamberRecipe( ItemStack in, ItemStack out )
 	{
 		final NBTTagCompound sendTag = this.convertToSimpleRecipe( in, out );
 

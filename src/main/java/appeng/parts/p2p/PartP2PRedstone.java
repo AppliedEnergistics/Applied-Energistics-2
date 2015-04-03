@@ -18,6 +18,7 @@
 
 package appeng.parts.p2p;
 
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRedstoneWire;
 import net.minecraft.init.Blocks;
@@ -36,86 +37,50 @@ import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.me.GridAccessException;
 import appeng.util.Platform;
 
+
 public class PartP2PRedstone extends PartP2PTunnel<PartP2PRedstone>
 {
 
-	public PartP2PRedstone(ItemStack is) {
+	int power;
+	boolean recursive = false;
+
+	public PartP2PRedstone( ItemStack is )
+	{
 		super( is );
 	}
 
-	int power;
-
-	@Override
-	public boolean canConnectRedstone()
-	{
-		return true;
-	}
-
-	@Override
-	public int isProvidingStrongPower()
-	{
-		return this.output ? this.power : 0;
-	}
-
-	@Override
-	public int isProvidingWeakPower()
-	{
-		return this.output ? this.power : 0;
-	}
-
-	@Override
-	public void onTunnelNetworkChange()
-	{
-		this.setNetworkReady();
-	}
-
 	@MENetworkEventSubscribe
-	public void changeStateA(MENetworkBootingStatusChange bs)
-	{
-		this.setNetworkReady();
-	}
-
-	@MENetworkEventSubscribe
-	public void changeStateB(MENetworkChannelsChanged bs)
-	{
-		this.setNetworkReady();
-	}
-
-	@MENetworkEventSubscribe
-	public void changeStateC(MENetworkPowerStatusChange bs)
+	public void changeStateA( MENetworkBootingStatusChange bs )
 	{
 		this.setNetworkReady();
 	}
 
 	public void setNetworkReady()
 	{
-		if ( this.output )
+		if( this.output )
 		{
 			PartP2PRedstone in = this.getInput();
-			if ( in != null )
+			if( in != null )
 				this.putInput( in.power );
 		}
 	}
 
-	boolean recursive = false;
-
-	protected void putInput(Object o)
+	protected void putInput( Object o )
 	{
-		if ( this.recursive )
+		if( this.recursive )
 			return;
 
 		this.recursive = true;
-		if ( this.output && this.proxy.isActive() )
+		if( this.output && this.proxy.isActive() )
 		{
 			int newPower = (Integer) o;
-			if ( this.power != newPower )
+			if( this.power != newPower )
 			{
 				this.power = newPower;
 				this.notifyNeighbors();
 			}
 		}
 		this.recursive = false;
-
 	}
 
 	public void notifyNeighbors()
@@ -137,25 +102,43 @@ public class PartP2PRedstone extends PartP2PTunnel<PartP2PRedstone>
 		Platform.notifyBlocksOfNeighbors( worldObj, xCoord + 1, yCoord, zCoord );
 	}
 
-	@Override
-	public void writeToNBT(NBTTagCompound tag)
+	@MENetworkEventSubscribe
+	public void changeStateB( MENetworkChannelsChanged bs )
 	{
-		super.writeToNBT( tag );
-		tag.setInteger( "power", this.power );
+		this.setNetworkReady();
+	}
+
+	@MENetworkEventSubscribe
+	public void changeStateC( MENetworkPowerStatusChange bs )
+	{
+		this.setNetworkReady();
 	}
 
 	@Override
-	public void readFromNBT(NBTTagCompound tag)
+	@SideOnly( Side.CLIENT )
+	public IIcon getTypeTexture()
+	{
+		return Blocks.redstone_block.getBlockTextureFromSide( 0 );
+	}
+
+	@Override
+	public void readFromNBT( NBTTagCompound tag )
 	{
 		super.readFromNBT( tag );
 		this.power = tag.getInteger( "power" );
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
-	public IIcon getTypeTexture()
+	public void writeToNBT( NBTTagCompound tag )
 	{
-		return Blocks.redstone_block.getBlockTextureFromSide( 0 );
+		super.writeToNBT( tag );
+		tag.setInteger( "power", this.power );
+	}
+
+	@Override
+	public void onTunnelNetworkChange()
+	{
+		this.setNetworkReady();
 	}
 
 	public float getPowerDrainPerTick()
@@ -166,17 +149,17 @@ public class PartP2PRedstone extends PartP2PTunnel<PartP2PRedstone>
 	@Override
 	public void onNeighborChanged()
 	{
-		if ( !this.output )
+		if( !this.output )
 		{
 			int x = this.tile.xCoord + this.side.offsetX;
 			int y = this.tile.yCoord + this.side.offsetY;
 			int z = this.tile.zCoord + this.side.offsetZ;
 
 			Block b = this.tile.getWorldObj().getBlock( x, y, z );
-			if ( b != null && !this.output )
+			if( b != null && !this.output )
 			{
 				int srcSide = this.side.ordinal();
-				if ( b instanceof BlockRedstoneWire )
+				if( b instanceof BlockRedstoneWire )
 					srcSide = 1;
 				this.power = b.isProvidingStrongPower( this.tile.getWorldObj(), x, y, z, srcSide );
 				this.power = Math.max( this.power, b.isProvidingWeakPower( this.tile.getWorldObj(), x, y, z, srcSide ) );
@@ -187,19 +170,36 @@ public class PartP2PRedstone extends PartP2PTunnel<PartP2PRedstone>
 		}
 	}
 
-	private void sendToOutput(int power)
+	@Override
+	public boolean canConnectRedstone()
+	{
+		return true;
+	}
+
+	@Override
+	public int isProvidingStrongPower()
+	{
+		return this.output ? this.power : 0;
+	}
+
+	@Override
+	public int isProvidingWeakPower()
+	{
+		return this.output ? this.power : 0;
+	}
+
+	private void sendToOutput( int power )
 	{
 		try
 		{
-			for (PartP2PRedstone rs : this.getOutputs())
+			for( PartP2PRedstone rs : this.getOutputs() )
 			{
 				rs.putInput( power );
 			}
 		}
-		catch (GridAccessException e)
+		catch( GridAccessException e )
 		{
 			// :P
 		}
 	}
-
 }

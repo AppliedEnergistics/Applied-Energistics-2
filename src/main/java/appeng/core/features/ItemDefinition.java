@@ -51,7 +51,7 @@ public class ItemDefinition implements IItemDefinition
 	@Override
 	public Optional<ItemStack> maybeStack( int stackSize )
 	{
-		if ( this.enabled )
+		if( this.enabled )
 		{
 			return Optional.of( new ItemStack( this.item ) );
 		}

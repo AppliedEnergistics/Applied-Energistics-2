@@ -18,38 +18,26 @@
 
 package appeng.util.item;
 
+
 import net.minecraft.item.Item;
 import net.minecraft.nbt.NBTTagCompound;
 
 import appeng.util.Platform;
+
 
 public class SharedSearchObject
 {
 
 	final int def;
 	final int hash;
-	NBTTagCompound compound;
 	public AESharedNBT shared;
+	NBTTagCompound compound;
 
-	public SharedSearchObject(Item itemID, int damageValue, NBTTagCompound tagCompound) {
-		this.def = (damageValue << Platform.DEF_OFFSET) | Item.itemRegistry.getIDForObject( itemID );
+	public SharedSearchObject( Item itemID, int damageValue, NBTTagCompound tagCompound )
+	{
+		this.def = ( damageValue << Platform.DEF_OFFSET ) | Item.itemRegistry.getIDForObject( itemID );
 		this.hash = Platform.NBTOrderlessHash( tagCompound );
 		this.compound = tagCompound;
-	}
-
-	@Override
-	public boolean equals(Object obj)
-	{
-		if ( obj == null )
-			return false;
-		if ( this.getClass() != obj.getClass() )
-			return false;
-		SharedSearchObject other = (SharedSearchObject) obj;
-		if ( this.def == other.def && this.hash == other.hash )
-		{
-			return Platform.NBTEqualityTest( this.compound, other.compound );
-		}
-		return false;
 	}
 
 	@Override
@@ -58,4 +46,18 @@ public class SharedSearchObject
 		return this.def ^ this.hash;
 	}
 
+	@Override
+	public boolean equals( Object obj )
+	{
+		if( obj == null )
+			return false;
+		if( this.getClass() != obj.getClass() )
+			return false;
+		SharedSearchObject other = (SharedSearchObject) obj;
+		if( this.def == other.def && this.hash == other.hash )
+		{
+			return Platform.NBTEqualityTest( this.compound, other.compound );
+		}
+		return false;
+	}
 }

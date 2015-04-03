@@ -64,12 +64,12 @@ public class PlayerMappingsInitializer
 		this.playerMappings = new HashMap<Integer, UUID>( capacity );
 
 		// Iterates through every pair of UUID to ID
-		for ( Map.Entry<String, Property> entry : playerList.getValues().entrySet() )
+		for( Map.Entry<String, Property> entry : playerList.getValues().entrySet() )
 		{
 			final String maybeUUID = entry.getKey();
 			final int id = entry.getValue().getInt();
 
-			if ( matcher.isUUID( maybeUUID ) )
+			if( matcher.isUUID( maybeUUID ) )
 			{
 				final UUID UUIDString = UUID.fromString( maybeUUID );
 

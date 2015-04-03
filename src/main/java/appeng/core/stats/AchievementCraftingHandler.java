@@ -44,22 +44,22 @@ public class AchievementCraftingHandler
 	@SubscribeEvent
 	public void onPlayerCraftingEvent( PlayerEvent.ItemCraftedEvent event )
 	{
-		if ( this.differentiator.isNoPlayer( event.player ) || event.crafting == null )
+		if( this.differentiator.isNoPlayer( event.player ) || event.crafting == null )
 			return;
 
-		for ( Achievements achievement : Achievements.values() )
+		for( Achievements achievement : Achievements.values() )
 		{
-			switch ( achievement.type )
+			switch( achievement.type )
 			{
 				case Craft:
-					if ( Platform.isSameItemPrecise( achievement.stack, event.crafting ) )
+					if( Platform.isSameItemPrecise( achievement.stack, event.crafting ) )
 					{
 						achievement.addToPlayer( event.player );
 						return;
 					}
 					break;
 				case CraftItem:
-					if ( achievement.stack != null && achievement.stack.getItem().getClass() == event.crafting.getItem().getClass() )
+					if( achievement.stack != null && achievement.stack.getItem().getClass() == event.crafting.getItem().getClass() )
 					{
 						achievement.addToPlayer( event.player );
 						return;

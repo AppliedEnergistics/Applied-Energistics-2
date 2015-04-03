@@ -18,7 +18,9 @@
 
 package appeng.client.texture;
 
+
 import net.minecraft.util.IIcon;
+
 
 public class FlippableIcon implements IIcon
 {
@@ -27,9 +29,10 @@ public class FlippableIcon implements IIcon
 	boolean flip_u;
 	boolean flip_v;
 
-	public FlippableIcon(IIcon o) {
+	public FlippableIcon( IIcon o )
+	{
 
-		if ( o == null )
+		if( o == null )
 			throw new RuntimeException( "Cannot create a wrapper icon with a null icon." );
 
 		this.original = o;
@@ -52,7 +55,7 @@ public class FlippableIcon implements IIcon
 	@Override
 	public float getMinU()
 	{
-		if ( this.flip_u )
+		if( this.flip_u )
 			return this.original.getMaxU();
 		return this.original.getMinU();
 	}
@@ -60,15 +63,15 @@ public class FlippableIcon implements IIcon
 	@Override
 	public float getMaxU()
 	{
-		if ( this.flip_u )
+		if( this.flip_u )
 			return this.original.getMinU();
 		return this.original.getMaxU();
 	}
 
 	@Override
-	public float getInterpolatedU(double px)
+	public float getInterpolatedU( double px )
 	{
-		if ( this.flip_u )
+		if( this.flip_u )
 			return this.original.getInterpolatedU( 16 - px );
 		return this.original.getInterpolatedU( px );
 	}
@@ -76,7 +79,7 @@ public class FlippableIcon implements IIcon
 	@Override
 	public float getMinV()
 	{
-		if ( this.flip_v )
+		if( this.flip_v )
 			return this.original.getMaxV();
 		return this.original.getMinV();
 	}
@@ -84,15 +87,15 @@ public class FlippableIcon implements IIcon
 	@Override
 	public float getMaxV()
 	{
-		if ( this.flip_v )
+		if( this.flip_v )
 			return this.original.getMinV();
 		return this.original.getMaxV();
 	}
 
 	@Override
-	public float getInterpolatedV(double px)
+	public float getInterpolatedV( double px )
 	{
-		if ( this.flip_v )
+		if( this.flip_v )
 			return this.original.getInterpolatedV( 16 - px );
 		return this.original.getInterpolatedV( px );
 	}
@@ -108,17 +111,16 @@ public class FlippableIcon implements IIcon
 		return this.original;
 	}
 
-	public void setFlip(boolean u, boolean v)
+	public void setFlip( boolean u, boolean v )
 	{
 		this.flip_u = u;
 		this.flip_v = v;
 	}
 
-	public int setFlip(int orientation)
+	public int setFlip( int orientation )
 	{
-		this.flip_u = (orientation & 8) == 8;
-		this.flip_v = (orientation & 16) == 16;
+		this.flip_u = ( orientation & 8 ) == 8;
+		this.flip_v = ( orientation & 16 ) == 16;
 		return orientation & 7;
 	}
-
 }

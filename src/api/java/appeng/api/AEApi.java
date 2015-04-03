@@ -51,17 +51,17 @@ public enum AEApi
 
 			HELD_API = (IAppEngApi) apiField.get( apiClass );
 		}
-		catch ( ClassNotFoundException e )
+		catch( ClassNotFoundException e )
 		{
-			throw new CoreInaccessibleException( "AE2 API tried to access the " + CORE_API_FQN + " class, without it being declared."  );
+			throw new CoreInaccessibleException( "AE2 API tried to access the " + CORE_API_FQN + " class, without it being declared." );
 		}
-		catch ( NoSuchFieldException e )
+		catch( NoSuchFieldException e )
 		{
 			throw new CoreInaccessibleException( "AE2 API tried to access the " + CORE_API_FIELD + " field in " + CORE_API_FQN + " without it being declared." );
 		}
-		catch ( IllegalAccessException e )
+		catch( IllegalAccessException e )
 		{
-			throw new CoreInaccessibleException( "AE2 API tried to access the " + CORE_API_FIELD + " field in " + CORE_API_FQN + " without enough access permissions.");
+			throw new CoreInaccessibleException( "AE2 API tried to access the " + CORE_API_FIELD + " field in " + CORE_API_FQN + " without enough access permissions." );
 		}
 	}
 

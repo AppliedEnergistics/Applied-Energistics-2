@@ -18,6 +18,7 @@
 
 package appeng.client.gui.implementations;
 
+
 import net.minecraft.entity.player.InventoryPlayer;
 
 import appeng.api.config.RedstoneMode;
@@ -29,11 +30,19 @@ import appeng.container.implementations.ContainerMAC;
 import appeng.core.localization.GuiText;
 import appeng.tile.crafting.TileMolecularAssembler;
 
+
 public class GuiMAC extends GuiUpgradeable
 {
 
 	final ContainerMAC container;
 	GuiProgressBar pb;
+
+	public GuiMAC( InventoryPlayer inventoryPlayer, TileMolecularAssembler te )
+	{
+		super( new ContainerMAC( inventoryPlayer, te ) );
+		this.ySize = 197;
+		this.container = (ContainerMAC) this.inventorySlots;
+	}
 
 	@Override
 	public void initGui()
@@ -45,21 +54,6 @@ public class GuiMAC extends GuiUpgradeable
 	}
 
 	@Override
-	public void drawBG(int offsetX, int offsetY, int mouseX, int mouseY)
-	{
-		this.pb.xPosition = 148 + this.guiLeft;
-		this.pb.yPosition = 48 + this.guiTop;
-		super.drawBG( offsetX, offsetY, mouseX, mouseY );
-	}
-
-	@Override
-	public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY)
-	{
-		this.pb.setFullMsg( this.container.getCurrentProgress() + "%" );
-		super.drawFG( offsetX, offsetY, mouseX, mouseY );
-	}
-
-	@Override
 	protected void addButtons()
 	{
 		this.redstoneMode = new GuiImgButton( this.guiLeft - 18, this.guiTop + 8, Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE );
@@ -67,16 +61,24 @@ public class GuiMAC extends GuiUpgradeable
 	}
 
 	@Override
+	public void drawFG( int offsetX, int offsetY, int mouseX, int mouseY )
+	{
+		this.pb.setFullMsg( this.container.getCurrentProgress() + "%" );
+		super.drawFG( offsetX, offsetY, mouseX, mouseY );
+	}
+
+	@Override
+	public void drawBG( int offsetX, int offsetY, int mouseX, int mouseY )
+	{
+		this.pb.xPosition = 148 + this.guiLeft;
+		this.pb.yPosition = 48 + this.guiTop;
+		super.drawBG( offsetX, offsetY, mouseX, mouseY );
+	}
+
+	@Override
 	protected String getBackground()
 	{
 		return "guis/mac.png";
-	}
-
-	public GuiMAC(InventoryPlayer inventoryPlayer, TileMolecularAssembler te)
-	{
-		super( new ContainerMAC( inventoryPlayer, te ) );
-		this.ySize = 197;
-		this.container = (ContainerMAC) this.inventorySlots;
 	}
 
 	@Override

@@ -18,6 +18,7 @@
 
 package appeng.client.render.blocks;
 
+
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.Minecraft;
@@ -34,23 +35,25 @@ import appeng.client.render.BaseBlockRender;
 import appeng.tile.AEBaseTile;
 import appeng.tile.storage.TileSkyChest;
 
+
 public class RenderBlockSkyChest extends BaseBlockRender
 {
 
 	final ModelChest model = new ModelChest();
 
-	public RenderBlockSkyChest() {
+	public RenderBlockSkyChest()
+	{
 		super( true, 80 );
 	}
 
 	@Override
-	public void renderInventory(AEBaseBlock blk, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj)
+	public void renderInventory( AEBaseBlock blk, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj )
 	{
-		GL11.glEnable( 32826 /* GL_RESCALE_NORMAL_EXT */);
+		GL11.glEnable( 32826 /* GL_RESCALE_NORMAL_EXT */ );
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
 
 		ResourceLocation loc;
-		if ( is.getItemDamage() == 1 )
+		if( is.getItemDamage() == 1 )
 			loc = new ResourceLocation( "appliedenergistics2", "textures/models/skyblockchest.png" );
 		else
 			loc = new ResourceLocation( "appliedenergistics2", "textures/models/skychest.png" );
@@ -62,37 +65,37 @@ public class RenderBlockSkyChest extends BaseBlockRender
 		GL11.glScalef( 1.0F, -1F, -1F );
 		GL11.glTranslatef( -0.0F, -1.0F, -1.0F );
 
-		this.model.chestLid.offsetY = -(0.9f / 16.0f);
-		this.model.chestLid.rotateAngleX = -((lidAngle * 3.141593F) / 2.0F);
+		this.model.chestLid.offsetY = -( 0.9f / 16.0f );
+		this.model.chestLid.rotateAngleX = -( ( lidAngle * 3.141593F ) / 2.0F );
 		this.model.renderAll();
 
-		GL11.glDisable( 32826 /* GL_RESCALE_NORMAL_EXT */);
+		GL11.glDisable( 32826 /* GL_RESCALE_NORMAL_EXT */ );
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
 	}
 
 	@Override
-	public boolean renderInWorld(AEBaseBlock blk, IBlockAccess world, int x, int y, int z, RenderBlocks renderer)
+	public boolean renderInWorld( AEBaseBlock blk, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
 	{
 		return true;
 	}
 
 	@Override
-	public void renderTile(AEBaseBlock block, AEBaseTile tile, Tessellator tess, double x, double y, double z, float partialTick, RenderBlocks renderer)
+	public void renderTile( AEBaseBlock block, AEBaseTile tile, Tessellator tess, double x, double y, double z, float partialTick, RenderBlocks renderer )
 	{
-		if ( !(tile instanceof TileSkyChest) )
+		if( !( tile instanceof TileSkyChest ) )
 			return;
 
 		TileSkyChest skyChest = (TileSkyChest) tile;
 
-		if ( !skyChest.hasWorldObj() )
+		if( !skyChest.hasWorldObj() )
 			return;
 
-		GL11.glEnable( 32826 /* GL_RESCALE_NORMAL_EXT */);
+		GL11.glEnable( 32826 /* GL_RESCALE_NORMAL_EXT */ );
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
 
 		ResourceLocation loc;
 
-		if ( tile.getWorldObj().getBlockMetadata( tile.xCoord, tile.yCoord, tile.zCoord ) == 1 )
+		if( tile.getWorldObj().getBlockMetadata( tile.xCoord, tile.yCoord, tile.zCoord ) == 1 )
 			loc = new ResourceLocation( "appliedenergistics2", "textures/models/skyblockchest.png" );
 		else
 			loc = new ResourceLocation( "appliedenergistics2", "textures/models/skychest.png" );
@@ -107,26 +110,26 @@ public class RenderBlockSkyChest extends BaseBlockRender
 		long now = System.currentTimeMillis();
 		long distance = now - skyChest.lastEvent;
 
-		if ( skyChest.playerOpen > 0 )
+		if( skyChest.playerOpen > 0 )
 			skyChest.lidAngle += distance * 0.0001;
 		else
 			skyChest.lidAngle -= distance * 0.0001;
 
-		if ( skyChest.lidAngle > 0.5f )
+		if( skyChest.lidAngle > 0.5f )
 			skyChest.lidAngle = 0.5f;
 
-		if ( skyChest.lidAngle < 0.0f )
+		if( skyChest.lidAngle < 0.0f )
 			skyChest.lidAngle = 0.0f;
 
 		float lidAngle = skyChest.lidAngle;
 		lidAngle = 1.0F - lidAngle;
 		lidAngle = 1.0F - lidAngle * lidAngle * lidAngle;
 
-		this.model.chestLid.offsetY = -(1.01f / 16.0f);
-		this.model.chestLid.rotateAngleX = -((lidAngle * 3.141593F) / 2.0F);
+		this.model.chestLid.offsetY = -( 1.01f / 16.0f );
+		this.model.chestLid.rotateAngleX = -( ( lidAngle * 3.141593F ) / 2.0F );
 		this.model.renderAll();
 
-		GL11.glDisable( 32826 /* GL_RESCALE_NORMAL_EXT */);
+		GL11.glDisable( 32826 /* GL_RESCALE_NORMAL_EXT */ );
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
 	}
 }

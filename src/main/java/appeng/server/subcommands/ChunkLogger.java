@@ -32,15 +32,16 @@ import appeng.core.AELog;
 import appeng.core.features.AEFeature;
 import appeng.server.ISubCommand;
 
+
 public class ChunkLogger implements ISubCommand
 {
 
 	boolean enabled = false;
 
 	@SubscribeEvent
-	public void ChunkLoad(ChunkEvent.Load load)
+	public void ChunkLoad( ChunkEvent.Load load )
 	{
-		if ( !load.world.isRemote )
+		if( !load.world.isRemote )
 		{
 			AELog.info( "Chunk Loaded:   " + load.getChunk().xPosition + ", " + load.getChunk().zPosition );
 			this.displayStack();
@@ -49,12 +50,12 @@ public class ChunkLogger implements ISubCommand
 
 	private void displayStack()
 	{
-		if ( AEConfig.instance.isFeatureEnabled( AEFeature.ChunkLoggerTrace ) )
+		if( AEConfig.instance.isFeatureEnabled( AEFeature.ChunkLoggerTrace ) )
 		{
 			boolean output = false;
-			for (StackTraceElement e : Thread.currentThread().getStackTrace())
+			for( StackTraceElement e : Thread.currentThread().getStackTrace() )
 			{
-				if ( output )
+				if( output )
 					AELog.info( "		" + e.getClassName() + '.' + e.getMethodName() + " (" + e.getLineNumber() + ')' );
 				else
 				{
@@ -65,9 +66,9 @@ public class ChunkLogger implements ISubCommand
 	}
 
 	@SubscribeEvent
-	public void ChunkLoad(ChunkEvent.Unload unload)
+	public void ChunkLoad( ChunkEvent.Unload unload )
 	{
-		if ( !unload.world.isRemote )
+		if( !unload.world.isRemote )
 		{
 			AELog.info( "Chunk Unloaded: " + unload.getChunk().xPosition + ", " + unload.getChunk().zPosition );
 			this.displayStack();
@@ -75,11 +76,17 @@ public class ChunkLogger implements ISubCommand
 	}
 
 	@Override
-	public void call(MinecraftServer srv, String[] data, ICommandSender sender)
+	public String getHelp( MinecraftServer srv )
+	{
+		return "commands.ae2.ChunkLogger";
+	}
+
+	@Override
+	public void call( MinecraftServer srv, String[] data, ICommandSender sender )
 	{
 		this.enabled = !this.enabled;
 
-		if ( this.enabled )
+		if( this.enabled )
 		{
 			MinecraftForge.EVENT_BUS.register( this );
 			sender.addChatMessage( new ChatComponentTranslation( "commands.ae2.ChunkLoggerOn" ) );
@@ -90,11 +97,4 @@ public class ChunkLogger implements ISubCommand
 			sender.addChatMessage( new ChatComponentTranslation( "commands.ae2.ChunkLoggerOff" ) );
 		}
 	}
-
-	@Override
-	public String getHelp(MinecraftServer srv)
-	{
-		return "commands.ae2.ChunkLogger";
-	}
-
 }

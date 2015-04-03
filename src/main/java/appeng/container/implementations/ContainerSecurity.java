@@ -39,6 +39,7 @@ import appeng.tile.inventory.IAEAppEngInventory;
 import appeng.tile.inventory.InvOperation;
 import appeng.tile.misc.TileSecurity;
 
+
 public class ContainerSecurity extends ContainerMEMonitorable implements IAEAppEngInventory
 {
 
@@ -50,8 +51,11 @@ public class ContainerSecurity extends ContainerMEMonitorable implements IAEAppE
 	final SlotOutput wirelessOut;
 
 	final TileSecurity securityBox;
+	@GuiSync( 0 )
+	public int security = 0;
 
-	public ContainerSecurity(InventoryPlayer ip, ITerminalHost monitorable) {
+	public ContainerSecurity( InventoryPlayer ip, ITerminalHost monitorable )
+	{
 		super( ip, monitorable, false );
 
 		this.securityBox = (TileSecurity) monitorable;
@@ -64,38 +68,23 @@ public class ContainerSecurity extends ContainerMEMonitorable implements IAEAppE
 		this.bindPlayerInventory( ip, 0, 0 );
 	}
 
-	@GuiSync(0)
-	public int security = 0;
-
-	@Override
-	public void onContainerClosed(EntityPlayer player)
-	{
-		super.onContainerClosed( player );
-
-		if ( this.wirelessIn.getHasStack() )
-			player.dropPlayerItemWithRandomChoice( this.wirelessIn.getStack(), false );
-
-		if ( this.wirelessOut.getHasStack() )
-			player.dropPlayerItemWithRandomChoice( this.wirelessOut.getStack(), false );
-	}
-
-	public void toggleSetting(String value, EntityPlayer player)
+	public void toggleSetting( String value, EntityPlayer player )
 	{
 		try
 		{
 			SecurityPermissions permission = SecurityPermissions.valueOf( value );
 
 			ItemStack a = this.configSlot.getStack();
-			if ( a != null && a.getItem() instanceof IBiometricCard )
+			if( a != null && a.getItem() instanceof IBiometricCard )
 			{
 				IBiometricCard bc = (IBiometricCard) a.getItem();
-				if ( bc.hasPermission( a, permission ) )
+				if( bc.hasPermission( a, permission ) )
 					bc.removePermission( a, permission );
 				else
 					bc.addPermission( a, permission );
 			}
 		}
-		catch (EnumConstantNotPresentException ex)
+		catch( EnumConstantNotPresentException ex )
 		{
 			// :(
 		}
@@ -109,11 +98,11 @@ public class ContainerSecurity extends ContainerMEMonitorable implements IAEAppE
 		this.security = 0;
 
 		ItemStack a = this.configSlot.getStack();
-		if ( a != null && a.getItem() instanceof IBiometricCard )
+		if( a != null && a.getItem() instanceof IBiometricCard )
 		{
 			IBiometricCard bc = (IBiometricCard) a.getItem();
 
-			for (SecurityPermissions sp : bc.getPermissions( a ))
+			for( SecurityPermissions sp : bc.getPermissions( a ) )
 				this.security |= ( 1 << sp.ordinal() );
 		}
 
@@ -123,29 +112,41 @@ public class ContainerSecurity extends ContainerMEMonitorable implements IAEAppE
 	}
 
 	@Override
+	public void onContainerClosed( EntityPlayer player )
+	{
+		super.onContainerClosed( player );
+
+		if( this.wirelessIn.getHasStack() )
+			player.dropPlayerItemWithRandomChoice( this.wirelessIn.getStack(), false );
+
+		if( this.wirelessOut.getHasStack() )
+			player.dropPlayerItemWithRandomChoice( this.wirelessOut.getStack(), false );
+	}
+
+	@Override
 	public void saveChanges()
 	{
 		// :P
 	}
 
 	@Override
-	public void onChangeInventory(IInventory inv, int slot, InvOperation mc, ItemStack removedStack, ItemStack newStack)
+	public void onChangeInventory( IInventory inv, int slot, InvOperation mc, ItemStack removedStack, ItemStack newStack )
 	{
-		if ( !this.wirelessOut.getHasStack() )
+		if( !this.wirelessOut.getHasStack() )
 		{
-			if ( this.wirelessIn.getHasStack() )
+			if( this.wirelessIn.getHasStack() )
 			{
 				ItemStack term = this.wirelessIn.getStack().copy();
 				INetworkEncodable networkEncodable = null;
 
-				if ( term.getItem() instanceof INetworkEncodable )
+				if( term.getItem() instanceof INetworkEncodable )
 					networkEncodable = (INetworkEncodable) term.getItem();
 
 				IWirelessTermHandler wTermHandler = AEApi.instance().registries().wireless().getWirelessTerminalHandler( term );
-				if ( wTermHandler != null )
+				if( wTermHandler != null )
 					networkEncodable = wTermHandler;
 
-				if ( networkEncodable != null )
+				if( networkEncodable != null )
 				{
 					networkEncodable.setEncryptionKey( term, String.valueOf( this.securityBox.securityKey ), "" );
 
@@ -153,14 +154,13 @@ public class ContainerSecurity extends ContainerMEMonitorable implements IAEAppE
 					this.wirelessOut.putStack( term );
 
 					// update the two slots in question...
-					for (Object crafter : this.crafters)
+					for( Object crafter : this.crafters )
 					{
 						ICrafting icrafting = (ICrafting) crafter;
 						icrafting.sendSlotContents( this, this.wirelessIn.slotNumber, this.wirelessIn.getStack() );
 						icrafting.sendSlotContents( this, this.wirelessOut.slotNumber, this.wirelessOut.getStack() );
 					}
 				}
-
 			}
 		}
 	}

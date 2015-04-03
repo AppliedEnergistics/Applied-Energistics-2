@@ -18,6 +18,7 @@
 
 package appeng.container.implementations;
 
+
 import net.minecraft.entity.player.InventoryPlayer;
 
 import appeng.api.config.CondenserOutput;
@@ -30,18 +31,26 @@ import appeng.container.slot.SlotRestrictedInput;
 import appeng.tile.misc.TileCondenser;
 import appeng.util.Platform;
 
+
 public class ContainerCondenser extends AEBaseContainer implements IProgressProvider
 {
 
 	final TileCondenser condenser;
+	@GuiSync( 0 )
+	public long requiredEnergy = 0;
+	@GuiSync( 1 )
+	public long storedPower = 0;
+	@GuiSync( 2 )
+	public CondenserOutput output = CondenserOutput.TRASH;
 
-	public ContainerCondenser(InventoryPlayer ip, TileCondenser condenser) {
+	public ContainerCondenser( InventoryPlayer ip, TileCondenser condenser )
+	{
 		super( ip, condenser, null );
 		this.condenser = condenser;
 
 		this.addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.TRASH, condenser, 0, 51, 52, ip ) );
 		this.addSlotToContainer( new SlotOutput( condenser, 1, 105, 52, -1 ) );
-		this.addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.STORAGE_COMPONENT, condenser.getInternalInventory(), 2, 101, 26, ip )).setStackLimit( 1 ) );
+		this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.STORAGE_COMPONENT, condenser.getInternalInventory(), 2, 101, 26, ip ) ).setStackLimit( 1 ) );
 
 		this.bindPlayerInventory( ip, 0, 197 - /* height of player inventory */82 );
 	}
@@ -49,7 +58,7 @@ public class ContainerCondenser extends AEBaseContainer implements IProgressProv
 	@Override
 	public void detectAndSendChanges()
 	{
-		if ( Platform.isServer() )
+		if( Platform.isServer() )
 		{
 			double maxStorage = this.condenser.getStorage();
 			double requiredEnergy = this.condenser.getRequiredPower();
@@ -62,15 +71,6 @@ public class ContainerCondenser extends AEBaseContainer implements IProgressProv
 		super.detectAndSendChanges();
 	}
 
-	@GuiSync(0)
-	public long requiredEnergy = 0;
-
-	@GuiSync(1)
-	public long storedPower = 0;
-
-	@GuiSync(2)
-	public CondenserOutput output = CondenserOutput.TRASH;
-
 	@Override
 	public int getCurrentProgress()
 	{
@@ -82,5 +82,4 @@ public class ContainerCondenser extends AEBaseContainer implements IProgressProv
 	{
 		return (int) this.requiredEnergy;
 	}
-
 }

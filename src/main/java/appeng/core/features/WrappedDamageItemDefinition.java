@@ -78,7 +78,7 @@ public final class WrappedDamageItemDefinition implements ITileDefinition
 	@Override
 	public boolean isSameAs( ItemStack comparableStack )
 	{
-		if ( comparableStack == null )
+		if( comparableStack == null )
 			return false;
 
 		return this.definition.isSameAs( comparableStack ) && comparableStack.getItemDamage() == this.damage;

@@ -45,14 +45,14 @@ public class OreHelper
 	/**
 	 * A local cache to speed up OreDictionary lookups.
 	 */
-	private final LoadingCache<String, List<ItemStack>> oreDictCache = CacheBuilder
-			.newBuilder().build( new CacheLoader<String, List<ItemStack>>(){
-				@Override
-				public List<ItemStack> load( String oreName )
-				{
-					return OreDictionary.getOres( oreName );
-				}
-			} );
+	private final LoadingCache<String, List<ItemStack>> oreDictCache = CacheBuilder.newBuilder().build( new CacheLoader<String, List<ItemStack>>()
+	{
+		@Override
+		public List<ItemStack> load( String oreName )
+		{
+			return OreDictionary.getOres( oreName );
+		}
+	} );
 
 	private final Map<ItemRef, OreReference> references = new HashMap<ItemRef, OreReference>();
 
@@ -60,13 +60,14 @@ public class OreHelper
 	 * Test if the passed {@link ItemStack} is an ore.
 	 *
 	 * @param ItemStack the itemstack to test
+	 *
 	 * @return true if an ore entry exists, false otherwise
 	 */
 	public OreReference isOre( ItemStack ItemStack )
 	{
 		ItemRef ir = new ItemRef( ItemStack );
 
-		if ( !this.references.containsKey( ir ) )
+		if( !this.references.containsKey( ir ) )
 		{
 			final OreReference ref = new OreReference();
 			final Collection<Integer> ores = ref.getOres();
@@ -74,17 +75,17 @@ public class OreHelper
 
 			Set<String> toAdd = new HashSet<String>();
 
-			for ( String ore : OreDictionary.getOreNames() )
+			for( String ore : OreDictionary.getOreNames() )
 			{
 				// skip ore if it is a match already or null.
-				if ( ore == null || toAdd.contains( ore ) )
+				if( ore == null || toAdd.contains( ore ) )
 				{
 					continue;
 				}
 
-				for ( ItemStack oreItem : this.oreDictCache.getUnchecked( ore ) )
+				for( ItemStack oreItem : this.oreDictCache.getUnchecked( ore ) )
 				{
-					if ( OreDictionary.itemMatches( oreItem, ItemStack, false ) )
+					if( OreDictionary.itemMatches( oreItem, ItemStack, false ) )
 					{
 						toAdd.add( ore );
 						break;
@@ -92,13 +93,13 @@ public class OreHelper
 				}
 			}
 
-			for ( String ore : toAdd )
+			for( String ore : toAdd )
 			{
 				set.add( ore );
 				ores.add( OreDictionary.getOreID( ore ) );
 			}
 
-			if ( !set.isEmpty() )
+			if( !set.isEmpty() )
 				this.references.put( ir, ref );
 			else
 				this.references.put( ir, null );
@@ -117,16 +118,16 @@ public class OreHelper
 
 	public boolean sameOre( OreReference a, OreReference b )
 	{
-		if ( a == null || b == null )
+		if( a == null || b == null )
 			return false;
 
-		if ( a == b )
+		if( a == b )
 			return true;
 
 		Collection<Integer> bOres = b.getOres();
-		for ( Integer ore : a.getOres() )
+		for( Integer ore : a.getOres() )
 		{
-			if ( bOres.contains( ore ) )
+			if( bOres.contains( ore ) )
 				return true;
 		}
 
@@ -136,14 +137,14 @@ public class OreHelper
 	public boolean sameOre( AEItemStack aeItemStack, ItemStack o )
 	{
 		OreReference a = aeItemStack.def.isOre;
-		if ( a == null )
+		if( a == null )
 			return false;
 
-		for ( String oreName : a.getEquivalents() )
+		for( String oreName : a.getEquivalents() )
 		{
-			for ( ItemStack oreItem : this.oreDictCache.getUnchecked( oreName ) )
+			for( ItemStack oreItem : this.oreDictCache.getUnchecked( oreName ) )
 			{
-				if ( OreDictionary.itemMatches( oreItem, o, false ) )
+				if( OreDictionary.itemMatches( oreItem, o, false ) )
 					return true;
 			}
 		}
@@ -159,31 +160,20 @@ public class OreHelper
 	private static class ItemRef
 	{
 
+		private final Item ref;
+		private final int damage;
+		private final int hash;
+
 		ItemRef( ItemStack stack )
 		{
 			this.ref = stack.getItem();
 
-			if ( stack.getItem().isDamageable() )
+			if( stack.getItem().isDamageable() )
 				this.damage = 0; // IGNORED
 			else
 				this.damage = stack.getItemDamage(); // might be important...
 
 			this.hash = this.ref.hashCode() ^ this.damage;
-		}
-
-		private final Item ref;
-		private final int damage;
-		private final int hash;
-
-		@Override
-		public boolean equals( Object obj )
-		{
-			if ( obj == null )
-				return false;
-			if ( this.getClass() != obj.getClass() )
-				return false;
-			ItemRef other = ( ItemRef ) obj;
-			return this.damage == other.damage && this.ref == other.ref;
 		}
 
 		@Override
@@ -193,10 +183,20 @@ public class OreHelper
 		}
 
 		@Override
+		public boolean equals( Object obj )
+		{
+			if( obj == null )
+				return false;
+			if( this.getClass() != obj.getClass() )
+				return false;
+			ItemRef other = (ItemRef) obj;
+			return this.damage == other.damage && this.ref == other.ref;
+		}
+
+		@Override
 		public String toString()
 		{
 			return "ItemRef [ref=" + this.ref.getUnlocalizedName() + ", damage=" + this.damage + ", hash=" + this.hash + ']';
 		}
-
 	}
 }

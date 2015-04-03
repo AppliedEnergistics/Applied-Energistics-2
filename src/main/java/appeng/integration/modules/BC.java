@@ -94,13 +94,13 @@ public final class BC extends BaseModule implements IBC
 	@Override
 	public boolean canAddItemsToPipe( TileEntity te, ItemStack is, ForgeDirection dir )
 	{
-		if ( is != null && te != null && te instanceof IInjectable )
+		if( is != null && te != null && te instanceof IInjectable )
 		{
 			IInjectable pt = (IInjectable) te;
-			if ( pt.canInjectItems( dir ) )
+			if( pt.canInjectItems( dir ) )
 			{
 				int amt = pt.injectItem( is, false, dir, null );
-				if ( amt == is.stackSize )
+				if( amt == is.stackSize )
 				{
 					return true;
 				}
@@ -113,13 +113,13 @@ public final class BC extends BaseModule implements IBC
 	@Override
 	public boolean addItemsToPipe( TileEntity te, ItemStack is, ForgeDirection dir )
 	{
-		if ( is != null && te != null && te instanceof IInjectable )
+		if( is != null && te != null && te instanceof IInjectable )
 		{
 			IInjectable pt = (IInjectable) te;
-			if ( pt.canInjectItems( dir ) )
+			if( pt.canInjectItems( dir ) )
 			{
 				int amt = pt.injectItem( is, false, dir, null );
-				if ( amt == is.stackSize )
+				if( amt == is.stackSize )
 				{
 					pt.injectItem( is, true, dir, null );
 					return true;
@@ -133,7 +133,7 @@ public final class BC extends BaseModule implements IBC
 	@Override
 	public boolean isFacade( ItemStack is )
 	{
-		if ( is == null )
+		if( is == null )
 			return false;
 
 		return is.getItem() instanceof IFacadeItem;
@@ -142,7 +142,7 @@ public final class BC extends BaseModule implements IBC
 	@Override
 	public boolean isPipe( TileEntity te, ForgeDirection dir )
 	{
-		if ( te instanceof IPipeTile )
+		if( te instanceof IPipeTile )
 		{
 			final IPipeTile pipeTile = (IPipeTile) te;
 			return !pipeTile.hasPipePluggable( dir.getOpposite() );
@@ -154,7 +154,7 @@ public final class BC extends BaseModule implements IBC
 	@Override
 	public void addFacade( ItemStack item )
 	{
-		if ( item != null )
+		if( item != null )
 			FMLInterModComms.sendMessage( "BuildCraft|Transport", "add-facade", item );
 	}
 
@@ -214,7 +214,7 @@ public final class BC extends BaseModule implements IBC
 
 			return new FacadePart( facade, side );
 		}
-		catch ( Throwable ignored )
+		catch( Throwable ignored )
 		{
 
 		}
@@ -233,14 +233,14 @@ public final class BC extends BaseModule implements IBC
 	{
 		final Item maybeFacadeItem = facade.getItem();
 
-		if ( maybeFacadeItem instanceof buildcraft.api.facades.IFacadeItem )
+		if( maybeFacadeItem instanceof buildcraft.api.facades.IFacadeItem )
 		{
 			final buildcraft.api.facades.IFacadeItem facadeItem = (buildcraft.api.facades.IFacadeItem) maybeFacadeItem;
 
 			final Block[] blocks = facadeItem.getBlocksForFacade( facade );
 			final int[] metas = facadeItem.getMetaValuesForFacade( facade );
 
-			if ( blocks.length > 0 && metas.length > 0 )
+			if( blocks.length > 0 && metas.length > 0 )
 			{
 				return new ItemStack( blocks[0], 1, metas[0] );
 			}
@@ -256,19 +256,11 @@ public final class BC extends BaseModule implements IBC
 		{
 			return BuildCraftTransport.instance.pipeIconProvider.getIcon( PipeIconProvider.TYPE.PipeStructureCobblestone.ordinal() ); // Structure
 		}
-		catch ( Throwable ignored )
+		catch( Throwable ignored )
 		{
 		}
 		return null;
 		// Pipe
-	}
-
-	private void addFacadeStack( IBlockDefinition definition )
-	{
-		for ( ItemStack facadeStack : definition.maybeStack( 1 ).asSet() )
-		{
-			this.addFacade( facadeStack );
-		}
 	}
 
 	@Override
@@ -290,17 +282,25 @@ public final class BC extends BaseModule implements IBC
 		{
 			this.initBuilderSupport();
 		}
-		catch ( Throwable builderSupport )
+		catch( Throwable builderSupport )
 		{
 			// not supported?
 		}
 
-		for ( Block skyStoneBlock : blocks.skyStone().maybeBlock().asSet() )
+		for( Block skyStoneBlock : blocks.skyStone().maybeBlock().asSet() )
 		{
 			this.addFacade( new ItemStack( skyStoneBlock, 1, 0 ) );
 			this.addFacade( new ItemStack( skyStoneBlock, 1, 1 ) );
 			this.addFacade( new ItemStack( skyStoneBlock, 1, 2 ) );
 			this.addFacade( new ItemStack( skyStoneBlock, 1, 3 ) );
+		}
+	}
+
+	private void addFacadeStack( IBlockDefinition definition )
+	{
+		for( ItemStack facadeStack : definition.maybeStack( 1 ).asSet() )
+		{
+			this.addFacade( facadeStack );
 		}
 	}
 
@@ -311,7 +311,7 @@ public final class BC extends BaseModule implements IBC
 		final IBlocks blocks = AEApi.instance().definitions().blocks();
 		final IBlockDefinition maybeMultiPart = blocks.multiPart();
 
-		for ( Method blockDefinition : blocks.getClass().getMethods() )
+		for( Method blockDefinition : blocks.getClass().getMethods() )
 		{
 			AEItemDefinition def;
 			try
@@ -319,20 +319,20 @@ public final class BC extends BaseModule implements IBC
 				def = (AEItemDefinition) blockDefinition.invoke( blocks );
 
 				Block myBlock = def.block();
-				if ( myBlock instanceof IOrientableBlock && ( (IOrientableBlock) myBlock ).usesMetadata() && def.entity() == null )
+				if( myBlock instanceof IOrientableBlock && ( (IOrientableBlock) myBlock ).usesMetadata() && def.entity() == null )
 				{
 					schematicRegistry.registerSchematicBlock( myBlock, AERotatableBlockSchematic.class );
 				}
-				else if ( maybeMultiPart.isSameAs( new ItemStack( myBlock ) ) )
+				else if( maybeMultiPart.isSameAs( new ItemStack( myBlock ) ) )
 				{
 					schematicRegistry.registerSchematicBlock( myBlock, AECableSchematicTile.class );
 				}
-				else if ( def.entity() != null )
+				else if( def.entity() != null )
 				{
 					schematicRegistry.registerSchematicBlock( myBlock, AEGenericSchematicTile.class );
 				}
 			}
-			catch ( Throwable t )
+			catch( Throwable t )
 			{
 				// :P
 			}

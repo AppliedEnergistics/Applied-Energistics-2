@@ -53,8 +53,8 @@ public class PartCraftingTerminal extends PartTerminal
 	{
 		super.getDrops( drops, wrenched );
 
-		for ( ItemStack is : this.craftingGrid )
-			if ( is != null )
+		for( ItemStack is : this.craftingGrid )
+			if( is != null )
 				drops.add( is );
 	}
 
@@ -78,14 +78,14 @@ public class PartCraftingTerminal extends PartTerminal
 		int x = (int) p.posX;
 		int y = (int) p.posY;
 		int z = (int) p.posZ;
-		if ( this.getHost().getTile() != null )
+		if( this.getHost().getTile() != null )
 		{
 			x = this.tile.xCoord;
 			y = this.tile.yCoord;
 			z = this.tile.zCoord;
 		}
 
-		if ( GuiBridge.GUI_CRAFTING_TERMINAL.hasPermissions( this.getHost().getTile(), x, y, z, this.side, p ) )
+		if( GuiBridge.GUI_CRAFTING_TERMINAL.hasPermissions( this.getHost().getTile(), x, y, z, this.side, p ) )
 			return GuiBridge.GUI_CRAFTING_TERMINAL;
 		return GuiBridge.GUI_ME;
 	}
@@ -99,7 +99,7 @@ public class PartCraftingTerminal extends PartTerminal
 	@Override
 	public IInventory getInventoryByName( String name )
 	{
-		if ( name.equals( "crafting" ) )
+		if( name.equals( "crafting" ) )
 			return this.craftingGrid;
 		return super.getInventoryByName( name );
 	}

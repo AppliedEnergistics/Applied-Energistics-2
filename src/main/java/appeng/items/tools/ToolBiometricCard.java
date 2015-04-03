@@ -50,14 +50,14 @@ public class ToolBiometricCard extends AEBaseItem implements IBiometricCard
 		this.setFeature( EnumSet.of( AEFeature.Security ) );
 		this.setMaxStackSize( 1 );
 
-		if ( Platform.isClient() )
+		if( Platform.isClient() )
 			MinecraftForgeClient.registerItemRenderer( this, new ToolBiometricCardRender() );
 	}
 
 	@Override
 	public ItemStack onItemRightClick( ItemStack is, World w, EntityPlayer p )
 	{
-		if ( p.isSneaking() )
+		if( p.isSneaking() )
 		{
 			this.encode( is, p );
 			p.swingItem();
@@ -70,9 +70,9 @@ public class ToolBiometricCard extends AEBaseItem implements IBiometricCard
 	@Override
 	public boolean itemInteractionForEntity( ItemStack is, EntityPlayer par2EntityPlayer, EntityLivingBase target )
 	{
-		if ( target instanceof EntityPlayer && !par2EntityPlayer.isSneaking() )
+		if( target instanceof EntityPlayer && !par2EntityPlayer.isSneaking() )
 		{
-			if ( par2EntityPlayer.capabilities.isCreativeMode )
+			if( par2EntityPlayer.capabilities.isCreativeMode )
 				is = par2EntityPlayer.getCurrentEquippedItem();
 			this.encode( is, (EntityPlayer) target );
 			par2EntityPlayer.swingItem();
@@ -92,7 +92,7 @@ public class ToolBiometricCard extends AEBaseItem implements IBiometricCard
 	{
 		GameProfile username = this.getProfile( is );
 
-		if ( username != null && username.equals( p.getGameProfile() ) )
+		if( username != null && username.equals( p.getGameProfile() ) )
 			this.setProfile( is, null );
 		else
 			this.setProfile( is, p.getGameProfile() );
@@ -103,7 +103,7 @@ public class ToolBiometricCard extends AEBaseItem implements IBiometricCard
 	{
 		NBTTagCompound tag = Platform.openNbtData( itemStack );
 
-		if ( profile != null )
+		if( profile != null )
 		{
 			NBTTagCompound pNBT = new NBTTagCompound();
 			NBTUtil.func_152460_a( pNBT, profile );
@@ -117,7 +117,7 @@ public class ToolBiometricCard extends AEBaseItem implements IBiometricCard
 	public GameProfile getProfile( ItemStack is )
 	{
 		NBTTagCompound tag = Platform.openNbtData( is );
-		if ( tag.hasKey( "profile" ) )
+		if( tag.hasKey( "profile" ) )
 			return NBTUtil.func_152459_a( tag.getCompoundTag( "profile" ) );
 		return null;
 	}
@@ -128,9 +128,9 @@ public class ToolBiometricCard extends AEBaseItem implements IBiometricCard
 		NBTTagCompound tag = Platform.openNbtData( is );
 		EnumSet<SecurityPermissions> result = EnumSet.noneOf( SecurityPermissions.class );
 
-		for ( SecurityPermissions sp : SecurityPermissions.values() )
+		for( SecurityPermissions sp : SecurityPermissions.values() )
 		{
-			if ( tag.getBoolean( sp.name() ) )
+			if( tag.getBoolean( sp.name() ) )
 				result.add( sp );
 		}
 
@@ -148,7 +148,7 @@ public class ToolBiometricCard extends AEBaseItem implements IBiometricCard
 	public void removePermission( ItemStack itemStack, SecurityPermissions permission )
 	{
 		NBTTagCompound tag = Platform.openNbtData( itemStack );
-		if ( tag.hasKey( permission.name() ) )
+		if( tag.hasKey( permission.name() ) )
 			tag.removeTag( permission.name() );
 	}
 
@@ -169,15 +169,15 @@ public class ToolBiometricCard extends AEBaseItem implements IBiometricCard
 	public void addCheckedInformation( ItemStack stack, EntityPlayer player, List<String> lines, boolean displayAdditionalInformation )
 	{
 		EnumSet<SecurityPermissions> perms = this.getPermissions( stack );
-		if ( perms.isEmpty() )
+		if( perms.isEmpty() )
 			lines.add( GuiText.NoPermissions.getLocal() );
 		else
 		{
 			String msg = null;
 
-			for ( SecurityPermissions sp : perms )
+			for( SecurityPermissions sp : perms )
 			{
-				if ( msg == null )
+				if( msg == null )
 					msg = Platform.gui_localize( sp.getUnlocalizedName() );
 				else
 					msg = msg + ", " + Platform.gui_localize( sp.getUnlocalizedName() );

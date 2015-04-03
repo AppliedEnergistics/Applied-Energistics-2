@@ -18,6 +18,7 @@
 
 package appeng.container.slot;
 
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Items;
@@ -44,67 +45,17 @@ import appeng.items.misc.ItemEncodedPattern;
 import appeng.recipes.handlers.Inscribe;
 import appeng.util.Platform;
 
+
 public class SlotRestrictedInput extends AppEngSlot
 {
 
-	public enum PlacableItemType
-	{
-		STORAGE_CELLS(15), ORE( 16 + 15), STORAGE_COMPONENT(3 * 16 + 15),
-
-		ENCODABLE_ITEM(4 * 16 + 15), TRASH(5 * 16 + 15), VALID_ENCODED_PATTERN_W_OUTPUT(7 * 16 + 15), ENCODED_PATTERN_W_OUTPUT(7 * 16 + 15),
-
-		ENCODED_CRAFTING_PATTERN(7 * 16 + 15), ENCODED_PATTERN(7 * 16 + 15), PATTERN(8 * 16 + 15), BLANK_PATTERN(8 * 16 + 15), POWERED_TOOL(9 * 16 + 15),
-
-		RANGE_BOOSTER(6 * 16 + 15), QE_SINGULARITY(10 * 16 + 15), SPATIAL_STORAGE_CELLS(11 * 16 + 15),
-
-		FUEL(12 * 16 + 15), UPGRADES(13 * 16 + 15), WORKBENCH_CELL(15), BIOMETRIC_CARD(14 * 16 + 15), VIEW_CELL(4 * 16 + 14),
-
-		INSCRIBER_PLATE(2 * 16 + 14), INSCRIBER_INPUT(3 * 16 + 14), METAL_INGOTS(3 * 16 + 14);
-
-		public final int IIcon;
-
-		PlacableItemType( int o ) {
-			this.IIcon = o;
-		}
-	}
-
-	@Override
-	public int getSlotStackLimit()
-	{
-		if ( this.stackLimit != -1 )
-			return this.stackLimit;
-		return super.getSlotStackLimit();
-	}
-
-	public boolean isValid(ItemStack is, World theWorld)
-	{
-		if ( this.which == PlacableItemType.VALID_ENCODED_PATTERN_W_OUTPUT )
-		{
-			ICraftingPatternDetails ap = is.getItem() instanceof ICraftingPatternItem ? ((ICraftingPatternItem) is.getItem()).getPatternForItem( is, theWorld )
-					: null;
-			return ap != null;
-		}
-		return true;
-	}
-
 	public final PlacableItemType which;
+	private final InventoryPlayer p;
 	public boolean allowEdit = true;
 	public int stackLimit = -1;
-	private final InventoryPlayer p;
 
-	@Override
-	public boolean canTakeStack(EntityPlayer par1EntityPlayer)
+	public SlotRestrictedInput( PlacableItemType valid, IInventory i, int slotIndex, int x, int y, InventoryPlayer p )
 	{
-		return this.allowEdit;
-	}
-
-	public Slot setStackLimit(int i)
-	{
-		this.stackLimit = i;
-		return this;
-	}
-
-	public SlotRestrictedInput(PlacableItemType valid, IInventory i, int slotIndex, int x, int y, InventoryPlayer p) {
 		super( i, slotIndex, x, y );
 		this.which = valid;
 		this.IIcon = valid.IIcon;
@@ -112,58 +63,66 @@ public class SlotRestrictedInput extends AppEngSlot
 	}
 
 	@Override
-	public ItemStack getDisplayStack()
+	public int getSlotStackLimit()
 	{
-		if ( Platform.isClient() && (this.which == PlacableItemType.ENCODED_PATTERN) )
+		if( this.stackLimit != -1 )
+			return this.stackLimit;
+		return super.getSlotStackLimit();
+	}
+
+	public boolean isValid( ItemStack is, World theWorld )
+	{
+		if( this.which == PlacableItemType.VALID_ENCODED_PATTERN_W_OUTPUT )
 		{
-			ItemStack is = super.getStack();
-			if ( is != null && is.getItem() instanceof ItemEncodedPattern )
-			{
-				ItemEncodedPattern iep = (ItemEncodedPattern) is.getItem();
-				ItemStack out = iep.getOutput( is );
-				if ( out != null )
-					return out;
-			}
+			ICraftingPatternDetails ap = is.getItem() instanceof ICraftingPatternItem ? ( (ICraftingPatternItem) is.getItem() ).getPatternForItem( is, theWorld ) : null;
+			return ap != null;
 		}
-		return super.getStack();
+		return true;
+	}
+
+	public Slot setStackLimit( int i )
+	{
+		this.stackLimit = i;
+		return this;
 	}
 
 	@Override
-	public boolean isItemValid(ItemStack i)
+	public boolean isItemValid( ItemStack i )
 	{
-		if ( !this.myContainer.isValidForSlot( this, i ) )
+		if( !this.myContainer.isValidForSlot( this, i ) )
 			return false;
 
-		if ( i == null )
+		if( i == null )
 			return false;
-		if ( i.getItem() == null )
-			return false;
-
-		if ( !this.inventory.isItemValidForSlot( this.getSlotIndex(), i ) )
+		if( i.getItem() == null )
 			return false;
 
-		if ( !this.allowEdit )
+		if( !this.inventory.isItemValidForSlot( this.getSlotIndex(), i ) )
+			return false;
+
+		if( !this.allowEdit )
 			return false;
 
 		final IDefinitions definitions = AEApi.instance().definitions();
 		final IMaterials materials = definitions.materials();
 		final IItems items = definitions.items();
 
-		switch (this.which)
+		switch( this.which )
 		{
 			case ENCODED_CRAFTING_PATTERN:
-				if ( i.getItem() instanceof ICraftingPatternItem )
+				if( i.getItem() instanceof ICraftingPatternItem )
 				{
 					ICraftingPatternItem b = (ICraftingPatternItem) i.getItem();
 					ICraftingPatternDetails de = b.getPatternForItem( i, this.p.player.worldObj );
-					if ( de != null )
+					if( de != null )
 						return de.isCraftable();
 				}
 				return false;
 			case VALID_ENCODED_PATTERN_W_OUTPUT:
 			case ENCODED_PATTERN_W_OUTPUT:
-			case ENCODED_PATTERN: {
-				if ( i.getItem() instanceof ICraftingPatternItem )
+			case ENCODED_PATTERN:
+			{
+				if( i.getItem() instanceof ICraftingPatternItem )
 					return true;
 				// ICraftingPatternDetails pattern = i.getItem() instanceof ICraftingPatternItem ? ((ICraftingPatternItem)
 				// i.getItem()).getPatternForItem( i ) : null;
@@ -174,19 +133,19 @@ public class SlotRestrictedInput extends AppEngSlot
 
 			case PATTERN:
 
-				if ( i.getItem() instanceof ICraftingPatternItem )
+				if( i.getItem() instanceof ICraftingPatternItem )
 					return true;
 
 				return materials.blankPattern().isSameAs( i );
 
 			case INSCRIBER_PLATE:
-				if ( materials.namePress().isSameAs( i ) )
+				if( materials.namePress().isSameAs( i ) )
 				{
 					return true;
 				}
 
-				for (ItemStack is : Inscribe.PLATES )
-					if ( Platform.isSameItemPrecise( is, i ) )
+				for( ItemStack is : Inscribe.PLATES )
+					if( Platform.isSameItemPrecise( is, i ) )
 						return true;
 
 				return false;
@@ -217,15 +176,15 @@ public class SlotRestrictedInput extends AppEngSlot
 				return materials.wirelessBooster().isSameAs( i );
 
 			case SPATIAL_STORAGE_CELLS:
-				return i.getItem() instanceof ISpatialStorageCell && ((ISpatialStorageCell) i.getItem()).isSpatialStorage( i );
+				return i.getItem() instanceof ISpatialStorageCell && ( (ISpatialStorageCell) i.getItem() ).isSpatialStorage( i );
 			case STORAGE_CELLS:
 				return AEApi.instance().registries().cell().isCellHandled( i );
 			case WORKBENCH_CELL:
-				return i.getItem() instanceof ICellWorkbenchItem && ((ICellWorkbenchItem) i.getItem()).isEditable( i );
+				return i.getItem() instanceof ICellWorkbenchItem && ( (ICellWorkbenchItem) i.getItem() ).isEditable( i );
 			case STORAGE_COMPONENT:
-				return i.getItem() instanceof IStorageComponent && ((IStorageComponent) i.getItem()).isStorageComponent( i );
+				return i.getItem() instanceof IStorageComponent && ( (IStorageComponent) i.getItem() ).isStorageComponent( i );
 			case TRASH:
-				if ( AEApi.instance().registries().cell().isCellHandled( i ) )
+				if( AEApi.instance().registries().cell().isCellHandled( i ) )
 					return false;
 
 				return !( i.getItem() instanceof IStorageComponent && ( (IStorageComponent) i.getItem() ).isStorageComponent( i ) );
@@ -234,7 +193,7 @@ public class SlotRestrictedInput extends AppEngSlot
 			case BIOMETRIC_CARD:
 				return i.getItem() instanceof IBiometricCard;
 			case UPGRADES:
-				return i.getItem() instanceof IUpgradeModule && ((IUpgradeModule) i.getItem()).getType( i ) != null;
+				return i.getItem() instanceof IUpgradeModule && ( (IUpgradeModule) i.getItem() ).getType( i ) != null;
 			default:
 				break;
 		}
@@ -242,20 +201,65 @@ public class SlotRestrictedInput extends AppEngSlot
 		return false;
 	}
 
-	static public boolean isMetalIngot(ItemStack i)
+	@Override
+	public boolean canTakeStack( EntityPlayer par1EntityPlayer )
 	{
-		if ( Platform.isSameItemPrecise( i, new ItemStack( Items.iron_ingot ) ) )
+		return this.allowEdit;
+	}
+
+	@Override
+	public ItemStack getDisplayStack()
+	{
+		if( Platform.isClient() && ( this.which == PlacableItemType.ENCODED_PATTERN ) )
+		{
+			ItemStack is = super.getStack();
+			if( is != null && is.getItem() instanceof ItemEncodedPattern )
+			{
+				ItemEncodedPattern iep = (ItemEncodedPattern) is.getItem();
+				ItemStack out = iep.getOutput( is );
+				if( out != null )
+					return out;
+			}
+		}
+		return super.getStack();
+	}
+
+	static public boolean isMetalIngot( ItemStack i )
+	{
+		if( Platform.isSameItemPrecise( i, new ItemStack( Items.iron_ingot ) ) )
 			return true;
 
-		for (String name : new String[] { "Copper", "Tin", "Obsidian", "Iron", "Lead", "Bronze", "Brass", "Nickel", "Aluminium" })
+		for( String name : new String[] { "Copper", "Tin", "Obsidian", "Iron", "Lead", "Bronze", "Brass", "Nickel", "Aluminium" } )
 		{
-			for (ItemStack ingot : OreDictionary.getOres( "ingot" + name ))
+			for( ItemStack ingot : OreDictionary.getOres( "ingot" + name ) )
 			{
-				if ( Platform.isSameItemPrecise( i, ingot ) )
+				if( Platform.isSameItemPrecise( i, ingot ) )
 					return true;
 			}
 		}
 
 		return false;
+	}
+
+	public enum PlacableItemType
+	{
+		STORAGE_CELLS( 15 ), ORE( 16 + 15 ), STORAGE_COMPONENT( 3 * 16 + 15 ),
+
+		ENCODABLE_ITEM( 4 * 16 + 15 ), TRASH( 5 * 16 + 15 ), VALID_ENCODED_PATTERN_W_OUTPUT( 7 * 16 + 15 ), ENCODED_PATTERN_W_OUTPUT( 7 * 16 + 15 ),
+
+		ENCODED_CRAFTING_PATTERN( 7 * 16 + 15 ), ENCODED_PATTERN( 7 * 16 + 15 ), PATTERN( 8 * 16 + 15 ), BLANK_PATTERN( 8 * 16 + 15 ), POWERED_TOOL( 9 * 16 + 15 ),
+
+		RANGE_BOOSTER( 6 * 16 + 15 ), QE_SINGULARITY( 10 * 16 + 15 ), SPATIAL_STORAGE_CELLS( 11 * 16 + 15 ),
+
+		FUEL( 12 * 16 + 15 ), UPGRADES( 13 * 16 + 15 ), WORKBENCH_CELL( 15 ), BIOMETRIC_CARD( 14 * 16 + 15 ), VIEW_CELL( 4 * 16 + 14 ),
+
+		INSCRIBER_PLATE( 2 * 16 + 14 ), INSCRIBER_INPUT( 3 * 16 + 14 ), METAL_INGOTS( 3 * 16 + 14 );
+
+		public final int IIcon;
+
+		PlacableItemType( int o )
+		{
+			this.IIcon = o;
+		}
 	}
 }

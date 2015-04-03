@@ -34,30 +34,31 @@ import appeng.container.guisync.GuiSync;
 import appeng.helpers.IPriorityHost;
 import appeng.util.Platform;
 
+
 public class ContainerPriority extends AEBaseContainer
 {
 
 	final IPriorityHost priHost;
 
-	@SideOnly(Side.CLIENT)
+	@SideOnly( Side.CLIENT )
 	public GuiTextField textField;
+	@GuiSync( 2 )
+	public long PriorityValue = -1;
 
-	@SideOnly(Side.CLIENT)
-	public void setTextField(GuiTextField level)
+	public ContainerPriority( InventoryPlayer ip, IPriorityHost te )
+	{
+		super( ip, (TileEntity) ( te instanceof TileEntity ? te : null ), (IPart) ( te instanceof IPart ? te : null ) );
+		this.priHost = te;
+	}
+
+	@SideOnly( Side.CLIENT )
+	public void setTextField( GuiTextField level )
 	{
 		this.textField = level;
 		this.textField.setText( String.valueOf( this.PriorityValue ) );
 	}
 
-	public ContainerPriority(InventoryPlayer ip, IPriorityHost te) {
-		super( ip, (TileEntity) (te instanceof TileEntity ? te : null), (IPart) (te instanceof IPart ? te : null) );
-		this.priHost = te;
-	}
-
-	@GuiSync(2)
-	public long PriorityValue = -1;
-
-	public void setPriority(int newValue, EntityPlayer player)
+	public void setPriority( int newValue, EntityPlayer player )
 	{
 		this.priHost.setPriority( newValue );
 		this.PriorityValue = newValue;
@@ -69,18 +70,18 @@ public class ContainerPriority extends AEBaseContainer
 		super.detectAndSendChanges();
 		this.verifyPermissions( SecurityPermissions.BUILD, false );
 
-		if ( Platform.isServer() )
+		if( Platform.isServer() )
 		{
 			this.PriorityValue = this.priHost.getPriority();
 		}
 	}
 
 	@Override
-	public void onUpdate(String field, Object oldValue, Object newValue)
+	public void onUpdate( String field, Object oldValue, Object newValue )
 	{
-		if ( field.equals( "PriorityValue" ) )
+		if( field.equals( "PriorityValue" ) )
 		{
-			if ( this.textField != null )
+			if( this.textField != null )
 				this.textField.setText( String.valueOf( this.PriorityValue ) );
 		}
 

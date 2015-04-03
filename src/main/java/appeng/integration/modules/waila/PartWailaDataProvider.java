@@ -93,11 +93,11 @@ public final class PartWailaDataProvider implements IWailaDataProvider
 
 		final Optional<IPart> maybePart = this.accessor.getMaybePart( te, mop );
 
-		if ( maybePart.isPresent() )
+		if( maybePart.isPresent() )
 		{
 			final IPart part = maybePart.get();
 
-			for ( IPartWailaDataProvider provider : this.providers )
+			for( IPartWailaDataProvider provider : this.providers )
 			{
 				provider.getWailaHead( part, currentToolTip, accessor, config );
 			}
@@ -114,11 +114,11 @@ public final class PartWailaDataProvider implements IWailaDataProvider
 
 		final Optional<IPart> maybePart = this.accessor.getMaybePart( te, mop );
 
-		if ( maybePart.isPresent() )
+		if( maybePart.isPresent() )
 		{
 			final IPart part = maybePart.get();
 
-			for ( IPartWailaDataProvider provider : this.providers )
+			for( IPartWailaDataProvider provider : this.providers )
 			{
 				provider.getWailaBody( part, currentToolTip, accessor, config );
 			}
@@ -135,11 +135,11 @@ public final class PartWailaDataProvider implements IWailaDataProvider
 
 		final Optional<IPart> maybePart = this.accessor.getMaybePart( te, mop );
 
-		if ( maybePart.isPresent() )
+		if( maybePart.isPresent() )
 		{
 			final IPart part = maybePart.get();
 
-			for ( IPartWailaDataProvider provider : this.providers )
+			for( IPartWailaDataProvider provider : this.providers )
 			{
 				provider.getWailaTail( part, currentToolTip, accessor, config );
 			}
@@ -153,15 +153,15 @@ public final class PartWailaDataProvider implements IWailaDataProvider
 	{
 		final MovingObjectPosition mop = this.tracer.retraceBlock( world, player, x, y, z );
 
-		if ( mop != null )
+		if( mop != null )
 		{
 			final Optional<IPart> maybePart = this.accessor.getMaybePart( te, mop );
 
-			if ( maybePart.isPresent() )
+			if( maybePart.isPresent() )
 			{
 				final IPart part = maybePart.get();
 
-				for ( IPartWailaDataProvider provider : this.providers )
+				for( IPartWailaDataProvider provider : this.providers )
 				{
 					provider.getNBTData( player, part, te, tag, world, x, y, z );
 				}

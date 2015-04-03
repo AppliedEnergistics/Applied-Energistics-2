@@ -55,6 +55,13 @@ public interface IGrinderEntry
 	ItemStack getOutput();
 
 	/**
+	 * allows you to change the output.
+	 *
+	 * @param output output item
+	 */
+	void setOutput( ItemStack output );
+
+	/**
 	 * gets the current output
 	 *
 	 * @return output that the grinder will produce
@@ -67,13 +74,6 @@ public interface IGrinderEntry
 	 * @return output that the grinder will produce
 	 */
 	ItemStack getSecondOptionalOutput();
-
-	/**
-	 * allows you to change the output.
-	 *
-	 * @param output output item
-	 */
-	void setOutput( ItemStack output );
 
 	/**
 	 * stack, and 0.0-1.0 chance that it will be generated.

@@ -18,6 +18,7 @@
 
 package appeng.core.sync.packets;
 
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -42,36 +43,35 @@ import appeng.client.gui.implementations.GuiInterfaceTerminal;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
 
+
 public class PacketCompressedNBT extends AppEngPacket
 {
 
+	// input.
+	final NBTTagCompound in;
 	// output...
 	final private ByteBuf data;
 	final private GZIPOutputStream compressFrame;
-
 	int writtenBytes = 0;
-
 	boolean empty = true;
 
-	// input.
-	final NBTTagCompound in;
-
 	// automatic.
-	public PacketCompressedNBT(final ByteBuf stream) throws IOException {
+	public PacketCompressedNBT( final ByteBuf stream ) throws IOException
+	{
 		this.data = null;
 		this.compressFrame = null;
 
-		GZIPInputStream gzReader = new GZIPInputStream( new InputStream() {
+		GZIPInputStream gzReader = new GZIPInputStream( new InputStream()
+		{
 
 			@Override
 			public int read() throws IOException
 			{
-				if ( stream.readableBytes() <= 0 )
+				if( stream.readableBytes() <= 0 )
 					return -1;
 
 				return stream.readByte() & 0xff;
 			}
-
 		} );
 
 		DataInputStream inStream = new DataInputStream( gzReader );
@@ -79,33 +79,23 @@ public class PacketCompressedNBT extends AppEngPacket
 		inStream.close();
 	}
 
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void clientPacketData(INetworkInfo network, AppEngPacket packet, EntityPlayer player)
-	{
-		GuiScreen gs = Minecraft.getMinecraft().currentScreen;
-
-		if ( gs instanceof GuiInterfaceTerminal )
-			((GuiInterfaceTerminal) gs).postUpdate( this.in );
-
-	}
-
 	// api
-	public PacketCompressedNBT(NBTTagCompound din) throws IOException {
+	public PacketCompressedNBT( NBTTagCompound din ) throws IOException
+	{
 
 		this.data = Unpooled.buffer( 2048 );
 		this.data.writeInt( this.getPacketID() );
 
 		this.in = din;
 
-		this.compressFrame = new GZIPOutputStream( new OutputStream() {
+		this.compressFrame = new GZIPOutputStream( new OutputStream()
+		{
 
 			@Override
-			public void write(int value) throws IOException
+			public void write( int value ) throws IOException
 			{
 				PacketCompressedNBT.this.data.writeByte( value );
 			}
-
 		} );
 
 		CompressedStreamTools.write( din, new DataOutputStream( this.compressFrame ) );
@@ -114,4 +104,13 @@ public class PacketCompressedNBT extends AppEngPacket
 		this.configureWrite( this.data );
 	}
 
+	@Override
+	@SideOnly( Side.CLIENT )
+	public void clientPacketData( INetworkInfo network, AppEngPacket packet, EntityPlayer player )
+	{
+		GuiScreen gs = Minecraft.getMinecraft().currentScreen;
+
+		if( gs instanceof GuiInterfaceTerminal )
+			( (GuiInterfaceTerminal) gs ).postUpdate( this.in );
+	}
 }

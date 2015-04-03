@@ -59,7 +59,7 @@ public final class ConfigManager implements IConfigManager
 	{
 		Enum<?> oldValue = this.settings.get( settingName );
 
-		if ( oldValue != null )
+		if( oldValue != null )
 			return oldValue;
 
 		throw new RuntimeException( "Invalid Config setting" );
@@ -83,7 +83,7 @@ public final class ConfigManager implements IConfigManager
 	public void writeToNBT( NBTTagCompound tagCompound )
 	{
 
-		for ( Settings setting : this.settings.keySet() )
+		for( Settings setting : this.settings.keySet() )
 		{
 			tagCompound.setString( setting.name(), this.settings.get( setting ).toString() );
 		}
@@ -97,20 +97,20 @@ public final class ConfigManager implements IConfigManager
 	@Override
 	public void readFromNBT( NBTTagCompound tagCompound )
 	{
-		for ( Settings key : this.settings.keySet() )
+		for( Settings key : this.settings.keySet() )
 		{
 			try
 			{
-				if ( tagCompound.hasKey( key.name() ) )
+				if( tagCompound.hasKey( key.name() ) )
 				{
 					String value = tagCompound.getString( key.name() );
 
 					// Provides an upgrade path for the rename of this value in the API between rv1 and rv2
-					if ( value.equals( "EXTACTABLE_ONLY" ) )
+					if( value.equals( "EXTACTABLE_ONLY" ) )
 					{
 						value = StorageFilter.EXTRACTABLE_ONLY.toString();
 					}
-					else if ( value.equals( "STOREABLE_AMOUNT" ) )
+					else if( value.equals( "STOREABLE_AMOUNT" ) )
 					{
 						value = LevelEmitterMode.STORABLE_AMOUNT.toString();
 					}
@@ -122,7 +122,7 @@ public final class ConfigManager implements IConfigManager
 					this.putSetting( key, newValue );
 				}
 			}
-			catch ( IllegalArgumentException e )
+			catch( IllegalArgumentException e )
 			{
 				AELog.error( e );
 			}

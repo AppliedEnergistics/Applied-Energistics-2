@@ -72,7 +72,7 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 
 	public TunnelCollection<T> getCollection( Collection<PartP2PTunnel> collection, Class<? extends PartP2PTunnel> c )
 	{
-		if ( this.type.matches( c ) )
+		if( this.type.matches( c ) )
 		{
 			this.type.setSource( collection );
 			return this.type;
@@ -83,17 +83,17 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 
 	public T getInput()
 	{
-		if ( this.freq == 0 )
+		if( this.freq == 0 )
 			return null;
 
 		PartP2PTunnel tunnel;
 		try
 		{
 			tunnel = this.proxy.getP2P().getInput( this.freq );
-			if ( this.getClass().isInstance( tunnel ) )
+			if( this.getClass().isInstance( tunnel ) )
 				return (T) tunnel;
 		}
-		catch ( GridAccessException e )
+		catch( GridAccessException e )
 		{
 			// :P
 		}
@@ -102,9 +102,17 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 
 	public TunnelCollection<T> getOutputs() throws GridAccessException
 	{
-		if ( this.proxy.isActive() )
+		if( this.proxy.isActive() )
 			return (TunnelCollection<T>) this.proxy.getP2P().getOutputs( this.freq, this.getClass() );
 		return new TunnelCollection( new ArrayList(), this.getClass() );
+	}
+
+	@Override
+	public void getBoxes( IPartCollisionHelper bch )
+	{
+		bch.addBox( 5, 5, 12, 11, 11, 13 );
+		bch.addBox( 3, 3, 13, 13, 13, 14 );
+		bch.addBox( 2, 2, 14, 14, 14, 16 );
 	}
 
 	@Override
@@ -128,7 +136,7 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 	protected IIcon getTypeTexture()
 	{
 		final Optional<Block> maybeBlock = AEApi.instance().definitions().blocks().quartz().maybeBlock();
-		if ( maybeBlock.isPresent() )
+		if( maybeBlock.isPresent() )
 		{
 			return maybeBlock.get().getIcon( 0, 0 );
 		}
@@ -170,11 +178,11 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 	@Override
 	public ItemStack getItemStack( PartItemStack type )
 	{
-		if ( type == PartItemStack.World || type == PartItemStack.Network || type == PartItemStack.Wrench || type == PartItemStack.Pick )
+		if( type == PartItemStack.World || type == PartItemStack.Network || type == PartItemStack.Wrench || type == PartItemStack.Pick )
 			return super.getItemStack( type );
 
 		final Optional<ItemStack> maybeMEStack = AEApi.instance().definitions().parts().p2PTunnelME().maybeStack( 1 );
-		if ( maybeMEStack.isPresent() )
+		if( maybeMEStack.isPresent() )
 		{
 			return maybeMEStack.get();
 		}
@@ -199,14 +207,6 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 	}
 
 	@Override
-	public void getBoxes( IPartCollisionHelper bch )
-	{
-		bch.addBox( 5, 5, 12, 11, 11, 13 );
-		bch.addBox( 3, 3, 13, 13, 13, 14 );
-		bch.addBox( 2, 2, 14, 14, 14, 16 );
-	}
-
-	@Override
 	public int cableConnectionRenderTo()
 	{
 		return 1;
@@ -227,7 +227,7 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 		// AELog.info( "ID:" + id.toString() + " : " + is.getItemDamage() );
 
 		TunnelType tt = AEApi.instance().registries().p2pTunnel().getTunnelTypeByItem( is );
-		if ( is != null && is.getItem() instanceof IMemoryCard )
+		if( is != null && is.getItem() instanceof IMemoryCard )
 		{
 			IMemoryCard mc = (IMemoryCard) is.getItem();
 			NBTTagCompound data = mc.getData( is );
@@ -235,18 +235,18 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 			ItemStack newType = ItemStack.loadItemStackFromNBT( data );
 			long freq = data.getLong( "freq" );
 
-			if ( newType != null )
+			if( newType != null )
 			{
-				if ( newType.getItem() instanceof IPartItem )
+				if( newType.getItem() instanceof IPartItem )
 				{
 					IPart testPart = ( (IPartItem) newType.getItem() ).createPartFromItemStack( newType );
-					if ( testPart instanceof PartP2PTunnel )
+					if( testPart instanceof PartP2PTunnel )
 					{
 						this.getHost().removePart( this.side, true );
 						ForgeDirection dir = this.getHost().addPart( newType, this.side, player );
 						IPart newBus = this.getHost().getPart( dir );
 
-						if ( newBus instanceof PartP2PTunnel )
+						if( newBus instanceof PartP2PTunnel )
 						{
 							PartP2PTunnel newTunnel = (PartP2PTunnel) newBus;
 							newTunnel.output = true;
@@ -256,7 +256,7 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 								P2PCache p2p = newTunnel.proxy.getP2P();
 								p2p.updateFreq( newTunnel, freq );
 							}
-							catch ( GridAccessException e )
+							catch( GridAccessException e )
 							{
 								// :P
 							}
@@ -271,58 +271,58 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 			}
 			mc.notifyUser( player, MemoryCardMessages.INVALID_MACHINE );
 		}
-		else if ( tt != null ) // attunement
+		else if( tt != null ) // attunement
 		{
 			ItemStack newType = null;
 
 			final IParts parts = AEApi.instance().definitions().parts();
 
-			switch ( tt )
+			switch( tt )
 			{
 				case LIGHT:
-					for ( ItemStack stack : parts.p2PTunnelLight().maybeStack( 1 ).asSet() )
+					for( ItemStack stack : parts.p2PTunnelLight().maybeStack( 1 ).asSet() )
 					{
 						newType = stack;
 					}
 					break;
 
 				case RF_POWER:
-					for ( ItemStack stack : parts.p2PTunnelRF().maybeStack( 1 ).asSet() )
+					for( ItemStack stack : parts.p2PTunnelRF().maybeStack( 1 ).asSet() )
 					{
 						newType = stack;
 					}
 					break;
 
 				case FLUID:
-					for ( ItemStack stack : parts.p2PTunnelLiquids().maybeStack( 1 ).asSet() )
+					for( ItemStack stack : parts.p2PTunnelLiquids().maybeStack( 1 ).asSet() )
 					{
 						newType = stack;
 					}
 					break;
 
 				case IC2_POWER:
-					for ( ItemStack stack : parts.p2PTunnelEU().maybeStack( 1 ).asSet() )
+					for( ItemStack stack : parts.p2PTunnelEU().maybeStack( 1 ).asSet() )
 					{
 						newType = stack;
 					}
 					break;
 
 				case ITEM:
-					for ( ItemStack stack : parts.p2PTunnelItems().maybeStack( 1 ).asSet() )
+					for( ItemStack stack : parts.p2PTunnelItems().maybeStack( 1 ).asSet() )
 					{
 						newType = stack;
 					}
 					break;
 
 				case ME:
-					for ( ItemStack stack : parts.p2PTunnelME().maybeStack( 1 ).asSet() )
+					for( ItemStack stack : parts.p2PTunnelME().maybeStack( 1 ).asSet() )
 					{
 						newType = stack;
 					}
 					break;
 
 				case REDSTONE:
-					for ( ItemStack stack : parts.p2PTunnelRedstone().maybeStack( 1 ).asSet() )
+					for( ItemStack stack : parts.p2PTunnelRedstone().maybeStack( 1 ).asSet() )
 					{
 						newType = stack;
 					}
@@ -332,7 +332,7 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 					break;
 			}
 
-			if ( newType != null && !Platform.isSameItem( newType, this.is ) )
+			if( newType != null && !Platform.isSameItem( newType, this.is ) )
 			{
 				boolean oldOutput = this.output;
 				long myFreq = this.freq;
@@ -341,7 +341,7 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 				ForgeDirection dir = this.getHost().addPart( newType, this.side, player );
 				IPart newBus = this.getHost().getPart( dir );
 
-				if ( newBus instanceof PartP2PTunnel )
+				if( newBus instanceof PartP2PTunnel )
 				{
 					PartP2PTunnel newTunnel = (PartP2PTunnel) newBus;
 					newTunnel.output = oldOutput;
@@ -352,7 +352,7 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 						P2PCache p2p = newTunnel.proxy.getP2P();
 						p2p.updateFreq( newTunnel, myFreq );
 					}
-					catch ( GridAccessException e )
+					catch( GridAccessException e )
 					{
 						// :P
 					}
@@ -370,7 +370,7 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 	public boolean onPartShiftActivate( EntityPlayer player, Vec3 pos )
 	{
 		ItemStack is = player.inventory.getCurrentItem();
-		if ( is != null && is.getItem() instanceof IMemoryCard )
+		if( is != null && is.getItem() instanceof IMemoryCard )
 		{
 			IMemoryCard mc = (IMemoryCard) is.getItem();
 			NBTTagCompound data = new NBTTagCompound();
@@ -379,14 +379,14 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 			boolean wasOutput = this.output;
 			this.output = false;
 
-			if ( wasOutput || this.freq == 0 )
+			if( wasOutput || this.freq == 0 )
 				newFreq = System.currentTimeMillis();
 
 			try
 			{
 				this.proxy.getP2P().updateFreq( this, newFreq );
 			}
-			catch ( GridAccessException e )
+			catch( GridAccessException e )
 			{
 				// :P
 			}
@@ -430,7 +430,7 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 		{
 			this.proxy.getEnergy().extractAEPower( ae_to_tax, Actionable.MODULATE, PowerMultiplier.ONE );
 		}
-		catch ( GridAccessException e )
+		catch( GridAccessException e )
 		{
 			// :P
 		}

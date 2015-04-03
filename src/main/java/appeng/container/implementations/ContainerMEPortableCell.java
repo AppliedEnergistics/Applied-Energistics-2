@@ -18,6 +18,7 @@
 
 package appeng.container.implementations;
 
+
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 
@@ -26,33 +27,34 @@ import appeng.api.config.PowerMultiplier;
 import appeng.api.implementations.guiobjects.IPortableCell;
 import appeng.util.Platform;
 
+
 public class ContainerMEPortableCell extends ContainerMEMonitorable
 {
 
-	double powerMultiplier = 0.5;
 	final IPortableCell civ;
+	double powerMultiplier = 0.5;
+	int ticks = 0;
 
-	public ContainerMEPortableCell(InventoryPlayer ip, IPortableCell monitorable) {
+	public ContainerMEPortableCell( InventoryPlayer ip, IPortableCell monitorable )
+	{
 		super( ip, monitorable, false );
 		this.lockPlayerInventorySlot( ip.currentItem );
 		this.civ = monitorable;
 		this.bindPlayerInventory( ip, 0, 0 );
 	}
 
-	int ticks = 0;
-
 	@Override
 	public void detectAndSendChanges()
 	{
 		ItemStack currentItem = this.getPlayerInv().getCurrentItem();
 
-		if ( this.civ != null )
+		if( this.civ != null )
 		{
-			if ( currentItem != this.civ.getItemStack() )
+			if( currentItem != this.civ.getItemStack() )
 			{
-				if ( currentItem != null )
+				if( currentItem != null )
 				{
-					if ( Platform.isSameItem( this.civ.getItemStack(), currentItem ) )
+					if( Platform.isSameItem( this.civ.getItemStack(), currentItem ) )
 						this.getPlayerInv().setInventorySlotContents( this.getPlayerInv().currentItem, this.civ.getItemStack() );
 					else
 						this.isContainerValid = false;
@@ -66,7 +68,7 @@ public class ContainerMEPortableCell extends ContainerMEMonitorable
 
 		// drain 1 ae t
 		this.ticks++;
-		if ( this.ticks > 10 )
+		if( this.ticks > 10 )
 		{
 			this.civ.extractAEPower( this.powerMultiplier * this.ticks, Actionable.MODULATE, PowerMultiplier.CONFIG );
 			this.ticks = 0;

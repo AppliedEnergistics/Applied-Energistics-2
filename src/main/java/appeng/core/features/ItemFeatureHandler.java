@@ -65,13 +65,13 @@ public final class ItemFeatureHandler implements IFeatureHandler
 	@Override
 	public void register()
 	{
-		if ( this.enabled )
+		if( this.enabled )
 		{
 			String name = this.extractor.get();
 			this.item.setTextureName( "appliedenergistics2:" + name );
 			this.item.setUnlocalizedName( /* "item." */"appliedenergistics2." + name );
 
-			if ( this.item instanceof ItemFacade )
+			if( this.item instanceof ItemFacade )
 			{
 				this.item.setCreativeTab( CreativeTabFacade.instance );
 			}
@@ -80,11 +80,11 @@ public final class ItemFeatureHandler implements IFeatureHandler
 				this.item.setCreativeTab( CreativeTab.instance );
 			}
 
-			if ( name.equals( "ItemMaterial" ) )
+			if( name.equals( "ItemMaterial" ) )
 			{
 				name = "ItemMultiMaterial";
 			}
-			else if ( name.equals( "ItemPart" ) )
+			else if( name.equals( "ItemPart" ) )
 			{
 				name = "ItemMultiPart";
 			}

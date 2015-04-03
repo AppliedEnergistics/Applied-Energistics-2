@@ -18,10 +18,8 @@
 
 package appeng.integration.modules.NEIHelpers;
 
-import static codechicken.lib.gui.GuiDraw.changeTexture;
-import static codechicken.lib.gui.GuiDraw.drawTexturedModalRect;
 
-import java.awt.Rectangle;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,42 +43,12 @@ import appeng.api.features.IGrinderEntry;
 import appeng.client.gui.implementations.GuiGrinder;
 import appeng.core.localization.GuiText;
 
+import static codechicken.lib.gui.GuiDraw.changeTexture;
+import static codechicken.lib.gui.GuiDraw.drawTexturedModalRect;
+
+
 public class NEIGrinderRecipeHandler extends TemplateRecipeHandler
 {
-
-	@Override
-	public void drawBackground(int recipe)
-	{
-		GL11.glColor4f( 1, 1, 1, 1 );
-		changeTexture( this.getGuiTexture() );
-		drawTexturedModalRect( 40, 10, 75, 16 + 10, 90, 66 );
-	}
-
-	@Override
-	public void drawForeground(int recipe)
-	{
-		super.drawForeground( recipe );
-		if ( this.arecipes.size() > recipe )
-		{
-			CachedRecipe cr = this.arecipes.get( recipe );
-			if ( cr instanceof CachedGrindStoneRecipe )
-			{
-				CachedGrindStoneRecipe cachedRecipe = (CachedGrindStoneRecipe) cr;
-				if ( cachedRecipe.hasOptional )
-				{
-					FontRenderer fr = Minecraft.getMinecraft().fontRenderer;
-					int width = fr.getStringWidth( cachedRecipe.Chance );
-					fr.drawString( cachedRecipe.Chance, (168 - width) / 2, 5, 0 );
-				}
-				else
-				{
-					FontRenderer fr = Minecraft.getMinecraft().fontRenderer;
-					int width = fr.getStringWidth( GuiText.NoSecondOutput.getLocal() );
-					fr.drawString( GuiText.NoSecondOutput.getLocal(), (168 - width) / 2, 5, 0 );
-				}
-			}
-		}
-	}
 
 	@Override
 	public void loadTransferRects()
@@ -89,23 +57,11 @@ public class NEIGrinderRecipeHandler extends TemplateRecipeHandler
 	}
 
 	@Override
-	public Class<? extends GuiContainer> getGuiClass()
+	public void loadCraftingRecipes( String outputId, Object... results )
 	{
-		return GuiGrinder.class;
-	}
-
-	@Override
-	public String getRecipeName()
-	{
-		return GuiText.GrindStone.getLocal();
-	}
-
-	@Override
-	public void loadCraftingRecipes(String outputId, Object... results)
-	{
-		if ( (outputId.equals( "grindstone" )) && (this.getClass() == NEIGrinderRecipeHandler.class) )
+		if( ( outputId.equals( "grindstone" ) ) && ( this.getClass() == NEIGrinderRecipeHandler.class ) )
 		{
-			for (IGrinderEntry recipe : AEApi.instance().registries().grinder().getRecipes())
+			for( IGrinderEntry recipe : AEApi.instance().registries().grinder().getRecipes() )
 			{
 				CachedGrindStoneRecipe cachedRecipe = new CachedGrindStoneRecipe( recipe );
 				cachedRecipe.computeVisuals();
@@ -119,11 +75,11 @@ public class NEIGrinderRecipeHandler extends TemplateRecipeHandler
 	}
 
 	@Override
-	public void loadCraftingRecipes(ItemStack result)
+	public void loadCraftingRecipes( ItemStack result )
 	{
-		for (IGrinderEntry recipe : AEApi.instance().registries().grinder().getRecipes())
+		for( IGrinderEntry recipe : AEApi.instance().registries().grinder().getRecipes() )
 		{
-			if ( NEIServerUtils.areStacksSameTypeCrafting( recipe.getOutput(), result ) )
+			if( NEIServerUtils.areStacksSameTypeCrafting( recipe.getOutput(), result ) )
 			{
 				CachedGrindStoneRecipe cachedRecipe = new CachedGrindStoneRecipe( recipe );
 				cachedRecipe.computeVisuals();
@@ -133,16 +89,16 @@ public class NEIGrinderRecipeHandler extends TemplateRecipeHandler
 	}
 
 	@Override
-	public void loadUsageRecipes(ItemStack ingredient)
+	public void loadUsageRecipes( ItemStack ingredient )
 	{
-		for (IGrinderEntry recipe : AEApi.instance().registries().grinder().getRecipes())
+		for( IGrinderEntry recipe : AEApi.instance().registries().grinder().getRecipes() )
 		{
 			CachedGrindStoneRecipe cachedRecipe = new CachedGrindStoneRecipe( recipe );
 
-			if ( (cachedRecipe.contains( cachedRecipe.ingredients, ingredient.getItem() )) )
+			if( ( cachedRecipe.contains( cachedRecipe.ingredients, ingredient.getItem() ) ) )
 			{
 				cachedRecipe.computeVisuals();
-				if ( cachedRecipe.contains( cachedRecipe.ingredients, ingredient ) )
+				if( cachedRecipe.contains( cachedRecipe.ingredients, ingredient ) )
 				{
 					cachedRecipe.setIngredientPermutation( cachedRecipe.ingredients, ingredient );
 					this.arecipes.add( cachedRecipe );
@@ -165,21 +121,67 @@ public class NEIGrinderRecipeHandler extends TemplateRecipeHandler
 	}
 
 	@Override
-	public boolean hasOverlay(GuiContainer gui, Container container, int recipe)
+	public Class<? extends GuiContainer> getGuiClass()
+	{
+		return GuiGrinder.class;
+	}
+
+	@Override
+	public void drawBackground( int recipe )
+	{
+		GL11.glColor4f( 1, 1, 1, 1 );
+		changeTexture( this.getGuiTexture() );
+		drawTexturedModalRect( 40, 10, 75, 16 + 10, 90, 66 );
+	}
+
+	@Override
+	public void drawForeground( int recipe )
+	{
+		super.drawForeground( recipe );
+		if( this.arecipes.size() > recipe )
+		{
+			CachedRecipe cr = this.arecipes.get( recipe );
+			if( cr instanceof CachedGrindStoneRecipe )
+			{
+				CachedGrindStoneRecipe cachedRecipe = (CachedGrindStoneRecipe) cr;
+				if( cachedRecipe.hasOptional )
+				{
+					FontRenderer fr = Minecraft.getMinecraft().fontRenderer;
+					int width = fr.getStringWidth( cachedRecipe.Chance );
+					fr.drawString( cachedRecipe.Chance, ( 168 - width ) / 2, 5, 0 );
+				}
+				else
+				{
+					FontRenderer fr = Minecraft.getMinecraft().fontRenderer;
+					int width = fr.getStringWidth( GuiText.NoSecondOutput.getLocal() );
+					fr.drawString( GuiText.NoSecondOutput.getLocal(), ( 168 - width ) / 2, 5, 0 );
+				}
+			}
+		}
+	}
+
+	@Override
+	public boolean hasOverlay( GuiContainer gui, Container container, int recipe )
 	{
 		return false;
 	}
 
 	@Override
-	public IRecipeOverlayRenderer getOverlayRenderer(GuiContainer gui, int recipe)
+	public IRecipeOverlayRenderer getOverlayRenderer( GuiContainer gui, int recipe )
 	{
 		return null;
 	}
 
 	@Override
-	public IOverlayHandler getOverlayHandler(GuiContainer gui, int recipe)
+	public IOverlayHandler getOverlayHandler( GuiContainer gui, int recipe )
 	{
 		return null;
+	}
+
+	@Override
+	public String getRecipeName()
+	{
+		return GuiText.GrindStone.getLocal();
 	}
 
 	public class CachedGrindStoneRecipe extends TemplateRecipeHandler.CachedRecipe
@@ -187,29 +189,23 @@ public class NEIGrinderRecipeHandler extends TemplateRecipeHandler
 
 		public final ArrayList<PositionedStack> ingredients;
 		public final PositionedStack result;
-
-		boolean hasOptional = false;
 		public String Chance;
+		boolean hasOptional = false;
 
-		public CachedGrindStoneRecipe(IGrinderEntry recipe) {
+		public CachedGrindStoneRecipe( IGrinderEntry recipe )
+		{
 			this.result = new PositionedStack( recipe.getOutput(), -30 + 107, 47 );
 			this.ingredients = new ArrayList<PositionedStack>();
 
-			if ( recipe.getOptionalOutput() != null )
+			if( recipe.getOptionalOutput() != null )
 			{
 				this.hasOptional = true;
-				this.Chance = ((int) (recipe.getOptionalChance() * 100)) + GuiText.OfSecondOutput.getLocal();
+				this.Chance = ( (int) ( recipe.getOptionalChance() * 100 ) ) + GuiText.OfSecondOutput.getLocal();
 				this.ingredients.add( new PositionedStack( recipe.getOptionalOutput(), -30 + 107 + 18, 47 ) );
 			}
 
-			if ( recipe.getInput() != null )
+			if( recipe.getInput() != null )
 				this.ingredients.add( new PositionedStack( recipe.getInput(), 45, 24 ) );
-		}
-
-		@Override
-		public List<PositionedStack> getIngredients()
-		{
-			return this.getCycledIngredients( NEIGrinderRecipeHandler.this.cycleticks / 20, this.ingredients );
 		}
 
 		@Override
@@ -218,9 +214,15 @@ public class NEIGrinderRecipeHandler extends TemplateRecipeHandler
 			return this.result;
 		}
 
+		@Override
+		public List<PositionedStack> getIngredients()
+		{
+			return this.getCycledIngredients( NEIGrinderRecipeHandler.this.cycleticks / 20, this.ingredients );
+		}
+
 		public void computeVisuals()
 		{
-			for (PositionedStack p : this.ingredients)
+			for( PositionedStack p : this.ingredients )
 			{
 				p.generatePermutations();
 			}
