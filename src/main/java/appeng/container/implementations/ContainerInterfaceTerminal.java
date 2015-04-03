@@ -54,17 +54,17 @@ import appeng.util.inv.AdaptorPlayerHand;
 import appeng.util.inv.WrapperInvSlot;
 
 
-public class ContainerInterfaceTerminal extends AEBaseContainer
+public final class ContainerInterfaceTerminal extends AEBaseContainer
 {
 
 	/**
 	 * this stuff is all server side..
 	 */
 
-	static private long autoBase = Long.MIN_VALUE;
+	private static long autoBase = Long.MIN_VALUE;
 	final Map<IInterfaceHost, InvTracker> diList = new HashMap<IInterfaceHost, InvTracker>();
 	final Map<Long, InvTracker> byId = new HashMap<Long, InvTracker>();
-	IGrid g;
+	IGrid grid;
 	NBTTagCompound data = new NBTTagCompound();
 
 	public ContainerInterfaceTerminal( InventoryPlayer ip, PartMonitor anchor )
@@ -72,7 +72,7 @@ public class ContainerInterfaceTerminal extends AEBaseContainer
 		super( ip, anchor );
 
 		if( Platform.isServer() )
-			this.g = anchor.getActionableNode().getGrid();
+			this.grid = anchor.getActionableNode().getGrid();
 
 		this.bindPlayerInventory( ip, 0, 222 - /* height of player inventory */82 );
 	}
@@ -85,7 +85,7 @@ public class ContainerInterfaceTerminal extends AEBaseContainer
 
 		super.detectAndSendChanges();
 
-		if( this.g == null )
+		if( this.grid == null )
 			return;
 
 		int total = 0;
@@ -97,7 +97,7 @@ public class ContainerInterfaceTerminal extends AEBaseContainer
 			IGridNode agn = host.getActionableNode();
 			if( agn != null && agn.isActive() )
 			{
-				for( IGridNode gn : this.g.getMachines( TileInterface.class ) )
+				for( IGridNode gn : this.grid.getMachines( TileInterface.class ) )
 				{
 					if( gn.isActive() )
 					{
@@ -120,7 +120,7 @@ public class ContainerInterfaceTerminal extends AEBaseContainer
 					}
 				}
 
-				for( IGridNode gn : this.g.getMachines( PartInterface.class ) )
+				for( IGridNode gn : this.grid.getMachines( PartInterface.class ) )
 				{
 					if( gn.isActive() )
 					{
@@ -289,7 +289,7 @@ public class ContainerInterfaceTerminal extends AEBaseContainer
 			IGridNode agn = host.getActionableNode();
 			if( agn != null && agn.isActive() )
 			{
-				for( IGridNode gn : this.g.getMachines( TileInterface.class ) )
+				for( IGridNode gn : this.grid.getMachines( TileInterface.class ) )
 				{
 					IInterfaceHost ih = (IInterfaceHost) gn.getMachine();
 					DualityInterface dual = ih.getInterfaceDuality();
@@ -297,7 +297,7 @@ public class ContainerInterfaceTerminal extends AEBaseContainer
 						this.diList.put( ih, new InvTracker( dual, dual.getPatterns(), dual.getTermName() ) );
 				}
 
-				for( IGridNode gn : this.g.getMachines( PartInterface.class ) )
+				for( IGridNode gn : this.grid.getMachines( PartInterface.class ) )
 				{
 					IInterfaceHost ih = (IInterfaceHost) gn.getMachine();
 					DualityInterface dual = ih.getInterfaceDuality();
