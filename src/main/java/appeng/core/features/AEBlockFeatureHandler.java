@@ -21,9 +21,9 @@ package appeng.core.features;
 
 import java.util.EnumSet;
 
-import com.google.common.base.Optional;
-
 import cpw.mods.fml.common.registry.GameRegistry;
+
+import com.google.common.base.Optional;
 
 import appeng.api.definitions.ITileDefinition;
 import appeng.block.AEBaseBlock;
@@ -83,6 +83,11 @@ public final class AEBlockFeatureHandler implements IFeatureHandler
 			// Bypass the forge magic with null to register our own itemblock later.
 			GameRegistry.registerBlock( this.featured, null, registryName );
 			GameRegistry.registerItem( this.definition.maybeItem().get(), registryName );
+
+			if( !this.featured.toString().equals( "BlockCableBus" ) )
+			{
+				GameRegistry.registerTileEntity( this.featured.getTileEntityClass(), this.featured.toString() );
+			}
 		}
 	}
 }

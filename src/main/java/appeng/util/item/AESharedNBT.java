@@ -50,14 +50,12 @@ public class AESharedNBT extends NBTTagCompound implements IAETagCompound
 
 	private AESharedNBT( Item itemID, int damageValue )
 	{
-		super();
 		this.item = itemID;
 		this.meta = damageValue;
 	}
 
 	public AESharedNBT( int fakeValue )
 	{
-		super();
 		this.item = null;
 		this.meta = 0;
 		this.hash = fakeValue;

@@ -31,7 +31,7 @@ public class BlockFluix extends AEDecorativeBlock
 {
 	public BlockFluix()
 	{
-		super( BlockFluix.class, Material.rock );
+		super( Material.rock );
 		this.setFeature( EnumSet.of( AEFeature.DecorativeQuartzBlocks ) );
 	}
 }

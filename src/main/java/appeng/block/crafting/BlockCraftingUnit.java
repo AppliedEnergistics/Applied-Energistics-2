@@ -51,16 +51,10 @@ public class BlockCraftingUnit extends AEBaseBlock
 
 	public BlockCraftingUnit()
 	{
-		this( BlockCraftingUnit.class );
-
-		this.setTileEntity( TileCraftingTile.class );
-	}
-
-	public BlockCraftingUnit( Class<? extends BlockCraftingUnit> childClass )
-	{
-		super( childClass, Material.iron );
+		super( Material.iron );
 
 		this.hasSubtypes = true;
+		this.setTileEntity( TileCraftingTile.class );
 		this.setFeature( EnumSet.of( AEFeature.CraftingCPU ) );
 	}
 

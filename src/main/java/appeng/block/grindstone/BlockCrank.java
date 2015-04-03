@@ -46,7 +46,8 @@ public class BlockCrank extends AEBaseBlock
 
 	public BlockCrank()
 	{
-		super( BlockCrank.class, Material.wood );
+		super( Material.wood );
+
 		this.setTileEntity( TileCrank.class );
 		this.setLightOpacity( 0 );
 		this.setHarvestLevel( "axe", 0 );

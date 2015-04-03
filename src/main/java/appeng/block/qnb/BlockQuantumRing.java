@@ -42,7 +42,7 @@ public class BlockQuantumRing extends AEBaseBlock implements ICustomCollision
 
 	public BlockQuantumRing()
 	{
-		super( BlockQuantumRing.class, Material.iron );
+		super( Material.iron );
 		this.setTileEntity( TileQuantumBridge.class );
 		float shave = 2.0f / 16.0f;
 		this.setBlockBounds( shave, shave, shave, 1.0f - shave, 1.0f - shave, 1.0f - shave );

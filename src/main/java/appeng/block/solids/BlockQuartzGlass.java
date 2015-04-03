@@ -36,15 +36,9 @@ import appeng.helpers.AEGlassMaterial;
 
 public class BlockQuartzGlass extends AEBaseBlock
 {
-
 	public BlockQuartzGlass()
 	{
-		this( BlockQuartzGlass.class );
-	}
-
-	public BlockQuartzGlass( Class c )
-	{
-		super( c, Material.glass );
+		super( Material.glass );
 		this.setLightOpacity( 0 );
 		this.isOpaque = false;
 		this.setFeature( EnumSet.of( AEFeature.DecorativeQuartzBlocks ) );

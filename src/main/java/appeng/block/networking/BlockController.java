@@ -37,7 +37,7 @@ public class BlockController extends AEBaseBlock
 
 	public BlockController()
 	{
-		super( BlockController.class, Material.iron );
+		super( Material.iron );
 		this.setTileEntity( TileController.class );
 		this.setHardness( 6 );
 		this.setFeature( EnumSet.of( AEFeature.Channels ) );

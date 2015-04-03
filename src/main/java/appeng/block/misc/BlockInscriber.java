@@ -40,7 +40,8 @@ public class BlockInscriber extends AEBaseBlock
 
 	public BlockInscriber()
 	{
-		super( BlockInscriber.class, Material.iron );
+		super( Material.iron );
+
 		this.setTileEntity( TileInscriber.class );
 		this.setLightOpacity( 2 );
 		this.isFullSize = this.isOpaque = false;

@@ -32,7 +32,7 @@ public class BlockQuartz extends AEDecorativeBlock
 
 	public BlockQuartz()
 	{
-		super( BlockQuartz.class, Material.rock );
+		super( Material.rock );
 		this.setFeature( EnumSet.of( AEFeature.DecorativeQuartzBlocks ) );
 	}
 }
