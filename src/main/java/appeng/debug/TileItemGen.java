@@ -18,6 +18,7 @@
 
 package appeng.debug;
 
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -30,22 +31,24 @@ import net.minecraft.item.ItemStack;
 
 import appeng.tile.AEBaseTile;
 
+
 public class TileItemGen extends AEBaseTile implements IInventory
 {
 
 	private static final Queue<ItemStack> POSSIBLE_ITEMS = new LinkedList<ItemStack>();
 
-	public TileItemGen() {
-		if ( POSSIBLE_ITEMS.isEmpty() )
+	public TileItemGen()
+	{
+		if( POSSIBLE_ITEMS.isEmpty() )
 		{
-			for (Object obj : Item.itemRegistry)
+			for( Object obj : Item.itemRegistry )
 			{
 				Item mi = (Item) obj;
-				if ( mi != null )
+				if( mi != null )
 				{
-					if ( mi.isDamageable() )
+					if( mi.isDamageable() )
 					{
-						for (int dmg = 0; dmg < mi.getMaxDamage(); dmg++)
+						for( int dmg = 0; dmg < mi.getMaxDamage(); dmg++ )
 							POSSIBLE_ITEMS.add( new ItemStack( mi, 1, dmg ) );
 					}
 					else
@@ -66,7 +69,7 @@ public class TileItemGen extends AEBaseTile implements IInventory
 	}
 
 	@Override
-	public ItemStack getStackInSlot(int i)
+	public ItemStack getStackInSlot( int i )
 	{
 		return this.getRandomItem();
 	}
@@ -77,7 +80,7 @@ public class TileItemGen extends AEBaseTile implements IInventory
 	}
 
 	@Override
-	public ItemStack decrStackSize(int i, int j)
+	public ItemStack decrStackSize( int i, int j )
 	{
 		ItemStack a = POSSIBLE_ITEMS.poll();
 		ItemStack out = a.copy();
@@ -86,13 +89,13 @@ public class TileItemGen extends AEBaseTile implements IInventory
 	}
 
 	@Override
-	public ItemStack getStackInSlotOnClosing(int i)
+	public ItemStack getStackInSlotOnClosing( int i )
 	{
 		return null;
 	}
 
 	@Override
-	public void setInventorySlotContents(int i, ItemStack itemstack)
+	public void setInventorySlotContents( int i, ItemStack itemstack )
 	{
 		ItemStack a = POSSIBLE_ITEMS.poll();
 		POSSIBLE_ITEMS.add( a );
@@ -117,6 +120,12 @@ public class TileItemGen extends AEBaseTile implements IInventory
 	}
 
 	@Override
+	public boolean isUseableByPlayer( EntityPlayer entityplayer )
+	{
+		return false;
+	}
+
+	@Override
 	public void openInventory()
 	{
 
@@ -129,15 +138,8 @@ public class TileItemGen extends AEBaseTile implements IInventory
 	}
 
 	@Override
-	public boolean isItemValidForSlot(int i, ItemStack itemstack)
+	public boolean isItemValidForSlot( int i, ItemStack itemstack )
 	{
 		return false;
 	}
-
-	@Override
-	public boolean isUseableByPlayer(EntityPlayer entityplayer)
-	{
-		return false;
-	}
-
 }

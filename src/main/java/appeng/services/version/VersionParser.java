@@ -103,9 +103,9 @@ public final class VersionParser
 	{
 		assert rawChannel.equalsIgnoreCase( Channel.Alpha.name() ) || rawChannel.equalsIgnoreCase( Channel.Beta.name() ) || rawChannel.equalsIgnoreCase( Channel.Release.name() );
 
-		for ( Channel channel : Channel.values() )
+		for( Channel channel : Channel.values() )
 		{
-			if ( channel.name().equalsIgnoreCase( rawChannel ) )
+			if( channel.name().equalsIgnoreCase( rawChannel ) )
 			{
 				return channel;
 			}

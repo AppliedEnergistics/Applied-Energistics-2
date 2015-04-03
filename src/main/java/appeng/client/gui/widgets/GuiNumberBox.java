@@ -18,6 +18,7 @@
 
 package appeng.client.gui.widgets;
 
+
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiTextField;
 
@@ -27,31 +28,30 @@ public class GuiNumberBox extends GuiTextField
 
 	final Class type;
 
-	public GuiNumberBox(FontRenderer p_i1032_1_, int p_i1032_2_, int p_i1032_3_, int p_i1032_4_, int p_i1032_5_,Class type) {
+	public GuiNumberBox( FontRenderer p_i1032_1_, int p_i1032_2_, int p_i1032_3_, int p_i1032_4_, int p_i1032_5_, Class type )
+	{
 		super( p_i1032_1_, p_i1032_2_, p_i1032_3_, p_i1032_4_, p_i1032_5_ );
 		this.type = type;
 	}
 
 	@Override
-	public void writeText(String p_146191_1_)
+	public void writeText( String p_146191_1_ )
 	{
 		String original = this.getText();
 		super.writeText( p_146191_1_ );
 
 		try
 		{
-			if ( this.type == int.class || this.type == Integer.class )
+			if( this.type == int.class || this.type == Integer.class )
 				Integer.parseInt( this.getText() );
-			else if ( this.type == long.class || this.type == Long.class )
+			else if( this.type == long.class || this.type == Long.class )
 				Long.parseLong( this.getText() );
-			else if ( this.type == double.class || this.type == Double.class )
+			else if( this.type == double.class || this.type == Double.class )
 				Double.parseDouble( this.getText() );
 		}
-		catch(NumberFormatException e )
+		catch( NumberFormatException e )
 		{
 			this.setText( original );
 		}
 	}
-
-
 }

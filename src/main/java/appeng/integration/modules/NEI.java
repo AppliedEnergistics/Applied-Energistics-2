@@ -51,6 +51,7 @@ import appeng.integration.modules.NEIHelpers.NEIInscriberRecipeHandler;
 import appeng.integration.modules.NEIHelpers.NEIWorldCraftingHandler;
 import appeng.integration.modules.NEIHelpers.TerminalCraftingSlotFinder;
 
+
 public class NEI extends BaseModule implements INEI, IContainerTooltipHandler
 {
 
@@ -62,17 +63,12 @@ public class NEI extends BaseModule implements INEI, IContainerTooltipHandler
 	Method registerRecipeHandler;
 	Method registerUsageHandler;
 
-	public NEI() throws ClassNotFoundException {
+	public NEI() throws ClassNotFoundException
+	{
 		this.testClassExistence( GuiContainerManager.class );
 		this.testClassExistence( codechicken.nei.recipe.ICraftingHandler.class );
 		this.testClassExistence( codechicken.nei.recipe.IUsageHandler.class );
 		this.API = Class.forName( "codechicken.nei.api.API" );
-	}
-
-	public void registerRecipeHandler(Object o) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException
-	{
-		this.registerRecipeHandler.invoke( this.API, o );
-		this.registerUsageHandler.invoke( this.API, o );
 	}
 
 	@Override
@@ -87,7 +83,7 @@ public class NEI extends BaseModule implements INEI, IContainerTooltipHandler
 		this.registerRecipeHandler( new NEIWorldCraftingHandler() );
 		this.registerRecipeHandler( new NEIGrinderRecipeHandler() );
 
-		if ( AEConfig.instance.isFeatureEnabled( AEFeature.Facades ) && AEConfig.instance.isFeatureEnabled( AEFeature.enableFacadeCrafting ) )
+		if( AEConfig.instance.isFeatureEnabled( AEFeature.Facades ) && AEConfig.instance.isFeatureEnabled( AEFeature.enableFacadeCrafting ) )
 			this.registerRecipeHandler( new NEIFacadeRecipeHandler() );
 
 		// large stack tooltips
@@ -107,6 +103,12 @@ public class NEI extends BaseModule implements INEI, IContainerTooltipHandler
 		registerGuiOverlayHandler.invoke( this.API, GuiPatternTerm.class, DefaultOverlayHandlerConstructor.newInstance( 6, 75 ), "crafting" );
 	}
 
+	public void registerRecipeHandler( Object o ) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException
+	{
+		this.registerRecipeHandler.invoke( this.API, o );
+		this.registerUsageHandler.invoke( this.API, o );
+	}
+
 	@Override
 	public void postInit()
 	{
@@ -114,14 +116,14 @@ public class NEI extends BaseModule implements INEI, IContainerTooltipHandler
 	}
 
 	@Override
-	public void drawSlot(Slot s)
+	public void drawSlot( Slot s )
 	{
-		if ( s == null )
+		if( s == null )
 			return;
 
 		ItemStack stack = s.getStack();
 
-		if ( stack == null )
+		if( stack == null )
 			return;
 
 		Minecraft mc = Minecraft.getMinecraft();
@@ -134,7 +136,7 @@ public class NEI extends BaseModule implements INEI, IContainerTooltipHandler
 	}
 
 	@Override
-	public RenderItem setItemRender(RenderItem renderItem)
+	public RenderItem setItemRender( RenderItem renderItem )
 	{
 		try
 		{
@@ -142,31 +144,30 @@ public class NEI extends BaseModule implements INEI, IContainerTooltipHandler
 			GuiContainerManager.drawItems = renderItem;
 			return ri;
 		}
-		catch (Throwable t)
+		catch( Throwable t )
 		{
 			throw new RuntimeException( "Invalid version of NEI, please update", t );
 		}
 	}
 
 	@Override
-	public List<String> handleItemDisplayName(GuiContainer arg0, ItemStack arg1, List<String> current)
+	public List<String> handleTooltip( GuiContainer arg0, int arg1, int arg2, List<String> current )
 	{
 		return current;
 	}
 
 	@Override
-	public List<String> handleItemTooltip(GuiContainer guiScreen, ItemStack stack, int mouseX, int mouseY, List<String> currentToolTip)
+	public List<String> handleItemDisplayName( GuiContainer arg0, ItemStack arg1, List<String> current )
 	{
-		if ( guiScreen instanceof AEBaseMEGui )
-			return ((AEBaseMEGui) guiScreen).handleItemTooltip( stack, mouseX, mouseY, currentToolTip );
+		return current;
+	}
+
+	@Override
+	public List<String> handleItemTooltip( GuiContainer guiScreen, ItemStack stack, int mouseX, int mouseY, List<String> currentToolTip )
+	{
+		if( guiScreen instanceof AEBaseMEGui )
+			return ( (AEBaseMEGui) guiScreen ).handleItemTooltip( stack, mouseX, mouseY, currentToolTip );
 
 		return currentToolTip;
 	}
-
-	@Override
-	public List<String> handleTooltip(GuiContainer arg0, int arg1, int arg2, List<String> current)
-	{
-		return current;
-	}
-
 }

@@ -18,11 +18,13 @@
 
 package appeng.util.inv;
 
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
+
 
 public class WrapperTEPipe implements IInventory
 {
@@ -30,7 +32,8 @@ public class WrapperTEPipe implements IInventory
 	final TileEntity ad;
 	final ForgeDirection dir;
 
-	public WrapperTEPipe(TileEntity te, ForgeDirection d) {
+	public WrapperTEPipe( TileEntity te, ForgeDirection d )
+	{
 		this.ad = te;
 		this.dir = d;
 	}
@@ -42,25 +45,25 @@ public class WrapperTEPipe implements IInventory
 	}
 
 	@Override
-	public ItemStack getStackInSlot(int i)
+	public ItemStack getStackInSlot( int i )
 	{
 		return null;
 	}
 
 	@Override
-	public ItemStack decrStackSize(int i, int j)
+	public ItemStack decrStackSize( int i, int j )
 	{
 		return null;
 	}
 
 	@Override
-	public ItemStack getStackInSlotOnClosing(int i)
+	public ItemStack getStackInSlotOnClosing( int i )
 	{
 		return null;
 	}
 
 	@Override
-	public void setInventorySlotContents(int i, ItemStack itemstack)
+	public void setInventorySlotContents( int i, ItemStack itemstack )
 	{
 		// ITE.addItemsToPipe( ad, itemstack, dir );
 	}
@@ -90,7 +93,7 @@ public class WrapperTEPipe implements IInventory
 	}
 
 	@Override
-	public boolean isUseableByPlayer(EntityPlayer entityplayer)
+	public boolean isUseableByPlayer( EntityPlayer entityplayer )
 	{
 		return false;
 	}
@@ -108,9 +111,8 @@ public class WrapperTEPipe implements IInventory
 	}
 
 	@Override
-	public boolean isItemValidForSlot(int i, ItemStack itemstack)
+	public boolean isItemValidForSlot( int i, ItemStack itemstack )
 	{
 		return false;
 	}
-
 }

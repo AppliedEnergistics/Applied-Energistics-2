@@ -18,6 +18,7 @@
 
 package appeng.core.features.registries;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,41 +30,43 @@ import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.ISaveProvider;
 import appeng.api.storage.StorageChannel;
 
+
 public class CellRegistry implements ICellRegistry
 {
 
 	final List<ICellHandler> handlers;
 
-	public CellRegistry() {
+	public CellRegistry()
+	{
 		this.handlers = new ArrayList<ICellHandler>();
 	}
 
 	@Override
-	public void addCellHandler(ICellHandler h)
+	public void addCellHandler( ICellHandler h )
 	{
-		if ( h != null )
+		if( h != null )
 			this.handlers.add( h );
 	}
 
 	@Override
-	public boolean isCellHandled(ItemStack is)
+	public boolean isCellHandled( ItemStack is )
 	{
-		if ( is == null )
+		if( is == null )
 			return false;
-		for (ICellHandler ch : this.handlers)
-			if ( ch.isCell( is ) )
+		for( ICellHandler ch : this.handlers )
+			if( ch.isCell( is ) )
 				return true;
 		return false;
 	}
 
 	@Override
-	public ICellHandler getHandler(ItemStack is)
+	public ICellHandler getHandler( ItemStack is )
 	{
-		if ( is == null )
+		if( is == null )
 			return null;
-		for (ICellHandler ch : this.handlers)
+		for( ICellHandler ch : this.handlers )
 		{
-			if ( ch.isCell( is ) )
+			if( ch.isCell( is ) )
 			{
 				return ch;
 			}
@@ -72,13 +75,13 @@ public class CellRegistry implements ICellRegistry
 	}
 
 	@Override
-	public IMEInventoryHandler getCellInventory(ItemStack is, ISaveProvider container, StorageChannel chan)
+	public IMEInventoryHandler getCellInventory( ItemStack is, ISaveProvider container, StorageChannel chan )
 	{
-		if ( is == null )
+		if( is == null )
 			return null;
-		for (ICellHandler ch : this.handlers)
+		for( ICellHandler ch : this.handlers )
 		{
-			if ( ch.isCell( is ) )
+			if( ch.isCell( is ) )
 			{
 				return ch.getCellInventory( is, container, chan );
 			}

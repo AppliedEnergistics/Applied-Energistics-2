@@ -80,8 +80,7 @@ import appeng.tile.inventory.InvOperation;
 import appeng.util.Platform;
 
 
-public class PartLevelEmitter extends PartUpgradeable
-		implements IEnergyWatcherHost, IStackWatcherHost, ICraftingWatcherHost, IMEMonitorHandlerReceiver<IAEItemStack>, ICraftingProvider
+public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherHost, IStackWatcherHost, ICraftingWatcherHost, IMEMonitorHandlerReceiver<IAEItemStack>, ICraftingProvider
 {
 
 	final int FLAG_ON = 4;
@@ -120,7 +119,7 @@ public class PartLevelEmitter extends PartUpgradeable
 	public void setReportingValue( long v )
 	{
 		this.reportingValue = v;
-		if ( this.getConfigManager().getSetting( Settings.LEVEL_TYPE ) == LevelType.ENERGY_LEVEL )
+		if( this.getConfigManager().getSetting( Settings.LEVEL_TYPE ) == LevelType.ENERGY_LEVEL )
 			this.configureWatchers();
 		else
 			this.updateState();
@@ -135,7 +134,7 @@ public class PartLevelEmitter extends PartUpgradeable
 	private void updateState()
 	{
 		boolean isOn = this.isLevelEmitterOn();
-		if ( this.prevState != isOn )
+		if( this.prevState != isOn )
 		{
 			this.host.markForUpdate();
 			TileEntity te = this.host.getTile();
@@ -147,23 +146,23 @@ public class PartLevelEmitter extends PartUpgradeable
 
 	private boolean isLevelEmitterOn()
 	{
-		if ( Platform.isClient() )
+		if( Platform.isClient() )
 		{
 			return ( this.clientFlags & this.FLAG_ON ) == this.FLAG_ON;
 		}
 
-		if ( !this.proxy.isActive() )
+		if( !this.proxy.isActive() )
 		{
 			return false;
 		}
 
-		if ( this.getInstalledUpgrades( Upgrades.CRAFTING ) > 0 )
+		if( this.getInstalledUpgrades( Upgrades.CRAFTING ) > 0 )
 		{
 			try
 			{
 				return this.proxy.getCrafting().isRequesting( this.config.getAEStackInSlot( 0 ) );
 			}
-			catch ( GridAccessException e )
+			catch( GridAccessException e )
 			{
 				// :P
 			}
@@ -206,41 +205,40 @@ public class PartLevelEmitter extends PartUpgradeable
 		this.updateState();
 	}
 
-
 	// update the system...
 	public void configureWatchers()
 	{
 		IAEItemStack myStack = this.config.getAEStackInSlot( 0 );
 
-		if ( this.myWatcher != null )
+		if( this.myWatcher != null )
 			this.myWatcher.clear();
 
-		if ( this.myEnergyWatcher != null )
+		if( this.myEnergyWatcher != null )
 			this.myEnergyWatcher.clear();
 
-		if ( this.myCraftingWatcher != null )
+		if( this.myCraftingWatcher != null )
 			this.myCraftingWatcher.clear();
 
 		try
 		{
 			this.proxy.getGrid().postEvent( new MENetworkCraftingPatternChange( this, this.proxy.getNode() ) );
 		}
-		catch ( GridAccessException e1 )
+		catch( GridAccessException e1 )
 		{
 			// :/
 		}
 
-		if ( this.getInstalledUpgrades( Upgrades.CRAFTING ) > 0 )
+		if( this.getInstalledUpgrades( Upgrades.CRAFTING ) > 0 )
 		{
-			if ( this.myCraftingWatcher != null && myStack != null )
+			if( this.myCraftingWatcher != null && myStack != null )
 				this.myCraftingWatcher.add( myStack );
 
 			return;
 		}
 
-		if ( this.getConfigManager().getSetting( Settings.LEVEL_TYPE ) == LevelType.ENERGY_LEVEL )
+		if( this.getConfigManager().getSetting( Settings.LEVEL_TYPE ) == LevelType.ENERGY_LEVEL )
 		{
-			if ( this.myEnergyWatcher != null )
+			if( this.myEnergyWatcher != null )
 				this.myEnergyWatcher.add( (double) this.reportingValue );
 
 			try
@@ -252,7 +250,7 @@ public class PartLevelEmitter extends PartUpgradeable
 				// no more item stuff..
 				this.proxy.getStorage().getItemInventory().removeListener( this );
 			}
-			catch ( GridAccessException e )
+			catch( GridAccessException e )
 			{
 				// :P
 			}
@@ -262,7 +260,7 @@ public class PartLevelEmitter extends PartUpgradeable
 
 		try
 		{
-			if ( this.getInstalledUpgrades( Upgrades.FUZZY ) > 0 || myStack == null )
+			if( this.getInstalledUpgrades( Upgrades.FUZZY ) > 0 || myStack == null )
 			{
 				this.proxy.getStorage().getItemInventory().addListener( this, this.proxy.getGrid() );
 			}
@@ -270,41 +268,40 @@ public class PartLevelEmitter extends PartUpgradeable
 			{
 				this.proxy.getStorage().getItemInventory().removeListener( this );
 
-				if ( this.myWatcher != null )
+				if( this.myWatcher != null )
 					this.myWatcher.add( myStack );
 			}
 
 			this.updateReportingValue( this.proxy.getStorage().getItemInventory() );
 		}
-		catch ( GridAccessException e )
+		catch( GridAccessException e )
 		{
 			// >.>
 		}
 	}
 
-
 	private void updateReportingValue( IMEMonitor<IAEItemStack> monitor )
 	{
 		IAEItemStack myStack = this.config.getAEStackInSlot( 0 );
 
-		if ( myStack == null )
+		if( myStack == null )
 		{
 			this.lastReportedValue = 0;
-			for ( IAEItemStack st : monitor.getStorageList() )
+			for( IAEItemStack st : monitor.getStorageList() )
 				this.lastReportedValue += st.getStackSize();
 		}
-		else if ( this.getInstalledUpgrades( Upgrades.FUZZY ) > 0 )
+		else if( this.getInstalledUpgrades( Upgrades.FUZZY ) > 0 )
 		{
 			this.lastReportedValue = 0;
 			FuzzyMode fzMode = (FuzzyMode) this.getConfigManager().getSetting( Settings.FUZZY_MODE );
 			Collection<IAEItemStack> fuzzyList = monitor.getStorageList().findFuzzy( myStack, fzMode );
-			for ( IAEItemStack st : fuzzyList )
+			for( IAEItemStack st : fuzzyList )
 				this.lastReportedValue += st.getStackSize();
 		}
 		else
 		{
 			IAEItemStack r = monitor.getStorageList().findPrecise( myStack );
-			if ( r == null )
+			if( r == null )
 				this.lastReportedValue = 0;
 			else
 				this.lastReportedValue = r.getStackSize();
@@ -313,7 +310,6 @@ public class PartLevelEmitter extends PartUpgradeable
 		this.updateState();
 	}
 
-
 	@Override
 	public void updateWatcher( IStackWatcher newWatcher )
 	{
@@ -321,17 +317,15 @@ public class PartLevelEmitter extends PartUpgradeable
 		this.configureWatchers();
 	}
 
-
 	@Override
 	public void onStackChange( IItemList o, IAEStack fullStack, IAEStack diffStack, BaseActionSource src, StorageChannel chan )
 	{
-		if ( chan == StorageChannel.ITEMS && fullStack.equals( this.config.getAEStackInSlot( 0 ) ) && this.getInstalledUpgrades( Upgrades.FUZZY ) == 0 )
+		if( chan == StorageChannel.ITEMS && fullStack.equals( this.config.getAEStackInSlot( 0 ) ) && this.getInstalledUpgrades( Upgrades.FUZZY ) == 0 )
 		{
 			this.lastReportedValue = fullStack.getStackSize();
 			this.updateState();
 		}
 	}
-
 
 	@Override
 	public void updateWatcher( IEnergyWatcher newWatcher )
@@ -340,14 +334,12 @@ public class PartLevelEmitter extends PartUpgradeable
 		this.configureWatchers();
 	}
 
-
 	@Override
 	public void onThresholdPass( IEnergyGrid energyGrid )
 	{
 		this.lastReportedValue = (long) energyGrid.getStoredPower();
 		this.updateState();
 	}
-
 
 	@Override
 	public boolean isValid( Object effectiveGrid )
@@ -356,19 +348,17 @@ public class PartLevelEmitter extends PartUpgradeable
 		{
 			return this.proxy.getGrid() == effectiveGrid;
 		}
-		catch ( GridAccessException e )
+		catch( GridAccessException e )
 		{
 			return false;
 		}
 	}
-
 
 	@Override
 	public void postChange( IBaseMonitor<IAEItemStack> monitor, Iterable<IAEItemStack> change, BaseActionSource actionSource )
 	{
 		this.updateReportingValue( (IMEMonitor<IAEItemStack>) monitor );
 	}
-
 
 	@Override
 	public void onListUpdate()
@@ -377,12 +367,23 @@ public class PartLevelEmitter extends PartUpgradeable
 		{
 			this.updateReportingValue( this.proxy.getStorage().getItemInventory() );
 		}
-		catch ( GridAccessException e )
+		catch( GridAccessException e )
 		{
 			// ;P
 		}
 	}
 
+	@Override
+	public AECableType getCableConnectionType( ForgeDirection dir )
+	{
+		return AECableType.SMART;
+	}
+
+	@Override
+	public void getBoxes( IPartCollisionHelper bch )
+	{
+		bch.addBox( 7, 7, 11, 9, 9, 16 );
+	}
 
 	@Override
 	@SideOnly( Side.CLIENT )
@@ -395,7 +396,6 @@ public class PartLevelEmitter extends PartUpgradeable
 		// rh.setBounds( 7, 7, 10, 9, 9, 15 );
 		// rh.renderInventoryBox( renderer );
 	}
-
 
 	public void renderTorchAtAngle( double baseX, double baseY, double baseZ )
 	{
@@ -457,13 +457,13 @@ public class PartLevelEmitter extends PartUpgradeable
 
 		double toff = 0.0d;
 
-		if ( !isOn )
+		if( !isOn )
 		{
 			toff = 1.0d / 16.0d;
 		}
 
 		Tessellator var12 = Tessellator.instance;
-		if ( isOn )
+		if( isOn )
 		{
 			var12.setColorOpaque_F( 1.0F, 1.0F, 1.0F );
 			var12.setBrightness( 11 << 20 | 11 << 4 );
@@ -505,7 +505,6 @@ public class PartLevelEmitter extends PartUpgradeable
 		this.addVertexWithUV( var36, baseY + 1.0D, baseZ - var44, var17, var18 );
 	}
 
-
 	public void addVertexWithUV( double x, double y, double z, double u, double v )
 	{
 		Tessellator var12 = Tessellator.instance;
@@ -514,13 +513,13 @@ public class PartLevelEmitter extends PartUpgradeable
 		y -= this.centerY;
 		z -= this.centerZ;
 
-		if ( this.side == ForgeDirection.DOWN )
+		if( this.side == ForgeDirection.DOWN )
 		{
 			y = -y;
 			z = -z;
 		}
 
-		if ( this.side == ForgeDirection.EAST )
+		if( this.side == ForgeDirection.EAST )
 		{
 			double m = x;
 			x = y;
@@ -528,14 +527,14 @@ public class PartLevelEmitter extends PartUpgradeable
 			y = -y;
 		}
 
-		if ( this.side == ForgeDirection.WEST )
+		if( this.side == ForgeDirection.WEST )
 		{
 			double m = x;
 			x = -y;
 			y = m;
 		}
 
-		if ( this.side == ForgeDirection.SOUTH )
+		if( this.side == ForgeDirection.SOUTH )
 		{
 			double m = z;
 			z = y;
@@ -543,7 +542,7 @@ public class PartLevelEmitter extends PartUpgradeable
 			y = -y;
 		}
 
-		if ( this.side == ForgeDirection.NORTH )
+		if( this.side == ForgeDirection.NORTH )
 		{
 			double m = z;
 			z = -y;
@@ -556,7 +555,6 @@ public class PartLevelEmitter extends PartUpgradeable
 
 		var12.addVertexWithUV( x, y, z, u, v );
 	}
-
 
 	@Override
 	@SideOnly( Side.CLIENT )
@@ -587,13 +585,11 @@ public class PartLevelEmitter extends PartUpgradeable
 		// super.renderWorldBlock( world, x, y, z, block, modelId, renderer );
 	}
 
-
 	@Override
 	public int isProvidingStrongPower()
 	{
 		return this.prevState ? 15 : 0;
 	}
-
 
 	@Override
 	public int isProvidingWeakPower()
@@ -601,18 +597,10 @@ public class PartLevelEmitter extends PartUpgradeable
 		return this.prevState ? 15 : 0;
 	}
 
-
-	@Override
-	public void getBoxes( IPartCollisionHelper bch )
-	{
-		bch.addBox( 7, 7, 11, 9, 9, 16 );
-	}
-
-
 	@Override
 	public void randomDisplayTick( World world, int x, int y, int z, Random r )
 	{
-		if ( this.isLevelEmitterOn() )
+		if( this.isLevelEmitterOn() )
 		{
 			ForgeDirection d = this.side;
 
@@ -624,27 +612,18 @@ public class PartLevelEmitter extends PartUpgradeable
 		}
 	}
 
-
-	@Override
-	public AECableType getCableConnectionType( ForgeDirection dir )
-	{
-		return AECableType.SMART;
-	}
-
-
 	@Override
 	public int cableConnectionRenderTo()
 	{
 		return 16;
 	}
 
-
 	@Override
 	public boolean onPartActivate( EntityPlayer player, Vec3 pos )
 	{
-		if ( !player.isSneaking() )
+		if( !player.isSneaking() )
 		{
-			if ( Platform.isClient() )
+			if( Platform.isClient() )
 				return true;
 
 			Platform.openGUI( player, this.getHost().getTile(), this.side, GuiBridge.GUI_LEVEL_EMITTER );
@@ -654,24 +633,32 @@ public class PartLevelEmitter extends PartUpgradeable
 		return false;
 	}
 
+	@Override
+	public void updateSetting( IConfigManager manager, Enum settingName, Enum newValue )
+	{
+		this.configureWatchers();
+	}
+
+	@Override
+	public void onChangeInventory( IInventory inv, int slot, InvOperation mc, ItemStack removedStack, ItemStack newStack )
+	{
+		if( inv == this.config )
+			this.configureWatchers();
+
+		super.onChangeInventory( inv, slot, mc, removedStack, newStack );
+	}
+
+	@Override
+	public void upgradesChanged()
+	{
+		this.configureWatchers();
+	}
 
 	@Override
 	public boolean canConnectRedstone()
 	{
 		return true;
 	}
-
-
-	@Override
-	public void writeToNBT( NBTTagCompound data )
-	{
-		super.writeToNBT( data );
-		data.setLong( "lastReportedValue", this.lastReportedValue );
-		data.setLong( "reportingValue", this.reportingValue );
-		data.setBoolean( "prevState", this.prevState );
-		this.config.writeToNBT( data, "config" );
-	}
-
 
 	@Override
 	public void readFromNBT( NBTTagCompound data )
@@ -683,38 +670,23 @@ public class PartLevelEmitter extends PartUpgradeable
 		this.config.readFromNBT( data, "config" );
 	}
 
+	@Override
+	public void writeToNBT( NBTTagCompound data )
+	{
+		super.writeToNBT( data );
+		data.setLong( "lastReportedValue", this.lastReportedValue );
+		data.setLong( "reportingValue", this.reportingValue );
+		data.setBoolean( "prevState", this.prevState );
+		this.config.writeToNBT( data, "config" );
+	}
 
 	@Override
 	public IInventory getInventoryByName( String name )
 	{
-		if ( name.equals( "config" ) )
+		if( name.equals( "config" ) )
 			return this.config;
 
 		return super.getInventoryByName( name );
-	}
-
-
-	@Override
-	public void updateSetting( IConfigManager manager, Enum settingName, Enum newValue )
-	{
-		this.configureWatchers();
-	}
-
-
-	@Override
-	public void upgradesChanged()
-	{
-		this.configureWatchers();
-	}
-
-
-	@Override
-	public void onChangeInventory( IInventory inv, int slot, InvOperation mc, ItemStack removedStack, ItemStack newStack )
-	{
-		if ( inv == this.config )
-			this.configureWatchers();
-
-		super.onChangeInventory( inv, slot, mc, removedStack, newStack );
 	}
 
 	@Override
@@ -732,12 +704,12 @@ public class PartLevelEmitter extends PartUpgradeable
 	@Override
 	public void provideCrafting( ICraftingProviderHelper craftingTracker )
 	{
-		if ( this.getInstalledUpgrades( Upgrades.CRAFTING ) > 0 )
+		if( this.getInstalledUpgrades( Upgrades.CRAFTING ) > 0 )
 		{
-			if ( this.getConfigManager().getSetting( Settings.CRAFT_VIA_REDSTONE ) == YesNo.YES )
+			if( this.getConfigManager().getSetting( Settings.CRAFT_VIA_REDSTONE ) == YesNo.YES )
 			{
 				IAEItemStack what = this.config.getAEStackInSlot( 0 );
-				if ( what != null )
+				if( what != null )
 					craftingTracker.setEmitable( what );
 			}
 		}

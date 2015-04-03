@@ -18,6 +18,7 @@
 
 package appeng.me.cache.helpers;
 
+
 import net.minecraft.crash.CrashReportCategory;
 
 import appeng.api.networking.IGridNode;
@@ -26,6 +27,7 @@ import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.util.DimensionalCoord;
 import appeng.me.cache.TickManagerCache;
 import appeng.parts.AEBasePart;
+
 
 public class TickTracker implements Comparable<TickTracker>
 {
@@ -40,44 +42,45 @@ public class TickTracker implements Comparable<TickTracker>
 	public long lastTick;
 	public int current_rate;
 
-	public TickTracker(TickingRequest req, IGridNode node, IGridTickable gt, long currentTick, TickManagerCache tickManagerCache) {
+	public TickTracker( TickingRequest req, IGridNode node, IGridTickable gt, long currentTick, TickManagerCache tickManagerCache )
+	{
 		this.request = req;
 		this.gt = gt;
 		this.node = node;
-		this.current_rate = (req.minTickRate + req.maxTickRate) / 2;
+		this.current_rate = ( req.minTickRate + req.maxTickRate ) / 2;
 		this.lastTick = currentTick;
 		this.host = tickManagerCache;
 	}
 
 	public long getAvgNanos()
 	{
-		return (this.LastFiveTicksTime / 5);
+		return ( this.LastFiveTicksTime / 5 );
 	}
 
-	public void setRate(int rate)
+	public void setRate( int rate )
 	{
 		this.current_rate = rate;
 
-		if ( this.current_rate < this.request.minTickRate )
+		if( this.current_rate < this.request.minTickRate )
 			this.current_rate = this.request.minTickRate;
 
-		if ( this.current_rate > this.request.maxTickRate )
+		if( this.current_rate > this.request.maxTickRate )
 			this.current_rate = this.request.maxTickRate;
 	}
 
 	@Override
-	public int compareTo(TickTracker t)
+	public int compareTo( TickTracker t )
 	{
-		int nextTick = (int) ((this.lastTick - this.host.getCurrentTick()) + this.current_rate);
-		int ts_nextTick = (int) ((t.lastTick - this.host.getCurrentTick()) + t.current_rate);
+		int nextTick = (int) ( ( this.lastTick - this.host.getCurrentTick() ) + this.current_rate );
+		int ts_nextTick = (int) ( ( t.lastTick - this.host.getCurrentTick() ) + t.current_rate );
 		return nextTick - ts_nextTick;
 	}
 
-	public void addEntityCrashInfo(CrashReportCategory crashreportcategory)
+	public void addEntityCrashInfo( CrashReportCategory crashreportcategory )
 	{
-		if ( this.gt instanceof AEBasePart )
+		if( this.gt instanceof AEBasePart )
 		{
-			AEBasePart part = (AEBasePart)this.gt;
+			AEBasePart part = (AEBasePart) this.gt;
 			part.addEntityCrashInfo( crashreportcategory );
 		}
 
@@ -89,7 +92,7 @@ public class TickTracker implements Comparable<TickTracker>
 		crashreportcategory.addCrashSection( "ConnectedSides", this.node.getConnectedSides() );
 
 		DimensionalCoord dc = this.node.getGridBlock().getLocation();
-		if ( dc != null )
+		if( dc != null )
 			crashreportcategory.addCrashSection( "Location", dc );
 	}
 }

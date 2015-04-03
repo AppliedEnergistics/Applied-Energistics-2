@@ -18,6 +18,7 @@
 
 package appeng.util.item;
 
+
 import java.util.List;
 
 import net.minecraft.init.Items;
@@ -30,37 +31,30 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 import appeng.util.Platform;
 
+
 public class AEItemDef
 {
 
-	public int myHash;
-
-	public int def;
-
-	public final int itemID;
-	public final Item item;
-	public int damageValue;
-
-	public int displayDamage;
-	public int maxDamage;
-
-	public AESharedNBT tagCompound;
-
-	@SideOnly(Side.CLIENT)
-	public String displayName;
-
-	@SideOnly(Side.CLIENT)
-	public List tooltip;
-
-	@SideOnly(Side.CLIENT)
-	public UniqueIdentifier uniqueID;
-
-	public OreReference isOre;
-
 	static final AESharedNBT LOW_TAG = new AESharedNBT( Integer.MIN_VALUE );
 	static final AESharedNBT HIGH_TAG = new AESharedNBT( Integer.MAX_VALUE );
+	public final int itemID;
+	public final Item item;
+	public int myHash;
+	public int def;
+	public int damageValue;
+	public int displayDamage;
+	public int maxDamage;
+	public AESharedNBT tagCompound;
+	@SideOnly( Side.CLIENT )
+	public String displayName;
+	@SideOnly( Side.CLIENT )
+	public List tooltip;
+	@SideOnly( Side.CLIENT )
+	public UniqueIdentifier uniqueID;
+	public OreReference isOre;
 
-	public AEItemDef(Item it) {
+	public AEItemDef( Item it )
+	{
 		this.item = it;
 		this.itemID = Item.getIdFromItem( it );
 	}
@@ -78,32 +72,27 @@ public class AEItemDef
 	}
 
 	@Override
-	public boolean equals(Object obj)
+	public boolean equals( Object obj )
 	{
-		if ( obj == null )
+		if( obj == null )
 			return false;
-		if ( this.getClass() != obj.getClass() )
+		if( this.getClass() != obj.getClass() )
 			return false;
 		AEItemDef other = (AEItemDef) obj;
 		return other.damageValue == this.damageValue && other.item == this.item && this.tagCompound == other.tagCompound;
 	}
 
-	public int getDamageValueHack(ItemStack is)
-	{
-		return Items.blaze_rod.getDamage( is );
-	}
-
-	public boolean isItem(ItemStack otherStack)
+	public boolean isItem( ItemStack otherStack )
 	{
 		// hackery!
 		int dmg = this.getDamageValueHack( otherStack );
 
-		if ( this.item == otherStack.getItem() && dmg == this.damageValue )
+		if( this.item == otherStack.getItem() && dmg == this.damageValue )
 		{
-			if ( (this.tagCompound != null) == otherStack.hasTagCompound() )
+			if( ( this.tagCompound != null ) == otherStack.hasTagCompound() )
 				return true;
 
-			if ( this.tagCompound != null && otherStack.hasTagCompound() )
+			if( this.tagCompound != null && otherStack.hasTagCompound() )
 				return Platform.NBTEqualityTest( this.tagCompound, otherStack.getTagCompound() );
 
 			return true;
@@ -111,9 +100,14 @@ public class AEItemDef
 		return false;
 	}
 
+	public int getDamageValueHack( ItemStack is )
+	{
+		return Items.blaze_rod.getDamage( is );
+	}
+
 	public void reHash()
 	{
 		this.def = this.itemID << Platform.DEF_OFFSET | this.damageValue;
-		this.myHash = this.def ^ (this.tagCompound == null ? 0 : System.identityHashCode( this.tagCompound ));
+		this.myHash = this.def ^ ( this.tagCompound == null ? 0 : System.identityHashCode( this.tagCompound ) );
 	}
 }

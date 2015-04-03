@@ -29,7 +29,7 @@ public class FalloutCopy extends Fallout
 	public void getRandomFall( IMeteoriteWorld w, int x, int y, int z )
 	{
 		double a = Math.random();
-		if ( a > SPECIFIED_BLOCK_THRESHOLD )
+		if( a > SPECIFIED_BLOCK_THRESHOLD )
 		{
 			this.putter.put( w, x, y, z, this.block, this.meta );
 		}
@@ -48,11 +48,11 @@ public class FalloutCopy extends Fallout
 	public void getRandomInset( IMeteoriteWorld w, int x, int y, int z )
 	{
 		double a = Math.random();
-		if ( a > SPECIFIED_BLOCK_THRESHOLD )
+		if( a > SPECIFIED_BLOCK_THRESHOLD )
 		{
 			this.putter.put( w, x, y, z, this.block, this.meta );
 		}
-		else if ( a > AIR_BLOCK_THRESHOLD )
+		else if( a > AIR_BLOCK_THRESHOLD )
 		{
 			this.putter.put( w, x, y, z, Platform.AIR );
 		}

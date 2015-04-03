@@ -18,6 +18,7 @@
 
 package appeng.core.api.imc;
 
+
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 
@@ -27,6 +28,7 @@ import appeng.api.AEApi;
 import appeng.core.AELog;
 import appeng.core.api.IIMCProcessor;
 
+
 public class IMCBlackListSpatial implements IIMCProcessor
 {
 
@@ -35,10 +37,10 @@ public class IMCBlackListSpatial implements IIMCProcessor
 	{
 
 		ItemStack is = m.getItemStackValue();
-		if ( is != null )
+		if( is != null )
 		{
 			Block blk = Block.getBlockFromItem( is.getItem() );
-			if ( blk != null )
+			if( blk != null )
 			{
 				AEApi.instance().registries().movable().blacklistBlock( blk );
 				return;
@@ -46,7 +48,5 @@ public class IMCBlackListSpatial implements IIMCProcessor
 		}
 
 		AELog.info( "Bad Block blacklisted by " + m.getSender() );
-
 	}
-
 }

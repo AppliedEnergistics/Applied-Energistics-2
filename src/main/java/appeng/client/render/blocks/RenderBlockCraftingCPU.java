@@ -18,6 +18,7 @@
 
 package appeng.client.render.blocks;
 
+
 import java.util.EnumSet;
 
 import net.minecraft.block.Block;
@@ -40,26 +41,29 @@ import appeng.client.texture.ExtraBlockTextures;
 import appeng.tile.crafting.TileCraftingMonitorTile;
 import appeng.tile.crafting.TileCraftingTile;
 
+
 public class RenderBlockCraftingCPU extends BaseBlockRender
 {
 
-	protected RenderBlockCraftingCPU(boolean useTESR, int range) {
+	protected RenderBlockCraftingCPU( boolean useTESR, int range )
+	{
 		super( useTESR, range );
 	}
 
-	public RenderBlockCraftingCPU() {
+	public RenderBlockCraftingCPU()
+	{
 		super( false, 20 );
 	}
 
 	@Override
-	public boolean renderInWorld(AEBaseBlock blk, IBlockAccess w, int x, int y, int z, RenderBlocks renderer)
+	public boolean renderInWorld( AEBaseBlock blk, IBlockAccess w, int x, int y, int z, RenderBlocks renderer )
 	{
 		IIcon theIcon = null;
 		boolean formed = false;
 		boolean emitsLight = false;
 
 		TileCraftingTile ct = blk.getTileEntity( w, x, y, z );
-		if ( ct != null && ct.isFormed() )
+		if( ct != null && ct.isFormed() )
 		{
 			formed = true;
 			emitsLight = ct.isPowered();
@@ -67,18 +71,18 @@ public class RenderBlockCraftingCPU extends BaseBlockRender
 		int meta = w.getBlockMetadata( x, y, z ) & 3;
 
 		boolean isMonitor = blk.getClass() == BlockCraftingMonitor.class;
-		theIcon = blk.getIcon( ForgeDirection.SOUTH.ordinal(), meta | (formed ? 8 : 0) );
+		theIcon = blk.getIcon( ForgeDirection.SOUTH.ordinal(), meta | ( formed ? 8 : 0 ) );
 
 		IIcon nonForward = theIcon;
-		if ( isMonitor )
+		if( isMonitor )
 		{
-			for ( Block craftingBlock : AEApi.instance().definitions().blocks().craftingUnit().maybeBlock().asSet() )
+			for( Block craftingBlock : AEApi.instance().definitions().blocks().craftingUnit().maybeBlock().asSet() )
 			{
 				nonForward = craftingBlock.getIcon( 0, meta | ( formed ? 8 : 0 ) );
 			}
 		}
 
-		if ( formed && renderer.overrideBlockTexture == null )
+		if( formed && renderer.overrideBlockTexture == null )
 		{
 			renderer = BusRenderer.INSTANCE.renderer;
 			BusRenderHelper i = BusRenderHelper.INSTANCE;
@@ -92,7 +96,7 @@ public class RenderBlockCraftingCPU extends BaseBlockRender
 			{
 				ct.lightCache = i.useSimplifiedRendering( x, y, z, null, ct.lightCache );
 			}
-			catch (Throwable ignored)
+			catch( Throwable ignored )
 			{
 
 			}
@@ -115,14 +119,13 @@ public class RenderBlockCraftingCPU extends BaseBlockRender
 			this.renderCorner( i, renderer, w, x, y, z, ForgeDirection.DOWN, ForgeDirection.WEST, ForgeDirection.NORTH );
 			this.renderCorner( i, renderer, w, x, y, z, ForgeDirection.DOWN, ForgeDirection.WEST, ForgeDirection.SOUTH );
 
-			for (ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+			for( ForgeDirection side : ForgeDirection.VALID_DIRECTIONS )
 			{
-				i.setBounds( this.fso( side, lowX, ForgeDirection.WEST ), this.fso( side, lowY, ForgeDirection.DOWN ), this.fso( side, lowZ, ForgeDirection.NORTH ),
-						this.fso( side, highX, ForgeDirection.EAST ), this.fso( side, highY, ForgeDirection.UP ), this.fso( side, highZ, ForgeDirection.SOUTH ) );
+				i.setBounds( this.fso( side, lowX, ForgeDirection.WEST ), this.fso( side, lowY, ForgeDirection.DOWN ), this.fso( side, lowZ, ForgeDirection.NORTH ), this.fso( side, highX, ForgeDirection.EAST ), this.fso( side, highY, ForgeDirection.UP ), this.fso( side, highZ, ForgeDirection.SOUTH ) );
 				i.prepareBounds( renderer );
 
 				boolean LocalEmit = emitsLight;
-				if ( blk instanceof BlockCraftingMonitor && ct.getForward() != side )
+				if( blk instanceof BlockCraftingMonitor && ct.getForward() != side )
 					LocalEmit = false;
 
 				this.handleSide( blk, meta, x, y, z, i, renderer, ct.getForward() == side ? theIcon : nonForward, LocalEmit, isMonitor, side, w );
@@ -144,74 +147,75 @@ public class RenderBlockCraftingCPU extends BaseBlockRender
 		}
 	}
 
-	private void renderCorner(BusRenderHelper i, RenderBlocks renderer, IBlockAccess w, int x, int y, int z, ForgeDirection up, ForgeDirection east,
-			ForgeDirection south)
+	private boolean isConnected( IBlockAccess w, int x, int y, int z, ForgeDirection side )
 	{
-		if ( this.isConnected( w, x, y, z, up ) )
+		final int tileYPos = y + side.offsetY;
+		if( 0 <= tileYPos && tileYPos <= 255 )
+		{
+			final TileEntity tile = w.getTileEntity( x + side.offsetX, tileYPos, z + side.offsetZ );
+
+			return tile instanceof TileCraftingTile;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	private void renderCorner( BusRenderHelper i, RenderBlocks renderer, IBlockAccess w, int x, int y, int z, ForgeDirection up, ForgeDirection east, ForgeDirection south )
+	{
+		if( this.isConnected( w, x, y, z, up ) )
 			return;
-		if ( this.isConnected( w, x, y, z, east ) )
+		if( this.isConnected( w, x, y, z, east ) )
 			return;
-		if ( this.isConnected( w, x, y, z, south ) )
+		if( this.isConnected( w, x, y, z, south ) )
 			return;
 
-		i.setBounds( this.gso( east, 3, ForgeDirection.WEST ), this.gso( up, 3, ForgeDirection.DOWN ), this.gso( south, 3, ForgeDirection.NORTH ),
-				this.gso( east, 13, ForgeDirection.EAST ), this.gso( up, 13, ForgeDirection.UP ), this.gso( south, 13, ForgeDirection.SOUTH ) );
+		i.setBounds( this.gso( east, 3, ForgeDirection.WEST ), this.gso( up, 3, ForgeDirection.DOWN ), this.gso( south, 3, ForgeDirection.NORTH ), this.gso( east, 13, ForgeDirection.EAST ), this.gso( up, 13, ForgeDirection.UP ), this.gso( south, 13, ForgeDirection.SOUTH ) );
 		i.prepareBounds( renderer );
 		i.setTexture( ExtraBlockTextures.BlockCraftingUnitRing.getIcon() );
 		i.renderBlockCurrentBounds( x, y, z, renderer );
 	}
 
-	private float gso(ForgeDirection side, float def, ForgeDirection target)
+	private float fso( ForgeDirection side, float def, ForgeDirection target )
 	{
-		if ( side != target )
+		if( side == target )
 		{
-			if ( side.offsetX > 0 || side.offsetY > 0 || side.offsetZ > 0 )
+			if( side.offsetX > 0 || side.offsetY > 0 || side.offsetZ > 0 )
 				return 16;
 			return 0;
 		}
 		return def;
 	}
 
-	private float fso(ForgeDirection side, float def, ForgeDirection target)
+	private void handleSide( AEBaseBlock blk, int meta, int x, int y, int z, BusRenderHelper i, RenderBlocks renderer, IIcon color, boolean emitsLight, boolean isMonitor, ForgeDirection side, IBlockAccess w )
 	{
-		if ( side == target )
-		{
-			if ( side.offsetX > 0 || side.offsetY > 0 || side.offsetZ > 0 )
-				return 16;
-			return 0;
-		}
-		return def;
-	}
-
-	private void handleSide(AEBaseBlock blk, int meta, int x, int y, int z, BusRenderHelper i, RenderBlocks renderer, IIcon color, boolean emitsLight,
-			boolean isMonitor, ForgeDirection side, IBlockAccess w)
-	{
-		if ( this.isConnected( w, x, y, z, side ) )
+		if( this.isConnected( w, x, y, z, side ) )
 			return;
 
 		i.setFacesToRender( EnumSet.of( side ) );
 
-		if ( meta == 0 && blk.getClass() == BlockCraftingUnit.class )
+		if( meta == 0 && blk.getClass() == BlockCraftingUnit.class )
 		{
 			i.setTexture( ExtraBlockTextures.BlockCraftingUnitFit.getIcon() );
 			i.renderBlockCurrentBounds( x, y, z, renderer );
 		}
 		else
 		{
-			if ( color == ExtraBlockTextures.BlockCraftingMonitorFit_Light.getIcon() )
+			if( color == ExtraBlockTextures.BlockCraftingMonitorFit_Light.getIcon() )
 				i.setTexture( ExtraBlockTextures.BlockCraftingMonitorOuter.getIcon() );
 			else
 				i.setTexture( ExtraBlockTextures.BlockCraftingFitSolid.getIcon() );
 
 			i.renderBlockCurrentBounds( x, y, z, renderer );
 
-			if ( color != null )
+			if( color != null )
 			{
 				i.setTexture( color );
 
-				if ( !emitsLight )
+				if( !emitsLight )
 				{
-					if ( color == ExtraBlockTextures.BlockCraftingMonitorFit_Light.getIcon() )
+					if( color == ExtraBlockTextures.BlockCraftingMonitorFit_Light.getIcon() )
 					{
 						int b = w.getLightBrightnessForSkyBlocks( x + side.offsetX, y + side.offsetY, z + side.offsetZ, 0 );
 
@@ -233,7 +237,7 @@ public class RenderBlockCraftingCPU extends BaseBlockRender
 				}
 				else
 				{
-					if ( isMonitor )
+					if( isMonitor )
 					{
 						TileCraftingMonitorTile sr = blk.getTileEntity( w, x, y, z );
 						AEColor col = sr.getColor();
@@ -257,68 +261,66 @@ public class RenderBlockCraftingCPU extends BaseBlockRender
 						i.renderFace( x, y, z, color, side, renderer );
 					}
 				}
-
 			}
 		}
 
-		for (ForgeDirection a : ForgeDirection.VALID_DIRECTIONS)
+		for( ForgeDirection a : ForgeDirection.VALID_DIRECTIONS )
 		{
-			if ( a == side || a == side.getOpposite() )
+			if( a == side || a == side.getOpposite() )
 				continue;
 
-			if ( (side.offsetX != 0 || side.offsetZ != 0)
-					&& (a == ForgeDirection.NORTH || a == ForgeDirection.EAST || a == ForgeDirection.WEST || a == ForgeDirection.SOUTH) )
+			if( ( side.offsetX != 0 || side.offsetZ != 0 ) && ( a == ForgeDirection.NORTH || a == ForgeDirection.EAST || a == ForgeDirection.WEST || a == ForgeDirection.SOUTH ) )
 				i.setTexture( ExtraBlockTextures.BlockCraftingUnitRingLongRotated.getIcon() );
-			else if ( (side.offsetY != 0) && (a == ForgeDirection.EAST || a == ForgeDirection.WEST) )
+			else if( ( side.offsetY != 0 ) && ( a == ForgeDirection.EAST || a == ForgeDirection.WEST ) )
 				i.setTexture( ExtraBlockTextures.BlockCraftingUnitRingLongRotated.getIcon() );
 			else
 				i.setTexture( ExtraBlockTextures.BlockCraftingUnitRingLong.getIcon() );
 
 			double width = 3.0 / 16.0;
 
-			if ( !(i.getBound( a ) < 0.001 || i.getBound( a ) > 15.999) )
+			if( !( i.getBound( a ) < 0.001 || i.getBound( a ) > 15.999 ) )
 			{
-				switch (a)
+				switch( a )
 				{
-				case DOWN:
-					renderer.renderMinY = 0;
-					renderer.renderMaxY = width;
-					break;
-				case EAST:
-					renderer.renderMaxX = 1;
-					renderer.renderMinX = 1.0 - width;
-					renderer.uvRotateTop = 1;
-					renderer.uvRotateBottom = 1;
-					renderer.uvRotateWest = 1;
-					renderer.uvRotateEast = 1;
-					break;
-				case NORTH:
-					renderer.renderMinZ = 0;
-					renderer.renderMaxZ = width;
-					renderer.uvRotateWest = 1;
-					renderer.uvRotateNorth = 1;
-					renderer.uvRotateSouth = 1;
-					break;
-				case SOUTH:
-					renderer.renderMaxZ = 1;
-					renderer.renderMinZ = 1.0 - width;
-					renderer.uvRotateNorth = 1;
-					renderer.uvRotateSouth = 1;
-					break;
-				case UP:
-					renderer.renderMaxY = 1;
-					renderer.renderMinY = 1.0 - width;
-					break;
-				case WEST:
-					renderer.renderMinX = 0;
-					renderer.renderMaxX = width;
-					renderer.uvRotateTop = 1;
-					renderer.uvRotateBottom = 1;
-					renderer.uvRotateWest = 1;
-					renderer.uvRotateEast = 1;
-					break;
-				case UNKNOWN:
-				default:
+					case DOWN:
+						renderer.renderMinY = 0;
+						renderer.renderMaxY = width;
+						break;
+					case EAST:
+						renderer.renderMaxX = 1;
+						renderer.renderMinX = 1.0 - width;
+						renderer.uvRotateTop = 1;
+						renderer.uvRotateBottom = 1;
+						renderer.uvRotateWest = 1;
+						renderer.uvRotateEast = 1;
+						break;
+					case NORTH:
+						renderer.renderMinZ = 0;
+						renderer.renderMaxZ = width;
+						renderer.uvRotateWest = 1;
+						renderer.uvRotateNorth = 1;
+						renderer.uvRotateSouth = 1;
+						break;
+					case SOUTH:
+						renderer.renderMaxZ = 1;
+						renderer.renderMinZ = 1.0 - width;
+						renderer.uvRotateNorth = 1;
+						renderer.uvRotateSouth = 1;
+						break;
+					case UP:
+						renderer.renderMaxY = 1;
+						renderer.renderMinY = 1.0 - width;
+						break;
+					case WEST:
+						renderer.renderMinX = 0;
+						renderer.renderMaxX = width;
+						renderer.uvRotateTop = 1;
+						renderer.uvRotateBottom = 1;
+						renderer.uvRotateWest = 1;
+						renderer.uvRotateEast = 1;
+						break;
+					case UNKNOWN:
+					default:
 				}
 
 				i.renderBlockCurrentBounds( x, y, z, renderer );
@@ -327,18 +329,14 @@ public class RenderBlockCraftingCPU extends BaseBlockRender
 		}
 	}
 
-	private boolean isConnected(IBlockAccess w, int x, int y, int z, ForgeDirection side)
+	private float gso( ForgeDirection side, float def, ForgeDirection target )
 	{
-		final int tileYPos = y + side.offsetY;
-		if ( 0 <= tileYPos && tileYPos <= 255)
+		if( side != target )
 		{
-			final TileEntity tile = w.getTileEntity( x + side.offsetX, tileYPos, z + side.offsetZ );
-
-			return tile instanceof TileCraftingTile;
+			if( side.offsetX > 0 || side.offsetY > 0 || side.offsetZ > 0 )
+				return 16;
+			return 0;
 		}
-		else
-		{
-			return false;
-		}
+		return def;
 	}
 }

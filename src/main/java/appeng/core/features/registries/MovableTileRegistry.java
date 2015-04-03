@@ -18,6 +18,7 @@
 
 package appeng.core.features.registries;
 
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -31,6 +32,7 @@ import appeng.api.movable.IMovableRegistry;
 import appeng.api.movable.IMovableTile;
 import appeng.spatial.DefaultSpatialHandler;
 
+
 public class MovableTileRegistry implements IMovableRegistry
 {
 
@@ -43,14 +45,53 @@ public class MovableTileRegistry implements IMovableRegistry
 
 	private final IMovableHandler nullHandler = new DefaultSpatialHandler();
 
-	private IMovableHandler testClass(Class myClass, TileEntity te)
+	@Override
+	public void blacklistBlock( Block blk )
+	{
+		this.blacklisted.add( blk );
+	}
+
+	@Override
+	public void whiteListTileEntity( Class<? extends TileEntity> c )
+	{
+
+		if( c.getName().equals( TileEntity.class.getName() ) )
+		{
+			throw new RuntimeException( new AppEngException( "Someone tried to make all tiles movable, this is a clear violation of the purpose of the white list." ) );
+		}
+
+		this.test.add( c );
+	}
+
+	@Override
+	public boolean askToMove( TileEntity te )
+	{
+		Class myClass = te.getClass();
+		IMovableHandler canMove = this.Valid.get( myClass );
+
+		if( canMove == null )
+			canMove = this.testClass( myClass, te );
+
+		if( canMove != this.nullHandler )
+		{
+			if( te instanceof IMovableTile )
+				( (IMovableTile) te ).prepareToMove();
+
+			te.invalidate();
+			return true;
+		}
+
+		return false;
+	}
+
+	private IMovableHandler testClass( Class myClass, TileEntity te )
 	{
 		IMovableHandler handler = null;
 
 		// ask handlers...
-		for (IMovableHandler han : this.handlers)
+		for( IMovableHandler han : this.handlers )
 		{
-			if ( han.canHandle( myClass, te ) )
+			if( han.canHandle( myClass, te ) )
 			{
 				handler = han;
 				break;
@@ -58,24 +99,23 @@ public class MovableTileRegistry implements IMovableRegistry
 		}
 
 		// if you have a handler your opted in
-		if ( handler != null )
+		if( handler != null )
 		{
 			this.Valid.put( myClass, handler );
 			return handler;
-
 		}
 
 		// if your movable our opted in
-		if ( te instanceof IMovableTile )
+		if( te instanceof IMovableTile )
 		{
 			this.Valid.put( myClass, this.dsh );
 			return this.dsh;
 		}
 
 		// if you are on the white list your opted in.
-		for (Class<? extends TileEntity> testClass : this.test)
+		for( Class<? extends TileEntity> testClass : this.test )
 		{
-			if ( testClass.isAssignableFrom( myClass ) )
+			if( testClass.isAssignableFrom( myClass ) )
 			{
 				this.Valid.put( myClass, this.dsh );
 				return this.dsh;
@@ -87,30 +127,9 @@ public class MovableTileRegistry implements IMovableRegistry
 	}
 
 	@Override
-	public boolean askToMove(TileEntity te)
+	public void doneMoving( TileEntity te )
 	{
-		Class myClass = te.getClass();
-		IMovableHandler canMove = this.Valid.get( myClass );
-
-		if ( canMove == null )
-			canMove = this.testClass( myClass, te );
-
-		if ( canMove != this.nullHandler )
-		{
-			if ( te instanceof IMovableTile )
-				((IMovableTile) te).prepareToMove();
-
-			te.invalidate();
-			return true;
-		}
-
-		return false;
-	}
-
-	@Override
-	public void doneMoving(TileEntity te)
-	{
-		if ( te instanceof IMovableTile )
+		if( te instanceof IMovableTile )
 		{
 			IMovableTile mt = (IMovableTile) te;
 			mt.doneMoving();
@@ -118,26 +137,13 @@ public class MovableTileRegistry implements IMovableRegistry
 	}
 
 	@Override
-	public void whiteListTileEntity(Class<? extends TileEntity> c)
-	{
-
-		if ( c.getName().equals( TileEntity.class.getName() ) )
-		{
-			throw new RuntimeException( new AppEngException(
-					"Someone tried to make all tiles movable, this is a clear violation of the purpose of the white list." ) );
-		}
-
-		this.test.add( c );
-	}
-
-	@Override
-	public void addHandler(IMovableHandler han)
+	public void addHandler( IMovableHandler han )
 	{
 		this.handlers.add( han );
 	}
 
 	@Override
-	public IMovableHandler getHandler(TileEntity te)
+	public IMovableHandler getHandler( TileEntity te )
 	{
 		Class myClass = te.getClass();
 		IMovableHandler h = this.Valid.get( myClass );
@@ -151,15 +157,8 @@ public class MovableTileRegistry implements IMovableRegistry
 	}
 
 	@Override
-	public void blacklistBlock(Block blk)
-	{
-		this.blacklisted.add( blk );
-	}
-
-	@Override
-	public boolean isBlacklisted(Block blk)
+	public boolean isBlacklisted( Block blk )
 	{
 		return this.blacklisted.contains( blk );
 	}
-
 }

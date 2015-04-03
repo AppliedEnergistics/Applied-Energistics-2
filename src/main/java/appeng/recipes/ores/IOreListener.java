@@ -18,7 +18,9 @@
 
 package appeng.recipes.ores;
 
+
 import net.minecraft.item.ItemStack;
+
 
 public interface IOreListener
 {
@@ -30,6 +32,5 @@ public interface IOreListener
 	 * @param name name of ore
 	 * @param item item with name
 	 */
-	void oreRegistered(String name, ItemStack item);
-
+	void oreRegistered( String name, ItemStack item );
 }

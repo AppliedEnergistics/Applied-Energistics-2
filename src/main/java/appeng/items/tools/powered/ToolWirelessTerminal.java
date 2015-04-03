@@ -54,15 +54,8 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 
 	public ToolWirelessTerminal()
 	{
-		super( AEConfig.instance.wirelessTerminalBattery, Optional.<String> absent() );
+		super( AEConfig.instance.wirelessTerminalBattery, Optional.<String>absent() );
 		this.setFeature( EnumSet.of( AEFeature.WirelessAccessTerminal, AEFeature.PoweredTools ) );
-	}
-
-	@SideOnly(Side.CLIENT)
-	@Override
-	public boolean isFull3D()
-	{
-		return false;
 	}
 
 	@Override
@@ -72,19 +65,26 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 		return item;
 	}
 
+	@SideOnly( Side.CLIENT )
+	@Override
+	public boolean isFull3D()
+	{
+		return false;
+	}
+
 	@Override
 	public void addCheckedInformation( ItemStack stack, EntityPlayer player, List<String> lines, boolean displayAdditionalInformation )
 	{
 		super.addCheckedInformation( stack, player, lines, displayAdditionalInformation );
 
-		if ( stack.hasTagCompound() )
+		if( stack.hasTagCompound() )
 		{
 			NBTTagCompound tag = Platform.openNbtData( stack );
-			if ( tag != null )
+			if( tag != null )
 			{
 				String encKey = tag.getString( "encryptionKey" );
 
-				if ( encKey == null || encKey.isEmpty() )
+				if( encKey == null || encKey.isEmpty() )
 					lines.add( GuiText.Unlinked.getLocal() );
 				else
 					lines.add( GuiText.Linked.getLocal() );
@@ -115,7 +115,8 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 	@Override
 	public IConfigManager getConfigManager( final ItemStack target )
 	{
-		final ConfigManager out = new ConfigManager( new IConfigManagerHost(){
+		final ConfigManager out = new ConfigManager( new IConfigManagerHost()
+		{
 
 			@Override
 			public void updateSetting( IConfigManager manager, Enum settingName, Enum newValue )
@@ -123,14 +124,13 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 				NBTTagCompound data = Platform.openNbtData( target );
 				manager.writeToNBT( data );
 			}
-
 		} );
 
 		out.registerSetting( Settings.SORT_BY, SortOrder.NAME );
 		out.registerSetting( Settings.VIEW_MODE, ViewItems.ALL );
 		out.registerSetting( Settings.SORT_DIRECTION, SortDir.ASCENDING );
 
-		out.readFromNBT( ( NBTTagCompound ) Platform.openNbtData( target ).copy() );
+		out.readFromNBT( (NBTTagCompound) Platform.openNbtData( target ).copy() );
 		return out;
 	}
 
@@ -148,5 +148,4 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 		tag.setString( "encryptionKey", encKey );
 		tag.setString( "name", name );
 	}
-
 }

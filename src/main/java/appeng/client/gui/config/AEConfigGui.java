@@ -32,24 +32,30 @@ import cpw.mods.fml.client.config.IConfigElement;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
 
+
 public class AEConfigGui extends GuiConfig
 {
+
+	public AEConfigGui( GuiScreen parent )
+	{
+		super( parent, getConfigElements(), AppEng.MOD_ID, false, false, GuiConfig.getAbridgedConfigPath( AEConfig.instance.getFilePath() ) );
+	}
 
 	private static List<IConfigElement> getConfigElements()
 	{
 		List<IConfigElement> list = new ArrayList<IConfigElement>();
 
-		for (String cat : AEConfig.instance.getCategoryNames())
+		for( String cat : AEConfig.instance.getCategoryNames() )
 		{
-			if ( cat.equals( "versionchecker" ) )
+			if( cat.equals( "versionchecker" ) )
 				continue;
 
-			if ( cat.equals( "settings" ) )
+			if( cat.equals( "settings" ) )
 				continue;
 
 			ConfigCategory cc = AEConfig.instance.getCategory( cat );
 
-			if ( cc.isChild() )
+			if( cc.isChild() )
 				continue;
 
 			ConfigElement ce = new ConfigElement( cc );
@@ -58,9 +64,4 @@ public class AEConfigGui extends GuiConfig
 
 		return list;
 	}
-
-	public AEConfigGui(GuiScreen parent) {
-		super( parent, getConfigElements(), AppEng.MOD_ID, false, false, GuiConfig.getAbridgedConfigPath( AEConfig.instance.getFilePath() ) );
-	}
-
 }

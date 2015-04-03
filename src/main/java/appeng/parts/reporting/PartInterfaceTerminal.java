@@ -42,11 +42,11 @@ public class PartInterfaceTerminal extends PartMonitor
 	@Override
 	public boolean onPartActivate( EntityPlayer player, Vec3 pos )
 	{
-		if ( !super.onPartActivate( player, pos ) )
+		if( !super.onPartActivate( player, pos ) )
 		{
-			if ( !player.isSneaking() )
+			if( !player.isSneaking() )
 			{
-				if ( Platform.isClient() )
+				if( Platform.isClient() )
 					return true;
 
 				Platform.openGUI( player, this.getHost().getTile(), this.side, GuiBridge.GUI_INTERFACE_TERMINAL );

@@ -94,6 +94,31 @@ public class PartToggleBus extends PartBasicState
 	}
 
 	@Override
+	public AECableType getCableConnectionType( ForgeDirection dir )
+	{
+		return AECableType.GLASS;
+	}
+
+	@Override
+	public void securityBreak()
+	{
+		if( this.is.stackSize > 0 )
+		{
+			List<ItemStack> items = new ArrayList<ItemStack>();
+			items.add( this.is.copy() );
+			this.host.removePart( this.side, false );
+			Platform.spawnDrops( this.tile.getWorldObj(), this.tile.xCoord, this.tile.yCoord, this.tile.zCoord, items );
+			this.is.stackSize = 0;
+		}
+	}
+
+	@Override
+	public void getBoxes( IPartCollisionHelper bch )
+	{
+		bch.addBox( 6, 6, 11, 10, 10, 16 );
+	}
+
+	@Override
 	@SideOnly( Side.CLIENT )
 	public void renderInventory( IPartRenderHelper rh, RenderBlocks renderer )
 	{
@@ -145,7 +170,7 @@ public class PartToggleBus extends PartBasicState
 		boolean oldHasRedstone = this.hasRedstone;
 		this.hasRedstone = this.getHost().hasRedstone( this.side );
 
-		if ( this.hasRedstone != oldHasRedstone )
+		if( this.hasRedstone != oldHasRedstone )
 		{
 			this.updateInternalState();
 			this.getHost().markForUpdate();
@@ -196,18 +221,6 @@ public class PartToggleBus extends PartBasicState
 	}
 
 	@Override
-	public void getBoxes( IPartCollisionHelper bch )
-	{
-		bch.addBox( 6, 6, 11, 10, 10, 16 );
-	}
-
-	@Override
-	public AECableType getCableConnectionType( ForgeDirection dir )
-	{
-		return AECableType.GLASS;
-	}
-
-	@Override
 	public int cableConnectionRenderTo()
 	{
 		return 5;
@@ -220,33 +233,20 @@ public class PartToggleBus extends PartBasicState
 		this.outerProxy.setOwner( player );
 	}
 
-	@Override
-	public void securityBreak()
-	{
-		if ( this.is.stackSize > 0 )
-		{
-			List<ItemStack> items = new ArrayList<ItemStack>();
-			items.add( this.is.copy() );
-			this.host.removePart( this.side, false );
-			Platform.spawnDrops( this.tile.getWorldObj(), this.tile.xCoord, this.tile.yCoord, this.tile.zCoord, items );
-			this.is.stackSize = 0;
-		}
-	}
-
 	private void updateInternalState()
 	{
 		boolean intention = this.getIntention();
-		if ( intention == ( this.connection == null ) )
+		if( intention == ( this.connection == null ) )
 		{
-			if ( this.proxy.getNode() != null && this.outerProxy.getNode() != null )
+			if( this.proxy.getNode() != null && this.outerProxy.getNode() != null )
 			{
-				if ( intention )
+				if( intention )
 				{
 					try
 					{
 						this.connection = AEApi.instance().createGridConnection( this.proxy.getNode(), this.outerProxy.getNode() );
 					}
-					catch ( FailedConnection e )
+					catch( FailedConnection e )
 					{
 						// :(
 					}

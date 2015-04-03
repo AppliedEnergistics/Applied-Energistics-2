@@ -18,12 +18,31 @@
 
 package appeng.util.inv;
 
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 
+
 public class WrapperInvSlot
 {
+
+	private final IInventory inv;
+
+	public WrapperInvSlot( IInventory inv )
+	{
+		this.inv = inv;
+	}
+
+	public IInventory getWrapper( int slot )
+	{
+		return new InternalInterfaceWrapper( this.inv, slot );
+	}
+
+	protected boolean isItemValid( ItemStack itemstack )
+	{
+		return true;
+	}
 
 	class InternalInterfaceWrapper implements IInventory
 	{
@@ -31,7 +50,8 @@ public class WrapperInvSlot
 		private final IInventory inv;
 		private final int slot;
 
-		public InternalInterfaceWrapper(IInventory target, int slot) {
+		public InternalInterfaceWrapper( IInventory target, int slot )
+		{
 			this.inv = target;
 			this.slot = slot;
 		}
@@ -43,25 +63,25 @@ public class WrapperInvSlot
 		}
 
 		@Override
-		public ItemStack getStackInSlot(int i)
+		public ItemStack getStackInSlot( int i )
 		{
 			return this.inv.getStackInSlot( this.slot );
 		}
 
 		@Override
-		public ItemStack decrStackSize(int i, int num)
+		public ItemStack decrStackSize( int i, int num )
 		{
 			return this.inv.decrStackSize( this.slot, num );
 		}
 
 		@Override
-		public ItemStack getStackInSlotOnClosing(int i)
+		public ItemStack getStackInSlotOnClosing( int i )
 		{
 			return this.inv.getStackInSlotOnClosing( this.slot );
 		}
 
 		@Override
-		public void setInventorySlotContents(int i, ItemStack itemstack)
+		public void setInventorySlotContents( int i, ItemStack itemstack )
 		{
 			this.inv.setInventorySlotContents( this.slot, itemstack );
 		}
@@ -91,7 +111,7 @@ public class WrapperInvSlot
 		}
 
 		@Override
-		public boolean isUseableByPlayer(EntityPlayer entityplayer)
+		public boolean isUseableByPlayer( EntityPlayer entityplayer )
 		{
 			return this.inv.isUseableByPlayer( entityplayer );
 		}
@@ -109,26 +129,9 @@ public class WrapperInvSlot
 		}
 
 		@Override
-		public boolean isItemValidForSlot(int i, ItemStack itemstack)
+		public boolean isItemValidForSlot( int i, ItemStack itemstack )
 		{
 			return WrapperInvSlot.this.isItemValid( itemstack ) && this.inv.isItemValidForSlot( this.slot, itemstack );
 		}
 	}
-
-	private final IInventory inv;
-
-	public WrapperInvSlot(IInventory inv) {
-		this.inv = inv;
-	}
-
-	public IInventory getWrapper(int slot)
-	{
-		return new InternalInterfaceWrapper( this.inv, slot );
-	}
-
-	protected boolean isItemValid(ItemStack itemstack)
-	{
-		return true;
-	}
-
 }

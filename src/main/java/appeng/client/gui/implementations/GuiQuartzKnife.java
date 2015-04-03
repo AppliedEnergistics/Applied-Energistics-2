@@ -18,6 +18,7 @@
 
 package appeng.client.gui.implementations;
 
+
 import java.io.IOException;
 
 import net.minecraft.client.gui.GuiTextField;
@@ -31,12 +32,14 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketValueConfig;
 import appeng.items.contents.QuartzKnifeObj;
 
+
 public class GuiQuartzKnife extends AEBaseGui
 {
 
 	GuiTextField name;
 
-	public GuiQuartzKnife(InventoryPlayer inventoryPlayer, QuartzKnifeObj te) {
+	public GuiQuartzKnife( InventoryPlayer inventoryPlayer, QuartzKnifeObj te )
+	{
 		super( new ContainerQuartzKnife( inventoryPlayer, te ) );
 		this.ySize = 184;
 	}
@@ -55,7 +58,14 @@ public class GuiQuartzKnife extends AEBaseGui
 	}
 
 	@Override
-	public void drawBG(int offsetX, int offsetY, int mouseX, int mouseY)
+	public void drawFG( int offsetX, int offsetY, int mouseX, int mouseY )
+	{
+		this.fontRendererObj.drawString( this.getGuiDisplayName( GuiText.QuartzCuttingKnife.getLocal() ), 8, 6, 4210752 );
+		this.fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
+	}
+
+	@Override
+	public void drawBG( int offsetX, int offsetY, int mouseX, int mouseY )
 	{
 		this.bindTexture( "guis/quartzknife.png" );
 		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize );
@@ -63,17 +73,17 @@ public class GuiQuartzKnife extends AEBaseGui
 	}
 
 	@Override
-	protected void keyTyped(char character, int key)
+	protected void keyTyped( char character, int key )
 	{
-		if ( this.name.textboxKeyTyped( character, key ) )
+		if( this.name.textboxKeyTyped( character, key ) )
 		{
 			try
 			{
 				String Out = this.name.getText();
-				((ContainerQuartzKnife) this.inventorySlots).setName( Out );
+				( (ContainerQuartzKnife) this.inventorySlots ).setName( Out );
 				NetworkHandler.instance.sendToServer( new PacketValueConfig( "QuartzKnife.Name", Out ) );
 			}
-			catch (IOException e)
+			catch( IOException e )
 			{
 				AELog.error( e );
 			}
@@ -83,12 +93,4 @@ public class GuiQuartzKnife extends AEBaseGui
 			super.keyTyped( character, key );
 		}
 	}
-
-	@Override
-	public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY)
-	{
-		this.fontRendererObj.drawString( this.getGuiDisplayName( GuiText.QuartzCuttingKnife.getLocal() ), 8, 6, 4210752 );
-		this.fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
-	}
-
 }

@@ -18,11 +18,13 @@
 
 package appeng.core.localization;
 
+
 import net.minecraft.util.StatCollector;
+
 
 public enum GuiText
 {
-	inventory("container"), // mc's default Inventory localization.
+	inventory( "container" ), // mc's default Inventory localization.
 
 	Chest, StoredEnergy, Of, Condenser, Drive, GrindStone, SkyChest,
 
@@ -72,22 +74,24 @@ public enum GuiText
 
 	final String root;
 
-	GuiText() {
+	GuiText()
+	{
 		this.root = "gui.appliedenergistics2";
 	}
 
-	GuiText(String r) {
-		this.root = r;
-	}
-
-	public String getUnlocalized()
+	GuiText( String r )
 	{
-		return this.root + '.' + this.toString();
+		this.root = r;
 	}
 
 	public String getLocal()
 	{
 		return StatCollector.translateToLocal( this.getUnlocalized() );
+	}
+
+	public String getUnlocalized()
+	{
+		return this.root + '.' + this.toString();
 	}
 
 }

@@ -64,14 +64,14 @@ public final class AEBlockFeatureHandler implements IFeatureHandler
 	@Override
 	public void register()
 	{
-		if ( this.enabled )
+		if( this.enabled )
 		{
 			String name = this.extractor.get();
 			this.featured.setCreativeTab( CreativeTab.instance );
 			this.featured.setBlockName( /* "tile." */"appliedenergistics2." + name );
 			this.featured.setBlockTextureName( "appliedenergistics2:" + name );
 
-			if ( Platform.isClient() )
+			if( Platform.isClient() )
 			{
 				CommonHelper.proxy.bindTileEntitySpecialRenderer( this.featured.getTileEntityClass(), this.featured );
 			}

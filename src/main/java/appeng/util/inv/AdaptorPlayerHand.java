@@ -1,4 +1,3 @@
-
 /*
  * This file is part of Applied Energistics 2.
  * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
@@ -45,56 +44,18 @@ public class AdaptorPlayerHand extends InventoryAdaptor
 	}
 
 	@Override
-	public ItemStack removeSimilarItems( int how_many, ItemStack Filter, FuzzyMode fuzzyMode, IInventoryDestination destination )
-	{
-		ItemStack hand = this.p.inventory.getItemStack();
-		if ( hand == null )
-			return null;
-
-		if ( Filter == null || Platform.isSameItemFuzzy( Filter, hand, fuzzyMode ) )
-		{
-			ItemStack result = hand.copy();
-			result.stackSize = hand.stackSize > how_many ? how_many : hand.stackSize;
-			hand.stackSize -= how_many;
-			if ( hand.stackSize <= 0 )
-				this.p.inventory.setItemStack( null );
-			return result;
-		}
-
-		return null;
-	}
-
-	@Override
-	public ItemStack simulateSimilarRemove( int amount, ItemStack Filter, FuzzyMode fuzzyMode, IInventoryDestination destination )
-	{
-
-		ItemStack hand = this.p.inventory.getItemStack();
-		if ( hand == null )
-			return null;
-
-		if ( Filter == null || Platform.isSameItemFuzzy( Filter, hand, fuzzyMode ) )
-		{
-			ItemStack result = hand.copy();
-			result.stackSize = hand.stackSize > amount ? amount : hand.stackSize;
-			return result;
-		}
-
-		return null;
-	}
-
-	@Override
 	public ItemStack removeItems( int amount, ItemStack filter, IInventoryDestination destination )
 	{
 		ItemStack hand = this.p.inventory.getItemStack();
-		if ( hand == null )
+		if( hand == null )
 			return null;
 
-		if ( filter == null || Platform.isSameItemPrecise( filter, hand ) )
+		if( filter == null || Platform.isSameItemPrecise( filter, hand ) )
 		{
 			ItemStack result = hand.copy();
 			result.stackSize = hand.stackSize > amount ? amount : hand.stackSize;
 			hand.stackSize -= amount;
-			if ( hand.stackSize <= 0 )
+			if( hand.stackSize <= 0 )
 				this.p.inventory.setItemStack( null );
 			return result;
 		}
@@ -107,10 +68,48 @@ public class AdaptorPlayerHand extends InventoryAdaptor
 	{
 
 		ItemStack hand = this.p.inventory.getItemStack();
-		if ( hand == null )
+		if( hand == null )
 			return null;
 
-		if ( filter == null || Platform.isSameItemPrecise( filter, hand ) )
+		if( filter == null || Platform.isSameItemPrecise( filter, hand ) )
+		{
+			ItemStack result = hand.copy();
+			result.stackSize = hand.stackSize > amount ? amount : hand.stackSize;
+			return result;
+		}
+
+		return null;
+	}
+
+	@Override
+	public ItemStack removeSimilarItems( int how_many, ItemStack Filter, FuzzyMode fuzzyMode, IInventoryDestination destination )
+	{
+		ItemStack hand = this.p.inventory.getItemStack();
+		if( hand == null )
+			return null;
+
+		if( Filter == null || Platform.isSameItemFuzzy( Filter, hand, fuzzyMode ) )
+		{
+			ItemStack result = hand.copy();
+			result.stackSize = hand.stackSize > how_many ? how_many : hand.stackSize;
+			hand.stackSize -= how_many;
+			if( hand.stackSize <= 0 )
+				this.p.inventory.setItemStack( null );
+			return result;
+		}
+
+		return null;
+	}
+
+	@Override
+	public ItemStack simulateSimilarRemove( int amount, ItemStack Filter, FuzzyMode fuzzyMode, IInventoryDestination destination )
+	{
+
+		ItemStack hand = this.p.inventory.getItemStack();
+		if( hand == null )
+			return null;
+
+		if( Filter == null || Platform.isSameItemFuzzy( Filter, hand, fuzzyMode ) )
 		{
 			ItemStack result = hand.copy();
 			result.stackSize = hand.stackSize > amount ? amount : hand.stackSize;
@@ -124,23 +123,23 @@ public class AdaptorPlayerHand extends InventoryAdaptor
 	public ItemStack addItems( ItemStack toBeAdded )
 	{
 
-		if ( toBeAdded == null )
+		if( toBeAdded == null )
 			return null;
-		if ( toBeAdded.stackSize == 0 )
+		if( toBeAdded.stackSize == 0 )
 			return null;
-		if ( this.p == null )
+		if( this.p == null )
 			return toBeAdded;
-		if ( this.p.inventory == null )
+		if( this.p.inventory == null )
 			return toBeAdded;
 
 		ItemStack hand = this.p.inventory.getItemStack();
 
-		if ( hand != null && !Platform.isSameItemPrecise( toBeAdded, hand ) )
+		if( hand != null && !Platform.isSameItemPrecise( toBeAdded, hand ) )
 			return toBeAdded;
 
 		int original = 0;
 		ItemStack newHand = null;
-		if ( hand == null )
+		if( hand == null )
 			newHand = toBeAdded.copy();
 		else
 		{
@@ -149,7 +148,7 @@ public class AdaptorPlayerHand extends InventoryAdaptor
 			newHand.stackSize += toBeAdded.stackSize;
 		}
 
-		if ( newHand.stackSize > newHand.getMaxStackSize() )
+		if( newHand.stackSize > newHand.getMaxStackSize() )
 		{
 			newHand.stackSize = newHand.getMaxStackSize();
 			ItemStack B = toBeAdded.copy();
@@ -166,15 +165,15 @@ public class AdaptorPlayerHand extends InventoryAdaptor
 	public ItemStack simulateAdd( ItemStack toBeSimulated )
 	{
 		ItemStack hand = this.p.inventory.getItemStack();
-		if ( toBeSimulated == null )
+		if( toBeSimulated == null )
 			return null;
 
-		if ( hand != null && !Platform.isSameItem( toBeSimulated, hand ) )
+		if( hand != null && !Platform.isSameItem( toBeSimulated, hand ) )
 			return toBeSimulated;
 
 		int original = 0;
 		ItemStack newHand = null;
-		if ( hand == null )
+		if( hand == null )
 			newHand = toBeSimulated.copy();
 		else
 		{
@@ -183,7 +182,7 @@ public class AdaptorPlayerHand extends InventoryAdaptor
 			newHand.stackSize += toBeSimulated.stackSize;
 		}
 
-		if ( newHand.stackSize > newHand.getMaxStackSize() )
+		if( newHand.stackSize > newHand.getMaxStackSize() )
 		{
 			newHand.stackSize = newHand.getMaxStackSize();
 			ItemStack B = toBeSimulated.copy();

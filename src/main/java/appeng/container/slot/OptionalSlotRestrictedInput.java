@@ -18,8 +18,10 @@
 
 package appeng.container.slot;
 
+
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
+
 
 public class OptionalSlotRestrictedInput extends SlotRestrictedInput
 {
@@ -27,8 +29,8 @@ public class OptionalSlotRestrictedInput extends SlotRestrictedInput
 	final int groupNum;
 	final IOptionalSlotHost host;
 
-	public OptionalSlotRestrictedInput(PlacableItemType valid, IInventory i, IOptionalSlotHost host, int slotIndex, int x, int y, int grpNum,
-			InventoryPlayer invPlayer) {
+	public OptionalSlotRestrictedInput( PlacableItemType valid, IInventory i, IOptionalSlotHost host, int slotIndex, int x, int y, int grpNum, InventoryPlayer invPlayer )
+	{
 		super( valid, i, slotIndex, x, y, invPlayer );
 		this.groupNum = grpNum;
 		this.host = host;
@@ -37,10 +39,9 @@ public class OptionalSlotRestrictedInput extends SlotRestrictedInput
 	@Override
 	public boolean isEnabled()
 	{
-		if ( this.host == null )
+		if( this.host == null )
 			return false;
 
 		return this.host.isSlotEnabled( this.groupNum );
 	}
-
 }

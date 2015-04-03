@@ -66,16 +66,16 @@ public interface IBiometricCard
 
 	/**
 	 * remove a permission from the item stack.
-	 * 
-	 * @param itemStack card
+	 *
+	 * @param itemStack  card
 	 * @param permission to be removed permission
 	 */
 	void removePermission( ItemStack itemStack, SecurityPermissions permission );
 
 	/**
 	 * add a permission to the item stack.
-	 * 
-	 * @param itemStack card
+	 *
+	 * @param itemStack  card
 	 * @param permission to be added permission
 	 */
 	void addPermission( ItemStack itemStack, SecurityPermissions permission );

@@ -53,6 +53,64 @@ public abstract class PartUpgradeable extends PartBasicState implements IAEAppEn
 	}
 
 	@Override
+	public void updateSetting( IConfigManager manager, Enum settingName, Enum newValue )
+	{
+
+	}
+
+	@Override
+	public void onChangeInventory( IInventory inv, int slot, InvOperation mc, ItemStack removedStack, ItemStack newStack )
+	{
+		if( inv == this.upgrades )
+		{
+			this.upgradesChanged();
+		}
+	}
+
+	public void upgradesChanged()
+	{
+
+	}
+
+	protected boolean isSleeping()
+	{
+		if( this.getInstalledUpgrades( Upgrades.REDSTONE ) > 0 )
+		{
+			switch( this.getRSMode() )
+			{
+				case IGNORE:
+					return false;
+
+				case HIGH_SIGNAL:
+					if( this.host.hasRedstone( this.side ) )
+						return false;
+
+					break;
+
+				case LOW_SIGNAL:
+					if( !this.host.hasRedstone( this.side ) )
+						return false;
+
+					break;
+
+				case SIGNAL_PULSE:
+				default:
+					break;
+			}
+
+			return true;
+		}
+
+		return false;
+	}
+
+	@Override
+	public int getInstalledUpgrades( Upgrades u )
+	{
+		return this.upgrades.getInstalledUpgrades( u );
+	}
+
+	@Override
 	public boolean canConnectRedstone()
 	{
 		return this.upgrades.getMaxInstalled( Upgrades.REDSTONE ) > 0;
@@ -77,8 +135,8 @@ public abstract class PartUpgradeable extends PartBasicState implements IAEAppEn
 	@Override
 	public void getDrops( List<ItemStack> drops, boolean wrenched )
 	{
-		for ( ItemStack is : this.upgrades )
-			if ( is != null )
+		for( ItemStack is : this.upgrades )
+			if( is != null )
 				drops.add( is );
 	}
 
@@ -91,68 +149,10 @@ public abstract class PartUpgradeable extends PartBasicState implements IAEAppEn
 	@Override
 	public IInventory getInventoryByName( String name )
 	{
-		if ( name.equals( "upgrades" ) )
+		if( name.equals( "upgrades" ) )
 			return this.upgrades;
 
 		return null;
-	}
-
-	@Override
-	public int getInstalledUpgrades( Upgrades u )
-	{
-		return this.upgrades.getInstalledUpgrades( u );
-	}
-
-	@Override
-	public void updateSetting( IConfigManager manager, Enum settingName, Enum newValue )
-	{
-
-	}
-
-	@Override
-	public void onChangeInventory( IInventory inv, int slot, InvOperation mc, ItemStack removedStack, ItemStack newStack )
-	{
-		if ( inv == this.upgrades )
-		{
-			this.upgradesChanged();
-		}
-	}
-
-	public void upgradesChanged()
-	{
-
-	}
-
-	protected boolean isSleeping()
-	{
-		if ( this.getInstalledUpgrades( Upgrades.REDSTONE ) > 0 )
-		{
-			switch ( this.getRSMode() )
-			{
-				case IGNORE:
-					return false;
-
-				case HIGH_SIGNAL:
-					if ( this.host.hasRedstone( this.side ) )
-						return false;
-
-					break;
-
-				case LOW_SIGNAL:
-					if ( !this.host.hasRedstone( this.side ) )
-						return false;
-
-					break;
-
-				case SIGNAL_PULSE:
-				default:
-					break;
-			}
-
-			return true;
-		}
-
-		return false;
 	}
 
 	public RedstoneMode getRSMode()

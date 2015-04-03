@@ -18,6 +18,7 @@
 
 package appeng.integration.modules.BCHelpers;
 
+
 import java.util.Set;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -38,11 +39,12 @@ import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalCoord;
 import appeng.parts.CableBusContainer;
 
+
 public class AECableSchematicTile extends AEGenericSchematicTile implements IPartHost
 {
 
 	@Override
-	public void rotateLeft(IBuilderContext context)
+	public void rotateLeft( IBuilderContext context )
 	{
 		CableBusContainer cbc = new CableBusContainer( this );
 		cbc.readFromNBT( this.tileNBT );
@@ -60,25 +62,25 @@ public class AECableSchematicTile extends AEGenericSchematicTile implements IPar
 	}
 
 	@Override
-	public boolean canAddPart(ItemStack part, ForgeDirection side)
+	public boolean canAddPart( ItemStack part, ForgeDirection side )
 	{
 		return false;
 	}
 
 	@Override
-	public ForgeDirection addPart(ItemStack is, ForgeDirection side, EntityPlayer owner)
+	public ForgeDirection addPart( ItemStack is, ForgeDirection side, EntityPlayer owner )
 	{
 		return null;
 	}
 
 	@Override
-	public IPart getPart(ForgeDirection side)
+	public IPart getPart( ForgeDirection side )
 	{
 		return null;
 	}
 
 	@Override
-	public void removePart(ForgeDirection side, boolean suppressUpdate)
+	public void removePart( ForgeDirection side, boolean suppressUpdate )
 	{
 
 	}
@@ -114,13 +116,13 @@ public class AECableSchematicTile extends AEGenericSchematicTile implements IPar
 	}
 
 	@Override
-	public boolean isBlocked(ForgeDirection side)
+	public boolean isBlocked( ForgeDirection side )
 	{
 		return false;
 	}
 
 	@Override
-	public SelectedPart selectPart(Vec3 pos)
+	public SelectedPart selectPart( Vec3 pos )
 	{
 		return null;
 	}
@@ -138,7 +140,7 @@ public class AECableSchematicTile extends AEGenericSchematicTile implements IPar
 	}
 
 	@Override
-	public boolean hasRedstone(ForgeDirection side)
+	public boolean hasRedstone( ForgeDirection side )
 	{
 		return false;
 	}

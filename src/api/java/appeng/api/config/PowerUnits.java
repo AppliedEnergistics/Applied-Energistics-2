@@ -32,19 +32,19 @@ public enum PowerUnits
 	RF( "gui.appliedenergistics2.units.thermalexpansion" ), // ThermalExpansion - Redstone Flux
 	MK( "gui.appliedenergistics2.units.mekanism" ); // Mekanism - Joules
 
-	PowerUnits( String un ) {
-		this.unlocalizedName = un;
-	}
-
+	/**
+	 * unlocalized name for the power unit.
+	 */
+	final public String unlocalizedName;
 	/**
 	 * please do not edit this value, it is set when AE loads its config files.
 	 */
 	public double conversionRatio = 1.0;
 
-	/**
-	 * unlocalized name for the power unit.
-	 */
-	final public String unlocalizedName;
+	PowerUnits( String un )
+	{
+		this.unlocalizedName = un;
+	}
 
 	/**
 	 * do power conversion using AE's conversion rates.

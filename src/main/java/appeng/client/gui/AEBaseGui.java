@@ -613,6 +613,21 @@ public abstract class AEBaseGui extends GuiContainer
 		this.subGui = true; // in case the gui is reopened later ( i'm looking at you NEI )
 	}
 
+	protected Slot getSlot( int mouseX, int mouseY )
+	{
+		final List<Slot> slots = this.getInventorySlots();
+		for( Slot slot : slots )
+		{
+			// isPointInRegion
+			if( this.func_146978_c( slot.xDisplayPosition, slot.yDisplayPosition, 16, 16, mouseX, mouseY ) )
+			{
+				return slot;
+			}
+		}
+
+		return null;
+	}
+
 	public abstract void drawBG( int offsetX, int offsetY, int mouseX, int mouseY );
 
 	@Override
@@ -650,21 +665,6 @@ public abstract class AEBaseGui extends GuiContainer
 				}
 			}
 		}
-	}
-
-	protected Slot getSlot( int mouseX, int mouseY )
-	{
-		final List<Slot> slots = this.getInventorySlots();
-		for( Slot slot : slots )
-		{
-			// isPointInRegion
-			if( this.func_146978_c( slot.xDisplayPosition, slot.yDisplayPosition, 16, 16, mouseX, mouseY ) )
-			{
-				return slot;
-			}
-		}
-
-		return null;
 	}
 
 	protected boolean enableSpaceClicking()

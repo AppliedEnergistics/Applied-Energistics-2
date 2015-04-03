@@ -18,6 +18,7 @@
 
 package appeng.me.cache;
 
+
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -55,34 +56,28 @@ import appeng.me.pathfinding.PathSegment;
 import appeng.tile.networking.TileController;
 import appeng.util.Platform;
 
+
 public class PathGridCache implements IPathingGrid
 {
 
-	boolean recalculateControllerNextTick = true;
-	boolean updateNetwork = true;
-	boolean booting = false;
-
 	final LinkedList<PathSegment> active = new LinkedList<PathSegment>();
-
-	ControllerState controllerState = ControllerState.NO_CONTROLLER;
-
-	int instance = Integer.MIN_VALUE;
-
-	int ticksUntilReady = 20;
-	public int channelsInUse = 0;
-	int lastChannels = 0;
-
 	final Set<TileController> controllers = new HashSet<TileController>();
 	final Set<IGridNode> requireChannels = new HashSet<IGridNode>();
 	final Set<IGridNode> blockDense = new HashSet<IGridNode>();
-
 	final IGrid myGrid;
-	private HashSet<IPathItem> semiOpen = new HashSet<IPathItem>();
-
+	public int channelsInUse = 0;
 	public int channelsByBlocks = 0;
 	public double channelPowerUsage = 0.0;
+	boolean recalculateControllerNextTick = true;
+	boolean updateNetwork = true;
+	boolean booting = false;
+	ControllerState controllerState = ControllerState.NO_CONTROLLER;
+	int instance = Integer.MIN_VALUE;
+	int ticksUntilReady = 20;
+	int lastChannels = 0;
+	private HashSet<IPathItem> semiOpen = new HashSet<IPathItem>();
 
-	public PathGridCache(IGrid g)
+	public PathGridCache( IGrid g )
 	{
 		this.myGrid = g;
 	}
@@ -90,14 +85,14 @@ public class PathGridCache implements IPathingGrid
 	@Override
 	public void onUpdateTick()
 	{
-		if ( this.recalculateControllerNextTick )
+		if( this.recalculateControllerNextTick )
 		{
 			this.recalcController();
 		}
 
-		if ( this.updateNetwork )
+		if( this.updateNetwork )
 		{
-			if ( !this.booting )
+			if( !this.booting )
 				this.myGrid.postEvent( new MENetworkBootingStatusChange() );
 
 			this.booting = true;
@@ -105,7 +100,7 @@ public class PathGridCache implements IPathingGrid
 			this.instance++;
 			this.channelsInUse = 0;
 
-			if ( !AEConfig.instance.isFeatureEnabled( AEFeature.Channels ) )
+			if( !AEConfig.instance.isFeatureEnabled( AEFeature.Channels ) )
 			{
 				int used = this.calculateRequiredChannels();
 
@@ -116,11 +111,11 @@ public class PathGridCache implements IPathingGrid
 
 				this.myGrid.getPivot().beginVisit( new AdHocChannelUpdater( used ) );
 			}
-			else if ( this.controllerState == ControllerState.NO_CONTROLLER )
+			else if( this.controllerState == ControllerState.NO_CONTROLLER )
 			{
 				int requiredChannels = this.calculateRequiredChannels();
 				int used = requiredChannels;
-				if ( requiredChannels > 8 )
+				if( requiredChannels > 8 )
 					used = 0;
 
 				int nodes = this.myGrid.getNodes().size();
@@ -132,7 +127,7 @@ public class PathGridCache implements IPathingGrid
 
 				this.myGrid.getPivot().beginVisit( new AdHocChannelUpdater( used ) );
 			}
-			else if ( this.controllerState == ControllerState.CONTROLLER_CONFLICT )
+			else if( this.controllerState == ControllerState.CONTROLLER_CONFLICT )
 			{
 				this.ticksUntilReady = 20;
 				this.myGrid.getPivot().beginVisit( new AdHocChannelUpdater( 0 ) );
@@ -146,13 +141,13 @@ public class PathGridCache implements IPathingGrid
 
 				// myGrid.getPivot().beginVisit( new AdHocChannelUpdater( 0 )
 				// );
-				for (IGridNode node : this.myGrid.getMachines( TileController.class ))
+				for( IGridNode node : this.myGrid.getMachines( TileController.class ) )
 				{
 					closedList.add( (IPathItem) node );
-					for (IGridConnection gcc : node.getConnections())
+					for( IGridConnection gcc : node.getConnections() )
 					{
 						GridConnection gc = (GridConnection) gcc;
-						if ( !(gc.getOtherSide( node ).getMachine() instanceof TileController) )
+						if( !( gc.getOtherSide( node ).getMachine() instanceof TileController ) )
 						{
 							List<IPathItem> open = new LinkedList<IPathItem>();
 							closedList.add( gc );
@@ -165,13 +160,13 @@ public class PathGridCache implements IPathingGrid
 			}
 		}
 
-		if ( !this.active.isEmpty() || this.ticksUntilReady > 0 )
+		if( !this.active.isEmpty() || this.ticksUntilReady > 0 )
 		{
 			Iterator<PathSegment> i = this.active.iterator();
-			while (i.hasNext())
+			while( i.hasNext() )
 			{
 				PathSegment pat = i.next();
-				if ( pat.step() )
+				if( pat.step() )
 				{
 					pat.isDead = true;
 					i.remove();
@@ -180,12 +175,12 @@ public class PathGridCache implements IPathingGrid
 
 			this.ticksUntilReady--;
 
-			if ( this.active.isEmpty() && this.ticksUntilReady <= 0 )
+			if( this.active.isEmpty() && this.ticksUntilReady <= 0 )
 			{
-				if ( this.controllerState == ControllerState.CONTROLLER_ONLINE )
+				if( this.controllerState == ControllerState.CONTROLLER_ONLINE )
 				{
 					final Iterator<TileController> controllerIterator = this.controllers.iterator();
-					if (controllerIterator.hasNext())
+					if( controllerIterator.hasNext() )
 					{
 						final TileController controller = controllerIterator.next();
 						controller.getGridNode( ForgeDirection.UNKNOWN ).beginVisit( new ControllerChannelUpdater() );
@@ -202,19 +197,142 @@ public class PathGridCache implements IPathingGrid
 		}
 	}
 
+	@Override
+	public void removeNode( IGridNode gridNode, IGridHost machine )
+	{
+		if( machine instanceof TileController )
+		{
+			this.controllers.remove( machine );
+			this.recalculateControllerNextTick = true;
+		}
+
+		EnumSet<GridFlags> flags = gridNode.getGridBlock().getFlags();
+
+		if( flags.contains( GridFlags.REQUIRE_CHANNEL ) )
+			this.requireChannels.remove( gridNode );
+
+		if( flags.contains( GridFlags.CANNOT_CARRY_COMPRESSED ) )
+			this.blockDense.remove( gridNode );
+
+		this.repath();
+	}
+
+	@Override
+	public void addNode( IGridNode gridNode, IGridHost machine )
+	{
+		if( machine instanceof TileController )
+		{
+			this.controllers.add( (TileController) machine );
+			this.recalculateControllerNextTick = true;
+		}
+
+		EnumSet<GridFlags> flags = gridNode.getGridBlock().getFlags();
+
+		if( flags.contains( GridFlags.REQUIRE_CHANNEL ) )
+			this.requireChannels.add( gridNode );
+
+		if( flags.contains( GridFlags.CANNOT_CARRY_COMPRESSED ) )
+			this.blockDense.add( gridNode );
+
+		this.repath();
+	}
+
+	@Override
+	public void onSplit( IGridStorage storageB )
+	{
+
+	}
+
+	@Override
+	public void onJoin( IGridStorage storageB )
+	{
+
+	}
+
+	@Override
+	public void populateGridStorage( IGridStorage storage )
+	{
+
+	}
+
+	private void recalcController()
+	{
+		this.recalculateControllerNextTick = false;
+		ControllerState old = this.controllerState;
+
+		if( this.controllers.isEmpty() )
+		{
+			this.controllerState = ControllerState.NO_CONTROLLER;
+		}
+		else
+		{
+			IGridNode startingNode = this.controllers.iterator().next().getGridNode( ForgeDirection.UNKNOWN );
+			if( startingNode == null )
+			{
+				this.controllerState = ControllerState.CONTROLLER_CONFLICT;
+				return;
+			}
+
+			DimensionalCoord dc = startingNode.getGridBlock().getLocation();
+			ControllerValidator cv = new ControllerValidator( dc.x, dc.y, dc.z );
+
+			startingNode.beginVisit( cv );
+
+			if( cv.isValid && cv.found == this.controllers.size() )
+				this.controllerState = ControllerState.CONTROLLER_ONLINE;
+			else
+				this.controllerState = ControllerState.CONTROLLER_CONFLICT;
+		}
+
+		if( old != this.controllerState )
+		{
+			this.myGrid.postEvent( new MENetworkControllerChange() );
+		}
+	}
+
+	private int calculateRequiredChannels()
+	{
+		int depth = 0;
+		this.semiOpen.clear();
+
+		for( IGridNode nodes : this.requireChannels )
+		{
+			if( !this.semiOpen.contains( nodes ) )
+			{
+				IGridBlock gb = nodes.getGridBlock();
+				EnumSet<GridFlags> flags = gb.getFlags();
+
+				if( flags.contains( GridFlags.COMPRESSED_CHANNEL ) && !this.blockDense.isEmpty() )
+					return 9;
+
+				depth++;
+
+				if( flags.contains( GridFlags.MULTIBLOCK ) )
+				{
+					IGridMultiblock gmb = (IGridMultiblock) gb;
+					Iterator<IGridNode> i = gmb.getMultiblockNodes();
+					while( i.hasNext() )
+						this.semiOpen.add( (IPathItem) i.next() );
+				}
+			}
+		}
+
+		return depth;
+	}
+
 	private void achievementPost()
 	{
-		if ( this.lastChannels != this.channelsInUse && AEConfig.instance.isFeatureEnabled( AEFeature.Channels ) )
+		if( this.lastChannels != this.channelsInUse && AEConfig.instance.isFeatureEnabled( AEFeature.Channels ) )
 		{
 			Achievements currentBracket = this.getAchievementBracket( this.channelsInUse );
 			Achievements lastBracket = this.getAchievementBracket( this.lastChannels );
-			if ( currentBracket != lastBracket && currentBracket != null )
+			if( currentBracket != lastBracket && currentBracket != null )
 			{
 				Set<Integer> players = new HashSet<Integer>();
-				for (IGridNode n : this.requireChannels)
+				for( IGridNode n : this.requireChannels )
 					players.add( n.getPlayerID() );
 
-				for (int id : players)
+				for( int id : players )
 				{
 					Platform.addStat( id, currentBracket.getAchievement() );
 				}
@@ -223,48 +341,43 @@ public class PathGridCache implements IPathingGrid
 		this.lastChannels = this.channelsInUse;
 	}
 
-	private Achievements getAchievementBracket(int ch)
+	private Achievements getAchievementBracket( int ch )
 	{
-		if ( ch < 8 )
+		if( ch < 8 )
 			return null;
 
-		if ( ch < 128 )
+		if( ch < 128 )
 			return Achievements.Networking1;
 
-		if ( ch < 2048 )
+		if( ch < 2048 )
 			return Achievements.Networking2;
 
 		return Achievements.Networking3;
 	}
 
-	private int calculateRequiredChannels()
+	@MENetworkEventSubscribe
+	void updateNodReq( MENetworkChannelChanged ev )
 	{
-		int depth = 0;
-		this.semiOpen.clear();
+		IGridNode gridNode = ev.node;
 
-		for (IGridNode nodes : this.requireChannels)
-		{
-			if ( !this.semiOpen.contains( nodes ) )
-			{
-				IGridBlock gb = nodes.getGridBlock();
-				EnumSet<GridFlags> flags = gb.getFlags();
+		if( gridNode.getGridBlock().getFlags().contains( GridFlags.REQUIRE_CHANNEL ) )
+			this.requireChannels.add( gridNode );
+		else
+			this.requireChannels.remove( gridNode );
 
-				if ( flags.contains( GridFlags.COMPRESSED_CHANNEL ) && !this.blockDense.isEmpty() )
-					return 9;
+		this.repath();
+	}
 
-				depth++;
+	@Override
+	public boolean isNetworkBooting()
+	{
+		return !this.active.isEmpty() && !this.booting;
+	}
 
-				if ( flags.contains( GridFlags.MULTIBLOCK ) )
-				{
-					IGridMultiblock gmb = (IGridMultiblock) gb;
-					Iterator<IGridNode> i = gmb.getMultiblockNodes();
-					while (i.hasNext())
-						this.semiOpen.add( (IPathItem) i.next() );
-				}
-			}
-		}
-
-		return depth;
+	@Override
+	public ControllerState getControllerState()
+	{
+		return this.controllerState;
 	}
 
 	@Override
@@ -276,123 +389,4 @@ public class PathGridCache implements IPathingGrid
 		this.channelsByBlocks = 0;
 		this.updateNetwork = true;
 	}
-
-	@Override
-	public void removeNode(IGridNode gridNode, IGridHost machine)
-	{
-		if ( machine instanceof TileController )
-		{
-			this.controllers.remove( machine );
-			this.recalculateControllerNextTick = true;
-		}
-
-		EnumSet<GridFlags> flags = gridNode.getGridBlock().getFlags();
-
-		if ( flags.contains( GridFlags.REQUIRE_CHANNEL ) )
-			this.requireChannels.remove( gridNode );
-
-		if ( flags.contains( GridFlags.CANNOT_CARRY_COMPRESSED ) )
-			this.blockDense.remove( gridNode );
-
-		this.repath();
-	}
-
-	@Override
-	public void addNode(IGridNode gridNode, IGridHost machine)
-	{
-		if ( machine instanceof TileController )
-		{
-			this.controllers.add( (TileController) machine );
-			this.recalculateControllerNextTick = true;
-		}
-
-		EnumSet<GridFlags> flags = gridNode.getGridBlock().getFlags();
-
-		if ( flags.contains( GridFlags.REQUIRE_CHANNEL ) )
-			this.requireChannels.add( gridNode );
-
-		if ( flags.contains( GridFlags.CANNOT_CARRY_COMPRESSED ) )
-			this.blockDense.add( gridNode );
-
-		this.repath();
-	}
-
-	@MENetworkEventSubscribe
-	void updateNodReq(MENetworkChannelChanged ev)
-	{
-		IGridNode gridNode = ev.node;
-
-		if ( gridNode.getGridBlock().getFlags().contains( GridFlags.REQUIRE_CHANNEL ) )
-			this.requireChannels.add( gridNode );
-		else
-			this.requireChannels.remove( gridNode );
-
-		this.repath();
-	}
-
-	private void recalcController()
-	{
-		this.recalculateControllerNextTick = false;
-		ControllerState old = this.controllerState;
-
-		if ( this.controllers.isEmpty() )
-		{
-			this.controllerState = ControllerState.NO_CONTROLLER;
-		}
-		else
-		{
-			IGridNode startingNode = this.controllers.iterator().next().getGridNode( ForgeDirection.UNKNOWN );
-			if ( startingNode == null )
-			{
-				this.controllerState = ControllerState.CONTROLLER_CONFLICT;
-				return;
-			}
-
-			DimensionalCoord dc = startingNode.getGridBlock().getLocation();
-			ControllerValidator cv = new ControllerValidator( dc.x, dc.y, dc.z );
-
-			startingNode.beginVisit( cv );
-
-			if ( cv.isValid && cv.found == this.controllers.size() )
-				this.controllerState = ControllerState.CONTROLLER_ONLINE;
-			else
-				this.controllerState = ControllerState.CONTROLLER_CONFLICT;
-		}
-
-		if ( old != this.controllerState )
-		{
-			this.myGrid.postEvent( new MENetworkControllerChange() );
-		}
-	}
-
-	@Override
-	public ControllerState getControllerState()
-	{
-		return this.controllerState;
-	}
-
-	@Override
-	public boolean isNetworkBooting()
-	{
-		return !this.active.isEmpty() && !this.booting;
-	}
-
-	@Override
-	public void onSplit(IGridStorage storageB)
-	{
-
-	}
-
-	@Override
-	public void onJoin(IGridStorage storageB)
-	{
-
-	}
-
-	@Override
-	public void populateGridStorage(IGridStorage storage)
-	{
-
-	}
-
 }

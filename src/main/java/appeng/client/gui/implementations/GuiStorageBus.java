@@ -18,6 +18,7 @@
 
 package appeng.client.gui.implementations;
 
+
 import java.io.IOException;
 
 import org.lwjgl.input.Mouse;
@@ -42,6 +43,7 @@ import appeng.core.sync.packets.PacketSwitchGuis;
 import appeng.core.sync.packets.PacketValueConfig;
 import appeng.parts.misc.PartStorageBus;
 
+
 public class GuiStorageBus extends GuiUpgradeable
 {
 
@@ -51,25 +53,10 @@ public class GuiStorageBus extends GuiUpgradeable
 	GuiImgButton partition;
 	GuiImgButton clear;
 
-	public GuiStorageBus(InventoryPlayer inventoryPlayer, PartStorageBus te) {
+	public GuiStorageBus( InventoryPlayer inventoryPlayer, PartStorageBus te )
+	{
 		super( new ContainerStorageBus( inventoryPlayer, te ) );
 		this.ySize = 251;
-	}
-
-	@Override
-	public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY)
-	{
-		this.fontRendererObj.drawString( this.getGuiDisplayName( GuiText.StorageBus.getLocal() ), 8, 6, 4210752 );
-		this.fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
-
-		if ( this.fuzzyMode != null )
-			this.fuzzyMode.set( this.cvb.fzMode );
-
-		if ( this.storageFilter != null )
-			this.storageFilter.set( ((ContainerStorageBus) this.cvb).storageFilter );
-
-		if ( this.rwMode != null )
-			this.rwMode.set( ((ContainerStorageBus) this.cvb).rwMode );
 	}
 
 	@Override
@@ -91,34 +78,19 @@ public class GuiStorageBus extends GuiUpgradeable
 	}
 
 	@Override
-	protected void actionPerformed(GuiButton btn)
+	public void drawFG( int offsetX, int offsetY, int mouseX, int mouseY )
 	{
-		super.actionPerformed( btn );
+		this.fontRendererObj.drawString( this.getGuiDisplayName( GuiText.StorageBus.getLocal() ), 8, 6, 4210752 );
+		this.fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
 
-		boolean backwards = Mouse.isButtonDown( 1 );
+		if( this.fuzzyMode != null )
+			this.fuzzyMode.set( this.cvb.fzMode );
 
-		try
-		{
-			if ( btn == this.partition )
-				NetworkHandler.instance.sendToServer( new PacketValueConfig( "StorageBus.Action", "Partition" ) );
+		if( this.storageFilter != null )
+			this.storageFilter.set( ( (ContainerStorageBus) this.cvb ).storageFilter );
 
-			else if ( btn == this.clear )
-				NetworkHandler.instance.sendToServer( new PacketValueConfig( "StorageBus.Action", "Clear" ) );
-
-			else if ( btn == this.priority )
-				NetworkHandler.instance.sendToServer( new PacketSwitchGuis( GuiBridge.GUI_PRIORITY ) );
-
-			else if ( btn == this.rwMode )
-				NetworkHandler.instance.sendToServer( new PacketConfigButton( this.rwMode.getSetting(), backwards ) );
-
-			else if ( btn == this.storageFilter )
-				NetworkHandler.instance.sendToServer( new PacketConfigButton( this.storageFilter.getSetting(), backwards ) );
-
-		}
-		catch (IOException e)
-		{
-			AELog.error( e );
-		}
+		if( this.rwMode != null )
+			this.rwMode.set( ( (ContainerStorageBus) this.cvb ).rwMode );
 	}
 
 	@Override
@@ -127,4 +99,33 @@ public class GuiStorageBus extends GuiUpgradeable
 		return "guis/storagebus.png";
 	}
 
+	@Override
+	protected void actionPerformed( GuiButton btn )
+	{
+		super.actionPerformed( btn );
+
+		boolean backwards = Mouse.isButtonDown( 1 );
+
+		try
+		{
+			if( btn == this.partition )
+				NetworkHandler.instance.sendToServer( new PacketValueConfig( "StorageBus.Action", "Partition" ) );
+
+			else if( btn == this.clear )
+				NetworkHandler.instance.sendToServer( new PacketValueConfig( "StorageBus.Action", "Clear" ) );
+
+			else if( btn == this.priority )
+				NetworkHandler.instance.sendToServer( new PacketSwitchGuis( GuiBridge.GUI_PRIORITY ) );
+
+			else if( btn == this.rwMode )
+				NetworkHandler.instance.sendToServer( new PacketConfigButton( this.rwMode.getSetting(), backwards ) );
+
+			else if( btn == this.storageFilter )
+				NetworkHandler.instance.sendToServer( new PacketConfigButton( this.storageFilter.getSetting(), backwards ) );
+		}
+		catch( IOException e )
+		{
+			AELog.error( e );
+		}
+	}
 }

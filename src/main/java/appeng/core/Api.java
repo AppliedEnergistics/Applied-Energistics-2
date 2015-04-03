@@ -40,6 +40,7 @@ import appeng.me.GridConnection;
 import appeng.me.GridNode;
 import appeng.util.Platform;
 
+
 public final class Api implements IAppEngApi
 {
 	public static final Api INSTANCE = new Api();
@@ -118,7 +119,7 @@ public final class Api implements IAppEngApi
 	@Override
 	public IGridNode createGridNode( IGridBlock blk )
 	{
-		if ( Platform.isClient() )
+		if( Platform.isClient() )
 			throw new RuntimeException( "Grid Features are Server Side Only." );
 		return new GridNode( blk );
 	}

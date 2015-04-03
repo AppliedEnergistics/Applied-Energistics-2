@@ -48,19 +48,22 @@ import appeng.core.features.AEFeature;
 import appeng.helpers.ICustomCollision;
 import appeng.helpers.MetaRotation;
 
+
 public class BlockQuartzTorch extends AEBaseBlock implements IOrientableBlock, ICustomCollision
 {
 
-	protected BlockQuartzTorch(Class which) {
-		super( which, Material.circuits );
-		this.setLightOpacity( 0 );
-		this.isFullSize = this.isOpaque = false;
-	}
-
-	public BlockQuartzTorch() {
+	public BlockQuartzTorch()
+	{
 		this( BlockQuartzTorch.class );
 		this.setFeature( EnumSet.of( AEFeature.DecorativeLights ) );
 		this.setLightLevel( 0.9375F );
+	}
+
+	protected BlockQuartzTorch( Class which )
+	{
+		super( which, Material.circuits );
+		this.setLightOpacity( 0 );
+		this.isFullSize = this.isOpaque = false;
 	}
 
 	@Override
@@ -70,48 +73,18 @@ public class BlockQuartzTorch extends AEBaseBlock implements IOrientableBlock, I
 	}
 
 	@Override
-	public IOrientable getOrientable(final IBlockAccess w, final int x, final int y, final int z)
+	public boolean isValidOrientation( World w, int x, int y, int z, ForgeDirection forward, ForgeDirection up )
 	{
-		return new MetaRotation( w, x, y, z );
+		return this.canPlaceAt( w, x, y, z, up.getOpposite() );
 	}
 
-	private void dropTorch(World w, int x, int y, int z)
-	{
-		w.func_147480_a( x, y, z, true );
-		// w.destroyBlock( x, y, z, true );
-		w.markBlockForUpdate( x, y, z );
-	}
-
-	@Override
-	public boolean canPlaceBlockAt(World w, int x, int y, int z)
-	{
-		for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS)
-			if ( this.canPlaceAt( w, x, y, z, dir ) )
-				return true;
-		return false;
-	}
-
-	private boolean canPlaceAt(World w, int x, int y, int z, ForgeDirection dir)
+	private boolean canPlaceAt( World w, int x, int y, int z, ForgeDirection dir )
 	{
 		return w.isSideSolid( x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ, dir.getOpposite(), false );
 	}
 
 	@Override
-	public boolean isValidOrientation(World w, int x, int y, int z, ForgeDirection forward, ForgeDirection up)
-	{
-		return this.canPlaceAt( w, x, y, z, up.getOpposite() );
-	}
-
-	@Override
-	public void onNeighborBlockChange(World w, int x, int y, int z, Block id)
-	{
-		ForgeDirection up = this.getOrientable( w, x, y, z ).getUp();
-		if ( !this.canPlaceAt( w, x, y, z, up.getOpposite() ) )
-			this.dropTorch( w, x, y, z );
-	}
-
-	@Override
-	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool(World w, int x, int y, int z, Entity e, boolean isVisual)
+	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool( World w, int x, int y, int z, Entity e, boolean isVisual )
 	{
 		ForgeDirection up = this.getOrientable( w, x, y, z ).getUp();
 		double xOff = -0.3 * up.offsetX;
@@ -121,7 +94,7 @@ public class BlockQuartzTorch extends AEBaseBlock implements IOrientableBlock, I
 	}
 
 	@Override
-	public void addCollidingBlockToList(World w, int x, int y, int z, AxisAlignedBB bb, List out, Entity e)
+	public void addCollidingBlockToList( World w, int x, int y, int z, AxisAlignedBB bb, List out, Entity e )
 	{/*
 	 * double xOff = -0.15 * getUp().offsetX; double yOff = -0.15 * getUp().offsetY; double zOff = -0.15 *
 	 * getUp().offsetZ; out.add( AxisAlignedBB.getBoundingBox( xOff + (double) x + 0.15, yOff + (double) y + 0.15, zOff
@@ -130,22 +103,22 @@ public class BlockQuartzTorch extends AEBaseBlock implements IOrientableBlock, I
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
-	public void randomDisplayTick(World w, int x, int y, int z, Random r)
+	@SideOnly( Side.CLIENT )
+	public void randomDisplayTick( World w, int x, int y, int z, Random r )
 	{
-		if ( !AEConfig.instance.enableEffects )
+		if( !AEConfig.instance.enableEffects )
 			return;
 
-		if ( r.nextFloat() < 0.98 )
+		if( r.nextFloat() < 0.98 )
 			return;
 
 		ForgeDirection up = this.getOrientable( w, x, y, z ).getUp();
 		double xOff = -0.3 * up.offsetX;
 		double yOff = -0.3 * up.offsetY;
 		double zOff = -0.3 * up.offsetZ;
-		for (int bolts = 0; bolts < 3; bolts++)
+		for( int bolts = 0; bolts < 3; bolts++ )
 		{
-			if ( CommonHelper.proxy.shouldAddParticles( r ) )
+			if( CommonHelper.proxy.shouldAddParticles( r ) )
 			{
 				LightningFX fx = new LightningFX( w, xOff + 0.5 + x, yOff + 0.5 + y, zOff + 0.5 + z, 0.0D, 0.0D, 0.0D );
 
@@ -155,9 +128,38 @@ public class BlockQuartzTorch extends AEBaseBlock implements IOrientableBlock, I
 	}
 
 	@Override
+	public void onNeighborBlockChange( World w, int x, int y, int z, Block id )
+	{
+		ForgeDirection up = this.getOrientable( w, x, y, z ).getUp();
+		if( !this.canPlaceAt( w, x, y, z, up.getOpposite() ) )
+			this.dropTorch( w, x, y, z );
+	}
+
+	private void dropTorch( World w, int x, int y, int z )
+	{
+		w.func_147480_a( x, y, z, true );
+		// w.destroyBlock( x, y, z, true );
+		w.markBlockForUpdate( x, y, z );
+	}
+
+	@Override
+	public boolean canPlaceBlockAt( World w, int x, int y, int z )
+	{
+		for( ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS )
+			if( this.canPlaceAt( w, x, y, z, dir ) )
+				return true;
+		return false;
+	}
+
+	@Override
 	public boolean usesMetadata()
 	{
 		return true;
 	}
 
+	@Override
+	public IOrientable getOrientable( final IBlockAccess w, final int x, final int y, final int z )
+	{
+		return new MetaRotation( w, x, y, z );
+	}
 }

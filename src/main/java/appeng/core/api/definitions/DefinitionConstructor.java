@@ -35,7 +35,7 @@ public class DefinitionConstructor
 	{
 		final IBlockDefinition definition = this.registerBlockDefinition( feature );
 
-		if ( definition instanceof ITileDefinition )
+		if( definition instanceof ITileDefinition )
 		{
 			return ( (ITileDefinition) definition );
 		}
@@ -47,7 +47,7 @@ public class DefinitionConstructor
 	{
 		final IItemDefinition definition = this.registerItemDefinition( feature );
 
-		if ( definition instanceof IBlockDefinition )
+		if( definition instanceof IBlockDefinition )
 		{
 			return ( (IBlockDefinition) definition );
 		}
@@ -59,7 +59,7 @@ public class DefinitionConstructor
 	{
 		final IFeatureHandler handler = feature.handler();
 
-		if ( handler.isFeatureAvailable() )
+		if( handler.isFeatureAvailable() )
 		{
 			this.handlers.addFeatureHandler( handler );
 			this.features.addFeature( feature );
@@ -74,9 +74,9 @@ public class DefinitionConstructor
 	{
 		final ColoredItemDefinition definition = new ColoredItemDefinition();
 
-		for ( Item targetItem : target.maybeItem().asSet() )
+		for( Item targetItem : target.maybeItem().asSet() )
 		{
-			for ( AEColor color : AEColor.VALID_COLORS )
+			for( AEColor color : AEColor.VALID_COLORS )
 			{
 				definition.add( color, new ItemStackSrc( targetItem, offset + color.ordinal() ) );
 			}
@@ -89,12 +89,12 @@ public class DefinitionConstructor
 	{
 		final ColoredItemDefinition definition = new ColoredItemDefinition();
 
-		for ( AEColor color : AEColor.values() )
+		for( AEColor color : AEColor.values() )
 		{
 			ItemStackSrc multiPartSource = target.createPart( type, color );
 			final Optional<ItemStackSrc> maybeSource = Optional.fromNullable( multiPartSource );
 
-			if ( maybeSource.isPresent() )
+			if( maybeSource.isPresent() )
 			{
 				definition.add( color, multiPartSource );
 			}

@@ -51,6 +51,12 @@ public class ContainerIOPort extends ContainerUpgradeable
 	}
 
 	@Override
+	protected int getHeight()
+	{
+		return 166;
+	}
+
+	@Override
 	protected void setupConfig()
 	{
 		int offX = 19;
@@ -58,14 +64,14 @@ public class ContainerIOPort extends ContainerUpgradeable
 
 		IInventory cells = this.upgradeable.getInventoryByName( "cells" );
 
-		for ( int y = 0; y < 3; y++ )
-			for ( int x = 0; x < 2; x++ )
+		for( int y = 0; y < 3; y++ )
+			for( int x = 0; x < 2; x++ )
 				this.addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.STORAGE_CELLS, cells, x + y * 2, offX + x * 18, offY + y * 18, this.invPlayer ) );
 
 		offX = 122;
 		offY = 17;
-		for ( int y = 0; y < 3; y++ )
-			for ( int x = 0; x < 2; x++ )
+		for( int y = 0; y < 3; y++ )
+			for( int x = 0; x < 2; x++ )
 				this.addSlotToContainer( new SlotOutput( cells, 6 + x + y * 2, offX + x * 18, offY + y * 18, SlotRestrictedInput.PlacableItemType.STORAGE_CELLS.IIcon ) );
 
 		IInventory upgrades = this.upgradeable.getInventoryByName( "upgrades" );
@@ -75,9 +81,9 @@ public class ContainerIOPort extends ContainerUpgradeable
 	}
 
 	@Override
-	protected int getHeight()
+	protected boolean supportCapacity()
 	{
-		return 166;
+		return false;
 	}
 
 	@Override
@@ -87,17 +93,11 @@ public class ContainerIOPort extends ContainerUpgradeable
 	}
 
 	@Override
-	protected boolean supportCapacity()
-	{
-		return false;
-	}
-
-	@Override
 	public void detectAndSendChanges()
 	{
 		this.verifyPermissions( SecurityPermissions.BUILD, false );
 
-		if ( Platform.isServer() )
+		if( Platform.isServer() )
 		{
 			this.opMode = (OperationMode) this.upgradeable.getConfigManager().getSetting( Settings.OPERATION_MODE );
 			this.fMode = (FullnessMode) this.upgradeable.getConfigManager().getSetting( Settings.FULLNESS_MODE );

@@ -18,6 +18,7 @@
 
 package appeng.core.features.registries;
 
+
 import appeng.api.features.IGrinderRegistry;
 import appeng.api.features.ILocatableRegistry;
 import appeng.api.features.IMatterCannonAmmoRegistry;
@@ -32,6 +33,7 @@ import appeng.api.movable.IMovableRegistry;
 import appeng.api.networking.IGridCacheRegistry;
 import appeng.api.storage.ICellRegistry;
 import appeng.api.storage.IExternalStorageRegistry;
+
 
 public class RegistryContainer implements IRegistryContainer
 {
@@ -48,6 +50,30 @@ public class RegistryContainer implements IRegistryContainer
 	private final MatterCannonAmmoRegistry matterCannonReg = new MatterCannonAmmoRegistry();
 	private final PlayerRegistry playerRegistry = new PlayerRegistry();
 	private final IRecipeHandlerRegistry recipeReg = new RecipeHandlerRegistry();
+
+	@Override
+	public IMovableRegistry movable()
+	{
+		return this.MovableReg;
+	}
+
+	@Override
+	public IGridCacheRegistry gridCache()
+	{
+		return this.GridCacheRegistry;
+	}
+
+	@Override
+	public IExternalStorageRegistry externalStorage()
+	{
+		return this.ExternalStorageHandlers;
+	}
+
+	@Override
+	public ISpecialComparisonRegistry specialComparison()
+	{
+		return this.SpecialComparisonRegistry;
+	}
 
 	@Override
 	public IWirelessTermRegistry wireless()
@@ -68,33 +94,9 @@ public class RegistryContainer implements IRegistryContainer
 	}
 
 	@Override
-	public ISpecialComparisonRegistry specialComparison()
-	{
-		return this.SpecialComparisonRegistry;
-	}
-
-	@Override
-	public IExternalStorageRegistry externalStorage()
-	{
-		return this.ExternalStorageHandlers;
-	}
-
-	@Override
 	public ILocatableRegistry locatable()
 	{
 		return this.LocatableRegistry;
-	}
-
-	@Override
-	public IGridCacheRegistry gridCache()
-	{
-		return this.GridCacheRegistry;
-	}
-
-	@Override
-	public IMovableRegistry movable()
-	{
-		return this.MovableReg;
 	}
 
 	@Override
@@ -126,5 +128,4 @@ public class RegistryContainer implements IRegistryContainer
 	{
 		return WorldGenRegistry.INSTANCE;
 	}
-
 }

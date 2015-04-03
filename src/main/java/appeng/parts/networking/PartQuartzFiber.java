@@ -18,6 +18,7 @@
 
 package appeng.parts.networking;
 
+
 import java.util.EnumSet;
 import java.util.Set;
 
@@ -47,12 +48,14 @@ import appeng.me.GridAccessException;
 import appeng.me.helpers.AENetworkProxy;
 import appeng.parts.AEBasePart;
 
+
 public class PartQuartzFiber extends AEBasePart implements IEnergyGridProvider
 {
 
 	final AENetworkProxy outerProxy = new AENetworkProxy( this, "outer", this.proxy.getMachineRepresentation(), true );
 
-	public PartQuartzFiber(ItemStack is) {
+	public PartQuartzFiber( ItemStack is )
+	{
 		super( is );
 		this.proxy.setIdlePowerUsage( 0 );
 		this.proxy.setFlags( GridFlags.CANNOT_CARRY );
@@ -61,79 +64,20 @@ public class PartQuartzFiber extends AEBasePart implements IEnergyGridProvider
 	}
 
 	@Override
-	public void onPlacement(EntityPlayer player, ItemStack held, ForgeDirection side)
-	{
-		super.onPlacement( player, held, side );
-		this.outerProxy.setOwner( player );
-	}
-
-	@Override
-	public void setPartHostInfo(ForgeDirection side, IPartHost host, TileEntity tile)
-	{
-		super.setPartHostInfo( side, host, tile );
-		this.outerProxy.setValidSides( EnumSet.of( side ) );
-	}
-
-	@Override
-	public void readFromNBT(NBTTagCompound extra)
-	{
-		super.readFromNBT( extra );
-		this.outerProxy.readFromNBT( extra );
-	}
-
-	@Override
-	public void writeToNBT(NBTTagCompound extra)
-	{
-		super.writeToNBT( extra );
-		this.outerProxy.writeToNBT( extra );
-	}
-
-	@Override
-	public void addToWorld()
-	{
-		super.addToWorld();
-		this.outerProxy.onReady();
-	}
-
-	@Override
-	public void removeFromWorld()
-	{
-		super.removeFromWorld();
-		this.outerProxy.invalidate();
-	}
-
-	@Override
-	public IGridNode getExternalFacingNode()
-	{
-		return this.outerProxy.getNode();
-	}
-
-	@Override
-	public AECableType getCableConnectionType(ForgeDirection dir)
+	public AECableType getCableConnectionType( ForgeDirection dir )
 	{
 		return AECableType.GLASS;
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
-	public void renderStatic(int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer)
-	{
-		IIcon myIcon = this.is.getIconIndex();
-		rh.setTexture( myIcon );
-		rh.setBounds( 6, 6, 10, 10, 10, 16 );
-		rh.renderBlock( x, y, z, renderer );
-		rh.setTexture( null );
-	}
-
-	@Override
-	public void getBoxes(IPartCollisionHelper bch)
+	public void getBoxes( IPartCollisionHelper bch )
 	{
 		bch.addBox( 6, 6, 10, 10, 10, 16 );
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
-	public void renderInventory(IPartRenderHelper rh, RenderBlocks renderer)
+	@SideOnly( Side.CLIENT )
+	public void renderInventory( IPartRenderHelper rh, RenderBlocks renderer )
 	{
 		GL11.glTranslated( -0.2, -0.3, 0.0 );
 
@@ -144,60 +88,55 @@ public class PartQuartzFiber extends AEBasePart implements IEnergyGridProvider
 	}
 
 	@Override
-	public double extractAEPower(double amt, Actionable mode, Set<IEnergyGrid> seen)
+	@SideOnly( Side.CLIENT )
+	public void renderStatic( int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer )
 	{
-		double acquiredPower = 0;
-
-		try
-		{
-			IEnergyGrid eg = this.proxy.getEnergy();
-			acquiredPower += eg.extractAEPower( amt - acquiredPower, mode, seen );
-		}
-		catch (GridAccessException e)
-		{
-			// :P
-		}
-
-		try
-		{
-			IEnergyGrid eg = this.outerProxy.getEnergy();
-			acquiredPower += eg.extractAEPower( amt - acquiredPower, mode, seen );
-		}
-		catch (GridAccessException e)
-		{
-			// :P
-		}
-
-		return acquiredPower;
+		IIcon myIcon = this.is.getIconIndex();
+		rh.setTexture( myIcon );
+		rh.setBounds( 6, 6, 10, 10, 10, 16 );
+		rh.renderBlock( x, y, z, renderer );
+		rh.setTexture( null );
 	}
 
 	@Override
-	public double injectAEPower(double amt, Actionable mode, Set<IEnergyGrid> seen)
+	public void readFromNBT( NBTTagCompound extra )
 	{
+		super.readFromNBT( extra );
+		this.outerProxy.readFromNBT( extra );
+	}
 
-		try
-		{
-			IEnergyGrid eg = this.proxy.getEnergy();
-			if ( !seen.contains( eg ) )
-				return eg.injectAEPower( amt, mode, seen );
-		}
-		catch (GridAccessException e)
-		{
-			// :P
-		}
+	@Override
+	public void writeToNBT( NBTTagCompound extra )
+	{
+		super.writeToNBT( extra );
+		this.outerProxy.writeToNBT( extra );
+	}
 
-		try
-		{
-			IEnergyGrid eg = this.outerProxy.getEnergy();
-			if ( !seen.contains( eg ) )
-				return eg.injectAEPower( amt, mode, seen );
-		}
-		catch (GridAccessException e)
-		{
-			// :P
-		}
+	@Override
+	public void removeFromWorld()
+	{
+		super.removeFromWorld();
+		this.outerProxy.invalidate();
+	}
 
-		return amt;
+	@Override
+	public void addToWorld()
+	{
+		super.addToWorld();
+		this.outerProxy.onReady();
+	}
+
+	@Override
+	public void setPartHostInfo( ForgeDirection side, IPartHost host, TileEntity tile )
+	{
+		super.setPartHostInfo( side, host, tile );
+		this.outerProxy.setValidSides( EnumSet.of( side ) );
+	}
+
+	@Override
+	public IGridNode getExternalFacingNode()
+	{
+		return this.outerProxy.getNode();
 	}
 
 	@Override
@@ -207,7 +146,71 @@ public class PartQuartzFiber extends AEBasePart implements IEnergyGridProvider
 	}
 
 	@Override
-	public double getEnergyDemand(double amt, Set<IEnergyGrid> seen)
+	public void onPlacement( EntityPlayer player, ItemStack held, ForgeDirection side )
+	{
+		super.onPlacement( player, held, side );
+		this.outerProxy.setOwner( player );
+	}
+
+	@Override
+	public double extractAEPower( double amt, Actionable mode, Set<IEnergyGrid> seen )
+	{
+		double acquiredPower = 0;
+
+		try
+		{
+			IEnergyGrid eg = this.proxy.getEnergy();
+			acquiredPower += eg.extractAEPower( amt - acquiredPower, mode, seen );
+		}
+		catch( GridAccessException e )
+		{
+			// :P
+		}
+
+		try
+		{
+			IEnergyGrid eg = this.outerProxy.getEnergy();
+			acquiredPower += eg.extractAEPower( amt - acquiredPower, mode, seen );
+		}
+		catch( GridAccessException e )
+		{
+			// :P
+		}
+
+		return acquiredPower;
+	}
+
+	@Override
+	public double injectAEPower( double amt, Actionable mode, Set<IEnergyGrid> seen )
+	{
+
+		try
+		{
+			IEnergyGrid eg = this.proxy.getEnergy();
+			if( !seen.contains( eg ) )
+				return eg.injectAEPower( amt, mode, seen );
+		}
+		catch( GridAccessException e )
+		{
+			// :P
+		}
+
+		try
+		{
+			IEnergyGrid eg = this.outerProxy.getEnergy();
+			if( !seen.contains( eg ) )
+				return eg.injectAEPower( amt, mode, seen );
+		}
+		catch( GridAccessException e )
+		{
+			// :P
+		}
+
+		return amt;
+	}
+
+	@Override
+	public double getEnergyDemand( double amt, Set<IEnergyGrid> seen )
 	{
 		double demand = 0;
 
@@ -216,7 +219,7 @@ public class PartQuartzFiber extends AEBasePart implements IEnergyGridProvider
 			IEnergyGrid eg = this.proxy.getEnergy();
 			demand += eg.getEnergyDemand( amt - demand, seen );
 		}
-		catch (GridAccessException e)
+		catch( GridAccessException e )
 		{
 			// :P
 		}
@@ -226,12 +229,11 @@ public class PartQuartzFiber extends AEBasePart implements IEnergyGridProvider
 			IEnergyGrid eg = this.outerProxy.getEnergy();
 			demand += eg.getEnergyDemand( amt - demand, seen );
 		}
-		catch (GridAccessException e)
+		catch( GridAccessException e )
 		{
 			// :P
 		}
 
 		return demand;
 	}
-
 }

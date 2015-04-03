@@ -18,6 +18,7 @@
 
 package appeng.block.misc;
 
+
 import java.util.EnumSet;
 
 import net.minecraft.block.material.Material;
@@ -33,10 +34,12 @@ import appeng.core.sync.GuiBridge;
 import appeng.tile.misc.TileInscriber;
 import appeng.util.Platform;
 
+
 public class BlockInscriber extends AEBaseBlock
 {
 
-	public BlockInscriber() {
+	public BlockInscriber()
+	{
 		super( BlockInscriber.class, Material.iron );
 		this.setFeature( EnumSet.of( AEFeature.Inscriber ) );
 		this.setTileEntity( TileInscriber.class );
@@ -51,19 +54,18 @@ public class BlockInscriber extends AEBaseBlock
 	}
 
 	@Override
-	public boolean onActivated(World w, int x, int y, int z, EntityPlayer p, int side, float hitX, float hitY, float hitZ)
+	public boolean onActivated( World w, int x, int y, int z, EntityPlayer p, int side, float hitX, float hitY, float hitZ )
 	{
-		if ( p.isSneaking() )
+		if( p.isSneaking() )
 			return false;
 
 		TileInscriber tg = this.getTileEntity( w, x, y, z );
-		if ( tg != null )
+		if( tg != null )
 		{
-			if ( Platform.isServer() )
+			if( Platform.isServer() )
 				Platform.openGUI( p, tg, ForgeDirection.getOrientation( side ), GuiBridge.GUI_INSCRIBER );
 			return true;
 		}
 		return false;
 	}
-
 }

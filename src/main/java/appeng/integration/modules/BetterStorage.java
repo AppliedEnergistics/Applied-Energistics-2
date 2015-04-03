@@ -18,6 +18,7 @@
 
 package appeng.integration.modules;
 
+
 import net.mcft.copy.betterstorage.api.crate.ICrateStorage;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -28,21 +29,22 @@ import appeng.integration.modules.helpers.BSCrateHandler;
 import appeng.integration.modules.helpers.BSCrateStorageAdaptor;
 import appeng.util.InventoryAdaptor;
 
+
 public class BetterStorage implements IIntegrationModule, IBetterStorage
 {
 
 	public static BetterStorage instance;
 
 	@Override
-	public boolean isStorageCrate(Object te)
+	public boolean isStorageCrate( Object te )
 	{
 		return te instanceof ICrateStorage;
 	}
 
 	@Override
-	public InventoryAdaptor getAdaptor(Object te, ForgeDirection d)
+	public InventoryAdaptor getAdaptor( Object te, ForgeDirection d )
 	{
-		if ( te instanceof ICrateStorage )
+		if( te instanceof ICrateStorage )
 		{
 			return new BSCrateStorageAdaptor( te, d );
 		}
@@ -60,5 +62,4 @@ public class BetterStorage implements IIntegrationModule, IBetterStorage
 	{
 		AEApi.instance().registries().externalStorage().addExternalStorageInterface( new BSCrateHandler() );
 	}
-
 }

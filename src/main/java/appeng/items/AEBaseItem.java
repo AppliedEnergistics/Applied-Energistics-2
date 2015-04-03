@@ -43,7 +43,7 @@ public abstract class AEBaseItem extends Item implements IAEFeature
 
 	public AEBaseItem()
 	{
-		this( Optional.<String> absent() );
+		this( Optional.<String>absent() );
 		this.setNoRepair();
 	}
 

@@ -50,7 +50,7 @@ public class ChunkOnly extends StandardWorld
 	@Override
 	public int getBlockMetadata( int x, int y, int z )
 	{
-		if ( this.range( x, y, z ) )
+		if( this.range( x, y, z ) )
 			return this.target.getBlockMetadata( x & 0xF, y, z & 0xF );
 		return 0;
 	}
@@ -58,7 +58,7 @@ public class ChunkOnly extends StandardWorld
 	@Override
 	public Block getBlock( int x, int y, int z )
 	{
-		if ( this.range( x, y, z ) )
+		if( this.range( x, y, z ) )
 			return this.target.getBlock( x & 0xF, y, z & 0xF );
 		return Platform.AIR;
 	}
@@ -66,7 +66,7 @@ public class ChunkOnly extends StandardWorld
 	@Override
 	public void setBlock( int x, int y, int z, Block blk )
 	{
-		if ( this.range( x, y, z ) )
+		if( this.range( x, y, z ) )
 		{
 			this.verticalBits |= 1 << ( y >> 4 );
 			this.w.setBlock( x, y, z, blk, 0, 1 );
@@ -76,7 +76,7 @@ public class ChunkOnly extends StandardWorld
 	@Override
 	public void setBlock( int x, int y, int z, Block blk, int metadata, int flags )
 	{
-		if ( this.range( x, y, z ) )
+		if( this.range( x, y, z ) )
 		{
 			this.verticalBits |= 1 << ( y >> 4 );
 			this.w.setBlock( x, y, z, blk, metadata, flags & ( ~2 ) );
@@ -86,7 +86,7 @@ public class ChunkOnly extends StandardWorld
 	@Override
 	public void done()
 	{
-		if ( this.verticalBits != 0 )
+		if( this.verticalBits != 0 )
 			Platform.sendChunk( this.target, this.verticalBits );
 	}
 

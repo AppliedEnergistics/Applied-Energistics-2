@@ -18,29 +18,26 @@
 
 package appeng.container.slot;
 
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 
+
 public class SlotInaccessible extends AppEngSlot
 {
 
-	public SlotInaccessible(IInventory i, int slotIdx, int x, int y) {
+	ItemStack dspStack = null;
+
+	public SlotInaccessible( IInventory i, int slotIdx, int x, int y )
+	{
 		super( i, slotIdx, x, y );
 	}
 
-	ItemStack dspStack = null;
-
 	@Override
-	public ItemStack getDisplayStack()
+	public boolean isItemValid( ItemStack i )
 	{
-		if ( this.dspStack == null )
-		{
-			ItemStack dsp = super.getDisplayStack();
-			if ( dsp != null )
-				this.dspStack = dsp.copy();
-		}
-		return this.dspStack;
+		return false;
 	}
 
 	@Override
@@ -51,15 +48,20 @@ public class SlotInaccessible extends AppEngSlot
 	}
 
 	@Override
-	public boolean canTakeStack(EntityPlayer par1EntityPlayer)
+	public boolean canTakeStack( EntityPlayer par1EntityPlayer )
 	{
 		return false;
 	}
 
 	@Override
-	public boolean isItemValid(ItemStack i)
+	public ItemStack getDisplayStack()
 	{
-		return false;
+		if( this.dspStack == null )
+		{
+			ItemStack dsp = super.getDisplayStack();
+			if( dsp != null )
+				this.dspStack = dsp.copy();
+		}
+		return this.dspStack;
 	}
-
 }

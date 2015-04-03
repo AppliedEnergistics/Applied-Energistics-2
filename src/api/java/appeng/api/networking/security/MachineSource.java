@@ -29,14 +29,14 @@ public class MachineSource extends BaseActionSource
 
 	public final IActionHost via;
 
+	public MachineSource( IActionHost v )
+	{
+		this.via = v;
+	}
+
 	@Override
 	public boolean isMachine()
 	{
 		return true;
-	}
-
-	public MachineSource( IActionHost v )
-	{
-		this.via = v;
 	}
 }

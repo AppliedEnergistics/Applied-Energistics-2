@@ -23,7 +23,9 @@
 
 package appeng.api.implementations.tiles;
 
+
 import net.minecraftforge.common.util.ForgeDirection;
+
 
 /**
  * Crank/Crankable API,
@@ -53,6 +55,5 @@ public interface ICrankable
 	/**
 	 * @return true if the crank can attach on the given side.
 	 */
-	boolean canCrankAttach(ForgeDirection directionToCrank);
-
+	boolean canCrankAttach( ForgeDirection directionToCrank );
 }

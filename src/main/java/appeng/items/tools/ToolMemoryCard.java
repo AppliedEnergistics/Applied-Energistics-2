@@ -51,7 +51,7 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 		lines.add( this.getLocalizedName( this.getSettingsName( stack ) + ".name", this.getSettingsName( stack ) ) );
 
 		NBTTagCompound data = this.getData( stack );
-		if ( data.hasKey( "tooltip" ) )
+		if( data.hasKey( "tooltip" ) )
 			lines.add( StatCollector.translateToLocal( this.getLocalizedName( data.getString( "tooltip" ) + ".name", data.getString( "tooltip" ) ) ) );
 	}
 
@@ -64,14 +64,14 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 	 */
 	private String getLocalizedName( String... name )
 	{
-		for ( String n : name )
+		for( String n : name )
 		{
 			String l = StatCollector.translateToLocal( n );
-			if ( !l.equals( n ) )
+			if( !l.equals( n ) )
 				return l;
 		}
 
-		for ( String n : name )
+		for( String n : name )
 			return n;
 
 		return "";
@@ -98,7 +98,7 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 	{
 		NBTTagCompound c = Platform.openNbtData( is );
 		NBTTagCompound o = c.getCompoundTag( "Data" );
-		if ( o == null )
+		if( o == null )
 			o = new NBTTagCompound();
 		return (NBTTagCompound) o.copy();
 	}
@@ -106,10 +106,10 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 	@Override
 	public void notifyUser( EntityPlayer player, MemoryCardMessages msg )
 	{
-		if ( Platform.isClient() )
+		if( Platform.isClient() )
 			return;
 
-		switch ( msg )
+		switch( msg )
 		{
 			case SETTINGS_CLEARED:
 				player.addChatMessage( PlayerMessages.SettingCleared.get() );
@@ -130,7 +130,7 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 	@Override
 	public boolean onItemUse( ItemStack is, EntityPlayer player, World w, int x, int y, int z, int side, float hx, float hy, float hz )
 	{
-		if ( player.isSneaking() && !w.isRemote )
+		if( player.isSneaking() && !w.isRemote )
 		{
 			IMemoryCard mem = (IMemoryCard) is.getItem();
 			mem.notifyUser( player, MemoryCardMessages.SETTINGS_CLEARED );

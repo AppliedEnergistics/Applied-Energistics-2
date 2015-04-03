@@ -18,6 +18,7 @@
 
 package appeng.util.item;
 
+
 import java.lang.ref.WeakReference;
 import java.util.WeakHashMap;
 
@@ -30,54 +31,100 @@ import appeng.api.features.IItemComparison;
 import appeng.api.storage.data.IAETagCompound;
 import appeng.util.Platform;
 
+
 /*
  * this is used for the shared NBT Cache.
  */
 public class AESharedNBT extends NBTTagCompound implements IAETagCompound
 {
 
+	/*
+	 * Shared Tag Compound Cache.
+	 */
+	private static final WeakHashMap<SharedSearchObject, WeakReference<SharedSearchObject>> SHARED_TAG_COMPOUND = new WeakHashMap<SharedSearchObject, WeakReference<SharedSearchObject>>();
 	private final Item item;
 	private final int meta;
-	private int hash;
 	public SharedSearchObject sso;
+	private int hash;
 	private IItemComparison comp;
 
-	public int getHash()
+	private AESharedNBT( Item itemID, int damageValue )
 	{
-		return this.hash;
-	}
-
-	@Override
-	public IItemComparison getSpecialComparison()
-	{
-		return this.comp;
-	}
-
-	private AESharedNBT(Item itemID, int damageValue) {
 		super();
 		this.item = itemID;
 		this.meta = damageValue;
 	}
 
-	public AESharedNBT(int fakeValue) {
+	public AESharedNBT( int fakeValue )
+	{
 		super();
 		this.item = null;
 		this.meta = 0;
 		this.hash = fakeValue;
 	}
 
-	@Override
-	public NBTTagCompound getNBTTagCompoundCopy()
+	/*
+	 * Debug purposes.
+	 */
+	public static int sharedTagLoad()
 	{
-		return (NBTTagCompound) this.copy();
+		return SHARED_TAG_COMPOUND.size();
 	}
 
-	public static AESharedNBT createFromCompound(Item itemID, int damageValue, NBTTagCompound c)
+	/*
+	 * Returns an NBT Compound that is used for accelerating comparisons.
+	 */
+	synchronized public static NBTTagCompound getSharedTagCompound( NBTTagCompound tagCompound, ItemStack s )
+	{
+		if( tagCompound.hasNoTags() )
+			return null;
+
+		Item item = s.getItem();
+		int meta = -1;
+		if( s.getItem() != null && s.isItemStackDamageable() && s.getHasSubtypes() )
+			meta = s.getItemDamage();
+
+		if( isShared( tagCompound ) )
+			return tagCompound;
+
+		SharedSearchObject sso = new SharedSearchObject( item, meta, tagCompound );
+
+		WeakReference<SharedSearchObject> c = SHARED_TAG_COMPOUND.get( sso );
+		if( c != null )
+		{
+			SharedSearchObject cg = c.get();
+			if( cg != null )
+				return cg.shared; // I don't think I really need to check this
+			// as its already certain to exist..
+		}
+
+		AESharedNBT clone = AESharedNBT.createFromCompound( item, meta, tagCompound );
+		sso.compound = (NBTTagCompound) sso.compound.copy(); // prevent
+		// modification
+		// of data based
+		// on original
+		// item.
+		sso.shared = clone;
+		clone.sso = sso;
+
+		SHARED_TAG_COMPOUND.put( sso, new WeakReference<SharedSearchObject>( sso ) );
+		return clone;
+	}
+
+	/*
+	 * returns true if the compound is part of the shared compound system ( and can thus be compared directly ).
+	 */
+	public static boolean isShared( NBTTagCompound ta )
+	{
+		return ta instanceof AESharedNBT;
+	}
+
+	public static AESharedNBT createFromCompound( Item itemID, int damageValue, NBTTagCompound c )
 	{
 		AESharedNBT x = new AESharedNBT( itemID, damageValue );
 
 		// c.getTags()
-		for (Object o : c.func_150296_c())
+		for( Object o : c.func_150296_c() )
 		{
 			String name = (String) o;
 			x.setTag( name, c.getTag( name ).copy() );
@@ -92,25 +139,42 @@ public class AESharedNBT extends NBTTagCompound implements IAETagCompound
 		return x;
 	}
 
-	@Override
-	public boolean equals(Object par1Obj)
+	public int getHash()
 	{
-		if ( par1Obj instanceof AESharedNBT )
+		return this.hash;
+	}
+
+	@Override
+	public NBTTagCompound getNBTTagCompoundCopy()
+	{
+		return (NBTTagCompound) this.copy();
+	}
+
+	@Override
+	public IItemComparison getSpecialComparison()
+	{
+		return this.comp;
+	}
+
+	@Override
+	public boolean equals( Object par1Obj )
+	{
+		if( par1Obj instanceof AESharedNBT )
 			return this == par1Obj;
 		return super.equals( par1Obj );
 	}
 
-	public boolean matches(Item item, int meta, int orderlessHash)
+	public boolean matches( Item item, int meta, int orderlessHash )
 	{
 		return item == this.item && this.meta == meta && this.hash == orderlessHash;
 	}
 
-	public boolean comparePreciseWithRegistry(AESharedNBT tagCompound)
+	public boolean comparePreciseWithRegistry( AESharedNBT tagCompound )
 	{
-		if ( this == tagCompound )
+		if( this == tagCompound )
 			return true;
 
-		if ( this.comp != null && tagCompound.comp != null )
+		if( this.comp != null && tagCompound.comp != null )
 		{
 			return this.comp.sameAsPrecise( tagCompound.comp );
 		}
@@ -118,83 +182,21 @@ public class AESharedNBT extends NBTTagCompound implements IAETagCompound
 		return false;
 	}
 
-	public boolean compareFuzzyWithRegistry(AESharedNBT tagCompound)
+	public boolean compareFuzzyWithRegistry( AESharedNBT tagCompound )
 	{
-		if ( this == tagCompound )
+		if( this == tagCompound )
 			return true;
-		if ( tagCompound == null )
+		if( tagCompound == null )
 			return false;
 
-		if ( this.comp == tagCompound.comp )
+		if( this.comp == tagCompound.comp )
 			return true;
 
-		if ( this.comp != null )
+		if( this.comp != null )
 		{
 			return this.comp.sameAsFuzzy( tagCompound.comp );
 		}
 
 		return false;
 	}
-
-	/*
-	 * Shared Tag Compound Cache.
-	 */
-	private static final WeakHashMap<SharedSearchObject, WeakReference<SharedSearchObject>> SHARED_TAG_COMPOUND = new WeakHashMap<SharedSearchObject, WeakReference<SharedSearchObject>>();
-
-	/*
-	 * Debug purposes.
-	 */
-	public static int sharedTagLoad()
-	{
-		return SHARED_TAG_COMPOUND.size();
-	}
-
-	/*
-	 * returns true if the compound is part of the shared compound system ( and can thus be compared directly ).
-	 */
-	public static boolean isShared(NBTTagCompound ta)
-	{
-		return ta instanceof AESharedNBT;
-	}
-
-	/*
-	 * Returns an NBT Compound that is used for accelerating comparisons.
-	 */
-	synchronized public static NBTTagCompound getSharedTagCompound(NBTTagCompound tagCompound, ItemStack s)
-	{
-		if ( tagCompound.hasNoTags() )
-			return null;
-
-		Item item = s.getItem();
-		int meta = -1;
-		if ( s.getItem() != null && s.isItemStackDamageable() && s.getHasSubtypes() )
-			meta = s.getItemDamage();
-
-		if ( isShared( tagCompound ) )
-			return tagCompound;
-
-		SharedSearchObject sso = new SharedSearchObject( item, meta, tagCompound );
-
-		WeakReference<SharedSearchObject> c = SHARED_TAG_COMPOUND.get( sso );
-		if ( c != null )
-		{
-			SharedSearchObject cg = c.get();
-			if ( cg != null )
-				return cg.shared; // I don't think I really need to check this
-									// as its already certain to exist..
-		}
-
-		AESharedNBT clone = AESharedNBT.createFromCompound( item, meta, tagCompound );
-		sso.compound = (NBTTagCompound) sso.compound.copy(); // prevent
-																// modification
-																// of data based
-																// on original
-																// item.
-		sso.shared = clone;
-		clone.sso = sso;
-
-		SHARED_TAG_COMPOUND.put( sso, new WeakReference<SharedSearchObject>( sso ) );
-		return clone;
-	}
-
 }

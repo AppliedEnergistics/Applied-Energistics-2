@@ -18,6 +18,7 @@
 
 package appeng.client;
 
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -86,64 +87,178 @@ import appeng.util.Platform;
 import static net.minecraftforge.client.IItemRenderer.ItemRenderType.ENTITY;
 import static net.minecraftforge.client.IItemRenderer.ItemRendererHelper.BLOCK_3D;
 
+
 public class ClientHelper extends ServerHelper
 {
 
 	private static final RenderItem ITEM_RENDERER = new RenderItem();
 	private static final RenderBlocks BLOCK_RENDERER = new RenderBlocks();
 
-	@Override
-	public CableRenderMode getRenderMode()
-	{
-		if ( Platform.isServer() )
-			return super.getRenderMode();
-
-		Minecraft mc = Minecraft.getMinecraft();
-		EntityPlayer player = mc.thePlayer;
-
-		return this.renderModeForPlayer( player );
-	}
-
-	@Override
-	public void triggerUpdates()
-	{
-		Minecraft mc = Minecraft.getMinecraft();
-		if ( mc == null || mc.thePlayer == null || mc.theWorld == null )
-			return;
-
-		EntityPlayer player = mc.thePlayer;
-
-		if ( player == null )
-			return;
-
-		int x = (int) player.posX;
-		int y = (int) player.posY;
-		int z = (int) player.posZ;
-
-		int range = 16 * 16;
-
-		mc.theWorld.markBlockRangeForRenderUpdate( x - range, y - range, z - range, x + range, y + range, z + range );
-	}
-
 	@SubscribeEvent
-	public void postPlayerRender(RenderLivingEvent.Pre p)
+	public void postPlayerRender( RenderLivingEvent.Pre p )
 	{
 		PlayerColor player = TickHandler.INSTANCE.getPlayerColors().get( p.entity.getEntityId() );
-		if ( player != null )
+		if( player != null )
 		{
 			AEColor col = player.myColor;
 
-			float r = 0xff & (col.mediumVariant >> 16);
-			float g = 0xff & (col.mediumVariant >> 8);
-			float b = 0xff & (col.mediumVariant);
+			float r = 0xff & ( col.mediumVariant >> 16 );
+			float g = 0xff & ( col.mediumVariant >> 8 );
+			float b = 0xff & ( col.mediumVariant );
 			GL11.glColor3f( r / 255.0f, g / 255.0f, b / 255.0f );
 		}
 	}
 
 	@Override
-	public void doRenderItem(ItemStack itemstack, World w)
+	public void init()
 	{
-		if ( itemstack != null )
+		MinecraftForge.EVENT_BUS.register( this );
+	}
+
+	@Override
+	public World getWorld()
+	{
+		if( Platform.isClient() )
+			return Minecraft.getMinecraft().theWorld;
+		else
+			return super.getWorld();
+	}
+
+	@Override
+	public void bindTileEntitySpecialRenderer( Class tile, AEBaseBlock blk )
+	{
+		BaseBlockRender bbr = blk.getRendererInstance().rendererInstance;
+		if( bbr.hasTESR() && tile != null )
+			ClientRegistry.bindTileEntitySpecialRenderer( tile, new TESRWrapper( bbr ) );
+	}
+
+	@Override
+	public List<EntityPlayer> getPlayers()
+	{
+		if( Platform.isClient() )
+		{
+			List<EntityPlayer> o = new ArrayList<EntityPlayer>();
+			o.add( Minecraft.getMinecraft().thePlayer );
+			return o;
+		}
+		else
+			return super.getPlayers();
+	}
+
+	@Override
+	public void spawnEffect( EffectType effect, World worldObj, double posX, double posY, double posZ, Object o )
+	{
+		if( AEConfig.instance.enableEffects )
+		{
+			switch( effect )
+			{
+				case Assembler:
+					this.spawnAssembler( worldObj, posX, posY, posZ, o );
+					return;
+				case Vibrant:
+					this.spawnVibrant( worldObj, posX, posY, posZ );
+					return;
+				case Crafting:
+					this.spawnCrafting( worldObj, posX, posY, posZ );
+					return;
+				case Energy:
+					this.spawnEnergy( worldObj, posX, posY, posZ );
+					return;
+				case Lightning:
+					this.spawnLightning( worldObj, posX, posY, posZ );
+					return;
+				case LightningArc:
+					this.spawnLightningArc( worldObj, posX, posY, posZ, (Vec3) o );
+					return;
+				default:
+			}
+		}
+	}
+
+	private void spawnAssembler( World worldObj, double posX, double posY, double posZ, Object o )
+	{
+		PacketAssemblerAnimation paa = (PacketAssemblerAnimation) o;
+
+		AssemblerFX fx = new AssemblerFX( Minecraft.getMinecraft().theWorld, posX, posY, posZ, 0.0D, 0.0D, 0.0D, paa.rate, paa.is );
+		Minecraft.getMinecraft().effectRenderer.addEffect( fx );
+	}
+
+	private void spawnVibrant( World w, double x, double y, double z )
+	{
+		if( CommonHelper.proxy.shouldAddParticles( Platform.getRandom() ) )
+		{
+			double d0 = ( Platform.getRandomFloat() - 0.5F ) * 0.26D;
+			double d1 = ( Platform.getRandomFloat() - 0.5F ) * 0.26D;
+			double d2 = ( Platform.getRandomFloat() - 0.5F ) * 0.26D;
+
+			VibrantFX fx = new VibrantFX( w, x + d0, y + d1, z + d2, 0.0D, 0.0D, 0.0D );
+			Minecraft.getMinecraft().effectRenderer.addEffect( fx );
+		}
+	}
+
+	private void spawnCrafting( World w, double posX, double posY, double posZ )
+	{
+		float x = (float) ( ( ( Platform.getRandomInt() % 100 ) * 0.01 ) - 0.5 ) * 0.7f;
+		float y = (float) ( ( ( Platform.getRandomInt() % 100 ) * 0.01 ) - 0.5 ) * 0.7f;
+		float z = (float) ( ( ( Platform.getRandomInt() % 100 ) * 0.01 ) - 0.5 ) * 0.7f;
+
+		CraftingFx fx = new CraftingFx( w, posX + x, posY + y, posZ + z, Items.diamond );
+
+		fx.motionX = -x * 0.2;
+		fx.motionY = -y * 0.2;
+		fx.motionZ = -z * 0.2;
+
+		Minecraft.getMinecraft().effectRenderer.addEffect( fx );
+	}
+
+	private void spawnEnergy( World w, double posX, double posY, double posZ )
+	{
+		float x = (float) ( ( ( Platform.getRandomInt() % 100 ) * 0.01 ) - 0.5 ) * 0.7f;
+		float y = (float) ( ( ( Platform.getRandomInt() % 100 ) * 0.01 ) - 0.5 ) * 0.7f;
+		float z = (float) ( ( ( Platform.getRandomInt() % 100 ) * 0.01 ) - 0.5 ) * 0.7f;
+
+		EnergyFx fx = new EnergyFx( w, posX + x, posY + y, posZ + z, Items.diamond );
+
+		fx.motionX = -x * 0.1;
+		fx.motionY = -y * 0.1;
+		fx.motionZ = -z * 0.1;
+
+		Minecraft.getMinecraft().effectRenderer.addEffect( fx );
+	}
+
+	private void spawnLightning( World worldObj, double posX, double posY, double posZ )
+	{
+		LightningFX fx = new LightningFX( worldObj, posX, posY + 0.3f, posZ, 0.0f, 0.0f, 0.0f );
+		Minecraft.getMinecraft().effectRenderer.addEffect( fx );
+	}
+
+	private void spawnLightningArc( World worldObj, double posX, double posY, double posZ, Vec3 second )
+	{
+		LightningFX fx = new LightningArcFX( worldObj, posX, posY, posZ, second.xCoord, second.yCoord, second.zCoord, 0.0f, 0.0f, 0.0f );
+		Minecraft.getMinecraft().effectRenderer.addEffect( fx );
+	}
+
+	@Override
+	public boolean shouldAddParticles( Random r )
+	{
+		int setting = Minecraft.getMinecraft().gameSettings.particleSetting;
+		if( setting == 2 )
+			return false;
+		if( setting == 0 )
+			return true;
+		return r.nextInt( 2 * ( setting + 1 ) ) == 0;
+	}
+
+	@Override
+	public MovingObjectPosition getMOP()
+	{
+		return Minecraft.getMinecraft().objectMouseOver;
+	}
+
+	@Override
+	public void doRenderItem( ItemStack itemstack, World w )
+	{
+		if( itemstack != null )
 		{
 			EntityItem entityitem = new EntityItem( w, 0.0D, 0.0D, 0.0D, itemstack );
 			entityitem.getEntityItem().stackSize = 1;
@@ -158,7 +273,7 @@ public class ClientHelper extends ServerHelper
 			GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
 			// GL11.glDisable( GL11.GL_CULL_FACE );
 
-			if ( itemstack.isItemEnchanted() || itemstack.getItem().requiresMultipleRenderPasses() )
+			if( itemstack.isItemEnchanted() || itemstack.getItem().requiresMultipleRenderPasses() )
 			{
 				GL11.glTranslatef( 0.0f, -0.05f, -0.25f );
 				GL11.glScalef( 1.0f / 1.5f, 1.0f / 1.5f, 1.0f / 1.5f );
@@ -167,7 +282,7 @@ public class ClientHelper extends ServerHelper
 				// GL11.glScalef( 1.0f , -1.0f, 1.0f );
 
 				Block block = Block.getBlockFromItem( itemstack.getItem() );
-				if ( (itemstack.getItemSpriteNumber() == 0 && block != null && RenderBlocks.renderItemIn3d( block.getRenderType() )) )
+				if( ( itemstack.getItemSpriteNumber() == 0 && block != null && RenderBlocks.renderItemIn3d( block.getRenderType() ) ) )
 				{
 					GL11.glRotatef( 25.0f, 1.0f, 0.0f, 0.0f );
 					GL11.glRotatef( 15.0f, 0.0f, 1.0f, 0.0f );
@@ -175,9 +290,9 @@ public class ClientHelper extends ServerHelper
 				}
 
 				IItemRenderer customRenderer = MinecraftForgeClient.getItemRenderer( itemstack, ENTITY );
-				if ( customRenderer != null && !(itemstack.getItem() instanceof ItemBlock) )
+				if( customRenderer != null && !( itemstack.getItem() instanceof ItemBlock ) )
 				{
-					if ( customRenderer.shouldUseRenderHelper( ENTITY, itemstack, BLOCK_3D ) )
+					if( customRenderer.shouldUseRenderHelper( ENTITY, itemstack, BLOCK_3D ) )
 					{
 						GL11.glTranslatef( 0, -0.04F, 0 );
 						GL11.glScalef( 0.7f, 0.7f, 0.7f );
@@ -186,7 +301,7 @@ public class ClientHelper extends ServerHelper
 						GL11.glRotatef( -90, 0, 1, 0 );
 					}
 				}
-				else if ( itemstack.getItem() instanceof ItemBlock )
+				else if( itemstack.getItem() instanceof ItemBlock )
 				{
 					GL11.glTranslatef( 0, -0.04F, 0 );
 					GL11.glScalef( 1.1f, 1.1f, 1.1f );
@@ -210,7 +325,7 @@ public class ClientHelper extends ServerHelper
 
 				RenderItem.renderInFrame = false;
 				FontRenderer fr = Minecraft.getMinecraft().fontRenderer;
-				if ( !ForgeHooksClient.renderInventoryItem( BLOCK_RENDERER, Minecraft.getMinecraft().renderEngine, itemstack, true, 0, 0, 0 ) )
+				if( !ForgeHooksClient.renderInventoryItem( BLOCK_RENDERER, Minecraft.getMinecraft().renderEngine, itemstack, true, 0, 0, 0 ) )
 				{
 					ITEM_RENDERER.renderItemIntoGUI( fr, Minecraft.getMinecraft().renderEngine, itemstack, 0, 0, false );
 				}
@@ -221,12 +336,6 @@ public class ClientHelper extends ServerHelper
 	}
 
 	@Override
-	public void init()
-	{
-		MinecraftForge.EVENT_BUS.register( this );
-	}
-
-	@Override
 	public void postInit()
 	{
 		RenderingRegistry.registerBlockHandler( WorldRender.INSTANCE );
@@ -234,187 +343,37 @@ public class ClientHelper extends ServerHelper
 		RenderManager.instance.entityRenderMap.put( EntityFloatingItem.class, new RenderFloatingItem() );
 	}
 
-	@SubscribeEvent
-	public void wheelEvent(MouseEvent me)
+	@Override
+	public CableRenderMode getRenderMode()
 	{
-		if ( me.isCanceled() || me.dwheel == 0 )
-			return;
+		if( Platform.isServer() )
+			return super.getRenderMode();
 
 		Minecraft mc = Minecraft.getMinecraft();
 		EntityPlayer player = mc.thePlayer;
-		ItemStack is = player.getHeldItem();
 
-		if ( is != null && is.getItem() instanceof IMouseWheelItem && player.isSneaking() )
-		{
-			try
-			{
-				NetworkHandler.instance.sendToServer( new PacketValueConfig( "Item", me.dwheel > 0 ? "WheelUp" : "WheelDown" ) );
-				me.setCanceled( true );
-			}
-			catch (IOException e)
-			{
-				AELog.error( e );
-			}
-		}
-	}
-
-	@SubscribeEvent
-	public void updateTextureSheet(TextureStitchEvent.Pre ev)
-	{
-		if ( ev.map.getTextureType() == 1 )
-		{
-			for (ExtraItemTextures et : ExtraItemTextures.values())
-				et.registerIcon( ev.map );
-		}
-
-		if ( ev.map.getTextureType() == 0 )
-		{
-			for (ExtraBlockTextures et : ExtraBlockTextures.values())
-				et.registerIcon( ev.map );
-
-			for (CableBusTextures cb : CableBusTextures.values())
-				cb.registerIcon( ev.map );
-		}
+		return this.renderModeForPlayer( player );
 	}
 
 	@Override
-	public World getWorld()
+	public void triggerUpdates()
 	{
-		if ( Platform.isClient() )
-			return Minecraft.getMinecraft().theWorld;
-		else
-			return super.getWorld();
-	}
+		Minecraft mc = Minecraft.getMinecraft();
+		if( mc == null || mc.thePlayer == null || mc.theWorld == null )
+			return;
 
-	@Override
-	public void bindTileEntitySpecialRenderer(Class tile, AEBaseBlock blk)
-	{
-		BaseBlockRender bbr = blk.getRendererInstance().rendererInstance;
-		if ( bbr.hasTESR() && tile != null )
-			ClientRegistry.bindTileEntitySpecialRenderer( tile, new TESRWrapper( bbr ) );
-	}
+		EntityPlayer player = mc.thePlayer;
 
-	@Override
-	public List<EntityPlayer> getPlayers()
-	{
-		if ( Platform.isClient() )
-		{
-			List<EntityPlayer> o = new ArrayList<EntityPlayer>();
-			o.add( Minecraft.getMinecraft().thePlayer );
-			return o;
-		}
-		else
-			return super.getPlayers();
-	}
+		if( player == null )
+			return;
 
-	@Override
-	public void spawnEffect(EffectType effect, World worldObj, double posX, double posY, double posZ, Object o)
-	{
-		if ( AEConfig.instance.enableEffects )
-		{
-			switch (effect)
-			{
-			case Assembler:
-				this.spawnAssembler( worldObj, posX, posY, posZ, o );
-				return;
-			case Vibrant:
-				this.spawnVibrant( worldObj, posX, posY, posZ );
-				return;
-			case Crafting:
-				this.spawnCrafting( worldObj, posX, posY, posZ );
-				return;
-			case Energy:
-				this.spawnEnergy( worldObj, posX, posY, posZ );
-				return;
-			case Lightning:
-				this.spawnLightning( worldObj, posX, posY, posZ );
-				return;
-			case LightningArc:
-				this.spawnLightningArc( worldObj, posX, posY, posZ, (Vec3) o );
-				return;
-			default:
-			}
-		}
-	}
+		int x = (int) player.posX;
+		int y = (int) player.posY;
+		int z = (int) player.posZ;
 
-	private void spawnAssembler(World worldObj, double posX, double posY, double posZ, Object o)
-	{
-		PacketAssemblerAnimation paa = (PacketAssemblerAnimation) o;
+		int range = 16 * 16;
 
-		AssemblerFX fx = new AssemblerFX( Minecraft.getMinecraft().theWorld, posX, posY, posZ, 0.0D, 0.0D, 0.0D, paa.rate, paa.is );
-		Minecraft.getMinecraft().effectRenderer.addEffect( fx );
-	}
-
-	private void spawnVibrant(World w, double x, double y, double z)
-	{
-		if ( CommonHelper.proxy.shouldAddParticles( Platform.getRandom() ) )
-		{
-			double d0 = (Platform.getRandomFloat() - 0.5F) * 0.26D;
-			double d1 = (Platform.getRandomFloat() - 0.5F) * 0.26D;
-			double d2 = (Platform.getRandomFloat() - 0.5F) * 0.26D;
-
-			VibrantFX fx = new VibrantFX( w, x + d0, y + d1, z + d2, 0.0D, 0.0D, 0.0D );
-			Minecraft.getMinecraft().effectRenderer.addEffect( fx );
-		}
-	}
-
-	private void spawnLightningArc(World worldObj, double posX, double posY, double posZ, Vec3 second)
-	{
-		LightningFX fx = new LightningArcFX( worldObj, posX, posY, posZ, second.xCoord, second.yCoord, second.zCoord, 0.0f, 0.0f, 0.0f );
-		Minecraft.getMinecraft().effectRenderer.addEffect( fx );
-	}
-
-	private void spawnLightning(World worldObj, double posX, double posY, double posZ)
-	{
-		LightningFX fx = new LightningFX( worldObj, posX, posY + 0.3f, posZ, 0.0f, 0.0f, 0.0f );
-		Minecraft.getMinecraft().effectRenderer.addEffect( fx );
-	}
-
-	private void spawnEnergy(World w, double posX, double posY, double posZ)
-	{
-		float x = (float) (((Platform.getRandomInt() % 100) * 0.01) - 0.5) * 0.7f;
-		float y = (float) (((Platform.getRandomInt() % 100) * 0.01) - 0.5) * 0.7f;
-		float z = (float) (((Platform.getRandomInt() % 100) * 0.01) - 0.5) * 0.7f;
-
-		EnergyFx fx = new EnergyFx( w, posX + x, posY + y, posZ + z, Items.diamond );
-
-		fx.motionX = -x * 0.1;
-		fx.motionY = -y * 0.1;
-		fx.motionZ = -z * 0.1;
-
-		Minecraft.getMinecraft().effectRenderer.addEffect( fx );
-	}
-
-	private void spawnCrafting(World w, double posX, double posY, double posZ)
-	{
-		float x = (float) (((Platform.getRandomInt() % 100) * 0.01) - 0.5) * 0.7f;
-		float y = (float) (((Platform.getRandomInt() % 100) * 0.01) - 0.5) * 0.7f;
-		float z = (float) (((Platform.getRandomInt() % 100) * 0.01) - 0.5) * 0.7f;
-
-		CraftingFx fx = new CraftingFx( w, posX + x, posY + y, posZ + z, Items.diamond );
-
-		fx.motionX = -x * 0.2;
-		fx.motionY = -y * 0.2;
-		fx.motionZ = -z * 0.2;
-
-		Minecraft.getMinecraft().effectRenderer.addEffect( fx );
-	}
-
-	@Override
-	public boolean shouldAddParticles(Random r)
-	{
-		int setting = Minecraft.getMinecraft().gameSettings.particleSetting;
-		if ( setting == 2 )
-			return false;
-		if ( setting == 0 )
-			return true;
-		return r.nextInt( 2 * (setting + 1) ) == 0;
-	}
-
-	@Override
-	public MovingObjectPosition getMOP()
-	{
-		return Minecraft.getMinecraft().objectMouseOver;
+		mc.theWorld.markBlockRangeForRenderUpdate( x - range, y - range, z - range, x + range, y + range, z + range );
 	}
 
 	@Override
@@ -423,4 +382,46 @@ public class ClientHelper extends ServerHelper
 		throw new MissingCoreMod();
 	}
 
+	@SubscribeEvent
+	public void wheelEvent( MouseEvent me )
+	{
+		if( me.isCanceled() || me.dwheel == 0 )
+			return;
+
+		Minecraft mc = Minecraft.getMinecraft();
+		EntityPlayer player = mc.thePlayer;
+		ItemStack is = player.getHeldItem();
+
+		if( is != null && is.getItem() instanceof IMouseWheelItem && player.isSneaking() )
+		{
+			try
+			{
+				NetworkHandler.instance.sendToServer( new PacketValueConfig( "Item", me.dwheel > 0 ? "WheelUp" : "WheelDown" ) );
+				me.setCanceled( true );
+			}
+			catch( IOException e )
+			{
+				AELog.error( e );
+			}
+		}
+	}
+
+	@SubscribeEvent
+	public void updateTextureSheet( TextureStitchEvent.Pre ev )
+	{
+		if( ev.map.getTextureType() == 1 )
+		{
+			for( ExtraItemTextures et : ExtraItemTextures.values() )
+				et.registerIcon( ev.map );
+		}
+
+		if( ev.map.getTextureType() == 0 )
+		{
+			for( ExtraBlockTextures et : ExtraBlockTextures.values() )
+				et.registerIcon( ev.map );
+
+			for( CableBusTextures cb : CableBusTextures.values() )
+				cb.registerIcon( ev.map );
+		}
+	}
 }

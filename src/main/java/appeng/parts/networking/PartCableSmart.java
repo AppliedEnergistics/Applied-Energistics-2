@@ -78,78 +78,22 @@ public class PartCableSmart extends PartCable
 	}
 
 	@Override
-	public IIcon getTexture( AEColor c )
-	{
-		return this.getSmartTexture( c );
-	}
-
-	@Override
-	@SideOnly( Side.CLIENT )
-	public void renderInventory( IPartRenderHelper rh, RenderBlocks renderer )
-	{
-		GL11.glTranslated( -0.0, -0.0, 0.3 );
-
-		float offU = 0;
-		float offV = 9;
-
-		OffsetIcon main = new OffsetIcon( this.getTexture( this.getCableColor() ), offU, offV );
-		OffsetIcon ch1 = new OffsetIcon( this.getChannelTex( 4, false ).getIcon(), offU, offV );
-		OffsetIcon ch2 = new OffsetIcon( this.getChannelTex( 4, true ).getIcon(), offU, offV );
-
-		for ( ForgeDirection side : EnumSet.of( ForgeDirection.UP, ForgeDirection.DOWN ) )
-		{
-			rh.setBounds( 5.0f, 5.0f, 2.0f, 11.0f, 11.0f, 14.0f );
-			rh.renderInventoryFace( main, side, renderer );
-			rh.renderInventoryFace( ch1, side, renderer );
-			rh.renderInventoryFace( ch2, side, renderer );
-		}
-
-		offU = 9;
-		offV = 0;
-		main = new OffsetIcon( this.getTexture( this.getCableColor() ), offU, offV );
-		ch1 = new OffsetIcon( this.getChannelTex( 4, false ).getIcon(), offU, offV );
-		ch2 = new OffsetIcon( this.getChannelTex( 4, true ).getIcon(), offU, offV );
-
-		for ( ForgeDirection side : EnumSet.of( ForgeDirection.EAST, ForgeDirection.WEST ) )
-		{
-			rh.setBounds( 5.0f, 5.0f, 2.0f, 11.0f, 11.0f, 14.0f );
-			rh.renderInventoryFace( main, side, renderer );
-			rh.renderInventoryFace( ch1, side, renderer );
-			rh.renderInventoryFace( ch2, side, renderer );
-		}
-
-		main = new OffsetIcon( this.getTexture( this.getCableColor() ), 0, 0 );
-		ch1 = new OffsetIcon( this.getChannelTex( 4, false ).getIcon(), 0, 0 );
-		ch2 = new OffsetIcon( this.getChannelTex( 4, true ).getIcon(), 0, 0 );
-
-		for ( ForgeDirection side : EnumSet.of( ForgeDirection.SOUTH, ForgeDirection.NORTH ) )
-		{
-			rh.setBounds( 5.0f, 5.0f, 2.0f, 11.0f, 11.0f, 14.0f );
-			rh.renderInventoryFace( main, side, renderer );
-			rh.renderInventoryFace( ch1, side, renderer );
-			rh.renderInventoryFace( ch2, side, renderer );
-		}
-
-		rh.setTexture( null );
-	}
-
-	@Override
 	public void getBoxes( IPartCollisionHelper bch )
 	{
 		bch.addBox( 5.0, 5.0, 5.0, 11.0, 11.0, 11.0 );
 
-		if ( Platform.isServer() )
+		if( Platform.isServer() )
 		{
 			IGridNode n = this.getGridNode();
-			if ( n != null )
+			if( n != null )
 				this.connections = n.getConnectedSides();
 			else
 				this.connections.clear();
 		}
 
-		for ( ForgeDirection of : this.connections )
+		for( ForgeDirection of : this.connections )
 		{
-			switch ( of )
+			switch( of )
 			{
 				case DOWN:
 					bch.addBox( 5.0, 0.0, 5.0, 11.0, 5.0, 11.0 );
@@ -176,6 +120,62 @@ public class PartCableSmart extends PartCable
 
 	@Override
 	@SideOnly( Side.CLIENT )
+	public void renderInventory( IPartRenderHelper rh, RenderBlocks renderer )
+	{
+		GL11.glTranslated( -0.0, -0.0, 0.3 );
+
+		float offU = 0;
+		float offV = 9;
+
+		OffsetIcon main = new OffsetIcon( this.getTexture( this.getCableColor() ), offU, offV );
+		OffsetIcon ch1 = new OffsetIcon( this.getChannelTex( 4, false ).getIcon(), offU, offV );
+		OffsetIcon ch2 = new OffsetIcon( this.getChannelTex( 4, true ).getIcon(), offU, offV );
+
+		for( ForgeDirection side : EnumSet.of( ForgeDirection.UP, ForgeDirection.DOWN ) )
+		{
+			rh.setBounds( 5.0f, 5.0f, 2.0f, 11.0f, 11.0f, 14.0f );
+			rh.renderInventoryFace( main, side, renderer );
+			rh.renderInventoryFace( ch1, side, renderer );
+			rh.renderInventoryFace( ch2, side, renderer );
+		}
+
+		offU = 9;
+		offV = 0;
+		main = new OffsetIcon( this.getTexture( this.getCableColor() ), offU, offV );
+		ch1 = new OffsetIcon( this.getChannelTex( 4, false ).getIcon(), offU, offV );
+		ch2 = new OffsetIcon( this.getChannelTex( 4, true ).getIcon(), offU, offV );
+
+		for( ForgeDirection side : EnumSet.of( ForgeDirection.EAST, ForgeDirection.WEST ) )
+		{
+			rh.setBounds( 5.0f, 5.0f, 2.0f, 11.0f, 11.0f, 14.0f );
+			rh.renderInventoryFace( main, side, renderer );
+			rh.renderInventoryFace( ch1, side, renderer );
+			rh.renderInventoryFace( ch2, side, renderer );
+		}
+
+		main = new OffsetIcon( this.getTexture( this.getCableColor() ), 0, 0 );
+		ch1 = new OffsetIcon( this.getChannelTex( 4, false ).getIcon(), 0, 0 );
+		ch2 = new OffsetIcon( this.getChannelTex( 4, true ).getIcon(), 0, 0 );
+
+		for( ForgeDirection side : EnumSet.of( ForgeDirection.SOUTH, ForgeDirection.NORTH ) )
+		{
+			rh.setBounds( 5.0f, 5.0f, 2.0f, 11.0f, 11.0f, 14.0f );
+			rh.renderInventoryFace( main, side, renderer );
+			rh.renderInventoryFace( ch1, side, renderer );
+			rh.renderInventoryFace( ch2, side, renderer );
+		}
+
+		rh.setTexture( null );
+	}
+
+	@Override
+	public IIcon getTexture( AEColor c )
+	{
+		return this.getSmartTexture( c );
+	}
+
+	@Override
+	@SideOnly( Side.CLIENT )
 	public void renderStatic( int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer )
 	{
 		this.renderCache = rh.useSimplifiedRendering( x, y, z, this, this.renderCache );
@@ -185,21 +185,21 @@ public class PartCableSmart extends PartCable
 
 		boolean hasBuses = false;
 		IPartHost ph = this.getHost();
-		for ( ForgeDirection of : EnumSet.complementOf( this.connections ) )
+		for( ForgeDirection of : EnumSet.complementOf( this.connections ) )
 		{
 			IPart bp = ph.getPart( of );
-			if ( bp instanceof IGridHost )
+			if( bp instanceof IGridHost )
 			{
-				if ( of != ForgeDirection.UNKNOWN )
+				if( of != ForgeDirection.UNKNOWN )
 				{
 					sides.add( of );
 					hasBuses = true;
 				}
 
 				int len = bp.cableConnectionRenderTo();
-				if ( len < 8 )
+				if( len < 8 )
 				{
-					switch ( of )
+					switch( of )
 					{
 						case DOWN:
 							rh.setBounds( 6, len, 6, 10, 5, 10 );
@@ -228,7 +228,7 @@ public class PartCableSmart extends PartCable
 					IIcon firstIcon = new TaughtIcon( this.getChannelTex( this.channelsOnSide[of.ordinal()], false ).getIcon(), -0.2f );
 					IIcon secondIcon = new TaughtIcon( this.getChannelTex( this.channelsOnSide[of.ordinal()], true ).getIcon(), -0.2f );
 
-					if ( of == ForgeDirection.EAST || of == ForgeDirection.WEST )
+					if( of == ForgeDirection.EAST || of == ForgeDirection.WEST )
 					{
 						AEBaseBlock blk = (AEBaseBlock) rh.getBlock();
 						FlippableIcon ico = blk.getRendererInstance().getTexture( ForgeDirection.EAST );
@@ -251,9 +251,9 @@ public class PartCableSmart extends PartCable
 			}
 		}
 
-		if ( sides.size() != 2 || !this.nonLinear( sides ) || hasBuses )
+		if( sides.size() != 2 || !this.nonLinear( sides ) || hasBuses )
 		{
-			for ( ForgeDirection of : this.connections )
+			for( ForgeDirection of : this.connections )
 			{
 				this.renderSmartConnection( x, y, z, rh, renderer, this.channelsOnSide[of.ordinal()], of );
 			}
@@ -266,7 +266,7 @@ public class PartCableSmart extends PartCable
 		{
 			ForgeDirection selectedSide = ForgeDirection.UNKNOWN;
 
-			for ( ForgeDirection of : this.connections )
+			for( ForgeDirection of : this.connections )
 			{
 				selectedSide = of;
 				break;
@@ -282,7 +282,7 @@ public class PartCableSmart extends PartCable
 			IIcon secondTaughtIcon = new TaughtIcon( this.getChannelTex( channels, true ).getIcon(), -0.2f );
 			IIcon secondOffsetIcon = new OffsetIcon( secondTaughtIcon, 0, -12 );
 
-			switch ( selectedSide )
+			switch( selectedSide )
 			{
 				case DOWN:
 				case UP:

@@ -18,6 +18,7 @@
 
 package appeng.core;
 
+
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
@@ -28,13 +29,20 @@ import com.google.common.base.Optional;
 import appeng.api.AEApi;
 import appeng.items.parts.ItemFacade;
 
+
 public final class CreativeTabFacade extends CreativeTabs
 {
 
 	public static CreativeTabFacade instance = null;
 
-	public CreativeTabFacade() {
+	public CreativeTabFacade()
+	{
 		super( "appliedenergistics2.facades" );
+	}
+
+	public static void init()
+	{
+		instance = new CreativeTabFacade();
 	}
 
 	@Override
@@ -47,17 +55,11 @@ public final class CreativeTabFacade extends CreativeTabs
 	public ItemStack getIconItemStack()
 	{
 		final Optional<Item> maybeFacade = AEApi.instance().definitions().items().facade().maybeItem();
-		if ( maybeFacade.isPresent() )
+		if( maybeFacade.isPresent() )
 		{
-			return ((ItemFacade) maybeFacade.get()).getCreativeTabIcon();
+			return ( (ItemFacade) maybeFacade.get() ).getCreativeTabIcon();
 		}
 
 		return new ItemStack( Blocks.planks );
 	}
-
-	public static void init()
-	{
-		instance = new CreativeTabFacade();
-	}
-
 }

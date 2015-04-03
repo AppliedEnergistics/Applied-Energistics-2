@@ -18,6 +18,7 @@
 
 package appeng.tile.crafting;
 
+
 import net.minecraft.item.ItemStack;
 
 import appeng.api.AEApi;
@@ -29,27 +30,27 @@ public class TileCraftingStorageTile extends TileCraftingTile
 	public static final int KILO_SCALAR = 1024;
 
 	@Override
-	protected ItemStack getItemFromTile(Object obj)
+	protected ItemStack getItemFromTile( Object obj )
 	{
 		final IBlocks blocks = AEApi.instance().definitions().blocks();
-		final int storage = ((TileCraftingTile) obj).getStorageBytes() / KILO_SCALAR;
+		final int storage = ( (TileCraftingTile) obj ).getStorageBytes() / KILO_SCALAR;
 
-		switch ( storage )
+		switch( storage )
 		{
 			case 4:
-				for ( ItemStack stack : blocks.craftingStorage4k().maybeStack( 1 ).asSet() )
+				for( ItemStack stack : blocks.craftingStorage4k().maybeStack( 1 ).asSet() )
 				{
 					return stack;
 				}
 				break;
 			case 16:
-				for ( ItemStack stack : blocks.craftingStorage16k().maybeStack( 1 ).asSet() )
+				for( ItemStack stack : blocks.craftingStorage16k().maybeStack( 1 ).asSet() )
 				{
 					return stack;
 				}
 				break;
 			case 64:
-				for ( ItemStack stack : blocks.craftingStorage64k().maybeStack( 1 ).asSet() )
+				for( ItemStack stack : blocks.craftingStorage64k().maybeStack( 1 ).asSet() )
 				{
 					return stack;
 				}
@@ -74,20 +75,20 @@ public class TileCraftingStorageTile extends TileCraftingTile
 	@Override
 	public int getStorageBytes()
 	{
-		if ( this.worldObj == null || this.notLoaded() )
+		if( this.worldObj == null || this.notLoaded() )
 			return 0;
 
-		switch (this.worldObj.getBlockMetadata( this.xCoord, this.yCoord, this.zCoord ) & 3)
+		switch( this.worldObj.getBlockMetadata( this.xCoord, this.yCoord, this.zCoord ) & 3 )
 		{
-		default:
-		case 0:
-			return 1024;
-		case 1:
-			return 4 * 1024;
-		case 2:
-			return 16 * 1024;
-		case 3:
-			return 64 * 1024;
+			default:
+			case 0:
+				return 1024;
+			case 1:
+				return 4 * 1024;
+			case 2:
+				return 16 * 1024;
+			case 3:
+				return 64 * 1024;
 		}
 	}
 }

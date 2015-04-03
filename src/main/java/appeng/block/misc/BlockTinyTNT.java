@@ -52,10 +52,12 @@ import appeng.entity.EntityTinyTNTPrimed;
 import appeng.helpers.ICustomCollision;
 import appeng.hooks.DispenserBehaviorTinyTNT;
 
+
 public class BlockTinyTNT extends AEBaseBlock implements ICustomCollision
 {
 
-	public BlockTinyTNT() {
+	public BlockTinyTNT()
+	{
 		super( BlockTinyTNT.class, Material.tnt );
 		this.setFeature( EnumSet.of( AEFeature.TinyTNT ) );
 		this.setLightOpacity( 1 );
@@ -68,6 +70,12 @@ public class BlockTinyTNT extends AEBaseBlock implements ICustomCollision
 	}
 
 	@Override
+	protected Class<? extends BaseBlockRender> getRenderer()
+	{
+		return RenderTinyTNT.class;
+	}
+
+	@Override
 	public void postInit()
 	{
 		super.postInit();
@@ -75,64 +83,15 @@ public class BlockTinyTNT extends AEBaseBlock implements ICustomCollision
 	}
 
 	@Override
-	protected Class<? extends BaseBlockRender> getRenderer()
-	{
-		return RenderTinyTNT.class;
-	}
-
-	@Override
-	public void registerBlockIcons(IIconRegister iconRegistry)
-	{
-		// no images required.
-	}
-
-	@Override
-	public IIcon getIcon(int direction, int metadata)
+	public IIcon getIcon( int direction, int metadata )
 	{
 		return new FullIcon( Blocks.tnt.getIcon( direction, metadata ) );
 	}
 
 	@Override
-	public void onEntityCollidedWithBlock(World w, int x, int y, int z, Entity entity)
+	public boolean onActivated( World w, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ )
 	{
-		if ( entity instanceof EntityArrow && !w.isRemote )
-		{
-			EntityArrow entityarrow = (EntityArrow) entity;
-
-			if ( entityarrow.isBurning() )
-			{
-				this.startFuse( w, x, y, z, entityarrow.shootingEntity instanceof EntityLivingBase ? (EntityLivingBase) entityarrow.shootingEntity : null );
-				w.setBlockToAir( x, y, z );
-			}
-		}
-	}
-
-	@Override
-	public void onBlockAdded(World w, int x, int y, int z)
-	{
-		super.onBlockAdded( w, x, y, z );
-
-		if ( w.isBlockIndirectlyGettingPowered( x, y, z ) )
-		{
-			this.startFuse( w, x, y, z, null );
-			w.setBlockToAir( x, y, z );
-		}
-	}
-
-	@Override
-	public void onNeighborBlockChange(World w, int x, int y, int z, Block id)
-	{
-		if ( w.isBlockIndirectlyGettingPowered( x, y, z ) )
-		{
-			this.startFuse( w, x, y, z, null );
-			w.setBlockToAir( x, y, z );
-		}
-	}
-
-	@Override
-	public boolean onActivated(World w, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
-	{
-		if ( player.getCurrentEquippedItem() != null && player.getCurrentEquippedItem().getItem() == Items.flint_and_steel )
+		if( player.getCurrentEquippedItem() != null && player.getCurrentEquippedItem().getItem() == Items.flint_and_steel )
 		{
 			this.startFuse( w, x, y, z, player );
 			w.setBlockToAir( x, y, z );
@@ -146,19 +105,14 @@ public class BlockTinyTNT extends AEBaseBlock implements ICustomCollision
 	}
 
 	@Override
-	public void onBlockDestroyedByExplosion(World w, int x, int y, int z, Explosion exp)
+	public void registerBlockIcons( IIconRegister iconRegistry )
 	{
-		if ( !w.isRemote )
-		{
-			EntityTinyTNTPrimed primedTinyTNTEntity = new EntityTinyTNTPrimed( w, x + 0.5F, y + 0.5F, z + 0.5F, exp.getExplosivePlacedBy() );
-			primedTinyTNTEntity.fuse = w.rand.nextInt( primedTinyTNTEntity.fuse / 4 ) + primedTinyTNTEntity.fuse / 8;
-			w.spawnEntityInWorld( primedTinyTNTEntity );
-		}
+		// no images required.
 	}
 
-	public void startFuse(World w, int x, int y, int z, EntityLivingBase igniter)
+	public void startFuse( World w, int x, int y, int z, EntityLivingBase igniter )
 	{
-		if ( !w.isRemote )
+		if( !w.isRemote )
 		{
 			EntityTinyTNTPrimed primedTinyTNTEntity = new EntityTinyTNTPrimed( w, x + 0.5F, y + 0.5F, z + 0.5F, igniter );
 			w.spawnEntityInWorld( primedTinyTNTEntity );
@@ -167,21 +121,68 @@ public class BlockTinyTNT extends AEBaseBlock implements ICustomCollision
 	}
 
 	@Override
-	public boolean canDropFromExplosion(Explosion exp)
+	public void onBlockAdded( World w, int x, int y, int z )
+	{
+		super.onBlockAdded( w, x, y, z );
+
+		if( w.isBlockIndirectlyGettingPowered( x, y, z ) )
+		{
+			this.startFuse( w, x, y, z, null );
+			w.setBlockToAir( x, y, z );
+		}
+	}
+
+	@Override
+	public void onNeighborBlockChange( World w, int x, int y, int z, Block id )
+	{
+		if( w.isBlockIndirectlyGettingPowered( x, y, z ) )
+		{
+			this.startFuse( w, x, y, z, null );
+			w.setBlockToAir( x, y, z );
+		}
+	}
+
+	@Override
+	public void onBlockDestroyedByExplosion( World w, int x, int y, int z, Explosion exp )
+	{
+		if( !w.isRemote )
+		{
+			EntityTinyTNTPrimed primedTinyTNTEntity = new EntityTinyTNTPrimed( w, x + 0.5F, y + 0.5F, z + 0.5F, exp.getExplosivePlacedBy() );
+			primedTinyTNTEntity.fuse = w.rand.nextInt( primedTinyTNTEntity.fuse / 4 ) + primedTinyTNTEntity.fuse / 8;
+			w.spawnEntityInWorld( primedTinyTNTEntity );
+		}
+	}
+
+	@Override
+	public void onEntityCollidedWithBlock( World w, int x, int y, int z, Entity entity )
+	{
+		if( entity instanceof EntityArrow && !w.isRemote )
+		{
+			EntityArrow entityarrow = (EntityArrow) entity;
+
+			if( entityarrow.isBurning() )
+			{
+				this.startFuse( w, x, y, z, entityarrow.shootingEntity instanceof EntityLivingBase ? (EntityLivingBase) entityarrow.shootingEntity : null );
+				w.setBlockToAir( x, y, z );
+			}
+		}
+	}
+
+	@Override
+	public boolean canDropFromExplosion( Explosion exp )
 	{
 		return false;
 	}
 
 	@Override
-	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool(World w, int x, int y, int z, Entity e, boolean isVisual)
+	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool( World w, int x, int y, int z, Entity e, boolean isVisual )
 	{
 		return Collections.singletonList( AxisAlignedBB.getBoundingBox( 0.25, 0, 0.25, 0.75, 0.5, 0.75 ) );
 	}
 
 	@Override
-	public void addCollidingBlockToList(World w, int x, int y, int z, AxisAlignedBB bb, List<AxisAlignedBB> out, Entity e)
+	public void addCollidingBlockToList( World w, int x, int y, int z, AxisAlignedBB bb, List<AxisAlignedBB> out, Entity e )
 	{
 		out.add( AxisAlignedBB.getBoundingBox( 0.25, 0, 0.25, 0.75, 0.5, 0.75 ) );
 	}
-
 }

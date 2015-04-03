@@ -56,37 +56,17 @@ public class ContainerFormationPlane extends ContainerUpgradeable
 	}
 
 	@Override
-	public int availableUpgrades()
-	{
-		return 5;
-	}
-
-	@Override
-	protected boolean supportCapacity()
-	{
-		return true;
-	}
-
-	@Override
-	public boolean isSlotEnabled( int idx )
-	{
-		int upgrades = this.upgradeable.getInstalledUpgrades( Upgrades.CAPACITY );
-
-		return upgrades > idx;
-	}
-
-	@Override
 	protected void setupConfig()
 	{
 		int xo = 8;
 		int yo = 23 + 6;
 
 		IInventory config = this.upgradeable.getInventoryByName( "config" );
-		for ( int y = 0; y < 7; y++ )
+		for( int y = 0; y < 7; y++ )
 		{
-			for ( int x = 0; x < 9; x++ )
+			for( int x = 0; x < 9; x++ )
 			{
-				if ( y < 2 )
+				if( y < 2 )
 					this.addSlotToContainer( new SlotFakeTypeOnly( config, y * 9 + x, xo + x * 18, yo + y * 18 ) );
 				else
 					this.addSlotToContainer( new OptionalSlotFakeTypeOnly( config, this, y * 9 + x, xo, yo, x, y, y - 2 ) );
@@ -102,17 +82,36 @@ public class ContainerFormationPlane extends ContainerUpgradeable
 	}
 
 	@Override
+	protected boolean supportCapacity()
+	{
+		return true;
+	}
+
+	@Override
+	public int availableUpgrades()
+	{
+		return 5;
+	}
+
+	@Override
 	public void detectAndSendChanges()
 	{
 		this.verifyPermissions( SecurityPermissions.BUILD, false );
 
-		if ( Platform.isServer() )
+		if( Platform.isServer() )
 		{
-			this.fzMode = ( FuzzyMode ) this.upgradeable.getConfigManager().getSetting( Settings.FUZZY_MODE );
-			this.placeMode = ( YesNo ) this.upgradeable.getConfigManager().getSetting( Settings.PLACE_BLOCK );
+			this.fzMode = (FuzzyMode) this.upgradeable.getConfigManager().getSetting( Settings.FUZZY_MODE );
+			this.placeMode = (YesNo) this.upgradeable.getConfigManager().getSetting( Settings.PLACE_BLOCK );
 		}
 
 		this.standardDetectAndSendChanges();
 	}
 
+	@Override
+	public boolean isSlotEnabled( int idx )
+	{
+		int upgrades = this.upgradeable.getInstalledUpgrades( Upgrades.CAPACITY );
+
+		return upgrades > idx;
+	}
 }

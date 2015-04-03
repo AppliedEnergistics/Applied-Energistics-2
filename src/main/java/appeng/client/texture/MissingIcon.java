@@ -18,6 +18,7 @@
 
 package appeng.client.texture;
 
+
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureMap;
@@ -26,26 +27,27 @@ import net.minecraft.util.IIcon;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+
 public class MissingIcon implements IIcon
 {
 
 	final boolean isBlock;
 
-	public MissingIcon(Object forWhat) {
-		this.isBlock = forWhat instanceof Block;
-	}
-
-	@SideOnly(Side.CLIENT)
-	public IIcon getMissing()
+	public MissingIcon( Object forWhat )
 	{
-		return ((TextureMap) Minecraft.getMinecraft().getTextureManager()
-				.getTexture( this.isBlock ? TextureMap.locationBlocksTexture : TextureMap.locationItemsTexture )).getAtlasSprite( "missingno" );
+		this.isBlock = forWhat instanceof Block;
 	}
 
 	@Override
 	public int getIconWidth()
 	{
 		return this.getMissing().getIconWidth();
+	}
+
+	@SideOnly( Side.CLIENT )
+	public IIcon getMissing()
+	{
+		return ( (TextureMap) Minecraft.getMinecraft().getTextureManager().getTexture( this.isBlock ? TextureMap.locationBlocksTexture : TextureMap.locationItemsTexture ) ).getAtlasSprite( "missingno" );
 	}
 
 	@Override
@@ -67,7 +69,7 @@ public class MissingIcon implements IIcon
 	}
 
 	@Override
-	public float getInterpolatedU(double var1)
+	public float getInterpolatedU( double var1 )
 	{
 		return this.getMissing().getInterpolatedU( var1 );
 	}
@@ -85,7 +87,7 @@ public class MissingIcon implements IIcon
 	}
 
 	@Override
-	public float getInterpolatedV(double var1)
+	public float getInterpolatedV( double var1 )
 	{
 		return this.getMissing().getInterpolatedV( var1 );
 	}
@@ -95,5 +97,4 @@ public class MissingIcon implements IIcon
 	{
 		return this.getMissing().getIconName();
 	}
-
 }

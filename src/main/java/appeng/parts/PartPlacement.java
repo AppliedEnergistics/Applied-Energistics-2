@@ -75,52 +75,52 @@ public class PartPlacement
 
 	public static boolean place( ItemStack held, int x, int y, int z, int face, EntityPlayer player, World world, PlaceType pass, int depth )
 	{
-		if ( depth > 3 )
+		if( depth > 3 )
 			return false;
 
 		ForgeDirection side = ForgeDirection.getOrientation( face );
 
-		if ( held != null && Platform.isWrench( player, held, x, y, z ) && player.isSneaking() )
+		if( held != null && Platform.isWrench( player, held, x, y, z ) && player.isSneaking() )
 		{
-			if ( !Platform.hasPermissions( new DimensionalCoord( world, x, y, z ), player ) )
+			if( !Platform.hasPermissions( new DimensionalCoord( world, x, y, z ), player ) )
 				return false;
 
 			Block block = world.getBlock( x, y, z );
 			TileEntity tile = world.getTileEntity( x, y, z );
 			IPartHost host = null;
 
-			if ( tile instanceof IPartHost )
+			if( tile instanceof IPartHost )
 				host = (IPartHost) tile;
 
-			if ( host != null )
+			if( host != null )
 			{
-				if ( !world.isRemote )
+				if( !world.isRemote )
 				{
 					LookDirection dir = Platform.getPlayerRay( player, getEyeOffset( player ) );
 					MovingObjectPosition mop = block.collisionRayTrace( world, x, y, z, dir.a, dir.b );
-					if ( mop != null )
+					if( mop != null )
 					{
 						List<ItemStack> is = new LinkedList<ItemStack>();
 						SelectedPart sp = selectPart( player, host, mop.hitVec.addVector( -mop.blockX, -mop.blockY, -mop.blockZ ) );
 
-						if ( sp.part != null )
+						if( sp.part != null )
 						{
 							is.add( sp.part.getItemStack( PartItemStack.Wrench ) );
 							sp.part.getDrops( is, true );
 							host.removePart( sp.side, false );
 						}
 
-						if ( sp.facade != null )
+						if( sp.facade != null )
 						{
 							is.add( sp.facade.getItemStack() );
 							host.getFacadeContainer().removeFacade( host, sp.side );
 							Platform.notifyBlocksOfNeighbors( world, x, y, z );
 						}
 
-						if ( host.isEmpty() )
+						if( host.isEmpty() )
 							host.cleanup();
 
-						if ( !is.isEmpty() )
+						if( !is.isEmpty() )
 						{
 							Platform.spawnDrops( world, x, y, z, is );
 						}
@@ -140,30 +140,30 @@ public class PartPlacement
 		TileEntity tile = world.getTileEntity( x, y, z );
 		IPartHost host = null;
 
-		if ( tile instanceof IPartHost )
+		if( tile instanceof IPartHost )
 			host = (IPartHost) tile;
 
-		if ( held != null )
+		if( held != null )
 		{
 			IFacadePart fp = isFacade( held, side );
-			if ( fp != null )
+			if( fp != null )
 			{
-				if ( host != null )
+				if( host != null )
 				{
-					if ( !world.isRemote )
+					if( !world.isRemote )
 					{
-						if ( host.getPart( ForgeDirection.UNKNOWN ) == null )
+						if( host.getPart( ForgeDirection.UNKNOWN ) == null )
 							return false;
 
-						if ( host.canAddPart( held, side ) )
+						if( host.canAddPart( held, side ) )
 						{
-							if ( host.getFacadeContainer().addFacade( fp ) )
+							if( host.getFacadeContainer().addFacade( fp ) )
 							{
 								host.markForUpdate();
-								if ( !player.capabilities.isCreativeMode )
+								if( !player.capabilities.isCreativeMode )
 								{
 									held.stackSize--;
-									if ( held.stackSize == 0 )
+									if( held.stackSize == 0 )
 									{
 										player.inventory.mainInventory[player.inventory.currentItem] = null;
 										MinecraftForge.EVENT_BUS.post( new PlayerDestroyItemEvent( player, held ) );
@@ -184,27 +184,27 @@ public class PartPlacement
 			}
 		}
 
-		if ( host == null && tile != null && AppEng.instance.isIntegrationEnabled( IntegrationType.FMP ) )
+		if( host == null && tile != null && AppEng.instance.isIntegrationEnabled( IntegrationType.FMP ) )
 			host = ( (IFMP) AppEng.instance.getIntegration( IntegrationType.FMP ) ).getOrCreateHost( tile );
 
-		if ( host == null && tile != null && AppEng.instance.isIntegrationEnabled( IntegrationType.ImmibisMicroblocks ) )
+		if( host == null && tile != null && AppEng.instance.isIntegrationEnabled( IntegrationType.ImmibisMicroblocks ) )
 			host = ( (IImmibisMicroblocks) AppEng.instance.getIntegration( IntegrationType.ImmibisMicroblocks ) ).getOrCreateHost( player, face, tile );
 
 		// if ( held == null )
 		{
 			Block block = world.getBlock( x, y, z );
-			if ( host != null && player.isSneaking() && block != null )
+			if( host != null && player.isSneaking() && block != null )
 			{
 				LookDirection dir = Platform.getPlayerRay( player, getEyeOffset( player ) );
 				MovingObjectPosition mop = block.collisionRayTrace( world, x, y, z, dir.a, dir.b );
-				if ( mop != null )
+				if( mop != null )
 				{
 					mop.hitVec = mop.hitVec.addVector( -mop.blockX, -mop.blockY, -mop.blockZ );
 					SelectedPart sPart = selectPart( player, host, mop.hitVec );
-					if ( sPart != null && sPart.part != null )
-						if ( sPart.part.onShiftActivate( player, mop.hitVec ) )
+					if( sPart != null && sPart.part != null )
+						if( sPart.part.onShiftActivate( player, mop.hitVec ) )
 						{
-							if ( world.isRemote )
+							if( world.isRemote )
 							{
 								NetworkHandler.instance.sendToServer( new PacketPartPlacement( x, y, z, face, getEyeOffset( player ) ) );
 							}
@@ -214,7 +214,7 @@ public class PartPlacement
 			}
 		}
 
-		if ( held == null || !( held.getItem() instanceof IPartItem ) )
+		if( held == null || !( held.getItem() instanceof IPartItem ) )
 			return false;
 
 		int te_x = x;
@@ -222,15 +222,15 @@ public class PartPlacement
 		int te_z = z;
 
 		final IBlockDefinition multiPart = AEApi.instance().definitions().blocks().multiPart();
-		if ( host == null && pass == PlaceType.PLACE_ITEM )
+		if( host == null && pass == PlaceType.PLACE_ITEM )
 		{
 			ForgeDirection offset = ForgeDirection.UNKNOWN;
 
 			Block blkID = world.getBlock( x, y, z );
-			if ( blkID != null && !blkID.isReplaceable( world, x, y, z ) )
+			if( blkID != null && !blkID.isReplaceable( world, x, y, z ) )
 			{
 				offset = side;
-				if ( Platform.isServer() )
+				if( Platform.isServer() )
 					side = side.getOpposite();
 			}
 
@@ -239,13 +239,13 @@ public class PartPlacement
 			te_z = z + offset.offsetZ;
 
 			tile = world.getTileEntity( te_x, te_y, te_z );
-			if ( tile instanceof IPartHost )
+			if( tile instanceof IPartHost )
 				host = (IPartHost) tile;
 
-			if ( host == null && tile != null && AppEng.instance.isIntegrationEnabled( IntegrationType.FMP ) )
+			if( host == null && tile != null && AppEng.instance.isIntegrationEnabled( IntegrationType.FMP ) )
 				host = ( (IFMP) AppEng.instance.getIntegration( IntegrationType.FMP ) ).getOrCreateHost( tile );
 
-			if ( host == null && tile != null && AppEng.instance.isIntegrationEnabled( IntegrationType.ImmibisMicroblocks ) )
+			if( host == null && tile != null && AppEng.instance.isIntegrationEnabled( IntegrationType.ImmibisMicroblocks ) )
 				host = ( (IImmibisMicroblocks) AppEng.instance.getIntegration( IntegrationType.ImmibisMicroblocks ) ).getOrCreateHost( player, face, tile );
 
 			final Optional<ItemStack> maybeMultiPartStack = multiPart.maybeStack( 1 );
@@ -256,13 +256,13 @@ public class PartPlacement
 			final boolean multiPartPresent = maybeMultiPartBlock.isPresent() && maybeMultiPartStack.isPresent() && maybeMultiPartItemBlock.isPresent();
 			final boolean canMultiPartBePlaced = maybeMultiPartBlock.get().canPlaceBlockAt( world, te_x, te_y, te_z );
 
-			if ( hostIsNotPresent && multiPartPresent  && canMultiPartBePlaced && maybeMultiPartItemBlock.get().placeBlockAt( maybeMultiPartStack.get(), player, world, te_x, te_y, te_z, side.ordinal(), 0.5f, 0.5f, 0.5f, 0 ) )
+			if( hostIsNotPresent && multiPartPresent && canMultiPartBePlaced && maybeMultiPartItemBlock.get().placeBlockAt( maybeMultiPartStack.get(), player, world, te_x, te_y, te_z, side.ordinal(), 0.5f, 0.5f, 0.5f, 0 ) )
 			{
-				if ( !world.isRemote )
+				if( !world.isRemote )
 				{
 					tile = world.getTileEntity( te_x, te_y, te_z );
 
-					if ( tile instanceof IPartHost )
+					if( tile instanceof IPartHost )
 						host = (IPartHost) tile;
 
 					pass = PlaceType.INTERACT_SECOND_PASS;
@@ -274,18 +274,18 @@ public class PartPlacement
 					return true;
 				}
 			}
-			else if ( host != null && !host.canAddPart( held, side ) )
+			else if( host != null && !host.canAddPart( held, side ) )
 			{
 				return false;
 			}
 		}
 
-		if ( host == null )
+		if( host == null )
 			return false;
 
-		if ( !host.canAddPart( held, side ) )
+		if( !host.canAddPart( held, side ) )
 		{
-			if ( pass == PlaceType.INTERACT_FIRST_PASS || pass == PlaceType.PLACE_ITEM )
+			if( pass == PlaceType.INTERACT_FIRST_PASS || pass == PlaceType.PLACE_ITEM )
 			{
 				te_x = x + side.offsetX;
 				te_y = y + side.offsetY;
@@ -294,49 +294,49 @@ public class PartPlacement
 				Block blkID = world.getBlock( te_x, te_y, te_z );
 				tile = world.getTileEntity( te_x, te_y, te_z );
 
-				if ( tile != null && AppEng.instance.isIntegrationEnabled( IntegrationType.FMP ) )
+				if( tile != null && AppEng.instance.isIntegrationEnabled( IntegrationType.FMP ) )
 					host = ( (IFMP) AppEng.instance.getIntegration( IntegrationType.FMP ) ).getOrCreateHost( tile );
 
-				if ( ( blkID == null || blkID.isReplaceable( world, te_x, te_y, te_z ) || host != null ) && side != ForgeDirection.UNKNOWN )
+				if( ( blkID == null || blkID.isReplaceable( world, te_x, te_y, te_z ) || host != null ) && side != ForgeDirection.UNKNOWN )
 					return place( held, te_x, te_y, te_z, side.getOpposite().ordinal(), player, world, pass == PlaceType.INTERACT_FIRST_PASS ? PlaceType.INTERACT_SECOND_PASS : PlaceType.PLACE_ITEM, depth + 1 );
 			}
 			return false;
 		}
 
-		if ( !world.isRemote )
+		if( !world.isRemote )
 		{
 			Block block = world.getBlock( x, y, z );
 			LookDirection dir = Platform.getPlayerRay( player, getEyeOffset( player ) );
 			MovingObjectPosition mop = block.collisionRayTrace( world, x, y, z, dir.a, dir.b );
-			if ( mop != null )
+			if( mop != null )
 			{
 				SelectedPart sp = selectPart( player, host, mop.hitVec.addVector( -mop.blockX, -mop.blockY, -mop.blockZ ) );
 
-				if ( sp.part != null )
+				if( sp.part != null )
 				{
-					if ( !player.isSneaking() && sp.part.onActivate( player, mop.hitVec ) )
+					if( !player.isSneaking() && sp.part.onActivate( player, mop.hitVec ) )
 						return false;
 				}
 			}
 
 			DimensionalCoord dc = host.getLocation();
-			if ( !Platform.hasPermissions( dc, player ) )
+			if( !Platform.hasPermissions( dc, player ) )
 				return false;
 
 			ForgeDirection mySide = host.addPart( held, side, player );
-			if ( mySide != null )
+			if( mySide != null )
 			{
-				for ( Block multiPartBlock : multiPart.maybeBlock().asSet() )
+				for( Block multiPartBlock : multiPart.maybeBlock().asSet() )
 				{
 					final SoundType ss = multiPartBlock.stepSound;
 
 					world.playSoundEffect( 0.5 + x, 0.5 + y, 0.5 + z, ss.func_150496_b(), ( ss.getVolume() + 1.0F ) / 2.0F, ss.getPitch() * 0.8F );
 				}
 
-				if ( !player.capabilities.isCreativeMode )
+				if( !player.capabilities.isCreativeMode )
 				{
 					held.stackSize--;
-					if ( held.stackSize == 0 )
+					if( held.stackSize == 0 )
 					{
 						player.inventory.mainInventory[player.inventory.currentItem] = null;
 						MinecraftForge.EVENT_BUS.post( new PlayerDestroyItemEvent( player, held ) );
@@ -354,7 +354,7 @@ public class PartPlacement
 
 	private static float getEyeOffset( EntityPlayer p )
 	{
-		if ( p.worldObj.isRemote )
+		if( p.worldObj.isRemote )
 			return Platform.getEyeOffset( p );
 
 		return eyeHeight;
@@ -371,13 +371,13 @@ public class PartPlacement
 
 	public static IFacadePart isFacade( ItemStack held, ForgeDirection side )
 	{
-		if ( held.getItem() instanceof IFacadeItem )
+		if( held.getItem() instanceof IFacadeItem )
 			return ( (IFacadeItem) held.getItem() ).createPartFromItemStack( held, side );
 
-		if ( AppEng.instance.isIntegrationEnabled( IntegrationType.BC ) )
+		if( AppEng.instance.isIntegrationEnabled( IntegrationType.BC ) )
 		{
 			IBC bc = (IBC) AppEng.instance.getIntegration( IntegrationType.BC );
-			if ( bc.isFacade( held ) )
+			if( bc.isFacade( held ) )
 				return bc.createFacadePart( held, side );
 		}
 
@@ -393,7 +393,7 @@ public class PartPlacement
 	@SubscribeEvent
 	public void playerInteract( PlayerInteractEvent event )
 	{
-		if ( event.action == Action.RIGHT_CLICK_AIR && event.entityPlayer.worldObj.isRemote )
+		if( event.action == Action.RIGHT_CLICK_AIR && event.entityPlayer.worldObj.isRemote )
 		{
 			// re-check to see if this event was already channeled, cause these two events are really stupid...
 			MovingObjectPosition mop = Platform.rayTrace( event.entityPlayer, true, false );
@@ -403,11 +403,11 @@ public class PartPlacement
 			double d0 = mc.playerController.getBlockReachDistance();
 			Vec3 vec3 = mc.renderViewEntity.getPosition( f );
 
-			if ( mop != null && mop.hitVec.distanceTo( vec3 ) < d0 )
+			if( mop != null && mop.hitVec.distanceTo( vec3 ) < d0 )
 			{
 				World w = event.entity.worldObj;
 				TileEntity te = w.getTileEntity( mop.blockX, mop.blockY, mop.blockZ );
-				if ( te instanceof IPartHost && this.wasCanceled )
+				if( te instanceof IPartHost && this.wasCanceled )
 					event.setCanceled( true );
 			}
 			else
@@ -418,21 +418,21 @@ public class PartPlacement
 				boolean supportedItem = items.memoryCard().isSameAs( held );
 				supportedItem |= items.colorApplicator().isSameAs( held );
 
-				if ( event.entityPlayer.isSneaking() && held != null && supportedItem )
+				if( event.entityPlayer.isSneaking() && held != null && supportedItem )
 				{
 					NetworkHandler.instance.sendToServer( new PacketClick( event.x, event.y, event.z, event.face, 0, 0, 0 ) );
 				}
 			}
 		}
-		else if ( event.action == Action.RIGHT_CLICK_BLOCK && event.entityPlayer.worldObj.isRemote )
+		else if( event.action == Action.RIGHT_CLICK_BLOCK && event.entityPlayer.worldObj.isRemote )
 		{
-			if ( this.placing.get() != null )
+			if( this.placing.get() != null )
 				return;
 
 			this.placing.set( event );
 
 			ItemStack held = event.entityPlayer.getHeldItem();
-			if ( place( held, event.x, event.y, event.z, event.face, event.entityPlayer, event.entityPlayer.worldObj, PlaceType.INTERACT_FIRST_PASS, 0 ) )
+			if( place( held, event.x, event.y, event.z, event.face, event.entityPlayer, event.entityPlayer.worldObj, PlaceType.INTERACT_FIRST_PASS, 0 ) )
 			{
 				event.setCanceled( true );
 				this.wasCanceled = true;

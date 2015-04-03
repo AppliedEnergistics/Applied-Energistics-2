@@ -26,7 +26,7 @@ public class FalloutSand extends FalloutCopy
 	@Override
 	public void getOther( IMeteoriteWorld w, int x, int y, int z, double a )
 	{
-		if ( a > GLASS_THRESHOLD )
+		if( a > GLASS_THRESHOLD )
 			this.putter.put( w, x, y, z, Blocks.glass );
 	}
 }

@@ -49,17 +49,23 @@ public class BlockCraftingMonitor extends BlockCraftingUnit
 	}
 
 	@Override
+	protected Class<? extends BaseBlockRender> getRenderer()
+	{
+		return RenderBlockCraftingCPUMonitor.class;
+	}
+
+	@Override
 	public IIcon getIcon( int direction, int metadata )
 	{
-		if ( direction != ForgeDirection.SOUTH.ordinal() )
+		if( direction != ForgeDirection.SOUTH.ordinal() )
 		{
-			for ( Block craftingUnitBlock : AEApi.instance().definitions().blocks().craftingUnit().maybeBlock().asSet() )
+			for( Block craftingUnitBlock : AEApi.instance().definitions().blocks().craftingUnit().maybeBlock().asSet() )
 			{
 				return craftingUnitBlock.getIcon( direction, metadata );
 			}
 		}
 
-		switch ( metadata )
+		switch( metadata )
 		{
 			default:
 			case 0:
@@ -67,12 +73,6 @@ public class BlockCraftingMonitor extends BlockCraftingUnit
 			case FLAG_FORMED:
 				return ExtraBlockTextures.BlockCraftingMonitorFit_Light.getIcon();
 		}
-	}
-
-	@Override
-	protected Class<? extends BaseBlockRender> getRenderer()
-	{
-		return RenderBlockCraftingCPUMonitor.class;
 	}
 
 	@Override

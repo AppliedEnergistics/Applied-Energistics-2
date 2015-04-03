@@ -81,13 +81,13 @@ public abstract class PartBasicState extends AEBasePart implements IPowerChannel
 
 	public void setColors( boolean hasChan, boolean hasPower )
 	{
-		if ( hasChan )
+		if( hasChan )
 		{
 			int l = 14;
 			Tessellator.instance.setBrightness( l << 20 | l << 4 );
 			Tessellator.instance.setColorOpaque_I( this.getColor().blackVariant );
 		}
-		else if ( hasPower )
+		else if( hasPower )
 		{
 			int l = 9;
 			Tessellator.instance.setBrightness( l << 20 | l << 4 );
@@ -109,15 +109,15 @@ public abstract class PartBasicState extends AEBasePart implements IPowerChannel
 
 		try
 		{
-			if ( this.proxy.getEnergy().isNetworkPowered() )
+			if( this.proxy.getEnergy().isNetworkPowered() )
 				this.clientFlags |= this.POWERED_FLAG;
 
-			if ( this.proxy.getNode().meetsChannelRequirements() )
+			if( this.proxy.getNode().meetsChannelRequirements() )
 				this.clientFlags |= this.CHANNEL_FLAG;
 
 			this.clientFlags = this.populateFlags( this.clientFlags );
 		}
-		catch ( GridAccessException e )
+		catch( GridAccessException e )
 		{
 			// meh
 		}

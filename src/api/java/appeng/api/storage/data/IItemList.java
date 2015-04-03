@@ -23,7 +23,9 @@
 
 package appeng.api.storage.data;
 
+
 import java.util.Iterator;
+
 
 /**
  * Represents a list of items in AE.
@@ -78,5 +80,4 @@ public interface IItemList<StackType extends IAEStack> extends IItemContainer<St
 	 * resets stack sizes to 0.
 	 */
 	void resetStatus();
-
 }

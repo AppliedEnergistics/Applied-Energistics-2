@@ -18,6 +18,7 @@
 
 package appeng.fmp;
 
+
 import java.util.Random;
 
 import net.minecraft.block.Block;
@@ -37,29 +38,31 @@ import appeng.api.exceptions.MissingDefinition;
 public class QuartzTorchPart extends McSidedMetaPart implements IRandomDisplayTick
 {
 
-	public QuartzTorchPart() {
+	public QuartzTorchPart()
+	{
 		this( ForgeDirection.DOWN.ordinal() );
 	}
 
-	public QuartzTorchPart(int meta) {
+	public QuartzTorchPart( int meta )
+	{
 		super( meta );
+	}
+
+	public static McBlockPart placement( World world, BlockCoord pos, int side )
+	{
+		pos = pos.copy().offset( side );
+		if( !world.isSideSolid( pos.x, pos.y, pos.z, ForgeDirection.getOrientation( side ) ) )
+		{
+			return null;
+		}
+
+		return new QuartzTorchPart( side );
 	}
 
 	@Override
 	public boolean doesTick()
 	{
 		return false;
-	}
-
-	@Override
-	public Block getBlock()
-	{
-		for ( Block torchBlock : AEApi.instance().definitions().blocks().quartzTorch().maybeBlock().asSet() )
-		{
-			return torchBlock;
-		}
-
-		throw new MissingDefinition( "Tried to retrieve a quartz torch, even though it is disabled." );
 	}
 
 	@Override
@@ -74,7 +77,7 @@ public class QuartzTorchPart extends McSidedMetaPart implements IRandomDisplayTi
 		return this.getBounds( this.meta );
 	}
 
-	public Cuboid6 getBounds(int meta)
+	public Cuboid6 getBounds( int meta )
 	{
 		ForgeDirection up = ForgeDirection.getOrientation( meta );
 		double xOff = -0.3 * up.offsetX;
@@ -84,25 +87,25 @@ public class QuartzTorchPart extends McSidedMetaPart implements IRandomDisplayTi
 	}
 
 	@Override
-	public int sideForMeta(int meta)
+	public int sideForMeta( int meta )
 	{
 		return ForgeDirection.getOrientation( meta ).getOpposite().ordinal();
 	}
 
-	public static McBlockPart placement(World world, BlockCoord pos, int side)
+	@Override
+	public void randomDisplayTick( Random r )
 	{
-		pos = pos.copy().offset( side );
-		if ( !world.isSideSolid( pos.x, pos.y, pos.z, ForgeDirection.getOrientation( side ) ) )
-		{
-			return null;
-		}
-
-		return new QuartzTorchPart( side );
+		this.getBlock().randomDisplayTick( this.world(), this.x(), this.y(), this.z(), r );
 	}
 
 	@Override
-	public void randomDisplayTick(Random r)
+	public Block getBlock()
 	{
-		this.getBlock().randomDisplayTick( this.world(), this.x(), this.y(), this.z(), r );
+		for( Block torchBlock : AEApi.instance().definitions().blocks().quartzTorch().maybeBlock().asSet() )
+		{
+			return torchBlock;
+		}
+
+		throw new MissingDefinition( "Tried to retrieve a quartz torch, even though it is disabled." );
 	}
 }

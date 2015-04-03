@@ -60,25 +60,25 @@ final public class QuartzWorldGen implements IWorldGenerator
 	{
 		int seaLevel = w.provider.getAverageGroundLevel() + 1;
 
-		if ( seaLevel < 20 )
+		if( seaLevel < 20 )
 		{
 			int x = ( chunkX << 4 ) + 8;
 			int z = ( chunkZ << 4 ) + 8;
 			seaLevel = w.getHeightValue( x, z );
 		}
 
-		if ( this.oreNormal == null || this.oreCharged == null )
+		if( this.oreNormal == null || this.oreCharged == null )
 			return;
 
 		double oreDepthMultiplier = AEConfig.instance.quartzOresClusterAmount * seaLevel / 64;
 		int scale = (int) Math.round( r.nextGaussian() * Math.sqrt( oreDepthMultiplier ) + oreDepthMultiplier );
 
-		for ( int x = 0; x < ( r.nextBoolean() ? scale * 2 : scale ) / 2; ++x )
+		for( int x = 0; x < ( r.nextBoolean() ? scale * 2 : scale ) / 2; ++x )
 		{
 			boolean isCharged = r.nextFloat() > AEConfig.instance.spawnChargedChance;
 			WorldGenMinable whichOre = isCharged ? this.oreCharged : this.oreNormal;
 
-			if ( WorldGenRegistry.INSTANCE.isWorldGenEnabled( isCharged ? WorldGenType.ChargedCertusQuartz : WorldGenType.CertusQuartz, w ) )
+			if( WorldGenRegistry.INSTANCE.isWorldGenEnabled( isCharged ? WorldGenType.ChargedCertusQuartz : WorldGenType.CertusQuartz, w ) )
 			{
 				int cx = chunkX * 16 + r.nextInt( 22 );
 				int cy = r.nextInt( 40 * seaLevel / 64 ) + r.nextInt( 22 * seaLevel / 64 ) + 12 * seaLevel / 64;

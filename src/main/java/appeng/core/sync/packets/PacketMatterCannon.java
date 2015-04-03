@@ -18,6 +18,7 @@
 
 package appeng.core.sync.packets;
 
+
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
@@ -34,6 +35,7 @@ import appeng.client.render.effects.MatterCannonFX;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
 
+
 public class PacketMatterCannon extends AppEngPacket
 {
 
@@ -46,7 +48,7 @@ public class PacketMatterCannon extends AppEngPacket
 	final byte len;
 
 	// automatic.
-	public PacketMatterCannon(ByteBuf stream)
+	public PacketMatterCannon( ByteBuf stream )
 	{
 		this.x = stream.readFloat();
 		this.y = stream.readFloat();
@@ -57,28 +59,8 @@ public class PacketMatterCannon extends AppEngPacket
 		this.len = stream.readByte();
 	}
 
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void clientPacketData(INetworkInfo network, AppEngPacket packet, EntityPlayer player)
-	{
-		try
-		{
-
-			World world = FMLClientHandler.instance().getClient().theWorld;
-			for (int a = 1; a < this.len; a++)
-			{
-				MatterCannonFX fx = new MatterCannonFX( world, this.x + this.dx * a, this.y + this.dy * a, this.z + this.dz * a, Items.diamond );
-
-				Minecraft.getMinecraft().effectRenderer.addEffect( fx );
-			}
-		}
-		catch (Exception ignored)
-		{
-		}
-	}
-
 	// api
-	public PacketMatterCannon(double x, double y, double z, float dx, float dy, float dz, byte len)
+	public PacketMatterCannon( double x, double y, double z, float dx, float dy, float dz, byte len )
 	{
 		float dl = dx * dx + dy * dy + dz * dz;
 		float dlz = (float) Math.sqrt( dl );
@@ -105,4 +87,23 @@ public class PacketMatterCannon extends AppEngPacket
 		this.configureWrite( data );
 	}
 
+	@Override
+	@SideOnly( Side.CLIENT )
+	public void clientPacketData( INetworkInfo network, AppEngPacket packet, EntityPlayer player )
+	{
+		try
+		{
+
+			World world = FMLClientHandler.instance().getClient().theWorld;
+			for( int a = 1; a < this.len; a++ )
+			{
+				MatterCannonFX fx = new MatterCannonFX( world, this.x + this.dx * a, this.y + this.dy * a, this.z + this.dz * a, Items.diamond );
+
+				Minecraft.getMinecraft().effectRenderer.addEffect( fx );
+			}
+		}
+		catch( Exception ignored )
+		{
+		}
+	}
 }

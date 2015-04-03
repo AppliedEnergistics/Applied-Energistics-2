@@ -18,6 +18,7 @@
 
 package appeng.parts;
 
+
 import java.util.List;
 
 import net.minecraft.entity.Entity;
@@ -25,6 +26,7 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import appeng.api.parts.IPartCollisionHelper;
+
 
 public class BusCollisionHelper implements IPartCollisionHelper
 {
@@ -38,7 +40,8 @@ public class BusCollisionHelper implements IPartCollisionHelper
 	final private Entity entity;
 	final private boolean isVisual;
 
-	public BusCollisionHelper(List<AxisAlignedBB> boxes, ForgeDirection x, ForgeDirection y, ForgeDirection z, Entity e, boolean visual) {
+	public BusCollisionHelper( List<AxisAlignedBB> boxes, ForgeDirection x, ForgeDirection y, ForgeDirection z, Entity e, boolean visual )
+	{
 		this.boxes = boxes;
 		this.x = x;
 		this.y = y;
@@ -47,56 +50,51 @@ public class BusCollisionHelper implements IPartCollisionHelper
 		this.isVisual = visual;
 	}
 
-	public BusCollisionHelper(List<AxisAlignedBB> boxes, ForgeDirection s, Entity e, boolean visual) {
+	public BusCollisionHelper( List<AxisAlignedBB> boxes, ForgeDirection s, Entity e, boolean visual )
+	{
 		this.boxes = boxes;
 		this.entity = e;
 		this.isVisual = visual;
 
-		switch (s)
+		switch( s )
 		{
-		case DOWN:
-			this.x = ForgeDirection.EAST;
-			this.y = ForgeDirection.NORTH;
-			this.z = ForgeDirection.DOWN;
-			break;
-		case UP:
-			this.x = ForgeDirection.EAST;
-			this.y = ForgeDirection.SOUTH;
-			this.z = ForgeDirection.UP;
-			break;
-		case EAST:
-			this.x = ForgeDirection.SOUTH;
-			this.y = ForgeDirection.UP;
-			this.z = ForgeDirection.EAST;
-			break;
-		case WEST:
-			this.x = ForgeDirection.NORTH;
-			this.y = ForgeDirection.UP;
-			this.z = ForgeDirection.WEST;
-			break;
-		case NORTH:
-			this.x = ForgeDirection.WEST;
-			this.y = ForgeDirection.UP;
-			this.z = ForgeDirection.NORTH;
-			break;
-		case SOUTH:
-			this.x = ForgeDirection.EAST;
-			this.y = ForgeDirection.UP;
-			this.z = ForgeDirection.SOUTH;
-			break;
-		case UNKNOWN:
-		default:
-			this.x = ForgeDirection.EAST;
-			this.y = ForgeDirection.UP;
-			this.z = ForgeDirection.SOUTH;
-			break;
+			case DOWN:
+				this.x = ForgeDirection.EAST;
+				this.y = ForgeDirection.NORTH;
+				this.z = ForgeDirection.DOWN;
+				break;
+			case UP:
+				this.x = ForgeDirection.EAST;
+				this.y = ForgeDirection.SOUTH;
+				this.z = ForgeDirection.UP;
+				break;
+			case EAST:
+				this.x = ForgeDirection.SOUTH;
+				this.y = ForgeDirection.UP;
+				this.z = ForgeDirection.EAST;
+				break;
+			case WEST:
+				this.x = ForgeDirection.NORTH;
+				this.y = ForgeDirection.UP;
+				this.z = ForgeDirection.WEST;
+				break;
+			case NORTH:
+				this.x = ForgeDirection.WEST;
+				this.y = ForgeDirection.UP;
+				this.z = ForgeDirection.NORTH;
+				break;
+			case SOUTH:
+				this.x = ForgeDirection.EAST;
+				this.y = ForgeDirection.UP;
+				this.z = ForgeDirection.SOUTH;
+				break;
+			case UNKNOWN:
+			default:
+				this.x = ForgeDirection.EAST;
+				this.y = ForgeDirection.UP;
+				this.z = ForgeDirection.SOUTH;
+				break;
 		}
-	}
-
-	@Override
-	public boolean isBBCollision()
-	{
-		return !this.isVisual;
 	}
 
 	/**
@@ -108,7 +106,7 @@ public class BusCollisionHelper implements IPartCollisionHelper
 	}
 
 	@Override
-	public void addBox(double minX, double minY, double minZ, double maxX, double maxY, double maxZ)
+	public void addBox( double minX, double minY, double minZ, double maxX, double maxY, double maxZ )
 	{
 		minX /= 16.0;
 		minY /= 16.0;
@@ -125,19 +123,19 @@ public class BusCollisionHelper implements IPartCollisionHelper
 		double bY = maxX * this.x.offsetY + maxY * this.y.offsetY + maxZ * this.z.offsetY;
 		double bZ = maxX * this.x.offsetZ + maxY * this.y.offsetZ + maxZ * this.z.offsetZ;
 
-		if ( this.x.offsetX + this.y.offsetX + this.z.offsetX < 0 )
+		if( this.x.offsetX + this.y.offsetX + this.z.offsetX < 0 )
 		{
 			aX += 1;
 			bX += 1;
 		}
 
-		if ( this.x.offsetY + this.y.offsetY + this.z.offsetY < 0 )
+		if( this.x.offsetY + this.y.offsetY + this.z.offsetY < 0 )
 		{
 			aY += 1;
 			bY += 1;
 		}
 
-		if ( this.x.offsetZ + this.y.offsetZ + this.z.offsetZ < 0 )
+		if( this.x.offsetZ + this.y.offsetZ + this.z.offsetZ < 0 )
 		{
 			aZ += 1;
 			bZ += 1;
@@ -171,4 +169,9 @@ public class BusCollisionHelper implements IPartCollisionHelper
 		return this.z;
 	}
 
+	@Override
+	public boolean isBBCollision()
+	{
+		return !this.isVisual;
+	}
 }

@@ -57,12 +57,12 @@ public class ItemViewCell extends AEBaseItem implements ICellWorkbenchItem
 
 		MergedPriorityList<IAEItemStack> myMergedList = new MergedPriorityList<IAEItemStack>();
 
-		for ( ItemStack currentViewCell : list )
+		for( ItemStack currentViewCell : list )
 		{
-			if ( currentViewCell == null )
+			if( currentViewCell == null )
 				continue;
 
-			if ( ( currentViewCell.getItem() instanceof ItemViewCell ) )
+			if( ( currentViewCell.getItem() instanceof ItemViewCell ) )
 			{
 				IItemList<IAEItemStack> priorityList = AEApi.instance().storage().createItemList();
 
@@ -74,15 +74,15 @@ public class ItemViewCell extends AEBaseItem implements ICellWorkbenchItem
 				boolean hasInverter = false;
 				boolean hasFuzzy = false;
 
-				for ( int x = 0; x < upgrades.getSizeInventory(); x++ )
+				for( int x = 0; x < upgrades.getSizeInventory(); x++ )
 				{
 					ItemStack is = upgrades.getStackInSlot( x );
-					if ( is != null && is.getItem() instanceof IUpgradeModule )
+					if( is != null && is.getItem() instanceof IUpgradeModule )
 					{
 						Upgrades u = ( (IUpgradeModule) is.getItem() ).getType( is );
-						if ( u != null )
+						if( u != null )
 						{
-							switch ( u )
+							switch( u )
 							{
 								case FUZZY:
 									hasFuzzy = true;
@@ -96,16 +96,16 @@ public class ItemViewCell extends AEBaseItem implements ICellWorkbenchItem
 					}
 				}
 
-				for ( int x = 0; x < config.getSizeInventory(); x++ )
+				for( int x = 0; x < config.getSizeInventory(); x++ )
 				{
 					ItemStack is = config.getStackInSlot( x );
-					if ( is != null )
+					if( is != null )
 						priorityList.add( AEItemStack.create( is ) );
 				}
 
-				if ( !priorityList.isEmpty() )
+				if( !priorityList.isEmpty() )
 				{
-					if ( hasFuzzy )
+					if( hasFuzzy )
 						myMergedList.addNewList( new FuzzyPriorityList<IAEItemStack>( priorityList, fzMode ), !hasInverter );
 					else
 						myMergedList.addNewList( new PrecisePriorityList<IAEItemStack>( priorityList ), !hasInverter );
@@ -144,7 +144,7 @@ public class ItemViewCell extends AEBaseItem implements ICellWorkbenchItem
 		{
 			return FuzzyMode.valueOf( fz );
 		}
-		catch ( Throwable t )
+		catch( Throwable t )
 		{
 			return FuzzyMode.IGNORE_ALL;
 		}

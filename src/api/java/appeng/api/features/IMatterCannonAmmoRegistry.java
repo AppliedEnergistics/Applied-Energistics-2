@@ -32,8 +32,8 @@ public interface IMatterCannonAmmoRegistry
 
 	/**
 	 * register a new ammo, generally speaking this is based off of atomic weight to make it easier to guess at
-	 * 
-	 * @param ammo new ammo
+	 *
+	 * @param ammo   new ammo
 	 * @param weight atomic weight
 	 */
 	void registerAmmo( ItemStack ammo, double weight );

@@ -51,19 +51,6 @@ public class GuiFormationPlane extends GuiUpgradeable
 	}
 
 	@Override
-	public void drawFG( int offsetX, int offsetY, int mouseX, int mouseY )
-	{
-		this.fontRendererObj.drawString( this.getGuiDisplayName( GuiText.FormationPlane.getLocal() ), 8, 6, 4210752 );
-		this.fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
-
-		if ( this.fuzzyMode != null )
-			this.fuzzyMode.set( this.cvb.fzMode );
-
-		if ( this.placeMode != null )
-			this.placeMode.set( ( ( ContainerFormationPlane ) this.cvb ).placeMode );
-	}
-
-	@Override
 	protected void addButtons()
 	{
 		this.placeMode = new GuiImgButton( this.guiLeft - 18, this.guiTop + 28, Settings.PLACE_BLOCK, YesNo.YES );
@@ -76,21 +63,16 @@ public class GuiFormationPlane extends GuiUpgradeable
 	}
 
 	@Override
-	protected void actionPerformed( GuiButton btn )
+	public void drawFG( int offsetX, int offsetY, int mouseX, int mouseY )
 	{
-		super.actionPerformed( btn );
+		this.fontRendererObj.drawString( this.getGuiDisplayName( GuiText.FormationPlane.getLocal() ), 8, 6, 4210752 );
+		this.fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
 
-		boolean backwards = Mouse.isButtonDown( 1 );
+		if( this.fuzzyMode != null )
+			this.fuzzyMode.set( this.cvb.fzMode );
 
-		if ( btn == this.priority )
-		{
-			NetworkHandler.instance.sendToServer( new PacketSwitchGuis( GuiBridge.GUI_PRIORITY ) );
-		}
-		else if ( btn == this.placeMode )
-		{
-			NetworkHandler.instance.sendToServer( new PacketConfigButton( this.placeMode.getSetting(), backwards ) );
-		}
-
+		if( this.placeMode != null )
+			this.placeMode.set( ( (ContainerFormationPlane) this.cvb ).placeMode );
 	}
 
 	@Override
@@ -99,4 +81,20 @@ public class GuiFormationPlane extends GuiUpgradeable
 		return "guis/storagebus.png";
 	}
 
+	@Override
+	protected void actionPerformed( GuiButton btn )
+	{
+		super.actionPerformed( btn );
+
+		boolean backwards = Mouse.isButtonDown( 1 );
+
+		if( btn == this.priority )
+		{
+			NetworkHandler.instance.sendToServer( new PacketSwitchGuis( GuiBridge.GUI_PRIORITY ) );
+		}
+		else if( btn == this.placeMode )
+		{
+			NetworkHandler.instance.sendToServer( new PacketConfigButton( this.placeMode.getSetting(), backwards ) );
+		}
+	}
 }

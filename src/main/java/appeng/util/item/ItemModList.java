@@ -18,6 +18,7 @@
 
 package appeng.util.item;
 
+
 import java.util.Collection;
 
 import appeng.api.AEApi;
@@ -25,24 +26,26 @@ import appeng.api.config.FuzzyMode;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemContainer;
 
+
 public class ItemModList implements IItemContainer<IAEItemStack>
 {
 
 	final IItemContainer<IAEItemStack> backingStore;
 	final IItemContainer<IAEItemStack> overrides = AEApi.instance().storage().createItemList();
 
-	public ItemModList(IItemContainer<IAEItemStack> backend) {
+	public ItemModList( IItemContainer<IAEItemStack> backend )
+	{
 		this.backingStore = backend;
 	}
 
 	@Override
-	public void add(IAEItemStack option)
+	public void add( IAEItemStack option )
 	{
 		IAEItemStack over = this.overrides.findPrecise( option );
-		if ( over == null )
+		if( over == null )
 		{
 			over = this.backingStore.findPrecise( option );
-			if ( over == null )
+			if( over == null )
 				this.overrides.add( option );
 			else
 			{
@@ -55,16 +58,16 @@ public class ItemModList implements IItemContainer<IAEItemStack>
 	}
 
 	@Override
-	public IAEItemStack findPrecise(IAEItemStack i)
+	public IAEItemStack findPrecise( IAEItemStack i )
 	{
 		IAEItemStack over = this.overrides.findPrecise( i );
-		if ( over == null )
+		if( over == null )
 			return this.backingStore.findPrecise( i );
 		return over;
 	}
 
 	@Override
-	public Collection<IAEItemStack> findFuzzy(IAEItemStack input, FuzzyMode fuzzy)
+	public Collection<IAEItemStack> findFuzzy( IAEItemStack input, FuzzyMode fuzzy )
 	{
 		return this.overrides.findFuzzy( input, fuzzy );
 	}
@@ -74,5 +77,4 @@ public class ItemModList implements IItemContainer<IAEItemStack>
 	{
 		return this.overrides.isEmpty() && this.backingStore.isEmpty();
 	}
-
 }

@@ -18,6 +18,7 @@
 
 package appeng.tile.powersink;
 
+
 import java.util.EnumSet;
 
 import net.minecraft.nbt.NBTTagCompound;
@@ -33,86 +34,85 @@ import appeng.tile.AEBaseInvTile;
 import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
 
+
 public abstract class AERootPoweredTile extends AEBaseInvTile implements IAEPowerStorage
 {
 
+	protected final boolean internalCanAcceptPower = true;
 	// values that determine general function, are set by inheriting classes if
 	// needed. These should generally remain static.
 	protected double internalMaxPower = 10000;
-	protected final boolean internalCanAcceptPower = true;
 	protected boolean internalPublicPowerStorage = false;
-	private EnumSet<ForgeDirection> internalPowerSides = EnumSet.allOf( ForgeDirection.class );
-
 	protected AccessRestriction internalPowerFlow = AccessRestriction.READ_WRITE;
-
 	// the current power buffer.
 	protected double internalCurrentPower = 0;
-
-	protected void setPowerSides(EnumSet<ForgeDirection> sides)
-	{
-		this.internalPowerSides = sides;
-		// trigger re-calc!
-	}
+	private EnumSet<ForgeDirection> internalPowerSides = EnumSet.allOf( ForgeDirection.class );
 
 	protected EnumSet<ForgeDirection> getPowerSides()
 	{
 		return this.internalPowerSides.clone();
 	}
 
-	@TileEvent(TileEventType.WORLD_NBT_WRITE)
-	public void writeToNBT_AERootPoweredTile(NBTTagCompound data)
+	protected void setPowerSides( EnumSet<ForgeDirection> sides )
+	{
+		this.internalPowerSides = sides;
+		// trigger re-calc!
+	}
+
+	@TileEvent( TileEventType.WORLD_NBT_WRITE )
+	public void writeToNBT_AERootPoweredTile( NBTTagCompound data )
 	{
 		data.setDouble( "internalCurrentPower", this.internalCurrentPower );
 	}
 
-	@TileEvent(TileEventType.WORLD_NBT_READ)
-	public void readFromNBT_AERootPoweredTile(NBTTagCompound data)
+	@TileEvent( TileEventType.WORLD_NBT_READ )
+	public void readFromNBT_AERootPoweredTile( NBTTagCompound data )
 	{
 		this.internalCurrentPower = data.getDouble( "internalCurrentPower" );
 	}
 
-	final protected double getExternalPowerDemand(PowerUnits externalUnit, double maxPowerRequired)
+	final protected double getExternalPowerDemand( PowerUnits externalUnit, double maxPowerRequired )
 	{
 		return PowerUnits.AE.convertTo( externalUnit, Math.max( 0.0, this.getFunnelPowerDemand( externalUnit.convertTo( PowerUnits.AE, maxPowerRequired ) ) ) );
 	}
 
-	protected double getFunnelPowerDemand(double maxRequired)
+	protected double getFunnelPowerDemand( double maxRequired )
 	{
 		return this.internalMaxPower - this.internalCurrentPower;
 	}
 
-	final public double injectExternalPower(PowerUnits input, double amt)
+	final public double injectExternalPower( PowerUnits input, double amt )
 	{
 		return PowerUnits.AE.convertTo( input, this.funnelPowerIntoStorage( input.convertTo( PowerUnits.AE, amt ), Actionable.MODULATE ) );
 	}
 
-	protected double funnelPowerIntoStorage(double AEUnits, Actionable mode)
+	protected double funnelPowerIntoStorage( double AEUnits, Actionable mode )
 	{
 		return this.injectAEPower( AEUnits, mode );
 	}
 
 	@Override
-	final public double injectAEPower(double amt, Actionable mode)
+	final public double injectAEPower( double amt, Actionable mode )
 	{
-		if ( amt < 0.000001 )
+		if( amt < 0.000001 )
 			return 0;
 
-		if ( mode == Actionable.SIMULATE )
+		if( mode == Actionable.SIMULATE )
 		{
 			double fakeBattery = this.internalCurrentPower + amt;
 
-			if ( fakeBattery > this.internalMaxPower )
+			if( fakeBattery > this.internalMaxPower )
 				return fakeBattery - this.internalMaxPower;
 
 			return 0;
 		}
 		else
 		{
-			if ( this.internalCurrentPower < 0.01 && amt > 0.01 )
+			if( this.internalCurrentPower < 0.01 && amt > 0.01 )
 				this.PowerEvent( PowerEventType.PROVIDE_POWER );
 
 			this.internalCurrentPower += amt;
-			if ( this.internalCurrentPower > this.internalMaxPower )
+			if( this.internalCurrentPower > this.internalMaxPower )
 			{
 				amt = this.internalCurrentPower - this.internalMaxPower;
 				this.internalCurrentPower = this.internalMaxPower;
@@ -123,41 +123,9 @@ public abstract class AERootPoweredTile extends AEBaseInvTile implements IAEPowe
 		}
 	}
 
-	protected void PowerEvent(PowerEventType x)
+	protected void PowerEvent( PowerEventType x )
 	{
 		// nothing.
-	}
-
-	protected double extractAEPower(double amt, Actionable mode)
-	{
-		if ( mode == Actionable.SIMULATE )
-		{
-			if ( this.internalCurrentPower > amt )
-				return amt;
-			return this.internalCurrentPower;
-		}
-
-		boolean wasFull = this.internalCurrentPower >= this.internalMaxPower - 0.001;
-		if ( wasFull && amt > 0.001 )
-		{
-			this.PowerEvent( PowerEventType.REQUEST_POWER );
-		}
-
-		if ( this.internalCurrentPower > amt )
-		{
-			this.internalCurrentPower -= amt;
-			return amt;
-		}
-
-		amt = this.internalCurrentPower;
-		this.internalCurrentPower = 0;
-		return amt;
-	}
-
-	@Override
-	final public double extractAEPower(double amt, Actionable mode, PowerMultiplier multiplier)
-	{
-		return multiplier.divide( this.extractAEPower( multiplier.multiply( amt ), mode ) );
 	}
 
 	@Override
@@ -182,5 +150,37 @@ public abstract class AERootPoweredTile extends AEBaseInvTile implements IAEPowe
 	final public AccessRestriction getPowerFlow()
 	{
 		return this.internalPowerFlow;
+	}
+
+	@Override
+	final public double extractAEPower( double amt, Actionable mode, PowerMultiplier multiplier )
+	{
+		return multiplier.divide( this.extractAEPower( multiplier.multiply( amt ), mode ) );
+	}
+
+	protected double extractAEPower( double amt, Actionable mode )
+	{
+		if( mode == Actionable.SIMULATE )
+		{
+			if( this.internalCurrentPower > amt )
+				return amt;
+			return this.internalCurrentPower;
+		}
+
+		boolean wasFull = this.internalCurrentPower >= this.internalMaxPower - 0.001;
+		if( wasFull && amt > 0.001 )
+		{
+			this.PowerEvent( PowerEventType.REQUEST_POWER );
+		}
+
+		if( this.internalCurrentPower > amt )
+		{
+			this.internalCurrentPower -= amt;
+			return amt;
+		}
+
+		amt = this.internalCurrentPower;
+		this.internalCurrentPower = 0;
+		return amt;
 	}
 }

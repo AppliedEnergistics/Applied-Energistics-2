@@ -18,7 +18,9 @@
 
 package appeng.crafting;
 
+
 import appeng.api.storage.data.IAEItemStack;
+
 
 public class CraftBranchFailure extends Exception
 {
@@ -27,7 +29,8 @@ public class CraftBranchFailure extends Exception
 
 	final IAEItemStack missing;
 
-	public CraftBranchFailure(IAEItemStack what, long howMany) {
+	public CraftBranchFailure( IAEItemStack what, long howMany )
+	{
 		super( "Failed: " + what.getItem().getUnlocalizedName() + " x " + howMany );
 		this.missing = what.copy();
 		this.missing.setStackSize( howMany );

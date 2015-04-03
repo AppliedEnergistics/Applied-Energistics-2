@@ -18,6 +18,7 @@
 
 package appeng.core.features;
 
+
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -26,68 +27,68 @@ import net.minecraft.tileentity.TileEntity;
 import appeng.api.util.AEColor;
 import appeng.api.util.AEColoredItemDefinition;
 
+
 public final class ColoredItemDefinition implements AEColoredItemDefinition
 {
 
 	final ItemStackSrc[] colors = new ItemStackSrc[17];
 
+	public void add( AEColor v, ItemStackSrc is )
+	{
+		this.colors[v.ordinal()] = is;
+	}
+
 	@Override
-	public Item item(AEColor color)
+	public Block block( AEColor color )
+	{
+		return null;
+	}
+
+	@Override
+	public Item item( AEColor color )
 	{
 		ItemStackSrc is = this.colors[color.ordinal()];
 
-		if ( is == null )
+		if( is == null )
 			return null;
 
 		return is.item;
 	}
 
 	@Override
-	public ItemStack stack(AEColor color, int stackSize)
+	public Class<? extends TileEntity> entity( AEColor color )
+	{
+		return null;
+	}
+
+	@Override
+	public ItemStack stack( AEColor color, int stackSize )
 	{
 		ItemStackSrc is = this.colors[color.ordinal()];
 
-		if ( is == null )
+		if( is == null )
 			return null;
 
 		return is.stack( stackSize );
 	}
 
 	@Override
-	public boolean sameAs(AEColor color, ItemStack comparableItem)
-	{
-		ItemStackSrc is = this.colors[color.ordinal()];
-
-		if ( comparableItem == null || is == null )
-			return false;
-
-		return comparableItem.getItem() == is.item && comparableItem.getItemDamage() == is.damage;
-	}
-
-	public void add(AEColor v, ItemStackSrc is)
-	{
-		this.colors[v.ordinal()] = is;
-	}
-
-	@Override
-	public Block block(AEColor color)
-	{
-		return null;
-	}
-
-	@Override
-	public Class<? extends TileEntity> entity(AEColor color)
-	{
-		return null;
-	}
-
-	@Override
-	public ItemStack[] allStacks(int stackSize)
+	public ItemStack[] allStacks( int stackSize )
 	{
 		ItemStack[] is = new ItemStack[this.colors.length];
-		for (int x = 0; x < is.length; x++)
+		for( int x = 0; x < is.length; x++ )
 			is[x] = this.colors[x].stack( 1 );
 		return is;
 	}
 
+	@Override
+	public boolean sameAs( AEColor color, ItemStack comparableItem )
+	{
+		ItemStackSrc is = this.colors[color.ordinal()];
+
+		if( comparableItem == null || is == null )
+			return false;
+
+		return comparableItem.getItem() == is.item && comparableItem.getItemDamage() == is.damage;
+	}
 }

@@ -18,6 +18,7 @@
 
 package appeng.client.render.blocks;
 
+
 import java.util.EnumSet;
 
 import org.lwjgl.opengl.GL11;
@@ -42,15 +43,17 @@ import appeng.core.AELog;
 import appeng.tile.AEBaseTile;
 import appeng.util.Platform;
 
+
 public class RenderBlockCharger extends BaseBlockRender
 {
 
-	public RenderBlockCharger() {
+	public RenderBlockCharger()
+	{
 		super( true, 30 );
 	}
 
 	@Override
-	public void renderInventory(AEBaseBlock blk, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj)
+	public void renderInventory( AEBaseBlock blk, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj )
 	{
 		Tessellator tess = Tessellator.instance;
 
@@ -78,11 +81,10 @@ public class RenderBlockCharger extends BaseBlockRender
 
 		renderer.renderAllFaces = false;
 		blk.getRendererInstance().setTemporaryRenderIcon( null );
-
 	}
 
 	@Override
-	public boolean renderInWorld(AEBaseBlock block, IBlockAccess world, int x, int y, int z, RenderBlocks renderer)
+	public boolean renderInWorld( AEBaseBlock block, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
 	{
 		this.preRenderInWorld( block, world, x, y, z, renderer );
 
@@ -124,13 +126,13 @@ public class RenderBlockCharger extends BaseBlockRender
 	}
 
 	@Override
-	public void renderTile(AEBaseBlock block, AEBaseTile tile, Tessellator tess, double x, double y, double z, float f, RenderBlocks renderer)
+	public void renderTile( AEBaseBlock block, AEBaseTile tile, Tessellator tess, double x, double y, double z, float f, RenderBlocks renderer )
 	{
 		ItemStack sis = null;
-		if ( tile instanceof IInventory )
-			sis = ((IInventory) tile).getStackInSlot( 0 );
+		if( tile instanceof IInventory )
+			sis = ( (IInventory) tile ).getStackInSlot( 0 );
 
-		if ( sis != null )
+		if( sis != null )
 		{
 			GL11.glPushMatrix();
 			this.applyTESRRotation( x, y, z, tile.getForward(), tile.getUp() );
@@ -142,7 +144,7 @@ public class RenderBlockCharger extends BaseBlockRender
 				GL11.glScalef( 1.0f, 1.0f, 1.0f );
 
 				Block blk = Block.getBlockFromItem( sis.getItem() );
-				if ( sis.getItemSpriteNumber() == 0 && block != null && RenderBlocks.renderItemIn3d( blk.getRenderType() ) )
+				if( sis.getItemSpriteNumber() == 0 && block != null && RenderBlocks.renderItemIn3d( blk.getRenderType() ) )
 				{
 					GL11.glRotatef( 25.0f, 1.0f, 0.0f, 0.0f );
 					GL11.glRotatef( 15.0f, 0.0f, 1.0f, 0.0f );
@@ -162,7 +164,7 @@ public class RenderBlockCharger extends BaseBlockRender
 
 				this.doRenderItem( sis, tile );
 			}
-			catch (Exception err)
+			catch( Exception err )
 			{
 				AELog.error( err );
 			}
@@ -170,5 +172,4 @@ public class RenderBlockCharger extends BaseBlockRender
 			GL11.glPopMatrix();
 		}
 	}
-
 }

@@ -397,51 +397,6 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 	}
 
 	@Override
-	public int hashCode()
-	{
-		return this.def.myHash;
-	}
-
-	@Override
-	public boolean equals( Object ia )
-	{
-		if( ia instanceof AEItemStack )
-		{
-			return ( (AEItemStack) ia ).def.equals( this.def );// && def.tagCompound == ((AEItemStack) ia).def.tagCompound;
-		}
-		else if( ia instanceof ItemStack )
-		{
-			ItemStack is = (ItemStack) ia;
-
-			if( is.getItem() == this.def.item && is.getItemDamage() == this.def.damageValue )
-			{
-				NBTTagCompound ta = this.def.tagCompound;
-				NBTTagCompound tb = is.getTagCompound();
-				if( ta == tb )
-					return true;
-
-				if( ( ta == null && tb == null ) || ( ta != null && ta.hasNoTags() && tb == null ) || ( tb != null && tb.hasNoTags() && ta == null ) || ( ta != null && ta.hasNoTags() && tb != null && tb.hasNoTags() ) )
-					return true;
-
-				if( ( ta == null && tb != null ) || ( ta != null && tb == null ) )
-					return false;
-
-				if( AESharedNBT.isShared( tb ) )
-					return ta == tb;
-
-				return Platform.NBTEqualityTest( ta, tb );
-			}
-		}
-		return false;
-	}
-
-	@Override
-	public String toString()
-	{
-		return this.getItemStack().toString();
-	}
-
-	@Override
 	public ItemStack getItemStack()
 	{
 		ItemStack is = new ItemStack( this.def.item, (int) Math.min( Integer.MAX_VALUE, this.stackSize ), this.def.damageValue );
@@ -485,6 +440,51 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 			return false;
 
 		return this.def.isItem( otherStack );
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return this.def.myHash;
+	}
+
+	@Override
+	public boolean equals( Object ia )
+	{
+		if( ia instanceof AEItemStack )
+		{
+			return ( (AEItemStack) ia ).def.equals( this.def );// && def.tagCompound == ((AEItemStack) ia).def.tagCompound;
+		}
+		else if( ia instanceof ItemStack )
+		{
+			ItemStack is = (ItemStack) ia;
+
+			if( is.getItem() == this.def.item && is.getItemDamage() == this.def.damageValue )
+			{
+				NBTTagCompound ta = this.def.tagCompound;
+				NBTTagCompound tb = is.getTagCompound();
+				if( ta == tb )
+					return true;
+
+				if( ( ta == null && tb == null ) || ( ta != null && ta.hasNoTags() && tb == null ) || ( tb != null && tb.hasNoTags() && ta == null ) || ( ta != null && ta.hasNoTags() && tb != null && tb.hasNoTags() ) )
+					return true;
+
+				if( ( ta == null && tb != null ) || ( ta != null && tb == null ) )
+					return false;
+
+				if( AESharedNBT.isShared( tb ) )
+					return ta == tb;
+
+				return Platform.NBTEqualityTest( ta, tb );
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public String toString()
+	{
+		return this.getItemStack().toString();
 	}
 
 	@Override
@@ -551,37 +551,6 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 			return "** Null";
 
 		return uniqueIdentifier.modId == null ? "** Null" : uniqueIdentifier.modId;
-	}
-
-	@Override
-	void writeIdentity( ByteBuf i ) throws IOException
-	{
-		i.writeShort( Item.itemRegistry.getIDForObject( this.def.item ) );
-		i.writeShort( this.getItemDamage() );
-	}
-
-	@Override
-	void readNBT( ByteBuf i ) throws IOException
-	{
-		if( this.hasTagCompound() )
-		{
-			ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-			DataOutputStream data = new DataOutputStream( bytes );
-
-			CompressedStreamTools.write( (NBTTagCompound) this.getTagCompound(), data );
-
-			byte[] tagBytes = bytes.toByteArray();
-			int size = tagBytes.length;
-
-			i.writeInt( size );
-			i.writeBytes( tagBytes );
-		}
-	}
-
-	@Override
-	public boolean hasTagCompound()
-	{
-		return this.def.tagCompound != null;
 	}
 
 	public IAEItemStack getLow( FuzzyMode fuzzy, boolean ignoreMeta )
@@ -665,5 +634,36 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 	public boolean isOre()
 	{
 		return this.def.isOre != null;
+	}
+
+	@Override
+	void writeIdentity( ByteBuf i ) throws IOException
+	{
+		i.writeShort( Item.itemRegistry.getIDForObject( this.def.item ) );
+		i.writeShort( this.getItemDamage() );
+	}
+
+	@Override
+	void readNBT( ByteBuf i ) throws IOException
+	{
+		if( this.hasTagCompound() )
+		{
+			ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+			DataOutputStream data = new DataOutputStream( bytes );
+
+			CompressedStreamTools.write( (NBTTagCompound) this.getTagCompound(), data );
+
+			byte[] tagBytes = bytes.toByteArray();
+			int size = tagBytes.length;
+
+			i.writeInt( size );
+			i.writeBytes( tagBytes );
+		}
+	}
+
+	@Override
+	public boolean hasTagCompound()
+	{
+		return this.def.tagCompound != null;
 	}
 }

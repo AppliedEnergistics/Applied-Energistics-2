@@ -18,6 +18,7 @@
 
 package appeng.integration.modules.NEIHelpers;
 
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -48,6 +49,7 @@ import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
 import appeng.core.localization.GuiText;
 
+
 public class NEIWorldCraftingHandler implements ICraftingHandler, IUsageHandler
 {
 
@@ -56,61 +58,6 @@ public class NEIWorldCraftingHandler implements ICraftingHandler, IUsageHandler
 	private final List<PositionedStack> outputs = new LinkedList<PositionedStack>();
 
 	private ItemStack target;
-
-	private void addRecipe(IItemDefinition def, String msg)
-	{
-		for ( ItemStack definitionStack : def.maybeStack( 1 ).asSet() )
-		{
-			if ( NEIServerUtils.areStacksSameTypeCrafting( definitionStack, this.target ) )
-			{
-				this.offsets.add( def );
-				this.outputs.add( new PositionedStack( definitionStack, 75, 4 ) );
-				this.details.put( def, msg );
-			}
-		}
-	}
-
-	private void addRecipes()
-	{
-		final IDefinitions definitions = AEApi.instance().definitions();
-		final IMaterials materials = definitions.materials();
-
-		final String message;
-		if ( AEConfig.instance.isFeatureEnabled( AEFeature.CertusQuartzWorldGen ) )
-		{
-			message = GuiText.ChargedQuartz.getLocal() + "\n\n" + GuiText.ChargedQuartzFind.getLocal();
-		}
-		else
-		{
-			message = GuiText.ChargedQuartzFind.getLocal();
-		}
-
-		this.addRecipe( materials.certusQuartzCrystalCharged(), message );
-
-		if ( AEConfig.instance.isFeatureEnabled( AEFeature.MeteoriteWorldGen ) )
-		{
-			this.addRecipe( materials.logicProcessorPress(), GuiText.inWorldCraftingPresses.getLocal() );
-			this.addRecipe( materials.calcProcessorPress(), GuiText.inWorldCraftingPresses.getLocal() );
-			this.addRecipe( materials.engProcessorPress(), GuiText.inWorldCraftingPresses.getLocal() );
-		}
-
-		if ( AEConfig.instance.isFeatureEnabled( AEFeature.inWorldFluix ) )
-		{
-			this.addRecipe( materials.fluixCrystal(), GuiText.inWorldFluix.getLocal() );
-		}
-
-		if ( AEConfig.instance.isFeatureEnabled( AEFeature.inWorldSingularity ) )
-		{
-			this.addRecipe( materials.qESingularity(), GuiText.inWorldSingularity.getLocal() );
-		}
-
-		if ( AEConfig.instance.isFeatureEnabled( AEFeature.inWorldPurification ) )
-		{
-			this.addRecipe( materials.purifiedCertusQuartzCrystal(), GuiText.inWorldPurificationCertus.getLocal() );
-			this.addRecipe( materials.purifiedNetherQuartzCrystal(), GuiText.inWorldPurificationNether.getLocal() );
-			this.addRecipe( materials.purifiedFluixCrystal(), GuiText.inWorldPurificationFluix.getLocal() );
-		}
-	}
 
 	@Override
 	public String getRecipeName()
@@ -125,15 +72,15 @@ public class NEIWorldCraftingHandler implements ICraftingHandler, IUsageHandler
 	}
 
 	@Override
-	public void drawBackground(int recipe)
+	public void drawBackground( int recipe )
 	{
 		GL11.glColor4f( 1, 1, 1, 1 );// nothing.
 	}
 
 	@Override
-	public void drawForeground(int recipe)
+	public void drawForeground( int recipe )
 	{
-		if ( this.outputs.size() > recipe )
+		if( this.outputs.size() > recipe )
 		{
 			// PositionedStack cr = this.outputs.get( recipe );
 			String details = this.details.get( this.offsets.get( recipe ) );
@@ -144,19 +91,19 @@ public class NEIWorldCraftingHandler implements ICraftingHandler, IUsageHandler
 	}
 
 	@Override
-	public List<PositionedStack> getIngredientStacks(int recipeIndex)
+	public List<PositionedStack> getIngredientStacks( int recipeIndex )
 	{
 		return new ArrayList<PositionedStack>();
 	}
 
 	@Override
-	public List<PositionedStack> getOtherStacks(int recipeIndex)
+	public List<PositionedStack> getOtherStacks( int recipeIndex )
 	{
 		return new ArrayList<PositionedStack>();
 	}
 
 	@Override
-	public PositionedStack getResultStack(int recipe)
+	public PositionedStack getResultStack( int recipe )
 	{
 		return this.outputs.get( recipe );
 	}
@@ -168,19 +115,19 @@ public class NEIWorldCraftingHandler implements ICraftingHandler, IUsageHandler
 	}
 
 	@Override
-	public boolean hasOverlay(GuiContainer gui, Container container, int recipe)
+	public boolean hasOverlay( GuiContainer gui, Container container, int recipe )
 	{
 		return false;
 	}
 
 	@Override
-	public IRecipeOverlayRenderer getOverlayRenderer(GuiContainer gui, int recipe)
+	public IRecipeOverlayRenderer getOverlayRenderer( GuiContainer gui, int recipe )
 	{
 		return null;
 	}
 
 	@Override
-	public IOverlayHandler getOverlayHandler(GuiContainer gui, int recipe)
+	public IOverlayHandler getOverlayHandler( GuiContainer gui, int recipe )
 	{
 		return null;
 	}
@@ -192,52 +139,40 @@ public class NEIWorldCraftingHandler implements ICraftingHandler, IUsageHandler
 	}
 
 	@Override
-	public List<String> handleTooltip(GuiRecipe gui, List<String> currentToolTip, int recipe)
+	public List<String> handleTooltip( GuiRecipe gui, List<String> currentToolTip, int recipe )
 	{
 		return currentToolTip;
 	}
 
 	@Override
-	public List<String> handleItemTooltip(GuiRecipe gui, ItemStack stack, List<String> currentToolTip, int recipe)
+	public List<String> handleItemTooltip( GuiRecipe gui, ItemStack stack, List<String> currentToolTip, int recipe )
 	{
 		return currentToolTip;
 	}
 
 	@Override
-	public boolean keyTyped(GuiRecipe gui, char keyChar, int keyCode, int recipe)
+	public boolean keyTyped( GuiRecipe gui, char keyChar, int keyCode, int recipe )
 	{
 		return false;
 	}
 
 	@Override
-	public boolean mouseClicked(GuiRecipe gui, int button, int recipe)
+	public boolean mouseClicked( GuiRecipe gui, int button, int recipe )
 	{
 		return false;
 	}
 
-	public NEIWorldCraftingHandler newInstance()
-	{
-		try
-		{
-			return this.getClass().newInstance();
-		}
-		catch (Exception e)
-		{
-			throw new RuntimeException( e );
-		}
-	}
-
 	@Override
-	public IUsageHandler getUsageHandler(String inputId, Object... ingredients)
+	public IUsageHandler getUsageHandler( String inputId, Object... ingredients )
 	{
 		return this;
 	}
 
 	@Override
-	public ICraftingHandler getRecipeHandler(String outputId, Object... results)
+	public ICraftingHandler getRecipeHandler( String outputId, Object... results )
 	{
 		NEIWorldCraftingHandler g = this.newInstance();
-		if ( results.length > 0 && results[0] instanceof ItemStack )
+		if( results.length > 0 && results[0] instanceof ItemStack )
 		{
 			g.target = (ItemStack) results[0];
 			g.addRecipes();
@@ -246,4 +181,70 @@ public class NEIWorldCraftingHandler implements ICraftingHandler, IUsageHandler
 		return this;
 	}
 
+	public NEIWorldCraftingHandler newInstance()
+	{
+		try
+		{
+			return this.getClass().newInstance();
+		}
+		catch( Exception e )
+		{
+			throw new RuntimeException( e );
+		}
+	}
+
+	private void addRecipes()
+	{
+		final IDefinitions definitions = AEApi.instance().definitions();
+		final IMaterials materials = definitions.materials();
+
+		final String message;
+		if( AEConfig.instance.isFeatureEnabled( AEFeature.CertusQuartzWorldGen ) )
+		{
+			message = GuiText.ChargedQuartz.getLocal() + "\n\n" + GuiText.ChargedQuartzFind.getLocal();
+		}
+		else
+		{
+			message = GuiText.ChargedQuartzFind.getLocal();
+		}
+
+		this.addRecipe( materials.certusQuartzCrystalCharged(), message );
+
+		if( AEConfig.instance.isFeatureEnabled( AEFeature.MeteoriteWorldGen ) )
+		{
+			this.addRecipe( materials.logicProcessorPress(), GuiText.inWorldCraftingPresses.getLocal() );
+			this.addRecipe( materials.calcProcessorPress(), GuiText.inWorldCraftingPresses.getLocal() );
+			this.addRecipe( materials.engProcessorPress(), GuiText.inWorldCraftingPresses.getLocal() );
+		}
+
+		if( AEConfig.instance.isFeatureEnabled( AEFeature.inWorldFluix ) )
+		{
+			this.addRecipe( materials.fluixCrystal(), GuiText.inWorldFluix.getLocal() );
+		}
+
+		if( AEConfig.instance.isFeatureEnabled( AEFeature.inWorldSingularity ) )
+		{
+			this.addRecipe( materials.qESingularity(), GuiText.inWorldSingularity.getLocal() );
+		}
+
+		if( AEConfig.instance.isFeatureEnabled( AEFeature.inWorldPurification ) )
+		{
+			this.addRecipe( materials.purifiedCertusQuartzCrystal(), GuiText.inWorldPurificationCertus.getLocal() );
+			this.addRecipe( materials.purifiedNetherQuartzCrystal(), GuiText.inWorldPurificationNether.getLocal() );
+			this.addRecipe( materials.purifiedFluixCrystal(), GuiText.inWorldPurificationFluix.getLocal() );
+		}
+	}
+
+	private void addRecipe( IItemDefinition def, String msg )
+	{
+		for( ItemStack definitionStack : def.maybeStack( 1 ).asSet() )
+		{
+			if( NEIServerUtils.areStacksSameTypeCrafting( definitionStack, this.target ) )
+			{
+				this.offsets.add( def );
+				this.outputs.add( new PositionedStack( definitionStack, 75, 4 ) );
+				this.details.put( def, msg );
+			}
+		}
+	}
 }

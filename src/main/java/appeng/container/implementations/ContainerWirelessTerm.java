@@ -18,6 +18,7 @@
 
 package appeng.container.implementations;
 
+
 import net.minecraft.entity.player.InventoryPlayer;
 
 import appeng.core.AEConfig;
@@ -25,12 +26,14 @@ import appeng.core.localization.PlayerMessages;
 import appeng.helpers.WirelessTerminalGuiObject;
 import appeng.util.Platform;
 
+
 public class ContainerWirelessTerm extends ContainerMEPortableCell
 {
 
 	final WirelessTerminalGuiObject wirelessTerminalGUIObject;
 
-	public ContainerWirelessTerm(InventoryPlayer ip, WirelessTerminalGuiObject wirelessTerminalGUIObject) {
+	public ContainerWirelessTerm( InventoryPlayer ip, WirelessTerminalGuiObject wirelessTerminalGUIObject )
+	{
 		super( ip, wirelessTerminalGUIObject );
 		this.wirelessTerminalGUIObject = wirelessTerminalGUIObject;
 	}
@@ -40,9 +43,9 @@ public class ContainerWirelessTerm extends ContainerMEPortableCell
 	{
 		super.detectAndSendChanges();
 
-		if ( !this.wirelessTerminalGUIObject.rangeCheck() )
+		if( !this.wirelessTerminalGUIObject.rangeCheck() )
 		{
-			if ( Platform.isServer() && this.isContainerValid )
+			if( Platform.isServer() && this.isContainerValid )
 				this.getPlayerInv().player.addChatMessage( PlayerMessages.OutOfRange.get() );
 
 			this.isContainerValid = false;

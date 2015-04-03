@@ -18,6 +18,7 @@
 
 package appeng.container.implementations;
 
+
 import java.io.IOException;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -42,62 +43,62 @@ import appeng.core.sync.packets.PacketMEInventoryUpdate;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 
+
 public class ContainerNetworkStatus extends AEBaseContainer
 {
 
+	@GuiSync( 0 )
+	public long avgAddition;
+	@GuiSync( 1 )
+	public long powerUsage;
+	@GuiSync( 2 )
+	public long currentPower;
+	@GuiSync( 3 )
+	public long maxPower;
 	IGrid network;
+	int delay = 40;
 
-	public ContainerNetworkStatus(InventoryPlayer ip, INetworkTool te) {
+	public ContainerNetworkStatus( InventoryPlayer ip, INetworkTool te )
+	{
 		super( ip, null, null );
 		IGridHost host = te.getGridHost();
 
-		if ( host != null )
+		if( host != null )
 		{
 			this.findNode( host, ForgeDirection.UNKNOWN );
-			for (ForgeDirection d : ForgeDirection.VALID_DIRECTIONS)
+			for( ForgeDirection d : ForgeDirection.VALID_DIRECTIONS )
 				this.findNode( host, d );
 		}
 
-		if ( this.network == null && Platform.isServer() )
+		if( this.network == null && Platform.isServer() )
 			this.isContainerValid = false;
 	}
 
-	private void findNode(IGridHost host, ForgeDirection d)
+	private void findNode( IGridHost host, ForgeDirection d )
 	{
-		if ( this.network == null )
+		if( this.network == null )
 		{
 			IGridNode node = host.getGridNode( d );
-			if ( node != null )
+			if( node != null )
 				this.network = node.getGrid();
 		}
 	}
-
-	int delay = 40;
-
-	@GuiSync(0)
-	public long avgAddition;
-	@GuiSync(1)
-	public long powerUsage;
-	@GuiSync(2)
-	public long currentPower;
-	@GuiSync(3)
-	public long maxPower;
 
 	@Override
 	public void detectAndSendChanges()
 	{
 		this.delay++;
-		if ( Platform.isServer() && this.delay > 15 && this.network != null )
+		if( Platform.isServer() && this.delay > 15 && this.network != null )
 		{
 			this.delay = 0;
 
 			IEnergyGrid eg = this.network.getCache( IEnergyGrid.class );
-			if ( eg != null )
+			if( eg != null )
 			{
-				this.avgAddition = (long) (100.0 * eg.getAvgPowerInjection());
-				this.powerUsage = (long) (100.0 * eg.getAvgPowerUsage());
-				this.currentPower = (long) (100.0 * eg.getStoredPower());
-				this.maxPower = (long) (100.0 * eg.getMaxStoredPower());
+				this.avgAddition = (long) ( 100.0 * eg.getAvgPowerInjection() );
+				this.powerUsage = (long) ( 100.0 * eg.getAvgPowerUsage() );
+				this.currentPower = (long) ( 100.0 * eg.getStoredPower() );
+				this.maxPower = (long) ( 100.0 * eg.getMaxStoredPower() );
 			}
 
 			PacketMEInventoryUpdate piu;
@@ -105,37 +106,36 @@ public class ContainerNetworkStatus extends AEBaseContainer
 			{
 				piu = new PacketMEInventoryUpdate();
 
-				for (Class<? extends IGridHost> machineClass : this.network.getMachinesClasses())
+				for( Class<? extends IGridHost> machineClass : this.network.getMachinesClasses() )
 				{
 					IItemList<IAEItemStack> list = AEApi.instance().storage().createItemList();
-					for (IGridNode machine : this.network.getMachines( machineClass ))
+					for( IGridNode machine : this.network.getMachines( machineClass ) )
 					{
 						IGridBlock blk = machine.getGridBlock();
 						ItemStack is = blk.getMachineRepresentation();
-						if ( is != null && is.getItem() != null )
+						if( is != null && is.getItem() != null )
 						{
 							IAEItemStack ais = AEItemStack.create( is );
 							ais.setStackSize( 1 );
-							ais.setCountRequestable( (long) (blk.getIdlePowerUsage() * 100.0) );
+							ais.setCountRequestable( (long) ( blk.getIdlePowerUsage() * 100.0 ) );
 							list.add( ais );
 						}
 					}
 
-					for (IAEItemStack ais : list)
+					for( IAEItemStack ais : list )
 						piu.appendItem( ais );
 				}
 
-				for (Object c : this.crafters)
+				for( Object c : this.crafters )
 				{
-					if ( c instanceof EntityPlayer )
+					if( c instanceof EntityPlayer )
 						NetworkHandler.instance.sendTo( piu, (EntityPlayerMP) c );
 				}
 			}
-			catch (IOException e)
+			catch( IOException e )
 			{
 				// :P
 			}
-
 		}
 		super.detectAndSendChanges();
 	}

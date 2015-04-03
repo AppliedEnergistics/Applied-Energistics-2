@@ -18,6 +18,7 @@
 
 package appeng.recipes.handlers;
 
+
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
@@ -29,33 +30,34 @@ import appeng.api.exceptions.RegistrationError;
 import appeng.api.recipes.ICraftHandler;
 import appeng.api.recipes.IIngredient;
 
+
 public class OreRegistration implements ICraftHandler
 {
 
 	final List<IIngredient> inputs;
 	final String name;
 
-	public OreRegistration(List<IIngredient> in, String out) {
+	public OreRegistration( List<IIngredient> in, String out )
+	{
 		this.inputs = in;
 		this.name = out;
 	}
 
 	@Override
+	public void setup( List<List<IIngredient>> input, List<List<IIngredient>> output ) throws RecipeError
+	{
+
+	}
+
+	@Override
 	public void register() throws RegistrationError, MissingIngredientError
 	{
-		for (IIngredient i : this.inputs)
+		for( IIngredient i : this.inputs )
 		{
-			for (ItemStack is : i.getItemStackSet())
+			for( ItemStack is : i.getItemStackSet() )
 			{
 				OreDictionary.registerOre( this.name, is );
 			}
 		}
 	}
-
-	@Override
-	public void setup(List<List<IIngredient>> input, List<List<IIngredient>> output) throws RecipeError
-	{
-
-	}
-
 }

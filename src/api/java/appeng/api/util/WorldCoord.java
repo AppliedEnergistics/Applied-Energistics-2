@@ -39,12 +39,16 @@ public class WorldCoord
 	public int y;
 	public int z;
 
-	public WorldCoord add( ForgeDirection direction, int length )
+	public WorldCoord( TileEntity s )
 	{
-		this.x += direction.offsetX * length;
-		this.y += direction.offsetY * length;
-		this.z += direction.offsetZ * length;
-		return this;
+		this( s.xCoord, s.yCoord, s.zCoord );
+	}
+
+	public WorldCoord( int _x, int _y, int _z )
+	{
+		this.x = _x;
+		this.y = _y;
+		this.z = _z;
 	}
 
 	public WorldCoord subtract( ForgeDirection direction, int length )
@@ -87,18 +91,6 @@ public class WorldCoord
 		return this;
 	}
 
-	public WorldCoord( int _x, int _y, int _z )
-	{
-		this.x = _x;
-		this.y = _y;
-		this.z = _z;
-	}
-
-	public WorldCoord( TileEntity s )
-	{
-		this( s.xCoord, s.yCoord, s.zCoord );
-	}
-
 	/**
 	 * Will Return NULL if it's at some diagonal!
 	 */
@@ -112,22 +104,22 @@ public class WorldCoord
 		int ylen = Math.abs( oy );
 		int zlen = Math.abs( oz );
 
-		if ( loc.isEqual( this.copy().add( ForgeDirection.EAST, xlen ) ) )
+		if( loc.isEqual( this.copy().add( ForgeDirection.EAST, xlen ) ) )
 			return ForgeDirection.EAST;
 
-		if ( loc.isEqual( this.copy().add( ForgeDirection.WEST, xlen ) ) )
+		if( loc.isEqual( this.copy().add( ForgeDirection.WEST, xlen ) ) )
 			return ForgeDirection.WEST;
 
-		if ( loc.isEqual( this.copy().add( ForgeDirection.NORTH, zlen ) ) )
+		if( loc.isEqual( this.copy().add( ForgeDirection.NORTH, zlen ) ) )
 			return ForgeDirection.NORTH;
 
-		if ( loc.isEqual( this.copy().add( ForgeDirection.SOUTH, zlen ) ) )
+		if( loc.isEqual( this.copy().add( ForgeDirection.SOUTH, zlen ) ) )
 			return ForgeDirection.SOUTH;
 
-		if ( loc.isEqual( this.copy().add( ForgeDirection.UP, ylen ) ) )
+		if( loc.isEqual( this.copy().add( ForgeDirection.UP, ylen ) ) )
 			return ForgeDirection.UP;
 
-		if ( loc.isEqual( this.copy().add( ForgeDirection.DOWN, ylen ) ) )
+		if( loc.isEqual( this.copy().add( ForgeDirection.DOWN, ylen ) ) )
 			return ForgeDirection.DOWN;
 
 		return null;
@@ -138,9 +130,23 @@ public class WorldCoord
 		return this.x == c.x && this.y == c.y && this.z == c.z;
 	}
 
+	public WorldCoord add( ForgeDirection direction, int length )
+	{
+		this.x += direction.offsetX * length;
+		this.y += direction.offsetY * length;
+		this.z += direction.offsetZ * length;
+		return this;
+	}
+
 	public WorldCoord copy()
 	{
 		return new WorldCoord( this.x, this.y, this.z );
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return ( this.y << 24 ) ^ this.x ^ this.z;
 	}
 
 	@Override
@@ -153,11 +159,5 @@ public class WorldCoord
 	public String toString()
 	{
 		return "x=" + this.x + ", y=" + this.y + ", z=" + this.z;
-	}
-
-	@Override
-	public int hashCode()
-	{
-		return ( this.y << 24 ) ^ this.x ^ this.z;
 	}
 }

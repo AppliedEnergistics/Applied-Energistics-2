@@ -18,6 +18,7 @@
 
 package appeng.block.solids;
 
+
 import java.util.EnumSet;
 
 import net.minecraft.block.material.Material;
@@ -32,37 +33,39 @@ import appeng.client.render.blocks.RenderQuartzGlass;
 import appeng.core.features.AEFeature;
 import appeng.helpers.AEGlassMaterial;
 
+
 public class BlockQuartzGlass extends AEBaseBlock
 {
 
-	public BlockQuartzGlass() {
+	public BlockQuartzGlass()
+	{
 		this( BlockQuartzGlass.class );
 	}
 
-	@Override
-	@SideOnly(Side.CLIENT)
-	public Class<? extends BaseBlockRender> getRenderer()
+	public BlockQuartzGlass( Class c )
 	{
-		return RenderQuartzGlass.class;
-	}
-
-	@Override
-	public boolean shouldSideBeRendered(IBlockAccess w, int x, int y, int z, int side)
-	{
-		Material mat = w.getBlock( x, y, z ).getMaterial();
-		if ( mat == Material.glass || mat == AEGlassMaterial.INSTANCE )
-		{
-			if ( w.getBlock( x, y, z ).getRenderType() == this.getRenderType() )
-				return false;
-		}
-		return super.shouldSideBeRendered( w, x, y, z, side );
-	}
-
-	public BlockQuartzGlass(Class c) {
 		super( c, Material.glass );
 		this.setFeature( EnumSet.of( AEFeature.DecorativeQuartzBlocks ) );
 		this.setLightOpacity( 0 );
 		this.isOpaque = false;
 	}
 
+	@Override
+	@SideOnly( Side.CLIENT )
+	public Class<? extends BaseBlockRender> getRenderer()
+	{
+		return RenderQuartzGlass.class;
+	}
+
+	@Override
+	public boolean shouldSideBeRendered( IBlockAccess w, int x, int y, int z, int side )
+	{
+		Material mat = w.getBlock( x, y, z ).getMaterial();
+		if( mat == Material.glass || mat == AEGlassMaterial.INSTANCE )
+		{
+			if( w.getBlock( x, y, z ).getRenderType() == this.getRenderType() )
+				return false;
+		}
+		return super.shouldSideBeRendered( w, x, y, z, side );
+	}
 }

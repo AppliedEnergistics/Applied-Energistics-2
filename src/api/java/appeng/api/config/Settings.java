@@ -57,16 +57,16 @@ public enum Settings
 
 	private final EnumSet values;
 
+	Settings( EnumSet set )
+	{
+		if( set == null || set.isEmpty() )
+			throw new RuntimeException( "Invalid configuration." );
+		this.values = set;
+	}
+
 	public EnumSet getPossibleValues()
 	{
 		return this.values;
-	}
-
-	Settings( EnumSet set )
-	{
-		if ( set == null || set.isEmpty() )
-			throw new RuntimeException( "Invalid configuration." );
-		this.values = set;
 	}
 
 }

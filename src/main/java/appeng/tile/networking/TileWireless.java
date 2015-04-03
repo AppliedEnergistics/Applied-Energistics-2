@@ -1,4 +1,3 @@
-
 /*
  * This file is part of Applied Energistics 2.
  * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
@@ -100,18 +99,18 @@ public class TileWireless extends AENetworkInvTile implements IWirelessAccessPoi
 
 		try
 		{
-			if ( this.gridProxy.getEnergy().isNetworkPowered() )
+			if( this.gridProxy.getEnergy().isNetworkPowered() )
 				this.clientFlags |= POWERED_FLAG;
 
-			if ( this.gridProxy.getNode().meetsChannelRequirements() )
+			if( this.gridProxy.getNode().meetsChannelRequirements() )
 				this.clientFlags |= CHANNEL_FLAG;
 		}
-		catch ( GridAccessException e )
+		catch( GridAccessException e )
 		{
 			// meh
 		}
 
-		data.writeByte( ( byte ) this.clientFlags );
+		data.writeByte( (byte) this.clientFlags );
 	}
 
 	@Override
@@ -133,64 +132,6 @@ public class TileWireless extends AENetworkInvTile implements IWirelessAccessPoi
 	}
 
 	@Override
-	public void onReady()
-	{
-		this.updatePower();
-		super.onReady();
-	}
-
-	@Override
-	public void markDirty()
-	{
-		this.updatePower();
-	}
-
-	private void updatePower()
-	{
-		this.gridProxy.setIdlePowerUsage( AEConfig.instance.wireless_getPowerDrain( this.getBoosters() ) );
-	}
-
-	@Override
-	public int[] getAccessibleSlotsBySide( ForgeDirection side )
-	{
-		return this.sides;
-	}
-
-	@Override
-	public double getRange()
-	{
-		return AEConfig.instance.wireless_getMaxRange( this.getBoosters() );
-	}
-
-	@Override
-	public boolean isActive()
-	{
-		if ( Platform.isClient() )
-			return this.isPowered() && ( CHANNEL_FLAG == ( this.clientFlags & CHANNEL_FLAG ) );
-
-		return this.gridProxy.isActive();
-	}
-
-	@Override
-	public IGrid getGrid()
-	{
-		try
-		{
-			return this.gridProxy.getGrid();
-		}
-		catch ( GridAccessException e )
-		{
-			return null;
-		}
-	}
-
-	private int getBoosters()
-	{
-		ItemStack boosters = this.inv.getStackInSlot( 0 );
-		return boosters == null ? 0 : boosters.stackSize;
-	}
-
-	@Override
 	public boolean isItemValidForSlot( int i, ItemStack itemstack )
 	{
 		return AEApi.instance().definitions().materials().wirelessBooster().isSameAs( itemstack );
@@ -203,9 +144,66 @@ public class TileWireless extends AENetworkInvTile implements IWirelessAccessPoi
 	}
 
 	@Override
+	public int[] getAccessibleSlotsBySide( ForgeDirection side )
+	{
+		return this.sides;
+	}
+
+	@Override
+	public void onReady()
+	{
+		this.updatePower();
+		super.onReady();
+	}
+
+	private void updatePower()
+	{
+		this.gridProxy.setIdlePowerUsage( AEConfig.instance.wireless_getPowerDrain( this.getBoosters() ) );
+	}
+
+	private int getBoosters()
+	{
+		ItemStack boosters = this.inv.getStackInSlot( 0 );
+		return boosters == null ? 0 : boosters.stackSize;
+	}
+
+	@Override
+	public void markDirty()
+	{
+		this.updatePower();
+	}
+
+	@Override
+	public double getRange()
+	{
+		return AEConfig.instance.wireless_getMaxRange( this.getBoosters() );
+	}
+
+	@Override
+	public boolean isActive()
+	{
+		if( Platform.isClient() )
+			return this.isPowered() && ( CHANNEL_FLAG == ( this.clientFlags & CHANNEL_FLAG ) );
+
+		return this.gridProxy.isActive();
+	}
+
+	@Override
+	public IGrid getGrid()
+	{
+		try
+		{
+			return this.gridProxy.getGrid();
+		}
+		catch( GridAccessException e )
+		{
+			return null;
+		}
+	}
+
+	@Override
 	public boolean isPowered()
 	{
 		return POWERED_FLAG == ( this.clientFlags & POWERED_FLAG );
 	}
-
 }

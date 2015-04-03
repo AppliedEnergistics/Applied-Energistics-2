@@ -22,6 +22,7 @@ package appeng.client.gui.widgets;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiTextField;
 
+
 /**
  * A modified version of the Minecraft text field.
  * You can initialize it over the full element span.
@@ -44,10 +45,10 @@ public class MEGuiTextField extends GuiTextField
 	 * Pays attention to the '_' caret.
 	 *
 	 * @param fontRenderer renderer for the strings
-	 * @param xPos absolute left position
-	 * @param yPos absolute top position
-	 * @param width absolute width
-	 * @param height absolute height
+	 * @param xPos         absolute left position
+	 * @param yPos         absolute top position
+	 * @param width        absolute width
+	 * @param height       absolute height
 	 */
 	public MEGuiTextField( FontRenderer fontRenderer, int xPos, int yPos, int width, int height )
 	{

@@ -18,6 +18,7 @@
 
 package appeng.core.sync.packets;
 
+
 import java.io.IOException;
 
 import io.netty.buffer.ByteBuf;
@@ -39,6 +40,7 @@ import appeng.helpers.InventoryAction;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 
+
 public class PacketInventoryAction extends AppEngPacket
 {
 
@@ -48,37 +50,87 @@ public class PacketInventoryAction extends AppEngPacket
 	final public IAEItemStack slotItem;
 
 	// automatic.
-	public PacketInventoryAction(ByteBuf stream) throws IOException {
+	public PacketInventoryAction( ByteBuf stream ) throws IOException
+	{
 		this.action = InventoryAction.values()[stream.readInt()];
 		this.slot = stream.readInt();
 		this.id = stream.readLong();
 		boolean hasItem = stream.readBoolean();
-		if ( hasItem )
+		if( hasItem )
 			this.slotItem = AEItemStack.loadItemStackFromPacket( stream );
 		else
 			this.slotItem = null;
 	}
 
+	// api
+	public PacketInventoryAction( InventoryAction action, int slot, IAEItemStack slotItem ) throws IOException
+	{
+
+		if( Platform.isClient() )
+			throw new RuntimeException( "invalid packet, client cannot post inv actions with stacks." );
+
+		this.action = action;
+		this.slot = slot;
+		this.id = 0;
+		this.slotItem = slotItem;
+
+		ByteBuf data = Unpooled.buffer();
+
+		data.writeInt( this.getPacketID() );
+		data.writeInt( action.ordinal() );
+		data.writeInt( slot );
+		data.writeLong( this.id );
+
+		if( slotItem == null )
+			data.writeBoolean( false );
+		else
+		{
+			data.writeBoolean( true );
+			slotItem.writeToPacket( data );
+		}
+
+		this.configureWrite( data );
+	}
+
+	// api
+	public PacketInventoryAction( InventoryAction action, int slot, long id )
+	{
+		this.action = action;
+		this.slot = slot;
+		this.id = id;
+		this.slotItem = null;
+
+		ByteBuf data = Unpooled.buffer();
+
+		data.writeInt( this.getPacketID() );
+		data.writeInt( action.ordinal() );
+		data.writeInt( slot );
+		data.writeLong( id );
+		data.writeBoolean( false );
+
+		this.configureWrite( data );
+	}
+
 	@Override
-	public void serverPacketData(INetworkInfo manager, AppEngPacket packet, EntityPlayer player)
+	public void serverPacketData( INetworkInfo manager, AppEngPacket packet, EntityPlayer player )
 	{
 		EntityPlayerMP sender = (EntityPlayerMP) player;
-		if ( sender.openContainer instanceof AEBaseContainer )
+		if( sender.openContainer instanceof AEBaseContainer )
 		{
 			AEBaseContainer baseContainer = (AEBaseContainer) sender.openContainer;
-			if ( this.action == InventoryAction.AUTO_CRAFT )
+			if( this.action == InventoryAction.AUTO_CRAFT )
 			{
 				ContainerOpenContext context = baseContainer.openContext;
-				if ( context != null )
+				if( context != null )
 				{
 					TileEntity te = context.getTile();
 					Platform.openGUI( sender, te, baseContainer.openContext.side, GuiBridge.GUI_CRAFTING_AMOUNT );
 
-					if ( sender.openContainer instanceof ContainerCraftAmount )
+					if( sender.openContainer instanceof ContainerCraftAmount )
 					{
 						ContainerCraftAmount cca = (ContainerCraftAmount) sender.openContainer;
 
-						if ( baseContainer.getTargetStack() != null )
+						if( baseContainer.getTargetStack() != null )
 						{
 							cca.craftingItem.putStack( baseContainer.getTargetStack().getItemStack() );
 							cca.whatToMake = baseContainer.getTargetStack();
@@ -96,62 +148,14 @@ public class PacketInventoryAction extends AppEngPacket
 	}
 
 	@Override
-	public void clientPacketData(INetworkInfo network, AppEngPacket packet, EntityPlayer player)
+	public void clientPacketData( INetworkInfo network, AppEngPacket packet, EntityPlayer player )
 	{
-		if ( this.action == InventoryAction.UPDATE_HAND )
+		if( this.action == InventoryAction.UPDATE_HAND )
 		{
-			if ( this.slotItem == null )
+			if( this.slotItem == null )
 				ClientHelper.proxy.getPlayers().get( 0 ).inventory.setItemStack( null );
 			else
 				ClientHelper.proxy.getPlayers().get( 0 ).inventory.setItemStack( this.slotItem.getItemStack() );
 		}
-	}
-
-	// api
-	public PacketInventoryAction(InventoryAction action, int slot, IAEItemStack slotItem) throws IOException {
-
-		if ( Platform.isClient() )
-			throw new RuntimeException( "invalid packet, client cannot post inv actions with stacks." );
-
-		this.action = action;
-		this.slot = slot;
-		this.id = 0;
-		this.slotItem = slotItem;
-
-		ByteBuf data = Unpooled.buffer();
-
-		data.writeInt( this.getPacketID() );
-		data.writeInt( action.ordinal() );
-		data.writeInt( slot );
-		data.writeLong( this.id );
-
-		if ( slotItem == null )
-			data.writeBoolean( false );
-		else
-		{
-			data.writeBoolean( true );
-			slotItem.writeToPacket( data );
-		}
-
-		this.configureWrite( data );
-	}
-
-	// api
-	public PacketInventoryAction(InventoryAction action, int slot, long id)
-	{
-		this.action = action;
-		this.slot = slot;
-		this.id = id;
-		this.slotItem = null;
-
-		ByteBuf data = Unpooled.buffer();
-
-		data.writeInt( this.getPacketID() );
-		data.writeInt( action.ordinal() );
-		data.writeInt( slot );
-		data.writeLong( id );
-		data.writeBoolean( false );
-
-		this.configureWrite( data );
 	}
 }

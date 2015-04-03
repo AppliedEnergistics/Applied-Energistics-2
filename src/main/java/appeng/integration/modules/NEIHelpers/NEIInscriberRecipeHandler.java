@@ -18,10 +18,8 @@
 
 package appeng.integration.modules.NEIHelpers;
 
-import static codechicken.lib.gui.GuiDraw.changeTexture;
-import static codechicken.lib.gui.GuiDraw.drawTexturedModalRect;
 
-import java.awt.Rectangle;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,16 +41,12 @@ import appeng.core.localization.GuiText;
 import appeng.recipes.handlers.Inscribe;
 import appeng.recipes.handlers.Inscribe.InscriberRecipe;
 
+import static codechicken.lib.gui.GuiDraw.changeTexture;
+import static codechicken.lib.gui.GuiDraw.drawTexturedModalRect;
+
+
 public class NEIInscriberRecipeHandler extends TemplateRecipeHandler
 {
-
-	@Override
-	public void drawBackground(int recipe)
-	{
-		GL11.glColor4f( 1, 1, 1, 1 );
-		changeTexture( this.getGuiTexture() );
-		drawTexturedModalRect( 0, 0, 5, 11, 166, 75 );
-	}
 
 	@Override
 	public void loadTransferRects()
@@ -61,23 +55,11 @@ public class NEIInscriberRecipeHandler extends TemplateRecipeHandler
 	}
 
 	@Override
-	public Class<? extends GuiContainer> getGuiClass()
+	public void loadCraftingRecipes( String outputId, Object... results )
 	{
-		return GuiInscriber.class;
-	}
-
-	@Override
-	public String getRecipeName()
-	{
-		return GuiText.Inscriber.getLocal();
-	}
-
-	@Override
-	public void loadCraftingRecipes(String outputId, Object... results)
-	{
-		if ( (outputId.equals( "inscriber" )) && (this.getClass() == NEIInscriberRecipeHandler.class) )
+		if( ( outputId.equals( "inscriber" ) ) && ( this.getClass() == NEIInscriberRecipeHandler.class ) )
 		{
-			for (InscriberRecipe recipe : Inscribe.RECIPES )
+			for( InscriberRecipe recipe : Inscribe.RECIPES )
 			{
 				CachedInscriberRecipe cachedRecipe = new CachedInscriberRecipe( recipe );
 				cachedRecipe.computeVisuals();
@@ -91,11 +73,11 @@ public class NEIInscriberRecipeHandler extends TemplateRecipeHandler
 	}
 
 	@Override
-	public void loadCraftingRecipes(ItemStack result)
+	public void loadCraftingRecipes( ItemStack result )
 	{
-		for (InscriberRecipe recipe : Inscribe.RECIPES )
+		for( InscriberRecipe recipe : Inscribe.RECIPES )
 		{
-			if ( NEIServerUtils.areStacksSameTypeCrafting( recipe.output, result ) )
+			if( NEIServerUtils.areStacksSameTypeCrafting( recipe.output, result ) )
 			{
 				CachedInscriberRecipe cachedRecipe = new CachedInscriberRecipe( recipe );
 				cachedRecipe.computeVisuals();
@@ -105,16 +87,16 @@ public class NEIInscriberRecipeHandler extends TemplateRecipeHandler
 	}
 
 	@Override
-	public void loadUsageRecipes(ItemStack ingredient)
+	public void loadUsageRecipes( ItemStack ingredient )
 	{
-		for (InscriberRecipe recipe : Inscribe.RECIPES )
+		for( InscriberRecipe recipe : Inscribe.RECIPES )
 		{
 			CachedInscriberRecipe cachedRecipe = new CachedInscriberRecipe( recipe );
 
-			if ( (cachedRecipe.contains( cachedRecipe.ingredients, ingredient.getItem() )) )
+			if( ( cachedRecipe.contains( cachedRecipe.ingredients, ingredient.getItem() ) ) )
 			{
 				cachedRecipe.computeVisuals();
-				if ( cachedRecipe.contains( cachedRecipe.ingredients, ingredient ) )
+				if( cachedRecipe.contains( cachedRecipe.ingredients, ingredient ) )
 				{
 					cachedRecipe.setIngredientPermutation( cachedRecipe.ingredients, ingredient );
 					this.arecipes.add( cachedRecipe );
@@ -137,21 +119,41 @@ public class NEIInscriberRecipeHandler extends TemplateRecipeHandler
 	}
 
 	@Override
-	public boolean hasOverlay(GuiContainer gui, Container container, int recipe)
+	public Class<? extends GuiContainer> getGuiClass()
+	{
+		return GuiInscriber.class;
+	}
+
+	@Override
+	public void drawBackground( int recipe )
+	{
+		GL11.glColor4f( 1, 1, 1, 1 );
+		changeTexture( this.getGuiTexture() );
+		drawTexturedModalRect( 0, 0, 5, 11, 166, 75 );
+	}
+
+	@Override
+	public boolean hasOverlay( GuiContainer gui, Container container, int recipe )
 	{
 		return false;
 	}
 
 	@Override
-	public IRecipeOverlayRenderer getOverlayRenderer(GuiContainer gui, int recipe)
+	public IRecipeOverlayRenderer getOverlayRenderer( GuiContainer gui, int recipe )
 	{
 		return null;
 	}
 
 	@Override
-	public IOverlayHandler getOverlayHandler(GuiContainer gui, int recipe)
+	public IOverlayHandler getOverlayHandler( GuiContainer gui, int recipe )
 	{
 		return null;
+	}
+
+	@Override
+	public String getRecipeName()
+	{
+		return GuiText.Inscriber.getLocal();
 	}
 
 	public class CachedInscriberRecipe extends TemplateRecipeHandler.CachedRecipe
@@ -160,24 +162,19 @@ public class NEIInscriberRecipeHandler extends TemplateRecipeHandler
 		public final ArrayList<PositionedStack> ingredients;
 		public final PositionedStack result;
 
-		public CachedInscriberRecipe(InscriberRecipe recipe) {
+		public CachedInscriberRecipe( InscriberRecipe recipe )
+		{
 			this.result = new PositionedStack( recipe.output, 108, 29 );
 			this.ingredients = new ArrayList<PositionedStack>();
 
-			if ( recipe.plateA != null )
+			if( recipe.plateA != null )
 				this.ingredients.add( new PositionedStack( recipe.plateA, 40, 5 ) );
 
-			if ( recipe.imprintable != null )
+			if( recipe.imprintable != null )
 				this.ingredients.add( new PositionedStack( recipe.imprintable, 40 + 18, 28 ) );
 
-			if ( recipe.plateB != null )
+			if( recipe.plateB != null )
 				this.ingredients.add( new PositionedStack( recipe.plateB, 40, 51 ) );
-		}
-
-		@Override
-		public List<PositionedStack> getIngredients()
-		{
-			return this.getCycledIngredients( NEIInscriberRecipeHandler.this.cycleticks / 20, this.ingredients );
 		}
 
 		@Override
@@ -186,9 +183,15 @@ public class NEIInscriberRecipeHandler extends TemplateRecipeHandler
 			return this.result;
 		}
 
+		@Override
+		public List<PositionedStack> getIngredients()
+		{
+			return this.getCycledIngredients( NEIInscriberRecipeHandler.this.cycleticks / 20, this.ingredients );
+		}
+
 		public void computeVisuals()
 		{
-			for (PositionedStack p : this.ingredients)
+			for( PositionedStack p : this.ingredients )
 			{
 				p.generatePermutations();
 			}

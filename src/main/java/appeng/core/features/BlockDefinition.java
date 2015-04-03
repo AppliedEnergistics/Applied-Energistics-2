@@ -57,7 +57,7 @@ public class BlockDefinition extends ItemDefinition implements IBlockDefinition
 	@Override
 	public Optional<ItemBlock> maybeItemBlock()
 	{
-		if ( this.enabled )
+		if( this.enabled )
 		{
 			return Optional.of( new ItemBlock( this.block ) );
 		}
@@ -70,7 +70,7 @@ public class BlockDefinition extends ItemDefinition implements IBlockDefinition
 	@Override
 	public final Optional<ItemStack> maybeStack( int stackSize )
 	{
-		if ( this.enabled )
+		if( this.enabled )
 		{
 			return Optional.of( new ItemStack( this.block ) );
 		}

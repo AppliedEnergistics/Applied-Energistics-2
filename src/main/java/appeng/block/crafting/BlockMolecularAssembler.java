@@ -18,6 +18,7 @@
 
 package appeng.block.crafting;
 
+
 import java.util.EnumSet;
 
 import net.minecraft.block.material.Material;
@@ -36,24 +37,19 @@ import appeng.core.sync.GuiBridge;
 import appeng.tile.crafting.TileMolecularAssembler;
 import appeng.util.Platform;
 
+
 public class BlockMolecularAssembler extends AEBaseBlock
 {
 
-	public BlockMolecularAssembler() {
+	public static boolean booleanAlphaPass = false;
+
+	public BlockMolecularAssembler()
+	{
 		super( BlockMolecularAssembler.class, Material.iron );
 		this.setFeature( EnumSet.of( AEFeature.MolecularAssembler ) );
 		this.setTileEntity( TileMolecularAssembler.class );
 		this.isOpaque = false;
 		this.lightOpacity = 1;
-	}
-
-	public static boolean booleanAlphaPass = false;
-
-	@Override
-	public boolean canRenderInPass(int pass)
-	{
-		booleanAlphaPass = pass == 1;
-		return pass == 0 || pass == 1;
 	}
 
 	@Override
@@ -63,17 +59,24 @@ public class BlockMolecularAssembler extends AEBaseBlock
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
+	public boolean canRenderInPass( int pass )
+	{
+		booleanAlphaPass = pass == 1;
+		return pass == 0 || pass == 1;
+	}
+
+	@Override
+	@SideOnly( Side.CLIENT )
 	public Class<? extends BaseBlockRender> getRenderer()
 	{
 		return RenderBlockAssembler.class;
 	}
 
 	@Override
-	public boolean onActivated(World w, int x, int y, int z, EntityPlayer p, int side, float hitX, float hitY, float hitZ)
+	public boolean onActivated( World w, int x, int y, int z, EntityPlayer p, int side, float hitX, float hitY, float hitZ )
 	{
 		TileMolecularAssembler tg = this.getTileEntity( w, x, y, z );
-		if ( tg != null && !p.isSneaking() )
+		if( tg != null && !p.isSneaking() )
 		{
 			Platform.openGUI( p, tg, ForgeDirection.getOrientation( side ), GuiBridge.GUI_MAC );
 			return true;

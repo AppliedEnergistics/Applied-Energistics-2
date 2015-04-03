@@ -18,14 +18,17 @@
 
 package appeng.integration.modules;
 
+
 import appeng.integration.BaseModule;
+
 
 public class RFItem extends BaseModule
 {
 
 	public static RFItem instance;
 
-	public RFItem() {
+	public RFItem()
+	{
 		this.testClassExistence( cofh.api.energy.IEnergyContainerItem.class );
 	}
 
@@ -40,5 +43,4 @@ public class RFItem extends BaseModule
 	{
 
 	}
-
 }

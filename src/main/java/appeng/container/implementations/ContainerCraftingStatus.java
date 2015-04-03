@@ -18,56 +18,34 @@
 
 package appeng.container.implementations;
 
+
 import java.util.ArrayList;
 import java.util.Collections;
 
-import com.google.common.collect.ImmutableSet;
-
 import net.minecraft.entity.player.InventoryPlayer;
+
+import com.google.common.collect.ImmutableSet;
 
 import appeng.api.networking.crafting.ICraftingCPU;
 import appeng.api.networking.crafting.ICraftingGrid;
 import appeng.api.storage.ITerminalHost;
 import appeng.container.guisync.GuiSync;
 
+
 public class ContainerCraftingStatus extends ContainerCraftingCPU
 {
 
-	@GuiSync(5)
+	public final ArrayList<CraftingCPURecord> cpus = new ArrayList<CraftingCPURecord>();
+	@GuiSync( 5 )
 	public int selectedCpu = -1;
-
-	@GuiSync(6)
+	@GuiSync( 6 )
 	public boolean noCPU = true;
-
-	@GuiSync(7)
+	@GuiSync( 7 )
 	public String myName = "";
 
-	public final ArrayList<CraftingCPURecord> cpus = new ArrayList<CraftingCPURecord>();
-
-	private void sendCPUs()
+	public ContainerCraftingStatus( InventoryPlayer ip, ITerminalHost te )
 	{
-		Collections.sort( this.cpus );
-
-		if ( this.selectedCpu >= this.cpus.size() )
-		{
-			this.selectedCpu = -1;
-			this.myName = "";
-		}
-		else if ( this.selectedCpu != -1 )
-		{
-			this.myName = this.cpus.get( this.selectedCpu ).myName;
-		}
-
-		if ( this.selectedCpu == -1 && this.cpus.size() > 0 )
-			this.selectedCpu = 0;
-
-		if ( this.selectedCpu != -1 )
-		{
-			if ( this.cpus.get( this.selectedCpu ).cpu != this.monitor )
-				this.setCPU( this.cpus.get( this.selectedCpu ).cpu );
-		}
-		else
-			this.setCPU( null );
+		super( ip, te );
 	}
 
 	@Override
@@ -78,28 +56,28 @@ public class ContainerCraftingStatus extends ContainerCraftingCPU
 
 		int matches = 0;
 		boolean changed = false;
-		for (ICraftingCPU c : cpuSet)
+		for( ICraftingCPU c : cpuSet )
 		{
 			boolean found = false;
-			for (CraftingCPURecord ccr : this.cpus)
-				if ( ccr.cpu == c )
+			for( CraftingCPURecord ccr : this.cpus )
+				if( ccr.cpu == c )
 					found = true;
 
 			boolean matched = this.cpuMatches( c );
 
-			if ( matched )
+			if( matched )
 				matches++;
 
-			if ( found == !matched )
+			if( found == !matched )
 				changed = true;
 		}
 
-		if ( changed || this.cpus.size() != matches )
+		if( changed || this.cpus.size() != matches )
 		{
 			this.cpus.clear();
-			for (ICraftingCPU c : cpuSet)
+			for( ICraftingCPU c : cpuSet )
 			{
-				if ( this.cpuMatches( c ) )
+				if( this.cpuMatches( c ) )
 					this.cpus.add( new CraftingCPURecord( c.getAvailableStorage(), c.getCoProcessors(), c ) );
 			}
 
@@ -111,31 +89,53 @@ public class ContainerCraftingStatus extends ContainerCraftingCPU
 		super.detectAndSendChanges();
 	}
 
-	private boolean cpuMatches(ICraftingCPU c)
+	private boolean cpuMatches( ICraftingCPU c )
 	{
 		return c.isBusy();
 	}
 
-	public ContainerCraftingStatus(InventoryPlayer ip, ITerminalHost te) {
-		super( ip, te );
+	private void sendCPUs()
+	{
+		Collections.sort( this.cpus );
+
+		if( this.selectedCpu >= this.cpus.size() )
+		{
+			this.selectedCpu = -1;
+			this.myName = "";
+		}
+		else if( this.selectedCpu != -1 )
+		{
+			this.myName = this.cpus.get( this.selectedCpu ).myName;
+		}
+
+		if( this.selectedCpu == -1 && this.cpus.size() > 0 )
+			this.selectedCpu = 0;
+
+		if( this.selectedCpu != -1 )
+		{
+			if( this.cpus.get( this.selectedCpu ).cpu != this.monitor )
+				this.setCPU( this.cpus.get( this.selectedCpu ).cpu );
+		}
+		else
+			this.setCPU( null );
 	}
 
-	public void cycleCpu(boolean next)
+	public void cycleCpu( boolean next )
 	{
-		if ( next )
+		if( next )
 			this.selectedCpu++;
 		else
 			this.selectedCpu--;
 
-		if ( this.selectedCpu < -1 )
+		if( this.selectedCpu < -1 )
 			this.selectedCpu = this.cpus.size() - 1;
-		else if ( this.selectedCpu >= this.cpus.size() )
+		else if( this.selectedCpu >= this.cpus.size() )
 			this.selectedCpu = -1;
 
-		if ( this.selectedCpu == -1 && this.cpus.size() > 0 )
+		if( this.selectedCpu == -1 && this.cpus.size() > 0 )
 			this.selectedCpu = 0;
 
-		if ( this.selectedCpu == -1 )
+		if( this.selectedCpu == -1 )
 		{
 			this.myName = "";
 			this.setCPU( null );
@@ -146,5 +146,4 @@ public class ContainerCraftingStatus extends ContainerCraftingCPU
 			this.setCPU( this.cpus.get( this.selectedCpu ).cpu );
 		}
 	}
-
 }

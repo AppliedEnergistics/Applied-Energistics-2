@@ -39,40 +39,35 @@ import appeng.container.slot.SlotRestrictedInput;
 import appeng.parts.automation.PartLevelEmitter;
 import appeng.util.Platform;
 
+
 public class ContainerLevelEmitter extends ContainerUpgradeable
 {
 
 	final PartLevelEmitter lvlEmitter;
 
-	@SideOnly(Side.CLIENT)
+	@SideOnly( Side.CLIENT )
 	public GuiTextField textField;
+	@GuiSync( 2 )
+	public LevelType lvType;
+	@GuiSync( 3 )
+	public long EmitterValue = -1;
+	@GuiSync( 4 )
+	public YesNo cmType;
 
-	@SideOnly(Side.CLIENT)
-	public void setTextField(GuiTextField level)
+	public ContainerLevelEmitter( InventoryPlayer ip, PartLevelEmitter te )
+	{
+		super( ip, te );
+		this.lvlEmitter = te;
+	}
+
+	@SideOnly( Side.CLIENT )
+	public void setTextField( GuiTextField level )
 	{
 		this.textField = level;
 		this.textField.setText( String.valueOf( this.EmitterValue ) );
 	}
 
-	public ContainerLevelEmitter(InventoryPlayer ip, PartLevelEmitter te) {
-		super( ip, te );
-		this.lvlEmitter = te;
-	}
-
-	@Override
-	public int availableUpgrades()
-	{
-
-		return 1;
-	}
-
-	@Override
-	protected boolean supportCapacity()
-	{
-		return false;
-	}
-
-	public void setLevel(long l, EntityPlayer player)
+	public void setLevel( long l, EntityPlayer player )
 	{
 		this.lvlEmitter.setReportingValue( l );
 		this.EmitterValue = l;
@@ -85,34 +80,38 @@ public class ContainerLevelEmitter extends ContainerUpgradeable
 		int y = 40;
 
 		IInventory upgrades = this.upgradeable.getInventoryByName( "upgrades" );
-		if ( this.availableUpgrades() > 0 )
-			this.addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 0, 187, 8, this.invPlayer )).setNotDraggable() );
-		if ( this.availableUpgrades() > 1 )
-			this.addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 1, 187, 8 + 18, this.invPlayer )).setNotDraggable() );
-		if ( this.availableUpgrades() > 2 )
-			this.addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 2, 187, 8 + 18 * 2, this.invPlayer )).setNotDraggable() );
-		if ( this.availableUpgrades() > 3 )
-			this.addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 3, 187, 8 + 18 * 3, this.invPlayer )).setNotDraggable() );
+		if( this.availableUpgrades() > 0 )
+			this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 0, 187, 8, this.invPlayer ) ).setNotDraggable() );
+		if( this.availableUpgrades() > 1 )
+			this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 1, 187, 8 + 18, this.invPlayer ) ).setNotDraggable() );
+		if( this.availableUpgrades() > 2 )
+			this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 2, 187, 8 + 18 * 2, this.invPlayer ) ).setNotDraggable() );
+		if( this.availableUpgrades() > 3 )
+			this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 3, 187, 8 + 18 * 3, this.invPlayer ) ).setNotDraggable() );
 
 		IInventory inv = this.upgradeable.getInventoryByName( "config" );
 		this.addSlotToContainer( new SlotFakeTypeOnly( inv, 0, x, y ) );
 	}
 
-	@GuiSync(2)
-	public LevelType lvType;
+	@Override
+	protected boolean supportCapacity()
+	{
+		return false;
+	}
 
-	@GuiSync(3)
-	public long EmitterValue = -1;
+	@Override
+	public int availableUpgrades()
+	{
 
-	@GuiSync(4)
-	public YesNo cmType;
+		return 1;
+	}
 
 	@Override
 	public void detectAndSendChanges()
 	{
 		this.verifyPermissions( SecurityPermissions.BUILD, false );
 
-		if ( Platform.isServer() )
+		if( Platform.isServer() )
 		{
 			this.EmitterValue = this.lvlEmitter.getReportingValue();
 			this.cmType = (YesNo) this.upgradeable.getConfigManager().getSetting( Settings.CRAFT_VIA_REDSTONE );
@@ -125,13 +124,12 @@ public class ContainerLevelEmitter extends ContainerUpgradeable
 	}
 
 	@Override
-	public void onUpdate(String field, Object oldValue, Object newValue)
+	public void onUpdate( String field, Object oldValue, Object newValue )
 	{
-		if ( field.equals( "EmitterValue" ) )
+		if( field.equals( "EmitterValue" ) )
 		{
-			if ( this.textField != null )
+			if( this.textField != null )
 				this.textField.setText( String.valueOf( this.EmitterValue ) );
 		}
 	}
-
 }

@@ -26,29 +26,24 @@ import net.minecraft.util.ResourceLocation;
 import appeng.container.interfaces.IProgressProvider;
 import appeng.core.localization.GuiText;
 
+
 public class GuiProgressBar extends GuiButton implements ITooltip
 {
-
-	public enum Direction
-	{
-		HORIZONTAL, VERTICAL
-	}
 
 	private final IProgressProvider source;
 	private final ResourceLocation texture;
 	private final int fill_u;
 	private final int fill_v;
 	private final Direction layout;
-
-	private String fullMsg;
 	private final String titleName;
+	private String fullMsg;
 
-	public GuiProgressBar(IProgressProvider source, String texture, int posX, int posY, int u, int y, int _width, int _height, Direction dir)
+	public GuiProgressBar( IProgressProvider source, String texture, int posX, int posY, int u, int y, int _width, int _height, Direction dir )
 	{
 		this( source, texture, posX, posY, u, y, _width, _height, dir, null );
 	}
 
-	public GuiProgressBar(IProgressProvider source, String texture, int posX, int posY, int u, int y, int _width, int _height, Direction dir, String title)
+	public GuiProgressBar( IProgressProvider source, String texture, int posX, int posY, int u, int y, int _width, int _height, Direction dir, String title )
 	{
 		super( posX, posY, _width, "" );
 		this.source = source;
@@ -64,22 +59,22 @@ public class GuiProgressBar extends GuiButton implements ITooltip
 	}
 
 	@Override
-	public void drawButton(Minecraft par1Minecraft, int par2, int par3)
+	public void drawButton( Minecraft par1Minecraft, int par2, int par3 )
 	{
-		if ( this.visible )
+		if( this.visible )
 		{
 			par1Minecraft.getTextureManager().bindTexture( this.texture );
 			int max = this.source.getMaxProgress();
 			int current = this.source.getCurrentProgress();
 
-			if ( this.layout == Direction.VERTICAL )
+			if( this.layout == Direction.VERTICAL )
 			{
-				int diff = this.height - (max > 0 ? (this.height * current) / max : 0);
+				int diff = this.height - ( max > 0 ? ( this.height * current ) / max : 0 );
 				this.drawTexturedModalRect( this.xPosition, this.yPosition + diff, this.fill_u, this.fill_v + diff, this.width, this.height - diff );
 			}
 			else
 			{
-				int diff = this.width - (max > 0 ? (this.width * current) / max : 0);
+				int diff = this.width - ( max > 0 ? ( this.width * current ) / max : 0 );
 				this.drawTexturedModalRect( this.xPosition, this.yPosition, this.fill_u + diff, this.fill_v, this.width - diff, this.height );
 			}
 
@@ -87,7 +82,7 @@ public class GuiProgressBar extends GuiButton implements ITooltip
 		}
 	}
 
-	public void setFullMsg(String msg)
+	public void setFullMsg( String msg )
 	{
 		this.fullMsg = msg;
 	}
@@ -95,10 +90,10 @@ public class GuiProgressBar extends GuiButton implements ITooltip
 	@Override
 	public String getMessage()
 	{
-		if ( this.fullMsg != null )
+		if( this.fullMsg != null )
 			return this.fullMsg;
 
-		return (this.titleName != null ? this.titleName : "") + '\n' + this.source.getCurrentProgress() + ' ' + GuiText.Of.getLocal() + ' ' + this.source.getMaxProgress();
+		return ( this.titleName != null ? this.titleName : "" ) + '\n' + this.source.getCurrentProgress() + ' ' + GuiText.Of.getLocal() + ' ' + this.source.getMaxProgress();
 	}
 
 	@Override
@@ -131,4 +126,8 @@ public class GuiProgressBar extends GuiButton implements ITooltip
 		return true;
 	}
 
+	public enum Direction
+	{
+		HORIZONTAL, VERTICAL
+	}
 }

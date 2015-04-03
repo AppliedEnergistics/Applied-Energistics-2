@@ -23,7 +23,9 @@
 
 package appeng.api.networking.events;
 
+
 import appeng.api.networking.IGridNode;
+
 
 /**
  * Implementers of a IGridBlock must post this event when your getIdlePowerUsage
@@ -37,8 +39,8 @@ public class MENetworkPowerIdleChange extends MENetworkEvent
 
 	public final IGridNode node;
 
-	public MENetworkPowerIdleChange(IGridNode nodeThatChanged) {
+	public MENetworkPowerIdleChange( IGridNode nodeThatChanged )
+	{
 		this.node = nodeThatChanged;
 	}
-
 }

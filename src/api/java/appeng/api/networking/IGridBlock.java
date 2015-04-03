@@ -33,6 +33,7 @@ import appeng.api.parts.IPart;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalCoord;
 
+
 /**
  * An Implementation is required to create your node for IGridHost
  *
@@ -79,12 +80,12 @@ public interface IGridBlock
 	/**
 	 * Notifies your IGridBlock that changes were made to your connections
 	 */
-	void onGridNotification(GridNotification notification);
+	void onGridNotification( GridNotification notification );
 
 	/**
 	 * Update Blocks network/connection/booting status. grid,
 	 *
-	 * @param grid grid
+	 * @param grid          grid
 	 * @param channelsInUse used channels
 	 */
 	void setNetworkStatus( IGrid grid, int channelsInUse );

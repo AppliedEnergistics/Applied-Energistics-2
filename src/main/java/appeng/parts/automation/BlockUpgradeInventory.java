@@ -25,11 +25,11 @@ public class BlockUpgradeInventory extends UpgradeInventory
 	{
 		int max = 0;
 
-		for ( ItemStack is : upgrades.getSupported().keySet() )
+		for( ItemStack is : upgrades.getSupported().keySet() )
 		{
 			final Item encodedItem = is.getItem();
 
-			if ( encodedItem instanceof ItemBlock && Block.getBlockFromItem( encodedItem ) == this.block )
+			if( encodedItem instanceof ItemBlock && Block.getBlockFromItem( encodedItem ) == this.block )
 			{
 				max = upgrades.getSupported().get( is );
 				break;

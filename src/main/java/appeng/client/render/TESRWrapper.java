@@ -18,6 +18,7 @@
 
 package appeng.client.render;
 
+
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.block.Block;
@@ -34,7 +35,8 @@ import appeng.core.AELog;
 import appeng.tile.AEBaseTile;
 import appeng.util.Platform;
 
-@SideOnly(Side.CLIENT)
+
+@SideOnly( Side.CLIENT )
 public class TESRWrapper extends TileEntitySpecialRenderer
 {
 
@@ -43,26 +45,27 @@ public class TESRWrapper extends TileEntitySpecialRenderer
 	final BaseBlockRender blkRender;
 	final double MAX_DISTANCE;
 
-	public TESRWrapper(BaseBlockRender render) {
+	public TESRWrapper( BaseBlockRender render )
+	{
 		this.blkRender = render;
 		this.MAX_DISTANCE = this.blkRender.getTesrRenderDistance();
 	}
 
 	@Override
-	final public void renderTileEntityAt(TileEntity te, double x, double y, double z, float f)
+	final public void renderTileEntityAt( TileEntity te, double x, double y, double z, float f )
 	{
-		if ( te instanceof AEBaseTile )
+		if( te instanceof AEBaseTile )
 		{
 			Block b = te.getBlockType();
 
-			if ( b instanceof AEBaseBlock && ((AEBaseTile) te).requiresTESR() )
+			if( b instanceof AEBaseBlock && ( (AEBaseTile) te ).requiresTESR() )
 			{
-				if ( Math.abs( x ) > this.MAX_DISTANCE || Math.abs( y ) > this.MAX_DISTANCE || Math.abs( z ) > this.MAX_DISTANCE )
+				if( Math.abs( x ) > this.MAX_DISTANCE || Math.abs( y ) > this.MAX_DISTANCE || Math.abs( z ) > this.MAX_DISTANCE )
 					return;
 
 				Tessellator tess = Tessellator.instance;
 
-				if ( Platform.isDrawing( tess ) )
+				if( Platform.isDrawing( tess ) )
 					return;
 
 				try
@@ -73,20 +76,19 @@ public class TESRWrapper extends TileEntitySpecialRenderer
 					this.renderBlocksInstance.blockAccess = te.getWorldObj();
 					this.blkRender.renderTile( (AEBaseBlock) b, (AEBaseTile) te, tess, x, y, z, f, this.renderBlocksInstance );
 
-					if ( Platform.isDrawing( tess ) )
+					if( Platform.isDrawing( tess ) )
 						throw new RuntimeException( "Error during rendering." );
 
 					GL11.glPopAttrib();
 					GL11.glPopMatrix();
 				}
-				catch (Throwable t)
+				catch( Throwable t )
 				{
 					AELog.severe( "Hi, Looks like there was a crash while rendering something..." );
 					t.printStackTrace();
 					AELog.severe( "MC will now crash ( probably )!" );
 					throw new RuntimeException( t );
 				}
-
 			}
 		}
 	}

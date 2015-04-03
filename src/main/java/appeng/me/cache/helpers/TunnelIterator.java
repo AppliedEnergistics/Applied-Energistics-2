@@ -18,10 +18,12 @@
 
 package appeng.me.cache.helpers;
 
+
 import java.util.Collection;
 import java.util.Iterator;
 
 import appeng.parts.p2p.PartP2PTunnel;
+
 
 public class TunnelIterator<T extends PartP2PTunnel> implements Iterator<T>
 {
@@ -30,20 +32,21 @@ public class TunnelIterator<T extends PartP2PTunnel> implements Iterator<T>
 	final Class targetType;
 	T Next;
 
-	private void findNext()
+	public TunnelIterator( Collection<T> tunnelSources, Class clz )
 	{
-		while (this.Next == null && this.wrapped.hasNext())
-		{
-			this.Next = this.wrapped.next();
-			if ( !this.targetType.isInstance( this.Next ) )
-				this.Next = null;
-		}
-	}
-
-	public TunnelIterator(Collection<T> tunnelSources, Class clz) {
 		this.wrapped = tunnelSources.iterator();
 		this.targetType = clz;
 		this.findNext();
+	}
+
+	private void findNext()
+	{
+		while( this.Next == null && this.wrapped.hasNext() )
+		{
+			this.Next = this.wrapped.next();
+			if( !this.targetType.isInstance( this.Next ) )
+				this.Next = null;
+		}
 	}
 
 	@Override
@@ -66,5 +69,4 @@ public class TunnelIterator<T extends PartP2PTunnel> implements Iterator<T>
 	{
 		// no.
 	}
-
 }

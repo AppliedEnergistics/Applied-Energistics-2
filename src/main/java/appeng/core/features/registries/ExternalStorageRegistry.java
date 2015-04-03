@@ -18,6 +18,7 @@
 
 package appeng.core.features.registries;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,35 +31,36 @@ import appeng.api.storage.IExternalStorageRegistry;
 import appeng.api.storage.StorageChannel;
 import appeng.core.features.registries.entries.ExternalIInv;
 
+
 public class ExternalStorageRegistry implements IExternalStorageRegistry
 {
 
 	final List<IExternalStorageHandler> Handlers;
 	final ExternalIInv lastHandler = new ExternalIInv();
 
-	public ExternalStorageRegistry() {
+	public ExternalStorageRegistry()
+	{
 		this.Handlers = new ArrayList<IExternalStorageHandler>();
 	}
 
 	@Override
-	public IExternalStorageHandler getHandler(TileEntity te, ForgeDirection d, StorageChannel chan, BaseActionSource mySrc)
-	{
-		for (IExternalStorageHandler x : this.Handlers)
-		{
-			if ( x.canHandle( te, d, chan, mySrc ) )
-				return x;
-		}
-
-		if ( this.lastHandler.canHandle( te, d, chan, mySrc ) )
-			return this.lastHandler;
-
-		return null;
-	}
-
-	@Override
-	public void addExternalStorageInterface(IExternalStorageHandler ei)
+	public void addExternalStorageInterface( IExternalStorageHandler ei )
 	{
 		this.Handlers.add( ei );
 	}
 
+	@Override
+	public IExternalStorageHandler getHandler( TileEntity te, ForgeDirection d, StorageChannel chan, BaseActionSource mySrc )
+	{
+		for( IExternalStorageHandler x : this.Handlers )
+		{
+			if( x.canHandle( te, d, chan, mySrc ) )
+				return x;
+		}
+
+		if( this.lastHandler.canHandle( te, d, chan, mySrc ) )
+			return this.lastHandler;
+
+		return null;
+	}
 }

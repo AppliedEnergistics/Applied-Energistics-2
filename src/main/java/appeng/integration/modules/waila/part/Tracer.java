@@ -40,11 +40,11 @@ public final class Tracer
 	 * Trace view of players to blocks.
 	 * Ignore all which are out of reach.
 	 *
-	 * @param world word of block
+	 * @param world  word of block
 	 * @param player player viewing block
-	 * @param x x pos of block
-	 * @param y y pos of block
-	 * @param z z pos of block
+	 * @param x      x pos of block
+	 * @param y      y pos of block
+	 * @param z      z pos of block
 	 *
 	 * @return trace movement. Can be null
 	 */
@@ -70,7 +70,7 @@ public final class Tracer
 	private Vec3 getCorrectedHeadVec( EntityPlayer player )
 	{
 		Vec3 v = Vec3.createVectorHelper( player.posX, player.posY, player.posZ );
-		if ( player.worldObj.isRemote )
+		if( player.worldObj.isRemote )
 		{
 			//compatibility with eye height changing mods
 			v.yCoord += player.getEyeHeight() - player.getDefaultEyeHeight();
@@ -78,7 +78,7 @@ public final class Tracer
 		else
 		{
 			v.yCoord += player.getEyeHeight();
-			if ( player instanceof EntityPlayerMP && player.isSneaking() )
+			if( player instanceof EntityPlayerMP && player.isSneaking() )
 				v.yCoord -= 0.08;
 		}
 		return v;

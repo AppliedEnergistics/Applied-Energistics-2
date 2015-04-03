@@ -18,6 +18,7 @@
 
 package appeng.util.inv;
 
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -28,6 +29,7 @@ import appeng.core.AppEng;
 import appeng.integration.IntegrationType;
 import appeng.integration.abstraction.IBC;
 
+
 public class WrapperBCPipe implements IInventory
 {
 
@@ -35,7 +37,8 @@ public class WrapperBCPipe implements IInventory
 	final private TileEntity ad;
 	final private ForgeDirection dir;
 
-	public WrapperBCPipe(TileEntity te, ForgeDirection d) {
+	public WrapperBCPipe( TileEntity te, ForgeDirection d )
+	{
 		this.bc = (IBC) AppEng.instance.getIntegration( IntegrationType.BC );
 		this.ad = te;
 		this.dir = d;
@@ -48,25 +51,25 @@ public class WrapperBCPipe implements IInventory
 	}
 
 	@Override
-	public ItemStack getStackInSlot(int i)
+	public ItemStack getStackInSlot( int i )
 	{
 		return null;
 	}
 
 	@Override
-	public ItemStack decrStackSize(int i, int j)
+	public ItemStack decrStackSize( int i, int j )
 	{
 		return null;
 	}
 
 	@Override
-	public ItemStack getStackInSlotOnClosing(int i)
+	public ItemStack getStackInSlotOnClosing( int i )
 	{
 		return null;
 	}
 
 	@Override
-	public void setInventorySlotContents(int i, ItemStack itemstack)
+	public void setInventorySlotContents( int i, ItemStack itemstack )
 	{
 		this.bc.addItemsToPipe( this.ad, itemstack, this.dir );
 	}
@@ -84,18 +87,6 @@ public class WrapperBCPipe implements IInventory
 	}
 
 	@Override
-	public void closeInventory()
-	{
-
-	}
-
-	@Override
-	public void openInventory()
-	{
-
-	}
-
-	@Override
 	public int getInventoryStackLimit()
 	{
 		return 64;
@@ -108,15 +99,26 @@ public class WrapperBCPipe implements IInventory
 	}
 
 	@Override
-	public boolean isUseableByPlayer(EntityPlayer entityplayer)
+	public boolean isUseableByPlayer( EntityPlayer entityplayer )
 	{
 		return false;
 	}
 
 	@Override
-	public boolean isItemValidForSlot(int i, ItemStack itemstack)
+	public void openInventory()
+	{
+
+	}
+
+	@Override
+	public void closeInventory()
+	{
+
+	}
+
+	@Override
+	public boolean isItemValidForSlot( int i, ItemStack itemstack )
 	{
 		return this.bc.canAddItemsToPipe( this.ad, itemstack, this.dir );
 	}
-
 }

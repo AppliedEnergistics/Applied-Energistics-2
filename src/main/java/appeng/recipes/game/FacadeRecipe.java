@@ -59,16 +59,16 @@ public final class FacadeRecipe implements IRecipe
 	@Nullable
 	private ItemStack getOutput( IInventory inv, boolean createFacade )
 	{
-		if ( inv.getStackInSlot( 0 ) == null && inv.getStackInSlot( 2 ) == null && inv.getStackInSlot( 6 ) == null && inv.getStackInSlot( 8 ) == null )
+		if( inv.getStackInSlot( 0 ) == null && inv.getStackInSlot( 2 ) == null && inv.getStackInSlot( 6 ) == null && inv.getStackInSlot( 8 ) == null )
 		{
-			if ( this.anchor.isSameAs( inv.getStackInSlot( 1 ) ) && this.anchor.isSameAs( inv.getStackInSlot( 3 ) ) && this.anchor.isSameAs( inv.getStackInSlot( 5 ) ) && this.anchor.isSameAs( inv.getStackInSlot( 7 ) ) )
+			if( this.anchor.isSameAs( inv.getStackInSlot( 1 ) ) && this.anchor.isSameAs( inv.getStackInSlot( 3 ) ) && this.anchor.isSameAs( inv.getStackInSlot( 5 ) ) && this.anchor.isSameAs( inv.getStackInSlot( 7 ) ) )
 			{
-				for ( Item facadeItemDefinition : this.maybeFacade.asSet() )
+				for( Item facadeItemDefinition : this.maybeFacade.asSet() )
 				{
 					final ItemFacade facade = (ItemFacade) facadeItemDefinition;
 
 					ItemStack facades = facade.createFacadeForItem( inv.getStackInSlot( 4 ), !createFacade );
-					if ( facades != null && createFacade )
+					if( facades != null && createFacade )
 						facades.stackSize = 4;
 					return facades;
 				}

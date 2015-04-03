@@ -45,33 +45,34 @@ public class RenderBlockCraftingCPUMonitor extends RenderBlockCraftingCPU
 {
 	private static final ReadableNumberConverter NUMBER_CONVERTER = ReadableNumberConverter.INSTANCE;
 
-	public RenderBlockCraftingCPUMonitor() {
+	public RenderBlockCraftingCPUMonitor()
+	{
 		super( true, 20 );
 	}
 
 	@Override
-	public void renderTile(AEBaseBlock block, AEBaseTile tile, Tessellator tess, double x, double y, double z, float f, RenderBlocks renderer)
+	public void renderTile( AEBaseBlock block, AEBaseTile tile, Tessellator tess, double x, double y, double z, float f, RenderBlocks renderer )
 	{
-		if ( Platform.isDrawing( tess ) )
+		if( Platform.isDrawing( tess ) )
 			return;
 
-		if ( tile instanceof TileCraftingMonitorTile )
+		if( tile instanceof TileCraftingMonitorTile )
 		{
 			TileCraftingMonitorTile cmt = (TileCraftingMonitorTile) tile;
 			IAEItemStack ais = cmt.getJobProgress();
 
-			if ( cmt.dspList == null )
+			if( cmt.dspList == null )
 			{
 				cmt.updateList = true;
 				cmt.dspList = GLAllocation.generateDisplayLists( 1 );
 			}
 
-			if ( ais != null )
+			if( ais != null )
 			{
 				GL11.glPushMatrix();
 				GL11.glTranslated( x + 0.5, y + 0.5, z + 0.5 );
 
-				if ( cmt.updateList )
+				if( cmt.updateList )
 				{
 					cmt.updateList = false;
 					GL11.glNewList( cmt.dspList, GL11.GL_COMPILE_AND_EXECUTE );
@@ -86,7 +87,7 @@ public class RenderBlockCraftingCPUMonitor extends RenderBlockCraftingCPU
 		}
 	}
 
-	private void tesrRenderScreen(Tessellator tess, TileCraftingMonitorTile cmt, IAEItemStack ais)
+	private void tesrRenderScreen( Tessellator tess, TileCraftingMonitorTile cmt, IAEItemStack ais )
 	{
 		ForgeDirection side = cmt.getForward();
 
@@ -94,7 +95,7 @@ public class RenderBlockCraftingCPUMonitor extends RenderBlockCraftingCPU
 		int spin = 0;
 
 		int max = 5;
-		while (walrus != cmt.getUp() && max > 0)
+		while( walrus != cmt.getUp() && max > 0 )
 		{
 			max--;
 			spin++;
@@ -108,38 +109,38 @@ public class RenderBlockCraftingCPUMonitor extends RenderBlockCraftingCPU
 		float scale = 0.7f;
 		GL11.glScalef( scale, scale, scale );
 
-		if ( side == ForgeDirection.UP )
+		if( side == ForgeDirection.UP )
 		{
 			GL11.glScalef( 1.0f, -1.0f, 1.0f );
 			GL11.glRotatef( 90.0f, 1.0f, 0.0f, 0.0f );
 			GL11.glRotatef( spin * 90.0F, 0, 0, 1 );
 		}
 
-		if ( side == ForgeDirection.DOWN )
+		if( side == ForgeDirection.DOWN )
 		{
 			GL11.glScalef( 1.0f, -1.0f, 1.0f );
 			GL11.glRotatef( -90.0f, 1.0f, 0.0f, 0.0f );
 			GL11.glRotatef( spin * -90.0F, 0, 0, 1 );
 		}
 
-		if ( side == ForgeDirection.EAST )
+		if( side == ForgeDirection.EAST )
 		{
 			GL11.glScalef( -1.0f, -1.0f, -1.0f );
 			GL11.glRotatef( -90.0f, 0.0f, 1.0f, 0.0f );
 		}
 
-		if ( side == ForgeDirection.WEST )
+		if( side == ForgeDirection.WEST )
 		{
 			GL11.glScalef( -1.0f, -1.0f, -1.0f );
 			GL11.glRotatef( 90.0f, 0.0f, 1.0f, 0.0f );
 		}
 
-		if ( side == ForgeDirection.NORTH )
+		if( side == ForgeDirection.NORTH )
 		{
 			GL11.glScalef( -1.0f, -1.0f, -1.0f );
 		}
 
-		if ( side == ForgeDirection.SOUTH )
+		if( side == ForgeDirection.SOUTH )
 		{
 			GL11.glScalef( -1.0f, -1.0f, -1.0f );
 			GL11.glRotatef( 180.0f, 0.0f, 1.0f, 0.0f );
@@ -164,9 +165,8 @@ public class RenderBlockCraftingCPUMonitor extends RenderBlockCraftingCPU
 			tess.setColorOpaque_F( 1.0f, 1.0f, 1.0f );
 
 			ClientHelper.proxy.doRenderItem( sis, cmt.getWorldObj() );
-
 		}
-		catch (Exception e)
+		catch( Exception e )
 		{
 			AELog.error( e );
 		}
@@ -186,5 +186,4 @@ public class RenderBlockCraftingCPUMonitor extends RenderBlockCraftingCPU
 
 		GL11.glPopAttrib();
 	}
-
 }

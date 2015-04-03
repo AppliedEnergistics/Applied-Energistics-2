@@ -89,7 +89,7 @@ public final class BusRenderHelper implements IPartRenderHelper
 		this.az = ForgeDirection.SOUTH;
 		this.ay = ForgeDirection.UP;
 		this.color = HEX_WHITE;
-		this.maybeBlock =  AEApi.instance().definitions().blocks().multiPart().maybeBlock();
+		this.maybeBlock = AEApi.instance().definitions().blocks().multiPart().maybeBlock();
 		this.maybeBaseBlock = this.maybeBlock.transform( new BaseBlockTransformFunction() );
 	}
 
@@ -107,7 +107,7 @@ public final class BusRenderHelper implements IPartRenderHelper
 
 	public double getBound( ForgeDirection side )
 	{
-		switch ( side )
+		switch( side )
 		{
 			default:
 			case UNKNOWN:
@@ -129,7 +129,7 @@ public final class BusRenderHelper implements IPartRenderHelper
 
 	public void setRenderColor( int color )
 	{
-		for ( Block block : AEApi.instance().definitions().blocks().multiPart().maybeBlock().asSet() )
+		for( Block block : AEApi.instance().definitions().blocks().multiPart().maybeBlock().asSet() )
 		{
 			final BlockCableBus cableBus = (BlockCableBus) block;
 			cableBus.setRenderColor( color );
@@ -150,7 +150,7 @@ public final class BusRenderHelper implements IPartRenderHelper
 
 	public void setBounds( double[] bounds )
 	{
-		if ( bounds == null || bounds.length != 6 )
+		if( bounds == null || bounds.length != 6 )
 			return;
 
 		this.minX = bounds[0];
@@ -160,7 +160,6 @@ public final class BusRenderHelper implements IPartRenderHelper
 		this.maxY = bounds[4];
 		this.maxZ = bounds[5];
 	}
-
 
 	private static class BoundBoxCalculator implements IPartCollisionHelper
 	{
@@ -183,7 +182,7 @@ public final class BusRenderHelper implements IPartRenderHelper
 		@Override
 		public void addBox( double minX, double minY, double minZ, double maxX, double maxY, double maxZ )
 		{
-			if ( this.started )
+			if( this.started )
 			{
 				this.minX = Math.min( this.minX, (float) minX );
 				this.minY = Math.min( this.minY, (float) minY );
@@ -227,17 +226,33 @@ public final class BusRenderHelper implements IPartRenderHelper
 		{
 			return false;
 		}
-	}	@Override
+	}
+
+
+	private static final class BaseBlockTransformFunction implements Function<Block, AEBaseBlock>
+	{
+		@Nullable
+		@Override
+		public AEBaseBlock apply( Block input )
+		{
+			if( input instanceof AEBaseBlock )
+			{
+				return ( (AEBaseBlock) input );
+			}
+
+			return null;
+		}
+	}
+
+	@Override
 	public void renderForPass( int pass )
 	{
 		this.renderingForPass = pass;
 	}
 
-
-
 	public boolean renderThis()
 	{
-		if ( this.renderingForPass == this.currentPass || this.noAlphaPass )
+		if( this.renderingForPass == this.currentPass || this.noAlphaPass )
 		{
 			this.itemsRendered++;
 			return true;
@@ -259,7 +274,7 @@ public final class BusRenderHelper implements IPartRenderHelper
 	{
 		RenderBlocksWorkaround rbw = BusRenderer.INSTANCE.renderer;
 
-		if ( sim != null && this.maybeBlock.isPresent() && rbw.similarLighting( this.maybeBlock.get(), rbw.blockAccess, x, y, z, sim ) )
+		if( sim != null && this.maybeBlock.isPresent() && rbw.similarLighting( this.maybeBlock.get(), rbw.blockAccess, x, y, z, sim ) )
 		{
 			rbw.populate( sim );
 			rbw.faces = EnumSet.allOf( ForgeDirection.class );
@@ -276,7 +291,7 @@ public final class BusRenderHelper implements IPartRenderHelper
 			rbw.faces.clear();
 
 			this.bbc.started = false;
-			if ( p == null )
+			if( p == null )
 			{
 				this.bbc.minX = this.bbc.minY = this.bbc.minZ = 0;
 				this.bbc.maxX = this.bbc.maxY = this.bbc.maxZ = 16;
@@ -285,18 +300,18 @@ public final class BusRenderHelper implements IPartRenderHelper
 			{
 				p.getBoxes( this.bbc );
 
-				if ( this.bbc.minX < 1 )
+				if( this.bbc.minX < 1 )
 					this.bbc.minX = 1;
-				if ( this.bbc.minY < 1 )
+				if( this.bbc.minY < 1 )
 					this.bbc.minY = 1;
-				if ( this.bbc.minZ < 1 )
+				if( this.bbc.minZ < 1 )
 					this.bbc.minZ = 1;
 
-				if ( this.bbc.maxX > 15 )
+				if( this.bbc.maxX > 15 )
 					this.bbc.maxX = 15;
-				if ( this.bbc.maxY > 15 )
+				if( this.bbc.maxY > 15 )
 					this.bbc.maxY = 15;
-				if ( this.bbc.maxZ > 15 )
+				if( this.bbc.maxZ > 15 )
 					this.bbc.maxZ = 15;
 			}
 
@@ -304,7 +319,7 @@ public final class BusRenderHelper implements IPartRenderHelper
 
 			this.bbr.renderBlockBounds( rbw, this.minX, this.minY, this.minZ, this.maxX, this.maxY, this.maxZ, this.ax, this.ay, this.az );
 
-			for ( Block block : this.maybeBlock.asSet() )
+			for( Block block : this.maybeBlock.asSet() )
 			{
 				rbw.renderStandardBlock( block, x, y, z );
 			}
@@ -338,7 +353,7 @@ public final class BusRenderHelper implements IPartRenderHelper
 	@Override
 	public void setTexture( IIcon ico )
 	{
-		for ( AEBaseBlock baseBlock : this.maybeBaseBlock.asSet() )
+		for( AEBaseBlock baseBlock : this.maybeBaseBlock.asSet() )
 		{
 			baseBlock.getRendererInstance().setTemporaryRenderIcon( ico );
 		}
@@ -356,7 +371,7 @@ public final class BusRenderHelper implements IPartRenderHelper
 		list[4] = West;
 		list[5] = East;
 
-		for ( AEBaseBlock baseBlock : this.maybeBaseBlock.asSet() )
+		for( AEBaseBlock baseBlock : this.maybeBaseBlock.asSet() )
 		{
 			baseBlock.getRendererInstance().setTemporaryRenderIcons( list[this.mapRotation( ForgeDirection.UP ).ordinal()], list[this.mapRotation( ForgeDirection.DOWN ).ordinal()], list[this.mapRotation( ForgeDirection.SOUTH ).ordinal()], list[this.mapRotation( ForgeDirection.NORTH ).ordinal()], list[this.mapRotation( ForgeDirection.EAST ).ordinal()], list[this.mapRotation( ForgeDirection.WEST ).ordinal()] );
 		}
@@ -368,30 +383,30 @@ public final class BusRenderHelper implements IPartRenderHelper
 		ForgeDirection up = this.ay;
 		ForgeDirection west = ForgeDirection.UNKNOWN;
 
-		if ( forward == null || up == null )
+		if( forward == null || up == null )
 			return dir;
 
 		int west_x = forward.offsetY * up.offsetZ - forward.offsetZ * up.offsetY;
 		int west_y = forward.offsetZ * up.offsetX - forward.offsetX * up.offsetZ;
 		int west_z = forward.offsetX * up.offsetY - forward.offsetY * up.offsetX;
 
-		for ( ForgeDirection dx : ForgeDirection.VALID_DIRECTIONS )
-			if ( dx.offsetX == west_x && dx.offsetY == west_y && dx.offsetZ == west_z )
+		for( ForgeDirection dx : ForgeDirection.VALID_DIRECTIONS )
+			if( dx.offsetX == west_x && dx.offsetY == west_y && dx.offsetZ == west_z )
 				west = dx;
 
-		if ( dir == forward )
+		if( dir == forward )
 			return ForgeDirection.SOUTH;
-		if ( dir == forward.getOpposite() )
+		if( dir == forward.getOpposite() )
 			return ForgeDirection.NORTH;
 
-		if ( dir == up )
+		if( dir == up )
 			return ForgeDirection.UP;
-		if ( dir == up.getOpposite() )
+		if( dir == up.getOpposite() )
 			return ForgeDirection.DOWN;
 
-		if ( dir == west )
+		if( dir == west )
 			return ForgeDirection.WEST;
-		if ( dir == west.getOpposite() )
+		if( dir == west.getOpposite() )
 			return ForgeDirection.EAST;
 
 		return ForgeDirection.UNKNOWN;
@@ -402,7 +417,7 @@ public final class BusRenderHelper implements IPartRenderHelper
 	{
 		renderer.setRenderBounds( this.minX / 16.0, this.minY / 16.0, this.minZ / 16.0, this.maxX / 16.0, this.maxY / 16.0, this.maxZ / 16.0 );
 
-		for ( AEBaseBlock baseBlock : this.maybeBaseBlock.asSet() )
+		for( AEBaseBlock baseBlock : this.maybeBaseBlock.asSet() )
 		{
 			this.bbr.renderInvBlock( EnumSet.allOf( ForgeDirection.class ), baseBlock, null, Tessellator.instance, this.color, renderer );
 		}
@@ -414,7 +429,7 @@ public final class BusRenderHelper implements IPartRenderHelper
 		renderer.setRenderBounds( this.minX / 16.0, this.minY / 16.0, this.minZ / 16.0, this.maxX / 16.0, this.maxY / 16.0, this.maxZ / 16.0 );
 		this.setTexture( IIcon );
 
-		for ( AEBaseBlock baseBlock : this.maybeBaseBlock.asSet() )
+		for( AEBaseBlock baseBlock : this.maybeBaseBlock.asSet() )
 		{
 			this.bbr.renderInvBlock( EnumSet.of( face ), baseBlock, null, Tessellator.instance, this.color, renderer );
 		}
@@ -423,10 +438,10 @@ public final class BusRenderHelper implements IPartRenderHelper
 	@Override
 	public void renderBlock( int x, int y, int z, RenderBlocks renderer )
 	{
-		if ( !this.renderThis() )
+		if( !this.renderThis() )
 			return;
 
-		for ( Block multiPart : AEApi.instance().definitions().blocks().multiPart().maybeBlock().asSet() )
+		for( Block multiPart : AEApi.instance().definitions().blocks().multiPart().maybeBlock().asSet() )
 		{
 			final AEBaseBlock block = (AEBaseBlock) multiPart;
 
@@ -452,7 +467,7 @@ public final class BusRenderHelper implements IPartRenderHelper
 	@Override
 	public Block getBlock()
 	{
-		for ( Block block : AEApi.instance().definitions().blocks().multiPart().maybeBlock().asSet() )
+		for( Block block : AEApi.instance().definitions().blocks().multiPart().maybeBlock().asSet() )
 		{
 			return block;
 		}
@@ -474,10 +489,10 @@ public final class BusRenderHelper implements IPartRenderHelper
 	@Override
 	public void renderBlockCurrentBounds( int x, int y, int z, RenderBlocks renderer )
 	{
-		if ( !this.renderThis() )
+		if( !this.renderThis() )
 			return;
 
-		for ( Block block : this.maybeBlock.asSet() )
+		for( Block block : this.maybeBlock.asSet() )
 		{
 			renderer.renderStandardBlock( block, x, y, z );
 		}
@@ -486,10 +501,10 @@ public final class BusRenderHelper implements IPartRenderHelper
 	@Override
 	public void renderFaceCutout( int x, int y, int z, IIcon ico, ForgeDirection face, float edgeThickness, RenderBlocks renderer )
 	{
-		if ( !this.renderThis() )
+		if( !this.renderThis() )
 			return;
 
-		switch ( face )
+		switch( face )
 		{
 			case DOWN:
 				face = this.ay.getOpposite();
@@ -515,7 +530,7 @@ public final class BusRenderHelper implements IPartRenderHelper
 				break;
 		}
 
-		for ( Block block : this.maybeBlock.asSet() )
+		for( Block block : this.maybeBlock.asSet() )
 		{
 			this.bbr.renderCutoutFace( block, ico, x, y, z, renderer, face, edgeThickness );
 		}
@@ -524,11 +539,11 @@ public final class BusRenderHelper implements IPartRenderHelper
 	@Override
 	public void renderFace( int x, int y, int z, IIcon ico, ForgeDirection face, RenderBlocks renderer )
 	{
-		if ( !this.renderThis() )
+		if( !this.renderThis() )
 			return;
 
 		this.prepareBounds( renderer );
-		switch ( face )
+		switch( face )
 		{
 			case DOWN:
 				face = this.ay.getOpposite();
@@ -554,7 +569,7 @@ public final class BusRenderHelper implements IPartRenderHelper
 				break;
 		}
 
-		for ( Block block : this.maybeBlock.asSet() )
+		for( Block block : this.maybeBlock.asSet() )
 		{
 			this.bbr.renderFace( x, y, z, block, ico, renderer, face );
 		}
@@ -576,20 +591,5 @@ public final class BusRenderHelper implements IPartRenderHelper
 	public ForgeDirection getWorldZ()
 	{
 		return this.az;
-	}
-
-	private static final class BaseBlockTransformFunction implements Function<Block, AEBaseBlock>
-	{
-		@Nullable
-		@Override
-		public AEBaseBlock apply( Block input )
-		{
-			if ( input instanceof AEBaseBlock )
-			{
-				return ( (AEBaseBlock) input );
-			}
-
-			return null;
-		}
 	}
 }

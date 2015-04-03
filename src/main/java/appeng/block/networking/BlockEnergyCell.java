@@ -18,6 +18,7 @@
 
 package appeng.block.networking;
 
+
 import java.util.EnumSet;
 import java.util.List;
 
@@ -41,27 +42,56 @@ import appeng.helpers.AEGlassMaterial;
 import appeng.tile.networking.TileEnergyCell;
 import appeng.util.Platform;
 
+
 public class BlockEnergyCell extends AEBaseBlock
 {
 
-	public double getMaxPower()
+	public BlockEnergyCell()
 	{
-		return 200000.0;
-	}
-
-	public BlockEnergyCell(Class c) {
-		super( c, AEGlassMaterial.INSTANCE );
-	}
-
-	public BlockEnergyCell() {
 		this( BlockEnergyCell.class );
 		this.setFeature( EnumSet.of( AEFeature.Core ) );
 		this.setTileEntity( TileEnergyCell.class );
 	}
 
+	public BlockEnergyCell( Class c )
+	{
+		super( c, AEGlassMaterial.INSTANCE );
+	}
+
 	@Override
-	@SideOnly(Side.CLIENT)
-	public void getCheckedSubBlocks(Item item, CreativeTabs tabs, List<ItemStack> itemStacks)
+	protected Class<? extends BaseBlockRender> getRenderer()
+	{
+		return RenderBlockEnergyCube.class;
+	}
+
+	@Override
+	public IIcon getIcon( int direction, int metadata )
+	{
+		switch( metadata )
+		{
+			case 0:
+				return ExtraBlockTextures.MEEnergyCell0.getIcon();
+			case 1:
+				return ExtraBlockTextures.MEEnergyCell1.getIcon();
+			case 2:
+				return ExtraBlockTextures.MEEnergyCell2.getIcon();
+			case 3:
+				return ExtraBlockTextures.MEEnergyCell3.getIcon();
+			case 4:
+				return ExtraBlockTextures.MEEnergyCell4.getIcon();
+			case 5:
+				return ExtraBlockTextures.MEEnergyCell5.getIcon();
+			case 6:
+				return ExtraBlockTextures.MEEnergyCell6.getIcon();
+			case 7:
+				return ExtraBlockTextures.MEEnergyCell7.getIcon();
+		}
+		return super.getIcon( direction, metadata );
+	}
+
+	@Override
+	@SideOnly( Side.CLIENT )
+	public void getCheckedSubBlocks( Item item, CreativeTabs tabs, List<ItemStack> itemStacks )
 	{
 		super.getCheckedSubBlocks( item, tabs, itemStacks );
 
@@ -73,36 +103,9 @@ public class BlockEnergyCell extends AEBaseBlock
 		itemStacks.add( charged );
 	}
 
-	@Override
-	protected Class<? extends BaseBlockRender> getRenderer()
+	public double getMaxPower()
 	{
-		return RenderBlockEnergyCube.class;
-	}
-
-	@Override
-	public IIcon getIcon(int direction, int metadata)
-	{
-		switch (metadata)
-		{
-		case 0:
-			return ExtraBlockTextures.MEEnergyCell0.getIcon();
-		case 1:
-			return ExtraBlockTextures.MEEnergyCell1.getIcon();
-		case 2:
-			return ExtraBlockTextures.MEEnergyCell2.getIcon();
-		case 3:
-			return ExtraBlockTextures.MEEnergyCell3.getIcon();
-		case 4:
-			return ExtraBlockTextures.MEEnergyCell4.getIcon();
-		case 5:
-			return ExtraBlockTextures.MEEnergyCell5.getIcon();
-		case 6:
-			return ExtraBlockTextures.MEEnergyCell6.getIcon();
-		case 7:
-			return ExtraBlockTextures.MEEnergyCell7.getIcon();
-
-		}
-		return super.getIcon( direction, metadata );
+		return 200000.0;
 	}
 
 	@Override
@@ -110,5 +113,4 @@ public class BlockEnergyCell extends AEBaseBlock
 	{
 		return AEBaseItemBlockChargeable.class;
 	}
-
 }

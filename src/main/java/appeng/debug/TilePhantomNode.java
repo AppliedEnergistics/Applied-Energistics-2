@@ -18,6 +18,7 @@
 
 package appeng.debug;
 
+
 import java.util.EnumSet;
 
 import net.minecraftforge.common.util.ForgeDirection;
@@ -26,11 +27,21 @@ import appeng.api.networking.IGridNode;
 import appeng.me.helpers.AENetworkProxy;
 import appeng.tile.grid.AENetworkTile;
 
+
 public class TilePhantomNode extends AENetworkTile
 {
 
 	protected AENetworkProxy proxy = null;
 	boolean crashMode = false;
+
+	@Override
+	public IGridNode getGridNode( ForgeDirection dir )
+	{
+		if( !this.crashMode )
+			return super.getGridNode( dir );
+
+		return this.proxy.getNode();
+	}
 
 	@Override
 	public void onReady()
@@ -41,18 +52,9 @@ public class TilePhantomNode extends AENetworkTile
 		this.crashMode = true;
 	}
 
-	@Override
-	public IGridNode getGridNode(ForgeDirection dir)
-	{
-		if ( !this.crashMode )
-			return super.getGridNode( dir );
-
-		return this.proxy.getNode();
-	}
-
 	public void BOOM()
 	{
-		if ( this.proxy != null )
+		if( this.proxy != null )
 		{
 			this.crashMode = true;
 			this.proxy.setValidSides( EnumSet.allOf( ForgeDirection.class ) );

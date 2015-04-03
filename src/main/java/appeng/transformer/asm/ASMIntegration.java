@@ -48,7 +48,7 @@ public class ASMIntegration implements IClassTransformer
 		 * Side, Display Name, ModID ClassPostFix
 		 */
 
-		for ( IntegrationType type : IntegrationType.values() )
+		for( IntegrationType type : IntegrationType.values() )
 		{
 			IntegrationRegistry.INSTANCE.add( type );
 		}
@@ -67,10 +67,10 @@ public class ASMIntegration implements IClassTransformer
 	@Override
 	public byte[] transform( String name, String transformedName, byte[] basicClass )
 	{
-		if ( basicClass == null || transformedName.startsWith( "appeng.transformer" ) )
+		if( basicClass == null || transformedName.startsWith( "appeng.transformer" ) )
 			return basicClass;
 
-		if ( transformedName.startsWith( "appeng." ) )
+		if( transformedName.startsWith( "appeng." ) )
 		{
 			// log( "Found " + transformedName );
 
@@ -82,14 +82,14 @@ public class ASMIntegration implements IClassTransformer
 			{
 				boolean reWrite = this.removeOptionals( classNode );
 
-				if ( reWrite )
+				if( reWrite )
 				{
 					ClassWriter writer = new ClassWriter( ClassWriter.COMPUTE_MAXS );
 					classNode.accept( writer );
 					return writer.toByteArray();
 				}
 			}
-			catch ( Throwable t )
+			catch( Throwable t )
 			{
 				t.printStackTrace();
 			}
@@ -101,20 +101,20 @@ public class ASMIntegration implements IClassTransformer
 	{
 		boolean changed = false;
 
-		if ( classNode.visibleAnnotations != null )
+		if( classNode.visibleAnnotations != null )
 		{
-			for ( AnnotationNode an : classNode.visibleAnnotations )
+			for( AnnotationNode an : classNode.visibleAnnotations )
 			{
-				if ( this.hasAnnotation( an, Integration.Interface.class ) )
+				if( this.hasAnnotation( an, Integration.Interface.class ) )
 				{
-					if ( this.stripInterface( classNode, Integration.Interface.class, an ) )
+					if( this.stripInterface( classNode, Integration.Interface.class, an ) )
 						changed = true;
 				}
-				else if ( this.hasAnnotation( an, Integration.InterfaceList.class ) )
+				else if( this.hasAnnotation( an, Integration.InterfaceList.class ) )
 				{
-					for ( Object o : ( ( List ) an.values.get( 1 ) ) )
+					for( Object o : ( (List) an.values.get( 1 ) ) )
 					{
-						if ( this.stripInterface( classNode, Integration.InterfaceList.class, ( AnnotationNode ) o ) )
+						if( this.stripInterface( classNode, Integration.InterfaceList.class, (AnnotationNode) o ) )
 							changed = true;
 					}
 				}
@@ -122,25 +122,24 @@ public class ASMIntegration implements IClassTransformer
 		}
 
 		Iterator<MethodNode> i = classNode.methods.iterator();
-		while ( i.hasNext() )
+		while( i.hasNext() )
 		{
 			MethodNode mn = i.next();
 
-			if ( mn.visibleAnnotations != null )
+			if( mn.visibleAnnotations != null )
 			{
-				for ( AnnotationNode an : mn.visibleAnnotations )
+				for( AnnotationNode an : mn.visibleAnnotations )
 				{
-					if ( this.hasAnnotation( an, Integration.Method.class ) )
+					if( this.hasAnnotation( an, Integration.Method.class ) )
 					{
-						if ( this.stripMethod( classNode, mn, i, Integration.Method.class, an ) )
+						if( this.stripMethod( classNode, mn, i, Integration.Method.class, an ) )
 							changed = true;
 					}
 				}
-
 			}
 		}
 
-		if ( changed )
+		if( changed )
 			this.log( "Updated " + classNode.name );
 
 		return changed;
@@ -151,57 +150,29 @@ public class ASMIntegration implements IClassTransformer
 		return ann.desc.equals( Type.getDescriptor( annotation ) );
 	}
 
-	private boolean stripMethod( ClassNode classNode, MethodNode mn, Iterator<MethodNode> i, Class class1, AnnotationNode an )
-	{
-		if ( an.values.size() != 2 )
-			throw new RuntimeException( "Unable to handle Method annotation on " + classNode.name );
-
-		String iName = null;
-
-		if ( an.values.get( 0 ).equals( "iname" ) )
-			iName = ( String ) an.values.get( 1 );
-
-		if ( iName != null )
-		{
-			IntegrationType type = IntegrationType.valueOf( iName );
-			if ( !IntegrationRegistry.INSTANCE.isEnabled( type ) )
-			{
-				this.log( "Removing Method " + mn.name + " from " + classNode.name + " because " + iName + " integration is disabled." );
-				i.remove();
-				return true;
-			}
-			else
-				this.log( "Allowing Method " + mn.name + " from " + classNode.name + " because " + iName + " integration is enabled." );
-		}
-		else
-			throw new RuntimeException( "Unable to handle Method annotation on " + classNode.name );
-
-		return false;
-	}
-
 	private boolean stripInterface( ClassNode classNode, Class class1, AnnotationNode an )
 	{
-		if ( an.values.size() != 4 )
+		if( an.values.size() != 4 )
 			throw new RuntimeException( "Unable to handle Interface annotation on " + classNode.name );
 
 		String iFace = null;
 		String iName = null;
 
-		if ( an.values.get( 0 ).equals( "iface" ) )
-			iFace = ( String ) an.values.get( 1 );
-		else if ( an.values.get( 2 ).equals( "iface" ) )
-			iFace = ( String ) an.values.get( 3 );
+		if( an.values.get( 0 ).equals( "iface" ) )
+			iFace = (String) an.values.get( 1 );
+		else if( an.values.get( 2 ).equals( "iface" ) )
+			iFace = (String) an.values.get( 3 );
 
-		if ( an.values.get( 0 ).equals( "iname" ) )
-			iName = ( String ) an.values.get( 1 );
-		else if ( an.values.get( 2 ).equals( "iname" ) )
-			iName = ( String ) an.values.get( 3 );
+		if( an.values.get( 0 ).equals( "iname" ) )
+			iName = (String) an.values.get( 1 );
+		else if( an.values.get( 2 ).equals( "iname" ) )
+			iName = (String) an.values.get( 3 );
 
 		IntegrationType type = IntegrationType.valueOf( iName );
 
-		if ( iName != null && iFace != null )
+		if( iName != null && iFace != null )
 		{
-			if ( !IntegrationRegistry.INSTANCE.isEnabled( type ) )
+			if( !IntegrationRegistry.INSTANCE.isEnabled( type ) )
 			{
 				this.log( "Removing Interface " + iFace + " from " + classNode.name + " because " + iName + " integration is disabled." );
 				classNode.interfaces.remove( iFace.replace( '.', '/' ) );
@@ -216,9 +187,36 @@ public class ASMIntegration implements IClassTransformer
 		return false;
 	}
 
+	private boolean stripMethod( ClassNode classNode, MethodNode mn, Iterator<MethodNode> i, Class class1, AnnotationNode an )
+	{
+		if( an.values.size() != 2 )
+			throw new RuntimeException( "Unable to handle Method annotation on " + classNode.name );
+
+		String iName = null;
+
+		if( an.values.get( 0 ).equals( "iname" ) )
+			iName = (String) an.values.get( 1 );
+
+		if( iName != null )
+		{
+			IntegrationType type = IntegrationType.valueOf( iName );
+			if( !IntegrationRegistry.INSTANCE.isEnabled( type ) )
+			{
+				this.log( "Removing Method " + mn.name + " from " + classNode.name + " because " + iName + " integration is disabled." );
+				i.remove();
+				return true;
+			}
+			else
+				this.log( "Allowing Method " + mn.name + " from " + classNode.name + " because " + iName + " integration is enabled." );
+		}
+		else
+			throw new RuntimeException( "Unable to handle Method annotation on " + classNode.name );
+
+		return false;
+	}
+
 	private void log( String string )
 	{
 		FMLRelaunchLog.log( "AE2-CORE", Level.INFO, string );
 	}
-
 }

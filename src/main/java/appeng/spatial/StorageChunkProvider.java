@@ -42,9 +42,9 @@ public class StorageChunkProvider extends ChunkProviderGenerate
 	{
 		BLOCKS = new Block[255 * SQUARE_CHUNK_SIZE];
 
-		for ( Block matrixFrameBlock : AEApi.instance().definitions().blocks().matrixFrame().maybeBlock().asSet() )
+		for( Block matrixFrameBlock : AEApi.instance().definitions().blocks().matrixFrame().maybeBlock().asSet() )
 		{
-			for ( int x = 0; x < BLOCKS.length; x++ )
+			for( int x = 0; x < BLOCKS.length; x++ )
 			{
 				BLOCKS[x] = matrixFrameBlock;
 			}
@@ -67,10 +67,10 @@ public class StorageChunkProvider extends ChunkProviderGenerate
 		byte[] biomes = chunk.getBiomeArray();
 		AEConfig config = AEConfig.instance;
 
-		for ( int k = 0; k < biomes.length; ++k )
+		for( int k = 0; k < biomes.length; ++k )
 			biomes[k] = (byte) config.storageBiomeID;
 
-		if ( !chunk.isTerrainPopulated )
+		if( !chunk.isTerrainPopulated )
 		{
 			chunk.isTerrainPopulated = true;
 			chunk.resetRelightChecks();

@@ -18,15 +18,18 @@
 
 package appeng.util.iterators;
 
+
 import java.util.Iterator;
+
 
 public class ChainedIterator<T> implements Iterator<T>
 {
 
-	int offset = 0;
 	final T[] list;
+	int offset = 0;
 
-	public ChainedIterator(T... list) {
+	public ChainedIterator( T... list )
+	{
 		this.list = list;
 	}
 
@@ -49,5 +52,4 @@ public class ChainedIterator<T> implements Iterator<T>
 	{
 		throw new RuntimeException( "Not implemented." );
 	}
-
 }

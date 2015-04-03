@@ -45,14 +45,14 @@ public enum StorageChannel
 
 	public final Class<? extends IAEStack> type;
 
-	StorageChannel( Class<? extends IAEStack> t ) 
+	StorageChannel( Class<? extends IAEStack> t )
 	{
 		this.type = t;
 	}
 
 	public IItemList createList()
 	{
-		if ( this == ITEMS )
+		if( this == ITEMS )
 			return AEApi.instance().storage().createItemList();
 		else
 			return AEApi.instance().storage().createFluidList();

@@ -34,8 +34,8 @@ public class AssemblerFX extends EntityFX
 
 	final IAEItemStack item;
 	final EntityFloatingItem fi;
-	float time = 0;
 	final float speed;
+	float time = 0;
 
 	public AssemblerFX( World w, double x, double y, double z, double r, double g, double b, float speed, IAEItemStack is )
 	{
@@ -47,7 +47,7 @@ public class AssemblerFX extends EntityFX
 		this.speed = speed;
 		this.fi = new EntityFloatingItem( this, w, x, y, z, is.getItemStack() );
 		w.spawnEntityInWorld( this.fi );
-		this.particleMaxAge = ( int ) Math.ceil( Math.max( 1, 100.0f / speed ) ) + 2;
+		this.particleMaxAge = (int) Math.ceil( Math.max( 1, 100.0f / speed ) ) + 2;
 		this.noClip = true;
 	}
 
@@ -63,11 +63,11 @@ public class AssemblerFX extends EntityFX
 	{
 		super.onUpdate();
 
-		if ( this.isDead )
+		if( this.isDead )
 			this.fi.setDead();
 		else
 		{
-			float lifeSpan = ( float ) this.particleAge / ( float ) this.particleMaxAge;
+			float lifeSpan = (float) this.particleAge / (float) this.particleMaxAge;
 			this.fi.setProgress( lifeSpan );
 		}
 	}
@@ -76,13 +76,12 @@ public class AssemblerFX extends EntityFX
 	public void renderParticle( Tessellator tess, float l, float rX, float rY, float rZ, float rYZ, float rXY )
 	{
 		this.time += l;
-		if ( this.time > 4.0 )
+		if( this.time > 4.0 )
 		{
 			this.time -= 4.0;
 			// if ( CommonHelper.proxy.shouldAddParticles( r ) )
-			for ( int x = 0; x < ( int ) Math.ceil( this.speed / 5 ); x++ )
+			for( int x = 0; x < (int) Math.ceil( this.speed / 5 ); x++ )
 				CommonHelper.proxy.spawnEffect( EffectType.Crafting, this.worldObj, this.posX, this.posY, this.posZ, null );
 		}
 	}
-
 }

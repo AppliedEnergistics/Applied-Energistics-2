@@ -47,90 +47,17 @@ import appeng.parts.networking.PartCable;
 import appeng.tile.crafting.TileMolecularAssembler;
 import appeng.util.Platform;
 
+
 public class RenderBlockAssembler extends BaseBlockRender implements IBoxProvider
 {
 
-	IIcon getConnectedCable(IBlockAccess world, int x, int y, int z, ForgeDirection side, boolean covered)
+	public RenderBlockAssembler()
 	{
-		final int tileYPos = y + side.offsetY;
-		if ( -1 < tileYPos && tileYPos < 256 )
-		{
-			TileEntity ne = world.getTileEntity( x + side.offsetX, tileYPos, z + side.offsetZ );
-			if ( ne instanceof IGridHost && ne instanceof IPartHost )
-			{
-				IPartHost ph = (IPartHost) ne;
-				IPart pcx = ph.getPart( ForgeDirection.UNKNOWN );
-				if ( pcx instanceof PartCable )
-				{
-					PartCable pc = (PartCable) pcx;
-					if ( pc.isConnected( side.getOpposite() ) )
-					{
-						if ( covered )
-							return pc.getCoveredTexture( pc.getCableColor() );
-						return pc.getGlassTexture( pc.getCableColor() );
-					}
-				}
-			}
-		}
-
-		return null;
-	}
-
-	public void renderCableAt(double Thickness, IBlockAccess world, int x, int y, int z, AEBaseBlock block, RenderBlocks renderer, double pull, boolean covered)
-	{
-		IIcon texture = null;
-
-		block.getRendererInstance().setTemporaryRenderIcon( texture = this.getConnectedCable( world, x, y, z, ForgeDirection.WEST, covered ) );
-		if ( texture != null )
-		{
-			renderer.setRenderBounds( 0.0D, 0.5D - Thickness, 0.5D - Thickness, 0.5D - Thickness - pull, 0.5D + Thickness, 0.5D + Thickness );
-			renderer.renderStandardBlock( block, x, y, z );
-		}
-
-		block.getRendererInstance().setTemporaryRenderIcon( texture = this.getConnectedCable( world, x, y, z, ForgeDirection.EAST, covered ) );
-		if ( texture != null )
-		{
-			renderer.setRenderBounds( 0.5D + Thickness + pull, 0.5D - Thickness, 0.5D - Thickness, 1.0D, 0.5D + Thickness, 0.5D + Thickness );
-			renderer.renderStandardBlock( block, x, y, z );
-		}
-
-		block.getRendererInstance().setTemporaryRenderIcon( texture = this.getConnectedCable( world, x, y, z, ForgeDirection.NORTH, covered ) );
-		if ( texture != null )
-		{
-			renderer.setRenderBounds( 0.5D - Thickness, 0.5D - Thickness, 0.0D, 0.5D + Thickness, 0.5D + Thickness, 0.5D - Thickness - pull );
-			renderer.renderStandardBlock( block, x, y, z );
-		}
-
-		block.getRendererInstance().setTemporaryRenderIcon( texture = this.getConnectedCable( world, x, y, z, ForgeDirection.SOUTH, covered ) );
-		if ( texture != null )
-		{
-			renderer.setRenderBounds( 0.5D - Thickness, 0.5D - Thickness, 0.5D + Thickness + pull, 0.5D + Thickness, 0.5D + Thickness, 1.0D );
-			renderer.renderStandardBlock( block, x, y, z );
-		}
-
-		block.getRendererInstance().setTemporaryRenderIcon( texture = this.getConnectedCable( world, x, y, z, ForgeDirection.DOWN, covered ) );
-		if ( texture != null )
-		{
-			renderer.setRenderBounds( 0.5D - Thickness, 0.0D, 0.5D - Thickness, 0.5D + Thickness, 0.5D - Thickness - pull, 0.5D + Thickness );
-			renderer.renderStandardBlock( block, x, y, z );
-		}
-
-		block.getRendererInstance().setTemporaryRenderIcon( texture = this.getConnectedCable( world, x, y, z, ForgeDirection.UP, covered ) );
-		if ( texture != null )
-		{
-			renderer.setRenderBounds( 0.5D - Thickness, 0.5D + Thickness + pull, 0.5D - Thickness, 0.5D + Thickness, 1.0D, 0.5D + Thickness );
-			renderer.renderStandardBlock( block, x, y, z );
-		}
-
-		block.getRendererInstance().setTemporaryRenderIcon( null );
-	}
-
-	public RenderBlockAssembler() {
 		super( false, 20 );
 	}
 
 	@Override
-	public void renderInventory(AEBaseBlock blk, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj)
+	public void renderInventory( AEBaseBlock blk, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj )
 	{
 		renderer.setOverrideBlockTexture( blk.getIcon( 0, 0 ) );
 
@@ -177,14 +104,14 @@ public class RenderBlockAssembler extends BaseBlockRender implements IBoxProvide
 	}
 
 	@Override
-	public boolean renderInWorld(AEBaseBlock block, IBlockAccess world, int x, int y, int z, RenderBlocks renderer)
+	public boolean renderInWorld( AEBaseBlock block, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
 	{
 		BlockMolecularAssembler blk = (BlockMolecularAssembler) block;
 		TileMolecularAssembler tma = blk.getTileEntity( world, x, y, z );
 
-		if ( BlockMolecularAssembler.booleanAlphaPass )
+		if( BlockMolecularAssembler.booleanAlphaPass )
 		{
-			if ( tma.isPowered() )
+			if( tma.isPowered() )
 			{
 				this.renderBlockBounds( renderer, 1, 1, 1, 15, 15, 15, ForgeDirection.WEST, ForgeDirection.UP, ForgeDirection.SOUTH );
 				TaughtIcon lights = new TaughtIcon( ExtraBlockTextures.BlockMolecularAssemblerLights.getIcon(), -2.0f );
@@ -274,8 +201,83 @@ public class RenderBlockAssembler extends BaseBlockRender implements IBoxProvide
 		return true;
 	}
 
+	public void renderCableAt( double Thickness, IBlockAccess world, int x, int y, int z, AEBaseBlock block, RenderBlocks renderer, double pull, boolean covered )
+	{
+		IIcon texture = null;
+
+		block.getRendererInstance().setTemporaryRenderIcon( texture = this.getConnectedCable( world, x, y, z, ForgeDirection.WEST, covered ) );
+		if( texture != null )
+		{
+			renderer.setRenderBounds( 0.0D, 0.5D - Thickness, 0.5D - Thickness, 0.5D - Thickness - pull, 0.5D + Thickness, 0.5D + Thickness );
+			renderer.renderStandardBlock( block, x, y, z );
+		}
+
+		block.getRendererInstance().setTemporaryRenderIcon( texture = this.getConnectedCable( world, x, y, z, ForgeDirection.EAST, covered ) );
+		if( texture != null )
+		{
+			renderer.setRenderBounds( 0.5D + Thickness + pull, 0.5D - Thickness, 0.5D - Thickness, 1.0D, 0.5D + Thickness, 0.5D + Thickness );
+			renderer.renderStandardBlock( block, x, y, z );
+		}
+
+		block.getRendererInstance().setTemporaryRenderIcon( texture = this.getConnectedCable( world, x, y, z, ForgeDirection.NORTH, covered ) );
+		if( texture != null )
+		{
+			renderer.setRenderBounds( 0.5D - Thickness, 0.5D - Thickness, 0.0D, 0.5D + Thickness, 0.5D + Thickness, 0.5D - Thickness - pull );
+			renderer.renderStandardBlock( block, x, y, z );
+		}
+
+		block.getRendererInstance().setTemporaryRenderIcon( texture = this.getConnectedCable( world, x, y, z, ForgeDirection.SOUTH, covered ) );
+		if( texture != null )
+		{
+			renderer.setRenderBounds( 0.5D - Thickness, 0.5D - Thickness, 0.5D + Thickness + pull, 0.5D + Thickness, 0.5D + Thickness, 1.0D );
+			renderer.renderStandardBlock( block, x, y, z );
+		}
+
+		block.getRendererInstance().setTemporaryRenderIcon( texture = this.getConnectedCable( world, x, y, z, ForgeDirection.DOWN, covered ) );
+		if( texture != null )
+		{
+			renderer.setRenderBounds( 0.5D - Thickness, 0.0D, 0.5D - Thickness, 0.5D + Thickness, 0.5D - Thickness - pull, 0.5D + Thickness );
+			renderer.renderStandardBlock( block, x, y, z );
+		}
+
+		block.getRendererInstance().setTemporaryRenderIcon( texture = this.getConnectedCable( world, x, y, z, ForgeDirection.UP, covered ) );
+		if( texture != null )
+		{
+			renderer.setRenderBounds( 0.5D - Thickness, 0.5D + Thickness + pull, 0.5D - Thickness, 0.5D + Thickness, 1.0D, 0.5D + Thickness );
+			renderer.renderStandardBlock( block, x, y, z );
+		}
+
+		block.getRendererInstance().setTemporaryRenderIcon( null );
+	}
+
+	IIcon getConnectedCable( IBlockAccess world, int x, int y, int z, ForgeDirection side, boolean covered )
+	{
+		final int tileYPos = y + side.offsetY;
+		if( -1 < tileYPos && tileYPos < 256 )
+		{
+			TileEntity ne = world.getTileEntity( x + side.offsetX, tileYPos, z + side.offsetZ );
+			if( ne instanceof IGridHost && ne instanceof IPartHost )
+			{
+				IPartHost ph = (IPartHost) ne;
+				IPart pcx = ph.getPart( ForgeDirection.UNKNOWN );
+				if( pcx instanceof PartCable )
+				{
+					PartCable pc = (PartCable) pcx;
+					if( pc.isConnected( side.getOpposite() ) )
+					{
+						if( covered )
+							return pc.getCoveredTexture( pc.getCableColor() );
+						return pc.getGlassTexture( pc.getCableColor() );
+					}
+				}
+			}
+		}
+
+		return null;
+	}
+
 	@Override
-	public void getBoxes(IPartCollisionHelper bch)
+	public void getBoxes( IPartCollisionHelper bch )
 	{
 		bch.addBox( 0, 0, 0, 16, 16, 16 );
 	}

@@ -18,6 +18,7 @@
 
 package appeng.integration.modules;
 
+
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
@@ -27,12 +28,14 @@ import appeng.api.AEApi;
 import appeng.api.config.TunnelType;
 import appeng.integration.BaseModule;
 
+
 public class RF extends BaseModule
 {
 
 	public static RF instance;
 
-	public RF() {
+	public RF()
+	{
 		this.testClassExistence( cofh.api.energy.IEnergyReceiver.class );
 		this.testClassExistence( cofh.api.energy.IEnergyProvider.class );
 		this.testClassExistence( cofh.api.energy.IEnergyHandler.class );
@@ -42,16 +45,6 @@ public class RF extends BaseModule
 	@Override
 	public void init()
 	{
-	}
-
-	void RFStack(String mod, String name, int dmg)
-	{
-		ItemStack modItem = GameRegistry.findItemStack( mod, name, 1 );
-		if ( modItem != null )
-		{
-			modItem.setItemDamage( dmg );
-			AEApi.instance().registries().p2pTunnel().addNewAttunement( modItem, TunnelType.RF_POWER );
-		}
 	}
 
 	@Override
@@ -70,4 +63,13 @@ public class RF extends BaseModule
 		this.RFStack( "EnderIO", "blockPowerMonitor", 0 );
 	}
 
+	void RFStack( String mod, String name, int dmg )
+	{
+		ItemStack modItem = GameRegistry.findItemStack( mod, name, 1 );
+		if( modItem != null )
+		{
+			modItem.setItemDamage( dmg );
+			AEApi.instance().registries().p2pTunnel().addNewAttunement( modItem, TunnelType.RF_POWER );
+		}
+	}
 }

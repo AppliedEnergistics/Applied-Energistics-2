@@ -18,6 +18,7 @@
 
 package appeng.parts.p2p;
 
+
 import java.util.LinkedList;
 
 import net.minecraft.init.Blocks;
@@ -37,35 +38,32 @@ import appeng.transformer.annotations.Integration.Interface;
 import appeng.transformer.annotations.Integration.InterfaceList;
 import appeng.util.Platform;
 
-@InterfaceList(value = { @Interface(iface = "ic2.api.energy.tile.IEnergySink", iname = "IC2"),
-		@Interface(iface = "ic2.api.energy.tile.IEnergySource", iname = "IC2") })
+
+@InterfaceList( value = { @Interface( iface = "ic2.api.energy.tile.IEnergySink", iname = "IC2" ), @Interface( iface = "ic2.api.energy.tile.IEnergySource", iname = "IC2" ) } )
 public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements ic2.api.energy.tile.IEnergySink, ic2.api.energy.tile.IEnergySource
 {
-
-	public PartP2PIC2Power(ItemStack is) {
-		super( is );
-	}
 
 	// two packet buffering...
 	double OutputEnergyA;
 	double OutputEnergyB;
-
 	// two packet buffering...
 	double OutputVoltageA;
 	double OutputVoltageB;
 
-	@Override
-	public void writeToNBT(NBTTagCompound tag)
+	public PartP2PIC2Power( ItemStack is )
 	{
-		super.writeToNBT( tag );
-		tag.setDouble( "OutputPacket", this.OutputEnergyA );
-		tag.setDouble( "OutputPacket2", this.OutputEnergyB );
-		tag.setDouble( "OutputVoltageA", this.OutputVoltageA );
-		tag.setDouble( "OutputVoltageB", this.OutputVoltageB );
+		super( is );
 	}
 
 	@Override
-	public void readFromNBT(NBTTagCompound tag)
+	@SideOnly( Side.CLIENT )
+	public IIcon getTypeTexture()
+	{
+		return Blocks.diamond_block.getBlockTextureFromSide( 0 );
+	}
+
+	@Override
+	public void readFromNBT( NBTTagCompound tag )
 	{
 		super.readFromNBT( tag );
 		this.OutputEnergyA = tag.getDouble( "OutputPacket" );
@@ -75,50 +73,19 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements i
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
-	public IIcon getTypeTexture()
+	public void writeToNBT( NBTTagCompound tag )
 	{
-		return Blocks.diamond_block.getBlockTextureFromSide( 0 );
+		super.writeToNBT( tag );
+		tag.setDouble( "OutputPacket", this.OutputEnergyA );
+		tag.setDouble( "OutputPacket2", this.OutputEnergyB );
+		tag.setDouble( "OutputVoltageA", this.OutputVoltageA );
+		tag.setDouble( "OutputVoltageB", this.OutputVoltageB );
 	}
 
 	@Override
-	public boolean acceptsEnergyFrom(TileEntity emitter, ForgeDirection direction)
+	public void onTunnelConfigChange()
 	{
-		if ( !this.output )
-			return direction == this.side;
-		return false;
-	}
-
-	@Override
-	public boolean emitsEnergyTo(TileEntity receiver, ForgeDirection direction)
-	{
-		if ( this.output )
-			return direction == this.side;
-		return false;
-	}
-
-	@Override
-	public double getDemandedEnergy()
-	{
-		if ( this.output )
-			return 0;
-
-		try
-		{
-			for (PartP2PIC2Power t : this.getOutputs())
-			{
-				if ( t.OutputEnergyA <= 0.0001 || t.OutputEnergyB <= 0.0001 )
-				{
-					return 2048;
-				}
-			}
-		}
-		catch (GridAccessException e)
-		{
-			return 0;
-		}
-
-		return 0;
+		this.getHost().partChanged();
 	}
 
 	@Override
@@ -128,58 +95,93 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements i
 	}
 
 	@Override
-	public void onTunnelConfigChange()
+	public boolean acceptsEnergyFrom( TileEntity emitter, ForgeDirection direction )
 	{
-		this.getHost().partChanged();
-	}
-
-	public float getPowerDrainPerTick()
-	{
-		return 0.5f;
+		if( !this.output )
+			return direction == this.side;
+		return false;
 	}
 
 	@Override
-	public double injectEnergy(ForgeDirection directionFrom, double amount, double voltage)
+	public boolean emitsEnergyTo( TileEntity receiver, ForgeDirection direction )
+	{
+		if( this.output )
+			return direction == this.side;
+		return false;
+	}
+
+	@Override
+	public double getDemandedEnergy()
+	{
+		if( this.output )
+			return 0;
+
+		try
+		{
+			for( PartP2PIC2Power t : this.getOutputs() )
+			{
+				if( t.OutputEnergyA <= 0.0001 || t.OutputEnergyB <= 0.0001 )
+				{
+					return 2048;
+				}
+			}
+		}
+		catch( GridAccessException e )
+		{
+			return 0;
+		}
+
+		return 0;
+	}
+
+	@Override
+	public int getSinkTier()
+	{
+		return 4;
+	}
+
+	@Override
+	public double injectEnergy( ForgeDirection directionFrom, double amount, double voltage )
 	{
 		TunnelCollection<PartP2PIC2Power> outs;
 		try
 		{
 			outs = this.getOutputs();
 		}
-		catch (GridAccessException e)
+		catch( GridAccessException e )
 		{
 			return amount;
 		}
 
-		if ( outs.isEmpty() )
+		if( outs.isEmpty() )
 			return amount;
 
 		LinkedList<PartP2PIC2Power> Options = new LinkedList<PartP2PIC2Power>();
-		for (PartP2PIC2Power o : outs)
+		for( PartP2PIC2Power o : outs )
 		{
-			if ( o.OutputEnergyA <= 0.01 )
+			if( o.OutputEnergyA <= 0.01 )
 				Options.add( o );
 		}
 
-		if ( Options.isEmpty() )
+		if( Options.isEmpty() )
 		{
-			for (PartP2PIC2Power o : outs)
-				if ( o.OutputEnergyB <= 0.01 )
+			for( PartP2PIC2Power o : outs )
+				if( o.OutputEnergyB <= 0.01 )
 					Options.add( o );
 		}
 
-		if ( Options.isEmpty() )
+		if( Options.isEmpty() )
 		{
-			for (PartP2PIC2Power o : outs)
+			for( PartP2PIC2Power o : outs )
 				Options.add( o );
 		}
 
-		if ( Options.isEmpty() )
+		if( Options.isEmpty() )
 			return amount;
 
 		PartP2PIC2Power x = Platform.pickRandom( Options );
 
-		if ( x != null && x.OutputEnergyA <= 0.001 )
+		if( x != null && x.OutputEnergyA <= 0.001 )
 		{
 			this.QueueTunnelDrain( PowerUnits.EU, amount );
 			x.OutputEnergyA = amount;
@@ -187,7 +189,7 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements i
 			return 0;
 		}
 
-		if ( x != null && x.OutputEnergyB <= 0.001 )
+		if( x != null && x.OutputEnergyB <= 0.001 )
 		{
 			this.QueueTunnelDrain( PowerUnits.EU, amount );
 			x.OutputEnergyB = amount;
@@ -198,25 +200,24 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements i
 		return amount;
 	}
 
-	@Override
-	public int getSinkTier()
+	public float getPowerDrainPerTick()
 	{
-		return 4;
+		return 0.5f;
 	}
 
 	@Override
 	public double getOfferedEnergy()
 	{
-		if ( this.output )
+		if( this.output )
 			return this.OutputEnergyA;
 		return 0;
 	}
 
 	@Override
-	public void drawEnergy(double amount)
+	public void drawEnergy( double amount )
 	{
 		this.OutputEnergyA -= amount;
-		if ( this.OutputEnergyA < 0.001 )
+		if( this.OutputEnergyA < 0.001 )
 		{
 			this.OutputEnergyA = this.OutputEnergyB;
 			this.OutputEnergyB = 0;
@@ -229,14 +230,13 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements i
 	@Override
 	public int getSourceTier()
 	{
-		if ( this.output )
+		if( this.output )
 			return this.calculateTierFromVoltage( this.OutputVoltageA );
 		return 4;
 	}
 
-	private int calculateTierFromVoltage(double voltage)
+	private int calculateTierFromVoltage( double voltage )
 	{
 		return ic2.api.energy.EnergyNet.instance.getTierFromPower( voltage );
 	}
-
 }

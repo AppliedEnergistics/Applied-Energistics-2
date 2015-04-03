@@ -18,6 +18,7 @@
 
 package appeng.core.sync.packets;
 
+
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
@@ -32,6 +33,7 @@ import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.util.Platform;
 
+
 public class PacketConfigButton extends AppEngPacket
 {
 
@@ -39,26 +41,15 @@ public class PacketConfigButton extends AppEngPacket
 	final public boolean rotationDirection;
 
 	// automatic.
-	public PacketConfigButton(ByteBuf stream) {
+	public PacketConfigButton( ByteBuf stream )
+	{
 		this.option = Settings.values()[stream.readInt()];
 		this.rotationDirection = stream.readBoolean();
 	}
 
-	@Override
-	public void serverPacketData(INetworkInfo manager, AppEngPacket packet, EntityPlayer player)
-	{
-		EntityPlayerMP sender = (EntityPlayerMP) player;
-		AEBaseContainer baseContainer = (AEBaseContainer) sender.openContainer;
-		if ( baseContainer.getTarget() instanceof IConfigurableObject )
-		{
-			IConfigManager cm = ((IConfigurableObject) baseContainer.getTarget()).getConfigManager();
-			Enum newState = Platform.rotateEnum( cm.getSetting( this.option ), this.rotationDirection, this.option.getPossibleValues() );
-			cm.putSetting( this.option, newState );
-		}
-	}
-
 	// api
-	public PacketConfigButton(Settings option, boolean rotationDirection) {
+	public PacketConfigButton( Settings option, boolean rotationDirection )
+	{
 		this.option = option;
 		this.rotationDirection = rotationDirection;
 
@@ -69,5 +60,18 @@ public class PacketConfigButton extends AppEngPacket
 		data.writeBoolean( rotationDirection );
 
 		this.configureWrite( data );
+	}
+
+	@Override
+	public void serverPacketData( INetworkInfo manager, AppEngPacket packet, EntityPlayer player )
+	{
+		EntityPlayerMP sender = (EntityPlayerMP) player;
+		AEBaseContainer baseContainer = (AEBaseContainer) sender.openContainer;
+		if( baseContainer.getTarget() instanceof IConfigurableObject )
+		{
+			IConfigManager cm = ( (IConfigurableObject) baseContainer.getTarget() ).getConfigManager();
+			Enum newState = Platform.rotateEnum( cm.getSetting( this.option ), this.rotationDirection, this.option.getPossibleValues() );
+			cm.putSetting( this.option, newState );
+		}
 	}
 }

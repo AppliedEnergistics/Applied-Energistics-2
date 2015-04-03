@@ -80,7 +80,7 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 	{
 		ResolverResult resolver = null;
 
-		for ( ItemStack crystalSeedStack : AEApi.instance().definitions().items().crystalSeed().maybeStack( 1 ).asSet() )
+		for( ItemStack crystalSeedStack : AEApi.instance().definitions().items().crystalSeed().maybeStack( 1 ).asSet() )
 		{
 			crystalSeedStack.setItemDamage( certus2 );
 			crystalSeedStack = newStyle( crystalSeedStack );
@@ -98,7 +98,7 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 
 	private int getProgress( ItemStack is )
 	{
-		if ( is.hasTagCompound() )
+		if( is.hasTagCompound() )
 		{
 			return is.getTagCompound().getInteger( "progress" );
 		}
@@ -120,28 +120,28 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 		final IMaterials materials = AEApi.instance().definitions().materials();
 		final int size = is.stackSize;
 
-		if ( newDamage == Certus + SINGLE_OFFSET )
+		if( newDamage == Certus + SINGLE_OFFSET )
 		{
-			for ( ItemStack quartzStack : materials.purifiedCertusQuartzCrystal().maybeStack( size ).asSet() )
+			for( ItemStack quartzStack : materials.purifiedCertusQuartzCrystal().maybeStack( size ).asSet() )
 			{
 				return quartzStack;
 			}
 		}
-		if ( newDamage == Nether + SINGLE_OFFSET )
+		if( newDamage == Nether + SINGLE_OFFSET )
 		{
-			for ( ItemStack quartzStack : materials.purifiedNetherQuartzCrystal().maybeStack( size ).asSet() )
+			for( ItemStack quartzStack : materials.purifiedNetherQuartzCrystal().maybeStack( size ).asSet() )
 			{
 				return quartzStack;
 			}
 		}
-		if ( newDamage == Fluix + SINGLE_OFFSET )
+		if( newDamage == Fluix + SINGLE_OFFSET )
 		{
-			for ( ItemStack quartzStack : materials.purifiedFluixCrystal().maybeStack( size ).asSet() )
+			for( ItemStack quartzStack : materials.purifiedFluixCrystal().maybeStack( size ).asSet() )
 			{
 				return quartzStack;
 			}
 		}
-		if ( newDamage > END )
+		if( newDamage > END )
 			return null;
 
 		this.setProgress( is, newDamage );
@@ -153,10 +153,6 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 		NBTTagCompound comp = Platform.openNbtData( is );
 		comp.setInteger( "progress", newDamage );
 		is.setItemDamage( is.getItemDamage() / LEVEL_OFFSET * LEVEL_OFFSET );
-	}	@Override
-	public int getEntityLifespan( ItemStack itemStack, World world )
-	{
-		return Integer.MAX_VALUE;
 	}
 
 	@Override
@@ -173,24 +169,30 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 		lines.add( Math.floor( (float) progress / (float) ( SINGLE_OFFSET / 100 ) ) + "%" );
 
 		super.addCheckedInformation( stack, player, lines, displayAdditionalInformation );
-	}	@Override
+	}
+
+	@Override
+	public int getEntityLifespan( ItemStack itemStack, World world )
+	{
+		return Integer.MAX_VALUE;
+	}
+
+	@Override
 	public String getUnlocalizedName( ItemStack is )
 	{
 		int damage = this.getProgress( is );
 
-		if ( damage < Certus + SINGLE_OFFSET )
+		if( damage < Certus + SINGLE_OFFSET )
 			return this.getUnlocalizedName() + ".Certus";
 
-		if ( damage < Nether + SINGLE_OFFSET )
+		if( damage < Nether + SINGLE_OFFSET )
 			return this.getUnlocalizedName() + ".Nether";
 
-		if ( damage < Fluix + SINGLE_OFFSET )
+		if( damage < Fluix + SINGLE_OFFSET )
 			return this.getUnlocalizedName() + ".Fluix";
 
 		return this.getUnlocalizedName();
 	}
-
-
 
 	@Override
 	public boolean isDamageable()
@@ -223,27 +225,27 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 
 		int damage = this.getProgress( stack );
 
-		if ( damage < Certus + SINGLE_OFFSET )
+		if( damage < Certus + SINGLE_OFFSET )
 			list = this.certus;
 
-		else if ( damage < Nether + SINGLE_OFFSET )
+		else if( damage < Nether + SINGLE_OFFSET )
 		{
 			damage -= Nether;
 			list = this.nether;
 		}
 
-		else if ( damage < Fluix + SINGLE_OFFSET )
+		else if( damage < Fluix + SINGLE_OFFSET )
 		{
 			damage -= Fluix;
 			list = this.fluix;
 		}
 
-		if ( list == null )
+		if( list == null )
 			return Items.diamond.getIconFromDamage( 0 );
 
-		if ( damage < LEVEL_OFFSET )
+		if( damage < LEVEL_OFFSET )
 			return list[0];
-		else if ( damage < LEVEL_OFFSET * 2 )
+		else if( damage < LEVEL_OFFSET * 2 )
 			return list[1];
 		else
 			return list[2];
@@ -282,7 +284,7 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 		egc.motionY = location.motionY;
 		egc.motionZ = location.motionZ;
 
-		if ( location instanceof EntityItem )
+		if( location instanceof EntityItem )
 			egc.delayBeforeCanPickup = ( (EntityItem) location ).delayBeforeCanPickup;
 
 		return egc;
@@ -306,6 +308,4 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 		l.add( newStyle( new ItemStack( this, 1, LEVEL_OFFSET * 2 + Nether ) ) );
 		l.add( newStyle( new ItemStack( this, 1, LEVEL_OFFSET * 2 + Fluix ) ) );
 	}
-
-
 }

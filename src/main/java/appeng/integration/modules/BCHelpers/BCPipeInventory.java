@@ -18,6 +18,7 @@
 
 package appeng.integration.modules.BCHelpers;
 
+
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -29,15 +30,44 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.integration.modules.BC;
 
+
 public class BCPipeInventory implements IMEInventory<IAEItemStack>
 {
 
 	final TileEntity te;
 	final ForgeDirection dir;
 
-	public BCPipeInventory(TileEntity _te, ForgeDirection _dir) {
+	public BCPipeInventory( TileEntity _te, ForgeDirection _dir )
+	{
 		this.te = _te;
 		this.dir = _dir;
+	}
+
+	@Override
+	public IAEItemStack injectItems( IAEItemStack input, Actionable mode, BaseActionSource src )
+	{
+		if( mode == Actionable.SIMULATE )
+		{
+			if( BC.instance.canAddItemsToPipe( this.te, input.getItemStack(), this.dir ) )
+				return null;
+			return input;
+		}
+
+		if( BC.instance.addItemsToPipe( this.te, input.getItemStack(), this.dir ) )
+			return null;
+		return input;
+	}
+
+	@Override
+	public IAEItemStack extractItems( IAEItemStack request, Actionable mode, BaseActionSource src )
+	{
+		return null;
+	}
+
+	@Override
+	public IItemList<IAEItemStack> getAvailableItems( IItemList<IAEItemStack> out )
+	{
+		return out;
 	}
 
 	@Override
@@ -45,32 +75,4 @@ public class BCPipeInventory implements IMEInventory<IAEItemStack>
 	{
 		return StorageChannel.ITEMS;
 	}
-
-	@Override
-	public IAEItemStack injectItems(IAEItemStack input, Actionable mode, BaseActionSource src)
-	{
-		if ( mode == Actionable.SIMULATE )
-		{
-			if ( BC.instance.canAddItemsToPipe( this.te, input.getItemStack(), this.dir ) )
-				return null;
-			return input;
-		}
-
-		if ( BC.instance.addItemsToPipe( this.te, input.getItemStack(), this.dir ) )
-			return null;
-		return input;
-	}
-
-	@Override
-	public IAEItemStack extractItems(IAEItemStack request, Actionable mode, BaseActionSource src)
-	{
-		return null;
-	}
-
-	@Override
-	public IItemList<IAEItemStack> getAvailableItems(IItemList<IAEItemStack> out)
-	{
-		return out;
-	}
-
 }

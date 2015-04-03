@@ -18,6 +18,7 @@
 
 package appeng.debug;
 
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -30,6 +31,7 @@ import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
 import appeng.util.Platform;
 
+
 public class TileCubeGenerator extends AEBaseTile
 {
 
@@ -38,22 +40,22 @@ public class TileCubeGenerator extends AEBaseTile
 	int countdown = 20 * 10;
 	EntityPlayer who;
 
-	@TileEvent(TileEventType.TICK)
+	@TileEvent( TileEventType.TICK )
 	public void TCG_Tick()
 	{
-		if ( this.is != null && Platform.isServer() )
+		if( this.is != null && Platform.isServer() )
 		{
 			this.countdown--;
 
-			if ( this.countdown % 20 == 0 )
+			if( this.countdown % 20 == 0 )
 			{
-				for (EntityPlayer e : CommonHelper.proxy.getPlayers())
+				for( EntityPlayer e : CommonHelper.proxy.getPlayers() )
 				{
-					e.addChatMessage( new ChatComponentText( "Spawning in... " + (this.countdown / 20) ) );
+					e.addChatMessage( new ChatComponentText( "Spawning in... " + ( this.countdown / 20 ) ) );
 				}
 			}
 
-			if ( this.countdown <= 0 )
+			if( this.countdown <= 0 )
 				this.spawn();
 		}
 	}
@@ -67,11 +69,11 @@ public class TileCubeGenerator extends AEBaseTile
 
 		int half = (int) Math.floor( this.size / 2 );
 
-		for (int y = 0; y < this.size; y++)
+		for( int y = 0; y < this.size; y++ )
 		{
-			for (int x = -half; x < half; x++)
+			for( int x = -half; x < half; x++ )
 			{
-				for (int z = -half; z < half; z++)
+				for( int z = -half; z < half; z++ )
 				{
 					i.onItemUse( this.is.copy(), this.who, this.worldObj, x + this.xCoord, y + this.yCoord - 1, z + this.zCoord, side, 0.5f, 0.0f, 0.5f );
 				}
@@ -79,25 +81,25 @@ public class TileCubeGenerator extends AEBaseTile
 		}
 	}
 
-	public void click(EntityPlayer player)
+	public void click( EntityPlayer player )
 	{
-		if ( Platform.isServer() )
+		if( Platform.isServer() )
 		{
 			ItemStack hand = player.inventory.getCurrentItem();
 			this.who = player;
 
-			if ( hand == null )
+			if( hand == null )
 			{
 				this.is = null;
 
-				if ( player.isSneaking() )
+				if( player.isSneaking() )
 					this.size--;
 				else
 					this.size++;
 
-				if ( this.size < 3 )
+				if( this.size < 3 )
 					this.size = 3;
-				if ( this.size > 64 )
+				if( this.size > 64 )
 					this.size = 64;
 
 				player.addChatMessage( new ChatComponentText( "Size: " + this.size ) );
@@ -109,5 +111,4 @@ public class TileCubeGenerator extends AEBaseTile
 			}
 		}
 	}
-
 }

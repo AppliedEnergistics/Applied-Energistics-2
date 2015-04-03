@@ -18,6 +18,7 @@
 
 package appeng.entity;
 
+
 import java.util.List;
 
 import net.minecraft.block.material.Material;
@@ -38,6 +39,7 @@ import appeng.core.features.AEFeature;
 import appeng.helpers.Reflected;
 import appeng.util.Platform;
 
+
 final public class EntityChargedQuartz extends AEBaseEntityItem
 {
 
@@ -45,12 +47,12 @@ final public class EntityChargedQuartz extends AEBaseEntityItem
 	int transformTime = 0;
 
 	@Reflected
-	public EntityChargedQuartz(World w)
+	public EntityChargedQuartz( World w )
 	{
 		super( w );
 	}
 
-	public EntityChargedQuartz(World w, double x, double y, double z, ItemStack is)
+	public EntityChargedQuartz( World w, double x, double y, double z, ItemStack is )
 	{
 		super( w, x, y, z, is );
 	}
@@ -60,10 +62,10 @@ final public class EntityChargedQuartz extends AEBaseEntityItem
 	{
 		super.onUpdate();
 
-		if ( !AEConfig.instance.isFeatureEnabled( AEFeature.inWorldFluix ) )
+		if( !AEConfig.instance.isFeatureEnabled( AEFeature.inWorldFluix ) )
 			return;
 
-		if ( Platform.isClient() && this.delay > 30 && AEConfig.instance.enableEffects )
+		if( Platform.isClient() && this.delay > 30 && AEConfig.instance.enableEffects )
 		{
 			CommonHelper.proxy.spawnEffect( EffectType.Lightning, this.worldObj, this.posX, this.posY, this.posZ, null );
 			this.delay = 0;
@@ -75,12 +77,12 @@ final public class EntityChargedQuartz extends AEBaseEntityItem
 		int k = MathHelper.floor_double( this.posZ );
 
 		Material mat = this.worldObj.getBlock( j, i, k ).getMaterial();
-		if ( Platform.isServer() && mat.isLiquid() )
+		if( Platform.isServer() && mat.isLiquid() )
 		{
 			this.transformTime++;
-			if ( this.transformTime > 60 )
+			if( this.transformTime > 60 )
 			{
-				if ( !this.transform() )
+				if( !this.transform() )
 					this.transformTime = 0;
 			}
 		}
@@ -93,7 +95,7 @@ final public class EntityChargedQuartz extends AEBaseEntityItem
 		ItemStack item = this.getEntityItem();
 		final IMaterials materials = AEApi.instance().definitions().materials();
 
-		if ( materials.certusQuartzCrystalCharged().isSameAs( item ) )
+		if( materials.certusQuartzCrystalCharged().isSameAs( item ) )
 		{
 			AxisAlignedBB region = AxisAlignedBB.getBoundingBox( this.posX - 1, this.posY - 1, this.posZ - 1, this.posX + 1, this.posY + 1, this.posZ + 1 );
 			List<Entity> l = this.getCheckedEntitiesWithinAABBExcludingEntity( region );
@@ -101,38 +103,38 @@ final public class EntityChargedQuartz extends AEBaseEntityItem
 			EntityItem redstone = null;
 			EntityItem netherQuartz = null;
 
-			for (Entity e : l)
+			for( Entity e : l )
 			{
-				if ( e instanceof EntityItem && !e.isDead )
+				if( e instanceof EntityItem && !e.isDead )
 				{
-					ItemStack other = ((EntityItem) e).getEntityItem();
-					if ( other != null && other.stackSize > 0 )
+					ItemStack other = ( (EntityItem) e ).getEntityItem();
+					if( other != null && other.stackSize > 0 )
 					{
-						if ( Platform.isSameItem( other, new ItemStack( Items.redstone ) ) )
+						if( Platform.isSameItem( other, new ItemStack( Items.redstone ) ) )
 							redstone = (EntityItem) e;
 
-						if ( Platform.isSameItem( other, new ItemStack( Items.quartz ) ) )
+						if( Platform.isSameItem( other, new ItemStack( Items.quartz ) ) )
 							netherQuartz = (EntityItem) e;
 					}
 				}
 			}
 
-			if ( redstone != null && netherQuartz != null )
+			if( redstone != null && netherQuartz != null )
 			{
 				this.getEntityItem().stackSize--;
 				redstone.getEntityItem().stackSize--;
 				netherQuartz.getEntityItem().stackSize--;
 
-				if ( this.getEntityItem().stackSize <= 0 )
+				if( this.getEntityItem().stackSize <= 0 )
 					this.setDead();
 
-				if ( redstone.getEntityItem().stackSize <= 0 )
+				if( redstone.getEntityItem().stackSize <= 0 )
 					redstone.setDead();
 
-				if ( netherQuartz.getEntityItem().stackSize <= 0 )
+				if( netherQuartz.getEntityItem().stackSize <= 0 )
 					netherQuartz.setDead();
 
-				for ( ItemStack fluixCrystalStack : materials.fluixCrystal().maybeStack( 2 ).asSet() )
+				for( ItemStack fluixCrystalStack : materials.fluixCrystal().maybeStack( 2 ).asSet() )
 				{
 					final EntityItem entity = new EntityItem( this.worldObj, this.posX, this.posY, this.posZ, fluixCrystalStack );
 

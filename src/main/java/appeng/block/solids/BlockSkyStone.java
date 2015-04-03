@@ -18,6 +18,7 @@
 
 package appeng.block.solids;
 
+
 import java.util.EnumSet;
 import java.util.List;
 
@@ -54,36 +55,22 @@ import appeng.integration.IntegrationType;
 import appeng.integration.abstraction.IRB;
 import appeng.util.Platform;
 
+
 @RotatableBlockEnable
 public class BlockSkyStone extends AEBaseBlock implements IOrientableBlock
 {
 
-	@SideOnly(Side.CLIENT)
+	@SideOnly( Side.CLIENT )
 	IIcon Block;
 
-	@SideOnly(Side.CLIENT)
+	@SideOnly( Side.CLIENT )
 	IIcon Brick;
 
-	@SideOnly(Side.CLIENT)
+	@SideOnly( Side.CLIENT )
 	IIcon SmallBrick;
 
-	@SubscribeEvent
-	public void breakFaster(PlayerEvent.BreakSpeed Ev)
+	public BlockSkyStone()
 	{
-		if ( Ev.block == this && Ev.entityPlayer != null )
-		{
-			ItemStack is = Ev.entityPlayer.inventory.getCurrentItem();
-			int level = -1;
-
-			if ( is != null )
-				level = is.getItem().getHarvestLevel( is, "pickaxe" );
-
-			if ( Ev.metadata > 0 || level >= 3 || Ev.originalSpeed > 7.0 )
-				Ev.newSpeed /= 0.1;
-		}
-	}
-
-	public BlockSkyStone() {
 		super( BlockSkyStone.class, Material.rock );
 		this.setFeature( EnumSet.of( AEFeature.Core ) );
 		this.setHardness( 50 );
@@ -93,74 +80,26 @@ public class BlockSkyStone extends AEBaseBlock implements IOrientableBlock
 		MinecraftForge.EVENT_BUS.register( this );
 	}
 
+	@SubscribeEvent
+	public void breakFaster( PlayerEvent.BreakSpeed Ev )
+	{
+		if( Ev.block == this && Ev.entityPlayer != null )
+		{
+			ItemStack is = Ev.entityPlayer.inventory.getCurrentItem();
+			int level = -1;
+
+			if( is != null )
+				level = is.getItem().getHarvestLevel( is, "pickaxe" );
+
+			if( Ev.metadata > 0 || level >= 3 || Ev.originalSpeed > 7.0 )
+				Ev.newSpeed /= 0.1;
+		}
+	}
+
 	@Override
-	public int damageDropped(int meta)
+	public int damageDropped( int meta )
 	{
 		return meta;
-	}
-
-	@Override
-	public String getUnlocalizedName(ItemStack is)
-	{
-		if ( is.getItemDamage() == 1 )
-			return this.getUnlocalizedName() + ".Block";
-
-		if ( is.getItemDamage() == 2 )
-			return this.getUnlocalizedName() + ".Brick";
-
-		if ( is.getItemDamage() == 3 )
-			return this.getUnlocalizedName() + ".SmallBrick";
-
-		return this.getUnlocalizedName();
-	}
-
-	@Override
-	public IOrientable getOrientable(final IBlockAccess w, final int x, final int y, final int z)
-	{
-		if ( AppEng.instance.isIntegrationEnabled( IntegrationType.RB ) )
-		{
-			TileEntity te = w.getTileEntity( x, y, z );
-			if ( te != null )
-			{
-				IOrientable out = ((IRB) AppEng.instance.getIntegration( IntegrationType.RB )).getOrientable( te );
-				if ( out != null )
-					return out;
-			}
-		}
-
-		if ( w.getBlockMetadata( x, y, z ) == 0 )
-			return new LocationRotation( w, x, y, z );
-
-		return new NullRotation();
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(IIconRegister ir)
-	{
-		super.registerBlockIcons( ir );
-		this.Block = ir.registerIcon( this.getTextureName() + ".Block" );
-		this.Brick = ir.registerIcon( this.getTextureName() + ".Brick" );
-		this.SmallBrick = ir.registerIcon( this.getTextureName() + ".SmallBrick" );
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public IIcon getIcon(int direction, int metadata)
-	{
-		if ( metadata == 1 )
-			return this.Block;
-		if ( metadata == 2 )
-			return this.Brick;
-		if ( metadata == 3 )
-			return this.SmallBrick;
-		return super.getIcon( direction, metadata );
-	}
-
-	@Override
-	public void setRenderStateByMeta(int metadata)
-	{
-		this.getRendererInstance().setTemporaryRenderIcon( this.getIcon( 0, metadata ) );
 	}
 
 	@Override
@@ -173,29 +112,10 @@ public class BlockSkyStone extends AEBaseBlock implements IOrientableBlock
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
-	public void getCheckedSubBlocks(Item item, CreativeTabs tabs, List<ItemStack> itemStacks)
-	{
-		super.getCheckedSubBlocks( item, tabs, itemStacks );
-
-		itemStacks.add( new ItemStack( item, 1, 1 ) );
-		itemStacks.add( new ItemStack( item, 1, 2 ) );
-		itemStacks.add( new ItemStack( item, 1, 3 ) );
-	}
-
-	@Override
-	public void onBlockAdded(World w, int x, int y, int z)
+	public void onBlockAdded( World w, int x, int y, int z )
 	{
 		super.onBlockAdded( w, x, y, z );
-		if ( Platform.isServer() )
-			WorldSettings.getInstance().getCompass().updateArea( w, x, y, z );
-	}
-
-	@Override
-	public void breakBlock(World w, int x, int y, int z, Block b, int WTF)
-	{
-		super.breakBlock( w, x, y, z, b, WTF );
-		if ( Platform.isServer() )
+		if( Platform.isServer() )
 			WorldSettings.getInstance().getCompass().updateArea( w, x, y, z );
 	}
 
@@ -211,4 +131,86 @@ public class BlockSkyStone extends AEBaseBlock implements IOrientableBlock
 		return false;
 	}
 
+	@Override
+	public IOrientable getOrientable( final IBlockAccess w, final int x, final int y, final int z )
+	{
+		if( AppEng.instance.isIntegrationEnabled( IntegrationType.RB ) )
+		{
+			TileEntity te = w.getTileEntity( x, y, z );
+			if( te != null )
+			{
+				IOrientable out = ( (IRB) AppEng.instance.getIntegration( IntegrationType.RB ) ).getOrientable( te );
+				if( out != null )
+					return out;
+			}
+		}
+
+		if( w.getBlockMetadata( x, y, z ) == 0 )
+			return new LocationRotation( w, x, y, z );
+
+		return new NullRotation();
+	}
+
+	@Override
+	public String getUnlocalizedName( ItemStack is )
+	{
+		if( is.getItemDamage() == 1 )
+			return this.getUnlocalizedName() + ".Block";
+
+		if( is.getItemDamage() == 2 )
+			return this.getUnlocalizedName() + ".Brick";
+
+		if( is.getItemDamage() == 3 )
+			return this.getUnlocalizedName() + ".SmallBrick";
+
+		return this.getUnlocalizedName();
+	}
+
+	@Override
+	@SideOnly( Side.CLIENT )
+	public void registerBlockIcons( IIconRegister ir )
+	{
+		super.registerBlockIcons( ir );
+		this.Block = ir.registerIcon( this.getTextureName() + ".Block" );
+		this.Brick = ir.registerIcon( this.getTextureName() + ".Brick" );
+		this.SmallBrick = ir.registerIcon( this.getTextureName() + ".SmallBrick" );
+	}
+
+	@Override
+	@SideOnly( Side.CLIENT )
+	public IIcon getIcon( int direction, int metadata )
+	{
+		if( metadata == 1 )
+			return this.Block;
+		if( metadata == 2 )
+			return this.Brick;
+		if( metadata == 3 )
+			return this.SmallBrick;
+		return super.getIcon( direction, metadata );
+	}
+
+	@Override
+	public void setRenderStateByMeta( int metadata )
+	{
+		this.getRendererInstance().setTemporaryRenderIcon( this.getIcon( 0, metadata ) );
+	}
+
+	@Override
+	@SideOnly( Side.CLIENT )
+	public void getCheckedSubBlocks( Item item, CreativeTabs tabs, List<ItemStack> itemStacks )
+	{
+		super.getCheckedSubBlocks( item, tabs, itemStacks );
+
+		itemStacks.add( new ItemStack( item, 1, 1 ) );
+		itemStacks.add( new ItemStack( item, 1, 2 ) );
+		itemStacks.add( new ItemStack( item, 1, 3 ) );
+	}
+
+	@Override
+	public void breakBlock( World w, int x, int y, int z, Block b, int WTF )
+	{
+		super.breakBlock( w, x, y, z, b, WTF );
+		if( Platform.isServer() )
+			WorldSettings.getInstance().getCompass().updateArea( w, x, y, z );
+	}
 }

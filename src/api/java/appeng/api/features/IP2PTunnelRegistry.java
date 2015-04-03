@@ -38,11 +38,9 @@ public interface IP2PTunnelRegistry
 	/**
 	 * Allows third parties to register items from their mod as potential
 	 * attunements for AE's P2P Tunnels
-	 * 
-	 * @param trigger
-	 *            - the item which triggers attunement
-	 * @param type
-	 *            - the type of tunnel
+	 *
+	 * @param trigger - the item which triggers attunement
+	 * @param type    - the type of tunnel
 	 */
 	void addNewAttunement( ItemStack trigger, TunnelType type );
 

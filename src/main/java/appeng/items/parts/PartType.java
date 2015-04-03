@@ -152,11 +152,10 @@ public enum PartType
 
 	InterfaceTerminal( 480, EnumSet.of( AEFeature.InterfaceTerminal ), PartInterfaceTerminal.class );
 
+	public final int baseDamage;
 	private final EnumSet<AEFeature> features;
 	private final Class<? extends IPart> myPart;
 	private final GuiText extraName;
-	public final int baseDamage;
-
 	public Constructor<? extends IPart> constructor;
 
 	PartType( int baseMetaValue, EnumSet<AEFeature> features, Class<? extends IPart> c )

@@ -18,9 +18,11 @@
 
 package appeng.core.features;
 
+
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+
 
 public class ItemStackSrc implements IStackSrc
 {
@@ -29,25 +31,27 @@ public class ItemStackSrc implements IStackSrc
 	public final Block block;
 	public final int damage;
 
-	public ItemStackSrc(Item i, int dmg) {
+	public ItemStackSrc( Item i, int dmg )
+	{
 		this.block = null;
 		this.item = i;
 		this.damage = dmg;
 	}
 
-	public ItemStackSrc(Block b, int dmg) {
+	public ItemStackSrc( Block b, int dmg )
+	{
 		this.item = null;
 		this.block = b;
 		this.damage = dmg;
 	}
 
 	@Override
-	public ItemStack stack(int i)
+	public ItemStack stack( int i )
 	{
-		if ( this.block != null )
+		if( this.block != null )
 			return new ItemStack( this.block, i, this.damage );
 
-		if ( this.item != null )
+		if( this.item != null )
 			return new ItemStack( this.item, i, this.damage );
 
 		return null;

@@ -18,11 +18,13 @@
 
 package appeng.parts.layers;
 
+
 import java.util.List;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
+
 
 public class InvLayerData
 {
@@ -35,72 +37,74 @@ public class InvLayerData
 	final private List<ISidedInventory> inventories;
 	final private List<InvSot> slots;
 
-	public InvLayerData( int[][] a, List<ISidedInventory> b, List<InvSot> c) {
+	public InvLayerData( int[][] a, List<ISidedInventory> b, List<InvSot> c )
+	{
 		this.sides = a;
 		this.inventories = b;
 		this.slots = c;
+	}
+
+	public ItemStack decreaseStackSize( int slot, int amount )
+	{
+		if( this.isSlotValid( slot ) )
+			return this.slots.get( slot ).decreaseStackSize( amount );
+
+		return null;
 	}
 
 	/**
 	 * check if a slot index is valid, prevent crashes from bad code :)
 	 *
 	 * @param slot slot index
+	 *
 	 * @return true, if the slot exists.
 	 */
-	boolean isSlotValid(int slot)
+	boolean isSlotValid( int slot )
 	{
 		return this.slots != null && slot >= 0 && slot < this.slots.size();
 	}
 
-	public ItemStack decreaseStackSize(int slot, int amount)
-	{
-		if ( this.isSlotValid( slot ) )
-			return this.slots.get( slot ).decreaseStackSize( amount );
-
-		return null;
-	}
-
 	public int getSizeInventory()
 	{
-		if ( this.slots == null )
+		if( this.slots == null )
 			return 0;
 
 		return this.slots.size();
 	}
 
-	public ItemStack getStackInSlot(int slot)
+	public ItemStack getStackInSlot( int slot )
 	{
-		if ( this.isSlotValid( slot ) )
+		if( this.isSlotValid( slot ) )
 			return this.slots.get( slot ).getStackInSlot();
 
 		return null;
 	}
 
-	public boolean isItemValidForSlot(int slot, ItemStack itemstack)
+	public boolean isItemValidForSlot( int slot, ItemStack itemstack )
 	{
-		if ( this.isSlotValid( slot ) )
+		if( this.isSlotValid( slot ) )
 			return this.slots.get( slot ).isItemValidForSlot( itemstack );
 
 		return false;
 	}
 
-	public void setInventorySlotContents(int slot, ItemStack itemstack)
+	public void setInventorySlotContents( int slot, ItemStack itemstack )
 	{
-		if ( this.isSlotValid( slot ) )
+		if( this.isSlotValid( slot ) )
 			this.slots.get( slot ).setInventorySlotContents( itemstack );
 	}
 
-	public boolean canExtractItem(int slot, ItemStack itemstack, int side)
+	public boolean canExtractItem( int slot, ItemStack itemstack, int side )
 	{
-		if ( this.isSlotValid( slot ) )
+		if( this.isSlotValid( slot ) )
 			return this.slots.get( slot ).canExtractItem( itemstack, side );
 
 		return false;
 	}
 
-	public boolean canInsertItem(int slot, ItemStack itemstack, int side)
+	public boolean canInsertItem( int slot, ItemStack itemstack, int side )
 	{
-		if ( this.isSlotValid( slot ) )
+		if( this.isSlotValid( slot ) )
 			return this.slots.get( slot ).canInsertItem( itemstack, side );
 
 		return false;
@@ -108,18 +112,17 @@ public class InvLayerData
 
 	public void markDirty()
 	{
-		if ( this.inventories != null )
+		if( this.inventories != null )
 		{
-			for (IInventory inv : this.inventories)
+			for( IInventory inv : this.inventories )
 				inv.markDirty();
 		}
 	}
 
-	public int[] getAccessibleSlotsFromSide(int side)
+	public int[] getAccessibleSlotsFromSide( int side )
 	{
-		if ( this.sides == null || side < 0 || side > 5 )
+		if( this.sides == null || side < 0 || side > 5 )
 			return NULL_SIDES;
 		return this.sides[side];
 	}
-
 }

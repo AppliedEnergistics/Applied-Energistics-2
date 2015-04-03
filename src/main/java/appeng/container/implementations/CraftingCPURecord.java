@@ -18,20 +18,21 @@
 
 package appeng.container.implementations;
 
+
 import appeng.api.networking.crafting.ICraftingCPU;
 import appeng.util.ItemSorters;
+
 
 public class CraftingCPURecord implements Comparable<CraftingCPURecord>
 {
 
+	public final String myName;
 	final ICraftingCPU cpu;
-
 	final long size;
 	final int processors;
 
-	public final String myName;
-
-	public CraftingCPURecord(long size, int coProcessors, ICraftingCPU server) {
+	public CraftingCPURecord( long size, int coProcessors, ICraftingCPU server )
+	{
 		this.size = size;
 		this.processors = coProcessors;
 		this.cpu = server;
@@ -39,12 +40,11 @@ public class CraftingCPURecord implements Comparable<CraftingCPURecord>
 	}
 
 	@Override
-	public int compareTo(CraftingCPURecord o)
+	public int compareTo( CraftingCPURecord o )
 	{
 		int a = ItemSorters.compareLong( o.processors, this.processors );
-		if ( a != 0 )
+		if( a != 0 )
 			return a;
 		return ItemSorters.compareLong( o.size, this.size );
 	}
-
 }

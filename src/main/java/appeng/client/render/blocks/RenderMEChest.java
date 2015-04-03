@@ -18,6 +18,7 @@
 
 package appeng.client.render.blocks;
 
+
 import java.util.EnumSet;
 
 import net.minecraft.client.renderer.RenderBlocks;
@@ -39,35 +40,37 @@ import appeng.client.texture.OffsetIcon;
 import appeng.tile.storage.TileChest;
 import appeng.util.Platform;
 
+
 public class RenderMEChest extends BaseBlockRender
 {
 
-	public RenderMEChest() {
+	public RenderMEChest()
+	{
 		super( false, 0 );
 	}
 
 	@Override
-	public void renderInventory(AEBaseBlock block, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj)
+	public void renderInventory( AEBaseBlock block, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj )
 	{
 		Tessellator.instance.setBrightness( 0 );
 		renderer.overrideBlockTexture = ExtraBlockTextures.getMissing();
 		this.renderInvBlock( EnumSet.of( ForgeDirection.SOUTH ), block, is, Tessellator.instance, 0x000000, renderer );
 
 		renderer.overrideBlockTexture = ExtraBlockTextures.MEChest.getIcon();
-		this.renderInvBlock( EnumSet.of( ForgeDirection.UP ), block, is, Tessellator.instance, this.adjustBrightness( AEColor.Transparent.whiteVariant, 0.7 ),
-				renderer );
+		this.renderInvBlock( EnumSet.of( ForgeDirection.UP ), block, is, Tessellator.instance, this.adjustBrightness( AEColor.Transparent.whiteVariant, 0.7 ), renderer );
 
 		renderer.overrideBlockTexture = null;
 		super.renderInventory( block, is, renderer, type, obj );
 	}
 
 	@Override
-	public boolean renderInWorld(AEBaseBlock imb, IBlockAccess world, int x, int y, int z, RenderBlocks renderer)
+	public boolean renderInWorld( AEBaseBlock imb, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
 	{
 		TileChest sp = imb.getTileEntity( world, x, y, z );
 		renderer.setRenderBounds( 0, 0, 0, 1, 1, 1 );
 
-		if ( sp == null ) return false;
+		if( sp == null )
+			return false;
 
 		ForgeDirection up = sp.getUp();
 		ForgeDirection forward = sp.getForward();
@@ -82,7 +85,7 @@ public class RenderMEChest extends BaseBlockRender
 
 		int offsetU = -4;
 		int offsetV = 8;
-		if ( stat == 0 )
+		if( stat == 0 )
 			offsetV = 3;
 
 		int b = world.getLightBrightnessForSkyBlocks( x + forward.offsetX, y + forward.offsetY, z + forward.offsetZ, 0 );
@@ -90,15 +93,15 @@ public class RenderMEChest extends BaseBlockRender
 		Tessellator.instance.setColorOpaque_I( 0xffffff );
 
 		FlippableIcon flippableIcon = new FlippableIcon( new OffsetIcon( ExtraBlockTextures.MEStorageCellTextures.getIcon(), offsetU, offsetV ) );
-		if ( forward == ForgeDirection.EAST && (up == ForgeDirection.NORTH || up == ForgeDirection.SOUTH) )
+		if( forward == ForgeDirection.EAST && ( up == ForgeDirection.NORTH || up == ForgeDirection.SOUTH ) )
 			flippableIcon.setFlip( true, false );
-		else if ( forward == ForgeDirection.NORTH && up == ForgeDirection.EAST )
+		else if( forward == ForgeDirection.NORTH && up == ForgeDirection.EAST )
 			flippableIcon.setFlip( false, true );
-		else if ( forward == ForgeDirection.NORTH && up == ForgeDirection.WEST )
+		else if( forward == ForgeDirection.NORTH && up == ForgeDirection.WEST )
 			flippableIcon.setFlip( true, false );
-		else if ( forward == ForgeDirection.DOWN && up == ForgeDirection.EAST )
+		else if( forward == ForgeDirection.DOWN && up == ForgeDirection.EAST )
 			flippableIcon.setFlip( false, true );
-		else if ( forward == ForgeDirection.DOWN )
+		else if( forward == ForgeDirection.DOWN )
 			flippableIcon.setFlip( true, false );
 
 		/*
@@ -110,27 +113,27 @@ public class RenderMEChest extends BaseBlockRender
 
 		this.renderFace( x, y, z, imb, flippableIcon, renderer, forward );
 
-		if ( stat != 0 )
+		if( stat != 0 )
 		{
 			b = 0;
-			if ( sp.isPowered() )
+			if( sp.isPowered() )
 			{
 				b = 15 << 20 | 15 << 4;
 			}
 
 			Tessellator.instance.setBrightness( b );
-			if ( stat == 1 )
+			if( stat == 1 )
 				Tessellator.instance.setColorOpaque_I( 0x00ff00 );
-			if ( stat == 2 )
+			if( stat == 2 )
 				Tessellator.instance.setColorOpaque_I( 0xffaa00 );
-			if ( stat == 3 )
+			if( stat == 3 )
 				Tessellator.instance.setColorOpaque_I( 0xff0000 );
 			this.selectFace( renderer, west, up, forward, 9, 10, 11, 12 );
 			this.renderFace( x, y, z, imb, ExtraBlockTextures.White.getIcon(), renderer, forward );
 		}
 
 		b = world.getLightBrightnessForSkyBlocks( x + up.offsetX, y + up.offsetY, z + up.offsetZ, 0 );
-		if ( sp.isPowered() )
+		if( sp.isPowered() )
 		{
 			b = 15 << 20 | 15 << 4;
 		}
@@ -145,7 +148,7 @@ public class RenderMEChest extends BaseBlockRender
 		IIcon ico = ch == null ? null : ch.getTopTexture_Light();
 		this.renderFace( x, y, z, imb, ico == null ? ExtraBlockTextures.MEChest.getIcon() : ico, renderer, up );
 
-		if ( ico != null )
+		if( ico != null )
 		{
 			Tessellator.instance.setColorOpaque_I( sp.getColor().mediumVariant );
 			ico = ch == null ? null : ch.getTopTexture_Medium();

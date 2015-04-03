@@ -18,6 +18,7 @@
 
 package appeng.client.render.blocks;
 
+
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.Minecraft;
@@ -35,15 +36,17 @@ import appeng.client.render.BaseBlockRender;
 import appeng.tile.AEBaseTile;
 import appeng.tile.grindstone.TileCrank;
 
+
 public class RenderBlockCrank extends BaseBlockRender
 {
 
-	public RenderBlockCrank() {
+	public RenderBlockCrank()
+	{
 		super( true, 60 );
 	}
 
 	@Override
-	public void renderInventory(AEBaseBlock blk, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj)
+	public void renderInventory( AEBaseBlock blk, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj )
 	{
 		renderer.renderAllFaces = true;
 
@@ -57,22 +60,22 @@ public class RenderBlockCrank extends BaseBlockRender
 	}
 
 	@Override
-	public boolean renderInWorld(AEBaseBlock imb, IBlockAccess world, int x, int y, int z, RenderBlocks renderer)
+	public boolean renderInWorld( AEBaseBlock imb, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
 	{
 		return true;
 	}
 
 	@Override
-	public void renderTile(AEBaseBlock blk, AEBaseTile tile, Tessellator tess, double x, double y, double z, float f, RenderBlocks renderBlocks)
+	public void renderTile( AEBaseBlock blk, AEBaseTile tile, Tessellator tess, double x, double y, double z, float f, RenderBlocks renderBlocks )
 	{
 		TileCrank tc = (TileCrank) tile;
-		if ( tc.getUp() == null || tc.getUp() == ForgeDirection.UNKNOWN )
+		if( tc.getUp() == null || tc.getUp() == ForgeDirection.UNKNOWN )
 			return;
 
 		Minecraft.getMinecraft().getTextureManager().bindTexture( TextureMap.locationBlocksTexture );
 		RenderHelper.disableStandardItemLighting();
 
-		if ( Minecraft.isAmbientOcclusionEnabled() )
+		if( Minecraft.isAmbientOcclusionEnabled() )
 			GL11.glShadeModel( GL11.GL_SMOOTH );
 		else
 			GL11.glShadeModel( GL11.GL_FLAT );
@@ -102,5 +105,4 @@ public class RenderBlockCrank extends BaseBlockRender
 		tess.setTranslation( 0, 0, 0 );
 		RenderHelper.enableStandardItemLighting();
 	}
-
 }

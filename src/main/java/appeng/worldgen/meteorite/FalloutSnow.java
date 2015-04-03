@@ -27,11 +27,11 @@ public class FalloutSnow extends FalloutCopy
 	@Override
 	public void getOther( IMeteoriteWorld w, int x, int y, int z, double a )
 	{
-		if ( a > SNOW_THRESHOLD )
+		if( a > SNOW_THRESHOLD )
 		{
 			this.putter.put( w, x, y, z, Blocks.snow );
 		}
-		else if ( a > ICE_THRESHOLD )
+		else if( a > ICE_THRESHOLD )
 		{
 			this.putter.put( w, x, y, z, Blocks.ice );
 		}

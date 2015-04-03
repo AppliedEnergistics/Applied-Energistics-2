@@ -73,8 +73,7 @@ import appeng.util.Platform;
 import appeng.util.inv.IInventoryDestination;
 
 
-public class PartInterface extends PartBasicState
-		implements IGridTickable, IStorageMonitorable, IInventoryDestination, IInterfaceHost, ISidedInventory, IAEAppEngInventory, ITileStorageMonitorable, IPriorityHost
+public class PartInterface extends PartBasicState implements IGridTickable, IStorageMonitorable, IInventoryDestination, IInterfaceHost, ISidedInventory, IAEAppEngInventory, ITileStorageMonitorable, IPriorityHost
 {
 
 	final DualityInterface duality = new DualityInterface( this.proxy, this );
@@ -98,6 +97,19 @@ public class PartInterface extends PartBasicState
 	}
 
 	@Override
+	public void getBoxes( IPartCollisionHelper bch )
+	{
+		bch.addBox( 2, 2, 14, 14, 14, 16 );
+		bch.addBox( 5, 5, 12, 11, 11, 14 );
+	}
+
+	@Override
+	public int getInstalledUpgrades( Upgrades u )
+	{
+		return this.duality.getInstalledUpgrades( u );
+	}
+
+	@Override
 	@SideOnly( Side.CLIENT )
 	public void renderInventory( IPartRenderHelper rh, RenderBlocks renderer )
 	{
@@ -111,6 +123,12 @@ public class PartInterface extends PartBasicState
 
 		rh.setBounds( 5, 5, 12, 11, 11, 14 );
 		rh.renderInventoryBox( renderer );
+	}
+
+	@Override
+	public void gridChanged()
+	{
+		this.duality.gridChanged();
 	}
 
 	@Override
@@ -158,13 +176,6 @@ public class PartInterface extends PartBasicState
 	}
 
 	@Override
-	public void getBoxes( IPartCollisionHelper bch )
-	{
-		bch.addBox( 2, 2, 14, 14, 14, 16 );
-		bch.addBox( 5, 5, 12, 11, 11, 14 );
-	}
-
-	@Override
 	public void getDrops( List<ItemStack> drops, boolean wrenched )
 	{
 		this.duality.addDrops( drops );
@@ -174,12 +185,6 @@ public class PartInterface extends PartBasicState
 	public int cableConnectionRenderTo()
 	{
 		return 4;
-	}
-
-	@Override
-	public void gridChanged()
-	{
-		this.duality.gridChanged();
 	}
 
 	@Override
@@ -195,18 +200,12 @@ public class PartInterface extends PartBasicState
 	}
 
 	@Override
-	public int getInstalledUpgrades( Upgrades u )
-	{
-		return this.duality.getInstalledUpgrades( u );
-	}
-
-	@Override
 	public boolean onPartActivate( EntityPlayer p, Vec3 pos )
 	{
-		if ( p.isSneaking() )
+		if( p.isSneaking() )
 			return false;
 
-		if ( Platform.isServer() )
+		if( Platform.isServer() )
 			Platform.openGUI( p, this.getTileEntity(), this.side, GuiBridge.GUI_INTERFACE );
 
 		return true;

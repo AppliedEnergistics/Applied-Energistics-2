@@ -113,9 +113,9 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 		@Override
 		public boolean equals( Object obj )
 		{
-			if ( obj == null )
+			if( obj == null )
 				return false;
-			if ( this.getClass() != obj.getClass() )
+			if( this.getClass() != obj.getClass() )
 				return false;
 			InWorldToolOperationIngredient other = (InWorldToolOperationIngredient) obj;
 			return this.blockID == other.blockID && this.metadata == other.metadata;
@@ -126,12 +126,12 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 	{
 		InWorldToolOperationResult r = this.heatUp.get( new InWorldToolOperationIngredient( blockID, metadata ) );
 
-		if ( r == null )
+		if( r == null )
 		{
 			r = this.heatUp.get( new InWorldToolOperationIngredient( blockID, OreDictionary.WILDCARD_VALUE ) );
 		}
 
-		if ( r.BlockItem != null )
+		if( r.BlockItem != null )
 		{
 			w.setBlock( x, y, z, Block.getBlockFromItem( r.BlockItem.getItem() ), r.BlockItem.getItemDamage(), 3 );
 		}
@@ -140,7 +140,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 			w.setBlock( x, y, z, Platform.AIR, 0, 3 );
 		}
 
-		if ( r.Drops != null )
+		if( r.Drops != null )
 		{
 			Platform.spawnDrops( w, x, y, z, r.Drops );
 		}
@@ -150,7 +150,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 	{
 		InWorldToolOperationResult r = this.heatUp.get( new InWorldToolOperationIngredient( blockID, metadata ) );
 
-		if ( r == null )
+		if( r == null )
 		{
 			r = this.heatUp.get( new InWorldToolOperationIngredient( blockID, OreDictionary.WILDCARD_VALUE ) );
 		}
@@ -162,12 +162,12 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 	{
 		InWorldToolOperationResult r = this.coolDown.get( new InWorldToolOperationIngredient( blockID, metadata ) );
 
-		if ( r == null )
+		if( r == null )
 		{
 			r = this.coolDown.get( new InWorldToolOperationIngredient( blockID, OreDictionary.WILDCARD_VALUE ) );
 		}
 
-		if ( r.BlockItem != null )
+		if( r.BlockItem != null )
 		{
 			w.setBlock( x, y, z, Block.getBlockFromItem( r.BlockItem.getItem() ), r.BlockItem.getItemDamage(), 3 );
 		}
@@ -176,7 +176,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 			w.setBlock( x, y, z, Platform.AIR, 0, 3 );
 		}
 
-		if ( r.Drops != null )
+		if( r.Drops != null )
 		{
 			Platform.spawnDrops( w, x, y, z, r.Drops );
 		}
@@ -186,7 +186,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 	{
 		InWorldToolOperationResult r = this.coolDown.get( new InWorldToolOperationIngredient( blockID, metadata ) );
 
-		if ( r == null )
+		if( r == null )
 		{
 			r = this.coolDown.get( new InWorldToolOperationIngredient( blockID, OreDictionary.WILDCARD_VALUE ) );
 		}
@@ -197,7 +197,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 	@Override
 	public boolean hitEntity( ItemStack item, EntityLivingBase target, EntityLivingBase hitter )
 	{
-		if ( this.getAECurrentPower( item ) > 1600 )
+		if( this.getAECurrentPower( item ) > 1600 )
 		{
 			this.extractAEPower( item, 1600 );
 			target.setFire( 8 );
@@ -211,19 +211,19 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 	{
 		MovingObjectPosition target = this.getMovingObjectPositionFromPlayer( w, p, true );
 
-		if ( target == null )
+		if( target == null )
 			return item;
 		else
 		{
-			if ( target.typeOfHit == MovingObjectType.BLOCK )
+			if( target.typeOfHit == MovingObjectType.BLOCK )
 			{
 				int x = target.blockX;
 				int y = target.blockY;
 				int z = target.blockZ;
 
-				if ( w.getBlock( x, y, z ).getMaterial() == Material.lava || w.getBlock( x, y, z ).getMaterial() == Material.water )
+				if( w.getBlock( x, y, z ).getMaterial() == Material.lava || w.getBlock( x, y, z ).getMaterial() == Material.water )
 				{
-					if ( Platform.hasPermissions( new DimensionalCoord( w, x, y, z ), p ) )
+					if( Platform.hasPermissions( new DimensionalCoord( w, x, y, z ), p ) )
 					{
 						this.onItemUse( item, p, w, x, y, z, 0, 0.0F, 0.0F, 0.0F );
 					}
@@ -237,17 +237,17 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 	@Override
 	public boolean onItemUse( ItemStack item, EntityPlayer p, World w, int x, int y, int z, int side, float hitX, float hitY, float hitZ )
 	{
-		if ( this.getAECurrentPower( item ) > 1600 )
+		if( this.getAECurrentPower( item ) > 1600 )
 		{
-			if ( !p.canPlayerEdit( x, y, z, side, item ) )
+			if( !p.canPlayerEdit( x, y, z, side, item ) )
 				return false;
 
 			Block blockID = w.getBlock( x, y, z );
 			int metadata = w.getBlockMetadata( x, y, z );
 
-			if ( p.isSneaking() )
+			if( p.isSneaking() )
 			{
-				if ( this.canCool( blockID, metadata ) )
+				if( this.canCool( blockID, metadata ) )
 				{
 					this.extractAEPower( item, 1600 );
 					this.cool( blockID, metadata, w, x, y, z );
@@ -256,21 +256,21 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 			}
 			else
 			{
-				if ( blockID instanceof BlockTNT )
+				if( blockID instanceof BlockTNT )
 				{
 					w.setBlock( x, y, z, Platform.AIR, 0, 3 );
 					( (BlockTNT) blockID ).func_150114_a( w, x, y, z, 1, p );
 					return true;
 				}
 
-				if ( blockID instanceof BlockTinyTNT )
+				if( blockID instanceof BlockTinyTNT )
 				{
 					w.setBlock( x, y, z, Platform.AIR, 0, 3 );
 					( (BlockTinyTNT) blockID ).startFuse( w, x, y, z, p );
 					return true;
 				}
 
-				if ( this.canHeat( blockID, metadata ) )
+				if( this.canHeat( blockID, metadata ) )
 				{
 					this.extractAEPower( item, 1600 );
 					this.heat( blockID, metadata, w, x, y, z );
@@ -282,15 +282,15 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 				boolean hasFurnaceable = false;
 				boolean canFurnaceable = true;
 
-				for ( ItemStack i : stack )
+				for( ItemStack i : stack )
 				{
 					ItemStack result = FurnaceRecipes.smelting().getSmeltingResult( i );
 
-					if ( result != null )
+					if( result != null )
 					{
-						if ( result.getItem() instanceof ItemBlock )
+						if( result.getItem() instanceof ItemBlock )
 						{
-							if ( Block.getBlockFromItem( result.getItem() ) == blockID && result.getItem().getDamage( result ) == metadata )
+							if( Block.getBlockFromItem( result.getItem() ) == blockID && result.getItem().getDamage( result ) == metadata )
 							{
 								canFurnaceable = false;
 							}
@@ -305,13 +305,13 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 					}
 				}
 
-				if ( hasFurnaceable && canFurnaceable )
+				if( hasFurnaceable && canFurnaceable )
 				{
 					this.extractAEPower( item, 1600 );
 					InWorldToolOperationResult or = InWorldToolOperationResult.getBlockOperationResult( out.toArray( new ItemStack[out.size()] ) );
 					w.playSoundEffect( x + 0.5D, y + 0.5D, z + 0.5D, "fire.ignite", 1.0F, itemRand.nextFloat() * 0.4F + 0.8F );
 
-					if ( or.BlockItem == null )
+					if( or.BlockItem == null )
 					{
 						w.setBlock( x, y, z, Platform.AIR, 0, 3 );
 					}
@@ -320,7 +320,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 						w.setBlock( x, y, z, Block.getBlockFromItem( or.BlockItem.getItem() ), or.BlockItem.getItemDamage(), 3 );
 					}
 
-					if ( or.Drops != null )
+					if( or.Drops != null )
 					{
 						Platform.spawnDrops( w, x, y, z, or.Drops );
 					}
@@ -334,10 +334,10 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 					y += dir.offsetY;
 					z += dir.offsetZ;
 
-					if ( !p.canPlayerEdit( x, y, z, side, item ) )
+					if( !p.canPlayerEdit( x, y, z, side, item ) )
 						return false;
 
-					if ( w.isAirBlock( x, y, z ) )
+					if( w.isAirBlock( x, y, z ) )
 					{
 						this.extractAEPower( item, 1600 );
 						w.playSoundEffect( x + 0.5D, y + 0.5D, z + 0.5D, "fire.ignite", 1.0F, itemRand.nextFloat() * 0.4F + 0.8F );

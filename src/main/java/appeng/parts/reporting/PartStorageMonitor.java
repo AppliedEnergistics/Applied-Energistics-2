@@ -87,6 +87,17 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 	}
 
 	@Override
+	public void readFromNBT( NBTTagCompound data )
+	{
+		super.readFromNBT( data );
+
+		this.isLocked = data.getBoolean( "isLocked" );
+
+		NBTTagCompound myItem = data.getCompoundTag( "configuredItem" );
+		this.configuredItem = AEItemStack.loadItemStackFromNBT( myItem );
+	}
+
+	@Override
 	public void writeToNBT( NBTTagCompound data )
 	{
 		super.writeToNBT( data );
@@ -101,14 +112,33 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 	}
 
 	@Override
-	public void readFromNBT( NBTTagCompound data )
+	public void writeToStream( ByteBuf data ) throws IOException
 	{
-		super.readFromNBT( data );
+		super.writeToStream( data );
 
-		this.isLocked = data.getBoolean( "isLocked" );
+		data.writeByte( this.spin );
+		data.writeBoolean( this.isLocked );
+		data.writeBoolean( this.configuredItem != null );
+		if( this.configuredItem != null )
+			this.configuredItem.writeToPacket( data );
+	}
 
-		NBTTagCompound myItem = data.getCompoundTag( "configuredItem" );
-		this.configuredItem = AEItemStack.loadItemStackFromNBT( myItem );
+	@Override
+	public boolean readFromStream( ByteBuf data ) throws IOException
+	{
+		boolean stuff = super.readFromStream( data );
+
+		this.spin = data.readByte();
+		this.isLocked = data.readBoolean();
+		boolean val = data.readBoolean();
+		if( val )
+			this.configuredItem = AEItemStack.loadItemStackFromPacket( data );
+		else
+			this.configuredItem = null;
+
+		this.updateList = true;
+
+		return stuff;
 	}
 
 	@Override
@@ -141,36 +171,6 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 			this.extractItem( player );
 
 		return true;
-	}
-
-	@Override
-	public void writeToStream( ByteBuf data ) throws IOException
-	{
-		super.writeToStream( data );
-
-		data.writeByte( this.spin );
-		data.writeBoolean( this.isLocked );
-		data.writeBoolean( this.configuredItem != null );
-		if( this.configuredItem != null )
-			this.configuredItem.writeToPacket( data );
-	}
-
-	@Override
-	public boolean readFromStream( ByteBuf data ) throws IOException
-	{
-		boolean stuff = super.readFromStream( data );
-
-		this.spin = data.readByte();
-		this.isLocked = data.readBoolean();
-		boolean val = data.readBoolean();
-		if( val )
-			this.configuredItem = AEItemStack.loadItemStackFromPacket( data );
-		else
-			this.configuredItem = null;
-
-		this.updateList = true;
-
-		return stuff;
 	}
 
 	// update the system...

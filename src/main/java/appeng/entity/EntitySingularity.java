@@ -58,7 +58,7 @@ final public class EntitySingularity extends AEBaseEntityItem
 	@Override
 	public boolean attackEntityFrom( DamageSource src, float dmg )
 	{
-		if ( src.isExplosion() )
+		if( src.isExplosion() )
 		{
 			this.doExplosion();
 			return false;
@@ -69,32 +69,32 @@ final public class EntitySingularity extends AEBaseEntityItem
 
 	public void doExplosion()
 	{
-		if ( Platform.isClient() )
+		if( Platform.isClient() )
 			return;
 
-		if ( !AEConfig.instance.isFeatureEnabled( AEFeature.inWorldSingularity ) )
+		if( !AEConfig.instance.isFeatureEnabled( AEFeature.inWorldSingularity ) )
 			return;
 
 		ItemStack item = this.getEntityItem();
 
 		final IMaterials materials = AEApi.instance().definitions().materials();
 
-		if ( materials.singularity().isSameAs( item ) )
+		if( materials.singularity().isSameAs( item ) )
 		{
 			AxisAlignedBB region = AxisAlignedBB.getBoundingBox( this.posX - 4, this.posY - 4, this.posZ - 4, this.posX + 4, this.posY + 4, this.posZ + 4 );
 			List<Entity> l = this.getCheckedEntitiesWithinAABBExcludingEntity( region );
 
-			for ( Entity e : l )
+			for( Entity e : l )
 			{
-				if ( e instanceof EntityItem )
+				if( e instanceof EntityItem )
 				{
-					ItemStack other = ( ( EntityItem ) e ).getEntityItem();
-					if ( other != null )
+					ItemStack other = ( (EntityItem) e ).getEntityItem();
+					if( other != null )
 					{
 						boolean matches = false;
-						for ( ItemStack is : OreDictionary.getOres( "dustEnder" ) )
+						for( ItemStack is : OreDictionary.getOres( "dustEnder" ) )
 						{
-							if ( OreDictionary.itemMatches( other, is, false ) )
+							if( OreDictionary.itemMatches( other, is, false ) )
 							{
 								matches = true;
 								break;
@@ -102,11 +102,11 @@ final public class EntitySingularity extends AEBaseEntityItem
 						}
 
 						// check... other name.
-						if ( !matches )
+						if( !matches )
 						{
-							for ( ItemStack is : OreDictionary.getOres( "dustEnderPearl" ) )
+							for( ItemStack is : OreDictionary.getOres( "dustEnderPearl" ) )
 							{
-								if ( OreDictionary.itemMatches( other, is, false ) )
+								if( OreDictionary.itemMatches( other, is, false ) )
 								{
 									matches = true;
 									break;
@@ -114,15 +114,15 @@ final public class EntitySingularity extends AEBaseEntityItem
 							}
 						}
 
-						if ( matches )
+						if( matches )
 						{
-							while ( item.stackSize > 0 && other.stackSize > 0 )
+							while( item.stackSize > 0 && other.stackSize > 0 )
 							{
 								other.stackSize--;
-								if ( other.stackSize == 0 )
+								if( other.stackSize == 0 )
 									e.setDead();
 
-								for ( ItemStack singularityStack : materials.qESingularity().maybeStack( 2 ).asSet() )
+								for( ItemStack singularityStack : materials.qESingularity().maybeStack( 2 ).asSet() )
 								{
 									NBTTagCompound cmp = Platform.openNbtData( singularityStack );
 									cmp.setLong( "freq", ( new Date() ).getTime() * 100 + ( randTickSeed ) % 100 );
@@ -134,7 +134,7 @@ final public class EntitySingularity extends AEBaseEntityItem
 								}
 							}
 
-							if ( item.stackSize <= 0 )
+							if( item.stackSize <= 0 )
 								this.setDead();
 						}
 					}

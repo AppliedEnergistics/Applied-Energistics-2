@@ -114,25 +114,9 @@ public enum Achievements
 	private Achievement parent;
 	private Achievement stat;
 
-	public void setParent( Achievements parent )
-	{
-		this.parent = parent.getAchievement();
-	}
-
-	public Achievement getAchievement()
-	{
-		if ( this.stat == null && this.stack != null )
-		{
-			this.stat = new Achievement( "achievement.ae2." + this.name(), "ae2." + this.name(), this.x, this.y, this.stack, this.parent );
-			this.stat.registerStat();
-		}
-
-		return this.stat;
-	}
-
 	Achievements( int x, int y, AEColoredItemDefinition which, AchievementType type )
 	{
-		this.stack = (which != null) ? which.stack( AEColor.Transparent, 1 ) : null;
+		this.stack = ( which != null ) ? which.stack( AEColor.Transparent, 1 ) : null;
 		this.type = type;
 		this.x = x;
 		this.y = y;
@@ -152,6 +136,22 @@ public enum Achievements
 		this.type = type;
 		this.x = x;
 		this.y = y;
+	}
+
+	public void setParent( Achievements parent )
+	{
+		this.parent = parent.getAchievement();
+	}
+
+	public Achievement getAchievement()
+	{
+		if( this.stat == null && this.stack != null )
+		{
+			this.stat = new Achievement( "achievement.ae2." + this.name(), "ae2." + this.name(), this.x, this.y, this.stack, this.parent );
+			this.stat.registerStat();
+		}
+
+		return this.stat;
 	}
 
 	public void addToPlayer( EntityPlayer player )

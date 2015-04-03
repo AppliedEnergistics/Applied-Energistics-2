@@ -24,9 +24,9 @@ public final class DefinitionUpgradeInventory extends UpgradeInventory
 	{
 		int max = 0;
 
-		for ( ItemStack stack : upgrades.getSupported().keySet() )
+		for( ItemStack stack : upgrades.getSupported().keySet() )
 		{
-			if ( this.definition.isSameAs( stack ) )
+			if( this.definition.isSameAs( stack ) )
 			{
 				max = upgrades.getSupported().get( stack );
 				break;

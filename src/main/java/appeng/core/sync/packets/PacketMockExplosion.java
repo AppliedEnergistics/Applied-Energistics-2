@@ -18,6 +18,7 @@
 
 package appeng.core.sync.packets;
 
+
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
@@ -31,6 +32,7 @@ import appeng.core.CommonHelper;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
 
+
 public class PacketMockExplosion extends AppEngPacket
 {
 
@@ -38,16 +40,8 @@ public class PacketMockExplosion extends AppEngPacket
 	final public double y;
 	final public double z;
 
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void clientPacketData(INetworkInfo network, AppEngPacket packet, EntityPlayer player)
-	{
-		World world = CommonHelper.proxy.getWorld();
-		world.spawnParticle( "largeexplode", this.x, this.y, this.z, 1.0D, 0.0D, 0.0D );
-	}
-
 	// automatic.
-	public PacketMockExplosion(ByteBuf stream)
+	public PacketMockExplosion( ByteBuf stream )
 	{
 		this.x = stream.readDouble();
 		this.y = stream.readDouble();
@@ -55,7 +49,7 @@ public class PacketMockExplosion extends AppEngPacket
 	}
 
 	// api
-	public PacketMockExplosion(double x, double y, double z)
+	public PacketMockExplosion( double x, double y, double z )
 	{
 		this.x = x;
 		this.y = y;
@@ -71,4 +65,11 @@ public class PacketMockExplosion extends AppEngPacket
 		this.configureWrite( data );
 	}
 
+	@Override
+	@SideOnly( Side.CLIENT )
+	public void clientPacketData( INetworkInfo network, AppEngPacket packet, EntityPlayer player )
+	{
+		World world = CommonHelper.proxy.getWorld();
+		world.spawnParticle( "largeexplode", this.x, this.y, this.z, 1.0D, 0.0D, 0.0D );
+	}
 }

@@ -101,7 +101,7 @@ public class GridNode implements IGridNode, IPathItem
 	public void addConnection( IGridConnection gridConnection )
 	{
 		this.connections.add( gridConnection );
-		if ( gridConnection.hasDirection() )
+		if( gridConnection.hasDirection() )
 			this.gridProxy.onGridNotification( GridNotification.ConnectionsChanged );
 
 		final IGridNode gn = this;
@@ -112,15 +112,15 @@ public class GridNode implements IGridNode, IPathItem
 	public void removeConnection( IGridConnection gridConnection )
 	{
 		this.connections.remove( gridConnection );
-		if ( gridConnection.hasDirection() )
+		if( gridConnection.hasDirection() )
 			this.gridProxy.onGridNotification( GridNotification.ConnectionsChanged );
 	}
 
 	public boolean hasConnection( IGridNode otherSide )
 	{
-		for ( IGridConnection gc : this.connections )
+		for( IGridConnection gc : this.connections )
 		{
-			if ( gc.a() == otherSide || gc.b() == otherSide )
+			if( gc.a() == otherSide || gc.b() == otherSide )
 				return true;
 		}
 		return false;
@@ -130,23 +130,16 @@ public class GridNode implements IGridNode, IPathItem
 	{
 		GridSplitDetector gsd = new GridSplitDetector( this.getInternalGrid().getPivot() );
 		this.beginVisit( gsd );
-		if ( !gsd.pivotFound )
+		if( !gsd.pivotFound )
 		{
 			IGridVisitor gp = new GridPropagator( new Grid( this ) );
 			this.beginVisit( gp );
 		}
 	}
 
-	@Override
-	public void setPlayerID( int playerID )
-	{
-		if ( playerID >= 0 )
-			this.playerID = playerID;
-	}
-
 	public Grid getInternalGrid()
 	{
-		if ( this.myGrid == null )
+		if( this.myGrid == null )
 			this.myGrid = new Grid( this );
 
 		return this.myGrid;
@@ -162,31 +155,31 @@ public class GridNode implements IGridNode, IPathItem
 
 		this.visitorIterationNumber = tracker;
 
-		if ( g instanceof IGridConnectionVisitor )
+		if( g instanceof IGridConnectionVisitor )
 		{
 			LinkedList<IGridConnection> nextConn = new LinkedList<IGridConnection>();
-			IGridConnectionVisitor gcv = ( IGridConnectionVisitor ) g;
+			IGridConnectionVisitor gcv = (IGridConnectionVisitor) g;
 
-			while ( !nextRun.isEmpty() )
+			while( !nextRun.isEmpty() )
 			{
-				while ( !nextConn.isEmpty() )
+				while( !nextConn.isEmpty() )
 					gcv.visitConnection( nextConn.poll() );
 
 				LinkedList<GridNode> thisRun = nextRun;
 				nextRun = new LinkedList<GridNode>();
 
-				for ( GridNode n : thisRun )
+				for( GridNode n : thisRun )
 					n.visitorConnection( tracker, g, nextRun, nextConn );
 			}
 		}
 		else
 		{
-			while ( !nextRun.isEmpty() )
+			while( !nextRun.isEmpty() )
 			{
 				LinkedList<GridNode> thisRun = nextRun;
 				nextRun = new LinkedList<GridNode>();
 
-				for ( GridNode n : thisRun )
+				for( GridNode n : thisRun )
 					n.visitorNode( tracker, g, nextRun );
 			}
 		}
@@ -201,7 +194,7 @@ public class GridNode implements IGridNode, IPathItem
 
 		this.compressedData |= ( this.gridProxy.getGridColor().ordinal() << 3 );
 
-		for ( ForgeDirection dir : this.gridProxy.getConnectableSides() )
+		for( ForgeDirection dir : this.gridProxy.getConnectableSides() )
 			this.compressedData |= ( 1 << ( dir.ordinal() + 8 ) );
 
 		this.FindConnections();
@@ -222,18 +215,18 @@ public class GridNode implements IGridNode, IPathItem
 
 	public void setGrid( Grid grid )
 	{
-		if ( this.myGrid == grid )
+		if( this.myGrid == grid )
 			return;
 
-		if ( this.myGrid != null )
+		if( this.myGrid != null )
 		{
 			this.myGrid.remove( this );
 
-			if ( this.myGrid.isEmpty() )
+			if( this.myGrid.isEmpty() )
 			{
 				this.myGrid.saveState();
 
-				for ( IGridCache c : grid.getCaches().values() )
+				for( IGridCache c : grid.getCaches().values() )
 					c.onJoin( this.myGrid.getMyStorage() );
 			}
 		}
@@ -245,19 +238,19 @@ public class GridNode implements IGridNode, IPathItem
 	@Override
 	public void destroy()
 	{
-		while ( !this.connections.isEmpty() )
+		while( !this.connections.isEmpty() )
 		{
 			// not part of this network for real anymore.
-			if ( this.connections.size() == 1 )
+			if( this.connections.size() == 1 )
 				this.setGridStorage( null );
 
 			IGridConnection c = this.connections.listIterator().next();
-			GridNode otherSide = ( GridNode ) c.getOtherSide( this );
+			GridNode otherSide = (GridNode) c.getOtherSide( this );
 			otherSide.getInternalGrid().setPivot( otherSide );
 			c.destroy();
 		}
 
-		if ( this.myGrid != null )
+		if( this.myGrid != null )
 			this.myGrid.remove( this );
 	}
 
@@ -271,7 +264,7 @@ public class GridNode implements IGridNode, IPathItem
 	public EnumSet<ForgeDirection> getConnectedSides()
 	{
 		EnumSet<ForgeDirection> set = EnumSet.noneOf( ForgeDirection.class );
-		for ( IGridConnection gc : this.connections )
+		for( IGridConnection gc : this.connections )
 			set.add( gc.getDirection( this ) );
 		return set;
 	}
@@ -292,7 +285,7 @@ public class GridNode implements IGridNode, IPathItem
 	public boolean isActive()
 	{
 		IGrid g = this.getGrid();
-		if ( g != null )
+		if( g != null )
 		{
 			IPathingGrid pg = g.getCache( IPathingGrid.class );
 			IEnergyGrid eg = g.getCache( IEnergyGrid.class );
@@ -304,7 +297,7 @@ public class GridNode implements IGridNode, IPathItem
 	@Override
 	public void loadFromNBT( String name, NBTTagCompound nodeData )
 	{
-		if ( this.myGrid == null )
+		if( this.myGrid == null )
 		{
 			NBTTagCompound node = nodeData.getCompoundTag( name );
 			this.playerID = node.getInteger( "p" );
@@ -318,7 +311,7 @@ public class GridNode implements IGridNode, IPathItem
 	@Override
 	public void saveToNBT( String name, NBTTagCompound nodeData )
 	{
-		if ( this.myStorage != null )
+		if( this.myStorage != null )
 		{
 			NBTTagCompound node = new NBTTagCompound();
 
@@ -344,6 +337,19 @@ public class GridNode implements IGridNode, IPathItem
 		return this.gridProxy.getFlags().contains( flag );
 	}
 
+	@Override
+	public int getPlayerID()
+	{
+		return this.playerID;
+	}
+
+	@Override
+	public void setPlayerID( int playerID )
+	{
+		if( playerID >= 0 )
+			this.playerID = playerID;
+	}
+
 	public int getUsedChannels()
 	{
 		return this.channelData & 0xff;
@@ -351,41 +357,41 @@ public class GridNode implements IGridNode, IPathItem
 
 	public void FindConnections()
 	{
-		if ( !this.gridProxy.isWorldAccessible() )
+		if( !this.gridProxy.isWorldAccessible() )
 			return;
 
 		EnumSet<ForgeDirection> newSecurityConnections = EnumSet.noneOf( ForgeDirection.class );
 
 		DimensionalCoord dc = this.gridProxy.getLocation();
-		for ( ForgeDirection f : ForgeDirection.VALID_DIRECTIONS )
+		for( ForgeDirection f : ForgeDirection.VALID_DIRECTIONS )
 		{
 			IGridHost te = this.findGridHost( dc.getWorld(), dc.x + f.offsetX, dc.y + f.offsetY, dc.z + f.offsetZ );
-			if ( te != null )
+			if( te != null )
 			{
-				GridNode node = ( GridNode ) te.getGridNode( f.getOpposite() );
-				if ( node == null )
+				GridNode node = (GridNode) te.getGridNode( f.getOpposite() );
+				if( node == null )
 					continue;
 
 				boolean isValidConnection = this.canConnect( node, f ) && node.canConnect( this, f.getOpposite() );
 
 				IGridConnection con = null; // find the connection for this
 				// direction..
-				for ( IGridConnection c : this.getConnections() )
+				for( IGridConnection c : this.getConnections() )
 				{
-					if ( c.getDirection( this ) == f )
+					if( c.getDirection( this ) == f )
 					{
 						con = c;
 						break;
 					}
 				}
 
-				if ( con != null )
+				if( con != null )
 				{
 					IGridNode os = con.getOtherSide( this );
-					if ( os == node )
+					if( os == node )
 					{
 						// if this connection is no longer valid, destroy it.
-						if ( !isValidConnection )
+						if( !isValidConnection )
 							con.destroy();
 					}
 					else
@@ -394,9 +400,9 @@ public class GridNode implements IGridNode, IPathItem
 						// throw new GridException( "invalid state found, encountered connection to phantom block." );
 					}
 				}
-				else if ( isValidConnection )
+				else if( isValidConnection )
 				{
-					if ( node.lastSecurityKey != -1 )
+					if( node.lastSecurityKey != -1 )
 						newSecurityConnections.add( f );
 					else
 					{
@@ -405,7 +411,7 @@ public class GridNode implements IGridNode, IPathItem
 						{
 							new GridConnection( node, this, f.getOpposite() );
 						}
-						catch ( FailedConnection e )
+						catch( FailedConnection e )
 						{
 							TickHandler.INSTANCE.addCallable( node.getWorld(), new MachineSecurityBreak( this ) );
 
@@ -416,13 +422,13 @@ public class GridNode implements IGridNode, IPathItem
 			}
 		}
 
-		for ( ForgeDirection f : newSecurityConnections )
+		for( ForgeDirection f : newSecurityConnections )
 		{
 			IGridHost te = this.findGridHost( dc.getWorld(), dc.x + f.offsetX, dc.y + f.offsetY, dc.z + f.offsetZ );
-			if ( te != null )
+			if( te != null )
 			{
-				GridNode node = ( GridNode ) te.getGridNode( f.getOpposite() );
-				if ( node == null )
+				GridNode node = (GridNode) te.getGridNode( f.getOpposite() );
+				if( node == null )
 					continue;
 
 				// construct a new connection between these two nodes.
@@ -430,7 +436,7 @@ public class GridNode implements IGridNode, IPathItem
 				{
 					new GridConnection( node, this, f.getOpposite() );
 				}
-				catch ( FailedConnection e )
+				catch( FailedConnection e )
 				{
 					TickHandler.INSTANCE.addCallable( node.getWorld(), new MachineSecurityBreak( this ) );
 
@@ -442,21 +448,21 @@ public class GridNode implements IGridNode, IPathItem
 
 	private IGridHost findGridHost( World world, int x, int y, int z )
 	{
-		if ( world.blockExists( x, y, z ) )
+		if( world.blockExists( x, y, z ) )
 		{
 			TileEntity te = world.getTileEntity( x, y, z );
-			if ( te instanceof IGridHost )
-				return ( IGridHost ) te;
+			if( te instanceof IGridHost )
+				return (IGridHost) te;
 		}
 		return null;
 	}
 
 	public boolean canConnect( GridNode from, ForgeDirection dir )
 	{
-		if ( !this.isValidDirection( dir ) )
+		if( !this.isValidDirection( dir ) )
 			return false;
 
-		if ( !from.getColor().matches( this.getColor() ) )
+		if( !from.getColor().matches( this.getColor() ) )
 			return false;
 
 		return true;
@@ -474,20 +480,20 @@ public class GridNode implements IGridNode, IPathItem
 
 	private void visitorConnection( Object tracker, IGridVisitor g, Deque<GridNode> nextRun, Deque<IGridConnection> nextConnections )
 	{
-		if ( g.visitNode( this ) )
+		if( g.visitNode( this ) )
 		{
-			for ( IGridConnection gc : this.getConnections() )
+			for( IGridConnection gc : this.getConnections() )
 			{
-				GridNode gn = ( GridNode ) gc.getOtherSide( this );
-				GridConnection gcc = ( GridConnection ) gc;
+				GridNode gn = (GridNode) gc.getOtherSide( this );
+				GridConnection gcc = (GridConnection) gc;
 
-				if ( gcc.visitorIterationNumber != tracker )
+				if( gcc.visitorIterationNumber != tracker )
 				{
 					gcc.visitorIterationNumber = tracker;
 					nextConnections.add( gc );
 				}
 
-				if ( tracker == gn.visitorIterationNumber )
+				if( tracker == gn.visitorIterationNumber )
 					continue;
 
 				gn.visitorIterationNumber = tracker;
@@ -499,13 +505,13 @@ public class GridNode implements IGridNode, IPathItem
 
 	private void visitorNode( Object tracker, IGridVisitor g, Deque<GridNode> nextRun )
 	{
-		if ( g.visitNode( this ) )
+		if( g.visitNode( this ) )
 		{
-			for ( IGridConnection gc : this.getConnections() )
+			for( IGridConnection gc : this.getConnections() )
 			{
-				GridNode gn = ( GridNode ) gc.getOtherSide( this );
+				GridNode gn = (GridNode) gc.getOtherSide( this );
 
-				if ( tracker == gn.visitorIterationNumber )
+				if( tracker == gn.visitorIterationNumber )
 					continue;
 
 				gn.visitorIterationNumber = tracker;
@@ -529,23 +535,23 @@ public class GridNode implements IGridNode, IPathItem
 	@Override
 	public IPathItem getControllerRoute()
 	{
-		if ( this.connections.isEmpty() || this.getFlags().contains( GridFlags.CANNOT_CARRY ) )
+		if( this.connections.isEmpty() || this.getFlags().contains( GridFlags.CANNOT_CARRY ) )
 			return null;
 
-		return ( IPathItem ) this.connections.get( 0 );
+		return (IPathItem) this.connections.get( 0 );
 	}
 
 	@Override
 	public void setControllerRoute( IPathItem fast, boolean zeroOut )
 	{
-		if ( zeroOut )
+		if( zeroOut )
 			this.channelData &= ~0xff;
 
 		int idx = this.connections.indexOf( fast );
-		if ( idx > 0 )
+		if( idx > 0 )
 		{
 			this.connections.remove( fast );
-			this.connections.add( 0, ( IGridConnection ) fast );
+			this.connections.add( 0, (IGridConnection) fast );
 		}
 	}
 
@@ -563,7 +569,7 @@ public class GridNode implements IGridNode, IPathItem
 	@Override
 	public IReadOnlyCollection<IPathItem> getPossibleOptions()
 	{
-		return ( ReadOnlyCollection ) this.getConnections();
+		return (ReadOnlyCollection) this.getConnections();
 	}
 
 	@Override
@@ -581,15 +587,15 @@ public class GridNode implements IGridNode, IPathItem
 	@Override
 	public void finalizeChannels()
 	{
-		if ( this.getFlags().contains( GridFlags.CANNOT_CARRY ) )
+		if( this.getFlags().contains( GridFlags.CANNOT_CARRY ) )
 			return;
 
-		if ( this.getLastUsedChannels() != this.getUsedChannels() )
+		if( this.getLastUsedChannels() != this.getUsedChannels() )
 		{
 			this.channelData &= 0xff;
 			this.channelData |= this.channelData << 8;
 
-			if ( this.getInternalGrid() != null )
+			if( this.getInternalGrid() != null )
 				this.getInternalGrid().postEventTo( this, EVENT );
 		}
 	}
@@ -635,11 +641,5 @@ public class GridNode implements IGridNode, IPathItem
 
 			return preferredA == preferredB ? 0 : ( preferredA ? -1 : 1 );
 		}
-	}
-
-	@Override
-	public int getPlayerID()
-	{
-		return this.playerID;
 	}
 }

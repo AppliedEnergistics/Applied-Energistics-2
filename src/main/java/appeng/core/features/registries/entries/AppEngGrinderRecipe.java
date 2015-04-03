@@ -18,9 +18,11 @@
 
 package appeng.core.features.registries.entries;
 
+
 import net.minecraft.item.ItemStack;
 
 import appeng.api.features.IGrinderEntry;
+
 
 public class AppEngGrinderRecipe implements IGrinderEntry
 {
@@ -36,13 +38,15 @@ public class AppEngGrinderRecipe implements IGrinderEntry
 
 	private int energy;
 
-	public AppEngGrinderRecipe(ItemStack a, ItemStack b, int cost) {
+	public AppEngGrinderRecipe( ItemStack a, ItemStack b, int cost )
+	{
 		this.in = a;
 		this.out = b;
 		this.energy = cost;
 	}
 
-	public AppEngGrinderRecipe(ItemStack a, ItemStack b, ItemStack c, float chance, int cost) {
+	public AppEngGrinderRecipe( ItemStack a, ItemStack b, ItemStack c, float chance, int cost )
+	{
 		this.in = a;
 		this.out = b;
 
@@ -52,7 +56,8 @@ public class AppEngGrinderRecipe implements IGrinderEntry
 		this.energy = cost;
 	}
 
-	public AppEngGrinderRecipe(ItemStack a, ItemStack b, ItemStack c, ItemStack d, float chance, float chance2, int cost) {
+	public AppEngGrinderRecipe( ItemStack a, ItemStack b, ItemStack c, ItemStack d, float chance, float chance2, int cost )
+	{
 		this.in = a;
 		this.out = b;
 
@@ -72,7 +77,7 @@ public class AppEngGrinderRecipe implements IGrinderEntry
 	}
 
 	@Override
-	public void setInput(ItemStack i)
+	public void setInput( ItemStack i )
 	{
 		this.in = i.copy();
 	}
@@ -84,21 +89,9 @@ public class AppEngGrinderRecipe implements IGrinderEntry
 	}
 
 	@Override
-	public void setOutput(ItemStack o)
+	public void setOutput( ItemStack o )
 	{
 		this.out = o.copy();
-	}
-
-	@Override
-	public int getEnergyCost()
-	{
-		return this.energy;
-	}
-
-	@Override
-	public void setEnergyCost(int c)
-	{
-		this.energy = c;
 	}
 
 	@Override
@@ -108,7 +101,13 @@ public class AppEngGrinderRecipe implements IGrinderEntry
 	}
 
 	@Override
-	public void setOptionalOutput(ItemStack output, float chance)
+	public ItemStack getSecondOptionalOutput()
+	{
+		return this.optionalOutput2;
+	}
+
+	@Override
+	public void setOptionalOutput( ItemStack output, float chance )
 	{
 		this.optionalOutput = output.copy();
 		this.optionalChance = chance;
@@ -121,13 +120,7 @@ public class AppEngGrinderRecipe implements IGrinderEntry
 	}
 
 	@Override
-	public ItemStack getSecondOptionalOutput()
-	{
-		return this.optionalOutput2;
-	}
-
-	@Override
-	public void setSecondOptionalOutput(ItemStack output, float chance)
+	public void setSecondOptionalOutput( ItemStack output, float chance )
 	{
 		this.optionalChance2 = chance;
 		this.optionalOutput2 = output.copy();
@@ -139,4 +132,15 @@ public class AppEngGrinderRecipe implements IGrinderEntry
 		return this.optionalChance2;
 	}
 
+	@Override
+	public int getEnergyCost()
+	{
+		return this.energy;
+	}
+
+	@Override
+	public void setEnergyCost( int c )
+	{
+		this.energy = c;
+	}
 }

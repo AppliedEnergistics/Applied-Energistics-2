@@ -59,6 +59,25 @@ public enum ReadableNumberConverter
 	}
 
 	/**
+	 * Gets character representation of the sign of a number
+	 *
+	 * @param number maybe signed number
+	 *
+	 * @return '-' if the number is signed, else an empty character
+	 */
+	private String getSign( long number )
+	{
+		if( number < 0 )
+		{
+			return "-";
+		}
+		else
+		{
+			return "";
+		}
+	}
+
+	/**
 	 * Converts a number into a human readable form. It will not round the number, but floor it.
 	 * Will try to cut the number down 1 decimal earlier. This will limit the String size to 3 chars.
 	 *
@@ -90,25 +109,6 @@ public enum ReadableNumberConverter
 			final char postFix = ENCODED_POSTFIXES[exp - 1];
 
 			return String.format( "%s%d%s", sign, result, postFix );
-		}
-	}
-
-	/**
-	 * Gets character representation of the sign of a number
-	 *
-	 * @param number maybe signed number
-	 *
-	 * @return '-' if the number is signed, else an empty character
-	 */
-	private String getSign( long number )
-	{
-		if ( number < 0 )
-		{
-			return "-";
-		}
-		else
-		{
-			return "";
 		}
 	}
 }

@@ -18,6 +18,7 @@
 
 package appeng.entity;
 
+
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.renderer.RenderBlocks;
@@ -31,15 +32,23 @@ import net.minecraft.util.ResourceLocation;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-@SideOnly(Side.CLIENT)
+
+@SideOnly( Side.CLIENT )
 public class RenderTinyTNTPrimed extends Render
 {
 
 	private final RenderBlocks blockRenderer = new RenderBlocks();
 
-	public RenderTinyTNTPrimed() {
+	public RenderTinyTNTPrimed()
+	{
 		this.shadowSize = 0.5F;
 		this.renderManager = RenderManager.instance;
+	}
+
+	@Override
+	public void doRender( Entity tnt, double x, double y, double z, float unused, float life )
+	{
+		this.renderPrimedTNT( (EntityTinyTNTPrimed) tnt, x, y, z, life );
 	}
 
 	public void renderPrimedTNT( EntityTinyTNTPrimed tnt, double x, double y, double z, float life )
@@ -48,16 +57,16 @@ public class RenderTinyTNTPrimed extends Render
 		GL11.glTranslatef( (float) x, (float) y - 0.25f, (float) z );
 		float f2;
 
-		if ( tnt.fuse - life + 1.0F < 10.0F )
+		if( tnt.fuse - life + 1.0F < 10.0F )
 		{
-			f2 = 1.0F - (tnt.fuse - life + 1.0F) / 10.0F;
+			f2 = 1.0F - ( tnt.fuse - life + 1.0F ) / 10.0F;
 
-			if ( f2 < 0.0F )
+			if( f2 < 0.0F )
 			{
 				f2 = 0.0F;
 			}
 
-			if ( f2 > 1.0F )
+			if( f2 > 1.0F )
 			{
 				f2 = 1.0F;
 			}
@@ -69,11 +78,11 @@ public class RenderTinyTNTPrimed extends Render
 		}
 
 		GL11.glScalef( 0.5f, 0.5f, 0.5f );
-		f2 = (1.0F - (tnt.fuse - life + 1.0F) / 100.0F) * 0.8F;
+		f2 = ( 1.0F - ( tnt.fuse - life + 1.0F ) / 100.0F ) * 0.8F;
 		this.bindEntityTexture( tnt );
 		this.blockRenderer.renderBlockAsItem( Blocks.tnt, 0, tnt.getBrightness( life ) );
 
-		if ( tnt.fuse / 5 % 2 == 0 )
+		if( tnt.fuse / 5 % 2 == 0 )
 		{
 			GL11.glDisable( GL11.GL_TEXTURE_2D );
 			GL11.glDisable( GL11.GL_LIGHTING );
@@ -91,15 +100,8 @@ public class RenderTinyTNTPrimed extends Render
 	}
 
 	@Override
-	public void doRender(Entity tnt, double x, double y, double z, float unused, float life)
-	{
-		this.renderPrimedTNT( (EntityTinyTNTPrimed) tnt, x, y, z, life );
-	}
-
-	@Override
-	protected ResourceLocation getEntityTexture(Entity entity)
+	protected ResourceLocation getEntityTexture( Entity entity )
 	{
 		return TextureMap.locationBlocksTexture;
 	}
-
 }

@@ -37,18 +37,12 @@ public class TileEnergyAcceptor extends AENetworkPowerTile
 {
 
 	final static AppEngInternalInventory INTERNAL_INVENTORY = new AppEngInternalInventory( null, 0 );
-	final int[] sides = new int[] { };
+	final int[] sides = new int[] {};
 
 	public TileEnergyAcceptor()
 	{
 		this.gridProxy.setIdlePowerUsage( 0.0 );
 		this.internalMaxPower = 0;
-	}
-
-	@Override
-	public AECableType getCableConnectionType( ForgeDirection dir )
-	{
-		return AECableType.COVERED;
 	}
 
 	@Override
@@ -68,6 +62,12 @@ public class TileEnergyAcceptor extends AENetworkPowerTile
 	}
 
 	@Override
+	public AECableType getCableConnectionType( ForgeDirection dir )
+	{
+		return AECableType.COVERED;
+	}
+
+	@Override
 	protected double getFunnelPowerDemand( double maxRequired )
 	{
 		try
@@ -75,7 +75,7 @@ public class TileEnergyAcceptor extends AENetworkPowerTile
 			IEnergyGrid grid = this.gridProxy.getEnergy();
 			return grid.getEnergyDemand( maxRequired );
 		}
-		catch ( GridAccessException e )
+		catch( GridAccessException e )
 		{
 			return this.internalMaxPower;
 		}
@@ -88,11 +88,11 @@ public class TileEnergyAcceptor extends AENetworkPowerTile
 		{
 			IEnergyGrid grid = this.gridProxy.getEnergy();
 			double leftOver = grid.injectPower( newPower, mode );
-			if ( mode == Actionable.SIMULATE )
+			if( mode == Actionable.SIMULATE )
 				return leftOver;
 			return 0.0;
 		}
-		catch ( GridAccessException e )
+		catch( GridAccessException e )
 		{
 			return super.funnelPowerIntoStorage( newPower, mode );
 		}

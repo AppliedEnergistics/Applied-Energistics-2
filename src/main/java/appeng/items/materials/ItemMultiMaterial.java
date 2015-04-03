@@ -90,37 +90,37 @@ public class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, 
 		super.addCheckedInformation( stack, player, lines, displayAdditionalInformation );
 
 		MaterialType mt = this.getTypeByStack( stack );
-		if ( mt == null )
+		if( mt == null )
 			return;
 
-		if ( mt == MaterialType.NamePress )
+		if( mt == MaterialType.NamePress )
 		{
 			NBTTagCompound c = Platform.openNbtData( stack );
 			lines.add( c.getString( "InscribeName" ) );
 		}
 
 		Upgrades u = this.getType( stack );
-		if ( u != null )
+		if( u != null )
 		{
 			List<String> textList = new LinkedList<String>();
-			for ( Entry<ItemStack, Integer> j : u.getSupported().entrySet() )
+			for( Entry<ItemStack, Integer> j : u.getSupported().entrySet() )
 			{
 				String name = null;
 
 				int limit = j.getValue();
 
-				if ( j.getKey().getItem() instanceof IItemGroup )
+				if( j.getKey().getItem() instanceof IItemGroup )
 				{
 					IItemGroup ig = (IItemGroup) j.getKey().getItem();
 					String str = ig.getUnlocalizedGroupName( u.getSupported().keySet(), j.getKey() );
-					if ( str != null )
+					if( str != null )
 						name = Platform.gui_localize( str ) + ( limit > 1 ? " (" + limit + ')' : "" );
 				}
 
-				if ( name == null )
+				if( name == null )
 					name = j.getKey().getDisplayName() + ( limit > 1 ? " (" + limit + ')' : "" );
 
-				if ( !textList.contains( name ) )
+				if( !textList.contains( name ) )
 					textList.add( name );
 			}
 
@@ -133,7 +133,7 @@ public class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, 
 
 	public MaterialType getTypeByStack( ItemStack is )
 	{
-		if ( this.dmgToMaterial.containsKey( is.getItemDamage() ) )
+		if( this.dmgToMaterial.containsKey( is.getItemDamage() ) )
 			return this.dmgToMaterial.get( is.getItemDamage() );
 		return MaterialType.InvalidType;
 	}
@@ -141,7 +141,7 @@ public class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, 
 	@Override
 	public Upgrades getType( ItemStack itemstack )
 	{
-		switch ( this.getTypeByStack( itemstack ) )
+		switch( this.getTypeByStack( itemstack ) )
 		{
 			case CardCapacity:
 				return Upgrades.CAPACITY;
@@ -162,13 +162,13 @@ public class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, 
 
 	public IStackSrc createMaterial( MaterialType mat )
 	{
-		if ( !mat.isRegistered() )
+		if( !mat.isRegistered() )
 		{
 			boolean enabled = true;
-			for ( AEFeature f : mat.getFeature() )
+			for( AEFeature f : mat.getFeature() )
 				enabled = enabled && AEConfig.instance.isFeatureEnabled( f );
 
-			if ( enabled )
+			if( enabled )
 			{
 				mat.itemInstance = this;
 				int newMaterialNum = mat.damageValue;
@@ -176,7 +176,7 @@ public class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, 
 
 				mat.stackSrc = new MaterialStackSrc( mat );
 
-				if ( this.dmgToMaterial.get( newMaterialNum ) == null )
+				if( this.dmgToMaterial.get( newMaterialNum ) == null )
 					this.dmgToMaterial.put( newMaterialNum, mat );
 				else
 					throw new RuntimeException( "Meta Overlap detected." );
@@ -192,25 +192,25 @@ public class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, 
 
 	public void makeUnique()
 	{
-		for ( MaterialType mt : ImmutableSet.copyOf( this.dmgToMaterial.values() ) )
+		for( MaterialType mt : ImmutableSet.copyOf( this.dmgToMaterial.values() ) )
 		{
-			if ( mt.getOreName() != null )
+			if( mt.getOreName() != null )
 			{
 				ItemStack replacement = null;
 
 				String[] names = mt.getOreName().split( "," );
 
-				for ( String name : names )
+				for( String name : names )
 				{
-					if ( replacement != null )
+					if( replacement != null )
 						break;
 
 					List<ItemStack> options = OreDictionary.getOres( name );
-					if ( options != null && options.size() > 0 )
+					if( options != null && options.size() > 0 )
 					{
-						for ( ItemStack is : options )
+						for( ItemStack is : options )
 						{
-							if ( is != null && is.getItem() != null )
+							if( is != null && is.getItem() != null )
 							{
 								replacement = is.copy();
 								break;
@@ -219,15 +219,15 @@ public class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, 
 					}
 				}
 
-				if ( replacement == null || AEConfig.instance.useAEVersion( mt ) )
+				if( replacement == null || AEConfig.instance.useAEVersion( mt ) )
 				{
 					// continue using the AE2 item.
-					for ( String name : names )
+					for( String name : names )
 						OreDictionary.registerOre( name, mt.stack( 1 ) );
 				}
 				else
 				{
-					if ( mt.itemInstance == this )
+					if( mt.itemInstance == this )
 						this.dmgToMaterial.remove( mt.damageValue );
 
 					mt.itemInstance = replacement.getItem();
@@ -240,7 +240,7 @@ public class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, 
 	@Override
 	public IIcon getIconFromDamage( int dmg )
 	{
-		if ( this.dmgToMaterial.containsKey( dmg ) )
+		if( this.dmgToMaterial.containsKey( dmg ) )
 			return this.dmgToMaterial.get( dmg ).IIcon;
 		return new MissingIcon( this );
 	}
@@ -253,11 +253,11 @@ public class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, 
 
 	private String nameOf( ItemStack is )
 	{
-		if ( is == null )
+		if( is == null )
 			return "null";
 
 		MaterialType mt = this.getTypeByStack( is );
-		if ( mt == null )
+		if( mt == null )
 			return "null";
 
 		return this.nameResolver.getName( mt.name() );
@@ -277,9 +277,9 @@ public class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, 
 			}
 		} );
 
-		for ( MaterialType mat : types )
+		for( MaterialType mat : types )
 		{
-			if ( mat.damageValue >= 0 && mat.isRegistered() && mat.itemInstance == this )
+			if( mat.damageValue >= 0 && mat.isRegistered() && mat.itemInstance == this )
 				cList.add( new ItemStack( this, 1, mat.damageValue ) );
 		}
 	}
@@ -287,12 +287,12 @@ public class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, 
 	@Override
 	public void registerIcons( IIconRegister icoRegister )
 	{
-		for ( MaterialType mat : MaterialType.values() )
+		for( MaterialType mat : MaterialType.values() )
 		{
-			if ( mat.damageValue != -1 )
+			if( mat.damageValue != -1 )
 			{
 				ItemStack what = new ItemStack( this, 1, mat.damageValue );
-				if ( this.getTypeByStack( what ) != MaterialType.InvalidType )
+				if( this.getTypeByStack( what ) != MaterialType.InvalidType )
 				{
 					String tex = "appliedenergistics2:" + this.nameOf( what );
 					mat.IIcon = icoRegister.registerIcon( tex );
@@ -304,31 +304,31 @@ public class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, 
 	@Override
 	public boolean onItemUseFirst( ItemStack is, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ )
 	{
-		if ( player.isSneaking() )
+		if( player.isSneaking() )
 		{
 			TileEntity te = world.getTileEntity( x, y, z );
 			IInventory upgrades = null;
 
-			if ( te instanceof IPartHost )
+			if( te instanceof IPartHost )
 			{
 				SelectedPart sp = ( (IPartHost) te ).selectPart( Vec3.createVectorHelper( hitX, hitY, hitZ ) );
-				if ( sp.part instanceof IUpgradeableHost )
+				if( sp.part instanceof IUpgradeableHost )
 					upgrades = ( (ISegmentedInventory) sp.part ).getInventoryByName( "upgrades" );
 			}
-			else if ( te instanceof IUpgradeableHost )
+			else if( te instanceof IUpgradeableHost )
 				upgrades = ( (ISegmentedInventory) te ).getInventoryByName( "upgrades" );
 
-			if ( upgrades != null && is != null && is.getItem() instanceof IUpgradeModule )
+			if( upgrades != null && is != null && is.getItem() instanceof IUpgradeModule )
 			{
 				IUpgradeModule um = (IUpgradeModule) is.getItem();
 				Upgrades u = um.getType( is );
 
-				if ( u != null )
+				if( u != null )
 				{
 					InventoryAdaptor ad = InventoryAdaptor.getAdaptor( upgrades, ForgeDirection.UNKNOWN );
-					if ( ad != null )
+					if( ad != null )
 					{
-						if ( player.worldObj.isRemote )
+						if( player.worldObj.isRemote )
 							return false;
 
 						player.inventory.setInventorySlotContents( player.inventory.currentItem, ad.addItems( is ) );
@@ -357,7 +357,7 @@ public class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, 
 		{
 			eqi = droppedEntity.getConstructor( World.class, double.class, double.class, double.class, ItemStack.class ).newInstance( w, location.posX, location.posY, location.posZ, itemstack );
 		}
-		catch ( Throwable t )
+		catch( Throwable t )
 		{
 			throw new RuntimeException( t );
 		}
@@ -366,7 +366,7 @@ public class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, 
 		eqi.motionY = location.motionY;
 		eqi.motionZ = location.motionZ;
 
-		if ( location instanceof EntityItem && eqi instanceof EntityItem )
+		if( location instanceof EntityItem && eqi instanceof EntityItem )
 			( (EntityItem) eqi ).delayBeforeCanPickup = ( (EntityItem) location ).delayBeforeCanPickup;
 
 		return eqi;
@@ -375,7 +375,7 @@ public class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, 
 	@Override
 	public int getBytes( ItemStack is )
 	{
-		switch ( this.getTypeByStack( is ) )
+		switch( this.getTypeByStack( is ) )
 		{
 			case Cell1kPart:
 				return KILO;
@@ -393,7 +393,7 @@ public class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, 
 	@Override
 	public boolean isStorageComponent( ItemStack is )
 	{
-		switch ( this.getTypeByStack( is ) )
+		switch( this.getTypeByStack( is ) )
 		{
 			case Cell1kPart:
 			case Cell4kPart:
@@ -421,14 +421,14 @@ public class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, 
 			{
 				Matcher a = this.pattern.matcher( o1 );
 				Matcher b = this.pattern.matcher( o2 );
-				if ( a.find() && b.find() )
+				if( a.find() && b.find() )
 				{
 					int ia = Integer.parseInt( a.group( 1 ) );
 					int ib = Integer.parseInt( b.group( 1 ) );
 					return Integer.compare( ia, ib );
 				}
 			}
-			catch ( Throwable t )
+			catch( Throwable t )
 			{
 				// ek!
 			}

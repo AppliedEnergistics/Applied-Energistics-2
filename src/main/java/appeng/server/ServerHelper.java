@@ -18,6 +18,7 @@
 
 package appeng.server;
 
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -42,61 +43,14 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.items.tools.ToolNetworkTool;
 import appeng.util.Platform;
 
+
 public class ServerHelper extends CommonHelper
 {
 
-	@Override
-	public void doRenderItem(ItemStack sis, World tile)
-	{
-
-	}
-
-	@Override
-	public List<EntityPlayer> getPlayers()
-	{
-		if ( !Platform.isClient() )
-		{
-			MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
-
-			if ( server != null )
-				return server.getConfigurationManager().playerEntityList;
-		}
-
-		return new ArrayList<EntityPlayer>();
-	}
-
-	@Override
-	public void sendToAllNearExcept(EntityPlayer p, double x, double y, double z, double dist, World w, AppEngPacket packet)
-	{
-		if ( Platform.isClient() )
-			return;
-
-		for (EntityPlayer o : this.getPlayers())
-		{
-			EntityPlayerMP entityplayermp = (EntityPlayerMP) o;
-
-			if ( entityplayermp != p && entityplayermp.worldObj == w )
-			{
-				double dX = x - entityplayermp.posX;
-				double dY = y - entityplayermp.posY;
-				double dZ = z - entityplayermp.posZ;
-
-				if ( dX * dX + dY * dY + dZ * dZ < dist * dist )
-				{
-					NetworkHandler.instance.sendTo( packet, entityplayermp );
-				}
-			}
-		}
-	}
+	private EntityPlayer renderModeBased;
 
 	@Override
 	public void init()
-	{
-
-	}
-
-	@Override
-	public void postInit()
 	{
 
 	}
@@ -108,19 +62,57 @@ public class ServerHelper extends CommonHelper
 	}
 
 	@Override
-	public void bindTileEntitySpecialRenderer(Class tile, AEBaseBlock blk)
+	public void bindTileEntitySpecialRenderer( Class tile, AEBaseBlock blk )
 	{
 		throw new RuntimeException( "This is a server..." );
 	}
 
 	@Override
-	public void spawnEffect(EffectType type, World worldObj, double posX, double posY, double posZ, Object o)
+	public List<EntityPlayer> getPlayers()
+	{
+		if( !Platform.isClient() )
+		{
+			MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
+
+			if( server != null )
+				return server.getConfigurationManager().playerEntityList;
+		}
+
+		return new ArrayList<EntityPlayer>();
+	}
+
+	@Override
+	public void sendToAllNearExcept( EntityPlayer p, double x, double y, double z, double dist, World w, AppEngPacket packet )
+	{
+		if( Platform.isClient() )
+			return;
+
+		for( EntityPlayer o : this.getPlayers() )
+		{
+			EntityPlayerMP entityplayermp = (EntityPlayerMP) o;
+
+			if( entityplayermp != p && entityplayermp.worldObj == w )
+			{
+				double dX = x - entityplayermp.posX;
+				double dY = y - entityplayermp.posY;
+				double dZ = z - entityplayermp.posZ;
+
+				if( dX * dX + dY * dY + dZ * dZ < dist * dist )
+				{
+					NetworkHandler.instance.sendTo( packet, entityplayermp );
+				}
+			}
+		}
+	}
+
+	@Override
+	public void spawnEffect( EffectType type, World worldObj, double posX, double posY, double posZ, Object o )
 	{
 		// :P
 	}
 
 	@Override
-	public boolean shouldAddParticles(Random r)
+	public boolean shouldAddParticles( Random r )
 	{
 		return false;
 	}
@@ -132,34 +124,38 @@ public class ServerHelper extends CommonHelper
 	}
 
 	@Override
+	public void doRenderItem( ItemStack sis, World tile )
+	{
+
+	}
+
+	@Override
+	public void postInit()
+	{
+
+	}
+
+	@Override
 	public CableRenderMode getRenderMode()
 	{
-		if ( this.renderModeBased == null )
+		if( this.renderModeBased == null )
 			return CableRenderMode.Standard;
 
 		return this.renderModeForPlayer( this.renderModeBased );
 	}
 
-	private EntityPlayer renderModeBased;
-
-	@Override
-	public void updateRenderMode(EntityPlayer player)
+	protected CableRenderMode renderModeForPlayer( EntityPlayer player )
 	{
-		this.renderModeBased = player;
-	}
-
-	protected CableRenderMode renderModeForPlayer(EntityPlayer player)
-	{
-		if ( player != null )
+		if( player != null )
 		{
-			for (int x = 0; x < InventoryPlayer.getHotbarSize(); x++)
+			for( int x = 0; x < InventoryPlayer.getHotbarSize(); x++ )
 			{
 				ItemStack is = player.inventory.getStackInSlot( x );
 
-				if ( is != null && is.getItem() instanceof ToolNetworkTool )
+				if( is != null && is.getItem() instanceof ToolNetworkTool )
 				{
 					NBTTagCompound c = is.getTagCompound();
-					if ( c != null && c.getBoolean( "hideFacades" ) )
+					if( c != null && c.getBoolean( "hideFacades" ) )
 						return CableRenderMode.CableView;
 				}
 			}
@@ -172,6 +168,12 @@ public class ServerHelper extends CommonHelper
 	public void triggerUpdates()
 	{
 
+	}
+
+	@Override
+	public void updateRenderMode( EntityPlayer player )
+	{
+		this.renderModeBased = player;
 	}
 
 	@Override

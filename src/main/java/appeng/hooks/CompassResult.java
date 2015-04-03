@@ -18,6 +18,7 @@
 
 package appeng.hooks;
 
+
 public class CompassResult
 {
 
@@ -28,11 +29,11 @@ public class CompassResult
 
 	public boolean requested = false;
 
-	public CompassResult(boolean hasResult, boolean spin, double rad) {
+	public CompassResult( boolean hasResult, boolean spin, double rad )
+	{
 		this.hasResult = hasResult;
 		this.spin = spin;
 		this.rad = rad;
 		this.time = System.currentTimeMillis();
 	}
-
 }

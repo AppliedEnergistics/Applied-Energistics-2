@@ -46,14 +46,14 @@ public class AchievementPickupHandler
 	@SubscribeEvent
 	public void onItemPickUp( PlayerEvent.ItemPickupEvent event )
 	{
-		if ( this.differentiator.isNoPlayer( event.player ) || event.pickedUp == null || event.pickedUp.getEntityItem() == null )
+		if( this.differentiator.isNoPlayer( event.player ) || event.pickedUp == null || event.pickedUp.getEntityItem() == null )
 			return;
 
 		ItemStack is = event.pickedUp.getEntityItem();
 
-		for ( Achievements achievement : Achievements.values() )
+		for( Achievements achievement : Achievements.values() )
 		{
-			if ( achievement.type == AchievementType.Pickup && Platform.isSameItemPrecise( achievement.stack, is ) )
+			if( achievement.type == AchievementType.Pickup && Platform.isSameItemPrecise( achievement.stack, is ) )
 			{
 				achievement.addToPlayer( event.player );
 				return;

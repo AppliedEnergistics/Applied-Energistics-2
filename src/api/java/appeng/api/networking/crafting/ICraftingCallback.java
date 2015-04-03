@@ -23,15 +23,14 @@
 
 package appeng.api.networking.crafting;
 
+
 public interface ICraftingCallback
 {
 
 	/**
 	 * this call back is synchronized with the world you passed.
 	 *
-	 * @param job
-	 *            - final job
+	 * @param job - final job
 	 */
 	void calculationComplete( ICraftingJob job );
-
 }

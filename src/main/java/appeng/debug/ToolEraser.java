@@ -57,7 +57,7 @@ public class ToolEraser extends AEBaseItem
 	@Override
 	public boolean onItemUseFirst( ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ )
 	{
-		if ( Platform.isClient() )
+		if( Platform.isClient() )
 			return false;
 
 		Block blk = world.getBlock( x, y, z );
@@ -67,17 +67,17 @@ public class ToolEraser extends AEBaseItem
 		List<WorldCoord> next = new LinkedList<WorldCoord>();
 		next.add( new WorldCoord( x, y, z ) );
 
-		while ( blocks < BLOCK_ERASE_LIMIT && !next.isEmpty() )
+		while( blocks < BLOCK_ERASE_LIMIT && !next.isEmpty() )
 		{
 			List<WorldCoord> c = next;
 			next = new LinkedList<WorldCoord>();
 
-			for ( WorldCoord wc : c )
+			for( WorldCoord wc : c )
 			{
 				Block c_blk = world.getBlock( wc.x, wc.y, wc.z );
 				int c_meta = world.getBlockMetadata( wc.x, wc.y, wc.z );
 
-				if ( c_blk == blk && c_meta == meta )
+				if( c_blk == blk && c_meta == meta )
 				{
 					blocks++;
 					world.setBlock( wc.x, wc.y, wc.z, Platform.AIR );

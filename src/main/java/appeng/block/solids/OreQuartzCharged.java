@@ -52,7 +52,7 @@ public class OreQuartzCharged extends OreQuartz
 	@Override
 	public Item getItemDropped( int id, Random rand, int meta )
 	{
-		for ( Item charged : AEApi.instance().definitions().materials().certusQuartzCrystalCharged().maybeItem().asSet() )
+		for( Item charged : AEApi.instance().definitions().materials().certusQuartzCrystalCharged().maybeItem().asSet() )
 		{
 			return charged;
 		}
@@ -82,7 +82,7 @@ public class OreQuartzCharged extends OreQuartz
 		double yOff = ( r.nextFloat() );
 		double zOff = ( r.nextFloat() );
 
-		switch ( r.nextInt( 6 ) )
+		switch( r.nextInt( 6 ) )
 		{
 			case 0:
 				xOff = -0.01;
@@ -107,11 +107,10 @@ public class OreQuartzCharged extends OreQuartz
 				break;
 		}
 
-		if ( CommonHelper.proxy.shouldAddParticles( r ) )
+		if( CommonHelper.proxy.shouldAddParticles( r ) )
 		{
 			ChargedOreFX fx = new ChargedOreFX( w, x + xOff, y + yOff, z + zOff, 0.0f, 0.0f, 0.0f );
 			Minecraft.getMinecraft().effectRenderer.addEffect( fx );
 		}
 	}
-
 }

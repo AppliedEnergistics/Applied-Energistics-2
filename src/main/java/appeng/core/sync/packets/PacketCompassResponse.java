@@ -18,6 +18,7 @@
 
 package appeng.core.sync.packets;
 
+
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
@@ -27,6 +28,7 @@ import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.hooks.CompassManager;
 import appeng.hooks.CompassResult;
+
 
 public class PacketCompassResponse extends AppEngPacket
 {
@@ -39,7 +41,8 @@ public class PacketCompassResponse extends AppEngPacket
 	public CompassResult cr;
 
 	// automatic.
-	public PacketCompassResponse(ByteBuf stream) {
+	public PacketCompassResponse( ByteBuf stream )
+	{
 		this.attunement = stream.readLong();
 		this.cx = stream.readInt();
 		this.cz = stream.readInt();
@@ -48,14 +51,9 @@ public class PacketCompassResponse extends AppEngPacket
 		this.cr = new CompassResult( stream.readBoolean(), stream.readBoolean(), stream.readDouble() );
 	}
 
-	@Override
-	public void clientPacketData(INetworkInfo network, AppEngPacket packet, EntityPlayer player)
-	{
-		CompassManager.INSTANCE.postResult( this.attunement, this.cx << 4, this.cdy << 5, this.cz << 4, this.cr );
-	}
-
 	// api
-	public PacketCompassResponse(PacketCompassRequest req, boolean hasResult, boolean spin, double radians) {
+	public PacketCompassResponse( PacketCompassRequest req, boolean hasResult, boolean spin, double radians )
+	{
 
 		ByteBuf data = Unpooled.buffer();
 
@@ -70,6 +68,11 @@ public class PacketCompassResponse extends AppEngPacket
 		data.writeDouble( radians );
 
 		this.configureWrite( data );
+	}
 
+	@Override
+	public void clientPacketData( INetworkInfo network, AppEngPacket packet, EntityPlayer player )
+	{
+		CompassManager.INSTANCE.postResult( this.attunement, this.cx << 4, this.cdy << 5, this.cz << 4, this.cr );
 	}
 }
