@@ -119,8 +119,8 @@ public class GuiCraftConfirm extends AEBaseGui
 		this.selectCPU.enabled = false;
 		this.buttonList.add( this.selectCPU );
 
-		if ( this.OriginalGui != null )
-			this.cancel = new GuiButton( 0, this.guiLeft + 6, this.guiTop + this.ySize - 25, 50, 20, GuiText.Cancel.getLocal() );
+		
+		this.cancel = new GuiButton( 0, this.guiLeft + 6, this.guiTop + this.ySize - 25, 50, 20, GuiText.Cancel.getLocal() );
 
 		this.buttonList.add( this.cancel );
 	}
@@ -166,7 +166,14 @@ public class GuiCraftConfirm extends AEBaseGui
 
 		if ( btn == this.cancel )
 		{
-			NetworkHandler.instance.sendToServer( new PacketSwitchGuis( this.OriginalGui ) );
+			if ( this.OriginalGui != null )
+			{
+				NetworkHandler.instance.sendToServer( new PacketSwitchGuis( this.OriginalGui ) );
+			}
+			else
+			{
+				this.mc.thePlayer.closeScreen();
+			}
 		}
 
 		if ( btn == this.start )

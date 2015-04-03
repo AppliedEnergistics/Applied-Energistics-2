@@ -321,6 +321,10 @@ public class ContainerCraftConfirm extends AEBaseContainer
 				TileEntity te = this.openContext.getTile();
 				Platform.openGUI( this.invPlayer.player, te, this.openContext.side, OriginalGui );
 			}
+			else
+			{
+				this.invPlayer.player.closeScreen();
+			}
 		}
 	}
 
