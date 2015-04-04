@@ -981,32 +981,28 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 
 	public String getTermName()
 	{
-		TileEntity tile = this.iHost.getTileEntity();
-		World w = tile.getWorldObj();
+		final TileEntity hostTile = this.iHost.getTileEntity();
+		final World hostWorld = hostTile.getWorldObj();
 
 		if( ( (ICustomNameObject) this.iHost ).hasCustomName() )
 			return ( (ICustomNameObject) this.iHost ).getCustomName();
 
-		EnumSet<ForgeDirection> possibleDirections = this.iHost.getTargets();
-		for( ForgeDirection s : possibleDirections )
+		final EnumSet<ForgeDirection> possibleDirections = this.iHost.getTargets();
+		for( ForgeDirection direction : possibleDirections )
 		{
-			Vec3 from = Vec3.createVectorHelper( tile.xCoord + 0.5, tile.yCoord + 0.5, tile.zCoord + 0.5 );
-			from = from.addVector( s.offsetX * 0.501, s.offsetY * 0.501, s.offsetZ * 0.501 );
-			Vec3 to = from.addVector( s.offsetX, s.offsetY, s.offsetZ );
+			final int xPos = hostTile.xCoord + direction.offsetX;
+			final int yPos = hostTile.yCoord + direction.offsetY;
+			final int zPos = hostTile.zCoord + direction.offsetZ;
+			final TileEntity directedTile = hostWorld.getTileEntity( xPos, yPos, zPos );
 
-			Block blk = w.getBlock( tile.xCoord + s.offsetX, tile.yCoord + s.offsetY, tile.zCoord + s.offsetZ );
-			MovingObjectPosition mop = w.rayTraceBlocks( from, to, true );
-
-			TileEntity te = w.getTileEntity( tile.xCoord + s.offsetX, tile.yCoord + s.offsetY, tile.zCoord + s.offsetZ );
-
-			if( te == null )
+			if( directedTile == null )
 				continue;
 
-			if( te instanceof IInterfaceHost )
+			if( directedTile instanceof IInterfaceHost )
 			{
 				try
 				{
-					if( ( (IInterfaceHost) te ).getInterfaceDuality().sameGrid( this.gridProxy.getGrid() ) )
+					if( ( (IInterfaceHost) directedTile ).getInterfaceDuality().sameGrid( this.gridProxy.getGrid() ) )
 						continue;
 				}
 				catch( GridAccessException e )
@@ -1015,35 +1011,33 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 				}
 			}
 
-			Item item = Item.getItemFromBlock( blk );
-
-			if( item == null )
+			final InventoryAdaptor adaptor = InventoryAdaptor.getAdaptor( directedTile, direction.getOpposite() );
+			if( directedTile instanceof ICraftingMachine || adaptor != null )
 			{
-				return blk.getUnlocalizedName();
-			}
-
-			ItemStack what = new ItemStack( item, 1, blk.getDamageValue( w, tile.xCoord + s.offsetX, tile.yCoord + s.offsetY, tile.zCoord + s.offsetZ ) );
-
-			if( te instanceof ICraftingMachine || InventoryAdaptor.getAdaptor( te, s.getOpposite() ) != null )
-			{
-				if( te instanceof IInventory && ( (IInventory) te ).getSizeInventory() == 0 )
+				if( directedTile instanceof IInventory && ( (IInventory) directedTile ).getSizeInventory() == 0 )
 					continue;
 
-				if( te instanceof ISidedInventory )
+				if( directedTile instanceof ISidedInventory )
 				{
-					int[] sides = ( (ISidedInventory) te ).getAccessibleSlotsFromSide( s.getOpposite().ordinal() );
+					int[] sides = ( (ISidedInventory) directedTile ).getAccessibleSlotsFromSide( direction.getOpposite().ordinal() );
 
 					if( sides == null || sides.length == 0 )
 						continue;
 				}
 
+				final Block directedBlock = hostWorld.getBlock( xPos, yPos, zPos );
+				ItemStack what = new ItemStack( directedBlock, 1, directedBlock.getDamageValue( hostWorld, xPos, yPos, zPos ) );
 				try
 				{
-					if( mop != null && !badBlocks.contains( blk ) )
+					Vec3 from = Vec3.createVectorHelper( hostTile.xCoord + 0.5, hostTile.yCoord + 0.5, hostTile.zCoord + 0.5 );
+					from = from.addVector( direction.offsetX * 0.501, direction.offsetY * 0.501, direction.offsetZ * 0.501 );
+					Vec3 to = from.addVector( direction.offsetX, direction.offsetY, direction.offsetZ );
+					MovingObjectPosition mop = hostWorld.rayTraceBlocks( from, to, true );
+					if( mop != null && !badBlocks.contains( directedBlock ) )
 					{
-						if( mop.blockX == te.xCoord && mop.blockY == te.yCoord && mop.blockZ == te.zCoord )
+						if( mop.blockX == directedTile.xCoord && mop.blockY == directedTile.yCoord && mop.blockZ == directedTile.zCoord )
 						{
-							ItemStack g = blk.getPickBlock( mop, w, te.xCoord, te.yCoord, te.zCoord, null );
+							ItemStack g = directedBlock.getPickBlock( mop, hostWorld, directedTile.xCoord, directedTile.yCoord, directedTile.zCoord, null );
 							if( g != null )
 								what = g;
 						}
@@ -1051,11 +1045,17 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 				}
 				catch( Throwable t )
 				{
-					badBlocks.add( blk ); // nope!
+					badBlocks.add( directedBlock ); // nope!
 				}
 
 				if( what.getItem() != null )
 					return what.getUnlocalizedName();
+
+				Item item = Item.getItemFromBlock( directedBlock );
+				if( item == null )
+				{
+					return directedBlock.getUnlocalizedName();
+				}
 			}
 		}
 
