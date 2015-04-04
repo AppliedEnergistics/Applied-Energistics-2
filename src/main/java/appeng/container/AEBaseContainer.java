@@ -348,14 +348,7 @@ public abstract class AEBaseContainer extends Container
 
 	protected void bindPlayerInventory( InventoryPlayer inventoryPlayer, int offset_x, int offset_y )
 	{
-		for( int i = 0; i < 9; i++ )
-		{
-			if( this.locked.contains( i ) )
-				this.addSlotToContainer( new SlotDisabled( inventoryPlayer, i, 8 + i * 18 + offset_x, 58 + offset_y ) );
-			else
-				this.addSlotToContainer( new SlotPlayerHotBar( inventoryPlayer, i, 8 + i * 18 + offset_x, 58 + offset_y ) );
-		}
-
+		// bind player inventory
 		for( int i = 0; i < 3; i++ )
 		{
 			for( int j = 0; j < 9; j++ )
@@ -365,6 +358,15 @@ public abstract class AEBaseContainer extends Container
 				else
 					this.addSlotToContainer( new SlotPlayerInv( inventoryPlayer, j + i * 9 + 9, 8 + j * 18 + offset_x, offset_y + i * 18 ) );
 			}
+		}
+
+		// bind player hotbar
+		for( int i = 0; i < 9; i++ )
+		{
+			if( this.locked.contains( i ) )
+				this.addSlotToContainer( new SlotDisabled( inventoryPlayer, i, 8 + i * 18 + offset_x, 58 + offset_y ) );
+			else
+				this.addSlotToContainer( new SlotPlayerHotBar( inventoryPlayer, i, 8 + i * 18 + offset_x, 58 + offset_y ) );
 		}
 	}
 
