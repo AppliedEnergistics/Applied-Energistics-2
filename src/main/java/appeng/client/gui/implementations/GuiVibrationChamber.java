@@ -62,7 +62,7 @@ public class GuiVibrationChamber extends AEBaseGui
 		int k = 25;
 		int l = -15;
 
-		this.pb.setFullMsg( this.cvc.aePerTick * this.cvc.getCurrentProgress() / 100 + " ae/t" );
+		this.pb.setFullMsg( this.cvc.aePerTick * this.cvc.getCurrentProgress() / 100 + " AE/t" );
 
 		if( this.cvc.getCurrentProgress() > 0 )
 		{
