@@ -92,9 +92,9 @@ public class BlockCableBus extends AEBaseBlock implements IRedNetConnection
 	public BlockCableBus()
 	{
 		super( BlockCableBus.class, AEGlassMaterial.INSTANCE );
-		this.setFeature( EnumSet.of( AEFeature.Core ) );
 		this.setLightOpacity( 0 );
 		this.isFullSize = this.isOpaque = false;
+		this.setFeature( EnumSet.of( AEFeature.Core ) );
 	}
 
 	@Override

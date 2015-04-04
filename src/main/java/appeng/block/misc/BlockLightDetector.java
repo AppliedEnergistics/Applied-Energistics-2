@@ -38,8 +38,8 @@ public class BlockLightDetector extends BlockQuartzTorch
 	public BlockLightDetector()
 	{
 		super( BlockLightDetector.class );
-		this.setFeature( EnumSet.of( AEFeature.LightDetector ) );
 		this.setTileEntity( TileLightDetector.class );
+		this.setFeature( EnumSet.of( AEFeature.LightDetector ) );
 	}
 
 	@Override

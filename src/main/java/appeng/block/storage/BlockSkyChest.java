@@ -58,13 +58,13 @@ public class BlockSkyChest extends AEBaseBlock implements ICustomCollision
 	public BlockSkyChest()
 	{
 		super( BlockSkyChest.class, Material.rock );
-		this.setFeature( EnumSet.of( AEFeature.Core, AEFeature.SkyStoneChests ) );
 		this.setTileEntity( TileSkyChest.class );
 		this.isOpaque = this.isFullSize = false;
 		this.lightOpacity = 0;
 		this.hasSubtypes = true;
 		this.setHardness( 50 );
 		this.blockResistance = 150.0f;
+		this.setFeature( EnumSet.of( AEFeature.Core, AEFeature.SkyStoneChests ) );
 	}
 
 	@Override

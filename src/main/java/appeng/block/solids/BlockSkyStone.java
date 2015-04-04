@@ -72,11 +72,12 @@ public class BlockSkyStone extends AEBaseBlock implements IOrientableBlock
 	public BlockSkyStone()
 	{
 		super( BlockSkyStone.class, Material.rock );
-		this.setFeature( EnumSet.of( AEFeature.Core ) );
 		this.setHardness( 50 );
 		this.hasSubtypes = true;
 		this.blockResistance = 150.0f;
 		this.setHarvestLevel( "pickaxe", 3, 0 );
+		this.setFeature( EnumSet.of( AEFeature.Core ) );
+
 		MinecraftForge.EVENT_BUS.register( this );
 	}
 

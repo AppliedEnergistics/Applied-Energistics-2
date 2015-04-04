@@ -42,8 +42,8 @@ public class BlockInterface extends AEBaseBlock
 	public BlockInterface()
 	{
 		super( BlockInterface.class, Material.iron );
-		this.setFeature( EnumSet.of( AEFeature.Core ) );
 		this.setTileEntity( TileInterface.class );
+		this.setFeature( EnumSet.of( AEFeature.Core ) );
 	}
 
 	@Override

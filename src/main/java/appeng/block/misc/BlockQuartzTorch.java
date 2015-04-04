@@ -55,8 +55,8 @@ public class BlockQuartzTorch extends AEBaseBlock implements IOrientableBlock, I
 	public BlockQuartzTorch()
 	{
 		this( BlockQuartzTorch.class );
-		this.setFeature( EnumSet.of( AEFeature.DecorativeLights ) );
 		this.setLightLevel( 0.9375F );
+		this.setFeature( EnumSet.of( AEFeature.DecorativeLights ) );
 	}
 
 	protected BlockQuartzTorch( Class which )
