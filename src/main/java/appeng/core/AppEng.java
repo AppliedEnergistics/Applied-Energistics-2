@@ -22,10 +22,14 @@ package appeng.core;
 import java.io.File;
 import java.util.concurrent.TimeUnit;
 
+import com.google.common.base.Stopwatch;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
+import cpw.mods.fml.common.ModAPIManager;
+import cpw.mods.fml.common.ModContainer;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLInterModComms;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
@@ -35,8 +39,7 @@ import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 
-import com.google.common.base.Stopwatch;
-
+import appeng.core.api.ApiConflictException;
 import appeng.core.crash.CrashInfo;
 import appeng.core.crash.IntegrationCrashEnhancement;
 import appeng.core.crash.ModCrashEnhancement;
@@ -55,8 +58,10 @@ import appeng.util.Platform;
 @Mod( modid = AppEng.MOD_ID, acceptedMinecraftVersions = "[1.7.10]", name = AppEng.MOD_NAME, version = AEConfig.VERSION, dependencies = AppEng.MOD_DEPENDENCIES, guiFactory = "appeng.client.gui.config.AEConfigGuiFactory" )
 public class AppEng
 {
+
 	public final static String MOD_ID = "appliedenergistics2";
 	public final static String MOD_NAME = "Applied Energistics 2";
+	public final static String API_ID = "appliedenergistics2|API";
 	public final static String MOD_DEPENDENCIES =
 			// a few mods, AE should load after, probably.
 			// required-after:AppliedEnergistics2API|all;
@@ -105,6 +110,8 @@ public class AppEng
 		{
 			CommonHelper.proxy.missingCoreMod();
 		}
+
+		this.checkForApiConflicts();
 
 		Stopwatch watch = Stopwatch.createStarted();
 		this.configDirectory = new File( event.getModConfigurationDirectory().getPath(), "AppliedEnergistics2" );
@@ -202,5 +209,39 @@ public class AppEng
 	public void serverStarting( FMLServerStartingEvent evt )
 	{
 		evt.registerServerCommand( new AECommand( evt.getServer() ) );
+	}
+
+	/**
+	 * Checks if AE2 and the API are provided by the same source.
+	 *
+	 * This is either the same jar or directory in case of indev.
+	 */
+	private void checkForApiConflicts()
+	{
+		final ModAPIManager apiManager = ModAPIManager.INSTANCE;
+		if ( apiManager.hasAPI( API_ID ) )
+		{
+			final ModContainer aeContainer = FMLCommonHandler.instance().findContainerFor( MOD_ID );
+			ModContainer aeApiContainer = null;
+
+			final Iterable<? extends ModContainer> apiList = apiManager.getAPIList();
+			for ( ModContainer container : apiList )
+			{
+				if ( API_ID.equals( container.getModId() ) )
+				{
+					aeApiContainer = container;
+					break;
+				}
+			}
+
+			final File ae2Source = aeContainer.getSource();
+			final File ae2ApiSource = aeApiContainer.getSource();
+
+			if ( !ae2Source.equals( ae2ApiSource ) )
+			{
+				final String offendingModId = aeApiContainer.getDependencies().toString();
+				throw new ApiConflictException( String.format( "Another mod with the id %s is already providing the AE2 API", offendingModId ) );
+			}
+		}
 	}
 }
