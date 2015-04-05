@@ -12,7 +12,8 @@ public class ChunkOnly extends StandardWorld
 {
 
 	final Chunk target;
-	final int cx, cz;
+	final int cx;
+	final int cz;
 	int verticalBits = 0;
 
 	public ChunkOnly( World w, int cx, int cz )
