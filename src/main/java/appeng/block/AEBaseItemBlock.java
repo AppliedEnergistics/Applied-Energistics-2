@@ -162,8 +162,6 @@ public class AEBaseItemBlock extends ItemBlock
 			forward = ForgeDirection.SOUTH;
 			if( up.offsetY == 0 )
 				forward = ForgeDirection.UP;
-
-			ori.setOrientation( forward, up );
 		}
 
 		if( !this.blockType.isValidOrientation( w, x, y, z, forward, up ) )
