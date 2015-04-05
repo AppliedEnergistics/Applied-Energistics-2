@@ -480,7 +480,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 	}
 
 	@Override
-	final public boolean onActivate( EntityPlayer player, Vec3 pos )
+	public final boolean onActivate( EntityPlayer player, Vec3 pos )
 	{
 		if( this.useMemoryCard( player ) )
 			return true;
@@ -489,7 +489,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 	}
 
 	@Override
-	final public boolean onShiftActivate( EntityPlayer player, Vec3 pos )
+	public final boolean onShiftActivate( EntityPlayer player, Vec3 pos )
 	{
 		if( this.useMemoryCard( player ) )
 			return true;

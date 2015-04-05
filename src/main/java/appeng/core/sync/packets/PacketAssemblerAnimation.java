@@ -40,11 +40,11 @@ import appeng.util.item.AEItemStack;
 public class PacketAssemblerAnimation extends AppEngPacket
 {
 
-	final public int x;
-	final public int y;
-	final public int z;
-	final public byte rate;
-	final public IAEItemStack is;
+	public final int x;
+	public final int y;
+	public final int z;
+	public final byte rate;
+	public final IAEItemStack is;
 
 	// automatic.
 	public PacketAssemblerAnimation( ByteBuf stream ) throws IOException

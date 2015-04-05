@@ -32,8 +32,8 @@ import appeng.tile.spatial.TileSpatialPylon;
 public class SpatialPylonCluster implements IAECluster
 {
 
-	final public DimensionalCoord min;
-	final public DimensionalCoord max;
+	public final DimensionalCoord min;
+	public final DimensionalCoord max;
 	final List<TileSpatialPylon> line = new ArrayList<TileSpatialPylon>();
 	public boolean isDestroyed = false;
 

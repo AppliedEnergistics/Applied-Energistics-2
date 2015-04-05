@@ -29,7 +29,7 @@ import appeng.api.parts.IPart;
 public class ContainerOpenContext
 {
 
-	final public boolean isItem;
+	public final boolean isItem;
 	public World w;
 	public int x;
 	public int y;

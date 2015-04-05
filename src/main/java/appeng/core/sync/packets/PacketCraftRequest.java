@@ -46,8 +46,8 @@ import appeng.util.Platform;
 public class PacketCraftRequest extends AppEngPacket
 {
 
-	final public long amount;
-	final public boolean heldShift;
+	public final long amount;
+	public final boolean heldShift;
 
 	// automatic.
 	public PacketCraftRequest( ByteBuf stream )

@@ -48,7 +48,7 @@ import appeng.util.Platform;
 public class TileCondenser extends AEBaseInvTile implements IFluidHandler, IConfigManagerHost, IConfigurableObject
 {
 
-	static private final FluidTankInfo[] EMPTY = new FluidTankInfo[] { new FluidTankInfo( null, 10 ) };
+	private static final FluidTankInfo[] EMPTY = new FluidTankInfo[] { new FluidTankInfo( null, 10 ) };
 	final int[] sides = new int[] { 0, 1 };
 	final AppEngInternalInventory inv = new AppEngInternalInventory( this, 3 );
 	final ConfigManager cm = new ConfigManager( this );

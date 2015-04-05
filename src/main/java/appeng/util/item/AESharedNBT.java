@@ -74,7 +74,7 @@ public class AESharedNBT extends NBTTagCompound implements IAETagCompound
 	/*
 	 * Returns an NBT Compound that is used for accelerating comparisons.
 	 */
-	synchronized public static NBTTagCompound getSharedTagCompound( NBTTagCompound tagCompound, ItemStack s )
+	public static synchronized NBTTagCompound getSharedTagCompound( NBTTagCompound tagCompound, ItemStack s )
 	{
 		if( tagCompound.hasNoTags() )
 			return null;

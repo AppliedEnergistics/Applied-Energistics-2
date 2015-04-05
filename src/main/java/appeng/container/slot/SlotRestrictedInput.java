@@ -224,7 +224,7 @@ public class SlotRestrictedInput extends AppEngSlot
 		return super.getStack();
 	}
 
-	static public boolean isMetalIngot( ItemStack i )
+	public static boolean isMetalIngot( ItemStack i )
 	{
 		if( Platform.isSameItemPrecise( i, new ItemStack( Items.iron_ingot ) ) )
 			return true;

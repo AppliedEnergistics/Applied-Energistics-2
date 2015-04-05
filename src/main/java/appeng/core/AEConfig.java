@@ -55,7 +55,7 @@ public class AEConfig extends Configuration implements IConfigurableObject, ICon
 	public static final double TUNNEL_POWER_LOSS = 0.05;
 	public static final String VERSION = "@version@";
 	public static final String CHANNEL = "@aechannel@";
-	public final static String PACKET_CHANNEL = "AE";
+	public static final String PACKET_CHANNEL = "AE";
 	public static AEConfig instance;
 	public final IConfigManager settings = new ConfigManager( this );
 	public final EnumSet<AEFeature> featureFlags = EnumSet.noneOf( AEFeature.class );
@@ -63,7 +63,7 @@ public class AEConfig extends Configuration implements IConfigurableObject, ICon
 	public final int[] priorityByStacks = new int[] { 1, 10, 100, 1000 };
 	public final int[] levelByStacks = new int[] { 1, 10, 100, 1000 };
 	private final double WirelessHighWirelessCount = 64;
-	final private File configFile;
+	private final File configFile;
 	public int storageBiomeID = -1;
 	public int storageProviderID = -1;
 	public int formationPlaneEntityLimit = 128;

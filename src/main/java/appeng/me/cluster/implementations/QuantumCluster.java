@@ -48,8 +48,8 @@ import appeng.util.iterators.ChainedIterator;
 public class QuantumCluster implements ILocatable, IAECluster
 {
 
-	final public WorldCoord min;
-	final public WorldCoord max;
+	public final WorldCoord min;
+	public final WorldCoord max;
 	public boolean isDestroyed = false;
 	public boolean updateStatus = true;
 	public TileQuantumBridge[] Ring;

@@ -36,9 +36,9 @@ import appeng.util.iterators.NullIterator;
 public class AdaptorBCPipe extends InventoryAdaptor
 {
 
-	final private IBC bc;
-	final private TileEntity i;
-	final private ForgeDirection d;
+	private final IBC bc;
+	private final TileEntity i;
+	private final ForgeDirection d;
 
 	public AdaptorBCPipe( TileEntity s, ForgeDirection dd )
 	{

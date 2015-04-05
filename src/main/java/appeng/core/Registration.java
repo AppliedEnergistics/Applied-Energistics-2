@@ -121,7 +121,7 @@ import appeng.worldgen.QuartzWorldGen;
 
 public final class Registration
 {
-	final public static Registration INSTANCE = new Registration();
+	public static final Registration INSTANCE = new Registration();
 
 	private final RecipeHandler recipeHandler;
 	private final DefinitionConverter converter;

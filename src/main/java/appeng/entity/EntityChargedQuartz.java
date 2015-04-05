@@ -40,7 +40,7 @@ import appeng.helpers.Reflected;
 import appeng.util.Platform;
 
 
-final public class EntityChargedQuartz extends AEBaseEntityItem
+public final class EntityChargedQuartz extends AEBaseEntityItem
 {
 
 	int delay = 0;

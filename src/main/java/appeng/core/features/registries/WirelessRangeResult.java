@@ -25,8 +25,8 @@ import net.minecraft.tileentity.TileEntity;
 public class WirelessRangeResult
 {
 
-	final public float dist;
-	final public TileEntity te;
+	public final float dist;
+	public final TileEntity te;
 
 	public WirelessRangeResult( TileEntity t, float d )
 	{

@@ -37,7 +37,7 @@ import appeng.core.AEConfig;
 import appeng.core.features.registries.WorldGenRegistry;
 
 
-final public class QuartzWorldGen implements IWorldGenerator
+public final class QuartzWorldGen implements IWorldGenerator
 {
 	private final WorldGenMinable oreNormal;
 	private final WorldGenMinable oreCharged;

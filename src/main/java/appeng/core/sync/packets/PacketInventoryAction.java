@@ -44,10 +44,10 @@ import appeng.util.item.AEItemStack;
 public class PacketInventoryAction extends AppEngPacket
 {
 
-	final public InventoryAction action;
-	final public int slot;
-	final public long id;
-	final public IAEItemStack slotItem;
+	public final InventoryAction action;
+	public final int slot;
+	public final long id;
+	public final IAEItemStack slotItem;
 
 	// automatic.
 	public PacketInventoryAction( ByteBuf stream ) throws IOException

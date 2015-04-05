@@ -30,9 +30,9 @@ import net.minecraft.nbt.NBTTagCompound;
 public class ResolverResult
 {
 
-	final public String itemName;
-	final public int damageValue;
-	final public NBTTagCompound compound;
+	public final String itemName;
+	public final int damageValue;
+	public final NBTTagCompound compound;
 
 	public ResolverResult( String name, int damage )
 	{

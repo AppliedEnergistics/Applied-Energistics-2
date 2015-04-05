@@ -56,7 +56,7 @@ public class RB extends BaseModule implements IRB
 	private class RBWrapper implements appeng.api.util.IOrientable
 	{
 
-		final private IOrientable internal;
+		private final IOrientable internal;
 
 		public RBWrapper( IOrientable ww )
 		{

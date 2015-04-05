@@ -66,7 +66,7 @@ import appeng.recipes.handlers.OreRegistration;
 public class RecipeHandler implements IRecipeHandler
 {
 
-	final public List<String> tokens = new LinkedList<String>();
+	public final List<String> tokens = new LinkedList<String>();
 	final RecipeData data;
 
 	public RecipeHandler()

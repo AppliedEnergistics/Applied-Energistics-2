@@ -77,7 +77,7 @@ public class BaseBlockRender
 		setOriMap();
 	}
 
-	static public void setOriMap()
+	public static void setOriMap()
 	{
 		// pointed up...
 		ORIENTATION_MAP[0][3][1] = 0;
@@ -309,7 +309,7 @@ public class BaseBlockRender
 		renderer.uvRotateBottom = renderer.uvRotateEast = renderer.uvRotateNorth = renderer.uvRotateSouth = renderer.uvRotateTop = renderer.uvRotateWest = 0;
 	}
 
-	static public int getOrientation( ForgeDirection in, ForgeDirection forward, ForgeDirection up )
+	public static int getOrientation( ForgeDirection in, ForgeDirection forward, ForgeDirection up )
 	{
 		if( in == null || in == ForgeDirection.UNKNOWN // 1
 				|| forward == null || forward == ForgeDirection.UNKNOWN // 2

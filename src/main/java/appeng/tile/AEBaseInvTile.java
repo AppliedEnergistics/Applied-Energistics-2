@@ -148,7 +148,7 @@ public abstract class AEBaseInvTile extends AEBaseTile implements ISidedInventor
 	public abstract void onChangeInventory( IInventory inv, int slot, InvOperation mc, ItemStack removed, ItemStack added );
 
 	@Override
-	final public int[] getAccessibleSlotsFromSide( int side )
+	public final int[] getAccessibleSlotsFromSide( int side )
 	{
 		Block blk = this.worldObj.getBlock( this.xCoord, this.yCoord, this.zCoord );
 		if( blk instanceof AEBaseBlock )

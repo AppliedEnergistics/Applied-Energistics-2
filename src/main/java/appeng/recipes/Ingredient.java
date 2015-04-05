@@ -41,12 +41,12 @@ import appeng.api.recipes.ResolverResultSet;
 public class Ingredient implements IIngredient
 {
 
-	final public boolean isAir;
+	public final boolean isAir;
 
-	final public String nameSpace;
-	final public String itemName;
-	final public int meta;
-	final public int qty;
+	public final String nameSpace;
+	public final String itemName;
+	public final int meta;
+	public final int qty;
 	NBTTagCompound nbt = null;
 	ItemStack[] baked;
 

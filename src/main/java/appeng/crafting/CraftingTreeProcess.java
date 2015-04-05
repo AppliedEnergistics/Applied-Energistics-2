@@ -49,7 +49,7 @@ public class CraftingTreeProcess
 	final ICraftingPatternDetails details;
 	final CraftingJob job;
 	final Map<CraftingTreeNode, Long> nodes = new HashMap<CraftingTreeNode, Long>();
-	final private int depth;
+	private final int depth;
 	public boolean possible = true;
 	World world;
 	long crafts = 0;

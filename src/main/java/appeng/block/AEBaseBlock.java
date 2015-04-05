@@ -196,7 +196,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	}
 
 	@Override
-	final public IFeatureHandler handler()
+	public final IFeatureHandler handler()
 	{
 		return this.handler;
 	}
@@ -279,7 +279,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	final public AxisAlignedBB getSelectedBoundingBoxFromPool( World w, int x, int y, int z )
+	public final AxisAlignedBB getSelectedBoundingBoxFromPool( World w, int x, int y, int z )
 	{
 		ICustomCollision collisionHandler = null;
 		AxisAlignedBB b = null;
@@ -360,7 +360,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	}
 
 	@Override
-	final public boolean isOpaqueCube()
+	public final boolean isOpaqueCube()
 	{
 		return this.isOpaque;
 	}
@@ -421,7 +421,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	}
 
 	@Override
-	final public boolean onBlockActivated( World w, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ )
+	public final boolean onBlockActivated( World w, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ )
 	{
 		if( player != null )
 		{
@@ -566,13 +566,13 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	}
 
 	@Override
-	final public boolean isNormalCube( IBlockAccess world, int x, int y, int z )
+	public final boolean isNormalCube( IBlockAccess world, int x, int y, int z )
 	{
 		return this.isFullSize;
 	}
 
 	@Override
-	final public boolean rotateBlock( World w, int x, int y, int z, ForgeDirection axis )
+	public final boolean rotateBlock( World w, int x, int y, int z, ForgeDirection axis )
 	{
 		IOrientable rotatable = null;
 
@@ -630,7 +630,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	}
 
 	@Override
-	final public ForgeDirection[] getValidRotations( World w, int x, int y, int z )
+	public final ForgeDirection[] getValidRotations( World w, int x, int y, int z )
 	{
 		if( this.hasBlockTileEntity() )
 		{
@@ -787,7 +787,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	}
 
 	@Override
-	final public TileEntity createNewTileEntity( World var1, int var2 )
+	public final TileEntity createNewTileEntity( World var1, int var2 )
 	{
 		if( this.hasBlockTileEntity() )
 		{

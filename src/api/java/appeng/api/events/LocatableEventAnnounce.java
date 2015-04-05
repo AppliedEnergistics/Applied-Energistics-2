@@ -37,8 +37,8 @@ import appeng.api.features.ILocatable;
 public class LocatableEventAnnounce extends Event
 {
 
-	final public ILocatable target;
-	final public LocatableEvent change;
+	public final ILocatable target;
+	public final LocatableEvent change;
 
 	public LocatableEventAnnounce( ILocatable o, LocatableEvent ev )
 	{

@@ -100,7 +100,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 {
 
 	static final Set<Block> badBlocks = new HashSet<Block>();
-	static private boolean interfaceRequest = false;
+	private static boolean interfaceRequest = false;
 	final int[] sides = new int[] { 0, 1, 2, 3, 4, 5, 6, 7 };
 	final IAEItemStack[] requireWork = new IAEItemStack[] { null, null, null, null, null, null, null, null };
 	final MultiCraftingTracker craftingTracker;

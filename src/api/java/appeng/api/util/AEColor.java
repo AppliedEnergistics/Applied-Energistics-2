@@ -77,22 +77,22 @@ public enum AEColor
 	/**
 	 * Unlocalized name for color.
 	 */
-	final public String unlocalizedName;
+	public final String unlocalizedName;
 
 	/**
 	 * Darkest Variant of the color, nearly black; as a RGB HEX Integer
 	 */
-	final public int blackVariant;
+	public final int blackVariant;
 
 	/**
 	 * The Variant of the color that is used to represent the color normally; as a RGB HEX Integer
 	 */
-	final public int mediumVariant;
+	public final int mediumVariant;
 
 	/**
 	 * Lightest Variant of the color, nearly white; as a RGB HEX Integer
 	 */
-	final public int whiteVariant;
+	public final int whiteVariant;
 
 	AEColor( String unlocalizedName, int blackHex, int medHex, int whiteHex )
 	{

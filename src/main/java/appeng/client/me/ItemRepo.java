@@ -49,11 +49,11 @@ import appeng.util.prioitylist.IPartitionList;
 public class ItemRepo
 {
 
-	final private IItemList<IAEItemStack> list = AEApi.instance().storage().createItemList();
-	final private ArrayList<IAEItemStack> view = new ArrayList<IAEItemStack>();
-	final private ArrayList<ItemStack> dsp = new ArrayList<ItemStack>();
-	final private IScrollSource src;
-	final private ISortSource sortSrc;
+	private final IItemList<IAEItemStack> list = AEApi.instance().storage().createItemList();
+	private final ArrayList<IAEItemStack> view = new ArrayList<IAEItemStack>();
+	private final ArrayList<ItemStack> dsp = new ArrayList<ItemStack>();
+	private final IScrollSource src;
+	private final ISortSource sortSrc;
 
 	public int rowSize = 9;
 

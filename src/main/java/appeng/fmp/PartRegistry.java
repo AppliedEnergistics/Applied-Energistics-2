@@ -33,9 +33,9 @@ public enum PartRegistry
 {
 	QuartzTorchPart( "ae2_torch", BlockQuartzTorch.class, QuartzTorchPart.class ), CableBusPart( "ae2_cablebus", BlockCableBus.class, CableBusPart.class );
 
-	final private String name;
-	final private Class<? extends AEBaseBlock> blk;
-	final private Class<? extends TMultiPart> part;
+	private final String name;
+	private final Class<? extends AEBaseBlock> blk;
+	private final Class<? extends TMultiPart> part;
 
 	PartRegistry( String name, Class<? extends AEBaseBlock> blk, Class<? extends TMultiPart> part )
 	{

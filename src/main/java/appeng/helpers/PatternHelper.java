@@ -178,7 +178,7 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 	}
 
 	@Override
-	synchronized public boolean isValidItemForSlot( int slotIndex, ItemStack i, World w )
+	public synchronized boolean isValidItemForSlot( int slotIndex, ItemStack i, World w )
 	{
 		if( !this.isCrafting )
 		{

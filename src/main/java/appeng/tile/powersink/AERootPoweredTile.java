@@ -71,7 +71,7 @@ public abstract class AERootPoweredTile extends AEBaseInvTile implements IAEPowe
 		this.internalCurrentPower = data.getDouble( "internalCurrentPower" );
 	}
 
-	final protected double getExternalPowerDemand( PowerUnits externalUnit, double maxPowerRequired )
+	protected final double getExternalPowerDemand( PowerUnits externalUnit, double maxPowerRequired )
 	{
 		return PowerUnits.AE.convertTo( externalUnit, Math.max( 0.0, this.getFunnelPowerDemand( externalUnit.convertTo( PowerUnits.AE, maxPowerRequired ) ) ) );
 	}
@@ -81,7 +81,7 @@ public abstract class AERootPoweredTile extends AEBaseInvTile implements IAEPowe
 		return this.internalMaxPower - this.internalCurrentPower;
 	}
 
-	final public double injectExternalPower( PowerUnits input, double amt )
+	public final double injectExternalPower( PowerUnits input, double amt )
 	{
 		return PowerUnits.AE.convertTo( input, this.funnelPowerIntoStorage( input.convertTo( PowerUnits.AE, amt ), Actionable.MODULATE ) );
 	}
@@ -92,7 +92,7 @@ public abstract class AERootPoweredTile extends AEBaseInvTile implements IAEPowe
 	}
 
 	@Override
-	final public double injectAEPower( double amt, Actionable mode )
+	public final double injectAEPower( double amt, Actionable mode )
 	{
 		if( amt < 0.000001 )
 			return 0;
@@ -129,31 +129,31 @@ public abstract class AERootPoweredTile extends AEBaseInvTile implements IAEPowe
 	}
 
 	@Override
-	final public double getAEMaxPower()
+	public final double getAEMaxPower()
 	{
 		return this.internalMaxPower;
 	}
 
 	@Override
-	final public double getAECurrentPower()
+	public final double getAECurrentPower()
 	{
 		return this.internalCurrentPower;
 	}
 
 	@Override
-	final public boolean isAEPublicPowerStorage()
+	public final boolean isAEPublicPowerStorage()
 	{
 		return this.internalPublicPowerStorage;
 	}
 
 	@Override
-	final public AccessRestriction getPowerFlow()
+	public final AccessRestriction getPowerFlow()
 	{
 		return this.internalPowerFlow;
 	}
 
 	@Override
-	final public double extractAEPower( double amt, Actionable mode, PowerMultiplier multiplier )
+	public final double extractAEPower( double amt, Actionable mode, PowerMultiplier multiplier )
 	{
 		return multiplier.divide( this.extractAEPower( multiplier.multiply( amt ), mode ) );
 	}

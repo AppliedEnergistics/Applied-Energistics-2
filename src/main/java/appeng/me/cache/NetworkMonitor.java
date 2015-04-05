@@ -39,9 +39,9 @@ import appeng.me.storage.ItemWatcher;
 public class NetworkMonitor<T extends IAEStack<T>> extends MEMonitorHandler<T>
 {
 
-	private final static Deque<NetworkMonitor<?>> DEPTH = new LinkedList<NetworkMonitor<?>>();
-	final private GridStorageCache myGridCache;
-	final private StorageChannel myChannel;
+	private static final Deque<NetworkMonitor<?>> DEPTH = new LinkedList<NetworkMonitor<?>>();
+	private final GridStorageCache myGridCache;
+	private final StorageChannel myChannel;
 	boolean sendEvent = false;
 
 	public NetworkMonitor( GridStorageCache cache, StorageChannel chan )

@@ -30,12 +30,12 @@ public class InvLayerData
 {
 
 	// a simple empty array for empty stuff..
-	private final static int[] NULL_SIDES = new int[] {};
+	private static final int[] NULL_SIDES = new int[] {};
 
 	// cache of inventory state.
-	final private int[][] sides;
-	final private List<ISidedInventory> inventories;
-	final private List<InvSot> slots;
+	private final int[][] sides;
+	private final List<ISidedInventory> inventories;
+	private final List<InvSot> slots;
 
 	public InvLayerData( int[][] a, List<ISidedInventory> b, List<InvSot> c )
 	{

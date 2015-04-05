@@ -37,7 +37,7 @@ import appeng.tile.qnb.TileQuantumBridge;
 public class QuantumCalculator extends MBCalculator
 {
 
-	final private TileQuantumBridge tqb;
+	private final TileQuantumBridge tqb;
 
 	public QuantumCalculator( IAEMultiBlock t )
 	{

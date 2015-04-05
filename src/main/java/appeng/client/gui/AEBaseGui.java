@@ -270,7 +270,7 @@ public abstract class AEBaseGui extends GuiContainer
 	}
 
 	@Override
-	final protected void drawGuiContainerForegroundLayer( int x, int y )
+	protected final void drawGuiContainerForegroundLayer( int x, int y )
 	{
 		int ox = this.guiLeft; // (width - xSize) / 2;
 		int oy = this.guiTop; // (height - ySize) / 2;
@@ -285,7 +285,7 @@ public abstract class AEBaseGui extends GuiContainer
 	public abstract void drawFG( int offsetX, int offsetY, int mouseX, int mouseY );
 
 	@Override
-	final protected void drawGuiContainerBackgroundLayer( float f, int x, int y )
+	protected final void drawGuiContainerBackgroundLayer( float f, int x, int y )
 	{
 		int ox = this.guiLeft; // (width - xSize) / 2;
 		int oy = this.guiTop; // (height - ySize) / 2;

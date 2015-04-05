@@ -57,10 +57,10 @@ public class CellInventory implements ICellInventory
 	static final String ITEM_PRE_FORMATTED_NAME = "PN";
 	static final String ITEM_PRE_FORMATTED_FUZZY = "FP";
 	private static final HashSet<Integer> BLACK_LIST = new HashSet<Integer>();
-	static protected String[] ITEM_SLOT_ARR;
-	static protected String[] ITEM_SLOT_COUNT_ARR;
-	final protected NBTTagCompound tagCompound;
-	final protected ISaveProvider container;
+	protected static String[] ITEM_SLOT_ARR;
+	protected static String[] ITEM_SLOT_COUNT_ARR;
+	protected final NBTTagCompound tagCompound;
+	protected final ISaveProvider container;
 	protected int MAX_ITEM_TYPES = 63;
 	protected short storedItems = 0;
 	protected int storedItemCount = 0;

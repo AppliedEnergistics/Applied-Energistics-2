@@ -34,7 +34,7 @@ import appeng.items.tools.powered.ToolMassCannon;
 import appeng.util.Platform;
 
 
-final public class DispenserMatterCannon extends BehaviorDefaultDispenseItem
+public final class DispenserMatterCannon extends BehaviorDefaultDispenseItem
 {
 
 	@Override

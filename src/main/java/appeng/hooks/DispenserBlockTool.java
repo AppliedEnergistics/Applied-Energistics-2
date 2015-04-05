@@ -31,7 +31,7 @@ import net.minecraft.world.WorldServer;
 import appeng.util.Platform;
 
 
-final public class DispenserBlockTool extends BehaviorDefaultDispenseItem
+public final class DispenserBlockTool extends BehaviorDefaultDispenseItem
 {
 
 	@Override

@@ -59,8 +59,8 @@ import appeng.helpers.IMouseWheelItem;
 public class PacketValueConfig extends AppEngPacket
 {
 
-	final public String Name;
-	final public String Value;
+	public final String Name;
+	public final String Value;
 
 	// automatic.
 	public PacketValueConfig( ByteBuf stream ) throws IOException

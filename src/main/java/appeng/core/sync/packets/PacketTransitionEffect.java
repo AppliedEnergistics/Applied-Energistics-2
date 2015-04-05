@@ -45,7 +45,7 @@ import appeng.util.Platform;
 public class PacketTransitionEffect extends AppEngPacket
 {
 
-	final public boolean mode;
+	public final boolean mode;
 	final double x;
 	final double y;
 	final double z;

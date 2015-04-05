@@ -29,7 +29,7 @@ import net.minecraft.world.World;
 import appeng.entity.EntityTinyTNTPrimed;
 
 
-final public class DispenserBehaviorTinyTNT extends BehaviorDefaultDispenseItem
+public final class DispenserBehaviorTinyTNT extends BehaviorDefaultDispenseItem
 {
 
 	@Override

@@ -30,7 +30,7 @@ import appeng.api.features.IWorldGen;
 public final class WorldGenRegistry implements IWorldGen
 {
 
-	static final public WorldGenRegistry INSTANCE = new WorldGenRegistry();
+	public static final WorldGenRegistry INSTANCE = new WorldGenRegistry();
 	final TypeSet[] types;
 
 	private WorldGenRegistry()

@@ -49,43 +49,43 @@ public abstract class RotaryCraft extends IC2 implements ShaftPowerReceiver
 	}
 
 	@Override
-	final public int getOmega()
+	public final int getOmega()
 	{
 		return this.omega;
 	}
 
 	@Override
-	final public int getTorque()
+	public final int getTorque()
 	{
 		return this.torque;
 	}
 
 	@Override
-	final public long getPower()
+	public final long getPower()
 	{
 		return this.power;
 	}
 
 	@Override
-	final public String getName()
+	public final String getName()
 	{
 		return "AE";
 	}
 
 	@Override
-	final public int getIORenderAlpha()
+	public final int getIORenderAlpha()
 	{
 		return this.alpha;
 	}
 
 	@Override
-	final public void setIORenderAlpha( int io )
+	public final void setIORenderAlpha( int io )
 	{
 		this.alpha = io;
 	}
 
 	@Override
-	final public void setPower( long p )
+	public final void setPower( long p )
 	{
 		if( Platform.isClient() )
 			return;
@@ -94,7 +94,7 @@ public abstract class RotaryCraft extends IC2 implements ShaftPowerReceiver
 	}
 
 	@Override
-	final public void noInputMachine()
+	public final void noInputMachine()
 	{
 		this.power = 0;
 		this.torque = 0;
@@ -102,18 +102,18 @@ public abstract class RotaryCraft extends IC2 implements ShaftPowerReceiver
 	}
 
 	@Override
-	final public void setTorque( int t )
+	public final void setTorque( int t )
 	{
 		this.torque = t;
 	}
 
 	@Override
-	final public void setOmega( int o )
+	public final void setOmega( int o )
 	{
 		this.omega = o;
 	}
 
-	final public boolean canReadFromBlock( int x, int y, int z )
+	public final boolean canReadFromBlock( int x, int y, int z )
 	{
 		ForgeDirection side = ForgeDirection.UNKNOWN;
 
@@ -134,19 +134,19 @@ public abstract class RotaryCraft extends IC2 implements ShaftPowerReceiver
 	}
 
 	@Override
-	final public boolean canReadFrom( ForgeDirection side )
+	public final boolean canReadFrom( ForgeDirection side )
 	{
 		return this.getPowerSides().contains( side );
 	}
 
 	@Override
-	final public boolean isReceiving()
+	public final boolean isReceiving()
 	{
 		return true;
 	}
 
 	@Override
-	final public int getMinTorque( int available )
+	public final int getMinTorque( int available )
 	{
 		return 0;
 	}

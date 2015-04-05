@@ -39,7 +39,7 @@ import appeng.tile.misc.TileSecurity;
 public class SecurityInventory implements IMEInventoryHandler<IAEItemStack>
 {
 
-	final public IItemList<IAEItemStack> storedItems = AEApi.instance().storage().createItemList();
+	public final IItemList<IAEItemStack> storedItems = AEApi.instance().storage().createItemList();
 	final TileSecurity securityTile;
 
 	public SecurityInventory( TileSecurity ts )

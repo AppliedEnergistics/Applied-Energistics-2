@@ -89,7 +89,7 @@ import appeng.util.ItemSorters;
 public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper, ICellProvider, IMEInventoryHandler<IAEStack>
 {
 
-	final public static ExecutorService CRAFTING_POOL;
+	public static final ExecutorService CRAFTING_POOL;
 	static final Comparator<ICraftingPatternDetails> COMPARATOR = new Comparator<ICraftingPatternDetails>()
 	{
 		@Override
