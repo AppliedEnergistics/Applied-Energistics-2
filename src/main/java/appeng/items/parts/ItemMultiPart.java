@@ -301,19 +301,22 @@ public class ItemMultiPart extends AEBaseItem implements IPartItem, IItemGroup
 			if( stack.getItem() == this )
 			{
 				PartType pt = this.getTypeByStack( stack );
-				switch( pt )
+				if ( pt != null )
 				{
-					case ImportBus:
-						importBus = true;
-						if( u == pt )
-							group = true;
-						break;
-					case ExportBus:
-						exportBus = true;
-						if( u == pt )
-							group = true;
-						break;
-					default:
+					switch( pt )
+					{
+						case ImportBus:
+							importBus = true;
+							if( u == pt )
+								group = true;
+							break;
+						case ExportBus:
+							exportBus = true;
+							if( u == pt )
+								group = true;
+							break;
+						default:
+					}
 				}
 			}
 		}
