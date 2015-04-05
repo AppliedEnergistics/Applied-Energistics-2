@@ -116,7 +116,7 @@ public abstract class AERootPoweredItem extends AEBaseItem implements IAEItemPow
 	{
 		NBTTagCompound data = Platform.openNbtData( is );
 
-		double currentStorage = data.getDouble( this.POWER_NBT_KEY );
+		double currentStorage = data.getDouble( POWER_NBT_KEY );
 		double maxStorage = this.getAEMaxPower( is );
 
 		switch( op )
@@ -126,19 +126,19 @@ public abstract class AERootPoweredItem extends AEBaseItem implements IAEItemPow
 				if( currentStorage > maxStorage )
 				{
 					double diff = currentStorage - maxStorage;
-					data.setDouble( this.POWER_NBT_KEY, maxStorage );
+					data.setDouble( POWER_NBT_KEY, maxStorage );
 					return diff;
 				}
-				data.setDouble( this.POWER_NBT_KEY, currentStorage );
+				data.setDouble( POWER_NBT_KEY, currentStorage );
 				return 0;
 			case EXTRACT:
 				if( currentStorage > adjustment )
 				{
 					currentStorage -= adjustment;
-					data.setDouble( this.POWER_NBT_KEY, currentStorage );
+					data.setDouble( POWER_NBT_KEY, currentStorage );
 					return adjustment;
 				}
-				data.setDouble( this.POWER_NBT_KEY, 0 );
+				data.setDouble( POWER_NBT_KEY, 0 );
 				return currentStorage;
 			default:
 				break;
