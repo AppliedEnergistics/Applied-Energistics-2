@@ -103,6 +103,9 @@ sourceSets {
                     "assets/appliedenergistics2/textures/models/*",
                     "assets/appliedenergistics2/textures/items/*"
         }
+
+        // IntelliJ and Gradle interaction bug
+        output.resourcesDir = output.classesDir
     }
 }
 
