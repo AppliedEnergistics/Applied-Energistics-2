@@ -508,6 +508,4 @@ public final class MeteoritePlacer
 	{
 		return this.settings;
 	}
-
-	;
 }

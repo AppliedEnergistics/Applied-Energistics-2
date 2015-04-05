@@ -103,7 +103,6 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 	private void updateHandler()
 	{
 		this.myHandler.setBaseAccess( AccessRestriction.WRITE );
-		;
 		this.myHandler.setWhitelist( this.getInstalledUpgrades( Upgrades.INVERTER ) > 0 ? IncludeExclude.BLACKLIST : IncludeExclude.WHITELIST );
 		this.myHandler.setPriority( this.priority );
 
