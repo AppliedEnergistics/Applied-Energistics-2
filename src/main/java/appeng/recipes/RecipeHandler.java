@@ -30,6 +30,8 @@ import java.util.Map.Entry;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import javax.annotation.Nonnull;
+
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
@@ -63,6 +65,12 @@ import appeng.recipes.handlers.IWebsiteSerializer;
 import appeng.recipes.handlers.OreRegistration;
 
 
+/**
+ * @author AlgorithmX2
+ * @author thatsIch
+ * @version rv2
+ * @since rv0
+ */
 public class RecipeHandler implements IRecipeHandler
 {
 
@@ -84,20 +92,17 @@ public class RecipeHandler implements IRecipeHandler
 		this.data.Handlers.add( ch );
 	}
 
-	public String getName( IIngredient i )
+	public String getName( @Nonnull IIngredient i )
 	{
 		try
 		{
 			for( ItemStack is : i.getItemStackSet() )
 			{
-				try
-				{
-					return this.getName( is );
-				}
-				catch( RecipeError ignored )
-				{
-				}
+				return this.getName( is );
 			}
+		}
+		catch( RecipeError ignored )
+		{
 		}
 		catch( Throwable t )
 		{

@@ -36,18 +36,24 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.IItemRenderer.ItemRenderType;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import appeng.api.features.IInscriberRecipe;
 import appeng.api.util.IOrientable;
 import appeng.block.AEBaseBlock;
 import appeng.block.misc.BlockInscriber;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.texture.ExtraBlockTextures;
 import appeng.core.AELog;
-import appeng.recipes.handlers.Inscribe.InscriberRecipe;
 import appeng.tile.AEBaseTile;
 import appeng.tile.misc.TileInscriber;
 import appeng.util.Platform;
 
 
+/**
+ * @author AlgorithmX2
+ * @author thatsIch
+ * @version rv2
+ * @since rv0
+ */
 public class RenderBlockInscriber extends BaseBlockRender
 {
 
@@ -225,9 +231,9 @@ public class RenderBlockInscriber extends BaseBlockRender
 
 			if( is == null )
 			{
-				InscriberRecipe ir = inv.getTask();
+				IInscriberRecipe ir = inv.getTask();
 				if( ir != null )
-					is = ir.output.copy();
+					is = ir.getOutput().copy();
 			}
 
 			this.renderItem( is, 0.0f, block, tile, tess, x, y, z, f, renderer );

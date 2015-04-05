@@ -42,10 +42,15 @@ import appeng.api.implementations.items.IUpgradeModule;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.storage.ICellWorkbenchItem;
 import appeng.items.misc.ItemEncodedPattern;
-import appeng.recipes.handlers.Inscribe;
 import appeng.util.Platform;
 
 
+/**
+ * @author AlgorithmX2
+ * @author thatsIch
+ * @version rv2
+ * @since rv0
+ */
 public class SlotRestrictedInput extends AppEngSlot
 {
 
@@ -144,8 +149,8 @@ public class SlotRestrictedInput extends AppEngSlot
 					return true;
 				}
 
-				for( ItemStack is : Inscribe.PLATES )
-					if( Platform.isSameItemPrecise( is, i ) )
+				for( ItemStack optional : AEApi.instance().registries().inscriber().getOptionals() )
+					if( Platform.isSameItemPrecise( optional, i ) )
 						return true;
 
 				return false;

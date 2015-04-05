@@ -25,16 +25,21 @@ import net.minecraft.item.ItemStack;
 
 import appeng.api.AEApi;
 import appeng.api.definitions.IItemDefinition;
+import appeng.api.features.IInscriberRecipe;
 import appeng.container.guisync.GuiSync;
 import appeng.container.interfaces.IProgressProvider;
 import appeng.container.slot.SlotOutput;
 import appeng.container.slot.SlotRestrictedInput;
-import appeng.recipes.handlers.Inscribe;
-import appeng.recipes.handlers.Inscribe.InscriberRecipe;
 import appeng.tile.misc.TileInscriber;
 import appeng.util.Platform;
 
 
+/**
+ * @author AlgorithmX2
+ * @author thatsIch
+ * @version rv2
+ * @since rv0
+ */
 public class ContainerInscriber extends ContainerUpgradeable implements IProgressProvider
 {
 
@@ -105,32 +110,32 @@ public class ContainerInscriber extends ContainerUpgradeable implements IProgres
 	@Override
 	public boolean isValidForSlot( Slot s, ItemStack is )
 	{
-		ItemStack PlateA = this.ti.getStackInSlot( 0 );
-		ItemStack PlateB = this.ti.getStackInSlot( 1 );
+		ItemStack top = this.ti.getStackInSlot( 0 );
+		ItemStack bot = this.ti.getStackInSlot( 1 );
 
 		if( s == this.middle )
 		{
-			for( ItemStack i : Inscribe.PLATES )
+			for( ItemStack optional : AEApi.instance().registries().inscriber().getOptionals() )
 			{
-				if( Platform.isSameItemPrecise( i, is ) )
+				if( Platform.isSameItemPrecise( optional, is ) )
 					return false;
 			}
 
 			boolean matches = false;
 			boolean found = false;
 
-			for( InscriberRecipe i : Inscribe.RECIPES )
+			for( IInscriberRecipe recipe : AEApi.instance().registries().inscriber().getRecipes() )
 			{
-				boolean matchA = ( PlateA == null && i.plateA == null ) || ( Platform.isSameItemPrecise( PlateA, i.plateA ) ) && // and...
-						( PlateB == null && i.plateB == null ) | ( Platform.isSameItemPrecise( PlateB, i.plateB ) );
+				boolean matchA = ( top == null && !recipe.getTopOptional().isPresent() ) || ( Platform.isSameItemPrecise( top, recipe.getTopOptional().orNull() ) ) && // and...
+						( bot == null && !recipe.getBottomOptional().isPresent() ) | ( Platform.isSameItemPrecise( bot, recipe.getBottomOptional().orNull() ) );
 
-				boolean matchB = ( PlateB == null && i.plateA == null ) || ( Platform.isSameItemPrecise( PlateB, i.plateA ) ) && // and...
-						( PlateA == null && i.plateB == null ) | ( Platform.isSameItemPrecise( PlateA, i.plateB ) );
+				boolean matchB = ( bot == null && !recipe.getTopOptional().isPresent() ) || ( Platform.isSameItemPrecise( bot, recipe.getTopOptional().orNull() ) ) && // and...
+						( top == null && !recipe.getBottomOptional().isPresent() ) | ( Platform.isSameItemPrecise( top, recipe.getBottomOptional().orNull() ) );
 
 				if( matchA || matchB )
 				{
 					matches = true;
-					for( ItemStack option : i.imprintable )
+					for( ItemStack option : recipe.getInputs() )
 					{
 						if( Platform.isSameItemPrecise( is, option ) )
 							found = true;
@@ -142,7 +147,7 @@ public class ContainerInscriber extends ContainerUpgradeable implements IProgres
 				return false;
 		}
 
-		if( ( s == this.top && PlateB != null ) || ( s == this.bottom && PlateA != null ) )
+		if( ( s == this.top && bot != null ) || ( s == this.bottom && top != null ) )
 		{
 			boolean isValid = false;
 			ItemStack otherSlot = null;
@@ -159,15 +164,15 @@ public class ContainerInscriber extends ContainerUpgradeable implements IProgres
 			}
 
 			// everything else
-			for( InscriberRecipe i : Inscribe.RECIPES )
+			for( IInscriberRecipe recipe : AEApi.instance().registries().inscriber().getRecipes() )
 			{
-				if( Platform.isSameItemPrecise( i.plateA, otherSlot ) )
+				if( Platform.isSameItemPrecise( recipe.getTopOptional().orNull(), otherSlot ) )
 				{
-					isValid = Platform.isSameItemPrecise( is, i.plateB );
+					isValid = Platform.isSameItemPrecise( is, recipe.getBottomOptional().orNull() );
 				}
-				else if( Platform.isSameItemPrecise( i.plateB, otherSlot ) )
+				else if( Platform.isSameItemPrecise( recipe.getBottomOptional().orNull(), otherSlot ) )
 				{
-					isValid = Platform.isSameItemPrecise( is, i.plateA );
+					isValid = Platform.isSameItemPrecise( is, recipe.getTopOptional().orNull() );
 				}
 
 				if( isValid )
