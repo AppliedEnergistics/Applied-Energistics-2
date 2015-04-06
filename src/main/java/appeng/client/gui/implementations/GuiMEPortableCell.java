@@ -30,7 +30,7 @@ public class GuiMEPortableCell extends GuiMEMonitorable
 
 	public GuiMEPortableCell( InventoryPlayer inventoryPlayer, IPortableCell te )
 	{
-		super( inventoryPlayer, te, new ContainerMEPortableCell( inventoryPlayer, null ) );
+		super( inventoryPlayer, te, new ContainerMEPortableCell( inventoryPlayer, te ) );
 	}
 
 	int defaultGetMaxRows()

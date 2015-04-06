@@ -25,20 +25,33 @@ import net.minecraft.item.ItemStack;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.implementations.guiobjects.IPortableCell;
+import appeng.container.interfaces.IInventorySlotAware;
 import appeng.util.Platform;
 
 
 public class ContainerMEPortableCell extends ContainerMEMonitorable
 {
 
-	final IPortableCell civ;
-	double powerMultiplier = 0.5;
-	int ticks = 0;
+	public double powerMultiplier = 0.5;
+
+	private final IPortableCell civ;
+	private int ticks = 0;
+	private final int slot;
 
 	public ContainerMEPortableCell( InventoryPlayer ip, IPortableCell monitorable )
 	{
 		super( ip, monitorable, false );
-		this.lockPlayerInventorySlot( ip.currentItem );
+		if( monitorable instanceof IInventorySlotAware )
+		{
+			int slotIndex = ( (IInventorySlotAware) monitorable ).getInventorySlot();
+			this.lockPlayerInventorySlot( slotIndex );
+			this.slot = slotIndex;
+		}
+		else
+		{
+			this.slot = -1;
+			this.lockPlayerInventorySlot( ip.currentItem );
+		}
 		this.civ = monitorable;
 		this.bindPlayerInventory( ip, 0, 0 );
 	}
@@ -46,7 +59,7 @@ public class ContainerMEPortableCell extends ContainerMEMonitorable
 	@Override
 	public void detectAndSendChanges()
 	{
-		ItemStack currentItem = this.getPlayerInv().getCurrentItem();
+		ItemStack currentItem = slot < 0 ? this.getPlayerInv().getCurrentItem() : this.getPlayerInv().getStackInSlot( slot );
 
 		if( this.civ != null )
 		{

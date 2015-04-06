@@ -48,10 +48,11 @@ import appeng.api.storage.data.IItemList;
 import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
+import appeng.container.interfaces.IInventorySlotAware;
 import appeng.tile.networking.TileWireless;
 
 
-public class WirelessTerminalGuiObject implements IPortableCell, IActionHost
+public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, IInventorySlotAware
 {
 
 	public final ItemStack effectiveItem;
@@ -64,6 +65,7 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost
 	IWirelessAccessPoint myWap;
 	double sqRange = Double.MAX_VALUE;
 	double myRange = Double.MAX_VALUE;
+	private final int inventorySlot;
 
 	public WirelessTerminalGuiObject( IWirelessTermHandler wh, ItemStack is, EntityPlayer ep, World w, int x, int y, int z )
 	{
@@ -71,6 +73,7 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost
 		this.effectiveItem = is;
 		this.myPlayer = ep;
 		this.wth = wh;
+		this.inventorySlot = x;
 
 		ILocatable obj = null;
 
@@ -332,4 +335,11 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost
 		}
 		return false;
 	}
+
+	@Override
+	public int getInventorySlot()
+	{
+		return inventorySlot;
+	}
+
 }
