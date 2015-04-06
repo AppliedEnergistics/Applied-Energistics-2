@@ -36,15 +36,21 @@ import codechicken.nei.api.IOverlayHandler;
 import codechicken.nei.api.IRecipeOverlayRenderer;
 import codechicken.nei.recipe.TemplateRecipeHandler;
 
+import appeng.api.AEApi;
+import appeng.api.features.IInscriberRecipe;
 import appeng.client.gui.implementations.GuiInscriber;
 import appeng.core.localization.GuiText;
-import appeng.recipes.handlers.Inscribe;
-import appeng.recipes.handlers.Inscribe.InscriberRecipe;
 
 import static codechicken.lib.gui.GuiDraw.changeTexture;
 import static codechicken.lib.gui.GuiDraw.drawTexturedModalRect;
 
 
+/**
+ * @author AlgorithmX2
+ * @author thatsIch
+ * @version rv2
+ * @since rv0
+ */
 public class NEIInscriberRecipeHandler extends TemplateRecipeHandler
 {
 
@@ -59,7 +65,7 @@ public class NEIInscriberRecipeHandler extends TemplateRecipeHandler
 	{
 		if( ( outputId.equals( "inscriber" ) ) && ( this.getClass() == NEIInscriberRecipeHandler.class ) )
 		{
-			for( InscriberRecipe recipe : Inscribe.RECIPES )
+			for( IInscriberRecipe recipe : AEApi.instance().registries().inscriber().getRecipes() )
 			{
 				CachedInscriberRecipe cachedRecipe = new CachedInscriberRecipe( recipe );
 				cachedRecipe.computeVisuals();
@@ -75,9 +81,9 @@ public class NEIInscriberRecipeHandler extends TemplateRecipeHandler
 	@Override
 	public void loadCraftingRecipes( ItemStack result )
 	{
-		for( InscriberRecipe recipe : Inscribe.RECIPES )
+		for( IInscriberRecipe recipe : AEApi.instance().registries().inscriber().getRecipes() )
 		{
-			if( NEIServerUtils.areStacksSameTypeCrafting( recipe.output, result ) )
+			if( NEIServerUtils.areStacksSameTypeCrafting( recipe.getOutput(), result ) )
 			{
 				CachedInscriberRecipe cachedRecipe = new CachedInscriberRecipe( recipe );
 				cachedRecipe.computeVisuals();
@@ -89,7 +95,7 @@ public class NEIInscriberRecipeHandler extends TemplateRecipeHandler
 	@Override
 	public void loadUsageRecipes( ItemStack ingredient )
 	{
-		for( InscriberRecipe recipe : Inscribe.RECIPES )
+		for( IInscriberRecipe recipe : AEApi.instance().registries().inscriber().getRecipes() )
 		{
 			CachedInscriberRecipe cachedRecipe = new CachedInscriberRecipe( recipe );
 
@@ -162,19 +168,22 @@ public class NEIInscriberRecipeHandler extends TemplateRecipeHandler
 		public final ArrayList<PositionedStack> ingredients;
 		public final PositionedStack result;
 
-		public CachedInscriberRecipe( InscriberRecipe recipe )
+		public CachedInscriberRecipe( IInscriberRecipe recipe )
 		{
-			this.result = new PositionedStack( recipe.output, 108, 29 );
+			this.result = new PositionedStack( recipe.getOutput(), 108, 29 );
 			this.ingredients = new ArrayList<PositionedStack>();
 
-			if( recipe.plateA != null )
-				this.ingredients.add( new PositionedStack( recipe.plateA, 40, 5 ) );
+			for( ItemStack top : recipe.getTopOptional().asSet() )
+			{
+				this.ingredients.add( new PositionedStack( top, 40, 5 ) );
+			}
 
-			if( recipe.imprintable != null )
-				this.ingredients.add( new PositionedStack( recipe.imprintable, 40 + 18, 28 ) );
+			this.ingredients.add( new PositionedStack( recipe.getInputs(), 40 + 18, 28 ) );
 
-			if( recipe.plateB != null )
-				this.ingredients.add( new PositionedStack( recipe.plateB, 40, 51 ) );
+			for( ItemStack bot : recipe.getBottomOptional().asSet() )
+			{
+				this.ingredients.add( new PositionedStack( bot, 40, 51 ) );
+			}
 		}
 
 		@Override

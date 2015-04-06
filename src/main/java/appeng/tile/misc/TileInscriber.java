@@ -22,6 +22,8 @@ package appeng.tile.misc;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.List;
+import javax.annotation.Nullable;
 
 import io.netty.buffer.ByteBuf;
 
@@ -31,12 +33,16 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import com.google.common.collect.Lists;
+
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.Upgrades;
 import appeng.api.definitions.IComparableDefinition;
 import appeng.api.definitions.ITileDefinition;
+import appeng.api.features.IInscriberRecipe;
+import appeng.api.features.InscriberProcessType;
 import appeng.api.implementations.IUpgradeableHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IEnergyGrid;
@@ -46,13 +52,12 @@ import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
+import appeng.core.features.registries.entries.InscriberRecipe;
 import appeng.core.settings.TickRates;
 import appeng.helpers.Reflected;
 import appeng.me.GridAccessException;
 import appeng.parts.automation.DefinitionUpgradeInventory;
 import appeng.parts.automation.UpgradeInventory;
-import appeng.recipes.handlers.Inscribe;
-import appeng.recipes.handlers.Inscribe.InscriberRecipe;
 import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
 import appeng.tile.grid.AENetworkPowerTile;
@@ -66,6 +71,12 @@ import appeng.util.inv.WrapperInventoryRange;
 import appeng.util.item.AEItemStack;
 
 
+/**
+ * @author AlgorithmX2
+ * @author thatsIch
+ * @version rv2
+ * @since rv0
+ */
 public class TileInscriber extends AENetworkPowerTile implements IGridTickable, IUpgradeableHost, IConfigManagerHost
 {
 
@@ -220,8 +231,8 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 				return true;
 			}
 
-			for( ItemStack s : Inscribe.PLATES )
-				if( Platform.isSameItemPrecise( s, itemstack ) )
+			for( ItemStack optionals : AEApi.instance().registries().inscriber().getOptionals() )
+				if( Platform.isSameItemPrecise( optionals, itemstack ) )
 					return true;
 		}
 
@@ -286,7 +297,8 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 		return this.smash;
 	}
 
-	public InscriberRecipe getTask()
+	@Nullable
+	public IInscriberRecipe getTask()
 	{
 		ItemStack plateA = this.getStackInSlot( 0 );
 		ItemStack plateB = this.getStackInSlot( 1 );
@@ -337,25 +349,28 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 				else
 					display.removeTag( "Name" );
 
-				return new InscriberRecipe( new ItemStack[] { startingItem }, plateA, plateB, renamedItem, false );
+				final List<ItemStack> inputs = Lists.newArrayList( startingItem );
+				final InscriberProcessType type = InscriberProcessType.Inscribe;
+
+				return new InscriberRecipe( inputs, renamedItem, plateA, plateB, type );
 			}
 		}
 
-		for( InscriberRecipe i : Inscribe.RECIPES )
+		for( IInscriberRecipe recipe : AEApi.instance().registries().inscriber().getRecipes() )
 		{
 
-			boolean matchA = ( plateA == null && i.plateA == null ) || ( Platform.isSameItemPrecise( plateA, i.plateA ) ) && // and...
-					( plateB == null && i.plateB == null ) | ( Platform.isSameItemPrecise( plateB, i.plateB ) );
+			boolean matchA = ( plateA == null && !recipe.getTopOptional().isPresent() ) || ( Platform.isSameItemPrecise( plateA, recipe.getTopOptional().orNull() ) ) && // and...
+					( plateB == null && !recipe.getBottomOptional().isPresent() ) | ( Platform.isSameItemPrecise( plateB, recipe.getBottomOptional().orNull() ) );
 
-			boolean matchB = ( plateB == null && i.plateA == null ) || ( Platform.isSameItemPrecise( plateB, i.plateA ) ) && // and...
-					( plateA == null && i.plateB == null ) | ( Platform.isSameItemPrecise( plateA, i.plateB ) );
+			boolean matchB = ( plateB == null && !recipe.getTopOptional().isPresent() ) || ( Platform.isSameItemPrecise( plateB, recipe.getTopOptional().orNull() ) ) && // and...
+					( plateA == null && !recipe.getBottomOptional().isPresent() ) | ( Platform.isSameItemPrecise( plateA, recipe.getBottomOptional().orNull() ) );
 
 			if( matchA || matchB )
 			{
-				for( ItemStack option : i.imprintable )
+				for( ItemStack option : recipe.getInputs() )
 				{
 					if( Platform.isSameItemPrecise( option, this.getStackInSlot( 2 ) ) )
-						return i;
+						return recipe;
 				}
 			}
 		}
@@ -367,21 +382,19 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 	{
 		if( this.smash )
 		{
-
 			this.finalStep++;
 			if( this.finalStep == 8 )
 			{
-
-				InscriberRecipe out = this.getTask();
+				final IInscriberRecipe out = this.getTask();
 				if( out != null )
 				{
-					ItemStack is = out.output.copy();
+					final ItemStack outputCopy = out.getOutput().copy();
 					InventoryAdaptor ad = InventoryAdaptor.getAdaptor( new WrapperInventoryRange( this.inv, 3, 1, true ), ForgeDirection.UNKNOWN );
 
-					if( ad.addItems( is ) == null )
+					if( ad.addItems( outputCopy ) == null )
 					{
 						this.processingTime = 0;
-						if( out.usePlates )
+						if( out.getProcessType() == InscriberProcessType.Press )
 						{
 							this.setInventorySlotContents( 0, null );
 							this.setInventorySlotContents( 1, null );
@@ -437,12 +450,12 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 			if( this.processingTime > this.maxProcessingTime )
 			{
 				this.processingTime = this.maxProcessingTime;
-				InscriberRecipe out = this.getTask();
+				IInscriberRecipe out = this.getTask();
 				if( out != null )
 				{
-					ItemStack is = out.output.copy();
+					ItemStack outputCopy = out.getOutput().copy();
 					InventoryAdaptor ad = InventoryAdaptor.getAdaptor( new WrapperInventoryRange( this.inv, 3, 1, true ), ForgeDirection.UNKNOWN );
-					if( ad.simulateAdd( is ) == null )
+					if( ad.simulateAdd( outputCopy ) == null )
 					{
 						this.smash = true;
 						this.finalStep = 0;

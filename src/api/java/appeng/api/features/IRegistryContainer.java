@@ -30,6 +30,12 @@ import appeng.api.storage.ICellRegistry;
 import appeng.api.storage.IExternalStorageRegistry;
 
 
+/**
+ * @author AlgorithmX2
+ * @author thatsIch
+ * @version rv2
+ * @since rv0
+ */
 public interface IRegistryContainer
 {
 
@@ -68,6 +74,11 @@ public interface IRegistryContainer
 	 * Manage grinder recipes via API
 	 */
 	IGrinderRegistry grinder();
+
+	/**
+	 * Manage inscriber recipes via API
+	 */
+	IInscriberRegistry inscriber();
 
 	/**
 	 * get access to the locatable registry

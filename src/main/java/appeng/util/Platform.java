@@ -32,6 +32,8 @@ import java.util.Random;
 import java.util.Set;
 import java.util.WeakHashMap;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
@@ -140,6 +142,12 @@ import appeng.util.item.OreReference;
 import appeng.util.prioitylist.IPartitionList;
 
 
+/**
+ * @author AlgorithmX2
+ * @author thatsIch
+ * @version rv2
+ * @since rv0
+ */
 public class Platform
 {
 
@@ -1119,7 +1127,7 @@ public class Platform
 		return StatCollector.translateToLocal( string );
 	}
 
-	public static boolean isSameItemPrecise( ItemStack is, ItemStack filter )
+	public static boolean isSameItemPrecise( @Nullable ItemStack is, @Nullable ItemStack filter )
 	{
 		return isSameItem( is, filter ) && sameStackStags( is, filter );
 	}
@@ -1707,7 +1715,7 @@ public class Platform
 		return false;
 	}
 
-	public static boolean isSameItem( ItemStack left, ItemStack right )
+	public static boolean isSameItem( @Nullable ItemStack left, @Nullable ItemStack right )
 	{
 		return left != null && right != null && left.isItemEqual( right );
 	}

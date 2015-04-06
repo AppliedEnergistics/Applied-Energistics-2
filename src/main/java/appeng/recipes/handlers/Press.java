@@ -19,11 +19,48 @@
 package appeng.recipes.handlers;
 
 
-public class Press extends Inscribe
-{
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-	public Press()
+import net.minecraft.item.ItemStack;
+
+import appeng.api.AEApi;
+import appeng.api.exceptions.MissingIngredientError;
+import appeng.api.exceptions.RegistrationError;
+import appeng.api.features.IInscriberRecipe;
+import appeng.api.features.InscriberProcessType;
+import appeng.core.features.registries.entries.InscriberRecipe;
+
+
+/**
+ * recipe translation for pressing in the inscriber
+ *
+ * @author AlgorithmX2
+ * @author thatsIch
+ * @version rv2
+ * @since rv0
+ */
+public final class Press extends InscriberProcess
+{
+	@Override
+	public void register() throws RegistrationError, MissingIngredientError
 	{
-		this.usePlates = true;
+		if ( this.getImprintable() == null )
+			return;
+		if ( this.getOutput() == null )
+			return;
+
+		final ItemStack[] realInput = this.getImprintable().getItemStackSet();
+		final List<ItemStack> inputs = new ArrayList<ItemStack>( realInput.length );
+		Collections.addAll( inputs, realInput );
+		final ItemStack top = ( this.getTopOptional() == null ) ? null : this.getTopOptional().getItemStack();
+		final ItemStack bot = ( this.getBotOptional() == null ) ? null : this.getBotOptional().getItemStack();
+		final ItemStack output = this.getOutput().getItemStack();
+		final InscriberProcessType type = InscriberProcessType.Press;
+
+		IInscriberRecipe recipe = new InscriberRecipe( inputs, output, top, bot, type );
+
+		AEApi.instance().registries().inscriber().addRecipe( recipe );
 	}
 }
