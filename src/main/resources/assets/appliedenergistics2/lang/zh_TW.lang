@@ -289,7 +289,7 @@ waila.appliedenergistics2.Locked=鎖定
 waila.appliedenergistics2.Unlocked=未鎖定
 waila.appliedenergistics2.Showing=顯示
 waila.appliedenergistics2.Contains=容納
-waila.appliedenergistics2.Channels=頻道
+waila.appliedenergistics2.Channels=%1$d of %2$d 頻道
 
 item.appliedenergistics2.ItemBasicStorageCell.1k.name=1k-ME存儲元件
 item.appliedenergistics2.ItemBasicStorageCell.4k.name=4k-ME存儲元件

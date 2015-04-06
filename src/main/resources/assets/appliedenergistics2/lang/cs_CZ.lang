@@ -311,7 +311,7 @@ waila.appliedenergistics2.Locked=Zamčeno
 waila.appliedenergistics2.Unlocked=Odemčeno
 waila.appliedenergistics2.Showing=Zobrazuje
 waila.appliedenergistics2.Contains=Obsahuje
-waila.appliedenergistics2.Channels=Kanály
+waila.appliedenergistics2.Channels=%1$d of %2$d Kanály
 
 item.appliedenergistics2.ItemBasicStorageCell.1k.name=1k ME úložný článek
 item.appliedenergistics2.ItemBasicStorageCell.4k.name=4k ME úložný článek

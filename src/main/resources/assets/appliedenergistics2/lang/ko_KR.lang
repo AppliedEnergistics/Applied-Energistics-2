@@ -321,7 +321,7 @@ waila.appliedenergistics2.Locked=잠겨있음
 waila.appliedenergistics2.Unlocked=잠겨있지 않음
 waila.appliedenergistics2.Showing=Showing
 waila.appliedenergistics2.Contains=Contains
-waila.appliedenergistics2.Channels=채널
+waila.appliedenergistics2.Channels=%1$d of %2$d 채널
 
 item.appliedenergistics2.ItemBasicStorageCell.1k.name=1k ME 저장용 셀
 item.appliedenergistics2.ItemBasicStorageCell.4k.name=4k ME 저장용 셀

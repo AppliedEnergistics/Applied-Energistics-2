@@ -327,7 +327,7 @@ waila.appliedenergistics2.Locked=锁定
 waila.appliedenergistics2.Unlocked=未锁定
 waila.appliedenergistics2.Showing=显示
 waila.appliedenergistics2.Contains=容纳
-waila.appliedenergistics2.Channels=频道
+waila.appliedenergistics2.Channels=%1$d of %2$d 频道
 waila.appliedenergistics2.Crafting=合成中
 
 item.appliedenergistics2.ItemBasicStorageCell.1k.name=1k-ME存储元件

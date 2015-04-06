@@ -311,7 +311,7 @@ waila.appliedenergistics2.Locked=Gesperrt
 waila.appliedenergistics2.Unlocked=Entsperrt
 waila.appliedenergistics2.Showing=Zeigt
 waila.appliedenergistics2.Contains=Enthält
-waila.appliedenergistics2.Channels=Kanäle
+waila.appliedenergistics2.Channels=%1$d of %2$d Kanäle
 
 item.appliedenergistics2.ItemBasicStorageCell.1k.name=1k-ME-Speicherzelle
 item.appliedenergistics2.ItemBasicStorageCell.4k.name=4k-ME-Speicherzelle
