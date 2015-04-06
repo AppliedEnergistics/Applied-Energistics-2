@@ -30,6 +30,7 @@ import net.minecraft.item.ItemStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.client.me.SlotME;
 import appeng.core.AEConfig;
+import appeng.core.localization.ButtonToolTips;
 
 
 public abstract class AEBaseMEGui extends AEBaseGui
@@ -63,14 +64,30 @@ public abstract class AEBaseMEGui extends AEBaseGui
 				if( myStack != null )
 				{
 					if( myStack.getStackSize() > BigNumber || ( myStack.getStackSize() > 1 && stack.isItemDamaged() ) )
-						currentToolTip.add( "\u00a77Items Stored: " + NumberFormat.getNumberInstance( Locale.US ).format( myStack.getStackSize() ) );
+					{
+						final String local = ButtonToolTips.ItemsStored.getLocal();
+						final String formattedAmount = NumberFormat.getNumberInstance( Locale.US ).format( myStack.getStackSize() );
+						final String format = String.format( local, formattedAmount );
+
+						currentToolTip.add( "\u00a77" + format );
+					}
 
 					if( myStack.getCountRequestable() > 0 )
-						currentToolTip.add( "\u00a77Items Requestable: " + NumberFormat.getNumberInstance( Locale.US ).format( myStack.getCountRequestable() ) );
+					{
+						final String local = ButtonToolTips.ItemsRequestable.getLocal();
+						final String formattedAmount = NumberFormat.getNumberInstance( Locale.US ).format( myStack.getCountRequestable() );
+						final String format = String.format( local, formattedAmount );
+
+						currentToolTip.add( "\u00a77" + format );
+					}
 				}
 				else if( stack.stackSize > BigNumber || ( stack.stackSize > 1 && stack.isItemDamaged() ) )
 				{
-					currentToolTip.add( "\u00a77Items Stored: " + NumberFormat.getNumberInstance( Locale.US ).format( stack.stackSize ) );
+					final String local = ButtonToolTips.ItemsStored.getLocal();
+					final String formattedAmount = NumberFormat.getNumberInstance( Locale.US ).format( stack.stackSize );
+					final String format = String.format( local, formattedAmount );
+
+					currentToolTip.add( "\u00a77" + format );
 				}
 			}
 		}

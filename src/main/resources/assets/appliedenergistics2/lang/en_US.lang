@@ -209,6 +209,9 @@ gui.appliedenergistics2.Excluded=Excluded
 gui.appliedenergistics2.Partitioned=Partitioned
 gui.appliedenergistics2.Precise=Precise
 gui.appliedenergistics2.Fuzzy=Fuzzy
+gui.appliedenergistics2.SmallFontCraft=Craft
+gui.appliedenergistics2.LargeFontCraft=+
+gui.appliedenergistics2.Nothing=Nothing
 
 gui.tooltips.appliedenergistics2.Stash=Store Items
 gui.tooltips.appliedenergistics2.StashDesc=Return items on the crafting grid to network storage.
@@ -294,6 +297,8 @@ gui.tooltips.appliedenergistics2.ReportInaccessibleItemsNo=No: Only extractable 
 gui.tooltips.appliedenergistics2.BlockPlacement=Block Placement
 gui.tooltips.appliedenergistics2.BlockPlacementYes=Blocks will be placed as block.
 gui.tooltips.appliedenergistics2.BlockPlacementNo=Blocks will be dropped as item.
+gui.tooltips.appliedenergistics2.ItemsStored=Items Stored: %s
+gui.tooltips.appliedenergistics2.ItemsRequestable=Items Requestable: %s
 
 gui.appliedenergistics2.units.appliedenergstics=AE
 gui.appliedenergistics2.units.buildcraft=Minecraft Joules
