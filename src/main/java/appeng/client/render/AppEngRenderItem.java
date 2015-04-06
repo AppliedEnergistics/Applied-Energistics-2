@@ -29,6 +29,7 @@ import net.minecraft.item.ItemStack;
 
 import appeng.api.storage.data.IAEItemStack;
 import appeng.core.AEConfig;
+import appeng.core.localization.GuiText;
 import appeng.util.ReadableNumberConverter;
 
 
@@ -75,7 +76,7 @@ public class AppEngRenderItem extends RenderItem
 
 			if( is.stackSize == 0 )
 			{
-				String craftLabelText = AEConfig.instance.useTerminalUseLargeFont() ? "+" : "Craft";
+				String craftLabelText = AEConfig.instance.useTerminalUseLargeFont() ? GuiText.LargeFontCraft.getLocal() : GuiText.SmallFontCraft.getLocal();
 				GL11.glDisable( GL11.GL_LIGHTING );
 				GL11.glDisable( GL11.GL_DEPTH_TEST );
 				GL11.glPushMatrix();

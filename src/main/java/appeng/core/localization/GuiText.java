@@ -70,7 +70,13 @@ public enum GuiText
 
 	NoCraftingJobs, CPUs, FacadeCrafting, inWorldCraftingPresses, ChargedQuartzFind,
 
-	Included, Excluded, Partitioned, Precise, Fuzzy;
+	Included, Excluded, Partitioned, Precise, Fuzzy,
+
+	// Used in a terminal to indicate that an item is craftable
+	SmallFontCraft, LargeFontCraft,
+
+	// Used in a ME Interface when no appropriate TileEntity was detected near it
+	Nothing;
 
 	final String root;
 

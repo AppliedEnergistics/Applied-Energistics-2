@@ -58,7 +58,10 @@ public enum ButtonToolTips
 
 	Craft, Mod, DoesntDespawn, EmitterMode, CraftViaRedstone, EmitWhenCrafting, ReportInaccessibleItems, ReportInaccessibleItemsYes, ReportInaccessibleItemsNo,
 
-	BlockPlacement, BlockPlacementYes, BlockPlacementNo;
+	BlockPlacement, BlockPlacementYes, BlockPlacementNo,
+
+	// Used in the tooltips of the items in the terminal, when moused over
+	ItemsStored, ItemsRequestable;
 
 	final String root;
 

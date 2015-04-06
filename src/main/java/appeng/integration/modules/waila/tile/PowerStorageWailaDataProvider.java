@@ -92,7 +92,7 @@ public final class PowerStorageWailaDataProvider extends BaseWailaDataProvider
 				final String formatCurrentPower = Platform.formatPowerLong( internalCurrentPower, false );
 				final String formatMaxPower = Platform.formatPowerLong( internalMaxPower, false );
 
-				currentToolTip.add( WailaText.Contains + ": " + formatCurrentPower + " / " + formatMaxPower );
+				currentToolTip.add( WailaText.Contains.getLocal() + ": " + formatCurrentPower + " / " + formatMaxPower );
 			}
 		}
 
