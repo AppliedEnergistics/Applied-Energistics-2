@@ -22,6 +22,7 @@ apply from: 'gradle/scripts/propertyloader.gradle'
 apply from: 'gradle/scripts/dependencies.gradle'
 apply from: 'gradle/scripts/artifacts.gradle'
 apply from: 'gradle/scripts/autoinstallruntime.gradle'
+apply from: 'gradle/scripts/integration.gradle'
 
 buildscript {
     repositories {
@@ -103,9 +104,6 @@ sourceSets {
                     "assets/appliedenergistics2/textures/models/*",
                     "assets/appliedenergistics2/textures/items/*"
         }
-
-        // IntelliJ and Gradle interaction bug
-        output.resourcesDir = output.classesDir
     }
 }
 
