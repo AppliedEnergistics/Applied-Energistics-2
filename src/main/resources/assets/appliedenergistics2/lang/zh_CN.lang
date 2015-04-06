@@ -1,3 +1,4 @@
+// 方块
 tile.appliedenergistics2.BlockCableBus.name=AE2线缆和(或)总线
 tile.appliedenergistics2.BlockCellWorkbench.name=元件工作台
 tile.appliedenergistics2.BlockCharger.name=充能器
@@ -60,6 +61,7 @@ tile.appliedenergistics2.SkyStoneBrickStairBlock.name=陨石石砖楼梯
 tile.appliedenergistics2.SkyStoneSmallBrickStairBlock.name=陨石砖块楼梯
 tile.appliedenergistics2.SkyStoneStairBlock.name=陨石楼梯
 
+// Chat Messages
 chat.appliedenergistics2.ChestCannotReadStorageCell=ME箱子无法读取存储元件.
 chat.appliedenergistics2.SettingCleared=设置已清除.
 chat.appliedenergistics2.OutOfRange=超出无线信号范围.
@@ -76,9 +78,11 @@ chat.appliedenergistics2.AmmoDepleted=弹药告罄.
 chat.appliedenergistics2.isNowLocked=监控器已锁定.
 chat.appliedenergistics2.isNowUnlocked=监控器已解锁.
 
+// Creative Tabs
 itemGroup.appliedenergistics2=应用能源2
 itemGroup.appliedenergistics2.facades=应用能源2-伪装板
 
+// GUI
 gui.appliedenergistics2.CraftingTerminal=合成终端
 gui.appliedenergistics2.METunnel=ME
 gui.appliedenergistics2.ItemTunnel=物品
@@ -209,7 +213,11 @@ gui.appliedenergistics2.Excluded=排除匹配
 gui.appliedenergistics2.Partitioned=分区
 gui.appliedenergistics2.Precise=精确匹配
 gui.appliedenergistics2.Fuzzy=模糊匹配
+gui.appliedenergistics2.SmallFontCraft=合成
+gui.appliedenergistics2.LargeFontCraft=+
+gui.appliedenergistics2.Nothing=Nothing
 
+// GUI提示
 gui.tooltips.appliedenergistics2.Stash=存储物品
 gui.tooltips.appliedenergistics2.StashDesc=将合成槽的物品返回网络
 gui.tooltips.appliedenergistics2.Substitutions=矿物词典替换
@@ -294,7 +302,10 @@ gui.tooltips.appliedenergistics2.ReportInaccessibleItemsNo=否: 只显示可以�
 gui.tooltips.appliedenergistics2.BlockPlacement=方块放置方式
 gui.tooltips.appliedenergistics2.BlockPlacementYes=方块将被放置.
 gui.tooltips.appliedenergistics2.BlockPlacementNo=方块将以物品形式掉落.
+gui.tooltips.appliedenergistics2.ItemsStored=Items Stored: %s
+gui.tooltips.appliedenergistics2.ItemsRequestable=Items Requestable: %s
 
+// 单位
 gui.appliedenergistics2.units.appliedenergstics=AE
 gui.appliedenergistics2.units.buildcraft=MJ
 gui.appliedenergistics2.units.ic2=EU
@@ -302,6 +313,7 @@ gui.appliedenergistics2.units.mekanism=Joules
 gui.appliedenergistics2.units.rotarycraft=Watts
 gui.appliedenergistics2.units.thermalexpansion=RF
 
+// 颜色
 gui.appliedenergistics2.White=白色
 gui.appliedenergistics2.Orange=橙色
 gui.appliedenergistics2.Magenta=品红色
@@ -320,6 +332,7 @@ gui.appliedenergistics2.Red=红色
 gui.appliedenergistics2.Black=黑色
 gui.appliedenergistics2.Fluix=Fluix默认色
 
+// waila
 waila.appliedenergistics2.DeviceOnline=设备开启
 waila.appliedenergistics2.DeviceOffline=设备关闭
 waila.appliedenergistics2.DeviceMissingChannel=设备缺少频道
@@ -327,9 +340,10 @@ waila.appliedenergistics2.Locked=锁定
 waila.appliedenergistics2.Unlocked=未锁定
 waila.appliedenergistics2.Showing=显示
 waila.appliedenergistics2.Contains=容纳
-waila.appliedenergistics2.Channels=%1$d of %2$d 频道
+waila.appliedenergistics2.Channels=%1$d / %2$d 频道
 waila.appliedenergistics2.Crafting=合成中
 
+// 物品
 item.appliedenergistics2.ItemBasicStorageCell.1k.name=1k-ME存储元件
 item.appliedenergistics2.ItemBasicStorageCell.4k.name=4k-ME存储元件
 item.appliedenergistics2.ItemBasicStorageCell.16k.name=16k-ME存储元件
@@ -460,6 +474,7 @@ item.appliedenergistics2.ToolBiometricCard.name=身份卡
 item.appliedenergistics2.ToolDebugCard.name=Dev.调试卡
 item.appliedenergistics2.ToolReplicatorCard.name=Dev.复制卡
 
+// 命令
 commands.ae2.usage=ae2提供的指令 - 输入/ae2 list查看指令列表,/ae2 help _____查看指令帮助.
 commands.ae2.permissions=你没有足够的权限来执行该指令.
 commands.ae2.ChunkLogger=是否向服务器日志打开区块载入与载出信息.(OP)
@@ -519,6 +534,7 @@ achievement.ae2.StorageBus.desc=制作一个存储总线
 achievement.ae2.QNB=量子隧道
 achievement.ae2.QNB.desc=制作一个链接室
 
+// 统计
 stat.ae2.ItemsInserted=物品已加入ME存储
 stat.ae2.ItemsExtracted=物品已取出ME存储
 stat.ae2.TurnedCranks=转动曲柄
