@@ -56,9 +56,9 @@ import appeng.util.Platform;
 public class AENetworkProxy implements IGridBlock
 {
 
-	final private IGridProxyable gp;
-	final private boolean worldNode;
-	final private String nbtName; // name
+	private final IGridProxyable gp;
+	private final boolean worldNode;
+	private final String nbtName; // name
 	public AEColor myColor = AEColor.Transparent;
 	NBTTagCompound data = null; // input
 	private ItemStack myRepInstance;

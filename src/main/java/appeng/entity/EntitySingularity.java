@@ -39,10 +39,10 @@ import appeng.helpers.Reflected;
 import appeng.util.Platform;
 
 
-final public class EntitySingularity extends AEBaseEntityItem
+public final class EntitySingularity extends AEBaseEntityItem
 {
 
-	static private int randTickSeed = 0;
+	private static int randTickSeed = 0;
 
 	@Reflected
 	public EntitySingularity( World w )

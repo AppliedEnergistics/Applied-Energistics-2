@@ -26,8 +26,8 @@ import appeng.parts.p2p.PartP2PTunnelME;
 public class TunnelConnection
 {
 
-	final public PartP2PTunnelME tunnel;
-	final public IGridConnection c;
+	public final PartP2PTunnelME tunnel;
+	public final IGridConnection c;
 
 	public TunnelConnection( PartP2PTunnelME t, IGridConnection con )
 	{

@@ -43,9 +43,9 @@ public class P2PCache implements IGridCache
 {
 
 	final IGrid myGrid;
-	final private HashMap<Long, PartP2PTunnel> inputs = new HashMap<Long, PartP2PTunnel>();
-	final private Multimap<Long, PartP2PTunnel> outputs = LinkedHashMultimap.create();
-	final private TunnelCollection NullColl = new TunnelCollection<PartP2PTunnel>( null, null );
+	private final HashMap<Long, PartP2PTunnel> inputs = new HashMap<Long, PartP2PTunnel>();
+	private final Multimap<Long, PartP2PTunnel> outputs = LinkedHashMultimap.create();
+	private final TunnelCollection NullColl = new TunnelCollection<PartP2PTunnel>( null, null );
 
 	public P2PCache( IGrid g )
 	{

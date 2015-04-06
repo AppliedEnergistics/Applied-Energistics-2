@@ -58,11 +58,11 @@ import appeng.me.storage.NetworkInventoryHandler;
 public class GridStorageCache implements IStorageGrid
 {
 
-	final public IGrid myGrid;
+	public final IGrid myGrid;
 	final HashSet<ICellProvider> activeCellProviders = new HashSet<ICellProvider>();
 	final HashSet<ICellProvider> inactiveCellProviders = new HashSet<ICellProvider>();
-	final private SetMultimap<IAEStack, ItemWatcher> interests = HashMultimap.create();
-	final public GenericInterestManager<ItemWatcher> interestManager = new GenericInterestManager<ItemWatcher>( this.interests );
+	private final SetMultimap<IAEStack, ItemWatcher> interests = HashMultimap.create();
+	public final GenericInterestManager<ItemWatcher> interestManager = new GenericInterestManager<ItemWatcher>( this.interests );
 	private final NetworkMonitor<IAEItemStack> itemMonitor = new NetworkMonitor<IAEItemStack>( this, StorageChannel.ITEMS );
 	private final NetworkMonitor<IAEFluidStack> fluidMonitor = new NetworkMonitor<IAEFluidStack>( this, StorageChannel.FLUIDS );
 	private final HashMap<IGridNode, IStackWatcher> watchers = new HashMap<IGridNode, IStackWatcher>();

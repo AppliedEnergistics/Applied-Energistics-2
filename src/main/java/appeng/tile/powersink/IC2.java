@@ -41,25 +41,25 @@ public abstract class IC2 extends AERootPoweredTile implements IEnergySink
 	boolean isInIC2 = false;
 
 	@Override
-	final public boolean acceptsEnergyFrom( TileEntity emitter, ForgeDirection direction )
+	public final boolean acceptsEnergyFrom( TileEntity emitter, ForgeDirection direction )
 	{
 		return this.getPowerSides().contains( direction );
 	}
 
 	@Override
-	final public double getDemandedEnergy()
+	public final double getDemandedEnergy()
 	{
 		return this.getExternalPowerDemand( PowerUnits.EU, Double.MAX_VALUE );
 	}
 
 	@Override
-	final public int getSinkTier()
+	public final int getSinkTier()
 	{
 		return Integer.MAX_VALUE;
 	}
 
 	@Override
-	final public double injectEnergy( ForgeDirection directionFrom, double amount, double voltage )
+	public final double injectEnergy( ForgeDirection directionFrom, double amount, double voltage )
 	{
 		// just store the excess in the current block, if I return the waste,
 		// IC2 will just disintegrate it - Oct 20th 2013

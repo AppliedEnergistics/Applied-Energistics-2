@@ -36,8 +36,8 @@ import appeng.util.prioitylist.IPartitionList;
 public class MEInventoryHandler<T extends IAEStack<T>> implements IMEInventoryHandler<T>
 {
 
-	final protected IMEMonitor<T> monitor;
-	final protected IMEInventoryHandler<T> internal;
+	protected final IMEMonitor<T> monitor;
+	protected final IMEInventoryHandler<T> internal;
 	final StorageChannel channel;
 	private int myPriority;
 	private IncludeExclude myWhitelist;

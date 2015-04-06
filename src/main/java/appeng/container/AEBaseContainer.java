@@ -86,7 +86,7 @@ public abstract class AEBaseContainer extends Container
 {
 
 	protected final InventoryPlayer invPlayer;
-	final protected BaseActionSource mySrc;
+	protected final BaseActionSource mySrc;
 	protected final HashSet<Integer> locked = new HashSet<Integer>();
 	final TileEntity tileEntity;
 	final IPart part;
@@ -327,7 +327,7 @@ public abstract class AEBaseContainer extends Container
 		return this.tileEntity;
 	}
 
-	final public void updateFullProgressBar( int idx, long value )
+	public final void updateFullProgressBar( int idx, long value )
 	{
 		if( this.syncData.containsKey( idx ) )
 		{
@@ -640,7 +640,7 @@ public abstract class AEBaseContainer extends Container
 	}
 
 	@Override
-	final public void updateProgressBar( int idx, int value )
+	public final void updateProgressBar( int idx, int value )
 	{
 		if( this.syncData.containsKey( idx ) )
 		{

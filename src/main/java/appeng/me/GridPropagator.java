@@ -25,7 +25,7 @@ import appeng.api.networking.IGridVisitor;
 
 public class GridPropagator implements IGridVisitor
 {
-	final private Grid g;
+	private final Grid g;
 
 	public GridPropagator( Grid g )
 	{

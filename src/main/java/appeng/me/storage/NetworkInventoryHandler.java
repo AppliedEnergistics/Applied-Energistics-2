@@ -49,7 +49,7 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
 
 	static final ThreadLocal<LinkedList> DEPTH_MOD = new ThreadLocal<LinkedList>();
 	static final ThreadLocal<LinkedList> DEPTH_SIM = new ThreadLocal<LinkedList>();
-	private final static Comparator<Integer> PRIORITY_SORTER = new Comparator<Integer>()
+	private static final Comparator<Integer> PRIORITY_SORTER = new Comparator<Integer>()
 	{
 
 		@Override

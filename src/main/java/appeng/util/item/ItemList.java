@@ -54,7 +54,7 @@ public final class ItemList<StackType extends IAEStack> implements IItemList<Sta
 	}
 
 	@Override
-	synchronized public void add( StackType option )
+	public synchronized void add( StackType option )
 	{
 		if( this.checkStackType( option ) )
 			return;
@@ -85,7 +85,7 @@ public final class ItemList<StackType extends IAEStack> implements IItemList<Sta
 	}
 
 	@Override
-	synchronized public StackType findPrecise( StackType i )
+	public synchronized StackType findPrecise( StackType i )
 	{
 		if( this.checkStackType( i ) )
 			return null;
@@ -154,7 +154,7 @@ public final class ItemList<StackType extends IAEStack> implements IItemList<Sta
 	}
 
 	@Override
-	synchronized public void addStorage( StackType option ) // adds a stack as
+	public synchronized void addStorage( StackType option ) // adds a stack as
 	// stored.
 	{
 		if( this.checkStackType( option ) )
@@ -175,12 +175,12 @@ public final class ItemList<StackType extends IAEStack> implements IItemList<Sta
 	}
 
 	/*
-	 * synchronized public void clean() { Iterator<StackType> i = iterator(); while (i.hasNext()) { StackType AEI =
+	 * public synchronized void clean() { Iterator<StackType> i = iterator(); while (i.hasNext()) { StackType AEI =
 	 * i.next(); if ( !AEI.isMeaningful() ) i.remove(); } }
 	 */
 
 	@Override
-	synchronized public void addCrafting( StackType option ) // adds a stack as
+	public synchronized void addCrafting( StackType option ) // adds a stack as
 	// craftable.
 	{
 		if( this.checkStackType( option ) )
@@ -204,7 +204,7 @@ public final class ItemList<StackType extends IAEStack> implements IItemList<Sta
 	}
 
 	@Override
-	synchronized public void addRequestable( StackType option ) // adds a stack
+	public synchronized void addRequestable( StackType option ) // adds a stack
 	// as
 	// requestable.
 	{
@@ -230,7 +230,7 @@ public final class ItemList<StackType extends IAEStack> implements IItemList<Sta
 	}
 
 	@Override
-	synchronized public StackType getFirstItem()
+	public synchronized StackType getFirstItem()
 	{
 		for( StackType stackType : this )
 		{
@@ -240,19 +240,19 @@ public final class ItemList<StackType extends IAEStack> implements IItemList<Sta
 	}
 
 	@Override
-	synchronized public int size()
+	public synchronized int size()
 	{
 		return this.records.values().size();
 	}
 
 	@Override
-	synchronized public Iterator<StackType> iterator()
+	public synchronized Iterator<StackType> iterator()
 	{
 		return new MeaningfulIterator<StackType>( this.records.values().iterator() );
 	}
 
 	@Override
-	synchronized public void resetStatus()
+	public synchronized void resetStatus()
 	{
 		for( StackType i : this )
 			i.reset();

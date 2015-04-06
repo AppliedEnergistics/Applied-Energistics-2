@@ -30,10 +30,10 @@ import appeng.api.util.AEColor;
 public class Splotch
 {
 
-	final public ForgeDirection side;
-	final public boolean lumen;
-	final public AEColor color;
-	final private int pos;
+	public final ForgeDirection side;
+	public final boolean lumen;
+	public final AEColor color;
+	private final int pos;
 
 	public Splotch( AEColor col, boolean lit, ForgeDirection side, Vec3 Pos )
 	{

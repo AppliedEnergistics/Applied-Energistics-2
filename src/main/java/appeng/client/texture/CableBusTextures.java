@@ -75,7 +75,7 @@ public enum CableBusTextures
 
 	PartWirelessSides( "PartWirelessSides" ), PartStorageSides( "PartStorageSides" ), PartStorageBack( "PartStorageBack" );
 
-	final private String name;
+	private final String name;
 	public IIcon IIcon;
 
 	CableBusTextures( String name )

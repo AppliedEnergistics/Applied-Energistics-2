@@ -58,14 +58,14 @@ import appeng.me.energy.EnergyWatcher;
 public class EnergyGridCache implements IEnergyGrid
 {
 
-	final public TreeSet<EnergyThreshold> interests = new TreeSet<EnergyThreshold>();
+	public final TreeSet<EnergyThreshold> interests = new TreeSet<EnergyThreshold>();
 	final double AvgLength = 40.0;
 	final Set<IAEPowerStorage> providers = new LinkedHashSet<IAEPowerStorage>();
 	final Set<IAEPowerStorage> requesters = new LinkedHashSet<IAEPowerStorage>();
 	final Multiset<IEnergyGridProvider> energyGridProviders = HashMultiset.create();
 	final IGrid myGrid;
-	final private HashMap<IGridNode, IEnergyWatcher> watchers = new HashMap<IGridNode, IEnergyWatcher>();
-	final private Set<IEnergyGrid> localSeen = new HashSet<IEnergyGrid>();
+	private final HashMap<IGridNode, IEnergyWatcher> watchers = new HashMap<IGridNode, IEnergyWatcher>();
+	private final Set<IEnergyGrid> localSeen = new HashSet<IEnergyGrid>();
 	/**
 	 * estimated power available.
 	 */

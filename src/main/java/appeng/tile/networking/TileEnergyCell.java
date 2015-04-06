@@ -124,7 +124,7 @@ public class TileEnergyCell extends AENetworkTile implements IAEPowerStorage
 	}
 
 	@Override
-	final public double injectAEPower( double amt, Actionable mode )
+	public final double injectAEPower( double amt, Actionable mode )
 	{
 		if( mode == Actionable.SIMULATE )
 		{
@@ -179,7 +179,7 @@ public class TileEnergyCell extends AENetworkTile implements IAEPowerStorage
 	}
 
 	@Override
-	final public double extractAEPower( double amt, Actionable mode, PowerMultiplier pm )
+	public final double extractAEPower( double amt, Actionable mode, PowerMultiplier pm )
 	{
 		return pm.divide( this.extractAEPower( pm.multiply( amt ), mode ) );
 	}

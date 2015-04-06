@@ -82,7 +82,7 @@ import appeng.util.item.AEItemStack;
 public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCell, IItemGroup, IBlockTool, IMouseWheelItem
 {
 
-	final static Map<Integer, AEColor> ORE_TO_COLOR = new HashMap<Integer, AEColor>();
+	static final Map<Integer, AEColor> ORE_TO_COLOR = new HashMap<Integer, AEColor>();
 
 	static
 	{

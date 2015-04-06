@@ -50,8 +50,8 @@ public class PacketCompressedNBT extends AppEngPacket
 	// input.
 	final NBTTagCompound in;
 	// output...
-	final private ByteBuf data;
-	final private GZIPOutputStream compressFrame;
+	private final ByteBuf data;
+	private final GZIPOutputStream compressFrame;
 	int writtenBytes = 0;
 	boolean empty = true;
 

@@ -33,10 +33,10 @@ import appeng.hooks.CompassResult;
 public class PacketCompassResponse extends AppEngPacket
 {
 
-	final public long attunement;
-	final public int cx;
-	final public int cz;
-	final public int cdy;
+	public final long attunement;
+	public final int cx;
+	public final int cz;
+	public final int cdy;
 
 	public CompassResult cr;
 

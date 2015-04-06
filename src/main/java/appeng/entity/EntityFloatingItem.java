@@ -25,7 +25,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 
-final public class EntityFloatingItem extends EntityItem
+public final class EntityFloatingItem extends EntityItem
 {
 
 	public static int ageStatic = 0;

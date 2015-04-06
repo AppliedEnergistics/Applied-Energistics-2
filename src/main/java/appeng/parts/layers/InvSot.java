@@ -26,8 +26,8 @@ import net.minecraft.item.ItemStack;
 public class InvSot
 {
 
-	final public ISidedInventory partInv;
-	final public int index;
+	public final ISidedInventory partInv;
+	public final int index;
 
 	public InvSot( ISidedInventory part, int slot )
 	{

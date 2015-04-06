@@ -32,7 +32,7 @@ import appeng.api.storage.data.IItemList;
 public class MEPassThrough<T extends IAEStack<T>> implements IMEInventoryHandler<T>
 {
 
-	final protected StorageChannel channel;
+	protected final StorageChannel channel;
 	private IMEInventory<T> internal;
 
 	public MEPassThrough( IMEInventory<T> i, StorageChannel channel )

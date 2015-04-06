@@ -61,14 +61,14 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 {
 
 	public static final ThreadLocal<WeakReference<AEBaseTile>> DROP_NO_ITEMS = new ThreadLocal<WeakReference<AEBaseTile>>();
-	static private final HashMap<Class, EnumMap<TileEventType, List<AETileEventHandler>>> HANDLERS = new HashMap<Class, EnumMap<TileEventType, List<AETileEventHandler>>>();
-	static private final HashMap<Class, ItemStackSrc> ITEM_STACKS = new HashMap<Class, ItemStackSrc>();
+	private static final HashMap<Class, EnumMap<TileEventType, List<AETileEventHandler>>> HANDLERS = new HashMap<Class, EnumMap<TileEventType, List<AETileEventHandler>>>();
+	private static final HashMap<Class, ItemStackSrc> ITEM_STACKS = new HashMap<Class, ItemStackSrc>();
 	public int renderFragment = 0;
 	public String customName;
 	private ForgeDirection forward = ForgeDirection.UNKNOWN;
 	private ForgeDirection up = ForgeDirection.UNKNOWN;
 
-	static public void registerTileItem( Class c, ItemStackSrc wat )
+	public static void registerTileItem( Class c, ItemStackSrc wat )
 	{
 		ITEM_STACKS.put( c, wat );
 	}
@@ -97,7 +97,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 		return src.stack( 1 );
 	}
 
-	final public void Tick()
+	public final void Tick()
 	{
 
 	}
@@ -113,7 +113,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 
 	@Override
 	// NOTE: WAS FINAL, changed for Immibis
-	final public void readFromNBT( NBTTagCompound data )
+	public final void readFromNBT( NBTTagCompound data )
 	{
 		super.readFromNBT( data );
 
@@ -142,7 +142,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 
 	@Override
 	// NOTE: WAS FINAL, changed for Immibis
-	final public void writeToNBT( NBTTagCompound data )
+	public final void writeToNBT( NBTTagCompound data )
 	{
 		super.writeToNBT( data );
 
@@ -160,7 +160,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	}
 
 	@Override
-	final public void updateEntity()
+	public final void updateEntity()
 	{
 		for( AETileEventHandler h : this.getHandlerListFor( TileEventType.TICK ) )
 			h.Tick( this );
@@ -190,7 +190,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	}
 
 	@Override
-	final public boolean canUpdate()
+	public final boolean canUpdate()
 	{
 		return this.hasHandlerFor( TileEventType.TICK );
 	}
@@ -220,7 +220,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 			this.invalidate();
 	}
 
-	final public boolean readFromStream( ByteBuf data )
+	public final boolean readFromStream( ByteBuf data )
 	{
 		boolean output = false;
 
@@ -271,7 +271,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 		}
 	}
 
-	final public void writeToStream( ByteBuf data )
+	public final void writeToStream( ByteBuf data )
 	{
 		try
 		{

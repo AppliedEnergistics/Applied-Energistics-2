@@ -81,8 +81,8 @@ public class BlockCableBus extends AEBaseBlock implements IRedNetConnection
 {
 
 	private static final ICableBusContainer NULL_CABLE_BUS = new NullCableBusContainer();
-	static public Class<? extends TileEntity> noTesrTile;
-	static public Class<? extends TileEntity> tesrTile;
+	public static Class<? extends TileEntity> noTesrTile;
+	public static Class<? extends TileEntity> tesrTile;
 	/**
 	 * Immibis MB Support.
 	 */

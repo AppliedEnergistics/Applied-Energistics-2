@@ -36,7 +36,7 @@ import appeng.tile.events.TileEventType;
 public class AENetworkTile extends AEBaseTile implements IActionHost, IGridProxyable
 {
 
-	final protected AENetworkProxy gridProxy = this.createProxy();
+	protected final AENetworkProxy gridProxy = this.createProxy();
 
 	@TileEvent( TileEventType.WORLD_NBT_READ )
 	public void readFromNBT_AENetwork( NBTTagCompound data )

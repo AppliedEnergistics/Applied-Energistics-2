@@ -64,11 +64,11 @@ public class TickHandler
 	public static final TickHandler INSTANCE = new TickHandler();
 	final Queue<Callable> serverQueue = new LinkedList<Callable>();
 	final Multimap<World, CraftingJob> craftingJobs = LinkedListMultimap.create();
-	final private WeakHashMap<World, Queue<Callable>> callQueue = new WeakHashMap<World, Queue<Callable>>();
-	final private HandlerRep server = new HandlerRep();
-	final private HandlerRep client = new HandlerRep();
-	final private HashMap<Integer, PlayerColor> cliPlayerColors = new HashMap<Integer, PlayerColor>();
-	final private HashMap<Integer, PlayerColor> srvPlayerColors = new HashMap<Integer, PlayerColor>();
+	private final WeakHashMap<World, Queue<Callable>> callQueue = new WeakHashMap<World, Queue<Callable>>();
+	private final HandlerRep server = new HandlerRep();
+	private final HandlerRep client = new HandlerRep();
+	private final HashMap<Integer, PlayerColor> cliPlayerColors = new HashMap<Integer, PlayerColor>();
+	private final HashMap<Integer, PlayerColor> srvPlayerColors = new HashMap<Integer, PlayerColor>();
 	CableRenderMode crm = CableRenderMode.Standard;
 
 	public HashMap<Integer, PlayerColor> getPlayerColors()
@@ -288,7 +288,7 @@ public class TickHandler
 	}
 
 
-	static public class PlayerColor
+	public static class PlayerColor
 	{
 
 		public final AEColor myColor;

@@ -30,7 +30,7 @@ import appeng.api.util.IReadOnlyCollection;
 
 public class GridNodeCollection implements IReadOnlyCollection<IGridNode>
 {
-	final private Map<Class<? extends IGridHost>, MachineSet> machines;
+	private final Map<Class<? extends IGridHost>, MachineSet> machines;
 
 	public GridNodeCollection( Map<Class<? extends IGridHost>, MachineSet> machines )
 	{

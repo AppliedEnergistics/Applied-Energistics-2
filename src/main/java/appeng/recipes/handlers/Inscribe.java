@@ -113,11 +113,11 @@ public class Inscribe implements ICraftHandler, IWebsiteSerializer
 	public static class InscriberRecipe
 	{
 
-		final public boolean usePlates;
-		final public ItemStack plateA;
-		final public ItemStack[] imprintable;
-		final public ItemStack plateB;
-		final public ItemStack output;
+		public final boolean usePlates;
+		public final ItemStack plateA;
+		public final ItemStack[] imprintable;
+		public final ItemStack plateB;
+		public final ItemStack output;
 
 		public InscriberRecipe( ItemStack[] imprintable, ItemStack plateA, ItemStack plateB, ItemStack out, boolean usePlates )
 		{

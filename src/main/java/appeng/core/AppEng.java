@@ -55,9 +55,9 @@ import appeng.util.Platform;
 @Mod( modid = AppEng.MOD_ID, acceptedMinecraftVersions = "[1.7.10]", name = AppEng.MOD_NAME, version = AEConfig.VERSION, dependencies = AppEng.MOD_DEPENDENCIES, guiFactory = "appeng.client.gui.config.AEConfigGuiFactory" )
 public class AppEng
 {
-	public final static String MOD_ID = "appliedenergistics2";
-	public final static String MOD_NAME = "Applied Energistics 2";
-	public final static String MOD_DEPENDENCIES =
+	public static final String MOD_ID = "appliedenergistics2";
+	public static final String MOD_NAME = "Applied Energistics 2";
+	public static final String MOD_DEPENDENCIES =
 			// a few mods, AE should load after, probably.
 			// required-after:AppliedEnergistics2API|all;
 			// "after:gregtech_addon;after:Mekanism;after:IC2;after:ThermalExpansion;after:BuildCraft|Core;" +

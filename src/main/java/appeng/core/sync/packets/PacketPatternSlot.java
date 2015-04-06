@@ -39,11 +39,11 @@ import appeng.util.item.AEItemStack;
 public class PacketPatternSlot extends AppEngPacket
 {
 
-	final public IAEItemStack slotItem;
+	public final IAEItemStack slotItem;
 
-	final public IAEItemStack[] pattern = new IAEItemStack[9];
+	public final IAEItemStack[] pattern = new IAEItemStack[9];
 
-	final public boolean shift;
+	public final boolean shift;
 
 	// automatic.
 	public PacketPatternSlot( ByteBuf stream ) throws IOException

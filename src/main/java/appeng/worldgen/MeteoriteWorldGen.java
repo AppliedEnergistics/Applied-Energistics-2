@@ -38,7 +38,7 @@ import appeng.util.Platform;
 import appeng.worldgen.meteorite.ChunkOnly;
 
 
-final public class MeteoriteWorldGen implements IWorldGenerator
+public final class MeteoriteWorldGen implements IWorldGenerator
 {
 	@Override
 	public void generate( Random r, int chunkX, int chunkZ, World w, IChunkProvider chunkGenerator, IChunkProvider chunkProvider )

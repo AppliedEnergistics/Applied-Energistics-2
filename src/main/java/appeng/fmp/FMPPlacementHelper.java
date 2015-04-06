@@ -48,7 +48,7 @@ import appeng.util.Platform;
 public class FMPPlacementHelper implements IPartHost
 {
 
-	final private static CableBusStorage NULL_STORAGE = new NullStorage();
+	private static final CableBusStorage NULL_STORAGE = new NullStorage();
 	private boolean hasPart = false;
 	private TileMultipart myMP;
 	private CableBusPart myPart;

@@ -57,7 +57,7 @@ public enum SecurityPermissions
 	 */
 	SECURITY;
 
-	final private String unlocalizedName = "gui.appliedenergistics2.security." + this.name().toLowerCase();
+	private final String unlocalizedName = "gui.appliedenergistics2.security." + this.name().toLowerCase();
 
 	public String getUnlocalizedName()
 	{

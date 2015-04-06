@@ -40,7 +40,7 @@ import appeng.util.Platform;
 public class TESRWrapper extends TileEntitySpecialRenderer
 {
 
-	final public RenderBlocks renderBlocksInstance = new RenderBlocks();
+	public final RenderBlocks renderBlocksInstance = new RenderBlocks();
 
 	final BaseBlockRender blkRender;
 	final double MAX_DISTANCE;
@@ -52,7 +52,7 @@ public class TESRWrapper extends TileEntitySpecialRenderer
 	}
 
 	@Override
-	final public void renderTileEntityAt( TileEntity te, double x, double y, double z, float f )
+	public final void renderTileEntityAt( TileEntity te, double x, double y, double z, float f )
 	{
 		if( te instanceof AEBaseTile )
 		{

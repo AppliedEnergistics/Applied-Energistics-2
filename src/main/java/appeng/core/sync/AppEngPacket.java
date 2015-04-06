@@ -43,7 +43,7 @@ public abstract class AppEngPacket
 		throw new RuntimeException( "This packet ( " + this.getPacketID() + " does not implement a server side handler." );
 	}
 
-	final public int getPacketID()
+	public final int getPacketID()
 	{
 		return AppEngPacketHandlerBase.PacketTypes.getID( this.getClass() ).ordinal();
 	}

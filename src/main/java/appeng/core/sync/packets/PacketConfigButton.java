@@ -37,8 +37,8 @@ import appeng.util.Platform;
 public class PacketConfigButton extends AppEngPacket
 {
 
-	final public Settings option;
-	final public boolean rotationDirection;
+	public final Settings option;
+	public final boolean rotationDirection;
 
 	// automatic.
 	public PacketConfigButton( ByteBuf stream )

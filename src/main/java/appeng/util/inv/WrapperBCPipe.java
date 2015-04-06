@@ -33,9 +33,9 @@ import appeng.integration.abstraction.IBC;
 public class WrapperBCPipe implements IInventory
 {
 
-	final private IBC bc;
-	final private TileEntity ad;
-	final private ForgeDirection dir;
+	private final IBC bc;
+	private final TileEntity ad;
+	private final ForgeDirection dir;
 
 	public WrapperBCPipe( TileEntity te, ForgeDirection d )
 	{

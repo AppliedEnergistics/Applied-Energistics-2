@@ -29,8 +29,8 @@ import appeng.parts.p2p.PartP2PTunnelME;
 public class Connections implements Callable
 {
 
-	final public HashMap<IGridNode, TunnelConnection> connections = new HashMap<IGridNode, TunnelConnection>();
-	final private PartP2PTunnelME me;
+	public final HashMap<IGridNode, TunnelConnection> connections = new HashMap<IGridNode, TunnelConnection>();
+	private final PartP2PTunnelME me;
 	public boolean create = false;
 	public boolean destroy = false;
 

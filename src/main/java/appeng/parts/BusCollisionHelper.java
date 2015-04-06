@@ -33,12 +33,12 @@ public class BusCollisionHelper implements IPartCollisionHelper
 
 	final List<AxisAlignedBB> boxes;
 
-	final private ForgeDirection x;
-	final private ForgeDirection y;
-	final private ForgeDirection z;
+	private final ForgeDirection x;
+	private final ForgeDirection y;
+	private final ForgeDirection z;
 
-	final private Entity entity;
-	final private boolean isVisual;
+	private final Entity entity;
+	private final boolean isVisual;
 
 	public BusCollisionHelper( List<AxisAlignedBB> boxes, ForgeDirection x, ForgeDirection y, ForgeDirection z, Entity e, boolean visual )
 	{

@@ -28,10 +28,10 @@ import appeng.util.ItemSorters;
 public class ClientDCInternalInv implements Comparable<ClientDCInternalInv>
 {
 
-	final public String unlocalizedName;
-	final public AppEngInternalInventory inv;
-	final public long id;
-	final public long sortBy;
+	public final String unlocalizedName;
+	public final AppEngInternalInventory inv;
+	public final long id;
+	public final long sortBy;
 
 	public ClientDCInternalInv( int size, long id, long sortBy, String unlocalizedName )
 	{

@@ -37,7 +37,7 @@ import appeng.core.features.AEFeature;
 import appeng.util.Platform;
 
 
-final public class EntityGrowingCrystal extends EntityItem
+public final class EntityGrowingCrystal extends EntityItem
 {
 
 	private int progress_1000 = 0;

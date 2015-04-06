@@ -87,7 +87,7 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 {
 
 	public static final ThreadLocal<Boolean> DISABLE_FACADE_OCCLUSION = new ThreadLocal<Boolean>();
-	private final static Cuboid6[] SIDE_TESTS = new Cuboid6[] {
+	private static final Cuboid6[] SIDE_TESTS = new Cuboid6[] {
 
 			new Cuboid6( 6.0 / 16.0, 0, 6.0 / 16.0, 10.0 / 16.0, 6.0 / 16.0, 10.0 / 16.0 ), // DOWN(0, -1, 0),
 

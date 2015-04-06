@@ -44,7 +44,7 @@ import appeng.helpers.Reflected;
 import appeng.util.Platform;
 
 
-final public class EntityTinyTNTPrimed extends EntityTNTPrimed implements IEntityAdditionalSpawnData
+public final class EntityTinyTNTPrimed extends EntityTNTPrimed implements IEntityAdditionalSpawnData
 {
 	@Reflected
 	public EntityTinyTNTPrimed( World w )

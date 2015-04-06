@@ -783,7 +783,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 		this.worldObj.markTileEntityChunkModified( this.xCoord, this.yCoord, this.zCoord, this );
 	}
 
-	static private class ChestNoHandler extends Exception
+	private static class ChestNoHandler extends Exception
 	{
 
 		private static final long serialVersionUID = 7995805326136526631L;

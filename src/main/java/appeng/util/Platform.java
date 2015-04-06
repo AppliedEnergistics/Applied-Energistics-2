@@ -150,7 +150,7 @@ public class Platform
 	/*
 	 * random source, use it for item drop locations...
 	 */
-	static private final Random RANDOM_GENERATOR = new Random();
+	private static final Random RANDOM_GENERATOR = new Random();
 	private static final WeakHashMap<World, EntityPlayer> FAKE_PLAYERS = new WeakHashMap<World, EntityPlayer>();
 	private static Field tagList;
 	private static Class playerInstance;
@@ -1442,7 +1442,7 @@ public class Platform
 		gs.postAlterationOfStoredItems( StorageChannel.ITEMS, itemChanges, src );
 	}
 
-	static public <T extends IAEStack<T>> void postListChanges( IItemList<T> before, IItemList<T> after, IMEMonitorHandlerReceiver<T> meMonitorPassthrough, BaseActionSource source )
+	public static <T extends IAEStack<T>> void postListChanges( IItemList<T> before, IItemList<T> after, IMEMonitorHandlerReceiver<T> meMonitorPassthrough, BaseActionSource source )
 	{
 		LinkedList<T> changes = new LinkedList<T>();
 

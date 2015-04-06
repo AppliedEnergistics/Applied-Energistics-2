@@ -35,7 +35,7 @@ public enum PowerUnits
 	/**
 	 * unlocalized name for the power unit.
 	 */
-	final public String unlocalizedName;
+	public final String unlocalizedName;
 	/**
 	 * please do not edit this value, it is set when AE loads its config files.
 	 */

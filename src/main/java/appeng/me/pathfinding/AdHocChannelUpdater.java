@@ -29,7 +29,7 @@ import appeng.me.GridNode;
 public class AdHocChannelUpdater implements IGridConnectionVisitor
 {
 
-	final private int usedChannels;
+	private final int usedChannels;
 
 	public AdHocChannelUpdater( int used )
 	{

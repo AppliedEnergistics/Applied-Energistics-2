@@ -43,8 +43,8 @@ public class SecurityCache implements ISecurityGrid
 {
 
 	public final IGrid myGrid;
-	final private List<ISecurityProvider> securityProvider = new ArrayList<ISecurityProvider>();
-	final private HashMap<Integer, EnumSet<SecurityPermissions>> playerPerms = new HashMap<Integer, EnumSet<SecurityPermissions>>();
+	private final List<ISecurityProvider> securityProvider = new ArrayList<ISecurityProvider>();
+	private final HashMap<Integer, EnumSet<SecurityPermissions>> playerPerms = new HashMap<Integer, EnumSet<SecurityPermissions>>();
 	private long securityKey = -1;
 
 	public SecurityCache( IGrid g )
