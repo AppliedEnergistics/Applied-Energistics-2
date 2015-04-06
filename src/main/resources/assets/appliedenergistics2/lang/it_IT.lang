@@ -328,7 +328,7 @@ waila.appliedenergistics2.Locked=Bloccato
 waila.appliedenergistics2.Unlocked=Sbloccato
 waila.appliedenergistics2.Showing=Mostra
 waila.appliedenergistics2.Contains=Contiene
-waila.appliedenergistics2.Channels=Canali
+waila.appliedenergistics2.Channels=%1$d of %2$d Canali
 
 item.appliedenergistics2.ItemBasicStorageCell.1k.name=Cella di immagazzinaggio da 1k ME
 item.appliedenergistics2.ItemBasicStorageCell.4k.name=Cella di immagazzinaggio da 4k ME

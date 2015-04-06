@@ -321,7 +321,7 @@ waila.appliedenergistics2.Locked=Trancado
 waila.appliedenergistics2.Unlocked=Destrancado
 waila.appliedenergistics2.Showing=Mostrando
 waila.appliedenergistics2.Contains=Contém
-waila.appliedenergistics2.Channels=Canais
+waila.appliedenergistics2.Channels=%1$d of %2$d Canais
 
 item.appliedenergistics2.ItemBasicStorageCell.1k.name=Célula de Armazenamento ME de 1k
 item.appliedenergistics2.ItemBasicStorageCell.4k.name=Célula de Armazenamento ME de 4k

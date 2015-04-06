@@ -291,7 +291,7 @@ waila.appliedenergistics2.Locked=Zárolva
 waila.appliedenergistics2.Unlocked=Nincs zárolva
 waila.appliedenergistics2.Showing=Mutatni
 waila.appliedenergistics2.Contains=Tárolni
-waila.appliedenergistics2.Channels=Csatornák
+waila.appliedenergistics2.Channels=%1$d of %2$d Csatornák
 
 item.appliedenergistics2.ItemBasicStorageCell.1k.name=1k ME Tároló Cella
 item.appliedenergistics2.ItemBasicStorageCell.4k.name=4k ME Tároló Cella

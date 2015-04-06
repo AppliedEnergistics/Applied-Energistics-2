@@ -325,7 +325,7 @@ waila.appliedenergistics2.Locked=Verrouillé
 waila.appliedenergistics2.Unlocked=Déverrouillé
 waila.appliedenergistics2.Showing=Affichant
 waila.appliedenergistics2.Contains=Contient
-waila.appliedenergistics2.Channels=Canaux
+waila.appliedenergistics2.Channels=%1$d of %2$d Canaux
 
 item.appliedenergistics2.ItemBasicStorageCell.1k.name=Disque de stockage 1k
 item.appliedenergistics2.ItemBasicStorageCell.4k.name=Disque de stockage 4k
