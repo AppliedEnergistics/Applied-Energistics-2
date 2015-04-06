@@ -328,7 +328,7 @@ waila.appliedenergistics2.Locked=Locked
 waila.appliedenergistics2.Unlocked=Unlocked
 waila.appliedenergistics2.Showing=Showing
 waila.appliedenergistics2.Contains=Contains
-waila.appliedenergistics2.Channels=Channels
+waila.appliedenergistics2.Channels=%1$d of %2$d Channels
 
 item.appliedenergistics2.ItemBasicStorageCell.1k.name=1k ME Storage Cell
 item.appliedenergistics2.ItemBasicStorageCell.4k.name=4k ME Storage Cell

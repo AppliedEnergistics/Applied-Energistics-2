@@ -32,7 +32,6 @@ import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 
 import appeng.api.parts.IPart;
-import appeng.core.localization.GuiText;
 import appeng.core.localization.WailaText;
 import appeng.parts.networking.PartCableSmart;
 import appeng.parts.networking.PartDenseCable;
@@ -82,7 +81,8 @@ public final class ChannelWailaDataProvider extends BasePartWailaDataProvider
 			final byte usedChannels = this.getUsedChannels( part, tag, this.cache );
 			final byte maxChannels = (byte) ( ( part instanceof PartDenseCable ) ? 32 : 8 );
 
-			currentToolTip.add( usedChannels + " " + GuiText.Of.getLocal() + ' ' + maxChannels + ' ' + WailaText.Channels.getLocal() );
+			final String formattedToolTip = String.format( WailaText.Channels.getLocal(), usedChannels, maxChannels );
+			currentToolTip.add( formattedToolTip );
 		}
 
 		return currentToolTip;
