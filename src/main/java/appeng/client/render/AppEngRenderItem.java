@@ -129,7 +129,7 @@ public class AppEngRenderItem extends RenderItem
 		}
 		else
 		{
-			return NUMBER_CONVERTER.toHumanReadableForm( originalSize );
+			return NUMBER_CONVERTER.toLongHumanReadableForm( originalSize );
 		}
 	}
 }
