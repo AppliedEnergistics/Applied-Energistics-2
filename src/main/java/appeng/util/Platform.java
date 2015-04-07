@@ -33,6 +33,7 @@ import java.util.Set;
 import java.util.WeakHashMap;
 
 import javax.annotation.Nullable;
+import javax.annotation.Nonnull;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
@@ -317,7 +318,7 @@ public class Platform
 		return false;
 	}
 
-	public static void openGUI( EntityPlayer p, TileEntity tile, ForgeDirection side, GuiBridge type )
+	public static void openGUI( @Nonnull EntityPlayer p, @Nullable TileEntity tile, @Nullable ForgeDirection side, @Nonnull GuiBridge type )
 	{
 		if( isClient() )
 			return;
@@ -334,10 +335,10 @@ public class Platform
 
 		if( ( type.getType().isItem() && tile == null ) || type.hasPermissions( tile, x, y, z, side, p ) )
 		{
-			if( tile != null && type.getType() == GuiHostType.ITEM )
-				p.openGui( AppEng.instance, type.ordinal() << 4 | (1 << 3) , p.getEntityWorld(), x, y, z );
-			else if ( tile == null && type.getType() == GuiHostType.ITEM )
-				p.openGui( AppEng.instance, type.ordinal() << 4 | (0 << 3), p.getEntityWorld(), p.inventory.currentItem, 0, 0 );
+			if( tile == null && type.getType() == GuiHostType.ITEM )
+				p.openGui( AppEng.instance, type.ordinal() << 4 | ( 0 << 3 ), p.getEntityWorld(), p.inventory.currentItem, 0, 0 );
+			else if( tile == null || type.getType() == GuiHostType.ITEM )
+				p.openGui( AppEng.instance, type.ordinal() << 4 | ( 1 << 3 ), p.getEntityWorld(), x, y, z );
 			else
 				p.openGui( AppEng.instance, type.ordinal() << 4 | ( side.ordinal() ), tile.getWorldObj(), x, y, z );
 		}
