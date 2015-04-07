@@ -19,7 +19,7 @@
 package appeng.core;
 
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import appeng.core.features.IAEFeature;
@@ -27,7 +27,7 @@ import appeng.core.features.IAEFeature;
 
 public final class FeatureRegistry
 {
-	private final Set<IAEFeature> registry = new HashSet<IAEFeature>();
+	private final Set<IAEFeature> registry = new LinkedHashSet<IAEFeature>();
 
 	public void addFeature( IAEFeature feature )
 	{
