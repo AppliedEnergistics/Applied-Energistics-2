@@ -59,14 +59,21 @@ import appeng.core.AELog;
 import appeng.core.localization.PlayerMessages;
 import appeng.helpers.Reflected;
 import appeng.me.GridAccessException;
+import appeng.util.IWideReadableNumberConverter;
 import appeng.util.Platform;
 import appeng.util.ReadableNumberConverter;
 import appeng.util.item.AEItemStack;
 
 
+/**
+ * @author AlgorithmX2
+ * @author thatsIch
+ * @version rv2
+ * @since rv0
+ */
 public class PartStorageMonitor extends PartMonitor implements IPartStorageMonitor, IStackWatcherHost
 {
-	private static final ReadableNumberConverter NUMBER_CONVERTER = ReadableNumberConverter.INSTANCE;
+	private static final IWideReadableNumberConverter NUMBER_CONVERTER = ReadableNumberConverter.INSTANCE;
 	IAEItemStack configuredItem;
 	boolean isLocked;
 	IStackWatcher myWatcher;
@@ -341,7 +348,7 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 		GL11.glScalef( 1.0f / 62.0f, 1.0f / 62.0f, 1.0f / 62.0f );
 
 		final long stackSize = ais.getStackSize();
-		final String renderedStackSize = NUMBER_CONVERTER.toHumanReadableForm( stackSize );
+		final String renderedStackSize = NUMBER_CONVERTER.toWideReadableForm( stackSize );
 
 		FontRenderer fr = Minecraft.getMinecraft().fontRenderer;
 		int width = fr.getStringWidth( renderedStackSize );

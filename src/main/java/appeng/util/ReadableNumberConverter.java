@@ -1,6 +1,12 @@
 package appeng.util;
 
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.Format;
+
+
 /**
  * Converter class to convert a large number into a SI system.
  *
@@ -8,7 +14,7 @@ package appeng.util;
  * @version rv2
  * @since rv2
  */
-public enum ReadableNumberConverter
+public enum ReadableNumberConverter implements ISlimReadableNumberConverter, IWideReadableNumberConverter
 {
 	INSTANCE;
 
@@ -18,124 +24,81 @@ public enum ReadableNumberConverter
 	private static final int DIVISION_BASE = 1000;
 
 	/**
-	 * for lg(1000) = 3, just saves some calculation
-	 */
-	private static final double LOG_DIVISION_BASE = Math.log( DIVISION_BASE );
-
-	/**
 	 * String representation of the sorted postfixes
 	 */
 	private static final char[] ENCODED_POSTFIXES = "KMGTPE".toCharArray();
 
-	/**
-	 * if a result would be higher than this threshold,
-	 * it is pushed into the next bigger group,
-	 * so the display string is shorter
-	 */
-	private static final int SHORT_THRESHOLD = 100;
+	private final Format format;
 
 	/**
-	 * Converts a number into a human readable form. It will not round the number, but floor it.
-	 *
-	 * Example: 15555L -> 15.5K
-	 *
-	 * @param number to be converted number
-	 *
-	 * @return String in SI format cut down as far as possible
+	 * Initializes the specific decimal format with special format for negative and positive numbers
 	 */
-	public String toHumanReadableForm( long number )
+	ReadableNumberConverter()
 	{
-		final String sign = this.getSign( number );
-		final long absNumber = Math.abs( number );
+		final DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+		symbols.setDecimalSeparator( '.' );
+		final DecimalFormat format = new DecimalFormat( ".#;0.#" );
+		format.setDecimalFormatSymbols( symbols );
+		format.setRoundingMode( RoundingMode.DOWN );
 
-		if( absNumber < DIVISION_BASE )
-			return Long.toString( number );
+		this.format = format;
+	}
 
-		final int exp = (int) ( Math.log( absNumber ) / LOG_DIVISION_BASE );
-		final char postFix = ENCODED_POSTFIXES[exp - 1];
-		final int result = (int) ( absNumber / Math.pow( DIVISION_BASE, exp ) );
-
-		return String.format( "%s%d%s", sign, result, postFix );
+	@Override
+	public String toSlimReadableForm( long number )
+	{
+		return this.toReadableFormRestrictedByWidth( number, 3 );
 	}
 
 	/**
-	 * Gets character representation of the sign of a number
+	 * restricts a string representation of a number to a specific width
 	 *
-	 * @param number maybe signed number
+	 * @param number to be formatted number
+	 * @param width  width limitation of the resulting number
 	 *
-	 * @return '-' if the number is signed, else an empty character
+	 * @return formatted number restricted by the width limitation
 	 */
-	private String getSign( long number )
+	private String toReadableFormRestrictedByWidth( long number, int width )
 	{
-		if( number < 0 )
+		assert number >= 0;
+
+		// handles low numbers more efficiently since no format is needed
+		final String numberString = Long.toString( number );
+		int numberSize = numberString.length();
+		if( numberSize <= width )
+			return numberString;
+
+		long base = number;
+		double last = base * 1000;
+		int exponent = -1;
+		String postFix = "";
+
+		while( numberSize > width )
 		{
-			return "-";
+			last = base;
+			base /= DIVISION_BASE;
+
+			exponent++;
+
+			// adds +1 due to the postfix
+			numberSize = Long.toString( base ).length() + 1;
+			postFix = String.valueOf( ENCODED_POSTFIXES[exponent] );
 		}
-		else
-		{
-			return "";
-		}
+
+		final String withPrecision = this.format.format( last / DIVISION_BASE ) + postFix;
+		final String withoutPrecision = Long.toString( base ) + postFix;
+
+		final String slimResult = ( withPrecision.length() <= width ) ? withPrecision : withoutPrecision;
+
+		// post condition
+		assert slimResult.length() <= width;
+
+		return slimResult;
 	}
 
-	/**
-	 * Converts a number into a human readable form. It will not round the number, but floor it.
-	 * Will try to cut the number down 1 decimal earlier. This will limit the String size to 3 chars.
-	 *
-	 * Example: 900L -> 0.9K
-	 *
-	 * @param number to be converted number
-	 *
-	 * @return String in SI format cut down as far as possible
-	 */
-	public String toShortHumanReadableForm( long number )
+	@Override
+	public String toWideReadableForm( final long number )
 	{
-		final String sign = this.getSign( number );
-		final long absNumber = Math.abs( number );
-
-		if( absNumber < DIVISION_BASE )
-			return Long.toString( number );
-
-		final int exp = (int) ( Math.log( absNumber ) / LOG_DIVISION_BASE );
-		final int result = (int) ( absNumber / Math.pow( DIVISION_BASE, exp ) );
-		if( result >= SHORT_THRESHOLD )
-		{
-			final int shortResult = result / SHORT_THRESHOLD;
-			final char postFix = ENCODED_POSTFIXES[exp];
-
-			return String.format( "%s.%d%s", sign, shortResult, postFix );
-		}
-		else
-		{
-			final char postFix = ENCODED_POSTFIXES[exp - 1];
-
-			return String.format( "%s%d%s", sign, result, postFix );
-		}
-	}
-
-	/**
-	 * Converts a number into a human readable form. It will not round the number, but floor it.
-	 * Will try to cut the number down 1 decimal later.
-	 *
-	 * Example:
-	 * 10000L -> 10K
-	 * 9999L -> 9999
-	 *
-	 * @param number to be converted number
-	 *
-	 * @return String in SI format cut down as far as possible
-	 */
-	public String toLongHumanReadableForm( long number )
-	{
-		final String sign = this.getSign( number );
-		final long absNumber = Math.abs( number );
-
-		if( absNumber < 10 * DIVISION_BASE )
-			return Long.toString( number );
-
-		final int exp = (int) ( Math.log( absNumber / 10 ) / LOG_DIVISION_BASE );
-		final int result = (int) ( absNumber / Math.pow( DIVISION_BASE, exp ) );
-		final char postFix = ENCODED_POSTFIXES[exp - 1];
-
-		return String.format( "%s%d%s", sign, result, postFix );
+		return this.toReadableFormRestrictedByWidth( number, 4 );
 	}
 }
