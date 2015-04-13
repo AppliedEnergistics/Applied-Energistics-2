@@ -24,7 +24,7 @@ import java.util.Set;
 import appeng.core.AEConfig;
 
 
-public class FeaturedActiveChecker
+public final class FeaturedActiveChecker
 {
 	private final Set<AEFeature> features;
 

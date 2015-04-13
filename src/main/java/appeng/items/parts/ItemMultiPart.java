@@ -53,6 +53,8 @@ import appeng.core.features.AEFeature;
 import appeng.core.features.ItemStackSrc;
 import appeng.core.features.NameResolver;
 import appeng.core.localization.GuiText;
+import appeng.integration.IntegrationRegistry;
+import appeng.integration.IntegrationType;
 import appeng.items.AEBaseItem;
 
 
@@ -85,6 +87,9 @@ public class ItemMultiPart extends AEBaseItem implements IPartItem, IItemGroup
 		boolean enabled = true;
 		for( AEFeature f : mat.getFeature() )
 			enabled = enabled && AEConfig.instance.isFeatureEnabled( f );
+
+		for( IntegrationType integrationType : mat.getIntegrations() )
+			enabled &= IntegrationRegistry.INSTANCE.isEnabled( integrationType );
 
 		int newPartNum = mat.baseDamage + varID;
 		ItemStackSrc output = new ItemStackSrc( this, newPartNum );

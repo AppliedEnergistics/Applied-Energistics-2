@@ -49,7 +49,7 @@ import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
 
 
-public class AEConfig extends Configuration implements IConfigurableObject, IConfigManagerHost
+public final class AEConfig extends Configuration implements IConfigurableObject, IConfigManagerHost
 {
 
 	public static final double TUNNEL_POWER_LOSS = 0.05;
