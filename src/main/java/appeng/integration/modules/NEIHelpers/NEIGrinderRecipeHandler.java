@@ -147,8 +147,8 @@ public class NEIGrinderRecipeHandler extends TemplateRecipeHandler
 				if( cachedRecipe.hasOptional )
 				{
 					FontRenderer fr = Minecraft.getMinecraft().fontRenderer;
-					int width = fr.getStringWidth( cachedRecipe.Chance );
-					fr.drawString( cachedRecipe.Chance, ( 168 - width ) / 2, 5, 0 );
+					int width = fr.getStringWidth( cachedRecipe.displayChance );
+					fr.drawString( cachedRecipe.displayChance, ( 168 - width ) / 2, 5, 0 );
 				}
 				else
 				{
@@ -186,10 +186,9 @@ public class NEIGrinderRecipeHandler extends TemplateRecipeHandler
 
 	public class CachedGrindStoneRecipe extends TemplateRecipeHandler.CachedRecipe
 	{
-
-		public final ArrayList<PositionedStack> ingredients;
+		public final List<PositionedStack> ingredients;
 		public final PositionedStack result;
-		public String Chance;
+		public String displayChance;
 		boolean hasOptional = false;
 
 		public CachedGrindStoneRecipe( IGrinderEntry recipe )
@@ -199,8 +198,10 @@ public class NEIGrinderRecipeHandler extends TemplateRecipeHandler
 
 			if( recipe.getOptionalOutput() != null )
 			{
+				final int chancePercent = (int) (recipe.getOptionalChance() * 100);
+
 				this.hasOptional = true;
-				this.Chance = ( (int) ( recipe.getOptionalChance() * 100 ) ) + GuiText.OfSecondOutput.getLocal();
+				this.displayChance = String.format( GuiText.OfSecondOutput.getLocal(), chancePercent );
 				this.ingredients.add( new PositionedStack( recipe.getOptionalOutput(), -30 + 107 + 18, 47 ) );
 			}
 
