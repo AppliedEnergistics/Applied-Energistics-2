@@ -81,7 +81,6 @@ gui.appliedenergistics2.METunnel=ME
 gui.appliedenergistics2.ItemTunnel=아이템
 gui.appliedenergistics2.FluidTunnel=액체
 gui.appliedenergistics2.RedstoneTunnel=레드스톤
-gui.appliedenergistics2.MJTunnel=MJ
 gui.appliedenergistics2.EUTunnel=EU
 gui.appliedenergistics2.RFTunnel=RF
 gui.appliedenergistics2.LightTunnel=빛
@@ -290,7 +289,6 @@ gui.tooltips.appliedenergistics2.ReportInaccessibleItemsYes=Yes: Items that cann
 gui.tooltips.appliedenergistics2.ReportInaccessibleItemsNo=No: Only extractable items will be visible.
 
 gui.appliedenergistics2.units.appliedenergstics=AE
-gui.appliedenergistics2.units.buildcraft=마인크래프트 줄(MJ)
 gui.appliedenergistics2.units.ic2=에너지 단위(EU)
 gui.appliedenergistics2.units.mekanism=줄(J)
 gui.appliedenergistics2.units.rotarycraft=와트(W)

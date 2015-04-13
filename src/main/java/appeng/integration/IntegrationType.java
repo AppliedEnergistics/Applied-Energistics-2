@@ -29,10 +29,6 @@ public enum IntegrationType
 
 	BC( IntegrationSide.BOTH, "BuildCraft", "BuildCraft|Silicon" ),
 
-	MJ6( IntegrationSide.BOTH, "BuildCraft6 Power", null ),
-
-	MJ5( IntegrationSide.BOTH, "BuildCraft5 Power", null ),
-
 	RF( IntegrationSide.BOTH, "RedstoneFlux Power - Tiles", "CoFHAPI" ),
 
 	RFItem( IntegrationSide.BOTH, "RedstoneFlux Power - Items", "CoFHAPI" ),

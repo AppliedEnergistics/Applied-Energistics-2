@@ -71,7 +71,6 @@ gui.appliedenergistics2.METunnel=ME
 gui.appliedenergistics2.ItemTunnel=Předmět
 gui.appliedenergistics2.FluidTunnel=Tekutina
 gui.appliedenergistics2.RedstoneTunnel=Rudit
-gui.appliedenergistics2.MJTunnel=MJ
 gui.appliedenergistics2.EUTunnel=EU
 gui.appliedenergistics2.RFTunnel=RF
 gui.appliedenergistics2.LightTunnel=Světlo
@@ -280,7 +279,6 @@ gui.tooltips.appliedenergistics2.ReportInaccessibleItemsYes=Ano: Předměty, kte
 gui.tooltips.appliedenergistics2.ReportInaccessibleItemsNo=Ne: Vidět budou pouze předměty, které mohou být vyextrahovány.
 
 gui.appliedenergistics2.units.appliedenergstics=AE
-gui.appliedenergistics2.units.buildcraft=Minecraftové Jouly
 gui.appliedenergistics2.units.ic2=Jednotky energie
 gui.appliedenergistics2.units.mekanism=Jouly
 gui.appliedenergistics2.units.rotarycraft=Watty
