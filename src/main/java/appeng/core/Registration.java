@@ -586,7 +586,7 @@ public final class Registration
 		PlayerMessages.values();
 		GuiText.values();
 
-		Api.INSTANCE.getPartHelper().initFMPSupport();
+		Api.INSTANCE.partHelper().initFMPSupport();
 		for( Block block : blocks.multiPart().maybeBlock().asSet() )
 		{
 			( (BlockCableBus) block ).setupTile();
