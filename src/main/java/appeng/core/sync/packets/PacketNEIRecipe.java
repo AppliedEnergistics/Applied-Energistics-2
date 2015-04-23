@@ -37,8 +37,11 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.oredict.OreDictionary;
 
 import appeng.api.config.Actionable;
+import appeng.api.config.FuzzyMode;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
@@ -53,6 +56,7 @@ import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.helpers.IContainerCraftingPacket;
 import appeng.items.storage.ItemViewCell;
+import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 import appeng.util.prioitylist.IPartitionList;
@@ -152,14 +156,14 @@ public class PacketNEIRecipe extends AppEngPacket
 
 							for( int x = 0; x < craftMatrix.getSizeInventory(); x++ )
 							{
-								ItemStack PatternItem = testInv.getStackInSlot( x );
+								ItemStack patternItem = testInv.getStackInSlot( x );
 
 								ItemStack currentItem = craftMatrix.getStackInSlot( x );
 								if( currentItem != null )
 								{
 									testInv.setInventorySlotContents( x, currentItem );
 									ItemStack newItemStack = r.matches( testInv, pmp.worldObj ) ? r.getCraftingResult( testInv ) : null;
-									testInv.setInventorySlotContents( x, PatternItem );
+									testInv.setInventorySlotContents( x, patternItem );
 
 									if( newItemStack == null || !Platform.isSameItemPrecise( newItemStack, is ) )
 									{
@@ -178,10 +182,10 @@ public class PacketNEIRecipe extends AppEngPacket
 								}
 
 								// True if we need to fetch an item for the recipe
-								if( PatternItem != null && currentItem == null )
+								if( patternItem != null && currentItem == null )
 								{
 									// Grab from network by recipe
-									ItemStack whichItem = Platform.extractItemsByRecipe( energy, cct.getSource(), storage, player.worldObj, r, is, testInv, PatternItem, x, all, realForFake, filter );
+									ItemStack whichItem = Platform.extractItemsByRecipe( energy, cct.getSource(), storage, player.worldObj, r, is, testInv, patternItem, x, all, realForFake, filter );
 
 									// If that doesn't get it, grab exact items from network (?)
 									// TODO see if this code is necessary
@@ -209,28 +213,7 @@ public class PacketNEIRecipe extends AppEngPacket
 									// If that doesn't work, grab from the player's inventory
 									if( whichItem == null && playerInventory != null )
 									{
-										for( int y = 0; y < this.recipe[x].length; y++ )
-										{
-											ItemStack playerItemStack = null;
-											for( int i = 0; i < playerInventory.getSizeInventory(); i++ )
-											{
-												// check if the item in slot y matches the required item.
-												playerItemStack = playerInventory.getStackInSlot( i );
-												if( playerItemStack != null && this.recipe[x][y] != null && playerItemStack.getItem() == this.recipe[x][y].getItem() )
-												{
-													if( realForFake == Actionable.SIMULATE )
-													{
-														whichItem = playerInventory.getStackInSlot( i ).copy();
-														whichItem.stackSize = 1;
-													}
-													else
-													{
-														whichItem = playerInventory.decrStackSize( i, 1 );
-													}
-													break;
-												}
-											}
-										}
+										whichItem = extractItemFromPlayerInventory( player, realForFake, patternItem );
 									}
 
 									craftMatrix.setInventorySlotContents( x, whichItem );
@@ -240,6 +223,45 @@ public class PacketNEIRecipe extends AppEngPacket
 						}
 					}
 				}
+			}
+		}
+	}
+
+	/**
+	 * Tries to extract an item from the player inventory. Does account for fuzzy items.
+	 *
+	 * @param player the {@link EntityPlayer} to extract from
+	 * @param mode the {@link Actionable} to simulate or modulate the operation
+	 * @param patternItem which {@link ItemStack} to extract
+	 * @return null or a found {@link ItemStack}
+	 */
+	private ItemStack extractItemFromPlayerInventory( EntityPlayer player, Actionable mode, ItemStack patternItem )
+	{
+		final InventoryAdaptor ia = InventoryAdaptor.getAdaptor( player, ForgeDirection.UNKNOWN );
+		final AEItemStack request = AEItemStack.create( patternItem );
+		final boolean isSimulated = mode == Actionable.SIMULATE;
+		final boolean checkFuzzy = request.isOre() || patternItem.getItemDamage() == OreDictionary.WILDCARD_VALUE || patternItem.hasTagCompound() || patternItem.isItemStackDamageable();
+
+		if( !checkFuzzy )
+		{
+			if( isSimulated )
+			{
+				return ia.simulateRemove( 1, patternItem, null );
+			}
+			else
+			{
+				return ia.removeItems( 1, patternItem, null );
+			}
+		}
+		else
+		{
+			if( isSimulated )
+			{
+				return ia.simulateSimilarRemove( 1, patternItem, FuzzyMode.IGNORE_ALL, null );
+			}
+			else
+			{
+				return ia.removeSimilarItems( 1, patternItem, FuzzyMode.IGNORE_ALL, null );
 			}
 		}
 	}
