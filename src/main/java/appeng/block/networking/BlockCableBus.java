@@ -230,7 +230,7 @@ public class BlockCableBus extends AEBaseBlock implements IRedNetConnection
 	}
 
 	@Override
-	public ItemStack getPickBlock( MovingObjectPosition target, World world, int x, int y, int z )
+	public ItemStack getPickBlock( MovingObjectPosition target, World world, int x, int y, int z, EntityPlayer player )
 	{
 		Vec3 v3 = target.hitVec.addVector( -x, -y, -z );
 		SelectedPart sp = this.cb( world, x, y, z ).selectPart( v3 );
