@@ -371,7 +371,8 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 					return;
 				}
 			}
-			else // Stored != null; dispose!
+			else
+			// Stored != null; dispose!
 			{
 				IAEItemStack work = AEApi.instance().storage().createItemStack( Stored );
 				this.requireWork[slot] = work.setStackSize( -work.getStackSize() );
@@ -507,7 +508,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 			return TickRateModulation.SLEEP;
 
 		if( this.hasItemsToSend() )
-			this.pushItemsOut( EnumSet.allOf( ForgeDirection.class ) );
+			this.pushItemsOut( this.iHost.getTargets() );
 
 		boolean couldDoWork = this.updateStorage();
 		return this.hasWorkToDo() ? ( couldDoWork ? TickRateModulation.URGENT : TickRateModulation.SLOWER ) : TickRateModulation.SLEEP;
@@ -734,7 +735,9 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 			this.cancelCrafting();
 
 		this.markDirty();
-	}	@Override
+	}
+
+	@Override
 	public IMEMonitor<IAEFluidStack> getFluidInventory()
 	{
 		if( this.hasConfig() )
@@ -825,7 +828,8 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 						ItemStack is = table.getStackInSlot( x );
 						if( is != null )
 						{
-							this.addToSendList( ad.addItems( is ) );
+							final ItemStack added = ad.addItems( is );
+							this.addToSendList( added );
 						}
 					}
 					this.pushItemsOut( possibleDirections );
@@ -1095,7 +1099,6 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		}
 	}
 
-
 	class InterfaceInventory extends MEMonitorIInventory
 	{
 
@@ -1123,6 +1126,5 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 			return super.extractItems( request, type, src );
 		}
 	}
-
 
 }
