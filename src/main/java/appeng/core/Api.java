@@ -31,7 +31,6 @@ import appeng.api.features.IRegistryContainer;
 import appeng.api.networking.IGridBlock;
 import appeng.api.networking.IGridConnection;
 import appeng.api.networking.IGridNode;
-import appeng.api.parts.IPartHelper;
 import appeng.api.storage.IStorageHelper;
 import appeng.core.api.ApiPart;
 import appeng.core.api.ApiStorage;
@@ -81,7 +80,7 @@ public final class Api implements IAppEngApi
 	}
 
 	@Override
-	public IPartHelper partHelper()
+	public ApiPart partHelper()
 	{
 		return this.partHelper;
 	}
@@ -128,10 +127,5 @@ public final class Api implements IAppEngApi
 	public IGridConnection createGridConnection( IGridNode a, IGridNode b ) throws FailedConnection
 	{
 		return new GridConnection( a, b, ForgeDirection.UNKNOWN );
-	}
-
-	public ApiPart getPartHelper()
-	{
-		return this.partHelper;
 	}
 }

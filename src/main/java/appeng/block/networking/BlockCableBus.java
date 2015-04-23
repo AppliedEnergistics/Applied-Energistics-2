@@ -450,10 +450,10 @@ public class BlockCableBus extends AEBaseBlock implements IRedNetConnection
 
 	public void setupTile()
 	{
-		this.setTileEntity( noTesrTile = Api.INSTANCE.getPartHelper().getCombinedInstance( TileCableBus.class.getName() ) );
+		this.setTileEntity( noTesrTile = Api.INSTANCE.partHelper().getCombinedInstance( TileCableBus.class.getName() ) );
 		if( Platform.isClient() )
 		{
-			tesrTile = Api.INSTANCE.getPartHelper().getCombinedInstance( TileCableBusTESR.class.getName() );
+			tesrTile = Api.INSTANCE.partHelper().getCombinedInstance( TileCableBusTESR.class.getName() );
 			GameRegistry.registerTileEntity( tesrTile, "ClientOnly_TESR_CableBus" );
 			CommonHelper.proxy.bindTileEntitySpecialRenderer( tesrTile, this );
 		}
