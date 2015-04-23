@@ -112,5 +112,6 @@ processResources {
     from(sourceSets.main.resources.srcDirs) {
         include 'mcmod.info'
         expand 'version': project.version, 'mcversion': config.minecraft_version
+        include 'pack.mcmeta'
     }
 }
