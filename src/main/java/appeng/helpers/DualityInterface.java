@@ -60,6 +60,7 @@ import appeng.api.networking.crafting.ICraftingProviderHelper;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.events.MENetworkCraftingPatternChange;
 import appeng.api.networking.security.BaseActionSource;
+import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.MachineSource;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
@@ -100,13 +101,13 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 {
 
 	static final Set<Block> badBlocks = new HashSet<Block>();
-	private static boolean interfaceRequest = false;
 	final int[] sides = new int[] { 0, 1, 2, 3, 4, 5, 6, 7 };
 	final IAEItemStack[] requireWork = new IAEItemStack[] { null, null, null, null, null, null, null, null };
 	final MultiCraftingTracker craftingTracker;
 	final AENetworkProxy gridProxy;
 	final IInterfaceHost iHost;
-	final BaseActionSource mySrc;
+	final BaseActionSource mySource;
+	final BaseActionSource interfaceRequestSource;
 	final ConfigManager cm = new ConfigManager( this );
 	final AppEngInternalAEInventory config = new AppEngInternalAEInventory( this, 8 );
 	final AppEngInternalInventory storage = new AppEngInternalInventory( this, 8 );
@@ -133,7 +134,8 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 
 		this.iHost = ih;
 		this.craftingTracker = new MultiCraftingTracker( this.iHost, 9 );
-		this.mySrc = this.fluids.changeSource = this.items.changeSource = new MachineSource( this.iHost );
+		this.mySource = this.fluids.changeSource = this.items.changeSource = new MachineSource( this.iHost );
+		this.interfaceRequestSource = new InterfaceRequestSource( this.iHost );
 	}
 
 	@Override
@@ -575,7 +577,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 	{
 		boolean changed = false;
 		InventoryAdaptor adaptor = this.getAdaptor( x );
-		interfaceRequest = this.isWorking = true;
+		this.isWorking = true;
 
 		try
 		{
@@ -593,7 +595,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 					throw new GridAccessException();
 				}
 
-				IAEItemStack acquired = Platform.poweredExtraction( src, this.destination, itemStack, this.mySrc );
+				IAEItemStack acquired = Platform.poweredExtraction( src, this.destination, itemStack, this.interfaceRequestSource );
 				if( acquired != null )
 				{
 					changed = true;
@@ -619,7 +621,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 					throw new GridAccessException();
 				}
 
-				toStore = Platform.poweredInsert( src, this.destination, toStore, this.mySrc );
+				toStore = Platform.poweredInsert( src, this.destination, toStore, this.interfaceRequestSource );
 
 				if( toStore != null )
 					diff -= toStore.getStackSize();
@@ -645,7 +647,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		if( changed )
 			this.updatePlan( x );
 
-		interfaceRequest = this.isWorking = false;
+		this.isWorking = false;
 		return changed;
 	}
 
@@ -660,7 +662,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		{
 			if( this.getInstalledUpgrades( Upgrades.CRAFTING ) > 0 && itemStack != null )
 			{
-				return this.craftingTracker.handleCrafting( x, itemStack.getStackSize(), itemStack, d, this.iHost.getTileEntity().getWorldObj(), this.gridProxy.getGrid(), this.gridProxy.getCrafting(), this.mySrc );
+				return this.craftingTracker.handleCrafting( x, itemStack.getStackSize(), itemStack, d, this.iHost.getTileEntity().getWorldObj(), this.gridProxy.getGrid(), this.gridProxy.getCrafting(), this.mySource );
 			}
 		}
 		catch( GridAccessException e )
@@ -1099,7 +1101,17 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		}
 	}
 
-	class InterfaceInventory extends MEMonitorIInventory
+	private class InterfaceRequestSource extends MachineSource
+	{
+
+		public InterfaceRequestSource( IActionHost v )
+		{
+			super( v );
+		}
+
+	}
+
+	private class InterfaceInventory extends MEMonitorIInventory
 	{
 
 		public InterfaceInventory( DualityInterface tileInterface )
@@ -1111,7 +1123,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		@Override
 		public IAEItemStack injectItems( IAEItemStack input, Actionable type, BaseActionSource src )
 		{
-			if( interfaceRequest )
+			if( src instanceof InterfaceRequestSource )
 				return input;
 
 			return super.injectItems( input, type, src );
@@ -1120,7 +1132,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		@Override
 		public IAEItemStack extractItems( IAEItemStack request, Actionable type, BaseActionSource src )
 		{
-			if( interfaceRequest )
+			if( src instanceof InterfaceRequestSource )
 				return null;
 
 			return super.extractItems( request, type, src );
