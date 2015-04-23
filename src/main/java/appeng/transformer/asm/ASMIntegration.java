@@ -20,7 +20,7 @@ package appeng.transformer.asm;
 
 
 import java.util.Iterator;
-import java.util.List;
+import javax.annotation.Nullable;
 
 import org.apache.logging.log4j.Level;
 import org.objectweb.asm.ClassReader;
@@ -34,13 +34,16 @@ import net.minecraft.launchwrapper.IClassTransformer;
 
 import cpw.mods.fml.relauncher.FMLRelaunchLog;
 
+import appeng.helpers.Reflected;
 import appeng.integration.IntegrationRegistry;
 import appeng.integration.IntegrationType;
 import appeng.transformer.annotations.Integration;
 
 
-public class ASMIntegration implements IClassTransformer
+@Reflected
+public final class ASMIntegration implements IClassTransformer
 {
+	@Reflected
 	public ASMIntegration()
 	{
 
@@ -64,6 +67,7 @@ public class ASMIntegration implements IClassTransformer
 
 	}
 
+	@Nullable
 	@Override
 	public byte[] transform( String name, String transformedName, byte[] basicClass )
 	{
@@ -72,8 +76,6 @@ public class ASMIntegration implements IClassTransformer
 
 		if( transformedName.startsWith( "appeng." ) )
 		{
-			// log( "Found " + transformedName );
-
 			ClassNode classNode = new ClassNode();
 			ClassReader classReader = new ClassReader( basicClass );
 			classReader.accept( classNode, 0 );
@@ -112,7 +114,7 @@ public class ASMIntegration implements IClassTransformer
 				}
 				else if( this.hasAnnotation( an, Integration.InterfaceList.class ) )
 				{
-					for( Object o : ( (List) an.values.get( 1 ) ) )
+					for( Object o : ( (Iterable) an.values.get( 1 ) ) )
 					{
 						if( this.stripInterface( classNode, Integration.InterfaceList.class, (AnnotationNode) o ) )
 							changed = true;
@@ -145,12 +147,12 @@ public class ASMIntegration implements IClassTransformer
 		return changed;
 	}
 
-	private boolean hasAnnotation( AnnotationNode ann, Class annotation )
+	private boolean hasAnnotation( AnnotationNode ann, Class<?> annotation )
 	{
 		return ann.desc.equals( Type.getDescriptor( annotation ) );
 	}
 
-	private boolean stripInterface( ClassNode classNode, Class class1, AnnotationNode an )
+	private boolean stripInterface( ClassNode classNode, Class<?> class1, AnnotationNode an )
 	{
 		if( an.values.size() != 4 )
 			throw new IllegalArgumentException( "Unable to handle Interface annotation on " + classNode.name );
@@ -168,10 +170,9 @@ public class ASMIntegration implements IClassTransformer
 		else if( an.values.get( 2 ).equals( "iname" ) )
 			iName = (String) an.values.get( 3 );
 
-		IntegrationType type = IntegrationType.valueOf( iName );
-
 		if( iName != null && iFace != null )
 		{
+			final IntegrationType type = IntegrationType.valueOf( iName );
 			if( !IntegrationRegistry.INSTANCE.isEnabled( type ) )
 			{
 				this.log( "Removing Interface " + iFace + " from " + classNode.name + " because " + iName + " integration is disabled." );

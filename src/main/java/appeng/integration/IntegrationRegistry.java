@@ -46,16 +46,16 @@ public enum IntegrationRegistry
 	public void init()
 	{
 		for( IntegrationNode node : this.modules )
-			node.Call( IntegrationStage.PRE_INIT );
+			node.call( IntegrationStage.PRE_INIT );
 
 		for( IntegrationNode node : this.modules )
-			node.Call( IntegrationStage.INIT );
+			node.call( IntegrationStage.INIT );
 	}
 
 	public void postInit()
 	{
 		for( IntegrationNode node : this.modules )
-			node.Call( IntegrationStage.POST_INIT );
+			node.call( IntegrationStage.POST_INIT );
 	}
 
 	public String getStatus()

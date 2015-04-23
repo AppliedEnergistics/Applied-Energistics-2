@@ -33,9 +33,9 @@ public enum IntegrationType
 
 	MJ5( IntegrationSide.BOTH, "BuildCraft5 Power", null ),
 
-	RF( IntegrationSide.BOTH, "RedstoneFlux Power - Tiles", null ),
+	RF( IntegrationSide.BOTH, "RedstoneFlux Power - Tiles", "CoFHAPI" ),
 
-	RFItem( IntegrationSide.BOTH, "RedstoneFlux Power - Items", null ),
+	RFItem( IntegrationSide.BOTH, "RedstoneFlux Power - Items", "CoFHAPI" ),
 
 	MFR( IntegrationSide.BOTH, "Mine Factory Reloaded", "MineFactoryReloaded" ),
 

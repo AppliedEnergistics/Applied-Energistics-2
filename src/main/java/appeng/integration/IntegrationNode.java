@@ -22,13 +22,14 @@ package appeng.integration;
 import java.lang.reflect.Field;
 
 import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.ModAPIManager;
 
 import appeng.api.exceptions.ModNotInstalled;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
 
 
-public class IntegrationNode
+public final class IntegrationNode
 {
 
 	final String displayName;
@@ -59,12 +60,12 @@ public class IntegrationNode
 	public boolean isActive()
 	{
 		if( this.state == IntegrationStage.PRE_INIT )
-			this.Call( IntegrationStage.PRE_INIT );
+			this.call( IntegrationStage.PRE_INIT );
 
 		return this.state != IntegrationStage.FAILED;
 	}
 
-	void Call( IntegrationStage stage )
+	void call( IntegrationStage stage )
 	{
 		if( this.state != IntegrationStage.FAILED )
 		{
@@ -76,15 +77,15 @@ public class IntegrationNode
 				switch( stage )
 				{
 					case PRE_INIT:
-
-						boolean enabled = this.modID == null || Loader.isModLoaded( this.modID );
+						final ModAPIManager apiManager = ModAPIManager.INSTANCE;
+						boolean enabled = this.modID == null || Loader.isModLoaded( this.modID ) || apiManager.hasAPI( this.modID );
 
 						AEConfig.instance.addCustomCategoryComment( "ModIntegration", "Valid Values are 'AUTO', 'ON', or 'OFF' - defaults to 'AUTO' ; Suggested that you leave this alone unless your experiencing an issue, or wish to disable the integration for a reason." );
-						String Mode = AEConfig.instance.get( "ModIntegration", this.displayName.replace( " ", "" ), "AUTO" ).getString();
+						String mode = AEConfig.instance.get( "ModIntegration", this.displayName.replace( " ", "" ), "AUTO" ).getString();
 
-						if( Mode.toUpperCase().equals( "ON" ) )
+						if( mode.toUpperCase().equals( "ON" ) )
 							enabled = true;
-						if( Mode.toUpperCase().equals( "OFF" ) )
+						if( mode.toUpperCase().equals( "OFF" ) )
 							enabled = false;
 
 						if( enabled )

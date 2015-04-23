@@ -41,7 +41,7 @@ import appeng.util.Platform;
 
 
 @InterfaceList( value = { @Interface( iface = "cofh.api.energy.IEnergyReceiver", iname = "RF" ) } )
-public class PartP2PRFPower extends PartP2PTunnel<PartP2PRFPower> implements IEnergyReceiver
+public final class PartP2PRFPower extends PartP2PTunnel<PartP2PRFPower> implements IEnergyReceiver
 {
 	private static final ThreadLocal<Stack<PartP2PRFPower>> THREAD_STACK = new ThreadLocal<Stack<PartP2PRFPower>>();
 	/**

@@ -20,6 +20,7 @@ package appeng.transformer.asm;
 
 
 import java.util.Iterator;
+import javax.annotation.Nullable;
 
 import org.apache.logging.log4j.Level;
 import org.objectweb.asm.ClassReader;
@@ -39,26 +40,31 @@ import cpw.mods.fml.relauncher.FMLRelaunchLog;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 
+import appeng.helpers.Reflected;
 
-public class ASMTweaker implements IClassTransformer
+
+@Reflected
+public final class ASMTweaker implements IClassTransformer
 {
+	private static final String[] EXCEPTIONS = new String[0];
+	private final Multimap<String, PublicLine> privateToPublicMethods = HashMultimap.create();
 
-	final Multimap<String, publicLine> privateToPublicMethods = HashMultimap.create();
-
+	@Reflected
 	public ASMTweaker()
 	{
-		this.privateToPublicMethods.put( "net.minecraft.client.gui.inventory.GuiContainer", new publicLine( "func_146977_a", "(Lnet/minecraft/inventory/Slot;)V" ) );
-		this.privateToPublicMethods.put( "net.minecraft.client.gui.inventory.GuiContainer", new publicLine( "a", "(Lzk;)V" ) );
+		this.privateToPublicMethods.put( "net.minecraft.client.gui.inventory.GuiContainer", new PublicLine( "func_146977_a", "(Lnet/minecraft/inventory/Slot;)V" ) );
+		this.privateToPublicMethods.put( "net.minecraft.client.gui.inventory.GuiContainer", new PublicLine( "a", "(Lzk;)V" ) );
 
-		this.privateToPublicMethods.put( "appeng.tile.AEBaseTile", new publicLine( "writeToNBT", "(Lnet/minecraft/nbt/NBTTagCompound;)V" ) );
-		this.privateToPublicMethods.put( "appeng.tile.AEBaseTile", new publicLine( "func_145841_b", "(Lnet/minecraft/nbt/NBTTagCompound;)V" ) );
-		this.privateToPublicMethods.put( "appeng.tile.AEBaseTile", new publicLine( "b", "(Ldh;)V" ) );
+		this.privateToPublicMethods.put( "appeng.tile.AEBaseTile", new PublicLine( "writeToNBT", "(Lnet/minecraft/nbt/NBTTagCompound;)V" ) );
+		this.privateToPublicMethods.put( "appeng.tile.AEBaseTile", new PublicLine( "func_145841_b", "(Lnet/minecraft/nbt/NBTTagCompound;)V" ) );
+		this.privateToPublicMethods.put( "appeng.tile.AEBaseTile", new PublicLine( "b", "(Ldh;)V" ) );
 
-		this.privateToPublicMethods.put( "appeng.tile.AEBaseTile", new publicLine( "readFromNBT", "(Lnet/minecraft/nbt/NBTTagCompound;)V" ) );
-		this.privateToPublicMethods.put( "appeng.tile.AEBaseTile", new publicLine( "func_145839_a", "(Lnet/minecraft/nbt/NBTTagCompound;)V" ) );
-		this.privateToPublicMethods.put( "appeng.tile.AEBaseTile", new publicLine( "a", "(Ldh;)V" ) );
+		this.privateToPublicMethods.put( "appeng.tile.AEBaseTile", new PublicLine( "readFromNBT", "(Lnet/minecraft/nbt/NBTTagCompound;)V" ) );
+		this.privateToPublicMethods.put( "appeng.tile.AEBaseTile", new PublicLine( "func_145839_a", "(Lnet/minecraft/nbt/NBTTagCompound;)V" ) );
+		this.privateToPublicMethods.put( "appeng.tile.AEBaseTile", new PublicLine( "a", "(Ldh;)V" ) );
 	}
 
+	@Nullable
 	@Override
 	public byte[] transform( String name, String transformedName, byte[] basicClass )
 	{
@@ -73,9 +79,9 @@ public class ASMTweaker implements IClassTransformer
 				ClassReader classReader = new ClassReader( basicClass );
 				classReader.accept( classNode, 0 );
 
-				for( publicLine Set : this.privateToPublicMethods.get( transformedName ) )
+				for( PublicLine set : this.privateToPublicMethods.get( transformedName ) )
 				{
-					this.makePublic( classNode, Set );
+					this.makePublic( classNode, set );
 				}
 
 				// CALL VIRTUAL!
@@ -85,7 +91,7 @@ public class ASMTweaker implements IClassTransformer
 					{
 						if( mn.name.equals( "func_146977_a" ) || ( mn.name.equals( "a" ) && mn.desc.equals( "(Lzk;)V" ) ) )
 						{
-							MethodNode newNode = new MethodNode( Opcodes.ACC_PUBLIC, "func_146977_a_original", mn.desc, mn.signature, new String[0] );
+							MethodNode newNode = new MethodNode( Opcodes.ACC_PUBLIC, "func_146977_a_original", mn.desc, mn.signature, EXCEPTIONS );
 							newNode.instructions.add( new VarInsnNode( Opcodes.ALOAD, 0 ) );
 							newNode.instructions.add( new VarInsnNode( Opcodes.ALOAD, 1 ) );
 							newNode.instructions.add( new MethodInsnNode( Opcodes.INVOKESPECIAL, classNode.name, mn.name, mn.desc, false ) );
@@ -132,7 +138,7 @@ public class ASMTweaker implements IClassTransformer
 		return basicClass;
 	}
 
-	private void makePublic( ClassNode classNode, publicLine set )
+	private void makePublic( ClassNode classNode, PublicLine set )
 	{
 		for( MethodNode mn : classNode.methods )
 		{
@@ -149,13 +155,12 @@ public class ASMTweaker implements IClassTransformer
 		FMLRelaunchLog.log( "AE2-CORE", Level.INFO, string );
 	}
 
-	class publicLine
+	private static final class PublicLine
 	{
+		private final String name;
+		private final String desc;
 
-		final String name;
-		final String desc;
-
-		public publicLine( String name, String desc )
+		public PublicLine( String name, String desc )
 		{
 			this.name = name;
 			this.desc = desc;
