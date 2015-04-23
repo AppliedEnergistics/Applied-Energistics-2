@@ -51,15 +51,15 @@ public class AETileEventHandler
 		}
 		catch( IllegalAccessException e )
 		{
-			throw new RuntimeException( e );
+			throw new IllegalStateException( e );
 		}
 		catch( IllegalArgumentException e )
 		{
-			throw new RuntimeException( e );
+			throw new IllegalStateException( e );
 		}
 		catch( InvocationTargetException e )
 		{
-			throw new RuntimeException( e );
+			throw new IllegalStateException( e );
 		}
 	}
 
@@ -72,15 +72,15 @@ public class AETileEventHandler
 		}
 		catch( IllegalAccessException e )
 		{
-			throw new RuntimeException( e );
+			throw new IllegalStateException( e );
 		}
 		catch( IllegalArgumentException e )
 		{
-			throw new RuntimeException( e );
+			throw new IllegalStateException( e );
 		}
 		catch( InvocationTargetException e )
 		{
-			throw new RuntimeException( e );
+			throw new IllegalStateException( e );
 		}
 	}
 
@@ -93,15 +93,15 @@ public class AETileEventHandler
 		}
 		catch( IllegalAccessException e )
 		{
-			throw new RuntimeException( e );
+			throw new IllegalStateException( e );
 		}
 		catch( IllegalArgumentException e )
 		{
-			throw new RuntimeException( e );
+			throw new IllegalStateException( e );
 		}
 		catch( InvocationTargetException e )
 		{
-			throw new RuntimeException( e );
+			throw new IllegalStateException( e );
 		}
 	}
 
@@ -114,15 +114,15 @@ public class AETileEventHandler
 		}
 		catch( IllegalAccessException e )
 		{
-			throw new RuntimeException( e );
+			throw new IllegalStateException( e );
 		}
 		catch( IllegalArgumentException e )
 		{
-			throw new RuntimeException( e );
+			throw new IllegalStateException( e );
 		}
 		catch( InvocationTargetException e )
 		{
-			throw new RuntimeException( e );
+			throw new IllegalStateException( e );
 		}
 	}
 
@@ -144,15 +144,15 @@ public class AETileEventHandler
 		}
 		catch( IllegalAccessException e )
 		{
-			throw new RuntimeException( e );
+			throw new IllegalStateException( e );
 		}
 		catch( IllegalArgumentException e )
 		{
-			throw new RuntimeException( e );
+			throw new IllegalStateException( e );
 		}
 		catch( InvocationTargetException e )
 		{
-			throw new RuntimeException( e );
+			throw new IllegalStateException( e );
 		}
 	}
 }

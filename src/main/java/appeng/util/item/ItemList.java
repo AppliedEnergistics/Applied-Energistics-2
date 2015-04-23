@@ -79,7 +79,7 @@ public final class ItemList<StackType extends IAEStack> implements IItemList<Sta
 			return true;
 
 		if( !this.clz.isInstance( st ) )
-			throw new RuntimeException( "WRONG TYPE - got " + st.getClass().getName() + " expected " + this.clz.getName() );
+			throw new IllegalArgumentException( "WRONG TYPE - got " + st.getClass().getName() + " expected " + this.clz.getName() );
 
 		return false;
 	}

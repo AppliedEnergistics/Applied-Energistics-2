@@ -934,7 +934,7 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 
 	public IAEItemStack getItemStack( IAEItemStack what, CraftingItemList storage2 )
 	{
-		IAEItemStack is = null;
+		IAEItemStack is;
 		switch( storage2 )
 		{
 			case STORAGE:
@@ -960,7 +960,7 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 				break;
 			default:
 			case ALL:
-				throw new RuntimeException( "Invalid Operation" );
+				throw new IllegalStateException( "Invalid Operation" );
 		}
 
 		if( is != null )

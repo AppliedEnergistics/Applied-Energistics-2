@@ -27,10 +27,9 @@ import net.minecraft.server.MinecraftServer;
 import com.google.common.base.Joiner;
 
 
-public class AECommand extends CommandBase
+public final class AECommand extends CommandBase
 {
-
-	final MinecraftServer srv;
+	private final MinecraftServer srv;
 
 	public AECommand( MinecraftServer server )
 	{

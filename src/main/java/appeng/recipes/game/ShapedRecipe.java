@@ -100,7 +100,7 @@ public class ShapedRecipe implements IRecipe, IRecipeBakeable
 				ret.append( tmp ).append( ", " );
 			}
 			ret.append( this.output );
-			throw new RuntimeException( ret.toString() );
+			throw new IllegalStateException( ret.toString() );
 		}
 
 		HashMap<Character, Object> itemMap = new HashMap<Character, Object>();
@@ -122,7 +122,7 @@ public class ShapedRecipe implements IRecipe, IRecipeBakeable
 					ret.append( tmp ).append( ", " );
 				}
 				ret.append( this.output );
-				throw new RuntimeException( ret.toString() );
+				throw new IllegalStateException( ret.toString() );
 			}
 		}
 

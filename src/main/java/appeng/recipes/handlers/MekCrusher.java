@@ -55,6 +55,7 @@ public class MekCrusher implements ICraftHandler, IWebsiteSerializer
 				return;
 			}
 		}
+
 		throw new RecipeError( "MekCrusher must have a single input, and single output." );
 	}
 

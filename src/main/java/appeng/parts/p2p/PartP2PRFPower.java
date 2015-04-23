@@ -130,7 +130,7 @@ public class PartP2PRFPower extends PartP2PTunnel<PartP2PRFPower> implements IEn
 			}
 
 			if( stack.pop() != this )
-				throw new RuntimeException( "Invalid Recursion detected." );
+				throw new IllegalStateException( "Invalid Recursion detected." );
 
 			return total;
 		}
@@ -197,7 +197,7 @@ public class PartP2PRFPower extends PartP2PTunnel<PartP2PRFPower> implements IEn
 		}
 
 		if( stack.pop() != this )
-			throw new RuntimeException( "Invalid Recursion detected." );
+			throw new IllegalStateException( "Invalid Recursion detected." );
 
 		return total;
 	}
@@ -231,7 +231,7 @@ public class PartP2PRFPower extends PartP2PTunnel<PartP2PRFPower> implements IEn
 		}
 
 		if( stack.pop() != this )
-			throw new RuntimeException( "Invalid Recursion detected." );
+			throw new IllegalStateException( "Invalid Recursion detected." );
 
 		return total;
 	}

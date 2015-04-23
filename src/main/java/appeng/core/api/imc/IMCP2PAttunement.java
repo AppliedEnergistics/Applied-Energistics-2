@@ -30,6 +30,8 @@ FMLInterModComms.sendMessage( "appliedenergistics2", "add-p2p-attunement-item", 
 package appeng.core.api.imc;
 
 
+import java.util.Arrays;
+
 import net.minecraft.item.ItemStack;
 
 import cpw.mods.fml.common.event.FMLInterModComms.IMCMessage;
@@ -55,9 +57,9 @@ public class IMCP2PAttunement implements IIMCProcessor
 			if( is != null )
 				AEApi.instance().registries().p2pTunnel().addNewAttunement( is, type );
 			else
-				throw new RuntimeException( "invalid item" );
+				throw new IllegalStateException( "invalid item in message " + m );
 		}
 		else
-			throw new RuntimeException( "invalid type" );
+			throw new IllegalStateException( "invalid type in message " + m + " is not contained in " + Arrays.toString( TunnelType.values() ) );
 	}
 }

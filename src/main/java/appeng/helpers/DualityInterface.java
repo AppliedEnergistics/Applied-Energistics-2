@@ -601,7 +601,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 					changed = true;
 					ItemStack issue = adaptor.addItems( acquired.getItemStack() );
 					if( issue != null )
-						throw new RuntimeException( "bad attempt at managing inventory. ( addItems )" );
+						throw new IllegalStateException( "bad attempt at managing inventory. ( addItems )" );
 				}
 				else
 					changed = this.handleCrafting( x, adaptor, itemStack ) || changed;
@@ -632,9 +632,9 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 					changed = true;
 					ItemStack removed = adaptor.removeItems( (int) diff, null, null );
 					if( removed == null )
-						throw new RuntimeException( "bad attempt at managing inventory. ( removeItems )" );
+						throw new IllegalStateException( "bad attempt at managing inventory. ( removeItems )" );
 					else if( removed.stackSize != diff )
-						throw new RuntimeException( "bad attempt at managing inventory. ( removeItems )" );
+						throw new IllegalStateException( "bad attempt at managing inventory. ( removeItems )" );
 				}
 			}
 			// else wtf?

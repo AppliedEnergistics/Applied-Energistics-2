@@ -67,7 +67,7 @@ public class PacketInventoryAction extends AppEngPacket
 	{
 
 		if( Platform.isClient() )
-			throw new RuntimeException( "invalid packet, client cannot post inv actions with stacks." );
+			throw new IllegalStateException( "invalid packet, client cannot post inv actions with stacks." );
 
 		this.action = action;
 		this.slot = slot;

@@ -156,11 +156,18 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 
 		try
 		{
-			return this.renderInfo = new BlockRenderInfo( this.getRenderer().newInstance() );
+			final BaseBlockRender renderer = this.getRenderer().newInstance();
+			this.renderInfo = new BlockRenderInfo( renderer );
+
+			return this.renderInfo;
 		}
-		catch( Throwable t )
+		catch ( InstantiationException e )
 		{
-			throw new RuntimeException( t );
+			throw new IllegalStateException( "Failed to create a new instance of an illegal class " + this.getRenderer(), e );
+		}
+		catch( IllegalAccessException e )
+		{
+			throw new IllegalStateException( "Failed to create a new instance of " + this.getRenderer() + " because of permissions.", e );
 		}
 	}
 
@@ -797,13 +804,11 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 			}
 			catch( InstantiationException e )
 			{
-				e.printStackTrace();
-				throw new RuntimeException( e );
+				throw new IllegalStateException( "Failed to create a new instance of an illegal class " + this.tileEntityType , e );
 			}
 			catch( IllegalAccessException e )
 			{
-				e.printStackTrace();
-				throw new RuntimeException( e );
+				throw new IllegalStateException( "Failed to create a new instance of " + this.tileEntityType + ", because lack of permissions", e );
 			}
 		}
 

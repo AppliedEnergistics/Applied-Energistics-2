@@ -154,7 +154,7 @@ public abstract class AEBaseContainer extends Container
 		this.obj = anchor instanceof IGuiItemObject ? (IGuiItemObject) anchor : null;
 
 		if( this.tileEntity == null && this.part == null && this.obj == null )
-			throw new RuntimeException( "Must have a valid anchor" );
+			throw new IllegalArgumentException( "Must have a valid anchor, instead " + anchor + " in " + ip );
 
 		this.mySrc = new PlayerSource( ip.player, this.getActionHost() );
 
@@ -380,7 +380,7 @@ public abstract class AEBaseContainer extends Container
 			return super.addSlotToContainer( newSlot );
 		}
 		else
-			throw new RuntimeException( "Invalid Slot for AE Container." );
+			throw new IllegalArgumentException( "Invalid Slot [" + newSlot + "]for AE Container instead of AppEngSlot." );
 	}
 
 	@Override

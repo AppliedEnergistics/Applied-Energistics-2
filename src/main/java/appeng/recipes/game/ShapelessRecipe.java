@@ -56,7 +56,7 @@ public class ShapelessRecipe implements IRecipe, IRecipeBakeable
 					ret.append( tmp ).append( ", " );
 				}
 				ret.append( this.output );
-				throw new RuntimeException( ret.toString() );
+				throw new IllegalArgumentException( ret.toString() );
 			}
 		}
 	}

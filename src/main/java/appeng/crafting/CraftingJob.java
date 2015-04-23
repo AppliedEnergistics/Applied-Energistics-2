@@ -218,7 +218,7 @@ public class CraftingJob implements Runnable, ICraftingJob
 		catch( Throwable t )
 		{
 			this.finish();
-			throw new RuntimeException( t );
+			throw new IllegalStateException( t );
 		}
 
 		this.finish();

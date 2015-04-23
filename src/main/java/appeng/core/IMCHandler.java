@@ -85,7 +85,7 @@ public class IMCHandler
 				}
 				else
 				{
-					throw new RuntimeException( "Invalid IMC Called: " + key );
+					throw new IllegalStateException( "Invalid IMC Called: " + key );
 				}
 			}
 			catch( Throwable t )

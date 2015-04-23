@@ -27,10 +27,9 @@ import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
 
 
-public class ProxyNodeIterator implements Iterator<IGridNode>
+public final class ProxyNodeIterator implements Iterator<IGridNode>
 {
-
-	final Iterator<IGridHost> hosts;
+	private final Iterator<IGridHost> hosts;
 
 	public ProxyNodeIterator( Iterator<IGridHost> hosts )
 	{
@@ -53,6 +52,6 @@ public class ProxyNodeIterator implements Iterator<IGridNode>
 	@Override
 	public void remove()
 	{
-		throw new RuntimeException( "Not implemented." );
+		throw new UnsupportedOperationException();
 	}
 }

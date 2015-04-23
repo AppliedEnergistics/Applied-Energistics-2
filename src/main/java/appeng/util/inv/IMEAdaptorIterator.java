@@ -25,15 +25,15 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 
 
-public class IMEAdaptorIterator implements Iterator<ItemSlot>
+public final class IMEAdaptorIterator implements Iterator<ItemSlot>
 {
+	private final Iterator<IAEItemStack> stack;
+	private final ItemSlot slot = new ItemSlot();
+	private final IMEAdaptor parent;
+	private final int containerSize;
 
-	final Iterator<IAEItemStack> stack;
-	final ItemSlot slot = new ItemSlot();
-	final IMEAdaptor parent;
-	final int containerSize;
-	int offset = 0;
-	boolean hasNext;
+	private int offset = 0;
+	private boolean hasNext;
 
 	public IMEAdaptorIterator( IMEAdaptor parent, IItemList<IAEItemStack> availableItems )
 	{
@@ -73,6 +73,6 @@ public class IMEAdaptorIterator implements Iterator<ItemSlot>
 	@Override
 	public void remove()
 	{
-		throw new RuntimeException( "Not Implemented!" );
+		throw new UnsupportedOperationException();
 	}
 }

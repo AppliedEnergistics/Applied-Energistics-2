@@ -68,6 +68,6 @@ public class MetaRotation implements IOrientable
 		if( this.w instanceof World )
 			( (World) this.w ).setBlockMetadataWithNotify( this.x, this.y, this.z, Up.ordinal(), 1 + 2 );
 		else
-			throw new RuntimeException( this.w.getClass().getName() + " received, expected World" );
+			throw new IllegalStateException( this.w.getClass().getName() + " received, expected World" );
 	}
 }

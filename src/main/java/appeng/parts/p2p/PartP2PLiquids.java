@@ -117,7 +117,7 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 		if( requestTotal <= 0 )
 		{
 			if( stack.pop() != this )
-				throw new RuntimeException( "Invalid Recursion detected." );
+				throw new IllegalStateException( "Invalid Recursion detected." );
 
 			return 0;
 		}
@@ -125,7 +125,7 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 		if( !doFill )
 		{
 			if( stack.pop() != this )
-				throw new RuntimeException( "Invalid Recursion detected." );
+				throw new IllegalStateException( "Invalid Recursion detected." );
 
 			return Math.min( resource.amount, requestTotal );
 		}
@@ -154,7 +154,7 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 		}
 
 		if( stack.pop() != this )
-			throw new RuntimeException( "Invalid Recursion detected." );
+			throw new IllegalStateException( "Invalid Recursion detected." );
 
 		return used;
 	}

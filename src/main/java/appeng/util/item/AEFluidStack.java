@@ -24,6 +24,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import javax.annotation.Nonnull;
 
 import io.netty.buffer.ByteBuf;
 
@@ -60,15 +61,12 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 		this.myHash = is.myHash;
 	}
 
-	private AEFluidStack( FluidStack is )
+	private AEFluidStack( @Nonnull FluidStack is )
 	{
-		if( is == null )
-			throw new RuntimeException( "Invalid Itemstack." );
-
 		this.fluid = is.getFluid();
 
 		if( this.fluid == null )
-			throw new RuntimeException( "Fluid is null." );
+			throw new IllegalArgumentException( "Fluid is null." );
 
 		this.stackSize = is.amount;
 		this.setCraftable( false );

@@ -364,9 +364,6 @@ public class ClientHelper extends ServerHelper
 
 		EntityPlayer player = mc.thePlayer;
 
-		if( player == null )
-			return;
-
 		int x = (int) player.posX;
 		int y = (int) player.posY;
 		int z = (int) player.posZ;

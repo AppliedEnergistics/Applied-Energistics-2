@@ -62,7 +62,7 @@ public final class ConfigManager implements IConfigManager
 		if( oldValue != null )
 			return oldValue;
 
-		throw new RuntimeException( "Invalid Config setting" );
+		throw new IllegalStateException( "Invalid Config setting. Expected a non-null value for " + settingName );
 	}
 
 	@Override

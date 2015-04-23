@@ -79,7 +79,7 @@ public class ItemMultiPart extends AEBaseItem implements IPartItem, IItemGroup
 		for( PartTypeIst p : this.dmgToPart.values() )
 		{
 			if( p.part == mat && p.variant == varID )
-				throw new RuntimeException( "Cannot create the same material twice..." );
+				throw new IllegalStateException( "Cannot create the same material twice..." );
 		}
 
 		boolean enabled = true;
@@ -102,7 +102,7 @@ public class ItemMultiPart extends AEBaseItem implements IPartItem, IItemGroup
 			}
 			else
 			{
-				throw new RuntimeException( "Meta Overlap detected." );
+				throw new IllegalStateException( "Meta Overlap detected." );
 			}
 		}
 
@@ -130,7 +130,7 @@ public class ItemMultiPart extends AEBaseItem implements IPartItem, IItemGroup
 		for( PartTypeIst p : this.dmgToPart.values() )
 		{
 			if( p.part == mat && p.variant == varID )
-				throw new RuntimeException( "Cannot create the same material twice..." );
+				throw new IllegalStateException( "Cannot create the same material twice..." );
 		}
 
 		boolean enabled = true;
@@ -152,7 +152,7 @@ public class ItemMultiPart extends AEBaseItem implements IPartItem, IItemGroup
 				return output;
 			}
 			else
-				throw new RuntimeException( "Meta Overlap detected." );
+				throw new IllegalStateException( "Meta Overlap detected." );
 		}
 
 		return null;
@@ -275,8 +275,9 @@ public class ItemMultiPart extends AEBaseItem implements IPartItem, IItemGroup
 		}
 		catch( Throwable e )
 		{
-			throw new RuntimeException( "Unable to construct IBusPart from IBusItem : " + this.getTypeByStack( is ).getPart().getName() + " ; Possibly didn't have correct constructor( ItemStack )", e );
+			throw new IllegalStateException( "Unable to construct IBusPart from IBusItem : " + this.getTypeByStack( is ).getPart().getName() + " ; Possibly didn't have correct constructor( ItemStack )", e );
 		}
+
 		return null;
 	}
 

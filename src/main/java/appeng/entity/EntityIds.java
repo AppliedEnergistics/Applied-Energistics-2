@@ -44,6 +44,6 @@ public final class EntityIds
 		if( droppedEntity == EntityGrowingCrystal.class )
 			return GROWING_CRYSTAL;
 
-		throw new RuntimeException( "Missing entity id: " + droppedEntity.getName() );
+		throw new IllegalStateException( "Missing entity id: " + droppedEntity.getName() );
 	}
 }

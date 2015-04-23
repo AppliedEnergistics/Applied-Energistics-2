@@ -53,9 +53,6 @@ public class RenderBlockCraftingCPUMonitor extends RenderBlockCraftingCPU
 	@Override
 	public void renderTile( AEBaseBlock block, AEBaseTile tile, Tessellator tess, double x, double y, double z, float f, RenderBlocks renderer )
 	{
-		if( Platform.isDrawing( tess ) )
-			return;
-
 		if( tile instanceof TileCraftingMonitorTile )
 		{
 			TileCraftingMonitorTile cmt = (TileCraftingMonitorTile) tile;

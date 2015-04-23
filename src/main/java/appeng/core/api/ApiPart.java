@@ -19,6 +19,7 @@
 package appeng.core.api;
 
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -85,9 +86,9 @@ public class ApiPart implements IPartHelper
 			{
 				return Class.forName( base );
 			}
-			catch( Throwable t )
+			catch( ClassNotFoundException e )
 			{
-				throw new RuntimeException( t );
+				throw new IllegalStateException( e );
 			}
 		}
 
@@ -95,14 +96,7 @@ public class ApiPart implements IPartHelper
 
 		if( this.tileImplementations.get( description ) != null )
 		{
-			try
-			{
-				return this.tileImplementations.get( description );
-			}
-			catch( Throwable t )
-			{
-				throw new RuntimeException( t );
-			}
+			return this.tileImplementations.get( description );
 		}
 
 		String f = base;// TileCableBus.class.getName();
@@ -121,9 +115,9 @@ public class ApiPart implements IPartHelper
 		{
 			myCLass = Class.forName( f );
 		}
-		catch( Throwable t )
+		catch( ClassNotFoundException e )
 		{
-			throw new RuntimeException( t );
+			throw new IllegalStateException( e );
 		}
 
 		String path = f;
@@ -147,14 +141,7 @@ public class ApiPart implements IPartHelper
 
 		this.tileImplementations.put( description, myCLass );
 
-		try
-		{
-			return myCLass;
-		}
-		catch( Throwable t )
-		{
-			throw new RuntimeException( t );
-		}
+		return myCLass;
 	}
 
 	public Class getClassByDesc( String Addendum, String fullPath, String root, String next )
@@ -247,19 +234,21 @@ public class ApiPart implements IPartHelper
 
 	public ClassNode getReader( String name )
 	{
+		ClassReader cr;
+		String path = '/' + name.replace( ".", "/" ) + ".class";
+		InputStream is = this.getClass().getResourceAsStream( path );
 		try
 		{
-			ClassReader cr;
-			String path = '/' + name.replace( ".", "/" ) + ".class";
-			InputStream is = this.getClass().getResourceAsStream( path );
 			cr = new ClassReader( is );
+
 			ClassNode cn = new ClassNode();
 			cr.accept( cn, ClassReader.EXPAND_FRAMES );
+
 			return cn;
 		}
-		catch( Throwable t )
+		catch( IOException e )
 		{
-			throw new RuntimeException( "Error loading " + name, t );
+			throw new IllegalStateException( "Error loading " + name, e );
 		}
 	}
 
@@ -306,7 +295,7 @@ public class ApiPart implements IPartHelper
 		catch( Exception e )
 		{
 			AELog.error( e );
-			throw new RuntimeException( "Unable to manage part API.", e );
+			throw new IllegalStateException( "Unable to manage part API.", e );
 		}
 		return clazz;
 	}

@@ -33,7 +33,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 import appeng.block.AEBaseBlock;
 import appeng.core.AELog;
 import appeng.tile.AEBaseTile;
-import appeng.util.Platform;
 
 
 @SideOnly( Side.CLIENT )
@@ -65,9 +64,6 @@ public class TESRWrapper extends TileEntitySpecialRenderer
 
 				Tessellator tess = Tessellator.instance;
 
-				if( Platform.isDrawing( tess ) )
-					return;
-
 				try
 				{
 					GL11.glPushMatrix();
@@ -75,9 +71,6 @@ public class TESRWrapper extends TileEntitySpecialRenderer
 
 					this.renderBlocksInstance.blockAccess = te.getWorldObj();
 					this.blkRender.renderTile( (AEBaseBlock) b, (AEBaseTile) te, tess, x, y, z, f, this.renderBlocksInstance );
-
-					if( Platform.isDrawing( tess ) )
-						throw new RuntimeException( "Error during rendering." );
 
 					GL11.glPopAttrib();
 					GL11.glPopMatrix();
@@ -87,7 +80,7 @@ public class TESRWrapper extends TileEntitySpecialRenderer
 					AELog.severe( "Hi, Looks like there was a crash while rendering something..." );
 					t.printStackTrace();
 					AELog.severe( "MC will now crash ( probably )!" );
-					throw new RuntimeException( t );
+					throw new IllegalStateException( t );
 				}
 			}
 		}

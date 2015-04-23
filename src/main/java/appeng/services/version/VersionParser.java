@@ -1,7 +1,6 @@
 package appeng.services.version;
 
 
-import java.security.InvalidParameterException;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
@@ -111,7 +110,7 @@ public final class VersionParser
 			}
 		}
 
-		throw new InvalidParameterException( "Raw channel did not contain any of the pre-programmed types." );
+		throw new IllegalArgumentException( "Raw channel " + rawChannel + " did not contain any of the pre-programmed types." );
 	}
 
 	/**

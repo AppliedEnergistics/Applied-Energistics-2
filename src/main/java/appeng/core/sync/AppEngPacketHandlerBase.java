@@ -130,7 +130,7 @@ public class AppEngPacketHandlerBase
 			REVERSE_LOOKUP.put( this.packetClass, this );
 
 			if( this.packetConstructor == null )
-				throw new RuntimeException( "Invalid Packet Class, must be constructable on DataInputStream" );
+				throw new IllegalStateException( "Invalid Packet Class " + c + ", must be constructable on DataInputStream" );
 		}
 
 		public static PacketTypes getPacket( int id )

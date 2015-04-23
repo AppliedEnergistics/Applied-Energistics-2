@@ -79,7 +79,6 @@ import appeng.core.sync.packets.PacketSwapSlots;
 import appeng.helpers.InventoryAction;
 import appeng.integration.IntegrationType;
 import appeng.integration.abstraction.INEI;
-import appeng.util.Platform;
 
 
 public abstract class AEBaseGui extends GuiContainer
@@ -744,8 +743,6 @@ public abstract class AEBaseGui extends GuiContainer
 			catch( Exception err )
 			{
 				AELog.warning( "[AppEng] AE prevented crash while drawing slot: " + err.toString() );
-				if( Platform.isDrawing( Tessellator.instance ) )
-					Tessellator.instance.draw();
 			}
 			this.setItemRender( pIR );
 			return;
@@ -794,8 +791,6 @@ public abstract class AEBaseGui extends GuiContainer
 						}
 						catch( Exception err )
 						{
-							if( Platform.isDrawing( tessellator ) )
-								tessellator.draw();
 						}
 						GL11.glPopAttrib();
 					}
@@ -876,15 +871,10 @@ public abstract class AEBaseGui extends GuiContainer
 	{
 		try
 		{
-			// drawSlotInventory
-			// super.func_146977_a( s );r
 			GuiContainer.class.getDeclaredMethod( "func_146977_a_original", Slot.class ).invoke( this, s );
 		}
 		catch( Exception err )
 		{
-			Tessellator tessellator = Tessellator.instance;
-			if( Platform.isDrawing( tessellator ) )
-				tessellator.draw();
 		}
 	}
 

@@ -77,10 +77,10 @@ public class IMCGrinder implements IIMCProcessor
 		int turns = msg.getInteger( "turns" );
 
 		if( in == null )
-			throw new RuntimeException( "invalid input" );
+			throw new IllegalStateException( "invalid input" );
 
 		if( out == null )
-			throw new RuntimeException( "invalid output" );
+			throw new IllegalStateException( "invalid output" );
 
 		if( msg.hasKey( "optional" ) )
 		{
@@ -88,7 +88,7 @@ public class IMCGrinder implements IIMCProcessor
 			ItemStack optional = ItemStack.loadItemStackFromNBT( optionalTag );
 
 			if( optional == null )
-				throw new RuntimeException( "invalid optional" );
+				throw new IllegalStateException( "invalid optional" );
 
 			float chance = msg.getFloat( "chance" );
 

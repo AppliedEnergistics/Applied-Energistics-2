@@ -20,16 +20,16 @@ package appeng.util.prioitylist;
 
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 
 import appeng.api.storage.data.IAEStack;
 
 
-public class MergedPriorityList<T extends IAEStack<T>> implements IPartitionList<T>
+public final class MergedPriorityList<T extends IAEStack<T>> implements IPartitionList<T>
 {
 
-	final List<IPartitionList<T>> positive = new ArrayList<IPartitionList<T>>();
-	final List<IPartitionList<T>> negative = new ArrayList<IPartitionList<T>>();
+	private final Collection<IPartitionList<T>> positive = new ArrayList<IPartitionList<T>>();
+	private final Collection<IPartitionList<T>> negative = new ArrayList<IPartitionList<T>>();
 
 	public void addNewList( IPartitionList<T> list, boolean isWhitelist )
 	{
@@ -67,6 +67,6 @@ public class MergedPriorityList<T extends IAEStack<T>> implements IPartitionList
 	@Override
 	public Iterable<T> getItems()
 	{
-		throw new RuntimeException( "Not Implemented" );
+		throw new UnsupportedOperationException();
 	}
 }

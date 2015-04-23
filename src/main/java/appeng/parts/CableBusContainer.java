@@ -348,7 +348,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 	@Override
 	public void clearContainer()
 	{
-		throw new RuntimeException( "Now that is silly!" );
+		throw new UnsupportedOperationException( "Now that is silly!" );
 	}
 
 	@Override
@@ -887,7 +887,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 						p.readFromStream( data );
 					}
 					else
-						throw new RuntimeException( "Invalid Stream For CableBus Container." );
+						throw new IllegalStateException( "Invalid Stream For CableBus Container." );
 				}
 			}
 			else if( this.getPart( side ) != null )
@@ -936,7 +936,8 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 					return side;
 				}
 		}
-		throw new RuntimeException( "Uhh Bad Part on Side." );
+
+		throw new IllegalStateException( "Uhh Bad Part (" + part + ") on Side." );
 	}
 
 	public void readFromNBT( NBTTagCompound data )
