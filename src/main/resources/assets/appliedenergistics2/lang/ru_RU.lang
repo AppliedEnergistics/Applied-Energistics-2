@@ -88,7 +88,6 @@ gui.appliedenergistics2.METunnel=МЭ
 gui.appliedenergistics2.ItemTunnel=Предмет
 gui.appliedenergistics2.FluidTunnel=Жидкость
 gui.appliedenergistics2.RedstoneTunnel=Красный камень
-gui.appliedenergistics2.MJTunnel=MJ
 gui.appliedenergistics2.EUTunnel=EU
 gui.appliedenergistics2.RFTunnel=RF
 gui.appliedenergistics2.LightTunnel=Свет
@@ -307,7 +306,6 @@ gui.tooltips.appliedenergistics2.ItemsRequestable=Запрашиваемые п�
 
 // Units
 gui.appliedenergistics2.units.appliedenergstics=AE
-gui.appliedenergistics2.units.buildcraft=Minecraft Joules
 gui.appliedenergistics2.units.ic2=Energy Units
 gui.appliedenergistics2.units.mekanism=Joules
 gui.appliedenergistics2.units.rotarycraft=Watts

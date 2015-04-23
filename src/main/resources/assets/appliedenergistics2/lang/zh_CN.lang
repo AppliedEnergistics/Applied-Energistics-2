@@ -88,7 +88,6 @@ gui.appliedenergistics2.METunnel=ME
 gui.appliedenergistics2.ItemTunnel=物品
 gui.appliedenergistics2.FluidTunnel=液体
 gui.appliedenergistics2.RedstoneTunnel=红石
-gui.appliedenergistics2.MJTunnel=MJ
 gui.appliedenergistics2.EUTunnel=EU
 gui.appliedenergistics2.RFTunnel=RF
 gui.appliedenergistics2.LightTunnel=光
@@ -307,7 +306,6 @@ gui.tooltips.appliedenergistics2.ItemsRequestable=Items Requestable: %s
 
 // 单位
 gui.appliedenergistics2.units.appliedenergstics=AE
-gui.appliedenergistics2.units.buildcraft=MJ
 gui.appliedenergistics2.units.ic2=EU
 gui.appliedenergistics2.units.mekanism=Joules
 gui.appliedenergistics2.units.rotarycraft=Watts

@@ -81,7 +81,6 @@ gui.appliedenergistics2.METunnel=ME
 gui.appliedenergistics2.ItemTunnel=Objet
 gui.appliedenergistics2.FluidTunnel=Fluide
 gui.appliedenergistics2.RedstoneTunnel=Redstone
-gui.appliedenergistics2.MJTunnel=MJ
 gui.appliedenergistics2.EUTunnel=EU
 gui.appliedenergistics2.RFTunnel=RF
 gui.appliedenergistics2.LightTunnel=Lumière
@@ -293,7 +292,6 @@ gui.tooltips.appliedenergistics2.BlockPlacementYes=Les blocs seront placés comm
 gui.tooltips.appliedenergistics2.BlockPlacementNo=Les blocs seront jettés comme un élément.
 
 gui.appliedenergistics2.units.appliedenergstics=AE
-gui.appliedenergistics2.units.buildcraft=Minecraft Joules
 gui.appliedenergistics2.units.ic2=Energy Units
 gui.appliedenergistics2.units.mekanism=Joules
 gui.appliedenergistics2.units.rotarycraft=Watts
