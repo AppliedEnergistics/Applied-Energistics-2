@@ -37,13 +37,20 @@ import appeng.client.ClientHelper;
 import appeng.core.AELog;
 import appeng.tile.AEBaseTile;
 import appeng.tile.crafting.TileCraftingMonitorTile;
+import appeng.util.IWideReadableNumberConverter;
 import appeng.util.Platform;
 import appeng.util.ReadableNumberConverter;
 
 
+/**
+ * @author AlgorithmX2
+ * @author thatsIch
+ * @version rv2
+ * @since rv1
+ */
 public class RenderBlockCraftingCPUMonitor extends RenderBlockCraftingCPU
 {
-	private static final ReadableNumberConverter NUMBER_CONVERTER = ReadableNumberConverter.INSTANCE;
+	private static final IWideReadableNumberConverter NUMBER_CONVERTER = ReadableNumberConverter.INSTANCE;
 
 	public RenderBlockCraftingCPUMonitor()
 	{
@@ -174,7 +181,7 @@ public class RenderBlockCraftingCPUMonitor extends RenderBlockCraftingCPU
 		GL11.glScalef( 1.0f / 62.0f, 1.0f / 62.0f, 1.0f / 62.0f );
 
 		final long stackSize = ais.getStackSize();
-		final String renderedStackSize = NUMBER_CONVERTER.toHumanReadableForm( stackSize );
+		final String renderedStackSize = NUMBER_CONVERTER.toWideReadableForm( stackSize );
 
 		FontRenderer fr = Minecraft.getMinecraft().fontRenderer;
 		int width = fr.getStringWidth( renderedStackSize );

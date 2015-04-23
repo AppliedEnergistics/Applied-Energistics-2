@@ -30,12 +30,21 @@ import net.minecraft.item.ItemStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.core.AEConfig;
 import appeng.core.localization.GuiText;
+import appeng.util.ISlimReadableNumberConverter;
+import appeng.util.IWideReadableNumberConverter;
 import appeng.util.ReadableNumberConverter;
 
 
+/**
+ * @author AlgorithmX2
+ * @author thatsIch
+ * @version rv2
+ * @since rv0
+ */
 public class AppEngRenderItem extends RenderItem
 {
-	private static final ReadableNumberConverter NUMBER_CONVERTER = ReadableNumberConverter.INSTANCE;
+	private static final ISlimReadableNumberConverter SLIM_CONVERTER = ReadableNumberConverter.INSTANCE;
+	private static final IWideReadableNumberConverter WIDE_CONVERTER = ReadableNumberConverter.INSTANCE;
 
 	public IAEItemStack aeStack;
 
@@ -125,11 +134,11 @@ public class AppEngRenderItem extends RenderItem
 	{
 		if( AEConfig.instance.useTerminalUseLargeFont() )
 		{
-			return NUMBER_CONVERTER.toShortHumanReadableForm( originalSize );
+			return SLIM_CONVERTER.toSlimReadableForm( originalSize );
 		}
 		else
 		{
-			return NUMBER_CONVERTER.toLongHumanReadableForm( originalSize );
+			return WIDE_CONVERTER.toWideReadableForm( originalSize );
 		}
 	}
 }
