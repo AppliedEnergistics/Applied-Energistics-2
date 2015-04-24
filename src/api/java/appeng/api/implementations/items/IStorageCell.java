@@ -59,8 +59,20 @@ public interface IStorageCell extends ICellWorkbenchItem
 	 * @param cellItem item
 	 *
 	 * @return number of bytes
+	 *
+	 * @deprecated use {@link IStorageCell#getBytesPerType(ItemStack)}
 	 */
+	@Deprecated
 	int BytePerType( ItemStack cellItem );
+
+	/**
+	 * Determines the number of bytes used for any type included on the cell.
+	 *
+	 * @param cellItem item
+	 *
+	 * @return number of bytes
+	 */
+	int getBytesPerType( ItemStack cellItem );
 
 	/**
 	 * Must be between 1 and 63, indicates how many types you want to store on

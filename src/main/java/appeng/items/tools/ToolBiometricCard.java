@@ -166,7 +166,7 @@ public class ToolBiometricCard extends AEBaseItem implements IBiometricCard
 	}
 
 	@Override
-	public void addCheckedInformation( ItemStack stack, EntityPlayer player, List<String> lines, boolean displayAdditionalInformation )
+	public void addCheckedInformation( ItemStack stack, EntityPlayer player, List<String> lines, boolean displayMoreInfo )
 	{
 		EnumSet<SecurityPermissions> perms = this.getPermissions( stack );
 		if( perms.isEmpty() )

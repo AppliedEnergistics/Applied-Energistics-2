@@ -78,9 +78,9 @@ public abstract class AEBaseItem extends Item implements IAEFeature
 
 	@Override
 	@SuppressWarnings( "unchecked" )
-	public final void addInformation( ItemStack stack, EntityPlayer player, List lines, boolean displayAdditionalInformation )
+	public final void addInformation( ItemStack stack, EntityPlayer player, List lines, boolean displayMoreInfo )
 	{
-		this.addCheckedInformation( stack, player, lines, displayAdditionalInformation );
+		this.addCheckedInformation( stack, player, lines, displayMoreInfo );
 	}
 
 	@Override
@@ -89,8 +89,8 @@ public abstract class AEBaseItem extends Item implements IAEFeature
 		return false;
 	}
 
-	public void addCheckedInformation( ItemStack stack, EntityPlayer player, List<String> lines, boolean displayAdditionalInformation )
+	public void addCheckedInformation( ItemStack stack, EntityPlayer player, List<String> lines, boolean displayMoreInfo )
 	{
-		super.addInformation( stack, player, lines, displayAdditionalInformation );
+		super.addInformation( stack, player, lines, displayMoreInfo );
 	}
 }

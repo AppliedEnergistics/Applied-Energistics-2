@@ -98,7 +98,7 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 	}
 
 	@Override
-	public void addCheckedInformation( ItemStack stack, EntityPlayer player, List<String> lines, boolean displayAdditionalInformation )
+	public void addCheckedInformation( ItemStack stack, EntityPlayer player, List<String> lines, boolean displayMoreInfo )
 	{
 		ICraftingPatternDetails details = this.getPatternForItem( stack, player.worldObj );
 
