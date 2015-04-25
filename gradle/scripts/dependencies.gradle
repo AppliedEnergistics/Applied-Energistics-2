@@ -19,14 +19,14 @@
 
 
 repositories {
-
+    mavenLocal()
     maven {
-        name 'CB Maven FS'
+        name "ChickenBones"
         url "http://chickenbones.net/maven/"
     }
 
     maven {
-        name "Waila Mobius Repo"
+        name "Mobius"
         url "http://mobiusstrip.eu/maven"
     }
 
@@ -34,31 +34,86 @@ repositories {
         name "FireBall API Depot"
         url "http://dl.tsr.me/artifactory/libs-release-local"
     }
+
+    maven {
+        name = "Player"
+        url = "http://maven.ic2.player.to/"
+    }
+
+    maven {
+        name = "Tterrag"
+        url = "http://maven.tterrag.com/"
+    }
+
+    maven  {
+        name = "RX14 Proxy"
+        url = "http://mvn.rx14.co.uk/repo/"
+    }
+//  CurseForge DNS for TE is not available or I am just being unlucky, code part can stay since this is applicable to any other curseforge mod though
+//    ivy {
+//        name = "CoFHLib"
+//        artifactPattern "http://addons.cursecdn.com/files/2212/893/[module]-[revision].[ext]"
+//    }
+//
+//    ivy {
+//        name = "CoFHCore"
+//        artifactPattern "http://addons.cursecdn.com/files/2212/895/[module]-[revision].[ext]"
+//    }
+
+//    ivy {
+//        name = "ThermalExpansion"
+//        artifactPattern "http://addons.curse.cursecdn.com/files/2212/446/[module]-[revision].[ext]"
+//    }
+
+//    ivy {
+//        name = "ThermalFoundation"
+//        artifactPattern "http://addons.curse.cursecdn.com/files/2212/444/[module]-[revision].[ext]"
+//    }
+}
+
+configurations {
+    mods
 }
 
 dependencies {
+    // installable
+    mods "mcp.mobius.waila:Waila:${waila_version}_${minecraft_version}:dev"
+    mods "mcp.mobius.jabba:Jabba:${jabba_version}_${minecraft_version}:dev"
+    mods "codechicken:EnderStorage:${minecraft_version}-${enderstorage_version}:dev"
+    mods "codechicken:Translocator:${minecraft_version}-${translocator_version}:dev"
+    mods "net.industrial-craft:industrialcraft-2:${ic2_version}-experimental:dev"
+    mods "com.enderio:EnderIO:${minecraft_version}-${enderio_version}:dev"
+    mods "net.mcft.copy.betterstorage:BetterStorage:${minecraft_version}-${betterstorage_version}:deobf"
+    mods "inventorytweaks:InventoryTweaks:${invtweaks_version}:deobf"
+//    mods name: 'CoFHLib', version: "[${minecraft_version}]${cofhlib_version}-dev", ext: 'jar'
+//    mods name: 'CoFHCore', version: "[${minecraft_version}]${cofhcore_version}-dev", ext: 'jar'
+//    mods name: 'ThermalExpansion', version: "[${minecraft_version}]${texpansion_version}-dev", ext: 'jar'
+//    mods name: 'ThermalFoundation', version: "[${minecraft_version}]${tfoundation_version}-dev", ext: 'jar'
 
     compile "codechicken:ForgeMultipart:${minecraft_version}-${fmp_version}:dev"
     compile "codechicken:CodeChickenLib:${minecraft_version}-${code_chicken_lib_version}:dev"
     compile "codechicken:CodeChickenCore:${minecraft_version}-${code_chicken_core_version}:dev"
     compile "codechicken:NotEnoughItems:${minecraft_version}-${nei_version}:dev"
-
     compile "com.mod-buildcraft:buildcraft:${bc_version}:dev"
 
+    // provided APIs
+    compile "net.industrial-craft:industrialcraft-2:${ic2_version}-experimental:api"
+    compile "net.mcft.copy.betterstorage:BetterStorage:${minecraft_version}-${betterstorage_version}:api"
+    compile "inventorytweaks:InventoryTweaks:${invtweaks_version}:api"
+
     // self compiled APIs
-    compile(group: 'api', name: 'betterstorage', version: "${api_betterstorage_version}")
+    compile "appeng:Waila:${waila_version}_${minecraft_version}:api"
+    compile "appeng:RotaryCraft:${rotarycraft_version}:api"
+    compile "appeng:mekanism:${minecraft_version}-${mekansim_version}:api"
+
+    // self compiled stubs
     compile(group: 'api', name: 'coloredlightscore', version: "${api_coloredlightscore_version}")
     compile(group: 'api', name: 'craftguide', version: "${api_craftguide_version}")
-    compile(group: 'api', name: 'ic2', version: "${api_ic2_version}")
     compile(group: 'api', name: 'immibis', version: "${api_immibis_version}")
-    compile(group: 'api', name: 'invtweaks', version: "${api_invtweaks_version}")
     compile(group: 'api', name: 'mfr', version: "${api_mfr_version}")
     compile(group: 'api', name: 'railcraft', version: "${api_railcraft_version}")
     compile(group: 'api', name: 'rblocks', version: "${api_rblocks_version}")
     compile(group: 'api', name: 'rf', version: "${api_rf_version}")
-    compile "appeng:Waila:${api_waila_version}:api"
-    compile "appeng:RotaryCraft:${api_rotarycraft_version}:api"
-    compile "appeng:mekanism:${api_mekansim_version}:api"
 
     testCompile "junit:junit:4.11"
 }

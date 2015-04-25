@@ -22,9 +22,11 @@ apply from: 'gradle/scripts/dependencies.gradle'
 apply from: 'gradle/scripts/artifacts.gradle'
 apply from: 'gradle/scripts/autoinstallruntime.gradle'
 apply from: 'gradle/scripts/integration.gradle'
+apply from: 'gradle/scripts/optional.gradle'
 
 buildscript {
     repositories {
+        mavenLocal()
         mavenCentral()
 
         maven {
