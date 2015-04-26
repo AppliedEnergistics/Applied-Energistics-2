@@ -24,6 +24,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.IBlockAccess;
 
 import com.google.common.base.Optional;
+import com.google.common.base.Preconditions;
 
 import appeng.api.definitions.IItemDefinition;
 import appeng.util.Platform;
@@ -36,7 +37,8 @@ public class ItemDefinition implements IItemDefinition
 
 	public ItemDefinition( Item item, ActivityState state )
 	{
-		assert item != null;
+		Preconditions.checkNotNull( item );
+		Preconditions.checkNotNull( state );
 
 		this.item = item;
 		this.enabled = state == ActivityState.Enabled;

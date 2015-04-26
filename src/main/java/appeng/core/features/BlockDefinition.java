@@ -21,14 +21,15 @@ package appeng.core.features;
 
 import java.lang.reflect.Constructor;
 
-import com.google.common.base.Optional;
-import com.google.common.collect.ObjectArrays;
-
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.IBlockAccess;
+
+import com.google.common.base.Optional;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ObjectArrays;
 
 import appeng.api.definitions.IBlockDefinition;
 import appeng.block.AEBaseBlock;
@@ -42,20 +43,22 @@ public class BlockDefinition extends ItemDefinition implements IBlockDefinition
 	public BlockDefinition( Block block, ActivityState state )
 	{
 		super( constructItemFromBlock( block ), state );
-		assert block != null;
+
+		Preconditions.checkNotNull( block );
+		Preconditions.checkNotNull( state );
 
 		this.block = block;
 		this.enabled = state == ActivityState.Enabled;
 	}
 
 	@Override
-	public Optional<Block> maybeBlock()
+	public final Optional<Block> maybeBlock()
 	{
 		return Optional.of( this.block );
 	}
 
 	@Override
-	public Optional<ItemBlock> maybeItemBlock()
+	public final Optional<ItemBlock> maybeItemBlock()
 	{
 		if( this.enabled )
 		{

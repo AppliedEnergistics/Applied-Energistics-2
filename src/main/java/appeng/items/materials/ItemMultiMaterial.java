@@ -47,6 +47,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.oredict.OreDictionary;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 
 import appeng.api.config.Upgrades;
@@ -68,7 +69,7 @@ import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 
 
-public class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, IUpgradeModule
+public final class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, IUpgradeModule
 {
 	public static final int KILO = 1024;
 	public static ItemMultiMaterial instance;
@@ -172,40 +173,36 @@ public class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, 
 
 	public IStackSrc createMaterial( MaterialType mat )
 	{
-		if( !mat.isRegistered() )
+		Preconditions.checkState( !mat.isRegistered(), "Cannot create the same material twice." );
+
+		boolean enabled = true;
+		
+		for( AEFeature f : mat.getFeature() )
 		{
-			boolean enabled = true;
-			for( AEFeature f : mat.getFeature() )
-			{
-				enabled = enabled && AEConfig.instance.isFeatureEnabled( f );
-			}
-
-			if( enabled )
-			{
-				mat.itemInstance = this;
-				int newMaterialNum = mat.damageValue;
-				mat.markReady();
-
-				mat.stackSrc = new MaterialStackSrc( mat );
-
-				if( this.dmgToMaterial.get( newMaterialNum ) == null )
-				{
-					this.dmgToMaterial.put( newMaterialNum, mat );
-				}
-				else
-				{
-					throw new IllegalStateException( "Meta Overlap detected." );
-				}
-
-				return mat.stackSrc;
-			}
-
-			return mat.stackSrc;
+			enabled = enabled && AEConfig.instance.isFeatureEnabled( f );
 		}
-		else
+
+		mat.stackSrc = new MaterialStackSrc( mat );
+
+		if( enabled )
 		{
-			throw new IllegalStateException( "Cannot create the same material twice..." );
+			mat.itemInstance = this;
+			mat.markReady();
+			int newMaterialNum = mat.damageValue;
+
+			
+			if( this.dmgToMaterial.get( newMaterialNum ) == null )
+			{
+				this.dmgToMaterial.put( newMaterialNum, mat );
+			}
+			else
+
+			{
+				throw new IllegalStateException( "Meta Overlap detected." );
+			}
 		}
+
+		return mat.stackSrc;
 	}
 
 	public void makeUnique()

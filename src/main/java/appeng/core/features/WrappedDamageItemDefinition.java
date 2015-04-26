@@ -19,8 +19,6 @@
 package appeng.core.features;
 
 
-import javax.annotation.Nullable;
-
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
@@ -30,6 +28,7 @@ import net.minecraft.world.IBlockAccess;
 
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
+import com.google.common.base.Preconditions;
 
 import appeng.api.definitions.ITileDefinition;
 
@@ -41,6 +40,9 @@ public final class WrappedDamageItemDefinition implements ITileDefinition
 
 	public WrappedDamageItemDefinition( ITileDefinition definition, int damage )
 	{
+		Preconditions.checkNotNull( definition );
+		Preconditions.checkArgument( damage >= 0 );
+
 		this.definition = definition;
 		this.damage = damage;
 	}
@@ -72,7 +74,7 @@ public final class WrappedDamageItemDefinition implements ITileDefinition
 	@Override
 	public Optional<ItemStack> maybeStack( final int stackSize )
 	{
-		return this.definition.maybeBlock().transform( new BlockTransformFunction( stackSize ) );
+		return this.definition.maybeBlock().transform( new BlockTransformFunction( stackSize, this.damage ) );
 	}
 
 	@Override
@@ -92,20 +94,26 @@ public final class WrappedDamageItemDefinition implements ITileDefinition
 		return this.definition.isSameAs( world, x, y, z ) && world.getBlockMetadata( x, y, z ) == this.damage;
 	}
 
-	private class BlockTransformFunction implements Function<Block, ItemStack>
+	private static final class BlockTransformFunction implements Function<Block, ItemStack>
 	{
 		private final int stackSize;
+		private final int damage;
 
-		public BlockTransformFunction( int stackSize )
+		public BlockTransformFunction( int stackSize, int damage )
 		{
+			Preconditions.checkArgument( stackSize > 0 );
+			Preconditions.checkArgument( damage >= 0 );
+
 			this.stackSize = stackSize;
+			this.damage = damage;
 		}
 
-		@Nullable
 		@Override
 		public ItemStack apply( Block input )
 		{
-			return new ItemStack( input, this.stackSize, WrappedDamageItemDefinition.this.damage );
+			Preconditions.checkNotNull( input );
+
+			return new ItemStack( input, this.stackSize, this.damage );
 		}
 	}
 }
