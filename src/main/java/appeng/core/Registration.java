@@ -22,7 +22,6 @@ package appeng.core;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.util.WeightedRandomChestContent;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.common.ChestGenHooks;
@@ -562,10 +561,16 @@ public final class Registration
 		registration.registerAchievements();
 
 		if( AEConfig.instance.isFeatureEnabled( AEFeature.enableDisassemblyCrafting ) )
-			CraftingManager.getInstance().getRecipeList().add( new DisassembleRecipe() );
+		{
+			GameRegistry.addRecipe( new DisassembleRecipe() );
+			RecipeSorter.register( "appliedenergistics2:disassemble", DisassembleRecipe.class, Category.SHAPELESS, "after:minecraft:shapeless" );
+		}
 
 		if( AEConfig.instance.isFeatureEnabled( AEFeature.enableFacadeCrafting ) )
-			CraftingManager.getInstance().getRecipeList().add( new FacadeRecipe() );
+		{
+			GameRegistry.addRecipe( new FacadeRecipe() );
+			RecipeSorter.register( "appliedenergistics2:facade", FacadeRecipe.class, Category.SHAPED, "after:minecraft:shaped" );
+		}
 	}
 
 	public void postInit( FMLPostInitializationEvent event )
