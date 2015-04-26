@@ -31,16 +31,17 @@ import appeng.api.util.IConfigurableObject;
 import appeng.container.AEBaseContainer;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
+import appeng.helpers.Reflected;
 import appeng.util.Platform;
 
 
-public class PacketConfigButton extends AppEngPacket
+public final class PacketConfigButton extends AppEngPacket
 {
-
-	public final Settings option;
-	public final boolean rotationDirection;
+	private final Settings option;
+	private final boolean rotationDirection;
 
 	// automatic.
+	@Reflected
 	public PacketConfigButton( ByteBuf stream )
 	{
 		this.option = Settings.values()[stream.readInt()];
@@ -66,12 +67,15 @@ public class PacketConfigButton extends AppEngPacket
 	public void serverPacketData( INetworkInfo manager, AppEngPacket packet, EntityPlayer player )
 	{
 		EntityPlayerMP sender = (EntityPlayerMP) player;
-		AEBaseContainer baseContainer = (AEBaseContainer) sender.openContainer;
-		if( baseContainer.getTarget() instanceof IConfigurableObject )
+		if ( sender.openContainer instanceof AEBaseContainer )
 		{
-			IConfigManager cm = ( (IConfigurableObject) baseContainer.getTarget() ).getConfigManager();
-			Enum newState = Platform.rotateEnum( cm.getSetting( this.option ), this.rotationDirection, this.option.getPossibleValues() );
-			cm.putSetting( this.option, newState );
+			final AEBaseContainer baseContainer = (AEBaseContainer) sender.openContainer;
+			if( baseContainer.getTarget() instanceof IConfigurableObject )
+			{
+				IConfigManager cm = ( (IConfigurableObject) baseContainer.getTarget() ).getConfigManager();
+				Enum<?> newState = Platform.rotateEnum( cm.getSetting( this.option ), this.rotationDirection, this.option.getPossibleValues() );
+				cm.putSetting( this.option, newState );
+			}
 		}
 	}
 }
