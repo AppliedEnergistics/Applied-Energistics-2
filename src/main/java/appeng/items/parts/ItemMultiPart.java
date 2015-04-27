@@ -19,6 +19,7 @@
 package appeng.items.parts;
 
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -28,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -41,6 +43,8 @@ import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+import com.google.common.base.Preconditions;
+
 import appeng.api.AEApi;
 import appeng.api.implementations.items.IItemGroup;
 import appeng.api.parts.IPart;
@@ -48,7 +52,6 @@ import appeng.api.parts.IPartHelper;
 import appeng.api.parts.IPartItem;
 import appeng.api.util.AEColor;
 import appeng.core.AEConfig;
-import appeng.core.AELog;
 import appeng.core.features.AEFeature;
 import appeng.core.features.ItemStackSrc;
 import appeng.core.features.NameResolver;
@@ -58,27 +61,55 @@ import appeng.integration.IntegrationType;
 import appeng.items.AEBaseItem;
 
 
-public class ItemMultiPart extends AEBaseItem implements IPartItem, IItemGroup
+public final class ItemMultiPart extends AEBaseItem implements IPartItem, IItemGroup
 {
 	public static ItemMultiPart instance;
 	private final NameResolver nameResolver;
-	private final Map<Integer, PartTypeIst> dmgToPart = new HashMap<Integer, PartTypeIst>();
+	private final Map<Integer, PartTypeWithVariant> registered;
+	private final Map<Integer, PartTypeWithVariant> unregistered;
 
 	public ItemMultiPart( IPartHelper partHelper )
 	{
+		Preconditions.checkNotNull( partHelper );
+
+		this.registered = new HashMap<Integer, PartTypeWithVariant>();
+		this.unregistered = new HashMap<Integer, PartTypeWithVariant>();
+
 		this.nameResolver = new NameResolver( this.getClass() );
 		this.setFeature( EnumSet.of( AEFeature.Core ) );
 		partHelper.setItemBusRenderer( this );
 		this.setHasSubtypes( true );
+
 		instance = this;
 	}
 
+	@Nonnull
 	public final ItemStackSrc createPart( PartType mat )
 	{
-		int varID = 0;
+		Preconditions.checkNotNull( mat );
+
+		return this.createPart( mat, 0 );
+	}
+
+	@Nonnull
+	public ItemStackSrc createPart( PartType mat, AEColor color )
+	{
+		Preconditions.checkNotNull( mat );
+		Preconditions.checkNotNull( color );
+
+		final int varID = color.ordinal();
+
+		return this.createPart( mat, varID );
+	}
+
+	@Nonnull
+	private ItemStackSrc createPart( PartType mat, int varID )
+	{
+		assert mat != null;
+		assert varID >= 0;
 
 		// verify
-		for( PartTypeIst p : this.dmgToPart.values() )
+		for( PartTypeWithVariant p : this.registered.values() )
 		{
 			if( p.part == mat && p.variant == varID )
 				throw new IllegalStateException( "Cannot create the same material twice..." );
@@ -91,81 +122,34 @@ public class ItemMultiPart extends AEBaseItem implements IPartItem, IItemGroup
 		for( IntegrationType integrationType : mat.getIntegrations() )
 			enabled &= IntegrationRegistry.INSTANCE.isEnabled( integrationType );
 
-		int newPartNum = mat.baseDamage + varID;
-		ItemStackSrc output = new ItemStackSrc( this, newPartNum );
+		final int partDamage = mat.baseDamage + varID;
+		final ItemStackSrc output = new ItemStackSrc( this, partDamage );
 
-		if( enabled )
-		{
-			PartTypeIst pti = new PartTypeIst();
-			pti.part = mat;
-			pti.variant = varID;
+		final PartTypeWithVariant pti = new PartTypeWithVariant( mat, varID );
 
-			if( this.dmgToPart.get( newPartNum ) == null )
-			{
-				this.dmgToPart.put( newPartNum, pti );
-				return output;
-			}
-			else
-			{
-				throw new IllegalStateException( "Meta Overlap detected." );
-			}
-		}
+		this.processMetaOverlap( enabled, partDamage, mat, pti );
 
 		return output;
 	}
 
-	public ItemStackSrc createPart( PartType mat, Enum variant )
+	private void processMetaOverlap( boolean enabled, int partDamage, PartType mat, PartTypeWithVariant pti )
 	{
-		try
-		{
-			// I think this still works?
-			ItemStack is = new ItemStack( this );
-			mat.getPart().getConstructor( ItemStack.class ).newInstance( is );
-		}
-		catch( Throwable e )
-		{
-			AELog.integration( e );
-			e.printStackTrace();
-			return null; // part not supported..
-		}
+		assert partDamage >= 0;
+		assert mat != null;
+		assert pti != null;
 
-		int varID = variant == null ? 0 : variant.ordinal();
+		final Map<Integer, PartTypeWithVariant> reference = ( enabled ) ? this.registered : this.unregistered;
+		if( reference.containsKey( partDamage ) )
+			throw new IllegalStateException( "Meta Overlap detected with type " + mat + " and damage " + partDamage + ". Found " + reference.get( partDamage ) + " there already." );
 
-		// verify
-		for( PartTypeIst p : this.dmgToPart.values() )
-		{
-			if( p.part == mat && p.variant == varID )
-				throw new IllegalStateException( "Cannot create the same material twice..." );
-		}
-
-		boolean enabled = true;
-		for( AEFeature f : mat.getFeature() )
-			enabled = enabled && AEConfig.instance.isFeatureEnabled( f );
-
-		if( enabled )
-		{
-			int newPartNum = mat.baseDamage + varID;
-			ItemStackSrc output = new ItemStackSrc( this, newPartNum );
-
-			PartTypeIst pti = new PartTypeIst();
-			pti.part = mat;
-			pti.variant = varID;
-
-			if( this.dmgToPart.get( newPartNum ) == null )
-			{
-				this.dmgToPart.put( newPartNum, pti );
-				return output;
-			}
-			else
-				throw new IllegalStateException( "Meta Overlap detected." );
-		}
-
-		return null;
+		reference.put( partDamage, pti );
 	}
 
 	public int getDamageByType( PartType t )
 	{
-		for( Entry<Integer, PartTypeIst> pt : this.dmgToPart.entrySet() )
+		Preconditions.checkNotNull( t );
+
+		for( Entry<Integer, PartTypeWithVariant> pt : this.registered.entrySet() )
 		{
 			if( pt.getValue().part == t )
 				return pt.getKey();
@@ -183,7 +167,7 @@ public class ItemMultiPart extends AEBaseItem implements IPartItem, IItemGroup
 	@Override
 	public IIcon getIconFromDamage( int dmg )
 	{
-		return this.dmgToPart.get( dmg ).ico;
+		return this.registered.get( dmg ).ico;
 	}
 
 	@Override
@@ -198,36 +182,16 @@ public class ItemMultiPart extends AEBaseItem implements IPartItem, IItemGroup
 		return "item.appliedenergistics2." + this.getName( is );
 	}
 
-	public String getName( ItemStack is )
-	{
-		return this.nameResolver.getName( this.getTypeByStack( is ).name() );
-	}
-
-	@Nullable
-	public PartType getTypeByStack( ItemStack is )
-	{
-		if( is == null )
-			return null;
-
-		PartTypeIst pt = this.dmgToPart.get( is.getItemDamage() );
-		if( pt != null )
-			return pt.part;
-
-		return null;
-	}
-
 	@Override
 	public String getItemStackDisplayName( ItemStack is )
 	{
-		PartType pt = this.getTypeByStack( is );
-		if( pt == null )
-			return "Unnamed";
+		final PartType pt = this.getTypeByStack( is );
 
 		if( pt.isCable() )
 		{
 			final AEColor[] variants = AEColor.values();
 
-			return super.getItemStackDisplayName( is ) + " - " + variants[this.dmgToPart.get( is.getItemDamage() ).variant].toString();
+			return super.getItemStackDisplayName( is ) + " - " + variants[this.registered.get( is.getItemDamage() ).variant].toString();
 		}
 
 		if( pt.getExtraName() != null )
@@ -239,60 +203,96 @@ public class ItemMultiPart extends AEBaseItem implements IPartItem, IItemGroup
 	@Override
 	public void getSubItems( Item number, CreativeTabs tab, List cList )
 	{
-		List<Entry<Integer, PartTypeIst>> types = new ArrayList<Entry<Integer, PartTypeIst>>( this.dmgToPart.entrySet() );
-		Collections.sort( types, new Comparator<Entry<Integer, PartTypeIst>>()
+		List<Entry<Integer, PartTypeWithVariant>> types = new ArrayList<Entry<Integer, PartTypeWithVariant>>( this.registered.entrySet() );
+		Collections.sort( types, new Comparator<Entry<Integer, PartTypeWithVariant>>()
 		{
 
 			@Override
-			public int compare( Entry<Integer, PartTypeIst> o1, Entry<Integer, PartTypeIst> o2 )
+			public int compare( Entry<Integer, PartTypeWithVariant> o1, Entry<Integer, PartTypeWithVariant> o2 )
 			{
 				return o1.getValue().part.name().compareTo( o2.getValue().part.name() );
 			}
 		} );
 
-		for( Entry<Integer, PartTypeIst> part : types )
+		for( Entry<Integer, PartTypeWithVariant> part : types )
 			cList.add( new ItemStack( this, 1, part.getKey() ) );
 	}
 
 	@Override
 	public void registerIcons( IIconRegister par1IconRegister )
 	{
-		for( Entry<Integer, PartTypeIst> part : this.dmgToPart.entrySet() )
+		for( Entry<Integer, PartTypeWithVariant> part : this.registered.entrySet() )
 		{
 			String tex = "appliedenergistics2:" + this.getName( new ItemStack( this, 1, part.getKey() ) );
 			part.getValue().ico = par1IconRegister.registerIcon( tex );
 		}
 	}
 
+	public String getName( ItemStack is )
+	{
+		Preconditions.checkNotNull( is );
+
+		final PartType stackType = this.getTypeByStack( is );
+		final String typeName = stackType.name();
+
+		return this.nameResolver.getName( typeName );
+	}
+
+	@Nonnull
+	public PartType getTypeByStack( ItemStack is )
+	{
+		Preconditions.checkNotNull( is );
+
+		final PartTypeWithVariant pt = this.registered.get( is.getItemDamage() );
+		if( pt != null )
+			return pt.part;
+		final PartTypeWithVariant unregisteredPartType = this.unregistered.get( is.getItemDamage() );
+		if( unregisteredPartType != null )
+			return unregisteredPartType.part;
+
+		throw new IllegalStateException( "ItemStack " + is + " has to be either registered or unregistered, but was not found in either." );
+	}
+
+	@Nonnull
 	@Override
 	public IPart createPartFromItemStack( ItemStack is )
 	{
+		final PartType type = this.getTypeByStack( is );
+		final Class<? extends IPart> part = type.getPart();
+
 		try
 		{
-			PartType t = this.getTypeByStack( is );
-			if( t != null )
-			{
-				if( t.constructor == null )
-					t.constructor = t.getPart().getConstructor( ItemStack.class );
+			if( type.constructor == null )
+				type.constructor = part.getConstructor( ItemStack.class );
 
-				return t.constructor.newInstance( is );
-			}
+			return type.constructor.newInstance( is );
 		}
-		catch( Throwable e )
+		catch( InstantiationException e )
 		{
-			throw new IllegalStateException( "Unable to construct IBusPart from IBusItem : " + this.getTypeByStack( is ).getPart().getName() + " ; Possibly didn't have correct constructor( ItemStack )", e );
+			throw new IllegalStateException( "Unable to construct IBusPart from IBusItem : " + part.getName() + " ; Possibly didn't have correct constructor( ItemStack )", e );
 		}
-
-		return null;
+		catch( IllegalAccessException e )
+		{
+			throw new IllegalStateException( "Unable to construct IBusPart from IBusItem : " + part.getName() + " ; Possibly didn't have correct constructor( ItemStack )", e );
+		}
+		catch( InvocationTargetException e )
+		{
+			throw new IllegalStateException( "Unable to construct IBusPart from IBusItem : " + part.getName() + " ; Possibly didn't have correct constructor( ItemStack )", e );
+		}
+		catch( NoSuchMethodException e )
+		{
+			throw new IllegalStateException( "Unable to construct IBusPart from IBusItem : " + part.getName() + " ; Possibly didn't have correct constructor( ItemStack )", e );
+		}
 	}
 
 	public int variantOf( int itemDamage )
 	{
-		if( this.dmgToPart.containsKey( itemDamage ) )
-			return this.dmgToPart.get( itemDamage ).variant;
+		if( this.registered.containsKey( itemDamage ) )
+			return this.registered.get( itemDamage ).variant;
 		return 0;
 	}
 
+	@Nullable
 	@Override
 	public String getUnlocalizedGroupName( Set<ItemStack> others, ItemStack is )
 	{
@@ -307,22 +307,19 @@ public class ItemMultiPart extends AEBaseItem implements IPartItem, IItemGroup
 			if( stack.getItem() == this )
 			{
 				PartType pt = this.getTypeByStack( stack );
-				if ( pt != null )
+				switch( pt )
 				{
-					switch( pt )
-					{
-						case ImportBus:
-							importBus = true;
-							if( u == pt )
-								group = true;
-							break;
-						case ExportBus:
-							exportBus = true;
-							if( u == pt )
-								group = true;
-							break;
-						default:
-					}
+					case ImportBus:
+						importBus = true;
+						if( u == pt )
+							group = true;
+						break;
+					case ExportBus:
+						exportBus = true;
+						if( u == pt )
+							group = true;
+						break;
+					default:
 				}
 			}
 		}
@@ -333,17 +330,21 @@ public class ItemMultiPart extends AEBaseItem implements IPartItem, IItemGroup
 		return null;
 	}
 
-	public ItemStack getStackFromTypeAndVariant( PartType mt, int variant )
+	private static final class PartTypeWithVariant
 	{
-		return new ItemStack( this, 1, mt.baseDamage + variant );
-	}
-
-	private static class PartTypeIst
-	{
-		private PartType part;
-		private int variant;
+		private final PartType part;
+		private final int variant;
 
 		@SideOnly( Side.CLIENT )
 		private IIcon ico;
+
+		private PartTypeWithVariant( PartType part, int variant )
+		{
+			assert part != null;
+			assert variant >= 0;
+
+			this.part = part;
+			this.variant = variant;
+		}
 	}
 }
