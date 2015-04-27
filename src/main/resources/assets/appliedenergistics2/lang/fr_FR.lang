@@ -1,3 +1,4 @@
+//Blocs
 tile.appliedenergistics2.BlockCableBus.name=Câble et/ou bus AE2
 tile.appliedenergistics2.BlockCellWorkbench.name=Etabli de cellules
 tile.appliedenergistics2.BlockCharger.name=Chargeur
@@ -60,12 +61,16 @@ tile.appliedenergistics2.SkyStoneBrickStairBlock.name=Escaliers de briques de pi
 tile.appliedenergistics2.SkyStoneSmallBrickStairBlock.name=Escaliers de petites briques de pierre de ciel
 tile.appliedenergistics2.SkyStoneStairBlock.name=Escaliers de pierre de ciel
 
+// Chat Messages
 chat.appliedenergistics2.ChestCannotReadStorageCell=Le coffre ME Chest ne peut pas lire la cellule de stockage.
 chat.appliedenergistics2.SettingCleared=Paramètres effacés.
 chat.appliedenergistics2.OutOfRange=Réseau sans-fil hors de portée.
 chat.appliedenergistics2.InvalidMachine=Machine invalide.
 chat.appliedenergistics2.LoadedSettings=Paramètres chargés avec succès.
 chat.appliedenergistics2.DeviceNotPowered=Le dispositif manque de puissance.
+chat.appliedenergistics2.DeviceNotWirelessTerminal=Le dispositif n'est pas un terminal sans fil.
+chat.appliedenergistics2.DeviceNotLinked=Le dispositif n'est pas lié.
+chat.appliedenergistics2.StationCanNotBeLocated=la station ne peut pas être localisée.
 chat.appliedenergistics2.MachineNotPowered=La machine n'est pas alimentée.
 chat.appliedenergistics2.CommunicationError=Erreur de communication avec le réseau.
 chat.appliedenergistics2.SavedSettings=Paramètres sauvés avec succès.
@@ -73,9 +78,11 @@ chat.appliedenergistics2.AmmoDepleted=Munitions épuisées.
 chat.appliedenergistics2.isNowLocked=Le moniteur est maintenant verrouillé.
 chat.appliedenergistics2.isNowUnlocked=Le moniteur est maintenant déverrouillé.
 
+// Creative Tabs
 itemGroup.appliedenergistics2=Applied Energistics 2
 itemGroup.appliedenergistics2.facades=Façades Applied Energistics 2
 
+// GUI
 gui.appliedenergistics2.CraftingTerminal=Terminal de craft
 gui.appliedenergistics2.METunnel=ME
 gui.appliedenergistics2.ItemTunnel=Objet
@@ -205,7 +212,11 @@ gui.appliedenergistics2.Excluded=Exclus
 gui.appliedenergistics2.Partitioned=Partitionné
 gui.appliedenergistics2.Precise=Précis
 gui.appliedenergistics2.Fuzzy=Brouillon
+gui.appliedenergistics2.SmallFontCraft=Craft
+gui.appliedenergistics2.LargeFontCraft=+
+gui.appliedenergistics2.Nothing=Rien
 
+// GUI Tooltips
 gui.tooltips.appliedenergistics2.Stash=Stocke des objets
 gui.tooltips.appliedenergistics2.StashDesc=Renvoie les objets de la grille de craft dans le réseau.
 gui.tooltips.appliedenergistics2.Substitutions=Remplacements du Ore-Dictionnary
@@ -290,13 +301,17 @@ gui.tooltips.appliedenergistics2.ReportInaccessibleItemsNo=Non: Seuls les élém
 gui.tooltips.appliedenergistics2.BlockPlacement=Placement de bloc
 gui.tooltips.appliedenergistics2.BlockPlacementYes=Les blocs seront placés comme un bloc.
 gui.tooltips.appliedenergistics2.BlockPlacementNo=Les blocs seront jettés comme un élément.
+gui.tooltips.appliedenergistics2.ItemsStored=Eléments stockés: %s
+gui.tooltips.appliedenergistics2.ItemsRequestable=Eléments recherchable: %s
 
+// Units
 gui.appliedenergistics2.units.appliedenergstics=AE
 gui.appliedenergistics2.units.ic2=Energy Units
 gui.appliedenergistics2.units.mekanism=Joules
 gui.appliedenergistics2.units.rotarycraft=Watts
 gui.appliedenergistics2.units.thermalexpansion=Redstone Flux
 
+// Colors
 gui.appliedenergistics2.White=Blanc
 gui.appliedenergistics2.Orange=Orange
 gui.appliedenergistics2.Magenta=Magenta
@@ -315,6 +330,7 @@ gui.appliedenergistics2.Red=Rouge
 gui.appliedenergistics2.Black=Noir
 gui.appliedenergistics2.Fluix=Fluix
 
+// Waila
 waila.appliedenergistics2.Crafting=Fabrication
 waila.appliedenergistics2.DeviceOnline=Dispositif en ligne
 waila.appliedenergistics2.DeviceOffline=Dispositif hors ligne
@@ -325,6 +341,7 @@ waila.appliedenergistics2.Showing=Affichant
 waila.appliedenergistics2.Contains=Contient
 waila.appliedenergistics2.Channels=%1$d of %2$d Canaux
 
+// Items
 item.appliedenergistics2.ItemBasicStorageCell.1k.name=Disque de stockage 1k
 item.appliedenergistics2.ItemBasicStorageCell.4k.name=Disque de stockage 4k
 item.appliedenergistics2.ItemBasicStorageCell.16k.name=Disque de stockage 16k
@@ -455,13 +472,15 @@ item.appliedenergistics2.ToolBiometricCard.name=Carte Biométrique
 item.appliedenergistics2.ToolDebugCard.name=Dev.DebugCard
 item.appliedenergistics2.ToolReplicatorCard.name=Dev.ReplicatorCard
 
+// Commands
 commands.ae2.usage=Commandes fournies par Applied Energistics 2 - utilisez /ae2 list pour lister et /ae2 help _____ pour l'aide sur une commande.
 commands.ae2.permissions=Vous n'avez pas les permissions adéquates pour exécuter cette commande.
 commands.ae2.ChunkLogger=Active le chargement et le déchargement des chunks dans le journal du serveur. ( OP )
-commands.ae2.ChunkLoggerOn=Le chargement de chunks est en actif
-commands.ae2.ChunkLoggerOff=Le chargement de morceaux est inactif
+commands.ae2.ChunkLoggerOn=Le chargement des chunks est en actif
+commands.ae2.ChunkLoggerOff=Le chargement des chunks est inactif
 commands.ae2.Supporters=Affiche une liste des supporters de AE2
 
+// Achievements
 achievement.ae2.Compass=Chasseur de météorites
 achievement.ae2.Compass.desc=Crafter une boussole à météorite.
 achievement.ae2.Presses=Technologie inconnue
@@ -513,6 +532,7 @@ achievement.ae2.StorageBus.desc=Crafter un bus de stockage.
 achievement.ae2.QNB=Ouvrir un tunnel quantique
 achievement.ae2.QNB.desc=Crafter un lien quantique.
 
+// Stats
 stat.ae2.ItemsInserted=Eléments ajoutés aux disques ME
 stat.ae2.ItemsExtracted=Eléments extraits des disques ME
 stat.ae2.TurnedCranks=Tours de manivelle
