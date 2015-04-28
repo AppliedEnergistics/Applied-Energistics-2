@@ -79,9 +79,7 @@ public enum AEFeature
 
 	AEFeature( String cat )
 	{
-		this.category = cat;
-		this.isVisible = !this.name().equals( "Core" );
-		this.defaultValue = true;
+		this(cat, true);
 	}
 
 	AEFeature( String cat, boolean defaultValue )
