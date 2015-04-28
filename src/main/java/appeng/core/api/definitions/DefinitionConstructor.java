@@ -3,8 +3,6 @@ package appeng.core.api.definitions;
 
 import net.minecraft.item.Item;
 
-import com.google.common.base.Optional;
-
 import appeng.api.definitions.IBlockDefinition;
 import appeng.api.definitions.IItemDefinition;
 import appeng.api.definitions.ITileDefinition;
@@ -91,13 +89,9 @@ public class DefinitionConstructor
 
 		for( AEColor color : AEColor.values() )
 		{
-			ItemStackSrc multiPartSource = target.createPart( type, color );
-			final Optional<ItemStackSrc> maybeSource = Optional.fromNullable( multiPartSource );
+			final ItemStackSrc multiPartSource = target.createPart( type, color );
 
-			if( maybeSource.isPresent() )
-			{
-				definition.add( color, multiPartSource );
-			}
+			definition.add( color, multiPartSource );
 		}
 
 		return definition;
