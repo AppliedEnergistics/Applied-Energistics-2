@@ -115,13 +115,13 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISto
 	{
 		rh.setTexture( CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorBack.getIcon(), this.is.getIconIndex(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon() );
 
-		rh.setBounds( 3, 3, 15, 13, 13, 16 );
+		rh.setBounds( 2, 2, 14, 14, 14, 16 );
 		rh.renderInventoryBox( renderer );
 
-		rh.setBounds( 2, 2, 14, 14, 14, 15 );
+		rh.setBounds( 5, 5, 12, 11, 11, 13 );
 		rh.renderInventoryBox( renderer );
 
-		rh.setBounds( 5, 5, 12, 11, 11, 14 );
+		rh.setBounds( 5, 5, 13, 11, 11, 14 );
 		rh.renderInventoryBox( renderer );
 	}
 
