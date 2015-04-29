@@ -38,27 +38,27 @@ repositories {
 
 dependencies {
 
-    compile "codechicken:ForgeMultipart:${config.cb_minecraft_version}-${config.fmp_version}:dev"
-    compile "codechicken:CodeChickenLib:${config.cb_minecraft_version}-${config.code_chicken_lib_version}:dev"
-    compile "codechicken:CodeChickenCore:${config.cb_minecraft_version}-${config.code_chicken_core_version}:dev"
-    compile "codechicken:NotEnoughItems:${config.cb_minecraft_version}-${config.nei_version}:dev"
+    compile "codechicken:ForgeMultipart:${minecraft_version}-${fmp_version}:dev"
+    compile "codechicken:CodeChickenLib:${minecraft_version}-${code_chicken_lib_version}:dev"
+    compile "codechicken:CodeChickenCore:${minecraft_version}-${code_chicken_core_version}:dev"
+    compile "codechicken:NotEnoughItems:${minecraft_version}-${nei_version}:dev"
 
-    compile "com.mod-buildcraft:buildcraft:${config.bc_version}:dev"
+    compile "com.mod-buildcraft:buildcraft:${bc_version}:dev"
 
     // self compiled APIs
-    compile(group: 'api', name: 'betterstorage', version: "${config.api_betterstorage_version}")
-    compile(group: 'api', name: 'coloredlightscore', version: "${config.api_coloredlightscore_version}")
-    compile(group: 'api', name: 'craftguide', version: "${config.api_craftguide_version}")
-    compile(group: 'api', name: 'ic2', version: "${config.api_ic2_version}")
-    compile(group: 'api', name: 'immibis', version: "${config.api_immibis_version}")
-    compile(group: 'api', name: 'invtweaks', version: "${config.api_invtweaks_version}")
-    compile(group: 'api', name: 'mfr', version: "${config.api_mfr_version}")
-    compile(group: 'api', name: 'railcraft', version: "${config.api_railcraft_version}")
-    compile(group: 'api', name: 'rblocks', version: "${config.api_rblocks_version}")
-    compile(group: 'api', name: 'rf', version: "${config.api_rf_version}")
-    compile "appeng:Waila:${config.api_waila_version}:api"
-    compile "appeng:RotaryCraft:${config.api_rotarycraft_version}:api"
-    compile "appeng:mekanism:${config.api_mekansim_version}:api"
+    compile(group: 'api', name: 'betterstorage', version: "${api_betterstorage_version}")
+    compile(group: 'api', name: 'coloredlightscore', version: "${api_coloredlightscore_version}")
+    compile(group: 'api', name: 'craftguide', version: "${api_craftguide_version}")
+    compile(group: 'api', name: 'ic2', version: "${api_ic2_version}")
+    compile(group: 'api', name: 'immibis', version: "${api_immibis_version}")
+    compile(group: 'api', name: 'invtweaks', version: "${api_invtweaks_version}")
+    compile(group: 'api', name: 'mfr', version: "${api_mfr_version}")
+    compile(group: 'api', name: 'railcraft', version: "${api_railcraft_version}")
+    compile(group: 'api', name: 'rblocks', version: "${api_rblocks_version}")
+    compile(group: 'api', name: 'rf', version: "${api_rf_version}")
+    compile "appeng:Waila:${api_waila_version}:api"
+    compile "appeng:RotaryCraft:${api_rotarycraft_version}:api"
+    compile "appeng:mekanism:${api_mekansim_version}:api"
 
     testCompile "junit:junit:4.11"
 }

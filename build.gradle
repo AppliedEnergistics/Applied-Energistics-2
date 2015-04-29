@@ -18,7 +18,6 @@
 
 apply plugin: 'forge'
 
-apply from: 'gradle/scripts/propertyloader.gradle'
 apply from: 'gradle/scripts/dependencies.gradle'
 apply from: 'gradle/scripts/artifacts.gradle'
 apply from: 'gradle/scripts/autoinstallruntime.gradle'
@@ -51,9 +50,9 @@ configurations.all {
 sourceCompatibility = JavaVersion.VERSION_1_6
 targetCompatibility = JavaVersion.VERSION_1_6
 
-version = config.version + "-" + config.aechannel + "-" + config.build
-group = config.group
-archivesBaseName = config.archivesBaseName
+version = aeversion + "-" + aechannel + "-" + aebuild
+group = aegroup
+archivesBaseName = aebasename
 
 // If TeamCity is running this build, lets set the version info
 if (hasProperty("teamcity")) {
@@ -78,11 +77,11 @@ jar {
 }
 
 minecraft {
-    version = config.minecraft_version + "-" + config.forge_version
+    version = minecraft_version + "-" + forge_version
 
     replaceIn "AEConfig.java"
     replace "@version@", project.version
-    replace "@aechannel@", config.aechannel
+    replace "@aechannel@", aechannel
 
     // used when launching minecraft in dev env
     runDir = "run"
@@ -111,7 +110,7 @@ processResources {
     // replace stuff in mcmod.info, nothing else
     from(sourceSets.main.resources.srcDirs) {
         include 'mcmod.info'
-        expand 'version': project.version, 'mcversion': config.minecraft_version
+        expand 'version': project.version, 'mcversion': minecraft_version
         include 'pack.mcmeta'
     }
 }

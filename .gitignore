@@ -7,7 +7,7 @@
 !gradlew
 !gradlew.bat
 !build.gradle
-!build.properties
+!gradle.properties
 
 # include markdowns
 !README.md
