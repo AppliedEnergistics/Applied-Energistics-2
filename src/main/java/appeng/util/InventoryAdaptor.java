@@ -47,7 +47,9 @@ public abstract class InventoryAdaptor implements Iterable<ItemSlot>
 	public static InventoryAdaptor getAdaptor( Object te, ForgeDirection d )
 	{
 		if( te == null )
+		{
 			return null;
+		}
 
 		IBetterStorage bs = (IBetterStorage) ( AppEng.instance.isIntegrationEnabled( IntegrationType.BetterStorage ) ? AppEng.instance.getIntegration( IntegrationType.BetterStorage ) : null );
 
@@ -75,13 +77,17 @@ public abstract class InventoryAdaptor implements Iterable<ItemSlot>
 			ISidedInventory si = (ISidedInventory) te;
 			int[] slots = si.getAccessibleSlotsFromSide( d.ordinal() );
 			if( si.getSizeInventory() > 0 && slots != null && slots.length > 0 )
+			{
 				return new AdaptorIInventory( new WrapperMCISidedInventory( si, d ) );
+			}
 		}
 		else if( te instanceof IInventory )
 		{
 			IInventory i = (IInventory) te;
 			if( i.getSizeInventory() > 0 )
+			{
 				return new AdaptorIInventory( i );
+			}
 		}
 
 		return null;

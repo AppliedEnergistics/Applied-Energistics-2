@@ -46,26 +46,34 @@ public class MEMonitorPassThrough<T extends IAEStack<T>> extends MEPassThrough<T
 	{
 		super( i, channel );
 		if( i instanceof IMEMonitor )
+		{
 			this.monitor = (IMEMonitor<T>) i;
+		}
 	}
 
 	@Override
 	public void setInternal( IMEInventory<T> i )
 	{
 		if( this.monitor != null )
+		{
 			this.monitor.removeListener( this );
+		}
 
 		this.monitor = null;
 		IItemList<T> before = this.getInternal() == null ? this.channel.createList() : this.getInternal().getAvailableItems( new ItemListIgnoreCrafting( this.channel.createList() ) );
 
 		super.setInternal( i );
 		if( i instanceof IMEMonitor )
+		{
 			this.monitor = (IMEMonitor<T>) i;
+		}
 
 		IItemList<T> after = this.getInternal() == null ? this.channel.createList() : this.getInternal().getAvailableItems( new ItemListIgnoreCrafting( this.channel.createList() ) );
 
 		if( this.monitor != null )
+		{
 			this.monitor.addListener( this, this.monitor );
+		}
 
 		Platform.postListChanges( before, after, this, this.changeSource );
 	}
@@ -116,9 +124,13 @@ public class MEMonitorPassThrough<T extends IAEStack<T>> extends MEPassThrough<T
 			Entry<IMEMonitorHandlerReceiver<T>, Object> e = i.next();
 			IMEMonitorHandlerReceiver<T> receiver = e.getKey();
 			if( receiver.isValid( e.getValue() ) )
+			{
 				receiver.postChange( this, change, source );
+			}
 			else
+			{
 				i.remove();
+			}
 		}
 	}
 
@@ -131,9 +143,13 @@ public class MEMonitorPassThrough<T extends IAEStack<T>> extends MEPassThrough<T
 			Entry<IMEMonitorHandlerReceiver<T>, Object> e = i.next();
 			IMEMonitorHandlerReceiver<T> receiver = e.getKey();
 			if( receiver.isValid( e.getValue() ) )
+			{
 				receiver.onListUpdate();
+			}
 			else
+			{
 				i.remove();
+			}
 		}
 	}
 }

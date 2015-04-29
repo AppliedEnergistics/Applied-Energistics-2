@@ -75,9 +75,13 @@ public class AEItemDef
 	public boolean equals( Object obj )
 	{
 		if( obj == null )
+		{
 			return false;
+		}
 		if( this.getClass() != obj.getClass() )
+		{
 			return false;
+		}
 		AEItemDef other = (AEItemDef) obj;
 		return other.damageValue == this.damageValue && other.item == this.item && this.tagCompound == other.tagCompound;
 	}
@@ -90,10 +94,14 @@ public class AEItemDef
 		if( this.item == otherStack.getItem() && dmg == this.damageValue )
 		{
 			if( ( this.tagCompound != null ) == otherStack.hasTagCompound() )
+			{
 				return true;
+			}
 
 			if( this.tagCompound != null && otherStack.hasTagCompound() )
+			{
 				return Platform.NBTEqualityTest( this.tagCompound, otherStack.getTagCompound() );
+			}
 
 			return true;
 		}

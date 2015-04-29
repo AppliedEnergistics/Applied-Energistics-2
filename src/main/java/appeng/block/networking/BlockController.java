@@ -48,7 +48,9 @@ public class BlockController extends AEBaseBlock
 	{
 		TileController tc = this.getTileEntity( w, x, y, z );
 		if( tc != null )
+		{
 			tc.onNeighborChange( false );
+		}
 	}
 
 	@Override

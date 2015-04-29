@@ -49,12 +49,16 @@ public class BCPipeInventory implements IMEInventory<IAEItemStack>
 		if( mode == Actionable.SIMULATE )
 		{
 			if( BC.instance.canAddItemsToPipe( this.te, input.getItemStack(), this.dir ) )
+			{
 				return null;
+			}
 			return input;
 		}
 
 		if( BC.instance.addItemsToPipe( this.te, input.getItemStack(), this.dir ) )
+		{
 			return null;
+		}
 		return input;
 	}
 

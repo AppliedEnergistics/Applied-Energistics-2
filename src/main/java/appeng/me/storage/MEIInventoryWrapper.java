@@ -54,7 +54,9 @@ public class MEIInventoryWrapper implements IMEInventory<IAEItemStack>
 		{
 			ItemStack is = mode == Actionable.SIMULATE ? this.adaptor.simulateAdd( input ) : this.adaptor.addItems( input );
 			if( is == null )
+			{
 				return null;
+			}
 			return AEItemStack.create( is );
 		}
 
@@ -109,7 +111,9 @@ public class MEIInventoryWrapper implements IMEInventory<IAEItemStack>
 
 				out.stackSize -= t.stackSize;
 				if( mode == Actionable.MODULATE )
+				{
 					this.target.setInventorySlotContents( x, t );
+				}
 
 				if( out.stackSize <= 0 )
 				{
@@ -172,9 +176,13 @@ public class MEIInventoryWrapper implements IMEInventory<IAEItemStack>
 					}
 
 					if( sub.stackSize <= 0 )
+					{
 						this.target.setInventorySlotContents( x, null );
+					}
 					else
+					{
 						this.target.setInventorySlotContents( x, sub );
+					}
 
 					if( retrieved != null )
 					{

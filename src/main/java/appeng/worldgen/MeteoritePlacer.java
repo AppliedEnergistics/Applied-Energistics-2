@@ -124,23 +124,33 @@ public final class MeteoritePlacer
 		Block blk = Block.getBlockById( this.settings.getInteger( "blk" ) );
 
 		if( blk == Blocks.sand )
+		{
 			this.type = new FalloutSand( w, x, y, z, this.putter, this.skyStoneDefinition );
+		}
 		else if( blk == Blocks.hardened_clay )
+		{
 			this.type = new FalloutCopy( w, x, y, z, this.putter, this.skyStoneDefinition );
+		}
 		else if( blk == Blocks.ice || blk == Blocks.snow )
+		{
 			this.type = new FalloutSnow( w, x, y, z, this.putter, this.skyStoneDefinition );
+		}
 
 		int skyMode = this.settings.getInteger( "skyMode" );
 
 		// creator
 		if( skyMode > 10 )
+		{
 			this.placeCrater( w, x, y, z );
+		}
 
 		this.placeMeteorite( w, x, y, z );
 
 		// collapse blocks...
 		if( skyMode > 3 )
+		{
 			this.decay( w, x, y, z );
+		}
 
 		w.done();
 		return true;
@@ -161,6 +171,7 @@ public final class MeteoritePlacer
 			boolean changed = false;
 
 			for( int i = minX; i < maxX; i++ )
+			{
 				for( int k = minZ; k < maxZ; k++ )
 				{
 					double dx = i - x;
@@ -174,12 +185,17 @@ public final class MeteoritePlacer
 						if( lava && j < y && w.getBlock( x, y - 1, z ).isBlockSolid( w.getWorld(), i, j, k, 0 ) )
 						{
 							if( j > h + distanceFrom * 0.02 )
+							{
 								this.putter.put( w, i, j, k, Blocks.lava );
+							}
 						}
 						else
+						{
 							changed = this.putter.put( w, i, j, k, Platform.AIR ) || changed;
+						}
 					}
 				}
+			}
 		}
 
 		for( Object o : w.getWorld().getEntitiesWithinAABB( EntityItem.class, AxisAlignedBB.getBoundingBox( w.minX( x - 30 ), y - 5, w.minZ( z - 30 ), w.maxX( x + 30 ), y + 30, w.maxZ( z + 30 ) ) ) )
@@ -198,7 +214,9 @@ public final class MeteoritePlacer
 
 		// spawn meteor
 		for( int i = meteorXLength; i < meteorXHeight; i++ )
+		{
 			for( int j = y - 8; j < y + 8; j++ )
+			{
 				for( int k = meteorZLength; k < meteorZHeight; k++ )
 				{
 					double dx = i - x;
@@ -213,6 +231,8 @@ public final class MeteoritePlacer
 						}
 					}
 				}
+			}
+		}
 
 		if( AEConfig.instance.isFeatureEnabled( AEFeature.SpawnPressesInMeteorites ) )
 		{
@@ -229,7 +249,9 @@ public final class MeteoritePlacer
 				int primary = Math.max( 1, (int) ( Math.random() * 4 ) );
 
 				if( primary > 3 ) // in case math breaks...
+				{
 					primary = 3;
+				}
 
 				for( int zz = 0; zz < primary; zz++ )
 				{
@@ -241,9 +263,13 @@ public final class MeteoritePlacer
 						duplicate = false;
 
 						if( Math.random() > PRESSES_SPAWN_CHANCE )
+						{
 							r = WorldSettings.getInstance().getNextOrderedValue( "presses" );
+						}
 						else
+						{
 							r = (int) ( Math.random() * 1000 );
+						}
 
 						ItemStack toAdd = null;
 						final IMaterials materials = AEApi.instance().definitions().materials();
@@ -280,9 +306,13 @@ public final class MeteoritePlacer
 						if( toAdd != null )
 						{
 							if( ap.simulateRemove( 1, toAdd, null ) == null )
+							{
 								ap.addItems( toAdd );
+							}
 							else
+							{
 								duplicate = true;
+							}
 						}
 					}
 					while( duplicate );
@@ -337,12 +367,16 @@ public final class MeteoritePlacer
 		int meteorZHeight = w.maxZ( z + 30 );
 
 		for( int i = meteorXLength; i < meteorXHeight; i++ )
+		{
 			for( int k = meteorZLength; k < meteorZHeight; k++ )
+			{
 				for( int j = y - 9; j < y + 30; j++ )
 				{
 					Block blk = w.getBlock( i, j, k );
 					if( blk == Blocks.lava )
+					{
 						continue;
+					}
 
 					if( blk.isReplaceable( w.getWorld(), i, j, k ) )
 					{
@@ -397,6 +431,8 @@ public final class MeteoritePlacer
 						}
 					}
 				}
+			}
+		}
 	}
 
 	public double getSqDistance( int x, int z )
@@ -412,11 +448,15 @@ public final class MeteoritePlacer
 		int validBlocks = 0;
 
 		if( !w.hasNoSky() )
+		{
 			return false;
+		}
 
 		Block blk = w.getBlock( x, y, z );
 		if( !this.validSpawn.contains( blk ) )
+		{
 			return false; // must spawn on a valid block..
+		}
 
 		this.settings = new NBTTagCompound();
 		this.settings.setInteger( "x", x );
@@ -432,33 +472,53 @@ public final class MeteoritePlacer
 		this.settings.setBoolean( "lava", Math.random() > 0.9 );
 
 		if( blk == Blocks.sand )
+		{
 			this.type = new FalloutSand( w, x, y, z, this.putter, this.skyStoneDefinition );
+		}
 		else if( blk == Blocks.hardened_clay )
+		{
 			this.type = new FalloutCopy( w, x, y, z, this.putter, this.skyStoneDefinition );
+		}
 		else if( blk == Blocks.ice || blk == Blocks.snow )
+		{
 			this.type = new FalloutSnow( w, x, y, z, this.putter, this.skyStoneDefinition );
+		}
 
 		int realValidBlocks = 0;
 
 		for( int i = x - 6; i < x + 6; i++ )
+		{
 			for( int j = y - 6; j < y + 6; j++ )
+			{
 				for( int k = z - 6; k < z + 6; k++ )
 				{
 					blk = w.getBlock( i, j, k );
 					if( this.validSpawn.contains( blk ) )
+					{
 						realValidBlocks++;
+					}
 				}
+			}
+		}
 
 		for( int i = x - 15; i < x + 15; i++ )
+		{
 			for( int j = y - 15; j < y + 15; j++ )
+			{
 				for( int k = z - 15; k < z + 15; k++ )
 				{
 					blk = w.getBlock( i, j, k );
 					if( this.invalidSpawn.contains( blk ) )
+					{
 						return false;
+					}
 					if( this.validSpawn.contains( blk ) )
+					{
 						validBlocks++;
+					}
 				}
+			}
+		}
 
 		int minBLocks = 200;
 		if( validBlocks > minBLocks && realValidBlocks > 80 )
@@ -468,32 +528,46 @@ public final class MeteoritePlacer
 			int skyMode = 0;
 
 			for( int i = x - 15; i < x + 15; i++ )
+			{
 				for( int j = y - 15; j < y + 11; j++ )
+				{
 					for( int k = z - 15; k < z + 15; k++ )
 					{
 						if( w.canBlockSeeTheSky( i, j, k ) )
+						{
 							skyMode++;
+						}
 					}
+				}
+			}
 
 			boolean solid = true;
 			for( int j = y - 15; j < y - 1; j++ )
 			{
 				if( w.getBlock( x, j, z ) == Platform.AIR )
+				{
 					solid = false;
+				}
 			}
 
 			if( !solid )
+			{
 				skyMode = 0;
+			}
 
 			// creator
 			if( skyMode > 10 )
+			{
 				this.placeCrater( w, x, y, z );
+			}
 
 			this.placeMeteorite( w, x, y, z );
 
 			// collapse blocks...
 			if( skyMode > 3 )
+			{
 				this.decay( w, x, y, z );
+			}
 
 			this.settings.setInteger( "skyMode", skyMode );
 			w.done();

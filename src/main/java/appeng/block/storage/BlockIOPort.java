@@ -49,20 +49,26 @@ public class BlockIOPort extends AEBaseBlock
 	{
 		TileIOPort te = this.getTileEntity( w, x, y, z );
 		if( te != null )
+		{
 			te.updateRedstoneState();
+		}
 	}
 
 	@Override
 	public boolean onActivated( World w, int x, int y, int z, EntityPlayer p, int side, float hitX, float hitY, float hitZ )
 	{
 		if( p.isSneaking() )
+		{
 			return false;
+		}
 
 		TileIOPort tg = this.getTileEntity( w, x, y, z );
 		if( tg != null )
 		{
 			if( Platform.isServer() )
+			{
 				Platform.openGUI( p, tg, ForgeDirection.getOrientation( side ), GuiBridge.GUI_IOPORT );
+			}
 			return true;
 		}
 		return false;

@@ -78,11 +78,15 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 	public boolean canInsert( ItemStack stack )
 	{
 		if( stack == null || stack.getItem() == null )
+		{
 			return false;
+		}
 
 		IAEItemStack out = this.destination.injectItems( this.lastItemChecked = AEApi.instance().storage().createItemStack( stack ), Actionable.SIMULATE, this.source );
 		if( out == null )
+		{
 			return true;
+		}
 		return out.getStackSize() != stack.stackSize;
 	}
 
@@ -145,7 +149,9 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 		if( !player.isSneaking() )
 		{
 			if( Platform.isClient() )
+			{
 				return true;
+			}
 
 			Platform.openGUI( player, this.getHost().getTile(), this.side, GuiBridge.GUI_BUS );
 			return true;
@@ -170,7 +176,9 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 	TickRateModulation doBusWork()
 	{
 		if( !this.proxy.isActive() )
+		{
 			return TickRateModulation.IDLE;
+		}
 
 		this.worked = false;
 
@@ -215,7 +223,9 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 						while( this.itemToSend > 0 )
 						{
 							if( this.importStuff( myAdaptor, ais, inv, energy, fzMode ) )
+							{
 								break;
+							}
 						}
 					}
 				}
@@ -225,7 +235,9 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 					while( this.itemToSend > 0 )
 					{
 						if( this.importStuff( myAdaptor, null, inv, energy, fzMode ) )
+						{
 							break;
+						}
 					}
 				}
 			}
@@ -235,7 +247,9 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 			}
 		}
 		else
+		{
 			return TickRateModulation.SLEEP;
+		}
 
 		return this.worked ? TickRateModulation.FASTER : TickRateModulation.SLOWER;
 	}
@@ -245,13 +259,19 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 		int toSend = this.itemToSend;
 
 		if( toSend > 64 )
+		{
 			toSend = 64;
+		}
 
 		ItemStack newItems;
 		if( this.getInstalledUpgrades( Upgrades.FUZZY ) > 0 )
+		{
 			newItems = myAdaptor.removeSimilarItems( toSend, whatToImport == null ? null : whatToImport.getItemStack(), fzMode, this.configDestination( inv ) );
+		}
 		else
+		{
 			newItems = myAdaptor.removeItems( toSend, whatToImport == null ? null : whatToImport.getItemStack(), this.configDestination( inv ) );
+		}
 
 		if( newItems != null )
 		{
@@ -259,9 +279,13 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 			this.itemToSend -= newItems.stackSize;
 
 			if( this.lastItemChecked == null || !this.lastItemChecked.isSameType( newItems ) )
+			{
 				this.lastItemChecked = AEApi.instance().storage().createItemStack( newItems );
+			}
 			else
+			{
 				this.lastItemChecked.setStackSize( newItems.stackSize );
+			}
 
 			IAEItemStack failed = Platform.poweredInsert( energy, this.destination, this.lastItemChecked, this.source );
 			// destination.injectItems( lastItemChecked, Actionable.MODULATE );
@@ -271,10 +295,14 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 				return true;
 			}
 			else
+			{
 				this.worked = true;
+			}
 		}
 		else
+		{
 			return true;
+		}
 
 		return false;
 	}

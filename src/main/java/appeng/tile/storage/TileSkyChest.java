@@ -57,7 +57,9 @@ public class TileSkyChest extends AEBaseInvTile
 		this.playerOpen = data.readBoolean() ? 1 : 0;
 
 		if( wasOpen != this.playerOpen )
+		{
 			this.lastEvent = System.currentTimeMillis();
+		}
 
 		return false; // TESR yo!
 	}
@@ -78,7 +80,9 @@ public class TileSkyChest extends AEBaseInvTile
 	public void openInventory()
 	{
 		if( Platform.isClient() )
+		{
 			return;
+		}
 
 		this.playerOpen++;
 
@@ -93,12 +97,16 @@ public class TileSkyChest extends AEBaseInvTile
 	public void closeInventory()
 	{
 		if( Platform.isClient() )
+		{
 			return;
+		}
 
 		this.playerOpen--;
 
 		if( this.playerOpen < 0 )
+		{
 			this.playerOpen = 0;
+		}
 
 		if( this.playerOpen == 0 )
 		{

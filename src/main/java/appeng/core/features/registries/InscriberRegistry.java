@@ -68,7 +68,9 @@ public final class InscriberRegistry implements IInscriberRegistry
 	public void addRecipe( IInscriberRecipe recipe )
 	{
 		if( recipe == null )
+		{
 			throw new IllegalArgumentException( "Tried to add an invalid (null) inscriber recipe to the registry." );
+		}
 
 		this.recipes.add( recipe );
 
@@ -154,15 +156,25 @@ public final class InscriberRegistry implements IInscriberRegistry
 		public IInscriberRecipe build()
 		{
 			if( this.inputs == null )
+			{
 				throw new IllegalStateException( "Input must be defined." );
+			}
 			if( this.inputs.size() == 0 )
+			{
 				throw new IllegalStateException( "Input must have a size." );
+			}
 			if( this.output == null )
+			{
 				throw new IllegalStateException( "Output must be defined." );
+			}
 			if ( this.topOptional == null && this.bottomOptional == null )
+			{
 				throw new IllegalStateException( "One optional must be defined." );
+			}
 			if ( this.type == null )
+			{
 				throw new IllegalStateException( "Process type must be defined." );
+			}
 
 			return new InscriberRecipe( this.inputs, this.output, this.topOptional, this.bottomOptional, this.type );
 		}

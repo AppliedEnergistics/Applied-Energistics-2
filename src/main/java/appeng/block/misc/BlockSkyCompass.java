@@ -80,7 +80,9 @@ public class BlockSkyCompass extends AEBaseBlock implements ICustomCollision
 	{
 		TileSkyCompass sc = this.getTileEntity( w, x, y, z );
 		if( sc != null )
+		{
 			return false;
+		}
 		return this.canPlaceAt( w, x, y, z, forward.getOpposite() );
 	}
 
@@ -95,7 +97,9 @@ public class BlockSkyCompass extends AEBaseBlock implements ICustomCollision
 		TileSkyCompass sc = this.getTileEntity( w, x, y, z );
 		ForgeDirection up = sc.getForward();
 		if( !this.canPlaceAt( w, x, y, z, up.getOpposite() ) )
+		{
 			this.dropTorch( w, x, y, z );
+		}
 	}
 
 	private void dropTorch( World w, int x, int y, int z )
@@ -109,8 +113,12 @@ public class BlockSkyCompass extends AEBaseBlock implements ICustomCollision
 	public boolean canPlaceBlockAt( World w, int x, int y, int z )
 	{
 		for( ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS )
+		{
 			if( this.canPlaceAt( w, x, y, z, dir ) )
+			{
 				return true;
+			}
+		}
 		return false;
 	}
 

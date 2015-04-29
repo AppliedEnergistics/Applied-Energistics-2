@@ -180,7 +180,9 @@ public class PartP2PTunnelME extends PartP2PTunnel<PartP2PTunnelME> implements I
 		if( connections.destroy )
 		{
 			for( TunnelConnection cw : this.connection.connections.values() )
+			{
 				cw.c.destroy();
+			}
 
 			this.connection.connections.clear();
 		}

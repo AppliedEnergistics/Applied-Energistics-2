@@ -213,7 +213,9 @@ public class CraftGuide extends CraftGuideAPIObject implements IIntegrationModul
 			output[i] = items.get( i );
 
 			if( output[i] instanceof ItemStack[] )
+			{
 				output[i] = Arrays.asList( (ItemStack[]) output[i] );
+			}
 
 			if( output[i] instanceof IIngredient )
 			{
@@ -248,7 +250,9 @@ public class CraftGuide extends CraftGuideAPIObject implements IIntegrationModul
 				output[i] = items[y * width + x];
 
 				if( output[i] instanceof ItemStack[] )
+				{
 					output[i] = Arrays.asList( (ItemStack[]) output[i] );
+				}
 
 				if( output[i] instanceof IIngredient )
 				{
@@ -284,7 +288,9 @@ public class CraftGuide extends CraftGuideAPIObject implements IIntegrationModul
 				output[i] = items[y * width + x];
 
 				if( output[i] instanceof ItemStack[] )
+				{
 					output[i] = Arrays.asList( (ItemStack[]) output[i] );
+				}
 
 				if( output[i] instanceof IIngredient )
 				{
@@ -316,7 +322,9 @@ public class CraftGuide extends CraftGuideAPIObject implements IIntegrationModul
 		{
 			list.set( x, list.get( x ).copy() );
 			if( list.get( x ).stackSize == 0 )
+			{
 				list.get( x ).stackSize = 1;
+			}
 		}
 
 		return list;

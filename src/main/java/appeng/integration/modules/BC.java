@@ -134,7 +134,9 @@ public final class BC extends BaseModule implements IBC
 	public boolean isFacade( ItemStack is )
 	{
 		if( is == null )
+		{
 			return false;
+		}
 
 		return is.getItem() instanceof IFacadeItem;
 	}
@@ -155,7 +157,9 @@ public final class BC extends BaseModule implements IBC
 	public void addFacade( ItemStack item )
 	{
 		if( item != null )
+		{
 			FMLInterModComms.sendMessage( "BuildCraft|Transport", "add-facade", item );
+		}
 	}
 
 	@Override

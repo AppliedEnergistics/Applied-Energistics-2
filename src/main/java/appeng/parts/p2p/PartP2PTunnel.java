@@ -84,14 +84,18 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 	public T getInput()
 	{
 		if( this.freq == 0 )
+		{
 			return null;
+		}
 
 		PartP2PTunnel tunnel;
 		try
 		{
 			tunnel = this.proxy.getP2P().getInput( this.freq );
 			if( this.getClass().isInstance( tunnel ) )
+			{
 				return (T) tunnel;
+			}
 		}
 		catch( GridAccessException e )
 		{
@@ -103,7 +107,9 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 	public TunnelCollection<T> getOutputs() throws GridAccessException
 	{
 		if( this.proxy.isActive() )
+		{
 			return (TunnelCollection<T>) this.proxy.getP2P().getOutputs( this.freq, this.getClass() );
+		}
 		return new TunnelCollection( new ArrayList(), this.getClass() );
 	}
 
@@ -179,7 +185,9 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 	public ItemStack getItemStack( PartItemStack type )
 	{
 		if( type == PartItemStack.World || type == PartItemStack.Network || type == PartItemStack.Wrench || type == PartItemStack.Pick )
+		{
 			return super.getItemStack( type );
+		}
 
 		final Optional<ItemStack> maybeMEStack = AEApi.instance().definitions().parts().p2PTunnelME().maybeStack( 1 );
 		if( maybeMEStack.isPresent() )
@@ -380,7 +388,9 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 			this.output = false;
 
 			if( wasOutput || this.freq == 0 )
+			{
 				newFreq = System.currentTimeMillis();
+			}
 
 			try
 			{

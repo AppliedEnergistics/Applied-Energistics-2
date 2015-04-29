@@ -51,7 +51,9 @@ public class ToolBiometricCard extends AEBaseItem implements IBiometricCard
 		this.setMaxStackSize( 1 );
 
 		if( Platform.isClient() )
+		{
 			MinecraftForgeClient.registerItemRenderer( this, new ToolBiometricCardRender() );
+		}
 	}
 
 	@Override
@@ -73,7 +75,9 @@ public class ToolBiometricCard extends AEBaseItem implements IBiometricCard
 		if( target instanceof EntityPlayer && !par2EntityPlayer.isSneaking() )
 		{
 			if( par2EntityPlayer.capabilities.isCreativeMode )
+			{
 				is = par2EntityPlayer.getCurrentEquippedItem();
+			}
 			this.encode( is, (EntityPlayer) target );
 			par2EntityPlayer.swingItem();
 			return true;
@@ -93,9 +97,13 @@ public class ToolBiometricCard extends AEBaseItem implements IBiometricCard
 		GameProfile username = this.getProfile( is );
 
 		if( username != null && username.equals( p.getGameProfile() ) )
+		{
 			this.setProfile( is, null );
+		}
 		else
+		{
 			this.setProfile( is, p.getGameProfile() );
+		}
 	}
 
 	@Override
@@ -110,7 +118,9 @@ public class ToolBiometricCard extends AEBaseItem implements IBiometricCard
 			tag.setTag( "profile", pNBT );
 		}
 		else
+		{
 			tag.removeTag( "profile" );
+		}
 	}
 
 	@Override
@@ -118,7 +128,9 @@ public class ToolBiometricCard extends AEBaseItem implements IBiometricCard
 	{
 		NBTTagCompound tag = Platform.openNbtData( is );
 		if( tag.hasKey( "profile" ) )
+		{
 			return NBTUtil.func_152459_a( tag.getCompoundTag( "profile" ) );
+		}
 		return null;
 	}
 
@@ -131,7 +143,9 @@ public class ToolBiometricCard extends AEBaseItem implements IBiometricCard
 		for( SecurityPermissions sp : SecurityPermissions.values() )
 		{
 			if( tag.getBoolean( sp.name() ) )
+			{
 				result.add( sp );
+			}
 		}
 
 		return result;
@@ -149,7 +163,9 @@ public class ToolBiometricCard extends AEBaseItem implements IBiometricCard
 	{
 		NBTTagCompound tag = Platform.openNbtData( itemStack );
 		if( tag.hasKey( permission.name() ) )
+		{
 			tag.removeTag( permission.name() );
+		}
 	}
 
 	@Override
@@ -170,7 +186,9 @@ public class ToolBiometricCard extends AEBaseItem implements IBiometricCard
 	{
 		EnumSet<SecurityPermissions> perms = this.getPermissions( stack );
 		if( perms.isEmpty() )
+		{
 			lines.add( GuiText.NoPermissions.getLocal() );
+		}
 		else
 		{
 			String msg = null;
@@ -178,9 +196,13 @@ public class ToolBiometricCard extends AEBaseItem implements IBiometricCard
 			for( SecurityPermissions sp : perms )
 			{
 				if( msg == null )
+				{
 					msg = Platform.gui_localize( sp.getUnlocalizedName() );
+				}
 				else
+				{
 					msg = msg + ", " + Platform.gui_localize( sp.getUnlocalizedName() );
+				}
 			}
 			lines.add( msg );
 		}

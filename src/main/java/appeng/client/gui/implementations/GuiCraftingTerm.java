@@ -59,7 +59,9 @@ public class GuiCraftingTerm extends GuiMEMonitorable
 			for( Object j : c.inventorySlots )
 			{
 				if( j instanceof SlotCraftingMatrix )
+				{
 					s = (Slot) j;
+				}
 			}
 
 			if( s != null )

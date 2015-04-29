@@ -140,7 +140,9 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 			}
 		}
 		else
+		{
 			this.recalculateDisplay();
+		}
 	}
 
 	private void recalculateDisplay()
@@ -148,12 +150,18 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 		int oldState = this.state;
 
 		for( int x = 0; x < this.getCellCount(); x++ )
+		{
 			this.state |= ( this.getCellStatus( x ) << ( 3 * x ) );
+		}
 
 		if( this.isPowered() )
+		{
 			this.state |= 0x40;
+		}
 		else
+		{
 			this.state &= ~0x40;
+		}
 
 		boolean currentActive = this.gridProxy.isActive();
 		if( this.wasActive != currentActive )
@@ -170,7 +178,9 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 		}
 
 		if( oldState != this.state )
+		{
 			this.markForUpdate();
+		}
 	}
 
 	@Override
@@ -199,9 +209,13 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 					IMEInventoryHandler<IAEFluidStack> fluidCell = this.cellHandler.getCellInventory( is, this, StorageChannel.FLUIDS );
 
 					if( itemCell != null )
+					{
 						power += this.cellHandler.cellIdleDrain( is, itemCell );
+					}
 					else if( fluidCell != null )
+					{
 						power += this.cellHandler.cellIdleDrain( is, fluidCell );
+					}
 
 					this.gridProxy.setIdlePowerUsage( power );
 
@@ -215,11 +229,15 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 		{
 			case FLUIDS:
 				if( this.fluidCell == null )
+				{
 					throw NO_HANDLER;
+				}
 				return this.fluidCell;
 			case ITEMS:
 				if( this.itemCell == null )
+				{
 					throw NO_HANDLER;
+				}
 				return this.itemCell;
 			default:
 		}
@@ -230,7 +248,9 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 	private <StackType extends IAEStack> MEMonitorHandler<StackType> wrap( IMEInventoryHandler h )
 	{
 		if( h == null )
+		{
 			return null;
+		}
 
 		MEInventoryHandler ih = new MEInventoryHandler( h, h.getChannel() );
 		ih.setPriority( this.priority );
@@ -245,7 +265,9 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 	public int getCellStatus( int slot )
 	{
 		if( Platform.isClient() )
+		{
 			return ( this.state >> ( slot * 3 ) ) & 3;
+		}
 
 		ItemStack cell = this.inv.getStackInSlot( 1 );
 		ICellHandler ch = AEApi.instance().registries().cell().getHandler( cell );
@@ -256,7 +278,9 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 			{
 				IMEInventoryHandler handler = this.getHandler( StorageChannel.ITEMS );
 				if( handler instanceof ChestMonitorHandler )
+				{
 					return ch.getStatusForCell( cell, ( (ChestMonitorHandler) handler ).getInternalHandler() );
+				}
 			}
 			catch( ChestNoHandler ignored )
 			{
@@ -266,7 +290,9 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 			{
 				IMEInventoryHandler handler = this.getHandler( StorageChannel.FLUIDS );
 				if( handler instanceof ChestMonitorHandler )
+				{
 					return ch.getStatusForCell( cell, ( (ChestMonitorHandler) handler ).getInternalHandler() );
+				}
 			}
 			catch( ChestNoHandler ignored )
 			{
@@ -280,7 +306,9 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 	public boolean isPowered()
 	{
 		if( Platform.isClient() )
+		{
 			return ( this.state & 0x40 ) == 0x40;
+		}
 
 		boolean gridPowered = this.getAECurrentPower() > 64;
 
@@ -303,7 +331,9 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 	{
 		long now = this.worldObj.getTotalWorldTime();
 		if( now - this.lastStateChange > 8 )
+		{
 			return false;
+		}
 
 		return ( ( this.state >> ( slot * 3 + 2 ) ) & 0x01 ) == 0x01;
 	}
@@ -319,7 +349,9 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 			eg = this.gridProxy.getEnergy();
 			stash = eg.extractAEPower( amt, mode, PowerMultiplier.ONE );
 			if( stash >= amt )
+			{
 				return stash;
+			}
 		}
 		catch( GridAccessException e )
 		{
@@ -334,7 +366,9 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 	public void Tick_TileChest()
 	{
 		if( this.worldObj.isRemote )
+		{
 			return;
+		}
 
 		double idleUsage = this.gridProxy.getIdlePowerUsage();
 
@@ -344,14 +378,18 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 			{
 				double powerUsed = this.extractAEPower( idleUsage, Actionable.MODULATE, PowerMultiplier.CONFIG ); // drain
 				if( powerUsed + 0.1 >= idleUsage != ( this.state & 0x40 ) > 0 )
+				{
 					this.recalculateDisplay();
+				}
 			}
 		}
 		catch( GridAccessException e )
 		{
 			double powerUsed = this.extractAEPower( this.gridProxy.getIdlePowerUsage(), Actionable.MODULATE, PowerMultiplier.CONFIG ); // drain
 			if( powerUsed + 0.1 >= idleUsage != ( this.state & 0x40 ) > 0 )
+			{
 				this.recalculateDisplay();
+			}
 		}
 
 		if( this.inv.getStackInSlot( 0 ) != null )
@@ -364,17 +402,27 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 	public void writeToStream_TileChest( ByteBuf data )
 	{
 		if( this.worldObj.getTotalWorldTime() - this.lastStateChange > 8 )
+		{
 			this.state = 0;
+		}
 		else
+		{
 			this.state &= 0x24924924; // just keep the blinks...
+		}
 
 		for( int x = 0; x < this.getCellCount(); x++ )
+		{
 			this.state |= ( this.getCellStatus( x ) << ( 3 * x ) );
+		}
 
 		if( this.isPowered() )
+		{
 			this.state |= 0x40;
+		}
 		else
+		{
 			this.state &= ~0x40;
+		}
 
 		data.writeByte( this.state );
 		data.writeByte( this.paintedColor.ordinal() );
@@ -404,9 +452,13 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 		int item = data.readInt();
 
 		if( item == 0 )
+		{
 			this.storageType = null;
+		}
 		else
+		{
 			this.storageType = new ItemStack( Item.getItemById( item & 0xffff ), 1, item >> Platform.DEF_OFFSET );
+		}
 
 		this.lastStateChange = this.worldObj.getTotalWorldTime();
 
@@ -419,7 +471,9 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 		this.config.readFromNBT( data );
 		this.priority = data.getInteger( "priority" );
 		if( data.hasKey( "paintedColor" ) )
+		{
 			this.paintedColor = AEColor.values()[data.getByte( "paintedColor" )];
+		}
 	}
 
 	@TileEvent( TileEventType.WORLD_NBT_WRITE )
@@ -503,9 +557,13 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 		if( slotIndex == 1 )
 		{
 			if( AEApi.instance().registries().cell().getCellInventory( insertingItem, this, StorageChannel.ITEMS ) != null )
+			{
 				return true;
+			}
 			if( AEApi.instance().registries().cell().getCellInventory( insertingItem, this, StorageChannel.FLUIDS ) != null )
+			{
 				return true;
+			}
 		}
 		else
 		{
@@ -532,14 +590,18 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 	public int[] getAccessibleSlotsBySide( ForgeDirection side )
 	{
 		if( ForgeDirection.SOUTH == side )
+		{
 			return FRONT;
+		}
 
 		if( this.isPowered() )
 		{
 			try
 			{
 				if( this.getHandler( StorageChannel.ITEMS ) != null )
+				{
 					return SIDES;
+				}
 			}
 			catch( ChestNoHandler e )
 			{
@@ -560,9 +622,13 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 				IAEItemStack returns = Platform.poweredInsert( this, cell, AEApi.instance().storage().createItemStack( this.inv.getStackInSlot( 0 ) ), this.mySrc );
 
 				if( returns == null )
+				{
 					this.inv.setInventorySlotContents( 0, null );
+				}
 				else
+				{
 					this.inv.setInventorySlotContents( 0, returns.getItemStack() );
+				}
 			}
 		}
 		catch( ChestNoHandler ignored )
@@ -617,7 +683,9 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 	{
 		long now = this.worldObj.getTotalWorldTime();
 		if( now - this.lastStateChange > 8 )
+		{
 			this.state = 0;
+		}
 		this.lastStateChange = now;
 
 		this.state |= 1 << ( slot * 3 + 2 );
@@ -640,7 +708,9 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 				IAEStack results = h.injectItems( AEFluidStack.create( resource ), doFill ? Actionable.MODULATE : Actionable.SIMULATE, this.mySrc );
 
 				if( results == null )
+				{
 					return resource.amount;
+				}
 
 				return resource.amount - (int) results.getStackSize();
 			}
@@ -690,7 +760,9 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 		{
 			IMEInventoryHandler h = this.getHandler( StorageChannel.FLUIDS );
 			if( h.getChannel() == StorageChannel.FLUIDS )
+			{
 				return new FluidTankInfo[] { new FluidTankInfo( null, 1 ) }; // eh?
+			}
 		}
 		catch( ChestNoHandler ignored )
 		{
@@ -703,14 +775,18 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 	public IStorageMonitorable getMonitorable( ForgeDirection side, BaseActionSource src )
 	{
 		if( Platform.canAccess( this.gridProxy, src ) && side != this.getForward() )
+		{
 			return this;
+		}
 		return null;
 	}
 
 	public ItemStack getStorageType()
 	{
 		if( this.isPowered() )
+		{
 			return this.storageType;
+		}
 		return null;
 	}
 
@@ -769,7 +845,9 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 	public boolean recolourBlock( ForgeDirection side, AEColor newPaintedColor, EntityPlayer who )
 	{
 		if( this.paintedColor == newPaintedColor )
+		{
 			return false;
+		}
 
 		this.paintedColor = newPaintedColor;
 		this.markDirty();
@@ -803,9 +881,13 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 		public boolean isValid( Object verificationToken )
 		{
 			if( this.chan == StorageChannel.ITEMS )
+			{
 				return verificationToken == TileChest.this.itemCell;
+			}
 			if( this.chan == StorageChannel.FLUIDS )
+			{
 				return verificationToken == TileChest.this.fluidCell;
+			}
 			return false;
 		}
 
@@ -817,7 +899,9 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 				try
 				{
 					if( TileChest.this.gridProxy.isActive() )
+					{
 						TileChest.this.gridProxy.getStorage().postAlterationOfStoredItems( this.chan, change, TileChest.this.mySrc );
+					}
 				}
 				catch( GridAccessException e )
 				{
@@ -848,7 +932,9 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 		{
 			IMEInventoryHandler<T> h = this.getHandler();
 			if( h instanceof MEInventoryHandler )
+			{
 				return (IMEInventoryHandler<T>) ( (MEInventoryHandler) h ).getInternal();
+			}
 			return this.getHandler();
 		}
 
@@ -856,7 +942,9 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 		public T injectItems( T input, Actionable mode, BaseActionSource src )
 		{
 			if( src.isPlayer() && !this.securityCheck( ( (PlayerSource) src ).player, SecurityPermissions.INJECT ) )
+			{
 				return input;
+			}
 			return super.injectItems( input, mode, src );
 		}
 
@@ -883,7 +971,9 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 
 						ISecurityGrid sg = g.getCache( ISecurityGrid.class );
 						if( sg.hasPermission( player, requiredPermission ) )
+						{
 							return true;
+						}
 					}
 				}
 
@@ -896,7 +986,9 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 		public T extractItems( T request, Actionable mode, BaseActionSource src )
 		{
 			if( src.isPlayer() && !this.securityCheck( ( (PlayerSource) src ).player, SecurityPermissions.EXTRACT ) )
+			{
 				return null;
+			}
 			return super.extractItems( request, mode, src );
 		}
 	}

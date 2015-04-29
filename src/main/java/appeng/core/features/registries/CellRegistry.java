@@ -45,17 +45,25 @@ public class CellRegistry implements ICellRegistry
 	public void addCellHandler( ICellHandler h )
 	{
 		if( h != null )
+		{
 			this.handlers.add( h );
+		}
 	}
 
 	@Override
 	public boolean isCellHandled( ItemStack is )
 	{
 		if( is == null )
+		{
 			return false;
+		}
 		for( ICellHandler ch : this.handlers )
+		{
 			if( ch.isCell( is ) )
+			{
 				return true;
+			}
+		}
 		return false;
 	}
 
@@ -63,7 +71,9 @@ public class CellRegistry implements ICellRegistry
 	public ICellHandler getHandler( ItemStack is )
 	{
 		if( is == null )
+		{
 			return null;
+		}
 		for( ICellHandler ch : this.handlers )
 		{
 			if( ch.isCell( is ) )
@@ -78,7 +88,9 @@ public class CellRegistry implements ICellRegistry
 	public IMEInventoryHandler getCellInventory( ItemStack is, ISaveProvider container, StorageChannel chan )
 	{
 		if( is == null )
+		{
 			return null;
+		}
 		for( ICellHandler ch : this.handlers )
 		{
 			if( ch.isCell( is ) )

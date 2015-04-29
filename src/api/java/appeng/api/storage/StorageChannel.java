@@ -53,8 +53,12 @@ public enum StorageChannel
 	public IItemList createList()
 	{
 		if( this == ITEMS )
+		{
 			return AEApi.instance().storage().createItemList();
+		}
 		else
+		{
 			return AEApi.instance().storage().createFluidList();
+		}
 	}
 }

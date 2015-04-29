@@ -178,7 +178,9 @@ public final class Registration
 	private void registerSpatial( boolean force )
 	{
 		if( !AEConfig.instance.isFeatureEnabled( AEFeature.SpatialIO ) )
+		{
 			return;
+		}
 
 		AEConfig config = AEConfig.instance;
 
@@ -188,14 +190,18 @@ public final class Registration
 			{
 				config.storageBiomeID = Platform.findEmpty( BiomeGenBase.getBiomeGenArray() );
 				if( config.storageBiomeID == -1 )
+				{
 					throw new IllegalStateException( "Biome Array is full, please free up some Biome ID's or disable spatial." );
+				}
 
 				this.storageBiome = new BiomeGenStorage( config.storageBiomeID );
 				config.save();
 			}
 
 			if( !force && config.storageBiomeID != -1 )
+			{
 				this.storageBiome = new BiomeGenStorage( config.storageBiomeID );
+			}
 		}
 
 		if( config.storageProviderID != -1 )
@@ -208,7 +214,9 @@ public final class Registration
 			config.storageProviderID = -11;
 
 			while( !DimensionManager.registerProviderType( config.storageProviderID, StorageWorldProvider.class, false ) )
+			{
 				config.storageProviderID--;
+			}
 
 			config.save();
 		}
@@ -508,9 +516,13 @@ public final class Registration
 		ItemMultiMaterial.instance.makeUnique();
 
 		if( AEConfig.instance.isFeatureEnabled( AEFeature.CustomRecipes ) )
+		{
 			this.recipeHandler.parseRecipes( new ConfigLoader( AppEng.instance.getConfigDirectory() ), "index.recipe" );
+		}
 		else
+		{
 			this.recipeHandler.parseRecipes( new JarLoader( "/assets/appliedenergistics2/recipes/" ), "index.recipe" );
+		}
 
 		partHelper.registerNewLayer( "appeng.parts.layers.LayerISidedInventory", "net.minecraft.inventory.ISidedInventory" );
 		partHelper.registerNewLayer( "appeng.parts.layers.LayerIFluidHandler", "net.minecraftforge.fluids.IFluidHandler" );
@@ -523,7 +535,9 @@ public final class Registration
 		}
 
 		if( AppEng.instance.isIntegrationEnabled( IntegrationType.RF ) )
+		{
 			partHelper.registerNewLayer( "appeng.parts.layers.LayerIEnergyHandler", "cofh.api.energy.IEnergyReceiver" );
+		}
 
 		FMLCommonHandler.instance().bus().register( TickHandler.INSTANCE );
 		MinecraftForge.EVENT_BUS.register( TickHandler.INSTANCE );
@@ -685,10 +699,14 @@ public final class Registration
 
 		// add villager trading to black smiths for a few basic materials
 		if( AEConfig.instance.isFeatureEnabled( AEFeature.VillagerTrading ) )
+		{
 			VillagerRegistry.instance().registerVillageTradeHandler( 3, new AETrading() );
+		}
 
 		if( AEConfig.instance.isFeatureEnabled( AEFeature.CertusQuartzWorldGen ) )
+		{
 			GameRegistry.registerWorldGenerator( new QuartzWorldGen(), 0 );
+		}
 
 		if( AEConfig.instance.isFeatureEnabled( AEFeature.MeteoriteWorldGen ) )
 		{

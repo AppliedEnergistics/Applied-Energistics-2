@@ -60,7 +60,9 @@ public class SlotInaccessible extends AppEngSlot
 		{
 			ItemStack dsp = super.getDisplayStack();
 			if( dsp != null )
+			{
 				this.dspStack = dsp.copy();
+			}
 		}
 		return this.dspStack;
 	}

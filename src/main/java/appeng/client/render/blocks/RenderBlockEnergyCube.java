@@ -47,9 +47,13 @@ public class RenderBlockEnergyCube extends BaseBlockRender
 		int meta = (int) ( 8.0 * ( internalCurrentPower / internalMaxPower ) );
 
 		if( meta > 7 )
+		{
 			meta = 7;
+		}
 		if( meta < 0 )
+		{
 			meta = 0;
+		}
 
 		renderer.setOverrideBlockTexture( blk.getIcon( 0, meta ) );
 		super.renderInventory( blk, is, renderer, type, obj );

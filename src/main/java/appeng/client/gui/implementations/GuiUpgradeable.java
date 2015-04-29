@@ -94,13 +94,19 @@ public class GuiUpgradeable extends AEBaseGui
 		this.fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
 
 		if( this.redstoneMode != null )
+		{
 			this.redstoneMode.set( this.cvb.rsMode );
+		}
 
 		if( this.fuzzyMode != null )
+		{
 			this.fuzzyMode.set( this.cvb.fzMode );
+		}
 
 		if( this.craftMode != null )
+		{
 			this.craftMode.set( this.cvb.cMode );
+		}
 	}
 
 	@Override
@@ -111,19 +117,29 @@ public class GuiUpgradeable extends AEBaseGui
 		this.bindTexture( this.getBackground() );
 		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, 211 - 34, this.ySize );
 		if( this.drawUpgrades() )
+		{
 			this.drawTexturedModalRect( offsetX + 177, offsetY, 177, 0, 35, 14 + this.cvb.availableUpgrades() * 18 );
+		}
 		if( this.hasToolbox() )
+		{
 			this.drawTexturedModalRect( offsetX + 178, offsetY + this.ySize - 90, 178, this.ySize - 90, 68, 68 );
+		}
 	}
 
 	protected void handleButtonVisibility()
 	{
 		if( this.redstoneMode != null )
+		{
 			this.redstoneMode.setVisibility( this.bc.getInstalledUpgrades( Upgrades.REDSTONE ) > 0 );
+		}
 		if( this.fuzzyMode != null )
+		{
 			this.fuzzyMode.setVisibility( this.bc.getInstalledUpgrades( Upgrades.FUZZY ) > 0 );
+		}
 		if( this.craftMode != null )
+		{
 			this.craftMode.setVisibility( this.bc.getInstalledUpgrades( Upgrades.CRAFTING ) > 0 );
+		}
 	}
 
 	protected String getBackground()
@@ -149,12 +165,18 @@ public class GuiUpgradeable extends AEBaseGui
 		boolean backwards = Mouse.isButtonDown( 1 );
 
 		if( btn == this.redstoneMode )
+		{
 			NetworkHandler.instance.sendToServer( new PacketConfigButton( this.redstoneMode.getSetting(), backwards ) );
+		}
 
 		if( btn == this.craftMode )
+		{
 			NetworkHandler.instance.sendToServer( new PacketConfigButton( this.craftMode.getSetting(), backwards ) );
+		}
 
 		if( btn == this.fuzzyMode )
+		{
 			NetworkHandler.instance.sendToServer( new PacketConfigButton( this.fuzzyMode.getSetting(), backwards ) );
+		}
 	}
 }

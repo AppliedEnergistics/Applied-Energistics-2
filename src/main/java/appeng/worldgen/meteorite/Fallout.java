@@ -28,24 +28,38 @@ public class Fallout
 	{
 		double a = Math.random();
 		if( a > 0.9 )
+		{
 			this.putter.put( w, x, y, z, Blocks.stone );
+		}
 		else if( a > 0.8 )
+		{
 			this.putter.put( w, x, y, z, Blocks.cobblestone );
+		}
 		else if( a > 0.7 )
+		{
 			this.putter.put( w, x, y, z, Blocks.dirt );
+		}
 		else
+		{
 			this.putter.put( w, x, y, z, Blocks.gravel );
+		}
 	}
 
 	public void getRandomInset( IMeteoriteWorld w, int x, int y, int z )
 	{
 		double a = Math.random();
 		if( a > 0.9 )
+		{
 			this.putter.put( w, x, y, z, Blocks.cobblestone );
+		}
 		else if( a > 0.8 )
+		{
 			this.putter.put( w, x, y, z, Blocks.stone );
+		}
 		else if( a > 0.7 )
+		{
 			this.putter.put( w, x, y, z, Blocks.grass );
+		}
 		else if( a > 0.6 )
 		{
 			for( Block skyStoneBlock : this.skyStoneDefinition.maybeBlock().asSet() )
@@ -54,8 +68,12 @@ public class Fallout
 			}
 		}
 		else if( a > 0.5 )
+		{
 			this.putter.put( w, x, y, z, Blocks.gravel );
+		}
 		else
+		{
 			this.putter.put( w, x, y, z, Platform.AIR );
+		}
 	}
 }

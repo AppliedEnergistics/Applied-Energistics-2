@@ -142,7 +142,9 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 			}
 		}
 		if( newDamage > END )
+		{
 			return null;
+		}
 
 		this.setProgress( is, newDamage );
 		return is;
@@ -183,13 +185,19 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 		int damage = this.getProgress( is );
 
 		if( damage < Certus + SINGLE_OFFSET )
+		{
 			return this.getUnlocalizedName() + ".Certus";
+		}
 
 		if( damage < Nether + SINGLE_OFFSET )
+		{
 			return this.getUnlocalizedName() + ".Nether";
+		}
 
 		if( damage < Fluix + SINGLE_OFFSET )
+		{
 			return this.getUnlocalizedName() + ".Fluix";
+		}
 
 		return this.getUnlocalizedName();
 	}
@@ -226,8 +234,9 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 		int damage = this.getProgress( stack );
 
 		if( damage < Certus + SINGLE_OFFSET )
+		{
 			list = this.certus;
-
+		}
 		else if( damage < Nether + SINGLE_OFFSET )
 		{
 			damage -= Nether;
@@ -241,14 +250,22 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 		}
 
 		if( list == null )
+		{
 			return Items.diamond.getIconFromDamage( 0 );
+		}
 
 		if( damage < LEVEL_OFFSET )
+		{
 			return list[0];
+		}
 		else if( damage < LEVEL_OFFSET * 2 )
+		{
 			return list[1];
+		}
 		else
+		{
 			return list[2];
+		}
 	}
 
 	@Override
@@ -285,7 +302,9 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 		egc.motionZ = location.motionZ;
 
 		if( location instanceof EntityItem )
+		{
 			egc.delayBeforeCanPickup = ( (EntityItem) location ).delayBeforeCanPickup;
+		}
 
 		return egc;
 	}

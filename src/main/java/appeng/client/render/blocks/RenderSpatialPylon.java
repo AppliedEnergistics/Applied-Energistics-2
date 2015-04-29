@@ -136,7 +136,9 @@ public class RenderSpatialPylon extends BaseBlockRender
 				Tessellator.instance.setColorOpaque_I( 0xffffff );
 
 				for( ForgeDirection d : ForgeDirection.VALID_DIRECTIONS )
+				{
 					this.renderFace( x, y, z, imb, this.getBlockTextureFromSideInside( imb, sp, displayBits, ori, d ), renderer, d );
+				}
 			}
 			else
 			{
@@ -166,16 +168,22 @@ public class RenderSpatialPylon extends BaseBlockRender
 	{
 
 		if( ori == dir || ori.getOpposite() == dir )
+		{
 			return blk.getRendererInstance().getTexture( dir );
+		}
 
 		if( ( displayBits & sp.DISPLAY_MIDDLE ) == sp.DISPLAY_MIDDLE )
+		{
 			return ExtraBlockTextures.BlockSpatialPylonC.getIcon();
-
+		}
 		else if( ( displayBits & sp.DISPLAY_MIDDLE ) == sp.DISPLAY_END_MIN )
+		{
 			return ExtraBlockTextures.BlockSpatialPylonE.getIcon();
-
+		}
 		else if( ( displayBits & sp.DISPLAY_MIDDLE ) == sp.DISPLAY_END_MAX )
+		{
 			return ExtraBlockTextures.BlockSpatialPylonE.getIcon();
+		}
 
 		return blk.getIcon( 0, 0 );
 	}
@@ -185,16 +193,22 @@ public class RenderSpatialPylon extends BaseBlockRender
 		boolean good = ( displayBits & sp.DISPLAY_ENABLED ) == sp.DISPLAY_ENABLED;
 
 		if( ori == dir || ori.getOpposite() == dir )
+		{
 			return good ? ExtraBlockTextures.BlockSpatialPylon_dim.getIcon() : ExtraBlockTextures.BlockSpatialPylon_red.getIcon();
+		}
 
 		if( ( displayBits & sp.DISPLAY_MIDDLE ) == sp.DISPLAY_MIDDLE )
+		{
 			return good ? ExtraBlockTextures.BlockSpatialPylonC_dim.getIcon() : ExtraBlockTextures.BlockSpatialPylonC_red.getIcon();
-
+		}
 		else if( ( displayBits & sp.DISPLAY_MIDDLE ) == sp.DISPLAY_END_MIN )
+		{
 			return good ? ExtraBlockTextures.BlockSpatialPylonE_dim.getIcon() : ExtraBlockTextures.BlockSpatialPylonE_red.getIcon();
-
+		}
 		else if( ( displayBits & sp.DISPLAY_MIDDLE ) == sp.DISPLAY_END_MAX )
+		{
 			return good ? ExtraBlockTextures.BlockSpatialPylonE_dim.getIcon() : ExtraBlockTextures.BlockSpatialPylonE_red.getIcon();
+		}
 
 		return blk.getIcon( 0, 0 );
 	}

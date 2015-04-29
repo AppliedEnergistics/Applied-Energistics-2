@@ -53,7 +53,9 @@ public class GuiNetworkTool extends AEBaseGui
 		try
 		{
 			if( btn == this.tFacades )
+			{
 				NetworkHandler.instance.sendToServer( new PacketValueConfig( "NetworkTool", "Toggle" ) );
+			}
 		}
 		catch( IOException e )
 		{
@@ -75,7 +77,9 @@ public class GuiNetworkTool extends AEBaseGui
 	public void drawFG( int offsetX, int offsetY, int mouseX, int mouseY )
 	{
 		if( this.tFacades != null )
+		{
 			this.tFacades.setState( ( (ContainerNetworkTool) this.inventorySlots ).facadeMode );
+		}
 
 		this.fontRendererObj.drawString( this.getGuiDisplayName( GuiText.NetworkTool.getLocal() ), 8, 6, 4210752 );
 		this.fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );

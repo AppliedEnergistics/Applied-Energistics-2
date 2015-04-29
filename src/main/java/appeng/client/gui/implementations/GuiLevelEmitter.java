@@ -130,10 +130,14 @@ public class GuiLevelEmitter extends GuiUpgradeable
 		super.drawFG( offsetX, offsetY, mouseX, mouseY );
 
 		if( this.craftingMode != null )
+		{
 			this.craftingMode.set( ( (ContainerLevelEmitter) this.cvb ).cmType );
+		}
 
 		if( this.levelMode != null )
+		{
 			this.levelMode.set( ( (ContainerLevelEmitter) this.cvb ).lvType );
+		}
 	}
 
 	@Override
@@ -170,16 +174,22 @@ public class GuiLevelEmitter extends GuiUpgradeable
 		boolean backwards = Mouse.isButtonDown( 1 );
 
 		if( btn == this.craftingMode )
+		{
 			NetworkHandler.instance.sendToServer( new PacketConfigButton( this.craftingMode.getSetting(), backwards ) );
+		}
 
 		if( btn == this.levelMode )
+		{
 			NetworkHandler.instance.sendToServer( new PacketConfigButton( this.levelMode.getSetting(), backwards ) );
+		}
 
 		boolean isPlus = btn == this.plus1 || btn == this.plus10 || btn == this.plus100 || btn == this.plus1000;
 		boolean isMinus = btn == this.minus1 || btn == this.minus10 || btn == this.minus100 || btn == this.minus1000;
 
 		if( isPlus || isMinus )
+		{
 			this.addQty( this.getQty( btn ) );
+		}
 	}
 
 	private void addQty( long i )
@@ -196,15 +206,21 @@ public class GuiLevelEmitter extends GuiUpgradeable
 			}
 
 			if( Fixed )
+			{
 				this.level.setText( Out );
+			}
 
 			if( Out.length() == 0 )
+			{
 				Out = "0";
+			}
 
 			long result = Long.parseLong( Out );
 			result += i;
 			if( result < 0 )
+			{
 				result = 0;
+			}
 
 			this.level.setText( Out = Long.toString( result ) );
 
@@ -240,10 +256,14 @@ public class GuiLevelEmitter extends GuiUpgradeable
 					}
 
 					if( Fixed )
+					{
 						this.level.setText( Out );
+					}
 
 					if( Out.length() == 0 )
+					{
 						Out = "0";
+					}
 
 					NetworkHandler.instance.sendToServer( new PacketValueConfig( "LevelEmitter.Value", Out ) );
 				}

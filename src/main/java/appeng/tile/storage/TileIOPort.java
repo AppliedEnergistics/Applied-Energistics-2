@@ -135,7 +135,9 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 		this.cells.readFromNBT( data, "cells" );
 		this.upgrades.readFromNBT( data, "upgrades" );
 		if( data.hasKey( "lastRedstoneState" ) )
+		{
 			this.lastRedstoneState = YesNo.values()[data.getInteger( "lastRedstoneState" )];
+		}
 	}
 
 	@Override
@@ -155,9 +157,13 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 		try
 		{
 			if( this.hasWork() )
+			{
 				this.gridProxy.getTick().wakeDevice( this.gridProxy.getNode() );
+			}
 			else
+			{
 				this.gridProxy.getTick().sleepDevice( this.gridProxy.getNode() );
+			}
 		}
 		catch( GridAccessException e )
 		{
@@ -178,7 +184,9 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 	public boolean getRedstoneState()
 	{
 		if( this.lastRedstoneState == YesNo.UNDECIDED )
+		{
 			this.updateRedstoneState();
+		}
 
 		return this.lastRedstoneState == YesNo.YES;
 	}
@@ -186,11 +194,15 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 	private boolean isEnabled()
 	{
 		if( this.getInstalledUpgrades( Upgrades.REDSTONE ) == 0 )
+		{
 			return true;
+		}
 
 		RedstoneMode rs = (RedstoneMode) this.manager.getSetting( Settings.REDSTONE_CONTROLLED );
 		if( rs == RedstoneMode.HIGH_SIGNAL )
+		{
 			return this.getRedstoneState();
+		}
 		return !this.getRedstoneState();
 	}
 
@@ -204,10 +216,14 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 	public IInventory getInventoryByName( String name )
 	{
 		if( name.equals( "upgrades" ) )
+		{
 			return this.upgrades;
+		}
 
 		if( name.equals( "cells" ) )
+		{
 			return this.cells;
+		}
 
 		return null;
 	}
@@ -223,8 +239,12 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 		if( this.isEnabled() )
 		{
 			for( int x = 0; x < 6; x++ )
+			{
 				if( this.cells.getStackInSlot( x ) != null )
+				{
 					return true;
+				}
+			}
 		}
 
 		return false;
@@ -277,7 +297,9 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 	public int[] getAccessibleSlotsBySide( ForgeDirection d )
 	{
 		if( d == ForgeDirection.UP || d == ForgeDirection.DOWN )
+		{
 			return this.input;
+		}
 
 		return this.output;
 	}
@@ -292,7 +314,9 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 	public TickRateModulation tickingRequest( IGridNode node, int TicksSinceLastCall )
 	{
 		if( !this.gridProxy.isActive() )
+		{
 			return TickRateModulation.IDLE;
+		}
 
 		long ItemsToMove = 256;
 
@@ -327,25 +351,37 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 						if( this.manager.getSetting( Settings.OPERATION_MODE ) == OperationMode.EMPTY )
 						{
 							if( itemInv != null )
+							{
 								ItemsToMove = this.transferContents( energy, itemInv, itemNet, ItemsToMove, StorageChannel.ITEMS );
+							}
 							if( fluidInv != null )
+							{
 								ItemsToMove = this.transferContents( energy, fluidInv, fluidNet, ItemsToMove, StorageChannel.FLUIDS );
+							}
 						}
 						else
 						{
 							if( itemInv != null )
+							{
 								ItemsToMove = this.transferContents( energy, itemNet, itemInv, ItemsToMove, StorageChannel.ITEMS );
+							}
 							if( fluidInv != null )
+							{
 								ItemsToMove = this.transferContents( energy, fluidNet, fluidInv, ItemsToMove, StorageChannel.FLUIDS );
+							}
 						}
 
 						if( ItemsToMove > 0 && this.shouldMove( itemInv, fluidInv ) && !this.moveSlot( x ) )
+						{
 							return TickRateModulation.IDLE;
+						}
 
 						return TickRateModulation.URGENT;
 					}
 					else
+					{
 						return TickRateModulation.URGENT;
+					}
 				}
 			}
 		}
@@ -374,7 +410,9 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 		}
 
 		if( StorageChannel.ITEMS == chan )
+		{
 			return this.cachedItem;
+		}
 
 		return this.cachedFluid;
 	}
@@ -383,9 +421,13 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 	{
 		IItemList<? extends IAEStack> myList;
 		if( src instanceof IMEMonitor )
+		{
 			myList = ( (IMEMonitor) src ).getStorageList();
+		}
 		else
+		{
 			myList = src.getAvailableItems( src.getChannel().createList() );
+		}
 
 		boolean didStuff;
 
@@ -402,9 +444,13 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 
 					long possible = 0;
 					if( stack == null )
+					{
 						possible = totalStackSize;
+					}
 					else
+					{
 						possible = totalStackSize - stack.getStackSize();
+					}
 
 					if( possible > 0 )
 					{
@@ -445,11 +491,17 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 		FullnessMode fm = (FullnessMode) this.manager.getSetting( Settings.FULLNESS_MODE );
 
 		if( itemInv != null && fluidInv != null )
+		{
 			return this.matches( fm, itemInv ) && this.matches( fm, fluidInv );
+		}
 		else if( itemInv != null )
+		{
 			return this.matches( fm, itemInv );
+		}
 		else if( fluidInv != null )
+		{
 			return this.matches( fm, fluidInv );
+		}
 
 		return true;
 	}
@@ -471,17 +523,25 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 	private boolean matches( FullnessMode fm, IMEInventory src )
 	{
 		if( fm == FullnessMode.HALF )
+		{
 			return true;
+		}
 
 		IItemList<? extends IAEStack> myList;
 
 		if( src instanceof IMEMonitor )
+		{
 			myList = ( (IMEMonitor) src ).getStorageList();
+		}
 		else
+		{
 			myList = src.getAvailableItems( src.getChannel().createList() );
+		}
 
 		if( fm == FullnessMode.EMPTY )
+		{
 			return myList.isEmpty();
+		}
 
 		IAEStack test = myList.getFirstItem();
 		if( test != null )

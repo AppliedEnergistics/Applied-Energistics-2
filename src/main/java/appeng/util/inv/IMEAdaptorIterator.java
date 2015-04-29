@@ -57,7 +57,9 @@ public final class IMEAdaptorIterator implements Iterator<ItemSlot>
 		this.slot.isExtractable = true;
 
 		if( this.parent.maxSlots < this.offset )
+		{
 			this.parent.maxSlots = this.offset;
+		}
 
 		if( this.hasNext )
 		{

@@ -107,10 +107,14 @@ public class BlockQuartzTorch extends AEBaseBlock implements IOrientableBlock, I
 	public void randomDisplayTick( World w, int x, int y, int z, Random r )
 	{
 		if( !AEConfig.instance.enableEffects )
+		{
 			return;
+		}
 
 		if( r.nextFloat() < 0.98 )
+		{
 			return;
+		}
 
 		ForgeDirection up = this.getOrientable( w, x, y, z ).getUp();
 		double xOff = -0.3 * up.offsetX;
@@ -132,7 +136,9 @@ public class BlockQuartzTorch extends AEBaseBlock implements IOrientableBlock, I
 	{
 		ForgeDirection up = this.getOrientable( w, x, y, z ).getUp();
 		if( !this.canPlaceAt( w, x, y, z, up.getOpposite() ) )
+		{
 			this.dropTorch( w, x, y, z );
+		}
 	}
 
 	private void dropTorch( World w, int x, int y, int z )
@@ -146,8 +152,12 @@ public class BlockQuartzTorch extends AEBaseBlock implements IOrientableBlock, I
 	public boolean canPlaceBlockAt( World w, int x, int y, int z )
 	{
 		for( ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS )
+		{
 			if( this.canPlaceAt( w, x, y, z, dir ) )
+			{
 				return true;
+			}
+		}
 		return false;
 	}
 

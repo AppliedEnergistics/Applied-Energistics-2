@@ -71,7 +71,9 @@ public class BlockCharger extends AEBaseBlock implements ICustomCollision
 	public boolean onActivated( World w, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ )
 	{
 		if( player.isSneaking() )
+		{
 			return false;
+		}
 
 		if( Platform.isServer() )
 		{
@@ -90,10 +92,14 @@ public class BlockCharger extends AEBaseBlock implements ICustomCollision
 	public void randomDisplayTick( World w, int x, int y, int z, Random r )
 	{
 		if( !AEConfig.instance.enableEffects )
+		{
 			return;
+		}
 
 		if( r.nextFloat() < 0.98 )
+		{
 			return;
+		}
 
 		AEBaseTile tile = this.getTileEntity( w, x, y, z );
 		if( tile instanceof TileCharger )

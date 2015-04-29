@@ -163,7 +163,9 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 		super.onChangeInventory( inv, slot, mc, removedStack, newStack );
 
 		if( inv == this.Config )
+		{
 			this.resetCache( true );
+		}
 	}
 
 	@Override
@@ -193,7 +195,9 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	public IInventory getInventoryByName( String name )
 	{
 		if( name.equals( "config" ) )
+		{
 			return this.Config;
+		}
 
 		return super.getInventoryByName( name );
 	}
@@ -201,12 +205,18 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	private void resetCache( boolean fullReset )
 	{
 		if( this.host == null || this.host.getTile() == null || this.host.getTile().getWorldObj() == null || this.host.getTile().getWorldObj().isRemote )
+		{
 			return;
+		}
 
 		if( fullReset )
+		{
 			this.resetCacheLogic = 2;
+		}
 		else
+		{
 			this.resetCacheLogic = 1;
+		}
 
 		try
 		{
@@ -230,7 +240,9 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 		try
 		{
 			if( this.proxy.isActive() )
+			{
 				this.proxy.getStorage().postAlterationOfStoredItems( StorageChannel.ITEMS, change, this.mySrc );
+			}
 		}
 		catch( GridAccessException e )
 		{
@@ -312,7 +324,9 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 		if( !player.isSneaking() )
 		{
 			if( Platform.isClient() )
+			{
 				return true;
+			}
 
 			Platform.openGUI( player, this.getHost().getTile(), this.side, GuiBridge.GUI_STORAGEBUS );
 			return true;
@@ -331,10 +345,14 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	public TickRateModulation tickingRequest( IGridNode node, int TicksSinceLastCall )
 	{
 		if( this.resetCacheLogic != 0 )
+		{
 			this.resetCache();
+		}
 
 		if( this.monitor != null )
+		{
 			return this.monitor.onTick();
+		}
 
 		return TickRateModulation.SLEEP;
 	}
@@ -347,20 +365,28 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 		IMEInventory<IAEItemStack> in = this.getInternalHandler();
 		IItemList<IAEItemStack> before = AEApi.instance().storage().createItemList();
 		if( in != null )
+		{
 			before = in.getAvailableItems( before );
+		}
 
 		this.cached = false;
 		if( fullReset )
+		{
 			this.handlerHash = 0;
+		}
 
 		IMEInventory<IAEItemStack> out = this.getInternalHandler();
 
 		if( this.monitor != null )
+		{
 			this.monitor.onTick();
+		}
 
 		IItemList<IAEItemStack> after = AEApi.instance().storage().createItemList();
 		if( out != null )
+		{
 			after = out.getAvailableItems( after );
+		}
 
 		Platform.postListChanges( before, after, this, this.mySrc );
 	}
@@ -368,7 +394,9 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	public MEInventoryHandler getInternalHandler()
 	{
 		if( this.cached )
+		{
 			return this.handler;
+		}
 
 		boolean wasSleeping = this.monitor == null;
 
@@ -379,7 +407,9 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 		int newHandlerHash = Platform.generateTileHash( target );
 
 		if( this.handlerHash == newHandlerHash && this.handlerHash != 0 )
+		{
 			return this.handler;
+		}
 
 		try
 		{
@@ -409,7 +439,9 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 				}
 
 				if( inv instanceof MEMonitorIInventory )
+				{
 					this.monitor = (MEMonitorIInventory) inv;
+				}
 
 				if( inv != null )
 				{
@@ -428,16 +460,24 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 					{
 						IAEItemStack is = this.Config.getAEStackInSlot( x );
 						if( is != null )
+						{
 							priorityList.add( is );
+						}
 					}
 
 					if( this.getInstalledUpgrades( Upgrades.FUZZY ) > 0 )
+					{
 						this.handler.setPartitionList( new FuzzyPriorityList( priorityList, (FuzzyMode) this.getConfigManager().getSetting( Settings.FUZZY_MODE ) ) );
+					}
 					else
+					{
 						this.handler.setPartitionList( new PrecisePriorityList( priorityList ) );
+					}
 
 					if( inv instanceof IMEMonitor )
+					{
 						( (IMEMonitor) inv ).addListener( this, this.handler );
+					}
 				}
 			}
 		}
@@ -449,9 +489,13 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 			{
 				ITickManager tm = this.proxy.getTick();
 				if( this.monitor == null )
+				{
 					tm.sleepDevice( this.proxy.getNode() );
+				}
 				else
+				{
 					tm.wakeDevice( this.proxy.getNode() );
+				}
 			}
 			catch( GridAccessException e )
 			{
@@ -467,13 +511,17 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 		IInterfaceHost achievement = null;
 
 		if( target instanceof IInterfaceHost )
+		{
 			achievement = (IInterfaceHost) target;
+		}
 
 		if( target instanceof IPartHost )
 		{
 			Object part = ( (IPartHost) target ).getPart( side );
 			if( part instanceof IInterfaceHost )
+			{
 				achievement = (IInterfaceHost) part;
+			}
 		}
 
 		if( achievement != null && achievement.getActionableNode() != null )
@@ -490,7 +538,9 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 		{
 			IMEInventoryHandler out = this.proxy.isActive() ? this.getInternalHandler() : null;
 			if( out != null )
+			{
 				return Collections.singletonList( out );
+			}
 		}
 		return Arrays.asList( new IMEInventoryHandler[] {} );
 	}

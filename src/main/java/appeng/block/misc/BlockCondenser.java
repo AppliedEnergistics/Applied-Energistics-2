@@ -47,7 +47,9 @@ public class BlockCondenser extends AEBaseBlock
 	public boolean onActivated( World w, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ )
 	{
 		if( player.isSneaking() )
+		{
 			return false;
+		}
 
 		if( Platform.isServer() )
 		{

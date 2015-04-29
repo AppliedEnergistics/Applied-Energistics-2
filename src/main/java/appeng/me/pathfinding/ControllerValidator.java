@@ -71,7 +71,9 @@ public class ControllerValidator implements IGridVisitor
 			this.isValid = false;
 		}
 		else
+		{
 			return false;
+		}
 
 		return this.isValid;
 	}

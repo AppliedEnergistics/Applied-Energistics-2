@@ -112,15 +112,21 @@ public final class ItemMultiPart extends AEBaseItem implements IPartItem, IItemG
 		for( PartTypeWithVariant p : this.registered.values() )
 		{
 			if( p.part == mat && p.variant == varID )
+			{
 				throw new IllegalStateException( "Cannot create the same material twice..." );
+			}
 		}
 
 		boolean enabled = true;
 		for( AEFeature f : mat.getFeature() )
+		{
 			enabled = enabled && AEConfig.instance.isFeatureEnabled( f );
+		}
 
 		for( IntegrationType integrationType : mat.getIntegrations() )
+		{
 			enabled &= IntegrationRegistry.INSTANCE.isEnabled( integrationType );
+		}
 
 		final int partDamage = mat.baseDamage + varID;
 		final ItemStackSrc output = new ItemStackSrc( this, partDamage );
@@ -140,7 +146,9 @@ public final class ItemMultiPart extends AEBaseItem implements IPartItem, IItemG
 
 		final Map<Integer, PartTypeWithVariant> reference = ( enabled ) ? this.registered : this.unregistered;
 		if( reference.containsKey( partDamage ) )
+		{
 			throw new IllegalStateException( "Meta Overlap detected with type " + mat + " and damage " + partDamage + ". Found " + reference.get( partDamage ) + " there already." );
+		}
 
 		reference.put( partDamage, pti );
 	}
@@ -152,7 +160,9 @@ public final class ItemMultiPart extends AEBaseItem implements IPartItem, IItemG
 		for( Entry<Integer, PartTypeWithVariant> pt : this.registered.entrySet() )
 		{
 			if( pt.getValue().part == t )
+			{
 				return pt.getKey();
+			}
 		}
 		return -1;
 	}
@@ -195,7 +205,9 @@ public final class ItemMultiPart extends AEBaseItem implements IPartItem, IItemG
 		}
 
 		if( pt.getExtraName() != null )
+		{
 			return super.getItemStackDisplayName( is ) + " - " + pt.getExtraName().getLocal();
+		}
 
 		return super.getItemStackDisplayName( is );
 	}
@@ -215,7 +227,9 @@ public final class ItemMultiPart extends AEBaseItem implements IPartItem, IItemG
 		} );
 
 		for( Entry<Integer, PartTypeWithVariant> part : types )
+		{
 			cList.add( new ItemStack( this, 1, part.getKey() ) );
+		}
 	}
 
 	@Override
@@ -245,10 +259,14 @@ public final class ItemMultiPart extends AEBaseItem implements IPartItem, IItemG
 
 		final PartTypeWithVariant pt = this.registered.get( is.getItemDamage() );
 		if( pt != null )
+		{
 			return pt.part;
+		}
 		final PartTypeWithVariant unregisteredPartType = this.unregistered.get( is.getItemDamage() );
 		if( unregisteredPartType != null )
+		{
 			return unregisteredPartType.part;
+		}
 
 		throw new IllegalStateException( "ItemStack " + is + " has to be either registered or unregistered, but was not found in either." );
 	}
@@ -263,7 +281,9 @@ public final class ItemMultiPart extends AEBaseItem implements IPartItem, IItemG
 		try
 		{
 			if( type.constructor == null )
+			{
 				type.constructor = part.getConstructor( ItemStack.class );
+			}
 
 			return type.constructor.newInstance( is );
 		}
@@ -288,7 +308,9 @@ public final class ItemMultiPart extends AEBaseItem implements IPartItem, IItemG
 	public int variantOf( int itemDamage )
 	{
 		if( this.registered.containsKey( itemDamage ) )
+		{
 			return this.registered.get( itemDamage ).variant;
+		}
 		return 0;
 	}
 
@@ -312,12 +334,16 @@ public final class ItemMultiPart extends AEBaseItem implements IPartItem, IItemG
 					case ImportBus:
 						importBus = true;
 						if( u == pt )
+						{
 							group = true;
+						}
 						break;
 					case ExportBus:
 						exportBus = true;
 						if( u == pt )
+						{
 							group = true;
+						}
 						break;
 					default:
 				}
@@ -325,7 +351,9 @@ public final class ItemMultiPart extends AEBaseItem implements IPartItem, IItemG
 		}
 
 		if( group && importBus && exportBus )
+		{
 			return GuiText.IOBuses.getUnlocalized();
+		}
 
 		return null;
 	}

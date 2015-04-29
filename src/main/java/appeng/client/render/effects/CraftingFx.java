@@ -72,7 +72,9 @@ public class CraftingFx extends EntityBreakingFX
 	public void renderParticle( Tessellator par1Tessellator, float partialTick, float x, float y, float z, float rx, float rz )
 	{
 		if( partialTick < 0 || partialTick > 1 )
+		{
 			return;
+		}
 
 		float f6 = this.particleTextureIndex.getMinU();
 		float f7 = this.particleTextureIndex.getMaxU();

@@ -52,8 +52,12 @@ public class ContainerCraftingTerm extends ContainerMEMonitorable implements IAE
 		IInventory crafting = this.ct.getInventoryByName( "crafting" );
 
 		for( int y = 0; y < 3; y++ )
+		{
 			for( int x = 0; x < 3; x++ )
+			{
 				this.addSlotToContainer( this.craftingSlots[x + y * 3] = new SlotCraftingMatrix( this, crafting, x + y * 3, 37 + x * 18, -72 + y * 18 ) );
+			}
+		}
 
 		this.addSlotToContainer( this.outputSlot = new SlotCraftingTerm( this.getPlayerInv().player, this.mySrc, this.powerSrc, monitorable, crafting, crafting, this.output, 131, -72 + 18, this ) );
 
@@ -72,7 +76,9 @@ public class ContainerCraftingTerm extends ContainerMEMonitorable implements IAE
 		InventoryCrafting ic = new InventoryCrafting( cn, 3, 3 );
 
 		for( int x = 0; x < 9; x++ )
+		{
 			ic.setInventorySlotContents( x, this.craftingSlots[x].getStack() );
+		}
 
 		this.outputSlot.putStack( CraftingManager.getInstance().findMatchingRecipe( ic, this.getPlayerInv().player.worldObj ) );
 	}

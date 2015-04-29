@@ -36,7 +36,9 @@ public class LayerITileStorageMonitorable extends LayerBase implements ITileStor
 	{
 		IPart part = this.getPart( side );
 		if( part instanceof ITileStorageMonitorable )
+		{
 			return ( (ITileStorageMonitorable) part ).getMonitorable( side, src );
+		}
 		return null;
 	}
 }

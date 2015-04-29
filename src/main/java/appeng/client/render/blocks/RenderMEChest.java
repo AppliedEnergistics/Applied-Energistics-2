@@ -70,7 +70,9 @@ public class RenderMEChest extends BaseBlockRender
 		renderer.setRenderBounds( 0, 0, 0, 1, 1, 1 );
 
 		if( sp == null )
+		{
 			return false;
+		}
 
 		ForgeDirection up = sp.getUp();
 		ForgeDirection forward = sp.getForward();
@@ -86,7 +88,9 @@ public class RenderMEChest extends BaseBlockRender
 		int offsetU = -4;
 		int offsetV = 8;
 		if( stat == 0 )
+		{
 			offsetV = 3;
+		}
 
 		int b = world.getLightBrightnessForSkyBlocks( x + forward.offsetX, y + forward.offsetY, z + forward.offsetZ, 0 );
 		Tessellator.instance.setBrightness( b );
@@ -94,15 +98,25 @@ public class RenderMEChest extends BaseBlockRender
 
 		FlippableIcon flippableIcon = new FlippableIcon( new OffsetIcon( ExtraBlockTextures.MEStorageCellTextures.getIcon(), offsetU, offsetV ) );
 		if( forward == ForgeDirection.EAST && ( up == ForgeDirection.NORTH || up == ForgeDirection.SOUTH ) )
+		{
 			flippableIcon.setFlip( true, false );
+		}
 		else if( forward == ForgeDirection.NORTH && up == ForgeDirection.EAST )
+		{
 			flippableIcon.setFlip( false, true );
+		}
 		else if( forward == ForgeDirection.NORTH && up == ForgeDirection.WEST )
+		{
 			flippableIcon.setFlip( true, false );
+		}
 		else if( forward == ForgeDirection.DOWN && up == ForgeDirection.EAST )
+		{
 			flippableIcon.setFlip( false, true );
+		}
 		else if( forward == ForgeDirection.DOWN )
+		{
 			flippableIcon.setFlip( true, false );
+		}
 
 		/*
 		 * 1.7.2
@@ -123,11 +137,17 @@ public class RenderMEChest extends BaseBlockRender
 
 			Tessellator.instance.setBrightness( b );
 			if( stat == 1 )
+			{
 				Tessellator.instance.setColorOpaque_I( 0x00ff00 );
+			}
 			if( stat == 2 )
+			{
 				Tessellator.instance.setColorOpaque_I( 0xffaa00 );
+			}
 			if( stat == 3 )
+			{
 				Tessellator.instance.setColorOpaque_I( 0xff0000 );
+			}
 			this.selectFace( renderer, west, up, forward, 9, 10, 11, 12 );
 			this.renderFace( x, y, z, imb, ExtraBlockTextures.White.getIcon(), renderer, forward );
 		}

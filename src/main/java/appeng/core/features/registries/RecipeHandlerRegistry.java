@@ -53,7 +53,9 @@ public class RecipeHandlerRegistry implements IRecipeHandlerRegistry
 	{
 		Class<? extends ICraftHandler> clz = this.handlers.get( name );
 		if( clz == null )
+		{
 			return null;
+		}
 		try
 		{
 			return clz.newInstance();
@@ -90,7 +92,9 @@ public class RecipeHandlerRegistry implements IRecipeHandlerRegistry
 			}
 
 			if( rr != null )
+			{
 				return rr;
+			}
 		}
 
 		return null;

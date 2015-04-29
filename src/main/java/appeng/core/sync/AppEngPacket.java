@@ -62,12 +62,16 @@ public abstract class AppEngPacket
 	public FMLProxyPacket getProxy()
 	{
 		if( this.p.array().length > 2 * 1024 * 1024 ) // 2k walking room :)
+		{
 			throw new IllegalArgumentException( "Sorry AE2 made a " + this.p.array().length + " byte packet by accident!" );
+		}
 
 		FMLProxyPacket pp = new FMLProxyPacket( this.p, NetworkHandler.instance.getChannel() );
 
 		if( AEConfig.instance.isFeatureEnabled( AEFeature.PacketLogging ) )
+		{
 			AELog.info( this.getClass().getName() + " : " + pp.payload().readableBytes() );
+		}
 
 		return pp;
 	}

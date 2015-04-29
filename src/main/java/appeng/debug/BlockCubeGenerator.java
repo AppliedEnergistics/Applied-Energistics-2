@@ -46,7 +46,9 @@ public class BlockCubeGenerator extends AEBaseBlock
 
 		TileCubeGenerator tcg = this.getTileEntity( w, x, y, z );
 		if( tcg != null )
+		{
 			tcg.click( player );
+		}
 
 		return true;
 	}

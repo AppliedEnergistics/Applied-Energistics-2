@@ -228,10 +228,14 @@ public enum GuiBridge implements IGuiHandler
 			String guiClass = start.replaceFirst( "container.", "client.gui." ).replace( ".Container", ".Gui" );
 
 			if( start.equals( guiClass ) )
+			{
 				throw new IllegalStateException( "Unable to find gui class" );
+			}
 			this.Gui = ReflectionHelper.getClass( this.getClass().getClassLoader(), guiClass );
 			if( this.Gui == null )
+			{
 				throw new IllegalStateException( "Cannot Load class: " + guiClass );
+			}
 		}
 	}
 
@@ -263,7 +267,9 @@ public enum GuiBridge implements IGuiHandler
 			}
 			Object myItem = this.getGuiObject( it, player, w, x, y, z );
 			if( myItem != null && ID.CorrectTileOrPart( myItem ) )
+			{
 				return this.updateGui( ID.ConstructContainer( player.inventory, side, myItem ), w, x, y, z, side, myItem );
+			}
 		}
 		if( ID.type.isTile() )
 		{
@@ -273,12 +279,16 @@ public enum GuiBridge implements IGuiHandler
 				( (IPartHost) TE ).getPart( side );
 				IPart part = ( (IPartHost) TE ).getPart( side );
 				if( ID.CorrectTileOrPart( part ) )
+				{
 					return this.updateGui( ID.ConstructContainer( player.inventory, side, part ), w, x, y, z, side, part );
+				}
 			}
 			else
 			{
 				if( ID.CorrectTileOrPart( TE ) )
+				{
 					return this.updateGui( ID.ConstructContainer( player.inventory, side, TE ), w, x, y, z, side, TE );
+				}
 			}
 		}
 		return new ContainerNull();
@@ -295,7 +305,9 @@ public enum GuiBridge implements IGuiHandler
 
 			IWirelessTermHandler wh = AEApi.instance().registries().wireless().getWirelessTerminalHandler( it );
 			if( wh != null )
+			{
 				return new WirelessTerminalGuiObject( wh, it, player, w, x, y, z );
+			}
 		}
 
 		return null;
@@ -304,7 +316,9 @@ public enum GuiBridge implements IGuiHandler
 	public boolean CorrectTileOrPart( Object tE )
 	{
 		if( this.Tile == null )
+		{
 			throw new IllegalArgumentException( "This Gui Cannot use the standard Handler." );
+		}
 
 		return this.Tile.isInstance( tE );
 	}
@@ -331,7 +345,9 @@ public enum GuiBridge implements IGuiHandler
 		{
 			Constructor[] c = this.Container.getConstructors();
 			if( c.length == 0 )
+			{
 				throw new AppEngException( "Invalid Gui Class" );
+			}
 
 			Constructor target = this.findConstructor( c, inventory, tE );
 
@@ -376,7 +392,9 @@ public enum GuiBridge implements IGuiHandler
 			if( types.length == 2 )
 			{
 				if( types[0].isAssignableFrom( inventory.getClass() ) && types[1].isAssignableFrom( tE.getClass() ) )
+				{
 					return con;
+				}
 			}
 		}
 		return null;
@@ -385,7 +403,9 @@ public enum GuiBridge implements IGuiHandler
 	private String typeName( Object inventory )
 	{
 		if( inventory == null )
+		{
 			return "NULL";
+		}
 
 		return inventory.getClass().getName();
 	}
@@ -429,7 +449,9 @@ public enum GuiBridge implements IGuiHandler
 			}
 			Object myItem = this.getGuiObject( it, player, w, x, y, z );
 			if( myItem != null && ID.CorrectTileOrPart( myItem ) )
+			{
 				return ID.ConstructGui( player.inventory, side, myItem );
+			}
 		}
 		if( ID.type.isTile() )
 		{
@@ -439,12 +461,16 @@ public enum GuiBridge implements IGuiHandler
 				( (IPartHost) TE ).getPart( side );
 				IPart part = ( (IPartHost) TE ).getPart( side );
 				if( ID.CorrectTileOrPart( part ) )
+				{
 					return ID.ConstructGui( player.inventory, side, part );
+				}
 			}
 			else
 			{
 				if( ID.CorrectTileOrPart( TE ) )
+				{
 					return ID.ConstructGui( player.inventory, side, TE );
+				}
 			}
 		}
 		return new GuiNull( new ContainerNull() );
@@ -456,7 +482,9 @@ public enum GuiBridge implements IGuiHandler
 		{
 			Constructor[] c = this.Gui.getConstructors();
 			if( c.length == 0 )
+			{
 				throw new AppEngException( "Invalid Gui Class" );
+			}
 
 			Constructor target = this.findConstructor( c, inventory, tE );
 
@@ -500,12 +528,16 @@ public enum GuiBridge implements IGuiHandler
 					( (IPartHost) TE ).getPart( side );
 					IPart part = ( (IPartHost) TE ).getPart( side );
 					if( this.CorrectTileOrPart( part ) )
+					{
 						return this.securityCheck( part, player );
+					}
 				}
 				else
 				{
 					if( this.CorrectTileOrPart( TE ) )
+					{
 						return this.securityCheck( TE, player );
+					}
 				}
 			}
 		}
@@ -535,7 +567,9 @@ public enum GuiBridge implements IGuiHandler
 
 					ISecurityGrid sg = g.getCache( ISecurityGrid.class );
 					if( sg.hasPermission( player, this.requiredPermission ) )
+					{
 						return true;
+					}
 				}
 			}
 

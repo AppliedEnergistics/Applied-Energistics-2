@@ -114,9 +114,13 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 		public boolean equals( Object obj )
 		{
 			if( obj == null )
+			{
 				return false;
+			}
 			if( this.getClass() != obj.getClass() )
+			{
 				return false;
+			}
 			InWorldToolOperationIngredient other = (InWorldToolOperationIngredient) obj;
 			return this.blockID == other.blockID && this.metadata == other.metadata;
 		}
@@ -212,7 +216,9 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 		MovingObjectPosition target = this.getMovingObjectPositionFromPlayer( w, p, true );
 
 		if( target == null )
+		{
 			return item;
+		}
 		else
 		{
 			if( target.typeOfHit == MovingObjectType.BLOCK )
@@ -240,7 +246,9 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 		if( this.getAECurrentPower( item ) > 1600 )
 		{
 			if( !p.canPlayerEdit( x, y, z, side, item ) )
+			{
 				return false;
+			}
 
 			Block blockID = w.getBlock( x, y, z );
 			int metadata = w.getBlockMetadata( x, y, z );
@@ -335,7 +343,9 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 					z += dir.offsetZ;
 
 					if( !p.canPlayerEdit( x, y, z, side, item ) )
+					{
 						return false;
+					}
 
 					if( w.isAirBlock( x, y, z ) )
 					{

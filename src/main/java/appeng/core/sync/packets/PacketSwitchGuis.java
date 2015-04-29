@@ -52,7 +52,9 @@ public class PacketSwitchGuis extends AppEngPacket
 		this.newGui = newGui;
 
 		if( Platform.isClient() )
+		{
 			AEBaseGui.switchingGuis = true;
+		}
 
 		ByteBuf data = Unpooled.buffer();
 

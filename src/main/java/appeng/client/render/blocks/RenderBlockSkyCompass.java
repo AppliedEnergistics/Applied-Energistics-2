@@ -61,11 +61,17 @@ public class RenderBlockSkyCompass extends BaseBlockRender
 
 			IInventory inv = Minecraft.getMinecraft().thePlayer.inventory;
 			for( int x = 0; x < inv.getSizeInventory(); x++ )
+			{
 				if( inv.getStackInSlot( x ) == is )
+				{
 					isGood = true;
+				}
+			}
 
 			if( !isGood )
+			{
 				type = ItemRenderType.FIRST_PERSON_MAP;
+			}
 		}
 
 		GL11.glEnable( 32826 /* GL_RESCALE_NORMAL_EXT */ );
@@ -85,15 +91,21 @@ public class RenderBlockSkyCompass extends BaseBlockRender
 		else
 		{
 			if( type == ItemRenderType.EQUIPPED_FIRST_PERSON )
+			{
 				GL11.glRotatef( 15.3f, 0.0f, 0.0f, 1.0f );
+			}
 
 			GL11.glScalef( 1.0F, -1F, -1F );
 			GL11.glScalef( 2.5f, 2.5f, 2.5f );
 
 			if( type == ItemRenderType.EQUIPPED_FIRST_PERSON )
+			{
 				GL11.glTranslatef( 0.3F, -1.65F, -0.19F );
+			}
 			else
+			{
 				GL11.glTranslatef( 0.2F, -1.65F, -0.19F );
+			}
 		}
 
 		long now = System.currentTimeMillis();
@@ -114,8 +126,12 @@ public class RenderBlockSkyCompass extends BaseBlockRender
 			CompassResult cr = CompassManager.INSTANCE.getCompassDirection( 0, x, y, z );
 
 			for( int i = 0; i < 3; i++ )
+			{
 				for( int j = 0; j < 3; j++ )
+				{
 					CompassManager.INSTANCE.getCompassDirection( 0, x + i - 1, y, z + j - 1 );
+				}
+			}
 
 			if( cr.hasResult )
 			{
@@ -166,12 +182,16 @@ public class RenderBlockSkyCompass extends BaseBlockRender
 	public void renderTile( AEBaseBlock block, AEBaseTile tile, Tessellator tess, double x, double y, double z, float partialTick, RenderBlocks renderer )
 	{
 		if( !( tile instanceof TileSkyCompass ) )
+		{
 			return;
+		}
 
 		TileSkyCompass skyCompass = (TileSkyCompass) tile;
 
 		if( !skyCompass.hasWorldObj() )
+		{
 			return;
+		}
 
 		GL11.glEnable( 32826 /* GL_RESCALE_NORMAL_EXT */ );
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
@@ -189,9 +209,13 @@ public class RenderBlockSkyCompass extends BaseBlockRender
 
 		CompassResult cr = null;
 		if( skyCompass.getForward() == ForgeDirection.UP || skyCompass.getForward() == ForgeDirection.DOWN )
+		{
 			cr = CompassManager.INSTANCE.getCompassDirection( 0, tile.xCoord, tile.yCoord, tile.zCoord );
+		}
 		else
+		{
 			cr = new CompassResult( false, true, 0 );
+		}
 
 		if( cr.hasResult )
 		{
@@ -201,7 +225,9 @@ public class RenderBlockSkyCompass extends BaseBlockRender
 				this.model.renderAll( ( now / 50000.0f ) * (float) Math.PI * 500.0f );
 			}
 			else
+			{
 				this.model.renderAll( (float) ( skyCompass.getForward() == ForgeDirection.DOWN ? this.flipidiy( cr.rad ) : cr.rad ) );
+			}
 		}
 		else
 		{

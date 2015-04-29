@@ -59,7 +59,9 @@ public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorag
 	{
 		WorldCoord wc = this.getStoredSize( stack );
 		if( wc.x > 0 )
+		{
 			lines.add( GuiText.StoredSize.getLocal() + ": " + wc.x + " x " + wc.y + " x " + wc.z );
+		}
 	}
 
 	@Override
@@ -111,7 +113,9 @@ public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorag
 				return WorldSettings.getInstance().getStoredSize( dim );
 			}
 			else
+			{
 				return new WorldCoord( c.getInteger( "sizeX" ), c.getInteger( "sizeY" ), c.getInteger( "sizeZ" ) );
+			}
 		}
 		return new WorldCoord( 0, 0, 0 );
 	}
@@ -164,7 +168,9 @@ public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorag
 			if( targetX <= maxSize && targetY <= maxSize && targetZ <= maxSize )
 			{
 				if( destination == null )
+				{
 					destination = this.createNewWorld( is );
+				}
 
 				StorageHelper.getInstance().swapRegions( w, destination, min.x + 1, min.y + 1, min.z + 1, 1, floorBuffer + 1, 1, targetX - 1, targetY - 1, targetZ - 1 );
 				this.setStoredSize( is, targetX, targetY, targetZ );

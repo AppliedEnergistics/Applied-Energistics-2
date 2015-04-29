@@ -121,7 +121,9 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 
 			CellUpgrades cu = (CellUpgrades) this.getUpgradesInventory( item );
 			if( cu != null )
+			{
 				shots += cu.getInstalledUpgrades( Upgrades.SPEED );
+			}
 
 			IMEInventory inv = AEApi.instance().registries().cell().getCellInventory( item, null, StorageChannel.ITEMS );
 			if( inv != null )
@@ -136,17 +138,23 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 						this.extractAEPower( item, 1600 );
 
 						if( Platform.isClient() )
+						{
 							return item;
+						}
 
 						aeAmmo.setStackSize( 1 );
 						ItemStack ammo = ( (IAEItemStack) aeAmmo ).getItemStack();
 						if( ammo == null )
+						{
 							return item;
+						}
 
 						ammo.stackSize = 1;
 						aeAmmo = inv.extractItems( aeAmmo, Actionable.MODULATE, new PlayerSource( p, null ) );
 						if( aeAmmo == null )
+						{
 							return item;
+						}
 
 						float f = 1.0F;
 						float f1 = p.prevRotationPitch + ( p.rotationPitch - p.prevRotationPitch ) * f;
@@ -186,7 +194,9 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 				else
 				{
 					if( Platform.isServer() )
+					{
 						p.addChatMessage( PlayerMessages.AmmoDepleted.get() );
+					}
 					return item;
 				}
 			}
@@ -213,7 +223,9 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 				{
 					// prevent killing / flying of mounts.
 					if( entity1.riddenByEntity == p )
+					{
 						continue;
+					}
 
 					float f1 = 0.3F;
 
@@ -286,7 +298,9 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 				int z = pos.blockZ + side.offsetZ;
 
 				if( !Platform.hasPermissions( new DimensionalCoord( w, x, y, z ), p ) )
+				{
 					return;
+				}
 
 				Block whatsThere = w.getBlock( x, y, z );
 				if( whatsThere.isReplaceable( w, x, y, z ) && w.isAirBlock( x, y, z ) )
@@ -333,7 +347,9 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 					{
 						// prevent killing / flying of mounts.
 						if( entity1.riddenByEntity == p )
+						{
 							continue;
+						}
 
 						float f1 = 0.3F;
 
@@ -391,7 +407,9 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 						// vec3.zCoord );
 						el.attackEntityFrom( dmgSrc, dmg );
 						if( !el.isEntityAlive() )
+						{
 							hasDestroyedSomething = true;
+						}
 					}
 					else if( pos.entityHit instanceof EntityItem )
 					{
@@ -406,7 +424,9 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 				else if( pos.typeOfHit == MovingObjectType.BLOCK )
 				{
 					if( !AEConfig.instance.isFeatureEnabled( AEFeature.MassCannonBlockDamage ) )
+					{
 						penetration = 0;
+					}
 					else
 					{
 						Block b = w.getBlock( pos.blockX, pos.blockY, pos.blockZ );
@@ -498,10 +518,14 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 	{
 		float pen = AEApi.instance().registries().matterCannon().getPenetration( requestedAddition.getItemStack() );
 		if( pen > 0 )
+		{
 			return false;
+		}
 
 		if( requestedAddition.getItem() instanceof ItemPaintBall )
+		{
 			return false;
+		}
 
 		return true;
 	}

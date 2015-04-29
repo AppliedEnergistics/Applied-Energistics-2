@@ -36,7 +36,9 @@ public class OffsetIcon implements IIcon
 	public OffsetIcon( IIcon o, float x, float y )
 	{
 		if( o == null )
+		{
 			throw new IllegalArgumentException( "Cannot create a wrapper icon with a null icon." );
+		}
 
 		this.p = o;
 		this.offsetX = x;

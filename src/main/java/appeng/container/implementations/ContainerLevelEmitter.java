@@ -81,13 +81,21 @@ public class ContainerLevelEmitter extends ContainerUpgradeable
 
 		IInventory upgrades = this.upgradeable.getInventoryByName( "upgrades" );
 		if( this.availableUpgrades() > 0 )
+		{
 			this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 0, 187, 8, this.invPlayer ) ).setNotDraggable() );
+		}
 		if( this.availableUpgrades() > 1 )
+		{
 			this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 1, 187, 8 + 18, this.invPlayer ) ).setNotDraggable() );
+		}
 		if( this.availableUpgrades() > 2 )
+		{
 			this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 2, 187, 8 + 18 * 2, this.invPlayer ) ).setNotDraggable() );
+		}
 		if( this.availableUpgrades() > 3 )
+		{
 			this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 3, 187, 8 + 18 * 3, this.invPlayer ) ).setNotDraggable() );
+		}
 
 		IInventory inv = this.upgradeable.getInventoryByName( "config" );
 		this.addSlotToContainer( new SlotFakeTypeOnly( inv, 0, x, y ) );
@@ -129,7 +137,9 @@ public class ContainerLevelEmitter extends ContainerUpgradeable
 		if( field.equals( "EmitterValue" ) )
 		{
 			if( this.textField != null )
+			{
 				this.textField.setText( String.valueOf( this.EmitterValue ) );
+			}
 		}
 	}
 }

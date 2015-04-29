@@ -66,7 +66,9 @@ public class FMP implements IIntegrationModule, IPartFactory, IPartConverter, IF
 		for( PartRegistry pr : PartRegistry.values() )
 		{
 			if( pr.getName().equals( name ) )
+			{
 				return pr.construct( 0 );
+			}
 		}
 
 		return null;
@@ -125,7 +127,9 @@ public class FMP implements IIntegrationModule, IPartFactory, IPartConverter, IF
 
 		String[] data = new String[reg.length];
 		for( int x = 0; x < data.length; x++ )
+		{
 			data[x] = reg[x].getName();
+		}
 
 		MultiPartRegistry.registerConverter( this );
 		MultiPartRegistry.registerParts( this, data );
@@ -162,7 +166,9 @@ public class FMP implements IIntegrationModule, IPartFactory, IPartConverter, IF
 				{
 					TMultiPart p = i.next();
 					if( p instanceof CableBusPart )
+					{
 						return (IPartHost) p;
+					}
 				}
 
 				return new FMPPlacementHelper( mp );
@@ -186,7 +192,9 @@ public class FMP implements IIntegrationModule, IPartFactory, IPartConverter, IF
 			{
 				TMultiPart p = i.next();
 				if( p instanceof CableBusPart )
+				{
 					return ( (CableBusPart) p ).cb;
+				}
 			}
 		}
 		return null;

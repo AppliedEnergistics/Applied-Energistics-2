@@ -45,7 +45,9 @@ public class ContainerOpenContext
 	public TileEntity getTile()
 	{
 		if( this.isItem )
+		{
 			return null;
+		}
 		return this.w.getTileEntity( this.x, this.y, this.z );
 	}
 }

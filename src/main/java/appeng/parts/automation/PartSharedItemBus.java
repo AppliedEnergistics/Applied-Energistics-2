@@ -76,7 +76,9 @@ public abstract class PartSharedItemBus extends PartUpgradeable implements IGrid
 	public IInventory getInventoryByName( String name )
 	{
 		if( name.equals( "config" ) )
+		{
 			return this.config;
+		}
 
 		return super.getInventoryByName( name );
 	}
@@ -86,9 +88,13 @@ public abstract class PartSharedItemBus extends PartUpgradeable implements IGrid
 		try
 		{
 			if( !this.isSleeping() )
+			{
 				this.proxy.getTick().wakeDevice( this.proxy.getNode() );
+			}
 			else
+			{
 				this.proxy.getTick().sleepDevice( this.proxy.getNode() );
+			}
 		}
 		catch( GridAccessException e )
 		{
@@ -104,7 +110,9 @@ public abstract class PartSharedItemBus extends PartUpgradeable implements IGrid
 		int newAdaptorHash = Platform.generateTileHash( target );
 
 		if( this.adaptorHash == newAdaptorHash && newAdaptorHash != 0 )
+		{
 			return this.adaptor;
+		}
 
 		this.adaptorHash = newAdaptorHash;
 		this.adaptor = InventoryAdaptor.getAdaptor( target, this.side.getOpposite() );
@@ -132,7 +140,9 @@ public abstract class PartSharedItemBus extends PartUpgradeable implements IGrid
 		{
 			this.lastRedstone = !this.lastRedstone;
 			if( this.lastRedstone && this.getRSMode() == RedstoneMode.SIGNAL_PULSE )
+			{
 				this.doBusWork();
+			}
 		}
 	}
 

@@ -51,10 +51,14 @@ public class CableRenderHelper
 		RenderBlocksWorkaround renderer = BusRenderer.INSTANCE.renderer;
 
 		if( renderer.overrideBlockTexture != null )
+		{
 			BusRenderHelper.INSTANCE.setPass( 0 );
+		}
 
 		if( renderer.blockAccess == null )
+		{
 			renderer.blockAccess = Minecraft.getMinecraft().theWorld;
+		}
 
 		for( ForgeDirection s : ForgeDirection.values() )
 		{
@@ -108,7 +112,9 @@ public class CableRenderHelper
 				o += bb.minZ < min ? 1 : 0;
 
 				if( o >= 2 )
+				{
 					useThinFacades = true;
+				}
 			}
 
 			for( ForgeDirection s : ForgeDirection.VALID_DIRECTIONS )
@@ -124,7 +130,9 @@ public class CableRenderHelper
 						if( bb.intersectsWith( pb ) )
 						{
 							if( b == null )
+							{
 								b = bb;
+							}
 							else
 							{
 								b.maxX = Math.max( b.maxX, bb.maxX );

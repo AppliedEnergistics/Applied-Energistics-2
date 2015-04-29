@@ -114,9 +114,13 @@ public class CellInventory implements ICellInventory
 		}
 
 		if( this.MAX_ITEM_TYPES > 63 )
+		{
 			this.MAX_ITEM_TYPES = 63;
+		}
 		if( this.MAX_ITEM_TYPES < 1 )
+		{
 			this.MAX_ITEM_TYPES = 1;
+		}
 
 		this.container = container;
 		this.tagCompound = Platform.openNbtData( o );
@@ -184,7 +188,9 @@ public class CellInventory implements ICellInventory
 	public static boolean isBlackListed( IAEItemStack input )
 	{
 		if( BLACK_LIST.contains( ( OreDictionary.WILDCARD_VALUE << Platform.DEF_OFFSET ) | Item.getIdFromItem( input.getItem() ) ) )
+		{
 			return true;
+		}
 		return BLACK_LIST.contains( ( input.getItemDamage() << Platform.DEF_OFFSET ) | Item.getIdFromItem( input.getItem() ) );
 	}
 
@@ -197,12 +203,18 @@ public class CellInventory implements ICellInventory
 	public IAEItemStack injectItems( IAEItemStack input, Actionable mode, BaseActionSource src )
 	{
 		if( input == null )
+		{
 			return null;
+		}
 		if( input.getStackSize() == 0 )
+		{
 			return null;
+		}
 
 		if( isBlackListed( input ) || this.CellType.isBlackListed( this.i, input ) )
+		{
 			return input;
+		}
 
 		ItemStack sharedItemStack = input.getItemStack();
 
@@ -210,7 +222,9 @@ public class CellInventory implements ICellInventory
 		{
 			IMEInventory meInventory = getCell( sharedItemStack, null );
 			if( meInventory != null && !this.isEmpty( meInventory ) )
+			{
 				return input;
+			}
 		}
 
 		IAEItemStack l = this.getCellItems().findPrecise( input );
@@ -218,7 +232,9 @@ public class CellInventory implements ICellInventory
 		{
 			long remainingItemSlots = this.getRemainingItemCount();
 			if( remainingItemSlots < 0 )
+			{
 				return input;
+			}
 
 			if( input.getStackSize() > remainingItemSlots )
 			{
@@ -284,7 +300,9 @@ public class CellInventory implements ICellInventory
 	public IAEItemStack extractItems( IAEItemStack request, Actionable mode, BaseActionSource src )
 	{
 		if( request == null )
+		{
 			return null;
+		}
 
 		long size = Math.min( Integer.MAX_VALUE, request.getStackSize() );
 
@@ -408,13 +426,17 @@ public class CellInventory implements ICellInventory
 		}
 
 		if( this.container != null )
+		{
 			this.container.saveChanges( this );
+		}
 	}
 
 	protected void loadCellItems()
 	{
 		if( this.cellItems == null )
+		{
 			this.cellItems = AEApi.instance().storage().createItemList();
+		}
 
 		this.cellItems.resetStatus(); // clears totals and stuff.
 
@@ -441,7 +463,9 @@ public class CellInventory implements ICellInventory
 	public IItemList getAvailableItems( IItemList out )
 	{
 		for( IAEItemStack i : this.getCellItems() )
+		{
 			out.add( i );
+		}
 
 		return out;
 	}
@@ -564,9 +588,13 @@ public class CellInventory implements ICellInventory
 	public int getStatusForCell()
 	{
 		if( this.canHoldNewItem() )
+		{
 			return 1;
+		}
 		if( this.getRemainingItemCount() > 0 )
+		{
 			return 2;
+		}
 		return 3;
 	}
 }

@@ -65,7 +65,9 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 		this.setFeature( EnumSet.of( AEFeature.Facades ) );
 		this.setHasSubtypes( true );
 		if( Platform.isClient() )
+		{
 			MinecraftForgeClient.registerItemRenderer( this, BusRenderer.INSTANCE );
+		}
 	}
 
 	@Override
@@ -125,7 +127,9 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 					{
 						ItemStack facade = this.createFacadeForItem( l, false );
 						if( facade != null )
+						{
 							this.subTypes.add( facade );
+						}
 					}
 				}
 				catch( Throwable t )
@@ -135,18 +139,24 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 			}
 
 			if( FacadeConfig.instance.hasChanged() )
+			{
 				FacadeConfig.instance.save();
+			}
 		}
 	}
 
 	public ItemStack createFacadeForItem( ItemStack l, boolean returnItem )
 	{
 		if( l == null )
+		{
 			return null;
+		}
 
 		Block b = Block.getBlockFromItem( l.getItem() );
 		if( b == null || l.hasTagCompound() )
+		{
 			return null;
+		}
 
 		int metadata = l.getItem().getMetadata( l.getItemDamage() );
 
@@ -158,7 +168,9 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 		if( FacadeConfig.instance.checkEnabled( b, metadata, defaultValue ) )
 		{
 			if( returnItem )
+			{
 				return l;
+			}
 
 			ItemStack is = new ItemStack( this );
 			NBTTagCompound data = new NBTTagCompound();
@@ -180,7 +192,9 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 	{
 		ItemStack in = this.getTextureItem( is );
 		if( in != null )
+		{
 			return new FacadePart( is, side );
+		}
 		return null;
 	}
 
@@ -189,7 +203,9 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 	{
 		Block blk = this.getBlock( is );
 		if( blk != null )
+		{
 			return new ItemStack( blk, 1, this.getMeta( is ) );
+		}
 		return null;
 	}
 
@@ -201,7 +217,9 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 		{
 			int[] blk = data.getIntArray( "x" );
 			if( blk != null && blk.length == 2 )
+			{
 				return blk[1];
+			}
 		}
 		return 0;
 	}
@@ -220,7 +238,9 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 			{
 				int[] blk = data.getIntArray( "x" );
 				if( blk != null && blk.length == 2 )
+				{
 					return Block.getBlockById( blk[0] );
+				}
 			}
 		}
 		return Blocks.glass;
@@ -236,7 +256,9 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 	{
 		this.calculateSubTypes();
 		if( this.subTypes.isEmpty() )
+		{
 			return new ItemStack( Items.cake );
+		}
 		return this.subTypes.get( 0 );
 	}
 
@@ -260,11 +282,15 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 		ItemStack out = this.getTextureItem( is );
 
 		if( out == null || out.getItem() == null )
+		{
 			return false;
+		}
 
 		Block blk = Block.getBlockFromItem( out.getItem() );
 		if( blk != null && blk.canRenderInPass( 1 ) )
+		{
 			return true;
+		}
 
 		return false;
 	}

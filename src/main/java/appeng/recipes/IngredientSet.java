@@ -56,19 +56,27 @@ public class IngredientSet implements IIngredient
 	public ItemStack[] getItemStackSet() throws RegistrationError, MissingIngredientError
 	{
 		if( this.baked != null )
+		{
 			return this.baked;
+		}
 
 		if( this.isInside )
+		{
 			return new ItemStack[0];
+		}
 
 		List<ItemStack> out = new LinkedList<ItemStack>();
 		out.addAll( this.items );
 
 		if( out.size() == 0 )
+		{
 			throw new MissingIngredientError( this.toString() + " - group could not be resolved to any items." );
+		}
 
 		for( ItemStack is : out )
+		{
 			is.stackSize = this.qty;
+		}
 
 		return out.toArray( new ItemStack[out.size()] );
 	}

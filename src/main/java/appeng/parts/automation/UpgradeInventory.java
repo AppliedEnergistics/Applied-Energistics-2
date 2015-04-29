@@ -67,7 +67,9 @@ public abstract class UpgradeInventory extends AppEngInternalInventory implement
 	public boolean isItemValidForSlot( int i, ItemStack itemstack )
 	{
 		if( itemstack == null )
+		{
 			return false;
+		}
 		Item it = itemstack.getItem();
 		if( it instanceof IUpgradeModule )
 		{
@@ -83,7 +85,9 @@ public abstract class UpgradeInventory extends AppEngInternalInventory implement
 	public int getInstalledUpgrades( Upgrades u )
 	{
 		if( !this.cached )
+		{
 			this.updateUpgradeInfo();
+		}
 
 		switch( u )
 		{
@@ -114,7 +118,9 @@ public abstract class UpgradeInventory extends AppEngInternalInventory implement
 		for( ItemStack is : this )
 		{
 			if( is == null || is.getItem() == null || !( is.getItem() instanceof IUpgradeModule ) )
+			{
 				continue;
+			}
 
 			Upgrades myUpgrade = ( (IUpgradeModule) is.getItem() ).getType( is );
 			switch( myUpgrade )
@@ -168,6 +174,8 @@ public abstract class UpgradeInventory extends AppEngInternalInventory implement
 	{
 		this.cached = false;
 		if( this.parent != null && Platform.isServer() )
+		{
 			this.parent.onChangeInventory( inv, slot, mc, removedStack, newStack );
+		}
 	}
 }

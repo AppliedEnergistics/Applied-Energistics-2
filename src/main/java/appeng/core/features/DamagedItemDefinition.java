@@ -57,7 +57,9 @@ public final class DamagedItemDefinition implements IItemDefinition
 	public boolean isSameAs( ItemStack comparableStack )
 	{
 		if( comparableStack == null )
+		{
 			return false;
+		}
 
 		return comparableStack.getItem() == this.source.getItem() && comparableStack.getItemDamage() == this.source.getDamage();
 	}

@@ -48,7 +48,9 @@ public class CompassManager
 			CompassResult res = i.next();
 			long diff = now - res.time;
 			if( diff > 20000 )
+			{
 				i.remove();
+			}
 		}
 
 		CompassRequest r = new CompassRequest( attunement, x, y, z );
@@ -106,9 +108,13 @@ public class CompassManager
 		public boolean equals( Object obj )
 		{
 			if( obj == null )
+			{
 				return false;
+			}
 			if( this.getClass() != obj.getClass() )
+			{
 				return false;
+			}
 			CompassRequest other = (CompassRequest) obj;
 			return this.attunement == other.attunement && this.cx == other.cx && this.cdy == other.cdy && this.cz == other.cz;
 		}

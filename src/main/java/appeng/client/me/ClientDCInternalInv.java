@@ -45,7 +45,9 @@ public class ClientDCInternalInv implements Comparable<ClientDCInternalInv>
 	{
 		String s = StatCollector.translateToLocal( this.unlocalizedName + ".name" );
 		if( s.equals( this.unlocalizedName + ".name" ) )
+		{
 			return StatCollector.translateToLocal( this.unlocalizedName );
+		}
 		return s;
 	}
 

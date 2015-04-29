@@ -100,10 +100,14 @@ public class TileWireless extends AENetworkInvTile implements IWirelessAccessPoi
 		try
 		{
 			if( this.gridProxy.getEnergy().isNetworkPowered() )
+			{
 				this.clientFlags |= POWERED_FLAG;
+			}
 
 			if( this.gridProxy.getNode().meetsChannelRequirements() )
+			{
 				this.clientFlags |= CHANNEL_FLAG;
+			}
 		}
 		catch( GridAccessException e )
 		{
@@ -183,7 +187,9 @@ public class TileWireless extends AENetworkInvTile implements IWirelessAccessPoi
 	public boolean isActive()
 	{
 		if( Platform.isClient() )
+		{
 			return this.isPowered() && ( CHANNEL_FLAG == ( this.clientFlags & CHANNEL_FLAG ) );
+		}
 
 		return this.gridProxy.isActive();
 	}

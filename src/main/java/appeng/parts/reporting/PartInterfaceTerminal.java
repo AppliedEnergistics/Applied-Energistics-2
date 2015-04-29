@@ -47,7 +47,9 @@ public class PartInterfaceTerminal extends PartMonitor
 			if( !player.isSneaking() )
 			{
 				if( Platform.isClient() )
+				{
 					return true;
+				}
 
 				Platform.openGUI( player, this.getHost().getTile(), this.side, GuiBridge.GUI_INTERFACE_TERMINAL );
 

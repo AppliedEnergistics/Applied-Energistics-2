@@ -58,8 +58,12 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 	public boolean isEmpty()
 	{
 		for( int x = 0; x < this.size; x++ )
+		{
 			if( this.getStackInSlot( x ) != null )
+			{
 				return false;
+			}
+		}
 		return true;
 	}
 
@@ -89,7 +93,9 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 				this.inv[slot] = null;
 			}
 			else
+			{
 				ns = split.splitStack( qty );
+			}
 
 			if( this.te != null && this.eventsEnabled() )
 			{
@@ -246,7 +252,9 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 	{
 		NBTTagCompound c = data.getCompoundTag( name );
 		if( c != null )
+		{
 			this.readFromNBT( c );
+		}
 	}
 
 	public void readFromNBT( NBTTagCompound target )
@@ -258,7 +266,9 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 				NBTTagCompound c = target.getCompoundTag( "#" + x );
 
 				if( c != null )
+				{
 					this.inv[x] = ItemStack.loadItemStackFromNBT( c );
+				}
 			}
 			catch( Exception e )
 			{

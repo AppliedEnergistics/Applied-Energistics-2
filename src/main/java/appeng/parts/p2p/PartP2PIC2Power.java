@@ -98,7 +98,9 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements i
 	public boolean acceptsEnergyFrom( TileEntity emitter, ForgeDirection direction )
 	{
 		if( !this.output )
+		{
 			return direction == this.side;
+		}
 		return false;
 	}
 
@@ -106,7 +108,9 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements i
 	public boolean emitsEnergyTo( TileEntity receiver, ForgeDirection direction )
 	{
 		if( this.output )
+		{
 			return direction == this.side;
+		}
 		return false;
 	}
 
@@ -114,7 +118,9 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements i
 	public double getDemandedEnergy()
 	{
 		if( this.output )
+		{
 			return 0;
+		}
 
 		try
 		{
@@ -154,30 +160,42 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements i
 		}
 
 		if( outs.isEmpty() )
+		{
 			return amount;
+		}
 
 		LinkedList<PartP2PIC2Power> Options = new LinkedList<PartP2PIC2Power>();
 		for( PartP2PIC2Power o : outs )
 		{
 			if( o.OutputEnergyA <= 0.01 )
+			{
 				Options.add( o );
+			}
 		}
 
 		if( Options.isEmpty() )
 		{
 			for( PartP2PIC2Power o : outs )
+			{
 				if( o.OutputEnergyB <= 0.01 )
+				{
 					Options.add( o );
+				}
+			}
 		}
 
 		if( Options.isEmpty() )
 		{
 			for( PartP2PIC2Power o : outs )
+			{
 				Options.add( o );
+			}
 		}
 
 		if( Options.isEmpty() )
+		{
 			return amount;
+		}
 
 		PartP2PIC2Power x = Platform.pickRandom( Options );
 
@@ -209,7 +227,9 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements i
 	public double getOfferedEnergy()
 	{
 		if( this.output )
+		{
 			return this.OutputEnergyA;
+		}
 		return 0;
 	}
 
@@ -231,7 +251,9 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements i
 	public int getSourceTier()
 	{
 		if( this.output )
+		{
 			return this.calculateTierFromVoltage( this.OutputVoltageA );
+		}
 		return 4;
 	}
 

@@ -50,7 +50,9 @@ public final class ColoredItemDefinition implements AEColoredItemDefinition
 		ItemStackSrc is = this.colors[color.ordinal()];
 
 		if( is == null )
+		{
 			return null;
+		}
 
 		return is.item;
 	}
@@ -67,7 +69,9 @@ public final class ColoredItemDefinition implements AEColoredItemDefinition
 		ItemStackSrc is = this.colors[color.ordinal()];
 
 		if( is == null )
+		{
 			return null;
+		}
 
 		return is.stack( stackSize );
 	}
@@ -77,7 +81,9 @@ public final class ColoredItemDefinition implements AEColoredItemDefinition
 	{
 		ItemStack[] is = new ItemStack[this.colors.length];
 		for( int x = 0; x < is.length; x++ )
+		{
 			is[x] = this.colors[x].stack( 1 );
+		}
 		return is;
 	}
 
@@ -87,7 +93,9 @@ public final class ColoredItemDefinition implements AEColoredItemDefinition
 		ItemStackSrc is = this.colors[color.ordinal()];
 
 		if( comparableItem == null || is == null )
+		{
 			return false;
+		}
 
 		return comparableItem.getItem() == is.item && comparableItem.getItemDamage() == is.damage;
 	}

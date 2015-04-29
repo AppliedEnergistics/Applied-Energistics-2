@@ -69,7 +69,9 @@ public class TileGrinder extends AEBaseInvTile implements ICrankable
 	public boolean canInsertItem( int slotIndex, ItemStack insertingItem, int side )
 	{
 		if( AEApi.instance().registries().grinder().getRecipeForInput( insertingItem ) == null )
+		{
 			return false;
+		}
 
 		return slotIndex >= 0 && slotIndex <= 2;
 	}
@@ -90,7 +92,9 @@ public class TileGrinder extends AEBaseInvTile implements ICrankable
 	public boolean canTurn()
 	{
 		if( Platform.isClient() )
+		{
 			return false;
+		}
 
 		if( null == this.getStackInSlot( 6 ) ) // Add if there isn't one...
 		{
@@ -99,7 +103,9 @@ public class TileGrinder extends AEBaseInvTile implements ICrankable
 			{
 				ItemStack item = src.getStackInSlot( x );
 				if( item == null )
+				{
 					continue;
+				}
 
 				IGrinderEntry r = AEApi.instance().registries().grinder().getRecipeForInput( item );
 				if( r != null )
@@ -111,7 +117,9 @@ public class TileGrinder extends AEBaseInvTile implements ICrankable
 						ais.stackSize = r.getInput().stackSize;
 
 						if( item.stackSize <= 0 )
+						{
 							item = null;
+						}
 
 						src.setInventorySlotContents( x, item );
 						this.setInventorySlotContents( 6, ais );
@@ -128,7 +136,9 @@ public class TileGrinder extends AEBaseInvTile implements ICrankable
 	public void applyTurn()
 	{
 		if( Platform.isClient() )
+		{
 			return;
+		}
 
 		this.points++;
 
@@ -137,7 +147,9 @@ public class TileGrinder extends AEBaseInvTile implements ICrankable
 		if( r != null )
 		{
 			if( r.getEnergyCost() > this.points )
+			{
 				return;
+			}
 
 			this.points = 0;
 			InventoryAdaptor sia = InventoryAdaptor.getAdaptor( new WrapperInventoryRange( this, 3, 3, true ), ForgeDirection.EAST );
@@ -146,11 +158,15 @@ public class TileGrinder extends AEBaseInvTile implements ICrankable
 
 			float chance = ( Platform.getRandomInt() % 2000 ) / 2000.0f;
 			if( chance <= r.getOptionalChance() )
+			{
 				this.addItem( sia, r.getOptionalOutput() );
+			}
 
 			chance = ( Platform.getRandomInt() % 2000 ) / 2000.0f;
 			if( chance <= r.getSecondOptionalChance() )
+			{
 				this.addItem( sia, r.getSecondOptionalOutput() );
+			}
 
 			this.setInventorySlotContents( 6, null );
 		}
@@ -159,7 +175,9 @@ public class TileGrinder extends AEBaseInvTile implements ICrankable
 	private void addItem( InventoryAdaptor sia, ItemStack output )
 	{
 		if( output == null )
+		{
 			return;
+		}
 
 		ItemStack notAdded = sia.addItems( output );
 		if( notAdded != null )

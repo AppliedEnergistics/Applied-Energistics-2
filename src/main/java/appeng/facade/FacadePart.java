@@ -70,7 +70,9 @@ public class FacadePart implements IFacadePart, IBoxProvider
 	public FacadePart( ItemStack facade, ForgeDirection side )
 	{
 		if( facade == null )
+		{
 			throw new IllegalArgumentException( "Facade Part constructed on null item." );
+		}
 		this.facade = facade.copy();
 		this.facade.stackSize = 1;
 		this.side = side;
@@ -136,14 +138,20 @@ public class FacadePart implements IFacadePart, IBoxProvider
 					}
 
 					if( myIcon == null )
+					{
 						myIcon = this.facade.getIconIndex();
+					}
 
 					instance.setTexture( myIcon );
 
 					if( this.isBC() )
+					{
 						instance.setBounds( 6, 6, 10, 10, 10, 15 );
+					}
 					else
+					{
 						instance.setBounds( 7, 7, 10, 9, 9, 15 );
+					}
 
 					instance.renderBlock( x, y, z, renderer );
 					instance.setTexture( null );
@@ -159,7 +167,9 @@ public class FacadePart implements IFacadePart, IBoxProvider
 						if( AEApi.instance().partHelper().getCableRenderMode().transparentFacades )
 						{
 							if( rbw != null )
+							{
 								rbw.opacity = 0.3f;
+							}
 							instance.renderForPass( 1 );
 						}
 						else
@@ -192,7 +202,9 @@ public class FacadePart implements IFacadePart, IBoxProvider
 							rbw.faces = EnumSet.noneOf( ForgeDirection.class );
 
 							if( this.prevLight != null && rbw.similarLighting( blk, rbw.blockAccess, x, y, z, this.prevLight ) )
+							{
 								rbw.populate( this.prevLight );
+							}
 							else
 							{
 								instance.setRenderColor( color );
@@ -368,28 +380,36 @@ public class FacadePart implements IFacadePart, IBoxProvider
 		{
 			IFacadePart fp = fc.getFacade( ForgeDirection.UP );
 			if( fp != null && ( fp.isTransparent() == facade.isTransparent() ) )
+			{
 				out.remove( ForgeDirection.UP );
+			}
 		}
 
 		if( out.contains( ForgeDirection.DOWN ) && ( side.offsetX != 0 || side.offsetZ != 0 ) )
 		{
 			IFacadePart fp = fc.getFacade( ForgeDirection.DOWN );
 			if( fp != null && ( fp.isTransparent() == facade.isTransparent() ) )
+			{
 				out.remove( ForgeDirection.DOWN );
+			}
 		}
 
 		if( out.contains( ForgeDirection.SOUTH ) && ( side.offsetX != 0 ) )
 		{
 			IFacadePart fp = fc.getFacade( ForgeDirection.SOUTH );
 			if( fp != null && ( fp.isTransparent() == facade.isTransparent() ) )
+			{
 				out.remove( ForgeDirection.SOUTH );
+			}
 		}
 
 		if( out.contains( ForgeDirection.NORTH ) && ( side.offsetX != 0 ) )
 		{
 			IFacadePart fp = fc.getFacade( ForgeDirection.NORTH );
 			if( fp != null && ( fp.isTransparent() == facade.isTransparent() ) )
+			{
 				out.remove( ForgeDirection.NORTH );
+			}
 		}
 
 		/*
@@ -535,7 +555,9 @@ public class FacadePart implements IFacadePart, IBoxProvider
 	{
 		ItemStack is = this.getTexture();
 		if( is == null )
+		{
 			return null;
+		}
 		return is.getItem();
 	}
 
@@ -544,7 +566,9 @@ public class FacadePart implements IFacadePart, IBoxProvider
 	{
 		ItemStack is = this.getTexture();
 		if( is == null )
+		{
 			return 0;
+		}
 		return is.getItemDamage();
 	}
 
@@ -564,7 +588,9 @@ public class FacadePart implements IFacadePart, IBoxProvider
 	public boolean isTransparent()
 	{
 		if( AEApi.instance().partHelper().getCableRenderMode().transparentFacades )
+		{
 			return true;
+		}
 
 		ItemStack is = this.getTexture();
 		Block blk = Block.getBlockFromItem( is.getItem() );

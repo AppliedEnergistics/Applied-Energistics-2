@@ -61,14 +61,18 @@ public class PartP2PRedstone extends PartP2PTunnel<PartP2PRedstone>
 		{
 			PartP2PRedstone in = this.getInput();
 			if( in != null )
+			{
 				this.putInput( in.power );
+			}
 		}
 	}
 
 	protected void putInput( Object o )
 	{
 		if( this.recursive )
+		{
 			return;
+		}
 
 		this.recursive = true;
 		if( this.output && this.proxy.isActive() )
@@ -160,13 +164,17 @@ public class PartP2PRedstone extends PartP2PTunnel<PartP2PRedstone>
 			{
 				int srcSide = this.side.ordinal();
 				if( b instanceof BlockRedstoneWire )
+				{
 					srcSide = 1;
+				}
 				this.power = b.isProvidingStrongPower( this.tile.getWorldObj(), x, y, z, srcSide );
 				this.power = Math.max( this.power, b.isProvidingWeakPower( this.tile.getWorldObj(), x, y, z, srcSide ) );
 				this.sendToOutput( this.power );
 			}
 			else
+			{
 				this.sendToOutput( 0 );
+			}
 		}
 	}
 

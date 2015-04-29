@@ -80,7 +80,9 @@ public class MEMonitorHandler<StackType extends IAEStack> implements IMEMonitor<
 	public StackType injectItems( StackType input, Actionable mode, BaseActionSource src )
 	{
 		if( mode == Actionable.SIMULATE )
+		{
 			return this.getHandler().injectItems( input, mode, src );
+		}
 		return this.monitorDifference( input.copy(), this.getHandler().injectItems( input, mode, src ), false, src );
 	}
 
@@ -94,12 +96,18 @@ public class MEMonitorHandler<StackType extends IAEStack> implements IMEMonitor<
 		StackType diff = (StackType) original.copy();
 
 		if( extraction )
+		{
 			diff.setStackSize( leftOvers == null ? 0 : -leftOvers.getStackSize() );
+		}
 		else if( leftOvers != null )
+		{
 			diff.decStackSize( leftOvers.getStackSize() );
+		}
 
 		if( diff.getStackSize() != 0 )
+		{
 			this.postChangesToListeners( ImmutableList.of( diff ), src );
+		}
 
 		return leftOvers;
 	}
@@ -118,9 +126,13 @@ public class MEMonitorHandler<StackType extends IAEStack> implements IMEMonitor<
 			Entry<IMEMonitorHandlerReceiver<StackType>, Object> o = i.next();
 			IMEMonitorHandlerReceiver<StackType> receiver = o.getKey();
 			if( receiver.isValid( o.getValue() ) )
+			{
 				receiver.postChange( this, diff, src );
+			}
 			else
+			{
 				i.remove();
+			}
 		}
 	}
 
@@ -133,7 +145,9 @@ public class MEMonitorHandler<StackType extends IAEStack> implements IMEMonitor<
 	public StackType extractItems( StackType request, Actionable mode, BaseActionSource src )
 	{
 		if( mode == Actionable.SIMULATE )
+		{
 			return this.getHandler().extractItems( request, mode, src );
+		}
 		return this.monitorDifference( request.copy(), this.getHandler().extractItems( request, mode, src ), true, src );
 	}
 

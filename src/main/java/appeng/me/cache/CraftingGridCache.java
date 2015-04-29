@@ -544,13 +544,17 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 					{
 						int comparison = ItemSorters.compareLong( nextCluster.getCoProcessors(), firstCluster.getCoProcessors() );
 						if( comparison != 0 )
+						{
 							return comparison;
+						}
 						return ItemSorters.compareLong( nextCluster.getAvailableStorage(), firstCluster.getAvailableStorage() );
 					}
 
 					int comparison = ItemSorters.compareLong( firstCluster.getCoProcessors(), nextCluster.getCoProcessors() );
 					if( comparison != 0 )
+					{
 						return comparison;
+					}
 					return ItemSorters.compareLong( firstCluster.getAvailableStorage(), nextCluster.getAvailableStorage() );
 				}
 			} );

@@ -38,7 +38,9 @@ public class LayerIFluidHandler extends LayerBase implements IFluidHandler
 	{
 		IPart part = this.getPart( from );
 		if( part instanceof IFluidHandler )
+		{
 			return ( (IFluidHandler) part ).fill( from, resource, doFill );
+		}
 		return 0;
 	}
 
@@ -47,7 +49,9 @@ public class LayerIFluidHandler extends LayerBase implements IFluidHandler
 	{
 		IPart part = this.getPart( from );
 		if( part instanceof IFluidHandler )
+		{
 			return ( (IFluidHandler) part ).drain( from, resource, doDrain );
+		}
 		return null;
 	}
 
@@ -56,7 +60,9 @@ public class LayerIFluidHandler extends LayerBase implements IFluidHandler
 	{
 		IPart part = this.getPart( from );
 		if( part instanceof IFluidHandler )
+		{
 			return ( (IFluidHandler) part ).drain( from, maxDrain, doDrain );
+		}
 		return null;
 	}
 
@@ -65,7 +71,9 @@ public class LayerIFluidHandler extends LayerBase implements IFluidHandler
 	{
 		IPart part = this.getPart( from );
 		if( part instanceof IFluidHandler )
+		{
 			return ( (IFluidHandler) part ).canFill( from, fluid );
+		}
 		return false;
 	}
 
@@ -74,7 +82,9 @@ public class LayerIFluidHandler extends LayerBase implements IFluidHandler
 	{
 		IPart part = this.getPart( from );
 		if( part instanceof IFluidHandler )
+		{
 			return ( (IFluidHandler) part ).canDrain( from, fluid );
+		}
 		return false;
 	}
 
@@ -83,7 +93,9 @@ public class LayerIFluidHandler extends LayerBase implements IFluidHandler
 	{
 		IPart part = this.getPart( from );
 		if( part instanceof IFluidHandler )
+		{
 			return ( (IFluidHandler) part ).getTankInfo( from );
+		}
 		return EMPTY_LIST;
 	}
 }

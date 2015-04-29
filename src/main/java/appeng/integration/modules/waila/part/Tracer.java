@@ -79,7 +79,9 @@ public final class Tracer
 		{
 			v.yCoord += player.getEyeHeight();
 			if( player instanceof EntityPlayerMP && player.isSneaking() )
+			{
 				v.yCoord -= 0.08;
+			}
 		}
 		return v;
 	}

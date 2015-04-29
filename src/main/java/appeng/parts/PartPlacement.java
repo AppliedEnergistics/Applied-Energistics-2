@@ -76,21 +76,27 @@ public class PartPlacement
 	public static boolean place( ItemStack held, int x, int y, int z, int face, EntityPlayer player, World world, PlaceType pass, int depth )
 	{
 		if( depth > 3 )
+		{
 			return false;
+		}
 
 		ForgeDirection side = ForgeDirection.getOrientation( face );
 
 		if( held != null && Platform.isWrench( player, held, x, y, z ) && player.isSneaking() )
 		{
 			if( !Platform.hasPermissions( new DimensionalCoord( world, x, y, z ), player ) )
+			{
 				return false;
+			}
 
 			Block block = world.getBlock( x, y, z );
 			TileEntity tile = world.getTileEntity( x, y, z );
 			IPartHost host = null;
 
 			if( tile instanceof IPartHost )
+			{
 				host = (IPartHost) tile;
+			}
 
 			if( host != null )
 			{
@@ -118,7 +124,9 @@ public class PartPlacement
 						}
 
 						if( host.isEmpty() )
+						{
 							host.cleanup();
+						}
 
 						if( !is.isEmpty() )
 						{
@@ -141,7 +149,9 @@ public class PartPlacement
 		IPartHost host = null;
 
 		if( tile instanceof IPartHost )
+		{
 			host = (IPartHost) tile;
+		}
 
 		if( held != null )
 		{
@@ -153,7 +163,9 @@ public class PartPlacement
 					if( !world.isRemote )
 					{
 						if( host.getPart( ForgeDirection.UNKNOWN ) == null )
+						{
 							return false;
+						}
 
 						if( host.canAddPart( held, side ) )
 						{
@@ -185,10 +197,14 @@ public class PartPlacement
 		}
 
 		if( host == null && tile != null && AppEng.instance.isIntegrationEnabled( IntegrationType.FMP ) )
+		{
 			host = ( (IFMP) AppEng.instance.getIntegration( IntegrationType.FMP ) ).getOrCreateHost( tile );
+		}
 
 		if( host == null && tile != null && AppEng.instance.isIntegrationEnabled( IntegrationType.ImmibisMicroblocks ) )
+		{
 			host = ( (IImmibisMicroblocks) AppEng.instance.getIntegration( IntegrationType.ImmibisMicroblocks ) ).getOrCreateHost( player, face, tile );
+		}
 
 		// if ( held == null )
 		{
@@ -202,6 +218,7 @@ public class PartPlacement
 					mop.hitVec = mop.hitVec.addVector( -mop.blockX, -mop.blockY, -mop.blockZ );
 					SelectedPart sPart = selectPart( player, host, mop.hitVec );
 					if( sPart != null && sPart.part != null )
+					{
 						if( sPart.part.onShiftActivate( player, mop.hitVec ) )
 						{
 							if( world.isRemote )
@@ -210,12 +227,15 @@ public class PartPlacement
 							}
 							return true;
 						}
+					}
 				}
 			}
 		}
 
 		if( held == null || !( held.getItem() instanceof IPartItem ) )
+		{
 			return false;
+		}
 
 		int te_x = x;
 		int te_y = y;
@@ -231,7 +251,9 @@ public class PartPlacement
 			{
 				offset = side;
 				if( Platform.isServer() )
+				{
 					side = side.getOpposite();
+				}
 			}
 
 			te_x = x + offset.offsetX;
@@ -240,13 +262,19 @@ public class PartPlacement
 
 			tile = world.getTileEntity( te_x, te_y, te_z );
 			if( tile instanceof IPartHost )
+			{
 				host = (IPartHost) tile;
+			}
 
 			if( host == null && tile != null && AppEng.instance.isIntegrationEnabled( IntegrationType.FMP ) )
+			{
 				host = ( (IFMP) AppEng.instance.getIntegration( IntegrationType.FMP ) ).getOrCreateHost( tile );
+			}
 
 			if( host == null && tile != null && AppEng.instance.isIntegrationEnabled( IntegrationType.ImmibisMicroblocks ) )
+			{
 				host = ( (IImmibisMicroblocks) AppEng.instance.getIntegration( IntegrationType.ImmibisMicroblocks ) ).getOrCreateHost( player, face, tile );
+			}
 
 			final Optional<ItemStack> maybeMultiPartStack = multiPart.maybeStack( 1 );
 			final Optional<Block> maybeMultiPartBlock = multiPart.maybeBlock();
@@ -263,7 +291,9 @@ public class PartPlacement
 					tile = world.getTileEntity( te_x, te_y, te_z );
 
 					if( tile instanceof IPartHost )
+					{
 						host = (IPartHost) tile;
+					}
 
 					pass = PlaceType.INTERACT_SECOND_PASS;
 				}
@@ -281,7 +311,9 @@ public class PartPlacement
 		}
 
 		if( host == null )
+		{
 			return false;
+		}
 
 		if( !host.canAddPart( held, side ) )
 		{
@@ -295,10 +327,14 @@ public class PartPlacement
 				tile = world.getTileEntity( te_x, te_y, te_z );
 
 				if( tile != null && AppEng.instance.isIntegrationEnabled( IntegrationType.FMP ) )
+				{
 					host = ( (IFMP) AppEng.instance.getIntegration( IntegrationType.FMP ) ).getOrCreateHost( tile );
+				}
 
 				if( ( blkID == null || blkID.isReplaceable( world, te_x, te_y, te_z ) || host != null ) && side != ForgeDirection.UNKNOWN )
+				{
 					return place( held, te_x, te_y, te_z, side.getOpposite().ordinal(), player, world, pass == PlaceType.INTERACT_FIRST_PASS ? PlaceType.INTERACT_SECOND_PASS : PlaceType.PLACE_ITEM, depth + 1 );
+				}
 			}
 			return false;
 		}
@@ -315,13 +351,17 @@ public class PartPlacement
 				if( sp.part != null )
 				{
 					if( !player.isSneaking() && sp.part.onActivate( player, mop.hitVec ) )
+					{
 						return false;
+					}
 				}
 			}
 
 			DimensionalCoord dc = host.getLocation();
 			if( !Platform.hasPermissions( dc, player ) )
+			{
 				return false;
+			}
 
 			ForgeDirection mySide = host.addPart( held, side, player );
 			if( mySide != null )
@@ -355,7 +395,9 @@ public class PartPlacement
 	private static float getEyeOffset( EntityPlayer p )
 	{
 		if( p.worldObj.isRemote )
+		{
 			return Platform.getEyeOffset( p );
+		}
 
 		return eyeHeight;
 	}
@@ -372,13 +414,17 @@ public class PartPlacement
 	public static IFacadePart isFacade( ItemStack held, ForgeDirection side )
 	{
 		if( held.getItem() instanceof IFacadeItem )
+		{
 			return ( (IFacadeItem) held.getItem() ).createPartFromItemStack( held, side );
+		}
 
 		if( AppEng.instance.isIntegrationEnabled( IntegrationType.BC ) )
 		{
 			IBC bc = (IBC) AppEng.instance.getIntegration( IntegrationType.BC );
 			if( bc.isFacade( held ) )
+			{
 				return bc.createFacadePart( held, side );
+			}
 		}
 
 		return null;
@@ -408,7 +454,9 @@ public class PartPlacement
 				World w = event.entity.worldObj;
 				TileEntity te = w.getTileEntity( mop.blockX, mop.blockY, mop.blockZ );
 				if( te instanceof IPartHost && this.wasCanceled )
+				{
 					event.setCanceled( true );
+				}
 			}
 			else
 			{
@@ -427,7 +475,9 @@ public class PartPlacement
 		else if( event.action == Action.RIGHT_CLICK_BLOCK && event.entityPlayer.worldObj.isRemote )
 		{
 			if( this.placing.get() != null )
+			{
 				return;
+			}
 
 			this.placing.set( event );
 

@@ -97,7 +97,9 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
 				{
 					this.sg = this.targetGrid.getCache( IStorageGrid.class );
 					if( this.sg != null )
+					{
 						this.itemStorage = this.sg.getItemInventory();
+					}
 				}
 			}
 		}
@@ -112,7 +114,9 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
 	public IMEMonitor<IAEItemStack> getItemInventory()
 	{
 		if( this.sg == null )
+		{
 			return null;
+		}
 		return this.sg.getItemInventory();
 	}
 
@@ -120,7 +124,9 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
 	public IMEMonitor<IAEFluidStack> getFluidInventory()
 	{
 		if( this.sg == null )
+		{
 			return null;
+		}
 		return this.sg.getFluidInventory();
 	}
 
@@ -128,21 +134,27 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
 	public void addListener( IMEMonitorHandlerReceiver<IAEItemStack> l, Object verificationToken )
 	{
 		if( this.itemStorage != null )
+		{
 			this.itemStorage.addListener( l, verificationToken );
+		}
 	}
 
 	@Override
 	public void removeListener( IMEMonitorHandlerReceiver<IAEItemStack> l )
 	{
 		if( this.itemStorage != null )
+		{
 			this.itemStorage.removeListener( l );
+		}
 	}
 
 	@Override
 	public IItemList<IAEItemStack> getAvailableItems( IItemList out )
 	{
 		if( this.itemStorage != null )
+		{
 			return this.itemStorage.getAvailableItems( out );
+		}
 		return out;
 	}
 
@@ -150,7 +162,9 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
 	public IItemList<IAEItemStack> getStorageList()
 	{
 		if( this.itemStorage != null )
+		{
 			return this.itemStorage.getStorageList();
+		}
 		return null;
 	}
 
@@ -158,7 +172,9 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
 	public AccessRestriction getAccess()
 	{
 		if( this.itemStorage != null )
+		{
 			return this.itemStorage.getAccess();
+		}
 		return AccessRestriction.NO_ACCESS;
 	}
 
@@ -166,7 +182,9 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
 	public boolean isPrioritized( IAEItemStack input )
 	{
 		if( this.itemStorage != null )
+		{
 			return this.itemStorage.isPrioritized( input );
+		}
 		return false;
 	}
 
@@ -174,7 +192,9 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
 	public boolean canAccept( IAEItemStack input )
 	{
 		if( this.itemStorage != null )
+		{
 			return this.itemStorage.canAccept( input );
+		}
 		return false;
 	}
 
@@ -182,7 +202,9 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
 	public int getPriority()
 	{
 		if( this.itemStorage != null )
+		{
 			return this.itemStorage.getPriority();
+		}
 		return 0;
 	}
 
@@ -190,7 +212,9 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
 	public int getSlot()
 	{
 		if( this.itemStorage != null )
+		{
 			return this.itemStorage.getSlot();
+		}
 		return 0;
 	}
 
@@ -204,7 +228,9 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
 	public IAEItemStack injectItems( IAEItemStack input, Actionable type, BaseActionSource src )
 	{
 		if( this.itemStorage != null )
+		{
 			return this.itemStorage.injectItems( input, type, src );
+		}
 		return input;
 	}
 
@@ -212,7 +238,9 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
 	public IAEItemStack extractItems( IAEItemStack request, Actionable mode, BaseActionSource src )
 	{
 		if( this.itemStorage != null )
+		{
 			return this.itemStorage.extractItems( request, mode, src );
+		}
 		return null;
 	}
 
@@ -220,7 +248,9 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
 	public StorageChannel getChannel()
 	{
 		if( this.itemStorage != null )
+		{
 			return this.itemStorage.getChannel();
+		}
 		return StorageChannel.ITEMS;
 	}
 
@@ -273,7 +303,9 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
 	{
 		this.rangeCheck();
 		if( this.myWap != null )
+		{
 			return this.myWap.getActionableNode();
+		}
 		return null;
 	}
 
@@ -288,7 +320,9 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
 				if( this.myWap.getGrid() == this.targetGrid )
 				{
 					if( this.testWap( this.myWap ) )
+					{
 						return true;
+					}
 				}
 				return false;
 			}
@@ -301,7 +335,9 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
 			{
 				IWirelessAccessPoint wap = (IWirelessAccessPoint) n.getMachine();
 				if( this.testWap( wap ) )
+				{
 					this.myWap = wap;
+				}
 			}
 
 			return this.myWap != null;

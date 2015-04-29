@@ -73,13 +73,17 @@ public class RenderBlockPaint extends BaseBlockRender
 			for( ForgeDirection side : ForgeDirection.VALID_DIRECTIONS )
 			{
 				if( tp.isSideValid( side ) )
+				{
 					validSides.add( side );
+				}
 			}
 
 			for( Splotch s : tp.getDots() )
 			{
 				if( !validSides.contains( s.side ) )
+				{
 					continue;
+				}
 
 				if( s.lumen )
 				{

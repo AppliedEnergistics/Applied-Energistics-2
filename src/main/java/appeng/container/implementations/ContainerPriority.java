@@ -82,7 +82,9 @@ public class ContainerPriority extends AEBaseContainer
 		if( field.equals( "PriorityValue" ) )
 		{
 			if( this.textField != null )
+			{
 				this.textField.setText( String.valueOf( this.PriorityValue ) );
+			}
 		}
 
 		super.onUpdate( field, oldValue, newValue );

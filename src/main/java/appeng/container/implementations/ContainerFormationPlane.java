@@ -67,9 +67,13 @@ public class ContainerFormationPlane extends ContainerUpgradeable
 			for( int x = 0; x < 9; x++ )
 			{
 				if( y < 2 )
+				{
 					this.addSlotToContainer( new SlotFakeTypeOnly( config, y * 9 + x, xo + x * 18, yo + y * 18 ) );
+				}
 				else
+				{
 					this.addSlotToContainer( new OptionalSlotFakeTypeOnly( config, this, y * 9 + x, xo, yo, x, y, y - 2 ) );
+				}
 			}
 		}
 

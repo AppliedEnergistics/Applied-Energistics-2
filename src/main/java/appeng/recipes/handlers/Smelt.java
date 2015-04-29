@@ -61,10 +61,14 @@ public class Smelt implements ICraftHandler, IWebsiteSerializer
 	public void register() throws RegistrationError, MissingIngredientError
 	{
 		if( this.in.getItemStack().getItem() == null )
+		{
 			throw new RegistrationError( this.in.toString() + ": Smelting Input is not a valid item." );
+		}
 
 		if( this.out.getItemStack().getItem() == null )
+		{
 			throw new RegistrationError( this.out.toString() + ": Smelting Output is not a valid item." );
+		}
 
 		GameRegistry.addSmelting( this.in.getItemStack(), this.out.getItemStack(), 0 );
 	}

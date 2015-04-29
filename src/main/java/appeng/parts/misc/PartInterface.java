@@ -203,10 +203,14 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISto
 	public boolean onPartActivate( EntityPlayer p, Vec3 pos )
 	{
 		if( p.isSneaking() )
+		{
 			return false;
+		}
 
 		if( Platform.isServer() )
+		{
 			Platform.openGUI( p, this.getTileEntity(), this.side, GuiBridge.GUI_INTERFACE );
+		}
 
 		return true;
 	}

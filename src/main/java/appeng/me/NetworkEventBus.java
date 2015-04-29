@@ -42,7 +42,9 @@ public class NetworkEventBus
 	public void readClass( Class listAs, Class c )
 	{
 		if( READ_CLASSES.contains( c ) )
+		{
 			return;
+		}
 		READ_CLASSES.add( c );
 
 		try
@@ -60,21 +62,29 @@ public class NetworkEventBus
 
 							Map<Class, MENetworkEventInfo> classEvents = EVENTS.get( types[0] );
 							if( classEvents == null )
+							{
 								EVENTS.put( types[0], classEvents = new HashMap<Class, MENetworkEventInfo>() );
+							}
 
 							MENetworkEventInfo thisEvent = classEvents.get( listAs );
 							if( thisEvent == null )
+							{
 								thisEvent = new MENetworkEventInfo();
+							}
 
 							thisEvent.Add( types[0], c, m );
 
 							classEvents.put( listAs, thisEvent );
 						}
 						else
+						{
 							throw new IllegalStateException( "Invalid ME Network Event Subscriber, " + m.getName() + "s Parameter must extend MENetworkEvent." );
+						}
 					}
 					else
+					{
 						throw new IllegalStateException( "Invalid ME Network Event Subscriber, " + m.getName() + " must have exactly 1 parameter." );
+					}
 				}
 			}
 		}
@@ -183,7 +193,9 @@ public class NetworkEventBus
 			}
 
 			if( e.isCanceled() )
+			{
 				throw new NetworkEventDone();
+			}
 		}
 	}
 
@@ -201,7 +213,9 @@ public class NetworkEventBus
 		public void invoke( Object obj, MENetworkEvent e ) throws NetworkEventDone
 		{
 			for( EventMethod em : this.methods )
+			{
 				em.invoke( obj, e );
+			}
 		}
 	}
 }

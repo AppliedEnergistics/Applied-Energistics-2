@@ -100,7 +100,9 @@ public class ToolBiometricCardRender implements IItemRenderer
 		{
 			GameProfile gp = ( (IBiometricCard) item.getItem() ).getProfile( item );
 			if( gp != null )
+			{
 				username = gp.getName();
+			}
 		}
 		int hash = username.length() > 0 ? username.hashCode() : 0;
 
@@ -113,7 +115,9 @@ public class ToolBiometricCardRender implements IItemRenderer
 
 		AEColor col = AEColor.values()[Math.abs( 3 + hash ) % AEColor.values().length];
 		if( hash == 0 )
+		{
 			col = AEColor.Black;
+		}
 
 		for( int x = 0; x < 8; x++ )// 8
 		{
@@ -123,14 +127,22 @@ public class ToolBiometricCardRender implements IItemRenderer
 				float scale = 0.3f / 255.0f;
 
 				if( x == 0 || y == 0 || x == 7 || y == 5 )
+				{
 					isLit = false;
+				}
 				else
+				{
 					isLit = ( hash & ( 1 << x ) ) != 0 || ( hash & ( 1 << y ) ) != 0;
+				}
 
 				if( isLit )
+				{
 					tessellator.setColorOpaque_I( col.mediumVariant );
+				}
 				else
+				{
 					tessellator.setColorOpaque_F( ( ( col.blackVariant >> 16 ) & 0xff ) * scale, ( ( col.blackVariant >> 8 ) & 0xff ) * scale, ( col.blackVariant & 0xff ) * scale );
+				}
 
 				tessellator.addVertexWithUV( x, y, z, u, v );
 				tessellator.addVertexWithUV( x + 1, y, z, u, v );

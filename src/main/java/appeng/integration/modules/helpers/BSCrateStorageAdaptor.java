@@ -99,9 +99,13 @@ public class BSCrateStorageAdaptor extends InventoryAdaptor
 		{
 			int cnt = this.cs.getItemCount( target );
 			if( cnt == 0 )
+			{
 				return null;
+			}
 			if( cnt > amount )
+			{
 				cnt = amount;
+			}
 			ItemStack c = target.copy();
 			c.stackSize = cnt;
 			return c;
@@ -164,9 +168,13 @@ public class BSCrateStorageAdaptor extends InventoryAdaptor
 		{
 			int cnt = this.cs.getItemCount( target );
 			if( cnt == 0 )
+			{
 				return null;
+			}
 			if( cnt > amount )
+			{
 				cnt = amount;
+			}
 			ItemStack c = target.copy();
 			c.stackSize = cnt;
 			return c;
@@ -187,7 +195,9 @@ public class BSCrateStorageAdaptor extends InventoryAdaptor
 		int items = this.cs.getSpaceForItem( toBeSimulated );
 		ItemStack B = Platform.cloneItemStack( toBeSimulated );
 		if( toBeSimulated.stackSize <= items )
+		{
 			return null;
+		}
 		B.stackSize -= items;
 		return B;
 	}

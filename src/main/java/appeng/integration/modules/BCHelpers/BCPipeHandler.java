@@ -42,7 +42,9 @@ public class BCPipeHandler implements IExternalStorageHandler
 	public IMEInventory getInventory( TileEntity te, ForgeDirection d, StorageChannel chan, BaseActionSource src )
 	{
 		if( chan == StorageChannel.ITEMS )
+		{
 			return new BCPipeInventory( te, d );
+		}
 		return null;
 	}
 }

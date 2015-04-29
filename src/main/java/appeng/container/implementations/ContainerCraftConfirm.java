@@ -98,14 +98,22 @@ public class ContainerCraftConfirm extends AEBaseContainer
 	public void cycleCpu( boolean next )
 	{
 		if( next )
+		{
 			this.selectedCpu++;
+		}
 		else
+		{
 			this.selectedCpu--;
+		}
 
 		if( this.selectedCpu < -1 )
+		{
 			this.selectedCpu = this.cpus.size() - 1;
+		}
 		else if( this.selectedCpu >= this.cpus.size() )
+		{
 			this.selectedCpu = -1;
+		}
 
 		if( this.selectedCpu == -1 )
 		{
@@ -125,7 +133,9 @@ public class ContainerCraftConfirm extends AEBaseContainer
 	public void detectAndSendChanges()
 	{
 		if( Platform.isClient() )
+		{
 			return;
+		}
 
 		ICraftingGrid cc = this.getGrid().getCache( ICraftingGrid.class );
 		ImmutableSet<ICraftingCPU> cpuSet = cc.getCpus();
@@ -136,16 +146,24 @@ public class ContainerCraftConfirm extends AEBaseContainer
 		{
 			boolean found = false;
 			for( CraftingCPURecord ccr : this.cpus )
+			{
 				if( ccr.cpu == c )
+				{
 					found = true;
+				}
+			}
 
 			boolean matched = this.cpuMatches( c );
 
 			if( matched )
+			{
 				matches++;
+			}
 
 			if( found == !matched )
+			{
 				changed = true;
+			}
 		}
 
 		if( changed || this.cpus.size() != matches )
@@ -154,7 +172,9 @@ public class ContainerCraftConfirm extends AEBaseContainer
 			for( ICraftingCPU c : cpuSet )
 			{
 				if( this.cpuMatches( c ) )
+				{
 					this.cpus.add( new CraftingCPURecord( c.getAvailableStorage(), c.getCoProcessors(), c ) );
+				}
 			}
 
 			this.sendCPUs();
@@ -180,7 +200,9 @@ public class ContainerCraftConfirm extends AEBaseContainer
 					}
 				}
 				else
+				{
 					this.simulation = true;
+				}
 
 				try
 				{
@@ -223,13 +245,19 @@ public class ContainerCraftConfirm extends AEBaseContainer
 						}
 
 						if( o.getStackSize() > 0 )
+						{
 							a.appendItem( o );
+						}
 
 						if( p.getStackSize() > 0 )
+						{
 							b.appendItem( p );
+						}
 
 						if( c != null && m != null && m.getStackSize() > 0 )
+						{
 							c.appendItem( m );
+						}
 					}
 
 					for( Object g : this.crafters )
@@ -239,7 +267,9 @@ public class ContainerCraftConfirm extends AEBaseContainer
 							NetworkHandler.instance.sendTo( a, (EntityPlayerMP) g );
 							NetworkHandler.instance.sendTo( b, (EntityPlayerMP) g );
 							if( c != null )
+							{
 								NetworkHandler.instance.sendTo( c, (EntityPlayerMP) g );
+							}
 						}
 					}
 				}
@@ -297,16 +327,24 @@ public class ContainerCraftConfirm extends AEBaseContainer
 
 		IActionHost ah = this.getActionHost();
 		if( ah instanceof WirelessTerminalGuiObject )
+		{
 			OriginalGui = GuiBridge.GUI_WIRELESS_TERM;
+		}
 
 		if( ah instanceof PartTerminal )
+		{
 			OriginalGui = GuiBridge.GUI_ME;
+		}
 
 		if( ah instanceof PartCraftingTerminal )
+		{
 			OriginalGui = GuiBridge.GUI_CRAFTING_TERMINAL;
+		}
 
 		if( ah instanceof PartPatternTerminal )
+		{
 			OriginalGui = GuiBridge.GUI_PATTERN_TERMINAL;
+		}
 
 		if( this.result != null && !this.simulation )
 		{

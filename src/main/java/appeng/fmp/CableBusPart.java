@@ -118,7 +118,9 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 		for( AxisAlignedBB bx : this.cb.getSelectedBoundingBoxesFromPool( false, true, null, true ) )
 		{
 			if( b == null )
+			{
 				b = bx;
+			}
 			else
 			{
 				double minX = Math.min( b.minX, bx.minX );
@@ -132,7 +134,9 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 		}
 
 		if( b == null )
+		{
 			return new Cuboid6( 0.0, 0.0, 0.0, 1.0, 1.0, 1.0 );
+		}
 
 		return new Cuboid6( b.minX, b.minY, b.minZ, b.maxX, b.maxY, b.maxZ );
 	}
@@ -251,9 +255,13 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 		if( sp != null )
 		{
 			if( sp.part != null )
+			{
 				return sp.part.getItemStack( PartItemStack.Break );
+			}
 			if( sp.facade != null )
+			{
 				return sp.facade.getItemStack();
+			}
 		}
 		return null;
 	}
@@ -372,7 +380,9 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 				IPart fPart = this.getPart( whichSide );
 
 				if( fPart != null )
+				{
 					fPart.getBoxes( bch );
+				}
 			}
 
 			AxisAlignedBB b = null;
@@ -383,7 +393,9 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 				if( bb.intersectsWith( pb ) )
 				{
 					if( b == null )
+					{
 						b = bb;
+					}
 					else
 					{
 						b.maxX = Math.max( b.maxX, bb.maxX );
@@ -397,7 +409,9 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 			}
 
 			if( b == null )
+			{
 				return 0;
+			}
 
 			switch( dir )
 			{
@@ -433,9 +447,13 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 		for( ForgeDirection side : ForgeDirection.values() )
 		{
 			if( this.getPart( side ) != null )
+			{
 				mask |= 1 << side.ordinal();
+			}
 			else if( side != ForgeDirection.UNKNOWN && this.getFacadeContainer().getFacade( side ) != null )
+			{
 				mask |= 1 << side.ordinal();
+			}
 		}
 
 		return mask;
@@ -520,7 +538,9 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 	public void markForUpdate()
 	{
 		if( Platform.isServer() && this.canUpdate )
+		{
 			this.sendDescUpdate();
+		}
 	}
 
 	@Override
@@ -554,7 +574,9 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 	public boolean isBlocked( ForgeDirection side )
 	{
 		if( side == null || side == ForgeDirection.UNKNOWN || this.tile() == null )
+		{
 			return false;
+		}
 
 		DISABLE_FACADE_OCCLUSION.set( true );
 		boolean blocked = !this.tile().canAddPart( new NormallyOccludedPart( SIDE_TESTS[side.ordinal()] ) );
@@ -575,14 +597,18 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 		// mark the chunk for save...
 		TileEntity te = this.tile();
 		if( te != null && te.getWorldObj() != null )
+		{
 			te.getWorldObj().getChunkFromBlockCoords( this.x(), this.z() ).isModified = true;
+		}
 	}
 
 	@Override
 	public void partChanged()
 	{
 		if( this.isInWorld() )
+		{
 			this.notifyNeighbors();
+		}
 	}
 
 	@Override
@@ -622,10 +648,14 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 	public void notifyNeighbors()
 	{
 		if( this.tile() instanceof TIInventoryTile )
+		{
 			( (TIInventoryTile) this.tile() ).rebuildSlotMap();
+		}
 
 		if( this.world() != null && this.world().blockExists( this.x(), this.y(), this.z() ) && !CableBusContainer.isLoading() )
+		{
 			Platform.notifyBlocksOfNeighbors( this.world(), this.x(), this.y(), this.z() );
+		}
 	}
 
 	@Override

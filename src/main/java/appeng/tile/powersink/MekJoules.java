@@ -55,7 +55,9 @@ public abstract class MekJoules extends RedstoneFlux implements IStrictEnergyAcc
 	{
 		double demand = this.getExternalPowerDemand( PowerUnits.MK, Double.MAX_VALUE );
 		if( amount > demand )
+		{
 			amount = demand;
+		}
 
 		double overflow = this.injectExternalPower( PowerUnits.MK, amount );
 		return amount - overflow;

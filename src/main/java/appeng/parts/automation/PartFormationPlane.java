@@ -113,13 +113,19 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 		{
 			IAEItemStack is = this.Config.getAEStackInSlot( x );
 			if( is != null )
+			{
 				priorityList.add( is );
+			}
 		}
 
 		if( this.getInstalledUpgrades( Upgrades.FUZZY ) > 0 )
+		{
 			this.myHandler.setPartitionList( new FuzzyPriorityList( priorityList, (FuzzyMode) this.getConfigManager().getSetting( Settings.FUZZY_MODE ) ) );
+		}
 		else
+		{
 			this.myHandler.setPartitionList( new PrecisePriorityList( priorityList ) );
+		}
 
 		try
 		{
@@ -150,7 +156,9 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 		super.onChangeInventory( inv, slot, mc, removedStack, newStack );
 
 		if( inv == this.Config )
+		{
 			this.updateHandler();
+		}
 	}
 
 	@Override
@@ -180,7 +188,9 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 	public IInventory getInventoryByName( String name )
 	{
 		if( name.equals( "config" ) )
+		{
 			return this.Config;
+		}
 
 		return super.getInventoryByName( name );
 	}
@@ -231,16 +241,24 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 			ForgeDirection u = bch.getWorldY();
 
 			if( this.isTransitionPlane( te.getWorldObj().getTileEntity( x - e.offsetX, y - e.offsetY, z - e.offsetZ ), this.side ) )
+			{
 				minX = 0;
+			}
 
 			if( this.isTransitionPlane( te.getWorldObj().getTileEntity( x + e.offsetX, y + e.offsetY, z + e.offsetZ ), this.side ) )
+			{
 				maxX = 16;
+			}
 
 			if( this.isTransitionPlane( te.getWorldObj().getTileEntity( x - u.offsetX, y - u.offsetY, z - u.offsetZ ), this.side ) )
+			{
 				minY = 0;
+			}
 
 			if( this.isTransitionPlane( te.getWorldObj().getTileEntity( x + u.offsetX, y + u.offsetY, z + u.offsetZ ), this.side ) )
+			{
 				maxY = 16;
+			}
 		}
 
 		bch.addBox( 5, 5, 14, 11, 11, 15 );
@@ -275,16 +293,24 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 		TileEntity te = this.getHost().getTile();
 
 		if( this.isTransitionPlane( te.getWorldObj().getTileEntity( x - e.offsetX, y - e.offsetY, z - e.offsetZ ), this.side ) )
+		{
 			minX = 0;
+		}
 
 		if( this.isTransitionPlane( te.getWorldObj().getTileEntity( x + e.offsetX, y + e.offsetY, z + e.offsetZ ), this.side ) )
+		{
 			maxX = 16;
+		}
 
 		if( this.isTransitionPlane( te.getWorldObj().getTileEntity( x - u.offsetX, y - u.offsetY, z - u.offsetZ ), this.side ) )
+		{
 			minY = 0;
+		}
 
 		if( this.isTransitionPlane( te.getWorldObj().getTileEntity( x + u.offsetX, y + u.offsetY, z + u.offsetZ ), this.side ) )
+		{
 			maxY = 16;
+		}
 
 		boolean isActive = ( this.clientFlags & ( this.POWERED_FLAG | this.CHANNEL_FLAG ) ) == ( this.POWERED_FLAG | this.CHANNEL_FLAG );
 
@@ -328,7 +354,9 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 		if( !player.isSneaking() )
 		{
 			if( Platform.isClient() )
+			{
 				return true;
+			}
 
 			Platform.openGUI( player, this.getHost().getTile(), this.side, GuiBridge.GUI_FORMATION_PLANE );
 			return true;
@@ -383,7 +411,9 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 	public IAEItemStack injectItems( IAEItemStack input, Actionable type, BaseActionSource src )
 	{
 		if( this.blocked || input == null || input.getStackSize() <= 0 )
+		{
 			return input;
+		}
 
 		YesNo placeBlock = (YesNo) this.getConfigManager().getSetting( Settings.PLACE_BLOCK );
 
@@ -413,9 +443,13 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 					Chunk c = w.getChunkFromBlockCoords( x, z );
 					int sum = 0;
 					for( List Z : c.entityLists )
+					{
 						sum += Z.size();
+					}
 					if( sum > 32 )
+					{
 						return input;
+					}
 				}
 				maxStorage = is.stackSize;
 				worked = true;
@@ -426,16 +460,24 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 						boolean Worked = false;
 
 						if( side.offsetX == 0 && side.offsetZ == 0 )
+						{
 							Worked = i.onItemUse( is, player, w, x + side.offsetX, y + side.offsetY, z + side.offsetZ, side.getOpposite().ordinal(), side.offsetX, side.offsetY, side.offsetZ );
+						}
 
 						if( !Worked && side.offsetX == 0 && side.offsetZ == 0 )
+						{
 							Worked = i.onItemUse( is, player, w, x - side.offsetX, y - side.offsetY, z - side.offsetZ, side.ordinal(), side.offsetX, side.offsetY, side.offsetZ );
+						}
 
 						if( !Worked && side.offsetY == 0 )
+						{
 							Worked = i.onItemUse( is, player, w, x, y - 1, z, ForgeDirection.UP.ordinal(), side.offsetX, side.offsetY, side.offsetZ );
+						}
 
 						if( !Worked )
+						{
 							i.onItemUse( is, player, w, x, y, z, side.getOpposite().ordinal(), side.offsetX, side.offsetY, side.offsetZ );
+						}
 
 						maxStorage -= is.stackSize;
 					}
@@ -446,7 +488,9 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 					}
 				}
 				else
+				{
 					maxStorage = 1;
+				}
 			}
 			else
 			{
@@ -454,7 +498,9 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 				Chunk c = w.getChunkFromBlockCoords( x, z );
 				int sum = 0;
 				for( List Z : c.entityLists )
+				{
 					sum += Z.size();
+				}
 
 				if( sum < AEConfig.instance.formationPlaneEntityLimit )
 				{
@@ -478,9 +524,13 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 						{
 							result = is.getItem().createEntity( w, ei, is );
 							if( result != null )
+							{
 								ei.setDead();
+							}
 							else
+							{
 								result = ei;
+							}
 						}
 
 						if( !w.spawnEntityInWorld( result ) )
@@ -491,7 +541,9 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 					}
 				}
 				else
+				{
 					worked = false;
+				}
 			}
 		}
 
@@ -502,7 +554,9 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 			IAEItemStack out = input.copy();
 			out.decStackSize( maxStorage );
 			if( out.getStackSize() == 0 )
+			{
 				return null;
+			}
 			return out;
 		}
 

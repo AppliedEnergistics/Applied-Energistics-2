@@ -60,7 +60,9 @@ public abstract class AEBaseInvTile extends AEBaseTile implements ISidedInventor
 			NBTTagCompound item = new NBTTagCompound();
 			ItemStack is = this.getStackInSlot( x );
 			if( is != null )
+			{
 				is.writeToNBT( item );
+			}
 			opt.setTag( "item" + x, item );
 		}
 		data.setTag( "inv", opt );

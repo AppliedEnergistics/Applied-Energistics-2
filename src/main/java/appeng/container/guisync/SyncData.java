@@ -60,9 +60,13 @@ public class SyncData
 		{
 			Object val = this.field.get( this.source );
 			if( val != null && this.clientVersion == null )
+			{
 				this.send( c, val );
+			}
 			else if( !val.equals( this.clientVersion ) )
+			{
 				this.send( c, val );
+			}
 		}
 		catch( IllegalArgumentException e )
 		{
@@ -83,7 +87,9 @@ public class SyncData
 		if( val instanceof String )
 		{
 			if( o instanceof EntityPlayerMP )
+			{
 				NetworkHandler.instance.sendTo( new PacketValueConfig( "SyncDat." + this.channel, (String) val ), (EntityPlayerMP) o );
+			}
 		}
 		else if( this.field.getType().isEnum() )
 		{
@@ -111,9 +117,13 @@ public class SyncData
 		{
 			Object oldValue = this.field.get( this.source );
 			if( val instanceof String )
+			{
 				this.updateString( oldValue, (String) val );
+			}
 			else
+			{
 				this.updateValue( oldValue, (Long) val );
+			}
 		}
 		catch( IllegalArgumentException e )
 		{
@@ -160,17 +170,29 @@ public class SyncData
 			else
 			{
 				if( this.field.getType().equals( int.class ) )
+				{
 					this.field.set( this.source, (int) val );
+				}
 				else if( this.field.getType().equals( long.class ) )
+				{
 					this.field.set( this.source, val );
+				}
 				else if( this.field.getType().equals( boolean.class ) )
+				{
 					this.field.set( this.source, val == 1 );
+				}
 				else if( this.field.getType().equals( Integer.class ) )
+				{
 					this.field.set( this.source, (int) val );
+				}
 				else if( this.field.getType().equals( Long.class ) )
+				{
 					this.field.set( this.source, val );
+				}
 				else if( this.field.getType().equals( Boolean.class ) )
+				{
 					this.field.set( this.source, val == 1 );
+				}
 			}
 
 			this.source.onUpdate( this.field.getName(), oldValue, this.field.get( this.source ) );

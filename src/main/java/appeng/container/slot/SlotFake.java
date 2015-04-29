@@ -56,7 +56,9 @@ public class SlotFake extends AppEngSlot
 	public void putStack( ItemStack is )
 	{
 		if( is != null )
+		{
 			is = is.copy();
+		}
 
 		super.putStack( is );
 	}

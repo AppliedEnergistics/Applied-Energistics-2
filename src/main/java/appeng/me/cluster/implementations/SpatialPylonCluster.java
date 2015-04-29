@@ -48,13 +48,21 @@ public class SpatialPylonCluster implements IAECluster
 		this.max = _max.copy();
 
 		if( this.min.x != this.max.x )
+		{
 			this.currentAxis = Axis.X;
+		}
 		else if( this.min.y != this.max.y )
+		{
 			this.currentAxis = Axis.Y;
+		}
 		else if( this.min.z != this.max.z )
+		{
 			this.currentAxis = Axis.Z;
+		}
 		else
+		{
 			this.currentAxis = Axis.UNFORMED;
+		}
 	}
 
 	@Override
@@ -71,7 +79,9 @@ public class SpatialPylonCluster implements IAECluster
 	{
 
 		if( this.isDestroyed )
+		{
 			return;
+		}
 		this.isDestroyed = true;
 
 		for( TileSpatialPylon r : this.line )

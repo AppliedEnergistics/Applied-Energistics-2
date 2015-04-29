@@ -67,14 +67,20 @@ public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorH
 		{
 			this.findNode( host, ForgeDirection.UNKNOWN );
 			for( ForgeDirection d : ForgeDirection.VALID_DIRECTIONS )
+			{
 				this.findNode( host, d );
+			}
 		}
 
 		if( te instanceof TileCraftingTile )
+		{
 			this.setCPU( (ICraftingCPU) ( (TileCraftingTile) te ).getCluster() );
+		}
 
 		if( this.network == null && Platform.isServer() )
+		{
 			this.isContainerValid = false;
+		}
 	}
 
 	private void findNode( IGridHost host, ForgeDirection d )
@@ -83,17 +89,23 @@ public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorH
 		{
 			IGridNode node = host.getGridNode( d );
 			if( node != null )
+			{
 				this.network = node.getGrid();
+			}
 		}
 	}
 
 	protected void setCPU( ICraftingCPU c )
 	{
 		if( c == this.monitor )
+		{
 			return;
+		}
 
 		if( this.monitor != null )
+		{
 			this.monitor.removeListener( this );
+		}
 
 		for( Object g : this.crafters )
 		{
@@ -143,7 +155,9 @@ public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorH
 		super.removeCraftingFromCrafters( c );
 
 		if( this.crafters.isEmpty() && this.monitor != null )
+		{
 			this.monitor.removeListener( this );
+		}
 	}
 
 	@Override
@@ -151,7 +165,9 @@ public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorH
 	{
 		super.onContainerClosed( player );
 		if( this.monitor != null )
+		{
 			this.monitor.removeListener( this );
+		}
 	}
 
 	@Override
@@ -179,13 +195,19 @@ public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorH
 					if( g instanceof EntityPlayer )
 					{
 						if( !a.isEmpty() )
+						{
 							NetworkHandler.instance.sendTo( a, (EntityPlayerMP) g );
+						}
 
 						if( !b.isEmpty() )
+						{
 							NetworkHandler.instance.sendTo( b, (EntityPlayerMP) g );
+						}
 
 						if( !c.isEmpty() )
+						{
 							NetworkHandler.instance.sendTo( c, (EntityPlayerMP) g );
+						}
 					}
 				}
 			}

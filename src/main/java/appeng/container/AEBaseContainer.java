@@ -120,13 +120,19 @@ public abstract class AEBaseContainer extends Container
 	protected IActionHost getActionHost()
 	{
 		if( this.obj instanceof IActionHost )
+		{
 			return (IActionHost) this.obj;
+		}
 
 		if( this.tileEntity instanceof IActionHost )
+		{
 			return (IActionHost) this.tileEntity;
+		}
 
 		if( this.part instanceof IActionHost )
+		{
 			return (IActionHost) this.part;
+		}
 
 		return null;
 	}
@@ -139,9 +145,13 @@ public abstract class AEBaseContainer extends Container
 			{
 				GuiSync annotation = f.getAnnotation( GuiSync.class );
 				if( this.syncData.containsKey( annotation.value() ) )
+				{
 					AELog.warning( "Channel already in use: " + annotation.value() + " for " + f.getName() );
+				}
 				else
+				{
 					this.syncData.put( annotation.value(), new SyncData( this, f, annotation ) );
+				}
 			}
 		}
 	}
@@ -154,7 +164,9 @@ public abstract class AEBaseContainer extends Container
 		this.obj = anchor instanceof IGuiItemObject ? (IGuiItemObject) anchor : null;
 
 		if( this.tileEntity == null && this.part == null && this.obj == null )
+		{
 			throw new IllegalArgumentException( "Must have a valid anchor, instead " + anchor + " in " + ip );
+		}
 
 		this.mySrc = new PlayerSource( ip.player, this.getActionHost() );
 
@@ -165,26 +177,34 @@ public abstract class AEBaseContainer extends Container
 	{
 		this.dataChunks.add( packetPartialItem );
 		if( packetPartialItem.getPageCount() == this.dataChunks.size() )
+		{
 			this.parsePartials();
+		}
 	}
 
 	private void parsePartials()
 	{
 		int total = 0;
 		for( PacketPartialItem ppi : this.dataChunks )
+		{
 			total += ppi.getSize();
+		}
 
 		byte[] buffer = new byte[total];
 		int cursor = 0;
 
 		for( PacketPartialItem ppi : this.dataChunks )
+		{
 			cursor = ppi.write( buffer, cursor );
+		}
 
 		try
 		{
 			NBTTagCompound data = CompressedStreamTools.readCompressed( new ByteArrayInputStream( buffer ) );
 			if( data != null )
+			{
 				this.setTargetStack( AEApi.instance().storage().createItemStack( ItemStack.loadItemStackFromNBT( data ) ) );
+			}
 		}
 		catch( IOException e )
 		{
@@ -208,13 +228,17 @@ public abstract class AEBaseContainer extends Container
 			ItemStack b = this.clientRequestedTargetItem == null ? null : this.clientRequestedTargetItem.getItemStack();
 
 			if( Platform.isSameItemPrecise( a, b ) )
+			{
 				return;
+			}
 
 			ByteArrayOutputStream stream = new ByteArrayOutputStream();
 			NBTTagCompound item = new NBTTagCompound();
 
 			if( stack != null )
+			{
 				stack.writeToNBT( item );
+			}
 
 			try
 			{
@@ -262,11 +286,15 @@ public abstract class AEBaseContainer extends Container
 	public void verifyPermissions( SecurityPermissions security, boolean requirePower )
 	{
 		if( Platform.isClient() )
+		{
 			return;
+		}
 
 		this.ticksSinceCheck++;
 		if( this.ticksSinceCheck < 20 )
+		{
 			return;
+		}
 
 		this.ticksSinceCheck = 0;
 		this.isContainerValid = this.isContainerValid && this.hasAccess( security, requirePower );
@@ -288,12 +316,16 @@ public abstract class AEBaseContainer extends Container
 					{
 						IEnergyGrid eg = g.getCache( IEnergyGrid.class );
 						if( !eg.isNetworkPowered() )
+						{
 							return false;
+						}
 					}
 
 					ISecurityGrid sg = g.getCache( ISecurityGrid.class );
 					if( sg.hasPermission( this.invPlayer.player, perm ) )
+					{
 						return true;
+					}
 				}
 			}
 		}
@@ -309,11 +341,17 @@ public abstract class AEBaseContainer extends Container
 	public Object getTarget()
 	{
 		if( this.tileEntity != null )
+		{
 			return this.tileEntity;
+		}
 		if( this.part != null )
+		{
 			return this.part;
+		}
 		if( this.obj != null )
+		{
 			return this.obj;
+		}
 		return null;
 	}
 
@@ -354,9 +392,13 @@ public abstract class AEBaseContainer extends Container
 			for( int j = 0; j < 9; j++ )
 			{
 				if( this.locked.contains( j + i * 9 + 9 ) )
+				{
 					this.addSlotToContainer( new SlotDisabled( inventoryPlayer, j + i * 9 + 9, 8 + j * 18 + offset_x, offset_y + i * 18 ) );
+				}
 				else
+				{
 					this.addSlotToContainer( new SlotPlayerInv( inventoryPlayer, j + i * 9 + 9, 8 + j * 18 + offset_x, offset_y + i * 18 ) );
+				}
 			}
 		}
 
@@ -364,9 +406,13 @@ public abstract class AEBaseContainer extends Container
 		for( int i = 0; i < 9; i++ )
 		{
 			if( this.locked.contains( i ) )
+			{
 				this.addSlotToContainer( new SlotDisabled( inventoryPlayer, i, 8 + i * 18 + offset_x, 58 + offset_y ) );
+			}
 			else
+			{
 				this.addSlotToContainer( new SlotPlayerHotBar( inventoryPlayer, i, 8 + i * 18 + offset_x, 58 + offset_y ) );
+			}
 		}
 	}
 
@@ -380,7 +426,9 @@ public abstract class AEBaseContainer extends Container
 			return super.addSlotToContainer( newSlot );
 		}
 		else
+		{
 			throw new IllegalArgumentException( "Invalid Slot [" + newSlot + "]for AE Container instead of AppEngSlot." );
+		}
 	}
 
 	@Override
@@ -395,7 +443,9 @@ public abstract class AEBaseContainer extends Container
 				ICrafting icrafting = (ICrafting) crafter;
 
 				for( SyncData sd : this.syncData.values() )
+				{
 					sd.tick( icrafting );
+				}
 			}
 		}
 
@@ -406,7 +456,9 @@ public abstract class AEBaseContainer extends Container
 	public ItemStack transferStackInSlot( EntityPlayer p, int idx )
 	{
 		if( Platform.isClient() )
+		{
 			return null;
+		}
 
 		boolean hasMETiles = false;
 		for( Object is : this.inventorySlots )
@@ -427,13 +479,17 @@ public abstract class AEBaseContainer extends Container
 		AppEngSlot clickSlot = (AppEngSlot) this.inventorySlots.get( idx ); // require AE SLots!
 
 		if( clickSlot instanceof SlotDisabled || clickSlot instanceof SlotInaccessible )
+		{
 			return null;
+		}
 		if( clickSlot != null && clickSlot.getHasStack() )
 		{
 			tis = clickSlot.getStack();
 
 			if( tis == null )
+			{
 				return null;
+			}
 
 			List<Slot> selectedSlots = new ArrayList<Slot>();
 
@@ -512,7 +568,9 @@ public abstract class AEBaseContainer extends Container
 				for( Slot d : selectedSlots )
 				{
 					if( d instanceof SlotDisabled || d instanceof SlotME )
+					{
 						continue;
+					}
 
 					if( d.isItemValid( tis ) )
 					{
@@ -524,7 +582,9 @@ public abstract class AEBaseContainer extends Container
 							{
 								int maxSize = t.getMaxStackSize();
 								if( maxSize > d.getSlotStackLimit() )
+								{
 									maxSize = d.getSlotStackLimit();
+								}
 
 								int placeAble = maxSize - t.stackSize;
 
@@ -548,7 +608,9 @@ public abstract class AEBaseContainer extends Container
 									return null;
 								}
 								else
+								{
 									this.updateSlot( d );
+								}
 							}
 						}
 					}
@@ -558,7 +620,9 @@ public abstract class AEBaseContainer extends Container
 				for( Slot d : selectedSlots )
 				{
 					if( d instanceof SlotDisabled || d instanceof SlotME )
+					{
 						continue;
+					}
 
 					if( d.isItemValid( tis ) )
 					{
@@ -570,7 +634,9 @@ public abstract class AEBaseContainer extends Container
 							{
 								int maxSize = t.getMaxStackSize();
 								if( d.getSlotStackLimit() < maxSize )
+								{
 									maxSize = d.getSlotStackLimit();
+								}
 
 								int placeAble = maxSize - t.stackSize;
 
@@ -596,18 +662,24 @@ public abstract class AEBaseContainer extends Container
 									return null;
 								}
 								else
+								{
 									this.updateSlot( d );
+								}
 							}
 						}
 						else
 						{
 							int maxSize = tis.getMaxStackSize();
 							if( maxSize > d.getSlotStackLimit() )
+							{
 								maxSize = d.getSlotStackLimit();
+							}
 
 							ItemStack tmp = tis.copy();
 							if( tmp.stackSize > maxSize )
+							{
 								tmp.stackSize = maxSize;
+							}
 
 							tis.stackSize -= tmp.stackSize;
 							d.putStack( tmp );
@@ -626,7 +698,9 @@ public abstract class AEBaseContainer extends Container
 								return null;
 							}
 							else
+							{
 								this.updateSlot( d );
+							}
 						}
 					}
 				}
@@ -654,7 +728,9 @@ public abstract class AEBaseContainer extends Container
 		if( this.isContainerValid )
 		{
 			if( this.tileEntity instanceof IInventory )
+			{
 				return ( (IInventory) this.tileEntity ).isUseableByPlayer( entityplayer );
+			}
 			return true;
 		}
 		return false;
@@ -694,9 +770,13 @@ public abstract class AEBaseContainer extends Container
 					case PICKUP_OR_SET_DOWN:
 
 						if( hand == null )
+						{
 							s.putStack( null );
+						}
 						else
+						{
 							s.putStack( hand.copy() );
+						}
 
 						break;
 					case PLACE_SINGLE:
@@ -715,9 +795,13 @@ public abstract class AEBaseContainer extends Container
 						if( is != null )
 						{
 							if( hand == null )
+							{
 								is.stackSize--;
+							}
 							else if( hand.isItemEqual( is ) )
+							{
 								is.stackSize = Math.min( is.getMaxStackSize(), is.stackSize + 1 );
+							}
 							else
 							{
 								is = hand.copy();
@@ -749,11 +833,15 @@ public abstract class AEBaseContainer extends Container
 				for( Object j : this.inventorySlots )
 				{
 					if( j instanceof Slot && j.getClass() == s.getClass() )
+					{
 						from.add( (Slot) j );
+					}
 				}
 
 				for( Slot fr : from )
+				{
 					this.transferStackInSlot( player, fr.slotNumber );
+				}
 			}
 
 			return;
@@ -766,7 +854,9 @@ public abstract class AEBaseContainer extends Container
 		{
 			case SHIFT_CLICK:
 				if( this.powerSrc == null || this.cellInv == null )
+				{
 					return;
+				}
 
 				if( slotItem != null )
 				{
@@ -780,16 +870,22 @@ public abstract class AEBaseContainer extends Container
 					myItem = adp.simulateAdd( myItem );
 
 					if( myItem != null )
+					{
 						ais.setStackSize( ais.getStackSize() - myItem.stackSize );
+					}
 
 					ais = Platform.poweredExtraction( this.powerSrc, this.cellInv, ais, this.mySrc );
 					if( ais != null )
+					{
 						adp.addItems( ais.getItemStack() );
+					}
 				}
 				break;
 			case ROLL_DOWN:
 				if( this.powerSrc == null || this.cellInv == null )
+				{
 					return;
+				}
 
 				int releaseQty = 1;
 				ItemStack isg = player.inventory.getItemStack();
@@ -807,7 +903,9 @@ public abstract class AEBaseContainer extends Container
 
 						ItemStack fail = ia.removeItems( 1, extracted.getItemStack(), null );
 						if( fail == null )
+						{
 							this.cellInv.extractItems( extracted, Actionable.MODULATE, this.mySrc );
+						}
 
 						this.updateHeld( player );
 					}
@@ -817,7 +915,9 @@ public abstract class AEBaseContainer extends Container
 			case ROLL_UP:
 			case PICKUP_SINGLE:
 				if( this.powerSrc == null || this.cellInv == null )
+				{
 					return;
+				}
 
 				if( slotItem != null )
 				{
@@ -827,9 +927,13 @@ public abstract class AEBaseContainer extends Container
 					if( item != null )
 					{
 						if( item.stackSize >= item.getMaxStackSize() )
+						{
 							liftQty = 0;
+						}
 						if( !Platform.isSameItemPrecise( slotItem.getItemStack(), item ) )
+						{
 							liftQty = 0;
+						}
 					}
 
 					if( liftQty > 0 )
@@ -843,7 +947,9 @@ public abstract class AEBaseContainer extends Container
 
 							ItemStack fail = ia.addItems( ais.getItemStack() );
 							if( fail != null )
+							{
 								this.cellInv.injectItems( ais, Actionable.MODULATE, this.mySrc );
+							}
 
 							this.updateHeld( player );
 						}
@@ -852,7 +958,9 @@ public abstract class AEBaseContainer extends Container
 				break;
 			case PICKUP_OR_SET_DOWN:
 				if( this.powerSrc == null || this.cellInv == null )
+				{
 					return;
+				}
 
 				if( player.inventory.getItemStack() == null )
 				{
@@ -862,9 +970,13 @@ public abstract class AEBaseContainer extends Container
 						ais.setStackSize( ais.getItemStack().getMaxStackSize() );
 						ais = Platform.poweredExtraction( this.powerSrc, this.cellInv, ais, this.mySrc );
 						if( ais != null )
+						{
 							player.inventory.setItemStack( ais.getItemStack() );
+						}
 						else
+						{
 							player.inventory.setItemStack( null );
+						}
 						this.updateHeld( player );
 					}
 				}
@@ -873,16 +985,22 @@ public abstract class AEBaseContainer extends Container
 					IAEItemStack ais = AEApi.instance().storage().createItemStack( player.inventory.getItemStack() );
 					ais = Platform.poweredInsert( this.powerSrc, this.cellInv, ais, this.mySrc );
 					if( ais != null )
+					{
 						player.inventory.setItemStack( ais.getItemStack() );
+					}
 					else
+					{
 						player.inventory.setItemStack( null );
+					}
 					this.updateHeld( player );
 				}
 
 				break;
 			case SPLIT_OR_PLACE_SINGLE:
 				if( this.powerSrc == null || this.cellInv == null )
+				{
 					return;
+				}
 
 				if( player.inventory.getItemStack() == null )
 				{
@@ -901,9 +1019,13 @@ public abstract class AEBaseContainer extends Container
 						}
 
 						if( ais != null )
+						{
 							player.inventory.setItemStack( ais.getItemStack() );
+						}
 						else
+						{
 							player.inventory.setItemStack( null );
+						}
 						this.updateHeld( player );
 					}
 				}
@@ -917,7 +1039,9 @@ public abstract class AEBaseContainer extends Container
 						ItemStack is = player.inventory.getItemStack();
 						is.stackSize--;
 						if( is.stackSize <= 0 )
+						{
 							player.inventory.setItemStack( null );
+						}
 						this.updateHeld( player );
 					}
 				}
@@ -935,7 +1059,9 @@ public abstract class AEBaseContainer extends Container
 			case MOVE_REGION:
 
 				if( this.powerSrc == null || this.cellInv == null )
+				{
 					return;
+				}
 
 				if( slotItem != null )
 				{
@@ -952,13 +1078,19 @@ public abstract class AEBaseContainer extends Container
 						myItem = adp.simulateAdd( myItem );
 
 						if( myItem != null )
+						{
 							ais.setStackSize( ais.getStackSize() - myItem.stackSize );
+						}
 
 						ais = Platform.poweredExtraction( this.powerSrc, this.cellInv, ais, this.mySrc );
 						if( ais != null )
+						{
 							adp.addItems( ais.getItemStack() );
+						}
 						else
+						{
 							return;
+						}
 					}
 				}
 
@@ -986,10 +1118,14 @@ public abstract class AEBaseContainer extends Container
 	public ItemStack shiftStoreItem( ItemStack input )
 	{
 		if( this.powerSrc == null || this.cellInv == null )
+		{
 			return input;
+		}
 		IAEItemStack ais = Platform.poweredInsert( this.powerSrc, this.cellInv, AEApi.instance().storage().createItemStack( input ), this.mySrc );
 		if( ais == null )
+		{
 			return null;
+		}
 		return ais.getItemStack();
 	}
 
@@ -1009,21 +1145,31 @@ public abstract class AEBaseContainer extends Container
 				ICustomNameObject name = null;
 
 				if( this.part instanceof ICustomNameObject )
+				{
 					name = (ICustomNameObject) this.part;
+				}
 
 				if( this.tileEntity instanceof ICustomNameObject )
+				{
 					name = (ICustomNameObject) this.tileEntity;
+				}
 
 				if( this.obj instanceof ICustomNameObject )
+				{
 					name = (ICustomNameObject) this.obj;
+				}
 
 				if( this instanceof ICustomNameObject )
+				{
 					name = (ICustomNameObject) this;
+				}
 
 				if( name != null )
 				{
 					if( name.hasCustomName() )
+					{
 						this.customName = name.getCustomName();
+					}
 
 					if( this.customName != null )
 					{
@@ -1048,30 +1194,42 @@ public abstract class AEBaseContainer extends Container
 
 		// NPE protection...
 		if( a == null || b == null )
+		{
 			return;
+		}
 
 		ItemStack isA = a.getStack();
 		ItemStack isB = b.getStack();
 
 		// something to do?
 		if( isA == null && isB == null )
+		{
 			return;
+		}
 
 		// can take?
 
 		if( isA != null && !a.canTakeStack( this.invPlayer.player ) )
+		{
 			return;
+		}
 
 		if( isB != null && !b.canTakeStack( this.invPlayer.player ) )
+		{
 			return;
+		}
 
 		// swap valid?
 
 		if( isB != null && !a.isItemValid( isB ) )
+		{
 			return;
+		}
 
 		if( isA != null && !b.isItemValid( isA ) )
+		{
 			return;
+		}
 
 		ItemStack testA = isB == null ? null : isB.copy();
 		ItemStack testB = isA == null ? null : isA.copy();
@@ -1080,7 +1238,9 @@ public abstract class AEBaseContainer extends Container
 		if( testA != null && testA.stackSize > a.getSlotStackLimit() )
 		{
 			if( testB != null )
+			{
 				return;
+			}
 
 			int totalA = testA.stackSize;
 			testA.stackSize = a.getSlotStackLimit();
@@ -1092,7 +1252,9 @@ public abstract class AEBaseContainer extends Container
 		if( testB != null && testB.stackSize > b.getSlotStackLimit() )
 		{
 			if( testA != null )
+			{
 				return;
+			}
 
 			int totalB = testB.stackSize;
 			testB.stackSize = b.getSlotStackLimit();

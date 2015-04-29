@@ -70,15 +70,21 @@ public class RenderBlockCrank extends BaseBlockRender
 	{
 		TileCrank tc = (TileCrank) tile;
 		if( tc.getUp() == null || tc.getUp() == ForgeDirection.UNKNOWN )
+		{
 			return;
+		}
 
 		Minecraft.getMinecraft().getTextureManager().bindTexture( TextureMap.locationBlocksTexture );
 		RenderHelper.disableStandardItemLighting();
 
 		if( Minecraft.isAmbientOcclusionEnabled() )
+		{
 			GL11.glShadeModel( GL11.GL_SMOOTH );
+		}
 		else
+		{
 			GL11.glShadeModel( GL11.GL_FLAT );
+		}
 
 		GL11.glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 

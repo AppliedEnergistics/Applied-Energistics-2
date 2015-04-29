@@ -149,9 +149,13 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 		for( int num = 0; num < this.inv.getSizeInventory(); num++ )
 		{
 			if( ( slot & ( 1 << num ) ) > 0 )
+			{
 				this.inv.setInventorySlotContents( num, AEItemStack.loadItemStackFromPacket( data ).getItemStack() );
+			}
 			else
+			{
 				this.inv.setInventorySlotContents( num, null );
+			}
 		}
 
 		return false;
@@ -165,7 +169,9 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 		for( int num = 0; num < this.inv.getSizeInventory(); num++ )
 		{
 			if( this.inv.getStackInSlot( num ) != null )
+			{
 				slot |= ( 1 << num );
+			}
 		}
 
 		data.writeByte( slot );
@@ -196,7 +202,9 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 		{
 			ItemStack is = this.upgrades.getStackInSlot( h );
 			if( is != null )
+			{
 				drops.add( is );
+			}
 		}
 	}
 
@@ -222,7 +230,9 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 	public boolean isItemValidForSlot( int i, ItemStack itemstack )
 	{
 		if( this.smash )
+		{
 			return false;
+		}
 
 		if( i == 0 || i == 1 )
 		{
@@ -232,8 +242,12 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 			}
 
 			for( ItemStack optionals : AEApi.instance().registries().inscriber().getOptionals() )
+			{
 				if( Platform.isSameItemPrecise( optionals, itemstack ) )
+				{
 					return true;
+				}
+			}
 		}
 
 		return i == 2;
@@ -247,10 +261,14 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 			if( mc != InvOperation.markDirty )
 			{
 				if( slot != 3 )
+				{
 					this.processingTime = 0;
+				}
 
 				if( !this.smash )
+				{
 					this.markForUpdate();
+				}
 
 				this.gridProxy.getTick().wakeDevice( this.gridProxy.getNode() );
 			}
@@ -265,7 +283,9 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 	public boolean canExtractItem( int slotIndex, ItemStack extractedItem, int side )
 	{
 		if( this.smash )
+		{
 			return false;
+		}
 
 		return slotIndex == 0 || slotIndex == 1 || slotIndex == 3;
 	}
@@ -274,10 +294,14 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 	public int[] getAccessibleSlotsBySide( ForgeDirection d )
 	{
 		if( d == ForgeDirection.UP )
+		{
 			return this.top;
+		}
 
 		if( d == ForgeDirection.DOWN )
+		{
 			return this.bottom;
+		}
 
 		return this.sides;
 	}
@@ -291,7 +315,9 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 	private boolean hasWork()
 	{
 		if( this.getTask() != null )
+		{
 			return true;
+		}
 
 		this.processingTime = 0;
 		return this.smash;
@@ -305,13 +331,19 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 		ItemStack renamedItem = this.getStackInSlot( 2 );
 
 		if( plateA != null && plateA.stackSize > 1 )
+		{
 			return null;
+		}
 
 		if( plateB != null && plateB.stackSize > 1 )
+		{
 			return null;
+		}
 
 		if( renamedItem != null && renamedItem.stackSize > 1 )
+		{
 			return null;
+		}
 
 		final IComparableDefinition namePress = AEApi.instance().definitions().materials().namePress();
 		boolean isNameA = namePress.isSameAs( plateA );
@@ -333,7 +365,9 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 				{
 					NBTTagCompound tag = Platform.openNbtData( plateB );
 					if( name.length() > 0 )
+					{
 						name += " ";
+					}
 					name += tag.getString( "InscribeName" );
 				}
 
@@ -345,9 +379,13 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 				tag.setTag( "display", display );
 
 				if( name.length() > 0 )
+				{
 					display.setString( "Name", name );
+				}
 				else
+				{
 					display.removeTag( "Name" );
+				}
 
 				final List<ItemStack> inputs = Lists.newArrayList( startingItem );
 				final InscriberProcessType type = InscriberProcessType.Inscribe;
@@ -370,7 +408,9 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 				for( ItemStack option : recipe.getInputs() )
 				{
 					if( Platform.isSameItemPrecise( option, this.getStackInSlot( 2 ) ) )
+					{
 						return recipe;
+					}
 				}
 			}
 		}
@@ -437,9 +477,13 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 					src.extractAEPower( powerConsumption, Actionable.MODULATE, PowerMultiplier.CONFIG );
 
 					if( this.processingTime == 0 )
+					{
 						this.processingTime += speedFactor;
+					}
 					else
+					{
 						this.processingTime += TicksSinceLastCall * speedFactor;
+					}
 				}
 			}
 			catch( GridAccessException e )
@@ -478,10 +522,14 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 	public IInventory getInventoryByName( String name )
 	{
 		if( name.equals( "inv" ) )
+		{
 			return this.inv;
+		}
 
 		if( name.equals( "upgrades" ) )
+		{
 			return this.upgrades;
+		}
 
 		return null;
 	}

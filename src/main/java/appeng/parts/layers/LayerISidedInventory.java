@@ -95,11 +95,13 @@ public class LayerISidedInventory extends LayerBase implements ISidedInventory
 
 				ForgeDirection currentSide = ForgeDirection.UNKNOWN;
 				for( ForgeDirection side : ForgeDirection.VALID_DIRECTIONS )
+				{
 					if( this.getPart( side ) == sides )
 					{
 						currentSide = side;
 						break;
 					}
+				}
 
 				int[] cSidesList = sideData[currentSide.ordinal()] = new int[slotCount];
 				for( int cSlot = 0; cSlot < slotCount; cSlot++ )
@@ -113,9 +115,13 @@ public class LayerISidedInventory extends LayerBase implements ISidedInventory
 		}
 
 		if( sideData == null || slots == null )
+		{
 			this.invLayer = null;
+		}
 		else
+		{
 			this.invLayer = new InvLayerData( sideData, inventories, slots );
+		}
 
 		// make sure inventory is updated before we call FMP.
 		super.notifyNeighbors();
@@ -125,7 +131,9 @@ public class LayerISidedInventory extends LayerBase implements ISidedInventory
 	public int getSizeInventory()
 	{
 		if( this.invLayer == null )
+		{
 			return 0;
+		}
 
 		return this.invLayer.getSizeInventory();
 	}
@@ -134,7 +142,9 @@ public class LayerISidedInventory extends LayerBase implements ISidedInventory
 	public ItemStack getStackInSlot( int slot )
 	{
 		if( this.invLayer == null )
+		{
 			return null;
+		}
 
 		return this.invLayer.getStackInSlot( slot );
 	}
@@ -143,7 +153,9 @@ public class LayerISidedInventory extends LayerBase implements ISidedInventory
 	public ItemStack decrStackSize( int slot, int amount )
 	{
 		if( this.invLayer == null )
+		{
 			return null;
+		}
 
 		return this.invLayer.decreaseStackSize( slot, amount );
 	}
@@ -158,7 +170,9 @@ public class LayerISidedInventory extends LayerBase implements ISidedInventory
 	public void setInventorySlotContents( int slot, ItemStack itemstack )
 	{
 		if( this.invLayer == null )
+		{
 			return;
+		}
 
 		this.invLayer.setInventorySlotContents( slot, itemstack );
 	}
@@ -201,7 +215,9 @@ public class LayerISidedInventory extends LayerBase implements ISidedInventory
 	public boolean isItemValidForSlot( int slot, ItemStack itemstack )
 	{
 		if( this.invLayer == null )
+		{
 			return false;
+		}
 
 		return this.invLayer.isItemValidForSlot( slot, itemstack );
 	}
@@ -210,7 +226,9 @@ public class LayerISidedInventory extends LayerBase implements ISidedInventory
 	public void markDirty()
 	{
 		if( this.invLayer != null )
+		{
 			this.invLayer.markDirty();
+		}
 
 		super.markForSave();
 	}
@@ -219,7 +237,9 @@ public class LayerISidedInventory extends LayerBase implements ISidedInventory
 	public int[] getAccessibleSlotsFromSide( int side )
 	{
 		if( this.invLayer != null )
+		{
 			return this.invLayer.getAccessibleSlotsFromSide( side );
+		}
 
 		return NULL_SIDES;
 	}
@@ -228,7 +248,9 @@ public class LayerISidedInventory extends LayerBase implements ISidedInventory
 	public boolean canInsertItem( int slot, ItemStack itemstack, int side )
 	{
 		if( this.invLayer == null )
+		{
 			return false;
+		}
 
 		return this.invLayer.canInsertItem( slot, itemstack, side );
 	}
@@ -237,7 +259,9 @@ public class LayerISidedInventory extends LayerBase implements ISidedInventory
 	public boolean canExtractItem( int slot, ItemStack itemstack, int side )
 	{
 		if( this.invLayer == null )
+		{
 			return false;
+		}
 
 		return this.invLayer.canExtractItem( slot, itemstack, side );
 	}

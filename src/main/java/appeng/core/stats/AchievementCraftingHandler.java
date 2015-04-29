@@ -45,7 +45,9 @@ public class AchievementCraftingHandler
 	public void onPlayerCraftingEvent( PlayerEvent.ItemCraftedEvent event )
 	{
 		if( this.differentiator.isNoPlayer( event.player ) || event.crafting == null )
+		{
 			return;
+		}
 
 		for( Achievements achievement : Achievements.values() )
 		{

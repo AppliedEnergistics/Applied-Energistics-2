@@ -43,10 +43,14 @@ public class VoidItemInventory implements IMEInventoryHandler<IAEItemStack>
 	public IAEItemStack injectItems( IAEItemStack input, Actionable mode, BaseActionSource src )
 	{
 		if( mode == Actionable.SIMULATE )
+		{
 			return null;
+		}
 
 		if( input != null )
+		{
 			this.target.addPower( input.getStackSize() );
+		}
 		return null;
 	}
 

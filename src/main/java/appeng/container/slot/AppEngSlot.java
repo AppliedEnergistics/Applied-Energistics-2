@@ -74,7 +74,9 @@ public class AppEngSlot extends Slot
 	public boolean isItemValid( ItemStack par1ItemStack )
 	{
 		if( this.isEnabled() )
+		{
 			return super.isItemValid( par1ItemStack );
+		}
 		return false;
 	}
 
@@ -82,10 +84,14 @@ public class AppEngSlot extends Slot
 	public ItemStack getStack()
 	{
 		if( !this.isEnabled() )
+		{
 			return null;
+		}
 
 		if( this.inventory.getSizeInventory() <= this.getSlotIndex() )
+		{
 			return null;
+		}
 
 		if( this.isDisplay )
 		{
@@ -103,7 +109,9 @@ public class AppEngSlot extends Slot
 			super.putStack( par1ItemStack );
 
 			if( this.myContainer != null )
+			{
 				this.myContainer.onSlotChange( this );
+			}
 		}
 	}
 
@@ -111,9 +119,13 @@ public class AppEngSlot extends Slot
 	public void onSlotChanged()
 	{
 		if( this.inventory instanceof AppEngInternalInventory )
+		{
 			( (AppEngInternalInventory) this.inventory ).markDirty( this.getSlotIndex() );
+		}
 		else
+		{
 			super.onSlotChanged();
+		}
 
 		this.isValid = hasCalculatedValidness.NotAvailable;
 	}
@@ -122,7 +134,9 @@ public class AppEngSlot extends Slot
 	public boolean canTakeStack( EntityPlayer par1EntityPlayer )
 	{
 		if( this.isEnabled() )
+		{
 			return super.canTakeStack( par1EntityPlayer );
+		}
 		return false;
 	}
 

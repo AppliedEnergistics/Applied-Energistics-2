@@ -115,7 +115,9 @@ public class ImmibisMicroblocks extends BaseModule implements IImmibisMicroblock
 
 		final TileEntity tx = w.getTileEntity( x, y, z );
 		if( tx instanceof IPartHost )
+		{
 			return (IPartHost) tx;
+		}
 
 		return null;
 	}

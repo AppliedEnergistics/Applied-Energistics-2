@@ -58,8 +58,12 @@ public class PartPatternTerminal extends PartTerminal
 	public void getDrops( List<ItemStack> drops, boolean wrenched )
 	{
 		for( ItemStack is : this.pattern )
+		{
 			if( is != null )
+			{
 				drops.add( is );
+			}
+		}
 	}
 
 	@Override
@@ -96,7 +100,9 @@ public class PartPatternTerminal extends PartTerminal
 		}
 
 		if( GuiBridge.GUI_PATTERN_TERMINAL.hasPermissions( this.getHost().getTile(), x, y, z, this.side, p ) )
+		{
 			return GuiBridge.GUI_PATTERN_TERMINAL;
+		}
 		return GuiBridge.GUI_ME;
 	}
 
@@ -144,7 +150,9 @@ public class PartPatternTerminal extends PartTerminal
 			{
 				ItemStack is = this.crafting.getStackInSlot( x );
 				if( is != null )
+				{
 					is.stackSize = 1;
+				}
 			}
 		}
 	}
@@ -164,13 +172,19 @@ public class PartPatternTerminal extends PartTerminal
 	public IInventory getInventoryByName( String name )
 	{
 		if( name.equals( "crafting" ) )
+		{
 			return this.crafting;
+		}
 
 		if( name.equals( "output" ) )
+		{
 			return this.output;
+		}
 
 		if( name.equals( "pattern" ) )
+		{
 			return this.pattern;
+		}
 
 		return super.getInventoryByName( name );
 	}

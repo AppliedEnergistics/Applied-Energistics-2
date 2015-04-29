@@ -91,7 +91,9 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench, 
 				int k = mop.blockZ;
 
 				if( w.getBlock( i, j, k ).isAir( w, i, j, k ) )
+				{
 					this.onItemUseFirst( it, p, w, 0, 0, 0, -1, 0, 0, 0 );
+				}
 			}
 		}
 
@@ -109,7 +111,9 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench, 
 			if( part.part != null )
 			{
 				if( part.part instanceof INetworkToolAgent && !( (INetworkToolAgent) part.part ).showNetworkInfo( mop ) )
+				{
 					return false;
+				}
 			}
 		}
 		else if( te instanceof INetworkToolAgent && !( (INetworkToolAgent) te ).showNetworkInfo( mop ) )
@@ -135,7 +139,9 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench, 
 		if( side >= 0 )
 		{
 			if( !Platform.hasPermissions( new DimensionalCoord( w, x, y, z ), p ) )
+			{
 				return false;
+			}
 
 			Block b = w.getBlock( x, y, z );
 			if( b != null && !p.isSneaking() )
@@ -155,22 +161,32 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench, 
 			if( !p.isSneaking() )
 			{
 				if( p.openContainer instanceof AEBaseContainer )
+				{
 					return true;
+				}
 
 				TileEntity te = w.getTileEntity( x, y, z );
 
 				if( te instanceof IGridHost )
+				{
 					Platform.openGUI( p, te, ForgeDirection.getOrientation( side ), GuiBridge.GUI_NETWORK_STATUS );
+				}
 				else
+				{
 					Platform.openGUI( p, null, ForgeDirection.UNKNOWN, GuiBridge.GUI_NETWORK_TOOL );
+				}
 
 				return true;
 			}
 			else
+			{
 				b.onBlockActivated( w, x, y, z, p, side, hitX, hitY, hitZ );
+			}
 		}
 		else
+		{
 			Platform.openGUI( p, null, ForgeDirection.UNKNOWN, GuiBridge.GUI_NETWORK_TOOL );
+		}
 
 		return false;
 	}

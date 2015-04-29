@@ -289,7 +289,9 @@ public class BaseBlockRender
 		if( info.isValid() )
 		{
 			if( block.hasSubtypes() )
+			{
 				block.setRenderStateByMeta( item.getItemDamage() );
+			}
 
 			renderer.uvRotateBottom = info.getTexture( ForgeDirection.DOWN ).setFlip( getOrientation( ForgeDirection.DOWN, ForgeDirection.SOUTH, ForgeDirection.UP ) );
 			renderer.uvRotateTop = info.getTexture( ForgeDirection.UP ).setFlip( getOrientation( ForgeDirection.UP, ForgeDirection.SOUTH, ForgeDirection.UP ) );
@@ -304,7 +306,9 @@ public class BaseBlockRender
 		this.renderInvBlock( EnumSet.allOf( ForgeDirection.class ), block, item, tess, 0xffffff, renderer );
 
 		if( block.hasSubtypes() )
+		{
 			info.setTemporaryRenderIcon( null );
+		}
 
 		renderer.uvRotateBottom = renderer.uvRotateEast = renderer.uvRotateNorth = renderer.uvRotateSouth = renderer.uvRotateTop = renderer.uvRotateWest = 0;
 	}
@@ -314,7 +318,9 @@ public class BaseBlockRender
 		if( in == null || in == ForgeDirection.UNKNOWN // 1
 				|| forward == null || forward == ForgeDirection.UNKNOWN // 2
 				|| up == null || up == ForgeDirection.UNKNOWN )
+		{
 			return 0;
+		}
 
 		int a = in.ordinal();
 		int b = forward.ordinal();
@@ -327,7 +333,9 @@ public class BaseBlockRender
 	{
 		int meta = 0;
 		if( block != null && block.hasSubtypes() && item != null )
+		{
 			meta = item.getItemDamage();
+		}
 
 		if( sides.contains( ForgeDirection.DOWN ) )
 		{
@@ -387,8 +395,12 @@ public class BaseBlockRender
 	public IIcon firstNotNull( IIcon... s )
 	{
 		for( IIcon o : s )
+		{
 			if( o != null )
+			{
 				return o;
+			}
+		}
 		return ExtraBlockTextures.getMissing();
 	}
 
@@ -434,9 +446,13 @@ public class BaseBlockRender
 	public IOrientable getOrientable( AEBaseBlock block, IBlockAccess w, int x, int y, int z )
 	{
 		if( block.hasBlockTileEntity() )
+		{
 			return (AEBaseTile) block.getTileEntity( w, x, y, z );
+		}
 		else if( block instanceof IOrientableBlock )
+		{
 			return ( (IOrientableBlock) block ).getOrientable( w, x, y, z );
+		}
 		return null;
 	}
 
@@ -660,10 +676,14 @@ public class BaseBlockRender
 	private double mapFaceUV( int offset, int uv )
 	{
 		if( offset == 0 )
+		{
 			return 0;
+		}
 
 		if( offset > 0 )
+		{
 			return uv / 16.0;
+		}
 
 		return ( 16.0 - uv ) / 16.0;
 	}
@@ -681,9 +701,13 @@ public class BaseBlockRender
 		RenderHelper.disableStandardItemLighting();
 
 		if( Minecraft.isAmbientOcclusionEnabled() )
+		{
 			GL11.glShadeModel( GL11.GL_SMOOTH );
+		}
 		else
+		{
 			GL11.glShadeModel( GL11.GL_FLAT );
+		}
 
 		GL11.glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 
@@ -706,10 +730,14 @@ public class BaseBlockRender
 		if( forward != null && up != null )
 		{
 			if( forward == ForgeDirection.UNKNOWN )
+			{
 				forward = ForgeDirection.SOUTH;
+			}
 
 			if( up == ForgeDirection.UNKNOWN )
+			{
 				up = ForgeDirection.UP;
+			}
 
 			ForgeDirection west = Platform.crossProduct( forward, up );
 

@@ -58,7 +58,9 @@ public class ToolEraser extends AEBaseItem
 	public boolean onItemUseFirst( ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ )
 	{
 		if( Platform.isClient() )
+		{
 			return false;
+		}
 
 		Block blk = world.getBlock( x, y, z );
 		int meta = world.getBlockMetadata( x, y, z );

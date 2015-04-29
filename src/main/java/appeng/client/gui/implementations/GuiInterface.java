@@ -68,10 +68,14 @@ public class GuiInterface extends GuiUpgradeable
 	public void drawFG( int offsetX, int offsetY, int mouseX, int mouseY )
 	{
 		if( this.BlockMode != null )
+		{
 			this.BlockMode.set( ( (ContainerInterface) this.cvb ).bMode );
+		}
 
 		if( this.interfaceMode != null )
+		{
 			this.interfaceMode.setState( ( (ContainerInterface) this.cvb ).iTermMode == YesNo.YES );
+		}
 
 		this.fontRendererObj.drawString( this.getGuiDisplayName( GuiText.Interface.getLocal() ), 8, 6, 4210752 );
 
@@ -101,9 +105,13 @@ public class GuiInterface extends GuiUpgradeable
 		}
 
 		if( btn == this.interfaceMode )
+		{
 			NetworkHandler.instance.sendToServer( new PacketConfigButton( Settings.INTERFACE_TERMINAL, backwards ) );
+		}
 
 		if( btn == this.BlockMode )
+		{
 			NetworkHandler.instance.sendToServer( new PacketConfigButton( this.BlockMode.getSetting(), backwards ) );
+		}
 	}
 }

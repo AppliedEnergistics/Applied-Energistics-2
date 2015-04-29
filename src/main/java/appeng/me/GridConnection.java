@@ -71,7 +71,9 @@ public class GridConnection implements IGridConnection, IPathItem
 		}
 
 		if( a == null || b == null )
+		{
 			throw new GridException( "Connection Forged Between null entities." );
+		}
 
 		if( a.hasConnection( b ) || b.hasConnection( a ) )
 		{
@@ -129,9 +131,13 @@ public class GridConnection implements IGridConnection, IPathItem
 	public IGridNode getOtherSide( IGridNode gridNode )
 	{
 		if( gridNode == this.sideA )
+		{
 			return this.sideB;
+		}
 		if( gridNode == this.sideB )
+		{
 			return this.sideA;
+		}
 
 		throw new GridException( "Invalid Side of Connection" );
 	}
@@ -140,12 +146,18 @@ public class GridConnection implements IGridConnection, IPathItem
 	public ForgeDirection getDirection( IGridNode side )
 	{
 		if( this.fromAtoB == ForgeDirection.UNKNOWN )
+		{
 			return this.fromAtoB;
+		}
 
 		if( this.sideA == side )
+		{
 			return this.fromAtoB;
+		}
 		else
+		{
 			return this.fromAtoB.getOpposite();
+		}
 	}
 
 	@Override
@@ -190,7 +202,9 @@ public class GridConnection implements IGridConnection, IPathItem
 	public IPathItem getControllerRoute()
 	{
 		if( this.sideA.getFlags().contains( GridFlags.CANNOT_CARRY ) )
+		{
 			return null;
+		}
 		return this.sideA;
 	}
 
@@ -198,7 +212,9 @@ public class GridConnection implements IGridConnection, IPathItem
 	public void setControllerRoute( IPathItem fast, boolean zeroOut )
 	{
 		if( zeroOut )
+		{
 			this.channelData &= ~0xff;
+		}
 
 		if( this.sideB == fast )
 		{
@@ -242,10 +258,14 @@ public class GridConnection implements IGridConnection, IPathItem
 			this.channelData |= this.channelData << 8;
 
 			if( this.sideA.getInternalGrid() != null )
+			{
 				this.sideA.getInternalGrid().postEventTo( this.sideA, EVENT );
+			}
 
 			if( this.sideB.getInternalGrid() != null )
+			{
 				this.sideB.getInternalGrid().postEventTo( this.sideB, EVENT );
+			}
 		}
 	}
 

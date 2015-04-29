@@ -40,7 +40,9 @@ public class AEExternalHandler implements IExternalStorageHandler
 	public boolean canHandle( TileEntity te, ForgeDirection d, StorageChannel channel, BaseActionSource mySrc )
 	{
 		if( channel == StorageChannel.ITEMS && te instanceof ITileStorageMonitorable )
+		{
 			return ( (ITileStorageMonitorable) te ).getMonitorable( d, mySrc ) != null;
+		}
 
 		return te instanceof TileCondenser;
 	}
@@ -51,9 +53,13 @@ public class AEExternalHandler implements IExternalStorageHandler
 		if( te instanceof TileCondenser )
 		{
 			if( channel == StorageChannel.ITEMS )
+			{
 				return new VoidItemInventory( (TileCondenser) te );
+			}
 			else
+			{
 				return new VoidFluidInventory( (TileCondenser) te );
+			}
 		}
 
 		if( te instanceof ITileStorageMonitorable )
@@ -65,14 +71,18 @@ public class AEExternalHandler implements IExternalStorageHandler
 			{
 				IMEInventory<IAEItemStack> ii = sm.getItemInventory();
 				if( ii != null )
+				{
 					return ii;
+				}
 			}
 
 			if( channel == StorageChannel.FLUIDS && sm != null )
 			{
 				IMEInventory<IAEFluidStack> fi = sm.getFluidInventory();
 				if( fi != null )
+				{
 					return fi;
+				}
 			}
 		}
 

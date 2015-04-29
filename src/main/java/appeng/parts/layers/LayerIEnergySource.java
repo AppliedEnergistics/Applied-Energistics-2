@@ -48,7 +48,9 @@ public class LayerIEnergySource extends LayerBase implements IEnergySource
 	private World getEnergySourceWorld()
 	{
 		if( this.getEnergySourceTile() == null )
+		{
 			return null;
+		}
 		return this.getEnergySourceTile().getWorldObj();
 	}
 
@@ -56,14 +58,18 @@ public class LayerIEnergySource extends LayerBase implements IEnergySource
 	{
 		TileEntity te = this.getEnergySourceTile();
 		if( te == null )
+		{
 			return false;
+		}
 		return !te.isInvalid();
 	}
 
 	private void addToENet()
 	{
 		if( this.getEnergySourceWorld() == null )
+		{
 			return;
+		}
 
 		// re-add
 		this.removeFromENet();
@@ -78,7 +84,9 @@ public class LayerIEnergySource extends LayerBase implements IEnergySource
 	private void removeFromENet()
 	{
 		if( this.getEnergySourceWorld() == null )
+		{
 			return;
+		}
 
 		if( this.isInIC2() && Platform.isServer() )
 		{
@@ -90,7 +98,9 @@ public class LayerIEnergySource extends LayerBase implements IEnergySource
 	private boolean interestedInIC2()
 	{
 		if( !( (IPartHost) this ).isInWorld() )
+		{
 			return false;
+		}
 
 		int interested = 0;
 		for( ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS )
@@ -110,20 +120,28 @@ public class LayerIEnergySource extends LayerBase implements IEnergySource
 		super.partChanged();
 
 		if( this.interestedInIC2() )
+		{
 			this.addToENet();
+		}
 		else
+		{
 			this.removeFromENet();
+		}
 	}
 
 	@Override
 	public boolean emitsEnergyTo( TileEntity receiver, ForgeDirection direction )
 	{
 		if( !this.isInIC2() )
+		{
 			return false;
+		}
 
 		IPart part = this.getPart( direction );
 		if( part instanceof IEnergySink )
+		{
 			return ( (IEnergyEmitter) part ).emitsEnergyTo( receiver, direction );
+		}
 		return false;
 	}
 
@@ -136,7 +154,9 @@ public class LayerIEnergySource extends LayerBase implements IEnergySource
 	public double getOfferedEnergy()
 	{
 		if( !this.isInIC2() )
+		{
 			return 0;
+		}
 
 		// this is a flawed implementation, that requires a change to the IC2 API.
 

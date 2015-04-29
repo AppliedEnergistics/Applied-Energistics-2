@@ -58,10 +58,14 @@ public final class EntityGrowingCrystal extends EntityItem
 		super.onUpdate();
 
 		if( !AEConfig.instance.isFeatureEnabled( AEFeature.inWorldPurification ) )
+		{
 			return;
+		}
 
 		if( this.age > 600 )
+		{
 			this.age = 100;
+		}
 
 		ItemStack is = this.getEntityItem();
 		Item gc = is.getItem();
@@ -84,34 +88,52 @@ public final class EntityGrowingCrystal extends EntityItem
 			if( mat.isLiquid() )
 			{
 				if( isClient )
+				{
 					this.progress_1000++;
+				}
 				else
+				{
 					this.progress_1000 += speed;
+				}
 			}
 			else
+			{
 				this.progress_1000 = 0;
+			}
 
 			if( isClient )
 			{
 				int len = 40;
 
 				if( speed > 2 )
+				{
 					len = 20;
+				}
 
 				if( speed > 90 )
+				{
 					len = 15;
+				}
 
 				if( speed > 150 )
+				{
 					len = 10;
+				}
 
 				if( speed > 240 )
+				{
 					len = 7;
+				}
 
 				if( speed > 360 )
+				{
 					len = 3;
+				}
 
 				if( speed > 500 )
+				{
 					len = 1;
+				}
 
 				if( this.progress_1000 >= len )
 				{
@@ -138,22 +160,34 @@ public final class EntityGrowingCrystal extends EntityItem
 		int qty = 0;
 
 		if( this.isAccelerated( x + 1, y, z ) )
+		{
 			qty += per + qty * mul;
+		}
 
 		if( this.isAccelerated( x, y + 1, z ) )
+		{
 			qty += per + qty * mul;
+		}
 
 		if( this.isAccelerated( x, y, z + 1 ) )
+		{
 			qty += per + qty * mul;
+		}
 
 		if( this.isAccelerated( x - 1, y, z ) )
+		{
 			qty += per + qty * mul;
+		}
 
 		if( this.isAccelerated( x, y - 1, z ) )
+		{
 			qty += per + qty * mul;
+		}
 
 		if( this.isAccelerated( x, y, z - 1 ) )
+		{
 			qty += per + qty * mul;
+		}
 
 		return qty;
 	}

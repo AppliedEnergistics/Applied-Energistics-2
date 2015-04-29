@@ -86,20 +86,26 @@ public class AENetworkProxy implements IGridBlock
 	public void writeToNBT( NBTTagCompound tag )
 	{
 		if( this.node != null )
+		{
 			this.node.saveToNBT( this.nbtName, tag );
+		}
 	}
 
 	public void setValidSides( EnumSet<ForgeDirection> validSides )
 	{
 		this.validSides = validSides;
 		if( this.node != null )
+		{
 			this.node.updateState();
+		}
 	}
 
 	public void validate()
 	{
 		if( this.gp instanceof AEBaseTile )
+		{
 			TickHandler.INSTANCE.addInit( (AEBaseTile) this.gp );
+		}
 	}
 
 	public void onChunkUnload()
@@ -127,7 +133,9 @@ public class AENetworkProxy implements IGridBlock
 		{
 			IOrientable ori = (IOrientable) this.gp;
 			if( ori.canBeRotated() )
+			{
 				ori.setOrientation( ori.getForward(), ori.getUp() );
+			}
 		}
 
 		this.getNode();
@@ -164,10 +172,14 @@ public class AENetworkProxy implements IGridBlock
 	{
 		IGrid grid = this.getGrid();
 		if( grid == null )
+		{
 			throw new GridAccessException();
+		}
 		IPathingGrid pg = grid.getCache( IPathingGrid.class );
 		if( pg == null )
+		{
 			throw new GridAccessException();
+		}
 		return pg;
 	}
 
@@ -181,10 +193,14 @@ public class AENetworkProxy implements IGridBlock
 	public IGrid getGrid() throws GridAccessException
 	{
 		if( this.node == null )
+		{
 			throw new GridAccessException();
+		}
 		IGrid grid = this.node.getGrid();
 		if( grid == null )
+		{
 			throw new GridAccessException();
+		}
 		return grid;
 	}
 
@@ -192,10 +208,14 @@ public class AENetworkProxy implements IGridBlock
 	{
 		IGrid grid = this.getGrid();
 		if( grid == null )
+		{
 			throw new GridAccessException();
+		}
 		ITickManager pg = grid.getCache( ITickManager.class );
 		if( pg == null )
+		{
 			throw new GridAccessException();
+		}
 		return pg;
 	}
 
@@ -203,12 +223,16 @@ public class AENetworkProxy implements IGridBlock
 	{
 		IGrid grid = this.getGrid();
 		if( grid == null )
+		{
 			throw new GridAccessException();
+		}
 
 		IStorageGrid pg = grid.getCache( IStorageGrid.class );
 
 		if( pg == null )
+		{
 			throw new GridAccessException();
+		}
 
 		return pg;
 	}
@@ -217,12 +241,16 @@ public class AENetworkProxy implements IGridBlock
 	{
 		IGrid grid = this.getGrid();
 		if( grid == null )
+		{
 			throw new GridAccessException();
+		}
 
 		P2PCache pg = grid.getCache( P2PCache.class );
 
 		if( pg == null )
+		{
 			throw new GridAccessException();
+		}
 
 		return pg;
 	}
@@ -231,12 +259,16 @@ public class AENetworkProxy implements IGridBlock
 	{
 		IGrid grid = this.getGrid();
 		if( grid == null )
+		{
 			throw new GridAccessException();
+		}
 
 		ISecurityGrid sg = grid.getCache( ISecurityGrid.class );
 
 		if( sg == null )
+		{
 			throw new GridAccessException();
+		}
 
 		return sg;
 	}
@@ -245,12 +277,16 @@ public class AENetworkProxy implements IGridBlock
 	{
 		IGrid grid = this.getGrid();
 		if( grid == null )
+		{
 			throw new GridAccessException();
+		}
 
 		ICraftingGrid sg = grid.getCache( ICraftingGrid.class );
 
 		if( sg == null )
+		{
 			throw new GridAccessException();
+		}
 
 		return sg;
 	}
@@ -289,7 +325,9 @@ public class AENetworkProxy implements IGridBlock
 	public void onGridNotification( GridNotification notification )
 	{
 		if( this.gp instanceof PartCable )
+		{
 			( (PartCable) this.gp ).markForUpdate();
+		}
 	}
 
 	@Override
@@ -357,7 +395,9 @@ public class AENetworkProxy implements IGridBlock
 	public boolean isActive()
 	{
 		if( this.node == null )
+		{
 			return false;
+		}
 
 		return this.node.isActive();
 	}
@@ -378,10 +418,14 @@ public class AENetworkProxy implements IGridBlock
 	{
 		IGrid grid = this.getGrid();
 		if( grid == null )
+		{
 			throw new GridAccessException();
+		}
 		IEnergyGrid eg = grid.getCache( IEnergyGrid.class );
 		if( eg == null )
+		{
 			throw new GridAccessException();
+		}
 		return eg;
 	}
 

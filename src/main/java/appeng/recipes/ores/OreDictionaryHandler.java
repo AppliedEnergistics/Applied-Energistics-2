@@ -45,16 +45,22 @@ public class OreDictionaryHandler
 	public void onOreDictionaryRegister( OreDictionary.OreRegisterEvent event )
 	{
 		if( event.Name == null || event.Ore == null )
+		{
 			return;
+		}
 
 		if( this.shouldCare( event.Name ) )
 		{
 			for( IOreListener v : this.ol )
+			{
 				v.oreRegistered( event.Name, event.Ore );
+			}
 		}
 
 		if( this.enableRebaking )
+		{
 			this.bakeRecipes();
+		}
 	}
 
 	/**
@@ -107,7 +113,9 @@ public class OreDictionaryHandler
 				for( ItemStack item : OreDictionary.getOres( name ) )
 				{
 					if( item != null )
+					{
 						n.oreRegistered( name, item );
+					}
 				}
 			}
 		}

@@ -68,7 +68,9 @@ public class SlotDisconnected extends AppEngSlot
 				ItemEncodedPattern iep = (ItemEncodedPattern) is.getItem();
 				ItemStack out = iep.getOutput( is );
 				if( out != null )
+				{
 					return out;
+				}
 			}
 		}
 		return super.getStack();

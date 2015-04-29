@@ -220,7 +220,9 @@ public class RenderBlocksWorkaround extends RenderBlocks
 		if( this.faces.contains( ForgeDirection.DOWN ) )
 		{
 			if( !this.renderFaces.contains( ForgeDirection.DOWN ) )
+			{
 				return;
+			}
 
 			if( this.isFacade )
 			{
@@ -257,7 +259,9 @@ public class RenderBlocksWorkaround extends RenderBlocks
 				}
 			}
 			else
+			{
 				super.renderFaceYNeg( par1Block, par2, par4, par6, par8Icon );
+			}
 		}
 		else
 		{
@@ -274,7 +278,9 @@ public class RenderBlocksWorkaround extends RenderBlocks
 		if( this.faces.contains( ForgeDirection.UP ) )
 		{
 			if( !this.renderFaces.contains( ForgeDirection.UP ) )
+			{
 				return;
+			}
 
 			if( this.isFacade )
 			{
@@ -311,7 +317,9 @@ public class RenderBlocksWorkaround extends RenderBlocks
 				}
 			}
 			else
+			{
 				super.renderFaceYPos( par1Block, par2, par4, par6, par8Icon );
+			}
 		}
 		else
 		{
@@ -328,7 +336,9 @@ public class RenderBlocksWorkaround extends RenderBlocks
 		if( this.faces.contains( ForgeDirection.NORTH ) )
 		{
 			if( !this.renderFaces.contains( ForgeDirection.NORTH ) )
+			{
 				return;
+			}
 
 			if( this.isFacade )
 			{
@@ -365,7 +375,9 @@ public class RenderBlocksWorkaround extends RenderBlocks
 				}
 			}
 			else
+			{
 				super.renderFaceZNeg( par1Block, par2, par4, par6, par8Icon );
+			}
 		}
 		else
 		{
@@ -382,7 +394,9 @@ public class RenderBlocksWorkaround extends RenderBlocks
 		if( this.faces.contains( ForgeDirection.SOUTH ) )
 		{
 			if( !this.renderFaces.contains( ForgeDirection.SOUTH ) )
+			{
 				return;
+			}
 
 			if( this.isFacade )
 			{
@@ -419,7 +433,9 @@ public class RenderBlocksWorkaround extends RenderBlocks
 				}
 			}
 			else
+			{
 				super.renderFaceZPos( par1Block, par2, par4, par6, par8Icon );
+			}
 		}
 		else
 		{
@@ -436,7 +452,9 @@ public class RenderBlocksWorkaround extends RenderBlocks
 		if( this.faces.contains( ForgeDirection.WEST ) )
 		{
 			if( !this.renderFaces.contains( ForgeDirection.WEST ) )
+			{
 				return;
+			}
 
 			if( this.isFacade )
 			{
@@ -473,7 +491,9 @@ public class RenderBlocksWorkaround extends RenderBlocks
 				}
 			}
 			else
+			{
 				super.renderFaceXNeg( par1Block, par2, par4, par6, par8Icon );
+			}
 		}
 		else
 		{
@@ -490,7 +510,9 @@ public class RenderBlocksWorkaround extends RenderBlocks
 		if( this.faces.contains( ForgeDirection.EAST ) )
 		{
 			if( !this.renderFaces.contains( ForgeDirection.EAST ) )
+			{
 				return;
+			}
 
 			if( this.isFacade )
 			{
@@ -527,7 +549,9 @@ public class RenderBlocksWorkaround extends RenderBlocks
 				}
 			}
 			else
+			{
 				super.renderFaceXPos( par1Block, par2, par4, par6, par8Icon );
+			}
 		}
 		else
 		{
@@ -577,13 +601,17 @@ public class RenderBlocksWorkaround extends RenderBlocks
 		int o = 0;
 
 		for( int i = -1; i <= 1; i++ )
+		{
 			for( int j = -1; j <= 1; j++ )
+			{
 				for( int k = -1; k <= 1; k++ )
 				{
 
 					this.lightHashTmp[o] = blk.getMixedBrightnessForBlock( this.blockAccess, x + i, y + j, z + k );
 					o++;
 				}
+			}
+		}
 
 		return Arrays.hashCode( this.lightHashTmp );
 	}

@@ -38,9 +38,13 @@ public final class GridCacheRegistry implements IGridCacheRegistry
 	public void registerGridCache( Class<? extends IGridCache> iface, Class<? extends IGridCache> implementation )
 	{
 		if( iface.isAssignableFrom( implementation ) )
+		{
 			this.caches.put( iface, implementation );
+		}
 		else
+		{
 			throw new IllegalArgumentException( "Invalid setup, grid cache must either be the same class, or an interface that the implementation implements. Gotten: " + iface + " and " + implementation );
+		}
 	}
 
 	@Override

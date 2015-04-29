@@ -43,11 +43,17 @@ public class GuiNumberBox extends GuiTextField
 		try
 		{
 			if( this.type == int.class || this.type == Integer.class )
+			{
 				Integer.parseInt( this.getText() );
+			}
 			else if( this.type == long.class || this.type == Long.class )
+			{
 				Long.parseLong( this.getText() );
+			}
 			else if( this.type == double.class || this.type == Double.class )
+			{
 				Double.parseDouble( this.getText() );
+			}
 		}
 		catch( NumberFormatException e )
 		{

@@ -73,7 +73,9 @@ public class CraftingTreeProcess
 			InventoryCrafting ic = new InventoryCrafting( new ContainerNull(), 3, 3 );
 			IAEItemStack[] is = details.getInputs();
 			for( int x = 0; x < ic.getSizeInventory(); x++ )
+			{
 				ic.setInventorySlotContents( x, is[x] == null ? null : is[x].getItemStack() );
+			}
 
 			FMLCommonHandler.instance().firePlayerCraftingEvent( Platform.getPlayer( (WorldServer) world ), details.getOutput( ic, world ), ic );
 
@@ -81,7 +83,9 @@ public class CraftingTreeProcess
 			{
 				ItemStack g = ic.getStackInSlot( x );
 				if( g != null && g.stackSize > 1 )
+				{
 					this.fullSimulation = true;
+				}
 			}
 
 			for( IAEItemStack part : details.getCondensedInputs() )
@@ -92,14 +96,20 @@ public class CraftingTreeProcess
 				for( IAEItemStack a : details.getCondensedOutputs() )
 				{
 					if( g != null && a != null && a.equals( g ) )
+					{
 						isAnInput = true;
+					}
 				}
 
 				if( isAnInput )
+				{
 					this.limitQty = true;
+				}
 
 				if( g.getItem().hasContainerItem( g ) )
+				{
 					this.limitQty = this.containerItems = true;
+				}
 			}
 
 			boolean complicated = false;
@@ -110,7 +120,9 @@ public class CraftingTreeProcess
 				{
 					IAEItemStack part = list[x];
 					if( part != null )
+					{
 						this.nodes.put( new CraftingTreeNode( cc, job, part.copy(), this, x, depth + 1 ), part.getStackSize() );
+					}
 				}
 			}
 			else
@@ -141,11 +153,15 @@ public class CraftingTreeProcess
 				for( IAEItemStack a : details.getCondensedOutputs() )
 				{
 					if( g != null && a != null && a.equals( g ) )
+					{
 						isAnInput = true;
+					}
 				}
 
 				if( isAnInput )
+				{
 					this.limitQty = true;
+				}
 			}
 
 			for( IAEItemStack part : details.getCondensedInputs() )
@@ -163,7 +179,9 @@ public class CraftingTreeProcess
 	long getTimes( long remaining, long stackSize )
 	{
 		if( this.limitQty || this.fullSimulation )
+		{
 			return 1;
+		}
 		return ( remaining / stackSize ) + ( remaining % stackSize != 0 ? 1 : 0 );
 	}
 
@@ -236,7 +254,9 @@ public class CraftingTreeProcess
 	{
 		job.addTask( this.getAmountCrafted( this.parent.getStack( 1 ) ), this.crafts, this.details, this.depth );
 		for( CraftingTreeNode pro : this.nodes.keySet() )
+		{
 			pro.dive( job );
+		}
 
 		job.addBytes( 8 + this.crafts + this.bytes );
 	}
@@ -273,7 +293,9 @@ public class CraftingTreeProcess
 		this.bytes = 0;
 
 		for( CraftingTreeNode pro : this.nodes.keySet() )
+		{
 			pro.setSimulate();
+		}
 	}
 
 	public void setJob( MECraftingInventory storage, CraftingCPUCluster craftingCPUCluster, BaseActionSource src ) throws CraftBranchFailure
@@ -281,7 +303,9 @@ public class CraftingTreeProcess
 		craftingCPUCluster.addCrafting( this.details, this.crafts );
 
 		for( CraftingTreeNode pro : this.nodes.keySet() )
+		{
 			pro.setJob( storage, craftingCPUCluster, src );
+		}
 	}
 
 	public void getPlan( IItemList<IAEItemStack> plan )
@@ -294,6 +318,8 @@ public class CraftingTreeProcess
 		}
 
 		for( CraftingTreeNode pro : this.nodes.keySet() )
+		{
 			pro.getPlan( plan );
+		}
 	}
 }

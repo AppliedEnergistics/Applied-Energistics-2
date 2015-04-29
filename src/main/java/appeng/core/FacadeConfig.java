@@ -46,7 +46,9 @@ public class FacadeConfig extends Configuration
 	public boolean checkEnabled( Block id, int metadata, boolean automatic )
 	{
 		if( id == null )
+		{
 			return false;
+		}
 
 		UniqueIdentifier blk = GameRegistry.findUniqueIdentifierFor( id );
 		if( blk == null )
@@ -56,7 +58,9 @@ public class FacadeConfig extends Configuration
 				try
 				{
 					if( f.get( Block.class ) == id )
+					{
 						return this.get( "minecraft", f.getName() + ( metadata == 0 ? "" : "." + metadata ), automatic ).getBoolean( automatic );
+					}
 				}
 				catch( Throwable e )
 				{

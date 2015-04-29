@@ -121,7 +121,9 @@ public class PacketNEIRecipe extends AppEngPacket
 			{
 				IGrid grid = node.getGrid();
 				if( grid == null )
+				{
 					return;
+				}
 
 				IStorageGrid inv = grid.getCache( IStorageGrid.class );
 				IEnergyGrid energy = grid.getCache( IEnergyGrid.class );
@@ -172,9 +174,13 @@ public class PacketNEIRecipe extends AppEngPacket
 										{
 											IAEItemStack out = realForFake == Actionable.SIMULATE ? null : Platform.poweredInsert( energy, storage, in, cct.getSource() );
 											if( out != null )
+											{
 												craftMatrix.setInventorySlotContents( x, out.getItemStack() );
+											}
 											else
+											{
 												craftMatrix.setInventorySlotContents( x, null );
+											}
 
 											currentItem = craftMatrix.getStackInSlot( x );
 										}

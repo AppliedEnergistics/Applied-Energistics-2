@@ -100,9 +100,13 @@ public class OreHelper
 			}
 
 			if( !set.isEmpty() )
+			{
 				this.references.put( ir, ref );
+			}
 			else
+			{
 				this.references.put( ir, null );
+			}
 		}
 
 		return this.references.get( ir );
@@ -119,16 +123,22 @@ public class OreHelper
 	public boolean sameOre( OreReference a, OreReference b )
 	{
 		if( a == null || b == null )
+		{
 			return false;
+		}
 
 		if( a == b )
+		{
 			return true;
+		}
 
 		Collection<Integer> bOres = b.getOres();
 		for( Integer ore : a.getOres() )
 		{
 			if( bOres.contains( ore ) )
+			{
 				return true;
+			}
 		}
 
 		return false;
@@ -138,14 +148,18 @@ public class OreHelper
 	{
 		OreReference a = aeItemStack.def.isOre;
 		if( a == null )
+		{
 			return false;
+		}
 
 		for( String oreName : a.getEquivalents() )
 		{
 			for( ItemStack oreItem : this.oreDictCache.getUnchecked( oreName ) )
 			{
 				if( OreDictionary.itemMatches( oreItem, o, false ) )
+				{
 					return true;
+				}
 			}
 		}
 
@@ -169,9 +183,13 @@ public class OreHelper
 			this.ref = stack.getItem();
 
 			if( stack.getItem().isDamageable() )
+			{
 				this.damage = 0; // IGNORED
+			}
 			else
+			{
 				this.damage = stack.getItemDamage(); // might be important...
+			}
 
 			this.hash = this.ref.hashCode() ^ this.damage;
 		}
@@ -186,9 +204,13 @@ public class OreHelper
 		public boolean equals( Object obj )
 		{
 			if( obj == null )
+			{
 				return false;
+			}
 			if( this.getClass() != obj.getClass() )
+			{
 				return false;
+			}
 			ItemRef other = (ItemRef) obj;
 			return this.damage == other.damage && this.ref == other.ref;
 		}

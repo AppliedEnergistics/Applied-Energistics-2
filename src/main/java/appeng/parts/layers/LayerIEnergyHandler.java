@@ -38,7 +38,9 @@ public class LayerIEnergyHandler extends LayerBase implements IEnergyHandler
 	{
 		IPart part = this.getPart( from );
 		if( part instanceof IEnergyReceiver )
+		{
 			return ( (IEnergyReceiver) part ).receiveEnergy( from, maxReceive, simulate );
+		}
 
 		return 0;
 	}
@@ -48,7 +50,9 @@ public class LayerIEnergyHandler extends LayerBase implements IEnergyHandler
 	{
 		IPart part = this.getPart( from );
 		if( part instanceof IEnergyProvider )
+		{
 			return ( (IEnergyProvider) part ).extractEnergy( from, maxExtract, simulate );
+		}
 
 		return 0;
 	}
@@ -58,7 +62,9 @@ public class LayerIEnergyHandler extends LayerBase implements IEnergyHandler
 	{
 		IPart part = this.getPart( from );
 		if( part instanceof IEnergyProvider )
+		{
 			return ( (IEnergyProvider) part ).getEnergyStored( from );
+		}
 
 		return 0;
 	}
@@ -68,7 +74,9 @@ public class LayerIEnergyHandler extends LayerBase implements IEnergyHandler
 	{
 		IPart part = this.getPart( from );
 		if( part instanceof IEnergyProvider )
+		{
 			return ( (IEnergyProvider) part ).getMaxEnergyStored( from );
+		}
 
 		return 0;
 	}
@@ -78,7 +86,9 @@ public class LayerIEnergyHandler extends LayerBase implements IEnergyHandler
 	{
 		IPart part = this.getPart( from );
 		if( part instanceof IEnergyConnection )
+		{
 			return ( (IEnergyConnection) part ).canConnectEnergy( from );
+		}
 
 		return false;
 	}

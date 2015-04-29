@@ -81,7 +81,9 @@ public class QuantumCalculator extends MBCalculator
 					IAEMultiBlock te = (IAEMultiBlock) w.getTileEntity( x, y, z );
 
 					if( !te.isValid() )
+					{
 						return false;
+					}
 
 					num++;
 					final IBlocks blocks = AEApi.instance().definitions().blocks();
@@ -137,9 +139,13 @@ public class QuantumCalculator extends MBCalculator
 					else
 					{
 						if( num == 1 || num == 3 || num == 7 || num == 9 )
+						{
 							flags = (byte) ( this.tqb.corner | num );
+						}
 						else
+						{
 							flags = num;
+						}
 						c.Ring[ringNum] = te;
 						ringNum++;
 					}

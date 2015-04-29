@@ -48,7 +48,9 @@ public class StorageHelper
 	public static StorageHelper getInstance()
 	{
 		if( instance == null )
+		{
 			instance = new StorageHelper();
+		}
 		return instance;
 	}
 
@@ -78,9 +80,13 @@ public class StorageHelper
 		}
 
 		if( oldWorld == null )
+		{
 			return entity;
+		}
 		if( newWorld == null )
+		{
 			return entity;
+		}
 
 		// Is something riding? Handle it first.
 		if( entity.riddenByEntity != null )
@@ -105,7 +111,9 @@ public class StorageHelper
 			if( player != null )
 			{
 				if( link.dim.provider instanceof StorageWorldProvider )
+				{
 					Achievements.SpatialIOExplorer.addToPlayer( player );
+				}
 
 				player.mcServer.getConfigurationManager().transferPlayerToDimension( player, link.dim.provider.dimensionId, new METeleporter( newWorld, link ) );
 			}
@@ -143,7 +151,9 @@ public class StorageHelper
 					entity = newEntity;
 				}
 				else
+				{
 					return null;
+				}
 
 				// myChunk.addEntity( entity );
 				// newWorld.loadedEntityList.add( entity );
@@ -157,7 +167,9 @@ public class StorageHelper
 		if( cart != null )
 		{
 			if( player != null )
+			{
 				entity.worldObj.updateEntityWithOptionalForce( entity, true );
+			}
 
 			entity.mountEntity( cart );
 		}
@@ -168,25 +180,31 @@ public class StorageHelper
 	public void transverseEdges( int minX, int minY, int minZ, int maxX, int maxY, int maxZ, ISpatialVisitor visitor )
 	{
 		for( int y = minY; y < maxY; y++ )
+		{
 			for( int z = minZ; z < maxZ; z++ )
 			{
 				visitor.visit( minX, y, z );
 				visitor.visit( maxX, y, z );
 			}
+		}
 
 		for( int x = minX; x < maxX; x++ )
+		{
 			for( int z = minZ; z < maxZ; z++ )
 			{
 				visitor.visit( x, minY, z );
 				visitor.visit( x, maxY, z );
 			}
+		}
 
 		for( int x = minX; x < maxX; x++ )
+		{
 			for( int y = minY; y < maxY; y++ )
 			{
 				visitor.visit( x, y, minZ );
 				visitor.visit( x, y, maxZ );
 			}
+		}
 	}
 
 	public void swapRegions( World src /** over world **/, World dst /** storage cell **/, int x, int y, int z, int i, int j, int k, int scaleX, int scaleY, int scaleZ )
@@ -220,10 +238,14 @@ public class StorageHelper
 		}
 
 		for( WorldCoord wc : cDst.updates )
+		{
 			cDst.world.notifyBlockOfNeighborChange( wc.x, wc.y, wc.z, Platform.AIR );
+		}
 
 		for( WorldCoord wc : cSrc.updates )
+		{
 			cSrc.world.notifyBlockOfNeighborChange( wc.x, wc.y, wc.z, Platform.AIR );
+		}
 
 		this.transverseEdges( x - 1, y - 1, z - 1, x + scaleX + 1, y + scaleY + 1, z + scaleZ + 1, new TriggerUpdates( src ) );
 		this.transverseEdges( i - 1, j - 1, k - 1, i + scaleX + 1, j + scaleY + 1, k + scaleZ + 1, new TriggerUpdates( dst ) );

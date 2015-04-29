@@ -48,15 +48,21 @@ public class AEConfigGui extends GuiConfig
 		for( String cat : AEConfig.instance.getCategoryNames() )
 		{
 			if( cat.equals( "versionchecker" ) )
+			{
 				continue;
+			}
 
 			if( cat.equals( "settings" ) )
+			{
 				continue;
+			}
 
 			ConfigCategory cc = AEConfig.instance.getCategory( cat );
 
 			if( cc.isChild() )
+			{
 				continue;
+			}
 
 			ConfigElement ce = new ConfigElement( cc );
 			list.add( ce );

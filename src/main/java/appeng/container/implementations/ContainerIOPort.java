@@ -65,14 +65,22 @@ public class ContainerIOPort extends ContainerUpgradeable
 		IInventory cells = this.upgradeable.getInventoryByName( "cells" );
 
 		for( int y = 0; y < 3; y++ )
+		{
 			for( int x = 0; x < 2; x++ )
+			{
 				this.addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.STORAGE_CELLS, cells, x + y * 2, offX + x * 18, offY + y * 18, this.invPlayer ) );
+			}
+		}
 
 		offX = 122;
 		offY = 17;
 		for( int y = 0; y < 3; y++ )
+		{
 			for( int x = 0; x < 2; x++ )
+			{
 				this.addSlotToContainer( new SlotOutput( cells, 6 + x + y * 2, offX + x * 18, offY + y * 18, SlotRestrictedInput.PlacableItemType.STORAGE_CELLS.IIcon ) );
+			}
+		}
 
 		IInventory upgrades = this.upgradeable.getInventoryByName( "upgrades" );
 		this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 0, 187, 8, this.invPlayer ) ).setNotDraggable() );

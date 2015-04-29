@@ -161,7 +161,9 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 
 				String str = Long.toString( refStack.getStackSize() );
 				if( refStack.getStackSize() >= 10000 )
+				{
 					str = Long.toString( refStack.getStackSize() / 1000 ) + 'k';
+				}
 
 				int w = this.fontRendererObj.getStringWidth( str );
 				this.fontRendererObj.drawString( str, (int) ( ( x * sectionLength + xo + sectionLength - 19 - ( w * 0.5 ) ) * 2 ), ( y * 18 + yo + 6 ) * 2, 4210752 );
@@ -176,7 +178,9 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 
 					toolTip += ( '\n' + GuiText.Installed.getLocal() + ": " + ( refStack.getStackSize() ) );
 					if( refStack.getCountRequestable() > 0 )
+					{
 						toolTip += ( '\n' + GuiText.EnergyDrain.getLocal() + ": " + Platform.formatPowerLong( refStack.getCountRequestable(), true ) );
+					}
 
 					toolPosX = x * sectionLength + xo + sectionLength - 8;
 					toolPosY = y * 18 + yo;
@@ -214,7 +218,9 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 		this.repo.clear();
 
 		for( IAEItemStack is : list )
+		{
 			this.repo.postUpdate( is );
+		}
 
 		this.repo.updateView();
 		this.setScrollBar();
@@ -249,7 +255,9 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 				if( myStack != null )
 				{
 					while( currentToolTip.size() > 1 )
+					{
 						currentToolTip.remove( 1 );
+					}
 				}
 			}
 		}
@@ -278,7 +286,9 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 				List currentToolTip = stack.getTooltip( this.mc.thePlayer, this.mc.gameSettings.advancedItemTooltips );
 
 				while( currentToolTip.size() > 1 )
+				{
 					currentToolTip.remove( 1 );
+				}
 
 				currentToolTip.add( GuiText.Installed.getLocal() + ": " + ( myStack.getStackSize() ) );
 				currentToolTip.add( GuiText.EnergyDrain.getLocal() + ": " + Platform.formatPowerLong( myStack.getCountRequestable(), true ) );

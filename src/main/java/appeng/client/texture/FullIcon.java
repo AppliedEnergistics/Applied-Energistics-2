@@ -33,7 +33,9 @@ public class FullIcon implements IIcon
 	public FullIcon( IIcon o )
 	{
 		if( o == null )
+		{
 			throw new IllegalArgumentException( "Cannot create a wrapper icon with a null icon." );
+		}
 
 		this.p = o;
 	}
@@ -69,7 +71,9 @@ public class FullIcon implements IIcon
 	public float getInterpolatedU( double d0 )
 	{
 		if( d0 > 8.0 )
+		{
 			return this.p.getMaxU();
+		}
 		return this.p.getMinU();
 	}
 
@@ -92,7 +96,9 @@ public class FullIcon implements IIcon
 	public float getInterpolatedV( double d0 )
 	{
 		if( d0 > 8.0 )
+		{
 			return this.p.getMaxV();
+		}
 		return this.p.getMinV();
 	}
 

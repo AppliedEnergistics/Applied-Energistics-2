@@ -60,7 +60,9 @@ public class ItemViewCell extends AEBaseItem implements ICellWorkbenchItem
 		for( ItemStack currentViewCell : list )
 		{
 			if( currentViewCell == null )
+			{
 				continue;
+			}
 
 			if( ( currentViewCell.getItem() instanceof ItemViewCell ) )
 			{
@@ -100,15 +102,21 @@ public class ItemViewCell extends AEBaseItem implements ICellWorkbenchItem
 				{
 					ItemStack is = config.getStackInSlot( x );
 					if( is != null )
+					{
 						priorityList.add( AEItemStack.create( is ) );
+					}
 				}
 
 				if( !priorityList.isEmpty() )
 				{
 					if( hasFuzzy )
+					{
 						myMergedList.addNewList( new FuzzyPriorityList<IAEItemStack>( priorityList, fzMode ), !hasInverter );
+					}
 					else
+					{
 						myMergedList.addNewList( new PrecisePriorityList<IAEItemStack>( priorityList ), !hasInverter );
+					}
 
 					myPartitionList = myMergedList;
 				}

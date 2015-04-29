@@ -146,7 +146,9 @@ public class WorldSettings extends Configuration
 						// edit.
 						int size = data.getInteger( "num" );
 						for( int s = 0; s < size; s++ )
+						{
 							ll.add( data.getCompoundTag( String.valueOf( s ) ) );
+						}
 					}
 				}
 			}
@@ -158,7 +160,9 @@ public class WorldSettings extends Configuration
 	NBTTagCompound loadSpawnData( int dim, int chunkX, int chunkZ )
 	{
 		if( !Thread.holdsLock( WorldSettings.class ) )
+		{
 			throw new IllegalStateException( "Invalid Request" );
+		}
 
 		NBTTagCompound data = null;
 		File file = new File( this.spawnDataFolder, dim + '_' + ( chunkX >> 4 ) + '_' + ( chunkZ >> 4 ) + ".dat" );
@@ -225,7 +229,9 @@ public class WorldSettings extends Configuration
 	void writeSpawnData( int dim, int chunkX, int chunkZ, NBTTagCompound data )
 	{
 		if( !Thread.holdsLock( WorldSettings.class ) )
+		{
 			throw new IllegalStateException( "Invalid Request" );
+		}
 
 		File file = new File( this.spawnDataFolder, dim + '_' + ( chunkX >> 4 ) + '_' + ( chunkZ >> 4 ) + ".dat" );
 		FileOutputStream fileOutputStream = null;
@@ -277,7 +283,9 @@ public class WorldSettings extends Configuration
 		this.save();
 
 		for( Integer dimID : this.storageCellDims )
+		{
 			DimensionManager.unregisterDimension( dimID );
+		}
 
 		this.storageCellDims.clear();
 
@@ -301,7 +309,9 @@ public class WorldSettings extends Configuration
 
 		// save to files
 		if( this.hasChanged() )
+		{
 			super.save();
+		}
 	}
 
 	public void addStorageCellDim( int newDim )
@@ -314,7 +324,9 @@ public class WorldSettings extends Configuration
 		String[] values = new String[this.storageCellDims.size()];
 
 		for( int x = 0; x < values.length; x++ )
+		{
 			values[x] = String.valueOf( this.storageCellDims.get( x ) );
+		}
 
 		this.get( "DimensionManager", "StorageCells", new int[0] ).set( values );
 		this.save();
@@ -337,7 +349,9 @@ public class WorldSettings extends Configuration
 		else
 		{
 			for( PlayerColor pc : TickHandler.INSTANCE.getPlayerColors().values() )
+			{
 				NetworkHandler.instance.sendToAll( pc.getPacket() );
+			}
 		}
 	}
 
@@ -427,13 +441,17 @@ public class WorldSettings extends Configuration
 		ConfigCategory playerList = this.getCategory( "players" );
 
 		if( playerList == null || profile == null || !profile.isComplete() )
+		{
 			return -1;
+		}
 
 		String uuid = profile.getId().toString();
 
 		Property prop = playerList.get( uuid );
 		if( prop != null && prop.isIntValue() )
+		{
 			return prop.getInt();
+		}
 		else
 		{
 			playerList.put( uuid, prop = new Property( uuid, String.valueOf( this.nextPlayer() ), Property.Type.INTEGER ) );
@@ -461,7 +479,9 @@ public class WorldSettings extends Configuration
 			for( EntityPlayer player : CommonHelper.proxy.getPlayers() )
 			{
 				if( player.getUniqueID().equals( uuid ) )
+				{
 					return player;
+				}
 			}
 		}
 

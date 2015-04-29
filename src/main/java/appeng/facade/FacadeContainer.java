@@ -71,7 +71,9 @@ public class FacadeContainer implements IFacadeContainer
 			{
 				this.storage.setFacade( side.ordinal(), null );
 				if( host != null )
+				{
 					host.markForUpdate();
+				}
 			}
 		}
 	}
@@ -97,7 +99,9 @@ public class FacadeContainer implements IFacadeContainer
 		newFacades[ForgeDirection.NORTH.ordinal()] = this.storage.getFacade( ForgeDirection.WEST.ordinal() );
 
 		for( int x = 0; x < this.facades; x++ )
+		{
 			this.storage.setFacade( x, newFacades[x] );
+		}
 	}
 
 	@Override
@@ -178,14 +182,18 @@ public class FacadeContainer implements IFacadeContainer
 				{
 					Item i = is.getItem();
 					if( i instanceof IFacadeItem )
+					{
 						this.storage.setFacade( x, ( (IFacadeItem) i ).createPartFromItemStack( is, ForgeDirection.getOrientation( x ) ) );
+					}
 					else
 					{
 						if( AppEng.instance.isIntegrationEnabled( IntegrationType.BC ) )
 						{
 							IBC bc = (IBC) AppEng.instance.getIntegration( IntegrationType.BC );
 							if( bc.isFacade( is ) )
+							{
 								this.storage.setFacade( x, bc.createFacadePart( is, ForgeDirection.getOrientation( x ) ) );
+							}
 						}
 					}
 				}
@@ -200,7 +208,9 @@ public class FacadeContainer implements IFacadeContainer
 		for( int x = 0; x < this.facades; x++ )
 		{
 			if( this.getFacade( ForgeDirection.getOrientation( x ) ) != null )
+			{
 				facadeSides |= ( 1 << x );
+			}
 		}
 		out.writeByte( (byte) facadeSides );
 
@@ -221,8 +231,12 @@ public class FacadeContainer implements IFacadeContainer
 	public boolean isEmpty()
 	{
 		for( int x = 0; x < this.facades; x++ )
+		{
 			if( this.storage.getFacade( x ) != null )
+			{
 				return false;
+			}
+		}
 		return true;
 	}
 }

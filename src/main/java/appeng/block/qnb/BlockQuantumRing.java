@@ -56,7 +56,9 @@ public class BlockQuantumRing extends AEBaseBlock implements ICustomCollision
 	{
 		TileQuantumBridge bridge = this.getTileEntity( w, x, y, z );
 		if( bridge != null )
+		{
 			bridge.neighborUpdate();
+		}
 	}
 
 	@Override
@@ -70,7 +72,9 @@ public class BlockQuantumRing extends AEBaseBlock implements ICustomCollision
 	{
 		TileQuantumBridge bridge = this.getTileEntity( w, x, y, z );
 		if( bridge != null )
+		{
 			bridge.breakCluster();
+		}
 
 		super.breakBlock( w, x, y, z, a, b );
 	}

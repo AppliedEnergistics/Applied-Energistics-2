@@ -76,7 +76,9 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 		this.def = new AEItemDef( item );
 
 		if( this.def.item == null )
+		{
 			throw new InvalidParameterException( "This ItemStack is bad, it has a null item." );
+		}
 
 		/*
 		 * Prevent an Item from changing the damage value on me... Either, this or a core mod.
@@ -97,7 +99,9 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 
 		NBTTagCompound tagCompound = is.getTagCompound();
 		if( tagCompound != null )
+		{
 			this.def.tagCompound = (AESharedNBT) AESharedNBT.getSharedTagCompound( tagCompound, is );
+		}
 
 		this.stackSize = is.stackSize;
 		this.setCraftable( false );
@@ -110,11 +114,15 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 	public static IAEItemStack loadItemStackFromNBT( NBTTagCompound i )
 	{
 		if( i == null )
+		{
 			return null;
+		}
 
 		ItemStack itemstack = ItemStack.loadItemStackFromNBT( i );
 		if( itemstack == null )
+		{
 			return null;
+		}
 
 		AEItemStack item = AEItemStack.create( itemstack );
 		// item.priority = i.getInteger( "Priority" );
@@ -168,7 +176,9 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 
 		ItemStack itemstack = ItemStack.loadItemStackFromNBT( d );
 		if( itemstack == null )
+		{
 			return null;
+		}
 
 		AEItemStack item = AEItemStack.create( itemstack );
 		// item.priority = (int) priority;
@@ -182,7 +192,9 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 	public void add( IAEItemStack option )
 	{
 		if( option == null )
+		{
 			return;
+		}
 
 		// if ( priority < ((AEItemStack) option).priority )
 		// priority = ((AEItemStack) option).priority;
@@ -237,9 +249,13 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 		i.setShort( "Damage", (short) this.def.damageValue );
 
 		if( this.def.tagCompound != null )
+		{
 			i.setTag( "tag", this.def.tagCompound );
+		}
 		else
+		{
 			i.removeTag( "tag" );
+		}
 	}
 
 	@Override
@@ -250,7 +266,9 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 			IAEItemStack o = (IAEItemStack) st;
 
 			if( this.sameOre( o ) )
+			{
 				return true;
+			}
 
 			if( o.getItem() == this.getItem() )
 			{
@@ -401,7 +419,9 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 	{
 		ItemStack is = new ItemStack( this.def.item, (int) Math.min( Integer.MAX_VALUE, this.stackSize ), this.def.damageValue );
 		if( this.def.tagCompound != null )
+		{
 			is.setTagCompound( this.def.tagCompound.getNBTTagCompoundCopy() );
+		}
 
 		return is;
 	}
@@ -428,7 +448,9 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 	public boolean isSameType( IAEItemStack otherStack )
 	{
 		if( otherStack == null )
+		{
 			return false;
+		}
 
 		return this.def.equals( ( (AEItemStack) otherStack ).def );
 	}
@@ -437,7 +459,9 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 	public boolean isSameType( ItemStack otherStack )
 	{
 		if( otherStack == null )
+		{
 			return false;
+		}
 
 		return this.def.isItem( otherStack );
 	}
@@ -464,16 +488,24 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 				NBTTagCompound ta = this.def.tagCompound;
 				NBTTagCompound tb = is.getTagCompound();
 				if( ta == tb )
+				{
 					return true;
+				}
 
 				if( ( ta == null && tb == null ) || ( ta != null && ta.hasNoTags() && tb == null ) || ( tb != null && tb.hasNoTags() && ta == null ) || ( ta != null && ta.hasNoTags() && tb != null && tb.hasNoTags() ) )
+				{
 					return true;
+				}
 
 				if( ( ta == null && tb != null ) || ( ta != null && tb == null ) )
+				{
 					return false;
+				}
 
 				if( AESharedNBT.isShared( tb ) )
+				{
 					return ta == tb;
+				}
 
 				return Platform.NBTEqualityTest( ta, tb );
 			}
@@ -492,15 +524,21 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 	{
 		int id = this.def.itemID - b.def.itemID;
 		if( id != 0 )
+		{
 			return id;
+		}
 
 		int damageValue = this.def.damageValue - b.def.damageValue;
 		if( damageValue != 0 )
+		{
 			return damageValue;
+		}
 
 		int displayDamage = this.def.displayDamage - b.def.displayDamage;
 		if( displayDamage != 0 )
+		{
 			return displayDamage;
+		}
 
 		return ( this.def.tagCompound == b.def.tagCompound ) ? 0 : this.compareNBT( b.def );
 	}
@@ -509,7 +547,9 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 	{
 		int nbt = this.compare( ( this.def.tagCompound == null ? 0 : this.def.tagCompound.getHash() ), ( b.tagCompound == null ? 0 : b.tagCompound.getHash() ) );
 		if( nbt == 0 )
+		{
 			return this.compare( System.identityHashCode( this.def.tagCompound ), System.identityHashCode( b.tagCompound ) );
+		}
 		return nbt;
 	}
 
@@ -522,7 +562,9 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 	public List getToolTip()
 	{
 		if( this.def.tooltip != null )
+		{
 			return this.def.tooltip;
+		}
 
 		return this.def.tooltip = Platform.getTooltip( this.getItemStack() );
 	}
@@ -531,7 +573,9 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 	public String getDisplayName()
 	{
 		if( this.def.displayName != null )
+		{
 			return this.def.displayName;
+		}
 
 		return this.def.displayName = Platform.getItemDisplayName( this.getItemStack() );
 	}
@@ -540,7 +584,9 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 	public String getModID()
 	{
 		if( this.def.uniqueID != null )
+		{
 			return this.getModName( this.def.uniqueID );
+		}
 
 		return this.getModName( this.def.uniqueID = GameRegistry.findUniqueIdentifierFor( this.def.item ) );
 	}
@@ -548,7 +594,9 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 	private String getModName( UniqueIdentifier uniqueIdentifier )
 	{
 		if( uniqueIdentifier == null )
+		{
 			return "** Null";
+		}
 
 		return uniqueIdentifier.modId == null ? "** Null" : uniqueIdentifier.modId;
 	}
@@ -574,9 +622,13 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 			else if( fuzzy == FuzzyMode.PERCENT_99 )
 			{
 				if( this.def.damageValue == 0 )
+				{
 					newDef.displayDamage = 0;
+				}
 				else
+				{
 					newDef.displayDamage = 1;
+				}
 			}
 			else
 			{
@@ -613,9 +665,13 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 			else if( fuzzy == FuzzyMode.PERCENT_99 )
 			{
 				if( this.def.damageValue == 0 )
+				{
 					newDef.displayDamage = 0;
+				}
 				else
+				{
 					newDef.displayDamage = this.def.maxDamage + 1;
+				}
 			}
 			else
 			{

@@ -60,14 +60,18 @@ public class MultiCraftingTracker
 		{
 			NBTTagCompound link = extra.getCompoundTag( "links-" + x );
 			if( link != null && !link.hasNoTags() )
+			{
 				this.setLink( x, AEApi.instance().storage().loadCraftingLink( link, this.owner ) );
+			}
 		}
 	}
 
 	void setLink( int slot, ICraftingLink l )
 	{
 		if( this.links == null )
+		{
 			this.links = new ICraftingLink[this.size];
+		}
 
 		this.links[slot] = l;
 
@@ -77,13 +81,19 @@ public class MultiCraftingTracker
 			ICraftingLink g = this.links[x];
 
 			if( g == null || g.isCanceled() || g.isDone() )
+			{
 				this.links[x] = null;
+			}
 			else
+			{
 				hasStuff = true;
+			}
 		}
 
 		if( !hasStuff )
+		{
 			this.links = null;
+		}
 	}
 
 	public void writeToNBT( NBTTagCompound extra )
@@ -103,7 +113,9 @@ public class MultiCraftingTracker
 	ICraftingLink getLink( int slot )
 	{
 		if( this.links == null )
+		{
 			return null;
+		}
 
 		return this.links[slot];
 	}
@@ -123,7 +135,9 @@ public class MultiCraftingTracker
 				try
 				{
 					if( craftingJob.isDone() )
+					{
 						job = craftingJob.get();
+					}
 
 					if( job != null )
 					{
@@ -157,7 +171,9 @@ public class MultiCraftingTracker
 	Future<ICraftingJob> getJob( int slot )
 	{
 		if( this.jobs == null )
+		{
 			return null;
+		}
 
 		return this.jobs[slot];
 	}
@@ -165,7 +181,9 @@ public class MultiCraftingTracker
 	void setJob( int slot, Future<ICraftingJob> l )
 	{
 		if( this.jobs == null )
+		{
 			this.jobs = new Future[this.size];
+		}
 
 		this.jobs[slot] = l;
 
@@ -179,13 +197,17 @@ public class MultiCraftingTracker
 		}
 
 		if( !hasStuff )
+		{
 			this.jobs = null;
+		}
 	}
 
 	public ImmutableSet<ICraftingLink> getRequestedJobs()
 	{
 		if( this.links == null )
+		{
 			return ImmutableSet.of();
+		}
 
 		return ImmutableSet.copyOf( new NonNullArrayIterator( this.links ) );
 	}
@@ -212,7 +234,9 @@ public class MultiCraftingTracker
 			for( int x = 0; x < this.links.length; x++ )
 			{
 				if( this.links[x] == link )
+				{
 					return x;
+				}
 			}
 		}
 
@@ -226,7 +250,9 @@ public class MultiCraftingTracker
 			for( ICraftingLink l : this.links )
 			{
 				if( l != null )
+				{
 					l.cancel();
+				}
 			}
 
 			this.links = null;
@@ -237,7 +263,9 @@ public class MultiCraftingTracker
 			for( Future<ICraftingJob> l : this.jobs )
 			{
 				if( l != null )
+				{
 					l.cancel( true );
+				}
 			}
 
 			this.jobs = null;

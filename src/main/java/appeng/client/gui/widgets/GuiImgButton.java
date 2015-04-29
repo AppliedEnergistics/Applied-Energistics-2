@@ -193,9 +193,13 @@ public class GuiImgButton extends GuiButton implements ITooltip
 				GL11.glScalef( 0.5f, 0.5f, 0.5f );
 
 				if( this.enabled )
+				{
 					GL11.glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
+				}
 				else
+				{
 					GL11.glColor4f( 0.5f, 0.5f, 0.5f, 1.0f );
+				}
 
 				par1Minecraft.renderEngine.bindTexture( ExtraBlockTextures.GuiTexture( "guis/states.png" ) );
 				this.field_146123_n = par2 >= this.xPosition && par3 >= this.yPosition && par2 < this.xPosition + this.width && par3 < this.yPosition + this.height;
@@ -212,9 +216,13 @@ public class GuiImgButton extends GuiButton implements ITooltip
 			else
 			{
 				if( this.enabled )
+				{
 					GL11.glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
+				}
 				else
+				{
 					GL11.glColor4f( 0.5f, 0.5f, 0.5f, 1.0f );
+				}
 
 				par1Minecraft.renderEngine.bindTexture( ExtraBlockTextures.GuiTexture( "guis/states.png" ) );
 				this.field_146123_n = par2 >= this.xPosition && par3 >= this.yPosition && par2 < this.xPosition + this.width && par3 < this.yPosition + this.height;
@@ -236,7 +244,9 @@ public class GuiImgButton extends GuiButton implements ITooltip
 		{
 			ButtonAppearance app = appearances.get( new EnumPair( this.buttonSetting, this.currentValue ) );
 			if( app == null )
+			{
 				return 256 - 1;
+			}
 			return app.index;
 		}
 		return 256 - 1;
@@ -262,7 +272,9 @@ public class GuiImgButton extends GuiButton implements ITooltip
 		{
 			ButtonAppearance buttonAppearance = appearances.get( new EnumPair( this.buttonSetting, this.currentValue ) );
 			if( buttonAppearance == null )
+			{
 				return "No Such Message";
+			}
 
 			displayName = buttonAppearance.displayName;
 			displayValue = buttonAppearance.displayValue;
@@ -274,19 +286,27 @@ public class GuiImgButton extends GuiButton implements ITooltip
 			String value = StatCollector.translateToLocal( displayValue );
 
 			if( name == null || name.isEmpty() )
+			{
 				name = displayName;
+			}
 			if( value == null || value.isEmpty() )
+			{
 				value = displayValue;
+			}
 
 			if( this.fillVar != null )
+			{
 				value = COMPILE.matcher( value ).replaceFirst( this.fillVar );
+			}
 
 			value = PATTERN_NEW_LINE.matcher( value ).replaceAll( "\n" );
 			StringBuilder sb = new StringBuilder( value );
 
 			int i = sb.lastIndexOf( "\n" );
 			if( i <= 0 )
+			{
 				i = 0;
+			}
 			while( i + 30 < sb.length() && ( i = sb.lastIndexOf( " ", i + 30 ) ) != -1 )
 			{
 				sb.replace( i, i + 1, "\n" );
@@ -357,9 +377,13 @@ public class GuiImgButton extends GuiButton implements ITooltip
 		public boolean equals( Object obj )
 		{
 			if( obj == null )
+			{
 				return false;
+			}
 			if( this.getClass() != obj.getClass() )
+			{
 				return false;
+			}
 			EnumPair other = (EnumPair) obj;
 			return other.setting == this.setting && other.value == this.value;
 		}

@@ -54,9 +54,13 @@ public class RenderBlockSkyChest extends BaseBlockRender
 
 		ResourceLocation loc;
 		if( is.getItemDamage() == 1 )
+		{
 			loc = new ResourceLocation( "appliedenergistics2", "textures/models/skyblockchest.png" );
+		}
 		else
+		{
 			loc = new ResourceLocation( "appliedenergistics2", "textures/models/skychest.png" );
+		}
 
 		Minecraft.getMinecraft().getTextureManager().bindTexture( loc );
 
@@ -83,12 +87,16 @@ public class RenderBlockSkyChest extends BaseBlockRender
 	public void renderTile( AEBaseBlock block, AEBaseTile tile, Tessellator tess, double x, double y, double z, float partialTick, RenderBlocks renderer )
 	{
 		if( !( tile instanceof TileSkyChest ) )
+		{
 			return;
+		}
 
 		TileSkyChest skyChest = (TileSkyChest) tile;
 
 		if( !skyChest.hasWorldObj() )
+		{
 			return;
+		}
 
 		GL11.glEnable( 32826 /* GL_RESCALE_NORMAL_EXT */ );
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
@@ -96,9 +104,13 @@ public class RenderBlockSkyChest extends BaseBlockRender
 		ResourceLocation loc;
 
 		if( tile.getWorldObj().getBlockMetadata( tile.xCoord, tile.yCoord, tile.zCoord ) == 1 )
+		{
 			loc = new ResourceLocation( "appliedenergistics2", "textures/models/skyblockchest.png" );
+		}
 		else
+		{
 			loc = new ResourceLocation( "appliedenergistics2", "textures/models/skychest.png" );
+		}
 
 		Minecraft.getMinecraft().getTextureManager().bindTexture( loc );
 
@@ -111,15 +123,23 @@ public class RenderBlockSkyChest extends BaseBlockRender
 		long distance = now - skyChest.lastEvent;
 
 		if( skyChest.playerOpen > 0 )
+		{
 			skyChest.lidAngle += distance * 0.0001;
+		}
 		else
+		{
 			skyChest.lidAngle -= distance * 0.0001;
+		}
 
 		if( skyChest.lidAngle > 0.5f )
+		{
 			skyChest.lidAngle = 0.5f;
+		}
 
 		if( skyChest.lidAngle < 0.0f )
+		{
 			skyChest.lidAngle = 0.0f;
+		}
 
 		float lidAngle = skyChest.lidAngle;
 		lidAngle = 1.0F - lidAngle;

@@ -72,7 +72,9 @@ public final class ContainerInterfaceTerminal extends AEBaseContainer
 		super( ip, anchor );
 
 		if( Platform.isServer() )
+		{
 			this.grid = anchor.getActionableNode().getGrid();
+		}
 
 		this.bindPlayerInventory( ip, 0, 222 - /* height of player inventory */82 );
 	}
@@ -81,12 +83,16 @@ public final class ContainerInterfaceTerminal extends AEBaseContainer
 	public void detectAndSendChanges()
 	{
 		if( Platform.isClient() )
+		{
 			return;
+		}
 
 		super.detectAndSendChanges();
 
 		if( this.grid == null )
+		{
 			return;
+		}
 
 		int total = 0;
 		boolean missing = false;
@@ -103,17 +109,23 @@ public final class ContainerInterfaceTerminal extends AEBaseContainer
 					{
 						IInterfaceHost ih = (IInterfaceHost) gn.getMachine();
 						if( ih.getInterfaceDuality().getConfigManager().getSetting( Settings.INTERFACE_TERMINAL ) == YesNo.NO )
+						{
 							continue;
+						}
 
 						InvTracker t = this.diList.get( ih );
 
 						if( t == null )
+						{
 							missing = true;
+						}
 						else
 						{
 							DualityInterface dual = ih.getInterfaceDuality();
 							if( !t.unlocalizedName.equals( dual.getTermName() ) )
+							{
 								missing = true;
+							}
 						}
 
 						total++;
@@ -126,17 +138,23 @@ public final class ContainerInterfaceTerminal extends AEBaseContainer
 					{
 						IInterfaceHost ih = (IInterfaceHost) gn.getMachine();
 						if( ih.getInterfaceDuality().getConfigManager().getSetting( Settings.INTERFACE_TERMINAL ) == YesNo.NO )
+						{
 							continue;
+						}
 
 						InvTracker t = this.diList.get( ih );
 
 						if( t == null )
+						{
 							missing = true;
+						}
 						else
 						{
 							DualityInterface dual = ih.getInterfaceDuality();
 							if( !t.unlocalizedName.equals( dual.getTermName() ) )
+							{
 								missing = true;
+							}
 						}
 
 						total++;
@@ -146,7 +164,9 @@ public final class ContainerInterfaceTerminal extends AEBaseContainer
 		}
 
 		if( total != this.diList.size() || missing )
+		{
 			this.regenList( this.data );
+		}
 		else
 		{
 			for( Entry<IInterfaceHost, InvTracker> en : this.diList.entrySet() )
@@ -155,7 +175,9 @@ public final class ContainerInterfaceTerminal extends AEBaseContainer
 				for( int x = 0; x < inv.server.getSizeInventory(); x++ )
 				{
 					if( this.isDifferent( inv.server.getStackInSlot( x ), inv.client.getStackInSlot( x ) ) )
+					{
 						this.addItems( this.data, inv, x, 1 );
+					}
 				}
 			}
 		}
@@ -199,7 +221,9 @@ public final class ContainerInterfaceTerminal extends AEBaseContainer
 					{
 						ItemStack inSlot = theSlot.getStackInSlot( 0 );
 						if( inSlot == null )
+						{
 							player.inventory.setItemStack( interfaceSlot.addItems( player.inventory.getItemStack() ) );
+						}
 						else
 						{
 							inSlot = inSlot.copy();
@@ -211,7 +235,9 @@ public final class ContainerInterfaceTerminal extends AEBaseContainer
 							player.inventory.setItemStack( interfaceSlot.addItems( inHand.copy() ) );
 
 							if( player.inventory.getItemStack() == null )
+							{
 								player.inventory.setItemStack( inSlot );
+							}
 							else
 							{
 								player.inventory.setItemStack( inHand );
@@ -232,17 +258,25 @@ public final class ContainerInterfaceTerminal extends AEBaseContainer
 					{
 						ItemStack extra = playerHand.removeItems( 1, null, null );
 						if( extra != null )
+						{
 							extra = interfaceSlot.addItems( extra );
+						}
 						if( extra != null )
+						{
 							playerHand.addItems( extra );
+						}
 					}
 					else if( is != null )
 					{
 						ItemStack extra = interfaceSlot.removeItems( ( is.stackSize + 1 ) / 2, null, null );
 						if( extra != null )
+						{
 							extra = playerHand.addItems( extra );
+						}
 						if( extra != null )
+						{
 							interfaceSlot.addItems( extra );
+						}
 					}
 
 					break;
@@ -294,7 +328,9 @@ public final class ContainerInterfaceTerminal extends AEBaseContainer
 					IInterfaceHost ih = (IInterfaceHost) gn.getMachine();
 					DualityInterface dual = ih.getInterfaceDuality();
 					if( gn.isActive() && dual.getConfigManager().getSetting( Settings.INTERFACE_TERMINAL ) == YesNo.YES )
+					{
 						this.diList.put( ih, new InvTracker( dual, dual.getPatterns(), dual.getTermName() ) );
+					}
 				}
 
 				for( IGridNode gn : this.grid.getMachines( PartInterface.class ) )
@@ -302,7 +338,9 @@ public final class ContainerInterfaceTerminal extends AEBaseContainer
 					IInterfaceHost ih = (IInterfaceHost) gn.getMachine();
 					DualityInterface dual = ih.getInterfaceDuality();
 					if( gn.isActive() && dual.getConfigManager().getSetting( Settings.INTERFACE_TERMINAL ) == YesNo.YES )
+					{
 						this.diList.put( ih, new InvTracker( dual, dual.getPatterns(), dual.getTermName() ) );
+					}
 				}
 			}
 		}
@@ -320,10 +358,14 @@ public final class ContainerInterfaceTerminal extends AEBaseContainer
 	private boolean isDifferent( ItemStack a, ItemStack b )
 	{
 		if( a == null && b == null )
+		{
 			return false;
+		}
 
 		if( a == null || b == null )
+		{
 			return true;
+		}
 
 		return !ItemStack.areItemStacksEqual( a, b );
 	}
@@ -349,7 +391,9 @@ public final class ContainerInterfaceTerminal extends AEBaseContainer
 			inv.client.setInventorySlotContents( x + offset, is == null ? null : is.copy() );
 
 			if( is != null )
+			{
 				is.writeToNBT( itemNBT );
+			}
 
 			tag.setTag( Integer.toString( x + offset ), itemNBT );
 		}

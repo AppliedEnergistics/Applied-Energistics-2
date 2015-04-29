@@ -111,7 +111,9 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 		this.ySize = 204;
 
 		if( te instanceof IViewCellStorage )
+		{
 			this.xSize += 33;
+		}
 
 		this.standardSize = this.xSize;
 
@@ -121,21 +123,33 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 		this.viewCell = te instanceof IViewCellStorage;
 
 		if( te instanceof TileSecurity )
+		{
 			this.myName = GuiText.Security;
+		}
 		else if( te instanceof WirelessTerminalGuiObject )
+		{
 			this.myName = GuiText.WirelessTerminal;
+		}
 		else if( te instanceof IPortableCell )
+		{
 			this.myName = GuiText.PortableCell;
+		}
 		else if( te instanceof IMEChest )
+		{
 			this.myName = GuiText.Chest;
+		}
 		else if( te instanceof PartTerminal )
+		{
 			this.myName = GuiText.Terminal;
+		}
 	}
 
 	public void postUpdate( List<IAEItemStack> list )
 	{
 		for( IAEItemStack is : list )
+		{
 			this.repo.postUpdate( is );
+		}
 
 		this.repo.updateView();
 		this.setScrollBar();
@@ -166,9 +180,13 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 				Enum next = Platform.rotateEnum( cv, backwards, iBtn.getSetting().getPossibleValues() );
 
 				if( btn == this.terminalStyleBox )
+				{
 					AEConfig.instance.settings.putSetting( iBtn.getSetting(), next );
+				}
 				else if( btn == this.searchBoxSettings )
+				{
 					AEConfig.instance.settings.putSetting( iBtn.getSetting(), next );
+				}
 				else
 				{
 					try
@@ -184,7 +202,9 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 				iBtn.set( next );
 
 				if( next.getClass() == SearchBoxMode.class || next.getClass() == TerminalStyle.class )
+				{
 					this.re_init();
+				}
 			}
 		}
 	}
@@ -217,10 +237,14 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 		}
 
 		if( hasNEI )
+		{
 			this.rows--;
+		}
 
 		if( this.rows < 3 )
+		{
 			this.rows = 3;
+		}
 
 		this.meSlots.clear();
 		for( int y = 0; y < this.rows; y++ )
@@ -232,9 +256,13 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 		}
 
 		if( AEConfig.instance.getConfigManager().getSetting( Settings.TERMINAL_STYLE ) != TerminalStyle.FULL )
+		{
 			this.xSize = this.standardSize + ( ( this.perRow - 9 ) * 18 );
+		}
 		else
+		{
 			this.xSize = this.standardSize;
+		}
 
 		super.initGui();
 		// full size : 204
@@ -303,7 +331,9 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 			if( s instanceof AppEngSlot )
 			{
 				if( ( (AppEngSlot) s ).xDisplayPosition < 197 )
+				{
 					this.repositionSlot( (AppEngSlot) s );
+				}
 			}
 
 			if( s instanceof SlotCraftingMatrix || s instanceof SlotFakeCraftingMatrix )
@@ -365,10 +395,14 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, x_width, 18 );
 
 		if( this.viewCell || ( this instanceof GuiSecurity ) )
+		{
 			this.drawTexturedModalRect( offsetX + x_width, offsetY, x_width, 0, 46, 128 );
+		}
 
 		for( int x = 0; x < this.rows; x++ )
+		{
 			this.drawTexturedModalRect( offsetX, offsetY + 18 + x * 18, 0, 18, x_width, 18 );
+		}
 
 		this.drawTexturedModalRect( offsetX, offsetY + 16 + this.rows * 18 + this.lowerTextureOffset, 0, 106 - 18 - 18, x_width, 99 + this.reservedSpace - this.lowerTextureOffset );
 
@@ -386,11 +420,15 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 			}
 
 			if( update )
+			{
 				this.repo.setViewCell( this.myCurrentViewCells );
+			}
 		}
 
 		if( this.searchField != null )
+		{
 			this.searchField.drawTextBox();
+		}
 	}
 
 	protected String getBackground()
@@ -420,7 +458,9 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 		if( !this.checkHotbarKeys( key ) )
 		{
 			if( character == ' ' && this.searchField.getText().length() == 0 )
+			{
 				return;
+			}
 
 			if( this.searchField.textboxKeyTyped( character, key ) )
 			{
@@ -464,13 +504,19 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 	public void updateSetting( IConfigManager manager, Enum settingName, Enum newValue )
 	{
 		if( this.SortByBox != null )
+		{
 			this.SortByBox.set( this.configSrc.getSetting( Settings.SORT_BY ) );
+		}
 
 		if( this.SortDirBox != null )
+		{
 			this.SortDirBox.set( this.configSrc.getSetting( Settings.SORT_DIRECTION ) );
+		}
 
 		if( this.ViewBox != null )
+		{
 			this.ViewBox.set( this.configSrc.getSetting( Settings.VIEW_MODE ) );
+		}
 
 		this.repo.updateView();
 	}

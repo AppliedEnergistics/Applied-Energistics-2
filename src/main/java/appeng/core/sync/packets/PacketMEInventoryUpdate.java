@@ -88,7 +88,9 @@ public class PacketMEInventoryUpdate extends AppEngPacket
 			public int read() throws IOException
 			{
 				if( stream.readableBytes() <= 0 )
+				{
 					return -1;
+				}
 
 				return stream.readByte() & STREAM_MASK;
 			}
@@ -100,7 +102,9 @@ public class PacketMEInventoryUpdate extends AppEngPacket
 		{
 			int bytes = gzReader.read( tmp );
 			if( bytes > 0 )
+			{
 				uncompressed.writeBytes( tmp, 0, bytes );
+			}
 		}
 		gzReader.close();
 
@@ -108,7 +112,9 @@ public class PacketMEInventoryUpdate extends AppEngPacket
 		// AELog.info( "Receiver: " + originalBytes + " -> " + uncompressedBytes );
 
 		while( uncompressed.readableBytes() > 0 )
+		{
 			this.list.add( AEItemStack.loadItemStackFromPacket( uncompressed ) );
+		}
 
 		this.empty = this.list.isEmpty();
 	}
@@ -146,16 +152,24 @@ public class PacketMEInventoryUpdate extends AppEngPacket
 		GuiScreen gs = Minecraft.getMinecraft().currentScreen;
 
 		if( gs instanceof GuiCraftConfirm )
+		{
 			( (GuiCraftConfirm) gs ).postUpdate( this.list, this.ref );
+		}
 
 		if( gs instanceof GuiCraftingCPU )
+		{
 			( (GuiCraftingCPU) gs ).postUpdate( this.list, this.ref );
+		}
 
 		if( gs instanceof GuiMEMonitorable )
+		{
 			( (GuiMEMonitorable) gs ).postUpdate( this.list );
+		}
 
 		if( gs instanceof GuiNetworkStatus )
+		{
 			( (GuiNetworkStatus) gs ).postUpdate( this.list );
+		}
 	}
 
 	@Nullable

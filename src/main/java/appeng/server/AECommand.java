@@ -99,9 +99,13 @@ public final class AECommand extends CommandBase
 			{
 				Commands c = Commands.valueOf( args[0] );
 				if( sender.canCommandSenderUseCommand( c.level, this.getCommandName() ) )
+				{
 					c.command.call( this.srv, args, sender );
+				}
 				else
+				{
 					throw new WrongUsageException( "commands.ae2.permissions" );
+				}
 			}
 			catch( WrongUsageException wrong )
 			{

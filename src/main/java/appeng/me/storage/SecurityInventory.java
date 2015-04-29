@@ -57,7 +57,9 @@ public class SecurityInventory implements IMEInventoryHandler<IAEItemStack>
 				if( this.canAccept( input ) )
 				{
 					if( type == Actionable.SIMULATE )
+					{
 						return null;
+					}
 
 					this.storedItems.add( input );
 					this.securityTile.inventoryChanged();
@@ -95,7 +97,9 @@ public class SecurityInventory implements IMEInventoryHandler<IAEItemStack>
 				IAEItemStack output = target.copy();
 
 				if( mode == Actionable.SIMULATE )
+				{
 					return output;
+				}
 
 				target.setStackSize( 0 );
 				this.securityTile.inventoryChanged();
@@ -109,7 +113,9 @@ public class SecurityInventory implements IMEInventoryHandler<IAEItemStack>
 	public IItemList<IAEItemStack> getAvailableItems( IItemList out )
 	{
 		for( IAEItemStack ais : this.storedItems )
+		{
 			out.add( ais );
+		}
 
 		return out;
 	}
@@ -142,7 +148,9 @@ public class SecurityInventory implements IMEInventoryHandler<IAEItemStack>
 
 			int PlayerID = AEApi.instance().registries().players().getID( newUser );
 			if( this.securityTile.getOwner() == PlayerID )
+			{
 				return false;
+			}
 
 			for( IAEItemStack ais : this.storedItems )
 			{
@@ -150,10 +158,14 @@ public class SecurityInventory implements IMEInventoryHandler<IAEItemStack>
 				{
 					GameProfile thisUser = tbc.getProfile( ais.getItemStack() );
 					if( thisUser == newUser )
+					{
 						return false;
+					}
 
 					if( thisUser != null && thisUser.equals( newUser ) )
+					{
 						return false;
+					}
 				}
 			}
 

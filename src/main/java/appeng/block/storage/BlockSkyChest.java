@@ -104,7 +104,9 @@ public class BlockSkyChest extends AEBaseBlock implements ICustomCollision
 	public boolean onActivated( World w, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ )
 	{
 		if( Platform.isServer() )
+		{
 			Platform.openGUI( player, this.getTileEntity( w, x, y, z ), ForgeDirection.getOrientation( side ), GuiBridge.GUI_SKYCHEST );
+		}
 
 		return true;
 	}
@@ -127,7 +129,9 @@ public class BlockSkyChest extends AEBaseBlock implements ICustomCollision
 	public String getUnlocalizedName( ItemStack is )
 	{
 		if( is.getItemDamage() == 1 )
+		{
 			return this.getUnlocalizedName() + ".Block";
+		}
 
 		return this.getUnlocalizedName();
 	}
@@ -140,7 +144,9 @@ public class BlockSkyChest extends AEBaseBlock implements ICustomCollision
 		ForgeDirection o = ForgeDirection.UNKNOWN;
 
 		if( sk != null )
+		{
 			o = sk.getUp();
+		}
 
 		double X = o.offsetX == 0 ? 0.06 : 0.0;
 		double Y = o.offsetY == 0 ? 0.06 : 0.0;

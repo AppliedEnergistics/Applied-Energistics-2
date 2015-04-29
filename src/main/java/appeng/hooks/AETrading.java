@@ -105,14 +105,22 @@ public class AETrading implements IVillageTradeHandler
 	private void addToList( MerchantRecipeList l, ItemStack a, ItemStack b )
 	{
 		if( a.stackSize < 1 )
+		{
 			a.stackSize = 1;
+		}
 		if( b.stackSize < 1 )
+		{
 			b.stackSize = 1;
+		}
 
 		if( a.stackSize > a.getMaxStackSize() )
+		{
 			a.stackSize = a.getMaxStackSize();
+		}
 		if( b.stackSize > b.getMaxStackSize() )
+		{
 			b.stackSize = b.getMaxStackSize();
+		}
 
 		l.add( new MerchantRecipe( a, b ) );
 	}

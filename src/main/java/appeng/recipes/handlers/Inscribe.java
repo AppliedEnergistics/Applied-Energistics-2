@@ -47,9 +47,13 @@ public final class Inscribe extends InscriberProcess
 	public void register() throws RegistrationError, MissingIngredientError
 	{
 		if ( this.getImprintable() == null )
+		{
 			return;
+		}
 		if ( this.getOutput() == null )
+		{
 			return;
+		}
 
 		final ItemStack[] realInput = this.getImprintable().getItemStackSet();
 		final List<ItemStack> inputs = new ArrayList<ItemStack>( realInput.length );

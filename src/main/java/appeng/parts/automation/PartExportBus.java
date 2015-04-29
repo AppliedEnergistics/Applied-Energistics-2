@@ -100,7 +100,9 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 	TickRateModulation doBusWork()
 	{
 		if( !this.proxy.isActive() )
+		{
 			return TickRateModulation.IDLE;
+		}
 
 		this.itemToSend = 1;
 		this.didSomething = false;
@@ -141,7 +143,9 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 					if( ais == null || this.itemToSend <= 0 || this.craftOnly() )
 					{
 						if( this.isCraftingEnabled() )
+						{
 							this.didSomething = this.cratingTracker.handleCrafting( x, this.itemToSend, ais, d, this.getTile().getWorldObj(), this.proxy.getGrid(), cg, this.mySrc ) || this.didSomething;
+						}
 						continue;
 					}
 
@@ -153,14 +157,20 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 						{
 							this.pushItemIntoTarget( d, energy, inv, o );
 							if( this.itemToSend <= 0 )
+							{
 								break;
+							}
 						}
 					}
 					else
+					{
 						this.pushItemIntoTarget( d, energy, inv, ais );
+					}
 
 					if( this.itemToSend == before && this.isCraftingEnabled() )
+					{
 						this.didSomething = this.cratingTracker.handleCrafting( x, this.itemToSend, ais, d, this.getTile().getWorldObj(), this.proxy.getGrid(), cg, this.mySrc ) || this.didSomething;
+					}
 				}
 			}
 		}
@@ -234,7 +244,9 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 		if( !player.isSneaking() )
 		{
 			if( Platform.isClient() )
+			{
 				return true;
+			}
 
 			Platform.openGUI( player, this.getHost().getTile(), this.side, GuiBridge.GUI_BUS );
 			return true;
@@ -302,7 +314,9 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 					inv.injectItems( ais, Actionable.MODULATE, this.mySrc );
 				}
 				else
+				{
 					this.didSomething = true;
+				}
 			}
 		}
 	}
@@ -328,7 +342,9 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 				if( energy.extractAEPower( power, mode, PowerMultiplier.CONFIG ) > power - 0.01 )
 				{
 					if( mode == Actionable.MODULATE )
+					{
 						return AEItemStack.create( d.addItems( items.getItemStack() ) );
+					}
 					return AEItemStack.create( d.simulateAdd( items.getItemStack() ) );
 				}
 			}

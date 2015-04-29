@@ -50,7 +50,9 @@ public class BlockQuartzLamp extends BlockQuartzGlass
 	public void randomDisplayTick( World w, int x, int y, int z, Random r )
 	{
 		if( !AEConfig.instance.enableEffects )
+		{
 			return;
+		}
 
 		if( CommonHelper.proxy.shouldAddParticles( r ) )
 		{

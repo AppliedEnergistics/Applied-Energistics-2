@@ -50,7 +50,9 @@ public class CableBusStorage
 	{
 		int x = side.ordinal();
 		if( this.sides != null && this.sides.length > x )
+		{
 			return this.sides[x];
+		}
 
 		return null;
 	}
@@ -75,15 +77,23 @@ public class CableBusStorage
 	{
 		int newSize = -1;
 		for( int x = 0; x < in.length; x++ )
+		{
 			if( in[x] != null )
+			{
 				newSize = x;
+			}
+		}
 
 		if( newSize == -1 )
+		{
 			return null;
+		}
 
 		newSize++;
 		if( newSize == in.length )
+		{
 			return in;
+		}
 
 		T[] newArray = (T[]) ( parts ? new IPart[newSize] : new IFacadePart[newSize] );
 		System.arraycopy( in, 0, newArray, 0, newSize );
@@ -94,13 +104,17 @@ public class CableBusStorage
 	private <T> T[] grow( T[] in, int new_value, boolean parts )
 	{
 		if( in != null && in.length > new_value )
+		{
 			return in;
+		}
 
 		int newSize = new_value + 1;
 
 		T[] newArray = (T[]) ( parts ? new IPart[newSize] : new IFacadePart[newSize] );
 		if( in != null )
+		{
 			System.arraycopy( in, 0, newArray, 0, in.length );
+		}
 
 		return newArray;
 	}
@@ -108,7 +122,9 @@ public class CableBusStorage
 	public IFacadePart getFacade( int x )
 	{
 		if( this.facades != null && this.facades.length > x )
+		{
 			return this.facades[x];
+		}
 
 		return null;
 	}

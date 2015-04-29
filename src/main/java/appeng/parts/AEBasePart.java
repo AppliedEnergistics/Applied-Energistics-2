@@ -123,7 +123,9 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 	protected AEColor getColor()
 	{
 		if( this.host == null )
+		{
 			return AEColor.Transparent;
+		}
 		return this.host.getColor();
 	}
 
@@ -376,7 +378,9 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 		{
 			IConfigManager cm = this.getConfigManager();
 			if( cm != null )
+			{
 				cm.readFromNBT( compound );
+			}
 		}
 
 		if( this instanceof IPriorityHost )
@@ -392,7 +396,9 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 			AppEngInternalAEInventory tmp = new AppEngInternalAEInventory( null, target.getSizeInventory() );
 			tmp.readFromNBT( compound, "config" );
 			for( int x = 0; x < tmp.getSizeInventory(); x++ )
+			{
 				target.setInventorySlotContents( x, tmp.getStackInSlot( x ) );
+			}
 		}
 	}
 
@@ -409,7 +415,9 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 
 		IConfigManager cm = this.getConfigManager();
 		if( cm != null )
+		{
 			cm.writeToNBT( output );
+		}
 
 		if( this instanceof IPriorityHost )
 		{
@@ -472,7 +480,9 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 					memoryCard.notifyUser( player, MemoryCardMessages.SETTINGS_LOADED );
 				}
 				else
+				{
 					memoryCard.notifyUser( player, MemoryCardMessages.INVALID_MACHINE );
+				}
 			}
 			return true;
 		}
@@ -483,7 +493,9 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 	public final boolean onActivate( EntityPlayer player, Vec3 pos )
 	{
 		if( this.useMemoryCard( player ) )
+		{
 			return true;
+		}
 
 		return this.onPartActivate( player, pos );
 	}
@@ -492,7 +504,9 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 	public final boolean onShiftActivate( EntityPlayer player, Vec3 pos )
 	{
 		if( this.useMemoryCard( player ) )
+		{
 			return true;
+		}
 
 		return this.onPartShiftActivate( player, pos );
 	}

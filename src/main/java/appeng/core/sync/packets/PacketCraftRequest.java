@@ -82,11 +82,15 @@ public class PacketCraftRequest extends AppEngPacket
 				IGridHost gh = (IGridHost) target;
 				IGridNode gn = gh.getGridNode( ForgeDirection.UNKNOWN );
 				if( gn == null )
+				{
 					return;
+				}
 
 				IGrid g = gn.getGrid();
 				if( g == null || cca.whatToMake == null )
+				{
 					return;
+				}
 
 				Future<ICraftingJob> futureJob = null;
 
@@ -115,7 +119,9 @@ public class PacketCraftRequest extends AppEngPacket
 				catch( Throwable e )
 				{
 					if( futureJob != null )
+					{
 						futureJob.cancel( true );
+					}
 					AELog.error( e );
 				}
 			}

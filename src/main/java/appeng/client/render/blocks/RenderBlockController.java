@@ -58,12 +58,18 @@ public class RenderBlockController extends BaseBlockRender
 			{
 				blk.getRendererInstance().setTemporaryRenderIcon( ExtraBlockTextures.BlockControllerColumnPowered.getIcon() );
 				if( isConflict )
+				{
 					lights = ExtraBlockTextures.BlockControllerColumnConflict;
+				}
 				else
+				{
 					lights = ExtraBlockTextures.BlockControllerColumnLights;
+				}
 			}
 			else
+			{
 				blk.getRendererInstance().setTemporaryRenderIcon( ExtraBlockTextures.BlockControllerColumn.getIcon() );
+			}
 
 			renderer.uvRotateEast = 1;
 			renderer.uvRotateWest = 1;
@@ -76,12 +82,18 @@ public class RenderBlockController extends BaseBlockRender
 			{
 				blk.getRendererInstance().setTemporaryRenderIcon( ExtraBlockTextures.BlockControllerColumnPowered.getIcon() );
 				if( isConflict )
+				{
 					lights = ExtraBlockTextures.BlockControllerColumnConflict;
+				}
 				else
+				{
 					lights = ExtraBlockTextures.BlockControllerColumnLights;
+				}
 			}
 			else
+			{
 				blk.getRendererInstance().setTemporaryRenderIcon( ExtraBlockTextures.BlockControllerColumn.getIcon() );
+			}
 
 			renderer.uvRotateEast = 0;
 			renderer.uvRotateNorth = 0;
@@ -92,12 +104,18 @@ public class RenderBlockController extends BaseBlockRender
 			{
 				blk.getRendererInstance().setTemporaryRenderIcon( ExtraBlockTextures.BlockControllerColumnPowered.getIcon() );
 				if( isConflict )
+				{
 					lights = ExtraBlockTextures.BlockControllerColumnConflict;
+				}
 				else
+				{
 					lights = ExtraBlockTextures.BlockControllerColumnLights;
+				}
 			}
 			else
+			{
 				blk.getRendererInstance().setTemporaryRenderIcon( ExtraBlockTextures.BlockControllerColumn.getIcon() );
+			}
 
 			renderer.uvRotateNorth = 1;
 			renderer.uvRotateSouth = 1;
@@ -109,9 +127,13 @@ public class RenderBlockController extends BaseBlockRender
 			renderer.uvRotateEast = renderer.uvRotateBottom = renderer.uvRotateNorth = renderer.uvRotateSouth = renderer.uvRotateTop = renderer.uvRotateWest = 0;
 
 			if( v == 0 )
+			{
 				blk.getRendererInstance().setTemporaryRenderIcon( ExtraBlockTextures.BlockControllerInsideA.getIcon() );
+			}
 			else
+			{
 				blk.getRendererInstance().setTemporaryRenderIcon( ExtraBlockTextures.BlockControllerInsideB.getIcon() );
+			}
 		}
 		else
 		{
@@ -119,12 +141,18 @@ public class RenderBlockController extends BaseBlockRender
 			{
 				blk.getRendererInstance().setTemporaryRenderIcon( ExtraBlockTextures.BlockControllerPowered.getIcon() );
 				if( isConflict )
+				{
 					lights = ExtraBlockTextures.BlockControllerConflict;
+				}
 				else
+				{
 					lights = ExtraBlockTextures.BlockControllerLights;
+				}
 			}
 			else
+			{
 				blk.getRendererInstance().setTemporaryRenderIcon( null );
+			}
 		}
 
 		boolean out = renderer.renderStandardBlock( blk, x, y, z );
@@ -148,7 +176,9 @@ public class RenderBlockController extends BaseBlockRender
 	private TileEntity getTileEntity( IBlockAccess world, int x, int y, int z )
 	{
 		if( y >= 0 )
+		{
 			return world.getTileEntity( x, y, z );
+		}
 		return null;
 	}
 }

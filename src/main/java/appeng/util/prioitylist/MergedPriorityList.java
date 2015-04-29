@@ -34,23 +34,35 @@ public final class MergedPriorityList<T extends IAEStack<T>> implements IPartiti
 	public void addNewList( IPartitionList<T> list, boolean isWhitelist )
 	{
 		if( isWhitelist )
+		{
 			this.positive.add( list );
+		}
 		else
+		{
 			this.negative.add( list );
+		}
 	}
 
 	@Override
 	public boolean isListed( T input )
 	{
 		for( IPartitionList<T> l : this.negative )
+		{
 			if( l.isListed( input ) )
+			{
 				return false;
+			}
+		}
 
 		if( !this.positive.isEmpty() )
 		{
 			for( IPartitionList<T> l : this.positive )
+			{
 				if( l.isListed( input ) )
+				{
 					return true;
+				}
+			}
 
 			return false;
 		}

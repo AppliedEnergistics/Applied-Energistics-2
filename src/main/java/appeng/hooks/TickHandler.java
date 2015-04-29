@@ -74,20 +74,26 @@ public class TickHandler
 	public HashMap<Integer, PlayerColor> getPlayerColors()
 	{
 		if( Platform.isServer() )
+		{
 			return this.srvPlayerColors;
+		}
 		return this.cliPlayerColors;
 	}
 
 	public void addCallable( World w, Callable c )
 	{
 		if( w == null )
+		{
 			this.serverQueue.add( c );
+		}
 		else
 		{
 			Queue<Callable> queue = this.callQueue.get( w );
 
 			if( queue == null )
+			{
 				this.callQueue.put( w, queue = new LinkedList<Callable>() );
+			}
 
 			queue.add( c );
 		}
@@ -96,26 +102,34 @@ public class TickHandler
 	public void addInit( AEBaseTile tile )
 	{
 		if( Platform.isServer() ) // for no there is no reason to care about this on the client...
+		{
 			this.getRepo().tiles.add( tile );
+		}
 	}
 
 	HandlerRep getRepo()
 	{
 		if( Platform.isServer() )
+		{
 			return this.server;
+		}
 		return this.client;
 	}
 
 	public void addNetwork( Grid grid )
 	{
 		if( Platform.isServer() ) // for no there is no reason to care about this on the client...
+		{
 			this.getRepo().networks.add( grid );
+		}
 	}
 
 	public void removeNetwork( Grid grid )
 	{
 		if( Platform.isServer() ) // for no there is no reason to care about this on the client...
+		{
 			this.getRepo().networks.remove( grid );
+		}
 	}
 
 	public Iterable<Grid> getGridList()
@@ -140,12 +154,16 @@ public class TickHandler
 				for( IGridNode n : g.getNodes() )
 				{
 					if( n.getWorld() == ev.world )
+					{
 						toDestroy.add( n );
+					}
 				}
 			}
 
 			for( IGridNode n : toDestroy )
+			{
 				n.destroy();
+			}
 		}
 	}
 
@@ -191,7 +209,9 @@ public class TickHandler
 					{
 						CraftingJob cj = i.next();
 						if( !cj.simulateFor( simTime ) )
+						{
 							i.remove();
+						}
 					}
 				}
 			}
@@ -207,12 +227,16 @@ public class TickHandler
 			{
 				AEBaseTile bt = repo.tiles.poll();
 				if( !bt.isInvalid() )
+				{
 					bt.onReady();
+				}
 			}
 
 			// tick networks.
 			for( Grid g : this.getRepo().networks )
+			{
 				g.update();
+			}
 
 			// cross world queue.
 			this.processQueue( this.serverQueue );
@@ -232,7 +256,9 @@ public class TickHandler
 		{
 			PlayerColor pc = i.next();
 			if( pc.ticksLeft <= 0 )
+			{
 				i.remove();
+			}
 			pc.ticksLeft--;
 		}
 	}
@@ -240,7 +266,9 @@ public class TickHandler
 	private void processQueue( Queue<Callable> queue )
 	{
 		if( queue == null )
+		{
 			return;
+		}
 
 		Stopwatch sw = Stopwatch.createStarted();
 
@@ -252,7 +280,9 @@ public class TickHandler
 				c.call();
 
 				if( sw.elapsed( TimeUnit.MILLISECONDS ) > 50 )
+				{
 					break;
+				}
 			}
 			catch( Exception e )
 			{

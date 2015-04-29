@@ -35,7 +35,9 @@ public class TaughtIcon implements IIcon
 	public TaughtIcon( IIcon icon, float tightness )
 	{
 		if( icon == null )
+		{
 			throw new IllegalArgumentException( "Cannot create a wrapper icon with a null icon." );
+		}
 
 		this.icon = icon;
 		this.tightness = tightness * 0.4f;
@@ -105,18 +107,26 @@ public class TaughtIcon implements IIcon
 	private float v( double d )
 	{
 		if( d < 8 )
+		{
 			d -= this.tightness;
+		}
 		if( d > 8 )
+		{
 			d += this.tightness;
+		}
 		return this.icon.getInterpolatedV( Math.min( 16.0, Math.max( 0.0, d ) ) );
 	}
 
 	private float u( double d )
 	{
 		if( d < 8 )
+		{
 			d -= this.tightness;
+		}
 		if( d > 8 )
+		{
 			d += this.tightness;
+		}
 		return this.icon.getInterpolatedU( Math.min( 16.0, Math.max( 0.0, d ) ) );
 	}
 }

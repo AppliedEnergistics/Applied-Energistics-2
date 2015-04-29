@@ -49,7 +49,9 @@ public class RB extends BaseModule implements IRB
 	public appeng.api.util.IOrientable getOrientable( TileEntity te )
 	{
 		if( te instanceof IOrientable )
+		{
 			return new RBWrapper( (IOrientable) te );
+		}
 		return null;
 	}
 

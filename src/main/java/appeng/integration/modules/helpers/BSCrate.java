@@ -47,11 +47,15 @@ public class BSCrate implements IMEInventory<IAEItemStack>
 	public IAEItemStack injectItems( IAEItemStack input, Actionable mode, BaseActionSource src )
 	{
 		if( mode == Actionable.SIMULATE )
+		{
 			return null;
+		}
 
 		ItemStack failed = this.crateStorage.insertItems( input.getItemStack() );
 		if( failed == null )
+		{
 			return null;
+		}
 		input.setStackSize( failed.stackSize );
 		return input;
 	}

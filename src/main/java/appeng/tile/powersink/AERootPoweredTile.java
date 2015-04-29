@@ -95,21 +95,27 @@ public abstract class AERootPoweredTile extends AEBaseInvTile implements IAEPowe
 	public final double injectAEPower( double amt, Actionable mode )
 	{
 		if( amt < 0.000001 )
+		{
 			return 0;
+		}
 
 		if( mode == Actionable.SIMULATE )
 		{
 			double fakeBattery = this.internalCurrentPower + amt;
 
 			if( fakeBattery > this.internalMaxPower )
+			{
 				return fakeBattery - this.internalMaxPower;
+			}
 
 			return 0;
 		}
 		else
 		{
 			if( this.internalCurrentPower < 0.01 && amt > 0.01 )
+			{
 				this.PowerEvent( PowerEventType.PROVIDE_POWER );
+			}
 
 			this.internalCurrentPower += amt;
 			if( this.internalCurrentPower > this.internalMaxPower )
@@ -163,7 +169,9 @@ public abstract class AERootPoweredTile extends AEBaseInvTile implements IAEPowe
 		if( mode == Actionable.SIMULATE )
 		{
 			if( this.internalCurrentPower > amt )
+			{
 				return amt;
+			}
 			return this.internalCurrentPower;
 		}
 

@@ -90,9 +90,13 @@ public class PartDenseCable extends PartCable
 		{
 			IGridNode n = this.getGridNode();
 			if( n != null )
+			{
 				this.connections = n.getConnectedSides();
+			}
 			else
+			{
 				this.connections.clear();
+			}
 		}
 
 		for( ForgeDirection of : this.connections )
@@ -222,7 +226,9 @@ public class PartDenseCable extends PartCable
 		for( ForgeDirection of : this.connections )
 		{
 			if( !this.isDense( of ) )
+			{
 				hasBuses = true;
+			}
 		}
 
 		if( sides.size() != 2 || !this.nonLinear( sides ) || hasBuses )
@@ -230,11 +236,17 @@ public class PartDenseCable extends PartCable
 			for( ForgeDirection of : this.connections )
 			{
 				if( this.isDense( of ) )
+				{
 					this.renderDenseConnection( x, y, z, rh, renderer, this.channelsOnSide[of.ordinal()], of );
+				}
 				else if( this.isSmart( of ) )
+				{
 					this.renderSmartConnection( x, y, z, rh, renderer, this.channelsOnSide[of.ordinal()], of );
+				}
 				else
+				{
 					this.renderCoveredConnection( x, y, z, rh, renderer, this.channelsOnSide[of.ordinal()], of );
+				}
 			}
 
 			rh.setTexture( this.getDenseTexture( this.getCableColor() ) );
@@ -388,9 +400,13 @@ public class PartDenseCable extends PartCable
 
 		rh.setFacesToRender( EnumSet.complementOf( EnumSet.of( of, of.getOpposite() ) ) );
 		if( ghh != null && partHost != null && ghh.getCableConnectionType( of ) != AECableType.GLASS && partHost.getColor() != AEColor.Transparent && partHost.getPart( of.getOpposite() ) == null )
+		{
 			rh.setTexture( this.getTexture( myColor = partHost.getColor() ) );
+		}
 		else
+		{
 			rh.setTexture( this.getTexture( this.getCableColor() ) );
+		}
 
 		switch( of )
 		{

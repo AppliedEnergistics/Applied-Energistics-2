@@ -104,11 +104,17 @@ public class AEItemResolver implements ISubItemResolver
 			if( itemName.startsWith( "ItemCrystalSeed." ) )
 			{
 				if( itemName.equalsIgnoreCase( "ItemCrystalSeed.Certus" ) )
+				{
 					return ItemCrystalSeed.getResolver( ItemCrystalSeed.Certus );
+				}
 				if( itemName.equalsIgnoreCase( "ItemCrystalSeed.Nether" ) )
+				{
 					return new ResolverResult( "ItemCrystalSeed", ItemCrystalSeed.Nether );
+				}
 				if( itemName.equalsIgnoreCase( "ItemCrystalSeed.Fluix" ) )
+				{
 					return new ResolverResult( "ItemCrystalSeed", ItemCrystalSeed.Fluix );
+				}
 
 				return null;
 			}
@@ -119,7 +125,9 @@ public class AEItemResolver implements ISubItemResolver
 				MaterialType mt = MaterialType.valueOf( materialName );
 				// itemName = itemName.substring( 0, itemName.indexOf( "." ) );
 				if( mt.itemInstance == ItemMultiMaterial.instance && mt.damageValue >= 0 && mt.isRegistered() )
+				{
 					return new ResolverResult( "ItemMultiMaterial", mt.damageValue );
+				}
 			}
 
 			if( itemName.startsWith( "ItemPart." ) )
@@ -129,7 +137,9 @@ public class AEItemResolver implements ISubItemResolver
 				// itemName = itemName.substring( 0, itemName.indexOf( "." ) );
 				int dVal = ItemMultiPart.instance.getDamageByType( pt );
 				if( dVal >= 0 )
+				{
 					return new ResolverResult( "ItemMultiPart", dVal );
+				}
 			}
 		}
 
@@ -150,7 +160,9 @@ public class AEItemResolver implements ISubItemResolver
 		}
 
 		if( col == AEColor.Transparent )
+		{
 			return null;
+		}
 
 		ItemStack is = partType.stack( col, 1 );
 		return new ResolverResult( "ItemPaintBall", ( lumen ? 20 : 0 ) + is.getItemDamage() );

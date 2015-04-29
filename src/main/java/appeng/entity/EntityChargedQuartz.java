@@ -63,7 +63,9 @@ public final class EntityChargedQuartz extends AEBaseEntityItem
 		super.onUpdate();
 
 		if( !AEConfig.instance.isFeatureEnabled( AEFeature.inWorldFluix ) )
+		{
 			return;
+		}
 
 		if( Platform.isClient() && this.delay > 30 && AEConfig.instance.enableEffects )
 		{
@@ -83,11 +85,15 @@ public final class EntityChargedQuartz extends AEBaseEntityItem
 			if( this.transformTime > 60 )
 			{
 				if( !this.transform() )
+				{
 					this.transformTime = 0;
+				}
 			}
 		}
 		else
+		{
 			this.transformTime = 0;
+		}
 	}
 
 	public boolean transform()
@@ -111,10 +117,14 @@ public final class EntityChargedQuartz extends AEBaseEntityItem
 					if( other != null && other.stackSize > 0 )
 					{
 						if( Platform.isSameItem( other, new ItemStack( Items.redstone ) ) )
+						{
 							redstone = (EntityItem) e;
+						}
 
 						if( Platform.isSameItem( other, new ItemStack( Items.quartz ) ) )
+						{
 							netherQuartz = (EntityItem) e;
+						}
 					}
 				}
 			}
@@ -126,13 +136,19 @@ public final class EntityChargedQuartz extends AEBaseEntityItem
 				netherQuartz.getEntityItem().stackSize--;
 
 				if( this.getEntityItem().stackSize <= 0 )
+				{
 					this.setDead();
+				}
 
 				if( redstone.getEntityItem().stackSize <= 0 )
+				{
 					redstone.setDead();
+				}
 
 				if( netherQuartz.getEntityItem().stackSize <= 0 )
+				{
 					netherQuartz.setDead();
+				}
 
 				for( ItemStack fluixCrystalStack : materials.fluixCrystal().maybeStack( 2 ).asSet() )
 				{

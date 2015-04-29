@@ -53,7 +53,9 @@ public class ToolReplicatorCard extends AEBaseItem
 	public boolean onItemUseFirst( ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ )
 	{
 		if( Platform.isClient() )
+		{
 			return false;
+		}
 
 		if( player.isSneaking() )
 		{
@@ -68,7 +70,9 @@ public class ToolReplicatorCard extends AEBaseItem
 				stack.setTagCompound( tag );
 			}
 			else
+			{
 				this.outputMsg( player, "This is not a Grid Tile." );
+			}
 		}
 		else
 		{
@@ -117,7 +121,9 @@ public class ToolReplicatorCard extends AEBaseItem
 								int scale_z = max.z - min.z;
 
 								for( int i = 1; i < scale_x; i++ )
+								{
 									for( int j = 1; j < scale_y; j++ )
+									{
 										for( int k = 1; k < scale_z; k++ )
 										{
 											Block blk = src_w.getBlock( min_x + i, min_y + j, min_z + k );
@@ -135,21 +141,33 @@ public class ToolReplicatorCard extends AEBaseItem
 											}
 											world.markBlockForUpdate( i + rel_x, j + rel_y, k + rel_z );
 										}
+									}
+								}
 							}
 							else
+							{
 								this.outputMsg( player, "requires valid spatial pylon setup." );
+							}
 						}
 						else
+						{
 							this.outputMsg( player, "no grid?" );
+						}
 					}
 					else
+					{
 						this.outputMsg( player, "No grid node?" );
+					}
 				}
 				else
+				{
 					this.outputMsg( player, "Src is no longer a grid block?" );
+				}
 			}
 			else
+			{
 				this.outputMsg( player, "No Source Defined" );
+			}
 		}
 		return true;
 	}

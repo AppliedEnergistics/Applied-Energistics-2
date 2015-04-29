@@ -37,7 +37,9 @@ public class WrapperInventoryRange implements IInventory
 		this.slots = s;
 
 		if( this.slots == null )
+		{
 			this.slots = new int[0];
+		}
 
 		this.ignoreValidItems = ignoreValid;
 	}
@@ -47,7 +49,9 @@ public class WrapperInventoryRange implements IInventory
 		this.src = a;
 		this.slots = new int[_size];
 		for( int x = 0; x < _size; x++ )
+		{
 			this.slots[x] = _min + x;
+		}
 		this.ignoreValidItems = ignoreValid;
 	}
 
@@ -145,7 +149,9 @@ public class WrapperInventoryRange implements IInventory
 	public boolean isItemValidForSlot( int i, ItemStack itemstack )
 	{
 		if( this.ignoreValidItems )
+		{
 			return true;
+		}
 
 		return this.src.isItemValidForSlot( this.slots[i], itemstack );
 	}

@@ -80,7 +80,9 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 		{
 			PartP2PLiquids in = this.getInput();
 			if( in != null )
+			{
 				in.onTunnelNetworkChange();
+			}
 		}
 	}
 
@@ -90,8 +92,12 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 		Stack<PartP2PLiquids> stack = this.getDepth();
 
 		for( PartP2PLiquids t : stack )
+		{
 			if( t == this )
+			{
 				return 0;
+			}
+		}
 
 		stack.push( this );
 
@@ -104,20 +110,30 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 			PartP2PLiquids l = i.next();
 			IFluidHandler tank = l.getTarget();
 			if( tank != null )
+			{
 				l.tmpUsed = tank.fill( l.side.getOpposite(), resource.copy(), false );
+			}
 			else
+			{
 				l.tmpUsed = 0;
+			}
 
 			if( l.tmpUsed <= 0 )
+			{
 				i.remove();
+			}
 			else
+			{
 				requestTotal += l.tmpUsed;
+			}
 		}
 
 		if( requestTotal <= 0 )
 		{
 			if( stack.pop() != this )
+			{
 				throw new IllegalStateException( "Invalid Recursion detected." );
+			}
 
 			return 0;
 		}
@@ -125,7 +141,9 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 		if( !doFill )
 		{
 			if( stack.pop() != this )
+			{
 				throw new IllegalStateException( "Invalid Recursion detected." );
+			}
 
 			return Math.min( resource.amount, requestTotal );
 		}
@@ -141,20 +159,28 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 			FluidStack insert = resource.copy();
 			insert.amount = (int) Math.ceil( insert.amount * ( (double) l.tmpUsed / (double) requestTotal ) );
 			if( insert.amount > available )
+			{
 				insert.amount = available;
+			}
 
 			IFluidHandler tank = l.getTarget();
 			if( tank != null )
+			{
 				l.tmpUsed = tank.fill( l.side.getOpposite(), insert.copy(), true );
+			}
 			else
+			{
 				l.tmpUsed = 0;
+			}
 
 			available -= insert.amount;
 			used += insert.amount;
 		}
 
 		if( stack.pop() != this )
+		{
 			throw new IllegalStateException( "Invalid Recursion detected." );
+		}
 
 		return used;
 	}
@@ -164,7 +190,9 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 		Stack<PartP2PLiquids> s = DEPTH.get();
 
 		if( s == null )
+		{
 			DEPTH.set( s = new Stack<PartP2PLiquids>() );
+		}
 
 		return s;
 	}
@@ -181,7 +209,9 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 				if( handler != null )
 				{
 					if( handler.canFill( l.side.getOpposite(), input ) )
+					{
 						outs.add( l );
+					}
 				}
 			}
 		}
@@ -196,14 +226,20 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 	IFluidHandler getTarget()
 	{
 		if( !this.proxy.isActive() )
+		{
 			return null;
+		}
 
 		if( this.cachedTank != null )
+		{
 			return this.cachedTank;
+		}
 
 		TileEntity te = this.tile.getWorldObj().getTileEntity( this.tile.xCoord + this.side.offsetX, this.tile.yCoord + this.side.offsetY, this.tile.zCoord + this.side.offsetZ );
 		if( te instanceof IFluidHandler )
+		{
 			return this.cachedTank = (IFluidHandler) te;
+		}
 
 		return null;
 	}
@@ -236,7 +272,9 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 	public FluidTankInfo[] getTankInfo( ForgeDirection from )
 	{
 		if( from == this.side )
+		{
 			return this.getTank();
+		}
 		return new FluidTankInfo[0];
 	}
 
@@ -246,14 +284,18 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 		{
 			PartP2PLiquids tun = this.getInput();
 			if( tun != null )
+			{
 				return ACTIVE_TANK;
+			}
 		}
 		else
 		{
 			try
 			{
 				if( !this.getOutputs().isEmpty() )
+				{
 					return ACTIVE_TANK;
+				}
 			}
 			catch( GridAccessException e )
 			{

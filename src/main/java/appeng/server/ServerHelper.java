@@ -75,7 +75,9 @@ public class ServerHelper extends CommonHelper
 			MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
 
 			if( server != null )
+			{
 				return server.getConfigurationManager().playerEntityList;
+			}
 		}
 
 		return new ArrayList<EntityPlayer>();
@@ -85,7 +87,9 @@ public class ServerHelper extends CommonHelper
 	public void sendToAllNearExcept( EntityPlayer p, double x, double y, double z, double dist, World w, AppEngPacket packet )
 	{
 		if( Platform.isClient() )
+		{
 			return;
+		}
 
 		for( EntityPlayer o : this.getPlayers() )
 		{
@@ -139,7 +143,9 @@ public class ServerHelper extends CommonHelper
 	public CableRenderMode getRenderMode()
 	{
 		if( this.renderModeBased == null )
+		{
 			return CableRenderMode.Standard;
+		}
 
 		return this.renderModeForPlayer( this.renderModeBased );
 	}
@@ -156,7 +162,9 @@ public class ServerHelper extends CommonHelper
 				{
 					NBTTagCompound c = is.getTagCompound();
 					if( c != null && c.getBoolean( "hideFacades" ) )
+					{
 						return CableRenderMode.CableView;
+					}
 				}
 			}
 		}

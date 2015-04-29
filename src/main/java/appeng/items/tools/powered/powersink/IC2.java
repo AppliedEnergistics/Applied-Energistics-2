@@ -48,7 +48,9 @@ public abstract class IC2 extends AERootPoweredItem implements IElectricItemMana
 		double limit = this.getTransferLimit( is );
 
 		if( !ignoreTransferLimit && amount > limit )
+		{
 			addedAmt = limit;
+		}
 
 		return addedAmt - ( (int) this.injectExternalPower( PowerUnits.EU, is, addedAmt, simulate ) );
 	}

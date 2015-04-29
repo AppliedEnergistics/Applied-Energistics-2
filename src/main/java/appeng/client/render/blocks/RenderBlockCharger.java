@@ -130,7 +130,9 @@ public class RenderBlockCharger extends BaseBlockRender
 	{
 		ItemStack sis = null;
 		if( tile instanceof IInventory )
+		{
 			sis = ( (IInventory) tile ).getStackInSlot( 0 );
+		}
 
 		if( sis != null )
 		{

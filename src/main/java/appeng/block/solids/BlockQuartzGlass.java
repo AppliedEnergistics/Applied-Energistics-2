@@ -64,7 +64,9 @@ public class BlockQuartzGlass extends AEBaseBlock
 		if( mat == Material.glass || mat == AEGlassMaterial.INSTANCE )
 		{
 			if( w.getBlock( x, y, z ).getRenderType() == this.getRenderType() )
+			{
 				return false;
+			}
 		}
 		return super.shouldSideBeRendered( w, x, y, z, side );
 	}

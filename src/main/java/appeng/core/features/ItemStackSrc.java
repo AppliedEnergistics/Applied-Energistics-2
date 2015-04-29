@@ -49,10 +49,14 @@ public class ItemStackSrc implements IStackSrc
 	public ItemStack stack( int i )
 	{
 		if( this.block != null )
+		{
 			return new ItemStack( this.block, i, this.damage );
+		}
 
 		if( this.item != null )
+		{
 			return new ItemStack( this.item, i, this.damage );
+		}
 
 		return null;
 	}

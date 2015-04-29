@@ -38,7 +38,9 @@ public class TilePhantomNode extends AENetworkTile
 	public IGridNode getGridNode( ForgeDirection dir )
 	{
 		if( !this.crashMode )
+		{
 			return super.getGridNode( dir );
+		}
 
 		return this.proxy.getNode();
 	}

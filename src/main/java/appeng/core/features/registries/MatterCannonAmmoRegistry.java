@@ -53,7 +53,9 @@ public class MatterCannonAmmoRegistry implements IOreListener, IMatterCannonAmmo
 		for( ItemStack o : this.DamageModifiers.keySet() )
 		{
 			if( Platform.isSameItem( o, is ) )
+			{
 				return this.DamageModifiers.get( o ).floatValue();
+			}
 		}
 		return 0;
 	}
@@ -62,7 +64,9 @@ public class MatterCannonAmmoRegistry implements IOreListener, IMatterCannonAmmo
 	public void oreRegistered( String name, ItemStack item )
 	{
 		if( !( name.startsWith( "berry" ) || name.startsWith( "nugget" ) ) )
+		{
 			return;
+		}
 
 		// addNugget( "Cobble", 18 ); // ?
 		this.considerItem( name, item, "MeatRaw", 32 );

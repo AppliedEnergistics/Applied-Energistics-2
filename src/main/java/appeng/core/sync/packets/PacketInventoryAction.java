@@ -57,9 +57,13 @@ public class PacketInventoryAction extends AppEngPacket
 		this.id = stream.readLong();
 		boolean hasItem = stream.readBoolean();
 		if( hasItem )
+		{
 			this.slotItem = AEItemStack.loadItemStackFromPacket( stream );
+		}
 		else
+		{
 			this.slotItem = null;
+		}
 	}
 
 	// api
@@ -67,7 +71,9 @@ public class PacketInventoryAction extends AppEngPacket
 	{
 
 		if( Platform.isClient() )
+		{
 			throw new IllegalStateException( "invalid packet, client cannot post inv actions with stacks." );
+		}
 
 		this.action = action;
 		this.slot = slot;
@@ -82,7 +88,9 @@ public class PacketInventoryAction extends AppEngPacket
 		data.writeLong( this.id );
 
 		if( slotItem == null )
+		{
 			data.writeBoolean( false );
+		}
 		else
 		{
 			data.writeBoolean( true );
@@ -153,9 +161,13 @@ public class PacketInventoryAction extends AppEngPacket
 		if( this.action == InventoryAction.UPDATE_HAND )
 		{
 			if( this.slotItem == null )
+			{
 				ClientHelper.proxy.getPlayers().get( 0 ).inventory.setItemStack( null );
+			}
 			else
+			{
 				ClientHelper.proxy.getPlayers().get( 0 ).inventory.setItemStack( this.slotItem.getItemStack() );
+			}
 		}
 	}
 }

@@ -62,7 +62,9 @@ public class BlockChest extends AEBaseBlock
 		if( tg != null && !p.isSneaking() )
 		{
 			if( Platform.isClient() )
+			{
 				return true;
+			}
 
 			if( side != tg.getUp().ordinal() )
 			{
@@ -78,7 +80,9 @@ public class BlockChest extends AEBaseBlock
 					tg.openGui( p, ch, cell, side );
 				}
 				else
+				{
 					p.addChatMessage( PlayerMessages.ChestCannotReadStorageCell.get() );
+				}
 			}
 
 			return true;

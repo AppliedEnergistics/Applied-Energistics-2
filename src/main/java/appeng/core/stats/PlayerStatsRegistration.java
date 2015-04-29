@@ -86,7 +86,9 @@ public class PlayerStatsRegistration
 			hierarchy.registerAchievementHierarchy();
 
 			for( Stats s : Stats.values() )
+			{
 				s.getStat();
+			}
 
 			/**
 			 * register
@@ -97,7 +99,9 @@ public class PlayerStatsRegistration
 			{
 				Achievement ach = a.getAchievement();
 				if( ach != null )
+				{
 					list.add( ach );
+				}
 			}
 
 			AchievementPage ae2AchievementPage = new AchievementPage( "Applied Energistics 2", list.toArray( new Achievement[list.size()] ) );

@@ -67,7 +67,9 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 	{
 		ICellWorkbenchItem cwi = this.workBench.getCell();
 		if( cwi != null )
+		{
 			cwi.setFuzzyMode( this.workBench.getInventoryByName( "cell" ).getStackInSlot( 0 ), valueOf );
+		}
 	}
 
 	public void nextCopyMode()
@@ -101,18 +103,22 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 		// null, 3 * 8 );
 
 		for( int w = 0; w < 7; w++ )
+		{
 			for( int z = 0; z < 9; z++ )
 			{
 				this.addSlotToContainer( new SlotFakeTypeOnly( inv, offset, x + z * 18, y + w * 18 ) );
 				offset++;
 			}
+		}
 
 		for( int zz = 0; zz < 3; zz++ )
+		{
 			for( int z = 0; z < 8; z++ )
 			{
 				int iSLot = zz * 8 + z;
 				this.addSlotToContainer( new OptionalSlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgradeInventory, this, iSLot, 187 + zz * 18, 8 + 18 * z, iSLot, this.invPlayer ) );
 			}
+		}
 		/*
 		 * if ( supportCapacity() ) { for (int w = 0; w < 2; w++) for (int z = 0; z < 9; z++) addSlotToContainer( new
 		 * OptionalSlotFakeTypeOnly( inv, this, offset++, x, y, z, w, 1 ) );
@@ -187,7 +193,9 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 	public void onUpdate( String field, Object oldValue, Object newValue )
 	{
 		if( field.equals( "copyMode" ) )
+		{
 			this.workBench.getConfigManager().putSetting( Settings.COPY_MODE, this.copyMode );
+		}
 
 		super.onUpdate( field, oldValue, newValue );
 	}
@@ -196,7 +204,9 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 	{
 		IInventory inv = this.upgradeable.getInventoryByName( "config" );
 		for( int x = 0; x < inv.getSizeInventory(); x++ )
+		{
 			inv.setInventorySlotContents( x, null );
+		}
 		this.detectAndSendChanges();
 	}
 
@@ -204,7 +214,9 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 	{
 		ICellWorkbenchItem cwi = this.workBench.getCell();
 		if( cwi != null )
+		{
 			return cwi.getFuzzyMode( this.workBench.getInventoryByName( "cell" ).getStackInSlot( 0 ) );
+		}
 		return FuzzyMode.IGNORE_ALL;
 	}
 
@@ -230,7 +242,9 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 				inv.setInventorySlotContents( x, g );
 			}
 			else
+			{
 				inv.setInventorySlotContents( x, null );
+			}
 		}
 
 		this.detectAndSendChanges();

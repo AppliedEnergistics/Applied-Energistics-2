@@ -66,7 +66,9 @@ public class SpatialPylonCalculator extends MBCalculator
 					IAEMultiBlock te = (IAEMultiBlock) w.getTileEntity( x, y, z );
 
 					if( !te.isValid() )
+					{
 						return false;
+					}
 				}
 			}
 		}

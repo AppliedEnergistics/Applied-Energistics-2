@@ -56,7 +56,9 @@ public class MinefactoryReloadedDeepStorageUnit implements IMEInventory<IAEItemS
 				long max = this.dsu.getMaxStoredCount();
 				long storedItems = is.stackSize;
 				if( max == storedItems )
+				{
 					return input;
+				}
 
 				storedItems += input.getStackSize();
 				if( storedItems > max )
@@ -64,13 +66,17 @@ public class MinefactoryReloadedDeepStorageUnit implements IMEInventory<IAEItemS
 					IAEItemStack overflow = AEItemStack.create( is );
 					overflow.setStackSize( (int) ( storedItems - max ) );
 					if( mode == Actionable.MODULATE )
+					{
 						this.dsu.setStoredItemCount( (int) max );
+					}
 					return overflow;
 				}
 				else
 				{
 					if( mode == Actionable.MODULATE )
+					{
 						this.dsu.setStoredItemCount( is.stackSize + (int) input.getStackSize() );
+					}
 					return null;
 				}
 			}
@@ -78,9 +84,13 @@ public class MinefactoryReloadedDeepStorageUnit implements IMEInventory<IAEItemS
 		else
 		{
 			if( input.getTagCompound() != null )
+			{
 				return input;
+			}
 			if( mode == Actionable.MODULATE )
+			{
 				this.dsu.setStoredItemType( input.getItemStack(), (int) input.getStackSize() );
+			}
 			return null;
 		}
 		return input;
@@ -96,13 +106,17 @@ public class MinefactoryReloadedDeepStorageUnit implements IMEInventory<IAEItemS
 			{
 				is = is.copy();
 				if( mode == Actionable.MODULATE )
+				{
 					this.dsu.setStoredItemCount( 0 );
+				}
 				return AEItemStack.create( is );
 			}
 			else
 			{
 				if( mode == Actionable.MODULATE )
+				{
 					this.dsu.setStoredItemCount( is.stackSize - (int) request.getStackSize() );
+				}
 				return request.copy();
 			}
 		}

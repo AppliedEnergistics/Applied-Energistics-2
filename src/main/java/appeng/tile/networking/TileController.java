@@ -85,9 +85,13 @@ public class TileController extends AENetworkPowerTile
 		if( oldValid != this.isValid || force )
 		{
 			if( this.isValid )
+			{
 				this.gridProxy.setValidSides( EnumSet.allOf( ForgeDirection.class ) );
+			}
 			else
+			{
 				this.gridProxy.setValidSides( EnumSet.noneOf( ForgeDirection.class ) );
+			}
 		}
 
 		this.updateMeta();
@@ -96,7 +100,9 @@ public class TileController extends AENetworkPowerTile
 	private void updateMeta()
 	{
 		if( !this.gridProxy.isReady() )
+		{
 			return;
+		}
 
 		int meta = 0;
 
@@ -107,7 +113,9 @@ public class TileController extends AENetworkPowerTile
 				meta = 1;
 
 				if( this.gridProxy.getPath().getControllerState() == ControllerState.CONTROLLER_CONFLICT )
+				{
 					meta = 2;
+				}
 			}
 		}
 		catch( GridAccessException e )
@@ -139,7 +147,9 @@ public class TileController extends AENetworkPowerTile
 		{
 			double ret = this.gridProxy.getEnergy().injectPower( AEUnits, mode );
 			if( mode == Actionable.SIMULATE )
+			{
 				return ret;
+			}
 			return 0;
 		}
 		catch( GridAccessException e )

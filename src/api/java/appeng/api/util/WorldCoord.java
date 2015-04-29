@@ -105,22 +105,34 @@ public class WorldCoord
 		int zlen = Math.abs( oz );
 
 		if( loc.isEqual( this.copy().add( ForgeDirection.EAST, xlen ) ) )
+		{
 			return ForgeDirection.EAST;
+		}
 
 		if( loc.isEqual( this.copy().add( ForgeDirection.WEST, xlen ) ) )
+		{
 			return ForgeDirection.WEST;
+		}
 
 		if( loc.isEqual( this.copy().add( ForgeDirection.NORTH, zlen ) ) )
+		{
 			return ForgeDirection.NORTH;
+		}
 
 		if( loc.isEqual( this.copy().add( ForgeDirection.SOUTH, zlen ) ) )
+		{
 			return ForgeDirection.SOUTH;
+		}
 
 		if( loc.isEqual( this.copy().add( ForgeDirection.UP, ylen ) ) )
+		{
 			return ForgeDirection.UP;
+		}
 
 		if( loc.isEqual( this.copy().add( ForgeDirection.DOWN, ylen ) ) )
+		{
 			return ForgeDirection.DOWN;
+		}
 
 		return null;
 	}

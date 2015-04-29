@@ -117,9 +117,13 @@ public final class ItemBasicStorageCell extends AEBaseItem implements IStorageCe
 					String list = ( handler.getIncludeExcludeMode() == IncludeExclude.WHITELIST ? GuiText.Included : GuiText.Excluded ).getLocal();
 
 					if( handler.isFuzzy() )
+					{
 						lines.add( GuiText.Partitioned.getLocal() + " - " + list + ' ' + GuiText.Fuzzy.getLocal() );
+					}
 					else
+					{
 						lines.add( GuiText.Partitioned.getLocal() + " - " + list + ' ' + GuiText.Precise.getLocal() );
+					}
 				}
 			}
 		}
@@ -229,7 +233,9 @@ public final class ItemBasicStorageCell extends AEBaseItem implements IStorageCe
 		if( player.isSneaking() )
 		{
 			if( Platform.isClient() )
+			{
 				return false;
+			}
 
 			InventoryPlayer playerInventory = player.inventory;
 			IMEInventoryHandler inv = AEApi.instance().registries().cell().getCellInventory( stack, null, StorageChannel.ITEMS );
@@ -244,7 +250,9 @@ public final class ItemBasicStorageCell extends AEBaseItem implements IStorageCe
 					// drop core
 					ItemStack extraB = ia.addItems( this.component.stack( 1 ) );
 					if( extraB != null )
+					{
 						player.dropPlayerItemWithRandomChoice( extraB, false );
+					}
 
 					// drop upgrades
 					final IInventory upgradesInventory = this.getUpgradesInventory( stack );
@@ -269,7 +277,9 @@ public final class ItemBasicStorageCell extends AEBaseItem implements IStorageCe
 					}
 
 					if( player.inventoryContainer != null )
+					{
 						player.inventoryContainer.detectAndSendChanges();
+					}
 
 					return true;
 				}

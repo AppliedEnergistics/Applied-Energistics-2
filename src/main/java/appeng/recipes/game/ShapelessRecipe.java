@@ -71,7 +71,9 @@ public class ShapelessRecipe implements IRecipe, IRecipeBakeable
 	public boolean matches( InventoryCrafting var1, World world )
 	{
 		if( this.disable )
+		{
 			return false;
+		}
 
 		ArrayList<Object> required = new ArrayList<Object>( this.input );
 
@@ -167,7 +169,9 @@ public class ShapelessRecipe implements IRecipe, IRecipeBakeable
 			for( Object o : this.input )
 			{
 				if( o instanceof IIngredient )
+				{
 					( (IIngredient) o ).bake();
+				}
 			}
 		}
 		catch( MissingIngredientError e )

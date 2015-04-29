@@ -49,7 +49,9 @@ public class TileItemGen extends AEBaseTile implements IInventory
 					if( mi.isDamageable() )
 					{
 						for( int dmg = 0; dmg < mi.getMaxDamage(); dmg++ )
+						{
 							POSSIBLE_ITEMS.add( new ItemStack( mi, 1, dmg ) );
+						}
 					}
 					else
 					{

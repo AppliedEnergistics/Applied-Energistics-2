@@ -35,9 +35,13 @@ public class AdaptorPlayerInventory implements IInventory
 	{
 
 		if( swap )
+		{
 			this.src = new WrapperChainedInventory( new WrapperInventoryRange( playerInv, 9, this.size - 9, false ), new WrapperInventoryRange( playerInv, 0, 9, false ) );
+		}
 		else
+		{
 			this.src = playerInv;
+		}
 	}
 
 	@Override

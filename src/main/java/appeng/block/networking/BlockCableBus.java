@@ -119,7 +119,9 @@ public class BlockCableBus extends AEBaseBlock implements IRedNetConnection
 	public int getRenderBlockPass()
 	{
 		if( AEConfig.instance.isFeatureEnabled( AEFeature.AlphaPass ) )
+		{
 			return 1;
+		}
 		return 0;
 	}
 
@@ -162,7 +164,9 @@ public class BlockCableBus extends AEBaseBlock implements IRedNetConnection
 			return block.getLightValue( world, x, y, z );
 		}
 		if( block == null )
+		{
 			return 0;
+		}
 		return this.cb( world, x, y, z ).getLightValue();
 	}
 
@@ -192,7 +196,9 @@ public class BlockCableBus extends AEBaseBlock implements IRedNetConnection
 		{
 			AEBaseTile tile = this.getTileEntity( world, x, y, z );
 			if( tile != null )
+			{
 				tile.disableDrops();
+			}
 			// maybe ray trace?
 		}
 		return super.removedByPlayer( world, player, x, y, z );
@@ -224,7 +230,9 @@ public class BlockCableBus extends AEBaseBlock implements IRedNetConnection
 		BusRenderHelper.INSTANCE.setPass( pass );
 
 		if( AEConfig.instance.isFeatureEnabled( AEFeature.AlphaPass ) )
+		{
 			return true;
+		}
 
 		return pass == 0;
 	}
@@ -236,9 +244,13 @@ public class BlockCableBus extends AEBaseBlock implements IRedNetConnection
 		SelectedPart sp = this.cb( world, x, y, z ).selectPart( v3 );
 
 		if( sp.part != null )
+		{
 			return sp.part.getItemStack( PartItemStack.Pick );
+		}
 		else if( sp.facade != null )
+		{
 			return sp.facade.getItemStack();
+		}
 
 		return null;
 	}
@@ -258,7 +270,9 @@ public class BlockCableBus extends AEBaseBlock implements IRedNetConnection
 				IIcon ico = this.getIcon( p );
 
 				if( ico == null )
+				{
 					continue;
+				}
 
 				byte b0 = (byte) ( Platform.getRandomInt() % 2 == 0 ? 1 : 0 );
 
@@ -304,7 +318,9 @@ public class BlockCableBus extends AEBaseBlock implements IRedNetConnection
 				IIcon ico = this.getIcon( p );
 
 				if( ico == null )
+				{
 					continue;
+				}
 
 				byte b0 = 3;
 
@@ -335,19 +351,25 @@ public class BlockCableBus extends AEBaseBlock implements IRedNetConnection
 	public void onNeighborChange( IBlockAccess w, int x, int y, int z, int tileX, int tileY, int tileZ )
 	{
 		if( Platform.isServer() )
+		{
 			this.cb( w, x, y, z ).onNeighborChanged();
+		}
 	}
 
 	private IIcon getIcon( IPart p )
 	{
 		if( p == null )
+		{
 			return null;
+		}
 
 		try
 		{
 			IIcon ico = p.getBreakingTexture();
 			if( ico != null )
+			{
 				return ico;
+			}
 		}
 		catch( Throwable t )
 		{
@@ -356,7 +378,9 @@ public class BlockCableBus extends AEBaseBlock implements IRedNetConnection
 
 		ItemStack is = p.getItemStack( PartItemStack.Network );
 		if( is == null || is.getItem() == null )
+		{
 			return null;
+		}
 
 		return is.getItem().getIcon( is, 0 );
 	}
@@ -367,10 +391,13 @@ public class BlockCableBus extends AEBaseBlock implements IRedNetConnection
 		ICableBusContainer out = null;
 
 		if( te instanceof TileCableBus )
+		{
 			out = ( (TileCableBus) te ).cb;
-
+		}
 		else if( AppEng.instance.isIntegrationEnabled( IntegrationType.FMP ) )
+		{
 			out = ( (IFMP) AppEng.instance.getIntegration( IntegrationType.FMP ) ).getCableContainer( te );
+		}
 
 		return out == null ? NULL_CABLE_BUS : out;
 	}
@@ -392,7 +419,9 @@ public class BlockCableBus extends AEBaseBlock implements IRedNetConnection
 	{
 		IIcon i = super.getIcon( direction, metadata );
 		if( i != null )
+		{
 			return i;
+		}
 
 		return ExtraBlockTextures.BlockQuartzGlassB.getIcon();
 	}
@@ -440,10 +469,14 @@ public class BlockCableBus extends AEBaseBlock implements IRedNetConnection
 		TileEntity te = w.getTileEntity( x, y, z );
 
 		if( noTesrTile.isInstance( te ) )
+		{
 			return (T) te;
+		}
 
 		if( tesrTile != null && tesrTile.isInstance( te ) )
+		{
 			return (T) te;
+		}
 
 		return null;
 	}

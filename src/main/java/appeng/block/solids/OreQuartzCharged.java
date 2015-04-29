@@ -20,7 +20,6 @@ package appeng.block.solids;
 
 
 import java.util.Random;
-
 import javax.annotation.Nullable;
 
 import net.minecraft.client.Minecraft;
@@ -76,7 +75,9 @@ public class OreQuartzCharged extends OreQuartz
 	public void randomDisplayTick( World w, int x, int y, int z, Random r )
 	{
 		if ( !AEConfig.instance.enableEffects )
+		{
 			return;
+		}
 
 		double xOff = ( r.nextFloat() );
 		double yOff = ( r.nextFloat() );

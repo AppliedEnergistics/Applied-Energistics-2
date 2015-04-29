@@ -80,14 +80,18 @@ public class PartMonitor extends AEBasePart implements IPartMonitor, IPowerChann
 			this.proxy.setIdlePowerUsage( 1.0 / 2.0 );
 		}
 		else
+		{
 			this.proxy.setIdlePowerUsage( 1.0 / 16.0 ); // lights drain a little bit.
+		}
 	}
 
 	@MENetworkEventSubscribe
 	public void bootingRender( MENetworkBootingStatusChange c )
 	{
 		if( this.notLightSource )
+		{
 			this.getHost().markForUpdate();
+		}
 	}
 
 	@MENetworkEventSubscribe
@@ -210,9 +214,13 @@ public class PartMonitor extends AEBasePart implements IPartMonitor, IPowerChann
 		try
 		{
 			if( Platform.isServer() )
+			{
 				return this.proxy.getEnergy().isNetworkPowered();
+			}
 			else
+			{
 				return ( ( this.clientFlags & this.POWERED_FLAG ) == this.POWERED_FLAG );
+			}
 		}
 		catch( GridAccessException e )
 		{
@@ -232,7 +240,9 @@ public class PartMonitor extends AEBasePart implements IPartMonitor, IPowerChann
 	{
 		super.readFromNBT( data );
 		if( data.hasKey( "opacity" ) )
+		{
 			this.opacity = data.getFloat( "opacity" );
+		}
 		this.spin = data.getByte( "spin" );
 	}
 
@@ -253,13 +263,19 @@ public class PartMonitor extends AEBasePart implements IPartMonitor, IPowerChann
 		try
 		{
 			if( this.proxy.getEnergy().isNetworkPowered() )
+			{
 				this.clientFlags |= this.POWERED_FLAG;
+			}
 
 			if( this.proxy.getPath().isNetworkBooting() )
+			{
 				this.clientFlags |= this.BOOTING_FLAG;
+			}
 
 			if( this.proxy.getNode().meetsChannelRequirements() )
+			{
 				this.clientFlags |= this.CHANNEL_FLAG;
+			}
 		}
 		catch( GridAccessException e )
 		{
@@ -277,7 +293,9 @@ public class PartMonitor extends AEBasePart implements IPartMonitor, IPowerChann
 		this.clientFlags = data.readByte();
 		this.spin = (byte) ( this.clientFlags & 3 );
 		if( this.clientFlags == oldFlags )
+		{
 			return false;
+		}
 		return true;
 	}
 
@@ -297,7 +315,9 @@ public class PartMonitor extends AEBasePart implements IPartMonitor, IPowerChann
 			if( Platform.isServer() )
 			{
 				if( this.spin > 3 )
+				{
 					this.spin = 0;
+				}
 
 				switch( this.spin )
 				{
@@ -321,7 +341,9 @@ public class PartMonitor extends AEBasePart implements IPartMonitor, IPowerChann
 			return true;
 		}
 		else
+		{
 			return super.onPartActivate( player, pos );
+		}
 	}
 
 	@Override
@@ -331,17 +353,25 @@ public class PartMonitor extends AEBasePart implements IPartMonitor, IPowerChann
 
 		byte rotation = (byte) ( MathHelper.floor_double( ( player.rotationYaw * 4F ) / 360F + 2.5D ) & 3 );
 		if( side == ForgeDirection.UP )
+		{
 			this.spin = rotation;
+		}
 		else if( side == ForgeDirection.DOWN )
+		{
 			this.spin = rotation;
+		}
 	}
 
 	@Override
 	public boolean isActive()
 	{
 		if( this.notLightSource )
+		{
 			return ( ( this.clientFlags & ( this.CHANNEL_FLAG | this.POWERED_FLAG ) ) == ( this.CHANNEL_FLAG | this.POWERED_FLAG ) );
+		}
 		else
+		{
 			return this.isPowered();
+		}
 	}
 }

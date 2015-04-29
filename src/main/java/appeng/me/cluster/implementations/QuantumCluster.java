@@ -88,7 +88,9 @@ public class QuantumCluster implements ILocatable, IAECluster
 			if( qe != 0 )
 			{
 				if( this.thisSide != 0 )
+				{
 					MinecraftForge.EVENT_BUS.post( new LocatableEventAnnounce( this, LocatableEvent.Unregister ) );
+				}
 
 				if( this.canUseNode( -qe ) )
 				{
@@ -130,7 +132,9 @@ public class QuantumCluster implements ILocatable, IAECluster
 					IGridNode sa = sideA.getNode();
 					IGridNode sb = sideB.getNode();
 					if( ( a == sa || b == sa ) && ( a == sb || b == sb ) )
+					{
 						return;
+					}
 				}
 
 				try
@@ -161,10 +165,14 @@ public class QuantumCluster implements ILocatable, IAECluster
 				}
 			}
 			else
+			{
 				shutdown = true;
+			}
 		}
 		else
+		{
 			shutdown = true;
+		}
 
 		if( shutdown && this.connection != null )
 		{
@@ -202,7 +210,9 @@ public class QuantumCluster implements ILocatable, IAECluster
 	private boolean isActive()
 	{
 		if( this.isDestroyed || !this.registered )
+		{
 			return false;
+		}
 
 		return this.center.isPowered() && this.hasQES();
 	}
@@ -221,7 +231,9 @@ public class QuantumCluster implements ILocatable, IAECluster
 	public void destroy()
 	{
 		if( this.isDestroyed )
+		{
 			return;
+		}
 		this.isDestroyed = true;
 
 		if( this.registered )

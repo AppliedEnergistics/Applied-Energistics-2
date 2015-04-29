@@ -63,7 +63,9 @@ public class ToolDebugCard extends AEBaseItem
 	public boolean onItemUseFirst( ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ )
 	{
 		if( Platform.isClient() )
+		{
 			return false;
+		}
 
 		if( player.isSneaking() )
 		{
@@ -112,16 +114,22 @@ public class ToolDebugCard extends AEBaseItem
 							for( IGridNode n : current )
 							{
 								if( n.getMachine() instanceof TileController )
+								{
 									break outer;
+								}
 
 								for( IGridConnection c : n.getConnections() )
+								{
 									next.add( c.getOtherSide( n ) );
+								}
 							}
 
 							length++;
 
 							if( length > maxLength )
+							{
 								break;
+							}
 						}
 
 						this.outputMsg( player, "Cable Distance: " + length );
@@ -154,10 +162,14 @@ public class ToolDebugCard extends AEBaseItem
 					}
 				}
 				else
+				{
 					this.outputMsg( player, "No Node Available." );
+				}
 			}
 			else
+			{
 				this.outputMsg( player, "Not Networked Block" );
+			}
 
 			if( te instanceof IPartHost )
 			{
@@ -171,7 +183,9 @@ public class ToolDebugCard extends AEBaseItem
 					{
 						ForgeDirection fd = gc.getDirection( n );
 						if( fd != ForgeDirection.UNKNOWN )
+						{
 							this.outputMsg( player, fd.toString() + ": " + gc.getUsedChannels() );
+						}
 					}
 				}
 			}
@@ -204,7 +218,9 @@ public class ToolDebugCard extends AEBaseItem
 	{
 		long ms = nanos / 100000;
 		if( nanos <= 100000 )
+		{
 			return nanos + "ns";
+		}
 		return ( ms / 10.0f ) + "ms";
 	}
 }

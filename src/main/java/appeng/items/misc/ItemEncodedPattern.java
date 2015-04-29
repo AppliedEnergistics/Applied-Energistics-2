@@ -54,7 +54,9 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 		this.setFeature( EnumSet.of( AEFeature.Patterns ) );
 		this.setMaxStackSize( 1 );
 		if( Platform.isClient() )
+		{
 			MinecraftForgeClient.registerItemRenderer( this, new ItemEncodedPatternRenderer() );
+		}
 	}
 
 	@Override
@@ -76,7 +78,9 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 		if( player.isSneaking() )
 		{
 			if( Platform.isClient() )
+			{
 				return false;
+			}
 
 			InventoryPlayer inv = player.inventory;
 
@@ -159,16 +163,22 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 	{
 		ItemStack out = SIMPLE_CACHE.get( item );
 		if( out != null )
+		{
 			return out;
+		}
 
 		World w = CommonHelper.proxy.getWorld();
 		if( w == null )
+		{
 			return null;
+		}
 
 		ICraftingPatternDetails details = this.getPatternForItem( item, w );
 
 		if( details == null )
+		{
 			return null;
+		}
 
 		SIMPLE_CACHE.put( item, out = details.getCondensedOutputs()[0].getItemStack() );
 		return out;

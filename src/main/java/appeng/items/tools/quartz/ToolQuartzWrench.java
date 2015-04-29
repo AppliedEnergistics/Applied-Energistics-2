@@ -58,7 +58,9 @@ public class ToolQuartzWrench extends AEBaseItem implements IAEWrench, IToolWren
 		if( b != null && !player.isSneaking() && Platform.hasPermissions( new DimensionalCoord( world, x, y, z ), player ) )
 		{
 			if( Platform.isClient() )
+			{
 				return !world.isRemote;
+			}
 
 			ForgeDirection mySide = ForgeDirection.getOrientation( side );
 			if( b.rotateBlock( world, x, y, z, mySide ) )

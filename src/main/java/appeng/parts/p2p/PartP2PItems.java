@@ -81,7 +81,9 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 		this.cachedInv = null;
 		PartP2PItems input = this.getInput();
 		if( input != null && this.output )
+		{
 			input.onTunnelNetworkChange();
+		}
 	}
 
 	IInventory getDestination()
@@ -89,7 +91,9 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 		this.requested = true;
 
 		if( this.cachedInv != null )
+		{
 			return this.cachedInv;
+		}
 
 		List<IInventory> outs = new LinkedList<IInventory>();
 		TunnelCollection<PartP2PItems> itemTunnels;
@@ -109,9 +113,13 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 			if( inv != null )
 			{
 				if( Platform.getRandomInt() % 2 == 0 )
+				{
 					outs.add( inv );
+				}
 				else
+				{
 					outs.add( 0, inv );
+				}
 			}
 		}
 
@@ -127,7 +135,9 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 			TileEntity te = this.tile.getWorldObj().getTileEntity( this.tile.xCoord + this.side.offsetX, this.tile.yCoord + this.side.offsetY, this.tile.zCoord + this.side.offsetZ );
 
 			if( this.which.contains( this ) )
+			{
 				return null;
+			}
 
 			this.which.add( this );
 
@@ -189,7 +199,9 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 		boolean wasReq = this.requested;
 
 		if( this.requested && this.cachedInv != null )
+		{
 			( (WrapperChainedInventory) this.cachedInv ).cycleOrder();
+		}
 
 		this.requested = false;
 		return wasReq ? TickRateModulation.FASTER : TickRateModulation.SLOWER;
@@ -264,7 +276,9 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 		{
 			PartP2PItems input = this.getInput();
 			if( input != null )
+			{
 				input.getHost().notifyNeighbors();
+			}
 		}
 	}
 
@@ -273,7 +287,9 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 	{
 		int[] slots = new int[this.getSizeInventory()];
 		for( int x = 0; x < this.getSizeInventory(); x++ )
+		{
 			slots[x] = x;
+		}
 		return slots;
 	}
 

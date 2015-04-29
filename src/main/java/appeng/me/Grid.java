@@ -95,7 +95,9 @@ public class Grid implements IGrid
 	{
 		int out = 0;
 		for( Collection<?> x : this.machines.values() )
+		{
 			out += x.size();
+		}
 		return out;
 	}
 
@@ -110,7 +112,9 @@ public class Grid implements IGrid
 		Class<? extends IGridHost> machineClass = gridNode.getMachineClass();
 		Set<IGridNode> nodes = this.machines.get( machineClass );
 		if( nodes != null )
+		{
 			nodes.remove( gridNode );
+		}
 
 		gridNode.setGridStorage( null );
 
@@ -118,7 +122,9 @@ public class Grid implements IGrid
 		{
 			Iterator<IGridNode> n = this.getNodes().iterator();
 			if( n.hasNext() )
+			{
 				this.pivot = (GridNode) n.next();
+			}
 			else
 			{
 				this.pivot = null;
@@ -152,7 +158,9 @@ public class Grid implements IGrid
 				this.myStorage.setGrid( this );
 
 				for( IGridCache gc : this.caches.values() )
+				{
 					gc.onJoin( this.myStorage );
+				}
 			}
 			else if( grid != this )
 			{
@@ -168,10 +176,14 @@ public class Grid implements IGrid
 					gs.addDivided( this.myStorage );
 
 					for( IGridCache gc : ( (Grid) grid ).caches.values() )
+					{
 						gc.onSplit( tmp );
+					}
 
 					for( IGridCache gc : this.caches.values() )
+					{
 						gc.onJoin( tmp );
+					}
 				}
 			}
 		}
@@ -229,7 +241,9 @@ public class Grid implements IGrid
 	{
 		MachineSet s = this.machines.get( c );
 		if( s == null )
+		{
 			return new MachineSet( c );
+		}
 		return s;
 	}
 
@@ -262,7 +276,9 @@ public class Grid implements IGrid
 		{
 			// are there any nodes left?
 			if( this.pivot != null )
+			{
 				gc.onUpdateTick();
+			}
 		}
 	}
 
