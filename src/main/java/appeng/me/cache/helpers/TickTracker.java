@@ -62,10 +62,14 @@ public class TickTracker implements Comparable<TickTracker>
 		this.current_rate = rate;
 
 		if( this.current_rate < this.request.minTickRate )
+		{
 			this.current_rate = this.request.minTickRate;
+		}
 
 		if( this.current_rate > this.request.maxTickRate )
+		{
 			this.current_rate = this.request.maxTickRate;
+		}
 	}
 
 	@Override
@@ -93,6 +97,8 @@ public class TickTracker implements Comparable<TickTracker>
 
 		DimensionalCoord dc = this.node.getGridBlock().getLocation();
 		if( dc != null )
+		{
 			crashreportcategory.addCrashSection( "Location", dc );
+		}
 	}
 }

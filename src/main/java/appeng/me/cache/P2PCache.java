@@ -59,7 +59,9 @@ public class P2PCache implements IGridCache
 		for( PartP2PTunnel me : this.inputs.values() )
 		{
 			if( me instanceof PartP2PTunnelME )
+			{
 				tm.wakeDevice( me.getGridNode() );
+			}
 		}
 	}
 
@@ -70,7 +72,9 @@ public class P2PCache implements IGridCache
 		for( PartP2PTunnel me : this.inputs.values() )
 		{
 			if( me instanceof PartP2PTunnelME )
+			{
 				tm.wakeDevice( me.getGridNode() );
+			}
 		}
 	}
 
@@ -88,7 +92,9 @@ public class P2PCache implements IGridCache
 			if( machine instanceof PartP2PTunnelME )
 			{
 				if( !node.hasFlag( GridFlags.REQUIRE_CHANNEL ) )
+				{
 					return;
+				}
 			}
 
 			PartP2PTunnel t = (PartP2PTunnel) machine;
@@ -96,9 +102,13 @@ public class P2PCache implements IGridCache
 			// );
 
 			if( t.output )
+			{
 				this.outputs.remove( t.freq, t );
+			}
 			else
+			{
 				this.inputs.remove( t.freq );
+			}
 
 			this.updateTunnel( t.freq, !t.output, false );
 		}
@@ -112,7 +122,9 @@ public class P2PCache implements IGridCache
 			if( machine instanceof PartP2PTunnelME )
 			{
 				if( !node.hasFlag( GridFlags.REQUIRE_CHANNEL ) )
+				{
 					return;
+				}
 			}
 
 			PartP2PTunnel t = (PartP2PTunnel) machine;
@@ -120,9 +132,13 @@ public class P2PCache implements IGridCache
 			// );
 
 			if( t.output )
+			{
 				this.outputs.put( t.freq, t );
+			}
 			else
+			{
 				this.inputs.put( t.freq, t );
+			}
 
 			this.updateTunnel( t.freq, !t.output, false );
 		}
@@ -151,7 +167,9 @@ public class P2PCache implements IGridCache
 		for( PartP2PTunnel p : this.outputs.get( freq ) )
 		{
 			if( configChange )
+			{
 				p.onTunnelConfigChange();
+			}
 			p.onTunnelNetworkChange();
 		}
 
@@ -159,7 +177,9 @@ public class P2PCache implements IGridCache
 		if( in != null )
 		{
 			if( configChange )
+			{
 				in.onTunnelConfigChange();
+			}
 			in.onTunnelNetworkChange();
 		}
 	}
@@ -167,17 +187,25 @@ public class P2PCache implements IGridCache
 	public void updateFreq( PartP2PTunnel t, long NewFreq )
 	{
 		if( this.outputs.containsValue( t ) )
+		{
 			this.outputs.remove( t.freq, t );
+		}
 
 		if( this.inputs.containsValue( t ) )
+		{
 			this.inputs.remove( t.freq );
+		}
 
 		t.freq = NewFreq;
 
 		if( t.output )
+		{
 			this.outputs.put( t.freq, t );
+		}
 		else
+		{
 			this.inputs.put( t.freq, t );
+		}
 
 		// AELog.info( "update-" + (t.output ? "output: " : "input: ") + t.freq
 		// );
@@ -189,11 +217,15 @@ public class P2PCache implements IGridCache
 	{
 		PartP2PTunnel in = this.inputs.get( freq );
 		if( in == null )
+		{
 			return this.NullColl;
+		}
 
 		TunnelCollection<PartP2PTunnel> out = this.inputs.get( freq ).getCollection( this.outputs.get( freq ), c );
 		if( out == null )
+		{
 			return this.NullColl;
+		}
 
 		return out;
 	}

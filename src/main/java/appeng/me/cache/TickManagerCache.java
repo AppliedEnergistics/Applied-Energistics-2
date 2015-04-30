@@ -62,10 +62,14 @@ public class TickManagerCache implements ITickManager
 		TickTracker tt = this.awake.get( node );
 
 		if( tt == null )
+		{
 			tt = this.sleeping.get( node );
+		}
 
 		if( tt == null )
+		{
 			return -1;
+		}
 
 		return tt.getAvgNanos();
 	}
@@ -111,10 +115,14 @@ public class TickManagerCache implements ITickManager
 					}
 
 					if( this.awake.containsKey( tt.node ) )
+					{
 						this.addToQueue( tt );
+					}
 				}
 				else
+				{
 					return; // done!
+				}
 			}
 		}
 		catch( Throwable t )
@@ -154,10 +162,14 @@ public class TickManagerCache implements ITickManager
 				TickTracker tt = new TickTracker( tr, gridNode, (IGridTickable) machine, this.currentTick, this );
 
 				if( tr.canBeAlerted )
+				{
 					this.alertable.put( gridNode, tt );
+				}
 
 				if( tr.isSleeping )
+				{
 					this.sleeping.put( gridNode, tt );
+				}
 				else
 				{
 					this.awake.put( gridNode, tt );
@@ -190,7 +202,9 @@ public class TickManagerCache implements ITickManager
 	{
 		TickTracker tt = this.alertable.get( node );
 		if( tt == null )
+		{
 			return false;
+		}
 		// throw new RuntimeException(
 		// "Invalid alerted device, this node is not marked as alertable, or part of this grid." );
 

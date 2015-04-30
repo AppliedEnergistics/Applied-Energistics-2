@@ -74,10 +74,14 @@ public class IMEAdaptor extends InventoryAdaptor
 		{
 			IItemList<IAEItemStack> list = this.getList();
 			if( !list.isEmpty() )
+			{
 				req = list.getFirstItem();
+			}
 		}
 		else
+		{
 			req = AEItemStack.create( Filter );
+		}
 
 		IAEItemStack out = null;
 
@@ -88,7 +92,9 @@ public class IMEAdaptor extends InventoryAdaptor
 		}
 
 		if( out != null )
+		{
 			return out.getItemStack();
+		}
 
 		return null;
 	}
@@ -103,7 +109,9 @@ public class IMEAdaptor extends InventoryAdaptor
 	public ItemStack removeSimilarItems( int how_many, ItemStack filter, FuzzyMode fuzzyMode, IInventoryDestination destination )
 	{
 		if( filter == null )
+		{
 			return this.doRemoveItems( how_many, null, destination, Actionable.MODULATE );
+		}
 		return this.doRemoveItemsFuzzy( how_many, filter, destination, Actionable.MODULATE, fuzzyMode );
 	}
 
@@ -111,7 +119,9 @@ public class IMEAdaptor extends InventoryAdaptor
 	{
 		IAEItemStack reqFilter = AEItemStack.create( Filter );
 		if( reqFilter == null )
+		{
 			return null;
+		}
 
 		IAEItemStack out = null;
 
@@ -122,7 +132,9 @@ public class IMEAdaptor extends InventoryAdaptor
 				req.setStackSize( how_many );
 				out = this.target.extractItems( req, type, this.src );
 				if( out != null )
+				{
 					return out.getItemStack();
+				}
 			}
 		}
 
@@ -133,7 +145,9 @@ public class IMEAdaptor extends InventoryAdaptor
 	public ItemStack simulateSimilarRemove( int amount, ItemStack filter, FuzzyMode fuzzyMode, IInventoryDestination destination )
 	{
 		if( filter == null )
+		{
 			return this.doRemoveItems( amount, null, destination, Actionable.SIMULATE );
+		}
 		return this.doRemoveItemsFuzzy( amount, filter, destination, Actionable.SIMULATE, fuzzyMode );
 	}
 
@@ -145,7 +159,9 @@ public class IMEAdaptor extends InventoryAdaptor
 		{
 			IAEItemStack out = this.target.injectItems( in, Actionable.MODULATE, this.src );
 			if( out != null )
+			{
 				return out.getItemStack();
+			}
 		}
 		return null;
 	}
@@ -158,7 +174,9 @@ public class IMEAdaptor extends InventoryAdaptor
 		{
 			IAEItemStack out = this.target.injectItems( in, Actionable.SIMULATE, this.src );
 			if( out != null )
+			{
 				return out.getItemStack();
+			}
 		}
 		return null;
 	}

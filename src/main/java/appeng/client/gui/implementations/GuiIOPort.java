@@ -70,13 +70,19 @@ public class GuiIOPort extends GuiUpgradeable
 		this.fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
 
 		if( this.redstoneMode != null )
+		{
 			this.redstoneMode.set( this.cvb.rsMode );
+		}
 
 		if( this.operationMode != null )
+		{
 			this.operationMode.set( ( (ContainerIOPort) this.cvb ).opMode );
+		}
 
 		if( this.fullMode != null )
+		{
 			this.fullMode.set( ( (ContainerIOPort) this.cvb ).fMode );
+		}
 	}
 
 	@Override
@@ -111,9 +117,13 @@ public class GuiIOPort extends GuiUpgradeable
 		boolean backwards = Mouse.isButtonDown( 1 );
 
 		if( btn == this.fullMode )
+		{
 			NetworkHandler.instance.sendToServer( new PacketConfigButton( this.fullMode.getSetting(), backwards ) );
+		}
 
 		if( btn == this.operationMode )
+		{
 			NetworkHandler.instance.sendToServer( new PacketConfigButton( this.operationMode.getSetting(), backwards ) );
+		}
 	}
 }

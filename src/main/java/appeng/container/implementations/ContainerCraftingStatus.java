@@ -60,16 +60,24 @@ public class ContainerCraftingStatus extends ContainerCraftingCPU
 		{
 			boolean found = false;
 			for( CraftingCPURecord ccr : this.cpus )
+			{
 				if( ccr.cpu == c )
+				{
 					found = true;
+				}
+			}
 
 			boolean matched = this.cpuMatches( c );
 
 			if( matched )
+			{
 				matches++;
+			}
 
 			if( found == !matched )
+			{
 				changed = true;
+			}
 		}
 
 		if( changed || this.cpus.size() != matches )
@@ -78,7 +86,9 @@ public class ContainerCraftingStatus extends ContainerCraftingCPU
 			for( ICraftingCPU c : cpuSet )
 			{
 				if( this.cpuMatches( c ) )
+				{
 					this.cpus.add( new CraftingCPURecord( c.getAvailableStorage(), c.getCoProcessors(), c ) );
+				}
 			}
 
 			this.sendCPUs();
@@ -109,31 +119,47 @@ public class ContainerCraftingStatus extends ContainerCraftingCPU
 		}
 
 		if( this.selectedCpu == -1 && this.cpus.size() > 0 )
+		{
 			this.selectedCpu = 0;
+		}
 
 		if( this.selectedCpu != -1 )
 		{
 			if( this.cpus.get( this.selectedCpu ).cpu != this.monitor )
+			{
 				this.setCPU( this.cpus.get( this.selectedCpu ).cpu );
+			}
 		}
 		else
+		{
 			this.setCPU( null );
+		}
 	}
 
 	public void cycleCpu( boolean next )
 	{
 		if( next )
+		{
 			this.selectedCpu++;
+		}
 		else
+		{
 			this.selectedCpu--;
+		}
 
 		if( this.selectedCpu < -1 )
+		{
 			this.selectedCpu = this.cpus.size() - 1;
+		}
 		else if( this.selectedCpu >= this.cpus.size() )
+		{
 			this.selectedCpu = -1;
+		}
 
 		if( this.selectedCpu == -1 && this.cpus.size() > 0 )
+		{
 			this.selectedCpu = 0;
+		}
 
 		if( this.selectedCpu == -1 )
 		{

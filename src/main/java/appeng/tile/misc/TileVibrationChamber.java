@@ -157,7 +157,9 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 		{
 			int newBurnTime = TileEntityFurnace.getItemBurnTime( is );
 			if( newBurnTime > 0 && is.stackSize > 0 )
+			{
 				return true;
+			}
 		}
 		return false;
 	}
@@ -172,7 +174,9 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 	public TickingRequest getTickingRequest( IGridNode node )
 	{
 		if( this.burnTime <= 0 )
+		{
 			this.eatFuel();
+		}
 
 		return new TickingRequest( TickRates.VibrationChamber.min, TickRates.VibrationChamber.max, this.burnTime <= 0, false );
 	}
@@ -185,7 +189,9 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 			this.eatFuel();
 
 			if( this.burnTime > 0 )
+			{
 				return TickRateModulation.URGENT;
+			}
 
 			this.burnSpeed = 100;
 			return TickRateModulation.SLEEP;
@@ -212,9 +218,13 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 			grid.injectPower( Math.max( 0.0, newPower - overFlow ), Actionable.MODULATE );
 
 			if( overFlow > 0 )
+			{
 				this.burnSpeed -= TicksSinceLastCall;
+			}
 			else
+			{
 				this.burnSpeed += TicksSinceLastCall;
+			}
 
 			this.burnSpeed = Math.max( 20, Math.min( this.burnSpeed, 200 ) );
 			return overFlow > 0 ? TickRateModulation.SLOWER : TickRateModulation.FASTER;
@@ -243,12 +253,16 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 					ItemStack container = null;
 
 					if( is.getItem().hasContainerItem( is ) )
+					{
 						container = is.getItem().getContainerItem( is );
+					}
 
 					this.setInventorySlotContents( 0, container );
 				}
 				else
+				{
 					this.setInventorySlotContents( 0, is );
+				}
 			}
 		}
 

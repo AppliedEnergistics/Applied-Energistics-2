@@ -51,21 +51,31 @@ public final class NameResolver
 		String name = this.withOriginalName.getSimpleName();
 
 		if( name.startsWith( "ItemMultiPart" ) )
+		{
 			name = ITEM_MULTI_PART.matcher( name ).replaceAll( "ItemPart" );
+		}
 		else if( name.startsWith( "ItemMultiMaterial" ) )
+		{
 			name = ITEM_MULTI_MATERIAL.matcher( name ).replaceAll( "ItemMaterial" );
+		}
 
 		if( subName != null )
 		{
 			// simple hack to allow me to do get nice names for these without
 			// mode code outside of AEBaseItem
 			if( subName.startsWith( "P2PTunnel" ) )
+			{
 				return "ItemPart.P2PTunnel";
+			}
 
 			if( subName.equals( "CertusQuartzTools" ) )
+			{
 				return QUARTZ.matcher( name ).replaceAll( "CertusQuartz" );
+			}
 			if( subName.equals( "NetherQuartzTools" ) )
+			{
 				return QUARTZ.matcher( name ).replaceAll( "NetherQuartz" );
+			}
 
 			name += '.' + subName;
 		}

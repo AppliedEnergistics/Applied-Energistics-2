@@ -46,7 +46,9 @@ public class ItemEncodedPatternRenderer implements IItemRenderer
 		{
 			ItemEncodedPattern iep = (ItemEncodedPattern) item.getItem();
 			if( iep.getOutput( item ) != null )
+			{
 				return true;
+			}
 		}
 
 		return false;

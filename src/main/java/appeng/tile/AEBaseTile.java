@@ -93,7 +93,9 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	{
 		ItemStackSrc src = ITEM_STACKS.get( obj.getClass() );
 		if( src == null )
+		{
 			return null;
+		}
 		return src.stack( 1 );
 	}
 
@@ -108,7 +110,9 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	public void onChunkLoad()
 	{
 		if( this.isInvalid() )
+		{
 			this.validate();
+		}
 	}
 
 	@Override
@@ -118,9 +122,13 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 		super.readFromNBT( data );
 
 		if( data.hasKey( "customName" ) )
+		{
 			this.customName = data.getString( "customName" );
+		}
 		else
+		{
 			this.customName = null;
+		}
 
 		try
 		{
@@ -153,17 +161,23 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 		}
 
 		if( this.customName != null )
+		{
 			data.setString( "customName", this.customName );
+		}
 
 		for( AETileEventHandler h : this.getHandlerListFor( TileEventType.WORLD_NBT_WRITE ) )
+		{
 			h.writeToNBT( this, data );
+		}
 	}
 
 	@Override
 	public final void updateEntity()
 	{
 		for( AETileEventHandler h : this.getHandlerListFor( TileEventType.TICK ) )
+		{
 			h.Tick( this );
+		}
 	}
 
 	@Override
@@ -177,7 +191,9 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 		{
 			this.writeToStream( stream );
 			if( stream.readableBytes() == 0 )
+			{
 				return null;
+			}
 		}
 		catch( Throwable t )
 		{
@@ -209,7 +225,9 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 		{
 			ByteBuf stream = Unpooled.copiedBuffer( pkt.func_148857_g().getByteArray( "X" ) );
 			if( this.readFromStream( stream ) )
+			{
 				this.markForUpdate();
+			}
 		}
 	}
 
@@ -217,7 +235,9 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	public void onChunkUnload()
 	{
 		if( !this.isInvalid() )
+		{
 			this.invalidate();
+		}
 	}
 
 	public final boolean readFromStream( ByteBuf data )
@@ -241,11 +261,17 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 
 			this.renderFragment = 100;
 			for( AETileEventHandler h : this.getHandlerListFor( TileEventType.NETWORK_READ ) )
+			{
 				if( h.readFromStream( this, data ) )
+				{
 					output = true;
+				}
+			}
 
 			if( ( this.renderFragment & 1 ) == 1 )
+			{
 				output = true;
+			}
 			this.renderFragment = 0;
 		}
 		catch( Throwable t )
@@ -259,7 +285,9 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	public void markForUpdate()
 	{
 		if( this.renderFragment > 0 )
+		{
 			this.renderFragment |= 1;
+		}
 		else
 		{
 			// TODO: Optimize Network Load
@@ -282,7 +310,9 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 			}
 
 			for( AETileEventHandler h : this.getHandlerListFor( TileEventType.NETWORK_WRITE ) )
+			{
 				h.writeToStream( this, data );
+			}
 		}
 		catch( Throwable t )
 		{
@@ -323,7 +353,9 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 		List<AETileEventHandler> list = handlerSet.get( type );
 
 		if( list == null )
+		{
 			handlerSet.put( type, list = new LinkedList<AETileEventHandler>() );
+		}
 
 		return list;
 	}
@@ -333,7 +365,9 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 		List<AETileEventHandler> list = handlerSet.get( value );
 
 		if( list == null )
+		{
 			handlerSet.put( value, list = new ArrayList<AETileEventHandler>() );
+		}
 
 		list.add( new AETileEventHandler( m, value ) );
 	}
@@ -379,7 +413,9 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 		{
 			IConfigManager cm = ( (IConfigurableObject) this ).getConfigManager();
 			if( cm != null )
+			{
 				cm.readFromNBT( compound );
+			}
 		}
 
 		if( this instanceof IPriorityHost )
@@ -397,7 +433,9 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 				AppEngInternalAEInventory tmp = new AppEngInternalAEInventory( null, target.getSizeInventory() );
 				tmp.readFromNBT( compound, "config" );
 				for( int x = 0; x < tmp.getSizeInventory(); x++ )
+				{
 					target.setInventorySlotContents( x, tmp.getStackInSlot( x ) );
+				}
 			}
 		}
 	}
@@ -422,7 +460,9 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 			{
 				ItemStack is = inv.getStackInSlot( l );
 				if( is != null )
+				{
 					drops.add( is );
+				}
 			}
 		}
 	}
@@ -459,7 +499,9 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 		{
 			IConfigManager cm = ( (IConfigurableObject) this ).getConfigManager();
 			if( cm != null )
+			{
 				cm.writeToNBT( output );
+			}
 		}
 
 		if( this instanceof IPriorityHost )

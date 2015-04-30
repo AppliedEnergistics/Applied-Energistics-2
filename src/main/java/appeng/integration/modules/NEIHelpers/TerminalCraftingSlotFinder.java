@@ -34,11 +34,13 @@ public class TerminalCraftingSlotFinder implements IStackPositioner
 	public ArrayList<PositionedStack> positionStacks( ArrayList<PositionedStack> a )
 	{
 		for( PositionedStack ps : a )
+		{
 			if( ps != null )
 			{
 				ps.relx += GuiMEMonitorable.CraftingGridOffsetX;
 				ps.rely += GuiMEMonitorable.CraftingGridOffsetY;
 			}
+		}
 		return a;
 	}
 }

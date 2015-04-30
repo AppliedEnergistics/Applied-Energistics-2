@@ -81,15 +81,21 @@ public final class PartP2PRFPower extends PartP2PTunnel<PartP2PRFPower> implemen
 	public int receiveEnergy( ForgeDirection from, int maxReceive, boolean simulate )
 	{
 		if( this.output )
+		{
 			return 0;
+		}
 
 		if( this.isActive() )
 		{
 			Stack<PartP2PRFPower> stack = this.getDepth();
 
 			for( PartP2PRFPower t : stack )
+			{
 				if( t == this )
+				{
 					return 0;
+				}
+			}
 
 			stack.push( this );
 
@@ -106,7 +112,9 @@ public final class PartP2PRFPower extends PartP2PTunnel<PartP2PRFPower> implemen
 						total += receiver;
 
 						if( maxReceive <= 0 )
+						{
 							break;
+						}
 					}
 				}
 
@@ -119,7 +127,9 @@ public final class PartP2PRFPower extends PartP2PTunnel<PartP2PRFPower> implemen
 						total += receiver;
 
 						if( maxReceive <= 0 )
+						{
 							break;
+						}
 					}
 				}
 
@@ -130,7 +140,9 @@ public final class PartP2PRFPower extends PartP2PTunnel<PartP2PRFPower> implemen
 			}
 
 			if( stack.pop() != this )
+			{
 				throw new IllegalStateException( "Invalid Recursion detected." );
+			}
 
 			return total;
 		}
@@ -143,7 +155,9 @@ public final class PartP2PRFPower extends PartP2PTunnel<PartP2PRFPower> implemen
 		Stack<PartP2PRFPower> s = THREAD_STACK.get();
 
 		if( s == null )
+		{
 			THREAD_STACK.set( s = new Stack<PartP2PRFPower>() );
+		}
 
 		return s;
 	}
@@ -161,7 +175,9 @@ public final class PartP2PRFPower extends PartP2PTunnel<PartP2PRFPower> implemen
 			}
 
 			if( this.outputTarget == null || !this.outputTarget.canConnectEnergy( this.side.getOpposite() ) )
+			{
 				return NULL_HANDLER;
+			}
 
 			return this.outputTarget;
 		}
@@ -172,15 +188,21 @@ public final class PartP2PRFPower extends PartP2PTunnel<PartP2PRFPower> implemen
 	public int getEnergyStored( ForgeDirection from )
 	{
 		if( this.output || !this.isActive() )
+		{
 			return 0;
+		}
 
 		int total = 0;
 
 		Stack<PartP2PRFPower> stack = this.getDepth();
 
 		for( PartP2PRFPower t : stack )
+		{
 			if( t == this )
+			{
 				return 0;
+			}
+		}
 
 		stack.push( this );
 
@@ -197,7 +219,9 @@ public final class PartP2PRFPower extends PartP2PTunnel<PartP2PRFPower> implemen
 		}
 
 		if( stack.pop() != this )
+		{
 			throw new IllegalStateException( "Invalid Recursion detected." );
+		}
 
 		return total;
 	}
@@ -206,15 +230,21 @@ public final class PartP2PRFPower extends PartP2PTunnel<PartP2PRFPower> implemen
 	public int getMaxEnergyStored( ForgeDirection from )
 	{
 		if( this.output || !this.isActive() )
+		{
 			return 0;
+		}
 
 		int total = 0;
 
 		Stack<PartP2PRFPower> stack = this.getDepth();
 
 		for( PartP2PRFPower t : stack )
+		{
 			if( t == this )
+			{
 				return 0;
+			}
+		}
 
 		stack.push( this );
 
@@ -231,7 +261,9 @@ public final class PartP2PRFPower extends PartP2PTunnel<PartP2PRFPower> implemen
 		}
 
 		if( stack.pop() != this )
+		{
 			throw new IllegalStateException( "Invalid Recursion detected." );
+		}
 
 		return total;
 	}

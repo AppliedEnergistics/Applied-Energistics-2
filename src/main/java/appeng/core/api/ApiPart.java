@@ -74,7 +74,9 @@ public class ApiPart implements IPartHelper
 		for( Class layerInterface : this.interfaces2Layer.keySet() )
 		{
 			if( AppEng.instance.isIntegrationEnabled( IntegrationType.FMP ) )
+			{
 				( (IFMP) AppEng.instance.getIntegration( IntegrationType.FMP ) ).registerPassThrough( layerInterface );
+			}
 		}
 	}
 
@@ -147,7 +149,9 @@ public class ApiPart implements IPartHelper
 	public Class getClassByDesc( String Addendum, String fullPath, String root, String next )
 	{
 		if( this.roots.get( fullPath ) != null )
+		{
 			return this.roots.get( fullPath );
+		}
 
 		ClassWriter cw = new ClassWriter( ClassWriter.COMPUTE_MAXS );
 		ClassNode n = this.getReader( next );
@@ -313,7 +317,9 @@ public class ApiPart implements IPartHelper
 				return true;
 			}
 			else
+			{
 				AELog.info( "Layer " + layer + " not registered, " + layerInterface + " already has a layer." );
+			}
 		}
 		catch( Throwable ignored )
 		{
@@ -326,7 +332,9 @@ public class ApiPart implements IPartHelper
 	public void setItemBusRenderer( IPartItem i )
 	{
 		if( Platform.isClient() && i instanceof Item )
+		{
 			MinecraftForgeClient.registerItemRenderer( (Item) i, BusRenderer.INSTANCE );
+		}
 	}
 
 	@Override
@@ -351,7 +359,9 @@ public class ApiPart implements IPartHelper
 		{
 			String o = this.inputOutput.get( typeName );
 			if( o == null )
+			{
 				return typeName;
+			}
 			return o;
 		}
 	}

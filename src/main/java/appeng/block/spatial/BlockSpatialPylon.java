@@ -48,7 +48,9 @@ public class BlockSpatialPylon extends AEBaseBlock
 	{
 		TileSpatialPylon tsp = this.getTileEntity( w, x, y, z );
 		if( tsp != null )
+		{
 			tsp.onNeighborBlockChange();
+		}
 	}
 
 	@Override
@@ -56,7 +58,9 @@ public class BlockSpatialPylon extends AEBaseBlock
 	{
 		TileSpatialPylon tsp = this.getTileEntity( w, x, y, z );
 		if( tsp != null )
+		{
 			return tsp.getLightValue();
+		}
 		return super.getLightValue( w, x, y, z );
 	}
 

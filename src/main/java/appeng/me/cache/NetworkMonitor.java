@@ -62,9 +62,13 @@ public class NetworkMonitor<T extends IAEStack<T>> extends MEMonitorHandler<T>
 			IMEMonitorHandlerReceiver<T> receiver = o.getKey();
 
 			if( receiver.isValid( o.getValue() ) )
+			{
 				receiver.onListUpdate();
+			}
 			else
+			{
 				i.remove();
+			}
 		}
 	}
 
@@ -100,7 +104,9 @@ public class NetworkMonitor<T extends IAEStack<T>> extends MEMonitorHandler<T>
 	protected void postChange( boolean Add, Iterable<T> changes, BaseActionSource src )
 	{
 		if( DEPTH.contains( this ) )
+		{
 			return;
+		}
 
 		DEPTH.push( this );
 
@@ -114,7 +120,9 @@ public class NetworkMonitor<T extends IAEStack<T>> extends MEMonitorHandler<T>
 			T difference = changedItem;
 
 			if( !Add && changedItem != null )
+			{
 				( difference = changedItem.copy() ).setStackSize( -changedItem.getStackSize() );
+			}
 
 			if( this.myGridCache.interestManager.containsKey( changedItem ) )
 			{
@@ -131,7 +139,9 @@ public class NetworkMonitor<T extends IAEStack<T>> extends MEMonitorHandler<T>
 					this.myGridCache.interestManager.enableTransactions();
 
 					for( ItemWatcher iw : list )
+					{
 						iw.getHost().onStackChange( myStorageList, fullStack, difference, src, this.getChannel() );
+					}
 
 					this.myGridCache.interestManager.disableTransactions();
 				}
@@ -140,6 +150,8 @@ public class NetworkMonitor<T extends IAEStack<T>> extends MEMonitorHandler<T>
 
 		final NetworkMonitor<?> last = DEPTH.pop();
 		if( last != this )
+		{
 			throw new IllegalStateException( "Invalid Access to Networked Storage API detected." );
+		}
 	}
 }

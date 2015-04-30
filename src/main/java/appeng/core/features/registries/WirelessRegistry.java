@@ -48,7 +48,9 @@ public final class WirelessRegistry implements IWirelessTermRegistry
 	public void registerWirelessHandler( IWirelessTermHandler handler )
 	{
 		if( handler != null )
+		{
 			this.handlers.add( handler );
+		}
 	}
 
 	@Override
@@ -57,7 +59,9 @@ public final class WirelessRegistry implements IWirelessTermRegistry
 		for( IWirelessTermHandler h : this.handlers )
 		{
 			if( h.canHandle( is ) )
+			{
 				return true;
+			}
 		}
 		return false;
 	}
@@ -68,7 +72,9 @@ public final class WirelessRegistry implements IWirelessTermRegistry
 		for( IWirelessTermHandler h : this.handlers )
 		{
 			if( h.canHandle( is ) )
+			{
 				return h;
+			}
 		}
 		return null;
 	}
@@ -77,7 +83,9 @@ public final class WirelessRegistry implements IWirelessTermRegistry
 	public void openWirelessTerminalGui( ItemStack item, World w, EntityPlayer player )
 	{
 		if( Platform.isClient() )
+		{
 			return;
+		}
 
 		if( !this.isWirelessTerminal( item ) )
 		{
@@ -106,6 +114,8 @@ public final class WirelessRegistry implements IWirelessTermRegistry
 			Platform.openGUI( player, null, null, GuiBridge.GUI_WIRELESS_TERM );
 		}
 		else
+		{
 			player.addChatMessage( PlayerMessages.DeviceNotPowered.get() );
+		}
 	}
 }

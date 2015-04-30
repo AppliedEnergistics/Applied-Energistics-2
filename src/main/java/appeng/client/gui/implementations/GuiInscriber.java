@@ -77,9 +77,13 @@ public class GuiInscriber extends AEBaseGui
 		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, 211 - 34, this.ySize );
 
 		if( this.drawUpgrades() )
+		{
 			this.drawTexturedModalRect( offsetX + 177, offsetY, 177, 0, 35, 14 + this.cvc.availableUpgrades() * 18 );
+		}
 		if( this.hasToolbox() )
+		{
 			this.drawTexturedModalRect( offsetX + 178, offsetY + this.ySize - 90, 178, this.ySize - 90, 68, 68 );
+		}
 	}
 
 	protected boolean drawUpgrades()

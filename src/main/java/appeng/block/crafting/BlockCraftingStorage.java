@@ -89,13 +89,19 @@ public class BlockCraftingStorage extends BlockCraftingUnit
 	public String getUnlocalizedName( ItemStack is )
 	{
 		if( is.getItemDamage() == 1 )
+		{
 			return "tile.appliedenergistics2.BlockCraftingStorage4k";
+		}
 
 		if( is.getItemDamage() == 2 )
+		{
 			return "tile.appliedenergistics2.BlockCraftingStorage16k";
+		}
 
 		if( is.getItemDamage() == 3 )
+		{
 			return "tile.appliedenergistics2.BlockCraftingStorage64k";
+		}
 
 		return this.getItemUnlocalizedName( is );
 	}

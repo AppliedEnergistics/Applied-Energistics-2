@@ -35,10 +35,14 @@ public enum IntegrationRegistry
 	public void add( IntegrationType type )
 	{
 		if( type.side == IntegrationSide.CLIENT && FMLLaunchHandler.side() == Side.SERVER )
+		{
 			return;
+		}
 
 		if( type.side == IntegrationSide.SERVER && FMLLaunchHandler.side() == Side.CLIENT )
+		{
 			return;
+		}
 
 		this.modules.add( new IntegrationNode( type.dspName, type.modID, type, "appeng.integration.modules." + type.name() ) );
 	}
@@ -46,16 +50,22 @@ public enum IntegrationRegistry
 	public void init()
 	{
 		for( IntegrationNode node : this.modules )
+		{
 			node.call( IntegrationStage.PRE_INIT );
+		}
 
 		for( IntegrationNode node : this.modules )
+		{
 			node.call( IntegrationStage.INIT );
+		}
 	}
 
 	public void postInit()
 	{
 		for( IntegrationNode node : this.modules )
+		{
 			node.call( IntegrationStage.POST_INIT );
+		}
 	}
 
 	public String getStatus()
@@ -81,7 +91,9 @@ public enum IntegrationRegistry
 		for( IntegrationNode node : this.modules )
 		{
 			if( node.shortName == name )
+			{
 				return node.isActive();
+			}
 		}
 		return false;
 	}

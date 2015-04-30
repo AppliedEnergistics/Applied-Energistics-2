@@ -56,7 +56,9 @@ public class TileCubeGenerator extends AEBaseTile
 			}
 
 			if( this.countdown <= 0 )
+			{
 				this.spawn();
+			}
 		}
 	}
 
@@ -93,14 +95,22 @@ public class TileCubeGenerator extends AEBaseTile
 				this.is = null;
 
 				if( player.isSneaking() )
+				{
 					this.size--;
+				}
 				else
+				{
 					this.size++;
+				}
 
 				if( this.size < 3 )
+				{
 					this.size = 3;
+				}
 				if( this.size > 64 )
+				{
 					this.size = 64;
+				}
 
 				player.addChatMessage( new ChatComponentText( "Size: " + this.size ) );
 			}

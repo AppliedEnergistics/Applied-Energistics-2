@@ -48,10 +48,14 @@ public final class WorldGenRegistry implements IWorldGen
 	public void disableWorldGenForProviderID( WorldGenType type, Class<? extends WorldProvider> provider )
 	{
 		if( type == null )
+		{
 			throw new IllegalArgumentException( "Bad Type Passed" );
+		}
 
 		if( provider == null )
+		{
 			throw new IllegalArgumentException( "Bad Provider Passed" );
+		}
 
 		this.types[type.ordinal()].badProviders.add( provider );
 	}
@@ -60,7 +64,9 @@ public final class WorldGenRegistry implements IWorldGen
 	public void enableWorldGenForDimension( WorldGenType type, int dimensionID )
 	{
 		if( type == null )
+		{
 			throw new IllegalArgumentException( "Bad Type Passed" );
+		}
 
 		this.types[type.ordinal()].enabledDimensions.add( dimensionID );
 	}
@@ -80,10 +86,14 @@ public final class WorldGenRegistry implements IWorldGen
 	public boolean isWorldGenEnabled( WorldGenType type, World w )
 	{
 		if( type == null )
+		{
 			throw new IllegalArgumentException( "Bad Type Passed" );
+		}
 
 		if( w == null )
+		{
 			throw new IllegalArgumentException( "Bad Provider Passed" );
+		}
 
 		boolean isBadProvider = this.types[type.ordinal()].badProviders.contains( w.provider.getClass() );
 		boolean isBadDimension = this.types[type.ordinal()].badDimensions.contains( w.provider.dimensionId );

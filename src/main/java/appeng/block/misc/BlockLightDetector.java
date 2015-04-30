@@ -46,7 +46,9 @@ public class BlockLightDetector extends BlockQuartzTorch
 	public int isProvidingWeakPower( IBlockAccess w, int x, int y, int z, int side )
 	{
 		if( w instanceof World && ( (TileLightDetector) this.getTileEntity( w, x, y, z ) ).isReady() )
+		{
 			return ( (World) w ).getBlockLightValue( x, y, z ) - 6;
+		}
 
 		return 0;
 	}
@@ -58,7 +60,9 @@ public class BlockLightDetector extends BlockQuartzTorch
 
 		TileLightDetector tld = this.getTileEntity( world, x, y, z );
 		if( tld != null )
+		{
 			tld.updateLight();
+		}
 	}
 
 	@Override

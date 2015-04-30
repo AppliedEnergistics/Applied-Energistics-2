@@ -87,9 +87,13 @@ public class SlotCraftingTerm extends AppEngCraftingSlot
 	public void doClick( InventoryAction action, EntityPlayer who )
 	{
 		if( this.getStack() == null )
+		{
 			return;
+		}
 		if( Platform.isClient() )
+		{
 			return;
+		}
 
 		IMEMonitor<IAEItemStack> inv = this.storage.getItemInventory();
 		int howManyPerCraft = this.getStack().stackSize;
@@ -116,11 +120,15 @@ public class SlotCraftingTerm extends AppEngCraftingSlot
 		maxTimesToCraft = this.CapCraftingAttempts( maxTimesToCraft );
 
 		if( ia == null )
+		{
 			return;
+		}
 
 		ItemStack rs = Platform.cloneItemStack( this.getStack() );
 		if( rs == null )
+		{
 			return;
+		}
 
 		for( int x = 0; x < maxTimesToCraft; x++ )
 		{
@@ -158,7 +166,9 @@ public class SlotCraftingTerm extends AppEngCraftingSlot
 			{
 				InventoryCrafting ic = new InventoryCrafting( new ContainerNull(), 3, 3 );
 				for( int x = 0; x < 9; x++ )
+				{
 					ic.setInventorySlotContents( x, this.pattern.getStackInSlot( x ) );
+				}
 
 				IRecipe r = Platform.findMatchingRecipe( ic, p.worldObj );
 
@@ -172,9 +182,13 @@ public class SlotCraftingTerm extends AppEngCraftingSlot
 						{
 							ItemStack pis = ic.getStackInSlot( x );
 							if( pis == null )
+							{
 								continue;
+							}
 							if( pis.getItem() != target )
+							{
 								isBad = true;
+							}
 						}
 						if( !isBad )
 						{
@@ -247,12 +261,16 @@ public class SlotCraftingTerm extends AppEngCraftingSlot
 					// eek! put it back!
 					IAEItemStack fail = inv.injectItems( AEItemStack.create( set[x] ), Actionable.MODULATE, this.mySrc );
 					if( fail != null )
+					{
 						drops.add( fail.getItemStack() );
+					}
 				}
 			}
 		}
 
 		if( drops.size() > 0 )
+		{
 			Platform.spawnDrops( p.worldObj, (int) p.posX, (int) p.posY, (int) p.posZ, drops );
+		}
 	}
 }

@@ -48,10 +48,14 @@ public final class EntityFloatingItem extends EntityItem
 	public void onUpdate()
 	{
 		if( !this.isDead && this.parent.isDead )
+		{
 			this.setDead();
+		}
 
 		if( this.superDeath > 100 )
+		{
 			this.setDead();
+		}
 		this.superDeath++;
 
 		this.age = ageStatic;
@@ -61,6 +65,8 @@ public final class EntityFloatingItem extends EntityItem
 	{
 		this.progress = progress;
 		if( this.progress > 0.99 )
+		{
 			this.setDead();
+		}
 	}
 }

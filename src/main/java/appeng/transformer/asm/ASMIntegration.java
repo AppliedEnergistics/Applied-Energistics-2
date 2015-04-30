@@ -72,7 +72,9 @@ public final class ASMIntegration implements IClassTransformer
 	public byte[] transform( String name, String transformedName, byte[] basicClass )
 	{
 		if( basicClass == null || transformedName.startsWith( "appeng.transformer" ) )
+		{
 			return basicClass;
+		}
 
 		if( transformedName.startsWith( "appeng." ) )
 		{
@@ -110,14 +112,18 @@ public final class ASMIntegration implements IClassTransformer
 				if( this.hasAnnotation( an, Integration.Interface.class ) )
 				{
 					if( this.stripInterface( classNode, Integration.Interface.class, an ) )
+					{
 						changed = true;
+					}
 				}
 				else if( this.hasAnnotation( an, Integration.InterfaceList.class ) )
 				{
 					for( Object o : ( (Iterable) an.values.get( 1 ) ) )
 					{
 						if( this.stripInterface( classNode, Integration.InterfaceList.class, (AnnotationNode) o ) )
+						{
 							changed = true;
+						}
 					}
 				}
 			}
@@ -135,14 +141,18 @@ public final class ASMIntegration implements IClassTransformer
 					if( this.hasAnnotation( an, Integration.Method.class ) )
 					{
 						if( this.stripMethod( classNode, mn, i, Integration.Method.class, an ) )
+						{
 							changed = true;
+						}
 					}
 				}
 			}
 		}
 
 		if( changed )
+		{
 			this.log( "Updated " + classNode.name );
+		}
 
 		return changed;
 	}
@@ -155,20 +165,30 @@ public final class ASMIntegration implements IClassTransformer
 	private boolean stripInterface( ClassNode classNode, Class<?> class1, AnnotationNode an )
 	{
 		if( an.values.size() != 4 )
+		{
 			throw new IllegalArgumentException( "Unable to handle Interface annotation on " + classNode.name );
+		}
 
 		String iFace = null;
 		String iName = null;
 
 		if( an.values.get( 0 ).equals( "iface" ) )
+		{
 			iFace = (String) an.values.get( 1 );
+		}
 		else if( an.values.get( 2 ).equals( "iface" ) )
+		{
 			iFace = (String) an.values.get( 3 );
+		}
 
 		if( an.values.get( 0 ).equals( "iname" ) )
+		{
 			iName = (String) an.values.get( 1 );
+		}
 		else if( an.values.get( 2 ).equals( "iname" ) )
+		{
 			iName = (String) an.values.get( 3 );
+		}
 
 		if( iName != null && iFace != null )
 		{
@@ -180,10 +200,14 @@ public final class ASMIntegration implements IClassTransformer
 				return true;
 			}
 			else
+			{
 				this.log( "Allowing Interface " + iFace + " from " + classNode.name + " because " + iName + " integration is enabled." );
+			}
 		}
 		else
+		{
 			throw new IllegalStateException( "Unable to handle Method annotation on " + classNode.name );
+		}
 
 		return false;
 	}
@@ -191,12 +215,16 @@ public final class ASMIntegration implements IClassTransformer
 	private boolean stripMethod( ClassNode classNode, MethodNode mn, Iterator<MethodNode> i, Class class1, AnnotationNode an )
 	{
 		if( an.values.size() != 2 )
+		{
 			throw new IllegalArgumentException( "Unable to handle Method annotation on " + classNode.name );
+		}
 
 		String iName = null;
 
 		if( an.values.get( 0 ).equals( "iname" ) )
+		{
 			iName = (String) an.values.get( 1 );
+		}
 
 		if( iName != null )
 		{
@@ -208,10 +236,14 @@ public final class ASMIntegration implements IClassTransformer
 				return true;
 			}
 			else
+			{
 				this.log( "Allowing Method " + mn.name + " from " + classNode.name + " because " + iName + " integration is enabled." );
+			}
 		}
 		else
+		{
 			throw new IllegalStateException( "Unable to handle Method annotation on " + classNode.name );
+		}
 
 		return false;
 	}

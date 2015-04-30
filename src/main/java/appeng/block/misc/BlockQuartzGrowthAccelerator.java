@@ -68,7 +68,9 @@ public class BlockQuartzGrowthAccelerator extends AEBaseBlock implements IOrient
 	public void randomDisplayTick( World w, int x, int y, int z, Random r )
 	{
 		if( !AEConfig.instance.enableEffects )
+		{
 			return;
+		}
 
 		TileQuartzGrowthAccelerator tileQuartzGrowthAccelerator = this.getTileEntity( w, x, y, z );
 
@@ -98,25 +100,33 @@ public class BlockQuartzGrowthAccelerator extends AEBaseBlock implements IOrient
 					dx = 0.6;
 					dz = d1;
 					if( !w.getBlock( x + west.offsetX, y + west.offsetY, z + west.offsetZ ).isAir( w, x + west.offsetX, y + west.offsetY, z + west.offsetZ ) )
+					{
 						return;
+					}
 					break;
 				case 1:
 					dx = d1;
 					dz += 0.6;
 					if( !w.getBlock( x + forward.offsetX, y + forward.offsetY, z + forward.offsetZ ).isAir( w, x + forward.offsetX, y + forward.offsetY, z + forward.offsetZ ) )
+					{
 						return;
+					}
 					break;
 				case 2:
 					dx = d1;
 					dz = -0.6;
 					if( !w.getBlock( x - forward.offsetX, y - forward.offsetY, z - forward.offsetZ ).isAir( w, x - forward.offsetX, y - forward.offsetY, z - forward.offsetZ ) )
+					{
 						return;
+					}
 					break;
 				case 3:
 					dx = -0.6;
 					dz = d1;
 					if( !w.getBlock( x - west.offsetX, y - west.offsetY, z - west.offsetZ ).isAir( w, x - west.offsetX, y - west.offsetY, z - west.offsetZ ) )
+					{
 						return;
+					}
 					break;
 			}
 

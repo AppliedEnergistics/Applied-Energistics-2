@@ -179,7 +179,9 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	public void markForUpdate()
 	{
 		if( this.worldObj == null )
+		{
 			return;
+		}
 
 		int newLV = this.cb.getLightValue();
 		if( newLV != this.oldLV )
@@ -217,10 +219,14 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 		if( this.cb.isEmpty() )
 		{
 			if( this.worldObj.getTileEntity( this.xCoord, this.yCoord, this.zCoord ) == this )
+			{
 				this.worldObj.func_147480_a( this.xCoord, this.yCoord, this.zCoord, true );
+			}
 		}
 		else
+		{
 			this.cb.addToWorld();
+		}
 	}
 
 	@Override
@@ -330,7 +336,9 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 		{
 			IImmibisMicroblocks imb = (IImmibisMicroblocks) AppEng.instance.getIntegration( IntegrationType.ImmibisMicroblocks );
 			if( imb != null && imb.leaveParts( this ) )
+			{
 				return;
+			}
 		}
 
 		this.getWorldObj().setBlock( this.xCoord, this.yCoord, this.zCoord, Platform.AIR );
@@ -338,14 +346,18 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	public void addCollidingBlockToList( World w, int x, int y, int z, AxisAlignedBB bb, List<AxisAlignedBB> out, Entity e )
 	{
 		for( AxisAlignedBB bx : this.getSelectedBoundingBoxesFromPool( w, x, y, z, e, false ) )
+		{
 			out.add( AxisAlignedBB.getBoundingBox( bx.minX, bx.minY, bx.minZ, bx.maxX, bx.maxY, bx.maxZ ) );
+		}
 	}
 
 	@Override
 	public void notifyNeighbors()
 	{
 		if( this.worldObj != null && this.worldObj.blockExists( this.xCoord, this.yCoord, this.zCoord ) && !CableBusContainer.isLoading() )
+		{
 			Platform.notifyBlocksOfNeighbors( this.worldObj, this.xCoord, this.yCoord, this.zCoord );
+		}
 	}
 
 	@Override

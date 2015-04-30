@@ -228,16 +228,22 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 				{
 					String str = Long.toString( stored.getStackSize() );
 					if( stored.getStackSize() >= 10000 )
+					{
 						str = Long.toString( stored.getStackSize() / 1000 ) + 'k';
+					}
 					if( stored.getStackSize() >= 10000000 )
+					{
 						str = Long.toString( stored.getStackSize() / 1000000 ) + 'm';
+					}
 
 					str = GuiText.Stored.getLocal() + ": " + str;
 					int w = 4 + this.fontRendererObj.getStringWidth( str );
 					this.fontRendererObj.drawString( str, (int) ( ( x * ( 1 + sectionLength ) + xo + sectionLength - 19 - ( w * 0.5 ) ) * 2 ), ( y * offY + yo + 6 - negY + downY ) * 2, 4210752 );
 
 					if( this.tooltip == z - viewStart )
+					{
 						lineList.add( GuiText.Stored.getLocal() + ": " + Long.toString( stored.getStackSize() ) );
+					}
 
 					downY += 5;
 				}
@@ -246,16 +252,22 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 				{
 					String str = Long.toString( activeStack.getStackSize() );
 					if( activeStack.getStackSize() >= 10000 )
+					{
 						str = Long.toString( activeStack.getStackSize() / 1000 ) + 'k';
+					}
 					if( activeStack.getStackSize() >= 10000000 )
+					{
 						str = Long.toString( activeStack.getStackSize() / 1000000 ) + 'm';
+					}
 
 					str = GuiText.Crafting.getLocal() + ": " + str;
 					int w = 4 + this.fontRendererObj.getStringWidth( str );
 					this.fontRendererObj.drawString( str, (int) ( ( x * ( 1 + sectionLength ) + xo + sectionLength - 19 - ( w * 0.5 ) ) * 2 ), ( y * offY + yo + 6 - negY + downY ) * 2, 4210752 );
 
 					if( this.tooltip == z - viewStart )
+					{
 						lineList.add( GuiText.Crafting.getLocal() + ": " + Long.toString( activeStack.getStackSize() ) );
+					}
 
 					downY += 5;
 				}
@@ -264,16 +276,22 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 				{
 					String str = Long.toString( pendingStack.getStackSize() );
 					if( pendingStack.getStackSize() >= 10000 )
+					{
 						str = Long.toString( pendingStack.getStackSize() / 1000 ) + 'k';
+					}
 					if( pendingStack.getStackSize() >= 10000000 )
+					{
 						str = Long.toString( pendingStack.getStackSize() / 1000000 ) + 'm';
+					}
 
 					str = GuiText.Scheduled.getLocal() + ": " + str;
 					int w = 4 + this.fontRendererObj.getStringWidth( str );
 					this.fontRendererObj.drawString( str, (int) ( ( x * ( 1 + sectionLength ) + xo + sectionLength - 19 - ( w * 0.5 ) ) * 2 ), ( y * offY + yo + 6 - negY + downY ) * 2, 4210752 );
 
 					if( this.tooltip == z - viewStart )
+					{
 						lineList.add( GuiText.Scheduled.getLocal() + ": " + Long.toString( pendingStack.getStackSize() ) );
+					}
 				}
 
 				GL11.glPopMatrix();
@@ -287,7 +305,9 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 					dspToolTip = Platform.getItemDisplayName( is );
 
 					if( lineList.size() > 0 )
+					{
 						dspToolTip = dspToolTip + '\n' + Joiner.on( "\n" ).join( lineList );
+					}
 
 					toolPosX = x * ( 1 + sectionLength ) + xo + sectionLength - 8;
 					toolPosY = y * offY + yo;
@@ -326,17 +346,23 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 		{
 			case 0:
 				for( IAEItemStack l : list )
+				{
 					this.handleInput( this.storage, l );
+				}
 				break;
 
 			case 1:
 				for( IAEItemStack l : list )
+				{
 					this.handleInput( this.active, l );
+				}
 				break;
 
 			case 2:
 				for( IAEItemStack l : list )
+				{
 					this.handleInput( this.pending, l );
+				}
 				break;
 		}
 
@@ -345,7 +371,9 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 			long amt = this.getTotal( l );
 
 			if( amt <= 0 )
+			{
 				this.deleteVisualStack( l );
+			}
 			else
 			{
 				IAEItemStack is = this.findVisualStack( l );
@@ -363,7 +391,9 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 		if( l.getStackSize() <= 0 )
 		{
 			if( a != null )
+			{
 				a.reset();
+			}
 		}
 		else
 		{
@@ -374,7 +404,9 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 			}
 
 			if( a != null )
+			{
 				a.setStackSize( l.getStackSize() );
+			}
 		}
 	}
 
@@ -387,13 +419,19 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 		long total = 0;
 
 		if( a != null )
+		{
 			total += a.getStackSize();
+		}
 
 		if( b != null )
+		{
 			total += b.getStackSize();
+		}
 
 		if( c != null )
+		{
 			total += c.getStackSize();
+		}
 
 		return total;
 	}

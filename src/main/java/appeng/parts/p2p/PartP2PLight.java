@@ -87,7 +87,9 @@ public class PartP2PLight extends PartP2PTunnel<PartP2PLight> implements IGridTi
 	private boolean doWork()
 	{
 		if( this.output )
+		{
 			return false;
+		}
 
 		TileEntity te = this.getTile();
 		World w = te.getWorldObj();
@@ -100,7 +102,9 @@ public class PartP2PLight extends PartP2PTunnel<PartP2PLight> implements IGridTi
 			try
 			{
 				for( PartP2PLight out : this.getOutputs() )
+				{
 					out.setLightLevel( this.lastValue );
+				}
 			}
 			catch( GridAccessException e )
 			{
@@ -119,14 +123,18 @@ public class PartP2PLight extends PartP2PTunnel<PartP2PLight> implements IGridTi
 		this.doWork();
 
 		if( this.output )
+		{
 			this.getHost().markForUpdate();
+		}
 	}
 
 	@Override
 	public int getLightLevel()
 	{
 		if( this.output && this.isPowered() )
+		{
 			return this.blockLight( this.lastValue );
+		}
 
 		return 0;
 	}
@@ -160,7 +168,9 @@ public class PartP2PLight extends PartP2PTunnel<PartP2PLight> implements IGridTi
 	{
 		super.readFromNBT( tag );
 		if( tag.hasKey( "opacity" ) )
+		{
 			this.opacity = tag.getFloat( "opacity" );
+		}
 		this.lastValue = tag.getInteger( "lastValue" );
 	}
 
@@ -185,12 +195,18 @@ public class PartP2PLight extends PartP2PTunnel<PartP2PLight> implements IGridTi
 		{
 			PartP2PLight src = this.getInput();
 			if( src != null && src.proxy.isActive() )
+			{
 				this.setLightLevel( src.lastValue );
+			}
 			else
+			{
 				this.getHost().markForUpdate();
+			}
 		}
 		else
+		{
 			this.doWork();
+		}
 	}
 
 	@Override

@@ -47,8 +47,12 @@ public class GroupIngredient implements IIngredient
 		this.name = myName;
 
 		for( IIngredient I : ingredients )
+		{
 			if( I.isAir() )
+			{
 				throw new RecipeError( "Cannot include air in a group." );
+			}
+		}
 
 		this.ingredients = ingredients;
 	}
@@ -70,10 +74,14 @@ public class GroupIngredient implements IIngredient
 	public ItemStack[] getItemStackSet() throws RegistrationError, MissingIngredientError
 	{
 		if( this.baked != null )
+		{
 			return this.baked;
+		}
 
 		if( this.isInside )
+		{
 			return new ItemStack[0];
+		}
 
 		List<ItemStack> out = new LinkedList<ItemStack>();
 		this.isInside = true;
@@ -97,10 +105,14 @@ public class GroupIngredient implements IIngredient
 		}
 
 		if( out.size() == 0 )
+		{
 			throw new MissingIngredientError( this.toString() + " - group could not be resolved to any items." );
+		}
 
 		for( ItemStack is : out )
+		{
 			is.stackSize = this.qty;
+		}
 
 		return out.toArray( new ItemStack[out.size()] );
 	}

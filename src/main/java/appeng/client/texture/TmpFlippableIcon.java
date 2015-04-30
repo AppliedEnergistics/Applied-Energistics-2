@@ -41,17 +41,25 @@ public class TmpFlippableIcon extends FlippableIcon
 		{
 			FlippableIcon fi = (FlippableIcon) i;
 			if( fi.flip_u )
+			{
 				this.flip_u = !this.flip_u;
+			}
 
 			if( fi.flip_v )
+			{
 				this.flip_v = !this.flip_v;
+			}
 
 			i = fi.getOriginal();
 		}
 
 		if( i == null )
+		{
 			this.original = NULL_ICON;
+		}
 		else
+		{
 			this.original = i;
+		}
 	}
 }

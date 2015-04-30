@@ -197,10 +197,14 @@ public class GuiCraftAmount extends AEBaseGui
 					}
 
 					if( fixed )
+					{
 						this.amountToCraft.setText( out );
+					}
 
 					if( out.length() == 0 )
+					{
 						out = "0";
+					}
 
 					long result = Long.parseLong( out );
 					if( result < 0 )
@@ -248,7 +252,9 @@ public class GuiCraftAmount extends AEBaseGui
 		boolean isMinus = btn == this.minus1 || btn == this.minus10 || btn == this.minus100 || btn == this.minus1000;
 
 		if( isPlus || isMinus )
+		{
 			this.addQty( this.getQty( btn ) );
+		}
 	}
 
 	private void addQty( int i )
@@ -265,19 +271,27 @@ public class GuiCraftAmount extends AEBaseGui
 			}
 
 			if( fixed )
+			{
 				this.amountToCraft.setText( out );
+			}
 
 			if( out.length() == 0 )
+			{
 				out = "0";
+			}
 
 			long result = Integer.parseInt( out );
 
 			if( result == 1 && i > 1 )
+			{
 				result = 0;
+			}
 
 			result += i;
 			if( result < 1 )
+			{
 				result = 1;
+			}
 
 			out = Long.toString( result );
 			Integer.parseInt( out );

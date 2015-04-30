@@ -54,7 +54,9 @@ public class PacketPatternSlot extends AppEngPacket
 		this.slotItem = this.readItem( stream );
 
 		for( int x = 0; x < 9; x++ )
+		{
 			this.pattern[x] = this.readItem( stream );
+		}
 	}
 
 	public IAEItemStack readItem( ByteBuf stream ) throws IOException
@@ -62,7 +64,9 @@ public class PacketPatternSlot extends AppEngPacket
 		boolean hasItem = stream.readBoolean();
 
 		if( hasItem )
+		{
 			return AEItemStack.loadItemStackFromPacket( stream );
+		}
 
 		return null;
 	}
@@ -93,7 +97,9 @@ public class PacketPatternSlot extends AppEngPacket
 	private void writeItem( IAEItemStack slotItem, ByteBuf data ) throws IOException
 	{
 		if( slotItem == null )
+		{
 			data.writeBoolean( false );
+		}
 		else
 		{
 			data.writeBoolean( true );

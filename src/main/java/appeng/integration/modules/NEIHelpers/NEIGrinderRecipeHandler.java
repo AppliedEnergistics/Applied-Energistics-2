@@ -206,7 +206,9 @@ public class NEIGrinderRecipeHandler extends TemplateRecipeHandler
 			}
 
 			if( recipe.getInput() != null )
+			{
 				this.ingredients.add( new PositionedStack( recipe.getInput(), 45, 24 ) );
+			}
 		}
 
 		@Override

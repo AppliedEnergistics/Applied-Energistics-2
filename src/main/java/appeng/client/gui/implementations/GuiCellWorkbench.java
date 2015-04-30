@@ -98,9 +98,13 @@ public class GuiCellWorkbench extends GuiUpgradeable
 				int dx = this.workbench.availableUpgrades() - 8;
 				this.drawTexturedModalRect( offsetX + 177 + 27, offsetY, 186, 0, 35 - 8, 7 + dx * 18 );
 				if( dx == 8 )
+				{
 					this.drawTexturedModalRect( offsetX + 177 + 27, offsetY + ( 7 + ( dx ) * 18 ), 186, 151, 35 - 8, 7 );
+				}
 				else
+				{
 					this.drawTexturedModalRect( offsetX + 177 + 27 + 4, offsetY + ( 7 + ( dx ) * 18 ), 186 + 4, 151, 35 - 8, 7 );
+				}
 			}
 			else
 			{
@@ -113,13 +117,19 @@ public class GuiCellWorkbench extends GuiUpgradeable
 				int dx = this.workbench.availableUpgrades() - 16;
 				this.drawTexturedModalRect( offsetX + 177 + 27 + 18, offsetY, 186, 0, 35 - 8, 7 + dx * 18 );
 				if( dx == 8 )
+				{
 					this.drawTexturedModalRect( offsetX + 177 + 27 + 18, offsetY + ( 7 + ( dx ) * 18 ), 186, 151, 35 - 8, 7 );
+				}
 				else
+				{
 					this.drawTexturedModalRect( offsetX + 177 + 27 + 18 + 4, offsetY + ( 7 + ( dx ) * 18 ), 186 + 4, 151, 35 - 8, 7 );
+				}
 			}
 		}
 		if( this.hasToolbox() )
+		{
 			this.drawTexturedModalRect( offsetX + 178, offsetY + this.ySize - 90, 178, 161, 68, 68 );
+		}
 	}
 
 	@Override
@@ -135,7 +145,9 @@ public class GuiCellWorkbench extends GuiUpgradeable
 			if( is != null && is.getItem() instanceof IUpgradeModule )
 			{
 				if( ( (IUpgradeModule) is.getItem() ).getType( is ) == Upgrades.FUZZY )
+				{
 					hasFuzzy = true;
+				}
 			}
 		}
 		this.fuzzyMode.setVisibility( hasFuzzy );
@@ -186,7 +198,9 @@ public class GuiCellWorkbench extends GuiUpgradeable
 				NetworkHandler.instance.sendToServer( new PacketValueConfig( "CellWorkbench.Fuzzy", fz.name() ) );
 			}
 			else
+			{
 				super.actionPerformed( btn );
+			}
 		}
 		catch( IOException ignored )
 		{

@@ -66,7 +66,9 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 		this.fluid = is.getFluid();
 
 		if( this.fluid == null )
+		{
 			throw new IllegalArgumentException( "Fluid is null." );
+		}
 
 		this.stackSize = is.amount;
 		this.setCraftable( false );
@@ -79,7 +81,9 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 	{
 		ItemStack itemstack = ItemStack.loadItemStackFromNBT( i );
 		if( itemstack == null )
+		{
 			return null;
+		}
 		AEFluidStack fluid = AEFluidStack.create( itemstack );
 		// fluid.priority = i.getInteger( "Priority" );
 		fluid.stackSize = i.getLong( "Cnt" );
@@ -91,11 +95,17 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 	public static AEFluidStack create( Object a )
 	{
 		if( a == null )
+		{
 			return null;
+		}
 		if( a instanceof AEFluidStack )
+		{
 			( (AEFluidStack) a ).copy();
+		}
 		if( a instanceof FluidStack )
+		{
 			return new AEFluidStack( (FluidStack) a );
+		}
 		return null;
 	}
 
@@ -135,7 +145,9 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 
 		FluidStack fluidStack = FluidStack.loadFluidStackFromNBT( d );
 		if( fluidStack == null )
+		{
 			return null;
+		}
 
 		AEFluidStack fluid = AEFluidStack.create( fluidStack );
 		// fluid.priority = (int) priority;
@@ -149,7 +161,9 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 	public void add( IAEFluidStack option )
 	{
 		if( option == null )
+		{
 			return;
+		}
 
 		// if ( priority < ((AEFluidStack) option).priority )
 		// priority = ((AEFluidStack) option).priority;
@@ -199,9 +213,13 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 		i.setBoolean( "Craft", this.isCraftable() );
 
 		if( this.tagCompound != null )
+		{
 			i.setTag( "tag", (NBTTagCompound) this.tagCompound );
+		}
 		else
+		{
 			i.removeTag( "tag" );
+		}
 	}
 
 	@Override
@@ -287,16 +305,24 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 				NBTTagCompound ta = (NBTTagCompound) this.tagCompound;
 				NBTTagCompound tb = is.tag;
 				if( ta == tb )
+				{
 					return true;
+				}
 
 				if( ( ta == null && tb == null ) || ( ta != null && ta.hasNoTags() && tb == null ) || ( tb != null && tb.hasNoTags() && ta == null ) || ( ta != null && ta.hasNoTags() && tb != null && tb.hasNoTags() ) )
+				{
 					return true;
+				}
 
 				if( ( ta == null && tb != null ) || ( ta != null && tb == null ) )
+				{
 					return false;
+				}
 
 				if( AESharedNBT.isShared( tb ) )
+				{
 					return ta == tb;
+				}
 
 				return Platform.NBTEqualityTest( ta, tb );
 			}
@@ -319,7 +345,9 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 	{
 		FluidStack is = new FluidStack( this.fluid, (int) Math.min( Integer.MAX_VALUE, this.stackSize ) );
 		if( this.tagCompound != null )
+		{
 			is.tag = this.tagCompound.getNBTTagCompoundCopy();
+		}
 
 		return is;
 	}

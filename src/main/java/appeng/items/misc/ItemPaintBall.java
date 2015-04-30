@@ -46,7 +46,9 @@ public class ItemPaintBall extends AEBaseItem
 		this.setHasSubtypes( true );
 
 		if( Platform.isClient() )
+		{
 			MinecraftForgeClient.registerItemRenderer( this, new PaintBallRender() );
+		}
 	}
 
 	@Override
@@ -64,10 +66,14 @@ public class ItemPaintBall extends AEBaseItem
 	{
 		int dmg = is.getItemDamage();
 		if( dmg >= DAMAGE_THRESHOLD )
+		{
 			dmg -= DAMAGE_THRESHOLD;
+		}
 
 		if( dmg >= AEColor.values().length )
+		{
 			return AEColor.Transparent;
+		}
 
 		return AEColor.values()[dmg];
 	}
@@ -76,12 +82,20 @@ public class ItemPaintBall extends AEBaseItem
 	public void getSubItems( Item i, CreativeTabs ct, List l )
 	{
 		for( AEColor c : AEColor.values() )
+		{
 			if( c != AEColor.Transparent )
+			{
 				l.add( new ItemStack( this, 1, c.ordinal() ) );
+			}
+		}
 
 		for( AEColor c : AEColor.values() )
+		{
 			if( c != AEColor.Transparent )
+			{
 				l.add( new ItemStack( this, 1, DAMAGE_THRESHOLD + c.ordinal() ) );
+			}
+		}
 	}
 
 	public boolean isLumen( ItemStack is )

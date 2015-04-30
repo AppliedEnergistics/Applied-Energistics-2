@@ -42,12 +42,16 @@ public class IMEInventoryDestination implements IInventoryDestination
 	{
 
 		if( stack == null )
+		{
 			return false;
+		}
 
 		IAEItemStack failed = this.me.injectItems( AEItemStack.create( stack ), Actionable.SIMULATE, null );
 
 		if( failed == null )
+		{
 			return true;
+		}
 		return failed.getStackSize() != stack.stackSize;
 	}
 }

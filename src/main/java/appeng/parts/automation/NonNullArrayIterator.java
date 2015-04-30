@@ -39,7 +39,9 @@ public class NonNullArrayIterator<E> implements Iterator<E>
 	public boolean hasNext()
 	{
 		while( this.offset < this.g.length && this.g[this.offset] == null )
+		{
 			this.offset++;
+		}
 
 		return this.offset != this.g.length;
 	}

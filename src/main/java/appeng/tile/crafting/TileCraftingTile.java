@@ -101,13 +101,17 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 	{
 		super.setName( name );
 		if( this.cluster != null )
+		{
 			this.cluster.updateName();
+		}
 	}
 
 	public boolean isAccelerator()
 	{
 		if( this.worldObj == null )
+		{
 			return false;
+		}
 		return ( this.worldObj.getBlockMetadata( this.xCoord, this.yCoord, this.zCoord ) & 3 ) == 1;
 	}
 
@@ -127,7 +131,9 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 	public void updateStatus( CraftingCPUCluster c )
 	{
 		if( this.cluster != null && this.cluster != c )
+		{
 			this.cluster.breakCluster();
+		}
 
 		this.cluster = c;
 		this.updateMeta( true );
@@ -136,33 +142,45 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 	public void updateMeta( boolean updateFormed )
 	{
 		if( this.worldObj == null || this.notLoaded() )
+		{
 			return;
+		}
 
 		boolean formed = this.isFormed();
 		boolean power = false;
 
 		if( this.gridProxy.isReady() )
+		{
 			power = this.gridProxy.isActive();
+		}
 
 		int current = this.worldObj.getBlockMetadata( this.xCoord, this.yCoord, this.zCoord );
 		int newMeta = ( current & 3 ) | ( formed ? 8 : 0 ) | ( power ? 4 : 0 );
 
 		if( current != newMeta )
+		{
 			this.worldObj.setBlockMetadataWithNotify( this.xCoord, this.yCoord, this.zCoord, newMeta, 2 );
+		}
 
 		if( updateFormed )
 		{
 			if( formed )
+			{
 				this.gridProxy.setValidSides( EnumSet.allOf( ForgeDirection.class ) );
+			}
 			else
+			{
 				this.gridProxy.setValidSides( EnumSet.noneOf( ForgeDirection.class ) );
+			}
 		}
 	}
 
 	public boolean isFormed()
 	{
 		if( Platform.isClient() )
+		{
 			return ( this.worldObj.getBlockMetadata( this.xCoord, this.yCoord, this.zCoord ) & 8 ) == 8;
+		}
 		return this.cluster != null;
 	}
 
@@ -171,7 +189,9 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 	{
 		data.setBoolean( "core", this.isCoreBlock );
 		if( this.isCoreBlock && this.cluster != null )
+		{
 			this.cluster.writeToNBT( data );
+		}
 	}
 
 	@TileEvent( TileEventType.WORLD_NBT_READ )
@@ -181,9 +201,13 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 		if( this.isCoreBlock )
 		{
 			if( this.cluster != null )
+			{
 				this.cluster.readFromNBT( data );
+			}
 			else
+			{
 				this.previousState = (NBTTagCompound) data.copy();
+			}
 		}
 	}
 
@@ -194,7 +218,9 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 		{
 			this.cluster.destroy();
 			if( update )
+			{
 				this.updateMeta( true );
+			}
 		}
 	}
 
@@ -251,7 +277,9 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 			{
 				IGridHost h = i.next();
 				if( h == this )
+				{
 					places.add( new WorldCoord( this ) );
+				}
 				else
 				{
 					TileEntity te = (TileEntity) h;
@@ -261,7 +289,9 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 						WorldCoord wc = new WorldCoord( te );
 						wc.add( d, 1 );
 						if( this.worldObj.isAirBlock( wc.x, wc.y, wc.z ) )
+						{
 							places.add( wc );
+						}
 					}
 				}
 			}
@@ -269,7 +299,9 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 			Collections.shuffle( places );
 
 			if( places.isEmpty() )
+			{
 				throw new IllegalStateException( this.cluster + " does not contain any kind of blocks, which were destroyed." );
+			}
 
 			for( IAEItemStack ais : inv.getAvailableItems( AEApi.instance().storage().createItemList() ) )
 			{
@@ -279,7 +311,9 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 				{
 					IAEItemStack g = inv.extractItems( ais.copy(), Actionable.MODULATE, this.cluster.getActionSource() );
 					if( g == null )
+					{
 						break;
+					}
 
 					WorldCoord wc = places.poll();
 					places.add( wc );
@@ -296,7 +330,9 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 	public boolean isPowered()
 	{
 		if( Platform.isClient() )
+		{
 			return ( this.worldObj.getBlockMetadata( this.xCoord, this.yCoord, this.zCoord ) & 4 ) == 4;
+		}
 		return this.gridProxy.isActive();
 	}
 
@@ -304,7 +340,9 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 	public boolean isActive()
 	{
 		if( Platform.isServer() )
+		{
 			return this.gridProxy.isActive();
+		}
 		return this.isPowered() && this.isFormed();
 	}
 }

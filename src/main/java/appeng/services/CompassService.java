@@ -67,7 +67,9 @@ public class CompassService implements ThreadFactory
 	public void cleanUp()
 	{
 		for( CompassReader cr : this.worldSet.values() )
+		{
 			cr.close();
+		}
 	}
 
 	public void updateArea( World w, int chunkX, int chunkZ )
@@ -206,7 +208,9 @@ public class CompassService implements ThreadFactory
 			cr.setHasBeacon( this.chunkX, this.chunkZ, this.doubleChunkY, this.value );
 
 			if( CompassService.this.jobSize() < 2 )
+			{
 				CompassService.this.cleanUp();
+			}
 		}
 	}
 
@@ -241,7 +245,9 @@ public class CompassService implements ThreadFactory
 				this.callback.calculatedDirection( true, true, -999, 0 );
 
 				if( CompassService.this.jobSize() < 2 )
+				{
 					CompassService.this.cleanUp();
+				}
 
 				return;
 			}
@@ -313,7 +319,9 @@ public class CompassService implements ThreadFactory
 					this.callback.calculatedDirection( true, false, CompassService.this.rad( cx, cz, chosen_x, chosen_z ), CompassService.this.dist( cx, cz, chosen_x, chosen_z ) );
 
 					if( CompassService.this.jobSize() < 2 )
+					{
 						CompassService.this.cleanUp();
+					}
 
 					return;
 				}
@@ -323,7 +331,9 @@ public class CompassService implements ThreadFactory
 			this.callback.calculatedDirection( false, true, -999, 999 );
 
 			if( CompassService.this.jobSize() < 2 )
+			{
 				CompassService.this.cleanUp();
+			}
 		}
 	}
 }

@@ -57,7 +57,9 @@ public final class ItemList<StackType extends IAEStack> implements IItemList<Sta
 	public synchronized void add( StackType option )
 	{
 		if( this.checkStackType( option ) )
+		{
 			return;
+		}
 
 		StackType st = this.records.get( option );
 
@@ -76,10 +78,14 @@ public final class ItemList<StackType extends IAEStack> implements IItemList<Sta
 	private boolean checkStackType( StackType st )
 	{
 		if( st == null )
+		{
 			return true;
+		}
 
 		if( !this.clz.isInstance( st ) )
+		{
 			throw new IllegalArgumentException( "WRONG TYPE - got " + st.getClass().getName() + " expected " + this.clz.getName() );
+		}
 
 		return false;
 	}
@@ -88,7 +94,9 @@ public final class ItemList<StackType extends IAEStack> implements IItemList<Sta
 	public synchronized StackType findPrecise( StackType i )
 	{
 		if( this.checkStackType( i ) )
+		{
 			return null;
+		}
 
 		StackType is = this.records.get( i );
 		if( is != null )
@@ -103,7 +111,9 @@ public final class ItemList<StackType extends IAEStack> implements IItemList<Sta
 	public Collection<StackType> findFuzzy( StackType filter, FuzzyMode fuzzy )
 	{
 		if( this.checkStackType( filter ) )
+		{
 			return new ArrayList<StackType>();
+		}
 
 		if( filter instanceof IAEFluidStack )
 		{
@@ -131,7 +141,9 @@ public final class ItemList<StackType extends IAEStack> implements IItemList<Sta
 				Collection<StackType> output = new LinkedList<StackType>();
 
 				for( IAEItemStack is : or.getAEEquivalents() )
+				{
 					output.addAll( this.findFuzzyDamage( (AEItemStack) is, fuzzy, is.getItemDamage() == OreDictionary.WILDCARD_VALUE ) );
+				}
 
 				return output;
 			}
@@ -158,7 +170,9 @@ public final class ItemList<StackType extends IAEStack> implements IItemList<Sta
 	// stored.
 	{
 		if( this.checkStackType( option ) )
+		{
 			return;
+		}
 
 		StackType st = this.records.get( option );
 
@@ -184,7 +198,9 @@ public final class ItemList<StackType extends IAEStack> implements IItemList<Sta
 	// craftable.
 	{
 		if( this.checkStackType( option ) )
+		{
 			return;
+		}
 
 		StackType st = this.records.get( option );
 
@@ -209,7 +225,9 @@ public final class ItemList<StackType extends IAEStack> implements IItemList<Sta
 	// requestable.
 	{
 		if( this.checkStackType( option ) )
+		{
 			return;
+		}
 
 		StackType st = this.records.get( option );
 
@@ -255,6 +273,8 @@ public final class ItemList<StackType extends IAEStack> implements IItemList<Sta
 	public synchronized void resetStatus()
 	{
 		for( StackType i : this )
+		{
 			i.reset();
+		}
 	}
 }

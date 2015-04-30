@@ -94,7 +94,9 @@ public class EnergyWatcher implements IEnergyWatcher
 	public boolean add( Double e )
 	{
 		if( this.myInterests.contains( e ) )
+		{
 			return false;
+		}
 
 		EnergyThreshold eh = new EnergyThreshold( e, this );
 		return this.gsc.interests.add( eh ) && this.myInterests.add( eh );
@@ -119,7 +121,9 @@ public class EnergyWatcher implements IEnergyWatcher
 		boolean didChange = false;
 
 		for( Double o : c )
+		{
 			didChange = this.add( o ) || didChange;
+		}
 
 		return didChange;
 	}
@@ -129,7 +133,9 @@ public class EnergyWatcher implements IEnergyWatcher
 	{
 		boolean didSomething = false;
 		for( Object o : c )
+		{
 			didSomething = this.remove( o ) || didSomething;
+		}
 		return didSomething;
 	}
 

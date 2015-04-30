@@ -42,7 +42,9 @@ public class GenericInterestManager<T>
 	public void enableTransactions()
 	{
 		if( this.transDepth == 0 )
+		{
 			this.transactions = new LinkedList<SavedTransactions>();
+		}
 
 		this.transDepth++;
 	}
@@ -59,9 +61,13 @@ public class GenericInterestManager<T>
 			for( SavedTransactions t : myActions )
 			{
 				if( t.put )
+				{
 					this.put( t.stack, t.iw );
+				}
 				else
+				{
 					this.remove( t.stack, t.iw );
+				}
 			}
 		}
 	}
@@ -74,7 +80,9 @@ public class GenericInterestManager<T>
 			return true;
 		}
 		else
+		{
 			return this.container.put( stack, iw );
+		}
 	}
 
 	public boolean remove( IAEStack stack, T iw )
@@ -85,7 +93,9 @@ public class GenericInterestManager<T>
 			return true;
 		}
 		else
+		{
 			return this.container.remove( stack, iw );
+		}
 	}
 
 	public boolean containsKey( IAEStack stack )

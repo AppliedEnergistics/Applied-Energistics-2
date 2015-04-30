@@ -69,12 +69,16 @@ public class MovableTileRegistry implements IMovableRegistry
 		IMovableHandler canMove = this.Valid.get( myClass );
 
 		if( canMove == null )
+		{
 			canMove = this.testClass( myClass, te );
+		}
 
 		if( canMove != this.nullHandler )
 		{
 			if( te instanceof IMovableTile )
+			{
 				( (IMovableTile) te ).prepareToMove();
+			}
 
 			te.invalidate();
 			return true;

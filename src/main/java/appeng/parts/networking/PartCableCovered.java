@@ -82,9 +82,13 @@ public class PartCableCovered extends PartCable
 		{
 			IGridNode n = this.getGridNode();
 			if( n != null )
+			{
 				this.connections = n.getConnectedSides();
+			}
 			else
+			{
 				this.connections.clear();
+			}
 		}
 
 		for( ForgeDirection of : this.connections )

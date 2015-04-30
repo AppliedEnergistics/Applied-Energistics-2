@@ -67,9 +67,13 @@ public class PartCableAnchor implements IPart
 	public void getBoxes( IPartCollisionHelper bch )
 	{
 		if( this.host != null && this.host.getFacadeContainer().getFacade( this.mySide ) != null )
+		{
 			bch.addBox( 7, 7, 10, 9, 9, 14 );
+		}
 		else
+		{
 			bch.addBox( 7, 7, 10, 9, 9, 16 );
+		}
 	}
 
 	@Override
@@ -96,9 +100,13 @@ public class PartCableAnchor implements IPart
 		IIcon myIcon = this.is.getIconIndex();
 		rh.setTexture( myIcon );
 		if( this.host != null && this.host.getFacadeContainer().getFacade( this.mySide ) != null )
+		{
 			rh.setBounds( 7, 7, 10, 9, 9, 14 );
+		}
 		else
+		{
 			rh.setBounds( 7, 7, 10, 9, 9, 16 );
+		}
 		rh.renderBlock( x, y, z, renderer );
 		rh.setTexture( null );
 	}

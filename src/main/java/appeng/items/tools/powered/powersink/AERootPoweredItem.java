@@ -156,7 +156,9 @@ public abstract class AERootPoweredItem extends AEBaseItem implements IAEItemPow
 		{
 			int requiredEU = (int) PowerUnits.AE.convertTo( PowerUnits.EU, this.getAEMaxPower( is ) - this.getAECurrentPower( is ) );
 			if( amount < requiredEU )
+			{
 				return 0;
+			}
 			return amount - requiredEU;
 		}
 		else

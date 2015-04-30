@@ -185,17 +185,29 @@ public class RenderBlockWireless extends BaseBlockRender
 			}
 
 			if( ForgeDirection.UP != fdz.getOpposite() )
+			{
 				super.renderFace( x, y, z, blk, r, renderer, ForgeDirection.UP );
+			}
 			if( ForgeDirection.DOWN != fdz.getOpposite() )
+			{
 				super.renderFace( x, y, z, blk, r, renderer, ForgeDirection.DOWN );
+			}
 			if( ForgeDirection.EAST != fdz.getOpposite() )
+			{
 				super.renderFace( x, y, z, blk, r, renderer, ForgeDirection.EAST );
+			}
 			if( ForgeDirection.WEST != fdz.getOpposite() )
+			{
 				super.renderFace( x, y, z, blk, r, renderer, ForgeDirection.WEST );
+			}
 			if( ForgeDirection.SOUTH != fdz.getOpposite() )
+			{
 				super.renderFace( x, y, z, blk, r, renderer, ForgeDirection.SOUTH );
+			}
 			if( ForgeDirection.NORTH != fdz.getOpposite() )
+			{
 				super.renderFace( x, y, z, blk, r, renderer, ForgeDirection.NORTH );
+			}
 
 			ri.setTemporaryRenderIcon( null );
 			renderer.renderAllFaces = false;

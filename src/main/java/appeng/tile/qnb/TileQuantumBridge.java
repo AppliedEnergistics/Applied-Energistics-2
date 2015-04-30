@@ -83,7 +83,9 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 		{
 			this.updateStatus = false;
 			if( this.cluster != null )
+			{
 				this.cluster.updateStatus( true );
+			}
 			this.markForUpdate();
 		}
 	}
@@ -94,10 +96,14 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 		int out = this.constructed;
 
 		if( this.getStackInSlot( 0 ) != null && this.constructed != -1 )
+		{
 			out |= this.hasSingularity;
+		}
 
 		if( this.gridProxy.isActive() && this.constructed != -1 )
+		{
 			out |= this.powered;
+		}
 
 		data.writeByte( (byte) out );
 	}
@@ -121,14 +127,18 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 	public void onChangeInventory( IInventory inv, int slot, InvOperation mc, ItemStack removed, ItemStack added )
 	{
 		if( this.cluster != null )
+		{
 			this.cluster.updateStatus( true );
+		}
 	}
 
 	@Override
 	public int[] getAccessibleSlotsBySide( ForgeDirection side )
 	{
 		if( this.isCenter() )
+		{
 			return this.sidesLink;
+		}
 		return this.sidesRing;
 	}
 
@@ -187,7 +197,9 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 		if( this.cluster != null )
 		{
 			if( !affectWorld )
+			{
 				this.cluster.updateStatus = false;
+			}
 
 			this.cluster.destroy();
 		}
@@ -195,7 +207,9 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 		this.cluster = null;
 
 		if( affectWorld )
+		{
 			this.gridProxy.setValidSides( EnumSet.noneOf( ForgeDirection.class ) );
+		}
 	}
 
 	@Override
@@ -227,7 +241,9 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 				this.gridProxy.setValidSides( this.getConnections() );
 			}
 			else
+			{
 				this.gridProxy.setValidSides( EnumSet.allOf( ForgeDirection.class ) );
+			}
 		}
 	}
 
@@ -244,7 +260,9 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 		{
 			TileEntity te = this.worldObj.getTileEntity( this.xCoord + d.offsetX, this.yCoord + d.offsetY, this.zCoord + d.offsetZ );
 			if( te instanceof TileQuantumBridge )
+			{
 				set.add( d );
+			}
 		}
 
 		return set;
@@ -257,7 +275,9 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 		{
 			NBTTagCompound c = is.getTagCompound();
 			if( c != null )
+			{
 				return c.getLong( "freq" );
+			}
 		}
 		return 0;
 	}
@@ -265,7 +285,9 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 	public boolean isPowered()
 	{
 		if( Platform.isClient() )
+		{
 			return ( this.constructed & this.powered ) == this.powered && this.constructed != -1;
+		}
 
 		try
 		{
@@ -304,13 +326,17 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 	public boolean hasQES()
 	{
 		if( this.constructed == -1 )
+		{
 			return false;
+		}
 		return ( this.constructed & this.hasSingularity ) == this.hasSingularity;
 	}
 
 	public void breakCluster()
 	{
 		if( this.cluster != null )
+		{
 			this.cluster.destroy();
+		}
 	}
 }

@@ -68,16 +68,24 @@ public class ContainerMEPortableCell extends ContainerMEMonitorable
 				if( currentItem != null )
 				{
 					if( Platform.isSameItem( this.civ.getItemStack(), currentItem ) )
+					{
 						this.getPlayerInv().setInventorySlotContents( this.getPlayerInv().currentItem, this.civ.getItemStack() );
+					}
 					else
+					{
 						this.isContainerValid = false;
+					}
 				}
 				else
+				{
 					this.isContainerValid = false;
+				}
 			}
 		}
 		else
+		{
 			this.isContainerValid = false;
+		}
 
 		// drain 1 ae t
 		this.ticks++;

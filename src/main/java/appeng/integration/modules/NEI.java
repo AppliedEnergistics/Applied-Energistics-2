@@ -84,7 +84,9 @@ public class NEI extends BaseModule implements INEI, IContainerTooltipHandler
 		this.registerRecipeHandler( new NEIGrinderRecipeHandler() );
 
 		if( AEConfig.instance.isFeatureEnabled( AEFeature.Facades ) && AEConfig.instance.isFeatureEnabled( AEFeature.enableFacadeCrafting ) )
+		{
 			this.registerRecipeHandler( new NEIFacadeRecipeHandler() );
+		}
 
 		// large stack tooltips
 		GuiContainerManager.addTooltipHandler( this );
@@ -119,12 +121,16 @@ public class NEI extends BaseModule implements INEI, IContainerTooltipHandler
 	public void drawSlot( Slot s )
 	{
 		if( s == null )
+		{
 			return;
+		}
 
 		ItemStack stack = s.getStack();
 
 		if( stack == null )
+		{
 			return;
+		}
 
 		Minecraft mc = Minecraft.getMinecraft();
 		FontRenderer fontRenderer = mc.fontRenderer;
@@ -166,7 +172,9 @@ public class NEI extends BaseModule implements INEI, IContainerTooltipHandler
 	public List<String> handleItemTooltip( GuiContainer guiScreen, ItemStack stack, int mouseX, int mouseY, List<String> currentToolTip )
 	{
 		if( guiScreen instanceof AEBaseMEGui )
+		{
 			return ( (AEBaseMEGui) guiScreen ).handleItemTooltip( stack, mouseX, mouseY, currentToolTip );
+		}
 
 		return currentToolTip;
 	}

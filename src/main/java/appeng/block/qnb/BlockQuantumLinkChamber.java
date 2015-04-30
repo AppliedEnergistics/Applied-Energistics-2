@@ -71,7 +71,9 @@ public class BlockQuantumLinkChamber extends AEBaseBlock implements ICustomColli
 			if( bridge.hasQES() )
 			{
 				if( CommonHelper.proxy.shouldAddParticles( r ) )
+				{
 					CommonHelper.proxy.spawnEffect( EffectType.Energy, w, bx + 0.5, by + 0.5, bz + 0.5, null );
+				}
 			}
 		}
 	}
@@ -81,7 +83,9 @@ public class BlockQuantumLinkChamber extends AEBaseBlock implements ICustomColli
 	{
 		TileQuantumBridge bridge = this.getTileEntity( w, x, y, z );
 		if( bridge != null )
+		{
 			bridge.neighborUpdate();
+		}
 	}
 
 	@Override
@@ -94,13 +98,17 @@ public class BlockQuantumLinkChamber extends AEBaseBlock implements ICustomColli
 	public boolean onActivated( World w, int x, int y, int z, EntityPlayer p, int side, float hitX, float hitY, float hitZ )
 	{
 		if( p.isSneaking() )
+		{
 			return false;
+		}
 
 		TileQuantumBridge tg = this.getTileEntity( w, x, y, z );
 		if( tg != null )
 		{
 			if( Platform.isServer() )
+			{
 				Platform.openGUI( p, tg, ForgeDirection.getOrientation( side ), GuiBridge.GUI_QNB );
+			}
 			return true;
 		}
 		return false;
@@ -111,7 +119,9 @@ public class BlockQuantumLinkChamber extends AEBaseBlock implements ICustomColli
 	{
 		TileQuantumBridge bridge = this.getTileEntity( w, x, y, z );
 		if( bridge != null )
+		{
 			bridge.breakCluster();
+		}
 
 		super.breakBlock( w, x, y, z, a, b );
 	}

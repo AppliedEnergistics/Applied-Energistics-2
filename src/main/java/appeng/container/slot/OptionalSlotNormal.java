@@ -39,7 +39,9 @@ public class OptionalSlotNormal extends AppEngSlot
 	public boolean isEnabled()
 	{
 		if( this.host == null )
+		{
 			return false;
+		}
 
 		return this.host.isSlotEnabled( this.groupNum );
 	}

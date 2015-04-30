@@ -124,8 +124,12 @@ public final class GrinderRecipeManager implements IGrinderRegistry, IOreListene
 	private void injectRecipe( AppEngGrinderRecipe appEngGrinderRecipe )
 	{
 		for( IGrinderEntry gr : this.recipes )
+		{
 			if( Platform.isSameItemPrecise( gr.getInput(), appEngGrinderRecipe.getInput() ) )
+			{
 				return;
+			}
+		}
 
 		this.recipes.add( appEngGrinderRecipe );
 	}
@@ -133,7 +137,9 @@ public final class GrinderRecipeManager implements IGrinderRegistry, IOreListene
 	private ItemStack copy( ItemStack is )
 	{
 		if( is != null )
+		{
 			return is.copy();
+		}
 		return null;
 	}
 
@@ -166,18 +172,26 @@ public final class GrinderRecipeManager implements IGrinderRegistry, IOreListene
 	private int getDustToOreRatio( String name )
 	{
 		if( name.equals( "Obsidian" ) )
+		{
 			return 1;
+		}
 		if( name.equals( "Charcoal" ) )
+		{
 			return 1;
+		}
 		if( name.equals( "Coal" ) )
+		{
 			return 1;
+		}
 		return 2;
 	}
 
 	private void addOre( String name, ItemStack item )
 	{
 		if( item == null )
+		{
 			return;
+		}
 		this.log( "Adding Ore - " + name + " : " + Platform.getItemDisplayName( item ) );
 
 		this.ores.put( item, name );
@@ -193,14 +207,18 @@ public final class GrinderRecipeManager implements IGrinderRegistry, IOreListene
 				this.addRecipe( item, is, extra, (float) ( AEConfig.instance.oreDoublePercentage / 100.0 ), 8 );
 			}
 			else
+			{
 				this.addRecipe( item, is, 8 );
+			}
 		}
 	}
 
 	private void addIngot( String name, ItemStack item )
 	{
 		if( item == null )
+		{
 			return;
+		}
 		this.log( "Adding Ingot - " + name + " : " + Platform.getItemDisplayName( item ) );
 
 		this.ingots.put( item, name );
@@ -214,7 +232,9 @@ public final class GrinderRecipeManager implements IGrinderRegistry, IOreListene
 	private void addDust( String name, ItemStack item )
 	{
 		if( item == null )
+		{
 			return;
+		}
 		if( this.dusts.containsKey( name ) )
 		{
 			this.log( "Rejecting Dust - " + name + " : " + Platform.getItemDisplayName( item ) );
@@ -226,6 +246,7 @@ public final class GrinderRecipeManager implements IGrinderRegistry, IOreListene
 		this.dusts.put( name, item );
 
 		for( Entry<ItemStack, String> d : this.ores.entrySet() )
+		{
 			if( name.equals( d.getValue() ) )
 			{
 				ItemStack is = item.copy();
@@ -238,12 +259,19 @@ public final class GrinderRecipeManager implements IGrinderRegistry, IOreListene
 					this.addRecipe( d.getKey(), is, extra, (float) ( AEConfig.instance.oreDoublePercentage / 100.0 ), 8 );
 				}
 				else
+				{
 					this.addRecipe( d.getKey(), is, 8 );
+				}
 			}
+		}
 
 		for( Entry<ItemStack, String> d : this.ingots.entrySet() )
+		{
 			if( name.equals( d.getValue() ) )
+			{
 				this.addRecipe( d.getKey(), item, 4 );
+			}
+		}
 	}
 
 	@Override

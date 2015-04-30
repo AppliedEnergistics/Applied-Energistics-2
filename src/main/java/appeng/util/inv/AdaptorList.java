@@ -50,9 +50,13 @@ public class AdaptorList extends InventoryAdaptor
 			if( is != null && ( filter == null || Platform.isSameItemPrecise( is, filter ) ) )
 			{
 				if( amount > is.stackSize )
+				{
 					amount = is.stackSize;
+				}
 				if( destination != null && !destination.canInsert( is ) )
+				{
 					amount = 0;
+				}
 
 				if( amount > 0 )
 				{
@@ -62,7 +66,9 @@ public class AdaptorList extends InventoryAdaptor
 
 					// remove it..
 					if( is.stackSize <= 0 )
+					{
 						this.i.remove( x );
+					}
 
 					return rv;
 				}
@@ -108,9 +114,13 @@ public class AdaptorList extends InventoryAdaptor
 			if( is != null && ( filter == null || Platform.isSameItemFuzzy( is, filter, fuzzyMode ) ) )
 			{
 				if( how_many > is.stackSize )
+				{
 					how_many = is.stackSize;
+				}
 				if( destination != null && !destination.canInsert( is ) )
+				{
 					how_many = 0;
+				}
 
 				if( how_many > 0 )
 				{
@@ -120,7 +130,9 @@ public class AdaptorList extends InventoryAdaptor
 
 					// remove it..
 					if( is.stackSize <= 0 )
+					{
 						this.i.remove( x );
+					}
 
 					return rv;
 				}
@@ -160,9 +172,13 @@ public class AdaptorList extends InventoryAdaptor
 	public ItemStack addItems( ItemStack toBeAdded )
 	{
 		if( toBeAdded == null )
+		{
 			return null;
+		}
 		if( toBeAdded.stackSize == 0 )
+		{
 			return null;
+		}
 
 		ItemStack left = toBeAdded.copy();
 

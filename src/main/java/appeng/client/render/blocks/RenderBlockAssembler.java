@@ -266,7 +266,9 @@ public class RenderBlockAssembler extends BaseBlockRender implements IBoxProvide
 					if( pc.isConnected( side.getOpposite() ) )
 					{
 						if( covered )
+						{
 							return pc.getCoveredTexture( pc.getCableColor() );
+						}
 						return pc.getGlassTexture( pc.getCableColor() );
 					}
 				}

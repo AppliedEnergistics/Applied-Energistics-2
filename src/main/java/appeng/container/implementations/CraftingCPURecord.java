@@ -44,7 +44,9 @@ public class CraftingCPURecord implements Comparable<CraftingCPURecord>
 	{
 		int a = ItemSorters.compareLong( o.processors, this.processors );
 		if( a != 0 )
+		{
 			return a;
+		}
 		return ItemSorters.compareLong( o.size, this.size );
 	}
 }

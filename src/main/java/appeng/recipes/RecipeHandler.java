@@ -118,7 +118,9 @@ public class RecipeHandler implements IRecipeHandler
 		String realName = id.modId + ':' + id.name;
 
 		if( !id.modId.equals( AppEng.MOD_ID ) && !id.modId.equals( "minecraft" ) )
+		{
 			throw new RecipeError( "Not applicable for website" );
+		}
 
 		final IDefinitions definitions = AEApi.instance().definitions();
 		final IItems items = definitions.items();
@@ -134,11 +136,17 @@ public class RecipeHandler implements IRecipeHandler
 		{
 			int dmg = is.getItemDamage();
 			if( dmg < ItemCrystalSeed.Nether )
+			{
 				realName += ".Certus";
+			}
 			else if( dmg < ItemCrystalSeed.Fluix )
+			{
 				realName += ".Nether";
+			}
 			else if( dmg < ItemCrystalSeed.END )
+			{
 				realName += ".Fluix";
+			}
 		}
 		else if( maybeSkyStoneItem.isPresent() && is.getItem() == maybeSkyStoneItem.get() )
 		{
@@ -203,7 +211,9 @@ public class RecipeHandler implements IRecipeHandler
 			realName += '.' + ( (ItemMultiPart) is.getItem() ).getTypeByStack( is ).name();
 		}
 		else if( is.getItemDamage() > 0 )
+		{
 			realName += "." + is.getItemDamage();
+		}
 
 		return realName;
 	}
@@ -213,7 +223,9 @@ public class RecipeHandler implements IRecipeHandler
 		String out = this.data.aliases.get( in );
 
 		if( out != null )
+		{
 			return out;
+		}
 
 		return in;
 	}
@@ -232,7 +244,9 @@ public class RecipeHandler implements IRecipeHandler
 			{
 				AELog.warning( "Error Loading Recipe File:" + path );
 				if( this.data.exceptions )
+				{
 					AELog.error( err );
+				}
 				return;
 			}
 
@@ -248,12 +262,16 @@ public class RecipeHandler implements IRecipeHandler
 				char c = (char) val;
 
 				if( c == '\n' )
+				{
 					line++;
+				}
 
 				if( inComment )
 				{
 					if( c == '\n' || c == '\r' )
+					{
 						inComment = false;
+					}
 				}
 				else if( inQuote )
 				{
@@ -288,7 +306,9 @@ public class RecipeHandler implements IRecipeHandler
 							this.processTokens( loader, path, line );
 
 							if( token.length() > 0 )
+							{
 								this.tokens.add( token );
+							}
 							token = "";
 
 							break;
@@ -303,7 +323,9 @@ public class RecipeHandler implements IRecipeHandler
 						case ' ':
 
 							if( token.length() > 0 )
+							{
 								this.tokens.add( token );
+							}
 							token = "";
 
 							break;
@@ -314,7 +336,9 @@ public class RecipeHandler implements IRecipeHandler
 			}
 
 			if( token.length() > 0 )
+			{
 				this.tokens.add( token );
+			}
 
 			reader.close();
 			this.processTokens( loader, path, line );
@@ -323,7 +347,9 @@ public class RecipeHandler implements IRecipeHandler
 		{
 			AELog.error( e );
 			if( this.data.crash )
+			{
 				throw new IllegalStateException( e );
+			}
 		}
 	}
 
@@ -331,7 +357,9 @@ public class RecipeHandler implements IRecipeHandler
 	public void injectRecipes()
 	{
 		if( cpw.mods.fml.common.Loader.instance().hasReachedState( LoaderState.POSTINITIALIZATION ) )
+		{
 			throw new IllegalStateException( "Recipes must now be loaded in Init." );
+		}
 
 		HashMap<Class, Integer> processed = new HashMap<Class, Integer>();
 		try
@@ -345,17 +373,25 @@ public class RecipeHandler implements IRecipeHandler
 					Class clz = ch.getClass();
 					Integer i = processed.get( clz );
 					if( i == null )
+					{
 						processed.put( clz, 1 );
+					}
 					else
+					{
 						processed.put( clz, i + 1 );
+					}
 				}
 				catch( RegistrationError e )
 				{
 					AELog.warning( "Unable to register a recipe: " + e.getMessage() );
 					if( this.data.exceptions )
+					{
 						AELog.error( e );
+					}
 					if( this.data.crash )
+					{
 						throw e;
+					}
 				}
 				catch( MissingIngredientError e )
 				{
@@ -363,9 +399,13 @@ public class RecipeHandler implements IRecipeHandler
 					{
 						AELog.warning( "Unable to register a recipe:" + e.getMessage() );
 						if( this.data.exceptions )
+						{
 							AELog.error( e );
+						}
 						if( this.data.crash )
+						{
 							throw e;
+						}
 					}
 				}
 			}
@@ -373,9 +413,13 @@ public class RecipeHandler implements IRecipeHandler
 		catch( Throwable e )
 		{
 			if( this.data.exceptions )
+			{
 				AELog.error( e );
+			}
 			if( this.data.crash )
+			{
 				throw new IllegalStateException( e );
+			}
 		}
 
 		for( Entry<Class, Integer> e : processed.entrySet() )
@@ -403,7 +447,9 @@ public class RecipeHandler implements IRecipeHandler
 							String realName = this.getName( is );
 							List<IWebsiteSerializer> recipes = this.findRecipe( is );
 							if( !recipes.isEmpty() )
+							{
 								combined.putAll( realName, recipes );
+							}
 						}
 					}
 					catch( RecipeError ignored )
@@ -482,7 +528,9 @@ public class RecipeHandler implements IRecipeHandler
 			IRecipeHandlerRegistry cr = AEApi.instance().registries().recipes();
 
 			if( this.tokens.isEmpty() )
+			{
 				return;
+			}
 
 			int split = this.tokens.indexOf( "->" );
 			if( split != -1 )
@@ -492,9 +540,13 @@ public class RecipeHandler implements IRecipeHandler
 				if( operation.equals( "alias" ) )
 				{
 					if( this.tokens.size() == 3 && this.tokens.indexOf( "->" ) == 1 )
+					{
 						this.data.aliases.put( this.tokens.get( 0 ), this.tokens.get( 2 ) );
+					}
 					else
+					{
 						throw new RecipeError( "Alias must have exactly 1 input and 1 output." );
+					}
 				}
 				else if( operation.equals( "group" ) )
 				{
@@ -508,7 +560,9 @@ public class RecipeHandler implements IRecipeHandler
 						this.data.groups.put( post.get( 0 ), new GroupIngredient( post.get( 0 ), inputs.get( 0 ) ) );
 					}
 					else
+					{
 						throw new RecipeError( "Group must have exactly 1 output, and 1 or more inputs." );
+					}
 				}
 				else if( operation.equals( "ore" ) )
 				{
@@ -523,7 +577,9 @@ public class RecipeHandler implements IRecipeHandler
 						this.addCrafting( ch );
 					}
 					else
+					{
 						throw new RecipeError( "Group must have exactly 1 output, and 1 or more inputs in a single row." );
+					}
 				}
 				else
 				{
@@ -541,7 +597,9 @@ public class RecipeHandler implements IRecipeHandler
 						this.addCrafting( ch );
 					}
 					else
+					{
 						throw new RecipeError( "Invalid crafting type: " + operation );
+					}
 				}
 			}
 			else
@@ -555,7 +613,9 @@ public class RecipeHandler implements IRecipeHandler
 						this.data.exceptions = this.tokens.get( 0 ).equals( "true" );
 					}
 					else
+					{
 						throw new RecipeError( "exceptions must be true or false explicitly." );
+					}
 				}
 				else if( operation.equals( "crash" ) && ( this.tokens.get( 0 ).equals( "true" ) || this.tokens.get( 0 ).equals( "false" ) ) )
 				{
@@ -564,7 +624,9 @@ public class RecipeHandler implements IRecipeHandler
 						this.data.crash = this.tokens.get( 0 ).equals( "true" );
 					}
 					else
+					{
 						throw new RecipeError( "crash must be true or false explicitly." );
+					}
 				}
 				else if( operation.equals( "erroronmissing" ) )
 				{
@@ -573,26 +635,38 @@ public class RecipeHandler implements IRecipeHandler
 						this.data.errorOnMissing = this.tokens.get( 0 ).equals( "true" );
 					}
 					else
+					{
 						throw new RecipeError( "erroronmissing must be true or false explicitly." );
+					}
 				}
 				else if( operation.equals( "import" ) )
 				{
 					if( this.tokens.size() == 1 )
+					{
 						( new RecipeHandler( this ) ).parseRecipes( loader, this.tokens.get( 0 ) );
+					}
 					else
+					{
 						throw new RecipeError( "Import must have exactly 1 input." );
+					}
 				}
 				else
+				{
 					throw new RecipeError( operation + ": " + this.tokens.toString() + "; recipe without an output." );
+				}
 			}
 		}
 		catch( RecipeError e )
 		{
 			AELog.warning( "Recipe Error '" + e.getMessage() + "' near line:" + line + " in " + file + " with: " + this.tokens.toString() );
 			if( this.data.exceptions )
+			{
 				AELog.error( e );
+			}
 			if( this.data.crash )
+			{
 				throw e;
+			}
 		}
 
 		this.tokens.clear();
@@ -611,9 +685,13 @@ public class RecipeHandler implements IRecipeHandler
 			if( v.equals( "," ) )
 			{
 				if( hasQty )
+				{
 					throw new RecipeError( "Qty found with no item." );
+				}
 				if( !cList.isEmpty() )
+				{
 					out.add( cList );
+				}
 				cList = new LinkedList<IIngredient>();
 			}
 			else
@@ -621,7 +699,9 @@ public class RecipeHandler implements IRecipeHandler
 				if( this.isNumber( v ) )
 				{
 					if( hasQty )
+					{
 						throw new RecipeError( "Qty found with no item." );
+					}
 					hasQty = true;
 					qty = Integer.parseInt( v );
 				}
@@ -633,13 +713,17 @@ public class RecipeHandler implements IRecipeHandler
 						hasQty = false;
 					}
 					else
+					{
 						cList.add( this.findIngredient( v, 1 ) );
+					}
 				}
 			}
 		}
 
 		if( !cList.isEmpty() )
+		{
 			out.add( cList );
+		}
 
 		return out;
 	}
@@ -649,7 +733,9 @@ public class RecipeHandler implements IRecipeHandler
 		GroupIngredient gi = this.data.groups.get( v );
 
 		if( gi != null )
+		{
 			return gi.copy( qty );
+		}
 
 		try
 		{
@@ -664,13 +750,17 @@ public class RecipeHandler implements IRecipeHandler
 	private boolean isNumber( String v )
 	{
 		if( v.length() <= 0 )
+		{
 			return false;
+		}
 
 		int l = v.length();
 		for( int x = 0; x < l; x++ )
 		{
 			if( !Character.isDigit( v.charAt( x ) ) )
+			{
 				return false;
+			}
 		}
 
 		return true;

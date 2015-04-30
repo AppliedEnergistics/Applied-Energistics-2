@@ -60,7 +60,9 @@ public final class ConfigManager implements IConfigManager
 		Enum<?> oldValue = this.settings.get( settingName );
 
 		if( oldValue != null )
+		{
 			return oldValue;
+		}
 
 		throw new IllegalStateException( "Invalid Config setting. Expected a non-null value for " + settingName );
 	}

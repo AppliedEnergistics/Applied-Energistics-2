@@ -119,7 +119,9 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 		{
 			boolean isEmpty = true;
 			for( int x = 0; x < this.inv.getSizeInventory(); x++ )
+			{
 				isEmpty = this.inv.getStackInSlot( x ) == null && isEmpty;
+			}
 
 			if( isEmpty && patternDetails.isCraftable() )
 			{
@@ -128,7 +130,9 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 				this.pushDirection = where;
 
 				for( int x = 0; x < table.getSizeInventory(); x++ )
+				{
 					this.inv.setInventorySlotContents( x, table.getStackInSlot( x ) );
+				}
 
 				this.updateSleepiness();
 				this.markDirty();
@@ -147,9 +151,13 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 			try
 			{
 				if( this.isAwake )
+				{
 					this.gridProxy.getTick().wakeDevice( this.gridProxy.getNode() );
+				}
 				else
+				{
 					this.gridProxy.getTick().sleepDevice( this.gridProxy.getNode() );
+				}
 			}
 			catch( GridAccessException e )
 			{
@@ -166,10 +174,14 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 	private boolean hasMats()
 	{
 		if( this.myPlan == null )
+		{
 			return false;
+		}
 
 		for( int x = 0; x < this.craftingInv.getSizeInventory(); x++ )
+		{
 			this.craftingInv.setInventorySlotContents( x, this.inv.getStackInSlot( x ) );
+		}
 
 		return this.myPlan.getOutput( this.craftingInv, this.getWorldObj() ) != null;
 	}
@@ -252,7 +264,9 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 		this.reboot = true;
 
 		if( this.forcePlan )
+		{
 			return;
+		}
 
 		ItemStack is = this.inv.getStackInSlot( 10 );
 
@@ -306,10 +320,14 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 	public IInventory getInventoryByName( String name )
 	{
 		if( name.equals( "upgrades" ) )
+		{
 			return this.upgrades;
+		}
 
 		if( name.equals( "mac" ) )
+		{
 			return this.inv;
+		}
 
 		return null;
 	}
@@ -336,10 +354,14 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 	public boolean isItemValidForSlot( int i, ItemStack itemstack )
 	{
 		if( i >= 9 )
+		{
 			return false;
+		}
 
 		if( this.hasPattern() )
+		{
 			return this.myPlan.isValidItemForSlot( i, itemstack, this.getWorldObj() );
+		}
 
 		return false;
 	}
@@ -353,7 +375,9 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 	public void onChangeInventory( IInventory inv, int slot, InvOperation mc, ItemStack removed, ItemStack added )
 	{
 		if( inv == this.inv )
+		{
 			this.recalculatePlan();
+		}
 	}
 
 	@Override
@@ -382,7 +406,9 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 		{
 			ItemStack is = this.upgrades.getStackInSlot( h );
 			if( is != null )
+			{
 				drops.add( is );
+			}
 		}
 	}
 
@@ -403,7 +429,9 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 
 			// did it eject?
 			if( this.inv.getStackInSlot( 9 ) == null )
+			{
 				this.markDirty();
+			}
 
 			this.ejectHeldItems();
 			this.updateSleepiness();
@@ -418,10 +446,14 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 		}
 
 		if( this.reboot )
+		{
 			TicksSinceLastCall = 1;
+		}
 
 		if( !this.isAwake )
+		{
 			return TickRateModulation.SLEEP;
+		}
 
 		this.reboot = false;
 		int speed = 10;
@@ -450,7 +482,9 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 		if( this.progress >= 100 )
 		{
 			for( int x = 0; x < this.craftingInv.getSizeInventory(); x++ )
+			{
 				this.craftingInv.setInventorySlotContents( x, this.inv.getStackInSlot( x ) );
+			}
 
 			this.progress = 0;
 			ItemStack output = this.myPlan.getOutput( this.craftingInv, this.getWorldObj() );
@@ -461,7 +495,9 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 				this.pushOut( output.copy() );
 
 				for( int x = 0; x < this.craftingInv.getSizeInventory(); x++ )
+				{
 					this.inv.setInventorySlotContents( x, Platform.getContainerItem( this.craftingInv.getStackInSlot( x ) ) );
+				}
 
 				if( this.inv.getStackInSlot( 10 ) == null )
 				{
@@ -530,10 +566,14 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 		if( this.pushDirection == ForgeDirection.UNKNOWN )
 		{
 			for( ForgeDirection d : ForgeDirection.VALID_DIRECTIONS )
+			{
 				output = this.pushTo( output, d );
+			}
 		}
 		else
+		{
 			output = this.pushTo( output, this.pushDirection );
+		}
 
 		if( output == null && this.forcePlan )
 		{
@@ -547,24 +587,32 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 	private ItemStack pushTo( ItemStack output, ForgeDirection d )
 	{
 		if( output == null )
+		{
 			return output;
+		}
 
 		TileEntity te = this.getWorldObj().getTileEntity( this.xCoord + d.offsetX, this.yCoord + d.offsetY, this.zCoord + d.offsetZ );
 
 		if( te == null )
+		{
 			return output;
+		}
 
 		InventoryAdaptor adaptor = InventoryAdaptor.getAdaptor( te, d.getOpposite() );
 
 		if( adaptor == null )
+		{
 			return output;
+		}
 
 		int size = output.stackSize;
 		output = adaptor.addItems( output );
 		int newSize = output == null ? 0 : output.stackSize;
 
 		if( size != newSize )
+		{
 			this.markDirty();
+		}
 
 		return output;
 	}

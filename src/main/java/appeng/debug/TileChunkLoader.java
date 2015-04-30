@@ -58,7 +58,9 @@ public class TileChunkLoader extends AEBaseTile
 	void initTicket()
 	{
 		if( Platform.isClient() )
+		{
 			return;
+		}
 
 		this.ct = ForgeChunkManager.requestTicket( AppEng.instance, this.worldObj, Type.NORMAL );
 
@@ -84,7 +86,9 @@ public class TileChunkLoader extends AEBaseTile
 	public void invalidate()
 	{
 		if( Platform.isClient() )
+		{
 			return;
+		}
 
 		AELog.info( "Released Ticket " + this.ct.toString() );
 		ForgeChunkManager.releaseTicket( this.ct );

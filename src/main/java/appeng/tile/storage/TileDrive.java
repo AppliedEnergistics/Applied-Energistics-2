@@ -85,17 +85,27 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 	public void writeToStream_TileDrive( ByteBuf data )
 	{
 		if( this.worldObj.getTotalWorldTime() - this.lastStateChange > 8 )
+		{
 			this.state = 0;
+		}
 		else
+		{
 			this.state &= 0x24924924; // just keep the blinks...
+		}
 
 		if( this.gridProxy.isActive() )
+		{
 			this.state |= 0x80000000;
+		}
 		else
+		{
 			this.state &= ~0x80000000;
+		}
 
 		for( int x = 0; x < this.getCellCount(); x++ )
+		{
 			this.state |= ( this.getCellStatus( x ) << ( 3 * x ) );
+		}
 
 		data.writeInt( this.state );
 	}
@@ -110,25 +120,33 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 	public int getCellStatus( int slot )
 	{
 		if( Platform.isClient() )
+		{
 			return ( this.state >> ( slot * 3 ) ) & 3;
+		}
 
 		ItemStack cell = this.inv.getStackInSlot( 2 );
 		ICellHandler ch = this.handlersBySlot[slot];
 
 		MEInventoryHandler handler = this.invBySlot[slot];
 		if( handler == null )
+		{
 			return 0;
+		}
 
 		if( handler.getChannel() == StorageChannel.ITEMS )
 		{
 			if( ch != null )
+			{
 				return ch.getStatusForCell( cell, handler.getInternal() );
+			}
 		}
 
 		if( handler.getChannel() == StorageChannel.FLUIDS )
 		{
 			if( ch != null )
+			{
 				return ch.getStatusForCell( cell, handler.getInternal() );
+			}
 		}
 
 		return 0;
@@ -138,7 +156,9 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 	public boolean isPowered()
 	{
 		if( Platform.isClient() )
+		{
 			return ( this.state & 0x80000000 ) == 0x80000000;
+		}
 
 		return this.gridProxy.isActive();
 	}
@@ -148,7 +168,9 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 	{
 		long now = this.worldObj.getTotalWorldTime();
 		if( now - this.lastStateChange > 8 )
+		{
 			return false;
+		}
 
 		return ( ( this.state >> ( slot * 3 + 2 ) ) & 0x01 ) == 0x01;
 	}
@@ -187,9 +209,13 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 
 		boolean currentActive = this.gridProxy.isActive();
 		if( currentActive )
+		{
 			this.state |= 0x80000000;
+		}
 		else
+		{
 			this.state &= ~0x80000000;
+		}
 
 		if( this.wasActive != currentActive )
 		{
@@ -205,10 +231,14 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 		}
 
 		for( int x = 0; x < this.getCellCount(); x++ )
+		{
 			this.state |= ( this.getCellStatus( x ) << ( 3 * x ) );
+		}
 
 		if( oldState != this.state )
+		{
 			this.markForUpdate();
+		}
 	}
 
 	@MENetworkEventSubscribe
@@ -374,7 +404,9 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 	{
 		long now = this.worldObj.getTotalWorldTime();
 		if( now - this.lastStateChange > 8 )
+		{
 			this.state = 0;
+		}
 		this.lastStateChange = now;
 
 		this.state |= 1 << ( slot * 3 + 2 );

@@ -156,7 +156,9 @@ public class GuiPriority extends AEBaseGui
 		}
 
 		if( this.OriginalGui != null && myIcon != null )
+		{
 			this.buttonList.add( this.originalGuiBtn = new GuiTabButton( this.guiLeft + 154, this.guiTop, myIcon, myIcon.getDisplayName(), itemRender ) );
+		}
 
 		this.priority = new GuiNumberBox( this.fontRendererObj, this.guiLeft + 62, this.guiTop + 57, 59, this.fontRendererObj.FONT_HEIGHT, Long.class );
 		this.priority.setEnableBackgroundDrawing( false );
@@ -196,7 +198,9 @@ public class GuiPriority extends AEBaseGui
 		boolean isMinus = btn == this.minus1 || btn == this.minus10 || btn == this.minus100 || btn == this.minus1000;
 
 		if( isPlus || isMinus )
+		{
 			this.addQty( this.getQty( btn ) );
+		}
 	}
 
 	private void addQty( int i )
@@ -213,10 +217,14 @@ public class GuiPriority extends AEBaseGui
 			}
 
 			if( fixed )
+			{
 				this.priority.setText( out );
+			}
 
 			if( out.length() == 0 )
+			{
 				out = "0";
+			}
 
 			long result = Long.parseLong( out );
 			result += i;
@@ -255,10 +263,14 @@ public class GuiPriority extends AEBaseGui
 					}
 
 					if( fixed )
+					{
 						this.priority.setText( out );
+					}
 
 					if( out.length() == 0 )
+					{
 						out = "0";
+					}
 
 					NetworkHandler.instance.sendToServer( new PacketValueConfig( "PriorityHost.Priority", out ) );
 				}

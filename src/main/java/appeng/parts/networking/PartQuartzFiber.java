@@ -188,7 +188,9 @@ public class PartQuartzFiber extends AEBasePart implements IEnergyGridProvider
 		{
 			IEnergyGrid eg = this.proxy.getEnergy();
 			if( !seen.contains( eg ) )
+			{
 				return eg.injectAEPower( amt, mode, seen );
+			}
 		}
 		catch( GridAccessException e )
 		{
@@ -199,7 +201,9 @@ public class PartQuartzFiber extends AEBasePart implements IEnergyGridProvider
 		{
 			IEnergyGrid eg = this.outerProxy.getEnergy();
 			if( !seen.contains( eg ) )
+			{
 				return eg.injectAEPower( amt, mode, seen );
+			}
 		}
 		catch( GridAccessException e )
 		{

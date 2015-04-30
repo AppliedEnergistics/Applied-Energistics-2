@@ -43,7 +43,9 @@ public class AENetworkProxyMultiblock extends AENetworkProxy implements IGridMul
 	public Iterator<IGridNode> getMultiblockNodes()
 	{
 		if( this.getCluster() == null )
+		{
 			return new ChainedIterator<IGridNode>();
+		}
 
 		return new ProxyNodeIterator( this.getCluster().getTiles() );
 	}

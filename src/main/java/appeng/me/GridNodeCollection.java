@@ -49,7 +49,9 @@ public class GridNodeCollection implements IReadOnlyCollection<IGridNode>
 		int size = 0;
 
 		for( Set<IGridNode> o : this.machines.values() )
+		{
 			size += o.size();
+		}
 
 		return size;
 	}
@@ -58,8 +60,12 @@ public class GridNodeCollection implements IReadOnlyCollection<IGridNode>
 	public boolean isEmpty()
 	{
 		for( Set<IGridNode> o : this.machines.values() )
+		{
 			if( !o.isEmpty() )
+			{
 				return false;
+			}
+		}
 
 		return true;
 	}

@@ -58,7 +58,9 @@ public class TilePaint extends AEBaseTile
 		ByteBuf myDat = Unpooled.buffer();
 		this.writeBuffer( myDat );
 		if( myDat.hasArray() )
+		{
 			data.setByteArray( "dots", myDat.array() );
+		}
 	}
 
 	void writeBuffer( ByteBuf out )
@@ -72,14 +74,18 @@ public class TilePaint extends AEBaseTile
 		out.writeByte( this.dots.size() );
 
 		for( Splotch s : this.dots )
+		{
 			s.writeToStream( out );
+		}
 	}
 
 	@TileEvent( TileEventType.WORLD_NBT_READ )
 	public void readFromNBT_TilePaint( NBTTagCompound data )
 	{
 		if( data.hasKey( "dots" ) )
+		{
 			this.readBuffer( Unpooled.copiedBuffer( data.getByteArray( "dots" ) ) );
+		}
 	}
 
 	void readBuffer( ByteBuf in )
@@ -95,7 +101,9 @@ public class TilePaint extends AEBaseTile
 
 		this.dots = new ArrayList( howMany );
 		for( int x = 0; x < howMany; x++ )
+		{
 			this.dots.add( new Splotch( in ) );
+		}
 
 		this.isLit = 0;
 		for( Splotch s : this.dots )
@@ -112,10 +120,14 @@ public class TilePaint extends AEBaseTile
 	private void maxLit()
 	{
 		if( this.isLit > 14 )
+		{
 			this.isLit = 14;
+		}
 
 		if( this.worldObj != null )
+		{
 			this.worldObj.updateLightByType( EnumSkyBlock.Block, this.xCoord, this.yCoord, this.zCoord );
+		}
 	}
 
 	@TileEvent( TileEventType.NETWORK_WRITE )
@@ -134,12 +146,16 @@ public class TilePaint extends AEBaseTile
 	public void onNeighborBlockChange()
 	{
 		if( this.dots == null )
+		{
 			return;
+		}
 
 		for( ForgeDirection side : ForgeDirection.VALID_DIRECTIONS )
 		{
 			if( !this.isSideValid( side ) )
+			{
 				this.removeSide( side );
+			}
 		}
 
 		this.updateData();
@@ -158,7 +174,9 @@ public class TilePaint extends AEBaseTile
 		{
 			Splotch s = i.next();
 			if( s.side == side )
+			{
 				i.remove();
+			}
 		}
 
 		this.markForUpdate();
@@ -179,16 +197,22 @@ public class TilePaint extends AEBaseTile
 		this.maxLit();
 
 		if( this.dots.isEmpty() )
+		{
 			this.dots = null;
+		}
 
 		if( this.dots == null )
+		{
 			this.worldObj.setBlock( this.xCoord, this.yCoord, this.zCoord, Blocks.air );
+		}
 	}
 
 	public void cleanSide( ForgeDirection side )
 	{
 		if( this.dots == null )
+		{
 			return;
+		}
 
 		this.removeSide( side );
 
@@ -211,14 +235,20 @@ public class TilePaint extends AEBaseTile
 			boolean lit = ipb.isLumen( type );
 
 			if( this.dots == null )
+			{
 				this.dots = new ArrayList<Splotch>();
+			}
 
 			if( this.dots.size() > 20 )
+			{
 				this.dots.remove( 0 );
+			}
 
 			this.dots.add( new Splotch( col, lit, side, hitVec ) );
 			if( lit )
+			{
 				this.isLit += LIGHT_PER_DOT;
+			}
 
 			this.maxLit();
 			this.markForUpdate();
@@ -229,7 +259,9 @@ public class TilePaint extends AEBaseTile
 	public Collection<Splotch> getDots()
 	{
 		if( this.dots == null )
+		{
 			return ImmutableList.of();
+		}
 
 		return this.dots;
 	}

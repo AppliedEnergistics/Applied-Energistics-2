@@ -50,9 +50,13 @@ public class SharedSearchObject
 	public boolean equals( Object obj )
 	{
 		if( obj == null )
+		{
 			return false;
+		}
 		if( this.getClass() != obj.getClass() )
+		{
 			return false;
+		}
 		SharedSearchObject other = (SharedSearchObject) obj;
 		if( this.def == other.def && this.hash == other.hash )
 		{

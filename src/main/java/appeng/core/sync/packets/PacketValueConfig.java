@@ -246,7 +246,9 @@ public class PacketValueConfig extends AppEngPacket
 		{
 			GuiScreen gs = Minecraft.getMinecraft().currentScreen;
 			if( gs instanceof GuiCraftingCPU )
+			{
 				( (GuiCraftingCPU) gs ).clearItems();
+			}
 		}
 		else if( c instanceof IConfigurableObject )
 		{

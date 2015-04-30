@@ -66,15 +66,21 @@ public class TileCellWorkbench extends AEBaseTile implements IUpgradeableHost, I
 		{
 			ICellWorkbenchItem cell = this.getCell();
 			if( cell == null )
+			{
 				return null;
+			}
 
 			ItemStack is = this.cell.getStackInSlot( 0 );
 			if( is == null )
+			{
 				return null;
+			}
 
 			IInventory inv = cell.getUpgradesInventory( is );
 			if( inv == null )
+			{
 				return null;
+			}
 
 			return this.cacheUpgrades = inv;
 		}
@@ -84,10 +90,14 @@ public class TileCellWorkbench extends AEBaseTile implements IUpgradeableHost, I
 	public ICellWorkbenchItem getCell()
 	{
 		if( this.cell.getStackInSlot( 0 ) == null )
+		{
 			return null;
+		}
 
 		if( this.cell.getStackInSlot( 0 ).getItem() instanceof ICellWorkbenchItem )
+		{
 			return ( (ICellWorkbenchItem) this.cell.getStackInSlot( 0 ).getItem() );
+		}
 
 		return null;
 	}
@@ -112,10 +122,14 @@ public class TileCellWorkbench extends AEBaseTile implements IUpgradeableHost, I
 	public IInventory getInventoryByName( String name )
 	{
 		if( name.equals( "config" ) )
+		{
 			return this.config;
+		}
 
 		if( name.equals( "cell" ) )
+		{
 			return this.cell;
+		}
 
 		return null;
 	}
@@ -152,12 +166,16 @@ public class TileCellWorkbench extends AEBaseTile implements IUpgradeableHost, I
 				if( cellHasConfig )
 				{
 					for( int x = 0; x < this.config.getSizeInventory(); x++ )
+					{
 						this.config.setInventorySlotContents( x, configInventory.getStackInSlot( x ) );
+					}
 				}
 				else
 				{
 					for( int x = 0; x < this.config.getSizeInventory(); x++ )
+					{
 						configInventory.setInventorySlotContents( x, this.config.getStackInSlot( x ) );
+					}
 
 					configInventory.markDirty();
 				}
@@ -165,7 +183,9 @@ public class TileCellWorkbench extends AEBaseTile implements IUpgradeableHost, I
 			else if( this.manager.getSetting( Settings.COPY_MODE ) == CopyMode.CLEAR_ON_REMOVE )
 			{
 				for( int x = 0; x < this.config.getSizeInventory(); x++ )
+				{
 					this.config.setInventorySlotContents( x, null );
+				}
 
 				this.markDirty();
 			}
@@ -178,7 +198,9 @@ public class TileCellWorkbench extends AEBaseTile implements IUpgradeableHost, I
 			if( c != null )
 			{
 				for( int x = 0; x < this.config.getSizeInventory(); x++ )
+				{
 					c.setInventorySlotContents( x, this.config.getStackInSlot( x ) );
+				}
 
 				c.markDirty();
 			}
@@ -191,15 +213,21 @@ public class TileCellWorkbench extends AEBaseTile implements IUpgradeableHost, I
 		{
 			ICellWorkbenchItem cell = this.getCell();
 			if( cell == null )
+			{
 				return null;
+			}
 
 			ItemStack is = this.cell.getStackInSlot( 0 );
 			if( is == null )
+			{
 				return null;
+			}
 
 			IInventory inv = cell.getConfigInventory( is );
 			if( inv == null )
+			{
 				return null;
+			}
 
 			this.cacheConfig = inv;
 		}
@@ -212,7 +240,9 @@ public class TileCellWorkbench extends AEBaseTile implements IUpgradeableHost, I
 		super.getDrops( w, x, y, z, drops );
 
 		if( this.cell.getStackInSlot( 0 ) != null )
+		{
 			drops.add( this.cell.getStackInSlot( 0 ) );
+		}
 	}
 
 	@Override

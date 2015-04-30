@@ -84,7 +84,9 @@ public class RenderBlockCraftingCPUMonitor extends RenderBlockCraftingCPU
 					GL11.glEndList();
 				}
 				else
+				{
 					GL11.glCallList( cmt.dspList );
+				}
 
 				GL11.glPopMatrix();
 			}

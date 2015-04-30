@@ -45,7 +45,9 @@ public abstract class RotaryCraft extends IC2 implements ShaftPowerReceiver
 	public void Tick_RotaryCraft()
 	{
 		if( this.worldObj != null && !this.worldObj.isRemote && this.power > 0 )
+		{
 			this.injectExternalPower( PowerUnits.WA, this.power );
+		}
 	}
 
 	@Override
@@ -88,7 +90,9 @@ public abstract class RotaryCraft extends IC2 implements ShaftPowerReceiver
 	public final void setPower( long p )
 	{
 		if( Platform.isClient() )
+		{
 			return;
+		}
 
 		this.power = p;
 	}
@@ -118,17 +122,29 @@ public abstract class RotaryCraft extends IC2 implements ShaftPowerReceiver
 		ForgeDirection side = ForgeDirection.UNKNOWN;
 
 		if( x == this.xCoord - 1 )
+		{
 			side = ForgeDirection.WEST;
+		}
 		else if( x == this.xCoord + 1 )
+		{
 			side = ForgeDirection.EAST;
+		}
 		else if( z == this.zCoord - 1 )
+		{
 			side = ForgeDirection.NORTH;
+		}
 		else if( z == this.zCoord + 1 )
+		{
 			side = ForgeDirection.SOUTH;
+		}
 		else if( y == this.yCoord - 1 )
+		{
 			side = ForgeDirection.DOWN;
+		}
 		else if( y == this.yCoord + 1 )
+		{
 			side = ForgeDirection.UP;
+		}
 
 		return this.getPowerSides().contains( side );
 	}

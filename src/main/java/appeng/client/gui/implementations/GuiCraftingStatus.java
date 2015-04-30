@@ -166,11 +166,15 @@ public class GuiCraftingStatus extends GuiCraftingCPU
 				btnTextText = GuiText.CPUs.getLocal() + ": " + name;
 			}
 			else
+			{
 				btnTextText = GuiText.CPUs.getLocal() + ": #" + this.status.selectedCpu;
+			}
 		}
 
 		if( this.status.noCPU )
+		{
 			btnTextText = GuiText.NoCraftingJobs.getLocal();
+		}
 
 		this.selectCPU.displayString = btnTextText;
 	}

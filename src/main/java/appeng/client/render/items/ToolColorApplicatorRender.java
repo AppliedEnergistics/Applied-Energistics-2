@@ -81,11 +81,17 @@ public class ToolColorApplicatorRender implements IItemRenderer
 		else
 		{
 			if( type == ItemRenderType.EQUIPPED_FIRST_PERSON )
+			{
 				GL11.glTranslatef( 0.0F, 0.0F, 0.0F );
+			}
 			else if( type == ItemRenderType.EQUIPPED )
+			{
 				GL11.glTranslatef( 0.0F, 0.0F, 0.0F );
+			}
 			else
+			{
 				GL11.glTranslatef( -0.5F, -0.3F, 0.01F );
+			}
 			ItemRenderer.renderItemIn2D( tessellator, f5, f6, f4, f7, par2Icon.getIconWidth(), par2Icon.getIconHeight(), f12 );
 
 			GL11.glDisable( GL11.GL_CULL_FACE );
@@ -101,7 +107,9 @@ public class ToolColorApplicatorRender implements IItemRenderer
 
 		GL11.glScalef( 1F / 16F, 1F / 16F, 1F );
 		if( type != ItemRenderType.INVENTORY )
+		{
 			GL11.glTranslatef( 2, 0, 0 );
+		}
 		GL11.glDisable( GL11.GL_LIGHTING );
 
 		AEColor col = null;

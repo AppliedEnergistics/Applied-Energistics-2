@@ -110,10 +110,14 @@ public abstract class PartBasicState extends AEBasePart implements IPowerChannel
 		try
 		{
 			if( this.proxy.getEnergy().isNetworkPowered() )
+			{
 				this.clientFlags |= this.POWERED_FLAG;
+			}
 
 			if( this.proxy.getNode().meetsChannelRequirements() )
+			{
 				this.clientFlags |= this.CHANNEL_FLAG;
+			}
 
 			this.clientFlags = this.populateFlags( this.clientFlags );
 		}

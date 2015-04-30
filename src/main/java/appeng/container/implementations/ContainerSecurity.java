@@ -79,9 +79,13 @@ public class ContainerSecurity extends ContainerMEMonitorable implements IAEAppE
 			{
 				IBiometricCard bc = (IBiometricCard) a.getItem();
 				if( bc.hasPermission( a, permission ) )
+				{
 					bc.removePermission( a, permission );
+				}
 				else
+				{
 					bc.addPermission( a, permission );
+				}
 			}
 		}
 		catch( EnumConstantNotPresentException ex )
@@ -103,7 +107,9 @@ public class ContainerSecurity extends ContainerMEMonitorable implements IAEAppE
 			IBiometricCard bc = (IBiometricCard) a.getItem();
 
 			for( SecurityPermissions sp : bc.getPermissions( a ) )
+			{
 				this.security |= ( 1 << sp.ordinal() );
+			}
 		}
 
 		this.updatePowerStatus();
@@ -117,10 +123,14 @@ public class ContainerSecurity extends ContainerMEMonitorable implements IAEAppE
 		super.onContainerClosed( player );
 
 		if( this.wirelessIn.getHasStack() )
+		{
 			player.dropPlayerItemWithRandomChoice( this.wirelessIn.getStack(), false );
+		}
 
 		if( this.wirelessOut.getHasStack() )
+		{
 			player.dropPlayerItemWithRandomChoice( this.wirelessOut.getStack(), false );
+		}
 	}
 
 	@Override
@@ -140,11 +150,15 @@ public class ContainerSecurity extends ContainerMEMonitorable implements IAEAppE
 				INetworkEncodable networkEncodable = null;
 
 				if( term.getItem() instanceof INetworkEncodable )
+				{
 					networkEncodable = (INetworkEncodable) term.getItem();
+				}
 
 				IWirelessTermHandler wTermHandler = AEApi.instance().registries().wireless().getWirelessTerminalHandler( term );
 				if( wTermHandler != null )
+				{
 					networkEncodable = wTermHandler;
+				}
 
 				if( networkEncodable != null )
 				{

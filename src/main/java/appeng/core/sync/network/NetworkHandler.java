@@ -90,7 +90,9 @@ public class NetworkHandler
 	public void newConnection( PlayerLoggedInEvent loginEvent )
 	{
 		if( loginEvent.player instanceof EntityPlayerMP )
+		{
 			WorldSettings.getInstance().sendToPlayer( null );
+		}
 	}
 
 	@SubscribeEvent
@@ -98,14 +100,18 @@ public class NetworkHandler
 	{
 		NetHandlerPlayServer srv = (NetHandlerPlayServer) ev.packet.handler();
 		if( this.serveHandler != null )
+		{
 			this.serveHandler.onPacketData( null, ev.packet, srv.playerEntity );
+		}
 	}
 
 	@SubscribeEvent
 	public void clientPacket( ClientCustomPacketEvent ev )
 	{
 		if( this.clientHandler != null )
+		{
 			this.clientHandler.onPacketData( null, ev.packet, null );
+		}
 	}
 
 	public String getChannel()

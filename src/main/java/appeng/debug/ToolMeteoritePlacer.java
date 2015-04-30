@@ -52,13 +52,17 @@ public class ToolMeteoritePlacer extends AEBaseItem
 	public boolean onItemUseFirst( ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ )
 	{
 		if( Platform.isClient() )
+		{
 			return false;
+		}
 
 		MeteoritePlacer mp = new MeteoritePlacer();
 		boolean worked = mp.spawnMeteorite( new StandardWorld( world ), x, y, z );
 
 		if( !worked )
+		{
 			player.addChatMessage( new ChatComponentText( "Un-suitable Location." ) );
+		}
 
 		return true;
 	}

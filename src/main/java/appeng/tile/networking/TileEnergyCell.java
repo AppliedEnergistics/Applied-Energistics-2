@@ -66,14 +66,20 @@ public class TileEnergyCell extends AENetworkTile implements IAEPowerStorage
 	private void changePowerLevel()
 	{
 		if( this.notLoaded() )
+		{
 			return;
+		}
 
 		byte boundMetadata = (byte) ( 8.0 * ( this.internalCurrentPower / this.internalMaxPower ) );
 
 		if( boundMetadata > 7 )
+		{
 			boundMetadata = 7;
+		}
 		if( boundMetadata < 0 )
+		{
 			boundMetadata = 0;
+		}
 
 		if( this.currentMeta != boundMetadata )
 		{
@@ -86,7 +92,9 @@ public class TileEnergyCell extends AENetworkTile implements IAEPowerStorage
 	public void writeToNBT_TileEnergyCell( NBTTagCompound data )
 	{
 		if( !this.worldObj.isRemote )
+		{
 			data.setDouble( "internalCurrentPower", this.internalCurrentPower );
+		}
 	}
 
 	@TileEvent( TileEventType.WORLD_NBT_READ )
@@ -138,7 +146,9 @@ public class TileEnergyCell extends AENetworkTile implements IAEPowerStorage
 		}
 
 		if( this.internalCurrentPower < 0.01 && amt > 0.01 )
+		{
 			this.gridProxy.getNode().getGrid().postEvent( new MENetworkPowerStorage( this, PowerEventType.PROVIDE_POWER ) );
+		}
 
 		this.internalCurrentPower += amt;
 		if( this.internalCurrentPower > this.internalMaxPower )
@@ -189,7 +199,9 @@ public class TileEnergyCell extends AENetworkTile implements IAEPowerStorage
 		if( mode == Actionable.SIMULATE )
 		{
 			if( this.internalCurrentPower > amt )
+			{
 				return amt;
+			}
 			return this.internalCurrentPower;
 		}
 

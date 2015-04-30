@@ -52,7 +52,9 @@ public class TunnelCollection<T extends PartP2PTunnel> implements Iterable<T>
 	public Iterator<T> iterator()
 	{
 		if( this.tunnelSources == null )
+		{
 			return new NullIterator<T>();
+		}
 		return new TunnelIterator<T>( this.tunnelSources, this.clz );
 	}
 

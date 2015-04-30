@@ -98,7 +98,9 @@ public class TileSecurity extends AENetworkTile implements ITerminalHost, IAEApp
 
 		this.securityKey = System.currentTimeMillis() * 10 + difference;
 		if( difference > 10 )
+		{
 			difference = 0;
+		}
 
 		this.cm.registerSetting( Settings.SORT_BY, SortOrder.NAME );
 		this.cm.registerSetting( Settings.VIEW_MODE, ViewItems.ALL );
@@ -115,10 +117,14 @@ public class TileSecurity extends AENetworkTile implements ITerminalHost, IAEApp
 	public void getDrops( World w, int x, int y, int z, ArrayList<ItemStack> drops )
 	{
 		if( !this.configSlot.isEmpty() )
+		{
 			drops.add( this.configSlot.getStackInSlot( 0 ) );
+		}
 
 		for( IAEItemStack ais : this.inventory.storedItems )
+		{
 			drops.add( ais.getItemStack() );
+		}
 	}
 
 	IMEInventoryHandler<IAEItemStack> getSecurityInventory()
@@ -173,7 +179,9 @@ public class TileSecurity extends AENetworkTile implements ITerminalHost, IAEApp
 	{
 		this.cm.readFromNBT( data );
 		if( data.hasKey( "paintedColor" ) )
+		{
 			this.paintedColor = AEColor.values()[data.getByte( "paintedColor" )];
+		}
 
 		this.securityKey = data.getLong( "securityKey" );
 		this.configSlot.readFromNBT( data, "config" );
@@ -342,7 +350,9 @@ public class TileSecurity extends AENetworkTile implements ITerminalHost, IAEApp
 	public boolean recolourBlock( ForgeDirection side, AEColor newPaintedColor, EntityPlayer who )
 	{
 		if( this.paintedColor == newPaintedColor )
+		{
 			return false;
+		}
 
 		this.paintedColor = newPaintedColor;
 		this.markDirty();

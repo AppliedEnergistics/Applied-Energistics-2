@@ -54,7 +54,9 @@ public class ClassInstantiation<T>
 				{
 					Class<?> cz = this.args[idx].getClass();
 					if( !this.isClassMatch( paramTypes[idx], cz, this.args[idx] ) )
+					{
 						valid = false;
+					}
 				}
 
 				if( valid )
@@ -86,7 +88,9 @@ public class ClassInstantiation<T>
 	private boolean isClassMatch( Class<?> expected, Class<?> got, Object value )
 	{
 		if( value == null && !expected.isPrimitive() )
+		{
 			return true;
+		}
 
 		expected = this.condense( expected, Boolean.class, Character.class, Byte.class, Short.class, Integer.class, Long.class, Float.class, Double.class );
 		got = this.condense( got, Boolean.class, Character.class, Byte.class, Short.class, Integer.class, Long.class, Float.class, Double.class );
@@ -103,7 +107,9 @@ public class ClassInstantiation<T>
 				try
 				{
 					if( expected == clz.getField( "TYPE" ).get( null ) )
+					{
 						return clz;
+					}
 				}
 				catch( Throwable t )
 				{

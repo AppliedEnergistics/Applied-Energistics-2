@@ -59,7 +59,9 @@ public class Grind implements ICraftHandler, IWebsiteSerializer
 	public void register() throws RegistrationError, MissingIngredientError
 	{
 		for( ItemStack is : this.pro_input.getItemStackSet() )
+		{
 			AEApi.instance().registries().grinder().addRecipe( is, this.pro_output[0].getItemStack(), 8 );
+		}
 	}
 
 	@Override

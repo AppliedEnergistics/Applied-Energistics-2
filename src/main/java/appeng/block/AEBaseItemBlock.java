@@ -56,14 +56,18 @@ public class AEBaseItemBlock extends ItemBlock
 		this.hasSubtypes = this.blockType.hasSubtypes;
 
 		if( Platform.isClient() )
+		{
 			MinecraftForgeClient.registerItemRenderer( this, ItemRenderer.INSTANCE );
+		}
 	}
 
 	@Override
 	public int getMetadata( int dmg )
 	{
 		if( this.hasSubtypes )
+		{
 			return dmg;
+		}
 		return 0;
 	}
 
@@ -107,17 +111,25 @@ public class AEBaseItemBlock extends ItemBlock
 			{
 				up = ForgeDirection.getOrientation( side );
 				if( up == ForgeDirection.UP || up == ForgeDirection.DOWN )
+				{
 					forward = ForgeDirection.SOUTH;
+				}
 				else
+				{
 					forward = ForgeDirection.UP;
+				}
 			}
 			else if( this.blockType instanceof BlockWireless || this.blockType instanceof BlockSkyCompass )
 			{
 				forward = ForgeDirection.getOrientation( side );
 				if( forward == ForgeDirection.UP || forward == ForgeDirection.DOWN )
+				{
 					up = ForgeDirection.SOUTH;
+				}
 				else
+				{
 					up = ForgeDirection.UP;
+				}
 			}
 			else
 			{
@@ -161,11 +173,15 @@ public class AEBaseItemBlock extends ItemBlock
 			up = ForgeDirection.getOrientation( side );
 			forward = ForgeDirection.SOUTH;
 			if( up.offsetY == 0 )
+			{
 				forward = ForgeDirection.UP;
+			}
 		}
 
 		if( !this.blockType.isValidOrientation( w, x, y, z, forward, up ) )
+		{
 			return false;
+		}
 
 		if( super.placeBlockAt( stack, player, w, x, y, z, side, hitX, hitY, hitZ, metadata ) )
 		{
@@ -175,13 +191,17 @@ public class AEBaseItemBlock extends ItemBlock
 				ori = tile;
 
 				if( tile == null )
+				{
 					return true;
+				}
 
 				if( ori.canBeRotated() && !this.blockType.hasCustomRotation() )
 				{
 					if( ori.getForward() == null || ori.getUp() == null || // null
 							tile.getForward() == ForgeDirection.UNKNOWN || ori.getUp() == ForgeDirection.UNKNOWN )
+					{
 						ori.setOrientation( forward, up );
+					}
 				}
 
 				if( tile instanceof IGridProxyable )

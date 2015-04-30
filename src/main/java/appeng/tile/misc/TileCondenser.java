@@ -83,7 +83,9 @@ public class TileCondenser extends AEBaseInvTile implements IFluidHandler, IConf
 			{
 				IStorageComponent sc = (IStorageComponent) is.getItem();
 				if( sc.isStorageComponent( is ) )
+				{
 					return sc.getBytes( is ) * 8;
+				}
 			}
 		}
 		return 0;
@@ -104,7 +106,9 @@ public class TileCondenser extends AEBaseInvTile implements IFluidHandler, IConf
 				this.addOutput( output );
 			}
 			else
+			{
 				break;
+			}
 		}
 	}
 
@@ -123,7 +127,9 @@ public class TileCondenser extends AEBaseInvTile implements IFluidHandler, IConf
 	{
 		ItemStack outputStack = this.getStackInSlot( 1 );
 		if( outputStack == null )
+		{
 			this.setInventorySlotContents( 1, output.copy() );
+		}
 		else
 		{
 			outputStack.stackSize++;
@@ -172,7 +178,9 @@ public class TileCondenser extends AEBaseInvTile implements IFluidHandler, IConf
 		if( i == 0 )
 		{
 			if( itemstack != null )
+			{
 				this.addPower( itemstack.stackSize );
+			}
 		}
 		else
 		{
@@ -222,7 +230,9 @@ public class TileCondenser extends AEBaseInvTile implements IFluidHandler, IConf
 	public int fill( ForgeDirection from, FluidStack resource, boolean doFill )
 	{
 		if( doFill )
+		{
 			this.addPower( ( resource == null ? 0.0 : (double) resource.amount ) / 500.0 );
+		}
 
 		return resource == null ? 0 : resource.amount;
 	}

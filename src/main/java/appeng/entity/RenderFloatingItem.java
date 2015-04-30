@@ -56,7 +56,9 @@ public class RenderFloatingItem extends RenderItem
 				GL11.glPushMatrix();
 
 				if( !( efi.getEntityItem().getItem() instanceof ItemBlock ) )
+				{
 					GL11.glTranslatef( 0, -0.15f, 0 );
+				}
 
 				super.doRender( efi, p_76986_2_, p_76986_4_, p_76986_6_, p_76986_8_, p_76986_9_ );
 				GL11.glPopMatrix();

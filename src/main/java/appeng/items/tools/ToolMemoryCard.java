@@ -52,7 +52,9 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 
 		NBTTagCompound data = this.getData( stack );
 		if( data.hasKey( "tooltip" ) )
+		{
 			lines.add( StatCollector.translateToLocal( this.getLocalizedName( data.getString( "tooltip" ) + ".name", data.getString( "tooltip" ) ) ) );
+		}
 	}
 
 	/**
@@ -68,11 +70,15 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 		{
 			String l = StatCollector.translateToLocal( n );
 			if( !l.equals( n ) )
+			{
 				return l;
+			}
 		}
 
 		for( String n : name )
+		{
 			return n;
+		}
 
 		return "";
 	}
@@ -99,7 +105,9 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 		NBTTagCompound c = Platform.openNbtData( is );
 		NBTTagCompound o = c.getCompoundTag( "Data" );
 		if( o == null )
+		{
 			o = new NBTTagCompound();
+		}
 		return (NBTTagCompound) o.copy();
 	}
 
@@ -107,7 +115,9 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 	public void notifyUser( EntityPlayer player, MemoryCardMessages msg )
 	{
 		if( Platform.isClient() )
+		{
 			return;
+		}
 
 		switch( msg )
 		{
@@ -138,7 +148,9 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 			return true;
 		}
 		else
+		{
 			return super.onItemUse( is, player, w, x, y, z, side, hx, hy, hz );
+		}
 	}
 
 	@Override

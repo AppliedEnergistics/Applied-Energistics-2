@@ -52,7 +52,9 @@ public class BasicCellHandler implements ICellHandler
 	public IMEInventoryHandler getCellInventory( ItemStack is, ISaveProvider container, StorageChannel channel )
 	{
 		if( channel == StorageChannel.ITEMS )
+		{
 			return CellInventory.getCell( is, container );
+		}
 		return null;
 	}
 

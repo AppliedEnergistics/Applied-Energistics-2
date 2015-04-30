@@ -47,8 +47,12 @@ public class RenderQuartzGlass extends BaseBlockRender
 			Random r = new Random( 924 );
 			offsets = new byte[10][10][10];
 			for( int x = 0; x < 10; x++ )
+			{
 				for( int y = 0; y < 10; y++ )
+				{
 					r.nextBytes( offsets[x][y] );
+				}
+			}
 		}
 	}
 
@@ -155,18 +159,30 @@ public class RenderQuartzGlass extends BaseBlockRender
 				}
 
 				if( maxX <= 0.001f )
+				{
 					maxX += 0.9f / 16.0f;
+				}
 				if( maxY <= 0.001f )
+				{
 					maxY += 0.9f / 16.0f;
+				}
 				if( maxZ <= 0.001f )
+				{
 					maxZ += 0.9f / 16.0f;
+				}
 
 				if( minX >= 0.999f )
+				{
 					minX -= 0.9f / 16.0f;
+				}
 				if( minY >= 0.999f )
+				{
 					minY -= 0.9f / 16.0f;
+				}
 				if( minZ >= 0.999f )
+				{
 					minZ -= 0.9f / 16.0f;
+				}
 
 				renderer.setRenderBounds( minX, minY, minZ, maxX, maxY, maxZ );
 

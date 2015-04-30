@@ -59,9 +59,13 @@ public class TileCraftingMonitorTile extends TileCraftingTile implements IColora
 		boolean hasItem = data.readBoolean();
 
 		if( hasItem )
+		{
 			this.dspPlay = AEItemStack.loadItemStackFromPacket( data );
+		}
 		else
+		{
 			this.dspPlay = null;
+		}
 
 		this.updateList = true;
 		return oldPaintedColor != this.paintedColor; // tesr!
@@ -73,7 +77,9 @@ public class TileCraftingMonitorTile extends TileCraftingTile implements IColora
 		data.writeByte( this.paintedColor.ordinal() );
 
 		if( this.dspPlay == null )
+		{
 			data.writeBoolean( false );
+		}
 		else
 		{
 			data.writeBoolean( true );
@@ -85,7 +91,9 @@ public class TileCraftingMonitorTile extends TileCraftingTile implements IColora
 	public void readFromNBT_TileCraftingMonitorTile( NBTTagCompound data )
 	{
 		if( data.hasKey( "paintedColor" ) )
+		{
 			this.paintedColor = AEColor.values()[data.getByte( "paintedColor" )];
+		}
 	}
 
 	@TileEvent( TileEventType.WORLD_NBT_WRITE )
@@ -144,7 +152,9 @@ public class TileCraftingMonitorTile extends TileCraftingTile implements IColora
 	public boolean recolourBlock( ForgeDirection side, AEColor newPaintedColor, EntityPlayer who )
 	{
 		if( this.paintedColor == newPaintedColor )
+		{
 			return false;
+		}
 
 		this.paintedColor = newPaintedColor;
 		this.markDirty();

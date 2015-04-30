@@ -87,7 +87,9 @@ public class SpatialPylonCache implements ISpatialCache
 			{
 				SpatialPylonCluster c = ( (TileSpatialPylon) gm.getMachine() ).getCluster();
 				if( c != null )
+				{
 					this.clusters.put( c, c );
+				}
 			}
 		}
 
@@ -99,9 +101,13 @@ public class SpatialPylonCache implements ISpatialCache
 		for( SpatialPylonCluster cl : this.clusters.values() )
 		{
 			if( this.captureMax == null )
+			{
 				this.captureMax = cl.max.copy();
+			}
 			if( this.captureMin == null )
+			{
 				this.captureMin = cl.min.copy();
+			}
 
 			pylonBlocks += cl.tileCount();
 
@@ -151,9 +157,13 @@ public class SpatialPylonCache implements ISpatialCache
 			this.efficiency = (double) pylonBlocks / (double) requirePylonBlocks;
 
 			if( this.efficiency > 1.0 )
+			{
 				this.efficiency = 1.0;
+			}
 			if( this.efficiency < 0.0 )
+			{
 				this.efficiency = 0.0;
+			}
 
 			minPower = (double) reqX * (double) reqY * reqZ * AEConfig.instance.spatialPowerMultiplier;
 			maxPower = Math.pow( minPower, AEConfig.instance.spatialPowerExponent );
@@ -167,7 +177,9 @@ public class SpatialPylonCache implements ISpatialCache
 			boolean myWasValid = cl.isValid;
 			cl.isValid = this.isValid;
 			if( myWasValid != this.isValid )
+			{
 				cl.updateStatus( false );
+			}
 		}
 	}
 

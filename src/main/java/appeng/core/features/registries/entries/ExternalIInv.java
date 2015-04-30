@@ -46,7 +46,9 @@ public class ExternalIInv implements IExternalStorageHandler
 		InventoryAdaptor ad = InventoryAdaptor.getAdaptor( te, d );
 
 		if( channel == StorageChannel.ITEMS && ad != null )
+		{
 			return new MEMonitorIInventory( ad );
+		}
 
 		return null;
 	}

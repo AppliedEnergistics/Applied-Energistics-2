@@ -55,10 +55,14 @@ public final class MeteoriteWorldGen implements IWorldGenerator
 				TickHandler.INSTANCE.addCallable( w, new MeteoriteSpawn( x, depth, z, w ) );
 			}
 			else
+			{
 				TickHandler.INSTANCE.addCallable( w, new MeteoriteSpawn( chunkX << 4, 128, chunkZ << 4, w ) );
+			}
 		}
 		else
+		{
 			WorldSettings.getInstance().getCompass().updateArea( w, chunkX, chunkZ );
+		}
 	}
 
 	private boolean tryMeteorite( World w, int depth, int x, int z )
@@ -73,12 +77,15 @@ public final class MeteoriteWorldGen implements IWorldGenerator
 				int pz = z >> 4;
 
 				for( int cx = px - 6; cx < px + 6; cx++ )
+				{
 					for( int cz = pz - 6; cz < pz + 6; cz++ )
 					{
 						if( w.getChunkProvider().chunkExists( cx, cz ) )
 						{
 							if( px == cx && pz == cz )
+							{
 								continue;
+							}
 
 							if( WorldSettings.getInstance().hasGenerated( w.provider.dimensionId, cx, cz ) )
 							{
@@ -87,13 +94,16 @@ public final class MeteoriteWorldGen implements IWorldGenerator
 							}
 						}
 					}
+				}
 
 				return true;
 			}
 
 			depth -= 15;
 			if( depth < 40 )
+			{
 				return false;
+			}
 		}
 
 		return false;
@@ -140,7 +150,9 @@ public final class MeteoriteWorldGen implements IWorldGenerator
 			boolean isCluster = ( minSqDist < 30 * 30 ) && Platform.getRandomFloat() < AEConfig.instance.meteoriteClusterChance;
 
 			if( minSqDist > AEConfig.instance.minMeteoriteDistanceSq || isCluster )
+			{
 				MeteoriteWorldGen.this.tryMeteorite( this.w, this.depth, this.x, this.z );
+			}
 
 			WorldSettings.getInstance().setGenerated( this.w.provider.dimensionId, chunkX, chunkZ );
 			WorldSettings.getInstance().getCompass().updateArea( this.w, chunkX, chunkZ );

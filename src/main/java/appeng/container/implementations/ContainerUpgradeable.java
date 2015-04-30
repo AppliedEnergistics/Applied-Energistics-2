@@ -104,8 +104,12 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 		if( this.hasToolbox() )
 		{
 			for( int v = 0; v < 3; v++ )
+			{
 				for( int u = 0; u < 3; u++ )
+				{
 					this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, this.tbInventory, u + v * 3, 186 + u * 18, this.getHeight() - 82 + v * 18, this.invPlayer ) ).setPlayerSide() );
+				}
+			}
 		}
 
 		this.setupConfig();
@@ -150,13 +154,21 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 	{
 		IInventory upgrades = this.upgradeable.getInventoryByName( "upgrades" );
 		if( this.availableUpgrades() > 0 )
+		{
 			this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 0, 187, 8, this.invPlayer ) ).setNotDraggable() );
+		}
 		if( this.availableUpgrades() > 1 )
+		{
 			this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 1, 187, 8 + 18, this.invPlayer ) ).setNotDraggable() );
+		}
 		if( this.availableUpgrades() > 2 )
+		{
 			this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 2, 187, 8 + 18 * 2, this.invPlayer ) ).setNotDraggable() );
+		}
 		if( this.availableUpgrades() > 3 )
+		{
 			this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 3, 187, 8 + 18 * 3, this.invPlayer ) ).setNotDraggable() );
+		}
 	}
 
 	protected boolean supportCapacity()
@@ -188,7 +200,9 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 			{
 				OptionalSlotFake fs = (OptionalSlotFake) o;
 				if( !fs.isEnabled() && fs.getDisplayStack() != null )
+				{
 					fs.clearStack();
+				}
 			}
 		}
 
@@ -200,7 +214,9 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 		this.fzMode = (FuzzyMode) cm.getSetting( Settings.FUZZY_MODE );
 		this.rsMode = (RedstoneMode) cm.getSetting( Settings.REDSTONE_CONTROLLED );
 		if( this.upgradeable instanceof PartExportBus )
+		{
 			this.cMode = (YesNo) cm.getSetting( Settings.CRAFT_ONLY );
+		}
 	}
 
 	public void checkToolbox()
@@ -214,12 +230,18 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 				if( currentItem != null )
 				{
 					if( Platform.isSameItem( this.tbInventory.getItemStack(), currentItem ) )
+					{
 						this.getPlayerInv().setInventorySlotContents( this.tbSlot, this.tbInventory.getItemStack() );
+					}
 					else
+					{
 						this.isContainerValid = false;
+					}
 				}
 				else
+				{
 					this.isContainerValid = false;
+				}
 			}
 		}
 	}
@@ -235,9 +257,13 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 		int upgrades = this.upgradeable.getInstalledUpgrades( Upgrades.CAPACITY );
 
 		if( idx == 1 && upgrades > 0 )
+		{
 			return true;
+		}
 		if( idx == 2 && upgrades > 1 )
+		{
 			return true;
+		}
 
 		return false;
 	}

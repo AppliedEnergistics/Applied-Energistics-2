@@ -253,9 +253,13 @@ public class RenderDrive extends BaseBlockRender
 				}
 
 				if( ( forward == ForgeDirection.UP && up == ForgeDirection.SOUTH ) || forward == ForgeDirection.DOWN )
+				{
 					this.selectFace( renderer, west, up, forward, 3 + xx * 7, 4 + xx * 7, 1 + yy * 3, 2 + yy * 3 );
+				}
 				else
+				{
 					this.selectFace( renderer, west, up, forward, 5 + xx * 7, 6 + xx * 7, 2 + yy * 3, 3 + yy * 3 );
+				}
 
 				if( stat != 0 )
 				{
@@ -271,16 +275,26 @@ public class RenderDrive extends BaseBlockRender
 					v4 = whiteIcon.getInterpolatedV( ( ( spin ) % 4 < 2 ) ? 1 : 3 );
 
 					if( sp.isPowered() )
+					{
 						tess.setBrightness( 15 << 20 | 15 << 4 );
+					}
 					else
+					{
 						tess.setBrightness( 0 );
+					}
 
 					if( stat == 1 )
+					{
 						Tessellator.instance.setColorOpaque_I( 0x00ff00 );
+					}
 					if( stat == 2 )
+					{
 						Tessellator.instance.setColorOpaque_I( 0xffaa00 );
+					}
 					if( stat == 3 )
+					{
 						Tessellator.instance.setColorOpaque_I( 0xff0000 );
+					}
 
 					switch( forward.offsetX + forward.offsetY * 2 + forward.offsetZ * 3 )
 					{

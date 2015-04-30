@@ -84,16 +84,24 @@ public class GuiCraftConfirm extends AEBaseGui
 		this.ccc = (ContainerCraftConfirm) this.inventorySlots;
 
 		if( te instanceof WirelessTerminalGuiObject )
+		{
 			this.OriginalGui = GuiBridge.GUI_WIRELESS_TERM;
+		}
 
 		if( te instanceof PartTerminal )
+		{
 			this.OriginalGui = GuiBridge.GUI_ME;
+		}
 
 		if( te instanceof PartCraftingTerminal )
+		{
 			this.OriginalGui = GuiBridge.GUI_CRAFTING_TERMINAL;
+		}
 
 		if( te instanceof PartPatternTerminal )
+		{
 			this.OriginalGui = GuiBridge.GUI_PATTERN_TERMINAL;
+		}
 	}
 
 	boolean isAutoStart()
@@ -115,7 +123,9 @@ public class GuiCraftConfirm extends AEBaseGui
 		this.buttonList.add( this.selectCPU );
 
 		if( this.OriginalGui != null )
+		{
 			this.cancel = new GuiButton( 0, this.guiLeft + 6, this.guiTop + this.ySize - 25, 50, 20, GuiText.Cancel.getLocal() );
+		}
 
 		this.buttonList.add( this.cancel );
 	}
@@ -174,11 +184,15 @@ public class GuiCraftConfirm extends AEBaseGui
 				btnTextText = GuiText.CraftingCPU.getLocal() + ": " + name;
 			}
 			else
+			{
 				btnTextText = GuiText.CraftingCPU.getLocal() + ": #" + this.ccc.selectedCpu;
+			}
 		}
 
 		if( this.ccc.noCPU )
+		{
 			btnTextText = GuiText.NoCraftingCPUs.getLocal();
+		}
 
 		this.selectCPU.displayString = btnTextText;
 	}
@@ -199,9 +213,13 @@ public class GuiCraftConfirm extends AEBaseGui
 		String dsp = null;
 
 		if( this.isSimulation() )
+		{
 			dsp = GuiText.Simulation.getLocal();
+		}
 		else
+		{
 			dsp = this.ccc.cpuBytesAvail > 0 ? ( GuiText.Bytes.getLocal() + ": " + this.ccc.cpuBytesAvail + " : " + GuiText.CoProcessors.getLocal() + ": " + this.ccc.cpuCoProcessors ) : GuiText.Bytes.getLocal() + ": N/A : " + GuiText.CoProcessors.getLocal() + ": N/A";
+		}
 
 		int offset = ( 219 - this.fontRendererObj.getStringWidth( dsp ) ) / 2;
 		this.fontRendererObj.drawString( dsp, offset, 165, 4210752 );
@@ -237,11 +255,17 @@ public class GuiCraftConfirm extends AEBaseGui
 				int lines = 0;
 
 				if( stored != null && stored.getStackSize() > 0 )
+				{
 					lines++;
+				}
 				if( pendingStack != null && pendingStack.getStackSize() > 0 )
+				{
 					lines++;
+				}
 				if( pendingStack != null && pendingStack.getStackSize() > 0 )
+				{
 					lines++;
+				}
 
 				int negY = ( ( lines - 1 ) * 5 ) / 2;
 				int downY = 0;
@@ -251,16 +275,22 @@ public class GuiCraftConfirm extends AEBaseGui
 				{
 					String str = Long.toString( stored.getStackSize() );
 					if( stored.getStackSize() >= 10000 )
+					{
 						str = Long.toString( stored.getStackSize() / 1000 ) + 'k';
+					}
 					if( stored.getStackSize() >= 10000000 )
+					{
 						str = Long.toString( stored.getStackSize() / 1000000 ) + 'm';
+					}
 
 					str = GuiText.FromStorage.getLocal() + ": " + str;
 					int w = 4 + this.fontRendererObj.getStringWidth( str );
 					this.fontRendererObj.drawString( str, (int) ( ( x * ( 1 + sectionLength ) + xo + sectionLength - 19 - ( w * 0.5 ) ) * 2 ), ( y * offY + yo + 6 - negY + downY ) * 2, 4210752 );
 
 					if( this.tooltip == z - viewStart )
+					{
 						lineList.add( GuiText.FromStorage.getLocal() + ": " + Long.toString( stored.getStackSize() ) );
+					}
 
 					downY += 5;
 				}
@@ -269,16 +299,22 @@ public class GuiCraftConfirm extends AEBaseGui
 				{
 					String str = Long.toString( missingStack.getStackSize() );
 					if( missingStack.getStackSize() >= 10000 )
+					{
 						str = Long.toString( missingStack.getStackSize() / 1000 ) + 'k';
+					}
 					if( missingStack.getStackSize() >= 10000000 )
+					{
 						str = Long.toString( missingStack.getStackSize() / 1000000 ) + 'm';
+					}
 
 					str = GuiText.Missing.getLocal() + ": " + str;
 					int w = 4 + this.fontRendererObj.getStringWidth( str );
 					this.fontRendererObj.drawString( str, (int) ( ( x * ( 1 + sectionLength ) + xo + sectionLength - 19 - ( w * 0.5 ) ) * 2 ), ( y * offY + yo + 6 - negY + downY ) * 2, 4210752 );
 
 					if( this.tooltip == z - viewStart )
+					{
 						lineList.add( GuiText.Missing.getLocal() + ": " + Long.toString( missingStack.getStackSize() ) );
+					}
 
 					red = true;
 					downY += 5;
@@ -288,16 +324,22 @@ public class GuiCraftConfirm extends AEBaseGui
 				{
 					String str = Long.toString( pendingStack.getStackSize() );
 					if( pendingStack.getStackSize() >= 10000 )
+					{
 						str = Long.toString( pendingStack.getStackSize() / 1000 ) + 'k';
+					}
 					if( pendingStack.getStackSize() >= 10000000 )
+					{
 						str = Long.toString( pendingStack.getStackSize() / 1000000 ) + 'm';
+					}
 
 					str = GuiText.ToCraft.getLocal() + ": " + str;
 					int w = 4 + this.fontRendererObj.getStringWidth( str );
 					this.fontRendererObj.drawString( str, (int) ( ( x * ( 1 + sectionLength ) + xo + sectionLength - 19 - ( w * 0.5 ) ) * 2 ), ( y * offY + yo + 6 - negY + downY ) * 2, 4210752 );
 
 					if( this.tooltip == z - viewStart )
+					{
 						lineList.add( GuiText.ToCraft.getLocal() + ": " + Long.toString( pendingStack.getStackSize() ) );
+					}
 				}
 
 				GL11.glPopMatrix();
@@ -311,7 +353,9 @@ public class GuiCraftConfirm extends AEBaseGui
 					dspToolTip = Platform.getItemDisplayName( is );
 
 					if( lineList.size() > 0 )
+					{
 						dspToolTip = dspToolTip + '\n' + Joiner.on( "\n" ).join( lineList );
+					}
 
 					toolPosX = x * ( 1 + sectionLength ) + xo + sectionLength - 8;
 					toolPosY = y * offY + yo;
@@ -366,17 +410,23 @@ public class GuiCraftConfirm extends AEBaseGui
 		{
 			case 0:
 				for( IAEItemStack l : list )
+				{
 					this.handleInput( this.storage, l );
+				}
 				break;
 
 			case 1:
 				for( IAEItemStack l : list )
+				{
 					this.handleInput( this.pending, l );
+				}
 				break;
 
 			case 2:
 				for( IAEItemStack l : list )
+				{
 					this.handleInput( this.missing, l );
+				}
 				break;
 		}
 
@@ -385,7 +435,9 @@ public class GuiCraftConfirm extends AEBaseGui
 			long amt = this.getTotal( l );
 
 			if( amt <= 0 )
+			{
 				this.deleteVisualStack( l );
+			}
 			else
 			{
 				IAEItemStack is = this.findVisualStack( l );
@@ -403,7 +455,9 @@ public class GuiCraftConfirm extends AEBaseGui
 		if( l.getStackSize() <= 0 )
 		{
 			if( a != null )
+			{
 				a.reset();
+			}
 		}
 		else
 		{
@@ -414,7 +468,9 @@ public class GuiCraftConfirm extends AEBaseGui
 			}
 
 			if( a != null )
+			{
 				a.setStackSize( l.getStackSize() );
+			}
 		}
 	}
 
@@ -427,13 +483,19 @@ public class GuiCraftConfirm extends AEBaseGui
 		long total = 0;
 
 		if( a != null )
+		{
 			total += a.getStackSize();
+		}
 
 		if( c != null )
+		{
 			total += c.getStackSize();
+		}
 
 		if( m != null )
+		{
 			total += m.getStackSize();
+		}
 
 		return total;
 	}

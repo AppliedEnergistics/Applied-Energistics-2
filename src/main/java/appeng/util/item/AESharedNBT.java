@@ -77,15 +77,21 @@ public class AESharedNBT extends NBTTagCompound implements IAETagCompound
 	public static synchronized NBTTagCompound getSharedTagCompound( NBTTagCompound tagCompound, ItemStack s )
 	{
 		if( tagCompound.hasNoTags() )
+		{
 			return null;
+		}
 
 		Item item = s.getItem();
 		int meta = -1;
 		if( s.getItem() != null && s.isItemStackDamageable() && s.getHasSubtypes() )
+		{
 			meta = s.getItemDamage();
+		}
 
 		if( isShared( tagCompound ) )
+		{
 			return tagCompound;
+		}
 
 		SharedSearchObject sso = new SharedSearchObject( item, meta, tagCompound );
 
@@ -94,7 +100,9 @@ public class AESharedNBT extends NBTTagCompound implements IAETagCompound
 		{
 			SharedSearchObject cg = c.get();
 			if( cg != null )
+			{
 				return cg.shared; // I don't think I really need to check this
+			}
 			// as its already certain to exist..
 		}
 
@@ -160,7 +168,9 @@ public class AESharedNBT extends NBTTagCompound implements IAETagCompound
 	public boolean equals( Object par1Obj )
 	{
 		if( par1Obj instanceof AESharedNBT )
+		{
 			return this == par1Obj;
+		}
 		return super.equals( par1Obj );
 	}
 
@@ -172,7 +182,9 @@ public class AESharedNBT extends NBTTagCompound implements IAETagCompound
 	public boolean comparePreciseWithRegistry( AESharedNBT tagCompound )
 	{
 		if( this == tagCompound )
+		{
 			return true;
+		}
 
 		if( this.comp != null && tagCompound.comp != null )
 		{
@@ -185,12 +197,18 @@ public class AESharedNBT extends NBTTagCompound implements IAETagCompound
 	public boolean compareFuzzyWithRegistry( AESharedNBT tagCompound )
 	{
 		if( this == tagCompound )
+		{
 			return true;
+		}
 		if( tagCompound == null )
+		{
 			return false;
+		}
 
 		if( this.comp == tagCompound.comp )
+		{
 			return true;
+		}
 
 		if( this.comp != null )
 		{

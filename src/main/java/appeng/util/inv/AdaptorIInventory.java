@@ -54,9 +54,13 @@ public class AdaptorIInventory extends InventoryAdaptor
 			{
 				int boundAmounts = amount;
 				if( boundAmounts > is.stackSize )
+				{
 					boundAmounts = is.stackSize;
+				}
 				if( destination != null && !destination.canInsert( is ) )
+				{
 					boundAmounts = 0;
+				}
 
 				if( boundAmounts > 0 )
 				{
@@ -108,9 +112,13 @@ public class AdaptorIInventory extends InventoryAdaptor
 			{
 				int boundAmount = amount;
 				if( boundAmount > is.stackSize )
+				{
 					boundAmount = is.stackSize;
+				}
 				if( destination != null && !destination.canInsert( is ) )
+				{
 					boundAmount = 0;
+				}
 
 				if( boundAmount > 0 )
 				{
@@ -143,9 +151,13 @@ public class AdaptorIInventory extends InventoryAdaptor
 			{
 				int newAmount = amount;
 				if( newAmount > is.stackSize )
+				{
 					newAmount = is.stackSize;
+				}
 				if( destination != null && !destination.canInsert( is ) )
+				{
 					newAmount = 0;
+				}
 
 				ItemStack rv = null;
 				if( newAmount > 0 )
@@ -189,9 +201,13 @@ public class AdaptorIInventory extends InventoryAdaptor
 			{
 				int boundAmount = amount;
 				if( boundAmount > is.stackSize )
+				{
 					boundAmount = is.stackSize;
+				}
 				if( destination != null && !destination.canInsert( is ) )
+				{
 					boundAmount = 0;
+				}
 
 				if( boundAmount > 0 )
 				{
@@ -223,7 +239,9 @@ public class AdaptorIInventory extends InventoryAdaptor
 		for( int x = 0; x < s; x++ )
 		{
 			if( this.i.getStackInSlot( x ) != null )
+			{
 				return true;
+			}
 		}
 		return false;
 	}
@@ -302,7 +320,9 @@ public class AdaptorIInventory extends InventoryAdaptor
 	boolean canRemoveStackFromSlot( int x, ItemStack is )
 	{
 		if( this.wrapperEnabled )
+		{
 			return ( (IInventoryWrapper) this.i ).canRemoveItemFromSlot( x, is );
+		}
 		return true;
 	}
 

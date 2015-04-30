@@ -46,7 +46,9 @@ public class ItemModList implements IItemContainer<IAEItemStack>
 		{
 			over = this.backingStore.findPrecise( option );
 			if( over == null )
+			{
 				this.overrides.add( option );
+			}
 			else
 			{
 				option.add( over );
@@ -54,7 +56,9 @@ public class ItemModList implements IItemContainer<IAEItemStack>
 			}
 		}
 		else
+		{
 			this.overrides.add( option );
+		}
 	}
 
 	@Override
@@ -62,7 +66,9 @@ public class ItemModList implements IItemContainer<IAEItemStack>
 	{
 		IAEItemStack over = this.overrides.findPrecise( i );
 		if( over == null )
+		{
 			return this.backingStore.findPrecise( i );
+		}
 		return over;
 	}
 

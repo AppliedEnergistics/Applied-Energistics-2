@@ -12,7 +12,9 @@ public class MeteoriteBlockPutter
 		Block original = w.getBlock( i, j, k );
 
 		if( original == Blocks.bedrock || original == blk )
+		{
 			return false;
+		}
 
 		w.setBlock( i, j, k, blk );
 		return true;

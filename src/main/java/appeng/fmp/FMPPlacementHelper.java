@@ -62,7 +62,9 @@ public class FMPPlacementHelper implements IPartHost
 	public IFacadeContainer getFacadeContainer()
 	{
 		if( this.myPart == null )
+		{
 			return new FacadeContainer( NULL_STORAGE );
+		}
 		return this.myPart.getFacadeContainer();
 	}
 
@@ -85,11 +87,15 @@ public class FMPPlacementHelper implements IPartHost
 		{
 			TMultiPart p = i.next();
 			if( p instanceof CableBusPart )
+			{
 				this.myPart = (CableBusPart) p;
+			}
 		}
 
 		if( this.myPart == null )
+		{
 			this.myPart = (CableBusPart) PartRegistry.CableBusPart.construct( 0 );
+		}
 
 		BlockCoord loc = new BlockCoord( this.myMP.xCoord, this.myMP.yCoord, this.myMP.zCoord );
 
@@ -137,7 +143,9 @@ public class FMPPlacementHelper implements IPartHost
 	public IPart getPart( ForgeDirection side )
 	{
 		if( this.myPart == null )
+		{
 			return null;
+		}
 		return this.myPart.getPart( side );
 	}
 
@@ -145,7 +153,9 @@ public class FMPPlacementHelper implements IPartHost
 	public void removePart( ForgeDirection side, boolean suppressUpdate )
 	{
 		if( this.myPart == null )
+		{
 			return;
+		}
 		this.myPart.removePart( side, suppressUpdate );
 	}
 
@@ -153,7 +163,9 @@ public class FMPPlacementHelper implements IPartHost
 	public void markForUpdate()
 	{
 		if( this.myPart == null )
+		{
 			return;
+		}
 		this.myPart.markForUpdate();
 	}
 
@@ -161,7 +173,9 @@ public class FMPPlacementHelper implements IPartHost
 	public DimensionalCoord getLocation()
 	{
 		if( this.myPart == null )
+		{
 			return new DimensionalCoord( this.myMP );
+		}
 		return this.myPart.getLocation();
 	}
 
@@ -175,7 +189,9 @@ public class FMPPlacementHelper implements IPartHost
 	public AEColor getColor()
 	{
 		if( this.myPart == null )
+		{
 			return AEColor.Transparent;
+		}
 		return this.myPart.getColor();
 	}
 
@@ -183,7 +199,9 @@ public class FMPPlacementHelper implements IPartHost
 	public void clearContainer()
 	{
 		if( this.myPart == null )
+		{
 			return;
+		}
 		this.myPart.clearContainer();
 	}
 
@@ -203,7 +221,9 @@ public class FMPPlacementHelper implements IPartHost
 	public SelectedPart selectPart( Vec3 pos )
 	{
 		if( this.myPart == null )
+		{
 			return new SelectedPart();
+		}
 		return this.myPart.selectPart( pos );
 	}
 
@@ -211,7 +231,9 @@ public class FMPPlacementHelper implements IPartHost
 	public void markForSave()
 	{
 		if( this.myPart == null )
+		{
 			return;
+		}
 		this.myPart.markForSave();
 	}
 
@@ -219,7 +241,9 @@ public class FMPPlacementHelper implements IPartHost
 	public void partChanged()
 	{
 		if( this.myPart == null )
+		{
 			return;
+		}
 		this.myPart.partChanged();
 	}
 
@@ -227,7 +251,9 @@ public class FMPPlacementHelper implements IPartHost
 	public boolean hasRedstone( ForgeDirection side )
 	{
 		if( this.myPart == null )
+		{
 			return false;
+		}
 		return this.myPart.hasRedstone( side );
 	}
 
@@ -235,7 +261,9 @@ public class FMPPlacementHelper implements IPartHost
 	public boolean isEmpty()
 	{
 		if( this.myPart == null )
+		{
 			return true;
+		}
 		return this.myPart.isEmpty();
 	}
 
@@ -243,7 +271,9 @@ public class FMPPlacementHelper implements IPartHost
 	public Set<LayerFlags> getLayerFlags()
 	{
 		if( this.myPart == null )
+		{
 			return EnumSet.noneOf( LayerFlags.class );
+		}
 		return this.myPart.getLayerFlags();
 	}
 
@@ -251,7 +281,9 @@ public class FMPPlacementHelper implements IPartHost
 	public void cleanup()
 	{
 		if( this.myPart == null )
+		{
 			return;
+		}
 		this.myPart.cleanup();
 	}
 
@@ -259,7 +291,9 @@ public class FMPPlacementHelper implements IPartHost
 	public void notifyNeighbors()
 	{
 		if( this.myPart == null )
+		{
 			return;
+		}
 		this.myPart.notifyNeighbors();
 	}
 
@@ -267,7 +301,9 @@ public class FMPPlacementHelper implements IPartHost
 	public boolean isInWorld()
 	{
 		if( this.myPart == null )
+		{
 			return this.myMP.getWorldObj() != null;
+		}
 		return this.myPart.isInWorld();
 	}
 

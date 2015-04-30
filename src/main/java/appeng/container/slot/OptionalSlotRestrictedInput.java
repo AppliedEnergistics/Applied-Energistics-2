@@ -40,7 +40,9 @@ public class OptionalSlotRestrictedInput extends SlotRestrictedInput
 	public boolean isEnabled()
 	{
 		if( this.host == null )
+		{
 			return false;
+		}
 
 		return this.host.isSlotEnabled( this.groupNum );
 	}

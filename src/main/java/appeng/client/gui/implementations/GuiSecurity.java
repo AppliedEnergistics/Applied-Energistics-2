@@ -62,15 +62,25 @@ public class GuiSecurity extends GuiMEMonitorable
 		SecurityPermissions toggleSetting = null;
 
 		if( btn == this.inject )
+		{
 			toggleSetting = SecurityPermissions.INJECT;
+		}
 		if( btn == this.extract )
+		{
 			toggleSetting = SecurityPermissions.EXTRACT;
+		}
 		if( btn == this.craft )
+		{
 			toggleSetting = SecurityPermissions.CRAFT;
+		}
 		if( btn == this.build )
+		{
 			toggleSetting = SecurityPermissions.BUILD;
+		}
 		if( btn == this.security )
+		{
 			toggleSetting = SecurityPermissions.SECURITY;
+		}
 
 		if( toggleSetting != null )
 		{

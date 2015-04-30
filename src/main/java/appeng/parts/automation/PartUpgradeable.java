@@ -83,13 +83,17 @@ public abstract class PartUpgradeable extends PartBasicState implements IAEAppEn
 
 				case HIGH_SIGNAL:
 					if( this.host.hasRedstone( this.side ) )
+					{
 						return false;
+					}
 
 					break;
 
 				case LOW_SIGNAL:
 					if( !this.host.hasRedstone( this.side ) )
+					{
 						return false;
+					}
 
 					break;
 
@@ -136,8 +140,12 @@ public abstract class PartUpgradeable extends PartBasicState implements IAEAppEn
 	public void getDrops( List<ItemStack> drops, boolean wrenched )
 	{
 		for( ItemStack is : this.upgrades )
+		{
 			if( is != null )
+			{
 				drops.add( is );
+			}
+		}
 	}
 
 	@Override
@@ -150,7 +158,9 @@ public abstract class PartUpgradeable extends PartBasicState implements IAEAppEn
 	public IInventory getInventoryByName( String name )
 	{
 		if( name.equals( "upgrades" ) )
+		{
 			return this.upgrades;
+		}
 
 		return null;
 	}

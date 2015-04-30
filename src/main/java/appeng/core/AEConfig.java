@@ -174,10 +174,14 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 			if( feature.isVisible )
 			{
 				if( this.get( "Features." + feature.category, feature.name(), feature.defaultValue ).getBoolean( feature.defaultValue ) )
+				{
 					this.featureFlags.add( feature );
+				}
 			}
 			else
+			{
 				this.featureFlags.add( feature );
+			}
 		}
 
 		ModContainer imb = cpw.mods.fml.common.Loader.instance().getIndexedModList().get( "ImmibisCore" );
@@ -185,7 +189,9 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 		{
 			List<String> version = Arrays.asList( "59.0.0", "59.0.1", "59.0.2" );
 			if( version.contains( imb.getVersion() ) )
+			{
 				this.featureFlags.remove( AEFeature.AlphaPass );
+			}
 		}
 
 		try
@@ -279,9 +285,13 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 			{
 				Enum eg = (Enum) Oeg;
 				if( comment == null )
+				{
 					comment = "Possible Values: " + eg.name();
+				}
 				else
+				{
 					comment += ", " + eg.name();
+				}
 			}
 		}
 
@@ -316,7 +326,9 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 		if( prop != null )
 		{
 			if( !category.equals( "Client" ) )
+			{
 				prop.setRequiresMcRestart( true );
+			}
 		}
 
 		return prop;
@@ -334,7 +346,9 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 		this.get( "Client", "PowerUnit", this.selectedPowerUnit.name(), this.getListComment( this.selectedPowerUnit ) ).set( this.selectedPowerUnit.name() );
 
 		if( this.hasChanged() )
+		{
 			super.save();
+		}
 	}
 
 	@SubscribeEvent
@@ -359,7 +373,9 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 	public boolean useAEVersion( MaterialType mt )
 	{
 		if( this.isFeatureEnabled( AEFeature.WebsiteRecipes ) )
+		{
 			return true;
+		}
 
 		this.setCategoryComment( "OreCamouflage", "AE2 Automatically uses alternative ores present in your instance of MC to blend better with its surroundings, if you prefer you can disable this selectively using these flags; Its important to note, that some if these items even if enabled may not be craftable in game because other items are overriding their recipes." );
 		Property p = this.get( "OreCamouflage", mt.name(), true );
@@ -382,7 +398,9 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 		}
 
 		if( this.updatable )
+		{
 			this.save();
+		}
 	}
 
 	public int getFreeMaterial( int varID )
@@ -400,7 +418,9 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 			int thisInt = p.getInt();
 
 			if( varID == thisInt )
+			{
 				alreadyUsed = true;
+			}
 
 			min = Math.max( min, thisInt + 1 );
 		}
@@ -408,7 +428,9 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 		if( alreadyUsed )
 		{
 			if( min < 16383 )
+			{
 				min = 16383;
+			}
 
 			return min;
 		}

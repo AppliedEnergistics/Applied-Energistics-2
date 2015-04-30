@@ -72,8 +72,12 @@ public class PartTerminal extends PartMonitor implements ITerminalHost, IConfigM
 		super.getDrops( drops, wrenched );
 
 		for( ItemStack is : this.viewCell )
+		{
 			if( is != null )
+			{
 				drops.add( is );
+			}
+		}
 	}
 
 	@Override
@@ -106,7 +110,9 @@ public class PartTerminal extends PartMonitor implements ITerminalHost, IConfigM
 			if( !player.isSneaking() )
 			{
 				if( Platform.isClient() )
+				{
 					return true;
+				}
 
 				Platform.openGUI( player, this.getHost().getTile(), this.side, this.getGui( player ) );
 

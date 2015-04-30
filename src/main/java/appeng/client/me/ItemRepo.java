@@ -74,7 +74,9 @@ public class ItemRepo
 		idx += this.src.getCurrentScroll() * this.rowSize;
 
 		if( idx >= this.view.size() )
+		{
 			return null;
+		}
 		return this.view.get( idx );
 	}
 
@@ -83,7 +85,9 @@ public class ItemRepo
 		idx += this.src.getCurrentScroll() * this.rowSize;
 
 		if( idx >= this.dsp.size() )
+		{
 			return null;
+		}
 		return this.dsp.get( idx );
 	}
 
@@ -102,7 +106,9 @@ public class ItemRepo
 			st.add( is );
 		}
 		else
+		{
 			this.list.add( is );
+		}
 	}
 
 	public void setViewCell( ItemStack[] list )
@@ -122,7 +128,9 @@ public class ItemRepo
 		Enum viewMode = this.sortSrc.getSortDisplay();
 		Enum searchMode = AEConfig.instance.settings.getSetting( Settings.SEARCH_MODE );
 		if( searchMode == SearchBoxMode.NEI_AUTOSEARCH || searchMode == SearchBoxMode.NEI_MANUAL_SEARCH )
+		{
 			this.updateNEI( this.searchString );
+		}
 
 		this.innerSearch = this.searchString;
 		boolean terminalSearchToolTips = AEConfig.instance.settings.getSetting( Settings.SEARCH_TOOLTIPS ) != YesNo.NO;
@@ -158,11 +166,15 @@ public class ItemRepo
 			if( this.myPartitionList != null )
 			{
 				if( !this.myPartitionList.isListed( is ) )
+				{
 					continue;
+				}
 			}
 
 			if( viewMode == ViewItems.CRAFTABLE && !is.isCraftable() )
+			{
 				continue;
+			}
 
 			if( viewMode == ViewItems.CRAFTABLE )
 			{
@@ -171,7 +183,9 @@ public class ItemRepo
 			}
 
 			if( viewMode == ViewItems.STORED && is.getStackSize() == 0 )
+			{
 				continue;
+			}
 
 			String dspName = searchMod ? Platform.getModId( is ) : Platform.getItemDisplayName( is );
 			notDone = true;
@@ -185,12 +199,14 @@ public class ItemRepo
 			if( terminalSearchToolTips && notDone )
 			{
 				for( Object lp : Platform.getTooltip( is ) )
+				{
 					if( lp instanceof String && m.matcher( (String) lp ).find() )
 					{
 						this.view.add( is );
 						notDone = false;
 						break;
 					}
+				}
 			}
 
 			/*
@@ -206,16 +222,26 @@ public class ItemRepo
 		ItemSorters.init();
 
 		if( SortBy == SortOrder.MOD )
+		{
 			Collections.sort( this.view, ItemSorters.CONFIG_BASED_SORT_BY_MOD );
+		}
 		else if( SortBy == SortOrder.AMOUNT )
+		{
 			Collections.sort( this.view, ItemSorters.CONFIG_BASED_SORT_BY_SIZE );
+		}
 		else if( SortBy == SortOrder.INVTWEAKS )
+		{
 			Collections.sort( this.view, ItemSorters.CONFIG_BASED_SORT_BY_INV_TWEAKS );
+		}
 		else
+		{
 			Collections.sort( this.view, ItemSorters.CONFIG_BASED_SORT_BY_NAME );
+		}
 
 		for( IAEItemStack is : this.view )
+		{
 			this.dsp.add( is.getItemStack() );
+		}
 	}
 
 	private void updateNEI( String filter )

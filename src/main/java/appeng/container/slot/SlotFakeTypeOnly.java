@@ -38,9 +38,13 @@ public class SlotFakeTypeOnly extends SlotFake
 		{
 			is = is.copy();
 			if( is.stackSize > 1 )
+			{
 				is.stackSize = 1;
+			}
 			else if( is.stackSize < -1 )
+			{
 				is.stackSize = -1;
+			}
 		}
 
 		super.putStack( is );

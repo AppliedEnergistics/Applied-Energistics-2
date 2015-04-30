@@ -49,15 +49,21 @@ public abstract class InscriberProcess implements ICraftHandler, IWebsiteSeriali
 				this.topOptional = input.get( 0 ).get( 1 );
 
 				if( input.get( 0 ).size() > 2 )
+				{
 					this.botOptional = input.get( 0 ).get( 2 );
+				}
 
 				this.output = output.get( 0 ).get( 0 );
 			}
 			else
+			{
 				throw new RecipeError( "Inscriber recipes cannot have rows, and must have more then one input." );
+			}
 		}
 		else
+		{
 			throw new RecipeError( "Inscriber recipes must produce a single output." );
+		}
 	}
 
 	@Override
@@ -78,13 +84,19 @@ public abstract class InscriberProcess implements ICraftHandler, IWebsiteSeriali
 		}
 
 		if( this.topOptional != null )
+		{
 			pattern += handler.getName( this.topOptional ) + '\n';
+		}
 
 		if ( this.imprintable != null )
+		{
 			pattern += handler.getName( this.imprintable );
+		}
 
 		if( this.botOptional != null )
+		{
 			pattern += '\n' + handler.getName( this.botOptional );
+		}
 
 		return pattern;
 	}

@@ -79,7 +79,9 @@ public class Ingredient implements IIngredient
 				if( this.nameSpace.equals( "oreDictionary" ) )
 				{
 					if( parts.length == 3 )
+					{
 						throw new RecipeError( "Cannot specify meta when using ore dictionary." );
+					}
 					sel = OreDictionary.WILDCARD_VALUE;
 				}
 				else
@@ -128,7 +130,9 @@ public class Ingredient implements IIngredient
 			this.itemName = tmpName;
 		}
 		else
+		{
 			throw new RecipeError( input + " : Needs at least Namespace and Name." );
+		}
 
 		handler.data.knownItem.add( this.toString() );
 	}
@@ -143,28 +147,40 @@ public class Ingredient implements IIngredient
 	public ItemStack getItemStack() throws RegistrationError, MissingIngredientError
 	{
 		if( this.isAir )
+		{
 			throw new RegistrationError( "Found blank item and expected a real item." );
+		}
 
 		if( this.nameSpace.equalsIgnoreCase( "oreDictionary" ) )
+		{
 			throw new RegistrationError( "Recipe format expected a single item, but got a set of items." );
+		}
 
 		Block blk = GameRegistry.findBlock( this.nameSpace, this.itemName );
 		if( blk == null )
+		{
 			blk = GameRegistry.findBlock( this.nameSpace, "tile." + this.itemName );
+		}
 
 		if( blk != null )
 		{
 			Item it = Item.getItemFromBlock( blk );
 			if( it != null )
+			{
 				return this.MakeItemStack( it, this.qty, this.meta, this.nbt );
+			}
 		}
 
 		Item it = GameRegistry.findItem( this.nameSpace, this.itemName );
 		if( it == null )
+		{
 			it = GameRegistry.findItem( this.nameSpace, "item." + this.itemName );
+		}
 
 		if( it != null )
+		{
 			return this.MakeItemStack( it, this.qty, this.meta, this.nbt );
+		}
 
 		/*
 		 * Object o = Item.itemRegistry.getObject( nameSpace + ":" + itemName ); if ( o instanceof Item ) return new
@@ -193,7 +209,9 @@ public class Ingredient implements IIngredient
 	public ItemStack[] getItemStackSet() throws RegistrationError, MissingIngredientError
 	{
 		if( this.baked != null )
+		{
 			return this.baked;
+		}
 
 		if( this.nameSpace.equalsIgnoreCase( "oreDictionary" ) )
 		{
@@ -209,7 +227,9 @@ public class Ingredient implements IIngredient
 			}
 
 			if( set.length == 0 )
+			{
 				throw new MissingIngredientError( this.itemName + " - ore dictionary could not be resolved to any items." );
+			}
 
 			return set;
 		}

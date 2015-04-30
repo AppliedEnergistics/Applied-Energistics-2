@@ -93,7 +93,9 @@ public class PathGridCache implements IPathingGrid
 		if( this.updateNetwork )
 		{
 			if( !this.booting )
+			{
 				this.myGrid.postEvent( new MENetworkBootingStatusChange() );
+			}
 
 			this.booting = true;
 			this.updateNetwork = false;
@@ -116,7 +118,9 @@ public class PathGridCache implements IPathingGrid
 				int requiredChannels = this.calculateRequiredChannels();
 				int used = requiredChannels;
 				if( requiredChannels > 8 )
+				{
 					used = 0;
+				}
 
 				int nodes = this.myGrid.getNodes().size();
 				this.channelsInUse = used;
@@ -209,10 +213,14 @@ public class PathGridCache implements IPathingGrid
 		EnumSet<GridFlags> flags = gridNode.getGridBlock().getFlags();
 
 		if( flags.contains( GridFlags.REQUIRE_CHANNEL ) )
+		{
 			this.requireChannels.remove( gridNode );
+		}
 
 		if( flags.contains( GridFlags.CANNOT_CARRY_COMPRESSED ) )
+		{
 			this.blockDense.remove( gridNode );
+		}
 
 		this.repath();
 	}
@@ -229,10 +237,14 @@ public class PathGridCache implements IPathingGrid
 		EnumSet<GridFlags> flags = gridNode.getGridBlock().getFlags();
 
 		if( flags.contains( GridFlags.REQUIRE_CHANNEL ) )
+		{
 			this.requireChannels.add( gridNode );
+		}
 
 		if( flags.contains( GridFlags.CANNOT_CARRY_COMPRESSED ) )
+		{
 			this.blockDense.add( gridNode );
+		}
 
 		this.repath();
 	}
@@ -279,9 +291,13 @@ public class PathGridCache implements IPathingGrid
 			startingNode.beginVisit( cv );
 
 			if( cv.isValid && cv.found == this.controllers.size() )
+			{
 				this.controllerState = ControllerState.CONTROLLER_ONLINE;
+			}
 			else
+			{
 				this.controllerState = ControllerState.CONTROLLER_CONFLICT;
+			}
 		}
 
 		if( old != this.controllerState )
@@ -303,7 +319,9 @@ public class PathGridCache implements IPathingGrid
 				EnumSet<GridFlags> flags = gb.getFlags();
 
 				if( flags.contains( GridFlags.COMPRESSED_CHANNEL ) && !this.blockDense.isEmpty() )
+				{
 					return 9;
+				}
 
 				depth++;
 
@@ -312,7 +330,9 @@ public class PathGridCache implements IPathingGrid
 					IGridMultiblock gmb = (IGridMultiblock) gb;
 					Iterator<IGridNode> i = gmb.getMultiblockNodes();
 					while( i.hasNext() )
+					{
 						this.semiOpen.add( (IPathItem) i.next() );
+					}
 				}
 			}
 		}
@@ -330,7 +350,9 @@ public class PathGridCache implements IPathingGrid
 			{
 				Set<Integer> players = new HashSet<Integer>();
 				for( IGridNode n : this.requireChannels )
+				{
 					players.add( n.getPlayerID() );
+				}
 
 				for( int id : players )
 				{
@@ -344,13 +366,19 @@ public class PathGridCache implements IPathingGrid
 	private Achievements getAchievementBracket( int ch )
 	{
 		if( ch < 8 )
+		{
 			return null;
+		}
 
 		if( ch < 128 )
+		{
 			return Achievements.Networking1;
+		}
 
 		if( ch < 2048 )
+		{
 			return Achievements.Networking2;
+		}
 
 		return Achievements.Networking3;
 	}
@@ -361,9 +389,13 @@ public class PathGridCache implements IPathingGrid
 		IGridNode gridNode = ev.node;
 
 		if( gridNode.getGridBlock().getFlags().contains( GridFlags.REQUIRE_CHANNEL ) )
+		{
 			this.requireChannels.add( gridNode );
+		}
 		else
+		{
 			this.requireChannels.remove( gridNode );
+		}
 
 		this.repath();
 	}

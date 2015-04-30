@@ -70,13 +70,17 @@ public class CraftingTreeNode
 
 		this.canEmit = cc.canEmitFor( this.what );
 		if( this.canEmit )
+		{
 			return; // if you can emit for something, you can't make it with patterns.
+		}
 
 		for( ICraftingPatternDetails details : cc.getCraftingFor( this.what, this.parent == null ? null : this.parent.details, slot, this.world ) )// in
 		// order.
 		{
 			if( this.parent == null || this.parent.notRecursive( details ) )
+			{
 				this.nodes.add( new CraftingTreeProcess( cc, job, details, this, depth + 1 ) );
+			}
 		}
 	}
 
@@ -84,16 +88,26 @@ public class CraftingTreeNode
 	{
 		IAEItemStack[] o = details.getCondensedOutputs();
 		for( IAEItemStack i : o )
+		{
 			if( i.equals( this.what ) )
+			{
 				return false;
+			}
+		}
 
 		o = details.getCondensedInputs();
 		for( IAEItemStack i : o )
+		{
 			if( i.equals( this.what ) )
+			{
 				return false;
+			}
+		}
 
 		if( this.parent == null )
+		{
 			return true;
+		}
 
 		return this.parent.notRecursive( details );
 	}
@@ -131,7 +145,9 @@ public class CraftingTreeNode
 						l -= available.getStackSize();
 
 						if( l == 0 )
+						{
 							return available;
+						}
 					}
 				}
 			}
@@ -156,7 +172,9 @@ public class CraftingTreeNode
 				l -= available.getStackSize();
 
 				if( l == 0 )
+				{
 					return available;
+				}
 			}
 		}
 
@@ -192,10 +210,14 @@ public class CraftingTreeNode
 					l -= available.getStackSize();
 
 					if( l <= 0 )
+					{
 						return available;
+					}
 				}
 				else
+				{
 					pro.possible = false; // ;P
+				}
 			}
 		}
 		else if( this.nodes.size() > 1 )
@@ -215,16 +237,22 @@ public class CraftingTreeNode
 						if( available != null )
 						{
 							if( !subInv.commit( src ) )
+							{
 								throw new CraftBranchFailure( this.what, l );
+							}
 
 							this.bytes += available.getStackSize();
 							l -= available.getStackSize();
 
 							if( l <= 0 )
+							{
 								return available;
+							}
 						}
 						else
+						{
 							pro.possible = false; // ;P
+						}
 					}
 				}
 				catch( CraftBranchFailure fail )
@@ -256,13 +284,17 @@ public class CraftingTreeNode
 	public void dive( CraftingJob job )
 	{
 		if( this.missing > 0 )
+		{
 			job.addMissing( this.getStack( this.missing ) );
+		}
 		// missing = 0;
 
 		job.addBytes( 8 + this.bytes );
 
 		for( CraftingTreeProcess pro : this.nodes )
+		{
 			pro.dive( job );
+		}
 	}
 
 	public IAEItemStack getStack( long size )
@@ -281,7 +313,9 @@ public class CraftingTreeNode
 		this.exhausted = false;
 
 		for( CraftingTreeProcess pro : this.nodes )
+		{
 			pro.setSimulate();
+		}
 	}
 
 	public void setJob( MECraftingInventory storage, CraftingCPUCluster craftingCPUCluster, BaseActionSource src ) throws CraftBranchFailure
@@ -291,7 +325,9 @@ public class CraftingTreeNode
 			IAEItemStack ex = storage.extractItems( i, Actionable.MODULATE, src );
 
 			if( ex == null || ex.getStackSize() != i.getStackSize() )
+			{
 				throw new CraftBranchFailure( i, i.getStackSize() );
+			}
 
 			craftingCPUCluster.addStorage( ex );
 		}
@@ -304,7 +340,9 @@ public class CraftingTreeNode
 		}
 
 		for( CraftingTreeProcess pro : this.nodes )
+		{
 			pro.setJob( storage, craftingCPUCluster, src );
+		}
 	}
 
 	public void getPlan( IItemList<IAEItemStack> plan )
@@ -324,9 +362,13 @@ public class CraftingTreeNode
 		}
 
 		for( IAEItemStack i : this.used )
+		{
 			plan.add( i.copy() );
+		}
 
 		for( CraftingTreeProcess pro : this.nodes )
+		{
 			pro.getPlan( plan );
+		}
 	}
 }

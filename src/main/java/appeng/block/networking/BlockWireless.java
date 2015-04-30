@@ -63,13 +63,17 @@ public class BlockWireless extends AEBaseBlock implements ICustomCollision
 	public boolean onActivated( World w, int x, int y, int z, EntityPlayer p, int side, float hitX, float hitY, float hitZ )
 	{
 		if( p.isSneaking() )
+		{
 			return false;
+		}
 
 		TileWireless tg = this.getTileEntity( w, x, y, z );
 		if( tg != null )
 		{
 			if( Platform.isServer() )
+			{
 				Platform.openGUI( p, tg, ForgeDirection.getOrientation( side ), GuiBridge.GUI_WIRELESS );
+			}
 			return true;
 		}
 		return false;
@@ -197,6 +201,8 @@ public class BlockWireless extends AEBaseBlock implements ICustomCollision
 			out.add( AxisAlignedBB.getBoundingBox( minX, minY, minZ, maxX, maxY, maxZ ) );
 		}
 		else
+		{
 			out.add( AxisAlignedBB.getBoundingBox( 0.0, 0.0, 0.0, 1.0, 1.0, 1.0 ) );
+		}
 	}
 }

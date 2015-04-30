@@ -97,7 +97,9 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable
 	{
 		AEItemStack is = AEItemStack.create( this.getStackInSlot( 0 ) );
 		if( is != null )
+		{
 			is.writeToPacket( data );
+		}
 	}
 
 	@TileEvent( TileEventType.TICK )
@@ -113,7 +115,9 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable
 
 		this.tickTickTimer++;
 		if( this.tickTickTimer < 20 )
+		{
 			return;
+		}
 		this.tickTickTimer = 0;
 
 		ItemStack myItem = this.getStackInSlot( 0 );
@@ -133,7 +137,9 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable
 		}
 
 		if( myItem == null )
+		{
 			return;
+		}
 
 		final IMaterials materials = AEApi.instance().definitions().materials();
 
@@ -147,7 +153,9 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable
 				double adjustment = ps.injectAEPower( myItem, this.extractAEPower( 150.0, Actionable.MODULATE, PowerMultiplier.CONFIG ) );
 				this.internalCurrentPower += adjustment;
 				if( oldPower > this.internalCurrentPower )
+				{
 					this.requiresUpdate = true;
+				}
 				this.tickTickTimer = 20; // keep ticking...
 			}
 		}
@@ -246,7 +254,9 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable
 		{
 			IAEItemPowerStorage ips = (IAEItemPowerStorage) extractedItem.getItem();
 			if( ips.getAECurrentPower( extractedItem ) >= ips.getAEMaxPower( extractedItem ) )
+			{
 				return true;
+			}
 		}
 
 		return AEApi.instance().definitions().materials().certusQuartzCrystalCharged().isSameAs( extractedItem );
@@ -261,7 +271,9 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable
 	public void activate( EntityPlayer player )
 	{
 		if( !Platform.hasPermissions( new DimensionalCoord( this ), player ) )
+		{
 			return;
+		}
 
 		ItemStack myItem = this.getStackInSlot( 0 );
 		if( myItem == null )

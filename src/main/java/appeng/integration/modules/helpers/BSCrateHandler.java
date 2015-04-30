@@ -42,7 +42,9 @@ public class BSCrateHandler implements IExternalStorageHandler
 	public IMEInventory getInventory( TileEntity te, ForgeDirection d, StorageChannel channel, BaseActionSource src )
 	{
 		if( channel == StorageChannel.ITEMS )
+		{
 			return new BSCrate( te, ForgeDirection.UNKNOWN );
+		}
 		return null;
 	}
 }

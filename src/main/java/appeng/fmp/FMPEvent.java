@@ -64,7 +64,9 @@ public class FMPEvent
 	{
 		MovingObjectPosition hit = RayTracer.reTrace( world, player );
 		if( hit == null )
+		{
 			return false;
+		}
 
 		BlockCoord pos = new BlockCoord( hit.blockX, hit.blockY, hit.blockZ ).offset( hit.sideHit );
 		ItemStack held = player.getHeldItem();
@@ -73,7 +75,9 @@ public class FMPEvent
 		Block blk = null;
 
 		if( held == null )
+		{
 			return false;
+		}
 
 		if( held.getItem() instanceof AEBaseItemBlock )
 		{
@@ -83,7 +87,9 @@ public class FMPEvent
 		}
 
 		if( part == null )
+		{
 			return false;
+		}
 
 		if( world.isRemote && !player.isSneaking() )// attempt to use block activated like normal and tell the server
 		// the right stuff
@@ -100,7 +106,9 @@ public class FMPEvent
 
 		TileMultipart tile = TileMultipart.getOrConvertTile( world, pos );
 		if( tile == null || !tile.canAddPart( part ) )
+		{
 			return false;
+		}
 
 		if( !world.isRemote )
 		{
@@ -130,7 +138,9 @@ public class FMPEvent
 	private static boolean ignoreActivate( Block block )
 	{
 		if( block instanceof BlockFence )
+		{
 			return true;
+		}
 		return false;
 	}
 
@@ -140,10 +150,14 @@ public class FMPEvent
 		if( event.action == Action.RIGHT_CLICK_BLOCK && event.entityPlayer.worldObj.isRemote )
 		{
 			if( this.placing.get() != null )
+			{
 				return;
+			}
 			this.placing.set( event );
 			if( place( event.entityPlayer, event.entityPlayer.worldObj ) )
+			{
 				event.setCanceled( true );
+			}
 			this.placing.set( null );
 		}
 	}

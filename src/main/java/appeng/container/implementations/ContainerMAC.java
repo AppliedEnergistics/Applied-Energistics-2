@@ -58,7 +58,9 @@ public class ContainerMAC extends ContainerUpgradeable implements IProgressProvi
 
 		ItemStack is = mac.getStackInSlot( 10 );
 		if( is == null )
+		{
 			return false;
+		}
 
 		if( is.getItem() instanceof ItemEncodedPattern )
 		{
@@ -66,7 +68,9 @@ public class ContainerMAC extends ContainerUpgradeable implements IProgressProvi
 			ItemEncodedPattern iep = (ItemEncodedPattern) is.getItem();
 			ICraftingPatternDetails ph = iep.getPatternForItem( is, w );
 			if( ph.isCraftable() )
+			{
 				return ph.isValidItemForSlot( slotIndex, i, w );
+			}
 		}
 
 		return false;
@@ -87,11 +91,13 @@ public class ContainerMAC extends ContainerUpgradeable implements IProgressProvi
 		IInventory mac = this.upgradeable.getInventoryByName( "mac" );
 
 		for( int y = 0; y < 3; y++ )
+		{
 			for( int x = 0; x < 3; x++ )
 			{
 				SlotMACPattern s = new SlotMACPattern( this, mac, x + y * 3, offX + x * 18, offY + y * 18 );
 				this.addSlotToContainer( s );
 			}
+		}
 
 		offX = 126;
 		offY = 16;

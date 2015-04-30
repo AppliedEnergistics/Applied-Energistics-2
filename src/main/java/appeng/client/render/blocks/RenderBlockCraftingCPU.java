@@ -126,7 +126,9 @@ public class RenderBlockCraftingCPU extends BaseBlockRender
 
 				boolean LocalEmit = emitsLight;
 				if( blk instanceof BlockCraftingMonitor && ct.getForward() != side )
+				{
 					LocalEmit = false;
+				}
 
 				this.handleSide( blk, meta, x, y, z, i, renderer, ct.getForward() == side ? theIcon : nonForward, LocalEmit, isMonitor, side, w );
 			}
@@ -165,11 +167,17 @@ public class RenderBlockCraftingCPU extends BaseBlockRender
 	private void renderCorner( BusRenderHelper i, RenderBlocks renderer, IBlockAccess w, int x, int y, int z, ForgeDirection up, ForgeDirection east, ForgeDirection south )
 	{
 		if( this.isConnected( w, x, y, z, up ) )
+		{
 			return;
+		}
 		if( this.isConnected( w, x, y, z, east ) )
+		{
 			return;
+		}
 		if( this.isConnected( w, x, y, z, south ) )
+		{
 			return;
+		}
 
 		i.setBounds( this.gso( east, 3, ForgeDirection.WEST ), this.gso( up, 3, ForgeDirection.DOWN ), this.gso( south, 3, ForgeDirection.NORTH ), this.gso( east, 13, ForgeDirection.EAST ), this.gso( up, 13, ForgeDirection.UP ), this.gso( south, 13, ForgeDirection.SOUTH ) );
 		i.prepareBounds( renderer );
@@ -182,7 +190,9 @@ public class RenderBlockCraftingCPU extends BaseBlockRender
 		if( side == target )
 		{
 			if( side.offsetX > 0 || side.offsetY > 0 || side.offsetZ > 0 )
+			{
 				return 16;
+			}
 			return 0;
 		}
 		return def;
@@ -191,7 +201,9 @@ public class RenderBlockCraftingCPU extends BaseBlockRender
 	private void handleSide( AEBaseBlock blk, int meta, int x, int y, int z, BusRenderHelper i, RenderBlocks renderer, IIcon color, boolean emitsLight, boolean isMonitor, ForgeDirection side, IBlockAccess w )
 	{
 		if( this.isConnected( w, x, y, z, side ) )
+		{
 			return;
+		}
 
 		i.setFacesToRender( EnumSet.of( side ) );
 
@@ -203,9 +215,13 @@ public class RenderBlockCraftingCPU extends BaseBlockRender
 		else
 		{
 			if( color == ExtraBlockTextures.BlockCraftingMonitorFit_Light.getIcon() )
+			{
 				i.setTexture( ExtraBlockTextures.BlockCraftingMonitorOuter.getIcon() );
+			}
 			else
+			{
 				i.setTexture( ExtraBlockTextures.BlockCraftingFitSolid.getIcon() );
+			}
 
 			i.renderBlockCurrentBounds( x, y, z, renderer );
 
@@ -233,7 +249,9 @@ public class RenderBlockCraftingCPU extends BaseBlockRender
 						i.renderFace( x, y, z, ExtraBlockTextures.BlockCraftingMonitorFit_Dark.getIcon(), side, renderer );
 					}
 					else
+					{
 						i.renderBlockCurrentBounds( x, y, z, renderer );
+					}
 				}
 				else
 				{
@@ -267,14 +285,22 @@ public class RenderBlockCraftingCPU extends BaseBlockRender
 		for( ForgeDirection a : ForgeDirection.VALID_DIRECTIONS )
 		{
 			if( a == side || a == side.getOpposite() )
+			{
 				continue;
+			}
 
 			if( ( side.offsetX != 0 || side.offsetZ != 0 ) && ( a == ForgeDirection.NORTH || a == ForgeDirection.EAST || a == ForgeDirection.WEST || a == ForgeDirection.SOUTH ) )
+			{
 				i.setTexture( ExtraBlockTextures.BlockCraftingUnitRingLongRotated.getIcon() );
+			}
 			else if( ( side.offsetY != 0 ) && ( a == ForgeDirection.EAST || a == ForgeDirection.WEST ) )
+			{
 				i.setTexture( ExtraBlockTextures.BlockCraftingUnitRingLongRotated.getIcon() );
+			}
 			else
+			{
 				i.setTexture( ExtraBlockTextures.BlockCraftingUnitRingLong.getIcon() );
+			}
 
 			double width = 3.0 / 16.0;
 
@@ -334,7 +360,9 @@ public class RenderBlockCraftingCPU extends BaseBlockRender
 		if( side != target )
 		{
 			if( side.offsetX > 0 || side.offsetY > 0 || side.offsetZ > 0 )
+			{
 				return 16;
+			}
 			return 0;
 		}
 		return def;

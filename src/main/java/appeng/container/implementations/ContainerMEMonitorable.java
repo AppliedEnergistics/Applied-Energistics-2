@@ -112,9 +112,13 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 				this.cellInv = this.monitor;
 
 				if( monitorable instanceof IPortableCell )
+				{
 					this.powerSrc = (IPortableCell) monitorable;
+				}
 				else if( monitorable instanceof IMEChest )
+				{
 					this.powerSrc = (IMEChest) monitorable;
+				}
 				else if( monitorable instanceof IGridHost )
 				{
 					IGridNode node = ( (IGridHost) monitorable ).getGridNode( ForgeDirection.UNKNOWN );
@@ -123,15 +127,21 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 						this.networkNode = node;
 						IGrid g = node.getGrid();
 						if( g != null )
+						{
 							this.powerSrc = new ChannelPowerSrc( this.networkNode, (IEnergyGrid) g.getCache( IEnergyGrid.class ) );
+						}
 					}
 				}
 			}
 			else
+			{
 				this.isContainerValid = false;
+			}
 		}
 		else
+		{
 			this.monitor = null;
+		}
 
 		this.canAccessViewCells = false;
 		if( monitorable instanceof IViewCellStorage )
@@ -145,7 +155,9 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 		}
 
 		if( bindInventory )
+		{
 			this.bindPlayerInventory( ip, 0, 0 );
+		}
 	}
 
 	public IGridNode getNetworkNode()
@@ -159,7 +171,9 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 		if( Platform.isServer() )
 		{
 			if( this.monitor != this.host.getItemInventory() )
+			{
 				this.isContainerValid = false;
+			}
 
 			for( Settings set : this.serverCM.getSettings() )
 			{
@@ -200,7 +214,9 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 							piu.appendItem( is );
 						}
 						else
+						{
 							piu.appendItem( send );
+						}
 					}
 
 					if( !piu.isEmpty() )
@@ -210,7 +226,9 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 						for( Object c : this.crafters )
 						{
 							if( c instanceof EntityPlayer )
+							{
 								NetworkHandler.instance.sendTo( piu, (EntityPlayerMP) c );
+							}
 						}
 					}
 				}
@@ -229,7 +247,9 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 				for( int y = 0; y < 5; y++ )
 				{
 					if( this.cellView[y] != null )
+					{
 						this.cellView[y].allowEdit = this.canAccessViewCells;
+					}
 				}
 			}
 
@@ -242,11 +262,17 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 		try
 		{
 			if( this.networkNode != null )
+			{
 				this.hasPower = this.networkNode.isActive();
+			}
 			else if( this.powerSrc instanceof IEnergyGrid )
+			{
 				this.hasPower = ( (IEnergyGrid) this.powerSrc ).isNetworkPowered();
+			}
 			else
+			{
 				this.hasPower = this.powerSrc.extractAEPower( 1, Actionable.SIMULATE, PowerMultiplier.CONFIG ) > 0.8;
+			}
 		}
 		catch( Throwable t )
 		{
@@ -260,8 +286,12 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 		if( field.equals( "canAccessViewCells" ) )
 		{
 			for( int y = 0; y < 5; y++ )
+			{
 				if( this.cellView[y] != null )
+				{
 					this.cellView[y].allowEdit = this.canAccessViewCells;
+				}
+			}
 		}
 
 		super.onUpdate( field, oldValue, newValue );
@@ -313,7 +343,9 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 		super.removeCraftingFromCrafters( c );
 
 		if( this.crafters.isEmpty() && this.monitor != null )
+		{
 			this.monitor.removeListener( this );
+		}
 	}
 
 	@Override
@@ -321,7 +353,9 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 	{
 		super.onContainerClosed( player );
 		if( this.monitor != null )
+		{
 			this.monitor.removeListener( this );
+		}
 	}
 
 	@Override
@@ -334,7 +368,9 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 	public void postChange( IBaseMonitor<IAEItemStack> monitor, Iterable<IAEItemStack> change, BaseActionSource source )
 	{
 		for( IAEItemStack is : change )
+		{
 			this.items.add( is );
+		}
 	}
 
 	@Override
@@ -354,14 +390,18 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 	public void updateSetting( IConfigManager manager, Enum settingName, Enum newValue )
 	{
 		if( this.gui != null )
+		{
 			this.gui.updateSetting( manager, settingName, newValue );
+		}
 	}
 
 	@Override
 	public IConfigManager getConfigManager()
 	{
 		if( Platform.isServer() )
+		{
 			return this.serverCM;
+		}
 		return this.clientCM;
 	}
 
@@ -370,7 +410,9 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 		ItemStack[] list = new ItemStack[this.cellView.length];
 
 		for( int x = 0; x < this.cellView.length; x++ )
+		{
 			list[x] = this.cellView[x].getStack();
+		}
 
 		return list;
 	}

@@ -113,7 +113,9 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 
 		NBTTagCompound myItem = new NBTTagCompound();
 		if( this.configuredItem != null )
+		{
 			this.configuredItem.writeToNBT( myItem );
+		}
 
 		data.setTag( "configuredItem", myItem );
 	}
@@ -127,7 +129,9 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 		data.writeBoolean( this.isLocked );
 		data.writeBoolean( this.configuredItem != null );
 		if( this.configuredItem != null )
+		{
 			this.configuredItem.writeToPacket( data );
+		}
 	}
 
 	@Override
@@ -139,9 +143,13 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 		this.isLocked = data.readBoolean();
 		boolean val = data.readBoolean();
 		if( val )
+		{
 			this.configuredItem = AEItemStack.loadItemStackFromPacket( data );
+		}
 		else
+		{
 			this.configuredItem = null;
+		}
 
 		this.updateList = true;
 
@@ -152,13 +160,19 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 	public boolean onPartActivate( EntityPlayer player, Vec3 pos )
 	{
 		if( Platform.isClient() )
+		{
 			return true;
+		}
 
 		if( !this.proxy.isActive() )
+		{
 			return false;
+		}
 
 		if( !Platform.hasPermissions( this.getLocation(), player ) )
+		{
 			return false;
+		}
 
 		TileEntity te = this.tile;
 		ItemStack eq = player.getCurrentEquippedItem();
@@ -175,7 +189,9 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 			this.getHost().markForUpdate();
 		}
 		else
+		{
 			this.extractItem( player );
+		}
 
 		return true;
 	}
@@ -184,14 +200,18 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 	public void configureWatchers()
 	{
 		if( this.myWatcher != null )
+		{
 			this.myWatcher.clear();
+		}
 
 		try
 		{
 			if( this.configuredItem != null )
 			{
 				if( this.myWatcher != null )
+				{
 					this.myWatcher.add( this.configuredItem );
+				}
 
 				this.updateReportingValue( this.proxy.getStorage().getItemInventory() );
 			}
@@ -213,9 +233,13 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 		{
 			IAEItemStack result = itemInventory.getStorageList().findPrecise( this.configuredItem );
 			if( result == null )
+			{
 				this.configuredItem.setStackSize( 0 );
+			}
 			else
+			{
 				this.configuredItem.setStackSize( result.getStackSize() );
+			}
 		}
 	}
 
@@ -225,7 +249,9 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 	{
 		super.finalize();
 		if( this.dspList != null )
+		{
 			GLAllocation.deleteDisplayLists( this.dspList );
+		}
 	}
 
 	@Override
@@ -233,12 +259,16 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 	public void renderDynamic( double x, double y, double z, IPartRenderHelper rh, RenderBlocks renderer )
 	{
 		if( this.dspList == null )
+		{
 			this.dspList = GLAllocation.generateDisplayLists( 1 );
+		}
 
 		Tessellator tess = Tessellator.instance;
 
 		if( ( this.clientFlags & ( this.POWERED_FLAG | this.CHANNEL_FLAG ) ) != ( this.POWERED_FLAG | this.CHANNEL_FLAG ) )
+		{
 			return;
+		}
 
 		IAEItemStack ais = (IAEItemStack) this.getDisplayed();
 		if( ais != null )
@@ -254,7 +284,9 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 				GL11.glEndList();
 			}
 			else
+			{
 				GL11.glCallList( this.dspList );
+			}
 
 			GL11.glPopMatrix();
 		}
@@ -375,9 +407,13 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 		if( this.configuredItem != null )
 		{
 			if( fullStack == null )
+			{
 				this.configuredItem.setStackSize( 0 );
+			}
 			else
+			{
 				this.configuredItem.setStackSize( fullStack.getStackSize() );
+			}
 
 			this.getHost().markForUpdate();
 		}

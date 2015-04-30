@@ -60,7 +60,9 @@ public class TESRWrapper extends TileEntitySpecialRenderer
 			if( b instanceof AEBaseBlock && ( (AEBaseTile) te ).requiresTESR() )
 			{
 				if( Math.abs( x ) > this.MAX_DISTANCE || Math.abs( y ) > this.MAX_DISTANCE || Math.abs( z ) > this.MAX_DISTANCE )
+				{
 					return;
+				}
 
 				Tessellator tess = Tessellator.instance;
 

@@ -52,7 +52,9 @@ public class PaintBallRender implements IItemRenderer
 	{
 		IIcon par2Icon = item.getIconIndex();
 		if( item.getItemDamage() >= 20 )
+		{
 			par2Icon = ExtraItemTextures.ItemPaintBallShimmer.getIcon();
+		}
 
 		float f4 = par2Icon.getMinU();
 		float f5 = par2Icon.getMaxU();
@@ -77,9 +79,13 @@ public class PaintBallRender implements IItemRenderer
 		float fail = 0.7f;
 
 		if( item.getItemDamage() >= 20 )
+		{
 			GL11.glColor4ub( (byte) ( full + r * fail ), (byte) ( full + g * fail ), (byte) ( full + b * fail ), (byte) 255 );
+		}
 		else
+		{
 			GL11.glColor4ub( (byte) r, (byte) g, (byte) b, (byte) 255 );
+		}
 
 		if( type == ItemRenderType.INVENTORY )
 		{
@@ -99,9 +105,13 @@ public class PaintBallRender implements IItemRenderer
 		else
 		{
 			if( type == ItemRenderType.EQUIPPED_FIRST_PERSON )
+			{
 				GL11.glTranslatef( 0.0F, 0.0F, 0.0F );
+			}
 			else
+			{
 				GL11.glTranslatef( -0.5F, -0.3F, 0.01F );
+			}
 			ItemRenderer.renderItemIn2D( tessellator, f5, f6, f4, f7, par2Icon.getIconWidth(), par2Icon.getIconHeight(), f12 );
 
 			GL11.glDisable( GL11.GL_CULL_FACE );

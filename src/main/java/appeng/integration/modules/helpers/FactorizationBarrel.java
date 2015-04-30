@@ -53,18 +53,26 @@ public class FactorizationBarrel implements IMEInventory<IAEItemStack>
 	public IAEItemStack injectItems( IAEItemStack input, Actionable mode, BaseActionSource src )
 	{
 		if( input == null )
+		{
 			return null;
+		}
 		if( input.getStackSize() == 0 )
+		{
 			return null;
+		}
 
 		ItemStack shared = input.getItemStack();
 		if( shared.isItemDamaged() )
+		{
 			return input;
+		}
 
 		if( this.remainingItemTypes() > 0 )
 		{
 			if( mode == Actionable.MODULATE )
+			{
 				this.fProxy.setItemType( this.te, input.getItemStack() );
+			}
 		}
 
 		if( this.containsItemType( input, mode == Actionable.SIMULATE ) )
@@ -74,7 +82,9 @@ public class FactorizationBarrel implements IMEInventory<IAEItemStack>
 			if( newTotal > max )
 			{
 				if( mode == Actionable.MODULATE )
+				{
 					this.fProxy.barrelSetCount( this.te, max );
+				}
 				IAEItemStack result = input.copy();
 				result.setStackSize( newTotal - max );
 				return result;
@@ -82,7 +92,9 @@ public class FactorizationBarrel implements IMEInventory<IAEItemStack>
 			else
 			{
 				if( mode == Actionable.MODULATE )
+				{
 					this.fProxy.barrelSetCount( this.te, newTotal );
+				}
 				return null;
 			}
 		}
@@ -101,7 +113,9 @@ public class FactorizationBarrel implements IMEInventory<IAEItemStack>
 
 		// empty barrels want your love too!
 		if( acceptEmpty && currentItem == null )
+		{
 			return true;
+		}
 
 		return i.equals( currentItem );
 	}
@@ -132,7 +146,9 @@ public class FactorizationBarrel implements IMEInventory<IAEItemStack>
 			else
 			{
 				if( mode == Actionable.MODULATE )
+				{
 					this.fProxy.barrelSetCount( this.te, (int) ( howMany - request.getStackSize() ) );
+				}
 				return request.copy();
 			}
 		}

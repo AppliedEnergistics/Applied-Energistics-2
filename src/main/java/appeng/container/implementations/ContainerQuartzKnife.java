@@ -76,12 +76,18 @@ public class ContainerQuartzKnife extends AEBaseContainer implements IAEAppEngIn
 			if( currentItem != null )
 			{
 				if( Platform.isSameItem( this.toolInv.getItemStack(), currentItem ) )
+				{
 					this.getPlayerInv().setInventorySlotContents( this.getPlayerInv().currentItem, this.toolInv.getItemStack() );
+				}
 				else
+				{
 					this.isContainerValid = false;
+				}
 			}
 			else
+			{
 				this.isContainerValid = false;
+			}
 		}
 
 		super.detectAndSendChanges();
@@ -91,7 +97,9 @@ public class ContainerQuartzKnife extends AEBaseContainer implements IAEAppEngIn
 	public void onContainerClosed( EntityPlayer par1EntityPlayer )
 	{
 		if( this.inSlot.getStackInSlot( 0 ) != null )
+		{
 			par1EntityPlayer.dropPlayerItemWithRandomChoice( this.inSlot.getStackInSlot( 0 ), false );
+		}
 	}
 
 	@Override
@@ -117,7 +125,9 @@ public class ContainerQuartzKnife extends AEBaseContainer implements IAEAppEngIn
 	{
 		ItemStack input = this.inSlot.getStackInSlot( 0 );
 		if( input == null )
+		{
 			return null;
+		}
 
 		if( SlotRestrictedInput.isMetalIngot( input ) )
 		{
@@ -143,7 +153,9 @@ public class ContainerQuartzKnife extends AEBaseContainer implements IAEAppEngIn
 		if( is != null )
 		{
 			if( this.makePlate() )
+			{
 				return is;
+			}
 		}
 		return null;
 	}
@@ -176,7 +188,9 @@ public class ContainerQuartzKnife extends AEBaseContainer implements IAEAppEngIn
 	public void setInventorySlotContents( int var1, ItemStack var2 )
 	{
 		if( var2 == null && Platform.isServer() )
+		{
 			this.makePlate();
+		}
 	}
 
 	@Override

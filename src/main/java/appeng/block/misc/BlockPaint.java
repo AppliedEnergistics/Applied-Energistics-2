@@ -88,7 +88,9 @@ public class BlockPaint extends AEBaseBlock
 		TilePaint tp = this.getTileEntity( w, x, y, z );
 
 		if( tp != null )
+		{
 			tp.onNeighborBlockChange();
+		}
 	}
 
 	@Override
@@ -107,7 +109,9 @@ public class BlockPaint extends AEBaseBlock
 	public void fillWithRain( World w, int x, int y, int z )
 	{
 		if( Platform.isServer() )
+		{
 			w.setBlock( x, y, z, Platform.AIR, 0, 3 );
+		}
 	}
 
 	@Override

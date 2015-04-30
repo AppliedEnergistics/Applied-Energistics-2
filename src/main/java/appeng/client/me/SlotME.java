@@ -41,7 +41,9 @@ public class SlotME extends Slot
 	public IAEItemStack getAEStack()
 	{
 		if( this.mySlot.hasPower() )
+		{
 			return this.mySlot.getAEStack();
+		}
 		return null;
 	}
 
@@ -60,7 +62,9 @@ public class SlotME extends Slot
 	public ItemStack getStack()
 	{
 		if( this.mySlot.hasPower() )
+		{
 			return this.mySlot.getStack();
+		}
 		return null;
 	}
 
@@ -68,7 +72,9 @@ public class SlotME extends Slot
 	public boolean getHasStack()
 	{
 		if( this.mySlot.hasPower() )
+		{
 			return this.getStack() != null;
+		}
 		return false;
 	}
 

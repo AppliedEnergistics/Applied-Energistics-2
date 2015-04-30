@@ -109,7 +109,9 @@ public class GuiScrollbar implements IScrollSource
 		this.pageSize = pageSize;
 
 		if( this.minScroll > this.maxScroll )
+		{
 			this.maxScroll = this.minScroll;
+		}
 
 		this.applyRange();
 	}
@@ -128,7 +130,9 @@ public class GuiScrollbar implements IScrollSource
 	public void click( AEBaseGui aeBaseGui, int x, int y )
 	{
 		if( this.getRange() == 0 )
+		{
 			return;
+		}
 
 		if( x > this.displayX && x <= this.displayX + this.width )
 		{

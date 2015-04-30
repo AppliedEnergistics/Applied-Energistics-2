@@ -66,16 +66,24 @@ public abstract class BaseVersion implements Version
 	public final boolean equals( Object o )
 	{
 		if( this == o )
+		{
 			return true;
+		}
 		if( !( o instanceof Version ) )
+		{
 			return false;
+		}
 
 		Version that = (Version) o;
 
 		if( this.revision != that.revision() )
+		{
 			return false;
+		}
 		if( this.build != that.build() )
+		{
 			return false;
+		}
 		return this.channel == that.channel();
 	}
 

@@ -85,21 +85,35 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, IT
 	public void setSide( ForgeDirection axis )
 	{
 		if( Platform.isClient() )
+		{
 			return;
+		}
 
 		if( this.pointAt == axis.getOpposite() )
+		{
 			this.pointAt = axis;
+		}
 		else if( this.pointAt == axis || this.pointAt == axis.getOpposite() )
+		{
 			this.pointAt = ForgeDirection.UNKNOWN;
+		}
 		else if( this.pointAt == ForgeDirection.UNKNOWN )
+		{
 			this.pointAt = axis.getOpposite();
+		}
 		else
+		{
 			this.pointAt = Platform.rotateAround( this.pointAt, axis );
+		}
 
 		if( ForgeDirection.UNKNOWN == this.pointAt )
+		{
 			this.setOrientation( this.pointAt, this.pointAt );
+		}
 		else
+		{
 			this.setOrientation( this.pointAt.offsetY != 0 ? ForgeDirection.SOUTH : ForgeDirection.UP, this.pointAt.getOpposite() );
+		}
 
 		this.gridProxy.setValidSides( EnumSet.complementOf( EnumSet.of( this.pointAt ) ) );
 		this.markForUpdate();
@@ -145,9 +159,13 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, IT
 		int val = data.getInteger( "pointAt" );
 
 		if( val >= 0 && val < ForgeDirection.values().length )
+		{
 			this.pointAt = ForgeDirection.values()[val];
+		}
 		else
+		{
 			this.pointAt = ForgeDirection.UNKNOWN;
+		}
 
 		this.duality.readFromNBT( data );
 	}
@@ -228,7 +246,9 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, IT
 	public EnumSet<ForgeDirection> getTargets()
 	{
 		if( this.pointAt == null || this.pointAt == ForgeDirection.UNKNOWN )
+		{
 			return EnumSet.complementOf( EnumSet.of( ForgeDirection.UNKNOWN ) );
+		}
 		return EnumSet.of( this.pointAt );
 	}
 

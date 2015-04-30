@@ -47,7 +47,9 @@ public class InvLayerData
 	public ItemStack decreaseStackSize( int slot, int amount )
 	{
 		if( this.isSlotValid( slot ) )
+		{
 			return this.slots.get( slot ).decreaseStackSize( amount );
+		}
 
 		return null;
 	}
@@ -67,7 +69,9 @@ public class InvLayerData
 	public int getSizeInventory()
 	{
 		if( this.slots == null )
+		{
 			return 0;
+		}
 
 		return this.slots.size();
 	}
@@ -75,7 +79,9 @@ public class InvLayerData
 	public ItemStack getStackInSlot( int slot )
 	{
 		if( this.isSlotValid( slot ) )
+		{
 			return this.slots.get( slot ).getStackInSlot();
+		}
 
 		return null;
 	}
@@ -83,7 +89,9 @@ public class InvLayerData
 	public boolean isItemValidForSlot( int slot, ItemStack itemstack )
 	{
 		if( this.isSlotValid( slot ) )
+		{
 			return this.slots.get( slot ).isItemValidForSlot( itemstack );
+		}
 
 		return false;
 	}
@@ -91,13 +99,17 @@ public class InvLayerData
 	public void setInventorySlotContents( int slot, ItemStack itemstack )
 	{
 		if( this.isSlotValid( slot ) )
+		{
 			this.slots.get( slot ).setInventorySlotContents( itemstack );
+		}
 	}
 
 	public boolean canExtractItem( int slot, ItemStack itemstack, int side )
 	{
 		if( this.isSlotValid( slot ) )
+		{
 			return this.slots.get( slot ).canExtractItem( itemstack, side );
+		}
 
 		return false;
 	}
@@ -105,7 +117,9 @@ public class InvLayerData
 	public boolean canInsertItem( int slot, ItemStack itemstack, int side )
 	{
 		if( this.isSlotValid( slot ) )
+		{
 			return this.slots.get( slot ).canInsertItem( itemstack, side );
+		}
 
 		return false;
 	}
@@ -115,14 +129,18 @@ public class InvLayerData
 		if( this.inventories != null )
 		{
 			for( IInventory inv : this.inventories )
+			{
 				inv.markDirty();
+			}
 		}
 	}
 
 	public int[] getAccessibleSlotsFromSide( int side )
 	{
 		if( this.sides == null || side < 0 || side > 5 )
+		{
 			return NULL_SIDES;
+		}
 		return this.sides[side];
 	}
 }

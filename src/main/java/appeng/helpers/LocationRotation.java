@@ -51,7 +51,9 @@ public class LocationRotation implements IOrientable
 	public ForgeDirection getForward()
 	{
 		if( this.getUp().offsetY == 0 )
+		{
 			return ForgeDirection.UP;
+		}
 		return ForgeDirection.SOUTH;
 	}
 

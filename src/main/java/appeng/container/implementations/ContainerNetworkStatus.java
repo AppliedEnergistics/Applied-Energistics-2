@@ -67,11 +67,15 @@ public class ContainerNetworkStatus extends AEBaseContainer
 		{
 			this.findNode( host, ForgeDirection.UNKNOWN );
 			for( ForgeDirection d : ForgeDirection.VALID_DIRECTIONS )
+			{
 				this.findNode( host, d );
+			}
 		}
 
 		if( this.network == null && Platform.isServer() )
+		{
 			this.isContainerValid = false;
+		}
 	}
 
 	private void findNode( IGridHost host, ForgeDirection d )
@@ -80,7 +84,9 @@ public class ContainerNetworkStatus extends AEBaseContainer
 		{
 			IGridNode node = host.getGridNode( d );
 			if( node != null )
+			{
 				this.network = node.getGrid();
+			}
 		}
 	}
 
@@ -123,13 +129,17 @@ public class ContainerNetworkStatus extends AEBaseContainer
 					}
 
 					for( IAEItemStack ais : list )
+					{
 						piu.appendItem( ais );
+					}
 				}
 
 				for( Object c : this.crafters )
 				{
 					if( c instanceof EntityPlayer )
+					{
 						NetworkHandler.instance.sendTo( piu, (EntityPlayerMP) c );
+					}
 				}
 			}
 			catch( IOException e )

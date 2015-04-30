@@ -63,7 +63,9 @@ public class CompassRegion
 	{
 		File fName = this.getFileName();
 		if( this.hasFile )
+		{
 			return;
+		}
 
 		if( create || this.fileExists( fName ) )
 		{
@@ -89,7 +91,9 @@ public class CompassRegion
 		if( !folderFile.exists() || !folderFile.isDirectory() )
 		{
 			if( !folderFile.mkdir() )
+			{
 				AELog.info( "Failed to create AE2/compass/" );
+			}
 		}
 
 		return new File( folder, this.world + '_' + this.low_x + '_' + this.low_z + ".dat" );
@@ -127,7 +131,9 @@ public class CompassRegion
 
 			int val = this.read( cx, cz );
 			if( val != 0 )
+			{
 				return true;
+			}
 		}
 
 		return false;
@@ -164,12 +170,18 @@ public class CompassRegion
 			int originalVal = val;
 
 			if( hasBeacon )
+			{
 				val |= 1 << cdy;
+			}
 			else
+			{
 				val &= ~( 1 << cdy );
+			}
 
 			if( originalVal != val )
+			{
 				this.write( cx, cz, val );
+			}
 		}
 	}
 

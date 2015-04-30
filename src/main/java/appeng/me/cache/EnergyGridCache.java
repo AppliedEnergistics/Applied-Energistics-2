@@ -129,11 +129,15 @@ public class EnergyGridCache implements IEnergyGrid
 			{
 				case PROVIDE_POWER:
 					if( ev.storage.getPowerFlow() != AccessRestriction.WRITE )
+					{
 						this.providers.add( ev.storage );
+					}
 					break;
 				case REQUEST_POWER:
 					if( ev.storage.getPowerFlow() != AccessRestriction.READ )
+					{
 						this.requesters.add( ev.storage );
+					}
 					break;
 			}
 		}
@@ -183,18 +187,26 @@ public class EnergyGridCache implements IEnergyGrid
 
 		// ticks since change..
 		if( currentlyHasPower == this.hasPower )
+		{
 			this.ticksSinceHasPowerChange++;
+		}
 		else
+		{
 			this.ticksSinceHasPowerChange = 0;
+		}
 
 		// update status..
 		this.hasPower = currentlyHasPower;
 
 		// update public status, this buffers power ups for 30 ticks.
 		if( this.hasPower && this.ticksSinceHasPowerChange > 30 )
+		{
 			this.publicPowerState( true, this.myGrid );
+		}
 		else if( !this.hasPower )
+		{
 			this.publicPowerState( false, this.myGrid );
+		}
 
 		this.availableTicksSinceUpdate++;
 	}
@@ -215,7 +227,9 @@ public class EnergyGridCache implements IEnergyGrid
 	private void publicPowerState( boolean newState, IGrid grid )
 	{
 		if( this.publicHasPower == newState )
+		{
 			return;
+		}
 
 		this.publicHasPower = newState;
 		( (Grid) this.myGrid ).setImportantFlag( 0, this.publicHasPower );
@@ -230,14 +244,18 @@ public class EnergyGridCache implements IEnergyGrid
 		this.availableTicksSinceUpdate = 0;
 		this.globalAvailablePower = 0;
 		for( IAEPowerStorage p : this.providers )
+		{
 			this.globalAvailablePower += p.getAECurrentPower();
+		}
 	}
 
 	@Override
 	public double extractAEPower( double amt, Actionable mode, Set<IEnergyGrid> seen )
 	{
 		if( !seen.add( this ) )
+		{
 			return 0;
+		}
 
 		double extractedPower = this.extra;
 
@@ -249,7 +267,9 @@ public class EnergyGridCache implements IEnergyGrid
 			{
 				Iterator<IEnergyGridProvider> i = this.energyGridProviders.iterator();
 				while( extractedPower < amt && i.hasNext() )
+				{
 					extractedPower += i.next().extractAEPower( amt - extractedPower, mode, seen );
+				}
 			}
 
 			return extractedPower;
@@ -274,7 +294,9 @@ public class EnergyGridCache implements IEnergyGrid
 		{
 			Iterator<IEnergyGridProvider> i = this.energyGridProviders.iterator();
 			while( extractedPower < amt && i.hasNext() )
+			{
 				extractedPower += i.next().extractAEPower( amt - extractedPower, mode, seen );
+			}
 		}
 
 		// go less or the correct amount?
@@ -287,7 +309,9 @@ public class EnergyGridCache implements IEnergyGrid
 	public double injectAEPower( double amt, Actionable mode, Set<IEnergyGrid> seen )
 	{
 		if( !seen.add( this ) )
+		{
 			return 0;
+		}
 
 		double ignore = this.extra;
 		amt += this.extra;
@@ -303,7 +327,9 @@ public class EnergyGridCache implements IEnergyGrid
 
 			Iterator<IEnergyGridProvider> i = this.energyGridProviders.iterator();
 			while( amt > 0 && i.hasNext() )
+			{
 				amt = i.next().injectAEPower( amt, mode, seen );
+			}
 		}
 		else
 		{
@@ -345,7 +371,9 @@ public class EnergyGridCache implements IEnergyGrid
 	public double getEnergyDemand( double maxRequired, Set<IEnergyGrid> seen )
 	{
 		if( !seen.add( this ) )
+		{
 			return 0;
+		}
 
 		double required = this.buffer() - this.extra;
 
@@ -354,7 +382,9 @@ public class EnergyGridCache implements IEnergyGrid
 		{
 			IAEPowerStorage node = it.next();
 			if( node.getPowerFlow() != AccessRestriction.READ )
+			{
 				required += Math.max( 0.0, node.getAEMaxPower() - node.getAECurrentPower() );
+			}
 		}
 
 		Iterator<IEnergyGridProvider> ix = this.energyGridProviders.iterator();
@@ -460,7 +490,9 @@ public class EnergyGridCache implements IEnergyGrid
 	public double getStoredPower()
 	{
 		if( this.availableTicksSinceUpdate > 90 )
+		{
 			this.refreshPower();
+		}
 
 		return Math.max( 0.0, this.globalAvailablePower );
 	}
@@ -482,7 +514,9 @@ public class EnergyGridCache implements IEnergyGrid
 	public void removeNode( IGridNode node, IGridHost machine )
 	{
 		if( machine instanceof IEnergyGridProvider )
+		{
 			this.energyGridProviders.remove( machine );
+		}
 
 		// idle draw.
 		GridNode gridNode = (GridNode) node;
@@ -501,10 +535,14 @@ public class EnergyGridCache implements IEnergyGrid
 				}
 
 				if( this.lastProvider == machine )
+				{
 					this.lastProvider = null;
+				}
 
 				if( this.lastRequester == machine )
+				{
 					this.lastRequester = null;
+				}
 
 				this.providers.remove( machine );
 				this.requesters.remove( machine );
@@ -526,7 +564,9 @@ public class EnergyGridCache implements IEnergyGrid
 	public void addNode( IGridNode node, IGridHost machine )
 	{
 		if( machine instanceof IEnergyGridProvider )
+		{
 			this.energyGridProviders.add( (IEnergyGridProvider) machine );
+		}
 
 		// idle draw...
 		GridNode gridNode = (GridNode) node;
@@ -555,7 +595,9 @@ public class EnergyGridCache implements IEnergyGrid
 				}
 
 				if( current < max && ps.getPowerFlow() != AccessRestriction.READ )
+				{
 					this.requesters.add( ps );
+				}
 			}
 		}
 

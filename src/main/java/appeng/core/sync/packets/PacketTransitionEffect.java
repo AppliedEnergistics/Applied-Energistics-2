@@ -89,12 +89,15 @@ public class PacketTransitionEffect extends AppEngPacket
 		World world = ClientHelper.proxy.getWorld();
 
 		for( int zz = 0; zz < ( this.mode ? 32 : 8 ); zz++ )
+		{
 			if( CommonHelper.proxy.shouldAddParticles( Platform.getRandom() ) )
 			{
 				EnergyFx fx = new EnergyFx( world, this.x + ( this.mode ? ( Platform.getRandomInt() % 100 ) * 0.01 : ( Platform.getRandomInt() % 100 ) * 0.005 - 0.25 ), this.y + ( this.mode ? ( Platform.getRandomInt() % 100 ) * 0.01 : ( Platform.getRandomInt() % 100 ) * 0.005 - 0.25 ), this.z + ( this.mode ? ( Platform.getRandomInt() % 100 ) * 0.01 : ( Platform.getRandomInt() % 100 ) * 0.005 - 0.25 ), Items.diamond );
 
 				if( !this.mode )
+				{
 					fx.fromItem( this.d );
+				}
 
 				fx.motionX = -0.1 * this.d.offsetX;
 				fx.motionY = -0.1 * this.d.offsetY;
@@ -102,6 +105,7 @@ public class PacketTransitionEffect extends AppEngPacket
 
 				Minecraft.getMinecraft().effectRenderer.addEffect( fx );
 			}
+		}
 
 		if( this.mode )
 		{

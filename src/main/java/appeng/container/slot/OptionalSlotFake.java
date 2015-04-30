@@ -49,7 +49,9 @@ public class OptionalSlotFake extends SlotFake
 		if( !this.isEnabled() )
 		{
 			if( this.getDisplayStack() != null )
+			{
 				this.clearStack();
+			}
 		}
 
 		return super.getStack();
@@ -59,7 +61,9 @@ public class OptionalSlotFake extends SlotFake
 	public boolean isEnabled()
 	{
 		if( this.host == null )
+		{
 			return false;
+		}
 
 		return this.host.isSlotEnabled( this.groupNum );
 	}

@@ -36,13 +36,21 @@ public final class EntityIds
 	public static int get( Class<? extends Entity> droppedEntity )
 	{
 		if( droppedEntity == EntityTinyTNTPrimed.class )
+		{
 			return TINY_TNT;
+		}
 		if( droppedEntity == EntitySingularity.class )
+		{
 			return SINGULARITY;
+		}
 		if( droppedEntity == EntityChargedQuartz.class )
+		{
 			return CHARGED_QUARTZ;
+		}
 		if( droppedEntity == EntityGrowingCrystal.class )
+		{
 			return GROWING_CRYSTAL;
+		}
 
 		throw new IllegalStateException( "Missing entity id: " + droppedEntity.getName() );
 	}

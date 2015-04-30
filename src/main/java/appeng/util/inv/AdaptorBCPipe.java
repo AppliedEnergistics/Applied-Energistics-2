@@ -84,14 +84,22 @@ public class AdaptorBCPipe extends InventoryAdaptor
 	public ItemStack addItems( ItemStack toBeAdded )
 	{
 		if( this.i == null )
+		{
 			return toBeAdded;
+		}
 		if( toBeAdded == null )
+		{
 			return null;
+		}
 		if( toBeAdded.stackSize == 0 )
+		{
 			return null;
+		}
 
 		if( this.bc.addItemsToPipe( this.i, toBeAdded, this.d ) )
+		{
 			return null;
+		}
 		return toBeAdded;
 	}
 
@@ -99,7 +107,9 @@ public class AdaptorBCPipe extends InventoryAdaptor
 	public ItemStack simulateAdd( ItemStack toBeSimulated )
 	{
 		if( this.i == null )
+		{
 			return toBeSimulated;
+		}
 		return null;
 	}
 

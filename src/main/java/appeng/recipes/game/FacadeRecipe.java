@@ -69,7 +69,9 @@ public final class FacadeRecipe implements IRecipe
 
 					ItemStack facades = facade.createFacadeForItem( inv.getStackInSlot( 4 ), !createFacade );
 					if( facades != null && createFacade )
+					{
 						facades.stackSize = 4;
+					}
 					return facades;
 				}
 			}

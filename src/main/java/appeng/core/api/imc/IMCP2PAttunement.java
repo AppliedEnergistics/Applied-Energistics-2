@@ -55,11 +55,17 @@ public class IMCP2PAttunement implements IIMCProcessor
 		{
 			ItemStack is = m.getItemStackValue();
 			if( is != null )
+			{
 				AEApi.instance().registries().p2pTunnel().addNewAttunement( is, type );
+			}
 			else
+			{
 				throw new IllegalStateException( "invalid item in message " + m );
+			}
 		}
 		else
+		{
 			throw new IllegalStateException( "invalid type in message " + m + " is not contained in " + Arrays.toString( TunnelType.values() ) );
+		}
 	}
 }

@@ -60,7 +60,9 @@ public final class IntegrationNode
 	public boolean isActive()
 	{
 		if( this.state == IntegrationStage.PRE_INIT )
+		{
 			this.call( IntegrationStage.PRE_INIT );
+		}
 
 		return this.state != IntegrationStage.FAILED;
 	}
@@ -70,7 +72,9 @@ public final class IntegrationNode
 		if( this.state != IntegrationStage.FAILED )
 		{
 			if( this.state.ordinal() > stage.ordinal() )
+			{
 				return;
+			}
 
 			try
 			{
@@ -84,9 +88,13 @@ public final class IntegrationNode
 						String mode = AEConfig.instance.get( "ModIntegration", this.displayName.replace( " ", "" ), "AUTO" ).getString();
 
 						if( mode.toUpperCase().equals( "ON" ) )
+						{
 							enabled = true;
+						}
 						if( mode.toUpperCase().equals( "OFF" ) )
+						{
 							enabled = false;
+						}
 
 						if( enabled )
 						{
@@ -96,7 +104,9 @@ public final class IntegrationNode
 							f.set( this.classValue, this.instance = this.mod );
 						}
 						else
+						{
 							throw new ModNotInstalled( this.modID );
+						}
 
 						this.state = IntegrationStage.INIT;
 
@@ -130,7 +140,9 @@ public final class IntegrationNode
 			{
 				AELog.info( this.displayName + " - Integration Disabled" );
 				if( !( this.exception instanceof ModNotInstalled ) )
+				{
 					AELog.integration( this.exception );
+				}
 			}
 			else
 			{

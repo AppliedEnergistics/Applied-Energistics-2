@@ -45,7 +45,9 @@ public class TunnelIterator<T extends PartP2PTunnel> implements Iterator<T>
 		{
 			this.Next = this.wrapped.next();
 			if( !this.targetType.isInstance( this.Next ) )
+			{
 				this.Next = null;
+			}
 		}
 	}
 

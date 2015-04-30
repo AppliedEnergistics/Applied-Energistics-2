@@ -121,10 +121,14 @@ public final class AppEng
 
 		CreativeTab.init();
 		if( AEConfig.instance.isFeatureEnabled( AEFeature.Facades ) )
+		{
 			CreativeTabFacade.init();
+		}
 
 		if( Platform.isClient() )
+		{
 			CommonHelper.proxy.init();
+		}
 
 		Registration.INSTANCE.preInitialize( event );
 

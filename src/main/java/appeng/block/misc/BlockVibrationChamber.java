@@ -68,7 +68,9 @@ public class BlockVibrationChamber extends AEBaseBlock
 	public boolean onActivated( World w, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ )
 	{
 		if( player.isSneaking() )
+		{
 			return false;
+		}
 
 		if( Platform.isServer() )
 		{
@@ -87,7 +89,9 @@ public class BlockVibrationChamber extends AEBaseBlock
 	public void randomDisplayTick( World w, int x, int y, int z, Random r )
 	{
 		if( !AEConfig.instance.enableEffects )
+		{
 			return;
+		}
 
 		AEBaseTile tile = this.getTileEntity( w, x, y, z );
 		if( tile instanceof TileVibrationChamber )

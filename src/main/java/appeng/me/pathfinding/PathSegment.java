@@ -72,9 +72,13 @@ public class PathSegment
 							boolean worked;
 
 							if( flags.contains( GridFlags.COMPRESSED_CHANNEL ) )
+							{
 								worked = this.useDenseChannel( pi );
+							}
 							else
+							{
 								worked = this.useChannel( pi );
+							}
 
 							if( worked && flags.contains( GridFlags.MULTIBLOCK ) )
 							{
@@ -83,7 +87,9 @@ public class PathSegment
 								{
 									IGridNode otherNodes = oni.next();
 									if( otherNodes != pi )
+									{
 										this.semiOpen.add( (IPathItem) otherNodes );
+									}
 								}
 							}
 						}
@@ -109,7 +115,9 @@ public class PathSegment
 		while( pi != null )
 		{
 			if( !pi.canSupportMoreChannels() || pi.getFlags().contains( GridFlags.CANNOT_CARRY_COMPRESSED ) )
+			{
 				return false;
+			}
 
 			pi = pi.getControllerRoute();
 		}
@@ -132,7 +140,9 @@ public class PathSegment
 		while( pi != null )
 		{
 			if( !pi.canSupportMoreChannels() )
+			{
 				return false;
+			}
 
 			pi = pi.getControllerRoute();
 		}

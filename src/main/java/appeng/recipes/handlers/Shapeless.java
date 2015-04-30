@@ -54,10 +54,14 @@ public class Shapeless implements ICraftHandler, IWebsiteSerializer
 				this.output = output.get( 0 ).get( 0 );
 			}
 			else
+			{
 				throw new RecipeError( "Shapeless crafting recipes cannot have rows." );
+			}
 		}
 		else
+		{
 			throw new RecipeError( "Crafting must produce a single output." );
+		}
 	}
 
 	@Override
@@ -65,7 +69,9 @@ public class Shapeless implements ICraftHandler, IWebsiteSerializer
 	{
 		List<Object> args = new ArrayList<Object>();
 		for( IIngredient i : this.inputs )
+		{
 			args.add( i );
+		}
 
 		ItemStack outIS = this.output.getItemStack();
 

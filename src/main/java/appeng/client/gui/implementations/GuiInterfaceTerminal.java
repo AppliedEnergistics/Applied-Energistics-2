@@ -105,7 +105,9 @@ public class GuiInterfaceTerminal extends AEBaseGui
 		while( o.hasNext() )
 		{
 			if( o.next() instanceof SlotDisconnected )
+			{
 				o.remove();
+			}
 		}
 
 		for( int x = 0; x < LINES_ON_PAGE && ex + x < this.lines.size(); x++ )
@@ -124,10 +126,14 @@ public class GuiInterfaceTerminal extends AEBaseGui
 				String name = (String) lineObj;
 				int rows = this.byName.get( name ).size();
 				if( rows > 1 )
+				{
 					name = name + " (" + rows + ')';
+				}
 
 				while( name.length() > 2 && this.fontRendererObj.getStringWidth( name ) > 155 )
+				{
 					name = name.substring( 0, name.length() - 1 );
+				}
 
 				this.fontRendererObj.drawString( name, 10, 6 + offset, 4210752 );
 			}
@@ -173,7 +179,9 @@ public class GuiInterfaceTerminal extends AEBaseGui
 		}
 
 		if( this.searchField != null )
+		{
 			this.searchField.drawTextBox();
+		}
 	}
 
 	@Override
@@ -182,7 +190,9 @@ public class GuiInterfaceTerminal extends AEBaseGui
 		if( !this.checkHotbarKeys( key ) )
 		{
 			if( character == ' ' && this.searchField.getText().length() == 0 )
+			{
 				return;
+			}
 
 			if( this.searchField.textboxKeyTyped( character, key ) )
 			{
@@ -218,7 +228,9 @@ public class GuiInterfaceTerminal extends AEBaseGui
 					{
 						String which = Integer.toString( x );
 						if( invData.hasKey( which ) )
+						{
 							current.inv.setInventorySlotContents( x, ItemStack.loadItemStackFromNBT( invData.getCompoundTag( which ) ) );
+						}
 					}
 				}
 				catch( NumberFormatException ignored )

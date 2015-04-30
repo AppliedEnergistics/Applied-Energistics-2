@@ -90,20 +90,32 @@ public class InscriberRecipe implements IInscriberRecipe
 	public boolean equals( Object o )
 	{
 		if( this == o )
+		{
 			return true;
+		}
 		if( !(o instanceof IInscriberRecipe) )
+		{
 			return false;
+		}
 
 		IInscriberRecipe that = (IInscriberRecipe) o;
 
 		if( !this.inputs.equals( that.getInputs() ) )
+		{
 			return false;
+		}
 		if( !this.output.equals( that.getOutput() ) )
+		{
 			return false;
+		}
 		if( !this.maybeTop.equals( that.getTopOptional() ) )
+		{
 			return false;
+		}
 		if( !this.maybeBot.equals( that.getBottomOptional()) )
+		{
 			return false;
+		}
 		return this.type == that.getProcessType();
 	}
 

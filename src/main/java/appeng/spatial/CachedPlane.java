@@ -97,14 +97,17 @@ public class CachedPlane
 		}
 
 		for( int x = 0; x < this.x_size; x++ )
+		{
 			for( int z = 0; z < this.z_size; z++ )
 			{
 				this.myColumns[x][z] = new Column( w.getChunkFromChunkCoords( ( minX + x ) >> 4, ( minZ + z ) >> 4 ), ( minX + x ) & 0xF, ( minZ + z ) & 0xF, minCY, cy_size );
 			}
+		}
 
 		IMovableRegistry mr = AEApi.instance().registries().movable();
 
 		for( int cx = 0; cx < this.cx_size; cx++ )
+		{
 			for( int cz = 0; cz < this.cz_size; cz++ )
 			{
 				LinkedList<Entry<ChunkPosition, TileEntity>> rawTiles = new LinkedList<Entry<ChunkPosition, TileEntity>>();
@@ -137,7 +140,9 @@ public class CachedPlane
 								c.worldObj.notifyBlocksOfNeighborChange( te.xCoord, te.yCoord, te.zCoord, Platform.AIR );
 							}
 							else
+							{
 								this.myColumns[te.xCoord - minX][te.zCoord - minZ].setSkip( te.yCoord );
+							}
 						}
 					}
 				}
@@ -163,6 +168,7 @@ public class CachedPlane
 					}
 				}
 			}
+		}
 
 		for( TileEntity te : this.tiles )
 		{
@@ -260,7 +266,9 @@ public class CachedPlane
 	{
 		this.updates.add( new WorldCoord( src_x, src_y, src_z ) );
 		for( ForgeDirection d : ForgeDirection.VALID_DIRECTIONS )
+		{
 			this.updates.add( new WorldCoord( src_x + d.offsetX, src_y + d.offsetY, src_z + d.offsetZ ) );
+		}
 	}
 
 	private void addTick( int x, int y, int z, NextTickListEntry entry )
@@ -320,6 +328,7 @@ public class CachedPlane
 
 		// update shit..
 		for( int x = 0; x < this.cx_size; x++ )
+		{
 			for( int z = 0; z < this.cz_size; z++ )
 			{
 				Chunk c = this.myChunks[x][z];
@@ -327,19 +336,24 @@ public class CachedPlane
 				c.generateSkylightMap();
 				c.isModified = true;
 			}
+		}
 
 		// send shit...
 		for( int x = 0; x < this.cx_size; x++ )
+		{
 			for( int z = 0; z < this.cz_size; z++ )
 			{
 
 				Chunk c = this.myChunks[x][z];
 
 				for( int y = 1; y < 255; y += 32 )
+				{
 					WorldSettings.getInstance().getCompass().updateArea( this.world, c.xPosition << 4, y, c.zPosition << 4 );
+				}
 
 				Platform.sendChunk( c, this.verticalBits );
 			}
+		}
 	}
 
 	class Column
@@ -365,7 +379,9 @@ public class CachedPlane
 				int by = ( ay + cy );
 				ExtendedBlockStorage extendedblockstorage = this.storage[by];
 				if( extendedblockstorage == null )
+				{
 					extendedblockstorage = this.storage[by] = new ExtendedBlockStorage( by << 4, !this.c.worldObj.provider.hasNoSky );
+				}
 			}
 		}
 
@@ -399,7 +415,9 @@ public class CachedPlane
 		{
 			ExtendedBlockStorage extendedblockstorage = this.storage[y >> 4];
 			if( CachedPlane.this.reg.isBlacklisted( extendedblockstorage.getBlockByExtId( this.x, y & 15, this.z ) ) )
+			{
 				return false;
+			}
 
 			return this.skipThese == null || !this.skipThese.contains( y );
 		}
@@ -407,7 +425,9 @@ public class CachedPlane
 		public void setSkip( int yCoord )
 		{
 			if( this.skipThese == null )
+			{
 				this.skipThese = new LinkedList<Integer>();
+			}
 			this.skipThese.add( yCoord );
 		}
 	}

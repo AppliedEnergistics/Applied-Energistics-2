@@ -63,7 +63,9 @@ public class PacketProgressBar extends AppEngPacket
 	{
 		Container c = player.openContainer;
 		if( c instanceof AEBaseContainer )
+		{
 			( (AEBaseContainer) c ).updateFullProgressBar( this.id, this.value );
+		}
 	}
 
 	@Override
@@ -71,6 +73,8 @@ public class PacketProgressBar extends AppEngPacket
 	{
 		Container c = player.openContainer;
 		if( c instanceof AEBaseContainer )
+		{
 			( (AEBaseContainer) c ).updateFullProgressBar( this.id, this.value );
+		}
 	}
 }

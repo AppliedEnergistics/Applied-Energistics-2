@@ -94,7 +94,9 @@ public class BlockCraftingUnit extends AEBaseBlock
 		if( tg != null && !p.isSneaking() && tg.isFormed() && tg.isActive() )
 		{
 			if( Platform.isClient() )
+			{
 				return true;
+			}
 
 			Platform.openGUI( p, tg, ForgeDirection.getOrientation( side ), GuiBridge.GUI_CRAFTING_CPU );
 			return true;
@@ -124,7 +126,9 @@ public class BlockCraftingUnit extends AEBaseBlock
 	{
 		TileCraftingTile cp = this.getTileEntity( w, x, y, z );
 		if( cp != null )
+		{
 			cp.breakCluster();
+		}
 
 		super.breakBlock( w, x, y, z, a, b );
 	}
@@ -133,7 +137,9 @@ public class BlockCraftingUnit extends AEBaseBlock
 	public String getUnlocalizedName( ItemStack is )
 	{
 		if( is.getItemDamage() == 1 )
+		{
 			return "tile.appliedenergistics2.BlockCraftingAccelerator";
+		}
 
 		return this.getItemUnlocalizedName( is );
 	}
@@ -148,7 +154,9 @@ public class BlockCraftingUnit extends AEBaseBlock
 	{
 		TileCraftingTile cp = this.getTileEntity( w, x, y, z );
 		if( cp != null )
+		{
 			cp.updateMultiBlock();
+		}
 	}
 
 	@Override

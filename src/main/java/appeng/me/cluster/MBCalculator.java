@@ -41,7 +41,9 @@ public abstract class MBCalculator
 	public void calculateMultiblock( World world, WorldCoord loc )
 	{
 		if( Platform.isClient() )
+		{
 			return;
+		}
 
 		try
 		{
@@ -50,17 +52,29 @@ public abstract class MBCalculator
 
 			// find size of MB structure...
 			while( this.isValidTileAt( world, min.x - 1, min.y, min.z ) )
+			{
 				min.x--;
+			}
 			while( this.isValidTileAt( world, min.x, min.y - 1, min.z ) )
+			{
 				min.y--;
+			}
 			while( this.isValidTileAt( world, min.x, min.y, min.z - 1 ) )
+			{
 				min.z--;
+			}
 			while( this.isValidTileAt( world, max.x + 1, max.y, max.z ) )
+			{
 				max.x++;
+			}
 			while( this.isValidTileAt( world, max.x, max.y + 1, max.z ) )
+			{
 				max.y++;
+			}
 			while( this.isValidTileAt( world, max.x, max.y, max.z + 1 ) )
+			{
 				max.z++;
+			}
 
 			if( this.checkMultiblockScale( min, max ) )
 			{
@@ -91,7 +105,9 @@ public abstract class MBCalculator
 						updateGrid = true;
 					}
 					else
+					{
 						c = cluster;
+					}
 
 					c.updateStatus( updateGrid );
 					return;
@@ -124,8 +140,12 @@ public abstract class MBCalculator
 	public boolean verifyUnownedRegion( World w, WorldCoord min, WorldCoord max )
 	{
 		for( ForgeDirection side : ForgeDirection.VALID_DIRECTIONS )
+		{
 			if( this.verifyUnownedRegionInner( w, min.x, min.y, min.z, max.x, max.y, max.z, side ) )
+			{
 				return false;
+			}
+		}
 
 		return true;
 	}
@@ -207,7 +227,9 @@ public abstract class MBCalculator
 				{
 					TileEntity te = w.getTileEntity( x, y, z );
 					if( this.isValidTile( te ) )
+					{
 						return true;
+					}
 				}
 			}
 		}

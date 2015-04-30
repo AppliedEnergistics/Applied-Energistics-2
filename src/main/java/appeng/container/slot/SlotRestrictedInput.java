@@ -71,7 +71,9 @@ public class SlotRestrictedInput extends AppEngSlot
 	public int getSlotStackLimit()
 	{
 		if( this.stackLimit != -1 )
+		{
 			return this.stackLimit;
+		}
 		return super.getSlotStackLimit();
 	}
 
@@ -95,18 +97,28 @@ public class SlotRestrictedInput extends AppEngSlot
 	public boolean isItemValid( ItemStack i )
 	{
 		if( !this.myContainer.isValidForSlot( this, i ) )
+		{
 			return false;
+		}
 
 		if( i == null )
+		{
 			return false;
+		}
 		if( i.getItem() == null )
+		{
 			return false;
+		}
 
 		if( !this.inventory.isItemValidForSlot( this.getSlotIndex(), i ) )
+		{
 			return false;
+		}
 
 		if( !this.allowEdit )
+		{
 			return false;
+		}
 
 		final IDefinitions definitions = AEApi.instance().definitions();
 		final IMaterials materials = definitions.materials();
@@ -120,7 +132,9 @@ public class SlotRestrictedInput extends AppEngSlot
 					ICraftingPatternItem b = (ICraftingPatternItem) i.getItem();
 					ICraftingPatternDetails de = b.getPatternForItem( i, this.p.player.worldObj );
 					if( de != null )
+					{
 						return de.isCraftable();
+					}
 				}
 				return false;
 			case VALID_ENCODED_PATTERN_W_OUTPUT:
@@ -128,7 +142,9 @@ public class SlotRestrictedInput extends AppEngSlot
 			case ENCODED_PATTERN:
 			{
 				if( i.getItem() instanceof ICraftingPatternItem )
+				{
 					return true;
+				}
 				// ICraftingPatternDetails pattern = i.getItem() instanceof ICraftingPatternItem ? ((ICraftingPatternItem)
 				// i.getItem()).getPatternForItem( i ) : null;
 				return false;// pattern != null;
@@ -139,7 +155,9 @@ public class SlotRestrictedInput extends AppEngSlot
 			case PATTERN:
 
 				if( i.getItem() instanceof ICraftingPatternItem )
+				{
 					return true;
+				}
 
 				return materials.blankPattern().isSameAs( i );
 
@@ -150,8 +168,12 @@ public class SlotRestrictedInput extends AppEngSlot
 				}
 
 				for( ItemStack optional : AEApi.instance().registries().inscriber().getOptionals() )
+				{
 					if( Platform.isSameItemPrecise( optional, i ) )
+					{
 						return true;
+					}
+				}
 
 				return false;
 
@@ -190,7 +212,9 @@ public class SlotRestrictedInput extends AppEngSlot
 				return i.getItem() instanceof IStorageComponent && ( (IStorageComponent) i.getItem() ).isStorageComponent( i );
 			case TRASH:
 				if( AEApi.instance().registries().cell().isCellHandled( i ) )
+				{
 					return false;
+				}
 
 				return !( i.getItem() instanceof IStorageComponent && ( (IStorageComponent) i.getItem() ).isStorageComponent( i ) );
 			case ENCODABLE_ITEM:
@@ -223,7 +247,9 @@ public class SlotRestrictedInput extends AppEngSlot
 				ItemEncodedPattern iep = (ItemEncodedPattern) is.getItem();
 				ItemStack out = iep.getOutput( is );
 				if( out != null )
+				{
 					return out;
+				}
 			}
 		}
 		return super.getStack();
@@ -232,14 +258,18 @@ public class SlotRestrictedInput extends AppEngSlot
 	public static boolean isMetalIngot( ItemStack i )
 	{
 		if( Platform.isSameItemPrecise( i, new ItemStack( Items.iron_ingot ) ) )
+		{
 			return true;
+		}
 
 		for( String name : new String[] { "Copper", "Tin", "Obsidian", "Iron", "Lead", "Bronze", "Brass", "Nickel", "Aluminium" } )
 		{
 			for( ItemStack ingot : OreDictionary.getOres( "ingot" + name ) )
 			{
 				if( Platform.isSameItemPrecise( i, ingot ) )
+				{
 					return true;
+				}
 			}
 		}
 

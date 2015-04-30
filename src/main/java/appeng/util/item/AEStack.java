@@ -154,13 +154,21 @@ public abstract class AEStack<StackType extends IAEStack> implements IAEStack<St
 	byte getType( long num )
 	{
 		if( num <= 255 )
+		{
 			return 0;
+		}
 		else if( num <= 65535 )
+		{
 			return 1;
+		}
 		else if( num <= 4294967295L )
+		{
 			return 2;
+		}
 		else
+		{
 			return 3;
+		}
 	}
 
 	abstract boolean hasTagCompound();
@@ -172,12 +180,20 @@ public abstract class AEStack<StackType extends IAEStack> implements IAEStack<St
 	void putPacketValue( ByteBuf tag, long num )
 	{
 		if( num <= 255 )
+		{
 			tag.writeByte( (byte) ( num + Byte.MIN_VALUE ) );
+		}
 		else if( num <= 65535 )
+		{
 			tag.writeShort( (short) ( num + Short.MIN_VALUE ) );
+		}
 		else if( num <= 4294967295L )
+		{
 			tag.writeInt( (int) ( num + Integer.MIN_VALUE ) );
+		}
 		else
+		{
 			tag.writeLong( num );
+		}
 	}
 }

@@ -77,10 +77,14 @@ public class IMCGrinder implements IIMCProcessor
 		int turns = msg.getInteger( "turns" );
 
 		if( in == null )
+		{
 			throw new IllegalStateException( "invalid input" );
+		}
 
 		if( out == null )
+		{
 			throw new IllegalStateException( "invalid output" );
+		}
 
 		if( msg.hasKey( "optional" ) )
 		{
@@ -88,13 +92,17 @@ public class IMCGrinder implements IIMCProcessor
 			ItemStack optional = ItemStack.loadItemStackFromNBT( optionalTag );
 
 			if( optional == null )
+			{
 				throw new IllegalStateException( "invalid optional" );
+			}
 
 			float chance = msg.getFloat( "chance" );
 
 			AEApi.instance().registries().grinder().addRecipe( in, out, optional, chance, turns );
 		}
 		else
+		{
 			AEApi.instance().registries().grinder().addRecipe( in, out, turns );
+		}
 	}
 }

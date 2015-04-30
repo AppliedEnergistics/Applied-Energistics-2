@@ -57,13 +57,19 @@ public class PartConversionMonitor extends PartStorageMonitor
 	public boolean onPartShiftActivate( EntityPlayer player, Vec3 pos )
 	{
 		if( Platform.isClient() )
+		{
 			return true;
+		}
 
 		if( !this.proxy.isActive() )
+		{
 			return false;
+		}
 
 		if( !Platform.hasPermissions( this.getLocation(), player ) )
+		{
 			return false;
+		}
 
 		boolean ModeB = false;
 
@@ -79,7 +85,9 @@ public class PartConversionMonitor extends PartStorageMonitor
 			try
 			{
 				if( !this.proxy.isActive() )
+				{
 					return false;
+				}
 
 				IEnergySource energy = this.proxy.getEnergy();
 				IMEMonitor<IAEItemStack> cell = this.proxy.getStorage().getItemInventory();
@@ -122,7 +130,9 @@ public class PartConversionMonitor extends PartStorageMonitor
 			try
 			{
 				if( !this.proxy.isActive() )
+				{
 					return;
+				}
 
 				IEnergySource energy = this.proxy.getEnergy();
 				IMEMonitor<IAEItemStack> cell = this.proxy.getStorage().getItemInventory();
@@ -144,7 +154,9 @@ public class PartConversionMonitor extends PartStorageMonitor
 					}
 
 					if( player.openContainer != null )
+					{
 						player.openContainer.detectAndSendChanges();
+					}
 				}
 			}
 			catch( GridAccessException e )

@@ -51,13 +51,19 @@ public class CraftingCPUCalculator extends MBCalculator
 	public boolean checkMultiblockScale( WorldCoord min, WorldCoord max )
 	{
 		if( max.x - min.x > 16 )
+		{
 			return false;
+		}
 
 		if( max.y - min.y > 16 )
+		{
 			return false;
+		}
 
 		if( max.z - min.z > 16 )
+		{
 			return false;
+		}
 
 		return true;
 	}
@@ -82,10 +88,14 @@ public class CraftingCPUCalculator extends MBCalculator
 					IAEMultiBlock te = (IAEMultiBlock) w.getTileEntity( x, y, z );
 
 					if( !te.isValid() )
+					{
 						return false;
+					}
 
 					if( !storage && te instanceof TileCraftingTile )
+					{
 						storage = ( (TileCraftingTile) te ).getStorageBytes() > 0;
+					}
 				}
 			}
 		}

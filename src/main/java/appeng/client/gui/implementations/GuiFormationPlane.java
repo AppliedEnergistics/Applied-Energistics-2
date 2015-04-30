@@ -69,10 +69,14 @@ public class GuiFormationPlane extends GuiUpgradeable
 		this.fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
 
 		if( this.fuzzyMode != null )
+		{
 			this.fuzzyMode.set( this.cvb.fzMode );
+		}
 
 		if( this.placeMode != null )
+		{
 			this.placeMode.set( ( (ContainerFormationPlane) this.cvb ).placeMode );
+		}
 	}
 
 	@Override

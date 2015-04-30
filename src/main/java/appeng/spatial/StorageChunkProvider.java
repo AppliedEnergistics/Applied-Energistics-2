@@ -68,7 +68,9 @@ public class StorageChunkProvider extends ChunkProviderGenerate
 		AEConfig config = AEConfig.instance;
 
 		for( int k = 0; k < biomes.length; ++k )
+		{
 			biomes[k] = (byte) config.storageBiomeID;
+		}
 
 		if( !chunk.isTerrainPopulated )
 		{

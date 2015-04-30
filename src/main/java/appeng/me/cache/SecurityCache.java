@@ -57,7 +57,9 @@ public class SecurityCache implements ISecurityGrid
 	{
 		this.playerPerms.clear();
 		if( this.securityProvider.isEmpty() )
+		{
 			return;
+		}
 
 		this.securityProvider.get( 0 ).readPermissions( this.playerPerms );
 	}
@@ -88,15 +90,21 @@ public class SecurityCache implements ISecurityGrid
 		long lastCode = this.securityKey;
 
 		if( this.securityProvider.size() == 1 )
+		{
 			this.securityKey = this.securityProvider.get( 0 ).getSecurityKey();
+		}
 		else
+		{
 			this.securityKey = -1;
+		}
 
 		if( lastCode != this.securityKey )
 		{
 			this.myGrid.postEvent( new MENetworkSecurityChange() );
 			for( IGridNode n : this.myGrid.getNodes() )
+			{
 				( (GridNode) n ).lastSecurityKey = this.securityKey;
+			}
 		}
 	}
 
@@ -109,7 +117,9 @@ public class SecurityCache implements ISecurityGrid
 			this.updateSecurityKey();
 		}
 		else
+		{
 			( (GridNode) gridNode ).lastSecurityKey = this.securityKey;
+		}
 	}
 
 	@Override
@@ -152,9 +162,13 @@ public class SecurityCache implements ISecurityGrid
 			if( perms == null )
 			{
 				if( playerID == -1 ) // no default?
+				{
 					return false;
+				}
 				else
+				{
 					return this.hasPermission( -1, perm );
+				}
 			}
 
 			return perms.contains( perm );
@@ -166,7 +180,9 @@ public class SecurityCache implements ISecurityGrid
 	public int getOwner()
 	{
 		if( this.isAvailable() )
+		{
 			return this.securityProvider.get( 0 ).getOwner();
+		}
 		return -1;
 	}
 }

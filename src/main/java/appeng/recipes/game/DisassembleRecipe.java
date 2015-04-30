@@ -93,7 +93,9 @@ public final class DisassembleRecipe implements IRecipe
 				// needs a single input in the recipe
 				itemCount++;
 				if ( itemCount > 1 )
+				{
 					return MISMATCHED_STACK;
+				}
 
 				// handle storage cells
 				for( ItemStack storageCellStack : this.getCellOutput( stackInSlot ).asSet() )
@@ -104,7 +106,9 @@ public final class DisassembleRecipe implements IRecipe
 					{
 						IItemList<IAEItemStack> list = cellInv.getAvailableItems( StorageChannel.ITEMS.createList() );
 						if( !list.isEmpty() )
+						{
 							return null;
+						}
 					}
 
 					output = storageCellStack;

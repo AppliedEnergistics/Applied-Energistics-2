@@ -90,10 +90,14 @@ public class BlockSkyStone extends AEBaseBlock implements IOrientableBlock
 			int level = -1;
 
 			if( is != null )
+			{
 				level = is.getItem().getHarvestLevel( is, "pickaxe" );
+			}
 
 			if( Ev.metadata > 0 || level >= 3 || Ev.originalSpeed > 7.0 )
+			{
 				Ev.newSpeed /= 0.1;
+			}
 		}
 	}
 
@@ -117,7 +121,9 @@ public class BlockSkyStone extends AEBaseBlock implements IOrientableBlock
 	{
 		super.onBlockAdded( w, x, y, z );
 		if( Platform.isServer() )
+		{
 			WorldSettings.getInstance().getCompass().updateArea( w, x, y, z );
+		}
 	}
 
 	// use AE2's renderer, no rotatable blocks.
@@ -142,12 +148,16 @@ public class BlockSkyStone extends AEBaseBlock implements IOrientableBlock
 			{
 				IOrientable out = ( (IRB) AppEng.instance.getIntegration( IntegrationType.RB ) ).getOrientable( te );
 				if( out != null )
+				{
 					return out;
+				}
 			}
 		}
 
 		if( w.getBlockMetadata( x, y, z ) == 0 )
+		{
 			return new LocationRotation( w, x, y, z );
+		}
 
 		return new NullRotation();
 	}
@@ -156,13 +166,19 @@ public class BlockSkyStone extends AEBaseBlock implements IOrientableBlock
 	public String getUnlocalizedName( ItemStack is )
 	{
 		if( is.getItemDamage() == 1 )
+		{
 			return this.getUnlocalizedName() + ".Block";
+		}
 
 		if( is.getItemDamage() == 2 )
+		{
 			return this.getUnlocalizedName() + ".Brick";
+		}
 
 		if( is.getItemDamage() == 3 )
+		{
 			return this.getUnlocalizedName() + ".SmallBrick";
+		}
 
 		return this.getUnlocalizedName();
 	}
@@ -182,11 +198,17 @@ public class BlockSkyStone extends AEBaseBlock implements IOrientableBlock
 	public IIcon getIcon( int direction, int metadata )
 	{
 		if( metadata == 1 )
+		{
 			return this.Block;
+		}
 		if( metadata == 2 )
+		{
 			return this.Brick;
+		}
 		if( metadata == 3 )
+		{
 			return this.SmallBrick;
+		}
 		return super.getIcon( direction, metadata );
 	}
 
@@ -212,6 +234,8 @@ public class BlockSkyStone extends AEBaseBlock implements IOrientableBlock
 	{
 		super.breakBlock( w, x, y, z, b, WTF );
 		if( Platform.isServer() )
+		{
 			WorldSettings.getInstance().getCompass().updateArea( w, x, y, z );
+		}
 	}
 }

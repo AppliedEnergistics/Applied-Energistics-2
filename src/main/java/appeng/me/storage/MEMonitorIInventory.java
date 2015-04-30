@@ -78,14 +78,20 @@ public class MEMonitorIInventory implements IMEMonitor<IAEItemStack>
 		ItemStack out = null;
 
 		if( type == Actionable.SIMULATE )
+		{
 			out = this.adaptor.simulateAdd( input.getItemStack() );
+		}
 		else
+		{
 			out = this.adaptor.addItems( input.getItemStack() );
+		}
 
 		this.onTick();
 
 		if( out == null )
+		{
 			return null;
+		}
 
 		// better then doing construction from scratch :3
 		IAEItemStack o = input.copy();
@@ -99,12 +105,18 @@ public class MEMonitorIInventory implements IMEMonitor<IAEItemStack>
 		ItemStack out = null;
 
 		if( type == Actionable.SIMULATE )
+		{
 			out = this.adaptor.simulateRemove( (int) request.getStackSize(), request.getItemStack(), null );
+		}
 		else
+		{
 			out = this.adaptor.removeItems( (int) request.getStackSize(), request.getItemStack(), null );
+		}
 
 		if( out == null )
+		{
 			return null;
+		}
 
 		// better then doing construction from scratch :3
 		IAEItemStack o = request.copy();
@@ -199,7 +211,9 @@ public class MEMonitorIInventory implements IMEMonitor<IAEItemStack>
 		}
 
 		if( !changes.isEmpty() )
+		{
 			this.postDifference( changes );
+		}
 
 		return changed ? TickRateModulation.URGENT : TickRateModulation.SLOWER;
 	}
@@ -207,10 +221,14 @@ public class MEMonitorIInventory implements IMEMonitor<IAEItemStack>
 	private boolean isDifferent( ItemStack a, ItemStack b )
 	{
 		if( a == b && b == null )
+		{
 			return false;
+		}
 
 		if( ( a == null && b != null ) || ( a != null && b == null ) )
+		{
 			return true;
+		}
 
 		return !Platform.isSameItemPrecise( a, b );
 	}
@@ -226,9 +244,13 @@ public class MEMonitorIInventory implements IMEMonitor<IAEItemStack>
 				Entry<IMEMonitorHandlerReceiver<IAEItemStack>, Object> l = i.next();
 				IMEMonitorHandlerReceiver<IAEItemStack> key = l.getKey();
 				if( key.isValid( l.getValue() ) )
+				{
 					key.postChange( this, a, this.mySource );
+				}
 				else
+				{
 					i.remove();
+				}
 			}
 		}
 	}
@@ -273,7 +295,9 @@ public class MEMonitorIInventory implements IMEMonitor<IAEItemStack>
 	public IItemList<IAEItemStack> getAvailableItems( IItemList out )
 	{
 		for( CachedItemStack is : this.memory.values() )
+		{
 			out.addStorage( is.aeStack );
+		}
 
 		return out;
 	}

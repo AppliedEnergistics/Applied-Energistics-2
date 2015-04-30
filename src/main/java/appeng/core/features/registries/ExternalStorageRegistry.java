@@ -55,11 +55,15 @@ public class ExternalStorageRegistry implements IExternalStorageRegistry
 		for( IExternalStorageHandler x : this.Handlers )
 		{
 			if( x.canHandle( te, d, chan, mySrc ) )
+			{
 				return x;
+			}
 		}
 
 		if( this.lastHandler.canHandle( te, d, chan, mySrc ) )
+		{
 			return this.lastHandler;
+		}
 
 		return null;
 	}

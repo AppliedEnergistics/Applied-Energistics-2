@@ -70,10 +70,14 @@ public final class EntitySingularity extends AEBaseEntityItem
 	public void doExplosion()
 	{
 		if( Platform.isClient() )
+		{
 			return;
+		}
 
 		if( !AEConfig.instance.isFeatureEnabled( AEFeature.inWorldSingularity ) )
+		{
 			return;
+		}
 
 		ItemStack item = this.getEntityItem();
 
@@ -120,7 +124,9 @@ public final class EntitySingularity extends AEBaseEntityItem
 							{
 								other.stackSize--;
 								if( other.stackSize == 0 )
+								{
 									e.setDead();
+								}
 
 								for( ItemStack singularityStack : materials.qESingularity().maybeStack( 2 ).asSet() )
 								{
@@ -135,7 +141,9 @@ public final class EntitySingularity extends AEBaseEntityItem
 							}
 
 							if( item.stackSize <= 0 )
+							{
 								this.setDead();
+							}
 						}
 					}
 				}

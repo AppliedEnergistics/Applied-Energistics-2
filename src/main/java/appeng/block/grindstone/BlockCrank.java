@@ -117,10 +117,12 @@ public class BlockCrank extends AEBaseBlock
 	private ForgeDirection findCrankable( World world, int x, int y, int z )
 	{
 		for( ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS )
+		{
 			if( this.isCrankable( world, x, y, z, dir ) )
 			{
 				return dir;
 			}
+		}
 		return ForgeDirection.UNKNOWN;
 	}
 

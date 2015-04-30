@@ -62,7 +62,9 @@ public class TileCrank extends AEBaseTile implements ICustomCollision
 				this.charge -= this.ticksPerRotation;
 				ICrankable g = this.getGrinder();
 				if( g != null )
+				{
 					g.applyTurn();
+				}
 			}
 
 			this.rotation--;
@@ -72,12 +74,16 @@ public class TileCrank extends AEBaseTile implements ICustomCollision
 	public ICrankable getGrinder()
 	{
 		if( Platform.isClient() )
+		{
 			return null;
+		}
 
 		ForgeDirection grinder = this.getUp().getOpposite();
 		TileEntity te = this.worldObj.getTileEntity( this.xCoord + grinder.offsetX, this.yCoord + grinder.offsetY, this.zCoord + grinder.offsetZ );
 		if( te instanceof ICrankable )
+		{
 			return (ICrankable) te;
+		}
 		return null;
 	}
 
@@ -113,7 +119,9 @@ public class TileCrank extends AEBaseTile implements ICustomCollision
 	public boolean power()
 	{
 		if( Platform.isClient() )
+		{
 			return false;
+		}
 
 		if( this.rotation < 3 )
 		{

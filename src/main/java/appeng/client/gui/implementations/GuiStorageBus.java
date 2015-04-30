@@ -84,13 +84,19 @@ public class GuiStorageBus extends GuiUpgradeable
 		this.fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
 
 		if( this.fuzzyMode != null )
+		{
 			this.fuzzyMode.set( this.cvb.fzMode );
+		}
 
 		if( this.storageFilter != null )
+		{
 			this.storageFilter.set( ( (ContainerStorageBus) this.cvb ).storageFilter );
+		}
 
 		if( this.rwMode != null )
+		{
 			this.rwMode.set( ( (ContainerStorageBus) this.cvb ).rwMode );
+		}
 	}
 
 	@Override
@@ -109,19 +115,25 @@ public class GuiStorageBus extends GuiUpgradeable
 		try
 		{
 			if( btn == this.partition )
+			{
 				NetworkHandler.instance.sendToServer( new PacketValueConfig( "StorageBus.Action", "Partition" ) );
-
+			}
 			else if( btn == this.clear )
+			{
 				NetworkHandler.instance.sendToServer( new PacketValueConfig( "StorageBus.Action", "Clear" ) );
-
+			}
 			else if( btn == this.priority )
+			{
 				NetworkHandler.instance.sendToServer( new PacketSwitchGuis( GuiBridge.GUI_PRIORITY ) );
-
+			}
 			else if( btn == this.rwMode )
+			{
 				NetworkHandler.instance.sendToServer( new PacketConfigButton( this.rwMode.getSetting(), backwards ) );
-
+			}
 			else if( btn == this.storageFilter )
+			{
 				NetworkHandler.instance.sendToServer( new PacketConfigButton( this.storageFilter.getSetting(), backwards ) );
+			}
 		}
 		catch( IOException e )
 		{

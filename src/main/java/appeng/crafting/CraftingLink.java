@@ -47,7 +47,9 @@ public class CraftingLink implements ICraftingLink
 		this.standalone = data.getBoolean( "standalone" );
 
 		if( !data.hasKey( "req" ) || !data.getBoolean( "req" ) )
+		{
 			throw new IllegalStateException( "Invalid Crafting Link for Object" );
+		}
 
 		this.req = req;
 		this.cpu = null;
@@ -61,7 +63,9 @@ public class CraftingLink implements ICraftingLink
 		this.standalone = data.getBoolean( "standalone" );
 
 		if( !data.hasKey( "req" ) || data.getBoolean( "req" ) )
+		{
 			throw new IllegalStateException( "Invalid Crafting Link for Object" );
+		}
 
 		this.cpu = cpu;
 		this.req = null;
@@ -71,13 +75,19 @@ public class CraftingLink implements ICraftingLink
 	public boolean isCanceled()
 	{
 		if( this.canceled )
+		{
 			return true;
+		}
 
 		if( this.done )
+		{
 			return false;
+		}
 
 		if( this.tie == null )
+		{
 			return false;
+		}
 
 		return this.tie.isCanceled();
 	}
@@ -86,13 +96,19 @@ public class CraftingLink implements ICraftingLink
 	public boolean isDone()
 	{
 		if( this.done )
+		{
 			return true;
+		}
 
 		if( this.canceled )
+		{
 			return false;
+		}
 
 		if( this.tie == null )
+		{
 			return false;
+		}
 
 		return this.tie.isDone();
 	}
@@ -101,12 +117,16 @@ public class CraftingLink implements ICraftingLink
 	public void cancel()
 	{
 		if( this.done )
+		{
 			return;
+		}
 
 		this.canceled = true;
 
 		if( this.tie != null )
+		{
 			this.tie.cancel();
+		}
 
 		this.tie = null;
 	}
@@ -136,7 +156,9 @@ public class CraftingLink implements ICraftingLink
 	public void setNexus( CraftingLinkNexus n )
 	{
 		if( this.tie != null )
+		{
 			this.tie.remove( this );
+		}
 
 		if( this.canceled && n != null )
 		{
@@ -148,13 +170,17 @@ public class CraftingLink implements ICraftingLink
 		this.tie = n;
 
 		if( n != null )
+		{
 			n.add( this );
+		}
 	}
 
 	public IAEItemStack injectItems( IAEItemStack input, Actionable mode )
 	{
 		if( this.tie == null || this.tie.req == null || this.tie.req.req == null )
+		{
 			return input;
+		}
 
 		return this.tie.req.req.injectCraftedItems( this.tie.req, input, mode );
 	}
@@ -162,6 +188,8 @@ public class CraftingLink implements ICraftingLink
 	public void markDone()
 	{
 		if( this.tie != null )
+		{
 			this.tie.markDone();
+		}
 	}
 }

@@ -43,10 +43,14 @@ public class VoidFluidInventory implements IMEInventoryHandler<IAEFluidStack>
 	public IAEFluidStack injectItems( IAEFluidStack input, Actionable mode, BaseActionSource src )
 	{
 		if( mode == Actionable.SIMULATE )
+		{
 			return null;
+		}
 
 		if( input != null )
+		{
 			this.target.addPower( input.getStackSize() / 1000.0 );
+		}
 		return null;
 	}
 

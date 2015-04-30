@@ -64,7 +64,9 @@ public class AssemblerFX extends EntityFX
 		super.onUpdate();
 
 		if( this.isDead )
+		{
 			this.fi.setDead();
+		}
 		else
 		{
 			float lifeSpan = (float) this.particleAge / (float) this.particleMaxAge;
@@ -81,7 +83,9 @@ public class AssemblerFX extends EntityFX
 			this.time -= 4.0;
 			// if ( CommonHelper.proxy.shouldAddParticles( r ) )
 			for( int x = 0; x < (int) Math.ceil( this.speed / 5 ); x++ )
+			{
 				CommonHelper.proxy.spawnEffect( EffectType.Crafting, this.worldObj, this.posX, this.posY, this.posZ, null );
+			}
 		}
 	}
 }

@@ -130,7 +130,9 @@ public class GuiPatternTerm extends GuiMEMonitorable
 	protected String getBackground()
 	{
 		if( this.container.craftingMode )
+		{
 			return "guis/pattern.png";
+		}
 		return "guis/pattern2.png";
 	}
 
@@ -138,8 +140,12 @@ public class GuiPatternTerm extends GuiMEMonitorable
 	protected void repositionSlot( AppEngSlot s )
 	{
 		if( s.isPlayerSide() )
+		{
 			s.yDisplayPosition = s.defY + this.ySize - 78 - 5;
+		}
 		else
+		{
 			s.yDisplayPosition = s.defY + this.ySize - 78 - 3;
+		}
 	}
 }

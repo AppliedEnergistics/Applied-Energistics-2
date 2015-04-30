@@ -119,9 +119,13 @@ public class ClientHelper extends ServerHelper
 	public World getWorld()
 	{
 		if( Platform.isClient() )
+		{
 			return Minecraft.getMinecraft().theWorld;
+		}
 		else
+		{
 			return super.getWorld();
+		}
 	}
 
 	@Override
@@ -129,7 +133,9 @@ public class ClientHelper extends ServerHelper
 	{
 		BaseBlockRender bbr = blk.getRendererInstance().rendererInstance;
 		if( bbr.hasTESR() && tile != null )
+		{
 			ClientRegistry.bindTileEntitySpecialRenderer( tile, new TESRWrapper( bbr ) );
+		}
 	}
 
 	@Override
@@ -142,7 +148,9 @@ public class ClientHelper extends ServerHelper
 			return o;
 		}
 		else
+		{
 			return super.getPlayers();
+		}
 	}
 
 	@Override
@@ -243,9 +251,13 @@ public class ClientHelper extends ServerHelper
 	{
 		int setting = Minecraft.getMinecraft().gameSettings.particleSetting;
 		if( setting == 2 )
+		{
 			return false;
+		}
 		if( setting == 0 )
+		{
 			return true;
+		}
 		return r.nextInt( 2 * ( setting + 1 ) ) == 0;
 	}
 
@@ -347,7 +359,9 @@ public class ClientHelper extends ServerHelper
 	public CableRenderMode getRenderMode()
 	{
 		if( Platform.isServer() )
+		{
 			return super.getRenderMode();
+		}
 
 		Minecraft mc = Minecraft.getMinecraft();
 		EntityPlayer player = mc.thePlayer;
@@ -360,7 +374,9 @@ public class ClientHelper extends ServerHelper
 	{
 		Minecraft mc = Minecraft.getMinecraft();
 		if( mc == null || mc.thePlayer == null || mc.theWorld == null )
+		{
 			return;
+		}
 
 		EntityPlayer player = mc.thePlayer;
 
@@ -383,7 +399,9 @@ public class ClientHelper extends ServerHelper
 	public void wheelEvent( MouseEvent me )
 	{
 		if( me.isCanceled() || me.dwheel == 0 )
+		{
 			return;
+		}
 
 		Minecraft mc = Minecraft.getMinecraft();
 		EntityPlayer player = mc.thePlayer;
@@ -409,16 +427,22 @@ public class ClientHelper extends ServerHelper
 		if( ev.map.getTextureType() == 1 )
 		{
 			for( ExtraItemTextures et : ExtraItemTextures.values() )
+			{
 				et.registerIcon( ev.map );
+			}
 		}
 
 		if( ev.map.getTextureType() == 0 )
 		{
 			for( ExtraBlockTextures et : ExtraBlockTextures.values() )
+			{
 				et.registerIcon( ev.map );
+			}
 
 			for( CableBusTextures cb : CableBusTextures.values() )
+			{
 				cb.registerIcon( ev.map );
+			}
 		}
 	}
 }

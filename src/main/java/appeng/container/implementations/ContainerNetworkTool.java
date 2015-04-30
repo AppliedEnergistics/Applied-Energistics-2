@@ -46,8 +46,12 @@ public class ContainerNetworkTool extends AEBaseContainer
 		this.lockPlayerInventorySlot( ip.currentItem );
 
 		for( int y = 0; y < 3; y++ )
+		{
 			for( int x = 0; x < 3; x++ )
+			{
 				this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, te, y * 3 + x, 80 - 18 + x * 18, 37 - 18 + y * 18, this.invPlayer ) ) );
+			}
+		}
 
 		this.bindPlayerInventory( ip, 0, 166 - /* height of player inventory */82 );
 	}
@@ -73,10 +77,14 @@ public class ContainerNetworkTool extends AEBaseContainer
 					this.getPlayerInv().setInventorySlotContents( this.getPlayerInv().currentItem, this.toolInv.getItemStack() );
 				}
 				else
+				{
 					this.isContainerValid = false;
+				}
 			}
 			else
+			{
 				this.isContainerValid = false;
+			}
 		}
 
 		if( this.isContainerValid )

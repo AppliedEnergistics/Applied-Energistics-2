@@ -36,7 +36,9 @@ public class LayerIPipeConnection extends LayerBase implements IPipeConnection
 	{
 		IPart part = this.getPart( with );
 		if( part instanceof IPipeConnection )
+		{
 			return ( (IPipeConnection) part ).overridePipeConnection( type, with );
+		}
 		return ConnectOverride.DEFAULT;
 	}
 }

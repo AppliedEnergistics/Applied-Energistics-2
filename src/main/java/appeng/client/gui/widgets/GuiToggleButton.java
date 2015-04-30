@@ -93,16 +93,22 @@ public class GuiToggleButton extends GuiButton implements ITooltip
 			String value = StatCollector.translateToLocal( this.displayHint );
 
 			if( name == null || name.isEmpty() )
+			{
 				name = this.displayName;
+			}
 			if( value == null || value.isEmpty() )
+			{
 				value = this.displayHint;
+			}
 
 			value = PATTERN_NEW_LINE.matcher( value ).replaceAll( "\n" );
 			StringBuilder sb = new StringBuilder( value );
 
 			int i = sb.lastIndexOf( "\n" );
 			if( i <= 0 )
+			{
 				i = 0;
+			}
 			while( i + 30 < sb.length() && ( i = sb.lastIndexOf( " ", i + 30 ) ) != -1 )
 			{
 				sb.replace( i, i + 1, "\n" );

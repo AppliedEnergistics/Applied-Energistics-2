@@ -85,7 +85,9 @@ public class CellInventoryHandler extends MEInventoryHandler<IAEItemStack> imple
 			{
 				ItemStack is = config.getStackInSlot( x );
 				if( is != null )
+				{
 					priorityList.add( AEItemStack.create( is ) );
+				}
 			}
 
 			this.setWhitelist( hasInverter ? IncludeExclude.BLACKLIST : IncludeExclude.WHITELIST );
@@ -93,9 +95,13 @@ public class CellInventoryHandler extends MEInventoryHandler<IAEItemStack> imple
 			if( !priorityList.isEmpty() )
 			{
 				if( hasFuzzy )
+				{
 					this.setPartitionList( new FuzzyPriorityList<IAEItemStack>( priorityList, fzMode ) );
+				}
 				else
+				{
 					this.setPartitionList( new PrecisePriorityList<IAEItemStack>( priorityList ) );
+				}
 			}
 		}
 	}
@@ -106,7 +112,9 @@ public class CellInventoryHandler extends MEInventoryHandler<IAEItemStack> imple
 		Object o = this.internal;
 
 		if( o instanceof MEPassThrough )
+		{
 			o = ( (MEPassThrough) o ).getInternal();
+		}
 
 		return (ICellInventory) ( o instanceof ICellInventory ? o : null );
 	}
@@ -139,7 +147,9 @@ public class CellInventoryHandler extends MEInventoryHandler<IAEItemStack> imple
 		int val = this.getCellInv().getStatusForCell();
 
 		if( val == 1 && this.isPreformatted() )
+		{
 			val = 2;
+		}
 
 		return val;
 	}

@@ -48,13 +48,19 @@ public class GridStorageSearch
 	public boolean equals( Object obj )
 	{
 		if( obj == null )
+		{
 			return false;
+		}
 		if( this.getClass() != obj.getClass() )
+		{
 			return false;
+		}
 
 		GridStorageSearch other = (GridStorageSearch) obj;
 		if( this.id == other.id )
+		{
 			return true;
+		}
 
 		return false;
 	}

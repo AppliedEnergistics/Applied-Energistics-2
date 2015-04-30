@@ -48,7 +48,9 @@ public final class DispenserMatterCannon extends BehaviorDefaultDispenseItem
 			for( ForgeDirection d : ForgeDirection.VALID_DIRECTIONS )
 			{
 				if( enumfacing.getFrontOffsetX() == d.offsetX && enumfacing.getFrontOffsetY() == d.offsetY && enumfacing.getFrontOffsetZ() == d.offsetZ )
+				{
 					dir = d;
+				}
 			}
 
 			ToolMassCannon tm = (ToolMassCannon) i;

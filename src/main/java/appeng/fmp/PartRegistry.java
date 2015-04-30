@@ -75,9 +75,13 @@ public enum PartRegistry
 		try
 		{
 			if( this == CableBusPart )
+			{
 				return (TMultiPart) Api.INSTANCE.partHelper().getCombinedInstance( this.part.getName() ).newInstance();
+			}
 			else
+			{
 				return this.part.getConstructor( int.class ).newInstance( meta );
+			}
 		}
 		catch( Throwable t )
 		{

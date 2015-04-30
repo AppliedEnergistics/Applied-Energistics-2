@@ -118,7 +118,9 @@ public class ContainerInscriber extends ContainerUpgradeable implements IProgres
 			for( ItemStack optional : AEApi.instance().registries().inscriber().getOptionals() )
 			{
 				if( Platform.isSameItemPrecise( optional, is ) )
+				{
 					return false;
+				}
 			}
 
 			boolean matches = false;
@@ -138,13 +140,17 @@ public class ContainerInscriber extends ContainerUpgradeable implements IProgres
 					for( ItemStack option : recipe.getInputs() )
 					{
 						if( Platform.isSameItemPrecise( is, option ) )
+						{
 							found = true;
+						}
 					}
 				}
 			}
 
 			if( matches && !found )
+			{
 				return false;
+			}
 		}
 
 		if( ( s == this.top && bot != null ) || ( s == this.bottom && top != null ) )
@@ -152,9 +158,13 @@ public class ContainerInscriber extends ContainerUpgradeable implements IProgres
 			boolean isValid = false;
 			ItemStack otherSlot = null;
 			if( s == this.top )
+			{
 				otherSlot = this.bottom.getStack();
+			}
 			else
+			{
 				otherSlot = this.top.getStack();
+			}
 
 			// name presses
 			final IItemDefinition namePress = AEApi.instance().definitions().materials().namePress();
@@ -176,11 +186,15 @@ public class ContainerInscriber extends ContainerUpgradeable implements IProgres
 				}
 
 				if( isValid )
+				{
 					break;
+				}
 			}
 
 			if( !isValid )
+			{
 				return false;
+			}
 		}
 
 		return true;

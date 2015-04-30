@@ -89,7 +89,9 @@ public class TileEnergyAcceptor extends AENetworkPowerTile
 			IEnergyGrid grid = this.gridProxy.getEnergy();
 			double leftOver = grid.injectPower( newPower, mode );
 			if( mode == Actionable.SIMULATE )
+			{
 				return leftOver;
+			}
 			return 0.0;
 		}
 		catch( GridAccessException e )

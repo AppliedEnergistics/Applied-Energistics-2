@@ -62,7 +62,9 @@ public class BlockRenderInfo
 	public void setTemporaryRenderIcon( IIcon IIcon )
 	{
 		if( IIcon == null )
+		{
 			this.useTmp = false;
+		}
 		else
 		{
 			this.useTmp = true;

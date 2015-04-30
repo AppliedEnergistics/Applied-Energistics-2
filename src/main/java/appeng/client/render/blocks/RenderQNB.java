@@ -61,7 +61,9 @@ public class RenderQNB extends BaseBlockRender
 	{
 		TileQuantumBridge tqb = block.getTileEntity( world, x, y, z );
 		if( tqb == null )
+		{
 			return false;
+		}
 
 		renderer.renderAllFaces = true;
 
@@ -120,7 +122,9 @@ public class RenderQNB extends BaseBlockRender
 						Tessellator.instance.setColorOpaque_F( 1.0F, 1.0F, 1.0F );
 						Tessellator.instance.setBrightness( bn << 20 | bn << 4 );
 						for( ForgeDirection side : ForgeDirection.VALID_DIRECTIONS )
+						{
 							this.renderFace( x, y, z, block, ExtraBlockTextures.BlockQRingCornerLight.getIcon(), renderer, side );
+						}
 					}
 				}
 				else
@@ -146,7 +150,9 @@ public class RenderQNB extends BaseBlockRender
 						Tessellator.instance.setColorOpaque_F( 1.0F, 1.0F, 1.0F );
 						Tessellator.instance.setBrightness( bn << 20 | bn << 4 );
 						for( ForgeDirection side : ForgeDirection.VALID_DIRECTIONS )
+						{
 							this.renderFace( x, y, z, block, ExtraBlockTextures.BlockQRingEdgeLight.getIcon(), renderer, side );
+						}
 					}
 				}
 			}

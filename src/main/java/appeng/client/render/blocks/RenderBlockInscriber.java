@@ -112,7 +112,9 @@ public class RenderBlockInscriber extends BaseBlockRender
 
 		IOrientable te = this.getOrientable( block, world, x, y, z );
 		if( te == null )
+		{
 			return false;
+		}
 
 		ForgeDirection fdy = te.getUp();
 		ForgeDirection fdz = te.getForward();
@@ -178,14 +180,18 @@ public class RenderBlockInscriber extends BaseBlockRender
 			long currentTime = System.currentTimeMillis();
 			absoluteProgress = currentTime - inv.clientStart;
 			if( absoluteProgress > 800 )
+			{
 				inv.smash = false;
+			}
 		}
 
 		float relativeProgress = absoluteProgress % 800 / 400.0f;
 		float progress = relativeProgress;
 
 		if( progress > 1.0f )
+		{
 			progress = 1.0f - ( progress - 1.0f );
+		}
 		press -= progress / 5.0f;
 
 		IIcon ic = ExtraBlockTextures.BlockInscriberInside.getIcon();
@@ -219,11 +225,17 @@ public class RenderBlockInscriber extends BaseBlockRender
 
 		int items = 0;
 		if( inv.getStackInSlot( 0 ) != null )
+		{
 			items++;
+		}
 		if( inv.getStackInSlot( 1 ) != null )
+		{
 			items++;
+		}
 		if( inv.getStackInSlot( 2 ) != null )
+		{
 			items++;
+		}
 
 		if( relativeProgress > 1.0f || items == 0 )
 		{
@@ -233,7 +245,9 @@ public class RenderBlockInscriber extends BaseBlockRender
 			{
 				IInscriberRecipe ir = inv.getTask();
 				if( ir != null )
+				{
 					is = ir.getOutput().copy();
+				}
 			}
 
 			this.renderItem( is, 0.0f, block, tile, tess, x, y, z, f, renderer );

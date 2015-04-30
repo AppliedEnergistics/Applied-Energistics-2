@@ -115,7 +115,9 @@ public class P2PTunnelRegistry implements IP2PTunnelRegistry
 	public void addNewAttunement( ItemStack trigger, TunnelType type )
 	{
 		if( type == null || trigger == null )
+		{
 			return;
+		}
 
 		this.Tunnels.put( trigger, type );
 	}
@@ -125,7 +127,9 @@ public class P2PTunnelRegistry implements IP2PTunnelRegistry
 		ItemStack myItemStack = GameRegistry.findItemStack( modID, Name, 1 );
 
 		if( myItemStack == null )
+		{
 			return null;
+		}
 
 		myItemStack.setItemDamage( meta );
 		return myItemStack;
@@ -145,15 +149,21 @@ public class P2PTunnelRegistry implements IP2PTunnelRegistry
 		if( trigger != null )
 		{
 			if( FluidContainerRegistry.isContainer( trigger ) )
+			{
 				return TunnelType.FLUID;
+			}
 
 			for( ItemStack is : this.Tunnels.keySet() )
 			{
 				if( is.getItem() == trigger.getItem() && is.getItemDamage() == OreDictionary.WILDCARD_VALUE )
+				{
 					return this.Tunnels.get( is );
+				}
 
 				if( Platform.isSameItem( is, trigger ) )
+				{
 					return this.Tunnels.get( is );
+				}
 			}
 		}
 

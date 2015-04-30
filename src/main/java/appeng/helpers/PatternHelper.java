@@ -65,7 +65,9 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 		NBTTagCompound encodedValue = is.getTagCompound();
 
 		if( encodedValue == null )
+		{
 			throw new IllegalArgumentException( "No pattern here!" );
+		}
 
 		NBTTagList inTag = encodedValue.getTagList( "in", 10 );
 		NBTTagList outTag = encodedValue.getTagList( "out", 10 );
@@ -99,7 +101,9 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 				out.add( AEApi.instance().storage().createItemStack( this.correctOutput ) );
 			}
 			else
+			{
 				throw new IllegalStateException( "No pattern here!" );
+			}
 		}
 		else
 		{
@@ -110,7 +114,9 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 			{
 				ItemStack gs = ItemStack.loadItemStackFromNBT( outTag.getCompoundTagAt( x ) );
 				if( gs != null )
+				{
 					out.add( AEApi.instance().storage().createItemStack( gs ) );
+				}
 			}
 		}
 
@@ -121,30 +127,44 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 		for( IAEItemStack io : this.outputs )
 		{
 			if( io == null )
+			{
 				continue;
+			}
 
 			IAEItemStack g = tmpOutputs.get( io );
 			if( g == null )
+			{
 				tmpOutputs.put( io, io.copy() );
+			}
 			else
+			{
 				g.add( io );
+			}
 		}
 
 		HashMap<IAEItemStack, IAEItemStack> tmpInputs = new HashMap<IAEItemStack, IAEItemStack>();
 		for( IAEItemStack io : this.inputs )
 		{
 			if( io == null )
+			{
 				continue;
+			}
 
 			IAEItemStack g = tmpInputs.get( io );
 			if( g == null )
+			{
 				tmpInputs.put( io, io.copy() );
+			}
 			else
+			{
 				g.add( io );
+			}
 		}
 
 		if( tmpOutputs.isEmpty() || tmpInputs.isEmpty() )
+		{
 			throw new IllegalStateException( "No pattern here!" );
+		}
 
 		int offset = 0;
 		this.condensedInputs = new IAEItemStack[tmpInputs.size()];
@@ -166,7 +186,9 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 	private void markItemAs( int slotIndex, ItemStack i, TestStatus b )
 	{
 		if( b == TestStatus.TEST || i.hasTagCompound() )
+		{
 			return;
+		}
 
 		( b == TestStatus.ACCEPT ? this.passCache : this.failCache ).add( new TestLookup( slotIndex, i ) );
 	}
@@ -199,7 +221,9 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 		}
 
 		for( int x = 0; x < this.crafting.getSizeInventory(); x++ )
+		{
 			this.testFrame.setInventorySlotContents( x, this.crafting.getStackInSlot( x ) );
+		}
 
 		this.testFrame.setInventorySlotContents( slotIndex, i );
 
@@ -270,16 +294,22 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 	public ItemStack getOutput( InventoryCrafting craftingInv, World w )
 	{
 		if( !this.isCrafting )
+		{
 			throw new IllegalStateException( "Only crafting recipes supported." );
+		}
 
 		for( int x = 0; x < craftingInv.getSizeInventory(); x++ )
 		{
 			if( !this.isValidItemForSlot( x, craftingInv.getStackInSlot( x ), w ) )
+			{
 				return null;
+			}
 		}
 
 		if( this.outputs != null && this.outputs.length > 0 )
+		{
 			return this.outputs[0].getItemStack();
+		}
 
 		return null;
 	}
@@ -287,19 +317,29 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 	private TestStatus getStatus( int slotIndex, ItemStack i )
 	{
 		if( this.crafting.getStackInSlot( slotIndex ) == null )
+		{
 			return i == null ? TestStatus.ACCEPT : TestStatus.DECLINE;
+		}
 
 		if( i == null )
+		{
 			return TestStatus.DECLINE;
+		}
 
 		if( i.hasTagCompound() )
+		{
 			return TestStatus.TEST;
+		}
 
 		if( this.passCache.contains( new TestLookup( slotIndex, i ) ) )
+		{
 			return TestStatus.ACCEPT;
+		}
 
 		if( this.failCache.contains( new TestLookup( slotIndex, i ) ) )
+		{
 			return TestStatus.DECLINE;
+		}
 
 		return TestStatus.TEST;
 	}
@@ -383,12 +423,18 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 	public boolean equals( Object obj )
 	{
 		if( obj == null )
+		{
 			return false;
+		}
 		if( this.getClass() != obj.getClass() )
+		{
 			return false;
+		}
 		PatternHelper other = (PatternHelper) obj;
 		if( this.pattern != null && other.pattern != null )
+		{
 			return this.pattern.equals( other.pattern );
+		}
 		return false;
 	}
 }

@@ -47,13 +47,17 @@ public class BlockCellWorkbench extends AEBaseBlock
 	public boolean onActivated( World w, int x, int y, int z, EntityPlayer p, int side, float hitX, float hitY, float hitZ )
 	{
 		if( p.isSneaking() )
+		{
 			return false;
+		}
 
 		TileCellWorkbench tg = this.getTileEntity( w, x, y, z );
 		if( tg != null )
 		{
 			if( Platform.isServer() )
+			{
 				Platform.openGUI( p, tg, ForgeDirection.getOrientation( side ), GuiBridge.GUI_CELL_WORKBENCH );
+			}
 			return true;
 		}
 		return false;

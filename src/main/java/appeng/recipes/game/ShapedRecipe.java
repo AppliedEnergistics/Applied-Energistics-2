@@ -144,7 +144,9 @@ public class ShapedRecipe implements IRecipe, IRecipeBakeable
 	public boolean matches( InventoryCrafting inv, World world )
 	{
 		if( this.disable )
+		{
 			return false;
+		}
 
 		for( int x = 0; x <= MAX_CRAFT_GRID_WIDTH - this.width; x++ )
 		{
@@ -187,7 +189,9 @@ public class ShapedRecipe implements IRecipe, IRecipeBakeable
 	private boolean checkMatch( InventoryCrafting inv, int startX, int startY, boolean mirror )
 	{
 		if( this.disable )
+		{
 			return false;
+		}
 
 		for( int x = 0; x < MAX_CRAFT_GRID_WIDTH; x++ )
 		{
@@ -310,7 +314,9 @@ public class ShapedRecipe implements IRecipe, IRecipeBakeable
 			for( Object o : this.input )
 			{
 				if( o instanceof IIngredient )
+				{
 					( (IIngredient) o ).bake();
+				}
 			}
 		}
 		catch( MissingIngredientError err )

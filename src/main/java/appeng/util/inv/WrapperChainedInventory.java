@@ -89,7 +89,9 @@ public class WrapperChainedInventory implements IInventory
 			List<IInventory> newOrder = new ArrayList<IInventory>( this.l.size() );
 			newOrder.add( this.l.get( this.l.size() - 1 ) );
 			for( int x = 0; x < this.l.size() - 1; x++ )
+			{
 				newOrder.add( this.l.get( x ) );
+			}
 			this.setInventory( newOrder );
 		}
 	}
@@ -181,7 +183,9 @@ public class WrapperChainedInventory implements IInventory
 		int smallest = 64;
 
 		for( IInventory i : this.l )
+		{
 			smallest = Math.min( smallest, i.getInventoryStackLimit() );
+		}
 
 		return smallest;
 	}

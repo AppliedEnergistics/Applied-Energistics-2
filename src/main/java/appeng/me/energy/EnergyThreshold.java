@@ -36,9 +36,13 @@ public class EnergyThreshold implements Comparable<EnergyThreshold>
 		this.watcher = wat;
 
 		if( this.watcher != null )
+		{
 			this.hash = this.watcher.hashCode() ^ ( (Double) lim ).hashCode();
+		}
 		else
+		{
 			this.hash = ( (Double) lim ).hashCode();
+		}
 	}
 
 	@Override

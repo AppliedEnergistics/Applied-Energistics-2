@@ -66,7 +66,9 @@ public enum ReadableNumberConverter implements ISlimReadableNumberConverter, IWi
 		final String numberString = Long.toString( number );
 		int numberSize = numberString.length();
 		if( numberSize <= width )
+		{
 			return numberString;
+		}
 
 		long base = number;
 		double last = base * 1000;

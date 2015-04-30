@@ -47,7 +47,9 @@ public class AchievementPickupHandler
 	public void onItemPickUp( PlayerEvent.ItemPickupEvent event )
 	{
 		if( this.differentiator.isNoPlayer( event.player ) || event.pickedUp == null || event.pickedUp.getEntityItem() == null )
+		{
 			return;
+		}
 
 		ItemStack is = event.pickedUp.getEntityItem();
 

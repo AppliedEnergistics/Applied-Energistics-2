@@ -54,9 +54,13 @@ public class ItemRenderer implements IItemRenderer
 		GL11.glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 
 		if( type == ItemRenderType.ENTITY )
+		{
 			GL11.glTranslatef( -0.5f, -0.5f, -0.5f );
+		}
 		if( type == ItemRenderType.INVENTORY )
+		{
 			GL11.glTranslatef( 0.0f, -0.1f, 0.0f );
+		}
 
 		WorldRender.INSTANCE.renderItemBlock( item, type, data );
 

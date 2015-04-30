@@ -41,7 +41,9 @@ public class WrapperMCISidedInventory extends WrapperInventoryRange implements I
 	public ItemStack decrStackSize( int var1, int var2 )
 	{
 		if( this.canRemoveItemFromSlot( var1, this.getStackInSlot( var1 ) ) )
+		{
 			return super.decrStackSize( var1, var2 );
+		}
 		return null;
 	}
 
@@ -50,10 +52,14 @@ public class WrapperMCISidedInventory extends WrapperInventoryRange implements I
 	{
 
 		if( this.ignoreValidItems )
+		{
 			return true;
+		}
 
 		if( this.side.isItemValidForSlot( this.slots[i], itemstack ) )
+		{
 			return this.side.canInsertItem( this.slots[i], itemstack, this.dir.ordinal() );
+		}
 
 		return false;
 	}
@@ -62,7 +68,9 @@ public class WrapperMCISidedInventory extends WrapperInventoryRange implements I
 	public boolean canRemoveItemFromSlot( int i, ItemStack is )
 	{
 		if( is == null )
+		{
 			return false;
+		}
 
 		return this.side.canExtractItem( this.slots[i], is, this.dir.ordinal() );
 	}

@@ -253,7 +253,9 @@ public class CraftingJob implements Runnable, ICraftingJob
 			}
 
 			if( Thread.interrupted() )
+			{
 				throw new InterruptedException();
+			}
 		}
 		this.incTime++;
 	}
@@ -261,7 +263,9 @@ public class CraftingJob implements Runnable, ICraftingJob
 	public void finish()
 	{
 		if( this.callback != null )
+		{
 			this.callback.calculationComplete( this );
+		}
 
 		this.availableCheck = null;
 
@@ -294,7 +298,9 @@ public class CraftingJob implements Runnable, ICraftingJob
 	public void populatePlan( IItemList<IAEItemStack> plan )
 	{
 		if( this.tree != null )
+		{
 			this.tree.getPlan( plan );
+		}
 	}
 
 	@Override
@@ -327,7 +333,9 @@ public class CraftingJob implements Runnable, ICraftingJob
 		synchronized( this.monitor )
 		{
 			if( this.done )
+			{
 				return false;
+			}
 
 			this.watch.reset();
 			this.watch.start();

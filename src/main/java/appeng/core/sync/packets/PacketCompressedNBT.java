@@ -68,7 +68,9 @@ public class PacketCompressedNBT extends AppEngPacket
 			public int read() throws IOException
 			{
 				if( stream.readableBytes() <= 0 )
+				{
 					return -1;
+				}
 
 				return stream.readByte() & 0xff;
 			}
@@ -111,6 +113,8 @@ public class PacketCompressedNBT extends AppEngPacket
 		GuiScreen gs = Minecraft.getMinecraft().currentScreen;
 
 		if( gs instanceof GuiInterfaceTerminal )
+		{
 			( (GuiInterfaceTerminal) gs ).postUpdate( this.in );
+		}
 	}
 }

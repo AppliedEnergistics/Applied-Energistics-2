@@ -117,13 +117,21 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 		super( mat );
 
 		if( mat == AEGlassMaterial.INSTANCE || mat == Material.glass )
+		{
 			this.setStepSound( Block.soundTypeGlass );
+		}
 		else if( mat == Material.rock )
+		{
 			this.setStepSound( Block.soundTypeStone );
+		}
 		else if( mat == Material.wood )
+		{
 			this.setStepSound( Block.soundTypeWood );
+		}
 		else
+		{
 			this.setStepSound( Block.soundTypeMetal );
+		}
 
 		this.featureFullName = new FeatureNameExtractor( c, subName ).get();
 		this.featureSubName = subName;
@@ -152,7 +160,9 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	public BlockRenderInfo getRendererInstance()
 	{
 		if( this.renderInfo != null )
+		{
 			return this.renderInfo;
+		}
 
 		try
 		{
@@ -243,7 +253,9 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	public IIcon getIcon( int direction, int metadata )
 	{
 		if( this.renderIcon != null )
+		{
 			return this.renderIcon;
+		}
 
 		return this.getRendererInstance().getTexture( ForgeDirection.getOrientation( direction ) );
 	}
@@ -256,12 +268,16 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 		ICustomCollision collisionHandler = null;
 
 		if( this instanceof ICustomCollision )
+		{
 			collisionHandler = (ICustomCollision) this;
+		}
 		else
 		{
 			AEBaseTile te = this.getTileEntity( w, x, y, z );
 			if( te instanceof ICustomCollision )
+			{
 				collisionHandler = (ICustomCollision) te;
+			}
 		}
 
 		if( collisionHandler != null && bb != null )
@@ -277,11 +293,15 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 				b.maxY += y;
 				b.maxZ += z;
 				if( bb.intersectsWith( b ) )
+				{
 					out.add( b );
+				}
 			}
 		}
 		else
+		{
 			super.addCollisionBoxesToList( w, x, y, z, bb, out, e );
+		}
 	}
 
 	@Override
@@ -292,12 +312,16 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 		AxisAlignedBB b = null;
 
 		if( this instanceof ICustomCollision )
+		{
 			collisionHandler = (ICustomCollision) this;
+		}
 		else
 		{
 			AEBaseTile te = this.getTileEntity( w, x, y, z );
 			if( te instanceof ICustomCollision )
+			{
 				collisionHandler = (ICustomCollision) te;
+			}
 		}
 
 		if( collisionHandler != null )
@@ -345,7 +369,9 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 			for( AxisAlignedBB bx : collisionHandler.getSelectedBoundingBoxesFromPool( w, x, y, z, null, false ) )
 			{
 				if( b == null )
+				{
 					b = bx;
+				}
 				else
 				{
 					double minX = Math.min( b.minX, bx.minX );
@@ -361,7 +387,9 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 			b.setBounds( b.minX + x, b.minY + y, b.minZ + z, b.maxX + x, b.maxY + y, b.maxZ + z );
 		}
 		else
+		{
 			b = super.getSelectedBoundingBoxFromPool( w, x, y, z );
+		}
 
 		return b;
 	}
@@ -378,12 +406,16 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 		ICustomCollision collisionHandler = null;
 
 		if( this instanceof ICustomCollision )
+		{
 			collisionHandler = (ICustomCollision) this;
+		}
 		else
 		{
 			AEBaseTile te = this.getTileEntity( w, x, y, z );
 			if( te instanceof ICustomCollision )
+			{
 				collisionHandler = (ICustomCollision) te;
+			}
 		}
 
 		if( collisionHandler != null )
@@ -444,10 +476,14 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 						ItemStack[] drops = Platform.getBlockDrops( w, x, y, z );
 
 						if( tile == null )
+						{
 							return false;
+						}
 
 						if( tile instanceof TileCableBus || tile instanceof TileSkyChest )
+						{
 							return false;
+						}
 
 						ItemStack op = new ItemStack( this );
 						for( ItemStack ol : drops )
@@ -456,7 +492,9 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 							{
 								NBTTagCompound tag = tile.downloadSettings( SettingsFrom.DISMANTLE_ITEM );
 								if( tag != null )
+								{
 									ol.setTagCompound( tag );
+								}
 							}
 						}
 
@@ -499,7 +537,9 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 							memoryCard.notifyUser( player, MemoryCardMessages.SETTINGS_LOADED );
 						}
 						else
+						{
 							memoryCard.notifyUser( player, MemoryCardMessages.INVALID_MACHINE );
+						}
 						return false;
 					}
 				}
@@ -521,7 +561,9 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 		{
 			TileEntity te = this.getTileEntity( w, x, y, z );
 			if( te instanceof AEBaseTile )
+			{
 				( (AEBaseTile) w.getTileEntity( x, y, z ) ).setName( is.getDisplayName() );
+			}
 		}
 	}
 
@@ -544,7 +586,9 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	{
 		TileEntity te = this.getTileEntity( w, x, y, z );
 		if( te instanceof IInventory )
+		{
 			return Container.calcRedstoneFromInventory( (IInventory) te );
+		}
 		return 0;
 	}
 
@@ -678,7 +722,9 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	{
 		// if the input is an flippable IIcon find the original.
 		while( substitute instanceof FlippableIcon )
+		{
 			substitute = ( (FlippableIcon) substitute ).getOriginal();
+		}
 
 		if( substitute != null )
 		{
@@ -689,7 +735,9 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 
 				IResource res = Minecraft.getMinecraft().getResourceManager().getResource( resLoc );
 				if( res != null )
+				{
 					return new FlippableIcon( ir.registerIcon( Name ) );
+				}
 			}
 			catch( Throwable e )
 			{
@@ -731,11 +779,15 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	public <T extends TileEntity> T getTileEntity( IBlockAccess w, int x, int y, int z )
 	{
 		if( !this.hasBlockTileEntity() )
+		{
 			return null;
+		}
 
 		TileEntity te = w.getTileEntity( x, y, z );
 		if( this.tileEntityType.isInstance( te ) )
+		{
 			return (T) te;
+		}
 
 		return null;
 	}
@@ -754,30 +806,48 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 		ForgeDirection west = ForgeDirection.UNKNOWN;
 
 		if( forward == null || up == null )
+		{
 			return dir;
+		}
 
 		int west_x = forward.offsetY * up.offsetZ - forward.offsetZ * up.offsetY;
 		int west_y = forward.offsetZ * up.offsetX - forward.offsetX * up.offsetZ;
 		int west_z = forward.offsetX * up.offsetY - forward.offsetY * up.offsetX;
 
 		for( ForgeDirection dx : ForgeDirection.VALID_DIRECTIONS )
+		{
 			if( dx.offsetX == west_x && dx.offsetY == west_y && dx.offsetZ == west_z )
+			{
 				west = dx;
+			}
+		}
 
 		if( dir == forward )
+		{
 			return ForgeDirection.SOUTH;
+		}
 		if( dir == forward.getOpposite() )
+		{
 			return ForgeDirection.NORTH;
+		}
 
 		if( dir == up )
+		{
 			return ForgeDirection.UP;
+		}
 		if( dir == up.getOpposite() )
+		{
 			return ForgeDirection.DOWN;
+		}
 
 		if( dir == west )
+		{
 			return ForgeDirection.WEST;
+		}
 		if( dir == west.getOpposite() )
+		{
 			return ForgeDirection.EAST;
+		}
 
 		return ForgeDirection.UNKNOWN;
 	}
@@ -823,9 +893,13 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 		{
 			ArrayList<ItemStack> drops = new ArrayList<ItemStack>();
 			if( te.dropItems() )
+			{
 				te.getDrops( w, x, y, z, drops );
+			}
 			else
+			{
 				te.getNoDrops( w, x, y, z, drops );
+			}
 
 			// Cry ;_; ...
 			Platform.spawnDrops( w, x, y, z, drops );
@@ -833,7 +907,9 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 
 		super.breakBlock( w, x, y, z, a, b );
 		if( te != null )
+		{
 			w.setTileEntity( x, y, z, null );
+		}
 	}
 
 	public String getUnlocalizedName( ItemStack is )

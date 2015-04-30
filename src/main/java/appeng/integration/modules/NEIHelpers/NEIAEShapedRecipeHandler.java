@@ -152,11 +152,15 @@ public class NEIAEShapedRecipeHandler extends TemplateRecipeHandler
 	{
 		IRecipeOverlayRenderer renderer = super.getOverlayRenderer( gui, recipe );
 		if( renderer != null )
+		{
 			return renderer;
+		}
 
 		IStackPositioner positioner = RecipeInfo.getStackPositioner( gui, "crafting2x2" );
 		if( positioner == null )
+		{
 			return null;
+		}
 
 		return new DefaultOverlayRenderer( this.getIngredientStacks( recipe ), positioner );
 	}
@@ -166,7 +170,9 @@ public class NEIAEShapedRecipeHandler extends TemplateRecipeHandler
 	{
 		IOverlayHandler handler = super.getOverlayHandler( gui, recipe );
 		if( handler != null )
+		{
 			return handler;
+		}
 
 		return RecipeInfo.getOverlayHandler( gui, "crafting2x2" );
 	}
@@ -176,7 +182,9 @@ public class NEIAEShapedRecipeHandler extends TemplateRecipeHandler
 		for( PositionedStack stack : this.getIngredientStacks( recipe ) )
 		{
 			if( ( stack.relx > 43 ) || ( stack.rely > 24 ) )
+			{
 				return false;
+			}
 		}
 		return true;
 	}

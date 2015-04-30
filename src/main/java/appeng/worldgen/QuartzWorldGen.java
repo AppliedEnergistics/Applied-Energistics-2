@@ -68,7 +68,9 @@ public final class QuartzWorldGen implements IWorldGenerator
 		}
 
 		if( this.oreNormal == null || this.oreCharged == null )
+		{
 			return;
+		}
 
 		double oreDepthMultiplier = AEConfig.instance.quartzOresClusterAmount * seaLevel / 64;
 		int scale = (int) Math.round( r.nextGaussian() * Math.sqrt( oreDepthMultiplier ) + oreDepthMultiplier );

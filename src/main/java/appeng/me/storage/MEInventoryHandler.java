@@ -53,9 +53,13 @@ public class MEInventoryHandler<T extends IAEStack<T>> implements IMEInventoryHa
 		this.channel = channel;
 
 		if( i instanceof IMEInventoryHandler )
+		{
 			this.internal = (IMEInventoryHandler<T>) i;
+		}
 		else
+		{
 			this.internal = new MEPassThrough<T>( i, channel );
+		}
 
 		this.monitor = this.internal instanceof IMEMonitor ? (IMEMonitor<T>) this.internal : null;
 
@@ -102,7 +106,9 @@ public class MEInventoryHandler<T extends IAEStack<T>> implements IMEInventoryHa
 	public T injectItems( T input, Actionable type, BaseActionSource src )
 	{
 		if( !this.canAccept( input ) )
+		{
 			return input;
+		}
 
 		return this.internal.injectItems( input, type, src );
 	}
@@ -111,7 +117,9 @@ public class MEInventoryHandler<T extends IAEStack<T>> implements IMEInventoryHa
 	public T extractItems( T request, Actionable type, BaseActionSource src )
 	{
 		if( !this.hasReadAccess )
+		{
 			return null;
+		}
 
 		return this.internal.extractItems( request, type, src );
 	}
@@ -120,7 +128,9 @@ public class MEInventoryHandler<T extends IAEStack<T>> implements IMEInventoryHa
 	public IItemList<T> getAvailableItems( IItemList<T> out )
 	{
 		if( !this.hasReadAccess )
+		{
 			return out;
+		}
 
 		return this.internal.getAvailableItems( out );
 	}
@@ -141,7 +151,9 @@ public class MEInventoryHandler<T extends IAEStack<T>> implements IMEInventoryHa
 	public boolean isPrioritized( T input )
 	{
 		if( this.myWhitelist == IncludeExclude.WHITELIST )
+		{
 			return this.myPartitionList.isListed( input ) || this.internal.isPrioritized( input );
+		}
 		return false;
 	}
 
@@ -149,12 +161,18 @@ public class MEInventoryHandler<T extends IAEStack<T>> implements IMEInventoryHa
 	public boolean canAccept( T input )
 	{
 		if( !this.hasWriteAccess )
+		{
 			return false;
+		}
 
 		if( this.myWhitelist == IncludeExclude.BLACKLIST && this.myPartitionList.isListed( input ) )
+		{
 			return false;
+		}
 		if( this.myPartitionList.isEmpty() || this.myWhitelist == IncludeExclude.BLACKLIST )
+		{
 			return this.internal.canAccept( input );
+		}
 		return this.myPartitionList.isListed( input ) && this.internal.canAccept( input );
 	}
 

@@ -69,7 +69,9 @@ public final class ASMTweaker implements IClassTransformer
 	public byte[] transform( String name, String transformedName, byte[] basicClass )
 	{
 		if( basicClass == null )
+		{
 			return null;
+		}
 
 		try
 		{

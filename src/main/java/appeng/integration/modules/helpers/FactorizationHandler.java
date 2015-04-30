@@ -44,7 +44,9 @@ public class FactorizationHandler implements IExternalStorageHandler
 	public IMEInventory getInventory( TileEntity te, ForgeDirection d, StorageChannel chan, BaseActionSource src )
 	{
 		if( chan == StorageChannel.ITEMS )
+		{
 			return new MEMonitorIInventory( new IMEAdaptor( FZ.instance.getFactorizationBarrel( te ), src ) );
+		}
 		return null;
 	}
 }

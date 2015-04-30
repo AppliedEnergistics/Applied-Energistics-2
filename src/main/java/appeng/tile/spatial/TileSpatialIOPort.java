@@ -71,13 +71,17 @@ public class TileSpatialIOPort extends AENetworkInvTile implements Callable
 	public void readFromNBT_TileSpatialIOPort( NBTTagCompound data )
 	{
 		if( data.hasKey( "lastRedstoneState" ) )
+		{
 			this.lastRedstoneState = YesNo.values()[data.getInteger( "lastRedstoneState" )];
+		}
 	}
 
 	public boolean getRedstoneState()
 	{
 		if( this.lastRedstoneState == YesNo.UNDECIDED )
+		{
 			this.updateRedstoneState();
+		}
 
 		return this.lastRedstoneState == YesNo.YES;
 	}
@@ -89,7 +93,9 @@ public class TileSpatialIOPort extends AENetworkInvTile implements Callable
 		{
 			this.lastRedstoneState = currentState;
 			if( this.lastRedstoneState == YesNo.YES )
+			{
 				this.triggerTransition();
+			}
 		}
 	}
 

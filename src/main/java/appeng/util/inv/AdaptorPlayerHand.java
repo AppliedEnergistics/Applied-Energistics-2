@@ -48,7 +48,9 @@ public class AdaptorPlayerHand extends InventoryAdaptor
 	{
 		ItemStack hand = this.p.inventory.getItemStack();
 		if( hand == null )
+		{
 			return null;
+		}
 
 		if( filter == null || Platform.isSameItemPrecise( filter, hand ) )
 		{
@@ -56,7 +58,9 @@ public class AdaptorPlayerHand extends InventoryAdaptor
 			result.stackSize = hand.stackSize > amount ? amount : hand.stackSize;
 			hand.stackSize -= amount;
 			if( hand.stackSize <= 0 )
+			{
 				this.p.inventory.setItemStack( null );
+			}
 			return result;
 		}
 
@@ -69,7 +73,9 @@ public class AdaptorPlayerHand extends InventoryAdaptor
 
 		ItemStack hand = this.p.inventory.getItemStack();
 		if( hand == null )
+		{
 			return null;
+		}
 
 		if( filter == null || Platform.isSameItemPrecise( filter, hand ) )
 		{
@@ -86,7 +92,9 @@ public class AdaptorPlayerHand extends InventoryAdaptor
 	{
 		ItemStack hand = this.p.inventory.getItemStack();
 		if( hand == null )
+		{
 			return null;
+		}
 
 		if( Filter == null || Platform.isSameItemFuzzy( Filter, hand, fuzzyMode ) )
 		{
@@ -94,7 +102,9 @@ public class AdaptorPlayerHand extends InventoryAdaptor
 			result.stackSize = hand.stackSize > how_many ? how_many : hand.stackSize;
 			hand.stackSize -= how_many;
 			if( hand.stackSize <= 0 )
+			{
 				this.p.inventory.setItemStack( null );
+			}
 			return result;
 		}
 
@@ -107,7 +117,9 @@ public class AdaptorPlayerHand extends InventoryAdaptor
 
 		ItemStack hand = this.p.inventory.getItemStack();
 		if( hand == null )
+		{
 			return null;
+		}
 
 		if( Filter == null || Platform.isSameItemFuzzy( Filter, hand, fuzzyMode ) )
 		{
@@ -124,23 +136,35 @@ public class AdaptorPlayerHand extends InventoryAdaptor
 	{
 
 		if( toBeAdded == null )
+		{
 			return null;
+		}
 		if( toBeAdded.stackSize == 0 )
+		{
 			return null;
+		}
 		if( this.p == null )
+		{
 			return toBeAdded;
+		}
 		if( this.p.inventory == null )
+		{
 			return toBeAdded;
+		}
 
 		ItemStack hand = this.p.inventory.getItemStack();
 
 		if( hand != null && !Platform.isSameItemPrecise( toBeAdded, hand ) )
+		{
 			return toBeAdded;
+		}
 
 		int original = 0;
 		ItemStack newHand = null;
 		if( hand == null )
+		{
 			newHand = toBeAdded.copy();
+		}
 		else
 		{
 			newHand = hand;
@@ -166,15 +190,21 @@ public class AdaptorPlayerHand extends InventoryAdaptor
 	{
 		ItemStack hand = this.p.inventory.getItemStack();
 		if( toBeSimulated == null )
+		{
 			return null;
+		}
 
 		if( hand != null && !Platform.isSameItem( toBeSimulated, hand ) )
+		{
 			return toBeSimulated;
+		}
 
 		int original = 0;
 		ItemStack newHand = null;
 		if( hand == null )
+		{
 			newHand = toBeSimulated.copy();
+		}
 		else
 		{
 			newHand = hand.copy();

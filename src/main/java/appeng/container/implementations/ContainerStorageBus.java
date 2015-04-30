@@ -79,9 +79,13 @@ public class ContainerStorageBus extends ContainerUpgradeable
 			for( int x = 0; x < 9; x++ )
 			{
 				if( y < 2 )
+				{
 					this.addSlotToContainer( new SlotFakeTypeOnly( config, y * 9 + x, xo + x * 18, yo + y * 18 ) );
+				}
 				else
+				{
 					this.addSlotToContainer( new OptionalSlotFakeTypeOnly( config, this, y * 9 + x, xo, yo, x, y, y - 2 ) );
+				}
 			}
 		}
 
@@ -132,7 +136,9 @@ public class ContainerStorageBus extends ContainerUpgradeable
 	{
 		IInventory inv = this.upgradeable.getInventoryByName( "config" );
 		for( int x = 0; x < inv.getSizeInventory(); x++ )
+		{
 			inv.setInventorySlotContents( x, null );
+		}
 		this.detectAndSendChanges();
 	}
 
@@ -158,7 +164,9 @@ public class ContainerStorageBus extends ContainerUpgradeable
 				inv.setInventorySlotContents( x, g );
 			}
 			else
+			{
 				inv.setInventorySlotContents( x, null );
+			}
 		}
 
 		this.detectAndSendChanges();

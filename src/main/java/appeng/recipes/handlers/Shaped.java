@@ -68,13 +68,19 @@ public class Shaped implements ICraftHandler, IWebsiteSerializer
 					this.output = output.get( 0 ).get( 0 );
 				}
 				else
+				{
 					throw new RecipeError( "Crafting recipes must have 1-3 columns." );
+				}
 			}
 			else
+			{
 				throw new RecipeError( "shaped crafting recipes must have 1-3 rows." );
+			}
 		}
 		else
+		{
 			throw new RecipeError( "Crafting must produce a single output." );
+		}
 	}
 
 	@Override
@@ -89,7 +95,9 @@ public class Shaped implements ICraftHandler, IWebsiteSerializer
 			for( int x = 0; x < this.cols; x++ )
 			{
 				if( this.inputs.get( y ).get( x ).isAir() )
+				{
 					row.append( ' ' );
+				}
 				else
 				{
 					row.append( first );
@@ -123,15 +131,21 @@ public class Shaped implements ICraftHandler, IWebsiteSerializer
 		o += h.getName( this.output ) + '\n';
 
 		for( int y = 0; y < this.rows; y++ )
+		{
 			for( int x = 0; x < this.cols; x++ )
 			{
 				IIngredient i = this.inputs.get( y ).get( x );
 
 				if( i.isAir() )
+				{
 					o += "air" + ( x + 1 == this.cols ? "\n" : " " );
+				}
 				else
+				{
 					o += h.getName( i ) + ( x + 1 == this.cols ? "\n" : " " );
+				}
 			}
+		}
 
 		return o.trim();
 	}
@@ -140,6 +154,7 @@ public class Shaped implements ICraftHandler, IWebsiteSerializer
 	public boolean canCraft( ItemStack reqOutput ) throws RegistrationError, MissingIngredientError
 	{
 		for( int y = 0; y < this.rows; y++ )
+		{
 			for( int x = 0; x < this.cols; x++ )
 			{
 				IIngredient i = this.inputs.get( y ).get( x );
@@ -149,10 +164,13 @@ public class Shaped implements ICraftHandler, IWebsiteSerializer
 					for( ItemStack r : i.getItemStackSet() )
 					{
 						if( Platform.isSameItemPrecise( r, reqOutput ) )
+						{
 							return false;
+						}
 					}
 				}
 			}
+		}
 
 		return Platform.isSameItemPrecise( this.output.getItemStack(), reqOutput );
 	}

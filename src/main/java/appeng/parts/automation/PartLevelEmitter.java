@@ -120,9 +120,13 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 	{
 		this.reportingValue = v;
 		if( this.getConfigManager().getSetting( Settings.LEVEL_TYPE ) == LevelType.ENERGY_LEVEL )
+		{
 			this.configureWatchers();
+		}
 		else
+		{
 			this.updateState();
+		}
 	}
 
 	@MENetworkEventSubscribe
@@ -211,13 +215,19 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 		IAEItemStack myStack = this.config.getAEStackInSlot( 0 );
 
 		if( this.myWatcher != null )
+		{
 			this.myWatcher.clear();
+		}
 
 		if( this.myEnergyWatcher != null )
+		{
 			this.myEnergyWatcher.clear();
+		}
 
 		if( this.myCraftingWatcher != null )
+		{
 			this.myCraftingWatcher.clear();
+		}
 
 		try
 		{
@@ -231,7 +241,9 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 		if( this.getInstalledUpgrades( Upgrades.CRAFTING ) > 0 )
 		{
 			if( this.myCraftingWatcher != null && myStack != null )
+			{
 				this.myCraftingWatcher.add( myStack );
+			}
 
 			return;
 		}
@@ -239,7 +251,9 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 		if( this.getConfigManager().getSetting( Settings.LEVEL_TYPE ) == LevelType.ENERGY_LEVEL )
 		{
 			if( this.myEnergyWatcher != null )
+			{
 				this.myEnergyWatcher.add( (double) this.reportingValue );
+			}
 
 			try
 			{
@@ -269,7 +283,9 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 				this.proxy.getStorage().getItemInventory().removeListener( this );
 
 				if( this.myWatcher != null )
+				{
 					this.myWatcher.add( myStack );
+				}
 			}
 
 			this.updateReportingValue( this.proxy.getStorage().getItemInventory() );
@@ -288,7 +304,9 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 		{
 			this.lastReportedValue = 0;
 			for( IAEItemStack st : monitor.getStorageList() )
+			{
 				this.lastReportedValue += st.getStackSize();
+			}
 		}
 		else if( this.getInstalledUpgrades( Upgrades.FUZZY ) > 0 )
 		{
@@ -296,15 +314,21 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 			FuzzyMode fzMode = (FuzzyMode) this.getConfigManager().getSetting( Settings.FUZZY_MODE );
 			Collection<IAEItemStack> fuzzyList = monitor.getStorageList().findFuzzy( myStack, fzMode );
 			for( IAEItemStack st : fuzzyList )
+			{
 				this.lastReportedValue += st.getStackSize();
+			}
 		}
 		else
 		{
 			IAEItemStack r = monitor.getStorageList().findPrecise( myStack );
 			if( r == null )
+			{
 				this.lastReportedValue = 0;
+			}
 			else
+			{
 				this.lastReportedValue = r.getStackSize();
+			}
 		}
 
 		this.updateState();
@@ -624,7 +648,9 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 		if( !player.isSneaking() )
 		{
 			if( Platform.isClient() )
+			{
 				return true;
+			}
 
 			Platform.openGUI( player, this.getHost().getTile(), this.side, GuiBridge.GUI_LEVEL_EMITTER );
 			return true;
@@ -643,7 +669,9 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 	public void onChangeInventory( IInventory inv, int slot, InvOperation mc, ItemStack removedStack, ItemStack newStack )
 	{
 		if( inv == this.config )
+		{
 			this.configureWatchers();
+		}
 
 		super.onChangeInventory( inv, slot, mc, removedStack, newStack );
 	}
@@ -684,7 +712,9 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 	public IInventory getInventoryByName( String name )
 	{
 		if( name.equals( "config" ) )
+		{
 			return this.config;
+		}
 
 		return super.getInventoryByName( name );
 	}
@@ -710,7 +740,9 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 			{
 				IAEItemStack what = this.config.getAEStackInSlot( 0 );
 				if( what != null )
+				{
 					craftingTracker.setEmitable( what );
+				}
 			}
 		}
 	}

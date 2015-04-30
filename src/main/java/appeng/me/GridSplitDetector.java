@@ -38,7 +38,9 @@ class GridSplitDetector implements IGridVisitor
 	public boolean visitNode( IGridNode n )
 	{
 		if( n == this.pivot )
+		{
 			this.pivotFound = true;
+		}
 
 		return !this.pivotFound;
 	}

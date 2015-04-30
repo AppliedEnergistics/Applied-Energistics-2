@@ -85,13 +85,19 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 				String encKey = tag.getString( "encryptionKey" );
 
 				if( encKey == null || encKey.isEmpty() )
+				{
 					lines.add( GuiText.Unlinked.getLocal() );
+				}
 				else
+				{
 					lines.add( GuiText.Linked.getLocal() );
+				}
 			}
 		}
 		else
+		{
 			lines.add( StatCollector.translateToLocal( "AppEng.GuiITooltip.Unlinked" ) );
+		}
 	}
 
 	@Override

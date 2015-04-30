@@ -112,7 +112,9 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 		newSides[ForgeDirection.NORTH.ordinal()] = this.getSide( ForgeDirection.WEST );
 
 		for( ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS )
+		{
 			this.setSide( dir, newSides[dir.ordinal()] );
+		}
 
 		this.getFacadeContainer().rotateLeft();
 	}
@@ -127,7 +129,9 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 	public boolean canAddPart( ItemStack is, ForgeDirection side )
 	{
 		if( PartPlacement.isFacade( is, side ) != null )
+		{
 			return true;
+		}
 
 		if( is.getItem() instanceof IPartItem )
 		{
@@ -143,11 +147,17 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 				{
 					boolean canPlace = true;
 					for( ForgeDirection d : ForgeDirection.VALID_DIRECTIONS )
+					{
 						if( this.getPart( d ) != null && !this.getPart( d ).canBePlacedOn( ( (IPartCable) bp ).supportsBuses() ) )
+						{
 							canPlace = false;
+						}
+					}
 
 					if( !canPlace )
+					{
 						return false;
+					}
 
 					return this.getPart( ForgeDirection.UNKNOWN ) == null;
 				}
@@ -155,7 +165,9 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 				{
 					IPart cable = this.getPart( ForgeDirection.UNKNOWN );
 					if( cable != null && !bp.canBePlacedOn( ( (IPartCable) cable ).supportsBuses() ) )
+					{
 						return false;
+					}
 
 					return this.getPart( side ) == null;
 				}
@@ -181,23 +193,35 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 				{
 					boolean canPlace = true;
 					for( ForgeDirection d : ForgeDirection.VALID_DIRECTIONS )
+					{
 						if( this.getPart( d ) != null && !this.getPart( d ).canBePlacedOn( ( (IPartCable) bp ).supportsBuses() ) )
+						{
 							canPlace = false;
+						}
+					}
 
 					if( !canPlace )
+					{
 						return null;
+					}
 
 					if( this.getPart( ForgeDirection.UNKNOWN ) != null )
+					{
 						return null;
+					}
 
 					this.setCenter( (IPartCable) bp );
 					bp.setPartHostInfo( ForgeDirection.UNKNOWN, this, this.tcb.getTile() );
 
 					if( player != null )
+					{
 						bp.onPlacement( player, is, side );
+					}
 
 					if( this.inWorld )
+					{
 						bp.addToWorld();
+					}
 
 					IGridNode cn = this.getCenter().getGridNode();
 					if( cn != null )
@@ -237,16 +261,22 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 				{
 					IPart cable = this.getPart( ForgeDirection.UNKNOWN );
 					if( cable != null && !bp.canBePlacedOn( ( (IPartCable) cable ).supportsBuses() ) )
+					{
 						return null;
+					}
 
 					this.setSide( side, bp );
 					bp.setPartHostInfo( side, this, this.getTile() );
 
 					if( player != null )
+					{
 						bp.onPlacement( player, is, side );
+					}
 
 					if( this.inWorld )
+					{
 						bp.addToWorld();
+					}
 
 					if( this.getCenter() != null )
 					{
@@ -286,7 +316,9 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 	public IPart getPart( ForgeDirection side )
 	{
 		if( side == ForgeDirection.UNKNOWN )
+		{
 			return this.getCenter();
+		}
 		return this.getSide( side );
 	}
 
@@ -296,13 +328,17 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 		if( side == ForgeDirection.UNKNOWN )
 		{
 			if( this.getCenter() != null )
+			{
 				this.getCenter().removeFromWorld();
+			}
 			this.setCenter( null );
 		}
 		else
 		{
 			if( this.getSide( side ) != null )
+			{
 				this.getSide( side ).removeFromWorld();
+			}
 			this.setSide( side, null );
 		}
 
@@ -445,7 +481,9 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 	public boolean hasRedstone( ForgeDirection side )
 	{
 		if( this.hasRedstone == YesNo.UNDECIDED )
+		{
 			this.updateRedstone();
+		}
 
 		return this.hasRedstone == YesNo.YES;
 	}
@@ -458,13 +496,17 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 		{
 			IPart part = this.getPart( s );
 			if( part != null )
+			{
 				return false;
+			}
 
 			if( s != ForgeDirection.UNKNOWN )
 			{
 				IFacadePart fp = fc.getFacade( s );
 				if( fp != null )
+				{
 					return false;
+				}
 			}
 		}
 		return true;
@@ -507,7 +549,9 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 		{
 			IPart p = this.getPart( s );
 			if( p != null )
+			{
 				this.requiresDynamicRender = this.requiresDynamicRender || p.requireDynamicRender();
+			}
 		}
 	}
 
@@ -523,20 +567,26 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 			for( ForgeDirection s : ForgeDirection.VALID_DIRECTIONS )
 			{
 				if( this.getPart( s ) != null || this.isBlocked( s ) )
+				{
 					sides.remove( s );
+				}
 			}
 
 			this.getCenter().setValidSides( sides );
 			IGridNode n = this.getCenter().getGridNode();
 			if( n != null )
+			{
 				n.updateState();
+			}
 		}
 	}
 
 	public void addToWorld()
 	{
 		if( this.inWorld )
+		{
 			return;
+		}
 
 		this.inWorld = true;
 		IS_LOADING.set( true );
@@ -592,7 +642,9 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 	public void removeFromWorld()
 	{
 		if( !this.inWorld )
+		{
 			return;
+		}
 
 		this.inWorld = false;
 
@@ -600,7 +652,9 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 		{
 			IPart part = this.getPart( s );
 			if( part != null )
+			{
 				part.removeFromWorld();
+			}
 		}
 
 		this.partChanged();
@@ -614,11 +668,15 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 		{
 			IGridNode n = part.getExternalFacingNode();
 			if( n != null )
+			{
 				return n;
+			}
 		}
 
 		if( this.getCenter() != null )
+		{
 			return this.getCenter().getGridNode();
+		}
 
 		return null;
 	}
@@ -631,7 +689,9 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 		{
 			AECableType t = ( (IGridHost) part ).getCableConnectionType( dir );
 			if( t != null && t != AECableType.NONE )
+			{
 				return t;
+			}
 		}
 
 		if( this.getCenter() != null )
@@ -649,7 +709,9 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 		{
 			IPart p = this.getPart( d );
 			if( p instanceof IGridHost )
+			{
 				( (IGridHost) p ).securityBreak();
+			}
 		}
 	}
 
@@ -666,9 +728,13 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 			if( part != null )
 			{
 				if( ignoreCableConnections && part instanceof IPartCable )
+				{
 					bch.addBox( 6.0, 6.0, 6.0, 10.0, 10.0, 10.0 );
+				}
 				else
+				{
 					part.getBoxes( bch );
+				}
 			}
 
 			if( AEApi.instance().partHelper().getCableRenderMode().opaqueFacades || !visual )
@@ -677,7 +743,9 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 				{
 					IFacadePart fp = fc.getFacade( s );
 					if( fp != null )
+					{
 						fp.getBoxes( bch, e );
+					}
 				}
 			}
 		}
@@ -706,7 +774,9 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 		{
 			IPart part = this.getPart( dir );
 			if( part != null && part.canConnectRedstone() )
+			{
 				return true;
+			}
 		}
 		return false;
 	}
@@ -718,7 +788,9 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 		{
 			IPart part = this.getPart( s );
 			if( part != null )
+			{
 				part.onEntityCollision( entity );
+			}
 		}
 	}
 
@@ -742,7 +814,9 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 		{
 			IPart part = this.getPart( s );
 			if( part != null )
+			{
 				part.onNeighborChanged();
+			}
 		}
 	}
 
@@ -750,12 +824,16 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 	public boolean isSolidOnSide( ForgeDirection side )
 	{
 		if( side == null || side == ForgeDirection.UNKNOWN )
+		{
 			return false;
+		}
 
 		// facades are solid..
 		IFacadePart fp = this.getFacadeContainer().getFacade( side );
 		if( fp != null )
+		{
 			return true;
+		}
 
 		// buses can be too.
 		IPart part = this.getPart( side );
@@ -771,7 +849,9 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 			if( p != null )
 			{
 				if( p.isLadder( entity ) )
+				{
 					return true;
+				}
 			}
 		}
 
@@ -800,11 +880,15 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 		{
 			IPart p = this.getPart( d );
 			if( p != null )
+			{
 				light = Math.max( p.getLightLevel(), light );
+			}
 		}
 
 		if( light > 0 && AppEng.instance.isIntegrationEnabled( IntegrationType.CLApi ) )
+		{
 			return ( (ICLApi) AppEng.instance.getIntegration( IntegrationType.CLApi ) ).colorLight( this.getColor(), light );
+		}
 
 		return light;
 	}
@@ -875,7 +959,9 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 				if( current != null && current.getItem() == myItem && current.getItemDamage() == dmgValue )
 				{
 					if( p.readFromStream( data ) )
+					{
 						updateBlock = true;
+					}
 				}
 				else
 				{
@@ -887,15 +973,21 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 						p.readFromStream( data );
 					}
 					else
+					{
 						throw new IllegalStateException( "Invalid Stream For CableBus Container." );
+					}
 				}
 			}
 			else if( this.getPart( side ) != null )
+			{
 				this.removePart( side, false );
+			}
 		}
 
 		if( this.getFacadeContainer().readFromStream( data ) )
+		{
 			return true;
+		}
 
 		return updateBlock;
 	}
@@ -927,14 +1019,18 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 	ForgeDirection getSide( IPart part )
 	{
 		if( this.getCenter() == part )
+		{
 			return ForgeDirection.UNKNOWN;
+		}
 		else
 		{
 			for( ForgeDirection side : ForgeDirection.VALID_DIRECTIONS )
+			{
 				if( this.getSide( side ) == part )
 				{
 					return side;
 				}
+			}
 		}
 
 		throw new IllegalStateException( "Uhh Bad Part (" + part + ") on Side." );
@@ -943,7 +1039,9 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 	public void readFromNBT( NBTTagCompound data )
 	{
 		if( data.hasKey( "hasRedstone" ) )
+		{
 			this.hasRedstone = YesNo.values()[data.getInteger( "hasRedstone" )];
+		}
 
 		for( int x = 0; x < 7; x++ )
 		{
@@ -956,12 +1054,16 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 				IPart p = this.getPart( side );
 				ItemStack iss = ItemStack.loadItemStackFromNBT( def );
 				if( iss == null )
+				{
 					continue;
+				}
 
 				ItemStack current = p == null ? null : p.getItemStack( PartItemStack.World );
 
 				if( Platform.isSameItemType( iss, current ) )
+				{
 					p.readFromNBT( extra );
+				}
 				else
 				{
 					this.removePart( side, true );
@@ -978,7 +1080,9 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 				}
 			}
 			else
+			{
 				this.removePart( side, false );
+			}
 		}
 
 		this.getFacadeContainer().readFromNBT( data );
@@ -999,7 +1103,9 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 			{
 				IFacadePart fp = this.getFacadeContainer().getFacade( s );
 				if( fp != null )
+				{
 					drops.add( fp.getItemStack() );
+				}
 			}
 		}
 

@@ -151,7 +151,9 @@ public final class BusRenderHelper implements IPartRenderHelper
 	public void setBounds( double[] bounds )
 	{
 		if( bounds == null || bounds.length != 6 )
+		{
 			return;
+		}
 
 		this.minX = bounds[0];
 		this.minY = bounds[1];
@@ -301,18 +303,30 @@ public final class BusRenderHelper implements IPartRenderHelper
 				p.getBoxes( this.bbc );
 
 				if( this.bbc.minX < 1 )
+				{
 					this.bbc.minX = 1;
+				}
 				if( this.bbc.minY < 1 )
+				{
 					this.bbc.minY = 1;
+				}
 				if( this.bbc.minZ < 1 )
+				{
 					this.bbc.minZ = 1;
+				}
 
 				if( this.bbc.maxX > 15 )
+				{
 					this.bbc.maxX = 15;
+				}
 				if( this.bbc.maxY > 15 )
+				{
 					this.bbc.maxY = 15;
+				}
 				if( this.bbc.maxZ > 15 )
+				{
 					this.bbc.maxZ = 15;
+				}
 			}
 
 			this.setBounds( this.bbc.minX, this.bbc.minY, this.bbc.minZ, this.bbc.maxX, this.bbc.maxY, this.bbc.maxZ );
@@ -384,30 +398,48 @@ public final class BusRenderHelper implements IPartRenderHelper
 		ForgeDirection west = ForgeDirection.UNKNOWN;
 
 		if( forward == null || up == null )
+		{
 			return dir;
+		}
 
 		int west_x = forward.offsetY * up.offsetZ - forward.offsetZ * up.offsetY;
 		int west_y = forward.offsetZ * up.offsetX - forward.offsetX * up.offsetZ;
 		int west_z = forward.offsetX * up.offsetY - forward.offsetY * up.offsetX;
 
 		for( ForgeDirection dx : ForgeDirection.VALID_DIRECTIONS )
+		{
 			if( dx.offsetX == west_x && dx.offsetY == west_y && dx.offsetZ == west_z )
+			{
 				west = dx;
+			}
+		}
 
 		if( dir == forward )
+		{
 			return ForgeDirection.SOUTH;
+		}
 		if( dir == forward.getOpposite() )
+		{
 			return ForgeDirection.NORTH;
+		}
 
 		if( dir == up )
+		{
 			return ForgeDirection.UP;
+		}
 		if( dir == up.getOpposite() )
+		{
 			return ForgeDirection.DOWN;
+		}
 
 		if( dir == west )
+		{
 			return ForgeDirection.WEST;
+		}
 		if( dir == west.getOpposite() )
+		{
 			return ForgeDirection.EAST;
+		}
 
 		return ForgeDirection.UNKNOWN;
 	}
@@ -439,7 +471,9 @@ public final class BusRenderHelper implements IPartRenderHelper
 	public void renderBlock( int x, int y, int z, RenderBlocks renderer )
 	{
 		if( !this.renderThis() )
+		{
 			return;
+		}
 
 		for( Block multiPart : AEApi.instance().definitions().blocks().multiPart().maybeBlock().asSet() )
 		{
@@ -490,7 +524,9 @@ public final class BusRenderHelper implements IPartRenderHelper
 	public void renderBlockCurrentBounds( int x, int y, int z, RenderBlocks renderer )
 	{
 		if( !this.renderThis() )
+		{
 			return;
+		}
 
 		for( Block block : this.maybeBlock.asSet() )
 		{
@@ -502,7 +538,9 @@ public final class BusRenderHelper implements IPartRenderHelper
 	public void renderFaceCutout( int x, int y, int z, IIcon ico, ForgeDirection face, float edgeThickness, RenderBlocks renderer )
 	{
 		if( !this.renderThis() )
+		{
 			return;
+		}
 
 		switch( face )
 		{
@@ -540,7 +578,9 @@ public final class BusRenderHelper implements IPartRenderHelper
 	public void renderFace( int x, int y, int z, IIcon ico, ForgeDirection face, RenderBlocks renderer )
 	{
 		if( !this.renderThis() )
+		{
 			return;
+		}
 
 		this.prepareBounds( renderer );
 		switch( face )

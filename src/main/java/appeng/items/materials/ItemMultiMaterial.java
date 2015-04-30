@@ -91,7 +91,9 @@ public class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, 
 
 		MaterialType mt = this.getTypeByStack( stack );
 		if( mt == null )
+		{
 			return;
+		}
 
 		if( mt == MaterialType.NamePress )
 		{
@@ -114,14 +116,20 @@ public class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, 
 					IItemGroup ig = (IItemGroup) j.getKey().getItem();
 					String str = ig.getUnlocalizedGroupName( u.getSupported().keySet(), j.getKey() );
 					if( str != null )
+					{
 						name = Platform.gui_localize( str ) + ( limit > 1 ? " (" + limit + ')' : "" );
+					}
 				}
 
 				if( name == null )
+				{
 					name = j.getKey().getDisplayName() + ( limit > 1 ? " (" + limit + ')' : "" );
+				}
 
 				if( !textList.contains( name ) )
+				{
 					textList.add( name );
+				}
 			}
 
 			Pattern p = Pattern.compile( "(\\d+)[^\\d]" );
@@ -134,7 +142,9 @@ public class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, 
 	public MaterialType getTypeByStack( ItemStack is )
 	{
 		if( this.dmgToMaterial.containsKey( is.getItemDamage() ) )
+		{
 			return this.dmgToMaterial.get( is.getItemDamage() );
+		}
 		return MaterialType.InvalidType;
 	}
 
@@ -166,7 +176,9 @@ public class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, 
 		{
 			boolean enabled = true;
 			for( AEFeature f : mat.getFeature() )
+			{
 				enabled = enabled && AEConfig.instance.isFeatureEnabled( f );
+			}
 
 			if( enabled )
 			{
@@ -177,9 +189,13 @@ public class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, 
 				mat.stackSrc = new MaterialStackSrc( mat );
 
 				if( this.dmgToMaterial.get( newMaterialNum ) == null )
+				{
 					this.dmgToMaterial.put( newMaterialNum, mat );
+				}
 				else
+				{
 					throw new IllegalStateException( "Meta Overlap detected." );
+				}
 
 				return mat.stackSrc;
 			}
@@ -187,7 +203,9 @@ public class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, 
 			return mat.stackSrc;
 		}
 		else
+		{
 			throw new IllegalStateException( "Cannot create the same material twice..." );
+		}
 	}
 
 	public void makeUnique()
@@ -203,7 +221,9 @@ public class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, 
 				for( String name : names )
 				{
 					if( replacement != null )
+					{
 						break;
+					}
 
 					List<ItemStack> options = OreDictionary.getOres( name );
 					if( options != null && options.size() > 0 )
@@ -223,12 +243,16 @@ public class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, 
 				{
 					// continue using the AE2 item.
 					for( String name : names )
+					{
 						OreDictionary.registerOre( name, mt.stack( 1 ) );
+					}
 				}
 				else
 				{
 					if( mt.itemInstance == this )
+					{
 						this.dmgToMaterial.remove( mt.damageValue );
+					}
 
 					mt.itemInstance = replacement.getItem();
 					mt.damageValue = replacement.getItemDamage();
@@ -241,7 +265,9 @@ public class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, 
 	public IIcon getIconFromDamage( int dmg )
 	{
 		if( this.dmgToMaterial.containsKey( dmg ) )
+		{
 			return this.dmgToMaterial.get( dmg ).IIcon;
+		}
 		return new MissingIcon( this );
 	}
 
@@ -254,11 +280,15 @@ public class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, 
 	private String nameOf( ItemStack is )
 	{
 		if( is == null )
+		{
 			return "null";
+		}
 
 		MaterialType mt = this.getTypeByStack( is );
 		if( mt == null )
+		{
 			return "null";
+		}
 
 		return this.nameResolver.getName( mt.name() );
 	}
@@ -280,7 +310,9 @@ public class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, 
 		for( MaterialType mat : types )
 		{
 			if( mat.damageValue >= 0 && mat.isRegistered() && mat.itemInstance == this )
+			{
 				cList.add( new ItemStack( this, 1, mat.damageValue ) );
+			}
 		}
 	}
 
@@ -313,10 +345,14 @@ public class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, 
 			{
 				SelectedPart sp = ( (IPartHost) te ).selectPart( Vec3.createVectorHelper( hitX, hitY, hitZ ) );
 				if( sp.part instanceof IUpgradeableHost )
+				{
 					upgrades = ( (ISegmentedInventory) sp.part ).getInventoryByName( "upgrades" );
+				}
 			}
 			else if( te instanceof IUpgradeableHost )
+			{
 				upgrades = ( (ISegmentedInventory) te ).getInventoryByName( "upgrades" );
+			}
 
 			if( upgrades != null && is != null && is.getItem() instanceof IUpgradeModule )
 			{
@@ -329,7 +365,9 @@ public class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, 
 					if( ad != null )
 					{
 						if( player.worldObj.isRemote )
+						{
 							return false;
+						}
 
 						player.inventory.setInventorySlotContents( player.inventory.currentItem, ad.addItems( is ) );
 						return true;
@@ -367,7 +405,9 @@ public class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, 
 		eqi.motionZ = location.motionZ;
 
 		if( location instanceof EntityItem && eqi instanceof EntityItem )
+		{
 			( (EntityItem) eqi ).delayBeforeCanPickup = ( (EntityItem) location ).delayBeforeCanPickup;
+		}
 
 		return eqi;
 	}

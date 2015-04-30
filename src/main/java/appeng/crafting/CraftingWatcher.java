@@ -90,7 +90,9 @@ public class CraftingWatcher implements ICraftingWatcher
 	public boolean add( IAEStack e )
 	{
 		if( this.myInterests.contains( e ) )
+		{
 			return false;
+		}
 
 		return this.myInterests.add( e.copy() ) && this.gsc.interestManager.put( e, this );
 	}
@@ -113,7 +115,9 @@ public class CraftingWatcher implements ICraftingWatcher
 		boolean didChange = false;
 
 		for( IAEStack o : c )
+		{
 			didChange = this.add( o ) || didChange;
+		}
 
 		return didChange;
 	}
@@ -123,7 +127,9 @@ public class CraftingWatcher implements ICraftingWatcher
 	{
 		boolean didSomething = false;
 		for( Object o : c )
+		{
 			didSomething = this.remove( o ) || didSomething;
+		}
 		return didSomething;
 	}
 

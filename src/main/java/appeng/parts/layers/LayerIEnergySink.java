@@ -46,7 +46,9 @@ public class LayerIEnergySink extends LayerBase implements IEnergySink
 	private World getEnergySinkWorld()
 	{
 		if( this.getEnergySinkTile() == null )
+		{
 			return null;
+		}
 
 		return this.getEnergySinkTile().getWorldObj();
 	}
@@ -56,7 +58,9 @@ public class LayerIEnergySink extends LayerBase implements IEnergySink
 		TileEntity te = this.getEnergySinkTile();
 
 		if( te == null )
+		{
 			return false;
+		}
 
 		return !te.isInvalid() && te.getWorldObj().blockExists( te.xCoord, te.yCoord, te.zCoord );
 	}
@@ -64,7 +68,9 @@ public class LayerIEnergySink extends LayerBase implements IEnergySink
 	private void addToENet()
 	{
 		if( this.getEnergySinkWorld() == null )
+		{
 			return;
+		}
 
 		// re-add
 		this.removeFromENet();
@@ -79,7 +85,9 @@ public class LayerIEnergySink extends LayerBase implements IEnergySink
 	private void removeFromENet()
 	{
 		if( this.getEnergySinkWorld() == null )
+		{
 			return;
+		}
 
 		if( this.isInIC2() && Platform.isServer() )
 		{
@@ -91,7 +99,9 @@ public class LayerIEnergySink extends LayerBase implements IEnergySink
 	private boolean interestedInIC2()
 	{
 		if( !( (IPartHost) this ).isInWorld() )
+		{
 			return false;
+		}
 
 		int interested = 0;
 		for( ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS )
@@ -111,20 +121,28 @@ public class LayerIEnergySink extends LayerBase implements IEnergySink
 		super.partChanged();
 
 		if( this.interestedInIC2() )
+		{
 			this.addToENet();
+		}
 		else
+		{
 			this.removeFromENet();
+		}
 	}
 
 	@Override
 	public boolean acceptsEnergyFrom( TileEntity emitter, ForgeDirection direction )
 	{
 		if( !this.isInIC2() )
+		{
 			return false;
+		}
 
 		IPart part = this.getPart( direction );
 		if( part instanceof IEnergySink )
+		{
 			return ( (IEnergySink) part ).acceptsEnergyFrom( emitter, direction );
+		}
 		return false;
 	}
 
@@ -137,7 +155,9 @@ public class LayerIEnergySink extends LayerBase implements IEnergySink
 	public double getDemandedEnergy()
 	{
 		if( !this.isInIC2() )
+		{
 			return 0;
+		}
 
 		// this is a flawed implementation, that requires a change to the IC2 API.
 
@@ -164,7 +184,9 @@ public class LayerIEnergySink extends LayerBase implements IEnergySink
 	public double injectEnergy( ForgeDirection directionFrom, double amount, double voltage )
 	{
 		if( !this.isInIC2() )
+		{
 			return amount;
+		}
 
 		for( ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS )
 		{

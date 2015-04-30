@@ -47,7 +47,9 @@ public final class LocatableRegistry implements ILocatableRegistry
 	public void updateLocatable( LocatableEventAnnounce e )
 	{
 		if( Platform.isClient() )
+		{
 			return; // IGNORE!
+		}
 
 		if( e.change == LocatableEvent.Register )
 		{
