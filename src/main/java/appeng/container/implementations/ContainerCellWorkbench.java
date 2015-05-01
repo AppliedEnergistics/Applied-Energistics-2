@@ -122,10 +122,8 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 		/*
 		 * if ( supportCapacity() ) { for (int w = 0; w < 2; w++) for (int z = 0; z < 9; z++) addSlotToContainer( new
 		 * OptionalSlotFakeTypeOnly( inv, this, offset++, x, y, z, w, 1 ) );
-		 *
 		 * for (int w = 0; w < 2; w++) for (int z = 0; z < 9; z++) addSlotToContainer( new OptionalSlotFakeTypeOnly(
 		 * inv, this, offset++, x, y, z, w + 2, 2 ) );
-		 *
 		 * for (int w = 0; w < 2; w++) for (int z = 0; z < 9; z++) addSlotToContainer( new OptionalSlotFakeTypeOnly(
 		 * inv, this, offset++, x, y, z, w + 4, 3 ) ); }
 		 */
@@ -149,6 +147,11 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 		ItemStack is = this.workBench.getInventoryByName( "cell" ).getStackInSlot( 0 );
 		if( Platform.isServer() )
 		{
+			if( workBench.getWorldObj().getTileEntity( workBench.xCoord, workBench.yCoord, workBench.zCoord ) != workBench )
+			{
+				this.isContainerValid = false;
+			}
+
 			for( Object crafter : this.crafters )
 			{
 				ICrafting icrafting = (ICrafting) crafter;
