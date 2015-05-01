@@ -19,6 +19,8 @@
 package appeng.tile;
 
 
+import javax.annotation.Nullable;
+
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -93,7 +95,7 @@ public abstract class AEBaseInvTile extends AEBaseTile implements ISidedInventor
 	}
 
 	@Override
-	public void setInventorySlotContents( int i, ItemStack itemstack )
+	public void setInventorySlotContents( int i, @Nullable ItemStack itemstack )
 	{
 		this.getInternalInventory().setInventorySlotContents( i, itemstack );
 	}

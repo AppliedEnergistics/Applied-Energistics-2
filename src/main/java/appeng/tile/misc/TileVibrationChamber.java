@@ -36,21 +36,25 @@ import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalCoord;
 import appeng.core.settings.TickRates;
+import appeng.helpers.Reflected;
 import appeng.me.GridAccessException;
 import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
 import appeng.tile.grid.AENetworkInvTile;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.tile.inventory.InvOperation;
+import appeng.util.Platform;
 
 
 public class TileVibrationChamber extends AENetworkInvTile implements IGridTickable
 {
-
-	final double powerPerTick = 5;
-
-	final int[] sides = new int[] { 0 };
-	final AppEngInternalInventory inv = new AppEngInternalInventory( this, 1 );
+	private static final int FUEL_SLOT_INDEX = 0;
+	private static final double POWER_PER_TICK = 5;
+	private static final int[] ACCESSIBLE_SLOTS = new int[] { FUEL_SLOT_INDEX };
+	private static final int MAX_BURN_SPEED = 200;
+	private static final double DILATION_SCALING = 100.0;
+	private static final int MIN_BURN_SPEED = 20;
+	private final IInventory inv = new AppEngInternalInventory( this, 1 );
 
 	public int burnSpeed = 100;
 	public double burnTime = 0;
@@ -71,16 +75,20 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 		return AECableType.COVERED;
 	}
 
+	@Reflected
 	@TileEvent( TileEventType.NETWORK_READ )
-	public boolean readFromStream_TileVibrationChamber( ByteBuf data )
+	public boolean hasUpdate( ByteBuf data )
 	{
-		boolean wasOn = this.isOn;
+		final boolean wasOn = this.isOn;
+
 		this.isOn = data.readBoolean();
+
 		return wasOn != this.isOn; // TESR doesn't need updates!
 	}
 
+	@Reflected
 	@TileEvent( TileEventType.NETWORK_WRITE )
-	public void writeToStream_TileVibrationChamber( ByteBuf data )
+	public void writeToNetwork( ByteBuf data )
 	{
 		data.writeBoolean( this.burnTime > 0 );
 	}
@@ -105,12 +113,6 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 	public IInventory getInternalInventory()
 	{
 		return this.inv;
-	}
-
-	@Override
-	public int getInventoryStackLimit()
-	{
-		return 64;
 	}
 
 	@Override
@@ -147,12 +149,12 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 	@Override
 	public int[] getAccessibleSlotsBySide( ForgeDirection side )
 	{
-		return this.sides;
+		return ACCESSIBLE_SLOTS;
 	}
 
 	private boolean canEatFuel()
 	{
-		ItemStack is = this.getStackInSlot( 0 );
+		ItemStack is = this.getStackInSlot( FUEL_SLOT_INDEX );
 		if( is != null )
 		{
 			int newBurnTime = TileEntityFurnace.getItemBurnTime( is );
@@ -182,7 +184,7 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 	}
 
 	@Override
-	public TickRateModulation tickingRequest( IGridNode node, int TicksSinceLastCall )
+	public TickRateModulation tickingRequest( IGridNode node, int ticksSinceLastCall )
 	{
 		if( this.burnTime <= 0 )
 		{
@@ -197,10 +199,10 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 			return TickRateModulation.SLEEP;
 		}
 
-		this.burnSpeed = Math.max( 20, Math.min( this.burnSpeed, 200 ) );
-		double dilation = this.burnSpeed / 100.0;
+		this.burnSpeed = Math.max( MIN_BURN_SPEED, Math.min( this.burnSpeed, MAX_BURN_SPEED ) );
+		double dilation = this.burnSpeed / DILATION_SCALING;
 
-		double timePassed = TicksSinceLastCall * dilation;
+		double timePassed = ticksSinceLastCall * dilation;
 		this.burnTime -= timePassed;
 		if( this.burnTime < 0 )
 		{
@@ -211,7 +213,7 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 		try
 		{
 			IEnergyGrid grid = this.gridProxy.getEnergy();
-			double newPower = timePassed * this.powerPerTick;
+			double newPower = timePassed * POWER_PER_TICK;
 			double overFlow = grid.injectPower( newPower, Actionable.SIMULATE );
 
 			// burn the over flow.
@@ -219,30 +221,30 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 
 			if( overFlow > 0 )
 			{
-				this.burnSpeed -= TicksSinceLastCall;
+				this.burnSpeed -= ticksSinceLastCall;
 			}
 			else
 			{
-				this.burnSpeed += TicksSinceLastCall;
+				this.burnSpeed += ticksSinceLastCall;
 			}
 
-			this.burnSpeed = Math.max( 20, Math.min( this.burnSpeed, 200 ) );
+			this.burnSpeed = Math.max( MIN_BURN_SPEED, Math.min( this.burnSpeed, MAX_BURN_SPEED ) );
 			return overFlow > 0 ? TickRateModulation.SLOWER : TickRateModulation.FASTER;
 		}
 		catch( GridAccessException e )
 		{
-			this.burnSpeed -= TicksSinceLastCall;
-			this.burnSpeed = Math.max( 20, Math.min( this.burnSpeed, 200 ) );
+			this.burnSpeed -= ticksSinceLastCall;
+			this.burnSpeed = Math.max( MIN_BURN_SPEED, Math.min( this.burnSpeed, MAX_BURN_SPEED ) );
 			return TickRateModulation.SLOWER;
 		}
 	}
 
 	private void eatFuel()
 	{
-		ItemStack is = this.getStackInSlot( 0 );
+		final ItemStack is = this.getStackInSlot( FUEL_SLOT_INDEX );
 		if( is != null )
 		{
-			int newBurnTime = TileEntityFurnace.getItemBurnTime( is );
+			final int newBurnTime = TileEntityFurnace.getItemBurnTime( is );
 			if( newBurnTime > 0 && is.stackSize > 0 )
 			{
 				this.burnTime += newBurnTime;
@@ -252,7 +254,7 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 				{
 					ItemStack container = null;
 
-					if( is.getItem().hasContainerItem( is ) )
+					if( is.getItem() != null && is.getItem().hasContainerItem( is ) )
 					{
 						container = is.getItem().getContainerItem( is );
 					}
@@ -263,6 +265,8 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 				{
 					this.setInventorySlotContents( 0, is );
 				}
+
+				this.markDirty();
 			}
 		}
 
@@ -278,10 +282,16 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 			}
 		}
 
+		// state change
 		if( ( !this.isOn && this.burnTime > 0 ) || ( this.isOn && this.burnTime <= 0 ) )
 		{
 			this.isOn = this.burnTime > 0;
 			this.markForUpdate();
+
+			if ( this.hasWorldObj() )
+			{
+				Platform.notifyBlocksOfNeighbors( this.worldObj, this.xCoord, this.yCoord, this.zCoord );
+			}
 		}
 	}
 }
