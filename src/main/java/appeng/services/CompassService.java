@@ -27,6 +27,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
+import javax.annotation.Nonnull;
 
 import net.minecraft.block.Block;
 import net.minecraft.world.World;
@@ -175,7 +176,7 @@ public class CompassService implements ThreadFactory
 	}
 
 	@Override
-	public Thread newThread( Runnable job )
+	public Thread newThread( @Nonnull Runnable job )
 	{
 		return new Thread( job, "AE Compass Service" );
 	}

@@ -19,6 +19,8 @@
 package appeng.container.implementations;
 
 
+import javax.annotation.Nonnull;
+
 import appeng.api.networking.crafting.ICraftingCPU;
 import appeng.util.ItemSorters;
 
@@ -40,7 +42,7 @@ public class CraftingCPURecord implements Comparable<CraftingCPURecord>
 	}
 
 	@Override
-	public int compareTo( CraftingCPURecord o )
+	public int compareTo( @Nonnull CraftingCPURecord o )
 	{
 		int a = ItemSorters.compareLong( o.processors, this.processors );
 		if( a != 0 )

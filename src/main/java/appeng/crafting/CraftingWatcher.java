@@ -22,6 +22,7 @@ package appeng.crafting;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
+import javax.annotation.Nonnull;
 
 import appeng.api.networking.crafting.ICraftingWatcher;
 import appeng.api.networking.crafting.ICraftingWatcherHost;
@@ -68,20 +69,23 @@ public class CraftingWatcher implements ICraftingWatcher
 		return this.myInterests.contains( o );
 	}
 
+	@Nonnull
 	@Override
 	public Iterator<IAEStack> iterator()
 	{
 		return new ItemWatcherIterator( this, this.myInterests.iterator() );
 	}
 
+	@Nonnull
 	@Override
 	public Object[] toArray()
 	{
 		return this.myInterests.toArray();
 	}
 
+	@Nonnull
 	@Override
-	public <T> T[] toArray( T[] a )
+	public <T> T[] toArray( @Nonnull T[] a )
 	{
 		return this.myInterests.toArray( a );
 	}
@@ -104,13 +108,13 @@ public class CraftingWatcher implements ICraftingWatcher
 	}
 
 	@Override
-	public boolean containsAll( Collection<?> c )
+	public boolean containsAll( @Nonnull Collection<?> c )
 	{
 		return this.myInterests.containsAll( c );
 	}
 
 	@Override
-	public boolean addAll( Collection<? extends IAEStack> c )
+	public boolean addAll( @Nonnull Collection<? extends IAEStack> c )
 	{
 		boolean didChange = false;
 
@@ -123,7 +127,7 @@ public class CraftingWatcher implements ICraftingWatcher
 	}
 
 	@Override
-	public boolean removeAll( Collection<?> c )
+	public boolean removeAll( @Nonnull Collection<?> c )
 	{
 		boolean didSomething = false;
 		for( Object o : c )
@@ -134,7 +138,7 @@ public class CraftingWatcher implements ICraftingWatcher
 	}
 
 	@Override
-	public boolean retainAll( Collection<?> c )
+	public boolean retainAll( @Nonnull Collection<?> c )
 	{
 		boolean changed = false;
 		Iterator<IAEStack> i = this.iterator();
