@@ -20,6 +20,7 @@ package appeng.core.features.registries;
 
 
 import java.util.HashSet;
+import java.util.Set;
 
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
@@ -115,8 +116,8 @@ public final class WorldGenRegistry implements IWorldGen
 	private static class TypeSet
 	{
 
-		final HashSet<Class<? extends WorldProvider>> badProviders = new HashSet<Class<? extends WorldProvider>>();
-		final HashSet<Integer> badDimensions = new HashSet<Integer>();
-		final HashSet<Integer> enabledDimensions = new HashSet<Integer>();
+		final Set<Class<? extends WorldProvider>> badProviders = new HashSet<Class<? extends WorldProvider>>();
+		final Set<Integer> badDimensions = new HashSet<Integer>();
+		final Set<Integer> enabledDimensions = new HashSet<Integer>();
 	}
 }

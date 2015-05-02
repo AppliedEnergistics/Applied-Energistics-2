@@ -49,7 +49,7 @@ public class CraftingTreeNode
 	// what item is this?
 	private final IAEItemStack what;
 	// what are the crafting patterns for this?
-	private final ArrayList<CraftingTreeProcess> nodes = new ArrayList<CraftingTreeProcess>();
+	private final List<CraftingTreeProcess> nodes = new ArrayList<CraftingTreeProcess>();
 	int bytes = 0;
 	boolean canEmit = false;
 	boolean cannotUse = false;

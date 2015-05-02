@@ -21,11 +21,12 @@ package appeng.services.compass;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.Map;
 
 
 public class CompassReader
 {
-	private final HashMap<Long, CompassRegion> regions = new HashMap<Long, CompassRegion>();
+	private final Map<Long, CompassRegion> regions = new HashMap<Long, CompassRegion>();
 	private final int dimensionId;
 	private final File rootFolder;
 

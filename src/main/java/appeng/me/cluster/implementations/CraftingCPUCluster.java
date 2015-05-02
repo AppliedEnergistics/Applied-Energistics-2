@@ -20,6 +20,7 @@ package appeng.me.cluster.implementations;
 
 
 import java.util.Collection;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -89,9 +90,9 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 	final Map<ICraftingPatternDetails, TaskProgress> tasks = new HashMap<ICraftingPatternDetails, TaskProgress>();
 	// INSTANCE sate
 	private final LinkedList<TileCraftingTile> tiles = new LinkedList<TileCraftingTile>();
-	private final LinkedList<TileCraftingTile> storage = new LinkedList<TileCraftingTile>();
-	private final LinkedList<TileCraftingMonitorTile> status = new LinkedList<TileCraftingMonitorTile>();
-	private final HashMap<IMEMonitorHandlerReceiver<IAEItemStack>, Object> listeners = new HashMap<IMEMonitorHandlerReceiver<IAEItemStack>, Object>();
+	private final Deque<TileCraftingTile> storage = new LinkedList<TileCraftingTile>();
+	private final Deque<TileCraftingMonitorTile> status = new LinkedList<TileCraftingMonitorTile>();
+	private final Map<IMEMonitorHandlerReceiver<IAEItemStack>, Object> listeners = new HashMap<IMEMonitorHandlerReceiver<IAEItemStack>, Object>();
 	public ICraftingLink myLastLink;
 	public String myName = "";
 	public boolean isDestroyed = false;

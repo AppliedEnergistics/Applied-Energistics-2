@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
@@ -57,9 +58,9 @@ public class GuiInterfaceTerminal extends AEBaseGui
 	// TODO: copied from GuiMEMonitorable. It looks not changed, maybe unneeded?
 	final int offsetX = 9;
 
-	private final HashMap<Long, ClientDCInternalInv> byId = new HashMap<Long, ClientDCInternalInv>();
+	private final Map<Long, ClientDCInternalInv> byId = new HashMap<Long, ClientDCInternalInv>();
 	private final HashMultimap<String, ClientDCInternalInv> byName = HashMultimap.create();
-	private final ArrayList<String> names = new ArrayList<String>();
+	private final List<String> names = new ArrayList<String>();
 	private final ArrayList<Object> lines = new ArrayList<Object>();
 
 	private final Map<String, Set<Object>> cachedSearches = new WeakHashMap<String, Set<Object>>();
@@ -310,7 +311,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 		{
 			this.lines.add( n );
 
-			ArrayList<ClientDCInternalInv> clientInventories = new ArrayList<ClientDCInternalInv>();
+			List<ClientDCInternalInv> clientInventories = new ArrayList<ClientDCInternalInv>();
 			clientInventories.addAll( this.byName.get( n ) );
 
 			Collections.sort( clientInventories );

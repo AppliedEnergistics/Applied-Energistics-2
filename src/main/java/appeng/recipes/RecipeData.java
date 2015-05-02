@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import appeng.api.recipes.ICraftHandler;
@@ -31,8 +32,8 @@ import appeng.api.recipes.ICraftHandler;
 public class RecipeData
 {
 
-	public final HashMap<String, String> aliases = new HashMap<String, String>();
-	public final HashMap<String, GroupIngredient> groups = new HashMap<String, GroupIngredient>();
+	public final Map<String, String> aliases = new HashMap<String, String>();
+	public final Map<String, GroupIngredient> groups = new HashMap<String, GroupIngredient>();
 
 	public final List<ICraftHandler> Handlers = new LinkedList<ICraftHandler>();
 	public final Set<String> knownItem = new HashSet<String>();

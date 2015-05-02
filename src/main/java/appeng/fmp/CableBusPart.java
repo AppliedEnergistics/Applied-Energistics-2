@@ -21,6 +21,7 @@ package appeng.fmp;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -337,7 +338,7 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 	@Override
 	public Iterable<Cuboid6> getOcclusionBoxes()
 	{
-		LinkedList<Cuboid6> l = new LinkedList<Cuboid6>();
+		Deque<Cuboid6> l = new LinkedList<Cuboid6>();
 		for( AxisAlignedBB b : this.cb.getSelectedBoundingBoxesFromPool( true, DISABLE_FACADE_OCCLUSION.get() == null, null, true ) )
 		{
 			l.add( new Cuboid6( b.minX, b.minY, b.minZ, b.maxX, b.maxY, b.maxZ ) );
@@ -562,7 +563,7 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 	}	@Override
 	public Iterable<Cuboid6> getCollisionBoxes()
 	{
-		LinkedList<Cuboid6> l = new LinkedList<Cuboid6>();
+		Deque<Cuboid6> l = new LinkedList<Cuboid6>();
 		for( AxisAlignedBB b : this.cb.getSelectedBoundingBoxesFromPool( false, true, null, true ) )
 		{
 			l.add( new Cuboid6( b.minX, b.minY, b.minZ, b.maxX, b.maxY, b.maxZ ) );
@@ -630,7 +631,7 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 	}	@Override
 	public Iterable<IndexedCuboid6> getSubParts()
 	{
-		LinkedList<IndexedCuboid6> l = new LinkedList<IndexedCuboid6>();
+		Deque<IndexedCuboid6> l = new LinkedList<IndexedCuboid6>();
 		for( Cuboid6 c : this.getCollisionBoxes() )
 		{
 			l.add( new IndexedCuboid6( 0, c ) );

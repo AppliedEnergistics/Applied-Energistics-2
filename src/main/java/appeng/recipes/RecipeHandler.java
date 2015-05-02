@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -361,7 +362,7 @@ public class RecipeHandler implements IRecipeHandler
 			throw new IllegalStateException( "Recipes must now be loaded in Init." );
 		}
 
-		HashMap<Class, Integer> processed = new HashMap<Class, Integer>();
+		Map<Class, Integer> processed = new HashMap<Class, Integer>();
 		try
 		{
 			for( ICraftHandler ch : this.data.Handlers )

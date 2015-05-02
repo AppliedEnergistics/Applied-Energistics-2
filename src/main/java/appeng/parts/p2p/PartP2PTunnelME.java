@@ -19,6 +19,7 @@
 package appeng.parts.p2p;
 
 
+import java.util.Deque;
 import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -212,7 +213,7 @@ public class PartP2PTunnelME extends PartP2PTunnel<PartP2PTunnelME> implements I
 				}
 			}
 
-			LinkedList<PartP2PTunnelME> newSides = new LinkedList<PartP2PTunnelME>();
+			Deque<PartP2PTunnelME> newSides = new LinkedList<PartP2PTunnelME>();
 			try
 			{
 				for( PartP2PTunnelME me : this.getOutputs() )

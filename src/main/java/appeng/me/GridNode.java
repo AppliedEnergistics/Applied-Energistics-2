@@ -165,7 +165,7 @@ public class GridNode implements IGridNode, IPathItem
 
 		if( g instanceof IGridConnectionVisitor )
 		{
-			LinkedList<IGridConnection> nextConn = new LinkedList<IGridConnection>();
+			Deque<IGridConnection> nextConn = new LinkedList<IGridConnection>();
 			IGridConnectionVisitor gcv = (IGridConnectionVisitor) g;
 
 			while( !nextRun.isEmpty() )
@@ -175,7 +175,7 @@ public class GridNode implements IGridNode, IPathItem
 					gcv.visitConnection( nextConn.poll() );
 				}
 
-				LinkedList<GridNode> thisRun = nextRun;
+				Iterable<GridNode> thisRun = nextRun;
 				nextRun = new LinkedList<GridNode>();
 
 				for( GridNode n : thisRun )
@@ -188,7 +188,7 @@ public class GridNode implements IGridNode, IPathItem
 		{
 			while( !nextRun.isEmpty() )
 			{
-				LinkedList<GridNode> thisRun = nextRun;
+				Iterable<GridNode> thisRun = nextRun;
 				nextRun = new LinkedList<GridNode>();
 
 				for( GridNode n : thisRun )

@@ -21,6 +21,7 @@ package appeng.me.storage;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import appeng.api.networking.security.BaseActionSource;
@@ -38,7 +39,7 @@ import appeng.util.inv.ItemListIgnoreCrafting;
 public class MEMonitorPassThrough<T extends IAEStack<T>> extends MEPassThrough<T> implements IMEMonitor<T>, IMEMonitorHandlerReceiver<T>
 {
 
-	final HashMap<IMEMonitorHandlerReceiver<T>, Object> listeners = new HashMap<IMEMonitorHandlerReceiver<T>, Object>();
+	final Map<IMEMonitorHandlerReceiver<T>, Object> listeners = new HashMap<IMEMonitorHandlerReceiver<T>, Object>();
 	public BaseActionSource changeSource;
 	IMEMonitor<T> monitor;
 

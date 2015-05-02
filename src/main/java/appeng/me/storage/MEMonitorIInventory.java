@@ -22,6 +22,7 @@ package appeng.me.storage;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.NavigableMap;
 import java.util.concurrent.ConcurrentSkipListMap;
@@ -49,7 +50,7 @@ public class MEMonitorIInventory implements IMEMonitor<IAEItemStack>
 
 	final InventoryAdaptor adaptor;
 	final IItemList<IAEItemStack> list = AEApi.instance().storage().createItemList();
-	final HashMap<IMEMonitorHandlerReceiver<IAEItemStack>, Object> listeners = new HashMap<IMEMonitorHandlerReceiver<IAEItemStack>, Object>();
+	final Map<IMEMonitorHandlerReceiver<IAEItemStack>, Object> listeners = new HashMap<IMEMonitorHandlerReceiver<IAEItemStack>, Object>();
 	private final NavigableMap<Integer, CachedItemStack> memory;
 	public BaseActionSource mySource;
 	public StorageFilter mode = StorageFilter.EXTRACTABLE_ONLY;

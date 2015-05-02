@@ -20,7 +20,6 @@ package appeng.tile.networking;
 
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -201,13 +200,13 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	}
 
 	@Override
-	public void getDrops( World w, int x, int y, int z, ArrayList drops )
+	public void getDrops( World w, int x, int y, int z, List drops )
 	{
 		this.cb.getDrops( drops );
 	}
 
 	@Override
-	public void getNoDrops( World w, int x, int y, int z, ArrayList<ItemStack> drops )
+	public void getNoDrops( World w, int x, int y, int z, List<ItemStack> drops )
 	{
 		this.cb.getNoDrops( drops );
 	}

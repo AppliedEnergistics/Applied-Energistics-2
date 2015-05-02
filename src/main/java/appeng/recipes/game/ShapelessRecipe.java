@@ -20,6 +20,7 @@ package appeng.recipes.game;
 
 
 import java.util.ArrayList;
+import java.util.List;
 
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
@@ -75,7 +76,7 @@ public class ShapelessRecipe implements IRecipe, IRecipeBakeable
 			return false;
 		}
 
-		ArrayList<Object> required = new ArrayList<Object>( this.input );
+		List<Object> required = new ArrayList<Object>( this.input );
 
 		for( int x = 0; x < var1.getSizeInventory(); x++ )
 		{
@@ -155,7 +156,7 @@ public class ShapelessRecipe implements IRecipe, IRecipeBakeable
 	 *
 	 * @return The recipes input vales.
 	 */
-	public ArrayList<Object> getInput()
+	public List<Object> getInput()
 	{
 		return this.input;
 	}

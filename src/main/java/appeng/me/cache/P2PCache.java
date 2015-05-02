@@ -20,6 +20,7 @@ package appeng.me.cache;
 
 
 import java.util.HashMap;
+import java.util.Map;
 
 import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
@@ -43,7 +44,7 @@ public class P2PCache implements IGridCache
 {
 
 	final IGrid myGrid;
-	private final HashMap<Long, PartP2PTunnel> inputs = new HashMap<Long, PartP2PTunnel>();
+	private final Map<Long, PartP2PTunnel> inputs = new HashMap<Long, PartP2PTunnel>();
 	private final Multimap<Long, PartP2PTunnel> outputs = LinkedHashMultimap.create();
 	private final TunnelCollection NullColl = new TunnelCollection<PartP2PTunnel>( null, null );
 

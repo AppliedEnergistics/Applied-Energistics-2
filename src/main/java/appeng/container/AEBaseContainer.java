@@ -28,6 +28,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -87,12 +89,12 @@ public abstract class AEBaseContainer extends Container
 
 	protected final InventoryPlayer invPlayer;
 	protected final BaseActionSource mySrc;
-	protected final HashSet<Integer> locked = new HashSet<Integer>();
+	protected final Set<Integer> locked = new HashSet<Integer>();
 	final TileEntity tileEntity;
 	final IPart part;
 	final IGuiItemObject obj;
 	final List<PacketPartialItem> dataChunks = new LinkedList<PacketPartialItem>();
-	final HashMap<Integer, SyncData> syncData = new HashMap<Integer, SyncData>();
+	final Map<Integer, SyncData> syncData = new HashMap<Integer, SyncData>();
 	public boolean isContainerValid = true;
 	public String customName;
 	public ContainerOpenContext openContext;

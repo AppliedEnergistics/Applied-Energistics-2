@@ -21,6 +21,7 @@ package appeng.hooks;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketCompassRequest;
@@ -30,7 +31,7 @@ public class CompassManager
 {
 
 	public static final CompassManager INSTANCE = new CompassManager();
-	final HashMap<CompassRequest, CompassResult> requests = new HashMap<CompassRequest, CompassResult>();
+	final Map<CompassRequest, CompassResult> requests = new HashMap<CompassRequest, CompassResult>();
 
 	public void postResult( long attunement, int x, int y, int z, CompassResult result )
 	{
