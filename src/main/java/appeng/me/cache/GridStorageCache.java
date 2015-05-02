@@ -19,10 +19,13 @@
 package appeng.me.cache;
 
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
@@ -59,13 +62,13 @@ public class GridStorageCache implements IStorageGrid
 {
 
 	public final IGrid myGrid;
-	final HashSet<ICellProvider> activeCellProviders = new HashSet<ICellProvider>();
-	final HashSet<ICellProvider> inactiveCellProviders = new HashSet<ICellProvider>();
+	final Set<ICellProvider> activeCellProviders = new HashSet<ICellProvider>();
+	final Set<ICellProvider> inactiveCellProviders = new HashSet<ICellProvider>();
 	private final SetMultimap<IAEStack, ItemWatcher> interests = HashMultimap.create();
 	public final GenericInterestManager<ItemWatcher> interestManager = new GenericInterestManager<ItemWatcher>( this.interests );
 	private final NetworkMonitor<IAEItemStack> itemMonitor = new NetworkMonitor<IAEItemStack>( this, StorageChannel.ITEMS );
 	private final NetworkMonitor<IAEFluidStack> fluidMonitor = new NetworkMonitor<IAEFluidStack>( this, StorageChannel.FLUIDS );
-	private final HashMap<IGridNode, IStackWatcher> watchers = new HashMap<IGridNode, IStackWatcher>();
+	private final Map<IGridNode, IStackWatcher> watchers = new HashMap<IGridNode, IStackWatcher>();
 	private NetworkInventoryHandler<IAEItemStack> myItemNetwork;
 	private NetworkInventoryHandler<IAEFluidStack> myFluidNetwork;
 
@@ -206,7 +209,7 @@ public class GridStorageCache implements IStorageGrid
 		this.myItemNetwork = null;
 		this.myFluidNetwork = null;
 
-		LinkedList<ICellProvider> ll = new LinkedList();
+		Collection<ICellProvider> ll = new LinkedList();
 		ll.addAll( this.inactiveCellProviders );
 		ll.addAll( this.activeCellProviders );
 

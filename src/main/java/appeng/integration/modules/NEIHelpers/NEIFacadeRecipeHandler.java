@@ -196,7 +196,7 @@ public class NEIFacadeRecipeHandler extends TemplateRecipeHandler
 
 	private final class CachedShapedRecipe extends TemplateRecipeHandler.CachedRecipe
 	{
-		public final ArrayList<PositionedStack> ingredients;
+		public final List<PositionedStack> ingredients;
 		public final PositionedStack result;
 
 		public CachedShapedRecipe( IFacadeItem facade, ItemStack anchor, ItemStack output )

@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
@@ -55,8 +57,8 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 	final IAEItemStack[] inputs;
 	final IAEItemStack[] outputs;
 	final boolean isCrafting;
-	final HashSet<TestLookup> failCache = new HashSet<TestLookup>();
-	final HashSet<TestLookup> passCache = new HashSet<TestLookup>();
+	final Set<TestLookup> failCache = new HashSet<TestLookup>();
+	final Set<TestLookup> passCache = new HashSet<TestLookup>();
 	private final IAEItemStack pattern;
 	public int priority = 0;
 
@@ -123,7 +125,7 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 		this.outputs = out.toArray( new IAEItemStack[out.size()] );
 		this.inputs = in.toArray( new IAEItemStack[in.size()] );
 
-		HashMap<IAEItemStack, IAEItemStack> tmpOutputs = new HashMap<IAEItemStack, IAEItemStack>();
+		Map<IAEItemStack, IAEItemStack> tmpOutputs = new HashMap<IAEItemStack, IAEItemStack>();
 		for( IAEItemStack io : this.outputs )
 		{
 			if( io == null )
@@ -142,7 +144,7 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 			}
 		}
 
-		HashMap<IAEItemStack, IAEItemStack> tmpInputs = new HashMap<IAEItemStack, IAEItemStack>();
+		Map<IAEItemStack, IAEItemStack> tmpInputs = new HashMap<IAEItemStack, IAEItemStack>();
 		for( IAEItemStack io : this.inputs )
 		{
 			if( io == null )

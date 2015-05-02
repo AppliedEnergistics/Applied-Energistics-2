@@ -21,6 +21,7 @@ package appeng.container.implementations;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import net.minecraft.entity.player.InventoryPlayer;
 
@@ -35,7 +36,7 @@ import appeng.container.guisync.GuiSync;
 public class ContainerCraftingStatus extends ContainerCraftingCPU
 {
 
-	public final ArrayList<CraftingCPURecord> cpus = new ArrayList<CraftingCPURecord>();
+	public final List<CraftingCPURecord> cpus = new ArrayList<CraftingCPURecord>();
 	@GuiSync( 5 )
 	public int selectedCpu = -1;
 	@GuiSync( 6 )

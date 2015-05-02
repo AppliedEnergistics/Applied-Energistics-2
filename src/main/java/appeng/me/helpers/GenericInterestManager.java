@@ -55,7 +55,7 @@ public class GenericInterestManager<T>
 
 		if( this.transDepth == 0 )
 		{
-			LinkedList<SavedTransactions> myActions = this.transactions;
+			Iterable<SavedTransactions> myActions = this.transactions;
 			this.transactions = null;
 
 			for( SavedTransactions t : myActions )

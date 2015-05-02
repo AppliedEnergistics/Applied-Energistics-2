@@ -21,6 +21,8 @@ package appeng.crafting;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import net.minecraft.nbt.NBTTagCompound;
@@ -47,12 +49,12 @@ public class CraftingJob implements Runnable, ICraftingJob
 {
 
 	final IItemList<IAEItemStack> storage;
-	final HashSet<IAEItemStack> prophecies;
+	final Set<IAEItemStack> prophecies;
 	final MECraftingInventory original;
 	final World world;
 	final IItemList<IAEItemStack> crafting = AEApi.instance().storage().createItemList();
 	final IItemList<IAEItemStack> missing = AEApi.instance().storage().createItemList();
-	final HashMap<String, TwoIntegers> opsAndMultiplier = new HashMap<String, TwoIntegers>();
+	final Map<String, TwoIntegers> opsAndMultiplier = new HashMap<String, TwoIntegers>();
 	private final Object monitor = new Object();
 	private final Stopwatch watch = Stopwatch.createUnstarted();
 	public CraftingTreeNode tree;

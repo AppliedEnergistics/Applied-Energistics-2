@@ -20,6 +20,7 @@ package appeng.core.features.registries;
 
 
 import java.util.HashMap;
+import java.util.Map;
 
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -33,7 +34,7 @@ import appeng.util.Platform;
 public class MatterCannonAmmoRegistry implements IOreListener, IMatterCannonAmmoRegistry
 {
 
-	private final HashMap<ItemStack, Double> DamageModifiers = new HashMap<ItemStack, Double>();
+	private final Map<ItemStack, Double> DamageModifiers = new HashMap<ItemStack, Double>();
 
 	public MatterCannonAmmoRegistry()
 	{

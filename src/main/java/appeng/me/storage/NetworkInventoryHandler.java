@@ -21,6 +21,7 @@ package appeng.me.storage;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Deque;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -129,7 +130,7 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
 
 	private boolean diveList( NetworkInventoryHandler<T> networkInventoryHandler, Actionable type )
 	{
-		LinkedList cDepth = this.getDepth( type );
+		Deque cDepth = this.getDepth( type );
 		if( cDepth.contains( networkInventoryHandler ) )
 		{
 			return true;
@@ -268,7 +269,7 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
 
 	private boolean diveIteration( NetworkInventoryHandler<T> networkInventoryHandler, Actionable type )
 	{
-		LinkedList cDepth = this.getDepth( type );
+		Deque cDepth = this.getDepth( type );
 		if( cDepth.isEmpty() )
 		{
 			currentPass++;

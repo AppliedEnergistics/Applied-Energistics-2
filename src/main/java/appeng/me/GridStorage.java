@@ -23,6 +23,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.util.Map;
 import java.util.WeakHashMap;
 
 import net.minecraft.nbt.CompressedStreamTools;
@@ -40,7 +41,7 @@ public class GridStorage implements IGridStorage
 	final long myID;
 	final NBTTagCompound data;
 	final GridStorageSearch mySearchEntry; // keep myself in the list until I'm
-	private final WeakHashMap<GridStorage, Boolean> divided = new WeakHashMap<GridStorage, Boolean>();
+	private final Map<GridStorage, Boolean> divided = new WeakHashMap<GridStorage, Boolean>();
 	public boolean isDirty = false;
 	private WeakReference<IGrid> internalGrid = null;
 	// lost...

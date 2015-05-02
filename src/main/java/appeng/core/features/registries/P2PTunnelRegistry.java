@@ -20,6 +20,7 @@ package appeng.core.features.registries;
 
 
 import java.util.HashMap;
+import java.util.Map;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -43,7 +44,7 @@ import appeng.util.Platform;
 public class P2PTunnelRegistry implements IP2PTunnelRegistry
 {
 
-	final HashMap<ItemStack, TunnelType> Tunnels = new HashMap<ItemStack, TunnelType>();
+	final Map<ItemStack, TunnelType> Tunnels = new HashMap<ItemStack, TunnelType>();
 
 	public void configure()
 	{

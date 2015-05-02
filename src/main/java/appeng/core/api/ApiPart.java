@@ -352,7 +352,7 @@ public class ApiPart implements IPartHelper
 	static class DefaultPackageClassNameRemapper extends Remapper
 	{
 
-		public final HashMap<String, String> inputOutput = new HashMap<String, String>();
+		public final Map<String, String> inputOutput = new HashMap<String, String>();
 
 		@Override
 		public String map( String typeName )

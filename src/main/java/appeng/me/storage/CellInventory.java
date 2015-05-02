@@ -20,6 +20,7 @@ package appeng.me.storage;
 
 
 import java.util.HashSet;
+import java.util.Set;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
@@ -56,7 +57,7 @@ public class CellInventory implements ICellInventory
 	static final String ITEM_PRE_FORMATTED_SLOT = "PF#";
 	static final String ITEM_PRE_FORMATTED_NAME = "PN";
 	static final String ITEM_PRE_FORMATTED_FUZZY = "FP";
-	private static final HashSet<Integer> BLACK_LIST = new HashSet<Integer>();
+	private static final Set<Integer> BLACK_LIST = new HashSet<Integer>();
 	protected static String[] ITEM_SLOT_ARR;
 	protected static String[] ITEM_SLOT_COUNT_ARR;
 	protected final NBTTagCompound tagCompound;

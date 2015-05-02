@@ -20,6 +20,7 @@ package appeng.me.cache;
 
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.PriorityQueue;
 
 import net.minecraft.crash.CrashReport;
@@ -41,9 +42,9 @@ public class TickManagerCache implements ITickManager
 {
 
 	final IGrid myGrid;
-	final HashMap<IGridNode, TickTracker> alertable = new HashMap<IGridNode, TickTracker>();
-	final HashMap<IGridNode, TickTracker> sleeping = new HashMap<IGridNode, TickTracker>();
-	final HashMap<IGridNode, TickTracker> awake = new HashMap<IGridNode, TickTracker>();
+	final Map<IGridNode, TickTracker> alertable = new HashMap<IGridNode, TickTracker>();
+	final Map<IGridNode, TickTracker> sleeping = new HashMap<IGridNode, TickTracker>();
+	final Map<IGridNode, TickTracker> awake = new HashMap<IGridNode, TickTracker>();
 	final PriorityQueue<TickTracker> upcomingTicks = new PriorityQueue<TickTracker>();
 	private long currentTick = 0;
 

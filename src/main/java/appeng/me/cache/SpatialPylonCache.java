@@ -22,6 +22,7 @@ package appeng.me.cache;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridHost;
@@ -48,7 +49,7 @@ public class SpatialPylonCache implements ISpatialCache
 	DimensionalCoord captureMax;
 	boolean isValid = false;
 	List<TileSpatialIOPort> ioPorts = new LinkedList<TileSpatialIOPort>();
-	HashMap<SpatialPylonCluster, SpatialPylonCluster> clusters = new HashMap<SpatialPylonCluster, SpatialPylonCluster>();
+	Map<SpatialPylonCluster, SpatialPylonCluster> clusters = new HashMap<SpatialPylonCluster, SpatialPylonCluster>();
 	boolean needsUpdate = false;
 
 	public SpatialPylonCache( IGrid g )

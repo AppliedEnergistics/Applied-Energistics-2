@@ -23,6 +23,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.NavigableSet;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -58,13 +60,13 @@ import appeng.me.energy.EnergyWatcher;
 public class EnergyGridCache implements IEnergyGrid
 {
 
-	public final TreeSet<EnergyThreshold> interests = new TreeSet<EnergyThreshold>();
+	public final NavigableSet<EnergyThreshold> interests = new TreeSet<EnergyThreshold>();
 	final double AvgLength = 40.0;
 	final Set<IAEPowerStorage> providers = new LinkedHashSet<IAEPowerStorage>();
 	final Set<IAEPowerStorage> requesters = new LinkedHashSet<IAEPowerStorage>();
 	final Multiset<IEnergyGridProvider> energyGridProviders = HashMultiset.create();
 	final IGrid myGrid;
-	private final HashMap<IGridNode, IEnergyWatcher> watchers = new HashMap<IGridNode, IEnergyWatcher>();
+	private final Map<IGridNode, IEnergyWatcher> watchers = new HashMap<IGridNode, IEnergyWatcher>();
 	private final Set<IEnergyGrid> localSeen = new HashSet<IEnergyGrid>();
 	/**
 	 * estimated power available.

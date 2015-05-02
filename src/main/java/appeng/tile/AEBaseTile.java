@@ -21,11 +21,13 @@ package appeng.tile;
 
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -61,8 +63,8 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 {
 
 	public static final ThreadLocal<WeakReference<AEBaseTile>> DROP_NO_ITEMS = new ThreadLocal<WeakReference<AEBaseTile>>();
-	private static final HashMap<Class, EnumMap<TileEventType, List<AETileEventHandler>>> HANDLERS = new HashMap<Class, EnumMap<TileEventType, List<AETileEventHandler>>>();
-	private static final HashMap<Class, ItemStackSrc> ITEM_STACKS = new HashMap<Class, ItemStackSrc>();
+	private static final Map<Class, EnumMap<TileEventType, List<AETileEventHandler>>> HANDLERS = new HashMap<Class, EnumMap<TileEventType, List<AETileEventHandler>>>();
+	private static final Map<Class, ItemStackSrc> ITEM_STACKS = new HashMap<Class, ItemStackSrc>();
 	public int renderFragment = 0;
 	public String customName;
 	private ForgeDirection forward = ForgeDirection.UNKNOWN;
@@ -360,7 +362,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 		return list;
 	}
 
-	private void addHandler( EnumMap<TileEventType, List<AETileEventHandler>> handlerSet, TileEventType value, Method m )
+	private void addHandler( AbstractMap<TileEventType, List<AETileEventHandler>> handlerSet, TileEventType value, Method m )
 	{
 		List<AETileEventHandler> list = handlerSet.get( value );
 
@@ -450,7 +452,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	 * @param drops drops of tile entity
 	 */
 	@Override
-	public void getDrops( World w, int x, int y, int z, ArrayList<ItemStack> drops )
+	public void getDrops( World w, int x, int y, int z, List<ItemStack> drops )
 	{
 		if( this instanceof IInventory )
 		{

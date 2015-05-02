@@ -22,6 +22,7 @@ package appeng.container.implementations;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.Future;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -67,7 +68,7 @@ import appeng.util.Platform;
 public class ContainerCraftConfirm extends AEBaseContainer
 {
 
-	public final ArrayList<CraftingCPURecord> cpus = new ArrayList<CraftingCPURecord>();
+	public final List<CraftingCPURecord> cpus = new ArrayList<CraftingCPURecord>();
 	final ITerminalHost priHost;
 	public Future<ICraftingJob> job;
 	public ICraftingJob result;
