@@ -19,12 +19,14 @@
 package appeng.core.features;
 
 
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.IBlockAccess;
+import javax.annotation.Nonnull;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
+
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.world.IBlockAccess;
 
 import appeng.api.definitions.IItemDefinition;
 import appeng.util.Platform;
@@ -32,10 +34,11 @@ import appeng.util.Platform;
 
 public class ItemDefinition implements IItemDefinition
 {
+	@Nonnull
 	private final Item item;
 	private final boolean enabled;
 
-	public ItemDefinition( Item item, ActivityState state )
+	public ItemDefinition( @Nonnull Item item, @Nonnull ActivityState state )
 	{
 		Preconditions.checkNotNull( item );
 		Preconditions.checkNotNull( state );
