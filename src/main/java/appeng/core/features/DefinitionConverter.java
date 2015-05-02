@@ -88,7 +88,7 @@ public final class DefinitionConverter
 		@Override
 		public boolean sameAsBlock( IBlockAccess world, int x, int y, int z )
 		{
-			return this.definition.isSameAs( world, x, y, z );
+			return false;
 		}
 	}
 
@@ -136,6 +136,12 @@ public final class DefinitionConverter
 		public Block block()
 		{
 			return this.definition.maybeBlock().orNull();
+		}
+
+		@Override
+		public boolean sameAsBlock( IBlockAccess world, int x, int y, int z )
+		{
+			return this.definition.isSameAs( world, x, y, z );
 		}
 	}
 

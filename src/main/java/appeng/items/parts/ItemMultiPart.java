@@ -63,6 +63,8 @@ import appeng.items.AEBaseItem;
 
 public final class ItemMultiPart extends AEBaseItem implements IPartItem, IItemGroup
 {
+	private static final Comparator<Entry<Integer, PartTypeWithVariant>> REGISTERED_COMPARATOR = new RegisteredComparator();
+	
 	public static ItemMultiPart instance;
 	private final NameResolver nameResolver;
 	private final Map<Integer, PartTypeWithVariant> registered;
@@ -216,15 +218,7 @@ public final class ItemMultiPart extends AEBaseItem implements IPartItem, IItemG
 	public void getSubItems( Item number, CreativeTabs tab, List cList )
 	{
 		List<Entry<Integer, PartTypeWithVariant>> types = new ArrayList<Entry<Integer, PartTypeWithVariant>>( this.registered.entrySet() );
-		Collections.sort( types, new Comparator<Entry<Integer, PartTypeWithVariant>>()
-		{
-
-			@Override
-			public int compare( Entry<Integer, PartTypeWithVariant> o1, Entry<Integer, PartTypeWithVariant> o2 )
-			{
-				return o1.getValue().part.name().compareTo( o2.getValue().part.name() );
-			}
-		} );
+		Collections.sort( types, REGISTERED_COMPARATOR );
 
 		for( Entry<Integer, PartTypeWithVariant> part : types )
 		{
@@ -373,6 +367,15 @@ public final class ItemMultiPart extends AEBaseItem implements IPartItem, IItemG
 
 			this.part = part;
 			this.variant = variant;
+		}
+	}
+	
+	private static final class RegisteredComparator implements Comparator<Entry<Integer, PartTypeWithVariant>>
+	{
+		@Override
+		public int compare( Entry<Integer, PartTypeWithVariant> o1, Entry<Integer, PartTypeWithVariant> o2 )
+		{
+			return o1.getValue().part.name().compareTo( o2.getValue().part.name() );
 		}
 	}
 }

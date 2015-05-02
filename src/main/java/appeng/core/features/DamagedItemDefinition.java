@@ -19,11 +19,14 @@
 package appeng.core.features;
 
 
+import javax.annotation.Nonnull;
+
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.IBlockAccess;
 
 import com.google.common.base.Optional;
+import com.google.common.base.Preconditions;
 
 import appeng.api.definitions.IItemDefinition;
 
@@ -32,9 +35,9 @@ public final class DamagedItemDefinition implements IItemDefinition
 {
 	private final IStackSrc source;
 
-	public DamagedItemDefinition( IStackSrc source )
+	public DamagedItemDefinition( @Nonnull IStackSrc source )
 	{
-		this.source = source;
+		this.source = Preconditions.checkNotNull( source );
 	}
 
 	@Override
