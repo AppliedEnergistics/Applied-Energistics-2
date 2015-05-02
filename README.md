@@ -1,3 +1,6 @@
+<!--[![Latest Release](https://img.shields.io/github/tag/AppliedEnergistics/Applied-Energistics-2.svg?label=Latest Release)](https://github.com/AppliedEnergistics/Applied-Energistics-2/releases) -->
+[![Latest Build](https://img.shields.io/teamcity/http/ci.tsr.me/s/AppliedEnergistics_AutoHeadBuild.svg?label=Latest Build)](http://ci.tsr.me/viewType.html?buildTypeId=AppliedEnergistics_AutoHeadBuild&tab=buildTypeStatusDiv)
+
 # Applied Energistics 2
 
 ## Table of Contents
@@ -26,12 +29,17 @@ A Mod about Matter, Energy and using them to conquer the world..
 
 ## License
 
-Applied Energistics 2 API is (c) 2013 - 2014 AlgorithmX2 and licensed under MIT.
-
-Applied Energistics 2 is (c) 2013 - 2014 AlgorithmX2 and licensed under LGPL v3.
-See the LICENSE.txt for details or go to http://www.gnu.org/licenses/lgpl-3.0.txt for more information.
-
-Textures and Models are licensed under [Creative Commons, Attribution-NonCommercial-ShareAlike 3.0]( https://creativecommons.org/licenses/by-nc-sa/3.0/).
+* Applied Energistics 2 API
+  - (c) 2013 - 2015 AlgorithmX2 et al
+  - ![License](https://img.shields.io/badge/License-MIT-red.svg?style=flat)
+* Applied Energistics 2
+  - (c) 2013 - 2015 AlgorithmX2 et al
+  - [![License](https://img.shields.io/badge/License-LGPLv3-blue.svg?style=flat)](https://raw.githubusercontent.com/AppliedEnergistics/Applied-Energistics-2/rv2/LICENSE)
+* Textures and Models
+  - (c) 2013 - 2015 AlgorithmX2 et al
+  - [![License](https://img.shields.io/badge/License-CC%20BY--NC--SA%203.0-yellow.svg?style=flat)](https://creativecommons.org/licenses/by-nc-sa/3.0/)
+* Text and Translations
+  - ![License](https://img.shields.io/badge/License-No%20Restriction-green.svg?style=flat)
 
 ## Downloads
 
@@ -103,7 +111,7 @@ Getting Started
 6. Push to your fork `git push`
 7. Create a Pull-Request on GitHub
 8. Wait for review
-9. Suqash commits for cleaner history
+9. Squash commits for cleaner history
 
 If you are only doing single file pull requests, GitHub supports using a quick way without the need of cloning your fork. Also read up about [synching](https://help.github.com/articles/syncing-a-fork) if you plan to contribute on regular basis.
 
@@ -136,10 +144,6 @@ An example string would be `appeng:appliedenergistics2:rv2-alpha-30:dev`
 ### Encoding
 
 Files must be encoded as UTF-8.
-
-### License
-
-All Text and Translations submitted here can be used for any purpose, and may be re-distributed or used without any limitations.
 
 ### New Translations
 
