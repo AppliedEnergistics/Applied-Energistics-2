@@ -39,7 +39,7 @@ import appeng.tile.misc.TileVibrationChamber;
 import appeng.util.Platform;
 
 
-public class BlockVibrationChamber extends AEBaseBlock
+public final class BlockVibrationChamber extends AEBaseBlock
 {
 
 	public BlockVibrationChamber()

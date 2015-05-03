@@ -25,5 +25,10 @@ public enum TileEventType
 
 	WORLD_NBT_READ, WORLD_NBT_WRITE,
 
-	NETWORK_READ, NETWORK_WRITE
+	/**
+	 * Methods annotated with this need to return a boolean
+	 */
+	NETWORK_READ,
+
+	NETWORK_WRITE
 }

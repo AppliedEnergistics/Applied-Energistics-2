@@ -32,18 +32,18 @@ import cpw.mods.fml.relauncher.SideOnly;
 import appeng.tile.AEBaseTile;
 
 
-public class AETileEventHandler
+public final class AETileEventHandler
 {
 
 	private final Method method;
 
-	public AETileEventHandler( Method m, TileEventType which )
+	public AETileEventHandler( Method method )
 	{
-		this.method = m;
+		this.method = method;
 	}
 
 	// TICK
-	public void Tick( AEBaseTile tile )
+	public void tick( AEBaseTile tile )
 	{
 		try
 		{

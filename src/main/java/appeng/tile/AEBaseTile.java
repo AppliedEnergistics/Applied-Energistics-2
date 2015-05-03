@@ -26,6 +26,9 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -61,14 +64,15 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 {
 
 	public static final ThreadLocal<WeakReference<AEBaseTile>> DROP_NO_ITEMS = new ThreadLocal<WeakReference<AEBaseTile>>();
-	private static final HashMap<Class, EnumMap<TileEventType, List<AETileEventHandler>>> HANDLERS = new HashMap<Class, EnumMap<TileEventType, List<AETileEventHandler>>>();
-	private static final HashMap<Class, ItemStackSrc> ITEM_STACKS = new HashMap<Class, ItemStackSrc>();
-	public int renderFragment = 0;
+	private static final Map<Class<? extends AEBaseTile>, Map<TileEventType, List<AETileEventHandler>>> HANDLERS = new HashMap<Class<? extends AEBaseTile>, Map<TileEventType, List<AETileEventHandler>>>();
+	private static final Map<Class<? extends TileEntity>, ItemStackSrc> ITEM_STACKS = new HashMap<Class<? extends TileEntity>, ItemStackSrc>();
+	private int renderFragment = 0;
+	@Nullable
 	public String customName;
 	private ForgeDirection forward = ForgeDirection.UNKNOWN;
 	private ForgeDirection up = ForgeDirection.UNKNOWN;
 
-	public static void registerTileItem( Class c, ItemStackSrc wat )
+	public static void registerTileItem( Class<? extends TileEntity> c, ItemStackSrc wat )
 	{
 		ITEM_STACKS.put( c, wat );
 	}
@@ -84,11 +88,13 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 		return !this.worldObj.blockExists( this.xCoord, this.yCoord, this.zCoord );
 	}
 
+	@Nonnull
 	public TileEntity getTile()
 	{
 		return this;
 	}
 
+	@Nullable
 	protected ItemStack getItemFromTile( Object obj )
 	{
 		ItemStackSrc src = ITEM_STACKS.get( obj.getClass() );
@@ -97,11 +103,6 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 			return null;
 		}
 		return src.stack( 1 );
-	}
-
-	public final void Tick()
-	{
-
 	}
 
 	/**
@@ -176,7 +177,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	{
 		for( AETileEventHandler h : this.getHandlerListFor( TileEventType.TICK ) )
 		{
-			h.Tick( this );
+			h.tick( this );
 		}
 	}
 
@@ -211,10 +212,11 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 		return this.hasHandlerFor( TileEventType.TICK );
 	}
 
-	protected boolean hasHandlerFor( TileEventType type )
+	private boolean hasHandlerFor( TileEventType type )
 	{
 		List<AETileEventHandler> list = this.getHandlerListFor( type );
-		return list != null && !list.isEmpty();
+
+		return !list.isEmpty();
 	}
 
 	@Override
@@ -331,45 +333,72 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 		return true;
 	}
 
-	protected List<AETileEventHandler> getHandlerListFor( TileEventType type )
+	@Nonnull
+	private List<AETileEventHandler> getHandlerListFor( TileEventType type )
 	{
-		Class clz = this.getClass();
-		EnumMap<TileEventType, List<AETileEventHandler>> handlerSet = HANDLERS.get( clz );
+		final Map<TileEventType, List<AETileEventHandler>> eventToHandlers = this.getEventToHandlers();
+		final List<AETileEventHandler> handlers = this.getHandlers( eventToHandlers, type );
 
-		if( handlerSet == null )
-		{
-			HANDLERS.put( clz, handlerSet = new EnumMap<TileEventType, List<AETileEventHandler>>( TileEventType.class ) );
-
-			for( Method m : clz.getMethods() )
-			{
-				TileEvent te = m.getAnnotation( TileEvent.class );
-				if( te != null )
-				{
-					this.addHandler( handlerSet, te.value(), m );
-				}
-			}
-		}
-
-		List<AETileEventHandler> list = handlerSet.get( type );
-
-		if( list == null )
-		{
-			handlerSet.put( type, list = new LinkedList<AETileEventHandler>() );
-		}
-
-		return list;
+		return handlers;
 	}
 
-	private void addHandler( EnumMap<TileEventType, List<AETileEventHandler>> handlerSet, TileEventType value, Method m )
+	@Nonnull
+	private Map<TileEventType, List<AETileEventHandler>> getEventToHandlers()
+	{
+		final Class<? extends AEBaseTile> clazz = this.getClass();
+		final Map<TileEventType, List<AETileEventHandler>> storedHandlers = HANDLERS.get( clazz );
+
+		if ( storedHandlers == null )
+		{
+			final Map<TileEventType, List<AETileEventHandler>> newStoredHandlers = new EnumMap<TileEventType, List<AETileEventHandler>>( TileEventType.class );
+
+			HANDLERS.put( clazz, newStoredHandlers );
+
+			for( Method method : clazz.getMethods() )
+			{
+				TileEvent event = method.getAnnotation( TileEvent.class );
+				if( event != null )
+				{
+					this.addHandler( newStoredHandlers, event.value(), method );
+				}
+			}
+
+			return newStoredHandlers;
+		}
+		else
+		{
+			return storedHandlers;
+		}
+	}
+
+	@Nonnull
+	private List<AETileEventHandler> getHandlers( Map<TileEventType, List<AETileEventHandler>> eventToHandlers, TileEventType event ) {
+		final List<AETileEventHandler> oldHandlers = eventToHandlers.get( event );
+
+		if( oldHandlers == null )
+		{
+			final List<AETileEventHandler> newHandlers = new LinkedList<AETileEventHandler>();
+			eventToHandlers.put( event, newHandlers );
+
+			return newHandlers;
+		}
+		else
+		{
+			return oldHandlers;
+		}
+	}
+
+	private void addHandler( Map<TileEventType, List<AETileEventHandler>> handlerSet, TileEventType value, Method m )
 	{
 		List<AETileEventHandler> list = handlerSet.get( value );
 
 		if( list == null )
 		{
-			handlerSet.put( value, list = new ArrayList<AETileEventHandler>() );
+			list = new ArrayList<AETileEventHandler>();
+			handlerSet.put( value, list );
 		}
 
-		list.add( new AETileEventHandler( m, value ) );
+		list.add( new AETileEventHandler( m ) );
 	}
 
 	@Override
