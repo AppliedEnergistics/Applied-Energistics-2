@@ -20,16 +20,17 @@ package appeng.core.features;
 
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import javax.annotation.Nonnull;
+
+import com.google.common.base.Optional;
+import com.google.common.base.Preconditions;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.IBlockAccess;
-
-import com.google.common.base.Optional;
-import com.google.common.base.Preconditions;
-import com.google.common.collect.ObjectArrays;
 
 import appeng.api.definitions.IBlockDefinition;
 import appeng.block.AEBaseBlock;
@@ -92,13 +93,16 @@ public class BlockDefinition extends ItemDefinition implements IBlockDefinition
 	/**
 	 * Create an {@link ItemBlock} from a {@link Block} to register it later as {@link Item}
 	 *
-	 * @param block
-	 * @return
+	 * @param block to be constructed from
+	 *
+	 * @return item from block
 	 */
+	@Nonnull
 	private static Item constructItemFromBlock( Block block )
 	{
-		final Class<? extends ItemBlock> itemclass = getItemBlockConstructor( block );
-		return constructItemBlock( block, itemclass );
+		final Class<? extends ItemBlock> itemClass = getItemBlockConstructor( block );
+
+		return constructItemBlock( block, itemClass );
 	}
 
 	/**
@@ -110,6 +114,7 @@ public class BlockDefinition extends ItemDefinition implements IBlockDefinition
 	 * @param block the block used to determine the used constructor.
 	 * @return a {@link Class} extending ItemBlock
 	 */
+	@Nonnull
 	private static Class<? extends ItemBlock> getItemBlockConstructor( Block block )
 	{
 		if ( block instanceof AEBaseBlock )
@@ -124,32 +129,39 @@ public class BlockDefinition extends ItemDefinition implements IBlockDefinition
 	/**
 	 * Actually construct an instance of {@link Item} with the block and earlier determined constructor.
 	 *
-	 * Shamelessly stolen from the forge magic.
-	 *
-	 * TODO: throw an exception instead of returning null? As this could cause issue later on.
-	 *
 	 * @param block the block to create the {@link ItemBlock} from
-	 * @param itemclass the class used to construct it.
+	 * @param itemClass the class used to construct it.
 	 * @return an {@link Item} for the block. Actually always a sub type of {@link ItemBlock}
 	 */
-	private static Item constructItemBlock( Block block, Class<? extends ItemBlock> itemclass )
+	@Nonnull
+	private static Item constructItemBlock( Block block, Class<? extends ItemBlock> itemClass )
 	{
+		assert block != null;
+		assert itemClass != null;
+
 		try
 		{
-			Object[] itemCtorArgs = new Object[] {};
-			Class<?>[] ctorArgClasses = new Class<?>[itemCtorArgs.length + 1];
-			ctorArgClasses[0] = Block.class;
-			for ( int idx = 1; idx < ctorArgClasses.length; idx++ )
-			{
-				ctorArgClasses[idx] = itemCtorArgs[idx - 1].getClass();
-			}
+			final Constructor<? extends ItemBlock> itemConstructor = itemClass.getConstructor( Block.class );
 
-			Constructor<? extends ItemBlock> itemCtor = itemclass.getConstructor( ctorArgClasses );
-			return itemCtor.newInstance( ObjectArrays.concat( block, itemCtorArgs ) );
+			return itemConstructor.newInstance( block );
 		}
-		catch ( Throwable t )
+		catch( InstantiationException e )
 		{
-			return null;
+			e.printStackTrace();
 		}
+		catch( IllegalAccessException e )
+		{
+			e.printStackTrace();
+		}
+		catch( InvocationTargetException e )
+		{
+			e.printStackTrace();
+		}
+		catch( NoSuchMethodException e )
+		{
+			e.printStackTrace();
+		}
+
+		throw new IllegalStateException( "Tried to construct an ItemBlock from Block " + block.getUnlocalizedName() + " and Class<Item>" + itemClass );
 	}
 }
