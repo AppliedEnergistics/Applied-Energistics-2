@@ -77,6 +77,8 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.world.BlockEvent;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Loader;
@@ -387,7 +389,20 @@ public class Platform
 
 	public static boolean hasPermissions( DimensionalCoord dc, EntityPlayer player )
 	{
-		return dc.getWorld().canMineBlock( player, dc.x, dc.y, dc.z );
+		World world = dc.getWorld();
+
+		if ( !world.canMineBlock( player, dc.x, dc.y, dc.z ) )
+		{
+			return false;
+		}
+
+		Block block = world.getBlock( dc.x, dc.y, dc.z );
+		int meta = world.getBlockMetadata( dc.x, dc.y, dc.z );
+
+		BlockEvent.BreakEvent breakEvent = new BlockEvent.BreakEvent( dc.x, dc.y, dc.z, world, block, meta,	player );
+		MinecraftForge.EVENT_BUS.post(breakEvent);
+		
+		return !breakEvent.isCanceled();
 	}
 
 	/*
