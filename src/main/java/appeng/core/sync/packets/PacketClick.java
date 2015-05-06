@@ -21,10 +21,11 @@ package appeng.core.sync.packets;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-
+import net.minecraftforge.event.ForgeEventFactory;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 import appeng.api.AEApi;
 import appeng.api.definitions.IComparableDefinition;
 import appeng.api.definitions.IItems;
@@ -80,31 +81,35 @@ public class PacketClick extends AppEngPacket
 	@Override
 	public void serverPacketData( INetworkInfo manager, AppEngPacket packet, EntityPlayer player )
 	{
-		ItemStack is = player.inventory.getCurrentItem();
-		final IItems items = AEApi.instance().definitions().items();
-		final IComparableDefinition maybeMemoryCard = items.memoryCard();
-		final IComparableDefinition maybeColorApplicator = items.colorApplicator();
-
-		if( is != null )
-		{
-			if( is.getItem() instanceof ToolNetworkTool )
+        PlayerInteractEvent event = ForgeEventFactory.onPlayerInteract(player, Action.RIGHT_CLICK_BLOCK, this.x, this.y, this.z, this.side, player.worldObj);
+        if (!event.isCanceled())
+        {
+			ItemStack is = player.inventory.getCurrentItem();
+			final IItems items = AEApi.instance().definitions().items();
+			final IComparableDefinition maybeMemoryCard = items.memoryCard();
+			final IComparableDefinition maybeColorApplicator = items.colorApplicator();
+	
+			if( is != null )
 			{
-				ToolNetworkTool tnt = (ToolNetworkTool) is.getItem();
-				tnt.serverSideToolLogic( is, player, player.worldObj, this.x, this.y, this.z, this.side, this.hitX, this.hitY, this.hitZ );
+				if( is.getItem() instanceof ToolNetworkTool )
+				{
+					ToolNetworkTool tnt = (ToolNetworkTool) is.getItem();
+					tnt.serverSideToolLogic( is, player, player.worldObj, this.x, this.y, this.z, this.side, this.hitX, this.hitY, this.hitZ );
+				}
+	
+				else if( maybeMemoryCard.isSameAs( is ) )
+				{
+					IMemoryCard mem = (IMemoryCard) is.getItem();
+					mem.notifyUser( player, MemoryCardMessages.SETTINGS_CLEARED );
+					is.setTagCompound( null );
+				}
+	
+				else if( maybeColorApplicator.isSameAs( is ) )
+				{
+					ToolColorApplicator mem = (ToolColorApplicator) is.getItem();
+					mem.cycleColors( is, mem.getColor( is ), 1 );
+				}
 			}
-
-			else if( maybeMemoryCard.isSameAs( is ) )
-			{
-				IMemoryCard mem = (IMemoryCard) is.getItem();
-				mem.notifyUser( player, MemoryCardMessages.SETTINGS_CLEARED );
-				is.setTagCompound( null );
-			}
-
-			else if( maybeColorApplicator.isSameAs( is ) )
-			{
-				ToolColorApplicator mem = (ToolColorApplicator) is.getItem();
-				mem.cycleColors( is, mem.getColor( is ), 1 );
-			}
-		}
+        }
 	}
 }
