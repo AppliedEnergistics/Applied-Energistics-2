@@ -110,6 +110,6 @@ public class PacketClick extends AppEngPacket
 					mem.cycleColors( is, mem.getColor( is ), 1 );
 				}
 			}
-        	}
+		}
 	}
 }
