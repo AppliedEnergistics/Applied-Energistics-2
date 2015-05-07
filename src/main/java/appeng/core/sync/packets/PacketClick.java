@@ -81,9 +81,9 @@ public class PacketClick extends AppEngPacket
 	@Override
 	public void serverPacketData( INetworkInfo manager, AppEngPacket packet, EntityPlayer player )
 	{
-        PlayerInteractEvent event = ForgeEventFactory.onPlayerInteract(player, Action.RIGHT_CLICK_BLOCK, this.x, this.y, this.z, this.side, player.worldObj);
-        if (!event.isCanceled())
-        {
+		PlayerInteractEvent event = ForgeEventFactory.onPlayerInteract( player, Action.RIGHT_CLICK_BLOCK, this.x, this.y, this.z, this.side, player.worldObj );
+		if ( !event.isCanceled() )
+		{
 			ItemStack is = player.inventory.getCurrentItem();
 			final IItems items = AEApi.instance().definitions().items();
 			final IComparableDefinition maybeMemoryCard = items.memoryCard();
@@ -110,6 +110,6 @@ public class PacketClick extends AppEngPacket
 					mem.cycleColors( is, mem.getColor( is ), 1 );
 				}
 			}
-        }
+        	}
 	}
 }
