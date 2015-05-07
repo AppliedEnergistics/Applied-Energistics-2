@@ -84,6 +84,8 @@ public class Parts
 
 	public AEItemDefinition partP2PTunnelLight;
 
+	public AEItemDefinition partP2PTunnelOpenComputers;
+
 	public AEItemDefinition partCableAnchor;
 
 	public AEItemDefinition partMonitor;

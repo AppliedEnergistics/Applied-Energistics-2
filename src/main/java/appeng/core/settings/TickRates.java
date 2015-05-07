@@ -45,7 +45,9 @@ public enum TickRates
 
 	ItemTunnel( 5, 60 ),
 
-	LightTunnel( 5, 120 );
+	LightTunnel( 5, 120 ),
+
+	OpenComputersTunnel( 1, 5 );
 
 	public int min;
 	public int max;
