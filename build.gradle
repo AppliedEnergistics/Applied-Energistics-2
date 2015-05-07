@@ -104,6 +104,7 @@ sourceSets {
                     "assets/appliedenergistics2/textures/guis/*",
                     "assets/appliedenergistics2/textures/models/*",
                     "assets/appliedenergistics2/textures/items/*",
+                    "assets/appliedenergistics2/meta/*",
                     "mcmod.info",
                     "pack.mcmeta"
         }
