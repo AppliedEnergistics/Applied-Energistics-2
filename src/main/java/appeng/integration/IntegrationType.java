@@ -57,7 +57,9 @@ public enum IntegrationType
 
 	ImmibisMicroblocks( IntegrationSide.BOTH, "ImmibisMicroblocks", "ImmibisMicroblocks" ),
 
-	BetterStorage( IntegrationSide.BOTH, "BetterStorage", "betterstorage" );
+	BetterStorage( IntegrationSide.BOTH, "BetterStorage", "betterstorage" ),
+
+	OpenComputers( IntegrationSide.BOTH, "OpenComputers", "OpenComputers" );
 
 	public final IntegrationSide side;
 	public final String dspName;

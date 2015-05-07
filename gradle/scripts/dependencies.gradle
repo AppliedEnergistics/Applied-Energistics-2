@@ -49,6 +49,12 @@ repositories {
         name = "RX14 Proxy"
         url = "http://mvn.rx14.co.uk/repo/"
     }
+
+    maven {
+        name "OpenComputers Repo"
+        url = "http://maven.cil.li/"
+    }
+
 //  CurseForge DNS for TE is not available or I am just being unlucky, code part can stay since this is applicable to any other curseforge mod though
 //    ivy {
 //        name = "CoFHLib"
@@ -97,6 +103,7 @@ dependencies {
     compile "com.mod-buildcraft:buildcraft:${bc_version}:dev"
 
     // provided APIs
+    compile "li.cil.oc:OpenComputers:MC${minecraft_version}-${opencomputers_version}:api"
     compile "net.industrial-craft:industrialcraft-2:${ic2_version}-experimental:api"
     compile "net.mcft.copy.betterstorage:BetterStorage:${minecraft_version}-${betterstorage_version}:api"
 

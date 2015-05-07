@@ -91,6 +91,7 @@ gui.appliedenergistics2.RedstoneTunnel=Redstone
 gui.appliedenergistics2.EUTunnel=EU
 gui.appliedenergistics2.RFTunnel=RF
 gui.appliedenergistics2.LightTunnel=Light
+gui.appliedenergistics2.OCTunnel=OpenComputers
 
 gui.appliedenergistics2.security.extract.name=Withdraw
 gui.appliedenergistics2.security.inject.name=Deposit
