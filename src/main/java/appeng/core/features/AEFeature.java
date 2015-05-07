@@ -57,7 +57,7 @@ public enum AEFeature
 
 	DenseEnergyCells( "HigherCapacity" ), DenseCables( "HigherCapacity" ),
 
-	P2PTunnelRF( "P2PTunnels" ), P2PTunnelME( "P2PTunnels" ), P2PTunnelItems( "P2PTunnels" ), P2PTunnelRedstone( "P2PTunnels" ), P2PTunnelEU( "P2PTunnels" ), P2PTunnelLiquids( "P2PTunnels" ), P2PTunnelLight( "P2PTunnels" ),
+	P2PTunnelRF( "P2PTunnels" ), P2PTunnelME( "P2PTunnels" ), P2PTunnelItems( "P2PTunnels" ), P2PTunnelRedstone( "P2PTunnels" ), P2PTunnelEU( "P2PTunnels" ), P2PTunnelLiquids( "P2PTunnels" ), P2PTunnelLight( "P2PTunnels" ), P2PTunnelOpenComputers( "P2PTunnels" ),
 
 	MassCannonBlockDamage( "BlockFeatures" ), TinyTNTBlockDamage( "BlockFeatures" ), Facades( "Facades" ),
 
