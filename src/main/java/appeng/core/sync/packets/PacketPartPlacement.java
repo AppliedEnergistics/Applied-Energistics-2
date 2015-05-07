@@ -71,14 +71,14 @@ public class PacketPartPlacement extends AppEngPacket
 	@Override
 	public void serverPacketData( INetworkInfo manager, AppEngPacket packet, EntityPlayer player )
 	{
-        PlayerInteractEvent event = ForgeEventFactory.onPlayerInteract(player, Action.RIGHT_CLICK_BLOCK, this.x, this.y, this.z, this.face, player.worldObj);
-        if (!event.isCanceled())
-        {
-    		EntityPlayerMP sender = (EntityPlayerMP) player;
-    		CommonHelper.proxy.updateRenderMode( sender );
-    		PartPlacement.eyeHeight = this.eyeHeight;
-    		PartPlacement.place( sender.getHeldItem(), this.x, this.y, this.z, this.face, sender, sender.worldObj, PartPlacement.PlaceType.INTERACT_FIRST_PASS, 0 );
-    		CommonHelper.proxy.updateRenderMode( null );
-        }
+		PlayerInteractEvent event = ForgeEventFactory.onPlayerInteract( player, Action.RIGHT_CLICK_BLOCK, this.x, this.y, this.z, this.face, player.worldObj );
+		if ( !event.isCanceled() )
+		{
+			EntityPlayerMP sender = (EntityPlayerMP) player;
+			CommonHelper.proxy.updateRenderMode( sender );
+			PartPlacement.eyeHeight = this.eyeHeight;
+			PartPlacement.place( sender.getHeldItem(), this.x, this.y, this.z, this.face, sender, sender.worldObj, PartPlacement.PlaceType.INTERACT_FIRST_PASS, 0 );
+			CommonHelper.proxy.updateRenderMode( null );
+		}
 	}
 }
