@@ -37,8 +37,8 @@ public class PlayerSecurityWrapper implements ISecurityRegistry
 	}
 
 	@Override
-	public void addPlayer( int PlayerID, EnumSet<SecurityPermissions> permissions )
+	public void addPlayer( int playerID, EnumSet<SecurityPermissions> permissions )
 	{
-		this.target.put( PlayerID, permissions );
+		this.target.put( playerID, permissions );
 	}
 }

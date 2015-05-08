@@ -384,7 +384,7 @@ public abstract class AEBaseContainer extends Container
 		}
 	}
 
-	protected void bindPlayerInventory( InventoryPlayer inventoryPlayer, int offset_x, int offset_y )
+	protected void bindPlayerInventory( InventoryPlayer inventoryPlayer, int offsetX, int offsetY )
 	{
 		// bind player inventory
 		for( int i = 0; i < 3; i++ )
@@ -393,11 +393,11 @@ public abstract class AEBaseContainer extends Container
 			{
 				if( this.locked.contains( j + i * 9 + 9 ) )
 				{
-					this.addSlotToContainer( new SlotDisabled( inventoryPlayer, j + i * 9 + 9, 8 + j * 18 + offset_x, offset_y + i * 18 ) );
+					this.addSlotToContainer( new SlotDisabled( inventoryPlayer, j + i * 9 + 9, 8 + j * 18 + offsetX, offsetY + i * 18 ) );
 				}
 				else
 				{
-					this.addSlotToContainer( new SlotPlayerInv( inventoryPlayer, j + i * 9 + 9, 8 + j * 18 + offset_x, offset_y + i * 18 ) );
+					this.addSlotToContainer( new SlotPlayerInv( inventoryPlayer, j + i * 9 + 9, 8 + j * 18 + offsetX, offsetY + i * 18 ) );
 				}
 			}
 		}
@@ -407,11 +407,11 @@ public abstract class AEBaseContainer extends Container
 		{
 			if( this.locked.contains( i ) )
 			{
-				this.addSlotToContainer( new SlotDisabled( inventoryPlayer, i, 8 + i * 18 + offset_x, 58 + offset_y ) );
+				this.addSlotToContainer( new SlotDisabled( inventoryPlayer, i, 8 + i * 18 + offsetX, 58 + offsetY ) );
 			}
 			else
 			{
-				this.addSlotToContainer( new SlotPlayerHotBar( inventoryPlayer, i, 8 + i * 18 + offset_x, 58 + offset_y ) );
+				this.addSlotToContainer( new SlotPlayerHotBar( inventoryPlayer, i, 8 + i * 18 + offsetX, 58 + offsetY ) );
 			}
 		}
 	}

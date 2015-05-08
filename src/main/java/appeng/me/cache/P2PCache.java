@@ -184,7 +184,7 @@ public class P2PCache implements IGridCache
 		}
 	}
 
-	public void updateFreq( PartP2PTunnel t, long NewFreq )
+	public void updateFreq( PartP2PTunnel t, long newFrequency )
 	{
 		if( this.outputs.containsValue( t ) )
 		{
@@ -196,7 +196,7 @@ public class P2PCache implements IGridCache
 			this.inputs.remove( t.freq );
 		}
 
-		t.freq = NewFreq;
+		t.freq = newFrequency;
 
 		if( t.output )
 		{

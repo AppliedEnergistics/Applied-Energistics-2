@@ -30,7 +30,7 @@ public interface IMeteoriteWorld
 
 	void setBlock( int i, int j, int k, Block blk );
 
-	void setBlock( int i, int j, int k, Block blk_b, int meta_b, int l );
+	void setBlock( int i, int j, int k, Block block, int meta, int l );
 
 	void done();
 }

@@ -175,9 +175,9 @@ public class CraftGuide extends CraftGuideAPIObject implements IIntegrationModul
 	}
 
 	@Override
-	public RecipeTemplate createRecipeTemplate( Slot[] slots, ItemStack craftingType, String backgroundTexture, int backgroundX, int backgroundY, String backgroundSelectedTexture, int backgroundSelectedX, int backgroundSelectedY )
+	public RecipeTemplate createRecipeTemplate( Slot[] slots, ItemStack craftingType, String bgTexture, int bgX, int bgY, String selectedBGTexture, int selectedBGX, int selectedBGY )
 	{
-		return this.parent.createRecipeTemplate( slots, craftingType, backgroundTexture, backgroundX, backgroundY, backgroundSelectedTexture, backgroundSelectedX, backgroundSelectedY );
+		return this.parent.createRecipeTemplate( slots, craftingType, bgTexture, bgX, bgY, selectedBGTexture, selectedBGX, selectedBGY );
 	}
 
 	@Override

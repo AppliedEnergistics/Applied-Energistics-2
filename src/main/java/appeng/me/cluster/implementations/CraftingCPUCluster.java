@@ -26,6 +26,9 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
+
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -34,9 +37,6 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 
 import cpw.mods.fml.common.FMLCommonHandler;
-
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
@@ -109,10 +109,10 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 	private int remainingOperations;
 	private boolean somethingChanged;
 
-	public CraftingCPUCluster( WorldCoord _min, WorldCoord _max )
+	public CraftingCPUCluster( WorldCoord min, WorldCoord max )
 	{
-		this.min = _min;
-		this.max = _max;
+		this.min = min;
+		this.max = max;
 	}
 
 	/**

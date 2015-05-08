@@ -44,7 +44,7 @@ public class BlockController extends AEBaseBlock
 	}
 
 	@Override
-	public void onNeighborBlockChange( World w, int x, int y, int z, Block id_junk )
+	public void onNeighborBlockChange( World w, int x, int y, int z, Block neighborBlock )
 	{
 		TileController tc = this.getTileEntity( w, x, y, z );
 		if( tc != null )

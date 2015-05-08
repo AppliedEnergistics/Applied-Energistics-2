@@ -26,13 +26,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.oredict.OreDictionary;
-
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.oredict.OreDictionary;
 
 import appeng.api.storage.data.IAEItemStack;
 
@@ -59,13 +59,13 @@ public class OreHelper
 	/**
 	 * Test if the passed {@link ItemStack} is an ore.
 	 *
-	 * @param ItemStack the itemstack to test
+	 * @param itemStack the itemstack to test
 	 *
 	 * @return true if an ore entry exists, false otherwise
 	 */
-	public OreReference isOre( ItemStack ItemStack )
+	public OreReference isOre( ItemStack itemStack )
 	{
-		ItemRef ir = new ItemRef( ItemStack );
+		ItemRef ir = new ItemRef( itemStack );
 
 		if( !this.references.containsKey( ir ) )
 		{
@@ -85,7 +85,7 @@ public class OreHelper
 
 				for( ItemStack oreItem : this.oreDictCache.getUnchecked( ore ) )
 				{
-					if( OreDictionary.itemMatches( oreItem, ItemStack, false ) )
+					if( OreDictionary.itemMatches( oreItem, itemStack, false ) )
 					{
 						toAdd.add( ore );
 						break;

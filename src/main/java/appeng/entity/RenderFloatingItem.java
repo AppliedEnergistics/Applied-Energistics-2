@@ -46,11 +46,11 @@ public class RenderFloatingItem extends RenderItem
 	}
 
 	@Override
-	public void doRender( EntityItem p_76986_1_, double p_76986_2_, double p_76986_4_, double p_76986_6_, float p_76986_8_, float p_76986_9_ )
+	public void doRender( EntityItem entityItem, double x, double y, double z, float yaw, float partialTick )
 	{
-		if( p_76986_1_ instanceof EntityFloatingItem )
+		if( entityItem instanceof EntityFloatingItem )
 		{
-			EntityFloatingItem efi = (EntityFloatingItem) p_76986_1_;
+			EntityFloatingItem efi = (EntityFloatingItem) entityItem;
 			if( efi.progress > 0.0 )
 			{
 				GL11.glPushMatrix();
@@ -60,7 +60,7 @@ public class RenderFloatingItem extends RenderItem
 					GL11.glTranslatef( 0, -0.15f, 0 );
 				}
 
-				super.doRender( efi, p_76986_2_, p_76986_4_, p_76986_6_, p_76986_8_, p_76986_9_ );
+				super.doRender( efi, x, y, z, yaw, partialTick );
 				GL11.glPopMatrix();
 			}
 		}

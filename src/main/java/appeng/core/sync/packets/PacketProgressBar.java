@@ -44,15 +44,15 @@ public class PacketProgressBar extends AppEngPacket
 	}
 
 	// api
-	public PacketProgressBar( int short_id, long value )
+	public PacketProgressBar( int shortID, long value )
 	{
-		this.id = (short) short_id;
+		this.id = (short) shortID;
 		this.value = value;
 
 		ByteBuf data = Unpooled.buffer();
 
 		data.writeInt( this.getPacketID() );
-		data.writeShort( short_id );
+		data.writeShort( shortID );
 		data.writeLong( value );
 
 		this.configureWrite( data );

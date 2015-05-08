@@ -44,13 +44,13 @@ public class WrapperInventoryRange implements IInventory
 		this.ignoreValidItems = ignoreValid;
 	}
 
-	public WrapperInventoryRange( IInventory a, int _min, int _size, boolean ignoreValid )
+	public WrapperInventoryRange( IInventory a, int min, int size, boolean ignoreValid )
 	{
 		this.src = a;
-		this.slots = new int[_size];
-		for( int x = 0; x < _size; x++ )
+		this.slots = new int[size];
+		for( int x = 0; x < size; x++ )
 		{
-			this.slots[x] = _min + x;
+			this.slots[x] = min + x;
 		}
 		this.ignoreValidItems = ignoreValid;
 	}

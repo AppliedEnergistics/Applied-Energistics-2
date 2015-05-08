@@ -59,10 +59,10 @@ public class QuantumCluster implements ILocatable, IAECluster
 	private long otherSide;
 	private TileQuantumBridge center;
 
-	public QuantumCluster( WorldCoord _min, WorldCoord _max )
+	public QuantumCluster( WorldCoord min, WorldCoord max )
 	{
-		this.min = _min;
-		this.max = _max;
+		this.min = min;
+		this.max = max;
 		this.Ring = new TileQuantumBridge[8];
 	}
 

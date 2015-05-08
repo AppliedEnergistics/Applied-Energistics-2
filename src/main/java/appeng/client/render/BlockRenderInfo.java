@@ -49,31 +49,31 @@ public class BlockRenderInfo
 		this.rendererInstance = inst;
 	}
 
-	public void updateIcons( FlippableIcon Bottom, FlippableIcon Top, FlippableIcon North, FlippableIcon South, FlippableIcon East, FlippableIcon West )
+	public void updateIcons( FlippableIcon bottom, FlippableIcon top, FlippableIcon north, FlippableIcon south, FlippableIcon east, FlippableIcon west )
 	{
-		this.topIcon = Top;
-		this.bottomIcon = Bottom;
-		this.southIcon = South;
-		this.northIcon = North;
-		this.eastIcon = East;
-		this.westIcon = West;
+		this.topIcon = top;
+		this.bottomIcon = bottom;
+		this.southIcon = south;
+		this.northIcon = north;
+		this.eastIcon = east;
+		this.westIcon = west;
 	}
 
-	public void setTemporaryRenderIcon( IIcon IIcon )
+	public void setTemporaryRenderIcon( IIcon icon )
 	{
-		if( IIcon == null )
+		if( icon == null )
 		{
 			this.useTmp = false;
 		}
 		else
 		{
 			this.useTmp = true;
-			this.tmpTopIcon.setOriginal( IIcon );
-			this.tmpBottomIcon.setOriginal( IIcon );
-			this.tmpSouthIcon.setOriginal( IIcon );
-			this.tmpNorthIcon.setOriginal( IIcon );
-			this.tmpEastIcon.setOriginal( IIcon );
-			this.tmpWestIcon.setOriginal( IIcon );
+			this.tmpTopIcon.setOriginal( icon );
+			this.tmpBottomIcon.setOriginal( icon );
+			this.tmpSouthIcon.setOriginal( icon );
+			this.tmpNorthIcon.setOriginal( icon );
+			this.tmpEastIcon.setOriginal( icon );
+			this.tmpWestIcon.setOriginal( icon );
 		}
 	}
 

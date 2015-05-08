@@ -101,7 +101,7 @@ public class NetworkMonitor<T extends IAEStack<T>> extends MEMonitorHandler<T>
 		this.postChange( true, changes, src );
 	}
 
-	protected void postChange( boolean Add, Iterable<T> changes, BaseActionSource src )
+	protected void postChange( boolean add, Iterable<T> changes, BaseActionSource src )
 	{
 		if( DEPTH.contains( this ) )
 		{
@@ -119,7 +119,7 @@ public class NetworkMonitor<T extends IAEStack<T>> extends MEMonitorHandler<T>
 		{
 			T difference = changedItem;
 
-			if( !Add && changedItem != null )
+			if( !add && changedItem != null )
 			{
 				( difference = changedItem.copy() ).setStackSize( -changedItem.getStackSize() );
 			}

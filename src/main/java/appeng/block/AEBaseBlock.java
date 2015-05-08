@@ -716,7 +716,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	}
 
 	@SideOnly( Side.CLIENT )
-	private FlippableIcon optionalIcon( IIconRegister ir, String Name, IIcon substitute )
+	private FlippableIcon optionalIcon( IIconRegister ir, String name, IIcon substitute )
 	{
 		// if the input is an flippable IIcon find the original.
 		while( substitute instanceof FlippableIcon )
@@ -728,13 +728,13 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 		{
 			try
 			{
-				ResourceLocation resLoc = new ResourceLocation( Name );
+				ResourceLocation resLoc = new ResourceLocation( name );
 				resLoc = new ResourceLocation( resLoc.getResourceDomain(), String.format( "%s/%s%s", "textures/blocks", resLoc.getResourcePath(), ".png" ) );
 
 				IResource res = Minecraft.getMinecraft().getResourceManager().getResource( resLoc );
 				if( res != null )
 				{
-					return new FlippableIcon( ir.registerIcon( Name ) );
+					return new FlippableIcon( ir.registerIcon( name ) );
 				}
 			}
 			catch( Throwable e )
@@ -743,7 +743,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 			}
 		}
 
-		return new FlippableIcon( ir.registerIcon( Name ) );
+		return new FlippableIcon( ir.registerIcon( name ) );
 	}
 
 	@SideOnly( Side.CLIENT )

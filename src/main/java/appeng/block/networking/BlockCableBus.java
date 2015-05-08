@@ -126,7 +126,7 @@ public class BlockCableBus extends AEBaseBlock implements IRedNetConnection
 	}
 
 	@Override
-	public int colorMultiplier( IBlockAccess p_149720_1_, int p_149720_2_, int p_149720_3_, int p_149720_4_ )
+	public int colorMultiplier( IBlockAccess world, int x, int y, int z )
 	{
 		return this.myColorMultiplier;
 	}

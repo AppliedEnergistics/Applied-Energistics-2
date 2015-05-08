@@ -21,9 +21,9 @@ package appeng.util.inv;
 
 import java.util.Iterator;
 
-import net.minecraft.item.ItemStack;
-
 import com.google.common.collect.ImmutableList;
+
+import net.minecraft.item.ItemStack;
 
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
@@ -66,11 +66,11 @@ public class IMEAdaptor extends InventoryAdaptor
 		return this.doRemoveItems( amount, filter, destination, Actionable.MODULATE );
 	}
 
-	public ItemStack doRemoveItems( int how_many, ItemStack Filter, IInventoryDestination destination, Actionable type )
+	public ItemStack doRemoveItems( int amount, ItemStack filter, IInventoryDestination destination, Actionable type )
 	{
 		IAEItemStack req = null;
 
-		if( Filter == null )
+		if( filter == null )
 		{
 			IItemList<IAEItemStack> list = this.getList();
 			if( !list.isEmpty() )
@@ -80,14 +80,14 @@ public class IMEAdaptor extends InventoryAdaptor
 		}
 		else
 		{
-			req = AEItemStack.create( Filter );
+			req = AEItemStack.create( filter );
 		}
 
 		IAEItemStack out = null;
 
 		if( req != null )
 		{
-			req.setStackSize( how_many );
+			req.setStackSize( amount );
 			out = this.target.extractItems( req, type, this.src );
 		}
 
@@ -106,18 +106,18 @@ public class IMEAdaptor extends InventoryAdaptor
 	}
 
 	@Override
-	public ItemStack removeSimilarItems( int how_many, ItemStack filter, FuzzyMode fuzzyMode, IInventoryDestination destination )
+	public ItemStack removeSimilarItems( int amount, ItemStack filter, FuzzyMode fuzzyMode, IInventoryDestination destination )
 	{
 		if( filter == null )
 		{
-			return this.doRemoveItems( how_many, null, destination, Actionable.MODULATE );
+			return this.doRemoveItems( amount, null, destination, Actionable.MODULATE );
 		}
-		return this.doRemoveItemsFuzzy( how_many, filter, destination, Actionable.MODULATE, fuzzyMode );
+		return this.doRemoveItemsFuzzy( amount, filter, destination, Actionable.MODULATE, fuzzyMode );
 	}
 
-	public ItemStack doRemoveItemsFuzzy( int how_many, ItemStack Filter, IInventoryDestination destination, Actionable type, FuzzyMode fuzzyMode )
+	public ItemStack doRemoveItemsFuzzy( int amount, ItemStack filter, IInventoryDestination destination, Actionable type, FuzzyMode fuzzyMode )
 	{
-		IAEItemStack reqFilter = AEItemStack.create( Filter );
+		IAEItemStack reqFilter = AEItemStack.create( filter );
 		if( reqFilter == null )
 		{
 			return null;
@@ -129,7 +129,7 @@ public class IMEAdaptor extends InventoryAdaptor
 		{
 			if( req != null )
 			{
-				req.setStackSize( how_many );
+				req.setStackSize( amount );
 				out = this.target.extractItems( req, type, this.src );
 				if( out != null )
 				{

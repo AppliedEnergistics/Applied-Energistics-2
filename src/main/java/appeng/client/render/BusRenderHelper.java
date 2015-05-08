@@ -22,6 +22,9 @@ package appeng.client.render;
 import java.util.EnumSet;
 import javax.annotation.Nullable;
 
+import com.google.common.base.Function;
+import com.google.common.base.Optional;
+
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
@@ -30,9 +33,6 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-
-import com.google.common.base.Function;
-import com.google.common.base.Optional;
 
 import appeng.api.AEApi;
 import appeng.api.exceptions.MissingDefinition;
@@ -374,16 +374,16 @@ public final class BusRenderHelper implements IPartRenderHelper
 	}
 
 	@Override
-	public void setTexture( IIcon Down, IIcon Up, IIcon North, IIcon South, IIcon West, IIcon East )
+	public void setTexture( IIcon down, IIcon up, IIcon north, IIcon south, IIcon west, IIcon east )
 	{
 		IIcon[] list = new IIcon[6];
 
-		list[0] = Down;
-		list[1] = Up;
-		list[2] = North;
-		list[3] = South;
-		list[4] = West;
-		list[5] = East;
+		list[0] = down;
+		list[1] = up;
+		list[2] = north;
+		list[3] = south;
+		list[4] = west;
+		list[5] = east;
 
 		for( AEBaseBlock baseBlock : this.maybeBaseBlock.asSet() )
 		{

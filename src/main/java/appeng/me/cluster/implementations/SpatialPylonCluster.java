@@ -42,10 +42,10 @@ public class SpatialPylonCluster implements IAECluster
 	public boolean hasPower;
 	public boolean hasChannel;
 
-	public SpatialPylonCluster( DimensionalCoord _min, DimensionalCoord _max )
+	public SpatialPylonCluster( DimensionalCoord min, DimensionalCoord max )
 	{
-		this.min = _min.copy();
-		this.max = _max.copy();
+		this.min = min.copy();
+		this.max = max.copy();
 
 		if( this.min.x != this.max.x )
 		{

@@ -408,12 +408,12 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 		return this.getFreeIDSLot( varID, "materials" );
 	}
 
-	public int getFreeIDSLot( int varID, String Category )
+	public int getFreeIDSLot( int varID, String category )
 	{
 		boolean alreadyUsed = false;
 		int min = 0;
 
-		for( Property p : this.getCategory( Category ).getValues().values() )
+		for( Property p : this.getCategory( category ).getValues().values() )
 		{
 			int thisInt = p.getInt();
 
@@ -469,10 +469,10 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 		return this.levelByStacks[i];
 	}
 
-	public Enum getSetting( String Category, Class<? extends Enum> class1, Enum myDefault )
+	public Enum getSetting( String category, Class<? extends Enum> class1, Enum myDefault )
 	{
 		String name = class1.getSimpleName();
-		Property p = this.get( Category, name, myDefault.name() );
+		Property p = this.get( category, name, myDefault.name() );
 
 		try
 		{
@@ -486,10 +486,10 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 		return myDefault;
 	}
 
-	public void setSetting( String Category, Enum s )
+	public void setSetting( String category, Enum s )
 	{
 		String name = s.getClass().getSimpleName();
-		this.get( Category, name, s.name() ).set( s.name() );
+		this.get( category, name, s.name() ).set( s.name() );
 		this.save();
 	}
 

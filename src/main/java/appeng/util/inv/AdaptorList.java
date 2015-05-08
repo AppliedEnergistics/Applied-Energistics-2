@@ -105,7 +105,7 @@ public class AdaptorList extends InventoryAdaptor
 	}
 
 	@Override
-	public ItemStack removeSimilarItems( int how_many, ItemStack filter, FuzzyMode fuzzyMode, IInventoryDestination destination )
+	public ItemStack removeSimilarItems( int amount, ItemStack filter, FuzzyMode fuzzyMode, IInventoryDestination destination )
 	{
 		int s = this.i.size();
 		for( int x = 0; x < s; x++ )
@@ -113,20 +113,20 @@ public class AdaptorList extends InventoryAdaptor
 			ItemStack is = this.i.get( x );
 			if( is != null && ( filter == null || Platform.isSameItemFuzzy( is, filter, fuzzyMode ) ) )
 			{
-				if( how_many > is.stackSize )
+				if( amount > is.stackSize )
 				{
-					how_many = is.stackSize;
+					amount = is.stackSize;
 				}
 				if( destination != null && !destination.canInsert( is ) )
 				{
-					how_many = 0;
+					amount = 0;
 				}
 
-				if( how_many > 0 )
+				if( amount > 0 )
 				{
 					ItemStack rv = is.copy();
-					rv.stackSize = how_many;
-					is.stackSize -= how_many;
+					rv.stackSize = amount;
+					is.stackSize -= amount;
 
 					// remove it..
 					if( is.stackSize <= 0 )

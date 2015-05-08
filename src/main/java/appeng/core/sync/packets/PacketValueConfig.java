@@ -72,10 +72,10 @@ public class PacketValueConfig extends AppEngPacket
 	}
 
 	// api
-	public PacketValueConfig( String Name, String Value ) throws IOException
+	public PacketValueConfig( String name, String value ) throws IOException
 	{
-		this.Name = Name;
-		this.Value = Value;
+		this.Name = name;
+		this.Value = value;
 
 		ByteBuf data = Unpooled.buffer();
 
@@ -83,8 +83,8 @@ public class PacketValueConfig extends AppEngPacket
 
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		DataOutputStream dos = new DataOutputStream( bos );
-		dos.writeUTF( Name );
-		dos.writeUTF( Value );
+		dos.writeUTF( name );
+		dos.writeUTF( value );
 		// dos.close();
 
 		data.writeBytes( bos.toByteArray() );

@@ -43,9 +43,9 @@ public class AppEngInternalAEInventory implements IInventory, Iterable<ItemStack
 	final int size;
 	int maxStack;
 
-	public AppEngInternalAEInventory( IAEAppEngInventory _te, int s )
+	public AppEngInternalAEInventory( IAEAppEngInventory te, int s )
 	{
-		this.te = _te;
+		this.te = te;
 		this.size = s;
 		this.maxStack = 64;
 		this.inv = new IAEItemStack[s];

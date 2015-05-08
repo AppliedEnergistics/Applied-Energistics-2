@@ -35,7 +35,7 @@ public class Splotch
 	public final AEColor color;
 	private final int pos;
 
-	public Splotch( AEColor col, boolean lit, ForgeDirection side, Vec3 Pos )
+	public Splotch( AEColor col, boolean lit, ForgeDirection side, Vec3 position )
 	{
 		this.color = col;
 		this.lumen = lit;
@@ -45,20 +45,20 @@ public class Splotch
 
 		if( side == ForgeDirection.SOUTH || side == ForgeDirection.NORTH )
 		{
-			x = Pos.xCoord;
-			y = Pos.yCoord;
+			x = position.xCoord;
+			y = position.yCoord;
 		}
 
 		else if( side == ForgeDirection.UP || side == ForgeDirection.DOWN )
 		{
-			x = Pos.xCoord;
-			y = Pos.zCoord;
+			x = position.xCoord;
+			y = position.zCoord;
 		}
 
 		else
 		{
-			x = Pos.yCoord;
-			y = Pos.zCoord;
+			x = position.yCoord;
+			y = position.zCoord;
 		}
 
 		int a = (int) ( x * 0xF );

@@ -51,7 +51,7 @@ public class NullRotation implements IOrientable
 	}
 
 	@Override
-	public void setOrientation( ForgeDirection Forward, ForgeDirection Up )
+	public void setOrientation( ForgeDirection forward, ForgeDirection up )
 	{
 
 	}
