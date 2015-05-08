@@ -307,7 +307,7 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 		return false;
 	}
 
-	private IInventoryDestination configDestination( IMEMonitor<IAEItemStack> itemInventory )
+	private IInventoryDestination configDestination( IMEInventory<IAEItemStack> itemInventory )
 	{
 		this.destination = itemInventory;
 		return this;

@@ -144,7 +144,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 		}
 	}
 
-	public void postUpdate( List<IAEItemStack> list )
+	public void postUpdate( Iterable<IAEItemStack> list )
 	{
 		for( IAEItemStack is : list )
 		{

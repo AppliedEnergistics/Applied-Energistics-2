@@ -99,7 +99,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 	static final int[] SIDES = new int[] { 0 };
 	static final int[] FRONT = new int[] { 1 };
 	static final int[] NO_SLOTS = new int[] {};
-	final AppEngInternalInventory inv = new AppEngInternalInventory( this, 2 );
+	final IInventory inv = new AppEngInternalInventory( this, 2 );
 	final BaseActionSource mySrc = new MachineSource( this );
 	final IConfigManager config = new ConfigManager( this );
 	ItemStack storageType;
@@ -928,7 +928,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 			super( t );
 		}
 
-		public IMEInventoryHandler<T> getInternalHandler()
+		public IMEInventory<T> getInternalHandler()
 		{
 			IMEInventoryHandler<T> h = this.getHandler();
 			if( h instanceof MEInventoryHandler )

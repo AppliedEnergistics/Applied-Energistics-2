@@ -20,6 +20,7 @@ package appeng.crafting;
 
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -49,7 +50,7 @@ public class CraftingTreeNode
 	// what item is this?
 	private final IAEItemStack what;
 	// what are the crafting patterns for this?
-	private final ArrayList<CraftingTreeProcess> nodes = new ArrayList<CraftingTreeProcess>();
+	private final List<CraftingTreeProcess> nodes = new ArrayList<CraftingTreeProcess>();
 	int bytes = 0;
 	boolean canEmit = false;
 	boolean cannotUse = false;
@@ -116,7 +117,7 @@ public class CraftingTreeNode
 	{
 		this.job.handlePausing();
 
-		List<IAEItemStack> thingsUsed = new LinkedList<IAEItemStack>();
+		Collection<IAEItemStack> thingsUsed = new LinkedList<IAEItemStack>();
 
 		this.what.setStackSize( l );
 		if( this.slot >= 0 && this.parent != null && this.parent.details.isCraftable() )

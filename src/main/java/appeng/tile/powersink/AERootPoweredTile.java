@@ -19,6 +19,7 @@
 package appeng.tile.powersink;
 
 
+import java.util.Collection;
 import java.util.EnumSet;
 
 import net.minecraft.nbt.NBTTagCompound;
@@ -48,7 +49,7 @@ public abstract class AERootPoweredTile extends AEBaseInvTile implements IAEPowe
 	protected double internalCurrentPower = 0;
 	private EnumSet<ForgeDirection> internalPowerSides = EnumSet.allOf( ForgeDirection.class );
 
-	protected EnumSet<ForgeDirection> getPowerSides()
+	protected Collection<ForgeDirection> getPowerSides()
 	{
 		return this.internalPowerSides.clone();
 	}

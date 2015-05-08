@@ -20,6 +20,7 @@ package appeng.recipes.ores;
 
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
@@ -37,7 +38,7 @@ public class OreDictionaryHandler
 
 	public static final OreDictionaryHandler INSTANCE = new OreDictionaryHandler();
 
-	private final List<IOreListener> ol = new ArrayList<IOreListener>();
+	private final Collection<IOreListener> ol = new ArrayList<IOreListener>();
 
 	private boolean enableRebaking = false;
 

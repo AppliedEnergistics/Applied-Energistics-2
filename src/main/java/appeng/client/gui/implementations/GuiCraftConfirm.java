@@ -22,6 +22,7 @@ package appeng.client.gui.implementations;
 import java.io.IOException;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -38,6 +39,7 @@ import net.minecraft.item.ItemStack;
 import appeng.api.AEApi;
 import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.client.gui.AEBaseGui;
 import appeng.client.gui.widgets.GuiScrollbar;
@@ -234,7 +236,7 @@ public class GuiCraftConfirm extends AEBaseGui
 		int viewEnd = viewStart + 3 * this.rows;
 
 		String dspToolTip = "";
-		List<String> lineList = new LinkedList<String>();
+		Collection<String> lineList = new LinkedList<String>();
 		int toolPosX = 0;
 		int toolPosY = 0;
 
@@ -404,7 +406,7 @@ public class GuiCraftConfirm extends AEBaseGui
 		this.myScrollBar.setRange( 0, ( size + 2 ) / 3 - this.rows, 1 );
 	}
 
-	public void postUpdate( List<IAEItemStack> list, byte ref )
+	public void postUpdate( Iterable<IAEItemStack> list, byte ref )
 	{
 		switch( ref )
 		{
@@ -514,7 +516,7 @@ public class GuiCraftConfirm extends AEBaseGui
 		}
 	}
 
-	private IAEItemStack findVisualStack( IAEItemStack l )
+	private IAEItemStack findVisualStack( IAEStack l )
 	{
 		for( IAEItemStack o : this.visual )
 		{

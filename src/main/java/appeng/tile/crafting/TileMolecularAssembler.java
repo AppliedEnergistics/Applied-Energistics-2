@@ -43,6 +43,7 @@ import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.api.definitions.ITileDefinition;
+import appeng.api.implementations.ICraftingPatternItem;
 import appeng.api.implementations.IPowerChannelState;
 import appeng.api.implementations.IUpgradeableHost;
 import appeng.api.implementations.tiles.ICraftingMachine;
@@ -242,7 +243,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 			if( myPat != null && myPat.getItem() instanceof ItemEncodedPattern )
 			{
 				World w = this.getWorldObj();
-				ItemEncodedPattern iep = (ItemEncodedPattern) myPat.getItem();
+				ICraftingPatternItem iep = (ItemEncodedPattern) myPat.getItem();
 				ICraftingPatternDetails ph = iep.getPatternForItem( myPat, w );
 				if( ph != null && ph.isCraftable() )
 				{
@@ -275,7 +276,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 			if( !Platform.isSameItem( is, this.myPattern ) )
 			{
 				World w = this.getWorldObj();
-				ItemEncodedPattern iep = (ItemEncodedPattern) is.getItem();
+				ICraftingPatternItem iep = (ItemEncodedPattern) is.getItem();
 				ICraftingPatternDetails ph = iep.getPatternForItem( is, w );
 
 				if( ph != null && ph.isCraftable() )

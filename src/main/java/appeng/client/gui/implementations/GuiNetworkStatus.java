@@ -213,7 +213,7 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize );
 	}
 
-	public void postUpdate( List<IAEItemStack> list )
+	public void postUpdate( Iterable<IAEItemStack> list )
 	{
 		this.repo.clear();
 

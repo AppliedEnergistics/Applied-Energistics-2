@@ -19,6 +19,7 @@
 package appeng.debug;
 
 
+import java.util.Collection;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;
@@ -100,7 +101,7 @@ public class ToolDebugCard extends AEBaseItem
 					{
 						int length = 0;
 
-						Set<IGridNode> next = new HashSet<IGridNode>();
+						Collection<IGridNode> next = new HashSet<IGridNode>();
 						next.add( node );
 
 						int maxLength = 10000;

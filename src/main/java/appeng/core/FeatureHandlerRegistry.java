@@ -34,7 +34,7 @@ public final class FeatureHandlerRegistry
 		this.registry.add( feature );
 	}
 
-	public Set<IFeatureHandler> getRegisteredFeatureHandlers()
+	public Iterable<IFeatureHandler> getRegisteredFeatureHandlers()
 	{
 		return this.registry;
 	}

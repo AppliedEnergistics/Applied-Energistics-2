@@ -34,7 +34,7 @@ public final class FeatureRegistry
 		this.registry.add( feature );
 	}
 
-	public Set<IAEFeature> getRegisteredFeatures()
+	public Iterable<IAEFeature> getRegisteredFeatures()
 	{
 		return this.registry;
 	}

@@ -22,6 +22,7 @@ package appeng.util.item;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
+import java.io.DataOutput;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.security.InvalidParameterException;
@@ -705,7 +706,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 		if( this.hasTagCompound() )
 		{
 			ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-			DataOutputStream data = new DataOutputStream( bytes );
+			DataOutput data = new DataOutputStream( bytes );
 
 			CompressedStreamTools.write( (NBTTagCompound) this.getTagCompound(), data );
 

@@ -54,7 +54,7 @@ public class TileWireless extends AENetworkInvTile implements IWirelessAccessPoi
 	public static final int CHANNEL_FLAG = 2;
 
 	final int[] sides = new int[] { 0 };
-	final AppEngInternalInventory inv = new AppEngInternalInventory( this, 1 );
+	final IInventory inv = new AppEngInternalInventory( this, 1 );
 
 	public int clientFlags = 0;
 

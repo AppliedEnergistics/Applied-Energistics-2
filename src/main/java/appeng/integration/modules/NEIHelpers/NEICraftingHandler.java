@@ -69,7 +69,7 @@ public class NEICraftingHandler implements IOverlayHandler
 		}
 	}
 
-	public void overlayRecipe( GuiContainer gui, List<PositionedStack> ingredients, boolean shift )
+	public void overlayRecipe( GuiContainer gui, Iterable<PositionedStack> ingredients, boolean shift )
 	{
 		try
 		{

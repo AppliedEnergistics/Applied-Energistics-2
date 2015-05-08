@@ -48,7 +48,7 @@ public class TileCellWorkbench extends AEBaseTile implements IUpgradeableHost, I
 
 	final AppEngInternalInventory cell = new AppEngInternalInventory( this, 1 );
 	final AppEngInternalAEInventory config = new AppEngInternalAEInventory( this, 63 );
-	final ConfigManager manager = new ConfigManager( this );
+	final IConfigManager manager = new ConfigManager( this );
 
 	IInventory cacheUpgrades = null;
 	IInventory cacheConfig = null;

@@ -121,7 +121,7 @@ public final class GrinderRecipeManager implements IGrinderRegistry, IOreListene
 		this.injectRecipe( new AppEngGrinderRecipe( this.copy( in ), this.copy( out ), this.copy( optional ), chance, cost ) );
 	}
 
-	private void injectRecipe( AppEngGrinderRecipe appEngGrinderRecipe )
+	private void injectRecipe( IGrinderEntry appEngGrinderRecipe )
 	{
 		for( IGrinderEntry gr : this.recipes )
 		{

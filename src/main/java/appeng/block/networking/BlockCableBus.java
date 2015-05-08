@@ -444,7 +444,7 @@ public class BlockCableBus extends AEBaseBlock implements IRedNetConnection
 		return this.recolourBlock( world, x, y, z, side, colour, null );
 	}
 
-	public boolean recolourBlock( World world, int x, int y, int z, ForgeDirection side, int colour, EntityPlayer who )
+	public boolean recolourBlock( IBlockAccess world, int x, int y, int z, ForgeDirection side, int colour, EntityPlayer who )
 	{
 		try
 		{

@@ -41,6 +41,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IAEStack;
 import appeng.client.gui.implementations.GuiCraftConfirm;
 import appeng.client.gui.implementations.GuiCraftingCPU;
 import appeng.client.gui.implementations.GuiMEMonitorable;
@@ -191,7 +192,7 @@ public class PacketMEInventoryUpdate extends AppEngPacket
 		return null;
 	}
 
-	public void appendItem( IAEItemStack is ) throws IOException, BufferOverflowException
+	public void appendItem( IAEStack is ) throws IOException, BufferOverflowException
 	{
 		ByteBuf tmp = Unpooled.buffer( OPERATION_BYTE_LIMIT );
 		is.writeToPacket( tmp );

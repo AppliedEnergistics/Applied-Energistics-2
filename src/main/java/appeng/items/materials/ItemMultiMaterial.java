@@ -134,7 +134,7 @@ public final class ItemMultiMaterial extends AEBaseItem implements IStorageCompo
 			}
 
 			Pattern p = Pattern.compile( "(\\d+)[^\\d]" );
-			SlightlyBetterSort s = new SlightlyBetterSort( p );
+			Comparator s = new SlightlyBetterSort( p );
 			Collections.sort( textList, s );
 			lines.addAll( textList );
 		}

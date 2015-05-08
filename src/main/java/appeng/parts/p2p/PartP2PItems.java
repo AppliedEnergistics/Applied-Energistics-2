@@ -19,6 +19,7 @@
 package appeng.parts.p2p;
 
 
+import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -65,7 +66,7 @@ import appeng.util.inv.WrapperMCISidedInventory;
 public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeConnection, ISidedInventory, IGridTickable
 {
 
-	final LinkedList<IInventory> which = new LinkedList<IInventory>();
+	final Deque<IInventory> which = new LinkedList<IInventory>();
 	int oldSize = 0;
 	boolean requested;
 	IInventory cachedInv;

@@ -114,7 +114,7 @@ public class RenderBlockAssembler extends BaseBlockRender implements IBoxProvide
 			if( tma.isPowered() )
 			{
 				this.renderBlockBounds( renderer, 1, 1, 1, 15, 15, 15, ForgeDirection.WEST, ForgeDirection.UP, ForgeDirection.SOUTH );
-				TaughtIcon lights = new TaughtIcon( ExtraBlockTextures.BlockMolecularAssemblerLights.getIcon(), -2.0f );
+				IIcon lights = new TaughtIcon( ExtraBlockTextures.BlockMolecularAssemblerLights.getIcon(), -2.0f );
 				Tessellator.instance.setColorRGBA_F( 1, 1, 1, 0.3f );
 				Tessellator.instance.setBrightness( 14 << 20 | 14 << 4 );
 				renderer.renderFaceXNeg( blk, x, y, z, lights );

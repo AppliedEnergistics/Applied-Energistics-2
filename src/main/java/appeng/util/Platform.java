@@ -29,6 +29,7 @@ import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.WeakHashMap;
@@ -71,6 +72,7 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.StatCollector;
 import net.minecraft.util.Vec3;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.Chunk;
@@ -159,7 +161,7 @@ public class Platform
 	 * random source, use it for item drop locations...
 	 */
 	private static final Random RANDOM_GENERATOR = new Random();
-	private static final WeakHashMap<World, EntityPlayer> FAKE_PLAYERS = new WeakHashMap<World, EntityPlayer>();
+	private static final Map<World, EntityPlayer> FAKE_PLAYERS = new WeakHashMap<World, EntityPlayer>();
 	private static Field tagList;
 	private static Class playerInstance;
 	private static Method getOrCreateChunkWatcher;
@@ -243,7 +245,7 @@ public class Platform
 		return ForgeDirection.UNKNOWN;
 	}
 
-	public static <T extends Enum> T rotateEnum( T ce, boolean backwards, EnumSet validOptions )
+	public static <T extends Enum> T rotateEnum( T ce, boolean backwards, Collection validOptions )
 	{
 		do
 		{
@@ -393,7 +395,7 @@ public class Platform
 	/*
 	 * Checks to see if a block is air?
 	 */
-	public static boolean isBlockAir( World w, int x, int y, int z )
+	public static boolean isBlockAir( IBlockAccess w, int x, int y, int z )
 	{
 		try
 		{
@@ -750,7 +752,7 @@ public class Platform
 	/*
 	 * Generates Item entities in the world similar to how items are generally dropped.
 	 */
-	public static void spawnDrops( World w, int x, int y, int z, List<ItemStack> drops )
+	public static void spawnDrops( World w, int x, int y, int z, Iterable<ItemStack> drops )
 	{
 		if( isServer() )
 		{
@@ -973,7 +975,7 @@ public class Platform
 		}
 	}
 
-	public static boolean hasSpecialComparison( IAEItemStack willAdd )
+	public static boolean hasSpecialComparison( IAEStack willAdd )
 	{
 		if( willAdd == null )
 		{
@@ -1570,7 +1572,7 @@ public class Platform
 		gs.postAlterationOfStoredItems( StorageChannel.ITEMS, itemChanges, src );
 	}
 
-	public static <T extends IAEStack<T>> void postListChanges( IItemList<T> before, IItemList<T> after, IMEMonitorHandlerReceiver<T> meMonitorPassthrough, BaseActionSource source )
+	public static <T extends IAEStack<T>> void postListChanges( IItemList<T> before, Iterable<T> after, IMEMonitorHandlerReceiver<T> meMonitorPassthrough, BaseActionSource source )
 	{
 		LinkedList<T> changes = new LinkedList<T>();
 
@@ -1803,7 +1805,7 @@ public class Platform
 		}
 	}
 
-	public static ItemStack extractItemsByRecipe( IEnergySource energySrc, BaseActionSource mySrc, IMEMonitor<IAEItemStack> src, World w, IRecipe r, ItemStack output, InventoryCrafting ci, ItemStack providedTemplate, int slot, IItemList<IAEItemStack> items, Actionable realForFake, IPartitionList<IAEItemStack> filter )
+	public static ItemStack extractItemsByRecipe( IEnergySource energySrc, BaseActionSource mySrc, IMEMonitor<IAEItemStack> src, World w, IRecipe r, ItemStack output, InventoryCrafting ci, ItemStack providedTemplate, int slot, Iterable<IAEItemStack> items, Actionable realForFake, IPartitionList<IAEItemStack> filter )
 	{
 		if( energySrc.extractAEPower( 1, Actionable.SIMULATE, PowerMultiplier.CONFIG ) > 0.9 )
 		{

@@ -20,6 +20,7 @@ package appeng.client.texture;
 
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
@@ -67,7 +68,7 @@ public enum ExtraItemTextures
 		return this.IIcon;
 	}
 
-	public void registerIcon( TextureMap map )
+	public void registerIcon( IIconRegister map )
 	{
 		this.IIcon = map.registerIcon( "appliedenergistics2:" + this.name );
 	}

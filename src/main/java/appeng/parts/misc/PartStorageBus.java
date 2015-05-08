@@ -391,7 +391,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 		Platform.postListChanges( before, after, this, this.mySrc );
 	}
 
-	public MEInventoryHandler getInternalHandler()
+	public IMEInventoryHandler getInternalHandler()
 	{
 		if( this.cached )
 		{

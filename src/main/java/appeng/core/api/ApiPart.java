@@ -22,6 +22,7 @@ package appeng.core.api;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -67,7 +68,7 @@ public class ApiPart implements IPartHelper
 	private final Map<String, Class> tileImplementations = new HashMap<String, Class>();
 	private final Map<Class<?>, String> interfaces2Layer = new HashMap<Class<?>, String>();
 	private final Map<String, Class> roots = new HashMap<String, Class>();
-	private final List<String> desc = new LinkedList<String>();
+	private final Collection<String> desc = new LinkedList<String>();
 
 	public void initFMPSupport()
 	{
@@ -352,7 +353,7 @@ public class ApiPart implements IPartHelper
 	static class DefaultPackageClassNameRemapper extends Remapper
 	{
 
-		public final HashMap<String, String> inputOutput = new HashMap<String, String>();
+		public final Map<String, String> inputOutput = new HashMap<String, String>();
 
 		@Override
 		public String map( String typeName )

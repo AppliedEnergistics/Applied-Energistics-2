@@ -28,7 +28,7 @@ import net.minecraftforge.client.IItemRenderer;
 public class ItemRenderer implements IItemRenderer
 {
 
-	public static final ItemRenderer INSTANCE = new ItemRenderer();
+	public static final IItemRenderer INSTANCE = new ItemRenderer();
 
 	@Override
 	public boolean handleRenderType( ItemStack item, ItemRenderType type )

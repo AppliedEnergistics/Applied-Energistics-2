@@ -32,6 +32,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 import appeng.api.implementations.tiles.IColorableTile;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IAEStack;
 import appeng.api.util.AEColor;
 import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
@@ -114,7 +115,7 @@ public class TileCraftingMonitorTile extends TileCraftingTile implements IColora
 		return true;
 	}
 
-	public void setJob( IAEItemStack is )
+	public void setJob( IAEStack is )
 	{
 		if( ( is == null ) != ( this.dspPlay == null ) )
 		{

@@ -20,9 +20,11 @@ package appeng.hooks;
 
 
 import java.util.Collection;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Queue;
 import java.util.WeakHashMap;
 import java.util.concurrent.Callable;
@@ -64,14 +66,14 @@ public class TickHandler
 	public static final TickHandler INSTANCE = new TickHandler();
 	final Queue<Callable> serverQueue = new LinkedList<Callable>();
 	final Multimap<World, CraftingJob> craftingJobs = LinkedListMultimap.create();
-	private final WeakHashMap<World, Queue<Callable>> callQueue = new WeakHashMap<World, Queue<Callable>>();
+	private final Map<World, Queue<Callable>> callQueue = new WeakHashMap<World, Queue<Callable>>();
 	private final HandlerRep server = new HandlerRep();
 	private final HandlerRep client = new HandlerRep();
 	private final HashMap<Integer, PlayerColor> cliPlayerColors = new HashMap<Integer, PlayerColor>();
 	private final HashMap<Integer, PlayerColor> srvPlayerColors = new HashMap<Integer, PlayerColor>();
 	CableRenderMode crm = CableRenderMode.Standard;
 
-	public HashMap<Integer, PlayerColor> getPlayerColors()
+	public Map<Integer, PlayerColor> getPlayerColors()
 	{
 		if( Platform.isServer() )
 		{
@@ -147,7 +149,7 @@ public class TickHandler
 	{
 		if( Platform.isServer() ) // for no there is no reason to care about this on the client...
 		{
-			LinkedList<IGridNode> toDestroy = new LinkedList<IGridNode>();
+			Deque<IGridNode> toDestroy = new LinkedList<IGridNode>();
 
 			for( Grid g : this.getRepo().networks )
 			{
@@ -249,7 +251,7 @@ public class TickHandler
 		}
 	}
 
-	private void tickColors( HashMap<Integer, PlayerColor> playerSet )
+	private void tickColors( Map<Integer, PlayerColor> playerSet )
 	{
 		Iterator<PlayerColor> i = playerSet.values().iterator();
 		while( i.hasNext() )

@@ -50,7 +50,7 @@ import appeng.util.iterators.NullIterator;
 public class ContainerCellWorkbench extends ContainerUpgradeable
 {
 	private final TileCellWorkbench workBench;
-	private final AppEngNullInventory nullInventory = new AppEngNullInventory();
+	private final IInventory nullInventory = new AppEngNullInventory();
 	@GuiSync( 2 )
 	public CopyMode copyMode = CopyMode.CLEAR_ON_REMOVE;
 	private ItemStack prevStack = null;

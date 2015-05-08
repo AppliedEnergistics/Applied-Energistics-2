@@ -19,6 +19,7 @@
 package appeng.helpers;
 
 
+import java.util.Collection;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -100,7 +101,7 @@ import appeng.util.item.AEItemStack;
 public class DualityInterface implements IGridTickable, IStorageMonitorable, IInventoryDestination, IAEAppEngInventory, IConfigManagerHost, ICraftingProvider, IUpgradeableHost, IPriorityHost
 {
 
-	static final Set<Block> badBlocks = new HashSet<Block>();
+	static final Collection<Block> badBlocks = new HashSet<Block>();
 	final int[] sides = new int[] { 0, 1, 2, 3, 4, 5, 6, 7 };
 	final IAEItemStack[] requireWork = new IAEItemStack[] { null, null, null, null, null, null, null, null };
 	final MultiCraftingTracker craftingTracker;
@@ -108,7 +109,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 	final IInterfaceHost iHost;
 	final BaseActionSource mySource;
 	final BaseActionSource interfaceRequestSource;
-	final ConfigManager cm = new ConfigManager( this );
+	final IConfigManager cm = new ConfigManager( this );
 	final AppEngInternalAEInventory config = new AppEngInternalAEInventory( this, 8 );
 	final AppEngInternalInventory storage = new AppEngInternalInventory( this, 8 );
 	final AppEngInternalInventory patterns = new AppEngInternalInventory( this, 9 );
@@ -556,7 +557,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		return this.hasWorkToDo() ? ( couldDoWork ? TickRateModulation.URGENT : TickRateModulation.SLOWER ) : TickRateModulation.SLEEP;
 	}
 
-	private void pushItemsOut( EnumSet<ForgeDirection> possibleDirections )
+	private void pushItemsOut( Iterable<ForgeDirection> possibleDirections )
 	{
 		if( !this.hasItemsToSend() )
 		{
@@ -986,7 +987,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		return this.cm.getSetting( Settings.BLOCK ) == YesNo.YES;
 	}
 
-	private boolean acceptsItems( InventoryAdaptor ad, InventoryCrafting table )
+	private boolean acceptsItems( InventoryAdaptor ad, IInventory table )
 	{
 		for( int x = 0; x < table.getSizeInventory(); x++ )
 		{
@@ -1018,7 +1019,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		}
 	}
 
-	public void addDrops( List<ItemStack> drops )
+	public void addDrops( Collection<ItemStack> drops )
 	{
 		if( this.waitingToSend != null )
 		{

@@ -28,7 +28,7 @@ import appeng.api.storage.data.IAEStack;
 public class DefaultPriorityList<T extends IAEStack<T>> implements IPartitionList<T>
 {
 
-	static final List NULL_LIST = new ArrayList();
+	static final Iterable NULL_LIST = new ArrayList();
 
 	@Override
 	public boolean isListed( T input )

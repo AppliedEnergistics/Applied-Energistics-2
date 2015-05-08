@@ -73,7 +73,7 @@ public class OreHelper
 			final Collection<Integer> ores = ref.getOres();
 			final Collection<String> set = ref.getEquivalents();
 
-			Set<String> toAdd = new HashSet<String>();
+			Collection<String> toAdd = new HashSet<String>();
 
 			for( String ore : OreDictionary.getOreNames() )
 			{
@@ -166,7 +166,7 @@ public class OreHelper
 		return false;
 	}
 
-	public List<ItemStack> getCachedOres( String oreName )
+	public Iterable<ItemStack> getCachedOres( String oreName )
 	{
 		return this.oreDictCache.getUnchecked( oreName );
 	}

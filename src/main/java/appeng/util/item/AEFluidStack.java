@@ -22,6 +22,7 @@ package appeng.util.item;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
+import java.io.DataOutput;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import javax.annotation.Nonnull;
@@ -374,7 +375,7 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 		if( this.hasTagCompound() )
 		{
 			ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-			DataOutputStream data = new DataOutputStream( bytes );
+			DataOutput data = new DataOutputStream( bytes );
 
 			CompressedStreamTools.write( (NBTTagCompound) this.tagCompound, data );
 

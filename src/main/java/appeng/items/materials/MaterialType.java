@@ -138,7 +138,7 @@ public enum MaterialType
 		return new ItemStack( this.itemInstance, size, this.damageValue );
 	}
 
-	public EnumSet<AEFeature> getFeature()
+	public Iterable<AEFeature> getFeature()
 	{
 		return this.features;
 	}

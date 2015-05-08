@@ -181,12 +181,12 @@ public enum PartType
 		return false;
 	}
 
-	public Set<AEFeature> getFeature()
+	public Iterable<AEFeature> getFeature()
 	{
 		return this.features;
 	}
 
-	public Set<IntegrationType> getIntegrations()
+	public Iterable<IntegrationType> getIntegrations()
 	{
 		return this.integrations;
 	}

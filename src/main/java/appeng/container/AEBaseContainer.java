@@ -24,10 +24,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -87,12 +90,12 @@ public abstract class AEBaseContainer extends Container
 
 	protected final InventoryPlayer invPlayer;
 	protected final BaseActionSource mySrc;
-	protected final HashSet<Integer> locked = new HashSet<Integer>();
+	protected final Set<Integer> locked = new HashSet<Integer>();
 	final TileEntity tileEntity;
 	final IPart part;
 	final IGuiItemObject obj;
-	final List<PacketPartialItem> dataChunks = new LinkedList<PacketPartialItem>();
-	final HashMap<Integer, SyncData> syncData = new HashMap<Integer, SyncData>();
+	final Collection<PacketPartialItem> dataChunks = new LinkedList<PacketPartialItem>();
+	final Map<Integer, SyncData> syncData = new HashMap<Integer, SyncData>();
 	public boolean isContainerValid = true;
 	public String customName;
 	public ContainerOpenContext openContext;
@@ -245,7 +248,7 @@ public abstract class AEBaseContainer extends Container
 				CompressedStreamTools.writeCompressed( item, stream );
 
 				int maxChunkSize = 30000;
-				List<byte[]> miniPackets = new LinkedList<byte[]>();
+				Collection<byte[]> miniPackets = new LinkedList<byte[]>();
 
 				byte[] data = stream.toByteArray();
 
@@ -491,7 +494,7 @@ public abstract class AEBaseContainer extends Container
 				return null;
 			}
 
-			List<Slot> selectedSlots = new ArrayList<Slot>();
+			Collection<Slot> selectedSlots = new ArrayList<Slot>();
 
 			/**
 			 * Gather a list of valid destinations.
@@ -828,7 +831,7 @@ public abstract class AEBaseContainer extends Container
 
 			if( action == InventoryAction.MOVE_REGION )
 			{
-				List<Slot> from = new LinkedList<Slot>();
+				Collection<Slot> from = new LinkedList<Slot>();
 
 				for( Object j : this.inventorySlots )
 				{

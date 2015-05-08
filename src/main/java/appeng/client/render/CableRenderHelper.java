@@ -31,6 +31,8 @@ import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.parts.IFacadeContainer;
 import appeng.api.parts.IFacadePart;
 import appeng.api.parts.IPart;
+import appeng.api.parts.IPartCollisionHelper;
+import appeng.api.parts.IPartHost;
 import appeng.parts.BusCollisionHelper;
 import appeng.parts.CableBusContainer;
 
@@ -45,7 +47,7 @@ public class CableRenderHelper
 		return INSTANCE;
 	}
 
-	public void renderStatic( CableBusContainer cableBusContainer, IFacadeContainer iFacadeContainer )
+	public void renderStatic( IPartHost cableBusContainer, IFacadeContainer iFacadeContainer )
 	{
 		TileEntity te = cableBusContainer.getTile();
 		RenderBlocksWorkaround renderer = BusRenderer.INSTANCE.renderer;
@@ -92,7 +94,7 @@ public class CableRenderHelper
 				{
 					this.setSide( s );
 					BusRenderHelper brh = BusRenderHelper.INSTANCE;
-					BusCollisionHelper bch = new BusCollisionHelper( boxes, brh.getWorldX(), brh.getWorldY(), brh.getWorldZ(), null, true );
+					IPartCollisionHelper bch = new BusCollisionHelper( boxes, brh.getWorldX(), brh.getWorldY(), brh.getWorldZ(), null, true );
 					part.getBoxes( bch );
 				}
 			}
@@ -209,7 +211,7 @@ public class CableRenderHelper
 		BusRenderHelper.INSTANCE.setOrientation( ax, ay, az );
 	}
 
-	public void renderDynamic( CableBusContainer cableBusContainer, double x, double y, double z )
+	public void renderDynamic( IPartHost cableBusContainer, double x, double y, double z )
 	{
 		for( ForgeDirection s : ForgeDirection.values() )
 		{

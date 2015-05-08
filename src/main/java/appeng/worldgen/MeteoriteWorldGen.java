@@ -109,7 +109,7 @@ public final class MeteoriteWorldGen implements IWorldGenerator
 		return false;
 	}
 
-	private Collection<NBTTagCompound> getNearByMeteorites( World w, int chunkX, int chunkZ )
+	private Iterable<NBTTagCompound> getNearByMeteorites( World w, int chunkX, int chunkZ )
 	{
 		return WorldSettings.getInstance().getNearByMeteorites( w.provider.dimensionId, chunkX, chunkZ );
 	}

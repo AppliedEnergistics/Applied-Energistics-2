@@ -50,8 +50,8 @@ public class TileCondenser extends AEBaseInvTile implements IFluidHandler, IConf
 
 	private static final FluidTankInfo[] EMPTY = new FluidTankInfo[] { new FluidTankInfo( null, 10 ) };
 	final int[] sides = new int[] { 0, 1 };
-	final AppEngInternalInventory inv = new AppEngInternalInventory( this, 3 );
-	final ConfigManager cm = new ConfigManager( this );
+	final IInventory inv = new AppEngInternalInventory( this, 3 );
+	final IConfigManager cm = new ConfigManager( this );
 
 	public double storedPower = 0;
 

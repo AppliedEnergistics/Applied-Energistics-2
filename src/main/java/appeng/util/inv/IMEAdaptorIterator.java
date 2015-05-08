@@ -35,7 +35,7 @@ public final class IMEAdaptorIterator implements Iterator<ItemSlot>
 	private int offset = 0;
 	private boolean hasNext;
 
-	public IMEAdaptorIterator( IMEAdaptor parent, IItemList<IAEItemStack> availableItems )
+	public IMEAdaptorIterator( IMEAdaptor parent, Iterable<IAEItemStack> availableItems )
 	{
 		this.stack = availableItems.iterator();
 		this.containerSize = parent.maxSlots;

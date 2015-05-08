@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -361,7 +362,7 @@ public class RecipeHandler implements IRecipeHandler
 			throw new IllegalStateException( "Recipes must now be loaded in Init." );
 		}
 
-		HashMap<Class, Integer> processed = new HashMap<Class, Integer>();
+		Map<Class, Integer> processed = new HashMap<Class, Integer>();
 		try
 		{
 			for( ICraftHandler ch : this.data.Handlers )
@@ -440,7 +441,7 @@ public class RecipeHandler implements IRecipeHandler
 					try
 					{
 
-						Ingredient i = new Ingredient( this, s, 1 );
+						IIngredient i = new Ingredient( this, s, 1 );
 
 						for( ItemStack is : i.getItemStackSet() )
 						{
@@ -672,7 +673,7 @@ public class RecipeHandler implements IRecipeHandler
 		this.tokens.clear();
 	}
 
-	private List<List<IIngredient>> parseLines( List<String> subList ) throws RecipeError
+	private List<List<IIngredient>> parseLines( Iterable<String> subList ) throws RecipeError
 	{
 		List<List<IIngredient>> out = new LinkedList<List<IIngredient>>();
 		List<IIngredient> cList = new LinkedList<IIngredient>();
@@ -747,7 +748,7 @@ public class RecipeHandler implements IRecipeHandler
 		}
 	}
 
-	private boolean isNumber( String v )
+	private boolean isNumber( CharSequence v )
 	{
 		if( v.length() <= 0 )
 		{
