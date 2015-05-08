@@ -364,7 +364,7 @@ public class Platform
 		{
 			if( tile == null && type.getType() == GuiHostType.ITEM )
 			{
-				p.openGui( AppEng.instance, type.ordinal() << 4 | ( 0 << 3 ), p.getEntityWorld(), p.inventory.currentItem, 0, 0 );
+				p.openGui( AppEng.instance, type.ordinal() << 4, p.getEntityWorld(), p.inventory.currentItem, 0, 0 );
 			}
 			else if( tile == null || type.getType() == GuiHostType.ITEM )
 			{
