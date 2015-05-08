@@ -715,7 +715,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 		}
 	}
 
-	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool( boolean ignoreCableConnections, boolean includeFacades, Entity e, boolean visual )
+	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool( boolean ignoreConnections, boolean includeFacades, Entity e, boolean visual )
 	{
 		List<AxisAlignedBB> boxes = new LinkedList<AxisAlignedBB>();
 
@@ -727,7 +727,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 			IPart part = this.getPart( s );
 			if( part != null )
 			{
-				if( ignoreCableConnections && part instanceof IPartCable )
+				if( ignoreConnections && part instanceof IPartCable )
 				{
 					bch.addBox( 6.0, 6.0, 6.0, 10.0, 10.0, 10.0 );
 				}

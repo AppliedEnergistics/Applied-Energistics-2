@@ -28,6 +28,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.base.Joiner;
+
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.commons.Remapper;
@@ -43,8 +45,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
-
-import com.google.common.base.Joiner;
 
 import appeng.api.parts.CableRenderMode;
 import appeng.api.parts.IPartHelper;
@@ -146,7 +146,7 @@ public class ApiPart implements IPartHelper
 		return myCLass;
 	}
 
-	public Class getClassByDesc( String Addendum, String fullPath, String root, String next )
+	public Class getClassByDesc( String addendum, String fullPath, String root, String next )
 	{
 		if( this.roots.get( fullPath ) != null )
 		{
@@ -159,7 +159,7 @@ public class ApiPart implements IPartHelper
 
 		try
 		{
-			n.name = n.name + '_' + Addendum;
+			n.name = n.name + '_' + addendum;
 			n.superName = Class.forName( root ).getName().replace( ".", "/" );
 		}
 		catch( Throwable t )
@@ -268,7 +268,7 @@ public class ApiPart implements IPartHelper
 		}
 	}
 
-	private Class loadClass( String Name, byte[] b )
+	private Class loadClass( String name, byte[] b )
 	{
 		// override classDefine (as it is protected) and define the class.
 		Class clazz = null;
@@ -284,10 +284,10 @@ public class ApiPart implements IPartHelper
 			defineClassMethod.setAccessible( true );
 			try
 			{
-				Object[] argsA = new Object[] { Name, Name, b };
+				Object[] argsA = new Object[] { name, name, b };
 				b = (byte[]) runTransformersMethod.invoke( loader, argsA );
 
-				Object[] args = new Object[] { Name, b, 0, b.length };
+				Object[] args = new Object[] { name, b, 0, b.length };
 				clazz = (Class) defineClassMethod.invoke( loader, args );
 			}
 			finally

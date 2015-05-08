@@ -38,20 +38,20 @@ public class GuiProgressBar extends GuiButton implements ITooltip
 	private final String titleName;
 	private String fullMsg;
 
-	public GuiProgressBar( IProgressProvider source, String texture, int posX, int posY, int u, int y, int _width, int _height, Direction dir )
+	public GuiProgressBar( IProgressProvider source, String texture, int posX, int posY, int u, int y, int width, int height, Direction dir )
 	{
-		this( source, texture, posX, posY, u, y, _width, _height, dir, null );
+		this( source, texture, posX, posY, u, y, width, height, dir, null );
 	}
 
-	public GuiProgressBar( IProgressProvider source, String texture, int posX, int posY, int u, int y, int _width, int _height, Direction dir, String title )
+	public GuiProgressBar( IProgressProvider source, String texture, int posX, int posY, int u, int y, int width, int height, Direction dir, String title )
 	{
-		super( posX, posY, _width, "" );
+		super( posX, posY, width, "" );
 		this.source = source;
 		this.xPosition = posX;
 		this.yPosition = posY;
 		this.texture = new ResourceLocation( "appliedenergistics2", "textures/" + texture );
-		this.width = _width;
-		this.height = _height;
+		this.width = width;
+		this.height = height;
 		this.fill_u = u;
 		this.fill_v = y;
 		this.layout = dir;

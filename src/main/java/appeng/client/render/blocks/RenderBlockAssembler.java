@@ -201,49 +201,49 @@ public class RenderBlockAssembler extends BaseBlockRender implements IBoxProvide
 		return true;
 	}
 
-	public void renderCableAt( double Thickness, IBlockAccess world, int x, int y, int z, AEBaseBlock block, RenderBlocks renderer, double pull, boolean covered )
+	public void renderCableAt( double thickness, IBlockAccess world, int x, int y, int z, AEBaseBlock block, RenderBlocks renderer, double pull, boolean covered )
 	{
 		IIcon texture = null;
 
 		block.getRendererInstance().setTemporaryRenderIcon( texture = this.getConnectedCable( world, x, y, z, ForgeDirection.WEST, covered ) );
 		if( texture != null )
 		{
-			renderer.setRenderBounds( 0.0D, 0.5D - Thickness, 0.5D - Thickness, 0.5D - Thickness - pull, 0.5D + Thickness, 0.5D + Thickness );
+			renderer.setRenderBounds( 0.0D, 0.5D - thickness, 0.5D - thickness, 0.5D - thickness - pull, 0.5D + thickness, 0.5D + thickness );
 			renderer.renderStandardBlock( block, x, y, z );
 		}
 
 		block.getRendererInstance().setTemporaryRenderIcon( texture = this.getConnectedCable( world, x, y, z, ForgeDirection.EAST, covered ) );
 		if( texture != null )
 		{
-			renderer.setRenderBounds( 0.5D + Thickness + pull, 0.5D - Thickness, 0.5D - Thickness, 1.0D, 0.5D + Thickness, 0.5D + Thickness );
+			renderer.setRenderBounds( 0.5D + thickness + pull, 0.5D - thickness, 0.5D - thickness, 1.0D, 0.5D + thickness, 0.5D + thickness );
 			renderer.renderStandardBlock( block, x, y, z );
 		}
 
 		block.getRendererInstance().setTemporaryRenderIcon( texture = this.getConnectedCable( world, x, y, z, ForgeDirection.NORTH, covered ) );
 		if( texture != null )
 		{
-			renderer.setRenderBounds( 0.5D - Thickness, 0.5D - Thickness, 0.0D, 0.5D + Thickness, 0.5D + Thickness, 0.5D - Thickness - pull );
+			renderer.setRenderBounds( 0.5D - thickness, 0.5D - thickness, 0.0D, 0.5D + thickness, 0.5D + thickness, 0.5D - thickness - pull );
 			renderer.renderStandardBlock( block, x, y, z );
 		}
 
 		block.getRendererInstance().setTemporaryRenderIcon( texture = this.getConnectedCable( world, x, y, z, ForgeDirection.SOUTH, covered ) );
 		if( texture != null )
 		{
-			renderer.setRenderBounds( 0.5D - Thickness, 0.5D - Thickness, 0.5D + Thickness + pull, 0.5D + Thickness, 0.5D + Thickness, 1.0D );
+			renderer.setRenderBounds( 0.5D - thickness, 0.5D - thickness, 0.5D + thickness + pull, 0.5D + thickness, 0.5D + thickness, 1.0D );
 			renderer.renderStandardBlock( block, x, y, z );
 		}
 
 		block.getRendererInstance().setTemporaryRenderIcon( texture = this.getConnectedCable( world, x, y, z, ForgeDirection.DOWN, covered ) );
 		if( texture != null )
 		{
-			renderer.setRenderBounds( 0.5D - Thickness, 0.0D, 0.5D - Thickness, 0.5D + Thickness, 0.5D - Thickness - pull, 0.5D + Thickness );
+			renderer.setRenderBounds( 0.5D - thickness, 0.0D, 0.5D - thickness, 0.5D + thickness, 0.5D - thickness - pull, 0.5D + thickness );
 			renderer.renderStandardBlock( block, x, y, z );
 		}
 
 		block.getRendererInstance().setTemporaryRenderIcon( texture = this.getConnectedCable( world, x, y, z, ForgeDirection.UP, covered ) );
 		if( texture != null )
 		{
-			renderer.setRenderBounds( 0.5D - Thickness, 0.5D + Thickness + pull, 0.5D - Thickness, 0.5D + Thickness, 1.0D, 0.5D + Thickness );
+			renderer.setRenderBounds( 0.5D - thickness, 0.5D + thickness + pull, 0.5D - thickness, 0.5D + thickness, 1.0D, 0.5D + thickness );
 			renderer.renderStandardBlock( block, x, y, z );
 		}
 

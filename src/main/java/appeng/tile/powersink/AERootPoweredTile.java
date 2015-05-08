@@ -86,9 +86,9 @@ public abstract class AERootPoweredTile extends AEBaseInvTile implements IAEPowe
 		return PowerUnits.AE.convertTo( input, this.funnelPowerIntoStorage( input.convertTo( PowerUnits.AE, amt ), Actionable.MODULATE ) );
 	}
 
-	protected double funnelPowerIntoStorage( double AEUnits, Actionable mode )
+	protected double funnelPowerIntoStorage( double power, Actionable mode )
 	{
-		return this.injectAEPower( AEUnits, mode );
+		return this.injectAEPower( power, mode );
 	}
 
 	@Override

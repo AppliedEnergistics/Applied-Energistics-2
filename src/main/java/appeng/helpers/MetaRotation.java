@@ -65,11 +65,11 @@ public class MetaRotation implements IOrientable
 	}
 
 	@Override
-	public void setOrientation( ForgeDirection Forward, ForgeDirection Up )
+	public void setOrientation( ForgeDirection foward, ForgeDirection up )
 	{
 		if( this.w instanceof World )
 		{
-			( (World) this.w ).setBlockMetadataWithNotify( this.x, this.y, this.z, Up.ordinal(), 1 + 2 );
+			( (World) this.w ).setBlockMetadataWithNotify( this.x, this.y, this.z, up.ordinal(), 1 + 2 );
 		}
 		else
 		{

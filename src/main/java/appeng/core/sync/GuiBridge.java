@@ -22,6 +22,8 @@ package appeng.core.sync;
 import java.lang.reflect.Constructor;
 import java.util.List;
 
+import com.google.common.collect.Lists;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
@@ -32,8 +34,6 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import cpw.mods.fml.common.network.IGuiHandler;
 import cpw.mods.fml.relauncher.ReflectionHelper;
-
-import com.google.common.collect.Lists;
 
 import appeng.api.AEApi;
 import appeng.api.config.SecurityPermissions;
@@ -195,24 +195,24 @@ public enum GuiBridge implements IGuiHandler
 
 	GUI_CRAFTING_STATUS( ContainerCraftingStatus.class, ITerminalHost.class, ITEM_OR_WORLD, SecurityPermissions.CRAFT );
 
-	private final Class Tile;
-	private final Class Container;
-	private Class Gui;
+	private final Class tileClass;
+	private final Class containerClass;
+	private Class guiClass;
 	private GuiHostType type;
 	private SecurityPermissions requiredPermission;
 
 	GuiBridge()
 	{
-		this.Tile = null;
-		this.Gui = null;
-		this.Container = null;
+		this.tileClass = null;
+		this.guiClass = null;
+		this.containerClass = null;
 	}
 
-	GuiBridge( Class _Container, SecurityPermissions requiredPermission )
+	GuiBridge( Class containerClass, SecurityPermissions requiredPermission )
 	{
 		this.requiredPermission = requiredPermission;
-		this.Container = _Container;
-		this.Tile = null;
+		this.containerClass = containerClass;
+		this.tileClass = null;
 		this.getGui();
 	}
 
@@ -224,36 +224,36 @@ public enum GuiBridge implements IGuiHandler
 	{
 		if( Platform.isClient() )
 		{
-			final String start = this.Container.getName();
+			final String start = this.containerClass.getName();
 			String guiClass = start.replaceFirst( "container.", "client.gui." ).replace( ".Container", ".Gui" );
 
 			if( start.equals( guiClass ) )
 			{
 				throw new IllegalStateException( "Unable to find gui class" );
 			}
-			this.Gui = ReflectionHelper.getClass( this.getClass().getClassLoader(), guiClass );
-			if( this.Gui == null )
+			this.guiClass = ReflectionHelper.getClass( this.getClass().getClassLoader(), guiClass );
+			if( this.guiClass == null )
 			{
 				throw new IllegalStateException( "Cannot Load class: " + guiClass );
 			}
 		}
 	}
 
-	GuiBridge( Class _Container, Class _Tile, GuiHostType type, SecurityPermissions requiredPermission )
+	GuiBridge( Class containerClass, Class tileClass, GuiHostType type, SecurityPermissions requiredPermission )
 	{
 		this.requiredPermission = requiredPermission;
-		this.Container = _Container;
+		this.containerClass = containerClass;
 		this.type = type;
-		this.Tile = _Tile;
+		this.tileClass = tileClass;
 		this.getGui();
 	}
 
 	@Override
-	public Object getServerGuiElement( int ID_ORDINAL, EntityPlayer player, World w, int x, int y, int z )
+	public Object getServerGuiElement( int ordinal, EntityPlayer player, World w, int x, int y, int z )
 	{
-		ForgeDirection side = ForgeDirection.getOrientation( ID_ORDINAL & 0x07 );
-		GuiBridge ID = values()[ID_ORDINAL >> 4];
-		boolean stem = ( ( ID_ORDINAL >> 3 ) & 1 ) == 1;
+		ForgeDirection side = ForgeDirection.getOrientation( ordinal & 0x07 );
+		GuiBridge ID = values()[ordinal >> 4];
+		boolean stem = ( ( ordinal >> 3 ) & 1 ) == 1;
 		if( ID.type.isItem() )
 		{
 			ItemStack it = null;
@@ -315,12 +315,12 @@ public enum GuiBridge implements IGuiHandler
 
 	public boolean CorrectTileOrPart( Object tE )
 	{
-		if( this.Tile == null )
+		if( this.tileClass == null )
 		{
 			throw new IllegalArgumentException( "This Gui Cannot use the standard Handler." );
 		}
 
-		return this.Tile.isInstance( tE );
+		return this.tileClass.isInstance( tE );
 	}
 
 	private Object updateGui( Object newContainer, World w, int x, int y, int z, ForgeDirection side, Object myItem )
@@ -343,7 +343,7 @@ public enum GuiBridge implements IGuiHandler
 	{
 		try
 		{
-			Constructor[] c = this.Container.getConstructors();
+			Constructor[] c = this.containerClass.getConstructors();
 			if( c.length == 0 )
 			{
 				throw new AppEngException( "Invalid Gui Class" );
@@ -353,7 +353,7 @@ public enum GuiBridge implements IGuiHandler
 
 			if( target == null )
 			{
-				throw new IllegalStateException( "Cannot find " + this.Container.getName() + "( " + this.typeName( inventory ) + ", " + this.typeName( tE ) + " )" );
+				throw new IllegalStateException( "Cannot find " + this.containerClass.getName() + "( " + this.typeName( inventory ) + ", " + this.typeName( tE ) + " )" );
 			}
 
 			Object o = target.newInstance( inventory, tE );
@@ -431,11 +431,11 @@ public enum GuiBridge implements IGuiHandler
 	}
 
 	@Override
-	public Object getClientGuiElement( int ID_ORDINAL, EntityPlayer player, World w, int x, int y, int z )
+	public Object getClientGuiElement( int ordinal, EntityPlayer player, World w, int x, int y, int z )
 	{
-		ForgeDirection side = ForgeDirection.getOrientation( ID_ORDINAL & 0x07 );
-		GuiBridge ID = values()[ID_ORDINAL >> 4];
-		boolean stem = ( ( ID_ORDINAL >> 3 ) & 1 ) == 1;
+		ForgeDirection side = ForgeDirection.getOrientation( ordinal & 0x07 );
+		GuiBridge ID = values()[ordinal >> 4];
+		boolean stem = ( ( ordinal >> 3 ) & 1 ) == 1;
 		if( ID.type.isItem() )
 		{
 			ItemStack it = null;
@@ -480,7 +480,7 @@ public enum GuiBridge implements IGuiHandler
 	{
 		try
 		{
-			Constructor[] c = this.Gui.getConstructors();
+			Constructor[] c = this.guiClass.getConstructors();
 			if( c.length == 0 )
 			{
 				throw new AppEngException( "Invalid Gui Class" );
@@ -490,7 +490,7 @@ public enum GuiBridge implements IGuiHandler
 
 			if( target == null )
 			{
-				throw new IllegalStateException( "Cannot find " + this.Container.getName() + "( " + this.typeName( inventory ) + ", " + this.typeName( tE ) + " )" );
+				throw new IllegalStateException( "Cannot find " + this.containerClass.getName() + "( " + this.typeName( inventory ) + ", " + this.typeName( tE ) + " )" );
 			}
 
 			return target.newInstance( inventory, tE );

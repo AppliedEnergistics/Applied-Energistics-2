@@ -35,12 +35,12 @@ public class BCPipeInventory implements IMEInventory<IAEItemStack>
 {
 
 	final TileEntity te;
-	final ForgeDirection dir;
+	final ForgeDirection direction;
 
-	public BCPipeInventory( TileEntity _te, ForgeDirection _dir )
+	public BCPipeInventory( TileEntity te, ForgeDirection direction )
 	{
-		this.te = _te;
-		this.dir = _dir;
+		this.te = te;
+		this.direction = direction;
 	}
 
 	@Override
@@ -48,14 +48,14 @@ public class BCPipeInventory implements IMEInventory<IAEItemStack>
 	{
 		if( mode == Actionable.SIMULATE )
 		{
-			if( BC.instance.canAddItemsToPipe( this.te, input.getItemStack(), this.dir ) )
+			if( BC.instance.canAddItemsToPipe( this.te, input.getItemStack(), this.direction ) )
 			{
 				return null;
 			}
 			return input;
 		}
 
-		if( BC.instance.addItemsToPipe( this.te, input.getItemStack(), this.dir ) )
+		if( BC.instance.addItemsToPipe( this.te, input.getItemStack(), this.direction ) )
 		{
 			return null;
 		}

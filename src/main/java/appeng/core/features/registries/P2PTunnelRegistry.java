@@ -122,9 +122,9 @@ public class P2PTunnelRegistry implements IP2PTunnelRegistry
 		this.Tunnels.put( trigger, type );
 	}
 
-	public ItemStack getModItem( String modID, String Name, int meta )
+	public ItemStack getModItem( String modID, String name, int meta )
 	{
-		ItemStack myItemStack = GameRegistry.findItemStack( modID, Name, 1 );
+		ItemStack myItemStack = GameRegistry.findItemStack( modID, name, 1 );
 
 		if( myItemStack == null )
 		{

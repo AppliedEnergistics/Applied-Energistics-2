@@ -141,9 +141,9 @@ public class MatterCannonAmmoRegistry implements IOreListener, IMatterCannonAmmo
 		this.considerItem( name, item, "Electrum", ( 107.8682 + 196.96655 ) / 2.0 );
 	}
 
-	private void considerItem( String ore, ItemStack item, String Name, double weight )
+	private void considerItem( String ore, ItemStack item, String name, double weight )
 	{
-		if( ore.equals( "berry" + Name ) || ore.equals( "nugget" + Name ) )
+		if( ore.equals( "berry" + name ) || ore.equals( "nugget" + name ) )
 		{
 			this.registerAmmo( item, weight );
 		}

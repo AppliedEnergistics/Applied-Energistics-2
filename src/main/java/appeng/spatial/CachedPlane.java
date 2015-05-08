@@ -262,12 +262,12 @@ public class CachedPlane
 		}
 	}
 
-	private void markForUpdate( int src_x, int src_y, int src_z )
+	private void markForUpdate( int x, int y, int z )
 	{
-		this.updates.add( new WorldCoord( src_x, src_y, src_z ) );
+		this.updates.add( new WorldCoord( x, y, z ) );
 		for( ForgeDirection d : ForgeDirection.VALID_DIRECTIONS )
 		{
-			this.updates.add( new WorldCoord( src_x + d.offsetX, src_y + d.offsetY, src_z + d.offsetZ ) );
+			this.updates.add( new WorldCoord( x + d.offsetX, y + d.offsetY, z + d.offsetZ ) );
 		}
 	}
 
@@ -366,17 +366,17 @@ public class CachedPlane
 		private final ExtendedBlockStorage[] storage;
 		private List<Integer> skipThese = null;
 
-		public Column( Chunk _c, int _x, int _z, int cy, int chunkHeight )
+		public Column( Chunk chunk, int x, int z, int chunkY, int chunkHeight )
 		{
-			this.x = _x;
-			this.z = _z;
-			this.c = _c;
+			this.x = x;
+			this.z = z;
+			this.c = chunk;
 			this.storage = this.c.getBlockStorageArray();
 
 			// make sure storage exists before hand...
 			for( int ay = 0; ay < chunkHeight; ay++ )
 			{
-				int by = ( ay + cy );
+				int by = ( ay + chunkY );
 				ExtendedBlockStorage extendedblockstorage = this.storage[by];
 				if( extendedblockstorage == null )
 				{

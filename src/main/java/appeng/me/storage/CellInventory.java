@@ -180,9 +180,9 @@ public class CellInventory implements ICellInventory
 		return false;
 	}
 
-	public static void addBasicBlackList( int itemID, int Meta )
+	public static void addBasicBlackList( int itemID, int meta )
 	{
-		BLACK_LIST.add( ( Meta << Platform.DEF_OFFSET ) | itemID );
+		BLACK_LIST.add( ( meta << Platform.DEF_OFFSET ) | itemID );
 	}
 
 	public static boolean isBlackListed( IAEItemStack input )

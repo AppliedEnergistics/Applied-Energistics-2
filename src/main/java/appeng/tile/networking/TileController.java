@@ -141,11 +141,11 @@ public class TileController extends AENetworkPowerTile
 	}
 
 	@Override
-	protected double funnelPowerIntoStorage( double AEUnits, Actionable mode )
+	protected double funnelPowerIntoStorage( double power, Actionable mode )
 	{
 		try
 		{
-			double ret = this.gridProxy.getEnergy().injectPower( AEUnits, mode );
+			double ret = this.gridProxy.getEnergy().injectPower( power, mode );
 			if( mode == Actionable.SIMULATE )
 			{
 				return ret;
@@ -155,7 +155,7 @@ public class TileController extends AENetworkPowerTile
 		catch( GridAccessException e )
 		{
 			// no grid? use local...
-			return super.funnelPowerIntoStorage( AEUnits, mode );
+			return super.funnelPowerIntoStorage( power, mode );
 		}
 	}
 

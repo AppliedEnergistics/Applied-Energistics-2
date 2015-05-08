@@ -65,7 +65,7 @@ public class LocationRotation implements IOrientable
 	}
 
 	@Override
-	public void setOrientation( ForgeDirection Forward, ForgeDirection Up )
+	public void setOrientation( ForgeDirection foward, ForgeDirection up )
 	{
 
 	}

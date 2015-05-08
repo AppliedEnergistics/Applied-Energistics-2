@@ -314,12 +314,12 @@ public class StorageHelper
 		final int yOff;
 		final int zOff;
 
-		TelDestination( World _dim, AxisAlignedBB srcBox, double _x, double _y, double _z, int tileX, int tileY, int tileZ )
+		TelDestination( World dimension, AxisAlignedBB srcBox, double x, double y, double z, int tileX, int tileY, int tileZ )
 		{
-			this.dim = _dim;
-			this.x = Math.min( srcBox.maxX - 0.5, Math.max( srcBox.minX + 0.5, _x + tileX ) );
-			this.y = Math.min( srcBox.maxY - 0.5, Math.max( srcBox.minY + 0.5, _y + tileY ) );
-			this.z = Math.min( srcBox.maxZ - 0.5, Math.max( srcBox.minZ + 0.5, _z + tileZ ) );
+			this.dim = dimension;
+			this.x = Math.min( srcBox.maxX - 0.5, Math.max( srcBox.minX + 0.5, x + tileX ) );
+			this.y = Math.min( srcBox.maxY - 0.5, Math.max( srcBox.minY + 0.5, y + tileY ) );
+			this.z = Math.min( srcBox.maxZ - 0.5, Math.max( srcBox.minZ + 0.5, z + tileZ ) );
 			this.xOff = tileX;
 			this.yOff = tileY;
 			this.zOff = tileZ;

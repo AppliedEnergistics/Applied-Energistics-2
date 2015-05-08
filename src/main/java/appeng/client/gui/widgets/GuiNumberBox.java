@@ -28,9 +28,9 @@ public class GuiNumberBox extends GuiTextField
 
 	final Class type;
 
-	public GuiNumberBox( FontRenderer p_i1032_1_, int p_i1032_2_, int p_i1032_3_, int p_i1032_4_, int p_i1032_5_, Class type )
+	public GuiNumberBox( FontRenderer fontRenderer, int x, int y, int width, int height, Class type )
 	{
-		super( p_i1032_1_, p_i1032_2_, p_i1032_3_, p_i1032_4_, p_i1032_5_ );
+		super( fontRenderer, x, y, width, height );
 		this.type = type;
 	}
 

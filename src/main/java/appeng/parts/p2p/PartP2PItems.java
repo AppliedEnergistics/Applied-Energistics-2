@@ -194,7 +194,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 	}
 
 	@Override
-	public TickRateModulation tickingRequest( IGridNode node, int TicksSinceLastCall )
+	public TickRateModulation tickingRequest( IGridNode node, int ticksSinceLastCall )
 	{
 		boolean wasReq = this.requested;
 

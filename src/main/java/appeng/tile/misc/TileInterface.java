@@ -22,6 +22,8 @@ package appeng.tile.misc;
 import java.util.ArrayList;
 import java.util.EnumSet;
 
+import com.google.common.collect.ImmutableSet;
+
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
@@ -29,8 +31,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-
-import com.google.common.collect.ImmutableSet;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.Upgrades;
@@ -213,9 +213,9 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, IT
 	}
 
 	@Override
-	public TickRateModulation tickingRequest( IGridNode node, int TicksSinceLastCall )
+	public TickRateModulation tickingRequest( IGridNode node, int ticksSinceLastCall )
 	{
-		return this.duality.tickingRequest( node, TicksSinceLastCall );
+		return this.duality.tickingRequest( node, ticksSinceLastCall );
 	}
 
 	@Override

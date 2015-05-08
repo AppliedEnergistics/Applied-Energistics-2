@@ -82,12 +82,12 @@ public class TileEnergyAcceptor extends AENetworkPowerTile
 	}
 
 	@Override
-	protected double funnelPowerIntoStorage( double newPower, Actionable mode )
+	protected double funnelPowerIntoStorage( double power, Actionable mode )
 	{
 		try
 		{
 			IEnergyGrid grid = this.gridProxy.getEnergy();
-			double leftOver = grid.injectPower( newPower, mode );
+			double leftOver = grid.injectPower( power, mode );
 			if( mode == Actionable.SIMULATE )
 			{
 				return leftOver;
@@ -96,7 +96,7 @@ public class TileEnergyAcceptor extends AENetworkPowerTile
 		}
 		catch( GridAccessException e )
 		{
-			return super.funnelPowerIntoStorage( newPower, mode );
+			return super.funnelPowerIntoStorage( power, mode );
 		}
 	}
 

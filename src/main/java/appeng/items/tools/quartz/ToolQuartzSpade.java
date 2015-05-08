@@ -21,10 +21,10 @@ package appeng.items.tools.quartz;
 
 import java.util.EnumSet;
 
+import com.google.common.base.Optional;
+
 import net.minecraft.item.ItemSpade;
 import net.minecraft.item.ItemStack;
-
-import com.google.common.base.Optional;
 
 import appeng.core.features.AEFeature;
 import appeng.core.features.IAEFeature;
@@ -38,11 +38,11 @@ public class ToolQuartzSpade extends ItemSpade implements IAEFeature
 	private final AEFeature type;
 	private final IFeatureHandler handler;
 
-	public ToolQuartzSpade( AEFeature Type )
+	public ToolQuartzSpade( AEFeature type )
 	{
 		super( ToolMaterial.IRON );
 
-		this.handler = new ItemFeatureHandler( EnumSet.of( this.type = Type, AEFeature.QuartzSpade ), this, this, Optional.of( Type.name() ) );
+		this.handler = new ItemFeatureHandler( EnumSet.of( this.type = type, AEFeature.QuartzSpade ), this, this, Optional.of( type.name() ) );
 	}
 
 	@Override

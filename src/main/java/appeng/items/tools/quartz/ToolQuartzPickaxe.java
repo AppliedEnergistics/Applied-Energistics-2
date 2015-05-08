@@ -21,10 +21,10 @@ package appeng.items.tools.quartz;
 
 import java.util.EnumSet;
 
+import com.google.common.base.Optional;
+
 import net.minecraft.item.ItemPickaxe;
 import net.minecraft.item.ItemStack;
-
-import com.google.common.base.Optional;
 
 import appeng.core.features.AEFeature;
 import appeng.core.features.IAEFeature;
@@ -38,12 +38,12 @@ public class ToolQuartzPickaxe extends ItemPickaxe implements IAEFeature
 	private final AEFeature type;
 	private final IFeatureHandler feature;
 
-	public ToolQuartzPickaxe( AEFeature Type )
+	public ToolQuartzPickaxe( AEFeature type )
 	{
 		super( ToolMaterial.IRON );
 
-		this.type = Type;
-		this.feature = new ItemFeatureHandler( EnumSet.of( Type, AEFeature.QuartzPickaxe ), this, this, Optional.of( Type.name() ) );
+		this.type = type;
+		this.feature = new ItemFeatureHandler( EnumSet.of( type, AEFeature.QuartzPickaxe ), this, this, Optional.of( type.name() ) );
 	}
 
 	@Override

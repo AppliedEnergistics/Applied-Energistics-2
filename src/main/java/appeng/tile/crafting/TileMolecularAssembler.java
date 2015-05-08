@@ -421,7 +421,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 	}
 
 	@Override
-	public TickRateModulation tickingRequest( IGridNode node, int TicksSinceLastCall )
+	public TickRateModulation tickingRequest( IGridNode node, int ticksSinceLastCall )
 	{
 		if( this.inv.getStackInSlot( 9 ) != null )
 		{
@@ -447,7 +447,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 
 		if( this.reboot )
 		{
-			TicksSinceLastCall = 1;
+			ticksSinceLastCall = 1;
 		}
 
 		if( !this.isAwake )
@@ -460,22 +460,22 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 		switch( this.upgrades.getInstalledUpgrades( Upgrades.SPEED ) )
 		{
 			case 0:
-				this.progress += this.userPower( TicksSinceLastCall, speed = 10, 1.0 );
+				this.progress += this.userPower( ticksSinceLastCall, speed = 10, 1.0 );
 				break;
 			case 1:
-				this.progress += this.userPower( TicksSinceLastCall, speed = 13, 1.3 );
+				this.progress += this.userPower( ticksSinceLastCall, speed = 13, 1.3 );
 				break;
 			case 2:
-				this.progress += this.userPower( TicksSinceLastCall, speed = 17, 1.7 );
+				this.progress += this.userPower( ticksSinceLastCall, speed = 17, 1.7 );
 				break;
 			case 3:
-				this.progress += this.userPower( TicksSinceLastCall, speed = 20, 2.0 );
+				this.progress += this.userPower( ticksSinceLastCall, speed = 20, 2.0 );
 				break;
 			case 4:
-				this.progress += this.userPower( TicksSinceLastCall, speed = 25, 2.5 );
+				this.progress += this.userPower( ticksSinceLastCall, speed = 25, 2.5 );
 				break;
 			case 5:
-				this.progress += this.userPower( TicksSinceLastCall, speed = 50, 5.0 );
+				this.progress += this.userPower( ticksSinceLastCall, speed = 50, 5.0 );
 				break;
 		}
 

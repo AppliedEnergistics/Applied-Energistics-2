@@ -101,14 +101,14 @@ public class CableBusStorage
 		return newArray;
 	}
 
-	private <T> T[] grow( T[] in, int new_value, boolean parts )
+	private <T> T[] grow( T[] in, int newValue, boolean parts )
 	{
-		if( in != null && in.length > new_value )
+		if( in != null && in.length > newValue )
 		{
 			return in;
 		}
 
-		int newSize = new_value + 1;
+		int newSize = newValue + 1;
 
 		T[] newArray = (T[]) ( parts ? new IPart[newSize] : new IFacadePart[newSize] );
 		if( in != null )

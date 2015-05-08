@@ -22,6 +22,8 @@ package appeng.parts.misc;
 import java.util.EnumSet;
 import java.util.List;
 
+import com.google.common.collect.ImmutableSet;
+
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -36,8 +38,6 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-
-import com.google.common.collect.ImmutableSet;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.Upgrades;
@@ -246,9 +246,9 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISto
 	}
 
 	@Override
-	public TickRateModulation tickingRequest( IGridNode node, int TicksSinceLastCall )
+	public TickRateModulation tickingRequest( IGridNode node, int ticksSinceLastCall )
 	{
-		return this.duality.tickingRequest( node, TicksSinceLastCall );
+		return this.duality.tickingRequest( node, ticksSinceLastCall );
 	}
 
 	@Override

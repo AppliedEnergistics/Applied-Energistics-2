@@ -30,6 +30,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import com.google.common.base.Joiner;
+import com.google.common.base.Stopwatch;
+
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
@@ -48,9 +51,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
 import cpw.mods.fml.common.ObfuscationReflectionHelper;
-
-import com.google.common.base.Joiner;
-import com.google.common.base.Stopwatch;
 
 import appeng.api.storage.data.IAEItemStack;
 import appeng.client.gui.widgets.GuiScrollbar;
@@ -156,14 +156,14 @@ public abstract class AEBaseGui extends GuiContainer
 	}
 
 	@Override
-	public void drawScreen( int mouse_x, int mouse_y, float btn )
+	public void drawScreen( int mouseX, int mouseY, float btn )
 	{
-		super.drawScreen( mouse_x, mouse_y, btn );
+		super.drawScreen( mouseX, mouseY, btn );
 
 		boolean hasClicked = Mouse.isButtonDown( 0 );
 		if( hasClicked && this.myScrollBar != null )
 		{
-			this.myScrollBar.click( this, mouse_x - this.guiLeft, mouse_y - this.guiTop );
+			this.myScrollBar.click( this, mouseX - this.guiLeft, mouseY - this.guiTop );
 		}
 
 		for( Object c : this.buttonList )
@@ -174,9 +174,9 @@ public abstract class AEBaseGui extends GuiContainer
 				int x = tooltip.xPos(); // ((GuiImgButton) c).xPosition;
 				int y = tooltip.yPos(); // ((GuiImgButton) c).yPosition;
 
-				if( x < mouse_x && x + tooltip.getWidth() > mouse_x && tooltip.isVisible() )
+				if( x < mouseX && x + tooltip.getWidth() > mouseX && tooltip.isVisible() )
 				{
-					if( y < mouse_y && y + tooltip.getHeight() > mouse_y )
+					if( y < mouseY && y + tooltip.getHeight() > mouseY )
 					{
 						if( y < 15 )
 						{
@@ -194,14 +194,14 @@ public abstract class AEBaseGui extends GuiContainer
 		}
 	}
 
-	public void drawTooltip( int par2, int par3, int forceWidth, String Msg )
+	public void drawTooltip( int par2, int par3, int forceWidth, String message )
 	{
 		GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS );
 		GL11.glDisable( GL12.GL_RESCALE_NORMAL );
 		RenderHelper.disableStandardItemLighting();
 		GL11.glDisable( GL11.GL_LIGHTING );
 		GL11.glDisable( GL11.GL_DEPTH_TEST );
-		String[] var4 = Msg.split( "\n" );
+		String[] var4 = message.split( "\n" );
 
 		if( var4.length > 0 )
 		{
@@ -590,7 +590,7 @@ public abstract class AEBaseGui extends GuiContainer
 	}
 
 	@Override
-	protected boolean checkHotbarKeys( int p_146983_1_ )
+	protected boolean checkHotbarKeys( int keyCode )
 	{
 		Slot theSlot;
 
@@ -607,7 +607,7 @@ public abstract class AEBaseGui extends GuiContainer
 		{
 			for( int j = 0; j < 9; ++j )
 			{
-				if( p_146983_1_ == this.mc.gameSettings.keyBindsHotbar[j].getKeyCode() )
+				if( keyCode == this.mc.gameSettings.keyBindsHotbar[j].getKeyCode() )
 				{
 					final List<Slot> slots = this.getInventorySlots();
 					for( Slot s : slots )

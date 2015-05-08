@@ -245,15 +245,15 @@ public class GridStorageCache implements IStorageGrid
 		tracker.applyChanges();
 	}
 
-	private void postChangesToNetwork( StorageChannel chan, int up_or_down, IItemList availableItems, BaseActionSource src )
+	private void postChangesToNetwork( StorageChannel chan, int upOrDown, IItemList availableItems, BaseActionSource src )
 	{
 		switch( chan )
 		{
 			case FLUIDS:
-				this.fluidMonitor.postChange( up_or_down > 0, availableItems, src );
+				this.fluidMonitor.postChange( upOrDown > 0, availableItems, src );
 				break;
 			case ITEMS:
-				this.itemMonitor.postChange( up_or_down > 0, availableItems, src );
+				this.itemMonitor.postChange( upOrDown > 0, availableItems, src );
 				break;
 			default:
 		}

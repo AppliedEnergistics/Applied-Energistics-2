@@ -70,10 +70,10 @@ public class BaseBlockRender
 		this( false, 20 );
 	}
 
-	public BaseBlockRender( boolean enableTESR, double tileEntitySpecialRendererRange )
+	public BaseBlockRender( boolean enableTESR, double renderDistance )
 	{
 		this.hasTESR = enableTESR;
-		this.renderDistance = tileEntitySpecialRendererRange;
+		this.renderDistance = renderDistance;
 		setOriMap();
 	}
 

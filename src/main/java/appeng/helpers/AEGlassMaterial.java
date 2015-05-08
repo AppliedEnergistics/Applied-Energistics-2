@@ -28,9 +28,9 @@ public class AEGlassMaterial extends Material
 
 	public static final AEGlassMaterial INSTANCE = ( new AEGlassMaterial( MapColor.airColor ) );
 
-	public AEGlassMaterial( MapColor p_i2116_1_ )
+	public AEGlassMaterial( MapColor color )
 	{
-		super( p_i2116_1_ );
+		super( color );
 	}
 
 	@Override

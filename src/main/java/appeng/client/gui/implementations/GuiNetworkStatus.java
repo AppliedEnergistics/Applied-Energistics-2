@@ -89,7 +89,7 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 	}
 
 	@Override
-	public void drawScreen( int mouse_x, int mouse_y, float btn )
+	public void drawScreen( int mouseX, int mouseY, float btn )
 	{
 		int x = 0;
 		int y = 0;
@@ -104,9 +104,9 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 			int minX = gx + 14 + x * 31;
 			int minY = gy + 41 + y * 18;
 
-			if( minX < mouse_x && minX + 28 > mouse_x )
+			if( minX < mouseX && minX + 28 > mouseX )
 			{
-				if( minY < mouse_y && minY + 20 > mouse_y )
+				if( minY < mouseY && minY + 20 > mouseY )
 				{
 					this.tooltip = z;
 					break;
@@ -122,7 +122,7 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 			}
 		}
 
-		super.drawScreen( mouse_x, mouse_y, btn );
+		super.drawScreen( mouseX, mouseY, btn );
 	}
 
 	@Override

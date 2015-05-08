@@ -26,14 +26,14 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.google.common.base.Joiner;
+
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
-
-import com.google.common.base.Joiner;
 
 import appeng.api.AEApi;
 import appeng.api.storage.ITerminalHost;
@@ -131,7 +131,7 @@ public class GuiCraftConfirm extends AEBaseGui
 	}
 
 	@Override
-	public void drawScreen( int mouse_x, int mouse_y, float btn )
+	public void drawScreen( int mouseX, int mouseY, float btn )
 	{
 		this.updateCPUButtonText();
 
@@ -152,9 +152,9 @@ public class GuiCraftConfirm extends AEBaseGui
 			int minX = gx + 9 + x * 67;
 			int minY = gy + 22 + y * offY;
 
-			if( minX < mouse_x && minX + 67 > mouse_x )
+			if( minX < mouseX && minX + 67 > mouseX )
 			{
-				if( minY < mouse_y && minY + offY - 2 > mouse_y )
+				if( minY < mouseY && minY + offY - 2 > mouseY )
 				{
 					this.tooltip = z;
 					break;
@@ -170,7 +170,7 @@ public class GuiCraftConfirm extends AEBaseGui
 			}
 		}
 
-		super.drawScreen( mouse_x, mouse_y, btn );
+		super.drawScreen( mouseX, mouseY, btn );
 	}
 
 	private void updateCPUButtonText()

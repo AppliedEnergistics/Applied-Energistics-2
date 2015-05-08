@@ -69,7 +69,7 @@ public class StorageWorldProvider extends WorldProvider
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public float[] calcSunriseSunsetColors( float p_76560_1_, float p_76560_2_ )
+	public float[] calcSunriseSunsetColors( float celestialAngle, float partialTicks )
 	{
 		return null;
 	}
