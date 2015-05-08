@@ -93,8 +93,8 @@ public final class MissingCoreMod extends CustomModLoadingErrorDisplayException
 	private void drawCenteredString( FontRenderer fontRenderer, String string, int x, int y, int colour )
 	{
 		final String reEncoded = string.replaceAll( "\\P{InBasic_Latin}", "" );
-		final int reEndcodedWidth = fontRenderer.getStringWidth( reEncoded );
-		final int centeredX = x - reEndcodedWidth / 2;
+		final int reEncodedWidth = fontRenderer.getStringWidth( reEncoded );
+		final int centeredX = x - reEncodedWidth / 2;
 
 		fontRenderer.drawStringWithShadow( string, centeredX, y, colour );
 	}

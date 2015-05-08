@@ -22,6 +22,8 @@ package appeng.parts.p2p;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import com.google.common.base.Optional;
+
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.entity.player.EntityPlayer;
@@ -34,8 +36,6 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-
-import com.google.common.base.Optional;
 
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
@@ -137,7 +137,7 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 	}
 
 	/**
-	 * @return If enabled it returns the icon of an AE quatz block, else vanilla quartz block icon
+	 * @return If enabled it returns the icon of an AE quartz block, else vanilla quartz block icon
 	 */
 	protected IIcon getTypeTexture()
 	{

@@ -8,7 +8,7 @@ import net.minecraftforge.common.config.Configuration;
 
 
 /**
- * Seperate config file to handle the version checker
+ * Separate config file to handle the version checker
  */
 public final class VersionCheckerConfig
 {
