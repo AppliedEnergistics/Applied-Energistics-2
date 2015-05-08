@@ -82,32 +82,32 @@ public class BlockQuantumRing extends AEBaseBlock implements ICustomCollision
 	@Override
 	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool( World w, int x, int y, int z, Entity e, boolean isVisual )
 	{
-		double OnePx = 2.0 / 16.0;
+		double onePixel = 2.0 / 16.0;
 		TileQuantumBridge bridge = this.getTileEntity( w, x, y, z );
 		if( bridge != null && bridge.isCorner() )
 		{
-			OnePx = 4.0 / 16.0;
+			onePixel = 4.0 / 16.0;
 		}
 		else if( bridge != null && bridge.isFormed() )
 		{
-			OnePx = 1.0 / 16.0;
+			onePixel = 1.0 / 16.0;
 		}
-		return Collections.singletonList( AxisAlignedBB.getBoundingBox( OnePx, OnePx, OnePx, 1.0 - OnePx, 1.0 - OnePx, 1.0 - OnePx ) );
+		return Collections.singletonList( AxisAlignedBB.getBoundingBox( onePixel, onePixel, onePixel, 1.0 - onePixel, 1.0 - onePixel, 1.0 - onePixel ) );
 	}
 
 	@Override
 	public void addCollidingBlockToList( World w, int x, int y, int z, AxisAlignedBB bb, List<AxisAlignedBB> out, Entity e )
 	{
-		double OnePx = 2.0 / 16.0;
+		double onePixel = 2.0 / 16.0;
 		TileQuantumBridge bridge = this.getTileEntity( w, x, y, z );
 		if( bridge != null && bridge.isCorner() )
 		{
-			OnePx = 4.0 / 16.0;
+			onePixel = 4.0 / 16.0;
 		}
 		else if( bridge != null && bridge.isFormed() )
 		{
-			OnePx = 1.0 / 16.0;
+			onePixel = 1.0 / 16.0;
 		}
-		out.add( AxisAlignedBB.getBoundingBox( OnePx, OnePx, OnePx, 1.0 - OnePx, 1.0 - OnePx, 1.0 - OnePx ) );
+		out.add( AxisAlignedBB.getBoundingBox( onePixel, onePixel, onePixel, 1.0 - onePixel, 1.0 - onePixel, 1.0 - onePixel ) );
 	}
 }

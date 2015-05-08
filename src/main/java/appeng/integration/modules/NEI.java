@@ -95,16 +95,16 @@ public class NEI extends BaseModule implements INEI, IContainerTooltipHandler
 
 		// crafting terminal...
 		Method registerGuiOverlay = this.apiClass.getDeclaredMethod( "registerGuiOverlay", Class.class, String.class, IStackPositioner.class );
-		Class IOverlayHandler = Class.forName( "codechicken.nei.api.IOverlayHandler" );
-		Class DefaultOverlayHandler = NEICraftingHandler.class;
+		Class overlayHandler = Class.forName( "codechicken.nei.api.IOverlayHandler" );
+		Class defaultHandler = NEICraftingHandler.class;
 
-		Method registerGuiOverlayHandler = this.apiClass.getDeclaredMethod( "registerGuiOverlayHandler", Class.class, IOverlayHandler, String.class );
+		Method registrar = this.apiClass.getDeclaredMethod( "registerGuiOverlayHandler", Class.class, overlayHandler, String.class );
 		registerGuiOverlay.invoke( this.apiClass, GuiCraftingTerm.class, "crafting", new TerminalCraftingSlotFinder() );
 		registerGuiOverlay.invoke( this.apiClass, GuiPatternTerm.class, "crafting", new TerminalCraftingSlotFinder() );
 
-		Constructor DefaultOverlayHandlerConstructor = DefaultOverlayHandler.getConstructor( int.class, int.class );
-		registerGuiOverlayHandler.invoke( this.apiClass, GuiCraftingTerm.class, DefaultOverlayHandlerConstructor.newInstance( 6, 75 ), "crafting" );
-		registerGuiOverlayHandler.invoke( this.apiClass, GuiPatternTerm.class, DefaultOverlayHandlerConstructor.newInstance( 6, 75 ), "crafting" );
+		Constructor defaultConstructor = defaultHandler.getConstructor( int.class, int.class );
+		registrar.invoke( this.apiClass, GuiCraftingTerm.class, defaultConstructor.newInstance( 6, 75 ), "crafting" );
+		registrar.invoke( this.apiClass, GuiPatternTerm.class, defaultConstructor.newInstance( 6, 75 ), "crafting" );
 	}
 
 	public void registerRecipeHandler( Object o ) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException

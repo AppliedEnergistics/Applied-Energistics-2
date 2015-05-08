@@ -164,40 +164,40 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements i
 			return amount;
 		}
 
-		LinkedList<PartP2PIC2Power> Options = new LinkedList<PartP2PIC2Power>();
+		LinkedList<PartP2PIC2Power> options = new LinkedList<PartP2PIC2Power>();
 		for( PartP2PIC2Power o : outs )
 		{
 			if( o.OutputEnergyA <= 0.01 )
 			{
-				Options.add( o );
+				options.add( o );
 			}
 		}
 
-		if( Options.isEmpty() )
+		if( options.isEmpty() )
 		{
 			for( PartP2PIC2Power o : outs )
 			{
 				if( o.OutputEnergyB <= 0.01 )
 				{
-					Options.add( o );
+					options.add( o );
 				}
 			}
 		}
 
-		if( Options.isEmpty() )
+		if( options.isEmpty() )
 		{
 			for( PartP2PIC2Power o : outs )
 			{
-				Options.add( o );
+				options.add( o );
 			}
 		}
 
-		if( Options.isEmpty() )
+		if( options.isEmpty() )
 		{
 			return amount;
 		}
 
-		PartP2PIC2Power x = Platform.pickRandom( Options );
+		PartP2PIC2Power x = Platform.pickRandom( options );
 
 		if( x != null && x.OutputEnergyA <= 0.001 )
 		{

@@ -240,9 +240,9 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 
 			this.updatePowerStatus();
 
-			boolean oldCanAccessViewCells = this.canAccessViewCells;
+			boolean oldAccessible = this.canAccessViewCells;
 			this.canAccessViewCells = this.hasAccess( SecurityPermissions.BUILD, false );
-			if( this.canAccessViewCells != oldCanAccessViewCells )
+			if( this.canAccessViewCells != oldAccessible )
 			{
 				for( int y = 0; y < 5; y++ )
 				{

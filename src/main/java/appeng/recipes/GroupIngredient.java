@@ -46,9 +46,9 @@ public class GroupIngredient implements IIngredient
 	{
 		this.name = myName;
 
-		for( IIngredient I : ingredients )
+		for( IIngredient ingredient : ingredients )
 		{
-			if( I.isAir() )
+			if( ingredient.isAir() )
 			{
 				throw new RecipeError( "Cannot include air in a group." );
 			}

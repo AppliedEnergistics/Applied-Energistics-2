@@ -193,13 +193,13 @@ public class BSCrateStorageAdaptor extends InventoryAdaptor
 	public ItemStack simulateAdd( ItemStack toBeSimulated )
 	{
 		int items = this.cs.getSpaceForItem( toBeSimulated );
-		ItemStack B = Platform.cloneItemStack( toBeSimulated );
+		ItemStack cloned = Platform.cloneItemStack( toBeSimulated );
 		if( toBeSimulated.stackSize <= items )
 		{
 			return null;
 		}
-		B.stackSize -= items;
-		return B;
+		cloned.stackSize -= items;
+		return cloned;
 	}
 
 	@Override

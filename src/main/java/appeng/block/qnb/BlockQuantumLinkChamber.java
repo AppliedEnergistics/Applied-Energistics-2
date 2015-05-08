@@ -129,14 +129,14 @@ public class BlockQuantumLinkChamber extends AEBaseBlock implements ICustomColli
 	@Override
 	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool( World w, int x, int y, int z, Entity e, boolean isVisual )
 	{
-		double OnePx = 2.0 / 16.0;
-		return Collections.singletonList( AxisAlignedBB.getBoundingBox( OnePx, OnePx, OnePx, 1.0 - OnePx, 1.0 - OnePx, 1.0 - OnePx ) );
+		double onePixel = 2.0 / 16.0;
+		return Collections.singletonList( AxisAlignedBB.getBoundingBox( onePixel, onePixel, onePixel, 1.0 - onePixel, 1.0 - onePixel, 1.0 - onePixel ) );
 	}
 
 	@Override
 	public void addCollidingBlockToList( World w, int x, int y, int z, AxisAlignedBB bb, List<AxisAlignedBB> out, Entity e )
 	{
-		double OnePx = 2.0 / 16.0;
-		out.add( AxisAlignedBB.getBoundingBox( OnePx, OnePx, OnePx, 1.0 - OnePx, 1.0 - OnePx, 1.0 - OnePx ) );
+		double onePixel = 2.0 / 16.0;
+		out.add( AxisAlignedBB.getBoundingBox( onePixel, onePixel, onePixel, 1.0 - onePixel, 1.0 - onePixel, 1.0 - onePixel ) );
 	}
 }

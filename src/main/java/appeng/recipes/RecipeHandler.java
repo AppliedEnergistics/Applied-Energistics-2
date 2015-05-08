@@ -31,15 +31,15 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import javax.annotation.Nonnull;
 
+import com.google.common.base.Optional;
+import com.google.common.collect.HashMultimap;
+
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 import cpw.mods.fml.common.LoaderState;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.GameRegistry.UniqueIdentifier;
-
-import com.google.common.base.Optional;
-import com.google.common.collect.HashMultimap;
 
 import appeng.api.AEApi;
 import appeng.api.definitions.IBlocks;
@@ -128,8 +128,8 @@ public class RecipeHandler implements IRecipeHandler
 
 		final Optional<Item> maybeCrystalSeedItem = items.crystalSeed().maybeItem();
 		final Optional<Item> maybeSkyStoneItem = blocks.skyStone().maybeItem();
-		final Optional<Item> maybeCraftingStorageItem = blocks.craftingStorage1k().maybeItem();
-		final Optional<Item> maybeCraftingUnitItem = blocks.craftingUnit().maybeItem();
+		final Optional<Item> maybeCStorageItem = blocks.craftingStorage1k().maybeItem();
+		final Optional<Item> maybeCUnitItem = blocks.craftingUnit().maybeItem();
 		final Optional<Item> maybeSkyChestItem = blocks.skyChest().maybeItem();
 
 		if( maybeCrystalSeedItem.isPresent() && is.getItem() == maybeCrystalSeedItem.get() )
@@ -164,7 +164,7 @@ public class RecipeHandler implements IRecipeHandler
 				default:
 			}
 		}
-		else if( maybeCraftingStorageItem.isPresent() && is.getItem() == maybeCraftingStorageItem.get() )
+		else if( maybeCStorageItem.isPresent() && is.getItem() == maybeCStorageItem.get() )
 		{
 			switch( is.getItemDamage() )
 			{
@@ -180,7 +180,7 @@ public class RecipeHandler implements IRecipeHandler
 				default:
 			}
 		}
-		else if( maybeCraftingUnitItem.isPresent() && is.getItem() == maybeCraftingUnitItem.get() )
+		else if( maybeCUnitItem.isPresent() && is.getItem() == maybeCUnitItem.get() )
 		{
 			switch( is.getItemDamage() )
 			{

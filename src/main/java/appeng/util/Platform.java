@@ -191,7 +191,7 @@ public class Platform
 		p = PowerUnits.AE.convertTo( displayUnits, p );
 
 		int offset = 0;
-		String Lvl = "";
+		String level = "";
 		String[] preFixes = new String[] { "k", "M", "G", "T", "P", "T", "P", "E", "Z", "Y" };
 		String unitName = displayUnits.name();
 
@@ -208,12 +208,12 @@ public class Platform
 		while( p > 1000 && offset < preFixes.length )
 		{
 			p /= 1000;
-			Lvl = preFixes[offset];
+			level = preFixes[offset];
 			offset++;
 		}
 
 		DecimalFormat df = new DecimalFormat( "#.##" );
-		return df.format( p ) + ' ' + Lvl + unitName + ( isRate ? "/t" : "" );
+		return df.format( p ) + ' ' + level + unitName + ( isRate ? "/t" : "" );
 	}
 
 	public static ForgeDirection crossProduct( ForgeDirection forward, ForgeDirection up )
@@ -1273,10 +1273,10 @@ public class Platform
 				}
 				else
 				{
-					float APercentDamaged = 1.0f - (float) a.getItemDamageForDisplay() / (float) a.getMaxDamage();
-					float BPercentDamaged = 1.0f - (float) b.getItemDamageForDisplay() / (float) b.getMaxDamage();
+					float percentDamagedOfA = 1.0f - (float) a.getItemDamageForDisplay() / (float) a.getMaxDamage();
+					float percentDamagedOfB = 1.0f - (float) b.getItemDamageForDisplay() / (float) b.getMaxDamage();
 
-					return ( APercentDamaged > mode.breakPoint ) == ( BPercentDamaged > mode.breakPoint );
+					return ( percentDamagedOfA > mode.breakPoint ) == ( percentDamagedOfB > mode.breakPoint );
 				}
 			}
 			catch( Throwable e )
@@ -1291,10 +1291,10 @@ public class Platform
 				}
 				else
 				{
-					float APercentDamaged = (float) a.getItemDamage() / (float) a.getMaxDamage();
-					float BPercentDamaged = (float) b.getItemDamage() / (float) b.getMaxDamage();
+					float percentDamagedOfA = (float) a.getItemDamage() / (float) a.getMaxDamage();
+					float percentDamagedOfB = (float) b.getItemDamage() / (float) b.getMaxDamage();
 
-					return ( APercentDamaged > mode.breakPoint ) == ( BPercentDamaged > mode.breakPoint );
+					return ( percentDamagedOfA > mode.breakPoint ) == ( percentDamagedOfB > mode.breakPoint );
 				}
 			}
 		}
@@ -1649,9 +1649,9 @@ public class Platform
 						return 0;
 					}
 
-					for( Integer Side : sides )
+					for( int side : sides )
 					{
-						int c = ( Side << ( offset % 8 ) ) ^ ( 1 << dir.ordinal() );
+						int c = ( side << ( offset % 8 ) ) ^ ( 1 << dir.ordinal() );
 						offset++;
 						hash = c + ( hash << 6 ) + ( hash << 16 ) - hash;
 					}
