@@ -54,7 +54,7 @@ public class FalloutCopy extends Fallout
 		}
 		else if( a > AIR_BLOCK_THRESHOLD )
 		{
-			this.putter.put( w, x, y, z, Platform.AIR );
+			this.putter.put( w, x, y, z, Platform.AIR_BLOCK );
 		}
 		else
 		{

@@ -136,8 +136,8 @@ public class CachedPlane
 							// don't skip air, just let the code replace it...
 							if( blk != null && blk.isAir( c.worldObj, te.xCoord, te.yCoord, te.zCoord ) && blk.isReplaceable( c.worldObj, te.xCoord, te.yCoord, te.zCoord ) )
 							{
-								c.worldObj.setBlock( te.xCoord, te.yCoord, te.zCoord, Platform.AIR );
-								c.worldObj.notifyBlocksOfNeighborChange( te.xCoord, te.yCoord, te.zCoord, Platform.AIR );
+								c.worldObj.setBlock( te.xCoord, te.yCoord, te.zCoord, Platform.AIR_BLOCK );
+								c.worldObj.notifyBlocksOfNeighborChange( te.xCoord, te.yCoord, te.zCoord, Platform.AIR_BLOCK );
 							}
 							else
 							{
@@ -391,7 +391,7 @@ public class CachedPlane
 			{
 				if( blk[0] == matrixFrameBlock )
 				{
-					blk[0] = Platform.AIR;
+					blk[0] = Platform.AIR_BLOCK;
 				}
 			}
 

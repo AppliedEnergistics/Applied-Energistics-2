@@ -73,7 +73,7 @@ public class Fallout
 		}
 		else
 		{
-			this.putter.put( w, x, y, z, Platform.AIR );
+			this.putter.put( w, x, y, z, Platform.AIR_BLOCK );
 		}
 	}
 }

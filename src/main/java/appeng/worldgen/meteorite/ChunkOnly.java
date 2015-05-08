@@ -65,7 +65,7 @@ public class ChunkOnly extends StandardWorld
 		{
 			return this.target.getBlock( x & 0xF, y, z & 0xF );
 		}
-		return Platform.AIR;
+		return Platform.AIR_BLOCK;
 	}
 
 	@Override

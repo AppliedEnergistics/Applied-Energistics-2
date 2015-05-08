@@ -110,7 +110,7 @@ public class BlockPaint extends AEBaseBlock
 	{
 		if( Platform.isServer() )
 		{
-			w.setBlock( x, y, z, Platform.AIR, 0, 3 );
+			w.setBlock( x, y, z, Platform.AIR_BLOCK, 0, 3 );
 		}
 	}
 
