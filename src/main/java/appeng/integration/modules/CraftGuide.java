@@ -84,25 +84,25 @@ public class CraftGuide extends CraftGuideAPIObject implements IIntegrationModul
 		this.parent = generator;
 
 		RecipeTemplate craftingTemplate;
-		RecipeTemplate smallCraftingTemplate;
+		RecipeTemplate smallTemplate;
 
 		if( uristqwerty.CraftGuide.CraftGuide.newerBackgroundStyle )
 		{
 			craftingTemplate = generator.createRecipeTemplate( this.craftingSlotsOwnBackground, null );
-			smallCraftingTemplate = generator.createRecipeTemplate( this.smallCraftingSlotsOwnBackground, null );
+			smallTemplate = generator.createRecipeTemplate( this.smallCraftingSlotsOwnBackground, null );
 		}
 		else
 		{
 			craftingTemplate = new DefaultRecipeTemplate( this.craftingSlots, RecipeGeneratorImplementation.workbench, new TextureClip( DynamicTexture.instance( "recipe_backgrounds" ), 1, 1, 79, 58 ), new TextureClip( DynamicTexture.instance( "recipe_backgrounds" ), 82, 1, 79, 58 ) );
 
-			smallCraftingTemplate = new DefaultRecipeTemplate( this.smallCraftingSlots, RecipeGeneratorImplementation.workbench, new TextureClip( DynamicTexture.instance( "recipe_backgrounds" ), 1, 61, 79, 58 ), new TextureClip( DynamicTexture.instance( "recipe_backgrounds" ), 82, 61, 79, 58 ) );
+			smallTemplate = new DefaultRecipeTemplate( this.smallCraftingSlots, RecipeGeneratorImplementation.workbench, new TextureClip( DynamicTexture.instance( "recipe_backgrounds" ), 1, 61, 79, 58 ), new TextureClip( DynamicTexture.instance( "recipe_backgrounds" ), 82, 61, 79, 58 ) );
 		}
 
 		RecipeTemplate shapelessTemplate = new DefaultRecipeTemplate( this.shapelessCraftingSlots, RecipeGeneratorImplementation.workbench, new TextureClip( DynamicTexture.instance( "recipe_backgrounds" ), 1, 121, 79, 58 ), new TextureClip( DynamicTexture.instance( "recipe_backgrounds" ), 82, 121, 79, 58 ) );
 
 		RecipeTemplate furnaceTemplate = new DefaultRecipeTemplate( this.furnaceSlots, new ItemStack( Blocks.furnace ), new TextureClip( DynamicTexture.instance( "recipe_backgrounds" ), 1, 181, 79, 58 ), new TextureClip( DynamicTexture.instance( "recipe_backgrounds" ), 82, 181, 79, 58 ) );
 
-		this.addCraftingRecipes( craftingTemplate, smallCraftingTemplate, shapelessTemplate, this );
+		this.addCraftingRecipes( craftingTemplate, smallTemplate, shapelessTemplate, this );
 		this.addGrinderRecipes( furnaceTemplate, this );
 		this.addInscriberRecipes( furnaceTemplate, this );
 	}

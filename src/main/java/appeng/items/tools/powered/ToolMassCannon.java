@@ -22,6 +22,8 @@ package appeng.items.tools.powered;
 import java.util.EnumSet;
 import java.util.List;
 
+import com.google.common.base.Optional;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDispenser;
 import net.minecraft.entity.Entity;
@@ -40,8 +42,6 @@ import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-
-import com.google.common.base.Optional;
 
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
@@ -325,10 +325,10 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 
 	private void standardAmmo( float penetration, World w, EntityPlayer p, Vec3 vec3, Vec3 vec31, Vec3 direction, double d0, double d1, double d2 )
 	{
-		boolean hasDestroyedSomething = true;
-		while( penetration > 0 && hasDestroyedSomething )
+		boolean hasDestroyed = true;
+		while( penetration > 0 && hasDestroyed )
 		{
-			hasDestroyedSomething = false;
+			hasDestroyed = false;
 
 			AxisAlignedBB bb = AxisAlignedBB.getBoundingBox( Math.min( vec3.xCoord, vec31.xCoord ), Math.min( vec3.yCoord, vec31.yCoord ), Math.min( vec3.zCoord, vec31.zCoord ), Math.max( vec3.xCoord, vec31.xCoord ), Math.max( vec3.yCoord, vec31.yCoord ), Math.max( vec3.zCoord, vec31.zCoord ) ).expand( 16, 16, 16 );
 
@@ -408,17 +408,17 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 						el.attackEntityFrom( dmgSrc, dmg );
 						if( !el.isEntityAlive() )
 						{
-							hasDestroyedSomething = true;
+							hasDestroyed = true;
 						}
 					}
 					else if( pos.entityHit instanceof EntityItem )
 					{
-						hasDestroyedSomething = true;
+						hasDestroyed = true;
 						pos.entityHit.setDead();
 					}
 					else if( pos.entityHit.attackEntityFrom( dmgSrc, dmg ) )
 					{
-						hasDestroyedSomething = true;
+						hasDestroyed = true;
 					}
 				}
 				else if( pos.typeOfHit == MovingObjectType.BLOCK )
@@ -438,7 +438,7 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 						{
 							if( penetration > hardness && Platform.hasPermissions( new DimensionalCoord( w, pos.blockX, pos.blockY, pos.blockZ ), p ) )
 							{
-								hasDestroyedSomething = true;
+								hasDestroyed = true;
 								penetration -= hardness;
 								penetration *= 0.60;
 								w.func_147480_a( pos.blockX, pos.blockY, pos.blockZ, true );

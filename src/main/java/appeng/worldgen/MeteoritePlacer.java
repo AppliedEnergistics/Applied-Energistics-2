@@ -437,10 +437,10 @@ public final class MeteoritePlacer
 
 	public double getSqDistance( int x, int z )
 	{
-		int Cx = this.settings.getInteger( "x" ) - x;
-		int Cz = this.settings.getInteger( "z" ) - z;
+		int chunkX = this.settings.getInteger( "x" ) - x;
+		int chunkZ = this.settings.getInteger( "z" ) - z;
 
-		return Cx * Cx + Cz * Cz;
+		return chunkX * chunkX + chunkZ * chunkZ;
 	}
 
 	public boolean spawnMeteorite( IMeteoriteWorld w, int x, int y, int z )

@@ -24,6 +24,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.concurrent.Future;
 
+import com.google.common.collect.ImmutableSet;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -31,8 +33,6 @@ import net.minecraft.inventory.ICrafting;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.world.World;
-
-import com.google.common.collect.ImmutableSet;
 
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
@@ -323,27 +323,27 @@ public class ContainerCraftConfirm extends AEBaseContainer
 
 	public void startJob()
 	{
-		GuiBridge OriginalGui = null;
+		GuiBridge originalGui = null;
 
 		IActionHost ah = this.getActionHost();
 		if( ah instanceof WirelessTerminalGuiObject )
 		{
-			OriginalGui = GuiBridge.GUI_WIRELESS_TERM;
+			originalGui = GuiBridge.GUI_WIRELESS_TERM;
 		}
 
 		if( ah instanceof PartTerminal )
 		{
-			OriginalGui = GuiBridge.GUI_ME;
+			originalGui = GuiBridge.GUI_ME;
 		}
 
 		if( ah instanceof PartCraftingTerminal )
 		{
-			OriginalGui = GuiBridge.GUI_CRAFTING_TERMINAL;
+			originalGui = GuiBridge.GUI_CRAFTING_TERMINAL;
 		}
 
 		if( ah instanceof PartPatternTerminal )
 		{
-			OriginalGui = GuiBridge.GUI_PATTERN_TERMINAL;
+			originalGui = GuiBridge.GUI_PATTERN_TERMINAL;
 		}
 
 		if( this.result != null && !this.simulation )
@@ -351,12 +351,12 @@ public class ContainerCraftConfirm extends AEBaseContainer
 			ICraftingGrid cc = this.getGrid().getCache( ICraftingGrid.class );
 			ICraftingLink g = cc.submitJob( this.result, null, this.selectedCpu == -1 ? null : this.cpus.get( this.selectedCpu ).cpu, true, this.getActionSrc() );
 			this.autoStart = false;
-			if( g != null && OriginalGui != null && this.openContext != null )
+			if( g != null && originalGui != null && this.openContext != null )
 			{
-				NetworkHandler.instance.sendTo( new PacketSwitchGuis( OriginalGui ), (EntityPlayerMP) this.invPlayer.player );
+				NetworkHandler.instance.sendTo( new PacketSwitchGuis( originalGui ), (EntityPlayerMP) this.invPlayer.player );
 
 				TileEntity te = this.openContext.getTile();
-				Platform.openGUI( this.invPlayer.player, te, this.openContext.side, OriginalGui );
+				Platform.openGUI( this.invPlayer.player, te, this.openContext.side, originalGui );
 			}
 		}
 	}

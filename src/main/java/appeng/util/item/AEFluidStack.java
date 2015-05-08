@@ -113,8 +113,8 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 	{
 		byte mask = data.readByte();
 		// byte PriorityType = (byte) (mask & 0x03);
-		byte StackType = (byte) ( ( mask & 0x0C ) >> 2 );
-		byte CountReqType = (byte) ( ( mask & 0x30 ) >> 4 );
+		byte stackType = (byte) ( ( mask & 0x0C ) >> 2 );
+		byte countReqType = (byte) ( ( mask & 0x30 ) >> 4 );
 		boolean isCraftable = ( mask & 0x40 ) > 0;
 		boolean hasTagCompound = ( mask & 0x80 ) > 0;
 
@@ -140,8 +140,8 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 		}
 
 		// long priority = getPacketValue( PriorityType, data );
-		long stackSize = getPacketValue( StackType, data );
-		long countRequestable = getPacketValue( CountReqType, data );
+		long stackSize = getPacketValue( stackType, data );
+		long countRequestable = getPacketValue( countReqType, data );
 
 		FluidStack fluidStack = FluidStack.loadFluidStackFromNBT( d );
 		if( fluidStack == null )

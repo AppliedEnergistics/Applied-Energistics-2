@@ -72,15 +72,15 @@ public class BlockQuartzGrowthAccelerator extends AEBaseBlock implements IOrient
 			return;
 		}
 
-		TileQuartzGrowthAccelerator tileQuartzGrowthAccelerator = this.getTileEntity( w, x, y, z );
+		TileQuartzGrowthAccelerator cga = this.getTileEntity( w, x, y, z );
 
-		if( tileQuartzGrowthAccelerator != null && tileQuartzGrowthAccelerator.hasPower && CommonHelper.proxy.shouldAddParticles( r ) )
+		if( cga != null && cga.hasPower && CommonHelper.proxy.shouldAddParticles( r ) )
 		{
 			double d0 = r.nextFloat() - 0.5F;
 			double d1 = r.nextFloat() - 0.5F;
 
-			ForgeDirection up = tileQuartzGrowthAccelerator.getUp();
-			ForgeDirection forward = tileQuartzGrowthAccelerator.getForward();
+			ForgeDirection up = cga.getUp();
+			ForgeDirection forward = cga.getForward();
 			ForgeDirection west = Platform.crossProduct( forward, up );
 
 			double rx = 0.5 + x;

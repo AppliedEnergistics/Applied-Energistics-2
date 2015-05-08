@@ -147,8 +147,8 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 	{
 		byte mask = data.readByte();
 		// byte PriorityType = (byte) (mask & 0x03);
-		byte StackType = (byte) ( ( mask & 0x0C ) >> 2 );
-		byte CountReqType = (byte) ( ( mask & 0x30 ) >> 4 );
+		byte stackType = (byte) ( ( mask & 0x0C ) >> 2 );
+		byte countReqType = (byte) ( ( mask & 0x30 ) >> 4 );
 		boolean isCraftable = ( mask & 0x40 ) > 0;
 		boolean hasTagCompound = ( mask & 0x80 ) > 0;
 
@@ -171,8 +171,8 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 		}
 
 		// long priority = getPacketValue( PriorityType, data );
-		long stackSize = getPacketValue( StackType, data );
-		long countRequestable = getPacketValue( CountReqType, data );
+		long stackSize = getPacketValue( stackType, data );
+		long countRequestable = getPacketValue( countReqType, data );
 
 		ItemStack itemstack = ItemStack.loadItemStackFromNBT( d );
 		if( itemstack == null )
@@ -289,10 +289,10 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 						}
 						else
 						{
-							float APercentDamaged = 1.0f - (float) a.getItemDamageForDisplay() / (float) a.getMaxDamage();
-							float BPercentDamaged = 1.0f - (float) b.getItemDamageForDisplay() / (float) b.getMaxDamage();
+							float percentDamageOfA = 1.0f - (float) a.getItemDamageForDisplay() / (float) a.getMaxDamage();
+							float percentDamageOfB = 1.0f - (float) b.getItemDamageForDisplay() / (float) b.getMaxDamage();
 
-							return ( APercentDamaged > mode.breakPoint ) == ( BPercentDamaged > mode.breakPoint );
+							return ( percentDamageOfA > mode.breakPoint ) == ( percentDamageOfB > mode.breakPoint );
 						}
 					}
 					catch( Throwable e )
@@ -307,10 +307,10 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 						}
 						else
 						{
-							float APercentDamaged = (float) a.getItemDamage() / (float) a.getMaxDamage();
-							float BPercentDamaged = (float) b.getItemDamage() / (float) b.getMaxDamage();
+							float percentDamageOfA = (float) a.getItemDamage() / (float) a.getMaxDamage();
+							float percentDamageOfB = (float) b.getItemDamage() / (float) b.getMaxDamage();
 
-							return ( APercentDamaged > mode.breakPoint ) == ( BPercentDamaged > mode.breakPoint );
+							return ( percentDamageOfA > mode.breakPoint ) == ( percentDamageOfB > mode.breakPoint );
 						}
 					}
 				}
@@ -343,10 +343,10 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 						}
 						else
 						{
-							float APercentDamaged = 1.0f - (float) a.getItemDamageForDisplay() / (float) a.getMaxDamage();
-							float BPercentDamaged = 1.0f - (float) o.getItemDamageForDisplay() / (float) o.getMaxDamage();
+							float percentDamageOfA = 1.0f - (float) a.getItemDamageForDisplay() / (float) a.getMaxDamage();
+							float percentDamageOfB = 1.0f - (float) o.getItemDamageForDisplay() / (float) o.getMaxDamage();
 
-							return ( APercentDamaged > mode.breakPoint ) == ( BPercentDamaged > mode.breakPoint );
+							return ( percentDamageOfA > mode.breakPoint ) == ( percentDamageOfB > mode.breakPoint );
 						}
 					}
 					catch( Throwable e )
@@ -361,10 +361,10 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 						}
 						else
 						{
-							float APercentDamaged = (float) a.getItemDamage() / (float) a.getMaxDamage();
-							float BPercentDamaged = (float) o.getItemDamage() / (float) o.getMaxDamage();
+							float percentDamageOfA = (float) a.getItemDamage() / (float) a.getMaxDamage();
+							float percentDamageOfB = (float) o.getItemDamage() / (float) o.getMaxDamage();
 
-							return ( APercentDamaged > mode.breakPoint ) == ( BPercentDamaged > mode.breakPoint );
+							return ( percentDamageOfA > mode.breakPoint ) == ( percentDamageOfB > mode.breakPoint );
 						}
 					}
 				}
