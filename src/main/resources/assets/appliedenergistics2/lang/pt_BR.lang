@@ -1,3 +1,4 @@
+//Blocos
 tile.appliedenergistics2.BlockCableBus.name=Cabos e/ou Barramentos do AE2
 tile.appliedenergistics2.BlockCellWorkbench.name=Bancada de Células
 tile.appliedenergistics2.BlockCharger.name=Carregador
@@ -19,7 +20,7 @@ tile.appliedenergistics2.BlockQuantumLinkChamber.name=Câmara de Ligação Quân
 tile.appliedenergistics2.BlockQuantumRing.name=Anel Quântico ME
 tile.appliedenergistics2.BlockFluix.name=Bloco de Fluix
 tile.appliedenergistics2.BlockQuartz.name=Bloco de Quartzo Certus
-tile.appliedenergistics2.BlockQuartzChiseled.name=Bloco de Quartzo Certus Cinzelado
+tile.appliedenergistics2.BlockQuartzChiseled.name=Bloco de Quartzo Certus Talhado
 tile.appliedenergistics2.BlockQuartzGlass.name=Vidro de Quartzo
 tile.appliedenergistics2.BlockQuartzLamp.name=Vidro Vibrante de Quartzo
 tile.appliedenergistics2.BlockQuartzPillar.name=Pilar de Quartzo Certus
@@ -50,8 +51,8 @@ tile.appliedenergistics2.BlockCraftingAccelerator.name=Unidade de Co-Processamen
 tile.appliedenergistics2.BlockCraftingUnit.name=Unidade de Fabricação
 tile.appliedenergistics2.BlockMolecularAssembler.name=Montador Molecular
 
-// Stairs
-tile.appliedenergistics2.ChiseledQuartzStairBlock.name=Escadas de Quartzo Certus Cinzelado
+// Escadas
+tile.appliedenergistics2.ChiseledQuartzStairBlock.name=Escadas de Quartzo Certus Talhadas
 tile.appliedenergistics2.FluixStairBlock.name=Escadas de Fluix 
 tile.appliedenergistics2.QuartzPillarStairBlock.name=Escadas de Pilar de Quartzo Certus 
 tile.appliedenergistics2.QuartzStairBlock.name=Escadas de Quartzo Certus 
@@ -472,7 +473,7 @@ achievement.ae2.IOPort=Embaralhamento de Células de Armazenamentos
 achievement.ae2.IOPort.desc=Faça uma Porta de ES
 achievement.ae2.CraftingTerminal=Uma Bancada (Muito) Maior
 achievement.ae2.CraftingTerminal.desc=Faça um Terminal de Fabricação
-achievement.ae2.PatternTerminal=Maestro de Fabricação
+achievement.ae2.PatternTerminal=Maestro da Fabricação
 achievement.ae2.PatternTerminal.desc=Faça um Terminal de Padrões
 achievement.ae2.ChargedQuartz=Chocante
 achievement.ae2.ChargedQuartz.desc=Ache Quartzo Carregado
@@ -502,7 +503,7 @@ achievement.ae2.Facade=Estética de Rede
 achievement.ae2.Facade.desc=Faça uma Fachada de Cabo
 achievement.ae2.NetworkTool=Diagnóstico de Rede
 achievement.ae2.NetworkTool.desc=Faça uma Ferramenta de Rede
-achievement.ae2.PortableCell=Armazenamento Portátil
+achievement.ae2.PortableCell=Armazenamento Nômade
 achievement.ae2.PortableCell.desc=Faça uma Célula Portátil
 achievement.ae2.StorageBus=Potencial Sem Limites
 achievement.ae2.StorageBus.desc=Faça um Barramento de Armazenamento
