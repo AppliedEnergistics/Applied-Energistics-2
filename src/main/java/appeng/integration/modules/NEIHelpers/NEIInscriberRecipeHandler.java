@@ -19,7 +19,7 @@
 package appeng.integration.modules.NEIHelpers;
 
 
-import java.awt.*;
+import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +30,7 @@ import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
+import codechicken.lib.gui.GuiDraw;
 import codechicken.nei.NEIServerUtils;
 import codechicken.nei.PositionedStack;
 import codechicken.nei.api.IOverlayHandler;
@@ -40,9 +41,6 @@ import appeng.api.AEApi;
 import appeng.api.features.IInscriberRecipe;
 import appeng.client.gui.implementations.GuiInscriber;
 import appeng.core.localization.GuiText;
-
-import static codechicken.lib.gui.GuiDraw.changeTexture;
-import static codechicken.lib.gui.GuiDraw.drawTexturedModalRect;
 
 
 /**
@@ -134,8 +132,8 @@ public class NEIInscriberRecipeHandler extends TemplateRecipeHandler
 	public void drawBackground( int recipe )
 	{
 		GL11.glColor4f( 1, 1, 1, 1 );
-		changeTexture( this.getGuiTexture() );
-		drawTexturedModalRect( 0, 0, 5, 11, 166, 75 );
+		GuiDraw.changeTexture( this.getGuiTexture() );
+		GuiDraw.drawTexturedModalRect( 0, 0, 5, 11, 166, 75 );
 	}
 
 	@Override
