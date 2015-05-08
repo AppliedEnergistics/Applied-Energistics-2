@@ -22,6 +22,7 @@ package appeng.util.inv;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -35,7 +36,7 @@ public class WrapperChainedInventory implements IInventory
 
 	int fullSize = 0;
 	private List<IInventory> l;
-	private HashMap<Integer, InvOffset> offsets;
+	private Map<Integer, InvOffset> offsets;
 
 	public WrapperChainedInventory( IInventory... inventories )
 	{

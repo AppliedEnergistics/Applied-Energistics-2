@@ -20,7 +20,6 @@ package appeng.tile.misc;
 
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 import javax.annotation.Nullable;
@@ -194,7 +193,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 	}
 
 	@Override
-	public void getDrops( World w, int x, int y, int z, ArrayList<ItemStack> drops )
+	public void getDrops( World w, int x, int y, int z, List<ItemStack> drops )
 	{
 		super.getDrops( w, x, y, z, drops );
 

@@ -19,7 +19,7 @@
 package appeng.tile.misc;
 
 
-import java.util.ArrayList;
+import java.util.List;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -235,7 +235,7 @@ public class TileCellWorkbench extends AEBaseTile implements IUpgradeableHost, I
 	}
 
 	@Override
-	public void getDrops( World w, int x, int y, int z, ArrayList<ItemStack> drops )
+	public void getDrops( World w, int x, int y, int z, List<ItemStack> drops )
 	{
 		super.getDrops( w, x, y, z, drops );
 
