@@ -58,10 +58,10 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 	public static final int LEVEL_OFFSET = 200;
 	public static final int SINGLE_OFFSET = LEVEL_OFFSET * 3;
 
-	public static final int Certus = 0;
-	public static final int Nether = SINGLE_OFFSET;
-	public static final int Fluix = SINGLE_OFFSET * 2;
-	public static final int END = SINGLE_OFFSET * 3;
+	public static final int CERTUS = 0;
+	public static final int NETHER = SINGLE_OFFSET;
+	public static final int FLUIX = SINGLE_OFFSET * 2;
+	public static final int FINAL_STAGE = SINGLE_OFFSET * 3;
 
 	final IIcon[] certus = new IIcon[3];
 	final IIcon[] fluix = new IIcon[3];
@@ -120,28 +120,28 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 		final IMaterials materials = AEApi.instance().definitions().materials();
 		final int size = is.stackSize;
 
-		if( newDamage == Certus + SINGLE_OFFSET )
+		if( newDamage == CERTUS + SINGLE_OFFSET )
 		{
 			for( ItemStack quartzStack : materials.purifiedCertusQuartzCrystal().maybeStack( size ).asSet() )
 			{
 				return quartzStack;
 			}
 		}
-		if( newDamage == Nether + SINGLE_OFFSET )
+		if( newDamage == NETHER + SINGLE_OFFSET )
 		{
 			for( ItemStack quartzStack : materials.purifiedNetherQuartzCrystal().maybeStack( size ).asSet() )
 			{
 				return quartzStack;
 			}
 		}
-		if( newDamage == Fluix + SINGLE_OFFSET )
+		if( newDamage == FLUIX + SINGLE_OFFSET )
 		{
 			for( ItemStack quartzStack : materials.purifiedFluixCrystal().maybeStack( size ).asSet() )
 			{
 				return quartzStack;
 			}
 		}
-		if( newDamage > END )
+		if( newDamage > FINAL_STAGE )
 		{
 			return null;
 		}
@@ -184,17 +184,17 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 	{
 		int damage = this.getProgress( is );
 
-		if( damage < Certus + SINGLE_OFFSET )
+		if( damage < CERTUS + SINGLE_OFFSET )
 		{
 			return this.getUnlocalizedName() + ".Certus";
 		}
 
-		if( damage < Nether + SINGLE_OFFSET )
+		if( damage < NETHER + SINGLE_OFFSET )
 		{
 			return this.getUnlocalizedName() + ".Nether";
 		}
 
-		if( damage < Fluix + SINGLE_OFFSET )
+		if( damage < FLUIX + SINGLE_OFFSET )
 		{
 			return this.getUnlocalizedName() + ".Fluix";
 		}
@@ -217,7 +217,7 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 	@Override
 	public int getMaxDamage( ItemStack stack )
 	{
-		return END;
+		return FINAL_STAGE;
 	}
 
 	@Override
@@ -233,19 +233,19 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 
 		int damage = this.getProgress( stack );
 
-		if( damage < Certus + SINGLE_OFFSET )
+		if( damage < CERTUS + SINGLE_OFFSET )
 		{
 			list = this.certus;
 		}
-		else if( damage < Nether + SINGLE_OFFSET )
+		else if( damage < NETHER + SINGLE_OFFSET )
 		{
-			damage -= Nether;
+			damage -= NETHER;
 			list = this.nether;
 		}
 
-		else if( damage < Fluix + SINGLE_OFFSET )
+		else if( damage < FLUIX + SINGLE_OFFSET )
 		{
-			damage -= Fluix;
+			damage -= FLUIX;
 			list = this.fluix;
 		}
 
@@ -313,18 +313,18 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 	public void getSubItems( Item i, CreativeTabs t, List l )
 	{
 		// lvl 0
-		l.add( newStyle( new ItemStack( this, 1, Certus ) ) );
-		l.add( newStyle( new ItemStack( this, 1, Nether ) ) );
-		l.add( newStyle( new ItemStack( this, 1, Fluix ) ) );
+		l.add( newStyle( new ItemStack( this, 1, CERTUS ) ) );
+		l.add( newStyle( new ItemStack( this, 1, NETHER ) ) );
+		l.add( newStyle( new ItemStack( this, 1, FLUIX ) ) );
 
 		// lvl 1
-		l.add( newStyle( new ItemStack( this, 1, LEVEL_OFFSET + Certus ) ) );
-		l.add( newStyle( new ItemStack( this, 1, LEVEL_OFFSET + Nether ) ) );
-		l.add( newStyle( new ItemStack( this, 1, LEVEL_OFFSET + Fluix ) ) );
+		l.add( newStyle( new ItemStack( this, 1, LEVEL_OFFSET + CERTUS ) ) );
+		l.add( newStyle( new ItemStack( this, 1, LEVEL_OFFSET + NETHER ) ) );
+		l.add( newStyle( new ItemStack( this, 1, LEVEL_OFFSET + FLUIX ) ) );
 
 		// lvl 2
-		l.add( newStyle( new ItemStack( this, 1, LEVEL_OFFSET * 2 + Certus ) ) );
-		l.add( newStyle( new ItemStack( this, 1, LEVEL_OFFSET * 2 + Nether ) ) );
-		l.add( newStyle( new ItemStack( this, 1, LEVEL_OFFSET * 2 + Fluix ) ) );
+		l.add( newStyle( new ItemStack( this, 1, LEVEL_OFFSET * 2 + CERTUS ) ) );
+		l.add( newStyle( new ItemStack( this, 1, LEVEL_OFFSET * 2 + NETHER ) ) );
+		l.add( newStyle( new ItemStack( this, 1, LEVEL_OFFSET * 2 + FLUIX ) ) );
 	}
 }

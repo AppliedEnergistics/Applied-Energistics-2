@@ -45,7 +45,7 @@ public class BlockUpdate implements Callable
 	{
 		if( this.w.blockExists( this.x, this.y, this.z ) )
 		{
-			this.w.notifyBlocksOfNeighborChange( this.x, this.y, this.z, Platform.AIR );
+			this.w.notifyBlocksOfNeighborChange( this.x, this.y, this.z, Platform.AIR_BLOCK );
 		}
 
 		return true;

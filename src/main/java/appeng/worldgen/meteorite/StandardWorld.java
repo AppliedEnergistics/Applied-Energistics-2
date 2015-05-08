@@ -65,7 +65,7 @@ public class StandardWorld implements IMeteoriteWorld
 		{
 			return this.w.getBlock( x, y, z );
 		}
-		return Platform.AIR;
+		return Platform.AIR_BLOCK;
 	}
 
 	@Override

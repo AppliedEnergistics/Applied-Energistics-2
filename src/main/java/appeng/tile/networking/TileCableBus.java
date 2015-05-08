@@ -334,7 +334,7 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 			}
 		}
 
-		this.getWorldObj().setBlock( this.xCoord, this.yCoord, this.zCoord, Platform.AIR );
+		this.getWorldObj().setBlock( this.xCoord, this.yCoord, this.zCoord, Platform.AIR_BLOCK );
 	}	@Override
 	public void addCollidingBlockToList( World w, int x, int y, int z, AxisAlignedBB bb, List<AxisAlignedBB> out, Entity e )
 	{

@@ -82,7 +82,7 @@ public class ToolEraser extends AEBaseItem
 				if( c_blk == blk && c_meta == meta )
 				{
 					blocks++;
-					world.setBlock( wc.x, wc.y, wc.z, Platform.AIR );
+					world.setBlock( wc.x, wc.y, wc.z, Platform.AIR_BLOCK );
 
 					this.wrappedAdd( world, wc.x + 1, wc.y, wc.z, next );
 					this.wrappedAdd( world, wc.x - 1, wc.y, wc.z, next );

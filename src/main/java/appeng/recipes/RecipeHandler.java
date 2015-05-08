@@ -135,15 +135,15 @@ public class RecipeHandler implements IRecipeHandler
 		if( maybeCrystalSeedItem.isPresent() && is.getItem() == maybeCrystalSeedItem.get() )
 		{
 			int dmg = is.getItemDamage();
-			if( dmg < ItemCrystalSeed.Nether )
+			if( dmg < ItemCrystalSeed.NETHER )
 			{
 				realName += ".Certus";
 			}
-			else if( dmg < ItemCrystalSeed.Fluix )
+			else if( dmg < ItemCrystalSeed.FLUIX )
 			{
 				realName += ".Nether";
 			}
-			else if( dmg < ItemCrystalSeed.END )
+			else if( dmg < ItemCrystalSeed.FINAL_STAGE )
 			{
 				realName += ".Fluix";
 			}

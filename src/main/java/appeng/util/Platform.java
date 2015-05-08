@@ -151,7 +151,7 @@ import appeng.util.prioitylist.IPartitionList;
 public class Platform
 {
 
-	public static final Block AIR = Blocks.air;
+	public static final Block AIR_BLOCK = Blocks.air;
 
 	public static final int DEF_OFFSET = 16;
 

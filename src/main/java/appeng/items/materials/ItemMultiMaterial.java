@@ -31,6 +31,9 @@ import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableSet;
+
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
@@ -46,9 +49,6 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.oredict.OreDictionary;
-
-import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableSet;
 
 import appeng.api.config.Upgrades;
 import appeng.api.implementations.IUpgradeableHost;
@@ -71,7 +71,7 @@ import appeng.util.Platform;
 
 public final class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, IUpgradeModule
 {
-	public static final int KILO = 1024;
+	public static final int KILO_SCALAR = 1024;
 	public static ItemMultiMaterial instance;
 
 	private final Map<Integer, MaterialType> dmgToMaterial = new HashMap<Integer, MaterialType>();
@@ -415,13 +415,13 @@ public final class ItemMultiMaterial extends AEBaseItem implements IStorageCompo
 		switch( this.getTypeByStack( is ) )
 		{
 			case Cell1kPart:
-				return KILO;
+				return KILO_SCALAR;
 			case Cell4kPart:
-				return KILO * 4;
+				return KILO_SCALAR * 4;
 			case Cell16kPart:
-				return KILO * 16;
+				return KILO_SCALAR * 16;
 			case Cell64kPart:
-				return KILO * 64;
+				return KILO_SCALAR * 64;
 			default:
 		}
 		return 0;

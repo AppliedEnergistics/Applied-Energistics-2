@@ -191,7 +191,7 @@ public final class MeteoritePlacer
 						}
 						else
 						{
-							changed = this.putter.put( w, i, j, k, Platform.AIR ) || changed;
+							changed = this.putter.put( w, i, j, k, Platform.AIR_BLOCK ) || changed;
 						}
 					}
 				}
@@ -380,7 +380,7 @@ public final class MeteoritePlacer
 
 					if( blk.isReplaceable( w.getWorld(), i, j, k ) )
 					{
-						blk = Platform.AIR;
+						blk = Platform.AIR_BLOCK;
 						Block blk_b = w.getBlock( i, j + 1, k );
 
 						if( blk_b != blk )
@@ -415,7 +415,7 @@ public final class MeteoritePlacer
 					{
 						// decay.
 						Block blk_b = w.getBlock( i, j + 1, k );
-						if( blk_b == Platform.AIR )
+						if( blk_b == Platform.AIR_BLOCK )
 						{
 							if( Math.random() > 0.4 )
 							{
@@ -544,7 +544,7 @@ public final class MeteoritePlacer
 			boolean solid = true;
 			for( int j = y - 15; j < y - 1; j++ )
 			{
-				if( w.getBlock( x, j, z ) == Platform.AIR )
+				if( w.getBlock( x, j, z ) == Platform.AIR_BLOCK )
 				{
 					solid = false;
 				}
