@@ -84,10 +84,9 @@ public final class ConfigManager implements IConfigManager
 	@Override
 	public void writeToNBT( NBTTagCompound tagCompound )
 	{
-
-		for( Settings setting : this.settings.keySet() )
+		for( Map.Entry<Settings, Enum<?>> entry : this.settings.entrySet() )
 		{
-			tagCompound.setString( setting.name(), this.settings.get( setting ).toString() );
+			tagCompound.setString( entry.getKey().name(), this.settings.get( entry.getKey() ).toString() );
 		}
 	}
 
@@ -99,13 +98,13 @@ public final class ConfigManager implements IConfigManager
 	@Override
 	public void readFromNBT( NBTTagCompound tagCompound )
 	{
-		for( Settings key : this.settings.keySet() )
+		for( Map.Entry<Settings, Enum<?>> entry : this.settings.entrySet() )
 		{
 			try
 			{
-				if( tagCompound.hasKey( key.name() ) )
+				if( tagCompound.hasKey( entry.getKey().name() ) )
 				{
-					String value = tagCompound.getString( key.name() );
+					String value = tagCompound.getString( entry.getKey().name() );
 
 					// Provides an upgrade path for the rename of this value in the API between rv1 and rv2
 					if( value.equals( "EXTACTABLE_ONLY" ) )
@@ -117,11 +116,11 @@ public final class ConfigManager implements IConfigManager
 						value = LevelEmitterMode.STORABLE_AMOUNT.toString();
 					}
 
-					Enum<?> oldValue = this.settings.get( key );
+					Enum<?> oldValue = this.settings.get( entry.getKey() );
 
 					Enum<?> newValue = Enum.valueOf( oldValue.getClass(), value );
 
-					this.putSetting( key, newValue );
+					this.putSetting( entry.getKey(), newValue );
 				}
 			}
 			catch( IllegalArgumentException e )
