@@ -40,6 +40,7 @@ import appeng.client.gui.implementations.GuiCraftingTerm;
 import appeng.client.gui.implementations.GuiPatternTerm;
 import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
+import appeng.helpers.Reflected;
 import appeng.integration.BaseModule;
 import appeng.integration.abstraction.INEI;
 import appeng.integration.modules.NEIHelpers.NEIAEShapedRecipeHandler;
@@ -54,28 +55,29 @@ import appeng.integration.modules.NEIHelpers.TerminalCraftingSlotFinder;
 
 public class NEI extends BaseModule implements INEI, IContainerTooltipHandler
 {
-
+	@Reflected
 	public static NEI instance;
 
-	Class<?> API;
+	private final Class<?> apiClass;
 
 	// recipe handler...
 	Method registerRecipeHandler;
 	Method registerUsageHandler;
 
+	@Reflected
 	public NEI() throws ClassNotFoundException
 	{
 		this.testClassExistence( GuiContainerManager.class );
 		this.testClassExistence( codechicken.nei.recipe.ICraftingHandler.class );
 		this.testClassExistence( codechicken.nei.recipe.IUsageHandler.class );
-		this.API = Class.forName( "codechicken.nei.api.API" );
+		this.apiClass = Class.forName( "codechicken.nei.api.API" );
 	}
 
 	@Override
 	public void init() throws Throwable
 	{
-		this.registerRecipeHandler = this.API.getDeclaredMethod( "registerRecipeHandler", codechicken.nei.recipe.ICraftingHandler.class );
-		this.registerUsageHandler = this.API.getDeclaredMethod( "registerUsageHandler", codechicken.nei.recipe.IUsageHandler.class );
+		this.registerRecipeHandler = this.apiClass.getDeclaredMethod( "registerRecipeHandler", codechicken.nei.recipe.ICraftingHandler.class );
+		this.registerUsageHandler = this.apiClass.getDeclaredMethod( "registerUsageHandler", codechicken.nei.recipe.IUsageHandler.class );
 
 		this.registerRecipeHandler( new NEIAEShapedRecipeHandler() );
 		this.registerRecipeHandler( new NEIAEShapelessRecipeHandler() );
@@ -92,23 +94,23 @@ public class NEI extends BaseModule implements INEI, IContainerTooltipHandler
 		GuiContainerManager.addTooltipHandler( this );
 
 		// crafting terminal...
-		Method registerGuiOverlay = this.API.getDeclaredMethod( "registerGuiOverlay", Class.class, String.class, IStackPositioner.class );
+		Method registerGuiOverlay = this.apiClass.getDeclaredMethod( "registerGuiOverlay", Class.class, String.class, IStackPositioner.class );
 		Class IOverlayHandler = Class.forName( "codechicken.nei.api.IOverlayHandler" );
 		Class DefaultOverlayHandler = NEICraftingHandler.class;
 
-		Method registerGuiOverlayHandler = this.API.getDeclaredMethod( "registerGuiOverlayHandler", Class.class, IOverlayHandler, String.class );
-		registerGuiOverlay.invoke( this.API, GuiCraftingTerm.class, "crafting", new TerminalCraftingSlotFinder() );
-		registerGuiOverlay.invoke( this.API, GuiPatternTerm.class, "crafting", new TerminalCraftingSlotFinder() );
+		Method registerGuiOverlayHandler = this.apiClass.getDeclaredMethod( "registerGuiOverlayHandler", Class.class, IOverlayHandler, String.class );
+		registerGuiOverlay.invoke( this.apiClass, GuiCraftingTerm.class, "crafting", new TerminalCraftingSlotFinder() );
+		registerGuiOverlay.invoke( this.apiClass, GuiPatternTerm.class, "crafting", new TerminalCraftingSlotFinder() );
 
 		Constructor DefaultOverlayHandlerConstructor = DefaultOverlayHandler.getConstructor( int.class, int.class );
-		registerGuiOverlayHandler.invoke( this.API, GuiCraftingTerm.class, DefaultOverlayHandlerConstructor.newInstance( 6, 75 ), "crafting" );
-		registerGuiOverlayHandler.invoke( this.API, GuiPatternTerm.class, DefaultOverlayHandlerConstructor.newInstance( 6, 75 ), "crafting" );
+		registerGuiOverlayHandler.invoke( this.apiClass, GuiCraftingTerm.class, DefaultOverlayHandlerConstructor.newInstance( 6, 75 ), "crafting" );
+		registerGuiOverlayHandler.invoke( this.apiClass, GuiPatternTerm.class, DefaultOverlayHandlerConstructor.newInstance( 6, 75 ), "crafting" );
 	}
 
 	public void registerRecipeHandler( Object o ) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException
 	{
-		this.registerRecipeHandler.invoke( this.API, o );
-		this.registerUsageHandler.invoke( this.API, o );
+		this.registerRecipeHandler.invoke( this.apiClass, o );
+		this.registerUsageHandler.invoke( this.apiClass, o );
 	}
 
 	@Override

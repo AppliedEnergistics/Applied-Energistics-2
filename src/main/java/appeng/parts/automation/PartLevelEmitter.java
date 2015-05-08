@@ -83,7 +83,7 @@ import appeng.util.Platform;
 public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherHost, IStackWatcherHost, ICraftingWatcherHost, IMEMonitorHandlerReceiver<IAEItemStack>, ICraftingProvider
 {
 
-	final int FLAG_ON = 4;
+	private static final int FLAG_ON = 4;
 
 	final AppEngInternalAEInventory config = new AppEngInternalAEInventory( this, 1 );
 

@@ -45,8 +45,8 @@ import appeng.me.GridAccessException;
 public abstract class PartBasicState extends AEBasePart implements IPowerChannelState
 {
 
-	protected final int POWERED_FLAG = 1;
-	protected final int CHANNEL_FLAG = 2;
+	protected static final int POWERED_FLAG = 1;
+	protected static final int CHANNEL_FLAG = 2;
 
 	protected int clientFlags = 0; // sent as byte.
 

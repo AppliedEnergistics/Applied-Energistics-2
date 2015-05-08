@@ -53,9 +53,9 @@ import appeng.util.Platform;
 public class PartMonitor extends AEBasePart implements IPartMonitor, IPowerChannelState
 {
 
-	final int POWERED_FLAG = 4;
-	final int BOOTING_FLAG = 8;
-	final int CHANNEL_FLAG = 16;
+	protected static final int POWERED_FLAG = 4;
+	protected static final int CHANNEL_FLAG = 16;
+	private static final int BOOTING_FLAG = 8;
 	// CableBusTextures frontSolid = CableBusTextures.PartMonitor_Solid;
 	CableBusTextures frontDark = CableBusTextures.PartMonitor_Colored;
 	CableBusTextures frontBright = CableBusTextures.PartMonitor_Bright;
@@ -197,37 +197,6 @@ public class PartMonitor extends AEBasePart implements IPartMonitor, IPowerChann
 		}
 	}
 
-	private int blockLight( int emit )
-	{
-		if( this.opacity < 0 )
-		{
-			TileEntity te = this.getTile();
-			this.opacity = 255 - te.getWorldObj().getBlockLightOpacity( te.xCoord + this.side.offsetX, te.yCoord + this.side.offsetY, te.zCoord + this.side.offsetZ );
-		}
-
-		return (int) ( emit * ( this.opacity / 255.0f ) );
-	}
-
-	@Override
-	public boolean isPowered()
-	{
-		try
-		{
-			if( Platform.isServer() )
-			{
-				return this.proxy.getEnergy().isNetworkPowered();
-			}
-			else
-			{
-				return ( ( this.clientFlags & this.POWERED_FLAG ) == this.POWERED_FLAG );
-			}
-		}
-		catch( GridAccessException e )
-		{
-			return false;
-		}
-	}
-
 	@Override
 	public void onNeighborChanged()
 	{
@@ -359,6 +328,37 @@ public class PartMonitor extends AEBasePart implements IPartMonitor, IPowerChann
 		else if( side == ForgeDirection.DOWN )
 		{
 			this.spin = rotation;
+		}
+	}
+
+	private int blockLight( int emit )
+	{
+		if( this.opacity < 0 )
+		{
+			TileEntity te = this.getTile();
+			this.opacity = 255 - te.getWorldObj().getBlockLightOpacity( te.xCoord + this.side.offsetX, te.yCoord + this.side.offsetY, te.zCoord + this.side.offsetZ );
+		}
+
+		return (int) ( emit * ( this.opacity / 255.0f ) );
+	}
+
+	@Override
+	public boolean isPowered()
+	{
+		try
+		{
+			if( Platform.isServer() )
+			{
+				return this.proxy.getEnergy().isNetworkPowered();
+			}
+			else
+			{
+				return ( ( this.clientFlags & this.POWERED_FLAG ) == this.POWERED_FLAG );
+			}
+		}
+		catch( GridAccessException e )
+		{
+			return false;
 		}
 	}
 
