@@ -112,7 +112,6 @@ dependencies {
     compile(group: 'api', name: 'immibis', version: "${api_immibis_version}")
     compile(group: 'api', name: 'mfr', version: "${api_mfr_version}")
     compile(group: 'api', name: 'railcraft', version: "${api_railcraft_version}")
-    compile(group: 'api', name: 'rblocks', version: "${api_rblocks_version}")
     compile(group: 'api', name: 'rf', version: "${api_rf_version}")
 
     testCompile "junit:junit:4.11"

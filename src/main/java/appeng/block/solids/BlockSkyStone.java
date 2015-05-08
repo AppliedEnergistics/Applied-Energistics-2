@@ -29,7 +29,6 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
@@ -41,40 +40,37 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-import rblocks.api.RotatableBlockEnable;
-
 import appeng.api.util.IOrientable;
 import appeng.api.util.IOrientableBlock;
 import appeng.block.AEBaseBlock;
-import appeng.core.AppEng;
 import appeng.core.WorldSettings;
 import appeng.core.features.AEFeature;
 import appeng.helpers.LocationRotation;
 import appeng.helpers.NullRotation;
-import appeng.integration.IntegrationType;
-import appeng.integration.abstraction.IRB;
 import appeng.util.Platform;
 
 
-@RotatableBlockEnable
 public class BlockSkyStone extends AEBaseBlock implements IOrientableBlock
 {
+	private static final float BLOCK_RESISTANCE = 150.0f;
+	private static final double BREAK_SPEAK_SCALAR = 0.1;
+	private static final double BREAK_SPEAK_THRESHOLD = 7.0;
 
 	@SideOnly( Side.CLIENT )
-	IIcon Block;
+	private IIcon block;
 
 	@SideOnly( Side.CLIENT )
-	IIcon Brick;
+	private IIcon brick;
 
 	@SideOnly( Side.CLIENT )
-	IIcon SmallBrick;
+	private IIcon smallBrick;
 
 	public BlockSkyStone()
 	{
 		super( BlockSkyStone.class, Material.rock );
 		this.setHardness( 50 );
 		this.hasSubtypes = true;
-		this.blockResistance = 150.0f;
+		this.blockResistance = BLOCK_RESISTANCE;
 		this.setHarvestLevel( "pickaxe", 3, 0 );
 		this.setFeature( EnumSet.of( AEFeature.Core ) );
 
@@ -82,21 +78,21 @@ public class BlockSkyStone extends AEBaseBlock implements IOrientableBlock
 	}
 
 	@SubscribeEvent
-	public void breakFaster( PlayerEvent.BreakSpeed Ev )
+	public void breakFaster( PlayerEvent.BreakSpeed event )
 	{
-		if( Ev.block == this && Ev.entityPlayer != null )
+		if( event.block == this && event.entityPlayer != null )
 		{
-			ItemStack is = Ev.entityPlayer.inventory.getCurrentItem();
+			ItemStack is = event.entityPlayer.inventory.getCurrentItem();
 			int level = -1;
 
-			if( is != null )
+			if( is != null && is.getItem() != null )
 			{
 				level = is.getItem().getHarvestLevel( is, "pickaxe" );
 			}
 
-			if( Ev.metadata > 0 || level >= 3 || Ev.originalSpeed > 7.0 )
+			if( event.metadata > 0 || level >= 3 || event.originalSpeed > BREAK_SPEAK_THRESHOLD )
 			{
-				Ev.newSpeed /= 0.1;
+				event.newSpeed /= BREAK_SPEAK_SCALAR;
 			}
 		}
 	}
@@ -126,12 +122,6 @@ public class BlockSkyStone extends AEBaseBlock implements IOrientableBlock
 		}
 	}
 
-	// use AE2's renderer, no rotatable blocks.
-	int getRealRenderType()
-	{
-		return this.getRenderType();
-	}
-
 	@Override
 	public boolean usesMetadata()
 	{
@@ -141,19 +131,6 @@ public class BlockSkyStone extends AEBaseBlock implements IOrientableBlock
 	@Override
 	public IOrientable getOrientable( final IBlockAccess w, final int x, final int y, final int z )
 	{
-		if( AppEng.instance.isIntegrationEnabled( IntegrationType.RB ) )
-		{
-			TileEntity te = w.getTileEntity( x, y, z );
-			if( te != null )
-			{
-				IOrientable out = ( (IRB) AppEng.instance.getIntegration( IntegrationType.RB ) ).getOrientable( te );
-				if( out != null )
-				{
-					return out;
-				}
-			}
-		}
-
 		if( w.getBlockMetadata( x, y, z ) == 0 )
 		{
 			return new LocationRotation( w, x, y, z );
@@ -188,9 +165,9 @@ public class BlockSkyStone extends AEBaseBlock implements IOrientableBlock
 	public void registerBlockIcons( IIconRegister ir )
 	{
 		super.registerBlockIcons( ir );
-		this.Block = ir.registerIcon( this.getTextureName() + ".Block" );
-		this.Brick = ir.registerIcon( this.getTextureName() + ".Brick" );
-		this.SmallBrick = ir.registerIcon( this.getTextureName() + ".SmallBrick" );
+		this.block = ir.registerIcon( this.getTextureName() + ".Block" );
+		this.brick = ir.registerIcon( this.getTextureName() + ".Brick" );
+		this.smallBrick = ir.registerIcon( this.getTextureName() + ".SmallBrick" );
 	}
 
 	@Override
@@ -199,15 +176,15 @@ public class BlockSkyStone extends AEBaseBlock implements IOrientableBlock
 	{
 		if( metadata == 1 )
 		{
-			return this.Block;
+			return this.block;
 		}
 		if( metadata == 2 )
 		{
-			return this.Brick;
+			return this.brick;
 		}
 		if( metadata == 3 )
 		{
-			return this.SmallBrick;
+			return this.smallBrick;
 		}
 		return super.getIcon( direction, metadata );
 	}
@@ -230,9 +207,9 @@ public class BlockSkyStone extends AEBaseBlock implements IOrientableBlock
 	}
 
 	@Override
-	public void breakBlock( World w, int x, int y, int z, Block b, int WTF )
+	public void breakBlock( World w, int x, int y, int z, Block b, int metadata )
 	{
-		super.breakBlock( w, x, y, z, b, WTF );
+		super.breakBlock( w, x, y, z, b, metadata );
 		if( Platform.isServer() )
 		{
 			WorldSettings.getInstance().getCompass().updateArea( w, x, y, z );
