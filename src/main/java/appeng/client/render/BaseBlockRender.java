@@ -447,7 +447,7 @@ public class BaseBlockRender
 	{
 		if( block.hasBlockTileEntity() )
 		{
-			return (AEBaseTile) block.getTileEntity( w, x, y, z );
+			return (IOrientable) block.getTileEntity( w, x, y, z );
 		}
 		else if( block instanceof IOrientableBlock )
 		{

@@ -30,6 +30,7 @@ import io.netty.buffer.ByteBuf;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompressedStreamTools;
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
@@ -37,6 +38,7 @@ import net.minecraftforge.fluids.FluidStack;
 import appeng.api.config.FuzzyMode;
 import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
+import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IAETagCompound;
 import appeng.util.Platform;
 
@@ -100,7 +102,7 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 		}
 		if( a instanceof AEFluidStack )
 		{
-			( (AEFluidStack) a ).copy();
+			( (IAEStack<IAEFluidStack>) a ).copy();
 		}
 		if( a instanceof FluidStack )
 		{
@@ -214,7 +216,7 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 
 		if( this.tagCompound != null )
 		{
-			i.setTag( "tag", (NBTTagCompound) this.tagCompound );
+			i.setTag( "tag", (NBTBase) this.tagCompound );
 		}
 		else
 		{

@@ -28,6 +28,7 @@ import net.minecraft.item.ItemHoe;
 import net.minecraft.item.ItemPickaxe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
+import net.minecraft.item.ItemTool;
 import net.minecraft.stats.AchievementList;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
@@ -119,7 +120,7 @@ public class AppEngCraftingSlot extends AppEngSlot
 			this.thePlayer.addStat( AchievementList.bakeCake, 1 );
 		}
 
-		if( par1ItemStack.getItem() instanceof ItemPickaxe && ( (ItemPickaxe) par1ItemStack.getItem() ).func_150913_i() != Item.ToolMaterial.WOOD )
+		if( par1ItemStack.getItem() instanceof ItemPickaxe && ( (ItemTool) par1ItemStack.getItem() ).func_150913_i() != Item.ToolMaterial.WOOD )
 		{
 			this.thePlayer.addStat( AchievementList.buildBetterPickaxe, 1 );
 		}

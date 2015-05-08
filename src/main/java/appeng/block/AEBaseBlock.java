@@ -24,6 +24,9 @@ import java.util.EnumSet;
 import java.util.List;
 import javax.annotation.Nullable;
 
+import com.google.common.base.Optional;
+import com.google.common.collect.Lists;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -52,9 +55,6 @@ import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-
-import com.google.common.base.Optional;
-import com.google.common.collect.Lists;
 
 import appeng.api.implementations.items.IMemoryCard;
 import appeng.api.implementations.items.MemoryCardMessages;
@@ -627,7 +627,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 
 		if( this.hasBlockTileEntity() )
 		{
-			rotatable = (AEBaseTile) this.getTileEntity( w, x, y, z );
+			rotatable = (IOrientable) this.getTileEntity( w, x, y, z );
 		}
 		else if( this instanceof IOrientableBlock )
 		{
@@ -758,7 +758,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 
 		if( this.hasBlockTileEntity() )
 		{
-			ori = (AEBaseTile) this.getTileEntity( w, x, y, z );
+			ori = (IOrientable) this.getTileEntity( w, x, y, z );
 		}
 		else if( this instanceof IOrientableBlock )
 		{

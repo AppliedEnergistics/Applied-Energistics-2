@@ -625,7 +625,7 @@ public class GridNode implements IGridNode, IPathItem
 	@Override
 	public IReadOnlyCollection<IPathItem> getPossibleOptions()
 	{
-		return (ReadOnlyCollection) this.getConnections();
+		return (IReadOnlyCollection) this.getConnections();
 	}
 
 	@Override
