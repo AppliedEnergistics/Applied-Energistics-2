@@ -26,9 +26,9 @@ import net.minecraft.world.IBlockAccess;
 
 public class AEDecorativeBlock extends AEBaseBlock
 {
-	public AEDecorativeBlock( Class<? extends AEBaseBlock> c, Material mat )
+	public AEDecorativeBlock( Material mat )
 	{
-		super( c, mat );
+		super( mat );
 	}
 
 	@Override

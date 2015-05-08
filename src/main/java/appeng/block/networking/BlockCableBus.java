@@ -91,7 +91,7 @@ public class BlockCableBus extends AEBaseBlock implements IRedNetConnection
 
 	public BlockCableBus()
 	{
-		super( BlockCableBus.class, AEGlassMaterial.INSTANCE );
+		super( AEGlassMaterial.INSTANCE );
 		this.setLightOpacity( 0 );
 		this.isFullSize = this.isOpaque = false;
 		this.setFeature( EnumSet.of( AEFeature.Core ) );
@@ -483,7 +483,9 @@ public class BlockCableBus extends AEBaseBlock implements IRedNetConnection
 
 	public void setupTile()
 	{
-		this.setTileEntity( noTesrTile = Api.INSTANCE.partHelper().getCombinedInstance( TileCableBus.class.getName() ) );
+		noTesrTile = Api.INSTANCE.partHelper().getCombinedInstance( TileCableBus.class.getName() );
+		this.setTileEntity( noTesrTile );
+		GameRegistry.registerTileEntity( noTesrTile, "BlockCableBus" );
 		if( Platform.isClient() )
 		{
 			tesrTile = Api.INSTANCE.partHelper().getCombinedInstance( TileCableBusTESR.class.getName() );

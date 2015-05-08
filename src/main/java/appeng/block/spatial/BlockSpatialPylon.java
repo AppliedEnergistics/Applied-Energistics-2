@@ -38,7 +38,7 @@ public class BlockSpatialPylon extends AEBaseBlock
 
 	public BlockSpatialPylon()
 	{
-		super( BlockSpatialPylon.class, AEGlassMaterial.INSTANCE );
+		super( AEGlassMaterial.INSTANCE );
 		this.setTileEntity( TileSpatialPylon.class );
 		this.setFeature( EnumSet.of( AEFeature.SpatialIO ) );
 	}

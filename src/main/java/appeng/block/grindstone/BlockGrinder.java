@@ -38,7 +38,8 @@ public class BlockGrinder extends AEBaseBlock
 
 	public BlockGrinder()
 	{
-		super( BlockGrinder.class, Material.rock );
+		super( Material.rock );
+
 		this.setTileEntity( TileGrinder.class );
 		this.setHardness( 3.2F );
 		this.setFeature( EnumSet.of( AEFeature.GrindStone ) );

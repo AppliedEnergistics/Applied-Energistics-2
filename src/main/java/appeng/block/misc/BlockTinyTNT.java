@@ -58,7 +58,7 @@ public class BlockTinyTNT extends AEBaseBlock implements ICustomCollision
 
 	public BlockTinyTNT()
 	{
-		super( BlockTinyTNT.class, Material.tnt );
+		super( Material.tnt );
 		this.setLightOpacity( 1 );
 		this.setBlockBounds( 0.25f, 0.0f, 0.25f, 0.75f, 0.5f, 0.75f );
 		this.isFullSize = this.isOpaque = false;

@@ -48,14 +48,10 @@ public class BlockEnergyCell extends AEBaseBlock
 
 	public BlockEnergyCell()
 	{
-		this( BlockEnergyCell.class );
+		super( AEGlassMaterial.INSTANCE );
+
 		this.setTileEntity( TileEnergyCell.class );
 		this.setFeature( EnumSet.of( AEFeature.Core ) );
-	}
-
-	public BlockEnergyCell( Class c )
-	{
-		super( c, AEGlassMaterial.INSTANCE );
 	}
 
 	@Override

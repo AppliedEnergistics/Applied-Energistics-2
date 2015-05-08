@@ -33,7 +33,7 @@ public class BlockItemGen extends AEBaseBlock
 
 	public BlockItemGen()
 	{
-		super( BlockItemGen.class, Material.iron );
+		super( Material.iron );
 		this.setTileEntity( TileItemGen.class );
 		this.setFeature( EnumSet.of( AEFeature.UnsupportedDeveloperTools, AEFeature.Creative ) );
 	}
