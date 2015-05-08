@@ -53,7 +53,7 @@ import appeng.util.Platform;
 
 public class PartToggleBus extends PartBasicState
 {
-	protected final int REDSTONE_FLAG = 4;
+	private static final int REDSTONE_FLAG = 4;
 	final AENetworkProxy outerProxy = new AENetworkProxy( this, "outer", null, true );
 	IGridConnection connection;
 	boolean hasRedstone = false;

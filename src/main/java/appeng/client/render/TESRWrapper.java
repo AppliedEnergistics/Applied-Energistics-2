@@ -42,12 +42,12 @@ public class TESRWrapper extends TileEntitySpecialRenderer
 	public final RenderBlocks renderBlocksInstance = new RenderBlocks();
 
 	final BaseBlockRender blkRender;
-	final double MAX_DISTANCE;
+	private final double maxDistance;
 
 	public TESRWrapper( BaseBlockRender render )
 	{
 		this.blkRender = render;
-		this.MAX_DISTANCE = this.blkRender.getTesrRenderDistance();
+		this.maxDistance = this.blkRender.getTesrRenderDistance();
 	}
 
 	@Override
@@ -59,7 +59,7 @@ public class TESRWrapper extends TileEntitySpecialRenderer
 
 			if( b instanceof AEBaseBlock && ( (AEBaseTile) te ).requiresTESR() )
 			{
-				if( Math.abs( x ) > this.MAX_DISTANCE || Math.abs( y ) > this.MAX_DISTANCE || Math.abs( z ) > this.MAX_DISTANCE )
+				if( Math.abs( x ) > this.maxDistance || Math.abs( y ) > this.maxDistance || Math.abs( z ) > this.maxDistance )
 				{
 					return;
 				}

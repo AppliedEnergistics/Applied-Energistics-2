@@ -35,8 +35,8 @@ public class LightningFX extends EntityFX
 	private static final Random RANDOM_GENERATOR = new Random();
 	final int steps = this.getSteps();
 	final double[][] Steps;
-	final double[] I = new double[3];
-	final double[] K = new double[3];
+	private final double[] vertices = new double[3];
+	private final double[] verticesWithUV = new double[3];
 	float currentPoint = 0;
 	boolean hasData = false;
 
@@ -206,15 +206,15 @@ public class LightningFX extends EntityFX
 		if( this.hasData )
 		{
 			tess.addVertexWithUV( a[0], a[1], a[2], f6, f8 );
-			tess.addVertexWithUV( this.I[0], this.I[1], this.I[2], f6, f8 );
-			tess.addVertexWithUV( this.K[0], this.K[1], this.K[2], f6, f8 );
+			tess.addVertexWithUV( this.vertices[0], this.vertices[1], this.vertices[2], f6, f8 );
+			tess.addVertexWithUV( this.verticesWithUV[0], this.verticesWithUV[1], this.verticesWithUV[2], f6, f8 );
 			tess.addVertexWithUV( b[0], b[1], b[2], f6, f8 );
 		}
 		this.hasData = true;
 		for( int x = 0; x < 3; x++ )
 		{
-			this.I[x] = a[x];
-			this.K[x] = b[x];
+			this.vertices[x] = a[x];
+			this.verticesWithUV[x] = b[x];
 		}
 	}
 }

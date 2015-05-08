@@ -43,17 +43,17 @@ import appeng.tile.grid.AENetworkTile;
 public class TileSpatialPylon extends AENetworkTile implements IAEMultiBlock
 {
 
-	public final int DISPLAY_END_MIN = 0x01;
-	public final int DISPLAY_END_MAX = 0x02;
-	public final int DISPLAY_MIDDLE = 0x01 + 0x02;
-	public final int DISPLAY_X = 0x04;
-	public final int DISPLAY_Y = 0x08;
-	public final int DISPLAY_Z = 0x04 + 0x08;
-	public final int MB_STATUS = 0x01 + 0x02 + 0x04 + 0x08;
+	public static final int DISPLAY_END_MIN = 0x01;
+	public static final int DISPLAY_END_MAX = 0x02;
+	public static final int DISPLAY_MIDDLE = 0x01 + 0x02;
+	public static final int DISPLAY_X = 0x04;
+	public static final int DISPLAY_Y = 0x08;
+	public static final int DISPLAY_Z = 0x04 + 0x08;
+	public static final int MB_STATUS = 0x01 + 0x02 + 0x04 + 0x08;
 
-	public final int DISPLAY_ENABLED = 0x10;
-	public final int DISPLAY_POWERED_ENABLED = 0x20;
-	public final int NET_STATUS = 0x10 + 0x20;
+	public static final int DISPLAY_ENABLED = 0x10;
+	public static final int DISPLAY_POWERED_ENABLED = 0x20;
+	public static final int NET_STATUS = 0x10 + 0x20;
 	final SpatialPylonCalculator calc = new SpatialPylonCalculator( this );
 	int displayBits = 0;
 	SpatialPylonCluster cluster;

@@ -57,11 +57,11 @@ public class CellInventory implements ICellInventory
 	static final String ITEM_PRE_FORMATTED_NAME = "PN";
 	static final String ITEM_PRE_FORMATTED_FUZZY = "FP";
 	private static final HashSet<Integer> BLACK_LIST = new HashSet<Integer>();
-	protected static String[] ITEM_SLOT_ARR;
-	protected static String[] ITEM_SLOT_COUNT_ARR;
+	protected static String[] itemSlots;
+	protected static String[] itemSlotCount;
 	protected final NBTTagCompound tagCompound;
 	protected final ISaveProvider container;
-	protected int MAX_ITEM_TYPES = 63;
+	protected int maxItemTypes = 63;
 	protected short storedItems = 0;
 	protected int storedItemCount = 0;
 	protected IItemList<IAEItemStack> cellItems;
@@ -76,15 +76,15 @@ public class CellInventory implements ICellInventory
 
 	protected CellInventory( ItemStack o, ISaveProvider container ) throws AppEngException
 	{
-		if( ITEM_SLOT_ARR == null )
+		if( itemSlots == null )
 		{
-			ITEM_SLOT_ARR = new String[this.MAX_ITEM_TYPES];
-			ITEM_SLOT_COUNT_ARR = new String[this.MAX_ITEM_TYPES];
+			itemSlots = new String[this.maxItemTypes];
+			itemSlotCount = new String[this.maxItemTypes];
 
-			for( int x = 0; x < this.MAX_ITEM_TYPES; x++ )
+			for( int x = 0; x < this.maxItemTypes; x++ )
 			{
-				ITEM_SLOT_ARR[x] = ITEM_SLOT + x;
-				ITEM_SLOT_COUNT_ARR[x] = ITEM_SLOT_COUNT + x;
+				itemSlots[x] = ITEM_SLOT + x;
+				itemSlotCount[x] = ITEM_SLOT_COUNT + x;
 			}
 		}
 
@@ -100,7 +100,7 @@ public class CellInventory implements ICellInventory
 		if( type instanceof IStorageCell )
 		{
 			this.CellType = (IStorageCell) this.i.getItem();
-			this.MAX_ITEM_TYPES = this.CellType.getTotalTypes( this.i );
+			this.maxItemTypes = this.CellType.getTotalTypes( this.i );
 		}
 
 		if( this.CellType == null )
@@ -113,13 +113,13 @@ public class CellInventory implements ICellInventory
 			throw new AppEngException( "ItemStack was used as a cell, but was not a cell!" );
 		}
 
-		if( this.MAX_ITEM_TYPES > 63 )
+		if( this.maxItemTypes > 63 )
 		{
-			this.MAX_ITEM_TYPES = 63;
+			this.maxItemTypes = 63;
 		}
-		if( this.MAX_ITEM_TYPES < 1 )
+		if( this.maxItemTypes < 1 )
 		{
-			this.MAX_ITEM_TYPES = 1;
+			this.maxItemTypes = 1;
 		}
 
 		this.container = container;
@@ -366,7 +366,7 @@ public class CellInventory implements ICellInventory
 		{
 			itemCount += v.getStackSize();
 
-			NBTBase c = this.tagCompound.getTag( ITEM_SLOT_ARR[x] );
+			NBTBase c = this.tagCompound.getTag( itemSlots[x] );
 			if( c instanceof NBTTagCompound )
 			{
 				v.writeToNBT( (NBTTagCompound) c );
@@ -375,14 +375,14 @@ public class CellInventory implements ICellInventory
 			{
 				NBTTagCompound g = new NBTTagCompound();
 				v.writeToNBT( g );
-				this.tagCompound.setTag( ITEM_SLOT_ARR[x], g );
+				this.tagCompound.setTag( itemSlots[x], g );
 			}
 
 			/*
-			 * NBTBase tagSlotCount = tagCompound.getTag( ITEM_SLOT_COUNT_ARR[x] ); if ( tagSlotCount instanceof
+			 * NBTBase tagSlotCount = tagCompound.getTag( itemSlotCount[x] ); if ( tagSlotCount instanceof
 			 * NBTTagInt ) ((NBTTagInt) tagSlotCount).data = (int) v.getStackSize(); else
 			 */
-			this.tagCompound.setInteger( ITEM_SLOT_COUNT_ARR[x], (int) v.getStackSize() );
+			this.tagCompound.setInteger( itemSlotCount[x], (int) v.getStackSize() );
 
 			x++;
 		}
@@ -419,10 +419,10 @@ public class CellInventory implements ICellInventory
 		}
 
 		// clean any old crusty stuff...
-		for(; x < oldStoredItems && x < this.MAX_ITEM_TYPES; x++ )
+		for(; x < oldStoredItems && x < this.maxItemTypes; x++ )
 		{
-			this.tagCompound.removeTag( ITEM_SLOT_ARR[x] );
-			this.tagCompound.removeTag( ITEM_SLOT_COUNT_ARR[x] );
+			this.tagCompound.removeTag( itemSlots[x] );
+			this.tagCompound.removeTag( itemSlotCount[x] );
 		}
 
 		if( this.container != null )
@@ -444,10 +444,10 @@ public class CellInventory implements ICellInventory
 
 		for( int x = 0; x < types; x++ )
 		{
-			ItemStack t = ItemStack.loadItemStackFromNBT( this.tagCompound.getCompoundTag( ITEM_SLOT_ARR[x] ) );
+			ItemStack t = ItemStack.loadItemStackFromNBT( this.tagCompound.getCompoundTag( itemSlots[x] ) );
 			if( t != null )
 			{
-				t.stackSize = this.tagCompound.getInteger( ITEM_SLOT_COUNT_ARR[x] );
+				t.stackSize = this.tagCompound.getInteger( itemSlotCount[x] );
 
 				if( t.stackSize > 0 )
 				{
@@ -541,7 +541,7 @@ public class CellInventory implements ICellInventory
 	@Override
 	public long getTotalItemTypes()
 	{
-		return this.MAX_ITEM_TYPES;
+		return this.maxItemTypes;
 	}
 
 	@Override
