@@ -22,6 +22,8 @@ package appeng.transformer;
 import java.util.Map;
 import javax.annotation.Nullable;
 
+import com.google.common.eventbus.EventBus;
+
 import cpw.mods.fml.common.DummyModContainer;
 import cpw.mods.fml.common.LoadController;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -30,8 +32,6 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.relauncher.FMLRelaunchLog;
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin.MCVersion;
-
-import com.google.common.eventbus.EventBus;
 
 import appeng.core.AEConfig;
 
@@ -51,6 +51,7 @@ public final class AppEngCore extends DummyModContainer implements IFMLLoadingPl
 		this.metadata.version = this.getVersion();
 		this.metadata.name = this.getName();
 		this.metadata.url = "http://ae2.ae-mod.info";
+		this.metadata.logoFile = "assets/appliedenergistics2/meta/logo.png";
 		this.metadata.description = "Embedded Coremod for Applied Energistics 2";
 	}
 
@@ -105,7 +106,7 @@ public final class AppEngCore extends DummyModContainer implements IFMLLoadingPl
 	@Override
 	public String getName()
 	{
-		return "AppliedEnergistics2 Core";
+		return "Applied Energistics 2 Core";
 	}
 
 	@Override
