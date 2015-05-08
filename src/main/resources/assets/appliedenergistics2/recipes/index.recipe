@@ -66,3 +66,4 @@ import=dyes_dense.recipe
 import=paint_balls.recipe
 import=crafting.recipe
 import=vanilla_enhance.recipe
+import=stairs.recipe
