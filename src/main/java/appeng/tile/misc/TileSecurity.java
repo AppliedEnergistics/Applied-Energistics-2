@@ -22,6 +22,7 @@ package appeng.tile.misc;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.List;
 
 import io.netty.buffer.ByteBuf;
 
@@ -114,7 +115,7 @@ public class TileSecurity extends AENetworkTile implements ITerminalHost, IAEApp
 	}
 
 	@Override
-	public void getDrops( World w, int x, int y, int z, ArrayList<ItemStack> drops )
+	public void getDrops( World w, int x, int y, int z, List<ItemStack> drops )
 	{
 		if( !this.configSlot.isEmpty() )
 		{

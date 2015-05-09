@@ -24,7 +24,7 @@
 package appeng.api.util;
 
 
-import java.util.ArrayList;
+import java.util.List;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -43,5 +43,5 @@ public interface ICommonTile
 	 * @param z     z pos of tile entity
 	 * @param drops drops of tile entity
 	 */
-	void getDrops( World world, int x, int y, int z, ArrayList<ItemStack> drops );
+	void getDrops( World world, int x, int y, int z, List<ItemStack> drops );
 }

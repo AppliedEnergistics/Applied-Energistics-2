@@ -19,7 +19,7 @@
 package appeng.tile.storage;
 
 
-import java.util.ArrayList;
+import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.inventory.IInventory;
@@ -562,7 +562,7 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 	 * @param drops drops of tile entity
 	 */
 	@Override
-	public void getDrops( World w, int x, int y, int z, ArrayList<ItemStack> drops )
+	public void getDrops( World w, int x, int y, int z, List<ItemStack> drops )
 	{
 		super.getDrops( w, x, y, z, drops );
 

@@ -22,6 +22,7 @@ package appeng.tile.misc;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 import com.google.common.collect.ImmutableList;
 
@@ -50,7 +51,7 @@ public class TilePaint extends AEBaseTile
 	static final int LIGHT_PER_DOT = 12;
 
 	int isLit = 0;
-	ArrayList<Splotch> dots = null;
+	List<Splotch> dots = null;
 
 	@TileEvent( TileEventType.WORLD_NBT_WRITE )
 	public void writeToNBT_TilePaint( NBTTagCompound data )

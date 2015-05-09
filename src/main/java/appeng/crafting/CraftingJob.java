@@ -21,6 +21,7 @@ package appeng.crafting;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import com.google.common.base.Stopwatch;
@@ -47,7 +48,7 @@ public class CraftingJob implements Runnable, ICraftingJob
 {
 
 	final IItemList<IAEItemStack> storage;
-	final HashSet<IAEItemStack> prophecies;
+	final Set<IAEItemStack> prophecies;
 	final MECraftingInventory original;
 	final World world;
 	final IItemList<IAEItemStack> crafting = AEApi.instance().storage().createItemList();
