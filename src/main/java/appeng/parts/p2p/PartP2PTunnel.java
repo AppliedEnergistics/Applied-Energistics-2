@@ -336,6 +336,13 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 					}
 					break;
 
+				case COMPUTER_MESSAGE:
+					for( ItemStack stack : parts.p2PTunnelOpenComputers().maybeStack( 1 ).asSet() )
+					{
+						newType = stack;
+					}
+					break;
+
 				default:
 					break;
 			}

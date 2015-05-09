@@ -104,3 +104,13 @@ task installBetterStorage(type: Copy, dependsOn: "deinstallBetterStorage") {
 task deinstallBetterStorage(type: Delete) {
     delete fileTree(dir: minecraft.runDir + "/mods", include: "*BetterStorage*.jar")
 }
+
+task installOpenComputers(type: Copy, dependsOn: "deinstallOpenComputers") {
+    from { configurations.mods }
+    include "**/*OpenComputer*dev*.jar"
+    into file(minecraft.runDir + "/mods")
+}
+
+task deinstallOpenComputers(type: Delete) {
+    delete fileTree(dir: minecraft.runDir + "/mods", include: "*OpenComputers*.jar")
+}
