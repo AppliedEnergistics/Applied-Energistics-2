@@ -43,7 +43,7 @@ import appeng.tile.inventory.InvOperation;
 public class TileController extends AENetworkPowerTile
 {
 
-	static final AppEngInternalInventory inv = new AppEngInternalInventory( null, 0 );
+	static final IInventory inv = new AppEngInternalInventory( null, 0 );
 	final int[] sides = new int[] {};
 	boolean isValid = false;
 

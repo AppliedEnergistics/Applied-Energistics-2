@@ -30,6 +30,7 @@ import net.minecraft.inventory.IInventory;
 
 import appeng.api.AEApi;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IAEStack;
 import appeng.container.implementations.ContainerPatternTerm;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
@@ -94,7 +95,7 @@ public class PacketPatternSlot extends AppEngPacket
 		this.configureWrite( data );
 	}
 
-	private void writeItem( IAEItemStack slotItem, ByteBuf data ) throws IOException
+	private void writeItem( IAEStack slotItem, ByteBuf data ) throws IOException
 	{
 		if( slotItem == null )
 		{

@@ -20,6 +20,7 @@ package appeng.util.item;
 
 
 import java.lang.ref.WeakReference;
+import java.util.Map;
 import java.util.WeakHashMap;
 
 import net.minecraft.item.Item;
@@ -41,7 +42,7 @@ public class AESharedNBT extends NBTTagCompound implements IAETagCompound
 	/*
 	 * Shared Tag Compound Cache.
 	 */
-	private static final WeakHashMap<SharedSearchObject, WeakReference<SharedSearchObject>> SHARED_TAG_COMPOUND = new WeakHashMap<SharedSearchObject, WeakReference<SharedSearchObject>>();
+	private static final Map<SharedSearchObject, WeakReference<SharedSearchObject>> SHARED_TAG_COMPOUND = new WeakHashMap<SharedSearchObject, WeakReference<SharedSearchObject>>();
 	private final Item item;
 	private final int meta;
 	public SharedSearchObject sso;

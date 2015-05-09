@@ -43,6 +43,7 @@ import appeng.api.networking.crafting.ICraftingGrid;
 import appeng.api.networking.crafting.ICraftingLink;
 import appeng.api.networking.crafting.ICraftingRequester;
 import appeng.api.networking.energy.IEnergyGrid;
+import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.security.MachineSource;
 import appeng.api.networking.ticking.TickRateModulation;
@@ -289,7 +290,7 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 		return this.getInstalledUpgrades( Upgrades.CRAFTING ) > 0;
 	}
 
-	private void pushItemIntoTarget( InventoryAdaptor d, IEnergyGrid energy, IMEInventory<IAEItemStack> inv, IAEItemStack ais )
+	private void pushItemIntoTarget( InventoryAdaptor d, IEnergySource energy, IMEInventory<IAEItemStack> inv, IAEItemStack ais )
 	{
 		ItemStack is = ais.getItemStack();
 		is.stackSize = (int) this.itemToSend;

@@ -63,7 +63,7 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 {
 
 	final int[] sides = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-	final AppEngInternalInventory inv = new AppEngInternalInventory( this, 10 );
+	final IInventory inv = new AppEngInternalInventory( this, 10 );
 	final ICellHandler[] handlersBySlot = new ICellHandler[10];
 	final DriveWatcher<IAEItemStack>[] invBySlot = new DriveWatcher[10];
 	final BaseActionSource mySrc;

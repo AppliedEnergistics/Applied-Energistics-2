@@ -20,6 +20,7 @@ package appeng.me.cache.helpers;
 
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.Callable;
 
 import appeng.api.networking.IGridNode;
@@ -29,7 +30,7 @@ import appeng.parts.p2p.PartP2PTunnelME;
 public class Connections implements Callable
 {
 
-	public final HashMap<IGridNode, TunnelConnection> connections = new HashMap<IGridNode, TunnelConnection>();
+	public final Map<IGridNode, TunnelConnection> connections = new HashMap<IGridNode, TunnelConnection>();
 	private final PartP2PTunnelME me;
 	public boolean create = false;
 	public boolean destroy = false;

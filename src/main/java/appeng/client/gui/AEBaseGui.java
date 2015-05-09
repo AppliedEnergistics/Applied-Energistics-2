@@ -84,9 +84,9 @@ import appeng.integration.abstraction.INEI;
 public abstract class AEBaseGui extends GuiContainer
 {
 	public static boolean switchingGuis;
-	protected final List<InternalSlotME> meSlots = new LinkedList<InternalSlotME>();
+	protected final Collection<InternalSlotME> meSlots = new LinkedList<InternalSlotME>();
 	// drag y
-	final Set<Slot> drag_click = new HashSet<Slot>();
+	final Collection<Slot> drag_click = new HashSet<Slot>();
 	final AppEngRenderItem aeRenderItem = new AppEngRenderItem();
 	protected GuiScrollbar myScrollBar = null;
 	boolean disableShiftClick = false;
@@ -103,7 +103,7 @@ public abstract class AEBaseGui extends GuiContainer
 		switchingGuis = false;
 	}
 
-	protected static String join( Collection<String> toolTip, String delimiter )
+	protected static String join( Iterable<String> toolTip, String delimiter )
 	{
 		final Joiner joiner = Joiner.on( delimiter );
 

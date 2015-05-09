@@ -203,7 +203,7 @@ public class NetworkEventBus
 	class MENetworkEventInfo
 	{
 
-		private final List<EventMethod> methods = new ArrayList<EventMethod>();
+		private final Collection<EventMethod> methods = new ArrayList<EventMethod>();
 
 		public void Add( Class Event, Class ObjClass, Method ObjMethod )
 		{

@@ -28,6 +28,7 @@ import appeng.api.exceptions.FailedConnection;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridConnection;
 import appeng.api.networking.IGridNode;
+import appeng.api.networking.IGridVisitor;
 import appeng.api.networking.events.MENetworkChannelsChanged;
 import appeng.api.networking.pathing.IPathingGrid;
 import appeng.api.util.DimensionalCoord;
@@ -94,22 +95,22 @@ public class GridConnection implements IGridConnection, IPathItem
 		{
 			if( a.getMyGrid() == null )
 			{
-				GridPropagator gp = new GridPropagator( b.getInternalGrid() );
+				IGridVisitor gp = new GridPropagator( b.getInternalGrid() );
 				a.beginVisit( gp );
 			}
 			else if( b.getMyGrid() == null )
 			{
-				GridPropagator gp = new GridPropagator( a.getInternalGrid() );
+				IGridVisitor gp = new GridPropagator( a.getInternalGrid() );
 				b.beginVisit( gp );
 			}
 			else if( this.isNetworkABetter( a, b ) )
 			{
-				GridPropagator gp = new GridPropagator( a.getInternalGrid() );
+				IGridVisitor gp = new GridPropagator( a.getInternalGrid() );
 				b.beginVisit( gp );
 			}
 			else
 			{
-				GridPropagator gp = new GridPropagator( b.getInternalGrid() );
+				IGridVisitor gp = new GridPropagator( b.getInternalGrid() );
 				a.beginVisit( gp );
 			}
 		}

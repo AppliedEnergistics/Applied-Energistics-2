@@ -64,7 +64,7 @@ public class AEConfigGui extends GuiConfig
 				continue;
 			}
 
-			ConfigElement ce = new ConfigElement( cc );
+			IConfigElement ce = new ConfigElement( cc );
 			list.add( ce );
 		}
 

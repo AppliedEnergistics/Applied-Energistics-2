@@ -256,7 +256,7 @@ public class TilePaint extends AEBaseTile
 		}
 	}
 
-	public Collection<Splotch> getDots()
+	public Iterable<Splotch> getDots()
 	{
 		if( this.dots == null )
 		{

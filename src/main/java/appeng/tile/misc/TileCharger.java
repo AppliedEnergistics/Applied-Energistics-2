@@ -56,7 +56,7 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable
 {
 
 	final int[] sides = new int[] { 0 };
-	final AppEngInternalInventory inv = new AppEngInternalInventory( this, 1 );
+	final IInventory inv = new AppEngInternalInventory( this, 1 );
 	int tickTickTimer = 0;
 
 	int lastUpdate = 0;

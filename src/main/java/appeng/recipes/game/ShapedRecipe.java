@@ -21,6 +21,7 @@ package appeng.recipes.game;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
@@ -103,7 +104,7 @@ public class ShapedRecipe implements IRecipe, IRecipeBakeable
 			throw new IllegalStateException( ret.toString() );
 		}
 
-		HashMap<Character, Object> itemMap = new HashMap<Character, Object>();
+		Map<Character, Object> itemMap = new HashMap<Character, Object>();
 
 		for(; idx < recipe.length; idx += 2 )
 		{

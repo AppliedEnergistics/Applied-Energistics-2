@@ -20,6 +20,7 @@ package appeng.parts.networking;
 
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.EnumSet;
 
 import org.lwjgl.opengl.GL11;
@@ -647,7 +648,7 @@ public class PartCable extends AEBasePart implements IPartCable
 		return coveredCable.item( AEColor.Transparent ).getIconIndex( coveredCableStack );
 	}
 
-	protected boolean nonLinear( EnumSet<ForgeDirection> sides )
+	protected boolean nonLinear( Collection<ForgeDirection> sides )
 	{
 		return ( sides.contains( ForgeDirection.EAST ) && sides.contains( ForgeDirection.WEST ) ) || ( sides.contains( ForgeDirection.NORTH ) && sides.contains( ForgeDirection.SOUTH ) ) || ( sides.contains( ForgeDirection.UP ) && sides.contains( ForgeDirection.DOWN ) );
 	}

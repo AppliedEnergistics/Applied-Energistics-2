@@ -85,7 +85,7 @@ public class TileSecurity extends AENetworkTile implements ITerminalHost, IAEApp
 	public final AppEngInternalInventory configSlot = new AppEngInternalInventory( this, 1 );
 	private final IConfigManager cm = new ConfigManager( this );
 	private final SecurityInventory inventory = new SecurityInventory( this );
-	private final MEMonitorHandler<IAEItemStack> securityMonitor = new MEMonitorHandler<IAEItemStack>( this.inventory );
+	private final IMEMonitor<IAEItemStack> securityMonitor = new MEMonitorHandler<IAEItemStack>( this.inventory );
 	public long securityKey;
 	AEColor paintedColor = AEColor.Transparent;
 	private boolean isActive = false;

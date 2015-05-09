@@ -97,7 +97,7 @@ public class PortableCellViewer extends MEMonitorHandler<IAEItemStack> implement
 	@Override
 	public IConfigManager getConfigManager()
 	{
-		final ConfigManager out = new ConfigManager( new IConfigManagerHost()
+		final IConfigManager out = new ConfigManager( new IConfigManagerHost()
 		{
 
 			@Override

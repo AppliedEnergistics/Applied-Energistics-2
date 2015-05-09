@@ -28,6 +28,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -105,7 +106,7 @@ public class BlockCharger extends AEBaseBlock implements ICustomCollision
 		AEBaseTile tile = this.getTileEntity( w, x, y, z );
 		if( tile instanceof TileCharger )
 		{
-			TileCharger tc = (TileCharger) tile;
+			IInventory tc = (TileCharger) tile;
 
 			if( AEApi.instance().definitions().materials().certusQuartzCrystalCharged().isSameAs( tc.getStackInSlot( 0 ) ) )
 			{

@@ -21,6 +21,7 @@ package appeng.client.gui.implementations;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -38,6 +39,7 @@ import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
 import appeng.api.config.ViewItems;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.api.util.AEColor;
 import appeng.client.gui.AEBaseGui;
@@ -176,7 +178,7 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 		int viewEnd = viewStart + 3 * 6;
 
 		String dspToolTip = "";
-		List<String> lineList = new LinkedList<String>();
+		Collection<String> lineList = new LinkedList<String>();
 		int toolPosX = 0;
 		int toolPosY = 0;
 
@@ -340,7 +342,7 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize );
 	}
 
-	public void postUpdate( List<IAEItemStack> list, byte ref )
+	public void postUpdate( Iterable<IAEItemStack> list, byte ref )
 	{
 		switch( ref )
 		{
@@ -450,7 +452,7 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 		}
 	}
 
-	private IAEItemStack findVisualStack( IAEItemStack l )
+	private IAEItemStack findVisualStack( IAEStack l )
 	{
 		for( IAEItemStack o : this.visual )
 		{

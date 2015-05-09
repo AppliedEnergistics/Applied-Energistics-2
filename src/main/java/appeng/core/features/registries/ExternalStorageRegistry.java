@@ -36,7 +36,7 @@ public class ExternalStorageRegistry implements IExternalStorageRegistry
 {
 
 	final List<IExternalStorageHandler> Handlers;
-	final ExternalIInv lastHandler = new ExternalIInv();
+	final IExternalStorageHandler lastHandler = new ExternalIInv();
 
 	public ExternalStorageRegistry()
 	{

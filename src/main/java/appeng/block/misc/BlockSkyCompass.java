@@ -30,6 +30,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.IIcon;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -86,7 +87,7 @@ public class BlockSkyCompass extends AEBaseBlock implements ICustomCollision
 		return this.canPlaceAt( w, x, y, z, forward.getOpposite() );
 	}
 
-	private boolean canPlaceAt( World w, int x, int y, int z, ForgeDirection dir )
+	private boolean canPlaceAt( IBlockAccess w, int x, int y, int z, ForgeDirection dir )
 	{
 		return w.isSideSolid( x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ, dir.getOpposite(), false );
 	}

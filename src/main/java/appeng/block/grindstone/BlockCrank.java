@@ -27,6 +27,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -127,7 +128,7 @@ public class BlockCrank extends AEBaseBlock
 		return ForgeDirection.UNKNOWN;
 	}
 
-	private boolean isCrankable( World world, int x, int y, int z, ForgeDirection offset )
+	private boolean isCrankable( IBlockAccess world, int x, int y, int z, ForgeDirection offset )
 	{
 		TileEntity te = world.getTileEntity( x + offset.offsetX, y + offset.offsetY, z + offset.offsetZ );
 

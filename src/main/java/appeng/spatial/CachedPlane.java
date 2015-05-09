@@ -19,6 +19,8 @@
 package appeng.spatial;
 
 
+import java.util.Collection;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -55,11 +57,11 @@ public class CachedPlane
 	final int y_size;
 	final Chunk[][] myChunks;
 	final Column[][] myColumns;
-	final LinkedList<TileEntity> tiles = new LinkedList<TileEntity>();
-	final LinkedList<NextTickListEntry> ticks = new LinkedList<NextTickListEntry>();
+	final Deque<TileEntity> tiles = new LinkedList<TileEntity>();
+	final Deque<NextTickListEntry> ticks = new LinkedList<NextTickListEntry>();
 	final World world;
 	final IMovableRegistry reg = AEApi.instance().registries().movable();
-	final LinkedList<WorldCoord> updates = new LinkedList<WorldCoord>();
+	final Deque<WorldCoord> updates = new LinkedList<WorldCoord>();
 	private final IBlockDefinition matrixFrame = AEApi.instance().definitions().blocks().matrixFrame();
 	int verticalBits;
 
@@ -110,8 +112,8 @@ public class CachedPlane
 		{
 			for( int cz = 0; cz < this.cz_size; cz++ )
 			{
-				LinkedList<Entry<ChunkPosition, TileEntity>> rawTiles = new LinkedList<Entry<ChunkPosition, TileEntity>>();
-				LinkedList<ChunkPosition> deadTiles = new LinkedList<ChunkPosition>();
+				Collection<Entry<ChunkPosition, TileEntity>> rawTiles = new LinkedList<Entry<ChunkPosition, TileEntity>>();
+				Deque<ChunkPosition> deadTiles = new LinkedList<ChunkPosition>();
 
 				Chunk c = w.getChunkFromChunkCoords( minCX + cx, minCZ + cz );
 				this.myChunks[cx][cz] = c;

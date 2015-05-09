@@ -74,7 +74,7 @@ public class BlockQuartzTorch extends AEBaseBlock implements IOrientableBlock, I
 		return this.canPlaceAt( w, x, y, z, up.getOpposite() );
 	}
 
-	private boolean canPlaceAt( World w, int x, int y, int z, ForgeDirection dir )
+	private boolean canPlaceAt( IBlockAccess w, int x, int y, int z, ForgeDirection dir )
 	{
 		return w.isSideSolid( x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ, dir.getOpposite(), false );
 	}

@@ -48,6 +48,7 @@ import appeng.api.IAppEngApi;
 import appeng.api.config.TunnelType;
 import appeng.api.definitions.IBlockDefinition;
 import appeng.api.definitions.IBlocks;
+import appeng.api.definitions.IItemDefinition;
 import appeng.api.features.IP2PTunnelRegistry;
 import appeng.api.parts.IFacadePart;
 import appeng.api.util.AEItemDefinition;
@@ -300,7 +301,7 @@ public final class BC extends BaseModule implements IBC
 		}
 	}
 
-	private void addFacadeStack( IBlockDefinition definition )
+	private void addFacadeStack( IItemDefinition definition )
 	{
 		for( ItemStack facadeStack : definition.maybeStack( 1 ).asSet() )
 		{

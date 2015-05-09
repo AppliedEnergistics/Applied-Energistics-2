@@ -67,7 +67,7 @@ public final class ContainerInterfaceTerminal extends AEBaseContainer
 	IGrid grid;
 	NBTTagCompound data = new NBTTagCompound();
 
-	public ContainerInterfaceTerminal( InventoryPlayer ip, PartMonitor anchor )
+	public ContainerInterfaceTerminal( InventoryPlayer ip, IActionHost anchor )
 	{
 		super( ip, anchor );
 

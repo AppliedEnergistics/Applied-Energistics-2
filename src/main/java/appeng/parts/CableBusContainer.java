@@ -1088,7 +1088,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 		this.getFacadeContainer().readFromNBT( data );
 	}
 
-	public List getDrops( List drops )
+	public Iterable getDrops( List drops )
 	{
 		for( ForgeDirection s : ForgeDirection.values() )
 		{

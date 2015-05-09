@@ -25,6 +25,7 @@ import java.util.Deque;
 import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.concurrent.Callable;
 
 import net.minecraft.nbt.NBTTagCompound;
@@ -165,7 +166,7 @@ public class GridNode implements IGridNode, IPathItem
 
 		if( g instanceof IGridConnectionVisitor )
 		{
-			LinkedList<IGridConnection> nextConn = new LinkedList<IGridConnection>();
+			Deque<IGridConnection> nextConn = new LinkedList<IGridConnection>();
 			IGridConnectionVisitor gcv = (IGridConnectionVisitor) g;
 
 			while( !nextRun.isEmpty() )
@@ -526,7 +527,7 @@ public class GridNode implements IGridNode, IPathItem
 		return AEColor.values()[( this.compressedData >> 3 ) & 0x1F];
 	}
 
-	private void visitorConnection( Object tracker, IGridVisitor g, Deque<GridNode> nextRun, Deque<IGridConnection> nextConnections )
+	private void visitorConnection( Object tracker, IGridVisitor g, Queue<GridNode> nextRun, Queue<IGridConnection> nextConnections )
 	{
 		if( g.visitNode( this ) )
 		{
@@ -553,7 +554,7 @@ public class GridNode implements IGridNode, IPathItem
 		}
 	}
 
-	private void visitorNode( Object tracker, IGridVisitor g, Deque<GridNode> nextRun )
+	private void visitorNode( Object tracker, IGridVisitor g, Queue<GridNode> nextRun )
 	{
 		if( g.visitNode( this ) )
 		{

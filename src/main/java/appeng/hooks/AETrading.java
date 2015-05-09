@@ -19,6 +19,7 @@
 package appeng.hooks;
 
 
+import java.util.List;
 import java.util.Random;
 
 import net.minecraft.entity.passive.EntityVillager;
@@ -102,7 +103,7 @@ public class AETrading implements IVillageTradeHandler
 		}
 	}
 
-	private void addToList( MerchantRecipeList l, ItemStack a, ItemStack b )
+	private void addToList( List l, ItemStack a, ItemStack b )
 	{
 		if( a.stackSize < 1 )
 		{

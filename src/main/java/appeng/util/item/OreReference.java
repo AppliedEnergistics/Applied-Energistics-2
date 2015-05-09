@@ -34,8 +34,8 @@ import appeng.api.storage.data.IAEItemStack;
 public class OreReference
 {
 
-	private final List<String> otherOptions = new LinkedList<String>();
-	private final Set<Integer> ores = new HashSet<Integer>();
+	private final Collection<String> otherOptions = new LinkedList<String>();
+	private final Collection<Integer> ores = new HashSet<Integer>();
 	private List<IAEItemStack> aeOtherOptions = null;
 
 	public Collection<String> getEquivalents()

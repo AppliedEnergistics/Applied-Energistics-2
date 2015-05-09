@@ -331,7 +331,7 @@ public final class MeteoritePlacer
 							}
 							break;
 						case 1:
-							List<ItemStack> possibles = new LinkedList<ItemStack>();
+							Collection<ItemStack> possibles = new LinkedList<ItemStack>();
 							possibles.addAll( OreDictionary.getOres( "nuggetIron" ) );
 							possibles.addAll( OreDictionary.getOres( "nuggetCopper" ) );
 							possibles.addAll( OreDictionary.getOres( "nuggetTin" ) );

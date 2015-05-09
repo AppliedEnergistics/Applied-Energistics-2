@@ -20,6 +20,7 @@ package appeng.client.render;
 
 
 import java.nio.FloatBuffer;
+import java.util.Collection;
 import java.util.EnumSet;
 import javax.annotation.Nullable;
 
@@ -329,7 +330,7 @@ public class BaseBlockRender
 		return ORIENTATION_MAP[a][b][c];
 	}
 
-	public void renderInvBlock( EnumSet<ForgeDirection> sides, AEBaseBlock block, ItemStack item, Tessellator tess, int color, RenderBlocks renderer )
+	public void renderInvBlock( Collection<ForgeDirection> sides, AEBaseBlock block, ItemStack item, Tessellator tess, int color, RenderBlocks renderer )
 	{
 		int meta = 0;
 		if( block != null && block.hasSubtypes() && item != null )
