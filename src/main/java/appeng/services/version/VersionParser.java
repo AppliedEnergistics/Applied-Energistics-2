@@ -86,7 +86,11 @@ public final class VersionParser
 	{
 		assert PATTERN_VALID_REVISION.matcher( rawRevision ).matches();
 
-		final int revision = new Scanner( rawRevision ).useDelimiter( PATTERN_REVISION ).nextInt();
+		final Scanner scanner = new Scanner( rawRevision );
+
+		final int revision = scanner.useDelimiter( PATTERN_REVISION ).nextInt();
+
+		scanner.close();
 
 		return revision;
 	}
@@ -124,7 +128,11 @@ public final class VersionParser
 	{
 		assert PATTERN_NATURAL.matcher( rawBuild ).matches();
 
-		final int build = new Scanner( rawBuild ).useDelimiter( PATTERN_BUILD ).nextInt();
+		final Scanner scanner = new Scanner( rawBuild );
+
+		final int build = scanner.useDelimiter( PATTERN_BUILD ).nextInt();
+
+		scanner.close();
 
 		return build;
 	}
