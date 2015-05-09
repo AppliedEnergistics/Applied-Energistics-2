@@ -43,7 +43,7 @@ public class AEGenericSchematicTile extends SchematicTile
 		ArrayList<ItemStack> list = new ArrayList<ItemStack>();
 		if( tile instanceof AEBaseTile )
 		{
-			ICommonTile tcb = (AEBaseTile) tile;
+			ICommonTile tcb = (ICommonTile) tile;
 			tcb.getDrops( tile.getWorldObj(), tile.xCoord, tile.yCoord, tile.zCoord, list );
 		}
 

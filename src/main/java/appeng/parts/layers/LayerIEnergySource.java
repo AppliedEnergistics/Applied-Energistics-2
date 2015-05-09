@@ -77,7 +77,7 @@ public class LayerIEnergySource extends LayerBase implements IEnergySource
 		if( !this.isInIC2() && Platform.isServer() && this.isTileValid() )
 		{
 			this.getLayerFlags().add( LayerFlags.IC2_ENET );
-			MinecraftForge.EVENT_BUS.post( new ic2.api.energy.event.EnergyTileLoadEvent( (IEnergySink) this.getEnergySourceTile() ) );
+			MinecraftForge.EVENT_BUS.post( new ic2.api.energy.event.EnergyTileLoadEvent( (IEnergyTile) this.getEnergySourceTile() ) );
 		}
 	}
 
@@ -91,7 +91,7 @@ public class LayerIEnergySource extends LayerBase implements IEnergySource
 		if( this.isInIC2() && Platform.isServer() )
 		{
 			this.getLayerFlags().remove( LayerFlags.IC2_ENET );
-			MinecraftForge.EVENT_BUS.post( new ic2.api.energy.event.EnergyTileUnloadEvent( (IEnergySink) this.getEnergySourceTile() ) );
+			MinecraftForge.EVENT_BUS.post( new ic2.api.energy.event.EnergyTileUnloadEvent( (IEnergyTile) this.getEnergySourceTile() ) );
 		}
 	}
 

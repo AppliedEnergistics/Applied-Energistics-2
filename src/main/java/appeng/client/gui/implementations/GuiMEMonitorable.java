@@ -330,7 +330,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 		{
 			if( s instanceof AppEngSlot )
 			{
-				if( ( (AppEngSlot) s ).xDisplayPosition < 197 )
+				if( ( (Slot) s ).xDisplayPosition < 197 )
 				{
 					this.repositionSlot( (AppEngSlot) s );
 				}

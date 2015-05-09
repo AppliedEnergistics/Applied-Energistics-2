@@ -45,6 +45,7 @@ import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IEnergyGrid;
+import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.storage.IBaseMonitor;
 import appeng.api.parts.IPart;
@@ -113,11 +114,11 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 
 				if( monitorable instanceof IPortableCell )
 				{
-					this.powerSrc = (IPortableCell) monitorable;
+					this.powerSrc = (IEnergySource) monitorable;
 				}
 				else if( monitorable instanceof IMEChest )
 				{
-					this.powerSrc = (IMEChest) monitorable;
+					this.powerSrc = (IEnergySource) monitorable;
 				}
 				else if( monitorable instanceof IGridHost )
 				{
@@ -128,7 +129,7 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 						IGrid g = node.getGrid();
 						if( g != null )
 						{
-							this.powerSrc = new ChannelPowerSrc( this.networkNode, (IEnergyGrid) g.getCache( IEnergyGrid.class ) );
+							this.powerSrc = new ChannelPowerSrc( this.networkNode, (IEnergySource) g.getCache( IEnergyGrid.class ) );
 						}
 					}
 				}

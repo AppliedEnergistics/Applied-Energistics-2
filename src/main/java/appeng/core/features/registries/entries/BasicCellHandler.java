@@ -21,6 +21,7 @@ package appeng.core.features.registries.entries;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 
 import appeng.api.implementations.tiles.IChestOrDrive;
@@ -79,7 +80,7 @@ public class BasicCellHandler implements ICellHandler
 	@Override
 	public void openChestGui( EntityPlayer player, IChestOrDrive chest, ICellHandler cellHandler, IMEInventoryHandler inv, ItemStack is, StorageChannel chan )
 	{
-		Platform.openGUI( player, (AEBaseTile) chest, chest.getUp(), GuiBridge.GUI_ME );
+		Platform.openGUI( player, (TileEntity) chest, chest.getUp(), GuiBridge.GUI_ME );
 	}
 
 	@Override

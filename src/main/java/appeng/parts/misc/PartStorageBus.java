@@ -476,7 +476,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 
 					if( inv instanceof IMEMonitor )
 					{
-						( (IMEMonitor) inv ).addListener( this, this.handler );
+						( (IBaseMonitor) inv ).addListener( this, this.handler );
 					}
 				}
 			}

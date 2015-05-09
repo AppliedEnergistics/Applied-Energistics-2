@@ -200,7 +200,7 @@ public class ItemRepo
 			{
 				for( Object lp : Platform.getTooltip( is ) )
 				{
-					if( lp instanceof String && m.matcher( (String) lp ).find() )
+					if( lp instanceof String && m.matcher( (CharSequence) lp ).find() )
 					{
 						this.view.add( is );
 						notDone = false;

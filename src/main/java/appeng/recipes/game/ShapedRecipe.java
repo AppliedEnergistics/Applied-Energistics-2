@@ -244,7 +244,7 @@ public class ShapedRecipe implements IRecipe, IRecipeBakeable
 				{
 					boolean matched = false;
 
-					for( ItemStack item : (ArrayList<ItemStack>) target )
+					for( ItemStack item : (Iterable<ItemStack>) target )
 					{
 						matched = matched || this.checkItemEquals( item, slot );
 					}

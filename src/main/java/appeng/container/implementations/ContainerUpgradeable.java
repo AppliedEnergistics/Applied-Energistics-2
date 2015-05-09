@@ -32,6 +32,7 @@ import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.api.config.YesNo;
 import appeng.api.implementations.IUpgradeableHost;
+import appeng.api.implementations.guiobjects.IGuiItem;
 import appeng.api.parts.IPart;
 import appeng.api.util.IConfigManager;
 import appeng.container.AEBaseContainer;
@@ -96,7 +97,7 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 			{
 				this.lockPlayerInventorySlot( x );
 				this.tbSlot = x;
-				this.tbInventory = (NetworkToolViewer) ( (ToolNetworkTool) pii.getItem() ).getGuiObject( pii, w, xCoord, yCoord, zCoord );
+				this.tbInventory = (NetworkToolViewer) ( (IGuiItem) pii.getItem() ).getGuiObject( pii, w, xCoord, yCoord, zCoord );
 				break;
 			}
 		}

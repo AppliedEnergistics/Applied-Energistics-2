@@ -44,6 +44,7 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketMEInventoryUpdate;
 import appeng.core.sync.packets.PacketValueConfig;
 import appeng.helpers.ICustomNameObject;
+import appeng.me.cluster.IAEMultiBlock;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
 import appeng.tile.crafting.TileCraftingTile;
 import appeng.util.Platform;
@@ -74,7 +75,7 @@ public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorH
 
 		if( te instanceof TileCraftingTile )
 		{
-			this.setCPU( (ICraftingCPU) ( (TileCraftingTile) te ).getCluster() );
+			this.setCPU( (ICraftingCPU) ( (IAEMultiBlock) te ).getCluster() );
 		}
 
 		if( this.network == null && Platform.isServer() )

@@ -24,6 +24,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import ic2.api.energy.tile.IEnergyAcceptor;
 import ic2.api.energy.tile.IEnergySink;
 import ic2.api.energy.tile.IEnergyTile;
 
@@ -78,7 +79,7 @@ public class LayerIEnergySink extends LayerBase implements IEnergySink
 		if( !this.isInIC2() && Platform.isServer() && this.isTileValid() )
 		{
 			this.getLayerFlags().add( LayerFlags.IC2_ENET );
-			MinecraftForge.EVENT_BUS.post( new ic2.api.energy.event.EnergyTileLoadEvent( (IEnergySink) this.getEnergySinkTile() ) );
+			MinecraftForge.EVENT_BUS.post( new ic2.api.energy.event.EnergyTileLoadEvent( (IEnergyTile) this.getEnergySinkTile() ) );
 		}
 	}
 
@@ -92,7 +93,7 @@ public class LayerIEnergySink extends LayerBase implements IEnergySink
 		if( this.isInIC2() && Platform.isServer() )
 		{
 			this.getLayerFlags().remove( LayerFlags.IC2_ENET );
-			MinecraftForge.EVENT_BUS.post( new ic2.api.energy.event.EnergyTileUnloadEvent( (IEnergySink) this.getEnergySinkTile() ) );
+			MinecraftForge.EVENT_BUS.post( new ic2.api.energy.event.EnergyTileUnloadEvent( (IEnergyTile) this.getEnergySinkTile() ) );
 		}
 	}
 
@@ -141,7 +142,7 @@ public class LayerIEnergySink extends LayerBase implements IEnergySink
 		IPart part = this.getPart( direction );
 		if( part instanceof IEnergySink )
 		{
-			return ( (IEnergySink) part ).acceptsEnergyFrom( emitter, direction );
+			return ( (IEnergyAcceptor) part ).acceptsEnergyFrom( emitter, direction );
 		}
 		return false;
 	}

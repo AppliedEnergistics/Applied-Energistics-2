@@ -528,22 +528,22 @@ public class Platform
 				}
 
 				case 1: // ( A instanceof NBTTagByte )
-					return ( (NBTTagByte) left ).func_150287_d() == ( (NBTTagByte) right ).func_150287_d();
+					return ( (NBTBase.NBTPrimitive) left ).func_150287_d() == ( (NBTBase.NBTPrimitive) right ).func_150287_d();
 
 				case 4: // else if ( A instanceof NBTTagLong )
-					return ( (NBTTagLong) left ).func_150291_c() == ( (NBTTagLong) right ).func_150291_c();
+					return ( (NBTBase.NBTPrimitive) left ).func_150291_c() == ( (NBTBase.NBTPrimitive) right ).func_150291_c();
 
 				case 8: // else if ( A instanceof NBTTagString )
 					return ( (NBTTagString) left ).func_150285_a_().equals( ( (NBTTagString) right ).func_150285_a_() ) || ( (NBTTagString) left ).func_150285_a_().equals( ( (NBTTagString) right ).func_150285_a_() );
 
 				case 6: // else if ( A instanceof NBTTagDouble )
-					return ( (NBTTagDouble) left ).func_150286_g() == ( (NBTTagDouble) right ).func_150286_g();
+					return ( (NBTBase.NBTPrimitive) left ).func_150286_g() == ( (NBTBase.NBTPrimitive) right ).func_150286_g();
 
 				case 5: // else if ( A instanceof NBTTagFloat )
-					return ( (NBTTagFloat) left ).func_150288_h() == ( (NBTTagFloat) right ).func_150288_h();
+					return ( (NBTBase.NBTPrimitive) left ).func_150288_h() == ( (NBTBase.NBTPrimitive) right ).func_150288_h();
 
 				case 3: // else if ( A instanceof NBTTagInt )
-					return ( (NBTTagInt) left ).func_150287_d() == ( (NBTTagInt) right ).func_150287_d();
+					return ( (NBTBase.NBTPrimitive) left ).func_150287_d() == ( (NBTBase.NBTPrimitive) right ).func_150287_d();
 
 				default:
 					return left.equals( right );
@@ -629,22 +629,22 @@ public class Platform
 			}
 
 			case 1: // ( A instanceof NBTTagByte )
-				return hash + ( (NBTTagByte) nbt ).func_150290_f();
+				return hash + ( (NBTBase.NBTPrimitive) nbt ).func_150290_f();
 
 			case 4: // else if ( A instanceof NBTTagLong )
-				return hash + (int) ( (NBTTagLong) nbt ).func_150291_c();
+				return hash + (int) ( (NBTBase.NBTPrimitive) nbt ).func_150291_c();
 
 			case 8: // else if ( A instanceof NBTTagString )
 				return hash + ( (NBTTagString) nbt ).func_150285_a_().hashCode();
 
 			case 6: // else if ( A instanceof NBTTagDouble )
-				return hash + (int) ( (NBTTagDouble) nbt ).func_150286_g();
+				return hash + (int) ( (NBTBase.NBTPrimitive) nbt ).func_150286_g();
 
 			case 5: // else if ( A instanceof NBTTagFloat )
-				return hash + (int) ( (NBTTagFloat) nbt ).func_150288_h();
+				return hash + (int) ( (NBTBase.NBTPrimitive) nbt ).func_150288_h();
 
 			case 3: // else if ( A instanceof NBTTagInt )
-				return hash + ( (NBTTagInt) nbt ).func_150287_d();
+				return hash + ( (NBTBase.NBTPrimitive) nbt ).func_150287_d();
 
 			default:
 				return hash;
@@ -856,7 +856,7 @@ public class Platform
 			return teA;
 		}
 
-		return new InventoryLargeChest( "", teA, (TileEntityChest) teB );
+		return new InventoryLargeChest( "", teA, (IInventory) teB );
 	}
 
 	public static boolean isModLoaded( String modid )
@@ -992,7 +992,7 @@ public class Platform
 	{
 		if( AESharedNBT.isShared( willAdd.getTagCompound() ) )
 		{
-			if( ( (AESharedNBT) willAdd.getTagCompound() ).getSpecialComparison() != null )
+			if( ( (IAETagCompound) willAdd.getTagCompound() ).getSpecialComparison() != null )
 			{
 				return true;
 			}
