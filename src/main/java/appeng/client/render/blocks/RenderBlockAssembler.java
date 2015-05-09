@@ -36,7 +36,6 @@ import appeng.api.parts.IPart;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartHost;
 import appeng.api.util.IOrientable;
-import appeng.block.AEBaseBlock;
 import appeng.block.crafting.BlockMolecularAssembler;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.BusRenderHelper;
@@ -48,7 +47,7 @@ import appeng.tile.crafting.TileMolecularAssembler;
 import appeng.util.Platform;
 
 
-public class RenderBlockAssembler extends BaseBlockRender implements IBoxProvider
+public class RenderBlockAssembler extends BaseBlockRender<BlockMolecularAssembler, TileMolecularAssembler> implements IBoxProvider
 {
 
 	public RenderBlockAssembler()
@@ -57,7 +56,7 @@ public class RenderBlockAssembler extends BaseBlockRender implements IBoxProvide
 	}
 
 	@Override
-	public void renderInventory( AEBaseBlock blk, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj )
+	public void renderInventory( BlockMolecularAssembler blk, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj )
 	{
 		renderer.setOverrideBlockTexture( blk.getIcon( 0, 0 ) );
 
@@ -104,7 +103,7 @@ public class RenderBlockAssembler extends BaseBlockRender implements IBoxProvide
 	}
 
 	@Override
-	public boolean renderInWorld( AEBaseBlock block, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
+	public boolean renderInWorld( BlockMolecularAssembler block, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
 	{
 		BlockMolecularAssembler blk = (BlockMolecularAssembler) block;
 		TileMolecularAssembler tma = blk.getTileEntity( world, x, y, z );
@@ -201,7 +200,7 @@ public class RenderBlockAssembler extends BaseBlockRender implements IBoxProvide
 		return true;
 	}
 
-	public void renderCableAt( double thickness, IBlockAccess world, int x, int y, int z, AEBaseBlock block, RenderBlocks renderer, double pull, boolean covered )
+	public void renderCableAt( double thickness, IBlockAccess world, int x, int y, int z, BlockMolecularAssembler block, RenderBlocks renderer, double pull, boolean covered )
 	{
 		IIcon texture = null;
 

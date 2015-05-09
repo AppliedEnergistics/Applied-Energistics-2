@@ -106,7 +106,7 @@ public interface IBlocks
 
 	ITileDefinition charger();
 
-	ITileDefinition tinyTNT();
+	IBlockDefinition tinyTNT();
 
 	ITileDefinition security();
 

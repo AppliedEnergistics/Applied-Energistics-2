@@ -44,6 +44,7 @@ import appeng.block.AEBaseBlock;
 import appeng.block.networking.BlockCableBus;
 import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
+import appeng.tile.AEBaseTile;
 
 
 @SideOnly( Side.CLIENT )
@@ -75,7 +76,7 @@ public final class BusRenderHelper implements IPartRenderHelper
 	{
 		this.bbc = new BoundBoxCalculator( this );
 		this.noAlphaPass = !AEConfig.instance.isFeatureEnabled( AEFeature.AlphaPass );
-		this.bbr = new BaseBlockRender();
+		this.bbr = new BaseBlockRender<AEBaseBlock, AEBaseTile>();
 		this.renderingForPass = 0;
 		this.currentPass = 0;
 		this.itemsRendered = 0;
@@ -230,7 +231,6 @@ public final class BusRenderHelper implements IPartRenderHelper
 		}
 	}
 
-
 	private static final class BaseBlockTransformFunction implements Function<Block, AEBaseBlock>
 	{
 		@Nullable
@@ -239,7 +239,7 @@ public final class BusRenderHelper implements IPartRenderHelper
 		{
 			if( input instanceof AEBaseBlock )
 			{
-				return ( (AEBaseBlock) input );
+				return( (AEBaseBlock) input );
 			}
 
 			return null;
@@ -568,7 +568,7 @@ public final class BusRenderHelper implements IPartRenderHelper
 				break;
 		}
 
-		for( Block block : this.maybeBlock.asSet() )
+		for( AEBaseBlock block : this.maybeBaseBlock.asSet() )
 		{
 			this.bbr.renderCutoutFace( block, ico, x, y, z, renderer, face, edgeThickness );
 		}
@@ -609,7 +609,7 @@ public final class BusRenderHelper implements IPartRenderHelper
 				break;
 		}
 
-		for( Block block : this.maybeBlock.asSet() )
+		for( AEBaseBlock block : this.maybeBaseBlock.asSet() )
 		{
 			this.bbr.renderFace( x, y, z, block, ico, renderer, face );
 		}

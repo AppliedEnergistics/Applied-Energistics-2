@@ -53,7 +53,7 @@ import appeng.api.parts.IPartHost;
 import appeng.api.parts.PartItemStack;
 import appeng.api.parts.SelectedPart;
 import appeng.api.util.AEColor;
-import appeng.block.AEBaseBlock;
+import appeng.block.AEBaseTileBlock;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.BusRenderHelper;
 import appeng.client.render.blocks.RendererCableBus;
@@ -61,6 +61,7 @@ import appeng.client.texture.ExtraBlockTextures;
 import appeng.core.AEConfig;
 import appeng.core.Api;
 import appeng.core.CommonHelper;
+import appeng.core.features.AECableBusFeatureHandler;
 import appeng.core.features.AEFeature;
 import appeng.helpers.AEGlassMaterial;
 import appeng.integration.IntegrationRegistry;
@@ -77,7 +78,7 @@ import appeng.util.Platform;
 
 
 @Interface( iface = "powercrystals.minefactoryreloaded.api.rednet.connectivity.IRedNetConnection", iname = "MFR" )
-public class BlockCableBus extends AEBaseBlock implements IRedNetConnection
+public class BlockCableBus extends AEBaseTileBlock implements IRedNetConnection
 {
 
 	private static final ICableBusContainer NULL_CABLE_BUS = new NullCableBusContainer();
@@ -94,6 +95,9 @@ public class BlockCableBus extends AEBaseBlock implements IRedNetConnection
 		super( AEGlassMaterial.INSTANCE );
 		this.setLightOpacity( 0 );
 		this.isFullSize = this.isOpaque = false;
+
+		// this will actually be overwritten later through setupTile and the combined layers
+		this.setTileEntity( TileCableBus.class );
 		this.setFeature( EnumSet.of( AEFeature.Core ) );
 	}
 
@@ -451,8 +455,7 @@ public class BlockCableBus extends AEBaseBlock implements IRedNetConnection
 			return this.cb( world, x, y, z ).recolourBlock( side, AEColor.values()[colour], who );
 		}
 		catch( Throwable ignored )
-		{
-		}
+		{}
 		return false;
 	}
 
@@ -464,7 +467,7 @@ public class BlockCableBus extends AEBaseBlock implements IRedNetConnection
 	}
 
 	@Override
-	public <T extends TileEntity> T getTileEntity( IBlockAccess w, int x, int y, int z )
+	public <T extends AEBaseTile> T getTileEntity( IBlockAccess w, int x, int y, int z )
 	{
 		TileEntity te = w.getTileEntity( x, y, z );
 
@@ -479,6 +482,13 @@ public class BlockCableBus extends AEBaseBlock implements IRedNetConnection
 		}
 
 		return null;
+	}
+
+	@Override
+	protected void setFeature( EnumSet<AEFeature> f )
+	{
+		final AECableBusFeatureHandler featureHandler = new AECableBusFeatureHandler( f, this, this.featureSubName );
+		this.setHandler( featureHandler );
 	}
 
 	public void setupTile()

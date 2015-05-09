@@ -27,7 +27,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import appeng.api.util.IOrientable;
-import appeng.block.AEBaseBlock;
+import appeng.block.AEBaseTileBlock;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.blocks.RenderBlockInterface;
 import appeng.core.features.AEFeature;
@@ -36,13 +36,13 @@ import appeng.tile.misc.TileInterface;
 import appeng.util.Platform;
 
 
-public class BlockInterface extends AEBaseBlock
+public class BlockInterface extends AEBaseTileBlock
 {
 
 	public BlockInterface()
 	{
 		super( Material.iron );
-		
+
 		this.setTileEntity( TileInterface.class );
 		this.setFeature( EnumSet.of( AEFeature.Core ) );
 	}

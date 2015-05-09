@@ -47,7 +47,7 @@ import appeng.util.Platform;
 public class AEBaseItemBlock extends ItemBlock
 {
 
-	final AEBaseBlock blockType;
+	private final AEBaseBlock blockType;
 
 	public AEBaseItemBlock( Block id )
 	{
@@ -105,7 +105,7 @@ public class AEBaseItemBlock extends ItemBlock
 
 		IOrientable ori = null;
 
-		if( this.blockType.hasBlockTileEntity() )
+		if( this.blockType instanceof AEBaseTileBlock )
 		{
 			if( this.blockType instanceof BlockLightDetector )
 			{
@@ -185,9 +185,9 @@ public class AEBaseItemBlock extends ItemBlock
 
 		if( super.placeBlockAt( stack, player, w, x, y, z, side, hitX, hitY, hitZ, metadata ) )
 		{
-			if( this.blockType.hasBlockTileEntity() && !( this.blockType instanceof BlockLightDetector ) )
+			if( this.blockType instanceof AEBaseTileBlock && !( this.blockType instanceof BlockLightDetector ) )
 			{
-				AEBaseTile tile = this.blockType.getTileEntity( w, x, y, z );
+				AEBaseTile tile = ( (AEBaseTileBlock) this.blockType ).getTileEntity( w, x, y, z );
 				ori = tile;
 
 				if( tile == null )
@@ -198,7 +198,7 @@ public class AEBaseItemBlock extends ItemBlock
 				if( ori.canBeRotated() && !this.blockType.hasCustomRotation() )
 				{
 					if( ori.getForward() == null || ori.getUp() == null || // null
-							tile.getForward() == ForgeDirection.UNKNOWN || ori.getUp() == ForgeDirection.UNKNOWN )
+					tile.getForward() == ForgeDirection.UNKNOWN || ori.getUp() == ForgeDirection.UNKNOWN )
 					{
 						ori.setOrientation( forward, up );
 					}

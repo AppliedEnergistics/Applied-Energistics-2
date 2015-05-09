@@ -29,7 +29,7 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import appeng.block.AEBaseBlock;
+import appeng.block.AEBaseTileBlock;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.blocks.RenderBlockWireless;
 import appeng.core.features.AEFeature;
@@ -40,7 +40,7 @@ import appeng.tile.networking.TileWireless;
 import appeng.util.Platform;
 
 
-public class BlockWireless extends AEBaseBlock implements ICustomCollision
+public class BlockWireless extends AEBaseTileBlock implements ICustomCollision
 {
 
 	public BlockWireless()

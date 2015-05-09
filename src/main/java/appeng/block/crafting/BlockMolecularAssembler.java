@@ -29,7 +29,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-import appeng.block.AEBaseBlock;
+import appeng.block.AEBaseTileBlock;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.blocks.RenderBlockAssembler;
 import appeng.core.features.AEFeature;
@@ -38,7 +38,7 @@ import appeng.tile.crafting.TileMolecularAssembler;
 import appeng.util.Platform;
 
 
-public class BlockMolecularAssembler extends AEBaseBlock
+public class BlockMolecularAssembler extends AEBaseTileBlock
 {
 
 	public static boolean booleanAlphaPass = false;
@@ -46,7 +46,7 @@ public class BlockMolecularAssembler extends AEBaseBlock
 	public BlockMolecularAssembler()
 	{
 		super( Material.iron );
-	
+
 		this.setTileEntity( TileMolecularAssembler.class );
 		this.isOpaque = false;
 		this.lightOpacity = 1;

@@ -26,9 +26,10 @@ import net.minecraftforge.client.IItemRenderer.ItemRenderType;
 
 import appeng.block.AEBaseBlock;
 import appeng.client.render.BaseBlockRender;
+import appeng.tile.AEBaseTile;
 
 
-public class RenderNull extends BaseBlockRender
+public class RenderNull extends BaseBlockRender<AEBaseBlock, AEBaseTile>
 {
 
 	public RenderNull()

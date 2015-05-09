@@ -27,7 +27,6 @@ import javax.annotation.Nullable;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 
-import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.RenderHelper;
@@ -47,7 +46,6 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 import appeng.api.util.IOrientable;
-import appeng.api.util.IOrientableBlock;
 import appeng.block.AEBaseBlock;
 import appeng.client.texture.ExtraBlockTextures;
 import appeng.tile.AEBaseTile;
@@ -55,7 +53,7 @@ import appeng.util.Platform;
 
 
 @SideOnly( Side.CLIENT )
-public class BaseBlockRender
+public class BaseBlockRender<B extends AEBaseBlock, T extends AEBaseTile>
 {
 	private static final int ORIENTATION_BITS = 7;
 	private static final int FLIP_H_BIT = 8;
@@ -282,7 +280,7 @@ public class BaseBlockRender
 		return this.renderDistance;
 	}
 
-	public void renderInventory( AEBaseBlock block, ItemStack item, RenderBlocks renderer, ItemRenderType type, Object[] data )
+	public void renderInventory( B block, ItemStack item, RenderBlocks renderer, ItemRenderType type, Object[] data )
 	{
 		Tessellator tess = Tessellator.instance;
 
@@ -330,7 +328,7 @@ public class BaseBlockRender
 		return ORIENTATION_MAP[a][b][c];
 	}
 
-	public void renderInvBlock( EnumSet<ForgeDirection> sides, AEBaseBlock block, ItemStack item, Tessellator tess, int color, RenderBlocks renderer )
+	public void renderInvBlock( EnumSet<ForgeDirection> sides, B block, ItemStack item, Tessellator tess, int color, RenderBlocks renderer )
 	{
 		int meta = 0;
 		if( block != null && block.hasSubtypes() && item != null )
@@ -405,7 +403,7 @@ public class BaseBlockRender
 		return ExtraBlockTextures.getMissing();
 	}
 
-	public boolean renderInWorld( AEBaseBlock block, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
+	public boolean renderInWorld( B block, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
 	{
 		this.preRenderInWorld( block, world, x, y, z, renderer );
 
@@ -415,7 +413,7 @@ public class BaseBlockRender
 		return o;
 	}
 
-	public void preRenderInWorld( AEBaseBlock block, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
+	public void preRenderInWorld( B block, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
 	{
 		ForgeDirection forward = ForgeDirection.SOUTH;
 		ForgeDirection up = ForgeDirection.UP;
@@ -444,17 +442,9 @@ public class BaseBlockRender
 	}
 
 	@Nullable
-	public IOrientable getOrientable( AEBaseBlock block, IBlockAccess w, int x, int y, int z )
+	public IOrientable getOrientable( B block, IBlockAccess w, int x, int y, int z )
 	{
-		if( block.hasBlockTileEntity() )
-		{
-			return (IOrientable) block.getTileEntity( w, x, y, z );
-		}
-		else if( block instanceof IOrientableBlock )
-		{
-			return ( (IOrientableBlock) block ).getOrientable( w, x, y, z );
-		}
-		return null;
+		return block.getOrientable( w, x, y, z );
 	}
 
 	protected void setInvRenderBounds( RenderBlocks renderer, int i, int j, int k, int l, int m, int n )
@@ -512,7 +502,7 @@ public class BaseBlockRender
 	}
 
 	@SideOnly( Side.CLIENT )
-	protected void renderCutoutFace( Block block, IIcon ico, int x, int y, int z, RenderBlocks renderer, ForgeDirection orientation, float edgeThickness )
+	protected void renderCutoutFace( B block, IIcon ico, int x, int y, int z, RenderBlocks renderer, ForgeDirection orientation, float edgeThickness )
 	{
 		Tessellator tess = Tessellator.instance;
 
@@ -624,7 +614,7 @@ public class BaseBlockRender
 	}
 
 	@SideOnly( Side.CLIENT )
-	protected void renderFace( int x, int y, int z, Block block, IIcon ico, RenderBlocks renderer, ForgeDirection orientation )
+	protected void renderFace( int x, int y, int z, B block, IIcon ico, RenderBlocks renderer, ForgeDirection orientation )
 	{
 		switch( orientation )
 		{
@@ -689,7 +679,7 @@ public class BaseBlockRender
 		return ( 16.0 - uv ) / 16.0;
 	}
 
-	public void renderTile( AEBaseBlock block, AEBaseTile tile, Tessellator tess, double x, double y, double z, float f, RenderBlocks renderer )
+	public void renderTile( B block, T tile, Tessellator tess, double x, double y, double z, float f, RenderBlocks renderer )
 	{
 		ForgeDirection forward = ForgeDirection.SOUTH;
 		ForgeDirection up = ForgeDirection.UP;

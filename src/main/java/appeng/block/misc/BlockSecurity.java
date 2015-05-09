@@ -26,7 +26,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import appeng.block.AEBaseBlock;
+import appeng.block.AEBaseTileBlock;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.blocks.RendererSecurity;
 import appeng.core.features.AEFeature;
@@ -35,13 +35,13 @@ import appeng.tile.misc.TileSecurity;
 import appeng.util.Platform;
 
 
-public class BlockSecurity extends AEBaseBlock
+public class BlockSecurity extends AEBaseTileBlock
 {
 
 	public BlockSecurity()
 	{
 		super( Material.iron );
-	
+
 		this.setTileEntity( TileSecurity.class );
 		this.setFeature( EnumSet.of( AEFeature.Security ) );
 	}

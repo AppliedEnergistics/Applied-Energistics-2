@@ -112,7 +112,7 @@ public final class ApiBlocks implements IBlocks
 	private final ITileDefinition inscriber;
 	private final ITileDefinition wireless;
 	private final ITileDefinition charger;
-	private final ITileDefinition tinyTNT;
+	private final IBlockDefinition tinyTNT;
 	private final ITileDefinition security;
 	private final ITileDefinition quantumRing;
 	private final ITileDefinition quantumLink;
@@ -197,7 +197,7 @@ public final class ApiBlocks implements IBlocks
 		this.inscriber = constructor.registerTileDefinition( new BlockInscriber() );
 		this.wireless = constructor.registerTileDefinition( new BlockWireless() );
 		this.charger = constructor.registerTileDefinition( new BlockCharger() );
-		this.tinyTNT = constructor.registerTileDefinition( new BlockTinyTNT() );
+		this.tinyTNT = constructor.registerBlockDefinition( new BlockTinyTNT() );
 		this.security = constructor.registerTileDefinition( new BlockSecurity() );
 		this.quantumRing = constructor.registerTileDefinition( new BlockQuantumRing() );
 		this.quantumLink = constructor.registerTileDefinition( new BlockQuantumLinkChamber() );
@@ -461,7 +461,7 @@ public final class ApiBlocks implements IBlocks
 	}
 
 	@Override
-	public ITileDefinition tinyTNT()
+	public IBlockDefinition tinyTNT()
 	{
 		return this.tinyTNT;
 	}

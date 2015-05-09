@@ -31,7 +31,6 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import appeng.api.AEApi;
 import appeng.api.util.AEColor;
-import appeng.block.AEBaseBlock;
 import appeng.block.crafting.BlockCraftingMonitor;
 import appeng.block.crafting.BlockCraftingUnit;
 import appeng.client.render.BaseBlockRender;
@@ -42,7 +41,7 @@ import appeng.tile.crafting.TileCraftingMonitorTile;
 import appeng.tile.crafting.TileCraftingTile;
 
 
-public class RenderBlockCraftingCPU extends BaseBlockRender
+public class RenderBlockCraftingCPU<B extends BlockCraftingUnit, T extends TileCraftingTile> extends BaseBlockRender<B, T>
 {
 
 	protected RenderBlockCraftingCPU( boolean useTESR, int range )
@@ -56,7 +55,7 @@ public class RenderBlockCraftingCPU extends BaseBlockRender
 	}
 
 	@Override
-	public boolean renderInWorld( AEBaseBlock blk, IBlockAccess w, int x, int y, int z, RenderBlocks renderer )
+	public boolean renderInWorld( B blk, IBlockAccess w, int x, int y, int z, RenderBlocks renderer )
 	{
 		IIcon theIcon = null;
 		boolean formed = false;
@@ -198,7 +197,7 @@ public class RenderBlockCraftingCPU extends BaseBlockRender
 		return def;
 	}
 
-	private void handleSide( AEBaseBlock blk, int meta, int x, int y, int z, BusRenderHelper i, RenderBlocks renderer, IIcon color, boolean emitsLight, boolean isMonitor, ForgeDirection side, IBlockAccess w )
+	private void handleSide( B blk, int meta, int x, int y, int z, BusRenderHelper i, RenderBlocks renderer, IIcon color, boolean emitsLight, boolean isMonitor, ForgeDirection side, IBlockAccess w )
 	{
 		if( this.isConnected( w, x, y, z, side ) )
 		{

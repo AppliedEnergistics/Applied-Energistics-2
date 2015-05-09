@@ -24,14 +24,14 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import appeng.block.AEBaseBlock;
+import appeng.block.misc.BlockInterface;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.BlockRenderInfo;
 import appeng.client.texture.ExtraBlockTextures;
 import appeng.tile.misc.TileInterface;
 
 
-public class RenderBlockInterface extends BaseBlockRender
+public class RenderBlockInterface extends BaseBlockRender<BlockInterface, TileInterface>
 {
 
 	public RenderBlockInterface()
@@ -40,7 +40,7 @@ public class RenderBlockInterface extends BaseBlockRender
 	}
 
 	@Override
-	public boolean renderInWorld( AEBaseBlock block, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
+	public boolean renderInWorld( BlockInterface block, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
 	{
 		TileInterface ti = block.getTileEntity( world, x, y, z );
 		BlockRenderInfo info = block.getRendererInstance();

@@ -29,14 +29,15 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.IItemRenderer.ItemRenderType;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import appeng.block.AEBaseBlock;
+import appeng.block.AEBaseTileBlock;
+import appeng.block.misc.BlockPaint;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.texture.ExtraBlockTextures;
 import appeng.helpers.Splotch;
 import appeng.tile.misc.TilePaint;
 
 
-public class RenderBlockPaint extends BaseBlockRender
+public class RenderBlockPaint extends BaseBlockRender<BlockPaint, TilePaint>
 {
 
 	public RenderBlockPaint()
@@ -45,13 +46,13 @@ public class RenderBlockPaint extends BaseBlockRender
 	}
 
 	@Override
-	public void renderInventory( AEBaseBlock block, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj )
+	public void renderInventory( BlockPaint block, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj )
 	{
 
 	}
 
 	@Override
-	public boolean renderInWorld( AEBaseBlock imb, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
+	public boolean renderInWorld( BlockPaint imb, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
 	{
 		TilePaint tp = imb.getTileEntity( world, x, y, z );
 		boolean out = false;

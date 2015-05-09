@@ -25,7 +25,7 @@ import net.minecraft.block.Block;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-import appeng.block.AEBaseBlock;
+import appeng.block.AEBaseTileBlock;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.blocks.RenderSpatialPylon;
 import appeng.core.features.AEFeature;
@@ -33,7 +33,7 @@ import appeng.helpers.AEGlassMaterial;
 import appeng.tile.spatial.TileSpatialPylon;
 
 
-public class BlockSpatialPylon extends AEBaseBlock
+public class BlockSpatialPylon extends AEBaseTileBlock
 {
 
 	public BlockSpatialPylon()

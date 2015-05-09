@@ -24,13 +24,13 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 
-import appeng.block.AEBaseBlock;
+import appeng.block.misc.BlockQuartzGrowthAccelerator;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.texture.ExtraBlockTextures;
 import appeng.tile.misc.TileQuartzGrowthAccelerator;
 
 
-public class RenderBlockQuartzAccelerator extends BaseBlockRender
+public class RenderBlockQuartzAccelerator extends BaseBlockRender<BlockQuartzGrowthAccelerator, TileQuartzGrowthAccelerator>
 {
 
 	public RenderBlockQuartzAccelerator()
@@ -39,7 +39,7 @@ public class RenderBlockQuartzAccelerator extends BaseBlockRender
 	}
 
 	@Override
-	public boolean renderInWorld( AEBaseBlock blk, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
+	public boolean renderInWorld( BlockQuartzGrowthAccelerator blk, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
 	{
 		TileEntity te = world.getTileEntity( x, y, z );
 		if( te instanceof TileQuartzGrowthAccelerator )

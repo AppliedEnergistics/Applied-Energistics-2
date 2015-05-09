@@ -36,7 +36,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-import appeng.block.AEBaseBlock;
+import appeng.block.AEBaseTileBlock;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.blocks.RenderBlockSkyCompass;
 import appeng.core.features.AEFeature;
@@ -44,7 +44,7 @@ import appeng.helpers.ICustomCollision;
 import appeng.tile.misc.TileSkyCompass;
 
 
-public class BlockSkyCompass extends AEBaseBlock implements ICustomCollision
+public class BlockSkyCompass extends AEBaseTileBlock implements ICustomCollision
 {
 
 	public BlockSkyCompass()

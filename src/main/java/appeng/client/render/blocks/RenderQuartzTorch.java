@@ -34,9 +34,10 @@ import appeng.api.util.IOrientableBlock;
 import appeng.block.AEBaseBlock;
 import appeng.block.misc.BlockQuartzTorch;
 import appeng.client.render.BaseBlockRender;
+import appeng.tile.AEBaseTile;
 
 
-public class RenderQuartzTorch extends BaseBlockRender
+public class RenderQuartzTorch extends BaseBlockRender<AEBaseBlock, AEBaseTile>
 {
 
 	public RenderQuartzTorch()

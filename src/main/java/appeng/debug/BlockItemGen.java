@@ -24,11 +24,11 @@ import java.util.EnumSet;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 
-import appeng.block.AEBaseBlock;
+import appeng.block.AEBaseTileBlock;
 import appeng.core.features.AEFeature;
 
 
-public class BlockItemGen extends AEBaseBlock
+public class BlockItemGen extends AEBaseTileBlock
 {
 
 	public BlockItemGen()

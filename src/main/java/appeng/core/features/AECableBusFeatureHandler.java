@@ -23,30 +23,33 @@ import java.util.EnumSet;
 
 import com.google.common.base.Optional;
 
+import net.minecraft.tileentity.TileEntity;
+
 import cpw.mods.fml.common.registry.GameRegistry;
 
-import appeng.api.definitions.IBlockDefinition;
-import appeng.block.AEBaseBlock;
+import appeng.api.definitions.ITileDefinition;
+import appeng.block.AEBaseTileBlock;
+import appeng.block.networking.BlockCableBus;
 import appeng.core.CommonHelper;
 import appeng.core.CreativeTab;
 import appeng.util.Platform;
 
 
-public final class AEBlockFeatureHandler implements IFeatureHandler
+public final class AECableBusFeatureHandler implements IFeatureHandler
 {
-	private final AEBaseBlock featured;
+	private final AEBaseTileBlock featured;
 	private final FeatureNameExtractor extractor;
 	private final boolean enabled;
-	private final BlockDefinition definition;
+	private final TileDefinition definition;
 
-	public AEBlockFeatureHandler( EnumSet<AEFeature> features, AEBaseBlock featured, Optional<String> subName )
+	public AECableBusFeatureHandler( EnumSet<AEFeature> features, BlockCableBus featured, Optional<String> subName )
 	{
 		final ActivityState state = new FeaturedActiveChecker( features ).getActivityState();
 
 		this.featured = featured;
 		this.extractor = new FeatureNameExtractor( featured.getClass(), subName );
 		this.enabled = state == ActivityState.Enabled;
-		this.definition = new BlockDefinition( featured, state );
+		this.definition = new TileDefinition( featured, state );
 	}
 
 	@Override
@@ -56,11 +59,14 @@ public final class AEBlockFeatureHandler implements IFeatureHandler
 	}
 
 	@Override
-	public IBlockDefinition getDefinition()
+	public ITileDefinition getDefinition()
 	{
 		return this.definition;
 	}
 
+	/**
+	 * Registration of the {@link TileEntity} will actually be handled by {@link BlockCableBus#setupTile()}.
+	 */
 	@Override
 	public void register()
 	{
@@ -70,6 +76,11 @@ public final class AEBlockFeatureHandler implements IFeatureHandler
 			this.featured.setCreativeTab( CreativeTab.instance );
 			this.featured.setBlockName( /* "tile." */"appliedenergistics2." + name );
 			this.featured.setBlockTextureName( "appliedenergistics2:" + name );
+
+			if( Platform.isClient() )
+			{
+				CommonHelper.proxy.bindTileEntitySpecialRenderer( this.featured.getTileEntityClass(), this.featured );
+			}
 
 			final String registryName = "tile." + name;
 

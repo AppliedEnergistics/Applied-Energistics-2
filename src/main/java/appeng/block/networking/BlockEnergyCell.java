@@ -31,9 +31,9 @@ import net.minecraft.util.IIcon;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-import appeng.block.AEBaseBlock;
 import appeng.block.AEBaseItemBlock;
 import appeng.block.AEBaseItemBlockChargeable;
+import appeng.block.AEBaseTileBlock;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.blocks.RenderBlockEnergyCube;
 import appeng.client.texture.ExtraBlockTextures;
@@ -43,7 +43,7 @@ import appeng.tile.networking.TileEnergyCell;
 import appeng.util.Platform;
 
 
-public class BlockEnergyCell extends AEBaseBlock
+public class BlockEnergyCell extends AEBaseTileBlock
 {
 
 	public BlockEnergyCell()

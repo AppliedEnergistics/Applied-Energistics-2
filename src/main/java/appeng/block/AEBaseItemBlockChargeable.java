@@ -51,7 +51,7 @@ public class AEBaseItemBlockChargeable extends AEBaseItemBlock implements IAEIte
 	@SideOnly( Side.CLIENT )
 	public void addCheckedInformation( ItemStack itemStack, EntityPlayer player, List<String> toolTip, boolean advancedTooltips )
 	{
-		NBTTagCompound tag = itemStack.getTagCompound();
+		final NBTTagCompound tag = itemStack.getTagCompound();
 		double internalCurrentPower = 0;
 		double internalMaxPower = this.getMaxEnergyCapacity();
 
@@ -60,14 +60,14 @@ public class AEBaseItemBlockChargeable extends AEBaseItemBlock implements IAEIte
 			internalCurrentPower = tag.getDouble( "internalCurrentPower" );
 		}
 
-		double percent = internalCurrentPower / internalMaxPower;
+		final double percent = internalCurrentPower / internalMaxPower;
 
 		toolTip.add( GuiText.StoredEnergy.getLocal() + ':' + MessageFormat.format( " {0,number,#} ", internalCurrentPower ) + Platform.gui_localize( PowerUnits.AE.unlocalizedName ) + " - " + MessageFormat.format( " {0,number,#.##%} ", percent ) );
 	}
 
 	private double getMaxEnergyCapacity()
 	{
-		Block blockID = Block.getBlockFromItem( this );
+		final Block blockID = Block.getBlockFromItem( this );
 		final IBlockDefinition energyCell = Api.INSTANCE.definitions().blocks().energyCell();
 		for( Block block : energyCell.maybeBlock().asSet() )
 		{
@@ -104,13 +104,13 @@ public class AEBaseItemBlockChargeable extends AEBaseItemBlock implements IAEIte
 
 	private double getInternal( ItemStack is )
 	{
-		NBTTagCompound nbt = Platform.openNbtData( is );
+		final NBTTagCompound nbt = Platform.openNbtData( is );
 		return nbt.getDouble( "internalCurrentPower" );
 	}
 
 	private void setInternal( ItemStack is, double amt )
 	{
-		NBTTagCompound nbt = Platform.openNbtData( is );
+		final NBTTagCompound nbt = Platform.openNbtData( is );
 		nbt.setDouble( "internalCurrentPower", amt );
 	}
 

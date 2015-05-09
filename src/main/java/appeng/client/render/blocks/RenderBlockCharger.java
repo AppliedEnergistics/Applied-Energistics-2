@@ -35,16 +35,15 @@ import net.minecraftforge.client.IItemRenderer.ItemRenderType;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import appeng.api.util.IOrientable;
-import appeng.block.AEBaseBlock;
 import appeng.block.misc.BlockCharger;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.texture.ExtraBlockTextures;
 import appeng.core.AELog;
-import appeng.tile.AEBaseTile;
+import appeng.tile.misc.TileCharger;
 import appeng.util.Platform;
 
 
-public class RenderBlockCharger extends BaseBlockRender
+public class RenderBlockCharger extends BaseBlockRender<BlockCharger, TileCharger>
 {
 
 	public RenderBlockCharger()
@@ -53,7 +52,7 @@ public class RenderBlockCharger extends BaseBlockRender
 	}
 
 	@Override
-	public void renderInventory( AEBaseBlock blk, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj )
+	public void renderInventory( BlockCharger blk, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj )
 	{
 		Tessellator tess = Tessellator.instance;
 
@@ -84,7 +83,7 @@ public class RenderBlockCharger extends BaseBlockRender
 	}
 
 	@Override
-	public boolean renderInWorld( AEBaseBlock block, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
+	public boolean renderInWorld( BlockCharger block, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
 	{
 		this.preRenderInWorld( block, world, x, y, z, renderer );
 
@@ -126,7 +125,7 @@ public class RenderBlockCharger extends BaseBlockRender
 	}
 
 	@Override
-	public void renderTile( AEBaseBlock block, AEBaseTile tile, Tessellator tess, double x, double y, double z, float f, RenderBlocks renderer )
+	public void renderTile( BlockCharger block, TileCharger tile, Tessellator tess, double x, double y, double z, float f, RenderBlocks renderer )
 	{
 		ItemStack sis = null;
 		if( tile instanceof IInventory )
@@ -153,7 +152,12 @@ public class RenderBlockCharger extends BaseBlockRender
 					GL11.glRotatef( 30.0f, 0.0f, 1.0f, 0.0f );
 				}
 
-				int br = tile.getWorldObj().getLightBrightnessForSkyBlocks( tile.xCoord, tile.yCoord, tile.zCoord, 0 );// << 20 | light << 4;
+				int br = tile.getWorldObj().getLightBrightnessForSkyBlocks( tile.xCoord, tile.yCoord, tile.zCoord, 0 );// <<
+																														// 20
+																														// |
+																														// light
+																														// <<
+																														// 4;
 				int var11 = br % 65536;
 				int var12 = br / 65536;
 				OpenGlHelper.setLightmapTextureCoords( OpenGlHelper.lightmapTexUnit, var11, var12 );

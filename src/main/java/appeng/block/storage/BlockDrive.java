@@ -26,7 +26,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import appeng.block.AEBaseBlock;
+import appeng.block.AEBaseTileBlock;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.blocks.RenderDrive;
 import appeng.core.features.AEFeature;
@@ -35,7 +35,7 @@ import appeng.tile.storage.TileDrive;
 import appeng.util.Platform;
 
 
-public class BlockDrive extends AEBaseBlock
+public class BlockDrive extends AEBaseTileBlock
 {
 
 	public BlockDrive()

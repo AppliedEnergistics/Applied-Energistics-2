@@ -26,14 +26,14 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import appeng.block.AEBaseBlock;
+import appeng.block.AEBaseTileBlock;
 import appeng.core.features.AEFeature;
 import appeng.core.sync.GuiBridge;
 import appeng.tile.misc.TileCondenser;
 import appeng.util.Platform;
 
 
-public class BlockCondenser extends AEBaseBlock
+public class BlockCondenser extends AEBaseTileBlock
 {
 
 	public BlockCondenser()

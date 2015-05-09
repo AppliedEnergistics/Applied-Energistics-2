@@ -24,11 +24,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.IItemRenderer.ItemRenderType;
 
-import appeng.block.AEBaseBlock;
+import appeng.block.misc.BlockTinyTNT;
 import appeng.client.render.BaseBlockRender;
+import appeng.tile.AEBaseTile;
 
 
-public class RenderTinyTNT extends BaseBlockRender
+public class RenderTinyTNT extends BaseBlockRender<BlockTinyTNT, AEBaseTile>
 {
 
 	public RenderTinyTNT()
@@ -37,14 +38,14 @@ public class RenderTinyTNT extends BaseBlockRender
 	}
 
 	@Override
-	public void renderInventory( AEBaseBlock block, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj )
+	public void renderInventory( BlockTinyTNT block, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj )
 	{
 		renderer.setRenderBounds( 0.25f, 0.0f, 0.25f, 0.75f, 0.5f, 0.75f );
 		super.renderInventory( block, is, renderer, type, obj );
 	}
 
 	@Override
-	public boolean renderInWorld( AEBaseBlock imb, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
+	public boolean renderInWorld( BlockTinyTNT imb, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
 	{
 		renderer.renderAllFaces = true;
 		renderer.setRenderBounds( 0.25f, 0.0f, 0.25f, 0.75f, 0.5f, 0.75f );

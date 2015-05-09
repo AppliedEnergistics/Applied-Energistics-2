@@ -26,7 +26,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import appeng.block.AEBaseBlock;
+import appeng.block.AEBaseTileBlock;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.blocks.RenderBlockInscriber;
 import appeng.core.features.AEFeature;
@@ -35,7 +35,7 @@ import appeng.tile.misc.TileInscriber;
 import appeng.util.Platform;
 
 
-public class BlockInscriber extends AEBaseBlock
+public class BlockInscriber extends AEBaseTileBlock
 {
 
 	public BlockInscriber()
