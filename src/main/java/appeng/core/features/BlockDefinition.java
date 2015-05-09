@@ -21,15 +21,15 @@ package appeng.core.features;
 
 import java.lang.reflect.Constructor;
 
+import com.google.common.base.Optional;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ObjectArrays;
+
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.IBlockAccess;
-
-import com.google.common.base.Optional;
-import com.google.common.base.Preconditions;
-import com.google.common.collect.ObjectArrays;
 
 import appeng.api.definitions.IBlockDefinition;
 import appeng.block.AEBaseBlock;

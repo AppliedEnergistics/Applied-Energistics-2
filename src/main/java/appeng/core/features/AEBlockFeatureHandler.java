@@ -21,9 +21,9 @@ package appeng.core.features;
 
 import java.util.EnumSet;
 
-import cpw.mods.fml.common.registry.GameRegistry;
-
 import com.google.common.base.Optional;
+
+import cpw.mods.fml.common.registry.GameRegistry;
 
 import appeng.api.definitions.ITileDefinition;
 import appeng.block.AEBaseBlock;

@@ -19,12 +19,12 @@
 package appeng.core.features;
 
 
+import com.google.common.base.Optional;
+import com.google.common.base.Preconditions;
+
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.IBlockAccess;
-
-import com.google.common.base.Optional;
-import com.google.common.base.Preconditions;
 
 import appeng.api.definitions.IItemDefinition;
 import appeng.util.Platform;

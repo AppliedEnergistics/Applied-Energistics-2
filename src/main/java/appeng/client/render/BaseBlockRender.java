@@ -21,6 +21,7 @@ package appeng.client.render;
 
 import java.nio.FloatBuffer;
 import java.util.EnumSet;
+
 import javax.annotation.Nullable;
 
 import org.lwjgl.BufferUtils;

@@ -28,6 +28,10 @@ import java.util.WeakHashMap;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
+import com.google.common.base.Stopwatch;
+import com.google.common.collect.LinkedListMultimap;
+import com.google.common.collect.Multimap;
+
 import net.minecraft.world.World;
 import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.event.world.WorldEvent;
@@ -37,10 +41,6 @@ import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.Phase;
 import cpw.mods.fml.common.gameevent.TickEvent.Type;
 import cpw.mods.fml.common.gameevent.TickEvent.WorldTickEvent;
-
-import com.google.common.base.Stopwatch;
-import com.google.common.collect.LinkedListMultimap;
-import com.google.common.collect.Multimap;
 
 import appeng.api.AEApi;
 import appeng.api.networking.IGridNode;

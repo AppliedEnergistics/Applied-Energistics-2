@@ -22,7 +22,11 @@ package appeng.block;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
+
 import javax.annotation.Nullable;
+
+import com.google.common.base.Optional;
+import com.google.common.collect.Lists;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
@@ -52,9 +56,6 @@ import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-
-import com.google.common.base.Optional;
-import com.google.common.collect.Lists;
 
 import appeng.api.implementations.items.IMemoryCard;
 import appeng.api.implementations.items.MemoryCardMessages;

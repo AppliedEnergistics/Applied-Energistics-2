@@ -19,12 +19,12 @@
 package appeng.core;
 
 
+import com.google.common.base.Optional;
+
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-
-import com.google.common.base.Optional;
 
 import appeng.api.AEApi;
 import appeng.items.parts.ItemFacade;

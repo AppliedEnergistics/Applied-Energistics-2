@@ -22,9 +22,9 @@ package appeng.container.implementations;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import net.minecraft.entity.player.InventoryPlayer;
-
 import com.google.common.collect.ImmutableSet;
+
+import net.minecraft.entity.player.InventoryPlayer;
 
 import appeng.api.networking.crafting.ICraftingCPU;
 import appeng.api.networking.crafting.ICraftingGrid;

@@ -22,13 +22,13 @@ package appeng.items.storage;
 import java.util.EnumSet;
 import java.util.List;
 
+import com.google.common.base.Optional;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
-
-import com.google.common.base.Optional;
 
 import appeng.api.implementations.TransitionResult;
 import appeng.api.implementations.items.ISpatialStorageCell;

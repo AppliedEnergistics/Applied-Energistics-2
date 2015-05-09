@@ -21,6 +21,8 @@ package appeng.tile.qnb;
 
 import java.util.EnumSet;
 
+import com.google.common.base.Optional;
+
 import io.netty.buffer.ByteBuf;
 
 import net.minecraft.block.Block;
@@ -29,8 +31,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
-
-import com.google.common.base.Optional;
 
 import appeng.api.AEApi;
 import appeng.api.definitions.IBlockDefinition;

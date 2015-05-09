@@ -22,6 +22,8 @@ package appeng.parts;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.google.common.base.Optional;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.Block.SoundType;
 import net.minecraft.client.Minecraft;
@@ -40,8 +42,6 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
-
-import com.google.common.base.Optional;
 
 import appeng.api.AEApi;
 import appeng.api.definitions.IBlockDefinition;

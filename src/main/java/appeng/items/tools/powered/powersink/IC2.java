@@ -19,11 +19,12 @@
 package appeng.items.tools.powered.powersink;
 
 
+import com.google.common.base.Optional;
+
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
-import com.google.common.base.Optional;
 import ic2.api.item.IElectricItemManager;
 import ic2.api.item.ISpecialElectricItem;
 

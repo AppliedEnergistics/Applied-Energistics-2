@@ -21,6 +21,8 @@ package appeng.hooks;
 
 import java.util.Random;
 
+import com.google.common.base.Optional;
+
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -28,8 +30,6 @@ import net.minecraft.village.MerchantRecipe;
 import net.minecraft.village.MerchantRecipeList;
 
 import cpw.mods.fml.common.registry.VillagerRegistry.IVillageTradeHandler;
-
-import com.google.common.base.Optional;
 
 import appeng.api.AEApi;
 import appeng.api.definitions.IItemDefinition;

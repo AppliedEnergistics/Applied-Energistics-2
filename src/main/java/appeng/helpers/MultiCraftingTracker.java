@@ -22,10 +22,10 @@ package appeng.helpers;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+import com.google.common.collect.ImmutableSet;
+
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
-
-import com.google.common.collect.ImmutableSet;
 
 import appeng.api.AEApi;
 import appeng.api.networking.IGrid;

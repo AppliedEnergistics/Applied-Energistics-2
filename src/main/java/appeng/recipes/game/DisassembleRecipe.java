@@ -21,16 +21,17 @@ package appeng.recipes.game;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import com.google.common.base.Optional;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
-
-import com.google.common.base.Optional;
 
 import appeng.api.AEApi;
 import appeng.api.definitions.IBlocks;

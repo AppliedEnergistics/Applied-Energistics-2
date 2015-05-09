@@ -19,11 +19,11 @@
 package appeng.integration.modules.waila.part;
 
 
+import com.google.common.base.Optional;
+
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
-
-import com.google.common.base.Optional;
 
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;

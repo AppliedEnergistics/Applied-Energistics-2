@@ -28,14 +28,14 @@ import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 
+import com.google.common.collect.HashMultimap;
+
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-
-import com.google.common.collect.HashMultimap;
 
 import appeng.api.AEApi;
 import appeng.client.gui.AEBaseGui;

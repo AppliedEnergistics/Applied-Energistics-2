@@ -19,6 +19,10 @@
 package appeng.core.sync;
 
 
+import static appeng.core.sync.GuiHostType.ITEM;
+import static appeng.core.sync.GuiHostType.ITEM_OR_WORLD;
+import static appeng.core.sync.GuiHostType.WORLD;
+
 import java.lang.reflect.Constructor;
 import java.util.List;
 
@@ -118,10 +122,6 @@ import appeng.tile.storage.TileDrive;
 import appeng.tile.storage.TileIOPort;
 import appeng.tile.storage.TileSkyChest;
 import appeng.util.Platform;
-
-import static appeng.core.sync.GuiHostType.ITEM;
-import static appeng.core.sync.GuiHostType.ITEM_OR_WORLD;
-import static appeng.core.sync.GuiHostType.WORLD;
 
 
 public enum GuiBridge implements IGuiHandler

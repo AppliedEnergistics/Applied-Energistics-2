@@ -27,9 +27,9 @@ import java.util.List;
 import java.util.NavigableMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 
-import net.minecraftforge.oredict.OreDictionary;
-
 import com.google.common.collect.Lists;
+
+import net.minecraftforge.oredict.OreDictionary;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.storage.data.IAEFluidStack;
