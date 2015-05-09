@@ -21,6 +21,8 @@ package appeng.parts.automation;
 
 import java.util.concurrent.Callable;
 
+import com.google.common.collect.Lists;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.RenderBlocks;
@@ -35,8 +37,6 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-
-import com.google.common.collect.Lists;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;

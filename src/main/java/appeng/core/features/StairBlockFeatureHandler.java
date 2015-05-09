@@ -21,11 +21,11 @@ package appeng.core.features;
 
 import java.util.EnumSet;
 
+import com.google.common.base.Optional;
+
 import net.minecraft.block.BlockStairs;
 
 import cpw.mods.fml.common.registry.GameRegistry;
-
-import com.google.common.base.Optional;
 
 import appeng.api.definitions.IBlockDefinition;
 import appeng.core.CreativeTab;

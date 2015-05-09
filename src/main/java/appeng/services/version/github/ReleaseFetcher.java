@@ -6,10 +6,10 @@ import java.lang.reflect.Type;
 import java.net.URL;
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
-
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+
+import org.apache.commons.io.IOUtils;
 
 import appeng.core.AELog;
 import appeng.services.version.Channel;

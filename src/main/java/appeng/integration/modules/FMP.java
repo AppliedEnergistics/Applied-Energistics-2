@@ -22,6 +22,8 @@ package appeng.integration.modules;
 import java.util.Collection;
 import java.util.List;
 
+import com.google.common.collect.Lists;
+
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.tileentity.TileEntity;
@@ -38,7 +40,6 @@ import codechicken.multipart.MultiPartRegistry.IPartFactory;
 import codechicken.multipart.MultipartGenerator;
 import codechicken.multipart.TMultiPart;
 import codechicken.multipart.TileMultipart;
-import com.google.common.collect.Lists;
 
 import appeng.api.AEApi;
 import appeng.api.definitions.IBlockDefinition;

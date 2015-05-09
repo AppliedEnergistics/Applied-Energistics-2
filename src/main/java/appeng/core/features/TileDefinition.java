@@ -19,10 +19,10 @@
 package appeng.core.features;
 
 
-import net.minecraft.tileentity.TileEntity;
-
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
+
+import net.minecraft.tileentity.TileEntity;
 
 import appeng.api.definitions.ITileDefinition;
 import appeng.block.AEBaseBlock;

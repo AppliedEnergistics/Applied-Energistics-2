@@ -36,13 +36,13 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
 
-import net.minecraft.world.World;
-
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
+
+import net.minecraft.world.World;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;

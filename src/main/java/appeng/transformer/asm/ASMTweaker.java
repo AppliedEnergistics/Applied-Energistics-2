@@ -20,7 +20,11 @@ package appeng.transformer.asm;
 
 
 import java.util.Iterator;
+
 import javax.annotation.Nullable;
+
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 
 import org.apache.logging.log4j.Level;
 import org.objectweb.asm.ClassReader;
@@ -36,9 +40,6 @@ import org.objectweb.asm.tree.VarInsnNode;
 import net.minecraft.launchwrapper.IClassTransformer;
 
 import cpw.mods.fml.relauncher.FMLRelaunchLog;
-
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
 
 import appeng.helpers.Reflected;
 

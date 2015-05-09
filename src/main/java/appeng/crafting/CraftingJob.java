@@ -23,10 +23,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.concurrent.TimeUnit;
 
+import com.google.common.base.Stopwatch;
+
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
-
-import com.google.common.base.Stopwatch;
 
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;

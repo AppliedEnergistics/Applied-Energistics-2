@@ -21,11 +21,11 @@ package appeng.items.tools.powered;
 
 import java.util.EnumSet;
 
+import com.google.common.base.Optional;
+
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
-
-import com.google.common.base.Optional;
 
 import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;

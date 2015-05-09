@@ -22,6 +22,8 @@ package appeng.items.tools;
 import java.util.EnumSet;
 import java.util.List;
 
+import com.mojang.authlib.GameProfile;
+
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -29,8 +31,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
-
-import com.mojang.authlib.GameProfile;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.features.IPlayerRegistry;

@@ -22,6 +22,7 @@ package appeng.crafting;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
+
 import javax.annotation.Nonnull;
 
 import appeng.api.networking.crafting.ICraftingWatcher;

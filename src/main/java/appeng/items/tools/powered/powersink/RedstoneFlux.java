@@ -19,10 +19,11 @@
 package appeng.items.tools.powered.powersink;
 
 
+import com.google.common.base.Optional;
+
 import net.minecraft.item.ItemStack;
 
 import cofh.api.energy.IEnergyContainerItem;
-import com.google.common.base.Optional;
 
 import appeng.api.config.PowerUnits;
 import appeng.transformer.annotations.Integration.Interface;

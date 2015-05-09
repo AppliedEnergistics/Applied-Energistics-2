@@ -19,6 +19,9 @@
 package appeng.client;
 
 
+import static net.minecraftforge.client.IItemRenderer.ItemRenderType.ENTITY;
+import static net.minecraftforge.client.IItemRenderer.ItemRendererHelper.BLOCK_3D;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -83,9 +86,6 @@ import appeng.hooks.TickHandler.PlayerColor;
 import appeng.server.ServerHelper;
 import appeng.transformer.MissingCoreMod;
 import appeng.util.Platform;
-
-import static net.minecraftforge.client.IItemRenderer.ItemRenderType.ENTITY;
-import static net.minecraftforge.client.IItemRenderer.ItemRendererHelper.BLOCK_3D;
 
 
 public class ClientHelper extends ServerHelper

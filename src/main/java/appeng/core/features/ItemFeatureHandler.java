@@ -21,11 +21,11 @@ package appeng.core.features;
 
 import java.util.EnumSet;
 
+import com.google.common.base.Optional;
+
 import net.minecraft.item.Item;
 
 import cpw.mods.fml.common.registry.GameRegistry;
-
-import com.google.common.base.Optional;
 
 import appeng.api.definitions.IItemDefinition;
 import appeng.core.CreativeTab;
