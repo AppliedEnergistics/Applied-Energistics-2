@@ -32,7 +32,7 @@ A Mod about Matter, Energy and using them to conquer the world..
 
 * Applied Energistics 2 API
   - (c) 2013 - 2015 AlgorithmX2 et al
-  - ![License](https://img.shields.io/badge/License-MIT-red.svg?style=flat)
+  - [![License](https://img.shields.io/badge/License-MIT-red.svg?style=flat)](http://opensource.org/licenses/MIT)
 * Applied Energistics 2
   - (c) 2013 - 2015 AlgorithmX2 et al
   - [![License](https://img.shields.io/badge/License-LGPLv3-blue.svg?style=flat)](https://raw.githubusercontent.com/AppliedEnergistics/Applied-Energistics-2/rv2/LICENSE)
@@ -40,7 +40,7 @@ A Mod about Matter, Energy and using them to conquer the world..
   - (c) 2013 - 2015 AlgorithmX2 et al
   - [![License](https://img.shields.io/badge/License-CC%20BY--NC--SA%203.0-yellow.svg?style=flat)](https://creativecommons.org/licenses/by-nc-sa/3.0/)
 * Text and Translations
-  - ![License](https://img.shields.io/badge/License-No%20Restriction-green.svg?style=flat)
+  - [![License](https://img.shields.io/badge/License-No%20Restriction-green.svg?style=flat)](https://creativecommons.org/publicdomain/zero/1.0/)
 
 ## Downloads
 
