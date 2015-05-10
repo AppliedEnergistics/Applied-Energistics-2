@@ -25,6 +25,7 @@ import java.util.Random;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockSlab;
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
@@ -39,12 +40,12 @@ import appeng.core.features.SlabBlockFeatureHandler;
 public class AEBaseSlabBlock extends BlockSlab implements IAEFeature
 {
 	private final IFeatureHandler features;
-	public AEBaseBlock block;
-	public int meta;
-	public boolean isDoubleSlab;
-	public AEBaseSlabBlock slabs;
-	public AEBaseSlabBlock dSlabs;
-	public final String name;
+	private final AEBaseBlock block;
+	private final int meta;
+	private final boolean isDoubleSlab;
+	private AEBaseSlabBlock slabs;
+	private AEBaseSlabBlock dSlabs;
+	private final String name;
 
 	public AEBaseSlabBlock( AEBaseBlock block, int meta, EnumSet<AEFeature> features, boolean isDoubleSlab, String name )
 	{
@@ -54,18 +55,28 @@ public class AEBaseSlabBlock extends BlockSlab implements IAEFeature
 		this.name = name;
 		this.isDoubleSlab = isDoubleSlab;
 		this.setBlockName( "appliedenergistics2." + name );
-	        this.setHardness( block.getBlockHardness( null, 0, 0, 0 ) );
-	        this.setResistance( block.getExplosionResistance( null ) * 5.0F / 3.0F );
-	        this.setStepSound( block.stepSound );
-	        this.useNeighborBrightness = true;
+		this.setHardness( block.getBlockHardness( null, 0, 0, 0 ) );
+		this.setResistance( block.getExplosionResistance( null ) * 5.0F / 3.0F );
+		this.setStepSound( block.stepSound );
+		this.useNeighborBrightness = true;
 		if (!isDoubleSlab) this.dSlabs = new AEBaseSlabBlock( block, meta, features, true, name + ".double" ).setSlabs(this);
-		this.features = isDoubleSlab ? new SlabBlockFeatureHandler( features, this ) : new SlabBlockFeatureHandler( features, this );
+		this.features = !isDoubleSlab ? new SlabBlockFeatureHandler( features, this ) : null;
 	}
 
 	public AEBaseSlabBlock setSlabs(AEBaseSlabBlock slabs)
 	{
 		this.slabs = slabs;
 		return this;
+	}
+	
+	public AEBaseSlabBlock slabs()
+	{
+		return slabs;
+	}
+	
+	public AEBaseSlabBlock dSlabs()
+	{
+		return dSlabs;
 	}
 
 	@Override
@@ -102,12 +113,6 @@ public class AEBaseSlabBlock extends BlockSlab implements IAEFeature
 	}
 
 	@Override
-	public int quantityDropped(int meta, int fortune, Random random)
-	{
-		return this.field_150004_a ? 2 : 1;
-	}
-
-	@Override
 	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z)
 	{
 		Block block = world.getBlock(x, y, z);
@@ -117,5 +122,10 @@ public class AEBaseSlabBlock extends BlockSlab implements IAEFeature
 
 		int meta = world.getBlockMetadata(x, y, z) & 7;
 		return new ItemStack(block, 1, meta);
+	}
+
+	public String name()
+	{
+		return name;
 	}
 }
