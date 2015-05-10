@@ -48,23 +48,17 @@ public class AEBaseSlabBlock extends BlockSlab implements IAEFeature
 
 	public AEBaseSlabBlock( AEBaseBlock block, int meta, EnumSet<AEFeature> features, boolean isDoubleSlab, String name )
 	{
-        super( isDoubleSlab, block.getMaterial() );
+		super( isDoubleSlab, block.getMaterial() );
 		this.block = block;
 		this.meta = meta;
 		this.name = name;
 		this.isDoubleSlab = isDoubleSlab;
 		this.setBlockName( "appliedenergistics2." + name );
-        this.setHardness( block.getBlockHardness( null, 0, 0, 0 ) );
-        this.setResistance( block.getExplosionResistance( null ) * 5.0F / 3.0F );
-        this.setStepSound( block.stepSound );
-        this.useNeighborBrightness = true;
-		if (!isDoubleSlab)
-		{
-			this.dSlabs = new AEBaseSlabBlock( block, meta, features, true, name + ".double" ).setSlabs(this);
-			this.slabs = this;
-		} else {
-			this.dSlabs = this;
-		}
+	        this.setHardness( block.getBlockHardness( null, 0, 0, 0 ) );
+	        this.setResistance( block.getExplosionResistance( null ) * 5.0F / 3.0F );
+	        this.setStepSound( block.stepSound );
+	        this.useNeighborBrightness = true;
+		if (!isDoubleSlab) this.dSlabs = new AEBaseSlabBlock( block, meta, features, true, name + ".double" ).setSlabs(this);
 		this.features = isDoubleSlab ? new SlabBlockFeatureHandler( features, this ) : new SlabBlockFeatureHandler( features, this );
 	}
 
@@ -104,24 +98,24 @@ public class AEBaseSlabBlock extends BlockSlab implements IAEFeature
 	@Override
 	public Item getItemDropped(int meta, Random rand, int fortune)
 	{
-	    return Item.getItemFromBlock(this.slabs);
+		return Item.getItemFromBlock(this.slabs);
 	}
 
 	@Override
 	public int quantityDropped(int meta, int fortune, Random random)
 	{
-	    return this.field_150004_a ? 2 : 1;
+		return this.field_150004_a ? 2 : 1;
 	}
 
 	@Override
 	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z)
 	{
-	    Block block = world.getBlock(x, y, z);
+		Block block = world.getBlock(x, y, z);
 
-	    if (block == null) return null;
-	    if (block == this.dSlabs) block = this.slabs;
+		if (block == null) return null;
+		if (block == this.dSlabs) block = this.slabs;
 
-	    int meta = world.getBlockMetadata(x, y, z) & 7;
-	    return new ItemStack(block, 1, meta);
+		int meta = world.getBlockMetadata(x, y, z) & 7;
+		return new ItemStack(block, 1, meta);
 	}
 }
