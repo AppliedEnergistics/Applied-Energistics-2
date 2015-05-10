@@ -1,24 +1,41 @@
 package appeng.integration.modules;
 
 import appeng.api.AEApi;
-import appeng.integration.IIntegrationModule;
+import appeng.api.definitions.IBlocks;
+import appeng.api.definitions.IDefinitions;
+import appeng.api.definitions.IItems;
+import appeng.api.definitions.IMaterials;
+import appeng.core.AELog;
+import appeng.integration.BaseModule;
 import com.pahimar.ee3.api.exchange.EnergyValueRegistryProxy;
-import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 
-public class EE3 implements IIntegrationModule {
+public class EE3 extends BaseModule {
 
-    @Override
-    public void init() throws Throwable {
-        ItemStack certusQuartzCrystal = AEApi.instance().definitions().materials().certusQuartzCrystal().maybeStack(1).get();
-        Block skyStone = AEApi.instance().definitions().blocks().skyStone().maybeBlock().get();
+    public static EE3 instance;
 
-        EnergyValueRegistryProxy.addPreAssignedEnergyValue(certusQuartzCrystal, 256.0F);    // Set the same as Nether Quarts
-        EnergyValueRegistryProxy.addPreAssignedEnergyValue(skyStone, 64.0F);                // Set the same as Obsidian
+    public EE3()
+    {
+        this.testClassExistence( com.pahimar.ee3.api.exchange.EnergyValueRegistryProxy.class );
     }
 
     @Override
-    public void postInit() {
+    public void init() throws Throwable
+    {
+        final IDefinitions definitions = AEApi.instance().definitions();
+        final IMaterials materials = definitions.materials();
+        final IItems items = definitions.items();
+        final IBlocks blocks = definitions.blocks();
+
+        EnergyValueRegistryProxy.addPreAssignedEnergyValue( new ItemStack(materials.certusQuartzCrystal().maybeItem().get(), 1, 0), 256 );       // Set the same as Nether Quarts
+        EnergyValueRegistryProxy.addPreAssignedEnergyValue( new ItemStack(blocks.skyStone().maybeBlock().get(), 1, 0), 64 );                     // Set the same as Obsidian
+
+        AELog.info("Registered EMC with EE3");
+    }
+
+    @Override
+    public void postInit()
+    {
 
     }
 }
