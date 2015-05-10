@@ -47,6 +47,13 @@ public class RC extends BaseModule implements IRC
 	}
 
 	@Override
+	public void preInit()
+	{
+
+	}
+
+
+	@Override
 	public void init()
 	{
 		// TODO Auto-generated method stub

@@ -52,6 +52,12 @@ public class BetterStorage implements IIntegrationModule, IBetterStorage
 	}
 
 	@Override
+	public void preInit()
+	{
+
+	}
+
+	@Override
 	public void init()
 	{
 

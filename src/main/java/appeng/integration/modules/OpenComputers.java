@@ -40,6 +40,13 @@ public class OpenComputers extends BaseModule
 	}
 
 	@Override
+	public void preInit()
+	{
+
+	}
+
+
+	@Override
 	public void init()
 	{
 	}

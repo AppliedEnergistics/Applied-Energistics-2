@@ -20,7 +20,7 @@ public class EE3 extends BaseModule {
     }
 
     @Override
-    public void init() throws Throwable
+    public void preInit()
     {
         final IDefinitions definitions = AEApi.instance().definitions();
         final IMaterials materials = definitions.materials();
@@ -31,6 +31,12 @@ public class EE3 extends BaseModule {
         EnergyValueRegistryProxy.addPreAssignedEnergyValue( new ItemStack(blocks.skyStone().maybeBlock().get(), 1, 0), 64 );                     // Set the same as Obsidian
 
         AELog.info("Registered EMC with EE3");
+    }
+
+    @Override
+    public void init() throws Throwable
+    {
+
     }
 
     @Override

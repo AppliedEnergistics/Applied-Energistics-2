@@ -48,6 +48,12 @@ public class DSU extends BaseModule implements IDSU
 	}
 
 	@Override
+	public void preInit()
+	{
+
+	}
+
+	@Override
 	public void init()
 	{
 		this.testClassExistence( IDeepStorageUnit.class );

@@ -33,6 +33,13 @@ public class RFItem extends BaseModule
 	}
 
 	@Override
+	public void preInit()
+	{
+
+	}
+
+
+	@Override
 	public void init()
 	{
 

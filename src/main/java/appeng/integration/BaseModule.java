@@ -28,6 +28,9 @@ public abstract class BaseModule implements IIntegrationModule
 	}
 
 	@Override
+	public abstract void preInit();
+
+	@Override
 	public abstract void init() throws Throwable;
 
 	@Override

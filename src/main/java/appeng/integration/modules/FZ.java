@@ -195,6 +195,12 @@ public class FZ implements IFZ, IIntegrationModule
 	}
 
 	@Override
+	public void preInit()
+	{
+
+	}
+
+	@Override
 	public void init() throws Throwable
 	{
 		day_BarrelClass = Class.forName( "factorization.weird.TileEntityDayBarrel" );

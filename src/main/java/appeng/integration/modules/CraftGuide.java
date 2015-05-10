@@ -358,6 +358,12 @@ public class CraftGuide extends CraftGuideAPIObject implements IIntegrationModul
 	}
 
 	@Override
+	public void preInit()
+	{
+
+	}
+
+	@Override
 	public void init() throws Throwable
 	{
 		StackInfo.addSource( this );

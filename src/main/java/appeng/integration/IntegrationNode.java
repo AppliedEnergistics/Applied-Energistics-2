@@ -107,7 +107,7 @@ public final class IntegrationNode
 						{
 							throw new ModNotInstalled( this.modID );
 						}
-
+						this.mod.preInit();
 						this.state = IntegrationStage.INIT;
 
 						break;

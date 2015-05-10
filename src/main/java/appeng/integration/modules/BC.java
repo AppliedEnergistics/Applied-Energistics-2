@@ -268,6 +268,12 @@ public final class BC extends BaseModule implements IBC
 	}
 
 	@Override
+	public void preInit()
+	{
+
+	}
+
+	@Override
 	public void init()
 	{
 		final IAppEngApi api = AEApi.instance();
