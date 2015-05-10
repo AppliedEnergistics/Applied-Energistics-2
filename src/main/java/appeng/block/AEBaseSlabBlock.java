@@ -42,7 +42,6 @@ public class AEBaseSlabBlock extends BlockSlab implements IAEFeature
 	private final IFeatureHandler features;
 	private final AEBaseBlock block;
 	private final int meta;
-	private final boolean isDoubleSlab;
 	private AEBaseSlabBlock slabs;
 	private AEBaseSlabBlock dSlabs;
 	private final String name;
@@ -53,14 +52,13 @@ public class AEBaseSlabBlock extends BlockSlab implements IAEFeature
 		this.block = block;
 		this.meta = meta;
 		this.name = name;
-		this.isDoubleSlab = isDoubleSlab;
 		this.setBlockName( "appliedenergistics2." + name );
 		this.setHardness( block.getBlockHardness( null, 0, 0, 0 ) );
 		this.setResistance( block.getExplosionResistance( null ) * 5.0F / 3.0F );
 		this.setStepSound( block.stepSound );
 		this.useNeighborBrightness = true;
-		if (!isDoubleSlab) this.dSlabs = new AEBaseSlabBlock( block, meta, features, true, name + ".double" ).setSlabs(this);
-		this.features = !isDoubleSlab ? new SlabBlockFeatureHandler( features, this ) : null;
+		if (!field_150004_a) this.dSlabs = new AEBaseSlabBlock( block, meta, features, true, name + ".double" ).setSlabs(this);
+		this.features = !field_150004_a ? new SlabBlockFeatureHandler( features, this ) : null;
 	}
 
 	public AEBaseSlabBlock setSlabs(AEBaseSlabBlock slabs)
