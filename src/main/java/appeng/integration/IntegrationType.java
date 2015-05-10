@@ -23,7 +23,7 @@ import scala.Int;
 
 public enum IntegrationType
 {
-	EE3( IntegrationSide.BOTH, "Equivalent Exchange 3", "EE3"),
+	EE3( IntegrationSide.BOTH, "Equivalent Exchange 3", "EE3" ),
 
 	IC2( IntegrationSide.BOTH, "Industrial Craft 2", "IC2" ),
 
