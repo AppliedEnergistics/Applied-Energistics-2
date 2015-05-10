@@ -90,6 +90,7 @@ public final class MeteoritePlacer
 		this.validSpawn.add( Blocks.hardened_clay );
 		this.validSpawn.add( Blocks.ice );
 		this.validSpawn.add( Blocks.snow );
+		this.validSpawn.add( Blocks.stained_hardened_clay );
 
 		for( Block skyStoneBlock : this.skyStoneDefinition.maybeBlock().asSet() )
 		{
