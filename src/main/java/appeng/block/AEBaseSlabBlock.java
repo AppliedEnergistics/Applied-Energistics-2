@@ -43,7 +43,7 @@ public class AEBaseSlabBlock extends BlockSlab implements IAEFeature
 	private final AEBaseBlock block;
 	private final int meta;
 	private AEBaseSlabBlock slabs;
-	private AEBaseSlabBlock dSlabs;
+	private AEBaseSlabBlock doubleSlabs;
 	private final String name;
 
 	public AEBaseSlabBlock( AEBaseBlock block, int meta, EnumSet<AEFeature> features, boolean isDoubleSlab, String name )
@@ -57,7 +57,7 @@ public class AEBaseSlabBlock extends BlockSlab implements IAEFeature
 		this.setResistance( block.getExplosionResistance( null ) * 5.0F / 3.0F );
 		this.setStepSound( block.stepSound );
 		this.useNeighborBrightness = true;
-		if (!field_150004_a) this.dSlabs = new AEBaseSlabBlock( block, meta, features, true, name + ".double" ).setSlabs(this);
+		if (!field_150004_a) this.doubleSlabs = new AEBaseSlabBlock( block, meta, features, true, name + ".double" ).setSlabs(this);
 		this.features = !field_150004_a ? new SlabBlockFeatureHandler( features, this ) : null;
 	}
 
@@ -72,9 +72,9 @@ public class AEBaseSlabBlock extends BlockSlab implements IAEFeature
 		return slabs;
 	}
 	
-	public AEBaseSlabBlock dSlabs()
+	public AEBaseSlabBlock doubleSlabs()
 	{
-		return dSlabs;
+		return doubleSlabs;
 	}
 
 	@Override
@@ -116,7 +116,7 @@ public class AEBaseSlabBlock extends BlockSlab implements IAEFeature
 		Block block = world.getBlock(x, y, z);
 
 		if (block == null) return null;
-		if (block == this.dSlabs) block = this.slabs;
+		if (block == this.doubleSlabs) block = this.slabs;
 
 		int meta = world.getBlockMetadata(x, y, z) & 7;
 		return new ItemStack(block, 1, meta);

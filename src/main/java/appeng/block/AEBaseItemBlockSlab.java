@@ -5,8 +5,8 @@ import net.minecraft.item.ItemSlab;
 
 public class AEBaseItemBlockSlab extends ItemSlab {
 
-	public AEBaseItemBlockSlab(Block b, AEBaseSlabBlock sb, AEBaseSlabBlock db, Boolean id)
+	public AEBaseItemBlockSlab(Block block, AEBaseSlabBlock singleSlab, AEBaseSlabBlock doubleSlab, Boolean isDoubleSlab)
 	{
-		super( b, sb, db, id );
+		super( block, singleSlab, doubleSlab, isDoubleSlab );
 	}
 }
