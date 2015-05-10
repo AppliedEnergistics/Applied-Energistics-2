@@ -22,6 +22,8 @@ package appeng.core.api.definitions;
 import java.util.EnumSet;
 import java.util.Set;
 
+import com.google.common.collect.ImmutableSet;
+
 import appeng.api.definitions.IBlockDefinition;
 import appeng.api.definitions.IBlocks;
 import appeng.api.definitions.ITileDefinition;
@@ -85,8 +87,6 @@ import appeng.debug.BlockChunkloader;
 import appeng.debug.BlockCubeGenerator;
 import appeng.debug.BlockItemGen;
 import appeng.debug.BlockPhantomNode;
-
-import com.google.common.collect.ImmutableSet;
 
 
 /**
