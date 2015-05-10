@@ -107,16 +107,16 @@ public class AEBaseSlabBlock extends BlockSlab implements IAEFeature
 	@Override
 	public Item getItemDropped(int meta, Random rand, int fortune)
 	{
-		return Item.getItemFromBlock(this.slabs);
+		return this.field_150004_a ? Item.getItemFromBlock(this.slabs) : Item.getItemFromBlock(this);
 	}
 
 	@Override
 	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z)
 	{
-		Block block = world.getBlock(x, y, z);
+		AEBaseSlabBlock block = (AEBaseSlabBlock) world.getBlock(x, y, z);
 
 		if (block == null) return null;
-		if (block == this.doubleSlabs) block = this.slabs;
+		if (block.field_150004_a) block = this.slabs;
 
 		int meta = world.getBlockMetadata(x, y, z) & 7;
 		return new ItemStack(block, 1, meta);
