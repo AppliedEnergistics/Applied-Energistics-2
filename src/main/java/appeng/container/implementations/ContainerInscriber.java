@@ -65,8 +65,6 @@ public class ContainerInscriber extends ContainerUpgradeable implements IProgres
 		this.addSlotToContainer( this.middle = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.INSCRIBER_INPUT, this.ti, 2, 63, 39, this.invPlayer ) );
 
 		this.addSlotToContainer( new SlotOutput( this.ti, 3, 113, 40, -1 ) );
-
-		this.bindPlayerInventory( ip, 0, this.getHeight() - /* height of player inventory */82 );
 	}
 
 	@Override
