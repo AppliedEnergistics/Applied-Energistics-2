@@ -28,7 +28,8 @@ public class RotaryCraft extends BaseModule
 
 	public RotaryCraft()
 	{
-		this.testClassExistence( Reika.RotaryCraft.API.Power.ShaftPowerReceiver.class );
+		this.testClassExistence( Reika.RotaryCraft.API.Power.AdvancedShaftPowerReceiver.class );
+		this.testClassExistence( Reika.RotaryCraft.API.Interfaces.Transducerable.class );
 	}
 
 	@Override

@@ -19,20 +19,25 @@
 package appeng.tile.powersink;
 
 
+import appeng.transformer.annotations.Integration;
+import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import Reika.RotaryCraft.API.Power.ShaftPowerReceiver;
+import Reika.RotaryCraft.API.Interfaces.Transducerable;
+import Reika.RotaryCraft.API.Power.AdvancedShaftPowerReceiver;
 
 import appeng.api.config.PowerUnits;
 import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
 import appeng.transformer.annotations.Integration.Interface;
+import appeng.transformer.annotations.Integration.InterfaceList;
 import appeng.transformer.annotations.Integration.Method;
 import appeng.util.Platform;
 
+import java.util.ArrayList;
 
-@Interface( iname = "RotaryCraft", iface = "Reika.RotaryCraft.API.Power.ShaftPowerReceiver" )
-public abstract class RotaryCraft extends IC2 implements ShaftPowerReceiver
+@InterfaceList( value = { @Interface( iname = "RotaryCraft", iface = "Reika.RotaryCraft.API.Power.AdvancedShaftPowerReceiver" ), @Interface( iname = "RotaryCraft", iface = "Reika.RotaryCraft.API.Interfaces.Transducerable") } )
+public abstract class RotaryCraft extends IC2 implements AdvancedShaftPowerReceiver, Transducerable
 {
 
 	private int omega = 0;
@@ -40,14 +45,30 @@ public abstract class RotaryCraft extends IC2 implements ShaftPowerReceiver
 	private long power = 0;
 	private int alpha = 0;
 
+	private long currentPower = 0;
+
 	@TileEvent( TileEventType.TICK )
 	@Method( iname = "RotaryCraft" )
 	public void Tick_RotaryCraft()
 	{
-		if( this.worldObj != null && !this.worldObj.isRemote && this.power > 0 )
+		if( this.worldObj != null && !this.worldObj.isRemote && this.currentPower > 0 )
 		{
-			this.injectExternalPower( PowerUnits.WA, this.power );
+			this.injectExternalPower( PowerUnits.WA, this.currentPower );
+			this.currentPower = 0;
 		}
+	}
+
+	@Override
+	public final boolean addPower( int torque, int omega, long power, ForgeDirection side )
+	{
+		this.omega = omega;
+		this.torque = torque;
+		this.power = power;
+
+		this.currentPower += power;
+
+		return true;
+
 	}
 
 	@Override
@@ -84,37 +105,6 @@ public abstract class RotaryCraft extends IC2 implements ShaftPowerReceiver
 	public final void setIORenderAlpha( int io )
 	{
 		this.alpha = io;
-	}
-
-	@Override
-	public final void setPower( long p )
-	{
-		if( Platform.isClient() )
-		{
-			return;
-		}
-
-		this.power = p;
-	}
-
-	@Override
-	public final void noInputMachine()
-	{
-		this.power = 0;
-		this.torque = 0;
-		this.omega = 0;
-	}
-
-	@Override
-	public final void setTorque( int t )
-	{
-		this.torque = t;
-	}
-
-	@Override
-	public final void setOmega( int o )
-	{
-		this.omega = o;
 	}
 
 	public final boolean canReadFromBlock( int x, int y, int z )
@@ -164,6 +154,33 @@ public abstract class RotaryCraft extends IC2 implements ShaftPowerReceiver
 	@Override
 	public final int getMinTorque( int available )
 	{
-		return 0;
+		return 1;
+	}
+
+	@Override
+	public final ArrayList<String> getMessages( World world, int x, int y, int z, int side )
+	{
+		String out;
+		if( power >= 1000000000 )
+		{
+			out = String.format( "Receiving %.3f GW @ %d rad/s.", power / 1000000000.0D, omega );
+		}
+		else if( power >= 1000000 )
+		{
+			out = String.format( "Receiving %.3f MW @ %d rad/s.", power / 1000000.0D, omega );
+		}
+		else if( power >= 1000 )
+		{
+			out = String.format( "Receiving %.3f kW @ %d rad/s.", power / 1000.0D, omega );
+		}
+		else
+		{
+			out = String.format( "Receiving %d W @ %d rad/s.", power, omega );
+		}
+
+
+		ArrayList<String> messages = new ArrayList<String>( 1 );
+		messages.add( out );
+		return messages;
 	}
 }
