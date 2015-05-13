@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -23,24 +23,35 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
+import javax.annotation.Nonnull;
+
+import com.google.common.base.Preconditions;
 
 import appeng.api.recipes.IRecipeLoader;
 
 
 public final class ConfigLoader implements IRecipeLoader
 {
-	private final File rootDirectory;
+	private final File generatedRecipesDir;
+	private final File userRecipesDir;
 
-	public ConfigLoader( File rootDirectory )
+	public ConfigLoader( File generatedRecipesDir, File userRecipesDir )
 	{
-		this.rootDirectory = rootDirectory;
+		this.generatedRecipesDir = generatedRecipesDir;
+		this.userRecipesDir = userRecipesDir;
 	}
 
 	@Override
-	public BufferedReader getFile( String s ) throws Exception
+	public BufferedReader getFile( @Nonnull String relativeFilePath ) throws Exception
 	{
-		final File f = new File( this.rootDirectory, s );
+		Preconditions.checkNotNull( relativeFilePath );
+		Preconditions.checkArgument( !relativeFilePath.isEmpty(), "Supplying an empty String will result creating a reader of a folder." );
 
-		return new BufferedReader( new InputStreamReader( new FileInputStream( f ), "UTF-8" ) );
+		final File generatedFile = new File( this.generatedRecipesDir, relativeFilePath );
+		final File userFile = new File( this.userRecipesDir, relativeFilePath );
+
+		final File toBeLoaded = ( userFile.exists() && userFile.isFile() ) ? userFile : generatedFile;
+
+		return new BufferedReader( new InputStreamReader( new FileInputStream( toBeLoaded ), "UTF-8" ) );
 	}
 }

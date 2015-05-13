@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2013 AlgorithmX2
+ * Copyright (c) 2013 - 2015 AlgorithmX2
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -25,10 +25,17 @@ package appeng.api.recipes;
 
 
 import java.io.BufferedReader;
+import javax.annotation.Nonnull;
 
 
 public interface IRecipeLoader
 {
-
-	BufferedReader getFile( String s ) throws Exception;
+	/**
+	 * @param filePath the path to the to be loaded file
+	 *
+	 * @return reader handler of the file
+	 *
+	 * @throws Exception if reading goes wrong
+	 */
+	BufferedReader getFile( @Nonnull String filePath ) throws Exception;
 }
