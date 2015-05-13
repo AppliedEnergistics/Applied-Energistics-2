@@ -11,7 +11,8 @@
 
 # include markdowns
 !README.md
-!License.md
+!LICENSE
+!CONTRIBUTING.md
 
 # include sourcecode
 !src/
