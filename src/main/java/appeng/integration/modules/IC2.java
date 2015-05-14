@@ -44,6 +44,12 @@ public class IC2 extends BaseModule implements IIC2
 	}
 
 	@Override
+	public void preInit()
+	{
+
+	}
+
+	@Override
 	public void init()
 	{
 	}

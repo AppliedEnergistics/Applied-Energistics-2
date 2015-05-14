@@ -112,6 +112,12 @@ public class FMP implements IIntegrationModule, IPartFactory, IPartConverter, IF
 	}
 
 	@Override
+	public void preInit()
+	{
+
+	}
+
+	@Override
 	public void init() throws Throwable
 	{
 		final IBlocks blocks = AEApi.instance().definitions().blocks();

@@ -48,6 +48,13 @@ public class Waila extends BaseModule
 	}
 
 	@Override
+	public void preInit()
+	{
+
+	}
+
+
+	@Override
 	public void init() throws Throwable
 	{
 		this.testClassExistence( IWailaDataProvider.class );

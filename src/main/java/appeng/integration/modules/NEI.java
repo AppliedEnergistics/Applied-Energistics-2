@@ -74,6 +74,13 @@ public class NEI extends BaseModule implements INEI, IContainerTooltipHandler
 	}
 
 	@Override
+	public void preInit()
+	{
+
+	}
+
+
+	@Override
 	public void init() throws Throwable
 	{
 		this.registerRecipeHandler = this.apiClass.getDeclaredMethod( "registerRecipeHandler", codechicken.nei.recipe.ICraftingHandler.class );

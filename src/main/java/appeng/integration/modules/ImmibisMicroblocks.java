@@ -54,6 +54,13 @@ public class ImmibisMicroblocks extends BaseModule implements IImmibisMicroblock
 	private Method mergeIntoMicroblockContainer;
 
 	@Override
+	public void preInit()
+	{
+
+	}
+
+
+	@Override
 	public void init() throws Throwable
 	{
 		this.testClassExistence( IMultipartTile.class );

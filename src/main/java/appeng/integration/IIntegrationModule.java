@@ -21,6 +21,7 @@ package appeng.integration;
 
 public interface IIntegrationModule
 {
+	void preInit();
 
 	void init() throws Throwable;
 

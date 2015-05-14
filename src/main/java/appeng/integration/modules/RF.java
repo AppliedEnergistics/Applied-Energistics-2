@@ -43,6 +43,13 @@ public class RF extends BaseModule
 	}
 
 	@Override
+	public void preInit()
+	{
+
+	}
+
+
+	@Override
 	public void init()
 	{
 	}

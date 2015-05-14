@@ -34,6 +34,13 @@ public final class Mekanism extends BaseModule implements IMekanism
 	public static Mekanism instance;
 
 	@Override
+	public void preInit()
+	{
+
+	}
+
+
+	@Override
 	public void init() throws Throwable
 	{
 		this.testClassExistence( mekanism.api.energy.IStrictEnergyAcceptor.class );
