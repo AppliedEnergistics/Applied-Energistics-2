@@ -3,6 +3,7 @@ package appeng.services.version;
 
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -31,49 +32,57 @@ public final class VersionParserTest
 	}
 
 	@Test
-	public void testParseGitHub_shouldPass()
+	public void testSameParsedGitHub()
+	{
+		final Version version = this.parser.parse( GITHUB_VERSION );
+
+		assertEquals( version, version );
+	}
+
+	@Test
+	public void testParseGitHub()
 	{
 		assertTrue( this.parser.parse( GITHUB_VERSION ).equals( VERSION ) );
 	}
 
 	@Test( expected = AssertionError.class )
-	public void parseGH_InvalidRevision_NotPass()
+	public void parseGH_InvalidRevision()
 	{
 		assertFalse( this.parser.parse( GITHUB_INVALID_REVISION ).equals( VERSION ) );
 	}
 
 	@Test( expected = AssertionError.class )
-	public void parseGH_InvalidChannel_NotPass()
+	public void parseGH_InvalidChannel()
 	{
 		assertFalse( this.parser.parse( GITHUB_INVALID_CHANNEL ).equals( VERSION ) );
 	}
 
 	@Test( expected = AssertionError.class )
-	public void parseGH_InvalidBuild_NotPass()
+	public void parseGH_InvalidBuild()
 	{
 		assertFalse( this.parser.parse( GITHUB_INVALID_BUILD ).equals( VERSION ) );
 	}
 
 	@Test
-	public void testParseMod_shouldPass()
+	public void testParseMod()
 	{
 		assertTrue( this.parser.parse( MOD_VERSION ).equals( VERSION ) );
 	}
 
 	@Test( expected = AssertionError.class )
-	public void parseMod_InvalidRevision_NotPass()
+	public void parseMod_InvalidRevision()
 	{
 		assertFalse( this.parser.parse( MOD_INVALID_REVISION ).equals( VERSION ) );
 	}
 
 	@Test( expected = AssertionError.class )
-	public void parseMod_InvalidChannel_NotPass()
+	public void parseMod_InvalidChannel()
 	{
 		assertFalse( this.parser.parse( MOD_INVALID_CHANNEL ).equals( VERSION ) );
 	}
 
 	@Test( expected = AssertionError.class )
-	public void parseMod_InvalidBuild_NotPass()
+	public void parseMod_InvalidBuild()
 	{
 		assertFalse( this.parser.parse( MOD_INVALID_BUILD ).equals( VERSION ) );
 	}
