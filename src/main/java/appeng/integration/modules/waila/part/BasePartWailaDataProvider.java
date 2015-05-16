@@ -22,6 +22,7 @@ package appeng.integration.modules.waila.part;
 import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -41,6 +42,12 @@ import appeng.api.parts.IPart;
  */
 public abstract class BasePartWailaDataProvider implements IPartWailaDataProvider
 {
+	@Override
+	public ItemStack getWailaStack( IPart part, IWailaConfigHandler config, ItemStack partStack )
+	{
+		return null;
+	}
+
 	@Override
 	public List<String> getWailaHead( IPart part, List<String> currentToolTip, IWailaDataAccessor accessor, IWailaConfigHandler config )
 	{

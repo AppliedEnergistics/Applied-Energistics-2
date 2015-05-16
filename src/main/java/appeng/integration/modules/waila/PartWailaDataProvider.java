@@ -38,6 +38,7 @@ import appeng.api.parts.IPart;
 import appeng.integration.modules.waila.part.ChannelWailaDataProvider;
 import appeng.integration.modules.waila.part.IPartWailaDataProvider;
 import appeng.integration.modules.waila.part.PartAccessor;
+import appeng.integration.modules.waila.part.PartStackWailaDataProvider;
 import appeng.integration.modules.waila.part.PowerStateWailaDataProvider;
 import appeng.integration.modules.waila.part.StorageMonitorWailaDataProvider;
 import appeng.integration.modules.waila.part.Tracer;
@@ -75,13 +76,32 @@ public final class PartWailaDataProvider implements IWailaDataProvider
 		final IPartWailaDataProvider channel = new ChannelWailaDataProvider();
 		final IPartWailaDataProvider storageMonitor = new StorageMonitorWailaDataProvider();
 		final IPartWailaDataProvider powerState = new PowerStateWailaDataProvider();
+		final IPartWailaDataProvider partStack = new PartStackWailaDataProvider();
 
-		this.providers = Lists.newArrayList( channel, storageMonitor, powerState );
+		this.providers = Lists.newArrayList( channel, storageMonitor, powerState, partStack );
 	}
 
 	@Override
 	public ItemStack getWailaStack( IWailaDataAccessor accessor, IWailaConfigHandler config )
 	{
+		final TileEntity te = accessor.getTileEntity();
+		final MovingObjectPosition mop = accessor.getPosition();
+
+		final Optional<IPart> maybePart = this.accessor.getMaybePart( te, mop );
+
+		if( maybePart.isPresent() )
+		{
+			final IPart part = maybePart.get();
+
+			ItemStack wailaStack = null;
+
+			for( IPartWailaDataProvider provider : this.providers )
+			{
+				wailaStack = provider.getWailaStack( part, config, wailaStack );
+			}
+			return wailaStack;
+		}
+
 		return null;
 	}
 
