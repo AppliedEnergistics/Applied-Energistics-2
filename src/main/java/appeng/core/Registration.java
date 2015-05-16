@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -76,6 +76,7 @@ import appeng.core.localization.PlayerMessages;
 import appeng.core.stats.PlayerStatsRegistration;
 import appeng.hooks.AETrading;
 import appeng.hooks.TickHandler;
+import appeng.integration.IntegrationRegistry;
 import appeng.integration.IntegrationType;
 import appeng.items.materials.ItemMultiMaterial;
 import appeng.me.cache.CraftingGridCache;
@@ -517,7 +518,7 @@ public final class Registration
 
 		if( AEConfig.instance.isFeatureEnabled( AEFeature.CustomRecipes ) )
 		{
-			this.recipeHandler.parseRecipes( new ConfigLoader( AppEng.instance.getConfigDirectory() ), "index.recipe" );
+			this.recipeHandler.parseRecipes( new ConfigLoader( AppEng.instance().getConfigDirectory() ), "index.recipe" );
 		}
 		else
 		{
@@ -528,18 +529,18 @@ public final class Registration
 		partHelper.registerNewLayer( "appeng.parts.layers.LayerIFluidHandler", "net.minecraftforge.fluids.IFluidHandler" );
 		partHelper.registerNewLayer( "appeng.parts.layers.LayerITileStorageMonitorable", "appeng.api.implementations.tiles.ITileStorageMonitorable" );
 
-		if( AppEng.instance.isIntegrationEnabled( IntegrationType.IC2 ) )
+		if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.IC2 ) )
 		{
 			partHelper.registerNewLayer( "appeng.parts.layers.LayerIEnergySink", "ic2.api.energy.tile.IEnergySink" );
 			partHelper.registerNewLayer( "appeng.parts.layers.LayerIEnergySource", "ic2.api.energy.tile.IEnergySource" );
 		}
 
-		if( AppEng.instance.isIntegrationEnabled( IntegrationType.RF ) )
+		if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.RF ) )
 		{
 			partHelper.registerNewLayer( "appeng.parts.layers.LayerIEnergyHandler", "cofh.api.energy.IEnergyReceiver" );
 		}
 
-		if ( AppEng.instance.isIntegrationEnabled( IntegrationType.OpenComputers ) )
+		if ( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.OpenComputers ) )
 		{
 			partHelper.registerNewLayer( "appeng.parts.layers.LayerSidedEnvironment", "li.cil.oc.api.network.SidedEnvironment" );
 		}

@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -52,12 +52,12 @@ import appeng.api.parts.IPartItem;
 import appeng.api.parts.PartItemStack;
 import appeng.api.parts.SelectedPart;
 import appeng.api.util.DimensionalCoord;
-import appeng.core.AppEng;
 import appeng.core.CommonHelper;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketClick;
 import appeng.core.sync.packets.PacketPartPlacement;
 import appeng.facade.IFacadeItem;
+import appeng.integration.IntegrationRegistry;
 import appeng.integration.IntegrationType;
 import appeng.integration.abstraction.IBC;
 import appeng.integration.abstraction.IFMP;
@@ -196,14 +196,14 @@ public class PartPlacement
 			}
 		}
 
-		if( host == null && tile != null && AppEng.instance.isIntegrationEnabled( IntegrationType.FMP ) )
+		if( host == null && tile != null && IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.FMP ) )
 		{
-			host = ( (IFMP) AppEng.instance.getIntegration( IntegrationType.FMP ) ).getOrCreateHost( tile );
+			host = ( (IFMP) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.FMP ) ).getOrCreateHost( tile );
 		}
 
-		if( host == null && tile != null && AppEng.instance.isIntegrationEnabled( IntegrationType.ImmibisMicroblocks ) )
+		if( host == null && tile != null && IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.ImmibisMicroblocks ) )
 		{
-			host = ( (IImmibisMicroblocks) AppEng.instance.getIntegration( IntegrationType.ImmibisMicroblocks ) ).getOrCreateHost( player, face, tile );
+			host = ( (IImmibisMicroblocks) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.ImmibisMicroblocks ) ).getOrCreateHost( player, face, tile );
 		}
 
 		// if ( held == null )
@@ -266,14 +266,14 @@ public class PartPlacement
 				host = (IPartHost) tile;
 			}
 
-			if( host == null && tile != null && AppEng.instance.isIntegrationEnabled( IntegrationType.FMP ) )
+			if( host == null && tile != null && IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.FMP ) )
 			{
-				host = ( (IFMP) AppEng.instance.getIntegration( IntegrationType.FMP ) ).getOrCreateHost( tile );
+				host = ( (IFMP) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.FMP ) ).getOrCreateHost( tile );
 			}
 
-			if( host == null && tile != null && AppEng.instance.isIntegrationEnabled( IntegrationType.ImmibisMicroblocks ) )
+			if( host == null && tile != null && IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.ImmibisMicroblocks ) )
 			{
-				host = ( (IImmibisMicroblocks) AppEng.instance.getIntegration( IntegrationType.ImmibisMicroblocks ) ).getOrCreateHost( player, face, tile );
+				host = ( (IImmibisMicroblocks) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.ImmibisMicroblocks ) ).getOrCreateHost( player, face, tile );
 			}
 
 			final Optional<ItemStack> maybeMultiPartStack = multiPart.maybeStack( 1 );
@@ -326,9 +326,9 @@ public class PartPlacement
 				Block blkID = world.getBlock( te_x, te_y, te_z );
 				tile = world.getTileEntity( te_x, te_y, te_z );
 
-				if( tile != null && AppEng.instance.isIntegrationEnabled( IntegrationType.FMP ) )
+				if( tile != null && IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.FMP ) )
 				{
-					host = ( (IFMP) AppEng.instance.getIntegration( IntegrationType.FMP ) ).getOrCreateHost( tile );
+					host = ( (IFMP) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.FMP ) ).getOrCreateHost( tile );
 				}
 
 				if( ( blkID == null || blkID.isReplaceable( world, te_x, te_y, te_z ) || host != null ) && side != ForgeDirection.UNKNOWN )
@@ -418,9 +418,9 @@ public class PartPlacement
 			return ( (IFacadeItem) held.getItem() ).createPartFromItemStack( held, side );
 		}
 
-		if( AppEng.instance.isIntegrationEnabled( IntegrationType.BC ) )
+		if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.BC ) )
 		{
-			IBC bc = (IBC) AppEng.instance.getIntegration( IntegrationType.BC );
+			IBC bc = (IBC) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.BC );
 			if( bc.isFacade( held ) )
 			{
 				return bc.createFacadePart( held, side );

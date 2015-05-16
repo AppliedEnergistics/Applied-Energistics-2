@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -20,7 +20,6 @@ package appeng.parts.p2p;
 
 
 import java.util.concurrent.Callable;
-
 import javax.annotation.Nullable;
 
 import net.minecraft.item.ItemStack;
@@ -45,9 +44,9 @@ import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.core.AELog;
-import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
 import appeng.hooks.TickHandler;
+import appeng.integration.IntegrationRegistry;
 import appeng.integration.IntegrationType;
 import appeng.me.GridAccessException;
 import appeng.transformer.annotations.Integration.Interface;
@@ -66,7 +65,7 @@ public final class PartP2POpenComputers extends PartP2PTunnel<PartP2POpenCompute
 	{
 		super( is );
 
-		if ( !AppEng.instance.isIntegrationEnabled( IntegrationType.OpenComputers ) )
+		if ( !IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.OpenComputers ) )
 		{
 			throw new RuntimeException( "OpenComputers is not installed!" );
 		}

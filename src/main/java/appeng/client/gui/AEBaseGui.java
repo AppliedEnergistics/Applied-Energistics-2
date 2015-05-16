@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -72,11 +72,11 @@ import appeng.container.slot.SlotOutput;
 import appeng.container.slot.SlotPatternTerm;
 import appeng.container.slot.SlotRestrictedInput;
 import appeng.core.AELog;
-import appeng.core.AppEng;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketInventoryAction;
 import appeng.core.sync.packets.PacketSwapSlots;
 import appeng.helpers.InventoryAction;
+import appeng.integration.IntegrationRegistry;
 import appeng.integration.IntegrationType;
 import appeng.integration.abstraction.INEI;
 
@@ -895,9 +895,9 @@ public abstract class AEBaseGui extends GuiContainer
 
 	private RenderItem setItemRender( RenderItem item )
 	{
-		if( AppEng.instance.isIntegrationEnabled( IntegrationType.NEI ) )
+		if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.NEI ) )
 		{
-			return ( (INEI) AppEng.instance.getIntegration( IntegrationType.NEI ) ).setItemRender( item );
+			return ( (INEI) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.NEI ) ).setItemRender( item );
 		}
 		else
 		{

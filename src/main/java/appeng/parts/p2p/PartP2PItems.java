@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -46,8 +46,8 @@ import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
-import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
+import appeng.integration.IntegrationRegistry;
 import appeng.integration.IntegrationType;
 import appeng.integration.abstraction.IBC;
 import appeng.me.GridAccessException;
@@ -141,9 +141,9 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 
 			this.which.add( this );
 
-			if( AppEng.instance.isIntegrationEnabled( IntegrationType.BC ) )
+			if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.BC ) )
 			{
-				IBC buildcraft = (IBC) AppEng.instance.getIntegration( IntegrationType.BC );
+				IBC buildcraft = (IBC) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.BC );
 				if( buildcraft != null )
 				{
 					if( buildcraft.isPipe( te, this.side.getOpposite() ) )

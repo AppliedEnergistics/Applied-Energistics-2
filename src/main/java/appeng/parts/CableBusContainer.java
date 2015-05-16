@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -63,9 +63,9 @@ import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalCoord;
 import appeng.client.render.CableRenderHelper;
 import appeng.core.AELog;
-import appeng.core.AppEng;
 import appeng.facade.FacadeContainer;
 import appeng.helpers.AEMultiTile;
+import appeng.integration.IntegrationRegistry;
 import appeng.integration.IntegrationType;
 import appeng.integration.abstraction.ICLApi;
 import appeng.me.GridConnection;
@@ -885,9 +885,9 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 			}
 		}
 
-		if( light > 0 && AppEng.instance.isIntegrationEnabled( IntegrationType.CLApi ) )
+		if( light > 0 && IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.CLApi ) )
 		{
-			return ( (ICLApi) AppEng.instance.getIntegration( IntegrationType.CLApi ) ).colorLight( this.getColor(), light );
+			return ( (ICLApi) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.CLApi ) ).colorLight( this.getColor(), light );
 		}
 
 		return light;

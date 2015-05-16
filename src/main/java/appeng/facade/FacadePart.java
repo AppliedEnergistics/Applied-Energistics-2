@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -51,7 +51,7 @@ import appeng.api.parts.ISimplifiedBundle;
 import appeng.client.render.BusRenderHelper;
 import appeng.client.render.RenderBlocksWorkaround;
 import appeng.core.AELog;
-import appeng.core.AppEng;
+import appeng.integration.IntegrationRegistry;
 import appeng.integration.IntegrationType;
 import appeng.integration.abstraction.IBC;
 import appeng.util.Platform;
@@ -133,7 +133,7 @@ public class FacadePart implements IFacadePart, IBoxProvider
 					IIcon myIcon = null;
 					if( this.isBC() )
 					{
-						IBC bc = (IBC) AppEng.instance.getIntegration( IntegrationType.BC );
+						IBC bc = (IBC) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.BC );
 						myIcon = bc.getFacadeTexture();
 					}
 
@@ -353,9 +353,9 @@ public class FacadePart implements IFacadePart, IBoxProvider
 
 			return facade.getTextureItem( this.facade );
 		}
-		else if( AppEng.instance.isIntegrationEnabled( IntegrationType.BC ) )
+		else if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.BC ) )
 		{
-			IBC bc = (IBC) AppEng.instance.getIntegration( IntegrationType.BC );
+			IBC bc = (IBC) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.BC );
 
 			return bc.getTextureForFacade( this.facade );
 		}

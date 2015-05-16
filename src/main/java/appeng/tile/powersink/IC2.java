@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -27,7 +27,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import ic2.api.energy.tile.IEnergySink;
 
 import appeng.api.config.PowerUnits;
-import appeng.core.AppEng;
+import appeng.integration.IntegrationRegistry;
 import appeng.integration.IntegrationType;
 import appeng.integration.abstraction.IIC2;
 import appeng.transformer.annotations.Integration.Interface;
@@ -77,9 +77,9 @@ public abstract class IC2 extends AERootPoweredTile implements IEnergySink
 
 	private void removeFromENet()
 	{
-		if( AppEng.instance.isIntegrationEnabled( IntegrationType.IC2 ) )
+		if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.IC2 ) )
 		{
-			IIC2 ic2Integration = (IIC2) AppEng.instance.getIntegration( IntegrationType.IC2 );
+			IIC2 ic2Integration = (IIC2) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.IC2 );
 			if( this.isInIC2 && Platform.isServer() && ic2Integration != null )
 			{
 				ic2Integration.removeFromEnergyNet( this );
@@ -104,9 +104,9 @@ public abstract class IC2 extends AERootPoweredTile implements IEnergySink
 
 	private void addToENet()
 	{
-		if( AppEng.instance.isIntegrationEnabled( IntegrationType.IC2 ) )
+		if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.IC2 ) )
 		{
-			IIC2 ic2Integration = (IIC2) AppEng.instance.getIntegration( IntegrationType.IC2 );
+			IIC2 ic2Integration = (IIC2) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.IC2 );
 			if( !this.isInIC2 && Platform.isServer() && ic2Integration != null )
 			{
 				ic2Integration.addToEnergyNet( this );

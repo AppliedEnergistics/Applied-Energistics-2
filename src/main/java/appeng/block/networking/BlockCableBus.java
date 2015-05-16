@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -60,10 +60,10 @@ import appeng.client.render.blocks.RendererCableBus;
 import appeng.client.texture.ExtraBlockTextures;
 import appeng.core.AEConfig;
 import appeng.core.Api;
-import appeng.core.AppEng;
 import appeng.core.CommonHelper;
 import appeng.core.features.AEFeature;
 import appeng.helpers.AEGlassMaterial;
+import appeng.integration.IntegrationRegistry;
 import appeng.integration.IntegrationType;
 import appeng.integration.abstraction.IFMP;
 import appeng.parts.ICableBusContainer;
@@ -394,9 +394,9 @@ public class BlockCableBus extends AEBaseBlock implements IRedNetConnection
 		{
 			out = ( (TileCableBus) te ).cb;
 		}
-		else if( AppEng.instance.isIntegrationEnabled( IntegrationType.FMP ) )
+		else if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.FMP ) )
 		{
-			out = ( (IFMP) AppEng.instance.getIntegration( IntegrationType.FMP ) ).getCableContainer( te );
+			out = ( (IFMP) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.FMP ) ).getCableContainer( te );
 		}
 
 		return out == null ? NULL_CABLE_BUS : out;
