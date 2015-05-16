@@ -22,6 +22,7 @@ package appeng.client.gui.implementations;
 import java.io.IOException;
 import java.util.List;
 
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
 import net.minecraft.client.gui.GuiButton;
@@ -218,6 +219,8 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 	@Override
 	public void initGui()
 	{
+		Keyboard.enableRepeatEvents( true );
+
 		this.maxRows = this.getMaxRows();
 		this.perRow = AEConfig.instance.getConfigManager().getSetting( Settings.TERMINAL_STYLE ) != TerminalStyle.FULL ? 9 : 9 + ( ( this.width - this.standardSize ) / 18 );
 
@@ -383,6 +386,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 	public void onGuiClosed()
 	{
 		super.onGuiClosed();
+		Keyboard.enableRepeatEvents( false );
 		memoryText = this.searchField.getText();
 	}
 
