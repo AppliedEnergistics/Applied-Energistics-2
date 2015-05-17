@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -55,7 +55,7 @@ import appeng.items.AEBaseItem;
 import appeng.util.Platform;
 
 
-public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassItem
+public final class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassItem
 {
 
 	private List<ItemStack> subTypes = null;
@@ -72,19 +72,19 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public int getSpriteNumber()
+	public final int getSpriteNumber()
 	{
 		return 0;
 	}
 
 	@Override
-	public boolean onItemUse( ItemStack is, EntityPlayer player, World w, int x, int y, int z, int side, float hitX, float hitY, float hitZ )
+	public final boolean onItemUse( ItemStack is, EntityPlayer player, World w, int x, int y, int z, int side, float hitX, float hitY, float hitZ )
 	{
 		return AEApi.instance().partHelper().placeBus( is, x, y, z, side, player, w );
 	}
 
 	@Override
-	public String getItemStackDisplayName( ItemStack is )
+	public final String getItemStackDisplayName( ItemStack is )
 	{
 		try
 		{
@@ -103,7 +103,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 	}
 
 	@Override
-	public void getSubItems( Item number, CreativeTabs tab, List list )
+	public final void getSubItems( Item number, CreativeTabs tab, List list )
 	{
 		this.calculateSubTypes();
 		list.addAll( this.subTypes );
@@ -145,7 +145,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 		}
 	}
 
-	public ItemStack createFacadeForItem( ItemStack l, boolean returnItem )
+	public final ItemStack createFacadeForItem( ItemStack l, boolean returnItem )
 	{
 		if( l == null )
 		{
@@ -188,7 +188,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 	}
 
 	@Override
-	public FacadePart createPartFromItemStack( ItemStack is, ForgeDirection side )
+	public final FacadePart createPartFromItemStack( ItemStack is, ForgeDirection side )
 	{
 		ItemStack in = this.getTextureItem( is );
 		if( in != null )
@@ -199,7 +199,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 	}
 
 	@Override
-	public ItemStack getTextureItem( ItemStack is )
+	public final ItemStack getTextureItem( ItemStack is )
 	{
 		Block blk = this.getBlock( is );
 		if( blk != null )
@@ -210,7 +210,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 	}
 
 	@Override
-	public int getMeta( ItemStack is )
+	public final int getMeta( ItemStack is )
 	{
 		NBTTagCompound data = is.getTagCompound();
 		if( data != null )
@@ -225,7 +225,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 	}
 
 	@Override
-	public Block getBlock( ItemStack is )
+	public final Block getBlock( ItemStack is )
 	{
 		NBTTagCompound data = is.getTagCompound();
 		if( data != null )
@@ -246,13 +246,13 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 		return Blocks.glass;
 	}
 
-	public List<ItemStack> getFacades()
+	public final List<ItemStack> getFacades()
 	{
 		this.calculateSubTypes();
 		return this.subTypes;
 	}
 
-	public ItemStack getCreativeTabIcon()
+	public final ItemStack getCreativeTabIcon()
 	{
 		this.calculateSubTypes();
 		if( this.subTypes.isEmpty() )
@@ -262,7 +262,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 		return this.subTypes.get( 0 );
 	}
 
-	public ItemStack createFromIDs( int[] ids )
+	public final ItemStack createFromIDs( int[] ids )
 	{
 		for( ItemStack facadeStack : AEApi.instance().definitions().items().facade().maybeStack( 1 ).asSet() )
 		{
@@ -277,7 +277,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 	}
 
 	@Override
-	public boolean useAlphaPass( ItemStack is )
+	public final boolean useAlphaPass( ItemStack is )
 	{
 		ItemStack out = this.getTextureItem( is );
 

@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -79,7 +79,7 @@ import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 
 
-public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCell, IItemGroup, IBlockTool, IMouseWheelItem
+public final class ToolColorApplicator extends AEBasePoweredItem implements IStorageCell, IItemGroup, IBlockTool, IMouseWheelItem
 {
 
 	static final Map<Integer, AEColor> ORE_TO_COLOR = new HashMap<Integer, AEColor>();
@@ -116,7 +116,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 	}
 
 	@Override
-	public boolean onItemUse( ItemStack is, EntityPlayer p, World w, int x, int y, int z, int side, float hitX, float hitY, float hitZ )
+	public final boolean onItemUse( ItemStack is, EntityPlayer p, World w, int x, int y, int z, int side, float hitX, float hitY, float hitZ )
 	{
 		Block blk = w.getBlock( x, y, z );
 		double powerPerUse = 100;
@@ -197,7 +197,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 	}
 
 	@Override
-	public String getItemStackDisplayName( ItemStack par1ItemStack )
+	public final String getItemStackDisplayName( ItemStack par1ItemStack )
 	{
 		String extra = GuiText.Empty.getLocal();
 
@@ -211,12 +211,12 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 		return super.getItemStackDisplayName( par1ItemStack ) + " - " + extra;
 	}
 
-	public AEColor getActiveColor( ItemStack tol )
+	public final AEColor getActiveColor( ItemStack tol )
 	{
 		return this.getColorFromItem( this.getColor( tol ) );
 	}
 
-	public AEColor getColorFromItem( ItemStack paintBall )
+	public final AEColor getColorFromItem( ItemStack paintBall )
 	{
 		if( paintBall == null )
 		{
@@ -249,7 +249,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 		return null;
 	}
 
-	public ItemStack getColor( ItemStack is )
+	public final ItemStack getColor( ItemStack is )
 	{
 		NBTTagCompound c = is.getTagCompound();
 		if( c != null && c.hasKey( "color" ) )
@@ -337,7 +337,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 		return newColor;
 	}
 
-	public void setColor( ItemStack is, ItemStack newColor )
+	public final void setColor( ItemStack is, ItemStack newColor )
 	{
 		NBTTagCompound data = Platform.openNbtData( is );
 		if( newColor == null )
@@ -417,7 +417,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 		return blk.recolourBlock( w, x, y, z, side, newColor.ordinal() );
 	}
 
-	public void cycleColors( ItemStack is, ItemStack paintBall, int i )
+	public final void cycleColors( ItemStack is, ItemStack paintBall, int i )
 	{
 		if( paintBall == null )
 		{
@@ -448,31 +448,31 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 	}
 
 	@Override
-	public int getBytes( ItemStack cellItem )
+	public final int getBytes( ItemStack cellItem )
 	{
 		return 512;
 	}
 
 	@Override
-	public int BytePerType( ItemStack cell )
+	public final int BytePerType( ItemStack cell )
 	{
 		return 8;
 	}
 
 	@Override
-	public int getBytesPerType( ItemStack cellItem )
+	public final int getBytesPerType( ItemStack cellItem )
 	{
 		return 8;
 	}
 
 	@Override
-	public int getTotalTypes( ItemStack cellItem )
+	public final int getTotalTypes( ItemStack cellItem )
 	{
 		return 27;
 	}
 
 	@Override
-	public boolean isBlackListed( ItemStack cellItem, IAEItemStack requestedAddition )
+	public final boolean isBlackListed( ItemStack cellItem, IAEItemStack requestedAddition )
 	{
 		if( requestedAddition != null )
 		{
@@ -497,49 +497,49 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 	}
 
 	@Override
-	public boolean storableInStorageCell()
+	public final boolean storableInStorageCell()
 	{
 		return true;
 	}
 
 	@Override
-	public boolean isStorageCell( ItemStack i )
+	public final boolean isStorageCell( ItemStack i )
 	{
 		return true;
 	}
 
 	@Override
-	public double getIdleDrain()
+	public final double getIdleDrain()
 	{
 		return 0.5;
 	}
 
 	@Override
-	public String getUnlocalizedGroupName( Set<ItemStack> others, ItemStack is )
+	public final String getUnlocalizedGroupName( Set<ItemStack> others, ItemStack is )
 	{
 		return GuiText.StorageCells.getUnlocalized();
 	}
 
 	@Override
-	public boolean isEditable( ItemStack is )
+	public final boolean isEditable( ItemStack is )
 	{
 		return true;
 	}
 
 	@Override
-	public IInventory getUpgradesInventory( ItemStack is )
+	public final IInventory getUpgradesInventory( ItemStack is )
 	{
 		return new CellUpgrades( is, 2 );
 	}
 
 	@Override
-	public IInventory getConfigInventory( ItemStack is )
+	public final IInventory getConfigInventory( ItemStack is )
 	{
 		return new CellConfig( is );
 	}
 
 	@Override
-	public FuzzyMode getFuzzyMode( ItemStack is )
+	public final FuzzyMode getFuzzyMode( ItemStack is )
 	{
 		String fz = Platform.openNbtData( is ).getString( "FuzzyMode" );
 		try
@@ -553,7 +553,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 	}
 
 	@Override
-	public void setFuzzyMode( ItemStack is, FuzzyMode fzMode )
+	public final void setFuzzyMode( ItemStack is, FuzzyMode fzMode )
 	{
 		Platform.openNbtData( is ).setString( "FuzzyMode", fzMode.name() );
 	}

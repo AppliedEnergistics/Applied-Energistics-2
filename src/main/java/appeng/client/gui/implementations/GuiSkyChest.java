@@ -29,7 +29,7 @@ import appeng.integration.IntegrationType;
 import appeng.tile.storage.TileSkyChest;
 
 
-public class GuiSkyChest extends AEBaseGui
+public final class GuiSkyChest extends AEBaseGui
 {
 
 	public GuiSkyChest( InventoryPlayer inventoryPlayer, TileSkyChest te )

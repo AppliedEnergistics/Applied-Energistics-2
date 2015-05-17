@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -31,7 +31,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 
 
-public class WrapperChainedInventory implements IInventory
+public final class WrapperChainedInventory implements IInventory
 {
 
 	int fullSize = 0;
@@ -43,13 +43,13 @@ public class WrapperChainedInventory implements IInventory
 		this.setInventory( inventories );
 	}
 
-	public void setInventory( IInventory... a )
+	public final void setInventory( IInventory... a )
 	{
 		this.l = ImmutableList.copyOf( a );
 		this.calculateSizes();
 	}
 
-	public void calculateSizes()
+	public final void calculateSizes()
 	{
 		this.offsets = new HashMap<Integer, WrapperChainedInventory.InvOffset>();
 
@@ -77,13 +77,13 @@ public class WrapperChainedInventory implements IInventory
 		this.setInventory( inventories );
 	}
 
-	public void setInventory( List<IInventory> a )
+	public final void setInventory( List<IInventory> a )
 	{
 		this.l = a;
 		this.calculateSizes();
 	}
 
-	public void cycleOrder()
+	public final void cycleOrder()
 	{
 		if( this.l.size() > 1 )
 		{
@@ -118,13 +118,13 @@ public class WrapperChainedInventory implements IInventory
 	}
 
 	@Override
-	public int getSizeInventory()
+	public final int getSizeInventory()
 	{
 		return this.fullSize;
 	}
 
 	@Override
-	public ItemStack getStackInSlot( int idx )
+	public final ItemStack getStackInSlot( int idx )
 	{
 		InvOffset io = this.offsets.get( idx );
 		if( io != null )
@@ -135,7 +135,7 @@ public class WrapperChainedInventory implements IInventory
 	}
 
 	@Override
-	public ItemStack decrStackSize( int idx, int var2 )
+	public final ItemStack decrStackSize( int idx, int var2 )
 	{
 		InvOffset io = this.offsets.get( idx );
 		if( io != null )
@@ -146,7 +146,7 @@ public class WrapperChainedInventory implements IInventory
 	}
 
 	@Override
-	public ItemStack getStackInSlotOnClosing( int idx )
+	public final ItemStack getStackInSlotOnClosing( int idx )
 	{
 		InvOffset io = this.offsets.get( idx );
 		if( io != null )
@@ -157,7 +157,7 @@ public class WrapperChainedInventory implements IInventory
 	}
 
 	@Override
-	public void setInventorySlotContents( int idx, ItemStack var2 )
+	public final void setInventorySlotContents( int idx, ItemStack var2 )
 	{
 		InvOffset io = this.offsets.get( idx );
 		if( io != null )
@@ -167,19 +167,19 @@ public class WrapperChainedInventory implements IInventory
 	}
 
 	@Override
-	public String getInventoryName()
+	public final String getInventoryName()
 	{
 		return "ChainedInv";
 	}
 
 	@Override
-	public boolean hasCustomInventoryName()
+	public final boolean hasCustomInventoryName()
 	{
 		return false;
 	}
 
 	@Override
-	public int getInventoryStackLimit()
+	public final int getInventoryStackLimit()
 	{
 		int smallest = 64;
 
@@ -192,7 +192,7 @@ public class WrapperChainedInventory implements IInventory
 	}
 
 	@Override
-	public void markDirty()
+	public final void markDirty()
 	{
 		for( IInventory i : this.l )
 		{
@@ -201,23 +201,23 @@ public class WrapperChainedInventory implements IInventory
 	}
 
 	@Override
-	public boolean isUseableByPlayer( EntityPlayer var1 )
+	public final boolean isUseableByPlayer( EntityPlayer var1 )
 	{
 		return false;
 	}
 
 	@Override
-	public void openInventory()
+	public final void openInventory()
 	{
 	}
 
 	@Override
-	public void closeInventory()
+	public final void closeInventory()
 	{
 	}
 
 	@Override
-	public boolean isItemValidForSlot( int idx, ItemStack itemstack )
+	public final boolean isItemValidForSlot( int idx, ItemStack itemstack )
 	{
 		InvOffset io = this.offsets.get( idx );
 		if( io != null )
@@ -227,7 +227,7 @@ public class WrapperChainedInventory implements IInventory
 		return false;
 	}
 
-	static class InvOffset
+	static final class InvOffset
 	{
 
 		int offset;

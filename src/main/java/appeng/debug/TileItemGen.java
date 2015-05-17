@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -32,7 +32,7 @@ import net.minecraft.item.ItemStack;
 import appeng.tile.AEBaseTile;
 
 
-public class TileItemGen extends AEBaseTile implements IInventory
+public final class TileItemGen extends AEBaseTile implements IInventory
 {
 
 	private static final Queue<ItemStack> POSSIBLE_ITEMS = new LinkedList<ItemStack>();
@@ -65,13 +65,13 @@ public class TileItemGen extends AEBaseTile implements IInventory
 	}
 
 	@Override
-	public int getSizeInventory()
+	public final int getSizeInventory()
 	{
 		return 1;
 	}
 
 	@Override
-	public ItemStack getStackInSlot( int i )
+	public final ItemStack getStackInSlot( int i )
 	{
 		return this.getRandomItem();
 	}
@@ -82,7 +82,7 @@ public class TileItemGen extends AEBaseTile implements IInventory
 	}
 
 	@Override
-	public ItemStack decrStackSize( int i, int j )
+	public final ItemStack decrStackSize( int i, int j )
 	{
 		ItemStack a = POSSIBLE_ITEMS.poll();
 		ItemStack out = a.copy();
@@ -91,56 +91,56 @@ public class TileItemGen extends AEBaseTile implements IInventory
 	}
 
 	@Override
-	public ItemStack getStackInSlotOnClosing( int i )
+	public final ItemStack getStackInSlotOnClosing( int i )
 	{
 		return null;
 	}
 
 	@Override
-	public void setInventorySlotContents( int i, ItemStack itemstack )
+	public final void setInventorySlotContents( int i, ItemStack itemstack )
 	{
 		ItemStack a = POSSIBLE_ITEMS.poll();
 		POSSIBLE_ITEMS.add( a );
 	}
 
 	@Override
-	public String getInventoryName()
+	public final String getInventoryName()
 	{
 		return null;
 	}
 
 	@Override
-	public boolean hasCustomInventoryName()
+	public final boolean hasCustomInventoryName()
 	{
 		return false;
 	}
 
 	@Override
-	public int getInventoryStackLimit()
+	public final int getInventoryStackLimit()
 	{
 		return 1;
 	}
 
 	@Override
-	public boolean isUseableByPlayer( EntityPlayer entityplayer )
+	public final boolean isUseableByPlayer( EntityPlayer entityplayer )
 	{
 		return false;
 	}
 
 	@Override
-	public void openInventory()
+	public final void openInventory()
 	{
 
 	}
 
 	@Override
-	public void closeInventory()
+	public final void closeInventory()
 	{
 
 	}
 
 	@Override
-	public boolean isItemValidForSlot( int i, ItemStack itemstack )
+	public final boolean isItemValidForSlot( int i, ItemStack itemstack )
 	{
 		return false;
 	}

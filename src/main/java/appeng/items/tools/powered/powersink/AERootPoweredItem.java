@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -71,13 +71,13 @@ public abstract class AERootPoweredItem extends AEBaseItem implements IAEItemPow
 	}
 
 	@Override
-	public boolean isDamageable()
+	public final boolean isDamageable()
 	{
 		return true;
 	}
 
 	@Override
-	public void getSubItems( Item id, CreativeTabs tab, List list )
+	public final void getSubItems( Item id, CreativeTabs tab, List list )
 	{
 		super.getSubItems( id, tab, list );
 
@@ -89,25 +89,25 @@ public abstract class AERootPoweredItem extends AEBaseItem implements IAEItemPow
 	}
 
 	@Override
-	public boolean isRepairable()
+	public final boolean isRepairable()
 	{
 		return false;
 	}
 
 	@Override
-	public double getDurabilityForDisplay( ItemStack is )
+	public final double getDurabilityForDisplay( ItemStack is )
 	{
 		return 1 - this.getAECurrentPower( is ) / this.getAEMaxPower( is );
 	}
 
 	@Override
-	public boolean isDamaged( ItemStack stack )
+	public final boolean isDamaged( ItemStack stack )
 	{
 		return true;
 	}
 
 	@Override
-	public void setDamage( ItemStack stack, int damage )
+	public final void setDamage( ItemStack stack, int damage )
 	{
 
 	}
@@ -150,7 +150,7 @@ public abstract class AERootPoweredItem extends AEBaseItem implements IAEItemPow
 	/**
 	 * inject external
 	 */
-	double injectExternalPower( PowerUnits input, ItemStack is, double amount, boolean simulate )
+	final double injectExternalPower( PowerUnits input, ItemStack is, double amount, boolean simulate )
 	{
 		if( simulate )
 		{
@@ -169,31 +169,31 @@ public abstract class AERootPoweredItem extends AEBaseItem implements IAEItemPow
 	}
 
 	@Override
-	public double injectAEPower( ItemStack is, double amt )
+	public final double injectAEPower( ItemStack is, double amt )
 	{
 		return this.getInternalBattery( is, batteryOperation.INJECT, amt );
 	}
 
 	@Override
-	public double extractAEPower( ItemStack is, double amt )
+	public final double extractAEPower( ItemStack is, double amt )
 	{
 		return this.getInternalBattery( is, batteryOperation.EXTRACT, amt );
 	}
 
 	@Override
-	public double getAEMaxPower( ItemStack is )
+	public final double getAEMaxPower( ItemStack is )
 	{
 		return this.powerCapacity;
 	}
 
 	@Override
-	public double getAECurrentPower( ItemStack is )
+	public final double getAECurrentPower( ItemStack is )
 	{
 		return this.getInternalBattery( is, batteryOperation.STORAGE, 0 );
 	}
 
 	@Override
-	public AccessRestriction getPowerFlow( ItemStack is )
+	public final AccessRestriction getPowerFlow( ItemStack is )
 	{
 		return AccessRestriction.WRITE;
 	}

@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -27,7 +27,7 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemContainer;
 
 
-public class ItemModList implements IItemContainer<IAEItemStack>
+public final class ItemModList implements IItemContainer<IAEItemStack>
 {
 
 	final IItemContainer<IAEItemStack> backingStore;
@@ -39,7 +39,7 @@ public class ItemModList implements IItemContainer<IAEItemStack>
 	}
 
 	@Override
-	public void add( IAEItemStack option )
+	public final void add( IAEItemStack option )
 	{
 		IAEItemStack over = this.overrides.findPrecise( option );
 		if( over == null )
@@ -62,7 +62,7 @@ public class ItemModList implements IItemContainer<IAEItemStack>
 	}
 
 	@Override
-	public IAEItemStack findPrecise( IAEItemStack i )
+	public final IAEItemStack findPrecise( IAEItemStack i )
 	{
 		IAEItemStack over = this.overrides.findPrecise( i );
 		if( over == null )
@@ -73,13 +73,13 @@ public class ItemModList implements IItemContainer<IAEItemStack>
 	}
 
 	@Override
-	public Collection<IAEItemStack> findFuzzy( IAEItemStack input, FuzzyMode fuzzy )
+	public final Collection<IAEItemStack> findFuzzy( IAEItemStack input, FuzzyMode fuzzy )
 	{
 		return this.overrides.findFuzzy( input, fuzzy );
 	}
 
 	@Override
-	public boolean isEmpty()
+	public final boolean isEmpty()
 	{
 		return this.overrides.isEmpty() && this.backingStore.isEmpty();
 	}

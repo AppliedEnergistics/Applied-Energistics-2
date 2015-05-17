@@ -29,7 +29,7 @@ import appeng.integration.abstraction.IInvTweaks;
 import appeng.util.item.AEItemStack;
 
 
-public class ItemSorters
+public final class ItemSorters
 {
 
 	public static SortDir Direction = SortDir.ASCENDING;

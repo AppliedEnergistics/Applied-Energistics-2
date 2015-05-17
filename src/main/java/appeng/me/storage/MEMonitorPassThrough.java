@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -35,7 +35,7 @@ import appeng.util.Platform;
 import appeng.util.inv.ItemListIgnoreCrafting;
 
 
-public class MEMonitorPassThrough<T extends IAEStack<T>> extends MEPassThrough<T> implements IMEMonitor<T>, IMEMonitorHandlerReceiver<T>
+public final class MEMonitorPassThrough<T extends IAEStack<T>> extends MEPassThrough<T> implements IMEMonitor<T>, IMEMonitorHandlerReceiver<T>
 {
 
 	final HashMap<IMEMonitorHandlerReceiver<T>, Object> listeners = new HashMap<IMEMonitorHandlerReceiver<T>, Object>();
@@ -52,7 +52,7 @@ public class MEMonitorPassThrough<T extends IAEStack<T>> extends MEPassThrough<T
 	}
 
 	@Override
-	public void setInternal( IMEInventory<T> i )
+	public final void setInternal( IMEInventory<T> i )
 	{
 		if( this.monitor != null )
 		{
@@ -79,26 +79,26 @@ public class MEMonitorPassThrough<T extends IAEStack<T>> extends MEPassThrough<T
 	}
 
 	@Override
-	public IItemList<T> getAvailableItems( IItemList out )
+	public final IItemList<T> getAvailableItems( IItemList out )
 	{
 		super.getAvailableItems( new ItemListIgnoreCrafting( out ) );
 		return out;
 	}
 
 	@Override
-	public void addListener( IMEMonitorHandlerReceiver<T> l, Object verificationToken )
+	public final void addListener( IMEMonitorHandlerReceiver<T> l, Object verificationToken )
 	{
 		this.listeners.put( l, verificationToken );
 	}
 
 	@Override
-	public void removeListener( IMEMonitorHandlerReceiver<T> l )
+	public final void removeListener( IMEMonitorHandlerReceiver<T> l )
 	{
 		this.listeners.remove( l );
 	}
 
 	@Override
-	public IItemList<T> getStorageList()
+	public final IItemList<T> getStorageList()
 	{
 		if( this.monitor == null )
 		{
@@ -110,13 +110,13 @@ public class MEMonitorPassThrough<T extends IAEStack<T>> extends MEPassThrough<T
 	}
 
 	@Override
-	public boolean isValid( Object verificationToken )
+	public final boolean isValid( Object verificationToken )
 	{
 		return verificationToken == this.monitor;
 	}
 
 	@Override
-	public void postChange( IBaseMonitor<T> monitor, Iterable<T> change, BaseActionSource source )
+	public final void postChange( IBaseMonitor<T> monitor, Iterable<T> change, BaseActionSource source )
 	{
 		Iterator<Entry<IMEMonitorHandlerReceiver<T>, Object>> i = this.listeners.entrySet().iterator();
 		while( i.hasNext() )
@@ -135,7 +135,7 @@ public class MEMonitorPassThrough<T extends IAEStack<T>> extends MEPassThrough<T
 	}
 
 	@Override
-	public void onListUpdate()
+	public final void onListUpdate()
 	{
 		Iterator<Entry<IMEMonitorHandlerReceiver<T>, Object>> i = this.listeners.entrySet().iterator();
 		while( i.hasNext() )

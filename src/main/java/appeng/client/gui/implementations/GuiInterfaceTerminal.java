@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -49,7 +49,7 @@ import appeng.parts.reporting.PartMonitor;
 import appeng.util.Platform;
 
 
-public class GuiInterfaceTerminal extends AEBaseGui
+public final class GuiInterfaceTerminal extends AEBaseGui
 {
 
 	private static final int LINES_ON_PAGE = 6;
@@ -76,7 +76,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 	}
 
 	@Override
-	public void initGui()
+	public final void initGui()
 	{
 		super.initGui();
 
@@ -142,7 +142,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 	}
 
 	@Override
-	protected void mouseClicked( int xCoord, int yCoord, int btn )
+	protected final void mouseClicked( int xCoord, int yCoord, int btn )
 	{
 		this.searchField.mouseClicked( xCoord, yCoord, btn );
 
@@ -185,7 +185,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 	}
 
 	@Override
-	protected void keyTyped( char character, int key )
+	protected final void keyTyped( char character, int key )
 	{
 		if( !this.checkHotbarKeys( key ) )
 		{
@@ -205,7 +205,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 		}
 	}
 
-	public void postUpdate( NBTTagCompound in )
+	public final void postUpdate( NBTTagCompound in )
 	{
 		if( in.getBoolean( "clear" ) )
 		{

@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -33,7 +33,7 @@ import appeng.core.sync.packets.PacketValueConfig;
 import appeng.items.contents.QuartzKnifeObj;
 
 
-public class GuiQuartzKnife extends AEBaseGui
+public final class GuiQuartzKnife extends AEBaseGui
 {
 
 	GuiTextField name;
@@ -45,7 +45,7 @@ public class GuiQuartzKnife extends AEBaseGui
 	}
 
 	@Override
-	public void initGui()
+	public final void initGui()
 	{
 		super.initGui();
 
@@ -73,7 +73,7 @@ public class GuiQuartzKnife extends AEBaseGui
 	}
 
 	@Override
-	protected void keyTyped( char character, int key )
+	protected final void keyTyped( char character, int key )
 	{
 		if( this.name.textboxKeyTyped( character, key ) )
 		{

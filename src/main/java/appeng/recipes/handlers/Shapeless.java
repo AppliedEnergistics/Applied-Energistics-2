@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -37,14 +37,14 @@ import appeng.recipes.game.ShapelessRecipe;
 import appeng.util.Platform;
 
 
-public class Shapeless implements ICraftHandler, IWebsiteSerializer
+public final class Shapeless implements ICraftHandler, IWebsiteSerializer
 {
 
 	List<IIngredient> inputs;
 	IIngredient output;
 
 	@Override
-	public void setup( List<List<IIngredient>> input, List<List<IIngredient>> output ) throws RecipeError
+	public final void setup( List<List<IIngredient>> input, List<List<IIngredient>> output ) throws RecipeError
 	{
 		if( output.size() == 1 && output.get( 0 ).size() == 1 )
 		{
@@ -65,7 +65,7 @@ public class Shapeless implements ICraftHandler, IWebsiteSerializer
 	}
 
 	@Override
-	public void register() throws RegistrationError, MissingIngredientError
+	public final void register() throws RegistrationError, MissingIngredientError
 	{
 		List<Object> args = new ArrayList<Object>();
 		for( IIngredient i : this.inputs )

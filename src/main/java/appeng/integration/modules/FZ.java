@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -38,7 +38,7 @@ import appeng.util.Platform;
 /**
  * 100% Hacks.
  */
-public class FZ implements IFZ, IIntegrationModule
+public final class FZ implements IFZ, IIntegrationModule
 {
 
 	public static FZ instance;
@@ -163,13 +163,13 @@ public class FZ implements IFZ, IIntegrationModule
 	}
 
 	@Override
-	public IMEInventory getFactorizationBarrel( TileEntity te )
+	public final IMEInventory getFactorizationBarrel( TileEntity te )
 	{
 		return new FactorizationBarrel( this, te );
 	}
 
 	@Override
-	public boolean isBarrel( TileEntity te )
+	public final boolean isBarrel( TileEntity te )
 	{
 		return day_BarrelClass.isAssignableFrom( te.getClass() );
 	}

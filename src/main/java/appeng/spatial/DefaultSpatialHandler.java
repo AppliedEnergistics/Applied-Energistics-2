@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -26,7 +26,7 @@ import net.minecraft.world.chunk.Chunk;
 import appeng.api.movable.IMovableHandler;
 
 
-public class DefaultSpatialHandler implements IMovableHandler
+public final class DefaultSpatialHandler implements IMovableHandler
 {
 
 	/**
@@ -37,13 +37,13 @@ public class DefaultSpatialHandler implements IMovableHandler
 	 * @return true
 	 */
 	@Override
-	public boolean canHandle( Class<? extends TileEntity> myClass, TileEntity tile )
+	public final boolean canHandle( Class<? extends TileEntity> myClass, TileEntity tile )
 	{
 		return true;
 	}
 
 	@Override
-	public void moveTile( TileEntity te, World w, int x, int y, int z )
+	public final void moveTile( TileEntity te, World w, int x, int y, int z )
 	{
 
 		te.setWorldObj( w );

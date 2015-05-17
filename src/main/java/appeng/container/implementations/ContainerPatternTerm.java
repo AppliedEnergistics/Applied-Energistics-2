@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -67,7 +67,7 @@ import appeng.util.inv.AdaptorPlayerHand;
 import appeng.util.item.AEItemStack;
 
 
-public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEAppEngInventory, IOptionalSlotHost, IContainerCraftingPacket
+public final class ContainerPatternTerm extends ContainerMEMonitorable implements IAEAppEngInventory, IOptionalSlotHost, IContainerCraftingPacket
 {
 
 	public final PartPatternTerminal ct;
@@ -140,20 +140,20 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 	}
 
 	@Override
-	public void putStackInSlot( int par1, ItemStack par2ItemStack )
+	public final void putStackInSlot( int par1, ItemStack par2ItemStack )
 	{
 		super.putStackInSlot( par1, par2ItemStack );
 		this.getAndUpdateOutput();
 	}
 
 	@Override
-	public void putStacksInSlots( ItemStack[] par1ArrayOfItemStack )
+	public final void putStacksInSlots( ItemStack[] par1ArrayOfItemStack )
 	{
 		super.putStacksInSlots( par1ArrayOfItemStack );
 		this.getAndUpdateOutput();
 	}
 
-	public ItemStack getAndUpdateOutput()
+	public final ItemStack getAndUpdateOutput()
 	{
 		InventoryCrafting ic = new InventoryCrafting( this, 3, 3 );
 		for( int x = 0; x < ic.getSizeInventory(); x++ )
@@ -178,7 +178,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 
 	}
 
-	public void encode()
+	public final void encode()
 	{
 		ItemStack output = this.patternSlotOUT.getStack();
 
@@ -342,7 +342,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 		}
 	}
 
-	public void craftOrGetItem( PacketPatternSlot packetPatternSlot )
+	public final void craftOrGetItem( PacketPatternSlot packetPatternSlot )
 	{
 		if( packetPatternSlot.slotItem != null && this.cellInv != null )
 		{
@@ -440,7 +440,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 	}
 
 	@Override
-	public void detectAndSendChanges()
+	public final void detectAndSendChanges()
 	{
 		super.detectAndSendChanges();
 		if( Platform.isServer() )
@@ -488,7 +488,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 		}
 	}
 
-	public void clear()
+	public final void clear()
 	{
 		for( Slot s : this.craftingSlots )
 		{

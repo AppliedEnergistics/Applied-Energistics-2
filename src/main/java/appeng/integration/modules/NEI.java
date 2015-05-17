@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -53,7 +53,7 @@ import appeng.integration.modules.NEIHelpers.NEIWorldCraftingHandler;
 import appeng.integration.modules.NEIHelpers.TerminalCraftingSlotFinder;
 
 
-public class NEI extends BaseModule implements INEI, IContainerTooltipHandler
+public final class NEI extends BaseModule implements INEI, IContainerTooltipHandler
 {
 	@Reflected
 	public static NEI instance;
@@ -107,7 +107,7 @@ public class NEI extends BaseModule implements INEI, IContainerTooltipHandler
 		registrar.invoke( this.apiClass, GuiPatternTerm.class, defaultConstructor.newInstance( 6, 75 ), "crafting" );
 	}
 
-	public void registerRecipeHandler( Object o ) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException
+	public final void registerRecipeHandler( Object o ) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException
 	{
 		this.registerRecipeHandler.invoke( this.apiClass, o );
 		this.registerUsageHandler.invoke( this.apiClass, o );
@@ -159,19 +159,19 @@ public class NEI extends BaseModule implements INEI, IContainerTooltipHandler
 	}
 
 	@Override
-	public List<String> handleTooltip( GuiContainer arg0, int arg1, int arg2, List<String> current )
+	public final List<String> handleTooltip( GuiContainer arg0, int arg1, int arg2, List<String> current )
 	{
 		return current;
 	}
 
 	@Override
-	public List<String> handleItemDisplayName( GuiContainer arg0, ItemStack arg1, List<String> current )
+	public final List<String> handleItemDisplayName( GuiContainer arg0, ItemStack arg1, List<String> current )
 	{
 		return current;
 	}
 
 	@Override
-	public List<String> handleItemTooltip( GuiContainer guiScreen, ItemStack stack, int mouseX, int mouseY, List<String> currentToolTip )
+	public final List<String> handleItemTooltip( GuiContainer guiScreen, ItemStack stack, int mouseX, int mouseY, List<String> currentToolTip )
 	{
 		if( guiScreen instanceof AEBaseMEGui )
 		{

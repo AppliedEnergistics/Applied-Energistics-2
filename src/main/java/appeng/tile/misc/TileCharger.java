@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -52,7 +52,7 @@ import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 
 
-public class TileCharger extends AENetworkPowerTile implements ICrankable
+public final class TileCharger extends AENetworkPowerTile implements ICrankable
 {
 
 	final int[] sides = new int[] { 0 };
@@ -71,7 +71,7 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable
 	}
 
 	@Override
-	public AECableType getCableConnectionType( ForgeDirection dir )
+	public final AECableType getCableConnectionType( ForgeDirection dir )
 	{
 		return AECableType.COVERED;
 	}
@@ -174,7 +174,7 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable
 	}
 
 	@Override
-	public void setOrientation( ForgeDirection inForward, ForgeDirection inUp )
+	public final void setOrientation( ForgeDirection inForward, ForgeDirection inUp )
 	{
 		super.setOrientation( inForward, inUp );
 		this.gridProxy.setValidSides( EnumSet.of( this.getUp(), this.getUp().getOpposite() ) );
@@ -188,13 +188,13 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable
 	}
 
 	@Override
-	public boolean canTurn()
+	public final boolean canTurn()
 	{
 		return this.internalCurrentPower < this.internalMaxPower;
 	}
 
 	@Override
-	public void applyTurn()
+	public final void applyTurn()
 	{
 		this.injectExternalPower( PowerUnits.AE, 150 );
 
@@ -216,25 +216,25 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable
 	}
 
 	@Override
-	public boolean canCrankAttach( ForgeDirection directionToCrank )
+	public final boolean canCrankAttach( ForgeDirection directionToCrank )
 	{
 		return this.getUp() == directionToCrank || this.getUp().getOpposite() == directionToCrank;
 	}
 
 	@Override
-	public IInventory getInternalInventory()
+	public final IInventory getInternalInventory()
 	{
 		return this.inv;
 	}
 
 	@Override
-	public int getInventoryStackLimit()
+	public final int getInventoryStackLimit()
 	{
 		return 1;
 	}
 
 	@Override
-	public boolean isItemValidForSlot( int i, ItemStack itemstack )
+	public final boolean isItemValidForSlot( int i, ItemStack itemstack )
 	{
 		final IItemDefinition cert = AEApi.instance().definitions().materials().certusQuartzCrystal();
 
@@ -248,7 +248,7 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable
 	}
 
 	@Override
-	public boolean canExtractItem( int slotIndex, ItemStack extractedItem, int side )
+	public final boolean canExtractItem( int slotIndex, ItemStack extractedItem, int side )
 	{
 		if( Platform.isChargeable( extractedItem ) )
 		{
@@ -268,7 +268,7 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable
 		return this.sides;
 	}
 
-	public void activate( EntityPlayer player )
+	public final void activate( EntityPlayer player )
 	{
 		if( !Platform.hasPermissions( new DimensionalCoord( this ), player ) )
 		{

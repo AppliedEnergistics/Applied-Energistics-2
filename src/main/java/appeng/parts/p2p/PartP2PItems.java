@@ -62,7 +62,7 @@ import appeng.util.inv.WrapperMCISidedInventory;
 
 
 @Interface( iface = "buildcraft.api.transport.IPipeConnection", iname = "BC" )
-public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeConnection, ISidedInventory, IGridTickable
+public final class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeConnection, ISidedInventory, IGridTickable
 {
 
 	final LinkedList<IInventory> which = new LinkedList<IInventory>();
@@ -76,7 +76,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 	}
 
 	@Override
-	public void onNeighborChanged()
+	public final void onNeighborChanged()
 	{
 		this.cachedInv = null;
 		PartP2PItems input = this.getInput();
@@ -86,7 +86,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 		}
 	}
 
-	IInventory getDestination()
+	final IInventory getDestination()
 	{
 		this.requested = true;
 
@@ -126,7 +126,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 		return this.cachedInv = new WrapperChainedInventory( outs );
 	}
 
-	IInventory getOutputInv()
+	final IInventory getOutputInv()
 	{
 		IInventory output = null;
 
@@ -188,13 +188,13 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 	}
 
 	@Override
-	public TickingRequest getTickingRequest( IGridNode node )
+	public final TickingRequest getTickingRequest( IGridNode node )
 	{
 		return new TickingRequest( TickRates.ItemTunnel.min, TickRates.ItemTunnel.max, false, false );
 	}
 
 	@Override
-	public TickRateModulation tickingRequest( IGridNode node, int ticksSinceLastCall )
+	public final TickRateModulation tickingRequest( IGridNode node, int ticksSinceLastCall )
 	{
 		boolean wasReq = this.requested;
 
@@ -260,7 +260,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 	}
 
 	@Override
-	public void onTunnelNetworkChange()
+	public final void onTunnelNetworkChange()
 	{
 		if( !this.output )
 		{
@@ -283,7 +283,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 	}
 
 	@Override
-	public int[] getAccessibleSlotsFromSide( int var1 )
+	public final int[] getAccessibleSlotsFromSide( int var1 )
 	{
 		int[] slots = new int[this.getSizeInventory()];
 		for( int x = 0; x < this.getSizeInventory(); x++ )
@@ -294,89 +294,89 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 	}
 
 	@Override
-	public int getSizeInventory()
+	public final int getSizeInventory()
 	{
 		return this.getDestination().getSizeInventory();
 	}
 
 	@Override
-	public ItemStack getStackInSlot( int i )
+	public final ItemStack getStackInSlot( int i )
 	{
 		return this.getDestination().getStackInSlot( i );
 	}
 
 	@Override
-	public ItemStack decrStackSize( int i, int j )
+	public final ItemStack decrStackSize( int i, int j )
 	{
 		return this.getDestination().decrStackSize( i, j );
 	}
 
 	@Override
-	public ItemStack getStackInSlotOnClosing( int i )
+	public final ItemStack getStackInSlotOnClosing( int i )
 	{
 		return null;
 	}
 
 	@Override
-	public void setInventorySlotContents( int i, ItemStack itemstack )
+	public final void setInventorySlotContents( int i, ItemStack itemstack )
 	{
 		this.getDestination().setInventorySlotContents( i, itemstack );
 	}
 
 	@Override
-	public String getInventoryName()
+	public final String getInventoryName()
 	{
 		return null;
 	}
 
 	@Override
-	public boolean hasCustomInventoryName()
+	public final boolean hasCustomInventoryName()
 	{
 		return false;
 	}
 
 	@Override
-	public int getInventoryStackLimit()
+	public final int getInventoryStackLimit()
 	{
 		return this.getDestination().getInventoryStackLimit();
 	}
 
 	@Override
-	public void markDirty()
+	public final void markDirty()
 	{
 		// eh?
 	}
 
 	@Override
-	public boolean isUseableByPlayer( EntityPlayer entityplayer )
+	public final boolean isUseableByPlayer( EntityPlayer entityplayer )
 	{
 		return false;
 	}
 
 	@Override
-	public void openInventory()
+	public final void openInventory()
 	{
 	}
 
 	@Override
-	public void closeInventory()
+	public final void closeInventory()
 	{
 	}
 
 	@Override
-	public boolean isItemValidForSlot( int i, net.minecraft.item.ItemStack itemstack )
-	{
-		return this.getDestination().isItemValidForSlot( i, itemstack );
-	}
-
-	@Override
-	public boolean canInsertItem( int i, ItemStack itemstack, int j )
+	public final boolean isItemValidForSlot( int i, net.minecraft.item.ItemStack itemstack )
 	{
 		return this.getDestination().isItemValidForSlot( i, itemstack );
 	}
 
 	@Override
-	public boolean canExtractItem( int i, ItemStack itemstack, int j )
+	public final boolean canInsertItem( int i, ItemStack itemstack, int j )
+	{
+		return this.getDestination().isItemValidForSlot( i, itemstack );
+	}
+
+	@Override
+	public final boolean canExtractItem( int i, ItemStack itemstack, int j )
 	{
 		return false;
 	}
@@ -388,7 +388,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 
 	@Override
 	@Method( iname = "BC" )
-	public ConnectOverride overridePipeConnection( PipeType type, ForgeDirection with )
+	public final ConnectOverride overridePipeConnection( PipeType type, ForgeDirection with )
 	{
 		return this.side == with && type == PipeType.ITEM ? ConnectOverride.CONNECT : ConnectOverride.DEFAULT;
 	}

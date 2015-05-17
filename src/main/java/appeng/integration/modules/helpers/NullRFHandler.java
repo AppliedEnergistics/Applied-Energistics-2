@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -24,29 +24,29 @@ import net.minecraftforge.common.util.ForgeDirection;
 import cofh.api.energy.IEnergyReceiver;
 
 
-public class NullRFHandler implements IEnergyReceiver
+public final class NullRFHandler implements IEnergyReceiver
 {
 
 	@Override
-	public int receiveEnergy( ForgeDirection from, int maxReceive, boolean simulate )
+	public final int receiveEnergy( ForgeDirection from, int maxReceive, boolean simulate )
 	{
 		return 0;
 	}
 
 	@Override
-	public int getEnergyStored( ForgeDirection from )
+	public final int getEnergyStored( ForgeDirection from )
 	{
 		return 0;
 	}
 
 	@Override
-	public int getMaxEnergyStored( ForgeDirection from )
+	public final int getMaxEnergyStored( ForgeDirection from )
 	{
 		return 0;
 	}
 
 	@Override
-	public boolean canConnectEnergy( ForgeDirection from )
+	public final boolean canConnectEnergy( ForgeDirection from )
 	{
 		return true;
 	}

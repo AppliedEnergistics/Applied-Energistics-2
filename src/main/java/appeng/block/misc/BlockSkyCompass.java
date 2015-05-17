@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -92,7 +92,7 @@ public class BlockSkyCompass extends AEBaseBlock implements ICustomCollision
 	}
 
 	@Override
-	public void onNeighborBlockChange( World w, int x, int y, int z, Block id )
+	public final void onNeighborBlockChange( World w, int x, int y, int z, Block id )
 	{
 		TileSkyCompass sc = this.getTileEntity( w, x, y, z );
 		ForgeDirection up = sc.getForward();
@@ -110,7 +110,7 @@ public class BlockSkyCompass extends AEBaseBlock implements ICustomCollision
 	}
 
 	@Override
-	public boolean canPlaceBlockAt( World w, int x, int y, int z )
+	public final boolean canPlaceBlockAt( World w, int x, int y, int z )
 	{
 		for( ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS )
 		{

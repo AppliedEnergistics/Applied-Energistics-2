@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -101,7 +101,7 @@ public class PartMonitor extends AEBasePart implements IPartMonitor, IPowerChann
 	}
 
 	@Override
-	public void getBoxes( IPartCollisionHelper bch )
+	public final void getBoxes( IPartCollisionHelper bch )
 	{
 		bch.addBox( 2, 2, 14, 14, 14, 16 );
 		bch.addBox( 4, 4, 13, 12, 12, 14 );
@@ -198,7 +198,7 @@ public class PartMonitor extends AEBasePart implements IPartMonitor, IPowerChann
 	}
 
 	@Override
-	public void onNeighborChanged()
+	public final void onNeighborChanged()
 	{
 		this.opacity = -1;
 		this.getHost().markForUpdate();
@@ -269,7 +269,7 @@ public class PartMonitor extends AEBasePart implements IPartMonitor, IPowerChann
 	}
 
 	@Override
-	public int getLightLevel()
+	public final int getLightLevel()
 	{
 		return this.blockLight( this.isPowered() ? ( this.notLightSource ? 9 : 15 ) : 0 );
 	}
@@ -316,7 +316,7 @@ public class PartMonitor extends AEBasePart implements IPartMonitor, IPowerChann
 	}
 
 	@Override
-	public void onPlacement( EntityPlayer player, ItemStack held, ForgeDirection side )
+	public final void onPlacement( EntityPlayer player, ItemStack held, ForgeDirection side )
 	{
 		super.onPlacement( player, held, side );
 
@@ -343,7 +343,7 @@ public class PartMonitor extends AEBasePart implements IPartMonitor, IPowerChann
 	}
 
 	@Override
-	public boolean isPowered()
+	public final boolean isPowered()
 	{
 		try
 		{
@@ -363,7 +363,7 @@ public class PartMonitor extends AEBasePart implements IPartMonitor, IPowerChann
 	}
 
 	@Override
-	public boolean isActive()
+	public final boolean isActive()
 	{
 		if( this.notLightSource )
 		{

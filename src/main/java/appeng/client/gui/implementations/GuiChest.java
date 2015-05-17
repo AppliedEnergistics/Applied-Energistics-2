@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -32,7 +32,7 @@ import appeng.core.sync.packets.PacketSwitchGuis;
 import appeng.tile.storage.TileChest;
 
 
-public class GuiChest extends AEBaseGui
+public final class GuiChest extends AEBaseGui
 {
 
 	GuiTabButton priority;
@@ -44,7 +44,7 @@ public class GuiChest extends AEBaseGui
 	}
 
 	@Override
-	protected void actionPerformed( GuiButton par1GuiButton )
+	protected final void actionPerformed( GuiButton par1GuiButton )
 	{
 		super.actionPerformed( par1GuiButton );
 
@@ -55,7 +55,7 @@ public class GuiChest extends AEBaseGui
 	}
 
 	@Override
-	public void initGui()
+	public final void initGui()
 	{
 		super.initGui();
 

@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -47,7 +47,7 @@ import appeng.tile.inventory.InvOperation;
 import appeng.util.Platform;
 
 
-public class TileWireless extends AENetworkInvTile implements IWirelessAccessPoint, IPowerChannelState
+public final class TileWireless extends AENetworkInvTile implements IWirelessAccessPoint, IPowerChannelState
 {
 
 	public static final int POWERED_FLAG = 1;
@@ -65,7 +65,7 @@ public class TileWireless extends AENetworkInvTile implements IWirelessAccessPoi
 	}
 
 	@Override
-	public void setOrientation( ForgeDirection inForward, ForgeDirection inUp )
+	public final void setOrientation( ForgeDirection inForward, ForgeDirection inUp )
 	{
 		super.setOrientation( inForward, inUp );
 		this.gridProxy.setValidSides( EnumSet.of( this.getForward().getOpposite() ) );
@@ -118,13 +118,13 @@ public class TileWireless extends AENetworkInvTile implements IWirelessAccessPoi
 	}
 
 	@Override
-	public AECableType getCableConnectionType( ForgeDirection dir )
+	public final AECableType getCableConnectionType( ForgeDirection dir )
 	{
 		return AECableType.SMART;
 	}
 
 	@Override
-	public DimensionalCoord getLocation()
+	public final DimensionalCoord getLocation()
 	{
 		return new DimensionalCoord( this );
 	}
@@ -136,7 +136,7 @@ public class TileWireless extends AENetworkInvTile implements IWirelessAccessPoi
 	}
 
 	@Override
-	public boolean isItemValidForSlot( int i, ItemStack itemstack )
+	public final boolean isItemValidForSlot( int i, ItemStack itemstack )
 	{
 		return AEApi.instance().definitions().materials().wirelessBooster().isSameAs( itemstack );
 	}
@@ -172,19 +172,19 @@ public class TileWireless extends AENetworkInvTile implements IWirelessAccessPoi
 	}
 
 	@Override
-	public void markDirty()
+	public final void markDirty()
 	{
 		this.updatePower();
 	}
 
 	@Override
-	public double getRange()
+	public final double getRange()
 	{
 		return AEConfig.instance.wireless_getMaxRange( this.getBoosters() );
 	}
 
 	@Override
-	public boolean isActive()
+	public final boolean isActive()
 	{
 		if( Platform.isClient() )
 		{
@@ -195,7 +195,7 @@ public class TileWireless extends AENetworkInvTile implements IWirelessAccessPoi
 	}
 
 	@Override
-	public IGrid getGrid()
+	public final IGrid getGrid()
 	{
 		try
 		{
@@ -208,7 +208,7 @@ public class TileWireless extends AENetworkInvTile implements IWirelessAccessPoi
 	}
 
 	@Override
-	public boolean isPowered()
+	public final boolean isPowered()
 	{
 		return POWERED_FLAG == ( this.clientFlags & POWERED_FLAG );
 	}

@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -37,7 +37,7 @@ import appeng.helpers.ICustomCollision;
 import appeng.tile.qnb.TileQuantumBridge;
 
 
-public class BlockQuantumRing extends AEBaseBlock implements ICustomCollision
+public final class BlockQuantumRing extends AEBaseBlock implements ICustomCollision
 {
 
 	public BlockQuantumRing()
@@ -52,7 +52,7 @@ public class BlockQuantumRing extends AEBaseBlock implements ICustomCollision
 	}
 
 	@Override
-	public void onNeighborBlockChange( World w, int x, int y, int z, Block pointlessNumber )
+	public final void onNeighborBlockChange( World w, int x, int y, int z, Block pointlessNumber )
 	{
 		TileQuantumBridge bridge = this.getTileEntity( w, x, y, z );
 		if( bridge != null )
@@ -68,7 +68,7 @@ public class BlockQuantumRing extends AEBaseBlock implements ICustomCollision
 	}
 
 	@Override
-	public void breakBlock( World w, int x, int y, int z, Block a, int b )
+	public final void breakBlock( World w, int x, int y, int z, Block a, int b )
 	{
 		TileQuantumBridge bridge = this.getTileEntity( w, x, y, z );
 		if( bridge != null )

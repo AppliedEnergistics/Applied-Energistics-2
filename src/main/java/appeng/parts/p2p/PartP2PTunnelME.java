@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -47,7 +47,7 @@ import appeng.me.cache.helpers.TunnelConnection;
 import appeng.me.helpers.AENetworkProxy;
 
 
-public class PartP2PTunnelME extends PartP2PTunnel<PartP2PTunnelME> implements IGridTickable
+public final class PartP2PTunnelME extends PartP2PTunnel<PartP2PTunnelME> implements IGridTickable
 {
 
 	public final Connections connection = new Connections( this );
@@ -61,14 +61,14 @@ public class PartP2PTunnelME extends PartP2PTunnel<PartP2PTunnelME> implements I
 	}
 
 	@Override
-	public void readFromNBT( NBTTagCompound extra )
+	public final void readFromNBT( NBTTagCompound extra )
 	{
 		super.readFromNBT( extra );
 		this.outerProxy.readFromNBT( extra );
 	}
 
 	@Override
-	public void writeToNBT( NBTTagCompound extra )
+	public final void writeToNBT( NBTTagCompound extra )
 	{
 		super.writeToNBT( extra );
 		this.outerProxy.writeToNBT( extra );
@@ -92,53 +92,53 @@ public class PartP2PTunnelME extends PartP2PTunnel<PartP2PTunnelME> implements I
 	}
 
 	@Override
-	public AECableType getCableConnectionType( ForgeDirection dir )
+	public final AECableType getCableConnectionType( ForgeDirection dir )
 	{
 		return AECableType.DENSE;
 	}
 
 	@Override
-	public void removeFromWorld()
+	public final void removeFromWorld()
 	{
 		super.removeFromWorld();
 		this.outerProxy.invalidate();
 	}
 
 	@Override
-	public void addToWorld()
+	public final void addToWorld()
 	{
 		super.addToWorld();
 		this.outerProxy.onReady();
 	}
 
 	@Override
-	public void setPartHostInfo( ForgeDirection side, IPartHost host, TileEntity tile )
+	public final void setPartHostInfo( ForgeDirection side, IPartHost host, TileEntity tile )
 	{
 		super.setPartHostInfo( side, host, tile );
 		this.outerProxy.setValidSides( EnumSet.of( side ) );
 	}
 
 	@Override
-	public IGridNode getExternalFacingNode()
+	public final IGridNode getExternalFacingNode()
 	{
 		return this.outerProxy.getNode();
 	}
 
 	@Override
-	public void onPlacement( EntityPlayer player, ItemStack held, ForgeDirection side )
+	public final void onPlacement( EntityPlayer player, ItemStack held, ForgeDirection side )
 	{
 		super.onPlacement( player, held, side );
 		this.outerProxy.setOwner( player );
 	}
 
 	@Override
-	public TickingRequest getTickingRequest( IGridNode node )
+	public final TickingRequest getTickingRequest( IGridNode node )
 	{
 		return new TickingRequest( TickRates.METunnel.min, TickRates.METunnel.max, true, false );
 	}
 
 	@Override
-	public TickRateModulation tickingRequest( IGridNode node, int ticksSinceLastCall )
+	public final TickRateModulation tickingRequest( IGridNode node, int ticksSinceLastCall )
 	{
 		// just move on...
 		try
@@ -175,7 +175,7 @@ public class PartP2PTunnelME extends PartP2PTunnel<PartP2PTunnelME> implements I
 		return TickRateModulation.IDLE;
 	}
 
-	public void updateConnections( Connections connections )
+	public final void updateConnections( Connections connections )
 	{
 		if( connections.destroy )
 		{

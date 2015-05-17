@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -40,11 +40,11 @@ import appeng.api.util.DimensionalCoord;
 import appeng.parts.CableBusContainer;
 
 
-public class AECableSchematicTile extends AEGenericSchematicTile implements IPartHost
+public final class AECableSchematicTile extends AEGenericSchematicTile implements IPartHost
 {
 
 	@Override
-	public void rotateLeft( IBuilderContext context )
+	public final void rotateLeft( IBuilderContext context )
 	{
 		CableBusContainer cbc = new CableBusContainer( this );
 		cbc.readFromNBT( this.tileNBT );
@@ -56,121 +56,121 @@ public class AECableSchematicTile extends AEGenericSchematicTile implements IPar
 	}
 
 	@Override
-	public IFacadeContainer getFacadeContainer()
+	public final IFacadeContainer getFacadeContainer()
 	{
 		return null;
 	}
 
 	@Override
-	public boolean canAddPart( ItemStack part, ForgeDirection side )
+	public final boolean canAddPart( ItemStack part, ForgeDirection side )
 	{
 		return false;
 	}
 
 	@Override
-	public ForgeDirection addPart( ItemStack is, ForgeDirection side, EntityPlayer owner )
+	public final ForgeDirection addPart( ItemStack is, ForgeDirection side, EntityPlayer owner )
 	{
 		return null;
 	}
 
 	@Override
-	public IPart getPart( ForgeDirection side )
+	public final IPart getPart( ForgeDirection side )
 	{
 		return null;
 	}
 
 	@Override
-	public void removePart( ForgeDirection side, boolean suppressUpdate )
+	public final void removePart( ForgeDirection side, boolean suppressUpdate )
 	{
 
 	}
 
 	@Override
-	public void markForUpdate()
+	public final void markForUpdate()
 	{
 
 	}
 
 	@Override
-	public DimensionalCoord getLocation()
-	{
-		return null;
-	}
-
-	@Override
-	public TileEntity getTile()
+	public final DimensionalCoord getLocation()
 	{
 		return null;
 	}
 
 	@Override
-	public AEColor getColor()
+	public final TileEntity getTile()
 	{
 		return null;
 	}
 
 	@Override
-	public void clearContainer()
+	public final AEColor getColor()
+	{
+		return null;
+	}
+
+	@Override
+	public final void clearContainer()
 	{
 
 	}
 
 	@Override
-	public boolean isBlocked( ForgeDirection side )
+	public final boolean isBlocked( ForgeDirection side )
 	{
 		return false;
 	}
 
 	@Override
-	public SelectedPart selectPart( Vec3 pos )
+	public final SelectedPart selectPart( Vec3 pos )
 	{
 		return null;
 	}
 
 	@Override
-	public void markForSave()
+	public final void markForSave()
 	{
 
 	}
 
 	@Override
-	public void partChanged()
+	public final void partChanged()
 	{
 
 	}
 
 	@Override
-	public boolean hasRedstone( ForgeDirection side )
-	{
-		return false;
-	}
-
-	@Override
-	public boolean isEmpty()
+	public final boolean hasRedstone( ForgeDirection side )
 	{
 		return false;
 	}
 
 	@Override
-	public Set<LayerFlags> getLayerFlags()
+	public final boolean isEmpty()
+	{
+		return false;
+	}
+
+	@Override
+	public final Set<LayerFlags> getLayerFlags()
 	{
 		return null;
 	}
 
 	@Override
-	public void cleanup()
+	public final void cleanup()
 	{
 
 	}
 
 	@Override
-	public void notifyNeighbors()
+	public final void notifyNeighbors()
 	{
 
 	}
 
 	@Override
-	public boolean isInWorld()
+	public final boolean isInWorld()
 	{
 		return false;
 	}

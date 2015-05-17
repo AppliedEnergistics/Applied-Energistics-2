@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -32,7 +32,7 @@ import appeng.me.cache.GridStorageCache;
 /**
  * Maintain my interests, and a global watch list, they should always be fully synchronized.
  */
-public class ItemWatcher implements IStackWatcher
+public final class ItemWatcher implements IStackWatcher
 {
 
 	final GridStorageCache gsc;
@@ -45,49 +45,49 @@ public class ItemWatcher implements IStackWatcher
 		this.myObject = host;
 	}
 
-	public IStackWatcherHost getHost()
+	public final IStackWatcherHost getHost()
 	{
 		return this.myObject;
 	}
 
 	@Override
-	public int size()
+	public final int size()
 	{
 		return this.myInterests.size();
 	}
 
 	@Override
-	public boolean isEmpty()
+	public final boolean isEmpty()
 	{
 		return this.myInterests.isEmpty();
 	}
 
 	@Override
-	public boolean contains( Object o )
+	public final boolean contains( Object o )
 	{
 		return this.myInterests.contains( o );
 	}
 
 	@Override
-	public Iterator<IAEStack> iterator()
+	public final Iterator<IAEStack> iterator()
 	{
 		return new ItemWatcherIterator( this, this.myInterests.iterator() );
 	}
 
 	@Override
-	public Object[] toArray()
+	public final Object[] toArray()
 	{
 		return this.myInterests.toArray();
 	}
 
 	@Override
-	public <T> T[] toArray( T[] a )
+	public final <T> T[] toArray( T[] a )
 	{
 		return this.myInterests.toArray( a );
 	}
 
 	@Override
-	public boolean add( IAEStack e )
+	public final boolean add( IAEStack e )
 	{
 		if( this.myInterests.contains( e ) )
 		{
@@ -98,19 +98,19 @@ public class ItemWatcher implements IStackWatcher
 	}
 
 	@Override
-	public boolean remove( Object o )
+	public final boolean remove( Object o )
 	{
 		return this.myInterests.remove( o ) && this.gsc.interestManager.remove( (IAEStack) o, this );
 	}
 
 	@Override
-	public boolean containsAll( Collection<?> c )
+	public final boolean containsAll( Collection<?> c )
 	{
 		return this.myInterests.containsAll( c );
 	}
 
 	@Override
-	public boolean addAll( Collection<? extends IAEStack> c )
+	public final boolean addAll( Collection<? extends IAEStack> c )
 	{
 		boolean didChange = false;
 
@@ -123,7 +123,7 @@ public class ItemWatcher implements IStackWatcher
 	}
 
 	@Override
-	public boolean removeAll( Collection<?> c )
+	public final boolean removeAll( Collection<?> c )
 	{
 		boolean didSomething = false;
 		for( Object o : c )
@@ -134,7 +134,7 @@ public class ItemWatcher implements IStackWatcher
 	}
 
 	@Override
-	public boolean retainAll( Collection<?> c )
+	public final boolean retainAll( Collection<?> c )
 	{
 		boolean changed = false;
 		Iterator<IAEStack> i = this.iterator();
@@ -152,7 +152,7 @@ public class ItemWatcher implements IStackWatcher
 	}
 
 	@Override
-	public void clear()
+	public final void clear()
 	{
 		Iterator<IAEStack> i = this.myInterests.iterator();
 		while( i.hasNext() )
@@ -162,7 +162,7 @@ public class ItemWatcher implements IStackWatcher
 		}
 	}
 
-	class ItemWatcherIterator implements Iterator<IAEStack>
+	final class ItemWatcherIterator implements Iterator<IAEStack>
 	{
 
 		final ItemWatcher watcher;
@@ -176,19 +176,19 @@ public class ItemWatcher implements IStackWatcher
 		}
 
 		@Override
-		public boolean hasNext()
+		public final boolean hasNext()
 		{
 			return this.interestIterator.hasNext();
 		}
 
 		@Override
-		public IAEStack next()
+		public final IAEStack next()
 		{
 			return this.myLast = this.interestIterator.next();
 		}
 
 		@Override
-		public void remove()
+		public final void remove()
 		{
 			ItemWatcher.this.gsc.interestManager.remove( this.myLast, this.watcher );
 			this.interestIterator.remove();

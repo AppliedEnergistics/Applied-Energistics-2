@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -42,13 +42,13 @@ import mcp.mobius.waila.api.IWailaDataProvider;
 public abstract class BaseWailaDataProvider implements IWailaDataProvider
 {
 	@Override
-	public ItemStack getWailaStack( IWailaDataAccessor accessor, IWailaConfigHandler config )
+	public final ItemStack getWailaStack( IWailaDataAccessor accessor, IWailaConfigHandler config )
 	{
 		return null;
 	}
 
 	@Override
-	public List<String> getWailaHead( ItemStack itemStack, List<String> currentToolTip, IWailaDataAccessor accessor, IWailaConfigHandler config )
+	public final List<String> getWailaHead( ItemStack itemStack, List<String> currentToolTip, IWailaDataAccessor accessor, IWailaConfigHandler config )
 	{
 		return currentToolTip;
 	}
@@ -60,7 +60,7 @@ public abstract class BaseWailaDataProvider implements IWailaDataProvider
 	}
 
 	@Override
-	public List<String> getWailaTail( ItemStack itemStack, List<String> currentToolTip, IWailaDataAccessor accessor, IWailaConfigHandler config )
+	public final List<String> getWailaTail( ItemStack itemStack, List<String> currentToolTip, IWailaDataAccessor accessor, IWailaConfigHandler config )
 	{
 		return currentToolTip;
 	}

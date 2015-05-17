@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -45,7 +45,7 @@ import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 
 
-public class CellInventory implements ICellInventory
+public final class CellInventory implements ICellInventory
 {
 
 	static final String ITEM_TYPE_TAG = "it";
@@ -200,7 +200,7 @@ public class CellInventory implements ICellInventory
 	}
 
 	@Override
-	public IAEItemStack injectItems( IAEItemStack input, Actionable mode, BaseActionSource src )
+	public final IAEItemStack injectItems( IAEItemStack input, Actionable mode, BaseActionSource src )
 	{
 		if( input == null )
 		{
@@ -297,7 +297,7 @@ public class CellInventory implements ICellInventory
 	}
 
 	@Override
-	public IAEItemStack extractItems( IAEItemStack request, Actionable mode, BaseActionSource src )
+	public final IAEItemStack extractItems( IAEItemStack request, Actionable mode, BaseActionSource src )
 	{
 		if( request == null )
 		{
@@ -338,7 +338,7 @@ public class CellInventory implements ICellInventory
 		return Results;
 	}
 
-	IItemList<IAEItemStack> getCellItems()
+	final IItemList<IAEItemStack> getCellItems()
 	{
 		if( this.cellItems == null )
 		{
@@ -355,7 +355,7 @@ public class CellInventory implements ICellInventory
 		this.tagCompound.setInteger( ITEM_COUNT_TAG, this.storedItemCount );
 	}
 
-	void saveChanges()
+	final void saveChanges()
 	{
 		// cellItems.clean();
 		int itemCount = 0;
@@ -431,7 +431,7 @@ public class CellInventory implements ICellInventory
 		}
 	}
 
-	protected void loadCellItems()
+	protected final void loadCellItems()
 	{
 		if( this.cellItems == null )
 		{
@@ -460,7 +460,7 @@ public class CellInventory implements ICellInventory
 	}
 
 	@Override
-	public IItemList getAvailableItems( IItemList out )
+	public final IItemList getAvailableItems( IItemList out )
 	{
 		for( IAEItemStack i : this.getCellItems() )
 		{
@@ -471,93 +471,93 @@ public class CellInventory implements ICellInventory
 	}
 
 	@Override
-	public StorageChannel getChannel()
+	public final StorageChannel getChannel()
 	{
 		return StorageChannel.ITEMS;
 	}
 
 	@Override
-	public ItemStack getItemStack()
+	public final ItemStack getItemStack()
 	{
 		return this.i;
 	}
 
 	@Override
-	public double getIdleDrain()
+	public final double getIdleDrain()
 	{
 		return this.CellType.getIdleDrain();
 	}
 
 	@Override
-	public FuzzyMode getFuzzyMode()
+	public final FuzzyMode getFuzzyMode()
 	{
 		return this.CellType.getFuzzyMode( this.i );
 	}
 
 	@Override
-	public IInventory getConfigInventory()
+	public final IInventory getConfigInventory()
 	{
 		return this.CellType.getConfigInventory( this.i );
 	}
 
 	@Override
-	public IInventory getUpgradesInventory()
+	public final IInventory getUpgradesInventory()
 	{
 		return this.CellType.getUpgradesInventory( this.i );
 	}
 
 	@Override
-	public int getBytesPerType()
+	public final int getBytesPerType()
 	{
 		return this.CellType.BytePerType( this.i );
 	}
 
 	@Override
-	public boolean canHoldNewItem()
+	public final boolean canHoldNewItem()
 	{
 		long bytesFree = this.getFreeBytes();
 		return ( bytesFree > this.getBytesPerType() || ( bytesFree == this.getBytesPerType() && this.getUnusedItemCount() > 0 ) ) && this.getRemainingItemTypes() > 0;
 	}
 
 	@Override
-	public long getTotalBytes()
+	public final long getTotalBytes()
 	{
 		return this.CellType.getBytes( this.i );
 	}
 
 	@Override
-	public long getFreeBytes()
+	public final long getFreeBytes()
 	{
 		return this.getTotalBytes() - this.getUsedBytes();
 	}
 
 	@Override
-	public long getUsedBytes()
+	public final long getUsedBytes()
 	{
 		long bytesForItemCount = ( this.getStoredItemCount() + this.getUnusedItemCount() ) / 8;
 		return this.getStoredItemTypes() * this.getBytesPerType() + bytesForItemCount;
 	}
 
 	@Override
-	public long getTotalItemTypes()
+	public final long getTotalItemTypes()
 	{
 		return this.maxItemTypes;
 	}
 
 	@Override
-	public long getStoredItemCount()
+	public final long getStoredItemCount()
 	{
 		return this.storedItemCount;
 	}
 
 	@Override
-	public long getStoredItemTypes()
+	public final long getStoredItemTypes()
 	{
 		return this.storedItems;
 	}
 
 	@Override
-	public long getRemainingItemTypes()
+	public final long getRemainingItemTypes()
 	{
 		long basedOnStorage = this.getFreeBytes() / this.getBytesPerType();
 		long baseOnTotal = this.getTotalItemTypes() - this.getStoredItemTypes();
@@ -565,14 +565,14 @@ public class CellInventory implements ICellInventory
 	}
 
 	@Override
-	public long getRemainingItemCount()
+	public final long getRemainingItemCount()
 	{
 		long remaining = this.getFreeBytes() * 8 + this.getUnusedItemCount();
 		return remaining > 0 ? remaining : 0;
 	}
 
 	@Override
-	public int getUnusedItemCount()
+	public final int getUnusedItemCount()
 	{
 		int div = (int) ( this.getStoredItemCount() % 8 );
 
@@ -585,7 +585,7 @@ public class CellInventory implements ICellInventory
 	}
 
 	@Override
-	public int getStatusForCell()
+	public final int getStatusForCell()
 	{
 		if( this.canHoldNewItem() )
 		{

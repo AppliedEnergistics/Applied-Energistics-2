@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -89,7 +89,7 @@ public class PartCable extends AEBasePart implements IPartCable
 	}
 
 	@Override
-	public AEColor getCableColor()
+	public final AEColor getCableColor()
 	{
 		return this.proxy.myColor;
 	}
@@ -101,7 +101,7 @@ public class PartCable extends AEBasePart implements IPartCable
 	}
 
 	@Override
-	public boolean changeColor( AEColor newColor, EntityPlayer who )
+	public final boolean changeColor( AEColor newColor, EntityPlayer who )
 	{
 		if( this.getCableColor() != newColor )
 		{
@@ -153,18 +153,18 @@ public class PartCable extends AEBasePart implements IPartCable
 	}
 
 	@Override
-	public void setValidSides( EnumSet<ForgeDirection> sides )
+	public final void setValidSides( EnumSet<ForgeDirection> sides )
 	{
 		this.proxy.setValidSides( sides );
 	}
 
 	@Override
-	public boolean isConnected( ForgeDirection side )
+	public final boolean isConnected( ForgeDirection side )
 	{
 		return this.connections.contains( side );
 	}
 
-	public void markForUpdate()
+	public final void markForUpdate()
 	{
 		this.getHost().markForUpdate();
 	}
@@ -272,7 +272,7 @@ public class PartCable extends AEBasePart implements IPartCable
 		return this.getGlassTexture( c );
 	}
 
-	public IIcon getGlassTexture( AEColor c )
+	public final IIcon getGlassTexture( AEColor c )
 	{
 		switch( c )
 		{
@@ -457,7 +457,7 @@ public class PartCable extends AEBasePart implements IPartCable
 	}
 
 	@Override
-	public void writeToNBT( NBTTagCompound data )
+	public final void writeToNBT( NBTTagCompound data )
 	{
 		super.writeToNBT( data );
 
@@ -479,7 +479,7 @@ public class PartCable extends AEBasePart implements IPartCable
 	}
 
 	@Override
-	public void writeToStream( ByteBuf data ) throws IOException
+	public final void writeToStream( ByteBuf data ) throws IOException
 	{
 		int cs = 0;
 		int sideOut = 0;
@@ -548,7 +548,7 @@ public class PartCable extends AEBasePart implements IPartCable
 	}
 
 	@Override
-	public boolean readFromStream( ByteBuf data ) throws IOException
+	public final boolean readFromStream( ByteBuf data ) throws IOException
 	{
 		int cs = data.readByte();
 		int sideOut = data.readInt();
@@ -597,12 +597,12 @@ public class PartCable extends AEBasePart implements IPartCable
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public IIcon getBreakingTexture()
+	public final IIcon getBreakingTexture()
 	{
 		return this.getTexture( this.getCableColor() );
 	}
 
-	public IIcon getCoveredTexture( AEColor c )
+	public final IIcon getCoveredTexture( AEColor c )
 	{
 		switch( c )
 		{
@@ -647,13 +647,13 @@ public class PartCable extends AEBasePart implements IPartCable
 		return coveredCable.item( AEColor.Transparent ).getIconIndex( coveredCableStack );
 	}
 
-	protected boolean nonLinear( EnumSet<ForgeDirection> sides )
+	protected final boolean nonLinear( EnumSet<ForgeDirection> sides )
 	{
 		return ( sides.contains( ForgeDirection.EAST ) && sides.contains( ForgeDirection.WEST ) ) || ( sides.contains( ForgeDirection.NORTH ) && sides.contains( ForgeDirection.SOUTH ) ) || ( sides.contains( ForgeDirection.UP ) && sides.contains( ForgeDirection.DOWN ) );
 	}
 
 	@SideOnly( Side.CLIENT )
-	public void renderGlassConnection( int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer, ForgeDirection of )
+	public final void renderGlassConnection( int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer, ForgeDirection of )
 	{
 		TileEntity te = this.tile.getWorldObj().getTileEntity( x + of.offsetX, y + of.offsetY, z + of.offsetZ );
 		IPartHost partHost = te instanceof IPartHost ? (IPartHost) te : null;
@@ -729,7 +729,7 @@ public class PartCable extends AEBasePart implements IPartCable
 	}
 
 	@SideOnly( Side.CLIENT )
-	public void renderCoveredConnection( int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer, int channels, ForgeDirection of )
+	public final void renderCoveredConnection( int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer, int channels, ForgeDirection of )
 	{
 		TileEntity te = this.tile.getWorldObj().getTileEntity( x + of.offsetX, y + of.offsetY, z + of.offsetZ );
 		IPartHost partHost = te instanceof IPartHost ? (IPartHost) te : null;
@@ -810,7 +810,7 @@ public class PartCable extends AEBasePart implements IPartCable
 	}
 
 	@SideOnly( Side.CLIENT )
-	public void renderSmartConnection( int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer, int channels, ForgeDirection of )
+	public final void renderSmartConnection( int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer, int channels, ForgeDirection of )
 	{
 		TileEntity te = this.tile.getWorldObj().getTileEntity( x + of.offsetX, y + of.offsetY, z + of.offsetZ );
 		IPartHost partHost = te instanceof IPartHost ? (IPartHost) te : null;
@@ -934,7 +934,7 @@ public class PartCable extends AEBasePart implements IPartCable
 		}
 	}
 
-	public IIcon getSmartTexture( AEColor c )
+	public final IIcon getSmartTexture( AEColor c )
 	{
 		switch( c )
 		{
@@ -980,7 +980,7 @@ public class PartCable extends AEBasePart implements IPartCable
 	}
 
 	@SideOnly( Side.CLIENT )
-	protected void setSmartConnectionRotations( ForgeDirection of, RenderBlocks renderer )
+	protected final void setSmartConnectionRotations( ForgeDirection of, RenderBlocks renderer )
 	{
 		switch( of )
 		{
@@ -1013,7 +1013,7 @@ public class PartCable extends AEBasePart implements IPartCable
 		}
 	}
 
-	protected CableBusTextures getChannelTex( int i, boolean b )
+	protected final CableBusTextures getChannelTex( int i, boolean b )
 	{
 		if( !this.powered )
 		{
@@ -1055,7 +1055,7 @@ public class PartCable extends AEBasePart implements IPartCable
 	}
 
 	@SideOnly( Side.CLIENT )
-	protected void renderAllFaces( AEBaseBlock blk, int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer )
+	protected final void renderAllFaces( AEBaseBlock blk, int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer )
 	{
 		rh.setBounds( (float) renderer.renderMinX * 16.0f, (float) renderer.renderMinY * 16.0f, (float) renderer.renderMinZ * 16.0f, (float) renderer.renderMaxX * 16.0f, (float) renderer.renderMaxY * 16.0f, (float) renderer.renderMaxZ * 16.0f );
 		rh.renderFace( x, y, z, blk.getRendererInstance().getTexture( ForgeDirection.WEST ), ForgeDirection.WEST, renderer );

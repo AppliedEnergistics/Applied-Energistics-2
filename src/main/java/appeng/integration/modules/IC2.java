@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -33,7 +33,7 @@ import appeng.integration.BaseModule;
 import appeng.integration.abstraction.IIC2;
 
 
-public class IC2 extends BaseModule implements IIC2
+public final class IC2 extends BaseModule implements IIC2
 {
 
 	public static IC2 instance;
@@ -81,7 +81,7 @@ public class IC2 extends BaseModule implements IIC2
 	}
 
 	@Override
-	public ItemStack getItem( String name )
+	public final ItemStack getItem( String name )
 	{
 		return ic2.api.item.IC2Items.getItem( name );
 	}

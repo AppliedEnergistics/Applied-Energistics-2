@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -32,7 +32,7 @@ import appeng.integration.abstraction.IFZ;
 import appeng.util.item.AEItemStack;
 
 
-public class FactorizationBarrel implements IMEInventory<IAEItemStack>
+public final class FactorizationBarrel implements IMEInventory<IAEItemStack>
 {
 
 	final IFZ fProxy;
@@ -50,7 +50,7 @@ public class FactorizationBarrel implements IMEInventory<IAEItemStack>
 	}
 
 	@Override
-	public IAEItemStack injectItems( IAEItemStack input, Actionable mode, BaseActionSource src )
+	public final IAEItemStack injectItems( IAEItemStack input, Actionable mode, BaseActionSource src )
 	{
 		if( input == null )
 		{
@@ -102,12 +102,12 @@ public class FactorizationBarrel implements IMEInventory<IAEItemStack>
 		return input;
 	}
 
-	public long remainingItemTypes()
+	public final long remainingItemTypes()
 	{
 		return this.fProxy.barrelGetItem( this.te ) == null ? 1 : 0;
 	}
 
-	public boolean containsItemType( IAEItemStack i, boolean acceptEmpty )
+	public final boolean containsItemType( IAEItemStack i, boolean acceptEmpty )
 	{
 		ItemStack currentItem = this.fProxy.barrelGetItem( this.te );
 
@@ -120,13 +120,13 @@ public class FactorizationBarrel implements IMEInventory<IAEItemStack>
 		return i.equals( currentItem );
 	}
 
-	public long storedItemCount()
+	public final long storedItemCount()
 	{
 		return this.fProxy.barrelGetItemCount( this.te );
 	}
 
 	@Override
-	public IAEItemStack extractItems( IAEItemStack request, Actionable mode, BaseActionSource src )
+	public final IAEItemStack extractItems( IAEItemStack request, Actionable mode, BaseActionSource src )
 	{
 		if( this.containsItemType( request, false ) )
 		{
@@ -156,7 +156,7 @@ public class FactorizationBarrel implements IMEInventory<IAEItemStack>
 	}
 
 	@Override
-	public IItemList<IAEItemStack> getAvailableItems( IItemList out )
+	public final IItemList<IAEItemStack> getAvailableItems( IItemList out )
 	{
 		ItemStack i = this.fProxy.barrelGetItem( this.te );
 		if( i != null )
@@ -169,7 +169,7 @@ public class FactorizationBarrel implements IMEInventory<IAEItemStack>
 	}
 
 	@Override
-	public StorageChannel getChannel()
+	public final StorageChannel getChannel()
 	{
 		return StorageChannel.ITEMS;
 	}

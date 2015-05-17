@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -36,7 +36,7 @@ import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.tile.inventory.InvOperation;
 
 
-public class PartPatternTerminal extends PartTerminal
+public final class PartPatternTerminal extends PartTerminal
 {
 	private final AppEngInternalInventory crafting = new AppEngInternalInventory( this, 9 );
 	private final AppEngInternalInventory output = new AppEngInternalInventory( this, 3 );
@@ -55,7 +55,7 @@ public class PartPatternTerminal extends PartTerminal
 	}
 
 	@Override
-	public void getDrops( List<ItemStack> drops, boolean wrenched )
+	public final void getDrops( List<ItemStack> drops, boolean wrenched )
 	{
 		for( ItemStack is : this.pattern )
 		{
@@ -67,7 +67,7 @@ public class PartPatternTerminal extends PartTerminal
 	}
 
 	@Override
-	public void readFromNBT( NBTTagCompound data )
+	public final void readFromNBT( NBTTagCompound data )
 	{
 		super.readFromNBT( data );
 		this.setCraftingRecipe( data.getBoolean( "craftingMode" ) );
@@ -77,7 +77,7 @@ public class PartPatternTerminal extends PartTerminal
 	}
 
 	@Override
-	public void writeToNBT( NBTTagCompound data )
+	public final void writeToNBT( NBTTagCompound data )
 	{
 		super.writeToNBT( data );
 		data.setBoolean( "craftingMode", this.craftingMode );
@@ -157,19 +157,19 @@ public class PartPatternTerminal extends PartTerminal
 		}
 	}
 
-	public boolean isCraftingRecipe()
+	public final boolean isCraftingRecipe()
 	{
 		return this.craftingMode;
 	}
 
-	public void setCraftingRecipe( boolean craftingMode )
+	public final void setCraftingRecipe( boolean craftingMode )
 	{
 		this.craftingMode = craftingMode;
 		this.fixCraftingRecipes();
 	}
 
 	@Override
-	public IInventory getInventoryByName( String name )
+	public final IInventory getInventoryByName( String name )
 	{
 		if( name.equals( "crafting" ) )
 		{

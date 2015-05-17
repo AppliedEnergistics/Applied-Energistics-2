@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -43,59 +43,59 @@ import appeng.util.item.AEItemStack;
 import appeng.util.item.ItemList;
 
 
-public class ApiStorage implements IStorageHelper
+public final class ApiStorage implements IStorageHelper
 {
 
 	@Override
-	public ICraftingLink loadCraftingLink( NBTTagCompound data, ICraftingRequester req )
+	public final ICraftingLink loadCraftingLink( NBTTagCompound data, ICraftingRequester req )
 	{
 		return new CraftingLink( data, req );
 	}
 
 	@Override
-	public IAEItemStack createItemStack( ItemStack is )
+	public final IAEItemStack createItemStack( ItemStack is )
 	{
 		return AEItemStack.create( is );
 	}
 
 	@Override
-	public IAEFluidStack createFluidStack( FluidStack is )
+	public final IAEFluidStack createFluidStack( FluidStack is )
 	{
 		return AEFluidStack.create( is );
 	}
 
 	@Override
-	public IItemList<IAEItemStack> createItemList()
+	public final IItemList<IAEItemStack> createItemList()
 	{
 		return new ItemList<IAEItemStack>( IAEItemStack.class );
 	}
 
 	@Override
-	public IItemList<IAEFluidStack> createFluidList()
+	public final IItemList<IAEFluidStack> createFluidList()
 	{
 		return new ItemList<IAEFluidStack>( IAEFluidStack.class );
 	}
 
 	@Override
-	public IAEItemStack readItemFromPacket( ByteBuf input ) throws IOException
+	public final IAEItemStack readItemFromPacket( ByteBuf input ) throws IOException
 	{
 		return AEItemStack.loadItemStackFromPacket( input );
 	}
 
 	@Override
-	public IAEFluidStack readFluidFromPacket( ByteBuf input ) throws IOException
+	public final IAEFluidStack readFluidFromPacket( ByteBuf input ) throws IOException
 	{
 		return AEFluidStack.loadFluidStackFromPacket( input );
 	}
 
 	@Override
-	public IAEItemStack poweredExtraction( IEnergySource energy, IMEInventory<IAEItemStack> cell, IAEItemStack request, BaseActionSource src )
+	public final IAEItemStack poweredExtraction( IEnergySource energy, IMEInventory<IAEItemStack> cell, IAEItemStack request, BaseActionSource src )
 	{
 		return Platform.poweredExtraction( energy, cell, request, src );
 	}
 
 	@Override
-	public IAEItemStack poweredInsert( IEnergySource energy, IMEInventory<IAEItemStack> cell, IAEItemStack input, BaseActionSource src )
+	public final IAEItemStack poweredInsert( IEnergySource energy, IMEInventory<IAEItemStack> cell, IAEItemStack input, BaseActionSource src )
 	{
 		return Platform.poweredInsert( energy, cell, input, src );
 	}

@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -27,7 +27,7 @@ import appeng.container.interfaces.IProgressProvider;
 import appeng.core.localization.GuiText;
 
 
-public class GuiProgressBar extends GuiButton implements ITooltip
+public final class GuiProgressBar extends GuiButton implements ITooltip
 {
 
 	private final IProgressProvider source;
@@ -59,7 +59,7 @@ public class GuiProgressBar extends GuiButton implements ITooltip
 	}
 
 	@Override
-	public void drawButton( Minecraft par1Minecraft, int par2, int par3 )
+	public final void drawButton( Minecraft par1Minecraft, int par2, int par3 )
 	{
 		if( this.visible )
 		{
@@ -82,7 +82,7 @@ public class GuiProgressBar extends GuiButton implements ITooltip
 		}
 	}
 
-	public void setFullMsg( String msg )
+	public final void setFullMsg( String msg )
 	{
 		this.fullMsg = msg;
 	}

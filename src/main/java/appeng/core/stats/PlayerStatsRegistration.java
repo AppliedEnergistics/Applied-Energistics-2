@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -35,7 +35,7 @@ import appeng.core.features.AEFeature;
  * Registered items are added to the player stats.
  * This will only happen if the {@link AEFeature#Achievements} feature is enabled.
  */
-public class PlayerStatsRegistration
+public final class PlayerStatsRegistration
 {
 	/**
 	 * {@link cpw.mods.fml.common.eventhandler.EventBus} to which the handlers might get posted to depending if the feature is enabled
@@ -62,7 +62,7 @@ public class PlayerStatsRegistration
 	/**
 	 * Registers the {@link appeng.core.stats.AchievementCraftingHandler} and {@link appeng.core.stats.AchievementPickupHandler} to the {@link #bus} if {@link #isAchievementFeatureEnabled} is true.
 	 */
-	public void registerAchievementHandlers()
+	public final void registerAchievementHandlers()
 	{
 		if( this.isAchievementFeatureEnabled )
 		{
@@ -78,7 +78,7 @@ public class PlayerStatsRegistration
 	/**
 	 * Registers the {@link appeng.core.stats.AchievementHierarchy} and adds all {@link appeng.core.stats.Achievements} to a new {@link net.minecraftforge.common.AchievementPage}.
 	 */
-	public void registerAchievements()
+	public final void registerAchievements()
 	{
 		if( this.isAchievementFeatureEnabled )
 		{

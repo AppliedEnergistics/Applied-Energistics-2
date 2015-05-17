@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -116,7 +116,7 @@ public class BlockCraftingUnit extends AEBaseBlock
 	}
 
 	@Override
-	public void breakBlock( World w, int x, int y, int z, Block a, int b )
+	public final void breakBlock( World w, int x, int y, int z, Block a, int b )
 	{
 		TileCraftingTile cp = this.getTileEntity( w, x, y, z );
 		if( cp != null )
@@ -138,13 +138,13 @@ public class BlockCraftingUnit extends AEBaseBlock
 		return this.getItemUnlocalizedName( is );
 	}
 
-	protected String getItemUnlocalizedName( ItemStack is )
+	protected final String getItemUnlocalizedName( ItemStack is )
 	{
 		return super.getUnlocalizedName( is );
 	}
 
 	@Override
-	public void onNeighborBlockChange( World w, int x, int y, int z, Block junk )
+	public final void onNeighborBlockChange( World w, int x, int y, int z, Block junk )
 	{
 		TileCraftingTile cp = this.getTileEntity( w, x, y, z );
 		if( cp != null )
@@ -154,13 +154,13 @@ public class BlockCraftingUnit extends AEBaseBlock
 	}
 
 	@Override
-	public int damageDropped( int meta )
+	public final int damageDropped( int meta )
 	{
 		return meta & 3;
 	}
 
 	@Override
-	public int getDamageValue( World w, int x, int y, int z )
+	public final int getDamageValue( World w, int x, int y, int z )
 	{
 		int meta = w.getBlockMetadata( x, y, z );
 		return this.damageDropped( meta );

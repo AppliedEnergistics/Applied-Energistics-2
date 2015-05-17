@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -36,7 +36,7 @@ import appeng.tile.inventory.IAEAppEngInventory;
 import appeng.tile.inventory.InvOperation;
 
 
-public class ContainerCraftingTerm extends ContainerMEMonitorable implements IAEAppEngInventory, IContainerCraftingPacket
+public final class ContainerCraftingTerm extends ContainerMEMonitorable implements IAEAppEngInventory, IContainerCraftingPacket
 {
 
 	public final PartCraftingTerminal ct;
@@ -70,7 +70,7 @@ public class ContainerCraftingTerm extends ContainerMEMonitorable implements IAE
 	 * Callback for when the crafting matrix is changed.
 	 */
 	@Override
-	public void onCraftMatrixChanged( IInventory par1IInventory )
+	public final void onCraftMatrixChanged( IInventory par1IInventory )
 	{
 		ContainerNull cn = new ContainerNull();
 		InventoryCrafting ic = new InventoryCrafting( cn, 3, 3 );

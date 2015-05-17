@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -45,7 +45,7 @@ import appeng.tile.qnb.TileQuantumBridge;
 import appeng.util.iterators.ChainedIterator;
 
 
-public class QuantumCluster implements ILocatable, IAECluster
+public final class QuantumCluster implements ILocatable, IAECluster
 {
 
 	public final WorldCoord min;
@@ -77,7 +77,7 @@ public class QuantumCluster implements ILocatable, IAECluster
 	}
 
 	@Override
-	public void updateStatus( boolean updateGrid )
+	public final void updateStatus( boolean updateGrid )
 	{
 		long qe;
 
@@ -185,7 +185,7 @@ public class QuantumCluster implements ILocatable, IAECluster
 		}
 	}
 
-	public boolean canUseNode( long qe )
+	public final boolean canUseNode( long qe )
 	{
 		QuantumCluster qc = (QuantumCluster) AEApi.instance().registries().locatable().getLocatableBy( qe );
 		if( qc != null )
@@ -222,13 +222,13 @@ public class QuantumCluster implements ILocatable, IAECluster
 		return this.center.getGridNode( ForgeDirection.UNKNOWN );
 	}
 
-	public boolean hasQES()
+	public final boolean hasQES()
 	{
 		return this.thisSide != 0;
 	}
 
 	@Override
-	public void destroy()
+	public final void destroy()
 	{
 		if( this.isDestroyed )
 		{
@@ -271,7 +271,7 @@ public class QuantumCluster implements ILocatable, IAECluster
 	}
 
 	@Override
-	public long getLocatableSerial()
+	public final long getLocatableSerial()
 	{
 		return this.thisSide;
 	}
@@ -281,7 +281,7 @@ public class QuantumCluster implements ILocatable, IAECluster
 		return this.center;
 	}
 
-	public void setCenter( TileQuantumBridge c )
+	public final void setCenter( TileQuantumBridge c )
 	{
 		this.registered = true;
 		MinecraftForge.EVENT_BUS.register( this );

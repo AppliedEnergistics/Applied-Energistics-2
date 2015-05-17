@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -38,25 +38,25 @@ public abstract class RedstoneFlux extends IC2 implements IEnergyContainerItem
 	}
 
 	@Override
-	public int receiveEnergy( ItemStack is, int maxReceive, boolean simulate )
+	public final int receiveEnergy( ItemStack is, int maxReceive, boolean simulate )
 	{
 		return maxReceive - (int) this.injectExternalPower( PowerUnits.RF, is, maxReceive, simulate );
 	}
 
 	@Override
-	public int extractEnergy( ItemStack container, int maxExtract, boolean simulate )
+	public final int extractEnergy( ItemStack container, int maxExtract, boolean simulate )
 	{
 		return 0;
 	}
 
 	@Override
-	public int getEnergyStored( ItemStack is )
+	public final int getEnergyStored( ItemStack is )
 	{
 		return (int) PowerUnits.AE.convertTo( PowerUnits.RF, this.getAECurrentPower( is ) );
 	}
 
 	@Override
-	public int getMaxEnergyStored( ItemStack is )
+	public final int getMaxEnergyStored( ItemStack is )
 	{
 		return (int) PowerUnits.AE.convertTo( PowerUnits.RF, this.getAEMaxPower( is ) );
 	}

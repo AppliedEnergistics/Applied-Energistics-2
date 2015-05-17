@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -25,13 +25,13 @@ import appeng.tile.events.TileEventType;
 import appeng.util.Platform;
 
 
-public class TileLightDetector extends AEBaseTile
+public final class TileLightDetector extends AEBaseTile
 {
 
 	int lastCheck = 30;
 	int lastLight = 0;
 
-	public boolean isReady()
+	public final boolean isReady()
 	{
 		return this.lastLight > 0;
 	}
@@ -47,7 +47,7 @@ public class TileLightDetector extends AEBaseTile
 		}
 	}
 
-	public void updateLight()
+	public final void updateLight()
 	{
 		int val = this.worldObj.getBlockLightValue( this.xCoord, this.yCoord, this.zCoord );
 
@@ -59,7 +59,7 @@ public class TileLightDetector extends AEBaseTile
 	}
 
 	@Override
-	public boolean canBeRotated()
+	public final boolean canBeRotated()
 	{
 		return false;
 	}

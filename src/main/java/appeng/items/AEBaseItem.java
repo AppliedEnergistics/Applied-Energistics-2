@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -71,7 +71,7 @@ public abstract class AEBaseItem extends Item implements IAEFeature
 		// override!
 	}
 
-	public void setFeature( EnumSet<AEFeature> f )
+	public final void setFeature( EnumSet<AEFeature> f )
 	{
 		this.feature = new ItemFeatureHandler( f, this, this, this.subName );
 	}
@@ -84,7 +84,7 @@ public abstract class AEBaseItem extends Item implements IAEFeature
 	}
 
 	@Override
-	public boolean isBookEnchantable( ItemStack itemstack1, ItemStack itemstack2 )
+	public final boolean isBookEnchantable( ItemStack itemstack1, ItemStack itemstack2 )
 	{
 		return false;
 	}

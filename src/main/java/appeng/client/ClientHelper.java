@@ -85,7 +85,7 @@ import appeng.transformer.MissingCoreMod;
 import appeng.util.Platform;
 
 
-public class ClientHelper extends ServerHelper
+public final class ClientHelper extends ServerHelper
 {
 
 	private static final RenderItem ITEM_RENDERER = new RenderItem();

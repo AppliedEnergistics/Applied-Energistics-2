@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -34,7 +34,7 @@ import cpw.mods.fml.relauncher.FMLRelaunchLog;
  * Will grant access to a pre initialized player map
  * based on the "players" category in the settings.cfg
  */
-public class PlayerMappings
+public final class PlayerMappings
 {
 	/**
 	 * View of player mappings, is not immutable,
@@ -59,7 +59,7 @@ public class PlayerMappings
 	 *
 	 * @return maybe the UUID of the searched player
 	 */
-	public Optional<UUID> get( int id )
+	public final Optional<UUID> get( int id )
 	{
 		final UUID maybe = this.mappings.get( id );
 
@@ -72,7 +72,7 @@ public class PlayerMappings
 	 * @param id   id of new player
 	 * @param uuid UUID of new player
 	 */
-	public void put( int id, UUID uuid )
+	public final void put( int id, UUID uuid )
 	{
 		this.mappings.put( id, uuid );
 	}

@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -69,7 +69,7 @@ public abstract class PartBasicState extends AEBasePart implements IPowerChannel
 	}
 
 	@SideOnly( Side.CLIENT )
-	public void renderLights( int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer )
+	public final void renderLights( int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer )
 	{
 		rh.normalRendering();
 		this.setColors( ( this.clientFlags & ( this.POWERED_FLAG | this.CHANNEL_FLAG ) ) == ( this.POWERED_FLAG | this.CHANNEL_FLAG ), ( this.clientFlags & this.POWERED_FLAG ) == this.POWERED_FLAG );
@@ -153,13 +153,13 @@ public abstract class PartBasicState extends AEBasePart implements IPowerChannel
 	}
 
 	@Override
-	public boolean isPowered()
+	public final boolean isPowered()
 	{
 		return ( this.clientFlags & this.POWERED_FLAG ) == this.POWERED_FLAG;
 	}
 
 	@Override
-	public boolean isActive()
+	public final boolean isActive()
 	{
 		return ( this.clientFlags & this.CHANNEL_FLAG ) == this.CHANNEL_FLAG;
 	}

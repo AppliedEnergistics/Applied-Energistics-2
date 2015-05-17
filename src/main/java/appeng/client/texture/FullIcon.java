@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -25,7 +25,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 
-public class FullIcon implements IIcon
+public final class FullIcon implements IIcon
 {
 
 	private final IIcon p;
@@ -41,34 +41,34 @@ public class FullIcon implements IIcon
 	}
 
 	@Override
-	public int getIconWidth()
+	public final int getIconWidth()
 	{
 		return this.p.getIconWidth();
 	}
 
 	@Override
-	public int getIconHeight()
+	public final int getIconHeight()
 	{
 		return this.p.getIconHeight();
 	}
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public float getMinU()
+	public final float getMinU()
 	{
 		return this.p.getMinU();
 	}
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public float getMaxU()
+	public final float getMaxU()
 	{
 		return this.p.getMaxU();
 	}
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public float getInterpolatedU( double d0 )
+	public final float getInterpolatedU( double d0 )
 	{
 		if( d0 > 8.0 )
 		{
@@ -79,21 +79,21 @@ public class FullIcon implements IIcon
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public float getMinV()
+	public final float getMinV()
 	{
 		return this.p.getMinV();
 	}
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public float getMaxV()
+	public final float getMaxV()
 	{
 		return this.p.getMaxV();
 	}
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public float getInterpolatedV( double d0 )
+	public final float getInterpolatedV( double d0 )
 	{
 		if( d0 > 8.0 )
 		{
@@ -104,7 +104,7 @@ public class FullIcon implements IIcon
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public String getIconName()
+	public final String getIconName()
 	{
 		return this.p.getIconName();
 	}

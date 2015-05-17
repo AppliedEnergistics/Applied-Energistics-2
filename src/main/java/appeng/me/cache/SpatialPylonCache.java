@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -38,7 +38,7 @@ import appeng.tile.spatial.TileSpatialIOPort;
 import appeng.tile.spatial.TileSpatialPylon;
 
 
-public class SpatialPylonCache implements ISpatialCache
+public final class SpatialPylonCache implements ISpatialCache
 {
 
 	final IGrid myGrid;
@@ -62,7 +62,7 @@ public class SpatialPylonCache implements ISpatialCache
 		this.reset( this.myGrid );
 	}
 
-	public void reset( IGrid grid )
+	public final void reset( IGrid grid )
 	{
 		int reqX = 0;
 		int reqY = 0;
@@ -184,72 +184,72 @@ public class SpatialPylonCache implements ISpatialCache
 	}
 
 	@Override
-	public boolean hasRegion()
+	public final boolean hasRegion()
 	{
 		return this.captureMin != null;
 	}
 
 	@Override
-	public boolean isValidRegion()
+	public final boolean isValidRegion()
 	{
 		return this.hasRegion() && this.isValid;
 	}
 
 	@Override
-	public DimensionalCoord getMin()
+	public final DimensionalCoord getMin()
 	{
 		return this.captureMin;
 	}
 
 	@Override
-	public DimensionalCoord getMax()
+	public final DimensionalCoord getMax()
 	{
 		return this.captureMax;
 	}
 
 	@Override
-	public long requiredPower()
+	public final long requiredPower()
 	{
 		return this.powerRequired;
 	}
 
 	@Override
-	public float currentEfficiency()
+	public final float currentEfficiency()
 	{
 		return (float) this.efficiency * 100;
 	}
 
 	@Override
-	public void onUpdateTick()
+	public final void onUpdateTick()
 	{
 	}
 
 	@Override
-	public void removeNode( IGridNode node, IGridHost machine )
-	{
-
-	}
-
-	@Override
-	public void addNode( IGridNode node, IGridHost machine )
+	public final void removeNode( IGridNode node, IGridHost machine )
 	{
 
 	}
 
 	@Override
-	public void onSplit( IGridStorage storageB )
+	public final void addNode( IGridNode node, IGridHost machine )
 	{
 
 	}
 
 	@Override
-	public void onJoin( IGridStorage storageB )
+	public final void onSplit( IGridStorage storageB )
 	{
 
 	}
 
 	@Override
-	public void populateGridStorage( IGridStorage storage )
+	public final void onJoin( IGridStorage storageB )
+	{
+
+	}
+
+	@Override
+	public final void populateGridStorage( IGridStorage storage )
 	{
 
 	}

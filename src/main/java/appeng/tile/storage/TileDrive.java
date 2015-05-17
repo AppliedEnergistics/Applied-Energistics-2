@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -59,7 +59,7 @@ import appeng.tile.inventory.InvOperation;
 import appeng.util.Platform;
 
 
-public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPriorityHost
+public final class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPriorityHost
 {
 
 	final int[] sides = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
@@ -111,13 +111,13 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 	}
 
 	@Override
-	public int getCellCount()
+	public final int getCellCount()
 	{
 		return 10;
 	}
 
 	@Override
-	public int getCellStatus( int slot )
+	public final int getCellStatus( int slot )
 	{
 		if( Platform.isClient() )
 		{
@@ -153,7 +153,7 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 	}
 
 	@Override
-	public boolean isPowered()
+	public final boolean isPowered()
 	{
 		if( Platform.isClient() )
 		{
@@ -164,7 +164,7 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 	}
 
 	@Override
-	public boolean isCellBlinking( int slot )
+	public final boolean isCellBlinking( int slot )
 	{
 		long now = this.worldObj.getTotalWorldTime();
 		if( now - this.lastStateChange > 8 )
@@ -248,7 +248,7 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 	}
 
 	@Override
-	public AECableType getCableConnectionType( ForgeDirection dir )
+	public final AECableType getCableConnectionType( ForgeDirection dir )
 	{
 		return AECableType.SMART;
 	}
@@ -266,7 +266,7 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 	}
 
 	@Override
-	public boolean isItemValidForSlot( int i, ItemStack itemstack )
+	public final boolean isItemValidForSlot( int i, ItemStack itemstack )
 	{
 		return itemstack != null && AEApi.instance().registries().cell().isCellHandled( itemstack );
 	}
@@ -300,7 +300,7 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 		return this.sides;
 	}
 
-	public void updateState()
+	public final void updateState()
 	{
 		if( !this.isCached )
 		{
@@ -364,7 +364,7 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 	}
 
 	@Override
-	public List<IMEInventoryHandler> getCellArray( StorageChannel channel )
+	public final List<IMEInventoryHandler> getCellArray( StorageChannel channel )
 	{
 		if( this.gridProxy.isActive() )
 		{
@@ -375,7 +375,7 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 	}
 
 	@Override
-	public int getPriority()
+	public final int getPriority()
 	{
 		return this.priority;
 	}
@@ -400,7 +400,7 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 	}
 
 	@Override
-	public void blinkCell( int slot )
+	public final void blinkCell( int slot )
 	{
 		long now = this.worldObj.getTotalWorldTime();
 		if( now - this.lastStateChange > 8 )
@@ -415,7 +415,7 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 	}
 
 	@Override
-	public void saveChanges( IMEInventory cellInventory )
+	public final void saveChanges( IMEInventory cellInventory )
 	{
 		this.worldObj.markTileEntityChunkModified( this.xCoord, this.yCoord, this.zCoord, this );
 	}

@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -57,7 +57,7 @@ import appeng.me.storage.CellInventoryHandler;
 import appeng.util.Platform;
 
 
-public class ToolPortableCell extends AEBasePoweredItem implements IStorageCell, IGuiItem, IItemGroup
+public final class ToolPortableCell extends AEBasePoweredItem implements IStorageCell, IGuiItem, IItemGroup
 {
 	public ToolPortableCell()
 	{
@@ -66,7 +66,7 @@ public class ToolPortableCell extends AEBasePoweredItem implements IStorageCell,
 	}
 
 	@Override
-	public ItemStack onItemRightClick( ItemStack item, World w, EntityPlayer player )
+	public final ItemStack onItemRightClick( ItemStack item, World w, EntityPlayer player )
 	{
 		Platform.openGUI( player, null, ForgeDirection.UNKNOWN, GuiBridge.GUI_PORTABLE_CELL );
 		return item;
@@ -74,7 +74,7 @@ public class ToolPortableCell extends AEBasePoweredItem implements IStorageCell,
 
 	@SideOnly( Side.CLIENT )
 	@Override
-	public boolean isFull3D()
+	public final boolean isFull3D()
 	{
 		return false;
 	}
@@ -98,79 +98,79 @@ public class ToolPortableCell extends AEBasePoweredItem implements IStorageCell,
 	}
 
 	@Override
-	public int getBytes( ItemStack cellItem )
+	public final int getBytes( ItemStack cellItem )
 	{
 		return 512;
 	}
 
 	@Override
-	public int BytePerType( ItemStack cell )
+	public final int BytePerType( ItemStack cell )
 	{
 		return 8;
 	}
 
 	@Override
-	public int getBytesPerType( ItemStack cellItem )
+	public final int getBytesPerType( ItemStack cellItem )
 	{
 		return 8;
 	}
 
 	@Override
-	public int getTotalTypes( ItemStack cellItem )
+	public final int getTotalTypes( ItemStack cellItem )
 	{
 		return 27;
 	}
 
 	@Override
-	public boolean isBlackListed( ItemStack cellItem, IAEItemStack requestedAddition )
+	public final boolean isBlackListed( ItemStack cellItem, IAEItemStack requestedAddition )
 	{
 		return false;
 	}
 
 	@Override
-	public boolean storableInStorageCell()
+	public final boolean storableInStorageCell()
 	{
 		return false;
 	}
 
 	@Override
-	public boolean isStorageCell( ItemStack i )
+	public final boolean isStorageCell( ItemStack i )
 	{
 		return true;
 	}
 
 	@Override
-	public double getIdleDrain()
+	public final double getIdleDrain()
 	{
 		return 0.5;
 	}
 
 	@Override
-	public String getUnlocalizedGroupName( Set<ItemStack> others, ItemStack is )
+	public final String getUnlocalizedGroupName( Set<ItemStack> others, ItemStack is )
 	{
 		return GuiText.StorageCells.getUnlocalized();
 	}
 
 	@Override
-	public boolean isEditable( ItemStack is )
+	public final boolean isEditable( ItemStack is )
 	{
 		return true;
 	}
 
 	@Override
-	public IInventory getUpgradesInventory( ItemStack is )
+	public final IInventory getUpgradesInventory( ItemStack is )
 	{
 		return new CellUpgrades( is, 2 );
 	}
 
 	@Override
-	public IInventory getConfigInventory( ItemStack is )
+	public final IInventory getConfigInventory( ItemStack is )
 	{
 		return new CellConfig( is );
 	}
 
 	@Override
-	public FuzzyMode getFuzzyMode( ItemStack is )
+	public final FuzzyMode getFuzzyMode( ItemStack is )
 	{
 		String fz = Platform.openNbtData( is ).getString( "FuzzyMode" );
 		try
@@ -184,13 +184,13 @@ public class ToolPortableCell extends AEBasePoweredItem implements IStorageCell,
 	}
 
 	@Override
-	public void setFuzzyMode( ItemStack is, FuzzyMode fzMode )
+	public final void setFuzzyMode( ItemStack is, FuzzyMode fzMode )
 	{
 		Platform.openNbtData( is ).setString( "FuzzyMode", fzMode.name() );
 	}
 
 	@Override
-	public IGuiItemObject getGuiObject( ItemStack is, World w, int x, int y, int z )
+	public final IGuiItemObject getGuiObject( ItemStack is, World w, int x, int y, int z )
 	{
 		return new PortableCellViewer( is, x );
 	}

@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -22,7 +22,6 @@ package appeng.crafting;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
-
 import javax.annotation.Nonnull;
 
 import appeng.api.networking.crafting.ICraftingWatcher;
@@ -34,7 +33,7 @@ import appeng.me.cache.CraftingGridCache;
 /**
  * Maintain my interests, and a global watch list, they should always be fully synchronized.
  */
-public class CraftingWatcher implements ICraftingWatcher
+public final class CraftingWatcher implements ICraftingWatcher
 {
 
 	final CraftingGridCache gsc;
@@ -47,52 +46,52 @@ public class CraftingWatcher implements ICraftingWatcher
 		this.host = host;
 	}
 
-	public ICraftingWatcherHost getHost()
+	public final ICraftingWatcherHost getHost()
 	{
 		return this.host;
 	}
 
 	@Override
-	public int size()
+	public final int size()
 	{
 		return this.myInterests.size();
 	}
 
 	@Override
-	public boolean isEmpty()
+	public final boolean isEmpty()
 	{
 		return this.myInterests.isEmpty();
 	}
 
 	@Override
-	public boolean contains( Object o )
+	public final boolean contains( Object o )
 	{
 		return this.myInterests.contains( o );
 	}
 
 	@Nonnull
 	@Override
-	public Iterator<IAEStack> iterator()
+	public final Iterator<IAEStack> iterator()
 	{
 		return new ItemWatcherIterator( this, this.myInterests.iterator() );
 	}
 
 	@Nonnull
 	@Override
-	public Object[] toArray()
+	public final Object[] toArray()
 	{
 		return this.myInterests.toArray();
 	}
 
 	@Nonnull
 	@Override
-	public <T> T[] toArray( @Nonnull T[] a )
+	public final <T> T[] toArray( @Nonnull T[] a )
 	{
 		return this.myInterests.toArray( a );
 	}
 
 	@Override
-	public boolean add( IAEStack e )
+	public final boolean add( IAEStack e )
 	{
 		if( this.myInterests.contains( e ) )
 		{
@@ -103,19 +102,19 @@ public class CraftingWatcher implements ICraftingWatcher
 	}
 
 	@Override
-	public boolean remove( Object o )
+	public final boolean remove( Object o )
 	{
 		return this.myInterests.remove( o ) && this.gsc.interestManager.remove( (IAEStack) o, this );
 	}
 
 	@Override
-	public boolean containsAll( @Nonnull Collection<?> c )
+	public final boolean containsAll( @Nonnull Collection<?> c )
 	{
 		return this.myInterests.containsAll( c );
 	}
 
 	@Override
-	public boolean addAll( @Nonnull Collection<? extends IAEStack> c )
+	public final boolean addAll( @Nonnull Collection<? extends IAEStack> c )
 	{
 		boolean didChange = false;
 
@@ -128,7 +127,7 @@ public class CraftingWatcher implements ICraftingWatcher
 	}
 
 	@Override
-	public boolean removeAll( @Nonnull Collection<?> c )
+	public final boolean removeAll( @Nonnull Collection<?> c )
 	{
 		boolean didSomething = false;
 		for( Object o : c )
@@ -139,7 +138,7 @@ public class CraftingWatcher implements ICraftingWatcher
 	}
 
 	@Override
-	public boolean retainAll( @Nonnull Collection<?> c )
+	public final boolean retainAll( @Nonnull Collection<?> c )
 	{
 		boolean changed = false;
 		Iterator<IAEStack> i = this.iterator();
@@ -157,7 +156,7 @@ public class CraftingWatcher implements ICraftingWatcher
 	}
 
 	@Override
-	public void clear()
+	public final void clear()
 	{
 		Iterator<IAEStack> i = this.myInterests.iterator();
 		while( i.hasNext() )
@@ -167,7 +166,7 @@ public class CraftingWatcher implements ICraftingWatcher
 		}
 	}
 
-	class ItemWatcherIterator implements Iterator<IAEStack>
+	final class ItemWatcherIterator implements Iterator<IAEStack>
 	{
 
 		final CraftingWatcher watcher;
@@ -181,19 +180,19 @@ public class CraftingWatcher implements ICraftingWatcher
 		}
 
 		@Override
-		public boolean hasNext()
+		public final boolean hasNext()
 		{
 			return this.interestIterator.hasNext();
 		}
 
 		@Override
-		public IAEStack next()
+		public final IAEStack next()
 		{
 			return this.myLast = this.interestIterator.next();
 		}
 
 		@Override
-		public void remove()
+		public final void remove()
 		{
 			CraftingWatcher.this.gsc.interestManager.remove( this.myLast, this.watcher );
 			this.interestIterator.remove();

@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -78,7 +78,7 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 		this.myScrollBar = new GuiScrollbar();
 	}
 
-	public void clearItems()
+	public final void clearItems()
 	{
 		this.storage = AEApi.instance().storage().createItemList();
 		this.active = AEApi.instance().storage().createItemList();
@@ -340,7 +340,7 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize );
 	}
 
-	public void postUpdate( List<IAEItemStack> list, byte ref )
+	public final void postUpdate( List<IAEItemStack> list, byte ref )
 	{
 		switch( ref )
 		{

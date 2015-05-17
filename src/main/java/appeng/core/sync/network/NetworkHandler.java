@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -35,7 +35,7 @@ import appeng.core.WorldSettings;
 import appeng.core.sync.AppEngPacket;
 
 
-public class NetworkHandler
+public final class NetworkHandler
 {
 
 	public static NetworkHandler instance;
@@ -114,22 +114,22 @@ public class NetworkHandler
 		}
 	}
 
-	public String getChannel()
+	public final String getChannel()
 	{
 		return this.myChannelName;
 	}
 
-	public void sendToAll( AppEngPacket message )
+	public final void sendToAll( AppEngPacket message )
 	{
 		this.ec.sendToAll( message.getProxy() );
 	}
 
-	public void sendTo( AppEngPacket message, EntityPlayerMP player )
+	public final void sendTo( AppEngPacket message, EntityPlayerMP player )
 	{
 		this.ec.sendTo( message.getProxy(), player );
 	}
 
-	public void sendToAllAround( AppEngPacket message, NetworkRegistry.TargetPoint point )
+	public final void sendToAllAround( AppEngPacket message, NetworkRegistry.TargetPoint point )
 	{
 		this.ec.sendToAllAround( message.getProxy(), point );
 	}
@@ -139,7 +139,7 @@ public class NetworkHandler
 		this.ec.sendToDimension( message.getProxy(), dimensionId );
 	}
 
-	public void sendToServer( AppEngPacket message )
+	public final void sendToServer( AppEngPacket message )
 	{
 		this.ec.sendToServer( message.getProxy() );
 	}

@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -31,7 +31,7 @@ import appeng.api.storage.ISaveProvider;
 import appeng.api.storage.StorageChannel;
 
 
-public class CellRegistry implements ICellRegistry
+public final class CellRegistry implements ICellRegistry
 {
 
 	final List<ICellHandler> handlers;
@@ -42,7 +42,7 @@ public class CellRegistry implements ICellRegistry
 	}
 
 	@Override
-	public void addCellHandler( ICellHandler h )
+	public final void addCellHandler( ICellHandler h )
 	{
 		if( h != null )
 		{
@@ -51,7 +51,7 @@ public class CellRegistry implements ICellRegistry
 	}
 
 	@Override
-	public boolean isCellHandled( ItemStack is )
+	public final boolean isCellHandled( ItemStack is )
 	{
 		if( is == null )
 		{
@@ -68,7 +68,7 @@ public class CellRegistry implements ICellRegistry
 	}
 
 	@Override
-	public ICellHandler getHandler( ItemStack is )
+	public final ICellHandler getHandler( ItemStack is )
 	{
 		if( is == null )
 		{
@@ -85,7 +85,7 @@ public class CellRegistry implements ICellRegistry
 	}
 
 	@Override
-	public IMEInventoryHandler getCellInventory( ItemStack is, ISaveProvider container, StorageChannel chan )
+	public final IMEInventoryHandler getCellInventory( ItemStack is, ISaveProvider container, StorageChannel chan )
 	{
 		if( is == null )
 		{

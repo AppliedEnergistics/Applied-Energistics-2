@@ -30,7 +30,7 @@ import appeng.block.AEBaseBlock;
 import appeng.core.features.AEFeature;
 
 
-public class BlockPhantomNode extends AEBaseBlock
+public final class BlockPhantomNode extends AEBaseBlock
 {
 
 	public BlockPhantomNode()
@@ -49,7 +49,7 @@ public class BlockPhantomNode extends AEBaseBlock
 	}
 
 	@Override
-	public void registerBlockIcons( IIconRegister iconRegistry )
+	public final void registerBlockIcons( IIconRegister iconRegistry )
 	{
 		this.registerNoIcons();
 	}

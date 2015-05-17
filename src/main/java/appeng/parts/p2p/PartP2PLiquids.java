@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -40,7 +40,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import appeng.me.GridAccessException;
 
 
-public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFluidHandler
+public final class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFluidHandler
 {
 
 	static final ThreadLocal<Stack<PartP2PLiquids>> DEPTH = new ThreadLocal<Stack<PartP2PLiquids>>();
@@ -67,13 +67,13 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 	}
 
 	@Override
-	public void onTunnelNetworkChange()
+	public final void onTunnelNetworkChange()
 	{
 		this.cachedTank = null;
 	}
 
 	@Override
-	public void onNeighborChanged()
+	public final void onNeighborChanged()
 	{
 		this.cachedTank = null;
 		if( this.output )
@@ -87,7 +87,7 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 	}
 
 	@Override
-	public int fill( ForgeDirection from, FluidStack resource, boolean doFill )
+	public final int fill( ForgeDirection from, FluidStack resource, boolean doFill )
 	{
 		Stack<PartP2PLiquids> stack = this.getDepth();
 
@@ -197,7 +197,7 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 		return s;
 	}
 
-	List<PartP2PLiquids> getOutputs( Fluid input )
+	final List<PartP2PLiquids> getOutputs( Fluid input )
 	{
 		List<PartP2PLiquids> outs = new LinkedList<PartP2PLiquids>();
 
@@ -223,7 +223,7 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 		return outs;
 	}
 
-	IFluidHandler getTarget()
+	final IFluidHandler getTarget()
 	{
 		if( !this.proxy.isActive() )
 		{
@@ -245,31 +245,31 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 	}
 
 	@Override
-	public FluidStack drain( ForgeDirection from, FluidStack resource, boolean doDrain )
+	public final FluidStack drain( ForgeDirection from, FluidStack resource, boolean doDrain )
 	{
 		return null;
 	}
 
 	@Override
-	public FluidStack drain( ForgeDirection from, int maxDrain, boolean doDrain )
+	public final FluidStack drain( ForgeDirection from, int maxDrain, boolean doDrain )
 	{
 		return null;
 	}
 
 	@Override
-	public boolean canFill( ForgeDirection from, Fluid fluid )
+	public final boolean canFill( ForgeDirection from, Fluid fluid )
 	{
 		return !this.output && from == this.side && !this.getOutputs( fluid ).isEmpty();
 	}
 
 	@Override
-	public boolean canDrain( ForgeDirection from, Fluid fluid )
+	public final boolean canDrain( ForgeDirection from, Fluid fluid )
 	{
 		return false;
 	}
 
 	@Override
-	public FluidTankInfo[] getTankInfo( ForgeDirection from )
+	public final FluidTankInfo[] getTankInfo( ForgeDirection from )
 	{
 		if( from == this.side )
 		{

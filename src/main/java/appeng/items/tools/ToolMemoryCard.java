@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -37,7 +37,7 @@ import appeng.items.AEBaseItem;
 import appeng.util.Platform;
 
 
-public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
+public final class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 {
 	public ToolMemoryCard()
 	{
@@ -84,7 +84,7 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 	}
 
 	@Override
-	public void setMemoryCardContents( ItemStack is, String settingsName, NBTTagCompound data )
+	public final void setMemoryCardContents( ItemStack is, String settingsName, NBTTagCompound data )
 	{
 		NBTTagCompound c = Platform.openNbtData( is );
 		c.setString( "Config", settingsName );
@@ -92,7 +92,7 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 	}
 
 	@Override
-	public String getSettingsName( ItemStack is )
+	public final String getSettingsName( ItemStack is )
 	{
 		NBTTagCompound c = Platform.openNbtData( is );
 		String name = c.getString( "Config" );
@@ -100,7 +100,7 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 	}
 
 	@Override
-	public NBTTagCompound getData( ItemStack is )
+	public final NBTTagCompound getData( ItemStack is )
 	{
 		NBTTagCompound c = Platform.openNbtData( is );
 		NBTTagCompound o = c.getCompoundTag( "Data" );
@@ -112,7 +112,7 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 	}
 
 	@Override
-	public void notifyUser( EntityPlayer player, MemoryCardMessages msg )
+	public final void notifyUser( EntityPlayer player, MemoryCardMessages msg )
 	{
 		if( Platform.isClient() )
 		{
@@ -138,7 +138,7 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 	}
 
 	@Override
-	public boolean onItemUse( ItemStack is, EntityPlayer player, World w, int x, int y, int z, int side, float hx, float hy, float hz )
+	public final boolean onItemUse( ItemStack is, EntityPlayer player, World w, int x, int y, int z, int side, float hx, float hy, float hz )
 	{
 		if( player.isSneaking() && !w.isRemote )
 		{
@@ -154,7 +154,7 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 	}
 
 	@Override
-	public boolean doesSneakBypassUse( World world, int x, int y, int z, EntityPlayer player )
+	public final boolean doesSneakBypassUse( World world, int x, int y, int z, EntityPlayer player )
 	{
 		return true;
 	}

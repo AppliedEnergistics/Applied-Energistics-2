@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -47,7 +47,7 @@ import appeng.helpers.Reflected;
 import appeng.util.Platform;
 
 
-public class PartCableCovered extends PartCable
+public final class PartCableCovered extends PartCable
 {
 	@Reflected
 	public PartCableCovered( ItemStack is )
@@ -68,13 +68,13 @@ public class PartCableCovered extends PartCable
 	}
 
 	@Override
-	public AECableType getCableConnectionType()
+	public final AECableType getCableConnectionType()
 	{
 		return AECableType.COVERED;
 	}
 
 	@Override
-	public void getBoxes( IPartCollisionHelper bch )
+	public final void getBoxes( IPartCollisionHelper bch )
 	{
 		bch.addBox( 5.0, 5.0, 5.0, 11.0, 11.0, 11.0 );
 
@@ -120,7 +120,7 @@ public class PartCableCovered extends PartCable
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderInventory( IPartRenderHelper rh, RenderBlocks renderer )
+	public final void renderInventory( IPartRenderHelper rh, RenderBlocks renderer )
 	{
 		GL11.glTranslated( -0.0, -0.0, 0.3 );
 
@@ -155,14 +155,14 @@ public class PartCableCovered extends PartCable
 	}
 
 	@Override
-	public IIcon getTexture( AEColor c )
+	public final IIcon getTexture( AEColor c )
 	{
 		return this.getCoveredTexture( c );
 	}
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderStatic( int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer )
+	public final void renderStatic( int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer )
 	{
 		this.renderCache = rh.useSimplifiedRendering( x, y, z, this, this.renderCache );
 		rh.setTexture( this.getTexture( this.getCableColor() ) );

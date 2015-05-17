@@ -61,7 +61,7 @@ import appeng.tile.networking.TileCableBus;
 import appeng.util.Platform;
 
 
-public class ApiPart implements IPartHelper
+public final class ApiPart implements IPartHelper
 {
 
 	private final Map<String, Class> tileImplementations = new HashMap<String, Class>();
@@ -69,7 +69,7 @@ public class ApiPart implements IPartHelper
 	private final Map<String, Class> roots = new HashMap<String, Class>();
 	private final List<String> desc = new LinkedList<String>();
 
-	public void initFMPSupport()
+	public final void initFMPSupport()
 	{
 		for( Class layerInterface : this.interfaces2Layer.keySet() )
 		{
@@ -80,7 +80,7 @@ public class ApiPart implements IPartHelper
 		}
 	}
 
-	public Class getCombinedInstance( String base )
+	public final Class getCombinedInstance( String base )
 	{
 		if( this.desc.size() == 0 )
 		{
@@ -146,7 +146,7 @@ public class ApiPart implements IPartHelper
 		return myCLass;
 	}
 
-	public Class getClassByDesc( String addendum, String fullPath, String root, String next )
+	public final Class getClassByDesc( String addendum, String fullPath, String root, String next )
 	{
 		if( this.roots.get( fullPath ) != null )
 		{
@@ -236,7 +236,7 @@ public class ApiPart implements IPartHelper
 		return clazz;
 	}
 
-	public ClassNode getReader( String name )
+	public final ClassNode getReader( String name )
 	{
 		ClassReader cr;
 		String path = '/' + name.replace( ".", "/" ) + ".class";
@@ -305,7 +305,7 @@ public class ApiPart implements IPartHelper
 	}
 
 	@Override
-	public boolean registerNewLayer( String layer, String layerInterface )
+	public final boolean registerNewLayer( String layer, String layerInterface )
 	{
 		try
 		{
@@ -329,7 +329,7 @@ public class ApiPart implements IPartHelper
 	}
 
 	@Override
-	public void setItemBusRenderer( IPartItem i )
+	public final void setItemBusRenderer( IPartItem i )
 	{
 		if( Platform.isClient() && i instanceof Item )
 		{
@@ -338,24 +338,24 @@ public class ApiPart implements IPartHelper
 	}
 
 	@Override
-	public boolean placeBus( ItemStack is, int x, int y, int z, int side, EntityPlayer player, World w )
+	public final boolean placeBus( ItemStack is, int x, int y, int z, int side, EntityPlayer player, World w )
 	{
 		return PartPlacement.place( is, x, y, z, side, player, w, PartPlacement.PlaceType.PLACE_ITEM, 0 );
 	}
 
 	@Override
-	public CableRenderMode getCableRenderMode()
+	public final CableRenderMode getCableRenderMode()
 	{
 		return CommonHelper.proxy.getRenderMode();
 	}
 
-	static class DefaultPackageClassNameRemapper extends Remapper
+	static final class DefaultPackageClassNameRemapper extends Remapper
 	{
 
 		public final HashMap<String, String> inputOutput = new HashMap<String, String>();
 
 		@Override
-		public String map( String typeName )
+		public final String map( String typeName )
 		{
 			String o = this.inputOutput.get( typeName );
 			if( o == null )

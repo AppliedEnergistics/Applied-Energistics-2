@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -29,7 +29,7 @@ import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 
 
-public class AdaptorIInventory extends InventoryAdaptor
+public final class AdaptorIInventory extends InventoryAdaptor
 {
 
 	private final IInventory i;
@@ -317,7 +317,7 @@ public class AdaptorIInventory extends InventoryAdaptor
 		return left;
 	}
 
-	boolean canRemoveStackFromSlot( int x, ItemStack is )
+	final boolean canRemoveStackFromSlot( int x, ItemStack is )
 	{
 		if( this.wrapperEnabled )
 		{
@@ -327,25 +327,25 @@ public class AdaptorIInventory extends InventoryAdaptor
 	}
 
 	@Override
-	public Iterator<ItemSlot> iterator()
+	public final Iterator<ItemSlot> iterator()
 	{
 		return new InvIterator();
 	}
 
-	class InvIterator implements Iterator<ItemSlot>
+	final class InvIterator implements Iterator<ItemSlot>
 	{
 
 		final ItemSlot is = new ItemSlot();
 		int x = 0;
 
 		@Override
-		public boolean hasNext()
+		public final boolean hasNext()
 		{
 			return this.x < AdaptorIInventory.this.i.getSizeInventory();
 		}
 
 		@Override
-		public ItemSlot next()
+		public final ItemSlot next()
 		{
 			ItemStack iss = AdaptorIInventory.this.i.getStackInSlot( this.x );
 
@@ -358,7 +358,7 @@ public class AdaptorIInventory extends InventoryAdaptor
 		}
 
 		@Override
-		public void remove()
+		public final void remove()
 		{
 			// nothing!
 		}

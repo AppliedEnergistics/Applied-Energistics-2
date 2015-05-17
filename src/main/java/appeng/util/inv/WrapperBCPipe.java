@@ -30,7 +30,7 @@ import appeng.integration.IntegrationType;
 import appeng.integration.abstraction.IBC;
 
 
-public class WrapperBCPipe implements IInventory
+public final class WrapperBCPipe implements IInventory
 {
 
 	private final IBC bc;
@@ -45,79 +45,79 @@ public class WrapperBCPipe implements IInventory
 	}
 
 	@Override
-	public int getSizeInventory()
+	public final int getSizeInventory()
 	{
 		return 1;
 	}
 
 	@Override
-	public ItemStack getStackInSlot( int i )
+	public final ItemStack getStackInSlot( int i )
 	{
 		return null;
 	}
 
 	@Override
-	public ItemStack decrStackSize( int i, int j )
+	public final ItemStack decrStackSize( int i, int j )
 	{
 		return null;
 	}
 
 	@Override
-	public ItemStack getStackInSlotOnClosing( int i )
+	public final ItemStack getStackInSlotOnClosing( int i )
 	{
 		return null;
 	}
 
 	@Override
-	public void setInventorySlotContents( int i, ItemStack itemstack )
+	public final void setInventorySlotContents( int i, ItemStack itemstack )
 	{
 		this.bc.addItemsToPipe( this.ad, itemstack, this.dir );
 	}
 
 	@Override
-	public String getInventoryName()
+	public final String getInventoryName()
 	{
 		return "BC Pipe Wrapper";
 	}
 
 	@Override
-	public boolean hasCustomInventoryName()
+	public final boolean hasCustomInventoryName()
 	{
 		return false;
 	}
 
 	@Override
-	public int getInventoryStackLimit()
+	public final int getInventoryStackLimit()
 	{
 		return 64;
 	}
 
 	@Override
-	public void markDirty()
+	public final void markDirty()
 	{
 
 	}
 
 	@Override
-	public boolean isUseableByPlayer( EntityPlayer entityplayer )
+	public final boolean isUseableByPlayer( EntityPlayer entityplayer )
 	{
 		return false;
 	}
 
 	@Override
-	public void openInventory()
+	public final void openInventory()
 	{
 
 	}
 
 	@Override
-	public void closeInventory()
+	public final void closeInventory()
 	{
 
 	}
 
 	@Override
-	public boolean isItemValidForSlot( int i, ItemStack itemstack )
+	public final boolean isItemValidForSlot( int i, ItemStack itemstack )
 	{
 		return this.bc.canAddItemsToPipe( this.ad, itemstack, this.dir );
 	}

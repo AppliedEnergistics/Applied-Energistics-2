@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -28,7 +28,7 @@ import appeng.api.networking.crafting.ICraftingRequester;
 import appeng.api.storage.data.IAEItemStack;
 
 
-public class CraftingLink implements ICraftingLink
+public final class CraftingLink implements ICraftingLink
 {
 
 	final ICraftingRequester req;
@@ -72,7 +72,7 @@ public class CraftingLink implements ICraftingLink
 	}
 
 	@Override
-	public boolean isCanceled()
+	public final boolean isCanceled()
 	{
 		if( this.canceled )
 		{
@@ -93,7 +93,7 @@ public class CraftingLink implements ICraftingLink
 	}
 
 	@Override
-	public boolean isDone()
+	public final boolean isDone()
 	{
 		if( this.done )
 		{
@@ -114,7 +114,7 @@ public class CraftingLink implements ICraftingLink
 	}
 
 	@Override
-	public void cancel()
+	public final void cancel()
 	{
 		if( this.done )
 		{
@@ -132,13 +132,13 @@ public class CraftingLink implements ICraftingLink
 	}
 
 	@Override
-	public boolean isStandalone()
+	public final boolean isStandalone()
 	{
 		return this.standalone;
 	}
 
 	@Override
-	public void writeToNBT( NBTTagCompound tag )
+	public final void writeToNBT( NBTTagCompound tag )
 	{
 		tag.setString( "CraftID", this.CraftID );
 		tag.setBoolean( "canceled", this.canceled );
@@ -148,12 +148,12 @@ public class CraftingLink implements ICraftingLink
 	}
 
 	@Override
-	public String getCraftingID()
+	public final String getCraftingID()
 	{
 		return this.CraftID;
 	}
 
-	public void setNexus( CraftingLinkNexus n )
+	public final void setNexus( CraftingLinkNexus n )
 	{
 		if( this.tie != null )
 		{
@@ -175,7 +175,7 @@ public class CraftingLink implements ICraftingLink
 		}
 	}
 
-	public IAEItemStack injectItems( IAEItemStack input, Actionable mode )
+	public final IAEItemStack injectItems( IAEItemStack input, Actionable mode )
 	{
 		if( this.tie == null || this.tie.req == null || this.tie.req.req == null )
 		{
@@ -185,7 +185,7 @@ public class CraftingLink implements ICraftingLink
 		return this.tie.req.req.injectCraftedItems( this.tie.req, input, mode );
 	}
 
-	public void markDone()
+	public final void markDone()
 	{
 		if( this.tie != null )
 		{

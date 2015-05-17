@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -58,46 +58,46 @@ public abstract class AEStack<StackType extends IAEStack> implements IAEStack<St
 	}
 
 	@Override
-	public long getStackSize()
+	public final long getStackSize()
 	{
 		return this.stackSize;
 	}
 
 	@Override
-	public StackType setStackSize( long ss )
+	public final StackType setStackSize( long ss )
 	{
 		this.stackSize = ss;
 		return (StackType) this;
 	}
 
 	@Override
-	public long getCountRequestable()
+	public final long getCountRequestable()
 	{
 		return this.countRequestable;
 	}
 
 	@Override
-	public StackType setCountRequestable( long countRequestable )
+	public final StackType setCountRequestable( long countRequestable )
 	{
 		this.countRequestable = countRequestable;
 		return (StackType) this;
 	}
 
 	@Override
-	public boolean isCraftable()
+	public final boolean isCraftable()
 	{
 		return this.isCraftable;
 	}
 
 	@Override
-	public StackType setCraftable( boolean isCraftable )
+	public final StackType setCraftable( boolean isCraftable )
 	{
 		this.isCraftable = isCraftable;
 		return (StackType) this;
 	}
 
 	@Override
-	public StackType reset()
+	public final StackType reset()
 	{
 		this.stackSize = 0;
 		// priority = Integer.MIN_VALUE;
@@ -107,37 +107,37 @@ public abstract class AEStack<StackType extends IAEStack> implements IAEStack<St
 	}
 
 	@Override
-	public boolean isMeaningful()
+	public final boolean isMeaningful()
 	{
 		return this.stackSize != 0 || this.countRequestable > 0 || this.isCraftable;
 	}
 
 	@Override
-	public void incStackSize( long i )
+	public final void incStackSize( long i )
 	{
 		this.stackSize += i;
 	}
 
 	@Override
-	public void decStackSize( long i )
+	public final void decStackSize( long i )
 	{
 		this.stackSize -= i;
 	}
 
 	@Override
-	public void incCountRequestable( long i )
+	public final void incCountRequestable( long i )
 	{
 		this.countRequestable += i;
 	}
 
 	@Override
-	public void decCountRequestable( long i )
+	public final void decCountRequestable( long i )
 	{
 		this.countRequestable -= i;
 	}
 
 	@Override
-	public void writeToPacket( ByteBuf i ) throws IOException
+	public final void writeToPacket( ByteBuf i ) throws IOException
 	{
 		byte mask = (byte) ( this.getType( 0 ) | ( this.getType( this.stackSize ) << 2 ) | ( this.getType( this.countRequestable ) << 4 ) | ( (byte) ( this.isCraftable ? 1 : 0 ) << 6 ) | ( this.hasTagCompound() ? 1 : 0 ) << 7 );
 
@@ -151,7 +151,7 @@ public abstract class AEStack<StackType extends IAEStack> implements IAEStack<St
 		this.putPacketValue( i, this.countRequestable );
 	}
 
-	byte getType( long num )
+	final byte getType( long num )
 	{
 		if( num <= 255 )
 		{
@@ -177,7 +177,7 @@ public abstract class AEStack<StackType extends IAEStack> implements IAEStack<St
 
 	abstract void readNBT( ByteBuf i ) throws IOException;
 
-	void putPacketValue( ByteBuf tag, long num )
+	final void putPacketValue( ByteBuf tag, long num )
 	{
 		if( num <= 255 )
 		{

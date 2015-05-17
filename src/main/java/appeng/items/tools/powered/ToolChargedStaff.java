@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -35,7 +35,7 @@ import appeng.server.ServerHelper;
 import appeng.util.Platform;
 
 
-public class ToolChargedStaff extends AEBasePoweredItem
+public final class ToolChargedStaff extends AEBasePoweredItem
 {
 
 	public ToolChargedStaff()
@@ -45,7 +45,7 @@ public class ToolChargedStaff extends AEBasePoweredItem
 	}
 
 	@Override
-	public boolean hitEntity( ItemStack item, EntityLivingBase target, EntityLivingBase hitter )
+	public final boolean hitEntity( ItemStack item, EntityLivingBase target, EntityLivingBase hitter )
 	{
 		if( this.getAECurrentPower( item ) > 300 )
 		{

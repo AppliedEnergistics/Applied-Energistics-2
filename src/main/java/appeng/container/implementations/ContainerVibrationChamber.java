@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -29,7 +29,7 @@ import appeng.tile.misc.TileVibrationChamber;
 import appeng.util.Platform;
 
 
-public class ContainerVibrationChamber extends AEBaseContainer implements IProgressProvider
+public final class ContainerVibrationChamber extends AEBaseContainer implements IProgressProvider
 {
 
 	private static final int MAX_BURN_TIME = 200;
@@ -51,7 +51,7 @@ public class ContainerVibrationChamber extends AEBaseContainer implements IProgr
 	}
 
 	@Override
-	public void detectAndSendChanges()
+	public final void detectAndSendChanges()
 	{
 		if( Platform.isServer() )
 		{
@@ -63,7 +63,7 @@ public class ContainerVibrationChamber extends AEBaseContainer implements IProgr
 	}
 
 	@Override
-	public int getCurrentProgress()
+	public final int getCurrentProgress()
 	{
 		return this.burnProgress > 0 ? this.burnSpeed : 0;
 	}

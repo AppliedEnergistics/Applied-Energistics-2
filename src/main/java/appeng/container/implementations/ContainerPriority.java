@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -35,7 +35,7 @@ import appeng.helpers.IPriorityHost;
 import appeng.util.Platform;
 
 
-public class ContainerPriority extends AEBaseContainer
+public final class ContainerPriority extends AEBaseContainer
 {
 
 	final IPriorityHost priHost;
@@ -52,20 +52,20 @@ public class ContainerPriority extends AEBaseContainer
 	}
 
 	@SideOnly( Side.CLIENT )
-	public void setTextField( GuiTextField level )
+	public final void setTextField( GuiTextField level )
 	{
 		this.textField = level;
 		this.textField.setText( String.valueOf( this.PriorityValue ) );
 	}
 
-	public void setPriority( int newValue, EntityPlayer player )
+	public final void setPriority( int newValue, EntityPlayer player )
 	{
 		this.priHost.setPriority( newValue );
 		this.PriorityValue = newValue;
 	}
 
 	@Override
-	public void detectAndSendChanges()
+	public final void detectAndSendChanges()
 	{
 		super.detectAndSendChanges();
 		this.verifyPermissions( SecurityPermissions.BUILD, false );

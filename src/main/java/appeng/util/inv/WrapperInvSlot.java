@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -34,7 +34,7 @@ public class WrapperInvSlot
 		this.inv = inv;
 	}
 
-	public IInventory getWrapper( int slot )
+	public final IInventory getWrapper( int slot )
 	{
 		return new InternalInterfaceWrapper( this.inv, slot );
 	}
@@ -44,7 +44,7 @@ public class WrapperInvSlot
 		return true;
 	}
 
-	class InternalInterfaceWrapper implements IInventory
+	final class InternalInterfaceWrapper implements IInventory
 	{
 
 		private final IInventory inv;
@@ -57,79 +57,79 @@ public class WrapperInvSlot
 		}
 
 		@Override
-		public int getSizeInventory()
+		public final int getSizeInventory()
 		{
 			return 1;
 		}
 
 		@Override
-		public ItemStack getStackInSlot( int i )
+		public final ItemStack getStackInSlot( int i )
 		{
 			return this.inv.getStackInSlot( this.slot );
 		}
 
 		@Override
-		public ItemStack decrStackSize( int i, int num )
+		public final ItemStack decrStackSize( int i, int num )
 		{
 			return this.inv.decrStackSize( this.slot, num );
 		}
 
 		@Override
-		public ItemStack getStackInSlotOnClosing( int i )
+		public final ItemStack getStackInSlotOnClosing( int i )
 		{
 			return this.inv.getStackInSlotOnClosing( this.slot );
 		}
 
 		@Override
-		public void setInventorySlotContents( int i, ItemStack itemstack )
+		public final void setInventorySlotContents( int i, ItemStack itemstack )
 		{
 			this.inv.setInventorySlotContents( this.slot, itemstack );
 		}
 
 		@Override
-		public String getInventoryName()
+		public final String getInventoryName()
 		{
 			return this.inv.getInventoryName();
 		}
 
 		@Override
-		public boolean hasCustomInventoryName()
+		public final boolean hasCustomInventoryName()
 		{
 			return this.inv.hasCustomInventoryName();
 		}
 
 		@Override
-		public int getInventoryStackLimit()
+		public final int getInventoryStackLimit()
 		{
 			return this.inv.getInventoryStackLimit();
 		}
 
 		@Override
-		public void markDirty()
+		public final void markDirty()
 		{
 			this.inv.markDirty();
 		}
 
 		@Override
-		public boolean isUseableByPlayer( EntityPlayer entityplayer )
+		public final boolean isUseableByPlayer( EntityPlayer entityplayer )
 		{
 			return this.inv.isUseableByPlayer( entityplayer );
 		}
 
 		@Override
-		public void openInventory()
+		public final void openInventory()
 		{
 			this.inv.openInventory();
 		}
 
 		@Override
-		public void closeInventory()
+		public final void closeInventory()
 		{
 			this.inv.closeInventory();
 		}
 
 		@Override
-		public boolean isItemValidForSlot( int i, ItemStack itemstack )
+		public final boolean isItemValidForSlot( int i, ItemStack itemstack )
 		{
 			return WrapperInvSlot.this.isItemValid( itemstack ) && this.inv.isItemValidForSlot( this.slot, itemstack );
 		}

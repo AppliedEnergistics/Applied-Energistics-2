@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -38,7 +38,7 @@ import appeng.core.AELog;
 
 
 @SideOnly( Side.CLIENT )
-public class RenderBlocksWorkaround extends RenderBlocks
+public final class RenderBlocksWorkaround extends RenderBlocks
 {
 
 	final int[] lightHashTmp = new int[27];
@@ -52,7 +52,7 @@ public class RenderBlocksWorkaround extends RenderBlocks
 	Field fColor;
 	private LightingCache lightState = new LightingCache();
 
-	public int getCurrentColor()
+	public final int getCurrentColor()
 	{
 		try
 		{
@@ -76,7 +76,7 @@ public class RenderBlocksWorkaround extends RenderBlocks
 		}
 	}
 
-	public int getCurrentBrightness()
+	public final int getCurrentBrightness()
 	{
 		try
 		{
@@ -100,12 +100,12 @@ public class RenderBlocksWorkaround extends RenderBlocks
 		}
 	}
 
-	public void setTexture( IIcon ico )
+	public final void setTexture( IIcon ico )
 	{
 		this.lightState.rXPos = this.lightState.rXNeg = this.lightState.rYPos = this.lightState.rYNeg = this.lightState.rZPos = this.lightState.rZNeg = ico;
 	}
 
-	public void setTexture( IIcon rYNeg, IIcon rYPos, IIcon rZNeg, IIcon rZPos, IIcon rXNeg, IIcon rXPos )
+	public final void setTexture( IIcon rYNeg, IIcon rYPos, IIcon rZNeg, IIcon rZPos, IIcon rXNeg, IIcon rXPos )
 	{
 		this.lightState.rXPos = rXPos;
 		this.lightState.rXNeg = rXNeg;
@@ -115,7 +115,7 @@ public class RenderBlocksWorkaround extends RenderBlocks
 		this.lightState.rZNeg = rZNeg;
 	}
 
-	public boolean renderStandardBlockNoCalculations( Block b, int x, int y, int z )
+	public final boolean renderStandardBlockNoCalculations( Block b, int x, int y, int z )
 	{
 		Tessellator.instance.setBrightness( this.lightState.bXPos );
 		this.restoreAO( this.lightState.aoXPos, this.lightState.foXPos );
@@ -189,7 +189,7 @@ public class RenderBlocksWorkaround extends RenderBlocks
 	}
 
 	@Override
-	public boolean renderStandardBlock( Block blk, int x, int y, int z )
+	public final boolean renderStandardBlock( Block blk, int x, int y, int z )
 	{
 		try
 		{
@@ -215,7 +215,7 @@ public class RenderBlocksWorkaround extends RenderBlocks
 	}
 
 	@Override
-	public void renderFaceYNeg( Block par1Block, double par2, double par4, double par6, IIcon par8Icon )
+	public final void renderFaceYNeg( Block par1Block, double par2, double par4, double par6, IIcon par8Icon )
 	{
 		if( this.faces.contains( ForgeDirection.DOWN ) )
 		{
@@ -273,7 +273,7 @@ public class RenderBlocksWorkaround extends RenderBlocks
 	}
 
 	@Override
-	public void renderFaceYPos( Block par1Block, double par2, double par4, double par6, IIcon par8Icon )
+	public final void renderFaceYPos( Block par1Block, double par2, double par4, double par6, IIcon par8Icon )
 	{
 		if( this.faces.contains( ForgeDirection.UP ) )
 		{
@@ -331,7 +331,7 @@ public class RenderBlocksWorkaround extends RenderBlocks
 	}
 
 	@Override
-	public void renderFaceZNeg( Block par1Block, double par2, double par4, double par6, IIcon par8Icon )
+	public final void renderFaceZNeg( Block par1Block, double par2, double par4, double par6, IIcon par8Icon )
 	{
 		if( this.faces.contains( ForgeDirection.NORTH ) )
 		{
@@ -389,7 +389,7 @@ public class RenderBlocksWorkaround extends RenderBlocks
 	}
 
 	@Override
-	public void renderFaceZPos( Block par1Block, double par2, double par4, double par6, IIcon par8Icon )
+	public final void renderFaceZPos( Block par1Block, double par2, double par4, double par6, IIcon par8Icon )
 	{
 		if( this.faces.contains( ForgeDirection.SOUTH ) )
 		{
@@ -447,7 +447,7 @@ public class RenderBlocksWorkaround extends RenderBlocks
 	}
 
 	@Override
-	public void renderFaceXNeg( Block par1Block, double par2, double par4, double par6, IIcon par8Icon )
+	public final void renderFaceXNeg( Block par1Block, double par2, double par4, double par6, IIcon par8Icon )
 	{
 		if( this.faces.contains( ForgeDirection.WEST ) )
 		{
@@ -505,7 +505,7 @@ public class RenderBlocksWorkaround extends RenderBlocks
 	}
 
 	@Override
-	public void renderFaceXPos( Block par1Block, double par2, double par4, double par6, IIcon par8Icon )
+	public final void renderFaceXPos( Block par1Block, double par2, double par4, double par6, IIcon par8Icon )
 	{
 		if( this.faces.contains( ForgeDirection.EAST ) )
 		{
@@ -590,7 +590,7 @@ public class RenderBlocksWorkaround extends RenderBlocks
 		Tessellator.instance.setBrightness( out );
 	}
 
-	public boolean similarLighting( Block blk, IBlockAccess w, int x, int y, int z, ISimplifiedBundle sim )
+	public final boolean similarLighting( Block blk, IBlockAccess w, int x, int y, int z, ISimplifiedBundle sim )
 	{
 		int lh = this.getLightingHash( blk, w, x, y, z );
 		return ( (LightingCache) sim ).lightHash == lh;
@@ -616,17 +616,17 @@ public class RenderBlocksWorkaround extends RenderBlocks
 		return Arrays.hashCode( this.lightHashTmp );
 	}
 
-	public void populate( ISimplifiedBundle sim )
+	public final void populate( ISimplifiedBundle sim )
 	{
 		this.lightState = new LightingCache( (LightingCache) sim );
 	}
 
-	public ISimplifiedBundle getLightingCache()
+	public final ISimplifiedBundle getLightingCache()
 	{
 		return new LightingCache( this.lightState );
 	}
 
-	private static class LightingCache implements ISimplifiedBundle
+	private static final class LightingCache implements ISimplifiedBundle
 	{
 
 		public final int[] aoXPos;

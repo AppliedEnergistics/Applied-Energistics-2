@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -77,7 +77,7 @@ import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 
 
-public class TileMolecularAssembler extends AENetworkInvTile implements IUpgradeableHost, IConfigManagerHost, IGridTickable, ICraftingMachine, IPowerChannelState
+public final class TileMolecularAssembler extends AENetworkInvTile implements IUpgradeableHost, IConfigManagerHost, IGridTickable, ICraftingMachine, IPowerChannelState
 {
 	private static final int[] SIDES = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
@@ -107,13 +107,13 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 		this.craftingInv = new InventoryCrafting( new ContainerNull(), 3, 3 );
 	}
 
-	protected int getUpgradeSlots()
+	protected final int getUpgradeSlots()
 	{
 		return 5;
 	}
 
 	@Override
-	public boolean pushPattern( ICraftingPatternDetails patternDetails, InventoryCrafting table, ForgeDirection where )
+	public final boolean pushPattern( ICraftingPatternDetails patternDetails, InventoryCrafting table, ForgeDirection where )
 	{
 		if( this.myPattern == null )
 		{
@@ -187,13 +187,13 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 	}
 
 	@Override
-	public boolean acceptsPlans()
+	public final boolean acceptsPlans()
 	{
 		return this.inv.getStackInSlot( 10 ) == null;
 	}
 
 	@Override
-	public int getInstalledUpgrades( Upgrades u )
+	public final int getInstalledUpgrades( Upgrades u )
 	{
 		return this.upgrades.getInstalledUpgrades( u );
 	}
@@ -299,7 +299,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 	}
 
 	@Override
-	public AECableType getCableConnectionType( ForgeDirection dir )
+	public final AECableType getCableConnectionType( ForgeDirection dir )
 	{
 		return AECableType.COVERED;
 	}
@@ -311,13 +311,13 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 	}
 
 	@Override
-	public IConfigManager getConfigManager()
+	public final IConfigManager getConfigManager()
 	{
 		return this.settings;
 	}
 
 	@Override
-	public IInventory getInventoryByName( String name )
+	public final IInventory getInventoryByName( String name )
 	{
 		if( name.equals( "upgrades" ) )
 		{
@@ -345,13 +345,13 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 	}
 
 	@Override
-	public int getInventoryStackLimit()
+	public final int getInventoryStackLimit()
 	{
 		return 1;
 	}
 
 	@Override
-	public boolean isItemValidForSlot( int i, ItemStack itemstack )
+	public final boolean isItemValidForSlot( int i, ItemStack itemstack )
 	{
 		if( i >= 9 )
 		{
@@ -381,7 +381,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 	}
 
 	@Override
-	public boolean canExtractItem( int slotIndex, ItemStack extractedItem, int side )
+	public final boolean canExtractItem( int slotIndex, ItemStack extractedItem, int side )
 	{
 		return slotIndex == 9;
 	}
@@ -392,13 +392,13 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 		return SIDES;
 	}
 
-	public int getCraftingProgress()
+	public final int getCraftingProgress()
 	{
 		return (int) this.progress;
 	}
 
 	@Override
-	public void getDrops( World w, int x, int y, int z, List<ItemStack> drops )
+	public final void getDrops( World w, int x, int y, int z, List<ItemStack> drops )
 	{
 		super.getDrops( w, x, y, z, drops );
 
@@ -413,7 +413,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 	}
 
 	@Override
-	public TickingRequest getTickingRequest( IGridNode node )
+	public final TickingRequest getTickingRequest( IGridNode node )
 	{
 		this.recalculatePlan();
 		this.updateSleepiness();
@@ -421,7 +421,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 	}
 
 	@Override
-	public TickRateModulation tickingRequest( IGridNode node, int ticksSinceLastCall )
+	public final TickRateModulation tickingRequest( IGridNode node, int ticksSinceLastCall )
 	{
 		if( this.inv.getStackInSlot( 9 ) != null )
 		{
@@ -644,13 +644,13 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 	}
 
 	@Override
-	public boolean isPowered()
+	public final boolean isPowered()
 	{
 		return this.isPowered;
 	}
 
 	@Override
-	public boolean isActive()
+	public final boolean isActive()
 	{
 		return this.isPowered;
 	}

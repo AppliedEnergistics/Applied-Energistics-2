@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -55,7 +55,7 @@ import appeng.util.InWorldToolOperationResult;
 import appeng.util.Platform;
 
 
-public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockTool
+public final class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockTool
 {
 	private final Map<InWorldToolOperationIngredient, InWorldToolOperationResult> heatUp;
 	private final Map<InWorldToolOperationIngredient, InWorldToolOperationResult> coolDown;
@@ -93,7 +93,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 		BlockDispenser.dispenseBehaviorRegistry.putObject( this, new DispenserBlockTool() );
 	}
 
-	private static class InWorldToolOperationIngredient
+	private static final class InWorldToolOperationIngredient
 	{
 		private final Block blockID;
 		private final int metadata;
@@ -105,13 +105,13 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 		}
 
 		@Override
-		public int hashCode()
+		public final int hashCode()
 		{
 			return this.blockID.hashCode() ^ this.metadata;
 		}
 
 		@Override
-		public boolean equals( Object obj )
+		public final boolean equals( Object obj )
 		{
 			if( obj == null )
 			{
@@ -199,7 +199,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 	}
 
 	@Override
-	public boolean hitEntity( ItemStack item, EntityLivingBase target, EntityLivingBase hitter )
+	public final boolean hitEntity( ItemStack item, EntityLivingBase target, EntityLivingBase hitter )
 	{
 		if( this.getAECurrentPower( item ) > 1600 )
 		{
@@ -211,7 +211,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 	}
 
 	@Override
-	public ItemStack onItemRightClick( ItemStack item, World w, EntityPlayer p )
+	public final ItemStack onItemRightClick( ItemStack item, World w, EntityPlayer p )
 	{
 		MovingObjectPosition target = this.getMovingObjectPositionFromPlayer( w, p, true );
 
@@ -241,7 +241,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 	}
 
 	@Override
-	public boolean onItemUse( ItemStack item, EntityPlayer p, World w, int x, int y, int z, int side, float hitX, float hitY, float hitZ )
+	public final boolean onItemUse( ItemStack item, EntityPlayer p, World w, int x, int y, int z, int side, float hitX, float hitY, float hitZ )
 	{
 		if( this.getAECurrentPower( item ) > 1600 )
 		{

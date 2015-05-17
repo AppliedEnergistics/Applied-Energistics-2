@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -28,7 +28,7 @@ import appeng.items.misc.ItemEncodedPattern;
 import appeng.util.Platform;
 
 
-public class SlotDisconnected extends AppEngSlot
+public final class SlotDisconnected extends AppEngSlot
 {
 
 	public final ClientDCInternalInv mySlot;
@@ -40,19 +40,19 @@ public class SlotDisconnected extends AppEngSlot
 	}
 
 	@Override
-	public boolean isItemValid( ItemStack par1ItemStack )
+	public final boolean isItemValid( ItemStack par1ItemStack )
 	{
 		return false;
 	}
 
 	@Override
-	public void putStack( ItemStack par1ItemStack )
+	public final void putStack( ItemStack par1ItemStack )
 	{
 
 	}
 
 	@Override
-	public boolean canTakeStack( EntityPlayer par1EntityPlayer )
+	public final boolean canTakeStack( EntityPlayer par1EntityPlayer )
 	{
 		return false;
 	}
@@ -77,30 +77,30 @@ public class SlotDisconnected extends AppEngSlot
 	}
 
 	@Override
-	public void onPickupFromSlot( EntityPlayer par1EntityPlayer, ItemStack par2ItemStack )
+	public final void onPickupFromSlot( EntityPlayer par1EntityPlayer, ItemStack par2ItemStack )
 	{
 	}
 
 	@Override
-	public boolean getHasStack()
+	public final boolean getHasStack()
 	{
 		return this.getStack() != null;
 	}
 
 	@Override
-	public int getSlotStackLimit()
+	public final int getSlotStackLimit()
 	{
 		return 0;
 	}
 
 	@Override
-	public ItemStack decrStackSize( int par1 )
+	public final ItemStack decrStackSize( int par1 )
 	{
 		return null;
 	}
 
 	@Override
-	public boolean isSlotInInventory( IInventory par1iInventory, int par2 )
+	public final boolean isSlotInInventory( IInventory par1iInventory, int par2 )
 	{
 		return false;
 	}

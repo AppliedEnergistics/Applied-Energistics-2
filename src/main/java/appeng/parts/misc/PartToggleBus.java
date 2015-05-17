@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -88,19 +88,19 @@ public class PartToggleBus extends PartBasicState
 	}
 
 	@Override
-	public IIcon getBreakingTexture()
+	public final IIcon getBreakingTexture()
 	{
 		return this.is.getIconIndex();
 	}
 
 	@Override
-	public AECableType getCableConnectionType( ForgeDirection dir )
+	public final AECableType getCableConnectionType( ForgeDirection dir )
 	{
 		return AECableType.GLASS;
 	}
 
 	@Override
-	public void securityBreak()
+	public final void securityBreak()
 	{
 		if( this.is.stackSize > 0 )
 		{
@@ -113,14 +113,14 @@ public class PartToggleBus extends PartBasicState
 	}
 
 	@Override
-	public void getBoxes( IPartCollisionHelper bch )
+	public final void getBoxes( IPartCollisionHelper bch )
 	{
 		bch.addBox( 6, 6, 11, 10, 10, 16 );
 	}
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderInventory( IPartRenderHelper rh, RenderBlocks renderer )
+	public final void renderInventory( IPartRenderHelper rh, RenderBlocks renderer )
 	{
 		GL11.glTranslated( -0.2, -0.3, 0.0 );
 
@@ -145,7 +145,7 @@ public class PartToggleBus extends PartBasicState
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderStatic( int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer )
+	public final void renderStatic( int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer )
 	{
 		this.renderCache = rh.useSimplifiedRendering( x, y, z, this, this.renderCache );
 		rh.setTexture( this.is.getIconIndex() );
@@ -165,7 +165,7 @@ public class PartToggleBus extends PartBasicState
 	}
 
 	@Override
-	public void onNeighborChanged()
+	public final void onNeighborChanged()
 	{
 		boolean oldHasRedstone = this.hasRedstone;
 		this.hasRedstone = this.getHost().hasRedstone( this.side );
@@ -178,28 +178,28 @@ public class PartToggleBus extends PartBasicState
 	}
 
 	@Override
-	public void readFromNBT( NBTTagCompound extra )
+	public final void readFromNBT( NBTTagCompound extra )
 	{
 		super.readFromNBT( extra );
 		this.outerProxy.readFromNBT( extra );
 	}
 
 	@Override
-	public void writeToNBT( NBTTagCompound extra )
+	public final void writeToNBT( NBTTagCompound extra )
 	{
 		super.writeToNBT( extra );
 		this.outerProxy.writeToNBT( extra );
 	}
 
 	@Override
-	public void removeFromWorld()
+	public final void removeFromWorld()
 	{
 		super.removeFromWorld();
 		this.outerProxy.invalidate();
 	}
 
 	@Override
-	public void addToWorld()
+	public final void addToWorld()
 	{
 		super.addToWorld();
 		this.outerProxy.onReady();
@@ -208,26 +208,26 @@ public class PartToggleBus extends PartBasicState
 	}
 
 	@Override
-	public void setPartHostInfo( ForgeDirection side, IPartHost host, TileEntity tile )
+	public final void setPartHostInfo( ForgeDirection side, IPartHost host, TileEntity tile )
 	{
 		super.setPartHostInfo( side, host, tile );
 		this.outerProxy.setValidSides( EnumSet.of( side ) );
 	}
 
 	@Override
-	public IGridNode getExternalFacingNode()
+	public final IGridNode getExternalFacingNode()
 	{
 		return this.outerProxy.getNode();
 	}
 
 	@Override
-	public int cableConnectionRenderTo()
+	public final int cableConnectionRenderTo()
 	{
 		return 5;
 	}
 
 	@Override
-	public void onPlacement( EntityPlayer player, ItemStack held, ForgeDirection side )
+	public final void onPlacement( EntityPlayer player, ItemStack held, ForgeDirection side )
 	{
 		super.onPlacement( player, held, side );
 		this.outerProxy.setOwner( player );

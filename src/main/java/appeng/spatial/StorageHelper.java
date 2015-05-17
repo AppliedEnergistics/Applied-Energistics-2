@@ -39,7 +39,7 @@ import appeng.core.stats.Achievements;
 import appeng.util.Platform;
 
 
-public class StorageHelper
+public final class StorageHelper
 {
 
 	private static StorageHelper instance;
@@ -62,7 +62,7 @@ public class StorageHelper
 	 *
 	 * @return teleported entity
 	 */
-	public Entity teleportEntity( Entity entity, TelDestination link )
+	public final Entity teleportEntity( Entity entity, TelDestination link )
 	{
 		WorldServer oldWorld;
 		WorldServer newWorld;
@@ -177,7 +177,7 @@ public class StorageHelper
 		return entity;
 	}
 
-	public void transverseEdges( int minX, int minY, int minZ, int maxX, int maxY, int maxZ, ISpatialVisitor visitor )
+	public final void transverseEdges( int minX, int minY, int minZ, int maxX, int maxY, int maxZ, ISpatialVisitor visitor )
 	{
 		for( int y = minY; y < maxY; y++ )
 		{
@@ -207,7 +207,7 @@ public class StorageHelper
 		}
 	}
 
-	public void swapRegions( World src /** over world **/, World dst /** storage cell **/, int x, int y, int z, int i, int j, int k, int scaleX, int scaleY, int scaleZ )
+	public final void swapRegions( World src /** over world **/, World dst /** storage cell **/, int x, int y, int z, int i, int j, int k, int scaleX, int scaleY, int scaleZ )
 	{
 		for( Block matrixFrameBlock : AEApi.instance().definitions().blocks().matrixFrame().maybeBlock().asSet() )
 		{
@@ -262,7 +262,7 @@ public class StorageHelper
 
 	}
 
-	static class TriggerUpdates implements ISpatialVisitor
+	static final class TriggerUpdates implements ISpatialVisitor
 	{
 
 		final World dst;
@@ -281,7 +281,7 @@ public class StorageHelper
 	}
 
 
-	static class WrapInMatrixFrame implements ISpatialVisitor
+	static final class WrapInMatrixFrame implements ISpatialVisitor
 	{
 
 		final World dst;
@@ -303,7 +303,7 @@ public class StorageHelper
 	}
 
 
-	static class TelDestination
+	static final class TelDestination
 	{
 
 		final World dim;
@@ -327,7 +327,7 @@ public class StorageHelper
 	}
 
 
-	static class METeleporter extends Teleporter
+	static final class METeleporter extends Teleporter
 	{
 
 		final TelDestination destination;
@@ -339,26 +339,26 @@ public class StorageHelper
 		}
 
 		@Override
-		public void placeInPortal( Entity par1Entity, double par2, double par4, double par6, float par8 )
+		public final void placeInPortal( Entity par1Entity, double par2, double par4, double par6, float par8 )
 		{
 			par1Entity.setLocationAndAngles( this.destination.x, this.destination.y, this.destination.z, par1Entity.rotationYaw, 0.0F );
 			par1Entity.motionX = par1Entity.motionY = par1Entity.motionZ = 0.0D;
 		}
 
 		@Override
-		public boolean placeInExistingPortal( Entity par1Entity, double par2, double par4, double par6, float par8 )
+		public final boolean placeInExistingPortal( Entity par1Entity, double par2, double par4, double par6, float par8 )
 		{
 			return false;
 		}
 
 		@Override
-		public boolean makePortal( Entity par1Entity )
+		public final boolean makePortal( Entity par1Entity )
 		{
 			return false;
 		}
 
 		@Override
-		public void removeStalePortalLocations( long par1 )
+		public final void removeStalePortalLocations( long par1 )
 		{
 
 		}

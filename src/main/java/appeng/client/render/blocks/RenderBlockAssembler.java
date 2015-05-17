@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -48,7 +48,7 @@ import appeng.tile.crafting.TileMolecularAssembler;
 import appeng.util.Platform;
 
 
-public class RenderBlockAssembler extends BaseBlockRender implements IBoxProvider
+public final class RenderBlockAssembler extends BaseBlockRender implements IBoxProvider
 {
 
 	public RenderBlockAssembler()
@@ -201,7 +201,7 @@ public class RenderBlockAssembler extends BaseBlockRender implements IBoxProvide
 		return true;
 	}
 
-	public void renderCableAt( double thickness, IBlockAccess world, int x, int y, int z, AEBaseBlock block, RenderBlocks renderer, double pull, boolean covered )
+	public final void renderCableAt( double thickness, IBlockAccess world, int x, int y, int z, AEBaseBlock block, RenderBlocks renderer, double pull, boolean covered )
 	{
 		IIcon texture = null;
 
@@ -250,7 +250,7 @@ public class RenderBlockAssembler extends BaseBlockRender implements IBoxProvide
 		block.getRendererInstance().setTemporaryRenderIcon( null );
 	}
 
-	IIcon getConnectedCable( IBlockAccess world, int x, int y, int z, ForgeDirection side, boolean covered )
+	final IIcon getConnectedCable( IBlockAccess world, int x, int y, int z, ForgeDirection side, boolean covered )
 	{
 		final int tileYPos = y + side.offsetY;
 		if( -1 < tileYPos && tileYPos < 256 )
@@ -279,7 +279,7 @@ public class RenderBlockAssembler extends BaseBlockRender implements IBoxProvide
 	}
 
 	@Override
-	public void getBoxes( IPartCollisionHelper bch )
+	public final void getBoxes( IPartCollisionHelper bch )
 	{
 		bch.addBox( 0, 0, 0, 16, 16, 16 );
 	}

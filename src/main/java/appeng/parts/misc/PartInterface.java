@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -73,7 +73,7 @@ import appeng.util.Platform;
 import appeng.util.inv.IInventoryDestination;
 
 
-public class PartInterface extends PartBasicState implements IGridTickable, IStorageMonitorable, IInventoryDestination, IInterfaceHost, ISidedInventory, IAEAppEngInventory, ITileStorageMonitorable, IPriorityHost
+public final class PartInterface extends PartBasicState implements IGridTickable, IStorageMonitorable, IInventoryDestination, IInterfaceHost, ISidedInventory, IAEAppEngInventory, ITileStorageMonitorable, IPriorityHost
 {
 
 	final DualityInterface duality = new DualityInterface( this.proxy, this );
@@ -97,21 +97,21 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISto
 	}
 
 	@Override
-	public void getBoxes( IPartCollisionHelper bch )
+	public final void getBoxes( IPartCollisionHelper bch )
 	{
 		bch.addBox( 2, 2, 14, 14, 14, 16 );
 		bch.addBox( 5, 5, 12, 11, 11, 14 );
 	}
 
 	@Override
-	public int getInstalledUpgrades( Upgrades u )
+	public final int getInstalledUpgrades( Upgrades u )
 	{
 		return this.duality.getInstalledUpgrades( u );
 	}
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderInventory( IPartRenderHelper rh, RenderBlocks renderer )
+	public final void renderInventory( IPartRenderHelper rh, RenderBlocks renderer )
 	{
 		rh.setTexture( CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorBack.getIcon(), this.is.getIconIndex(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon() );
 
@@ -133,7 +133,7 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISto
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderStatic( int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer )
+	public final void renderStatic( int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer )
 	{
 		this.renderCache = rh.useSimplifiedRendering( x, y, z, this, this.renderCache );
 		rh.setTexture( CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorBack.getIcon(), this.is.getIconIndex(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon() );
@@ -155,46 +155,46 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISto
 	}
 
 	@Override
-	public void readFromNBT( NBTTagCompound data )
+	public final void readFromNBT( NBTTagCompound data )
 	{
 		super.readFromNBT( data );
 		this.duality.readFromNBT( data );
 	}
 
 	@Override
-	public void writeToNBT( NBTTagCompound data )
+	public final void writeToNBT( NBTTagCompound data )
 	{
 		super.writeToNBT( data );
 		this.duality.writeToNBT( data );
 	}
 
 	@Override
-	public void addToWorld()
+	public final void addToWorld()
 	{
 		super.addToWorld();
 		this.duality.initialize();
 	}
 
 	@Override
-	public void getDrops( List<ItemStack> drops, boolean wrenched )
+	public final void getDrops( List<ItemStack> drops, boolean wrenched )
 	{
 		this.duality.addDrops( drops );
 	}
 
 	@Override
-	public int cableConnectionRenderTo()
+	public final int cableConnectionRenderTo()
 	{
 		return 4;
 	}
 
 	@Override
-	public IConfigManager getConfigManager()
+	public final IConfigManager getConfigManager()
 	{
 		return this.duality.getConfigManager();
 	}
 
 	@Override
-	public IInventory getInventoryByName( String name )
+	public final IInventory getInventoryByName( String name )
 	{
 		return this.duality.getInventoryByName( name );
 	}
@@ -216,7 +216,7 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISto
 	}
 
 	@Override
-	public IIcon getBreakingTexture()
+	public final IIcon getBreakingTexture()
 	{
 		return this.is.getIconIndex();
 	}
@@ -228,121 +228,121 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISto
 	}
 
 	@Override
-	public IMEMonitor<IAEItemStack> getItemInventory()
+	public final IMEMonitor<IAEItemStack> getItemInventory()
 	{
 		return this.duality.getItemInventory();
 	}
 
 	@Override
-	public IMEMonitor<IAEFluidStack> getFluidInventory()
+	public final IMEMonitor<IAEFluidStack> getFluidInventory()
 	{
 		return this.duality.getFluidInventory();
 	}
 
 	@Override
-	public TickingRequest getTickingRequest( IGridNode node )
+	public final TickingRequest getTickingRequest( IGridNode node )
 	{
 		return this.duality.getTickingRequest( node );
 	}
 
 	@Override
-	public TickRateModulation tickingRequest( IGridNode node, int ticksSinceLastCall )
+	public final TickRateModulation tickingRequest( IGridNode node, int ticksSinceLastCall )
 	{
 		return this.duality.tickingRequest( node, ticksSinceLastCall );
 	}
 
 	@Override
-	public int getSizeInventory()
+	public final int getSizeInventory()
 	{
 		return this.duality.getStorage().getSizeInventory();
 	}
 
 	@Override
-	public ItemStack getStackInSlot( int i )
+	public final ItemStack getStackInSlot( int i )
 	{
 		return this.duality.getStorage().getStackInSlot( i );
 	}
 
 	@Override
-	public ItemStack decrStackSize( int i, int j )
+	public final ItemStack decrStackSize( int i, int j )
 	{
 		return this.duality.getStorage().decrStackSize( i, j );
 	}
 
 	@Override
-	public ItemStack getStackInSlotOnClosing( int i )
+	public final ItemStack getStackInSlotOnClosing( int i )
 	{
 		return this.duality.getStorage().getStackInSlotOnClosing( i );
 	}
 
 	@Override
-	public void setInventorySlotContents( int i, ItemStack itemstack )
+	public final void setInventorySlotContents( int i, ItemStack itemstack )
 	{
 		this.duality.getStorage().setInventorySlotContents( i, itemstack );
 	}
 
 	@Override
-	public String getInventoryName()
+	public final String getInventoryName()
 	{
 		return this.duality.getStorage().getInventoryName();
 	}
 
 	@Override
-	public boolean hasCustomInventoryName()
+	public final boolean hasCustomInventoryName()
 	{
 		return this.duality.getStorage().hasCustomInventoryName();
 	}
 
 	@Override
-	public int getInventoryStackLimit()
+	public final int getInventoryStackLimit()
 	{
 		return this.duality.getStorage().getInventoryStackLimit();
 	}
 
 	@Override
-	public void markDirty()
+	public final void markDirty()
 	{
 		this.duality.getStorage().markDirty();
 	}
 
 	@Override
-	public boolean isUseableByPlayer( EntityPlayer entityplayer )
+	public final boolean isUseableByPlayer( EntityPlayer entityplayer )
 	{
 		return this.duality.getStorage().isUseableByPlayer( entityplayer );
 	}
 
 	@Override
-	public void openInventory()
+	public final void openInventory()
 	{
 		this.duality.getStorage().openInventory();
 	}
 
 	@Override
-	public void closeInventory()
+	public final void closeInventory()
 	{
 		this.duality.getStorage().closeInventory();
 	}
 
 	@Override
-	public boolean isItemValidForSlot( int i, ItemStack itemstack )
+	public final boolean isItemValidForSlot( int i, ItemStack itemstack )
 	{
 		return this.duality.getStorage().isItemValidForSlot( i, itemstack );
 	}
 
 	@Override
-	public int[] getAccessibleSlotsFromSide( int s )
+	public final int[] getAccessibleSlotsFromSide( int s )
 	{
 		return this.duality.getAccessibleSlotsFromSide( s );
 	}
 
 	@Override
-	public boolean canInsertItem( int i, ItemStack itemstack, int j )
+	public final boolean canInsertItem( int i, ItemStack itemstack, int j )
 	{
 		return true;
 	}
 
 	@Override
-	public boolean canExtractItem( int i, ItemStack itemstack, int j )
+	public final boolean canExtractItem( int i, ItemStack itemstack, int j )
 	{
 		return true;
 	}
@@ -366,49 +366,49 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISto
 	}
 
 	@Override
-	public TileEntity getTileEntity()
+	public final TileEntity getTileEntity()
 	{
 		return super.getHost().getTile();
 	}
 
 	@Override
-	public IStorageMonitorable getMonitorable( ForgeDirection side, BaseActionSource src )
+	public final IStorageMonitorable getMonitorable( ForgeDirection side, BaseActionSource src )
 	{
 		return this.duality.getMonitorable( side, src, this );
 	}
 
 	@Override
-	public boolean pushPattern( ICraftingPatternDetails patternDetails, InventoryCrafting table )
+	public final boolean pushPattern( ICraftingPatternDetails patternDetails, InventoryCrafting table )
 	{
 		return this.duality.pushPattern( patternDetails, table );
 	}
 
 	@Override
-	public boolean isBusy()
+	public final boolean isBusy()
 	{
 		return this.duality.isBusy();
 	}
 
 	@Override
-	public void provideCrafting( ICraftingProviderHelper craftingTracker )
+	public final void provideCrafting( ICraftingProviderHelper craftingTracker )
 	{
 		this.duality.provideCrafting( craftingTracker );
 	}
 
 	@Override
-	public ImmutableSet<ICraftingLink> getRequestedJobs()
+	public final ImmutableSet<ICraftingLink> getRequestedJobs()
 	{
 		return this.duality.getRequestedJobs();
 	}
 
 	@Override
-	public IAEItemStack injectCraftedItems( ICraftingLink link, IAEItemStack items, Actionable mode )
+	public final IAEItemStack injectCraftedItems( ICraftingLink link, IAEItemStack items, Actionable mode )
 	{
 		return this.duality.injectCraftedItems( link, items, mode );
 	}
 
 	@Override
-	public void jobStateChange( ICraftingLink link )
+	public final void jobStateChange( ICraftingLink link )
 	{
 		this.duality.jobStateChange( link );
 	}

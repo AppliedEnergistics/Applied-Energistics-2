@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -35,7 +35,7 @@ import appeng.items.AEBaseItem;
 import appeng.util.Platform;
 
 
-public class ItemPaintBall extends AEBaseItem
+public final class ItemPaintBall extends AEBaseItem
 {
 
 	public static final int DAMAGE_THRESHOLD = 20;
@@ -52,17 +52,17 @@ public class ItemPaintBall extends AEBaseItem
 	}
 
 	@Override
-	public String getItemStackDisplayName( ItemStack is )
+	public final String getItemStackDisplayName( ItemStack is )
 	{
 		return super.getItemStackDisplayName( is ) + " - " + this.getExtraName( is );
 	}
 
-	public String getExtraName( ItemStack is )
+	public final String getExtraName( ItemStack is )
 	{
 		return ( is.getItemDamage() >= DAMAGE_THRESHOLD ? GuiText.Lumen.getLocal() + ' ' : "" ) + this.getColor( is );
 	}
 
-	public AEColor getColor( ItemStack is )
+	public final AEColor getColor( ItemStack is )
 	{
 		int dmg = is.getItemDamage();
 		if( dmg >= DAMAGE_THRESHOLD )
@@ -79,7 +79,7 @@ public class ItemPaintBall extends AEBaseItem
 	}
 
 	@Override
-	public void getSubItems( Item i, CreativeTabs ct, List l )
+	public final void getSubItems( Item i, CreativeTabs ct, List l )
 	{
 		for( AEColor c : AEColor.values() )
 		{
@@ -98,7 +98,7 @@ public class ItemPaintBall extends AEBaseItem
 		}
 	}
 
-	public boolean isLumen( ItemStack is )
+	public final boolean isLumen( ItemStack is )
 	{
 		int dmg = is.getItemDamage();
 		return dmg >= DAMAGE_THRESHOLD;

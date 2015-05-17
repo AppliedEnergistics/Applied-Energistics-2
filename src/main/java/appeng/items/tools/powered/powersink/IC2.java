@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -43,7 +43,7 @@ public abstract class IC2 extends AERootPoweredItem implements IElectricItemMana
 	}
 
 	@Override
-	public double charge( ItemStack is, double amount, int tier, boolean ignoreTransferLimit, boolean simulate )
+	public final double charge( ItemStack is, double amount, int tier, boolean ignoreTransferLimit, boolean simulate )
 	{
 		double addedAmt = amount;
 		double limit = this.getTransferLimit( is );
@@ -57,25 +57,25 @@ public abstract class IC2 extends AERootPoweredItem implements IElectricItemMana
 	}
 
 	@Override
-	public double discharge( ItemStack itemStack, double amount, int tier, boolean ignoreTransferLimit, boolean externally, boolean simulate )
+	public final double discharge( ItemStack itemStack, double amount, int tier, boolean ignoreTransferLimit, boolean externally, boolean simulate )
 	{
 		return 0;
 	}
 
 	@Override
-	public double getCharge( ItemStack is )
+	public final double getCharge( ItemStack is )
 	{
 		return (int) PowerUnits.AE.convertTo( PowerUnits.EU, this.getAECurrentPower( is ) );
 	}
 
 	@Override
-	public boolean canUse( ItemStack is, double amount )
+	public final boolean canUse( ItemStack is, double amount )
 	{
 		return this.getCharge( is ) > amount;
 	}
 
 	@Override
-	public boolean use( ItemStack is, double amount, EntityLivingBase entity )
+	public final boolean use( ItemStack is, double amount, EntityLivingBase entity )
 	{
 		if( this.canUse( is, amount ) )
 		{
@@ -87,56 +87,56 @@ public abstract class IC2 extends AERootPoweredItem implements IElectricItemMana
 	}
 
 	@Override
-	public void chargeFromArmor( ItemStack itemStack, EntityLivingBase entity )
+	public final void chargeFromArmor( ItemStack itemStack, EntityLivingBase entity )
 	{
 		// wtf?
 	}
 
 	@Override
-	public String getToolTip( ItemStack itemStack )
+	public final String getToolTip( ItemStack itemStack )
 	{
 		return null;
 	}
 
 	@Override
-	public boolean canProvideEnergy( ItemStack itemStack )
+	public final boolean canProvideEnergy( ItemStack itemStack )
 	{
 		return false;
 	}
 
 	@Override
-	public Item getChargedItem( ItemStack itemStack )
+	public final Item getChargedItem( ItemStack itemStack )
 	{
 		return itemStack.getItem();
 	}
 
 	@Override
-	public Item getEmptyItem( ItemStack itemStack )
+	public final Item getEmptyItem( ItemStack itemStack )
 	{
 		return itemStack.getItem();
 	}
 
 	@Override
-	public double getMaxCharge( ItemStack itemStack )
+	public final double getMaxCharge( ItemStack itemStack )
 	{
 		return PowerUnits.AE.convertTo( PowerUnits.EU, this.getAEMaxPower( itemStack ) );
 	}
 
 	@Override
-	public int getTier( ItemStack itemStack )
+	public final int getTier( ItemStack itemStack )
 	{
 		return 1;
 	}
 
 	@Override
-	public double getTransferLimit( ItemStack itemStack )
+	public final double getTransferLimit( ItemStack itemStack )
 	{
 		return Math.max( 32, this.getMaxCharge( itemStack ) / 200 );
 	}
 
 	@Override
 	@Method( iname = "IC2" )
-	public IElectricItemManager getManager( ItemStack itemStack )
+	public final IElectricItemManager getManager( ItemStack itemStack )
 	{
 		return this;
 	}

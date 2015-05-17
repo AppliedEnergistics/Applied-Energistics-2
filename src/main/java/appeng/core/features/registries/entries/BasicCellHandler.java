@@ -39,17 +39,17 @@ import appeng.me.storage.CellInventoryHandler;
 import appeng.util.Platform;
 
 
-public class BasicCellHandler implements ICellHandler
+public final class BasicCellHandler implements ICellHandler
 {
 
 	@Override
-	public boolean isCell( ItemStack is )
+	public final boolean isCell( ItemStack is )
 	{
 		return CellInventory.isCell( is );
 	}
 
 	@Override
-	public IMEInventoryHandler getCellInventory( ItemStack is, ISaveProvider container, StorageChannel channel )
+	public final IMEInventoryHandler getCellInventory( ItemStack is, ISaveProvider container, StorageChannel channel )
 	{
 		if( channel == StorageChannel.ITEMS )
 		{
@@ -59,31 +59,31 @@ public class BasicCellHandler implements ICellHandler
 	}
 
 	@Override
-	public IIcon getTopTexture_Light()
+	public final IIcon getTopTexture_Light()
 	{
 		return ExtraBlockTextures.BlockMEChestItems_Light.getIcon();
 	}
 
 	@Override
-	public IIcon getTopTexture_Medium()
+	public final IIcon getTopTexture_Medium()
 	{
 		return ExtraBlockTextures.BlockMEChestItems_Medium.getIcon();
 	}
 
 	@Override
-	public IIcon getTopTexture_Dark()
+	public final IIcon getTopTexture_Dark()
 	{
 		return ExtraBlockTextures.BlockMEChestItems_Dark.getIcon();
 	}
 
 	@Override
-	public void openChestGui( EntityPlayer player, IChestOrDrive chest, ICellHandler cellHandler, IMEInventoryHandler inv, ItemStack is, StorageChannel chan )
+	public final void openChestGui( EntityPlayer player, IChestOrDrive chest, ICellHandler cellHandler, IMEInventoryHandler inv, ItemStack is, StorageChannel chan )
 	{
 		Platform.openGUI( player, (TileEntity) chest, chest.getUp(), GuiBridge.GUI_ME );
 	}
 
 	@Override
-	public int getStatusForCell( ItemStack is, IMEInventory handler )
+	public final int getStatusForCell( ItemStack is, IMEInventory handler )
 	{
 		if( handler instanceof CellInventoryHandler )
 		{
@@ -94,7 +94,7 @@ public class BasicCellHandler implements ICellHandler
 	}
 
 	@Override
-	public double cellIdleDrain( ItemStack is, IMEInventory handler )
+	public final double cellIdleDrain( ItemStack is, IMEInventory handler )
 	{
 		ICellInventory inv = ( (ICellInventoryHandler) handler ).getCellInv();
 		return inv.getIdleDrain();

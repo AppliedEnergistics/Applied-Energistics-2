@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -34,7 +34,7 @@ import appeng.core.sync.packets.PacketPatternSlot;
 import appeng.helpers.IContainerCraftingPacket;
 
 
-public class SlotPatternTerm extends SlotCraftingTerm
+public final class SlotPatternTerm extends SlotCraftingTerm
 {
 
 	final int groupNum;
@@ -48,13 +48,13 @@ public class SlotPatternTerm extends SlotCraftingTerm
 		this.groupNum = groupNumber;
 	}
 
-	public AppEngPacket getRequest( boolean shift ) throws IOException
+	public final AppEngPacket getRequest( boolean shift ) throws IOException
 	{
 		return new PacketPatternSlot( this.pattern, AEApi.instance().storage().createItemStack( this.getStack() ), shift );
 	}
 
 	@Override
-	public ItemStack getStack()
+	public final ItemStack getStack()
 	{
 		if( !this.isEnabled() )
 		{
@@ -68,7 +68,7 @@ public class SlotPatternTerm extends SlotCraftingTerm
 	}
 
 	@Override
-	public boolean isEnabled()
+	public final boolean isEnabled()
 	{
 		if( this.host == null )
 		{

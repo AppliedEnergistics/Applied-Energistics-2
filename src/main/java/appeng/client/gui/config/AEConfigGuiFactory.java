@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -27,29 +27,29 @@ import net.minecraft.client.gui.GuiScreen;
 import cpw.mods.fml.client.IModGuiFactory;
 
 
-public class AEConfigGuiFactory implements IModGuiFactory
+public final class AEConfigGuiFactory implements IModGuiFactory
 {
 
 	@Override
-	public void initialize( Minecraft minecraftInstance )
+	public final void initialize( Minecraft minecraftInstance )
 	{
 
 	}
 
 	@Override
-	public Class<? extends GuiScreen> mainConfigGuiClass()
+	public final Class<? extends GuiScreen> mainConfigGuiClass()
 	{
 		return AEConfigGui.class;
 	}
 
 	@Override
-	public Set<RuntimeOptionCategoryElement> runtimeGuiCategories()
+	public final Set<RuntimeOptionCategoryElement> runtimeGuiCategories()
 	{
 		return null;
 	}
 
 	@Override
-	public RuntimeOptionGuiHandler getHandlerFor( RuntimeOptionCategoryElement element )
+	public final RuntimeOptionGuiHandler getHandlerFor( RuntimeOptionCategoryElement element )
 	{
 		return null;
 	}

@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -150,7 +150,7 @@ public class ServerHelper extends CommonHelper
 		return this.renderModeForPlayer( this.renderModeBased );
 	}
 
-	protected CableRenderMode renderModeForPlayer( EntityPlayer player )
+	protected final CableRenderMode renderModeForPlayer( EntityPlayer player )
 	{
 		if( player != null )
 		{

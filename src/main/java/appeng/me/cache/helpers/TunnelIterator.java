@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -25,7 +25,7 @@ import java.util.Iterator;
 import appeng.parts.p2p.PartP2PTunnel;
 
 
-public class TunnelIterator<T extends PartP2PTunnel> implements Iterator<T>
+public final class TunnelIterator<T extends PartP2PTunnel> implements Iterator<T>
 {
 
 	final Iterator<T> wrapped;
@@ -52,14 +52,14 @@ public class TunnelIterator<T extends PartP2PTunnel> implements Iterator<T>
 	}
 
 	@Override
-	public boolean hasNext()
+	public final boolean hasNext()
 	{
 		this.findNext();
 		return this.Next != null;
 	}
 
 	@Override
-	public T next()
+	public final T next()
 	{
 		T tmp = this.Next;
 		this.Next = null;
@@ -67,7 +67,7 @@ public class TunnelIterator<T extends PartP2PTunnel> implements Iterator<T>
 	}
 
 	@Override
-	public void remove()
+	public final void remove()
 	{
 		// no.
 	}

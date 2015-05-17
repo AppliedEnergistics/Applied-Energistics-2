@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -51,7 +51,7 @@ import appeng.client.texture.ExtraBlockTextures;
 import appeng.core.localization.ButtonToolTips;
 
 
-public class GuiImgButton extends GuiButton implements ITooltip
+public final class GuiImgButton extends GuiButton implements ITooltip
 {
 	private static final Pattern COMPILE = Pattern.compile( "%s" );
 	private static final Pattern PATTERN_NEW_LINE = Pattern.compile( "\\n", Pattern.LITERAL );
@@ -170,14 +170,14 @@ public class GuiImgButton extends GuiButton implements ITooltip
 		appearances.put( new EnumPair( setting, val ), a );
 	}
 
-	public void setVisibility( boolean vis )
+	public final void setVisibility( boolean vis )
 	{
 		this.visible = vis;
 		this.enabled = vis;
 	}
 
 	@Override
-	public void drawButton( Minecraft par1Minecraft, int par2, int par3 )
+	public final void drawButton( Minecraft par1Minecraft, int par2, int par3 )
 	{
 		if( this.visible )
 		{
@@ -252,12 +252,12 @@ public class GuiImgButton extends GuiButton implements ITooltip
 		return 256 - 1;
 	}
 
-	public Settings getSetting()
+	public final Settings getSetting()
 	{
 		return (Settings) this.buttonSetting;
 	}
 
-	public Enum getCurrentValue()
+	public final Enum getCurrentValue()
 	{
 		return this.currentValue;
 	}
@@ -347,7 +347,7 @@ public class GuiImgButton extends GuiButton implements ITooltip
 		return this.visible;
 	}
 
-	public void set( Enum e )
+	public final void set( Enum e )
 	{
 		if( this.currentValue != e )
 		{
@@ -355,7 +355,7 @@ public class GuiImgButton extends GuiButton implements ITooltip
 		}
 	}
 
-	static class EnumPair
+	static final class EnumPair
 	{
 
 		final Enum setting;
@@ -368,13 +368,13 @@ public class GuiImgButton extends GuiButton implements ITooltip
 		}
 
 		@Override
-		public int hashCode()
+		public final int hashCode()
 		{
 			return this.setting.hashCode() ^ this.value.hashCode();
 		}
 
 		@Override
-		public boolean equals( Object obj )
+		public final boolean equals( Object obj )
 		{
 			if( obj == null )
 			{
@@ -390,7 +390,7 @@ public class GuiImgButton extends GuiButton implements ITooltip
 	}
 
 
-	private static class ButtonAppearance
+	private static final class ButtonAppearance
 	{
 		public int index;
 		public String displayName;

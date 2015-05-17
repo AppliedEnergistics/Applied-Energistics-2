@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -38,7 +38,7 @@ import appeng.tile.inventory.InvOperation;
 import appeng.util.Platform;
 
 
-public class ContainerQuartzKnife extends AEBaseContainer implements IAEAppEngInventory, IInventory
+public final class ContainerQuartzKnife extends AEBaseContainer implements IAEAppEngInventory, IInventory
 {
 
 	final QuartzKnifeObj toolInv;
@@ -61,13 +61,13 @@ public class ContainerQuartzKnife extends AEBaseContainer implements IAEAppEngIn
 		this.bindPlayerInventory( ip, 0, 184 - /* height of player inventory */82 );
 	}
 
-	public void setName( String value )
+	public final void setName( String value )
 	{
 		this.myName = value;
 	}
 
 	@Override
-	public void detectAndSendChanges()
+	public final void detectAndSendChanges()
 	{
 		ItemStack currentItem = this.getPlayerInv().getCurrentItem();
 
@@ -94,7 +94,7 @@ public class ContainerQuartzKnife extends AEBaseContainer implements IAEAppEngIn
 	}
 
 	@Override
-	public void onContainerClosed( EntityPlayer par1EntityPlayer )
+	public final void onContainerClosed( EntityPlayer par1EntityPlayer )
 	{
 		if( this.inSlot.getStackInSlot( 0 ) != null )
 		{
@@ -115,13 +115,13 @@ public class ContainerQuartzKnife extends AEBaseContainer implements IAEAppEngIn
 	}
 
 	@Override
-	public int getSizeInventory()
+	public final int getSizeInventory()
 	{
 		return 1;
 	}
 
 	@Override
-	public ItemStack getStackInSlot( int var1 )
+	public final ItemStack getStackInSlot( int var1 )
 	{
 		ItemStack input = this.inSlot.getStackInSlot( 0 );
 		if( input == null )
@@ -147,7 +147,7 @@ public class ContainerQuartzKnife extends AEBaseContainer implements IAEAppEngIn
 	}
 
 	@Override
-	public ItemStack decrStackSize( int var1, int var2 )
+	public final ItemStack decrStackSize( int var1, int var2 )
 	{
 		ItemStack is = this.getStackInSlot( 0 );
 		if( is != null )
@@ -179,13 +179,13 @@ public class ContainerQuartzKnife extends AEBaseContainer implements IAEAppEngIn
 	}
 
 	@Override
-	public ItemStack getStackInSlotOnClosing( int var1 )
+	public final ItemStack getStackInSlotOnClosing( int var1 )
 	{
 		return null;
 	}
 
 	@Override
-	public void setInventorySlotContents( int var1, ItemStack var2 )
+	public final void setInventorySlotContents( int var1, ItemStack var2 )
 	{
 		if( var2 == null && Platform.isServer() )
 		{
@@ -194,49 +194,49 @@ public class ContainerQuartzKnife extends AEBaseContainer implements IAEAppEngIn
 	}
 
 	@Override
-	public String getInventoryName()
+	public final String getInventoryName()
 	{
 		return "Quartz Knife Output";
 	}
 
 	@Override
-	public boolean hasCustomInventoryName()
+	public final boolean hasCustomInventoryName()
 	{
 		return false;
 	}
 
 	@Override
-	public int getInventoryStackLimit()
+	public final int getInventoryStackLimit()
 	{
 		return 1;
 	}
 
 	@Override
-	public void markDirty()
+	public final void markDirty()
 	{
 
 	}
 
 	@Override
-	public boolean isUseableByPlayer( EntityPlayer var1 )
+	public final boolean isUseableByPlayer( EntityPlayer var1 )
 	{
 		return false;
 	}
 
 	@Override
-	public void openInventory()
+	public final void openInventory()
 	{
 
 	}
 
 	@Override
-	public void closeInventory()
+	public final void closeInventory()
 	{
 
 	}
 
 	@Override
-	public boolean isItemValidForSlot( int var1, ItemStack var2 )
+	public final boolean isItemValidForSlot( int var1, ItemStack var2 )
 	{
 		return false;
 	}

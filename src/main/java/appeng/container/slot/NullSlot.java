@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -25,7 +25,7 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
 
-public class NullSlot extends Slot
+public final class NullSlot extends Slot
 {
 
 	public NullSlot()
@@ -34,67 +34,67 @@ public class NullSlot extends Slot
 	}
 
 	@Override
-	public void onSlotChange( ItemStack par1ItemStack, ItemStack par2ItemStack )
+	public final void onSlotChange( ItemStack par1ItemStack, ItemStack par2ItemStack )
 	{
 
 	}
 
 	@Override
-	public void onPickupFromSlot( EntityPlayer par1EntityPlayer, ItemStack par2ItemStack )
+	public final void onPickupFromSlot( EntityPlayer par1EntityPlayer, ItemStack par2ItemStack )
 	{
 
 	}
 
 	@Override
-	public boolean isItemValid( ItemStack par1ItemStack )
+	public final boolean isItemValid( ItemStack par1ItemStack )
 	{
 		return false;
 	}
 
 	@Override
-	public ItemStack getStack()
+	public final ItemStack getStack()
 	{
 		return null;
 	}
 
 	@Override
-	public void putStack( ItemStack par1ItemStack )
+	public final void putStack( ItemStack par1ItemStack )
 	{
 
 	}
 
 	@Override
-	public void onSlotChanged()
+	public final void onSlotChanged()
 	{
 
 	}
 
 	@Override
-	public int getSlotStackLimit()
+	public final int getSlotStackLimit()
 	{
 		return 0;
 	}
 
 	@Override
-	public ItemStack decrStackSize( int par1 )
+	public final ItemStack decrStackSize( int par1 )
 	{
 		return null;
 	}
 
 	@Override
-	public boolean isSlotInInventory( IInventory par1IInventory, int par2 )
+	public final boolean isSlotInInventory( IInventory par1IInventory, int par2 )
 	{
 		return false;
 	}
 
 	@Override
-	public boolean canTakeStack( EntityPlayer par1EntityPlayer )
+	public final boolean canTakeStack( EntityPlayer par1EntityPlayer )
 	{
 		return false;
 	}
 
 	@Override
-	public int getSlotIndex()
+	public final int getSlotIndex()
 	{
 		return 0;
 	}

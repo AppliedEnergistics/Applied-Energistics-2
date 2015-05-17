@@ -116,7 +116,7 @@ public abstract class IC2 extends AERootPoweredTile implements IEnergySink
 	}
 
 	@Override
-	protected void setPowerSides( EnumSet<ForgeDirection> sides )
+	protected final void setPowerSides( EnumSet<ForgeDirection> sides )
 	{
 		super.setPowerSides( sides );
 		this.removeFromENet();

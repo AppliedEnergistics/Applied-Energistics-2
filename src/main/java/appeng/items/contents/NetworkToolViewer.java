@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -29,7 +29,7 @@ import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.Platform;
 
 
-public class NetworkToolViewer implements INetworkTool
+public final class NetworkToolViewer implements INetworkTool
 {
 
 	final AppEngInternalInventory inv;
@@ -48,92 +48,92 @@ public class NetworkToolViewer implements INetworkTool
 	}
 
 	@Override
-	public int getSizeInventory()
+	public final int getSizeInventory()
 	{
 		return this.inv.getSizeInventory();
 	}
 
 	@Override
-	public ItemStack getStackInSlot( int i )
+	public final ItemStack getStackInSlot( int i )
 	{
 		return this.inv.getStackInSlot( i );
 	}
 
 	@Override
-	public ItemStack decrStackSize( int i, int j )
+	public final ItemStack decrStackSize( int i, int j )
 	{
 		return this.inv.decrStackSize( i, j );
 	}
 
 	@Override
-	public ItemStack getStackInSlotOnClosing( int i )
+	public final ItemStack getStackInSlotOnClosing( int i )
 	{
 		return this.inv.getStackInSlotOnClosing( i );
 	}
 
 	@Override
-	public void setInventorySlotContents( int i, ItemStack itemstack )
+	public final void setInventorySlotContents( int i, ItemStack itemstack )
 	{
 		this.inv.setInventorySlotContents( i, itemstack );
 	}
 
 	@Override
-	public String getInventoryName()
+	public final String getInventoryName()
 	{
 		return this.inv.getInventoryName();
 	}
 
 	@Override
-	public boolean hasCustomInventoryName()
+	public final boolean hasCustomInventoryName()
 	{
 		return this.inv.hasCustomInventoryName();
 	}
 
 	@Override
-	public int getInventoryStackLimit()
+	public final int getInventoryStackLimit()
 	{
 		return this.inv.getInventoryStackLimit();
 	}
 
 	@Override
-	public void markDirty()
+	public final void markDirty()
 	{
 		this.inv.markDirty();
 		this.inv.writeToNBT( Platform.openNbtData( this.is ), "inv" );
 	}
 
 	@Override
-	public boolean isUseableByPlayer( EntityPlayer entityplayer )
+	public final boolean isUseableByPlayer( EntityPlayer entityplayer )
 	{
 		return this.inv.isUseableByPlayer( entityplayer );
 	}
 
 	@Override
-	public void openInventory()
+	public final void openInventory()
 	{
 		this.inv.openInventory();
 	}
 
 	@Override
-	public void closeInventory()
+	public final void closeInventory()
 	{
 		this.inv.closeInventory();
 	}
 
 	@Override
-	public boolean isItemValidForSlot( int i, ItemStack itemstack )
+	public final boolean isItemValidForSlot( int i, ItemStack itemstack )
 	{
 		return this.inv.isItemValidForSlot( i, itemstack ) && itemstack.getItem() instanceof IUpgradeModule && ( (IUpgradeModule) itemstack.getItem() ).getType( itemstack ) != null;
 	}
 
 	@Override
-	public ItemStack getItemStack()
+	public final ItemStack getItemStack()
 	{
 		return this.is;
 	}
 
 	@Override
-	public IGridHost getGridHost()
+	public final IGridHost getGridHost()
 	{
 		return this.gh;
 	}

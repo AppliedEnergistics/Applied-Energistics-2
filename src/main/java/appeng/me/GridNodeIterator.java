@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -32,7 +32,7 @@ import appeng.api.networking.IGridNode;
  * Traverses first over the {@link appeng.me.MachineSet}
  * and then over every containing {@link appeng.api.networking.IGridNode}
  */
-public class GridNodeIterator implements Iterator<IGridNode>
+public final class GridNodeIterator implements Iterator<IGridNode>
 {
 	private final Iterator<MachineSet> outerIterator;
 	private Iterator<IGridNode> innerIterator;
@@ -57,7 +57,7 @@ public class GridNodeIterator implements Iterator<IGridNode>
 	}
 
 	@Override
-	public boolean hasNext()
+	public final boolean hasNext()
 	{
 		while( true )
 		{
@@ -73,13 +73,13 @@ public class GridNodeIterator implements Iterator<IGridNode>
 	}
 
 	@Override
-	public IGridNode next()
+	public final IGridNode next()
 	{
 		return this.innerIterator.next();
 	}
 
 	@Override
-	public void remove()
+	public final void remove()
 	{
 		this.innerIterator.remove();
 	}

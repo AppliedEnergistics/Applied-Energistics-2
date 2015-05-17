@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -33,7 +33,7 @@ import appeng.util.inv.ItemSlot;
 import appeng.util.iterators.StackToSlotIterator;
 
 
-public class BSCrateStorageAdaptor extends InventoryAdaptor
+public final class BSCrateStorageAdaptor extends InventoryAdaptor
 {
 
 	final ICrateStorage cs;
@@ -209,7 +209,7 @@ public class BSCrateStorageAdaptor extends InventoryAdaptor
 	}
 
 	@Override
-	public Iterator<ItemSlot> iterator()
+	public final Iterator<ItemSlot> iterator()
 	{
 		return new StackToSlotIterator( this.cs.getContents().iterator() );
 	}

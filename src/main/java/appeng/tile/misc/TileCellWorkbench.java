@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -43,7 +43,7 @@ import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
 
 
-public class TileCellWorkbench extends AEBaseTile implements IUpgradeableHost, IAEAppEngInventory, IConfigManagerHost
+public final class TileCellWorkbench extends AEBaseTile implements IUpgradeableHost, IAEAppEngInventory, IConfigManagerHost
 {
 
 	final AppEngInternalInventory cell = new AppEngInternalInventory( this, 1 );
@@ -60,7 +60,7 @@ public class TileCellWorkbench extends AEBaseTile implements IUpgradeableHost, I
 		this.cell.enableClientEvents = true;
 	}
 
-	public IInventory getCellUpgradeInventory()
+	public final IInventory getCellUpgradeInventory()
 	{
 		if( this.cacheUpgrades == null )
 		{
@@ -87,7 +87,7 @@ public class TileCellWorkbench extends AEBaseTile implements IUpgradeableHost, I
 		return this.cacheUpgrades;
 	}
 
-	public ICellWorkbenchItem getCell()
+	public final ICellWorkbenchItem getCell()
 	{
 		if( this.cell.getStackInSlot( 0 ) == null )
 		{
@@ -119,7 +119,7 @@ public class TileCellWorkbench extends AEBaseTile implements IUpgradeableHost, I
 	}
 
 	@Override
-	public IInventory getInventoryByName( String name )
+	public final IInventory getInventoryByName( String name )
 	{
 		if( name.equals( "config" ) )
 		{
@@ -135,7 +135,7 @@ public class TileCellWorkbench extends AEBaseTile implements IUpgradeableHost, I
 	}
 
 	@Override
-	public int getInstalledUpgrades( Upgrades u )
+	public final int getInstalledUpgrades( Upgrades u )
 	{
 		return 0;
 	}
@@ -235,7 +235,7 @@ public class TileCellWorkbench extends AEBaseTile implements IUpgradeableHost, I
 	}
 
 	@Override
-	public void getDrops( World w, int x, int y, int z, List<ItemStack> drops )
+	public final void getDrops( World w, int x, int y, int z, List<ItemStack> drops )
 	{
 		super.getDrops( w, x, y, z, drops );
 
@@ -246,7 +246,7 @@ public class TileCellWorkbench extends AEBaseTile implements IUpgradeableHost, I
 	}
 
 	@Override
-	public IConfigManager getConfigManager()
+	public final IConfigManager getConfigManager()
 	{
 		return this.manager;
 	}

@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -78,12 +78,12 @@ public class AENetworkProxy implements IGridBlock
 		this.validSides = EnumSet.allOf( ForgeDirection.class );
 	}
 
-	public void setVisualRepresentation( ItemStack is )
+	public final void setVisualRepresentation( ItemStack is )
 	{
 		this.myRepInstance = is;
 	}
 
-	public void writeToNBT( NBTTagCompound tag )
+	public final void writeToNBT( NBTTagCompound tag )
 	{
 		if( this.node != null )
 		{
@@ -91,7 +91,7 @@ public class AENetworkProxy implements IGridBlock
 		}
 	}
 
-	public void setValidSides( EnumSet<ForgeDirection> validSides )
+	public final void setValidSides( EnumSet<ForgeDirection> validSides )
 	{
 		this.validSides = validSides;
 		if( this.node != null )
@@ -100,7 +100,7 @@ public class AENetworkProxy implements IGridBlock
 		}
 	}
 
-	public void validate()
+	public final void validate()
 	{
 		if( this.gp instanceof AEBaseTile )
 		{
@@ -108,13 +108,13 @@ public class AENetworkProxy implements IGridBlock
 		}
 	}
 
-	public void onChunkUnload()
+	public final void onChunkUnload()
 	{
 		this.isReady = false;
 		this.invalidate();
 	}
 
-	public void invalidate()
+	public final void invalidate()
 	{
 		this.isReady = false;
 		if( this.node != null )
@@ -124,7 +124,7 @@ public class AENetworkProxy implements IGridBlock
 		}
 	}
 
-	public void onReady()
+	public final void onReady()
 	{
 		this.isReady = true;
 
@@ -141,7 +141,7 @@ public class AENetworkProxy implements IGridBlock
 		this.getNode();
 	}
 
-	public IGridNode getNode()
+	public final IGridNode getNode()
 	{
 		if( this.node == null && Platform.isServer() && this.isReady )
 		{
@@ -153,7 +153,7 @@ public class AENetworkProxy implements IGridBlock
 		return this.node;
 	}
 
-	public void readFromNBT( NBTTagCompound tag )
+	public final void readFromNBT( NBTTagCompound tag )
 	{
 		this.data = tag;
 		if( this.node != null && this.data != null )
@@ -168,7 +168,7 @@ public class AENetworkProxy implements IGridBlock
 		}
 	}
 
-	public IPathingGrid getPath() throws GridAccessException
+	public final IPathingGrid getPath() throws GridAccessException
 	{
 		IGrid grid = this.getGrid();
 		if( grid == null )
@@ -190,7 +190,7 @@ public class AENetworkProxy implements IGridBlock
 	 *
 	 * @throws GridAccessException of node or grid is null
 	 */
-	public IGrid getGrid() throws GridAccessException
+	public final IGrid getGrid() throws GridAccessException
 	{
 		if( this.node == null )
 		{
@@ -204,7 +204,7 @@ public class AENetworkProxy implements IGridBlock
 		return grid;
 	}
 
-	public ITickManager getTick() throws GridAccessException
+	public final ITickManager getTick() throws GridAccessException
 	{
 		IGrid grid = this.getGrid();
 		if( grid == null )
@@ -219,7 +219,7 @@ public class AENetworkProxy implements IGridBlock
 		return pg;
 	}
 
-	public IStorageGrid getStorage() throws GridAccessException
+	public final IStorageGrid getStorage() throws GridAccessException
 	{
 		IGrid grid = this.getGrid();
 		if( grid == null )
@@ -237,7 +237,7 @@ public class AENetworkProxy implements IGridBlock
 		return pg;
 	}
 
-	public P2PCache getP2P() throws GridAccessException
+	public final P2PCache getP2P() throws GridAccessException
 	{
 		IGrid grid = this.getGrid();
 		if( grid == null )
@@ -255,7 +255,7 @@ public class AENetworkProxy implements IGridBlock
 		return pg;
 	}
 
-	public ISecurityGrid getSecurity() throws GridAccessException
+	public final ISecurityGrid getSecurity() throws GridAccessException
 	{
 		IGrid grid = this.getGrid();
 		if( grid == null )
@@ -273,7 +273,7 @@ public class AENetworkProxy implements IGridBlock
 		return sg;
 	}
 
-	public ICraftingGrid getCrafting() throws GridAccessException
+	public final ICraftingGrid getCrafting() throws GridAccessException
 	{
 		IGrid grid = this.getGrid();
 		if( grid == null )
@@ -292,37 +292,37 @@ public class AENetworkProxy implements IGridBlock
 	}
 
 	@Override
-	public double getIdlePowerUsage()
+	public final double getIdlePowerUsage()
 	{
 		return this.idleDraw;
 	}
 
 	@Override
-	public EnumSet<GridFlags> getFlags()
+	public final EnumSet<GridFlags> getFlags()
 	{
 		return this.flags;
 	}
 
 	@Override
-	public boolean isWorldAccessible()
+	public final boolean isWorldAccessible()
 	{
 		return this.worldNode;
 	}
 
 	@Override
-	public DimensionalCoord getLocation()
+	public final DimensionalCoord getLocation()
 	{
 		return this.gp.getLocation();
 	}
 
 	@Override
-	public AEColor getGridColor()
+	public final AEColor getGridColor()
 	{
 		return this.myColor;
 	}
 
 	@Override
-	public void onGridNotification( GridNotification notification )
+	public final void onGridNotification( GridNotification notification )
 	{
 		if( this.gp instanceof PartCable )
 		{
@@ -331,36 +331,36 @@ public class AENetworkProxy implements IGridBlock
 	}
 
 	@Override
-	public void setNetworkStatus( IGrid grid, int channelsInUse )
+	public final void setNetworkStatus( IGrid grid, int channelsInUse )
 	{
 
 	}
 
 	@Override
-	public EnumSet<ForgeDirection> getConnectableSides()
+	public final EnumSet<ForgeDirection> getConnectableSides()
 	{
 		return this.validSides;
 	}
 
 	@Override
-	public IGridHost getMachine()
+	public final IGridHost getMachine()
 	{
 		return this.gp;
 	}
 
 	@Override
-	public void gridChanged()
+	public final void gridChanged()
 	{
 		this.gp.gridChanged();
 	}
 
 	@Override
-	public ItemStack getMachineRepresentation()
+	public final ItemStack getMachineRepresentation()
 	{
 		return this.myRepInstance;
 	}
 
-	public void setFlags( GridFlags... requireChannel )
+	public final void setFlags( GridFlags... requireChannel )
 	{
 		EnumSet<GridFlags> flags = EnumSet.noneOf( GridFlags.class );
 
@@ -369,7 +369,7 @@ public class AENetworkProxy implements IGridBlock
 		this.flags = flags;
 	}
 
-	public void setIdlePowerUsage( double idle )
+	public final void setIdlePowerUsage( double idle )
 	{
 		this.idleDraw = idle;
 
@@ -387,12 +387,12 @@ public class AENetworkProxy implements IGridBlock
 		}
 	}
 
-	public boolean isReady()
+	public final boolean isReady()
 	{
 		return this.isReady;
 	}
 
-	public boolean isActive()
+	public final boolean isActive()
 	{
 		if( this.node == null )
 		{
@@ -402,7 +402,7 @@ public class AENetworkProxy implements IGridBlock
 		return this.node.isActive();
 	}
 
-	public boolean isPowered()
+	public final boolean isPowered()
 	{
 		try
 		{
@@ -414,7 +414,7 @@ public class AENetworkProxy implements IGridBlock
 		}
 	}
 
-	public IEnergyGrid getEnergy() throws GridAccessException
+	public final IEnergyGrid getEnergy() throws GridAccessException
 	{
 		IGrid grid = this.getGrid();
 		if( grid == null )
@@ -429,7 +429,7 @@ public class AENetworkProxy implements IGridBlock
 		return eg;
 	}
 
-	public void setOwner( EntityPlayer player )
+	public final void setOwner( EntityPlayer player )
 	{
 		this.owner = player;
 	}

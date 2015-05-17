@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -35,7 +35,7 @@ import appeng.container.slot.SlotInaccessible;
 import appeng.tile.inventory.AppEngInternalInventory;
 
 
-public class ContainerCraftAmount extends AEBaseContainer
+public final class ContainerCraftAmount extends AEBaseContainer
 {
 
 	public final Slot craftingItem;
@@ -52,24 +52,24 @@ public class ContainerCraftAmount extends AEBaseContainer
 	}
 
 	@Override
-	public void detectAndSendChanges()
+	public final void detectAndSendChanges()
 	{
 		super.detectAndSendChanges();
 		this.verifyPermissions( SecurityPermissions.CRAFT, false );
 	}
 
-	public IGrid getGrid()
+	public final IGrid getGrid()
 	{
 		IActionHost h = ( (IActionHost) this.getTarget() );
 		return h.getActionableNode().getGrid();
 	}
 
-	public World getWorld()
+	public final World getWorld()
 	{
 		return this.getPlayerInv().player.worldObj;
 	}
 
-	public BaseActionSource getActionSrc()
+	public final BaseActionSource getActionSrc()
 	{
 		return new PlayerSource( this.getPlayerInv().player, (IActionHost) this.getTarget() );
 	}

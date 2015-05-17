@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -34,7 +34,7 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketValueConfig;
 
 
-public class GuiSecurity extends GuiMEMonitorable
+public final class GuiSecurity extends GuiMEMonitorable
 {
 
 	GuiToggleButton inject;
@@ -55,7 +55,7 @@ public class GuiSecurity extends GuiMEMonitorable
 	}
 
 	@Override
-	protected void actionPerformed( net.minecraft.client.gui.GuiButton btn )
+	protected final void actionPerformed( net.minecraft.client.gui.GuiButton btn )
 	{
 		super.actionPerformed( btn );
 
@@ -96,7 +96,7 @@ public class GuiSecurity extends GuiMEMonitorable
 	}
 
 	@Override
-	public void initGui()
+	public final void initGui()
 	{
 		super.initGui();
 

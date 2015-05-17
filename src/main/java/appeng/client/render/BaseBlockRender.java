@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -21,7 +21,6 @@ package appeng.client.render;
 
 import java.nio.FloatBuffer;
 import java.util.EnumSet;
-
 import javax.annotation.Nullable;
 
 import org.lwjgl.BufferUtils;
@@ -255,12 +254,12 @@ public class BaseBlockRender
 		ORIENTATION_MAP[5][2][4] = 1 | FLIP_H_BIT;
 	}
 
-	public boolean hasTESR()
+	public final boolean hasTESR()
 	{
 		return this.hasTESR;
 	}
 
-	protected int adjustBrightness( int v, double d )
+	protected final int adjustBrightness( int v, double d )
 	{
 		int r = 0xff & ( v >> 16 );
 		int g = 0xff & ( v >> 8 );
@@ -277,7 +276,7 @@ public class BaseBlockRender
 		return ( r << 16 ) | ( g << 8 ) | b;
 	}
 
-	public double getTesrRenderDistance()
+	public final double getTesrRenderDistance()
 	{
 		return this.renderDistance;
 	}
@@ -330,7 +329,7 @@ public class BaseBlockRender
 		return ORIENTATION_MAP[a][b][c];
 	}
 
-	public void renderInvBlock( EnumSet<ForgeDirection> sides, AEBaseBlock block, ItemStack item, Tessellator tess, int color, RenderBlocks renderer )
+	public final void renderInvBlock( EnumSet<ForgeDirection> sides, AEBaseBlock block, ItemStack item, Tessellator tess, int color, RenderBlocks renderer )
 	{
 		int meta = 0;
 		if( block != null && block.hasSubtypes() && item != null )
@@ -393,7 +392,7 @@ public class BaseBlockRender
 		}
 	}
 
-	public IIcon firstNotNull( IIcon... s )
+	public final IIcon firstNotNull( IIcon... s )
 	{
 		for( IIcon o : s )
 		{
@@ -415,7 +414,7 @@ public class BaseBlockRender
 		return o;
 	}
 
-	public void preRenderInWorld( AEBaseBlock block, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
+	public final void preRenderInWorld( AEBaseBlock block, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
 	{
 		ForgeDirection forward = ForgeDirection.SOUTH;
 		ForgeDirection up = ForgeDirection.UP;
@@ -438,13 +437,13 @@ public class BaseBlockRender
 		}
 	}
 
-	public void postRenderInWorld( RenderBlocks renderer )
+	public final void postRenderInWorld( RenderBlocks renderer )
 	{
 		renderer.uvRotateBottom = renderer.uvRotateEast = renderer.uvRotateNorth = renderer.uvRotateSouth = renderer.uvRotateTop = renderer.uvRotateWest = 0;
 	}
 
 	@Nullable
-	public IOrientable getOrientable( AEBaseBlock block, IBlockAccess w, int x, int y, int z )
+	public final IOrientable getOrientable( AEBaseBlock block, IBlockAccess w, int x, int y, int z )
 	{
 		if( block.hasBlockTileEntity() )
 		{
@@ -457,12 +456,12 @@ public class BaseBlockRender
 		return null;
 	}
 
-	protected void setInvRenderBounds( RenderBlocks renderer, int i, int j, int k, int l, int m, int n )
+	protected final void setInvRenderBounds( RenderBlocks renderer, int i, int j, int k, int l, int m, int n )
 	{
 		renderer.setRenderBounds( i / 16.0, j / 16.0, k / 16.0, l / 16.0, m / 16.0, n / 16.0 );
 	}
 
-	protected void renderBlockBounds( RenderBlocks renderer,
+	protected final void renderBlockBounds( RenderBlocks renderer,
 
 			double minX, double minY, double minZ,
 
@@ -512,7 +511,7 @@ public class BaseBlockRender
 	}
 
 	@SideOnly( Side.CLIENT )
-	protected void renderCutoutFace( Block block, IIcon ico, int x, int y, int z, RenderBlocks renderer, ForgeDirection orientation, float edgeThickness )
+	protected final void renderCutoutFace( Block block, IIcon ico, int x, int y, int z, RenderBlocks renderer, ForgeDirection orientation, float edgeThickness )
 	{
 		Tessellator tess = Tessellator.instance;
 
@@ -624,7 +623,7 @@ public class BaseBlockRender
 	}
 
 	@SideOnly( Side.CLIENT )
-	protected void renderFace( int x, int y, int z, Block block, IIcon ico, RenderBlocks renderer, ForgeDirection orientation )
+	protected final void renderFace( int x, int y, int z, Block block, IIcon ico, RenderBlocks renderer, ForgeDirection orientation )
 	{
 		switch( orientation )
 		{
@@ -651,7 +650,7 @@ public class BaseBlockRender
 		}
 	}
 
-	public void selectFace( RenderBlocks renderer, ForgeDirection west, ForgeDirection up, ForgeDirection forward, int u1, int u2, int v1, int v2 )
+	public final void selectFace( RenderBlocks renderer, ForgeDirection west, ForgeDirection up, ForgeDirection forward, int u1, int u2, int v1, int v2 )
 	{
 		v1 = 16 - v1;
 		v2 = 16 - v2;
@@ -726,7 +725,7 @@ public class BaseBlockRender
 		renderer.uvRotateBottom = renderer.uvRotateTop = renderer.uvRotateEast = renderer.uvRotateWest = renderer.uvRotateNorth = renderer.uvRotateSouth = 0;
 	}
 
-	protected void applyTESRRotation( double x, double y, double z, ForgeDirection forward, ForgeDirection up )
+	protected final void applyTESRRotation( double x, double y, double z, ForgeDirection forward, ForgeDirection up )
 	{
 		if( forward != null && up != null )
 		{
@@ -772,7 +771,7 @@ public class BaseBlockRender
 		}
 	}
 
-	public void doRenderItem( ItemStack itemstack, TileEntity par1EntityItemFrame )
+	public final void doRenderItem( ItemStack itemstack, TileEntity par1EntityItemFrame )
 	{
 		if( itemstack != null )
 		{

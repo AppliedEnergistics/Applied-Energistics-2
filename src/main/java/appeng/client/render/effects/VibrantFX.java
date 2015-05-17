@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -27,7 +27,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 
 @SideOnly( Side.CLIENT )
-public class VibrantFX extends EntityFX
+public final class VibrantFX extends EntityFX
 {
 
 	public VibrantFX( World par1World, double x, double y, double z, double par8, double par10, double par12 )
@@ -51,7 +51,7 @@ public class VibrantFX extends EntityFX
 	}
 
 	@Override
-	public float getBrightness( float par1 )
+	public final float getBrightness( float par1 )
 	{
 		return 1.0f;
 	}
@@ -60,7 +60,7 @@ public class VibrantFX extends EntityFX
 	 * Called to update the entity's position/logic.
 	 */
 	@Override
-	public void onUpdate()
+	public final void onUpdate()
 	{
 		this.prevPosX = this.posX;
 		this.prevPosY = this.posY;

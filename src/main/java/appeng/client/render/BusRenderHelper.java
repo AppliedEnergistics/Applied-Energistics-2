@@ -163,7 +163,7 @@ public final class BusRenderHelper implements IPartRenderHelper
 		this.maxZ = bounds[5];
 	}
 
-	private static class BoundBoxCalculator implements IPartCollisionHelper
+	private static final class BoundBoxCalculator implements IPartCollisionHelper
 	{
 		private final BusRenderHelper helper;
 		private boolean started = false;
@@ -182,7 +182,7 @@ public final class BusRenderHelper implements IPartRenderHelper
 		}
 
 		@Override
-		public void addBox( double minX, double minY, double minZ, double maxX, double maxY, double maxZ )
+		public final void addBox( double minX, double minY, double minZ, double maxX, double maxY, double maxZ )
 		{
 			if( this.started )
 			{
@@ -206,25 +206,25 @@ public final class BusRenderHelper implements IPartRenderHelper
 		}
 
 		@Override
-		public ForgeDirection getWorldX()
+		public final ForgeDirection getWorldX()
 		{
 			return this.helper.ax;
 		}
 
 		@Override
-		public ForgeDirection getWorldY()
+		public final ForgeDirection getWorldY()
 		{
 			return this.helper.ay;
 		}
 
 		@Override
-		public ForgeDirection getWorldZ()
+		public final ForgeDirection getWorldZ()
 		{
 			return this.helper.az;
 		}
 
 		@Override
-		public boolean isBBCollision()
+		public final boolean isBBCollision()
 		{
 			return false;
 		}

@@ -57,7 +57,7 @@ import appeng.integration.abstraction.IBC;
 import appeng.util.Platform;
 
 
-public class FacadePart implements IFacadePart, IBoxProvider
+public final class FacadePart implements IFacadePart, IBoxProvider
 {
 
 	public final ItemStack facade;
@@ -84,13 +84,13 @@ public class FacadePart implements IFacadePart, IBoxProvider
 	}
 
 	@Override
-	public ItemStack getItemStack()
+	public final ItemStack getItemStack()
 	{
 		return this.facade;
 	}
 
 	@Override
-	public void getBoxes( IPartCollisionHelper ch, Entity e )
+	public final void getBoxes( IPartCollisionHelper ch, Entity e )
 	{
 		if( e instanceof EntityLivingBase )
 		{
@@ -106,7 +106,7 @@ public class FacadePart implements IFacadePart, IBoxProvider
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderStatic( int x, int y, int z, IPartRenderHelper instance2, RenderBlocks renderer, IFacadeContainer fc, AxisAlignedBB busBounds, boolean renderStilt )
+	public final void renderStatic( int x, int y, int z, IPartRenderHelper instance2, RenderBlocks renderer, IFacadeContainer fc, AxisAlignedBB busBounds, boolean renderStilt )
 	{
 		if( this.facade != null )
 		{
@@ -342,7 +342,7 @@ public class FacadePart implements IFacadePart, IBoxProvider
 		}
 	}
 
-	ItemStack getTexture()
+	final ItemStack getTexture()
 	{
 		final Item maybeFacade = this.facade.getItem();
 
@@ -486,7 +486,7 @@ public class FacadePart implements IFacadePart, IBoxProvider
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderInventory( IPartRenderHelper instance, RenderBlocks renderer )
+	public final void renderInventory( IPartRenderHelper instance, RenderBlocks renderer )
 	{
 		if( this.facade != null )
 		{
@@ -539,19 +539,19 @@ public class FacadePart implements IFacadePart, IBoxProvider
 	}
 
 	@Override
-	public ForgeDirection getSide()
+	public final ForgeDirection getSide()
 	{
 		return this.side;
 	}
 
 	@Override
-	public AxisAlignedBB getPrimaryBox()
+	public final AxisAlignedBB getPrimaryBox()
 	{
 		return Platform.getPrimaryBox( this.side, this.thickness );
 	}
 
 	@Override
-	public Item getItem()
+	public final Item getItem()
 	{
 		ItemStack is = this.getTexture();
 		if( is == null )
@@ -562,7 +562,7 @@ public class FacadePart implements IFacadePart, IBoxProvider
 	}
 
 	@Override
-	public int getItemDamage()
+	public final int getItemDamage()
 	{
 		ItemStack is = this.getTexture();
 		if( is == null )
@@ -573,19 +573,19 @@ public class FacadePart implements IFacadePart, IBoxProvider
 	}
 
 	@Override
-	public boolean isBC()
+	public final boolean isBC()
 	{
 		return !( this.facade.getItem() instanceof IFacadeItem );
 	}
 
 	@Override
-	public void setThinFacades( boolean useThinFacades )
+	public final void setThinFacades( boolean useThinFacades )
 	{
 		this.thickness = useThinFacades ? 1 : 2;
 	}
 
 	@Override
-	public boolean isTransparent()
+	public final boolean isTransparent()
 	{
 		if( AEApi.instance().partHelper().getCableRenderMode().transparentFacades )
 		{
@@ -599,7 +599,7 @@ public class FacadePart implements IFacadePart, IBoxProvider
 	}
 
 	@Override
-	public void getBoxes( IPartCollisionHelper bch )
+	public final void getBoxes( IPartCollisionHelper bch )
 	{
 		this.getBoxes( bch, null );
 	}

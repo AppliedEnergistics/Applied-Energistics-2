@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -38,7 +38,7 @@ import appeng.util.Platform;
 import appeng.util.inv.WrapperInventoryRange;
 
 
-public class TileGrinder extends AEBaseInvTile implements ICrankable
+public final class TileGrinder extends AEBaseInvTile implements ICrankable
 {
 
 	final int[] inputs = new int[] { 0, 1, 2 };
@@ -47,7 +47,7 @@ public class TileGrinder extends AEBaseInvTile implements ICrankable
 	int points;
 
 	@Override
-	public void setOrientation( ForgeDirection inForward, ForgeDirection inUp )
+	public final void setOrientation( ForgeDirection inForward, ForgeDirection inUp )
 	{
 		super.setOrientation( inForward, inUp );
 		this.getBlockType().onNeighborBlockChange( this.worldObj, this.xCoord, this.yCoord, this.zCoord, Platform.AIR_BLOCK );
@@ -66,7 +66,7 @@ public class TileGrinder extends AEBaseInvTile implements ICrankable
 	}
 
 	@Override
-	public boolean canInsertItem( int slotIndex, ItemStack insertingItem, int side )
+	public final boolean canInsertItem( int slotIndex, ItemStack insertingItem, int side )
 	{
 		if( AEApi.instance().registries().grinder().getRecipeForInput( insertingItem ) == null )
 		{
@@ -77,7 +77,7 @@ public class TileGrinder extends AEBaseInvTile implements ICrankable
 	}
 
 	@Override
-	public boolean canExtractItem( int slotIndex, ItemStack extractedItem, int side )
+	public final boolean canExtractItem( int slotIndex, ItemStack extractedItem, int side )
 	{
 		return slotIndex >= 3 && slotIndex <= 5;
 	}
@@ -89,7 +89,7 @@ public class TileGrinder extends AEBaseInvTile implements ICrankable
 	}
 
 	@Override
-	public boolean canTurn()
+	public final boolean canTurn()
 	{
 		if( Platform.isClient() )
 		{
@@ -133,7 +133,7 @@ public class TileGrinder extends AEBaseInvTile implements ICrankable
 	}
 
 	@Override
-	public void applyTurn()
+	public final void applyTurn()
 	{
 		if( Platform.isClient() )
 		{
@@ -194,7 +194,7 @@ public class TileGrinder extends AEBaseInvTile implements ICrankable
 	}
 
 	@Override
-	public boolean canCrankAttach( ForgeDirection directionToCrank )
+	public final boolean canCrankAttach( ForgeDirection directionToCrank )
 	{
 		return this.getUp() == directionToCrank;
 	}

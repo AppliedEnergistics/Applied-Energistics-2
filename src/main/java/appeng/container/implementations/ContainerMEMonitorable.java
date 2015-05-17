@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -258,7 +258,7 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 		}
 	}
 
-	protected void updatePowerStatus()
+	protected final void updatePowerStatus()
 	{
 		try
 		{
@@ -299,13 +299,13 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 	}
 
 	@Override
-	public void addCraftingToCrafters( ICrafting c )
+	public final void addCraftingToCrafters( ICrafting c )
 	{
 		super.addCraftingToCrafters( c );
 		this.queueInventory( c );
 	}
 
-	public void queueInventory( ICrafting c )
+	public final void queueInventory( ICrafting c )
 	{
 		if( Platform.isServer() && c instanceof EntityPlayer && this.monitor != null )
 		{
@@ -339,7 +339,7 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 	}
 
 	@Override
-	public void removeCraftingFromCrafters( ICrafting c )
+	public final void removeCraftingFromCrafters( ICrafting c )
 	{
 		super.removeCraftingFromCrafters( c );
 
@@ -360,13 +360,13 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 	}
 
 	@Override
-	public boolean isValid( Object verificationToken )
+	public final boolean isValid( Object verificationToken )
 	{
 		return true;
 	}
 
 	@Override
-	public void postChange( IBaseMonitor<IAEItemStack> monitor, Iterable<IAEItemStack> change, BaseActionSource source )
+	public final void postChange( IBaseMonitor<IAEItemStack> monitor, Iterable<IAEItemStack> change, BaseActionSource source )
 	{
 		for( IAEItemStack is : change )
 		{
@@ -375,7 +375,7 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 	}
 
 	@Override
-	public void onListUpdate()
+	public final void onListUpdate()
 	{
 		for( Object c : this.crafters )
 		{
@@ -397,7 +397,7 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 	}
 
 	@Override
-	public IConfigManager getConfigManager()
+	public final IConfigManager getConfigManager()
 	{
 		if( Platform.isServer() )
 		{
@@ -406,7 +406,7 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 		return this.clientCM;
 	}
 
-	public ItemStack[] getViewCells()
+	public final ItemStack[] getViewCells()
 	{
 		ItemStack[] list = new ItemStack[this.cellView.length];
 

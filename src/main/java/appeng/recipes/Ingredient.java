@@ -38,7 +38,7 @@ import appeng.api.recipes.ResolverResult;
 import appeng.api.recipes.ResolverResultSet;
 
 
-public class Ingredient implements IIngredient
+public final class Ingredient implements IIngredient
 {
 
 	public final boolean isAir;
@@ -138,13 +138,13 @@ public class Ingredient implements IIngredient
 	}
 
 	@Override
-	public String toString()
+	public final String toString()
 	{
 		return this.nameSpace + ':' + this.itemName + ':' + this.meta;
 	}
 
 	@Override
-	public ItemStack getItemStack() throws RegistrationError, MissingIngredientError
+	public final ItemStack getItemStack() throws RegistrationError, MissingIngredientError
 	{
 		if( this.isAir )
 		{
@@ -206,7 +206,7 @@ public class Ingredient implements IIngredient
 	}
 
 	@Override
-	public ItemStack[] getItemStackSet() throws RegistrationError, MissingIngredientError
+	public final ItemStack[] getItemStackSet() throws RegistrationError, MissingIngredientError
 	{
 		if( this.baked != null )
 		{
@@ -238,37 +238,37 @@ public class Ingredient implements IIngredient
 	}
 
 	@Override
-	public String getNameSpace()
+	public final String getNameSpace()
 	{
 		return this.nameSpace;
 	}
 
 	@Override
-	public String getItemName()
+	public final String getItemName()
 	{
 		return this.itemName;
 	}
 
 	@Override
-	public int getDamageValue()
+	public final int getDamageValue()
 	{
 		return this.meta;
 	}
 
 	@Override
-	public int getQty()
+	public final int getQty()
 	{
 		return this.qty;
 	}
 
 	@Override
-	public boolean isAir()
+	public final boolean isAir()
 	{
 		return this.isAir;
 	}
 
 	@Override
-	public void bake() throws RegistrationError, MissingIngredientError
+	public final void bake() throws RegistrationError, MissingIngredientError
 	{
 		this.baked = null;
 		this.baked = this.getItemStackSet();

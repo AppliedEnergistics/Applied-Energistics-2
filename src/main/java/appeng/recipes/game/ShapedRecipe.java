@@ -34,7 +34,7 @@ import appeng.api.exceptions.RegistrationError;
 import appeng.api.recipes.IIngredient;
 
 
-public class ShapedRecipe implements IRecipe, IRecipeBakeable
+public final class ShapedRecipe implements IRecipe, IRecipeBakeable
 {
 
 	// Added in for future ease of change, but hard coded for now.
@@ -136,13 +136,13 @@ public class ShapedRecipe implements IRecipe, IRecipeBakeable
 		}
 	}
 
-	public boolean isEnabled()
+	public final boolean isEnabled()
 	{
 		return !this.disable;
 	}
 
 	@Override
-	public boolean matches( InventoryCrafting inv, World world )
+	public final boolean matches( InventoryCrafting inv, World world )
 	{
 		if( this.disable )
 		{
@@ -169,19 +169,19 @@ public class ShapedRecipe implements IRecipe, IRecipeBakeable
 	}
 
 	@Override
-	public ItemStack getCraftingResult( InventoryCrafting var1 )
+	public final ItemStack getCraftingResult( InventoryCrafting var1 )
 	{
 		return this.output.copy();
 	}
 
 	@Override
-	public int getRecipeSize()
+	public final int getRecipeSize()
 	{
 		return this.input.length;
 	}
 
 	@Override
-	public ItemStack getRecipeOutput()
+	public final ItemStack getRecipeOutput()
 	{
 		return this.output;
 	}
@@ -291,17 +291,17 @@ public class ShapedRecipe implements IRecipe, IRecipeBakeable
 		return this.input;
 	}
 
-	public int getWidth()
+	public final int getWidth()
 	{
 		return this.width;
 	}
 
-	public int getHeight()
+	public final int getHeight()
 	{
 		return this.height;
 	}
 
-	public Object[] getIngredients()
+	public final Object[] getIngredients()
 	{
 		return this.input;
 	}

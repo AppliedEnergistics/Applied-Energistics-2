@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -96,7 +96,7 @@ public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorH
 		}
 	}
 
-	protected void setCPU( ICraftingCPU c )
+	protected final void setCPU( ICraftingCPU c )
 	{
 		if( c == this.monitor )
 		{
@@ -142,7 +142,7 @@ public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorH
 		}
 	}
 
-	public void cancelCrafting()
+	public final void cancelCrafting()
 	{
 		if( this.monitor != null )
 		{
@@ -151,7 +151,7 @@ public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorH
 	}
 
 	@Override
-	public void removeCraftingFromCrafters( ICrafting c )
+	public final void removeCraftingFromCrafters( ICrafting c )
 	{
 		super.removeCraftingFromCrafters( c );
 
@@ -162,7 +162,7 @@ public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorH
 	}
 
 	@Override
-	public void onContainerClosed( EntityPlayer player )
+	public final void onContainerClosed( EntityPlayer player )
 	{
 		super.onContainerClosed( player );
 		if( this.monitor != null )
@@ -221,13 +221,13 @@ public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorH
 	}
 
 	@Override
-	public boolean isValid( Object verificationToken )
+	public final boolean isValid( Object verificationToken )
 	{
 		return true;
 	}
 
 	@Override
-	public void postChange( IBaseMonitor<IAEItemStack> monitor, Iterable<IAEItemStack> change, BaseActionSource actionSource )
+	public final void postChange( IBaseMonitor<IAEItemStack> monitor, Iterable<IAEItemStack> change, BaseActionSource actionSource )
 	{
 		for( IAEItemStack is : change )
 		{
@@ -238,7 +238,7 @@ public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorH
 	}
 
 	@Override
-	public void onListUpdate()
+	public final void onListUpdate()
 	{
 
 	}

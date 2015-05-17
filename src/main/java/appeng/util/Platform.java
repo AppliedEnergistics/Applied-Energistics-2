@@ -144,7 +144,7 @@ import appeng.util.prioitylist.IPartitionList;
  * @version rv2
  * @since rv0
  */
-public class Platform
+public final class Platform
 {
 
 	public static final Block AIR_BLOCK = Blocks.air;

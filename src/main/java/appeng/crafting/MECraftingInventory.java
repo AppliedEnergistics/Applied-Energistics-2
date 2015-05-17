@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -29,7 +29,7 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 
 
-public class MECraftingInventory implements IMEInventory<IAEItemStack>
+public final class MECraftingInventory implements IMEInventory<IAEItemStack>
 {
 
 	final MECraftingInventory par;
@@ -180,7 +180,7 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack>
 	}
 
 	@Override
-	public IAEItemStack injectItems( IAEItemStack input, Actionable mode, BaseActionSource src )
+	public final IAEItemStack injectItems( IAEItemStack input, Actionable mode, BaseActionSource src )
 	{
 		if( input == null )
 		{
@@ -200,7 +200,7 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack>
 	}
 
 	@Override
-	public IAEItemStack extractItems( IAEItemStack request, Actionable mode, BaseActionSource src )
+	public final IAEItemStack extractItems( IAEItemStack request, Actionable mode, BaseActionSource src )
 	{
 		if( request == null )
 		{
@@ -243,7 +243,7 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack>
 	}
 
 	@Override
-	public IItemList<IAEItemStack> getAvailableItems( IItemList<IAEItemStack> out )
+	public final IItemList<IAEItemStack> getAvailableItems( IItemList<IAEItemStack> out )
 	{
 		for( IAEItemStack is : this.localCache )
 		{
@@ -254,17 +254,17 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack>
 	}
 
 	@Override
-	public StorageChannel getChannel()
+	public final StorageChannel getChannel()
 	{
 		return StorageChannel.ITEMS;
 	}
 
-	public IItemList<IAEItemStack> getItemList()
+	public final IItemList<IAEItemStack> getItemList()
 	{
 		return this.localCache;
 	}
 
-	public boolean commit( BaseActionSource src )
+	public final boolean commit( BaseActionSource src )
 	{
 		IItemList<IAEItemStack> added = AEApi.instance().storage().createItemList();
 		IItemList<IAEItemStack> pulled = AEApi.instance().storage().createItemList();
@@ -336,12 +336,12 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack>
 		return true;
 	}
 
-	public void addMissing( IAEItemStack extra )
+	public final void addMissing( IAEItemStack extra )
 	{
 		this.missingCache.add( extra );
 	}
 
-	public void ignore( IAEItemStack what )
+	public final void ignore( IAEItemStack what )
 	{
 		IAEItemStack list = this.localCache.findPrecise( what );
 		if( list != null )

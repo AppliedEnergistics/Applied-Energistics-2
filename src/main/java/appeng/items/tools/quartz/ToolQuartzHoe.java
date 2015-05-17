@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -33,7 +33,7 @@ import appeng.core.features.ItemFeatureHandler;
 import appeng.util.Platform;
 
 
-public class ToolQuartzHoe extends ItemHoe implements IAEFeature
+public final class ToolQuartzHoe extends ItemHoe implements IAEFeature
 {
 	private final AEFeature feature;
 	private final IFeatureHandler handler;
@@ -59,7 +59,7 @@ public class ToolQuartzHoe extends ItemHoe implements IAEFeature
 	}
 
 	@Override
-	public boolean getIsRepairable( ItemStack a, ItemStack b )
+	public final boolean getIsRepairable( ItemStack a, ItemStack b )
 	{
 		return Platform.canRepair( this.feature, a, b );
 	}

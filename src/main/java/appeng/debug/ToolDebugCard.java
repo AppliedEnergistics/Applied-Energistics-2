@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -52,7 +52,7 @@ import appeng.tile.networking.TileController;
 import appeng.util.Platform;
 
 
-public class ToolDebugCard extends AEBaseItem
+public final class ToolDebugCard extends AEBaseItem
 {
 	public ToolDebugCard()
 	{
@@ -60,7 +60,7 @@ public class ToolDebugCard extends AEBaseItem
 	}
 
 	@Override
-	public boolean onItemUseFirst( ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ )
+	public final boolean onItemUseFirst( ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ )
 	{
 		if( Platform.isClient() )
 		{
@@ -214,7 +214,7 @@ public class ToolDebugCard extends AEBaseItem
 		player.addChatMessage( new ChatComponentText( string ) );
 	}
 
-	public String timeMeasurement( long nanos )
+	public final String timeMeasurement( long nanos )
 	{
 		long ms = nanos / 100000;
 		if( nanos <= 100000 )

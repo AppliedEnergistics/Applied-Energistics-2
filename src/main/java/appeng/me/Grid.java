@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -41,7 +41,7 @@ import appeng.hooks.TickHandler;
 import appeng.util.ReadOnlyCollection;
 
 
-public class Grid implements IGrid
+public final class Grid implements IGrid
 {
 	private final NetworkEventBus eventBus = new NetworkEventBus();
 	private final Map<Class<? extends IGridHost>, MachineSet> machines = new HashMap<Class<? extends IGridHost>, MachineSet>();
@@ -71,27 +71,27 @@ public class Grid implements IGrid
 		center.setGrid( this );
 	}
 
-	public int getPriority()
+	public final int getPriority()
 	{
 		return this.priority;
 	}
 
-	public IGridStorage getMyStorage()
+	public final IGridStorage getMyStorage()
 	{
 		return this.myStorage;
 	}
 
-	public Map<Class<? extends IGridCache>, GridCacheWrapper> getCaches()
+	public final Map<Class<? extends IGridCache>, GridCacheWrapper> getCaches()
 	{
 		return this.caches;
 	}
 
-	public Iterable<Class<? extends IGridHost>> getMachineClasses()
+	public final Iterable<Class<? extends IGridHost>> getMachineClasses()
 	{
 		return this.machines.keySet();
 	}
 
-	public int size()
+	public final int size()
 	{
 		int out = 0;
 		for( Collection<?> x : this.machines.values() )
@@ -101,7 +101,7 @@ public class Grid implements IGrid
 		return out;
 	}
 
-	public void remove( GridNode gridNode )
+	public final void remove( GridNode gridNode )
 	{
 		for( IGridCache c : this.caches.values() )
 		{
@@ -134,7 +134,7 @@ public class Grid implements IGrid
 		}
 	}
 
-	public void add( GridNode gridNode )
+	public final void add( GridNode gridNode )
 	{
 		Class<? extends IGridHost> mClass = gridNode.getMachineClass();
 
@@ -211,25 +211,25 @@ public class Grid implements IGrid
 
 	@Override
 	@SuppressWarnings( "unchecked" )
-	public <C extends IGridCache> C getCache( Class<? extends IGridCache> iface )
+	public final <C extends IGridCache> C getCache( Class<? extends IGridCache> iface )
 	{
 		return (C) this.caches.get( iface ).myCache;
 	}
 
 	@Override
-	public MENetworkEvent postEvent( MENetworkEvent ev )
+	public final MENetworkEvent postEvent( MENetworkEvent ev )
 	{
 		return this.eventBus.postEvent( this, ev );
 	}
 
 	@Override
-	public MENetworkEvent postEventTo( IGridNode node, MENetworkEvent ev )
+	public final MENetworkEvent postEventTo( IGridNode node, MENetworkEvent ev )
 	{
 		return this.eventBus.postEventTo( this, (GridNode) node, ev );
 	}
 
 	@Override
-	public IReadOnlyCollection<Class<? extends IGridHost>> getMachinesClasses()
+	public final IReadOnlyCollection<Class<? extends IGridHost>> getMachinesClasses()
 	{
 		Set<Class<? extends IGridHost>> machineKeys = this.machines.keySet();
 
@@ -237,7 +237,7 @@ public class Grid implements IGrid
 	}
 
 	@Override
-	public IMachineSet getMachines( Class<? extends IGridHost> c )
+	public final IMachineSet getMachines( Class<? extends IGridHost> c )
 	{
 		MachineSet s = this.machines.get( c );
 		if( s == null )
@@ -248,29 +248,29 @@ public class Grid implements IGrid
 	}
 
 	@Override
-	public IReadOnlyCollection<IGridNode> getNodes()
+	public final IReadOnlyCollection<IGridNode> getNodes()
 	{
 		return new GridNodeCollection( this.machines );
 	}
 
 	@Override
-	public boolean isEmpty()
+	public final boolean isEmpty()
 	{
 		return this.pivot == null;
 	}
 
 	@Override
-	public IGridNode getPivot()
+	public final IGridNode getPivot()
 	{
 		return this.pivot;
 	}
 
-	public void setPivot( GridNode pivot )
+	public final void setPivot( GridNode pivot )
 	{
 		this.pivot = pivot;
 	}
 
-	public void update()
+	public final void update()
 	{
 		for( IGridCache gc : this.caches.values() )
 		{
@@ -282,7 +282,7 @@ public class Grid implements IGrid
 		}
 	}
 
-	public void saveState()
+	public final void saveState()
 	{
 		for( IGridCache c : this.caches.values() )
 		{
@@ -290,7 +290,7 @@ public class Grid implements IGrid
 		}
 	}
 
-	public void setImportantFlag( int i, boolean publicHasPower )
+	public final void setImportantFlag( int i, boolean publicHasPower )
 	{
 		int flag = 1 << i;
 		this.priority = ( this.priority & ~flag ) | ( publicHasPower ? flag : 0 );

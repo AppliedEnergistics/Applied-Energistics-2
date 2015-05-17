@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -40,7 +40,7 @@ import appeng.util.Platform;
  * @version rv2
  * @since rv0
  */
-public class ContainerInscriber extends ContainerUpgradeable implements IProgressProvider
+public final class ContainerInscriber extends ContainerUpgradeable implements IProgressProvider
 {
 
 	final TileInscriber ti;
@@ -88,13 +88,13 @@ public class ContainerInscriber extends ContainerUpgradeable implements IProgres
 	}
 
 	@Override
-	public int availableUpgrades()
+	public final int availableUpgrades()
 	{
 		return 3;
 	}
 
 	@Override
-	public void detectAndSendChanges()
+	public final void detectAndSendChanges()
 	{
 		this.standardDetectAndSendChanges();
 
@@ -199,13 +199,13 @@ public class ContainerInscriber extends ContainerUpgradeable implements IProgres
 	}
 
 	@Override
-	public int getCurrentProgress()
+	public final int getCurrentProgress()
 	{
 		return this.processingTime;
 	}
 
 	@Override
-	public int getMaxProgress()
+	public final int getMaxProgress()
 	{
 		return this.maxProcessingTime;
 	}

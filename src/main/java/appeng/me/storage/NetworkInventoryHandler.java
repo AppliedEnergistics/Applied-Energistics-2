@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -44,7 +44,7 @@ import appeng.me.cache.SecurityCache;
 import appeng.util.ItemSorters;
 
 
-public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInventoryHandler<T>
+public final class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInventoryHandler<T>
 {
 
 	static final ThreadLocal<LinkedList> DEPTH_MOD = new ThreadLocal<LinkedList>();
@@ -72,7 +72,7 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
 		this.priorityInventory = new TreeMap<Integer, List<IMEInventoryHandler<T>>>( PRIORITY_SORTER ); // TreeMultimap.create( prioritySorter, hashSorter );
 	}
 
-	public void addNewStorage( IMEInventoryHandler<T> h )
+	public final void addNewStorage( IMEInventoryHandler<T> h )
 	{
 		int priority = h.getPriority();
 		List<IMEInventoryHandler<T>> list = this.priorityInventory.get( priority );
@@ -85,7 +85,7 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
 	}
 
 	@Override
-	public T injectItems( T input, Actionable type, BaseActionSource src )
+	public final T injectItems( T input, Actionable type, BaseActionSource src )
 	{
 		if( this.diveList( this, type ) )
 		{
@@ -200,7 +200,7 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
 	}
 
 	@Override
-	public T extractItems( T request, Actionable mode, BaseActionSource src )
+	public final T extractItems( T request, Actionable mode, BaseActionSource src )
 	{
 		if( this.diveList( this, mode ) )
 		{
@@ -245,7 +245,7 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
 	}
 
 	@Override
-	public IItemList<T> getAvailableItems( IItemList out )
+	public final IItemList<T> getAvailableItems( IItemList out )
 	{
 		if( this.diveIteration( this, Actionable.SIMULATE ) )
 		{
@@ -291,43 +291,43 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
 	}
 
 	@Override
-	public StorageChannel getChannel()
+	public final StorageChannel getChannel()
 	{
 		return this.myChannel;
 	}
 
 	@Override
-	public AccessRestriction getAccess()
+	public final AccessRestriction getAccess()
 	{
 		return AccessRestriction.READ_WRITE;
 	}
 
 	@Override
-	public boolean isPrioritized( T input )
+	public final boolean isPrioritized( T input )
 	{
 		return false;
 	}
 
 	@Override
-	public boolean canAccept( T input )
+	public final boolean canAccept( T input )
 	{
 		return true;
 	}
 
 	@Override
-	public int getPriority()
+	public final int getPriority()
 	{
 		return 0;
 	}
 
 	@Override
-	public int getSlot()
+	public final int getSlot()
 	{
 		return 0;
 	}
 
 	@Override
-	public boolean validForPass( int i )
+	public final boolean validForPass( int i )
 	{
 		return true;
 	}

@@ -64,7 +64,7 @@ import appeng.util.Platform;
 import appeng.util.inv.IInventoryDestination;
 
 
-public class TileInterface extends AENetworkInvTile implements IGridTickable, ITileStorageMonitorable, IStorageMonitorable, IInventoryDestination, IInterfaceHost, IPriorityHost
+public final class TileInterface extends AENetworkInvTile implements IGridTickable, ITileStorageMonitorable, IStorageMonitorable, IInventoryDestination, IInterfaceHost, IPriorityHost
 {
 
 	final DualityInterface duality = new DualityInterface( this.gridProxy, this );
@@ -82,7 +82,7 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, IT
 		this.duality.notifyNeighbors();
 	}
 
-	public void setSide( ForgeDirection axis )
+	public final void setSide( ForgeDirection axis )
 	{
 		if( Platform.isClient() )
 		{
@@ -121,13 +121,13 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, IT
 	}
 
 	@Override
-	public void markDirty()
+	public final void markDirty()
 	{
 		this.duality.markDirty();
 	}
 
 	@Override
-	public void getDrops( World w, int x, int y, int z, List<ItemStack> drops )
+	public final void getDrops( World w, int x, int y, int z, List<ItemStack> drops )
 	{
 		this.duality.addDrops( drops );
 	}
@@ -171,7 +171,7 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, IT
 	}
 
 	@Override
-	public AECableType getCableConnectionType( ForgeDirection dir )
+	public final AECableType getCableConnectionType( ForgeDirection dir )
 	{
 		return this.duality.getCableConnectionType( dir );
 	}
@@ -189,31 +189,31 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, IT
 	}
 
 	@Override
-	public IMEMonitor<IAEItemStack> getItemInventory()
+	public final IMEMonitor<IAEItemStack> getItemInventory()
 	{
 		return this.duality.getItemInventory();
 	}
 
 	@Override
-	public IMEMonitor<IAEFluidStack> getFluidInventory()
+	public final IMEMonitor<IAEFluidStack> getFluidInventory()
 	{
 		return this.duality.getFluidInventory();
 	}
 
 	@Override
-	public IInventory getInventoryByName( String name )
+	public final IInventory getInventoryByName( String name )
 	{
 		return this.duality.getInventoryByName( name );
 	}
 
 	@Override
-	public TickingRequest getTickingRequest( IGridNode node )
+	public final TickingRequest getTickingRequest( IGridNode node )
 	{
 		return this.duality.getTickingRequest( node );
 	}
 
 	@Override
-	public TickRateModulation tickingRequest( IGridNode node, int ticksSinceLastCall )
+	public final TickRateModulation tickingRequest( IGridNode node, int ticksSinceLastCall )
 	{
 		return this.duality.tickingRequest( node, ticksSinceLastCall );
 	}
@@ -259,55 +259,55 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, IT
 	}
 
 	@Override
-	public IStorageMonitorable getMonitorable( ForgeDirection side, BaseActionSource src )
+	public final IStorageMonitorable getMonitorable( ForgeDirection side, BaseActionSource src )
 	{
 		return this.duality.getMonitorable( side, src, this );
 	}
 
 	@Override
-	public IConfigManager getConfigManager()
+	public final IConfigManager getConfigManager()
 	{
 		return this.duality.getConfigManager();
 	}
 
 	@Override
-	public boolean pushPattern( ICraftingPatternDetails patternDetails, InventoryCrafting table )
+	public final boolean pushPattern( ICraftingPatternDetails patternDetails, InventoryCrafting table )
 	{
 		return this.duality.pushPattern( patternDetails, table );
 	}
 
 	@Override
-	public boolean isBusy()
+	public final boolean isBusy()
 	{
 		return this.duality.isBusy();
 	}
 
 	@Override
-	public void provideCrafting( ICraftingProviderHelper craftingTracker )
+	public final void provideCrafting( ICraftingProviderHelper craftingTracker )
 	{
 		this.duality.provideCrafting( craftingTracker );
 	}
 
 	@Override
-	public int getInstalledUpgrades( Upgrades u )
+	public final int getInstalledUpgrades( Upgrades u )
 	{
 		return this.duality.getInstalledUpgrades( u );
 	}
 
 	@Override
-	public ImmutableSet<ICraftingLink> getRequestedJobs()
+	public final ImmutableSet<ICraftingLink> getRequestedJobs()
 	{
 		return this.duality.getRequestedJobs();
 	}
 
 	@Override
-	public IAEItemStack injectCraftedItems( ICraftingLink link, IAEItemStack items, Actionable mode )
+	public final IAEItemStack injectCraftedItems( ICraftingLink link, IAEItemStack items, Actionable mode )
 	{
 		return this.duality.injectCraftedItems( link, items, mode );
 	}
 
 	@Override
-	public void jobStateChange( ICraftingLink link )
+	public final void jobStateChange( ICraftingLink link )
 	{
 		this.duality.jobStateChange( link );
 	}

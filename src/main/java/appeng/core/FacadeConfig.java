@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -31,7 +31,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.GameRegistry.UniqueIdentifier;
 
 
-public class FacadeConfig extends Configuration
+public final class FacadeConfig extends Configuration
 {
 
 	public static FacadeConfig instance;
@@ -43,7 +43,7 @@ public class FacadeConfig extends Configuration
 		this.replacementPattern = Pattern.compile( "[^a-zA-Z0-9]" );
 	}
 
-	public boolean checkEnabled( Block id, int metadata, boolean automatic )
+	public final boolean checkEnabled( Block id, int metadata, boolean automatic )
 	{
 		if( id == null )
 		{

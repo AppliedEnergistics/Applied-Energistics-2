@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -23,7 +23,7 @@ import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 
 
-public class InvSot
+public final class InvSot
 {
 
 	public final ISidedInventory partInv;
@@ -35,32 +35,32 @@ public class InvSot
 		this.index = slot;
 	}
 
-	public ItemStack decreaseStackSize( int j )
+	public final ItemStack decreaseStackSize( int j )
 	{
 		return this.partInv.decrStackSize( this.index, j );
 	}
 
-	public ItemStack getStackInSlot()
+	public final ItemStack getStackInSlot()
 	{
 		return this.partInv.getStackInSlot( this.index );
 	}
 
-	public boolean isItemValidForSlot( ItemStack itemstack )
+	public final boolean isItemValidForSlot( ItemStack itemstack )
 	{
 		return this.partInv.isItemValidForSlot( this.index, itemstack );
 	}
 
-	public void setInventorySlotContents( ItemStack itemstack )
+	public final void setInventorySlotContents( ItemStack itemstack )
 	{
 		this.partInv.setInventorySlotContents( this.index, itemstack );
 	}
 
-	public boolean canExtractItem( ItemStack itemstack, int side )
+	public final boolean canExtractItem( ItemStack itemstack, int side )
 	{
 		return this.partInv.canExtractItem( this.index, itemstack, side );
 	}
 
-	public boolean canInsertItem( ItemStack itemstack, int side )
+	public final boolean canInsertItem( ItemStack itemstack, int side )
 	{
 		return this.partInv.canInsertItem( this.index, itemstack, side );
 	}

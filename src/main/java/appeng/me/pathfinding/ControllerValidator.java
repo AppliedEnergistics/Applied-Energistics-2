@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -25,7 +25,7 @@ import appeng.api.networking.IGridVisitor;
 import appeng.tile.networking.TileController;
 
 
-public class ControllerValidator implements IGridVisitor
+public final class ControllerValidator implements IGridVisitor
 {
 
 	public boolean isValid = true;
@@ -48,7 +48,7 @@ public class ControllerValidator implements IGridVisitor
 	}
 
 	@Override
-	public boolean visitNode( IGridNode n )
+	public final boolean visitNode( IGridNode n )
 	{
 		IGridHost host = n.getMachine();
 		if( this.isValid && host instanceof TileController )

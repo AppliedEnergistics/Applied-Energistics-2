@@ -28,14 +28,14 @@ import appeng.me.helpers.AENetworkProxy;
 import appeng.tile.grid.AENetworkTile;
 
 
-public class TilePhantomNode extends AENetworkTile
+public final class TilePhantomNode extends AENetworkTile
 {
 
 	protected AENetworkProxy proxy = null;
 	boolean crashMode = false;
 
 	@Override
-	public IGridNode getGridNode( ForgeDirection dir )
+	public final IGridNode getGridNode( ForgeDirection dir )
 	{
 		if( !this.crashMode )
 		{

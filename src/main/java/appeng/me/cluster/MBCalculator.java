@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -38,7 +38,7 @@ public abstract class MBCalculator
 		this.target = t;
 	}
 
-	public void calculateMultiblock( World world, WorldCoord loc )
+	public final void calculateMultiblock( World world, WorldCoord loc )
 	{
 		if( Platform.isClient() )
 		{
@@ -122,7 +122,7 @@ public abstract class MBCalculator
 		this.disconnect();
 	}
 
-	public boolean isValidTileAt( World w, int x, int y, int z )
+	public final boolean isValidTileAt( World w, int x, int y, int z )
 	{
 		return this.isValidTile( w.getTileEntity( x, y, z ) );
 	}
@@ -137,7 +137,7 @@ public abstract class MBCalculator
 	 */
 	public abstract boolean checkMultiblockScale( WorldCoord min, WorldCoord max );
 
-	public boolean verifyUnownedRegion( World w, WorldCoord min, WorldCoord max )
+	public final boolean verifyUnownedRegion( World w, WorldCoord min, WorldCoord max )
 	{
 		for( ForgeDirection side : ForgeDirection.VALID_DIRECTIONS )
 		{
@@ -187,7 +187,7 @@ public abstract class MBCalculator
 	 */
 	public abstract boolean isValidTile( TileEntity te );
 
-	public boolean verifyUnownedRegionInner( World w, int minX, int minY, int minZ, int maxX, int maxY, int maxZ, ForgeDirection side )
+	public final boolean verifyUnownedRegionInner( World w, int minX, int minY, int minZ, int maxX, int maxY, int maxZ, ForgeDirection side )
 	{
 		switch( side )
 		{

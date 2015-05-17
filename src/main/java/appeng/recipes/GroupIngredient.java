@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -32,7 +32,7 @@ import appeng.api.exceptions.RegistrationError;
 import appeng.api.recipes.IIngredient;
 
 
-public class GroupIngredient implements IIngredient
+public final class GroupIngredient implements IIngredient
 {
 
 	final String name;
@@ -57,7 +57,7 @@ public class GroupIngredient implements IIngredient
 		this.ingredients = ingredients;
 	}
 
-	public IIngredient copy( int qty ) throws RecipeError
+	public final IIngredient copy( int qty ) throws RecipeError
 	{
 		GroupIngredient gi = new GroupIngredient( this.name, this.ingredients );
 		gi.qty = qty;
@@ -65,13 +65,13 @@ public class GroupIngredient implements IIngredient
 	}
 
 	@Override
-	public ItemStack getItemStack() throws RegistrationError, MissingIngredientError
+	public final ItemStack getItemStack() throws RegistrationError, MissingIngredientError
 	{
 		throw new RegistrationError( "Cannot pass group of items to a recipe which desires a single recipe item." );
 	}
 
 	@Override
-	public ItemStack[] getItemStackSet() throws RegistrationError, MissingIngredientError
+	public final ItemStack[] getItemStackSet() throws RegistrationError, MissingIngredientError
 	{
 		if( this.baked != null )
 		{
@@ -118,37 +118,37 @@ public class GroupIngredient implements IIngredient
 	}
 
 	@Override
-	public boolean isAir()
+	public final boolean isAir()
 	{
 		return false;
 	}
 
 	@Override
-	public String getNameSpace()
+	public final String getNameSpace()
 	{
 		return "";
 	}
 
 	@Override
-	public String getItemName()
+	public final String getItemName()
 	{
 		return this.name;
 	}
 
 	@Override
-	public int getDamageValue()
+	public final int getDamageValue()
 	{
 		return OreDictionary.WILDCARD_VALUE;
 	}
 
 	@Override
-	public int getQty()
+	public final int getQty()
 	{
 		return 0;
 	}
 
 	@Override
-	public void bake() throws RegistrationError, MissingIngredientError
+	public final void bake() throws RegistrationError, MissingIngredientError
 	{
 		this.baked = null;
 		this.baked = this.getItemStackSet();

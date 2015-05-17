@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -36,7 +36,7 @@ import appeng.util.InventoryAdaptor;
 import appeng.util.item.AEItemStack;
 
 
-public class IMEAdaptor extends InventoryAdaptor
+public final class IMEAdaptor extends InventoryAdaptor
 {
 
 	final IMEInventory<IAEItemStack> target;
@@ -50,12 +50,12 @@ public class IMEAdaptor extends InventoryAdaptor
 	}
 
 	@Override
-	public Iterator<ItemSlot> iterator()
+	public final Iterator<ItemSlot> iterator()
 	{
 		return new IMEAdaptorIterator( this, this.getList() );
 	}
 
-	IItemList<IAEItemStack> getList()
+	final IItemList<IAEItemStack> getList()
 	{
 		return this.target.getAvailableItems( AEApi.instance().storage().createItemList() );
 	}
@@ -66,7 +66,7 @@ public class IMEAdaptor extends InventoryAdaptor
 		return this.doRemoveItems( amount, filter, destination, Actionable.MODULATE );
 	}
 
-	public ItemStack doRemoveItems( int amount, ItemStack filter, IInventoryDestination destination, Actionable type )
+	public final ItemStack doRemoveItems( int amount, ItemStack filter, IInventoryDestination destination, Actionable type )
 	{
 		IAEItemStack req = null;
 
@@ -115,7 +115,7 @@ public class IMEAdaptor extends InventoryAdaptor
 		return this.doRemoveItemsFuzzy( amount, filter, destination, Actionable.MODULATE, fuzzyMode );
 	}
 
-	public ItemStack doRemoveItemsFuzzy( int amount, ItemStack filter, IInventoryDestination destination, Actionable type, FuzzyMode fuzzyMode )
+	public final ItemStack doRemoveItemsFuzzy( int amount, ItemStack filter, IInventoryDestination destination, Actionable type, FuzzyMode fuzzyMode )
 	{
 		IAEItemStack reqFilter = AEItemStack.create( filter );
 		if( reqFilter == null )

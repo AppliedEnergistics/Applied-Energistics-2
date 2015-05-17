@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -68,7 +68,7 @@ public class SlotRestrictedInput extends AppEngSlot
 	}
 
 	@Override
-	public int getSlotStackLimit()
+	public final int getSlotStackLimit()
 	{
 		if( this.stackLimit != -1 )
 		{
@@ -77,7 +77,7 @@ public class SlotRestrictedInput extends AppEngSlot
 		return super.getSlotStackLimit();
 	}
 
-	public boolean isValid( ItemStack is, World theWorld )
+	public final boolean isValid( ItemStack is, World theWorld )
 	{
 		if( this.which == PlacableItemType.VALID_ENCODED_PATTERN_W_OUTPUT )
 		{
@@ -87,14 +87,14 @@ public class SlotRestrictedInput extends AppEngSlot
 		return true;
 	}
 
-	public Slot setStackLimit( int i )
+	public final Slot setStackLimit( int i )
 	{
 		this.stackLimit = i;
 		return this;
 	}
 
 	@Override
-	public boolean isItemValid( ItemStack i )
+	public final boolean isItemValid( ItemStack i )
 	{
 		if( !this.myContainer.isValidForSlot( this, i ) )
 		{
@@ -231,7 +231,7 @@ public class SlotRestrictedInput extends AppEngSlot
 	}
 
 	@Override
-	public boolean canTakeStack( EntityPlayer par1EntityPlayer )
+	public final boolean canTakeStack( EntityPlayer par1EntityPlayer )
 	{
 		return this.allowEdit;
 	}

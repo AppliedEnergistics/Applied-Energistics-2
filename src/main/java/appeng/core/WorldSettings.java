@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -54,7 +54,7 @@ import appeng.me.GridStorageSearch;
 import appeng.services.CompassService;
 
 
-public class WorldSettings extends Configuration
+public final class WorldSettings extends Configuration
 {
 	private static final String SPAWNDATA_FOLDER = "spawndata";
 	private static final String COMPASS_FOLDER = "compass";
@@ -126,7 +126,7 @@ public class WorldSettings extends Configuration
 		return instance;
 	}
 
-	public Collection<NBTTagCompound> getNearByMeteorites( int dim, int chunkX, int chunkZ )
+	public final Collection<NBTTagCompound> getNearByMeteorites( int dim, int chunkX, int chunkZ )
 	{
 		Collection<NBTTagCompound> ll = new LinkedList<NBTTagCompound>();
 
@@ -157,7 +157,7 @@ public class WorldSettings extends Configuration
 		return ll;
 	}
 
-	NBTTagCompound loadSpawnData( int dim, int chunkX, int chunkZ )
+	final NBTTagCompound loadSpawnData( int dim, int chunkX, int chunkZ )
 	{
 		if( !Thread.holdsLock( WorldSettings.class ) )
 		{
@@ -204,7 +204,7 @@ public class WorldSettings extends Configuration
 		return data;
 	}
 
-	public boolean hasGenerated( int dim, int chunkX, int chunkZ )
+	public final boolean hasGenerated( int dim, int chunkX, int chunkZ )
 	{
 		synchronized( WorldSettings.class )
 		{
@@ -213,7 +213,7 @@ public class WorldSettings extends Configuration
 		}
 	}
 
-	public void setGenerated( int dim, int chunkX, int chunkZ )
+	public final void setGenerated( int dim, int chunkX, int chunkZ )
 	{
 		synchronized( WorldSettings.class )
 		{
@@ -226,7 +226,7 @@ public class WorldSettings extends Configuration
 		}
 	}
 
-	void writeSpawnData( int dim, int chunkX, int chunkZ, NBTTagCompound data )
+	final void writeSpawnData( int dim, int chunkX, int chunkZ, NBTTagCompound data )
 	{
 		if( !Thread.holdsLock( WorldSettings.class ) )
 		{
@@ -261,7 +261,7 @@ public class WorldSettings extends Configuration
 		}
 	}
 
-	public boolean addNearByMeteorites( int dim, int chunkX, int chunkZ, NBTTagCompound newData )
+	public final boolean addNearByMeteorites( int dim, int chunkX, int chunkZ, NBTTagCompound newData )
 	{
 		synchronized( WorldSettings.class )
 		{
@@ -278,7 +278,7 @@ public class WorldSettings extends Configuration
 		}
 	}
 
-	public void shutdown()
+	public final void shutdown()
 	{
 		this.save();
 
@@ -294,7 +294,7 @@ public class WorldSettings extends Configuration
 	}
 
 	@Override
-	public void save()
+	public final void save()
 	{
 		// populate new data
 		for( GridStorageSearch gs : this.loadedStorage.keySet() )
@@ -314,7 +314,7 @@ public class WorldSettings extends Configuration
 		}
 	}
 
-	public void addStorageCellDim( int newDim )
+	public final void addStorageCellDim( int newDim )
 	{
 		this.storageCellDims.add( newDim );
 		DimensionManager.registerDimension( newDim, AEConfig.instance.storageProviderID );
@@ -332,12 +332,12 @@ public class WorldSettings extends Configuration
 		this.save();
 	}
 
-	public CompassService getCompass()
+	public final CompassService getCompass()
 	{
 		return this.compass;
 	}
 
-	public void sendToPlayer( NetworkManager manager )
+	public final void sendToPlayer( NetworkManager manager )
 	{
 		if( manager != null )
 		{
@@ -355,12 +355,12 @@ public class WorldSettings extends Configuration
 		}
 	}
 
-	public void init()
+	public final void init()
 	{
 		this.save();
 	}
 
-	public WorldCoord getStoredSize( int dim )
+	public final WorldCoord getStoredSize( int dim )
 	{
 		int x = this.get( "StorageCell" + dim, "scaleX", 0 ).getInt();
 		int y = this.get( "StorageCell" + dim, "scaleY", 0 ).getInt();
@@ -368,7 +368,7 @@ public class WorldSettings extends Configuration
 		return new WorldCoord( x, y, z );
 	}
 
-	public void setStoredSize( int dim, int targetX, int targetY, int targetZ )
+	public final void setStoredSize( int dim, int targetX, int targetY, int targetZ )
 	{
 		this.get( "StorageCell" + dim, "scaleX", 0 ).set( targetX );
 		this.get( "StorageCell" + dim, "scaleY", 0 ).set( targetY );
@@ -383,7 +383,7 @@ public class WorldSettings extends Configuration
 	 *
 	 * @return corresponding grid storage
 	 */
-	public GridStorage getGridStorage( long storageID )
+	public final GridStorage getGridStorage( long storageID )
 	{
 		GridStorageSearch gss = new GridStorageSearch( storageID );
 		WeakReference<GridStorageSearch> result = this.loadedStorage.get( gss );
@@ -404,7 +404,7 @@ public class WorldSettings extends Configuration
 	/**
 	 * create a new storage
 	 */
-	public GridStorage getNewGridStorage()
+	public final GridStorage getNewGridStorage()
 	{
 		long storageID = this.nextGridStorage();
 		GridStorageSearch gss = new GridStorageSearch( storageID );
@@ -422,13 +422,13 @@ public class WorldSettings extends Configuration
 		return r;
 	}
 
-	public void destroyGridStorage( long id )
+	public final void destroyGridStorage( long id )
 	{
 		String stringID = String.valueOf( id );
 		this.getCategory( "gridstorage" ).remove( stringID );
 	}
 
-	public int getNextOrderedValue( String name )
+	public final int getNextOrderedValue( String name )
 	{
 		Property p = this.get( "orderedValues", name, 0 );
 		int myValue = p.getInt();
@@ -436,7 +436,7 @@ public class WorldSettings extends Configuration
 		return myValue;
 	}
 
-	public int getPlayerID( GameProfile profile )
+	public final int getPlayerID( GameProfile profile )
 	{
 		ConfigCategory playerList = this.getCategory( "players" );
 
@@ -469,7 +469,7 @@ public class WorldSettings extends Configuration
 		return r;
 	}
 
-	public EntityPlayer getPlayerFromID( int playerID )
+	public final EntityPlayer getPlayerFromID( int playerID )
 	{
 		Optional<UUID> maybe = this.mappings.get( playerID );
 

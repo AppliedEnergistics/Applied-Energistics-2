@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -38,7 +38,7 @@ import appeng.client.texture.ExtraBlockTextures;
 import appeng.tile.crafting.TileCraftingMonitorTile;
 
 
-public class BlockCraftingMonitor extends BlockCraftingUnit
+public final class BlockCraftingMonitor extends BlockCraftingUnit
 {
 	public BlockCraftingMonitor()
 	{
@@ -52,7 +52,7 @@ public class BlockCraftingMonitor extends BlockCraftingUnit
 	}
 
 	@Override
-	public IIcon getIcon( int direction, int metadata )
+	public final IIcon getIcon( int direction, int metadata )
 	{
 		if( direction != ForgeDirection.SOUTH.ordinal() )
 		{

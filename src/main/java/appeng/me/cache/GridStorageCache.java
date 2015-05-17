@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -55,7 +55,7 @@ import appeng.me.storage.ItemWatcher;
 import appeng.me.storage.NetworkInventoryHandler;
 
 
-public class GridStorageCache implements IStorageGrid
+public final class GridStorageCache implements IStorageGrid
 {
 
 	public final IGrid myGrid;
@@ -75,14 +75,14 @@ public class GridStorageCache implements IStorageGrid
 	}
 
 	@Override
-	public void onUpdateTick()
+	public final void onUpdateTick()
 	{
 		this.itemMonitor.onTick();
 		this.fluidMonitor.onTick();
 	}
 
 	@Override
-	public void removeNode( IGridNode node, IGridHost machine )
+	public final void removeNode( IGridNode node, IGridHost machine )
 	{
 		if( machine instanceof ICellContainer )
 		{
@@ -105,7 +105,7 @@ public class GridStorageCache implements IStorageGrid
 	}
 
 	@Override
-	public void addNode( IGridNode node, IGridHost machine )
+	public final void addNode( IGridNode node, IGridHost machine )
 	{
 		if( machine instanceof ICellContainer )
 		{
@@ -129,24 +129,24 @@ public class GridStorageCache implements IStorageGrid
 	}
 
 	@Override
-	public void onSplit( IGridStorage storageB )
+	public final void onSplit( IGridStorage storageB )
 	{
 
 	}
 
 	@Override
-	public void onJoin( IGridStorage storageB )
+	public final void onJoin( IGridStorage storageB )
 	{
 
 	}
 
 	@Override
-	public void populateGridStorage( IGridStorage storage )
+	public final void populateGridStorage( IGridStorage storage )
 	{
 
 	}
 
-	public CellChangeTracker addCellProvider( ICellProvider cc, CellChangeTracker tracker )
+	public final CellChangeTracker addCellProvider( ICellProvider cc, CellChangeTracker tracker )
 	{
 		if( this.inactiveCellProviders.contains( cc ) )
 		{
@@ -173,7 +173,7 @@ public class GridStorageCache implements IStorageGrid
 		return tracker;
 	}
 
-	public CellChangeTracker removeCellProvider( ICellProvider cc, CellChangeTracker tracker )
+	public final CellChangeTracker removeCellProvider( ICellProvider cc, CellChangeTracker tracker )
 	{
 		if( this.activeCellProviders.contains( cc ) )
 		{
@@ -259,7 +259,7 @@ public class GridStorageCache implements IStorageGrid
 		}
 	}
 
-	public IMEInventoryHandler<IAEItemStack> getItemInventoryHandler()
+	public final IMEInventoryHandler<IAEItemStack> getItemInventoryHandler()
 	{
 		if( this.myItemNetwork == null )
 		{
@@ -298,7 +298,7 @@ public class GridStorageCache implements IStorageGrid
 		}
 	}
 
-	public IMEInventoryHandler<IAEFluidStack> getFluidInventoryHandler()
+	public final IMEInventoryHandler<IAEFluidStack> getFluidInventoryHandler()
 	{
 		if( this.myFluidNetwork == null )
 		{
@@ -308,7 +308,7 @@ public class GridStorageCache implements IStorageGrid
 	}
 
 	@Override
-	public void postAlterationOfStoredItems( StorageChannel chan, Iterable<? extends IAEStack> input, BaseActionSource src )
+	public final void postAlterationOfStoredItems( StorageChannel chan, Iterable<? extends IAEStack> input, BaseActionSource src )
 	{
 		if( chan == StorageChannel.ITEMS )
 		{
@@ -321,32 +321,32 @@ public class GridStorageCache implements IStorageGrid
 	}
 
 	@Override
-	public void registerCellProvider( ICellProvider provider )
+	public final void registerCellProvider( ICellProvider provider )
 	{
 		this.inactiveCellProviders.add( provider );
 		this.addCellProvider( provider, new CellChangeTracker() ).applyChanges();
 	}
 
 	@Override
-	public void unregisterCellProvider( ICellProvider provider )
+	public final void unregisterCellProvider( ICellProvider provider )
 	{
 		this.removeCellProvider( provider, new CellChangeTracker() ).applyChanges();
 		this.inactiveCellProviders.remove( provider );
 	}
 
 	@Override
-	public IMEMonitor<IAEItemStack> getItemInventory()
+	public final IMEMonitor<IAEItemStack> getItemInventory()
 	{
 		return this.itemMonitor;
 	}
 
 	@Override
-	public IMEMonitor<IAEFluidStack> getFluidInventory()
+	public final IMEMonitor<IAEFluidStack> getFluidInventory()
 	{
 		return this.fluidMonitor;
 	}
 
-	private class CellChangeTrackerRecord
+	private final class CellChangeTrackerRecord
 	{
 
 		final StorageChannel channel;
@@ -374,24 +374,24 @@ public class GridStorageCache implements IStorageGrid
 			}
 		}
 
-		public void applyChanges()
+		public final void applyChanges()
 		{
 			GridStorageCache.this.postChangesToNetwork( this.channel, this.up_or_down, this.list, this.src );
 		}
 	}
 
 
-	private class CellChangeTracker
+	private final class CellChangeTracker
 	{
 
 		final List<CellChangeTrackerRecord> data = new LinkedList<CellChangeTrackerRecord>();
 
-		public void postChanges( StorageChannel channel, int i, IMEInventoryHandler<? extends IAEStack> h, BaseActionSource actionSrc )
+		public final void postChanges( StorageChannel channel, int i, IMEInventoryHandler<? extends IAEStack> h, BaseActionSource actionSrc )
 		{
 			this.data.add( new CellChangeTrackerRecord( channel, i, h, actionSrc ) );
 		}
 
-		public void applyChanges()
+		public final void applyChanges()
 		{
 			for( CellChangeTrackerRecord rec : this.data )
 			{

@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -30,7 +30,7 @@ import appeng.recipes.ores.OreDictionaryHandler;
 import appeng.util.Platform;
 
 
-public class MatterCannonAmmoRegistry implements IOreListener, IMatterCannonAmmoRegistry
+public final class MatterCannonAmmoRegistry implements IOreListener, IMatterCannonAmmoRegistry
 {
 
 	private final HashMap<ItemStack, Double> DamageModifiers = new HashMap<ItemStack, Double>();
@@ -42,13 +42,13 @@ public class MatterCannonAmmoRegistry implements IOreListener, IMatterCannonAmmo
 	}
 
 	@Override
-	public void registerAmmo( ItemStack ammo, double weight )
+	public final void registerAmmo( ItemStack ammo, double weight )
 	{
 		this.DamageModifiers.put( ammo, weight );
 	}
 
 	@Override
-	public float getPenetration( ItemStack is )
+	public final float getPenetration( ItemStack is )
 	{
 		for( ItemStack o : this.DamageModifiers.keySet() )
 		{

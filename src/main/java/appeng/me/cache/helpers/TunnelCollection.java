@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -26,7 +26,7 @@ import appeng.parts.p2p.PartP2PTunnel;
 import appeng.util.iterators.NullIterator;
 
 
-public class TunnelCollection<T extends PartP2PTunnel> implements Iterable<T>
+public final class TunnelCollection<T extends PartP2PTunnel> implements Iterable<T>
 {
 
 	final Class clz;
@@ -38,18 +38,18 @@ public class TunnelCollection<T extends PartP2PTunnel> implements Iterable<T>
 		this.clz = c;
 	}
 
-	public void setSource( Collection<T> c )
+	public final void setSource( Collection<T> c )
 	{
 		this.tunnelSources = c;
 	}
 
-	public boolean isEmpty()
+	public final boolean isEmpty()
 	{
 		return !this.iterator().hasNext();
 	}
 
 	@Override
-	public Iterator<T> iterator()
+	public final Iterator<T> iterator()
 	{
 		if( this.tunnelSources == null )
 		{
@@ -58,7 +58,7 @@ public class TunnelCollection<T extends PartP2PTunnel> implements Iterable<T>
 		return new TunnelIterator<T>( this.tunnelSources, this.clz );
 	}
 
-	public boolean matches( Class<? extends PartP2PTunnel> c )
+	public final boolean matches( Class<? extends PartP2PTunnel> c )
 	{
 		return this.clz == c;
 	}

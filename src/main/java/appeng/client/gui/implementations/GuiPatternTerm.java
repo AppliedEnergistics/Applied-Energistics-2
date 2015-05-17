@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -38,7 +38,7 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketValueConfig;
 
 
-public class GuiPatternTerm extends GuiMEMonitorable
+public final class GuiPatternTerm extends GuiMEMonitorable
 {
 
 	final ContainerPatternTerm container;
@@ -57,7 +57,7 @@ public class GuiPatternTerm extends GuiMEMonitorable
 	}
 
 	@Override
-	protected void actionPerformed( GuiButton btn )
+	protected final void actionPerformed( GuiButton btn )
 	{
 		super.actionPerformed( btn );
 
@@ -92,7 +92,7 @@ public class GuiPatternTerm extends GuiMEMonitorable
 	}
 
 	@Override
-	public void initGui()
+	public final void initGui()
 	{
 		super.initGui();
 		this.buttonList.add( this.tabCraftButton = new GuiTabButton( this.guiLeft + 173, this.guiTop + this.ySize - 177, new ItemStack( Blocks.crafting_table ), GuiText.CraftingPattern.getLocal(), itemRender ) );

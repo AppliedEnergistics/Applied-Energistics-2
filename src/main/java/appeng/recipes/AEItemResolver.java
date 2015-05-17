@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -38,11 +38,11 @@ import appeng.items.parts.ItemMultiPart;
 import appeng.items.parts.PartType;
 
 
-public class AEItemResolver implements ISubItemResolver
+public final class AEItemResolver implements ISubItemResolver
 {
 
 	@Override
-	public Object resolveItemByName( String nameSpace, String itemName )
+	public final Object resolveItemByName( String nameSpace, String itemName )
 	{
 
 		if( nameSpace.equals( AppEng.MOD_ID ) )

@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -23,7 +23,7 @@ import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 
 
-public class ModelCompass extends ModelBase
+public final class ModelCompass extends ModelBase
 {
 
 	final ModelRenderer Ring1;
@@ -100,7 +100,7 @@ public class ModelCompass extends ModelBase
 		model.rotateAngleZ = z;
 	}
 
-	public void renderAll( float rad )
+	public final void renderAll( float rad )
 	{
 		this.setRotation( this.Pointer, 0F, 0F, 0F );
 

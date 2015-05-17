@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -41,7 +41,7 @@ import appeng.tile.AEBaseTile;
 import appeng.tile.grindstone.TileCrank;
 
 
-public class BlockCrank extends AEBaseBlock
+public final class BlockCrank extends AEBaseBlock
 {
 
 	public BlockCrank()
@@ -89,7 +89,7 @@ public class BlockCrank extends AEBaseBlock
 	}
 
 	@Override
-	public void onBlockPlacedBy( World world, int x, int y, int z, EntityLivingBase placer, ItemStack itemStack )
+	public final void onBlockPlacedBy( World world, int x, int y, int z, EntityLivingBase placer, ItemStack itemStack )
 	{
 		AEBaseTile tile = this.getTileEntity( world, x, y, z );
 		if( tile != null )
@@ -135,7 +135,7 @@ public class BlockCrank extends AEBaseBlock
 	}
 
 	@Override
-	public void onNeighborBlockChange( World world, int x, int y, int z, Block block )
+	public final void onNeighborBlockChange( World world, int x, int y, int z, Block block )
 	{
 		AEBaseTile tile = this.getTileEntity( world, x, y, z );
 		if( tile != null )
@@ -152,7 +152,7 @@ public class BlockCrank extends AEBaseBlock
 	}
 
 	@Override
-	public boolean canPlaceBlockAt( World world, int x, int y, int z )
+	public final boolean canPlaceBlockAt( World world, int x, int y, int z )
 	{
 		return this.findCrankable( world, x, y, z ) != ForgeDirection.UNKNOWN;
 	}

@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -118,7 +118,7 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 		this.bindPlayerInventory( ip, 0, this.getHeight() - /* height of player inventory */82 );
 	}
 
-	public boolean hasToolbox()
+	public final boolean hasToolbox()
 	{
 		return this.tbInventory != null;
 	}
@@ -151,7 +151,7 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 		}
 	}
 
-	protected void setupUpgrades()
+	protected final void setupUpgrades()
 	{
 		IInventory upgrades = this.upgradeable.getInventoryByName( "upgrades" );
 		if( this.availableUpgrades() > 0 )
@@ -220,7 +220,7 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 		}
 	}
 
-	public void checkToolbox()
+	public final void checkToolbox()
 	{
 		if( this.hasToolbox() )
 		{
@@ -247,7 +247,7 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 		}
 	}
 
-	protected void standardDetectAndSendChanges()
+	protected final void standardDetectAndSendChanges()
 	{
 		super.detectAndSendChanges();
 	}

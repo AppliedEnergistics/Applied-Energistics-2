@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -50,7 +50,7 @@ import appeng.core.features.AEFeature;
 import appeng.core.localization.GuiText;
 
 
-public class NEIWorldCraftingHandler implements ICraftingHandler, IUsageHandler
+public final class NEIWorldCraftingHandler implements ICraftingHandler, IUsageHandler
 {
 
 	private final Map<IItemDefinition, String> details = new HashMap<IItemDefinition, String>();
@@ -60,25 +60,25 @@ public class NEIWorldCraftingHandler implements ICraftingHandler, IUsageHandler
 	private ItemStack target;
 
 	@Override
-	public String getRecipeName()
+	public final String getRecipeName()
 	{
 		return GuiText.InWorldCrafting.getLocal();
 	}
 
 	@Override
-	public int numRecipes()
+	public final int numRecipes()
 	{
 		return this.offsets.size();
 	}
 
 	@Override
-	public void drawBackground( int recipe )
+	public final void drawBackground( int recipe )
 	{
 		GL11.glColor4f( 1, 1, 1, 1 );// nothing.
 	}
 
 	@Override
-	public void drawForeground( int recipe )
+	public final void drawForeground( int recipe )
 	{
 		if( this.outputs.size() > recipe )
 		{
@@ -91,85 +91,85 @@ public class NEIWorldCraftingHandler implements ICraftingHandler, IUsageHandler
 	}
 
 	@Override
-	public List<PositionedStack> getIngredientStacks( int recipeIndex )
+	public final List<PositionedStack> getIngredientStacks( int recipeIndex )
 	{
 		return new ArrayList<PositionedStack>();
 	}
 
 	@Override
-	public List<PositionedStack> getOtherStacks( int recipeIndex )
+	public final List<PositionedStack> getOtherStacks( int recipeIndex )
 	{
 		return new ArrayList<PositionedStack>();
 	}
 
 	@Override
-	public PositionedStack getResultStack( int recipe )
+	public final PositionedStack getResultStack( int recipe )
 	{
 		return this.outputs.get( recipe );
 	}
 
 	@Override
-	public void onUpdate()
+	public final void onUpdate()
 	{
 
 	}
 
 	@Override
-	public boolean hasOverlay( GuiContainer gui, Container container, int recipe )
+	public final boolean hasOverlay( GuiContainer gui, Container container, int recipe )
 	{
 		return false;
 	}
 
 	@Override
-	public IRecipeOverlayRenderer getOverlayRenderer( GuiContainer gui, int recipe )
+	public final IRecipeOverlayRenderer getOverlayRenderer( GuiContainer gui, int recipe )
 	{
 		return null;
 	}
 
 	@Override
-	public IOverlayHandler getOverlayHandler( GuiContainer gui, int recipe )
+	public final IOverlayHandler getOverlayHandler( GuiContainer gui, int recipe )
 	{
 		return null;
 	}
 
 	@Override
-	public int recipiesPerPage()
+	public final int recipiesPerPage()
 	{
 		return 1;
 	}
 
 	@Override
-	public List<String> handleTooltip( GuiRecipe gui, List<String> currentToolTip, int recipe )
+	public final List<String> handleTooltip( GuiRecipe gui, List<String> currentToolTip, int recipe )
 	{
 		return currentToolTip;
 	}
 
 	@Override
-	public List<String> handleItemTooltip( GuiRecipe gui, ItemStack stack, List<String> currentToolTip, int recipe )
+	public final List<String> handleItemTooltip( GuiRecipe gui, ItemStack stack, List<String> currentToolTip, int recipe )
 	{
 		return currentToolTip;
 	}
 
 	@Override
-	public boolean keyTyped( GuiRecipe gui, char keyChar, int keyCode, int recipe )
+	public final boolean keyTyped( GuiRecipe gui, char keyChar, int keyCode, int recipe )
 	{
 		return false;
 	}
 
 	@Override
-	public boolean mouseClicked( GuiRecipe gui, int button, int recipe )
+	public final boolean mouseClicked( GuiRecipe gui, int button, int recipe )
 	{
 		return false;
 	}
 
 	@Override
-	public IUsageHandler getUsageHandler( String inputId, Object... ingredients )
+	public final IUsageHandler getUsageHandler( String inputId, Object... ingredients )
 	{
 		return this;
 	}
 
 	@Override
-	public ICraftingHandler getRecipeHandler( String outputId, Object... results )
+	public final ICraftingHandler getRecipeHandler( String outputId, Object... results )
 	{
 		NEIWorldCraftingHandler g = this.newInstance();
 		if( results.length > 0 && results[0] instanceof ItemStack )
@@ -181,7 +181,7 @@ public class NEIWorldCraftingHandler implements ICraftingHandler, IUsageHandler
 		return this;
 	}
 
-	public NEIWorldCraftingHandler newInstance()
+	public final NEIWorldCraftingHandler newInstance()
 	{
 		try
 		{

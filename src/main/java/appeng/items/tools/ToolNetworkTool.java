@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -55,7 +55,7 @@ import appeng.util.Platform;
 
 
 @Interface( iface = "buildcraft.api.tools.IToolWrench", iname = "BC" )
-public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench, IToolWrench
+public final class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench, IToolWrench
 {
 
 	public ToolNetworkTool()
@@ -68,14 +68,14 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench, 
 	}
 
 	@Override
-	public IGuiItemObject getGuiObject( ItemStack is, World world, int x, int y, int z )
+	public final IGuiItemObject getGuiObject( ItemStack is, World world, int x, int y, int z )
 	{
 		TileEntity te = world.getTileEntity( x, y, z );
 		return new NetworkToolViewer( is, (IGridHost) ( te instanceof IGridHost ? te : null ) );
 	}
 
 	@Override
-	public ItemStack onItemRightClick( ItemStack it, World w, EntityPlayer p )
+	public final ItemStack onItemRightClick( ItemStack it, World w, EntityPlayer p )
 	{
 		if( Platform.isClient() )
 		{
@@ -102,7 +102,7 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench, 
 	}
 
 	@Override
-	public boolean onItemUseFirst( ItemStack is, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ )
+	public final boolean onItemUseFirst( ItemStack is, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ )
 	{
 		MovingObjectPosition mop = new MovingObjectPosition( x, y, z, side, Vec3.createVectorHelper( hitX, hitY, hitZ ) );
 		TileEntity te = world.getTileEntity( x, y, z );
@@ -130,12 +130,12 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench, 
 	}
 
 	@Override
-	public boolean doesSneakBypassUse( World world, int x, int y, int z, EntityPlayer player )
+	public final boolean doesSneakBypassUse( World world, int x, int y, int z, EntityPlayer player )
 	{
 		return true;
 	}
 
-	public boolean serverSideToolLogic( ItemStack is, EntityPlayer p, World w, int x, int y, int z, int side, float hitX, float hitY, float hitZ )
+	public final boolean serverSideToolLogic( ItemStack is, EntityPlayer p, World w, int x, int y, int z, int side, float hitX, float hitY, float hitZ )
 	{
 		if( side >= 0 )
 		{
@@ -193,19 +193,19 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench, 
 	}
 
 	@Override
-	public boolean canWrench( ItemStack is, EntityPlayer player, int x, int y, int z )
+	public final boolean canWrench( ItemStack is, EntityPlayer player, int x, int y, int z )
 	{
 		return true;
 	}
 
 	@Override
-	public boolean canWrench( EntityPlayer player, int x, int y, int z )
+	public final boolean canWrench( EntityPlayer player, int x, int y, int z )
 	{
 		return true;
 	}
 
 	@Override
-	public void wrenchUsed( EntityPlayer player, int x, int y, int z )
+	public final void wrenchUsed( EntityPlayer player, int x, int y, int z )
 	{
 		player.swingItem();
 	}

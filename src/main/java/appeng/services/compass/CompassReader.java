@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -35,7 +35,7 @@ public class CompassReader
 		this.rootFolder = rootFolder;
 	}
 
-	public void close()
+	public final void close()
 	{
 		for( CompassRegion r : this.regions.values() )
 		{
@@ -45,7 +45,7 @@ public class CompassReader
 		this.regions.clear();
 	}
 
-	public void setHasBeacon( int cx, int cz, int cdy, boolean hasBeacon )
+	public final void setHasBeacon( int cx, int cz, int cdy, boolean hasBeacon )
 	{
 		CompassRegion r = this.getRegion( cx, cz );
 		r.setHasBeacon( cx, cz, cdy, hasBeacon );
@@ -67,7 +67,7 @@ public class CompassReader
 		return cr;
 	}
 
-	public boolean hasBeacon( int cx, int cz )
+	public final boolean hasBeacon( int cx, int cz )
 	{
 		CompassRegion r = this.getRegion( cx, cz );
 		return r.hasBeacon( cx, cz );

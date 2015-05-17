@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -55,7 +55,7 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 		return new MEIInventoryWrapper( this, null );
 	}
 
-	public boolean isEmpty()
+	public final boolean isEmpty()
 	{
 		for( int x = 0; x < this.size; x++ )
 		{
@@ -68,19 +68,19 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 	}
 
 	@Override
-	public int getSizeInventory()
+	public final int getSizeInventory()
 	{
 		return this.size;
 	}
 
 	@Override
-	public ItemStack getStackInSlot( int var1 )
+	public final ItemStack getStackInSlot( int var1 )
 	{
 		return this.inv[var1];
 	}
 
 	@Override
-	public ItemStack decrStackSize( int slot, int qty )
+	public final ItemStack decrStackSize( int slot, int qty )
 	{
 		if( this.inv[slot] != null )
 		{
@@ -115,13 +115,13 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 	}
 
 	@Override
-	public ItemStack getStackInSlotOnClosing( int var1 )
+	public final ItemStack getStackInSlotOnClosing( int var1 )
 	{
 		return null;
 	}
 
 	@Override
-	public void setInventorySlotContents( int slot, ItemStack newItemStack )
+	public final void setInventorySlotContents( int slot, ItemStack newItemStack )
 	{
 		ItemStack oldStack = this.inv[slot];
 		this.inv[slot] = newItemStack;
@@ -158,13 +158,13 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 	}
 
 	@Override
-	public String getInventoryName()
+	public final String getInventoryName()
 	{
 		return "appeng-internal";
 	}
 
 	@Override
-	public boolean hasCustomInventoryName()
+	public final boolean hasCustomInventoryName()
 	{
 		return false;
 	}
@@ -185,18 +185,18 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 	}
 
 	@Override
-	public boolean isUseableByPlayer( EntityPlayer var1 )
+	public final boolean isUseableByPlayer( EntityPlayer var1 )
 	{
 		return true;
 	}
 
 	@Override
-	public void openInventory()
+	public final void openInventory()
 	{
 	}
 
 	@Override
-	public void closeInventory()
+	public final void closeInventory()
 	{
 	}
 
@@ -206,13 +206,13 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 		return true;
 	}
 
-	public void setMaxStackSize( int s )
+	public final void setMaxStackSize( int s )
 	{
 		this.maxStack = s;
 	}
 
 	// for guis...
-	public void markDirty( int slotIndex )
+	public final void markDirty( int slotIndex )
 	{
 		if( this.te != null && this.eventsEnabled() )
 		{
@@ -220,14 +220,14 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 		}
 	}
 
-	public void writeToNBT( NBTTagCompound data, String name )
+	public final void writeToNBT( NBTTagCompound data, String name )
 	{
 		NBTTagCompound c = new NBTTagCompound();
 		this.writeToNBT( c );
 		data.setTag( name, c );
 	}
 
-	public void writeToNBT( NBTTagCompound target )
+	public final void writeToNBT( NBTTagCompound target )
 	{
 		for( int x = 0; x < this.size; x++ )
 		{
@@ -248,7 +248,7 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 		}
 	}
 
-	public void readFromNBT( NBTTagCompound data, String name )
+	public final void readFromNBT( NBTTagCompound data, String name )
 	{
 		NBTTagCompound c = data.getCompoundTag( name );
 		if( c != null )
@@ -278,7 +278,7 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 	}
 
 	@Override
-	public Iterator<ItemStack> iterator()
+	public final Iterator<ItemStack> iterator()
 	{
 		return new InvIterator( this );
 	}

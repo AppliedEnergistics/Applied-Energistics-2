@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -43,7 +43,7 @@ import appeng.client.texture.ExtraBlockTextures;
 import appeng.tile.qnb.TileQuantumBridge;
 
 
-public class RenderQNB extends BaseBlockRender
+public final class RenderQNB extends BaseBlockRender
 {
 
 	@Override
@@ -162,7 +162,7 @@ public class RenderQNB extends BaseBlockRender
 		return true;
 	}
 
-	public void renderCableAt( double thickness, IBlockAccess world, int x, int y, int z, AEBaseBlock block, RenderBlocks renderer, IIcon texture, double pull, Collection<ForgeDirection> connections )
+	public final void renderCableAt( double thickness, IBlockAccess world, int x, int y, int z, AEBaseBlock block, RenderBlocks renderer, IIcon texture, double pull, Collection<ForgeDirection> connections )
 	{
 		block.getRendererInstance().setTemporaryRenderIcon( texture );
 

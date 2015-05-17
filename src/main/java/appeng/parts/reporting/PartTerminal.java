@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -81,7 +81,7 @@ public class PartTerminal extends PartMonitor implements ITerminalHost, IConfigM
 	}
 
 	@Override
-	public IConfigManager getConfigManager()
+	public final IConfigManager getConfigManager()
 	{
 		return this.cm;
 	}
@@ -128,7 +128,7 @@ public class PartTerminal extends PartMonitor implements ITerminalHost, IConfigM
 	}
 
 	@Override
-	public IMEMonitor getItemInventory()
+	public final IMEMonitor getItemInventory()
 	{
 		try
 		{
@@ -142,7 +142,7 @@ public class PartTerminal extends PartMonitor implements ITerminalHost, IConfigM
 	}
 
 	@Override
-	public IMEMonitor getFluidInventory()
+	public final IMEMonitor getFluidInventory()
 	{
 		try
 		{
@@ -162,7 +162,7 @@ public class PartTerminal extends PartMonitor implements ITerminalHost, IConfigM
 	}
 
 	@Override
-	public IInventory getViewCellStorage()
+	public final IInventory getViewCellStorage()
 	{
 		return this.viewCell;
 	}

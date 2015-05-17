@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -64,7 +64,7 @@ import appeng.parts.reporting.PartTerminal;
 import appeng.util.Platform;
 
 
-public class ContainerCraftConfirm extends AEBaseContainer
+public final class ContainerCraftConfirm extends AEBaseContainer
 {
 
 	public final ArrayList<CraftingCPURecord> cpus = new ArrayList<CraftingCPURecord>();
@@ -95,7 +95,7 @@ public class ContainerCraftConfirm extends AEBaseContainer
 		this.priHost = te;
 	}
 
-	public void cycleCpu( boolean next )
+	public final void cycleCpu( boolean next )
 	{
 		if( next )
 		{
@@ -130,7 +130,7 @@ public class ContainerCraftConfirm extends AEBaseContainer
 	}
 
 	@Override
-	public void detectAndSendChanges()
+	public final void detectAndSendChanges()
 	{
 		if( Platform.isClient() )
 		{
@@ -291,7 +291,7 @@ public class ContainerCraftConfirm extends AEBaseContainer
 		this.verifyPermissions( SecurityPermissions.CRAFT, false );
 	}
 
-	public IGrid getGrid()
+	public final IGrid getGrid()
 	{
 		IActionHost h = ( (IActionHost) this.getTarget() );
 		return h.getActionableNode().getGrid();
@@ -321,7 +321,7 @@ public class ContainerCraftConfirm extends AEBaseContainer
 		}
 	}
 
-	public void startJob()
+	public final void startJob()
 	{
 		GuiBridge originalGui = null;
 
@@ -361,13 +361,13 @@ public class ContainerCraftConfirm extends AEBaseContainer
 		}
 	}
 
-	public BaseActionSource getActionSrc()
+	public final BaseActionSource getActionSrc()
 	{
 		return new PlayerSource( this.getPlayerInv().player, (IActionHost) this.getTarget() );
 	}
 
 	@Override
-	public void removeCraftingFromCrafters( ICrafting c )
+	public final void removeCraftingFromCrafters( ICrafting c )
 	{
 		super.removeCraftingFromCrafters( c );
 		if( this.job != null )
@@ -378,7 +378,7 @@ public class ContainerCraftConfirm extends AEBaseContainer
 	}
 
 	@Override
-	public void onContainerClosed( EntityPlayer par1EntityPlayer )
+	public final void onContainerClosed( EntityPlayer par1EntityPlayer )
 	{
 		super.onContainerClosed( par1EntityPlayer );
 		if( this.job != null )

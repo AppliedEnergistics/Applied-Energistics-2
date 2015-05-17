@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -29,7 +29,7 @@ import appeng.api.features.IItemComparisonProvider;
 import appeng.api.features.ISpecialComparisonRegistry;
 
 
-public class SpecialComparisonRegistry implements ISpecialComparisonRegistry
+public final class SpecialComparisonRegistry implements ISpecialComparisonRegistry
 {
 
 	private final List<IItemComparisonProvider> CompRegistry;
@@ -40,7 +40,7 @@ public class SpecialComparisonRegistry implements ISpecialComparisonRegistry
 	}
 
 	@Override
-	public IItemComparison getSpecialComparison( ItemStack stack )
+	public final IItemComparison getSpecialComparison( ItemStack stack )
 	{
 		for( IItemComparisonProvider i : this.CompRegistry )
 		{
@@ -55,7 +55,7 @@ public class SpecialComparisonRegistry implements ISpecialComparisonRegistry
 	}
 
 	@Override
-	public void addComparisonProvider( IItemComparisonProvider prov )
+	public final void addComparisonProvider( IItemComparisonProvider prov )
 	{
 		this.CompRegistry.add( prov );
 	}

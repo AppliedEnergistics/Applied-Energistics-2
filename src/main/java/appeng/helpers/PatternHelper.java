@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -194,13 +194,13 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 	}
 
 	@Override
-	public ItemStack getPattern()
+	public final ItemStack getPattern()
 	{
 		return this.patternItem;
 	}
 
 	@Override
-	public synchronized boolean isValidItemForSlot( int slotIndex, ItemStack i, World w )
+	public final synchronized boolean isValidItemForSlot( int slotIndex, ItemStack i, World w )
 	{
 		if( !this.isCrafting )
 		{
@@ -255,43 +255,43 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 	}
 
 	@Override
-	public boolean isCraftable()
+	public final boolean isCraftable()
 	{
 		return this.isCrafting;
 	}
 
 	@Override
-	public IAEItemStack[] getInputs()
+	public final IAEItemStack[] getInputs()
 	{
 		return this.inputs;
 	}
 
 	@Override
-	public IAEItemStack[] getCondensedInputs()
+	public final IAEItemStack[] getCondensedInputs()
 	{
 		return this.condensedInputs;
 	}
 
 	@Override
-	public IAEItemStack[] getCondensedOutputs()
+	public final IAEItemStack[] getCondensedOutputs()
 	{
 		return this.condensedOutputs;
 	}
 
 	@Override
-	public IAEItemStack[] getOutputs()
+	public final IAEItemStack[] getOutputs()
 	{
 		return this.outputs;
 	}
 
 	@Override
-	public boolean canSubstitute()
+	public final boolean canSubstitute()
 	{
 		return false;
 	}
 
 	@Override
-	public ItemStack getOutput( InventoryCrafting craftingInv, World w )
+	public final ItemStack getOutput( InventoryCrafting craftingInv, World w )
 	{
 		if( !this.isCrafting )
 		{
@@ -345,25 +345,25 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 	}
 
 	@Override
-	public int getPriority()
+	public final int getPriority()
 	{
 		return this.priority;
 	}
 
 	@Override
-	public void setPriority( int priority )
+	public final void setPriority( int priority )
 	{
 		this.priority = priority;
 	}
 
 	@Override
-	public int compareTo( PatternHelper o )
+	public final int compareTo( PatternHelper o )
 	{
 		return ItemSorters.compareInt( o.priority, this.priority );
 	}
 
 	@Override
-	public int hashCode()
+	public final int hashCode()
 	{
 		return this.pattern.hashCode();
 	}
@@ -374,7 +374,7 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 	}
 
 
-	static class TestLookup
+	static final class TestLookup
 	{
 
 		final int slot;
@@ -395,13 +395,13 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 		}
 
 		@Override
-		public int hashCode()
+		public final int hashCode()
 		{
 			return this.hash;
 		}
 
 		@Override
-		public boolean equals( Object obj )
+		public final boolean equals( Object obj )
 		{
 			final boolean equality;
 
@@ -420,7 +420,7 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 	}
 
 	@Override
-	public boolean equals( Object obj )
+	public final boolean equals( Object obj )
 	{
 		if( obj == null )
 		{

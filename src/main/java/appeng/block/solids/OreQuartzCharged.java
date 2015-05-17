@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -20,7 +20,6 @@ package appeng.block.solids;
 
 
 import java.util.Random;
-
 import javax.annotation.Nullable;
 
 import net.minecraft.client.Minecraft;
@@ -38,7 +37,7 @@ import appeng.core.AEConfig;
 import appeng.core.CommonHelper;
 
 
-public class OreQuartzCharged extends OreQuartz
+public final class OreQuartzCharged extends OreQuartz
 {
 
 	public OreQuartzCharged()
@@ -49,7 +48,7 @@ public class OreQuartzCharged extends OreQuartz
 
 	@Nullable
 	@Override
-	public Item getItemDropped( int id, Random rand, int meta )
+	public final Item getItemDropped( int id, Random rand, int meta )
 	{
 		for( Item charged : AEApi.instance().definitions().materials().certusQuartzCrystalCharged().maybeItem().asSet() )
 		{
@@ -60,7 +59,7 @@ public class OreQuartzCharged extends OreQuartz
 	}
 
 	@Override
-	public int damageDropped( int id )
+	public final int damageDropped( int id )
 	{
 		for ( ItemStack crystalStack : AEApi.instance().definitions().materials().certusQuartzCrystalCharged().maybeStack( 1 ).asSet() )
 		{
@@ -72,7 +71,7 @@ public class OreQuartzCharged extends OreQuartz
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void randomDisplayTick( World w, int x, int y, int z, Random r )
+	public final void randomDisplayTick( World w, int x, int y, int z, Random r )
 	{
 		if ( !AEConfig.instance.enableEffects )
 		{

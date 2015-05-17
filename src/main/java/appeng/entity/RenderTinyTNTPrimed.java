@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -34,7 +34,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 
 @SideOnly( Side.CLIENT )
-public class RenderTinyTNTPrimed extends Render
+public final class RenderTinyTNTPrimed extends Render
 {
 
 	private final RenderBlocks blockRenderer = new RenderBlocks();
@@ -46,12 +46,12 @@ public class RenderTinyTNTPrimed extends Render
 	}
 
 	@Override
-	public void doRender( Entity tnt, double x, double y, double z, float unused, float life )
+	public final void doRender( Entity tnt, double x, double y, double z, float unused, float life )
 	{
 		this.renderPrimedTNT( (EntityTinyTNTPrimed) tnt, x, y, z, life );
 	}
 
-	public void renderPrimedTNT( EntityTinyTNTPrimed tnt, double x, double y, double z, float life )
+	public final void renderPrimedTNT( EntityTinyTNTPrimed tnt, double x, double y, double z, float life )
 	{
 		GL11.glPushMatrix();
 		GL11.glTranslatef( (float) x, (float) y - 0.25f, (float) z );
@@ -100,7 +100,7 @@ public class RenderTinyTNTPrimed extends Render
 	}
 
 	@Override
-	protected ResourceLocation getEntityTexture( Entity entity )
+	protected final ResourceLocation getEntityTexture( Entity entity )
 	{
 		return TextureMap.locationBlocksTexture;
 	}

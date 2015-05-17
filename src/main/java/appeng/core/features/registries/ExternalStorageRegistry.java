@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -32,7 +32,7 @@ import appeng.api.storage.StorageChannel;
 import appeng.core.features.registries.entries.ExternalIInv;
 
 
-public class ExternalStorageRegistry implements IExternalStorageRegistry
+public final class ExternalStorageRegistry implements IExternalStorageRegistry
 {
 
 	final List<IExternalStorageHandler> Handlers;
@@ -44,13 +44,13 @@ public class ExternalStorageRegistry implements IExternalStorageRegistry
 	}
 
 	@Override
-	public void addExternalStorageInterface( IExternalStorageHandler ei )
+	public final void addExternalStorageInterface( IExternalStorageHandler ei )
 	{
 		this.Handlers.add( ei );
 	}
 
 	@Override
-	public IExternalStorageHandler getHandler( TileEntity te, ForgeDirection d, StorageChannel chan, BaseActionSource mySrc )
+	public final IExternalStorageHandler getHandler( TileEntity te, ForgeDirection d, StorageChannel chan, BaseActionSource mySrc )
 	{
 		for( IExternalStorageHandler x : this.Handlers )
 		{

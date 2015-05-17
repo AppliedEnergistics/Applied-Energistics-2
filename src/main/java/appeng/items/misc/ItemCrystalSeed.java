@@ -52,7 +52,7 @@ import appeng.items.AEBaseItem;
 import appeng.util.Platform;
 
 
-public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
+public final class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 {
 
 	public static final int LEVEL_OFFSET = 200;
@@ -114,7 +114,7 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 
 	@Nullable
 	@Override
-	public ItemStack triggerGrowth( ItemStack is )
+	public final ItemStack triggerGrowth( ItemStack is )
 	{
 		int newDamage = this.getProgress( is ) + 1;
 		final IMaterials materials = AEApi.instance().definitions().materials();
@@ -158,7 +158,7 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 	}
 
 	@Override
-	public float getMultiplier( Block blk, Material mat )
+	public final float getMultiplier( Block blk, Material mat )
 	{
 		return 0.5f;
 	}
@@ -174,13 +174,13 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 	}
 
 	@Override
-	public int getEntityLifespan( ItemStack itemStack, World world )
+	public final int getEntityLifespan( ItemStack itemStack, World world )
 	{
 		return Integer.MAX_VALUE;
 	}
 
 	@Override
-	public String getUnlocalizedName( ItemStack is )
+	public final String getUnlocalizedName( ItemStack is )
 	{
 		int damage = this.getProgress( is );
 
@@ -203,31 +203,31 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 	}
 
 	@Override
-	public boolean isDamageable()
+	public final boolean isDamageable()
 	{
 		return false;
 	}
 
 	@Override
-	public boolean isDamaged( ItemStack stack )
+	public final boolean isDamaged( ItemStack stack )
 	{
 		return false;
 	}
 
 	@Override
-	public int getMaxDamage( ItemStack stack )
+	public final int getMaxDamage( ItemStack stack )
 	{
 		return FINAL_STAGE;
 	}
 
 	@Override
-	public IIcon getIcon( ItemStack stack, int pass )
+	public final IIcon getIcon( ItemStack stack, int pass )
 	{
 		return this.getIconIndex( stack );
 	}
 
 	@Override
-	public IIcon getIconIndex( ItemStack stack )
+	public final IIcon getIconIndex( ItemStack stack )
 	{
 		IIcon[] list = null;
 
@@ -269,7 +269,7 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 	}
 
 	@Override
-	public void registerIcons( IIconRegister ir )
+	public final void registerIcons( IIconRegister ir )
 	{
 		String preFix = "appliedenergistics2:ItemCrystalSeed.";
 
@@ -287,13 +287,13 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 	}
 
 	@Override
-	public boolean hasCustomEntity( ItemStack stack )
+	public final boolean hasCustomEntity( ItemStack stack )
 	{
 		return true;
 	}
 
 	@Override
-	public Entity createEntity( World world, Entity location, ItemStack itemstack )
+	public final Entity createEntity( World world, Entity location, ItemStack itemstack )
 	{
 		EntityGrowingCrystal egc = new EntityGrowingCrystal( world, location.posX, location.posY, location.posZ, itemstack );
 
@@ -310,7 +310,7 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 	}
 
 	@Override
-	public void getSubItems( Item i, CreativeTabs t, List l )
+	public final void getSubItems( Item i, CreativeTabs t, List l )
 	{
 		// lvl 0
 		l.add( newStyle( new ItemStack( this, 1, CERTUS ) ) );

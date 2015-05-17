@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -28,7 +28,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.parts.IPartCollisionHelper;
 
 
-public class BusCollisionHelper implements IPartCollisionHelper
+public final class BusCollisionHelper implements IPartCollisionHelper
 {
 
 	final List<AxisAlignedBB> boxes;
@@ -106,7 +106,7 @@ public class BusCollisionHelper implements IPartCollisionHelper
 	}
 
 	@Override
-	public void addBox( double minX, double minY, double minZ, double maxX, double maxY, double maxZ )
+	public final void addBox( double minX, double minY, double minZ, double maxX, double maxY, double maxZ )
 	{
 		minX /= 16.0;
 		minY /= 16.0;
@@ -152,25 +152,25 @@ public class BusCollisionHelper implements IPartCollisionHelper
 	}
 
 	@Override
-	public ForgeDirection getWorldX()
+	public final ForgeDirection getWorldX()
 	{
 		return this.x;
 	}
 
 	@Override
-	public ForgeDirection getWorldY()
+	public final ForgeDirection getWorldY()
 	{
 		return this.y;
 	}
 
 	@Override
-	public ForgeDirection getWorldZ()
+	public final ForgeDirection getWorldZ()
 	{
 		return this.z;
 	}
 
 	@Override
-	public boolean isBBCollision()
+	public final boolean isBBCollision()
 	{
 		return !this.isVisual;
 	}

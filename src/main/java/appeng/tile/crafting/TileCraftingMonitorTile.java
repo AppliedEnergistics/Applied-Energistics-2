@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -38,7 +38,7 @@ import appeng.tile.events.TileEventType;
 import appeng.util.item.AEItemStack;
 
 
-public class TileCraftingMonitorTile extends TileCraftingTile implements IColorableTile
+public final class TileCraftingMonitorTile extends TileCraftingTile implements IColorableTile
 {
 
 	@SideOnly( Side.CLIENT )
@@ -114,7 +114,7 @@ public class TileCraftingMonitorTile extends TileCraftingTile implements IColora
 		return true;
 	}
 
-	public void setJob( IAEItemStack is )
+	public final void setJob( IAEItemStack is )
 	{
 		if( ( is == null ) != ( this.dspPlay == null ) )
 		{
@@ -131,7 +131,7 @@ public class TileCraftingMonitorTile extends TileCraftingTile implements IColora
 		}
 	}
 
-	public IAEItemStack getJobProgress()
+	public final IAEItemStack getJobProgress()
 	{
 		return this.dspPlay;// AEItemStack.create( new ItemStack( Items.diamond, 64 ) );
 	}
@@ -143,13 +143,13 @@ public class TileCraftingMonitorTile extends TileCraftingTile implements IColora
 	}
 
 	@Override
-	public AEColor getColor()
+	public final AEColor getColor()
 	{
 		return this.paintedColor;
 	}
 
 	@Override
-	public boolean recolourBlock( ForgeDirection side, AEColor newPaintedColor, EntityPlayer who )
+	public final boolean recolourBlock( ForgeDirection side, AEColor newPaintedColor, EntityPlayer who )
 	{
 		if( this.paintedColor == newPaintedColor )
 		{

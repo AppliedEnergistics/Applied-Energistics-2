@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -42,7 +42,7 @@ import appeng.spatial.StorageWorldProvider;
 import appeng.util.Platform;
 
 
-public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorageCell
+public final class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorageCell
 {
 	private final int maxRegion;
 
@@ -65,19 +65,19 @@ public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorag
 	}
 
 	@Override
-	public boolean isSpatialStorage( ItemStack is )
+	public final boolean isSpatialStorage( ItemStack is )
 	{
 		return true;
 	}
 
 	@Override
-	public int getMaxStoredDim( ItemStack is )
+	public final int getMaxStoredDim( ItemStack is )
 	{
 		return this.maxRegion;
 	}
 
 	@Override
-	public World getWorld( ItemStack is )
+	public final World getWorld( ItemStack is )
 	{
 		if( is.hasTagCompound() )
 		{
@@ -102,7 +102,7 @@ public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorag
 	}
 
 	@Override
-	public WorldCoord getStoredSize( ItemStack is )
+	public final WorldCoord getStoredSize( ItemStack is )
 	{
 		if( is.hasTagCompound() )
 		{
@@ -121,7 +121,7 @@ public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorag
 	}
 
 	@Override
-	public WorldCoord getMin( ItemStack is )
+	public final WorldCoord getMin( ItemStack is )
 	{
 		World w = this.getWorld( is );
 		if( w != null )
@@ -136,7 +136,7 @@ public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorag
 	}
 
 	@Override
-	public WorldCoord getMax( ItemStack is )
+	public final WorldCoord getMax( ItemStack is )
 	{
 		World w = this.getWorld( is );
 		if( w != null )
@@ -151,7 +151,7 @@ public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorag
 	}
 
 	@Override
-	public TransitionResult doSpatialTransition( ItemStack is, World w, WorldCoord min, WorldCoord max, boolean doTransition )
+	public final TransitionResult doSpatialTransition( ItemStack is, World w, WorldCoord min, WorldCoord max, boolean doTransition )
 	{
 		WorldCoord scale = this.getStoredSize( is );
 
@@ -182,7 +182,7 @@ public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorag
 		return new TransitionResult( false, 0 );
 	}
 
-	public World createNewWorld( ItemStack is )
+	public final World createNewWorld( ItemStack is )
 	{
 		NBTTagCompound c = Platform.openNbtData( is );
 		int newDim = DimensionManager.getNextFreeDimId();

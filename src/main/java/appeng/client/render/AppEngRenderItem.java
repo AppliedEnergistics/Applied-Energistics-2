@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -41,7 +41,7 @@ import appeng.util.ReadableNumberConverter;
  * @version rv2
  * @since rv0
  */
-public class AppEngRenderItem extends RenderItem
+public final class AppEngRenderItem extends RenderItem
 {
 	private static final ISlimReadableNumberConverter SLIM_CONVERTER = ReadableNumberConverter.INSTANCE;
 	private static final IWideReadableNumberConverter WIDE_CONVERTER = ReadableNumberConverter.INSTANCE;
@@ -49,7 +49,7 @@ public class AppEngRenderItem extends RenderItem
 	public IAEItemStack aeStack;
 
 	@Override
-	public void renderItemOverlayIntoGUI( FontRenderer fontRenderer, TextureManager textureManager, ItemStack is, int par4, int par5, String par6Str )
+	public final void renderItemOverlayIntoGUI( FontRenderer fontRenderer, TextureManager textureManager, ItemStack is, int par4, int par5, String par6Str )
 	{
 		if( is != null )
 		{

@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -32,7 +32,7 @@ import appeng.core.AELog;
 import appeng.recipes.game.IRecipeBakeable;
 
 
-public class OreDictionaryHandler
+public final class OreDictionaryHandler
 {
 
 	public static final OreDictionaryHandler INSTANCE = new OreDictionaryHandler();
@@ -75,7 +75,7 @@ public class OreDictionaryHandler
 		return true;
 	}
 
-	public void bakeRecipes()
+	public final void bakeRecipes()
 	{
 		this.enableRebaking = true;
 
@@ -101,7 +101,7 @@ public class OreDictionaryHandler
 	 *
 	 * @param n to be added ore listener
 	 */
-	public void observe( IOreListener n )
+	public final void observe( IOreListener n )
 	{
 		this.ol.add( n );
 

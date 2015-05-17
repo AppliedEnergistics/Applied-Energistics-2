@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -36,17 +36,17 @@ public class CableBusStorage
 	private IPart[] sides;
 	private IFacadePart[] facades;
 
-	protected IPartCable getCenter()
+	protected final IPartCable getCenter()
 	{
 		return this.center;
 	}
 
-	protected void setCenter( IPartCable center )
+	protected final void setCenter( IPartCable center )
 	{
 		this.center = center;
 	}
 
-	protected IPart getSide( ForgeDirection side )
+	protected final IPart getSide( ForgeDirection side )
 	{
 		int x = side.ordinal();
 		if( this.sides != null && this.sides.length > x )
@@ -57,7 +57,7 @@ public class CableBusStorage
 		return null;
 	}
 
-	protected void setSide( ForgeDirection side, IPart part )
+	protected final void setSide( ForgeDirection side, IPart part )
 	{
 		int x = side.ordinal();
 

@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -92,7 +92,7 @@ import appeng.util.Platform;
 import appeng.util.item.AEFluidStack;
 
 
-public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHandler, ITerminalHost, IPriorityHost, IConfigManagerHost, IColorableTile
+public final class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHandler, ITerminalHost, IPriorityHost, IConfigManagerHost, IColorableTile
 {
 
 	static final ChestNoHandler NO_HANDLER = new ChestNoHandler();
@@ -184,12 +184,12 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 	}
 
 	@Override
-	public int getCellCount()
+	public final int getCellCount()
 	{
 		return 1;
 	}
 
-	public IMEInventoryHandler getHandler( StorageChannel channel ) throws ChestNoHandler
+	public final IMEInventoryHandler getHandler( StorageChannel channel ) throws ChestNoHandler
 	{
 		if( !this.isCached )
 		{
@@ -262,7 +262,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 	}
 
 	@Override
-	public int getCellStatus( int slot )
+	public final int getCellStatus( int slot )
 	{
 		if( Platform.isClient() )
 		{
@@ -303,7 +303,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 	}
 
 	@Override
-	public boolean isPowered()
+	public final boolean isPowered()
 	{
 		if( Platform.isClient() )
 		{
@@ -327,7 +327,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 	}
 
 	@Override
-	public boolean isCellBlinking( int slot )
+	public final boolean isCellBlinking( int slot )
 	{
 		long now = this.worldObj.getTotalWorldTime();
 		if( now - this.lastStateChange > 8 )
@@ -497,13 +497,13 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 	}
 
 	@Override
-	public IMEMonitor getItemInventory()
+	public final IMEMonitor getItemInventory()
 	{
 		return this.itemCell;
 	}
 
 	@Override
-	public IMEMonitor getFluidInventory()
+	public final IMEMonitor getFluidInventory()
 	{
 		return this.fluidCell;
 	}
@@ -515,7 +515,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 	}
 
 	@Override
-	public void setInventorySlotContents( int i, ItemStack itemstack )
+	public final void setInventorySlotContents( int i, ItemStack itemstack )
 	{
 		this.inv.setInventorySlotContents( i, itemstack );
 		this.tryToStoreContents();
@@ -552,7 +552,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 	}
 
 	@Override
-	public boolean canInsertItem( int slotIndex, ItemStack insertingItem, int side )
+	public final boolean canInsertItem( int slotIndex, ItemStack insertingItem, int side )
 	{
 		if( slotIndex == 1 )
 		{
@@ -581,7 +581,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 	}
 
 	@Override
-	public boolean canExtractItem( int slotIndex, ItemStack extractedItem, int side )
+	public final boolean canExtractItem( int slotIndex, ItemStack extractedItem, int side )
 	{
 		return slotIndex == 1;
 	}
@@ -637,7 +637,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 	}
 
 	@Override
-	public List<IMEInventoryHandler> getCellArray( StorageChannel channel )
+	public final List<IMEInventoryHandler> getCellArray( StorageChannel channel )
 	{
 		if( this.gridProxy.isActive() )
 		{
@@ -654,7 +654,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 	}
 
 	@Override
-	public int getPriority()
+	public final int getPriority()
 	{
 		return this.priority;
 	}
@@ -679,7 +679,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 	}
 
 	@Override
-	public void blinkCell( int slot )
+	public final void blinkCell( int slot )
 	{
 		long now = this.worldObj.getTotalWorldTime();
 		if( now - this.lastStateChange > 8 )
@@ -694,7 +694,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 	}
 
 	@Override
-	public int fill( ForgeDirection from, FluidStack resource, boolean doFill )
+	public final int fill( ForgeDirection from, FluidStack resource, boolean doFill )
 	{
 		double req = resource.amount / 500.0;
 		double available = this.extractAEPower( req, Actionable.SIMULATE, PowerMultiplier.CONFIG );
@@ -722,19 +722,19 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 	}
 
 	@Override
-	public FluidStack drain( ForgeDirection from, FluidStack resource, boolean doDrain )
+	public final FluidStack drain( ForgeDirection from, FluidStack resource, boolean doDrain )
 	{
 		return null;
 	}
 
 	@Override
-	public FluidStack drain( ForgeDirection from, int maxDrain, boolean doDrain )
+	public final FluidStack drain( ForgeDirection from, int maxDrain, boolean doDrain )
 	{
 		return null;
 	}
 
 	@Override
-	public boolean canFill( ForgeDirection from, Fluid fluid )
+	public final boolean canFill( ForgeDirection from, Fluid fluid )
 	{
 		try
 		{
@@ -748,13 +748,13 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 	}
 
 	@Override
-	public boolean canDrain( ForgeDirection from, Fluid fluid )
+	public final boolean canDrain( ForgeDirection from, Fluid fluid )
 	{
 		return false;
 	}
 
 	@Override
-	public FluidTankInfo[] getTankInfo( ForgeDirection from )
+	public final FluidTankInfo[] getTankInfo( ForgeDirection from )
 	{
 		try
 		{
@@ -772,7 +772,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 	}
 
 	@Override
-	public IStorageMonitorable getMonitorable( ForgeDirection side, BaseActionSource src )
+	public final IStorageMonitorable getMonitorable( ForgeDirection side, BaseActionSource src )
 	{
 		if( Platform.canAccess( this.gridProxy, src ) && side != this.getForward() )
 		{
@@ -781,7 +781,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 		return null;
 	}
 
-	public ItemStack getStorageType()
+	public final ItemStack getStorageType()
 	{
 		if( this.isPowered() )
 		{
@@ -791,7 +791,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 	}
 
 	@Override
-	public IConfigManager getConfigManager()
+	public final IConfigManager getConfigManager()
 	{
 		return this.config;
 	}
@@ -802,7 +802,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 
 	}
 
-	public boolean openGui( EntityPlayer p, ICellHandler ch, ItemStack cell, int side )
+	public final boolean openGui( EntityPlayer p, ICellHandler ch, ItemStack cell, int side )
 	{
 		try
 		{
@@ -836,13 +836,13 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 	}
 
 	@Override
-	public AEColor getColor()
+	public final AEColor getColor()
 	{
 		return this.paintedColor;
 	}
 
 	@Override
-	public boolean recolourBlock( ForgeDirection side, AEColor newPaintedColor, EntityPlayer who )
+	public final boolean recolourBlock( ForgeDirection side, AEColor newPaintedColor, EntityPlayer who )
 	{
 		if( this.paintedColor == newPaintedColor )
 		{
@@ -856,18 +856,18 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 	}
 
 	@Override
-	public void saveChanges( IMEInventory cellInventory )
+	public final void saveChanges( IMEInventory cellInventory )
 	{
 		this.worldObj.markTileEntityChunkModified( this.xCoord, this.yCoord, this.zCoord, this );
 	}
 
-	private static class ChestNoHandler extends Exception
+	private static final class ChestNoHandler extends Exception
 	{
 		private static final long serialVersionUID = 7995805326136526631L;
 	}
 
 
-	class ChestNetNotifier<T extends IAEStack<T>> implements IMEMonitorHandlerReceiver<T>
+	final class ChestNetNotifier<T extends IAEStack<T>> implements IMEMonitorHandlerReceiver<T>
 	{
 
 		final StorageChannel chan;
@@ -878,7 +878,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 		}
 
 		@Override
-		public boolean isValid( Object verificationToken )
+		public final boolean isValid( Object verificationToken )
 		{
 			if( this.chan == StorageChannel.ITEMS )
 			{
@@ -892,7 +892,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 		}
 
 		@Override
-		public void postChange( IBaseMonitor<T> monitor, Iterable<T> change, BaseActionSource source )
+		public final void postChange( IBaseMonitor<T> monitor, Iterable<T> change, BaseActionSource source )
 		{
 			if( source == TileChest.this.mySrc || ( source instanceof PlayerSource && ( (PlayerSource) source ).via == TileChest.this ) )
 			{
@@ -913,14 +913,14 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 		}
 
 		@Override
-		public void onListUpdate()
+		public final void onListUpdate()
 		{
 			// not used here
 		}
 	}
 
 
-	class ChestMonitorHandler<T extends IAEStack> extends MEMonitorHandler<T>
+	final class ChestMonitorHandler<T extends IAEStack> extends MEMonitorHandler<T>
 	{
 
 		public ChestMonitorHandler( IMEInventoryHandler<T> t )
@@ -928,7 +928,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 			super( t );
 		}
 
-		public IMEInventoryHandler<T> getInternalHandler()
+		public final IMEInventoryHandler<T> getInternalHandler()
 		{
 			IMEInventoryHandler<T> h = this.getHandler();
 			if( h instanceof MEInventoryHandler )
@@ -939,7 +939,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 		}
 
 		@Override
-		public T injectItems( T input, Actionable mode, BaseActionSource src )
+		public final T injectItems( T input, Actionable mode, BaseActionSource src )
 		{
 			if( src.isPlayer() && !this.securityCheck( ( (PlayerSource) src ).player, SecurityPermissions.INJECT ) )
 			{
@@ -983,7 +983,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 		}
 
 		@Override
-		public T extractItems( T request, Actionable mode, BaseActionSource src )
+		public final T extractItems( T request, Actionable mode, BaseActionSource src )
 		{
 			if( src.isPlayer() && !this.securityCheck( ( (PlayerSource) src ).player, SecurityPermissions.EXTRACT ) )
 			{

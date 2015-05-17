@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -29,7 +29,7 @@ import appeng.api.storage.IMEInventory;
 import appeng.api.storage.data.IAEStack;
 
 
-public class DriveWatcher<T extends IAEStack<T>> extends MEInventoryHandler<T>
+public final class DriveWatcher<T extends IAEStack<T>> extends MEInventoryHandler<T>
 {
 
 	final int oldStatus = 0;
@@ -46,7 +46,7 @@ public class DriveWatcher<T extends IAEStack<T>> extends MEInventoryHandler<T>
 	}
 
 	@Override
-	public T injectItems( T input, Actionable type, BaseActionSource src )
+	public final T injectItems( T input, Actionable type, BaseActionSource src )
 	{
 		long size = input.getStackSize();
 
@@ -66,7 +66,7 @@ public class DriveWatcher<T extends IAEStack<T>> extends MEInventoryHandler<T>
 	}
 
 	@Override
-	public T extractItems( T request, Actionable type, BaseActionSource src )
+	public final T extractItems( T request, Actionable type, BaseActionSource src )
 	{
 		T a = super.extractItems( request, type, src );
 

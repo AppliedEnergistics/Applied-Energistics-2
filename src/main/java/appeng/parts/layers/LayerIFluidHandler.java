@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -28,13 +28,13 @@ import appeng.api.parts.IPart;
 import appeng.api.parts.LayerBase;
 
 
-public class LayerIFluidHandler extends LayerBase implements IFluidHandler
+public final class LayerIFluidHandler extends LayerBase implements IFluidHandler
 {
 
 	static final FluidTankInfo[] EMPTY_LIST = new FluidTankInfo[0];
 
 	@Override
-	public int fill( ForgeDirection from, FluidStack resource, boolean doFill )
+	public final int fill( ForgeDirection from, FluidStack resource, boolean doFill )
 	{
 		IPart part = this.getPart( from );
 		if( part instanceof IFluidHandler )
@@ -45,7 +45,7 @@ public class LayerIFluidHandler extends LayerBase implements IFluidHandler
 	}
 
 	@Override
-	public FluidStack drain( ForgeDirection from, FluidStack resource, boolean doDrain )
+	public final FluidStack drain( ForgeDirection from, FluidStack resource, boolean doDrain )
 	{
 		IPart part = this.getPart( from );
 		if( part instanceof IFluidHandler )
@@ -56,7 +56,7 @@ public class LayerIFluidHandler extends LayerBase implements IFluidHandler
 	}
 
 	@Override
-	public FluidStack drain( ForgeDirection from, int maxDrain, boolean doDrain )
+	public final FluidStack drain( ForgeDirection from, int maxDrain, boolean doDrain )
 	{
 		IPart part = this.getPart( from );
 		if( part instanceof IFluidHandler )
@@ -67,7 +67,7 @@ public class LayerIFluidHandler extends LayerBase implements IFluidHandler
 	}
 
 	@Override
-	public boolean canFill( ForgeDirection from, net.minecraftforge.fluids.Fluid fluid )
+	public final boolean canFill( ForgeDirection from, net.minecraftforge.fluids.Fluid fluid )
 	{
 		IPart part = this.getPart( from );
 		if( part instanceof IFluidHandler )
@@ -78,7 +78,7 @@ public class LayerIFluidHandler extends LayerBase implements IFluidHandler
 	}
 
 	@Override
-	public boolean canDrain( ForgeDirection from, net.minecraftforge.fluids.Fluid fluid )
+	public final boolean canDrain( ForgeDirection from, net.minecraftforge.fluids.Fluid fluid )
 	{
 		IPart part = this.getPart( from );
 		if( part instanceof IFluidHandler )
@@ -89,7 +89,7 @@ public class LayerIFluidHandler extends LayerBase implements IFluidHandler
 	}
 
 	@Override
-	public FluidTankInfo[] getTankInfo( ForgeDirection from )
+	public final FluidTankInfo[] getTankInfo( ForgeDirection from )
 	{
 		IPart part = this.getPart( from );
 		if( part instanceof IFluidHandler )

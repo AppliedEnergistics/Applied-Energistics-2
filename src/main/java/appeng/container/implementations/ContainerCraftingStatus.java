@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -32,7 +32,7 @@ import appeng.api.storage.ITerminalHost;
 import appeng.container.guisync.GuiSync;
 
 
-public class ContainerCraftingStatus extends ContainerCraftingCPU
+public final class ContainerCraftingStatus extends ContainerCraftingCPU
 {
 
 	public final ArrayList<CraftingCPURecord> cpus = new ArrayList<CraftingCPURecord>();
@@ -49,7 +49,7 @@ public class ContainerCraftingStatus extends ContainerCraftingCPU
 	}
 
 	@Override
-	public void detectAndSendChanges()
+	public final void detectAndSendChanges()
 	{
 		ICraftingGrid cc = this.network.getCache( ICraftingGrid.class );
 		ImmutableSet<ICraftingCPU> cpuSet = cc.getCpus();
@@ -136,7 +136,7 @@ public class ContainerCraftingStatus extends ContainerCraftingCPU
 		}
 	}
 
-	public void cycleCpu( boolean next )
+	public final void cycleCpu( boolean next )
 	{
 		if( next )
 		{

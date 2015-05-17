@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -72,7 +72,7 @@ import appeng.util.Platform;
 import appeng.util.inv.WrapperInventoryRange;
 
 
-public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IConfigManagerHost, IGridTickable
+public final class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IConfigManagerHost, IGridTickable
 {
 	private static final int INPUT_SLOT_INDEX_TOP_LEFT = 0;
 	private static final int INPUT_SLOT_INDEX_TOP_RIGHT = 1;
@@ -141,7 +141,7 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 	}
 
 	@Override
-	public AECableType getCableConnectionType( ForgeDirection dir )
+	public final AECableType getCableConnectionType( ForgeDirection dir )
 	{
 		return AECableType.SMART;
 	}
@@ -171,7 +171,7 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 		}
 	}
 
-	public void updateRedstoneState()
+	public final void updateRedstoneState()
 	{
 		YesNo currentState = this.worldObj.isBlockIndirectlyGettingPowered( this.xCoord, this.yCoord, this.zCoord ) ? YesNo.YES : YesNo.NO;
 		if( this.lastRedstoneState != currentState )
@@ -181,7 +181,7 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 		}
 	}
 
-	public boolean getRedstoneState()
+	public final boolean getRedstoneState()
 	{
 		if( this.lastRedstoneState == YesNo.UNDECIDED )
 		{
@@ -207,13 +207,13 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 	}
 
 	@Override
-	public IConfigManager getConfigManager()
+	public final IConfigManager getConfigManager()
 	{
 		return this.manager;
 	}
 
 	@Override
-	public IInventory getInventoryByName( String name )
+	public final IInventory getInventoryByName( String name )
 	{
 		if( name.equals( "upgrades" ) )
 		{
@@ -234,7 +234,7 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 		this.updateTask();
 	}
 
-	boolean hasWork()
+	final boolean hasWork()
 	{
 		if( this.isEnabled() )
 		{
@@ -266,7 +266,7 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 	}
 
 	@Override
-	public boolean canInsertItem( int slotIndex, ItemStack insertingItem, int side )
+	public final boolean canInsertItem( int slotIndex, ItemStack insertingItem, int side )
 	{
 		for( int inputSlotIndex : this.input )
 		{
@@ -280,7 +280,7 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 	}
 
 	@Override
-	public boolean canExtractItem( int slotIndex, ItemStack extractedItem, int side )
+	public final boolean canExtractItem( int slotIndex, ItemStack extractedItem, int side )
 	{
 		for( int outputSlotIndex : this.output )
 		{
@@ -305,13 +305,13 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 	}
 
 	@Override
-	public TickingRequest getTickingRequest( IGridNode node )
+	public final TickingRequest getTickingRequest( IGridNode node )
 	{
 		return new TickingRequest( TickRates.IOPort.min, TickRates.IOPort.max, this.hasWork(), false );
 	}
 
 	@Override
-	public TickRateModulation tickingRequest( IGridNode node, int ticksSinceLastCall )
+	public final TickRateModulation tickingRequest( IGridNode node, int ticksSinceLastCall )
 	{
 		if( !this.gridProxy.isActive() )
 		{
@@ -395,7 +395,7 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 	}
 
 	@Override
-	public int getInstalledUpgrades( Upgrades u )
+	public final int getInstalledUpgrades( Upgrades u )
 	{
 		return this.upgrades.getInstalledUpgrades( u );
 	}
@@ -562,7 +562,7 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 	 * @param drops drops of tile entity
 	 */
 	@Override
-	public void getDrops( World w, int x, int y, int z, List<ItemStack> drops )
+	public final void getDrops( World w, int x, int y, int z, List<ItemStack> drops )
 	{
 		super.getDrops( w, x, y, z, drops );
 

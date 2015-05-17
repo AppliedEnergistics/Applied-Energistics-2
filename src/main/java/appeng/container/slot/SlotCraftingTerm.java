@@ -74,17 +74,17 @@ public class SlotCraftingTerm extends AppEngCraftingSlot
 	}
 
 	@Override
-	public boolean canTakeStack( EntityPlayer par1EntityPlayer )
+	public final boolean canTakeStack( EntityPlayer par1EntityPlayer )
 	{
 		return false;
 	}
 
 	@Override
-	public void onPickupFromSlot( EntityPlayer p, ItemStack is )
+	public final void onPickupFromSlot( EntityPlayer p, ItemStack is )
 	{
 	}
 
-	public void doClick( InventoryAction action, EntityPlayer who )
+	public final void doClick( InventoryAction action, EntityPlayer who )
 	{
 		if( this.getStack() == null )
 		{
@@ -152,7 +152,7 @@ public class SlotCraftingTerm extends AppEngCraftingSlot
 		return maxTimesToCraft;
 	}
 
-	public ItemStack craftItem( EntityPlayer p, ItemStack request, IMEMonitor<IAEItemStack> inv, IItemList all )
+	public final ItemStack craftItem( EntityPlayer p, ItemStack request, IMEMonitor<IAEItemStack> inv, IItemList all )
 	{
 		// update crafting matrix...
 		ItemStack is = this.getStack();
@@ -232,17 +232,17 @@ public class SlotCraftingTerm extends AppEngCraftingSlot
 		return null;
 	}
 
-	public boolean preCraft( EntityPlayer p, IMEMonitor<IAEItemStack> inv, ItemStack[] set, ItemStack result )
+	public final boolean preCraft( EntityPlayer p, IMEMonitor<IAEItemStack> inv, ItemStack[] set, ItemStack result )
 	{
 		return true;
 	}
 
-	public void makeItem( EntityPlayer p, ItemStack is )
+	public final void makeItem( EntityPlayer p, ItemStack is )
 	{
 		super.onPickupFromSlot( p, is );
 	}
 
-	public void postCraft( EntityPlayer p, IMEMonitor<IAEItemStack> inv, ItemStack[] set, ItemStack result )
+	public final void postCraft( EntityPlayer p, IMEMonitor<IAEItemStack> inv, ItemStack[] set, ItemStack result )
 	{
 		List<ItemStack> drops = new ArrayList<ItemStack>();
 

@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -71,25 +71,25 @@ public abstract class AEBaseInvTile extends AEBaseTile implements ISidedInventor
 	}
 
 	@Override
-	public int getSizeInventory()
+	public final int getSizeInventory()
 	{
 		return this.getInternalInventory().getSizeInventory();
 	}
 
 	@Override
-	public ItemStack getStackInSlot( int i )
+	public final ItemStack getStackInSlot( int i )
 	{
 		return this.getInternalInventory().getStackInSlot( i );
 	}
 
 	@Override
-	public ItemStack decrStackSize( int i, int j )
+	public final ItemStack decrStackSize( int i, int j )
 	{
 		return this.getInternalInventory().decrStackSize( i, j );
 	}
 
 	@Override
-	public ItemStack getStackInSlotOnClosing( int i )
+	public final ItemStack getStackInSlotOnClosing( int i )
 	{
 		return null;
 	}
@@ -104,7 +104,7 @@ public abstract class AEBaseInvTile extends AEBaseTile implements ISidedInventor
 	 * Returns the name of the inventory
 	 */
 	@Override
-	public String getInventoryName()
+	public final String getInventoryName()
 	{
 		return this.getCustomName();
 	}
@@ -113,7 +113,7 @@ public abstract class AEBaseInvTile extends AEBaseTile implements ISidedInventor
 	 * Returns if the inventory is named
 	 */
 	@Override
-	public boolean hasCustomInventoryName()
+	public final boolean hasCustomInventoryName()
 	{
 		return this.hasCustomName();
 	}
@@ -125,7 +125,7 @@ public abstract class AEBaseInvTile extends AEBaseTile implements ISidedInventor
 	}
 
 	@Override
-	public boolean isUseableByPlayer( EntityPlayer p )
+	public final boolean isUseableByPlayer( EntityPlayer p )
 	{
 		final double squaredMCReach = 64.0D;
 

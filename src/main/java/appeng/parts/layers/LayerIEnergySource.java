@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -33,10 +33,12 @@ import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.LayerBase;
 import appeng.api.parts.LayerFlags;
+import appeng.helpers.Reflected;
 import appeng.util.Platform;
 
 
-public class LayerIEnergySource extends LayerBase implements IEnergySource
+@Reflected
+public abstract class LayerIEnergySource extends LayerBase implements IEnergySource
 {
 
 	private TileEntity getEnergySourceTile()
@@ -115,7 +117,7 @@ public class LayerIEnergySource extends LayerBase implements IEnergySource
 	}
 
 	@Override
-	public void partChanged()
+	public final void partChanged()
 	{
 		super.partChanged();
 
@@ -130,7 +132,7 @@ public class LayerIEnergySource extends LayerBase implements IEnergySource
 	}
 
 	@Override
-	public boolean emitsEnergyTo( TileEntity receiver, ForgeDirection direction )
+	public final boolean emitsEnergyTo( TileEntity receiver, ForgeDirection direction )
 	{
 		if( !this.isInIC2() )
 		{
@@ -151,7 +153,7 @@ public class LayerIEnergySource extends LayerBase implements IEnergySource
 	}
 
 	@Override
-	public double getOfferedEnergy()
+	public final double getOfferedEnergy()
 	{
 		if( !this.isInIC2() )
 		{
@@ -174,7 +176,7 @@ public class LayerIEnergySource extends LayerBase implements IEnergySource
 	}
 
 	@Override
-	public void drawEnergy( double amount )
+	public final void drawEnergy( double amount )
 	{
 		// this is a flawed implementation, that requires a change to the IC2 API.
 
@@ -190,7 +192,7 @@ public class LayerIEnergySource extends LayerBase implements IEnergySource
 	}
 
 	@Override
-	public int getSourceTier()
+	public final int getSourceTier()
 	{
 		// this is a flawed implementation, that requires a change to the IC2 API.
 

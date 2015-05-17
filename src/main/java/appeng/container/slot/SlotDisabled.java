@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -24,7 +24,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 
 
-public class SlotDisabled extends AppEngSlot
+public final class SlotDisabled extends AppEngSlot
 {
 
 	public SlotDisabled( IInventory par1iInventory, int slotIndex, int x, int y )
@@ -33,13 +33,13 @@ public class SlotDisabled extends AppEngSlot
 	}
 
 	@Override
-	public boolean isItemValid( ItemStack par1ItemStack )
+	public final boolean isItemValid( ItemStack par1ItemStack )
 	{
 		return false;
 	}
 
 	@Override
-	public boolean canTakeStack( EntityPlayer par1EntityPlayer )
+	public final boolean canTakeStack( EntityPlayer par1EntityPlayer )
 	{
 		return false;
 	}

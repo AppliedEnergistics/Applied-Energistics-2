@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -36,7 +36,7 @@ import appeng.api.storage.data.IItemList;
 import appeng.me.storage.ItemWatcher;
 
 
-public class NetworkMonitor<T extends IAEStack<T>> extends MEMonitorHandler<T>
+public final class NetworkMonitor<T extends IAEStack<T>> extends MEMonitorHandler<T>
 {
 
 	private static final Deque<NetworkMonitor<?>> DEPTH = new LinkedList<NetworkMonitor<?>>();
@@ -51,7 +51,7 @@ public class NetworkMonitor<T extends IAEStack<T>> extends MEMonitorHandler<T>
 		this.myChannel = chan;
 	}
 
-	public void forceUpdate()
+	public final void forceUpdate()
 	{
 		this.hasChanged = true;
 
@@ -72,7 +72,7 @@ public class NetworkMonitor<T extends IAEStack<T>> extends MEMonitorHandler<T>
 		}
 	}
 
-	public void onTick()
+	public final void onTick()
 	{
 		if( this.sendEvent )
 		{
@@ -82,7 +82,7 @@ public class NetworkMonitor<T extends IAEStack<T>> extends MEMonitorHandler<T>
 	}
 
 	@Override
-	protected IMEInventoryHandler getHandler()
+	protected final IMEInventoryHandler getHandler()
 	{
 		switch( this.myChannel )
 		{
@@ -96,12 +96,12 @@ public class NetworkMonitor<T extends IAEStack<T>> extends MEMonitorHandler<T>
 	}
 
 	@Override
-	protected void postChangesToListeners( Iterable<T> changes, BaseActionSource src )
+	protected final void postChangesToListeners( Iterable<T> changes, BaseActionSource src )
 	{
 		this.postChange( true, changes, src );
 	}
 
-	protected void postChange( boolean add, Iterable<T> changes, BaseActionSource src )
+	protected final void postChange( boolean add, Iterable<T> changes, BaseActionSource src )
 	{
 		if( DEPTH.contains( this ) )
 		{

@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -37,7 +37,7 @@ import appeng.items.contents.QuartzKnifeObj;
 import appeng.util.Platform;
 
 
-public class ToolQuartzCuttingKnife extends AEBaseItem implements IGuiItem
+public final class ToolQuartzCuttingKnife extends AEBaseItem implements IGuiItem
 {
 	private final AEFeature type;
 
@@ -52,7 +52,7 @@ public class ToolQuartzCuttingKnife extends AEBaseItem implements IGuiItem
 	}
 
 	@Override
-	public boolean onItemUse( ItemStack is, EntityPlayer p, World w, int x, int y, int z, int s, float hitX, float hitY, float hitZ )
+	public final boolean onItemUse( ItemStack is, EntityPlayer p, World w, int x, int y, int z, int s, float hitX, float hitY, float hitZ )
 	{
 		if( Platform.isServer() )
 		{
@@ -62,7 +62,7 @@ public class ToolQuartzCuttingKnife extends AEBaseItem implements IGuiItem
 	}
 
 	@Override
-	public ItemStack onItemRightClick( ItemStack it, World w, EntityPlayer p )
+	public final ItemStack onItemRightClick( ItemStack it, World w, EntityPlayer p )
 	{
 		if( Platform.isServer() )
 		{
@@ -73,38 +73,38 @@ public class ToolQuartzCuttingKnife extends AEBaseItem implements IGuiItem
 	}
 
 	@Override
-	public boolean doesContainerItemLeaveCraftingGrid( ItemStack par1ItemStack )
+	public final boolean doesContainerItemLeaveCraftingGrid( ItemStack par1ItemStack )
 	{
 		return false;
 	}
 
 	@Override
-	public boolean getIsRepairable( ItemStack a, ItemStack b )
+	public final boolean getIsRepairable( ItemStack a, ItemStack b )
 	{
 		return Platform.canRepair( this.type, a, b );
 	}
 
 	@Override
-	public boolean isRepairable()
+	public final boolean isRepairable()
 	{
 		return false;
 	}
 
 	@Override
-	public ItemStack getContainerItem( ItemStack itemStack )
+	public final ItemStack getContainerItem( ItemStack itemStack )
 	{
 		itemStack.setItemDamage( itemStack.getItemDamage() + 1 );
 		return itemStack;
 	}
 
 	@Override
-	public boolean hasContainerItem( ItemStack stack )
+	public final boolean hasContainerItem( ItemStack stack )
 	{
 		return true;
 	}
 
 	@Override
-	public IGuiItemObject getGuiObject( ItemStack is, World world, int x, int y, int z )
+	public final IGuiItemObject getGuiObject( ItemStack is, World world, int x, int y, int z )
 	{
 		return new QuartzKnifeObj( is );
 	}

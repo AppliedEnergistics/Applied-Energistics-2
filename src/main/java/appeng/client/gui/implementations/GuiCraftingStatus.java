@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -49,7 +49,7 @@ import appeng.parts.reporting.PartPatternTerminal;
 import appeng.parts.reporting.PartTerminal;
 
 
-public class GuiCraftingStatus extends GuiCraftingCPU
+public final class GuiCraftingStatus extends GuiCraftingCPU
 {
 
 	final ContainerCraftingStatus status;
@@ -107,7 +107,7 @@ public class GuiCraftingStatus extends GuiCraftingCPU
 	}
 
 	@Override
-	protected void actionPerformed( GuiButton btn )
+	protected final void actionPerformed( GuiButton btn )
 	{
 		super.actionPerformed( btn );
 
@@ -132,7 +132,7 @@ public class GuiCraftingStatus extends GuiCraftingCPU
 	}
 
 	@Override
-	public void initGui()
+	public final void initGui()
 	{
 		super.initGui();
 
@@ -148,7 +148,7 @@ public class GuiCraftingStatus extends GuiCraftingCPU
 	}
 
 	@Override
-	public void drawScreen( int mouseX, int mouseY, float btn )
+	public final void drawScreen( int mouseX, int mouseY, float btn )
 	{
 		this.updateCPUButtonText();
 		super.drawScreen( mouseX, mouseY, btn );

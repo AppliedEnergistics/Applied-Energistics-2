@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -24,7 +24,7 @@ import net.minecraft.item.ItemStack;
 import appeng.api.features.IGrinderEntry;
 
 
-public class AppEngGrinderRecipe implements IGrinderEntry
+public final class AppEngGrinderRecipe implements IGrinderEntry
 {
 
 	private ItemStack in;
@@ -71,75 +71,75 @@ public class AppEngGrinderRecipe implements IGrinderEntry
 	}
 
 	@Override
-	public ItemStack getInput()
+	public final ItemStack getInput()
 	{
 		return this.in;
 	}
 
 	@Override
-	public void setInput( ItemStack i )
+	public final void setInput( ItemStack i )
 	{
 		this.in = i.copy();
 	}
 
 	@Override
-	public ItemStack getOutput()
+	public final ItemStack getOutput()
 	{
 		return this.out;
 	}
 
 	@Override
-	public void setOutput( ItemStack o )
+	public final void setOutput( ItemStack o )
 	{
 		this.out = o.copy();
 	}
 
 	@Override
-	public ItemStack getOptionalOutput()
+	public final ItemStack getOptionalOutput()
 	{
 		return this.optionalOutput;
 	}
 
 	@Override
-	public ItemStack getSecondOptionalOutput()
+	public final ItemStack getSecondOptionalOutput()
 	{
 		return this.optionalOutput2;
 	}
 
 	@Override
-	public void setOptionalOutput( ItemStack output, float chance )
+	public final void setOptionalOutput( ItemStack output, float chance )
 	{
 		this.optionalOutput = output.copy();
 		this.optionalChance = chance;
 	}
 
 	@Override
-	public float getOptionalChance()
+	public final float getOptionalChance()
 	{
 		return this.optionalChance;
 	}
 
 	@Override
-	public void setSecondOptionalOutput( ItemStack output, float chance )
+	public final void setSecondOptionalOutput( ItemStack output, float chance )
 	{
 		this.optionalChance2 = chance;
 		this.optionalOutput2 = output.copy();
 	}
 
 	@Override
-	public float getSecondOptionalChance()
+	public final float getSecondOptionalChance()
 	{
 		return this.optionalChance2;
 	}
 
 	@Override
-	public int getEnergyCost()
+	public final int getEnergyCost()
 	{
 		return this.energy;
 	}
 
 	@Override
-	public void setEnergyCost( int c )
+	public final void setEnergyCost( int c )
 	{
 		this.energy = c;
 	}

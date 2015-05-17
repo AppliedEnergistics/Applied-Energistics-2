@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -71,7 +71,7 @@ public class TickHandler
 	private final HashMap<Integer, PlayerColor> srvPlayerColors = new HashMap<Integer, PlayerColor>();
 	CableRenderMode crm = CableRenderMode.Standard;
 
-	public HashMap<Integer, PlayerColor> getPlayerColors()
+	public final HashMap<Integer, PlayerColor> getPlayerColors()
 	{
 		if( Platform.isServer() )
 		{
@@ -295,7 +295,7 @@ public class TickHandler
 		// AELog.info( "processQueue Time: " + time + "ms" );
 	}
 
-	public void registerCraftingSimulation( World world, CraftingJob craftingJob )
+	public final void registerCraftingSimulation( World world, CraftingJob craftingJob )
 	{
 		synchronized( this.craftingJobs )
 		{
@@ -303,14 +303,14 @@ public class TickHandler
 		}
 	}
 
-	static class HandlerRep
+	static final class HandlerRep
 	{
 
 		public Queue<AEBaseTile> tiles = new LinkedList<AEBaseTile>();
 
 		public Collection<Grid> networks = new NetworkList();
 
-		public void clear()
+		public final void clear()
 		{
 			this.tiles = new LinkedList<AEBaseTile>();
 			this.networks = new NetworkList();
@@ -318,7 +318,7 @@ public class TickHandler
 	}
 
 
-	public static class PlayerColor
+	public static final class PlayerColor
 	{
 
 		public final AEColor myColor;
@@ -332,7 +332,7 @@ public class TickHandler
 			this.ticksLeft = ticks;
 		}
 
-		public PacketPaintedEntity getPacket()
+		public final PacketPaintedEntity getPacket()
 		{
 			return new PacketPaintedEntity( this.myEntity, this.myColor, this.ticksLeft );
 		}

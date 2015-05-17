@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -44,7 +44,7 @@ import appeng.core.sync.packets.PacketValueConfig;
 import appeng.parts.automation.PartLevelEmitter;
 
 
-public class GuiLevelEmitter extends GuiUpgradeable
+public final class GuiLevelEmitter extends GuiUpgradeable
 {
 
 	GuiNumberBox level;
@@ -67,7 +67,7 @@ public class GuiLevelEmitter extends GuiUpgradeable
 	}
 
 	@Override
-	public void initGui()
+	public final void initGui()
 	{
 		super.initGui();
 
@@ -167,7 +167,7 @@ public class GuiLevelEmitter extends GuiUpgradeable
 	}
 
 	@Override
-	protected void actionPerformed( GuiButton btn )
+	protected final void actionPerformed( GuiButton btn )
 	{
 		super.actionPerformed( btn );
 
@@ -238,7 +238,7 @@ public class GuiLevelEmitter extends GuiUpgradeable
 	}
 
 	@Override
-	protected void keyTyped( char character, int key )
+	protected final void keyTyped( char character, int key )
 	{
 		if( !this.checkHotbarKeys( key ) )
 		{

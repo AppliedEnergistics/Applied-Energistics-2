@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -27,7 +27,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
-
 import javax.annotation.Nonnull;
 
 import net.minecraft.block.Block;
@@ -40,7 +39,7 @@ import appeng.services.compass.CompassReader;
 import appeng.services.compass.ICompassCallback;
 
 
-public class CompassService implements ThreadFactory
+public final class CompassService implements ThreadFactory
 {
 	private static final int CHUNK_SIZE = 16;
 	private final Map<World, CompassReader> worldSet = new HashMap<World, CompassReader>();
@@ -55,18 +54,18 @@ public class CompassService implements ThreadFactory
 		this.jobSize = 0;
 	}
 
-	public Future<?> getCompassDirection( DimensionalCoord coord, int maxRange, ICompassCallback cc )
+	public final Future<?> getCompassDirection( DimensionalCoord coord, int maxRange, ICompassCallback cc )
 	{
 		this.jobSize++;
 		return this.executor.submit( new CMDirectionRequest( coord, maxRange, cc ) );
 	}
 
-	public int jobSize()
+	public final int jobSize()
 	{
 		return this.jobSize;
 	}
 
-	public void cleanUp()
+	public final void cleanUp()
 	{
 		for( CompassReader cr : this.worldSet.values() )
 		{
@@ -74,7 +73,7 @@ public class CompassService implements ThreadFactory
 		}
 	}
 
-	public void updateArea( World w, int chunkX, int chunkZ )
+	public final void updateArea( World w, int chunkX, int chunkZ )
 	{
 		int x = chunkX << 4;
 		int z = chunkZ << 4;
@@ -90,7 +89,7 @@ public class CompassService implements ThreadFactory
 		this.updateArea( w, x, CHUNK_SIZE + 224, z );
 	}
 
-	public Future<?> updateArea( World w, int x, int y, int z )
+	public final Future<?> updateArea( World w, int x, int y, int z )
 	{
 		this.jobSize++;
 
@@ -154,7 +153,7 @@ public class CompassService implements ThreadFactory
 		return Math.atan2( -up, side ) - Math.PI / 2.0;
 	}
 
-	public void kill()
+	public final void kill()
 	{
 		this.executor.shutdown();
 
@@ -177,12 +176,12 @@ public class CompassService implements ThreadFactory
 	}
 
 	@Override
-	public Thread newThread( @Nonnull Runnable job )
+	public final Thread newThread( @Nonnull Runnable job )
 	{
 		return new Thread( job, "AE Compass Service" );
 	}
 
-	private class CMUpdatePost implements Runnable
+	private final class CMUpdatePost implements Runnable
 	{
 
 		public final World world;
@@ -202,7 +201,7 @@ public class CompassService implements ThreadFactory
 		}
 
 		@Override
-		public void run()
+		public final void run()
 		{
 			CompassService.this.jobSize--;
 
@@ -217,7 +216,7 @@ public class CompassService implements ThreadFactory
 	}
 
 
-	private class CMDirectionRequest implements Runnable
+	private final class CMDirectionRequest implements Runnable
 	{
 
 		public final int maxRange;
@@ -232,7 +231,7 @@ public class CompassService implements ThreadFactory
 		}
 
 		@Override
-		public void run()
+		public final void run()
 		{
 			CompassService.this.jobSize--;
 

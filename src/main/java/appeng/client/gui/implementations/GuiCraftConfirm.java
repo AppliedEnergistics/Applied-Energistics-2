@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -55,7 +55,7 @@ import appeng.parts.reporting.PartTerminal;
 import appeng.util.Platform;
 
 
-public class GuiCraftConfirm extends AEBaseGui
+public final class GuiCraftConfirm extends AEBaseGui
 {
 
 	final ContainerCraftConfirm ccc;
@@ -110,7 +110,7 @@ public class GuiCraftConfirm extends AEBaseGui
 	}
 
 	@Override
-	public void initGui()
+	public final void initGui()
 	{
 		super.initGui();
 
@@ -131,7 +131,7 @@ public class GuiCraftConfirm extends AEBaseGui
 	}
 
 	@Override
-	public void drawScreen( int mouseX, int mouseY, float btn )
+	public final void drawScreen( int mouseX, int mouseY, float btn )
 	{
 		this.updateCPUButtonText();
 
@@ -197,7 +197,7 @@ public class GuiCraftConfirm extends AEBaseGui
 		this.selectCPU.displayString = btnTextText;
 	}
 
-	boolean isSimulation()
+	final boolean isSimulation()
 	{
 		return ( (ContainerCraftConfirm) this.inventorySlots ).simulation;
 	}
@@ -404,7 +404,7 @@ public class GuiCraftConfirm extends AEBaseGui
 		this.myScrollBar.setRange( 0, ( size + 2 ) / 3 - this.rows, 1 );
 	}
 
-	public void postUpdate( List<IAEItemStack> list, byte ref )
+	public final void postUpdate( List<IAEItemStack> list, byte ref )
 	{
 		switch( ref )
 		{
@@ -530,7 +530,7 @@ public class GuiCraftConfirm extends AEBaseGui
 	}
 
 	@Override
-	protected void keyTyped( char character, int key )
+	protected final void keyTyped( char character, int key )
 	{
 		if( !this.checkHotbarKeys( key ) )
 		{
@@ -543,7 +543,7 @@ public class GuiCraftConfirm extends AEBaseGui
 	}
 
 	@Override
-	protected void actionPerformed( GuiButton btn )
+	protected final void actionPerformed( GuiButton btn )
 	{
 		super.actionPerformed( btn );
 

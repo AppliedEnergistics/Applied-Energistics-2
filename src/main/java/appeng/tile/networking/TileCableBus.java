@@ -114,7 +114,7 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 		}
 	}
 
-	protected void copyFrom( TileCableBus oldTile )
+	protected final void copyFrom( TileCableBus oldTile )
 	{
 		CableBusContainer tmpCB = this.cb;
 		this.cb = oldTile.cb;
@@ -129,46 +129,46 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	}
 
 	@Override
-	public double getMaxRenderDistanceSquared()
+	public final double getMaxRenderDistanceSquared()
 	{
 		return 900.0;
 	}
 
 	@Override
-	public void invalidate()
+	public final void invalidate()
 	{
 		super.invalidate();
 		this.cb.removeFromWorld();
 	}
 
 	@Override
-	public void validate()
+	public final void validate()
 	{
 		super.validate();
 		TickHandler.INSTANCE.addInit( this );
 	}
 
 	@Override
-	public IGridNode getGridNode( ForgeDirection dir )
+	public final IGridNode getGridNode( ForgeDirection dir )
 	{
 		return this.cb.getGridNode( dir );
 	}
 
 	@Override
-	public AECableType getCableConnectionType( ForgeDirection side )
+	public final AECableType getCableConnectionType( ForgeDirection side )
 	{
 		return this.cb.getCableConnectionType( side );
 	}
 
 	@Override
-	public void onChunkUnload()
+	public final void onChunkUnload()
 	{
 		super.onChunkUnload();
 		this.cb.removeFromWorld();
 	}
 
 	@Override
-	public void markForUpdate()
+	public final void markForUpdate()
 	{
 		if( this.worldObj == null )
 		{
@@ -187,13 +187,13 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	}
 
 	@Override
-	public boolean canBeRotated()
+	public final boolean canBeRotated()
 	{
 		return false;
 	}
 
 	@Override
-	public void getDrops( World w, int x, int y, int z, List drops )
+	public final void getDrops( World w, int x, int y, int z, List drops )
 	{
 		this.cb.getDrops( drops );
 	}
@@ -228,101 +228,101 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	}
 
 	@Override
-	public IFacadeContainer getFacadeContainer()
+	public final IFacadeContainer getFacadeContainer()
 	{
 		return this.cb.getFacadeContainer();
 	}
 
 	@Override
-	public boolean canAddPart( ItemStack is, ForgeDirection side )
+	public final boolean canAddPart( ItemStack is, ForgeDirection side )
 	{
 		return this.cb.canAddPart( is, side );
 	}
 
 	@Override
-	public ForgeDirection addPart( ItemStack is, ForgeDirection side, EntityPlayer player )
+	public final ForgeDirection addPart( ItemStack is, ForgeDirection side, EntityPlayer player )
 	{
 		return this.cb.addPart( is, side, player );
 	}
 
 	@Override
-	public IPart getPart( ForgeDirection side )
+	public final IPart getPart( ForgeDirection side )
 	{
 		return this.cb.getPart( side );
 	}
 
 	@Override
-	public void removePart( ForgeDirection side, boolean suppressUpdate )
+	public final void removePart( ForgeDirection side, boolean suppressUpdate )
 	{
 		this.cb.removePart( side, suppressUpdate );
 	}
 
 	@Override
-	public DimensionalCoord getLocation()
+	public final DimensionalCoord getLocation()
 	{
 		return new DimensionalCoord( this );
 	}
 
 	@Override
-	public AEColor getColor()
+	public final AEColor getColor()
 	{
 		return this.cb.getColor();
 	}
 
 	@Override
-	public void clearContainer()
+	public final void clearContainer()
 	{
 		this.cb = new CableBusContainer( this );
 	}
 
 	@Override
-	public boolean isBlocked( ForgeDirection side )
+	public final boolean isBlocked( ForgeDirection side )
 	{
 		return !this.ImmibisMicroblocks_isSideOpen( side.ordinal() );
 	}	@Override
-	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool( World w, int x, int y, int z, Entity e, boolean visual )
+	public final Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool( World w, int x, int y, int z, Entity e, boolean visual )
 	{
 		return this.cb.getSelectedBoundingBoxesFromPool( false, true, e, visual );
 	}
 
 	@Override
-	public SelectedPart selectPart( Vec3 pos )
+	public final SelectedPart selectPart( Vec3 pos )
 	{
 		return this.cb.selectPart( pos );
 	}
 
 	@Override
-	public void markForSave()
+	public final void markForSave()
 	{
 		super.markDirty();
 	}
 
 	@Override
-	public void partChanged()
+	public final void partChanged()
 	{
 		this.notifyNeighbors();
 	}
 
 	@Override
-	public boolean hasRedstone( ForgeDirection side )
+	public final boolean hasRedstone( ForgeDirection side )
 	{
 		return this.cb.hasRedstone( side );
 	}
 
 	@Override
-	public boolean isEmpty()
+	public final boolean isEmpty()
 	{
 		return this.cb.isEmpty();
 	}
 
 	@Override
-	public Set<LayerFlags> getLayerFlags()
+	public final Set<LayerFlags> getLayerFlags()
 	{
 		return this.cb.getLayerFlags();
 	}
 
 	@Override
-	public void cleanup()
+	public final void cleanup()
 	{
 		if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.ImmibisMicroblocks ) )
 		{
@@ -344,7 +344,7 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	}
 
 	@Override
-	public void notifyNeighbors()
+	public final void notifyNeighbors()
 	{
 		if( this.worldObj != null && this.worldObj.blockExists( this.xCoord, this.yCoord, this.zCoord ) && !CableBusContainer.isLoading() )
 		{
@@ -353,12 +353,12 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	}
 
 	@Override
-	public boolean isInWorld()
+	public final boolean isInWorld()
 	{
 		return this.cb.isInWorld();
 	}
 
-	public boolean ImmibisMicroblocks_isSideOpen( int side )
+	public final boolean ImmibisMicroblocks_isSideOpen( int side )
 	{
 		return true;
 	}
@@ -369,7 +369,7 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	}
 
 	@Override
-	public boolean recolourBlock( ForgeDirection side, AEColor colour, EntityPlayer who )
+	public final boolean recolourBlock( ForgeDirection side, AEColor colour, EntityPlayer who )
 	{
 		return this.cb.recolourBlock( side, colour, who );
 	}

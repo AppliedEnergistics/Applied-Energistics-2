@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -53,7 +53,7 @@ import appeng.recipes.game.ShapedRecipe;
 import appeng.recipes.game.ShapelessRecipe;
 
 
-public class CraftGuide extends CraftGuideAPIObject implements IIntegrationModule, RecipeProvider, StackInfoSource, RecipeGenerator
+public final class CraftGuide extends CraftGuideAPIObject implements IIntegrationModule, RecipeProvider, StackInfoSource, RecipeGenerator
 {
 
 	public static CraftGuide instance;
@@ -72,14 +72,14 @@ public class CraftGuide extends CraftGuideAPIObject implements IIntegrationModul
 	RecipeGenerator parent;
 
 	@Override
-	public String getInfo( ItemStack itemStack )
+	public final String getInfo( ItemStack itemStack )
 	{
 		// :P
 		return null;
 	}
 
 	@Override
-	public void generateRecipes( RecipeGenerator generator )
+	public final void generateRecipes( RecipeGenerator generator )
 	{
 		this.parent = generator;
 
@@ -163,48 +163,48 @@ public class CraftGuide extends CraftGuideAPIObject implements IIntegrationModul
 	}
 
 	@Override
-	public RecipeTemplate createRecipeTemplate( Slot[] slots, ItemStack craftingType )
+	public final RecipeTemplate createRecipeTemplate( Slot[] slots, ItemStack craftingType )
 	{
 		return this.parent.createRecipeTemplate( slots, craftingType );
 	}
 
 	@Override
-	public RecipeTemplate createRecipeTemplate( Slot[] slots, ItemStack craftingType, String backgroundTexture, int backgroundX, int backgroundY, int backgroundSelectedX, int backgroundSelectedY )
+	public final RecipeTemplate createRecipeTemplate( Slot[] slots, ItemStack craftingType, String backgroundTexture, int backgroundX, int backgroundY, int backgroundSelectedX, int backgroundSelectedY )
 	{
 		return this.parent.createRecipeTemplate( slots, craftingType, backgroundTexture, backgroundX, backgroundY, backgroundSelectedX, backgroundSelectedY );
 	}
 
 	@Override
-	public RecipeTemplate createRecipeTemplate( Slot[] slots, ItemStack craftingType, String bgTexture, int bgX, int bgY, String selectedBGTexture, int selectedBGX, int selectedBGY )
+	public final RecipeTemplate createRecipeTemplate( Slot[] slots, ItemStack craftingType, String bgTexture, int bgX, int bgY, String selectedBGTexture, int selectedBGX, int selectedBGY )
 	{
 		return this.parent.createRecipeTemplate( slots, craftingType, bgTexture, bgX, bgY, selectedBGTexture, selectedBGX, selectedBGY );
 	}
 
 	@Override
-	public void addRecipe( RecipeTemplate template, Object[] crafting )
+	public final void addRecipe( RecipeTemplate template, Object[] crafting )
 	{
 		this.parent.addRecipe( template, crafting );
 	}
 
 	@Override
-	public void addRecipe( CraftGuideRecipe recipe, ItemStack craftingType )
+	public final void addRecipe( CraftGuideRecipe recipe, ItemStack craftingType )
 	{
 		this.parent.addRecipe( recipe, craftingType );
 	}
 
 	@Override
-	public void setDefaultTypeVisibility( ItemStack type, boolean visible )
+	public final void setDefaultTypeVisibility( ItemStack type, boolean visible )
 	{
 		this.parent.setDefaultTypeVisibility( type, visible );
 	}
 
 	@Override
-	public Object[] getCraftingRecipe( IRecipe recipe )
+	public final Object[] getCraftingRecipe( IRecipe recipe )
 	{
 		return this.getCraftingRecipe( recipe, true );
 	}
 
-	Object[] getCraftingShapelessRecipe( List items, ItemStack recipeOutput )
+	final Object[] getCraftingShapelessRecipe( List items, ItemStack recipeOutput )
 	{
 		Object[] output = new Object[10];
 
@@ -238,7 +238,7 @@ public class CraftGuide extends CraftGuideAPIObject implements IIntegrationModul
 		return output;
 	}
 
-	Object[] getSmallShapedRecipe( int width, int height, Object[] items, ItemStack recipeOutput )
+	final Object[] getSmallShapedRecipe( int width, int height, Object[] items, ItemStack recipeOutput )
 	{
 		Object[] output = new Object[5];
 
@@ -276,7 +276,7 @@ public class CraftGuide extends CraftGuideAPIObject implements IIntegrationModul
 		return output;
 	}
 
-	Object[] getCraftingShapedRecipe( int width, int height, Object[] items, ItemStack recipeOutput )
+	final Object[] getCraftingShapedRecipe( int width, int height, Object[] items, ItemStack recipeOutput )
 	{
 		Object[] output = new Object[10];
 
@@ -331,7 +331,7 @@ public class CraftGuide extends CraftGuideAPIObject implements IIntegrationModul
 	}
 
 	@Override
-	public Object[] getCraftingRecipe( IRecipe recipe, boolean allowSmallGrid )
+	public final Object[] getCraftingRecipe( IRecipe recipe, boolean allowSmallGrid )
 	{
 		if( recipe instanceof ShapelessRecipe )
 		{

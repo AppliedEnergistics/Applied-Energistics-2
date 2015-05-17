@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -145,25 +145,25 @@ public class AESharedNBT extends NBTTagCompound implements IAETagCompound
 		return x;
 	}
 
-	public int getHash()
+	public final int getHash()
 	{
 		return this.hash;
 	}
 
 	@Override
-	public NBTTagCompound getNBTTagCompoundCopy()
+	public final NBTTagCompound getNBTTagCompoundCopy()
 	{
 		return (NBTTagCompound) this.copy();
 	}
 
 	@Override
-	public IItemComparison getSpecialComparison()
+	public final IItemComparison getSpecialComparison()
 	{
 		return this.comp;
 	}
 
 	@Override
-	public boolean equals( Object par1Obj )
+	public final boolean equals( Object par1Obj )
 	{
 		if( par1Obj instanceof AESharedNBT )
 		{

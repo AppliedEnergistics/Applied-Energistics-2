@@ -78,7 +78,7 @@ import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 
 
-public class TileSecurity extends AENetworkTile implements ITerminalHost, IAEAppEngInventory, ILocatable, IConfigManagerHost, ISecurityProvider, IColorableTile
+public final class TileSecurity extends AENetworkTile implements ITerminalHost, IAEAppEngInventory, ILocatable, IConfigManagerHost, ISecurityProvider, IColorableTile
 {
 
 	private static int difference = 0;
@@ -114,7 +114,7 @@ public class TileSecurity extends AENetworkTile implements ITerminalHost, IAEApp
 	}
 
 	@Override
-	public void getDrops( World w, int x, int y, int z, List<ItemStack> drops )
+	public final void getDrops( World w, int x, int y, int z, List<ItemStack> drops )
 	{
 		if( !this.configSlot.isEmpty() )
 		{
@@ -197,7 +197,7 @@ public class TileSecurity extends AENetworkTile implements ITerminalHost, IAEApp
 		}
 	}
 
-	public void inventoryChanged()
+	public final void inventoryChanged()
 	{
 		try
 		{
@@ -223,13 +223,13 @@ public class TileSecurity extends AENetworkTile implements ITerminalHost, IAEApp
 	}
 
 	@Override
-	public AECableType getCableConnectionType( ForgeDirection dir )
+	public final AECableType getCableConnectionType( ForgeDirection dir )
 	{
 		return AECableType.SMART;
 	}
 
 	@Override
-	public void onChunkUnload()
+	public final void onChunkUnload()
 	{
 		super.onChunkUnload();
 		MinecraftForge.EVENT_BUS.post( new LocatableEventAnnounce( this, LocatableEvent.Unregister ) );
@@ -248,7 +248,7 @@ public class TileSecurity extends AENetworkTile implements ITerminalHost, IAEApp
 	}
 
 	@Override
-	public void invalidate()
+	public final void invalidate()
 	{
 		super.invalidate();
 		MinecraftForge.EVENT_BUS.post( new LocatableEventAnnounce( this, LocatableEvent.Unregister ) );
@@ -261,25 +261,25 @@ public class TileSecurity extends AENetworkTile implements ITerminalHost, IAEApp
 		return new DimensionalCoord( this );
 	}
 
-	public boolean isActive()
+	public final boolean isActive()
 	{
 		return this.isActive;
 	}
 
 	@Override
-	public IMEMonitor<IAEItemStack> getItemInventory()
+	public final IMEMonitor<IAEItemStack> getItemInventory()
 	{
 		return this.securityMonitor;
 	}
 
 	@Override
-	public IMEMonitor<IAEFluidStack> getFluidInventory()
+	public final IMEMonitor<IAEFluidStack> getFluidInventory()
 	{
 		return null;
 	}
 
 	@Override
-	public long getLocatableSerial()
+	public final long getLocatableSerial()
 	{
 		return this.securityKey;
 	}
@@ -290,7 +290,7 @@ public class TileSecurity extends AENetworkTile implements ITerminalHost, IAEApp
 	}
 
 	@Override
-	public IConfigManager getConfigManager()
+	public final IConfigManager getConfigManager()
 	{
 		return this.cm;
 	}
@@ -302,13 +302,13 @@ public class TileSecurity extends AENetworkTile implements ITerminalHost, IAEApp
 	}
 
 	@Override
-	public long getSecurityKey()
+	public final long getSecurityKey()
 	{
 		return this.securityKey;
 	}
 
 	@Override
-	public void readPermissions( HashMap<Integer, EnumSet<SecurityPermissions>> playerPerms )
+	public final void readPermissions( HashMap<Integer, EnumSet<SecurityPermissions>> playerPerms )
 	{
 		IPlayerRegistry pr = AEApi.instance().registries().players();
 
@@ -329,25 +329,25 @@ public class TileSecurity extends AENetworkTile implements ITerminalHost, IAEApp
 	}
 
 	@Override
-	public boolean isSecurityEnabled()
+	public final boolean isSecurityEnabled()
 	{
 		return this.isActive && this.gridProxy.isActive();
 	}
 
 	@Override
-	public int getOwner()
+	public final int getOwner()
 	{
 		return this.gridProxy.getNode().getPlayerID();
 	}
 
 	@Override
-	public AEColor getColor()
+	public final AEColor getColor()
 	{
 		return this.paintedColor;
 	}
 
 	@Override
-	public boolean recolourBlock( ForgeDirection side, AEColor newPaintedColor, EntityPlayer who )
+	public final boolean recolourBlock( ForgeDirection side, AEColor newPaintedColor, EntityPlayer who )
 	{
 		if( this.paintedColor == newPaintedColor )
 		{

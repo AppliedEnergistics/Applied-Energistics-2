@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -35,7 +35,7 @@ import appeng.api.AEApi;
 import appeng.api.exceptions.MissingDefinition;
 
 
-public class QuartzTorchPart extends McSidedMetaPart implements IRandomDisplayTick
+public final class QuartzTorchPart extends McSidedMetaPart implements IRandomDisplayTick
 {
 
 	public QuartzTorchPart()
@@ -60,24 +60,24 @@ public class QuartzTorchPart extends McSidedMetaPart implements IRandomDisplayTi
 	}
 
 	@Override
-	public boolean doesTick()
+	public final boolean doesTick()
 	{
 		return false;
 	}
 
 	@Override
-	public String getType()
+	public final String getType()
 	{
 		return PartRegistry.QuartzTorchPart.getName();
 	}
 
 	@Override
-	public Cuboid6 getBounds()
+	public final Cuboid6 getBounds()
 	{
 		return this.getBounds( this.meta );
 	}
 
-	public Cuboid6 getBounds( int meta )
+	public final Cuboid6 getBounds( int meta )
 	{
 		ForgeDirection up = ForgeDirection.getOrientation( meta );
 		double xOff = -0.3 * up.offsetX;
@@ -87,19 +87,19 @@ public class QuartzTorchPart extends McSidedMetaPart implements IRandomDisplayTi
 	}
 
 	@Override
-	public int sideForMeta( int meta )
+	public final int sideForMeta( int meta )
 	{
 		return ForgeDirection.getOrientation( meta ).getOpposite().ordinal();
 	}
 
 	@Override
-	public void randomDisplayTick( Random r )
+	public final void randomDisplayTick( Random r )
 	{
 		this.getBlock().randomDisplayTick( this.world(), this.x(), this.y(), this.z(), r );
 	}
 
 	@Override
-	public Block getBlock()
+	public final Block getBlock()
 	{
 		for( Block torchBlock : AEApi.instance().definitions().blocks().quartzTorch().maybeBlock().asSet() )
 		{

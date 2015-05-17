@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -49,7 +49,7 @@ import appeng.me.helpers.AENetworkProxy;
 import appeng.parts.AEBasePart;
 
 
-public class PartQuartzFiber extends AEBasePart implements IEnergyGridProvider
+public final class PartQuartzFiber extends AEBasePart implements IEnergyGridProvider
 {
 
 	final AENetworkProxy outerProxy = new AENetworkProxy( this, "outer", this.proxy.getMachineRepresentation(), true );
@@ -64,20 +64,20 @@ public class PartQuartzFiber extends AEBasePart implements IEnergyGridProvider
 	}
 
 	@Override
-	public AECableType getCableConnectionType( ForgeDirection dir )
+	public final AECableType getCableConnectionType( ForgeDirection dir )
 	{
 		return AECableType.GLASS;
 	}
 
 	@Override
-	public void getBoxes( IPartCollisionHelper bch )
+	public final void getBoxes( IPartCollisionHelper bch )
 	{
 		bch.addBox( 6, 6, 10, 10, 10, 16 );
 	}
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderInventory( IPartRenderHelper rh, RenderBlocks renderer )
+	public final void renderInventory( IPartRenderHelper rh, RenderBlocks renderer )
 	{
 		GL11.glTranslated( -0.2, -0.3, 0.0 );
 
@@ -89,7 +89,7 @@ public class PartQuartzFiber extends AEBasePart implements IEnergyGridProvider
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderStatic( int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer )
+	public final void renderStatic( int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer )
 	{
 		IIcon myIcon = this.is.getIconIndex();
 		rh.setTexture( myIcon );
@@ -99,61 +99,61 @@ public class PartQuartzFiber extends AEBasePart implements IEnergyGridProvider
 	}
 
 	@Override
-	public void readFromNBT( NBTTagCompound extra )
+	public final void readFromNBT( NBTTagCompound extra )
 	{
 		super.readFromNBT( extra );
 		this.outerProxy.readFromNBT( extra );
 	}
 
 	@Override
-	public void writeToNBT( NBTTagCompound extra )
+	public final void writeToNBT( NBTTagCompound extra )
 	{
 		super.writeToNBT( extra );
 		this.outerProxy.writeToNBT( extra );
 	}
 
 	@Override
-	public void removeFromWorld()
+	public final void removeFromWorld()
 	{
 		super.removeFromWorld();
 		this.outerProxy.invalidate();
 	}
 
 	@Override
-	public void addToWorld()
+	public final void addToWorld()
 	{
 		super.addToWorld();
 		this.outerProxy.onReady();
 	}
 
 	@Override
-	public void setPartHostInfo( ForgeDirection side, IPartHost host, TileEntity tile )
+	public final void setPartHostInfo( ForgeDirection side, IPartHost host, TileEntity tile )
 	{
 		super.setPartHostInfo( side, host, tile );
 		this.outerProxy.setValidSides( EnumSet.of( side ) );
 	}
 
 	@Override
-	public IGridNode getExternalFacingNode()
+	public final IGridNode getExternalFacingNode()
 	{
 		return this.outerProxy.getNode();
 	}
 
 	@Override
-	public int cableConnectionRenderTo()
+	public final int cableConnectionRenderTo()
 	{
 		return 16;
 	}
 
 	@Override
-	public void onPlacement( EntityPlayer player, ItemStack held, ForgeDirection side )
+	public final void onPlacement( EntityPlayer player, ItemStack held, ForgeDirection side )
 	{
 		super.onPlacement( player, held, side );
 		this.outerProxy.setOwner( player );
 	}
 
 	@Override
-	public double extractAEPower( double amt, Actionable mode, Set<IEnergyGrid> seen )
+	public final double extractAEPower( double amt, Actionable mode, Set<IEnergyGrid> seen )
 	{
 		double acquiredPower = 0;
 
@@ -181,7 +181,7 @@ public class PartQuartzFiber extends AEBasePart implements IEnergyGridProvider
 	}
 
 	@Override
-	public double injectAEPower( double amt, Actionable mode, Set<IEnergyGrid> seen )
+	public final double injectAEPower( double amt, Actionable mode, Set<IEnergyGrid> seen )
 	{
 
 		try
@@ -214,7 +214,7 @@ public class PartQuartzFiber extends AEBasePart implements IEnergyGridProvider
 	}
 
 	@Override
-	public double getEnergyDemand( double amt, Set<IEnergyGrid> seen )
+	public final double getEnergyDemand( double amt, Set<IEnergyGrid> seen )
 	{
 		double demand = 0;
 

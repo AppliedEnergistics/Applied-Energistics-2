@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -34,7 +34,7 @@ import appeng.client.texture.ExtraBlockTextures;
 import appeng.client.texture.OffsetIcon;
 
 
-public class RenderQuartzGlass extends BaseBlockRender
+public final class RenderQuartzGlass extends BaseBlockRender
 {
 
 	static byte[][][] offsets;
@@ -129,7 +129,7 @@ public class RenderQuartzGlass extends BaseBlockRender
 		return result;
 	}
 
-	void renderEdge( AEBaseBlock imb, IBlockAccess world, int x, int y, int z, RenderBlocks renderer, ForgeDirection side, ForgeDirection direction )
+	final void renderEdge( AEBaseBlock imb, IBlockAccess world, int x, int y, int z, RenderBlocks renderer, ForgeDirection side, ForgeDirection direction )
 	{
 		if( !this.isFlush( imb, world, x + side.offsetX, y + side.offsetY, z + side.offsetZ ) )
 		{
@@ -213,12 +213,12 @@ public class RenderQuartzGlass extends BaseBlockRender
 		}
 	}
 
-	boolean isFlush( AEBaseBlock imb, IBlockAccess world, int x, int y, int z )
+	final boolean isFlush( AEBaseBlock imb, IBlockAccess world, int x, int y, int z )
 	{
 		return this.isGlass( imb, world, x, y, z );
 	}
 
-	boolean isGlass( AEBaseBlock imb, IBlockAccess world, int x, int y, int z )
+	final boolean isGlass( AEBaseBlock imb, IBlockAccess world, int x, int y, int z )
 	{
 		return this.isQuartzGlass( world, x, y, z ) || this.isVibrantQuartzGlass( world, x, y, z );
 	}
