@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -26,10 +26,10 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-
 import javax.annotation.Nonnull;
 
 import com.google.common.base.Optional;
@@ -362,7 +362,7 @@ public class RecipeHandler implements IRecipeHandler
 			throw new IllegalStateException( "Recipes must now be loaded in Init." );
 		}
 
-		HashMap<Class, Integer> processed = new HashMap<Class, Integer>();
+		Map<Class, Integer> processed = new HashMap<Class, Integer>();
 		try
 		{
 			for( ICraftHandler ch : this.data.Handlers )

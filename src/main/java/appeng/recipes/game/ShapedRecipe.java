@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -21,6 +21,7 @@ package appeng.recipes.game;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
@@ -103,7 +104,7 @@ public class ShapedRecipe implements IRecipe, IRecipeBakeable
 			throw new IllegalStateException( ret.toString() );
 		}
 
-		HashMap<Character, Object> itemMap = new HashMap<Character, Object>();
+		Map<Character, IIngredient> itemMap = new HashMap<Character, IIngredient>();
 
 		for(; idx < recipe.length; idx += 2 )
 		{
@@ -112,7 +113,7 @@ public class ShapedRecipe implements IRecipe, IRecipeBakeable
 
 			if( in instanceof IIngredient )
 			{
-				itemMap.put( chr, in );
+				itemMap.put( chr, (IIngredient) in );
 			}
 			else
 			{
