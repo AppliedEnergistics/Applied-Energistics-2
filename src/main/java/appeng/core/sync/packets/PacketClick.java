@@ -81,7 +81,6 @@ public class PacketClick extends AppEngPacket
 	@Override
 	public void serverPacketData( INetworkInfo manager, AppEngPacket packet, EntityPlayer player )
 	{
-<<<<<<< HEAD
 		ItemStack is = player.inventory.getCurrentItem();
 		final IItems items = AEApi.instance().definitions().items();
 		final IComparableDefinition maybeMemoryCard = items.memoryCard();
@@ -90,17 +89,6 @@ public class PacketClick extends AppEngPacket
 		if( is != null )
 		{
 			if( is.getItem() instanceof ToolNetworkTool )
-=======
-		PlayerInteractEvent event = ForgeEventFactory.onPlayerInteract( player, Action.RIGHT_CLICK_BLOCK, this.x, this.y, this.z, this.side, player.worldObj );
-		if ( !event.isCanceled() )
-		{
-			ItemStack is = player.inventory.getCurrentItem();
-			final IItems items = AEApi.instance().definitions().items();
-			final IComparableDefinition maybeMemoryCard = items.memoryCard();
-			final IComparableDefinition maybeColorApplicator = items.colorApplicator();
-	
-			if( is != null )
->>>>>>> branch 'master' of https://github.com/krwminer/Applied-Energistics-2.git
 			{
 				PlayerInteractEvent event = ForgeEventFactory.onPlayerInteract( player, Action.RIGHT_CLICK_BLOCK, this.x, this.y, this.z, this.side, player.worldObj );
 				if ( !event.isCanceled() )
@@ -109,7 +97,6 @@ public class PacketClick extends AppEngPacket
 					tnt.serverSideToolLogic( is, player, player.worldObj, this.x, this.y, this.z, this.side, this.hitX, this.hitY, this.hitZ );
 				}
 			}
-<<<<<<< HEAD
 
 			else if( maybeMemoryCard.isSameAs( is ) )
 			{
@@ -123,8 +110,6 @@ public class PacketClick extends AppEngPacket
 				ToolColorApplicator mem = (ToolColorApplicator) is.getItem();
 				mem.cycleColors( is, mem.getColor( is ), 1 );
 			}
-=======
->>>>>>> branch 'master' of https://github.com/krwminer/Applied-Energistics-2.git
 		}
 	}
 }
