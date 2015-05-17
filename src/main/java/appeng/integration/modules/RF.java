@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -50,20 +50,20 @@ public class RF extends BaseModule
 	@Override
 	public void postInit()
 	{
-		this.RFStack( "ExtraUtilities", "extractor_base", 12 );
-		this.RFStack( "ExtraUtilities", "pipes", 11 );
-		this.RFStack( "ExtraUtilities", "pipes", 14 );
-		this.RFStack( "ExtraUtilities", "generator", OreDictionary.WILDCARD_VALUE );
+		this.registerRFAttunement( "ExtraUtilities", "extractor_base", 12 );
+		this.registerRFAttunement( "ExtraUtilities", "pipes", 11 );
+		this.registerRFAttunement( "ExtraUtilities", "pipes", 14 );
+		this.registerRFAttunement( "ExtraUtilities", "generator", OreDictionary.WILDCARD_VALUE );
 
-		this.RFStack( "ThermalExpansion", "Cell", OreDictionary.WILDCARD_VALUE );
-		this.RFStack( "ThermalExpansion", "Dynamo", OreDictionary.WILDCARD_VALUE );
+		this.registerRFAttunement( "ThermalExpansion", "Cell", OreDictionary.WILDCARD_VALUE );
+		this.registerRFAttunement( "ThermalExpansion", "Dynamo", OreDictionary.WILDCARD_VALUE );
 
-		this.RFStack( "EnderIO", "itemPowerConduit", OreDictionary.WILDCARD_VALUE );
-		this.RFStack( "EnderIO", "blockCapacitorBank", 0 );
-		this.RFStack( "EnderIO", "blockPowerMonitor", 0 );
+		this.registerRFAttunement( "EnderIO", "itemPowerConduit", OreDictionary.WILDCARD_VALUE );
+		this.registerRFAttunement( "EnderIO", "blockCapacitorBank", 0 );
+		this.registerRFAttunement( "EnderIO", "blockPowerMonitor", 0 );
 	}
 
-	void RFStack( String mod, String name, int dmg )
+	void registerRFAttunement( String mod, String name, int dmg )
 	{
 		ItemStack modItem = GameRegistry.findItemStack( mod, name, 1 );
 		if( modItem != null )
