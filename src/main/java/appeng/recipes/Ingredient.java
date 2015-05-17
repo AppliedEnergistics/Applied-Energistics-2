@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -167,7 +167,7 @@ public class Ingredient implements IIngredient
 			Item it = Item.getItemFromBlock( blk );
 			if( it != null )
 			{
-				return this.MakeItemStack( it, this.qty, this.meta, this.nbt );
+				return this.makeItemStack( it, this.qty, this.meta, this.nbt );
 			}
 		}
 
@@ -179,7 +179,7 @@ public class Ingredient implements IIngredient
 
 		if( it != null )
 		{
-			return this.MakeItemStack( it, this.qty, this.meta, this.nbt );
+			return this.makeItemStack( it, this.qty, this.meta, this.nbt );
 		}
 
 		/*
@@ -198,7 +198,7 @@ public class Ingredient implements IIngredient
 		throw new MissingIngredientError( "Unable to find item: " + this.toString() );
 	}
 
-	private ItemStack MakeItemStack( Item it, int quantity, int damageValue, NBTTagCompound compound )
+	private ItemStack makeItemStack( Item it, int quantity, int damageValue, NBTTagCompound compound )
 	{
 		ItemStack is = new ItemStack( it, quantity, damageValue );
 		is.setTagCompound( compound );
