@@ -51,6 +51,73 @@ public class BlockDefinition extends ItemDefinition implements IBlockDefinition
 		this.enabled = state == ActivityState.Enabled;
 	}
 
+	/**
+	 * Create an {@link ItemBlock} from a {@link Block} to register it later as {@link Item}
+	 *
+	 * @param block source block
+	 *
+	 * @return item from block
+	 */
+	private static Item constructItemFromBlock( Block block )
+	{
+		final Class<? extends ItemBlock> itemclass = getItemBlockConstructor( block );
+		return constructItemBlock( block, itemclass );
+	}
+
+	/**
+	 * Returns the constructor to use.
+	 *
+	 * Either {@link ItemBlock} or in case of an {@link AEBaseBlock} the class returned by
+	 * AEBaseBlock.getItemBlockClass().
+	 *
+	 * @param block the block used to determine the used constructor.
+	 *
+	 * @return a {@link Class} extending ItemBlock
+	 */
+	private static Class<? extends ItemBlock> getItemBlockConstructor( Block block )
+	{
+		if( block instanceof AEBaseBlock )
+		{
+			final AEBaseBlock aeBaseBlock = (AEBaseBlock) block;
+			return aeBaseBlock.getItemBlockClass();
+		}
+
+		return ItemBlock.class;
+	}
+
+	/**
+	 * Actually construct an instance of {@link Item} with the block and earlier determined constructor.
+	 *
+	 * Shamelessly stolen from the forge magic.
+	 *
+	 * TODO: throw an exception instead of returning null? As this could cause issue later on.
+	 *
+	 * @param block     the block to create the {@link ItemBlock} from
+	 * @param itemclass the class used to construct it.
+	 *
+	 * @return an {@link Item} for the block. Actually always a sub type of {@link ItemBlock}
+	 */
+	private static Item constructItemBlock( Block block, Class<? extends ItemBlock> itemclass )
+	{
+		try
+		{
+			Object[] itemCtorArgs = new Object[] {};
+			Class<?>[] ctorArgClasses = new Class<?>[itemCtorArgs.length + 1];
+			ctorArgClasses[0] = Block.class;
+			for( int idx = 1; idx < ctorArgClasses.length; idx++ )
+			{
+				ctorArgClasses[idx] = itemCtorArgs[idx - 1].getClass();
+			}
+
+			Constructor<? extends ItemBlock> itemCtor = itemclass.getConstructor( ctorArgClasses );
+			return itemCtor.newInstance( ObjectArrays.concat( block, itemCtorArgs ) );
+		}
+		catch( Throwable t )
+		{
+			return null;
+		}
+	}
+
 	@Override
 	public final Optional<Block> maybeBlock()
 	{
@@ -87,69 +154,5 @@ public class BlockDefinition extends ItemDefinition implements IBlockDefinition
 	public final boolean isSameAs( IBlockAccess world, int x, int y, int z )
 	{
 		return this.enabled && world.getBlock( x, y, z ) == this.block;
-	}
-
-	/**
-	 * Create an {@link ItemBlock} from a {@link Block} to register it later as {@link Item}
-	 *
-	 * @param block
-	 * @return
-	 */
-	private static Item constructItemFromBlock( Block block )
-	{
-		final Class<? extends ItemBlock> itemclass = getItemBlockConstructor( block );
-		return constructItemBlock( block, itemclass );
-	}
-
-	/**
-	 * Returns the constructor to use.
-	 *
-	 * Either {@link ItemBlock} or in case of an {@link AEBaseBlock} the class returned by
-	 * AEBaseBlock.getItemBlockClass().
-	 *
-	 * @param block the block used to determine the used constructor.
-	 * @return a {@link Class} extending ItemBlock
-	 */
-	private static Class<? extends ItemBlock> getItemBlockConstructor( Block block )
-	{
-		if ( block instanceof AEBaseBlock )
-		{
-			final AEBaseBlock aeBaseBlock = ( AEBaseBlock ) block;
-			return aeBaseBlock.getItemBlockClass();
-		}
-
-		return ItemBlock.class;
-	}
-
-	/**
-	 * Actually construct an instance of {@link Item} with the block and earlier determined constructor.
-	 *
-	 * Shamelessly stolen from the forge magic.
-	 *
-	 * TODO: throw an exception instead of returning null? As this could cause issue later on.
-	 *
-	 * @param block the block to create the {@link ItemBlock} from
-	 * @param itemclass the class used to construct it.
-	 * @return an {@link Item} for the block. Actually always a sub type of {@link ItemBlock}
-	 */
-	private static Item constructItemBlock( Block block, Class<? extends ItemBlock> itemclass )
-	{
-		try
-		{
-			Object[] itemCtorArgs = new Object[] {};
-			Class<?>[] ctorArgClasses = new Class<?>[itemCtorArgs.length + 1];
-			ctorArgClasses[0] = Block.class;
-			for ( int idx = 1; idx < ctorArgClasses.length; idx++ )
-			{
-				ctorArgClasses[idx] = itemCtorArgs[idx - 1].getClass();
-			}
-
-			Constructor<? extends ItemBlock> itemCtor = itemclass.getConstructor( ctorArgClasses );
-			return itemCtor.newInstance( ObjectArrays.concat( block, itemCtorArgs ) );
-		}
-		catch ( Throwable t )
-		{
-			return null;
-		}
 	}
 }
