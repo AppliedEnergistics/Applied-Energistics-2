@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -102,7 +102,7 @@ public class BlockDefinition extends ItemDefinition implements IBlockDefinition
 	}
 
 	/**
-	 * Returns the cosntructor to use.
+	 * Returns the constructor to use.
 	 *
 	 * Either {@link ItemBlock} or in case of an {@link AEBaseBlock} the class returned by
 	 * AEBaseBlock.getItemBlockClass().
