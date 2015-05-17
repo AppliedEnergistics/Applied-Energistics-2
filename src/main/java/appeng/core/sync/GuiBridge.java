@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -18,10 +18,6 @@
 
 package appeng.core.sync;
 
-
-import static appeng.core.sync.GuiHostType.ITEM;
-import static appeng.core.sync.GuiHostType.ITEM_OR_WORLD;
-import static appeng.core.sync.GuiHostType.WORLD;
 
 import java.lang.reflect.Constructor;
 import java.util.List;
@@ -128,72 +124,72 @@ public enum GuiBridge implements IGuiHandler
 {
 	GUI_Handler(),
 
-	GUI_GRINDER( ContainerGrinder.class, TileGrinder.class, WORLD, null ),
+	GUI_GRINDER( ContainerGrinder.class, TileGrinder.class, GuiHostType.WORLD, null ),
 
-	GUI_QNB( ContainerQNB.class, TileQuantumBridge.class, WORLD, SecurityPermissions.BUILD ),
+	GUI_QNB( ContainerQNB.class, TileQuantumBridge.class, GuiHostType.WORLD, SecurityPermissions.BUILD ),
 
-	GUI_SKYCHEST( ContainerSkyChest.class, TileSkyChest.class, WORLD, null ),
+	GUI_SKYCHEST( ContainerSkyChest.class, TileSkyChest.class, GuiHostType.WORLD, null ),
 
-	GUI_CHEST( ContainerChest.class, TileChest.class, WORLD, SecurityPermissions.BUILD ),
+	GUI_CHEST( ContainerChest.class, TileChest.class, GuiHostType.WORLD, SecurityPermissions.BUILD ),
 
-	GUI_WIRELESS( ContainerWireless.class, TileWireless.class, WORLD, SecurityPermissions.BUILD ),
+	GUI_WIRELESS( ContainerWireless.class, TileWireless.class, GuiHostType.WORLD, SecurityPermissions.BUILD ),
 
-	GUI_ME( ContainerMEMonitorable.class, ITerminalHost.class, WORLD, null ),
+	GUI_ME( ContainerMEMonitorable.class, ITerminalHost.class, GuiHostType.WORLD, null ),
 
-	GUI_PORTABLE_CELL( ContainerMEPortableCell.class, IPortableCell.class, ITEM, null ),
+	GUI_PORTABLE_CELL( ContainerMEPortableCell.class, IPortableCell.class, GuiHostType.ITEM, null ),
 
-	GUI_WIRELESS_TERM( ContainerWirelessTerm.class, WirelessTerminalGuiObject.class, ITEM, null ),
+	GUI_WIRELESS_TERM( ContainerWirelessTerm.class, WirelessTerminalGuiObject.class, GuiHostType.ITEM, null ),
 
-	GUI_NETWORK_STATUS( ContainerNetworkStatus.class, INetworkTool.class, ITEM, null ),
+	GUI_NETWORK_STATUS( ContainerNetworkStatus.class, INetworkTool.class, GuiHostType.ITEM, null ),
 
-	GUI_CRAFTING_CPU( ContainerCraftingCPU.class, TileCraftingTile.class, WORLD, SecurityPermissions.CRAFT ),
+	GUI_CRAFTING_CPU( ContainerCraftingCPU.class, TileCraftingTile.class, GuiHostType.WORLD, SecurityPermissions.CRAFT ),
 
-	GUI_NETWORK_TOOL( ContainerNetworkTool.class, INetworkTool.class, ITEM, null ),
+	GUI_NETWORK_TOOL( ContainerNetworkTool.class, INetworkTool.class, GuiHostType.ITEM, null ),
 
-	GUI_QUARTZ_KNIFE( ContainerQuartzKnife.class, QuartzKnifeObj.class, ITEM, null ),
+	GUI_QUARTZ_KNIFE( ContainerQuartzKnife.class, QuartzKnifeObj.class, GuiHostType.ITEM, null ),
 
-	GUI_DRIVE( ContainerDrive.class, TileDrive.class, WORLD, SecurityPermissions.BUILD ),
+	GUI_DRIVE( ContainerDrive.class, TileDrive.class, GuiHostType.WORLD, SecurityPermissions.BUILD ),
 
-	GUI_VIBRATION_CHAMBER( ContainerVibrationChamber.class, TileVibrationChamber.class, WORLD, null ),
+	GUI_VIBRATION_CHAMBER( ContainerVibrationChamber.class, TileVibrationChamber.class, GuiHostType.WORLD, null ),
 
-	GUI_CONDENSER( ContainerCondenser.class, TileCondenser.class, WORLD, null ),
+	GUI_CONDENSER( ContainerCondenser.class, TileCondenser.class, GuiHostType.WORLD, null ),
 
-	GUI_INTERFACE( ContainerInterface.class, IInterfaceHost.class, WORLD, SecurityPermissions.BUILD ),
+	GUI_INTERFACE( ContainerInterface.class, IInterfaceHost.class, GuiHostType.WORLD, SecurityPermissions.BUILD ),
 
-	GUI_BUS( ContainerUpgradeable.class, IUpgradeableHost.class, WORLD, SecurityPermissions.BUILD ),
+	GUI_BUS( ContainerUpgradeable.class, IUpgradeableHost.class, GuiHostType.WORLD, SecurityPermissions.BUILD ),
 
-	GUI_IOPORT( ContainerIOPort.class, TileIOPort.class, WORLD, SecurityPermissions.BUILD ),
+	GUI_IOPORT( ContainerIOPort.class, TileIOPort.class, GuiHostType.WORLD, SecurityPermissions.BUILD ),
 
-	GUI_STORAGEBUS( ContainerStorageBus.class, PartStorageBus.class, WORLD, SecurityPermissions.BUILD ),
+	GUI_STORAGEBUS( ContainerStorageBus.class, PartStorageBus.class, GuiHostType.WORLD, SecurityPermissions.BUILD ),
 
-	GUI_FORMATION_PLANE( ContainerFormationPlane.class, PartFormationPlane.class, WORLD, SecurityPermissions.BUILD ),
+	GUI_FORMATION_PLANE( ContainerFormationPlane.class, PartFormationPlane.class, GuiHostType.WORLD, SecurityPermissions.BUILD ),
 
-	GUI_PRIORITY( ContainerPriority.class, IPriorityHost.class, WORLD, SecurityPermissions.BUILD ),
+	GUI_PRIORITY( ContainerPriority.class, IPriorityHost.class, GuiHostType.WORLD, SecurityPermissions.BUILD ),
 
-	GUI_SECURITY( ContainerSecurity.class, TileSecurity.class, WORLD, SecurityPermissions.SECURITY ),
+	GUI_SECURITY( ContainerSecurity.class, TileSecurity.class, GuiHostType.WORLD, SecurityPermissions.SECURITY ),
 
-	GUI_CRAFTING_TERMINAL( ContainerCraftingTerm.class, PartCraftingTerminal.class, WORLD, SecurityPermissions.CRAFT ),
+	GUI_CRAFTING_TERMINAL( ContainerCraftingTerm.class, PartCraftingTerminal.class, GuiHostType.WORLD, SecurityPermissions.CRAFT ),
 
-	GUI_PATTERN_TERMINAL( ContainerPatternTerm.class, PartPatternTerminal.class, WORLD, SecurityPermissions.CRAFT ),
+	GUI_PATTERN_TERMINAL( ContainerPatternTerm.class, PartPatternTerminal.class, GuiHostType.WORLD, SecurityPermissions.CRAFT ),
 
 	// extends (Container/Gui) + Bus
-	GUI_LEVEL_EMITTER( ContainerLevelEmitter.class, PartLevelEmitter.class, WORLD, SecurityPermissions.BUILD ),
+	GUI_LEVEL_EMITTER( ContainerLevelEmitter.class, PartLevelEmitter.class, GuiHostType.WORLD, SecurityPermissions.BUILD ),
 
-	GUI_SPATIAL_IO_PORT( ContainerSpatialIOPort.class, TileSpatialIOPort.class, WORLD, SecurityPermissions.BUILD ),
+	GUI_SPATIAL_IO_PORT( ContainerSpatialIOPort.class, TileSpatialIOPort.class, GuiHostType.WORLD, SecurityPermissions.BUILD ),
 
-	GUI_INSCRIBER( ContainerInscriber.class, TileInscriber.class, WORLD, null ),
+	GUI_INSCRIBER( ContainerInscriber.class, TileInscriber.class, GuiHostType.WORLD, null ),
 
-	GUI_CELL_WORKBENCH( ContainerCellWorkbench.class, TileCellWorkbench.class, WORLD, null ),
+	GUI_CELL_WORKBENCH( ContainerCellWorkbench.class, TileCellWorkbench.class, GuiHostType.WORLD, null ),
 
-	GUI_MAC( ContainerMAC.class, TileMolecularAssembler.class, WORLD, null ),
+	GUI_MAC( ContainerMAC.class, TileMolecularAssembler.class, GuiHostType.WORLD, null ),
 
-	GUI_CRAFTING_AMOUNT( ContainerCraftAmount.class, ITerminalHost.class, ITEM_OR_WORLD, SecurityPermissions.CRAFT ),
+	GUI_CRAFTING_AMOUNT( ContainerCraftAmount.class, ITerminalHost.class, GuiHostType.ITEM_OR_WORLD, SecurityPermissions.CRAFT ),
 
-	GUI_CRAFTING_CONFIRM( ContainerCraftConfirm.class, ITerminalHost.class, ITEM_OR_WORLD, SecurityPermissions.CRAFT ),
+	GUI_CRAFTING_CONFIRM( ContainerCraftConfirm.class, ITerminalHost.class, GuiHostType.ITEM_OR_WORLD, SecurityPermissions.CRAFT ),
 
-	GUI_INTERFACE_TERMINAL( ContainerInterfaceTerminal.class, PartMonitor.class, WORLD, SecurityPermissions.BUILD ),
+	GUI_INTERFACE_TERMINAL( ContainerInterfaceTerminal.class, PartMonitor.class, GuiHostType.WORLD, SecurityPermissions.BUILD ),
 
-	GUI_CRAFTING_STATUS( ContainerCraftingStatus.class, ITerminalHost.class, ITEM_OR_WORLD, SecurityPermissions.CRAFT );
+	GUI_CRAFTING_STATUS( ContainerCraftingStatus.class, ITerminalHost.class, GuiHostType.ITEM_OR_WORLD, SecurityPermissions.CRAFT );
 
 	private final Class tileClass;
 	private final Class containerClass;
