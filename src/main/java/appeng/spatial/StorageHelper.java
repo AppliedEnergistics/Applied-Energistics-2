@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -222,7 +222,7 @@ public class StorageHelper
 		CachedPlane cSrc = new CachedPlane( src, x, y, z, x + scaleX, y + scaleY, z + scaleZ );
 
 		// do nearly all the work... swaps blocks, tiles, and block ticks
-		cSrc.Swap( cDst );
+		cSrc.swap( cDst );
 
 		List<Entity> srcE = src.getEntitiesWithinAABB( Entity.class, srcBox );
 		List<Entity> dstE = dst.getEntitiesWithinAABB( Entity.class, dstBox );
