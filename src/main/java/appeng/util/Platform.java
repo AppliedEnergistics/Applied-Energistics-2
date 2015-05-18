@@ -1859,15 +1859,15 @@ public class Platform
 		return null;
 	}
 
-	public static boolean isSameItemType( ItemStack ol, ItemStack op )
+	public static boolean isSameItemType( ItemStack that, ItemStack other )
 	{
-		if( ol != null && op != null && ol.getItem() == op.getItem() )
+		if( that != null && other != null && that.getItem() == other.getItem() )
 		{
-			if( ol.isItemStackDamageable() )
+			if( that.isItemStackDamageable() )
 			{
 				return true;
 			}
-			return ol.getItemDamage() == ol.getItemDamage();
+			return that.getItemDamage() == other.getItemDamage();
 		}
 		return false;
 	}
