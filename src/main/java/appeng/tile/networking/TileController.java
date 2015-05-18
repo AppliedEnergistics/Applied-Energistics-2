@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -42,10 +42,10 @@ import appeng.tile.inventory.InvOperation;
 
 public class TileController extends AENetworkPowerTile
 {
+	private static final IInventory NULL_INVENTORY = new AppEngInternalInventory( null, 0 );
+	private static final int[] ACCESSIBLE_SLOTS_BY_SIDE = new int[] {};
 
-	static final AppEngInternalInventory inv = new AppEngInternalInventory( null, 0 );
-	final int[] sides = new int[] {};
-	boolean isValid = false;
+	private boolean isValid = false;
 
 	public TileController()
 	{
@@ -187,7 +187,7 @@ public class TileController extends AENetworkPowerTile
 	@Override
 	public IInventory getInternalInventory()
 	{
-		return inv;
+		return NULL_INVENTORY;
 	}
 
 	@Override
@@ -199,6 +199,6 @@ public class TileController extends AENetworkPowerTile
 	@Override
 	public int[] getAccessibleSlotsBySide( ForgeDirection side )
 	{
-		return this.sides;
+		return this.ACCESSIBLE_SLOTS_BY_SIDE;
 	}
 }
