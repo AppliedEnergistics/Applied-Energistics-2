@@ -69,6 +69,8 @@ public enum CableBusTextures
 
 	BlockFormPlaneOn( "BlockFormPlaneOn" ),
 
+	BlockIdentityAnnihilationPlaneOn( "BlockIdentityAnnihilationPlaneOn" ),
+
 	ItemPartLevelEmitterOn( "ItemPart.LevelEmitterOn" ), PartTransitionPlaneBack( "PartTransitionPlaneBack" ),
 
 	PartTunnelSides( "PartTunnelSides" ), PartPlaneSides( "PartPlaneSides" ), PartExportSides( "PartExportSides" ), PartImportSides( "PartImportSides" ),

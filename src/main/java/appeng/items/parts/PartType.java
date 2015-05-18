@@ -33,6 +33,7 @@ import appeng.parts.automation.PartExportBus;
 import appeng.parts.automation.PartFormationPlane;
 import appeng.parts.automation.PartImportBus;
 import appeng.parts.automation.PartLevelEmitter;
+import appeng.parts.automation.PartIdentityAnnihilationPlane;
 import appeng.parts.misc.PartCableAnchor;
 import appeng.parts.misc.PartInterface;
 import appeng.parts.misc.PartInvertedToggleBus;
@@ -67,40 +68,40 @@ public enum PartType
 	InvalidType( -1, EnumSet.of( AEFeature.Core ), EnumSet.noneOf( IntegrationType.class ), null ),
 
 	CableGlass( 0, EnumSet.of( AEFeature.Core ), EnumSet.noneOf( IntegrationType.class ), PartCableGlass.class )
-			{
-				@Override
-				public boolean isCable()
-				{
-					return true;
-				}
-			},
+	{
+		@Override
+		public boolean isCable()
+		{
+			return true;
+		}
+	},
 
 	CableCovered( 20, EnumSet.of( AEFeature.Core ), EnumSet.noneOf( IntegrationType.class ), PartCableCovered.class )
-			{
-				@Override
-				public boolean isCable()
-				{
-					return true;
-				}
-			},
+	{
+		@Override
+		public boolean isCable()
+		{
+			return true;
+		}
+	},
 
 	CableSmart( 40, EnumSet.of( AEFeature.Channels ), EnumSet.noneOf( IntegrationType.class ), PartCableSmart.class )
-			{
-				@Override
-				public boolean isCable()
-				{
-					return true;
-				}
-			},
+	{
+		@Override
+		public boolean isCable()
+		{
+			return true;
+		}
+	},
 
 	CableDense( 60, EnumSet.of( AEFeature.Channels ), EnumSet.noneOf( IntegrationType.class ), PartDenseCable.class )
-			{
-				@Override
-				public boolean isCable()
-				{
-					return true;
-				}
-			},
+	{
+		@Override
+		public boolean isCable()
+		{
+			return true;
+		}
+	},
 
 	ToggleBus( 80, EnumSet.of( AEFeature.Core ), EnumSet.noneOf( IntegrationType.class ), PartToggleBus.class ),
 
@@ -125,6 +126,8 @@ public enum PartType
 	LevelEmitter( 280, EnumSet.of( AEFeature.LevelEmitter ), EnumSet.noneOf( IntegrationType.class ), PartLevelEmitter.class ),
 
 	AnnihilationPlane( 300, EnumSet.of( AEFeature.AnnihilationPlane ), EnumSet.noneOf( IntegrationType.class ), PartAnnihilationPlane.class ),
+
+	IdentityAnnihilationPlane( 301, EnumSet.of( AEFeature.AnnihilationPlane, AEFeature.IdentityAnnihilationPlane ), EnumSet.noneOf( IntegrationType.class ), PartIdentityAnnihilationPlane.class ),
 
 	FormationPlane( 320, EnumSet.of( AEFeature.FormationPlane ), EnumSet.noneOf( IntegrationType.class ), PartFormationPlane.class ),
 
@@ -154,7 +157,7 @@ public enum PartType
 
 	P2PTunnelLight( 467, EnumSet.of( AEFeature.P2PTunnel, AEFeature.P2PTunnelLight ), EnumSet.noneOf( IntegrationType.class ), PartP2PLight.class, GuiText.LightTunnel ),
 
-	P2PTunnelOpenComputers(468, EnumSet.of( AEFeature.P2PTunnel, AEFeature.P2PTunnelOpenComputers ), EnumSet.of( IntegrationType.OpenComputers ), PartP2POpenComputers.class, GuiText.OCTunnel ),
+	P2PTunnelOpenComputers( 468, EnumSet.of( AEFeature.P2PTunnel, AEFeature.P2PTunnelOpenComputers ), EnumSet.of( IntegrationType.OpenComputers ), PartP2POpenComputers.class, GuiText.OCTunnel ),
 
 	InterfaceTerminal( 480, EnumSet.of( AEFeature.InterfaceTerminal ), EnumSet.noneOf( IntegrationType.class ), PartInterfaceTerminal.class );
 
@@ -172,7 +175,7 @@ public enum PartType
 
 	PartType( int baseMetaValue, Set<AEFeature> features, Set<IntegrationType> integrations, Class<? extends IPart> c, GuiText en )
 	{
-		this.features = Collections.unmodifiableSet( features ) ;
+		this.features = Collections.unmodifiableSet( features );
 		this.integrations = Collections.unmodifiableSet( integrations );
 		this.myPart = c;
 		this.extraName = en;

@@ -66,6 +66,8 @@ public interface IParts
 
 	IItemDefinition annihilationPlane();
 
+	IItemDefinition identityAnnihilationPlane();
+
 	IItemDefinition formationPlane();
 
 	IItemDefinition p2PTunnelME();

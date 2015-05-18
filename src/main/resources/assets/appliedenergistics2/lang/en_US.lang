@@ -423,6 +423,7 @@ item.appliedenergistics2.ItemMaterial.SkyDust.name=Sky Stone Dust
 item.appliedenergistics2.ItemMaterial.CardCrafting.name=Crafting Card
 
 item.appliedenergistics2.ItemPart.AnnihilationPlane.name=ME Annihilation Plane
+item.appliedenergistics2.ItemPart.IdentityAnnihilationPlane.name=ME Identity Annihilation Plane
 item.appliedenergistics2.ItemPart.CableAnchor.name=Cable Anchor
 item.appliedenergistics2.ItemPart.CableCovered.name=ME Covered Cable
 item.appliedenergistics2.ItemPart.CableGlass.name=ME Glass Cable

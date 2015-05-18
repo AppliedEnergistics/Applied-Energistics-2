@@ -38,10 +38,10 @@ public final class ApiParts implements IParts
 	private final AEColoredItemDefinition cableCovered;
 	private final AEColoredItemDefinition cableGlass;
 	private final AEColoredItemDefinition cableDense;
-	//	private final AEColoredItemDefinition lumenCableSmart;
-	//	private final AEColoredItemDefinition lumenCableCovered;
-	//	private final AEColoredItemDefinition lumenCableGlass;
-	//	private final AEColoredItemDefinition lumenCableDense;
+	// private final AEColoredItemDefinition lumenCableSmart;
+	// private final AEColoredItemDefinition lumenCableCovered;
+	// private final AEColoredItemDefinition lumenCableGlass;
+	// private final AEColoredItemDefinition lumenCableDense;
 	private final IItemDefinition quartzFiber;
 	private final IItemDefinition toggleBus;
 	private final IItemDefinition invertedToggleBus;
@@ -51,6 +51,7 @@ public final class ApiParts implements IParts
 	private final IItemDefinition iface;
 	private final IItemDefinition levelEmitter;
 	private final IItemDefinition annihilationPlane;
+	private final IItemDefinition identityAnnihilationPlane;
 	private final IItemDefinition formationPlane;
 	private final IItemDefinition p2PTunnelME;
 	private final IItemDefinition p2PTunnelRedstone;
@@ -80,10 +81,10 @@ public final class ApiParts implements IParts
 		this.cableCovered = constructor.constructColoredDefinition( itemMultiPart, PartType.CableCovered );
 		this.cableGlass = constructor.constructColoredDefinition( itemMultiPart, PartType.CableGlass );
 		this.cableDense = constructor.constructColoredDefinition( itemMultiPart, PartType.CableDense );
-		//		this.lumenCableSmart = Optional.absent(); // has yet to be implemented, no PartType defined for it yet
-		//		this.lumenCableCovered = Optional.absent(); // has yet to be implemented, no PartType defined for it yet
-		//		this.lumenCableGlass = Optional.absent(); // has yet to be implemented, no PartType defined for it yet
-		//		this.lumenCableDense = Optional.absent(); // has yet to be implemented, no PartType defined for it yet
+		// this.lumenCableSmart = Optional.absent(); // has yet to be implemented, no PartType defined for it yet
+		// this.lumenCableCovered = Optional.absent(); // has yet to be implemented, no PartType defined for it yet
+		// this.lumenCableGlass = Optional.absent(); // has yet to be implemented, no PartType defined for it yet
+		// this.lumenCableDense = Optional.absent(); // has yet to be implemented, no PartType defined for it yet
 		this.quartzFiber = new DamagedItemDefinition( itemMultiPart.createPart( PartType.QuartzFiber ) );
 		this.toggleBus = new DamagedItemDefinition( itemMultiPart.createPart( PartType.ToggleBus ) );
 		this.invertedToggleBus = new DamagedItemDefinition( itemMultiPart.createPart( PartType.InvertedToggleBus ) );
@@ -93,6 +94,7 @@ public final class ApiParts implements IParts
 		this.iface = new DamagedItemDefinition( itemMultiPart.createPart( PartType.Interface ) );
 		this.levelEmitter = new DamagedItemDefinition( itemMultiPart.createPart( PartType.LevelEmitter ) );
 		this.annihilationPlane = new DamagedItemDefinition( itemMultiPart.createPart( PartType.AnnihilationPlane ) );
+		this.identityAnnihilationPlane = new DamagedItemDefinition( itemMultiPart.createPart( PartType.IdentityAnnihilationPlane ) );
 		this.formationPlane = new DamagedItemDefinition( itemMultiPart.createPart( PartType.FormationPlane ) );
 		this.p2PTunnelME = new DamagedItemDefinition( itemMultiPart.createPart( PartType.P2PTunnelME ) );
 		this.p2PTunnelRedstone = new DamagedItemDefinition( itemMultiPart.createPart( PartType.P2PTunnelRedstone ) );
@@ -142,28 +144,28 @@ public final class ApiParts implements IParts
 	public AEColoredItemDefinition lumenCableSmart()
 	{
 		throw new MissingDefinition( "Lumen Smart Cable has yet to be implemented." );
-		//		return this.lumenCableSmart;
+		// return this.lumenCableSmart;
 	}
 
 	@Override
 	public AEColoredItemDefinition lumenCableCovered()
 	{
 		throw new MissingDefinition( "Lumen Covered Cable has yet to be implemented." );
-		//		return this.lumenCableCovered;
+		// return this.lumenCableCovered;
 	}
 
 	@Override
 	public AEColoredItemDefinition lumenCableGlass()
 	{
 		throw new MissingDefinition( "Lumen Glass Cable has yet to be implemented." );
-		//		return this.lumenCableGlass;
+		// return this.lumenCableGlass;
 	}
 
 	@Override
 	public AEColoredItemDefinition lumenCableDense()
 	{
 		throw new MissingDefinition( "Lumen Dense Cable has yet to be implemented." );
-		//		return this.lumenCableDense;
+		// return this.lumenCableDense;
 	}
 
 	@Override
@@ -218,6 +220,12 @@ public final class ApiParts implements IParts
 	public IItemDefinition annihilationPlane()
 	{
 		return this.annihilationPlane;
+	}
+
+	@Override
+	public IItemDefinition identityAnnihilationPlane()
+	{
+		return this.identityAnnihilationPlane;
 	}
 
 	@Override
