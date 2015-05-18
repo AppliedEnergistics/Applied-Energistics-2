@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -52,8 +52,8 @@ import appeng.api.parts.IPartItem;
 import appeng.api.parts.LayerBase;
 import appeng.client.render.BusRenderer;
 import appeng.core.AELog;
-import appeng.core.AppEng;
 import appeng.core.CommonHelper;
+import appeng.integration.IntegrationRegistry;
 import appeng.integration.IntegrationType;
 import appeng.integration.abstraction.IFMP;
 import appeng.parts.PartPlacement;
@@ -73,9 +73,9 @@ public class ApiPart implements IPartHelper
 	{
 		for( Class layerInterface : this.interfaces2Layer.keySet() )
 		{
-			if( AppEng.instance.isIntegrationEnabled( IntegrationType.FMP ) )
+			if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.FMP ) )
 			{
-				( (IFMP) AppEng.instance.getIntegration( IntegrationType.FMP ) ).registerPassThrough( layerInterface );
+				( (IFMP) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.FMP ) ).registerPassThrough( layerInterface );
 			}
 		}
 	}

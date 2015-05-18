@@ -62,7 +62,7 @@ public class TileChunkLoader extends AEBaseTile
 			return;
 		}
 
-		this.ct = ForgeChunkManager.requestTicket( AppEng.instance, this.worldObj, Type.NORMAL );
+		this.ct = ForgeChunkManager.requestTicket( AppEng.instance(), this.worldObj, Type.NORMAL );
 
 		if( this.ct == null )
 		{

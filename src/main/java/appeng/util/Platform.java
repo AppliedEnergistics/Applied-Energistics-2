@@ -126,6 +126,7 @@ import appeng.core.stats.Stats;
 import appeng.core.sync.GuiBridge;
 import appeng.core.sync.GuiHostType;
 import appeng.hooks.TickHandler;
+import appeng.integration.IntegrationRegistry;
 import appeng.integration.IntegrationType;
 import appeng.me.GridAccessException;
 import appeng.me.GridNode;
@@ -320,17 +321,17 @@ public class Platform
 
 	private static boolean isNotValidSetting( Enum e )
 	{
-		if( e == SortOrder.INVTWEAKS && !AppEng.instance.isIntegrationEnabled( IntegrationType.InvTweaks ) )
+		if( e == SortOrder.INVTWEAKS && !IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.InvTweaks ) )
 		{
 			return true;
 		}
 
-		if( e == SearchBoxMode.NEI_AUTOSEARCH && !AppEng.instance.isIntegrationEnabled( IntegrationType.NEI ) )
+		if( e == SearchBoxMode.NEI_AUTOSEARCH && !IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.NEI ) )
 		{
 			return true;
 		}
 
-		if( e == SearchBoxMode.NEI_MANUAL_SEARCH && !AppEng.instance.isIntegrationEnabled( IntegrationType.NEI ) )
+		if( e == SearchBoxMode.NEI_MANUAL_SEARCH && !IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.NEI ) )
 		{
 			return true;
 		}
@@ -359,15 +360,15 @@ public class Platform
 		{
 			if( tile == null && type.getType() == GuiHostType.ITEM )
 			{
-				p.openGui( AppEng.instance, type.ordinal() << 4, p.getEntityWorld(), p.inventory.currentItem, 0, 0 );
+				p.openGui( AppEng.instance(), type.ordinal() << 4, p.getEntityWorld(), p.inventory.currentItem, 0, 0 );
 			}
 			else if( tile == null || type.getType() == GuiHostType.ITEM )
 			{
-				p.openGui( AppEng.instance, type.ordinal() << 4 | ( 1 << 3 ), p.getEntityWorld(), x, y, z );
+				p.openGui( AppEng.instance(), type.ordinal() << 4 | ( 1 << 3 ), p.getEntityWorld(), x, y, z );
 			}
 			else
 			{
-				p.openGui( AppEng.instance, type.ordinal() << 4 | ( side.ordinal() ), tile.getWorldObj(), x, y, z );
+				p.openGui( AppEng.instance(), type.ordinal() << 4 | ( side.ordinal() ), tile.getWorldObj(), x, y, z );
 			}
 		}
 	}

@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -29,7 +29,7 @@ import net.minecraft.tileentity.TileEntityChest;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import appeng.api.config.FuzzyMode;
-import appeng.core.AppEng;
+import appeng.integration.IntegrationRegistry;
 import appeng.integration.IntegrationType;
 import appeng.integration.abstraction.IBetterStorage;
 import appeng.util.inv.AdaptorIInventory;
@@ -51,7 +51,7 @@ public abstract class InventoryAdaptor implements Iterable<ItemSlot>
 			return null;
 		}
 
-		IBetterStorage bs = (IBetterStorage) ( AppEng.instance.isIntegrationEnabled( IntegrationType.BetterStorage ) ? AppEng.instance.getIntegration( IntegrationType.BetterStorage ) : null );
+		IBetterStorage bs = (IBetterStorage) ( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.BetterStorage ) ? IntegrationRegistry.INSTANCE.getInstance( IntegrationType.BetterStorage ) : null );
 
 		if( te instanceof EntityPlayer )
 		{

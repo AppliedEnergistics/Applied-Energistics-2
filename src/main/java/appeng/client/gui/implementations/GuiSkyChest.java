@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -23,8 +23,8 @@ import net.minecraft.entity.player.InventoryPlayer;
 
 import appeng.client.gui.AEBaseGui;
 import appeng.container.implementations.ContainerSkyChest;
-import appeng.core.AppEng;
 import appeng.core.localization.GuiText;
+import appeng.integration.IntegrationRegistry;
 import appeng.integration.IntegrationType;
 import appeng.tile.storage.TileSkyChest;
 
@@ -55,6 +55,6 @@ public class GuiSkyChest extends AEBaseGui
 	@Override
 	protected boolean enableSpaceClicking()
 	{
-		return !AppEng.instance.isIntegrationEnabled( IntegrationType.InvTweaks );
+		return !IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.InvTweaks );
 	}
 }

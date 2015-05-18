@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -33,7 +33,7 @@ import appeng.api.AEApi;
 import appeng.api.parts.IFacadeContainer;
 import appeng.api.parts.IFacadePart;
 import appeng.api.parts.IPartHost;
-import appeng.core.AppEng;
+import appeng.integration.IntegrationRegistry;
 import appeng.integration.IntegrationType;
 import appeng.integration.abstraction.IBC;
 import appeng.items.parts.ItemFacade;
@@ -137,9 +137,9 @@ public class FacadeContainer implements IFacadeContainer
 				boolean isBC = ids[0] < 0;
 				ids[0] = Math.abs( ids[0] );
 
-				if( isBC && AppEng.instance.isIntegrationEnabled( IntegrationType.BC ) )
+				if( isBC && IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.BC ) )
 				{
-					IBC bc = (IBC) AppEng.instance.getIntegration( IntegrationType.BC );
+					IBC bc = (IBC) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.BC );
 					changed = changed || this.storage.getFacade( x ) == null;
 					this.storage.setFacade( x, bc.createFacadePart( (Block) Block.blockRegistry.getObjectById( ids[0] ), ids[1], side ) );
 				}
@@ -187,9 +187,9 @@ public class FacadeContainer implements IFacadeContainer
 					}
 					else
 					{
-						if( AppEng.instance.isIntegrationEnabled( IntegrationType.BC ) )
+						if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.BC ) )
 						{
-							IBC bc = (IBC) AppEng.instance.getIntegration( IntegrationType.BC );
+							IBC bc = (IBC) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.BC );
 							if( bc.isFacade( is ) )
 							{
 								this.storage.setFacade( x, bc.createFacadePart( is, ForgeDirection.getOrientation( x ) ) );
