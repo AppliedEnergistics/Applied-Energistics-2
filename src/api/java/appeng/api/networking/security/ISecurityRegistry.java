@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2013 AlgorithmX2
+ * Copyright (c) 2013 - 2015 AlgorithmX2
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -38,8 +38,8 @@ public interface ISecurityRegistry
 	/**
 	 * Submit Permissions into the register.
 	 *
-	 * @param PlayerID    player id
+	 * @param playerID    player id
 	 * @param permissions permissions of player
 	 */
-	void addPlayer( int PlayerID, EnumSet<SecurityPermissions> permissions );
+	void addPlayer( int playerID, EnumSet<SecurityPermissions> permissions );
 }
