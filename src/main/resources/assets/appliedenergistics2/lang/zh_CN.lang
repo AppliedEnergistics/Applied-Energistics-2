@@ -91,6 +91,7 @@ gui.appliedenergistics2.RedstoneTunnel=红石
 gui.appliedenergistics2.EUTunnel=EU
 gui.appliedenergistics2.RFTunnel=RF
 gui.appliedenergistics2.LightTunnel=光
+gui.appliedenergistics2.OCTunnel=OpenComputers
 
 gui.appliedenergistics2.security.extract.name=取出
 gui.appliedenergistics2.security.inject.name=存入
@@ -214,7 +215,7 @@ gui.appliedenergistics2.Precise=精确匹配
 gui.appliedenergistics2.Fuzzy=模糊匹配
 gui.appliedenergistics2.SmallFontCraft=Craft
 gui.appliedenergistics2.LargeFontCraft=+
-gui.appliedenergistics2.Nothing=Nothing
+gui.appliedenergistics2.Nothing=无
 
 // GUI提示
 gui.tooltips.appliedenergistics2.Stash=存储物品
