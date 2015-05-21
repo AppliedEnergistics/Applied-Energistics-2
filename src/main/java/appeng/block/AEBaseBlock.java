@@ -627,7 +627,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 
 		if( this.hasBlockTileEntity() )
 		{
-			rotatable = this.getTileEntity( w, x, y, z );
+			rotatable = (IOrientable) this.getTileEntity( w, x, y, z );
 		}
 		else if( this instanceof IOrientableBlock )
 		{
@@ -758,7 +758,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 
 		if( this.hasBlockTileEntity() )
 		{
-			ori = this.getTileEntity( w, x, y, z );
+			ori = (IOrientable) this.getTileEntity( w, x, y, z );
 		}
 		else if( this instanceof IOrientableBlock )
 		{
