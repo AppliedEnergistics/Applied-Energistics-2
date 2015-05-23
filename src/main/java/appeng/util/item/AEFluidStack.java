@@ -303,7 +303,7 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 		{
 			FluidStack is = (FluidStack) ia;
 
-			if( is.fluidID == this.fluid.getID() )
+			if( is.getFluidID() == this.fluid.getID() )
 			{
 				NBTTagCompound ta = (NBTTagCompound) this.tagCompound;
 				NBTTagCompound tb = is.tag;
