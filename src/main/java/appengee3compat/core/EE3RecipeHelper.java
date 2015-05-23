@@ -42,7 +42,7 @@ public class EE3RecipeHelper {
                     if (clearList)
                         recipeInputs.clear();
 
-                    AELog.info(">>> " + recipeOutput.getDisplayName() + " >>> " + recipeInputs.toString());
+                    //AELog.info(">>> " + recipeOutput.getDisplayName() + " >>> " + recipeInputs.toString());
 
                     if (!recipeInputs.isEmpty()) {
                         RecipeRegistryProxy.addRecipe(recipeOutput, recipeInputs);
