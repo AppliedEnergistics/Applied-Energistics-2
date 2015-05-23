@@ -10,7 +10,6 @@ import com.google.common.base.Stopwatch;
 import com.pahimar.ee3.api.exchange.EnergyValueRegistryProxy;
 import com.pahimar.ee3.api.exchange.RecipeRegistryProxy;
 import com.pahimar.ee3.api.knowledge.AbilityRegistryProxy;
-import com.pahimar.ee3.knowledge.AbilityRegistry;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
