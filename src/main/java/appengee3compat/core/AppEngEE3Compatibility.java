@@ -71,7 +71,7 @@ public final class AppEngEE3Compatibility {
 
             EE3RecipeHelper.initRecipes();
             RegisterFurnaceRecipes();
-            RegisterFacadeRecipes();
+            //RegisterFacadeRecipes();
             RegisterGrinderRecipes();
             RegisterInscriberRecipes();
             RegisterWorldRecipes();
