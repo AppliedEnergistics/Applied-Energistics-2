@@ -9,6 +9,8 @@ import com.pahimar.ee3.api.exchange.RecipeRegistryProxy;
 import com.pahimar.ee3.exchange.OreStack;
 import com.pahimar.ee3.exchange.WrappedStack;
 import com.pahimar.ee3.util.ItemHelper;
+import net.minecraft.init.Items;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
@@ -27,6 +29,20 @@ public class EE3RecipeHelper {
 
                 if (recipeOutput != null) {
                     List<WrappedStack> recipeInputs = getRecipeInputs(recipe);
+
+                    boolean clearList = false;
+                    for (WrappedStack stack : recipeInputs) {
+                        ItemStack unknown = (ItemStack)stack.getWrappedObject();
+
+                        if (unknown.isItemEqual(new ItemStack(Items.water_bucket, 1))) {
+                            clearList = true;
+                        }
+                    }
+
+                    if (clearList)
+                        recipeInputs.clear();
+
+                    AELog.info(">>> " + recipeOutput.getDisplayName() + " >>> " + recipeInputs.toString());
 
                     if (!recipeInputs.isEmpty()) {
                         RecipeRegistryProxy.addRecipe(recipeOutput, recipeInputs);
