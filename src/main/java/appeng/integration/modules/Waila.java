@@ -38,6 +38,7 @@ public class Waila extends BaseModule
 	{
 		final IWailaDataProvider partHost = new PartWailaDataProvider();
 
+		registrar.registerStackProvider( partHost, AEBaseTile.class );
 		registrar.registerBodyProvider( partHost, AEBaseTile.class );
 		registrar.registerNBTProvider( partHost, AEBaseTile.class );
 

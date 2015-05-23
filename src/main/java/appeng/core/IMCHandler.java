@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -38,6 +38,8 @@ import appeng.core.api.imc.IMCSpatial;
  */
 public class IMCHandler
 {
+	private static final int INITIAL_PROCESSORS_CAPACITY = 20;
+
 	/**
 	 * Contains the processors,
 	 *
@@ -51,7 +53,7 @@ public class IMCHandler
 	 */
 	public IMCHandler()
 	{
-		this.processors = new HashMap<String, IIMCProcessor>();
+		this.processors = new HashMap<String, IIMCProcessor>( INITIAL_PROCESSORS_CAPACITY );
 
 		this.processors.put( "blacklist-block-spatial", new IMCBlackListSpatial() );
 		this.processors.put( "whitelist-spatial", new IMCSpatial() );

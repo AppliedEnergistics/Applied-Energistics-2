@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -18,9 +18,6 @@
 
 package appeng.client;
 
-
-import static net.minecraftforge.client.IItemRenderer.ItemRenderType.ENTITY;
-import static net.minecraftforge.client.IItemRenderer.ItemRendererHelper.BLOCK_3D;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -301,10 +298,10 @@ public class ClientHelper extends ServerHelper
 					GL11.glRotatef( 30.0f, 0.0f, 1.0f, 0.0f );
 				}
 
-				IItemRenderer customRenderer = MinecraftForgeClient.getItemRenderer( itemstack, ENTITY );
+				IItemRenderer customRenderer = MinecraftForgeClient.getItemRenderer( itemstack, IItemRenderer.ItemRenderType.ENTITY );
 				if( customRenderer != null && !( itemstack.getItem() instanceof ItemBlock ) )
 				{
-					if( customRenderer.shouldUseRenderHelper( ENTITY, itemstack, BLOCK_3D ) )
+					if( customRenderer.shouldUseRenderHelper( IItemRenderer.ItemRenderType.ENTITY, itemstack, IItemRenderer.ItemRendererHelper.BLOCK_3D ) )
 					{
 						GL11.glTranslatef( 0, -0.04F, 0 );
 						GL11.glScalef( 0.7f, 0.7f, 0.7f );

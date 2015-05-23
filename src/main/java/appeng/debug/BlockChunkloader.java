@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -41,7 +41,7 @@ public class BlockChunkloader extends AEBaseBlock implements LoadingCallback
 	{
 		super( Material.iron );
 		this.setTileEntity( TileChunkLoader.class );
-		ForgeChunkManager.setForcedChunkLoadingCallback( AppEng.instance, this );
+		ForgeChunkManager.setForcedChunkLoadingCallback( AppEng.instance(), this );
 		this.setFeature( EnumSet.of( AEFeature.UnsupportedDeveloperTools, AEFeature.Creative ) );
 	}
 

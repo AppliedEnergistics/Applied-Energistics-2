@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -20,7 +20,6 @@ package appeng.client.render;
 
 
 import java.util.EnumSet;
-
 import javax.annotation.Nullable;
 
 import com.google.common.base.Function;
@@ -457,10 +456,10 @@ public final class BusRenderHelper implements IPartRenderHelper
 	}
 
 	@Override
-	public void renderInventoryFace( IIcon IIcon, ForgeDirection face, RenderBlocks renderer )
+	public void renderInventoryFace( IIcon icon, ForgeDirection face, RenderBlocks renderer )
 	{
 		renderer.setRenderBounds( this.minX / 16.0, this.minY / 16.0, this.minZ / 16.0, this.maxX / 16.0, this.maxY / 16.0, this.maxZ / 16.0 );
-		this.setTexture( IIcon );
+		this.setTexture( icon );
 
 		for( AEBaseBlock baseBlock : this.maybeBaseBlock.asSet() )
 		{

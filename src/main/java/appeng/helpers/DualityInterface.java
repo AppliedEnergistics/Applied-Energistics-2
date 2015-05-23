@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -19,12 +19,12 @@
 package appeng.helpers;
 
 
+import java.util.Collection;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 import com.google.common.collect.ImmutableSet;
 
@@ -100,7 +100,7 @@ import appeng.util.item.AEItemStack;
 public class DualityInterface implements IGridTickable, IStorageMonitorable, IInventoryDestination, IAEAppEngInventory, IConfigManagerHost, ICraftingProvider, IUpgradeableHost, IPriorityHost
 {
 
-	static final Set<Block> badBlocks = new HashSet<Block>();
+	private static final Collection<Block> BAD_BLOCKS = new HashSet<Block>( 100 );
 	final int[] sides = new int[] { 0, 1, 2, 3, 4, 5, 6, 7 };
 	final IAEItemStack[] requireWork = new IAEItemStack[] { null, null, null, null, null, null, null, null };
 	final MultiCraftingTracker craftingTracker;
@@ -1171,7 +1171,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 					from = from.addVector( direction.offsetX * 0.501, direction.offsetY * 0.501, direction.offsetZ * 0.501 );
 					Vec3 to = from.addVector( direction.offsetX, direction.offsetY, direction.offsetZ );
 					MovingObjectPosition mop = hostWorld.rayTraceBlocks( from, to, true );
-					if( mop != null && !badBlocks.contains( directedBlock ) )
+					if( mop != null && !BAD_BLOCKS.contains( directedBlock ) )
 					{
 						if( mop.blockX == directedTile.xCoord && mop.blockY == directedTile.yCoord && mop.blockZ == directedTile.zCoord )
 						{
@@ -1185,7 +1185,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 				}
 				catch( Throwable t )
 				{
-					badBlocks.add( directedBlock ); // nope!
+					BAD_BLOCKS.add( directedBlock ); // nope!
 				}
 
 				if( what.getItem() != null )

@@ -93,7 +93,7 @@ public final class DisassembleRecipe implements IRecipe
 			{
 				// needs a single input in the recipe
 				itemCount++;
-				if ( itemCount > 1 )
+				if( itemCount > 1 )
 				{
 					return MISMATCHED_STACK;
 				}

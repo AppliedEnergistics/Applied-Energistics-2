@@ -29,6 +29,7 @@ import net.minecraft.world.World;
 
 import gnu.trove.map.TObjectLongMap;
 import gnu.trove.map.hash.TObjectLongHashMap;
+import mcp.mobius.waila.api.ITaggedList;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 
@@ -76,6 +77,9 @@ public final class PowerStorageWailaDataProvider extends BaseWailaDataProvider
 	@Override
 	public List<String> getWailaBody( ItemStack itemStack, List<String> currentToolTip, IWailaDataAccessor accessor, IWailaConfigHandler config )
 	{
+		//Removes RF tooltip on WAILA 1.5.9+
+		((ITaggedList<String, String>) currentToolTip).removeEntries("RFEnergyStorage");
+
 		final TileEntity te = accessor.getTileEntity();
 		if( te instanceof IAEPowerStorage )
 		{

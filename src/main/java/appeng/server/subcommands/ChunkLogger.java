@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -39,11 +39,11 @@ public class ChunkLogger implements ISubCommand
 	boolean enabled = false;
 
 	@SubscribeEvent
-	public void ChunkLoad( ChunkEvent.Load load )
+	public void onChunkLoadEvent( ChunkEvent.Load event )
 	{
-		if( !load.world.isRemote )
+		if( !event.world.isRemote )
 		{
-			AELog.info( "Chunk Loaded:   " + load.getChunk().xPosition + ", " + load.getChunk().zPosition );
+			AELog.info( "Chunk Loaded:   " + event.getChunk().xPosition + ", " + event.getChunk().zPosition );
 			this.displayStack();
 		}
 	}
@@ -68,7 +68,7 @@ public class ChunkLogger implements ISubCommand
 	}
 
 	@SubscribeEvent
-	public void ChunkLoad( ChunkEvent.Unload unload )
+	public void onChunkUnloadEvent( ChunkEvent.Unload unload )
 	{
 		if( !unload.world.isRemote )
 		{

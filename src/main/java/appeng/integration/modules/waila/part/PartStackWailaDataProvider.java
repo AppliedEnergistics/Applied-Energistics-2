@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -16,31 +16,27 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.integration.modules;
+package appeng.integration.modules.waila.part;
 
+import appeng.api.parts.IPart;
+import appeng.api.parts.PartItemStack;
+import mcp.mobius.waila.api.IWailaConfigHandler;
+import net.minecraft.item.ItemStack;
 
-import appeng.integration.BaseModule;
-
-
-public class RotaryCraft extends BaseModule
-{
-	public static RotaryCraft instance;
-
-	public RotaryCraft()
-	{
-		this.testClassExistence( Reika.RotaryCraft.API.Power.AdvancedShaftPowerReceiver.class );
-		this.testClassExistence( Reika.RotaryCraft.API.Interfaces.Transducerable.class );
-	}
-
-	@Override
-	public void init() throws Throwable
-	{
-
-	}
+/**
+ *  Part ItemStack provider for WAILA
+ *
+ * @author TheJulianJES
+ * @version rv2
+ * @since rv2
+ */
+public class PartStackWailaDataProvider extends BasePartWailaDataProvider {
 
 	@Override
-	public void postInit()
+	public ItemStack getWailaStack( IPart part, IWailaConfigHandler config, ItemStack partStack )
 	{
-
+		partStack = part.getItemStack( PartItemStack.Pick );
+		return partStack;
 	}
+
 }

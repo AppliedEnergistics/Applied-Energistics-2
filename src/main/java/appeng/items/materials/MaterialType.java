@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -114,7 +114,7 @@ public enum MaterialType
 		this.damageValue = metaValue;
 		this.droppedEntity = c;
 
-		EntityRegistry.registerModEntity( this.droppedEntity, this.droppedEntity.getSimpleName(), EntityIds.get( this.droppedEntity ), AppEng.instance, 16, 4, true );
+		EntityRegistry.registerModEntity( this.droppedEntity, this.droppedEntity.getSimpleName(), EntityIds.get( this.droppedEntity ), AppEng.instance(), 16, 4, true );
 	}
 
 	MaterialType( int metaValue, AEFeature part, String oreDictionary, Class<? extends Entity> c )
@@ -123,7 +123,7 @@ public enum MaterialType
 		this.damageValue = metaValue;
 		this.oreName = oreDictionary;
 		this.droppedEntity = c;
-		EntityRegistry.registerModEntity( this.droppedEntity, this.droppedEntity.getSimpleName(), EntityIds.get( this.droppedEntity ), AppEng.instance, 16, 4, true );
+		EntityRegistry.registerModEntity( this.droppedEntity, this.droppedEntity.getSimpleName(), EntityIds.get( this.droppedEntity ), AppEng.instance(), 16, 4, true );
 	}
 
 	MaterialType( int metaValue, AEFeature part, String oreDictionary )

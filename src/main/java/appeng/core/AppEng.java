@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -21,6 +21,7 @@ package appeng.core;
 
 import java.io.File;
 import java.util.concurrent.TimeUnit;
+import javax.annotation.Nonnull;
 
 import com.google.common.base.Stopwatch;
 
@@ -45,7 +46,6 @@ import appeng.core.sync.GuiBridge;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.hooks.TickHandler;
 import appeng.integration.IntegrationRegistry;
-import appeng.integration.IntegrationType;
 import appeng.server.AECommand;
 import appeng.services.VersionChecker;
 import appeng.services.version.VersionCheckerConfig;
@@ -68,19 +68,26 @@ public final class AppEng
 					+ net.minecraftforge.common.ForgeVersion.minorVersion + '.' // minorVersion
 					+ net.minecraftforge.common.ForgeVersion.revisionVersion + '.' // revisionVersion
 					+ net.minecraftforge.common.ForgeVersion.buildVersion + ",)"; // buildVersion
-	public static AppEng instance;
+
+	@Nonnull
+	private static final AppEng INSTANCE = new AppEng();
 
 	private final IMCHandler imcHandler;
 
 	private File configDirectory;
 
-	public AppEng()
+	AppEng()
 	{
-		instance = this;
-
 		this.imcHandler = new IMCHandler();
 
 		FMLCommonHandler.instance().registerCrashCallable( new ModCrashEnhancement( CrashInfo.MOD_VERSION ) );
+	}
+
+	@Nonnull
+	@Mod.InstanceFactory
+	public static AppEng instance()
+	{
+		return INSTANCE;
 	}
 
 	public final File getConfigDirectory()
@@ -88,18 +95,8 @@ public final class AppEng
 		return this.configDirectory;
 	}
 
-	public boolean isIntegrationEnabled( IntegrationType integrationName )
-	{
-		return IntegrationRegistry.INSTANCE.isEnabled( integrationName );
-	}
-
-	public Object getIntegration( IntegrationType integrationName )
-	{
-		return IntegrationRegistry.INSTANCE.getInstance( integrationName );
-	}
-
 	@EventHandler
-	void preInit( FMLPreInitializationEvent event )
+	private void preInit( FMLPreInitializationEvent event )
 	{
 		if( !Loader.isModLoaded( "appliedenergistics2-core" ) )
 		{
@@ -153,7 +150,7 @@ public final class AppEng
 	}
 
 	@EventHandler
-	void init( FMLInitializationEvent event )
+	private void init( FMLInitializationEvent event )
 	{
 		Stopwatch star = Stopwatch.createStarted();
 		AELog.info( "Initialization ( started )" );
@@ -165,7 +162,7 @@ public final class AppEng
 	}
 
 	@EventHandler
-	void postInit( FMLPostInitializationEvent event )
+	private void postInit( FMLPostInitializationEvent event )
 	{
 		Stopwatch star = Stopwatch.createStarted();
 		AELog.info( "Post Initialization ( started )" );
@@ -184,26 +181,26 @@ public final class AppEng
 	}
 
 	@EventHandler
-	public void handleIMCEvent( FMLInterModComms.IMCEvent event )
+	private void handleIMCEvent( FMLInterModComms.IMCEvent event )
 	{
 		this.imcHandler.handleIMCEvent( event );
 	}
 
 	@EventHandler
-	public void serverStopping( FMLServerStoppingEvent event )
+	private void serverStopping( FMLServerStoppingEvent event )
 	{
 		WorldSettings.getInstance().shutdown();
 		TickHandler.INSTANCE.shutdown();
 	}
 
 	@EventHandler
-	public void serverAboutToStart( FMLServerAboutToStartEvent evt )
+	private void serverAboutToStart( FMLServerAboutToStartEvent evt )
 	{
 		WorldSettings.getInstance().init();
 	}
 
 	@EventHandler
-	public void serverStarting( FMLServerStartingEvent evt )
+	private void serverStarting( FMLServerStartingEvent evt )
 	{
 		evt.registerServerCommand( new AECommand( evt.getServer() ) );
 	}

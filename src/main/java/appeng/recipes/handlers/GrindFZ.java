@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -29,7 +29,7 @@ import appeng.api.exceptions.RegistrationError;
 import appeng.api.recipes.ICraftHandler;
 import appeng.api.recipes.IIngredient;
 import appeng.core.AELog;
-import appeng.core.AppEng;
+import appeng.integration.IntegrationRegistry;
 import appeng.integration.IntegrationType;
 import appeng.integration.abstraction.IFZ;
 import appeng.recipes.RecipeHandler;
@@ -61,9 +61,9 @@ public class GrindFZ implements ICraftHandler, IWebsiteSerializer
 	@Override
 	public void register() throws RegistrationError, MissingIngredientError
 	{
-		if( AppEng.instance.isIntegrationEnabled( IntegrationType.FZ ) )
+		if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.FZ ) )
 		{
-			IFZ fz = (IFZ) AppEng.instance.getIntegration( IntegrationType.FZ );
+			IFZ fz = (IFZ) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.FZ );
 			for( ItemStack is : this.pro_input.getItemStackSet() )
 			{
 				try

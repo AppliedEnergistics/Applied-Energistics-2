@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -26,7 +26,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import appeng.api.config.FuzzyMode;
-import appeng.core.AppEng;
+import appeng.integration.IntegrationRegistry;
 import appeng.integration.IntegrationType;
 import appeng.integration.abstraction.IBC;
 import appeng.util.InventoryAdaptor;
@@ -42,7 +42,7 @@ public class AdaptorBCPipe extends InventoryAdaptor
 
 	public AdaptorBCPipe( TileEntity s, ForgeDirection dd )
 	{
-		this.bc = (IBC) AppEng.instance.getIntegration( IntegrationType.BC );
+		this.bc = (IBC) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.BC );
 		if( this.bc != null )
 		{
 			if( this.bc.isPipe( s, dd ) )

@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -147,7 +147,7 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 		ItemStack is = this.workBench.getInventoryByName( "cell" ).getStackInSlot( 0 );
 		if( Platform.isServer() )
 		{
-			if( workBench.getWorldObj().getTileEntity( workBench.xCoord, workBench.yCoord, workBench.zCoord ) != workBench )
+			if( this.workBench.getWorldObj().getTileEntity( this.workBench.xCoord, this.workBench.yCoord, this.workBench.zCoord ) != this.workBench )
 			{
 				this.isContainerValid = false;
 			}

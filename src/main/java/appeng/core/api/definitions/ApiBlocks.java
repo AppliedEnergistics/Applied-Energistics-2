@@ -175,7 +175,7 @@ public final class ApiBlocks implements IBlocks
 		final BlockQuartzGrowthAccelerator cga = new BlockQuartzGrowthAccelerator();
 		final BlockQuartzTorch quartzTorch = new BlockQuartzTorch();
 		final BlockQuartz quartzBlock = new BlockQuartz();
-		final BlockQuartzChiseled chiseldQuartz = new BlockQuartzChiseled();
+		final BlockQuartzChiseled chiseledQuartz = new BlockQuartzChiseled();
 
 		this.orientables = ImmutableSet.<IOrientableBlock>of( lightDetector, quartzPillar, skyStone, cga, quartzTorch );
 
@@ -184,7 +184,7 @@ public final class ApiBlocks implements IBlocks
 		this.matrixFrame = constructor.registerBlockDefinition( new BlockMatrixFrame() );
 		this.quartz = constructor.registerBlockDefinition( quartzBlock );
 		this.quartzPillar = constructor.registerBlockDefinition( quartzPillar );
-		this.quartzChiseled = constructor.registerBlockDefinition( chiseldQuartz );
+		this.quartzChiseled = constructor.registerBlockDefinition( chiseledQuartz );
 		this.quartzGlass = constructor.registerBlockDefinition( new BlockQuartzGlass() );
 		this.quartzVibrantGlass = constructor.registerBlockDefinition( new BlockQuartzLamp() );
 		this.quartzTorch = constructor.registerBlockDefinition( quartzTorch );
@@ -237,7 +237,7 @@ public final class ApiBlocks implements IBlocks
 
 		this.quartzStair = constructor.registerBlockDefinition( new QuartzStairBlock( quartzBlock ) );
 
-		this.chiseledQuartzStair = constructor.registerBlockDefinition( new ChiseledQuartzStairBlock( chiseldQuartz ) );
+		this.chiseledQuartzStair = constructor.registerBlockDefinition( new ChiseledQuartzStairBlock( chiseledQuartz ) );
 
 		this.quartzPillarStair = constructor.registerBlockDefinition( new QuartzPillarStairBlock( quartzPillar ) );
 

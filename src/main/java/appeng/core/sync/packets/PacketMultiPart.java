@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -26,9 +26,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.MinecraftForge;
 
-import appeng.core.AppEng;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
+import appeng.integration.IntegrationRegistry;
 import appeng.integration.IntegrationType;
 import appeng.integration.abstraction.IFMP;
 
@@ -54,7 +54,7 @@ public class PacketMultiPart extends AppEngPacket
 	@Override
 	public void serverPacketData( INetworkInfo manager, AppEngPacket packet, EntityPlayer player )
 	{
-		IFMP fmp = (IFMP) AppEng.instance.getIntegration( IntegrationType.FMP );
+		IFMP fmp = (IFMP) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.FMP );
 		if( fmp != null )
 		{
 			EntityPlayerMP sender = (EntityPlayerMP) player;
