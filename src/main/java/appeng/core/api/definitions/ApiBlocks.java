@@ -247,7 +247,7 @@ public final class ApiBlocks implements IBlocks
 		this.skyStoneSmallBrickSlab = constructor.registerBlockDefinition( new AEBaseSlabBlock( skyStone, 3, EnumSet.of(AEFeature.DecorativeQuartzBlocks), false, "SkyStoneSmallBrickSlabBlock" ) );
 		this.fluixSlab = constructor.registerBlockDefinition( new AEBaseSlabBlock( fluixBlock, 0, EnumSet.of(AEFeature.DecorativeQuartzBlocks), false, "FluixSlabBlock" ) );
 		this.quartzSlab = constructor.registerBlockDefinition( new AEBaseSlabBlock( quartzBlock, 0, EnumSet.of(AEFeature.DecorativeQuartzBlocks), false, "QuartzSlabBlock" ) );
-		this.chiseledQuartzSlab = constructor.registerBlockDefinition( new AEBaseSlabBlock( chiseldQuartz, 0, EnumSet.of(AEFeature.DecorativeQuartzBlocks), false, "ChiseledQuartzSlabBlock" ) );;
+		this.chiseledQuartzSlab = constructor.registerBlockDefinition( new AEBaseSlabBlock( chiseledQuartz, 0, EnumSet.of(AEFeature.DecorativeQuartzBlocks), false, "ChiseledQuartzSlabBlock" ) );;
 		this.quartzPillarSlab = constructor.registerBlockDefinition( new AEBaseSlabBlock( quartzPillar, 0, EnumSet.of(AEFeature.DecorativeQuartzBlocks), false, "QuartzPillarSlabBlock" ) );
 
 		this.itemGen = constructor.registerBlockDefinition( new BlockItemGen() );
