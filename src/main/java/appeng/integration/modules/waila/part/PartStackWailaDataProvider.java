@@ -27,8 +27,8 @@ import net.minecraft.item.ItemStack;
  *  Part ItemStack provider for WAILA
  *
  * @author TheJulianJES
- * @version rv3
- * @since rv3
+ * @version rv2
+ * @since rv2
  */
 public class PartStackWailaDataProvider extends BasePartWailaDataProvider {
 
