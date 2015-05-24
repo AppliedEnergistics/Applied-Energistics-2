@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -24,6 +24,7 @@ import java.util.List;
 
 import com.google.common.base.Optional;
 
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -84,13 +85,25 @@ public abstract class AEBaseItem extends Item implements IAEFeature
 	}
 
 	@Override
+	@SuppressWarnings( "unchecked" )
+	public final void getSubItems( Item sameItem, CreativeTabs creativeTab, List itemStacks )
+	{
+		this.getCheckedSubItems( sameItem, creativeTab, itemStacks );
+	}
+
+	@Override
 	public boolean isBookEnchantable( ItemStack itemstack1, ItemStack itemstack2 )
 	{
 		return false;
 	}
 
-	public void addCheckedInformation( ItemStack stack, EntityPlayer player, List<String> lines, boolean displayMoreInfo )
+	protected void addCheckedInformation( ItemStack stack, EntityPlayer player, List<String> lines, boolean displayMoreInfo )
 	{
 		super.addInformation( stack, player, lines, displayMoreInfo );
+	}
+
+	protected void getCheckedSubItems( Item sameItem, CreativeTabs creativeTab, List<ItemStack> itemStacks )
+	{
+		super.getSubItems( sameItem, creativeTab, itemStacks );
 	}
 }

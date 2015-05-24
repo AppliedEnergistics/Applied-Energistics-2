@@ -514,12 +514,15 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IMask
 			is = is.copy();
 			is.stackSize = 1;
 
-			IPart bp = bi.createPartFromItemStack( is );
+			final IPart bp = bi.createPartFromItemStack( is );
 			if( !( side == null || side == ForgeDirection.UNKNOWN || this.tile() == null ) )
 			{
 				List<AxisAlignedBB> boxes = new ArrayList<AxisAlignedBB>();
 				IPartCollisionHelper bch = new BusCollisionHelper( boxes, side, null, true );
-				bp.getBoxes( bch );
+				if( bp != null )
+				{
+					bp.getBoxes( bch );
+				}
 				for( AxisAlignedBB bb : boxes )
 				{
 					if( !this.tile().canAddPart( new NormallyOccludedPart( new Cuboid6( bb ) ) ) )

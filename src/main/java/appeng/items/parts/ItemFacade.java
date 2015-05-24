@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -103,17 +103,17 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 	}
 
 	@Override
-	public void getSubItems( Item number, CreativeTabs tab, List list )
+	protected void getCheckedSubItems( Item sameItem, CreativeTabs creativeTab, List<ItemStack> itemStacks )
 	{
 		this.calculateSubTypes();
-		list.addAll( this.subTypes );
+		itemStacks.addAll( this.subTypes );
 	}
 
 	private void calculateSubTypes()
 	{
 		if( this.subTypes == null )
 		{
-			this.subTypes = new ArrayList<ItemStack>();
+			this.subTypes = new ArrayList<ItemStack>( 1000 );
 			for( Object blk : Block.blockRegistry )
 			{
 				Block b = (Block) blk;
@@ -121,7 +121,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 				{
 					Item item = Item.getItemFromBlock( b );
 
-					List<ItemStack> tmpList = new ArrayList<ItemStack>();
+					List<ItemStack> tmpList = new ArrayList<ItemStack>( 100 );
 					b.getSubBlocks( item, b.getCreativeTabToDisplayOn(), tmpList );
 					for( ItemStack l : tmpList )
 					{
