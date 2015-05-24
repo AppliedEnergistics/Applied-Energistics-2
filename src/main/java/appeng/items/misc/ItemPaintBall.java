@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -123,13 +123,13 @@ public class ItemPaintBall extends AEBaseItem
 	}
 
 	@Override
-	public void getSubItems( Item i, CreativeTabs ct, List l )
+	protected void getCheckedSubItems( Item sameItem, CreativeTabs creativeTab, List<ItemStack> itemStacks )
 	{
 		for( AEColor c : AEColor.values() )
 		{
 			if( c != AEColor.Transparent )
 			{
-				l.add( new ItemStack( this, 1, c.ordinal() ) );
+				itemStacks.add( new ItemStack( this, 1, c.ordinal() ) );
 			}
 		}
 
@@ -137,7 +137,7 @@ public class ItemPaintBall extends AEBaseItem
 		{
 			if( c != AEColor.Transparent )
 			{
-				l.add( new ItemStack( this, 1, DAMAGE_THRESHOLD + c.ordinal() ) );
+				itemStacks.add( new ItemStack( this, 1, DAMAGE_THRESHOLD + c.ordinal() ) );
 			}
 		}
 	}

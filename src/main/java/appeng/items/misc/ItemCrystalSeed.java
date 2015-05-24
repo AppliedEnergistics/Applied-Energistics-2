@@ -313,21 +313,21 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 	}
 
 	@Override
-	public void getSubItems( Item i, CreativeTabs t, List l )
+	protected void getCheckedSubItems( Item sameItem, CreativeTabs creativeTab, List<ItemStack> itemStacks )
 	{
 		// lvl 0
-		l.add( newStyle( new ItemStack( this, 1, CERTUS ) ) );
-		l.add( newStyle( new ItemStack( this, 1, NETHER ) ) );
-		l.add( newStyle( new ItemStack( this, 1, FLUIX ) ) );
+		itemStacks.add( newStyle( new ItemStack( this, 1, CERTUS ) ) );
+		itemStacks.add( newStyle( new ItemStack( this, 1, NETHER ) ) );
+		itemStacks.add( newStyle( new ItemStack( this, 1, FLUIX ) ) );
 
 		// lvl 1
-		l.add( newStyle( new ItemStack( this, 1, LEVEL_OFFSET + CERTUS ) ) );
-		l.add( newStyle( new ItemStack( this, 1, LEVEL_OFFSET + NETHER ) ) );
-		l.add( newStyle( new ItemStack( this, 1, LEVEL_OFFSET + FLUIX ) ) );
+		itemStacks.add( newStyle( new ItemStack( this, 1, LEVEL_OFFSET + CERTUS ) ) );
+		itemStacks.add( newStyle( new ItemStack( this, 1, LEVEL_OFFSET + NETHER ) ) );
+		itemStacks.add( newStyle( new ItemStack( this, 1, LEVEL_OFFSET + FLUIX ) ) );
 
 		// lvl 2
-		l.add( newStyle( new ItemStack( this, 1, LEVEL_OFFSET * 2 + CERTUS ) ) );
-		l.add( newStyle( new ItemStack( this, 1, LEVEL_OFFSET * 2 + NETHER ) ) );
-		l.add( newStyle( new ItemStack( this, 1, LEVEL_OFFSET * 2 + FLUIX ) ) );
+		itemStacks.add( newStyle( new ItemStack( this, 1, LEVEL_OFFSET * 2 + CERTUS ) ) );
+		itemStacks.add( newStyle( new ItemStack( this, 1, LEVEL_OFFSET * 2 + NETHER ) ) );
+		itemStacks.add( newStyle( new ItemStack( this, 1, LEVEL_OFFSET * 2 + FLUIX ) ) );
 	}
 }

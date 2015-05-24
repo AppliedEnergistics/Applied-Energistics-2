@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -21,6 +21,7 @@ package appeng.items.parts;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.EnumSet;
@@ -47,6 +48,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import appeng.api.AEApi;
+import appeng.api.exceptions.MissingDefinition;
 import appeng.api.implementations.items.IItemGroup;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHelper;
@@ -58,6 +60,7 @@ import appeng.client.texture.MissingIcon;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
 import appeng.core.features.AEFeature;
+import appeng.core.features.ActivityState;
 import appeng.core.features.ItemStackSrc;
 import appeng.core.localization.GuiText;
 import appeng.integration.IntegrationRegistry;
@@ -67,18 +70,17 @@ import appeng.items.AEBaseItem;
 
 public final class ItemMultiPart extends AEBaseItem implements IPartItem, IItemGroup
 {
+	private static final int INITIAL_REGISTERED_CAPACITY = PartType.values().length;
 	private static final Comparator<Entry<Integer, PartTypeWithVariant>> REGISTERED_COMPARATOR = new RegisteredComparator();
-	
+
 	public static ItemMultiPart instance;
 	private final Map<Integer, PartTypeWithVariant> registered;
-	private final Map<Integer, PartTypeWithVariant> unregistered;
 
 	public ItemMultiPart( IPartHelper partHelper )
 	{
 		Preconditions.checkNotNull( partHelper );
 
-		this.registered = new HashMap<Integer, PartTypeWithVariant>();
-		this.unregistered = new HashMap<Integer, PartTypeWithVariant>();
+		this.registered = new HashMap<Integer, PartTypeWithVariant>( INITIAL_REGISTERED_CAPACITY );
 
 		this.setFeature( EnumSet.of( AEFeature.Core ) );
 		partHelper.setItemBusRenderer( this );
@@ -133,7 +135,8 @@ public final class ItemMultiPart extends AEBaseItem implements IPartItem, IItemG
 		}
 
 		final int partDamage = mat.baseDamage + varID;
-		final ItemStackSrc output = new ItemStackSrc( this, partDamage );
+		final ActivityState state = ActivityState.from( enabled );
+		final ItemStackSrc output = new ItemStackSrc( this, partDamage, state );
 
 		final PartTypeWithVariant pti = new PartTypeWithVariant( mat, varID );
 
@@ -148,13 +151,13 @@ public final class ItemMultiPart extends AEBaseItem implements IPartItem, IItemG
 		assert mat != null;
 		assert pti != null;
 
-		final Map<Integer, PartTypeWithVariant> reference = ( enabled ) ? this.registered : this.unregistered;
-		if( reference.containsKey( partDamage ) )
+		final PartTypeWithVariant registeredPartType = this.registered.get( partDamage );
+		if( registeredPartType != null )
 		{
-			throw new IllegalStateException( "Meta Overlap detected with type " + mat + " and damage " + partDamage + ". Found " + reference.get( partDamage ) + " there already." );
+			throw new IllegalStateException( "Meta Overlap detected with type " + mat + " and damage " + partDamage + ". Found " + registeredPartType + " there already." );
 		}
 
-		reference.put( partDamage, pti );
+		this.registered.put( partDamage, pti );
 	}
 
 	public int getDamageByType( PartType t )
@@ -204,13 +207,13 @@ public final class ItemMultiPart extends AEBaseItem implements IPartItem, IItemG
 	}
 
 	@Override
-	public IAESprite getIcon(
-			ItemStack is )
+	public IAESprite getIcon( ItemStack is )
 	{
-		for( Entry<Integer, PartTypeWithVariant> part : this.registered.entrySet() )
+		final int dmg = is.getMetadata();
+		final PartTypeWithVariant registeredType = this.registered.get( dmg );
+		if( registeredType != null )
 		{
-			if ( is.getMetadata() == part.getKey() )
-				return part.getValue().texture;
+			return registeredType.texture;
 		}
 		
 		return new MissingIcon( this );
@@ -225,7 +228,12 @@ public final class ItemMultiPart extends AEBaseItem implements IPartItem, IItemG
 		{
 			final AEColor[] variants = AEColor.values();
 
-			return super.getItemStackDisplayName( is ) + " - " + variants[this.registered.get( is.getItemDamage() ).variant].toString();
+			final int itemDamage = is.getItemDamage();
+			final PartTypeWithVariant registeredPartType = this.registered.get( itemDamage );
+			if( registeredPartType != null )
+			{
+				return super.getItemStackDisplayName( is ) + " - " + variants[registeredPartType.variant].toString();
+			}
 		}
 
 		if( pt.getExtraName() != null )
@@ -237,14 +245,24 @@ public final class ItemMultiPart extends AEBaseItem implements IPartItem, IItemG
 	}
 
 	@Override
-	public void getSubItems( Item number, CreativeTabs tab, List cList )
+	public void registerIcons( IIconRegister iconRegister )
+	{
+		for( Entry<Integer, PartTypeWithVariant> part : this.registered.entrySet() )
+		{
+			String tex = "appliedenergistics2:" + this.getName( new ItemStack( this, 1, part.getKey() ) );
+			part.getValue().ico = iconRegister.registerIcon( tex );
+		}
+	}
+
+	@Override
+	protected void getCheckedSubItems( Item sameItem, CreativeTabs creativeTab, List<ItemStack> itemStacks )
 	{
 		List<Entry<Integer, PartTypeWithVariant>> types = new ArrayList<Entry<Integer, PartTypeWithVariant>>( this.registered.entrySet() );
 		Collections.sort( types, REGISTERED_COMPARATOR );
 
 		for( Entry<Integer, PartTypeWithVariant> part : types )
 		{
-			cList.add( new ItemStack( this, 1, part.getKey() ) );
+			itemStacks.add( new ItemStack( this, 1, part.getKey() ) );
 		}
 	}
 
@@ -268,21 +286,20 @@ public final class ItemMultiPart extends AEBaseItem implements IPartItem, IItemG
 		{
 			return pt.part;
 		}
-		final PartTypeWithVariant unregisteredPartType = this.unregistered.get( is.getItemDamage() );
-		if( unregisteredPartType != null )
-		{
-			return unregisteredPartType.part;
-		}
 
-		throw new IllegalStateException( "ItemStack " + is + " has to be either registered or unregistered, but was not found in either." );
+		return PartType.InvalidType;
 	}
 
-	@Nonnull
+	@Nullable
 	@Override
 	public IPart createPartFromItemStack( ItemStack is )
 	{
 		final PartType type = this.getTypeByStack( is );
 		final Class<? extends IPart> part = type.getPart();
+		if( part == null )
+		{
+			return null;
+		}
 
 		try
 		{
@@ -313,10 +330,12 @@ public final class ItemMultiPart extends AEBaseItem implements IPartItem, IItemG
 
 	public int variantOf( int itemDamage )
 	{
-		if( this.registered.containsKey( itemDamage ) )
+		final PartTypeWithVariant registeredPartType = this.registered.get( itemDamage );
+		if( registeredPartType != null )
 		{
-			return this.registered.get( itemDamage ).variant;
+			return registeredPartType.variant;
 		}
+
 		return 0;
 	}
 
@@ -380,8 +399,19 @@ public final class ItemMultiPart extends AEBaseItem implements IPartItem, IItemG
 			this.part = part;
 			this.variant = variant;
 		}
+
+		@Override
+		public String toString()
+		{
+			return "PartTypeWithVariant{" +
+					"part=" + this.part +
+					", variant=" + this.variant +
+					", ico=" + this.ico +
+					'}';
+		}
 	}
-	
+
+
 	private static final class RegisteredComparator implements Comparator<Entry<Integer, PartTypeWithVariant>>
 	{
 		@Override

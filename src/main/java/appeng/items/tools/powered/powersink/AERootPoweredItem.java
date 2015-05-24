@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -76,15 +76,16 @@ public abstract class AERootPoweredItem extends AEBaseItem implements IAEItemPow
 	}
 
 	@Override
-	public void getSubItems( Item id, CreativeTabs tab, List list )
+	protected void getCheckedSubItems( Item sameItem, CreativeTabs creativeTab, List<ItemStack> itemStacks )
 	{
-		super.getSubItems( id, tab, list );
+		super.getCheckedSubItems( sameItem, creativeTab, itemStacks );
 
-		ItemStack charged = new ItemStack( this, 1 );
-		NBTTagCompound tag = Platform.openNbtData( charged );
+		final ItemStack charged = new ItemStack( this, 1 );
+		final NBTTagCompound tag = Platform.openNbtData( charged );
 		tag.setDouble( "internalCurrentPower", this.getAEMaxPower( charged ) );
 		tag.setDouble( "internalMaxPower", this.getAEMaxPower( charged ) );
-		list.add( charged );
+
+		itemStacks.add( charged );
 	}
 
 	@Override

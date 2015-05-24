@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -26,6 +26,7 @@ import com.google.common.base.Preconditions;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.world.IBlockAccess;
 
 import appeng.api.definitions.IItemDefinition;
 
@@ -34,15 +35,14 @@ public final class DamagedItemDefinition implements IItemDefinition
 {
 	private final String identifier;
 	private final IStackSrc source;
+	private final boolean enabled;
 
 	public DamagedItemDefinition( @Nonnull String identifier, @Nonnull IStackSrc source )
 	{
-		Preconditions.checkNotNull( identifier );
+		this.identifier = Preconditions.checkNotNull( identifier );
 		Preconditions.checkArgument( !identifier.isEmpty() );
-		Preconditions.checkNotNull( source );
-
-		this.identifier = identifier;
-		this.source = source;
+		this.source = Preconditions.checkNotNull( source );
+		this.enabled = source.isEnabled();
 	}
 
 	@Nonnull
@@ -63,15 +63,38 @@ public final class DamagedItemDefinition implements IItemDefinition
 	@Override
 	public Optional<ItemStack> maybeStack( int stackSize )
 	{
-		final ItemStack stack = this.source.stack( stackSize );
+		if ( this.enabled )
+		{
+			final ItemStack stack = this.source.stack( stackSize );
 
-		return Optional.fromNullable( stack );
+			return Optional.fromNullable( stack );
+		}
+		else
+		{
+			return Optional.absent();
+		}
+	}
+
+	@Override
+	public boolean isEnabled()
+	{
+		return this.enabled;
 	}
 
 	@Override
 	public boolean isSameAs( ItemStack comparableStack )
 	{
-		// is available && is same item && has same damage
-		return comparableStack != null && comparableStack.getItem() == this.source.getItem() && comparableStack.getItemDamage() == this.source.getDamage();
+		if( comparableStack == null )
+		{
+			return false;
+		}
+
+		return this.enabled && comparableStack.getItem() == this.source.getItem() && comparableStack.getItemDamage() == this.source.getDamage();
+	}
+
+	@Override
+	public boolean isSameAs( IBlockAccess world, int x, int y, int z )
+	{
+		return false;
 	}
 }

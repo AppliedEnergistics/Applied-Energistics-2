@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -53,7 +53,7 @@ public final class ColoredItemDefinition implements AEColoredItemDefinition
 			return null;
 		}
 
-		return is.item;
+		return is.getItem();
 	}
 
 	@Override
@@ -96,6 +96,6 @@ public final class ColoredItemDefinition implements AEColoredItemDefinition
 			return false;
 		}
 
-		return comparableItem.getItem() == is.item && comparableItem.getItemDamage() == is.damage;
+		return comparableItem.getItem() == is.getItem() && comparableItem.getItemDamage() == is.damage;
 	}
 }
