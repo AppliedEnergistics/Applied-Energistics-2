@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -34,10 +34,12 @@ import appeng.api.definitions.IItemDefinition;
 public final class DamagedItemDefinition implements IItemDefinition
 {
 	private final IStackSrc source;
+	private final boolean enabled;
 
 	public DamagedItemDefinition( @Nonnull IStackSrc source )
 	{
 		this.source = Preconditions.checkNotNull( source );
+		this.enabled = source.isEnabled();
 	}
 
 	@Override
@@ -51,9 +53,22 @@ public final class DamagedItemDefinition implements IItemDefinition
 	@Override
 	public Optional<ItemStack> maybeStack( int stackSize )
 	{
-		final ItemStack stack = this.source.stack( stackSize );
+		if ( this.enabled )
+		{
+			final ItemStack stack = this.source.stack( stackSize );
 
-		return Optional.fromNullable( stack );
+			return Optional.fromNullable( stack );
+		}
+		else
+		{
+			return Optional.absent();
+		}
+	}
+
+	@Override
+	public boolean isEnabled()
+	{
+		return this.enabled;
 	}
 
 	@Override
@@ -64,7 +79,7 @@ public final class DamagedItemDefinition implements IItemDefinition
 			return false;
 		}
 
-		return comparableStack.getItem() == this.source.getItem() && comparableStack.getItemDamage() == this.source.getDamage();
+		return this.enabled && comparableStack.getItem() == this.source.getItem() && comparableStack.getItemDamage() == this.source.getDamage();
 	}
 
 	@Override

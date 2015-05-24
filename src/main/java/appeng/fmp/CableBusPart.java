@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -497,12 +497,15 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 			is = is.copy();
 			is.stackSize = 1;
 
-			IPart bp = bi.createPartFromItemStack( is );
+			final IPart bp = bi.createPartFromItemStack( is );
 			if( !( side == null || side == ForgeDirection.UNKNOWN || this.tile() == null ) )
 			{
 				List<AxisAlignedBB> boxes = new ArrayList<AxisAlignedBB>();
 				IPartCollisionHelper bch = new BusCollisionHelper( boxes, side, null, true );
-				bp.getBoxes( bch );
+				if( bp != null )
+				{
+					bp.getBoxes( bch );
+				}
 				for( AxisAlignedBB bb : boxes )
 				{
 					if( !this.tile().canAddPart( new NormallyOccludedPart( new Cuboid6( bb ) ) ) )

@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2013 AlgorithmX2
+ * Copyright (c) 2013 - 2015 AlgorithmX2
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -23,6 +23,8 @@
 
 package appeng.api.parts;
 
+
+import javax.annotation.Nullable;
 
 import net.minecraft.item.ItemStack;
 
@@ -63,5 +65,6 @@ public interface IPartItem
 	 *
 	 * @return part from item
 	 */
+	@Nullable
 	IPart createPartFromItemStack( ItemStack is );
 }

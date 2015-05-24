@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -291,7 +291,7 @@ public final class ItemMultiMaterial extends AEBaseItem implements IStorageCompo
 	}
 
 	@Override
-	public void getSubItems( Item par1, CreativeTabs par2CreativeTabs, List cList )
+	protected void getCheckedSubItems( Item sameItem, CreativeTabs creativeTab, List<ItemStack> itemStacks )
 	{
 		List<MaterialType> types = Arrays.asList( MaterialType.values() );
 		Collections.sort( types, new Comparator<MaterialType>()
@@ -308,7 +308,7 @@ public final class ItemMultiMaterial extends AEBaseItem implements IStorageCompo
 		{
 			if( mat.damageValue >= 0 && mat.isRegistered() && mat.itemInstance == this )
 			{
-				cList.add( new ItemStack( this, 1, mat.damageValue ) );
+				itemStacks.add( new ItemStack( this, 1, mat.damageValue ) );
 			}
 		}
 	}

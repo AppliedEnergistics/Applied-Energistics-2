@@ -70,6 +70,7 @@ import appeng.client.texture.FlippableIcon;
 import appeng.client.texture.MissingIcon;
 import appeng.core.features.AEBlockFeatureHandler;
 import appeng.core.features.AEFeature;
+import appeng.core.features.ActivityState;
 import appeng.core.features.FeatureNameExtractor;
 import appeng.core.features.IAEFeature;
 import appeng.core.features.IFeatureHandler;
@@ -195,7 +196,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	{
 		this.tileEntityType = c;
 
-		AEBaseTile.registerTileItem( c, new ItemStackSrc( this, 0 ) );
+		AEBaseTile.registerTileItem( c, new ItemStackSrc( this, 0, ActivityState.Enabled ) );
 		this.isInventory = IInventory.class.isAssignableFrom( c );
 		this.setTileProvider( this.hasBlockTileEntity() );
 	}
