@@ -12,6 +12,7 @@ import com.pahimar.ee3.api.exchange.RecipeRegistryProxy;
 import com.pahimar.ee3.api.knowledge.AbilityRegistryProxy;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
+import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import net.minecraft.init.Items;
@@ -64,7 +65,8 @@ public final class AppEngEE3Compatibility {
     }
 
     @Mod.EventHandler
-    void postInit(FMLPostInitializationEvent event) {
+    //void postInit(FMLPostInitializationEvent event) {
+    void init(FMLInitializationEvent event) {
         if (Loader.isModLoaded("EE3")) {
             Stopwatch watch = Stopwatch.createStarted();
             AELog.info("Post Initialization ( started )");
@@ -75,6 +77,8 @@ public final class AppEngEE3Compatibility {
             RegisterGrinderRecipes();
             RegisterInscriberRecipes();
             RegisterWorldRecipes();
+
+            //RecipeRegistryProxy.dumpRecipeRegistryToLog();
 
             AELog.info("Post Initialization ( ended after " + watch.elapsed(TimeUnit.MILLISECONDS) + "ms )");
         }

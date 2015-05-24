@@ -1,22 +1,22 @@
 package appengee3compat.core;
 
+import appeng.api.AEApi;
+import appeng.api.definitions.IParts;
 import appeng.api.exceptions.MissingIngredientError;
 import appeng.api.exceptions.RegistrationError;
 import appeng.api.recipes.IIngredient;
+import appeng.api.util.AEColor;
 import appeng.recipes.game.ShapedRecipe;
 import appeng.recipes.game.ShapelessRecipe;
+import appeng.util.Platform;
 import com.pahimar.ee3.api.exchange.RecipeRegistryProxy;
-import com.pahimar.ee3.exchange.OreStack;
-import com.pahimar.ee3.exchange.WrappedStack;
-import com.pahimar.ee3.util.ItemHelper;
 import net.minecraft.init.Items;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 
 public class EE3RecipeHelper {
@@ -28,20 +28,9 @@ public class EE3RecipeHelper {
                 ItemStack recipeOutput = recipe.getRecipeOutput();
 
                 if (recipeOutput != null) {
-                    List<WrappedStack> recipeInputs = getRecipeInputs(recipe);
+                    List<ItemStack> recipeInputs = getRecipeInputs(recipe);
 
-                    boolean clearList = false;
-                    for (WrappedStack stack : recipeInputs) {
-                        ItemStack unknown = (ItemStack)stack.getWrappedObject();
-
-                        if (unknown.isItemEqual(new ItemStack(Items.water_bucket, 1))) {
-                            clearList = true;
-                        }
-                    }
-
-                    if (clearList)
-                        recipeInputs.clear();
-
+                    //-Dlog4j.configurationFile=log4j2.xml
                     //AELog.info(">>> " + recipeOutput.getDisplayName() + " >>> " + recipeInputs.toString());
 
                     if (!recipeInputs.isEmpty()) {
@@ -52,8 +41,8 @@ public class EE3RecipeHelper {
         }
     }
 
-    public static List<WrappedStack> getRecipeInputs(IRecipe recipe) {
-        ArrayList<WrappedStack> recipeInputs = new ArrayList<WrappedStack>();
+    public static List<ItemStack> getRecipeInputs(IRecipe recipe) {
+        ArrayList<ItemStack> recipeInputs = new ArrayList<ItemStack>();
 
 
         if (recipe instanceof ShapedRecipe) {
@@ -63,15 +52,23 @@ public class EE3RecipeHelper {
                     IIngredient ing = (IIngredient) shapedOreRecipe.getInput()[i];
 
                     try {
-                        ItemStack[] is = ing.getItemStackSet();
-                        if (is.length == 17) {
-                            recipeInputs.add(WrappedStack.wrap(is[16]));
+                        ItemStack[] is = ing.getItemStackSet().clone();
+                        Object preferred = Platform.findPreferred(is);
+                        ItemStack itemStack;
+                        if (preferred instanceof ItemStack) {
+                            itemStack = (ItemStack)preferred;
                         } else {
-                            recipeInputs.add(WrappedStack.wrap(is[0]));
+                            itemStack = is[0];
                         }
+
+                        if (itemStack.stackSize == 0)
+                            itemStack.stackSize = 1;
+
+                        recipeInputs.add(itemStack);
                     }
-                    catch (RegistrationError ignored) { }
-                    catch (MissingIngredientError ignored) { }
+
+                    catch (RegistrationError ignored) { ignored.printStackTrace(); }
+                    catch (MissingIngredientError ignored) { ignored.printStackTrace(); }
                 }
             }
 
@@ -83,62 +80,37 @@ public class EE3RecipeHelper {
                     IIngredient ing = (IIngredient) shapelessOreRecipe.getInput().get(i);
 
                     try {
-                        ItemStack[] is = ing.getItemStackSet();
-                        if (is.length == 17) {
-                            recipeInputs.add(WrappedStack.wrap(is[16]));
+                        ItemStack[] is = ing.getItemStackSet().clone();
+                        Object preferred = Platform.findPreferred(is);
+                        ItemStack itemStack;
+                        if (preferred instanceof ItemStack) {
+                            itemStack = (ItemStack)preferred;
                         } else {
-                            recipeInputs.add(WrappedStack.wrap(is[0]));
+                            itemStack = is[0];
                         }
+
+                        if (itemStack.stackSize == 0)
+                            itemStack.stackSize = 1;
+
+                        recipeInputs.add(itemStack);
                     }
-                    catch (RegistrationError ignored) { }
-                    catch (MissingIngredientError ignored) { }
+
+                    catch (RegistrationError ignored) { ignored.printStackTrace(); }
+                    catch (MissingIngredientError ignored) { ignored.printStackTrace(); }
                 }
             }
         }
 
-        return collateInputStacks(recipeInputs);
-    }
-
-    public static List<WrappedStack> collateInputStacks(List<?> uncollatedStacks) {
-        List<WrappedStack> collatedStacks = new ArrayList<WrappedStack>();
-
-        WrappedStack stack;
-        boolean found;
-
-        for (Object object : uncollatedStacks) {
-            found = false;
-
-            if (WrappedStack.canBeWrapped(object)) {
-                stack = WrappedStack.wrap(object);
-
-                if (collatedStacks.isEmpty()) {
-                    collatedStacks.add(stack);
-                } else {
-
-                    for (WrappedStack collatedStack : collatedStacks) {
-                        if (collatedStack.getWrappedObject() != null) {
-                            if (stack.getWrappedObject() instanceof ItemStack && collatedStack.getWrappedObject() instanceof ItemStack) {
-                                if (ItemHelper.equals((ItemStack) stack.getWrappedObject(), (ItemStack) collatedStack.getWrappedObject())) {
-                                    collatedStack.setStackSize(collatedStack.getStackSize() + stack.getStackSize());
-                                    found = true;
-                                }
-                            } else if (stack.getWrappedObject() instanceof OreStack && collatedStack.getWrappedObject() instanceof OreStack) {
-                                if (OreStack.compareOreNames((OreStack) stack.getWrappedObject(),
-                                        (OreStack) collatedStack.getWrappedObject())) {
-                                    collatedStack.setStackSize(collatedStack.getStackSize() + stack.getStackSize());
-                                    found = true;
-                                }
-                            }
-                        }
-                    }
-
-                    if (!found) {
-                        collatedStacks.add(stack);
-                    }
-                }
+        boolean clear = false;
+        for (ItemStack is : recipeInputs) {
+            if (is.isItemEqual(new ItemStack(Items.water_bucket, 1))) {
+                clear = true;
             }
         }
-        Collections.sort(collatedStacks);
-        return collatedStacks;
+
+        if (clear)
+            recipeInputs.clear();
+
+        return recipeInputs;
     }
 }
