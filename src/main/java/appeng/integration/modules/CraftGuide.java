@@ -40,8 +40,6 @@ import uristqwerty.CraftGuide.api.RecipeProvider;
 import uristqwerty.CraftGuide.api.RecipeTemplate;
 import uristqwerty.CraftGuide.api.Slot;
 import uristqwerty.CraftGuide.api.SlotType;
-import uristqwerty.CraftGuide.api.StackInfo;
-import uristqwerty.CraftGuide.api.StackInfoSource;
 import uristqwerty.gui_craftguide.texture.DynamicTexture;
 import uristqwerty.gui_craftguide.texture.TextureClip;
 
@@ -53,7 +51,7 @@ import appeng.recipes.game.ShapedRecipe;
 import appeng.recipes.game.ShapelessRecipe;
 
 
-public class CraftGuide extends CraftGuideAPIObject implements IIntegrationModule, RecipeProvider, StackInfoSource, RecipeGenerator
+public class CraftGuide extends CraftGuideAPIObject implements IIntegrationModule, RecipeProvider
 {
 
 	public static CraftGuide instance;
@@ -69,20 +67,10 @@ public class CraftGuide extends CraftGuideAPIObject implements IIntegrationModul
 	private final Slot[] smallCraftingSlots = new ItemSlot[] { new ItemSlot( 12, 12, 16, 16 ), new ItemSlot( 30, 12, 16, 16 ), new ItemSlot( 12, 30, 16, 16 ), new ItemSlot( 30, 30, 16, 16 ), new ItemSlot( 59, 21, 16, 16, true ).setSlotType( SlotType.OUTPUT_SLOT ), };
 
 	private final Slot[] furnaceSlots = new ItemSlot[] { new ItemSlot( 13, 21, 16, 16 ), new ItemSlot( 50, 21, 16, 16, true ).setSlotType( SlotType.OUTPUT_SLOT ), };
-	RecipeGenerator parent;
-
-	@Override
-	public String getInfo( ItemStack itemStack )
-	{
-		// :P
-		return null;
-	}
 
 	@Override
 	public void generateRecipes( RecipeGenerator generator )
 	{
-		this.parent = generator;
-
 		RecipeTemplate craftingTemplate;
 		RecipeTemplate smallTemplate;
 
@@ -102,9 +90,9 @@ public class CraftGuide extends CraftGuideAPIObject implements IIntegrationModul
 
 		RecipeTemplate furnaceTemplate = new DefaultRecipeTemplate( this.furnaceSlots, new ItemStack( Blocks.furnace ), new TextureClip( DynamicTexture.instance( "recipe_backgrounds" ), 1, 181, 79, 58 ), new TextureClip( DynamicTexture.instance( "recipe_backgrounds" ), 82, 181, 79, 58 ) );
 
-		this.addCraftingRecipes( craftingTemplate, smallTemplate, shapelessTemplate, this );
-		this.addGrinderRecipes( furnaceTemplate, this );
-		this.addInscriberRecipes( furnaceTemplate, this );
+		this.addCraftingRecipes( craftingTemplate, smallTemplate, shapelessTemplate, generator );
+		this.addGrinderRecipes( furnaceTemplate, generator );
+		this.addInscriberRecipes( furnaceTemplate, generator );
 	}
 
 	private void addCraftingRecipes( RecipeTemplate template, RecipeTemplate templateSmall, RecipeTemplate templateShapeless, RecipeGenerator generator )
@@ -119,8 +107,12 @@ public class CraftGuide extends CraftGuideAPIObject implements IIntegrationModul
 			{
 				IRecipe recipe = (IRecipe) o;
 
-				Object[] items = generator.getCraftingRecipe( recipe, true );
+				Object[] items = this.getCraftingRecipe( recipe, true );
 
+				if( items == null )
+				{
+					continue;
+				}
 				if( items.length == 5 )
 				{
 					generator.addRecipe( templateSmall, items );
@@ -138,8 +130,7 @@ public class CraftGuide extends CraftGuideAPIObject implements IIntegrationModul
 			{
 				if( errCount >= 5 )
 				{
-					CraftGuideLog.log( "CraftGuide DefaultRecipeProvider: Stack trace limit reached, further stack traces from this invocation will not be logged to the console. They will still be logged to (.minecraft)/config/CraftGuide/CraftGuide.log", true );
-					errCount = -1;
+					CraftGuideLog.log( "AppEng CraftGuide integration: Stack trace limit reached, further stack traces from this invocation will not be logged to the console. They will still be logged to (.minecraft)/config/CraftGuide/CraftGuide.log", true );
 				}
 				else
 				{
@@ -160,48 +151,6 @@ public class CraftGuide extends CraftGuideAPIObject implements IIntegrationModul
 	private void addInscriberRecipes( RecipeTemplate template, RecipeGenerator generator )
 	{
 
-	}
-
-	@Override
-	public RecipeTemplate createRecipeTemplate( Slot[] slots, ItemStack craftingType )
-	{
-		return this.parent.createRecipeTemplate( slots, craftingType );
-	}
-
-	@Override
-	public RecipeTemplate createRecipeTemplate( Slot[] slots, ItemStack craftingType, String backgroundTexture, int backgroundX, int backgroundY, int backgroundSelectedX, int backgroundSelectedY )
-	{
-		return this.parent.createRecipeTemplate( slots, craftingType, backgroundTexture, backgroundX, backgroundY, backgroundSelectedX, backgroundSelectedY );
-	}
-
-	@Override
-	public RecipeTemplate createRecipeTemplate( Slot[] slots, ItemStack craftingType, String bgTexture, int bgX, int bgY, String selectedBGTexture, int selectedBGX, int selectedBGY )
-	{
-		return this.parent.createRecipeTemplate( slots, craftingType, bgTexture, bgX, bgY, selectedBGTexture, selectedBGX, selectedBGY );
-	}
-
-	@Override
-	public void addRecipe( RecipeTemplate template, Object[] crafting )
-	{
-		this.parent.addRecipe( template, crafting );
-	}
-
-	@Override
-	public void addRecipe( CraftGuideRecipe recipe, ItemStack craftingType )
-	{
-		this.parent.addRecipe( recipe, craftingType );
-	}
-
-	@Override
-	public void setDefaultTypeVisibility( ItemStack type, boolean visible )
-	{
-		this.parent.setDefaultTypeVisibility( type, visible );
-	}
-
-	@Override
-	public Object[] getCraftingRecipe( IRecipe recipe )
-	{
-		return this.getCraftingRecipe( recipe, true );
 	}
 
 	Object[] getCraftingShapelessRecipe( List items, ItemStack recipeOutput )
@@ -330,7 +279,6 @@ public class CraftGuide extends CraftGuideAPIObject implements IIntegrationModul
 		return list;
 	}
 
-	@Override
 	public Object[] getCraftingRecipe( IRecipe recipe, boolean allowSmallGrid )
 	{
 		if( recipe instanceof ShapelessRecipe )
@@ -360,7 +308,6 @@ public class CraftGuide extends CraftGuideAPIObject implements IIntegrationModul
 	@Override
 	public void init() throws Throwable
 	{
-		StackInfo.addSource( this );
 	}
 
 	@Override
