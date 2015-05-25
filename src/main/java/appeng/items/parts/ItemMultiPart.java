@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -29,7 +29,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -204,7 +203,13 @@ public final class ItemMultiPart extends AEBaseItem implements IPartItem, IItemG
 		{
 			final AEColor[] variants = AEColor.values();
 
-			return super.getItemStackDisplayName( is ) + " - " + variants[this.registered.get( is.getItemDamage() ).variant].toString();
+			final int itemDamage = is.getItemDamage();
+			final PartTypeWithVariant registered = this.registered.get( itemDamage );
+
+			if ( registered != null )
+			{
+				return super.getItemStackDisplayName( is ) + " - " + variants[registered.variant].toString();
+			}
 		}
 
 		if( pt.getExtraName() != null )
