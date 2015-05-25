@@ -13,5 +13,20 @@
         "credits":"AlgorithmX2",
         "logoFile":"assets/appliedenergistics2/meta/logo.png",
         "screenshots":[]
-    }
+    },
+    {
+            "modid":"appliedenergistics2ee3compatibility",
+            "name":"Applied Energistics 2 EE3 Compatibility",
+            "description":"Adds EE3 Support to AE2",
+            "version":"${version}",
+            "mcversion":"${mcversion}",
+            "url":"http://ae2.ae-mod.info",
+            "updateUrl":"",
+            "authorList":[
+             "FireBall1725"
+            ],
+            "credits":"FireBall1725",
+            "logoFile":"assets/appliedenergistics2/meta/logo.png",
+            "screenshots":[]
+        }
 ]

@@ -104,6 +104,8 @@ dependencies {
     compile "codechicken:NotEnoughItems:${minecraft_version}-${nei_version}:dev"
     compile "com.mod-buildcraft:buildcraft:${bc_version}:dev"
 
+    compile "com.pahimar.ee3:EquivalentExchange3:${minecraft_version}-${ee3_version}:dev"
+
     // provided APIs
     compile "li.cil.oc:OpenComputers:MC${minecraft_version}-${opencomputers_version}:api"
     compile "net.industrial-craft:industrialcraft-2:${ic2_version}-experimental:api"

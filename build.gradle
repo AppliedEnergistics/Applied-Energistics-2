@@ -73,6 +73,7 @@ jar {
 
     // specify which files are really included, can control which APIs should be in
     include "appeng/**"
+    include "appengee3compat/**"
     include "assets/**"
     include "mcmod.info"
     include "pack.mcmeta"
