@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -21,103 +21,186 @@ package appeng.integration.modules;
 
 import java.util.Arrays;
 import java.util.List;
+import javax.annotation.Nullable;
 
-import net.minecraft.init.Blocks;
+import com.google.common.base.Optional;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
+
+import cpw.mods.fml.relauncher.ReflectionHelper;
+
 import uristqwerty.CraftGuide.CraftGuideLog;
 import uristqwerty.CraftGuide.DefaultRecipeTemplate;
 import uristqwerty.CraftGuide.RecipeGeneratorImplementation;
+import uristqwerty.CraftGuide.api.ChanceSlot;
 import uristqwerty.CraftGuide.api.CraftGuideAPIObject;
-import uristqwerty.CraftGuide.api.CraftGuideRecipe;
 import uristqwerty.CraftGuide.api.ItemSlot;
 import uristqwerty.CraftGuide.api.RecipeGenerator;
 import uristqwerty.CraftGuide.api.RecipeProvider;
 import uristqwerty.CraftGuide.api.RecipeTemplate;
 import uristqwerty.CraftGuide.api.Slot;
 import uristqwerty.CraftGuide.api.SlotType;
-import uristqwerty.CraftGuide.api.StackInfo;
-import uristqwerty.CraftGuide.api.StackInfoSource;
 import uristqwerty.gui_craftguide.texture.DynamicTexture;
 import uristqwerty.gui_craftguide.texture.TextureClip;
+
+import appeng.api.AEApi;
+import appeng.api.IAppEngApi;
+import appeng.api.definitions.IBlocks;
 import appeng.api.exceptions.MissingIngredientError;
 import appeng.api.exceptions.RegistrationError;
+import appeng.api.features.IGrinderEntry;
+import appeng.api.features.IInscriberRecipe;
 import appeng.api.recipes.IIngredient;
+import appeng.helpers.Reflected;
 import appeng.integration.IIntegrationModule;
 import appeng.recipes.game.ShapedRecipe;
 import appeng.recipes.game.ShapelessRecipe;
 
 
-public class CraftGuide extends CraftGuideAPIObject implements IIntegrationModule, RecipeProvider, StackInfoSource, RecipeGenerator
+public final class CraftGuide extends CraftGuideAPIObject implements IIntegrationModule, RecipeProvider
 {
+	private static final int SLOT_SIZE = 16;
+	private static final int TEXTURE_WIDTH = 79;
+	private static final int TEXTURE_HEIGHT = 58;
+	private static final int GRINDER_RATIO = 10000;
 
+	private static final Slot[] GRINDER_SLOTS = new ItemSlot[] {
+			new ItemSlot( 3, 21, SLOT_SIZE, SLOT_SIZE ).drawOwnBackground(),
+			new ItemSlot( 41, 21, SLOT_SIZE, SLOT_SIZE, true ).drawOwnBackground().setSlotType( SlotType.OUTPUT_SLOT ),
+			new ChanceSlot( 59, 12, SLOT_SIZE, SLOT_SIZE, true ).setRatio( GRINDER_RATIO ).setFormatString( " (%1$.2f%% chance)" ).drawOwnBackground().setSlotType( SlotType.OUTPUT_SLOT ),
+			new ChanceSlot( 59, 30, SLOT_SIZE, SLOT_SIZE, true ).setRatio( GRINDER_RATIO ).setFormatString( " (%1$.2f%% chance)" ).drawOwnBackground().setSlotType( SlotType.OUTPUT_SLOT ),
+			new ItemSlot( 22, 12, SLOT_SIZE, SLOT_SIZE ).setSlotType( SlotType.MACHINE_SLOT ),
+			new ItemSlot( 22, 30, SLOT_SIZE, SLOT_SIZE ).setSlotType( SlotType.MACHINE_SLOT )
+	};
+	private static final Slot[] INSCRIBER_SLOTS = new ItemSlot[] {
+			new ItemSlot( 12, 21, SLOT_SIZE, SLOT_SIZE ).drawOwnBackground(),
+			new ItemSlot( 21, 3, SLOT_SIZE, SLOT_SIZE ).drawOwnBackground(),
+			new ItemSlot( 21, 39, SLOT_SIZE, SLOT_SIZE ).drawOwnBackground(),
+			new ItemSlot( 50, 21, SLOT_SIZE, SLOT_SIZE, true ).drawOwnBackground().setSlotType( SlotType.OUTPUT_SLOT ),
+			new ItemSlot( 31, 21, SLOT_SIZE, SLOT_SIZE ).setSlotType( SlotType.MACHINE_SLOT )
+	};
+	private static final Slot[] SHAPELESS_CRAFTING_SLOTS = new ItemSlot[] {
+			new ItemSlot( 3, 3, SLOT_SIZE, SLOT_SIZE ),
+			new ItemSlot( 21, 3, SLOT_SIZE, SLOT_SIZE ),
+			new ItemSlot( 39, 3, SLOT_SIZE, SLOT_SIZE ),
+			new ItemSlot( 3, 21, SLOT_SIZE, SLOT_SIZE ),
+			new ItemSlot( 21, 21, SLOT_SIZE, SLOT_SIZE ),
+			new ItemSlot( 39, 21, SLOT_SIZE, SLOT_SIZE ),
+			new ItemSlot( 3, 39, SLOT_SIZE, SLOT_SIZE ),
+			new ItemSlot( 21, 39, SLOT_SIZE, SLOT_SIZE ),
+			new ItemSlot( 39, 39, SLOT_SIZE, SLOT_SIZE ),
+			new ItemSlot( 59, 21, SLOT_SIZE, SLOT_SIZE, true ).setSlotType( SlotType.OUTPUT_SLOT ),
+	};
+	private static final Slot[] CRAFTING_SLOTS_OWN_BG = new ItemSlot[] {
+			new ItemSlot( 3, 3, SLOT_SIZE, SLOT_SIZE ).drawOwnBackground(),
+			new ItemSlot( 21, 3, SLOT_SIZE, SLOT_SIZE ).drawOwnBackground(),
+			new ItemSlot( 39, 3, SLOT_SIZE, SLOT_SIZE ).drawOwnBackground(),
+			new ItemSlot( 3, 21, SLOT_SIZE, SLOT_SIZE ).drawOwnBackground(),
+			new ItemSlot( 21, 21, SLOT_SIZE, SLOT_SIZE ).drawOwnBackground(),
+			new ItemSlot( 39, 21, SLOT_SIZE, SLOT_SIZE ).drawOwnBackground(),
+			new ItemSlot( 3, 39, SLOT_SIZE, SLOT_SIZE ).drawOwnBackground(),
+			new ItemSlot( 21, 39, SLOT_SIZE, SLOT_SIZE ).drawOwnBackground(),
+			new ItemSlot( 39, 39, SLOT_SIZE, SLOT_SIZE ).drawOwnBackground(),
+			new ItemSlot( 59, 21, SLOT_SIZE, SLOT_SIZE, true ).setSlotType( SlotType.OUTPUT_SLOT ).drawOwnBackground(),
+	};
+	private static final Slot[] SMALL_CRAFTING_SLOTS_OWN_BG = new ItemSlot[] {
+			new ItemSlot( 12, 12, SLOT_SIZE, SLOT_SIZE ).drawOwnBackground(),
+			new ItemSlot( 30, 12, SLOT_SIZE, SLOT_SIZE ).drawOwnBackground(),
+			new ItemSlot( 12, 30, SLOT_SIZE, SLOT_SIZE ).drawOwnBackground(),
+			new ItemSlot( 30, 30, SLOT_SIZE, SLOT_SIZE ).drawOwnBackground(),
+			new ItemSlot( 59, 21, SLOT_SIZE, SLOT_SIZE, true ).setSlotType( SlotType.OUTPUT_SLOT ).drawOwnBackground(),
+	};
+	private static final Slot[] CRTAFTING_SLOTS = new ItemSlot[] {
+			new ItemSlot( 3, 3, SLOT_SIZE, SLOT_SIZE ),
+			new ItemSlot( 21, 3, SLOT_SIZE, SLOT_SIZE ),
+			new ItemSlot( 39, 3, SLOT_SIZE, SLOT_SIZE ),
+			new ItemSlot( 3, 21, SLOT_SIZE, SLOT_SIZE ),
+			new ItemSlot( 21, 21, SLOT_SIZE, SLOT_SIZE ),
+			new ItemSlot( 39, 21, SLOT_SIZE, SLOT_SIZE ),
+			new ItemSlot( 3, 39, SLOT_SIZE, SLOT_SIZE ),
+			new ItemSlot( 21, 39, SLOT_SIZE, SLOT_SIZE ),
+			new ItemSlot( 39, 39, SLOT_SIZE, SLOT_SIZE ),
+			new ItemSlot( 59, 21, SLOT_SIZE, SLOT_SIZE, true ).setSlotType( SlotType.OUTPUT_SLOT ),
+	};
+	private static final Slot[] SMALL_CRAFTING_SLOTS = new ItemSlot[] {
+			new ItemSlot( 12, 12, SLOT_SIZE, SLOT_SIZE ),
+			new ItemSlot( 30, 12, SLOT_SIZE, SLOT_SIZE ),
+			new ItemSlot( 12, 30, SLOT_SIZE, SLOT_SIZE ),
+			new ItemSlot( 30, 30, SLOT_SIZE, SLOT_SIZE ),
+			new ItemSlot( 59, 21, SLOT_SIZE, SLOT_SIZE, true ).setSlotType( SlotType.OUTPUT_SLOT ),
+	};
+
+	@Reflected
 	public static CraftGuide instance;
-
-	private final Slot[] shapelessCraftingSlots = new ItemSlot[] { new ItemSlot( 3, 3, 16, 16 ), new ItemSlot( 21, 3, 16, 16 ), new ItemSlot( 39, 3, 16, 16 ), new ItemSlot( 3, 21, 16, 16 ), new ItemSlot( 21, 21, 16, 16 ), new ItemSlot( 39, 21, 16, 16 ), new ItemSlot( 3, 39, 16, 16 ), new ItemSlot( 21, 39, 16, 16 ), new ItemSlot( 39, 39, 16, 16 ), new ItemSlot( 59, 21, 16, 16, true ).setSlotType( SlotType.OUTPUT_SLOT ), };
-
-	private final Slot[] craftingSlotsOwnBackground = new ItemSlot[] { new ItemSlot( 3, 3, 16, 16 ).drawOwnBackground(), new ItemSlot( 21, 3, 16, 16 ).drawOwnBackground(), new ItemSlot( 39, 3, 16, 16 ).drawOwnBackground(), new ItemSlot( 3, 21, 16, 16 ).drawOwnBackground(), new ItemSlot( 21, 21, 16, 16 ).drawOwnBackground(), new ItemSlot( 39, 21, 16, 16 ).drawOwnBackground(), new ItemSlot( 3, 39, 16, 16 ).drawOwnBackground(), new ItemSlot( 21, 39, 16, 16 ).drawOwnBackground(), new ItemSlot( 39, 39, 16, 16 ).drawOwnBackground(), new ItemSlot( 59, 21, 16, 16, true ).setSlotType( SlotType.OUTPUT_SLOT ).drawOwnBackground(), };
-
-	private final Slot[] smallCraftingSlotsOwnBackground = new ItemSlot[] { new ItemSlot( 12, 12, 16, 16 ).drawOwnBackground(), new ItemSlot( 30, 12, 16, 16 ).drawOwnBackground(), new ItemSlot( 12, 30, 16, 16 ).drawOwnBackground(), new ItemSlot( 30, 30, 16, 16 ).drawOwnBackground(), new ItemSlot( 59, 21, 16, 16, true ).setSlotType( SlotType.OUTPUT_SLOT ).drawOwnBackground(), };
-
-	private final Slot[] craftingSlots = new ItemSlot[] { new ItemSlot( 3, 3, 16, 16 ), new ItemSlot( 21, 3, 16, 16 ), new ItemSlot( 39, 3, 16, 16 ), new ItemSlot( 3, 21, 16, 16 ), new ItemSlot( 21, 21, 16, 16 ), new ItemSlot( 39, 21, 16, 16 ), new ItemSlot( 3, 39, 16, 16 ), new ItemSlot( 21, 39, 16, 16 ), new ItemSlot( 39, 39, 16, 16 ), new ItemSlot( 59, 21, 16, 16, true ).setSlotType( SlotType.OUTPUT_SLOT ), };
-
-	private final Slot[] smallCraftingSlots = new ItemSlot[] { new ItemSlot( 12, 12, 16, 16 ), new ItemSlot( 30, 12, 16, 16 ), new ItemSlot( 12, 30, 16, 16 ), new ItemSlot( 30, 30, 16, 16 ), new ItemSlot( 59, 21, 16, 16, true ).setSlotType( SlotType.OUTPUT_SLOT ), };
-
-	private final Slot[] furnaceSlots = new ItemSlot[] { new ItemSlot( 13, 21, 16, 16 ), new ItemSlot( 50, 21, 16, 16, true ).setSlotType( SlotType.OUTPUT_SLOT ), };
-	RecipeGenerator parent;
-
-	@Override
-	public String getInfo( ItemStack itemStack )
-	{
-		// :P
-		return null;
-	}
 
 	@Override
 	public void generateRecipes( RecipeGenerator generator )
 	{
-		this.parent = generator;
-
-		RecipeTemplate craftingTemplate;
-		RecipeTemplate smallTemplate;
+		final RecipeTemplate craftingTemplate;
+		final RecipeTemplate smallTemplate;
 
 		if( uristqwerty.CraftGuide.CraftGuide.newerBackgroundStyle )
 		{
-			craftingTemplate = generator.createRecipeTemplate( this.craftingSlotsOwnBackground, null );
-			smallTemplate = generator.createRecipeTemplate( this.smallCraftingSlotsOwnBackground, null );
+			craftingTemplate = generator.createRecipeTemplate( CRAFTING_SLOTS_OWN_BG, null );
+			smallTemplate = generator.createRecipeTemplate( SMALL_CRAFTING_SLOTS_OWN_BG, null );
 		}
 		else
 		{
-			craftingTemplate = new DefaultRecipeTemplate( this.craftingSlots, RecipeGeneratorImplementation.workbench, new TextureClip( DynamicTexture.instance( "recipe_backgrounds" ), 1, 1, 79, 58 ), new TextureClip( DynamicTexture.instance( "recipe_backgrounds" ), 82, 1, 79, 58 ) );
+			final TextureClip craftingBG = new TextureClip( DynamicTexture.instance( "recipe_backgrounds" ), 1, 1, TEXTURE_WIDTH, TEXTURE_HEIGHT );
+			final TextureClip craftingSelected = new TextureClip( DynamicTexture.instance( "recipe_backgrounds" ), 82, 1, TEXTURE_WIDTH, TEXTURE_HEIGHT );
+			craftingTemplate = new DefaultRecipeTemplate( CRTAFTING_SLOTS, RecipeGeneratorImplementation.workbench, craftingBG, craftingSelected );
 
-			smallTemplate = new DefaultRecipeTemplate( this.smallCraftingSlots, RecipeGeneratorImplementation.workbench, new TextureClip( DynamicTexture.instance( "recipe_backgrounds" ), 1, 61, 79, 58 ), new TextureClip( DynamicTexture.instance( "recipe_backgrounds" ), 82, 61, 79, 58 ) );
+			final TextureClip smallBG = new TextureClip( DynamicTexture.instance( "recipe_backgrounds" ), 1, 61, TEXTURE_WIDTH, TEXTURE_HEIGHT );
+			final TextureClip smallSelected = new TextureClip( DynamicTexture.instance( "recipe_backgrounds" ), 82, 61, TEXTURE_WIDTH, TEXTURE_HEIGHT );
+			smallTemplate = new DefaultRecipeTemplate( SMALL_CRAFTING_SLOTS, RecipeGeneratorImplementation.workbench, smallBG, smallSelected );
 		}
 
-		RecipeTemplate shapelessTemplate = new DefaultRecipeTemplate( this.shapelessCraftingSlots, RecipeGeneratorImplementation.workbench, new TextureClip( DynamicTexture.instance( "recipe_backgrounds" ), 1, 121, 79, 58 ), new TextureClip( DynamicTexture.instance( "recipe_backgrounds" ), 82, 121, 79, 58 ) );
+		final TextureClip shapelessBG = new TextureClip( DynamicTexture.instance( "recipe_backgrounds" ), 1, 121, TEXTURE_WIDTH, TEXTURE_HEIGHT );
+		final TextureClip shapelessSelected = new TextureClip( DynamicTexture.instance( "recipe_backgrounds" ), 82, 121, TEXTURE_WIDTH, TEXTURE_HEIGHT );
+		final RecipeTemplate shapelessTemplate = new DefaultRecipeTemplate( SHAPELESS_CRAFTING_SLOTS, RecipeGeneratorImplementation.workbench, shapelessBG, shapelessSelected );
 
-		RecipeTemplate furnaceTemplate = new DefaultRecipeTemplate( this.furnaceSlots, new ItemStack( Blocks.furnace ), new TextureClip( DynamicTexture.instance( "recipe_backgrounds" ), 1, 181, 79, 58 ), new TextureClip( DynamicTexture.instance( "recipe_backgrounds" ), 82, 181, 79, 58 ) );
+		this.addCraftingRecipes( craftingTemplate, smallTemplate, shapelessTemplate, generator );
 
-		this.addCraftingRecipes( craftingTemplate, smallTemplate, shapelessTemplate, this );
-		this.addGrinderRecipes( furnaceTemplate, this );
-		this.addInscriberRecipes( furnaceTemplate, this );
+		final IAppEngApi api = AEApi.instance();
+		final IBlocks aeBlocks = api.definitions().blocks();
+		final Optional<ItemStack> grindstone = aeBlocks.grindStone().maybeStack( 1 );
+		final Optional<ItemStack> inscriber = aeBlocks.inscriber().maybeStack( 1 );
+
+		if( grindstone.isPresent() )
+		{
+			this.addGrinderRecipes( api, grindstone.get(), generator );
+		}
+
+		if( inscriber.isPresent() )
+		{
+			this.addInscriberRecipes( api, inscriber.get(), generator );
+		}
+	}
+
+	@SuppressWarnings( "unchecked" )
+	private List<IRecipe> getUncheckedRecipes()
+	{
+		return (List<IRecipe>) CraftingManager.getInstance().getRecipeList();
 	}
 
 	private void addCraftingRecipes( RecipeTemplate template, RecipeTemplate templateSmall, RecipeTemplate templateShapeless, RecipeGenerator generator )
 	{
-		List recipes = CraftingManager.getInstance().getRecipeList();
+		final List<IRecipe> recipes = this.getUncheckedRecipes();
 
 		int errCount = 0;
 
-		for( Object o : recipes )
+		for( IRecipe recipe : recipes )
 		{
 			try
 			{
-				IRecipe recipe = (IRecipe) o;
+				final Object[] items = this.getCraftingRecipe( recipe, true );
 
-				Object[] items = generator.getCraftingRecipe( recipe, true );
-
+				if( items == null )
+				{
+					continue;
+				}
 				if( items.length == 5 )
 				{
 					generator.addRecipe( templateSmall, items );
@@ -135,8 +218,7 @@ public class CraftGuide extends CraftGuideAPIObject implements IIntegrationModul
 			{
 				if( errCount >= 5 )
 				{
-					CraftGuideLog.log( "CraftGuide DefaultRecipeProvider: Stack trace limit reached, further stack traces from this invocation will not be logged to the console. They will still be logged to (.minecraft)/config/CraftGuide/CraftGuide.log", true );
-					errCount = -1;
+					CraftGuideLog.log( "AppEng CraftGuide integration: Stack trace limit reached, further stack traces from this invocation will not be logged to the console. They will still be logged to (.minecraft)/config/CraftGuide/CraftGuide.log", true );
 				}
 				else
 				{
@@ -149,61 +231,49 @@ public class CraftGuide extends CraftGuideAPIObject implements IIntegrationModul
 		}
 	}
 
-	private void addGrinderRecipes( RecipeTemplate template, RecipeGenerator generator )
+	private void addGrinderRecipes( IAppEngApi api, ItemStack grindstone, RecipeGenerator generator )
 	{
+		final ItemStack handle = api.definitions().blocks().crankHandle().maybeStack( 1 ).orNull();
+		final RecipeTemplate grinderTemplate = generator.createRecipeTemplate( GRINDER_SLOTS, grindstone );
 
+		for( IGrinderEntry recipe : api.registries().grinder().getRecipes() )
+		{
+			generator.addRecipe( grinderTemplate, new Object[] {
+					recipe.getInput(),
+					recipe.getOutput(),
+					new Object[] {
+							recipe.getOptionalOutput(),
+							(int) ( recipe.getOptionalChance() * GRINDER_RATIO )
+					},
+					new Object[] {
+							recipe.getSecondOptionalOutput(),
+							(int) ( recipe.getOptionalChance() * GRINDER_RATIO )
+					},
+					handle,
+					grindstone
+			} );
+		}
 	}
 
-	private void addInscriberRecipes( RecipeTemplate template, RecipeGenerator generator )
+	private void addInscriberRecipes( IAppEngApi api, ItemStack inscriber, RecipeGenerator generator )
 	{
+		final RecipeTemplate inscriberTemplate = generator.createRecipeTemplate( INSCRIBER_SLOTS, inscriber );
 
+		for( IInscriberRecipe recipe : api.registries().inscriber().getRecipes() )
+		{
+			generator.addRecipe( inscriberTemplate, new Object[] {
+					recipe.getInputs(),
+					recipe.getTopOptional().orNull(),
+					recipe.getBottomOptional().orNull(),
+					recipe.getOutput(),
+					inscriber
+			} );
+		}
 	}
 
-	@Override
-	public RecipeTemplate createRecipeTemplate( Slot[] slots, ItemStack craftingType )
+	private Object[] getCraftingShapelessRecipe( List<?> items, ItemStack recipeOutput )
 	{
-		return this.parent.createRecipeTemplate( slots, craftingType );
-	}
-
-	@Override
-	public RecipeTemplate createRecipeTemplate( Slot[] slots, ItemStack craftingType, String backgroundTexture, int backgroundX, int backgroundY, int backgroundSelectedX, int backgroundSelectedY )
-	{
-		return this.parent.createRecipeTemplate( slots, craftingType, backgroundTexture, backgroundX, backgroundY, backgroundSelectedX, backgroundSelectedY );
-	}
-
-	@Override
-	public RecipeTemplate createRecipeTemplate( Slot[] slots, ItemStack craftingType, String bgTexture, int bgX, int bgY, String selectedBGTexture, int selectedBGX, int selectedBGY )
-	{
-		return this.parent.createRecipeTemplate( slots, craftingType, bgTexture, bgX, bgY, selectedBGTexture, selectedBGX, selectedBGY );
-	}
-
-	@Override
-	public void addRecipe( RecipeTemplate template, Object[] crafting )
-	{
-		this.parent.addRecipe( template, crafting );
-	}
-
-	@Override
-	public void addRecipe( CraftGuideRecipe recipe, ItemStack craftingType )
-	{
-		this.parent.addRecipe( recipe, craftingType );
-	}
-
-	@Override
-	public void setDefaultTypeVisibility( ItemStack type, boolean visible )
-	{
-		this.parent.setDefaultTypeVisibility( type, visible );
-	}
-
-	@Override
-	public Object[] getCraftingRecipe( IRecipe recipe )
-	{
-		return this.getCraftingRecipe( recipe, true );
-	}
-
-	Object[] getCraftingShapelessRecipe( List items, ItemStack recipeOutput )
-	{
-		Object[] output = new Object[10];
+		final Object[] output = new Object[10];
 
 		for( int i = 0; i < items.size(); i++ )
 		{
@@ -232,18 +302,19 @@ public class CraftGuide extends CraftGuideAPIObject implements IIntegrationModul
 		}
 
 		output[9] = recipeOutput;
+
 		return output;
 	}
 
-	Object[] getSmallShapedRecipe( int width, int height, Object[] items, ItemStack recipeOutput )
+	private Object[] getSmallShapedRecipe( int width, int height, Object[] items, ItemStack recipeOutput )
 	{
-		Object[] output = new Object[5];
+		final Object[] output = new Object[5];
 
 		for( int y = 0; y < height; y++ )
 		{
 			for( int x = 0; x < width; x++ )
 			{
-				int i = y * 2 + x;
+				final int i = y * 2 + x;
 				output[i] = items[y * width + x];
 
 				if( output[i] instanceof ItemStack[] )
@@ -270,18 +341,19 @@ public class CraftGuide extends CraftGuideAPIObject implements IIntegrationModul
 		}
 
 		output[4] = recipeOutput;
+
 		return output;
 	}
 
-	Object[] getCraftingShapedRecipe( int width, int height, Object[] items, ItemStack recipeOutput )
+	private Object[] getCraftingShapedRecipe( int width, int height, Object[] items, ItemStack recipeOutput )
 	{
-		Object[] output = new Object[10];
+		final Object[] output = new Object[10];
 
 		for( int y = 0; y < height; y++ )
 		{
 			for( int x = 0; x < width; x++ )
 			{
-				int i = y * 3 + x;
+				final int i = y * 3 + x;
 				output[i] = items[y * width + x];
 
 				if( output[i] instanceof ItemStack[] )
@@ -308,12 +380,13 @@ public class CraftGuide extends CraftGuideAPIObject implements IIntegrationModul
 		}
 
 		output[9] = recipeOutput;
+
 		return output;
 	}
 
 	private Object toCG( ItemStack[] itemStackSet )
 	{
-		List<ItemStack> list = Arrays.asList( itemStackSet );
+		final List<ItemStack> list = Arrays.asList( itemStackSet );
 
 		for( int x = 0; x < list.size(); x++ )
 		{
@@ -327,19 +400,20 @@ public class CraftGuide extends CraftGuideAPIObject implements IIntegrationModul
 		return list;
 	}
 
-	@Override
-	public Object[] getCraftingRecipe( IRecipe recipe, boolean allowSmallGrid )
+	@Nullable
+	private Object[] getCraftingRecipe( IRecipe recipe, boolean allowSmallGrid )
 	{
 		if( recipe instanceof ShapelessRecipe )
 		{
-			List items = ReflectionHelper.getPrivateValue( ShapelessRecipe.class, (ShapelessRecipe) recipe, "input" );
+			final List<Object> items = ReflectionHelper.getPrivateValue( ShapelessRecipe.class, (ShapelessRecipe) recipe, "input" );
+
 			return this.getCraftingShapelessRecipe( items, recipe.getRecipeOutput() );
 		}
 		else if( recipe instanceof ShapedRecipe )
 		{
-			int width = ReflectionHelper.getPrivateValue( ShapedRecipe.class, (ShapedRecipe) recipe, "width" );
-			int height = ReflectionHelper.getPrivateValue( ShapedRecipe.class, (ShapedRecipe) recipe, "height" );
-			Object[] items = ReflectionHelper.getPrivateValue( ShapedRecipe.class, (ShapedRecipe) recipe, "input" );
+			final int width = ReflectionHelper.getPrivateValue( ShapedRecipe.class, (ShapedRecipe) recipe, "width" );
+			final int height = ReflectionHelper.getPrivateValue( ShapedRecipe.class, (ShapedRecipe) recipe, "height" );
+			final Object[] items = ReflectionHelper.getPrivateValue( ShapedRecipe.class, (ShapedRecipe) recipe, "input" );
 
 			if( allowSmallGrid && width < 3 && height < 3 )
 			{
@@ -357,7 +431,6 @@ public class CraftGuide extends CraftGuideAPIObject implements IIntegrationModul
 	@Override
 	public void init() throws Throwable
 	{
-		StackInfo.addSource( this );
 	}
 
 	@Override
