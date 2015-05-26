@@ -54,7 +54,7 @@ public class RenderBlockCharger extends BaseBlockRender<BlockCharger, TileCharge
 	@Override
 	public void renderInventory( BlockCharger blk, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj )
 	{
-		Tessellator tess = Tessellator.instance;
+		final Tessellator tess = Tessellator.instance;
 
 		renderer.renderAllFaces = true;
 		this.setInvRenderBounds( renderer, 6, 1, 0, 10, 15, 2 );
@@ -87,13 +87,13 @@ public class RenderBlockCharger extends BaseBlockRender<BlockCharger, TileCharge
 	{
 		this.preRenderInWorld( block, world, x, y, z, renderer );
 
-		BlockCharger blk = (BlockCharger) block;
+		final BlockCharger blk = (BlockCharger) block;
 
-		IOrientable te = this.getOrientable( block, world, x, y, z );
+		final IOrientable te = this.getOrientable( block, world, x, y, z );
 
-		ForgeDirection fdy = te.getUp();
-		ForgeDirection fdz = te.getForward();
-		ForgeDirection fdx = Platform.crossProduct( fdz, fdy ).getOpposite();
+		final ForgeDirection fdy = te.getUp();
+		final ForgeDirection fdz = te.getForward();
+		final ForgeDirection fdx = Platform.crossProduct( fdz, fdy ).getOpposite();
 
 		renderer.renderAllFaces = true;
 		this.renderBlockBounds( renderer, 6, 1, 0, 10, 15, 2, fdx, fdy, fdz );
@@ -144,7 +144,7 @@ public class RenderBlockCharger extends BaseBlockRender<BlockCharger, TileCharge
 				GL11.glScalef( 1.0f / 1.1f, 1.0f / 1.1f, 1.0f / 1.1f );
 				GL11.glScalef( 1.0f, 1.0f, 1.0f );
 
-				Block blk = Block.getBlockFromItem( sis.getItem() );
+				final Block blk = Block.getBlockFromItem( sis.getItem() );
 				if( sis.getItemSpriteNumber() == 0 && block != null && RenderBlocks.renderItemIn3d( blk.getRenderType() ) )
 				{
 					GL11.glRotatef( 25.0f, 1.0f, 0.0f, 0.0f );
@@ -152,14 +152,11 @@ public class RenderBlockCharger extends BaseBlockRender<BlockCharger, TileCharge
 					GL11.glRotatef( 30.0f, 0.0f, 1.0f, 0.0f );
 				}
 
-				int br = tile.getWorldObj().getLightBrightnessForSkyBlocks( tile.xCoord, tile.yCoord, tile.zCoord, 0 );// <<
-																														// 20
-																														// |
-																														// light
-																														// <<
-																														// 4;
-				int var11 = br % 65536;
-				int var12 = br / 65536;
+				// << 20 | light << 4;
+				final int br = tile.getWorldObj().getLightBrightnessForSkyBlocks( tile.xCoord, tile.yCoord, tile.zCoord, 0 );
+				final int var11 = br % 65536;
+				final int var12 = br / 65536;
+
 				OpenGlHelper.setLightmapTextureCoords( OpenGlHelper.lightmapTexUnit, var11, var12 );
 
 				GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );

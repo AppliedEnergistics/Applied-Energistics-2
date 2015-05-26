@@ -41,7 +41,7 @@ public class TESRWrapper extends TileEntitySpecialRenderer
 
 	public final RenderBlocks renderBlocksInstance = new RenderBlocks();
 
-	final BaseBlockRender blkRender;
+	private final BaseBlockRender blkRender;
 	private final double maxDistance;
 
 	public TESRWrapper( BaseBlockRender render )
@@ -69,12 +69,10 @@ public class TESRWrapper extends TileEntitySpecialRenderer
 				try
 				{
 					GL11.glPushMatrix();
-					GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS );
 
 					this.renderBlocksInstance.blockAccess = te.getWorldObj();
 					this.blkRender.renderTile( (AEBaseBlock) b, (AEBaseTile) te, tess, x, y, z, f, this.renderBlocksInstance );
 
-					GL11.glPopAttrib();
 					GL11.glPopMatrix();
 				}
 				catch( Throwable t )

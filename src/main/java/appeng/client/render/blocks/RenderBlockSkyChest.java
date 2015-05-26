@@ -20,6 +20,7 @@ package appeng.client.render.blocks;
 
 
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelChest;
@@ -38,7 +39,11 @@ import appeng.tile.storage.TileSkyChest;
 public class RenderBlockSkyChest extends BaseBlockRender<BlockSkyChest, TileSkyChest>
 {
 
-	final ModelChest model = new ModelChest();
+	private final static ResourceLocation SKY_STONE_CHEST = new ResourceLocation( "appliedenergistics2", "textures/models/skychest.png" );
+	private final static ResourceLocation SKY_BLOCK_CHEST = new ResourceLocation( "appliedenergistics2", "textures/models/skyblockchest.png" );
+	private final static ResourceLocation METADATA_TO_TEXTURE[] = new ResourceLocation[] { SKY_STONE_CHEST, SKY_BLOCK_CHEST };
+
+	private final ModelChest model = new ModelChest();
 
 	public RenderBlockSkyChest()
 	{
@@ -48,22 +53,15 @@ public class RenderBlockSkyChest extends BaseBlockRender<BlockSkyChest, TileSkyC
 	@Override
 	public void renderInventory( BlockSkyChest blk, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj )
 	{
-		GL11.glEnable( 32826 /* GL_RESCALE_NORMAL_EXT */);
+		GL11.glEnable( GL12.GL_RESCALE_NORMAL );
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
 
-		ResourceLocation loc;
-		if( is.getItemDamage() == 1 )
-		{
-			loc = new ResourceLocation( "appliedenergistics2", "textures/models/skyblockchest.png" );
-		}
-		else
-		{
-			loc = new ResourceLocation( "appliedenergistics2", "textures/models/skychest.png" );
-		}
+		final int metaData = is.getItemDamage();
+		final ResourceLocation loc = METADATA_TO_TEXTURE[metaData];
 
 		Minecraft.getMinecraft().getTextureManager().bindTexture( loc );
 
-		float lidAngle = 0.0f;
+		final float lidAngle = 0.0f;
 
 		GL11.glScalef( 1.0F, -1F, -1F );
 		GL11.glTranslatef( -0.0F, -1.0F, -1.0F );
@@ -72,7 +70,7 @@ public class RenderBlockSkyChest extends BaseBlockRender<BlockSkyChest, TileSkyC
 		this.model.chestLid.rotateAngleX = -( ( lidAngle * 3.141593F ) / 2.0F );
 		this.model.renderAll();
 
-		GL11.glDisable( 32826 /* GL_RESCALE_NORMAL_EXT */);
+		GL11.glDisable( GL12.GL_RESCALE_NORMAL );
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
 	}
 
@@ -90,26 +88,18 @@ public class RenderBlockSkyChest extends BaseBlockRender<BlockSkyChest, TileSkyC
 			return;
 		}
 
-		TileSkyChest skyChest = (TileSkyChest) tile;
+		final TileSkyChest skyChest = (TileSkyChest) tile;
 
 		if( !skyChest.hasWorldObj() )
 		{
 			return;
 		}
 
-		GL11.glEnable( 32826 /* GL_RESCALE_NORMAL_EXT */);
+		GL11.glEnable( GL12.GL_RESCALE_NORMAL );
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
 
-		ResourceLocation loc;
-
-		if( tile.getWorldObj().getBlockMetadata( tile.xCoord, tile.yCoord, tile.zCoord ) == 1 )
-		{
-			loc = new ResourceLocation( "appliedenergistics2", "textures/models/skyblockchest.png" );
-		}
-		else
-		{
-			loc = new ResourceLocation( "appliedenergistics2", "textures/models/skychest.png" );
-		}
+		final int metaData = tile.getWorldObj().getBlockMetadata( tile.xCoord, tile.yCoord, tile.zCoord );
+		final ResourceLocation loc = METADATA_TO_TEXTURE[metaData];
 
 		Minecraft.getMinecraft().getTextureManager().bindTexture( loc );
 
@@ -118,8 +108,8 @@ public class RenderBlockSkyChest extends BaseBlockRender<BlockSkyChest, TileSkyC
 		GL11.glScalef( 1.0F, -1F, -1F );
 		GL11.glTranslatef( -0.0F, -1.0F, -1.0F );
 
-		long now = System.currentTimeMillis();
-		long distance = now - skyChest.lastEvent;
+		final long now = System.currentTimeMillis();
+		final long distance = now - skyChest.lastEvent;
 
 		if( skyChest.playerOpen > 0 )
 		{
@@ -146,9 +136,13 @@ public class RenderBlockSkyChest extends BaseBlockRender<BlockSkyChest, TileSkyC
 
 		this.model.chestLid.offsetY = -( 1.01f / 16.0f );
 		this.model.chestLid.rotateAngleX = -( ( lidAngle * 3.141593F ) / 2.0F );
-		this.model.renderAll();
 
-		GL11.glDisable( 32826 /* GL_RESCALE_NORMAL_EXT */);
+		// The vanilla chests wants culling reversed...
+		GL11.glCullFace( GL11.GL_FRONT );
+		this.model.renderAll();
+		GL11.glCullFace( GL11.GL_BACK );
+
+		GL11.glDisable( GL12.GL_RESCALE_NORMAL );
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
 	}
 }

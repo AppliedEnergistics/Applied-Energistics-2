@@ -65,7 +65,7 @@ public class RenderBlockInscriber extends BaseBlockRender<BlockInscriber, TileIn
 	@Override
 	public void renderInventory( BlockInscriber blk, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj )
 	{
-		Tessellator tess = Tessellator.instance;
+		final Tessellator tess = Tessellator.instance;
 
 		renderer.renderAllFaces = true;
 		this.setInvRenderBounds( renderer, 6, 1, 0, 10, 15, 2 );
@@ -108,17 +108,17 @@ public class RenderBlockInscriber extends BaseBlockRender<BlockInscriber, TileIn
 	{
 		this.preRenderInWorld( block, world, x, y, z, renderer );
 
-		BlockInscriber blk = (BlockInscriber) block;
+		final BlockInscriber blk = (BlockInscriber) block;
 
-		IOrientable te = this.getOrientable( block, world, x, y, z );
+		final IOrientable te = this.getOrientable( block, world, x, y, z );
 		if( te == null )
 		{
 			return false;
 		}
 
-		ForgeDirection fdy = te.getUp();
-		ForgeDirection fdz = te.getForward();
-		ForgeDirection fdx = Platform.crossProduct( fdz, fdy ).getOpposite();
+		final ForgeDirection fdy = te.getUp();
+		final ForgeDirection fdz = te.getForward();
+		final ForgeDirection fdx = Platform.crossProduct( fdz, fdy ).getOpposite();
 
 		renderer.renderAllFaces = true;
 
@@ -163,21 +163,21 @@ public class RenderBlockInscriber extends BaseBlockRender<BlockInscriber, TileIn
 		Minecraft mc = Minecraft.getMinecraft();
 		mc.renderEngine.bindTexture( TextureMap.locationBlocksTexture );
 
-		int br = tile.getWorldObj().getLightBrightnessForSkyBlocks( tile.xCoord, tile.yCoord, tile.zCoord, 0 );// << 20
-																												// |
-																												// light
-																												// << 4;
-		int var11 = br % 65536;
-		int var12 = br / 65536;
+		// << 20 | light << 4;
+		final int br = tile.getWorldObj().getLightBrightnessForSkyBlocks( tile.xCoord, tile.yCoord, tile.zCoord, 0 );
+		final int var11 = br % 65536;
+		final int var12 = br / 65536;
+
 		OpenGlHelper.setLightmapTextureCoords( OpenGlHelper.lightmapTexUnit, var11, var12 );
 
-		float TwoPx = 2.0f / 16.0f;
+		final float TwoPx = 2.0f / 16.0f;
 		float middle = 0.5f;
 
 		float press = 0.2f;
-		float base = 0.4f;
+		final float base = 0.4f;
 
 		long absoluteProgress = 0;
+
 		if( inv.smash )
 		{
 			long currentTime = System.currentTimeMillis();
@@ -277,7 +277,8 @@ public class RenderBlockInscriber extends BaseBlockRender<BlockInscriber, TileIn
 				GL11.glScalef( 1.0f / 1.1f, 1.0f / 1.1f, 1.0f / 1.1f );
 				GL11.glScalef( 1.0f, 1.0f, 1.0f );
 
-				Block blk = Block.getBlockFromItem( sis.getItem() );
+				final Block blk = Block.getBlockFromItem( sis.getItem() );
+
 				if( sis.getItemSpriteNumber() == 0 && block != null && RenderBlocks.renderItemIn3d( blk.getRenderType() ) )
 				{
 					GL11.glRotatef( 25.0f, 1.0f, 0.0f, 0.0f );
@@ -287,14 +288,11 @@ public class RenderBlockInscriber extends BaseBlockRender<BlockInscriber, TileIn
 
 				GL11.glRotatef( 90.0f, 1, 0, 0 );
 
-				int br = tile.getWorldObj().getLightBrightnessForSkyBlocks( tile.xCoord, tile.yCoord, tile.zCoord, 0 );// <<
-																														// 20
-																														// |
-																														// light
-																														// <<
-																														// 4;
-				int var11 = br % 65536;
-				int var12 = br / 65536;
+				// << 20 | light << 4;
+				final int br = tile.getWorldObj().getLightBrightnessForSkyBlocks( tile.xCoord, tile.yCoord, tile.zCoord, 0 );
+				final int var11 = br % 65536;
+				final int var12 = br / 65536;
+
 				OpenGlHelper.setLightmapTextureCoords( OpenGlHelper.lightmapTexUnit, var11, var12 );
 
 				GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
