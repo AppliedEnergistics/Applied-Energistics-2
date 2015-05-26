@@ -22,18 +22,20 @@ package appeng.integration.modules;
 import java.util.Arrays;
 import java.util.List;
 
+import com.google.common.base.Optional;
+
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
-
 import cpw.mods.fml.relauncher.ReflectionHelper;
-
 import uristqwerty.CraftGuide.CraftGuideLog;
 import uristqwerty.CraftGuide.DefaultRecipeTemplate;
 import uristqwerty.CraftGuide.RecipeGeneratorImplementation;
+import uristqwerty.CraftGuide.api.ChanceSlot;
 import uristqwerty.CraftGuide.api.CraftGuideAPIObject;
 import uristqwerty.CraftGuide.api.CraftGuideRecipe;
+import uristqwerty.CraftGuide.api.ExtraSlot;
 import uristqwerty.CraftGuide.api.ItemSlot;
 import uristqwerty.CraftGuide.api.RecipeGenerator;
 import uristqwerty.CraftGuide.api.RecipeProvider;
@@ -42,9 +44,13 @@ import uristqwerty.CraftGuide.api.Slot;
 import uristqwerty.CraftGuide.api.SlotType;
 import uristqwerty.gui_craftguide.texture.DynamicTexture;
 import uristqwerty.gui_craftguide.texture.TextureClip;
-
+import appeng.api.AEApi;
+import appeng.api.IAppEngApi;
+import appeng.api.definitions.IBlocks;
 import appeng.api.exceptions.MissingIngredientError;
 import appeng.api.exceptions.RegistrationError;
+import appeng.api.features.IGrinderEntry;
+import appeng.api.features.IInscriberRecipe;
 import appeng.api.recipes.IIngredient;
 import appeng.integration.IIntegrationModule;
 import appeng.recipes.game.ShapedRecipe;
@@ -66,8 +72,6 @@ public class CraftGuide extends CraftGuideAPIObject implements IIntegrationModul
 
 	private final Slot[] smallCraftingSlots = new ItemSlot[] { new ItemSlot( 12, 12, 16, 16 ), new ItemSlot( 30, 12, 16, 16 ), new ItemSlot( 12, 30, 16, 16 ), new ItemSlot( 30, 30, 16, 16 ), new ItemSlot( 59, 21, 16, 16, true ).setSlotType( SlotType.OUTPUT_SLOT ), };
 
-	private final Slot[] furnaceSlots = new ItemSlot[] { new ItemSlot( 13, 21, 16, 16 ), new ItemSlot( 50, 21, 16, 16, true ).setSlotType( SlotType.OUTPUT_SLOT ), };
-
 	@Override
 	public void generateRecipes( RecipeGenerator generator )
 	{
@@ -88,11 +92,22 @@ public class CraftGuide extends CraftGuideAPIObject implements IIntegrationModul
 
 		RecipeTemplate shapelessTemplate = new DefaultRecipeTemplate( this.shapelessCraftingSlots, RecipeGeneratorImplementation.workbench, new TextureClip( DynamicTexture.instance( "recipe_backgrounds" ), 1, 121, 79, 58 ), new TextureClip( DynamicTexture.instance( "recipe_backgrounds" ), 82, 121, 79, 58 ) );
 
-		RecipeTemplate furnaceTemplate = new DefaultRecipeTemplate( this.furnaceSlots, new ItemStack( Blocks.furnace ), new TextureClip( DynamicTexture.instance( "recipe_backgrounds" ), 1, 181, 79, 58 ), new TextureClip( DynamicTexture.instance( "recipe_backgrounds" ), 82, 181, 79, 58 ) );
-
 		this.addCraftingRecipes( craftingTemplate, smallTemplate, shapelessTemplate, generator );
-		this.addGrinderRecipes( furnaceTemplate, generator );
-		this.addInscriberRecipes( furnaceTemplate, generator );
+
+		final IAppEngApi api = AEApi.instance();
+		IBlocks aeBlocks = api.definitions().blocks();
+		Optional<ItemStack> grindstone = aeBlocks.grindStone().maybeStack(1);
+		Optional<ItemStack> inscriber = aeBlocks.inscriber().maybeStack(1);
+
+		if( grindstone.isPresent() )
+		{
+			this.addGrinderRecipes( api, grindstone.get(), generator );
+		}
+
+		if( inscriber.isPresent() )
+		{
+			this.addInscriberRecipes( api, inscriber.get(), generator );
+		}
 	}
 
 	private void addCraftingRecipes( RecipeTemplate template, RecipeTemplate templateSmall, RecipeTemplate templateShapeless, RecipeGenerator generator )
@@ -143,14 +158,51 @@ public class CraftGuide extends CraftGuideAPIObject implements IIntegrationModul
 		}
 	}
 
-	private void addGrinderRecipes( RecipeTemplate template, RecipeGenerator generator )
+	private void addGrinderRecipes( IAppEngApi api, ItemStack grindstone, RecipeGenerator generator )
 	{
+		ItemStack handle = api.definitions().blocks().crankHandle().maybeStack(1).orNull();
+		Slot[] grinderSlots = new ItemSlot[] {
+				new ItemSlot( 3, 21, 16, 16 ).drawOwnBackground(),
+				new ItemSlot( 41, 21, 16, 16, true ).drawOwnBackground().setSlotType( SlotType.OUTPUT_SLOT ),
+				new ChanceSlot( 59, 12, 16, 16, true).setRatio( 10000 ).setFormatString( " (%1$.2f%% chance)" ).drawOwnBackground().setSlotType( SlotType.OUTPUT_SLOT ),
+				new ChanceSlot( 59, 30, 16, 16, true).setRatio( 10000 ).setFormatString( " (%1$.2f%% chance)" ).drawOwnBackground().setSlotType( SlotType.OUTPUT_SLOT ),
+				new ExtraSlot( 22, 12, 16, 16, handle ).clickable( true ).showName( true ).setSlotType( SlotType.MACHINE_SLOT ),
+				new ExtraSlot( 22, 30, 16, 16, grindstone ).clickable( true ).showName( true ).setSlotType( SlotType.MACHINE_SLOT ) };
+		RecipeTemplate grinderTemplate = generator.createRecipeTemplate( grinderSlots, grindstone );
 
+		for( IGrinderEntry recipe : api.registries().grinder().getRecipes() )
+		{
+			generator.addRecipe( grinderTemplate, new Object[] {
+					recipe.getInput(),
+					recipe.getOutput(),
+					new Object[] { recipe.getOptionalOutput(), (int)(recipe.getOptionalChance() * 10000) },
+					new Object[] { recipe.getSecondOptionalOutput(), (int)(recipe.getOptionalChance() * 10000) },
+					handle,
+					grindstone
+			});
+		}
 	}
 
-	private void addInscriberRecipes( RecipeTemplate template, RecipeGenerator generator )
+	private void addInscriberRecipes( IAppEngApi api, ItemStack inscriber, RecipeGenerator generator )
 	{
+		Slot[] inscriberSlots = new ItemSlot[] {
+				new ItemSlot( 12, 21, 16, 16 ).drawOwnBackground(),
+				new ItemSlot( 21, 3, 16, 16 ).drawOwnBackground(),
+				new ItemSlot( 21, 39, 16, 16 ).drawOwnBackground(),
+				new ItemSlot( 50, 21, 16, 16, true ).drawOwnBackground().setSlotType( SlotType.OUTPUT_SLOT ),
+				new ExtraSlot( 31, 21, 16, 16, inscriber ).clickable( true ).showName( true ).setSlotType( SlotType.MACHINE_SLOT ) };
 
+		RecipeTemplate inscriberTemplate = generator.createRecipeTemplate( inscriberSlots, inscriber );
+
+		for( IInscriberRecipe recipe : api.registries().inscriber().getRecipes() )
+		{
+			generator.addRecipe( inscriberTemplate, new Object[] {
+					recipe.getInputs(),
+					recipe.getTopOptional().orNull(),
+					recipe.getBottomOptional().orNull(),
+					recipe.getOutput(),
+					inscriber });
+		}
 	}
 
 	Object[] getCraftingShapelessRecipe( List items, ItemStack recipeOutput )
