@@ -100,7 +100,8 @@ import appeng.parts.automation.PartFormationPlane;
 import appeng.parts.automation.PartLevelEmitter;
 import appeng.parts.misc.PartStorageBus;
 import appeng.parts.reporting.PartCraftingTerminal;
-import appeng.parts.reporting.PartMonitor;
+import appeng.parts.reporting.PartInterfaceTerminal;
+import appeng.parts.reporting.PartPanel;
 import appeng.parts.reporting.PartPatternTerminal;
 import appeng.tile.crafting.TileCraftingTile;
 import appeng.tile.crafting.TileMolecularAssembler;
@@ -187,7 +188,7 @@ public enum GuiBridge implements IGuiHandler
 
 	GUI_CRAFTING_CONFIRM( ContainerCraftConfirm.class, ITerminalHost.class, GuiHostType.ITEM_OR_WORLD, SecurityPermissions.CRAFT ),
 
-	GUI_INTERFACE_TERMINAL( ContainerInterfaceTerminal.class, PartMonitor.class, GuiHostType.WORLD, SecurityPermissions.BUILD ),
+	GUI_INTERFACE_TERMINAL( ContainerInterfaceTerminal.class, PartInterfaceTerminal.class, GuiHostType.WORLD, SecurityPermissions.BUILD ),
 
 	GUI_CRAFTING_STATUS( ContainerCraftingStatus.class, ITerminalHost.class, GuiHostType.ITEM_OR_WORLD, SecurityPermissions.CRAFT );
 

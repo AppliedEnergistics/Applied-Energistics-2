@@ -45,7 +45,7 @@ import appeng.client.me.ClientDCInternalInv;
 import appeng.client.me.SlotDisconnected;
 import appeng.container.implementations.ContainerInterfaceTerminal;
 import appeng.core.localization.GuiText;
-import appeng.parts.reporting.PartMonitor;
+import appeng.parts.reporting.PartInterfaceTerminal;
 import appeng.util.Platform;
 
 
@@ -67,7 +67,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 	private boolean refreshList = false;
 	private MEGuiTextField searchField;
 
-	public GuiInterfaceTerminal( InventoryPlayer inventoryPlayer, PartMonitor te )
+	public GuiInterfaceTerminal( InventoryPlayer inventoryPlayer, PartInterfaceTerminal te )
 	{
 		super( new ContainerInterfaceTerminal( inventoryPlayer, te ) );
 		this.myScrollBar = new GuiScrollbar();

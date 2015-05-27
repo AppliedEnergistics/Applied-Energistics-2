@@ -25,6 +25,8 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Random;
 
+import com.google.common.base.Preconditions;
+
 import io.netty.buffer.ByteBuf;
 
 import net.minecraft.client.renderer.RenderBlocks;
@@ -85,6 +87,8 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 
 	public AEBasePart( ItemStack is )
 	{
+		Preconditions.checkNotNull( is );
+
 		this.is = is;
 		this.proxy = new AENetworkProxy( this, "part", is, this instanceof PartCable );
 		this.proxy.setValidSides( EnumSet.noneOf( ForgeDirection.class ) );
@@ -139,7 +143,9 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 	public int getInstalledUpgrades( Upgrades u )
 	{
 		return 0;
-	}	@Override
+	}
+
+	@Override
 	@SideOnly( Side.CLIENT )
 	public void renderInventory( IPartRenderHelper rh, RenderBlocks renderer )
 	{
@@ -189,7 +195,9 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 	public String getCustomName()
 	{
 		return this.is.getDisplayName();
-	}	@Override
+	}
+
+	@Override
 	@SideOnly( Side.CLIENT )
 	public void renderStatic( int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer )
 	{
@@ -207,10 +215,6 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 	{
 		crashreportcategory.addCrashSection( "Part Side", this.side );
 	}
-
-
-
-
 
 	@Override
 	@SideOnly( Side.CLIENT )
@@ -369,7 +373,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 	/**
 	 * depending on the from, different settings will be accepted, don't call this with null
 	 *
-	 * @param from     source of settings
+	 * @param from source of settings
 	 * @param compound compound of source
 	 */
 	public void uploadSettings( SettingsFrom from, NBTTagCompound compound )

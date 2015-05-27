@@ -36,8 +36,12 @@ import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.tile.inventory.InvOperation;
 
 
-public class PartPatternTerminal extends PartTerminal
+public class PartPatternTerminal extends AbstractPartTerminal
 {
+	private static final CableBusTextures FRONT_BRIGHT_ICON = CableBusTextures.PartPatternTerm_Bright;
+	private static final CableBusTextures FRONT_DARK_ICON = CableBusTextures.PartPatternTerm_Dark;
+	private static final CableBusTextures FRONT_COLORED_ICON = CableBusTextures.PartPatternTerm_Colored;
+
 	private final AppEngInternalInventory crafting = new AppEngInternalInventory( this, 9 );
 	private final AppEngInternalInventory output = new AppEngInternalInventory( this, 3 );
 	private final AppEngInternalInventory pattern = new AppEngInternalInventory( this, 2 );
@@ -48,16 +52,12 @@ public class PartPatternTerminal extends PartTerminal
 	public PartPatternTerminal( ItemStack is )
 	{
 		super( is );
-
-		this.frontBright = CableBusTextures.PartPatternTerm_Bright;
-		this.frontColored = CableBusTextures.PartPatternTerm_Colored;
-		this.frontDark = CableBusTextures.PartPatternTerm_Dark;
 	}
 
 	@Override
 	public void getDrops( List<ItemStack> drops, boolean wrenched )
 	{
-		for( ItemStack is : this.pattern )
+		for( final ItemStack is : this.pattern )
 		{
 			if( is != null )
 			{
@@ -111,24 +111,24 @@ public class PartPatternTerminal extends PartTerminal
 	{
 		if( inv == this.pattern && slot == 1 )
 		{
-			ItemStack is = this.pattern.getStackInSlot( 1 );
+			final ItemStack is = this.pattern.getStackInSlot( 1 );
 			if( is != null && is.getItem() instanceof ICraftingPatternItem )
 			{
-				ICraftingPatternItem pattern = (ICraftingPatternItem) is.getItem();
-				ICraftingPatternDetails details = pattern.getPatternForItem( is, this.getHost().getTile().getWorldObj() );
+				final ICraftingPatternItem pattern = (ICraftingPatternItem) is.getItem();
+				final ICraftingPatternDetails details = pattern.getPatternForItem( is, this.getHost().getTile().getWorldObj() );
 				if( details != null )
 				{
 					this.setCraftingRecipe( details.isCraftable() );
 
 					for( int x = 0; x < this.crafting.getSizeInventory() && x < details.getInputs().length; x++ )
 					{
-						IAEItemStack item = details.getInputs()[x];
+						final IAEItemStack item = details.getInputs()[x];
 						this.crafting.setInventorySlotContents( x, item == null ? null : item.getItemStack() );
 					}
 
 					for( int x = 0; x < this.output.getSizeInventory() && x < details.getOutputs().length; x++ )
 					{
-						IAEItemStack item = details.getOutputs()[x];
+						final IAEItemStack item = details.getOutputs()[x];
 						this.output.setInventorySlotContents( x, item == null ? null : item.getItemStack() );
 					}
 				}
@@ -148,7 +148,7 @@ public class PartPatternTerminal extends PartTerminal
 		{
 			for( int x = 0; x < this.crafting.getSizeInventory(); x++ )
 			{
-				ItemStack is = this.crafting.getStackInSlot( x );
+				final ItemStack is = this.crafting.getStackInSlot( x );
 				if( is != null )
 				{
 					is.stackSize = 1;
@@ -187,5 +187,23 @@ public class PartPatternTerminal extends PartTerminal
 		}
 
 		return super.getInventoryByName( name );
+	}
+
+	@Override
+	public CableBusTextures getFrontBright()
+	{
+		return FRONT_BRIGHT_ICON;
+	}
+
+	@Override
+	public CableBusTextures getFrontColored()
+	{
+		return FRONT_COLORED_ICON;
+	}
+
+	@Override
+	public CableBusTextures getFrontDark()
+	{
+		return FRONT_DARK_ICON;
 	}
 }

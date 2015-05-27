@@ -47,13 +47,13 @@ public enum CableBusTextures
 
 	PartPatternTerm_Bright( "PartPatternTerm_Bright" ), PartPatternTerm_Colored( "PartPatternTerm_Colored" ), PartPatternTerm_Dark( "PartPatternTerm_Dark" ),
 
-	PartConversionMonitor_Bright( "PartConversionMonitor_Bright" ), PartConversionMonitor_Colored( "PartConversionMonitor_Colored" ), PartConversionMonitor_Dark( "PartConversionMonitor_Dark" ),
+	PartConversionMonitor_Bright( "PartConversionMonitor_Bright" ), PartConversionMonitor_Colored( "PartConversionMonitor_Colored" ), PartConversionMonitor_Dark( "PartConversionMonitor_Dark" ), PartConversionMonitor_Dark_Locked( "PartConversionMonitor_Dark_Locked" ),
 
 	PartInterfaceTerm_Bright( "PartInterfaceTerm_Bright" ), PartInterfaceTerm_Colored( "PartInterfaceTerm_Colored" ), PartInterfaceTerm_Dark( "PartInterfaceTerm_Dark" ),
 
 	PartCraftingTerm_Bright( "PartCraftingTerm_Bright" ), PartCraftingTerm_Colored( "PartCraftingTerm_Colored" ), PartCraftingTerm_Dark( "PartCraftingTerm_Dark" ), //
 
-	PartStorageMonitor_Bright( "PartStorageMonitor_Bright" ), PartStorageMonitor_Colored( "PartStorageMonitor_Colored" ), PartStorageMonitor_Dark( "PartStorageMonitor_Dark" ),
+	PartStorageMonitor_Bright( "PartStorageMonitor_Bright" ), PartStorageMonitor_Colored( "PartStorageMonitor_Colored" ), PartStorageMonitor_Dark( "PartStorageMonitor_Dark" ), PartStorageMonitor_Colored_Locked( "PartStorageMonitor_Colored_Locked" ),
 
 	PartTerminal_Bright( "PartTerminal_Bright" ), PartTerminal_Colored( "PartTerminal_Colored" ), PartTerminal_Dark( "PartTerminal_Dark" ),
 

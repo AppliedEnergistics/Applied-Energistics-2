@@ -21,44 +21,23 @@ package appeng.parts.reporting;
 
 import net.minecraft.item.ItemStack;
 
-import appeng.client.texture.CableBusTextures;
 import appeng.helpers.Reflected;
 
 
-/**
- * @author AlgorithmX2
- * @author thatsIch
- * @version rv2
- * @since rv0
- */
-public class PartStorageMonitor extends AbstractPartMonitor
+public class PartSemiDarkPanel extends AbstractPartPanel
 {
-	private static final CableBusTextures FRONT_BRIGHT_ICON = CableBusTextures.PartStorageMonitor_Bright;
-	private static final CableBusTextures FRONT_DARK_ICON = CableBusTextures.PartStorageMonitor_Dark;
-	private static final CableBusTextures FRONT_COLORED_ICON = CableBusTextures.PartStorageMonitor_Colored;
-	private static final CableBusTextures FRONT_COLORED_ICON_LOCKED = CableBusTextures.PartStorageMonitor_Colored_Locked;
 
 	@Reflected
-	public PartStorageMonitor( ItemStack is )
+	public PartSemiDarkPanel( ItemStack is )
 	{
 		super( is );
 	}
 
 	@Override
-	public CableBusTextures getFrontBright()
+	protected int getBrightnessColor()
 	{
-		return FRONT_BRIGHT_ICON;
-	}
-
-	@Override
-	public CableBusTextures getFrontColored()
-	{
-		return this.isLocked() ? FRONT_COLORED_ICON_LOCKED : FRONT_COLORED_ICON;
-	}
-
-	@Override
-	public CableBusTextures getFrontDark()
-	{
-		return FRONT_DARK_ICON;
+		final int light = this.getColor().whiteVariant;
+		final int dark = this.getColor().mediumVariant;
+		return ( ( ( ( ( light >> 16 ) & 0xff ) + ( ( dark >> 16 ) & 0xff ) ) / 2 ) << 16 ) | ( ( ( ( ( light >> 8 ) & 0xff ) + ( ( dark >> 8 ) & 0xff ) ) / 2 ) << 8 ) | ( ( ( ( light ) & 0xff ) + ( ( dark ) & 0xff ) ) / 2 );
 	}
 }
