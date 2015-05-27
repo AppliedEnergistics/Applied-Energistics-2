@@ -19,156 +19,38 @@
 package appeng.parts.reporting;
 
 
-import java.util.List;
-
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.Vec3;
-import appeng.api.config.Settings;
-import appeng.api.config.SortDir;
-import appeng.api.config.SortOrder;
-import appeng.api.config.ViewItems;
-import appeng.api.implementations.tiles.IViewCellStorage;
-import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.ITerminalHost;
-import appeng.api.util.IConfigManager;
+
 import appeng.client.texture.CableBusTextures;
-import appeng.core.sync.GuiBridge;
-import appeng.me.GridAccessException;
-import appeng.tile.inventory.AppEngInternalInventory;
-import appeng.tile.inventory.IAEAppEngInventory;
-import appeng.tile.inventory.InvOperation;
-import appeng.util.ConfigManager;
-import appeng.util.IConfigManagerHost;
-import appeng.util.Platform;
 
 
-public class PartTerminal extends PartMonitor implements ITerminalHost, IConfigManagerHost, IViewCellStorage, IAEAppEngInventory
+public class PartTerminal extends AbstractPartTerminal
 {
-
-	final IConfigManager cm = new ConfigManager( this );
-	final AppEngInternalInventory viewCell = new AppEngInternalInventory( this, 5 );
 
 	public PartTerminal( ItemStack is )
 	{
-		super( is, true );
+		super( is );
+	}
 
-		this.frontBright = CableBusTextures.PartTerminal_Bright;
-		this.frontColored = CableBusTextures.PartTerminal_Colored;
-		this.frontDark = CableBusTextures.PartTerminal_Dark;
-		// frontSolid = CableBusTextures.PartTerminal_Solid;
+	private static final CableBusTextures FRONT_BRIGHT_ICON = CableBusTextures.PartTerminal_Bright;
+	private static final CableBusTextures FRONT_DARK_ICON = CableBusTextures.PartTerminal_Dark;
+	private static final CableBusTextures FRONT_COLORED_ICON = CableBusTextures.PartTerminal_Colored;
 
-		this.cm.registerSetting( Settings.SORT_BY, SortOrder.NAME );
-		this.cm.registerSetting( Settings.VIEW_MODE, ViewItems.ALL );
-		this.cm.registerSetting( Settings.SORT_DIRECTION, SortDir.ASCENDING );
+	@Override
+	public CableBusTextures getFrontBright()
+	{
+		return FRONT_BRIGHT_ICON;
 	}
 
 	@Override
-	public void getDrops( List<ItemStack> drops, boolean wrenched )
+	public CableBusTextures getFrontColored()
 	{
-		super.getDrops( drops, wrenched );
-
-		for( ItemStack is : this.viewCell )
-		{
-			if( is != null )
-			{
-				drops.add( is );
-			}
-		}
+		return FRONT_COLORED_ICON;
 	}
 
 	@Override
-	public IConfigManager getConfigManager()
+	public CableBusTextures getFrontDark()
 	{
-		return this.cm;
-	}
-
-	@Override
-	public void readFromNBT( NBTTagCompound data )
-	{
-		super.readFromNBT( data );
-		this.cm.readFromNBT( data );
-		this.viewCell.readFromNBT( data, "viewCell" );
-	}
-
-	@Override
-	public void writeToNBT( NBTTagCompound data )
-	{
-		super.writeToNBT( data );
-		this.cm.writeToNBT( data );
-		this.viewCell.writeToNBT( data, "viewCell" );
-	}
-
-	@Override
-	public boolean onPartActivate( EntityPlayer player, Vec3 pos )
-	{
-		if( !super.onPartActivate( player, pos ) )
-		{
-			if( !player.isSneaking() )
-			{
-				if( Platform.isClient() )
-				{
-					return true;
-				}
-
-				Platform.openGUI( player, this.getHost().getTile(), this.side, this.getGui( player ) );
-
-				return true;
-			}
-		}
-		return false;
-	}
-
-	public GuiBridge getGui( EntityPlayer player )
-	{
-		return GuiBridge.GUI_ME;
-	}
-
-	@Override
-	public IMEMonitor getItemInventory()
-	{
-		try
-		{
-			return this.proxy.getStorage().getItemInventory();
-		}
-		catch( GridAccessException e )
-		{
-			// err nope?
-		}
-		return null;
-	}
-
-	@Override
-	public IMEMonitor getFluidInventory()
-	{
-		try
-		{
-			return this.proxy.getStorage().getFluidInventory();
-		}
-		catch( GridAccessException e )
-		{
-			// err nope?
-		}
-		return null;
-	}
-
-	@Override
-	public void updateSetting( IConfigManager manager, Enum settingName, Enum newValue )
-	{
-
-	}
-
-	@Override
-	public IInventory getViewCellStorage()
-	{
-		return this.viewCell;
-	}
-
-	@Override
-	public void onChangeInventory( IInventory inv, int slot, InvOperation mc, ItemStack removedStack, ItemStack newStack )
-	{
-		this.host.markForSave();
+		return FRONT_DARK_ICON;
 	}
 }

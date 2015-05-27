@@ -19,13 +19,15 @@
 package appeng.parts;
 
 
-import io.netty.buffer.ByteBuf;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Random;
+
+import com.google.common.base.Preconditions;
+
+import io.netty.buffer.ByteBuf;
 
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.crash.CrashReportCategory;
@@ -83,6 +85,8 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 
 	public AEBasePart( ItemStack is )
 	{
+		Preconditions.checkNotNull( is );
+
 		this.is = is;
 		this.proxy = new AENetworkProxy( this, "part", is, this instanceof PartCable );
 		this.proxy.setValidSides( EnumSet.noneOf( EnumFacing.class ) );
@@ -137,7 +141,9 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 	public int getInstalledUpgrades( Upgrades u )
 	{
 		return 0;
-	}	@Override
+	}
+
+	@Override
 	@SideOnly( Side.CLIENT )
 	public void renderInventory( IPartRenderHelper rh, IRenderHelper renderer )
 	{
@@ -188,7 +194,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 	{
 		return this.is.getDisplayName();
 	}
-	
+
 	@Override
 	@SideOnly( Side.CLIENT )
 	public void renderStatic( BlockPos pos, IPartRenderHelper rh, IRenderHelper renderer )
@@ -207,10 +213,6 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 	{
 		crashreportcategory.addCrashSection( "Part Side", this.side );
 	}
-
-
-
-
 
 	@Override
 	@SideOnly( Side.CLIENT )
@@ -369,7 +371,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 	/**
 	 * depending on the from, different settings will be accepted, don't call this with null
 	 *
-	 * @param from     source of settings
+	 * @param from source of settings
 	 * @param compound compound of source
 	 */
 	public void uploadSettings( SettingsFrom from, NBTTagCompound compound )

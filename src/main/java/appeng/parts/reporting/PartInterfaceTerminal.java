@@ -27,15 +27,15 @@ import appeng.core.sync.GuiBridge;
 import appeng.util.Platform;
 
 
-public class PartInterfaceTerminal extends PartMonitor
+public class PartInterfaceTerminal extends AbstractPartDisplay
 {
+	private static final CableBusTextures FRONT_BRIGHT_ICON = CableBusTextures.PartInterfaceTerm_Bright;
+	private static final CableBusTextures FRONT_DARK_ICON = CableBusTextures.PartInterfaceTerm_Dark;
+	private static final CableBusTextures FRONT_COLORED_ICON = CableBusTextures.PartInterfaceTerm_Colored;
+
 	public PartInterfaceTerminal( ItemStack is )
 	{
-		super( is, true );
-
-		this.frontBright = CableBusTextures.PartInterfaceTerm_Bright;
-		this.frontColored = CableBusTextures.PartInterfaceTerm_Colored;
-		this.frontDark = CableBusTextures.PartInterfaceTerm_Dark;
+		super( is );
 	}
 
 	@Override
@@ -57,5 +57,23 @@ public class PartInterfaceTerminal extends PartMonitor
 		}
 
 		return false;
+	}
+
+	@Override
+	public CableBusTextures getFrontBright()
+	{
+		return FRONT_BRIGHT_ICON;
+	}
+
+	@Override
+	public CableBusTextures getFrontColored()
+	{
+		return FRONT_COLORED_ICON;
+	}
+
+	@Override
+	public CableBusTextures getFrontDark()
+	{
+		return FRONT_DARK_ICON;
 	}
 }

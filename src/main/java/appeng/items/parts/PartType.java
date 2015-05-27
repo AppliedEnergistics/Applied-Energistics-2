@@ -51,11 +51,11 @@ import appeng.parts.p2p.PartP2PRedstone;
 import appeng.parts.p2p.PartP2PTunnelME;
 import appeng.parts.reporting.PartConversionMonitor;
 import appeng.parts.reporting.PartCraftingTerminal;
-import appeng.parts.reporting.PartDarkMonitor;
+import appeng.parts.reporting.PartDarkPanel;
 import appeng.parts.reporting.PartInterfaceTerminal;
-import appeng.parts.reporting.PartMonitor;
+import appeng.parts.reporting.PartPanel;
 import appeng.parts.reporting.PartPatternTerminal;
-import appeng.parts.reporting.PartSemiDarkMonitor;
+import appeng.parts.reporting.PartSemiDarkPanel;
 import appeng.parts.reporting.PartStorageMonitor;
 import appeng.parts.reporting.PartTerminal;
 
@@ -108,11 +108,11 @@ public enum PartType
 
 	QuartzFiber( 140, EnumSet.of( AEFeature.Core ), EnumSet.noneOf( IntegrationType.class ), PartQuartzFiber.class ),
 
-	Monitor( 160, EnumSet.of( AEFeature.Core ), EnumSet.noneOf( IntegrationType.class ), PartMonitor.class ),
+	Monitor( 160, EnumSet.of( AEFeature.Core ), EnumSet.noneOf( IntegrationType.class ), PartPanel.class ),
 
-	SemiDarkMonitor( 180, EnumSet.of( AEFeature.Core ), EnumSet.noneOf( IntegrationType.class ), PartSemiDarkMonitor.class ),
+	SemiDarkMonitor( 180, EnumSet.of( AEFeature.Core ), EnumSet.noneOf( IntegrationType.class ), PartSemiDarkPanel.class ),
 
-	DarkMonitor( 200, EnumSet.of( AEFeature.Core ), EnumSet.noneOf( IntegrationType.class ), PartDarkMonitor.class ),
+	DarkMonitor( 200, EnumSet.of( AEFeature.Core ), EnumSet.noneOf( IntegrationType.class ), PartDarkPanel.class ),
 
 	StorageBus( 220, EnumSet.of( AEFeature.StorageBus ), EnumSet.noneOf( IntegrationType.class ), PartStorageBus.class ),
 
