@@ -16,37 +16,18 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.core.features.registries;
+package appeng.core.worlddata;
 
 
-import javax.annotation.Nullable;
-
-import com.mojang.authlib.GameProfile;
-
-import net.minecraft.entity.player.EntityPlayer;
-import appeng.api.features.IPlayerRegistry;
-import appeng.core.worlddata.WorldData;
+import appeng.services.CompassService;
 
 
-public class PlayerRegistry implements IPlayerRegistry
+/**
+ * @author thatsIch
+ * @version rv3 - 30.05.2015
+ * @since rv3 30.05.2015
+ */
+public interface IWorldCompassData
 {
-
-	@Override
-	public int getID( GameProfile username )
-	{
-		return WorldData.instance().playerData().getPlayerID( username );
-	}
-
-	@Override
-	public int getID( EntityPlayer player )
-	{
-		return WorldData.instance().playerData().getPlayerID( player.getGameProfile() );
-	}
-
-	@Nullable
-	@Override
-	public EntityPlayer findPlayer( int playerID )
-	{
-		return WorldData.instance().playerData().getPlayerFromID( playerID );
-	}
+	CompassService service();
 }

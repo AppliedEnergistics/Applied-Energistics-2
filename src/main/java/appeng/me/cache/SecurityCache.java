@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -24,6 +24,9 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 
+import com.google.common.base.Preconditions;
+import com.mojang.authlib.GameProfile;
+
 import net.minecraft.entity.player.EntityPlayer;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;
@@ -34,7 +37,7 @@ import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.events.MENetworkSecurityChange;
 import appeng.api.networking.security.ISecurityGrid;
 import appeng.api.networking.security.ISecurityProvider;
-import appeng.core.WorldSettings;
+import appeng.core.worlddata.WorldData;
 import appeng.me.GridNode;
 
 
@@ -148,7 +151,13 @@ public class SecurityCache implements ISecurityGrid
 	@Override
 	public boolean hasPermission( EntityPlayer player, SecurityPermissions perm )
 	{
-		return this.hasPermission( player == null ? -1 : WorldSettings.getInstance().getPlayerID( player.getGameProfile() ), perm );
+		Preconditions.checkNotNull( player );
+		Preconditions.checkNotNull( perm );
+
+		final GameProfile profile = player.getGameProfile();
+		final int playerID = WorldData.instance().playerData().getPlayerID( profile );
+
+		return this.hasPermission( playerID, perm );
 	}
 
 	@Override

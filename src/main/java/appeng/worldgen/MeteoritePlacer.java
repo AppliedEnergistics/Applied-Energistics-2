@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -42,8 +42,8 @@ import appeng.api.definitions.IBlockDefinition;
 import appeng.api.definitions.IBlocks;
 import appeng.api.definitions.IMaterials;
 import appeng.core.AEConfig;
-import appeng.core.WorldSettings;
 import appeng.core.features.AEFeature;
+import appeng.core.worlddata.WorldData;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 import appeng.worldgen.meteorite.Fallout;
@@ -272,7 +272,7 @@ public final class MeteoritePlacer
 
 						if( Math.random() > PRESSES_SPAWN_CHANCE )
 						{
-							r = WorldSettings.getInstance().getNextOrderedValue( "presses" );
+							r = WorldData.instance().storageData().getNextOrderedValue( "presses" );
 						}
 						else
 						{
@@ -579,7 +579,7 @@ public final class MeteoritePlacer
 			this.settings.setInteger( "skyMode", skyMode );
 			w.done();
 
-			WorldSettings.getInstance().addNearByMeteorites( w.getWorld().provider.getDimensionId(), x >> 4, z >> 4, this.settings );
+			WorldData.instance().spawnData().addNearByMeteorites( w.getWorld().provider.getDimensionId(), x >> 4, z >> 4, this.settings );
 			return true;
 		}
 		return false;

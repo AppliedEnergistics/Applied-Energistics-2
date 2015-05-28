@@ -30,13 +30,12 @@ import net.minecraftforge.fml.common.network.FMLNetworkEvent.ClientCustomPacketE
 import net.minecraftforge.fml.common.network.FMLNetworkEvent.ServerConnectionFromClientEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent.ServerCustomPacketEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
-import appeng.core.WorldSettings;
-import appeng.core.sync.AppEngPacket;
 
+import appeng.core.sync.AppEngPacket;
+import appeng.core.worlddata.WorldData;
 
 public class NetworkHandler
 {
-
 	public static NetworkHandler instance;
 
 	final FMLEventChannel ec;
@@ -82,7 +81,7 @@ public class NetworkHandler
 	@SubscribeEvent
 	public void newConnection( ServerConnectionFromClientEvent ev )
 	{
-		WorldSettings.getInstance().sendToPlayer( ev.manager );
+		WorldData.instance().dimensionData().sendToPlayer( ev.manager );
 	}
 
 	@SubscribeEvent
@@ -90,7 +89,7 @@ public class NetworkHandler
 	{
 		if( loginEvent.player instanceof EntityPlayerMP )
 		{
-			WorldSettings.getInstance().sendToPlayer( null );
+			WorldData.instance().dimensionData().sendToPlayer( null );
 		}
 	}
 
@@ -104,9 +103,9 @@ public class NetworkHandler
 			{
 				this.serveHandler.onPacketData( null, ev.handler, ev.packet, srv.playerEntity );
 			}
-			catch ( final ThreadQuickExitException ext )
+			catch ( final ThreadQuickExitException ignored )
 			{
-				;
+				
 			}
 		}
 	}
@@ -120,9 +119,9 @@ public class NetworkHandler
 			{
 				this.clientHandler.onPacketData( null, ev.handler, ev.packet, null );
 			}
-			catch ( final ThreadQuickExitException ext )
+			catch ( final ThreadQuickExitException ignored )
 			{
-				;
+				
 			}
 		}
 	}

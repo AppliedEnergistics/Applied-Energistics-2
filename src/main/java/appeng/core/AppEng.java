@@ -44,6 +44,7 @@ import appeng.core.crash.ModCrashEnhancement;
 import appeng.core.features.AEFeature;
 import appeng.core.sync.GuiBridge;
 import appeng.core.sync.network.NetworkHandler;
+import appeng.core.worlddata.WorldData;
 import appeng.hooks.TickHandler;
 import appeng.integration.IntegrationRegistry;
 import appeng.server.AECommand;
@@ -187,16 +188,16 @@ public final class AppEng
 	}
 
 	@EventHandler
-	private void serverStopping( FMLServerStoppingEvent event )
+	private void serverAboutToStart( FMLServerAboutToStartEvent evt )
 	{
-		WorldSettings.getInstance().shutdown();
-		TickHandler.INSTANCE.shutdown();
+		WorldData.onServerAboutToStart();
 	}
 
 	@EventHandler
-	private void serverAboutToStart( FMLServerAboutToStartEvent evt )
+	private void serverStopping( FMLServerStoppingEvent event )
 	{
-		WorldSettings.getInstance().init();
+		WorldData.instance().onServerStopping();
+		TickHandler.INSTANCE.shutdown();
 	}
 
 	@EventHandler

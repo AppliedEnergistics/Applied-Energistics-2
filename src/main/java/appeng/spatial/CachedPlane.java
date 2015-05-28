@@ -39,7 +39,7 @@ import appeng.api.movable.IMovableRegistry;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.WorldCoord;
 import appeng.core.AELog;
-import appeng.core.WorldSettings;
+import appeng.core.worlddata.WorldData;
 import appeng.util.Platform;
 
 
@@ -353,7 +353,7 @@ public class CachedPlane
 
 				for( int y = 1; y < 255; y += 32 )
 				{
-					WorldSettings.getInstance().getCompass().updateArea( this.world, c.xPosition << 4, y, c.zPosition << 4 );
+					WorldData.instance().compassData().service().updateArea( this.world, c.xPosition << 4, y, c.zPosition << 4 );
 				}
 
 				Platform.sendChunk( c, this.verticalBits );

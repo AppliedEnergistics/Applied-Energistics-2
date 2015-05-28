@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -19,7 +19,6 @@
 package appeng.worldgen;
 
 
-import java.util.Collection;
 import java.util.Random;
 import java.util.concurrent.Callable;
 
@@ -29,8 +28,8 @@ import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraftforge.fml.common.IWorldGenerator;
 import appeng.api.features.IWorldGen.WorldGenType;
 import appeng.core.AEConfig;
-import appeng.core.WorldSettings;
 import appeng.core.features.registries.WorldGenRegistry;
+import appeng.core.worlddata.WorldData;
 import appeng.hooks.TickHandler;
 import appeng.util.Platform;
 import appeng.worldgen.meteorite.ChunkOnly;
@@ -59,7 +58,7 @@ public final class MeteoriteWorldGen implements IWorldGenerator
 		}
 		else
 		{
-			WorldSettings.getInstance().getCompass().updateArea( w, chunkX, chunkZ );
+			WorldData.instance().compassData().service().updateArea( w, chunkX, chunkZ );
 		}
 	}
 
@@ -85,7 +84,7 @@ public final class MeteoriteWorldGen implements IWorldGenerator
 								continue;
 							}
 
-							if( WorldSettings.getInstance().hasGenerated( w.provider.getDimensionId(), cx, cz ) )
+							if( WorldData.instance().spawnData().hasGenerated( w.provider.getDimensionId(), cx, cz ) )
 							{
 								MeteoritePlacer mp2 = new MeteoritePlacer();
 								mp2.spawnMeteorite( new ChunkOnly( w, cx, cz ), mp.getSettings() );
@@ -107,9 +106,9 @@ public final class MeteoriteWorldGen implements IWorldGenerator
 		return false;
 	}
 
-	private Collection<NBTTagCompound> getNearByMeteorites( World w, int chunkX, int chunkZ )
+	private Iterable<NBTTagCompound> getNearByMeteorites( World w, int chunkX, int chunkZ )
 	{
-		return WorldSettings.getInstance().getNearByMeteorites( w.provider.getDimensionId(), chunkX, chunkZ );
+		return WorldData.instance().spawnData().getNearByMeteorites( w.provider.getDimensionId(), chunkX, chunkZ );
 	}
 
 	class MeteoriteSpawn implements Callable
@@ -152,8 +151,8 @@ public final class MeteoriteWorldGen implements IWorldGenerator
 				MeteoriteWorldGen.this.tryMeteorite( this.w, this.depth, this.x, this.z );
 			}
 
-			WorldSettings.getInstance().setGenerated( this.w.provider.getDimensionId(), chunkX, chunkZ );
-			WorldSettings.getInstance().getCompass().updateArea( this.w, chunkX, chunkZ );
+			WorldData.instance().spawnData().setGenerated( this.w.provider.getDimensionId(), chunkX, chunkZ );
+			WorldData.instance().compassData().service().updateArea( this.w, chunkX, chunkZ );
 
 			return null;
 		}

@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.core;
+package appeng.core.worlddata;
 
 
 import java.util.HashMap;
@@ -26,13 +26,15 @@ import java.util.UUID;
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.relauncher.FMLRelaunchLog;
+
+import appeng.core.AELog;
 import appeng.util.UUIDMatcher;
 
 
 /**
  * Initializes a map of ID to UUID from the player list in the settings.cfg
  */
-public class PlayerMappingsInitializer
+class PlayerMappingsInitializer
 {
 	/**
 	 * Internal immutable mapping
@@ -50,7 +52,7 @@ public class PlayerMappingsInitializer
 	 * @param playerList the category for the player list, generally extracted using the "players" tag
 	 * @param log        the logger used to warn the server or user of faulty entries
 	 */
-	public PlayerMappingsInitializer( ConfigCategory playerList, FMLRelaunchLog log )
+	PlayerMappingsInitializer( ConfigCategory playerList, FMLRelaunchLog log )
 	{
 		// Matcher for UUIDs
 		final UUIDMatcher matcher = new UUIDMatcher();
@@ -69,9 +71,9 @@ public class PlayerMappingsInitializer
 
 			if( matcher.isUUID( maybeUUID ) )
 			{
-				final UUID UUIDString = UUID.fromString( maybeUUID );
+				final UUID uuidString = UUID.fromString( maybeUUID );
 
-				this.playerMappings.put( id, UUIDString );
+				this.playerMappings.put( id, uuidString );
 			}
 			else
 			{

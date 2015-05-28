@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -21,6 +21,8 @@ package appeng.block.solids;
 
 import java.util.EnumSet;
 
+import com.google.common.base.Optional;
+
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
@@ -29,12 +31,11 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import appeng.block.AEBaseBlock;
-import appeng.core.WorldSettings;
-import appeng.core.features.AEFeature;
-import appeng.util.Platform;
 
-import com.google.common.base.Optional;
+import appeng.block.AEBaseBlock;
+import appeng.core.features.AEFeature;
+import appeng.core.worlddata.WorldData;
+import appeng.util.Platform;
 
 
 public class BlockSkyStone extends AEBaseBlock
@@ -93,7 +94,7 @@ public class BlockSkyStone extends AEBaseBlock
 		super.onBlockAdded( w, pos, state );
 		if( Platform.isServer() )
 		{
-			WorldSettings.getInstance().getCompass().updateArea( w, pos.getX(), pos.getY(), pos.getZ() );
+			WorldData.instance().compassData().service().updateArea( w, pos.getX(), pos.getY(), pos.getZ() );
 		}
 	}
 
@@ -118,7 +119,7 @@ public class BlockSkyStone extends AEBaseBlock
 		super.breakBlock( w, pos, state );
 		if( Platform.isServer() )
 		{
-			WorldSettings.getInstance().getCompass().updateArea( w, pos.getX(), pos.getY(), pos.getZ() );
+			WorldData.instance().compassData().service().updateArea( w, pos.getX(), pos.getY(), pos.getZ() );
 		}
 	}
 }

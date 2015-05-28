@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -21,6 +21,8 @@ package appeng.me.helpers;
 
 import java.util.Collections;
 import java.util.EnumSet;
+
+import com.mojang.authlib.GameProfile;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -43,7 +45,7 @@ import appeng.api.networking.ticking.ITickManager;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IOrientable;
-import appeng.core.WorldSettings;
+import appeng.core.worlddata.WorldData;
 import appeng.hooks.TickHandler;
 import appeng.me.GridAccessException;
 import appeng.me.cache.P2PCache;
@@ -162,7 +164,10 @@ public class AENetworkProxy implements IGridBlock
 		}
 		else if( this.node != null && this.owner != null )
 		{
-			this.node.setPlayerID( WorldSettings.getInstance().getPlayerID( this.owner.getGameProfile() ) );
+			final GameProfile profile = this.owner.getGameProfile();
+			final int playerID = WorldData.instance().playerData().getPlayerID( profile );
+
+			this.node.setPlayerID( playerID );
 			this.owner = null;
 		}
 	}

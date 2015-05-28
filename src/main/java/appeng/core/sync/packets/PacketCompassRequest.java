@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -24,10 +24,10 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import appeng.api.util.DimensionalCoord;
-import appeng.core.WorldSettings;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.core.sync.network.NetworkHandler;
+import appeng.core.worlddata.WorldData;
 import appeng.services.compass.ICompassCallback;
 
 
@@ -77,6 +77,6 @@ public class PacketCompassRequest extends AppEngPacket implements ICompassCallba
 		this.talkBackTo = player;
 
 		DimensionalCoord loc = new DimensionalCoord( player.worldObj, this.cx << 4, this.cdy << 5, this.cz << 4 );
-		WorldSettings.getInstance().getCompass().getCompassDirection( loc, 174, this );
+		WorldData.instance().compassData().service().getCompassDirection( loc, 174, this );
 	}
 }

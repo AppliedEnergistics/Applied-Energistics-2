@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -30,9 +30,9 @@ import net.minecraftforge.common.DimensionManager;
 import appeng.api.implementations.TransitionResult;
 import appeng.api.implementations.items.ISpatialStorageCell;
 import appeng.api.util.WorldCoord;
-import appeng.core.WorldSettings;
 import appeng.core.features.AEFeature;
 import appeng.core.localization.GuiText;
+import appeng.core.worlddata.WorldData;
 import appeng.items.AEBaseItem;
 import appeng.spatial.StorageHelper;
 import appeng.spatial.StorageWorldProvider;
@@ -109,7 +109,7 @@ public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorag
 			if( Platform.isServer() )
 			{
 				int dim = c.getInteger( "StorageDim" );
-				return WorldSettings.getInstance().getStoredSize( dim );
+				return WorldData.instance().dimensionData().getStoredSize( dim );
 			}
 			else
 			{
@@ -186,7 +186,7 @@ public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorag
 		NBTTagCompound c = Platform.openNbtData( is );
 		int newDim = DimensionManager.getNextFreeDimId();
 		c.setInteger( "StorageDim", newDim );
-		WorldSettings.getInstance().addStorageCellDim( newDim );
+		WorldData.instance().dimensionData().addStorageCell( newDim );
 		DimensionManager.initDimension( newDim );
 		return DimensionManager.getWorld( newDim );
 	}
@@ -200,7 +200,7 @@ public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorag
 			c.setInteger( "sizeX", targetX );
 			c.setInteger( "sizeY", targetY );
 			c.setInteger( "sizeZ", targetZ );
-			WorldSettings.getInstance().setStoredSize( dim, targetX, targetY, targetZ );
+			WorldData.instance().dimensionData().setStoredSize( dim, targetX, targetY, targetZ );
 		}
 	}
 }
