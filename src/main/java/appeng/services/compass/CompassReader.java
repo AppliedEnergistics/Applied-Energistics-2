@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -21,18 +21,25 @@ package appeng.services.compass;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.Map;
+import javax.annotation.Nonnull;
+
+import com.google.common.base.Preconditions;
 
 
-public class CompassReader
+public final class CompassReader
 {
-	private final HashMap<Long, CompassRegion> regions = new HashMap<Long, CompassRegion>();
+	private final Map<Long, CompassRegion> regions = new HashMap<Long, CompassRegion>( 100 );
 	private final int dimensionId;
-	private final File rootFolder;
+	private final File worldCompassFolder;
 
-	public CompassReader( int dimensionId, File rootFolder )
+	public CompassReader( int dimensionId, @Nonnull final File worldCompassFolder )
 	{
+		Preconditions.checkNotNull( worldCompassFolder );
+		Preconditions.checkArgument( worldCompassFolder.isDirectory() );
+
 		this.dimensionId = dimensionId;
-		this.rootFolder = rootFolder;
+		this.worldCompassFolder = worldCompassFolder;
 	}
 
 	public void close()
@@ -60,7 +67,7 @@ public class CompassReader
 		CompassRegion cr = this.regions.get( pos );
 		if( cr == null )
 		{
-			cr = new CompassRegion( cx, cz, this.dimensionId, this.rootFolder );
+			cr = new CompassRegion( cx, cz, this.dimensionId, this.worldCompassFolder );
 			this.regions.put( pos, cr );
 		}
 

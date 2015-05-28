@@ -16,38 +16,27 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.core.features.registries;
+package appeng.services.compass;
 
 
-import javax.annotation.Nullable;
+import java.util.concurrent.ThreadFactory;
+import javax.annotation.Nonnull;
 
-import com.mojang.authlib.GameProfile;
-
-import net.minecraft.entity.player.EntityPlayer;
-
-import appeng.api.features.IPlayerRegistry;
-import appeng.core.worlddata.WorldData;
+import com.google.common.base.Preconditions;
 
 
-public class PlayerRegistry implements IPlayerRegistry
+/**
+ * @author thatsIch
+ * @version rv3 - 31.05.2015
+ * @since rv3 31.05.2015
+ */
+public final class CompassThreadFactory implements ThreadFactory
 {
-
 	@Override
-	public int getID( GameProfile username )
+	public Thread newThread( @Nonnull final Runnable job )
 	{
-		return WorldData.instance().playerData().getPlayerID( username );
-	}
+		Preconditions.checkNotNull( job );
 
-	@Override
-	public int getID( EntityPlayer player )
-	{
-		return WorldData.instance().playerData().getPlayerID( player.getGameProfile() );
-	}
-
-	@Nullable
-	@Override
-	public EntityPlayer findPlayer( int playerID )
-	{
-		return WorldData.instance().playerData().getPlayerFromID( playerID );
+		return new Thread( job, "AE Compass Service" );
 	}
 }

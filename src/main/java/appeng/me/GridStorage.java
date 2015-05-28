@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -31,7 +31,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridStorage;
 import appeng.core.AELog;
-import appeng.core.WorldSettings;
+import appeng.core.worlddata.WorldData;
 
 
 public class GridStorage implements IGridStorage
@@ -157,6 +157,6 @@ public class GridStorage implements IGridStorage
 
 	public void remove()
 	{
-		WorldSettings.getInstance().destroyGridStorage( this.myID );
+		WorldData.instance().storageData().destroyGridStorage( this.myID );
 	}
 }

@@ -16,38 +16,33 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.core.features.registries;
+package appeng.core.worlddata;
 
 
-import javax.annotation.Nullable;
-
-import com.mojang.authlib.GameProfile;
-
-import net.minecraft.entity.player.EntityPlayer;
-
-import appeng.api.features.IPlayerRegistry;
-import appeng.core.worlddata.WorldData;
+import javax.annotation.Nonnull;
 
 
-public class PlayerRegistry implements IPlayerRegistry
+/**
+ * @author thatsIch
+ * @version rv3 - 30.05.2015
+ * @since rv3 30.05.2015
+ */
+public interface IWorldData
 {
+	void onServerStopping();
 
-	@Override
-	public int getID( GameProfile username )
-	{
-		return WorldData.instance().playerData().getPlayerID( username );
-	}
+	@Nonnull
+	IWorldGridStorageData storageData();
 
-	@Override
-	public int getID( EntityPlayer player )
-	{
-		return WorldData.instance().playerData().getPlayerID( player.getGameProfile() );
-	}
+	@Nonnull
+	IWorldPlayerData playerData();
 
-	@Nullable
-	@Override
-	public EntityPlayer findPlayer( int playerID )
-	{
-		return WorldData.instance().playerData().getPlayerFromID( playerID );
-	}
+	@Nonnull
+	IWorldDimensionData dimensionData();
+
+	@Nonnull
+	IWorldCompassData compassData();
+
+	@Nonnull
+	IWorldSpawnData spawnData();
 }

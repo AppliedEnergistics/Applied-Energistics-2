@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -23,55 +23,56 @@ import java.io.File;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import javax.annotation.Nonnull;
 
-import appeng.core.AELog;
+import com.google.common.base.Preconditions;
+
+import appeng.core.worlddata.MeteorDataNameEncoder;
 
 
-public class CompassRegion
+public final class CompassRegion
 {
-	final int low_x;
-	final int low_z;
+	private final int lowX;
+	private final int lowZ;
+	private final int world;
+	private final File worldCompassFolder;
+	private final MeteorDataNameEncoder encoder;
 
-	final int hi_x;
-	final int hi_z;
+	private boolean hasFile = false;
+	private RandomAccessFile raf = null;
+	private ByteBuffer buffer;
 
-	final int world;
-	final File rootFolder;
-	boolean hasFile = false;
-	RandomAccessFile raf = null;
-	ByteBuffer buffer;
-
-	public CompassRegion( int cx, int cz, int worldID, File rootFolder )
+	public CompassRegion( int cx, int cz, int worldID, @Nonnull final File worldCompassFolder )
 	{
+		Preconditions.checkNotNull( worldCompassFolder );
+		Preconditions.checkArgument( worldCompassFolder.isDirectory() );
 
 		this.world = worldID;
-		this.rootFolder = rootFolder;
+		this.worldCompassFolder = worldCompassFolder;
+		this.encoder = new MeteorDataNameEncoder( 0 );
 
 		int region_x = cx >> 10;
 		int region_z = cz >> 10;
 
-		this.low_x = region_x << 10;
-		this.low_z = region_z << 10;
-
-		this.hi_x = this.low_x + 1024;
-		this.hi_z = this.low_z + 1024;
+		this.lowX = region_x << 10;
+		this.lowZ = region_z << 10;
 
 		this.openFile( false );
 	}
 
 	private void openFile( boolean create )
 	{
-		File fName = this.getFileName();
 		if( this.hasFile )
 		{
 			return;
 		}
 
-		if( create || this.fileExists( fName ) )
+		final File file = this.getFile();
+		if( create || this.isFileExistent( file ) )
 		{
 			try
 			{
-				this.raf = new RandomAccessFile( fName, "rw" );
+				this.raf = new RandomAccessFile( file, "rw" );
 				FileChannel fc = this.raf.getChannel();
 				this.buffer = fc.map( FileChannel.MapMode.READ_WRITE, 0, 0x400 * 0x400 );// fc.size() );
 				this.hasFile = true;
@@ -83,25 +84,16 @@ public class CompassRegion
 		}
 	}
 
-	private File getFileName()
+	private File getFile()
 	{
-		String folder = this.rootFolder.getPath() + File.separatorChar + "compass";
-		File folderFile = new File( folder );
+		final String fileName = this.encoder.encode( this.world, this.lowX, this.lowZ);
 
-		if( !folderFile.exists() || !folderFile.isDirectory() )
-		{
-			if( !folderFile.mkdir() )
-			{
-				AELog.info( "Failed to create AE2/compass/" );
-			}
-		}
-
-		return new File( folder, this.world + '_' + this.low_x + '_' + this.low_z + ".dat" );
+		return new File( this.worldCompassFolder, fileName );
 	}
 
-	private boolean fileExists( File name )
+	private boolean isFileExistent( File file )
 	{
-		return name.exists() && name.isFile();
+		return file.exists() && file.isFile();
 	}
 
 	public void close()
