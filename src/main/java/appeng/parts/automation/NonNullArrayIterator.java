@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -24,7 +24,7 @@ import java.util.Iterator;
 import scala.NotImplementedError;
 
 
-public class NonNullArrayIterator<E> implements Iterator<E>
+public final class NonNullArrayIterator<E> implements Iterator<E>
 {
 
 	final E[] g;
@@ -36,7 +36,7 @@ public class NonNullArrayIterator<E> implements Iterator<E>
 	}
 
 	@Override
-	public boolean hasNext()
+	public final boolean hasNext()
 	{
 		while( this.offset < this.g.length && this.g[this.offset] == null )
 		{
@@ -47,7 +47,7 @@ public class NonNullArrayIterator<E> implements Iterator<E>
 	}
 
 	@Override
-	public E next()
+	public final E next()
 	{
 		E result = this.g[this.offset];
 		this.offset++;
@@ -55,7 +55,7 @@ public class NonNullArrayIterator<E> implements Iterator<E>
 	}
 
 	@Override
-	public void remove()
+	public final void remove()
 	{
 		throw new NotImplementedError();
 	}

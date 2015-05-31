@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -43,7 +43,7 @@ import appeng.items.AEBaseItem;
 import appeng.util.Platform;
 
 
-public class ToolBiometricCard extends AEBaseItem implements IBiometricCard
+public final class ToolBiometricCard extends AEBaseItem implements IBiometricCard
 {
 	public ToolBiometricCard()
 	{
@@ -57,7 +57,7 @@ public class ToolBiometricCard extends AEBaseItem implements IBiometricCard
 	}
 
 	@Override
-	public ItemStack onItemRightClick( ItemStack is, World w, EntityPlayer p )
+	public final ItemStack onItemRightClick( ItemStack is, World w, EntityPlayer p )
 	{
 		if( p.isSneaking() )
 		{
@@ -70,7 +70,7 @@ public class ToolBiometricCard extends AEBaseItem implements IBiometricCard
 	}
 
 	@Override
-	public boolean itemInteractionForEntity( ItemStack is, EntityPlayer par2EntityPlayer, EntityLivingBase target )
+	public final boolean itemInteractionForEntity( ItemStack is, EntityPlayer par2EntityPlayer, EntityLivingBase target )
 	{
 		if( target instanceof EntityPlayer && !par2EntityPlayer.isSneaking() )
 		{
@@ -86,7 +86,7 @@ public class ToolBiometricCard extends AEBaseItem implements IBiometricCard
 	}
 
 	@Override
-	public String getItemStackDisplayName( ItemStack is )
+	public final String getItemStackDisplayName( ItemStack is )
 	{
 		GameProfile username = this.getProfile( is );
 		return username != null ? super.getItemStackDisplayName( is ) + " - " + username.getName() : super.getItemStackDisplayName( is );
@@ -107,7 +107,7 @@ public class ToolBiometricCard extends AEBaseItem implements IBiometricCard
 	}
 
 	@Override
-	public void setProfile( ItemStack itemStack, GameProfile profile )
+	public final void setProfile( ItemStack itemStack, GameProfile profile )
 	{
 		NBTTagCompound tag = Platform.openNbtData( itemStack );
 
@@ -124,7 +124,7 @@ public class ToolBiometricCard extends AEBaseItem implements IBiometricCard
 	}
 
 	@Override
-	public GameProfile getProfile( ItemStack is )
+	public final GameProfile getProfile( ItemStack is )
 	{
 		NBTTagCompound tag = Platform.openNbtData( is );
 		if( tag.hasKey( "profile" ) )
@@ -135,7 +135,7 @@ public class ToolBiometricCard extends AEBaseItem implements IBiometricCard
 	}
 
 	@Override
-	public EnumSet<SecurityPermissions> getPermissions( ItemStack is )
+	public final EnumSet<SecurityPermissions> getPermissions( ItemStack is )
 	{
 		NBTTagCompound tag = Platform.openNbtData( is );
 		EnumSet<SecurityPermissions> result = EnumSet.noneOf( SecurityPermissions.class );
@@ -152,14 +152,14 @@ public class ToolBiometricCard extends AEBaseItem implements IBiometricCard
 	}
 
 	@Override
-	public boolean hasPermission( ItemStack is, SecurityPermissions permission )
+	public final boolean hasPermission( ItemStack is, SecurityPermissions permission )
 	{
 		NBTTagCompound tag = Platform.openNbtData( is );
 		return tag.getBoolean( permission.name() );
 	}
 
 	@Override
-	public void removePermission( ItemStack itemStack, SecurityPermissions permission )
+	public final void removePermission( ItemStack itemStack, SecurityPermissions permission )
 	{
 		NBTTagCompound tag = Platform.openNbtData( itemStack );
 		if( tag.hasKey( permission.name() ) )
@@ -169,14 +169,14 @@ public class ToolBiometricCard extends AEBaseItem implements IBiometricCard
 	}
 
 	@Override
-	public void addPermission( ItemStack itemStack, SecurityPermissions permission )
+	public final void addPermission( ItemStack itemStack, SecurityPermissions permission )
 	{
 		NBTTagCompound tag = Platform.openNbtData( itemStack );
 		tag.setBoolean( permission.name(), true );
 	}
 
 	@Override
-	public void registerPermissions( ISecurityRegistry register, IPlayerRegistry pr, ItemStack is )
+	public final void registerPermissions( ISecurityRegistry register, IPlayerRegistry pr, ItemStack is )
 	{
 		register.addPlayer( pr.getID( this.getProfile( is ) ), this.getPermissions( is ) );
 	}

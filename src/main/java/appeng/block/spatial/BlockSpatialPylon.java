@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -33,7 +33,7 @@ import appeng.helpers.AEGlassMaterial;
 import appeng.tile.spatial.TileSpatialPylon;
 
 
-public class BlockSpatialPylon extends AEBaseBlock
+public final class BlockSpatialPylon extends AEBaseBlock
 {
 
 	public BlockSpatialPylon()
@@ -44,7 +44,7 @@ public class BlockSpatialPylon extends AEBaseBlock
 	}
 
 	@Override
-	public void onNeighborBlockChange( World w, int x, int y, int z, Block junk )
+	public final void onNeighborBlockChange( World w, int x, int y, int z, Block junk )
 	{
 		TileSpatialPylon tsp = this.getTileEntity( w, x, y, z );
 		if( tsp != null )
@@ -54,7 +54,7 @@ public class BlockSpatialPylon extends AEBaseBlock
 	}
 
 	@Override
-	public int getLightValue( IBlockAccess w, int x, int y, int z )
+	public final int getLightValue( IBlockAccess w, int x, int y, int z )
 	{
 		TileSpatialPylon tsp = this.getTileEntity( w, x, y, z );
 		if( tsp != null )

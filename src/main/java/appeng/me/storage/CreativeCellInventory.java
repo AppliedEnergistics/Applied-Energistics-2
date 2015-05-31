@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -33,7 +33,7 @@ import appeng.items.contents.CellConfig;
 import appeng.util.item.AEItemStack;
 
 
-public class CreativeCellInventory implements IMEInventoryHandler<IAEItemStack>
+public final class CreativeCellInventory implements IMEInventoryHandler<IAEItemStack>
 {
 
 	final IItemList<IAEItemStack> itemListCache = AEApi.instance().storage().createItemList();
@@ -58,7 +58,7 @@ public class CreativeCellInventory implements IMEInventoryHandler<IAEItemStack>
 	}
 
 	@Override
-	public IAEItemStack injectItems( IAEItemStack input, Actionable mode, BaseActionSource src )
+	public final IAEItemStack injectItems( IAEItemStack input, Actionable mode, BaseActionSource src )
 	{
 		IAEItemStack local = this.itemListCache.findPrecise( input );
 		if( local == null )
@@ -70,7 +70,7 @@ public class CreativeCellInventory implements IMEInventoryHandler<IAEItemStack>
 	}
 
 	@Override
-	public IAEItemStack extractItems( IAEItemStack request, Actionable mode, BaseActionSource src )
+	public final IAEItemStack extractItems( IAEItemStack request, Actionable mode, BaseActionSource src )
 	{
 		IAEItemStack local = this.itemListCache.findPrecise( request );
 		if( local == null )
@@ -82,7 +82,7 @@ public class CreativeCellInventory implements IMEInventoryHandler<IAEItemStack>
 	}
 
 	@Override
-	public IItemList<IAEItemStack> getAvailableItems( IItemList out )
+	public final IItemList<IAEItemStack> getAvailableItems( IItemList out )
 	{
 		for( IAEItemStack ais : this.itemListCache )
 		{
@@ -92,43 +92,43 @@ public class CreativeCellInventory implements IMEInventoryHandler<IAEItemStack>
 	}
 
 	@Override
-	public StorageChannel getChannel()
+	public final StorageChannel getChannel()
 	{
 		return StorageChannel.ITEMS;
 	}
 
 	@Override
-	public AccessRestriction getAccess()
+	public final AccessRestriction getAccess()
 	{
 		return AccessRestriction.READ_WRITE;
 	}
 
 	@Override
-	public boolean isPrioritized( IAEItemStack input )
+	public final boolean isPrioritized( IAEItemStack input )
 	{
 		return this.itemListCache.findPrecise( input ) != null;
 	}
 
 	@Override
-	public boolean canAccept( IAEItemStack input )
+	public final boolean canAccept( IAEItemStack input )
 	{
 		return this.itemListCache.findPrecise( input ) != null;
 	}
 
 	@Override
-	public int getPriority()
+	public final int getPriority()
 	{
 		return 0;
 	}
 
 	@Override
-	public int getSlot()
+	public final int getSlot()
 	{
 		return 0;
 	}
 
 	@Override
-	public boolean validForPass( int i )
+	public final boolean validForPass( int i )
 	{
 		return true;
 	}

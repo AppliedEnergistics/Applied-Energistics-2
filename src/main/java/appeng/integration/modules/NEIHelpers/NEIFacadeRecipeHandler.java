@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -44,7 +44,7 @@ import appeng.facade.IFacadeItem;
 import appeng.items.parts.ItemFacade;
 
 
-public class NEIFacadeRecipeHandler extends TemplateRecipeHandler
+public final class NEIFacadeRecipeHandler extends TemplateRecipeHandler
 {
 	final ItemFacade facade;
 	final IItemDefinition anchorDefinition;
@@ -58,13 +58,13 @@ public class NEIFacadeRecipeHandler extends TemplateRecipeHandler
 	}
 
 	@Override
-	public void loadTransferRects()
+	public final void loadTransferRects()
 	{
 		this.transferRects.add( new TemplateRecipeHandler.RecipeTransferRect( new Rectangle( 84, 23, 24, 18 ), "crafting" ) );
 	}
 
 	@Override
-	public void loadCraftingRecipes( String outputId, Object... results )
+	public final void loadCraftingRecipes( String outputId, Object... results )
 	{
 		if( ( outputId.equals( "crafting" ) ) && ( this.getClass() == NEIFacadeRecipeHandler.class ) )
 		{
@@ -86,7 +86,7 @@ public class NEIFacadeRecipeHandler extends TemplateRecipeHandler
 	}
 
 	@Override
-	public void loadCraftingRecipes( ItemStack result )
+	public final void loadCraftingRecipes( ItemStack result )
 	{
 		if( result.getItem() == this.facade )
 		{
@@ -100,7 +100,7 @@ public class NEIFacadeRecipeHandler extends TemplateRecipeHandler
 	}
 
 	@Override
-	public void loadUsageRecipes( ItemStack ingredient )
+	public final void loadUsageRecipes( ItemStack ingredient )
 	{
 		List<ItemStack> facades = this.facade.getFacades();
 		for( ItemStack anchorStack : this.anchorDefinition.maybeStack( 1 ).asSet() )
@@ -123,31 +123,31 @@ public class NEIFacadeRecipeHandler extends TemplateRecipeHandler
 	}
 
 	@Override
-	public String getGuiTexture()
+	public final String getGuiTexture()
 	{
 		return "textures/gui/container/crafting_table.png";
 	}
 
 	@Override
-	public String getOverlayIdentifier()
+	public final String getOverlayIdentifier()
 	{
 		return "crafting";
 	}
 
 	@Override
-	public Class<? extends GuiContainer> getGuiClass()
+	public final Class<? extends GuiContainer> getGuiClass()
 	{
 		return GuiCrafting.class;
 	}
 
 	@Override
-	public boolean hasOverlay( GuiContainer gui, Container container, int recipe )
+	public final boolean hasOverlay( GuiContainer gui, Container container, int recipe )
 	{
 		return ( super.hasOverlay( gui, container, recipe ) ) || ( ( this.isRecipe2x2( recipe ) ) && ( RecipeInfo.hasDefaultOverlay( gui, "crafting2x2" ) ) );
 	}
 
 	@Override
-	public IRecipeOverlayRenderer getOverlayRenderer( GuiContainer gui, int recipe )
+	public final IRecipeOverlayRenderer getOverlayRenderer( GuiContainer gui, int recipe )
 	{
 		IRecipeOverlayRenderer renderer = super.getOverlayRenderer( gui, recipe );
 		if( renderer != null )
@@ -165,7 +165,7 @@ public class NEIFacadeRecipeHandler extends TemplateRecipeHandler
 	}
 
 	@Override
-	public IOverlayHandler getOverlayHandler( GuiContainer gui, int recipe )
+	public final IOverlayHandler getOverlayHandler( GuiContainer gui, int recipe )
 	{
 		IOverlayHandler handler = super.getOverlayHandler( gui, recipe );
 		if( handler != null )
@@ -176,7 +176,7 @@ public class NEIFacadeRecipeHandler extends TemplateRecipeHandler
 		return RecipeInfo.getOverlayHandler( gui, "crafting2x2" );
 	}
 
-	public boolean isRecipe2x2( int recipe )
+	public final boolean isRecipe2x2( int recipe )
 	{
 		for( PositionedStack stack : this.getIngredientStacks( recipe ) )
 		{
@@ -189,7 +189,7 @@ public class NEIFacadeRecipeHandler extends TemplateRecipeHandler
 	}
 
 	@Override
-	public String getRecipeName()
+	public final String getRecipeName()
 	{
 		return GuiText.FacadeCrafting.getLocal();
 	}

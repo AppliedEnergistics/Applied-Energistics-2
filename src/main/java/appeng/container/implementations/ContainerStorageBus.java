@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -44,7 +44,7 @@ import appeng.util.Platform;
 import appeng.util.iterators.NullIterator;
 
 
-public class ContainerStorageBus extends ContainerUpgradeable
+public final class ContainerStorageBus extends ContainerUpgradeable
 {
 
 	final PartStorageBus storageBus;
@@ -110,7 +110,7 @@ public class ContainerStorageBus extends ContainerUpgradeable
 	}
 
 	@Override
-	public void detectAndSendChanges()
+	public final void detectAndSendChanges()
 	{
 		this.verifyPermissions( SecurityPermissions.BUILD, false );
 
@@ -125,14 +125,14 @@ public class ContainerStorageBus extends ContainerUpgradeable
 	}
 
 	@Override
-	public boolean isSlotEnabled( int idx )
+	public final boolean isSlotEnabled( int idx )
 	{
 		int upgrades = this.upgradeable.getInstalledUpgrades( Upgrades.CAPACITY );
 
 		return upgrades > idx;
 	}
 
-	public void clear()
+	public final void clear()
 	{
 		IInventory inv = this.upgradeable.getInventoryByName( "config" );
 		for( int x = 0; x < inv.getSizeInventory(); x++ )
@@ -142,7 +142,7 @@ public class ContainerStorageBus extends ContainerUpgradeable
 		this.detectAndSendChanges();
 	}
 
-	public void partition()
+	public final void partition()
 	{
 		IInventory inv = this.upgradeable.getInventoryByName( "config" );
 

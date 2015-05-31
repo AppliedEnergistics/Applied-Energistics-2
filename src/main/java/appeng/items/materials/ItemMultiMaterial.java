@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -442,7 +442,7 @@ public final class ItemMultiMaterial extends AEBaseItem implements IStorageCompo
 		return false;
 	}
 
-	private static class SlightlyBetterSort implements Comparator<String>
+	private static final class SlightlyBetterSort implements Comparator<String>
 	{
 		private final Pattern pattern;
 
@@ -452,7 +452,7 @@ public final class ItemMultiMaterial extends AEBaseItem implements IStorageCompo
 		}
 
 		@Override
-		public int compare( String o1, String o2 )
+		public final int compare( String o1, String o2 )
 		{
 			try
 			{

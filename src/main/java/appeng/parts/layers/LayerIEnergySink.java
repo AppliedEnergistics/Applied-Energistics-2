@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -32,10 +32,12 @@ import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.LayerBase;
 import appeng.api.parts.LayerFlags;
+import appeng.helpers.Reflected;
 import appeng.util.Platform;
 
 
-public class LayerIEnergySink extends LayerBase implements IEnergySink
+@Reflected
+public abstract class LayerIEnergySink extends LayerBase implements IEnergySink
 {
 
 	private TileEntity getEnergySinkTile()
@@ -117,7 +119,7 @@ public class LayerIEnergySink extends LayerBase implements IEnergySink
 	}
 
 	@Override
-	public void partChanged()
+	public final void partChanged()
 	{
 		super.partChanged();
 
@@ -132,7 +134,7 @@ public class LayerIEnergySink extends LayerBase implements IEnergySink
 	}
 
 	@Override
-	public boolean acceptsEnergyFrom( TileEntity emitter, ForgeDirection direction )
+	public final boolean acceptsEnergyFrom( TileEntity emitter, ForgeDirection direction )
 	{
 		if( !this.isInIC2() )
 		{
@@ -153,7 +155,7 @@ public class LayerIEnergySink extends LayerBase implements IEnergySink
 	}
 
 	@Override
-	public double getDemandedEnergy()
+	public final double getDemandedEnergy()
 	{
 		if( !this.isInIC2() )
 		{
@@ -176,13 +178,13 @@ public class LayerIEnergySink extends LayerBase implements IEnergySink
 	}
 
 	@Override
-	public int getSinkTier()
+	public final int getSinkTier()
 	{
 		return Integer.MAX_VALUE; // no real options here...
 	}
 
 	@Override
-	public double injectEnergy( ForgeDirection directionFrom, double amount, double voltage )
+	public final double injectEnergy( ForgeDirection directionFrom, double amount, double voltage )
 	{
 		if( !this.isInIC2() )
 		{

@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -25,7 +25,7 @@ import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridStorage;
 
 
-public class GridCacheWrapper implements IGridCache
+public final class GridCacheWrapper implements IGridCache
 {
 
 	final IGridCache myCache;
@@ -38,37 +38,37 @@ public class GridCacheWrapper implements IGridCache
 	}
 
 	@Override
-	public void onUpdateTick()
+	public final void onUpdateTick()
 	{
 		this.myCache.onUpdateTick();
 	}
 
 	@Override
-	public void removeNode( final IGridNode gridNode, final IGridHost machine )
+	public final void removeNode( final IGridNode gridNode, final IGridHost machine )
 	{
 		this.myCache.removeNode( gridNode, machine );
 	}
 
 	@Override
-	public void addNode( final IGridNode gridNode, final IGridHost machine )
+	public final void addNode( final IGridNode gridNode, final IGridHost machine )
 	{
 		this.myCache.addNode( gridNode, machine );
 	}
 
 	@Override
-	public void onSplit( final IGridStorage storageB )
+	public final void onSplit( final IGridStorage storageB )
 	{
 		this.myCache.onSplit( storageB );
 	}
 
 	@Override
-	public void onJoin( final IGridStorage storageB )
+	public final void onJoin( final IGridStorage storageB )
 	{
 		this.myCache.onJoin( storageB );
 	}
 
 	@Override
-	public void populateGridStorage( final IGridStorage storage )
+	public final void populateGridStorage( final IGridStorage storage )
 	{
 		this.myCache.populateGridStorage( storage );
 	}

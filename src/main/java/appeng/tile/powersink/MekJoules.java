@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -32,26 +32,26 @@ public abstract class MekJoules extends RedstoneFlux implements IStrictEnergyAcc
 {
 
 	@Override
-	public double getEnergy()
+	public final double getEnergy()
 	{
 		return 0;
 	}
 
 	@Override
-	public void setEnergy( double energy )
+	public final void setEnergy( double energy )
 	{
 		double extra = this.injectExternalPower( PowerUnits.MK, energy );
 		this.internalCurrentPower += PowerUnits.MK.convertTo( PowerUnits.AE, extra );
 	}
 
 	@Override
-	public double getMaxEnergy()
+	public final double getMaxEnergy()
 	{
 		return this.getExternalPowerDemand( PowerUnits.MK, 100000 );
 	}
 
 	@Override
-	public double transferEnergyToAcceptor( ForgeDirection side, double amount )
+	public final double transferEnergyToAcceptor( ForgeDirection side, double amount )
 	{
 		double demand = this.getExternalPowerDemand( PowerUnits.MK, Double.MAX_VALUE );
 		if( amount > demand )
@@ -64,7 +64,7 @@ public abstract class MekJoules extends RedstoneFlux implements IStrictEnergyAcc
 	}
 
 	@Override
-	public boolean canReceiveEnergy( ForgeDirection side )
+	public final boolean canReceiveEnergy( ForgeDirection side )
 	{
 		return this.getPowerSides().contains( side );
 	}

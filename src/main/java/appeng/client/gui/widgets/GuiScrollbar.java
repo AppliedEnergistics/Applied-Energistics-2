@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -24,7 +24,7 @@ import org.lwjgl.opengl.GL11;
 import appeng.client.gui.AEBaseGui;
 
 
-public class GuiScrollbar implements IScrollSource
+public final class GuiScrollbar implements IScrollSource
 {
 
 	private int displayX = 0;
@@ -37,7 +37,7 @@ public class GuiScrollbar implements IScrollSource
 	private int minScroll = 0;
 	private int currentScroll = 0;
 
-	public void draw( AEBaseGui g )
+	public final void draw( AEBaseGui g )
 	{
 		g.bindTexture( "minecraft", "gui/container/creative_inventory/tabs.png" );
 		GL11.glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
@@ -53,7 +53,7 @@ public class GuiScrollbar implements IScrollSource
 		}
 	}
 
-	public int getRange()
+	public final int getRange()
 	{
 		return this.maxScroll - this.minScroll;
 	}
@@ -63,7 +63,7 @@ public class GuiScrollbar implements IScrollSource
 		return this.displayX;
 	}
 
-	public GuiScrollbar setLeft( int v )
+	public final GuiScrollbar setLeft( int v )
 	{
 		this.displayX = v;
 		return this;
@@ -74,7 +74,7 @@ public class GuiScrollbar implements IScrollSource
 		return this.displayY;
 	}
 
-	public GuiScrollbar setTop( int v )
+	public final GuiScrollbar setTop( int v )
 	{
 		this.displayY = v;
 		return this;
@@ -96,13 +96,13 @@ public class GuiScrollbar implements IScrollSource
 		return this.height;
 	}
 
-	public GuiScrollbar setHeight( int v )
+	public final GuiScrollbar setHeight( int v )
 	{
 		this.height = v;
 		return this;
 	}
 
-	public void setRange( int min, int max, int pageSize )
+	public final void setRange( int min, int max, int pageSize )
 	{
 		this.minScroll = min;
 		this.maxScroll = max;
@@ -122,12 +122,12 @@ public class GuiScrollbar implements IScrollSource
 	}
 
 	@Override
-	public int getCurrentScroll()
+	public final int getCurrentScroll()
 	{
 		return this.currentScroll;
 	}
 
-	public void click( AEBaseGui aeBaseGui, int x, int y )
+	public final void click( AEBaseGui aeBaseGui, int x, int y )
 	{
 		if( this.getRange() == 0 )
 		{
@@ -146,7 +146,7 @@ public class GuiScrollbar implements IScrollSource
 		}
 	}
 
-	public void wheel( int delta )
+	public final void wheel( int delta )
 	{
 		delta = Math.max( Math.min( -delta, 1 ), -1 );
 		this.currentScroll += delta * this.pageSize;

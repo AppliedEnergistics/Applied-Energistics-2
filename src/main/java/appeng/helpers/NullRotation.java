@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -24,7 +24,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.util.IOrientable;
 
 
-public class NullRotation implements IOrientable
+public final class NullRotation implements IOrientable
 {
 
 	public NullRotation()
@@ -33,25 +33,25 @@ public class NullRotation implements IOrientable
 	}
 
 	@Override
-	public boolean canBeRotated()
+	public final boolean canBeRotated()
 	{
 		return false;
 	}
 
 	@Override
-	public ForgeDirection getForward()
+	public final ForgeDirection getForward()
 	{
 		return ForgeDirection.SOUTH;
 	}
 
 	@Override
-	public ForgeDirection getUp()
+	public final ForgeDirection getUp()
 	{
 		return ForgeDirection.UP;
 	}
 
 	@Override
-	public void setOrientation( ForgeDirection forward, ForgeDirection up )
+	public final void setOrientation( ForgeDirection forward, ForgeDirection up )
 	{
 
 	}

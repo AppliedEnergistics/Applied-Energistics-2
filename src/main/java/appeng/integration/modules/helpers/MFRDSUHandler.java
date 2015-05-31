@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -31,17 +31,17 @@ import appeng.me.storage.MEMonitorIInventory;
 import appeng.util.inv.IMEAdaptor;
 
 
-public class MFRDSUHandler implements IExternalStorageHandler
+public final class MFRDSUHandler implements IExternalStorageHandler
 {
 
 	@Override
-	public boolean canHandle( TileEntity te, ForgeDirection d, StorageChannel chan, BaseActionSource mySrc )
+	public final boolean canHandle( TileEntity te, ForgeDirection d, StorageChannel chan, BaseActionSource mySrc )
 	{
 		return chan == StorageChannel.ITEMS && DSU.instance.isDSU( te );
 	}
 
 	@Override
-	public IMEInventory getInventory( TileEntity te, ForgeDirection d, StorageChannel chan, BaseActionSource src )
+	public final IMEInventory getInventory( TileEntity te, ForgeDirection d, StorageChannel chan, BaseActionSource src )
 	{
 		if( chan == StorageChannel.ITEMS )
 		{

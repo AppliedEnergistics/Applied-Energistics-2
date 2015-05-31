@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -55,7 +55,7 @@ import appeng.me.pathfinding.IPathItem;
 import appeng.util.ReadOnlyCollection;
 
 
-public class GridNode implements IGridNode, IPathItem
+public final class GridNode implements IGridNode, IPathItem
 {
 	private static final MENetworkChannelsChanged EVENT = new MENetworkChannelsChanged();
 	private static final int[] CHANNEL_COUNT = new int[] { 0, 8, 32 };
@@ -78,27 +78,27 @@ public class GridNode implements IGridNode, IPathItem
 		this.gridProxy = what;
 	}
 
-	public IGridBlock getGridProxy()
+	public final IGridBlock getGridProxy()
 	{
 		return this.gridProxy;
 	}
 
-	public Grid getMyGrid()
+	public final Grid getMyGrid()
 	{
 		return this.myGrid;
 	}
 
-	public int usedChannels()
+	public final int usedChannels()
 	{
 		return this.channelData >> 8;
 	}
 
-	public Class<? extends IGridHost> getMachineClass()
+	public final Class<? extends IGridHost> getMachineClass()
 	{
 		return this.getMachine().getClass();
 	}
 
-	public void addConnection( IGridConnection gridConnection )
+	public final void addConnection( IGridConnection gridConnection )
 	{
 		this.connections.add( gridConnection );
 		if( gridConnection.hasDirection() )
@@ -111,7 +111,7 @@ public class GridNode implements IGridNode, IPathItem
 		Collections.sort( this.connections, new ConnectionComparator( gn ) );
 	}
 
-	public void removeConnection( IGridConnection gridConnection )
+	public final void removeConnection( IGridConnection gridConnection )
 	{
 		this.connections.remove( gridConnection );
 		if( gridConnection.hasDirection() )
@@ -120,7 +120,7 @@ public class GridNode implements IGridNode, IPathItem
 		}
 	}
 
-	public boolean hasConnection( IGridNode otherSide )
+	public final boolean hasConnection( IGridNode otherSide )
 	{
 		for( IGridConnection gc : this.connections )
 		{
@@ -132,7 +132,7 @@ public class GridNode implements IGridNode, IPathItem
 		return false;
 	}
 
-	public void validateGrid()
+	public final void validateGrid()
 	{
 		GridSplitDetector gsd = new GridSplitDetector( this.getInternalGrid().getPivot() );
 		this.beginVisit( gsd );
@@ -143,7 +143,7 @@ public class GridNode implements IGridNode, IPathItem
 		}
 	}
 
-	public Grid getInternalGrid()
+	public final Grid getInternalGrid()
 	{
 		if( this.myGrid == null )
 		{
@@ -154,7 +154,7 @@ public class GridNode implements IGridNode, IPathItem
 	}
 
 	@Override
-	public void beginVisit( IGridVisitor g )
+	public final void beginVisit( IGridVisitor g )
 	{
 		Object tracker = new Object();
 
@@ -200,7 +200,7 @@ public class GridNode implements IGridNode, IPathItem
 	}
 
 	@Override
-	public void updateState()
+	public final void updateState()
 	{
 		EnumSet<GridFlags> set = this.gridProxy.getFlags();
 
@@ -218,18 +218,18 @@ public class GridNode implements IGridNode, IPathItem
 	}
 
 	@Override
-	public IGridHost getMachine()
+	public final IGridHost getMachine()
 	{
 		return this.gridProxy.getMachine();
 	}
 
 	@Override
-	public IGrid getGrid()
+	public final IGrid getGrid()
 	{
 		return this.myGrid;
 	}
 
-	public void setGrid( Grid grid )
+	public final void setGrid( Grid grid )
 	{
 		if( this.myGrid == grid )
 		{
@@ -256,7 +256,7 @@ public class GridNode implements IGridNode, IPathItem
 	}
 
 	@Override
-	public void destroy()
+	public final void destroy()
 	{
 		while( !this.connections.isEmpty() )
 		{
@@ -279,13 +279,13 @@ public class GridNode implements IGridNode, IPathItem
 	}
 
 	@Override
-	public World getWorld()
+	public final World getWorld()
 	{
 		return this.gridProxy.getLocation().getWorld();
 	}
 
 	@Override
-	public EnumSet<ForgeDirection> getConnectedSides()
+	public final EnumSet<ForgeDirection> getConnectedSides()
 	{
 		EnumSet<ForgeDirection> set = EnumSet.noneOf( ForgeDirection.class );
 		for( IGridConnection gc : this.connections )
@@ -296,19 +296,19 @@ public class GridNode implements IGridNode, IPathItem
 	}
 
 	@Override
-	public IReadOnlyCollection<IGridConnection> getConnections()
+	public final IReadOnlyCollection<IGridConnection> getConnections()
 	{
 		return new ReadOnlyCollection<IGridConnection>( this.connections );
 	}
 
 	@Override
-	public IGridBlock getGridBlock()
+	public final IGridBlock getGridBlock()
 	{
 		return this.gridProxy;
 	}
 
 	@Override
-	public boolean isActive()
+	public final boolean isActive()
 	{
 		IGrid g = this.getGrid();
 		if( g != null )
@@ -321,7 +321,7 @@ public class GridNode implements IGridNode, IPathItem
 	}
 
 	@Override
-	public void loadFromNBT( String name, NBTTagCompound nodeData )
+	public final void loadFromNBT( String name, NBTTagCompound nodeData )
 	{
 		if( this.myGrid == null )
 		{
@@ -337,7 +337,7 @@ public class GridNode implements IGridNode, IPathItem
 	}
 
 	@Override
-	public void saveToNBT( String name, NBTTagCompound nodeData )
+	public final void saveToNBT( String name, NBTTagCompound nodeData )
 	{
 		if( this.myStorage != null )
 		{
@@ -356,25 +356,25 @@ public class GridNode implements IGridNode, IPathItem
 	}
 
 	@Override
-	public boolean meetsChannelRequirements()
+	public final boolean meetsChannelRequirements()
 	{
 		return ( !this.gridProxy.getFlags().contains( GridFlags.REQUIRE_CHANNEL ) || this.getUsedChannels() > 0 );
 	}
 
 	@Override
-	public boolean hasFlag( GridFlags flag )
+	public final boolean hasFlag( GridFlags flag )
 	{
 		return this.gridProxy.getFlags().contains( flag );
 	}
 
 	@Override
-	public int getPlayerID()
+	public final int getPlayerID()
 	{
 		return this.playerID;
 	}
 
 	@Override
-	public void setPlayerID( int playerID )
+	public final void setPlayerID( int playerID )
 	{
 		if( playerID >= 0 )
 		{
@@ -382,12 +382,12 @@ public class GridNode implements IGridNode, IPathItem
 		}
 	}
 
-	public int getUsedChannels()
+	public final int getUsedChannels()
 	{
 		return this.channelData & 0xff;
 	}
 
-	public void FindConnections()
+	public final void FindConnections()
 	{
 		if( !this.gridProxy.isWorldAccessible() )
 		{
@@ -501,7 +501,7 @@ public class GridNode implements IGridNode, IPathItem
 		return null;
 	}
 
-	public boolean canConnect( GridNode from, ForgeDirection dir )
+	public final boolean canConnect( GridNode from, ForgeDirection dir )
 	{
 		if( !this.isValidDirection( dir ) )
 		{
@@ -521,7 +521,7 @@ public class GridNode implements IGridNode, IPathItem
 		return ( this.compressedData & ( 1 << ( 8 + dir.ordinal() ) ) ) > 0;
 	}
 
-	public AEColor getColor()
+	public final AEColor getColor()
 	{
 		return AEColor.values()[( this.compressedData >> 3 ) & 0x1F];
 	}
@@ -573,12 +573,12 @@ public class GridNode implements IGridNode, IPathItem
 		}
 	}
 
-	public GridStorage getGridStorage()
+	public final GridStorage getGridStorage()
 	{
 		return this.myStorage;
 	}
 
-	public void setGridStorage( GridStorage s )
+	public final void setGridStorage( GridStorage s )
 	{
 		this.myStorage = s;
 		this.channelData = 0;
@@ -596,7 +596,7 @@ public class GridNode implements IGridNode, IPathItem
 	}
 
 	@Override
-	public void setControllerRoute( IPathItem fast, boolean zeroOut )
+	public final void setControllerRoute( IPathItem fast, boolean zeroOut )
 	{
 		if( zeroOut )
 		{
@@ -617,7 +617,7 @@ public class GridNode implements IGridNode, IPathItem
 		return this.getUsedChannels() < this.getMaxChannels();
 	}
 
-	public int getMaxChannels()
+	public final int getMaxChannels()
 	{
 		return CHANNEL_COUNT[this.compressedData & 0x03];
 	}
@@ -629,19 +629,19 @@ public class GridNode implements IGridNode, IPathItem
 	}
 
 	@Override
-	public void incrementChannelCount( int usedChannels )
+	public final void incrementChannelCount( int usedChannels )
 	{
 		this.channelData += usedChannels;
 	}
 
 	@Override
-	public EnumSet<GridFlags> getFlags()
+	public final EnumSet<GridFlags> getFlags()
 	{
 		return this.gridProxy.getFlags();
 	}
 
 	@Override
-	public void finalizeChannels()
+	public final void finalizeChannels()
 	{
 		if( this.getFlags().contains( GridFlags.CANNOT_CARRY ) )
 		{
@@ -660,12 +660,12 @@ public class GridNode implements IGridNode, IPathItem
 		}
 	}
 
-	public int getLastUsedChannels()
+	public final int getLastUsedChannels()
 	{
 		return ( this.channelData >> 8 ) & 0xff;
 	}
 
-	private static class MachineSecurityBreak implements Callable<Void>
+	private static final class MachineSecurityBreak implements Callable<Void>
 	{
 		private final GridNode node;
 
@@ -675,7 +675,7 @@ public class GridNode implements IGridNode, IPathItem
 		}
 
 		@Override
-		public Void call() throws Exception
+		public final Void call() throws Exception
 		{
 			this.node.getMachine().securityBreak();
 
@@ -684,7 +684,7 @@ public class GridNode implements IGridNode, IPathItem
 	}
 
 
-	private static class ConnectionComparator implements Comparator<IGridConnection>
+	private static final class ConnectionComparator implements Comparator<IGridConnection>
 	{
 		private final IGridNode gn;
 
@@ -694,7 +694,7 @@ public class GridNode implements IGridNode, IPathItem
 		}
 
 		@Override
-		public int compare( IGridConnection o1, IGridConnection o2 )
+		public final int compare( IGridConnection o1, IGridConnection o2 )
 		{
 			boolean preferredA = o1.getOtherSide( this.gn ).hasFlag( GridFlags.PREFERRED );
 			boolean preferredB = o2.getOtherSide( this.gn ).hasFlag( GridFlags.PREFERRED );

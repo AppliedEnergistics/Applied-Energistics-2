@@ -42,7 +42,7 @@ import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
 
 
-public class PortableCellViewer extends MEMonitorHandler<IAEItemStack> implements IPortableCell, IInventorySlotAware
+public final class PortableCellViewer extends MEMonitorHandler<IAEItemStack> implements IPortableCell, IInventorySlotAware
 {
 
 	private final ItemStack target;
@@ -64,13 +64,13 @@ public class PortableCellViewer extends MEMonitorHandler<IAEItemStack> implement
 	}
 
 	@Override
-	public ItemStack getItemStack()
+	public final ItemStack getItemStack()
 	{
 		return this.target;
 	}
 
 	@Override
-	public double extractAEPower( double amt, Actionable mode, PowerMultiplier usePowerMultiplier )
+	public final double extractAEPower( double amt, Actionable mode, PowerMultiplier usePowerMultiplier )
 	{
 		amt = usePowerMultiplier.multiply( amt );
 
@@ -83,19 +83,19 @@ public class PortableCellViewer extends MEMonitorHandler<IAEItemStack> implement
 	}
 
 	@Override
-	public IMEMonitor<IAEItemStack> getItemInventory()
+	public final IMEMonitor<IAEItemStack> getItemInventory()
 	{
 		return this;
 	}
 
 	@Override
-	public IMEMonitor<IAEFluidStack> getFluidInventory()
+	public final IMEMonitor<IAEFluidStack> getFluidInventory()
 	{
 		return null;
 	}
 
 	@Override
-	public IConfigManager getConfigManager()
+	public final IConfigManager getConfigManager()
 	{
 		final ConfigManager out = new ConfigManager( new IConfigManagerHost()
 		{

@@ -32,7 +32,7 @@ import appeng.tile.events.TileEventType;
 import appeng.util.Platform;
 
 
-public class TileCubeGenerator extends AEBaseTile
+public final class TileCubeGenerator extends AEBaseTile
 {
 
 	int size = 3;
@@ -62,7 +62,7 @@ public class TileCubeGenerator extends AEBaseTile
 		}
 	}
 
-	void spawn()
+	final void spawn()
 	{
 		this.worldObj.setBlock( this.xCoord, this.yCoord, this.zCoord, Platform.AIR_BLOCK, 0, 3 );
 
@@ -83,7 +83,7 @@ public class TileCubeGenerator extends AEBaseTile
 		}
 	}
 
-	public void click( EntityPlayer player )
+	public final void click( EntityPlayer player )
 	{
 		if( Platform.isServer() )
 		{

@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -58,13 +58,13 @@ public abstract class UpgradeInventory extends AppEngInternalInventory implement
 	}
 
 	@Override
-	public int getInventoryStackLimit()
+	public final int getInventoryStackLimit()
 	{
 		return 1;
 	}
 
 	@Override
-	public boolean isItemValidForSlot( int i, ItemStack itemstack )
+	public final boolean isItemValidForSlot( int i, ItemStack itemstack )
 	{
 		if( itemstack == null )
 		{
@@ -82,7 +82,7 @@ public abstract class UpgradeInventory extends AppEngInternalInventory implement
 		return false;
 	}
 
-	public int getInstalledUpgrades( Upgrades u )
+	public final int getInstalledUpgrades( Upgrades u )
 	{
 		if( !this.cached )
 		{

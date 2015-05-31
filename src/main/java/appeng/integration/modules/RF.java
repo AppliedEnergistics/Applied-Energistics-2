@@ -29,7 +29,7 @@ import appeng.api.config.TunnelType;
 import appeng.integration.BaseModule;
 
 
-public class RF extends BaseModule
+public final class RF extends BaseModule
 {
 
 	public static RF instance;

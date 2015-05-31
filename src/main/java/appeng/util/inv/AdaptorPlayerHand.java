@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -33,7 +33,7 @@ import appeng.util.iterators.NullIterator;
 /*
  * Lets you do simply tests with the players cursor, without messing with the specifics.
  */
-public class AdaptorPlayerHand extends InventoryAdaptor
+public final class AdaptorPlayerHand extends InventoryAdaptor
 {
 
 	private final EntityPlayer player;
@@ -230,7 +230,7 @@ public class AdaptorPlayerHand extends InventoryAdaptor
 	}
 
 	@Override
-	public Iterator<ItemSlot> iterator()
+	public final Iterator<ItemSlot> iterator()
 	{
 		return new NullIterator<ItemSlot>();
 	}

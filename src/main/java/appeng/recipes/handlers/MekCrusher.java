@@ -36,14 +36,14 @@ import appeng.recipes.RecipeHandler;
 import appeng.util.Platform;
 
 
-public class MekCrusher implements ICraftHandler, IWebsiteSerializer
+public final class MekCrusher implements ICraftHandler, IWebsiteSerializer
 {
 
 	IIngredient pro_input;
 	IIngredient[] pro_output;
 
 	@Override
-	public void setup( List<List<IIngredient>> input, List<List<IIngredient>> output ) throws RecipeError
+	public final void setup( List<List<IIngredient>> input, List<List<IIngredient>> output ) throws RecipeError
 	{
 		if( input.size() == 1 && output.size() == 1 )
 		{
@@ -60,7 +60,7 @@ public class MekCrusher implements ICraftHandler, IWebsiteSerializer
 	}
 
 	@Override
-	public void register() throws RegistrationError, MissingIngredientError
+	public final void register() throws RegistrationError, MissingIngredientError
 	{
 		if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.Mekanism ) )
 		{

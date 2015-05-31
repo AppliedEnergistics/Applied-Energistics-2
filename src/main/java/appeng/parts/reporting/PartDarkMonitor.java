@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -31,7 +31,7 @@ import appeng.api.parts.IPartRenderHelper;
 import appeng.client.texture.CableBusTextures;
 
 
-public class PartDarkMonitor extends PartMonitor
+public final class PartDarkMonitor extends PartMonitor
 {
 	public PartDarkMonitor( ItemStack is )
 	{
@@ -41,7 +41,7 @@ public class PartDarkMonitor extends PartMonitor
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderInventory( IPartRenderHelper rh, RenderBlocks renderer )
+	public final void renderInventory( IPartRenderHelper rh, RenderBlocks renderer )
 	{
 		rh.setBounds( 2, 2, 14, 14, 14, 16 );
 
@@ -57,7 +57,7 @@ public class PartDarkMonitor extends PartMonitor
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderStatic( int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer )
+	public final void renderStatic( int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer )
 	{
 		rh.setTexture( CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorBack.getIcon(), this.is.getIconIndex(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon() );
 

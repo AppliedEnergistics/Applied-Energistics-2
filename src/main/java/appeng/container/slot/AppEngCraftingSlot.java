@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -65,7 +65,7 @@ public class AppEngCraftingSlot extends AppEngSlot
 	 * Check if the stack is a valid item for this slot. Always true beside for the armor slots.
 	 */
 	@Override
-	public boolean isItemValid( ItemStack par1ItemStack )
+	public final boolean isItemValid( ItemStack par1ItemStack )
 	{
 		return false;
 	}
@@ -75,7 +75,7 @@ public class AppEngCraftingSlot extends AppEngSlot
 	 * internal count then calls onCrafting(item).
 	 */
 	@Override
-	protected void onCrafting( ItemStack par1ItemStack, int par2 )
+	protected final void onCrafting( ItemStack par1ItemStack, int par2 )
 	{
 		this.amountCrafted += par2;
 		this.onCrafting( par1ItemStack );
@@ -85,7 +85,7 @@ public class AppEngCraftingSlot extends AppEngSlot
 	 * the itemStack passed in is the output - ie, iron ingots, and pickaxes, not ore and wood.
 	 */
 	@Override
-	protected void onCrafting( ItemStack par1ItemStack )
+	protected final void onCrafting( ItemStack par1ItemStack )
 	{
 		par1ItemStack.onCrafting( this.thePlayer.worldObj, this.thePlayer, this.amountCrafted );
 		this.amountCrafted = 0;
@@ -186,7 +186,7 @@ public class AppEngCraftingSlot extends AppEngSlot
 	 * stack.
 	 */
 	@Override
-	public ItemStack decrStackSize( int par1 )
+	public final ItemStack decrStackSize( int par1 )
 	{
 		if( this.getHasStack() )
 		{

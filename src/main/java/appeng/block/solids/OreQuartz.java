@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -21,7 +21,6 @@ package appeng.block.solids;
 
 import java.util.EnumSet;
 import java.util.Random;
-
 import javax.annotation.Nullable;
 
 import net.minecraft.block.material.Material;
@@ -70,7 +69,7 @@ public class OreQuartz extends AEBaseBlock
 	}
 
 	@Override
-	public int getMixedBrightnessForBlock( IBlockAccess par1iBlockAccess, int par2, int par3, int par4 )
+	public final int getMixedBrightnessForBlock( IBlockAccess par1iBlockAccess, int par2, int par3, int par4 )
 	{
 		int j1 = super.getMixedBrightnessForBlock( par1iBlockAccess, par2, par3, par4 );
 		if( this.enhanceBrightness )
@@ -96,7 +95,7 @@ public class OreQuartz extends AEBaseBlock
 	}
 
 	@Override
-	public int quantityDropped( Random rand )
+	public final int quantityDropped( Random rand )
 	{
 		return 1 + rand.nextInt( 2 );
 	}
@@ -114,7 +113,7 @@ public class OreQuartz extends AEBaseBlock
 	}
 
 	@Override
-	public void dropBlockAsItemWithChance( World w, int x, int y, int z, int blockID, float something, int meta )
+	public final void dropBlockAsItemWithChance( World w, int x, int y, int z, int blockID, float something, int meta )
 	{
 		super.dropBlockAsItemWithChance( w, x, y, z, blockID, something, meta );
 
@@ -138,7 +137,7 @@ public class OreQuartz extends AEBaseBlock
 	}
 
 	@Override
-	public int quantityDroppedWithBonus( int fortune, Random rand )
+	public final int quantityDroppedWithBonus( int fortune, Random rand )
 	{
 		if( fortune > 0 && Item.getItemFromBlock( this ) != this.getItemDropped( 0, rand, fortune ) )
 		{
@@ -157,17 +156,17 @@ public class OreQuartz extends AEBaseBlock
 		}
 	}
 
-	public void setBoostBrightnessLow( int boostBrightnessLow )
+	public final void setBoostBrightnessLow( int boostBrightnessLow )
 	{
 		this.boostBrightnessLow = boostBrightnessLow;
 	}
 
-	public void setBoostBrightnessHigh( int boostBrightnessHigh )
+	public final void setBoostBrightnessHigh( int boostBrightnessHigh )
 	{
 		this.boostBrightnessHigh = boostBrightnessHigh;
 	}
 
-	public void setEnhanceBrightness( boolean enhanceBrightness )
+	public final void setEnhanceBrightness( boolean enhanceBrightness )
 	{
 		this.enhanceBrightness = enhanceBrightness;
 	}

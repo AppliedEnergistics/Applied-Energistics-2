@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -27,7 +27,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
-
 import javax.annotation.Nullable;
 
 import io.netty.buffer.ByteBuf;
@@ -52,7 +51,7 @@ import appeng.core.sync.network.INetworkInfo;
 import appeng.util.item.AEItemStack;
 
 
-public class PacketMEInventoryUpdate extends AppEngPacket
+public final class PacketMEInventoryUpdate extends AppEngPacket
 {
 	private static final int UNCOMPRESSED_PACKET_BYTE_LIMIT = 16 * 1024 * 1024;
 	private static final int OPERATION_BYTE_LIMIT = 2 * 1024;
@@ -192,7 +191,7 @@ public class PacketMEInventoryUpdate extends AppEngPacket
 		return null;
 	}
 
-	public void appendItem( IAEItemStack is ) throws IOException, BufferOverflowException
+	public final void appendItem( IAEItemStack is ) throws IOException, BufferOverflowException
 	{
 		ByteBuf tmp = Unpooled.buffer( OPERATION_BYTE_LIMIT );
 		is.writeToPacket( tmp );
@@ -215,7 +214,7 @@ public class PacketMEInventoryUpdate extends AppEngPacket
 		return this.data.readableBytes();
 	}
 
-	public boolean isEmpty()
+	public final boolean isEmpty()
 	{
 		return this.empty;
 	}

@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -45,7 +45,7 @@ import appeng.util.Platform;
 
 
 @SideOnly( Side.CLIENT )
-public class BusRenderer implements IItemRenderer
+public final class BusRenderer implements IItemRenderer
 {
 
 	public static final BusRenderer INSTANCE = new BusRenderer();
@@ -53,19 +53,19 @@ public class BusRenderer implements IItemRenderer
 	public final RenderBlocksWorkaround renderer = new RenderBlocksWorkaround();
 
 	@Override
-	public boolean handleRenderType( ItemStack item, ItemRenderType type )
+	public final boolean handleRenderType( ItemStack item, ItemRenderType type )
 	{
 		return true;
 	}
 
 	@Override
-	public boolean shouldUseRenderHelper( ItemRenderType type, ItemStack item, ItemRendererHelper helper )
+	public final boolean shouldUseRenderHelper( ItemRenderType type, ItemStack item, ItemRendererHelper helper )
 	{
 		return true;
 	}
 
 	@Override
-	public void renderItem( ItemRenderType type, ItemStack item, Object... data )
+	public final void renderItem( ItemRenderType type, ItemStack item, Object... data )
 	{
 		if( item == null )
 		{
@@ -164,7 +164,7 @@ public class BusRenderer implements IItemRenderer
 		GL11.glPopMatrix();
 	}
 
-	public IPart getRenderer( ItemStack is, IPartItem c )
+	public final IPart getRenderer( ItemStack is, IPartItem c )
 	{
 		int id = ( Item.getIdFromItem( is.getItem() ) << Platform.DEF_OFFSET ) | is.getItemDamage();
 

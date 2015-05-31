@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -35,7 +35,7 @@ import appeng.util.iterators.AEInvIterator;
 import appeng.util.iterators.InvIterator;
 
 
-public class AppEngInternalAEInventory implements IInventory, Iterable<ItemStack>
+public final class AppEngInternalAEInventory implements IInventory, Iterable<ItemStack>
 {
 
 	protected final IAEAppEngInventory te;
@@ -68,19 +68,19 @@ public class AppEngInternalAEInventory implements IInventory, Iterable<ItemStack
 		this.maxStack = s;
 	}
 
-	public IAEItemStack getAEStackInSlot( int var1 )
+	public final IAEItemStack getAEStackInSlot( int var1 )
 	{
 		return this.inv[var1];
 	}
 
-	public void writeToNBT( NBTTagCompound data, String name )
+	public final void writeToNBT( NBTTagCompound data, String name )
 	{
 		NBTTagCompound c = new NBTTagCompound();
 		this.writeToNBT( c );
 		data.setTag( name, c );
 	}
 
-	public void writeToNBT( NBTTagCompound target )
+	public final void writeToNBT( NBTTagCompound target )
 	{
 		for( int x = 0; x < this.size; x++ )
 		{
@@ -101,7 +101,7 @@ public class AppEngInternalAEInventory implements IInventory, Iterable<ItemStack
 		}
 	}
 
-	public void readFromNBT( NBTTagCompound data, String name )
+	public final void readFromNBT( NBTTagCompound data, String name )
 	{
 		NBTTagCompound c = data.getCompoundTag( name );
 		if( c != null )
@@ -110,7 +110,7 @@ public class AppEngInternalAEInventory implements IInventory, Iterable<ItemStack
 		}
 	}
 
-	public void readFromNBT( NBTTagCompound target )
+	public final void readFromNBT( NBTTagCompound target )
 	{
 		for( int x = 0; x < this.size; x++ )
 		{
@@ -131,13 +131,13 @@ public class AppEngInternalAEInventory implements IInventory, Iterable<ItemStack
 	}
 
 	@Override
-	public int getSizeInventory()
+	public final int getSizeInventory()
 	{
 		return this.size;
 	}
 
 	@Override
-	public ItemStack getStackInSlot( int var1 )
+	public final ItemStack getStackInSlot( int var1 )
 	{
 		if( this.inv[var1] == null )
 		{
@@ -148,7 +148,7 @@ public class AppEngInternalAEInventory implements IInventory, Iterable<ItemStack
 	}
 
 	@Override
-	public ItemStack decrStackSize( int slot, int qty )
+	public final ItemStack decrStackSize( int slot, int qty )
 	{
 		if( this.inv[slot] != null )
 		{
@@ -177,13 +177,13 @@ public class AppEngInternalAEInventory implements IInventory, Iterable<ItemStack
 	}
 
 	@Override
-	public ItemStack getStackInSlotOnClosing( int var1 )
+	public final ItemStack getStackInSlotOnClosing( int var1 )
 	{
 		return null;
 	}
 
 	@Override
-	public void setInventorySlotContents( int slot, ItemStack newItemStack )
+	public final void setInventorySlotContents( int slot, ItemStack newItemStack )
 	{
 		ItemStack oldStack = this.getStackInSlot( slot );
 		this.inv[slot] = AEApi.instance().storage().createItemStack( newItemStack );
@@ -218,25 +218,25 @@ public class AppEngInternalAEInventory implements IInventory, Iterable<ItemStack
 	}
 
 	@Override
-	public String getInventoryName()
+	public final String getInventoryName()
 	{
 		return "appeng-internal";
 	}
 
 	@Override
-	public boolean hasCustomInventoryName()
+	public final boolean hasCustomInventoryName()
 	{
 		return false;
 	}
 
 	@Override
-	public int getInventoryStackLimit()
+	public final int getInventoryStackLimit()
 	{
 		return this.maxStack > 64 ? 64 : this.maxStack;
 	}
 
 	@Override
-	public void markDirty()
+	public final void markDirty()
 	{
 		if( this.te != null && Platform.isServer() )
 		{
@@ -245,29 +245,29 @@ public class AppEngInternalAEInventory implements IInventory, Iterable<ItemStack
 	}
 
 	@Override
-	public boolean isUseableByPlayer( EntityPlayer var1 )
+	public final boolean isUseableByPlayer( EntityPlayer var1 )
 	{
 		return true;
 	}
 
 	@Override
-	public void openInventory()
+	public final void openInventory()
 	{
 	}
 
 	@Override
-	public void closeInventory()
+	public final void closeInventory()
 	{
 	}
 
 	@Override
-	public boolean isItemValidForSlot( int i, ItemStack itemstack )
+	public final boolean isItemValidForSlot( int i, ItemStack itemstack )
 	{
 		return true;
 	}
 
 	@Override
-	public Iterator<ItemStack> iterator()
+	public final Iterator<ItemStack> iterator()
 	{
 		return new InvIterator( this );
 	}

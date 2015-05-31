@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -46,7 +46,7 @@ import appeng.util.Platform;
 import appeng.util.prioitylist.IPartitionList;
 
 
-public class ItemRepo
+public final class ItemRepo
 {
 
 	private final IItemList<IAEItemStack> list = AEApi.instance().storage().createItemList();
@@ -69,7 +69,7 @@ public class ItemRepo
 		this.sortSrc = sortSrc;
 	}
 
-	public IAEItemStack getReferenceItem( int idx )
+	public final IAEItemStack getReferenceItem( int idx )
 	{
 		idx += this.src.getCurrentScroll() * this.rowSize;
 
@@ -80,7 +80,7 @@ public class ItemRepo
 		return this.view.get( idx );
 	}
 
-	public ItemStack getItem( int idx )
+	public final ItemStack getItem( int idx )
 	{
 		idx += this.src.getCurrentScroll() * this.rowSize;
 
@@ -96,7 +96,7 @@ public class ItemRepo
 		this.searchString = search == null ? "" : search;
 	}
 
-	public void postUpdate( IAEItemStack is )
+	public final void postUpdate( IAEItemStack is )
 	{
 		IAEItemStack st = this.list.findPrecise( is );
 
@@ -111,13 +111,13 @@ public class ItemRepo
 		}
 	}
 
-	public void setViewCell( ItemStack[] list )
+	public final void setViewCell( ItemStack[] list )
 	{
 		this.myPartitionList = ItemViewCell.createFilter( list );
 		this.updateView();
 	}
 
-	public void updateView()
+	public final void updateView()
 	{
 		this.view.clear();
 		this.dsp.clear();
@@ -268,22 +268,22 @@ public class ItemRepo
 		}
 	}
 
-	public int size()
+	public final int size()
 	{
 		return this.view.size();
 	}
 
-	public void clear()
+	public final void clear()
 	{
 		this.list.resetStatus();
 	}
 
-	public boolean hasPower()
+	public final boolean hasPower()
 	{
 		return this.hasPower;
 	}
 
-	public void setPower( boolean hasPower )
+	public final void setPower( boolean hasPower )
 	{
 		this.hasPower = hasPower;
 	}

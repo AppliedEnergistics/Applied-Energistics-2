@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -28,7 +28,7 @@ import appeng.api.networking.IGridNode;
 import appeng.api.util.IReadOnlyCollection;
 
 
-public class GridNodeCollection implements IReadOnlyCollection<IGridNode>
+public final class GridNodeCollection implements IReadOnlyCollection<IGridNode>
 {
 	private final Map<Class<? extends IGridHost>, MachineSet> machines;
 
@@ -38,13 +38,13 @@ public class GridNodeCollection implements IReadOnlyCollection<IGridNode>
 	}
 
 	@Override
-	public Iterator<IGridNode> iterator()
+	public final Iterator<IGridNode> iterator()
 	{
 		return new GridNodeIterator( this.machines );
 	}
 
 	@Override
-	public int size()
+	public final int size()
 	{
 		int size = 0;
 
@@ -57,7 +57,7 @@ public class GridNodeCollection implements IReadOnlyCollection<IGridNode>
 	}
 
 	@Override
-	public boolean isEmpty()
+	public final boolean isEmpty()
 	{
 		for( Set<IGridNode> o : this.machines.values() )
 		{
@@ -71,7 +71,7 @@ public class GridNodeCollection implements IReadOnlyCollection<IGridNode>
 	}
 
 	@Override
-	public boolean contains( Object maybeGridNode )
+	public final boolean contains( Object maybeGridNode )
 	{
 		final boolean doesContainNode;
 

@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -25,7 +25,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 
-public class OffsetIcon implements IIcon
+public final class OffsetIcon implements IIcon
 {
 
 	final float offsetX;
@@ -46,62 +46,62 @@ public class OffsetIcon implements IIcon
 	}
 
 	@Override
-	public int getIconWidth()
+	public final int getIconWidth()
 	{
 		return this.p.getIconWidth();
 	}
 
 	@Override
-	public int getIconHeight()
+	public final int getIconHeight()
 	{
 		return this.p.getIconHeight();
 	}
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public float getMinU()
+	public final float getMinU()
 	{
 		return this.u( 0 - this.offsetX );
 	}
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public float getMaxU()
+	public final float getMaxU()
 	{
 		return this.u( 16 - this.offsetX );
 	}
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public float getInterpolatedU( double d0 )
+	public final float getInterpolatedU( double d0 )
 	{
 		return this.u( d0 - this.offsetX );
 	}
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public float getMinV()
+	public final float getMinV()
 	{
 		return this.v( 0 - this.offsetY );
 	}
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public float getMaxV()
+	public final float getMaxV()
 	{
 		return this.v( 16 - this.offsetY );
 	}
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public float getInterpolatedV( double d0 )
+	public final float getInterpolatedV( double d0 )
 	{
 		return this.v( d0 - this.offsetY );
 	}
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public String getIconName()
+	public final String getIconName()
 	{
 		return this.p.getIconName();
 	}

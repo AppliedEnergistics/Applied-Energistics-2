@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -69,12 +69,12 @@ public class MEInventoryHandler<T extends IAEStack<T>> implements IMEInventoryHa
 		this.myPartitionList = new DefaultPriorityList<T>();
 	}
 
-	public IncludeExclude getWhitelist()
+	public final IncludeExclude getWhitelist()
 	{
 		return this.myWhitelist;
 	}
 
-	public void setWhitelist( IncludeExclude myWhitelist )
+	public final void setWhitelist( IncludeExclude myWhitelist )
 	{
 		this.myWhitelist = myWhitelist;
 	}
@@ -84,7 +84,7 @@ public class MEInventoryHandler<T extends IAEStack<T>> implements IMEInventoryHa
 		return this.myAccess;
 	}
 
-	public void setBaseAccess( AccessRestriction myAccess )
+	public final void setBaseAccess( AccessRestriction myAccess )
 	{
 		this.myAccess = myAccess;
 		this.cachedAccessRestriction = this.myAccess.restrictPermissions( this.internal.getAccess() );
@@ -92,12 +92,12 @@ public class MEInventoryHandler<T extends IAEStack<T>> implements IMEInventoryHa
 		this.hasWriteAccess = this.cachedAccessRestriction.hasPermission( AccessRestriction.WRITE );
 	}
 
-	public IPartitionList<T> getPartitionList()
+	public final IPartitionList<T> getPartitionList()
 	{
 		return this.myPartitionList;
 	}
 
-	public void setPartitionList( IPartitionList<T> myPartitionList )
+	public final void setPartitionList( IPartitionList<T> myPartitionList )
 	{
 		this.myPartitionList = myPartitionList;
 	}
@@ -125,7 +125,7 @@ public class MEInventoryHandler<T extends IAEStack<T>> implements IMEInventoryHa
 	}
 
 	@Override
-	public IItemList<T> getAvailableItems( IItemList<T> out )
+	public final IItemList<T> getAvailableItems( IItemList<T> out )
 	{
 		if( !this.hasReadAccess )
 		{
@@ -136,19 +136,19 @@ public class MEInventoryHandler<T extends IAEStack<T>> implements IMEInventoryHa
 	}
 
 	@Override
-	public StorageChannel getChannel()
+	public final StorageChannel getChannel()
 	{
 		return this.internal.getChannel();
 	}
 
 	@Override
-	public AccessRestriction getAccess()
+	public final AccessRestriction getAccess()
 	{
 		return this.cachedAccessRestriction;
 	}
 
 	@Override
-	public boolean isPrioritized( T input )
+	public final boolean isPrioritized( T input )
 	{
 		if( this.myWhitelist == IncludeExclude.WHITELIST )
 		{
@@ -158,7 +158,7 @@ public class MEInventoryHandler<T extends IAEStack<T>> implements IMEInventoryHa
 	}
 
 	@Override
-	public boolean canAccept( T input )
+	public final boolean canAccept( T input )
 	{
 		if( !this.hasWriteAccess )
 		{
@@ -177,29 +177,29 @@ public class MEInventoryHandler<T extends IAEStack<T>> implements IMEInventoryHa
 	}
 
 	@Override
-	public int getPriority()
+	public final int getPriority()
 	{
 		return this.myPriority;
 	}
 
-	public void setPriority( int myPriority )
+	public final void setPriority( int myPriority )
 	{
 		this.myPriority = myPriority;
 	}
 
 	@Override
-	public int getSlot()
+	public final int getSlot()
 	{
 		return this.internal.getSlot();
 	}
 
 	@Override
-	public boolean validForPass( int i )
+	public final boolean validForPass( int i )
 	{
 		return true;
 	}
 
-	public IMEInventory<T> getInternal()
+	public final IMEInventory<T> getInternal()
 	{
 		return this.internal;
 	}

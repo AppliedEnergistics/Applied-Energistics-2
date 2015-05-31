@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -34,7 +34,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 
 @SideOnly( Side.CLIENT )
-public class RenderFloatingItem extends RenderItem
+public final class RenderFloatingItem extends RenderItem
 {
 
 	public static DoubleBuffer buffer = ByteBuffer.allocateDirect( 8 * 4 ).asDoubleBuffer();
@@ -46,7 +46,7 @@ public class RenderFloatingItem extends RenderItem
 	}
 
 	@Override
-	public void doRender( EntityItem entityItem, double x, double y, double z, float yaw, float partialTick )
+	public final void doRender( EntityItem entityItem, double x, double y, double z, float yaw, float partialTick )
 	{
 		if( entityItem instanceof EntityFloatingItem )
 		{
@@ -67,7 +67,7 @@ public class RenderFloatingItem extends RenderItem
 	}
 
 	@Override
-	public boolean shouldBob()
+	public final boolean shouldBob()
 	{
 		return false;
 	}

@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -45,7 +45,7 @@ import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
 
 
-public class TileCondenser extends AEBaseInvTile implements IFluidHandler, IConfigManagerHost, IConfigurableObject
+public final class TileCondenser extends AEBaseInvTile implements IFluidHandler, IConfigManagerHost, IConfigurableObject
 {
 
 	private static final FluidTankInfo[] EMPTY = new FluidTankInfo[] { new FluidTankInfo( null, 10 ) };
@@ -74,7 +74,7 @@ public class TileCondenser extends AEBaseInvTile implements IFluidHandler, IConf
 		this.storedPower = data.getDouble( "storedPower" );
 	}
 
-	public double getStorage()
+	public final double getStorage()
 	{
 		ItemStack is = this.inv.getStackInSlot( 2 );
 		if( is != null )
@@ -91,7 +91,7 @@ public class TileCondenser extends AEBaseInvTile implements IFluidHandler, IConf
 		return 0;
 	}
 
-	public void addPower( double rawPower )
+	public final void addPower( double rawPower )
 	{
 		this.storedPower += rawPower;
 		this.storedPower = Math.max( 0.0, Math.min( this.getStorage(), this.storedPower ) );
@@ -161,19 +161,19 @@ public class TileCondenser extends AEBaseInvTile implements IFluidHandler, IConf
 		return null;
 	}
 
-	public double getRequiredPower()
+	public final double getRequiredPower()
 	{
 		return ( (CondenserOutput) this.cm.getSetting( Settings.CONDENSER_OUTPUT ) ).requiredPower;
 	}
 
 	@Override
-	public IInventory getInternalInventory()
+	public final IInventory getInternalInventory()
 	{
 		return this.inv;
 	}
 
 	@Override
-	public void setInventorySlotContents( int i, ItemStack itemstack )
+	public final void setInventorySlotContents( int i, ItemStack itemstack )
 	{
 		if( i == 0 )
 		{
@@ -189,7 +189,7 @@ public class TileCondenser extends AEBaseInvTile implements IFluidHandler, IConf
 	}
 
 	@Override
-	public boolean isItemValidForSlot( int i, ItemStack itemstack )
+	public final boolean isItemValidForSlot( int i, ItemStack itemstack )
 	{
 		return i == 0;
 	}
@@ -209,13 +209,13 @@ public class TileCondenser extends AEBaseInvTile implements IFluidHandler, IConf
 	}
 
 	@Override
-	public boolean canInsertItem( int slotIndex, ItemStack insertingItem, int side )
+	public final boolean canInsertItem( int slotIndex, ItemStack insertingItem, int side )
 	{
 		return slotIndex == 0;
 	}
 
 	@Override
-	public boolean canExtractItem( int slotIndex, ItemStack extractedItem, int side )
+	public final boolean canExtractItem( int slotIndex, ItemStack extractedItem, int side )
 	{
 		return slotIndex != 0;
 	}
@@ -227,7 +227,7 @@ public class TileCondenser extends AEBaseInvTile implements IFluidHandler, IConf
 	}
 
 	@Override
-	public int fill( ForgeDirection from, FluidStack resource, boolean doFill )
+	public final int fill( ForgeDirection from, FluidStack resource, boolean doFill )
 	{
 		if( doFill )
 		{
@@ -238,31 +238,31 @@ public class TileCondenser extends AEBaseInvTile implements IFluidHandler, IConf
 	}
 
 	@Override
-	public FluidStack drain( ForgeDirection from, FluidStack resource, boolean doDrain )
+	public final FluidStack drain( ForgeDirection from, FluidStack resource, boolean doDrain )
 	{
 		return null;
 	}
 
 	@Override
-	public FluidStack drain( ForgeDirection from, int maxDrain, boolean doDrain )
+	public final FluidStack drain( ForgeDirection from, int maxDrain, boolean doDrain )
 	{
 		return null;
 	}
 
 	@Override
-	public boolean canFill( ForgeDirection from, Fluid fluid )
+	public final boolean canFill( ForgeDirection from, Fluid fluid )
 	{
 		return true;
 	}
 
 	@Override
-	public boolean canDrain( ForgeDirection from, Fluid fluid )
+	public final boolean canDrain( ForgeDirection from, Fluid fluid )
 	{
 		return false;
 	}
 
 	@Override
-	public FluidTankInfo[] getTankInfo( ForgeDirection from )
+	public final FluidTankInfo[] getTankInfo( ForgeDirection from )
 	{
 		return EMPTY;
 	}
@@ -274,7 +274,7 @@ public class TileCondenser extends AEBaseInvTile implements IFluidHandler, IConf
 	}
 
 	@Override
-	public IConfigManager getConfigManager()
+	public final IConfigManager getConfigManager()
 	{
 		return this.cm;
 	}

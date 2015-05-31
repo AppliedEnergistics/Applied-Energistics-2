@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -26,7 +26,7 @@ import appeng.api.networking.IGridNode;
 import appeng.parts.p2p.PartP2PTunnelME;
 
 
-public class Connections implements Callable
+public final class Connections implements Callable
 {
 
 	public final HashMap<IGridNode, TunnelConnection> connections = new HashMap<IGridNode, TunnelConnection>();
@@ -40,20 +40,20 @@ public class Connections implements Callable
 	}
 
 	@Override
-	public Object call() throws Exception
+	public final Object call() throws Exception
 	{
 		this.me.updateConnections( this );
 
 		return null;
 	}
 
-	public void markDestroy()
+	public final void markDestroy()
 	{
 		this.create = false;
 		this.destroy = true;
 	}
 
-	public void markCreate()
+	public final void markCreate()
 	{
 		this.create = true;
 		this.destroy = false;

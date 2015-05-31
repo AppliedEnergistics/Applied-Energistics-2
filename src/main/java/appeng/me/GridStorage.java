@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -34,7 +34,7 @@ import appeng.core.AELog;
 import appeng.core.WorldSettings;
 
 
-public class GridStorage implements IGridStorage
+public final class GridStorage implements IGridStorage
 {
 
 	final long myID;
@@ -94,7 +94,7 @@ public class GridStorage implements IGridStorage
 		this.data = new NBTTagCompound();
 	}
 
-	public String getValue()
+	public final String getValue()
 	{
 		this.isDirty = false;
 
@@ -118,24 +118,24 @@ public class GridStorage implements IGridStorage
 		return "";
 	}
 
-	public IGrid getGrid()
+	public final IGrid getGrid()
 	{
 		return this.internalGrid == null ? null : this.internalGrid.get();
 	}
 
-	public void setGrid( Grid grid )
+	public final void setGrid( Grid grid )
 	{
 		this.internalGrid = new WeakReference<IGrid>( grid );
 	}
 
 	@Override
-	public NBTTagCompound dataObject()
+	public final NBTTagCompound dataObject()
 	{
 		return this.data;
 	}
 
 	@Override
-	public long getID()
+	public final long getID()
 	{
 		return this.myID;
 	}
@@ -145,17 +145,17 @@ public class GridStorage implements IGridStorage
 		this.isDirty = true;
 	}
 
-	public void addDivided( GridStorage gs )
+	public final void addDivided( GridStorage gs )
 	{
 		this.divided.put( gs, true );
 	}
 
-	public boolean hasDivided( GridStorage myStorage )
+	public final boolean hasDivided( GridStorage myStorage )
 	{
 		return this.divided.containsKey( myStorage );
 	}
 
-	public void remove()
+	public final void remove()
 	{
 		WorldSettings.getInstance().destroyGridStorage( this.myID );
 	}

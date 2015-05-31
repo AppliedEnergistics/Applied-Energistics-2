@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -52,7 +52,7 @@ import appeng.tile.inventory.InvOperation;
 import appeng.util.Platform;
 
 
-public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
+public final class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 {
 	private static final IBlockDefinition RING_DEFINITION = AEApi.instance().definitions().blocks().quantumRing();
 	public final byte corner = 16;
@@ -142,7 +142,7 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 		return this.sidesRing;
 	}
 
-	public boolean isCenter()
+	public final boolean isCenter()
 	{
 		for( Block link : AEApi.instance().definitions().blocks().quantumLink().maybeBlock().asSet() )
 		{
@@ -159,7 +159,7 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 	}
 
 	@Override
-	public void onChunkUnload()
+	public final void onChunkUnload()
 	{
 		this.disconnect( false );
 		super.onChunkUnload();
@@ -185,14 +185,14 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 	}
 
 	@Override
-	public void invalidate()
+	public final void invalidate()
 	{
 		this.disconnect( false );
 		super.invalidate();
 	}
 
 	@Override
-	public void disconnect( boolean affectWorld )
+	public final void disconnect( boolean affectWorld )
 	{
 		if( this.cluster != null )
 		{
@@ -224,7 +224,7 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 		return !this.isInvalid();
 	}
 
-	public void updateStatus( QuantumCluster c, byte flags, boolean affectWorld )
+	public final void updateStatus( QuantumCluster c, byte flags, boolean affectWorld )
 	{
 		this.cluster = c;
 
@@ -247,12 +247,12 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 		}
 	}
 
-	public boolean isCorner()
+	public final boolean isCorner()
 	{
 		return ( this.constructed & this.corner ) == this.corner && this.constructed != -1;
 	}
 
-	public EnumSet<ForgeDirection> getConnections()
+	public final EnumSet<ForgeDirection> getConnections()
 	{
 		EnumSet<ForgeDirection> set = EnumSet.noneOf( ForgeDirection.class );
 
@@ -268,7 +268,7 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 		return set;
 	}
 
-	public long getQEFrequency()
+	public final long getQEFrequency()
 	{
 		ItemStack is = this.internalInventory.getStackInSlot( 0 );
 		if( is != null )
@@ -282,7 +282,7 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 		return 0;
 	}
 
-	public boolean isPowered()
+	public final boolean isPowered()
 	{
 		if( Platform.isClient() )
 		{
@@ -301,29 +301,29 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 		return false;
 	}
 
-	public boolean isFormed()
+	public final boolean isFormed()
 	{
 		return this.constructed != -1;
 	}
 
 	@Override
-	public AECableType getCableConnectionType( ForgeDirection dir )
+	public final AECableType getCableConnectionType( ForgeDirection dir )
 	{
 		return AECableType.DENSE;
 	}
 
-	public void neighborUpdate()
+	public final void neighborUpdate()
 	{
 		this.calc.calculateMultiblock( this.worldObj, this.getLocation() );
 	}
 
 	@Override
-	public DimensionalCoord getLocation()
+	public final DimensionalCoord getLocation()
 	{
 		return new DimensionalCoord( this );
 	}
 
-	public boolean hasQES()
+	public final boolean hasQES()
 	{
 		if( this.constructed == -1 )
 		{
@@ -332,7 +332,7 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 		return ( this.constructed & this.hasSingularity ) == this.hasSingularity;
 	}
 
-	public void breakCluster()
+	public final void breakCluster()
 	{
 		if( this.cluster != null )
 		{

@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -27,7 +27,7 @@ import java.nio.channels.FileChannel;
 import appeng.core.AELog;
 
 
-public class CompassRegion
+public final class CompassRegion
 {
 	final int low_x;
 	final int low_z;
@@ -104,7 +104,7 @@ public class CompassRegion
 		return name.exists() && name.isFile();
 	}
 
-	public void close()
+	public final void close()
 	{
 		try
 		{
@@ -122,7 +122,7 @@ public class CompassRegion
 		}
 	}
 
-	public boolean hasBeacon( int cx, int cz )
+	public final boolean hasBeacon( int cx, int cz )
 	{
 		if( this.hasFile )
 		{
@@ -157,7 +157,7 @@ public class CompassRegion
 		}
 	}
 
-	public void setHasBeacon( int cx, int cz, int cdy, boolean hasBeacon )
+	public final void setHasBeacon( int cx, int cz, int cdy, boolean hasBeacon )
 	{
 		cx &= 0x3FF;
 		cz &= 0x3FF;

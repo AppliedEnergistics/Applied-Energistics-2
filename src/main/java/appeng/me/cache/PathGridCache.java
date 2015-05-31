@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -57,7 +57,7 @@ import appeng.tile.networking.TileController;
 import appeng.util.Platform;
 
 
-public class PathGridCache implements IPathingGrid
+public final class PathGridCache implements IPathingGrid
 {
 
 	final LinkedList<PathSegment> active = new LinkedList<PathSegment>();
@@ -83,7 +83,7 @@ public class PathGridCache implements IPathingGrid
 	}
 
 	@Override
-	public void onUpdateTick()
+	public final void onUpdateTick()
 	{
 		if( this.recalculateControllerNextTick )
 		{
@@ -202,7 +202,7 @@ public class PathGridCache implements IPathingGrid
 	}
 
 	@Override
-	public void removeNode( IGridNode gridNode, IGridHost machine )
+	public final void removeNode( IGridNode gridNode, IGridHost machine )
 	{
 		if( machine instanceof TileController )
 		{
@@ -226,7 +226,7 @@ public class PathGridCache implements IPathingGrid
 	}
 
 	@Override
-	public void addNode( IGridNode gridNode, IGridHost machine )
+	public final void addNode( IGridNode gridNode, IGridHost machine )
 	{
 		if( machine instanceof TileController )
 		{
@@ -250,19 +250,19 @@ public class PathGridCache implements IPathingGrid
 	}
 
 	@Override
-	public void onSplit( IGridStorage storageB )
+	public final void onSplit( IGridStorage storageB )
 	{
 
 	}
 
 	@Override
-	public void onJoin( IGridStorage storageB )
+	public final void onJoin( IGridStorage storageB )
 	{
 
 	}
 
 	@Override
-	public void populateGridStorage( IGridStorage storage )
+	public final void populateGridStorage( IGridStorage storage )
 	{
 
 	}
@@ -401,19 +401,19 @@ public class PathGridCache implements IPathingGrid
 	}
 
 	@Override
-	public boolean isNetworkBooting()
+	public final boolean isNetworkBooting()
 	{
 		return !this.active.isEmpty() && !this.booting;
 	}
 
 	@Override
-	public ControllerState getControllerState()
+	public final ControllerState getControllerState()
 	{
 		return this.controllerState;
 	}
 
 	@Override
-	public void repath()
+	public final void repath()
 	{
 		// clean up...
 		this.active.clear();

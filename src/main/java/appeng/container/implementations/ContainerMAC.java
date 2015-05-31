@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -38,7 +38,7 @@ import appeng.tile.crafting.TileMolecularAssembler;
 import appeng.util.Platform;
 
 
-public class ContainerMAC extends ContainerUpgradeable implements IProgressProvider
+public final class ContainerMAC extends ContainerUpgradeable implements IProgressProvider
 {
 
 	private static final int MAX_CRAFT_PROGRESS = 100;
@@ -52,7 +52,7 @@ public class ContainerMAC extends ContainerUpgradeable implements IProgressProvi
 		this.tma = te;
 	}
 
-	public boolean isValidItemForSlot( int slotIndex, ItemStack i )
+	public final boolean isValidItemForSlot( int slotIndex, ItemStack i )
 	{
 		IInventory mac = this.upgradeable.getInventoryByName( "mac" );
 
@@ -129,7 +129,7 @@ public class ContainerMAC extends ContainerUpgradeable implements IProgressProvi
 	}
 
 	@Override
-	public void detectAndSendChanges()
+	public final void detectAndSendChanges()
 	{
 		this.verifyPermissions( SecurityPermissions.BUILD, false );
 
@@ -144,7 +144,7 @@ public class ContainerMAC extends ContainerUpgradeable implements IProgressProvi
 	}
 
 	@Override
-	public int getCurrentProgress()
+	public final int getCurrentProgress()
 	{
 		return this.craftProgress;
 	}

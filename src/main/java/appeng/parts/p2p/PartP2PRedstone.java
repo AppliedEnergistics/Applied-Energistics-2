@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -38,7 +38,7 @@ import appeng.me.GridAccessException;
 import appeng.util.Platform;
 
 
-public class PartP2PRedstone extends PartP2PTunnel<PartP2PRedstone>
+public final class PartP2PRedstone extends PartP2PTunnel<PartP2PRedstone>
 {
 
 	int power;
@@ -55,7 +55,7 @@ public class PartP2PRedstone extends PartP2PTunnel<PartP2PRedstone>
 		this.setNetworkReady();
 	}
 
-	public void setNetworkReady()
+	public final void setNetworkReady()
 	{
 		if( this.output )
 		{
@@ -67,7 +67,7 @@ public class PartP2PRedstone extends PartP2PTunnel<PartP2PRedstone>
 		}
 	}
 
-	protected void putInput( Object o )
+	protected final void putInput( Object o )
 	{
 		if( this.recursive )
 		{
@@ -87,7 +87,7 @@ public class PartP2PRedstone extends PartP2PTunnel<PartP2PRedstone>
 		this.recursive = false;
 	}
 
-	public void notifyNeighbors()
+	public final void notifyNeighbors()
 	{
 		World worldObj = this.tile.getWorldObj();
 
@@ -126,14 +126,14 @@ public class PartP2PRedstone extends PartP2PTunnel<PartP2PRedstone>
 	}
 
 	@Override
-	public void readFromNBT( NBTTagCompound tag )
+	public final void readFromNBT( NBTTagCompound tag )
 	{
 		super.readFromNBT( tag );
 		this.power = tag.getInteger( "power" );
 	}
 
 	@Override
-	public void writeToNBT( NBTTagCompound tag )
+	public final void writeToNBT( NBTTagCompound tag )
 	{
 		super.writeToNBT( tag );
 		tag.setInteger( "power", this.power );
@@ -151,7 +151,7 @@ public class PartP2PRedstone extends PartP2PTunnel<PartP2PRedstone>
 	}
 
 	@Override
-	public void onNeighborChanged()
+	public final void onNeighborChanged()
 	{
 		if( !this.output )
 		{
@@ -179,19 +179,19 @@ public class PartP2PRedstone extends PartP2PTunnel<PartP2PRedstone>
 	}
 
 	@Override
-	public boolean canConnectRedstone()
+	public final boolean canConnectRedstone()
 	{
 		return true;
 	}
 
 	@Override
-	public int isProvidingStrongPower()
+	public final int isProvidingStrongPower()
 	{
 		return this.output ? this.power : 0;
 	}
 
 	@Override
-	public int isProvidingWeakPower()
+	public final int isProvidingWeakPower()
 	{
 		return this.output ? this.power : 0;
 	}

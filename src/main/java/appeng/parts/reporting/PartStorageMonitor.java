@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -94,7 +94,7 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 	}
 
 	@Override
-	public void readFromNBT( NBTTagCompound data )
+	public final void readFromNBT( NBTTagCompound data )
 	{
 		super.readFromNBT( data );
 
@@ -105,7 +105,7 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 	}
 
 	@Override
-	public void writeToNBT( NBTTagCompound data )
+	public final void writeToNBT( NBTTagCompound data )
 	{
 		super.writeToNBT( data );
 
@@ -121,7 +121,7 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 	}
 
 	@Override
-	public void writeToStream( ByteBuf data ) throws IOException
+	public final void writeToStream( ByteBuf data ) throws IOException
 	{
 		super.writeToStream( data );
 
@@ -135,7 +135,7 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 	}
 
 	@Override
-	public boolean readFromStream( ByteBuf data ) throws IOException
+	public final boolean readFromStream( ByteBuf data ) throws IOException
 	{
 		boolean stuff = super.readFromStream( data );
 
@@ -197,7 +197,7 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 	}
 
 	// update the system...
-	public void configureWatchers()
+	public final void configureWatchers()
 	{
 		if( this.myWatcher != null )
 		{
@@ -245,7 +245,7 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	protected void finalize() throws Throwable
+	protected final void finalize() throws Throwable
 	{
 		super.finalize();
 		if( this.dspList != null )
@@ -256,7 +256,7 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderDynamic( double x, double y, double z, IPartRenderHelper rh, RenderBlocks renderer )
+	public final void renderDynamic( double x, double y, double z, IPartRenderHelper rh, RenderBlocks renderer )
 	{
 		if( this.dspList == null )
 		{
@@ -293,13 +293,13 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 	}
 
 	@Override
-	public boolean requireDynamicRender()
+	public final boolean requireDynamicRender()
 	{
 		return true;
 	}
 
 	@Override
-	public IAEStack getDisplayed()
+	public final IAEStack getDisplayed()
 	{
 		return this.configuredItem;
 	}
@@ -389,20 +389,20 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 	}
 
 	@Override
-	public boolean isLocked()
+	public final boolean isLocked()
 	{
 		return this.isLocked;
 	}
 
 	@Override
-	public void updateWatcher( IStackWatcher newWatcher )
+	public final void updateWatcher( IStackWatcher newWatcher )
 	{
 		this.myWatcher = newWatcher;
 		this.configureWatchers();
 	}
 
 	@Override
-	public void onStackChange( IItemList o, IAEStack fullStack, IAEStack diffStack, BaseActionSource src, StorageChannel chan )
+	public final void onStackChange( IItemList o, IAEStack fullStack, IAEStack diffStack, BaseActionSource src, StorageChannel chan )
 	{
 		if( this.configuredItem != null )
 		{
@@ -420,7 +420,7 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 	}
 
 	@Override
-	public boolean showNetworkInfo( MovingObjectPosition where )
+	public final boolean showNetworkInfo( MovingObjectPosition where )
 	{
 		return false;
 	}

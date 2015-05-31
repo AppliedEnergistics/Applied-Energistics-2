@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -34,7 +34,7 @@ import appeng.client.texture.ExtraBlockTextures;
 
 
 @SideOnly( Side.CLIENT )
-public class CraftingFx extends EntityBreakingFX
+public final class CraftingFx extends EntityBreakingFX
 {
 
 	private final IIcon particleTextureIndex;
@@ -63,13 +63,13 @@ public class CraftingFx extends EntityBreakingFX
 	}
 
 	@Override
-	public int getFXLayer()
+	public final int getFXLayer()
 	{
 		return 1;
 	}
 
 	@Override
-	public void renderParticle( Tessellator par1Tessellator, float partialTick, float x, float y, float z, float rx, float rz )
+	public final void renderParticle( Tessellator par1Tessellator, float partialTick, float x, float y, float z, float rx, float rz )
 	{
 		if( partialTick < 0 || partialTick > 1 )
 		{
@@ -114,7 +114,7 @@ public class CraftingFx extends EntityBreakingFX
 	}
 
 	@Override
-	public void onUpdate()
+	public final void onUpdate()
 	{
 		super.onUpdate();
 		this.particleScale *= 0.51f;

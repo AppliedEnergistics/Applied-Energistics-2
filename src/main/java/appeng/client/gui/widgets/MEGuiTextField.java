@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -31,7 +31,7 @@ import net.minecraft.client.gui.GuiTextField;
  *
  * The rendering does pay attention to the size of the '_' caret.
  */
-public class MEGuiTextField extends GuiTextField
+public final class MEGuiTextField extends GuiTextField
 {
 	private static final int PADDING = 2;
 
@@ -61,7 +61,7 @@ public class MEGuiTextField extends GuiTextField
 	}
 
 	@Override
-	public void mouseClicked( int xPos, int yPos, int button )
+	public final void mouseClicked( int xPos, int yPos, int button )
 	{
 		super.mouseClicked( xPos, yPos, button );
 
@@ -78,7 +78,7 @@ public class MEGuiTextField extends GuiTextField
 	 *
 	 * @return true if mouse position is within the text field area
 	 */
-	public boolean isMouseIn( int xCoord, int yCoord )
+	public final boolean isMouseIn( int xCoord, int yCoord )
 	{
 		final boolean withinXRange = this._xPos <= xCoord && xCoord < this._xPos + this._width;
 		final boolean withinYRange = this._yPos <= yCoord && yCoord < this._yPos + this._height;

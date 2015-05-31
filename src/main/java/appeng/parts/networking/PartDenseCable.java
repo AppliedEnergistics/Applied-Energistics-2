@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -55,7 +55,7 @@ import appeng.helpers.Reflected;
 import appeng.util.Platform;
 
 
-public class PartDenseCable extends PartCable
+public final class PartDenseCable extends PartCable
 {
 	@Reflected
 	public PartDenseCable( ItemStack is )
@@ -66,19 +66,19 @@ public class PartDenseCable extends PartCable
 	}
 
 	@Override
-	public BusSupport supportsBuses()
+	public final BusSupport supportsBuses()
 	{
 		return BusSupport.DENSE_CABLE;
 	}
 
 	@Override
-	public AECableType getCableConnectionType()
+	public final AECableType getCableConnectionType()
 	{
 		return AECableType.DENSE;
 	}
 
 	@Override
-	public void getBoxes( IPartCollisionHelper bch )
+	public final void getBoxes( IPartCollisionHelper bch )
 	{
 		boolean noLadder = !bch.isBBCollision();
 		double min = noLadder ? 3.0 : 4.9;
@@ -156,7 +156,7 @@ public class PartDenseCable extends PartCable
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderInventory( IPartRenderHelper rh, RenderBlocks renderer )
+	public final void renderInventory( IPartRenderHelper rh, RenderBlocks renderer )
 	{
 		GL11.glTranslated( -0.0, -0.0, 0.3 );
 		rh.setBounds( 4.0f, 4.0f, 2.0f, 12.0f, 12.0f, 14.0f );
@@ -203,7 +203,7 @@ public class PartDenseCable extends PartCable
 	}
 
 	@Override
-	public IIcon getTexture( AEColor c )
+	public final IIcon getTexture( AEColor c )
 	{
 		if( c == AEColor.Transparent )
 		{
@@ -215,7 +215,7 @@ public class PartDenseCable extends PartCable
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderStatic( int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer )
+	public final void renderStatic( int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer )
 	{
 		this.renderCache = rh.useSimplifiedRendering( x, y, z, this, this.renderCache );
 		rh.setTexture( this.getTexture( this.getCableColor() ) );
@@ -360,7 +360,7 @@ public class PartDenseCable extends PartCable
 	}
 
 	@SideOnly( Side.CLIENT )
-	public void renderDenseConnection( int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer, int channels, ForgeDirection of )
+	public final void renderDenseConnection( int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer, int channels, ForgeDirection of )
 	{
 		TileEntity te = this.tile.getWorldObj().getTileEntity( x + of.offsetX, y + of.offsetY, z + of.offsetZ );
 		IPartHost partHost = te instanceof IPartHost ? (IPartHost) te : null;

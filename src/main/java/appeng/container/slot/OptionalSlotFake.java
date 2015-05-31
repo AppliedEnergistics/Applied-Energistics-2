@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -44,7 +44,7 @@ public class OptionalSlotFake extends SlotFake
 	}
 
 	@Override
-	public ItemStack getStack()
+	public final ItemStack getStack()
 	{
 		if( !this.isEnabled() )
 		{
@@ -68,7 +68,7 @@ public class OptionalSlotFake extends SlotFake
 		return this.host.isSlotEnabled( this.groupNum );
 	}
 
-	public boolean renderDisabled()
+	public final boolean renderDisabled()
 	{
 		return this.renderDisabled;
 	}

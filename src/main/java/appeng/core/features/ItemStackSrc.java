@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -26,7 +26,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 
-public class ItemStackSrc implements IStackSrc
+public final class ItemStackSrc implements IStackSrc
 {
 
 	public final Item item;
@@ -49,7 +49,7 @@ public class ItemStackSrc implements IStackSrc
 
 	@Nullable
 	@Override
-	public ItemStack stack( int i )
+	public final ItemStack stack( int i )
 	{
 		if( this.block != null )
 		{

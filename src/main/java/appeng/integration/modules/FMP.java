@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -56,13 +56,13 @@ import appeng.integration.modules.helpers.FMPPacketEvent;
 import appeng.parts.CableBusContainer;
 
 
-public class FMP implements IIntegrationModule, IPartFactory, IPartConverter, IFMP
+public final class FMP implements IIntegrationModule, IPartFactory, IPartConverter, IFMP
 {
 
 	public static FMP instance;
 
 	@Override
-	public TMultiPart createPart( String name, boolean client )
+	public final TMultiPart createPart( String name, boolean client )
 	{
 		for( PartRegistry pr : PartRegistry.values() )
 		{
@@ -76,7 +76,7 @@ public class FMP implements IIntegrationModule, IPartFactory, IPartConverter, IF
 	}
 
 	@Override
-	public TMultiPart convert( World world, BlockCoord pos )
+	public final TMultiPart convert( World world, BlockCoord pos )
 	{
 		Block blk = world.getBlock( pos.x, pos.y, pos.z );
 		int meta = world.getBlockMetadata( pos.x, pos.y, pos.z );
@@ -92,7 +92,7 @@ public class FMP implements IIntegrationModule, IPartFactory, IPartConverter, IF
 	}
 
 	@Override
-	public Iterable<Block> blockTypes()
+	public final Iterable<Block> blockTypes()
 	{
 		final IBlocks blocks = AEApi.instance().definitions().blocks();
 		final List<Block> blockTypes = Lists.newArrayListWithCapacity( 2 );

@@ -36,7 +36,7 @@ import appeng.core.api.imc.IMCSpatial;
 /**
  * Handles the delegation of the corresponding IMC messages to the suitable IMC processors
  */
-public class IMCHandler
+public final class IMCHandler
 {
 	private static final int INITIAL_PROCESSORS_CAPACITY = 20;
 
@@ -72,7 +72,7 @@ public class IMCHandler
 	 *
 	 * @param event Event carrying the identifier and message for the handlers
 	 */
-	public void handleIMCEvent( FMLInterModComms.IMCEvent event )
+	public final void handleIMCEvent( FMLInterModComms.IMCEvent event )
 	{
 		for( FMLInterModComms.IMCMessage message : event.getMessages() )
 		{

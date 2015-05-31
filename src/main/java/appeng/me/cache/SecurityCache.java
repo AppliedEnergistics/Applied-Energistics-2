@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -39,7 +39,7 @@ import appeng.core.WorldSettings;
 import appeng.me.GridNode;
 
 
-public class SecurityCache implements ISecurityGrid
+public final class SecurityCache implements ISecurityGrid
 {
 
 	public final IGrid myGrid;
@@ -70,13 +70,13 @@ public class SecurityCache implements ISecurityGrid
 	}
 
 	@Override
-	public void onUpdateTick()
+	public final void onUpdateTick()
 	{
 
 	}
 
 	@Override
-	public void removeNode( IGridNode gridNode, IGridHost machine )
+	public final void removeNode( IGridNode gridNode, IGridHost machine )
 	{
 		if( machine instanceof ISecurityProvider )
 		{
@@ -109,7 +109,7 @@ public class SecurityCache implements ISecurityGrid
 	}
 
 	@Override
-	public void addNode( IGridNode gridNode, IGridHost machine )
+	public final void addNode( IGridNode gridNode, IGridHost machine )
 	{
 		if( machine instanceof ISecurityProvider )
 		{
@@ -123,23 +123,23 @@ public class SecurityCache implements ISecurityGrid
 	}
 
 	@Override
-	public void onSplit( IGridStorage destinationStorage )
+	public final void onSplit( IGridStorage destinationStorage )
 	{
 
 	}
 
 	@Override
-	public void onJoin( IGridStorage sourceStorage )
+	public final void onJoin( IGridStorage sourceStorage )
 	{
 
 	}
 
 	@Override
-	public void populateGridStorage( IGridStorage destinationStorage )
+	public final void populateGridStorage( IGridStorage destinationStorage )
 	{
 
 	}	@Override
-	public boolean isAvailable()
+	public final boolean isAvailable()
 	{
 		return this.securityProvider.size() == 1 && this.securityProvider.get( 0 ).isSecurityEnabled();
 	}
@@ -147,13 +147,13 @@ public class SecurityCache implements ISecurityGrid
 
 
 	@Override
-	public boolean hasPermission( EntityPlayer player, SecurityPermissions perm )
+	public final boolean hasPermission( EntityPlayer player, SecurityPermissions perm )
 	{
 		return this.hasPermission( player == null ? -1 : WorldSettings.getInstance().getPlayerID( player.getGameProfile() ), perm );
 	}
 
 	@Override
-	public boolean hasPermission( int playerID, SecurityPermissions perm )
+	public final boolean hasPermission( int playerID, SecurityPermissions perm )
 	{
 		if( this.isAvailable() )
 		{
@@ -177,7 +177,7 @@ public class SecurityCache implements ISecurityGrid
 	}
 
 	@Override
-	public int getOwner()
+	public final int getOwner()
 	{
 		if( this.isAvailable() )
 		{

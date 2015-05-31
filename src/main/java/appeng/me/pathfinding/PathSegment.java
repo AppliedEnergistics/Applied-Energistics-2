@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -31,7 +31,7 @@ import appeng.api.networking.IGridNode;
 import appeng.me.cache.PathGridCache;
 
 
-public class PathSegment
+public final class PathSegment
 {
 
 	final PathGridCache pgc;
@@ -49,7 +49,7 @@ public class PathSegment
 		this.isDead = false;
 	}
 
-	public boolean step()
+	public final boolean step()
 	{
 		List<IPathItem> oldOpen = this.open;
 		this.open = new LinkedList<IPathItem>();

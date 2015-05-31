@@ -26,7 +26,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.util.IOrientable;
 
 
-public class MetaRotation implements IOrientable
+public final class MetaRotation implements IOrientable
 {
 
 	final IBlockAccess w;
@@ -43,13 +43,13 @@ public class MetaRotation implements IOrientable
 	}
 
 	@Override
-	public boolean canBeRotated()
+	public final boolean canBeRotated()
 	{
 		return true;
 	}
 
 	@Override
-	public ForgeDirection getForward()
+	public final ForgeDirection getForward()
 	{
 		if( this.getUp().offsetY == 0 )
 		{
@@ -59,7 +59,7 @@ public class MetaRotation implements IOrientable
 	}
 
 	@Override
-	public ForgeDirection getUp()
+	public final ForgeDirection getUp()
 	{
 		return ForgeDirection.getOrientation( this.w.getBlockMetadata( this.x, this.y, this.z ) );
 	}

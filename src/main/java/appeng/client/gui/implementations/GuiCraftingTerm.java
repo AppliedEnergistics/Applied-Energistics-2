@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -36,7 +36,7 @@ import appeng.core.sync.packets.PacketInventoryAction;
 import appeng.helpers.InventoryAction;
 
 
-public class GuiCraftingTerm extends GuiMEMonitorable
+public final class GuiCraftingTerm extends GuiMEMonitorable
 {
 
 	GuiImgButton clearBtn;
@@ -48,7 +48,7 @@ public class GuiCraftingTerm extends GuiMEMonitorable
 	}
 
 	@Override
-	protected void actionPerformed( GuiButton btn )
+	protected final void actionPerformed( GuiButton btn )
 	{
 		super.actionPerformed( btn );
 
@@ -74,7 +74,7 @@ public class GuiCraftingTerm extends GuiMEMonitorable
 	}
 
 	@Override
-	public void initGui()
+	public final void initGui()
 	{
 		super.initGui();
 		this.buttonList.add( this.clearBtn = new GuiImgButton( this.guiLeft + 92, this.guiTop + this.ySize - 156, Settings.ACTIONS, ActionItems.STASH ) );

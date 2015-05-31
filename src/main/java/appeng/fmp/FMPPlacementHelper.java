@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -45,7 +45,7 @@ import appeng.parts.CableBusStorage;
 import appeng.util.Platform;
 
 
-public class FMPPlacementHelper implements IPartHost
+public final class FMPPlacementHelper implements IPartHost
 {
 
 	private static final CableBusStorage NULL_STORAGE = new NullStorage();
@@ -59,7 +59,7 @@ public class FMPPlacementHelper implements IPartHost
 	}
 
 	@Override
-	public IFacadeContainer getFacadeContainer()
+	public final IFacadeContainer getFacadeContainer()
 	{
 		if( this.myPart == null )
 		{
@@ -69,7 +69,7 @@ public class FMPPlacementHelper implements IPartHost
 	}
 
 	@Override
-	public boolean canAddPart( ItemStack part, ForgeDirection side )
+	public final boolean canAddPart( ItemStack part, ForgeDirection side )
 	{
 		CableBusPart myPart = this.getPart();
 
@@ -108,7 +108,7 @@ public class FMPPlacementHelper implements IPartHost
 		return this.myPart;
 	}
 
-	public void removePart()
+	public final void removePart()
 	{
 		if( this.myPart.isEmpty() )
 		{
@@ -128,7 +128,7 @@ public class FMPPlacementHelper implements IPartHost
 	}
 
 	@Override
-	public ForgeDirection addPart( ItemStack is, ForgeDirection side, EntityPlayer owner )
+	public final ForgeDirection addPart( ItemStack is, ForgeDirection side, EntityPlayer owner )
 	{
 		CableBusPart myPart = this.getPart();
 
@@ -140,7 +140,7 @@ public class FMPPlacementHelper implements IPartHost
 	}
 
 	@Override
-	public IPart getPart( ForgeDirection side )
+	public final IPart getPart( ForgeDirection side )
 	{
 		if( this.myPart == null )
 		{
@@ -150,7 +150,7 @@ public class FMPPlacementHelper implements IPartHost
 	}
 
 	@Override
-	public void removePart( ForgeDirection side, boolean suppressUpdate )
+	public final void removePart( ForgeDirection side, boolean suppressUpdate )
 	{
 		if( this.myPart == null )
 		{
@@ -160,7 +160,7 @@ public class FMPPlacementHelper implements IPartHost
 	}
 
 	@Override
-	public void markForUpdate()
+	public final void markForUpdate()
 	{
 		if( this.myPart == null )
 		{
@@ -170,7 +170,7 @@ public class FMPPlacementHelper implements IPartHost
 	}
 
 	@Override
-	public DimensionalCoord getLocation()
+	public final DimensionalCoord getLocation()
 	{
 		if( this.myPart == null )
 		{
@@ -180,13 +180,13 @@ public class FMPPlacementHelper implements IPartHost
 	}
 
 	@Override
-	public TileEntity getTile()
+	public final TileEntity getTile()
 	{
 		return this.myMP;
 	}
 
 	@Override
-	public AEColor getColor()
+	public final AEColor getColor()
 	{
 		if( this.myPart == null )
 		{
@@ -196,7 +196,7 @@ public class FMPPlacementHelper implements IPartHost
 	}
 
 	@Override
-	public void clearContainer()
+	public final void clearContainer()
 	{
 		if( this.myPart == null )
 		{
@@ -206,7 +206,7 @@ public class FMPPlacementHelper implements IPartHost
 	}
 
 	@Override
-	public boolean isBlocked( ForgeDirection side )
+	public final boolean isBlocked( ForgeDirection side )
 	{
 		this.getPart();
 
@@ -218,7 +218,7 @@ public class FMPPlacementHelper implements IPartHost
 	}
 
 	@Override
-	public SelectedPart selectPart( Vec3 pos )
+	public final SelectedPart selectPart( Vec3 pos )
 	{
 		if( this.myPart == null )
 		{
@@ -228,7 +228,7 @@ public class FMPPlacementHelper implements IPartHost
 	}
 
 	@Override
-	public void markForSave()
+	public final void markForSave()
 	{
 		if( this.myPart == null )
 		{
@@ -238,7 +238,7 @@ public class FMPPlacementHelper implements IPartHost
 	}
 
 	@Override
-	public void partChanged()
+	public final void partChanged()
 	{
 		if( this.myPart == null )
 		{
@@ -248,7 +248,7 @@ public class FMPPlacementHelper implements IPartHost
 	}
 
 	@Override
-	public boolean hasRedstone( ForgeDirection side )
+	public final boolean hasRedstone( ForgeDirection side )
 	{
 		if( this.myPart == null )
 		{
@@ -258,7 +258,7 @@ public class FMPPlacementHelper implements IPartHost
 	}
 
 	@Override
-	public boolean isEmpty()
+	public final boolean isEmpty()
 	{
 		if( this.myPart == null )
 		{
@@ -268,7 +268,7 @@ public class FMPPlacementHelper implements IPartHost
 	}
 
 	@Override
-	public Set<LayerFlags> getLayerFlags()
+	public final Set<LayerFlags> getLayerFlags()
 	{
 		if( this.myPart == null )
 		{
@@ -278,7 +278,7 @@ public class FMPPlacementHelper implements IPartHost
 	}
 
 	@Override
-	public void cleanup()
+	public final void cleanup()
 	{
 		if( this.myPart == null )
 		{
@@ -288,7 +288,7 @@ public class FMPPlacementHelper implements IPartHost
 	}
 
 	@Override
-	public void notifyNeighbors()
+	public final void notifyNeighbors()
 	{
 		if( this.myPart == null )
 		{
@@ -298,7 +298,7 @@ public class FMPPlacementHelper implements IPartHost
 	}
 
 	@Override
-	public boolean isInWorld()
+	public final boolean isInWorld()
 	{
 		if( this.myPart == null )
 		{
@@ -307,7 +307,7 @@ public class FMPPlacementHelper implements IPartHost
 		return this.myPart.isInWorld();
 	}
 
-	static class NullStorage extends CableBusStorage
+	static final class NullStorage extends CableBusStorage
 	{
 
 		@Override

@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -29,7 +29,7 @@ import appeng.core.CommonHelper;
 import appeng.entity.EntityFloatingItem;
 
 
-public class AssemblerFX extends EntityFX
+public final class AssemblerFX extends EntityFX
 {
 
 	final IAEItemStack item;
@@ -52,14 +52,14 @@ public class AssemblerFX extends EntityFX
 	}
 
 	@Override
-	public int getBrightnessForRender( float par1 )
+	public final int getBrightnessForRender( float par1 )
 	{
 		int j1 = 13;
 		return j1 << 20 | j1 << 4;
 	}
 
 	@Override
-	public void onUpdate()
+	public final void onUpdate()
 	{
 		super.onUpdate();
 
@@ -75,7 +75,7 @@ public class AssemblerFX extends EntityFX
 	}
 
 	@Override
-	public void renderParticle( Tessellator tess, float l, float rX, float rY, float rZ, float rYZ, float rXY )
+	public final void renderParticle( Tessellator tess, float l, float rX, float rY, float rZ, float rYZ, float rXY )
 	{
 		this.time += l;
 		if( this.time > 4.0 )

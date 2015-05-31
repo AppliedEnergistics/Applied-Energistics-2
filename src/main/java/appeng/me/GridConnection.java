@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -40,7 +40,7 @@ import appeng.util.Platform;
 import appeng.util.ReadOnlyCollection;
 
 
-public class GridConnection implements IGridConnection, IPathItem
+public final class GridConnection implements IGridConnection, IPathItem
 {
 
 	private static final MENetworkChannelsChanged EVENT = new MENetworkChannelsChanged();
@@ -128,7 +128,7 @@ public class GridConnection implements IGridConnection, IPathItem
 	}
 
 	@Override
-	public IGridNode getOtherSide( IGridNode gridNode )
+	public final IGridNode getOtherSide( IGridNode gridNode )
 	{
 		if( gridNode == this.sideA )
 		{
@@ -143,7 +143,7 @@ public class GridConnection implements IGridConnection, IPathItem
 	}
 
 	@Override
-	public ForgeDirection getDirection( IGridNode side )
+	public final ForgeDirection getDirection( IGridNode side )
 	{
 		if( this.fromAtoB == ForgeDirection.UNKNOWN )
 		{
@@ -161,7 +161,7 @@ public class GridConnection implements IGridConnection, IPathItem
 	}
 
 	@Override
-	public void destroy()
+	public final void destroy()
 	{
 		// a connection was destroyed RE-PATH!!
 		IPathingGrid p = this.sideA.getInternalGrid().getCache( IPathingGrid.class );
@@ -175,25 +175,25 @@ public class GridConnection implements IGridConnection, IPathItem
 	}
 
 	@Override
-	public IGridNode a()
+	public final IGridNode a()
 	{
 		return this.sideA;
 	}
 
 	@Override
-	public IGridNode b()
+	public final IGridNode b()
 	{
 		return this.sideB;
 	}
 
 	@Override
-	public boolean hasDirection()
+	public final boolean hasDirection()
 	{
 		return this.fromAtoB != ForgeDirection.UNKNOWN;
 	}
 
 	@Override
-	public int getUsedChannels()
+	public final int getUsedChannels()
 	{
 		return ( this.channelData >> 8 ) & 0xff;
 	}
@@ -209,7 +209,7 @@ public class GridConnection implements IGridConnection, IPathItem
 	}
 
 	@Override
-	public void setControllerRoute( IPathItem fast, boolean zeroOut )
+	public final void setControllerRoute( IPathItem fast, boolean zeroOut )
 	{
 		if( zeroOut )
 		{
@@ -238,7 +238,7 @@ public class GridConnection implements IGridConnection, IPathItem
 	}
 
 	@Override
-	public void incrementChannelCount( int usedChannels )
+	public final void incrementChannelCount( int usedChannels )
 	{
 		this.channelData += usedChannels;
 	}
@@ -250,7 +250,7 @@ public class GridConnection implements IGridConnection, IPathItem
 	}
 
 	@Override
-	public void finalizeChannels()
+	public final void finalizeChannels()
 	{
 		if( this.getUsedChannels() != this.getLastUsedChannels() )
 		{
@@ -269,7 +269,7 @@ public class GridConnection implements IGridConnection, IPathItem
 		}
 	}
 
-	public int getLastUsedChannels()
+	public final int getLastUsedChannels()
 	{
 		return this.channelData & 0xff;
 	}

@@ -40,7 +40,7 @@ import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.tile.inventory.InvOperation;
 
 
-public class TileController extends AENetworkPowerTile
+public final class TileController extends AENetworkPowerTile
 {
 	private static final IInventory NULL_INVENTORY = new AppEngInternalInventory( null, 0 );
 	private static final int[] ACCESSIBLE_SLOTS_BY_SIDE = new int[] {};
@@ -56,7 +56,7 @@ public class TileController extends AENetworkPowerTile
 	}
 
 	@Override
-	public AECableType getCableConnectionType( ForgeDirection dir )
+	public final AECableType getCableConnectionType( ForgeDirection dir )
 	{
 		return AECableType.DENSE;
 	}
@@ -68,7 +68,7 @@ public class TileController extends AENetworkPowerTile
 		super.onReady();
 	}
 
-	public void onNeighborChange( boolean force )
+	public final void onNeighborChange( boolean force )
 	{
 		boolean xx = this.worldObj.getTileEntity( this.xCoord - 1, this.yCoord, this.zCoord ) instanceof TileController && this.worldObj.getTileEntity( this.xCoord + 1, this.yCoord, this.zCoord ) instanceof TileController;
 		boolean yy = this.worldObj.getTileEntity( this.xCoord, this.yCoord - 1, this.zCoord ) instanceof TileController && this.worldObj.getTileEntity( this.xCoord, this.yCoord + 1, this.zCoord ) instanceof TileController;

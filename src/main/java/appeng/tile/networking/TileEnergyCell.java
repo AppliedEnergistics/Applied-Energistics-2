@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -50,7 +50,7 @@ public class TileEnergyCell extends AENetworkTile implements IAEPowerStorage
 	}
 
 	@Override
-	public AECableType getCableConnectionType( ForgeDirection dir )
+	public final AECableType getCableConnectionType( ForgeDirection dir )
 	{
 		return AECableType.COVERED;
 	}
@@ -104,7 +104,7 @@ public class TileEnergyCell extends AENetworkTile implements IAEPowerStorage
 	}
 
 	@Override
-	public boolean canBeRotated()
+	public final boolean canBeRotated()
 	{
 		return false;
 	}
@@ -165,25 +165,25 @@ public class TileEnergyCell extends AENetworkTile implements IAEPowerStorage
 	}
 
 	@Override
-	public double getAEMaxPower()
+	public final double getAEMaxPower()
 	{
 		return this.internalMaxPower;
 	}
 
 	@Override
-	public double getAECurrentPower()
+	public final double getAECurrentPower()
 	{
 		return this.internalCurrentPower;
 	}
 
 	@Override
-	public boolean isAEPublicPowerStorage()
+	public final boolean isAEPublicPowerStorage()
 	{
 		return true;
 	}
 
 	@Override
-	public AccessRestriction getPowerFlow()
+	public final AccessRestriction getPowerFlow()
 	{
 		return AccessRestriction.READ_WRITE;
 	}

@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -23,7 +23,7 @@ import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 
 
-public class PrecisePriorityList<T extends IAEStack<T>> implements IPartitionList<T>
+public final class PrecisePriorityList<T extends IAEStack<T>> implements IPartitionList<T>
 {
 
 	final IItemList<T> list;

@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -27,7 +27,7 @@ import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.ItemSorters;
 
 
-public class ClientDCInternalInv implements Comparable<ClientDCInternalInv>
+public final class ClientDCInternalInv implements Comparable<ClientDCInternalInv>
 {
 
 	public final String unlocalizedName;
@@ -43,7 +43,7 @@ public class ClientDCInternalInv implements Comparable<ClientDCInternalInv>
 		this.sortBy = sortBy;
 	}
 
-	public String getName()
+	public final String getName()
 	{
 		String s = StatCollector.translateToLocal( this.unlocalizedName + ".name" );
 		if( s.equals( this.unlocalizedName + ".name" ) )
@@ -54,7 +54,7 @@ public class ClientDCInternalInv implements Comparable<ClientDCInternalInv>
 	}
 
 	@Override
-	public int compareTo( @Nonnull ClientDCInternalInv o )
+	public final int compareTo( @Nonnull ClientDCInternalInv o )
 	{
 		return ItemSorters.compareLong( this.sortBy, o.sortBy );
 	}

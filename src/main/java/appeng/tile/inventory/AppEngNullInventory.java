@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -25,7 +25,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 
-public class AppEngNullInventory implements IInventory
+public final class AppEngNullInventory implements IInventory
 {
 
 	public AppEngNullInventory()
@@ -37,77 +37,77 @@ public class AppEngNullInventory implements IInventory
 	}
 
 	@Override
-	public int getSizeInventory()
+	public final int getSizeInventory()
 	{
 		return 0;
 	}
 
 	@Override
-	public ItemStack getStackInSlot( int var1 )
+	public final ItemStack getStackInSlot( int var1 )
 	{
 		return null;
 	}
 
 	@Override
-	public ItemStack decrStackSize( int slot, int qty )
+	public final ItemStack decrStackSize( int slot, int qty )
 	{
 		return null;
 	}
 
 	@Override
-	public ItemStack getStackInSlotOnClosing( int var1 )
+	public final ItemStack getStackInSlotOnClosing( int var1 )
 	{
 		return null;
 	}
 
 	@Override
-	public void setInventorySlotContents( int slot, ItemStack newItemStack )
+	public final void setInventorySlotContents( int slot, ItemStack newItemStack )
 	{
 
 	}
 
 	@Override
-	public String getInventoryName()
+	public final String getInventoryName()
 	{
 		return "appeng-internal";
 	}
 
 	@Override
-	public boolean hasCustomInventoryName()
+	public final boolean hasCustomInventoryName()
 	{
 		return false;
 	}
 
 	@Override
-	public int getInventoryStackLimit()
+	public final int getInventoryStackLimit()
 	{
 		return 0;
 	}
 
 	@Override
-	public void markDirty()
+	public final void markDirty()
 	{
 
 	}
 
 	@Override
-	public boolean isUseableByPlayer( EntityPlayer var1 )
+	public final boolean isUseableByPlayer( EntityPlayer var1 )
 	{
 		return false;
 	}
 
 	@Override
-	public void openInventory()
+	public final void openInventory()
 	{
 	}
 
 	@Override
-	public void closeInventory()
+	public final void closeInventory()
 	{
 	}
 
 	@Override
-	public boolean isItemValidForSlot( int i, ItemStack itemstack )
+	public final boolean isItemValidForSlot( int i, ItemStack itemstack )
 	{
 		return false;
 	}

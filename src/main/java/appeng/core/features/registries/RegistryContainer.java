@@ -44,7 +44,7 @@ import appeng.api.storage.IExternalStorageRegistry;
  * @version rv2
  * @since rv0
  */
-public class RegistryContainer implements IRegistryContainer
+public final class RegistryContainer implements IRegistryContainer
 {
 	private final IGrinderRegistry grinder = new GrinderRecipeManager();
 	private final IInscriberRegistry inscriber = new InscriberRegistry();
@@ -61,85 +61,85 @@ public class RegistryContainer implements IRegistryContainer
 	private final IRecipeHandlerRegistry recipeReg = new RecipeHandlerRegistry();
 
 	@Override
-	public IMovableRegistry movable()
+	public final IMovableRegistry movable()
 	{
 		return this.movable;
 	}
 
 	@Override
-	public IGridCacheRegistry gridCache()
+	public final IGridCacheRegistry gridCache()
 	{
 		return this.gridCache;
 	}
 
 	@Override
-	public IExternalStorageRegistry externalStorage()
+	public final IExternalStorageRegistry externalStorage()
 	{
 		return this.storage;
 	}
 
 	@Override
-	public ISpecialComparisonRegistry specialComparison()
+	public final ISpecialComparisonRegistry specialComparison()
 	{
 		return this.comparison;
 	}
 
 	@Override
-	public IWirelessTermRegistry wireless()
+	public final IWirelessTermRegistry wireless()
 	{
 		return this.wireless;
 	}
 
 	@Override
-	public ICellRegistry cell()
+	public final ICellRegistry cell()
 	{
 		return this.cell;
 	}
 
 	@Override
-	public IGrinderRegistry grinder()
+	public final IGrinderRegistry grinder()
 	{
 		return this.grinder;
 	}
 
 	@Override
-	public IInscriberRegistry inscriber()
+	public final IInscriberRegistry inscriber()
 	{
 		return this.inscriber;
 	}
 
 	@Override
-	public ILocatableRegistry locatable()
+	public final ILocatableRegistry locatable()
 	{
 		return this.locatable;
 	}
 
 	@Override
-	public IP2PTunnelRegistry p2pTunnel()
+	public final IP2PTunnelRegistry p2pTunnel()
 	{
 		return this.p2pTunnel;
 	}
 
 	@Override
-	public IMatterCannonAmmoRegistry matterCannon()
+	public final IMatterCannonAmmoRegistry matterCannon()
 	{
 		return this.matterCannonReg;
 	}
 
 	@Override
-	public IPlayerRegistry players()
+	public final IPlayerRegistry players()
 	{
 		return this.playerRegistry;
 	}
 
 	@Override
-	public IRecipeHandlerRegistry recipes()
+	public final IRecipeHandlerRegistry recipes()
 	{
 		return this.recipeReg;
 	}
 
 	@Override
-	public IWorldGen worldgen()
+	public final IWorldGen worldgen()
 	{
 		return WorldGenRegistry.INSTANCE;
 	}

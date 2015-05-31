@@ -84,7 +84,7 @@ import appeng.util.Platform;
 import appeng.util.SettingsFrom;
 
 
-public class AEBaseBlock extends BlockContainer implements IAEFeature
+public abstract class AEBaseBlock extends BlockContainer implements IAEFeature
 {
 	private final String featureFullName;
 	private final Optional<String> featureSubName;
@@ -148,7 +148,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 		return this.featureFullName;
 	}
 
-	public void registerNoIcons()
+	public final void registerNoIcons()
 	{
 		BlockRenderInfo info = this.getRendererInstance();
 		FlippableIcon i = new FlippableIcon( new MissingIcon( this ) );
@@ -156,7 +156,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	}
 
 	@SideOnly( Side.CLIENT )
-	public BlockRenderInfo getRendererInstance()
+	public final BlockRenderInfo getRendererInstance()
 	{
 		if( this.renderInfo != null )
 		{
@@ -186,12 +186,12 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 		return BaseBlockRender.class;
 	}
 
-	public IIcon unmappedGetIcon( IBlockAccess w, int x, int y, int z, int s )
+	public final IIcon unmappedGetIcon( IBlockAccess w, int x, int y, int z, int s )
 	{
 		return super.getIcon( w, x, y, z, s );
 	}
 
-	protected void setTileEntity( Class<? extends TileEntity> c )
+	protected final void setTileEntity( Class<? extends TileEntity> c )
 	{
 		this.tileEntityType = c;
 
@@ -200,12 +200,12 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 		this.setTileProvider( this.hasBlockTileEntity() );
 	}
 
-	public boolean hasBlockTileEntity()
+	public final boolean hasBlockTileEntity()
 	{
 		return this.tileEntityType != null;
 	}
 
-	protected void setFeature( EnumSet<AEFeature> f )
+	protected final void setFeature( EnumSet<AEFeature> f )
 	{
 		this.handler = new AEBlockFeatureHandler( f, this, this.featureSubName );
 	}
@@ -228,7 +228,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	}
 
 	@Override
-	public boolean renderAsNormalBlock()
+	public final boolean renderAsNormalBlock()
 	{
 		return this.isFullSize && this.isOpaque;
 	}
@@ -261,7 +261,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	@Override
 	@SuppressWarnings( "unchecked" )
 	// NOTE: WAS FINAL, changed for Immibis
-	public void addCollisionBoxesToList( World w, int x, int y, int z, AxisAlignedBB bb, List out, Entity e )
+	public final void addCollisionBoxesToList( World w, int x, int y, int z, AxisAlignedBB bb, List out, Entity e )
 	{
 		ICustomCollision collisionHandler = null;
 
@@ -399,7 +399,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	}
 
 	@Override
-	public MovingObjectPosition collisionRayTrace( World w, int x, int y, int z, Vec3 a, Vec3 b )
+	public final MovingObjectPosition collisionRayTrace( World w, int x, int y, int z, Vec3 a, Vec3 b )
 	{
 		ICustomCollision collisionHandler = null;
 
@@ -574,13 +574,13 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	}
 
 	@Override
-	public boolean hasComparatorInputOverride()
+	public final boolean hasComparatorInputOverride()
 	{
 		return this.isInventory;
 	}
 
 	@Override
-	public int getComparatorInputOverride( World w, int x, int y, int z, int s )
+	public final int getComparatorInputOverride( World w, int x, int y, int z, int s )
 	{
 		TileEntity te = this.getTileEntity( w, x, y, z );
 		if( te instanceof IInventory )
@@ -752,7 +752,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 		super.getSubBlocks( item, tabs, itemStacks );
 	}
 
-	int mapRotation( IBlockAccess w, int x, int y, int z, int s )
+	final int mapRotation( IBlockAccess w, int x, int y, int z, int s )
 	{
 		IOrientable ori = null;
 
@@ -790,7 +790,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 		return null;
 	}
 
-	public ForgeDirection mapRotation( IOrientable ori, ForgeDirection dir )
+	public final ForgeDirection mapRotation( IOrientable ori, ForgeDirection dir )
 	{
 		// case DOWN: return bottomIcon;
 		// case UP: return blockIcon;
@@ -850,7 +850,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 		return ForgeDirection.UNKNOWN;
 	}
 
-	public Class<? extends TileEntity> getTileEntityClass()
+	public final Class<? extends TileEntity> getTileEntityClass()
 	{
 		return this.tileEntityType;
 	}
@@ -915,7 +915,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 		return this.getUnlocalizedName();
 	}
 
-	public void addInformation( ItemStack is, EntityPlayer player, List<String> lines, boolean advancedItemTooltips )
+	public final void addInformation( ItemStack is, EntityPlayer player, List<String> lines, boolean advancedItemTooltips )
 	{
 
 	}
@@ -925,7 +925,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 		return AEBaseItemBlock.class;
 	}
 
-	public boolean hasSubtypes()
+	public final boolean hasSubtypes()
 	{
 		return this.hasSubtypes;
 	}

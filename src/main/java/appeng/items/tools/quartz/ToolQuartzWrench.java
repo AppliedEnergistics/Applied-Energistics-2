@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -40,7 +40,7 @@ import appeng.util.Platform;
 
 
 @Interface( iface = "buildcraft.api.tools.IToolWrench", iname = "BC" )
-public class ToolQuartzWrench extends AEBaseItem implements IAEWrench, IToolWrench
+public final class ToolQuartzWrench extends AEBaseItem implements IAEWrench, IToolWrench
 {
 
 	public ToolQuartzWrench( AEFeature type )
@@ -53,7 +53,7 @@ public class ToolQuartzWrench extends AEBaseItem implements IAEWrench, IToolWren
 	}
 
 	@Override
-	public boolean onItemUseFirst( ItemStack is, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ )
+	public final boolean onItemUseFirst( ItemStack is, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ )
 	{
 		Block b = world.getBlock( x, y, z );
 		if( b != null && !player.isSneaking() && Platform.hasPermissions( new DimensionalCoord( world, x, y, z ), player ) )
@@ -76,25 +76,25 @@ public class ToolQuartzWrench extends AEBaseItem implements IAEWrench, IToolWren
 
 	@Override
 	// public boolean shouldPassSneakingClickToBlock(World w, int x, int y, int z)
-	public boolean doesSneakBypassUse( World world, int x, int y, int z, EntityPlayer player )
+	public final boolean doesSneakBypassUse( World world, int x, int y, int z, EntityPlayer player )
 	{
 		return true;
 	}
 
 	@Override
-	public boolean canWrench( ItemStack is, EntityPlayer player, int x, int y, int z )
+	public final boolean canWrench( ItemStack is, EntityPlayer player, int x, int y, int z )
 	{
 		return true;
 	}
 
 	@Override
-	public boolean canWrench( EntityPlayer player, int x, int y, int z )
+	public final boolean canWrench( EntityPlayer player, int x, int y, int z )
 	{
 		return true;
 	}
 
 	@Override
-	public void wrenchUsed( EntityPlayer player, int x, int y, int z )
+	public final void wrenchUsed( EntityPlayer player, int x, int y, int z )
 	{
 		player.swingItem();
 	}

@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -69,7 +69,7 @@ public abstract class AENetworkPowerTile extends AEBasePoweredTile implements IA
 	}
 
 	@Override
-	public IGridNode getGridNode( ForgeDirection dir )
+	public final IGridNode getGridNode( ForgeDirection dir )
 	{
 		return this.gridProxy.getNode();
 	}
@@ -81,21 +81,21 @@ public abstract class AENetworkPowerTile extends AEBasePoweredTile implements IA
 	}
 
 	@Override
-	public void validate()
+	public final void validate()
 	{
 		super.validate();
 		this.gridProxy.validate();
 	}
 
 	@Override
-	public void invalidate()
+	public final void invalidate()
 	{
 		super.invalidate();
 		this.gridProxy.invalidate();
 	}
 
 	@Override
-	public void onChunkUnload()
+	public final void onChunkUnload()
 	{
 		super.onChunkUnload();
 		this.gridProxy.onChunkUnload();
@@ -109,7 +109,7 @@ public abstract class AENetworkPowerTile extends AEBasePoweredTile implements IA
 	}
 
 	@Override
-	public IGridNode getActionableNode()
+	public final IGridNode getActionableNode()
 	{
 		return this.gridProxy.getNode();
 	}

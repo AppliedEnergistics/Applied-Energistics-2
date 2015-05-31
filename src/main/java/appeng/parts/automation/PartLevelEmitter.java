@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -80,7 +80,7 @@ import appeng.tile.inventory.InvOperation;
 import appeng.util.Platform;
 
 
-public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherHost, IStackWatcherHost, ICraftingWatcherHost, IMEMonitorHandlerReceiver<IAEItemStack>, ICraftingProvider
+public final class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherHost, IStackWatcherHost, ICraftingWatcherHost, IMEMonitorHandlerReceiver<IAEItemStack>, ICraftingProvider
 {
 
 	private static final int FLAG_ON = 4;
@@ -111,12 +111,12 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 		this.getConfigManager().registerSetting( Settings.CRAFT_VIA_REDSTONE, YesNo.NO );
 	}
 
-	public long getReportingValue()
+	public final long getReportingValue()
 	{
 		return this.reportingValue;
 	}
 
-	public void setReportingValue( long v )
+	public final void setReportingValue( long v )
 	{
 		this.reportingValue = v;
 		if( this.getConfigManager().getSetting( Settings.LEVEL_TYPE ) == LevelType.ENERGY_LEVEL )
@@ -191,26 +191,26 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 	}
 
 	@Override
-	public IIcon getBreakingTexture()
+	public final IIcon getBreakingTexture()
 	{
 		return this.is.getIconIndex();
 	}
 
 	@Override
-	public void updateWatcher( ICraftingWatcher newWatcher )
+	public final void updateWatcher( ICraftingWatcher newWatcher )
 	{
 		this.myCraftingWatcher = newWatcher;
 		this.configureWatchers();
 	}
 
 	@Override
-	public void onRequestChange( ICraftingGrid craftingGrid, IAEItemStack what )
+	public final void onRequestChange( ICraftingGrid craftingGrid, IAEItemStack what )
 	{
 		this.updateState();
 	}
 
 	// update the system...
-	public void configureWatchers()
+	public final void configureWatchers()
 	{
 		IAEItemStack myStack = this.config.getAEStackInSlot( 0 );
 
@@ -335,14 +335,14 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 	}
 
 	@Override
-	public void updateWatcher( IStackWatcher newWatcher )
+	public final void updateWatcher( IStackWatcher newWatcher )
 	{
 		this.myWatcher = newWatcher;
 		this.configureWatchers();
 	}
 
 	@Override
-	public void onStackChange( IItemList o, IAEStack fullStack, IAEStack diffStack, BaseActionSource src, StorageChannel chan )
+	public final void onStackChange( IItemList o, IAEStack fullStack, IAEStack diffStack, BaseActionSource src, StorageChannel chan )
 	{
 		if( chan == StorageChannel.ITEMS && fullStack.equals( this.config.getAEStackInSlot( 0 ) ) && this.getInstalledUpgrades( Upgrades.FUZZY ) == 0 )
 		{
@@ -352,21 +352,21 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 	}
 
 	@Override
-	public void updateWatcher( IEnergyWatcher newWatcher )
+	public final void updateWatcher( IEnergyWatcher newWatcher )
 	{
 		this.myEnergyWatcher = newWatcher;
 		this.configureWatchers();
 	}
 
 	@Override
-	public void onThresholdPass( IEnergyGrid energyGrid )
+	public final void onThresholdPass( IEnergyGrid energyGrid )
 	{
 		this.lastReportedValue = (long) energyGrid.getStoredPower();
 		this.updateState();
 	}
 
 	@Override
-	public boolean isValid( Object effectiveGrid )
+	public final boolean isValid( Object effectiveGrid )
 	{
 		try
 		{
@@ -379,13 +379,13 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 	}
 
 	@Override
-	public void postChange( IBaseMonitor<IAEItemStack> monitor, Iterable<IAEItemStack> change, BaseActionSource actionSource )
+	public final void postChange( IBaseMonitor<IAEItemStack> monitor, Iterable<IAEItemStack> change, BaseActionSource actionSource )
 	{
 		this.updateReportingValue( (IMEMonitor<IAEItemStack>) monitor );
 	}
 
 	@Override
-	public void onListUpdate()
+	public final void onListUpdate()
 	{
 		try
 		{
@@ -398,20 +398,20 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 	}
 
 	@Override
-	public AECableType getCableConnectionType( ForgeDirection dir )
+	public final AECableType getCableConnectionType( ForgeDirection dir )
 	{
 		return AECableType.SMART;
 	}
 
 	@Override
-	public void getBoxes( IPartCollisionHelper bch )
+	public final void getBoxes( IPartCollisionHelper bch )
 	{
 		bch.addBox( 7, 7, 11, 9, 9, 16 );
 	}
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderInventory( IPartRenderHelper rh, RenderBlocks renderer )
+	public final void renderInventory( IPartRenderHelper rh, RenderBlocks renderer )
 	{
 		rh.setTexture( this.is.getIconIndex() );
 		Tessellator.instance.startDrawingQuads();
@@ -421,7 +421,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 		// rh.renderInventoryBox( renderer );
 	}
 
-	public void renderTorchAtAngle( double baseX, double baseY, double baseZ )
+	public final void renderTorchAtAngle( double baseX, double baseY, double baseZ )
 	{
 		boolean isOn = this.isLevelEmitterOn();
 		IIcon offTexture = this.is.getIconIndex();
@@ -529,7 +529,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 		this.addVertexWithUV( var36, baseY + 1.0D, baseZ - var44, var17, var18 );
 	}
 
-	public void addVertexWithUV( double x, double y, double z, double u, double v )
+	public final void addVertexWithUV( double x, double y, double z, double u, double v )
 	{
 		Tessellator var12 = Tessellator.instance;
 
@@ -582,7 +582,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderStatic( int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer )
+	public final void renderStatic( int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer )
 	{
 		rh.setTexture( this.is.getIconIndex() );
 		// rh.setTexture( CableBusTextures.ItemPartLevelEmitterOn.getIcon() );
@@ -610,19 +610,19 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 	}
 
 	@Override
-	public int isProvidingStrongPower()
+	public final int isProvidingStrongPower()
 	{
 		return this.prevState ? 15 : 0;
 	}
 
 	@Override
-	public int isProvidingWeakPower()
+	public final int isProvidingWeakPower()
 	{
 		return this.prevState ? 15 : 0;
 	}
 
 	@Override
-	public void randomDisplayTick( World world, int x, int y, int z, Random r )
+	public final void randomDisplayTick( World world, int x, int y, int z, Random r )
 	{
 		if( this.isLevelEmitterOn() )
 		{
@@ -637,7 +637,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 	}
 
 	@Override
-	public int cableConnectionRenderTo()
+	public final int cableConnectionRenderTo()
 	{
 		return 16;
 	}
@@ -683,13 +683,13 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 	}
 
 	@Override
-	public boolean canConnectRedstone()
+	public final boolean canConnectRedstone()
 	{
 		return true;
 	}
 
 	@Override
-	public void readFromNBT( NBTTagCompound data )
+	public final void readFromNBT( NBTTagCompound data )
 	{
 		super.readFromNBT( data );
 		this.lastReportedValue = data.getLong( "lastReportedValue" );
@@ -699,7 +699,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 	}
 
 	@Override
-	public void writeToNBT( NBTTagCompound data )
+	public final void writeToNBT( NBTTagCompound data )
 	{
 		super.writeToNBT( data );
 		data.setLong( "lastReportedValue", this.lastReportedValue );
@@ -709,7 +709,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 	}
 
 	@Override
-	public IInventory getInventoryByName( String name )
+	public final IInventory getInventoryByName( String name )
 	{
 		if( name.equals( "config" ) )
 		{
@@ -720,19 +720,19 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 	}
 
 	@Override
-	public boolean pushPattern( ICraftingPatternDetails patternDetails, InventoryCrafting table )
+	public final boolean pushPattern( ICraftingPatternDetails patternDetails, InventoryCrafting table )
 	{
 		return false;
 	}
 
 	@Override
-	public boolean isBusy()
+	public final boolean isBusy()
 	{
 		return true;
 	}
 
 	@Override
-	public void provideCrafting( ICraftingProviderHelper craftingTracker )
+	public final void provideCrafting( ICraftingProviderHelper craftingTracker )
 	{
 		if( this.getInstalledUpgrades( Upgrades.CRAFTING ) > 0 )
 		{

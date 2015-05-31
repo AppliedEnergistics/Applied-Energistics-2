@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -33,7 +33,7 @@ import appeng.api.storage.data.IItemList;
 import appeng.util.item.AEItemStack;
 
 
-public class MinefactoryReloadedDeepStorageUnit implements IMEInventory<IAEItemStack>
+public final class MinefactoryReloadedDeepStorageUnit implements IMEInventory<IAEItemStack>
 {
 
 	final IDeepStorageUnit dsu;
@@ -46,7 +46,7 @@ public class MinefactoryReloadedDeepStorageUnit implements IMEInventory<IAEItemS
 	}
 
 	@Override
-	public IAEItemStack injectItems( IAEItemStack input, Actionable mode, BaseActionSource src )
+	public final IAEItemStack injectItems( IAEItemStack input, Actionable mode, BaseActionSource src )
 	{
 		ItemStack is = this.dsu.getStoredItemType();
 		if( is != null )
@@ -97,7 +97,7 @@ public class MinefactoryReloadedDeepStorageUnit implements IMEInventory<IAEItemS
 	}
 
 	@Override
-	public IAEItemStack extractItems( IAEItemStack request, Actionable mode, BaseActionSource src )
+	public final IAEItemStack extractItems( IAEItemStack request, Actionable mode, BaseActionSource src )
 	{
 		ItemStack is = this.dsu.getStoredItemType();
 		if( request.equals( is ) )
@@ -124,7 +124,7 @@ public class MinefactoryReloadedDeepStorageUnit implements IMEInventory<IAEItemS
 	}
 
 	@Override
-	public IItemList<IAEItemStack> getAvailableItems( IItemList<IAEItemStack> out )
+	public final IItemList<IAEItemStack> getAvailableItems( IItemList<IAEItemStack> out )
 	{
 		ItemStack is = this.dsu.getStoredItemType();
 		if( is != null )
@@ -135,7 +135,7 @@ public class MinefactoryReloadedDeepStorageUnit implements IMEInventory<IAEItemS
 	}
 
 	@Override
-	public StorageChannel getChannel()
+	public final StorageChannel getChannel()
 	{
 		return StorageChannel.ITEMS;
 	}

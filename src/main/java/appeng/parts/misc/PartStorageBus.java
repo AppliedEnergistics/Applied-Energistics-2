@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -91,7 +91,7 @@ import appeng.util.prioitylist.PrecisePriorityList;
 
 
 @Interface( iname = "BC", iface = "buildcraft.api.transport.IPipeConnection" )
-public class PartStorageBus extends PartUpgradeable implements IGridTickable, ICellContainer, IMEMonitorHandlerReceiver<IAEItemStack>, IPipeConnection, IPriorityHost
+public final class PartStorageBus extends PartUpgradeable implements IGridTickable, ICellContainer, IMEMonitorHandlerReceiver<IAEItemStack>, IPipeConnection, IPriorityHost
 {
 	final BaseActionSource mySrc;
 	final AppEngInternalAEInventory Config = new AppEngInternalAEInventory( this, 63 );
@@ -176,7 +176,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	}
 
 	@Override
-	public void readFromNBT( NBTTagCompound data )
+	public final void readFromNBT( NBTTagCompound data )
 	{
 		super.readFromNBT( data );
 		this.Config.readFromNBT( data, "config" );
@@ -184,7 +184,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	}
 
 	@Override
-	public void writeToNBT( NBTTagCompound data )
+	public final void writeToNBT( NBTTagCompound data )
 	{
 		super.writeToNBT( data );
 		this.Config.writeToNBT( data, "config" );
@@ -192,7 +192,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	}
 
 	@Override
-	public IInventory getInventoryByName( String name )
+	public final IInventory getInventoryByName( String name )
 	{
 		if( name.equals( "config" ) )
 		{
@@ -229,13 +229,13 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	}
 
 	@Override
-	public boolean isValid( Object verificationToken )
+	public final boolean isValid( Object verificationToken )
 	{
 		return this.handler == verificationToken;
 	}
 
 	@Override
-	public void postChange( IBaseMonitor<IAEItemStack> monitor, Iterable<IAEItemStack> change, BaseActionSource source )
+	public final void postChange( IBaseMonitor<IAEItemStack> monitor, Iterable<IAEItemStack> change, BaseActionSource source )
 	{
 		try
 		{
@@ -251,13 +251,13 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	}
 
 	@Override
-	public void onListUpdate()
+	public final void onListUpdate()
 	{
 		// not used here.
 	}
 
 	@Override
-	public void getBoxes( IPartCollisionHelper bch )
+	public final void getBoxes( IPartCollisionHelper bch )
 	{
 		bch.addBox( 3, 3, 15, 13, 13, 16 );
 		bch.addBox( 2, 2, 14, 14, 14, 15 );
@@ -266,7 +266,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderInventory( IPartRenderHelper rh, RenderBlocks renderer )
+	public final void renderInventory( IPartRenderHelper rh, RenderBlocks renderer )
 	{
 		rh.setTexture( CableBusTextures.PartStorageSides.getIcon(), CableBusTextures.PartStorageSides.getIcon(), CableBusTextures.PartStorageBack.getIcon(), this.is.getIconIndex(), CableBusTextures.PartStorageSides.getIcon(), CableBusTextures.PartStorageSides.getIcon() );
 
@@ -282,7 +282,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderStatic( int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer )
+	public final void renderStatic( int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer )
 	{
 		this.renderCache = rh.useSimplifiedRendering( x, y, z, this, this.renderCache );
 		rh.setTexture( CableBusTextures.PartStorageSides.getIcon(), CableBusTextures.PartStorageSides.getIcon(), CableBusTextures.PartStorageBack.getIcon(), this.is.getIconIndex(), CableBusTextures.PartStorageSides.getIcon(), CableBusTextures.PartStorageSides.getIcon() );
@@ -307,13 +307,13 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	}
 
 	@Override
-	public void onNeighborChanged()
+	public final void onNeighborChanged()
 	{
 		this.resetCache( false );
 	}
 
 	@Override
-	public int cableConnectionRenderTo()
+	public final int cableConnectionRenderTo()
 	{
 		return 4;
 	}
@@ -336,13 +336,13 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	}
 
 	@Override
-	public TickingRequest getTickingRequest( IGridNode node )
+	public final TickingRequest getTickingRequest( IGridNode node )
 	{
 		return new TickingRequest( TickRates.StorageBus.min, TickRates.StorageBus.max, this.monitor == null, true );
 	}
 
 	@Override
-	public TickRateModulation tickingRequest( IGridNode node, int ticksSinceLastCall )
+	public final TickRateModulation tickingRequest( IGridNode node, int ticksSinceLastCall )
 	{
 		if( this.resetCacheLogic != 0 )
 		{
@@ -391,7 +391,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 		Platform.postListChanges( before, after, this, this.mySrc );
 	}
 
-	public MEInventoryHandler getInternalHandler()
+	public final MEInventoryHandler getInternalHandler()
 	{
 		if( this.cached )
 		{
@@ -532,7 +532,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	}
 
 	@Override
-	public List<IMEInventoryHandler> getCellArray( StorageChannel channel )
+	public final List<IMEInventoryHandler> getCellArray( StorageChannel channel )
 	{
 		if( channel == StorageChannel.ITEMS )
 		{
@@ -546,7 +546,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	}
 
 	@Override
-	public int getPriority()
+	public final int getPriority()
 	{
 		return this.priority;
 	}
@@ -560,19 +560,19 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	}
 
 	@Override
-	public void blinkCell( int slot )
+	public final void blinkCell( int slot )
 	{
 	}
 
 	@Override
 	@Method( iname = "BC" )
-	public ConnectOverride overridePipeConnection( PipeType type, ForgeDirection with )
+	public final ConnectOverride overridePipeConnection( PipeType type, ForgeDirection with )
 	{
 		return type == PipeType.ITEM && with == this.side ? ConnectOverride.CONNECT : ConnectOverride.DISCONNECT;
 	}
 
 	@Override
-	public void saveChanges( IMEInventory cellInventory )
+	public final void saveChanges( IMEInventory cellInventory )
 	{
 		// nope!
 	}

@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -33,7 +33,7 @@ import appeng.api.movable.IMovableTile;
 import appeng.spatial.DefaultSpatialHandler;
 
 
-public class MovableTileRegistry implements IMovableRegistry
+public final class MovableTileRegistry implements IMovableRegistry
 {
 
 	private final HashSet<Block> blacklisted = new HashSet<Block>();
@@ -46,13 +46,13 @@ public class MovableTileRegistry implements IMovableRegistry
 	private final IMovableHandler nullHandler = new DefaultSpatialHandler();
 
 	@Override
-	public void blacklistBlock( Block blk )
+	public final void blacklistBlock( Block blk )
 	{
 		this.blacklisted.add( blk );
 	}
 
 	@Override
-	public void whiteListTileEntity( Class<? extends TileEntity> c )
+	public final void whiteListTileEntity( Class<? extends TileEntity> c )
 	{
 		if( c.getName().equals( TileEntity.class.getName() ) )
 		{
@@ -63,7 +63,7 @@ public class MovableTileRegistry implements IMovableRegistry
 	}
 
 	@Override
-	public boolean askToMove( TileEntity te )
+	public final boolean askToMove( TileEntity te )
 	{
 		Class myClass = te.getClass();
 		IMovableHandler canMove = this.Valid.get( myClass );
@@ -130,7 +130,7 @@ public class MovableTileRegistry implements IMovableRegistry
 	}
 
 	@Override
-	public void doneMoving( TileEntity te )
+	public final void doneMoving( TileEntity te )
 	{
 		if( te instanceof IMovableTile )
 		{
@@ -140,13 +140,13 @@ public class MovableTileRegistry implements IMovableRegistry
 	}
 
 	@Override
-	public void addHandler( IMovableHandler han )
+	public final void addHandler( IMovableHandler han )
 	{
 		this.handlers.add( han );
 	}
 
 	@Override
-	public IMovableHandler getHandler( TileEntity te )
+	public final IMovableHandler getHandler( TileEntity te )
 	{
 		Class myClass = te.getClass();
 		IMovableHandler h = this.Valid.get( myClass );
@@ -154,13 +154,13 @@ public class MovableTileRegistry implements IMovableRegistry
 	}
 
 	@Override
-	public IMovableHandler getDefaultHandler()
+	public final IMovableHandler getDefaultHandler()
 	{
 		return this.dsh;
 	}
 
 	@Override
-	public boolean isBlacklisted( Block blk )
+	public final boolean isBlacklisted( Block blk )
 	{
 		return this.blacklisted.contains( blk );
 	}

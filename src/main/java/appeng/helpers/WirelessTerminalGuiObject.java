@@ -52,7 +52,7 @@ import appeng.container.interfaces.IInventorySlotAware;
 import appeng.tile.networking.TileWireless;
 
 
-public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, IInventorySlotAware
+public final class WirelessTerminalGuiObject implements IPortableCell, IActionHost, IInventorySlotAware
 {
 
 	public final ItemStack effectiveItem;
@@ -105,13 +105,13 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
 		}
 	}
 
-	public double getRange()
+	public final double getRange()
 	{
 		return this.myRange;
 	}
 
 	@Override
-	public IMEMonitor<IAEItemStack> getItemInventory()
+	public final IMEMonitor<IAEItemStack> getItemInventory()
 	{
 		if( this.sg == null )
 		{
@@ -121,7 +121,7 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
 	}
 
 	@Override
-	public IMEMonitor<IAEFluidStack> getFluidInventory()
+	public final IMEMonitor<IAEFluidStack> getFluidInventory()
 	{
 		if( this.sg == null )
 		{
@@ -131,7 +131,7 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
 	}
 
 	@Override
-	public void addListener( IMEMonitorHandlerReceiver<IAEItemStack> l, Object verificationToken )
+	public final void addListener( IMEMonitorHandlerReceiver<IAEItemStack> l, Object verificationToken )
 	{
 		if( this.itemStorage != null )
 		{
@@ -140,7 +140,7 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
 	}
 
 	@Override
-	public void removeListener( IMEMonitorHandlerReceiver<IAEItemStack> l )
+	public final void removeListener( IMEMonitorHandlerReceiver<IAEItemStack> l )
 	{
 		if( this.itemStorage != null )
 		{
@@ -149,7 +149,7 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
 	}
 
 	@Override
-	public IItemList<IAEItemStack> getAvailableItems( IItemList out )
+	public final IItemList<IAEItemStack> getAvailableItems( IItemList out )
 	{
 		if( this.itemStorage != null )
 		{
@@ -159,7 +159,7 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
 	}
 
 	@Override
-	public IItemList<IAEItemStack> getStorageList()
+	public final IItemList<IAEItemStack> getStorageList()
 	{
 		if( this.itemStorage != null )
 		{
@@ -169,7 +169,7 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
 	}
 
 	@Override
-	public AccessRestriction getAccess()
+	public final AccessRestriction getAccess()
 	{
 		if( this.itemStorage != null )
 		{
@@ -179,7 +179,7 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
 	}
 
 	@Override
-	public boolean isPrioritized( IAEItemStack input )
+	public final boolean isPrioritized( IAEItemStack input )
 	{
 		if( this.itemStorage != null )
 		{
@@ -189,7 +189,7 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
 	}
 
 	@Override
-	public boolean canAccept( IAEItemStack input )
+	public final boolean canAccept( IAEItemStack input )
 	{
 		if( this.itemStorage != null )
 		{
@@ -199,7 +199,7 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
 	}
 
 	@Override
-	public int getPriority()
+	public final int getPriority()
 	{
 		if( this.itemStorage != null )
 		{
@@ -209,7 +209,7 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
 	}
 
 	@Override
-	public int getSlot()
+	public final int getSlot()
 	{
 		if( this.itemStorage != null )
 		{
@@ -219,13 +219,13 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
 	}
 
 	@Override
-	public boolean validForPass( int i )
+	public final boolean validForPass( int i )
 	{
 		return this.itemStorage.validForPass( i );
 	}
 
 	@Override
-	public IAEItemStack injectItems( IAEItemStack input, Actionable type, BaseActionSource src )
+	public final IAEItemStack injectItems( IAEItemStack input, Actionable type, BaseActionSource src )
 	{
 		if( this.itemStorage != null )
 		{
@@ -235,7 +235,7 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
 	}
 
 	@Override
-	public IAEItemStack extractItems( IAEItemStack request, Actionable mode, BaseActionSource src )
+	public final IAEItemStack extractItems( IAEItemStack request, Actionable mode, BaseActionSource src )
 	{
 		if( this.itemStorage != null )
 		{
@@ -245,7 +245,7 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
 	}
 
 	@Override
-	public StorageChannel getChannel()
+	public final StorageChannel getChannel()
 	{
 		if( this.itemStorage != null )
 		{
@@ -255,7 +255,7 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
 	}
 
 	@Override
-	public double extractAEPower( double amt, Actionable mode, PowerMultiplier usePowerMultiplier )
+	public final double extractAEPower( double amt, Actionable mode, PowerMultiplier usePowerMultiplier )
 	{
 		if( this.wth != null && this.effectiveItem != null )
 		{
@@ -269,37 +269,37 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
 	}
 
 	@Override
-	public ItemStack getItemStack()
+	public final ItemStack getItemStack()
 	{
 		return this.effectiveItem;
 	}
 
 	@Override
-	public IConfigManager getConfigManager()
+	public final IConfigManager getConfigManager()
 	{
 		return this.wth.getConfigManager( this.effectiveItem );
 	}
 
 	@Override
-	public IGridNode getGridNode( ForgeDirection dir )
+	public final IGridNode getGridNode( ForgeDirection dir )
 	{
 		return this.getActionableNode();
 	}
 
 	@Override
-	public AECableType getCableConnectionType( ForgeDirection dir )
+	public final AECableType getCableConnectionType( ForgeDirection dir )
 	{
 		return AECableType.NONE;
 	}
 
 	@Override
-	public void securityBreak()
+	public final void securityBreak()
 	{
 
 	}
 
 	@Override
-	public IGridNode getActionableNode()
+	public final IGridNode getActionableNode()
 	{
 		this.rangeCheck();
 		if( this.myWap != null )
@@ -309,7 +309,7 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
 		return null;
 	}
 
-	public boolean rangeCheck()
+	public final boolean rangeCheck()
 	{
 		this.sqRange = this.myRange = Double.MAX_VALUE;
 

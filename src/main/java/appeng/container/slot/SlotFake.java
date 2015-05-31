@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -36,18 +36,18 @@ public class SlotFake extends AppEngSlot
 	}
 
 	@Override
-	public void onPickupFromSlot( EntityPlayer par1EntityPlayer, ItemStack par2ItemStack )
+	public final void onPickupFromSlot( EntityPlayer par1EntityPlayer, ItemStack par2ItemStack )
 	{
 	}
 
 	@Override
-	public ItemStack decrStackSize( int par1 )
+	public final ItemStack decrStackSize( int par1 )
 	{
 		return null;
 	}
 
 	@Override
-	public boolean isItemValid( ItemStack par1ItemStack )
+	public final boolean isItemValid( ItemStack par1ItemStack )
 	{
 		return false;
 	}
@@ -64,7 +64,7 @@ public class SlotFake extends AppEngSlot
 	}
 
 	@Override
-	public boolean canTakeStack( EntityPlayer par1EntityPlayer )
+	public final boolean canTakeStack( EntityPlayer par1EntityPlayer )
 	{
 		return false;
 	}

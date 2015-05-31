@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -25,7 +25,7 @@ import java.util.Iterator;
 import appeng.api.util.IReadOnlyCollection;
 
 
-public class ReadOnlyCollection<T> implements IReadOnlyCollection<T>
+public final class ReadOnlyCollection<T> implements IReadOnlyCollection<T>
 {
 
 	private final Collection<T> c;
@@ -36,25 +36,25 @@ public class ReadOnlyCollection<T> implements IReadOnlyCollection<T>
 	}
 
 	@Override
-	public Iterator<T> iterator()
+	public final Iterator<T> iterator()
 	{
 		return this.c.iterator();
 	}
 
 	@Override
-	public int size()
+	public final int size()
 	{
 		return this.c.size();
 	}
 
 	@Override
-	public boolean isEmpty()
+	public final boolean isEmpty()
 	{
 		return this.c.isEmpty();
 	}
 
 	@Override
-	public boolean contains( Object node )
+	public final boolean contains( Object node )
 	{
 		return this.c.contains( node );
 	}

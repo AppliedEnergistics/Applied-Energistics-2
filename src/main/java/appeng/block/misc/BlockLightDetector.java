@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -32,7 +32,7 @@ import appeng.core.features.AEFeature;
 import appeng.tile.misc.TileLightDetector;
 
 
-public class BlockLightDetector extends BlockQuartzTorch
+public final class BlockLightDetector extends BlockQuartzTorch
 {
 
 	public BlockLightDetector()
@@ -42,7 +42,7 @@ public class BlockLightDetector extends BlockQuartzTorch
 	}
 
 	@Override
-	public int isProvidingWeakPower( IBlockAccess w, int x, int y, int z, int side )
+	public final int isProvidingWeakPower( IBlockAccess w, int x, int y, int z, int side )
 	{
 		if( w instanceof World && ( (TileLightDetector) this.getTileEntity( w, x, y, z ) ).isReady() )
 		{
@@ -53,7 +53,7 @@ public class BlockLightDetector extends BlockQuartzTorch
 	}
 
 	@Override
-	public void onNeighborChange( IBlockAccess world, int x, int y, int z, int tileX, int tileY, int tileZ )
+	public final void onNeighborChange( IBlockAccess world, int x, int y, int z, int tileX, int tileY, int tileZ )
 	{
 		super.onNeighborChange( world, x, y, z, tileX, tileY, tileZ );
 
@@ -66,7 +66,7 @@ public class BlockLightDetector extends BlockQuartzTorch
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void randomDisplayTick( World w, int x, int y, int z, Random r )
+	public final void randomDisplayTick( World w, int x, int y, int z, Random r )
 	{
 		// cancel out lightning
 	}

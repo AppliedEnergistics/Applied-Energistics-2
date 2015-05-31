@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -50,7 +50,7 @@ import appeng.helpers.NullRotation;
 import appeng.util.Platform;
 
 
-public class BlockSkyStone extends AEBaseBlock implements IOrientableBlock
+public final class BlockSkyStone extends AEBaseBlock implements IOrientableBlock
 {
 	private static final float BLOCK_RESISTANCE = 150.0f;
 	private static final double BREAK_SPEAK_SCALAR = 0.1;
@@ -98,13 +98,13 @@ public class BlockSkyStone extends AEBaseBlock implements IOrientableBlock
 	}
 
 	@Override
-	public int damageDropped( int meta )
+	public final int damageDropped( int meta )
 	{
 		return meta;
 	}
 
 	@Override
-	public ItemStack getPickBlock( MovingObjectPosition target, World world, int x, int y, int z, EntityPlayer player )
+	public final ItemStack getPickBlock( MovingObjectPosition target, World world, int x, int y, int z, EntityPlayer player )
 	{
 		final ItemStack is = super.getPickBlock( target, world, x, y, z, player );
 		is.setItemDamage( world.getBlockMetadata( x, y, z ) );
@@ -113,7 +113,7 @@ public class BlockSkyStone extends AEBaseBlock implements IOrientableBlock
 	}
 
 	@Override
-	public void onBlockAdded( World w, int x, int y, int z )
+	public final void onBlockAdded( World w, int x, int y, int z )
 	{
 		super.onBlockAdded( w, x, y, z );
 		if( Platform.isServer() )
@@ -123,13 +123,13 @@ public class BlockSkyStone extends AEBaseBlock implements IOrientableBlock
 	}
 
 	@Override
-	public boolean usesMetadata()
+	public final boolean usesMetadata()
 	{
 		return false;
 	}
 
 	@Override
-	public IOrientable getOrientable( final IBlockAccess w, final int x, final int y, final int z )
+	public final IOrientable getOrientable( final IBlockAccess w, final int x, final int y, final int z )
 	{
 		if( w.getBlockMetadata( x, y, z ) == 0 )
 		{
@@ -162,7 +162,7 @@ public class BlockSkyStone extends AEBaseBlock implements IOrientableBlock
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void registerBlockIcons( IIconRegister ir )
+	public final void registerBlockIcons( IIconRegister ir )
 	{
 		super.registerBlockIcons( ir );
 		this.block = ir.registerIcon( this.getTextureName() + ".Block" );
@@ -172,7 +172,7 @@ public class BlockSkyStone extends AEBaseBlock implements IOrientableBlock
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public IIcon getIcon( int direction, int metadata )
+	public final IIcon getIcon( int direction, int metadata )
 	{
 		if( metadata == 1 )
 		{
@@ -207,7 +207,7 @@ public class BlockSkyStone extends AEBaseBlock implements IOrientableBlock
 	}
 
 	@Override
-	public void breakBlock( World w, int x, int y, int z, Block b, int metadata )
+	public final void breakBlock( World w, int x, int y, int z, Block b, int metadata )
 	{
 		super.breakBlock( w, x, y, z, b, metadata );
 		if( Platform.isServer() )

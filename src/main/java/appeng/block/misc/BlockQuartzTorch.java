@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -128,7 +128,7 @@ public class BlockQuartzTorch extends AEBaseBlock implements IOrientableBlock, I
 	}
 
 	@Override
-	public void onNeighborBlockChange( World w, int x, int y, int z, Block id )
+	public final void onNeighborBlockChange( World w, int x, int y, int z, Block id )
 	{
 		ForgeDirection up = this.getOrientable( w, x, y, z ).getUp();
 		if( !this.canPlaceAt( w, x, y, z, up.getOpposite() ) )
@@ -145,7 +145,7 @@ public class BlockQuartzTorch extends AEBaseBlock implements IOrientableBlock, I
 	}
 
 	@Override
-	public boolean canPlaceBlockAt( World w, int x, int y, int z )
+	public final boolean canPlaceBlockAt( World w, int x, int y, int z )
 	{
 		for( ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS )
 		{
@@ -158,13 +158,13 @@ public class BlockQuartzTorch extends AEBaseBlock implements IOrientableBlock, I
 	}
 
 	@Override
-	public boolean usesMetadata()
+	public final boolean usesMetadata()
 	{
 		return true;
 	}
 
 	@Override
-	public IOrientable getOrientable( final IBlockAccess w, final int x, final int y, final int z )
+	public final IOrientable getOrientable( final IBlockAccess w, final int x, final int y, final int z )
 	{
 		return new MetaRotation( w, x, y, z );
 	}

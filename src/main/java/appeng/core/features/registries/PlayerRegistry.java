@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -27,23 +27,23 @@ import appeng.api.features.IPlayerRegistry;
 import appeng.core.WorldSettings;
 
 
-public class PlayerRegistry implements IPlayerRegistry
+public final class PlayerRegistry implements IPlayerRegistry
 {
 
 	@Override
-	public int getID( GameProfile username )
+	public final int getID( GameProfile username )
 	{
 		return WorldSettings.getInstance().getPlayerID( username );
 	}
 
 	@Override
-	public int getID( EntityPlayer player )
+	public final int getID( EntityPlayer player )
 	{
 		return WorldSettings.getInstance().getPlayerID( player.getGameProfile() );
 	}
 
 	@Override
-	public EntityPlayer findPlayer( int playerID )
+	public final EntityPlayer findPlayer( int playerID )
 	{
 		return WorldSettings.getInstance().getPlayerFromID( playerID );
 	}

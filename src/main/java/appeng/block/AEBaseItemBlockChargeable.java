@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -39,7 +39,7 @@ import appeng.core.localization.GuiText;
 import appeng.util.Platform;
 
 
-public class AEBaseItemBlockChargeable extends AEBaseItemBlock implements IAEItemPowerStorage
+public final class AEBaseItemBlockChargeable extends AEBaseItemBlock implements IAEItemPowerStorage
 {
 
 	public AEBaseItemBlockChargeable( Block id )
@@ -85,7 +85,7 @@ public class AEBaseItemBlockChargeable extends AEBaseItemBlock implements IAEIte
 	}
 
 	@Override
-	public double injectAEPower( ItemStack is, double amt )
+	public final double injectAEPower( ItemStack is, double amt )
 	{
 		double internalCurrentPower = this.getInternal( is );
 		double internalMaxPower = this.getMaxEnergyCapacity();
@@ -115,7 +115,7 @@ public class AEBaseItemBlockChargeable extends AEBaseItemBlock implements IAEIte
 	}
 
 	@Override
-	public double extractAEPower( ItemStack is, double amt )
+	public final double extractAEPower( ItemStack is, double amt )
 	{
 		double internalCurrentPower = this.getInternal( is );
 		if( internalCurrentPower > amt )
@@ -131,19 +131,19 @@ public class AEBaseItemBlockChargeable extends AEBaseItemBlock implements IAEIte
 	}
 
 	@Override
-	public double getAEMaxPower( ItemStack is )
+	public final double getAEMaxPower( ItemStack is )
 	{
 		return this.getMaxEnergyCapacity();
 	}
 
 	@Override
-	public double getAECurrentPower( ItemStack is )
+	public final double getAECurrentPower( ItemStack is )
 	{
 		return this.getInternal( is );
 	}
 
 	@Override
-	public AccessRestriction getPowerFlow( ItemStack is )
+	public final AccessRestriction getPowerFlow( ItemStack is )
 	{
 		return AccessRestriction.WRITE;
 	}

@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -47,7 +47,7 @@ public abstract class PartSharedItemBus extends PartUpgradeable implements IGrid
 		super( is );
 	}
 
-	protected int availableSlots()
+	protected final int availableSlots()
 	{
 		return Math.min( 1 + this.getInstalledUpgrades( Upgrades.CAPACITY ) * 4, this.config.getSizeInventory() );
 	}
@@ -73,7 +73,7 @@ public abstract class PartSharedItemBus extends PartUpgradeable implements IGrid
 	}
 
 	@Override
-	public IInventory getInventoryByName( String name )
+	public final IInventory getInventoryByName( String name )
 	{
 		if( name.equals( "config" ) )
 		{
@@ -102,7 +102,7 @@ public abstract class PartSharedItemBus extends PartUpgradeable implements IGrid
 		}
 	}
 
-	InventoryAdaptor getHandler()
+	final InventoryAdaptor getHandler()
 	{
 		TileEntity self = this.getHost().getTile();
 		TileEntity target = this.getTileEntity( self, self.xCoord + this.side.offsetX, self.yCoord + this.side.offsetY, self.zCoord + this.side.offsetZ );
@@ -133,7 +133,7 @@ public abstract class PartSharedItemBus extends PartUpgradeable implements IGrid
 	}
 
 	@Override
-	public void onNeighborChanged()
+	public final void onNeighborChanged()
 	{
 		this.updateState();
 		if( this.lastRedstone != this.host.hasRedstone( this.side ) )

@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -39,7 +39,7 @@ import appeng.parts.p2p.PartP2PTunnel;
 import appeng.parts.p2p.PartP2PTunnelME;
 
 
-public class P2PCache implements IGridCache
+public final class P2PCache implements IGridCache
 {
 
 	final IGrid myGrid;
@@ -79,13 +79,13 @@ public class P2PCache implements IGridCache
 	}
 
 	@Override
-	public void onUpdateTick()
+	public final void onUpdateTick()
 	{
 
 	}
 
 	@Override
-	public void removeNode( IGridNode node, IGridHost machine )
+	public final void removeNode( IGridNode node, IGridHost machine )
 	{
 		if( machine instanceof PartP2PTunnel )
 		{
@@ -115,7 +115,7 @@ public class P2PCache implements IGridCache
 	}
 
 	@Override
-	public void addNode( IGridNode node, IGridHost machine )
+	public final void addNode( IGridNode node, IGridHost machine )
 	{
 		if( machine instanceof PartP2PTunnel )
 		{
@@ -145,19 +145,19 @@ public class P2PCache implements IGridCache
 	}
 
 	@Override
-	public void onSplit( IGridStorage storageB )
+	public final void onSplit( IGridStorage storageB )
 	{
 
 	}
 
 	@Override
-	public void onJoin( IGridStorage storageB )
+	public final void onJoin( IGridStorage storageB )
 	{
 
 	}
 
 	@Override
-	public void populateGridStorage( IGridStorage storage )
+	public final void populateGridStorage( IGridStorage storage )
 	{
 
 	}
@@ -184,7 +184,7 @@ public class P2PCache implements IGridCache
 		}
 	}
 
-	public void updateFreq( PartP2PTunnel t, long newFrequency )
+	public final void updateFreq( PartP2PTunnel t, long newFrequency )
 	{
 		if( this.outputs.containsValue( t ) )
 		{
@@ -213,7 +213,7 @@ public class P2PCache implements IGridCache
 		this.updateTunnel( t.freq, !t.output, true );
 	}
 
-	public TunnelCollection<PartP2PTunnel> getOutputs( long freq, Class<? extends PartP2PTunnel> c )
+	public final TunnelCollection<PartP2PTunnel> getOutputs( long freq, Class<? extends PartP2PTunnel> c )
 	{
 		PartP2PTunnel in = this.inputs.get( freq );
 		if( in == null )
@@ -230,7 +230,7 @@ public class P2PCache implements IGridCache
 		return out;
 	}
 
-	public PartP2PTunnel getInput( long freq )
+	public final PartP2PTunnel getInput( long freq )
 	{
 		return this.inputs.get( freq );
 	}

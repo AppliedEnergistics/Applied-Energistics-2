@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -34,7 +34,7 @@ import appeng.client.texture.ExtraBlockTextures;
 
 
 @SideOnly( Side.CLIENT )
-public class EnergyFx extends EntityBreakingFX
+public final class EnergyFx extends EntityBreakingFX
 {
 
 	private final IIcon particleTextureIndex;
@@ -62,13 +62,13 @@ public class EnergyFx extends EntityBreakingFX
 	}
 
 	@Override
-	public int getFXLayer()
+	public final int getFXLayer()
 	{
 		return 1;
 	}
 
 	@Override
-	public void renderParticle( Tessellator par1Tessellator, float par2, float par3, float par4, float par5, float par6, float par7 )
+	public final void renderParticle( Tessellator par1Tessellator, float par2, float par3, float par4, float par5, float par6, float par7 )
 	{
 		float f6 = this.particleTextureIndex.getMinU();
 		float f7 = this.particleTextureIndex.getMaxU();
@@ -95,7 +95,7 @@ public class EnergyFx extends EntityBreakingFX
 		}
 	}
 
-	public void fromItem( ForgeDirection d )
+	public final void fromItem( ForgeDirection d )
 	{
 		this.posX += 0.2 * d.offsetX;
 		this.posY += 0.2 * d.offsetY;
@@ -104,7 +104,7 @@ public class EnergyFx extends EntityBreakingFX
 	}
 
 	@Override
-	public void onUpdate()
+	public final void onUpdate()
 	{
 		super.onUpdate();
 		this.particleScale *= 0.89f;

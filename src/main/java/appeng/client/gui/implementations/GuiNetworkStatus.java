@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -47,7 +47,7 @@ import appeng.core.localization.GuiText;
 import appeng.util.Platform;
 
 
-public class GuiNetworkStatus extends AEBaseGui implements ISortSource
+public final class GuiNetworkStatus extends AEBaseGui implements ISortSource
 {
 
 	final ItemRepo repo;
@@ -66,7 +66,7 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 	}
 
 	@Override
-	protected void actionPerformed( GuiButton btn )
+	protected final void actionPerformed( GuiButton btn )
 	{
 		super.actionPerformed( btn );
 
@@ -80,7 +80,7 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 	}
 
 	@Override
-	public void initGui()
+	public final void initGui()
 	{
 		super.initGui();
 
@@ -89,7 +89,7 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 	}
 
 	@Override
-	public void drawScreen( int mouseX, int mouseY, float btn )
+	public final void drawScreen( int mouseX, int mouseY, float btn )
 	{
 		int x = 0;
 		int y = 0;
@@ -213,7 +213,7 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize );
 	}
 
-	public void postUpdate( List<IAEItemStack> list )
+	public final void postUpdate( List<IAEItemStack> list )
 	{
 		this.repo.clear();
 

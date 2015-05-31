@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -37,7 +37,7 @@ import appeng.api.networking.ticking.TickingRequest;
 import appeng.me.cache.helpers.TickTracker;
 
 
-public class TickManagerCache implements ITickManager
+public final class TickManagerCache implements ITickManager
 {
 
 	final IGrid myGrid;
@@ -52,12 +52,12 @@ public class TickManagerCache implements ITickManager
 		this.myGrid = g;
 	}
 
-	public long getCurrentTick()
+	public final long getCurrentTick()
 	{
 		return this.currentTick;
 	}
 
-	public long getAvgNanoTime( IGridNode node )
+	public final long getAvgNanoTime( IGridNode node )
 	{
 		TickTracker tt = this.awake.get( node );
 
@@ -75,7 +75,7 @@ public class TickManagerCache implements ITickManager
 	}
 
 	@Override
-	public void onUpdateTick()
+	public final void onUpdateTick()
 	{
 		TickTracker tt = null;
 		try
@@ -141,7 +141,7 @@ public class TickManagerCache implements ITickManager
 	}
 
 	@Override
-	public void removeNode( IGridNode gridNode, IGridHost machine )
+	public final void removeNode( IGridNode gridNode, IGridHost machine )
 	{
 		if( machine instanceof IGridTickable )
 		{
@@ -152,7 +152,7 @@ public class TickManagerCache implements ITickManager
 	}
 
 	@Override
-	public void addNode( IGridNode gridNode, IGridHost machine )
+	public final void addNode( IGridNode gridNode, IGridHost machine )
 	{
 		if( machine instanceof IGridTickable )
 		{
@@ -180,25 +180,25 @@ public class TickManagerCache implements ITickManager
 	}
 
 	@Override
-	public void onSplit( IGridStorage storageB )
+	public final void onSplit( IGridStorage storageB )
 	{
 
 	}
 
 	@Override
-	public void onJoin( IGridStorage storageB )
+	public final void onJoin( IGridStorage storageB )
 	{
 
 	}
 
 	@Override
-	public void populateGridStorage( IGridStorage storage )
+	public final void populateGridStorage( IGridStorage storage )
 	{
 
 	}
 
 	@Override
-	public boolean alertDevice( IGridNode node )
+	public final boolean alertDevice( IGridNode node )
 	{
 		TickTracker tt = this.alertable.get( node );
 		if( tt == null )
@@ -224,7 +224,7 @@ public class TickManagerCache implements ITickManager
 	}
 
 	@Override
-	public boolean sleepDevice( IGridNode node )
+	public final boolean sleepDevice( IGridNode node )
 	{
 		if( this.awake.containsKey( node ) )
 		{
@@ -239,7 +239,7 @@ public class TickManagerCache implements ITickManager
 	}
 
 	@Override
-	public boolean wakeDevice( IGridNode node )
+	public final boolean wakeDevice( IGridNode node )
 	{
 		if( this.sleeping.containsKey( node ) )
 		{

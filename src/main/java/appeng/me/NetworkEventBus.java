@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -34,12 +34,12 @@ import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.core.AELog;
 
 
-public class NetworkEventBus
+public final class NetworkEventBus
 {
 	private static final Collection<Class> READ_CLASSES = new HashSet<Class>();
 	private static final Map<Class<? extends MENetworkEvent>, Map<Class, MENetworkEventInfo>> EVENTS = new HashMap<Class<? extends MENetworkEvent>, Map<Class, MENetworkEventInfo>>();
 
-	public void readClass( Class listAs, Class c )
+	public final void readClass( Class listAs, Class c )
 	{
 		if( READ_CLASSES.contains( c ) )
 		{
@@ -94,7 +94,7 @@ public class NetworkEventBus
 		}
 	}
 
-	public MENetworkEvent postEvent( Grid g, MENetworkEvent e )
+	public final MENetworkEvent postEvent( Grid g, MENetworkEvent e )
 	{
 		Map<Class, MENetworkEventInfo> subscribers = EVENTS.get( e.getClass() );
 		int x = 0;
@@ -130,7 +130,7 @@ public class NetworkEventBus
 		return e;
 	}
 
-	public MENetworkEvent postEventTo( Grid grid, GridNode node, MENetworkEvent e )
+	public final MENetworkEvent postEventTo( Grid grid, GridNode node, MENetworkEvent e )
 	{
 		Map<Class, MENetworkEventInfo> subscribers = EVENTS.get( e.getClass() );
 		int x = 0;
@@ -156,14 +156,14 @@ public class NetworkEventBus
 		return e;
 	}
 
-	static class NetworkEventDone extends Throwable
+	static final class NetworkEventDone extends Throwable
 	{
 
 		private static final long serialVersionUID = -3079021487019171205L;
 	}
 
 
-	class EventMethod
+	final class EventMethod
 	{
 
 		public final Class objClass;
@@ -177,7 +177,7 @@ public class NetworkEventBus
 			this.objEvent = Event;
 		}
 
-		public void invoke( Object obj, MENetworkEvent e ) throws NetworkEventDone
+		public final void invoke( Object obj, MENetworkEvent e ) throws NetworkEventDone
 		{
 			try
 			{
@@ -200,17 +200,17 @@ public class NetworkEventBus
 	}
 
 
-	class MENetworkEventInfo
+	final class MENetworkEventInfo
 	{
 
 		private final List<EventMethod> methods = new ArrayList<EventMethod>();
 
-		public void Add( Class Event, Class ObjClass, Method ObjMethod )
+		public final void Add( Class Event, Class ObjClass, Method ObjMethod )
 		{
 			this.methods.add( new EventMethod( Event, ObjClass, ObjMethod ) );
 		}
 
-		public void invoke( Object obj, MENetworkEvent e ) throws NetworkEventDone
+		public final void invoke( Object obj, MENetworkEvent e ) throws NetworkEventDone
 		{
 			for( EventMethod em : this.methods )
 			{

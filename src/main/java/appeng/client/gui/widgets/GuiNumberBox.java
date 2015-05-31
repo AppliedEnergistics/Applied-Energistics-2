@@ -23,7 +23,7 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiTextField;
 
 
-public class GuiNumberBox extends GuiTextField
+public final class GuiNumberBox extends GuiTextField
 {
 
 	final Class type;
@@ -35,7 +35,7 @@ public class GuiNumberBox extends GuiTextField
 	}
 
 	@Override
-	public void writeText( String selectedText )
+	public final void writeText( String selectedText )
 	{
 		String original = this.getText();
 		super.writeText( selectedText );

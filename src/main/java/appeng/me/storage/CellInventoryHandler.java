@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -40,7 +40,7 @@ import appeng.util.prioitylist.FuzzyPriorityList;
 import appeng.util.prioitylist.PrecisePriorityList;
 
 
-public class CellInventoryHandler extends MEInventoryHandler<IAEItemStack> implements ICellInventoryHandler
+public final class CellInventoryHandler extends MEInventoryHandler<IAEItemStack> implements ICellInventoryHandler
 {
 
 	CellInventoryHandler( IMEInventory c )
@@ -107,7 +107,7 @@ public class CellInventoryHandler extends MEInventoryHandler<IAEItemStack> imple
 	}
 
 	@Override
-	public ICellInventory getCellInv()
+	public final ICellInventory getCellInv()
 	{
 		Object o = this.internal;
 
@@ -120,19 +120,19 @@ public class CellInventoryHandler extends MEInventoryHandler<IAEItemStack> imple
 	}
 
 	@Override
-	public boolean isPreformatted()
+	public final boolean isPreformatted()
 	{
 		return !this.getPartitionList().isEmpty();
 	}
 
 	@Override
-	public boolean isFuzzy()
+	public final boolean isFuzzy()
 	{
 		return this.getPartitionList() instanceof FuzzyPriorityList;
 	}
 
 	@Override
-	public IncludeExclude getIncludeExcludeMode()
+	public final IncludeExclude getIncludeExcludeMode()
 	{
 		return this.getWhitelist();
 	}
@@ -142,7 +142,7 @@ public class CellInventoryHandler extends MEInventoryHandler<IAEItemStack> imple
 		return Platform.openNbtData( this.getCellInv().getItemStack() );
 	}
 
-	public int getStatusForCell()
+	public final int getStatusForCell()
 	{
 		int val = this.getCellInv().getStatusForCell();
 

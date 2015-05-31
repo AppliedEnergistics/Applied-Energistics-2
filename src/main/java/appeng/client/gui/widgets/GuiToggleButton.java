@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -30,7 +30,7 @@ import net.minecraft.util.StatCollector;
 import appeng.client.texture.ExtraBlockTextures;
 
 
-public class GuiToggleButton extends GuiButton implements ITooltip
+public final class GuiToggleButton extends GuiButton implements ITooltip
 {
 	private static final Pattern PATTERN_NEW_LINE = Pattern.compile( "\\n", Pattern.LITERAL );
 	private final int iconIdxOn;
@@ -54,13 +54,13 @@ public class GuiToggleButton extends GuiButton implements ITooltip
 		this.height = 16;
 	}
 
-	public void setState( boolean isOn )
+	public final void setState( boolean isOn )
 	{
 		this.isActive = isOn;
 	}
 
 	@Override
-	public void drawButton( Minecraft par1Minecraft, int par2, int par3 )
+	public final void drawButton( Minecraft par1Minecraft, int par2, int par3 )
 	{
 		if( this.visible )
 		{

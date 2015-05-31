@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -40,12 +40,12 @@ import appeng.api.util.AEColor;
 import appeng.util.Platform;
 
 
-public class P2PTunnelRegistry implements IP2PTunnelRegistry
+public final class P2PTunnelRegistry implements IP2PTunnelRegistry
 {
 
 	final HashMap<ItemStack, TunnelType> Tunnels = new HashMap<ItemStack, TunnelType>();
 
-	public void configure()
+	public final void configure()
 	{
 		/**
 		 * light!
@@ -112,7 +112,7 @@ public class P2PTunnelRegistry implements IP2PTunnelRegistry
 	}
 
 	@Override
-	public void addNewAttunement( ItemStack trigger, TunnelType type )
+	public final void addNewAttunement( ItemStack trigger, TunnelType type )
 	{
 		if( type == null || trigger == null )
 		{
@@ -122,7 +122,7 @@ public class P2PTunnelRegistry implements IP2PTunnelRegistry
 		this.Tunnels.put( trigger, type );
 	}
 
-	public ItemStack getModItem( String modID, String name, int meta )
+	public final ItemStack getModItem( String modID, String name, int meta )
 	{
 		ItemStack myItemStack = GameRegistry.findItemStack( modID, name, 1 );
 
@@ -144,7 +144,7 @@ public class P2PTunnelRegistry implements IP2PTunnelRegistry
 	}
 
 	@Override
-	public TunnelType getTunnelTypeByItem( ItemStack trigger )
+	public final TunnelType getTunnelTypeByItem( ItemStack trigger )
 	{
 		if( trigger != null )
 		{

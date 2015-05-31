@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -23,7 +23,7 @@ import net.minecraft.client.particle.EntityReddustFX;
 import net.minecraft.world.World;
 
 
-public class ChargedOreFX extends EntityReddustFX
+public final class ChargedOreFX extends EntityReddustFX
 {
 
 	public ChargedOreFX( World w, double x, double y, double z, float r, float g, float b )
@@ -32,7 +32,7 @@ public class ChargedOreFX extends EntityReddustFX
 	}
 
 	@Override
-	public int getBrightnessForRender( float par1 )
+	public final int getBrightnessForRender( float par1 )
 	{
 		int j1 = super.getBrightnessForRender( par1 );
 		j1 = Math.max( j1 >> 20, j1 >> 4 );

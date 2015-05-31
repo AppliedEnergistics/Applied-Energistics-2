@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -41,7 +41,7 @@ public class MEPassThrough<T extends IAEStack<T>> implements IMEInventoryHandler
 		this.setInternal( i );
 	}
 
-	protected IMEInventory<T> getInternal()
+	protected final IMEInventory<T> getInternal()
 	{
 		return this.internal;
 	}
@@ -52,13 +52,13 @@ public class MEPassThrough<T extends IAEStack<T>> implements IMEInventoryHandler
 	}
 
 	@Override
-	public T injectItems( T input, Actionable type, BaseActionSource src )
+	public final T injectItems( T input, Actionable type, BaseActionSource src )
 	{
 		return this.internal.injectItems( input, type, src );
 	}
 
 	@Override
-	public T extractItems( T request, Actionable type, BaseActionSource src )
+	public final T extractItems( T request, Actionable type, BaseActionSource src )
 	{
 		return this.internal.extractItems( request, type, src );
 	}
@@ -70,43 +70,43 @@ public class MEPassThrough<T extends IAEStack<T>> implements IMEInventoryHandler
 	}
 
 	@Override
-	public StorageChannel getChannel()
+	public final StorageChannel getChannel()
 	{
 		return this.internal.getChannel();
 	}
 
 	@Override
-	public AccessRestriction getAccess()
+	public final AccessRestriction getAccess()
 	{
 		return AccessRestriction.READ_WRITE;
 	}
 
 	@Override
-	public boolean isPrioritized( T input )
+	public final boolean isPrioritized( T input )
 	{
 		return false;
 	}
 
 	@Override
-	public boolean canAccept( T input )
+	public final boolean canAccept( T input )
 	{
 		return true;
 	}
 
 	@Override
-	public int getPriority()
+	public final int getPriority()
 	{
 		return 0;
 	}
 
 	@Override
-	public int getSlot()
+	public final int getSlot()
 	{
 		return 0;
 	}
 
 	@Override
-	public boolean validForPass( int i )
+	public final boolean validForPass( int i )
 	{
 		return true;
 	}

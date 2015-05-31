@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -56,7 +56,7 @@ import appeng.util.Platform;
 import appeng.util.inv.IInventoryDestination;
 
 
-public class PartImportBus extends PartSharedItemBus implements IInventoryDestination
+public final class PartImportBus extends PartSharedItemBus implements IInventoryDestination
 {
 	private final BaseActionSource source;
 	IMEInventory<IAEItemStack> destination = null;
@@ -91,7 +91,7 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 	}
 
 	@Override
-	public void getBoxes( IPartCollisionHelper bch )
+	public final void getBoxes( IPartCollisionHelper bch )
 	{
 		bch.addBox( 6, 6, 11, 10, 10, 13 );
 		bch.addBox( 5, 5, 13, 11, 11, 14 );
@@ -100,7 +100,7 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderInventory( IPartRenderHelper rh, RenderBlocks renderer )
+	public final void renderInventory( IPartRenderHelper rh, RenderBlocks renderer )
 	{
 		rh.setTexture( CableBusTextures.PartImportSides.getIcon(), CableBusTextures.PartImportSides.getIcon(), CableBusTextures.PartMonitorBack.getIcon(), this.is.getIconIndex(), CableBusTextures.PartImportSides.getIcon(), CableBusTextures.PartImportSides.getIcon() );
 
@@ -116,7 +116,7 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderStatic( int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer )
+	public final void renderStatic( int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer )
 	{
 		this.renderCache = rh.useSimplifiedRendering( x, y, z, this, this.renderCache );
 		rh.setTexture( CableBusTextures.PartImportSides.getIcon(), CableBusTextures.PartImportSides.getIcon(), CableBusTextures.PartMonitorBack.getIcon(), this.is.getIconIndex(), CableBusTextures.PartImportSides.getIcon(), CableBusTextures.PartImportSides.getIcon() );
@@ -138,7 +138,7 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 	}
 
 	@Override
-	public int cableConnectionRenderTo()
+	public final int cableConnectionRenderTo()
 	{
 		return 5;
 	}
@@ -161,19 +161,19 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 	}
 
 	@Override
-	public TickingRequest getTickingRequest( IGridNode node )
+	public final TickingRequest getTickingRequest( IGridNode node )
 	{
 		return new TickingRequest( TickRates.ImportBus.min, TickRates.ImportBus.max, this.getHandler() == null, false );
 	}
 
 	@Override
-	public TickRateModulation tickingRequest( IGridNode node, int ticksSinceLastCall )
+	public final TickRateModulation tickingRequest( IGridNode node, int ticksSinceLastCall )
 	{
 		return this.doBusWork();
 	}
 
 	@Override
-	TickRateModulation doBusWork()
+	final TickRateModulation doBusWork()
 	{
 		if( !this.proxy.isActive() )
 		{

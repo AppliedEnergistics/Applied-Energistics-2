@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -61,13 +61,13 @@ public class MEMonitorIInventory implements IMEMonitor<IAEItemStack>
 	}
 
 	@Override
-	public void addListener( IMEMonitorHandlerReceiver<IAEItemStack> l, Object verificationToken )
+	public final void addListener( IMEMonitorHandlerReceiver<IAEItemStack> l, Object verificationToken )
 	{
 		this.listeners.put( l, verificationToken );
 	}
 
 	@Override
-	public void removeListener( IMEMonitorHandlerReceiver<IAEItemStack> l )
+	public final void removeListener( IMEMonitorHandlerReceiver<IAEItemStack> l )
 	{
 		this.listeners.remove( l );
 	}
@@ -128,12 +128,12 @@ public class MEMonitorIInventory implements IMEMonitor<IAEItemStack>
 	}
 
 	@Override
-	public StorageChannel getChannel()
+	public final StorageChannel getChannel()
 	{
 		return StorageChannel.ITEMS;
 	}
 
-	public TickRateModulation onTick()
+	public final TickRateModulation onTick()
 	{
 		boolean changed = false;
 
@@ -256,43 +256,43 @@ public class MEMonitorIInventory implements IMEMonitor<IAEItemStack>
 	}
 
 	@Override
-	public AccessRestriction getAccess()
+	public final AccessRestriction getAccess()
 	{
 		return AccessRestriction.READ_WRITE;
 	}
 
 	@Override
-	public boolean isPrioritized( IAEItemStack input )
+	public final boolean isPrioritized( IAEItemStack input )
 	{
 		return false;
 	}
 
 	@Override
-	public boolean canAccept( IAEItemStack input )
+	public final boolean canAccept( IAEItemStack input )
 	{
 		return true;
 	}
 
 	@Override
-	public int getPriority()
+	public final int getPriority()
 	{
 		return 0;
 	}
 
 	@Override
-	public int getSlot()
+	public final int getSlot()
 	{
 		return 0;
 	}
 
 	@Override
-	public boolean validForPass( int i )
+	public final boolean validForPass( int i )
 	{
 		return true;
 	}
 
 	@Override
-	public IItemList<IAEItemStack> getAvailableItems( IItemList out )
+	public final IItemList<IAEItemStack> getAvailableItems( IItemList out )
 	{
 		for( CachedItemStack is : this.memory.values() )
 		{
@@ -303,12 +303,12 @@ public class MEMonitorIInventory implements IMEMonitor<IAEItemStack>
 	}
 
 	@Override
-	public IItemList<IAEItemStack> getStorageList()
+	public final IItemList<IAEItemStack> getStorageList()
 	{
 		return this.list;
 	}
 
-	static class CachedItemStack
+	static final class CachedItemStack
 	{
 
 		final ItemStack itemStack;

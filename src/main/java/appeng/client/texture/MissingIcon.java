@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -28,7 +28,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 
-public class MissingIcon implements IIcon
+public final class MissingIcon implements IIcon
 {
 
 	final boolean isBlock;
@@ -39,61 +39,61 @@ public class MissingIcon implements IIcon
 	}
 
 	@Override
-	public int getIconWidth()
+	public final int getIconWidth()
 	{
 		return this.getMissing().getIconWidth();
 	}
 
 	@SideOnly( Side.CLIENT )
-	public IIcon getMissing()
+	public final IIcon getMissing()
 	{
 		return ( (TextureMap) Minecraft.getMinecraft().getTextureManager().getTexture( this.isBlock ? TextureMap.locationBlocksTexture : TextureMap.locationItemsTexture ) ).getAtlasSprite( "missingno" );
 	}
 
 	@Override
-	public int getIconHeight()
+	public final int getIconHeight()
 	{
 		return this.getMissing().getIconHeight();
 	}
 
 	@Override
-	public float getMinU()
+	public final float getMinU()
 	{
 		return this.getMissing().getMinU();
 	}
 
 	@Override
-	public float getMaxU()
+	public final float getMaxU()
 	{
 		return this.getMissing().getMaxU();
 	}
 
 	@Override
-	public float getInterpolatedU( double var1 )
+	public final float getInterpolatedU( double var1 )
 	{
 		return this.getMissing().getInterpolatedU( var1 );
 	}
 
 	@Override
-	public float getMinV()
+	public final float getMinV()
 	{
 		return this.getMissing().getMinV();
 	}
 
 	@Override
-	public float getMaxV()
+	public final float getMaxV()
 	{
 		return this.getMissing().getMaxV();
 	}
 
 	@Override
-	public float getInterpolatedV( double var1 )
+	public final float getInterpolatedV( double var1 )
 	{
 		return this.getMissing().getInterpolatedV( var1 );
 	}
 
 	@Override
-	public String getIconName()
+	public final String getIconName()
 	{
 		return this.getMissing().getIconName();
 	}

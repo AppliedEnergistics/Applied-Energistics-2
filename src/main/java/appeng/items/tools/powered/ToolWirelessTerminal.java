@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -49,7 +49,7 @@ import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
 
 
-public class ToolWirelessTerminal extends AEBasePoweredItem implements IWirelessTermHandler
+public final class ToolWirelessTerminal extends AEBasePoweredItem implements IWirelessTermHandler
 {
 
 	public ToolWirelessTerminal()
@@ -59,7 +59,7 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 	}
 
 	@Override
-	public ItemStack onItemRightClick( ItemStack item, World w, EntityPlayer player )
+	public final ItemStack onItemRightClick( ItemStack item, World w, EntityPlayer player )
 	{
 		AEApi.instance().registries().wireless().openWirelessTerminalGui( item, w, player );
 		return item;
@@ -67,7 +67,7 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 
 	@SideOnly( Side.CLIENT )
 	@Override
-	public boolean isFull3D()
+	public final boolean isFull3D()
 	{
 		return false;
 	}
@@ -101,19 +101,19 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 	}
 
 	@Override
-	public boolean canHandle( ItemStack is )
+	public final boolean canHandle( ItemStack is )
 	{
 		return AEApi.instance().definitions().items().wirelessTerminal().isSameAs( is );
 	}
 
 	@Override
-	public boolean usePower( EntityPlayer player, double amount, ItemStack is )
+	public final boolean usePower( EntityPlayer player, double amount, ItemStack is )
 	{
 		return this.extractAEPower( is, amount ) >= amount - 0.5;
 	}
 
 	@Override
-	public boolean hasPower( EntityPlayer player, double amt, ItemStack is )
+	public final boolean hasPower( EntityPlayer player, double amt, ItemStack is )
 	{
 		return this.getAECurrentPower( is ) >= amt;
 	}
@@ -141,14 +141,14 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 	}
 
 	@Override
-	public String getEncryptionKey( ItemStack item )
+	public final String getEncryptionKey( ItemStack item )
 	{
 		NBTTagCompound tag = Platform.openNbtData( item );
 		return tag.getString( "encryptionKey" );
 	}
 
 	@Override
-	public void setEncryptionKey( ItemStack item, String encKey, String name )
+	public final void setEncryptionKey( ItemStack item, String encKey, String name )
 	{
 		NBTTagCompound tag = Platform.openNbtData( item );
 		tag.setString( "encryptionKey", encKey );

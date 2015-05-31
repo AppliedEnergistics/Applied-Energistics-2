@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -28,65 +28,65 @@ import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 
 
-public class NullInventory<T extends IAEStack<T>> implements IMEInventoryHandler<T>
+public final class NullInventory<T extends IAEStack<T>> implements IMEInventoryHandler<T>
 {
 
 	@Override
-	public T injectItems( T input, Actionable mode, BaseActionSource src )
+	public final T injectItems( T input, Actionable mode, BaseActionSource src )
 	{
 		return input;
 	}
 
 	@Override
-	public T extractItems( T request, Actionable mode, BaseActionSource src )
+	public final T extractItems( T request, Actionable mode, BaseActionSource src )
 	{
 		return null;
 	}
 
 	@Override
-	public IItemList<T> getAvailableItems( IItemList out )
+	public final IItemList<T> getAvailableItems( IItemList out )
 	{
 		return out;
 	}
 
 	@Override
-	public StorageChannel getChannel()
+	public final StorageChannel getChannel()
 	{
 		return StorageChannel.ITEMS;
 	}
 
 	@Override
-	public AccessRestriction getAccess()
+	public final AccessRestriction getAccess()
 	{
 		return AccessRestriction.READ;
 	}
 
 	@Override
-	public boolean isPrioritized( T input )
+	public final boolean isPrioritized( T input )
 	{
 		return false;
 	}
 
 	@Override
-	public boolean canAccept( T input )
+	public final boolean canAccept( T input )
 	{
 		return false;
 	}
 
 	@Override
-	public int getPriority()
+	public final int getPriority()
 	{
 		return 0;
 	}
 
 	@Override
-	public int getSlot()
+	public final int getSlot()
 	{
 		return 0;
 	}
 
 	@Override
-	public boolean validForPass( int i )
+	public final boolean validForPass( int i )
 	{
 		return i == 2;
 	}

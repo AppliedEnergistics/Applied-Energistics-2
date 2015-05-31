@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -28,7 +28,7 @@ import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
 
 
-public class ItemCraftingStorage extends AEBaseItemBlock
+public final class ItemCraftingStorage extends AEBaseItemBlock
 {
 
 	public ItemCraftingStorage( Block id )
@@ -37,7 +37,7 @@ public class ItemCraftingStorage extends AEBaseItemBlock
 	}
 
 	@Override
-	public ItemStack getContainerItem( ItemStack itemStack )
+	public final ItemStack getContainerItem( ItemStack itemStack )
 	{
 		for( ItemStack stack : AEApi.instance().definitions().blocks().craftingUnit().maybeStack( 1 ).asSet() )
 		{
@@ -48,7 +48,7 @@ public class ItemCraftingStorage extends AEBaseItemBlock
 	}
 
 	@Override
-	public boolean hasContainerItem( ItemStack stack )
+	public final boolean hasContainerItem( ItemStack stack )
 	{
 		return AEConfig.instance.isFeatureEnabled( AEFeature.enableDisassemblyCrafting );
 	}

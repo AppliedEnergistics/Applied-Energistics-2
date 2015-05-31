@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -44,7 +44,7 @@ import appeng.core.features.AEFeature;
 import appeng.helpers.ICustomCollision;
 
 
-public class BlockMatrixFrame extends AEBaseBlock implements ICustomCollision
+public final class BlockMatrixFrame extends AEBaseBlock implements ICustomCollision
 {
 
 	public BlockMatrixFrame()
@@ -64,7 +64,7 @@ public class BlockMatrixFrame extends AEBaseBlock implements ICustomCollision
 	}
 
 	@Override
-	public void registerBlockIcons( IIconRegister iconRegistry )
+	public final void registerBlockIcons( IIconRegister iconRegistry )
 	{
 
 	}
@@ -90,19 +90,19 @@ public class BlockMatrixFrame extends AEBaseBlock implements ICustomCollision
 	}
 
 	@Override
-	public boolean canPlaceBlockAt( World world, int x, int y, int z )
+	public final boolean canPlaceBlockAt( World world, int x, int y, int z )
 	{
 		return false;
 	}
 
 	@Override
-	public void onBlockExploded( World world, int x, int y, int z, Explosion explosion )
+	public final void onBlockExploded( World world, int x, int y, int z, Explosion explosion )
 	{
 		// Don't explode.
 	}
 
 	@Override
-	public boolean canEntityDestroy( IBlockAccess world, int x, int y, int z, Entity entity )
+	public final boolean canEntityDestroy( IBlockAccess world, int x, int y, int z, Entity entity )
 	{
 		return false;
 	}

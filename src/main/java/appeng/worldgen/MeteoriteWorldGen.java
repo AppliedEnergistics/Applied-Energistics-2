@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -114,7 +114,7 @@ public final class MeteoriteWorldGen implements IWorldGenerator
 		return WorldSettings.getInstance().getNearByMeteorites( w.provider.dimensionId, chunkX, chunkZ );
 	}
 
-	class MeteoriteSpawn implements Callable
+	final class MeteoriteSpawn implements Callable
 	{
 
 		final int x;
@@ -131,7 +131,7 @@ public final class MeteoriteWorldGen implements IWorldGenerator
 		}
 
 		@Override
-		public Object call() throws Exception
+		public final Object call() throws Exception
 		{
 			int chunkX = this.x >> 4;
 			int chunkZ = this.z >> 4;

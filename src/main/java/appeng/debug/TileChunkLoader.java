@@ -39,7 +39,7 @@ import appeng.tile.events.TileEventType;
 import appeng.util.Platform;
 
 
-public class TileChunkLoader extends AEBaseTile
+public final class TileChunkLoader extends AEBaseTile
 {
 
 	boolean requestTicket = true;
@@ -55,7 +55,7 @@ public class TileChunkLoader extends AEBaseTile
 		}
 	}
 
-	void initTicket()
+	final void initTicket()
 	{
 		if( Platform.isClient() )
 		{
@@ -83,7 +83,7 @@ public class TileChunkLoader extends AEBaseTile
 	}
 
 	@Override
-	public void invalidate()
+	public final void invalidate()
 	{
 		if( Platform.isClient() )
 		{

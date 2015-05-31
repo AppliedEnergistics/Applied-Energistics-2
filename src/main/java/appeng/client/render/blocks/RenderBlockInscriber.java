@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -54,7 +54,7 @@ import appeng.util.Platform;
  * @version rv2
  * @since rv0
  */
-public class RenderBlockInscriber extends BaseBlockRender
+public final class RenderBlockInscriber extends BaseBlockRender
 {
 
 	public RenderBlockInscriber()
@@ -260,7 +260,7 @@ public class RenderBlockInscriber extends BaseBlockRender
 		}
 	}
 
-	public void renderItem( ItemStack sis, float o, AEBaseBlock block, AEBaseTile tile, Tessellator tess, double x, double y, double z, float f, RenderBlocks renderer )
+	public final void renderItem( ItemStack sis, float o, AEBaseBlock block, AEBaseTile tile, Tessellator tess, double x, double y, double z, float f, RenderBlocks renderer )
 	{
 		if( sis != null )
 		{

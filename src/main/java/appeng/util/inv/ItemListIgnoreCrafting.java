@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -27,7 +27,7 @@ import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 
 
-public class ItemListIgnoreCrafting<T extends IAEStack> implements IItemList<T>
+public final class ItemListIgnoreCrafting<T extends IAEStack> implements IItemList<T>
 {
 
 	final IItemList<T> target;
@@ -38,7 +38,7 @@ public class ItemListIgnoreCrafting<T extends IAEStack> implements IItemList<T>
 	}
 
 	@Override
-	public void add( T option )
+	public final void add( T option )
 	{
 		if( option != null && option.isCraftable() )
 		{
@@ -50,61 +50,61 @@ public class ItemListIgnoreCrafting<T extends IAEStack> implements IItemList<T>
 	}
 
 	@Override
-	public T findPrecise( T i )
+	public final T findPrecise( T i )
 	{
 		return this.target.findPrecise( i );
 	}
 
 	@Override
-	public Collection<T> findFuzzy( T input, FuzzyMode fuzzy )
+	public final Collection<T> findFuzzy( T input, FuzzyMode fuzzy )
 	{
 		return this.target.findFuzzy( input, fuzzy );
 	}
 
 	@Override
-	public boolean isEmpty()
+	public final boolean isEmpty()
 	{
 		return this.target.isEmpty();
 	}
 
 	@Override
-	public void addStorage( T option )
+	public final void addStorage( T option )
 	{
 		this.target.addStorage( option );
 	}
 
 	@Override
-	public void addCrafting( T option )
+	public final void addCrafting( T option )
 	{
 		// nothing.
 	}
 
 	@Override
-	public void addRequestable( T option )
+	public final void addRequestable( T option )
 	{
 		this.target.addRequestable( option );
 	}
 
 	@Override
-	public T getFirstItem()
+	public final T getFirstItem()
 	{
 		return this.target.getFirstItem();
 	}
 
 	@Override
-	public int size()
+	public final int size()
 	{
 		return this.target.size();
 	}
 
 	@Override
-	public Iterator<T> iterator()
+	public final Iterator<T> iterator()
 	{
 		return this.target.iterator();
 	}
 
 	@Override
-	public void resetStatus()
+	public final void resetStatus()
 	{
 		this.target.resetStatus();
 	}

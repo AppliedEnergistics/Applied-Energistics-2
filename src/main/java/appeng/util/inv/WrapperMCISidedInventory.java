@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -24,7 +24,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
 
 
-public class WrapperMCISidedInventory extends WrapperInventoryRange implements IInventoryWrapper
+public final class WrapperMCISidedInventory extends WrapperInventoryRange implements IInventoryWrapper
 {
 
 	final ISidedInventory side;
@@ -38,7 +38,7 @@ public class WrapperMCISidedInventory extends WrapperInventoryRange implements I
 	}
 
 	@Override
-	public ItemStack decrStackSize( int var1, int var2 )
+	public final ItemStack decrStackSize( int var1, int var2 )
 	{
 		if( this.canRemoveItemFromSlot( var1, this.getStackInSlot( var1 ) ) )
 		{
@@ -48,7 +48,7 @@ public class WrapperMCISidedInventory extends WrapperInventoryRange implements I
 	}
 
 	@Override
-	public boolean isItemValidForSlot( int i, ItemStack itemstack )
+	public final boolean isItemValidForSlot( int i, ItemStack itemstack )
 	{
 
 		if( this.ignoreValidItems )
@@ -65,7 +65,7 @@ public class WrapperMCISidedInventory extends WrapperInventoryRange implements I
 	}
 
 	@Override
-	public boolean canRemoveItemFromSlot( int i, ItemStack is )
+	public final boolean canRemoveItemFromSlot( int i, ItemStack is )
 	{
 		if( is == null )
 		{

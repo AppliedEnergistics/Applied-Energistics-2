@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -33,7 +33,7 @@ import appeng.api.AEApi;
 import appeng.core.AEConfig;
 
 
-public class StorageChunkProvider extends ChunkProviderGenerate
+public final class StorageChunkProvider extends ChunkProviderGenerate
 {
 	public static final int SQUARE_CHUNK_SIZE = 256;
 	private static final Block[] BLOCKS;
@@ -60,7 +60,7 @@ public class StorageChunkProvider extends ChunkProviderGenerate
 	}
 
 	@Override
-	public Chunk provideChunk( int x, int z )
+	public final Chunk provideChunk( int x, int z )
 	{
 		Chunk chunk = new Chunk( this.world, BLOCKS, x, z );
 
@@ -82,19 +82,19 @@ public class StorageChunkProvider extends ChunkProviderGenerate
 	}
 
 	@Override
-	public void populate( IChunkProvider par1iChunkProvider, int par2, int par3 )
+	public final void populate( IChunkProvider par1iChunkProvider, int par2, int par3 )
 	{
 
 	}
 
 	@Override
-	public boolean unloadQueuedChunks()
+	public final boolean unloadQueuedChunks()
 	{
 		return true;
 	}
 
 	@Override
-	public List getPossibleCreatures( EnumCreatureType a, int b, int c, int d )
+	public final List getPossibleCreatures( EnumCreatureType a, int b, int c, int d )
 	{
 		return new ArrayList();
 	}

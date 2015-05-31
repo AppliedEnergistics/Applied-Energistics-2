@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -43,7 +43,7 @@ import appeng.core.settings.TickRates;
 import appeng.me.GridAccessException;
 
 
-public class PartP2PLight extends PartP2PTunnel<PartP2PLight> implements IGridTickable
+public final class PartP2PLight extends PartP2PTunnel<PartP2PLight> implements IGridTickable
 {
 
 	int lastValue = 0;
@@ -69,14 +69,14 @@ public class PartP2PLight extends PartP2PTunnel<PartP2PLight> implements IGridTi
 	}
 
 	@Override
-	public void writeToStream( ByteBuf data ) throws IOException
+	public final void writeToStream( ByteBuf data ) throws IOException
 	{
 		super.writeToStream( data );
 		data.writeInt( this.output ? this.lastValue : 0 );
 	}
 
 	@Override
-	public boolean readFromStream( ByteBuf data ) throws IOException
+	public final boolean readFromStream( ByteBuf data ) throws IOException
 	{
 		super.readFromStream( data );
 		this.lastValue = data.readInt();
@@ -116,7 +116,7 @@ public class PartP2PLight extends PartP2PTunnel<PartP2PLight> implements IGridTi
 	}
 
 	@Override
-	public void onNeighborChanged()
+	public final void onNeighborChanged()
 	{
 		this.opacity = -1;
 
@@ -129,7 +129,7 @@ public class PartP2PLight extends PartP2PTunnel<PartP2PLight> implements IGridTi
 	}
 
 	@Override
-	public int getLightLevel()
+	public final int getLightLevel()
 	{
 		if( this.output && this.isPowered() )
 		{
@@ -139,7 +139,7 @@ public class PartP2PLight extends PartP2PTunnel<PartP2PLight> implements IGridTi
 		return 0;
 	}
 
-	public void setLightLevel( int out )
+	public final void setLightLevel( int out )
 	{
 		this.lastValue = out;
 		this.getHost().markForUpdate();
@@ -164,7 +164,7 @@ public class PartP2PLight extends PartP2PTunnel<PartP2PLight> implements IGridTi
 	}
 
 	@Override
-	public void readFromNBT( NBTTagCompound tag )
+	public final void readFromNBT( NBTTagCompound tag )
 	{
 		super.readFromNBT( tag );
 		if( tag.hasKey( "opacity" ) )
@@ -175,7 +175,7 @@ public class PartP2PLight extends PartP2PTunnel<PartP2PLight> implements IGridTi
 	}
 
 	@Override
-	public void writeToNBT( NBTTagCompound tag )
+	public final void writeToNBT( NBTTagCompound tag )
 	{
 		super.writeToNBT( tag );
 		tag.setFloat( "opacity", this.opacity );
@@ -189,7 +189,7 @@ public class PartP2PLight extends PartP2PTunnel<PartP2PLight> implements IGridTi
 	}
 
 	@Override
-	public void onTunnelNetworkChange()
+	public final void onTunnelNetworkChange()
 	{
 		if( this.output )
 		{
@@ -210,13 +210,13 @@ public class PartP2PLight extends PartP2PTunnel<PartP2PLight> implements IGridTi
 	}
 
 	@Override
-	public TickingRequest getTickingRequest( IGridNode node )
+	public final TickingRequest getTickingRequest( IGridNode node )
 	{
 		return new TickingRequest( TickRates.LightTunnel.min, TickRates.LightTunnel.max, false, false );
 	}
 
 	@Override
-	public TickRateModulation tickingRequest( IGridNode node, int ticksSinceLastCall )
+	public final TickRateModulation tickingRequest( IGridNode node, int ticksSinceLastCall )
 	{
 		return this.doWork() ? TickRateModulation.FASTER : TickRateModulation.SLOWER;
 	}

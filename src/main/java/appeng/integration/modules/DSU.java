@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -31,18 +31,18 @@ import appeng.integration.modules.helpers.MFRDSUHandler;
 import appeng.integration.modules.helpers.MinefactoryReloadedDeepStorageUnit;
 
 
-public class DSU extends BaseModule implements IDSU
+public final class DSU extends BaseModule implements IDSU
 {
 	public static DSU instance;
 
 	@Override
-	public IMEInventory getDSU( TileEntity te )
+	public final IMEInventory getDSU( TileEntity te )
 	{
 		return new MinefactoryReloadedDeepStorageUnit( te );
 	}
 
 	@Override
-	public boolean isDSU( TileEntity te )
+	public final boolean isDSU( TileEntity te )
 	{
 		return te instanceof IDeepStorageUnit;
 	}

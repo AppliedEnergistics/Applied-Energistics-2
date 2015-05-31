@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -31,7 +31,7 @@ import appeng.items.AEBaseItem;
 import appeng.items.contents.CellConfig;
 
 
-public class ItemCreativeStorageCell extends AEBaseItem implements ICellWorkbenchItem
+public final class ItemCreativeStorageCell extends AEBaseItem implements ICellWorkbenchItem
 {
 
 	public ItemCreativeStorageCell()
@@ -41,31 +41,31 @@ public class ItemCreativeStorageCell extends AEBaseItem implements ICellWorkbenc
 	}
 
 	@Override
-	public boolean isEditable( ItemStack is )
+	public final boolean isEditable( ItemStack is )
 	{
 		return true;
 	}
 
 	@Override
-	public IInventory getUpgradesInventory( ItemStack is )
+	public final IInventory getUpgradesInventory( ItemStack is )
 	{
 		return null;
 	}
 
 	@Override
-	public IInventory getConfigInventory( ItemStack is )
+	public final IInventory getConfigInventory( ItemStack is )
 	{
 		return new CellConfig( is );
 	}
 
 	@Override
-	public FuzzyMode getFuzzyMode( ItemStack is )
+	public final FuzzyMode getFuzzyMode( ItemStack is )
 	{
 		return FuzzyMode.IGNORE_ALL;
 	}
 
 	@Override
-	public void setFuzzyMode( ItemStack is, FuzzyMode fzMode )
+	public final void setFuzzyMode( ItemStack is, FuzzyMode fzMode )
 	{
 
 	}

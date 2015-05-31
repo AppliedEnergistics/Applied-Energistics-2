@@ -71,7 +71,7 @@ import appeng.recipes.handlers.OreRegistration;
  * @version rv2
  * @since rv0
  */
-public class RecipeHandler implements IRecipeHandler
+public final class RecipeHandler implements IRecipeHandler
 {
 
 	public final List<String> tokens = new LinkedList<String>();
@@ -92,7 +92,7 @@ public class RecipeHandler implements IRecipeHandler
 		this.data.Handlers.add( ch );
 	}
 
-	public String getName( @Nonnull IIngredient i )
+	public final String getName( @Nonnull IIngredient i )
 	{
 		try
 		{
@@ -113,7 +113,7 @@ public class RecipeHandler implements IRecipeHandler
 		return i.getNameSpace() + ':' + i.getItemName();
 	}
 
-	public String getName( ItemStack is ) throws RecipeError
+	public final String getName( ItemStack is ) throws RecipeError
 	{
 		UniqueIdentifier id = GameRegistry.findUniqueIdentifierFor( is.getItem() );
 		String realName = id.modId + ':' + id.name;
@@ -219,7 +219,7 @@ public class RecipeHandler implements IRecipeHandler
 		return realName;
 	}
 
-	public String alias( String in )
+	public final String alias( String in )
 	{
 		String out = this.data.aliases.get( in );
 
@@ -232,7 +232,7 @@ public class RecipeHandler implements IRecipeHandler
 	}
 
 	@Override
-	public void parseRecipes( IRecipeLoader loader, String path )
+	public final void parseRecipes( IRecipeLoader loader, String path )
 	{
 		try
 		{
@@ -355,7 +355,7 @@ public class RecipeHandler implements IRecipeHandler
 	}
 
 	@Override
-	public void injectRecipes()
+	public final void injectRecipes()
 	{
 		if( cpw.mods.fml.common.Loader.instance().hasReachedState( LoaderState.POSTINITIALIZATION ) )
 		{
@@ -500,7 +500,7 @@ public class RecipeHandler implements IRecipeHandler
 		}
 	}
 
-	public List<IWebsiteSerializer> findRecipe( ItemStack output )
+	public final List<IWebsiteSerializer> findRecipe( ItemStack output )
 	{
 		List<IWebsiteSerializer> out = new LinkedList<IWebsiteSerializer>();
 

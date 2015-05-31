@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -24,7 +24,7 @@ import java.util.Iterator;
 import appeng.api.storage.data.IAEStack;
 
 
-public class MeaningfulIterator<StackType extends IAEStack> implements Iterator<StackType>
+public final class MeaningfulIterator<StackType extends IAEStack> implements Iterator<StackType>
 {
 
 	private final Iterator<StackType> parent;
@@ -36,7 +36,7 @@ public class MeaningfulIterator<StackType extends IAEStack> implements Iterator<
 	}
 
 	@Override
-	public boolean hasNext()
+	public final boolean hasNext()
 	{
 		while( this.parent.hasNext() )
 		{
@@ -55,13 +55,13 @@ public class MeaningfulIterator<StackType extends IAEStack> implements Iterator<
 	}
 
 	@Override
-	public StackType next()
+	public final StackType next()
 	{
 		return this.next;
 	}
 
 	@Override
-	public void remove()
+	public final void remove()
 	{
 		this.parent.remove();
 	}

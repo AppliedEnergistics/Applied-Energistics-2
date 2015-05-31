@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -24,7 +24,7 @@ import java.util.Random;
 import net.minecraft.world.World;
 
 
-public class LightningArcFX extends LightningFX
+public final class LightningArcFX extends LightningFX
 {
 	private static final Random RANDOM_GENERATOR = new Random();
 
@@ -45,7 +45,7 @@ public class LightningArcFX extends LightningFX
 	}
 
 	@Override
-	protected void regen()
+	protected final void regen()
 	{
 		double i = 1.0 / ( this.steps - 1 );
 		double lastDirectionX = this.rx * i;

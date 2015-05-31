@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -27,7 +27,7 @@ import com.google.common.collect.Multimap;
 import appeng.api.storage.data.IAEStack;
 
 
-public class GenericInterestManager<T>
+public final class GenericInterestManager<T>
 {
 
 	private final Multimap<IAEStack, T> container;
@@ -39,7 +39,7 @@ public class GenericInterestManager<T>
 		this.container = interests;
 	}
 
-	public void enableTransactions()
+	public final void enableTransactions()
 	{
 		if( this.transDepth == 0 )
 		{
@@ -49,7 +49,7 @@ public class GenericInterestManager<T>
 		this.transDepth++;
 	}
 
-	public void disableTransactions()
+	public final void disableTransactions()
 	{
 		this.transDepth--;
 
@@ -72,7 +72,7 @@ public class GenericInterestManager<T>
 		}
 	}
 
-	public boolean put( IAEStack stack, T iw )
+	public final boolean put( IAEStack stack, T iw )
 	{
 		if( this.transactions != null )
 		{
@@ -85,7 +85,7 @@ public class GenericInterestManager<T>
 		}
 	}
 
-	public boolean remove( IAEStack stack, T iw )
+	public final boolean remove( IAEStack stack, T iw )
 	{
 		if( this.transactions != null )
 		{
@@ -98,17 +98,17 @@ public class GenericInterestManager<T>
 		}
 	}
 
-	public boolean containsKey( IAEStack stack )
+	public final boolean containsKey( IAEStack stack )
 	{
 		return this.container.containsKey( stack );
 	}
 
-	public Collection<T> get( IAEStack stack )
+	public final Collection<T> get( IAEStack stack )
 	{
 		return this.container.get( stack );
 	}
 
-	class SavedTransactions
+	final class SavedTransactions
 	{
 
 		public final boolean put;

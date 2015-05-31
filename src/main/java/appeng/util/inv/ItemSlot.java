@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -25,7 +25,7 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.util.item.AEItemStack;
 
 
-public class ItemSlot
+public final class ItemSlot
 {
 
 	public int slot;
@@ -34,12 +34,12 @@ public class ItemSlot
 	private IAEItemStack aeItemStack;
 	private ItemStack itemStack;
 
-	public ItemStack getItemStack()
+	public final ItemStack getItemStack()
 	{
 		return this.itemStack == null ? ( this.aeItemStack == null ? null : ( this.itemStack = this.aeItemStack.getItemStack() ) ) : this.itemStack;
 	}
 
-	public void setItemStack( ItemStack is )
+	public final void setItemStack( ItemStack is )
 	{
 		this.aeItemStack = null;
 		this.itemStack = is;
@@ -50,7 +50,7 @@ public class ItemSlot
 		return this.aeItemStack == null ? ( this.itemStack == null ? null : ( this.aeItemStack = AEItemStack.create( this.itemStack ) ) ) : this.aeItemStack;
 	}
 
-	public void setAEItemStack( IAEItemStack is )
+	public final void setAEItemStack( IAEItemStack is )
 	{
 		this.aeItemStack = is;
 		this.itemStack = null;

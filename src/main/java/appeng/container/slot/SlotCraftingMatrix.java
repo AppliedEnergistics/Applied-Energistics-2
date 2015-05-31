@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -24,7 +24,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 
 
-public class SlotCraftingMatrix extends AppEngSlot
+public final class SlotCraftingMatrix extends AppEngSlot
 {
 
 	final Container c;
@@ -43,7 +43,7 @@ public class SlotCraftingMatrix extends AppEngSlot
 	}
 
 	@Override
-	public void putStack( ItemStack par1ItemStack )
+	public final void putStack( ItemStack par1ItemStack )
 	{
 		super.putStack( par1ItemStack );
 		this.c.onCraftMatrixChanged( this.inventory );
@@ -56,7 +56,7 @@ public class SlotCraftingMatrix extends AppEngSlot
 	}
 
 	@Override
-	public ItemStack decrStackSize( int par1 )
+	public final ItemStack decrStackSize( int par1 )
 	{
 		ItemStack is = super.decrStackSize( par1 );
 		this.c.onCraftMatrixChanged( this.inventory );

@@ -66,7 +66,7 @@ import appeng.util.LookDirection;
 import appeng.util.Platform;
 
 
-public class PartPlacement
+public final class PartPlacement
 {
 
 	public static float eyeHeight = 0.0f;

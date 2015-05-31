@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -26,7 +26,7 @@ import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 
 
-public class InvLayerData
+public final class InvLayerData
 {
 
 	// a simple empty array for empty stuff..
@@ -44,7 +44,7 @@ public class InvLayerData
 		this.slots = c;
 	}
 
-	public ItemStack decreaseStackSize( int slot, int amount )
+	public final ItemStack decreaseStackSize( int slot, int amount )
 	{
 		if( this.isSlotValid( slot ) )
 		{
@@ -61,12 +61,12 @@ public class InvLayerData
 	 *
 	 * @return true, if the slot exists.
 	 */
-	boolean isSlotValid( int slot )
+	final boolean isSlotValid( int slot )
 	{
 		return this.slots != null && slot >= 0 && slot < this.slots.size();
 	}
 
-	public int getSizeInventory()
+	public final int getSizeInventory()
 	{
 		if( this.slots == null )
 		{
@@ -76,7 +76,7 @@ public class InvLayerData
 		return this.slots.size();
 	}
 
-	public ItemStack getStackInSlot( int slot )
+	public final ItemStack getStackInSlot( int slot )
 	{
 		if( this.isSlotValid( slot ) )
 		{
@@ -86,7 +86,7 @@ public class InvLayerData
 		return null;
 	}
 
-	public boolean isItemValidForSlot( int slot, ItemStack itemstack )
+	public final boolean isItemValidForSlot( int slot, ItemStack itemstack )
 	{
 		if( this.isSlotValid( slot ) )
 		{
@@ -96,7 +96,7 @@ public class InvLayerData
 		return false;
 	}
 
-	public void setInventorySlotContents( int slot, ItemStack itemstack )
+	public final void setInventorySlotContents( int slot, ItemStack itemstack )
 	{
 		if( this.isSlotValid( slot ) )
 		{
@@ -104,7 +104,7 @@ public class InvLayerData
 		}
 	}
 
-	public boolean canExtractItem( int slot, ItemStack itemstack, int side )
+	public final boolean canExtractItem( int slot, ItemStack itemstack, int side )
 	{
 		if( this.isSlotValid( slot ) )
 		{
@@ -114,7 +114,7 @@ public class InvLayerData
 		return false;
 	}
 
-	public boolean canInsertItem( int slot, ItemStack itemstack, int side )
+	public final boolean canInsertItem( int slot, ItemStack itemstack, int side )
 	{
 		if( this.isSlotValid( slot ) )
 		{
@@ -124,7 +124,7 @@ public class InvLayerData
 		return false;
 	}
 
-	public void markDirty()
+	public final void markDirty()
 	{
 		if( this.inventories != null )
 		{
@@ -135,7 +135,7 @@ public class InvLayerData
 		}
 	}
 
-	public int[] getAccessibleSlotsFromSide( int side )
+	public final int[] getAccessibleSlotsFromSide( int side )
 	{
 		if( this.sides == null || side < 0 || side > 5 )
 		{

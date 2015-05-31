@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -41,7 +41,7 @@ public abstract class AEBaseMEGui extends AEBaseGui
 		super( container );
 	}
 
-	public List<String> handleItemTooltip( ItemStack stack, int mouseX, int mouseY, List<String> currentToolTip )
+	public final List<String> handleItemTooltip( ItemStack stack, int mouseX, int mouseY, List<String> currentToolTip )
 	{
 		if( stack != null )
 		{
@@ -97,7 +97,7 @@ public abstract class AEBaseMEGui extends AEBaseGui
 	// Vanilla version...
 	// protected void drawItemStackTooltip(ItemStack stack, int x, int y)
 	@Override
-	protected void renderToolTip( ItemStack stack, int x, int y )
+	protected final void renderToolTip( ItemStack stack, int x, int y )
 	{
 		Slot s = this.getSlot( x, y );
 		if( s instanceof SlotME && stack != null )

@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -26,7 +26,7 @@ import appeng.client.texture.FlippableIcon;
 import appeng.client.texture.TmpFlippableIcon;
 
 
-public class BlockRenderInfo
+public final class BlockRenderInfo
 {
 
 	public final BaseBlockRender rendererInstance;
@@ -49,7 +49,7 @@ public class BlockRenderInfo
 		this.rendererInstance = inst;
 	}
 
-	public void updateIcons( FlippableIcon bottom, FlippableIcon top, FlippableIcon north, FlippableIcon south, FlippableIcon east, FlippableIcon west )
+	public final void updateIcons( FlippableIcon bottom, FlippableIcon top, FlippableIcon north, FlippableIcon south, FlippableIcon east, FlippableIcon west )
 	{
 		this.topIcon = top;
 		this.bottomIcon = bottom;
@@ -59,7 +59,7 @@ public class BlockRenderInfo
 		this.westIcon = west;
 	}
 
-	public void setTemporaryRenderIcon( IIcon icon )
+	public final void setTemporaryRenderIcon( IIcon icon )
 	{
 		if( icon == null )
 		{
@@ -77,7 +77,7 @@ public class BlockRenderInfo
 		}
 	}
 
-	public void setTemporaryRenderIcons( IIcon nTopIcon, IIcon nBottomIcon, IIcon nSouthIcon, IIcon nNorthIcon, IIcon nEastIcon, IIcon nWestIcon )
+	public final void setTemporaryRenderIcons( IIcon nTopIcon, IIcon nBottomIcon, IIcon nSouthIcon, IIcon nNorthIcon, IIcon nEastIcon, IIcon nWestIcon )
 	{
 		this.tmpTopIcon.setOriginal( nTopIcon == null ? this.getTexture( ForgeDirection.UP ) : nTopIcon );
 		this.tmpBottomIcon.setOriginal( nBottomIcon == null ? this.getTexture( ForgeDirection.DOWN ) : nBottomIcon );
@@ -88,7 +88,7 @@ public class BlockRenderInfo
 		this.useTmp = true;
 	}
 
-	public FlippableIcon getTexture( ForgeDirection dir )
+	public final FlippableIcon getTexture( ForgeDirection dir )
 	{
 		if( this.useTmp )
 		{
@@ -132,7 +132,7 @@ public class BlockRenderInfo
 		return this.topIcon;
 	}
 
-	public boolean isValid()
+	public final boolean isValid()
 	{
 		return this.topIcon != null && this.bottomIcon != null && this.southIcon != null && this.northIcon != null && this.eastIcon != null && this.westIcon != null;
 	}

@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -33,7 +33,7 @@ import appeng.tile.inventory.InvOperation;
 import appeng.util.Platform;
 
 
-public class TileSkyChest extends AEBaseInvTile
+public final class TileSkyChest extends AEBaseInvTile
 {
 
 	final int[] sides = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35 };
@@ -77,7 +77,7 @@ public class TileSkyChest extends AEBaseInvTile
 	}
 
 	@Override
-	public void openInventory()
+	public final void openInventory()
 	{
 		if( Platform.isClient() )
 		{
@@ -94,7 +94,7 @@ public class TileSkyChest extends AEBaseInvTile
 	}
 
 	@Override
-	public void closeInventory()
+	public final void closeInventory()
 	{
 		if( Platform.isClient() )
 		{

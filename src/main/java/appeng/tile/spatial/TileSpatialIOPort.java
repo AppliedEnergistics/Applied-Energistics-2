@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -49,7 +49,7 @@ import appeng.tile.inventory.InvOperation;
 import appeng.util.Platform;
 
 
-public class TileSpatialIOPort extends AENetworkInvTile implements Callable
+public final class TileSpatialIOPort extends AENetworkInvTile implements Callable
 {
 
 	final int[] sides = { 0, 1 };
@@ -86,7 +86,7 @@ public class TileSpatialIOPort extends AENetworkInvTile implements Callable
 		return this.lastRedstoneState == YesNo.YES;
 	}
 
-	public void updateRedstoneState()
+	public final void updateRedstoneState()
 	{
 		YesNo currentState = this.worldObj.isBlockIndirectlyGettingPowered( this.xCoord, this.yCoord, this.zCoord ) ? YesNo.YES : YesNo.NO;
 		if( this.lastRedstoneState != currentState )
@@ -122,7 +122,7 @@ public class TileSpatialIOPort extends AENetworkInvTile implements Callable
 	}
 
 	@Override
-	public Object call() throws Exception
+	public final Object call() throws Exception
 	{
 
 		ItemStack cell = this.getStackInSlot( 0 );
@@ -159,7 +159,7 @@ public class TileSpatialIOPort extends AENetworkInvTile implements Callable
 	}
 
 	@Override
-	public AECableType getCableConnectionType( ForgeDirection dir )
+	public final AECableType getCableConnectionType( ForgeDirection dir )
 	{
 		return AECableType.SMART;
 	}
@@ -177,7 +177,7 @@ public class TileSpatialIOPort extends AENetworkInvTile implements Callable
 	}
 
 	@Override
-	public boolean isItemValidForSlot( int i, ItemStack itemstack )
+	public final boolean isItemValidForSlot( int i, ItemStack itemstack )
 	{
 		return ( i == 0 && this.isSpatialCell( itemstack ) );
 	}
@@ -189,13 +189,13 @@ public class TileSpatialIOPort extends AENetworkInvTile implements Callable
 	}
 
 	@Override
-	public boolean canInsertItem( int slotIndex, ItemStack insertingItem, int side )
+	public final boolean canInsertItem( int slotIndex, ItemStack insertingItem, int side )
 	{
 		return this.isItemValidForSlot( slotIndex, insertingItem );
 	}
 
 	@Override
-	public boolean canExtractItem( int slotIndex, ItemStack extractedItem, int side )
+	public final boolean canExtractItem( int slotIndex, ItemStack extractedItem, int side )
 	{
 		return slotIndex == 1;
 	}

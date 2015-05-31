@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -30,26 +30,26 @@ import appeng.core.AELog;
 import appeng.recipes.RecipeHandler;
 
 
-public class RecipeHandlerRegistry implements IRecipeHandlerRegistry
+public final class RecipeHandlerRegistry implements IRecipeHandlerRegistry
 {
 
 	final HashMap<String, Class<? extends ICraftHandler>> handlers = new HashMap<String, Class<? extends ICraftHandler>>();
 	final LinkedList<ISubItemResolver> resolvers = new LinkedList<ISubItemResolver>();
 
 	@Override
-	public void addNewCraftHandler( String name, Class<? extends ICraftHandler> handler )
+	public final void addNewCraftHandler( String name, Class<? extends ICraftHandler> handler )
 	{
 		this.handlers.put( name.toLowerCase(), handler );
 	}
 
 	@Override
-	public void addNewSubItemResolver( ISubItemResolver sir )
+	public final void addNewSubItemResolver( ISubItemResolver sir )
 	{
 		this.resolvers.add( sir );
 	}
 
 	@Override
-	public ICraftHandler getCraftHandlerFor( String name )
+	public final ICraftHandler getCraftHandlerFor( String name )
 	{
 		Class<? extends ICraftHandler> clz = this.handlers.get( name );
 		if( clz == null )
@@ -70,13 +70,13 @@ public class RecipeHandlerRegistry implements IRecipeHandlerRegistry
 	}
 
 	@Override
-	public IRecipeHandler createNewRecipehandler()
+	public final IRecipeHandler createNewRecipehandler()
 	{
 		return new RecipeHandler();
 	}
 
 	@Override
-	public Object resolveItem( String nameSpace, String itemName )
+	public final Object resolveItem( String nameSpace, String itemName )
 	{
 		for( ISubItemResolver sir : this.resolvers )
 		{

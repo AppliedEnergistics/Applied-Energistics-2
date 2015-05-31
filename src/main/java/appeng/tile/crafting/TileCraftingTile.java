@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -90,7 +90,7 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 	}
 
 	@Override
-	public boolean canBeRotated()
+	public final boolean canBeRotated()
 	{
 		return true;// return BlockCraftingUnit.checkType( worldObj.getBlockMetadata( xCoord, yCoord, zCoord ),
 		// BlockCraftingUnit.BASE_MONITOR );
@@ -123,12 +123,12 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 		this.updateMultiBlock();
 	}
 
-	public void updateMultiBlock()
+	public final void updateMultiBlock()
 	{
 		this.calc.calculateMultiblock( this.worldObj, this.getLocation() );
 	}
 
-	public void updateStatus( CraftingCPUCluster c )
+	public final void updateStatus( CraftingCPUCluster c )
 	{
 		if( this.cluster != null && this.cluster != c )
 		{
@@ -139,7 +139,7 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 		this.updateMeta( true );
 	}
 
-	public void updateMeta( boolean updateFormed )
+	public final void updateMeta( boolean updateFormed )
 	{
 		if( this.worldObj == null || this.notLoaded() )
 		{
@@ -175,7 +175,7 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 		}
 	}
 
-	public boolean isFormed()
+	public final boolean isFormed()
 	{
 		if( Platform.isClient() )
 		{
@@ -212,7 +212,7 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 	}
 
 	@Override
-	public void disconnect( boolean update )
+	public final void disconnect( boolean update )
 	{
 		if( this.cluster != null )
 		{
@@ -225,7 +225,7 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 	}
 
 	@Override
-	public IAECluster getCluster()
+	public final IAECluster getCluster()
 	{
 		return this.cluster;
 	}
@@ -263,7 +263,7 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 		return 0;
 	}
 
-	public void breakCluster()
+	public final void breakCluster()
 	{
 		if( this.cluster != null )
 		{
@@ -327,7 +327,7 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 	}
 
 	@Override
-	public boolean isPowered()
+	public final boolean isPowered()
 	{
 		if( Platform.isClient() )
 		{
@@ -337,7 +337,7 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 	}
 
 	@Override
-	public boolean isActive()
+	public final boolean isActive()
 	{
 		if( Platform.isServer() )
 		{

@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -24,7 +24,7 @@ import appeng.api.networking.IGridHost;
 import appeng.me.cache.CraftingGridCache;
 
 
-public class CraftingLinkNexus
+public final class CraftingLinkNexus
 {
 
 	public final String CraftID;
@@ -39,7 +39,7 @@ public class CraftingLinkNexus
 		this.CraftID = craftID;
 	}
 
-	public boolean isDead( IGrid g, CraftingGridCache craftingGridCache )
+	public final boolean isDead( IGrid g, CraftingGridCache craftingGridCache )
 	{
 		if( this.canceled || this.done )
 		{
@@ -74,7 +74,7 @@ public class CraftingLinkNexus
 		return false;
 	}
 
-	public void cancel()
+	public final void cancel()
 	{
 		this.canceled = true;
 
@@ -93,7 +93,7 @@ public class CraftingLinkNexus
 		}
 	}
 
-	public void remove( CraftingLink craftingLink )
+	public final void remove( CraftingLink craftingLink )
 	{
 		if( this.req == craftingLink )
 		{
@@ -105,7 +105,7 @@ public class CraftingLinkNexus
 		}
 	}
 
-	public void add( CraftingLink craftingLink )
+	public final void add( CraftingLink craftingLink )
 	{
 		if( craftingLink.cpu != null )
 		{
@@ -117,17 +117,17 @@ public class CraftingLinkNexus
 		}
 	}
 
-	public boolean isCanceled()
+	public final boolean isCanceled()
 	{
 		return this.canceled;
 	}
 
-	public boolean isDone()
+	public final boolean isDone()
 	{
 		return this.done;
 	}
 
-	public void markDone()
+	public final void markDone()
 	{
 		this.done = true;
 
@@ -146,12 +146,12 @@ public class CraftingLinkNexus
 		}
 	}
 
-	public boolean isMachine( IGridHost machine )
+	public final boolean isMachine( IGridHost machine )
 	{
-		return this.req == machine;
+		return this.req.req == machine;
 	}
 
-	public void removeNode()
+	public final void removeNode()
 	{
 		if( this.req != null )
 		{

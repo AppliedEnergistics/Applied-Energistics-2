@@ -40,7 +40,7 @@ import appeng.util.Platform;
 
 
 @InterfaceList( value = { @Interface( iface = "ic2.api.energy.tile.IEnergySink", iname = "IC2" ), @Interface( iface = "ic2.api.energy.tile.IEnergySource", iname = "IC2" ) } )
-public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements ic2.api.energy.tile.IEnergySink, ic2.api.energy.tile.IEnergySource
+public final class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements ic2.api.energy.tile.IEnergySink, ic2.api.energy.tile.IEnergySource
 {
 
 	// two packet buffering...
@@ -63,7 +63,7 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements i
 	}
 
 	@Override
-	public void readFromNBT( NBTTagCompound tag )
+	public final void readFromNBT( NBTTagCompound tag )
 	{
 		super.readFromNBT( tag );
 		this.OutputEnergyA = tag.getDouble( "OutputPacket" );
@@ -73,7 +73,7 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements i
 	}
 
 	@Override
-	public void writeToNBT( NBTTagCompound tag )
+	public final void writeToNBT( NBTTagCompound tag )
 	{
 		super.writeToNBT( tag );
 		tag.setDouble( "OutputPacket", this.OutputEnergyA );
@@ -95,7 +95,7 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements i
 	}
 
 	@Override
-	public boolean acceptsEnergyFrom( TileEntity emitter, ForgeDirection direction )
+	public final boolean acceptsEnergyFrom( TileEntity emitter, ForgeDirection direction )
 	{
 		if( !this.output )
 		{
@@ -105,7 +105,7 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements i
 	}
 
 	@Override
-	public boolean emitsEnergyTo( TileEntity receiver, ForgeDirection direction )
+	public final boolean emitsEnergyTo( TileEntity receiver, ForgeDirection direction )
 	{
 		if( this.output )
 		{
@@ -115,7 +115,7 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements i
 	}
 
 	@Override
-	public double getDemandedEnergy()
+	public final double getDemandedEnergy()
 	{
 		if( this.output )
 		{
@@ -141,13 +141,13 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements i
 	}
 
 	@Override
-	public int getSinkTier()
+	public final int getSinkTier()
 	{
 		return 4;
 	}
 
 	@Override
-	public double injectEnergy( ForgeDirection directionFrom, double amount, double voltage )
+	public final double injectEnergy( ForgeDirection directionFrom, double amount, double voltage )
 	{
 		TunnelCollection<PartP2PIC2Power> outs;
 		try
@@ -224,7 +224,7 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements i
 	}
 
 	@Override
-	public double getOfferedEnergy()
+	public final double getOfferedEnergy()
 	{
 		if( this.output )
 		{
@@ -234,7 +234,7 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements i
 	}
 
 	@Override
-	public void drawEnergy( double amount )
+	public final void drawEnergy( double amount )
 	{
 		this.OutputEnergyA -= amount;
 		if( this.OutputEnergyA < 0.001 )
@@ -248,7 +248,7 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements i
 	}
 
 	@Override
-	public int getSourceTier()
+	public final int getSourceTier()
 	{
 		if( this.output )
 		{

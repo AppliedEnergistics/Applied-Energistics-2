@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -27,7 +27,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.util.AEColor;
 
 
-public class Splotch
+public final class Splotch
 {
 
 	public final ForgeDirection side;
@@ -79,24 +79,24 @@ public class Splotch
 		this.lumen = ( ( val >> 7 ) & 0x01 ) > 0;
 	}
 
-	public void writeToStream( ByteBuf stream )
+	public final void writeToStream( ByteBuf stream )
 	{
 		stream.writeByte( this.pos );
 		int val = this.side.ordinal() | ( this.color.ordinal() << 3 ) | ( this.lumen ? 0x80 : 0x00 );
 		stream.writeByte( val );
 	}
 
-	public float x()
+	public final float x()
 	{
 		return ( this.pos & 0x0f ) / 15.0f;
 	}
 
-	public float y()
+	public final float y()
 	{
 		return ( ( this.pos >> 4 ) & 0x0f ) / 15.0f;
 	}
 
-	public int getSeed()
+	public final int getSeed()
 	{
 		int val = this.side.ordinal() | ( this.color.ordinal() << 3 ) | ( this.lumen ? 0x80 : 0x00 );
 		return Math.abs( this.pos + val );

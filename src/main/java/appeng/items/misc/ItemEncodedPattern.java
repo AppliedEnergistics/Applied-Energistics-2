@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -44,7 +44,7 @@ import appeng.items.AEBaseItem;
 import appeng.util.Platform;
 
 
-public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternItem
+public final class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternItem
 {
 	// rather simple client side caching.
 	private static final Map<ItemStack, ItemStack> SIMPLE_CACHE = new WeakHashMap<ItemStack, ItemStack>();
@@ -60,7 +60,7 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 	}
 
 	@Override
-	public ItemStack onItemRightClick( ItemStack stack, World w, EntityPlayer player )
+	public final ItemStack onItemRightClick( ItemStack stack, World w, EntityPlayer player )
 	{
 		this.clearPattern( stack, player );
 
@@ -68,7 +68,7 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 	}
 
 	@Override
-	public boolean onItemUseFirst( ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ )
+	public final boolean onItemUseFirst( ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ )
 	{
 		return this.clearPattern( stack, player );
 	}
@@ -147,7 +147,7 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 	}
 
 	@Override
-	public ICraftingPatternDetails getPatternForItem( ItemStack is, World w )
+	public final ICraftingPatternDetails getPatternForItem( ItemStack is, World w )
 	{
 		try
 		{
@@ -159,7 +159,7 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 		}
 	}
 
-	public ItemStack getOutput( ItemStack item )
+	public final ItemStack getOutput( ItemStack item )
 	{
 		ItemStack out = SIMPLE_CACHE.get( item );
 		if( out != null )

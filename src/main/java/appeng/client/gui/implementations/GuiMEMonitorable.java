@@ -145,7 +145,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 		}
 	}
 
-	public void postUpdate( List<IAEItemStack> list )
+	public final void postUpdate( List<IAEItemStack> list )
 	{
 		for( IAEItemStack is : list )
 		{
@@ -210,7 +210,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 		}
 	}
 
-	public void re_init()
+	public final void re_init()
 	{
 		this.buttonList.clear();
 		this.initGui();
@@ -362,7 +362,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 	}
 
 	@Override
-	protected void mouseClicked( int xCoord, int yCoord, int btn )
+	protected final void mouseClicked( int xCoord, int yCoord, int btn )
 	{
 		Enum searchMode = AEConfig.instance.settings.getSetting( Settings.SEARCH_MODE );
 
@@ -383,7 +383,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 	}
 
 	@Override
-	public void onGuiClosed()
+	public final void onGuiClosed()
 	{
 		super.onGuiClosed();
 		Keyboard.enableRepeatEvents( false );
@@ -457,7 +457,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 	}
 
 	@Override
-	protected void keyTyped( char character, int key )
+	protected final void keyTyped( char character, int key )
 	{
 		if( !this.checkHotbarKeys( key ) )
 		{
@@ -480,7 +480,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 	}
 
 	@Override
-	public void updateScreen()
+	public final void updateScreen()
 	{
 		this.repo.setPower( this.monitorableContainer.hasPower );
 		super.updateScreen();

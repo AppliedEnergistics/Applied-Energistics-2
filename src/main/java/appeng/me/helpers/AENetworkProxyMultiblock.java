@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -31,7 +31,7 @@ import appeng.util.iterators.ChainedIterator;
 import appeng.util.iterators.ProxyNodeIterator;
 
 
-public class AENetworkProxyMultiblock extends AENetworkProxy implements IGridMultiblock
+public final class AENetworkProxyMultiblock extends AENetworkProxy implements IGridMultiblock
 {
 
 	public AENetworkProxyMultiblock( IGridProxyable te, String nbtName, ItemStack itemStack, boolean inWorld )
@@ -40,7 +40,7 @@ public class AENetworkProxyMultiblock extends AENetworkProxy implements IGridMul
 	}
 
 	@Override
-	public Iterator<IGridNode> getMultiblockNodes()
+	public final Iterator<IGridNode> getMultiblockNodes()
 	{
 		if( this.getCluster() == null )
 		{
@@ -50,7 +50,7 @@ public class AENetworkProxyMultiblock extends AENetworkProxy implements IGridMul
 		return new ProxyNodeIterator( this.getCluster().getTiles() );
 	}
 
-	IAECluster getCluster()
+	final IAECluster getCluster()
 	{
 		return ( (IAEMultiBlock) this.getMachine() ).getCluster();
 	}

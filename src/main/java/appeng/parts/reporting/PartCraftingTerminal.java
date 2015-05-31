@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -33,7 +33,7 @@ import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.tile.inventory.InvOperation;
 
 
-public class PartCraftingTerminal extends PartTerminal
+public final class PartCraftingTerminal extends PartTerminal
 {
 	private final AppEngInternalInventory craftingGrid = new AppEngInternalInventory( this, 9 );
 
@@ -49,7 +49,7 @@ public class PartCraftingTerminal extends PartTerminal
 	}
 
 	@Override
-	public void getDrops( List<ItemStack> drops, boolean wrenched )
+	public final void getDrops( List<ItemStack> drops, boolean wrenched )
 	{
 		super.getDrops( drops, wrenched );
 
@@ -63,14 +63,14 @@ public class PartCraftingTerminal extends PartTerminal
 	}
 
 	@Override
-	public void readFromNBT( NBTTagCompound data )
+	public final void readFromNBT( NBTTagCompound data )
 	{
 		super.readFromNBT( data );
 		this.craftingGrid.readFromNBT( data, "craftingGrid" );
 	}
 
 	@Override
-	public void writeToNBT( NBTTagCompound data )
+	public final void writeToNBT( NBTTagCompound data )
 	{
 		super.writeToNBT( data );
 		this.craftingGrid.writeToNBT( data, "craftingGrid" );
@@ -103,7 +103,7 @@ public class PartCraftingTerminal extends PartTerminal
 	}
 
 	@Override
-	public IInventory getInventoryByName( String name )
+	public final IInventory getInventoryByName( String name )
 	{
 		if( name.equals( "crafting" ) )
 		{

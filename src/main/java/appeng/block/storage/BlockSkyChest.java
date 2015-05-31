@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -52,7 +52,7 @@ import appeng.tile.storage.TileSkyChest;
 import appeng.util.Platform;
 
 
-public class BlockSkyChest extends AEBaseBlock implements ICustomCollision
+public final class BlockSkyChest extends AEBaseBlock implements ICustomCollision
 {
 
 	public BlockSkyChest()
@@ -68,13 +68,13 @@ public class BlockSkyChest extends AEBaseBlock implements ICustomCollision
 	}
 
 	@Override
-	public int damageDropped( int metadata )
+	public final int damageDropped( int metadata )
 	{
 		return metadata;
 	}
 
 	@Override
-	public ItemStack getPickBlock( MovingObjectPosition target, World world, int x, int y, int z, EntityPlayer player )
+	public final ItemStack getPickBlock( MovingObjectPosition target, World world, int x, int y, int z, EntityPlayer player )
 	{
 		final ItemStack is = super.getPickBlock( target, world, x, y, z, player );
 		is.setItemDamage( world.getBlockMetadata( x, y, z ) );
@@ -90,7 +90,7 @@ public class BlockSkyChest extends AEBaseBlock implements ICustomCollision
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public IIcon getIcon( int direction, int metadata )
+	public final IIcon getIcon( int direction, int metadata )
 	{
 		for( Block skyStoneBlock : AEApi.instance().definitions().blocks().skyStone().maybeBlock().asSet() )
 		{
@@ -112,7 +112,7 @@ public class BlockSkyChest extends AEBaseBlock implements ICustomCollision
 	}
 
 	@Override
-	public void registerBlockIcons( IIconRegister iconRegistry )
+	public final void registerBlockIcons( IIconRegister iconRegistry )
 	{
 	}
 

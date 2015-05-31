@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -38,7 +38,7 @@ import appeng.tile.crafting.TileMolecularAssembler;
 import appeng.util.Platform;
 
 
-public class BlockMolecularAssembler extends AEBaseBlock
+public final class BlockMolecularAssembler extends AEBaseBlock
 {
 
 	public static boolean booleanAlphaPass = false;
@@ -54,13 +54,13 @@ public class BlockMolecularAssembler extends AEBaseBlock
 	}
 
 	@Override
-	public int getRenderBlockPass()
+	public final int getRenderBlockPass()
 	{
 		return 1;
 	}
 
 	@Override
-	public boolean canRenderInPass( int pass )
+	public final boolean canRenderInPass( int pass )
 	{
 		booleanAlphaPass = pass == 1;
 		return pass == 0 || pass == 1;

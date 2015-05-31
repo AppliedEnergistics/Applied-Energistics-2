@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -45,7 +45,7 @@ import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
 
 
-public class TilePaint extends AEBaseTile
+public final class TilePaint extends AEBaseTile
 {
 
 	static final int LIGHT_PER_DOT = 12;
@@ -64,7 +64,7 @@ public class TilePaint extends AEBaseTile
 		}
 	}
 
-	void writeBuffer( ByteBuf out )
+	final void writeBuffer( ByteBuf out )
 	{
 		if( this.dots == null )
 		{
@@ -89,7 +89,7 @@ public class TilePaint extends AEBaseTile
 		}
 	}
 
-	void readBuffer( ByteBuf in )
+	final void readBuffer( ByteBuf in )
 	{
 		byte howMany = in.readByte();
 
@@ -144,7 +144,7 @@ public class TilePaint extends AEBaseTile
 		return true;
 	}
 
-	public void onNeighborBlockChange()
+	public final void onNeighborBlockChange()
 	{
 		if( this.dots == null )
 		{
@@ -162,7 +162,7 @@ public class TilePaint extends AEBaseTile
 		this.updateData();
 	}
 
-	public boolean isSideValid( ForgeDirection side )
+	public final boolean isSideValid( ForgeDirection side )
 	{
 		Block blk = this.worldObj.getBlock( this.xCoord + side.offsetX, this.yCoord + side.offsetY, this.zCoord + side.offsetZ );
 		return blk.isSideSolid( this.worldObj, this.xCoord + side.offsetX, this.yCoord + side.offsetY, this.zCoord + side.offsetZ, side.getOpposite() );
@@ -208,7 +208,7 @@ public class TilePaint extends AEBaseTile
 		}
 	}
 
-	public void cleanSide( ForgeDirection side )
+	public final void cleanSide( ForgeDirection side )
 	{
 		if( this.dots == null )
 		{
@@ -220,12 +220,12 @@ public class TilePaint extends AEBaseTile
 		this.updateData();
 	}
 
-	public int getLightLevel()
+	public final int getLightLevel()
 	{
 		return this.isLit;
 	}
 
-	public void addBlot( ItemStack type, ForgeDirection side, Vec3 hitVec )
+	public final void addBlot( ItemStack type, ForgeDirection side, Vec3 hitVec )
 	{
 		Block blk = this.worldObj.getBlock( this.xCoord + side.offsetX, this.yCoord + side.offsetY, this.zCoord + side.offsetZ );
 		if( blk.isSideSolid( this.worldObj, this.xCoord + side.offsetX, this.yCoord + side.offsetY, this.zCoord + side.offsetZ, side.getOpposite() ) )
@@ -257,7 +257,7 @@ public class TilePaint extends AEBaseTile
 		}
 	}
 
-	public Collection<Splotch> getDots()
+	public final Collection<Splotch> getDots()
 	{
 		if( this.dots == null )
 		{

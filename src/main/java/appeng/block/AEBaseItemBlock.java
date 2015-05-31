@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -62,7 +62,7 @@ public class AEBaseItemBlock extends ItemBlock
 	}
 
 	@Override
-	public int getMetadata( int dmg )
+	public final int getMetadata( int dmg )
 	{
 		if( this.hasSubtypes )
 		{
@@ -86,19 +86,19 @@ public class AEBaseItemBlock extends ItemBlock
 	}
 
 	@Override
-	public boolean isBookEnchantable( ItemStack itemstack1, ItemStack itemstack2 )
+	public final boolean isBookEnchantable( ItemStack itemstack1, ItemStack itemstack2 )
 	{
 		return false;
 	}
 
 	@Override
-	public String getUnlocalizedName( ItemStack is )
+	public final String getUnlocalizedName( ItemStack is )
 	{
 		return this.blockType.getUnlocalizedName( is );
 	}
 
 	@Override
-	public boolean placeBlockAt( ItemStack stack, EntityPlayer player, World w, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int metadata )
+	public final boolean placeBlockAt( ItemStack stack, EntityPlayer player, World w, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int metadata )
 	{
 		ForgeDirection up = ForgeDirection.UNKNOWN;
 		ForgeDirection forward = ForgeDirection.UNKNOWN;

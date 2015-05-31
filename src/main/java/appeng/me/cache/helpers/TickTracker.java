@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -31,7 +31,7 @@ import appeng.me.cache.TickManagerCache;
 import appeng.parts.AEBasePart;
 
 
-public class TickTracker implements Comparable<TickTracker>
+public final class TickTracker implements Comparable<TickTracker>
 {
 
 	public final TickingRequest request;
@@ -54,12 +54,12 @@ public class TickTracker implements Comparable<TickTracker>
 		this.host = tickManagerCache;
 	}
 
-	public long getAvgNanos()
+	public final long getAvgNanos()
 	{
 		return ( this.LastFiveTicksTime / 5 );
 	}
 
-	public void setRate( int rate )
+	public final void setRate( int rate )
 	{
 		this.current_rate = rate;
 
@@ -75,14 +75,14 @@ public class TickTracker implements Comparable<TickTracker>
 	}
 
 	@Override
-	public int compareTo( @Nonnull TickTracker t )
+	public final int compareTo( @Nonnull TickTracker t )
 	{
 		int nextTick = (int) ( ( this.lastTick - this.host.getCurrentTick() ) + this.current_rate );
 		int ts_nextTick = (int) ( ( t.lastTick - this.host.getCurrentTick() ) + t.current_rate );
 		return nextTick - ts_nextTick;
 	}
 
-	public void addEntityCrashInfo( CrashReportCategory crashreportcategory )
+	public final void addEntityCrashInfo( CrashReportCategory crashreportcategory )
 	{
 		if( this.gt instanceof AEBasePart )
 		{

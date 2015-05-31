@@ -40,7 +40,7 @@ import appeng.items.parts.ItemFacade;
 import appeng.parts.CableBusStorage;
 
 
-public class FacadeContainer implements IFacadeContainer
+public final class FacadeContainer implements IFacadeContainer
 {
 
 	final int facades = 6;
@@ -52,7 +52,7 @@ public class FacadeContainer implements IFacadeContainer
 	}
 
 	@Override
-	public boolean addFacade( IFacadePart a )
+	public final boolean addFacade( IFacadePart a )
 	{
 		if( this.getFacade( a.getSide() ) == null )
 		{
@@ -63,7 +63,7 @@ public class FacadeContainer implements IFacadeContainer
 	}
 
 	@Override
-	public void removeFacade( IPartHost host, ForgeDirection side )
+	public final void removeFacade( IPartHost host, ForgeDirection side )
 	{
 		if( side != null && side != ForgeDirection.UNKNOWN )
 		{
@@ -79,13 +79,13 @@ public class FacadeContainer implements IFacadeContainer
 	}
 
 	@Override
-	public IFacadePart getFacade( ForgeDirection s )
+	public final IFacadePart getFacade( ForgeDirection s )
 	{
 		return this.storage.getFacade( s.ordinal() );
 	}
 
 	@Override
-	public void rotateLeft()
+	public final void rotateLeft()
 	{
 		IFacadePart[] newFacades = new FacadePart[6];
 
@@ -105,7 +105,7 @@ public class FacadeContainer implements IFacadeContainer
 	}
 
 	@Override
-	public void writeToNBT( NBTTagCompound c )
+	public final void writeToNBT( NBTTagCompound c )
 	{
 		for( int x = 0; x < this.facades; x++ )
 		{
@@ -119,7 +119,7 @@ public class FacadeContainer implements IFacadeContainer
 	}
 
 	@Override
-	public boolean readFromStream( ByteBuf out ) throws IOException
+	public final boolean readFromStream( ByteBuf out ) throws IOException
 	{
 		int facadeSides = out.readByte();
 
@@ -168,7 +168,7 @@ public class FacadeContainer implements IFacadeContainer
 	}
 
 	@Override
-	public void readFromNBT( NBTTagCompound c )
+	public final void readFromNBT( NBTTagCompound c )
 	{
 		for( int x = 0; x < this.facades; x++ )
 		{
@@ -202,7 +202,7 @@ public class FacadeContainer implements IFacadeContainer
 	}
 
 	@Override
-	public void writeToStream( ByteBuf out ) throws IOException
+	public final void writeToStream( ByteBuf out ) throws IOException
 	{
 		int facadeSides = 0;
 		for( int x = 0; x < this.facades; x++ )
@@ -228,7 +228,7 @@ public class FacadeContainer implements IFacadeContainer
 	}
 
 	@Override
-	public boolean isEmpty()
+	public final boolean isEmpty()
 	{
 		for( int x = 0; x < this.facades; x++ )
 		{

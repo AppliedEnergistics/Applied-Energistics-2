@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -42,19 +42,19 @@ public class FlippableIcon implements IIcon
 	}
 
 	@Override
-	public int getIconWidth()
+	public final int getIconWidth()
 	{
 		return this.original.getIconWidth();
 	}
 
 	@Override
-	public int getIconHeight()
+	public final int getIconHeight()
 	{
 		return this.original.getIconHeight();
 	}
 
 	@Override
-	public float getMinU()
+	public final float getMinU()
 	{
 		if( this.flip_u )
 		{
@@ -64,7 +64,7 @@ public class FlippableIcon implements IIcon
 	}
 
 	@Override
-	public float getMaxU()
+	public final float getMaxU()
 	{
 		if( this.flip_u )
 		{
@@ -74,7 +74,7 @@ public class FlippableIcon implements IIcon
 	}
 
 	@Override
-	public float getInterpolatedU( double px )
+	public final float getInterpolatedU( double px )
 	{
 		if( this.flip_u )
 		{
@@ -84,7 +84,7 @@ public class FlippableIcon implements IIcon
 	}
 
 	@Override
-	public float getMinV()
+	public final float getMinV()
 	{
 		if( this.flip_v )
 		{
@@ -94,7 +94,7 @@ public class FlippableIcon implements IIcon
 	}
 
 	@Override
-	public float getMaxV()
+	public final float getMaxV()
 	{
 		if( this.flip_v )
 		{
@@ -104,7 +104,7 @@ public class FlippableIcon implements IIcon
 	}
 
 	@Override
-	public float getInterpolatedV( double px )
+	public final float getInterpolatedV( double px )
 	{
 		if( this.flip_v )
 		{
@@ -114,23 +114,23 @@ public class FlippableIcon implements IIcon
 	}
 
 	@Override
-	public String getIconName()
+	public final String getIconName()
 	{
 		return this.original.getIconName();
 	}
 
-	public IIcon getOriginal()
+	public final IIcon getOriginal()
 	{
 		return this.original;
 	}
 
-	public void setFlip( boolean u, boolean v )
+	public final void setFlip( boolean u, boolean v )
 	{
 		this.flip_u = u;
 		this.flip_v = v;
 	}
 
-	public int setFlip( int orientation )
+	public final int setFlip( int orientation )
 	{
 		this.flip_u = ( orientation & 8 ) == 8;
 		this.flip_v = ( orientation & 16 ) == 16;

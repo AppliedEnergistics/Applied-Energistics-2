@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -90,13 +90,13 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 		this.proxy.setValidSides( EnumSet.noneOf( ForgeDirection.class ) );
 	}
 
-	public IPartHost getHost()
+	public final IPartHost getHost()
 	{
 		return this.host;
 	}
 
 	@Override
-	public IGridNode getGridNode( ForgeDirection dir )
+	public final IGridNode getGridNode( ForgeDirection dir )
 	{
 		return this.proxy.getNode();
 	}
@@ -120,7 +120,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 		}
 	}
 
-	protected AEColor getColor()
+	protected final AEColor getColor()
 	{
 		if( this.host == null )
 		{
@@ -151,7 +151,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 	}
 
 	@Override
-	public TileEntity getTile()
+	public final TileEntity getTile()
 	{
 		return this.tile;
 	}
@@ -163,7 +163,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 	}
 
 	@Override
-	public DimensionalCoord getLocation()
+	public final DimensionalCoord getLocation()
 	{
 		return new DimensionalCoord( this.tile );
 	}
@@ -175,12 +175,12 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 	}
 
 	@Override
-	public IGridNode getActionableNode()
+	public final IGridNode getActionableNode()
 	{
 		return this.proxy.getNode();
 	}
 
-	public void saveChanges()
+	public final void saveChanges()
 	{
 		this.host.markForSave();
 	}
@@ -203,7 +203,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 		return this.is.hasDisplayName();
 	}
 
-	public void addEntityCrashInfo( CrashReportCategory crashreportcategory )
+	public final void addEntityCrashInfo( CrashReportCategory crashreportcategory )
 	{
 		crashreportcategory.addCrashSection( "Part Side", this.side );
 	}
@@ -232,7 +232,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 	}
 
 	@Override
-	public boolean isSolid()
+	public final boolean isSolid()
 	{
 		return false;
 	}
@@ -286,7 +286,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 	}
 
 	@Override
-	public IGridNode getGridNode()
+	public final IGridNode getGridNode()
 	{
 		return this.proxy.getNode();
 	}
@@ -349,7 +349,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 	}
 
 	@Override
-	public boolean isLadder( EntityLivingBase entity )
+	public final boolean isLadder( EntityLivingBase entity )
 	{
 		return false;
 	}
@@ -372,7 +372,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 	 * @param from     source of settings
 	 * @param compound compound of source
 	 */
-	public void uploadSettings( SettingsFrom from, NBTTagCompound compound )
+	public final void uploadSettings( SettingsFrom from, NBTTagCompound compound )
 	{
 		if( compound != null )
 		{
@@ -409,7 +409,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 	 *
 	 * @return compound of source
 	 */
-	public NBTTagCompound downloadSettings( SettingsFrom from )
+	public final NBTTagCompound downloadSettings( SettingsFrom from )
 	{
 		NBTTagCompound output = new NBTTagCompound();
 
@@ -528,7 +528,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 	}
 
 	@Override
-	public boolean canBePlacedOn( BusSupport what )
+	public final boolean canBePlacedOn( BusSupport what )
 	{
 		return what == BusSupport.CABLE;
 	}

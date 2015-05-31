@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -38,12 +38,12 @@ public class OreReference
 	private final Set<Integer> ores = new HashSet<Integer>();
 	private List<IAEItemStack> aeOtherOptions = null;
 
-	public Collection<String> getEquivalents()
+	public final Collection<String> getEquivalents()
 	{
 		return this.otherOptions;
 	}
 
-	public List<IAEItemStack> getAEEquivalents()
+	public final List<IAEItemStack> getAEEquivalents()
 	{
 		if( this.aeOtherOptions == null )
 		{
@@ -65,7 +65,7 @@ public class OreReference
 		return this.aeOtherOptions;
 	}
 
-	public Collection<Integer> getOres()
+	public final Collection<Integer> getOres()
 	{
 		return this.ores;
 	}

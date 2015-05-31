@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -35,7 +35,7 @@ import appeng.client.render.SpatialSkyRender;
 import appeng.core.Registration;
 
 
-public class StorageWorldProvider extends WorldProvider
+public final class StorageWorldProvider extends WorldProvider
 {
 
 	public StorageWorldProvider()
@@ -44,111 +44,111 @@ public class StorageWorldProvider extends WorldProvider
 	}
 
 	@Override
-	protected void registerWorldChunkManager()
+	protected final void registerWorldChunkManager()
 	{
 		super.worldChunkMgr = new WorldChunkManagerHell( Registration.INSTANCE.storageBiome, 0.0F );
 	}
 
 	@Override
-	public IChunkProvider createChunkGenerator()
+	public final IChunkProvider createChunkGenerator()
 	{
 		return new StorageChunkProvider( this.worldObj, 0 );
 	}
 
 	@Override
-	public float calculateCelestialAngle( long par1, float par3 )
+	public final float calculateCelestialAngle( long par1, float par3 )
 	{
 		return 0;
 	}
 
 	@Override
-	public boolean isSurfaceWorld()
+	public final boolean isSurfaceWorld()
 	{
 		return false;
 	}
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public float[] calcSunriseSunsetColors( float celestialAngle, float partialTicks )
+	public final float[] calcSunriseSunsetColors( float celestialAngle, float partialTicks )
 	{
 		return null;
 	}
 
 	@Override
-	public Vec3 getFogColor( float par1, float par2 )
+	public final Vec3 getFogColor( float par1, float par2 )
 	{
 		return Vec3.createVectorHelper( 0.07, 0.07, 0.07 );
 	}
 
 	@Override
-	public boolean canRespawnHere()
+	public final boolean canRespawnHere()
 	{
 		return false;
 	}
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public boolean isSkyColored()
+	public final boolean isSkyColored()
 	{
 		return true;
 	}
 
 	@Override
-	public boolean doesXZShowFog( int par1, int par2 )
+	public final boolean doesXZShowFog( int par1, int par2 )
 	{
 		return false;
 	}
 
 	@Override
-	public String getDimensionName()
+	public final String getDimensionName()
 	{
 		return "Storage Cell";
 	}
 
 	@Override
-	public IRenderHandler getSkyRenderer()
+	public final IRenderHandler getSkyRenderer()
 	{
 		return SpatialSkyRender.getInstance();
 	}
 
 	@Override
-	public boolean isDaytime()
+	public final boolean isDaytime()
 	{
 		return false;
 	}
 
 	@Override
-	public Vec3 getSkyColor( Entity cameraEntity, float partialTicks )
+	public final Vec3 getSkyColor( Entity cameraEntity, float partialTicks )
 	{
 		return Vec3.createVectorHelper( 0.07, 0.07, 0.07 );
 	}
 
 	@Override
-	public float getStarBrightness( float par1 )
+	public final float getStarBrightness( float par1 )
 	{
 		return 0;
 	}
 
 	@Override
-	public boolean canSnowAt( int x, int y, int z, boolean checkLight )
+	public final boolean canSnowAt( int x, int y, int z, boolean checkLight )
 	{
 		return false;
 	}
 
 	@Override
-	public ChunkCoordinates getSpawnPoint()
+	public final ChunkCoordinates getSpawnPoint()
 	{
 		return new ChunkCoordinates( 0, 0, 0 );
 	}
 
 	@Override
-	public boolean isBlockHighHumidity( int x, int y, int z )
+	public final boolean isBlockHighHumidity( int x, int y, int z )
 	{
 		return false;
 	}
 
 	@Override
-	public boolean canDoLightning( Chunk chunk )
+	public final boolean canDoLightning( Chunk chunk )
 	{
 		return false;
 	}

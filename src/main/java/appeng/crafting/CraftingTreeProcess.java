@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -42,7 +42,7 @@ import appeng.me.cluster.implementations.CraftingCPUCluster;
 import appeng.util.Platform;
 
 
-public class CraftingTreeProcess
+public final class CraftingTreeProcess
 {
 
 	final CraftingTreeNode parent;
@@ -171,12 +171,12 @@ public class CraftingTreeProcess
 		}
 	}
 
-	public boolean notRecursive( ICraftingPatternDetails details )
+	public final boolean notRecursive( ICraftingPatternDetails details )
 	{
 		return this.parent == null || this.parent.notRecursive( details );
 	}
 
-	long getTimes( long remaining, long stackSize )
+	final long getTimes( long remaining, long stackSize )
 	{
 		if( this.limitQty || this.fullSimulation )
 		{
@@ -185,7 +185,7 @@ public class CraftingTreeProcess
 		return ( remaining / stackSize ) + ( remaining % stackSize != 0 ? 1 : 0 );
 	}
 
-	public void request( MECraftingInventory inv, long i, BaseActionSource src ) throws CraftBranchFailure, InterruptedException
+	public final void request( MECraftingInventory inv, long i, BaseActionSource src ) throws CraftBranchFailure, InterruptedException
 	{
 		this.job.handlePausing();
 
@@ -250,7 +250,7 @@ public class CraftingTreeProcess
 		this.crafts += i;
 	}
 
-	public void dive( CraftingJob job )
+	public final void dive( CraftingJob job )
 	{
 		job.addTask( this.getAmountCrafted( this.parent.getStack( 1 ) ), this.crafts, this.details, this.depth );
 		for( CraftingTreeNode pro : this.nodes.keySet() )
@@ -261,7 +261,7 @@ public class CraftingTreeProcess
 		job.addBytes( 8 + this.crafts + this.bytes );
 	}
 
-	IAEItemStack getAmountCrafted( IAEItemStack what2 )
+	final IAEItemStack getAmountCrafted( IAEItemStack what2 )
 	{
 		for( IAEItemStack is : this.details.getCondensedOutputs() )
 		{
@@ -287,7 +287,7 @@ public class CraftingTreeProcess
 		throw new IllegalStateException( "Crafting Tree construction failed." );
 	}
 
-	public void setSimulate()
+	public final void setSimulate()
 	{
 		this.crafts = 0;
 		this.bytes = 0;
@@ -298,7 +298,7 @@ public class CraftingTreeProcess
 		}
 	}
 
-	public void setJob( MECraftingInventory storage, CraftingCPUCluster craftingCPUCluster, BaseActionSource src ) throws CraftBranchFailure
+	public final void setJob( MECraftingInventory storage, CraftingCPUCluster craftingCPUCluster, BaseActionSource src ) throws CraftBranchFailure
 	{
 		craftingCPUCluster.addCrafting( this.details, this.crafts );
 
@@ -308,7 +308,7 @@ public class CraftingTreeProcess
 		}
 	}
 
-	public void getPlan( IItemList<IAEItemStack> plan )
+	public final void getPlan( IItemList<IAEItemStack> plan )
 	{
 		for( IAEItemStack i : this.details.getOutputs() )
 		{

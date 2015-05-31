@@ -33,7 +33,7 @@ import appeng.util.InventoryAdaptor;
 import appeng.util.iterators.NullIterator;
 
 
-public class AdaptorBCPipe extends InventoryAdaptor
+public final class AdaptorBCPipe extends InventoryAdaptor
 {
 
 	private final IBC bc;
@@ -120,7 +120,7 @@ public class AdaptorBCPipe extends InventoryAdaptor
 	}
 
 	@Override
-	public Iterator<ItemSlot> iterator()
+	public final Iterator<ItemSlot> iterator()
 	{
 		return new NullIterator<ItemSlot>();
 	}

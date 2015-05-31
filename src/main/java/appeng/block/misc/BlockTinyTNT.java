@@ -53,7 +53,7 @@ import appeng.helpers.ICustomCollision;
 import appeng.hooks.DispenserBehaviorTinyTNT;
 
 
-public class BlockTinyTNT extends AEBaseBlock implements ICustomCollision
+public final class BlockTinyTNT extends AEBaseBlock implements ICustomCollision
 {
 
 	public BlockTinyTNT()
@@ -83,7 +83,7 @@ public class BlockTinyTNT extends AEBaseBlock implements ICustomCollision
 	}
 
 	@Override
-	public IIcon getIcon( int direction, int metadata )
+	public final IIcon getIcon( int direction, int metadata )
 	{
 		return new FullIcon( Blocks.tnt.getIcon( direction, metadata ) );
 	}
@@ -105,12 +105,12 @@ public class BlockTinyTNT extends AEBaseBlock implements ICustomCollision
 	}
 
 	@Override
-	public void registerBlockIcons( IIconRegister iconRegistry )
+	public final void registerBlockIcons( IIconRegister iconRegistry )
 	{
 		// no images required.
 	}
 
-	public void startFuse( World w, int x, int y, int z, EntityLivingBase igniter )
+	public final void startFuse( World w, int x, int y, int z, EntityLivingBase igniter )
 	{
 		if( !w.isRemote )
 		{
@@ -121,7 +121,7 @@ public class BlockTinyTNT extends AEBaseBlock implements ICustomCollision
 	}
 
 	@Override
-	public void onBlockAdded( World w, int x, int y, int z )
+	public final void onBlockAdded( World w, int x, int y, int z )
 	{
 		super.onBlockAdded( w, x, y, z );
 
@@ -133,7 +133,7 @@ public class BlockTinyTNT extends AEBaseBlock implements ICustomCollision
 	}
 
 	@Override
-	public void onNeighborBlockChange( World w, int x, int y, int z, Block id )
+	public final void onNeighborBlockChange( World w, int x, int y, int z, Block id )
 	{
 		if( w.isBlockIndirectlyGettingPowered( x, y, z ) )
 		{
@@ -143,7 +143,7 @@ public class BlockTinyTNT extends AEBaseBlock implements ICustomCollision
 	}
 
 	@Override
-	public void onBlockDestroyedByExplosion( World w, int x, int y, int z, Explosion exp )
+	public final void onBlockDestroyedByExplosion( World w, int x, int y, int z, Explosion exp )
 	{
 		if( !w.isRemote )
 		{
@@ -154,7 +154,7 @@ public class BlockTinyTNT extends AEBaseBlock implements ICustomCollision
 	}
 
 	@Override
-	public void onEntityCollidedWithBlock( World w, int x, int y, int z, Entity entity )
+	public final void onEntityCollidedWithBlock( World w, int x, int y, int z, Entity entity )
 	{
 		if( entity instanceof EntityArrow && !w.isRemote )
 		{
@@ -169,7 +169,7 @@ public class BlockTinyTNT extends AEBaseBlock implements ICustomCollision
 	}
 
 	@Override
-	public boolean canDropFromExplosion( Explosion exp )
+	public final boolean canDropFromExplosion( Explosion exp )
 	{
 		return false;
 	}

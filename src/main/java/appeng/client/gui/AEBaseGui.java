@@ -110,7 +110,7 @@ public abstract class AEBaseGui extends GuiContainer
 		return joiner.join( toolTip );
 	}
 
-	protected int getQty( GuiButton btn )
+	protected final int getQty( GuiButton btn )
 	{
 		try
 		{
@@ -123,7 +123,7 @@ public abstract class AEBaseGui extends GuiContainer
 		}
 	}
 
-	public boolean isSubGui()
+	public final boolean isSubGui()
 	{
 		return this.subGui;
 	}
@@ -194,7 +194,7 @@ public abstract class AEBaseGui extends GuiContainer
 		}
 	}
 
-	public void drawTooltip( int par2, int par3, int forceWidth, String message )
+	public final void drawTooltip( int par2, int par3, int forceWidth, String message )
 	{
 		GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS );
 		GL11.glDisable( GL12.GL_RESCALE_NORMAL );
@@ -355,7 +355,7 @@ public abstract class AEBaseGui extends GuiContainer
 	}
 
 	@Override
-	protected void mouseClickMove( int x, int y, int c, long d )
+	protected final void mouseClickMove( int x, int y, int c, long d )
 	{
 		Slot slot = this.getSlot( x, y );
 		ItemStack itemstack = this.mc.thePlayer.inventory.getItemStack();
@@ -379,7 +379,7 @@ public abstract class AEBaseGui extends GuiContainer
 	}
 
 	@Override
-	protected void handleMouseClick( Slot slot, int slotIdx, int ctrlDown, int key )
+	protected final void handleMouseClick( Slot slot, int slotIdx, int ctrlDown, int key )
 	{
 		EntityPlayer player = Minecraft.getMinecraft().thePlayer;
 
@@ -590,7 +590,7 @@ public abstract class AEBaseGui extends GuiContainer
 	}
 
 	@Override
-	protected boolean checkHotbarKeys( int keyCode )
+	protected final boolean checkHotbarKeys( int keyCode )
 	{
 		Slot theSlot;
 
@@ -651,7 +651,7 @@ public abstract class AEBaseGui extends GuiContainer
 		this.subGui = true; // in case the gui is reopened later ( i'm looking at you NEI )
 	}
 
-	protected Slot getSlot( int mouseX, int mouseY )
+	protected final Slot getSlot( int mouseX, int mouseY )
 	{
 		final List<Slot> slots = this.getInventorySlots();
 		for( Slot slot : slots )
@@ -669,7 +669,7 @@ public abstract class AEBaseGui extends GuiContainer
 	public abstract void drawBG( int offsetX, int offsetY, int mouseX, int mouseY );
 
 	@Override
-	public void handleMouseInput()
+	public final void handleMouseInput()
 	{
 		super.handleMouseInput();
 
@@ -686,7 +686,7 @@ public abstract class AEBaseGui extends GuiContainer
 		}
 	}
 
-	protected void mouseWheelEvent( int x, int y, int wheel )
+	protected final void mouseWheelEvent( int x, int y, int wheel )
 	{
 		Slot slot = this.getSlot( x, y );
 		if( slot instanceof SlotME )
@@ -712,13 +712,13 @@ public abstract class AEBaseGui extends GuiContainer
 		return true;
 	}
 
-	public void bindTexture( String base, String file )
+	public final void bindTexture( String base, String file )
 	{
 		ResourceLocation loc = new ResourceLocation( base, "textures/" + file );
 		this.mc.getTextureManager().bindTexture( loc );
 	}
 
-	protected void drawItem( int x, int y, ItemStack is )
+	protected final void drawItem( int x, int y, ItemStack is )
 	{
 		this.zLevel = 100.0F;
 		itemRender.zLevel = 100.0F;
@@ -759,7 +759,7 @@ public abstract class AEBaseGui extends GuiContainer
 		this.drawSlot( s );
 	}
 
-	public void drawSlot( Slot s )
+	public final void drawSlot( Slot s )
 	{
 		if( s instanceof SlotME )
 		{
@@ -923,7 +923,7 @@ public abstract class AEBaseGui extends GuiContainer
 		}
 	}
 
-	public void bindTexture( String file )
+	public final void bindTexture( String file )
 	{
 		ResourceLocation loc = new ResourceLocation( "appliedenergistics2", "textures/" + file );
 		this.mc.getTextureManager().bindTexture( loc );

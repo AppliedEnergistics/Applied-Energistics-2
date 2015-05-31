@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -36,7 +36,7 @@ import appeng.api.storage.data.IItemList;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
 
 
-public class CraftingTreeNode
+public final class CraftingTreeNode
 {
 
 	// what slot!
@@ -84,7 +84,7 @@ public class CraftingTreeNode
 		}
 	}
 
-	boolean notRecursive( ICraftingPatternDetails details )
+	final boolean notRecursive( ICraftingPatternDetails details )
 	{
 		IAEItemStack[] o = details.getCondensedOutputs();
 		for( IAEItemStack i : o )
@@ -112,7 +112,7 @@ public class CraftingTreeNode
 		return this.parent.notRecursive( details );
 	}
 
-	public IAEItemStack request( MECraftingInventory inv, long l, BaseActionSource src ) throws CraftBranchFailure, InterruptedException
+	public final IAEItemStack request( MECraftingInventory inv, long l, BaseActionSource src ) throws CraftBranchFailure, InterruptedException
 	{
 		this.job.handlePausing();
 
@@ -281,7 +281,7 @@ public class CraftingTreeNode
 		throw new CraftBranchFailure( this.what, l );
 	}
 
-	public void dive( CraftingJob job )
+	public final void dive( CraftingJob job )
 	{
 		if( this.missing > 0 )
 		{
@@ -297,14 +297,14 @@ public class CraftingTreeNode
 		}
 	}
 
-	public IAEItemStack getStack( long size )
+	public final IAEItemStack getStack( long size )
 	{
 		IAEItemStack is = this.what.copy();
 		is.setStackSize( size );
 		return is;
 	}
 
-	public void setSimulate()
+	public final void setSimulate()
 	{
 		this.sim = true;
 		this.missing = 0;
@@ -318,7 +318,7 @@ public class CraftingTreeNode
 		}
 	}
 
-	public void setJob( MECraftingInventory storage, CraftingCPUCluster craftingCPUCluster, BaseActionSource src ) throws CraftBranchFailure
+	public final void setJob( MECraftingInventory storage, CraftingCPUCluster craftingCPUCluster, BaseActionSource src ) throws CraftBranchFailure
 	{
 		for( IAEItemStack i : this.used )
 		{
@@ -345,7 +345,7 @@ public class CraftingTreeNode
 		}
 	}
 
-	public void getPlan( IItemList<IAEItemStack> plan )
+	public final void getPlan( IItemList<IAEItemStack> plan )
 	{
 		if( this.missing > 0 )
 		{

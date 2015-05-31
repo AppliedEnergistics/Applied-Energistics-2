@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -45,17 +45,17 @@ import appeng.client.gui.implementations.GuiGrinder;
 import appeng.core.localization.GuiText;
 
 
-public class NEIGrinderRecipeHandler extends TemplateRecipeHandler
+public final class NEIGrinderRecipeHandler extends TemplateRecipeHandler
 {
 
 	@Override
-	public void loadTransferRects()
+	public final void loadTransferRects()
 	{
 		this.transferRects.add( new TemplateRecipeHandler.RecipeTransferRect( new Rectangle( 84, 23, 24, 18 ), "grindstone" ) );
 	}
 
 	@Override
-	public void loadCraftingRecipes( String outputId, Object... results )
+	public final void loadCraftingRecipes( String outputId, Object... results )
 	{
 		if( ( outputId.equals( "grindstone" ) ) && ( this.getClass() == NEIGrinderRecipeHandler.class ) )
 		{
@@ -73,7 +73,7 @@ public class NEIGrinderRecipeHandler extends TemplateRecipeHandler
 	}
 
 	@Override
-	public void loadCraftingRecipes( ItemStack result )
+	public final void loadCraftingRecipes( ItemStack result )
 	{
 		for( IGrinderEntry recipe : AEApi.instance().registries().grinder().getRecipes() )
 		{
@@ -87,7 +87,7 @@ public class NEIGrinderRecipeHandler extends TemplateRecipeHandler
 	}
 
 	@Override
-	public void loadUsageRecipes( ItemStack ingredient )
+	public final void loadUsageRecipes( ItemStack ingredient )
 	{
 		for( IGrinderEntry recipe : AEApi.instance().registries().grinder().getRecipes() )
 		{
@@ -106,26 +106,26 @@ public class NEIGrinderRecipeHandler extends TemplateRecipeHandler
 	}
 
 	@Override
-	public String getGuiTexture()
+	public final String getGuiTexture()
 	{
 		ResourceLocation loc = new ResourceLocation( "appliedenergistics2", "textures/guis/grinder.png" );
 		return loc.toString();
 	}
 
 	@Override
-	public String getOverlayIdentifier()
+	public final String getOverlayIdentifier()
 	{
 		return "grindstone";
 	}
 
 	@Override
-	public Class<? extends GuiContainer> getGuiClass()
+	public final Class<? extends GuiContainer> getGuiClass()
 	{
 		return GuiGrinder.class;
 	}
 
 	@Override
-	public void drawBackground( int recipe )
+	public final void drawBackground( int recipe )
 	{
 		GL11.glColor4f( 1, 1, 1, 1 );
 		GuiDraw.changeTexture( this.getGuiTexture() );
@@ -133,7 +133,7 @@ public class NEIGrinderRecipeHandler extends TemplateRecipeHandler
 	}
 
 	@Override
-	public void drawForeground( int recipe )
+	public final void drawForeground( int recipe )
 	{
 		super.drawForeground( recipe );
 		if( this.arecipes.size() > recipe )
@@ -159,30 +159,30 @@ public class NEIGrinderRecipeHandler extends TemplateRecipeHandler
 	}
 
 	@Override
-	public boolean hasOverlay( GuiContainer gui, Container container, int recipe )
+	public final boolean hasOverlay( GuiContainer gui, Container container, int recipe )
 	{
 		return false;
 	}
 
 	@Override
-	public IRecipeOverlayRenderer getOverlayRenderer( GuiContainer gui, int recipe )
+	public final IRecipeOverlayRenderer getOverlayRenderer( GuiContainer gui, int recipe )
 	{
 		return null;
 	}
 
 	@Override
-	public IOverlayHandler getOverlayHandler( GuiContainer gui, int recipe )
+	public final IOverlayHandler getOverlayHandler( GuiContainer gui, int recipe )
 	{
 		return null;
 	}
 
 	@Override
-	public String getRecipeName()
+	public final String getRecipeName()
 	{
 		return GuiText.GrindStone.getLocal();
 	}
 
-	public class CachedGrindStoneRecipe extends TemplateRecipeHandler.CachedRecipe
+	public final class CachedGrindStoneRecipe extends TemplateRecipeHandler.CachedRecipe
 	{
 		public final List<PositionedStack> ingredients;
 		public final PositionedStack result;
@@ -210,18 +210,18 @@ public class NEIGrinderRecipeHandler extends TemplateRecipeHandler
 		}
 
 		@Override
-		public PositionedStack getResult()
+		public final PositionedStack getResult()
 		{
 			return this.result;
 		}
 
 		@Override
-		public List<PositionedStack> getIngredients()
+		public final List<PositionedStack> getIngredients()
 		{
 			return this.getCycledIngredients( NEIGrinderRecipeHandler.this.cycleticks / 20, this.ingredients );
 		}
 
-		public void computeVisuals()
+		public final void computeVisuals()
 		{
 			for( PositionedStack p : this.ingredients )
 			{

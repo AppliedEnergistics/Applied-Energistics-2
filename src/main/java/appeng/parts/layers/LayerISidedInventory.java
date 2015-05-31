@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -44,7 +44,7 @@ import appeng.api.parts.LayerBase;
  * If your inventory changes in between placement and removal, you must trigger a PartChange on the {@link IPartHost} so
  * it can recalculate the inventory wrapper.
  */
-public class LayerISidedInventory extends LayerBase implements ISidedInventory
+public final class LayerISidedInventory extends LayerBase implements ISidedInventory
 {
 
 	// a simple empty array for empty stuff..
@@ -56,7 +56,7 @@ public class LayerISidedInventory extends LayerBase implements ISidedInventory
 	 * Recalculate inventory wrapper cache.
 	 */
 	@Override
-	public void notifyNeighbors()
+	public final void notifyNeighbors()
 	{
 		// cache of inventory state.
 		int[][] sideData = null;
@@ -128,7 +128,7 @@ public class LayerISidedInventory extends LayerBase implements ISidedInventory
 	}
 
 	@Override
-	public int getSizeInventory()
+	public final int getSizeInventory()
 	{
 		if( this.invLayer == null )
 		{
@@ -139,7 +139,7 @@ public class LayerISidedInventory extends LayerBase implements ISidedInventory
 	}
 
 	@Override
-	public ItemStack getStackInSlot( int slot )
+	public final ItemStack getStackInSlot( int slot )
 	{
 		if( this.invLayer == null )
 		{
@@ -150,7 +150,7 @@ public class LayerISidedInventory extends LayerBase implements ISidedInventory
 	}
 
 	@Override
-	public ItemStack decrStackSize( int slot, int amount )
+	public final ItemStack decrStackSize( int slot, int amount )
 	{
 		if( this.invLayer == null )
 		{
@@ -161,13 +161,13 @@ public class LayerISidedInventory extends LayerBase implements ISidedInventory
 	}
 
 	@Override
-	public ItemStack getStackInSlotOnClosing( int slot )
+	public final ItemStack getStackInSlotOnClosing( int slot )
 	{
 		return null;
 	}
 
 	@Override
-	public void setInventorySlotContents( int slot, ItemStack itemstack )
+	public final void setInventorySlotContents( int slot, ItemStack itemstack )
 	{
 		if( this.invLayer == null )
 		{
@@ -178,41 +178,41 @@ public class LayerISidedInventory extends LayerBase implements ISidedInventory
 	}
 
 	@Override
-	public String getInventoryName()
+	public final String getInventoryName()
 	{
 		return "AEMultiPart";
 	}
 
 	@Override
-	public boolean hasCustomInventoryName()
+	public final boolean hasCustomInventoryName()
 	{
 		return false;
 	}
 
 	@Override
-	public int getInventoryStackLimit()
+	public final int getInventoryStackLimit()
 	{
 		return 64; // no options here.
 	}
 
 	@Override
-	public boolean isUseableByPlayer( EntityPlayer entityplayer )
+	public final boolean isUseableByPlayer( EntityPlayer entityplayer )
 	{
 		return false;
 	}
 
 	@Override
-	public void openInventory()
+	public final void openInventory()
 	{
 	}
 
 	@Override
-	public void closeInventory()
+	public final void closeInventory()
 	{
 	}
 
 	@Override
-	public boolean isItemValidForSlot( int slot, ItemStack itemstack )
+	public final boolean isItemValidForSlot( int slot, ItemStack itemstack )
 	{
 		if( this.invLayer == null )
 		{
@@ -223,7 +223,7 @@ public class LayerISidedInventory extends LayerBase implements ISidedInventory
 	}
 
 	@Override
-	public void markDirty()
+	public final void markDirty()
 	{
 		if( this.invLayer != null )
 		{
@@ -234,7 +234,7 @@ public class LayerISidedInventory extends LayerBase implements ISidedInventory
 	}
 
 	@Override
-	public int[] getAccessibleSlotsFromSide( int side )
+	public final int[] getAccessibleSlotsFromSide( int side )
 	{
 		if( this.invLayer != null )
 		{
@@ -245,7 +245,7 @@ public class LayerISidedInventory extends LayerBase implements ISidedInventory
 	}
 
 	@Override
-	public boolean canInsertItem( int slot, ItemStack itemstack, int side )
+	public final boolean canInsertItem( int slot, ItemStack itemstack, int side )
 	{
 		if( this.invLayer == null )
 		{
@@ -256,7 +256,7 @@ public class LayerISidedInventory extends LayerBase implements ISidedInventory
 	}
 
 	@Override
-	public boolean canExtractItem( int slot, ItemStack itemstack, int side )
+	public final boolean canExtractItem( int slot, ItemStack itemstack, int side )
 	{
 		if( this.invLayer == null )
 		{

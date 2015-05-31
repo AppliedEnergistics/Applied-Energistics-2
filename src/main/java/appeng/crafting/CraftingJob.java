@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -44,7 +44,7 @@ import appeng.core.AELog;
 import appeng.hooks.TickHandler;
 
 
-public class CraftingJob implements Runnable, ICraftingJob
+public final class CraftingJob implements Runnable, ICraftingJob
 {
 
 	final IItemList<IAEItemStack> storage;
@@ -104,12 +104,12 @@ public class CraftingJob implements Runnable, ICraftingJob
 		return new CraftingTreeNode( cc, this, what, null, -1, 0 );
 	}
 
-	public void refund( IAEItemStack o )
+	public final void refund( IAEItemStack o )
 	{
 		this.availableCheck.injectItems( o, Actionable.MODULATE, this.actionSrc );
 	}
 
-	public IAEItemStack checkUse( IAEItemStack available )
+	public final IAEItemStack checkUse( IAEItemStack available )
 	{
 		return this.availableCheck.extractItems( available, Actionable.MODULATE, this.actionSrc );
 	}
@@ -119,7 +119,7 @@ public class CraftingJob implements Runnable, ICraftingJob
 
 	}
 
-	public void addTask( IAEItemStack what, long crafts, ICraftingPatternDetails details, int depth )
+	public final void addTask( IAEItemStack what, long crafts, ICraftingPatternDetails details, int depth )
 	{
 		if( crafts > 0 )
 		{
@@ -129,14 +129,14 @@ public class CraftingJob implements Runnable, ICraftingJob
 		}
 	}
 
-	public void addMissing( IAEItemStack what )
+	public final void addMissing( IAEItemStack what )
 	{
 		what = what.copy();
 		this.missing.add( what );
 	}
 
 	@Override
-	public void run()
+	public final void run()
 	{
 		try
 		{
@@ -225,7 +225,7 @@ public class CraftingJob implements Runnable, ICraftingJob
 		this.finish();
 	}
 
-	public void handlePausing() throws InterruptedException
+	public final void handlePausing() throws InterruptedException
 	{
 		if( this.incTime > 100 )
 		{
@@ -261,7 +261,7 @@ public class CraftingJob implements Runnable, ICraftingJob
 		this.incTime++;
 	}
 
-	public void finish()
+	public final void finish()
 	{
 		if( this.callback != null )
 		{
@@ -284,19 +284,19 @@ public class CraftingJob implements Runnable, ICraftingJob
 	}
 
 	@Override
-	public boolean isSimulation()
+	public final boolean isSimulation()
 	{
 		return this.simulate;
 	}
 
 	@Override
-	public long getByteTotal()
+	public final long getByteTotal()
 	{
 		return this.bytes;
 	}
 
 	@Override
-	public void populatePlan( IItemList<IAEItemStack> plan )
+	public final void populatePlan( IItemList<IAEItemStack> plan )
 	{
 		if( this.tree != null )
 		{
@@ -305,7 +305,7 @@ public class CraftingJob implements Runnable, ICraftingJob
 	}
 
 	@Override
-	public IAEItemStack getOutput()
+	public final IAEItemStack getOutput()
 	{
 		return this.output;
 	}
@@ -315,7 +315,7 @@ public class CraftingJob implements Runnable, ICraftingJob
 		return this.done;
 	}
 
-	public World getWorld()
+	public final World getWorld()
 	{
 		return this.world;
 	}
@@ -327,7 +327,7 @@ public class CraftingJob implements Runnable, ICraftingJob
 	 *
 	 * @return true if this needs more simulation
 	 */
-	public boolean simulateFor( int milli )
+	public final boolean simulateFor( int milli )
 	{
 		this.time = milli;
 
@@ -363,12 +363,12 @@ public class CraftingJob implements Runnable, ICraftingJob
 		return true;
 	}
 
-	public void addBytes( long crafts )
+	public final void addBytes( long crafts )
 	{
 		this.bytes += crafts;
 	}
 
-	static class TwoIntegers
+	static final class TwoIntegers
 	{
 
 		public final long perOp = 0;

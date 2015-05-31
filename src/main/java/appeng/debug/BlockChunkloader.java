@@ -34,7 +34,7 @@ import appeng.core.AppEng;
 import appeng.core.features.AEFeature;
 
 
-public class BlockChunkloader extends AEBaseBlock implements LoadingCallback
+public final class BlockChunkloader extends AEBaseBlock implements LoadingCallback
 {
 
 	public BlockChunkloader()
@@ -46,13 +46,13 @@ public class BlockChunkloader extends AEBaseBlock implements LoadingCallback
 	}
 
 	@Override
-	public void ticketsLoaded( List<Ticket> tickets, World world )
+	public final void ticketsLoaded( List<Ticket> tickets, World world )
 	{
 
 	}
 
 	@Override
-	public void registerBlockIcons( IIconRegister iconRegistry )
+	public final void registerBlockIcons( IIconRegister iconRegistry )
 	{
 		this.registerNoIcons();
 	}

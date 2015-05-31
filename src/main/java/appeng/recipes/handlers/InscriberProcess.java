@@ -1,8 +1,25 @@
+/*
+ * This file is part of Applied Energistics 2.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
+ *
+ * Applied Energistics 2 is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Applied Energistics 2 is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
+ */
+
 package appeng.recipes.handlers;
 
 
 import java.util.List;
-
 import javax.annotation.Nullable;
 
 import net.minecraft.item.ItemStack;
@@ -39,7 +56,7 @@ public abstract class InscriberProcess implements ICraftHandler, IWebsiteSeriali
 	private IIngredient output;
 
 	@Override
-	public void setup( List<List<IIngredient>> input, List<List<IIngredient>> output ) throws RecipeError
+	public final void setup( List<List<IIngredient>> input, List<List<IIngredient>> output ) throws RecipeError
 	{
 		if( output.size() == 1 && output.get( 0 ).size() == 1 )
 		{
@@ -103,25 +120,25 @@ public abstract class InscriberProcess implements ICraftHandler, IWebsiteSeriali
 	}
 
 	@Nullable
-	protected IIngredient getImprintable()
+	protected final IIngredient getImprintable()
 	{
 		return this.imprintable;
 	}
 
 	@Nullable
-	protected IIngredient getTopOptional()
+	protected final IIngredient getTopOptional()
 	{
 		return this.topOptional;
 	}
 
 	@Nullable
-	protected IIngredient getBotOptional()
+	protected final IIngredient getBotOptional()
 	{
 		return this.botOptional;
 	}
 
 	@Nullable
-	protected IIngredient getOutput()
+	protected final IIngredient getOutput()
 	{
 		return this.output;
 	}

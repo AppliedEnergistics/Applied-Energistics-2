@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -55,7 +55,7 @@ import appeng.me.energy.EnergyThreshold;
 import appeng.me.energy.EnergyWatcher;
 
 
-public class EnergyGridCache implements IEnergyGrid
+public final class EnergyGridCache implements IEnergyGrid
 {
 
 	public final TreeSet<EnergyThreshold> interests = new TreeSet<EnergyThreshold>();
@@ -148,7 +148,7 @@ public class EnergyGridCache implements IEnergyGrid
 	}
 
 	@Override
-	public void onUpdateTick()
+	public final void onUpdateTick()
 	{
 		if( !this.interests.isEmpty() )
 		{
@@ -212,14 +212,14 @@ public class EnergyGridCache implements IEnergyGrid
 	}
 
 	@Override
-	public double extractAEPower( double amt, Actionable mode, PowerMultiplier pm )
+	public final double extractAEPower( double amt, Actionable mode, PowerMultiplier pm )
 	{
 		this.localSeen.clear();
 		return pm.divide( this.extractAEPower( pm.multiply( amt ), mode, this.localSeen ) );
 	}
 
 	@Override
-	public double getIdlePowerUsage()
+	public final double getIdlePowerUsage()
 	{
 		return this.drainPerTick + this.pgc.channelPowerUsage;
 	}
@@ -239,7 +239,7 @@ public class EnergyGridCache implements IEnergyGrid
 	/**
 	 * refresh current stored power.
 	 */
-	public void refreshPower()
+	public final void refreshPower()
 	{
 		this.availableTicksSinceUpdate = 0;
 		this.globalAvailablePower = 0;
@@ -250,7 +250,7 @@ public class EnergyGridCache implements IEnergyGrid
 	}
 
 	@Override
-	public double extractAEPower( double amt, Actionable mode, Set<IEnergyGrid> seen )
+	public final double extractAEPower( double amt, Actionable mode, Set<IEnergyGrid> seen )
 	{
 		if( !seen.add( this ) )
 		{
@@ -306,7 +306,7 @@ public class EnergyGridCache implements IEnergyGrid
 	}
 
 	@Override
-	public double injectAEPower( double amt, Actionable mode, Set<IEnergyGrid> seen )
+	public final double injectAEPower( double amt, Actionable mode, Set<IEnergyGrid> seen )
 	{
 		if( !seen.add( this ) )
 		{
@@ -368,7 +368,7 @@ public class EnergyGridCache implements IEnergyGrid
 	}
 
 	@Override
-	public double getEnergyDemand( double maxRequired, Set<IEnergyGrid> seen )
+	public final double getEnergyDemand( double maxRequired, Set<IEnergyGrid> seen )
 	{
 		if( !seen.add( this ) )
 		{
@@ -446,25 +446,25 @@ public class EnergyGridCache implements IEnergyGrid
 	}
 
 	@Override
-	public double getAvgPowerUsage()
+	public final double getAvgPowerUsage()
 	{
 		return this.avgDrainPerTick;
 	}
 
 	@Override
-	public double getAvgPowerInjection()
+	public final double getAvgPowerInjection()
 	{
 		return this.avgInjectionPerTick;
 	}
 
 	@Override
-	public boolean isNetworkPowered()
+	public final boolean isNetworkPowered()
 	{
 		return this.publicHasPower;
 	}
 
 	@Override
-	public double injectPower( double amt, Actionable mode )
+	public final double injectPower( double amt, Actionable mode )
 	{
 		this.localSeen.clear();
 		return this.injectAEPower( amt, mode, this.localSeen );
@@ -487,7 +487,7 @@ public class EnergyGridCache implements IEnergyGrid
 	}
 
 	@Override
-	public double getStoredPower()
+	public final double getStoredPower()
 	{
 		if( this.availableTicksSinceUpdate > 90 )
 		{
@@ -498,20 +498,20 @@ public class EnergyGridCache implements IEnergyGrid
 	}
 
 	@Override
-	public double getMaxStoredPower()
+	public final double getMaxStoredPower()
 	{
 		return this.globalMaxPower;
 	}
 
 	@Override
-	public double getEnergyDemand( double maxRequired )
+	public final double getEnergyDemand( double maxRequired )
 	{
 		this.localSeen.clear();
 		return this.getEnergyDemand( maxRequired, this.localSeen );
 	}
 
 	@Override
-	public void removeNode( IGridNode node, IGridHost machine )
+	public final void removeNode( IGridNode node, IGridHost machine )
 	{
 		if( machine instanceof IEnergyGridProvider )
 		{
@@ -561,7 +561,7 @@ public class EnergyGridCache implements IEnergyGrid
 	}
 
 	@Override
-	public void addNode( IGridNode node, IGridHost machine )
+	public final void addNode( IGridNode node, IGridHost machine )
 	{
 		if( machine instanceof IEnergyGridProvider )
 		{
@@ -613,20 +613,20 @@ public class EnergyGridCache implements IEnergyGrid
 	}
 
 	@Override
-	public void onSplit( IGridStorage storageB )
+	public final void onSplit( IGridStorage storageB )
 	{
 		this.extra /= 2;
 		storageB.dataObject().setDouble( "extraEnergy", this.extra );
 	}
 
 	@Override
-	public void onJoin( IGridStorage storageB )
+	public final void onJoin( IGridStorage storageB )
 	{
 		this.extra += storageB.dataObject().getDouble( "extraEnergy" );
 	}
 
 	@Override
-	public void populateGridStorage( IGridStorage storage )
+	public final void populateGridStorage( IGridStorage storage )
 	{
 		storage.dataObject().setDouble( "extraEnergy", this.extra );
 	}

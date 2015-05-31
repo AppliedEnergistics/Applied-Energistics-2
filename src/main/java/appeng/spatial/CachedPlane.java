@@ -43,7 +43,7 @@ import appeng.core.WorldSettings;
 import appeng.util.Platform;
 
 
-public class CachedPlane
+public final class CachedPlane
 {
 	final int x_size;
 	final int z_size;
@@ -189,7 +189,7 @@ public class CachedPlane
 		return mr.getHandler( te );
 	}
 
-	void swap( CachedPlane dst )
+	final void swap( CachedPlane dst )
 	{
 		IMovableRegistry mr = AEApi.instance().registries().movable();
 
@@ -356,7 +356,7 @@ public class CachedPlane
 		}
 	}
 
-	class Column
+	final class Column
 	{
 
 		private final int x;
@@ -385,7 +385,7 @@ public class CachedPlane
 			}
 		}
 
-		public void setBlockIDWithMetadata( int y, Object[] blk )
+		public final void setBlockIDWithMetadata( int y, Object[] blk )
 		{
 			for( Block matrixFrameBlock : CachedPlane.this.matrixFrame.maybeBlock().asSet() )
 			{
@@ -402,7 +402,7 @@ public class CachedPlane
 			extendedBlockStorage.setExtBlocklightValue( this.x, y & 15, this.z, (Integer) blk[2] );
 		}
 
-		public Object[] getDetails( int y )
+		public final Object[] getDetails( int y )
 		{
 			ExtendedBlockStorage extendedblockstorage = this.storage[y >> 4];
 			this.ch[0] = extendedblockstorage.getBlockByExtId( this.x, y & 15, this.z );
@@ -411,7 +411,7 @@ public class CachedPlane
 			return this.ch;
 		}
 
-		public boolean doNotSkip( int y )
+		public final boolean doNotSkip( int y )
 		{
 			ExtendedBlockStorage extendedblockstorage = this.storage[y >> 4];
 			if( CachedPlane.this.reg.isBlacklisted( extendedblockstorage.getBlockByExtId( this.x, y & 15, this.z ) ) )
@@ -422,7 +422,7 @@ public class CachedPlane
 			return this.skipThese == null || !this.skipThese.contains( y );
 		}
 
-		public void setSkip( int yCoord )
+		public final void setSkip( int yCoord )
 		{
 			if( this.skipThese == null )
 			{

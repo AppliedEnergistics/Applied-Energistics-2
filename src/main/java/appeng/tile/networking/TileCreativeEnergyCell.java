@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -29,7 +29,7 @@ import appeng.api.util.AECableType;
 import appeng.tile.grid.AENetworkTile;
 
 
-public class TileCreativeEnergyCell extends AENetworkTile implements IAEPowerStorage
+public final class TileCreativeEnergyCell extends AENetworkTile implements IAEPowerStorage
 {
 
 	public TileCreativeEnergyCell()
@@ -38,43 +38,43 @@ public class TileCreativeEnergyCell extends AENetworkTile implements IAEPowerSto
 	}
 
 	@Override
-	public AECableType getCableConnectionType( ForgeDirection dir )
+	public final AECableType getCableConnectionType( ForgeDirection dir )
 	{
 		return AECableType.COVERED;
 	}
 
 	@Override
-	public double injectAEPower( double amt, Actionable mode )
+	public final double injectAEPower( double amt, Actionable mode )
 	{
 		return 0;
 	}
 
 	@Override
-	public double getAEMaxPower()
+	public final double getAEMaxPower()
 	{
 		return Long.MAX_VALUE / 10000;
 	}
 
 	@Override
-	public double getAECurrentPower()
+	public final double getAECurrentPower()
 	{
 		return Long.MAX_VALUE / 10000;
 	}
 
 	@Override
-	public boolean isAEPublicPowerStorage()
+	public final boolean isAEPublicPowerStorage()
 	{
 		return true;
 	}
 
 	@Override
-	public AccessRestriction getPowerFlow()
+	public final AccessRestriction getPowerFlow()
 	{
 		return AccessRestriction.READ_WRITE;
 	}
 
 	@Override
-	public double extractAEPower( double amt, Actionable mode, PowerMultiplier pm )
+	public final double extractAEPower( double amt, Actionable mode, PowerMultiplier pm )
 	{
 		return amt;
 	}

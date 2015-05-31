@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -26,7 +26,7 @@ import appeng.api.networking.IGridNode;
 import appeng.api.networking.IMachineSet;
 
 
-public class MachineSet extends HashSet<IGridNode> implements IMachineSet
+public final class MachineSet extends HashSet<IGridNode> implements IMachineSet
 {
 
 	private static final long serialVersionUID = 3224660708327386933L;
@@ -39,7 +39,7 @@ public class MachineSet extends HashSet<IGridNode> implements IMachineSet
 	}
 
 	@Override
-	public Class<? extends IGridHost> getMachineClass()
+	public final Class<? extends IGridHost> getMachineClass()
 	{
 		return this.machine;
 	}

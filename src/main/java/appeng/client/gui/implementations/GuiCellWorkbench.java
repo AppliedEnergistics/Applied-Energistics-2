@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -44,7 +44,7 @@ import appeng.tile.misc.TileCellWorkbench;
 import appeng.util.Platform;
 
 
-public class GuiCellWorkbench extends GuiUpgradeable
+public final class GuiCellWorkbench extends GuiUpgradeable
 {
 
 	final ContainerCellWorkbench workbench;
@@ -133,7 +133,7 @@ public class GuiCellWorkbench extends GuiUpgradeable
 	}
 
 	@Override
-	protected void handleButtonVisibility()
+	protected final void handleButtonVisibility()
 	{
 		this.copyMode.setState( this.workbench.copyMode == CopyMode.CLEAR_ON_REMOVE );
 
@@ -154,13 +154,13 @@ public class GuiCellWorkbench extends GuiUpgradeable
 	}
 
 	@Override
-	protected String getBackground()
+	protected final String getBackground()
 	{
 		return "guis/cellworkbench.png";
 	}
 
 	@Override
-	protected boolean drawUpgrades()
+	protected final boolean drawUpgrades()
 	{
 		return this.workbench.availableUpgrades() > 0;
 	}
@@ -172,7 +172,7 @@ public class GuiCellWorkbench extends GuiUpgradeable
 	}
 
 	@Override
-	protected void actionPerformed( GuiButton btn )
+	protected final void actionPerformed( GuiButton btn )
 	{
 		try
 		{

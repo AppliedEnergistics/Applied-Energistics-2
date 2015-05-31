@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -25,7 +25,7 @@ import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.Platform;
 
 
-public class CellConfig extends AppEngInternalInventory
+public final class CellConfig extends AppEngInternalInventory
 {
 
 	final ItemStack is;
@@ -38,7 +38,7 @@ public class CellConfig extends AppEngInternalInventory
 	}
 
 	@Override
-	public void markDirty()
+	public final void markDirty()
 	{
 		this.writeToNBT( Platform.openNbtData( this.is ), "list" );
 	}

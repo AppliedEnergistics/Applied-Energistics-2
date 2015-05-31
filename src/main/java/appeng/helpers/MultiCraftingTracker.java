@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -39,7 +39,7 @@ import appeng.parts.automation.NonNullArrayIterator;
 import appeng.util.InventoryAdaptor;
 
 
-public class MultiCraftingTracker
+public final class MultiCraftingTracker
 {
 
 	final int size;
@@ -54,7 +54,7 @@ public class MultiCraftingTracker
 		this.size = size;
 	}
 
-	public void readFromNBT( NBTTagCompound extra )
+	public final void readFromNBT( NBTTagCompound extra )
 	{
 		for( int x = 0; x < this.size; x++ )
 		{
@@ -66,7 +66,7 @@ public class MultiCraftingTracker
 		}
 	}
 
-	void setLink( int slot, ICraftingLink l )
+	final void setLink( int slot, ICraftingLink l )
 	{
 		if( this.links == null )
 		{
@@ -96,7 +96,7 @@ public class MultiCraftingTracker
 		}
 	}
 
-	public void writeToNBT( NBTTagCompound extra )
+	public final void writeToNBT( NBTTagCompound extra )
 	{
 		for( int x = 0; x < this.size; x++ )
 		{
@@ -110,7 +110,7 @@ public class MultiCraftingTracker
 		}
 	}
 
-	ICraftingLink getLink( int slot )
+	final ICraftingLink getLink( int slot )
 	{
 		if( this.links == null )
 		{
@@ -120,7 +120,7 @@ public class MultiCraftingTracker
 		return this.links[slot];
 	}
 
-	public boolean handleCrafting( int x, long itemToCraft, IAEItemStack ais, InventoryAdaptor d, World w, IGrid g, ICraftingGrid cg, BaseActionSource mySrc )
+	public final boolean handleCrafting( int x, long itemToCraft, IAEItemStack ais, InventoryAdaptor d, World w, IGrid g, ICraftingGrid cg, BaseActionSource mySrc )
 	{
 		if( ais != null && d.simulateAdd( ais.getItemStack() ) == null )
 		{
@@ -168,7 +168,7 @@ public class MultiCraftingTracker
 		return false;
 	}
 
-	Future<ICraftingJob> getJob( int slot )
+	final Future<ICraftingJob> getJob( int slot )
 	{
 		if( this.jobs == null )
 		{
@@ -178,7 +178,7 @@ public class MultiCraftingTracker
 		return this.jobs[slot];
 	}
 
-	void setJob( int slot, Future<ICraftingJob> l )
+	final void setJob( int slot, Future<ICraftingJob> l )
 	{
 		if( this.jobs == null )
 		{
@@ -202,7 +202,7 @@ public class MultiCraftingTracker
 		}
 	}
 
-	public ImmutableSet<ICraftingLink> getRequestedJobs()
+	public final ImmutableSet<ICraftingLink> getRequestedJobs()
 	{
 		if( this.links == null )
 		{
@@ -212,7 +212,7 @@ public class MultiCraftingTracker
 		return ImmutableSet.copyOf( new NonNullArrayIterator( this.links ) );
 	}
 
-	public void jobStateChange( ICraftingLink link )
+	public final void jobStateChange( ICraftingLink link )
 	{
 		if( this.links != null )
 		{
@@ -227,7 +227,7 @@ public class MultiCraftingTracker
 		}
 	}
 
-	public int getSlot( ICraftingLink link )
+	public final int getSlot( ICraftingLink link )
 	{
 		if( this.links != null )
 		{
@@ -243,7 +243,7 @@ public class MultiCraftingTracker
 		return -1;
 	}
 
-	public void cancel()
+	public final void cancel()
 	{
 		if( this.links != null )
 		{
@@ -272,7 +272,7 @@ public class MultiCraftingTracker
 		}
 	}
 
-	public boolean isBusy( int slot )
+	public final boolean isBusy( int slot )
 	{
 		return this.getLink( slot ) != null || this.getJob( slot ) != null;
 	}

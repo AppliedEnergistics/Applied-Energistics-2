@@ -1,3 +1,21 @@
+/*
+ * This file is part of Applied Energistics 2.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
+ *
+ * Applied Energistics 2 is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Applied Energistics 2 is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
+ */
+
 package appeng.core.features;
 
 
@@ -80,7 +98,7 @@ public final class DefinitionConverter
 		}
 
 		@Override
-		public boolean sameAsStack( ItemStack comparableItem )
+		public final boolean sameAsStack( ItemStack comparableItem )
 		{
 			return this.definition.isSameAs( comparableItem );
 		}
@@ -106,14 +124,14 @@ public final class DefinitionConverter
 
 		@Nullable
 		@Override
-		public ItemStack stack( int stackSize )
+		public final ItemStack stack( int stackSize )
 		{
 			return this.definition.maybeStack( stackSize ).orNull();
 		}
 
 		@Nullable
 		@Override
-		public Item item()
+		public final Item item()
 		{
 			return this.definition.maybeItem().orNull();
 		}
@@ -133,20 +151,20 @@ public final class DefinitionConverter
 
 		@Nullable
 		@Override
-		public Block block()
+		public final Block block()
 		{
 			return this.definition.maybeBlock().orNull();
 		}
 
 		@Override
-		public boolean sameAsBlock( IBlockAccess world, int x, int y, int z )
+		public final boolean sameAsBlock( IBlockAccess world, int x, int y, int z )
 		{
 			return this.definition.isSameAs( world, x, y, z );
 		}
 	}
 
 
-	private static class AETile extends AEBlock
+	private static final class AETile extends AEBlock
 	{
 		private final ITileDefinition definition;
 
@@ -159,7 +177,7 @@ public final class DefinitionConverter
 
 		@Nullable
 		@Override
-		public Class<? extends TileEntity> entity()
+		public final Class<? extends TileEntity> entity()
 		{
 			return this.definition.maybeEntity().orNull();
 		}

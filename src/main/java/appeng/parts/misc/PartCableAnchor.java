@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -50,7 +50,7 @@ import appeng.api.parts.ISimplifiedBundle;
 import appeng.api.parts.PartItemStack;
 
 
-public class PartCableAnchor implements IPart
+public final class PartCableAnchor implements IPart
 {
 
 	protected ISimplifiedBundle renderCache = null;
@@ -64,7 +64,7 @@ public class PartCableAnchor implements IPart
 	}
 
 	@Override
-	public void getBoxes( IPartCollisionHelper bch )
+	public final void getBoxes( IPartCollisionHelper bch )
 	{
 		if( this.host != null && this.host.getFacadeContainer().getFacade( this.mySide ) != null )
 		{
@@ -77,14 +77,14 @@ public class PartCableAnchor implements IPart
 	}
 
 	@Override
-	public ItemStack getItemStack( PartItemStack wrenched )
+	public final ItemStack getItemStack( PartItemStack wrenched )
 	{
 		return this.is;
 	}
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderInventory( IPartRenderHelper instance, RenderBlocks renderer )
+	public final void renderInventory( IPartRenderHelper instance, RenderBlocks renderer )
 	{
 		instance.setTexture( this.is.getIconIndex() );
 		instance.setBounds( 7, 7, 4, 9, 9, 14 );
@@ -94,7 +94,7 @@ public class PartCableAnchor implements IPart
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderStatic( int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer )
+	public final void renderStatic( int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer )
 	{
 		this.renderCache = rh.useSimplifiedRendering( x, y, z, this, this.renderCache );
 		IIcon myIcon = this.is.getIconIndex();
@@ -113,165 +113,165 @@ public class PartCableAnchor implements IPart
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderDynamic( double x, double y, double z, IPartRenderHelper rh, RenderBlocks renderer )
+	public final void renderDynamic( double x, double y, double z, IPartRenderHelper rh, RenderBlocks renderer )
 	{
 
 	}
 
 	@Override
-	public IIcon getBreakingTexture()
+	public final IIcon getBreakingTexture()
 	{
 		return null;
 	}
 
 	@Override
-	public boolean requireDynamicRender()
+	public final boolean requireDynamicRender()
 	{
 		return false;
 	}
 
 	@Override
-	public boolean isSolid()
+	public final boolean isSolid()
 	{
 		return false;
 	}
 
 	@Override
-	public boolean canConnectRedstone()
+	public final boolean canConnectRedstone()
 	{
 		return false;
 	}
 
 	@Override
-	public void writeToNBT( NBTTagCompound data )
+	public final void writeToNBT( NBTTagCompound data )
 	{
 
 	}
 
 	@Override
-	public void readFromNBT( NBTTagCompound data )
+	public final void readFromNBT( NBTTagCompound data )
 	{
 
 	}
 
 	@Override
-	public int getLightLevel()
+	public final int getLightLevel()
 	{
 		return 0;
 	}
 
 	@Override
-	public boolean isLadder( EntityLivingBase entity )
+	public final boolean isLadder( EntityLivingBase entity )
 	{
 		return this.mySide.offsetY == 0 && ( entity.isCollidedHorizontally || !entity.onGround );
 	}
 
 	@Override
-	public void onNeighborChanged()
+	public final void onNeighborChanged()
 	{
 
 	}
 
 	@Override
-	public int isProvidingStrongPower()
-	{
-		return 0;
-	}
-
-	@Override
-	public int isProvidingWeakPower()
+	public final int isProvidingStrongPower()
 	{
 		return 0;
 	}
 
 	@Override
-	public void writeToStream( ByteBuf data ) throws IOException
+	public final int isProvidingWeakPower()
+	{
+		return 0;
+	}
+
+	@Override
+	public final void writeToStream( ByteBuf data ) throws IOException
 	{
 
 	}
 
 	@Override
-	public boolean readFromStream( ByteBuf data ) throws IOException
+	public final boolean readFromStream( ByteBuf data ) throws IOException
 	{
 		return false;
 	}
 
 	@Override
-	public IGridNode getGridNode()
+	public final IGridNode getGridNode()
 	{
 		return null;
 	}
 
 	@Override
-	public void onEntityCollision( Entity entity )
+	public final void onEntityCollision( Entity entity )
 	{
 
 	}
 
 	@Override
-	public void removeFromWorld()
+	public final void removeFromWorld()
 	{
 
 	}
 
 	@Override
-	public void addToWorld()
+	public final void addToWorld()
 	{
 
 	}
 
 	@Override
-	public IGridNode getExternalFacingNode()
+	public final IGridNode getExternalFacingNode()
 	{
 		return null;
 	}
 
 	@Override
-	public void setPartHostInfo( ForgeDirection side, IPartHost host, TileEntity tile )
+	public final void setPartHostInfo( ForgeDirection side, IPartHost host, TileEntity tile )
 	{
 		this.host = host;
 		this.mySide = side;
 	}
 
 	@Override
-	public boolean onActivate( EntityPlayer player, Vec3 pos )
+	public final boolean onActivate( EntityPlayer player, Vec3 pos )
 	{
 		return false;
 	}
 
 	@Override
-	public boolean onShiftActivate( EntityPlayer player, Vec3 pos )
+	public final boolean onShiftActivate( EntityPlayer player, Vec3 pos )
 	{
 		return false;
 	}
 
 	@Override
-	public void getDrops( List<ItemStack> drops, boolean wrenched )
+	public final void getDrops( List<ItemStack> drops, boolean wrenched )
 	{
 
 	}
 
 	@Override
-	public int cableConnectionRenderTo()
+	public final int cableConnectionRenderTo()
 	{
 		return 0;
 	}
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void randomDisplayTick( World world, int x, int y, int z, Random r )
+	public final void randomDisplayTick( World world, int x, int y, int z, Random r )
 	{
 
 	}
 
 	@Override
-	public void onPlacement( EntityPlayer player, ItemStack held, ForgeDirection side )
+	public final void onPlacement( EntityPlayer player, ItemStack held, ForgeDirection side )
 	{
 
 	}
 
 	@Override
-	public boolean canBePlacedOn( BusSupport what )
+	public final boolean canBePlacedOn( BusSupport what )
 	{
 		return what == BusSupport.CABLE || what == BusSupport.DENSE_CABLE;
 	}

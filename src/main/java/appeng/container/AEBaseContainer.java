@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -117,7 +117,7 @@ public abstract class AEBaseContainer extends Container
 		this.prepareSync();
 	}
 
-	protected IActionHost getActionHost()
+	protected final IActionHost getActionHost()
 	{
 		if( this.obj instanceof IActionHost )
 		{
@@ -173,7 +173,7 @@ public abstract class AEBaseContainer extends Container
 		this.prepareSync();
 	}
 
-	public void postPartial( PacketPartialItem packetPartialItem )
+	public final void postPartial( PacketPartialItem packetPartialItem )
 	{
 		this.dataChunks.add( packetPartialItem );
 		if( packetPartialItem.getPageCount() == this.dataChunks.size() )
@@ -214,12 +214,12 @@ public abstract class AEBaseContainer extends Container
 		this.dataChunks.clear();
 	}
 
-	public IAEItemStack getTargetStack()
+	public final IAEItemStack getTargetStack()
 	{
 		return this.clientRequestedTargetItem;
 	}
 
-	public void setTargetStack( IAEItemStack stack )
+	public final void setTargetStack( IAEItemStack stack )
 	{
 		// client doesn't need to re-send, makes for lower overhead rapid packets.
 		if( Platform.isClient() )
@@ -283,7 +283,7 @@ public abstract class AEBaseContainer extends Container
 		return this.mySrc;
 	}
 
-	public void verifyPermissions( SecurityPermissions security, boolean requirePower )
+	public final void verifyPermissions( SecurityPermissions security, boolean requirePower )
 	{
 		if( Platform.isClient() )
 		{
@@ -300,7 +300,7 @@ public abstract class AEBaseContainer extends Container
 		this.isContainerValid = this.isContainerValid && this.hasAccess( security, requirePower );
 	}
 
-	protected boolean hasAccess( SecurityPermissions perm, boolean requirePower )
+	protected final boolean hasAccess( SecurityPermissions perm, boolean requirePower )
 	{
 		IActionHost host = this.getActionHost();
 
@@ -333,12 +333,12 @@ public abstract class AEBaseContainer extends Container
 		return false;
 	}
 
-	public void lockPlayerInventorySlot( int idx )
+	public final void lockPlayerInventorySlot( int idx )
 	{
 		this.locked.add( idx );
 	}
 
-	public Object getTarget()
+	public final Object getTarget()
 	{
 		if( this.tileEntity != null )
 		{
@@ -355,12 +355,12 @@ public abstract class AEBaseContainer extends Container
 		return null;
 	}
 
-	public InventoryPlayer getPlayerInv()
+	public final InventoryPlayer getPlayerInv()
 	{
 		return this.invPlayer;
 	}
 
-	public TileEntity getTileEntity()
+	public final TileEntity getTileEntity()
 	{
 		return this.tileEntity;
 	}
@@ -376,7 +376,7 @@ public abstract class AEBaseContainer extends Container
 		this.updateProgressBar( idx, (int) value );
 	}
 
-	public void stringSync( int idx, String value )
+	public final void stringSync( int idx, String value )
 	{
 		if( this.syncData.containsKey( idx ) )
 		{
@@ -384,7 +384,7 @@ public abstract class AEBaseContainer extends Container
 		}
 	}
 
-	protected void bindPlayerInventory( InventoryPlayer inventoryPlayer, int offsetX, int offsetY )
+	protected final void bindPlayerInventory( InventoryPlayer inventoryPlayer, int offsetX, int offsetY )
 	{
 		// bind player inventory
 		for( int i = 0; i < 3; i++ )
@@ -417,7 +417,7 @@ public abstract class AEBaseContainer extends Container
 	}
 
 	@Override
-	protected Slot addSlotToContainer( Slot newSlot )
+	protected final Slot addSlotToContainer( Slot newSlot )
 	{
 		if( newSlot instanceof AppEngSlot )
 		{
@@ -453,7 +453,7 @@ public abstract class AEBaseContainer extends Container
 	}
 
 	@Override
-	public ItemStack transferStackInSlot( EntityPlayer p, int idx )
+	public final ItemStack transferStackInSlot( EntityPlayer p, int idx )
 	{
 		if( Platform.isClient() )
 		{
@@ -723,7 +723,7 @@ public abstract class AEBaseContainer extends Container
 	}
 
 	@Override
-	public boolean canInteractWith( EntityPlayer entityplayer )
+	public final boolean canInteractWith( EntityPlayer entityplayer )
 	{
 		if( this.isContainerValid )
 		{
@@ -737,7 +737,7 @@ public abstract class AEBaseContainer extends Container
 	}
 
 	@Override
-	public boolean canDragIntoSlot( Slot s )
+	public final boolean canDragIntoSlot( Slot s )
 	{
 		return ( (AppEngSlot) s ).isDraggable;
 	}
@@ -1100,7 +1100,7 @@ public abstract class AEBaseContainer extends Container
 		}
 	}
 
-	protected void updateHeld( EntityPlayerMP p )
+	protected final void updateHeld( EntityPlayerMP p )
 	{
 		if( Platform.isServer() )
 		{
@@ -1115,7 +1115,7 @@ public abstract class AEBaseContainer extends Container
 		}
 	}
 
-	public ItemStack shiftStoreItem( ItemStack input )
+	public final ItemStack shiftStoreItem( ItemStack input )
 	{
 		if( this.powerSrc == null || this.cellInv == null )
 		{
@@ -1135,7 +1135,7 @@ public abstract class AEBaseContainer extends Container
 		this.detectAndSendChanges();
 	}
 
-	protected void sendCustomName()
+	protected final void sendCustomName()
 	{
 		if( !this.sentCustomName )
 		{
@@ -1187,7 +1187,7 @@ public abstract class AEBaseContainer extends Container
 		}
 	}
 
-	public void swapSlotContents( int slotA, int slotB )
+	public final void swapSlotContents( int slotA, int slotB )
 	{
 		Slot a = this.getSlot( slotA );
 		Slot b = this.getSlot( slotB );

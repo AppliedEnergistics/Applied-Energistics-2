@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -64,7 +64,7 @@ import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 
 
-public class PartExportBus extends PartSharedItemBus implements ICraftingRequester
+public final class PartExportBus extends PartSharedItemBus implements ICraftingRequester
 {
 	final MultiCraftingTracker cratingTracker = new MultiCraftingTracker( this, 9 );
 	final BaseActionSource mySrc;
@@ -83,21 +83,21 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 	}
 
 	@Override
-	public void readFromNBT( NBTTagCompound extra )
+	public final void readFromNBT( NBTTagCompound extra )
 	{
 		super.readFromNBT( extra );
 		this.cratingTracker.readFromNBT( extra );
 	}
 
 	@Override
-	public void writeToNBT( NBTTagCompound extra )
+	public final void writeToNBT( NBTTagCompound extra )
 	{
 		super.writeToNBT( extra );
 		this.cratingTracker.writeToNBT( extra );
 	}
 
 	@Override
-	TickRateModulation doBusWork()
+	final TickRateModulation doBusWork()
 	{
 		if( !this.proxy.isActive() )
 		{
@@ -183,7 +183,7 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 	}
 
 	@Override
-	public void getBoxes( IPartCollisionHelper bch )
+	public final void getBoxes( IPartCollisionHelper bch )
 	{
 		bch.addBox( 4, 4, 12, 12, 12, 14 );
 		bch.addBox( 5, 5, 14, 11, 11, 15 );
@@ -193,7 +193,7 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderInventory( IPartRenderHelper rh, RenderBlocks renderer )
+	public final void renderInventory( IPartRenderHelper rh, RenderBlocks renderer )
 	{
 
 		rh.setTexture( CableBusTextures.PartExportSides.getIcon(), CableBusTextures.PartExportSides.getIcon(), CableBusTextures.PartMonitorBack.getIcon(), this.is.getIconIndex(), CableBusTextures.PartExportSides.getIcon(), CableBusTextures.PartExportSides.getIcon() );
@@ -210,7 +210,7 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderStatic( int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer )
+	public final void renderStatic( int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer )
 	{
 		this.renderCache = rh.useSimplifiedRendering( x, y, z, this, this.renderCache );
 		rh.setTexture( CableBusTextures.PartExportSides.getIcon(), CableBusTextures.PartExportSides.getIcon(), CableBusTextures.PartMonitorBack.getIcon(), this.is.getIconIndex(), CableBusTextures.PartExportSides.getIcon(), CableBusTextures.PartExportSides.getIcon() );
@@ -233,7 +233,7 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 	}
 
 	@Override
-	public int cableConnectionRenderTo()
+	public final int cableConnectionRenderTo()
 	{
 		return 5;
 	}
@@ -256,13 +256,13 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 	}
 
 	@Override
-	public TickingRequest getTickingRequest( IGridNode node )
+	public final TickingRequest getTickingRequest( IGridNode node )
 	{
 		return new TickingRequest( TickRates.ExportBus.min, TickRates.ExportBus.max, this.isSleeping(), false );
 	}
 
 	@Override
-	protected boolean isSleeping()
+	protected final boolean isSleeping()
 	{
 		return this.getHandler() == null || super.isSleeping();
 	}
@@ -274,7 +274,7 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 	}
 
 	@Override
-	public TickRateModulation tickingRequest( IGridNode node, int ticksSinceLastCall )
+	public final TickRateModulation tickingRequest( IGridNode node, int ticksSinceLastCall )
 	{
 		return this.doBusWork();
 	}
@@ -322,13 +322,13 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 	}
 
 	@Override
-	public ImmutableSet<ICraftingLink> getRequestedJobs()
+	public final ImmutableSet<ICraftingLink> getRequestedJobs()
 	{
 		return this.cratingTracker.getRequestedJobs();
 	}
 
 	@Override
-	public IAEItemStack injectCraftedItems( ICraftingLink link, IAEItemStack items, Actionable mode )
+	public final IAEItemStack injectCraftedItems( ICraftingLink link, IAEItemStack items, Actionable mode )
 	{
 		InventoryAdaptor d = this.getHandler();
 
@@ -358,7 +358,7 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 	}
 
 	@Override
-	public void jobStateChange( ICraftingLink link )
+	public final void jobStateChange( ICraftingLink link )
 	{
 		this.cratingTracker.jobStateChange( link );
 	}

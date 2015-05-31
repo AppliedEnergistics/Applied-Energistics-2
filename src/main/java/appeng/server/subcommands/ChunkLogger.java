@@ -33,7 +33,7 @@ import appeng.core.features.AEFeature;
 import appeng.server.ISubCommand;
 
 
-public class ChunkLogger implements ISubCommand
+public final class ChunkLogger implements ISubCommand
 {
 
 	boolean enabled = false;

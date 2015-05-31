@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -37,7 +37,7 @@ import appeng.tile.grid.AENetworkTile;
 import appeng.util.Platform;
 
 
-public class TileQuartzGrowthAccelerator extends AENetworkTile implements IPowerChannelState, ICrystalGrowthAccelerator
+public final class TileQuartzGrowthAccelerator extends AENetworkTile implements IPowerChannelState, ICrystalGrowthAccelerator
 {
 
 	public boolean hasPower = false;
@@ -56,7 +56,7 @@ public class TileQuartzGrowthAccelerator extends AENetworkTile implements IPower
 	}
 
 	@Override
-	public AECableType getCableConnectionType( ForgeDirection dir )
+	public final AECableType getCableConnectionType( ForgeDirection dir )
 	{
 		return AECableType.COVERED;
 	}
@@ -83,14 +83,14 @@ public class TileQuartzGrowthAccelerator extends AENetworkTile implements IPower
 	}
 
 	@Override
-	public void setOrientation( ForgeDirection inForward, ForgeDirection inUp )
+	public final void setOrientation( ForgeDirection inForward, ForgeDirection inUp )
 	{
 		super.setOrientation( inForward, inUp );
 		this.gridProxy.setValidSides( EnumSet.of( this.getUp(), this.getUp().getOpposite() ) );
 	}
 
 	@Override
-	public boolean isPowered()
+	public final boolean isPowered()
 	{
 		if( Platform.isServer() )
 		{
@@ -108,7 +108,7 @@ public class TileQuartzGrowthAccelerator extends AENetworkTile implements IPower
 	}
 
 	@Override
-	public boolean isActive()
+	public final boolean isActive()
 	{
 		return this.isPowered();
 	}

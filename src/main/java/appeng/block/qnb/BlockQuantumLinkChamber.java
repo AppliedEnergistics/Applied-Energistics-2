@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -47,7 +47,7 @@ import appeng.tile.qnb.TileQuantumBridge;
 import appeng.util.Platform;
 
 
-public class BlockQuantumLinkChamber extends AEBaseBlock implements ICustomCollision
+public final class BlockQuantumLinkChamber extends AEBaseBlock implements ICustomCollision
 {
 
 	public BlockQuantumLinkChamber()
@@ -63,7 +63,7 @@ public class BlockQuantumLinkChamber extends AEBaseBlock implements ICustomColli
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void randomDisplayTick( World w, int bx, int by, int bz, Random r )
+	public final void randomDisplayTick( World w, int bx, int by, int bz, Random r )
 	{
 		TileQuantumBridge bridge = this.getTileEntity( w, bx, by, bz );
 		if( bridge != null )
@@ -79,7 +79,7 @@ public class BlockQuantumLinkChamber extends AEBaseBlock implements ICustomColli
 	}
 
 	@Override
-	public void onNeighborBlockChange( World w, int x, int y, int z, Block pointlessNumber )
+	public final void onNeighborBlockChange( World w, int x, int y, int z, Block pointlessNumber )
 	{
 		TileQuantumBridge bridge = this.getTileEntity( w, x, y, z );
 		if( bridge != null )
@@ -115,7 +115,7 @@ public class BlockQuantumLinkChamber extends AEBaseBlock implements ICustomColli
 	}
 
 	@Override
-	public void breakBlock( World w, int x, int y, int z, Block a, int b )
+	public final void breakBlock( World w, int x, int y, int z, Block a, int b )
 	{
 		TileQuantumBridge bridge = this.getTileEntity( w, x, y, z );
 		if( bridge != null )

@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -27,7 +27,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -78,19 +77,19 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 		ITEM_STACKS.put( c, wat );
 	}
 
-	public boolean dropItems()
+	public final boolean dropItems()
 	{
 		WeakReference<AEBaseTile> what = DROP_NO_ITEMS.get();
 		return what == null || what.get() != this;
 	}
 
-	public boolean notLoaded()
+	public final boolean notLoaded()
 	{
 		return !this.worldObj.blockExists( this.xCoord, this.yCoord, this.zCoord );
 	}
 
 	@Nonnull
-	public TileEntity getTile()
+	public final TileEntity getTile()
 	{
 		return this;
 	}
@@ -109,7 +108,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	/**
 	 * for dormant chunk cache.
 	 */
-	public void onChunkLoad()
+	public final void onChunkLoad()
 	{
 		if( this.isInvalid() )
 		{
@@ -183,7 +182,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	}
 
 	@Override
-	public Packet getDescriptionPacket()
+	public final Packet getDescriptionPacket()
 	{
 		NBTTagCompound data = new NBTTagCompound();
 
@@ -221,7 +220,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	}
 
 	@Override
-	public void onDataPacket( NetworkManager net, S35PacketUpdateTileEntity pkt )
+	public final void onDataPacket( NetworkManager net, S35PacketUpdateTileEntity pkt )
 	{
 		// / pkt.actionType
 		if( pkt.func_148853_f() == 64 )
@@ -403,13 +402,13 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	}
 
 	@Override
-	public ForgeDirection getForward()
+	public final ForgeDirection getForward()
 	{
 		return this.forward;
 	}
 
 	@Override
-	public ForgeDirection getUp()
+	public final ForgeDirection getUp()
 	{
 		return this.up;
 	}
@@ -423,7 +422,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 		Platform.notifyBlocksOfNeighbors( this.worldObj, this.xCoord, this.yCoord, this.zCoord );
 	}
 
-	public void onPlacement( ItemStack stack, EntityPlayer player, int side )
+	public final void onPlacement( ItemStack stack, EntityPlayer player, int side )
 	{
 		if( stack.hasTagCompound() )
 		{
@@ -553,13 +552,13 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	}
 
 	@Override
-	public String getCustomName()
+	public final String getCustomName()
 	{
 		return this.hasCustomName() ? this.customName : this.getClass().getSimpleName();
 	}
 
 	@Override
-	public boolean hasCustomName()
+	public final boolean hasCustomName()
 	{
 		return this.customName != null && this.customName.length() > 0;
 	}
@@ -570,12 +569,12 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 		this.disableDrops();
 	}
 
-	public void disableDrops()
+	public final void disableDrops()
 	{
 		DROP_NO_ITEMS.set( new WeakReference<AEBaseTile>( this ) );
 	}
 
-	public void saveChanges()
+	public final void saveChanges()
 	{
 		super.markDirty();
 	}

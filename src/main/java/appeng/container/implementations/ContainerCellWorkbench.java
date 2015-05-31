@@ -47,7 +47,7 @@ import appeng.util.Platform;
 import appeng.util.iterators.NullIterator;
 
 
-public class ContainerCellWorkbench extends ContainerUpgradeable
+public final class ContainerCellWorkbench extends ContainerUpgradeable
 {
 	private final TileCellWorkbench workBench;
 	private final AppEngNullInventory nullInventory = new AppEngNullInventory();
@@ -63,7 +63,7 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 		this.workBench = te;
 	}
 
-	public void setFuzzy( FuzzyMode valueOf )
+	public final void setFuzzy( FuzzyMode valueOf )
 	{
 		ICellWorkbenchItem cwi = this.workBench.getCell();
 		if( cwi != null )
@@ -72,12 +72,12 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 		}
 	}
 
-	public void nextCopyMode()
+	public final void nextCopyMode()
 	{
 		this.workBench.getConfigManager().putSetting( Settings.COPY_MODE, Platform.nextEnum( this.getCopyMode() ) );
 	}
 
-	public CopyMode getCopyMode()
+	public final CopyMode getCopyMode()
 	{
 		return (CopyMode) this.workBench.getConfigManager().getSetting( Settings.COPY_MODE );
 	}
@@ -130,7 +130,7 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 	}
 
 	@Override
-	public int availableUpgrades()
+	public final int availableUpgrades()
 	{
 		ItemStack is = this.workBench.getInventoryByName( "cell" ).getStackInSlot( 0 );
 		if( this.prevStack != is )
@@ -142,7 +142,7 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 	}
 
 	@Override
-	public void detectAndSendChanges()
+	public final void detectAndSendChanges()
 	{
 		ItemStack is = this.workBench.getInventoryByName( "cell" ).getStackInSlot( 0 );
 		if( Platform.isServer() )
@@ -185,7 +185,7 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 		return idx < this.availableUpgrades();
 	}
 
-	public IInventory getCellUpgradeInventory()
+	public final IInventory getCellUpgradeInventory()
 	{
 		final IInventory upgradeInventory = this.workBench.getCellUpgradeInventory();
 
@@ -203,7 +203,7 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 		super.onUpdate( field, oldValue, newValue );
 	}
 
-	public void clear()
+	public final void clear()
 	{
 		IInventory inv = this.upgradeable.getInventoryByName( "config" );
 		for( int x = 0; x < inv.getSizeInventory(); x++ )
@@ -223,7 +223,7 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 		return FuzzyMode.IGNORE_ALL;
 	}
 
-	public void partition()
+	public final void partition()
 	{
 		IInventory inv = this.upgradeable.getInventoryByName( "config" );
 
@@ -253,23 +253,23 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 		this.detectAndSendChanges();
 	}
 
-	private class Upgrades implements IInventory
+	private final class Upgrades implements IInventory
 	{
 
 		@Override
-		public int getSizeInventory()
+		public final int getSizeInventory()
 		{
 			return ContainerCellWorkbench.this.getCellUpgradeInventory().getSizeInventory();
 		}
 
 		@Override
-		public ItemStack getStackInSlot( int i )
+		public final ItemStack getStackInSlot( int i )
 		{
 			return ContainerCellWorkbench.this.getCellUpgradeInventory().getStackInSlot( i );
 		}
 
 		@Override
-		public ItemStack decrStackSize( int i, int j )
+		public final ItemStack decrStackSize( int i, int j )
 		{
 			IInventory inv = ContainerCellWorkbench.this.getCellUpgradeInventory();
 			ItemStack is = inv.decrStackSize( i, j );
@@ -278,7 +278,7 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 		}
 
 		@Override
-		public ItemStack getStackInSlotOnClosing( int i )
+		public final ItemStack getStackInSlotOnClosing( int i )
 		{
 			IInventory inv = ContainerCellWorkbench.this.getCellUpgradeInventory();
 			ItemStack is = inv.getStackInSlotOnClosing( i );
@@ -287,7 +287,7 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 		}
 
 		@Override
-		public void setInventorySlotContents( int i, ItemStack itemstack )
+		public final void setInventorySlotContents( int i, ItemStack itemstack )
 		{
 			IInventory inv = ContainerCellWorkbench.this.getCellUpgradeInventory();
 			inv.setInventorySlotContents( i, itemstack );
@@ -295,47 +295,47 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 		}
 
 		@Override
-		public String getInventoryName()
+		public final String getInventoryName()
 		{
 			return "Upgrades";
 		}
 
 		@Override
-		public boolean hasCustomInventoryName()
+		public final boolean hasCustomInventoryName()
 		{
 			return false;
 		}
 
 		@Override
-		public int getInventoryStackLimit()
+		public final int getInventoryStackLimit()
 		{
 			return 1;
 		}
 
 		@Override
-		public void markDirty()
+		public final void markDirty()
 		{
 
 		}
 
 		@Override
-		public boolean isUseableByPlayer( EntityPlayer entityplayer )
+		public final boolean isUseableByPlayer( EntityPlayer entityplayer )
 		{
 			return false;
 		}
 
 		@Override
-		public void openInventory()
+		public final void openInventory()
 		{
 		}
 
 		@Override
-		public void closeInventory()
+		public final void closeInventory()
 		{
 		}
 
 		@Override
-		public boolean isItemValidForSlot( int i, ItemStack itemstack )
+		public final boolean isItemValidForSlot( int i, ItemStack itemstack )
 		{
 			return ContainerCellWorkbench.this.getCellUpgradeInventory().isItemValidForSlot( i, itemstack );
 		}

@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -32,13 +32,13 @@ public class CompassManager
 	public static final CompassManager INSTANCE = new CompassManager();
 	final HashMap<CompassRequest, CompassResult> requests = new HashMap<CompassRequest, CompassResult>();
 
-	public void postResult( long attunement, int x, int y, int z, CompassResult result )
+	public final void postResult( long attunement, int x, int y, int z, CompassResult result )
 	{
 		CompassRequest r = new CompassRequest( attunement, x, y, z );
 		this.requests.put( r, result );
 	}
 
-	public CompassResult getCompassDirection( long attunement, int x, int y, int z )
+	public final CompassResult getCompassDirection( long attunement, int x, int y, int z )
 	{
 		long now = System.currentTimeMillis();
 
@@ -79,7 +79,7 @@ public class CompassManager
 		NetworkHandler.instance.sendToServer( new PacketCompassRequest( r.attunement, r.cx, r.cz, r.cdy ) );
 	}
 
-	static class CompassRequest
+	static final class CompassRequest
 	{
 
 		final int hash;
@@ -99,13 +99,13 @@ public class CompassManager
 		}
 
 		@Override
-		public int hashCode()
+		public final int hashCode()
 		{
 			return this.hash;
 		}
 
 		@Override
-		public boolean equals( Object obj )
+		public final boolean equals( Object obj )
 		{
 			if( obj == null )
 			{

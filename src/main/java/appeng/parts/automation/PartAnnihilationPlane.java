@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -67,7 +67,7 @@ import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 
 
-public class PartAnnihilationPlane extends PartBasicState implements IGridTickable, Callable<TickRateModulation>
+public final class PartAnnihilationPlane extends PartBasicState implements IGridTickable, Callable<TickRateModulation>
 {
 	private final BaseActionSource mySrc = new MachineSource( this );
 	private boolean isAccepting = true;
@@ -79,14 +79,14 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 	}
 
 	@Override
-	public TickRateModulation call() throws Exception
+	public final TickRateModulation call() throws Exception
 	{
 		this.breaking = false;
 		return this.breakBlock( true );
 	}
 
 	@Override
-	public void getBoxes( IPartCollisionHelper bch )
+	public final void getBoxes( IPartCollisionHelper bch )
 	{
 		int minX = 1;
 		int minY = 1;
@@ -132,7 +132,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderInventory( IPartRenderHelper rh, RenderBlocks renderer )
+	public final void renderInventory( IPartRenderHelper rh, RenderBlocks renderer )
 	{
 		rh.setTexture( CableBusTextures.PartPlaneSides.getIcon(), CableBusTextures.PartPlaneSides.getIcon(), CableBusTextures.PartTransitionPlaneBack.getIcon(), this.is.getIconIndex(), CableBusTextures.PartPlaneSides.getIcon(), CableBusTextures.PartPlaneSides.getIcon() );
 
@@ -145,7 +145,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderStatic( int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer )
+	public final void renderStatic( int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer )
 	{
 		int minX = 1;
 		int minY = 1;
@@ -194,7 +194,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 	}
 
 	@Override
-	public void onNeighborChanged()
+	public final void onNeighborChanged()
 	{
 		this.isAccepting = true;
 		try
@@ -208,7 +208,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 	}
 
 	@Override
-	public void onEntityCollision( Entity entity )
+	public final void onEntityCollision( Entity entity )
 	{
 		if( this.isAccepting && entity instanceof EntityItem && !entity.isDead && Platform.isServer() && this.proxy.isActive() )
 		{
@@ -269,7 +269,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 	}
 
 	@Override
-	public int cableConnectionRenderTo()
+	public final int cableConnectionRenderTo()
 	{
 		return 1;
 	}
@@ -367,7 +367,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 		this.getHost().markForUpdate();
 	}
 
-	public TickRateModulation breakBlock( boolean modulate )
+	public final TickRateModulation breakBlock( boolean modulate )
 	{
 		if( this.isAccepting && this.proxy.isActive() )
 		{
@@ -449,13 +449,13 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 	}
 
 	@Override
-	public TickingRequest getTickingRequest( IGridNode node )
+	public final TickingRequest getTickingRequest( IGridNode node )
 	{
 		return new TickingRequest( TickRates.AnnihilationPlane.min, TickRates.AnnihilationPlane.max, false, true );
 	}
 
 	@Override
-	public TickRateModulation tickingRequest( IGridNode node, int ticksSinceLastCall )
+	public final TickRateModulation tickingRequest( IGridNode node, int ticksSinceLastCall )
 	{
 		if( this.breaking )
 		{

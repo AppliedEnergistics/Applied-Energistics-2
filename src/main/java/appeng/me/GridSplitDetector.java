@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -23,7 +23,7 @@ import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridVisitor;
 
 
-class GridSplitDetector implements IGridVisitor
+final class GridSplitDetector implements IGridVisitor
 {
 
 	final IGridNode pivot;
@@ -35,7 +35,7 @@ class GridSplitDetector implements IGridVisitor
 	}
 
 	@Override
-	public boolean visitNode( IGridNode n )
+	public final boolean visitNode( IGridNode n )
 	{
 		if( n == this.pivot )
 		{

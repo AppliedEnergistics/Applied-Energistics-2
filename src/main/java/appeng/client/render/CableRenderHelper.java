@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -35,7 +35,7 @@ import appeng.parts.BusCollisionHelper;
 import appeng.parts.CableBusContainer;
 
 
-public class CableRenderHelper
+public final class CableRenderHelper
 {
 
 	private static final CableRenderHelper INSTANCE = new CableRenderHelper();
@@ -45,7 +45,7 @@ public class CableRenderHelper
 		return INSTANCE;
 	}
 
-	public void renderStatic( CableBusContainer cableBusContainer, IFacadeContainer iFacadeContainer )
+	public final void renderStatic( CableBusContainer cableBusContainer, IFacadeContainer iFacadeContainer )
 	{
 		TileEntity te = cableBusContainer.getTile();
 		RenderBlocksWorkaround renderer = BusRenderer.INSTANCE.renderer;
@@ -209,7 +209,7 @@ public class CableRenderHelper
 		BusRenderHelper.INSTANCE.setOrientation( ax, ay, az );
 	}
 
-	public void renderDynamic( CableBusContainer cableBusContainer, double x, double y, double z )
+	public final void renderDynamic( CableBusContainer cableBusContainer, double x, double y, double z )
 	{
 		for( ForgeDirection s : ForgeDirection.values() )
 		{

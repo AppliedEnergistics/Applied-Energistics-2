@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -31,14 +31,14 @@ import net.minecraftforge.client.IItemRenderer;
 import appeng.items.misc.ItemEncodedPattern;
 
 
-public class ItemEncodedPatternRenderer implements IItemRenderer
+public final class ItemEncodedPatternRenderer implements IItemRenderer
 {
 
 	final RenderItem ri = new RenderItem();
 	boolean recursive;
 
 	@Override
-	public boolean handleRenderType( ItemStack item, ItemRenderType type )
+	public final boolean handleRenderType( ItemStack item, ItemRenderType type )
 	{
 		boolean isShiftHeld = Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) || Keyboard.isKeyDown( Keyboard.KEY_RSHIFT );
 
@@ -55,13 +55,13 @@ public class ItemEncodedPatternRenderer implements IItemRenderer
 	}
 
 	@Override
-	public boolean shouldUseRenderHelper( ItemRenderType type, ItemStack item, ItemRendererHelper helper )
+	public final boolean shouldUseRenderHelper( ItemRenderType type, ItemStack item, ItemRendererHelper helper )
 	{
 		return false;
 	}
 
 	@Override
-	public void renderItem( ItemRenderType type, ItemStack item, Object... data )
+	public final void renderItem( ItemRenderType type, ItemStack item, Object... data )
 	{
 		this.recursive = true;
 

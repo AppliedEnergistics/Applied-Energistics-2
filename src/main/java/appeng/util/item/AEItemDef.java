@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -32,7 +32,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import appeng.util.Platform;
 
 
-public class AEItemDef
+public final class AEItemDef
 {
 
 	static final AESharedNBT LOW_TAG = new AESharedNBT( Integer.MIN_VALUE );
@@ -59,7 +59,7 @@ public class AEItemDef
 		this.itemID = Item.getIdFromItem( it );
 	}
 
-	public AEItemDef copy()
+	public final AEItemDef copy()
 	{
 		AEItemDef t = new AEItemDef( this.item );
 		t.def = this.def;
@@ -72,7 +72,7 @@ public class AEItemDef
 	}
 
 	@Override
-	public boolean equals( Object obj )
+	public final boolean equals( Object obj )
 	{
 		if( obj == null )
 		{
@@ -86,7 +86,7 @@ public class AEItemDef
 		return other.damageValue == this.damageValue && other.item == this.item && this.tagCompound == other.tagCompound;
 	}
 
-	public boolean isItem( ItemStack otherStack )
+	public final boolean isItem( ItemStack otherStack )
 	{
 		// hackery!
 		int dmg = this.getDamageValueHack( otherStack );
@@ -108,12 +108,12 @@ public class AEItemDef
 		return false;
 	}
 
-	public int getDamageValueHack( ItemStack is )
+	public final int getDamageValueHack( ItemStack is )
 	{
 		return Items.blaze_rod.getDamage( is );
 	}
 
-	public void reHash()
+	public final void reHash()
 	{
 		this.def = this.itemID << Platform.DEF_OFFSET | this.damageValue;
 		this.myHash = this.def ^ ( this.tagCompound == null ? 0 : System.identityHashCode( this.tagCompound ) );

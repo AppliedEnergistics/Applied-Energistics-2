@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -40,7 +40,7 @@ import appeng.tile.events.TileEventType;
 import appeng.tile.grid.AENetworkTile;
 
 
-public class TileSpatialPylon extends AENetworkTile implements IAEMultiBlock
+public final class TileSpatialPylon extends AENetworkTile implements IAEMultiBlock
 {
 
 	public static final int DISPLAY_END_MIN = 0x01;
@@ -73,7 +73,7 @@ public class TileSpatialPylon extends AENetworkTile implements IAEMultiBlock
 	}
 
 	@Override
-	public void onChunkUnload()
+	public final void onChunkUnload()
 	{
 		this.disconnect( false );
 		super.onChunkUnload();
@@ -87,19 +87,19 @@ public class TileSpatialPylon extends AENetworkTile implements IAEMultiBlock
 	}
 
 	@Override
-	public void invalidate()
+	public final void invalidate()
 	{
 		this.disconnect( false );
 		super.invalidate();
 	}
 
-	public void onNeighborBlockChange()
+	public final void onNeighborBlockChange()
 	{
 		this.calc.calculateMultiblock( this.worldObj, this.getLocation() );
 	}
 
 	@Override
-	public void disconnect( boolean b )
+	public final void disconnect( boolean b )
 	{
 		if( this.cluster != null )
 		{
@@ -109,7 +109,7 @@ public class TileSpatialPylon extends AENetworkTile implements IAEMultiBlock
 	}
 
 	@Override
-	public SpatialPylonCluster getCluster()
+	public final SpatialPylonCluster getCluster()
 	{
 		return this.cluster;
 	}
@@ -120,14 +120,14 @@ public class TileSpatialPylon extends AENetworkTile implements IAEMultiBlock
 		return true;
 	}
 
-	public void updateStatus( SpatialPylonCluster c )
+	public final void updateStatus( SpatialPylonCluster c )
 	{
 		this.cluster = c;
 		this.gridProxy.setValidSides( c == null ? EnumSet.noneOf( ForgeDirection.class ) : EnumSet.allOf( ForgeDirection.class ) );
 		this.recalculateDisplay();
 	}
 
-	public void recalculateDisplay()
+	public final void recalculateDisplay()
 	{
 		int oldBits = this.displayBits;
 
@@ -189,7 +189,7 @@ public class TileSpatialPylon extends AENetworkTile implements IAEMultiBlock
 	}
 
 	@Override
-	public void markForUpdate()
+	public final void markForUpdate()
 	{
 		super.markForUpdate();
 		boolean hasLight = this.getLightValue() > 0;
@@ -202,12 +202,12 @@ public class TileSpatialPylon extends AENetworkTile implements IAEMultiBlock
 	}
 
 	@Override
-	public boolean canBeRotated()
+	public final boolean canBeRotated()
 	{
 		return false;
 	}
 
-	public int getLightValue()
+	public final int getLightValue()
 	{
 		if( ( this.displayBits & this.DISPLAY_POWERED_ENABLED ) == this.DISPLAY_POWERED_ENABLED )
 		{
@@ -242,7 +242,7 @@ public class TileSpatialPylon extends AENetworkTile implements IAEMultiBlock
 		this.recalculateDisplay();
 	}
 
-	public int getDisplayBits()
+	public final int getDisplayBits()
 	{
 		return this.displayBits;
 	}

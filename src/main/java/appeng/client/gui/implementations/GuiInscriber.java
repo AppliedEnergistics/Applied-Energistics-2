@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -30,7 +30,7 @@ import appeng.core.localization.GuiText;
 import appeng.tile.misc.TileInscriber;
 
 
-public class GuiInscriber extends AEBaseGui
+public final class GuiInscriber extends AEBaseGui
 {
 
 	final ContainerInscriber cvc;
@@ -44,13 +44,13 @@ public class GuiInscriber extends AEBaseGui
 		this.xSize = this.hasToolbox() ? 246 : 211;
 	}
 
-	protected boolean hasToolbox()
+	protected final boolean hasToolbox()
 	{
 		return ( (ContainerUpgradeable) this.inventorySlots ).hasToolbox();
 	}
 
 	@Override
-	public void initGui()
+	public final void initGui()
 	{
 		super.initGui();
 
@@ -86,7 +86,7 @@ public class GuiInscriber extends AEBaseGui
 		}
 	}
 
-	protected boolean drawUpgrades()
+	protected final boolean drawUpgrades()
 	{
 		return true;
 	}

@@ -33,7 +33,7 @@ import appeng.integration.IntegrationType;
 import appeng.integration.abstraction.IFMP;
 
 
-public class PacketMultiPart extends AppEngPacket
+public final class PacketMultiPart extends AppEngPacket
 {
 
 	// automatic.

@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -74,13 +74,13 @@ public class WrapperInventoryRange implements IInventory
 	}
 
 	@Override
-	public int getSizeInventory()
+	public final int getSizeInventory()
 	{
 		return this.slots.length;
 	}
 
 	@Override
-	public ItemStack getStackInSlot( int var1 )
+	public final ItemStack getStackInSlot( int var1 )
 	{
 		return this.src.getStackInSlot( this.slots[var1] );
 	}
@@ -92,55 +92,55 @@ public class WrapperInventoryRange implements IInventory
 	}
 
 	@Override
-	public ItemStack getStackInSlotOnClosing( int var1 )
+	public final ItemStack getStackInSlotOnClosing( int var1 )
 	{
 		return this.src.getStackInSlotOnClosing( this.slots[var1] );
 	}
 
 	@Override
-	public void setInventorySlotContents( int var1, ItemStack var2 )
+	public final void setInventorySlotContents( int var1, ItemStack var2 )
 	{
 		this.src.setInventorySlotContents( this.slots[var1], var2 );
 	}
 
 	@Override
-	public String getInventoryName()
+	public final String getInventoryName()
 	{
 		return this.src.getInventoryName();
 	}
 
 	@Override
-	public boolean hasCustomInventoryName()
+	public final boolean hasCustomInventoryName()
 	{
 		return false;
 	}
 
 	@Override
-	public int getInventoryStackLimit()
+	public final int getInventoryStackLimit()
 	{
 		return this.src.getInventoryStackLimit();
 	}
 
 	@Override
-	public void markDirty()
+	public final void markDirty()
 	{
 		this.src.markDirty();
 	}
 
 	@Override
-	public boolean isUseableByPlayer( EntityPlayer var1 )
+	public final boolean isUseableByPlayer( EntityPlayer var1 )
 	{
 		return this.src.isUseableByPlayer( var1 );
 	}
 
 	@Override
-	public void openInventory()
+	public final void openInventory()
 	{
 		this.src.openInventory();
 	}
 
 	@Override
-	public void closeInventory()
+	public final void closeInventory()
 	{
 		this.src.closeInventory();
 	}
