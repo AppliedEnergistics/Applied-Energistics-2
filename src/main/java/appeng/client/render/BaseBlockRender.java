@@ -754,7 +754,6 @@ public class BaseBlockRender<B extends AEBaseBlock, T extends AEBaseTile>
 			GL11.glTranslated( x + 0.5, y + 0.5, z + 0.5 );
 			GL11.glMultMatrix( this.rotMat );
 			GL11.glTranslated( -0.5, -0.5, -0.5 );
-			GL11.glCullFace( GL11.GL_FRONT );
 		}
 		else
 		{
