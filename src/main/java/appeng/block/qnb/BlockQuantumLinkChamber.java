@@ -20,11 +20,9 @@ package appeng.block.qnb;
 
 
 import java.util.Collections;
-import java.util.EnumSet;
 import java.util.List;
 import java.util.Random;
 
-import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.AxisAlignedBB;
@@ -34,31 +32,20 @@ import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-import appeng.block.AEBaseBlock;
 import appeng.client.EffectType;
-import appeng.client.render.BaseBlockRender;
-import appeng.client.render.blocks.RenderQNB;
 import appeng.core.CommonHelper;
-import appeng.core.features.AEFeature;
 import appeng.core.sync.GuiBridge;
 import appeng.helpers.AEGlassMaterial;
-import appeng.helpers.ICustomCollision;
 import appeng.tile.qnb.TileQuantumBridge;
 import appeng.util.Platform;
 
 
-public class BlockQuantumLinkChamber extends AEBaseBlock implements ICustomCollision
+public class BlockQuantumLinkChamber extends BlockQuantumBase
 {
 
 	public BlockQuantumLinkChamber()
 	{
 		super( AEGlassMaterial.INSTANCE );
-		this.setTileEntity( TileQuantumBridge.class );
-		float shave = 2.0f / 16.0f;
-		this.setBlockBounds( shave, shave, shave, 1.0f - shave, 1.0f - shave, 1.0f - shave );
-		this.setLightOpacity( 0 );
-		this.isFullSize = this.isOpaque = false;
-		this.setFeature( EnumSet.of( AEFeature.QuantumNetworkBridge ) );
 	}
 
 	@Override
@@ -79,22 +66,6 @@ public class BlockQuantumLinkChamber extends AEBaseBlock implements ICustomColli
 	}
 
 	@Override
-	public void onNeighborBlockChange( World w, int x, int y, int z, Block pointlessNumber )
-	{
-		TileQuantumBridge bridge = this.getTileEntity( w, x, y, z );
-		if( bridge != null )
-		{
-			bridge.neighborUpdate();
-		}
-	}
-
-	@Override
-	protected Class<? extends BaseBlockRender> getRenderer()
-	{
-		return RenderQNB.class;
-	}
-
-	@Override
 	public boolean onActivated( World w, int x, int y, int z, EntityPlayer p, int side, float hitX, float hitY, float hitZ )
 	{
 		if( p.isSneaking() )
@@ -112,18 +83,6 @@ public class BlockQuantumLinkChamber extends AEBaseBlock implements ICustomColli
 			return true;
 		}
 		return false;
-	}
-
-	@Override
-	public void breakBlock( World w, int x, int y, int z, Block a, int b )
-	{
-		TileQuantumBridge bridge = this.getTileEntity( w, x, y, z );
-		if( bridge != null )
-		{
-			bridge.breakCluster();
-		}
-
-		super.breakBlock( w, x, y, z, a, b );
 	}
 
 	@Override

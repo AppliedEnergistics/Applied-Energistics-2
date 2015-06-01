@@ -32,7 +32,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.AEApi;
 import appeng.api.storage.ICellHandler;
 import appeng.api.util.AEColor;
-import appeng.block.AEBaseBlock;
+import appeng.block.storage.BlockChest;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.texture.ExtraBlockTextures;
 import appeng.client.texture.FlippableIcon;
@@ -41,7 +41,7 @@ import appeng.tile.storage.TileChest;
 import appeng.util.Platform;
 
 
-public class RenderMEChest extends BaseBlockRender
+public class RenderMEChest extends BaseBlockRender<BlockChest, TileChest>
 {
 
 	public RenderMEChest()
@@ -50,7 +50,7 @@ public class RenderMEChest extends BaseBlockRender
 	}
 
 	@Override
-	public void renderInventory( AEBaseBlock block, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj )
+	public void renderInventory( BlockChest block, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj )
 	{
 		Tessellator.instance.setBrightness( 0 );
 		renderer.overrideBlockTexture = ExtraBlockTextures.getMissing();
@@ -64,7 +64,7 @@ public class RenderMEChest extends BaseBlockRender
 	}
 
 	@Override
-	public boolean renderInWorld( AEBaseBlock imb, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
+	public boolean renderInWorld( BlockChest imb, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
 	{
 		TileChest sp = imb.getTileEntity( world, x, y, z );
 		renderer.setRenderBounds( 0, 0, 0, 1, 1, 1 );
@@ -120,8 +120,8 @@ public class RenderMEChest extends BaseBlockRender
 
 		/*
 		 * 1.7.2
-		 *
-		 * else if ( forward == ForgeDirection.EAST && up == ForgeDirection.UP ) flippableIcon.setFlip( true, false ); else if (
+		 * else if ( forward == ForgeDirection.EAST && up == ForgeDirection.UP ) flippableIcon.setFlip( true, false );
+		 * else if (
 		 * forward == ForgeDirection.NORTH && up == ForgeDirection.UP ) flippableIcon.setFlip( true, false );
 		 */
 

@@ -32,7 +32,7 @@ import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import appeng.api.implementations.tiles.ICrankable;
-import appeng.block.AEBaseBlock;
+import appeng.block.AEBaseTileBlock;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.blocks.RenderBlockCrank;
 import appeng.core.features.AEFeature;
@@ -41,7 +41,7 @@ import appeng.tile.AEBaseTile;
 import appeng.tile.grindstone.TileCrank;
 
 
-public class BlockCrank extends AEBaseBlock
+public class BlockCrank extends AEBaseTileBlock
 {
 
 	public BlockCrank()

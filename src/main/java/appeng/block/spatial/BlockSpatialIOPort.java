@@ -27,14 +27,14 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import appeng.block.AEBaseBlock;
+import appeng.block.AEBaseTileBlock;
 import appeng.core.features.AEFeature;
 import appeng.core.sync.GuiBridge;
 import appeng.tile.spatial.TileSpatialIOPort;
 import appeng.util.Platform;
 
 
-public class BlockSpatialIOPort extends AEBaseBlock
+public class BlockSpatialIOPort extends AEBaseTileBlock
 {
 
 	public BlockSpatialIOPort()

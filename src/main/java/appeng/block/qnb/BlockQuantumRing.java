@@ -23,60 +23,21 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 
-import appeng.block.AEBaseBlock;
-import appeng.client.render.BaseBlockRender;
-import appeng.client.render.blocks.RenderQNB;
 import appeng.core.features.AEFeature;
-import appeng.helpers.ICustomCollision;
 import appeng.tile.qnb.TileQuantumBridge;
 
 
-public class BlockQuantumRing extends AEBaseBlock implements ICustomCollision
+public class BlockQuantumRing extends BlockQuantumBase
 {
 
 	public BlockQuantumRing()
 	{
 		super( Material.iron );
-		this.setTileEntity( TileQuantumBridge.class );
-		float shave = 2.0f / 16.0f;
-		this.setBlockBounds( shave, shave, shave, 1.0f - shave, 1.0f - shave, 1.0f - shave );
-		this.setLightOpacity( 1 );
-		this.isFullSize = this.isOpaque = false;
-		this.setFeature( EnumSet.of( AEFeature.QuantumNetworkBridge ) );
-	}
-
-	@Override
-	public void onNeighborBlockChange( World w, int x, int y, int z, Block pointlessNumber )
-	{
-		TileQuantumBridge bridge = this.getTileEntity( w, x, y, z );
-		if( bridge != null )
-		{
-			bridge.neighborUpdate();
-		}
-	}
-
-	@Override
-	protected Class<? extends BaseBlockRender> getRenderer()
-	{
-		return RenderQNB.class;
-	}
-
-	@Override
-	public void breakBlock( World w, int x, int y, int z, Block a, int b )
-	{
-		TileQuantumBridge bridge = this.getTileEntity( w, x, y, z );
-		if( bridge != null )
-		{
-			bridge.breakCluster();
-		}
-
-		super.breakBlock( w, x, y, z, a, b );
 	}
 
 	@Override

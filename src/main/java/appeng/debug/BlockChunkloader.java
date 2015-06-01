@@ -29,12 +29,12 @@ import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.ForgeChunkManager.LoadingCallback;
 import net.minecraftforge.common.ForgeChunkManager.Ticket;
 
-import appeng.block.AEBaseBlock;
+import appeng.block.AEBaseTileBlock;
 import appeng.core.AppEng;
 import appeng.core.features.AEFeature;
 
 
-public class BlockChunkloader extends AEBaseBlock implements LoadingCallback
+public class BlockChunkloader extends AEBaseTileBlock implements LoadingCallback
 {
 
 	public BlockChunkloader()

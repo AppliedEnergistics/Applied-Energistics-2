@@ -36,7 +36,7 @@ import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-import appeng.block.AEBaseBlock;
+import appeng.block.AEBaseTileBlock;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.blocks.RenderBlockPaint;
 import appeng.core.features.AEFeature;
@@ -44,13 +44,13 @@ import appeng.tile.misc.TilePaint;
 import appeng.util.Platform;
 
 
-public class BlockPaint extends AEBaseBlock
+public class BlockPaint extends AEBaseTileBlock
 {
 
 	public BlockPaint()
 	{
 		super( new MaterialLiquid( MapColor.airColor ) );
-	
+
 		this.setTileEntity( TilePaint.class );
 		this.setLightOpacity( 0 );
 		this.isFullSize = false;

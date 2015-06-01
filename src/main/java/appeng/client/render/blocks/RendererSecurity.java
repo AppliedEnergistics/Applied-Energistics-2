@@ -30,13 +30,13 @@ import net.minecraftforge.client.IItemRenderer.ItemRenderType;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import appeng.api.util.AEColor;
-import appeng.block.AEBaseBlock;
+import appeng.block.misc.BlockSecurity;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.texture.ExtraBlockTextures;
 import appeng.tile.misc.TileSecurity;
 
 
-public class RendererSecurity extends BaseBlockRender
+public class RendererSecurity extends BaseBlockRender<BlockSecurity, TileSecurity>
 {
 
 	public RendererSecurity()
@@ -45,7 +45,7 @@ public class RendererSecurity extends BaseBlockRender
 	}
 
 	@Override
-	public void renderInventory( AEBaseBlock block, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj )
+	public void renderInventory( BlockSecurity block, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj )
 	{
 		renderer.overrideBlockTexture = ExtraBlockTextures.getMissing();
 		this.renderInvBlock( EnumSet.of( ForgeDirection.SOUTH ), block, is, Tessellator.instance, 0x000000, renderer );
@@ -58,7 +58,7 @@ public class RendererSecurity extends BaseBlockRender
 	}
 
 	@Override
-	public boolean renderInWorld( AEBaseBlock imb, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
+	public boolean renderInWorld( BlockSecurity imb, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
 	{
 		TileSecurity sp = imb.getTileEntity( world, x, y, z );
 		renderer.setRenderBounds( 0, 0, 0, 1, 1, 1 );

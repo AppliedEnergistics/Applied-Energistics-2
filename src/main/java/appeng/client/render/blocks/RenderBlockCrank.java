@@ -31,13 +31,12 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.IItemRenderer.ItemRenderType;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import appeng.block.AEBaseBlock;
+import appeng.block.grindstone.BlockCrank;
 import appeng.client.render.BaseBlockRender;
-import appeng.tile.AEBaseTile;
 import appeng.tile.grindstone.TileCrank;
 
 
-public class RenderBlockCrank extends BaseBlockRender
+public class RenderBlockCrank extends BaseBlockRender<BlockCrank, TileCrank>
 {
 
 	public RenderBlockCrank()
@@ -46,7 +45,7 @@ public class RenderBlockCrank extends BaseBlockRender
 	}
 
 	@Override
-	public void renderInventory( AEBaseBlock blk, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj )
+	public void renderInventory( BlockCrank blk, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj )
 	{
 		renderer.renderAllFaces = true;
 
@@ -60,13 +59,13 @@ public class RenderBlockCrank extends BaseBlockRender
 	}
 
 	@Override
-	public boolean renderInWorld( AEBaseBlock imb, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
+	public boolean renderInWorld( BlockCrank imb, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
 	{
 		return true;
 	}
 
 	@Override
-	public void renderTile( AEBaseBlock blk, AEBaseTile tile, Tessellator tess, double x, double y, double z, float f, RenderBlocks renderBlocks )
+	public void renderTile( BlockCrank blk, TileCrank tile, Tessellator tess, double x, double y, double z, float f, RenderBlocks renderBlocks )
 	{
 		TileCrank tc = (TileCrank) tile;
 		if( tc.getUp() == null || tc.getUp() == ForgeDirection.UNKNOWN )

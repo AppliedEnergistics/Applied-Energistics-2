@@ -35,7 +35,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-import appeng.block.AEBaseBlock;
+import appeng.block.AEBaseTileBlock;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.blocks.RenderBlockCraftingCPU;
 import appeng.client.texture.ExtraBlockTextures;
@@ -45,7 +45,7 @@ import appeng.tile.crafting.TileCraftingTile;
 import appeng.util.Platform;
 
 
-public class BlockCraftingUnit extends AEBaseBlock
+public class BlockCraftingUnit extends AEBaseTileBlock
 {
 	public static final int FLAG_FORMED = 8;
 

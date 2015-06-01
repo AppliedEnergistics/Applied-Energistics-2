@@ -32,16 +32,15 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.IItemRenderer.ItemRenderType;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import appeng.block.AEBaseBlock;
+import appeng.block.misc.BlockSkyCompass;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.model.ModelCompass;
 import appeng.hooks.CompassManager;
 import appeng.hooks.CompassResult;
-import appeng.tile.AEBaseTile;
 import appeng.tile.misc.TileSkyCompass;
 
 
-public class RenderBlockSkyCompass extends BaseBlockRender
+public class RenderBlockSkyCompass extends BaseBlockRender<BlockSkyCompass, TileSkyCompass>
 {
 
 	final ModelCompass model = new ModelCompass();
@@ -53,7 +52,7 @@ public class RenderBlockSkyCompass extends BaseBlockRender
 	}
 
 	@Override
-	public void renderInventory( AEBaseBlock blk, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj )
+	public void renderInventory( BlockSkyCompass blk, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj )
 	{
 		if( type == ItemRenderType.INVENTORY )
 		{
@@ -74,7 +73,7 @@ public class RenderBlockSkyCompass extends BaseBlockRender
 			}
 		}
 
-		GL11.glEnable( 32826 /* GL_RESCALE_NORMAL_EXT */ );
+		GL11.glEnable( 32826 /* GL_RESCALE_NORMAL_EXT */);
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
 
 		ResourceLocation loc = new ResourceLocation( "appliedenergistics2", "textures/models/compass.png" );
@@ -168,18 +167,18 @@ public class RenderBlockSkyCompass extends BaseBlockRender
 			this.model.renderAll( ( now / 50000.0f ) * (float) Math.PI * 500.0f );
 		}
 
-		GL11.glDisable( 32826 /* GL_RESCALE_NORMAL_EXT */ );
+		GL11.glDisable( 32826 /* GL_RESCALE_NORMAL_EXT */);
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
 	}
 
 	@Override
-	public boolean renderInWorld( AEBaseBlock blk, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
+	public boolean renderInWorld( BlockSkyCompass blk, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
 	{
 		return true;
 	}
 
 	@Override
-	public void renderTile( AEBaseBlock block, AEBaseTile tile, Tessellator tess, double x, double y, double z, float partialTick, RenderBlocks renderer )
+	public void renderTile( BlockSkyCompass block, TileSkyCompass tile, Tessellator tess, double x, double y, double z, float partialTick, RenderBlocks renderer )
 	{
 		if( !( tile instanceof TileSkyCompass ) )
 		{
@@ -193,7 +192,7 @@ public class RenderBlockSkyCompass extends BaseBlockRender
 			return;
 		}
 
-		GL11.glEnable( 32826 /* GL_RESCALE_NORMAL_EXT */ );
+		GL11.glEnable( 32826 /* GL_RESCALE_NORMAL_EXT */);
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
 
 		ResourceLocation loc = new ResourceLocation( "appliedenergistics2", "textures/models/compass.png" );
@@ -235,7 +234,7 @@ public class RenderBlockSkyCompass extends BaseBlockRender
 			this.model.renderAll( ( now / 500000.0f ) * (float) Math.PI * 500.0f );
 		}
 
-		GL11.glDisable( 32826 /* GL_RESCALE_NORMAL_EXT */ );
+		GL11.glDisable( 32826 /* GL_RESCALE_NORMAL_EXT */);
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
 	}
 

@@ -30,13 +30,12 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.IItemRenderer.ItemRenderType;
 
-import appeng.block.AEBaseBlock;
+import appeng.block.storage.BlockSkyChest;
 import appeng.client.render.BaseBlockRender;
-import appeng.tile.AEBaseTile;
 import appeng.tile.storage.TileSkyChest;
 
 
-public class RenderBlockSkyChest extends BaseBlockRender
+public class RenderBlockSkyChest extends BaseBlockRender<BlockSkyChest, TileSkyChest>
 {
 
 	final ModelChest model = new ModelChest();
@@ -47,9 +46,9 @@ public class RenderBlockSkyChest extends BaseBlockRender
 	}
 
 	@Override
-	public void renderInventory( AEBaseBlock blk, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj )
+	public void renderInventory( BlockSkyChest blk, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj )
 	{
-		GL11.glEnable( 32826 /* GL_RESCALE_NORMAL_EXT */ );
+		GL11.glEnable( 32826 /* GL_RESCALE_NORMAL_EXT */);
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
 
 		ResourceLocation loc;
@@ -73,18 +72,18 @@ public class RenderBlockSkyChest extends BaseBlockRender
 		this.model.chestLid.rotateAngleX = -( ( lidAngle * 3.141593F ) / 2.0F );
 		this.model.renderAll();
 
-		GL11.glDisable( 32826 /* GL_RESCALE_NORMAL_EXT */ );
+		GL11.glDisable( 32826 /* GL_RESCALE_NORMAL_EXT */);
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
 	}
 
 	@Override
-	public boolean renderInWorld( AEBaseBlock blk, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
+	public boolean renderInWorld( BlockSkyChest blk, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
 	{
 		return true;
 	}
 
 	@Override
-	public void renderTile( AEBaseBlock block, AEBaseTile tile, Tessellator tess, double x, double y, double z, float partialTick, RenderBlocks renderer )
+	public void renderTile( BlockSkyChest block, TileSkyChest tile, Tessellator tess, double x, double y, double z, float partialTick, RenderBlocks renderer )
 	{
 		if( !( tile instanceof TileSkyChest ) )
 		{
@@ -98,7 +97,7 @@ public class RenderBlockSkyChest extends BaseBlockRender
 			return;
 		}
 
-		GL11.glEnable( 32826 /* GL_RESCALE_NORMAL_EXT */ );
+		GL11.glEnable( 32826 /* GL_RESCALE_NORMAL_EXT */);
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
 
 		ResourceLocation loc;
@@ -149,7 +148,7 @@ public class RenderBlockSkyChest extends BaseBlockRender
 		this.model.chestLid.rotateAngleX = -( ( lidAngle * 3.141593F ) / 2.0F );
 		this.model.renderAll();
 
-		GL11.glDisable( 32826 /* GL_RESCALE_NORMAL_EXT */ );
+		GL11.glDisable( 32826 /* GL_RESCALE_NORMAL_EXT */);
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
 	}
 }

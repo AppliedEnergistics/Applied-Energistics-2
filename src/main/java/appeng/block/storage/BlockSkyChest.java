@@ -42,7 +42,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 import appeng.api.AEApi;
-import appeng.block.AEBaseBlock;
+import appeng.block.AEBaseTileBlock;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.blocks.RenderBlockSkyChest;
 import appeng.core.features.AEFeature;
@@ -52,7 +52,7 @@ import appeng.tile.storage.TileSkyChest;
 import appeng.util.Platform;
 
 
-public class BlockSkyChest extends AEBaseBlock implements ICustomCollision
+public class BlockSkyChest extends AEBaseTileBlock implements ICustomCollision
 {
 
 	public BlockSkyChest()

@@ -28,13 +28,14 @@ import net.minecraftforge.client.IItemRenderer.ItemRenderType;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import appeng.api.AEApi;
-import appeng.block.AEBaseBlock;
+import appeng.block.solids.BlockQuartzGlass;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.texture.ExtraBlockTextures;
 import appeng.client.texture.OffsetIcon;
+import appeng.tile.AEBaseTile;
 
 
-public class RenderQuartzGlass extends BaseBlockRender
+public class RenderQuartzGlass extends BaseBlockRender<BlockQuartzGlass, AEBaseTile>
 {
 
 	static byte[][][] offsets;
@@ -57,7 +58,7 @@ public class RenderQuartzGlass extends BaseBlockRender
 	}
 
 	@Override
-	public void renderInventory( AEBaseBlock block, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj )
+	public void renderInventory( BlockQuartzGlass block, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj )
 	{
 		renderer.overrideBlockTexture = ExtraBlockTextures.GlassFrame.getIcon();
 		super.renderInventory( block, is, renderer, type, obj );
@@ -66,7 +67,7 @@ public class RenderQuartzGlass extends BaseBlockRender
 	}
 
 	@Override
-	public boolean renderInWorld( AEBaseBlock imb, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
+	public boolean renderInWorld( BlockQuartzGlass imb, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
 	{
 		renderer.setRenderBounds( 0, 0, 0, 1, 1, 1 );
 
@@ -129,7 +130,7 @@ public class RenderQuartzGlass extends BaseBlockRender
 		return result;
 	}
 
-	void renderEdge( AEBaseBlock imb, IBlockAccess world, int x, int y, int z, RenderBlocks renderer, ForgeDirection side, ForgeDirection direction )
+	private void renderEdge( BlockQuartzGlass imb, IBlockAccess world, int x, int y, int z, RenderBlocks renderer, ForgeDirection side, ForgeDirection direction )
 	{
 		if( !this.isFlush( imb, world, x + side.offsetX, y + side.offsetY, z + side.offsetZ ) )
 		{
@@ -213,12 +214,12 @@ public class RenderQuartzGlass extends BaseBlockRender
 		}
 	}
 
-	boolean isFlush( AEBaseBlock imb, IBlockAccess world, int x, int y, int z )
+	private boolean isFlush( BlockQuartzGlass imb, IBlockAccess world, int x, int y, int z )
 	{
 		return this.isGlass( imb, world, x, y, z );
 	}
 
-	boolean isGlass( AEBaseBlock imb, IBlockAccess world, int x, int y, int z )
+	private boolean isGlass( BlockQuartzGlass imb, IBlockAccess world, int x, int y, int z )
 	{
 		return this.isQuartzGlass( world, x, y, z ) || this.isVibrantQuartzGlass( world, x, y, z );
 	}

@@ -25,11 +25,12 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.IItemRenderer.ItemRenderType;
 
 import appeng.api.implementations.items.IAEItemPowerStorage;
-import appeng.block.AEBaseBlock;
+import appeng.block.networking.BlockEnergyCell;
 import appeng.client.render.BaseBlockRender;
+import appeng.tile.networking.TileEnergyCell;
 
 
-public class RenderBlockEnergyCube extends BaseBlockRender
+public class RenderBlockEnergyCube extends BaseBlockRender<BlockEnergyCell, TileEnergyCell>
 {
 
 	public RenderBlockEnergyCube()
@@ -38,7 +39,7 @@ public class RenderBlockEnergyCube extends BaseBlockRender
 	}
 
 	@Override
-	public void renderInventory( AEBaseBlock blk, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj )
+	public void renderInventory( BlockEnergyCell blk, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj )
 	{
 		IAEItemPowerStorage myItem = (IAEItemPowerStorage) is.getItem();
 		double internalCurrentPower = myItem.getAECurrentPower( is );
@@ -61,7 +62,7 @@ public class RenderBlockEnergyCube extends BaseBlockRender
 	}
 
 	@Override
-	public boolean renderInWorld( AEBaseBlock blk, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
+	public boolean renderInWorld( BlockEnergyCell blk, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
 	{
 		int meta = world.getBlockMetadata( x, y, z );
 

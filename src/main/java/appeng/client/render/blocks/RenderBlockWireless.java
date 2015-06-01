@@ -30,7 +30,7 @@ import net.minecraftforge.client.IItemRenderer.ItemRenderType;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import appeng.api.util.AEColor;
-import appeng.block.AEBaseBlock;
+import appeng.block.networking.BlockWireless;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.BlockRenderInfo;
 import appeng.client.texture.CableBusTextures;
@@ -40,15 +40,15 @@ import appeng.tile.networking.TileWireless;
 import appeng.util.Platform;
 
 
-public class RenderBlockWireless extends BaseBlockRender
+public class RenderBlockWireless extends BaseBlockRender<BlockWireless, TileWireless>
 {
 
-	int centerX = 0;
-	int centerY = 0;
-	int centerZ = 0;
-	AEBaseBlock blk;
-	boolean hasChan = false;
-	boolean hasPower = false;
+	private int centerX = 0;
+	private int centerY = 0;
+	private int centerZ = 0;
+	private BlockWireless blk;
+	private boolean hasChan = false;
+	private boolean hasPower = false;
 
 	public RenderBlockWireless()
 	{
@@ -56,7 +56,7 @@ public class RenderBlockWireless extends BaseBlockRender
 	}
 
 	@Override
-	public void renderInventory( AEBaseBlock blk, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj )
+	public void renderInventory( BlockWireless blk, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj )
 	{
 		this.blk = blk;
 		this.centerX = 0;
@@ -107,7 +107,7 @@ public class RenderBlockWireless extends BaseBlockRender
 	}
 
 	@Override
-	public boolean renderInWorld( AEBaseBlock blk, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
+	public boolean renderInWorld( BlockWireless blk, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
 	{
 		TileWireless tw = blk.getTileEntity( world, x, y, z );
 		this.blk = blk;

@@ -25,21 +25,20 @@ import com.google.common.base.Preconditions;
 import net.minecraft.tileentity.TileEntity;
 
 import appeng.api.definitions.ITileDefinition;
-import appeng.block.AEBaseBlock;
+import appeng.block.AEBaseTileBlock;
 
 
 public final class TileDefinition extends BlockDefinition implements ITileDefinition
 {
-	private final AEBaseBlock block;
+	private final AEBaseTileBlock block;
 
-	public TileDefinition( AEBaseBlock block, ActivityState state )
+	public TileDefinition( AEBaseTileBlock block, ActivityState state )
 	{
 		super( block, state );
 
 		Preconditions.checkNotNull( block );
 		Preconditions.checkNotNull( state );
-
-		Preconditions.checkState( !block.hasBlockTileEntity() || block.getTileEntityClass() != null );
+		Preconditions.checkNotNull( block.getTileEntityClass() );
 
 		this.block = block;
 	}

@@ -27,14 +27,14 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.IItemRenderer.ItemRenderType;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import appeng.block.AEBaseBlock;
+import appeng.block.spatial.BlockSpatialPylon;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.BlockRenderInfo;
 import appeng.client.texture.ExtraBlockTextures;
 import appeng.tile.spatial.TileSpatialPylon;
 
 
-public class RenderSpatialPylon extends BaseBlockRender
+public class RenderSpatialPylon extends BaseBlockRender<BlockSpatialPylon, TileSpatialPylon>
 {
 
 	public RenderSpatialPylon()
@@ -43,7 +43,7 @@ public class RenderSpatialPylon extends BaseBlockRender
 	}
 
 	@Override
-	public void renderInventory( AEBaseBlock block, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj )
+	public void renderInventory( BlockSpatialPylon block, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj )
 	{
 		renderer.overrideBlockTexture = ExtraBlockTextures.BlockSpatialPylon_dim.getIcon();
 		super.renderInventory( block, is, renderer, type, obj );
@@ -52,7 +52,7 @@ public class RenderSpatialPylon extends BaseBlockRender
 	}
 
 	@Override
-	public boolean renderInWorld( AEBaseBlock imb, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
+	public boolean renderInWorld( BlockSpatialPylon imb, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
 	{
 		renderer.setRenderBounds( 0, 0, 0, 1, 1, 1 );
 
@@ -63,17 +63,17 @@ public class RenderSpatialPylon extends BaseBlockRender
 
 		if( displayBits != 0 )
 		{
-			if( ( displayBits & sp.DISPLAY_Z ) == sp.DISPLAY_X )
+			if( ( displayBits & TileSpatialPylon.DISPLAY_Z ) == TileSpatialPylon.DISPLAY_X )
 			{
 				ori = ForgeDirection.EAST;
-				if( ( displayBits & sp.DISPLAY_MIDDLE ) == sp.DISPLAY_END_MAX )
+				if( ( displayBits & TileSpatialPylon.DISPLAY_MIDDLE ) == TileSpatialPylon.DISPLAY_END_MAX )
 				{
 					renderer.uvRotateEast = 1;
 					renderer.uvRotateWest = 2;
 					renderer.uvRotateTop = 2;
 					renderer.uvRotateBottom = 1;
 				}
-				else if( ( displayBits & sp.DISPLAY_MIDDLE ) == sp.DISPLAY_END_MIN )
+				else if( ( displayBits & TileSpatialPylon.DISPLAY_MIDDLE ) == TileSpatialPylon.DISPLAY_END_MIN )
 				{
 					renderer.uvRotateEast = 2;
 					renderer.uvRotateWest = 1;
@@ -89,10 +89,10 @@ public class RenderSpatialPylon extends BaseBlockRender
 				}
 			}
 
-			else if( ( displayBits & sp.DISPLAY_Z ) == sp.DISPLAY_Y )
+			else if( ( displayBits & TileSpatialPylon.DISPLAY_Z ) == TileSpatialPylon.DISPLAY_Y )
 			{
 				ori = ForgeDirection.UP;
-				if( ( displayBits & sp.DISPLAY_MIDDLE ) == sp.DISPLAY_END_MAX )
+				if( ( displayBits & TileSpatialPylon.DISPLAY_MIDDLE ) == TileSpatialPylon.DISPLAY_END_MAX )
 				{
 					renderer.uvRotateNorth = 3;
 					renderer.uvRotateSouth = 3;
@@ -101,15 +101,15 @@ public class RenderSpatialPylon extends BaseBlockRender
 				}
 			}
 
-			else if( ( displayBits & sp.DISPLAY_Z ) == sp.DISPLAY_Z )
+			else if( ( displayBits & TileSpatialPylon.DISPLAY_Z ) == TileSpatialPylon.DISPLAY_Z )
 			{
 				ori = ForgeDirection.NORTH;
-				if( ( displayBits & sp.DISPLAY_MIDDLE ) == sp.DISPLAY_END_MAX )
+				if( ( displayBits & TileSpatialPylon.DISPLAY_MIDDLE ) == TileSpatialPylon.DISPLAY_END_MAX )
 				{
 					renderer.uvRotateSouth = 1;
 					renderer.uvRotateNorth = 2;
 				}
-				else if( ( displayBits & sp.DISPLAY_MIDDLE ) == sp.DISPLAY_END_MIN )
+				else if( ( displayBits & TileSpatialPylon.DISPLAY_MIDDLE ) == TileSpatialPylon.DISPLAY_END_MIN )
 				{
 					renderer.uvRotateNorth = 1;
 					renderer.uvRotateSouth = 2;
@@ -129,7 +129,7 @@ public class RenderSpatialPylon extends BaseBlockRender
 
 			boolean r = renderer.renderStandardBlock( imb, x, y, z );
 
-			if( ( displayBits & sp.DISPLAY_POWERED_ENABLED ) == sp.DISPLAY_POWERED_ENABLED )
+			if( ( displayBits & TileSpatialPylon.DISPLAY_POWERED_ENABLED ) == TileSpatialPylon.DISPLAY_POWERED_ENABLED )
 			{
 				int bn = 15;
 				Tessellator.instance.setBrightness( bn << 20 | bn << 4 );
@@ -164,7 +164,7 @@ public class RenderSpatialPylon extends BaseBlockRender
 		return result;
 	}
 
-	private IIcon getBlockTextureFromSideOutside( AEBaseBlock blk, TileSpatialPylon sp, int displayBits, ForgeDirection ori, ForgeDirection dir )
+	private IIcon getBlockTextureFromSideOutside( BlockSpatialPylon blk, TileSpatialPylon sp, int displayBits, ForgeDirection ori, ForgeDirection dir )
 	{
 
 		if( ori == dir || ori.getOpposite() == dir )
@@ -172,15 +172,15 @@ public class RenderSpatialPylon extends BaseBlockRender
 			return blk.getRendererInstance().getTexture( dir );
 		}
 
-		if( ( displayBits & sp.DISPLAY_MIDDLE ) == sp.DISPLAY_MIDDLE )
+		if( ( displayBits & TileSpatialPylon.DISPLAY_MIDDLE ) == TileSpatialPylon.DISPLAY_MIDDLE )
 		{
 			return ExtraBlockTextures.BlockSpatialPylonC.getIcon();
 		}
-		else if( ( displayBits & sp.DISPLAY_MIDDLE ) == sp.DISPLAY_END_MIN )
+		else if( ( displayBits & TileSpatialPylon.DISPLAY_MIDDLE ) == TileSpatialPylon.DISPLAY_END_MIN )
 		{
 			return ExtraBlockTextures.BlockSpatialPylonE.getIcon();
 		}
-		else if( ( displayBits & sp.DISPLAY_MIDDLE ) == sp.DISPLAY_END_MAX )
+		else if( ( displayBits & TileSpatialPylon.DISPLAY_MIDDLE ) == TileSpatialPylon.DISPLAY_END_MAX )
 		{
 			return ExtraBlockTextures.BlockSpatialPylonE.getIcon();
 		}
@@ -188,24 +188,24 @@ public class RenderSpatialPylon extends BaseBlockRender
 		return blk.getIcon( 0, 0 );
 	}
 
-	private IIcon getBlockTextureFromSideInside( AEBaseBlock blk, TileSpatialPylon sp, int displayBits, ForgeDirection ori, ForgeDirection dir )
+	private IIcon getBlockTextureFromSideInside( BlockSpatialPylon blk, TileSpatialPylon sp, int displayBits, ForgeDirection ori, ForgeDirection dir )
 	{
-		boolean good = ( displayBits & sp.DISPLAY_ENABLED ) == sp.DISPLAY_ENABLED;
+		boolean good = ( displayBits & TileSpatialPylon.DISPLAY_ENABLED ) == TileSpatialPylon.DISPLAY_ENABLED;
 
 		if( ori == dir || ori.getOpposite() == dir )
 		{
 			return good ? ExtraBlockTextures.BlockSpatialPylon_dim.getIcon() : ExtraBlockTextures.BlockSpatialPylon_red.getIcon();
 		}
 
-		if( ( displayBits & sp.DISPLAY_MIDDLE ) == sp.DISPLAY_MIDDLE )
+		if( ( displayBits & TileSpatialPylon.DISPLAY_MIDDLE ) == TileSpatialPylon.DISPLAY_MIDDLE )
 		{
 			return good ? ExtraBlockTextures.BlockSpatialPylonC_dim.getIcon() : ExtraBlockTextures.BlockSpatialPylonC_red.getIcon();
 		}
-		else if( ( displayBits & sp.DISPLAY_MIDDLE ) == sp.DISPLAY_END_MIN )
+		else if( ( displayBits & TileSpatialPylon.DISPLAY_MIDDLE ) == TileSpatialPylon.DISPLAY_END_MIN )
 		{
 			return good ? ExtraBlockTextures.BlockSpatialPylonE_dim.getIcon() : ExtraBlockTextures.BlockSpatialPylonE_red.getIcon();
 		}
-		else if( ( displayBits & sp.DISPLAY_MIDDLE ) == sp.DISPLAY_END_MAX )
+		else if( ( displayBits & TileSpatialPylon.DISPLAY_MIDDLE ) == TileSpatialPylon.DISPLAY_END_MAX )
 		{
 			return good ? ExtraBlockTextures.BlockSpatialPylonE_dim.getIcon() : ExtraBlockTextures.BlockSpatialPylonE_red.getIcon();
 		}

@@ -32,10 +32,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import appeng.api.storage.data.IAEItemStack;
-import appeng.block.AEBaseBlock;
+import appeng.block.crafting.BlockCraftingMonitor;
 import appeng.client.ClientHelper;
 import appeng.core.AELog;
-import appeng.tile.AEBaseTile;
 import appeng.tile.crafting.TileCraftingMonitorTile;
 import appeng.util.IWideReadableNumberConverter;
 import appeng.util.Platform;
@@ -48,7 +47,7 @@ import appeng.util.ReadableNumberConverter;
  * @version rv2
  * @since rv1
  */
-public class RenderBlockCraftingCPUMonitor extends RenderBlockCraftingCPU
+public class RenderBlockCraftingCPUMonitor extends RenderBlockCraftingCPU<BlockCraftingMonitor, TileCraftingMonitorTile>
 {
 	private static final IWideReadableNumberConverter NUMBER_CONVERTER = ReadableNumberConverter.INSTANCE;
 
@@ -58,7 +57,7 @@ public class RenderBlockCraftingCPUMonitor extends RenderBlockCraftingCPU
 	}
 
 	@Override
-	public void renderTile( AEBaseBlock block, AEBaseTile tile, Tessellator tess, double x, double y, double z, float f, RenderBlocks renderer )
+	public void renderTile( BlockCraftingMonitor block, TileCraftingMonitorTile tile, Tessellator tess, double x, double y, double z, float f, RenderBlocks renderer )
 	{
 		if( tile instanceof TileCraftingMonitorTile )
 		{

@@ -29,7 +29,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import appeng.api.AEApi;
 import appeng.api.storage.ICellHandler;
-import appeng.block.AEBaseBlock;
+import appeng.block.AEBaseTileBlock;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.blocks.RenderMEChest;
 import appeng.core.features.AEFeature;
@@ -39,7 +39,7 @@ import appeng.tile.storage.TileChest;
 import appeng.util.Platform;
 
 
-public class BlockChest extends AEBaseBlock
+public class BlockChest extends AEBaseTileBlock
 {
 
 	public BlockChest()

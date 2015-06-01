@@ -25,7 +25,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.IItemRenderer.ItemRenderType;
 
-import appeng.block.AEBaseBlock;
+import appeng.block.networking.BlockCableBus;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.BusRenderHelper;
 import appeng.client.render.BusRenderer;
@@ -33,7 +33,7 @@ import appeng.tile.AEBaseTile;
 import appeng.tile.networking.TileCableBus;
 
 
-public class RendererCableBus extends BaseBlockRender
+public class RendererCableBus extends BaseBlockRender<BlockCableBus, TileCableBus>
 {
 
 	public RendererCableBus()
@@ -42,13 +42,13 @@ public class RendererCableBus extends BaseBlockRender
 	}
 
 	@Override
-	public void renderInventory( AEBaseBlock blk, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj )
+	public void renderInventory( BlockCableBus blk, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj )
 	{
 		// nothing.
 	}
 
 	@Override
-	public boolean renderInWorld( AEBaseBlock block, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
+	public boolean renderInWorld( BlockCableBus block, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
 	{
 		AEBaseTile t = block.getTileEntity( world, x, y, z );
 
@@ -65,7 +65,7 @@ public class RendererCableBus extends BaseBlockRender
 	}
 
 	@Override
-	public void renderTile( AEBaseBlock block, AEBaseTile t, Tessellator tess, double x, double y, double z, float f, RenderBlocks renderer )
+	public void renderTile( BlockCableBus block, TileCableBus t, Tessellator tess, double x, double y, double z, float f, RenderBlocks renderer )
 	{
 		if( t instanceof TileCableBus )
 		{

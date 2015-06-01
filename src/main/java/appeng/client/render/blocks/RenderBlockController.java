@@ -25,12 +25,13 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockAccess;
 
 import appeng.block.AEBaseBlock;
+import appeng.block.networking.BlockController;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.texture.ExtraBlockTextures;
 import appeng.tile.networking.TileController;
 
 
-public class RenderBlockController extends BaseBlockRender
+public class RenderBlockController extends BaseBlockRender<BlockController, TileController>
 {
 
 	public RenderBlockController()
@@ -39,7 +40,7 @@ public class RenderBlockController extends BaseBlockRender
 	}
 
 	@Override
-	public boolean renderInWorld( AEBaseBlock blk, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
+	public boolean renderInWorld( BlockController blk, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
 	{
 
 		boolean xx = this.getTileEntity( world, x - 1, y, z ) instanceof TileController && this.getTileEntity( world, x + 1, y, z ) instanceof TileController;

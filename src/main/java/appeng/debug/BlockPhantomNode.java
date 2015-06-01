@@ -26,11 +26,11 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 
-import appeng.block.AEBaseBlock;
+import appeng.block.AEBaseTileBlock;
 import appeng.core.features.AEFeature;
 
 
-public class BlockPhantomNode extends AEBaseBlock
+public class BlockPhantomNode extends AEBaseTileBlock
 {
 
 	public BlockPhantomNode()

@@ -29,7 +29,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import appeng.block.AEBaseBlock;
+import appeng.block.AEBaseTileBlock;
 import appeng.client.texture.ExtraBlockTextures;
 import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
@@ -39,7 +39,7 @@ import appeng.tile.misc.TileVibrationChamber;
 import appeng.util.Platform;
 
 
-public final class BlockVibrationChamber extends AEBaseBlock
+public final class BlockVibrationChamber extends AEBaseTileBlock
 {
 
 	public BlockVibrationChamber()

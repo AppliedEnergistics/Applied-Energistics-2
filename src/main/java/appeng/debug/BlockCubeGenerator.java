@@ -26,11 +26,11 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 
-import appeng.block.AEBaseBlock;
+import appeng.block.AEBaseTileBlock;
 import appeng.core.features.AEFeature;
 
 
-public class BlockCubeGenerator extends AEBaseBlock
+public class BlockCubeGenerator extends AEBaseTileBlock
 {
 
 	public BlockCubeGenerator()

@@ -26,14 +26,14 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import appeng.block.AEBaseBlock;
+import appeng.block.AEBaseTileBlock;
 import appeng.core.features.AEFeature;
 import appeng.core.sync.GuiBridge;
 import appeng.tile.misc.TileCellWorkbench;
 import appeng.util.Platform;
 
 
-public class BlockCellWorkbench extends AEBaseBlock
+public class BlockCellWorkbench extends AEBaseTileBlock
 {
 
 	public BlockCellWorkbench()

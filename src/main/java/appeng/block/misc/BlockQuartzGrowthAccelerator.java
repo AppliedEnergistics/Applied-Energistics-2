@@ -34,7 +34,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 import appeng.api.util.IOrientable;
 import appeng.api.util.IOrientableBlock;
-import appeng.block.AEBaseBlock;
+import appeng.block.AEBaseTileBlock;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.blocks.RenderBlockQuartzAccelerator;
 import appeng.client.render.effects.LightningFX;
@@ -46,7 +46,7 @@ import appeng.tile.misc.TileQuartzGrowthAccelerator;
 import appeng.util.Platform;
 
 
-public class BlockQuartzGrowthAccelerator extends AEBaseBlock implements IOrientableBlock
+public class BlockQuartzGrowthAccelerator extends AEBaseTileBlock implements IOrientableBlock
 {
 
 	public BlockQuartzGrowthAccelerator()

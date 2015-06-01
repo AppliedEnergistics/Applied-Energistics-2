@@ -37,17 +37,17 @@ import appeng.api.definitions.IBlocks;
 import appeng.api.definitions.IDefinitions;
 import appeng.api.definitions.IParts;
 import appeng.api.util.AEColor;
-import appeng.block.AEBaseBlock;
+import appeng.block.qnb.BlockQuantumBase;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.texture.ExtraBlockTextures;
 import appeng.tile.qnb.TileQuantumBridge;
 
 
-public class RenderQNB extends BaseBlockRender
+public class RenderQNB extends BaseBlockRender<BlockQuantumBase, TileQuantumBridge>
 {
 
 	@Override
-	public void renderInventory( AEBaseBlock block, ItemStack item, RenderBlocks renderer, ItemRenderType type, Object[] obj )
+	public void renderInventory( BlockQuantumBase block, ItemStack item, RenderBlocks renderer, ItemRenderType type, Object[] obj )
 	{
 		float minPx = 2.0f / 16.0f;
 		float maxPx = 14.0f / 16.0f;
@@ -57,7 +57,7 @@ public class RenderQNB extends BaseBlockRender
 	}
 
 	@Override
-	public boolean renderInWorld( AEBaseBlock block, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
+	public boolean renderInWorld( BlockQuantumBase block, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
 	{
 		TileQuantumBridge tqb = block.getTileEntity( world, x, y, z );
 		if( tqb == null )
@@ -162,7 +162,7 @@ public class RenderQNB extends BaseBlockRender
 		return true;
 	}
 
-	public void renderCableAt( double thickness, IBlockAccess world, int x, int y, int z, AEBaseBlock block, RenderBlocks renderer, IIcon texture, double pull, Collection<ForgeDirection> connections )
+	private void renderCableAt( double thickness, IBlockAccess world, int x, int y, int z, BlockQuantumBase block, RenderBlocks renderer, IIcon texture, double pull, Collection<ForgeDirection> connections )
 	{
 		block.getRendererInstance().setTemporaryRenderIcon( texture );
 
