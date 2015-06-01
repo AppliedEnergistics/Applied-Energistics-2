@@ -59,7 +59,7 @@ public enum GuiText
 
 	NoSecondOutput, Stores, Next, SelectAmount, Lumen, Empty,
 
-	ConfirmCrafting, Stored, Crafting, Scheduled, CraftingStatus, Cancel,
+	ConfirmCrafting, Stored, Crafting, Scheduled, CraftingStatus, Cancel, ETA, ETAFormat,
 
 	FromStorage, ToCraft, CraftingPlan, CalculatingWait, Start, Bytes,
 

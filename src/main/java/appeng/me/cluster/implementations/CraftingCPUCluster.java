@@ -109,6 +109,11 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 	private int remainingOperations;
 	private boolean somethingChanged;
 
+	private long lastTime;
+	private long elapsedTime;
+	private long startItemCount;
+	private long remainingItemCount;
+
 	public CraftingCPUCluster( WorldCoord min, WorldCoord max )
 	{
 		this.min = min;
@@ -272,11 +277,13 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 			if( is != null && is.getStackSize() > 0 )
 			{
 				this.waiting = false;
+
 				this.postChange( (IAEItemStack) input, src );
 
 				if( is.getStackSize() >= input.getStackSize() )
 				{
 					is.decStackSize( input.getStackSize() );
+					this.updateElapsedTime( (IAEItemStack) input );
 					this.markDirty();
 					this.postCraftingStatusChange( is );
 
@@ -406,6 +413,10 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 		}
 
 		AELog.crafting( "marking job as complete" );
+		this.remainingItemCount = 0;
+		this.startItemCount = 0;
+		this.lastTime = 0;
+		this.elapsedTime = 0;
 		this.isComplete = true;
 	}
 
@@ -838,6 +849,8 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 
 				this.myLastLink = new CraftingLink( this.generateLinkData( craftID, requestingMachine == null, false ), this );
 
+				this.prepareElapsedTime();
+
 				if( requestingMachine == null )
 				{
 					return this.myLastLink;
@@ -848,9 +861,8 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 				this.submitLink( this.myLastLink );
 				this.submitLink( whatLink );
 
-				IItemList<IAEItemStack> list;
-				this.getListOfItem( list = AEApi.instance().storage().createItemList(), CraftingItemList.ALL );
-
+				IItemList<IAEItemStack> list = AEApi.instance().storage().createItemList();
+				this.getListOfItem( list, CraftingItemList.ALL );
 				for( IAEItemStack ge : list )
 				{
 					this.postChange( ge, this.machineSrc );
@@ -1097,6 +1109,10 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 		data.setTag( "tasks", list );
 
 		data.setTag( "waitingFor", this.writeList( this.waitingFor ) );
+
+		data.setLong( "elapsedTime", this.getElapsedTime() );
+		data.setLong( "startItemCount", this.getStartItemCount() );
+		data.setLong( "remainingItemCount", this.getRemainingItemCount() );
 	}
 
 	private NBTTagCompound writeItem( IAEItemStack finalOutput2 )
@@ -1180,6 +1196,11 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 		{
 			this.postCraftingStatusChange( is.copy() );
 		}
+
+		this.lastTime = System.nanoTime();
+		this.elapsedTime = data.getLong( "elapsedTime" );
+		this.startItemCount = data.getLong( "startItemCount" );
+		this.remainingItemCount = data.getLong( "remainingItemCount" );
 	}
 
 	public void updateName()
@@ -1240,6 +1261,48 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 		{
 			t.breakCluster();
 		}
+	}
+
+	private void prepareElapsedTime()
+	{
+		this.lastTime = System.nanoTime();
+		this.elapsedTime = 0;
+		int itemCount = 0;
+
+		IItemList<IAEItemStack> list = AEApi.instance().storage().createItemList();
+		this.getListOfItem( list, CraftingItemList.ACTIVE );
+		this.getListOfItem( list, CraftingItemList.PENDING );
+
+		for( IAEItemStack ge : list )
+		{
+			itemCount += ge.getStackSize();
+		}
+
+		this.startItemCount = itemCount;
+		this.remainingItemCount = itemCount;
+	}
+
+	private void updateElapsedTime( IAEItemStack is )
+	{
+		final long nextStartTime = System.nanoTime();
+		this.elapsedTime = this.getElapsedTime() + nextStartTime - lastTime;
+		this.lastTime = nextStartTime;
+		this.remainingItemCount = this.getRemainingItemCount() - is.getStackSize();
+	}
+
+	public long getElapsedTime()
+	{
+		return elapsedTime;
+	}
+
+	public long getRemainingItemCount()
+	{
+		return remainingItemCount;
+	}
+
+	public long getStartItemCount()
+	{
+		return startItemCount;
 	}
 
 	static class TaskProgress

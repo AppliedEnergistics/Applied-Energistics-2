@@ -39,6 +39,7 @@ import appeng.api.storage.IMEMonitorHandlerReceiver;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.container.AEBaseContainer;
+import appeng.container.guisync.GuiSync;
 import appeng.core.AELog;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketMEInventoryUpdate;
@@ -58,6 +59,9 @@ public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorH
 	CraftingCPUCluster monitor = null;
 	String cpuName = null;
 	int delay = 40;
+
+	@GuiSync( 0 )
+	public long eta = -1;
 
 	public ContainerCraftingCPU( InventoryPlayer ip, Object te )
 	{
@@ -126,14 +130,11 @@ public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorH
 		if( c instanceof CraftingCPUCluster )
 		{
 			this.cpuName = c.getName();
-
 			this.monitor = (CraftingCPUCluster) c;
-			if( this.monitor != null )
-			{
-				this.list.resetStatus();
-				this.monitor.getListOfItem( this.list, CraftingItemList.ALL );
-				this.monitor.addListener( this, null );
-			}
+			this.list.resetStatus();
+			this.monitor.getListOfItem( this.list, CraftingItemList.ALL );
+			this.monitor.addListener( this, null );
+			this.eta = 0;
 		}
 		else
 		{
@@ -148,6 +149,7 @@ public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorH
 		{
 			this.monitor.cancel();
 		}
+		this.eta = -1;
 	}
 
 	@Override
@@ -178,6 +180,15 @@ public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorH
 		{
 			try
 			{
+				if( this.eta >= 0 )
+				{
+					final long elapsedTime = this.monitor.getElapsedTime();
+					final double remainingItems = this.monitor.getRemainingItemCount();
+					final double startItems = this.monitor.getStartItemCount();
+					final long eta = (long) ( elapsedTime / Math.max( 1d, ( startItems - remainingItems ) ) * remainingItems );
+					this.eta = eta;
+				}
+
 				PacketMEInventoryUpdate a = new PacketMEInventoryUpdate( (byte) 0 );
 				PacketMEInventoryUpdate b = new PacketMEInventoryUpdate( (byte) 1 );
 				PacketMEInventoryUpdate c = new PacketMEInventoryUpdate( (byte) 2 );
