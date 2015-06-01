@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -34,7 +34,10 @@ import cpw.mods.fml.common.event.FMLInterModComms;
 import buildcraft.BuildCraftEnergy;
 import buildcraft.BuildCraftTransport;
 import buildcraft.api.blueprints.BuilderAPI;
+import buildcraft.api.blueprints.IBuilderContext;
 import buildcraft.api.blueprints.ISchematicRegistry;
+import buildcraft.api.blueprints.SchematicBlock;
+import buildcraft.api.blueprints.SchematicTile;
 import buildcraft.api.facades.IFacadeItem;
 import buildcraft.api.tools.IToolWrench;
 import buildcraft.api.transport.IInjectable;
@@ -68,9 +71,21 @@ public final class BC extends BaseModule implements IBC
 
 	public BC()
 	{
-		this.testClassExistence( IPipeConnection.class );
-		this.testClassExistence( ItemFacade.class );
+		this.testClassExistence( BuildCraftEnergy.class );
+		this.testClassExistence( BuildCraftTransport.class );
+		this.testClassExistence( BuilderAPI.class );
+		this.testClassExistence( IBuilderContext.class );
+		this.testClassExistence( ISchematicRegistry.class );
+		this.testClassExistence( IFacadeItem.class );
 		this.testClassExistence( IToolWrench.class );
+		this.testClassExistence( IInjectable.class );
+		this.testClassExistence( IPipeConnection.class );
+		this.testClassExistence( IPipeTile.class );
+		this.testClassExistence( ItemFacade.class );
+		this.testClassExistence( PipeIconProvider.class );
+		this.testClassExistence( SchematicTile.class );
+		this.testClassExistence( SchematicBlock.class );
+		this.testClassExistence( IPipeTile.PipeType.class );
 	}
 
 	@Override
