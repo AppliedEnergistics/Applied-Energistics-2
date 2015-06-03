@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2013 AlgorithmX2
+ * Copyright (c) 2013 - 2015 AlgorithmX2
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -24,6 +24,8 @@
 package appeng.api.features;
 
 
+import javax.annotation.Nullable;
+
 import net.minecraft.item.ItemStack;
 
 import appeng.api.config.TunnelType;
@@ -39,10 +41,10 @@ public interface IP2PTunnelRegistry
 	 * Allows third parties to register items from their mod as potential
 	 * attunements for AE's P2P Tunnels
 	 *
-	 * @param trigger - the item which triggers attunement
-	 * @param type    - the type of tunnel
+	 * @param trigger - the item which triggers attunement. Nullable, but then ignored
+	 * @param type    - the type of tunnel. Nullable, but then ignored
 	 */
-	void addNewAttunement( ItemStack trigger, TunnelType type );
+	void addNewAttunement( @Nullable ItemStack trigger, @Nullable TunnelType type );
 
 	/**
 	 * returns null if no attunement can be found.
@@ -51,5 +53,6 @@ public interface IP2PTunnelRegistry
 	 *
 	 * @return null if no attunement can be found or attunement
 	 */
+	@Nullable
 	TunnelType getTunnelTypeByItem( ItemStack trigger );
 }

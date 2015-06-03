@@ -26,12 +26,13 @@ import cpw.mods.fml.common.registry.GameRegistry;
 
 import appeng.api.AEApi;
 import appeng.api.config.TunnelType;
+import appeng.helpers.Reflected;
 import appeng.integration.BaseModule;
 
 
-public class RF extends BaseModule
+public final class RF extends BaseModule
 {
-
+	@Reflected
 	public static RF instance;
 
 	public RF()
@@ -58,14 +59,23 @@ public class RF extends BaseModule
 		this.registerRFAttunement( "ThermalExpansion", "Cell", OreDictionary.WILDCARD_VALUE );
 		this.registerRFAttunement( "ThermalExpansion", "Dynamo", OreDictionary.WILDCARD_VALUE );
 
+		// Fluxduct
+		this.registerRFAttunement( "ThermalDynamics", "ThermalDynamics_0", 0 );
+
 		this.registerRFAttunement( "EnderIO", "itemPowerConduit", OreDictionary.WILDCARD_VALUE );
 		this.registerRFAttunement( "EnderIO", "blockCapacitorBank", 0 );
 		this.registerRFAttunement( "EnderIO", "blockPowerMonitor", 0 );
 	}
 
-	void registerRFAttunement( String mod, String name, int dmg )
+	private void registerRFAttunement( String mod, String name, int dmg )
 	{
-		ItemStack modItem = GameRegistry.findItemStack( mod, name, 1 );
+		assert mod != null;
+		assert !mod.isEmpty();
+		assert name != null;
+		assert !name.isEmpty();
+		assert dmg >= 0;
+
+		final ItemStack modItem = GameRegistry.findItemStack( mod, name, 1 );
 		if( modItem != null )
 		{
 			modItem.setItemDamage( dmg );

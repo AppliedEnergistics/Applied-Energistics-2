@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -20,6 +20,8 @@ package appeng.core.features.registries;
 
 
 import java.util.HashMap;
+import java.util.Map;
+import javax.annotation.Nullable;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -40,10 +42,11 @@ import appeng.api.util.AEColor;
 import appeng.util.Platform;
 
 
-public class P2PTunnelRegistry implements IP2PTunnelRegistry
+public final class P2PTunnelRegistry implements IP2PTunnelRegistry
 {
+	private static final int INITIAL_CAPACITY = 40;
 
-	final HashMap<ItemStack, TunnelType> Tunnels = new HashMap<ItemStack, TunnelType>();
+	private final Map<ItemStack, TunnelType> tunnels = new HashMap<ItemStack, TunnelType>( INITIAL_CAPACITY );
 
 	public void configure()
 	{
@@ -88,6 +91,7 @@ public class P2PTunnelRegistry implements IP2PTunnelRegistry
 		this.addNewAttunement( this.getModItem( "ExtraUtilities", "extractor_base", 0 ), TunnelType.ITEM );
 		this.addNewAttunement( this.getModItem( "Mekanism", "PartTransmitter", 9 ), TunnelType.ITEM );
 		this.addNewAttunement( this.getModItem( "EnderIO", "itemItemConduit", OreDictionary.WILDCARD_VALUE ), TunnelType.ITEM );
+		this.addNewAttunement( this.getModItem( "ThermalDynamics", "ThermalDynamics_32", 0 ), TunnelType.ITEM );
 
 		/**
 		 * attune based on lots of random item related stuff
@@ -101,6 +105,7 @@ public class P2PTunnelRegistry implements IP2PTunnelRegistry
 		this.addNewAttunement( this.getModItem( "ExtraUtilities", "extractor_base", 6 ), TunnelType.FLUID );
 		this.addNewAttunement( this.getModItem( "ExtraUtilities", "drum", OreDictionary.WILDCARD_VALUE ), TunnelType.FLUID );
 		this.addNewAttunement( this.getModItem( "EnderIO", "itemLiquidConduit", OreDictionary.WILDCARD_VALUE ), TunnelType.FLUID );
+		this.addNewAttunement( this.getModItem( "ThermalDynamics", "ThermalDynamics_16", 0 ), TunnelType.FLUID );
 
 		for( AEColor c : AEColor.values() )
 		{
@@ -112,17 +117,46 @@ public class P2PTunnelRegistry implements IP2PTunnelRegistry
 	}
 
 	@Override
-	public void addNewAttunement( ItemStack trigger, TunnelType type )
+	public void addNewAttunement( @Nullable ItemStack trigger, @Nullable TunnelType type )
 	{
 		if( type == null || trigger == null )
 		{
 			return;
 		}
 
-		this.Tunnels.put( trigger, type );
+		this.tunnels.put( trigger, type );
 	}
 
-	public ItemStack getModItem( String modID, String name, int meta )
+	@Nullable
+	@Override
+	public TunnelType getTunnelTypeByItem( ItemStack trigger )
+	{
+		if( trigger != null )
+		{
+			if( FluidContainerRegistry.isContainer( trigger ) )
+			{
+				return TunnelType.FLUID;
+			}
+
+			for( ItemStack is : this.tunnels.keySet() )
+			{
+				if( is.getItem() == trigger.getItem() && is.getItemDamage() == OreDictionary.WILDCARD_VALUE )
+				{
+					return this.tunnels.get( is );
+				}
+
+				if( Platform.isSameItem( is, trigger ) )
+				{
+					return this.tunnels.get( is );
+				}
+			}
+		}
+
+		return null;
+	}
+
+	@Nullable
+	private ItemStack getModItem( String modID, String name, int meta )
 	{
 		ItemStack myItemStack = GameRegistry.findItemStack( modID, name, 1 );
 
@@ -141,32 +175,5 @@ public class P2PTunnelRegistry implements IP2PTunnelRegistry
 		{
 			this.addNewAttunement( definitionStack, type );
 		}
-	}
-
-	@Override
-	public TunnelType getTunnelTypeByItem( ItemStack trigger )
-	{
-		if( trigger != null )
-		{
-			if( FluidContainerRegistry.isContainer( trigger ) )
-			{
-				return TunnelType.FLUID;
-			}
-
-			for( ItemStack is : this.Tunnels.keySet() )
-			{
-				if( is.getItem() == trigger.getItem() && is.getItemDamage() == OreDictionary.WILDCARD_VALUE )
-				{
-					return this.Tunnels.get( is );
-				}
-
-				if( Platform.isSameItem( is, trigger ) )
-				{
-					return this.Tunnels.get( is );
-				}
-			}
-		}
-
-		return null;
 	}
 }
