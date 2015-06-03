@@ -108,8 +108,6 @@ import appeng.recipes.handlers.Pulverizer;
 import appeng.recipes.handlers.Shaped;
 import appeng.recipes.handlers.Shapeless;
 import appeng.recipes.handlers.Smelt;
-import appeng.recipes.loader.ConfigLoader;
-import appeng.recipes.loader.JarLoader;
 import appeng.recipes.ores.OreDictionaryHandler;
 import appeng.spatial.BiomeGenStorage;
 import appeng.spatial.StorageWorldProvider;
@@ -516,14 +514,8 @@ public final class Registration
 		// Perform ore camouflage!
 		ItemMultiMaterial.instance.makeUnique();
 
-		if( AEConfig.instance.isFeatureEnabled( AEFeature.CustomRecipes ) )
-		{
-			this.recipeHandler.parseRecipes( new ConfigLoader( AppEng.instance().getConfigDirectory() ), "index.recipe" );
-		}
-		else
-		{
-			this.recipeHandler.parseRecipes( new JarLoader( "/assets/appliedenergistics2/recipes/" ), "index.recipe" );
-		}
+		final Runnable recipeLoader = new RecipeLoader( this.recipeHandler );
+		recipeLoader.run();
 
 		partHelper.registerNewLayer( "appeng.parts.layers.LayerISidedInventory", "net.minecraft.inventory.ISidedInventory" );
 		partHelper.registerNewLayer( "appeng.parts.layers.LayerIFluidHandler", "net.minecraftforge.fluids.IFluidHandler" );
