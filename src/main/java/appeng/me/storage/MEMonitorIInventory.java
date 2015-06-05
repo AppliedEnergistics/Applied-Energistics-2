@@ -86,7 +86,10 @@ public class MEMonitorIInventory implements IMEMonitor<IAEItemStack>
 			out = this.adaptor.addItems( input.getItemStack() );
 		}
 
-		this.onTick();
+		if( type == Actionable.MODULATE )
+		{
+			this.onTick();
+		}
 
 		if( out == null )
 		{
@@ -122,7 +125,10 @@ public class MEMonitorIInventory implements IMEMonitor<IAEItemStack>
 		IAEItemStack o = request.copy();
 		o.setStackSize( out.stackSize );
 
-		this.onTick();
+		if( type == Actionable.MODULATE )
+		{
+			this.onTick();
+		}
 
 		return o;
 	}
