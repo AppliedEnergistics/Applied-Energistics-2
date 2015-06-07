@@ -27,19 +27,19 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import appeng.integration.IntegrationRegistry;
 import appeng.integration.IntegrationType;
-import appeng.integration.abstraction.IBC;
+import appeng.integration.abstraction.IBuildCraftTransport;
 
 
 public class WrapperBCPipe implements IInventory
 {
 
-	private final IBC bc;
+	private final IBuildCraftTransport bc;
 	private final TileEntity ad;
 	private final ForgeDirection dir;
 
 	public WrapperBCPipe( TileEntity te, ForgeDirection d )
 	{
-		this.bc = (IBC) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.BC );
+		this.bc = (IBuildCraftTransport) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.BuildCraftTransport );
 		this.ad = te;
 		this.dir = d;
 	}
@@ -71,7 +71,10 @@ public class WrapperBCPipe implements IInventory
 	@Override
 	public void setInventorySlotContents( int i, ItemStack itemstack )
 	{
-		this.bc.addItemsToPipe( this.ad, itemstack, this.dir );
+		if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.BuildCraftTransport ) )
+		{
+			this.bc.addItemsToPipe( this.ad, itemstack, this.dir );
+		}
 	}
 
 	@Override

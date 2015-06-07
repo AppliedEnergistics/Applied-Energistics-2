@@ -20,6 +20,7 @@ package appeng.facade;
 
 
 import java.util.EnumSet;
+import javax.annotation.Nullable;
 
 import org.lwjgl.opengl.GL11;
 
@@ -53,7 +54,7 @@ import appeng.client.render.RenderBlocksWorkaround;
 import appeng.core.AELog;
 import appeng.integration.IntegrationRegistry;
 import appeng.integration.IntegrationType;
-import appeng.integration.abstraction.IBC;
+import appeng.integration.abstraction.IBuildCraftTransport;
 import appeng.util.Platform;
 
 
@@ -131,10 +132,10 @@ public class FacadePart implements IFacadePart, IBoxProvider
 					}
 
 					IIcon myIcon = null;
-					if( this.isBC() )
+					if( this.notAEFacade() && IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.BuildCraftTransport ) )
 					{
-						IBC bc = (IBC) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.BC );
-						myIcon = bc.getFacadeTexture();
+						IBuildCraftTransport bc = (IBuildCraftTransport) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.BuildCraftTransport );
+						myIcon = bc.getCobbleStructurePipeTexture();
 					}
 
 					if( myIcon == null )
@@ -144,7 +145,7 @@ public class FacadePart implements IFacadePart, IBoxProvider
 
 					instance.setTexture( myIcon );
 
-					if( this.isBC() )
+					if( this.notAEFacade() )
 					{
 						instance.setBounds( 6, 6, 10, 10, 10, 15 );
 					}
@@ -342,6 +343,124 @@ public class FacadePart implements IFacadePart, IBoxProvider
 		}
 	}
 
+	@Override
+	@SideOnly( Side.CLIENT )
+	public void renderInventory( IPartRenderHelper instance, RenderBlocks renderer )
+	{
+		if( this.facade != null )
+		{
+			IFacadeItem fi = (IFacadeItem) this.facade.getItem();
+
+			try
+			{
+				if( fi != null )
+				{
+					ItemStack randomItem = fi.getTextureItem( this.facade );
+
+					instance.setTexture( this.facade.getIconIndex() );
+					instance.setBounds( 7, 7, 4, 9, 9, 14 );
+					instance.renderInventoryBox( renderer );
+					instance.setTexture( null );
+
+					if( randomItem != null )
+					{
+						if( randomItem.getItem() instanceof ItemBlock )
+						{
+							ItemBlock ib = (ItemBlock) randomItem.getItem();
+							Block blk = Block.getBlockFromItem( ib );
+
+							try
+							{
+								int color = ib.getColorFromItemStack( randomItem, 0 );
+								GL11.glColor4f( 1.0f, 1.0f, 1.0f, 1.0F );
+								instance.setInvColor( color );
+							}
+							catch( Throwable error )
+							{
+								GL11.glColor4f( 1.0f, 1.0f, 1.0f, 1.0F );
+								instance.setInvColor( 0xffffff );
+							}
+
+							Tessellator.instance.setBrightness( 15 << 20 | 15 << 4 );
+							Tessellator.instance.setColorOpaque_F( 1, 1, 1 );
+							instance.setTexture( blk.getIcon( this.side.ordinal(), ib.getMetadata( randomItem.getItemDamage() ) ) );
+
+							instance.setBounds( 0, 0, 14, 16, 16, 16 );
+							instance.renderInventoryBox( renderer );
+
+							instance.setTexture( null );
+						}
+					}
+				}
+			}
+			catch( Exception ignored )
+			{
+
+			}
+		}
+	}
+
+	@Override
+	public ForgeDirection getSide()
+	{
+		return this.side;
+	}
+
+	@Override
+	public AxisAlignedBB getPrimaryBox()
+	{
+		return Platform.getPrimaryBox( this.side, this.thickness );
+	}
+
+	@Override
+	public Item getItem()
+	{
+		ItemStack is = this.getTexture();
+		if( is == null )
+		{
+			return null;
+		}
+		return is.getItem();
+	}
+
+	@Override
+	public int getItemDamage()
+	{
+		ItemStack is = this.getTexture();
+		if( is == null )
+		{
+			return 0;
+		}
+		return is.getItemDamage();
+	}
+
+	@Override
+	public boolean notAEFacade()
+	{
+		return !( this.facade.getItem() instanceof IFacadeItem );
+	}
+
+	@Override
+	public void setThinFacades( boolean useThinFacades )
+	{
+		this.thickness = useThinFacades ? 1 : 2;
+	}
+
+	@Override
+	public boolean isTransparent()
+	{
+		if( AEApi.instance().partHelper().getCableRenderMode().transparentFacades )
+		{
+			return true;
+		}
+
+		ItemStack is = this.getTexture();
+		Block blk = Block.getBlockFromItem( is.getItem() );
+
+		return !blk.isOpaqueCube();
+	}
+
+	@Nullable
 	ItemStack getTexture()
 	{
 		final Item maybeFacade = this.facade.getItem();
@@ -353,9 +472,9 @@ public class FacadePart implements IFacadePart, IBoxProvider
 
 			return facade.getTextureItem( this.facade );
 		}
-		else if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.BC ) )
+		else if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.BuildCraftTransport ) )
 		{
-			IBC bc = (IBC) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.BC );
+			final IBuildCraftTransport bc = (IBuildCraftTransport) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.BuildCraftTransport );
 
 			return bc.getTextureForFacade( this.facade );
 		}
@@ -482,120 +601,6 @@ public class FacadePart implements IFacadePart, IBoxProvider
 		}
 
 		return true;
-	}
-
-	@Override
-	@SideOnly( Side.CLIENT )
-	public void renderInventory( IPartRenderHelper instance, RenderBlocks renderer )
-	{
-		if( this.facade != null )
-		{
-			IFacadeItem fi = (IFacadeItem) this.facade.getItem();
-
-			try
-			{
-				ItemStack randomItem = fi.getTextureItem( this.facade );
-
-				instance.setTexture( this.facade.getIconIndex() );
-				instance.setBounds( 7, 7, 4, 9, 9, 14 );
-				instance.renderInventoryBox( renderer );
-				instance.setTexture( null );
-
-				if( randomItem != null )
-				{
-					if( randomItem.getItem() instanceof ItemBlock )
-					{
-						ItemBlock ib = (ItemBlock) randomItem.getItem();
-						Block blk = Block.getBlockFromItem( ib );
-
-						try
-						{
-							int color = ib.getColorFromItemStack( randomItem, 0 );
-							GL11.glColor4f( 1.0f, 1.0f, 1.0f, 1.0F );
-							instance.setInvColor( color );
-						}
-						catch( Throwable error )
-						{
-							GL11.glColor4f( 1.0f, 1.0f, 1.0f, 1.0F );
-							instance.setInvColor( 0xffffff );
-						}
-
-						Tessellator.instance.setBrightness( 15 << 20 | 15 << 4 );
-						Tessellator.instance.setColorOpaque_F( 1, 1, 1 );
-						instance.setTexture( blk.getIcon( this.side.ordinal(), ib.getMetadata( randomItem.getItemDamage() ) ) );
-
-						instance.setBounds( 0, 0, 14, 16, 16, 16 );
-						instance.renderInventoryBox( renderer );
-
-						instance.setTexture( null );
-					}
-				}
-			}
-			catch( Throwable ignored )
-			{
-
-			}
-		}
-	}
-
-	@Override
-	public ForgeDirection getSide()
-	{
-		return this.side;
-	}
-
-	@Override
-	public AxisAlignedBB getPrimaryBox()
-	{
-		return Platform.getPrimaryBox( this.side, this.thickness );
-	}
-
-	@Override
-	public Item getItem()
-	{
-		ItemStack is = this.getTexture();
-		if( is == null )
-		{
-			return null;
-		}
-		return is.getItem();
-	}
-
-	@Override
-	public int getItemDamage()
-	{
-		ItemStack is = this.getTexture();
-		if( is == null )
-		{
-			return 0;
-		}
-		return is.getItemDamage();
-	}
-
-	@Override
-	public boolean isBC()
-	{
-		return !( this.facade.getItem() instanceof IFacadeItem );
-	}
-
-	@Override
-	public void setThinFacades( boolean useThinFacades )
-	{
-		this.thickness = useThinFacades ? 1 : 2;
-	}
-
-	@Override
-	public boolean isTransparent()
-	{
-		if( AEApi.instance().partHelper().getCableRenderMode().transparentFacades )
-		{
-			return true;
-		}
-
-		ItemStack is = this.getTexture();
-		Block blk = Block.getBlockFromItem( is.getItem() );
-
-		return !blk.isOpaqueCube();
 	}
 
 	@Override

@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -26,8 +26,10 @@ import buildcraft.api.transport.IPipeTile.PipeType;
 
 import appeng.api.parts.IPart;
 import appeng.api.parts.LayerBase;
+import appeng.helpers.Reflected;
 
 
+@Reflected
 public class LayerIPipeConnection extends LayerBase implements IPipeConnection
 {
 
