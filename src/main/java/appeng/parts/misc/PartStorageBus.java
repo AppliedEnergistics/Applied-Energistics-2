@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -83,8 +83,9 @@ import appeng.util.Platform;
 import appeng.util.prioitylist.FuzzyPriorityList;
 import appeng.util.prioitylist.PrecisePriorityList;
 
-// TODO: BC PIPE INTEGRATION
-//@Interface( iname = "BC", iface = "buildcraft.api.transport.IPipeConnection" )  - IPipeConnection
+
+// TODO: BC Integration
+//@Interface( iname = "BuildCraftCore", iface = "buildcraft.api.transport.IPipeConnection" )
 public class PartStorageBus extends PartUpgradeable implements IGridTickable, ICellContainer, IMEMonitorHandlerReceiver<IAEItemStack>, IPriorityHost
 {
 	final BaseActionSource mySrc;
@@ -560,8 +561,8 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	// TODO: BC PIPE INTEGRATION
 	/*
 	@Override
-	@Method( iname = "BC" )
-	public ConnectOverride overridePipeConnection( PipeType type, AEPartLocation with )
+	@Method( iname = "BuildCraftCore" )
+	public ConnectOverride overridePipeConnection( PipeType type, ForgeDirection with )
 	{
 		return type == PipeType.ITEM && with == this.side ? ConnectOverride.CONNECT : ConnectOverride.DISCONNECT;
 	}

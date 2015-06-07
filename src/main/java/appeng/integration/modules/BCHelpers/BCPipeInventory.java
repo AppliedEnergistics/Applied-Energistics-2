@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -27,7 +27,9 @@ import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.api.util.ForgeDirection;
-import appeng.integration.modules.BC;
+import appeng.integration.IntegrationRegistry;
+import appeng.integration.IntegrationType;
+import appeng.integration.abstraction.IBuildCraftTransport;
 
 
 public class BCPipeInventory implements IMEInventory<IAEItemStack>
@@ -45,19 +47,25 @@ public class BCPipeInventory implements IMEInventory<IAEItemStack>
 	@Override
 	public IAEItemStack injectItems( IAEItemStack input, Actionable mode, BaseActionSource src )
 	{
-		if( mode == Actionable.SIMULATE )
+		if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.BuildCraftTransport ) )
 		{
-			if( BC.instance.canAddItemsToPipe( this.te, input.getItemStack(), this.direction ) )
+			final IBuildCraftTransport registry = (IBuildCraftTransport) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.BuildCraftTransport );
+
+			if( mode == Actionable.SIMULATE )
+			{
+				if( registry.canAddItemsToPipe( this.te, input.getItemStack(), this.direction ) )
+				{
+					return null;
+				}
+				return input;
+			}
+
+			if( registry.addItemsToPipe( this.te, input.getItemStack(), this.direction ) )
 			{
 				return null;
 			}
-			return input;
 		}
 
-		if( BC.instance.addItemsToPipe( this.te, input.getItemStack(), this.direction ) )
-		{
-			return null;
-		}
 		return input;
 	}
 

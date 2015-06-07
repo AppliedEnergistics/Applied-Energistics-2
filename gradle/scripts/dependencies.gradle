@@ -1,3 +1,4 @@
+
 /*
  * This file is part of Applied Energistics 2.
  * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
@@ -53,6 +54,11 @@ repositories {
     maven {
         name "OpenComputers Repo"
         url = "http://maven.cil.li/"
+    }
+
+    ivy {
+        name "BuildCraft"
+        artifactPattern "http://www.mod-buildcraft.com/releases/BuildCraft/[revision]/[module]-[revision]-[classifier].[ext]"
     }
 
 //  CurseForge DNS for TE is not available or I am just being unlucky, code part can stay since this is applicable to any other curseforge mod though

@@ -30,6 +30,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IChatComponent;
+
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.events.MENetworkBootingStatusChange;
 import appeng.api.networking.events.MENetworkChannelsChanged;
@@ -39,16 +40,20 @@ import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.core.settings.TickRates;
+import appeng.integration.IntegrationRegistry;
+import appeng.integration.IntegrationType;
+import appeng.integration.abstraction.IBuildCraftTransport;
 import appeng.me.GridAccessException;
 import appeng.me.cache.helpers.TunnelCollection;
 import appeng.tile.inventory.AppEngNullInventory;
 import appeng.util.Platform;
+import appeng.util.inv.WrapperBCPipe;
 import appeng.util.inv.WrapperChainedInventory;
 import appeng.util.inv.WrapperMCISidedInventory;
 
 
-// TODO: BUILD CRAFT INTEGRATION
-// @Interface( iface = "buildcraft.api.transport.IPipeConnection", iname = "BC" ) IPipeConnection
+// TODO: BC Integration 
+//@Integration.Interface( iface = "buildcraft.api.transport.IPipeConnection", iname = "BuildCraftCore" )
 public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements ISidedInventory, IGridTickable
 {
 
@@ -128,26 +133,20 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements ISidedI
 
 			this.which.add( this );
 
-			/*
-			// TODO: BUILD CRAFT INTEGRATION
-			if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.BC ) )
+			if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.BuildCraftTransport ) )
 			{
-				IBC buildcraft = (IBC) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.BC );
-				if( buildcraft != null )
+				final IBuildCraftTransport buildcraft = (IBuildCraftTransport) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.BuildCraftTransport );
+				if( buildcraft.isPipe( te, this.side.getOpposite() ) )
 				{
-					if( buildcraft.isPipe( te, this.side.getOpposite() ) )
+					try
 					{
-						try
-						{
-							output = new WrapperBCPipe( te, this.side.getFacing().getOpposite() );
-						}
-						catch( Throwable ignore )
-						{
-						}
+						output = new WrapperBCPipe( te, this.side.getFacing().getOpposite() );
+					}
+					catch( Throwable ignore )
+					{
 					}
 				}
 			}
-			*/
 			
 			/*
 			 * if ( AppEng.INSTANCE.isIntegrationEnabled( "TE" ) ) { ITE thermal = (ITE) AppEng.INSTANCE.getIntegration(
@@ -382,7 +381,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements ISidedI
 			int id,
 			int value )
 	{
-		
+
 	}
 
 	@Override
@@ -403,13 +402,11 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements ISidedI
 		return null;
 	}
 
-	/*
-	// TODO: BUILD CRAFT INTEGRATION
-	@Override
-	@Method( iname = "BC" )
-	public ConnectOverride overridePipeConnection( PipeType type, AEPartLocation with )
-	{
-		return this.side == with && type == PipeType.ITEM ? ConnectOverride.CONNECT : ConnectOverride.DEFAULT;
-	}
-	*/
+	// TODO: BC Integration
+//	@Override
+//	@Method( iname = "BuildCraftCore" )
+//	public ConnectOverride overridePipeConnection( PipeType type, ForgeDirection with )
+//	{
+//		return this.side == with && type == PipeType.ITEM ? ConnectOverride.CONNECT : ConnectOverride.DEFAULT;
+//	}
 }

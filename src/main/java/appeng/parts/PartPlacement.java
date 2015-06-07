@@ -57,7 +57,7 @@ import appeng.core.sync.packets.PacketPartPlacement;
 import appeng.facade.IFacadeItem;
 import appeng.integration.IntegrationRegistry;
 import appeng.integration.IntegrationType;
-import appeng.integration.abstraction.IBC;
+import appeng.integration.abstraction.IBuildCraftTransport;
 import appeng.integration.abstraction.IFMP;
 import appeng.util.LookDirection;
 import appeng.util.Platform;
@@ -419,9 +419,9 @@ public class PartPlacement
 			return ( (IFacadeItem) held.getItem() ).createPartFromItemStack( held, side );
 		}
 
-		if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.BC ) )
+		if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.BuildCraftTransport ) )
 		{
-			IBC bc = (IBC) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.BC );
+			IBuildCraftTransport bc = (IBuildCraftTransport) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.BuildCraftTransport );
 			if( bc.isFacade( held ) )
 			{
 				return bc.createFacadePart( held, side );

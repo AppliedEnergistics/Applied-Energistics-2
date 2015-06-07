@@ -19,13 +19,15 @@
 package appeng.facade;
 
 
-import io.netty.buffer.ByteBuf;
-
 import java.io.IOException;
 
+import io.netty.buffer.ByteBuf;
+
+import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+
 import appeng.api.AEApi;
 import appeng.api.parts.IFacadeContainer;
 import appeng.api.parts.IFacadePart;
@@ -33,7 +35,7 @@ import appeng.api.parts.IPartHost;
 import appeng.api.util.AEPartLocation;
 import appeng.integration.IntegrationRegistry;
 import appeng.integration.IntegrationType;
-import appeng.integration.abstraction.IBC;
+import appeng.integration.abstraction.IBuildCraftTransport;
 import appeng.items.parts.ItemFacade;
 import appeng.parts.CableBusStorage;
 
@@ -135,15 +137,16 @@ public class FacadeContainer implements IFacadeContainer
 				boolean isBC = ids[0] < 0;
 				ids[0] = Math.abs( ids[0] );
 
-				// TODO: BC Facade Integration!
-				/*
-				if( isBC && IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.BC ) )
+				if( isBC && IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.BuildCraftTransport ) )
 				{
-					IBC bc = (IBC) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.BC );
+					final IBuildCraftTransport bc = (IBuildCraftTransport) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.BuildCraftTransport );
+					final IFacadePart created = bc.createFacadePart( Block.getStateById( ids[0] ), ids[1], side );
 					changed = changed || this.storage.getFacade( x ) == null;
 					this.storage.setFacade( x, bc.createFacadePart( Block.getStateById( id[0] ), ids[1], side ) );
+
+					this.storage.setFacade( x, created );
 				}
-				else */
+				else 
 				if( !isBC )
 				{
 					for( Item facadeItem : AEApi.instance().definitions().items().facade().maybeItem().asSet() )
@@ -188,9 +191,9 @@ public class FacadeContainer implements IFacadeContainer
 					}
 					else
 					{
-						if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.BC ) )
+						if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.BuildCraftTransport ) )
 						{
-							IBC bc = (IBC) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.BC );
+							final IBuildCraftTransport bc = (IBuildCraftTransport) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.BuildCraftTransport );
 							if( bc.isFacade( is ) )
 							{
 								this.storage.setFacade( x, bc.createFacadePart( is, AEPartLocation.fromOrdinal( x ) ) );
@@ -222,7 +225,7 @@ public class FacadeContainer implements IFacadeContainer
 			{
 				int itemID = Item.getIdFromItem( part.getItem() );
 				int dmgValue = part.getItemDamage();
-				out.writeInt( itemID * ( part.isBC() ? -1 : 1 ) );
+				out.writeInt( itemID * ( part.notAEFacade() ? -1 : 1 ) );
 				out.writeInt( dmgValue );
 			}
 		}
