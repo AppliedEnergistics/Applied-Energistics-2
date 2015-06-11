@@ -76,8 +76,8 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 	private final static int CANCEL_HEIGHT = 20;
 	private final static int CANCEL_WIDTH = 50;
 
-	private final static int ETA_TOP_OFFSET = 165;
-	private final static int ETA_LEFT_OFFSET = 8;
+	private final static int TITLE_TOP_OFFSET = 7;
+	private final static int TITLE_LEFT_OFFSET = 8;
 
 	private final static int ITEMSTACK_LEFT_OFFSET = 9;
 	private final static int ITEMSTACK_TOP_OFFSET = 22;
@@ -192,17 +192,17 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 	@Override
 	public void drawFG( int offsetX, int offsetY, int mouseX, int mouseY )
 	{
-		ReadableNumberConverter converter = ReadableNumberConverter.INSTANCE;
+		final ReadableNumberConverter converter = ReadableNumberConverter.INSTANCE;
+		String title = this.getGuiDisplayName( GuiText.CraftingStatus.getLocal() );
 
-		this.fontRendererObj.drawString( this.getGuiDisplayName( GuiText.CraftingStatus.getLocal() ), 8, 7, TEXT_COLOR );
-
-		if( this.craftingCpu.eta > 0 )
+		if( this.craftingCpu.eta > 0 && !this.visual.isEmpty() )
 		{
-			final String etaText = this.getGuiDisplayName( GuiText.ETA.getLocal() );
 			final long etaInMilliseconds = TimeUnit.MILLISECONDS.convert( this.craftingCpu.eta, TimeUnit.NANOSECONDS );
-			final String etaTimeText = DurationFormatUtils.formatDuration( etaInMilliseconds, this.getGuiDisplayName( GuiText.ETAFormat.getLocal() ) );
-			this.fontRendererObj.drawString( String.format( etaText, etaTimeText ), ETA_LEFT_OFFSET, ETA_TOP_OFFSET, TEXT_COLOR );
+			final String etaTimeText = DurationFormatUtils.formatDuration( etaInMilliseconds, GuiText.ETAFormat.getLocal() );
+			title += " - " + etaTimeText;
 		}
+
+		this.fontRendererObj.drawString( title, TITLE_LEFT_OFFSET, TITLE_TOP_OFFSET, TEXT_COLOR );
 
 		int x = 0;
 		int y = 0;
