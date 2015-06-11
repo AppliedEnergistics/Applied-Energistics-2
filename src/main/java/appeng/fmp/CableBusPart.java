@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -41,7 +41,7 @@ import codechicken.lib.data.MCDataOutput;
 import codechicken.lib.raytracer.IndexedCuboid6;
 import codechicken.lib.vec.Cuboid6;
 import codechicken.lib.vec.Vector3;
-import codechicken.multipart.IRedstonePart;
+import codechicken.multipart.IMaskedRedstonePart;
 import codechicken.multipart.JCuboidPart;
 import codechicken.multipart.JNormalOcclusion;
 import codechicken.multipart.NormalOcclusionTest;
@@ -80,24 +80,41 @@ import appeng.util.Platform;
  *
  * TSlottedPart,ISidedHollowConnect
  */
-public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IRedstonePart, AEMultiTile
+public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IMaskedRedstonePart, AEMultiTile
 {
-
 	public static final ThreadLocal<Boolean> DISABLE_FACADE_OCCLUSION = new ThreadLocal<Boolean>();
+
+	private static final double SHORTER = 6.0 / 16.0;
+	private static final double LONGER = 10.0 / 16.0;
+	private static final double MIN_DIRECTION = 0;
+	private static final double MAX_DIRECTION = 1.0;
 	private static final Cuboid6[] SIDE_TESTS = new Cuboid6[] {
 
-			new Cuboid6( 6.0 / 16.0, 0, 6.0 / 16.0, 10.0 / 16.0, 6.0 / 16.0, 10.0 / 16.0 ), // DOWN(0, -1, 0),
+			// DOWN(0, -1, 0),
+			new Cuboid6( SHORTER, MIN_DIRECTION, SHORTER, LONGER, SHORTER, LONGER ),
 
-			new Cuboid6( 6.0 / 16.0, 10.0 / 16.0, 6.0 / 16.0, 10.0 / 16.0, 1.0, 10.0 / 16.0 ), // UP(0, 1, 0),
+			// UP(0, 1, 0),
+			new Cuboid6( SHORTER, LONGER, SHORTER, LONGER, MAX_DIRECTION, LONGER ),
 
-			new Cuboid6( 6.0 / 16.0, 6.0 / 16.0, 0.0, 10.0 / 16.0, 10.0 / 16.0, 6.0 / 16.0 ),// NORTH(0, 0, -1),
+			// NORTH(0, 0, -1),
+			new Cuboid6( SHORTER, SHORTER, MIN_DIRECTION, LONGER, LONGER, SHORTER ),
 
-			new Cuboid6( 6.0 / 16.0, 6.0 / 16.0, 10.0 / 16.0, 10.0 / 16.0, 10.0 / 16.0, 1.0 ),// SOUTH(0, 0, 1),
+			// SOUTH(0, 0, 1),
+			new Cuboid6( SHORTER, SHORTER, LONGER, LONGER, LONGER, MAX_DIRECTION ),
 
-			new Cuboid6( 0.0, 6.0 / 16.0, 6.0 / 16.0, 6.0 / 16.0, 10.0 / 16.0, 10.0 / 16.0 ),// WEST(-1, 0, 0),
+			// WEST(-1, 0, 0),
+			new Cuboid6( MIN_DIRECTION, SHORTER, SHORTER, SHORTER, LONGER, LONGER ),
 
-			new Cuboid6( 10.0 / 16.0, 6.0 / 16.0, 6.0 / 16.0, 1.0, 10.0 / 16.0, 10.0 / 16.0 ),// EAST(1, 0, 0),
+			// EAST(1, 0, 0),
+			new Cuboid6( LONGER, SHORTER, SHORTER, MAX_DIRECTION, LONGER, LONGER ),
 	};
+
+	/**
+	 * Mask for {@link IMaskedRedstonePart#getConnectionMask(int)}
+	 *
+	 * the bits are derived from the rotation, where 4 is the center
+	 */
+	private static final int CONNECTION_MASK = 0x000010;
 	public CableBusContainer cb = new CableBusContainer( this );
 	boolean canUpdate = false;
 
@@ -556,15 +573,6 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 	public void clearContainer()
 	{
 		this.cb = new CableBusContainer( this );
-	}	@Override
-	public Iterable<Cuboid6> getCollisionBoxes()
-	{
-		LinkedList<Cuboid6> l = new LinkedList<Cuboid6>();
-		for( AxisAlignedBB b : this.cb.getSelectedBoundingBoxesFromPool( false, true, null, true ) )
-		{
-			l.add( new Cuboid6( b.minX, b.minY, b.minZ, b.maxX, b.maxY, b.maxZ ) );
-		}
-		return l;
 	}
 
 	@Override
@@ -576,7 +584,11 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 		}
 
 		DISABLE_FACADE_OCCLUSION.set( true );
-		boolean blocked = !this.tile().canAddPart( new NormallyOccludedPart( SIDE_TESTS[side.ordinal()] ) );
+
+		final int ordinal = side.ordinal();
+		final Cuboid6 sideTest = SIDE_TESTS[ordinal];
+		final NormallyOccludedPart occludedPart = new NormallyOccludedPart( sideTest );
+		boolean blocked = !this.tile().canAddPart( occludedPart );
 		DISABLE_FACADE_OCCLUSION.remove();
 
 		return blocked;
@@ -624,15 +636,6 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 	public Set<LayerFlags> getLayerFlags()
 	{
 		return this.cb.getLayerFlags();
-	}	@Override
-	public Iterable<IndexedCuboid6> getSubParts()
-	{
-		LinkedList<IndexedCuboid6> l = new LinkedList<IndexedCuboid6>();
-		for( Cuboid6 c : this.getCollisionBoxes() )
-		{
-			l.add( new IndexedCuboid6( 0, c ) );
-		}
-		return l;
 	}
 
 	@Override
@@ -661,7 +664,31 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 		return this.cb.isInWorld();
 	}
 
+	@Override
+	public Iterable<Cuboid6> getCollisionBoxes()
+	{
+		LinkedList<Cuboid6> l = new LinkedList<Cuboid6>();
+		for( AxisAlignedBB b : this.cb.getSelectedBoundingBoxesFromPool( false, true, null, true ) )
+		{
+			l.add( new Cuboid6( b.minX, b.minY, b.minZ, b.maxX, b.maxY, b.maxZ ) );
+		}
+		return l;
+	}
 
+	@Override
+	public Iterable<IndexedCuboid6> getSubParts()
+	{
+		LinkedList<IndexedCuboid6> l = new LinkedList<IndexedCuboid6>();
+		for( Cuboid6 c : this.getCollisionBoxes() )
+		{
+			l.add( new IndexedCuboid6( 0, c ) );
+		}
+		return l;
+	}
 
-
+	@Override
+	public int getConnectionMask( int side )
+	{
+		return CONNECTION_MASK;
+	}
 }
