@@ -38,7 +38,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 import appeng.api.util.IOrientable;
 import appeng.api.util.IOrientableBlock;
 import appeng.block.AEBaseTileBlock;
-import appeng.client.render.BaseBlockRender;
 import appeng.client.render.blocks.RenderQuartzTorch;
 import appeng.core.features.AEFeature;
 import appeng.helpers.ICustomCollision;
@@ -53,7 +52,6 @@ public class BlockLightDetector extends AEBaseTileBlock implements IOrientableBl
 	{
 		super( Material.circuits );
 
-		this.setLightLevel( 0.9375F );
 		this.setLightOpacity( 0 );
 		this.isFullSize = false;
 		this.isOpaque = false;
