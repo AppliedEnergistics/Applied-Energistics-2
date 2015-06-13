@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -29,7 +29,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.oredict.OreDictionary;
 
 import appeng.api.AEApi;
 import appeng.api.exceptions.MissingDefinition;
@@ -65,12 +64,6 @@ public class OreQuartz extends AEBaseBlock
 	protected Class<? extends BaseBlockRender> getRenderer()
 	{
 		return RenderQuartzOre.class;
-	}
-
-	@Override
-	public void postInit()
-	{
-		OreDictionary.registerOre( "oreCertusQuartz", new ItemStack( this ) );
 	}
 
 	@Override
