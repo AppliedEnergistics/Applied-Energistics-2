@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -49,7 +49,7 @@ import appeng.api.networking.pathing.IPathingGrid;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IReadOnlyCollection;
-import appeng.core.WorldSettings;
+import appeng.core.worlddata.WorldData;
 import appeng.hooks.TickHandler;
 import appeng.me.pathfinding.IPathItem;
 import appeng.util.ReadOnlyCollection;
@@ -328,7 +328,10 @@ public class GridNode implements IGridNode, IPathItem
 			NBTTagCompound node = nodeData.getCompoundTag( name );
 			this.playerID = node.getInteger( "p" );
 			this.lastSecurityKey = node.getLong( "k" );
-			this.setGridStorage( WorldSettings.getInstance().getGridStorage( node.getLong( "g" ) ) );
+
+			final long storageID = node.getLong( "g" );
+			final GridStorage gridStorage = WorldData.instance().storageData().getGridStorage( storageID );
+			this.setGridStorage( gridStorage );
 		}
 		else
 		{

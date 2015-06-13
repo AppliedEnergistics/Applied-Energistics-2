@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -36,7 +36,7 @@ import appeng.api.networking.IMachineSet;
 import appeng.api.networking.events.MENetworkEvent;
 import appeng.api.networking.events.MENetworkPostCacheConstruction;
 import appeng.api.util.IReadOnlyCollection;
-import appeng.core.WorldSettings;
+import appeng.core.worlddata.WorldData;
 import appeng.hooks.TickHandler;
 import appeng.util.ReadOnlyCollection;
 
@@ -166,7 +166,7 @@ public class Grid implements IGrid
 			{
 				if( this.myStorage == null )
 				{
-					this.myStorage = WorldSettings.getInstance().getNewGridStorage();
+					this.myStorage = WorldData.instance().storageData().getNewGridStorage();
 					this.myStorage.setGrid( this );
 				}
 
@@ -189,7 +189,7 @@ public class Grid implements IGrid
 		}
 		else if( this.myStorage == null )
 		{
-			this.myStorage = WorldSettings.getInstance().getNewGridStorage();
+			this.myStorage = WorldData.instance().storageData().getNewGridStorage();
 			this.myStorage.setGrid( this );
 		}
 

@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -27,8 +27,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
-
 import javax.annotation.Nonnull;
+
+import com.google.common.base.Preconditions;
 
 import net.minecraft.block.Block;
 import net.minecraft.world.World;
@@ -40,18 +41,27 @@ import appeng.services.compass.CompassReader;
 import appeng.services.compass.ICompassCallback;
 
 
-public class CompassService implements ThreadFactory
+public final class CompassService
 {
 	private static final int CHUNK_SIZE = 16;
-	private final Map<World, CompassReader> worldSet = new HashMap<World, CompassReader>();
-	private final ExecutorService executor;
-	private final File rootFolder;
-	private int jobSize = 0;
 
-	public CompassService( File aEFolder )
+	private final Map<World, CompassReader> worldSet = new HashMap<World, CompassReader>( 10 );
+	private final ExecutorService executor;
+
+	/**
+	 * AE2 Folder for each world
+	 */
+	private final File worldCompassFolder;
+
+	private int jobSize;
+
+	public CompassService( @Nonnull final File worldCompassFolder, @Nonnull final ThreadFactory factory )
 	{
-		this.rootFolder = aEFolder;
-		this.executor = Executors.newSingleThreadExecutor( this );
+		Preconditions.checkNotNull( worldCompassFolder );
+		Preconditions.checkArgument( worldCompassFolder.isDirectory() );
+
+		this.worldCompassFolder = worldCompassFolder;
+		this.executor = Executors.newSingleThreadExecutor( factory );
 		this.jobSize = 0;
 	}
 
@@ -131,7 +141,7 @@ public class CompassService implements ThreadFactory
 
 		if( cr == null )
 		{
-			cr = new CompassReader( w.provider.dimensionId, this.rootFolder );
+			cr = new CompassReader( w.provider.dimensionId, this.worldCompassFolder );
 			this.worldSet.put( w, cr );
 		}
 
@@ -174,12 +184,6 @@ public class CompassService implements ThreadFactory
 		{
 			// wrap this up..
 		}
-	}
-
-	@Override
-	public Thread newThread( @Nonnull Runnable job )
-	{
-		return new Thread( job, "AE Compass Service" );
 	}
 
 	private class CMUpdatePost implements Runnable

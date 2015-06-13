@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -43,8 +43,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 import appeng.api.util.IOrientable;
 import appeng.api.util.IOrientableBlock;
 import appeng.block.AEBaseBlock;
-import appeng.core.WorldSettings;
 import appeng.core.features.AEFeature;
+import appeng.core.worlddata.WorldData;
 import appeng.helpers.LocationRotation;
 import appeng.helpers.NullRotation;
 import appeng.util.Platform;
@@ -118,7 +118,7 @@ public class BlockSkyStone extends AEBaseBlock implements IOrientableBlock
 		super.onBlockAdded( w, x, y, z );
 		if( Platform.isServer() )
 		{
-			WorldSettings.getInstance().getCompass().updateArea( w, x, y, z );
+			WorldData.instance().compassData().service().updateArea( w, x, y, z );
 		}
 	}
 
@@ -212,7 +212,7 @@ public class BlockSkyStone extends AEBaseBlock implements IOrientableBlock
 		super.breakBlock( w, x, y, z, b, metadata );
 		if( Platform.isServer() )
 		{
-			WorldSettings.getInstance().getCompass().updateArea( w, x, y, z );
+			WorldData.instance().compassData().service().updateArea( w, x, y, z );
 		}
 	}
 }

@@ -16,38 +16,26 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.core.features.registries;
+package appeng.core.worlddata;
 
 
-import javax.annotation.Nullable;
+import java.util.Collection;
 
-import com.mojang.authlib.GameProfile;
-
-import net.minecraft.entity.player.EntityPlayer;
-
-import appeng.api.features.IPlayerRegistry;
-import appeng.core.worlddata.WorldData;
+import net.minecraft.nbt.NBTTagCompound;
 
 
-public class PlayerRegistry implements IPlayerRegistry
+/**
+ * @author thatsIch
+ * @version rv3 - 30.05.2015
+ * @since rv3 30.05.2015
+ */
+public interface IWorldSpawnData
 {
+	void setGenerated( int dim, int chunkX, int chunkZ );
 
-	@Override
-	public int getID( GameProfile username )
-	{
-		return WorldData.instance().playerData().getPlayerID( username );
-	}
+	boolean hasGenerated( int dim, int chunkX, int chunkZ );
 
-	@Override
-	public int getID( EntityPlayer player )
-	{
-		return WorldData.instance().playerData().getPlayerID( player.getGameProfile() );
-	}
+	boolean addNearByMeteorites( int dim, int chunkX, int chunkZ, NBTTagCompound newData );
 
-	@Nullable
-	@Override
-	public EntityPlayer findPlayer( int playerID )
-	{
-		return WorldData.instance().playerData().getPlayerFromID( playerID );
-	}
+	Collection<NBTTagCompound> getNearByMeteorites( int dim, int chunkX, int chunkZ );
 }

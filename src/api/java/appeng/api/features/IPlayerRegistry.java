@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2013 AlgorithmX2
+ * Copyright (c) 2013 - 2015 AlgorithmX2
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -24,9 +24,11 @@
 package appeng.api.features;
 
 
-import net.minecraft.entity.player.EntityPlayer;
+import javax.annotation.Nullable;
 
 import com.mojang.authlib.GameProfile;
+
+import net.minecraft.entity.player.EntityPlayer;
 
 
 /**
@@ -55,5 +57,6 @@ public interface IPlayerRegistry
 	 *
 	 * @return PlayerEntity, or null if the player could not be found.
 	 */
+	@Nullable
 	EntityPlayer findPlayer( int playerID );
 }

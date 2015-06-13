@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -31,8 +31,8 @@ import cpw.mods.fml.common.network.FMLNetworkEvent.ServerConnectionFromClientEve
 import cpw.mods.fml.common.network.FMLNetworkEvent.ServerCustomPacketEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 
-import appeng.core.WorldSettings;
 import appeng.core.sync.AppEngPacket;
+import appeng.core.worlddata.WorldData;
 
 
 public class NetworkHandler
@@ -83,7 +83,7 @@ public class NetworkHandler
 	@SubscribeEvent
 	public void newConnection( ServerConnectionFromClientEvent ev )
 	{
-		WorldSettings.getInstance().sendToPlayer( ev.manager );
+		WorldData.instance().dimensionData().sendToPlayer( ev.manager );
 	}
 
 	@SubscribeEvent
@@ -91,7 +91,7 @@ public class NetworkHandler
 	{
 		if( loginEvent.player instanceof EntityPlayerMP )
 		{
-			WorldSettings.getInstance().sendToPlayer( null );
+			WorldData.instance().dimensionData().sendToPlayer( null );
 		}
 	}
 

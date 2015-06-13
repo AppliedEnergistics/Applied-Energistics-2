@@ -16,38 +16,51 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.core.features.registries;
+package appeng.core.worlddata;
 
 
-import javax.annotation.Nullable;
+import java.io.File;
+import javax.annotation.Nonnull;
 
-import com.mojang.authlib.GameProfile;
+import com.google.common.base.Preconditions;
 
-import net.minecraft.entity.player.EntityPlayer;
-
-import appeng.api.features.IPlayerRegistry;
-import appeng.core.worlddata.WorldData;
+import appeng.services.CompassService;
 
 
-public class PlayerRegistry implements IPlayerRegistry
+/**
+ * @author thatsIch
+ * @version rv3 - 30.05.2015
+ * @since rv3 30.05.2015
+ */
+final class CompassData implements IWorldCompassData, IOnWorldStartable, IOnWorldStoppable
 {
+	@Nonnull
+	private final CompassService service;
 
-	@Override
-	public int getID( GameProfile username )
+	public CompassData( @Nonnull final File compassDirectory, @Nonnull final CompassService service )
 	{
-		return WorldData.instance().playerData().getPlayerID( username );
+		Preconditions.checkNotNull( compassDirectory );
+		Preconditions.checkArgument( compassDirectory.isDirectory() );
+		Preconditions.checkNotNull( service );
+
+		this.service = service;
 	}
 
 	@Override
-	public int getID( EntityPlayer player )
+	public CompassService service()
 	{
-		return WorldData.instance().playerData().getPlayerID( player.getGameProfile() );
+		return this.service;
 	}
 
-	@Nullable
 	@Override
-	public EntityPlayer findPlayer( int playerID )
+	public void onWorldStart()
 	{
-		return WorldData.instance().playerData().getPlayerFromID( playerID );
+
+	}
+
+	@Override
+	public void onWorldStop()
+	{
+		this.service.kill();
 	}
 }
