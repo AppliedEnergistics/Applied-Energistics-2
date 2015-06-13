@@ -45,10 +45,16 @@ repositories {
         url = "http://maven.tterrag.com/"
     }
 
-    maven  {
+    maven {
         name = "RX14 Proxy"
         url = "http://mvn.rx14.co.uk/repo/"
     }
+
+    ivy {
+        name "BuildCraft"
+        artifactPattern "http://www.mod-buildcraft.com/releases/BuildCraft/[revision]/[module]-[revision]-[classifier].[ext]"
+    }
+
 //  CurseForge DNS for TE is not available or I am just being unlucky, code part can stay since this is applicable to any other curseforge mod though
 //    ivy {
 //        name = "CoFHLib"
