@@ -18,6 +18,8 @@ ore=mc:stained_hardened_clay:* -> blockStainedHardenedClay
 ore=ae2:ItemMaterial.NetherQuartzDust -> dustNetherQuartz
 ore=ae2:ItemMaterial.CertusQuartzDust -> dustCertusQuartz
 ore=ae2:ItemMaterial.FluixDust -> dustFluix
+ore=ae2:tile.OreQuartz -> oreCertusQuartz
+ore=ae2:tile.OreQuartzCharged -> oreCertusQuartz
 
 group= mc:iron_ingot oredictionary:ingotCopper oredictionary:ingotTin oredictionary:ingotSilver oredictionary:ingotLead oredictionary:ingotBronze oredictionary:ingotBrass oredictionary:ingotNickel oredictionary:ingotInvar oredictionary:ingotAluminium -> metalIngots
 group= oredictionary:dustEnder oredictionary:dustEnderPearl -> dustEnder
