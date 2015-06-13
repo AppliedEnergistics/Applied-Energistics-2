@@ -53,7 +53,7 @@ import appeng.util.inv.WrapperMCISidedInventory;
 
 
 // TODO: BC Integration 
-//@Integration.Interface( iface = "buildcraft.api.transport.IPipeConnection", iname = "BuildCraftCore" )
+//@Integration.Interface( iface = "buildcraft.api.transport.IPipeConnection", iname = "BuildCraftTransport" )
 public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements ISidedInventory, IGridTickable
 {
 
@@ -404,7 +404,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements ISidedI
 
 	// TODO: BC Integration
 //	@Override
-//	@Method( iname = "BuildCraftCore" )
+//	@Method( iname = "BuildCraftTransport" )
 //	public ConnectOverride overridePipeConnection( PipeType type, ForgeDirection with )
 //	{
 //		return this.side == with && type == PipeType.ITEM ? ConnectOverride.CONNECT : ConnectOverride.DEFAULT;
