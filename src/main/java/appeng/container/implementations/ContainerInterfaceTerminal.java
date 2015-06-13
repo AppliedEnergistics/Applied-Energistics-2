@@ -44,7 +44,7 @@ import appeng.helpers.IInterfaceHost;
 import appeng.helpers.InventoryAction;
 import appeng.items.misc.ItemEncodedPattern;
 import appeng.parts.misc.PartInterface;
-import appeng.parts.reporting.PartMonitor;
+import appeng.parts.reporting.PartInterfaceTerminal;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.tile.misc.TileInterface;
 import appeng.util.InventoryAdaptor;
@@ -67,7 +67,7 @@ public final class ContainerInterfaceTerminal extends AEBaseContainer
 	IGrid grid;
 	NBTTagCompound data = new NBTTagCompound();
 
-	public ContainerInterfaceTerminal( InventoryPlayer ip, PartMonitor anchor )
+	public ContainerInterfaceTerminal( InventoryPlayer ip, PartInterfaceTerminal anchor )
 	{
 		super( ip, anchor );
 
@@ -418,7 +418,6 @@ public final class ContainerInterfaceTerminal extends AEBaseContainer
 			this.sortBy = dual.getSortValue();
 		}
 	}
-
 
 	static class PatternInvSlot extends WrapperInvSlot
 	{

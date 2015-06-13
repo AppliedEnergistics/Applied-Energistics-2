@@ -62,6 +62,7 @@ import appeng.core.sync.packets.PacketValueConfig;
 import appeng.helpers.WirelessTerminalGuiObject;
 import appeng.integration.IntegrationRegistry;
 import appeng.integration.IntegrationType;
+import appeng.parts.reporting.AbstractPartTerminal;
 import appeng.parts.reporting.PartTerminal;
 import appeng.tile.misc.TileSecurity;
 import appeng.util.IConfigManagerHost;
@@ -139,7 +140,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 		{
 			this.myName = GuiText.Chest;
 		}
-		else if( te instanceof PartTerminal )
+		else if( te instanceof AbstractPartTerminal )
 		{
 			this.myName = GuiText.Terminal;
 		}

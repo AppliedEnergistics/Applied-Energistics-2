@@ -30,22 +30,20 @@ import appeng.client.texture.CableBusTextures;
 import appeng.core.sync.GuiBridge;
 import appeng.helpers.Reflected;
 import appeng.tile.inventory.AppEngInternalInventory;
-import appeng.tile.inventory.InvOperation;
 
 
-public class PartCraftingTerminal extends PartTerminal
+public class PartCraftingTerminal extends AbstractPartTerminal
 {
+	private static final CableBusTextures FRONT_BRIGHT_ICON = CableBusTextures.PartCraftingTerm_Bright;
+	private static final CableBusTextures FRONT_DARK_ICON = CableBusTextures.PartCraftingTerm_Dark;
+	private static final CableBusTextures FRONT_COLORED_ICON = CableBusTextures.PartCraftingTerm_Colored;
+
 	private final AppEngInternalInventory craftingGrid = new AppEngInternalInventory( this, 9 );
 
 	@Reflected
 	public PartCraftingTerminal( ItemStack is )
 	{
 		super( is );
-
-		this.frontBright = CableBusTextures.PartCraftingTerm_Bright;
-		this.frontColored = CableBusTextures.PartCraftingTerm_Colored;
-		this.frontDark = CableBusTextures.PartCraftingTerm_Dark;
-		// frontSolid = CableBusTextures.PartCraftingTerm_Solid;
 	}
 
 	@Override
@@ -53,7 +51,7 @@ public class PartCraftingTerminal extends PartTerminal
 	{
 		super.getDrops( drops, wrenched );
 
-		for( ItemStack is : this.craftingGrid )
+		for( final ItemStack is : this.craftingGrid )
 		{
 			if( is != null )
 			{
@@ -97,12 +95,6 @@ public class PartCraftingTerminal extends PartTerminal
 	}
 
 	@Override
-	public void onChangeInventory( IInventory inv, int slot, InvOperation mc, ItemStack removedStack, ItemStack newStack )
-	{
-		this.host.markForSave();
-	}
-
-	@Override
 	public IInventory getInventoryByName( String name )
 	{
 		if( name.equals( "crafting" ) )
@@ -110,5 +102,23 @@ public class PartCraftingTerminal extends PartTerminal
 			return this.craftingGrid;
 		}
 		return super.getInventoryByName( name );
+	}
+
+	@Override
+	public CableBusTextures getFrontBright()
+	{
+		return FRONT_BRIGHT_ICON;
+	}
+
+	@Override
+	public CableBusTextures getFrontColored()
+	{
+		return FRONT_COLORED_ICON;
+	}
+
+	@Override
+	public CableBusTextures getFrontDark()
+	{
+		return FRONT_DARK_ICON;
 	}
 }
