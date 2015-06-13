@@ -140,6 +140,7 @@ public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorH
 		{
 			this.monitor = null;
 			this.cpuName = "";
+			this.eta = -1;
 		}
 	}
 
