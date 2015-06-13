@@ -28,24 +28,23 @@ import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.config.FuzzyMode;
 import appeng.integration.IntegrationRegistry;
 import appeng.integration.IntegrationType;
-import appeng.integration.abstraction.IBC;
+import appeng.integration.abstraction.IBuildCraftTransport;
 import appeng.util.InventoryAdaptor;
 import appeng.util.iterators.NullIterator;
 
 
 public class AdaptorBCPipe extends InventoryAdaptor
 {
-
-	private final IBC bc;
+	private final IBuildCraftTransport buildCraft;
 	private final TileEntity i;
 	private final ForgeDirection d;
 
 	public AdaptorBCPipe( TileEntity s, ForgeDirection dd )
 	{
-		this.bc = (IBC) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.BC );
-		if( this.bc != null )
+		this.buildCraft = (IBuildCraftTransport) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.BuildCraftTransport );
+		if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.BuildCraftTransport ) )
 		{
-			if( this.bc.isPipe( s, dd ) )
+			if( this.buildCraft.isPipe( s, dd ) )
 			{
 				this.i = s;
 				this.d = dd;
@@ -96,7 +95,7 @@ public class AdaptorBCPipe extends InventoryAdaptor
 			return null;
 		}
 
-		if( this.bc.addItemsToPipe( this.i, toBeAdded, this.d ) )
+		if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.BuildCraftTransport ) && this.buildCraft.addItemsToPipe( this.i, toBeAdded, this.d ) )
 		{
 			return null;
 		}

@@ -35,7 +35,7 @@ import appeng.api.parts.IFacadePart;
 import appeng.api.parts.IPartHost;
 import appeng.integration.IntegrationRegistry;
 import appeng.integration.IntegrationType;
-import appeng.integration.abstraction.IBC;
+import appeng.integration.abstraction.IBuildCraftTransport;
 import appeng.items.parts.ItemFacade;
 import appeng.parts.CableBusStorage;
 
@@ -137,11 +137,13 @@ public class FacadeContainer implements IFacadeContainer
 				boolean isBC = ids[0] < 0;
 				ids[0] = Math.abs( ids[0] );
 
-				if( isBC && IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.BC ) )
+				if( isBC && IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.BuildCraftTransport ) )
 				{
-					IBC bc = (IBC) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.BC );
+					final IBuildCraftTransport bc = (IBuildCraftTransport) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.BuildCraftTransport );
+					final IFacadePart created = bc.createFacadePart( (Block) Block.blockRegistry.getObjectById( ids[0] ), ids[1], side );
 					changed = changed || this.storage.getFacade( x ) == null;
-					this.storage.setFacade( x, bc.createFacadePart( (Block) Block.blockRegistry.getObjectById( ids[0] ), ids[1], side ) );
+
+					this.storage.setFacade( x, created );
 				}
 				else if( !isBC )
 				{
@@ -187,9 +189,9 @@ public class FacadeContainer implements IFacadeContainer
 					}
 					else
 					{
-						if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.BC ) )
+						if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.BuildCraftTransport ) )
 						{
-							IBC bc = (IBC) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.BC );
+							final IBuildCraftTransport bc = (IBuildCraftTransport) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.BuildCraftTransport );
 							if( bc.isFacade( is ) )
 							{
 								this.storage.setFacade( x, bc.createFacadePart( is, ForgeDirection.getOrientation( x ) ) );
@@ -221,7 +223,7 @@ public class FacadeContainer implements IFacadeContainer
 			{
 				int itemID = Item.getIdFromItem( part.getItem() );
 				int dmgValue = part.getItemDamage();
-				out.writeInt( itemID * ( part.isBC() ? -1 : 1 ) );
+				out.writeInt( itemID * ( part.notAEFacade() ? -1 : 1 ) );
 				out.writeInt( dmgValue );
 			}
 		}

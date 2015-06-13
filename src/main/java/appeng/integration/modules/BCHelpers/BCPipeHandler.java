@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -26,7 +26,9 @@ import appeng.api.networking.security.BaseActionSource;
 import appeng.api.storage.IExternalStorageHandler;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.StorageChannel;
-import appeng.integration.modules.BC;
+import appeng.integration.IntegrationRegistry;
+import appeng.integration.IntegrationType;
+import appeng.integration.abstraction.IBuildCraftTransport;
 
 
 public class BCPipeHandler implements IExternalStorageHandler
@@ -35,7 +37,14 @@ public class BCPipeHandler implements IExternalStorageHandler
 	@Override
 	public boolean canHandle( TileEntity te, ForgeDirection d, StorageChannel chan, BaseActionSource mySrc )
 	{
-		return chan == StorageChannel.ITEMS && BC.instance.isPipe( te, d );
+		if ( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.BuildCraftTransport ) )
+		{
+			final IBuildCraftTransport bc = (IBuildCraftTransport) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.BuildCraftTransport );
+
+			return chan == StorageChannel.ITEMS && bc.isPipe( te, d );
+		}
+
+		return false;
 	}
 
 	@Override

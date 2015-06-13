@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -18,6 +18,8 @@
 
 package appeng.parts;
 
+
+import javax.annotation.Nullable;
 
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -129,7 +131,7 @@ public class CableBusStorage
 		return null;
 	}
 
-	public void setFacade( int x, IFacadePart facade )
+	public void setFacade( int x, @Nullable IFacadePart facade )
 	{
 		if( this.facades != null && this.facades.length > x && facade == null )
 		{

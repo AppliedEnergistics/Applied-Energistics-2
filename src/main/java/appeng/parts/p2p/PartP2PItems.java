@@ -49,7 +49,7 @@ import appeng.api.networking.ticking.TickingRequest;
 import appeng.core.settings.TickRates;
 import appeng.integration.IntegrationRegistry;
 import appeng.integration.IntegrationType;
-import appeng.integration.abstraction.IBC;
+import appeng.integration.abstraction.IBuildCraftTransport;
 import appeng.me.GridAccessException;
 import appeng.me.cache.helpers.TunnelCollection;
 import appeng.tile.inventory.AppEngNullInventory;
@@ -61,7 +61,7 @@ import appeng.util.inv.WrapperChainedInventory;
 import appeng.util.inv.WrapperMCISidedInventory;
 
 
-@Interface( iface = "buildcraft.api.transport.IPipeConnection", iname = "BC" )
+@Interface( iface = "buildcraft.api.transport.IPipeConnection", iname = "BuildCraftCore" )
 public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeConnection, ISidedInventory, IGridTickable
 {
 
@@ -141,20 +141,17 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 
 			this.which.add( this );
 
-			if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.BC ) )
+			if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.BuildCraftTransport ) )
 			{
-				IBC buildcraft = (IBC) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.BC );
-				if( buildcraft != null )
+				final IBuildCraftTransport buildcraft = (IBuildCraftTransport) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.BuildCraftTransport );
+				if( buildcraft.isPipe( te, this.side.getOpposite() ) )
 				{
-					if( buildcraft.isPipe( te, this.side.getOpposite() ) )
+					try
 					{
-						try
-						{
-							output = new WrapperBCPipe( te, this.side.getOpposite() );
-						}
-						catch( Throwable ignore )
-						{
-						}
+						output = new WrapperBCPipe( te, this.side.getOpposite() );
+					}
+					catch( Throwable ignore )
+					{
 					}
 				}
 			}
@@ -387,7 +384,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 	}
 
 	@Override
-	@Method( iname = "BC" )
+	@Method( iname = "BuildCraftCore" )
 	public ConnectOverride overridePipeConnection( PipeType type, ForgeDirection with )
 	{
 		return this.side == with && type == PipeType.ITEM ? ConnectOverride.CONNECT : ConnectOverride.DEFAULT;
