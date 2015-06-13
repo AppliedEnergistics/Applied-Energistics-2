@@ -61,7 +61,7 @@ import appeng.util.inv.WrapperChainedInventory;
 import appeng.util.inv.WrapperMCISidedInventory;
 
 
-@Interface( iface = "buildcraft.api.transport.IPipeConnection", iname = "BuildCraftCore" )
+@Interface( iface = "buildcraft.api.transport.IPipeConnection", iname = "BuildCraftTransport" )
 public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeConnection, ISidedInventory, IGridTickable
 {
 
@@ -384,7 +384,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 	}
 
 	@Override
-	@Method( iname = "BuildCraftCore" )
+	@Method( iname = "BuildCraftTransport" )
 	public ConnectOverride overridePipeConnection( PipeType type, ForgeDirection with )
 	{
 		return this.side == with && type == PipeType.ITEM ? ConnectOverride.CONNECT : ConnectOverride.DEFAULT;

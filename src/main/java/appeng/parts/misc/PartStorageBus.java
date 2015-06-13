@@ -90,7 +90,7 @@ import appeng.util.prioitylist.FuzzyPriorityList;
 import appeng.util.prioitylist.PrecisePriorityList;
 
 
-@Interface( iname = "BuildCraftCore", iface = "buildcraft.api.transport.IPipeConnection" )
+@Interface( iname = "BuildCraftTransport", iface = "buildcraft.api.transport.IPipeConnection" )
 public class PartStorageBus extends PartUpgradeable implements IGridTickable, ICellContainer, IMEMonitorHandlerReceiver<IAEItemStack>, IPipeConnection, IPriorityHost
 {
 	final BaseActionSource mySrc;
@@ -565,7 +565,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	}
 
 	@Override
-	@Method( iname = "BuildCraftCore" )
+	@Method( iname = "BuildCraftTransport" )
 	public ConnectOverride overridePipeConnection( PipeType type, ForgeDirection with )
 	{
 		return type == PipeType.ITEM && with == this.side ? ConnectOverride.CONNECT : ConnectOverride.DISCONNECT;
