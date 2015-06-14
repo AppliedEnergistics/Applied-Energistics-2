@@ -31,6 +31,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import cpw.mods.fml.common.event.FMLInterModComms;
 
+import buildcraft.BuildCraftCore;
 import buildcraft.BuildCraftEnergy;
 import buildcraft.BuildCraftTransport;
 import buildcraft.api.blueprints.BuilderAPI;
@@ -181,9 +182,9 @@ public final class BC extends BaseModule implements IBC
 	public void registerPowerP2P()
 	{
 		IP2PTunnelRegistry reg = AEApi.instance().registries().p2pTunnel();
-		reg.addNewAttunement( new ItemStack( BuildCraftEnergy.engineBlock, 1, 0 ), TunnelType.RF_POWER );
-		reg.addNewAttunement( new ItemStack( BuildCraftEnergy.engineBlock, 1, 1 ), TunnelType.RF_POWER );
-		reg.addNewAttunement( new ItemStack( BuildCraftEnergy.engineBlock, 1, 2 ), TunnelType.RF_POWER );
+		reg.addNewAttunement( new ItemStack( BuildCraftCore.engineBlock, 1, 0 ), TunnelType.RF_POWER );
+		reg.addNewAttunement( new ItemStack( BuildCraftCore.engineBlock, 1, 1 ), TunnelType.RF_POWER );
+		reg.addNewAttunement( new ItemStack( BuildCraftCore.engineBlock, 1, 2 ), TunnelType.RF_POWER );
 		reg.addNewAttunement( new ItemStack( BuildCraftTransport.pipePowerCobblestone ), TunnelType.RF_POWER );
 		reg.addNewAttunement( new ItemStack( BuildCraftTransport.pipePowerDiamond ), TunnelType.RF_POWER );
 		reg.addNewAttunement( new ItemStack( BuildCraftTransport.pipePowerGold ), TunnelType.RF_POWER );
