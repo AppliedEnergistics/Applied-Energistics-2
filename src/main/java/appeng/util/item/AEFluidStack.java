@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -24,7 +24,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-
 import javax.annotation.Nonnull;
 
 import io.netty.buffer.ByteBuf;
@@ -47,8 +46,8 @@ import appeng.util.Platform;
 public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFluidStack, Comparable<AEFluidStack>
 {
 
-	public int myHash;
-	Fluid fluid;
+	private final int myHash;
+	private final Fluid fluid;
 	private IAETagCompound tagCompound;
 
 	private AEFluidStack( AEFluidStack is )
@@ -303,7 +302,7 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 		{
 			FluidStack is = (FluidStack) ia;
 
-			if( is.fluidID == this.fluid.getID() )
+			if( is.getFluidID() == this.fluid.getID() )
 			{
 				NBTTagCompound ta = (NBTTagCompound) this.tagCompound;
 				NBTTagCompound tb = is.tag;
@@ -337,31 +336,13 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 	public String toString()
 	{
 		return this.getFluidStack().toString();
-	}	@Override
+	}
+
+	@Override
 	public boolean hasTagCompound()
 	{
 		return this.tagCompound != null;
 	}
-
-	@Override
-	public FluidStack getFluidStack()
-	{
-		FluidStack is = new FluidStack( this.fluid, (int) Math.min( Integer.MAX_VALUE, this.stackSize ) );
-		if( this.tagCompound != null )
-		{
-			is.tag = this.tagCompound.getNBTTagCompoundCopy();
-		}
-
-		return is;
-	}
-
-	@Override
-	public Fluid getFluid()
-	{
-		return this.fluid;
-	}
-
-
 
 	@Override
 	void writeIdentity( ByteBuf i ) throws IOException
@@ -387,5 +368,23 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 			i.writeInt( size );
 			i.writeBytes( tagBytes );
 		}
+	}
+
+	@Override
+	public FluidStack getFluidStack()
+	{
+		FluidStack is = new FluidStack( this.fluid, (int) Math.min( Integer.MAX_VALUE, this.stackSize ) );
+		if( this.tagCompound != null )
+		{
+			is.tag = this.tagCompound.getNBTTagCompoundCopy();
+		}
+
+		return is;
+	}
+
+	@Override
+	public Fluid getFluid()
+	{
+		return this.fluid;
 	}
 }
