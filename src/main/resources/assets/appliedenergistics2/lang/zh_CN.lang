@@ -194,7 +194,6 @@ gui.appliedenergistics2.Lumen=光通
 gui.appliedenergistics2.Empty=空
 gui.appliedenergistics2.Stored=现存
 gui.appliedenergistics2.Cancel=取消
-gui.appliedenergistics2.ETA=ETA: %s
 gui.appliedenergistics2.ETAFormat=HH:mm:ss
 gui.appliedenergistics2.Crafting=正在合成
 gui.appliedenergistics2.Scheduled=计划合成
