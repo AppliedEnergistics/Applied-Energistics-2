@@ -66,7 +66,6 @@ final class DimensionData implements IWorldDimensionData, IOnWorldStartable, IOn
 	DimensionData( @Nonnull final File parentFile, @Nonnull final String configVersion )
 	{
 		Preconditions.checkNotNull( parentFile );
-		Preconditions.checkArgument( parentFile.isFile() );
 		Preconditions.checkNotNull( configVersion );
 		Preconditions.checkArgument( !configVersion.isEmpty() );
 

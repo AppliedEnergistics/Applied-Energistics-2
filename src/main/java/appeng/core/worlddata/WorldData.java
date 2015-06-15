@@ -38,9 +38,8 @@ import appeng.services.compass.CompassThreadFactory;
 /**
  * Singleton access to anything related to world-based data.
  *
- * Data will change depending which world is loaded.
- * Will probably not affect SMP at all since only one world is loaded,
- * but SSP more, cause they play on different worlds.
+ * Data will change depending which world is loaded. Will probably not affect SMP at all since only one world is loaded, but SSP more, cause they play on
+ * different worlds.
  *
  * @author thatsIch
  * @version rv3 - 30.05.2015
@@ -64,6 +63,7 @@ public final class WorldData implements IWorldData
 
 	private final List<IOnWorldStartable> startables;
 	private final List<IOnWorldStoppable> stoppables;
+
 	private final File ae2directory;
 	private final File spawnDirectory;
 	private final File compassDirectory;
@@ -74,19 +74,20 @@ public final class WorldData implements IWorldData
 		Preconditions.checkArgument( worldDirectory.isDirectory() );
 
 		this.ae2directory = new File( worldDirectory, AE2_DIRECTORY_NAME );
-		final File settingsFile = new File( this.ae2directory, SETTING_FILE_NAME );
 		this.spawnDirectory = new File( this.ae2directory, SPAWNDATA_DIR_NAME );
+		this.compassDirectory = new File( this.ae2directory, COMPASS_DIR_NAME );
+
+		final File settingsFile = new File( this.ae2directory, SETTING_FILE_NAME );
 
 		final PlayerData playerData = new PlayerData( settingsFile, AEConfig.VERSION );
 		final DimensionData dimensionData = new DimensionData( settingsFile, AEConfig.VERSION );
 		final StorageData storageData = new StorageData( settingsFile, AEConfig.VERSION );
 
-		this.compassDirectory = new File( this.ae2directory, COMPASS_DIR_NAME );
 		final ThreadFactory compassThreadFactory = new CompassThreadFactory();
 		final CompassService compassService = new CompassService( this.compassDirectory, compassThreadFactory );
 		final CompassData compassData = new CompassData( this.compassDirectory, compassService );
 
-		final SpawnData spawnData = new SpawnData( this.spawnDirectory );
+		final IWorldSpawnData spawnData = new SpawnData( this.spawnDirectory );
 
 		this.playerData = playerData;
 		this.dimensionData = dimensionData;
@@ -94,8 +95,8 @@ public final class WorldData implements IWorldData
 		this.compassData = compassData;
 		this.spawnData = spawnData;
 
-		this.startables = Lists.<IOnWorldStartable>newArrayList( playerData, dimensionData, storageData, compassData, spawnData );
-		this.stoppables = Lists.<IOnWorldStoppable>newArrayList( playerData, dimensionData, storageData, compassData, spawnData );
+		this.startables = Lists.<IOnWorldStartable>newArrayList( playerData, dimensionData, storageData );
+		this.stoppables = Lists.<IOnWorldStoppable>newArrayList( playerData, dimensionData, storageData, compassData );
 	}
 
 	/**

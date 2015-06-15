@@ -40,7 +40,7 @@ import appeng.core.AELog;
  * @version rv3 - 30.05.2015
  * @since rv3 30.05.2015
  */
-final class SpawnData implements IWorldSpawnData, IOnWorldStartable, IOnWorldStoppable
+final class SpawnData implements IWorldSpawnData
 {
 	@Nonnull
 	private final File spawnDirectory;
@@ -50,16 +50,9 @@ final class SpawnData implements IWorldSpawnData, IOnWorldStartable, IOnWorldSto
 	public SpawnData( @Nonnull final File spawnDirectory )
 	{
 		Preconditions.checkNotNull( spawnDirectory );
-		Preconditions.checkArgument( spawnDirectory.isDirectory() );
 
 		this.spawnDirectory = spawnDirectory;
 		this.encoder = new MeteorDataNameEncoder( 4 );
-	}
-
-	@Override
-	public void onWorldStart()
-	{
-
 	}
 
 	@Override
@@ -133,12 +126,6 @@ final class SpawnData implements IWorldSpawnData, IOnWorldStartable, IOnWorldSto
 		}
 
 		return ll;
-	}
-
-	@Override
-	public void onWorldStop()
-	{
-
 	}
 
 	private NBTTagCompound loadSpawnData( int dim, int chunkX, int chunkZ )
