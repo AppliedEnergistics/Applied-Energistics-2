@@ -1,8 +1,27 @@
+/*
+ * This file is part of Applied Energistics 2.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
+ *
+ * Applied Energistics 2 is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Applied Energistics 2 is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
+ */
+
 package appeng.core.features.registries;
 
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -20,12 +39,12 @@ import appeng.core.features.registries.entries.InscriberRecipe;
 
 /**
  * @author thatsIch
- * @version rv2
+ * @version rv3
  * @since rv2
  */
 public final class InscriberRegistry implements IInscriberRegistry
 {
-	private final List<IInscriberRecipe> recipes;
+	private final Set<IInscriberRecipe> recipes;
 	private final Set<ItemStack> optionals;
 	private final Set<ItemStack> inputs;
 
@@ -33,14 +52,14 @@ public final class InscriberRegistry implements IInscriberRegistry
 	{
 		this.inputs = new HashSet<ItemStack>();
 		this.optionals = new HashSet<ItemStack>();
-		this.recipes = new ArrayList<IInscriberRecipe>();
+		this.recipes = new HashSet<IInscriberRecipe>();
 	}
 
 	@Nonnull
 	@Override
-	public List<IInscriberRecipe> getRecipes()
+	public Collection<IInscriberRecipe> getRecipes()
 	{
-		return this.recipes;
+		return Collections.unmodifiableCollection( this.recipes );
 	}
 
 	@Nonnull
@@ -167,11 +186,11 @@ public final class InscriberRegistry implements IInscriberRegistry
 			{
 				throw new IllegalStateException( "Output must be defined." );
 			}
-			if ( this.topOptional == null && this.bottomOptional == null )
+			if( this.topOptional == null && this.bottomOptional == null )
 			{
 				throw new IllegalStateException( "One optional must be defined." );
 			}
-			if ( this.type == null )
+			if( this.type == null )
 			{
 				throw new IllegalStateException( "Process type must be defined." );
 			}
