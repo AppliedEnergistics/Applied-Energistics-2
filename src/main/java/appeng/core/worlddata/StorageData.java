@@ -57,7 +57,6 @@ final class StorageData implements IWorldGridStorageData, IOnWorldStartable, IOn
 	public StorageData( @Nonnull final File settingsFile, @Nonnull final String version )
 	{
 		Preconditions.checkNotNull( settingsFile );
-		Preconditions.checkArgument( settingsFile.isFile() );
 		Preconditions.checkNotNull( version );
 		Preconditions.checkArgument( !version.isEmpty() );
 
