@@ -72,7 +72,8 @@ public class GridNode implements IGridNode, IPathItem
 	private Object visitorIterationNumber = null;
 	// connection criteria
 	private int compressedData = 0;
-	private int channelData = 0;
+	private int usedChannels = 0;
+	private int lastUsedChannels = 0;
 
 	public GridNode( IGridBlock what )
 	{
@@ -91,7 +92,7 @@ public class GridNode implements IGridNode, IPathItem
 
 	public int usedChannels()
 	{
-		return this.channelData >> 8;
+		return this.lastUsedChannels;
 	}
 
 	public Class<? extends IGridHost> getMachineClass()
@@ -359,7 +360,7 @@ public class GridNode implements IGridNode, IPathItem
 	@Override
 	public boolean meetsChannelRequirements()
 	{
-		return ( !this.gridProxy.getFlags().contains( GridFlags.REQUIRE_CHANNEL ) || this.getUsedChannels() > 0 );
+		return( !this.gridProxy.getFlags().contains( GridFlags.REQUIRE_CHANNEL ) || this.getUsedChannels() > 0 );
 	}
 
 	@Override
@@ -385,7 +386,7 @@ public class GridNode implements IGridNode, IPathItem
 
 	public int getUsedChannels()
 	{
-		return this.channelData & 0xff;
+		return this.usedChannels;
 	}
 
 	public void FindConnections()
@@ -583,7 +584,7 @@ public class GridNode implements IGridNode, IPathItem
 	public void setGridStorage( GridStorage s )
 	{
 		this.myStorage = s;
-		this.channelData = 0;
+		this.usedChannels = 0;
 	}
 
 	@Override
@@ -602,7 +603,7 @@ public class GridNode implements IGridNode, IPathItem
 	{
 		if( zeroOut )
 		{
-			this.channelData &= ~0xff;
+			this.usedChannels = 0;
 		}
 
 		int idx = this.connections.indexOf( fast );
@@ -633,7 +634,7 @@ public class GridNode implements IGridNode, IPathItem
 	@Override
 	public void incrementChannelCount( int usedChannels )
 	{
-		this.channelData += usedChannels;
+		this.usedChannels += usedChannels;
 	}
 
 	@Override
@@ -652,8 +653,7 @@ public class GridNode implements IGridNode, IPathItem
 
 		if( this.getLastUsedChannels() != this.getUsedChannels() )
 		{
-			this.channelData &= 0xff;
-			this.channelData |= this.channelData << 8;
+			this.lastUsedChannels = this.usedChannels;
 
 			if( this.getInternalGrid() != null )
 			{
@@ -664,7 +664,7 @@ public class GridNode implements IGridNode, IPathItem
 
 	public int getLastUsedChannels()
 	{
-		return ( this.channelData >> 8 ) & 0xff;
+		return lastUsedChannels;
 	}
 
 	private static class MachineSecurityBreak implements Callable<Void>
@@ -684,7 +684,6 @@ public class GridNode implements IGridNode, IPathItem
 			return null;
 		}
 	}
-
 
 	private static class ConnectionComparator implements Comparator<IGridConnection>
 	{
