@@ -19,6 +19,7 @@
 package appeng.me.pathfinding;
 
 
+import net.minecraft.util.BlockPos;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridVisitor;
@@ -40,10 +41,10 @@ public class ControllerValidator implements IGridVisitor
 	public ControllerValidator( int x, int y, int z )
 	{
 		this.minX = x;
-		this.minY = y;
-		this.minZ = z;
 		this.maxX = x;
+		this.minY = y;
 		this.maxY = y;
+		this.minZ = z;
 		this.maxZ = z;
 	}
 
@@ -55,12 +56,14 @@ public class ControllerValidator implements IGridVisitor
 		{
 			TileController c = (TileController) host;
 
-			this.minX = Math.min( c.xCoord, this.minX );
-			this.maxX = Math.max( c.xCoord, this.maxX );
-			this.minY = Math.min( c.yCoord, this.minY );
-			this.maxY = Math.max( c.yCoord, this.maxY );
-			this.minZ = Math.min( c.zCoord, this.minZ );
-			this.maxZ = Math.max( c.zCoord, this.maxZ );
+			BlockPos pos = c.getPos();
+			
+			this.minX = Math.min( pos.getX(), this.minX );
+			this.maxX = Math.max( pos.getX(), this.maxX );
+			this.minY = Math.min( pos.getY(), this.minY );
+			this.maxY = Math.max( pos.getY(), this.maxY );
+			this.minZ = Math.min( pos.getZ(), this.minZ );
+			this.maxZ = Math.max( pos.getZ(), this.maxZ );
 
 			if( this.maxX - this.minX < 7 && this.maxY - this.minY < 7 && this.maxZ - this.minZ < 7 )
 			{

@@ -21,16 +21,13 @@ package appeng.parts.networking;
 
 import java.util.EnumSet;
 
-import org.lwjgl.opengl.GL11;
-
-import net.minecraft.client.renderer.RenderBlocks;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import org.lwjgl.opengl.GL11;
 
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
@@ -43,8 +40,11 @@ import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartRenderHelper;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
+import appeng.api.util.AEPartLocation;
 import appeng.block.AEBaseBlock;
+import appeng.client.render.IRenderHelper;
 import appeng.client.texture.FlippableIcon;
+import appeng.client.texture.IAESprite;
 import appeng.client.texture.OffsetIcon;
 import appeng.client.texture.TaughtIcon;
 import appeng.helpers.Reflected;
@@ -95,7 +95,7 @@ public class PartCableSmart extends PartCable
 			}
 		}
 
-		for( ForgeDirection of : this.connections )
+		for( AEPartLocation of : this.connections )
 		{
 			switch( of )
 			{
@@ -124,18 +124,18 @@ public class PartCableSmart extends PartCable
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderInventory( IPartRenderHelper rh, RenderBlocks renderer )
+	public void renderInventory( IPartRenderHelper rh, IRenderHelper renderer )
 	{
 		GL11.glTranslated( -0.0, -0.0, 0.3 );
 
 		float offU = 0;
 		float offV = 9;
 
-		OffsetIcon main = new OffsetIcon( this.getTexture( this.getCableColor() ), offU, offV );
+		OffsetIcon main = new OffsetIcon( this.getTexture( this.getCableColor(), renderer ), offU, offV );
 		OffsetIcon ch1 = new OffsetIcon( this.getChannelTex( 4, false ).getIcon(), offU, offV );
 		OffsetIcon ch2 = new OffsetIcon( this.getChannelTex( 4, true ).getIcon(), offU, offV );
 
-		for( ForgeDirection side : EnumSet.of( ForgeDirection.UP, ForgeDirection.DOWN ) )
+		for( EnumFacing side : EnumSet.of( EnumFacing.UP, EnumFacing.DOWN ) )
 		{
 			rh.setBounds( 5.0f, 5.0f, 2.0f, 11.0f, 11.0f, 14.0f );
 			rh.renderInventoryFace( main, side, renderer );
@@ -145,11 +145,11 @@ public class PartCableSmart extends PartCable
 
 		offU = 9;
 		offV = 0;
-		main = new OffsetIcon( this.getTexture( this.getCableColor() ), offU, offV );
+		main = new OffsetIcon( this.getTexture( this.getCableColor(), renderer ), offU, offV );
 		ch1 = new OffsetIcon( this.getChannelTex( 4, false ).getIcon(), offU, offV );
 		ch2 = new OffsetIcon( this.getChannelTex( 4, true ).getIcon(), offU, offV );
 
-		for( ForgeDirection side : EnumSet.of( ForgeDirection.EAST, ForgeDirection.WEST ) )
+		for( EnumFacing side : EnumSet.of( EnumFacing.EAST, EnumFacing.WEST ) )
 		{
 			rh.setBounds( 5.0f, 5.0f, 2.0f, 11.0f, 11.0f, 14.0f );
 			rh.renderInventoryFace( main, side, renderer );
@@ -157,11 +157,11 @@ public class PartCableSmart extends PartCable
 			rh.renderInventoryFace( ch2, side, renderer );
 		}
 
-		main = new OffsetIcon( this.getTexture( this.getCableColor() ), 0, 0 );
+		main = new OffsetIcon( this.getTexture( this.getCableColor(), renderer ), 0, 0 );
 		ch1 = new OffsetIcon( this.getChannelTex( 4, false ).getIcon(), 0, 0 );
 		ch2 = new OffsetIcon( this.getChannelTex( 4, true ).getIcon(), 0, 0 );
 
-		for( ForgeDirection side : EnumSet.of( ForgeDirection.SOUTH, ForgeDirection.NORTH ) )
+		for( EnumFacing side : EnumSet.of( EnumFacing.SOUTH, EnumFacing.NORTH ) )
 		{
 			rh.setBounds( 5.0f, 5.0f, 2.0f, 11.0f, 11.0f, 14.0f );
 			rh.renderInventoryFace( main, side, renderer );
@@ -173,28 +173,27 @@ public class PartCableSmart extends PartCable
 	}
 
 	@Override
-	public IIcon getTexture( AEColor c )
+	public IAESprite getTexture( AEColor c, IRenderHelper renderer )
 	{
-		return this.getSmartTexture( c );
+		return this.getSmartTexture( c, renderer );
 	}
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderStatic( int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer )
+	public void renderStatic( BlockPos pos, IPartRenderHelper rh, IRenderHelper renderer )
 	{
-		this.renderCache = rh.useSimplifiedRendering( x, y, z, this, this.renderCache );
-		rh.setTexture( this.getTexture( this.getCableColor() ) );
+		rh.setTexture( this.getTexture( this.getCableColor(), renderer ) );
 
-		EnumSet<ForgeDirection> sides = this.connections.clone();
+		EnumSet<AEPartLocation> sides = this.connections.clone();
 
 		boolean hasBuses = false;
 		IPartHost ph = this.getHost();
-		for( ForgeDirection of : EnumSet.complementOf( this.connections ) )
+		for( AEPartLocation of : EnumSet.complementOf( this.connections ) )
 		{
 			IPart bp = ph.getPart( of );
 			if( bp instanceof IGridHost )
 			{
-				if( of != ForgeDirection.UNKNOWN )
+				if( of != AEPartLocation.INTERNAL )
 				{
 					sides.add( of );
 					hasBuses = true;
@@ -226,65 +225,65 @@ public class PartCableSmart extends PartCable
 						default:
 							continue;
 					}
-					rh.renderBlock( x, y, z, renderer );
+					rh.renderBlock( pos, renderer );
 
 					this.setSmartConnectionRotations( of, renderer );
-					IIcon firstIcon = new TaughtIcon( this.getChannelTex( this.channelsOnSide[of.ordinal()], false ).getIcon(), -0.2f );
-					IIcon secondIcon = new TaughtIcon( this.getChannelTex( this.channelsOnSide[of.ordinal()], true ).getIcon(), -0.2f );
+					IAESprite firstIcon = new TaughtIcon( this.getChannelTex( this.channelsOnSide[of.ordinal()], false ).getIcon(), -0.2f );
+					IAESprite secondIcon = new TaughtIcon( this.getChannelTex( this.channelsOnSide[of.ordinal()], true ).getIcon(), -0.2f );
 
-					if( of == ForgeDirection.EAST || of == ForgeDirection.WEST )
+					if( of == AEPartLocation.EAST || of == AEPartLocation.WEST )
 					{
 						AEBaseBlock blk = (AEBaseBlock) rh.getBlock();
-						FlippableIcon ico = blk.getRendererInstance().getTexture( ForgeDirection.EAST );
+						FlippableIcon ico = blk.getRendererInstance().getTexture( AEPartLocation.EAST );
 						ico.setFlip( false, true );
 					}
 
-					Tessellator.instance.setBrightness( 15 << 20 | 15 << 4 );
-					Tessellator.instance.setColorOpaque_I( this.getCableColor().blackVariant );
+					renderer.setBrightness( 15 << 20 | 15 << 4 );
+					renderer.setColorOpaque_I( this.getCableColor().blackVariant );
 					rh.setTexture( firstIcon, firstIcon, firstIcon, firstIcon, firstIcon, firstIcon );
-					this.renderAllFaces( (AEBaseBlock) rh.getBlock(), x, y, z, rh, renderer );
+					this.renderAllFaces( (AEBaseBlock) rh.getBlock(), pos, rh, renderer );
 
-					Tessellator.instance.setColorOpaque_I( this.getCableColor().whiteVariant );
+					renderer.setColorOpaque_I( this.getCableColor().whiteVariant );
 					rh.setTexture( secondIcon, secondIcon, secondIcon, secondIcon, secondIcon, secondIcon );
-					this.renderAllFaces( (AEBaseBlock) rh.getBlock(), x, y, z, rh, renderer );
+					this.renderAllFaces( (AEBaseBlock) rh.getBlock(), pos, rh, renderer );
 
 					renderer.uvRotateBottom = renderer.uvRotateEast = renderer.uvRotateNorth = renderer.uvRotateSouth = renderer.uvRotateTop = renderer.uvRotateWest = 0;
 
-					rh.setTexture( this.getTexture( this.getCableColor() ) );
+					rh.setTexture( this.getTexture( this.getCableColor(), renderer ) );
 				}
 			}
 		}
 
 		if( sides.size() != 2 || !this.nonLinear( sides ) || hasBuses )
 		{
-			for( ForgeDirection of : this.connections )
+			for( AEPartLocation of : this.connections )
 			{
-				this.renderSmartConnection( x, y, z, rh, renderer, this.channelsOnSide[of.ordinal()], of );
+				this.renderSmartConnection( pos, rh, renderer, this.channelsOnSide[of.ordinal()], of );
 			}
 
-			rh.setTexture( this.getCoveredTexture( this.getCableColor() ) );
+			rh.setTexture( this.getCoveredTexture( this.getCableColor(), renderer ) );
 			rh.setBounds( 5, 5, 5, 11, 11, 11 );
-			rh.renderBlock( x, y, z, renderer );
+			rh.renderBlock( pos, renderer );
 		}
 		else
 		{
-			ForgeDirection selectedSide = ForgeDirection.UNKNOWN;
+			AEPartLocation selectedSide = AEPartLocation.INTERNAL;
 
-			for( ForgeDirection of : this.connections )
+			for( AEPartLocation of : this.connections )
 			{
 				selectedSide = of;
 				break;
 			}
 
 			int channels = this.channelsOnSide[selectedSide.ordinal()];
-			IIcon def = this.getTexture( this.getCableColor() );
-			IIcon off = new OffsetIcon( def, 0, -12 );
+			IAESprite def = this.getTexture( this.getCableColor(), renderer );
+			IAESprite off = new OffsetIcon( def, 0, -12 );
 
-			IIcon firstTaughtIcon = new TaughtIcon( this.getChannelTex( channels, false ).getIcon(), -0.2f );
-			IIcon firstOffsetIcon = new OffsetIcon( firstTaughtIcon, 0, -12 );
+			IAESprite firstTaughtIcon = new TaughtIcon( this.getChannelTex( channels, false ).getIcon(), -0.2f );
+			IAESprite firstOffsetIcon = new OffsetIcon( firstTaughtIcon, 0, -12 );
 
-			IIcon secondTaughtIcon = new TaughtIcon( this.getChannelTex( channels, true ).getIcon(), -0.2f );
-			IIcon secondOffsetIcon = new OffsetIcon( secondTaughtIcon, 0, -12 );
+			IAESprite secondTaughtIcon = new TaughtIcon( this.getChannelTex( channels, true ).getIcon(), -0.2f );
+			IAESprite secondOffsetIcon = new OffsetIcon( secondTaughtIcon, 0, -12 );
 
 			switch( selectedSide )
 			{
@@ -292,22 +291,22 @@ public class PartCableSmart extends PartCable
 				case UP:
 					renderer.setRenderBounds( 5 / 16.0, 0, 5 / 16.0, 11 / 16.0, 16 / 16.0, 11 / 16.0 );
 					rh.setTexture( def, def, off, off, off, off );
-					rh.renderBlockCurrentBounds( x, y, z, renderer );
+					rh.renderBlockCurrentBounds( pos, renderer );
 
 					renderer.uvRotateTop = 0;
 					renderer.uvRotateBottom = 0;
 					renderer.uvRotateSouth = 3;
 					renderer.uvRotateEast = 3;
 
-					Tessellator.instance.setBrightness( 15 << 20 | 15 << 4 );
+					renderer.setBrightness( 15 << 20 | 15 << 4 );
 
-					Tessellator.instance.setColorOpaque_I( this.getCableColor().blackVariant );
+					renderer.setColorOpaque_I( this.getCableColor().blackVariant );
 					rh.setTexture( firstTaughtIcon, firstTaughtIcon, firstOffsetIcon, firstOffsetIcon, firstOffsetIcon, firstOffsetIcon );
-					this.renderAllFaces( (AEBaseBlock) rh.getBlock(), x, y, z, rh, renderer );
+					this.renderAllFaces( (AEBaseBlock) rh.getBlock(), pos, rh, renderer );
 
-					Tessellator.instance.setColorOpaque_I( this.getCableColor().whiteVariant );
+					renderer.setColorOpaque_I( this.getCableColor().whiteVariant );
 					rh.setTexture( secondTaughtIcon, secondTaughtIcon, secondOffsetIcon, secondOffsetIcon, secondOffsetIcon, secondOffsetIcon );
-					this.renderAllFaces( (AEBaseBlock) rh.getBlock(), x, y, z, rh, renderer );
+					this.renderAllFaces( (AEBaseBlock) rh.getBlock(), pos, rh, renderer );
 					break;
 				case EAST:
 				case WEST:
@@ -320,13 +319,13 @@ public class PartCableSmart extends PartCable
 					renderer.uvRotateNorth = 0;
 
 					AEBaseBlock blk = (AEBaseBlock) rh.getBlock();
-					FlippableIcon ico = blk.getRendererInstance().getTexture( ForgeDirection.EAST );
+					FlippableIcon ico = blk.getRendererInstance().getTexture( AEPartLocation.EAST );
 					ico.setFlip( false, true );
 
 					renderer.setRenderBounds( 0, 5 / 16.0, 5 / 16.0, 16 / 16.0, 11 / 16.0, 11 / 16.0 );
-					rh.renderBlockCurrentBounds( x, y, z, renderer );
+					rh.renderBlockCurrentBounds( pos, renderer );
 
-					Tessellator.instance.setBrightness( 15 << 20 | 15 << 4 );
+					renderer.setBrightness( 15 << 20 | 15 << 4 );
 
 					FlippableIcon fpA = new FlippableIcon( firstTaughtIcon );
 					FlippableIcon fpB = new FlippableIcon( secondTaughtIcon );
@@ -337,13 +336,13 @@ public class PartCableSmart extends PartCable
 					fpA.setFlip( true, false );
 					fpB.setFlip( true, false );
 
-					Tessellator.instance.setColorOpaque_I( this.getCableColor().blackVariant );
+					renderer.setColorOpaque_I( this.getCableColor().blackVariant );
 					rh.setTexture( firstOffsetIcon, firstOffsetIcon, firstOffsetIcon, firstOffsetIcon, firstTaughtIcon, fpA );
-					this.renderAllFaces( (AEBaseBlock) rh.getBlock(), x, y, z, rh, renderer );
+					this.renderAllFaces( (AEBaseBlock) rh.getBlock(), pos, rh, renderer );
 
-					Tessellator.instance.setColorOpaque_I( this.getCableColor().whiteVariant );
+					renderer.setColorOpaque_I( this.getCableColor().whiteVariant );
 					rh.setTexture( secondOffsetIcon, secondOffsetIcon, secondOffsetIcon, secondOffsetIcon, secondTaughtIcon, fpB );
-					this.renderAllFaces( (AEBaseBlock) rh.getBlock(), x, y, z, rh, renderer );
+					this.renderAllFaces( (AEBaseBlock) rh.getBlock(), pos, rh, renderer );
 					break;
 				case NORTH:
 				case SOUTH:
@@ -354,17 +353,17 @@ public class PartCableSmart extends PartCable
 					renderer.uvRotateSouth = 2;
 					renderer.uvRotateWest = 1;
 					renderer.setRenderBounds( 5 / 16.0, 5 / 16.0, 0, 11 / 16.0, 11 / 16.0, 16 / 16.0 );
-					rh.renderBlockCurrentBounds( x, y, z, renderer );
+					rh.renderBlockCurrentBounds( pos, renderer );
 
-					Tessellator.instance.setBrightness( 15 << 20 | 15 << 4 );
+					renderer.setBrightness( 15 << 20 | 15 << 4 );
 
-					Tessellator.instance.setColorOpaque_I( this.getCableColor().blackVariant );
+					renderer.setColorOpaque_I( this.getCableColor().blackVariant );
 					rh.setTexture( firstOffsetIcon, firstOffsetIcon, firstTaughtIcon, firstTaughtIcon, firstOffsetIcon, firstOffsetIcon );
-					this.renderAllFaces( (AEBaseBlock) rh.getBlock(), x, y, z, rh, renderer );
+					this.renderAllFaces( (AEBaseBlock) rh.getBlock(), pos, rh, renderer );
 
-					Tessellator.instance.setColorOpaque_I( this.getCableColor().whiteVariant );
+					renderer.setColorOpaque_I( this.getCableColor().whiteVariant );
 					rh.setTexture( secondOffsetIcon, secondOffsetIcon, secondTaughtIcon, secondTaughtIcon, secondOffsetIcon, secondOffsetIcon );
-					this.renderAllFaces( (AEBaseBlock) rh.getBlock(), x, y, z, rh, renderer );
+					this.renderAllFaces( (AEBaseBlock) rh.getBlock(), pos, rh, renderer );
 					break;
 				default:
 					break;

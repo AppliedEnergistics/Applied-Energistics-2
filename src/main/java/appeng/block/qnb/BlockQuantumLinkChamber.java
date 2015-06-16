@@ -23,15 +23,15 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumWorldBlockLayer;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
+import appeng.api.util.AEPartLocation;
 import appeng.client.EffectType;
 import appeng.core.CommonHelper;
 import appeng.core.sync.GuiBridge;
@@ -47,38 +47,48 @@ public class BlockQuantumLinkChamber extends BlockQuantumBase
 	{
 		super( AEGlassMaterial.INSTANCE );
 	}
-
+	
 	@Override
-	@SideOnly( Side.CLIENT )
-	public void randomDisplayTick( World w, int bx, int by, int bz, Random r )
+	public void randomDisplayTick(
+			World w,
+			BlockPos pos,
+			IBlockState state,
+			Random rand )
 	{
-		TileQuantumBridge bridge = this.getTileEntity( w, bx, by, bz );
+		TileQuantumBridge bridge = this.getTileEntity( w, pos );
 		if( bridge != null )
 		{
 			if( bridge.hasQES() )
 			{
-				if( CommonHelper.proxy.shouldAddParticles( r ) )
+				if( CommonHelper.proxy.shouldAddParticles( rand ) )
 				{
-					CommonHelper.proxy.spawnEffect( EffectType.Energy, w, bx + 0.5, by + 0.5, bz + 0.5, null );
+					CommonHelper.proxy.spawnEffect( EffectType.Energy, w, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, null );
 				}
 			}
 		}
 	}
 
 	@Override
-	public boolean onActivated( World w, int x, int y, int z, EntityPlayer p, int side, float hitX, float hitY, float hitZ )
+	public boolean onActivated(
+			World w,
+			BlockPos pos,
+			EntityPlayer p,
+			EnumFacing side,
+			float hitX,
+			float hitY,
+			float hitZ )
 	{
 		if( p.isSneaking() )
 		{
 			return false;
 		}
 
-		TileQuantumBridge tg = this.getTileEntity( w, x, y, z );
+		TileQuantumBridge tg = this.getTileEntity( w, pos );
 		if( tg != null )
 		{
 			if( Platform.isServer() )
 			{
-				Platform.openGUI( p, tg, ForgeDirection.getOrientation( side ), GuiBridge.GUI_QNB );
+				Platform.openGUI( p, tg, AEPartLocation.fromFacing( side ), GuiBridge.GUI_QNB );
 			}
 			return true;
 		}
@@ -86,16 +96,25 @@ public class BlockQuantumLinkChamber extends BlockQuantumBase
 	}
 
 	@Override
-	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool( World w, int x, int y, int z, Entity e, boolean isVisual )
+	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool(
+			World w,
+			BlockPos pos,
+			Entity thePlayer,
+			boolean b )
 	{
 		double onePixel = 2.0 / 16.0;
-		return Collections.singletonList( AxisAlignedBB.getBoundingBox( onePixel, onePixel, onePixel, 1.0 - onePixel, 1.0 - onePixel, 1.0 - onePixel ) );
+		return Collections.singletonList( AxisAlignedBB.fromBounds( onePixel, onePixel, onePixel, 1.0 - onePixel, 1.0 - onePixel, 1.0 - onePixel ) );
 	}
-
+	
 	@Override
-	public void addCollidingBlockToList( World w, int x, int y, int z, AxisAlignedBB bb, List<AxisAlignedBB> out, Entity e )
+	public void addCollidingBlockToList(
+			World w,
+			BlockPos pos,
+			AxisAlignedBB bb,
+			List<AxisAlignedBB> out,
+			Entity e )
 	{
 		double onePixel = 2.0 / 16.0;
-		out.add( AxisAlignedBB.getBoundingBox( onePixel, onePixel, onePixel, 1.0 - onePixel, 1.0 - onePixel, 1.0 - onePixel ) );
+		out.add( AxisAlignedBB.fromBounds( onePixel, onePixel, onePixel, 1.0 - onePixel, 1.0 - onePixel, 1.0 - onePixel ) );
 	}
 }

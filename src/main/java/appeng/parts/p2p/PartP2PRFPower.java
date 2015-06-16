@@ -21,18 +21,15 @@ package appeng.parts.p2p;
 
 import java.util.Stack;
 
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
-import net.minecraftforge.common.util.ForgeDirection;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import cofh.api.energy.IEnergyReceiver;
-
 import appeng.api.config.PowerUnits;
+import appeng.api.util.ForgeDirection;
 import appeng.integration.modules.helpers.NullRFHandler;
 import appeng.me.GridAccessException;
 import appeng.transformer.annotations.Integration.Interface;
@@ -58,7 +55,7 @@ public final class PartP2PRFPower extends PartP2PTunnel<PartP2PRFPower> implemen
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public IIcon getTypeTexture()
+	public TextureAtlasSprite getTypeTexture()
 	{
 		return Blocks.iron_block.getBlockTextureFromSide( 0 );
 	}
@@ -169,7 +166,7 @@ public final class PartP2PRFPower extends PartP2PTunnel<PartP2PRFPower> implemen
 			if( !this.cachedTarget )
 			{
 				TileEntity self = this.getTile();
-				TileEntity te = self.getWorldObj().getTileEntity( self.xCoord + this.side.offsetX, self.yCoord + this.side.offsetY, self.zCoord + this.side.offsetZ );
+				TileEntity te = self.getWorld().getTileEntity( self.xCoord + this.side.offsetX, self.yCoord + this.side.offsetY, self.zCoord + this.side.offsetZ );
 				this.outputTarget = te instanceof IEnergyReceiver ? (IEnergyReceiver) te : null;
 				this.cachedTarget = true;
 			}

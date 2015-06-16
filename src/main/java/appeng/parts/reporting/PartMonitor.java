@@ -19,23 +19,20 @@
 package appeng.parts.reporting;
 
 
-import java.io.IOException;
-
 import io.netty.buffer.ByteBuf;
 
-import net.minecraft.client.renderer.RenderBlocks;
-import net.minecraft.client.renderer.Tessellator;
+import java.io.IOException;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.Vec3;
-import net.minecraftforge.common.util.ForgeDirection;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import appeng.api.implementations.IPowerChannelState;
 import appeng.api.implementations.parts.IPartMonitor;
 import appeng.api.networking.GridFlags;
@@ -44,6 +41,8 @@ import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartRenderHelper;
+import appeng.api.util.AEPartLocation;
+import appeng.client.render.IRenderHelper;
 import appeng.client.texture.CableBusTextures;
 import appeng.me.GridAccessException;
 import appeng.parts.AEBasePart;
@@ -109,21 +108,21 @@ public class PartMonitor extends AEBasePart implements IPartMonitor, IPowerChann
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderInventory( IPartRenderHelper rh, RenderBlocks renderer )
+	public void renderInventory( IPartRenderHelper rh, IRenderHelper renderer )
 	{
 		rh.setBounds( 2, 2, 14, 14, 14, 16 );
 
-		rh.setTexture( CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorBack.getIcon(), this.is.getIconIndex(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon() );
+		rh.setTexture( CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorBack.getIcon(), renderer.getIcon( is ), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon() );
 		rh.renderInventoryBox( renderer );
 
 		rh.setInvColor( this.getColor().whiteVariant );
-		rh.renderInventoryFace( this.frontBright.getIcon(), ForgeDirection.SOUTH, renderer );
+		rh.renderInventoryFace( this.frontBright.getIcon(), EnumFacing.SOUTH, renderer );
 
 		rh.setInvColor( this.getColor().mediumVariant );
-		rh.renderInventoryFace( this.frontDark.getIcon(), ForgeDirection.SOUTH, renderer );
+		rh.renderInventoryFace( this.frontDark.getIcon(), EnumFacing.SOUTH, renderer );
 
 		rh.setInvColor( this.getColor().blackVariant );
-		rh.renderInventoryFace( this.frontColored.getIcon(), ForgeDirection.SOUTH, renderer );
+		rh.renderInventoryFace( this.frontColored.getIcon(), EnumFacing.SOUTH, renderer );
 
 		rh.setBounds( 4, 4, 13, 12, 12, 14 );
 		rh.renderInventoryBox( renderer );
@@ -131,41 +130,39 @@ public class PartMonitor extends AEBasePart implements IPartMonitor, IPowerChann
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderStatic( int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer )
+	public void renderStatic( BlockPos pos, IPartRenderHelper rh, IRenderHelper renderer )
 	{
-		this.renderCache = rh.useSimplifiedRendering( x, y, z, this, this.renderCache );
-
-		rh.setTexture( CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorBack.getIcon(), this.is.getIconIndex(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon() );
+		rh.setTexture( CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorBack.getIcon(), renderer.getIcon( is ), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon() );
 
 		rh.setBounds( 2, 2, 14, 14, 14, 16 );
-		rh.renderBlock( x, y, z, renderer );
+		rh.renderBlock( pos, renderer );
 
 		if( this.getLightLevel() > 0 )
 		{
 			int l = 13;
-			Tessellator.instance.setBrightness( l << 20 | l << 4 );
+			renderer.setBrightness( l << 20 | l << 4 );
 		}
 
 		renderer.uvRotateBottom = renderer.uvRotateEast = renderer.uvRotateNorth = renderer.uvRotateSouth = renderer.uvRotateTop = renderer.uvRotateWest = this.spin;
 
-		Tessellator.instance.setColorOpaque_I( this.getColor().whiteVariant );
-		rh.renderFace( x, y, z, this.frontBright.getIcon(), ForgeDirection.SOUTH, renderer );
+		renderer.setColorOpaque_I( this.getColor().whiteVariant );
+		rh.renderFace( pos, this.frontBright.getIcon(), EnumFacing.SOUTH, renderer );
 
-		Tessellator.instance.setColorOpaque_I( this.getColor().mediumVariant );
-		rh.renderFace( x, y, z, this.frontDark.getIcon(), ForgeDirection.SOUTH, renderer );
+		renderer.setColorOpaque_I( this.getColor().mediumVariant );
+		rh.renderFace( pos, this.frontDark.getIcon(), EnumFacing.SOUTH, renderer );
 
-		Tessellator.instance.setColorOpaque_I( this.getColor().blackVariant );
-		rh.renderFace( x, y, z, this.frontColored.getIcon(), ForgeDirection.SOUTH, renderer );
+		renderer.setColorOpaque_I( this.getColor().blackVariant );
+		rh.renderFace( pos, this.frontColored.getIcon(), EnumFacing.SOUTH, renderer );
 
 		renderer.uvRotateBottom = renderer.uvRotateEast = renderer.uvRotateNorth = renderer.uvRotateSouth = renderer.uvRotateTop = renderer.uvRotateWest = 0;
 
 		if( this.notLightSource )
 		{
-			rh.setTexture( CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartMonitorBack.getIcon(), this.is.getIconIndex(), CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartMonitorSidesStatus.getIcon() );
+			rh.setTexture( CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartMonitorBack.getIcon(), renderer.getIcon( is ), CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartMonitorSidesStatus.getIcon() );
 		}
 
 		rh.setBounds( 4, 4, 13, 12, 12, 14 );
-		rh.renderBlock( x, y, z, renderer );
+		rh.renderBlock( pos, renderer );
 
 		if( this.notLightSource )
 		{
@@ -175,25 +172,25 @@ public class PartMonitor extends AEBasePart implements IPartMonitor, IPowerChann
 			if( hasChan )
 			{
 				int l = 14;
-				Tessellator.instance.setBrightness( l << 20 | l << 4 );
-				Tessellator.instance.setColorOpaque_I( this.getColor().blackVariant );
+				renderer.setBrightness( l << 20 | l << 4 );
+				renderer.setColorOpaque_I( this.getColor().blackVariant );
 			}
 			else if( hasPower )
 			{
 				int l = 9;
-				Tessellator.instance.setBrightness( l << 20 | l << 4 );
-				Tessellator.instance.setColorOpaque_I( this.getColor().whiteVariant );
+				renderer.setBrightness( l << 20 | l << 4 );
+				renderer.setColorOpaque_I( this.getColor().whiteVariant );
 			}
 			else
 			{
-				Tessellator.instance.setBrightness( 0 );
-				Tessellator.instance.setColorOpaque_I( 0x000000 );
+				renderer.setBrightness( 0 );
+				renderer.setColorOpaque_I( 0x000000 );
 			}
 
-			rh.renderFace( x, y, z, CableBusTextures.PartMonitorSidesStatusLights.getIcon(), ForgeDirection.EAST, renderer );
-			rh.renderFace( x, y, z, CableBusTextures.PartMonitorSidesStatusLights.getIcon(), ForgeDirection.WEST, renderer );
-			rh.renderFace( x, y, z, CableBusTextures.PartMonitorSidesStatusLights.getIcon(), ForgeDirection.UP, renderer );
-			rh.renderFace( x, y, z, CableBusTextures.PartMonitorSidesStatusLights.getIcon(), ForgeDirection.DOWN, renderer );
+			rh.renderFace( pos, CableBusTextures.PartMonitorSidesStatusLights.getIcon(), EnumFacing.EAST, renderer );
+			rh.renderFace( pos, CableBusTextures.PartMonitorSidesStatusLights.getIcon(), EnumFacing.WEST, renderer );
+			rh.renderFace( pos, CableBusTextures.PartMonitorSidesStatusLights.getIcon(), EnumFacing.UP, renderer );
+			rh.renderFace( pos, CableBusTextures.PartMonitorSidesStatusLights.getIcon(), EnumFacing.DOWN, renderer );
 		}
 	}
 
@@ -279,7 +276,7 @@ public class PartMonitor extends AEBasePart implements IPartMonitor, IPowerChann
 	{
 		TileEntity te = this.getTile();
 
-		if( !player.isSneaking() && Platform.isWrench( player, player.inventory.getCurrentItem(), te.xCoord, te.yCoord, te.zCoord ) )
+		if( !player.isSneaking() && Platform.isWrench( player, player.inventory.getCurrentItem(), te.getPos() ) )
 		{
 			if( Platform.isServer() )
 			{
@@ -316,16 +313,16 @@ public class PartMonitor extends AEBasePart implements IPartMonitor, IPowerChann
 	}
 
 	@Override
-	public void onPlacement( EntityPlayer player, ItemStack held, ForgeDirection side )
+	public void onPlacement( EntityPlayer player, ItemStack held, AEPartLocation side )
 	{
 		super.onPlacement( player, held, side );
 
 		byte rotation = (byte) ( MathHelper.floor_double( ( player.rotationYaw * 4F ) / 360F + 2.5D ) & 3 );
-		if( side == ForgeDirection.UP )
+		if( side == AEPartLocation.UP )
 		{
 			this.spin = rotation;
 		}
-		else if( side == ForgeDirection.DOWN )
+		else if( side == AEPartLocation.DOWN )
 		{
 			this.spin = rotation;
 		}
@@ -336,7 +333,7 @@ public class PartMonitor extends AEBasePart implements IPartMonitor, IPowerChann
 		if( this.opacity < 0 )
 		{
 			TileEntity te = this.getTile();
-			this.opacity = 255 - te.getWorldObj().getBlockLightOpacity( te.xCoord + this.side.offsetX, te.yCoord + this.side.offsetY, te.zCoord + this.side.offsetZ );
+			this.opacity = 255 - te.getWorld().getBlockLightOpacity( te.getPos().offset( side.getFacing() ) );
 		}
 
 		return (int) ( emit * ( this.opacity / 255.0f ) );

@@ -19,12 +19,11 @@
 package appeng.tile.spatial;
 
 
-import java.util.EnumSet;
-
 import io.netty.buffer.ByteBuf;
 
-import net.minecraftforge.common.util.ForgeDirection;
+import java.util.EnumSet;
 
+import net.minecraft.util.EnumFacing;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.events.MENetworkChannelsChanged;
 import appeng.api.networking.events.MENetworkEventSubscribe;
@@ -63,7 +62,7 @@ public class TileSpatialPylon extends AENetworkTile implements IAEMultiBlock
 	{
 		this.gridProxy.setFlags( GridFlags.REQUIRE_CHANNEL, GridFlags.MULTIBLOCK );
 		this.gridProxy.setIdlePowerUsage( 0.5 );
-		this.gridProxy.setValidSides( EnumSet.noneOf( ForgeDirection.class ) );
+		this.gridProxy.setValidSides( EnumSet.noneOf( EnumFacing.class ) );
 	}
 
 	@Override
@@ -123,7 +122,7 @@ public class TileSpatialPylon extends AENetworkTile implements IAEMultiBlock
 	public void updateStatus( SpatialPylonCluster c )
 	{
 		this.cluster = c;
-		this.gridProxy.setValidSides( c == null ? EnumSet.noneOf( ForgeDirection.class ) : EnumSet.allOf( ForgeDirection.class ) );
+		this.gridProxy.setValidSides( c == null ? EnumSet.noneOf( EnumFacing.class ) : EnumSet.allOf( EnumFacing.class ) );
 		this.recalculateDisplay();
 	}
 
@@ -196,7 +195,7 @@ public class TileSpatialPylon extends AENetworkTile implements IAEMultiBlock
 		if( hasLight != this.didHaveLight )
 		{
 			this.didHaveLight = hasLight;
-			this.worldObj.func_147451_t( this.xCoord, this.yCoord, this.zCoord );
+			this.worldObj.checkLight( pos );
 			// worldObj.updateAllLightTypes( xCoord, yCoord, zCoord );
 		}
 	}

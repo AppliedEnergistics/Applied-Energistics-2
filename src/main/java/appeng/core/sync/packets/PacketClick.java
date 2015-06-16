@@ -21,10 +21,10 @@ package appeng.core.sync.packets;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import appeng.api.AEApi;
 import appeng.api.definitions.IComparableDefinition;
 import appeng.api.definitions.IItems;
@@ -60,16 +60,16 @@ public class PacketClick extends AppEngPacket
 	}
 
 	// api
-	public PacketClick( int x, int y, int z, int side, float hitX, float hitY, float hitZ )
+	public PacketClick( BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ )
 	{
 
 		ByteBuf data = Unpooled.buffer();
 
 		data.writeInt( this.getPacketID() );
-		data.writeInt( this.x = x );
-		data.writeInt( this.y = y );
-		data.writeInt( this.z = z );
-		data.writeInt( this.side = side );
+		data.writeInt( this.x = pos.getX() );
+		data.writeInt( this.y = pos.getY() );
+		data.writeInt( this.z = pos.getZ() );
+		data.writeInt( this.side = side.ordinal() );
 		data.writeFloat( this.hitX = hitX );
 		data.writeFloat( this.hitY = hitY );
 		data.writeFloat( this.hitZ = hitZ );
@@ -90,7 +90,7 @@ public class PacketClick extends AppEngPacket
 			if( is.getItem() instanceof ToolNetworkTool )
 			{
 				ToolNetworkTool tnt = (ToolNetworkTool) is.getItem();
-				tnt.serverSideToolLogic( is, player, player.worldObj, this.x, this.y, this.z, this.side, this.hitX, this.hitY, this.hitZ );
+				tnt.serverSideToolLogic( is, player, player.worldObj, new BlockPos( this.x, this.y, this.z), EnumFacing.VALUES[ this.side ], this.hitX, this.hitY, this.hitZ );
 			}
 
 			else if( maybeMemoryCard.isSameAs( is ) )

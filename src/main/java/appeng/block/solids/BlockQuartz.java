@@ -22,7 +22,6 @@ package appeng.block.solids;
 import java.util.EnumSet;
 
 import net.minecraft.block.material.Material;
-
 import appeng.block.AEDecorativeBlock;
 import appeng.core.features.AEFeature;
 

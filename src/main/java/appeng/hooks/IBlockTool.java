@@ -21,11 +21,22 @@ package appeng.hooks;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 
 
 public interface IBlockTool
 {
 
-	boolean onItemUse( ItemStack dispensedItem, EntityPlayer player, World w, int x, int y, int z, int ordinal, float hitX, float hitY, float hitZ );
+	public boolean onItemUse(
+			ItemStack item,
+			EntityPlayer p,
+			World w,
+			BlockPos pos,
+			EnumFacing side,
+			float hitX,
+			float hitY,
+			float hitZ );
+	
 }

@@ -24,28 +24,27 @@
 package appeng.api.parts;
 
 
+import io.netty.buffer.ByteBuf;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Random;
 
-import io.netty.buffer.ByteBuf;
-
-import net.minecraft.client.renderer.RenderBlocks;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import appeng.api.networking.IGridNode;
+import appeng.api.util.AEPartLocation;
+import appeng.client.render.IRenderHelper;
 
 
 public interface IPart extends IBoxProvider
@@ -74,7 +73,7 @@ public interface IPart extends IBoxProvider
 	 * @param renderer renderer
 	 */
 	@SideOnly( Side.CLIENT )
-	void renderInventory( IPartRenderHelper rh, RenderBlocks renderer );
+	void renderInventory( IPartRenderHelper rh, IRenderHelper renderer );
 
 	/**
 	 * render world renderer ( preferred )
@@ -88,7 +87,7 @@ public interface IPart extends IBoxProvider
 	 * @param renderer renderer
 	 */
 	@SideOnly( Side.CLIENT )
-	void renderStatic( int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer );
+	void renderStatic( BlockPos pos, IPartRenderHelper rh, IRenderHelper renderer );
 
 	/**
 	 * render TESR.
@@ -102,14 +101,14 @@ public interface IPart extends IBoxProvider
 	 * @param renderer renderer
 	 */
 	@SideOnly( Side.CLIENT )
-	void renderDynamic( double x, double y, double z, IPartRenderHelper rh, RenderBlocks renderer );
+	void renderDynamic( double x, double y, double z, IPartRenderHelper rh, IRenderHelper renderer );
 
 	/**
 	 * @return the Block sheet icon used when rendering the breaking particles, return null to use the ItemStack
 	 * texture.
 	 */
 	@SideOnly( Side.CLIENT )
-	IIcon getBreakingTexture();
+	TextureAtlasSprite getBreakingTexture(IRenderHelper renderer);
 
 	/**
 	 * return true only if your part require dynamic rendering, must be consistent.
@@ -233,7 +232,7 @@ public interface IPart extends IBoxProvider
 	 * @param host part side
 	 * @param tile tile entity of part
 	 */
-	void setPartHostInfo( ForgeDirection side, IPartHost host, TileEntity tile );
+	void setPartHostInfo( AEPartLocation side, IPartHost host, TileEntity tile );
 
 	/**
 	 * Called when you right click the part, very similar to Block.onActivateBlock
@@ -273,12 +272,10 @@ public interface IPart extends IBoxProvider
 	 * same as Block.randomDisplayTick, for but parts.
 	 *
 	 * @param world world of block
-	 * @param x     x coord of block
-	 * @param y     y coord of block
-	 * @param z     z coord of block
+	 * @param pos	location of block
 	 * @param r     random
 	 */
-	void randomDisplayTick( World world, int x, int y, int z, Random r );
+	void randomDisplayTick( World world, BlockPos pos, Random r );
 
 	/**
 	 * Called when placed in the world by a player, this happens before addWorld.
@@ -287,7 +284,7 @@ public interface IPart extends IBoxProvider
 	 * @param held   held item
 	 * @param side   placing side
 	 */
-	void onPlacement( EntityPlayer player, ItemStack held, ForgeDirection side );
+	void onPlacement( EntityPlayer player, ItemStack held, AEPartLocation side );
 
 	/**
 	 * Used to determine which parts can be placed on what cables.

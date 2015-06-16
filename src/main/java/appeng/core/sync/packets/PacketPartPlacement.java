@@ -21,10 +21,10 @@ package appeng.core.sync.packets;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import appeng.core.CommonHelper;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
@@ -51,15 +51,15 @@ public class PacketPartPlacement extends AppEngPacket
 	}
 
 	// api
-	public PacketPartPlacement( int x, int y, int z, int face, float eyeHeight )
+	public PacketPartPlacement( BlockPos pos, EnumFacing face, float eyeHeight )
 	{
 		ByteBuf data = Unpooled.buffer();
 
 		data.writeInt( this.getPacketID() );
-		data.writeInt( x );
-		data.writeInt( y );
-		data.writeInt( z );
-		data.writeByte( face );
+		data.writeInt( pos.getX() );
+		data.writeInt( pos.getY() );
+		data.writeInt( pos.getZ() );
+		data.writeByte( face.ordinal() );
 		data.writeFloat( eyeHeight );
 
 		this.configureWrite( data );
@@ -71,7 +71,7 @@ public class PacketPartPlacement extends AppEngPacket
 		EntityPlayerMP sender = (EntityPlayerMP) player;
 		CommonHelper.proxy.updateRenderMode( sender );
 		PartPlacement.eyeHeight = this.eyeHeight;
-		PartPlacement.place( sender.getHeldItem(), this.x, this.y, this.z, this.face, sender, sender.worldObj, PartPlacement.PlaceType.INTERACT_FIRST_PASS, 0 );
+		PartPlacement.place( sender.getHeldItem(), new BlockPos( this.x, this.y, this.z ), EnumFacing.VALUES[ this.face ], sender, sender.worldObj, PartPlacement.PlaceType.INTERACT_FIRST_PASS, 0 );
 		CommonHelper.proxy.updateRenderMode( null );
 	}
 }

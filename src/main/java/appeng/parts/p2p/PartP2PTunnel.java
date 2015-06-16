@@ -22,21 +22,16 @@ package appeng.parts.p2p;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import com.google.common.base.Optional;
-
 import net.minecraft.block.Block;
-import net.minecraft.client.renderer.RenderBlocks;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.Vec3;
-import net.minecraftforge.common.util.ForgeDirection;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
@@ -50,13 +45,18 @@ import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartRenderHelper;
 import appeng.api.parts.PartItemStack;
+import appeng.api.util.AEPartLocation;
+import appeng.client.render.IRenderHelper;
 import appeng.client.texture.CableBusTextures;
+import appeng.client.texture.IAESprite;
 import appeng.core.AEConfig;
 import appeng.me.GridAccessException;
 import appeng.me.cache.P2PCache;
 import appeng.me.cache.helpers.TunnelCollection;
 import appeng.parts.PartBasicState;
 import appeng.util.Platform;
+
+import com.google.common.base.Optional;
 
 
 public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicState
@@ -123,62 +123,62 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderInventory( IPartRenderHelper rh, RenderBlocks renderer )
+	public void renderInventory( IPartRenderHelper rh, IRenderHelper renderer )
 	{
-		rh.setTexture( this.getTypeTexture() );
+		rh.setTexture( this.getTypeTexture(renderer) );
 
 		rh.setBounds( 2, 2, 14, 14, 14, 16 );
 		rh.renderInventoryBox( renderer );
 
-		rh.setTexture( CableBusTextures.PartTunnelSides.getIcon(), CableBusTextures.PartTunnelSides.getIcon(), CableBusTextures.BlockP2PTunnel2.getIcon(), this.is.getIconIndex(), CableBusTextures.PartTunnelSides.getIcon(), CableBusTextures.PartTunnelSides.getIcon() );
+		rh.setTexture( CableBusTextures.PartTunnelSides.getIcon(), CableBusTextures.PartTunnelSides.getIcon(), CableBusTextures.BlockP2PTunnel2.getIcon(), renderer.getIcon( is ), CableBusTextures.PartTunnelSides.getIcon(), CableBusTextures.PartTunnelSides.getIcon() );
 
 		rh.setBounds( 2, 2, 14, 14, 14, 16 );
 		rh.renderInventoryBox( renderer );
 	}
 
 	/**
+	 * @param renderer 
 	 * @return If enabled it returns the icon of an AE quartz block, else vanilla quartz block icon
 	 */
-	protected IIcon getTypeTexture()
+	protected IAESprite getTypeTexture(IRenderHelper renderer )
 	{
 		final Optional<Block> maybeBlock = AEApi.instance().definitions().blocks().quartz().maybeBlock();
 		if( maybeBlock.isPresent() )
 		{
-			return maybeBlock.get().getIcon( 0, 0 );
+			return renderer.getIcon( new ItemStack(maybeBlock.get()) );
 		}
 		else
 		{
-			return Blocks.quartz_block.getIcon( 0, 0 );
+			return renderer.getIcon( new ItemStack(Blocks.quartz_block) );
 		}
 	}
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderStatic( int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer )
+	public void renderStatic( BlockPos pos, IPartRenderHelper rh, IRenderHelper renderer )
 	{
-		this.renderCache = rh.useSimplifiedRendering( x, y, z, this, this.renderCache );
-		rh.setTexture( this.getTypeTexture() );
+		rh.setTexture( this.getTypeTexture(renderer) );
 
 		rh.setBounds( 2, 2, 14, 14, 14, 16 );
-		rh.renderBlock( x, y, z, renderer );
+		rh.renderBlock( pos, renderer );
 
-		rh.setTexture( CableBusTextures.PartTunnelSides.getIcon(), CableBusTextures.PartTunnelSides.getIcon(), CableBusTextures.BlockP2PTunnel2.getIcon(), this.is.getIconIndex(), CableBusTextures.PartTunnelSides.getIcon(), CableBusTextures.PartTunnelSides.getIcon() );
+		rh.setTexture( CableBusTextures.PartTunnelSides.getIcon(), CableBusTextures.PartTunnelSides.getIcon(), CableBusTextures.BlockP2PTunnel2.getIcon(), renderer.getIcon( is ), CableBusTextures.PartTunnelSides.getIcon(), CableBusTextures.PartTunnelSides.getIcon() );
 
 		rh.setBounds( 2, 2, 14, 14, 14, 16 );
-		rh.renderBlock( x, y, z, renderer );
+		rh.renderBlock( pos, renderer );
 
 		rh.setBounds( 3, 3, 13, 13, 13, 14 );
-		rh.renderBlock( x, y, z, renderer );
+		rh.renderBlock( pos, renderer );
 
 		rh.setTexture( CableBusTextures.BlockP2PTunnel3.getIcon() );
 
 		rh.setBounds( 6, 5, 12, 10, 11, 13 );
-		rh.renderBlock( x, y, z, renderer );
+		rh.renderBlock( pos, renderer );
 
 		rh.setBounds( 5, 6, 12, 11, 10, 13 );
-		rh.renderBlock( x, y, z, renderer );
+		rh.renderBlock( pos, renderer );
 
-		this.renderLights( x, y, z, rh, renderer );
+		this.renderLights( pos, rh, renderer );
 	}
 
 	@Override
@@ -251,7 +251,7 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 					if( testPart instanceof PartP2PTunnel )
 					{
 						this.getHost().removePart( this.side, true );
-						ForgeDirection dir = this.getHost().addPart( newType, this.side, player );
+						AEPartLocation dir = this.getHost().addPart( newType, this.side, player );
 						IPart newBus = this.getHost().getPart( dir );
 
 						if( newBus instanceof PartP2PTunnel )
@@ -294,27 +294,31 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 					}
 					break;
 
+					/*
 				case RF_POWER:
 					for( ItemStack stack : parts.p2PTunnelRF().maybeStack( 1 ).asSet() )
 					{
 						newType = stack;
 					}
 					break;
-
+					*/
+					
 				case FLUID:
 					for( ItemStack stack : parts.p2PTunnelLiquids().maybeStack( 1 ).asSet() )
 					{
 						newType = stack;
 					}
 					break;
-
+					
+					/*
 				case IC2_POWER:
 					for( ItemStack stack : parts.p2PTunnelEU().maybeStack( 1 ).asSet() )
 					{
 						newType = stack;
 					}
 					break;
-
+					*/
+					
 				case ITEM:
 					for( ItemStack stack : parts.p2PTunnelItems().maybeStack( 1 ).asSet() )
 					{
@@ -335,14 +339,16 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 						newType = stack;
 					}
 					break;
-
+					
+					/*
 				case COMPUTER_MESSAGE:
 					for( ItemStack stack : parts.p2PTunnelOpenComputers().maybeStack( 1 ).asSet() )
 					{
 						newType = stack;
 					}
 					break;
-
+					*/
+					
 				default:
 					break;
 			}
@@ -353,7 +359,7 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 				long myFreq = this.freq;
 
 				this.getHost().removePart( this.side, false );
-				ForgeDirection dir = this.getHost().addPart( newType, this.side, player );
+				AEPartLocation dir = this.getHost().addPart( newType, this.side, player );
 				IPart newBus = this.getHost().getPart( dir );
 
 				if( newBus instanceof PartP2PTunnel )
@@ -373,7 +379,7 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 					}
 				}
 
-				Platform.notifyBlocksOfNeighbors( this.tile.getWorldObj(), this.tile.xCoord, this.tile.yCoord, this.tile.zCoord );
+				Platform.notifyBlocksOfNeighbors( this.tile.getWorld(), this.tile.getPos() );
 				return true;
 			}
 		}
@@ -434,9 +440,9 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public IIcon getBreakingTexture()
+	public TextureAtlasSprite getBreakingTexture( IRenderHelper renderer )
 	{
-		return CableBusTextures.BlockP2PTunnel2.getIcon();
+		return CableBusTextures.BlockP2PTunnel2.getIcon().getAtlas();
 	}
 
 	protected void queueTunnelDrain( PowerUnits unit, double f )

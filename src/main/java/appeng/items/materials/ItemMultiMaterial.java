@@ -31,10 +31,6 @@ import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableSet;
-
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
@@ -44,12 +40,13 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
-
 import appeng.api.config.Upgrades;
 import appeng.api.implementations.IUpgradeableHost;
 import appeng.api.implementations.items.IItemGroup;
@@ -58,7 +55,7 @@ import appeng.api.implementations.items.IUpgradeModule;
 import appeng.api.implementations.tiles.ISegmentedInventory;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.SelectedPart;
-import appeng.client.texture.MissingIcon;
+import appeng.client.ClientHelper;
 import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
 import appeng.core.features.IStackSrc;
@@ -67,6 +64,9 @@ import appeng.core.features.NameResolver;
 import appeng.items.AEBaseItem;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
+
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableSet;
 
 
 public final class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, IUpgradeModule
@@ -259,21 +259,24 @@ public final class ItemMultiMaterial extends AEBaseItem implements IStorageCompo
 	}
 
 	@Override
-	public IIcon getIconFromDamage( int dmg )
-	{
-		if( this.dmgToMaterial.containsKey( dmg ) )
-		{
-			return this.dmgToMaterial.get( dmg ).IIcon;
-		}
-		return new MissingIcon( this );
-	}
-
-	@Override
 	public String getUnlocalizedName( ItemStack is )
 	{
 		return "item.appliedenergistics2." + this.nameOf( is );
 	}
 
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void registerIcons(
+			ClientHelper proxy,
+			String name )
+	{
+		for ( MaterialType type : MaterialType.values()  )
+		{
+			if ( type != MaterialType.InvalidType )
+				proxy.setIcon( this, type.damageValue, name +"."+ type.name() );
+		}
+	}
+	
 	private String nameOf( ItemStack is )
 	{
 		if( is == null )
@@ -314,33 +317,24 @@ public final class ItemMultiMaterial extends AEBaseItem implements IStorageCompo
 	}
 
 	@Override
-	public void registerIcons( IIconRegister icoRegister )
-	{
-		for( MaterialType mat : MaterialType.values() )
-		{
-			if( mat.damageValue != -1 )
-			{
-				ItemStack what = new ItemStack( this, 1, mat.damageValue );
-				if( this.getTypeByStack( what ) != MaterialType.InvalidType )
-				{
-					String tex = "appliedenergistics2:" + this.nameOf( what );
-					mat.IIcon = icoRegister.registerIcon( tex );
-				}
-			}
-		}
-	}
-
-	@Override
-	public boolean onItemUseFirst( ItemStack is, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ )
+	public boolean onItemUseFirst(
+			ItemStack is,
+			EntityPlayer player,
+			World world,
+			BlockPos pos,
+			EnumFacing side,
+			float hitX,
+			float hitY,
+			float hitZ )
 	{
 		if( player.isSneaking() )
 		{
-			TileEntity te = world.getTileEntity( x, y, z );
+			TileEntity te = world.getTileEntity( pos );
 			IInventory upgrades = null;
 
 			if( te instanceof IPartHost )
 			{
-				SelectedPart sp = ( (IPartHost) te ).selectPart( Vec3.createVectorHelper( hitX, hitY, hitZ ) );
+				SelectedPart sp = ( (IPartHost) te ).selectPart( new Vec3( hitX, hitY, hitZ ) );
 				if( sp.part instanceof IUpgradeableHost )
 				{
 					upgrades = ( (ISegmentedInventory) sp.part ).getInventoryByName( "upgrades" );
@@ -358,7 +352,7 @@ public final class ItemMultiMaterial extends AEBaseItem implements IStorageCompo
 
 				if( u != null )
 				{
-					InventoryAdaptor ad = InventoryAdaptor.getAdaptor( upgrades, ForgeDirection.UNKNOWN );
+					InventoryAdaptor ad = InventoryAdaptor.getAdaptor( upgrades, EnumFacing.UP );
 					if( ad != null )
 					{
 						if( player.worldObj.isRemote )
@@ -373,7 +367,7 @@ public final class ItemMultiMaterial extends AEBaseItem implements IStorageCompo
 			}
 		}
 
-		return super.onItemUseFirst( is, player, world, x, y, z, side, hitX, hitY, hitZ );
+		return super.onItemUseFirst( is, player, world, pos, side, hitX, hitY, hitZ );
 	}
 
 	@Override
@@ -403,7 +397,9 @@ public final class ItemMultiMaterial extends AEBaseItem implements IStorageCompo
 
 		if( location instanceof EntityItem && eqi instanceof EntityItem )
 		{
-			( (EntityItem) eqi ).delayBeforeCanPickup = ( (EntityItem) location ).delayBeforeCanPickup;
+			// TODO: Entity Pick up time?
+			// needs fixing?
+			// ( (EntityItem) eqi ).setPickupDelay( ( (EntityItem) location ).pick;
 		}
 
 		return eqi;

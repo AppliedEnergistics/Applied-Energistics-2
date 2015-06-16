@@ -25,8 +25,7 @@ import java.util.EnumSet;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.common.util.ForgeDirection;
-
+import net.minecraft.util.EnumFacing;
 import appeng.api.AEApi;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.GridNotification;
@@ -64,7 +63,7 @@ public class AENetworkProxy implements IGridBlock
 	private ItemStack myRepInstance;
 	private boolean isReady = false;
 	private IGridNode node = null;
-	private EnumSet<ForgeDirection> validSides;
+	private EnumSet<EnumFacing> validSides;
 	private EnumSet<GridFlags> flags = EnumSet.noneOf( GridFlags.class );
 	private double idleDraw = 1.0;
 	private EntityPlayer owner;
@@ -75,7 +74,7 @@ public class AENetworkProxy implements IGridBlock
 		this.nbtName = nbtName;
 		this.worldNode = inWorld;
 		this.myRepInstance = visual;
-		this.validSides = EnumSet.allOf( ForgeDirection.class );
+		this.validSides = EnumSet.allOf( EnumFacing.class );
 	}
 
 	public void setVisualRepresentation( ItemStack is )
@@ -91,7 +90,7 @@ public class AENetworkProxy implements IGridBlock
 		}
 	}
 
-	public void setValidSides( EnumSet<ForgeDirection> validSides )
+	public void setValidSides( EnumSet<EnumFacing> validSides )
 	{
 		this.validSides = validSides;
 		if( this.node != null )
@@ -337,7 +336,7 @@ public class AENetworkProxy implements IGridBlock
 	}
 
 	@Override
-	public EnumSet<ForgeDirection> getConnectableSides()
+	public EnumSet<EnumFacing> getConnectableSides()
 	{
 		return this.validSides;
 	}

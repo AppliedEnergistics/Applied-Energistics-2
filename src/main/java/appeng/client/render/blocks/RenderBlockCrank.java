@@ -19,20 +19,23 @@
 package appeng.client.render.blocks;
 
 
-import org.lwjgl.opengl.GL11;
-
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.IItemRenderer.ItemRenderType;
-import net.minecraftforge.common.util.ForgeDirection;
+
+import org.lwjgl.opengl.GL11;
 
 import appeng.block.grindstone.BlockCrank;
 import appeng.client.render.BaseBlockRender;
+import appeng.client.render.IRenderHelper;
 import appeng.tile.grindstone.TileCrank;
 
 
@@ -45,7 +48,7 @@ public class RenderBlockCrank extends BaseBlockRender<BlockCrank, TileCrank>
 	}
 
 	@Override
-	public void renderInventory( BlockCrank blk, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj )
+	public void renderInventory( BlockCrank blk, ItemStack is, IRenderHelper renderer, ItemRenderType type, Object[] obj )
 	{
 		renderer.renderAllFaces = true;
 
@@ -59,16 +62,16 @@ public class RenderBlockCrank extends BaseBlockRender<BlockCrank, TileCrank>
 	}
 
 	@Override
-	public boolean renderInWorld( BlockCrank imb, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
+	public boolean renderInWorld( BlockCrank imb, IBlockAccess world, BlockPos pos, IRenderHelper renderer )
 	{
 		return true;
 	}
 
 	@Override
-	public void renderTile( BlockCrank blk, TileCrank tile, Tessellator tess, double x, double y, double z, float f, RenderBlocks renderBlocks )
+	public void renderTile( BlockCrank blk, TileCrank tile, WorldRenderer tess, double x, double y, double z, float f, IRenderHelper renderBlocks )
 	{
-		TileCrank tc = (TileCrank) tile;
-		if( tc.getUp() == null || tc.getUp() == ForgeDirection.UNKNOWN )
+		TileCrank tc = tile;
+		if( tc.getUp() == null || tc.getUp() == null )
 		{
 			return;
 		}
@@ -86,28 +89,36 @@ public class RenderBlockCrank extends BaseBlockRender<BlockCrank, TileCrank>
 		}
 
 		GL11.glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
-
 		this.applyTESRRotation( x, y, z, tile.getForward(), tile.getUp() );
 
 		GL11.glTranslated( 0.5, 0, 0.5 );
 		GL11.glRotatef( tc.visibleRotation, 0, 1, 0 );
+		GL11.glScalef( -1, 1, 1 );
 		GL11.glTranslated( -0.5, 0, -0.5 );
 
-		tess.setTranslation( -tc.xCoord, -tc.yCoord, -tc.zCoord );
-		tess.startDrawingQuads();
+		//tess.setTranslation( -tc.getPos().getX(), -tc.getPos().getY(), -tc.getPos().getZ() );
+		//tess.startDrawingQuads();
+		
+		RenderItem ri = Minecraft.getMinecraft().getRenderItem();
+		
+		ItemStack stack = new ItemStack( blk );
+		IBakedModel model = ri.getItemModelMesher().getItemModel( stack );
+        Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelRenderer().renderModelBrightnessColor(model, 1.0F, 1.0F, 1.0F, 1.0F);
+		
+		/*
 		renderBlocks.renderAllFaces = true;
-		renderBlocks.blockAccess = tc.getWorldObj();
+		renderBlocks.blockAccess = tc.getWorld();
 
 		renderBlocks.setRenderBounds( 0.5D - 0.05, 0.5D - 0.5, 0.5D - 0.05, 0.5D + 0.05, 0.5D + 0.1, 0.5D + 0.05 );
 
-		renderBlocks.renderStandardBlock( blk, tc.xCoord, tc.yCoord, tc.zCoord );
-
+		renderBlocks.renderStandardBlock( blk,  tc.getPos());
 		renderBlocks.setRenderBounds( 0.70D - 0.15, 0.55D - 0.05, 0.5D - 0.05, 0.70D + 0.15, 0.55D + 0.05, 0.5D + 0.05 );
 
-		renderBlocks.renderStandardBlock( blk, tc.xCoord, tc.yCoord, tc.zCoord );
+		renderBlocks.renderStandardBlock( blk, tc.getPos()  );
+		*/
 
-		tess.draw();
-		tess.setTranslation( 0, 0, 0 );
+		//Tessellator.getInstance().draw();
+		//tess.setTranslation( 0, 0, 0 );
 		RenderHelper.enableStandardItemLighting();
 	}
 }

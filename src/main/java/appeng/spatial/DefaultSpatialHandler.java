@@ -20,9 +20,9 @@ package appeng.spatial;
 
 
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
-
 import appeng.api.movable.IMovableHandler;
 
 
@@ -43,22 +43,18 @@ public class DefaultSpatialHandler implements IMovableHandler
 	}
 
 	@Override
-	public void moveTile( TileEntity te, World w, int x, int y, int z )
+	public void moveTile( TileEntity te, World w, BlockPos newPosition )
 	{
-
 		te.setWorldObj( w );
-		te.xCoord = x;
-		te.yCoord = y;
-		te.zCoord = z;
+		te.setPos( newPosition );
 
-		Chunk c = w.getChunkFromBlockCoords( x, z );
-		c.func_150812_a( x & 0xF, y, z & 0xF, te );
-		// c.setChunkBlockTileEntity( x & 0xF, y, z & 0xF, te );
+		Chunk c = w.getChunkFromBlockCoords( newPosition );
+		c.addTileEntity( newPosition, te );
 
-		if( c.isChunkLoaded )
+		if( c.isLoaded() )
 		{
 			w.addTileEntity( te );
-			w.markBlockForUpdate( x, y, z );
+			w.markBlockForUpdate( newPosition );
 		}
 	}
 }

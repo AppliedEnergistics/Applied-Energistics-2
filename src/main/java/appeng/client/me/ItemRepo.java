@@ -26,9 +26,7 @@ import java.util.Collections;
 import java.util.regex.Pattern;
 
 import net.minecraft.item.ItemStack;
-
-import cpw.mods.fml.relauncher.ReflectionHelper;
-
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import appeng.api.AEApi;
 import appeng.api.config.SearchBoxMode;
 import appeng.api.config.Settings;

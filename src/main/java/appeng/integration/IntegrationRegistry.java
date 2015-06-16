@@ -22,8 +22,8 @@ package appeng.integration;
 import java.util.Collection;
 import java.util.LinkedList;
 
-import cpw.mods.fml.relauncher.FMLLaunchHandler;
-import cpw.mods.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.FMLLaunchHandler;
+import net.minecraftforge.fml.relauncher.Side;
 
 
 public enum IntegrationRegistry

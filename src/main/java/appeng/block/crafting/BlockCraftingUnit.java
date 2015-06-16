@@ -24,17 +24,20 @@ import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.properties.PropertyBool;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumWorldBlockLayer;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+import appeng.api.util.AEPartLocation;
 import appeng.block.AEBaseTileBlock;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.blocks.RenderBlockCraftingCPU;
@@ -44,16 +47,49 @@ import appeng.core.sync.GuiBridge;
 import appeng.tile.crafting.TileCraftingTile;
 import appeng.util.Platform;
 
+import com.google.common.base.Optional;
+
 
 public class BlockCraftingUnit extends AEBaseTileBlock
 {
+    public static final PropertyBool POWERED = PropertyBool.create("powered");
+    public static final PropertyBool FORMED = PropertyBool.create("formed");
+
 	public static final int FLAG_FORMED = 8;
 
-	public BlockCraftingUnit()
+	final public CraftingUnitType type;
+	
+	public static enum CraftingUnitType
 	{
-		super( Material.iron );
+		UNIT, ACCELERATOR, STORAGE_1K,STORAGE_4K, STORAGE_16K, STORAGE_64K, MONITOR
+	};
 
-		this.hasSubtypes = true;
+	@Override
+	public EnumWorldBlockLayer getBlockLayer()
+	{
+		return EnumWorldBlockLayer.CUTOUT;
+	}
+
+	@Override
+	public int getMetaFromState(
+			IBlockState state )
+	{
+		boolean p = (boolean)state.getValue( POWERED );
+		boolean f = (boolean)state.getValue( FORMED );
+		return (p ? 1 : 0) | (f?2 : 0);
+	}
+	
+	@Override
+	public IBlockState getStateFromMeta( int meta )
+	{
+		return getDefaultState().withProperty( POWERED, ( meta & 1 ) == 1 ? true : false  ).withProperty( FORMED, ( meta & 2 ) == 2 ? true : false );
+	}
+	
+	public BlockCraftingUnit( CraftingUnitType type )
+	{
+		super( Material.iron, Optional.of(type.name()) );
+
+		this.type = type;
 		this.setTileEntity( TileCraftingTile.class );
 		this.setFeature( EnumSet.of( AEFeature.CraftingCPU ) );
 	}
@@ -65,26 +101,34 @@ public class BlockCraftingUnit extends AEBaseTileBlock
 	}
 
 	@Override
-	public IIcon getIcon( int direction, int metadata )
+	public appeng.client.texture.IAESprite getIcon(EnumFacing side, IBlockState state)
 	{
-		switch( metadata )
+		if ( type == CraftingUnitType.ACCELERATOR )
 		{
-			default:
-			case 0:
-				return super.getIcon( 0, 0 );
-			case 1:
-				return ExtraBlockTextures.BlockCraftingAccelerator.getIcon();
-			case FLAG_FORMED:
-				return ExtraBlockTextures.BlockCraftingUnitFit.getIcon();
-			case 1 | FLAG_FORMED:
+			if ( (boolean)state.getValue( FORMED  ) )
 				return ExtraBlockTextures.BlockCraftingAcceleratorFit.getIcon();
+			
+			return ExtraBlockTextures.BlockCraftingAccelerator.getIcon();
 		}
+		
+		if ( (boolean)state.getValue( FORMED  ) )
+			return ExtraBlockTextures.BlockCraftingUnitFit.getIcon();
+
+		return super.getIcon( side,state );
 	}
 
-	@Override
-	public boolean onActivated( World w, int x, int y, int z, EntityPlayer p, int side, float hitX, float hitY, float hitZ )
-	{
-		TileCraftingTile tg = this.getTileEntity( w, x, y, z );
+@Override
+public boolean onBlockActivated(
+		World w,
+		BlockPos pos,
+		IBlockState state,
+		EntityPlayer p,
+		EnumFacing side,
+		float hitX,
+		float hitY,
+		float hitZ )
+{
+		TileCraftingTile tg = this.getTileEntity( w, pos );
 		if( tg != null && !p.isSneaking() && tg.isFormed() && tg.isActive() )
 		{
 			if( Platform.isClient() )
@@ -92,7 +136,7 @@ public class BlockCraftingUnit extends AEBaseTileBlock
 				return true;
 			}
 
-			Platform.openGUI( p, tg, ForgeDirection.getOrientation( side ), GuiBridge.GUI_CRAFTING_CPU );
+			Platform.openGUI( p, tg, AEPartLocation.fromFacing( side ), GuiBridge.GUI_CRAFTING_CPU );
 			return true;
 		}
 
@@ -108,23 +152,18 @@ public class BlockCraftingUnit extends AEBaseTileBlock
 	}
 
 	@Override
-	public void setRenderStateByMeta( int itemDamage )
+	public void breakBlock(
+			World w,
+			BlockPos pos,
+			IBlockState state )
 	{
-		IIcon front = this.getIcon( ForgeDirection.SOUTH.ordinal(), itemDamage );
-		IIcon other = this.getIcon( ForgeDirection.NORTH.ordinal(), itemDamage );
-		this.getRendererInstance().setTemporaryRenderIcons( other, other, front, other, other, other );
-	}
-
-	@Override
-	public void breakBlock( World w, int x, int y, int z, Block a, int b )
-	{
-		TileCraftingTile cp = this.getTileEntity( w, x, y, z );
+		TileCraftingTile cp = this.getTileEntity( w, pos );
 		if( cp != null )
 		{
 			cp.breakCluster();
 		}
 
-		super.breakBlock( w, x, y, z, a, b );
+		super.breakBlock( w, pos, state );
 	}
 
 	@Override
@@ -144,25 +183,23 @@ public class BlockCraftingUnit extends AEBaseTileBlock
 	}
 
 	@Override
-	public void onNeighborBlockChange( World w, int x, int y, int z, Block junk )
+	protected IProperty[] getAEStates()
 	{
-		TileCraftingTile cp = this.getTileEntity( w, x, y, z );
+		return new IProperty[]{POWERED, FORMED };
+	}
+
+	@Override
+	public void onNeighborBlockChange(
+			World worldIn,
+			BlockPos pos,
+			IBlockState state,
+			Block neighborBlock )
+	{
+		TileCraftingTile cp = this.getTileEntity( worldIn, pos );
 		if( cp != null )
 		{
 			cp.updateMultiBlock();
 		}
 	}
 
-	@Override
-	public int damageDropped( int meta )
-	{
-		return meta & 3;
-	}
-
-	@Override
-	public int getDamageValue( World w, int x, int y, int z )
-	{
-		int meta = w.getBlockMetadata( x, y, z );
-		return this.damageDropped( meta );
-	}
 }

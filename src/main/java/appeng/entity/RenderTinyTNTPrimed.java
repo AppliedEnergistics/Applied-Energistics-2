@@ -19,42 +19,46 @@
 package appeng.entity;
 
 
-import org.lwjgl.opengl.GL11;
-
-import net.minecraft.client.renderer.RenderBlocks;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.BlockRendererDispatcher;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.Entity;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import org.lwjgl.opengl.GL11;
+
+import appeng.client.render.IRenderHelper;
 
 
 @SideOnly( Side.CLIENT )
 public class RenderTinyTNTPrimed extends Render
 {
 
-	private final RenderBlocks blockRenderer = new RenderBlocks();
+	private final IRenderHelper blockRenderer = new IRenderHelper();
 
-	public RenderTinyTNTPrimed()
-	{
+    public RenderTinyTNTPrimed(RenderManager p_i46134_1_)
+    {
+        super(p_i46134_1_);
 		this.shadowSize = 0.5F;
-		this.renderManager = RenderManager.instance;
 	}
 
 	@Override
 	public void doRender( Entity tnt, double x, double y, double z, float unused, float life )
 	{
-		this.renderPrimedTNT( (EntityTinyTNTPrimed) tnt, x, y, z, life );
+		this.renderPrimedTNT( (EntityTinyTNTPrimed) tnt, x, y, z, unused, life );
 	}
 
-	public void renderPrimedTNT( EntityTinyTNTPrimed tnt, double x, double y, double z, float life )
+	public void renderPrimedTNT( EntityTinyTNTPrimed tnt, double x, double y, double z, float unused, float life  )
 	{
-		GL11.glPushMatrix();
-		GL11.glTranslatef( (float) x, (float) y - 0.25f, (float) z );
+        BlockRendererDispatcher blockrendererdispatcher = Minecraft.getMinecraft().getBlockRendererDispatcher();
+        GlStateManager.pushMatrix();
+        GlStateManager.translate((float)x, (float)y + 0.5F, (float)z);
 		float f2;
 
 		if( tnt.fuse - life + 1.0F < 10.0F )
@@ -78,25 +82,32 @@ public class RenderTinyTNTPrimed extends Render
 		}
 
 		GL11.glScalef( 0.5f, 0.5f, 0.5f );
-		f2 = ( 1.0F - ( tnt.fuse - life + 1.0F ) / 100.0F ) * 0.8F;
-		this.bindEntityTexture( tnt );
-		this.blockRenderer.renderBlockAsItem( Blocks.tnt, 0, tnt.getBrightness( life ) );
+        f2 = (1.0F - (tnt.fuse - life + 1.0F) / 100.0F) * 0.8F;
+        this.bindEntityTexture(tnt);
+        GlStateManager.translate(-0.5F, -0.5F, 0.5F);
+        blockrendererdispatcher.renderBlockBrightness(Blocks.tnt.getDefaultState(), tnt.getBrightness(life));
+        GlStateManager.translate(0.0F, 0.0F, 1.0F);
 
 		if( tnt.fuse / 5 % 2 == 0 )
 		{
-			GL11.glDisable( GL11.GL_TEXTURE_2D );
-			GL11.glDisable( GL11.GL_LIGHTING );
-			GL11.glEnable( GL11.GL_BLEND );
-			GL11.glBlendFunc( GL11.GL_SRC_ALPHA, GL11.GL_DST_ALPHA );
-			GL11.glColor4f( 1.0F, 1.0F, 1.0F, f2 );
-			this.blockRenderer.renderBlockAsItem( Blocks.tnt, 0, 1.0F );
-			GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
-			GL11.glDisable( GL11.GL_BLEND );
-			GL11.glEnable( GL11.GL_LIGHTING );
-			GL11.glEnable( GL11.GL_TEXTURE_2D );
+            GlStateManager.disableTexture2D();
+            GlStateManager.disableLighting();
+            GlStateManager.enableBlend();
+            GlStateManager.blendFunc(770, 772);
+            GlStateManager.color(1.0F, 1.0F, 1.0F, f2);
+            GlStateManager.doPolygonOffset(-3.0F, -3.0F);
+            GlStateManager.enablePolygonOffset();
+            blockrendererdispatcher.renderBlockBrightness(Blocks.tnt.getDefaultState(), 1.0F);
+            GlStateManager.doPolygonOffset(0.0F, 0.0F);
+            GlStateManager.disablePolygonOffset();
+            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+            GlStateManager.disableBlend();
+            GlStateManager.enableLighting();
+            GlStateManager.enableTexture2D();
 		}
 
-		GL11.glPopMatrix();
+        GlStateManager.popMatrix();
+        super.doRender(tnt, x, y, z, unused, life );
 	}
 
 	@Override

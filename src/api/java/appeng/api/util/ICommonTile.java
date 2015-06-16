@@ -27,6 +27,7 @@ package appeng.api.util;
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 
 
@@ -38,10 +39,8 @@ public interface ICommonTile
 	 * the block itself.
 	 *
 	 * @param world world of tile entity
-	 * @param x     x pos of tile entity
-	 * @param y     y pos of tile entity
-	 * @param z     z pos of tile entity
+	 * @param pos location of the block
 	 * @param drops drops of tile entity
 	 */
-	void getDrops( World world, int x, int y, int z, List<ItemStack> drops );
+	void getDrops( World world, BlockPos pos, List<ItemStack> drops );
 }

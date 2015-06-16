@@ -25,7 +25,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-
+import net.minecraft.util.IChatComponent;
 import appeng.api.storage.IMEInventory;
 import appeng.core.AELog;
 import appeng.me.storage.MEIInventoryWrapper;
@@ -158,13 +158,13 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 	}
 
 	@Override
-	public String getInventoryName()
+	public String getName()
 	{
 		return "appeng-internal";
 	}
 
 	@Override
-	public boolean hasCustomInventoryName()
+	public boolean hasCustomName()
 	{
 		return false;
 	}
@@ -188,16 +188,6 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 	public boolean isUseableByPlayer( EntityPlayer var1 )
 	{
 		return true;
-	}
-
-	@Override
-	public void openInventory()
-	{
-	}
-
-	@Override
-	public void closeInventory()
-	{
 	}
 
 	@Override
@@ -281,5 +271,54 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 	public Iterator<ItemStack> iterator()
 	{
 		return new InvIterator( this );
+	}
+
+	@Override
+	public IChatComponent getDisplayName()
+	{
+		return null;
+	}
+
+	@Override
+	public void openInventory(
+			EntityPlayer player )
+	{
+		
+	}
+
+	@Override
+	public void closeInventory(
+			EntityPlayer player )
+	{
+		
+	}
+
+	@Override
+	public int getField(
+			int id )
+	{
+		return 0;
+	}
+
+	@Override
+	public void setField(
+			int id,
+			int value )
+	{		
+	}
+
+	@Override
+	public int getFieldCount()
+	{
+		return 0;
+	}
+
+	@Override
+	public void clear()
+	{
+		for( int x = 0; x < this.size; x++ )
+		{
+			setInventorySlotContents( x,null );
+		}
 	}
 }

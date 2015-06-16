@@ -20,13 +20,11 @@ package appeng.tile.misc;
 
 
 import io.netty.buffer.ByteBuf;
-
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntityFurnace;
-import net.minecraftforge.common.util.ForgeDirection;
-
+import net.minecraft.util.EnumFacing;
 import appeng.api.config.Actionable;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IEnergyGrid;
@@ -34,6 +32,7 @@ import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.util.AECableType;
+import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.core.settings.TickRates;
 import appeng.helpers.Reflected;
@@ -70,7 +69,7 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 	}
 
 	@Override
-	public AECableType getCableConnectionType( ForgeDirection dir )
+	public AECableType getCableConnectionType( AEPartLocation dir )
 	{
 		return AECableType.COVERED;
 	}
@@ -141,13 +140,13 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 	}
 
 	@Override
-	public boolean canExtractItem( int slotIndex, ItemStack extractedItem, int side )
+	public boolean canExtractItem( int slotIndex, ItemStack extractedItem, EnumFacing side )
 	{
 		return false;
 	}
 
 	@Override
-	public int[] getAccessibleSlotsBySide( ForgeDirection side )
+	public int[] getAccessibleSlotsBySide( EnumFacing side )
 	{
 		return ACCESSIBLE_SLOTS;
 	}
@@ -290,7 +289,7 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 
 			if ( this.hasWorldObj() )
 			{
-				Platform.notifyBlocksOfNeighbors( this.worldObj, this.xCoord, this.yCoord, this.zCoord );
+				Platform.notifyBlocksOfNeighbors( this.worldObj, pos );
 			}
 		}
 	}

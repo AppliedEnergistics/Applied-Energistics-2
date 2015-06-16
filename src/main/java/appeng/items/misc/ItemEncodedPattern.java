@@ -24,18 +24,23 @@ import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.ItemMeshDefinition;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
-import net.minecraftforge.client.MinecraftForgeClient;
-
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import appeng.api.AEApi;
 import appeng.api.implementations.ICraftingPatternItem;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.client.render.items.ItemEncodedPatternRenderer;
+import appeng.client.ClientHelper;
 import appeng.core.CommonHelper;
 import appeng.core.features.AEFeature;
 import appeng.core.localization.GuiText;
@@ -53,12 +58,50 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 	{
 		this.setFeature( EnumSet.of( AEFeature.Patterns ) );
 		this.setMaxStackSize( 1 );
-		if( Platform.isClient() )
-		{
-			MinecraftForgeClient.registerItemRenderer( this, new ItemEncodedPatternRenderer() );
-		}
 	}
 
+	@SideOnly(Side.CLIENT)
+	ModelResourceLocation res;
+	
+	@SideOnly(Side.CLIENT)
+	ModelResourceLocation encodedPatternModel; // TODO:  make encoded pattern model!
+	
+	@Override
+	public void registerIcons(
+			ClientHelper proxy,
+			String name )
+	{
+		encodedPatternModel = res = proxy.setIcon( this, name );
+
+		Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register( this, new ItemMeshDefinition(){
+			
+			boolean recursive = false;
+			
+			@Override
+			public ModelResourceLocation getModelLocation(
+					ItemStack stack )
+			{
+				if ( recursive == false )
+				{
+					this.recursive = true;
+	
+					ItemEncodedPattern iep = (ItemEncodedPattern) stack.getItem();
+	
+					ItemStack is = iep.getOutput( stack );
+					if ( Minecraft.getMinecraft().thePlayer.isSneaking() )
+					{
+						return encodedPatternModel;
+					}
+					
+					this.recursive = false;
+				}
+				
+				return res;
+			}
+		});
+
+	}
+	
 	@Override
 	public ItemStack onItemRightClick( ItemStack stack, World w, EntityPlayer player )
 	{
@@ -68,7 +111,15 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 	}
 
 	@Override
-	public boolean onItemUseFirst( ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ )
+	public boolean onItemUseFirst(
+			ItemStack stack,
+			EntityPlayer player,
+			World world,
+			BlockPos pos,
+			EnumFacing side,
+			float hitX,
+			float hitY,
+			float hitZ )
 	{
 		return this.clearPattern( stack, player );
 	}

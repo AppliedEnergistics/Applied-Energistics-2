@@ -19,15 +19,14 @@
 package appeng.client.gui.widgets;
 
 
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
-
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.item.ItemStack;
+
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 
 import appeng.client.texture.ExtraBlockTextures;
 
@@ -81,7 +80,7 @@ public class GuiTabButton extends GuiButton implements ITooltip
 		{
 			GL11.glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 			minecraft.renderEngine.bindTexture( ExtraBlockTextures.GuiTexture( "guis/states.png" ) );
-			this.field_146123_n = x >= this.xPosition && y >= this.yPosition && x < this.xPosition + this.width && y < this.yPosition + this.height;
+			this.hovered = x >= this.xPosition && y >= this.yPosition && x < this.xPosition + this.width && y < this.yPosition + this.height;
 
 			int uv_x = ( this.hideEdge > 0 ? 11 : 13 );
 
@@ -107,8 +106,7 @@ public class GuiTabButton extends GuiButton implements ITooltip
 				GL11.glEnable( GL11.GL_LIGHTING );
 				GL11.glEnable( GL12.GL_RESCALE_NORMAL );
 				RenderHelper.enableGUIStandardItemLighting();
-				FontRenderer fontrenderer = minecraft.fontRenderer;
-				this.itemRenderer.renderItemAndEffectIntoGUI( fontrenderer, minecraft.renderEngine, this.myItem, offsetX + this.xPosition + 3, this.yPosition + 3 );
+				this.itemRenderer.renderItemAndEffectIntoGUI( this.myItem, offsetX + this.xPosition + 3, this.yPosition + 3 );
 				GL11.glDisable( GL11.GL_LIGHTING );
 
 				this.itemRenderer.zLevel = 0.0F;

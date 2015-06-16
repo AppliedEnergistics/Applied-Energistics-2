@@ -27,7 +27,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
-
 import appeng.util.Platform;
 
 
@@ -40,17 +39,13 @@ public final class DispenserBlockTool extends BehaviorDefaultDispenseItem
 		Item i = dispensedItem.getItem();
 		if( i instanceof IBlockTool )
 		{
-			EnumFacing enumfacing = BlockDispenser.func_149937_b( dispenser.getBlockMetadata() );
+			EnumFacing enumfacing = BlockDispenser.getFacing( dispenser.getBlockMetadata() );
 			IBlockTool tm = (IBlockTool) i;
 
 			World w = dispenser.getWorld();
 			if( w instanceof WorldServer )
 			{
-				int x = dispenser.getXInt() + enumfacing.getFrontOffsetX();
-				int y = dispenser.getYInt() + enumfacing.getFrontOffsetY();
-				int z = dispenser.getZInt() + enumfacing.getFrontOffsetZ();
-
-				tm.onItemUse( dispensedItem, Platform.getPlayer( (WorldServer) w ), w, x, y, z, enumfacing.ordinal(), 0.5f, 0.5f, 0.5f );
+				tm.onItemUse( dispensedItem, Platform.getPlayer( (WorldServer) w ), w, dispenser.getBlockPos().offset( enumfacing ), enumfacing, 0.5f, 0.5f, 0.5f );
 			}
 		}
 		return dispensedItem;

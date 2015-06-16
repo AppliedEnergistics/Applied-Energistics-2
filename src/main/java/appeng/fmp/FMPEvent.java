@@ -30,16 +30,13 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
-
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import codechicken.lib.packet.PacketCustom;
 import codechicken.lib.raytracer.RayTracer;
 import codechicken.lib.vec.BlockCoord;
 import codechicken.lib.vec.Vector3;
 import codechicken.multipart.TMultiPart;
 import codechicken.multipart.TileMultipart;
-
 import appeng.block.AEBaseItemBlock;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketMultiPart;

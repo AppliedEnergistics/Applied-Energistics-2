@@ -21,15 +21,16 @@ package appeng.client.render;
 
 import java.util.Random;
 
-import org.lwjgl.opengl.GL11;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraftforge.client.IRenderHandler;
+
+import org.lwjgl.opengl.GL11;
 
 
 public class SpatialSkyRender extends IRenderHandler
@@ -74,7 +75,8 @@ public class SpatialSkyRender extends IRenderHandler
 		GL11.glDisable( GL11.GL_BLEND );
 		GL11.glDepthMask( false );
 		GL11.glColor4f( 0.0f, 0.0f, 0.0f, 1.0f );
-		Tessellator tessellator = Tessellator.instance;
+		Tessellator tessellator = Tessellator.getInstance();
+        WorldRenderer worldrenderer = tessellator.getWorldRenderer();
 
 		for( int i = 0; i < 6; ++i )
 		{
@@ -105,12 +107,12 @@ public class SpatialSkyRender extends IRenderHandler
 				GL11.glRotatef( -90.0F, 0.0F, 0.0F, 1.0F );
 			}
 
-			tessellator.startDrawingQuads();
-			tessellator.setColorOpaque_I( 0 );
-			tessellator.addVertexWithUV( -100.0D, -100.0D, -100.0D, 0.0D, 0.0D );
-			tessellator.addVertexWithUV( -100.0D, -100.0D, 100.0D, 0.0D, 16.0D );
-			tessellator.addVertexWithUV( 100.0D, -100.0D, 100.0D, 16.0D, 16.0D );
-			tessellator.addVertexWithUV( 100.0D, -100.0D, -100.0D, 16.0D, 0.0D );
+			worldrenderer.startDrawingQuads();
+			worldrenderer.setColorOpaque_I( 0 );
+			worldrenderer.addVertexWithUV( -100.0D, -100.0D, -100.0D, 0.0D, 0.0D );
+			worldrenderer.addVertexWithUV( -100.0D, -100.0D, 100.0D, 0.0D, 16.0D );
+			worldrenderer.addVertexWithUV( 100.0D, -100.0D, 100.0D, 16.0D, 16.0D );
+			worldrenderer.addVertexWithUV( 100.0D, -100.0D, -100.0D, 16.0D, 0.0D );
 			tessellator.draw();
 			GL11.glPopMatrix();
 		}
@@ -142,8 +144,9 @@ public class SpatialSkyRender extends IRenderHandler
 
 	private void renderTwinkles()
 	{
-		Tessellator tessellator = Tessellator.instance;
-		tessellator.startDrawingQuads();
+		Tessellator tessellator = Tessellator.getInstance();
+        WorldRenderer worldrenderer = tessellator.getWorldRenderer();
+        worldrenderer.startDrawingQuads();
 
 		for( int i = 0; i < 50; ++i )
 		{
@@ -183,7 +186,7 @@ public class SpatialSkyRender extends IRenderHandler
 					double d23 = d17 * d12 - d20 * d13;
 					double d24 = d23 * d9 - d21 * d10;
 					double d25 = d21 * d9 + d23 * d10;
-					tessellator.addVertex( x + d24, y + d22, z + d25 );
+					worldrenderer.addVertex( x + d24, y + d22, z + d25 );
 				}
 			}
 		}

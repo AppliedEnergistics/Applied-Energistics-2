@@ -21,6 +21,7 @@ package appeng.parts.layers;
 
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
 
 
 public class InvSot
@@ -55,12 +56,12 @@ public class InvSot
 		this.partInv.setInventorySlotContents( this.index, itemstack );
 	}
 
-	public boolean canExtractItem( ItemStack itemstack, int side )
+	public boolean canExtractItem( ItemStack itemstack, EnumFacing side )
 	{
 		return this.partInv.canExtractItem( this.index, itemstack, side );
 	}
 
-	public boolean canInsertItem( ItemStack itemstack, int side )
+	public boolean canInsertItem( ItemStack itemstack, EnumFacing side )
 	{
 		return this.partInv.canInsertItem( this.index, itemstack, side );
 	}

@@ -21,15 +21,15 @@ package appeng.client.render.blocks;
 
 import java.util.Random;
 
-import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.IItemRenderer.ItemRenderType;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.api.AEApi;
+import appeng.api.util.AEPartLocation;
 import appeng.block.solids.BlockQuartzGlass;
 import appeng.client.render.BaseBlockRender;
+import appeng.client.render.IRenderHelper;
 import appeng.client.texture.ExtraBlockTextures;
 import appeng.client.texture.OffsetIcon;
 import appeng.tile.AEBaseTile;
@@ -58,7 +58,7 @@ public class RenderQuartzGlass extends BaseBlockRender<BlockQuartzGlass, AEBaseT
 	}
 
 	@Override
-	public void renderInventory( BlockQuartzGlass block, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj )
+	public void renderInventory( BlockQuartzGlass block, ItemStack is, IRenderHelper renderer, ItemRenderType type, Object[] obj )
 	{
 		renderer.overrideBlockTexture = ExtraBlockTextures.GlassFrame.getIcon();
 		super.renderInventory( block, is, renderer, type, obj );
@@ -67,21 +67,21 @@ public class RenderQuartzGlass extends BaseBlockRender<BlockQuartzGlass, AEBaseT
 	}
 
 	@Override
-	public boolean renderInWorld( BlockQuartzGlass imb, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
+	public boolean renderInWorld( BlockQuartzGlass imb, IBlockAccess world, BlockPos pos, IRenderHelper renderer )
 	{
 		renderer.setRenderBounds( 0, 0, 0, 1, 1, 1 );
 
-		int cx = Math.abs( x % 10 );
-		int cy = Math.abs( y % 10 );
-		int cz = Math.abs( z % 10 );
+		int cx = Math.abs( pos.getX() % 10 );
+		int cy = Math.abs( pos.getY() % 10 );
+		int cz = Math.abs( pos.getZ() % 10 );
 
 		int u = offsets[cx][cy][cz] % 4;
 		int v = offsets[9 - cx][9 - cy][9 - cz] % 4;
 
-		switch( Math.abs( ( offsets[cx][cy][cz] + ( x + y + z ) ) % 4 ) )
+		switch( Math.abs( ( offsets[cx][cy][cz] + ( pos.getX()+pos.getY()+pos.getZ() ) ) % 4 ) )
 		{
 			case 0:
-				renderer.overrideBlockTexture = new OffsetIcon( imb.getIcon( 0, 0 ), u / 2, v / 2 );
+				renderer.overrideBlockTexture = new OffsetIcon( renderer.getIcon( world.getBlockState( pos ) )[0], u / 2, v / 2 );
 				break;
 			case 1:
 				renderer.overrideBlockTexture = new OffsetIcon( ExtraBlockTextures.BlockQuartzGlassB.getIcon(), u / 2, v / 2 );
@@ -94,66 +94,66 @@ public class RenderQuartzGlass extends BaseBlockRender<BlockQuartzGlass, AEBaseT
 				break;
 		}
 
-		boolean result = renderer.renderStandardBlock( imb, x, y, z );
+		boolean result = renderer.renderStandardBlock( imb, pos );
 
 		renderer.overrideBlockTexture = null;
-		this.renderEdge( imb, world, x, y, z, renderer, ForgeDirection.UP, ForgeDirection.EAST );
-		this.renderEdge( imb, world, x, y, z, renderer, ForgeDirection.UP, ForgeDirection.WEST );
-		this.renderEdge( imb, world, x, y, z, renderer, ForgeDirection.UP, ForgeDirection.NORTH );
-		this.renderEdge( imb, world, x, y, z, renderer, ForgeDirection.UP, ForgeDirection.SOUTH );
+		this.renderEdge( imb, world, pos, renderer, AEPartLocation.UP, AEPartLocation.EAST );
+		this.renderEdge( imb, world, pos, renderer, AEPartLocation.UP, AEPartLocation.WEST );
+		this.renderEdge( imb, world, pos, renderer, AEPartLocation.UP, AEPartLocation.NORTH );
+		this.renderEdge( imb, world, pos, renderer, AEPartLocation.UP, AEPartLocation.SOUTH );
 
-		this.renderEdge( imb, world, x, y, z, renderer, ForgeDirection.DOWN, ForgeDirection.EAST );
-		this.renderEdge( imb, world, x, y, z, renderer, ForgeDirection.DOWN, ForgeDirection.WEST );
-		this.renderEdge( imb, world, x, y, z, renderer, ForgeDirection.DOWN, ForgeDirection.NORTH );
-		this.renderEdge( imb, world, x, y, z, renderer, ForgeDirection.DOWN, ForgeDirection.SOUTH );
+		this.renderEdge( imb, world, pos, renderer, AEPartLocation.DOWN, AEPartLocation.EAST );
+		this.renderEdge( imb, world, pos, renderer, AEPartLocation.DOWN, AEPartLocation.WEST );
+		this.renderEdge( imb, world, pos, renderer, AEPartLocation.DOWN, AEPartLocation.NORTH );
+		this.renderEdge( imb, world, pos, renderer, AEPartLocation.DOWN, AEPartLocation.SOUTH );
 
-		this.renderEdge( imb, world, x, y, z, renderer, ForgeDirection.EAST, ForgeDirection.UP );
-		this.renderEdge( imb, world, x, y, z, renderer, ForgeDirection.EAST, ForgeDirection.DOWN );
-		this.renderEdge( imb, world, x, y, z, renderer, ForgeDirection.EAST, ForgeDirection.NORTH );
-		this.renderEdge( imb, world, x, y, z, renderer, ForgeDirection.EAST, ForgeDirection.SOUTH );
+		this.renderEdge( imb, world, pos, renderer, AEPartLocation.EAST, AEPartLocation.UP );
+		this.renderEdge( imb, world, pos, renderer, AEPartLocation.EAST, AEPartLocation.DOWN );
+		this.renderEdge( imb, world, pos, renderer, AEPartLocation.EAST, AEPartLocation.NORTH );
+		this.renderEdge( imb, world, pos, renderer, AEPartLocation.EAST, AEPartLocation.SOUTH );
 
-		this.renderEdge( imb, world, x, y, z, renderer, ForgeDirection.WEST, ForgeDirection.UP );
-		this.renderEdge( imb, world, x, y, z, renderer, ForgeDirection.WEST, ForgeDirection.DOWN );
-		this.renderEdge( imb, world, x, y, z, renderer, ForgeDirection.WEST, ForgeDirection.NORTH );
-		this.renderEdge( imb, world, x, y, z, renderer, ForgeDirection.WEST, ForgeDirection.SOUTH );
+		this.renderEdge( imb, world, pos, renderer, AEPartLocation.WEST, AEPartLocation.UP );
+		this.renderEdge( imb, world, pos, renderer, AEPartLocation.WEST, AEPartLocation.DOWN );
+		this.renderEdge( imb, world, pos, renderer, AEPartLocation.WEST, AEPartLocation.NORTH );
+		this.renderEdge( imb, world, pos, renderer, AEPartLocation.WEST, AEPartLocation.SOUTH );
 
-		this.renderEdge( imb, world, x, y, z, renderer, ForgeDirection.NORTH, ForgeDirection.EAST );
-		this.renderEdge( imb, world, x, y, z, renderer, ForgeDirection.NORTH, ForgeDirection.WEST );
-		this.renderEdge( imb, world, x, y, z, renderer, ForgeDirection.NORTH, ForgeDirection.UP );
-		this.renderEdge( imb, world, x, y, z, renderer, ForgeDirection.NORTH, ForgeDirection.DOWN );
+		this.renderEdge( imb, world, pos, renderer, AEPartLocation.NORTH, AEPartLocation.EAST );
+		this.renderEdge( imb, world, pos, renderer, AEPartLocation.NORTH, AEPartLocation.WEST );
+		this.renderEdge( imb, world, pos, renderer, AEPartLocation.NORTH, AEPartLocation.UP );
+		this.renderEdge( imb, world, pos, renderer, AEPartLocation.NORTH, AEPartLocation.DOWN );
 
-		this.renderEdge( imb, world, x, y, z, renderer, ForgeDirection.SOUTH, ForgeDirection.EAST );
-		this.renderEdge( imb, world, x, y, z, renderer, ForgeDirection.SOUTH, ForgeDirection.WEST );
-		this.renderEdge( imb, world, x, y, z, renderer, ForgeDirection.SOUTH, ForgeDirection.UP );
-		this.renderEdge( imb, world, x, y, z, renderer, ForgeDirection.SOUTH, ForgeDirection.DOWN );
+		this.renderEdge( imb, world, pos, renderer, AEPartLocation.SOUTH, AEPartLocation.EAST );
+		this.renderEdge( imb, world, pos, renderer, AEPartLocation.SOUTH, AEPartLocation.WEST );
+		this.renderEdge( imb, world, pos, renderer, AEPartLocation.SOUTH, AEPartLocation.UP );
+		this.renderEdge( imb, world, pos, renderer, AEPartLocation.SOUTH, AEPartLocation.DOWN );
 
 		return result;
 	}
 
-	private void renderEdge( BlockQuartzGlass imb, IBlockAccess world, int x, int y, int z, RenderBlocks renderer, ForgeDirection side, ForgeDirection direction )
+	private void renderEdge( BlockQuartzGlass imb, IBlockAccess world, BlockPos pos, IRenderHelper renderer, AEPartLocation side, AEPartLocation direction )
 	{
-		if( !this.isFlush( imb, world, x + side.offsetX, y + side.offsetY, z + side.offsetZ ) )
+		if( !this.isFlush( imb, world, pos.getX() + side.xOffset, pos.getY() + side.yOffset, pos.getZ() + side.zOffset ) )
 		{
-			if( !this.isFlush( imb, world, x + direction.offsetX, y + direction.offsetY, z + direction.offsetZ ) )
+			if( !this.isFlush( imb, world, pos.getX() + direction.xOffset, pos.getY() + direction.yOffset, pos.getZ() + direction.zOffset ) )
 			{
-				float minX = 0.5f + ( side.offsetX + direction.offsetX ) / 2.0f;
-				float minY = 0.5f + ( side.offsetY + direction.offsetY ) / 2.0f;
-				float minZ = 0.5f + ( side.offsetZ + direction.offsetZ ) / 2.0f;
-				float maxX = 0.5f + ( side.offsetX + direction.offsetX ) / 2.0f;
-				float maxY = 0.5f + ( side.offsetY + direction.offsetY ) / 2.0f;
-				float maxZ = 0.5f + ( side.offsetZ + direction.offsetZ ) / 2.0f;
+				float minX = 0.5f + ( side.xOffset + direction.xOffset ) / 2.0f;
+				float minY = 0.5f + ( side.yOffset + direction.yOffset ) / 2.0f;
+				float minZ = 0.5f + ( side.zOffset + direction.zOffset ) / 2.0f;
+				float maxX = 0.5f + ( side.xOffset + direction.xOffset ) / 2.0f;
+				float maxY = 0.5f + ( side.yOffset + direction.yOffset ) / 2.0f;
+				float maxZ = 0.5f + ( side.zOffset + direction.zOffset ) / 2.0f;
 
-				if( 0 == side.offsetX && 0 == direction.offsetX )
+				if( 0 == side.xOffset && 0 == direction.xOffset )
 				{
 					minX = 0.0f;
 					maxX = 1.0f;
 				}
-				if( 0 == side.offsetY && 0 == direction.offsetY )
+				if( 0 == side.yOffset && 0 == direction.yOffset )
 				{
 					minY = 0.0f;
 					maxY = 1.0f;
 				}
-				if( 0 == side.offsetZ && 0 == direction.offsetZ )
+				if( 0 == side.zOffset && 0 == direction.zOffset )
 				{
 					minZ = 0.0f;
 					maxZ = 1.0f;
@@ -190,22 +190,22 @@ public class RenderQuartzGlass extends BaseBlockRender<BlockQuartzGlass, AEBaseT
 				switch( side )
 				{
 					case WEST:
-						renderer.renderFaceXNeg( imb, x, y, z, ExtraBlockTextures.GlassFrame.getIcon() );
+						renderer.renderFaceXNeg( imb, pos, ExtraBlockTextures.GlassFrame.getIcon() );
 						break;
 					case EAST:
-						renderer.renderFaceXPos( imb, x, y, z, ExtraBlockTextures.GlassFrame.getIcon() );
+						renderer.renderFaceXPos( imb, pos, ExtraBlockTextures.GlassFrame.getIcon() );
 						break;
 					case NORTH:
-						renderer.renderFaceZNeg( imb, x, y, z, ExtraBlockTextures.GlassFrame.getIcon() );
+						renderer.renderFaceZNeg( imb, pos, ExtraBlockTextures.GlassFrame.getIcon() );
 						break;
 					case SOUTH:
-						renderer.renderFaceZPos( imb, x, y, z, ExtraBlockTextures.GlassFrame.getIcon() );
+						renderer.renderFaceZPos( imb, pos, ExtraBlockTextures.GlassFrame.getIcon() );
 						break;
 					case DOWN:
-						renderer.renderFaceYNeg( imb, x, y, z, ExtraBlockTextures.GlassFrame.getIcon() );
+						renderer.renderFaceYNeg( imb, pos, ExtraBlockTextures.GlassFrame.getIcon() );
 						break;
 					case UP:
-						renderer.renderFaceYPos( imb, x, y, z, ExtraBlockTextures.GlassFrame.getIcon() );
+						renderer.renderFaceYPos( imb, pos, ExtraBlockTextures.GlassFrame.getIcon() );
 						break;
 					default:
 						break;
@@ -216,21 +216,21 @@ public class RenderQuartzGlass extends BaseBlockRender<BlockQuartzGlass, AEBaseT
 
 	private boolean isFlush( BlockQuartzGlass imb, IBlockAccess world, int x, int y, int z )
 	{
-		return this.isGlass( imb, world, x, y, z );
+		return this.isGlass( imb, world, new BlockPos(x, y, z) );
 	}
 
-	private boolean isGlass( BlockQuartzGlass imb, IBlockAccess world, int x, int y, int z )
+	private boolean isGlass( BlockQuartzGlass imb, IBlockAccess world,BlockPos pos)
 	{
-		return this.isQuartzGlass( world, x, y, z ) || this.isVibrantQuartzGlass( world, x, y, z );
+		return this.isQuartzGlass( world, pos ) || this.isVibrantQuartzGlass( world, pos );
 	}
 
-	private boolean isQuartzGlass( IBlockAccess world, int x, int y, int z )
+	private boolean isQuartzGlass( IBlockAccess world,BlockPos pos)
 	{
-		return AEApi.instance().definitions().blocks().quartzGlass().isSameAs( world, x, y, z );
+		return AEApi.instance().definitions().blocks().quartzGlass().isSameAs( world, pos );
 	}
 
-	private boolean isVibrantQuartzGlass( IBlockAccess world, int x, int y, int z )
+	private boolean isVibrantQuartzGlass( IBlockAccess world,BlockPos pos)
 	{
-		return AEApi.instance().definitions().blocks().quartzVibrantGlass().isSameAs( world, x, y, z );
+		return AEApi.instance().definitions().blocks().quartzVibrantGlass().isSameAs( world, pos );
 	}
 }

@@ -23,8 +23,7 @@ import java.util.EnumSet;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.util.ForgeDirection;
-
+import net.minecraft.util.EnumFacing;
 import appeng.api.config.Actionable;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.events.MENetworkControllerChange;
@@ -34,6 +33,9 @@ import appeng.api.networking.events.MENetworkPowerStorage;
 import appeng.api.networking.events.MENetworkPowerStorage.PowerEventType;
 import appeng.api.networking.pathing.ControllerState;
 import appeng.api.util.AECableType;
+import appeng.api.util.AEPartLocation;
+import appeng.block.networking.BlockController;
+import appeng.block.networking.BlockController.ControllerBlockState;
 import appeng.me.GridAccessException;
 import appeng.tile.grid.AENetworkPowerTile;
 import appeng.tile.inventory.AppEngInternalInventory;
@@ -56,7 +58,7 @@ public class TileController extends AENetworkPowerTile
 	}
 
 	@Override
-	public AECableType getCableConnectionType( ForgeDirection dir )
+	public AECableType getCableConnectionType( AEPartLocation dir )
 	{
 		return AECableType.DENSE;
 	}
@@ -70,9 +72,9 @@ public class TileController extends AENetworkPowerTile
 
 	public void onNeighborChange( boolean force )
 	{
-		boolean xx = this.worldObj.getTileEntity( this.xCoord - 1, this.yCoord, this.zCoord ) instanceof TileController && this.worldObj.getTileEntity( this.xCoord + 1, this.yCoord, this.zCoord ) instanceof TileController;
-		boolean yy = this.worldObj.getTileEntity( this.xCoord, this.yCoord - 1, this.zCoord ) instanceof TileController && this.worldObj.getTileEntity( this.xCoord, this.yCoord + 1, this.zCoord ) instanceof TileController;
-		boolean zz = this.worldObj.getTileEntity( this.xCoord, this.yCoord, this.zCoord - 1 ) instanceof TileController && this.worldObj.getTileEntity( this.xCoord, this.yCoord, this.zCoord + 1 ) instanceof TileController;
+		boolean xx = this.worldObj.getTileEntity( pos.offset( EnumFacing.EAST ) ) instanceof TileController && this.worldObj.getTileEntity( pos.offset( EnumFacing.WEST ) ) instanceof TileController;
+		boolean yy = this.worldObj.getTileEntity( pos.offset( EnumFacing.UP ) ) instanceof TileController && this.worldObj.getTileEntity( pos.offset( EnumFacing.DOWN ) ) instanceof TileController;
+		boolean zz = this.worldObj.getTileEntity( pos.offset( EnumFacing.NORTH ) ) instanceof TileController && this.worldObj.getTileEntity( pos.offset( EnumFacing.SOUTH ) ) instanceof TileController;
 
 		// int meta = world.getBlockMetadata( xCoord, yCoord, zCoord );
 		// boolean hasPower = meta > 0;
@@ -86,11 +88,11 @@ public class TileController extends AENetworkPowerTile
 		{
 			if( this.isValid )
 			{
-				this.gridProxy.setValidSides( EnumSet.allOf( ForgeDirection.class ) );
+				this.gridProxy.setValidSides( EnumSet.allOf( EnumFacing.class ) );
 			}
 			else
 			{
-				this.gridProxy.setValidSides( EnumSet.noneOf( ForgeDirection.class ) );
+				this.gridProxy.setValidSides( EnumSet.noneOf( EnumFacing.class ) );
 			}
 		}
 
@@ -104,26 +106,26 @@ public class TileController extends AENetworkPowerTile
 			return;
 		}
 
-		int meta = 0;
-
+		ControllerBlockState metaState = ControllerBlockState.OFFLINE;
+		
 		try
 		{
 			if( this.gridProxy.getEnergy().isNetworkPowered() )
 			{
-				meta = 1;
+				metaState = ControllerBlockState.ONLINE;
 
 				if( this.gridProxy.getPath().getControllerState() == ControllerState.CONTROLLER_CONFLICT )
 				{
-					meta = 2;
+					metaState = ControllerBlockState.CONFLICTED;
 				}
 			}
 		}
 		catch( GridAccessException e )
 		{
-			meta = 0;
+			metaState = ControllerBlockState.OFFLINE;
 		}
 
-		this.worldObj.setBlockMetadataWithNotify( this.xCoord, this.yCoord, this.zCoord, meta, 2 );
+		this.worldObj.setBlockState( pos, worldObj.getBlockState( pos ).withProperty( BlockController.CONTROLLER_STATE, metaState ) );
 	}
 
 	@Override
@@ -197,7 +199,7 @@ public class TileController extends AENetworkPowerTile
 	}
 
 	@Override
-	public int[] getAccessibleSlotsBySide( ForgeDirection side )
+	public int[] getAccessibleSlotsBySide( EnumFacing whichSide )
 	{
 		return this.ACCESSIBLE_SLOTS_BY_SIDE;
 	}

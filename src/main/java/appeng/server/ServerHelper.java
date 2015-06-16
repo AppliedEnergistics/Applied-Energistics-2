@@ -30,10 +30,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-
-import cpw.mods.fml.common.FMLCommonHandler;
-
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import appeng.api.parts.CableRenderMode;
 import appeng.block.AEBaseBlock;
 import appeng.client.EffectType;
@@ -50,7 +49,13 @@ public class ServerHelper extends CommonHelper
 	private EntityPlayer renderModeBased;
 
 	@Override
-	public void init()
+	public void configureIcon(Object item, String name )
+	{
+		
+	}
+	
+	@Override
+	public void preinit()
 	{
 
 	}
@@ -188,5 +193,13 @@ public class ServerHelper extends CommonHelper
 	public void missingCoreMod()
 	{
 		throw new IllegalStateException( "Unable to Load Core Mod, please verify that AE2 is properly install in the mods folder, with a .jar extension." );
+	}
+
+	@Override
+	public ResourceLocation addIcon(
+			String string )
+	{
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

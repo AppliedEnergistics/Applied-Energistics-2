@@ -21,10 +21,10 @@ package appeng.client.gui.implementations;
 
 import java.io.IOException;
 
-import org.lwjgl.input.Mouse;
-
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
+
+import org.lwjgl.input.Mouse;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.LevelType;
@@ -167,7 +167,7 @@ public class GuiLevelEmitter extends GuiUpgradeable
 	}
 
 	@Override
-	protected void actionPerformed( GuiButton btn )
+	protected void actionPerformed( GuiButton btn ) throws IOException
 	{
 		super.actionPerformed( btn );
 
@@ -238,7 +238,7 @@ public class GuiLevelEmitter extends GuiUpgradeable
 	}
 
 	@Override
-	protected void keyTyped( char character, int key )
+	protected void keyTyped( char character, int key ) throws IOException
 	{
 		if( !this.checkHotbarKeys( key ) )
 		{

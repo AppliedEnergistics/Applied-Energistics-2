@@ -23,7 +23,6 @@ import java.io.IOException;
 
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.InventoryPlayer;
-
 import appeng.client.gui.AEBaseGui;
 import appeng.container.implementations.ContainerQuartzKnife;
 import appeng.core.AELog;
@@ -49,7 +48,7 @@ public class GuiQuartzKnife extends AEBaseGui
 	{
 		super.initGui();
 
-		this.name = new GuiTextField( this.fontRendererObj, this.guiLeft + 24, this.guiTop + 32, 79, this.fontRendererObj.FONT_HEIGHT );
+		this.name = new GuiTextField( 0,this.fontRendererObj, this.guiLeft + 24, this.guiTop + 32, 79, this.fontRendererObj.FONT_HEIGHT );
 		this.name.setEnableBackgroundDrawing( false );
 		this.name.setMaxStringLength( 32 );
 		this.name.setTextColor( 0xFFFFFF );
@@ -73,7 +72,7 @@ public class GuiQuartzKnife extends AEBaseGui
 	}
 
 	@Override
-	protected void keyTyped( char character, int key )
+	protected void keyTyped( char character, int key ) throws IOException
 	{
 		if( this.name.textboxKeyTyped( character, key ) )
 		{

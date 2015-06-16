@@ -25,6 +25,7 @@ package appeng.api.config;
 
 
 import java.util.EnumSet;
+
 import javax.annotation.Nonnull;
 
 

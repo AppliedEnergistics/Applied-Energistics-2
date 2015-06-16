@@ -19,18 +19,30 @@
 package appeng.client.render.blocks;
 
 
-import net.minecraft.client.renderer.RenderBlocks;
-import net.minecraft.client.renderer.Tessellator;
+import java.util.HashMap;
+import java.util.Map;
+
+import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.IItemRenderer.ItemRenderType;
-
+import appeng.api.parts.IFacadePart;
+import appeng.api.parts.IPart;
+import appeng.api.parts.IPartItem;
+import appeng.api.util.AEPartLocation;
 import appeng.block.networking.BlockCableBus;
+import appeng.client.ClientHelper;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.BusRenderHelper;
 import appeng.client.render.BusRenderer;
+import appeng.client.render.IRenderHelper;
+import appeng.facade.IFacadeItem;
 import appeng.tile.AEBaseTile;
 import appeng.tile.networking.TileCableBus;
+import appeng.util.Platform;
 
 
 public class RendererCableBus extends BaseBlockRender<BlockCableBus, TileCableBus>
@@ -42,22 +54,81 @@ public class RendererCableBus extends BaseBlockRender<BlockCableBus, TileCableBu
 	}
 
 	@Override
-	public void renderInventory( BlockCableBus blk, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj )
+	public void renderInventory( BlockCableBus blk, ItemStack item, IRenderHelper renderer, ItemRenderType type, Object[] obj )
 	{
-		// nothing.
+		renderer.setColorOpaque_F( 1, 1, 1 );
+		renderer.setBrightness( 14 << 20 | 14 << 4 );
+
+		BusRenderer.INSTANCE.renderer = renderer; // post data to this...
+		BusRenderHelper.INSTANCE.setBounds( 0, 0, 0, 1, 1, 1 );
+		BusRenderHelper.INSTANCE.setTexture( null );
+		BusRenderHelper.INSTANCE.setInvColor( 0xffffff );
+		renderer.blockAccess = ClientHelper.proxy.getWorld();
+
+		BusRenderHelper.INSTANCE.setOrientation( EnumFacing.EAST, EnumFacing.UP, EnumFacing.SOUTH );
+
+		renderer.uvRotateBottom = renderer.uvRotateEast = renderer.uvRotateNorth = renderer.uvRotateSouth = renderer.uvRotateTop = renderer.uvRotateWest = 0;
+		renderer.overrideBlockTexture = null;
+
+		if( item.getItem() instanceof IFacadeItem )
+		{
+			IFacadeItem fi = (IFacadeItem) item.getItem();
+			IFacadePart fp = fi.createPartFromItemStack( item, AEPartLocation.SOUTH );
+
+			if( fp != null )
+			{
+				fp.renderInventory( BusRenderHelper.INSTANCE, renderer );
+			}
+		}
+		else
+		{
+			IPart ip = this.getRenderer( item, (IPartItem) item.getItem() );
+			if( ip != null )
+			{
+				if( type == ItemRenderType.ENTITY )
+				{
+					int depth = ip.cableConnectionRenderTo();
+				}
+
+				ip.renderInventory( BusRenderHelper.INSTANCE, renderer );
+			}
+		}
+
+		renderer.uvRotateBottom = renderer.uvRotateEast = renderer.uvRotateNorth = renderer.uvRotateSouth = renderer.uvRotateTop = renderer.uvRotateWest = 0;
 	}
 
-	@Override
-	public boolean renderInWorld( BlockCableBus block, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
+	public IPart getRenderer( ItemStack is, IPartItem c )
 	{
-		AEBaseTile t = block.getTileEntity( world, x, y, z );
+		int id = ( Item.getIdFromItem( is.getItem() ) << Platform.DEF_OFFSET ) | is.getItemDamage();
+
+		IPart part = RENDER_PART.get( id );
+		if( part == null )
+		{
+			part = c.createPartFromItemStack( is );
+			if( part != null )
+			{
+				RENDER_PART.put( id, part );
+			}
+		}
+
+		return part;
+	}
+
+	public static final BusRenderer INSTANCE = new BusRenderer();
+	private static final Map<Integer, IPart> RENDER_PART = new HashMap<Integer, IPart>();
+	
+	@Override
+	public boolean renderInWorld( BlockCableBus block, IBlockAccess world, BlockPos pos, IRenderHelper renderer )
+	{
+		AEBaseTile t = block.getTileEntity( world, pos );
 
 		if( t instanceof TileCableBus )
 		{
+			BusRenderer.INSTANCE.renderer = renderer; // post data to this...
 			BusRenderer.INSTANCE.renderer.renderAllFaces = true;
 			BusRenderer.INSTANCE.renderer.blockAccess = renderer.blockAccess;
 			BusRenderer.INSTANCE.renderer.overrideBlockTexture = renderer.overrideBlockTexture;
-			( (TileCableBus) t ).cb.renderStatic( x, y, z );
+			( (TileCableBus) t ).cb.renderStatic();
 			BusRenderer.INSTANCE.renderer.renderAllFaces = false;
 		}
 
@@ -65,12 +136,12 @@ public class RendererCableBus extends BaseBlockRender<BlockCableBus, TileCableBu
 	}
 
 	@Override
-	public void renderTile( BlockCableBus block, TileCableBus t, Tessellator tess, double x, double y, double z, float f, RenderBlocks renderer )
+	public void renderTile( BlockCableBus block, TileCableBus t, WorldRenderer tess, double x, double y, double z, float f, IRenderHelper renderer )
 	{
 		if( t instanceof TileCableBus )
 		{
 			BusRenderer.INSTANCE.renderer.overrideBlockTexture = null;
-			( (TileCableBus) t ).cb.renderDynamic( x, y, z );
+			t.cb.renderDynamic( x, y, z );
 		}
 	}
 }

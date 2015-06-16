@@ -24,8 +24,7 @@
 package appeng.api.implementations.tiles;
 
 
-import net.minecraftforge.common.util.ForgeDirection;
-
+import net.minecraft.util.EnumFacing;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.storage.IStorageMonitorable;
 
@@ -36,5 +35,5 @@ import appeng.api.storage.IStorageMonitorable;
 public interface ITileStorageMonitorable
 {
 
-	IStorageMonitorable getMonitorable( ForgeDirection side, BaseActionSource src );
+	IStorageMonitorable getMonitorable( EnumFacing side, BaseActionSource src );
 }

@@ -19,15 +19,13 @@
 package appeng.parts.reporting;
 
 
-import net.minecraft.client.renderer.RenderBlocks;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.util.ForgeDirection;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import appeng.api.parts.IPartRenderHelper;
+import appeng.client.render.IRenderHelper;
 import appeng.client.texture.CableBusTextures;
 
 
@@ -41,15 +39,15 @@ public class PartDarkMonitor extends PartMonitor
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderInventory( IPartRenderHelper rh, RenderBlocks renderer )
+	public void renderInventory( IPartRenderHelper rh, IRenderHelper renderer )
 	{
 		rh.setBounds( 2, 2, 14, 14, 14, 16 );
 
-		rh.setTexture( CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorBack.getIcon(), this.is.getIconIndex(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon() );
+		rh.setTexture( CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorBack.getIcon(), renderer.getIcon( is ), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon() );
 		rh.renderInventoryBox( renderer );
 
 		rh.setInvColor( this.getColor().mediumVariant );
-		rh.renderInventoryFace( this.frontBright.getIcon(), ForgeDirection.SOUTH, renderer );
+		rh.renderInventoryFace( this.frontBright.getIcon(), EnumFacing.SOUTH, renderer );
 
 		rh.setBounds( 4, 4, 13, 12, 12, 14 );
 		rh.renderInventoryBox( renderer );
@@ -57,23 +55,23 @@ public class PartDarkMonitor extends PartMonitor
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderStatic( int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer )
+	public void renderStatic( BlockPos pos, IPartRenderHelper rh, IRenderHelper renderer )
 	{
-		rh.setTexture( CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorBack.getIcon(), this.is.getIconIndex(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon() );
+		rh.setTexture( CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorBack.getIcon(), renderer.getIcon( is ), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon() );
 
 		rh.setBounds( 2, 2, 14, 14, 14, 16 );
-		rh.renderBlock( x, y, z, renderer );
+		rh.renderBlock( pos, renderer );
 
 		if( this.getLightLevel() > 0 )
 		{
 			int l = 13;
-			Tessellator.instance.setBrightness( l << 20 | l << 4 );
+			renderer.setBrightness( l << 20 | l << 4 );
 		}
 
-		Tessellator.instance.setColorOpaque_I( this.getColor().mediumVariant );
-		rh.renderFace( x, y, z, this.frontBright.getIcon(), ForgeDirection.SOUTH, renderer );
+		renderer.setColorOpaque_I( this.getColor().mediumVariant );
+		rh.renderFace( pos, this.frontBright.getIcon(), EnumFacing.SOUTH, renderer );
 
 		rh.setBounds( 4, 4, 13, 12, 12, 14 );
-		rh.renderBlock( x, y, z, renderer );
+		rh.renderBlock( pos, renderer );
 	}
 }

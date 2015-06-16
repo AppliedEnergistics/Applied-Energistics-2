@@ -78,13 +78,13 @@ public interface IParts
 
 	IItemDefinition p2PTunnelLiquids();
 
-	IItemDefinition p2PTunnelEU();
+	//IItemDefinition p2PTunnelEU();
 
-	IItemDefinition p2PTunnelRF();
+	//IItemDefinition p2PTunnelRF();
 
 	IItemDefinition p2PTunnelLight();
 
-	IItemDefinition p2PTunnelOpenComputers();
+	//IItemDefinition p2PTunnelOpenComputers();
 
 	IItemDefinition cableAnchor();
 

@@ -19,13 +19,15 @@
 package appeng.client.render;
 
 
-import org.lwjgl.opengl.GL11;
-
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.client.resources.model.ModelManager;
 import net.minecraft.item.ItemStack;
+
+import org.lwjgl.opengl.GL11;
 
 import appeng.api.storage.data.IAEItemStack;
 import appeng.core.AEConfig;
@@ -43,13 +45,25 @@ import appeng.util.ReadableNumberConverter;
  */
 public class AppEngRenderItem extends RenderItem
 {
+	public AppEngRenderItem(
+			TextureManager textureManager,
+			ModelManager modelManager )
+	{
+		super( textureManager, modelManager );
+	}
+
 	private static final ISlimReadableNumberConverter SLIM_CONVERTER = ReadableNumberConverter.INSTANCE;
 	private static final IWideReadableNumberConverter WIDE_CONVERTER = ReadableNumberConverter.INSTANCE;
 
 	public IAEItemStack aeStack;
 
 	@Override
-	public void renderItemOverlayIntoGUI( FontRenderer fontRenderer, TextureManager textureManager, ItemStack is, int par4, int par5, String par6Str )
+	public void renderItemOverlayIntoGUI(
+			FontRenderer fontRenderer,
+			ItemStack is,
+			int xPos,
+			int yPos,
+			String text )
 	{
 		if( is != null )
 		{
@@ -70,12 +84,13 @@ public class AppEngRenderItem extends RenderItem
 				GL11.glDisable( GL11.GL_TEXTURE_2D );
 				GL11.glDisable( GL11.GL_ALPHA_TEST );
 				GL11.glDisable( GL11.GL_BLEND );
-				Tessellator tessellator = Tessellator.instance;
+				Tessellator tessellator = Tessellator.getInstance();
+				WorldRenderer wr = tessellator.getWorldRenderer();
 				int l = 255 - k << 16 | k << 8;
 				int i1 = ( 255 - k ) / 4 << 16 | 16128;
-				this.renderQuad( tessellator, par4 + 2, par5 + 13, 13, 2, 0 );
-				this.renderQuad( tessellator, par4 + 2, par5 + 13, 12, 1, i1 );
-				this.renderQuad( tessellator, par4 + 2, par5 + 13, j1, 1, l );
+				this.renderQuad( tessellator, xPos + 2, yPos + 13, 13, 2, 0 );
+				this.renderQuad( tessellator, xPos + 2, yPos + 13, 12, 1, i1 );
+				this.renderQuad( tessellator, xPos + 2, yPos + 13, j1, 1, l );
 				GL11.glEnable( GL11.GL_ALPHA_TEST );
 				GL11.glEnable( GL11.GL_TEXTURE_2D );
 				GL11.glEnable( GL11.GL_LIGHTING );
@@ -90,8 +105,8 @@ public class AppEngRenderItem extends RenderItem
 				GL11.glDisable( GL11.GL_DEPTH_TEST );
 				GL11.glPushMatrix();
 				GL11.glScaled( scaleFactor, scaleFactor, scaleFactor );
-				int X = (int) ( ( (float) par4 + offset + 16.0f - fontRenderer.getStringWidth( craftLabelText ) * scaleFactor ) * inverseScaleFactor );
-				int Y = (int) ( ( (float) par5 + offset + 16.0f - 7.0f * scaleFactor ) * inverseScaleFactor );
+				int X = (int) ( ( (float) xPos + offset + 16.0f - fontRenderer.getStringWidth( craftLabelText ) * scaleFactor ) * inverseScaleFactor );
+				int Y = (int) ( ( (float) yPos + offset + 16.0f - 7.0f * scaleFactor ) * inverseScaleFactor );
 				fontRenderer.drawStringWithShadow( craftLabelText, X, Y, 16777215 );
 				GL11.glPopMatrix();
 				GL11.glEnable( GL11.GL_LIGHTING );
@@ -107,8 +122,8 @@ public class AppEngRenderItem extends RenderItem
 				GL11.glDisable( GL11.GL_DEPTH_TEST );
 				GL11.glPushMatrix();
 				GL11.glScaled( scaleFactor, scaleFactor, scaleFactor );
-				int X = (int) ( ( (float) par4 + offset + 16.0f - fontRenderer.getStringWidth( stackSize ) * scaleFactor ) * inverseScaleFactor );
-				int Y = (int) ( ( (float) par5 + offset + 16.0f - 7.0f * scaleFactor ) * inverseScaleFactor );
+				int X = (int) ( ( (float) xPos + offset + 16.0f - fontRenderer.getStringWidth( stackSize ) * scaleFactor ) * inverseScaleFactor );
+				int Y = (int) ( ( (float) yPos + offset + 16.0f - 7.0f * scaleFactor ) * inverseScaleFactor );
 				fontRenderer.drawStringWithShadow( stackSize, X, Y, 16777215 );
 				GL11.glPopMatrix();
 				GL11.glEnable( GL11.GL_LIGHTING );
@@ -121,12 +136,14 @@ public class AppEngRenderItem extends RenderItem
 
 	private void renderQuad( Tessellator par1Tessellator, int par2, int par3, int par4, int par5, int par6 )
 	{
-		par1Tessellator.startDrawingQuads();
-		par1Tessellator.setColorOpaque_I( par6 );
-		par1Tessellator.addVertex( par2, par3, 0.0D );
-		par1Tessellator.addVertex( par2, par3 + par5, 0.0D );
-		par1Tessellator.addVertex( par2 + par4, par3 + par5, 0.0D );
-		par1Tessellator.addVertex( par2 + par4, par3, 0.0D );
+		WorldRenderer wr = par1Tessellator.getWorldRenderer();
+		
+		wr.startDrawingQuads();
+		wr.setColorOpaque_I( par6 );
+		wr.addVertex( par2, par3, 0.0D );
+		wr.addVertex( par2, par3 + par5, 0.0D );
+		wr.addVertex( par2 + par4, par3 + par5, 0.0D );
+		wr.addVertex( par2 + par4, par3, 0.0D );
 		par1Tessellator.draw();
 	}
 

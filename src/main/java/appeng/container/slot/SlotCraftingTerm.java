@@ -28,7 +28,7 @@ import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
-
+import net.minecraft.util.BlockPos;
 import appeng.api.config.Actionable;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.BaseActionSource;
@@ -140,7 +140,7 @@ public class SlotCraftingTerm extends AppEngCraftingSlot
 				{
 					List<ItemStack> drops = new ArrayList<ItemStack>();
 					drops.add( extra );
-					Platform.spawnDrops( who.worldObj, (int) who.posX, (int) who.posY, (int) who.posZ, drops );
+					Platform.spawnDrops( who.worldObj, new BlockPos( (int) who.posX, (int) who.posY, (int) who.posZ ), drops );
 					return;
 				}
 			}
@@ -270,7 +270,7 @@ public class SlotCraftingTerm extends AppEngCraftingSlot
 
 		if( drops.size() > 0 )
 		{
-			Platform.spawnDrops( p.worldObj, (int) p.posX, (int) p.posY, (int) p.posZ, drops );
+			Platform.spawnDrops( p.worldObj, new BlockPos( (int) p.posX, (int) p.posY, (int) p.posZ ), drops );
 		}
 	}
 }

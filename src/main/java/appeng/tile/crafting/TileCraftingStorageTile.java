@@ -20,9 +20,9 @@ package appeng.tile.crafting;
 
 
 import net.minecraft.item.ItemStack;
-
 import appeng.api.AEApi;
 import appeng.api.definitions.IBlocks;
+import appeng.block.crafting.BlockCraftingUnit;
 
 
 public class TileCraftingStorageTile extends TileCraftingTile
@@ -80,16 +80,17 @@ public class TileCraftingStorageTile extends TileCraftingTile
 			return 0;
 		}
 
-		switch( this.worldObj.getBlockMetadata( this.xCoord, this.yCoord, this.zCoord ) & 3 )
+		BlockCraftingUnit unit = (BlockCraftingUnit)this.worldObj.getBlockState( pos ).getBlock();
+		switch( unit.type )
 		{
 			default:
-			case 0:
+			case STORAGE_1K:
 				return 1024;
-			case 1:
+			case STORAGE_4K:
 				return 4 * 1024;
-			case 2:
+			case STORAGE_16K:
 				return 16 * 1024;
-			case 3:
+			case STORAGE_64K:
 				return 64 * 1024;
 		}
 	}

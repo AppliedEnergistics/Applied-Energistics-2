@@ -25,8 +25,7 @@ package appeng.api.storage;
 
 
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
-
+import net.minecraft.util.EnumFacing;
 import appeng.api.IAppEngApi;
 import appeng.api.networking.security.BaseActionSource;
 
@@ -54,5 +53,5 @@ public interface IExternalStorageRegistry
 	 *
 	 * @return the handler for a given tile / forge direction
 	 */
-	IExternalStorageHandler getHandler( TileEntity te, ForgeDirection opposite, StorageChannel channel, BaseActionSource mySrc );
+	IExternalStorageHandler getHandler( TileEntity te, EnumFacing opposite, StorageChannel channel, BaseActionSource mySrc );
 }

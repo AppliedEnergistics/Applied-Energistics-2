@@ -30,7 +30,7 @@ public class GuiNumberBox extends GuiTextField
 
 	public GuiNumberBox( FontRenderer fontRenderer, int x, int y, int width, int height, Class type )
 	{
-		super( fontRenderer, x, y, width, height );
+		super( 0, fontRenderer, x, y, width, height );
 		this.type = type;
 	}
 

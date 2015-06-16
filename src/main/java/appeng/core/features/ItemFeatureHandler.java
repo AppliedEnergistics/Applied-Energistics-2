@@ -21,16 +21,16 @@ package appeng.core.features;
 
 import java.util.EnumSet;
 
-import com.google.common.base.Optional;
-
 import net.minecraft.item.Item;
-
-import cpw.mods.fml.common.registry.GameRegistry;
-
+import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.relauncher.Side;
 import appeng.api.definitions.IItemDefinition;
+import appeng.core.CommonHelper;
 import appeng.core.CreativeTab;
 import appeng.core.CreativeTabFacade;
 import appeng.items.parts.ItemFacade;
+
+import com.google.common.base.Optional;
 
 
 public final class ItemFeatureHandler implements IFeatureHandler
@@ -63,12 +63,14 @@ public final class ItemFeatureHandler implements IFeatureHandler
 	}
 
 	@Override
-	public void register()
+	public void register(Side side)
 	{
 		if( this.enabled )
 		{
 			String name = this.extractor.get();
-			this.item.setTextureName( "appliedenergistics2:" + name );
+			String itemPhysicalName = name;
+			
+			//this.item.setTextureName( "appliedenergistics2:" + name );
 			this.item.setUnlocalizedName( /* "item." */"appliedenergistics2." + name );
 
 			if( this.item instanceof ItemFacade )
@@ -90,6 +92,20 @@ public final class ItemFeatureHandler implements IFeatureHandler
 			}
 
 			GameRegistry.registerItem( this.item, "item." + name );
+			
+			if ( side == Side.CLIENT )
+			{
+				CommonHelper.proxy.configureIcon( item, itemPhysicalName );
+			}
 		}
 	}
+
+	
+	private void configureIcon(
+			Item item,
+			int meta,
+			String name )
+	{
+	}
+	
 }

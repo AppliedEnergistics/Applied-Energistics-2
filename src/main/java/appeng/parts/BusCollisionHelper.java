@@ -23,9 +23,9 @@ import java.util.List;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraftforge.common.util.ForgeDirection;
-
+import net.minecraft.util.EnumFacing;
 import appeng.api.parts.IPartCollisionHelper;
+import appeng.api.util.AEPartLocation;
 
 
 public class BusCollisionHelper implements IPartCollisionHelper
@@ -33,14 +33,14 @@ public class BusCollisionHelper implements IPartCollisionHelper
 
 	final List<AxisAlignedBB> boxes;
 
-	private final ForgeDirection x;
-	private final ForgeDirection y;
-	private final ForgeDirection z;
+	private final EnumFacing x;
+	private final EnumFacing y;
+	private final EnumFacing z;
 
 	private final Entity entity;
 	private final boolean isVisual;
 
-	public BusCollisionHelper( List<AxisAlignedBB> boxes, ForgeDirection x, ForgeDirection y, ForgeDirection z, Entity e, boolean visual )
+	public BusCollisionHelper( List<AxisAlignedBB> boxes, EnumFacing x, EnumFacing y, EnumFacing z, Entity e, boolean visual )
 	{
 		this.boxes = boxes;
 		this.x = x;
@@ -50,7 +50,7 @@ public class BusCollisionHelper implements IPartCollisionHelper
 		this.isVisual = visual;
 	}
 
-	public BusCollisionHelper( List<AxisAlignedBB> boxes, ForgeDirection s, Entity e, boolean visual )
+	public BusCollisionHelper( List<AxisAlignedBB> boxes, AEPartLocation s, Entity e, boolean visual )
 	{
 		this.boxes = boxes;
 		this.entity = e;
@@ -59,40 +59,40 @@ public class BusCollisionHelper implements IPartCollisionHelper
 		switch( s )
 		{
 			case DOWN:
-				this.x = ForgeDirection.EAST;
-				this.y = ForgeDirection.NORTH;
-				this.z = ForgeDirection.DOWN;
+				this.x = EnumFacing.EAST;
+				this.y = EnumFacing.NORTH;
+				this.z = EnumFacing.DOWN;
 				break;
 			case UP:
-				this.x = ForgeDirection.EAST;
-				this.y = ForgeDirection.SOUTH;
-				this.z = ForgeDirection.UP;
+				this.x = EnumFacing.EAST;
+				this.y = EnumFacing.SOUTH;
+				this.z = EnumFacing.UP;
 				break;
 			case EAST:
-				this.x = ForgeDirection.SOUTH;
-				this.y = ForgeDirection.UP;
-				this.z = ForgeDirection.EAST;
+				this.x = EnumFacing.SOUTH;
+				this.y = EnumFacing.UP;
+				this.z = EnumFacing.EAST;
 				break;
 			case WEST:
-				this.x = ForgeDirection.NORTH;
-				this.y = ForgeDirection.UP;
-				this.z = ForgeDirection.WEST;
+				this.x = EnumFacing.NORTH;
+				this.y = EnumFacing.UP;
+				this.z = EnumFacing.WEST;
 				break;
 			case NORTH:
-				this.x = ForgeDirection.WEST;
-				this.y = ForgeDirection.UP;
-				this.z = ForgeDirection.NORTH;
+				this.x = EnumFacing.WEST;
+				this.y = EnumFacing.UP;
+				this.z = EnumFacing.NORTH;
 				break;
 			case SOUTH:
-				this.x = ForgeDirection.EAST;
-				this.y = ForgeDirection.UP;
-				this.z = ForgeDirection.SOUTH;
+				this.x = EnumFacing.EAST;
+				this.y = EnumFacing.UP;
+				this.z = EnumFacing.SOUTH;
 				break;
-			case UNKNOWN:
+			case INTERNAL:
 			default:
-				this.x = ForgeDirection.EAST;
-				this.y = ForgeDirection.UP;
-				this.z = ForgeDirection.SOUTH;
+				this.x = EnumFacing.EAST;
+				this.y = EnumFacing.UP;
+				this.z = EnumFacing.SOUTH;
 				break;
 		}
 	}
@@ -115,27 +115,27 @@ public class BusCollisionHelper implements IPartCollisionHelper
 		maxY /= 16.0;
 		maxZ /= 16.0;
 
-		double aX = minX * this.x.offsetX + minY * this.y.offsetX + minZ * this.z.offsetX;
-		double aY = minX * this.x.offsetY + minY * this.y.offsetY + minZ * this.z.offsetY;
-		double aZ = minX * this.x.offsetZ + minY * this.y.offsetZ + minZ * this.z.offsetZ;
+		double aX = minX * this.x.getFrontOffsetX() + minY * this.y.getFrontOffsetX() + minZ * this.z.getFrontOffsetX();
+		double aY = minX * this.x.getFrontOffsetY() + minY * this.y.getFrontOffsetY() + minZ * this.z.getFrontOffsetY();
+		double aZ = minX * this.x.getFrontOffsetZ() + minY * this.y.getFrontOffsetZ() + minZ * this.z.getFrontOffsetZ();
 
-		double bX = maxX * this.x.offsetX + maxY * this.y.offsetX + maxZ * this.z.offsetX;
-		double bY = maxX * this.x.offsetY + maxY * this.y.offsetY + maxZ * this.z.offsetY;
-		double bZ = maxX * this.x.offsetZ + maxY * this.y.offsetZ + maxZ * this.z.offsetZ;
+		double bX = maxX * this.x.getFrontOffsetX() + maxY * this.y.getFrontOffsetX() + maxZ * this.z.getFrontOffsetX();
+		double bY = maxX * this.x.getFrontOffsetY() + maxY * this.y.getFrontOffsetY() + maxZ * this.z.getFrontOffsetY();
+		double bZ = maxX * this.x.getFrontOffsetZ() + maxY * this.y.getFrontOffsetZ() + maxZ * this.z.getFrontOffsetZ();
 
-		if( this.x.offsetX + this.y.offsetX + this.z.offsetX < 0 )
+		if( this.x.getFrontOffsetX() + this.y.getFrontOffsetX() + this.z.getFrontOffsetX() < 0 )
 		{
 			aX += 1;
 			bX += 1;
 		}
 
-		if( this.x.offsetY + this.y.offsetY + this.z.offsetY < 0 )
+		if( this.x.getFrontOffsetY() + this.y.getFrontOffsetY() + this.z.getFrontOffsetY() < 0 )
 		{
 			aY += 1;
 			bY += 1;
 		}
 
-		if( this.x.offsetZ + this.y.offsetZ + this.z.offsetZ < 0 )
+		if( this.x.getFrontOffsetZ() + this.y.getFrontOffsetZ() + this.z.getFrontOffsetZ() < 0 )
 		{
 			aZ += 1;
 			bZ += 1;
@@ -148,23 +148,23 @@ public class BusCollisionHelper implements IPartCollisionHelper
 		maxY = Math.max( aY, bY );
 		maxZ = Math.max( aZ, bZ );
 
-		this.boxes.add( AxisAlignedBB.getBoundingBox( minX, minY, minZ, maxX, maxY, maxZ ) );
+		this.boxes.add( AxisAlignedBB.fromBounds( minX, minY, minZ, maxX, maxY, maxZ ) );
 	}
 
 	@Override
-	public ForgeDirection getWorldX()
+	public EnumFacing getWorldX()
 	{
 		return this.x;
 	}
 
 	@Override
-	public ForgeDirection getWorldY()
+	public EnumFacing getWorldY()
 	{
 		return this.y;
 	}
 
 	@Override
-	public ForgeDirection getWorldZ()
+	public EnumFacing getWorldZ()
 	{
 		return this.z;
 	}

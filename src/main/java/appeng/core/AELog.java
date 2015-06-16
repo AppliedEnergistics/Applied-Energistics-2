@@ -19,9 +19,10 @@
 package appeng.core;
 
 
-import org.apache.logging.log4j.Level;
+import net.minecraft.util.BlockPos;
+import net.minecraftforge.fml.relauncher.FMLRelaunchLog;
 
-import cpw.mods.fml.relauncher.FMLRelaunchLog;
+import org.apache.logging.log4j.Level;
 
 import appeng.core.features.AEFeature;
 import appeng.tile.AEBaseTile;
@@ -80,11 +81,11 @@ public final class AELog
 		log( Level.ERROR, format, data );
 	}
 
-	public static void blockUpdate( int xCoord, int yCoord, int zCoord, AEBaseTile aeBaseTile )
+	public static void blockUpdate( BlockPos pos, AEBaseTile aeBaseTile )
 	{
 		if( AEConfig.instance.isFeatureEnabled( AEFeature.UpdateLogging ) )
 		{
-			info( aeBaseTile.getClass().getName() + " @ " + xCoord + ", " + yCoord + ", " + zCoord );
+			info( aeBaseTile.getClass().getName() + " @ " + pos );
 		}
 	}
 

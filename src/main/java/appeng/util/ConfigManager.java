@@ -24,7 +24,6 @@ import java.util.Map;
 import java.util.Set;
 
 import net.minecraft.nbt.NBTTagCompound;
-
 import appeng.api.config.LevelEmitterMode;
 import appeng.api.config.Settings;
 import appeng.api.config.StorageFilter;

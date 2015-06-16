@@ -27,7 +27,8 @@ package appeng.api.parts;
 import java.util.Set;
 
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
+import appeng.api.util.AEPartLocation;
 
 
 /**
@@ -46,7 +47,21 @@ public abstract class LayerBase extends TileEntity // implements IPartHost
 	 *
 	 * @return the part for the requested side.
 	 */
-	public IPart getPart( ForgeDirection side )
+	public IPart getPart( AEPartLocation side )
+	{
+		return null; // place holder.
+	}
+
+	/**
+	 * Grants access for the layer to the parts of the host.
+	 *
+	 * This Method looks silly, that is because its not used at runtime, a real implementation will be used instead.
+	 *
+	 * @param side side of part
+	 *
+	 * @return the part for the requested side.
+	 */
+	public IPart getPart( EnumFacing side )
 	{
 		return null; // place holder.
 	}

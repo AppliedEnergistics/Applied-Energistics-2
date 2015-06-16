@@ -19,20 +19,14 @@
 package appeng.parts.p2p;
 
 
-import java.io.IOException;
-
 import io.netty.buffer.ByteBuf;
 
-import net.minecraft.init.Blocks;
+import java.io.IOException;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.events.MENetworkChannelsChanged;
 import appeng.api.networking.events.MENetworkPowerStatusChange;
@@ -92,9 +86,9 @@ public class PartP2PLight extends PartP2PTunnel<PartP2PLight> implements IGridTi
 		}
 
 		TileEntity te = this.getTile();
-		World w = te.getWorldObj();
+		World w = te.getWorld();
 
-		int newLevel = w.getBlockLightValue( te.xCoord + this.side.offsetX, te.yCoord + this.side.offsetY, te.zCoord + this.side.offsetZ );
+		int newLevel = w.getLight( te.getPos().offset( side.getFacing() ) );
 
 		if( this.lastValue != newLevel && this.proxy.isActive() )
 		{
@@ -150,17 +144,10 @@ public class PartP2PLight extends PartP2PTunnel<PartP2PLight> implements IGridTi
 		if( this.opacity < 0 )
 		{
 			TileEntity te = this.getTile();
-			this.opacity = 255 - te.getWorldObj().getBlockLightOpacity( te.xCoord + this.side.offsetX, te.yCoord + this.side.offsetY, te.zCoord + this.side.offsetZ );
+			this.opacity = 255 - te.getWorld().getBlockLightOpacity( te.getPos().offset( side.getFacing() ) );
 		}
 
 		return (int) ( emit * ( this.opacity / 255.0f ) );
-	}
-
-	@Override
-	@SideOnly( Side.CLIENT )
-	public IIcon getTypeTexture()
-	{
-		return Blocks.quartz_block.getBlockTextureFromSide( 0 );
 	}
 
 	@Override

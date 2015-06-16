@@ -22,10 +22,12 @@ package appeng.block.grindstone;
 import java.util.EnumSet;
 
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-
+import appeng.api.util.AEPartLocation;
 import appeng.block.AEBaseTileBlock;
 import appeng.core.features.AEFeature;
 import appeng.core.sync.GuiBridge;
@@ -46,12 +48,34 @@ public class BlockGrinder extends AEBaseTileBlock
 	}
 
 	@Override
-	public boolean onActivated( World w, int x, int y, int z, EntityPlayer p, int side, float hitX, float hitY, float hitZ )
+	public boolean onBlockActivated(
+			World worldIn,
+			BlockPos pos,
+			IBlockState state,
+			EntityPlayer playerIn,
+			EnumFacing side,
+			float hitX,
+			float hitY,
+			float hitZ )
 	{
-		TileGrinder tg = this.getTileEntity( w, x, y, z );
+		// TODO Auto-generated method stub
+		return super.onBlockActivated( worldIn, pos, state, playerIn, side, hitX, hitY, hitZ );
+	}
+	
+	@Override
+	public boolean onActivated(
+			World w,
+			BlockPos pos,
+			EntityPlayer p,
+			EnumFacing side,
+			float hitX,
+			float hitY,
+			float hitZ )
+	{
+		TileGrinder tg = this.getTileEntity( w, pos );
 		if( tg != null && !p.isSneaking() )
 		{
-			Platform.openGUI( p, tg, ForgeDirection.getOrientation( side ), GuiBridge.GUI_GRINDER );
+			Platform.openGUI( p, tg, AEPartLocation.fromFacing( side ), GuiBridge.GUI_GRINDER );
 			return true;
 		}
 		return false;

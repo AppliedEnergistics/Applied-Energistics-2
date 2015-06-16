@@ -20,17 +20,19 @@ package appeng.client.render;
 
 
 import java.util.ArrayList;
-import java.util.EnumSet;
 import java.util.List;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraftforge.common.util.ForgeDirection;
-
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumWorldBlockLayer;
+import net.minecraftforge.client.MinecraftForgeClient;
 import appeng.api.parts.IFacadeContainer;
 import appeng.api.parts.IFacadePart;
 import appeng.api.parts.IPart;
+import appeng.api.util.AEAxisAlignedBB;
+import appeng.api.util.AEPartLocation;
 import appeng.parts.BusCollisionHelper;
 import appeng.parts.CableBusContainer;
 
@@ -48,11 +50,15 @@ public class CableRenderHelper
 	public void renderStatic( CableBusContainer cableBusContainer, IFacadeContainer iFacadeContainer )
 	{
 		TileEntity te = cableBusContainer.getTile();
-		RenderBlocksWorkaround renderer = BusRenderer.INSTANCE.renderer;
+		IRenderHelper renderer = BusRenderer.INSTANCE.renderer;
 
 		if( renderer.overrideBlockTexture != null )
 		{
 			BusRenderHelper.INSTANCE.setPass( 0 );
+		}
+		else
+		{
+			BusRenderHelper.INSTANCE.setPass( MinecraftForgeClient.getRenderLayer() == EnumWorldBlockLayer.TRANSLUCENT ? 1 : 0 );
 		}
 
 		if( renderer.blockAccess == null )
@@ -60,7 +66,7 @@ public class CableRenderHelper
 			renderer.blockAccess = Minecraft.getMinecraft().theWorld;
 		}
 
-		for( ForgeDirection s : ForgeDirection.values() )
+		for( AEPartLocation s : AEPartLocation.values() )
 		{
 			IPart part = cableBusContainer.getPart( s );
 			if( part != null )
@@ -68,14 +74,14 @@ public class CableRenderHelper
 				this.setSide( s );
 				renderer.renderAllFaces = true;
 
-				renderer.flipTexture = false;
+				//renderer.flipTexture = false;
 				renderer.uvRotateBottom = renderer.uvRotateEast = renderer.uvRotateNorth = renderer.uvRotateSouth = renderer.uvRotateTop = renderer.uvRotateWest = 0;
+				renderer.setOverrideBlockTexture( null );
 
-				part.renderStatic( te.xCoord, te.yCoord, te.zCoord, BusRenderHelper.INSTANCE, renderer );
+				part.renderStatic( te.getPos(), BusRenderHelper.INSTANCE, renderer );
 
-				renderer.faces = EnumSet.allOf( ForgeDirection.class );
-				renderer.calculations = true;
-				renderer.useTextures = true;
+				//renderer.faces = EnumSet.allOf( EnumFacing.class );
+				//renderer.useTextures = true;
 			}
 		}
 
@@ -85,7 +91,7 @@ public class CableRenderHelper
 			 * snag list of boxes...
 			 */
 			List<AxisAlignedBB> boxes = new ArrayList<AxisAlignedBB>();
-			for( ForgeDirection s : ForgeDirection.values() )
+			for( AEPartLocation s : AEPartLocation.values() )
 			{
 				IPart part = cableBusContainer.getPart( s );
 				if( part != null )
@@ -117,12 +123,12 @@ public class CableRenderHelper
 				}
 			}
 
-			for( ForgeDirection s : ForgeDirection.VALID_DIRECTIONS )
+			for( AEPartLocation s : AEPartLocation.SIDE_LOCATIONS )
 			{
 				IFacadePart fPart = iFacadeContainer.getFacade( s );
 				if( fPart != null )
 				{
-					AxisAlignedBB b = null;
+					AEAxisAlignedBB b = null;
 					fPart.setThinFacades( useThinFacades );
 					AxisAlignedBB pb = fPart.getPrimaryBox();
 					for( AxisAlignedBB bb : boxes )
@@ -131,7 +137,7 @@ public class CableRenderHelper
 						{
 							if( b == null )
 							{
-								b = bb;
+								b = AEAxisAlignedBB.fromBounds( bb );
 							}
 							else
 							{
@@ -147,62 +153,62 @@ public class CableRenderHelper
 
 					renderer.flipTexture = false;
 					renderer.uvRotateBottom = renderer.uvRotateEast = renderer.uvRotateNorth = renderer.uvRotateSouth = renderer.uvRotateTop = renderer.uvRotateWest = 0;
+					renderer.setOverrideBlockTexture( null );
 
 					this.setSide( s );
-					fPart.renderStatic( te.xCoord, te.yCoord, te.zCoord, BusRenderHelper.INSTANCE, renderer, iFacadeContainer, b, cableBusContainer.getPart( s ) == null );
+					
+					fPart.renderStatic( te.getPos(), BusRenderHelper.INSTANCE, renderer, iFacadeContainer, b == null ? null : b.getBoundingBox(), cableBusContainer.getPart( s ) == null );
 				}
 			}
 
-			renderer.isFacade = false;
-			renderer.enableAO = false;
-			renderer.setTexture( null );
-			renderer.calculations = true;
+			//renderer.isFacade = false;
+			//renderer.enableAO = false;
+			// renderer.sett
 		}
 	}
 
-	private void setSide( ForgeDirection s )
+	private void setSide( AEPartLocation s )
 	{
-		ForgeDirection ax;
-		ForgeDirection ay;
-		ForgeDirection az;
+		EnumFacing ax;
+		EnumFacing ay;
+		EnumFacing az;
 
 		switch( s )
 		{
 			case DOWN:
-				ax = ForgeDirection.EAST;
-				ay = ForgeDirection.NORTH;
-				az = ForgeDirection.DOWN;
+				ax = EnumFacing.EAST;
+				ay = EnumFacing.NORTH;
+				az = EnumFacing.DOWN;
 				break;
 			case UP:
-				ax = ForgeDirection.EAST;
-				ay = ForgeDirection.SOUTH;
-				az = ForgeDirection.UP;
+				ax = EnumFacing.EAST;
+				ay = EnumFacing.SOUTH;
+				az = EnumFacing.UP;
 				break;
 			case EAST:
-				ax = ForgeDirection.SOUTH;
-				ay = ForgeDirection.UP;
-				az = ForgeDirection.EAST;
+				ax = EnumFacing.SOUTH;
+				ay = EnumFacing.UP;
+				az = EnumFacing.EAST;
 				break;
 			case WEST:
-				ax = ForgeDirection.NORTH;
-				ay = ForgeDirection.UP;
-				az = ForgeDirection.WEST;
+				ax = EnumFacing.NORTH;
+				ay = EnumFacing.UP;
+				az = EnumFacing.WEST;
 				break;
 			case NORTH:
-				ax = ForgeDirection.WEST;
-				ay = ForgeDirection.UP;
-				az = ForgeDirection.NORTH;
+				ax = EnumFacing.WEST;
+				ay = EnumFacing.UP;
+				az = EnumFacing.NORTH;
 				break;
 			case SOUTH:
-				ax = ForgeDirection.EAST;
-				ay = ForgeDirection.UP;
-				az = ForgeDirection.SOUTH;
+				ax = EnumFacing.EAST;
+				ay = EnumFacing.UP;
+				az = EnumFacing.SOUTH;
 				break;
-			case UNKNOWN:
 			default:
-				ax = ForgeDirection.EAST;
-				ay = ForgeDirection.UP;
-				az = ForgeDirection.SOUTH;
+				ax = EnumFacing.EAST;
+				ay = EnumFacing.UP;
+				az = EnumFacing.SOUTH;
 				break;
 		}
 
@@ -211,52 +217,51 @@ public class CableRenderHelper
 
 	public void renderDynamic( CableBusContainer cableBusContainer, double x, double y, double z )
 	{
-		for( ForgeDirection s : ForgeDirection.values() )
+		for( EnumFacing s : EnumFacing.values() )
 		{
 			IPart part = cableBusContainer.getPart( s );
 			if( part != null )
 			{
-				ForgeDirection ax;
-				ForgeDirection ay;
-				ForgeDirection az;
+				EnumFacing ax;
+				EnumFacing ay;
+				EnumFacing az;
 
 				switch( s )
 				{
 					case DOWN:
-						ax = ForgeDirection.EAST;
-						ay = ForgeDirection.NORTH;
-						az = ForgeDirection.DOWN;
+						ax = EnumFacing.EAST;
+						ay = EnumFacing.NORTH;
+						az = EnumFacing.DOWN;
 						break;
 					case UP:
-						ax = ForgeDirection.EAST;
-						ay = ForgeDirection.SOUTH;
-						az = ForgeDirection.UP;
+						ax = EnumFacing.EAST;
+						ay = EnumFacing.SOUTH;
+						az = EnumFacing.UP;
 						break;
 					case EAST:
-						ax = ForgeDirection.SOUTH;
-						ay = ForgeDirection.UP;
-						az = ForgeDirection.EAST;
+						ax = EnumFacing.SOUTH;
+						ay = EnumFacing.UP;
+						az = EnumFacing.EAST;
 						break;
 					case WEST:
-						ax = ForgeDirection.NORTH;
-						ay = ForgeDirection.UP;
-						az = ForgeDirection.WEST;
+						ax = EnumFacing.NORTH;
+						ay = EnumFacing.UP;
+						az = EnumFacing.WEST;
 						break;
 					case NORTH:
-						ax = ForgeDirection.WEST;
-						ay = ForgeDirection.UP;
-						az = ForgeDirection.NORTH;
+						ax = EnumFacing.WEST;
+						ay = EnumFacing.UP;
+						az = EnumFacing.NORTH;
 						break;
 					case SOUTH:
-						ax = ForgeDirection.EAST;
-						ay = ForgeDirection.UP;
-						az = ForgeDirection.SOUTH;
+						ax = EnumFacing.EAST;
+						ay = EnumFacing.UP;
+						az = EnumFacing.SOUTH;
 						break;
-					case UNKNOWN:
 					default:
-						ax = ForgeDirection.EAST;
-						ay = ForgeDirection.UP;
-						az = ForgeDirection.SOUTH;
+						ax = EnumFacing.EAST;
+						ay = EnumFacing.UP;
+						az = EnumFacing.SOUTH;
 						break;
 				}
 

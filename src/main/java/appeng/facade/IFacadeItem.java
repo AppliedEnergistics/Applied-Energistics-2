@@ -21,13 +21,13 @@ package appeng.facade;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.util.ForgeDirection;
+import appeng.api.util.AEPartLocation;
 
 
 public interface IFacadeItem
 {
 
-	FacadePart createPartFromItemStack( ItemStack is, ForgeDirection side );
+	FacadePart createPartFromItemStack( ItemStack is, AEPartLocation side );
 
 	ItemStack getTextureItem( ItemStack is );
 

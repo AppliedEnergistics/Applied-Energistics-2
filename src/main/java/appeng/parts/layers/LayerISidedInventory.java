@@ -27,11 +27,12 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.util.ForgeDirection;
-
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.IChatComponent;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.LayerBase;
+import appeng.api.util.AEPartLocation;
 
 
 /**
@@ -66,7 +67,7 @@ public class LayerISidedInventory extends LayerBase implements ISidedInventory
 		inventories = new ArrayList<ISidedInventory>();
 		int slotCount = 0;
 
-		for( ForgeDirection side : ForgeDirection.VALID_DIRECTIONS )
+		for( AEPartLocation side : AEPartLocation.SIDE_LOCATIONS )
 		{
 			IPart bp = this.getPart( side );
 			if( bp instanceof ISidedInventory )
@@ -93,8 +94,8 @@ public class LayerISidedInventory extends LayerBase implements ISidedInventory
 				offsetForPart = 0;
 				slotCount = sides.getSizeInventory();
 
-				ForgeDirection currentSide = ForgeDirection.UNKNOWN;
-				for( ForgeDirection side : ForgeDirection.VALID_DIRECTIONS )
+				AEPartLocation currentSide = AEPartLocation.INTERNAL;
+				for( AEPartLocation side : AEPartLocation.SIDE_LOCATIONS )
 				{
 					if( this.getPart( side ) == sides )
 					{
@@ -178,13 +179,13 @@ public class LayerISidedInventory extends LayerBase implements ISidedInventory
 	}
 
 	@Override
-	public String getInventoryName()
+	public String getName()
 	{
 		return "AEMultiPart";
 	}
 
 	@Override
-	public boolean hasCustomInventoryName()
+	public boolean hasCustomName()
 	{
 		return false;
 	}
@@ -202,12 +203,12 @@ public class LayerISidedInventory extends LayerBase implements ISidedInventory
 	}
 
 	@Override
-	public void openInventory()
+	public void openInventory(EntityPlayer player)
 	{
 	}
 
 	@Override
-	public void closeInventory()
+	public void closeInventory(EntityPlayer player)
 	{
 	}
 
@@ -234,18 +235,18 @@ public class LayerISidedInventory extends LayerBase implements ISidedInventory
 	}
 
 	@Override
-	public int[] getAccessibleSlotsFromSide( int side )
+	public int[] getSlotsForFace( EnumFacing side )
 	{
 		if( this.invLayer != null )
 		{
-			return this.invLayer.getAccessibleSlotsFromSide( side );
+			return this.invLayer.getSlotsForFace( side );
 		}
 
 		return NULL_SIDES;
 	}
 
 	@Override
-	public boolean canInsertItem( int slot, ItemStack itemstack, int side )
+	public boolean canInsertItem( int slot, ItemStack itemstack, EnumFacing side )
 	{
 		if( this.invLayer == null )
 		{
@@ -256,7 +257,7 @@ public class LayerISidedInventory extends LayerBase implements ISidedInventory
 	}
 
 	@Override
-	public boolean canExtractItem( int slot, ItemStack itemstack, int side )
+	public boolean canExtractItem( int slot, ItemStack itemstack, EnumFacing side )
 	{
 		if( this.invLayer == null )
 		{
@@ -264,5 +265,38 @@ public class LayerISidedInventory extends LayerBase implements ISidedInventory
 		}
 
 		return this.invLayer.canExtractItem( slot, itemstack, side );
+	}
+
+	@Override
+	public int getField(
+			int id )
+	{
+		return 0;
+	}
+
+	@Override
+	public void setField(
+			int id,
+			int value )
+	{
+		
+	}
+
+	@Override
+	public int getFieldCount()
+	{
+		return 0;
+	}
+
+	@Override
+	public void clear()
+	{
+		
+	}
+
+	@Override
+	public IChatComponent getDisplayName()
+	{
+		return null;
 	}
 }

@@ -21,27 +21,26 @@ package appeng.block;
 
 import java.util.EnumSet;
 
-import com.google.common.base.Optional;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockStairs;
-
 import appeng.core.features.AEFeature;
 import appeng.core.features.IAEFeature;
 import appeng.core.features.IFeatureHandler;
 import appeng.core.features.StairBlockFeatureHandler;
+
+import com.google.common.base.Optional;
 
 
 public abstract class AEBaseStairBlock extends BlockStairs implements IAEFeature
 {
 	private final IFeatureHandler features;
 
-	protected AEBaseStairBlock( Block block, int meta, EnumSet<AEFeature> features )
+	protected AEBaseStairBlock( Block block, EnumSet<AEFeature> features, String type  )
 	{
-		super( block, meta );
+		super( block.getDefaultState() );
 
-		this.features = new StairBlockFeatureHandler( features, this, Optional.<String>absent() );
-		this.setBlockName( block.getUnlocalizedName() );
+		this.features = new StairBlockFeatureHandler( features, this, Optional.<String>of(type) );
+		setUnlocalizedName( block.getUnlocalizedName() );
 
 		this.setLightOpacity( 0 );
 	}

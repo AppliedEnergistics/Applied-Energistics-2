@@ -22,8 +22,8 @@ package appeng.parts.automation;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
-
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Upgrades;
 import appeng.api.networking.ticking.IGridTickable;
@@ -105,7 +105,7 @@ public abstract class PartSharedItemBus extends PartUpgradeable implements IGrid
 	InventoryAdaptor getHandler()
 	{
 		TileEntity self = this.getHost().getTile();
-		TileEntity target = this.getTileEntity( self, self.xCoord + this.side.offsetX, self.yCoord + this.side.offsetY, self.zCoord + this.side.offsetZ );
+		TileEntity target = this.getTileEntity( self, self.getPos().offset( side.getFacing() ) );
 
 		int newAdaptorHash = Platform.generateTileHash( target );
 
@@ -115,18 +115,18 @@ public abstract class PartSharedItemBus extends PartUpgradeable implements IGrid
 		}
 
 		this.adaptorHash = newAdaptorHash;
-		this.adaptor = InventoryAdaptor.getAdaptor( target, this.side.getOpposite() );
+		this.adaptor = InventoryAdaptor.getAdaptor( target, this.side.getFacing().getOpposite() );
 
 		return this.adaptor;
 	}
 
-	private TileEntity getTileEntity( TileEntity self, int x, int y, int z )
+	private TileEntity getTileEntity( TileEntity self, BlockPos pos )
 	{
-		World w = self.getWorldObj();
+		World w = self.getWorld();
 
-		if( w.getChunkProvider().chunkExists( x >> 4, z >> 4 ) )
+		if( w.getChunkProvider().chunkExists( pos.getX() >> 4, pos.getZ() >> 4 ) )
 		{
-			return w.getTileEntity( x, y, z );
+			return w.getTileEntity( pos );
 		}
 
 		return null;

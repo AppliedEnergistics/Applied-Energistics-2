@@ -20,31 +20,28 @@ package appeng.client.render;
 
 
 import java.util.EnumSet;
+
 import javax.annotation.Nullable;
 
-import com.google.common.base.Function;
-import com.google.common.base.Optional;
-
 import net.minecraft.block.Block;
-import net.minecraft.client.renderer.RenderBlocks;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.util.IIcon;
-import net.minecraftforge.common.util.ForgeDirection;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import appeng.api.AEApi;
 import appeng.api.exceptions.MissingDefinition;
-import appeng.api.parts.IBoxProvider;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartRenderHelper;
-import appeng.api.parts.ISimplifiedBundle;
+import appeng.api.util.AEPartLocation;
 import appeng.block.AEBaseBlock;
 import appeng.block.networking.BlockCableBus;
+import appeng.client.texture.IAESprite;
 import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
 import appeng.tile.AEBaseTile;
+
+import com.google.common.base.Function;
+import com.google.common.base.Optional;
 
 
 @SideOnly( Side.CLIENT )
@@ -67,9 +64,9 @@ public final class BusRenderHelper implements IPartRenderHelper
 	private double maxX;
 	private double maxY;
 	private double maxZ;
-	private ForgeDirection ax;
-	private ForgeDirection ay;
-	private ForgeDirection az;
+	private EnumFacing ax;
+	private EnumFacing ay;
+	private EnumFacing az;
 	private int color;
 
 	public BusRenderHelper()
@@ -86,9 +83,9 @@ public final class BusRenderHelper implements IPartRenderHelper
 		this.maxX = 16;
 		this.maxY = 16;
 		this.maxZ = 16;
-		this.ax = ForgeDirection.EAST;
-		this.az = ForgeDirection.SOUTH;
-		this.ay = ForgeDirection.UP;
+		this.ax = EnumFacing.EAST;
+		this.az = EnumFacing.SOUTH;
+		this.ay = EnumFacing.UP;
 		this.color = HEX_WHITE;
 		this.maybeBlock = AEApi.instance().definitions().blocks().multiPart().maybeBlock();
 		this.maybeBaseBlock = this.maybeBlock.transform( new BaseBlockTransformFunction() );
@@ -106,12 +103,12 @@ public final class BusRenderHelper implements IPartRenderHelper
 		this.itemsRendered = 0;
 	}
 
-	public double getBound( ForgeDirection side )
+	public double getBound( AEPartLocation side )
 	{
 		switch( side )
 		{
 			default:
-			case UNKNOWN:
+			case INTERNAL:
 				return 0.5;
 			case DOWN:
 				return this.minY;
@@ -128,20 +125,22 @@ public final class BusRenderHelper implements IPartRenderHelper
 		}
 	}
 
-	public void setRenderColor( int color )
-	{
-		for( Block block : AEApi.instance().definitions().blocks().multiPart().maybeBlock().asSet() )
+	/*
+		public void setRenderColor( int color )
 		{
-			final BlockCableBus cableBus = (BlockCableBus) block;
-			cableBus.setRenderColor( color );
+			for( Block block : AEApi.instance().definitions().blocks().multiPart().maybeBlock().asSet() )
+			{
+				final BlockCableBus cableBus = (BlockCableBus) block;
+				cableBus.setRenderColor( color );
+			}
 		}
-	}
-
-	public void setOrientation( ForgeDirection dx, ForgeDirection dy, ForgeDirection dz )
+	*/
+		
+	public void setOrientation( EnumFacing dx, EnumFacing dy, EnumFacing dz )
 	{
-		this.ax = dx == null ? ForgeDirection.EAST : dx;
-		this.ay = dy == null ? ForgeDirection.UP : dy;
-		this.az = dz == null ? ForgeDirection.SOUTH : dz;
+		this.ax = dx == null ? EnumFacing.EAST : dx;
+		this.ay = dy == null ? EnumFacing.UP : dy;
+		this.az = dz == null ? EnumFacing.SOUTH : dz;
 	}
 
 	public double[] getBounds()
@@ -207,19 +206,19 @@ public final class BusRenderHelper implements IPartRenderHelper
 		}
 
 		@Override
-		public ForgeDirection getWorldX()
+		public EnumFacing getWorldX()
 		{
 			return this.helper.ax;
 		}
 
 		@Override
-		public ForgeDirection getWorldY()
+		public EnumFacing getWorldY()
 		{
 			return this.helper.ay;
 		}
 
 		@Override
-		public ForgeDirection getWorldZ()
+		public EnumFacing getWorldZ()
 		{
 			return this.helper.az;
 		}
@@ -263,91 +262,6 @@ public final class BusRenderHelper implements IPartRenderHelper
 	}
 
 	@Override
-	public void normalRendering()
-	{
-		RenderBlocksWorkaround rbw = BusRenderer.INSTANCE.renderer;
-		rbw.calculations = true;
-		rbw.useTextures = true;
-		rbw.enableAO = false;
-	}
-
-	@Override
-	public ISimplifiedBundle useSimplifiedRendering( int x, int y, int z, IBoxProvider p, ISimplifiedBundle sim )
-	{
-		RenderBlocksWorkaround rbw = BusRenderer.INSTANCE.renderer;
-
-		if( sim != null && this.maybeBlock.isPresent() && rbw.similarLighting( this.maybeBlock.get(), rbw.blockAccess, x, y, z, sim ) )
-		{
-			rbw.populate( sim );
-			rbw.faces = EnumSet.allOf( ForgeDirection.class );
-			rbw.calculations = false;
-			rbw.useTextures = false;
-
-			return sim;
-		}
-		else
-		{
-			boolean allFaces = rbw.renderAllFaces;
-			rbw.renderAllFaces = true;
-			rbw.calculations = true;
-			rbw.faces.clear();
-
-			this.bbc.started = false;
-			if( p == null )
-			{
-				this.bbc.minX = this.bbc.minY = this.bbc.minZ = 0;
-				this.bbc.maxX = this.bbc.maxY = this.bbc.maxZ = 16;
-			}
-			else
-			{
-				p.getBoxes( this.bbc );
-
-				if( this.bbc.minX < 1 )
-				{
-					this.bbc.minX = 1;
-				}
-				if( this.bbc.minY < 1 )
-				{
-					this.bbc.minY = 1;
-				}
-				if( this.bbc.minZ < 1 )
-				{
-					this.bbc.minZ = 1;
-				}
-
-				if( this.bbc.maxX > 15 )
-				{
-					this.bbc.maxX = 15;
-				}
-				if( this.bbc.maxY > 15 )
-				{
-					this.bbc.maxY = 15;
-				}
-				if( this.bbc.maxZ > 15 )
-				{
-					this.bbc.maxZ = 15;
-				}
-			}
-
-			this.setBounds( this.bbc.minX, this.bbc.minY, this.bbc.minZ, this.bbc.maxX, this.bbc.maxY, this.bbc.maxZ );
-
-			this.bbr.renderBlockBounds( rbw, this.minX, this.minY, this.minZ, this.maxX, this.maxY, this.maxZ, this.ax, this.ay, this.az );
-
-			for( Block block : this.maybeBlock.asSet() )
-			{
-				rbw.renderStandardBlock( block, x, y, z );
-			}
-
-			rbw.faces = EnumSet.allOf( ForgeDirection.class );
-			rbw.renderAllFaces = allFaces;
-			rbw.calculations = false;
-			rbw.useTextures = false;
-
-			return rbw.getLightingCache();
-		}
-	}
-
-	@Override
 	public void setBounds( float minX, float minY, float minZ, float maxX, float maxY, float maxZ )
 	{
 		this.minX = minX;
@@ -365,7 +279,7 @@ public final class BusRenderHelper implements IPartRenderHelper
 	}
 
 	@Override
-	public void setTexture( IIcon ico )
+	public void setTexture( IAESprite ico )
 	{
 		for( AEBaseBlock baseBlock : this.maybeBaseBlock.asSet() )
 		{
@@ -374,9 +288,9 @@ public final class BusRenderHelper implements IPartRenderHelper
 	}
 
 	@Override
-	public void setTexture( IIcon down, IIcon up, IIcon north, IIcon south, IIcon west, IIcon east )
+	public void setTexture( IAESprite down, IAESprite up, IAESprite north, IAESprite south, IAESprite west, IAESprite east )
 	{
-		IIcon[] list = new IIcon[6];
+		IAESprite[] list = new IAESprite[6];
 
 		list[0] = down;
 		list[1] = up;
@@ -387,28 +301,28 @@ public final class BusRenderHelper implements IPartRenderHelper
 
 		for( AEBaseBlock baseBlock : this.maybeBaseBlock.asSet() )
 		{
-			baseBlock.getRendererInstance().setTemporaryRenderIcons( list[this.mapRotation( ForgeDirection.UP ).ordinal()], list[this.mapRotation( ForgeDirection.DOWN ).ordinal()], list[this.mapRotation( ForgeDirection.SOUTH ).ordinal()], list[this.mapRotation( ForgeDirection.NORTH ).ordinal()], list[this.mapRotation( ForgeDirection.EAST ).ordinal()], list[this.mapRotation( ForgeDirection.WEST ).ordinal()] );
+			baseBlock.getRendererInstance().setTemporaryRenderIcons( list[this.mapRotation( EnumFacing.UP ).ordinal()], list[this.mapRotation( EnumFacing.DOWN ).ordinal()], list[this.mapRotation( EnumFacing.SOUTH ).ordinal()], list[this.mapRotation( EnumFacing.NORTH ).ordinal()], list[this.mapRotation( EnumFacing.EAST ).ordinal()], list[this.mapRotation( EnumFacing.WEST ).ordinal()] );
 		}
 	}
 
-	public ForgeDirection mapRotation( ForgeDirection dir )
+	public EnumFacing mapRotation( EnumFacing dir )
 	{
-		ForgeDirection forward = this.az;
-		ForgeDirection up = this.ay;
-		ForgeDirection west = ForgeDirection.UNKNOWN;
+		EnumFacing forward = this.az;
+		EnumFacing up = this.ay;
+		EnumFacing west = null;
 
 		if( forward == null || up == null )
 		{
 			return dir;
 		}
 
-		int west_x = forward.offsetY * up.offsetZ - forward.offsetZ * up.offsetY;
-		int west_y = forward.offsetZ * up.offsetX - forward.offsetX * up.offsetZ;
-		int west_z = forward.offsetX * up.offsetY - forward.offsetY * up.offsetX;
+		int west_x = forward.getFrontOffsetY() * up.getFrontOffsetZ() - forward.getFrontOffsetZ() * up.getFrontOffsetY();
+		int west_y = forward.getFrontOffsetZ() * up.getFrontOffsetX() - forward.getFrontOffsetX() * up.getFrontOffsetZ();
+		int west_z = forward.getFrontOffsetX() * up.getFrontOffsetY() - forward.getFrontOffsetY() * up.getFrontOffsetX();
 
-		for( ForgeDirection dx : ForgeDirection.VALID_DIRECTIONS )
+		for( EnumFacing dx : EnumFacing.VALUES )
 		{
-			if( dx.offsetX == west_x && dx.offsetY == west_y && dx.offsetZ == west_z )
+			if( dx.getFrontOffsetX() == west_x && dx.getFrontOffsetY() == west_y && dx.getFrontOffsetZ() == west_z )
 			{
 				west = dx;
 			}
@@ -416,59 +330,59 @@ public final class BusRenderHelper implements IPartRenderHelper
 
 		if( dir == forward )
 		{
-			return ForgeDirection.SOUTH;
+			return EnumFacing.SOUTH;
 		}
 		if( dir == forward.getOpposite() )
 		{
-			return ForgeDirection.NORTH;
+			return EnumFacing.NORTH;
 		}
 
 		if( dir == up )
 		{
-			return ForgeDirection.UP;
+			return EnumFacing.UP;
 		}
 		if( dir == up.getOpposite() )
 		{
-			return ForgeDirection.DOWN;
+			return EnumFacing.DOWN;
 		}
 
 		if( dir == west )
 		{
-			return ForgeDirection.WEST;
+			return EnumFacing.WEST;
 		}
 		if( dir == west.getOpposite() )
 		{
-			return ForgeDirection.EAST;
+			return EnumFacing.EAST;
 		}
-
-		return ForgeDirection.UNKNOWN;
+		
+		return null;
 	}
 
 	@Override
-	public void renderInventoryBox( RenderBlocks renderer )
+	public void renderInventoryBox( IRenderHelper renderer )
 	{
 		renderer.setRenderBounds( this.minX / 16.0, this.minY / 16.0, this.minZ / 16.0, this.maxX / 16.0, this.maxY / 16.0, this.maxZ / 16.0 );
 
 		for( AEBaseBlock baseBlock : this.maybeBaseBlock.asSet() )
 		{
-			this.bbr.renderInvBlock( EnumSet.allOf( ForgeDirection.class ), baseBlock, null, Tessellator.instance, this.color, renderer );
+			this.bbr.renderInvBlock( EnumSet.allOf( AEPartLocation.class ), baseBlock, null, this.color, renderer );
 		}
 	}
 
 	@Override
-	public void renderInventoryFace( IIcon icon, ForgeDirection face, RenderBlocks renderer )
+	public void renderInventoryFace( IAESprite icon, EnumFacing face, IRenderHelper renderer )
 	{
 		renderer.setRenderBounds( this.minX / 16.0, this.minY / 16.0, this.minZ / 16.0, this.maxX / 16.0, this.maxY / 16.0, this.maxZ / 16.0 );
 		this.setTexture( icon );
 
 		for( AEBaseBlock baseBlock : this.maybeBaseBlock.asSet() )
 		{
-			this.bbr.renderInvBlock( EnumSet.of( face ), baseBlock, null, Tessellator.instance, this.color, renderer );
+			this.bbr.renderInvBlock( EnumSet.of( AEPartLocation.fromFacing( face ) ), baseBlock, null, this.color, renderer );
 		}
 	}
 
 	@Override
-	public void renderBlock( int x, int y, int z, RenderBlocks renderer )
+	public void renderBlock( BlockPos pos, IRenderHelper renderer )
 	{
 		if( !this.renderThis() )
 		{
@@ -480,21 +394,21 @@ public final class BusRenderHelper implements IPartRenderHelper
 			final AEBaseBlock block = (AEBaseBlock) multiPart;
 
 			BlockRenderInfo info = block.getRendererInstance();
-			ForgeDirection forward = BusRenderHelper.INSTANCE.az;
-			ForgeDirection up = BusRenderHelper.INSTANCE.ay;
+			EnumFacing forward = BusRenderHelper.INSTANCE.az;
+			EnumFacing up = BusRenderHelper.INSTANCE.ay;
 
-			renderer.uvRotateBottom = info.getTexture( ForgeDirection.DOWN ).setFlip( BaseBlockRender.getOrientation( ForgeDirection.DOWN, forward, up ) );
-			renderer.uvRotateTop = info.getTexture( ForgeDirection.UP ).setFlip( BaseBlockRender.getOrientation( ForgeDirection.UP, forward, up ) );
+			renderer.uvRotateBottom = info.getTexture( AEPartLocation.DOWN ).setFlip( BaseBlockRender.getOrientation( EnumFacing.DOWN, forward, up ) );
+			renderer.uvRotateTop = info.getTexture( AEPartLocation.UP ).setFlip( BaseBlockRender.getOrientation( EnumFacing.UP, forward, up ) );
 
-			renderer.uvRotateEast = info.getTexture( ForgeDirection.EAST ).setFlip( BaseBlockRender.getOrientation( ForgeDirection.EAST, forward, up ) );
-			renderer.uvRotateWest = info.getTexture( ForgeDirection.WEST ).setFlip( BaseBlockRender.getOrientation( ForgeDirection.WEST, forward, up ) );
+			renderer.uvRotateEast = info.getTexture( AEPartLocation.EAST ).setFlip( BaseBlockRender.getOrientation( EnumFacing.EAST, forward, up ) );
+			renderer.uvRotateWest = info.getTexture( AEPartLocation.WEST ).setFlip( BaseBlockRender.getOrientation( EnumFacing.WEST, forward, up ) );
 
-			renderer.uvRotateNorth = info.getTexture( ForgeDirection.NORTH ).setFlip( BaseBlockRender.getOrientation( ForgeDirection.NORTH, forward, up ) );
-			renderer.uvRotateSouth = info.getTexture( ForgeDirection.SOUTH ).setFlip( BaseBlockRender.getOrientation( ForgeDirection.SOUTH, forward, up ) );
+			renderer.uvRotateNorth = info.getTexture( AEPartLocation.NORTH ).setFlip( BaseBlockRender.getOrientation( EnumFacing.NORTH, forward, up ) );
+			renderer.uvRotateSouth = info.getTexture( AEPartLocation.SOUTH ).setFlip( BaseBlockRender.getOrientation( EnumFacing.SOUTH, forward, up ) );
 
 			this.bbr.renderBlockBounds( renderer, this.minX, this.minY, this.minZ, this.maxX, this.maxY, this.maxZ, this.ax, this.ay, this.az );
 
-			renderer.renderStandardBlock( block, x, y, z );
+			renderer.renderStandardBlock( block, pos );
 		}
 	}
 
@@ -509,19 +423,19 @@ public final class BusRenderHelper implements IPartRenderHelper
 		throw new MissingDefinition( "Tried to access the multi part block without it being defined." );
 	}
 
-	public void prepareBounds( RenderBlocks renderer )
+	public void prepareBounds( IRenderHelper renderer )
 	{
 		this.bbr.renderBlockBounds( renderer, this.minX, this.minY, this.minZ, this.maxX, this.maxY, this.maxZ, this.ax, this.ay, this.az );
 	}
 
 	@Override
-	public void setFacesToRender( EnumSet<ForgeDirection> faces )
+	public void setFacesToRender( EnumSet<EnumFacing> faces )
 	{
 		BusRenderer.INSTANCE.renderer.renderFaces = faces;
 	}
 
 	@Override
-	public void renderBlockCurrentBounds( int x, int y, int z, RenderBlocks renderer )
+	public void renderBlockCurrentBounds( BlockPos pos, IRenderHelper renderer )
 	{
 		if( !this.renderThis() )
 		{
@@ -530,12 +444,12 @@ public final class BusRenderHelper implements IPartRenderHelper
 
 		for( Block block : this.maybeBlock.asSet() )
 		{
-			renderer.renderStandardBlock( block, x, y, z );
+			renderer.renderStandardBlock( block, pos );
 		}
 	}
 
 	@Override
-	public void renderFaceCutout( int x, int y, int z, IIcon ico, ForgeDirection face, float edgeThickness, RenderBlocks renderer )
+	public void renderFaceCutout( BlockPos pos, IAESprite ico, EnumFacing face, float edgeThickness, IRenderHelper renderer )
 	{
 		if( !this.renderThis() )
 		{
@@ -562,20 +476,18 @@ public final class BusRenderHelper implements IPartRenderHelper
 			case WEST:
 				face = this.ax.getOpposite();
 				break;
-			case UNKNOWN:
-				break;
 			default:
 				break;
 		}
 
 		for( AEBaseBlock block : this.maybeBaseBlock.asSet() )
 		{
-			this.bbr.renderCutoutFace( block, ico, x, y, z, renderer, face, edgeThickness );
+			this.bbr.renderCutoutFace( block, ico, pos, renderer, face, edgeThickness );
 		}
 	}
 
 	@Override
-	public void renderFace( int x, int y, int z, IIcon ico, ForgeDirection face, RenderBlocks renderer )
+	public void renderFace( BlockPos pos, IAESprite ico, EnumFacing face, IRenderHelper renderer )
 	{
 		if( !this.renderThis() )
 		{
@@ -603,32 +515,30 @@ public final class BusRenderHelper implements IPartRenderHelper
 			case WEST:
 				face = this.ax.getOpposite();
 				break;
-			case UNKNOWN:
-				break;
 			default:
 				break;
 		}
 
 		for( AEBaseBlock block : this.maybeBaseBlock.asSet() )
 		{
-			this.bbr.renderFace( x, y, z, block, ico, renderer, face );
+			this.bbr.renderFace( pos, block, ico, renderer, face );
 		}
 	}
 
 	@Override
-	public ForgeDirection getWorldX()
+	public EnumFacing getWorldX()
 	{
 		return this.ax;
 	}
 
 	@Override
-	public ForgeDirection getWorldY()
+	public EnumFacing getWorldY()
 	{
 		return this.ay;
 	}
 
 	@Override
-	public ForgeDirection getWorldZ()
+	public EnumFacing getWorldZ()
 	{
 		return this.az;
 	}

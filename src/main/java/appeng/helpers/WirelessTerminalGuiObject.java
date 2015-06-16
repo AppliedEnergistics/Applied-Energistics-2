@@ -22,8 +22,6 @@ package appeng.helpers;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
@@ -46,6 +44,7 @@ import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.api.util.AECableType;
+import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
 import appeng.container.interfaces.IInventorySlotAware;
@@ -89,7 +88,7 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
 
 		if( obj instanceof IGridHost )
 		{
-			IGridNode n = ( (IGridHost) obj ).getGridNode( ForgeDirection.UNKNOWN );
+			IGridNode n = ( (IGridHost) obj ).getGridNode( AEPartLocation.INTERNAL );
 			if( n != null )
 			{
 				this.targetGrid = n.getGrid();
@@ -281,13 +280,13 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
 	}
 
 	@Override
-	public IGridNode getGridNode( ForgeDirection dir )
+	public IGridNode getGridNode( AEPartLocation dir )
 	{
 		return this.getActionableNode();
 	}
 
 	@Override
-	public AECableType getCableConnectionType( ForgeDirection dir )
+	public AECableType getCableConnectionType( AEPartLocation dir )
 	{
 		return AECableType.NONE;
 	}

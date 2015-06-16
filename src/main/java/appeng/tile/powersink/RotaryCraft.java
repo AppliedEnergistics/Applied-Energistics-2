@@ -21,12 +21,10 @@ package appeng.tile.powersink;
 
 import appeng.transformer.annotations.Integration;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import Reika.RotaryCraft.API.Interfaces.Transducerable;
 import Reika.RotaryCraft.API.Power.AdvancedShaftPowerReceiver;
-
 import appeng.api.config.PowerUnits;
+import appeng.api.util.ForgeDirection;
 import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
 import appeng.transformer.annotations.Integration.Interface;

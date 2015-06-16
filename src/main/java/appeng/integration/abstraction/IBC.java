@@ -19,15 +19,15 @@
 package appeng.integration.abstraction;
 
 
-import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
-import net.minecraftforge.common.util.ForgeDirection;
-
+import net.minecraft.util.EnumFacing;
 import appeng.api.parts.IFacadePart;
+import appeng.api.util.AEPartLocation;
+import appeng.client.texture.IAESprite;
 
 
 public interface IBC
@@ -38,13 +38,13 @@ public interface IBC
 
 	void wrenchUsed( Item i, EntityPlayer p, int x, int y, int z );
 
-	boolean canAddItemsToPipe( TileEntity te, ItemStack is, ForgeDirection dir );
+	boolean canAddItemsToPipe( TileEntity te, ItemStack is, EnumFacing dir );
 
-	boolean addItemsToPipe( TileEntity te, ItemStack is, ForgeDirection dir );
+	boolean addItemsToPipe( TileEntity te, ItemStack is, EnumFacing dir );
 
 	boolean isFacade( ItemStack is );
 
-	boolean isPipe( TileEntity te, ForgeDirection dir );
+	boolean isPipe( TileEntity te, EnumFacing dir );
 
 	void addFacade( ItemStack item );
 
@@ -54,11 +54,11 @@ public interface IBC
 
 	void registerLiquidsP2P();
 
-	IFacadePart createFacadePart( Block blk, int meta, ForgeDirection side );
+	IFacadePart createFacadePart( IBlockState state, AEPartLocation side );
 
-	IFacadePart createFacadePart( ItemStack held, ForgeDirection side );
+	IFacadePart createFacadePart( ItemStack held, AEPartLocation side );
 
 	ItemStack getTextureForFacade( ItemStack facade );
 
-	IIcon getFacadeTexture();
+	IAESprite getFacadeTexture();
 }

@@ -18,27 +18,12 @@
 
 package appeng.hooks;
 
+// TODO Villager Trading!??!?!
 
-import java.util.Random;
-
-import com.google.common.base.Optional;
-
-import net.minecraft.entity.passive.EntityVillager;
-import net.minecraft.init.Items;
-import net.minecraft.item.ItemStack;
-import net.minecraft.village.MerchantRecipe;
-import net.minecraft.village.MerchantRecipeList;
-
-import cpw.mods.fml.common.registry.VillagerRegistry.IVillageTradeHandler;
-
-import appeng.api.AEApi;
-import appeng.api.definitions.IItemDefinition;
-import appeng.api.definitions.IMaterials;
-
-
-public class AETrading implements IVillageTradeHandler
+public class AETrading
 {
 
+	/*
 	@Override
 	public void manipulateTradesForVillager( EntityVillager villager, MerchantRecipeList recipeList, Random random )
 	{
@@ -124,4 +109,6 @@ public class AETrading implements IVillageTradeHandler
 
 		l.add( new MerchantRecipe( a, b ) );
 	}
+	*/
+	
 }

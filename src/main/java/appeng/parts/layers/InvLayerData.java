@@ -24,6 +24,7 @@ import java.util.List;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
 
 
 public class InvLayerData
@@ -104,7 +105,7 @@ public class InvLayerData
 		}
 	}
 
-	public boolean canExtractItem( int slot, ItemStack itemstack, int side )
+	public boolean canExtractItem( int slot, ItemStack itemstack, EnumFacing side )
 	{
 		if( this.isSlotValid( slot ) )
 		{
@@ -114,7 +115,7 @@ public class InvLayerData
 		return false;
 	}
 
-	public boolean canInsertItem( int slot, ItemStack itemstack, int side )
+	public boolean canInsertItem( int slot, ItemStack itemstack, EnumFacing side )
 	{
 		if( this.isSlotValid( slot ) )
 		{
@@ -135,12 +136,12 @@ public class InvLayerData
 		}
 	}
 
-	public int[] getAccessibleSlotsFromSide( int side )
+	public int[] getSlotsForFace( EnumFacing side )
 	{
-		if( this.sides == null || side < 0 || side > 5 )
+		if( this.sides == null || side == null )
 		{
 			return NULL_SIDES;
 		}
-		return this.sides[side];
+		return this.sides[side.ordinal()];
 	}
 }

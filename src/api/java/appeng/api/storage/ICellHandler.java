@@ -26,12 +26,10 @@ package appeng.api.storage;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import appeng.api.implementations.tiles.IChestOrDrive;
+import appeng.client.texture.IAESprite;
 
 
 /**
@@ -68,7 +66,7 @@ public interface ICellHandler
 	 * assets for examples.
 	 */
 	@SideOnly( Side.CLIENT )
-	IIcon getTopTexture_Light();
+	IAESprite getTopTexture_Light();
 
 	/**
 	 * @return the ME Chest texture for medium pixels this storage cell type, should be 10x10 with 3px of transparent
@@ -76,7 +74,7 @@ public interface ICellHandler
 	 * assets for examples.
 	 */
 	@SideOnly( Side.CLIENT )
-	IIcon getTopTexture_Medium();
+	IAESprite getTopTexture_Medium();
 
 	/**
 	 * @return the ME Chest texture for dark pixels this storage cell type, should be 10x10 with 3px of transparent
@@ -84,7 +82,7 @@ public interface ICellHandler
 	 * assets for examples.
 	 */
 	@SideOnly( Side.CLIENT )
-	IIcon getTopTexture_Dark();
+	IAESprite getTopTexture_Dark();
 
 	/**
 	 * Called when the storage cell is planed in an ME Chest and the user tries to open the terminal side, if your item

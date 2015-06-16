@@ -19,15 +19,15 @@
 package appeng.parts;
 
 
+import io.netty.buffer.ByteBuf;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Random;
 
-import io.netty.buffer.ByteBuf;
-
-import net.minecraft.client.renderer.RenderBlocks;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.crash.CrashReportCategory;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -36,14 +36,12 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import appeng.api.AEApi;
 import appeng.api.config.Upgrades;
 import appeng.api.definitions.IDefinitions;
@@ -57,12 +55,13 @@ import appeng.api.parts.IPart;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartRenderHelper;
-import appeng.api.parts.ISimplifiedBundle;
 import appeng.api.parts.PartItemStack;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
+import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
+import appeng.client.render.IRenderHelper;
 import appeng.helpers.ICustomNameObject;
 import appeng.helpers.IPriorityHost;
 import appeng.me.helpers.AENetworkProxy;
@@ -78,16 +77,15 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 
 	protected final AENetworkProxy proxy;
 	protected final ItemStack is;
-	protected ISimplifiedBundle renderCache = null;
 	protected TileEntity tile = null;
 	protected IPartHost host = null;
-	protected ForgeDirection side = null;
+	protected AEPartLocation side = null;
 
 	public AEBasePart( ItemStack is )
 	{
 		this.is = is;
 		this.proxy = new AENetworkProxy( this, "part", is, this instanceof PartCable );
-		this.proxy.setValidSides( EnumSet.noneOf( ForgeDirection.class ) );
+		this.proxy.setValidSides( EnumSet.noneOf( EnumFacing.class ) );
 	}
 
 	public IPartHost getHost()
@@ -96,13 +94,13 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 	}
 
 	@Override
-	public IGridNode getGridNode( ForgeDirection dir )
+	public IGridNode getGridNode( AEPartLocation dir )
 	{
 		return this.proxy.getNode();
 	}
 
 	@Override
-	public AECableType getCableConnectionType( ForgeDirection dir )
+	public AECableType getCableConnectionType( AEPartLocation dir )
 	{
 		return AECableType.GLASS;
 	}
@@ -115,7 +113,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 			List<ItemStack> items = new ArrayList<ItemStack>();
 			items.add( this.is.copy() );
 			this.host.removePart( this.side, false );
-			Platform.spawnDrops( this.tile.getWorldObj(), this.tile.xCoord, this.tile.yCoord, this.tile.zCoord, items );
+			Platform.spawnDrops( this.tile.getWorld(), this.tile.getPos(), items );
 			this.is.stackSize = 0;
 		}
 	}
@@ -141,7 +139,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 		return 0;
 	}	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderInventory( IPartRenderHelper rh, RenderBlocks renderer )
+	public void renderInventory( IPartRenderHelper rh, IRenderHelper renderer )
 	{
 		rh.setBounds( 1, 1, 1, 15, 15, 15 );
 		rh.renderInventoryBox( renderer );
@@ -189,12 +187,14 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 	public String getCustomName()
 	{
 		return this.is.getDisplayName();
-	}	@Override
+	}
+	
+	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderStatic( int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer )
+	public void renderStatic( BlockPos pos, IPartRenderHelper rh, IRenderHelper renderer )
 	{
 		rh.setBounds( 1, 1, 1, 15, 15, 15 );
-		rh.renderBlock( x, y, z, renderer );
+		rh.renderBlock( pos, renderer );
 	}
 
 	@Override
@@ -214,7 +214,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderDynamic( double x, double y, double z, IPartRenderHelper rh, RenderBlocks renderer )
+	public void renderDynamic( double x, double y, double z, IPartRenderHelper rh, IRenderHelper renderer )
 	{
 
 	}
@@ -310,7 +310,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 	}
 
 	@Override
-	public void setPartHostInfo( ForgeDirection side, IPartHost host, TileEntity tile )
+	public void setPartHostInfo( AEPartLocation side, IPartHost host, TileEntity tile )
 	{
 		this.side = side;
 		this.tile = tile;
@@ -325,7 +325,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void randomDisplayTick( World world, int x, int y, int z, Random r )
+	public void randomDisplayTick( World world, BlockPos pos, Random r )
 	{
 
 	}
@@ -522,7 +522,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 	}
 
 	@Override
-	public void onPlacement( EntityPlayer player, ItemStack held, ForgeDirection side )
+	public void onPlacement( EntityPlayer player, ItemStack held, AEPartLocation side )
 	{
 		this.proxy.setOwner( player );
 	}
@@ -541,7 +541,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public IIcon getBreakingTexture()
+	public TextureAtlasSprite getBreakingTexture(IRenderHelper renderer)
 	{
 		return null;
 	}

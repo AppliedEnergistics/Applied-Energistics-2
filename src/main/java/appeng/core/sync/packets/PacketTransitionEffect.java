@@ -21,19 +21,17 @@ package appeng.core.sync.packets;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+import appeng.api.util.AEPartLocation;
 import appeng.client.ClientHelper;
 import appeng.client.render.effects.EnergyFx;
 import appeng.core.CommonHelper;
@@ -49,7 +47,7 @@ public class PacketTransitionEffect extends AppEngPacket
 	final double x;
 	final double y;
 	final double z;
-	final ForgeDirection d;
+	final AEPartLocation d;
 
 	// automatic.
 	public PacketTransitionEffect( ByteBuf stream )
@@ -57,12 +55,12 @@ public class PacketTransitionEffect extends AppEngPacket
 		this.x = stream.readFloat();
 		this.y = stream.readFloat();
 		this.z = stream.readFloat();
-		this.d = ForgeDirection.getOrientation( stream.readByte() );
+		this.d = AEPartLocation.fromOrdinal( stream.readByte() );
 		this.mode = stream.readBoolean();
 	}
 
 	// api
-	public PacketTransitionEffect( double x, double y, double z, ForgeDirection dir, boolean wasBlock )
+	public PacketTransitionEffect( double x, double y, double z, AEPartLocation dir, boolean wasBlock )
 	{
 		this.x = x;
 		this.y = y;
@@ -99,9 +97,9 @@ public class PacketTransitionEffect extends AppEngPacket
 					fx.fromItem( this.d );
 				}
 
-				fx.motionX = -0.1 * this.d.offsetX;
-				fx.motionY = -0.1 * this.d.offsetY;
-				fx.motionZ = -0.1 * this.d.offsetZ;
+				fx.motionX = -0.1 * this.d.xOffset;
+				fx.motionY = -0.1 * this.d.yOffset;
+				fx.motionZ = -0.1 * this.d.zOffset;
 
 				Minecraft.getMinecraft().effectRenderer.addEffect( fx );
 			}
@@ -109,9 +107,9 @@ public class PacketTransitionEffect extends AppEngPacket
 
 		if( this.mode )
 		{
-			Block block = world.getBlock( (int) this.x, (int) this.y, (int) this.z );
+			Block block = world.getBlockState( new BlockPos( (int) this.x, (int) this.y, (int) this.z ) ).getBlock();
 
-			Minecraft.getMinecraft().getSoundHandler().playSound( new PositionedSoundRecord( new ResourceLocation( block.stepSound.getBreakSound() ), ( block.stepSound.getVolume() + 1.0F ) / 2.0F, block.stepSound.getPitch() * 0.8F, (float) this.x + 0.5F, (float) this.y + 0.5F, (float) this.z + 0.5F ) );
+			Minecraft.getMinecraft().getSoundHandler().playSound( new PositionedSoundRecord( new ResourceLocation( block.stepSound.getBreakSound() ), ( block.stepSound.getVolume() + 1.0F ) / 2.0F, block.stepSound.getFrequency() * 0.8F, (float) this.x + 0.5F, (float) this.y + 0.5F, (float) this.z + 0.5F ) );
 		}
 	}
 }

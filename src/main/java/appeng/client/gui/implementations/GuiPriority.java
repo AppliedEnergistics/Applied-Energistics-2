@@ -24,7 +24,6 @@ import java.io.IOException;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
-
 import appeng.api.AEApi;
 import appeng.api.definitions.IBlocks;
 import appeng.api.definitions.IDefinitions;
@@ -185,7 +184,7 @@ public class GuiPriority extends AEBaseGui
 	}
 
 	@Override
-	protected void actionPerformed( GuiButton btn )
+	protected void actionPerformed( GuiButton btn ) throws IOException
 	{
 		super.actionPerformed( btn );
 
@@ -245,7 +244,7 @@ public class GuiPriority extends AEBaseGui
 	}
 
 	@Override
-	protected void keyTyped( char character, int key )
+	protected void keyTyped( char character, int key ) throws IOException
 	{
 		if( !this.checkHotbarKeys( key ) )
 		{

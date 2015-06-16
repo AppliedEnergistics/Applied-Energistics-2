@@ -30,7 +30,6 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
-
 import appeng.api.AEApi;
 import appeng.api.definitions.IMaterials;
 import appeng.core.AEConfig;
@@ -85,7 +84,7 @@ public final class EntitySingularity extends AEBaseEntityItem
 
 		if( materials.singularity().isSameAs( item ) )
 		{
-			AxisAlignedBB region = AxisAlignedBB.getBoundingBox( this.posX - 4, this.posY - 4, this.posZ - 4, this.posX + 4, this.posY + 4, this.posZ + 4 );
+			AxisAlignedBB region = AxisAlignedBB.fromBounds( this.posX - 4, this.posY - 4, this.posZ - 4, this.posX + 4, this.posY + 4, this.posZ + 4 );
 			List<Entity> l = this.getCheckedEntitiesWithinAABBExcludingEntity( region );
 
 			for( Entity e : l )

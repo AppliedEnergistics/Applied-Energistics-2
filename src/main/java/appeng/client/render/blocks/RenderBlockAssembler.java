@@ -21,26 +21,25 @@ package appeng.client.render.blocks;
 
 import java.util.EnumSet;
 
-import net.minecraft.client.renderer.RenderBlocks;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.IItemRenderer.ItemRenderType;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.api.networking.IGridHost;
 import appeng.api.parts.IBoxProvider;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartHost;
+import appeng.api.util.AEPartLocation;
 import appeng.api.util.IOrientable;
 import appeng.block.crafting.BlockMolecularAssembler;
 import appeng.client.render.BaseBlockRender;
-import appeng.client.render.BusRenderHelper;
 import appeng.client.render.BusRenderer;
+import appeng.client.render.IRenderHelper;
 import appeng.client.texture.ExtraBlockTextures;
+import appeng.client.texture.IAESprite;
 import appeng.client.texture.TaughtIcon;
 import appeng.parts.networking.PartCable;
 import appeng.tile.crafting.TileMolecularAssembler;
@@ -56,209 +55,204 @@ public class RenderBlockAssembler extends BaseBlockRender<BlockMolecularAssemble
 	}
 
 	@Override
-	public void renderInventory( BlockMolecularAssembler blk, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj )
+	public void renderInventory( BlockMolecularAssembler blk, ItemStack is, IRenderHelper renderer, ItemRenderType type, Object[] obj )
 	{
-		renderer.setOverrideBlockTexture( blk.getIcon( 0, 0 ) );
+		renderer.setOverrideBlockTexture( renderer.getIcon( blk.getStateFromMeta( is.getMetadata() ) )[0] );
 
 		this.setInvRenderBounds( renderer, 2, 14, 0, 14, 16, 2 );
-		this.renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, Tessellator.instance, 0xffffff, renderer );
+		this.renderInvBlock( EnumSet.allOf( AEPartLocation.class ), blk, is, 0xffffff, renderer );
 
 		this.setInvRenderBounds( renderer, 0, 14, 2, 2, 16, 14 );
-		this.renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, Tessellator.instance, 0xffffff, renderer );
+		this.renderInvBlock( EnumSet.allOf( AEPartLocation.class ), blk, is, 0xffffff, renderer );
 
 		this.setInvRenderBounds( renderer, 2, 0, 14, 14, 2, 16 );
-		this.renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, Tessellator.instance, 0xffffff, renderer );
+		this.renderInvBlock( EnumSet.allOf( AEPartLocation.class ), blk, is, 0xffffff, renderer );
 
 		this.setInvRenderBounds( renderer, 14, 0, 2, 16, 2, 14 );
-		this.renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, Tessellator.instance, 0xffffff, renderer );
+		this.renderInvBlock( EnumSet.allOf( AEPartLocation.class ), blk, is, 0xffffff, renderer );
 
 		this.setInvRenderBounds( renderer, 0, 0, 0, 16, 2, 2 );
-		this.renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, Tessellator.instance, 0xffffff, renderer );
+		this.renderInvBlock( EnumSet.allOf( AEPartLocation.class ), blk, is, 0xffffff, renderer );
 
 		this.setInvRenderBounds( renderer, 0, 2, 0, 2, 16, 2 );
-		this.renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, Tessellator.instance, 0xffffff, renderer );
+		this.renderInvBlock( EnumSet.allOf( AEPartLocation.class ), blk, is, 0xffffff, renderer );
 
 		this.setInvRenderBounds( renderer, 0, 0, 2, 2, 2, 16 );
-		this.renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, Tessellator.instance, 0xffffff, renderer );
+		this.renderInvBlock( EnumSet.allOf( AEPartLocation.class ), blk, is, 0xffffff, renderer );
 
 		this.setInvRenderBounds( renderer, 0, 14, 14, 16, 16, 16 );
-		this.renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, Tessellator.instance, 0xffffff, renderer );
+		this.renderInvBlock( EnumSet.allOf( AEPartLocation.class ), blk, is, 0xffffff, renderer );
 
 		this.setInvRenderBounds( renderer, 14, 0, 14, 16, 14, 16 );
-		this.renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, Tessellator.instance, 0xffffff, renderer );
+		this.renderInvBlock( EnumSet.allOf( AEPartLocation.class ), blk, is, 0xffffff, renderer );
 
 		this.setInvRenderBounds( renderer, 14, 14, 0, 16, 16, 14 );
-		this.renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, Tessellator.instance, 0xffffff, renderer );
+		this.renderInvBlock( EnumSet.allOf( AEPartLocation.class ), blk, is,  0xffffff, renderer );
 
 		this.setInvRenderBounds( renderer, 14, 2, 0, 16, 14, 2 );
-		this.renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, Tessellator.instance, 0xffffff, renderer );
+		this.renderInvBlock( EnumSet.allOf( AEPartLocation.class ), blk, is,  0xffffff, renderer );
 
 		this.setInvRenderBounds( renderer, 0, 2, 14, 2, 14, 16 );
-		this.renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, Tessellator.instance, 0xffffff, renderer );
+		this.renderInvBlock( EnumSet.allOf( AEPartLocation.class ), blk, is, 0xffffff, renderer );
 
 		this.setInvRenderBounds( renderer, 1, 1, 1, 15, 15, 15 );
-		this.renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, Tessellator.instance, 0xffffff, renderer );
+		this.renderInvBlock( EnumSet.allOf( AEPartLocation.class ), blk, is,  0xffffff, renderer );
 
 		renderer.setOverrideBlockTexture( null );
 	}
 
 	@Override
-	public boolean renderInWorld( BlockMolecularAssembler block, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
+	public boolean renderInWorld( BlockMolecularAssembler block, IBlockAccess world, BlockPos pos, IRenderHelper renderer )
 	{
-		BlockMolecularAssembler blk = (BlockMolecularAssembler) block;
-		TileMolecularAssembler tma = blk.getTileEntity( world, x, y, z );
+		BlockMolecularAssembler blk = block;
+		TileMolecularAssembler tma = blk.getTileEntity( world, pos );
 
-		if( BlockMolecularAssembler.booleanAlphaPass )
+		if ( renderer.isAlphaPass() )
 		{
 			if( tma.isPowered() )
 			{
-				this.renderBlockBounds( renderer, 1, 1, 1, 15, 15, 15, ForgeDirection.WEST, ForgeDirection.UP, ForgeDirection.SOUTH );
+				this.renderBlockBounds( renderer, 1, 1, 1, 15, 15, 15, EnumFacing.WEST, EnumFacing.UP, EnumFacing.SOUTH );
 				TaughtIcon lights = new TaughtIcon( ExtraBlockTextures.BlockMolecularAssemblerLights.getIcon(), -2.0f );
-				Tessellator.instance.setColorRGBA_F( 1, 1, 1, 0.3f );
-				Tessellator.instance.setBrightness( 14 << 20 | 14 << 4 );
-				renderer.renderFaceXNeg( blk, x, y, z, lights );
-				renderer.renderFaceXPos( blk, x, y, z, lights );
-				renderer.renderFaceYNeg( blk, x, y, z, lights );
-				renderer.renderFaceYPos( blk, x, y, z, lights );
-				renderer.renderFaceZNeg( blk, x, y, z, lights );
-				renderer.renderFaceZPos( blk, x, y, z, lights );
+				renderer.setColorRGBA_F( 1, 1, 1, 0.3f );
+				renderer.setBrightness( 14 << 20 | 14 << 4 );
+				renderer.renderFaceXNeg( blk, pos, lights );
+				renderer.renderFaceXPos( blk, pos, lights );
+				renderer.renderFaceYNeg( blk, pos, lights );
+				renderer.renderFaceYPos( blk, pos, lights );
+				renderer.renderFaceZNeg( blk, pos, lights );
+				renderer.renderFaceZPos( blk, pos, lights );
 				return true;
 			}
 			return false;
 		}
 
-		BusRenderer.INSTANCE.renderer.blockAccess = renderer.blockAccess;
-		renderer = BusRenderer.INSTANCE.renderer;
+		//BusRenderer.INSTANCE.renderer.blockAccess = renderer.blockAccess;
+		//renderer = BusRenderer.INSTANCE.renderer;
+		BusRenderer.INSTANCE.renderer=renderer;
+		
+		this.preRenderInWorld( block, world, pos, renderer );
 
-		this.preRenderInWorld( block, world, x, y, z, renderer );
+		IOrientable te = this.getOrientable( block, world, pos );
 
-		tma.lightCache = BusRenderHelper.INSTANCE.useSimplifiedRendering( x, y, z, this, tma.lightCache );
-
-		BusRenderer.INSTANCE.renderer.isFacade = true;
-		IOrientable te = this.getOrientable( block, world, x, y, z );
-
-		ForgeDirection fdy = te.getUp();
-		ForgeDirection fdz = te.getForward();
-		ForgeDirection fdx = Platform.crossProduct( fdz, fdy ).getOpposite();
+		EnumFacing fdy = te.getUp();
+		EnumFacing fdz = te.getForward();
+		EnumFacing fdx = Platform.crossProduct( fdz, fdy ).getOpposite();
 
 		renderer.renderAllFaces = true;
 
-		this.renderCableAt( 0.11D, world, x, y, z, block, renderer, 0.141D, false );
-		this.renderCableAt( 0.188D, world, x, y, z, block, renderer, 0.1875D, true );
+		this.renderCableAt( 0.11D, world, pos, block, renderer, 0.141D, false );
+		this.renderCableAt( 0.188D, world, pos, block, renderer, 0.1875D, true );
 
-		blk.getRendererInstance().setTemporaryRenderIcon( blk.getIcon( 0, 0 ) );
+		blk.getRendererInstance().setTemporaryRenderIcon(  renderer.getIcon( world.getBlockState( pos ) )[0] );
 
 		this.renderBlockBounds( renderer, 2, 14, 0, 14, 16, 2, fdx, fdy, fdz );
-		renderer.renderStandardBlock( blk, x, y, z );
+		renderer.renderStandardBlock( blk, pos );
 
 		this.renderBlockBounds( renderer, 0, 14, 2, 2, 16, 14, fdx, fdy, fdz );
-		renderer.renderStandardBlock( blk, x, y, z );
+		renderer.renderStandardBlock( blk, pos );
 
 		this.renderBlockBounds( renderer, 2, 0, 14, 14, 2, 16, fdx, fdy, fdz );
-		renderer.renderStandardBlock( blk, x, y, z );
+		renderer.renderStandardBlock( blk, pos );
 
 		this.renderBlockBounds( renderer, 14, 0, 2, 16, 2, 14, fdx, fdy, fdz );
-		renderer.renderStandardBlock( blk, x, y, z );
+		renderer.renderStandardBlock( blk, pos );
 
 		// sides...
 		this.renderBlockBounds( renderer, 0, 0, 0, 16, 2, 2, fdx, fdy, fdz );
-		renderer.renderStandardBlock( blk, x, y, z );
+		renderer.renderStandardBlock( blk, pos );
 
 		this.renderBlockBounds( renderer, 0, 2, 0, 2, 16, 2, fdx, fdy, fdz );
-		renderer.renderStandardBlock( blk, x, y, z );
+		renderer.renderStandardBlock( blk, pos );
 
 		this.renderBlockBounds( renderer, 0, 0, 2, 2, 2, 16, fdx, fdy, fdz );
-		renderer.renderStandardBlock( blk, x, y, z );
+		renderer.renderStandardBlock( blk, pos );
 
 		this.renderBlockBounds( renderer, 0, 14, 14, 16, 16, 16, fdx, fdy, fdz );
-		renderer.renderStandardBlock( blk, x, y, z );
+		renderer.renderStandardBlock( blk, pos );
 
 		this.renderBlockBounds( renderer, 14, 0, 14, 16, 14, 16, fdx, fdy, fdz );
-		renderer.renderStandardBlock( blk, x, y, z );
+		renderer.renderStandardBlock( blk, pos );
 
 		this.renderBlockBounds( renderer, 14, 14, 0, 16, 16, 14, fdx, fdy, fdz );
-		renderer.renderStandardBlock( blk, x, y, z );
+		renderer.renderStandardBlock( blk, pos );
 
 		this.renderBlockBounds( renderer, 14, 2, 0, 16, 14, 2, fdx, fdy, fdz );
-		renderer.renderStandardBlock( blk, x, y, z );
+		renderer.renderStandardBlock( blk, pos );
 
 		this.renderBlockBounds( renderer, 0, 2, 14, 2, 14, 16, fdx, fdy, fdz );
-		renderer.renderStandardBlock( blk, x, y, z );
+		renderer.renderStandardBlock( blk, pos );
 
 		this.renderBlockBounds( renderer, 1, 1, 1, 15, 15, 15, fdx, fdy, fdz );
-		renderer.renderStandardBlock( blk, x, y, z );
-
-		BusRenderHelper.INSTANCE.normalRendering();
+		renderer.renderStandardBlock( blk, pos );
 
 		blk.getRendererInstance().setTemporaryRenderIcon( null );
 
 		renderer.renderAllFaces = false;
-		BusRenderer.INSTANCE.renderer.isFacade = false;
 
 		this.postRenderInWorld( renderer );
 
 		return true;
 	}
 
-	public void renderCableAt( double thickness, IBlockAccess world, int x, int y, int z, BlockMolecularAssembler block, RenderBlocks renderer, double pull, boolean covered )
+	public void renderCableAt( double thickness, IBlockAccess world, BlockPos pos, BlockMolecularAssembler block, IRenderHelper renderer, double pull, boolean covered )
 	{
-		IIcon texture = null;
+		IAESprite texture = null;
 
-		block.getRendererInstance().setTemporaryRenderIcon( texture = this.getConnectedCable( world, x, y, z, ForgeDirection.WEST, covered ) );
+		block.getRendererInstance().setTemporaryRenderIcon( texture = this.getConnectedCable( world, pos, EnumFacing.WEST, covered, renderer ) );
 		if( texture != null )
 		{
 			renderer.setRenderBounds( 0.0D, 0.5D - thickness, 0.5D - thickness, 0.5D - thickness - pull, 0.5D + thickness, 0.5D + thickness );
-			renderer.renderStandardBlock( block, x, y, z );
+			renderer.renderStandardBlock( block, pos );
 		}
 
-		block.getRendererInstance().setTemporaryRenderIcon( texture = this.getConnectedCable( world, x, y, z, ForgeDirection.EAST, covered ) );
+		block.getRendererInstance().setTemporaryRenderIcon( texture = this.getConnectedCable( world, pos, EnumFacing.EAST, covered, renderer ) );
 		if( texture != null )
 		{
 			renderer.setRenderBounds( 0.5D + thickness + pull, 0.5D - thickness, 0.5D - thickness, 1.0D, 0.5D + thickness, 0.5D + thickness );
-			renderer.renderStandardBlock( block, x, y, z );
+			renderer.renderStandardBlock( block, pos );
 		}
 
-		block.getRendererInstance().setTemporaryRenderIcon( texture = this.getConnectedCable( world, x, y, z, ForgeDirection.NORTH, covered ) );
+		block.getRendererInstance().setTemporaryRenderIcon( texture = this.getConnectedCable( world, pos, EnumFacing.NORTH, covered, renderer ) );
 		if( texture != null )
 		{
 			renderer.setRenderBounds( 0.5D - thickness, 0.5D - thickness, 0.0D, 0.5D + thickness, 0.5D + thickness, 0.5D - thickness - pull );
-			renderer.renderStandardBlock( block, x, y, z );
+			renderer.renderStandardBlock( block, pos );
 		}
 
-		block.getRendererInstance().setTemporaryRenderIcon( texture = this.getConnectedCable( world, x, y, z, ForgeDirection.SOUTH, covered ) );
+		block.getRendererInstance().setTemporaryRenderIcon( texture = this.getConnectedCable( world, pos, EnumFacing.SOUTH, covered, renderer ) );
 		if( texture != null )
 		{
 			renderer.setRenderBounds( 0.5D - thickness, 0.5D - thickness, 0.5D + thickness + pull, 0.5D + thickness, 0.5D + thickness, 1.0D );
-			renderer.renderStandardBlock( block, x, y, z );
+			renderer.renderStandardBlock( block, pos );
 		}
 
-		block.getRendererInstance().setTemporaryRenderIcon( texture = this.getConnectedCable( world, x, y, z, ForgeDirection.DOWN, covered ) );
+		block.getRendererInstance().setTemporaryRenderIcon( texture = this.getConnectedCable( world, pos, EnumFacing.DOWN, covered, renderer ) );
 		if( texture != null )
 		{
 			renderer.setRenderBounds( 0.5D - thickness, 0.0D, 0.5D - thickness, 0.5D + thickness, 0.5D - thickness - pull, 0.5D + thickness );
-			renderer.renderStandardBlock( block, x, y, z );
+			renderer.renderStandardBlock( block, pos );
 		}
 
-		block.getRendererInstance().setTemporaryRenderIcon( texture = this.getConnectedCable( world, x, y, z, ForgeDirection.UP, covered ) );
+		block.getRendererInstance().setTemporaryRenderIcon( texture = this.getConnectedCable( world, pos, EnumFacing.UP, covered, renderer ) );
 		if( texture != null )
 		{
 			renderer.setRenderBounds( 0.5D - thickness, 0.5D + thickness + pull, 0.5D - thickness, 0.5D + thickness, 1.0D, 0.5D + thickness );
-			renderer.renderStandardBlock( block, x, y, z );
+			renderer.renderStandardBlock( block, pos );
 		}
 
 		block.getRendererInstance().setTemporaryRenderIcon( null );
 	}
 
-	IIcon getConnectedCable( IBlockAccess world, int x, int y, int z, ForgeDirection side, boolean covered )
+	IAESprite getConnectedCable( IBlockAccess world, BlockPos pos, EnumFacing side, boolean covered,IRenderHelper renderer )
 	{
-		final int tileYPos = y + side.offsetY;
+		final int tileYPos = pos.getY() + side.getFrontOffsetY();
 		if( -1 < tileYPos && tileYPos < 256 )
 		{
-			TileEntity ne = world.getTileEntity( x + side.offsetX, tileYPos, z + side.offsetZ );
+			TileEntity ne = world.getTileEntity( pos.offset( side ) );
 			if( ne instanceof IGridHost && ne instanceof IPartHost )
 			{
 				IPartHost ph = (IPartHost) ne;
-				IPart pcx = ph.getPart( ForgeDirection.UNKNOWN );
+				IPart pcx = ph.getPart( AEPartLocation.INTERNAL );
 				if( pcx instanceof PartCable )
 				{
 					PartCable pc = (PartCable) pcx;
@@ -266,9 +260,9 @@ public class RenderBlockAssembler extends BaseBlockRender<BlockMolecularAssemble
 					{
 						if( covered )
 						{
-							return pc.getCoveredTexture( pc.getCableColor() );
+							return pc.getCoveredTexture( pc.getCableColor(),renderer );
 						}
-						return pc.getGlassTexture( pc.getCableColor() );
+						return pc.getGlassTexture( pc.getCableColor(),renderer );
 					}
 				}
 			}

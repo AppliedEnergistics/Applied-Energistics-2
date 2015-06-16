@@ -22,9 +22,7 @@ package appeng.parts.misc;
 import java.util.EnumSet;
 import java.util.List;
 
-import com.google.common.collect.ImmutableSet;
-
-import net.minecraft.client.renderer.RenderBlocks;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
@@ -32,13 +30,12 @@ import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.IChatComponent;
 import net.minecraft.util.Vec3;
-import net.minecraftforge.common.util.ForgeDirection;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import appeng.api.config.Actionable;
 import appeng.api.config.Upgrades;
 import appeng.api.implementations.tiles.ITileStorageMonitorable;
@@ -60,6 +57,7 @@ import appeng.api.storage.IStorageMonitorable;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.IConfigManager;
+import appeng.client.render.IRenderHelper;
 import appeng.client.texture.CableBusTextures;
 import appeng.core.sync.GuiBridge;
 import appeng.helpers.DualityInterface;
@@ -71,6 +69,8 @@ import appeng.tile.inventory.IAEAppEngInventory;
 import appeng.tile.inventory.InvOperation;
 import appeng.util.Platform;
 import appeng.util.inv.IInventoryDestination;
+
+import com.google.common.collect.ImmutableSet;
 
 
 public class PartInterface extends PartBasicState implements IGridTickable, IStorageMonitorable, IInventoryDestination, IInterfaceHost, ISidedInventory, IAEAppEngInventory, ITileStorageMonitorable, IPriorityHost
@@ -111,9 +111,9 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISto
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderInventory( IPartRenderHelper rh, RenderBlocks renderer )
+	public void renderInventory( IPartRenderHelper rh, IRenderHelper renderer )
 	{
-		rh.setTexture( CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorBack.getIcon(), this.is.getIconIndex(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon() );
+		rh.setTexture( CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorBack.getIcon(), renderer.getIcon( is ), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon() );
 
 		rh.setBounds( 2, 2, 14, 14, 14, 16 );
 		rh.renderInventoryBox( renderer );
@@ -133,25 +133,24 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISto
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderStatic( int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer )
+	public void renderStatic( BlockPos pos, IPartRenderHelper rh, IRenderHelper renderer )
 	{
-		this.renderCache = rh.useSimplifiedRendering( x, y, z, this, this.renderCache );
-		rh.setTexture( CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorBack.getIcon(), this.is.getIconIndex(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon() );
+		rh.setTexture( CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorBack.getIcon(), renderer.getIcon( is ), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon() );
 
 		rh.setBounds( 2, 2, 14, 14, 14, 16 );
-		rh.renderBlock( x, y, z, renderer );
+		rh.renderBlock( pos, renderer );
 
-		rh.setTexture( CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorBack.getIcon(), this.is.getIconIndex(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon() );
+		rh.setTexture( CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorBack.getIcon(), renderer.getIcon( is ), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon() );
 
 		rh.setBounds( 5, 5, 12, 11, 11, 13 );
-		rh.renderBlock( x, y, z, renderer );
+		rh.renderBlock( pos, renderer );
 
-		rh.setTexture( CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartMonitorBack.getIcon(), this.is.getIconIndex(), CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartMonitorSidesStatus.getIcon() );
+		rh.setTexture( CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartMonitorBack.getIcon(), renderer.getIcon( is ), CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartMonitorSidesStatus.getIcon() );
 
 		rh.setBounds( 5, 5, 13, 11, 11, 14 );
-		rh.renderBlock( x, y, z, renderer );
+		rh.renderBlock( pos, renderer );
 
-		this.renderLights( x, y, z, rh, renderer );
+		this.renderLights( pos, rh, renderer );
 	}
 
 	@Override
@@ -216,9 +215,9 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISto
 	}
 
 	@Override
-	public IIcon getBreakingTexture()
+	public TextureAtlasSprite getBreakingTexture(IRenderHelper renderer)
 	{
-		return this.is.getIconIndex();
+		return renderer.getIcon( is ).getAtlas();
 	}
 
 	@Override
@@ -282,15 +281,15 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISto
 	}
 
 	@Override
-	public String getInventoryName()
+	public String getName()
 	{
-		return this.duality.getStorage().getInventoryName();
+		return this.duality.getStorage().getName();
 	}
 
 	@Override
-	public boolean hasCustomInventoryName()
+	public boolean hasCustomName()
 	{
-		return this.duality.getStorage().hasCustomInventoryName();
+		return this.duality.getStorage().hasCustomName();
 	}
 
 	@Override
@@ -312,15 +311,15 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISto
 	}
 
 	@Override
-	public void openInventory()
+	public void openInventory( EntityPlayer player )
 	{
-		this.duality.getStorage().openInventory();
+		this.duality.getStorage().openInventory(player);
 	}
 
 	@Override
-	public void closeInventory()
+	public void closeInventory( EntityPlayer player )
 	{
-		this.duality.getStorage().closeInventory();
+		this.duality.getStorage().closeInventory(player);
 	}
 
 	@Override
@@ -330,19 +329,19 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISto
 	}
 
 	@Override
-	public int[] getAccessibleSlotsFromSide( int s )
+	public int[] getSlotsForFace( EnumFacing side )
 	{
-		return this.duality.getAccessibleSlotsFromSide( s );
+		return this.duality.getSlotsForFace( side );
 	}
 
 	@Override
-	public boolean canInsertItem( int i, ItemStack itemstack, int j )
+	public boolean canInsertItem( int i, ItemStack itemstack, EnumFacing j )
 	{
 		return true;
 	}
 
 	@Override
-	public boolean canExtractItem( int i, ItemStack itemstack, int j )
+	public boolean canExtractItem( int i, ItemStack itemstack, EnumFacing j )
 	{
 		return true;
 	}
@@ -360,9 +359,9 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISto
 	}
 
 	@Override
-	public EnumSet<ForgeDirection> getTargets()
+	public EnumSet<EnumFacing> getTargets()
 	{
-		return EnumSet.of( this.side );
+		return EnumSet.of( this.side.getFacing() );
 	}
 
 	@Override
@@ -372,7 +371,7 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISto
 	}
 
 	@Override
-	public IStorageMonitorable getMonitorable( ForgeDirection side, BaseActionSource src )
+	public IStorageMonitorable getMonitorable( EnumFacing side, BaseActionSource src )
 	{
 		return this.duality.getMonitorable( side, src, this );
 	}
@@ -423,5 +422,38 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISto
 	public void setPriority( int newValue )
 	{
 		this.duality.setPriority( newValue );
+	}
+
+	@Override
+	public int getField(
+			int id )
+	{
+		return 0;
+	}
+
+	@Override
+	public void setField(
+			int id,
+			int value )
+	{
+		
+	}
+
+	@Override
+	public int getFieldCount()
+	{
+		return 0;
+	}
+
+	@Override
+	public void clear()
+	{
+		
+	}
+
+	@Override
+	public IChatComponent getDisplayName()
+	{
+		return null;
 	}
 }

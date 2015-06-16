@@ -24,7 +24,7 @@
 package appeng.api.networking;
 
 
-import net.minecraftforge.common.util.ForgeDirection;
+import appeng.api.util.AEPartLocation;
 
 
 /**
@@ -54,7 +54,7 @@ public interface IGridConnection
 	 *
 	 * @return the direction of the connection, only valid for in world connections.
 	 */
-	ForgeDirection getDirection( IGridNode gridNode );
+	AEPartLocation getDirection( IGridNode gridNode );
 
 	/**
 	 * by destroying a connection you may create new grids, and trigger un-expected behavior, you should only destroy

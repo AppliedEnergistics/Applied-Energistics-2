@@ -21,7 +21,6 @@ package appeng.me.storage;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.storage.IMEInventory;

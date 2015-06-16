@@ -23,6 +23,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.IChatComponent;
 
 
 public class AppEngNullInventory implements IInventory
@@ -67,13 +68,13 @@ public class AppEngNullInventory implements IInventory
 	}
 
 	@Override
-	public String getInventoryName()
+	public String getName()
 	{
 		return "appeng-internal";
 	}
 
 	@Override
-	public boolean hasCustomInventoryName()
+	public boolean hasCustomName()
 	{
 		return false;
 	}
@@ -97,18 +98,55 @@ public class AppEngNullInventory implements IInventory
 	}
 
 	@Override
-	public void openInventory()
-	{
-	}
-
-	@Override
-	public void closeInventory()
-	{
-	}
-
-	@Override
 	public boolean isItemValidForSlot( int i, ItemStack itemstack )
 	{
 		return false;
+	}
+
+	@Override
+	public IChatComponent getDisplayName()
+	{
+		return null;
+	}
+
+	@Override
+	public void openInventory(
+			EntityPlayer player )
+	{
+				
+	}
+
+	@Override
+	public void closeInventory(
+			EntityPlayer player )
+	{
+		
+	}
+
+	@Override
+	public int getField(
+			int id )
+	{
+		return 0;
+	}
+
+	@Override
+	public void setField(
+			int id,
+			int value )
+	{
+		
+	}
+
+	@Override
+	public int getFieldCount()
+	{
+		return 0;
+	}
+
+	@Override
+	public void clear()
+	{
+		
 	}
 }

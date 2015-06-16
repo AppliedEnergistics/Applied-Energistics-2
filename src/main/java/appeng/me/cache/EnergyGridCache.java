@@ -26,9 +26,6 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.TreeSet;
 
-import com.google.common.collect.HashMultiset;
-import com.google.common.collect.Multiset;
-
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
@@ -53,6 +50,9 @@ import appeng.me.Grid;
 import appeng.me.GridNode;
 import appeng.me.energy.EnergyThreshold;
 import appeng.me.energy.EnergyWatcher;
+
+import com.google.common.collect.HashMultiset;
+import com.google.common.collect.Multiset;
 
 
 public class EnergyGridCache implements IEnergyGrid

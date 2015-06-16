@@ -23,9 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.minecraftforge.common.MinecraftForge;
-
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import appeng.api.events.LocatableEventAnnounce;
 import appeng.api.events.LocatableEventAnnounce.LocatableEvent;
 import appeng.api.features.ILocatable;

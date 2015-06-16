@@ -2,7 +2,6 @@ package appeng.core.api.definitions;
 
 
 import net.minecraft.item.Item;
-
 import appeng.api.definitions.IBlockDefinition;
 import appeng.api.definitions.IItemDefinition;
 import appeng.api.definitions.ITileDefinition;

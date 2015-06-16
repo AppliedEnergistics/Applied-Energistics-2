@@ -22,29 +22,28 @@ package appeng.parts.automation;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.block.Block;
-import net.minecraft.client.renderer.RenderBlocks;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.FakePlayerFactory;
-import net.minecraftforge.common.util.ForgeDirection;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartRenderHelper;
+import appeng.api.util.AEPartLocation;
+import appeng.client.render.IRenderHelper;
 import appeng.client.texture.CableBusTextures;
+import appeng.client.texture.IAESprite;
 
 
 public class PartIdentityAnnihilationPlane extends PartAnnihilationPlane
 {
-	private final static IIcon ACTIVE_ICON = CableBusTextures.BlockIdentityAnnihilationPlaneOn.getIcon();
+	private final static IAESprite ACTIVE_ICON = CableBusTextures.BlockIdentityAnnihilationPlaneOn.getIcon();
 
 	private static final float SILK_TOUCH_FACTOR = 16;
 
@@ -55,13 +54,13 @@ public class PartIdentityAnnihilationPlane extends PartAnnihilationPlane
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderStatic( int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer )
+	public void renderStatic( BlockPos pos, IPartRenderHelper rh, IRenderHelper renderer )
 	{
-		this.renderStaticWithIcon( x, y, z, rh, renderer, ACTIVE_ICON );
+		this.renderStaticWithIcon( pos, rh, renderer, ACTIVE_ICON );
 	}
 
 	@Override
-	protected boolean isAnnihilationPlane( TileEntity blockTileEntity, ForgeDirection side )
+	protected boolean isAnnihilationPlane( TileEntity blockTileEntity, AEPartLocation side )
 	{
 		if( blockTileEntity instanceof IPartHost )
 		{
@@ -72,31 +71,30 @@ public class PartIdentityAnnihilationPlane extends PartAnnihilationPlane
 	}
 
 	@Override
-	protected float calculateEnergyUsage( WorldServer w, int x, int y, int z, List<ItemStack> items )
+	protected float calculateEnergyUsage( WorldServer w, BlockPos pos, List<ItemStack> items )
 	{
-		final float requiredEnergy = super.calculateEnergyUsage( w, x, y, z, items );
+		final float requiredEnergy = super.calculateEnergyUsage( w, pos, items );
 
 		return requiredEnergy * SILK_TOUCH_FACTOR;
 	}
 
 	@Override
-	protected List<ItemStack> obtainBlockDrops( WorldServer w, int x, int y, int z )
+	protected List<ItemStack> obtainBlockDrops( WorldServer w, BlockPos pos )
 	{
 		final FakePlayer fakePlayer = FakePlayerFactory.getMinecraft( w );
-		final Block block = w.getBlock( x, y, z );
-		final int blockMeta = w.getBlockMetadata( x, y, z );
-
-		if( block.canSilkHarvest( w, fakePlayer, x, y, z, blockMeta ) )
+		final IBlockState state = w.getBlockState( pos );
+		
+		if( state.getBlock().canSilkHarvest( w, pos, state, fakePlayer ) )
 		{
 			final List<ItemStack> out = new ArrayList<ItemStack>( 1 );
-			final Item item = Item.getItemFromBlock( block );
+			final Item item = Item.getItemFromBlock( state.getBlock() );
 
 			if( item != null )
 			{
 				int meta = 0;
 				if( item.getHasSubtypes() )
 				{
-					meta = blockMeta;
+					meta = state.getBlock().getMetaFromState( state );
 				}
 				ItemStack itemstack = new ItemStack( item, 1, meta );
 				out.add( itemstack );
@@ -105,7 +103,7 @@ public class PartIdentityAnnihilationPlane extends PartAnnihilationPlane
 		}
 		else
 		{
-			return super.obtainBlockDrops( w, x, y, z );
+			return super.obtainBlockDrops( w, pos );
 		}
 	}
 }

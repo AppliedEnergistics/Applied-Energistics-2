@@ -25,6 +25,7 @@ package appeng.api.movable;
 
 
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 
 
@@ -61,9 +62,7 @@ public interface IMovableHandler
 	 *
 	 * @param tile  to be moved tile
 	 * @param world world of tile
-	 * @param x     x coord of tile
-	 * @param y     y coord of tile
-	 * @param z     z coord of tile
+	 * @param newPosition the new location
 	 */
-	void moveTile( TileEntity tile, World world, int x, int y, int z );
+	void moveTile( TileEntity tile, World world, BlockPos newPosition );
 }

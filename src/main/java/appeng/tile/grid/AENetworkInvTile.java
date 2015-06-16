@@ -20,10 +20,9 @@ package appeng.tile.grid;
 
 
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.IActionHost;
+import appeng.api.util.AEPartLocation;
 import appeng.me.helpers.AENetworkProxy;
 import appeng.me.helpers.IGridProxyable;
 import appeng.tile.AEBaseInvTile;
@@ -61,7 +60,7 @@ public abstract class AENetworkInvTile extends AEBaseInvTile implements IActionH
 	}
 
 	@Override
-	public IGridNode getGridNode( ForgeDirection dir )
+	public IGridNode getGridNode( AEPartLocation dir )
 	{
 		return this.gridProxy.getNode();
 	}
@@ -99,4 +98,18 @@ public abstract class AENetworkInvTile extends AEBaseInvTile implements IActionH
 	{
 		return this.gridProxy.getNode();
 	}
+	
+	@Override
+	public int getField(
+			int id )
+	{
+		return 0;
+	}
+	
+	@Override
+	public int getFieldCount()
+	{
+		return 0;
+	}
+	
 }

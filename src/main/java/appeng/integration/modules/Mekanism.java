@@ -21,9 +21,7 @@ package appeng.integration.modules;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-
-import cpw.mods.fml.common.event.FMLInterModComms;
-
+import net.minecraftforge.fml.common.event.FMLInterModComms;
 import appeng.integration.BaseModule;
 import appeng.integration.abstraction.IMekanism;
 

@@ -32,9 +32,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.WeakHashMap;
 
-import com.google.common.base.Optional;
-import com.mojang.authlib.GameProfile;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
@@ -43,7 +40,6 @@ import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
-
 import appeng.api.util.WorldCoord;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketNewStorageDimension;
@@ -52,6 +48,9 @@ import appeng.hooks.TickHandler.PlayerColor;
 import appeng.me.GridStorage;
 import appeng.me.GridStorageSearch;
 import appeng.services.CompassService;
+
+import com.google.common.base.Optional;
+import com.mojang.authlib.GameProfile;
 
 
 public class WorldSettings extends Configuration
@@ -343,7 +342,7 @@ public class WorldSettings extends Configuration
 		{
 			for( int newDim : this.get( "DimensionManager", "StorageCells", new int[0] ).getIntList() )
 			{
-				manager.scheduleOutboundPacket( ( new PacketNewStorageDimension( newDim ) ).getProxy() );
+				manager.sendPacket( ( new PacketNewStorageDimension( newDim ) ).getProxy() );
 			}
 		}
 		else

@@ -21,10 +21,13 @@ package appeng.core.sync;
 
 import io.netty.buffer.ByteBuf;
 
+import java.io.IOException;
+
 import net.minecraft.entity.player.EntityPlayer;
-
-import cpw.mods.fml.common.network.internal.FMLProxyPacket;
-
+import net.minecraft.network.INetHandler;
+import net.minecraft.network.Packet;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.common.network.internal.FMLProxyPacket;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.features.AEFeature;
@@ -32,11 +35,11 @@ import appeng.core.sync.network.INetworkInfo;
 import appeng.core.sync.network.NetworkHandler;
 
 
-public abstract class AppEngPacket
+public abstract class AppEngPacket implements Packet
 {
 
 	AppEngPacketHandlerBase.PacketTypes id;
-	private ByteBuf p;
+	private PacketBuffer p;
 
 	public void serverPacketData( INetworkInfo manager, AppEngPacket packet, EntityPlayer player )
 	{
@@ -56,7 +59,7 @@ public abstract class AppEngPacket
 	protected void configureWrite( ByteBuf data )
 	{
 		data.capacity( data.readableBytes() );
-		this.p = data;
+		this.p = new PacketBuffer(data);
 	}
 
 	public FMLProxyPacket getProxy()
@@ -75,4 +78,27 @@ public abstract class AppEngPacket
 
 		return pp;
 	}
+	
+	@Override
+    public void readPacketData(PacketBuffer buf) throws IOException
+    {
+    	throw new RuntimeException( "Not Implemented" );
+    }
+
+	@Override
+	public void writePacketData(PacketBuffer buf) throws IOException
+    {
+    	throw new RuntimeException( "Not Implemented" );
+    }
+
+	PacketCallState caller;
+	
+	public void setCallParam( PacketCallState call ){caller = call;}
+	
+	@Override
+	public void processPacket(INetHandler handler)
+    {
+		caller.call(this);
+    }
+
 }

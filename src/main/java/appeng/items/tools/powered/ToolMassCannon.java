@@ -22,8 +22,6 @@ package appeng.items.tools.powered;
 import java.util.EnumSet;
 import java.util.List;
 
-import com.google.common.base.Optional;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDispenser;
 import net.minecraft.entity.Entity;
@@ -35,14 +33,14 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
@@ -75,7 +73,10 @@ import appeng.items.misc.ItemPaintBall;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.me.storage.CellInventoryHandler;
 import appeng.tile.misc.TilePaint;
+import appeng.util.LookDirection;
 import appeng.util.Platform;
+
+import com.google.common.base.Optional;
 
 
 public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
@@ -155,26 +156,18 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 						{
 							return item;
 						}
+						
+						LookDirection dir = Platform.getPlayerRay( p, p.getEyeHeight() );
 
-						float f = 1.0F;
-						float f1 = p.prevRotationPitch + ( p.rotationPitch - p.prevRotationPitch ) * f;
-						float f2 = p.prevRotationYaw + ( p.rotationYaw - p.prevRotationYaw ) * f;
-						double d0 = p.prevPosX + ( p.posX - p.prevPosX ) * f;
-						double d1 = p.prevPosY + ( p.posY - p.prevPosY ) * f + 1.62D - p.yOffset;
-						double d2 = p.prevPosZ + ( p.posZ - p.prevPosZ ) * f;
-						Vec3 vec3 = Vec3.createVectorHelper( d0, d1, d2 );
-						float f3 = MathHelper.cos( -f2 * 0.017453292F - (float) Math.PI );
-						float f4 = MathHelper.sin( -f2 * 0.017453292F - (float) Math.PI );
-						float f5 = -MathHelper.cos( -f1 * 0.017453292F );
-						float f6 = MathHelper.sin( -f1 * 0.017453292F );
-						float f7 = f4 * f5;
-						float f8 = f3 * f5;
-						double d3 = 32.0D;
-
-						Vec3 vec31 = vec3.addVector( f7 * d3, f6 * d3, f8 * d3 );
-						Vec3 direction = Vec3.createVectorHelper( f7 * d3, f6 * d3, f8 * d3 );
+						Vec3 vec3 = dir.a;
+						Vec3 vec31 = dir.b;
+						Vec3 direction = vec31.subtract( vec3 );
 						direction.normalize();
 
+						double d0 = vec3.xCoord;
+						double d1 = vec3.yCoord;
+						double d2 = vec3.zCoord;
+						
 						float penetration = AEApi.instance().registries().matterCannon().getPenetration( ammo ); // 196.96655f;
 						if( penetration <= 0 )
 						{
@@ -206,7 +199,7 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 
 	private void shootPaintBalls( ItemStack type, World w, EntityPlayer p, Vec3 vec3, Vec3 vec31, Vec3 direction, double d0, double d1, double d2 )
 	{
-		AxisAlignedBB bb = AxisAlignedBB.getBoundingBox( Math.min( vec3.xCoord, vec31.xCoord ), Math.min( vec3.yCoord, vec31.yCoord ), Math.min( vec3.zCoord, vec31.zCoord ), Math.max( vec3.xCoord, vec31.xCoord ), Math.max( vec3.yCoord, vec31.yCoord ), Math.max( vec3.zCoord, vec31.zCoord ) ).expand( 16, 16, 16 );
+		AxisAlignedBB bb = AxisAlignedBB.fromBounds( Math.min( vec3.xCoord, vec31.xCoord ), Math.min( vec3.yCoord, vec31.yCoord ), Math.min( vec3.zCoord, vec31.zCoord ), Math.max( vec3.xCoord, vec31.xCoord ), Math.max( vec3.yCoord, vec31.yCoord ), Math.max( vec3.zCoord, vec31.zCoord ) ).expand( 16, 16, 16 );
 
 		Entity entity = null;
 		List list = w.getEntitiesWithinAABBExcludingEntity( p, bb );
@@ -229,7 +222,7 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 
 					float f1 = 0.3F;
 
-					AxisAlignedBB boundingBox = entity1.boundingBox.expand( f1, f1, f1 );
+					AxisAlignedBB boundingBox = entity1.getBoundingBox().expand( f1, f1, f1 );
 					MovingObjectPosition movingObjectPosition = boundingBox.calculateIntercept( vec3, vec31 );
 
 					if( movingObjectPosition != null )
@@ -248,7 +241,7 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 
 		MovingObjectPosition pos = w.rayTraceBlocks( vec3, vec31, false );
 
-		Vec3 vec = Vec3.createVectorHelper( d0, d1, d2 );
+		Vec3 vec = new Vec3( d0, d1, d2 );
 		if( entity != null && pos != null && pos.hitVec.squareDistanceTo( vec ) > closest )
 		{
 			pos = new MovingObjectPosition( entity );
@@ -283,7 +276,7 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 				if( pos.entityHit instanceof EntitySheep )
 				{
 					EntitySheep sh = (EntitySheep) pos.entityHit;
-					sh.setFleeceColor( col.ordinal() );
+					sh.setFleeceColor( col.dye );
 				}
 
 				pos.entityHit.attackEntityFrom( DamageSource.causePlayerDamage( p ), 0 );
@@ -291,33 +284,28 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 			}
 			else if( pos.typeOfHit == MovingObjectType.BLOCK )
 			{
-				ForgeDirection side = ForgeDirection.getOrientation( pos.sideHit );
+				EnumFacing side = pos.sideHit;				
+				BlockPos hitPos = pos.getBlockPos().offset( side );
 
-				int x = pos.blockX + side.offsetX;
-				int y = pos.blockY + side.offsetY;
-				int z = pos.blockZ + side.offsetZ;
-
-				if( !Platform.hasPermissions( new DimensionalCoord( w, x, y, z ), p ) )
+				if( !Platform.hasPermissions( new DimensionalCoord( w, hitPos ), p ) )
 				{
 					return;
 				}
 
-				Block whatsThere = w.getBlock( x, y, z );
-				if( whatsThere.isReplaceable( w, x, y, z ) && w.isAirBlock( x, y, z ) )
+				Block whatsThere = w.getBlockState( hitPos ).getBlock();
+				if( whatsThere.isReplaceable( w, hitPos ) && w.isAirBlock( hitPos ) )
 				{
 					for( Block paintBlock : AEApi.instance().definitions().blocks().paint().maybeBlock().asSet() )
 					{
-						w.setBlock( x, y, z, paintBlock, 0, 3 );
+						w.setBlockState( hitPos, paintBlock.getDefaultState(), 3 );
 					}
 				}
 
-				TileEntity te = w.getTileEntity( x, y, z );
+				TileEntity te = w.getTileEntity( hitPos );
 				if( te instanceof TilePaint )
 				{
-					pos.hitVec.xCoord -= x;
-					pos.hitVec.yCoord -= y;
-					pos.hitVec.zCoord -= z;
-					( (TilePaint) te ).addBlot( type, side.getOpposite(), pos.hitVec );
+					Vec3 hp = pos.hitVec.subtract(  hitPos.getX(), hitPos.getY(), hitPos.getZ() );
+					( (TilePaint) te ).addBlot( type, side.getOpposite(), hp  );
 				}
 			}
 		}
@@ -330,7 +318,7 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 		{
 			hasDestroyed = false;
 
-			AxisAlignedBB bb = AxisAlignedBB.getBoundingBox( Math.min( vec3.xCoord, vec31.xCoord ), Math.min( vec3.yCoord, vec31.yCoord ), Math.min( vec3.zCoord, vec31.zCoord ), Math.max( vec3.xCoord, vec31.xCoord ), Math.max( vec3.yCoord, vec31.yCoord ), Math.max( vec3.zCoord, vec31.zCoord ) ).expand( 16, 16, 16 );
+			AxisAlignedBB bb = AxisAlignedBB.fromBounds( Math.min( vec3.xCoord, vec31.xCoord ), Math.min( vec3.yCoord, vec31.yCoord ), Math.min( vec3.zCoord, vec31.zCoord ), Math.max( vec3.xCoord, vec31.xCoord ), Math.max( vec3.yCoord, vec31.yCoord ), Math.max( vec3.zCoord, vec31.zCoord ) ).expand( 16, 16, 16 );
 
 			Entity entity = null;
 			List list = w.getEntitiesWithinAABBExcludingEntity( p, bb );
@@ -353,7 +341,7 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 
 						float f1 = 0.3F;
 
-						AxisAlignedBB boundingBox = entity1.boundingBox.expand( f1, f1, f1 );
+						AxisAlignedBB boundingBox = entity1.getBoundingBox().expand( f1, f1, f1 );
 						MovingObjectPosition movingObjectPosition = boundingBox.calculateIntercept( vec3, vec31 );
 
 						if( movingObjectPosition != null )
@@ -370,7 +358,7 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 				}
 			}
 
-			Vec3 vec = Vec3.createVectorHelper( d0, d1, d2 );
+			Vec3 vec = new Vec3( d0, d1, d2 );
 			MovingObjectPosition pos = w.rayTraceBlocks( vec3, vec31, true );
 			if( entity != null && pos != null && pos.hitVec.squareDistanceTo( vec ) > closest )
 			{
@@ -429,20 +417,19 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 					}
 					else
 					{
-						Block b = w.getBlock( pos.blockX, pos.blockY, pos.blockZ );
+						Block b = w.getBlockState( pos.getBlockPos() ).getBlock();
 						// int meta = w.getBlockMetadata(
 						// pos.blockX, pos.blockY, pos.blockZ );
 
-						float hardness = b.getBlockHardness( w, pos.blockX, pos.blockY, pos.blockZ ) * 9.0f;
+						float hardness = b.getBlockHardness( w, pos.getBlockPos() ) * 9.0f;
 						if( hardness >= 0.0 )
 						{
-							if( penetration > hardness && Platform.hasPermissions( new DimensionalCoord( w, pos.blockX, pos.blockY, pos.blockZ ), p ) )
+							if( penetration > hardness && Platform.hasPermissions( new DimensionalCoord( w, pos.getBlockPos() ), p ) )
 							{
 								hasDestroyed = true;
 								penetration -= hardness;
 								penetration *= 0.60;
-								w.func_147480_a( pos.blockX, pos.blockY, pos.blockZ, true );
-								// w.destroyBlock( pos.blockX, pos.blockY, pos.blockZ, true );
+								w.destroyBlock( pos.getBlockPos(), true );
 							}
 						}
 					}

@@ -26,12 +26,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Vec3;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import codechicken.lib.vec.BlockCoord;
 import codechicken.multipart.TMultiPart;
 import codechicken.multipart.TileMultipart;
-
 import appeng.api.parts.IFacadeContainer;
 import appeng.api.parts.IFacadePart;
 import appeng.api.parts.IPart;
@@ -40,6 +37,7 @@ import appeng.api.parts.LayerFlags;
 import appeng.api.parts.SelectedPart;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalCoord;
+import appeng.api.util.ForgeDirection;
 import appeng.facade.FacadeContainer;
 import appeng.parts.CableBusStorage;
 import appeng.util.Platform;
@@ -101,7 +99,7 @@ public class FMPPlacementHelper implements IPartHost
 
 		if( this.myMP.canAddPart( this.myPart ) && Platform.isServer() )
 		{
-			this.myMP = TileMultipart.addPart( this.myMP.getWorldObj(), loc, this.myPart );
+			this.myMP = TileMultipart.addPart( this.myMP.getWorld(), loc, this.myPart );
 			this.hasPart = true;
 		}
 
@@ -302,7 +300,7 @@ public class FMPPlacementHelper implements IPartHost
 	{
 		if( this.myPart == null )
 		{
-			return this.myMP.getWorldObj() != null;
+			return this.myMP.getWorld() != null;
 		}
 		return this.myPart.isInWorld();
 	}

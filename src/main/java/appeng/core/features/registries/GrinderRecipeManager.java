@@ -28,7 +28,6 @@ import java.util.Map.Entry;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-
 import appeng.api.features.IGrinderEntry;
 import appeng.api.features.IGrinderRegistry;
 import appeng.core.AEConfig;

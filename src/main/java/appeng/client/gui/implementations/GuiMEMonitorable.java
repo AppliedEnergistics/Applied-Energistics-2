@@ -22,13 +22,13 @@ package appeng.client.gui.implementations;
 import java.io.IOException;
 import java.util.List;
 
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
-
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
 
 import appeng.api.config.SearchBoxMode;
 import appeng.api.config.Settings;
@@ -362,7 +362,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 	}
 
 	@Override
-	protected void mouseClicked( int xCoord, int yCoord, int btn )
+	protected void mouseClicked( int xCoord, int yCoord, int btn ) throws IOException
 	{
 		Enum searchMode = AEConfig.instance.settings.getSetting( Settings.SEARCH_MODE );
 
@@ -457,7 +457,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 	}
 
 	@Override
-	protected void keyTyped( char character, int key )
+	protected void keyTyped( char character, int key ) throws IOException
 	{
 		if( !this.checkHotbarKeys( key ) )
 		{

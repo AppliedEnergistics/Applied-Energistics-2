@@ -19,44 +19,42 @@
 package appeng.parts.misc;
 
 
+import io.netty.buffer.ByteBuf;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Random;
 
-import io.netty.buffer.ByteBuf;
-
-import net.minecraft.client.renderer.RenderBlocks;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import appeng.api.networking.IGridNode;
 import appeng.api.parts.BusSupport;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartRenderHelper;
-import appeng.api.parts.ISimplifiedBundle;
 import appeng.api.parts.PartItemStack;
+import appeng.api.util.AEPartLocation;
+import appeng.client.render.IRenderHelper;
+import appeng.client.texture.IAESprite;
 
 
 public class PartCableAnchor implements IPart
 {
 
-	protected ISimplifiedBundle renderCache = null;
 	ItemStack is = null;
 	IPartHost host = null;
-	ForgeDirection mySide = ForgeDirection.UP;
+	AEPartLocation mySide = AEPartLocation.UP;
 
 	public PartCableAnchor( ItemStack is )
 	{
@@ -84,9 +82,9 @@ public class PartCableAnchor implements IPart
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderInventory( IPartRenderHelper instance, RenderBlocks renderer )
+	public void renderInventory( IPartRenderHelper instance, IRenderHelper renderer )
 	{
-		instance.setTexture( this.is.getIconIndex() );
+		instance.setTexture( renderer.getIcon( is ) );
 		instance.setBounds( 7, 7, 4, 9, 9, 14 );
 		instance.renderInventoryBox( renderer );
 		instance.setTexture( null );
@@ -94,10 +92,9 @@ public class PartCableAnchor implements IPart
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderStatic( int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer )
+	public void renderStatic( BlockPos pos, IPartRenderHelper rh, IRenderHelper renderer )
 	{
-		this.renderCache = rh.useSimplifiedRendering( x, y, z, this, this.renderCache );
-		IIcon myIcon = this.is.getIconIndex();
+		IAESprite myIcon =  renderer.getIcon( is );
 		rh.setTexture( myIcon );
 		if( this.host != null && this.host.getFacadeContainer().getFacade( this.mySide ) != null )
 		{
@@ -107,19 +104,19 @@ public class PartCableAnchor implements IPart
 		{
 			rh.setBounds( 7, 7, 10, 9, 9, 16 );
 		}
-		rh.renderBlock( x, y, z, renderer );
+		rh.renderBlock( pos, renderer );
 		rh.setTexture( null );
 	}
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderDynamic( double x, double y, double z, IPartRenderHelper rh, RenderBlocks renderer )
+	public void renderDynamic( double x, double y, double z, IPartRenderHelper rh, IRenderHelper renderer )
 	{
 
 	}
 
 	@Override
-	public IIcon getBreakingTexture()
+	public TextureAtlasSprite getBreakingTexture( IRenderHelper renderer)
 	{
 		return null;
 	}
@@ -163,7 +160,7 @@ public class PartCableAnchor implements IPart
 	@Override
 	public boolean isLadder( EntityLivingBase entity )
 	{
-		return this.mySide.offsetY == 0 && ( entity.isCollidedHorizontally || !entity.onGround );
+		return this.mySide.yOffset == 0 && ( entity.isCollidedHorizontally || !entity.onGround );
 	}
 
 	@Override
@@ -227,7 +224,7 @@ public class PartCableAnchor implements IPart
 	}
 
 	@Override
-	public void setPartHostInfo( ForgeDirection side, IPartHost host, TileEntity tile )
+	public void setPartHostInfo( AEPartLocation side, IPartHost host, TileEntity tile )
 	{
 		this.host = host;
 		this.mySide = side;
@@ -258,14 +255,16 @@ public class PartCableAnchor implements IPart
 	}
 
 	@Override
-	@SideOnly( Side.CLIENT )
-	public void randomDisplayTick( World world, int x, int y, int z, Random r )
+	public void randomDisplayTick(
+			World world,
+			BlockPos pos,
+			Random r )
 	{
 
 	}
 
 	@Override
-	public void onPlacement( EntityPlayer player, ItemStack held, ForgeDirection side )
+	public void onPlacement( EntityPlayer player, ItemStack held, AEPartLocation side )
 	{
 
 	}

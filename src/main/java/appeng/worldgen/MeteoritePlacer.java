@@ -25,6 +25,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.init.Blocks;
@@ -33,9 +34,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.oredict.OreDictionary;
-
 import appeng.api.AEApi;
 import appeng.api.definitions.IBlockDefinition;
 import appeng.api.definitions.IBlocks;
@@ -99,7 +100,13 @@ public final class MeteoritePlacer
 		this.invalidSpawn.add( Blocks.planks );
 		this.invalidSpawn.add( Blocks.iron_door );
 		this.invalidSpawn.add( Blocks.iron_bars );
-		this.invalidSpawn.add( Blocks.wooden_door );
+		this.invalidSpawn.add( Blocks.oak_door );
+		this.invalidSpawn.add( Blocks.acacia_door );
+		this.invalidSpawn.add( Blocks.birch_door );
+		this.invalidSpawn.add( Blocks.dark_oak_door );
+		this.invalidSpawn.add( Blocks.iron_door );
+		this.invalidSpawn.add( Blocks.jungle_door );
+		this.invalidSpawn.add( Blocks.spruce_door );
 		this.invalidSpawn.add( Blocks.brick_block );
 		this.invalidSpawn.add( Blocks.clay );
 		this.invalidSpawn.add( Blocks.water );
@@ -183,7 +190,7 @@ public final class MeteoritePlacer
 
 					if( j > h + distanceFrom * 0.02 )
 					{
-						if( lava && j < y && w.getBlock( x, y - 1, z ).isBlockSolid( w.getWorld(), i, j, k, 0 ) )
+						if( lava && j < y && w.getBlock( x, y - 1, z ).isBlockSolid( w.getWorld(), new BlockPos( i, j, k ), EnumFacing.UP ) )
 						{
 							if( j > h + distanceFrom * 0.02 )
 							{
@@ -199,7 +206,7 @@ public final class MeteoritePlacer
 			}
 		}
 
-		for( Object o : w.getWorld().getEntitiesWithinAABB( EntityItem.class, AxisAlignedBB.getBoundingBox( w.minX( x - 30 ), y - 5, w.minZ( z - 30 ), w.maxX( x + 30 ), y + 30, w.maxZ( z + 30 ) ) ) )
+		for( Object o : w.getWorld().getEntitiesWithinAABB( EntityItem.class, AxisAlignedBB.fromBounds( w.minX( x - 30 ), y - 5, w.minZ( z - 30 ), w.maxX( x + 30 ), y + 30, w.maxZ( z + 30 ) ) ) )
 		{
 			Entity e = (Entity) o;
 			e.setDead();
@@ -245,7 +252,7 @@ public final class MeteoritePlacer
 			TileEntity te = w.getTileEntity( x, y, z );
 			if( te instanceof IInventory )
 			{
-				InventoryAdaptor ap = InventoryAdaptor.getAdaptor( te, ForgeDirection.UP );
+				InventoryAdaptor ap = InventoryAdaptor.getAdaptor( te, EnumFacing.UP );
 
 				int primary = Math.max( 1, (int) ( Math.random() * 4 ) );
 
@@ -379,17 +386,16 @@ public final class MeteoritePlacer
 						continue;
 					}
 
-					if( blk.isReplaceable( w.getWorld(), i, j, k ) )
+					if( blk.isReplaceable( w.getWorld(), new BlockPos( i, j, k ) ) )
 					{
 						blk = Platform.AIR_BLOCK;
 						Block blk_b = w.getBlock( i, j + 1, k );
 
 						if( blk_b != blk )
 						{
-							int meta_b = w.getBlockMetadata( i, j + 1, k );
+							IBlockState meta_b = w.getBlockState( i, j + 1, k );
 
-							w.setBlock( i, j, k, blk_b, meta_b, 3 );
-							w.setBlock( i, j + 1, k, blk );
+							w.setBlock( i, j, k, meta_b, 3 );
 						}
 						else if( randomShit < 100 * this.crater )
 						{
@@ -399,7 +405,7 @@ public final class MeteoritePlacer
 							double dist = dx * dx + dy * dy + dz * dz;
 
 							Block xf = w.getBlock( i, j - 1, k );
-							if( !xf.isReplaceable( w.getWorld(), i, j - 1, k ) )
+							if( !xf.isReplaceable( w.getWorld(), new BlockPos(i, j - 1, k) ) )
 							{
 								double extraRange = Math.random() * 0.6;
 								double height = this.crater * ( extraRange + 0.2 ) - Math.abs( dist - this.crater * 1.7 );
@@ -573,7 +579,7 @@ public final class MeteoritePlacer
 			this.settings.setInteger( "skyMode", skyMode );
 			w.done();
 
-			WorldSettings.getInstance().addNearByMeteorites( w.getWorld().provider.dimensionId, x >> 4, z >> 4, this.settings );
+			WorldSettings.getInstance().addNearByMeteorites( w.getWorld().provider.getDimensionId(), x >> 4, z >> 4, this.settings );
 			return true;
 		}
 		return false;

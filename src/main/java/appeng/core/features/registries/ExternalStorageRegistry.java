@@ -23,8 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
-
+import net.minecraft.util.EnumFacing;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.storage.IExternalStorageHandler;
 import appeng.api.storage.IExternalStorageRegistry;
@@ -50,7 +49,7 @@ public class ExternalStorageRegistry implements IExternalStorageRegistry
 	}
 
 	@Override
-	public IExternalStorageHandler getHandler( TileEntity te, ForgeDirection d, StorageChannel chan, BaseActionSource mySrc )
+	public IExternalStorageHandler getHandler( TileEntity te, EnumFacing d, StorageChannel chan, BaseActionSource mySrc )
 	{
 		for( IExternalStorageHandler x : this.Handlers )
 		{

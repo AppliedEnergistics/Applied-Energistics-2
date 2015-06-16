@@ -22,16 +22,12 @@ package appeng.client.render;
 import java.util.HashMap;
 
 import net.minecraft.block.Block;
-import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.IItemRenderer.ItemRenderType;
-
-import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
-import cpw.mods.fml.client.registry.RenderingRegistry;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import appeng.block.AEBaseBlock;
 import appeng.core.AELog;
 
@@ -42,8 +38,7 @@ public final class WorldRender implements ISimpleBlockRenderingHandler
 
 	public static final WorldRender INSTANCE = new WorldRender();
 	public final HashMap<AEBaseBlock, BaseBlockRender> blockRenders = new HashMap<AEBaseBlock, BaseBlockRender>();
-	final int renderID = RenderingRegistry.getNextAvailableRenderId();
-	private final RenderBlocks renderer = new RenderBlocks();
+	private final IRenderHelper renderer = new IRenderHelper();
 	boolean hasError = false;
 
 	private WorldRender()
@@ -56,29 +51,17 @@ public final class WorldRender implements ISimpleBlockRenderingHandler
 	}
 
 	@Override
-	public void renderInventoryBlock( Block block, int metadata, int modelID, RenderBlocks renderer )
+	public void renderInventoryBlock( Block block, int metadata, int modelID, IRenderHelper renderer )
 	{
 		// wtf is this for?
 	}
 
 	@Override
-	public boolean renderWorldBlock( IBlockAccess world, int x, int y, int z, Block block, int modelId, RenderBlocks renderer )
+	public boolean renderWorldBlock( IBlockAccess world, BlockPos pos, Block block, int modelId, IRenderHelper renderer )
 	{
 		AEBaseBlock blk = (AEBaseBlock) block;
 		renderer.setRenderBoundsFromBlock( block );
-		return this.getRender( blk ).renderInWorld( blk, world, x, y, z, renderer );
-	}
-
-	@Override
-	public boolean shouldRender3DInInventory( int modelId )
-	{
-		return true;
-	}
-
-	@Override
-	public int getRenderId()
-	{
-		return this.renderID;
+		return this.getRender( blk ).renderInWorld( blk, world, pos, renderer );
 	}
 
 	private BaseBlockRender getRender( AEBaseBlock block )

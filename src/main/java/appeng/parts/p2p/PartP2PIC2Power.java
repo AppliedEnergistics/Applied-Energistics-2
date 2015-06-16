@@ -21,17 +21,15 @@ package appeng.parts.p2p;
 
 import java.util.LinkedList;
 
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
-import net.minecraftforge.common.util.ForgeDirection;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import appeng.api.config.PowerUnits;
+import appeng.api.util.ForgeDirection;
 import appeng.me.GridAccessException;
 import appeng.me.cache.helpers.TunnelCollection;
 import appeng.transformer.annotations.Integration.Interface;
@@ -57,7 +55,7 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements i
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public IIcon getTypeTexture()
+	public TextureAtlasSprite getTypeTexture()
 	{
 		return Blocks.diamond_block.getBlockTextureFromSide( 0 );
 	}

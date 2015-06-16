@@ -19,15 +19,14 @@
 package appeng.client.render.blocks;
 
 
-import net.minecraft.client.renderer.RenderBlocks;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.IBlockAccess;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.block.misc.BlockInterface;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.BlockRenderInfo;
+import appeng.client.render.IRenderHelper;
 import appeng.client.texture.ExtraBlockTextures;
+import appeng.client.texture.IAESprite;
 import appeng.tile.misc.TileInterface;
 
 
@@ -40,18 +39,18 @@ public class RenderBlockInterface extends BaseBlockRender<BlockInterface, TileIn
 	}
 
 	@Override
-	public boolean renderInWorld( BlockInterface block, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
+	public boolean renderInWorld( BlockInterface block, IBlockAccess world, BlockPos pos, IRenderHelper renderer )
 	{
-		TileInterface ti = block.getTileEntity( world, x, y, z );
+		TileInterface ti = block.getTileEntity( world, pos );
 		BlockRenderInfo info = block.getRendererInstance();
 
-		if( ti != null && ti.getForward() != ForgeDirection.UNKNOWN )
+		if( ti != null && ti.getForward() != null )
 		{
-			IIcon side = ExtraBlockTextures.BlockInterfaceAlternateArrow.getIcon();
-			info.setTemporaryRenderIcons( ExtraBlockTextures.BlockInterfaceAlternate.getIcon(), block.getIcon( 0, 0 ), side, side, side, side );
+			IAESprite side = ExtraBlockTextures.BlockInterfaceAlternateArrow.getIcon();
+			info.setTemporaryRenderIcons( ExtraBlockTextures.BlockInterfaceAlternate.getIcon(), renderer.getIcon( world.getBlockState( pos ) )[0], side, side, side, side );
 		}
 
-		boolean fz = super.renderInWorld( block, world, x, y, z, renderer );
+		boolean fz = super.renderInWorld( block, world, pos, renderer );
 
 		info.setTemporaryRenderIcon( null );
 

@@ -23,7 +23,8 @@ import java.util.Random;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EntityFX;
-import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
@@ -83,8 +84,8 @@ public class LightningFX extends EntityFX
 	}
 
 	@Override
-	public void renderParticle( Tessellator tess, float l, float rX, float rY, float rZ, float rYZ, float rXY )
-	{
+    public void func_180434_a(WorldRenderer tess, Entity p_180434_2_, float l, float rX, float rY, float rZ, float rYZ, float rXY )
+    {
 		float j = 1.0f;
 		tess.setColorRGBA_F( this.particleRed * j * 0.9f, this.particleGreen * j * 0.95f, this.particleBlue * j, this.particleAlpha );
 		if( this.particleAge == 3 )
@@ -201,7 +202,7 @@ public class LightningFX extends EntityFX
 		this.hasData = false;
 	}
 
-	private void draw( Tessellator tess, double[] a, double[] b, double f6, double f8 )
+	private void draw( WorldRenderer tess, double[] a, double[] b, double f6, double f8 )
 	{
 		if( this.hasData )
 		{

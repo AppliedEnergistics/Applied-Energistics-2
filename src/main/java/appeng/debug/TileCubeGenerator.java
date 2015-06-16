@@ -22,9 +22,10 @@ package appeng.debug;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.gui.IUpdatePlayerListBox;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
-import net.minecraftforge.common.util.ForgeDirection;
-
+import net.minecraft.util.EnumFacing;
 import appeng.core.CommonHelper;
 import appeng.tile.AEBaseTile;
 import appeng.tile.TileEvent;
@@ -32,7 +33,7 @@ import appeng.tile.events.TileEventType;
 import appeng.util.Platform;
 
 
-public class TileCubeGenerator extends AEBaseTile
+public class TileCubeGenerator extends AEBaseTile implements IUpdatePlayerListBox
 {
 
 	int size = 3;
@@ -64,10 +65,10 @@ public class TileCubeGenerator extends AEBaseTile
 
 	void spawn()
 	{
-		this.worldObj.setBlock( this.xCoord, this.yCoord, this.zCoord, Platform.AIR_BLOCK, 0, 3 );
+		this.worldObj.setBlockToAir( pos );
 
 		Item i = this.is.getItem();
-		int side = ForgeDirection.UP.ordinal();
+		EnumFacing side = EnumFacing.UP;
 
 		int half = (int) Math.floor( this.size / 2 );
 
@@ -77,7 +78,8 @@ public class TileCubeGenerator extends AEBaseTile
 			{
 				for( int z = -half; z < half; z++ )
 				{
-					i.onItemUse( this.is.copy(), this.who, this.worldObj, x + this.xCoord, y + this.yCoord - 1, z + this.zCoord, side, 0.5f, 0.0f, 0.5f );
+					BlockPos p = pos.add( x, y-1, z );
+					i.onItemUse( this.is.copy(), this.who, this.worldObj, p, side, 0.5f, 0.0f, 0.5f );
 				}
 			}
 		}

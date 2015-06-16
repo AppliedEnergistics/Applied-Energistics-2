@@ -19,17 +19,19 @@
 package appeng.tile.grindstone;
 
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.Collections;
 import java.util.List;
 
-import io.netty.buffer.ByteBuf;
-
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.server.gui.IUpdatePlayerListBox;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.api.implementations.tiles.ICrankable;
 import appeng.helpers.ICustomCollision;
 import appeng.tile.AEBaseTile;
@@ -38,7 +40,7 @@ import appeng.tile.events.TileEventType;
 import appeng.util.Platform;
 
 
-public class TileCrank extends AEBaseTile implements ICustomCollision
+public class TileCrank extends AEBaseTile implements ICustomCollision, IUpdatePlayerListBox
 {
 
 	final int ticksPerRotation = 18;
@@ -78,8 +80,8 @@ public class TileCrank extends AEBaseTile implements ICustomCollision
 			return null;
 		}
 
-		ForgeDirection grinder = this.getUp().getOpposite();
-		TileEntity te = this.worldObj.getTileEntity( this.xCoord + grinder.offsetX, this.yCoord + grinder.offsetY, this.zCoord + grinder.offsetZ );
+		EnumFacing grinder = this.getUp().getOpposite();
+		TileEntity te = this.worldObj.getTileEntity( pos.offset( grinder ) );
 		if( te instanceof ICrankable )
 		{
 			return (ICrankable) te;
@@ -101,10 +103,11 @@ public class TileCrank extends AEBaseTile implements ICustomCollision
 	}
 
 	@Override
-	public void setOrientation( ForgeDirection inForward, ForgeDirection inUp )
+	public void setOrientation( EnumFacing inForward, EnumFacing inUp )
 	{
 		super.setOrientation( inForward, inUp );
-		this.getBlockType().onNeighborBlockChange( this.worldObj, this.xCoord, this.yCoord, this.zCoord, Platform.AIR_BLOCK );
+		IBlockState state = this.worldObj.getBlockState( pos );
+		this.getBlockType().onNeighborBlockChange( this.worldObj, pos, state, state.getBlock() );
 	}
 
 	@Override
@@ -140,8 +143,7 @@ public class TileCrank extends AEBaseTile implements ICustomCollision
 					this.hits++;
 					if( this.hits > 10 )
 					{
-						this.worldObj.func_147480_a( this.xCoord, this.yCoord, this.zCoord, false );
-						// worldObj.destroyBlock( xCoord, yCoord, zCoord, false );
+						this.worldObj.destroyBlock( pos, false );
 					}
 				}
 			}
@@ -151,21 +153,30 @@ public class TileCrank extends AEBaseTile implements ICustomCollision
 	}
 
 	@Override
-	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool( World w, int x, int y, int z, Entity e, boolean isVisual )
+	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool(
+			World w,
+			BlockPos pos,
+			Entity thePlayer,
+			boolean b )
 	{
-		double xOff = -0.15 * this.getUp().offsetX;
-		double yOff = -0.15 * this.getUp().offsetY;
-		double zOff = -0.15 * this.getUp().offsetZ;
-		return Collections.singletonList( AxisAlignedBB.getBoundingBox( xOff + 0.15, yOff + 0.15, zOff + 0.15, xOff + 0.85, yOff + 0.85, zOff + 0.85 ) );
+		double xOff = -0.15 * this.getUp().getFrontOffsetX();
+		double yOff = -0.15 * this.getUp().getFrontOffsetY();
+		double zOff = -0.15 * this.getUp().getFrontOffsetZ();
+		return Collections.singletonList( AxisAlignedBB.fromBounds( xOff + 0.15, yOff + 0.15, zOff + 0.15, xOff + 0.85, yOff + 0.85, zOff + 0.85 ) );
 	}
-
+	
 	@Override
-	public void addCollidingBlockToList( World w, int x, int y, int z, AxisAlignedBB bb, List<AxisAlignedBB> out, Entity e )
+	public void addCollidingBlockToList(
+			World w,
+			BlockPos pos,
+			AxisAlignedBB bb,
+			List<AxisAlignedBB> out,
+			Entity e )
 	{
-		double xOff = -0.15 * this.getUp().offsetX;
-		double yOff = -0.15 * this.getUp().offsetY;
-		double zOff = -0.15 * this.getUp().offsetZ;
-		out.add( AxisAlignedBB.getBoundingBox( xOff + 0.15, yOff + 0.15, zOff + 0.15,// ahh
+		double xOff = -0.15 * this.getUp().getFrontOffsetX();
+		double yOff = -0.15 * this.getUp().getFrontOffsetY();
+		double zOff = -0.15 * this.getUp().getFrontOffsetZ();
+		out.add( AxisAlignedBB.fromBounds( xOff + 0.15, yOff + 0.15, zOff + 0.15,// ahh
 				xOff + 0.85, yOff + 0.85, zOff + 0.85 ) );
 	}
 }

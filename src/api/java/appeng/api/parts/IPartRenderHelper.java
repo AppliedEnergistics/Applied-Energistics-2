@@ -27,12 +27,12 @@ package appeng.api.parts;
 import java.util.EnumSet;
 
 import net.minecraft.block.Block;
-import net.minecraft.client.renderer.RenderBlocks;
-import net.minecraft.util.IIcon;
-import net.minecraftforge.common.util.ForgeDirection;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+import appeng.client.render.IRenderHelper;
+import appeng.client.texture.IAESprite;
 
 
 public interface IPartRenderHelper
@@ -57,31 +57,27 @@ public interface IPartRenderHelper
 	 *
 	 * render a single face.
 	 *
-	 * @param x        x coord of part
-	 * @param y        y coord of part
-	 * @param z        z coord of part
+	 * @param pos	   POSITION of part
 	 * @param ico      icon of part
 	 * @param face     direction its facing
 	 * @param renderer renderer of part
 	 */
 	@SideOnly( Side.CLIENT )
-	void renderFace( int x, int y, int z, IIcon ico, ForgeDirection face, RenderBlocks renderer );
+	void renderFace( BlockPos pos, IAESprite ico, EnumFacing face, IRenderHelper renderer );
 
 	/**
 	 * static renderer
 	 *
 	 * render a box with a cut out box in the center.
 	 *
-	 * @param x             x pos of part
-	 * @param y             y pos of part
-	 * @param z             z pos of part
+	 * @param pos			pos of part
 	 * @param ico           icon of part
 	 * @param face          face of part
 	 * @param edgeThickness thickness of the edge
 	 * @param renderer      renderer
 	 */
 	@SideOnly( Side.CLIENT )
-	void renderFaceCutout( int x, int y, int z, IIcon ico, ForgeDirection face, float edgeThickness, RenderBlocks renderer );
+	void renderFaceCutout( BlockPos pos, IAESprite ico, EnumFacing face, float edgeThickness, IRenderHelper renderer );
 
 	/**
 	 * static renderer
@@ -94,17 +90,17 @@ public interface IPartRenderHelper
 	 * @param renderer renderer
 	 */
 	@SideOnly( Side.CLIENT )
-	void renderBlock( int x, int y, int z, RenderBlocks renderer );
+	void renderBlock( BlockPos pos, IRenderHelper renderer );
 
 	/**
 	 * render a single face in inventory renderer.
 	 *
-	 * @param IIcon     icon of part
+	 * @param TextureAtlasSprite     icon of part
 	 * @param direction face of part
 	 * @param renderer  renderer
 	 */
 	@SideOnly( Side.CLIENT )
-	void renderInventoryFace( IIcon IIcon, ForgeDirection direction, RenderBlocks renderer );
+	void renderInventoryFace( IAESprite IIcon, EnumFacing direction, IRenderHelper renderer );
 
 	/**
 	 * render a box in inventory renderer.
@@ -112,7 +108,7 @@ public interface IPartRenderHelper
 	 * @param renderer renderer
 	 */
 	@SideOnly( Side.CLIENT )
-	void renderInventoryBox( RenderBlocks renderer );
+	void renderInventoryBox( IRenderHelper renderer );
 
 	/**
 	 * inventory, and static renderer.
@@ -126,16 +122,16 @@ public interface IPartRenderHelper
 	 * @param west  west face
 	 * @param east  east face
 	 */
-	void setTexture( IIcon down, IIcon up, IIcon north, IIcon south, IIcon west, IIcon east );
+	void setTexture( IAESprite down, IAESprite up, IAESprite north, IAESprite south, IAESprite west, IAESprite east );
 
 	/**
 	 * inventory, and static renderer.
 	 *
-	 * set all sides to a single IIcon.
+	 * set all sides to a single TextureAtlasSprite.
 	 *
 	 * @param ico to be set icon
 	 */
-	void setTexture( IIcon ico );
+	void setTexture( IAESprite ico );
 
 	/**
 	 * configure the color multiplier for the inventory renderer.
@@ -152,30 +148,17 @@ public interface IPartRenderHelper
 	/**
 	 * @return the east vector in world directions, rather then renderer
 	 */
-	ForgeDirection getWorldX();
+	EnumFacing getWorldX();
 
 	/**
 	 * @return the up vector in world directions, rather then renderer.
 	 */
-	ForgeDirection getWorldY();
+	EnumFacing getWorldY();
 
 	/**
 	 * @return the forward vector in world directions, rather then renderer.
 	 */
-	ForgeDirection getWorldZ();
-
-	/**
-	 * Pre-Calculates default lighting for the part, call this before using the render helper to render anything else to
-	 * get simplified, but faster lighting for more then one block.
-	 *
-	 * Only worth it if you render more then 1 block.
-	 */
-	ISimplifiedBundle useSimplifiedRendering( int x, int y, int z, IBoxProvider p, ISimplifiedBundle sim );
-
-	/**
-	 * disables, useSimplifiedRendering.
-	 */
-	void normalRendering();
+	EnumFacing getWorldZ();
 
 	/**
 	 * render a block using the current renderer state.
@@ -185,7 +168,7 @@ public interface IPartRenderHelper
 	 * @param z        z pos of part
 	 * @param renderer renderer of part
 	 */
-	void renderBlockCurrentBounds( int x, int y, int z, RenderBlocks renderer );
+	void renderBlockCurrentBounds( BlockPos pos, IRenderHelper renderer );
 
 	/**
 	 * allow you to enable your part to render during the alpha pass or the standard pass.
@@ -199,5 +182,5 @@ public interface IPartRenderHelper
 	 *
 	 * @param complementOf sides to render
 	 */
-	void setFacesToRender( EnumSet<ForgeDirection> complementOf );
+	void setFacesToRender( EnumSet<EnumFacing> complementOf );
 }

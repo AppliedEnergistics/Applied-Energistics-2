@@ -33,26 +33,28 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import com.google.common.base.Preconditions;
-
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import appeng.api.AEApi;
 import appeng.api.implementations.items.IItemGroup;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHelper;
 import appeng.api.parts.IPartItem;
 import appeng.api.util.AEColor;
+import appeng.client.texture.BaseIcon;
+import appeng.client.texture.IAESprite;
+import appeng.client.texture.MissingIcon;
 import appeng.core.AEConfig;
+import appeng.core.AppEng;
 import appeng.core.features.AEFeature;
 import appeng.core.features.ItemStackSrc;
 import appeng.core.features.NameResolver;
@@ -60,6 +62,8 @@ import appeng.core.localization.GuiText;
 import appeng.integration.IntegrationRegistry;
 import appeng.integration.IntegrationType;
 import appeng.items.AEBaseItem;
+
+import com.google.common.base.Preconditions;
 
 
 public final class ItemMultiPart extends AEBaseItem implements IPartItem, IItemGroup
@@ -171,22 +175,17 @@ public final class ItemMultiPart extends AEBaseItem implements IPartItem, IItemG
 	}
 
 	@Override
-	@SideOnly( Side.CLIENT )
-	public int getSpriteNumber()
+	public boolean onItemUse(
+			ItemStack is,
+			EntityPlayer player,
+			World w,
+			BlockPos pos,
+			EnumFacing side,
+			float hitX,
+			float hitY,
+			float hitZ )
 	{
-		return 0;
-	}
-
-	@Override
-	public IIcon getIconFromDamage( int dmg )
-	{
-		return this.registered.get( dmg ).ico;
-	}
-
-	@Override
-	public boolean onItemUse( ItemStack is, EntityPlayer player, World w, int x, int y, int z, int side, float hitX, float hitY, float hitZ )
-	{
-		return AEApi.instance().partHelper().placeBus( is, x, y, z, side, player, w );
+		return AEApi.instance().partHelper().placeBus( is, pos, side, player, w );
 	}
 
 	@Override
@@ -195,6 +194,31 @@ public final class ItemMultiPart extends AEBaseItem implements IPartItem, IItemG
 		return "item.appliedenergistics2." + this.getName( is );
 	}
 
+	
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void registerCustomIcon(
+			TextureMap map )
+	{
+		for( Entry<Integer, PartTypeWithVariant> part : this.registered.entrySet() )
+		{
+			part.getValue().texture= new BaseIcon( map.registerSprite(  new ResourceLocation( AppEng.MOD_ID, "blocks/" + this.getName( new ItemStack( this, 1, part.getKey() ) ) )) );
+		}
+	}
+
+	@Override
+	public IAESprite getIcon(
+			ItemStack is )
+	{
+		for( Entry<Integer, PartTypeWithVariant> part : this.registered.entrySet() )
+		{
+			if ( is.getMetadata() == part.getKey() )
+				return part.getValue().texture;
+		}
+		
+		return new MissingIcon( this );
+	}
+	
 	@Override
 	public String getItemStackDisplayName( ItemStack is )
 	{
@@ -224,16 +248,6 @@ public final class ItemMultiPart extends AEBaseItem implements IPartItem, IItemG
 		for( Entry<Integer, PartTypeWithVariant> part : types )
 		{
 			cList.add( new ItemStack( this, 1, part.getKey() ) );
-		}
-	}
-
-	@Override
-	public void registerIcons( IIconRegister par1IconRegister )
-	{
-		for( Entry<Integer, PartTypeWithVariant> part : this.registered.entrySet() )
-		{
-			String tex = "appliedenergistics2:" + this.getName( new ItemStack( this, 1, part.getKey() ) );
-			part.getValue().ico = par1IconRegister.registerIcon( tex );
 		}
 	}
 
@@ -358,9 +372,9 @@ public final class ItemMultiPart extends AEBaseItem implements IPartItem, IItemG
 		private final PartType part;
 		private final int variant;
 
-		@SideOnly( Side.CLIENT )
-		private IIcon ico;
-
+		@SideOnly(Side.CLIENT)
+		public IAESprite texture = null;
+		
 		private PartTypeWithVariant( PartType part, int variant )
 		{
 			assert part != null;
@@ -379,4 +393,5 @@ public final class ItemMultiPart extends AEBaseItem implements IPartItem, IItemG
 			return o1.getValue().part.name().compareTo( o2.getValue().part.name() );
 		}
 	}
+
 }

@@ -25,9 +25,9 @@ import net.minecraft.block.Block;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.FullnessMode;
@@ -53,6 +53,7 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.api.util.AECableType;
+import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
 import appeng.core.settings.TickRates;
@@ -141,7 +142,7 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 	}
 
 	@Override
-	public AECableType getCableConnectionType( ForgeDirection dir )
+	public AECableType getCableConnectionType( AEPartLocation dir )
 	{
 		return AECableType.SMART;
 	}
@@ -173,7 +174,7 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 
 	public void updateRedstoneState()
 	{
-		YesNo currentState = this.worldObj.isBlockIndirectlyGettingPowered( this.xCoord, this.yCoord, this.zCoord ) ? YesNo.YES : YesNo.NO;
+		YesNo currentState = this.worldObj.isBlockIndirectlyGettingPowered( pos ) != 0 ? YesNo.YES : YesNo.NO;
 		if( this.lastRedstoneState != currentState )
 		{
 			this.lastRedstoneState = currentState;
@@ -266,7 +267,7 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 	}
 
 	@Override
-	public boolean canInsertItem( int slotIndex, ItemStack insertingItem, int side )
+	public boolean canInsertItem( int slotIndex, ItemStack insertingItem, EnumFacing side )
 	{
 		for( int inputSlotIndex : this.input )
 		{
@@ -280,7 +281,7 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 	}
 
 	@Override
-	public boolean canExtractItem( int slotIndex, ItemStack extractedItem, int side )
+	public boolean canExtractItem( int slotIndex, ItemStack extractedItem, EnumFacing side )
 	{
 		for( int outputSlotIndex : this.output )
 		{
@@ -294,9 +295,9 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 	}
 
 	@Override
-	public int[] getAccessibleSlotsBySide( ForgeDirection d )
+	public int[] getAccessibleSlotsBySide( EnumFacing d )
 	{
-		if( d == ForgeDirection.UP || d == ForgeDirection.DOWN )
+		if( d == EnumFacing.UP || d == EnumFacing.DOWN )
 		{
 			return this.input;
 		}
@@ -509,7 +510,7 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 	private boolean moveSlot( int x )
 	{
 		WrapperInventoryRange wir = new WrapperInventoryRange( this, this.output, true );
-		ItemStack result = InventoryAdaptor.getAdaptor( wir, ForgeDirection.UNKNOWN ).addItems( this.getStackInSlot( x ) );
+		ItemStack result = InventoryAdaptor.getAdaptor( wir, EnumFacing.UP ).addItems( this.getStackInSlot( x ) );
 
 		if( result == null )
 		{
@@ -562,9 +563,12 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 	 * @param drops drops of tile entity
 	 */
 	@Override
-	public void getDrops( World w, int x, int y, int z, List<ItemStack> drops )
+	public void getDrops(
+			World w,
+			BlockPos pos,
+			List<ItemStack> drops )
 	{
-		super.getDrops( w, x, y, z, drops );
+		super.getDrops( w, pos, drops );
 
 		for( int upgradeIndex = 0; upgradeIndex < this.upgrades.getSizeInventory(); upgradeIndex++ )
 		{

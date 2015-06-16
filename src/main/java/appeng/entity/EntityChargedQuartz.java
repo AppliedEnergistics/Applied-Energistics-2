@@ -27,9 +27,9 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
-
 import appeng.api.AEApi;
 import appeng.api.definitions.IMaterials;
 import appeng.client.EffectType;
@@ -78,7 +78,7 @@ public final class EntityChargedQuartz extends AEBaseEntityItem
 		int i = MathHelper.floor_double( this.posY );
 		int k = MathHelper.floor_double( this.posZ );
 
-		Material mat = this.worldObj.getBlock( j, i, k ).getMaterial();
+		Material mat = this.worldObj.getBlockState( new BlockPos( j, i, k ) ).getBlock().getMaterial();
 		if( Platform.isServer() && mat.isLiquid() )
 		{
 			this.transformTime++;
@@ -103,7 +103,7 @@ public final class EntityChargedQuartz extends AEBaseEntityItem
 
 		if( materials.certusQuartzCrystalCharged().isSameAs( item ) )
 		{
-			AxisAlignedBB region = AxisAlignedBB.getBoundingBox( this.posX - 1, this.posY - 1, this.posZ - 1, this.posX + 1, this.posY + 1, this.posZ + 1 );
+			AxisAlignedBB region = AxisAlignedBB.fromBounds( this.posX - 1, this.posY - 1, this.posZ - 1, this.posX + 1, this.posY + 1, this.posZ + 1 );
 			List<Entity> l = this.getCheckedEntitiesWithinAABBExcludingEntity( region );
 
 			EntityItem redstone = null;

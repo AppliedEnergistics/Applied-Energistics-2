@@ -21,9 +21,9 @@ package appeng.me.cluster.implementations;
 
 import net.minecraft.block.Block;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-
 import appeng.api.AEApi;
 import appeng.api.definitions.IBlockDefinition;
 import appeng.api.definitions.IBlocks;
@@ -78,7 +78,8 @@ public class QuantumCalculator extends MBCalculator
 			{
 				for( int z = min.z; z <= max.z; z++ )
 				{
-					IAEMultiBlock te = (IAEMultiBlock) w.getTileEntity( x, y, z );
+					BlockPos p = new BlockPos( x, y, z );
+					IAEMultiBlock te = (IAEMultiBlock) w.getTileEntity( p );
 
 					if( !te.isValid() )
 					{
@@ -89,14 +90,14 @@ public class QuantumCalculator extends MBCalculator
 					final IBlocks blocks = AEApi.instance().definitions().blocks();
 					if( num == 5 )
 					{
-						if( !this.isBlockAtLocation( w, x, y, z, blocks.quantumLink() ) )
+						if( !this.isBlockAtLocation( w, p, blocks.quantumLink() ) )
 						{
 							return false;
 						}
 					}
 					else
 					{
-						if( !this.isBlockAtLocation( w, x, y, z, blocks.quantumRing() ) )
+						if( !this.isBlockAtLocation( w, p, blocks.quantumRing() ) )
 						{
 							return false;
 						}
@@ -126,7 +127,7 @@ public class QuantumCalculator extends MBCalculator
 			{
 				for( int z = min.z; z <= max.z; z++ )
 				{
-					TileQuantumBridge te = (TileQuantumBridge) w.getTileEntity( x, y, z );
+					TileQuantumBridge te = (TileQuantumBridge) w.getTileEntity( new BlockPos( x, y, z ) );
 
 					byte flags;
 
@@ -162,11 +163,11 @@ public class QuantumCalculator extends MBCalculator
 		return te instanceof TileQuantumBridge;
 	}
 
-	private boolean isBlockAtLocation( IBlockAccess w, int x, int y, int z, IBlockDefinition def )
+	private boolean isBlockAtLocation( IBlockAccess w, BlockPos pos, IBlockDefinition def )
 	{
 		for( Block block : def.maybeBlock().asSet() )
 		{
-			return block == w.getBlock( x, y, z );
+			return block == w.getBlockState( pos ).getBlock();
 		}
 
 		return false;

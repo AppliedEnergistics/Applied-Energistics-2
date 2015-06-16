@@ -22,15 +22,12 @@ package appeng.integration.modules;
 import java.lang.reflect.Method;
 
 import net.minecraft.block.Block;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
-import net.minecraftforge.common.util.ForgeDirection;
-
-import cpw.mods.fml.common.event.FMLInterModComms;
-
+import net.minecraftforge.fml.common.event.FMLInterModComms;
 import buildcraft.BuildCraftEnergy;
 import buildcraft.BuildCraftTransport;
 import buildcraft.api.blueprints.BuilderAPI;
@@ -45,7 +42,6 @@ import buildcraft.api.transport.IPipeConnection;
 import buildcraft.api.transport.IPipeTile;
 import buildcraft.transport.ItemFacade;
 import buildcraft.transport.PipeIconProvider;
-
 import appeng.api.AEApi;
 import appeng.api.IAppEngApi;
 import appeng.api.config.TunnelType;
@@ -54,6 +50,7 @@ import appeng.api.definitions.IBlocks;
 import appeng.api.features.IP2PTunnelRegistry;
 import appeng.api.parts.IFacadePart;
 import appeng.api.util.AEItemDefinition;
+import appeng.api.util.ForgeDirection;
 import appeng.api.util.IOrientableBlock;
 import appeng.facade.FacadePart;
 import appeng.integration.BaseModule;
@@ -269,7 +266,7 @@ public final class BC extends BaseModule implements IBC
 	}
 
 	@Override
-	public IIcon getFacadeTexture()
+	public TextureAtlasSprite getFacadeTexture()
 	{
 		try
 		{

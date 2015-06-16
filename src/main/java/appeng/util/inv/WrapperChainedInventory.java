@@ -24,11 +24,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.google.common.collect.ImmutableList;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.IChatComponent;
+
+import com.google.common.collect.ImmutableList;
 
 
 public class WrapperChainedInventory implements IInventory
@@ -167,13 +168,13 @@ public class WrapperChainedInventory implements IInventory
 	}
 
 	@Override
-	public String getInventoryName()
+	public String getName()
 	{
 		return "ChainedInv";
 	}
 
 	@Override
-	public boolean hasCustomInventoryName()
+	public boolean hasCustomName()
 	{
 		return false;
 	}
@@ -205,14 +206,16 @@ public class WrapperChainedInventory implements IInventory
 	{
 		return false;
 	}
-
+	
 	@Override
-	public void openInventory()
+	public void openInventory(
+			EntityPlayer player )
 	{
 	}
-
+	
 	@Override
-	public void closeInventory()
+	public void closeInventory(
+			EntityPlayer player )
 	{
 	}
 
@@ -233,5 +236,38 @@ public class WrapperChainedInventory implements IInventory
 		int offset;
 		int size;
 		IInventory i;
+	}
+
+	@Override
+	public IChatComponent getDisplayName()
+	{
+		return null;
+	}
+
+	@Override
+	public int getField(
+			int id )
+	{
+		return 0;
+	}
+
+	@Override
+	public void setField(
+			int id,
+			int value )
+	{
+		
+	}
+
+	@Override
+	public int getFieldCount()
+	{
+		return 0;
+	}
+
+	@Override
+	public void clear()
+	{
+		
 	}
 }

@@ -24,10 +24,8 @@ import java.util.List;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.oredict.OreDictionary;
-
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-
 import appeng.core.AELog;
 import appeng.recipes.game.IRecipeBakeable;
 

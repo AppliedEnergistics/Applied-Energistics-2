@@ -19,11 +19,9 @@
 package appeng.integration.modules.BCHelpers;
 
 
-import net.minecraftforge.common.util.ForgeDirection;
-
 import buildcraft.api.blueprints.IBuilderContext;
 import buildcraft.api.blueprints.SchematicBlock;
-
+import appeng.api.util.ForgeDirection;
 import appeng.util.Platform;
 
 

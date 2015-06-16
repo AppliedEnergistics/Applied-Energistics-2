@@ -20,8 +20,6 @@ package appeng.tile.networking;
 
 
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
@@ -29,6 +27,8 @@ import appeng.api.networking.energy.IAEPowerStorage;
 import appeng.api.networking.events.MENetworkPowerStorage;
 import appeng.api.networking.events.MENetworkPowerStorage.PowerEventType;
 import appeng.api.util.AECableType;
+import appeng.api.util.AEPartLocation;
+import appeng.block.networking.BlockEnergyCell;
 import appeng.me.GridAccessException;
 import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
@@ -39,6 +39,7 @@ import appeng.util.SettingsFrom;
 public class TileEnergyCell extends AENetworkTile implements IAEPowerStorage
 {
 
+	
 	protected double internalCurrentPower = 0.0;
 	protected double internalMaxPower = 200000.0;
 
@@ -50,7 +51,7 @@ public class TileEnergyCell extends AENetworkTile implements IAEPowerStorage
 	}
 
 	@Override
-	public AECableType getCableConnectionType( ForgeDirection dir )
+	public AECableType getCableConnectionType( AEPartLocation dir )
 	{
 		return AECableType.COVERED;
 	}
@@ -59,7 +60,8 @@ public class TileEnergyCell extends AENetworkTile implements IAEPowerStorage
 	public void onReady()
 	{
 		super.onReady();
-		this.currentMeta = (byte) this.worldObj.getBlockMetadata( this.xCoord, this.yCoord, this.zCoord );
+		int value =  ( Integer ) this.worldObj.getBlockState( pos ).getValue( BlockEnergyCell.ENERGY_STORAGE );
+		currentMeta = (byte)value;
 		this.changePowerLevel();
 	}
 
@@ -84,7 +86,7 @@ public class TileEnergyCell extends AENetworkTile implements IAEPowerStorage
 		if( this.currentMeta != boundMetadata )
 		{
 			this.currentMeta = boundMetadata;
-			this.worldObj.setBlockMetadataWithNotify( this.xCoord, this.yCoord, this.zCoord, this.currentMeta, 2 );
+			this.worldObj.setBlockState( pos, this.worldObj.getBlockState( pos ).withProperty( BlockEnergyCell.ENERGY_STORAGE, (int)boundMetadata ) );
 		}
 	}
 

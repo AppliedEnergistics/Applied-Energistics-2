@@ -19,15 +19,15 @@
 package appeng.core.features;
 
 
-import com.google.common.base.Optional;
-import com.google.common.base.Preconditions;
-
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.IBlockAccess;
-
 import appeng.api.definitions.IItemDefinition;
 import appeng.util.Platform;
+
+import com.google.common.base.Optional;
+import com.google.common.base.Preconditions;
 
 
 public class ItemDefinition implements IItemDefinition
@@ -70,7 +70,7 @@ public class ItemDefinition implements IItemDefinition
 	}
 
 	@Override
-	public boolean isSameAs( IBlockAccess world, int x, int y, int z )
+	public boolean isSameAs( IBlockAccess world, BlockPos pos )
 	{
 		return false;
 	}

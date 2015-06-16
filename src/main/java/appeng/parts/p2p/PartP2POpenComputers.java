@@ -20,16 +20,14 @@ package appeng.parts.p2p;
 
 
 import java.util.concurrent.Callable;
+
 import javax.annotation.Nullable;
 
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.IIcon;
-import net.minecraftforge.common.util.ForgeDirection;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import li.cil.oc.api.API;
 import li.cil.oc.api.Items;
 import li.cil.oc.api.Network;
@@ -38,11 +36,11 @@ import li.cil.oc.api.network.Message;
 import li.cil.oc.api.network.Node;
 import li.cil.oc.api.network.SidedEnvironment;
 import li.cil.oc.api.network.Visibility;
-
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
+import appeng.api.util.ForgeDirection;
 import appeng.core.AELog;
 import appeng.core.settings.TickRates;
 import appeng.hooks.TickHandler;
@@ -85,7 +83,7 @@ public final class PartP2POpenComputers extends PartP2PTunnel<PartP2POpenCompute
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public IIcon getTypeTexture()
+	public TextureAtlasSprite getTypeTexture()
 	{
 		return Items.get( "adapter" ).block().getBlockTextureFromSide( 2 );
 	}
@@ -149,7 +147,7 @@ public final class PartP2POpenComputers extends PartP2PTunnel<PartP2POpenCompute
 			{
 				if ( this.node() != null ) // Client side doesn't have nodes.
 				{
-					TickHandler.INSTANCE.addCallable( this.tile.getWorldObj(), this.updateCallback );
+					TickHandler.INSTANCE.addCallable( this.tile.getWorld(), this.updateCallback );
 				}
 
 				return TickRateModulation.SLEEP;

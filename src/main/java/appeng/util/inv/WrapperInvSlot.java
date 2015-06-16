@@ -22,6 +22,7 @@ package appeng.util.inv;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.IChatComponent;
 
 
 public class WrapperInvSlot
@@ -87,18 +88,6 @@ public class WrapperInvSlot
 		}
 
 		@Override
-		public String getInventoryName()
-		{
-			return this.inv.getInventoryName();
-		}
-
-		@Override
-		public boolean hasCustomInventoryName()
-		{
-			return this.inv.hasCustomInventoryName();
-		}
-
-		@Override
 		public int getInventoryStackLimit()
 		{
 			return this.inv.getInventoryStackLimit();
@@ -117,21 +106,68 @@ public class WrapperInvSlot
 		}
 
 		@Override
-		public void openInventory()
+		public String getName()
 		{
-			this.inv.openInventory();
+			return this.inv.getName();
 		}
 
 		@Override
-		public void closeInventory()
+		public boolean hasCustomName()
 		{
-			this.inv.closeInventory();
+			return this.inv.hasCustomName();
 		}
 
+		@Override
+		public void openInventory(
+				EntityPlayer player )
+		{
+			this.inv.openInventory(player);			
+		}
+		
+		@Override
+		public void closeInventory(
+				EntityPlayer player )
+		{
+			this.inv.closeInventory(player);			
+		}
+
+		@Override
+		public void clear()
+		{
+			this.inv.clear();
+		}
+		
+		@Override
+		public int getField(
+				int id )
+		{
+			return inv.getField( id );
+		}
+		
+		@Override
+		public int getFieldCount()
+		{
+			return this.inv.getFieldCount();
+		}
+		
 		@Override
 		public boolean isItemValidForSlot( int i, ItemStack itemstack )
 		{
 			return WrapperInvSlot.this.isItemValid( itemstack ) && this.inv.isItemValidForSlot( this.slot, itemstack );
+		}
+
+		@Override
+		public IChatComponent getDisplayName()
+		{
+			return inv.getDisplayName();
+		}
+
+		@Override
+		public void setField(
+				int id,
+				int value )
+		{
+			inv.setField( id, value );
 		}
 	}
 }

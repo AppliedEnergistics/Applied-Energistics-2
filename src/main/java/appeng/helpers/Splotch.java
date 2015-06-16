@@ -20,22 +20,20 @@ package appeng.helpers;
 
 
 import io.netty.buffer.ByteBuf;
-
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.Vec3;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.api.util.AEColor;
 
 
 public class Splotch
 {
 
-	public final ForgeDirection side;
+	public final EnumFacing side;
 	public final boolean lumen;
 	public final AEColor color;
 	private final int pos;
 
-	public Splotch( AEColor col, boolean lit, ForgeDirection side, Vec3 position )
+	public Splotch( AEColor col, boolean lit, EnumFacing side, Vec3 position )
 	{
 		this.color = col;
 		this.lumen = lit;
@@ -43,13 +41,13 @@ public class Splotch
 		double x;
 		double y;
 
-		if( side == ForgeDirection.SOUTH || side == ForgeDirection.NORTH )
+		if( side == EnumFacing.SOUTH || side == EnumFacing.NORTH )
 		{
 			x = position.xCoord;
 			y = position.yCoord;
 		}
 
-		else if( side == ForgeDirection.UP || side == ForgeDirection.DOWN )
+		else if( side == EnumFacing.UP || side == EnumFacing.DOWN )
 		{
 			x = position.xCoord;
 			y = position.zCoord;
@@ -74,7 +72,7 @@ public class Splotch
 		this.pos = data.readByte();
 		int val = data.readByte();
 
-		this.side = ForgeDirection.getOrientation( val & 0x07 );
+		this.side = EnumFacing.VALUES[ val & 0x07 ];
 		this.color = AEColor.values()[( val >> 3 ) & 0x0F];
 		this.lumen = ( ( val >> 7 ) & 0x01 ) > 0;
 	}

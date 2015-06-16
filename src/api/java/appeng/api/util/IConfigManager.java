@@ -27,7 +27,6 @@ package appeng.api.util;
 import java.util.Set;
 
 import net.minecraft.nbt.NBTTagCompound;
-
 import appeng.api.config.Settings;
 
 

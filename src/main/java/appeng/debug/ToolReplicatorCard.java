@@ -22,20 +22,22 @@ package appeng.debug;
 import java.util.EnumSet;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.spatial.ISpatialCache;
+import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.core.features.AEFeature;
 import appeng.items.AEBaseItem;
@@ -48,25 +50,37 @@ public class ToolReplicatorCard extends AEBaseItem
 	{
 		this.setFeature( EnumSet.of( AEFeature.UnsupportedDeveloperTools, AEFeature.Creative ) );
 	}
-
+	
 	@Override
-	public boolean onItemUseFirst( ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ )
+	public boolean onItemUseFirst(
+			ItemStack stack,
+			EntityPlayer player,
+			World world,
+			BlockPos pos,
+			EnumFacing side,
+			float hitX,
+			float hitY,
+			float hitZ )
 	{
 		if( Platform.isClient() )
 		{
 			return false;
 		}
 
+		int x = pos.getX();
+		int y = pos.getY();
+		int z = pos.getZ();
+		
 		if( player.isSneaking() )
 		{
-			if( world.getTileEntity( x, y, z ) instanceof IGridHost )
+			if( world.getTileEntity( pos ) instanceof IGridHost )
 			{
 				NBTTagCompound tag = new NBTTagCompound();
 				tag.setInteger( "x", x );
 				tag.setInteger( "y", y );
 				tag.setInteger( "z", z );
-				tag.setInteger( "side", side );
-				tag.setInteger( "dimid", world.provider.dimensionId );
+				tag.setInteger( "side", side.ordinal() );
+				tag.setInteger( "dimid", world.provider.getDimensionId() );
 				stack.setTagCompound( tag );
 			}
 			else
@@ -86,13 +100,13 @@ public class ToolReplicatorCard extends AEBaseItem
 				int dimid = ish.getInteger( "dimid" );
 				World src_w = DimensionManager.getWorld( dimid );
 
-				TileEntity te = src_w.getTileEntity( src_x, src_y, src_z );
+				TileEntity te = src_w.getTileEntity( new BlockPos( src_x, src_y, src_z ) );
 				if( te instanceof IGridHost )
 				{
 					IGridHost gh = (IGridHost) te;
-					ForgeDirection sideOff = ForgeDirection.getOrientation( src_side );
-					ForgeDirection currentSideOff = ForgeDirection.getOrientation( side );
-					IGridNode n = gh.getGridNode( sideOff );
+					EnumFacing sideOff = EnumFacing.VALUES[src_side];
+					EnumFacing currentSideOff = side;
+					IGridNode n = gh.getGridNode( AEPartLocation.fromFacing( sideOff ) );
 					if( n != null )
 					{
 						IGrid g = n.getGrid();
@@ -104,9 +118,9 @@ public class ToolReplicatorCard extends AEBaseItem
 								DimensionalCoord min = sc.getMin();
 								DimensionalCoord max = sc.getMax();
 
-								x += currentSideOff.offsetX;
-								y += currentSideOff.offsetY;
-								z += currentSideOff.offsetZ;
+								x += currentSideOff.getFrontOffsetX();
+								y += currentSideOff.getFrontOffsetY();
+								z += currentSideOff.getFrontOffsetZ();
 
 								int min_x = min.x;
 								int min_y = min.y;
@@ -126,20 +140,22 @@ public class ToolReplicatorCard extends AEBaseItem
 									{
 										for( int k = 1; k < scale_z; k++ )
 										{
-											Block blk = src_w.getBlock( min_x + i, min_y + j, min_z + k );
-											int meta = src_w.getBlockMetadata( min_x + i, min_y + j, min_z + k );
-											world.setBlock( i + rel_x, j + rel_y, k + rel_z, blk, meta, 4 );
-
-											if( blk != null && blk.hasTileEntity( meta ) )
+											BlockPos p = new BlockPos( min_x + i, min_y + j, min_z + k  );
+											BlockPos d = new BlockPos( i + rel_x, j + rel_y, k + rel_z );
+											IBlockState state = src_w.getBlockState( p );
+											Block blk = state.getBlock();
+											
+											world.setBlockState( d, state );
+											if( blk != null && blk.hasTileEntity( state ) )
 											{
-												TileEntity ote = src_w.getTileEntity( min_x + i, min_y + j, min_z + k );
-												TileEntity nte = blk.createTileEntity( world, meta );
+												TileEntity ote = src_w.getTileEntity( p );
+												TileEntity nte = blk.createTileEntity( world, state );
 												NBTTagCompound data = new NBTTagCompound();
 												ote.writeToNBT( data );
 												nte.readFromNBT( (NBTTagCompound) data.copy() );
-												world.setTileEntity( i + rel_x, j + rel_y, k + rel_z, nte );
+												world.setTileEntity( d, nte );
 											}
-											world.markBlockForUpdate( i + rel_x, j + rel_y, k + rel_z );
+											world.markBlockForUpdate( d );
 										}
 									}
 								}

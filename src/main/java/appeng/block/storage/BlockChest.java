@@ -24,11 +24,13 @@ import java.util.EnumSet;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumWorldBlockLayer;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.api.AEApi;
 import appeng.api.storage.ICellHandler;
+import appeng.api.util.AEPartLocation;
 import appeng.block.AEBaseTileBlock;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.blocks.RenderMEChest;
@@ -41,12 +43,18 @@ import appeng.util.Platform;
 
 public class BlockChest extends AEBaseTileBlock
 {
-
+	
 	public BlockChest()
 	{
 		super( Material.iron );
 		this.setTileEntity( TileChest.class );
 		this.setFeature( EnumSet.of( AEFeature.StorageCells, AEFeature.MEChest ) );
+	}
+
+	@Override
+	public EnumWorldBlockLayer getBlockLayer()
+	{
+		return EnumWorldBlockLayer.CUTOUT;
 	}
 
 	@Override
@@ -56,9 +64,16 @@ public class BlockChest extends AEBaseTileBlock
 	}
 
 	@Override
-	public boolean onActivated( World w, int x, int y, int z, EntityPlayer p, int side, float hitX, float hitY, float hitZ )
+	public boolean onActivated(
+			World w,
+			BlockPos pos,
+			EntityPlayer p,
+			EnumFacing side,
+			float hitX,
+			float hitY,
+			float hitZ )
 	{
-		TileChest tg = this.getTileEntity( w, x, y, z );
+		TileChest tg = this.getTileEntity( w, pos );
 		if( tg != null && !p.isSneaking() )
 		{
 			if( Platform.isClient() )
@@ -66,9 +81,9 @@ public class BlockChest extends AEBaseTileBlock
 				return true;
 			}
 
-			if( side != tg.getUp().ordinal() )
+			if( side != tg.getUp() )
 			{
-				Platform.openGUI( p, tg, ForgeDirection.getOrientation( side ), GuiBridge.GUI_CHEST );
+				Platform.openGUI( p, tg, AEPartLocation.fromFacing( side ), GuiBridge.GUI_CHEST );
 			}
 			else
 			{

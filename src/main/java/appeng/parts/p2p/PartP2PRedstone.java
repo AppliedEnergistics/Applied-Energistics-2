@@ -21,15 +21,12 @@ package appeng.parts.p2p;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRedstoneWire;
-import net.minecraft.init.Blocks;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
 import appeng.api.networking.events.MENetworkBootingStatusChange;
 import appeng.api.networking.events.MENetworkChannelsChanged;
 import appeng.api.networking.events.MENetworkEventSubscribe;
@@ -89,21 +86,13 @@ public class PartP2PRedstone extends PartP2PTunnel<PartP2PRedstone>
 
 	public void notifyNeighbors()
 	{
-		World worldObj = this.tile.getWorldObj();
+		World worldObj = this.tile.getWorld();
 
-		int xCoord = this.tile.xCoord;
-		int yCoord = this.tile.yCoord;
-		int zCoord = this.tile.zCoord;
-
-		Platform.notifyBlocksOfNeighbors( worldObj, xCoord, yCoord, zCoord );
+		Platform.notifyBlocksOfNeighbors( worldObj,tile.getPos());
 
 		// and this cause sometimes it can go thought walls.
-		Platform.notifyBlocksOfNeighbors( worldObj, xCoord - 1, yCoord, zCoord );
-		Platform.notifyBlocksOfNeighbors( worldObj, xCoord, yCoord - 1, zCoord );
-		Platform.notifyBlocksOfNeighbors( worldObj, xCoord, yCoord, zCoord - 1 );
-		Platform.notifyBlocksOfNeighbors( worldObj, xCoord, yCoord, zCoord + 1 );
-		Platform.notifyBlocksOfNeighbors( worldObj, xCoord, yCoord + 1, zCoord );
-		Platform.notifyBlocksOfNeighbors( worldObj, xCoord + 1, yCoord, zCoord );
+		for ( EnumFacing face : EnumFacing.VALUES )
+			Platform.notifyBlocksOfNeighbors( worldObj,tile.getPos().offset( face ) );
 	}
 
 	@MENetworkEventSubscribe
@@ -116,13 +105,6 @@ public class PartP2PRedstone extends PartP2PTunnel<PartP2PRedstone>
 	public void changeStateC( MENetworkPowerStatusChange bs )
 	{
 		this.setNetworkReady();
-	}
-
-	@Override
-	@SideOnly( Side.CLIENT )
-	public IIcon getTypeTexture()
-	{
-		return Blocks.redstone_block.getBlockTextureFromSide( 0 );
 	}
 
 	@Override
@@ -155,20 +137,20 @@ public class PartP2PRedstone extends PartP2PTunnel<PartP2PRedstone>
 	{
 		if( !this.output )
 		{
-			int x = this.tile.xCoord + this.side.offsetX;
-			int y = this.tile.yCoord + this.side.offsetY;
-			int z = this.tile.zCoord + this.side.offsetZ;
+			BlockPos target = tile.getPos().offset( side.getFacing() );
 
-			Block b = this.tile.getWorldObj().getBlock( x, y, z );
+			IBlockState state = this.tile.getWorld().getBlockState( target );
+			Block b = state.getBlock();
 			if( b != null && !this.output )
 			{
-				int srcSide = this.side.ordinal();
+				EnumFacing srcSide = this.side.getFacing();
 				if( b instanceof BlockRedstoneWire )
 				{
-					srcSide = 1;
+					srcSide = EnumFacing.UP;
 				}
-				this.power = b.isProvidingStrongPower( this.tile.getWorldObj(), x, y, z, srcSide );
-				this.power = Math.max( this.power, b.isProvidingWeakPower( this.tile.getWorldObj(), x, y, z, srcSide ) );
+				
+				this.power = b.isProvidingStrongPower( this.tile.getWorld(), target,state, srcSide );
+				this.power = Math.max( this.power, b.isProvidingWeakPower( this.tile.getWorld(), target, state, srcSide ) );
 				this.sendToOutput( this.power );
 			}
 			else

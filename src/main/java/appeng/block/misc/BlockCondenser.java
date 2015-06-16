@@ -23,9 +23,10 @@ import java.util.EnumSet;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-
+import appeng.api.util.AEPartLocation;
 import appeng.block.AEBaseTileBlock;
 import appeng.core.features.AEFeature;
 import appeng.core.sync.GuiBridge;
@@ -45,7 +46,14 @@ public class BlockCondenser extends AEBaseTileBlock
 	}
 
 	@Override
-	public boolean onActivated( World w, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ )
+	public boolean onActivated(
+			World w,
+			BlockPos pos,
+			EntityPlayer player,
+			EnumFacing side,
+			float hitX,
+			float hitY,
+			float hitZ )
 	{
 		if( player.isSneaking() )
 		{
@@ -54,10 +62,10 @@ public class BlockCondenser extends AEBaseTileBlock
 
 		if( Platform.isServer() )
 		{
-			TileCondenser tc = this.getTileEntity( w, x, y, z );
+			TileCondenser tc = this.getTileEntity( w, pos );
 			if( tc != null && !player.isSneaking() )
 			{
-				Platform.openGUI( player, tc, ForgeDirection.getOrientation( side ), GuiBridge.GUI_CONDENSER );
+				Platform.openGUI( player, tc, AEPartLocation.fromFacing( side ), GuiBridge.GUI_CONDENSER );
 				return true;
 			}
 		}

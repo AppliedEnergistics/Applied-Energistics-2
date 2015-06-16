@@ -22,26 +22,23 @@ package appeng.block;
 import java.util.List;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
-import net.minecraftforge.client.MinecraftForgeClient;
-import net.minecraftforge.common.util.ForgeDirection;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import appeng.api.util.IOrientable;
 import appeng.api.util.IOrientableBlock;
 import appeng.block.misc.BlockLightDetector;
 import appeng.block.misc.BlockSkyCompass;
 import appeng.block.networking.BlockWireless;
-import appeng.client.render.ItemRenderer;
 import appeng.me.helpers.IGridProxyable;
 import appeng.tile.AEBaseTile;
-import appeng.util.Platform;
 
 
 public class AEBaseItemBlock extends ItemBlock
@@ -54,11 +51,6 @@ public class AEBaseItemBlock extends ItemBlock
 		super( id );
 		this.blockType = (AEBaseBlock) id;
 		this.hasSubtypes = this.blockType.hasSubtypes;
-
-		if( Platform.isClient() )
-		{
-			MinecraftForgeClient.registerItemRenderer( this, ItemRenderer.INSTANCE );
-		}
 	}
 
 	@Override
@@ -96,12 +88,21 @@ public class AEBaseItemBlock extends ItemBlock
 	{
 		return this.blockType.getUnlocalizedName( is );
 	}
-
+	
 	@Override
-	public boolean placeBlockAt( ItemStack stack, EntityPlayer player, World w, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int metadata )
+	public boolean placeBlockAt(
+			ItemStack stack,
+			EntityPlayer player,
+			World w,
+			BlockPos pos,
+			EnumFacing side,
+			float hitX,
+			float hitY,
+			float hitZ,
+			IBlockState newState )
 	{
-		ForgeDirection up = ForgeDirection.UNKNOWN;
-		ForgeDirection forward = ForgeDirection.UNKNOWN;
+		EnumFacing up = null;
+		EnumFacing forward = null;
 
 		IOrientable ori = null;
 
@@ -109,31 +110,31 @@ public class AEBaseItemBlock extends ItemBlock
 		{
 			if( this.blockType instanceof BlockLightDetector )
 			{
-				up = ForgeDirection.getOrientation( side );
-				if( up == ForgeDirection.UP || up == ForgeDirection.DOWN )
+				up = side;
+				if( up == EnumFacing.UP || up == EnumFacing.DOWN )
 				{
-					forward = ForgeDirection.SOUTH;
+					forward = EnumFacing.SOUTH;
 				}
 				else
 				{
-					forward = ForgeDirection.UP;
+					forward = EnumFacing.UP;
 				}
 			}
 			else if( this.blockType instanceof BlockWireless || this.blockType instanceof BlockSkyCompass )
 			{
-				forward = ForgeDirection.getOrientation( side );
-				if( forward == ForgeDirection.UP || forward == ForgeDirection.DOWN )
+				forward = side;
+				if( forward == EnumFacing.UP || forward == EnumFacing.DOWN )
 				{
-					up = ForgeDirection.SOUTH;
+					up = EnumFacing.SOUTH;
 				}
 				else
 				{
-					up = ForgeDirection.UP;
+					up = EnumFacing.UP;
 				}
 			}
 			else
 			{
-				up = ForgeDirection.UP;
+				up = EnumFacing.UP;
 
 				byte rotation = (byte) ( MathHelper.floor_double( ( player.rotationYaw * 4F ) / 360F + 2.5D ) & 3 );
 
@@ -141,53 +142,53 @@ public class AEBaseItemBlock extends ItemBlock
 				{
 					default:
 					case 0:
-						forward = ForgeDirection.SOUTH;
+						forward = EnumFacing.SOUTH;
 						break;
 					case 1:
-						forward = ForgeDirection.WEST;
+						forward = EnumFacing.WEST;
 						break;
 					case 2:
-						forward = ForgeDirection.NORTH;
+						forward = EnumFacing.NORTH;
 						break;
 					case 3:
-						forward = ForgeDirection.EAST;
+						forward = EnumFacing.EAST;
 						break;
 				}
 
 				if( player.rotationPitch > 65 )
 				{
 					up = forward.getOpposite();
-					forward = ForgeDirection.UP;
+					forward = EnumFacing.UP;
 				}
 				else if( player.rotationPitch < -65 )
 				{
 					up = forward.getOpposite();
-					forward = ForgeDirection.DOWN;
+					forward = EnumFacing.DOWN;
 				}
 			}
 		}
 
 		if( this.blockType instanceof IOrientableBlock )
 		{
-			ori = ( (IOrientableBlock) this.blockType ).getOrientable( w, x, y, z );
-			up = ForgeDirection.getOrientation( side );
-			forward = ForgeDirection.SOUTH;
-			if( up.offsetY == 0 )
+			ori = ( (IOrientableBlock) this.blockType ).getOrientable( w, pos );
+			up = side;
+			forward = EnumFacing.SOUTH;
+			if( up.getFrontOffsetY() == 0 )
 			{
-				forward = ForgeDirection.UP;
+				forward = EnumFacing.UP;
 			}
 		}
 
-		if( !this.blockType.isValidOrientation( w, x, y, z, forward, up ) )
+		if( !this.blockType.isValidOrientation( w, pos, forward, up ) )
 		{
 			return false;
 		}
 
-		if( super.placeBlockAt( stack, player, w, x, y, z, side, hitX, hitY, hitZ, metadata ) )
+		if( super.placeBlockAt( stack, player, w, pos, side, hitX, hitY, hitZ, newState ) )
 		{
 			if( this.blockType instanceof AEBaseTileBlock && !( this.blockType instanceof BlockLightDetector ) )
 			{
-				AEBaseTile tile = ( (AEBaseTileBlock) this.blockType ).getTileEntity( w, x, y, z );
+				AEBaseTile tile = ( (AEBaseTileBlock) this.blockType ).getTileEntity( w, pos );
 				ori = tile;
 
 				if( tile == null )
@@ -197,8 +198,7 @@ public class AEBaseItemBlock extends ItemBlock
 
 				if( ori.canBeRotated() && !this.blockType.hasCustomRotation() )
 				{
-					if( ori.getForward() == null || ori.getUp() == null || // null
-					tile.getForward() == ForgeDirection.UNKNOWN || ori.getUp() == ForgeDirection.UNKNOWN )
+					if( ori.getForward() == null || ori.getUp() == null )
 					{
 						ori.setOrientation( forward, up );
 					}

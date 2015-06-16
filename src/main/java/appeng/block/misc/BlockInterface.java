@@ -23,9 +23,10 @@ import java.util.EnumSet;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-
+import appeng.api.util.AEPartLocation;
 import appeng.api.util.IOrientable;
 import appeng.block.AEBaseTileBlock;
 import appeng.client.render.BaseBlockRender;
@@ -54,19 +55,26 @@ public class BlockInterface extends AEBaseTileBlock
 	}
 
 	@Override
-	public boolean onActivated( World w, int x, int y, int z, EntityPlayer p, int side, float hitX, float hitY, float hitZ )
+	public boolean onActivated(
+			World w,
+			BlockPos pos,
+			EntityPlayer p,
+			EnumFacing side,
+			float hitX,
+			float hitY,
+			float hitZ )
 	{
 		if( p.isSneaking() )
 		{
 			return false;
 		}
 
-		TileInterface tg = this.getTileEntity( w, x, y, z );
+		TileInterface tg = this.getTileEntity( w, pos );
 		if( tg != null )
 		{
 			if( Platform.isServer() )
 			{
-				Platform.openGUI( p, tg, ForgeDirection.getOrientation( side ), GuiBridge.GUI_INTERFACE );
+				Platform.openGUI( p, tg, AEPartLocation.fromFacing( side ), GuiBridge.GUI_INTERFACE );
 			}
 			return true;
 		}
@@ -80,11 +88,11 @@ public class BlockInterface extends AEBaseTileBlock
 	}
 
 	@Override
-	protected void customRotateBlock( IOrientable rotatable, ForgeDirection axis )
+	protected void customRotateBlock( IOrientable rotatable, EnumFacing axis )
 	{
 		if( rotatable instanceof TileInterface )
 		{
-			( (TileInterface) rotatable ).setSide( axis );
+			( (TileInterface) rotatable ).setSide( AEPartLocation.fromFacing( axis ) );
 		}
 	}
 }

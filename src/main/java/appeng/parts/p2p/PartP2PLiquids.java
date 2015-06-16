@@ -24,19 +24,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
 
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
 import appeng.me.GridAccessException;
 
 
@@ -60,13 +54,6 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 	}
 
 	@Override
-	@SideOnly( Side.CLIENT )
-	public IIcon getTypeTexture()
-	{
-		return Blocks.lapis_block.getBlockTextureFromSide( 0 );
-	}
-
-	@Override
 	public void onTunnelNetworkChange()
 	{
 		this.cachedTank = null;
@@ -87,7 +74,7 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 	}
 
 	@Override
-	public int fill( ForgeDirection from, FluidStack resource, boolean doFill )
+	public int fill( EnumFacing from, FluidStack resource, boolean doFill )
 	{
 		Stack<PartP2PLiquids> stack = this.getDepth();
 
@@ -111,7 +98,7 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 			IFluidHandler tank = l.getTarget();
 			if( tank != null )
 			{
-				l.tmpUsed = tank.fill( l.side.getOpposite(), resource.copy(), false );
+				l.tmpUsed = tank.fill( l.side.getFacing().getOpposite(), resource.copy(), false );
 			}
 			else
 			{
@@ -166,7 +153,7 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 			IFluidHandler tank = l.getTarget();
 			if( tank != null )
 			{
-				l.tmpUsed = tank.fill( l.side.getOpposite(), insert.copy(), true );
+				l.tmpUsed = tank.fill( l.side.getFacing().getOpposite(), insert.copy(), true );
 			}
 			else
 			{
@@ -208,7 +195,7 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 				IFluidHandler handler = l.getTarget();
 				if( handler != null )
 				{
-					if( handler.canFill( l.side.getOpposite(), input ) )
+					if( handler.canFill( l.side.getFacing().getOpposite(), input ) )
 					{
 						outs.add( l );
 					}
@@ -235,7 +222,7 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 			return this.cachedTank;
 		}
 
-		TileEntity te = this.tile.getWorldObj().getTileEntity( this.tile.xCoord + this.side.offsetX, this.tile.yCoord + this.side.offsetY, this.tile.zCoord + this.side.offsetZ );
+		TileEntity te = this.tile.getWorld().getTileEntity( this.tile.getPos().offset( side.getFacing() ) );
 		if( te instanceof IFluidHandler )
 		{
 			return this.cachedTank = (IFluidHandler) te;
@@ -245,33 +232,33 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 	}
 
 	@Override
-	public FluidStack drain( ForgeDirection from, FluidStack resource, boolean doDrain )
+	public FluidStack drain( EnumFacing from, FluidStack resource, boolean doDrain )
 	{
 		return null;
 	}
 
 	@Override
-	public FluidStack drain( ForgeDirection from, int maxDrain, boolean doDrain )
+	public FluidStack drain( EnumFacing from, int maxDrain, boolean doDrain )
 	{
 		return null;
 	}
 
 	@Override
-	public boolean canFill( ForgeDirection from, Fluid fluid )
+	public boolean canFill( EnumFacing from, Fluid fluid )
 	{
-		return !this.output && from == this.side && !this.getOutputs( fluid ).isEmpty();
+		return !this.output && from == this.side.getFacing() && !this.getOutputs( fluid ).isEmpty();
 	}
 
 	@Override
-	public boolean canDrain( ForgeDirection from, Fluid fluid )
+	public boolean canDrain( EnumFacing from, Fluid fluid )
 	{
 		return false;
 	}
 
 	@Override
-	public FluidTankInfo[] getTankInfo( ForgeDirection from )
+	public FluidTankInfo[] getTankInfo( EnumFacing from )
 	{
-		if( from == this.side )
+		if( from == this.side.getFacing() )
 		{
 			return this.getTank();
 		}

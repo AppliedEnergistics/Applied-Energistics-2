@@ -25,9 +25,10 @@ import java.util.List;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
-
 import appeng.api.implementations.items.IMemoryCard;
 import appeng.api.implementations.items.MemoryCardMessages;
 import appeng.core.features.AEFeature;
@@ -138,7 +139,15 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 	}
 
 	@Override
-	public boolean onItemUse( ItemStack is, EntityPlayer player, World w, int x, int y, int z, int side, float hx, float hy, float hz )
+	public boolean onItemUse(
+			ItemStack is,
+			EntityPlayer player,
+			World w,
+			BlockPos pos,
+			EnumFacing side,
+			float hx,
+			float hy,
+			float hz )
 	{
 		if( player.isSneaking() && !w.isRemote )
 		{
@@ -149,12 +158,15 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 		}
 		else
 		{
-			return super.onItemUse( is, player, w, x, y, z, side, hx, hy, hz );
+			return super.onItemUse( is, player, w, pos, side, hx, hy, hz );
 		}
 	}
-
+	
 	@Override
-	public boolean doesSneakBypassUse( World world, int x, int y, int z, EntityPlayer player )
+	public boolean doesSneakBypassUse(
+			World world,
+			BlockPos pos,
+			EntityPlayer player )
 	{
 		return true;
 	}

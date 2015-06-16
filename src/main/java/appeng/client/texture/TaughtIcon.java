@@ -19,27 +19,32 @@
 package appeng.client.texture;
 
 
-import net.minecraft.util.IIcon;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
-
-public class TaughtIcon implements IIcon
+public class TaughtIcon implements IAESprite
 {
 
 	final float tightness;
 
-	private final IIcon icon;
+	private final IAESprite icon;
 
-	public TaughtIcon( IIcon icon, float tightness )
+	@Override
+	public TextureAtlasSprite getAtlas()
 	{
-		if( icon == null )
+		return icon.getAtlas();
+	}
+	
+	public TaughtIcon( IAESprite iIcon, float tightness )
+	{
+		if( iIcon == null )
 		{
 			throw new IllegalArgumentException( "Cannot create a wrapper icon with a null icon." );
 		}
 
-		this.icon = icon;
+		this.icon = iIcon;
 		this.tightness = tightness * 0.4f;
 	}
 

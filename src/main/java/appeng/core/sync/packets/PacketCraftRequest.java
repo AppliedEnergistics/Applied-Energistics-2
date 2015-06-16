@@ -19,20 +19,19 @@
 package appeng.core.sync.packets;
 
 
-import java.util.concurrent.Future;
-
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
+import java.util.concurrent.Future;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.crafting.ICraftingGrid;
 import appeng.api.networking.crafting.ICraftingJob;
+import appeng.api.util.AEPartLocation;
 import appeng.container.ContainerOpenContext;
 import appeng.container.implementations.ContainerCraftAmount;
 import appeng.container.implementations.ContainerCraftConfirm;
@@ -80,7 +79,7 @@ public class PacketCraftRequest extends AppEngPacket
 			if( target instanceof IGridHost )
 			{
 				IGridHost gh = (IGridHost) target;
-				IGridNode gn = gh.getGridNode( ForgeDirection.UNKNOWN );
+				IGridNode gn = gh.getGridNode( AEPartLocation.INTERNAL );
 				if( gn == null )
 				{
 					return;

@@ -21,18 +21,17 @@ package appeng.items.tools.powered;
 
 import java.util.EnumSet;
 
-import com.google.common.base.Optional;
-
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
-
 import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
 import appeng.core.sync.packets.PacketLightning;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.server.ServerHelper;
 import appeng.util.Platform;
+
+import com.google.common.base.Optional;
 
 
 public class ToolChargedStaff extends AEBasePoweredItem
@@ -54,9 +53,9 @@ public class ToolChargedStaff extends AEBasePoweredItem
 			{
 				for( int x = 0; x < 2; x++ )
 				{
-					float dx = (float) ( Platform.getRandomFloat() * target.width + target.boundingBox.minX );
-					float dy = (float) ( Platform.getRandomFloat() * target.height + target.boundingBox.minY );
-					float dz = (float) ( Platform.getRandomFloat() * target.width + target.boundingBox.minZ );
+					float dx = (float) ( Platform.getRandomFloat() * target.width + target.getBoundingBox().minX );
+					float dy = (float) ( Platform.getRandomFloat() * target.height + target.getBoundingBox().minY );
+					float dz = (float) ( Platform.getRandomFloat() * target.width + target.getBoundingBox().minZ );
 					ServerHelper.proxy.sendToAllNearExcept( null, dx, dy, dz, 32.0, target.worldObj, new PacketLightning( dx, dy, dz ) );
 				}
 			}

@@ -25,10 +25,10 @@ import java.util.Random;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.api.parts.SelectedPart;
 import appeng.api.util.AEColor;
 
@@ -37,19 +37,19 @@ public class NullCableBusContainer implements ICableBusContainer
 {
 
 	@Override
-	public int isProvidingStrongPower( ForgeDirection opposite )
+	public int isProvidingStrongPower( EnumFacing opposite )
 	{
 		return 0;
 	}
 
 	@Override
-	public int isProvidingWeakPower( ForgeDirection opposite )
+	public int isProvidingWeakPower( EnumFacing opposite )
 	{
 		return 0;
 	}
 
 	@Override
-	public boolean canConnectRedstone( EnumSet<ForgeDirection> of )
+	public boolean canConnectRedstone( EnumSet<EnumFacing> of )
 	{
 		return false;
 	}
@@ -73,7 +73,7 @@ public class NullCableBusContainer implements ICableBusContainer
 	}
 
 	@Override
-	public boolean isSolidOnSide( ForgeDirection side )
+	public boolean isSolidOnSide( EnumFacing side )
 	{
 		return false;
 	}
@@ -91,7 +91,7 @@ public class NullCableBusContainer implements ICableBusContainer
 	}
 
 	@Override
-	public boolean recolourBlock( ForgeDirection side, AEColor colour, EntityPlayer who )
+	public boolean recolourBlock( EnumFacing side, AEColor colour, EntityPlayer who )
 	{
 		return false;
 	}
@@ -103,7 +103,7 @@ public class NullCableBusContainer implements ICableBusContainer
 	}
 
 	@Override
-	public void randomDisplayTick( World world, int x, int y, int z, Random r )
+	public void randomDisplayTick( World world, BlockPos pos, Random r )
 	{
 
 	}

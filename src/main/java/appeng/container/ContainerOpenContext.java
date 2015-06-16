@@ -20,10 +20,10 @@ package appeng.container;
 
 
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.api.parts.IPart;
+import appeng.api.util.AEPartLocation;
 
 
 public class ContainerOpenContext
@@ -34,7 +34,7 @@ public class ContainerOpenContext
 	public int x;
 	public int y;
 	public int z;
-	public ForgeDirection side;
+	public AEPartLocation side;
 
 	public ContainerOpenContext( Object myItem )
 	{
@@ -48,6 +48,6 @@ public class ContainerOpenContext
 		{
 			return null;
 		}
-		return this.w.getTileEntity( this.x, this.y, this.z );
+		return this.w.getTileEntity( new BlockPos( x,y,z) );
 	}
 }

@@ -19,25 +19,24 @@
 package appeng.tile.qnb;
 
 
-import java.util.EnumSet;
-
-import com.google.common.base.Optional;
-
 import io.netty.buffer.ByteBuf;
+
+import java.util.EnumSet;
 
 import net.minecraft.block.Block;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.server.gui.IUpdatePlayerListBox;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
-
+import net.minecraft.util.EnumFacing;
 import appeng.api.AEApi;
 import appeng.api.definitions.IBlockDefinition;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.util.AECableType;
+import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.me.GridAccessException;
 import appeng.me.cluster.IAECluster;
@@ -51,8 +50,10 @@ import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.tile.inventory.InvOperation;
 import appeng.util.Platform;
 
+import com.google.common.base.Optional;
 
-public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
+
+public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock, IUpdatePlayerListBox
 {
 	private static final IBlockDefinition RING_DEFINITION = AEApi.instance().definitions().blocks().quantumRing();
 	public final byte corner = 16;
@@ -70,7 +71,7 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 
 	public TileQuantumBridge()
 	{
-		this.gridProxy.setValidSides( EnumSet.noneOf( ForgeDirection.class ) );
+		this.gridProxy.setValidSides( EnumSet.noneOf( EnumFacing.class ) );
 		this.gridProxy.setFlags( GridFlags.DENSE_CAPACITY );
 		this.gridProxy.setIdlePowerUsage( 22 );
 		this.internalInventory.setMaxStackSize( 1 );
@@ -133,7 +134,7 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 	}
 
 	@Override
-	public int[] getAccessibleSlotsBySide( ForgeDirection side )
+	public int[] getAccessibleSlotsBySide( EnumFacing side )
 	{
 		if( this.isCenter() )
 		{
@@ -208,7 +209,7 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 
 		if( affectWorld )
 		{
-			this.gridProxy.setValidSides( EnumSet.noneOf( ForgeDirection.class ) );
+			this.gridProxy.setValidSides( EnumSet.noneOf( EnumFacing.class ) );
 		}
 	}
 
@@ -238,11 +239,16 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 
 			if( this.isCorner() || this.isCenter() )
 			{
-				this.gridProxy.setValidSides( this.getConnections() );
+				EnumSet<EnumFacing> sides = EnumSet.noneOf( EnumFacing.class );
+				for ( AEPartLocation dir : this.getConnections() )
+					if ( dir != AEPartLocation.INTERNAL )
+						sides.add( dir.getFacing());
+				
+				this.gridProxy.setValidSides( sides );
 			}
 			else
 			{
-				this.gridProxy.setValidSides( EnumSet.allOf( ForgeDirection.class ) );
+				this.gridProxy.setValidSides( EnumSet.allOf( EnumFacing.class ) );
 			}
 		}
 	}
@@ -252,13 +258,13 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 		return ( this.constructed & this.corner ) == this.corner && this.constructed != -1;
 	}
 
-	public EnumSet<ForgeDirection> getConnections()
+	public EnumSet<AEPartLocation> getConnections()
 	{
-		EnumSet<ForgeDirection> set = EnumSet.noneOf( ForgeDirection.class );
+		EnumSet<AEPartLocation> set = EnumSet.noneOf( AEPartLocation.class );
 
-		for( ForgeDirection d : ForgeDirection.VALID_DIRECTIONS )
+		for( AEPartLocation d : AEPartLocation.values() )
 		{
-			TileEntity te = this.worldObj.getTileEntity( this.xCoord + d.offsetX, this.yCoord + d.offsetY, this.zCoord + d.offsetZ );
+			TileEntity te = this.worldObj.getTileEntity( d == AEPartLocation.INTERNAL ? pos : pos.offset( d.getFacing() ) );
 			if( te instanceof TileQuantumBridge )
 			{
 				set.add( d );
@@ -307,7 +313,7 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 	}
 
 	@Override
-	public AECableType getCableConnectionType( ForgeDirection dir )
+	public AECableType getCableConnectionType( AEPartLocation dir )
 	{
 		return AECableType.DENSE;
 	}

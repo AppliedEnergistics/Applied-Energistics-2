@@ -27,8 +27,7 @@ package appeng.api.networking;
 import java.util.EnumSet;
 
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.util.ForgeDirection;
-
+import net.minecraft.util.EnumFacing;
 import appeng.api.parts.IPart;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalCoord;
@@ -94,7 +93,7 @@ public interface IGridBlock
 	 * Determine which sides of the block can be connected too, only used when isWorldAccessible returns true, not used
 	 * for {@link IPart} implementations.
 	 */
-	EnumSet<ForgeDirection> getConnectableSides();
+	EnumSet<EnumFacing> getConnectableSides();
 
 	/**
 	 * @return the IGridHost for the node, this will be an IGridPart or a TileEntity generally speaking.

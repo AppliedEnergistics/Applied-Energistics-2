@@ -19,11 +19,11 @@
 package appeng.util.inv;
 
 
+import appeng.api.util.ForgeDirection;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
 
 
 public class WrapperTEPipe implements IInventory

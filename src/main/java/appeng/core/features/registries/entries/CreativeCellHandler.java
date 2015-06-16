@@ -22,15 +22,15 @@ package appeng.core.features.registries.entries;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
-
 import appeng.api.implementations.tiles.IChestOrDrive;
 import appeng.api.storage.ICellHandler;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.ISaveProvider;
 import appeng.api.storage.StorageChannel;
+import appeng.api.util.AEPartLocation;
 import appeng.client.texture.ExtraBlockTextures;
+import appeng.client.texture.IAESprite;
 import appeng.core.sync.GuiBridge;
 import appeng.items.storage.ItemCreativeStorageCell;
 import appeng.me.storage.CreativeCellInventory;
@@ -57,19 +57,19 @@ public class CreativeCellHandler implements ICellHandler
 	}
 
 	@Override
-	public IIcon getTopTexture_Light()
+	public IAESprite getTopTexture_Light()
 	{
 		return ExtraBlockTextures.BlockMEChestItems_Light.getIcon();
 	}
 
 	@Override
-	public IIcon getTopTexture_Medium()
+	public IAESprite getTopTexture_Medium()
 	{
 		return ExtraBlockTextures.BlockMEChestItems_Medium.getIcon();
 	}
 
 	@Override
-	public IIcon getTopTexture_Dark()
+	public IAESprite getTopTexture_Dark()
 	{
 		return ExtraBlockTextures.BlockMEChestItems_Dark.getIcon();
 	}
@@ -77,7 +77,7 @@ public class CreativeCellHandler implements ICellHandler
 	@Override
 	public void openChestGui( EntityPlayer player, IChestOrDrive chest, ICellHandler cellHandler, IMEInventoryHandler inv, ItemStack is, StorageChannel chan )
 	{
-		Platform.openGUI( player, (TileEntity) chest, chest.getUp(), GuiBridge.GUI_ME );
+		Platform.openGUI( player, (TileEntity) chest, AEPartLocation.fromFacing( chest.getUp() ), GuiBridge.GUI_ME );
 	}
 
 	@Override

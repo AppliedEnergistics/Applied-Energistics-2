@@ -22,9 +22,10 @@ package appeng.block.spatial;
 import java.util.EnumSet;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-
 import appeng.block.AEBaseTileBlock;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.blocks.RenderSpatialPylon;
@@ -44,24 +45,30 @@ public class BlockSpatialPylon extends AEBaseTileBlock
 	}
 
 	@Override
-	public void onNeighborBlockChange( World w, int x, int y, int z, Block junk )
+	public void onNeighborBlockChange(
+			World w,
+			BlockPos pos,
+			IBlockState state,
+			Block neighborBlock )
 	{
-		TileSpatialPylon tsp = this.getTileEntity( w, x, y, z );
+		TileSpatialPylon tsp = this.getTileEntity( w, pos );
 		if( tsp != null )
 		{
 			tsp.onNeighborBlockChange();
 		}
 	}
-
+	
 	@Override
-	public int getLightValue( IBlockAccess w, int x, int y, int z )
+	public int getLightValue(
+			IBlockAccess w,
+			BlockPos pos )
 	{
-		TileSpatialPylon tsp = this.getTileEntity( w, x, y, z );
+		TileSpatialPylon tsp = this.getTileEntity( w, pos );
 		if( tsp != null )
 		{
 			return tsp.getLightValue();
 		}
-		return super.getLightValue( w, x, y, z );
+		return super.getLightValue( w, pos );
 	}
 
 	@Override

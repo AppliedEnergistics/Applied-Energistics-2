@@ -20,9 +20,9 @@ package appeng.client.render.effects;
 
 
 import net.minecraft.client.particle.EntityFX;
-import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
-
 import appeng.api.storage.data.IAEItemStack;
 import appeng.client.EffectType;
 import appeng.core.CommonHelper;
@@ -75,8 +75,8 @@ public class AssemblerFX extends EntityFX
 	}
 
 	@Override
-	public void renderParticle( Tessellator tess, float l, float rX, float rY, float rZ, float rYZ, float rXY )
-	{
+    public void func_180434_a(WorldRenderer par1Tessellator, Entity p_180434_2_, float l, float rX, float rY, float rZ, float rYZ, float rXY )
+    {
 		this.time += l;
 		if( this.time > 4.0 )
 		{

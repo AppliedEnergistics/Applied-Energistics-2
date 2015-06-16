@@ -19,18 +19,18 @@
 package appeng.tile.misc;
 
 
+import io.netty.buffer.ByteBuf;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
-import io.netty.buffer.ByteBuf;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.util.ForgeDirection;
-
+import net.minecraft.server.gui.IUpdatePlayerListBox;
+import net.minecraft.util.EnumFacing;
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
@@ -41,6 +41,7 @@ import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.api.implementations.tiles.ICrankable;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AECableType;
+import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.me.GridAccessException;
 import appeng.tile.TileEvent;
@@ -52,7 +53,7 @@ import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 
 
-public class TileCharger extends AENetworkPowerTile implements ICrankable
+public class TileCharger extends AENetworkPowerTile implements ICrankable, IUpdatePlayerListBox
 {
 
 	final int[] sides = new int[] { 0 };
@@ -64,14 +65,14 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable
 
 	public TileCharger()
 	{
-		this.gridProxy.setValidSides( EnumSet.noneOf( ForgeDirection.class ) );
+		this.gridProxy.setValidSides( EnumSet.noneOf( EnumFacing.class ) );
 		this.gridProxy.setFlags();
 		this.internalMaxPower = 1500;
 		this.gridProxy.setIdlePowerUsage( 0 );
 	}
 
 	@Override
-	public AECableType getCableConnectionType( ForgeDirection dir )
+	public AECableType getCableConnectionType( AEPartLocation dir )
 	{
 		return AECableType.COVERED;
 	}
@@ -174,7 +175,7 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable
 	}
 
 	@Override
-	public void setOrientation( ForgeDirection inForward, ForgeDirection inUp )
+	public void setOrientation( EnumFacing inForward, EnumFacing inUp )
 	{
 		super.setOrientation( inForward, inUp );
 		this.gridProxy.setValidSides( EnumSet.of( this.getUp(), this.getUp().getOpposite() ) );
@@ -216,7 +217,7 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable
 	}
 
 	@Override
-	public boolean canCrankAttach( ForgeDirection directionToCrank )
+	public boolean canCrankAttach( EnumFacing directionToCrank )
 	{
 		return this.getUp() == directionToCrank || this.getUp().getOpposite() == directionToCrank;
 	}
@@ -248,7 +249,7 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable
 	}
 
 	@Override
-	public boolean canExtractItem( int slotIndex, ItemStack extractedItem, int side )
+	public boolean canExtractItem( int slotIndex, ItemStack extractedItem, EnumFacing side )
 	{
 		if( Platform.isChargeable( extractedItem ) )
 		{
@@ -263,7 +264,7 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable
 	}
 
 	@Override
-	public int[] getAccessibleSlotsBySide( ForgeDirection whichSide )
+	public int[] getAccessibleSlotsBySide( EnumFacing whichSide )
 	{
 		return this.sides;
 	}
@@ -291,7 +292,7 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable
 			List<ItemStack> drops = new ArrayList<ItemStack>();
 			drops.add( myItem );
 			this.setInventorySlotContents( 0, null );
-			Platform.spawnDrops( this.worldObj, this.xCoord + this.getForward().offsetX, this.yCoord + this.getForward().offsetY, this.zCoord + this.getForward().offsetZ, drops );
+			Platform.spawnDrops( this.worldObj, pos.offset( getForward() ), drops );
 		}
 	}
 }

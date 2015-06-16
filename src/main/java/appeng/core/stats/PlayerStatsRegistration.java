@@ -23,9 +23,7 @@ import java.util.ArrayList;
 
 import net.minecraft.stats.Achievement;
 import net.minecraftforge.common.AchievementPage;
-
-import cpw.mods.fml.common.eventhandler.EventBus;
-
+import net.minecraftforge.fml.common.eventhandler.EventBus;
 import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
 
@@ -38,7 +36,7 @@ import appeng.core.features.AEFeature;
 public class PlayerStatsRegistration
 {
 	/**
-	 * {@link cpw.mods.fml.common.eventhandler.EventBus} to which the handlers might get posted to depending if the feature is enabled
+	 * {@link net.minecraftforge.fml.common.eventhandler.EventBus} to which the handlers might get posted to depending if the feature is enabled
 	 */
 	private final EventBus bus;
 
@@ -48,7 +46,7 @@ public class PlayerStatsRegistration
 	private final boolean isAchievementFeatureEnabled;
 
 	/**
-	 * Constructs this with an {@link cpw.mods.fml.common.eventhandler.EventBus} and {@link appeng.core.AEConfig}.
+	 * Constructs this with an {@link net.minecraftforge.fml.common.eventhandler.EventBus} and {@link appeng.core.AEConfig}.
 	 *
 	 * @param bus    {@see #bus}
 	 * @param config {@link appeng.core.AEConfig} which is used to determine if the {@link appeng.core.features.AEFeature#Achievements} is enabled

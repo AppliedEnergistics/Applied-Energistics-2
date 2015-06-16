@@ -19,21 +19,20 @@
 package appeng.client.render.blocks;
 
 
-import org.lwjgl.opengl.GL11;
-
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.RenderBlocks;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
+import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.IItemRenderer.ItemRenderType;
-import net.minecraftforge.common.util.ForgeDirection;
+
+import org.lwjgl.opengl.GL11;
 
 import appeng.block.misc.BlockSkyCompass;
 import appeng.client.render.BaseBlockRender;
+import appeng.client.render.IRenderHelper;
 import appeng.client.render.model.ModelCompass;
 import appeng.hooks.CompassManager;
 import appeng.hooks.CompassResult;
@@ -52,8 +51,9 @@ public class RenderBlockSkyCompass extends BaseBlockRender<BlockSkyCompass, Tile
 	}
 
 	@Override
-	public void renderInventory( BlockSkyCompass blk, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj )
+	public void renderInventory( BlockSkyCompass blk, ItemStack is, IRenderHelper renderer, ItemRenderType type, Object[] obj )
 	{
+		/*
 		if( type == ItemRenderType.INVENTORY )
 		{
 			boolean isGood = false;
@@ -73,7 +73,7 @@ public class RenderBlockSkyCompass extends BaseBlockRender<BlockSkyCompass, Tile
 			}
 		}
 
-		GL11.glEnable( 32826 /* GL_RESCALE_NORMAL_EXT */);
+		GL11.glEnable( 32826 ); // GL_RESCALE_NORMAL_EXT
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
 
 		ResourceLocation loc = new ResourceLocation( "appliedenergistics2", "textures/models/compass.png" );
@@ -167,25 +167,26 @@ public class RenderBlockSkyCompass extends BaseBlockRender<BlockSkyCompass, Tile
 			this.model.renderAll( ( now / 50000.0f ) * (float) Math.PI * 500.0f );
 		}
 
-		GL11.glDisable( 32826 /* GL_RESCALE_NORMAL_EXT */);
+		GL11.glDisable( 32826 ); // GL_RESCALE_NORMAL_EXT
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
+		*/
 	}
 
 	@Override
-	public boolean renderInWorld( BlockSkyCompass blk, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
+	public boolean renderInWorld( BlockSkyCompass blk, IBlockAccess world, BlockPos pos, IRenderHelper renderer )
 	{
 		return true;
 	}
 
 	@Override
-	public void renderTile( BlockSkyCompass block, TileSkyCompass tile, Tessellator tess, double x, double y, double z, float partialTick, RenderBlocks renderer )
+	public void renderTile( BlockSkyCompass block, TileSkyCompass tile, WorldRenderer tess, double x, double y, double z, float partialTick, IRenderHelper renderer )
 	{
 		if( !( tile instanceof TileSkyCompass ) )
 		{
 			return;
 		}
 
-		TileSkyCompass skyCompass = (TileSkyCompass) tile;
+		TileSkyCompass skyCompass = tile;
 
 		if( !skyCompass.hasWorldObj() )
 		{
@@ -207,9 +208,9 @@ public class RenderBlockSkyCompass extends BaseBlockRender<BlockSkyCompass, Tile
 		long now = System.currentTimeMillis();
 
 		CompassResult cr = null;
-		if( skyCompass.getForward() == ForgeDirection.UP || skyCompass.getForward() == ForgeDirection.DOWN )
+		if( skyCompass.getForward() == EnumFacing.UP || skyCompass.getForward() == EnumFacing.DOWN )
 		{
-			cr = CompassManager.INSTANCE.getCompassDirection( 0, tile.xCoord, tile.yCoord, tile.zCoord );
+			cr = CompassManager.INSTANCE.getCompassDirection( 0, tile.getPos().getX(), tile.getPos().getY(),tile.getPos().getZ());
 		}
 		else
 		{
@@ -225,7 +226,7 @@ public class RenderBlockSkyCompass extends BaseBlockRender<BlockSkyCompass, Tile
 			}
 			else
 			{
-				this.model.renderAll( (float) ( skyCompass.getForward() == ForgeDirection.DOWN ? this.flipidiy( cr.rad ) : cr.rad ) );
+				this.model.renderAll( (float) ( skyCompass.getForward() == EnumFacing.DOWN ? this.flipidiy( cr.rad ) : cr.rad ) );
 			}
 		}
 		else

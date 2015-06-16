@@ -19,18 +19,17 @@
 package appeng.client.texture;
 
 
-import net.minecraft.util.IIcon;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
-
-public class FullIcon implements IIcon
+public class FullIcon implements IAESprite
 {
 
-	private final IIcon p;
+	private final TextureAtlasSprite p;
 
-	public FullIcon( IIcon o )
+	public FullIcon( TextureAtlasSprite o )
 	{
 		if( o == null )
 		{
@@ -40,6 +39,12 @@ public class FullIcon implements IIcon
 		this.p = o;
 	}
 
+	@Override
+	public TextureAtlasSprite getAtlas()
+	{
+		return p;
+	}
+	
 	@Override
 	public int getIconWidth()
 	{

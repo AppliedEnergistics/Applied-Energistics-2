@@ -23,21 +23,15 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.Vec3;
-import net.minecraftforge.common.util.ForgeDirection;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
-import buildcraft.api.transport.IPipeConnection;
-import buildcraft.api.transport.IPipeTile.PipeType;
-
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.FuzzyMode;
@@ -69,7 +63,9 @@ import appeng.api.storage.IMEMonitorHandlerReceiver;
 import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
+import appeng.api.util.AEPartLocation;
 import appeng.api.util.IConfigManager;
+import appeng.client.render.IRenderHelper;
 import appeng.client.texture.CableBusTextures;
 import appeng.core.settings.TickRates;
 import appeng.core.stats.Achievements;
@@ -83,15 +79,13 @@ import appeng.me.storage.MEMonitorIInventory;
 import appeng.parts.automation.PartUpgradeable;
 import appeng.tile.inventory.AppEngInternalAEInventory;
 import appeng.tile.inventory.InvOperation;
-import appeng.transformer.annotations.Integration.Interface;
-import appeng.transformer.annotations.Integration.Method;
 import appeng.util.Platform;
 import appeng.util.prioitylist.FuzzyPriorityList;
 import appeng.util.prioitylist.PrecisePriorityList;
 
-
-@Interface( iname = "BC", iface = "buildcraft.api.transport.IPipeConnection" )
-public class PartStorageBus extends PartUpgradeable implements IGridTickable, ICellContainer, IMEMonitorHandlerReceiver<IAEItemStack>, IPipeConnection, IPriorityHost
+// TODO: BC PIPE INTEGRATION
+//@Interface( iname = "BC", iface = "buildcraft.api.transport.IPipeConnection" )  - IPipeConnection
+public class PartStorageBus extends PartUpgradeable implements IGridTickable, ICellContainer, IMEMonitorHandlerReceiver<IAEItemStack>, IPriorityHost
 {
 	final BaseActionSource mySrc;
 	final AppEngInternalAEInventory Config = new AppEngInternalAEInventory( this, 63 );
@@ -204,7 +198,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 
 	private void resetCache( boolean fullReset )
 	{
-		if( this.host == null || this.host.getTile() == null || this.host.getTile().getWorldObj() == null || this.host.getTile().getWorldObj().isRemote )
+		if( this.host == null || this.host.getTile() == null || this.host.getTile().getWorld() == null || this.host.getTile().getWorld().isRemote )
 		{
 			return;
 		}
@@ -266,9 +260,9 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderInventory( IPartRenderHelper rh, RenderBlocks renderer )
+	public void renderInventory( IPartRenderHelper rh, IRenderHelper renderer )
 	{
-		rh.setTexture( CableBusTextures.PartStorageSides.getIcon(), CableBusTextures.PartStorageSides.getIcon(), CableBusTextures.PartStorageBack.getIcon(), this.is.getIconIndex(), CableBusTextures.PartStorageSides.getIcon(), CableBusTextures.PartStorageSides.getIcon() );
+		rh.setTexture( CableBusTextures.PartStorageSides.getIcon(), CableBusTextures.PartStorageSides.getIcon(), CableBusTextures.PartStorageBack.getIcon(), renderer.getIcon( is ), CableBusTextures.PartStorageSides.getIcon(), CableBusTextures.PartStorageSides.getIcon() );
 
 		rh.setBounds( 3, 3, 15, 13, 13, 16 );
 		rh.renderInventoryBox( renderer );
@@ -282,28 +276,27 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderStatic( int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer )
+	public void renderStatic( BlockPos pos, IPartRenderHelper rh, IRenderHelper renderer )
 	{
-		this.renderCache = rh.useSimplifiedRendering( x, y, z, this, this.renderCache );
-		rh.setTexture( CableBusTextures.PartStorageSides.getIcon(), CableBusTextures.PartStorageSides.getIcon(), CableBusTextures.PartStorageBack.getIcon(), this.is.getIconIndex(), CableBusTextures.PartStorageSides.getIcon(), CableBusTextures.PartStorageSides.getIcon() );
+		rh.setTexture( CableBusTextures.PartStorageSides.getIcon(), CableBusTextures.PartStorageSides.getIcon(), CableBusTextures.PartStorageBack.getIcon(), renderer.getIcon( is ), CableBusTextures.PartStorageSides.getIcon(), CableBusTextures.PartStorageSides.getIcon() );
 
 		rh.setBounds( 3, 3, 15, 13, 13, 16 );
-		rh.renderBlock( x, y, z, renderer );
+		rh.renderBlock( pos, renderer );
 
 		rh.setBounds( 2, 2, 14, 14, 14, 15 );
-		rh.renderBlock( x, y, z, renderer );
+		rh.renderBlock( pos, renderer );
 
-		rh.setTexture( CableBusTextures.PartStorageSides.getIcon(), CableBusTextures.PartStorageSides.getIcon(), CableBusTextures.PartStorageBack.getIcon(), this.is.getIconIndex(), CableBusTextures.PartStorageSides.getIcon(), CableBusTextures.PartStorageSides.getIcon() );
+		rh.setTexture( CableBusTextures.PartStorageSides.getIcon(), CableBusTextures.PartStorageSides.getIcon(), CableBusTextures.PartStorageBack.getIcon(), renderer.getIcon( is ), CableBusTextures.PartStorageSides.getIcon(), CableBusTextures.PartStorageSides.getIcon() );
 
 		rh.setBounds( 5, 5, 12, 11, 11, 13 );
-		rh.renderBlock( x, y, z, renderer );
+		rh.renderBlock( pos, renderer );
 
-		rh.setTexture( CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartMonitorBack.getIcon(), this.is.getIconIndex(), CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartMonitorSidesStatus.getIcon() );
+		rh.setTexture( CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartMonitorBack.getIcon(), renderer.getIcon( is ), CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartMonitorSidesStatus.getIcon() );
 
 		rh.setBounds( 5, 5, 13, 11, 11, 14 );
-		rh.renderBlock( x, y, z, renderer );
+		rh.renderBlock( pos, renderer );
 
-		this.renderLights( x, y, z, rh, renderer );
+		this.renderLights( pos, rh, renderer );
 	}
 
 	@Override
@@ -402,7 +395,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 
 		this.cached = true;
 		TileEntity self = this.getHost().getTile();
-		TileEntity target = self.getWorldObj().getTileEntity( self.xCoord + this.side.offsetX, self.yCoord + this.side.offsetY, self.zCoord + this.side.offsetZ );
+		TileEntity target = self.getWorld().getTileEntity( self.getPos().offset( side.getFacing() ) );
 
 		int newHandlerHash = Platform.generateTileHash( target );
 
@@ -426,10 +419,10 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 		this.monitor = null;
 		if( target != null )
 		{
-			IExternalStorageHandler esh = AEApi.instance().registries().externalStorage().getHandler( target, this.side.getOpposite(), StorageChannel.ITEMS, this.mySrc );
+			IExternalStorageHandler esh = AEApi.instance().registries().externalStorage().getHandler( target, this.side.getFacing().getOpposite(), StorageChannel.ITEMS, this.mySrc );
 			if( esh != null )
 			{
-				IMEInventory inv = esh.getInventory( target, this.side.getOpposite(), StorageChannel.ITEMS, this.mySrc );
+				IMEInventory inv = esh.getInventory( target, this.side.getFacing().getOpposite(), StorageChannel.ITEMS, this.mySrc );
 
 				if( inv instanceof MEMonitorIInventory )
 				{
@@ -506,7 +499,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 		return this.handler;
 	}
 
-	private void checkInterfaceVsStorageBus( TileEntity target, ForgeDirection side )
+	private void checkInterfaceVsStorageBus( TileEntity target, AEPartLocation side )
 	{
 		IInterfaceHost achievement = null;
 
@@ -564,13 +557,15 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	{
 	}
 
+	// TODO: BC PIPE INTEGRATION
+	/*
 	@Override
 	@Method( iname = "BC" )
-	public ConnectOverride overridePipeConnection( PipeType type, ForgeDirection with )
+	public ConnectOverride overridePipeConnection( PipeType type, AEPartLocation with )
 	{
 		return type == PipeType.ITEM && with == this.side ? ConnectOverride.CONNECT : ConnectOverride.DISCONNECT;
 	}
-
+	*/
 	@Override
 	public void saveChanges( IMEInventory cellInventory )
 	{

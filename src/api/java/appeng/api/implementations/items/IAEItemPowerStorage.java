@@ -25,7 +25,6 @@ package appeng.api.implementations.items;
 
 
 import net.minecraft.item.ItemStack;
-
 import appeng.api.config.AccessRestriction;
 import appeng.api.networking.energy.IAEPowerStorage;
 

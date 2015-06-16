@@ -26,11 +26,8 @@ import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.event.world.WorldEvent;
-
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import appeng.api.AEApi;
 import appeng.api.events.LocatableEventAnnounce;
 import appeng.api.events.LocatableEventAnnounce.LocatableEvent;
@@ -38,6 +35,7 @@ import appeng.api.exceptions.FailedConnection;
 import appeng.api.features.ILocatable;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
+import appeng.api.util.AEPartLocation;
 import appeng.api.util.WorldCoord;
 import appeng.me.cache.helpers.ConnectionWrapper;
 import appeng.me.cluster.IAECluster;
@@ -69,7 +67,7 @@ public class QuantumCluster implements ILocatable, IAECluster
 	@SubscribeEvent
 	public void onUnload( WorldEvent.Unload e )
 	{
-		if( this.center.getWorldObj() == e.world )
+		if( this.center.getWorld() == e.world )
 		{
 			this.updateStatus = false;
 			this.destroy();
@@ -190,16 +188,16 @@ public class QuantumCluster implements ILocatable, IAECluster
 		QuantumCluster qc = (QuantumCluster) AEApi.instance().registries().locatable().getLocatableBy( qe );
 		if( qc != null )
 		{
-			World theWorld = qc.center.getWorldObj();
+			World theWorld = qc.center.getWorld();
 			if( !qc.isDestroyed )
 			{
-				Chunk c = theWorld.getChunkFromBlockCoords( qc.center.xCoord, qc.center.zCoord );
-				if( c.isChunkLoaded )
+				Chunk c = theWorld.getChunkFromBlockCoords( qc.center.getPos() );
+				if( c.isLoaded() )
 				{
-					int id = theWorld.provider.dimensionId;
+					int id = theWorld.provider.getDimensionId();
 					World cur = DimensionManager.getWorld( id );
 
-					TileEntity te = theWorld.getTileEntity( qc.center.xCoord, qc.center.yCoord, qc.center.zCoord );
+					TileEntity te = theWorld.getTileEntity( qc.center.getPos() );
 					return te != qc.center || theWorld != cur;
 				}
 			}
@@ -219,7 +217,7 @@ public class QuantumCluster implements ILocatable, IAECluster
 
 	private IGridNode getNode()
 	{
-		return this.center.getGridNode( ForgeDirection.UNKNOWN );
+		return this.center.getGridNode( AEPartLocation.INTERNAL );
 	}
 
 	public boolean hasQES()

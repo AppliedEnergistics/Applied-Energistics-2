@@ -5,7 +5,6 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-
 import appeng.api.config.Upgrades;
 import appeng.tile.inventory.IAEAppEngInventory;
 

@@ -21,16 +21,15 @@ package appeng.core.sync.network;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.NetHandlerPlayServer;
-
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
-import cpw.mods.fml.common.network.FMLEventChannel;
-import cpw.mods.fml.common.network.FMLNetworkEvent.ClientCustomPacketEvent;
-import cpw.mods.fml.common.network.FMLNetworkEvent.ServerConnectionFromClientEvent;
-import cpw.mods.fml.common.network.FMLNetworkEvent.ServerCustomPacketEvent;
-import cpw.mods.fml.common.network.NetworkRegistry;
-
+import net.minecraft.network.ThreadQuickExitException;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
+import net.minecraftforge.fml.common.network.FMLEventChannel;
+import net.minecraftforge.fml.common.network.FMLNetworkEvent.ClientCustomPacketEvent;
+import net.minecraftforge.fml.common.network.FMLNetworkEvent.ServerConnectionFromClientEvent;
+import net.minecraftforge.fml.common.network.FMLNetworkEvent.ServerCustomPacketEvent;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 import appeng.core.WorldSettings;
 import appeng.core.sync.AppEngPacket;
 
@@ -101,7 +100,14 @@ public class NetworkHandler
 		NetHandlerPlayServer srv = (NetHandlerPlayServer) ev.packet.handler();
 		if( this.serveHandler != null )
 		{
-			this.serveHandler.onPacketData( null, ev.packet, srv.playerEntity );
+			try
+			{
+				this.serveHandler.onPacketData( null, ev.handler, ev.packet, srv.playerEntity );
+			}
+			catch ( final ThreadQuickExitException ext )
+			{
+				;
+			}
 		}
 	}
 
@@ -110,7 +116,14 @@ public class NetworkHandler
 	{
 		if( this.clientHandler != null )
 		{
-			this.clientHandler.onPacketData( null, ev.packet, null );
+			try
+			{
+				this.clientHandler.onPacketData( null, ev.handler, ev.packet, null );
+			}
+			catch ( final ThreadQuickExitException ext )
+			{
+				;
+			}
 		}
 	}
 

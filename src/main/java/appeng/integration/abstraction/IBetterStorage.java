@@ -19,8 +19,7 @@
 package appeng.integration.abstraction;
 
 
-import net.minecraftforge.common.util.ForgeDirection;
-
+import net.minecraft.util.EnumFacing;
 import appeng.util.InventoryAdaptor;
 
 
@@ -29,5 +28,5 @@ public interface IBetterStorage
 
 	boolean isStorageCrate( Object te );
 
-	InventoryAdaptor getAdaptor( Object te, ForgeDirection d );
+	InventoryAdaptor getAdaptor( Object te, EnumFacing d );
 }

@@ -19,13 +19,14 @@
 package appeng.tile.misc;
 
 
+import net.minecraft.server.gui.IUpdatePlayerListBox;
 import appeng.tile.AEBaseTile;
 import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
 import appeng.util.Platform;
 
 
-public class TileLightDetector extends AEBaseTile
+public class TileLightDetector extends AEBaseTile implements IUpdatePlayerListBox
 {
 
 	int lastCheck = 30;
@@ -49,12 +50,12 @@ public class TileLightDetector extends AEBaseTile
 
 	public void updateLight()
 	{
-		int val = this.worldObj.getBlockLightValue( this.xCoord, this.yCoord, this.zCoord );
+		int val = this.worldObj.getLight( pos );
 
 		if( this.lastLight != val )
 		{
 			this.lastLight = val;
-			Platform.notifyBlocksOfNeighbors( this.worldObj, this.xCoord, this.yCoord, this.zCoord );
+			Platform.notifyBlocksOfNeighbors( this.worldObj, pos );
 		}
 	}
 

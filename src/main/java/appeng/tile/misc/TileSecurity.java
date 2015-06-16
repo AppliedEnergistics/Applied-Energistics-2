@@ -19,11 +19,11 @@
 package appeng.tile.misc;
 
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
-
-import io.netty.buffer.ByteBuf;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -31,10 +31,10 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.api.AEApi;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
@@ -61,6 +61,7 @@ import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
+import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
 import appeng.helpers.PlayerSecurityWrapper;
@@ -112,9 +113,12 @@ public class TileSecurity extends AENetworkTile implements ITerminalHost, IAEApp
 	{
 
 	}
-
+	
 	@Override
-	public void getDrops( World w, int x, int y, int z, List<ItemStack> drops )
+	public void getDrops(
+			World w,
+			BlockPos pos,
+			List<ItemStack> drops )
 	{
 		if( !this.configSlot.isEmpty() )
 		{
@@ -187,7 +191,7 @@ public class TileSecurity extends AENetworkTile implements ITerminalHost, IAEApp
 		this.configSlot.readFromNBT( data, "config" );
 
 		NBTTagCompound storedItems = data.getCompoundTag( "storedItems" );
-		for( Object key : storedItems.func_150296_c() )
+		for( Object key : storedItems.getKeySet() )
 		{
 			NBTBase obj = storedItems.getTag( (String) key );
 			if( obj instanceof NBTTagCompound )
@@ -223,7 +227,7 @@ public class TileSecurity extends AENetworkTile implements ITerminalHost, IAEApp
 	}
 
 	@Override
-	public AECableType getCableConnectionType( ForgeDirection dir )
+	public AECableType getCableConnectionType( AEPartLocation dir )
 	{
 		return AECableType.SMART;
 	}
@@ -347,7 +351,7 @@ public class TileSecurity extends AENetworkTile implements ITerminalHost, IAEApp
 	}
 
 	@Override
-	public boolean recolourBlock( ForgeDirection side, AEColor newPaintedColor, EntityPlayer who )
+	public boolean recolourBlock( EnumFacing side, AEColor newPaintedColor, EntityPlayer who )
 	{
 		if( this.paintedColor == newPaintedColor )
 		{

@@ -19,7 +19,7 @@
 package appeng.core.api;
 
 
-import cpw.mods.fml.common.event.FMLInterModComms.IMCMessage;
+import net.minecraftforge.fml.common.event.FMLInterModComms.IMCMessage;
 
 
 public interface IIMCProcessor

@@ -19,22 +19,20 @@
 package appeng.tile.misc;
 
 
+import io.netty.buffer.ByteBuf;
+
 import java.io.IOException;
 import java.util.EnumSet;
 import java.util.List;
 
 import javax.annotation.Nullable;
 
-import com.google.common.collect.Lists;
-
-import io.netty.buffer.ByteBuf;
-
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
@@ -51,6 +49,7 @@ import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.util.AECableType;
+import appeng.api.util.AEPartLocation;
 import appeng.api.util.IConfigManager;
 import appeng.core.features.registries.entries.InscriberRecipe;
 import appeng.core.settings.TickRates;
@@ -69,6 +68,8 @@ import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 import appeng.util.inv.WrapperInventoryRange;
 import appeng.util.item.AEItemStack;
+
+import com.google.common.collect.Lists;
 
 
 /**
@@ -96,7 +97,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 	@Reflected
 	public TileInscriber()
 	{
-		this.gridProxy.setValidSides( EnumSet.noneOf( ForgeDirection.class ) );
+		this.gridProxy.setValidSides( EnumSet.noneOf( EnumFacing.class ) );
 		this.internalMaxPower = 1500;
 		this.gridProxy.setIdlePowerUsage( 0 );
 		this.settings = new ConfigManager( this );
@@ -111,7 +112,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 	}
 
 	@Override
-	public AECableType getCableConnectionType( ForgeDirection dir )
+	public AECableType getCableConnectionType( AEPartLocation dir )
 	{
 		return AECableType.COVERED;
 	}
@@ -186,7 +187,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 	}
 
 	@Override
-	public void setOrientation( ForgeDirection inForward, ForgeDirection inUp )
+	public void setOrientation( EnumFacing inForward, EnumFacing inUp )
 	{
 		super.setOrientation( inForward, inUp );
 		this.gridProxy.setValidSides( EnumSet.complementOf( EnumSet.of( this.getForward() ) ) );
@@ -194,9 +195,12 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 	}
 
 	@Override
-	public void getDrops( World w, int x, int y, int z, List<ItemStack> drops )
+	public void getDrops(
+			World w,
+			BlockPos pos,
+			List<ItemStack> drops )
 	{
-		super.getDrops( w, x, y, z, drops );
+		super.getDrops( w, pos, drops );
 
 		for( int h = 0; h < this.upgrades.getSizeInventory(); h++ )
 		{
@@ -280,7 +284,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 	}
 
 	@Override
-	public boolean canExtractItem( int slotIndex, ItemStack extractedItem, int side )
+	public boolean canExtractItem( int slotIndex, ItemStack extractedItem, EnumFacing side )
 	{
 		if( this.smash )
 		{
@@ -291,14 +295,14 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 	}
 
 	@Override
-	public int[] getAccessibleSlotsBySide( ForgeDirection d )
+	public int[] getAccessibleSlotsBySide( EnumFacing d )
 	{
-		if( d == ForgeDirection.UP )
+		if( d == EnumFacing.UP )
 		{
 			return this.top;
 		}
 
-		if( d == ForgeDirection.DOWN )
+		if( d == EnumFacing.DOWN )
 		{
 			return this.bottom;
 		}
@@ -429,7 +433,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 				if( out != null )
 				{
 					final ItemStack outputCopy = out.getOutput().copy();
-					InventoryAdaptor ad = InventoryAdaptor.getAdaptor( new WrapperInventoryRange( this.inv, 3, 1, true ), ForgeDirection.UNKNOWN );
+					InventoryAdaptor ad = InventoryAdaptor.getAdaptor( new WrapperInventoryRange( this.inv, 3, 1, true ), EnumFacing.UP );
 
 					if( ad.addItems( outputCopy ) == null )
 					{
@@ -498,7 +502,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 				if( out != null )
 				{
 					ItemStack outputCopy = out.getOutput().copy();
-					InventoryAdaptor ad = InventoryAdaptor.getAdaptor( new WrapperInventoryRange( this.inv, 3, 1, true ), ForgeDirection.UNKNOWN );
+					InventoryAdaptor ad = InventoryAdaptor.getAdaptor( new WrapperInventoryRange( this.inv, 3, 1, true ), EnumFacing.UP );
 					if( ad.simulateAdd( outputCopy ) == null )
 					{
 						this.smash = true;

@@ -22,31 +22,37 @@ package appeng.entity;
 import java.nio.ByteBuffer;
 import java.nio.DoubleBuffer;
 
-import org.lwjgl.opengl.GL11;
-
-import net.minecraft.client.renderer.entity.RenderItem;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.entity.RenderEntityItem;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemBlock;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import org.lwjgl.opengl.GL11;
 
 
 @SideOnly( Side.CLIENT )
-public class RenderFloatingItem extends RenderItem
+public class RenderFloatingItem extends RenderEntityItem
 {
 
 	public static DoubleBuffer buffer = ByteBuffer.allocateDirect( 8 * 4 ).asDoubleBuffer();
 
-	public RenderFloatingItem()
+	public RenderFloatingItem(RenderManager manager)
 	{
+		super(manager,Minecraft.getMinecraft().getRenderItem());
 		this.shadowOpaque = 0.0F;
-		this.renderManager = RenderManager.instance;
 	}
-
+	
 	@Override
-	public void doRender( EntityItem entityItem, double x, double y, double z, float yaw, float partialTick )
+	public void doRender(
+			Entity entityItem,
+			double x,
+			double y,
+			double z,
+			float yaw,
+			float partialTick )
 	{
 		if( entityItem instanceof EntityFloatingItem )
 		{

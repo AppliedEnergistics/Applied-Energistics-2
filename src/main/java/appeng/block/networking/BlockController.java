@@ -23,8 +23,13 @@ import java.util.EnumSet;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.properties.PropertyEnum;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumWorldBlockLayer;
+import net.minecraft.util.IStringSerializable;
 import net.minecraft.world.World;
-
 import appeng.block.AEBaseTileBlock;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.blocks.RenderBlockController;
@@ -35,6 +40,45 @@ import appeng.tile.networking.TileController;
 public class BlockController extends AEBaseTileBlock
 {
 
+	public static enum ControllerBlockState implements IStringSerializable
+	{
+		OFFLINE, ONLINE, CONFLICTED;
+
+		@Override
+		public String getName()
+		{
+			return name();
+		}
+		
+	};
+
+    public static final PropertyEnum CONTROLLER_STATE = PropertyEnum.create("state",ControllerBlockState.class);
+	
+    @Override
+    protected IProperty[] getAEStates()
+    {
+    	return new IProperty[]{ CONTROLLER_STATE };
+    }
+    
+	@Override
+	public int getMetaFromState(
+			IBlockState state )
+	{
+		return ((ControllerBlockState)state.getValue( CONTROLLER_STATE )).ordinal();
+	}
+	
+	@Override
+	public IBlockState getStateFromMeta( int meta )
+	{
+		return getDefaultState().withProperty( CONTROLLER_STATE, ControllerBlockState.OFFLINE );
+	}
+	
+	@Override
+	public EnumWorldBlockLayer getBlockLayer()
+	{
+		return EnumWorldBlockLayer.CUTOUT;
+	}
+	
 	public BlockController()
 	{
 		super( Material.iron );
@@ -44,9 +88,13 @@ public class BlockController extends AEBaseTileBlock
 	}
 
 	@Override
-	public void onNeighborBlockChange( World w, int x, int y, int z, Block neighborBlock )
+	public void onNeighborBlockChange(
+			World w,
+			BlockPos pos,
+			IBlockState state,
+			Block neighborBlock )
 	{
-		TileController tc = this.getTileEntity( w, x, y, z );
+		TileController tc = this.getTileEntity( w, pos );
 		if( tc != null )
 		{
 			tc.onNeighborChange( false );

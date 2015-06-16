@@ -19,19 +19,13 @@
 package appeng.core.api.definitions;
 
 
-import java.util.EnumSet;
-import java.util.Set;
-
-import com.google.common.collect.ImmutableSet;
-
 import appeng.api.definitions.IBlockDefinition;
 import appeng.api.definitions.IBlocks;
 import appeng.api.definitions.ITileDefinition;
-import appeng.api.util.IOrientableBlock;
-import appeng.block.AEBaseSlabBlock;
 import appeng.block.crafting.BlockCraftingMonitor;
 import appeng.block.crafting.BlockCraftingStorage;
 import appeng.block.crafting.BlockCraftingUnit;
+import appeng.block.crafting.BlockCraftingUnit.CraftingUnitType;
 import appeng.block.crafting.BlockMolecularAssembler;
 import appeng.block.grindstone.BlockCrank;
 import appeng.block.grindstone.BlockGrinder;
@@ -64,25 +58,18 @@ import appeng.block.solids.BlockQuartzGlass;
 import appeng.block.solids.BlockQuartzLamp;
 import appeng.block.solids.BlockQuartzPillar;
 import appeng.block.solids.BlockSkyStone;
+import appeng.block.solids.BlockSkyStone.SkystoneType;
 import appeng.block.solids.OreQuartz;
 import appeng.block.solids.OreQuartzCharged;
 import appeng.block.spatial.BlockMatrixFrame;
 import appeng.block.spatial.BlockSpatialIOPort;
 import appeng.block.spatial.BlockSpatialPylon;
-import appeng.block.stair.ChiseledQuartzStairBlock;
-import appeng.block.stair.FluixStairBlock;
-import appeng.block.stair.QuartzPillarStairBlock;
-import appeng.block.stair.QuartzStairBlock;
-import appeng.block.stair.SkyStoneBlockStairBlock;
-import appeng.block.stair.SkyStoneBrickStairBlock;
-import appeng.block.stair.SkyStoneSmallBrickStairBlock;
-import appeng.block.stair.SkyStoneStairBlock;
+import appeng.block.stair.BlockStairCommon;
 import appeng.block.storage.BlockChest;
 import appeng.block.storage.BlockDrive;
 import appeng.block.storage.BlockIOPort;
 import appeng.block.storage.BlockSkyChest;
-import appeng.core.features.AEFeature;
-import appeng.core.features.WrappedDamageItemDefinition;
+import appeng.block.storage.BlockSkyChest.SkyChestType;
 import appeng.debug.BlockChunkloader;
 import appeng.debug.BlockCubeGenerator;
 import appeng.debug.BlockItemGen;
@@ -104,8 +91,12 @@ public final class ApiBlocks implements IBlocks
 	private final IBlockDefinition quartzVibrantGlass;
 	private final IBlockDefinition quartzTorch;
 	private final IBlockDefinition fluix;
-	private final IBlockDefinition skyStone;
+	private final IBlockDefinition skyStone_stone;
+	private final IBlockDefinition skyStone_block;
+	private final IBlockDefinition skyStone_brick;
+	private final IBlockDefinition skyStone_smallbrick;
 	private final IBlockDefinition skyChest;
+	private final IBlockDefinition skyChestBlock;
 	private final IBlockDefinition skyCompass;
 	private final ITileDefinition grindStone;
 	private final ITileDefinition crankHandle;
@@ -150,6 +141,7 @@ public final class ApiBlocks implements IBlocks
 	private final IBlockDefinition quartzStair;
 	private final IBlockDefinition chiseledQuartzStair;
 	private final IBlockDefinition quartzPillarStair;
+	/*
 	private final IBlockDefinition skyStoneSlab;
 	private final IBlockDefinition skyStoneBlockSlab;
 	private final IBlockDefinition skyStoneBrickSlab;
@@ -158,39 +150,31 @@ public final class ApiBlocks implements IBlocks
 	private final IBlockDefinition quartzSlab;
 	private final IBlockDefinition chiseledQuartzSlab;
 	private final IBlockDefinition quartzPillarSlab;
+	*/
 
 	private final IBlockDefinition itemGen;
 	private final IBlockDefinition chunkLoader;
 	private final IBlockDefinition phantomNode;
 	private final IBlockDefinition cubeGenerator;
 
-	private final Set<IOrientableBlock> orientables;
-
 	public ApiBlocks( DefinitionConstructor constructor )
 	{
-		final BlockLightDetector lightDetector = new BlockLightDetector();
-		final BlockQuartzPillar quartzPillar = new BlockQuartzPillar();
-		final BlockSkyStone skyStone = new BlockSkyStone();
-		final BlockFluix fluixBlock = new BlockFluix();
-		final BlockQuartzGrowthAccelerator cga = new BlockQuartzGrowthAccelerator();
-		final BlockQuartzTorch quartzTorch = new BlockQuartzTorch();
-		final BlockQuartz quartzBlock = new BlockQuartz();
-		final BlockQuartzChiseled chiseledQuartz = new BlockQuartzChiseled();
-
-		this.orientables = ImmutableSet.<IOrientableBlock>of( lightDetector, quartzPillar, skyStone, cga, quartzTorch );
-
 		this.quartzOre = constructor.registerBlockDefinition( new OreQuartz() );
 		this.quartzOreCharged = constructor.registerBlockDefinition( new OreQuartzCharged() );
 		this.matrixFrame = constructor.registerBlockDefinition( new BlockMatrixFrame() );
-		this.quartz = constructor.registerBlockDefinition( quartzBlock );
-		this.quartzPillar = constructor.registerBlockDefinition( quartzPillar );
-		this.quartzChiseled = constructor.registerBlockDefinition( chiseledQuartz );
+		this.quartz = constructor.registerBlockDefinition( new BlockQuartz() );
+		this.quartzPillar = constructor.registerBlockDefinition( new BlockQuartzPillar() );
+		this.quartzChiseled = constructor.registerBlockDefinition( new BlockQuartzChiseled() );
 		this.quartzGlass = constructor.registerBlockDefinition( new BlockQuartzGlass() );
 		this.quartzVibrantGlass = constructor.registerBlockDefinition( new BlockQuartzLamp() );
-		this.quartzTorch = constructor.registerBlockDefinition( quartzTorch );
-		this.fluix = constructor.registerBlockDefinition( fluixBlock );
-		this.skyStone = constructor.registerBlockDefinition( skyStone );
-		this.skyChest = constructor.registerBlockDefinition( new BlockSkyChest() );
+		this.quartzTorch = constructor.registerBlockDefinition( new BlockQuartzTorch() );
+		this.fluix = constructor.registerBlockDefinition( new BlockFluix() );
+		this.skyStone_stone = constructor.registerBlockDefinition( new BlockSkyStone( SkystoneType.stone ) );
+		this.skyStone_block = constructor.registerBlockDefinition( new BlockSkyStone( SkystoneType.block ) );
+		this.skyStone_brick = constructor.registerBlockDefinition( new BlockSkyStone( SkystoneType.brick ) );
+		this.skyStone_smallbrick = constructor.registerBlockDefinition( new BlockSkyStone( SkystoneType.smallbrick ) );
+		this.skyChest = constructor.registerBlockDefinition( new BlockSkyChest(SkyChestType.STONE) );
+		this.skyChestBlock = constructor.registerBlockDefinition( new BlockSkyChest(SkyChestType.BLOCK) );
 		this.skyCompass = constructor.registerBlockDefinition( new BlockSkyCompass() );
 		this.grindStone = constructor.registerTileDefinition( new BlockGrinder() );
 		this.crankHandle = constructor.registerTileDefinition( new BlockCrank() );
@@ -213,47 +197,54 @@ public final class ApiBlocks implements IBlocks
 		this.condenser = constructor.registerTileDefinition( new BlockCondenser() );
 		this.energyAcceptor = constructor.registerTileDefinition( new BlockEnergyAcceptor() );
 		this.vibrationChamber = constructor.registerTileDefinition( new BlockVibrationChamber() );
-		this.quartzGrowthAccelerator = constructor.registerTileDefinition( cga );
+		this.quartzGrowthAccelerator = constructor.registerTileDefinition( new BlockQuartzGrowthAccelerator() );
 		this.energyCell = constructor.registerTileDefinition( new BlockEnergyCell() );
 		this.energyCellDense = constructor.registerTileDefinition( new BlockDenseEnergyCell() );
 		this.energyCellCreative = constructor.registerTileDefinition( new BlockCreativeEnergyCell() );
-		this.craftingUnit = constructor.registerTileDefinition( new BlockCraftingUnit() );
-		this.craftingAccelerator = new WrappedDamageItemDefinition( this.craftingUnit, 1 );
-		this.craftingStorage1k = constructor.registerTileDefinition( new BlockCraftingStorage() );
-		this.craftingStorage4k = new WrappedDamageItemDefinition( this.craftingStorage1k, 1 );
-		this.craftingStorage16k = new WrappedDamageItemDefinition( this.craftingStorage1k, 2 );
-		this.craftingStorage64k = new WrappedDamageItemDefinition( this.craftingStorage1k, 3 );
+		this.craftingUnit = constructor.registerTileDefinition( new BlockCraftingUnit(CraftingUnitType.UNIT) );
+		this.craftingAccelerator = constructor.registerTileDefinition( new BlockCraftingUnit(CraftingUnitType.ACCELERATOR) );
+		this.craftingStorage1k = constructor.registerTileDefinition( new BlockCraftingStorage(CraftingUnitType.STORAGE_1K) );
+		this.craftingStorage4k = constructor.registerTileDefinition( new BlockCraftingStorage(CraftingUnitType.STORAGE_4K) );
+		this.craftingStorage16k = constructor.registerTileDefinition( new BlockCraftingStorage(CraftingUnitType.STORAGE_16K) );
+		this.craftingStorage64k = constructor.registerTileDefinition( new BlockCraftingStorage(CraftingUnitType.STORAGE_64K) );
 		this.craftingMonitor = constructor.registerTileDefinition( new BlockCraftingMonitor() );
 		this.molecularAssembler = constructor.registerTileDefinition( new BlockMolecularAssembler() );
-		this.lightDetector = constructor.registerTileDefinition( lightDetector );
+		this.lightDetector = constructor.registerTileDefinition( new BlockLightDetector() );
 		this.paint = constructor.registerTileDefinition( new BlockPaint() );
 
-		this.skyStoneStair = constructor.registerBlockDefinition( new SkyStoneStairBlock( skyStone, 0 ) );
-		this.skyStoneBlockStair = constructor.registerBlockDefinition( new SkyStoneBlockStairBlock( skyStone, 1 ) );
-		this.skyStoneBrickStair = constructor.registerBlockDefinition( new SkyStoneBrickStairBlock( skyStone, 2 ) );
-		this.skyStoneSmallBrickStair = constructor.registerBlockDefinition( new SkyStoneSmallBrickStairBlock( skyStone, 3 ) );
+		this.skyStoneStair = makeStairs( constructor,skyStone_stone, "skystone_stone" ) ;
+		this.skyStoneBlockStair = makeStairs( constructor,skyStone_block, "skystone_block" ) ;
+		this.skyStoneBrickStair = makeStairs( constructor,skyStone_brick, "skystone_brick" ) ;
+		this.skyStoneSmallBrickStair = makeStairs( constructor, skyStone_smallbrick, "skystone_smallbrick" ) ;
+		this.fluixStair = makeStairs( constructor, fluix, "fluix" ) ;
+		this.quartzStair = makeStairs( constructor,quartz, "quartz" ) ;
+		this.chiseledQuartzStair = makeStairs( constructor, quartzChiseled, "quartz_chiseled" ) ;
+		this.quartzPillarStair = makeStairs( constructor, quartzPillar, "quartz_pillar" ) ;
 
-		this.fluixStair = constructor.registerBlockDefinition( new FluixStairBlock( fluixBlock ) );
-
-		this.quartzStair = constructor.registerBlockDefinition( new QuartzStairBlock( quartzBlock ) );
-
-		this.chiseledQuartzStair = constructor.registerBlockDefinition( new ChiseledQuartzStairBlock( chiseledQuartz ) );
-
-		this.quartzPillarStair = constructor.registerBlockDefinition( new QuartzPillarStairBlock( quartzPillar ) );
-
-		this.skyStoneSlab = constructor.registerBlockDefinition( new AEBaseSlabBlock( skyStone, 0, EnumSet.of(AEFeature.DecorativeQuartzBlocks), false, "SkyStoneSlabBlock" ) );
-		this.skyStoneBlockSlab = constructor.registerBlockDefinition( new AEBaseSlabBlock( skyStone, 1, EnumSet.of(AEFeature.DecorativeQuartzBlocks), false, "SkyStoneBlockSlabBlock" ) );
-		this.skyStoneBrickSlab = constructor.registerBlockDefinition( new AEBaseSlabBlock( skyStone, 2, EnumSet.of(AEFeature.DecorativeQuartzBlocks), false, "SkyStoneBrickSlabBlock" ) );
-		this.skyStoneSmallBrickSlab = constructor.registerBlockDefinition( new AEBaseSlabBlock( skyStone, 3, EnumSet.of(AEFeature.DecorativeQuartzBlocks), false, "SkyStoneSmallBrickSlabBlock" ) );
-		this.fluixSlab = constructor.registerBlockDefinition( new AEBaseSlabBlock( fluixBlock, 0, EnumSet.of(AEFeature.DecorativeQuartzBlocks), false, "FluixSlabBlock" ) );
-		this.quartzSlab = constructor.registerBlockDefinition( new AEBaseSlabBlock( quartzBlock, 0, EnumSet.of(AEFeature.DecorativeQuartzBlocks), false, "QuartzSlabBlock" ) );
-		this.chiseledQuartzSlab = constructor.registerBlockDefinition( new AEBaseSlabBlock( chiseledQuartz, 0, EnumSet.of(AEFeature.DecorativeQuartzBlocks), false, "ChiseledQuartzSlabBlock" ) );;
-		this.quartzPillarSlab = constructor.registerBlockDefinition( new AEBaseSlabBlock( quartzPillar, 0, EnumSet.of(AEFeature.DecorativeQuartzBlocks), false, "QuartzPillarSlabBlock" ) );
-
+		// TODO Re-Add Slabs...
+		/*
+		this.skyStoneSlab = constructor.registerBlockDefinition( new AEBaseSlabBlock( skyStone_stone, EnumSet.of(AEFeature.DecorativeQuartzBlocks), false, "SkyStoneSlabBlock" ) );
+		this.skyStoneBlockSlab = constructor.registerBlockDefinition( new AEBaseSlabBlock( skyStone_block, EnumSet.of(AEFeature.DecorativeQuartzBlocks), false, "SkyStoneBlockSlabBlock" ) );
+		this.skyStoneBrickSlab = constructor.registerBlockDefinition( new AEBaseSlabBlock( skyStone_brick, EnumSet.of(AEFeature.DecorativeQuartzBlocks), false, "SkyStoneBrickSlabBlock" ) );
+		this.skyStoneSmallBrickSlab = constructor.registerBlockDefinition( new AEBaseSlabBlock( skyStone_smallbrick, EnumSet.of(AEFeature.DecorativeQuartzBlocks), false, "SkyStoneSmallBrickSlabBlock" ) );
+		this.fluixSlab = constructor.registerBlockDefinition( new AEBaseSlabBlock( fluixBlock, EnumSet.of(AEFeature.DecorativeQuartzBlocks), false, "FluixSlabBlock" ) );
+		this.quartzSlab = constructor.registerBlockDefinition( new AEBaseSlabBlock( quartzBlock, EnumSet.of(AEFeature.DecorativeQuartzBlocks), false, "QuartzSlabBlock" ) );
+		this.chiseledQuartzSlab = constructor.registerBlockDefinition( new AEBaseSlabBlock( chiseledQuartz, EnumSet.of(AEFeature.DecorativeQuartzBlocks), false, "ChiseledQuartzSlabBlock" ) );;
+		this.quartzPillarSlab = constructor.registerBlockDefinition( new AEBaseSlabBlock( quartzPillar, EnumSet.of(AEFeature.DecorativeQuartzBlocks), false, "QuartzPillarSlabBlock" ) )
+		*/
+		
 		this.itemGen = constructor.registerBlockDefinition( new BlockItemGen() );
 		this.chunkLoader = constructor.registerBlockDefinition( new BlockChunkloader() );
 		this.phantomNode = constructor.registerBlockDefinition( new BlockPhantomNode() );
 		this.cubeGenerator = constructor.registerBlockDefinition( new BlockCubeGenerator() );
+	}
+
+	private IBlockDefinition makeStairs(DefinitionConstructor constructor,
+			IBlockDefinition block, String name )
+	{
+		if ( block.maybeBlock().isPresent() )
+			return constructor.registerBlockDefinition(  new BlockStairCommon( block.maybeBlock().get(), name ));
+		return null;
 	}
 
 	@Override
@@ -319,13 +310,37 @@ public final class ApiBlocks implements IBlocks
 	@Override
 	public IBlockDefinition skyStone()
 	{
-		return this.skyStone;
+		return this.skyStone_stone;
+	}
+
+	@Override
+	public IBlockDefinition skyStoneBlock()
+	{
+		return this.skyStone_block;
+	}
+
+	@Override
+	public IBlockDefinition skyStoneBrick()
+	{
+		return this.skyStone_brick;
+	}
+
+	@Override
+	public IBlockDefinition skyStoneSmallBrick()
+	{
+		return this.skyStone_smallbrick;
 	}
 
 	@Override
 	public IBlockDefinition skyChest()
 	{
 		return this.skyChest;
+	}
+
+	@Override
+	public IBlockDefinition skyChestBlock()
+	{
+		return this.skyChestBlock;
 	}
 
 	@Override
@@ -382,6 +397,7 @@ public final class ApiBlocks implements IBlocks
 		return this.quartzPillarStair;
 	}
 
+	/*
 	@Override
 	public IBlockDefinition skyStoneSlab()
 	{
@@ -429,7 +445,8 @@ public final class ApiBlocks implements IBlocks
 	{
 		return this.quartzPillarSlab;
 	}
-
+*/
+	
 	@Override
 	public ITileDefinition grindStone()
 	{
@@ -660,8 +677,4 @@ public final class ApiBlocks implements IBlocks
 		return this.cubeGenerator;
 	}
 
-	public Set<IOrientableBlock> orientables()
-	{
-		return this.orientables;
-	}
 }

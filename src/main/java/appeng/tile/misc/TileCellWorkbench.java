@@ -24,8 +24,8 @@ import java.util.List;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
-
 import appeng.api.config.CopyMode;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
@@ -235,9 +235,12 @@ public class TileCellWorkbench extends AEBaseTile implements IUpgradeableHost, I
 	}
 
 	@Override
-	public void getDrops( World w, int x, int y, int z, List<ItemStack> drops )
+	public void getDrops(
+			World w,
+			BlockPos pos,
+			List<ItemStack> drops )
 	{
-		super.getDrops( w, x, y, z, drops );
+		super.getDrops( w, pos, drops );
 
 		if( this.cell.getStackInSlot( 0 ) != null )
 		{

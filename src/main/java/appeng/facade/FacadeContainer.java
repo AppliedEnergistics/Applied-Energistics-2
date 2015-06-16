@@ -19,20 +19,18 @@
 package appeng.facade;
 
 
-import java.io.IOException;
-
 import io.netty.buffer.ByteBuf;
 
-import net.minecraft.block.Block;
+import java.io.IOException;
+
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.api.AEApi;
 import appeng.api.parts.IFacadeContainer;
 import appeng.api.parts.IFacadePart;
 import appeng.api.parts.IPartHost;
+import appeng.api.util.AEPartLocation;
 import appeng.integration.IntegrationRegistry;
 import appeng.integration.IntegrationType;
 import appeng.integration.abstraction.IBC;
@@ -63,9 +61,9 @@ public class FacadeContainer implements IFacadeContainer
 	}
 
 	@Override
-	public void removeFacade( IPartHost host, ForgeDirection side )
+	public void removeFacade( IPartHost host, AEPartLocation side )
 	{
-		if( side != null && side != ForgeDirection.UNKNOWN )
+		if( side != null && side != AEPartLocation.INTERNAL )
 		{
 			if( this.storage.getFacade( side.ordinal() ) != null )
 			{
@@ -79,7 +77,7 @@ public class FacadeContainer implements IFacadeContainer
 	}
 
 	@Override
-	public IFacadePart getFacade( ForgeDirection s )
+	public IFacadePart getFacade( AEPartLocation s )
 	{
 		return this.storage.getFacade( s.ordinal() );
 	}
@@ -89,14 +87,14 @@ public class FacadeContainer implements IFacadeContainer
 	{
 		IFacadePart[] newFacades = new FacadePart[6];
 
-		newFacades[ForgeDirection.UP.ordinal()] = this.storage.getFacade( ForgeDirection.UP.ordinal() );
-		newFacades[ForgeDirection.DOWN.ordinal()] = this.storage.getFacade( ForgeDirection.DOWN.ordinal() );
+		newFacades[AEPartLocation.UP.ordinal()] = this.storage.getFacade( AEPartLocation.UP.ordinal() );
+		newFacades[AEPartLocation.DOWN.ordinal()] = this.storage.getFacade( AEPartLocation.DOWN.ordinal() );
 
-		newFacades[ForgeDirection.EAST.ordinal()] = this.storage.getFacade( ForgeDirection.NORTH.ordinal() );
-		newFacades[ForgeDirection.SOUTH.ordinal()] = this.storage.getFacade( ForgeDirection.EAST.ordinal() );
+		newFacades[AEPartLocation.EAST.ordinal()] = this.storage.getFacade( AEPartLocation.NORTH.ordinal() );
+		newFacades[AEPartLocation.SOUTH.ordinal()] = this.storage.getFacade( AEPartLocation.EAST.ordinal() );
 
-		newFacades[ForgeDirection.WEST.ordinal()] = this.storage.getFacade( ForgeDirection.SOUTH.ordinal() );
-		newFacades[ForgeDirection.NORTH.ordinal()] = this.storage.getFacade( ForgeDirection.WEST.ordinal() );
+		newFacades[AEPartLocation.WEST.ordinal()] = this.storage.getFacade( AEPartLocation.SOUTH.ordinal() );
+		newFacades[AEPartLocation.NORTH.ordinal()] = this.storage.getFacade( AEPartLocation.WEST.ordinal() );
 
 		for( int x = 0; x < this.facades; x++ )
 		{
@@ -128,7 +126,7 @@ public class FacadeContainer implements IFacadeContainer
 		int[] ids = new int[2];
 		for( int x = 0; x < this.facades; x++ )
 		{
-			ForgeDirection side = ForgeDirection.getOrientation( x );
+			AEPartLocation side = AEPartLocation.fromOrdinal( x );
 			int ix = ( 1 << x );
 			if( ( facadeSides & ix ) == ix )
 			{
@@ -137,13 +135,16 @@ public class FacadeContainer implements IFacadeContainer
 				boolean isBC = ids[0] < 0;
 				ids[0] = Math.abs( ids[0] );
 
+				// TODO: BC Facade Integration!
+				/*
 				if( isBC && IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.BC ) )
 				{
 					IBC bc = (IBC) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.BC );
 					changed = changed || this.storage.getFacade( x ) == null;
-					this.storage.setFacade( x, bc.createFacadePart( (Block) Block.blockRegistry.getObjectById( ids[0] ), ids[1], side ) );
+					this.storage.setFacade( x, bc.createFacadePart( Block.getStateById( id[0] ), ids[1], side ) );
 				}
-				else if( !isBC )
+				else */
+				if( !isBC )
 				{
 					for( Item facadeItem : AEApi.instance().definitions().items().facade().maybeItem().asSet() )
 					{
@@ -183,7 +184,7 @@ public class FacadeContainer implements IFacadeContainer
 					Item i = is.getItem();
 					if( i instanceof IFacadeItem )
 					{
-						this.storage.setFacade( x, ( (IFacadeItem) i ).createPartFromItemStack( is, ForgeDirection.getOrientation( x ) ) );
+						this.storage.setFacade( x, ( (IFacadeItem) i ).createPartFromItemStack( is, AEPartLocation.fromOrdinal( x ) ) );
 					}
 					else
 					{
@@ -192,7 +193,7 @@ public class FacadeContainer implements IFacadeContainer
 							IBC bc = (IBC) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.BC );
 							if( bc.isFacade( is ) )
 							{
-								this.storage.setFacade( x, bc.createFacadePart( is, ForgeDirection.getOrientation( x ) ) );
+								this.storage.setFacade( x, bc.createFacadePart( is, AEPartLocation.fromOrdinal( x ) ) );
 							}
 						}
 					}
@@ -207,7 +208,7 @@ public class FacadeContainer implements IFacadeContainer
 		int facadeSides = 0;
 		for( int x = 0; x < this.facades; x++ )
 		{
-			if( this.getFacade( ForgeDirection.getOrientation( x ) ) != null )
+			if( this.getFacade( AEPartLocation.fromOrdinal( x ) ) != null )
 			{
 				facadeSides |= ( 1 << x );
 			}
@@ -216,7 +217,7 @@ public class FacadeContainer implements IFacadeContainer
 
 		for( int x = 0; x < this.facades; x++ )
 		{
-			IFacadePart part = this.getFacade( ForgeDirection.getOrientation( x ) );
+			IFacadePart part = this.getFacade( AEPartLocation.fromOrdinal( x ) );
 			if( part != null )
 			{
 				int itemID = Item.getIdFromItem( part.getItem() );

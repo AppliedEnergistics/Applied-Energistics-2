@@ -33,7 +33,6 @@ import javax.annotation.Nonnull;
 import net.minecraft.block.Block;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
-
 import appeng.api.AEApi;
 import appeng.api.util.DimensionalCoord;
 import appeng.services.compass.CompassReader;
@@ -102,7 +101,7 @@ public class CompassService implements ThreadFactory
 		int hi_y = low_y + 32;
 
 		// lower level...
-		Chunk c = w.getChunkFromBlockCoords( x, z );
+		Chunk c = w.getChunkFromChunkCoords( cx, cz );
 
 		for( Block skyStoneBlock : AEApi.instance().definitions().blocks().skyStone().maybeBlock().asSet() )
 		{
@@ -113,7 +112,7 @@ public class CompassService implements ThreadFactory
 					for( int k = low_y; k < hi_y; k++ )
 					{
 						Block blk = c.getBlock( i, k, j );
-						if( blk == skyStoneBlock && c.getBlockMetadata( i, k, j ) == 0 )
+						if( blk == skyStoneBlock )
 						{
 							return this.executor.submit( new CMUpdatePost( w, cx, cz, cdy, true ) );
 						}
@@ -131,7 +130,7 @@ public class CompassService implements ThreadFactory
 
 		if( cr == null )
 		{
-			cr = new CompassReader( w.provider.dimensionId, this.rootFolder );
+			cr = new CompassReader( w.provider.getDimensionId(), this.rootFolder );
 			this.worldSet.put( w, cr );
 		}
 

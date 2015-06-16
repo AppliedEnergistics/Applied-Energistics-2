@@ -21,16 +21,16 @@ package appeng.core.features.registries;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.annotation.Nullable;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
-
-import cpw.mods.fml.common.registry.GameRegistry;
-
 import appeng.api.AEApi;
 import appeng.api.config.TunnelType;
 import appeng.api.definitions.IBlocks;
@@ -158,14 +158,14 @@ public final class P2PTunnelRegistry implements IP2PTunnelRegistry
 	@Nullable
 	private ItemStack getModItem( String modID, String name, int meta )
 	{
-		ItemStack myItemStack = GameRegistry.findItemStack( modID, name, 1 );
+		Item item = GameRegistry.findItem( modID, name );
 
-		if( myItemStack == null )
+		if( item == null )
 		{
 			return null;
 		}
-
-		myItemStack.setItemDamage( meta );
+		
+		ItemStack myItemStack  = new ItemStack( item, 1, meta );
 		return myItemStack;
 	}
 

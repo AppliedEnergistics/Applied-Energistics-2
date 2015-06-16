@@ -19,11 +19,9 @@
 package appeng.container.implementations;
 
 
+import invtweaks.api.container.ChestContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-
-import invtweaks.api.container.ChestContainer;
-
 import appeng.container.AEBaseContainer;
 import appeng.container.slot.SlotNormal;
 import appeng.tile.storage.TileSkyChest;
@@ -48,7 +46,7 @@ public class ContainerSkyChest extends AEBaseContainer
 			}
 		}
 
-		this.chest.openInventory();
+		this.chest.openInventory(ip.player);
 
 		this.bindPlayerInventory( ip, 0, 195 - /* height of player inventory */82 );
 	}
@@ -57,6 +55,6 @@ public class ContainerSkyChest extends AEBaseContainer
 	public void onContainerClosed( EntityPlayer par1EntityPlayer )
 	{
 		super.onContainerClosed( par1EntityPlayer );
-		this.chest.closeInventory();
+		this.chest.closeInventory(par1EntityPlayer);
 	}
 }

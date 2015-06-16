@@ -21,14 +21,13 @@ package appeng.core.features;
 
 import java.util.EnumSet;
 
-import com.google.common.base.Optional;
-
 import net.minecraft.block.BlockStairs;
-
-import cpw.mods.fml.common.registry.GameRegistry;
-
+import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.relauncher.Side;
 import appeng.api.definitions.IBlockDefinition;
 import appeng.core.CreativeTab;
+
+import com.google.common.base.Optional;
 
 
 public class StairBlockFeatureHandler implements IFeatureHandler
@@ -61,14 +60,14 @@ public class StairBlockFeatureHandler implements IFeatureHandler
 	}
 
 	@Override
-	public final void register()
+	public final void register(Side side)
 	{
 		if( this.enabled )
 		{
 			String name = this.extractor.get();
 			this.stairs.setCreativeTab( CreativeTab.instance );
-			this.stairs.setBlockName( "appliedenergistics2." + name );
-			this.stairs.setBlockTextureName( "appliedenergistics2:" + name );
+			this.stairs.setUnlocalizedName( "appliedenergistics2." + name );
+			//this.stairs.setBlockTextureName( "appliedenergistics2:" + name );
 
 			GameRegistry.registerBlock( this.stairs, "tile." + name );
 		}

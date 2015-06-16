@@ -25,9 +25,7 @@ import java.util.UUID;
 
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Property;
-
-import cpw.mods.fml.relauncher.FMLRelaunchLog;
-
+import net.minecraftforge.fml.relauncher.FMLRelaunchLog;
 import appeng.util.UUIDMatcher;
 
 

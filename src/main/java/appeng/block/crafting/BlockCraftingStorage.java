@@ -24,19 +24,18 @@ import java.util.List;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import appeng.client.texture.ExtraBlockTextures;
 import appeng.tile.crafting.TileCraftingStorageTile;
 
 
 public class BlockCraftingStorage extends BlockCraftingUnit
 {
-	public BlockCraftingStorage()
+	
+	public BlockCraftingStorage( CraftingUnitType type )
 	{
+		super(type );
 		this.setTileEntity( TileCraftingStorageTile.class );
 	}
 
@@ -47,29 +46,29 @@ public class BlockCraftingStorage extends BlockCraftingUnit
 	}
 
 	@Override
-	public IIcon getIcon( int direction, int metadata )
+	public appeng.client.texture.IAESprite getIcon(net.minecraft.util.EnumFacing side, net.minecraft.block.state.IBlockState state)
 	{
-		switch( metadata & ( ~4 ) )
+		boolean formed = (boolean)state.getValue( FORMED );
+		switch(  this.type )
 		{
 			default:
-
-			case 0:
-				return super.getIcon( 0, 0 );
-			case 1:
-				return ExtraBlockTextures.BlockCraftingStorage4k.getIcon();
-			case 2:
-				return ExtraBlockTextures.BlockCraftingStorage16k.getIcon();
-			case 3:
-				return ExtraBlockTextures.BlockCraftingStorage64k.getIcon();
-
-			case FLAG_FORMED:
-				return ExtraBlockTextures.BlockCraftingStorage1kFit.getIcon();
-			case 1 | FLAG_FORMED:
-				return ExtraBlockTextures.BlockCraftingStorage4kFit.getIcon();
-			case 2 | FLAG_FORMED:
-				return ExtraBlockTextures.BlockCraftingStorage16kFit.getIcon();
-			case 3 | FLAG_FORMED:
-				return ExtraBlockTextures.BlockCraftingStorage64kFit.getIcon();
+			case STORAGE_1K:
+				return formed ? 
+						super.getIcon( side,state ) : 
+							ExtraBlockTextures.BlockCraftingStorage1kFit.getIcon();
+			case STORAGE_4K:
+				return formed ? 
+						ExtraBlockTextures.BlockCraftingStorage4k.getIcon() : 
+							ExtraBlockTextures.BlockCraftingStorage1kFit.getIcon();
+			case STORAGE_16K:
+				return formed ? 
+						ExtraBlockTextures.BlockCraftingStorage16k.getIcon() : 
+							ExtraBlockTextures.BlockCraftingStorage16kFit.getIcon();
+			case STORAGE_64K:
+				return formed ? 
+						ExtraBlockTextures.BlockCraftingStorage64k.getIcon() : 
+							ExtraBlockTextures.BlockCraftingStorage64kFit.getIcon();
+			
 		}
 	}
 

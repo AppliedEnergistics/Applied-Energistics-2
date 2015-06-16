@@ -29,8 +29,7 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.common.util.ForgeDirection;
-
+import net.minecraft.util.EnumFacing;
 import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
 import appeng.api.networking.IGrid;
@@ -283,13 +282,13 @@ public final class ContainerInterfaceTerminal extends AEBaseContainer
 				case SHIFT_CLICK:
 
 					IInventory mySlot = slotInv.getWrapper( slot );
-					InventoryAdaptor playerInv = InventoryAdaptor.getAdaptor( player, ForgeDirection.UNKNOWN );
+					InventoryAdaptor playerInv = InventoryAdaptor.getAdaptor( player, EnumFacing.UP );
 					mySlot.setInventorySlotContents( 0, playerInv.addItems( mySlot.getStackInSlot( 0 ) ) );
 
 					break;
 				case MOVE_REGION:
 
-					InventoryAdaptor playerInvAd = InventoryAdaptor.getAdaptor( player, ForgeDirection.UNKNOWN );
+					InventoryAdaptor playerInvAd = InventoryAdaptor.getAdaptor( player, EnumFacing.UP );
 					for( int x = 0; x < inv.server.getSizeInventory(); x++ )
 					{
 						inv.server.setInventorySlotContents( x, playerInvAd.addItems( inv.server.getStackInSlot( x ) ) );

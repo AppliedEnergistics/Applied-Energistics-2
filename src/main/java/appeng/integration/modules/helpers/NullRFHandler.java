@@ -19,8 +19,7 @@
 package appeng.integration.modules.helpers;
 
 
-import net.minecraftforge.common.util.ForgeDirection;
-
+import appeng.api.util.ForgeDirection;
 import cofh.api.energy.IEnergyReceiver;
 
 

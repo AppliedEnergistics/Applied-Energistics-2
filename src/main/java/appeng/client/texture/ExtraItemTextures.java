@@ -19,13 +19,9 @@
 package appeng.client.texture;
 
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import appeng.core.AppEng;
 
 
 public enum ExtraItemTextures
@@ -39,7 +35,7 @@ public enum ExtraItemTextures
 	ToolColorApplicatorTip_Light( "ToolColorApplicatorTip_Light" );
 
 	private final String name;
-	public IIcon IIcon;
+	public IAESprite IIcon;
 
 	ExtraItemTextures( String name )
 	{
@@ -51,24 +47,18 @@ public enum ExtraItemTextures
 		return new ResourceLocation( "appliedenergistics2", "textures/" + string );
 	}
 
-	@SideOnly( Side.CLIENT )
-	public static IIcon getMissing()
-	{
-		return ( (TextureMap) Minecraft.getMinecraft().getTextureManager().getTexture( TextureMap.locationItemsTexture ) ).getAtlasSprite( "missingno" );
-	}
-
 	public String getName()
 	{
 		return this.name;
 	}
 
-	public IIcon getIcon()
+	public IAESprite getIcon()
 	{
 		return this.IIcon;
 	}
 
 	public void registerIcon( TextureMap map )
 	{
-		this.IIcon = map.registerIcon( "appliedenergistics2:" + this.name );
+		IIcon = new BaseIcon( map.registerSprite( new ResourceLocation( AppEng.MOD_ID, "items/" + name ) ) );
 	}
 }

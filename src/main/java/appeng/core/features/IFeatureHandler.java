@@ -19,6 +19,7 @@
 package appeng.core.features;
 
 
+import net.minecraftforge.fml.relauncher.Side;
 import appeng.api.definitions.IItemDefinition;
 
 
@@ -28,5 +29,5 @@ public interface IFeatureHandler
 
 	IItemDefinition getDefinition();
 
-	void register();
+	void register(Side side );
 }

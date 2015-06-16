@@ -26,7 +26,6 @@ package appeng.api.features;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-
 import appeng.api.util.IConfigManager;
 
 

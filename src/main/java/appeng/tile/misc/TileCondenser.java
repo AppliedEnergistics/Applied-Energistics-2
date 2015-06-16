@@ -22,12 +22,11 @@ package appeng.tile.misc;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
-
 import appeng.api.AEApi;
 import appeng.api.config.CondenserOutput;
 import appeng.api.config.Settings;
@@ -209,25 +208,25 @@ public class TileCondenser extends AEBaseInvTile implements IFluidHandler, IConf
 	}
 
 	@Override
-	public boolean canInsertItem( int slotIndex, ItemStack insertingItem, int side )
+	public boolean canInsertItem( int slotIndex, ItemStack insertingItem, EnumFacing side )
 	{
 		return slotIndex == 0;
 	}
 
 	@Override
-	public boolean canExtractItem( int slotIndex, ItemStack extractedItem, int side )
+	public boolean canExtractItem( int slotIndex, ItemStack extractedItem, EnumFacing side )
 	{
 		return slotIndex != 0;
 	}
 
 	@Override
-	public int[] getAccessibleSlotsBySide( ForgeDirection side )
+	public int[] getAccessibleSlotsBySide( EnumFacing side )
 	{
 		return this.sides;
 	}
 
 	@Override
-	public int fill( ForgeDirection from, FluidStack resource, boolean doFill )
+	public int fill( EnumFacing from, FluidStack resource, boolean doFill )
 	{
 		if( doFill )
 		{
@@ -238,31 +237,31 @@ public class TileCondenser extends AEBaseInvTile implements IFluidHandler, IConf
 	}
 
 	@Override
-	public FluidStack drain( ForgeDirection from, FluidStack resource, boolean doDrain )
+	public FluidStack drain( EnumFacing from, FluidStack resource, boolean doDrain )
 	{
 		return null;
 	}
 
 	@Override
-	public FluidStack drain( ForgeDirection from, int maxDrain, boolean doDrain )
+	public FluidStack drain( EnumFacing from, int maxDrain, boolean doDrain )
 	{
 		return null;
 	}
 
 	@Override
-	public boolean canFill( ForgeDirection from, Fluid fluid )
+	public boolean canFill( EnumFacing from, Fluid fluid )
 	{
 		return true;
 	}
 
 	@Override
-	public boolean canDrain( ForgeDirection from, Fluid fluid )
+	public boolean canDrain( EnumFacing from, Fluid fluid )
 	{
 		return false;
 	}
 
 	@Override
-	public FluidTankInfo[] getTankInfo( ForgeDirection from )
+	public FluidTankInfo[] getTankInfo( EnumFacing from )
 	{
 		return EMPTY;
 	}

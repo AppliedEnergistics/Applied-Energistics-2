@@ -20,17 +20,15 @@ package appeng.spatial;
 
 
 import net.minecraft.entity.Entity;
-import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.biome.WorldChunkManagerHell;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraftforge.client.IRenderHandler;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import appeng.client.render.SpatialSkyRender;
 import appeng.core.Registration;
 
@@ -77,7 +75,7 @@ public class StorageWorldProvider extends WorldProvider
 	@Override
 	public Vec3 getFogColor( float par1, float par2 )
 	{
-		return Vec3.createVectorHelper( 0.07, 0.07, 0.07 );
+		return new Vec3( 0.07, 0.07, 0.07 );
 	}
 
 	@Override
@@ -120,7 +118,7 @@ public class StorageWorldProvider extends WorldProvider
 	@Override
 	public Vec3 getSkyColor( Entity cameraEntity, float partialTicks )
 	{
-		return Vec3.createVectorHelper( 0.07, 0.07, 0.07 );
+		return new Vec3( 0.07, 0.07, 0.07 );
 	}
 
 	@Override
@@ -130,19 +128,19 @@ public class StorageWorldProvider extends WorldProvider
 	}
 
 	@Override
-	public boolean canSnowAt( int x, int y, int z, boolean checkLight )
+	public boolean canSnowAt( BlockPos pos, boolean checkLight )
 	{
 		return false;
 	}
-
+	
 	@Override
-	public ChunkCoordinates getSpawnPoint()
+	public BlockPos getSpawnCoordinate()
 	{
-		return new ChunkCoordinates( 0, 0, 0 );
+		return new BlockPos(0,0,0);
 	}
 
 	@Override
-	public boolean isBlockHighHumidity( int x, int y, int z )
+	public boolean isBlockHighHumidity( BlockPos pos )
 	{
 		return false;
 	}
@@ -151,5 +149,11 @@ public class StorageWorldProvider extends WorldProvider
 	public boolean canDoLightning( Chunk chunk )
 	{
 		return false;
+	}
+
+	@Override
+	public String getInternalNameSuffix()
+	{
+		return null;
 	}
 }

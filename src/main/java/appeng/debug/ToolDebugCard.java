@@ -27,10 +27,10 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.api.networking.IGridConnection;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
@@ -41,6 +41,7 @@ import appeng.api.networking.pathing.IPathingGrid;
 import appeng.api.networking.ticking.ITickManager;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
+import appeng.api.util.AEPartLocation;
 import appeng.core.features.AEFeature;
 import appeng.hooks.TickHandler;
 import appeng.items.AEBaseItem;
@@ -60,7 +61,15 @@ public class ToolDebugCard extends AEBaseItem
 	}
 
 	@Override
-	public boolean onItemUseFirst( ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ )
+	public boolean onItemUseFirst(
+			ItemStack stack,
+			EntityPlayer player,
+			World world,
+			BlockPos pos,
+			EnumFacing side,
+			float hitX,
+			float hitY,
+			float hitZ )
 	{
 		if( Platform.isClient() )
 		{
@@ -83,11 +92,11 @@ public class ToolDebugCard extends AEBaseItem
 		}
 		else
 		{
-			TileEntity te = world.getTileEntity( x, y, z );
+			TileEntity te = world.getTileEntity( pos );
 
 			if( te instanceof IGridHost )
 			{
-				GridNode node = (GridNode) ( (IGridHost) te ).getGridNode( ForgeDirection.getOrientation( side ) );
+				GridNode node = (GridNode) ( (IGridHost) te ).getGridNode( AEPartLocation.fromFacing( side ) );
 				if( node != null )
 				{
 					Grid g = node.getInternalGrid();
@@ -173,7 +182,7 @@ public class ToolDebugCard extends AEBaseItem
 
 			if( te instanceof IPartHost )
 			{
-				IPart center = ( (IPartHost) te ).getPart( ForgeDirection.UNKNOWN );
+				IPart center = ( (IPartHost) te ).getPart( AEPartLocation.INTERNAL );
 				( (IPartHost) te ).markForUpdate();
 				if( center != null )
 				{
@@ -181,8 +190,8 @@ public class ToolDebugCard extends AEBaseItem
 					this.outputMsg( player, "Node Channels: " + n.usedChannels() );
 					for( IGridConnection gc : n.getConnections() )
 					{
-						ForgeDirection fd = gc.getDirection( n );
-						if( fd != ForgeDirection.UNKNOWN )
+						AEPartLocation fd = gc.getDirection( n );
+						if( fd != AEPartLocation.INTERNAL )
 						{
 							this.outputMsg( player, fd.toString() + ": " + gc.getUsedChannels() );
 						}
@@ -197,7 +206,7 @@ public class ToolDebugCard extends AEBaseItem
 
 				if( te instanceof IGridHost )
 				{
-					IGridNode node = ( (IGridHost) te ).getGridNode( ForgeDirection.getOrientation( side ) );
+					IGridNode node = ( (IGridHost) te ).getGridNode( AEPartLocation.fromFacing( side ) );
 					if( node != null && node.getGrid() != null )
 					{
 						IEnergyGrid eg = node.getGrid().getCache( IEnergyGrid.class );

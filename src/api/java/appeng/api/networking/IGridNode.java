@@ -28,9 +28,8 @@ import java.util.EnumSet;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.api.IAppEngApi;
+import appeng.api.util.AEPartLocation;
 import appeng.api.util.IReadOnlyCollection;
 
 
@@ -89,9 +88,9 @@ public interface IGridNode
 	World getWorld();
 
 	/**
-	 * @return a set of the connected sides, UNKNOWN represents an invisible connection
+	 * @return a set of the connected sides, INTERNAL represents an invisible connection
 	 */
-	EnumSet<ForgeDirection> getConnectedSides();
+	EnumSet<AEPartLocation> getConnectedSides();
 
 	/**
 	 * lets you iterate a nodes connections

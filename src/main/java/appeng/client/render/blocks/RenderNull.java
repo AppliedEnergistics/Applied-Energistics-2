@@ -19,13 +19,13 @@
 package appeng.client.render.blocks;
 
 
-import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.IItemRenderer.ItemRenderType;
-
 import appeng.block.AEBaseBlock;
 import appeng.client.render.BaseBlockRender;
+import appeng.client.render.IRenderHelper;
 import appeng.tile.AEBaseTile;
 
 
@@ -38,13 +38,13 @@ public class RenderNull extends BaseBlockRender<AEBaseBlock, AEBaseTile>
 	}
 
 	@Override
-	public void renderInventory( AEBaseBlock block, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj )
+	public void renderInventory( AEBaseBlock block, ItemStack is, IRenderHelper renderer, ItemRenderType type, Object[] obj )
 	{
 
 	}
 
 	@Override
-	public boolean renderInWorld( AEBaseBlock block, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
+	public boolean renderInWorld( AEBaseBlock block, IBlockAccess world, BlockPos pos, IRenderHelper renderer )
 	{
 		return true;
 	}

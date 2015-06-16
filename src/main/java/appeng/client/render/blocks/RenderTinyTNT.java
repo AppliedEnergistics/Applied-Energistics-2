@@ -19,13 +19,18 @@
 package appeng.client.render.blocks;
 
 
-import net.minecraft.client.renderer.RenderBlocks;
+import net.minecraft.client.Minecraft;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.IBlockAccess;
+import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.IItemRenderer.ItemRenderType;
-
 import appeng.block.misc.BlockTinyTNT;
 import appeng.client.render.BaseBlockRender;
+import appeng.client.render.IRenderHelper;
+import appeng.client.texture.BaseIcon;
+import appeng.client.texture.FullIcon;
 import appeng.tile.AEBaseTile;
 
 
@@ -38,18 +43,20 @@ public class RenderTinyTNT extends BaseBlockRender<BlockTinyTNT, AEBaseTile>
 	}
 
 	@Override
-	public void renderInventory( BlockTinyTNT block, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj )
+	public void renderInventory( BlockTinyTNT block, ItemStack is, IRenderHelper renderer, ItemRenderType type, Object[] obj )
 	{
+		renderer.setOverrideBlockTexture( new FullIcon( Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getTexture( Blocks.tnt.getDefaultState() )) );
 		renderer.setRenderBounds( 0.25f, 0.0f, 0.25f, 0.75f, 0.5f, 0.75f );
 		super.renderInventory( block, is, renderer, type, obj );
 	}
 
 	@Override
-	public boolean renderInWorld( BlockTinyTNT imb, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
+	public boolean renderInWorld( BlockTinyTNT imb, IBlockAccess world, BlockPos pos, IRenderHelper renderer )
 	{
+		renderer.setOverrideBlockTexture( new FullIcon( Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getTexture( Blocks.tnt.getDefaultState() )) );
 		renderer.renderAllFaces = true;
 		renderer.setRenderBounds( 0.25f, 0.0f, 0.25f, 0.75f, 0.5f, 0.75f );
-		boolean out = super.renderInWorld( imb, world, x, y, z, renderer );
+		boolean out = super.renderInWorld( imb, world, pos, renderer );
 		renderer.renderAllFaces = false;
 		return out;
 	}

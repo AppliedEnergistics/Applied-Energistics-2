@@ -21,18 +21,16 @@ package appeng.client.render.blocks;
 
 import java.util.EnumSet;
 
-import net.minecraft.client.renderer.RenderBlocks;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.IItemRenderer.ItemRenderType;
-import net.minecraftforge.common.util.ForgeDirection;
-
-import appeng.block.AEBaseTileBlock;
 import appeng.block.misc.BlockPaint;
 import appeng.client.render.BaseBlockRender;
+import appeng.client.render.IRenderHelper;
 import appeng.client.texture.ExtraBlockTextures;
+import appeng.client.texture.IAESprite;
 import appeng.helpers.Splotch;
 import appeng.tile.misc.TilePaint;
 
@@ -46,32 +44,33 @@ public class RenderBlockPaint extends BaseBlockRender<BlockPaint, TilePaint>
 	}
 
 	@Override
-	public void renderInventory( BlockPaint block, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj )
+	public void renderInventory( BlockPaint block, ItemStack is, IRenderHelper renderer, ItemRenderType type, Object[] obj )
 	{
 
 	}
 
 	@Override
-	public boolean renderInWorld( BlockPaint imb, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
+	public boolean renderInWorld( BlockPaint imb, IBlockAccess world, BlockPos pos, IRenderHelper tess )
 	{
-		TilePaint tp = imb.getTileEntity( world, x, y, z );
+		TilePaint tp = imb.getTileEntity( world, pos );
 		boolean out = false;
 		if( tp != null )
 		{
 			// super.renderInWorld( imb, world, x, y, z, renderer );
+			int x = pos.getX();
+			int y = pos.getY();
+			int z = pos.getZ();
 
-			IIcon[] icoSet = new IIcon[] { imb.getIcon( 0, 0 ), ExtraBlockTextures.BlockPaint2.getIcon(), ExtraBlockTextures.BlockPaint3.getIcon() };
-
-			Tessellator tess = Tessellator.instance;
+			IAESprite[] icoSet = new IAESprite[] { imb.getIcon( EnumFacing.UP, imb.getDefaultState() ), ExtraBlockTextures.BlockPaint2.getIcon(), ExtraBlockTextures.BlockPaint3.getIcon() };
 
 			int lumen = 14 << 20 | 14 << 4;
-			int brightness = imb.getMixedBrightnessForBlock( world, x, y, z );
+			int brightness = imb.getMixedBrightnessForBlock( world, pos );
 
 			double offsetConstant = 0.001;
 
-			EnumSet<ForgeDirection> validSides = EnumSet.noneOf( ForgeDirection.class );
+			EnumSet<EnumFacing> validSides = EnumSet.noneOf( EnumFacing.class );
 
-			for( ForgeDirection side : ForgeDirection.VALID_DIRECTIONS )
+			for( EnumFacing side : EnumFacing.VALUES )
 			{
 				if( tp.isSideValid( side ) )
 				{
@@ -108,13 +107,13 @@ public class RenderBlockPaint extends BaseBlockRender<BlockPaint, TilePaint>
 				pos_x = Math.max( buffer, Math.min( 1.0 - buffer, pos_x ) );
 				pos_y = Math.max( buffer, Math.min( 1.0 - buffer, pos_y ) );
 
-				if( s.side == ForgeDirection.SOUTH || s.side == ForgeDirection.NORTH )
+				if( s.side == EnumFacing.SOUTH || s.side == EnumFacing.NORTH )
 				{
 					pos_x += x;
 					pos_y += y;
 				}
 
-				else if( s.side == ForgeDirection.UP || s.side == ForgeDirection.DOWN )
+				else if( s.side == EnumFacing.UP || s.side == EnumFacing.DOWN )
 				{
 					pos_x += x;
 					pos_y += z;
@@ -125,54 +124,55 @@ public class RenderBlockPaint extends BaseBlockRender<BlockPaint, TilePaint>
 					pos_x += y;
 					pos_y += z;
 				}
-
-				IIcon ico = icoSet[s.getSeed() % icoSet.length];
-
+				
+				IAESprite ico = icoSet[s.getSeed() % icoSet.length];
+				EnumFacing rs = s.side.getOpposite();
+				
 				switch( s.side )
 				{
 					case UP:
 						offset = 1.0 - offset;
-						tess.addVertexWithUV( pos_x - buffer, y + offset, pos_y - buffer, ico.getMinU(), ico.getMinV() );
-						tess.addVertexWithUV( pos_x + buffer, y + offset, pos_y - buffer, ico.getMaxU(), ico.getMinV() );
-						tess.addVertexWithUV( pos_x + buffer, y + offset, pos_y + buffer, ico.getMaxU(), ico.getMaxV() );
-						tess.addVertexWithUV( pos_x - buffer, y + offset, pos_y + buffer, ico.getMinU(), ico.getMaxV() );
+						tess.addVertexWithUV( rs,pos_x - buffer, y + offset, pos_y - buffer, ico.getMinU(), ico.getMinV() );
+						tess.addVertexWithUV( rs,pos_x + buffer, y + offset, pos_y - buffer, ico.getMaxU(), ico.getMinV() );
+						tess.addVertexWithUV( rs,pos_x + buffer, y + offset, pos_y + buffer, ico.getMaxU(), ico.getMaxV() );
+						tess.addVertexWithUV( rs,pos_x - buffer, y + offset, pos_y + buffer, ico.getMinU(), ico.getMaxV() );
 						break;
 
 					case DOWN:
-						tess.addVertexWithUV( pos_x + buffer, y + offset, pos_y - buffer, ico.getMinU(), ico.getMinV() );
-						tess.addVertexWithUV( pos_x - buffer, y + offset, pos_y - buffer, ico.getMaxU(), ico.getMinV() );
-						tess.addVertexWithUV( pos_x - buffer, y + offset, pos_y + buffer, ico.getMaxU(), ico.getMaxV() );
-						tess.addVertexWithUV( pos_x + buffer, y + offset, pos_y + buffer, ico.getMinU(), ico.getMaxV() );
+						tess.addVertexWithUV( rs, pos_x + buffer, y + offset, pos_y - buffer, ico.getMinU(), ico.getMinV() );
+						tess.addVertexWithUV( rs, pos_x - buffer, y + offset, pos_y - buffer, ico.getMaxU(), ico.getMinV() );
+						tess.addVertexWithUV( rs, pos_x - buffer, y + offset, pos_y + buffer, ico.getMaxU(), ico.getMaxV() );
+						tess.addVertexWithUV( rs, pos_x + buffer, y + offset, pos_y + buffer, ico.getMinU(), ico.getMaxV() );
 						break;
 
 					case EAST:
 						offset = 1.0 - offset;
-						tess.addVertexWithUV( x + offset, pos_x + buffer, pos_y - buffer, ico.getMinU(), ico.getMinV() );
-						tess.addVertexWithUV( x + offset, pos_x - buffer, pos_y - buffer, ico.getMaxU(), ico.getMinV() );
-						tess.addVertexWithUV( x + offset, pos_x - buffer, pos_y + buffer, ico.getMaxU(), ico.getMaxV() );
-						tess.addVertexWithUV( x + offset, pos_x + buffer, pos_y + buffer, ico.getMinU(), ico.getMaxV() );
+						tess.addVertexWithUV( rs, x + offset, pos_x + buffer, pos_y - buffer, ico.getMinU(), ico.getMinV() );
+						tess.addVertexWithUV( rs, x + offset, pos_x - buffer, pos_y - buffer, ico.getMaxU(), ico.getMinV() );
+						tess.addVertexWithUV( rs, x + offset, pos_x - buffer, pos_y + buffer, ico.getMaxU(), ico.getMaxV() );
+						tess.addVertexWithUV( rs, x + offset, pos_x + buffer, pos_y + buffer, ico.getMinU(), ico.getMaxV() );
 						break;
 
 					case WEST:
-						tess.addVertexWithUV( x + offset, pos_x - buffer, pos_y - buffer, ico.getMinU(), ico.getMinV() );
-						tess.addVertexWithUV( x + offset, pos_x + buffer, pos_y - buffer, ico.getMaxU(), ico.getMinV() );
-						tess.addVertexWithUV( x + offset, pos_x + buffer, pos_y + buffer, ico.getMaxU(), ico.getMaxV() );
-						tess.addVertexWithUV( x + offset, pos_x - buffer, pos_y + buffer, ico.getMinU(), ico.getMaxV() );
+						tess.addVertexWithUV( rs, x + offset, pos_x - buffer, pos_y - buffer, ico.getMinU(), ico.getMinV() );
+						tess.addVertexWithUV( rs, x + offset, pos_x + buffer, pos_y - buffer, ico.getMaxU(), ico.getMinV() );
+						tess.addVertexWithUV( rs, x + offset, pos_x + buffer, pos_y + buffer, ico.getMaxU(), ico.getMaxV() );
+						tess.addVertexWithUV( rs, x + offset, pos_x - buffer, pos_y + buffer, ico.getMinU(), ico.getMaxV() );
 						break;
 
 					case SOUTH:
 						offset = 1.0 - offset;
-						tess.addVertexWithUV( pos_x + buffer, pos_y - buffer, z + offset, ico.getMinU(), ico.getMinV() );
-						tess.addVertexWithUV( pos_x - buffer, pos_y - buffer, z + offset, ico.getMaxU(), ico.getMinV() );
-						tess.addVertexWithUV( pos_x - buffer, pos_y + buffer, z + offset, ico.getMaxU(), ico.getMaxV() );
-						tess.addVertexWithUV( pos_x + buffer, pos_y + buffer, z + offset, ico.getMinU(), ico.getMaxV() );
+						tess.addVertexWithUV( rs, pos_x + buffer, pos_y - buffer, z + offset, ico.getMinU(), ico.getMinV() );
+						tess.addVertexWithUV( rs, pos_x - buffer, pos_y - buffer, z + offset, ico.getMaxU(), ico.getMinV() );
+						tess.addVertexWithUV( rs, pos_x - buffer, pos_y + buffer, z + offset, ico.getMaxU(), ico.getMaxV() );
+						tess.addVertexWithUV( rs, pos_x + buffer, pos_y + buffer, z + offset, ico.getMinU(), ico.getMaxV() );
 						break;
 
 					case NORTH:
-						tess.addVertexWithUV( pos_x - buffer, pos_y - buffer, z + offset, ico.getMinU(), ico.getMinV() );
-						tess.addVertexWithUV( pos_x + buffer, pos_y - buffer, z + offset, ico.getMaxU(), ico.getMinV() );
-						tess.addVertexWithUV( pos_x + buffer, pos_y + buffer, z + offset, ico.getMaxU(), ico.getMaxV() );
-						tess.addVertexWithUV( pos_x - buffer, pos_y + buffer, z + offset, ico.getMinU(), ico.getMaxV() );
+						tess.addVertexWithUV( rs, pos_x - buffer, pos_y - buffer, z + offset, ico.getMinU(), ico.getMinV() );
+						tess.addVertexWithUV( rs, pos_x + buffer, pos_y - buffer, z + offset, ico.getMaxU(), ico.getMinV() );
+						tess.addVertexWithUV( rs, pos_x + buffer, pos_y + buffer, z + offset, ico.getMaxU(), ico.getMaxV() );
+						tess.addVertexWithUV( rs, pos_x - buffer, pos_y + buffer, z + offset, ico.getMinU(), ico.getMaxV() );
 						break;
 
 					default:

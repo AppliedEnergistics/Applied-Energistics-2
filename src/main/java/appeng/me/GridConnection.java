@@ -22,14 +22,13 @@ package appeng.me;
 import java.util.Arrays;
 import java.util.EnumSet;
 
-import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.api.exceptions.FailedConnection;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridConnection;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.events.MENetworkChannelsChanged;
 import appeng.api.networking.pathing.IPathingGrid;
+import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IReadOnlyCollection;
 import appeng.core.AEConfig;
@@ -47,10 +46,10 @@ public class GridConnection implements IGridConnection, IPathItem
 	public int channelData = 0;
 	Object visitorIterationNumber = null;
 	private GridNode sideA;
-	private ForgeDirection fromAtoB;
+	private AEPartLocation fromAtoB;
 	private GridNode sideB;
 
-	public GridConnection( IGridNode aNode, IGridNode bNode, ForgeDirection fromAtoB ) throws FailedConnection
+	public GridConnection( IGridNode aNode, IGridNode bNode, AEPartLocation fromAtoB ) throws FailedConnection
 	{
 
 		GridNode a = (GridNode) aNode;
@@ -143,9 +142,9 @@ public class GridConnection implements IGridConnection, IPathItem
 	}
 
 	@Override
-	public ForgeDirection getDirection( IGridNode side )
+	public AEPartLocation getDirection( IGridNode side )
 	{
-		if( this.fromAtoB == ForgeDirection.UNKNOWN )
+		if( this.fromAtoB == AEPartLocation.INTERNAL )
 		{
 			return this.fromAtoB;
 		}
@@ -189,7 +188,7 @@ public class GridConnection implements IGridConnection, IPathItem
 	@Override
 	public boolean hasDirection()
 	{
-		return this.fromAtoB != ForgeDirection.UNKNOWN;
+		return this.fromAtoB != AEPartLocation.INTERNAL;
 	}
 
 	@Override

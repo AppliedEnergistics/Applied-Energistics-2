@@ -19,17 +19,17 @@
 package appeng.tile.misc;
 
 
-import java.util.EnumSet;
-
 import io.netty.buffer.ByteBuf;
 
-import net.minecraftforge.common.util.ForgeDirection;
+import java.util.EnumSet;
 
+import net.minecraft.util.EnumFacing;
 import appeng.api.implementations.IPowerChannelState;
 import appeng.api.implementations.tiles.ICrystalGrowthAccelerator;
 import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.util.AECableType;
+import appeng.api.util.AEPartLocation;
 import appeng.me.GridAccessException;
 import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
@@ -44,7 +44,7 @@ public class TileQuartzGrowthAccelerator extends AENetworkTile implements IPower
 
 	public TileQuartzGrowthAccelerator()
 	{
-		this.gridProxy.setValidSides( EnumSet.noneOf( ForgeDirection.class ) );
+		this.gridProxy.setValidSides( EnumSet.noneOf( EnumFacing.class ) );
 		this.gridProxy.setFlags();
 		this.gridProxy.setIdlePowerUsage( 8 );
 	}
@@ -56,7 +56,7 @@ public class TileQuartzGrowthAccelerator extends AENetworkTile implements IPower
 	}
 
 	@Override
-	public AECableType getCableConnectionType( ForgeDirection dir )
+	public AECableType getCableConnectionType( AEPartLocation dir )
 	{
 		return AECableType.COVERED;
 	}
@@ -83,7 +83,7 @@ public class TileQuartzGrowthAccelerator extends AENetworkTile implements IPower
 	}
 
 	@Override
-	public void setOrientation( ForgeDirection inForward, ForgeDirection inUp )
+	public void setOrientation( EnumFacing inForward, EnumFacing inUp )
 	{
 		super.setOrientation( inForward, inUp );
 		this.gridProxy.setValidSides( EnumSet.of( this.getUp(), this.getUp().getOpposite() ) );

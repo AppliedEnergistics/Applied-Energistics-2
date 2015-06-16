@@ -24,8 +24,7 @@
 package appeng.api.events;
 
 
-import cpw.mods.fml.common.eventhandler.Event;
-
+import net.minecraftforge.fml.common.eventhandler.Event;
 import appeng.api.features.ILocatable;
 
 

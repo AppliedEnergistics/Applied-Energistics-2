@@ -24,19 +24,17 @@ import java.util.EnumSet;
 import java.util.List;
 
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import appeng.block.AEBaseBlock;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.blocks.RenderNull;
@@ -64,12 +62,6 @@ public class BlockMatrixFrame extends AEBaseBlock implements ICustomCollision
 	}
 
 	@Override
-	public void registerBlockIcons( IIconRegister iconRegistry )
-	{
-
-	}
-
-	@Override
 	@SideOnly( Side.CLIENT )
 	public void getCheckedSubBlocks( Item item, CreativeTabs tabs, List<ItemStack> itemStacks )
 	{
@@ -77,32 +69,49 @@ public class BlockMatrixFrame extends AEBaseBlock implements ICustomCollision
 	}
 
 	@Override
-	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool( World w, int x, int y, int z, Entity e, boolean isVisual )
+	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool(
+			World w,
+			BlockPos pos,
+			Entity thePlayer,
+			boolean b )
 	{
 		return Arrays.asList( new AxisAlignedBB[] {} );// AxisAlignedBB.getBoundingBox( 0.25, 0, 0.25, 0.75, 0.5, 0.75 )
 		// } );
 	}
-
+	
 	@Override
-	public void addCollidingBlockToList( World w, int x, int y, int z, AxisAlignedBB bb, List<AxisAlignedBB> out, Entity e )
+	public void addCollidingBlockToList(
+			World w,
+			BlockPos pos,
+			AxisAlignedBB bb,
+			List<AxisAlignedBB> out,
+			Entity e )
 	{
-		out.add( AxisAlignedBB.getBoundingBox( 0.0, 0.0, 0.0, 1.0, 1.0, 1.0 ) );
+		out.add( AxisAlignedBB.fromBounds( 0.0, 0.0, 0.0, 1.0, 1.0, 1.0 ) );
 	}
 
 	@Override
-	public boolean canPlaceBlockAt( World world, int x, int y, int z )
+	public boolean canPlaceBlockAt(
+			World worldIn,
+			BlockPos pos )
 	{
 		return false;
 	}
 
 	@Override
-	public void onBlockExploded( World world, int x, int y, int z, Explosion explosion )
+	public void onBlockExploded(
+			World world,
+			BlockPos pos,
+			Explosion explosion )
 	{
 		// Don't explode.
 	}
 
 	@Override
-	public boolean canEntityDestroy( IBlockAccess world, int x, int y, int z, Entity entity )
+	public boolean canEntityDestroy(
+			IBlockAccess world,
+			BlockPos pos,
+			Entity entity )
 	{
 		return false;
 	}

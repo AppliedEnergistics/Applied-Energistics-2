@@ -25,8 +25,7 @@ FMLInterModComms.sendMessage( "appliedenergistics2", "whitelist-spatial", "mymod
 package appeng.core.api.imc;
 
 
-import cpw.mods.fml.common.event.FMLInterModComms.IMCMessage;
-
+import net.minecraftforge.fml.common.event.FMLInterModComms.IMCMessage;
 import appeng.api.AEApi;
 import appeng.core.AELog;
 import appeng.core.api.IIMCProcessor;

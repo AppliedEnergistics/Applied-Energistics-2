@@ -24,11 +24,11 @@ import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.EnumCreatureType;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.ChunkProviderGenerate;
-
 import appeng.api.AEApi;
 import appeng.core.AEConfig;
 
@@ -55,14 +55,14 @@ public class StorageChunkProvider extends ChunkProviderGenerate
 
 	public StorageChunkProvider( World world, long i )
 	{
-		super( world, i, false );
+		super( world, i, false, null );
 		this.world = world;
 	}
 
 	@Override
 	public Chunk provideChunk( int x, int z )
 	{
-		Chunk chunk = new Chunk( this.world, BLOCKS, x, z );
+		Chunk chunk = new Chunk( this.world, x, z );
 
 		byte[] biomes = chunk.getBiomeArray();
 		AEConfig config = AEConfig.instance;
@@ -72,9 +72,9 @@ public class StorageChunkProvider extends ChunkProviderGenerate
 			biomes[k] = (byte) config.storageBiomeID;
 		}
 
-		if( !chunk.isTerrainPopulated )
+		if( !chunk.isTerrainPopulated() )
 		{
-			chunk.isTerrainPopulated = true;
+			chunk.setTerrainPopulated( true );
 			chunk.resetRelightChecks();
 		}
 
@@ -94,7 +94,9 @@ public class StorageChunkProvider extends ChunkProviderGenerate
 	}
 
 	@Override
-	public List getPossibleCreatures( EnumCreatureType a, int b, int c, int d )
+	public List func_177458_a(
+			EnumCreatureType p_177458_1_,
+			BlockPos p_177458_2_ )
 	{
 		return new ArrayList();
 	}

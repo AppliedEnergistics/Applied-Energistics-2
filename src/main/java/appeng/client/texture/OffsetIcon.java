@@ -19,28 +19,27 @@
 package appeng.client.texture;
 
 
-import net.minecraft.util.IIcon;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
-
-public class OffsetIcon implements IIcon
+public class OffsetIcon implements IAESprite
 {
 
 	final float offsetX;
 	final float offsetY;
 
-	private final IIcon p;
+	private final IAESprite p;
 
-	public OffsetIcon( IIcon o, float x, float y )
+	public OffsetIcon( IAESprite iIcon, float x, float y )
 	{
-		if( o == null )
+		if( iIcon == null )
 		{
 			throw new IllegalArgumentException( "Cannot create a wrapper icon with a null icon." );
 		}
 
-		this.p = o;
+		this.p = iIcon;
 		this.offsetX = x;
 		this.offsetY = y;
 	}
@@ -114,5 +113,11 @@ public class OffsetIcon implements IIcon
 	private float u( double d )
 	{
 		return this.p.getInterpolatedU( Math.min( 16.0, Math.max( 0.0, d ) ) );
+	}
+
+	@Override
+	public TextureAtlasSprite getAtlas()
+	{
+		return p.getAtlas();
 	}
 }

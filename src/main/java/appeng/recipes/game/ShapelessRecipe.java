@@ -25,8 +25,8 @@ import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.oredict.OreDictionary;
-
 import appeng.api.exceptions.MissingIngredientError;
 import appeng.api.exceptions.RegistrationError;
 import appeng.api.recipes.IIngredient;
@@ -179,4 +179,12 @@ public class ShapelessRecipe implements IRecipe, IRecipeBakeable
 			this.disable = true;
 		}
 	}
+	
+	@Override
+	public ItemStack[] getRemainingItems(
+			InventoryCrafting inv )
+	{
+        return ForgeHooks.defaultRecipeGetRemainingItems(inv);
+	}
+	
 }

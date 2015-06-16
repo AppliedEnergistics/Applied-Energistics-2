@@ -19,9 +19,8 @@
 package appeng.helpers;
 
 
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.IBlockAccess;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.api.util.IOrientable;
 
 
@@ -48,24 +47,24 @@ public class LocationRotation implements IOrientable
 	}
 
 	@Override
-	public ForgeDirection getForward()
+	public EnumFacing getForward()
 	{
-		if( this.getUp().offsetY == 0 )
+		if( this.getUp().getFrontOffsetY() == 0 )
 		{
-			return ForgeDirection.UP;
+			return EnumFacing.UP;
 		}
-		return ForgeDirection.SOUTH;
+		return EnumFacing.SOUTH;
 	}
 
 	@Override
-	public ForgeDirection getUp()
+	public EnumFacing getUp()
 	{
 		int num = Math.abs( this.x + this.y + this.z ) % 6;
-		return ForgeDirection.getOrientation( num );
+		return EnumFacing.VALUES[ num ];
 	}
 
 	@Override
-	public void setOrientation( ForgeDirection forward, ForgeDirection up )
+	public void setOrientation( EnumFacing forward, EnumFacing up )
 	{
 
 	}

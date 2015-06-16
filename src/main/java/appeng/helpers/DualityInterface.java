@@ -26,8 +26,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.google.common.collect.ImmutableSet;
-
 import net.minecraft.block.Block;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
@@ -37,11 +35,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.Settings;
@@ -73,6 +71,7 @@ import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AECableType;
+import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
 import appeng.core.settings.TickRates;
@@ -95,6 +94,8 @@ import appeng.util.inv.AdaptorIInventory;
 import appeng.util.inv.IInventoryDestination;
 import appeng.util.inv.WrapperInvSlot;
 import appeng.util.item.AEItemStack;
+
+import com.google.common.collect.ImmutableSet;
 
 
 public class DualityInterface implements IGridTickable, IStorageMonitorable, IInventoryDestination, IAEAppEngInventory, IConfigManagerHost, ICraftingProvider, IUpgradeableHost, IPriorityHost
@@ -429,9 +430,9 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		}
 
 		TileEntity te = this.iHost.getTileEntity();
-		if( te != null && te.getWorldObj() != null )
+		if( te != null && te.getWorld() != null )
 		{
-			Platform.notifyBlocksOfNeighbors( te.getWorldObj(), te.xCoord, te.yCoord, te.zCoord );
+			Platform.notifyBlocksOfNeighbors( te.getWorld(), te.getPos() );
 		}
 	}
 
@@ -445,7 +446,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		if( is.getItem() instanceof ICraftingPatternItem )
 		{
 			ICraftingPatternItem cpi = (ICraftingPatternItem) is.getItem();
-			ICraftingPatternDetails details = cpi.getPatternForItem( is, this.iHost.getTileEntity().getWorldObj() );
+			ICraftingPatternDetails details = cpi.getPatternForItem( is, this.iHost.getTileEntity().getWorld() );
 
 			if( details != null )
 			{
@@ -505,7 +506,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		this.notifyNeighbors();
 	}
 
-	public AECableType getCableConnectionType( ForgeDirection dir )
+	public AECableType getCableConnectionType( AEPartLocation dir )
 	{
 		return AECableType.SMART;
 	}
@@ -528,7 +529,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		}
 	}
 
-	public int[] getAccessibleSlotsFromSide( int side )
+	public int[] getSlotsForFace( EnumFacing side )
 	{
 		return this.sides;
 	}
@@ -556,7 +557,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		return this.hasWorkToDo() ? ( couldDoWork ? TickRateModulation.URGENT : TickRateModulation.SLOWER ) : TickRateModulation.SLEEP;
 	}
 
-	private void pushItemsOut( EnumSet<ForgeDirection> possibleDirections )
+	private void pushItemsOut( EnumSet<EnumFacing> possibleDirections )
 	{
 		if( !this.hasItemsToSend() )
 		{
@@ -564,16 +565,16 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		}
 
 		TileEntity tile = this.iHost.getTileEntity();
-		World w = tile.getWorldObj();
+		World w = tile.getWorld();
 
 		Iterator<ItemStack> i = this.waitingToSend.iterator();
 		while( i.hasNext() )
 		{
 			ItemStack whatToSend = i.next();
 
-			for( ForgeDirection s : possibleDirections )
+			for( EnumFacing s : possibleDirections )
 			{
-				TileEntity te = w.getTileEntity( tile.xCoord + s.offsetX, tile.yCoord + s.offsetY, tile.zCoord + s.offsetZ );
+				TileEntity te = w.getTileEntity( tile.getPos().offset( s ) );
 				if( te == null )
 				{
 					continue;
@@ -730,7 +731,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		{
 			if( this.getInstalledUpgrades( Upgrades.CRAFTING ) > 0 && itemStack != null )
 			{
-				return this.craftingTracker.handleCrafting( x, itemStack.getStackSize(), itemStack, d, this.iHost.getTileEntity().getWorldObj(), this.gridProxy.getGrid(), this.gridProxy.getCrafting(), this.mySource );
+				return this.craftingTracker.handleCrafting( x, itemStack.getStackSize(), itemStack, d, this.iHost.getTileEntity().getWorld(), this.gridProxy.getGrid(), this.gridProxy.getCrafting(), this.mySource );
 			}
 		}
 		catch( GridAccessException e )
@@ -837,7 +838,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		this.craftingTracker.cancel();
 	}
 
-	public IStorageMonitorable getMonitorable( ForgeDirection side, BaseActionSource src, IStorageMonitorable myInterface )
+	public IStorageMonitorable getMonitorable( EnumFacing side, BaseActionSource src, IStorageMonitorable myInterface )
 	{
 		if( Platform.canAccess( this.gridProxy, src ) )
 		{
@@ -872,12 +873,12 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		}
 
 		TileEntity tile = this.iHost.getTileEntity();
-		World w = tile.getWorldObj();
+		World w = tile.getWorld();
 
-		EnumSet<ForgeDirection> possibleDirections = this.iHost.getTargets();
-		for( ForgeDirection s : possibleDirections )
+		EnumSet<EnumFacing> possibleDirections = this.iHost.getTargets();
+		for( EnumFacing s : possibleDirections )
 		{
-			TileEntity te = w.getTileEntity( tile.xCoord + s.offsetX, tile.yCoord + s.offsetY, tile.zCoord + s.offsetZ );
+			TileEntity te = w.getTileEntity( tile.getPos().offset( s ) );
 			if( te instanceof IInterfaceHost )
 			{
 				try
@@ -949,15 +950,15 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 
 		if( this.isBlocking() )
 		{
-			EnumSet<ForgeDirection> possibleDirections = this.iHost.getTargets();
+			EnumSet<EnumFacing> possibleDirections = this.iHost.getTargets();
 			TileEntity tile = this.iHost.getTileEntity();
-			World w = tile.getWorldObj();
+			World w = tile.getWorld();
 
 			boolean allAreBusy = true;
 
-			for( ForgeDirection s : possibleDirections )
+			for( EnumFacing s : possibleDirections )
 			{
-				TileEntity te = w.getTileEntity( tile.xCoord + s.offsetX, tile.yCoord + s.offsetY, tile.zCoord + s.offsetZ );
+				TileEntity te = w.getTileEntity( tile.getPos().offset( s ) );
 
 				InventoryAdaptor ad = InventoryAdaptor.getAdaptor( te, s.getOpposite() );
 				if( ad != null )
@@ -1110,20 +1111,18 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 	public String getTermName()
 	{
 		final TileEntity hostTile = this.iHost.getTileEntity();
-		final World hostWorld = hostTile.getWorldObj();
+		final World hostWorld = hostTile.getWorld();
 
 		if( ( (ICustomNameObject) this.iHost ).hasCustomName() )
 		{
 			return ( (ICustomNameObject) this.iHost ).getCustomName();
 		}
 
-		final EnumSet<ForgeDirection> possibleDirections = this.iHost.getTargets();
-		for( ForgeDirection direction : possibleDirections )
+		final EnumSet<EnumFacing> possibleDirections = this.iHost.getTargets();
+		for( EnumFacing direction : possibleDirections )
 		{
-			final int xPos = hostTile.xCoord + direction.offsetX;
-			final int yPos = hostTile.yCoord + direction.offsetY;
-			final int zPos = hostTile.zCoord + direction.offsetZ;
-			final TileEntity directedTile = hostWorld.getTileEntity( xPos, yPos, zPos );
+			BlockPos targ = hostTile.getPos().offset( direction );
+			final TileEntity directedTile = hostWorld.getTileEntity( targ );
 
 			if( directedTile == null )
 			{
@@ -1155,7 +1154,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 
 				if( directedTile instanceof ISidedInventory )
 				{
-					int[] sides = ( (ISidedInventory) directedTile ).getAccessibleSlotsFromSide( direction.getOpposite().ordinal() );
+					int[] sides = ( (ISidedInventory) directedTile ).getSlotsForFace( direction.getOpposite() );
 
 					if( sides == null || sides.length == 0 )
 					{
@@ -1163,19 +1162,19 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 					}
 				}
 
-				final Block directedBlock = hostWorld.getBlock( xPos, yPos, zPos );
-				ItemStack what = new ItemStack( directedBlock, 1, directedBlock.getDamageValue( hostWorld, xPos, yPos, zPos ) );
+				final Block directedBlock = hostWorld.getBlockState( targ ).getBlock();
+				ItemStack what = new ItemStack( directedBlock, 1, directedBlock.getDamageValue( hostWorld, targ ) );
 				try
 				{
-					Vec3 from = Vec3.createVectorHelper( hostTile.xCoord + 0.5, hostTile.yCoord + 0.5, hostTile.zCoord + 0.5 );
-					from = from.addVector( direction.offsetX * 0.501, direction.offsetY * 0.501, direction.offsetZ * 0.501 );
-					Vec3 to = from.addVector( direction.offsetX, direction.offsetY, direction.offsetZ );
+					Vec3 from = new Vec3( hostTile.getPos().getX() + 0.5, hostTile.getPos().getY() + 0.5, hostTile.getPos().getZ() + 0.5 );
+					from = from.addVector( direction.getFrontOffsetX() * 0.501, direction.getFrontOffsetY() * 0.501, direction.getFrontOffsetZ() * 0.501 );
+					Vec3 to = from.addVector( direction.getFrontOffsetX(), direction.getFrontOffsetY(), direction.getFrontOffsetZ() );
 					MovingObjectPosition mop = hostWorld.rayTraceBlocks( from, to, true );
 					if( mop != null && !BAD_BLOCKS.contains( directedBlock ) )
 					{
-						if( mop.blockX == directedTile.xCoord && mop.blockY == directedTile.yCoord && mop.blockZ == directedTile.zCoord )
+						if( mop.getBlockPos().equals( directedTile.getPos() ) )
 						{
-							ItemStack g = directedBlock.getPickBlock( mop, hostWorld, directedTile.xCoord, directedTile.yCoord, directedTile.zCoord, null );
+							ItemStack g = directedBlock.getPickBlock( mop, hostWorld, directedTile.getPos() );
 							if( g != null )
 							{
 								what = g;
@@ -1207,7 +1206,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 	public long getSortValue()
 	{
 		TileEntity te = this.iHost.getTileEntity();
-		return ( te.zCoord << 24 ) ^ ( te.xCoord << 8 ) ^ te.yCoord;
+		return ( te.getPos().getZ() << 24 ) ^ ( te.getPos().getX() << 8 ) ^ te.getPos().getY();
 	}
 
 	public void initialize()

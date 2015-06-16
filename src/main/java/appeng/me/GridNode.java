@@ -29,9 +29,9 @@ import java.util.concurrent.Callable;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.api.exceptions.FailedConnection;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.GridNotification;
@@ -47,6 +47,7 @@ import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.events.MENetworkChannelsChanged;
 import appeng.api.networking.pathing.IPathingGrid;
 import appeng.api.util.AEColor;
+import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IReadOnlyCollection;
 import appeng.core.WorldSettings;
@@ -208,7 +209,7 @@ public class GridNode implements IGridNode, IPathItem
 
 		this.compressedData |= ( this.gridProxy.getGridColor().ordinal() << 3 );
 
-		for( ForgeDirection dir : this.gridProxy.getConnectableSides() )
+		for( EnumFacing dir : this.gridProxy.getConnectableSides() )
 		{
 			this.compressedData |= ( 1 << ( dir.ordinal() + 8 ) );
 		}
@@ -285,9 +286,9 @@ public class GridNode implements IGridNode, IPathItem
 	}
 
 	@Override
-	public EnumSet<ForgeDirection> getConnectedSides()
+	public EnumSet<AEPartLocation> getConnectedSides()
 	{
-		EnumSet<ForgeDirection> set = EnumSet.noneOf( ForgeDirection.class );
+		EnumSet<AEPartLocation> set = EnumSet.noneOf( AEPartLocation.class );
 		for( IGridConnection gc : this.connections )
 		{
 			set.add( gc.getDirection( this ) );
@@ -394,12 +395,12 @@ public class GridNode implements IGridNode, IPathItem
 			return;
 		}
 
-		EnumSet<ForgeDirection> newSecurityConnections = EnumSet.noneOf( ForgeDirection.class );
+		EnumSet<AEPartLocation> newSecurityConnections = EnumSet.noneOf( AEPartLocation.class );
 
 		DimensionalCoord dc = this.gridProxy.getLocation();
-		for( ForgeDirection f : ForgeDirection.VALID_DIRECTIONS )
+		for( AEPartLocation f : AEPartLocation.SIDE_LOCATIONS )
 		{
-			IGridHost te = this.findGridHost( dc.getWorld(), dc.x + f.offsetX, dc.y + f.offsetY, dc.z + f.offsetZ );
+			IGridHost te = this.findGridHost( dc.getWorld(), dc.x + f.xOffset, dc.y + f.yOffset, dc.z + f.zOffset );
 			if( te != null )
 			{
 				GridNode node = (GridNode) te.getGridNode( f.getOpposite() );
@@ -462,9 +463,9 @@ public class GridNode implements IGridNode, IPathItem
 			}
 		}
 
-		for( ForgeDirection f : newSecurityConnections )
+		for( AEPartLocation f : newSecurityConnections )
 		{
-			IGridHost te = this.findGridHost( dc.getWorld(), dc.x + f.offsetX, dc.y + f.offsetY, dc.z + f.offsetZ );
+			IGridHost te = this.findGridHost( dc.getWorld(), dc.x + f.xOffset, dc.y + f.yOffset, dc.z + f.zOffset );
 			if( te != null )
 			{
 				GridNode node = (GridNode) te.getGridNode( f.getOpposite() );
@@ -490,9 +491,10 @@ public class GridNode implements IGridNode, IPathItem
 
 	private IGridHost findGridHost( World world, int x, int y, int z )
 	{
-		if( world.blockExists( x, y, z ) )
+		BlockPos pos = new BlockPos(x,y,z);
+		if( world.isBlockLoaded( pos ) )
 		{
-			TileEntity te = world.getTileEntity( x, y, z );
+			TileEntity te = world.getTileEntity( pos );
 			if( te instanceof IGridHost )
 			{
 				return (IGridHost) te;
@@ -501,7 +503,7 @@ public class GridNode implements IGridNode, IPathItem
 		return null;
 	}
 
-	public boolean canConnect( GridNode from, ForgeDirection dir )
+	public boolean canConnect( GridNode from, AEPartLocation dir )
 	{
 		if( !this.isValidDirection( dir ) )
 		{
@@ -516,7 +518,7 @@ public class GridNode implements IGridNode, IPathItem
 		return true;
 	}
 
-	private boolean isValidDirection( ForgeDirection dir )
+	private boolean isValidDirection( AEPartLocation dir )
 	{
 		return ( this.compressedData & ( 1 << ( 8 + dir.ordinal() ) ) ) > 0;
 	}

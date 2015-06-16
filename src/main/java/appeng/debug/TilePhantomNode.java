@@ -21,9 +21,9 @@ package appeng.debug;
 
 import java.util.EnumSet;
 
-import net.minecraftforge.common.util.ForgeDirection;
-
+import net.minecraft.util.EnumFacing;
 import appeng.api.networking.IGridNode;
+import appeng.api.util.AEPartLocation;
 import appeng.me.helpers.AENetworkProxy;
 import appeng.tile.grid.AENetworkTile;
 
@@ -35,7 +35,7 @@ public class TilePhantomNode extends AENetworkTile
 	boolean crashMode = false;
 
 	@Override
-	public IGridNode getGridNode( ForgeDirection dir )
+	public IGridNode getGridNode( AEPartLocation dir )
 	{
 		if( !this.crashMode )
 		{
@@ -59,7 +59,7 @@ public class TilePhantomNode extends AENetworkTile
 		if( this.proxy != null )
 		{
 			this.crashMode = true;
-			this.proxy.setValidSides( EnumSet.allOf( ForgeDirection.class ) );
+			this.proxy.setValidSides( EnumSet.allOf( EnumFacing.class ) );
 		}
 	}
 }

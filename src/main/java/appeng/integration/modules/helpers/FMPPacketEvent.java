@@ -20,8 +20,7 @@ package appeng.integration.modules.helpers;
 
 
 import net.minecraft.entity.player.EntityPlayerMP;
-
-import cpw.mods.fml.common.eventhandler.Event;
+import net.minecraftforge.fml.common.eventhandler.Event;
 
 
 public class FMPPacketEvent extends Event

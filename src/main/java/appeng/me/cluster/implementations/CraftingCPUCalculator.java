@@ -22,13 +22,13 @@ package appeng.me.cluster.implementations;
 import java.util.Iterator;
 
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.events.MENetworkCraftingCpuChange;
+import appeng.api.util.AEPartLocation;
 import appeng.api.util.WorldCoord;
 import appeng.me.cluster.IAECluster;
 import appeng.me.cluster.IAEMultiBlock;
@@ -85,7 +85,7 @@ public class CraftingCPUCalculator extends MBCalculator
 			{
 				for( int z = min.z; z <= max.z; z++ )
 				{
-					IAEMultiBlock te = (IAEMultiBlock) w.getTileEntity( x, y, z );
+					IAEMultiBlock te = (IAEMultiBlock) w.getTileEntity( new BlockPos( x, y, z ) );
 
 					if( !te.isValid() )
 					{
@@ -120,7 +120,7 @@ public class CraftingCPUCalculator extends MBCalculator
 			{
 				for( int z = min.z; z <= max.z; z++ )
 				{
-					TileCraftingTile te = (TileCraftingTile) w.getTileEntity( x, y, z );
+					TileCraftingTile te = (TileCraftingTile) w.getTileEntity( new BlockPos( x, y, z ) );
 					te.updateStatus( c );
 					c.addTile( te );
 				}
@@ -133,7 +133,7 @@ public class CraftingCPUCalculator extends MBCalculator
 		while( i.hasNext() )
 		{
 			IGridHost gh = i.next();
-			IGridNode n = gh.getGridNode( ForgeDirection.UNKNOWN );
+			IGridNode n = gh.getGridNode( AEPartLocation.INTERNAL );
 			if( n != null )
 			{
 				IGrid g = n.getGrid();

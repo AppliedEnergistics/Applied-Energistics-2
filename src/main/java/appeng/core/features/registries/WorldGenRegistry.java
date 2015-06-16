@@ -23,7 +23,6 @@ import java.util.HashSet;
 
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
-
 import appeng.api.features.IWorldGen;
 
 
@@ -96,8 +95,8 @@ public final class WorldGenRegistry implements IWorldGen
 		}
 
 		boolean isBadProvider = this.types[type.ordinal()].badProviders.contains( w.provider.getClass() );
-		boolean isBadDimension = this.types[type.ordinal()].badDimensions.contains( w.provider.dimensionId );
-		boolean isGoodDimension = this.types[type.ordinal()].enabledDimensions.contains( w.provider.dimensionId );
+		boolean isBadDimension = this.types[type.ordinal()].badDimensions.contains( w.provider.getDimensionId() );
+		boolean isGoodDimension = this.types[type.ordinal()].enabledDimensions.contains( w.provider.getDimensionId() );
 
 		if( isBadProvider || isBadDimension )
 		{

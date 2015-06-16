@@ -22,8 +22,7 @@ package appeng.tile.powersink;
 import java.util.EnumSet;
 
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.common.util.ForgeDirection;
-
+import net.minecraft.util.EnumFacing;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
@@ -46,14 +45,14 @@ public abstract class AERootPoweredTile extends AEBaseInvTile implements IAEPowe
 	protected AccessRestriction internalPowerFlow = AccessRestriction.READ_WRITE;
 	// the current power buffer.
 	protected double internalCurrentPower = 0;
-	private EnumSet<ForgeDirection> internalPowerSides = EnumSet.allOf( ForgeDirection.class );
+	private EnumSet<EnumFacing> internalPowerSides = EnumSet.allOf( EnumFacing.class );
 
-	protected EnumSet<ForgeDirection> getPowerSides()
+	protected EnumSet<EnumFacing> getPowerSides()
 	{
 		return this.internalPowerSides.clone();
 	}
 
-	protected void setPowerSides( EnumSet<ForgeDirection> sides )
+	protected void setPowerSides( EnumSet<EnumFacing> sides )
 	{
 		this.internalPowerSides = sides;
 		// trigger re-calc!

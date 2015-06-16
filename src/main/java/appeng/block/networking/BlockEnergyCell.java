@@ -22,15 +22,15 @@ package appeng.block.networking;
 import java.util.EnumSet;
 import java.util.List;
 
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.properties.PropertyInteger;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.IIcon;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import appeng.block.AEBaseItemBlock;
 import appeng.block.AEBaseItemBlockChargeable;
 import appeng.block.AEBaseTileBlock;
@@ -46,6 +46,21 @@ import appeng.util.Platform;
 public class BlockEnergyCell extends AEBaseTileBlock
 {
 
+	public static final PropertyInteger ENERGY_STORAGE = PropertyInteger.create( "fullness", 0, 8 );
+
+	@Override
+	public int getMetaFromState(
+			IBlockState state )
+	{
+		return (int)state.getValue( ENERGY_STORAGE );
+	}
+	
+	@Override
+	public IBlockState getStateFromMeta( int meta )
+	{
+		return getDefaultState().withProperty( ENERGY_STORAGE, Math.min( 7,  Math.max( 0, meta ) ) );
+	}
+	
 	public BlockEnergyCell()
 	{
 		super( AEGlassMaterial.INSTANCE );
@@ -61,10 +76,11 @@ public class BlockEnergyCell extends AEBaseTileBlock
 	}
 
 	@Override
-	public IIcon getIcon( int direction, int metadata )
+	public appeng.client.texture.IAESprite getIcon(net.minecraft.util.EnumFacing side, IBlockState state)
 	{
-		switch( metadata )
+		switch( (int)state.getValue( ENERGY_STORAGE ) )
 		{
+			default:
 			case 0:
 				return ExtraBlockTextures.MEEnergyCell0.getIcon();
 			case 1:
@@ -82,7 +98,6 @@ public class BlockEnergyCell extends AEBaseTileBlock
 			case 7:
 				return ExtraBlockTextures.MEEnergyCell7.getIcon();
 		}
-		return super.getIcon( direction, metadata );
 	}
 
 	@Override
@@ -102,6 +117,12 @@ public class BlockEnergyCell extends AEBaseTileBlock
 	public double getMaxPower()
 	{
 		return 200000.0;
+	}
+
+	@Override
+	protected IProperty[] getAEStates()
+	{
+		return new IProperty[]{ENERGY_STORAGE};
 	}
 
 	@Override

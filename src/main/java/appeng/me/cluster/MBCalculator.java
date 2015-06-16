@@ -20,9 +20,9 @@ package appeng.me.cluster;
 
 
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-
+import appeng.api.util.AEPartLocation;
 import appeng.api.util.WorldCoord;
 import appeng.core.AELog;
 import appeng.util.Platform;
@@ -124,7 +124,7 @@ public abstract class MBCalculator
 
 	public boolean isValidTileAt( World w, int x, int y, int z )
 	{
-		return this.isValidTile( w.getTileEntity( x, y, z ) );
+		return this.isValidTile( w.getTileEntity( new BlockPos( x, y, z ) ) );
 	}
 
 	/**
@@ -139,7 +139,7 @@ public abstract class MBCalculator
 
 	public boolean verifyUnownedRegion( World w, WorldCoord min, WorldCoord max )
 	{
-		for( ForgeDirection side : ForgeDirection.VALID_DIRECTIONS )
+		for( AEPartLocation side : AEPartLocation.SIDE_LOCATIONS )
 		{
 			if( this.verifyUnownedRegionInner( w, min.x, min.y, min.z, max.x, max.y, max.z, side ) )
 			{
@@ -187,7 +187,7 @@ public abstract class MBCalculator
 	 */
 	public abstract boolean isValidTile( TileEntity te );
 
-	public boolean verifyUnownedRegionInner( World w, int minX, int minY, int minZ, int maxX, int maxY, int maxZ, ForgeDirection side )
+	public boolean verifyUnownedRegionInner( World w, int minX, int minY, int minZ, int maxX, int maxY, int maxZ, AEPartLocation side )
 	{
 		switch( side )
 		{
@@ -215,7 +215,7 @@ public abstract class MBCalculator
 				maxY += 1;
 				minY = maxY;
 				break;
-			case UNKNOWN:
+			case INTERNAL:
 				return false;
 		}
 
@@ -225,7 +225,7 @@ public abstract class MBCalculator
 			{
 				for( int z = minZ; z <= maxZ; z++ )
 				{
-					TileEntity te = w.getTileEntity( x, y, z );
+					TileEntity te = w.getTileEntity( new BlockPos( x, y, z ) );
 					if( this.isValidTile( te ) )
 					{
 						return true;

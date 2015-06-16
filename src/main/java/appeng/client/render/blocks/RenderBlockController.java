@@ -19,14 +19,14 @@
 package appeng.client.render.blocks;
 
 
-import net.minecraft.client.renderer.RenderBlocks;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.IBlockAccess;
-
-import appeng.block.AEBaseBlock;
 import appeng.block.networking.BlockController;
+import appeng.block.networking.BlockController.ControllerBlockState;
 import appeng.client.render.BaseBlockRender;
+import appeng.client.render.IRenderHelper;
 import appeng.client.texture.ExtraBlockTextures;
 import appeng.tile.networking.TileController;
 
@@ -40,16 +40,16 @@ public class RenderBlockController extends BaseBlockRender<BlockController, Tile
 	}
 
 	@Override
-	public boolean renderInWorld( BlockController blk, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
+	public boolean renderInWorld( BlockController blk, IBlockAccess world, BlockPos pos, IRenderHelper renderer )
 	{
 
-		boolean xx = this.getTileEntity( world, x - 1, y, z ) instanceof TileController && this.getTileEntity( world, x + 1, y, z ) instanceof TileController;
-		boolean yy = this.getTileEntity( world, x, y - 1, z ) instanceof TileController && this.getTileEntity( world, x, y + 1, z ) instanceof TileController;
-		boolean zz = this.getTileEntity( world, x, y, z - 1 ) instanceof TileController && this.getTileEntity( world, x, y, z + 1 ) instanceof TileController;
+		boolean xx = this.getTileEntity( world,  pos.offset( EnumFacing.WEST ) ) instanceof TileController && this.getTileEntity( world, pos.offset( EnumFacing.EAST ) ) instanceof TileController;
+		boolean yy = this.getTileEntity( world, pos.offset( EnumFacing.DOWN ) ) instanceof TileController && this.getTileEntity( world, pos.offset( EnumFacing.UP ) ) instanceof TileController;
+		boolean zz = this.getTileEntity( world, pos.offset( EnumFacing.SOUTH )) instanceof TileController && this.getTileEntity( world, pos.offset( EnumFacing.NORTH ) ) instanceof TileController;
 
-		int meta = world.getBlockMetadata( x, y, z );
-		boolean hasPower = meta > 0;
-		boolean isConflict = meta == 2;
+		BlockController.ControllerBlockState meta = ( ControllerBlockState ) world.getBlockState( pos ).getValue( BlockController.CONTROLLER_STATE );
+		boolean hasPower = meta != BlockController.ControllerBlockState.OFFLINE;
+		boolean isConflict = meta == BlockController.ControllerBlockState.CONFLICTED;
 
 		ExtraBlockTextures lights = null;
 
@@ -124,7 +124,7 @@ public class RenderBlockController extends BaseBlockRender<BlockController, Tile
 		}
 		else if( ( xx ? 1 : 0 ) + ( yy ? 1 : 0 ) + ( zz ? 1 : 0 ) >= 2 )
 		{
-			int v = ( Math.abs( x ) + Math.abs( y ) + Math.abs( z ) ) % 2;
+			int v = ( Math.abs( pos.getX() ) + Math.abs( pos.getY() ) + Math.abs( pos.getZ() ) ) % 2;
 			renderer.uvRotateEast = renderer.uvRotateBottom = renderer.uvRotateNorth = renderer.uvRotateSouth = renderer.uvRotateTop = renderer.uvRotateWest = 0;
 
 			if( v == 0 )
@@ -156,17 +156,17 @@ public class RenderBlockController extends BaseBlockRender<BlockController, Tile
 			}
 		}
 
-		boolean out = renderer.renderStandardBlock( blk, x, y, z );
+		boolean out = renderer.renderStandardBlock( blk, pos );
 		if( lights != null )
 		{
-			Tessellator.instance.setColorOpaque_F( 1.0f, 1.0f, 1.0f );
-			Tessellator.instance.setBrightness( 14 << 20 | 14 << 4 );
-			renderer.renderFaceXNeg( blk, x, y, z, lights.getIcon() );
-			renderer.renderFaceXPos( blk, x, y, z, lights.getIcon() );
-			renderer.renderFaceYNeg( blk, x, y, z, lights.getIcon() );
-			renderer.renderFaceYPos( blk, x, y, z, lights.getIcon() );
-			renderer.renderFaceZNeg( blk, x, y, z, lights.getIcon() );
-			renderer.renderFaceZPos( blk, x, y, z, lights.getIcon() );
+			renderer.setColorOpaque_F( 1.0f, 1.0f, 1.0f );
+			renderer.setBrightness( 14 << 20 | 14 << 4 );
+			renderer.renderFaceXNeg( blk, pos, lights.getIcon() );
+			renderer.renderFaceXPos( blk, pos, lights.getIcon() );
+			renderer.renderFaceYNeg( blk, pos, lights.getIcon() );
+			renderer.renderFaceYPos( blk, pos, lights.getIcon() );
+			renderer.renderFaceZNeg( blk, pos, lights.getIcon() );
+			renderer.renderFaceZPos( blk, pos, lights.getIcon() );
 		}
 
 		blk.getRendererInstance().setTemporaryRenderIcon( null );
@@ -174,11 +174,11 @@ public class RenderBlockController extends BaseBlockRender<BlockController, Tile
 		return out;
 	}
 
-	private TileEntity getTileEntity( IBlockAccess world, int x, int y, int z )
+	private TileEntity getTileEntity( IBlockAccess world, BlockPos pos )
 	{
-		if( y >= 0 )
+		if( pos.getY() >= 0 )
 		{
-			return world.getTileEntity( x, y, z );
+			return world.getTileEntity( pos );
 		}
 		return null;
 	}

@@ -21,26 +21,23 @@ package appeng.items.tools.quartz;
 
 import java.util.EnumSet;
 
-import com.google.common.base.Optional;
-
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-
-import buildcraft.api.tools.IToolWrench;
-
 import appeng.api.implementations.items.IAEWrench;
 import appeng.api.util.DimensionalCoord;
 import appeng.core.features.AEFeature;
 import appeng.items.AEBaseItem;
-import appeng.transformer.annotations.Integration.Interface;
 import appeng.util.Platform;
 
+import com.google.common.base.Optional;
 
-@Interface( iface = "buildcraft.api.tools.IToolWrench", iname = "BC" )
-public class ToolQuartzWrench extends AEBaseItem implements IAEWrench, IToolWrench
+
+//@Interface( iface = "buildcraft.api.tools.IToolWrench", iname = "BC" ) IToolWrench
+public class ToolQuartzWrench extends AEBaseItem implements IAEWrench
 {
 
 	public ToolQuartzWrench( AEFeature type )
@@ -53,20 +50,27 @@ public class ToolQuartzWrench extends AEBaseItem implements IAEWrench, IToolWren
 	}
 
 	@Override
-	public boolean onItemUseFirst( ItemStack is, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ )
+	public boolean onItemUseFirst(
+			ItemStack stack,
+			EntityPlayer player,
+			World world,
+			BlockPos pos,
+			EnumFacing side,
+			float hitX,
+			float hitY,
+			float hitZ )
 	{
-		Block b = world.getBlock( x, y, z );
-		if( b != null && !player.isSneaking() && Platform.hasPermissions( new DimensionalCoord( world, x, y, z ), player ) )
+		Block b = world.getBlockState( pos ).getBlock();
+		if( b != null && !player.isSneaking() && Platform.hasPermissions( new DimensionalCoord( world, pos ), player ) )
 		{
 			if( Platform.isClient() )
 			{
 				return !world.isRemote;
 			}
 
-			ForgeDirection mySide = ForgeDirection.getOrientation( side );
-			if( b.rotateBlock( world, x, y, z, mySide ) )
+			if( b.rotateBlock( world, pos, side ) )
 			{
-				b.onNeighborBlockChange( world, x, y, z, Platform.AIR_BLOCK );
+				b.onNeighborBlockChange( world, pos, Platform.AIR_BLOCK.getDefaultState(), Platform.AIR_BLOCK );
 				player.swingItem();
 				return !world.isRemote;
 			}
@@ -75,18 +79,25 @@ public class ToolQuartzWrench extends AEBaseItem implements IAEWrench, IToolWren
 	}
 
 	@Override
-	// public boolean shouldPassSneakingClickToBlock(World w, int x, int y, int z)
-	public boolean doesSneakBypassUse( World world, int x, int y, int z, EntityPlayer player )
+	public boolean doesSneakBypassUse(
+			World world,
+			BlockPos pos,
+			EntityPlayer player )
 	{
 		return true;
 	}
 
 	@Override
-	public boolean canWrench( ItemStack is, EntityPlayer player, int x, int y, int z )
+	public boolean canWrench(
+			ItemStack wrench,
+			EntityPlayer player,
+			BlockPos pos )
 	{
 		return true;
 	}
 
+	// TODO: BC Wrench Integration
+	/*
 	@Override
 	public boolean canWrench( EntityPlayer player, int x, int y, int z )
 	{
@@ -98,4 +109,5 @@ public class ToolQuartzWrench extends AEBaseItem implements IAEWrench, IToolWren
 	{
 		player.swingItem();
 	}
+	*/
 }

@@ -19,21 +19,21 @@
 package appeng.client.render.blocks;
 
 
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.RenderBlocks;
-import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
+
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 
 import appeng.api.storage.data.IAEItemStack;
 import appeng.block.crafting.BlockCraftingMonitor;
 import appeng.client.ClientHelper;
+import appeng.client.render.IRenderHelper;
 import appeng.core.AELog;
 import appeng.tile.crafting.TileCraftingMonitorTile;
 import appeng.util.IWideReadableNumberConverter;
@@ -57,11 +57,11 @@ public class RenderBlockCraftingCPUMonitor extends RenderBlockCraftingCPU<BlockC
 	}
 
 	@Override
-	public void renderTile( BlockCraftingMonitor block, TileCraftingMonitorTile tile, Tessellator tess, double x, double y, double z, float f, RenderBlocks renderer )
+	public void renderTile( BlockCraftingMonitor block, TileCraftingMonitorTile tile, WorldRenderer tess, double x, double y, double z, float f, IRenderHelper renderer )
 	{
 		if( tile instanceof TileCraftingMonitorTile )
 		{
-			TileCraftingMonitorTile cmt = (TileCraftingMonitorTile) tile;
+			TileCraftingMonitorTile cmt = tile;
 			IAEItemStack ais = cmt.getJobProgress();
 
 			if( cmt.dspList == null )
@@ -92,11 +92,11 @@ public class RenderBlockCraftingCPUMonitor extends RenderBlockCraftingCPU<BlockC
 		}
 	}
 
-	private void tesrRenderScreen( Tessellator tess, TileCraftingMonitorTile cmt, IAEItemStack ais )
+	private void tesrRenderScreen( WorldRenderer tess, TileCraftingMonitorTile cmt, IAEItemStack ais )
 	{
-		ForgeDirection side = cmt.getForward();
+		EnumFacing side = cmt.getForward();
 
-		ForgeDirection walrus = side.offsetY != 0 ? ForgeDirection.SOUTH : ForgeDirection.UP;
+		EnumFacing walrus = side.getFrontOffsetY() != 0 ? EnumFacing.SOUTH : EnumFacing.UP;
 		int spin = 0;
 
 		int max = 5;
@@ -109,43 +109,43 @@ public class RenderBlockCraftingCPUMonitor extends RenderBlockCraftingCPU<BlockC
 		max--;
 
 		GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS );
-		GL11.glTranslated( side.offsetX * 0.69, side.offsetY * 0.69, side.offsetZ * 0.69 );
+		GL11.glTranslated( side.getFrontOffsetX() * 0.69, side.getFrontOffsetY() * 0.69, side.getFrontOffsetZ() * 0.69 );
 
 		float scale = 0.7f;
 		GL11.glScalef( scale, scale, scale );
 
-		if( side == ForgeDirection.UP )
+		if( side == EnumFacing.UP )
 		{
 			GL11.glScalef( 1.0f, -1.0f, 1.0f );
 			GL11.glRotatef( 90.0f, 1.0f, 0.0f, 0.0f );
 			GL11.glRotatef( spin * 90.0F, 0, 0, 1 );
 		}
 
-		if( side == ForgeDirection.DOWN )
+		if( side == EnumFacing.DOWN )
 		{
 			GL11.glScalef( 1.0f, -1.0f, 1.0f );
 			GL11.glRotatef( -90.0f, 1.0f, 0.0f, 0.0f );
 			GL11.glRotatef( spin * -90.0F, 0, 0, 1 );
 		}
 
-		if( side == ForgeDirection.EAST )
+		if( side == EnumFacing.EAST )
 		{
 			GL11.glScalef( -1.0f, -1.0f, -1.0f );
 			GL11.glRotatef( -90.0f, 0.0f, 1.0f, 0.0f );
 		}
 
-		if( side == ForgeDirection.WEST )
+		if( side == EnumFacing.WEST )
 		{
 			GL11.glScalef( -1.0f, -1.0f, -1.0f );
 			GL11.glRotatef( 90.0f, 0.0f, 1.0f, 0.0f );
 		}
 
-		if( side == ForgeDirection.NORTH )
+		if( side == EnumFacing.NORTH )
 		{
 			GL11.glScalef( -1.0f, -1.0f, -1.0f );
 		}
 
-		if( side == ForgeDirection.SOUTH )
+		if( side == EnumFacing.SOUTH )
 		{
 			GL11.glScalef( -1.0f, -1.0f, -1.0f );
 			GL11.glRotatef( 180.0f, 0.0f, 1.0f, 0.0f );
@@ -169,7 +169,7 @@ public class RenderBlockCraftingCPUMonitor extends RenderBlockCraftingCPU<BlockC
 			// RenderHelper.enableGUIStandardItemLighting();
 			tess.setColorOpaque_F( 1.0f, 1.0f, 1.0f );
 
-			ClientHelper.proxy.doRenderItem( sis, cmt.getWorldObj() );
+			ClientHelper.proxy.doRenderItem( sis, cmt.getWorld() );
 		}
 		catch( Exception e )
 		{
@@ -184,7 +184,7 @@ public class RenderBlockCraftingCPUMonitor extends RenderBlockCraftingCPU<BlockC
 		final long stackSize = ais.getStackSize();
 		final String renderedStackSize = NUMBER_CONVERTER.toWideReadableForm( stackSize );
 
-		FontRenderer fr = Minecraft.getMinecraft().fontRenderer;
+		FontRenderer fr = Minecraft.getMinecraft().fontRendererObj;
 		int width = fr.getStringWidth( renderedStackSize );
 		GL11.glTranslatef( -0.5f * width, 0.0f, -1.0f );
 		fr.drawString( renderedStackSize, 0, 0, 0 );

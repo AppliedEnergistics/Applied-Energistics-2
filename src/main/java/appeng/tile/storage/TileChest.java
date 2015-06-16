@@ -19,23 +19,23 @@
 package appeng.tile.storage;
 
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import io.netty.buffer.ByteBuf;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.server.gui.IUpdatePlayerListBox;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
-
 import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
@@ -92,7 +92,7 @@ import appeng.util.Platform;
 import appeng.util.item.AEFluidStack;
 
 
-public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHandler, ITerminalHost, IPriorityHost, IConfigManagerHost, IColorableTile
+public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHandler, ITerminalHost, IPriorityHost, IConfigManagerHost, IColorableTile, IUpdatePlayerListBox
 {
 
 	static final ChestNoHandler NO_HANDLER = new ChestNoHandler();
@@ -545,14 +545,14 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 			// update the neighbors
 			if( this.worldObj != null )
 			{
-				Platform.notifyBlocksOfNeighbors( this.worldObj, this.xCoord, this.yCoord, this.zCoord );
+				Platform.notifyBlocksOfNeighbors( this.worldObj, pos );
 				this.markForUpdate();
 			}
 		}
 	}
 
 	@Override
-	public boolean canInsertItem( int slotIndex, ItemStack insertingItem, int side )
+	public boolean canInsertItem( int slotIndex, ItemStack insertingItem, EnumFacing side )
 	{
 		if( slotIndex == 1 )
 		{
@@ -581,15 +581,15 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 	}
 
 	@Override
-	public boolean canExtractItem( int slotIndex, ItemStack extractedItem, int side )
+	public boolean canExtractItem( int slotIndex, ItemStack extractedItem, EnumFacing side )
 	{
 		return slotIndex == 1;
 	}
 
 	@Override
-	public int[] getAccessibleSlotsBySide( ForgeDirection side )
+	public int[] getAccessibleSlotsBySide( EnumFacing side )
 	{
-		if( ForgeDirection.SOUTH == side )
+		if( EnumFacing.SOUTH == side )
 		{
 			return FRONT;
 		}
@@ -694,7 +694,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 	}
 
 	@Override
-	public int fill( ForgeDirection from, FluidStack resource, boolean doFill )
+	public int fill( EnumFacing from, FluidStack resource, boolean doFill )
 	{
 		double req = resource.amount / 500.0;
 		double available = this.extractAEPower( req, Actionable.SIMULATE, PowerMultiplier.CONFIG );
@@ -722,19 +722,19 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 	}
 
 	@Override
-	public FluidStack drain( ForgeDirection from, FluidStack resource, boolean doDrain )
+	public FluidStack drain( EnumFacing from, FluidStack resource, boolean doDrain )
 	{
 		return null;
 	}
 
 	@Override
-	public FluidStack drain( ForgeDirection from, int maxDrain, boolean doDrain )
+	public FluidStack drain( EnumFacing from, int maxDrain, boolean doDrain )
 	{
 		return null;
 	}
 
 	@Override
-	public boolean canFill( ForgeDirection from, Fluid fluid )
+	public boolean canFill( EnumFacing from, Fluid fluid )
 	{
 		try
 		{
@@ -748,13 +748,13 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 	}
 
 	@Override
-	public boolean canDrain( ForgeDirection from, Fluid fluid )
+	public boolean canDrain( EnumFacing from, Fluid fluid )
 	{
 		return false;
 	}
 
 	@Override
-	public FluidTankInfo[] getTankInfo( ForgeDirection from )
+	public FluidTankInfo[] getTankInfo( EnumFacing from )
 	{
 		try
 		{
@@ -772,7 +772,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 	}
 
 	@Override
-	public IStorageMonitorable getMonitorable( ForgeDirection side, BaseActionSource src )
+	public IStorageMonitorable getMonitorable( EnumFacing side, BaseActionSource src )
 	{
 		if( Platform.canAccess( this.gridProxy, src ) && side != this.getForward() )
 		{
@@ -802,7 +802,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 
 	}
 
-	public boolean openGui( EntityPlayer p, ICellHandler ch, ItemStack cell, int side )
+	public boolean openGui( EntityPlayer p, ICellHandler ch, ItemStack cell, EnumFacing side )
 	{
 		try
 		{
@@ -842,7 +842,10 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 	}
 
 	@Override
-	public boolean recolourBlock( ForgeDirection side, AEColor newPaintedColor, EntityPlayer who )
+	public boolean recolourBlock(
+			EnumFacing side,
+			AEColor newPaintedColor,
+			EntityPlayer who )
 	{
 		if( this.paintedColor == newPaintedColor )
 		{
@@ -858,7 +861,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 	@Override
 	public void saveChanges( IMEInventory cellInventory )
 	{
-		this.worldObj.markTileEntityChunkModified( this.xCoord, this.yCoord, this.zCoord, this );
+		this.worldObj.markChunkDirty( pos, this );
 	}
 
 	private static class ChestNoHandler extends Exception

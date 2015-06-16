@@ -21,20 +21,20 @@ package appeng.client.render.blocks;
 
 import java.util.EnumSet;
 
-import net.minecraft.client.renderer.RenderBlocks;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.IItemRenderer.ItemRenderType;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.api.util.AEColor;
+import appeng.api.util.AEPartLocation;
 import appeng.block.networking.BlockWireless;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.BlockRenderInfo;
+import appeng.client.render.IRenderHelper;
 import appeng.client.texture.CableBusTextures;
 import appeng.client.texture.ExtraBlockTextures;
+import appeng.client.texture.IAESprite;
 import appeng.client.texture.OffsetIcon;
 import appeng.tile.networking.TileWireless;
 import appeng.util.Platform;
@@ -43,9 +43,7 @@ import appeng.util.Platform;
 public class RenderBlockWireless extends BaseBlockRender<BlockWireless, TileWireless>
 {
 
-	private int centerX = 0;
-	private int centerY = 0;
-	private int centerZ = 0;
+	BlockPos center;
 	private BlockWireless blk;
 	private boolean hasChan = false;
 	private boolean hasPower = false;
@@ -56,60 +54,56 @@ public class RenderBlockWireless extends BaseBlockRender<BlockWireless, TileWire
 	}
 
 	@Override
-	public void renderInventory( BlockWireless blk, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj )
+	public void renderInventory( BlockWireless blk, ItemStack is, IRenderHelper renderer, ItemRenderType type, Object[] obj )
 	{
 		this.blk = blk;
-		this.centerX = 0;
-		this.centerY = 0;
-		this.centerZ = 0;
+		center = new BlockPos(0,0,0);
 		this.hasChan = false;
 		this.hasPower = false;
 		BlockRenderInfo ri = blk.getRendererInstance();
-		Tessellator tess = Tessellator.instance;
 
 		renderer.renderAllFaces = true;
 
-		IIcon r = CableBusTextures.PartMonitorSidesStatus.getIcon();
+		IAESprite r = CableBusTextures.PartMonitorSidesStatus.getIcon();
 		ri.setTemporaryRenderIcons( r, r, CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon(), r, r );
-		this.renderBlockBounds( renderer, 5, 5, 0, 11, 11, 1, ForgeDirection.EAST, ForgeDirection.UP, ForgeDirection.SOUTH );
-		this.renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, tess, 0xffffff, renderer );
+		this.renderBlockBounds( renderer, 5, 5, 0, 11, 11, 1, EnumFacing.EAST, EnumFacing.UP, EnumFacing.SOUTH );
+		this.renderInvBlock( EnumSet.allOf( AEPartLocation.class ), blk, is, 0xffffff, renderer );
 
 		r = CableBusTextures.PartWirelessSides.getIcon();
 		ri.setTemporaryRenderIcons( r, r, ExtraBlockTextures.BlockWirelessInside.getIcon(), ExtraBlockTextures.BlockWirelessInside.getIcon(), r, r );
-		this.renderBlockBounds( renderer, 5, 5, 1, 11, 11, 2, ForgeDirection.EAST, ForgeDirection.UP, ForgeDirection.SOUTH );
-		this.renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, tess, 0xffffff, renderer );
+		this.renderBlockBounds( renderer, 5, 5, 1, 11, 11, 2, EnumFacing.EAST, EnumFacing.UP, EnumFacing.SOUTH );
+		this.renderInvBlock( EnumSet.allOf( AEPartLocation.class ), blk, is, 0xffffff, renderer );
 
-		tess.startDrawingQuads();
+		//renderer.startDrawingQuads();
 		ri.setTemporaryRenderIcon( null );
-		this.renderTorchAtAngle( renderer, ForgeDirection.EAST, ForgeDirection.UP, ForgeDirection.SOUTH );
+		this.renderTorchAtAngle( renderer, EnumFacing.EAST, EnumFacing.UP, EnumFacing.SOUTH );
 		super.postRenderInWorld( renderer );
-		tess.draw();
 
 		ri.setTemporaryRenderIcons( r, r, ExtraBlockTextures.BlockWirelessInside.getIcon(), ExtraBlockTextures.BlockWirelessInside.getIcon(), r, r );
 
-		ForgeDirection[] sides = new ForgeDirection[] { ForgeDirection.EAST, ForgeDirection.WEST, ForgeDirection.UP, ForgeDirection.DOWN };
+		AEPartLocation[] sides = new AEPartLocation[] { AEPartLocation.EAST, AEPartLocation.WEST, AEPartLocation.UP, AEPartLocation.DOWN };
 
 		int s = 1;
 
-		for( ForgeDirection side : sides )
+		for( AEPartLocation side : sides )
 		{
-			this.renderBlockBounds( renderer, 8 + ( side.offsetX != 0 ? side.offsetX * 2 : -2 ), 8 + ( side.offsetY != 0 ? side.offsetY * 2 : -2 ), 2 + ( side.offsetZ != 0 ? side.offsetZ * 2 : -1 ) + s, 8 + ( side.offsetX != 0 ? side.offsetX * 4 : 2 ), 8 + ( side.offsetY != 0 ? side.offsetY * 4 : 2 ), 2 + ( side.offsetZ != 0 ? side.offsetZ * 5 : 1 ) + s, ForgeDirection.EAST, ForgeDirection.UP, ForgeDirection.SOUTH );
-			this.renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, tess, 0xffffff, renderer );
+			this.renderBlockBounds( renderer, 8 + ( side.xOffset != 0 ? side.xOffset * 2 : -2 ), 8 + ( side.yOffset != 0 ? side.yOffset * 2 : -2 ), 2 + ( side.zOffset != 0 ? side.zOffset * 2 : -1 ) + s, 8 + ( side.xOffset != 0 ? side.xOffset * 4 : 2 ), 8 + ( side.yOffset != 0 ? side.yOffset * 4 : 2 ), 2 + ( side.zOffset != 0 ? side.zOffset * 5 : 1 ) + s, EnumFacing.EAST, EnumFacing.UP, EnumFacing.SOUTH );
+			this.renderInvBlock( EnumSet.allOf( AEPartLocation.class ), blk, is,  0xffffff, renderer );
 		}
 
 		s = 3;
-		for( ForgeDirection side : sides )
+		for( AEPartLocation side : sides )
 		{
-			this.renderBlockBounds( renderer, 8 + ( side.offsetX != 0 ? side.offsetX * 4 : -1 ), 8 + ( side.offsetY != 0 ? side.offsetY * 4 : -1 ), 1 + ( side.offsetZ != 0 ? side.offsetZ * 4 : -1 ) + s, 8 + ( side.offsetX != 0 ? side.offsetX * 5 : 1 ), 8 + ( side.offsetY != 0 ? side.offsetY * 5 : 1 ), 2 + ( side.offsetZ != 0 ? side.offsetZ * 5 : 1 ) + s, ForgeDirection.EAST, ForgeDirection.UP, ForgeDirection.SOUTH );
+			this.renderBlockBounds( renderer, 8 + ( side.xOffset != 0 ? side.xOffset * 4 : -1 ), 8 + ( side.yOffset != 0 ? side.yOffset * 4 : -1 ), 1 + ( side.zOffset != 0 ? side.zOffset * 4 : -1 ) + s, 8 + ( side.xOffset != 0 ? side.xOffset * 5 : 1 ), 8 + ( side.yOffset != 0 ? side.yOffset * 5 : 1 ), 2 + ( side.zOffset != 0 ? side.zOffset * 5 : 1 ) + s, EnumFacing.EAST, EnumFacing.UP, EnumFacing.SOUTH );
 
-			this.renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, tess, 0xffffff, renderer );
+			this.renderInvBlock( EnumSet.allOf( AEPartLocation.class ), blk, is, 0xffffff, renderer );
 		}
 	}
 
 	@Override
-	public boolean renderInWorld( BlockWireless blk, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
+	public boolean renderInWorld( BlockWireless blk, IBlockAccess world, BlockPos pos, IRenderHelper renderer )
 	{
-		TileWireless tw = blk.getTileEntity( world, x, y, z );
+		TileWireless tw = blk.getTileEntity( world, pos );
 		this.blk = blk;
 		if( tw != null )
 		{
@@ -118,25 +112,23 @@ public class RenderBlockWireless extends BaseBlockRender<BlockWireless, TileWire
 
 			BlockRenderInfo ri = blk.getRendererInstance();
 
-			ForgeDirection fdy = tw.getUp();
-			ForgeDirection fdz = tw.getForward();
-			ForgeDirection fdx = Platform.crossProduct( fdz, fdy ).getOpposite();
+			EnumFacing fdy = tw.getUp();
+			EnumFacing fdz = tw.getForward();
+			EnumFacing fdx = Platform.crossProduct( fdz, fdy ).getOpposite();
 
 			renderer.renderAllFaces = true;
 
-			IIcon r = CableBusTextures.PartMonitorSidesStatus.getIcon();
+			IAESprite r = CableBusTextures.PartMonitorSidesStatus.getIcon();
 			ri.setTemporaryRenderIcons( r, r, CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon(), r, r );
 			this.renderBlockBounds( renderer, 5, 5, 0, 11, 11, 1, fdx, fdy, fdz );
-			super.renderInWorld( blk, world, x, y, z, renderer );
+			super.renderInWorld( blk, world, pos, renderer );
 
 			r = CableBusTextures.PartWirelessSides.getIcon();
 			ri.setTemporaryRenderIcons( r, r, ExtraBlockTextures.BlockWirelessInside.getIcon(), ExtraBlockTextures.BlockWirelessInside.getIcon(), r, r );
 			this.renderBlockBounds( renderer, 5, 5, 1, 11, 11, 2, fdx, fdy, fdz );
-			super.renderInWorld( blk, world, x, y, z, renderer );
+			super.renderInWorld( blk, world, pos, renderer );
 
-			this.centerX = x;
-			this.centerY = y;
-			this.centerZ = z;
+			center = pos;
 			ri.setTemporaryRenderIcon( null );
 
 			this.renderTorchAtAngle( renderer, fdx, fdy, fdz );
@@ -144,21 +136,21 @@ public class RenderBlockWireless extends BaseBlockRender<BlockWireless, TileWire
 
 			ri.setTemporaryRenderIcons( r, r, ExtraBlockTextures.BlockWirelessInside.getIcon(), ExtraBlockTextures.BlockWirelessInside.getIcon(), r, r );
 
-			ForgeDirection[] sides = new ForgeDirection[] { ForgeDirection.EAST, ForgeDirection.WEST, ForgeDirection.UP, ForgeDirection.DOWN };
+			AEPartLocation[] sides = new AEPartLocation[] { AEPartLocation.EAST, AEPartLocation.WEST, AEPartLocation.UP, AEPartLocation.DOWN };
 
 			int s = 1;
 
-			for( ForgeDirection side : sides )
+			for( AEPartLocation side : sides )
 			{
-				this.renderBlockBounds( renderer, 8 + ( side.offsetX != 0 ? side.offsetX * 2 : -2 ), 8 + ( side.offsetY != 0 ? side.offsetY * 2 : -2 ), 2 + ( side.offsetZ != 0 ? side.offsetZ * 2 : -1 ) + s, 8 + ( side.offsetX != 0 ? side.offsetX * 4 : 2 ), 8 + ( side.offsetY != 0 ? side.offsetY * 4 : 2 ), 2 + ( side.offsetZ != 0 ? side.offsetZ * 5 : 1 ) + s, fdx, fdy, fdz );
-				super.renderInWorld( blk, world, x, y, z, renderer );
+				this.renderBlockBounds( renderer, 8 + ( side.xOffset != 0 ? side.xOffset * 2 : -2 ), 8 + ( side.yOffset != 0 ? side.yOffset * 2 : -2 ), 2 + ( side.zOffset != 0 ? side.zOffset * 2 : -1 ) + s, 8 + ( side.xOffset != 0 ? side.xOffset * 4 : 2 ), 8 + ( side.yOffset != 0 ? side.yOffset * 4 : 2 ), 2 + ( side.zOffset != 0 ? side.zOffset * 5 : 1 ) + s, fdx, fdy, fdz );
+				super.renderInWorld( blk, world, pos, renderer );
 			}
 
 			s = 3;
-			for( ForgeDirection side : sides )
+			for( AEPartLocation side : sides )
 			{
-				this.renderBlockBounds( renderer, 8 + ( side.offsetX != 0 ? side.offsetX * 4 : -1 ), 8 + ( side.offsetY != 0 ? side.offsetY * 4 : -1 ), 1 + ( side.offsetZ != 0 ? side.offsetZ * 4 : -1 ) + s, 8 + ( side.offsetX != 0 ? side.offsetX * 5 : 1 ), 8 + ( side.offsetY != 0 ? side.offsetY * 5 : 1 ), 2 + ( side.offsetZ != 0 ? side.offsetZ * 5 : 1 ) + s, fdx, fdy, fdz );
-				super.renderInWorld( blk, world, x, y, z, renderer );
+				this.renderBlockBounds( renderer, 8 + ( side.xOffset != 0 ? side.xOffset * 4 : -1 ), 8 + ( side.yOffset != 0 ? side.yOffset * 4 : -1 ), 1 + ( side.zOffset != 0 ? side.zOffset * 4 : -1 ) + s, 8 + ( side.xOffset != 0 ? side.xOffset * 5 : 1 ), 8 + ( side.yOffset != 0 ? side.yOffset * 5 : 1 ), 2 + ( side.zOffset != 0 ? side.zOffset * 5 : 1 ) + s, fdx, fdy, fdz );
+				super.renderInWorld( blk, world, pos, renderer );
 			}
 
 			r = CableBusTextures.PartMonitorSidesStatusLights.getIcon();
@@ -169,44 +161,44 @@ public class RenderBlockWireless extends BaseBlockRender<BlockWireless, TileWire
 			if( this.hasChan )
 			{
 				int l = 14;
-				Tessellator.instance.setBrightness( l << 20 | l << 4 );
-				Tessellator.instance.setColorOpaque_I( AEColor.Transparent.blackVariant );
+				renderer.setBrightness( l << 20 | l << 4 );
+				renderer.setColorOpaque_I( AEColor.Transparent.blackVariant );
 			}
 			else if( this.hasPower )
 			{
 				int l = 9;
-				Tessellator.instance.setBrightness( l << 20 | l << 4 );
-				Tessellator.instance.setColorOpaque_I( AEColor.Transparent.whiteVariant );
+				renderer.setBrightness( l << 20 | l << 4 );
+				renderer.setColorOpaque_I( AEColor.Transparent.whiteVariant );
 			}
 			else
 			{
-				Tessellator.instance.setBrightness( 0 );
-				Tessellator.instance.setColorOpaque_I( 0x000000 );
+				renderer.setBrightness( 0 );
+				renderer.setColorOpaque_I( 0x000000 );
 			}
 
-			if( ForgeDirection.UP != fdz.getOpposite() )
+			if( EnumFacing.UP != fdz.getOpposite() )
 			{
-				super.renderFace( x, y, z, blk, r, renderer, ForgeDirection.UP );
+				super.renderFace( pos, blk, r, renderer, EnumFacing.UP );
 			}
-			if( ForgeDirection.DOWN != fdz.getOpposite() )
+			if( EnumFacing.DOWN != fdz.getOpposite() )
 			{
-				super.renderFace( x, y, z, blk, r, renderer, ForgeDirection.DOWN );
+				super.renderFace( pos, blk, r, renderer, EnumFacing.DOWN );
 			}
-			if( ForgeDirection.EAST != fdz.getOpposite() )
+			if( EnumFacing.EAST != fdz.getOpposite() )
 			{
-				super.renderFace( x, y, z, blk, r, renderer, ForgeDirection.EAST );
+				super.renderFace( pos, blk, r, renderer, EnumFacing.EAST );
 			}
-			if( ForgeDirection.WEST != fdz.getOpposite() )
+			if( EnumFacing.WEST != fdz.getOpposite() )
 			{
-				super.renderFace( x, y, z, blk, r, renderer, ForgeDirection.WEST );
+				super.renderFace( pos, blk, r, renderer, EnumFacing.WEST );
 			}
-			if( ForgeDirection.SOUTH != fdz.getOpposite() )
+			if( EnumFacing.SOUTH != fdz.getOpposite() )
 			{
-				super.renderFace( x, y, z, blk, r, renderer, ForgeDirection.SOUTH );
+				super.renderFace( pos, blk, r, renderer, EnumFacing.SOUTH );
 			}
-			if( ForgeDirection.NORTH != fdz.getOpposite() )
+			if( EnumFacing.NORTH != fdz.getOpposite() )
 			{
-				super.renderFace( x, y, z, blk, r, renderer, ForgeDirection.NORTH );
+				super.renderFace( pos, blk, r, renderer, EnumFacing.NORTH );
 			}
 
 			ri.setTemporaryRenderIcon( null );
@@ -216,10 +208,10 @@ public class RenderBlockWireless extends BaseBlockRender<BlockWireless, TileWire
 		return true;
 	}
 
-	private void renderTorchAtAngle( RenderBlocks renderer, ForgeDirection x, ForgeDirection y, ForgeDirection z )
+	private void renderTorchAtAngle( IRenderHelper renderer, EnumFacing x, EnumFacing y, EnumFacing z )
 	{
-		IIcon r = ( this.hasChan ? CableBusTextures.BlockWirelessOn.getIcon() : this.blk.getIcon( 0, 0 ) );
-		IIcon sides = new OffsetIcon( r, 0.0f, -2.0f );
+		IAESprite r = ( this.hasChan ? CableBusTextures.BlockWirelessOn.getIcon() : renderer.getIcon( blk.getDefaultState() )[0] );
+		IAESprite sides = new OffsetIcon( r, 0.0f, -2.0f );
 
 		switch( z )
 		{
@@ -257,16 +249,16 @@ public class RenderBlockWireless extends BaseBlockRender<BlockWireless, TileWire
 				break;
 		}
 
-		Tessellator.instance.setColorOpaque_I( 0xffffff );
-		this.renderBlockBounds( renderer, 0, 7, 1, 16, 9, 16, x, y, z );
-		this.renderFace( this.centerX, this.centerY, this.centerZ, this.blk, sides, renderer, y );
-		this.renderFace( this.centerX, this.centerY, this.centerZ, this.blk, sides, renderer, y.getOpposite() );
+		renderer.setColorOpaque_I( 0xffffff );
+		this.renderBlockBounds( renderer, 0, 7, 1, 16, 9, 16, x,y,z );
+		this.renderFace( center, this.blk, sides, renderer, y );
+		this.renderFace( center, this.blk, sides, renderer, y.getOpposite() );
 
 		this.renderBlockBounds( renderer, 7, 0, 1, 9, 16, 16, x, y, z );
-		this.renderFace( this.centerX, this.centerY, this.centerZ, this.blk, sides, renderer, x );
-		this.renderFace( this.centerX, this.centerY, this.centerZ, this.blk, sides, renderer, x.getOpposite() );
+		this.renderFace( center, this.blk, sides, renderer, x );
+		this.renderFace( center, this.blk, sides, renderer, x.getOpposite() );
 
 		this.renderBlockBounds( renderer, 7, 7, 1, 9, 9, 10.6, x, y, z );
-		this.renderFace( this.centerX, this.centerY, this.centerZ, this.blk, r, renderer, z );
+		this.renderFace( center, this.blk, r, renderer, z );
 	}
 }

@@ -19,29 +19,27 @@
 package appeng.parts.reporting;
 
 
-import java.io.IOException;
-
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
-
 import io.netty.buffer.ByteBuf;
+
+import java.io.IOException;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 
 import appeng.api.implementations.parts.IPartStorageMonitor;
 import appeng.api.networking.security.BaseActionSource;
@@ -53,7 +51,9 @@ import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
+import appeng.api.util.AEPartLocation;
 import appeng.client.ClientHelper;
+import appeng.client.render.IRenderHelper;
 import appeng.client.texture.CableBusTextures;
 import appeng.core.AELog;
 import appeng.core.localization.PlayerMessages;
@@ -176,7 +176,7 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 
 		TileEntity te = this.tile;
 		ItemStack eq = player.getCurrentEquippedItem();
-		if( Platform.isWrench( player, eq, te.xCoord, te.yCoord, te.zCoord ) )
+		if( Platform.isWrench( player, eq, te.getPos() ) )
 		{
 			this.isLocked = !this.isLocked;
 			player.addChatMessage( ( this.isLocked ? PlayerMessages.isNowLocked : PlayerMessages.isNowUnlocked ).get() );
@@ -256,14 +256,15 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderDynamic( double x, double y, double z, IPartRenderHelper rh, RenderBlocks renderer )
+	public void renderDynamic( double x, double y, double z, IPartRenderHelper rh, IRenderHelper renderer )
 	{
 		if( this.dspList == null )
 		{
 			this.dspList = GLAllocation.generateDisplayLists( 1 );
 		}
 
-		Tessellator tess = Tessellator.instance;
+		Tessellator tess = Tessellator.getInstance();
+		WorldRenderer wr = tess.getWorldRenderer();
 
 		if( ( this.clientFlags & ( this.POWERED_FLAG | this.CHANNEL_FLAG ) ) != ( this.POWERED_FLAG | this.CHANNEL_FLAG ) )
 		{
@@ -280,7 +281,9 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 			{
 				this.updateList = false;
 				GL11.glNewList( this.dspList, GL11.GL_COMPILE_AND_EXECUTE );
-				this.tesrRenderScreen( tess, ais );
+				wr.startDrawingQuads();
+				this.tesrRenderScreen( wr, ais );
+				tess.draw();
 				GL11.glEndList();
 			}
 			else
@@ -304,44 +307,44 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 		return this.configuredItem;
 	}
 
-	private void tesrRenderScreen( Tessellator tess, IAEItemStack ais )
+	private void tesrRenderScreen( WorldRenderer wr, IAEItemStack ais )
 	{
 		GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS );
-		ForgeDirection d = this.side;
-		GL11.glTranslated( d.offsetX * 0.77, d.offsetY * 0.77, d.offsetZ * 0.77 );
+		AEPartLocation d = this.side;
+		GL11.glTranslated( d.xOffset * 0.77, d.yOffset * 0.77, d.zOffset * 0.77 );
 
-		if( d == ForgeDirection.UP )
+		if( d == AEPartLocation.UP )
 		{
 			GL11.glScalef( 1.0f, -1.0f, 1.0f );
 			GL11.glRotatef( 90.0f, 1.0f, 0.0f, 0.0f );
 			GL11.glRotatef( this.spin * 90.0F, 0, 0, 1 );
 		}
 
-		if( d == ForgeDirection.DOWN )
+		if( d == AEPartLocation.DOWN )
 		{
 			GL11.glScalef( 1.0f, -1.0f, 1.0f );
 			GL11.glRotatef( -90.0f, 1.0f, 0.0f, 0.0f );
 			GL11.glRotatef( this.spin * -90.0F, 0, 0, 1 );
 		}
 
-		if( d == ForgeDirection.EAST )
+		if( d == AEPartLocation.EAST )
 		{
 			GL11.glScalef( -1.0f, -1.0f, -1.0f );
 			GL11.glRotatef( -90.0f, 0.0f, 1.0f, 0.0f );
 		}
 
-		if( d == ForgeDirection.WEST )
+		if( d == AEPartLocation.WEST )
 		{
 			GL11.glScalef( -1.0f, -1.0f, -1.0f );
 			GL11.glRotatef( 90.0f, 0.0f, 1.0f, 0.0f );
 		}
 
-		if( d == ForgeDirection.NORTH )
+		if( d == AEPartLocation.NORTH )
 		{
 			GL11.glScalef( -1.0f, -1.0f, -1.0f );
 		}
 
-		if( d == ForgeDirection.SOUTH )
+		if( d == AEPartLocation.SOUTH )
 		{
 			GL11.glScalef( -1.0f, -1.0f, -1.0f );
 			GL11.glRotatef( 180.0f, 0.0f, 1.0f, 0.0f );
@@ -363,9 +366,9 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 			GL11.glDisable( GL11.GL_LIGHTING );
 			GL11.glDisable( GL12.GL_RESCALE_NORMAL );
 			// RenderHelper.enableGUIStandardItemLighting();
-			tess.setColorOpaque_F( 1.0f, 1.0f, 1.0f );
+			wr.setColorOpaque_F( 1.0f, 1.0f, 1.0f );
 
-			ClientHelper.proxy.doRenderItem( sis, this.tile.getWorldObj() );
+			ClientHelper.proxy.doRenderItem( sis, this.tile.getWorld() );
 		}
 		catch( Exception e )
 		{
@@ -380,7 +383,7 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 		final long stackSize = ais.getStackSize();
 		final String renderedStackSize = NUMBER_CONVERTER.toWideReadableForm( stackSize );
 
-		FontRenderer fr = Minecraft.getMinecraft().fontRenderer;
+		FontRenderer fr = Minecraft.getMinecraft().fontRendererObj;
 		int width = fr.getStringWidth( renderedStackSize );
 		GL11.glTranslatef( -0.5f * width, 0.0f, -1.0f );
 		fr.drawString( renderedStackSize, 0, 0, 0 );

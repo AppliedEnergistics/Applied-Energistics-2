@@ -22,7 +22,6 @@ package appeng.client.gui.widgets;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.util.ResourceLocation;
-
 import appeng.container.interfaces.IProgressProvider;
 import appeng.core.localization.GuiText;
 

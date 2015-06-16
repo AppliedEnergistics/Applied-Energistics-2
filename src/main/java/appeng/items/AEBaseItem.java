@@ -22,17 +22,21 @@ package appeng.items;
 import java.util.EnumSet;
 import java.util.List;
 
-import com.google.common.base.Optional;
-
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+import appeng.client.ClientHelper;
+import appeng.client.texture.IAESprite;
 import appeng.core.features.AEFeature;
 import appeng.core.features.FeatureNameExtractor;
 import appeng.core.features.IAEFeature;
 import appeng.core.features.IFeatureHandler;
 import appeng.core.features.ItemFeatureHandler;
+
+import com.google.common.base.Optional;
 
 
 public abstract class AEBaseItem extends Item implements IAEFeature
@@ -92,5 +96,28 @@ public abstract class AEBaseItem extends Item implements IAEFeature
 	public void addCheckedInformation( ItemStack stack, EntityPlayer player, List<String> lines, boolean displayMoreInfo )
 	{
 		super.addInformation( stack, player, lines, displayMoreInfo );
+	}
+
+	@SideOnly(Side.CLIENT)
+	protected IAESprite myIcon = null;
+	
+	@SideOnly(Side.CLIENT)
+	public void registerIcons(
+			ClientHelper proxy, String name )
+	{
+		proxy.setIcon( this, 0, name );
+	}
+
+	public IAESprite getIcon(
+			ItemStack is )
+	{
+		return myIcon;
+	}
+
+	@SideOnly(Side.CLIENT)
+	public void registerCustomIcon(			
+			TextureMap map )
+	{
+		
 	}
 }

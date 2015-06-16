@@ -19,7 +19,7 @@
 package appeng.core.crash;
 
 
-import cpw.mods.fml.common.ICrashCallable;
+import net.minecraftforge.fml.common.ICrashCallable;
 
 
 abstract class BaseCrashEnhancement implements ICrashCallable

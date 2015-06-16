@@ -19,36 +19,53 @@
 package appeng.core.sync.network;
 
 
-import java.lang.reflect.InvocationTargetException;
-
 import io.netty.buffer.ByteBuf;
+
+import java.lang.reflect.InvocationTargetException;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
-
-import cpw.mods.fml.common.network.internal.FMLProxyPacket;
-
+import net.minecraft.network.INetHandler;
+import net.minecraft.network.PacketThreadUtil;
+import net.minecraftforge.fml.common.network.internal.FMLProxyPacket;
 import appeng.core.AELog;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.AppEngPacketHandlerBase;
+import appeng.core.sync.PacketCallState;
 
 
 public class AppEngClientPacketHandler extends AppEngPacketHandlerBase implements IPacketHandler
 {
 
 	@Override
-	public void onPacketData( INetworkInfo network, FMLProxyPacket packet, EntityPlayer player )
+	public void onPacketData(
+			final INetworkInfo manager,
+			INetHandler handler,
+			FMLProxyPacket packet,
+			final EntityPlayer player )
 	{
 		ByteBuf stream = packet.payload();
 		int packetType = -1;
-
-		player = Minecraft.getMinecraft().thePlayer;
 
 		try
 		{
 			packetType = stream.readInt();
 			AppEngPacket pack = PacketTypes.getPacket( packetType ).parsePacket( stream );
-			pack.clientPacketData( network, pack, player );
+
+			PacketCallState callState = 
+			 new PacketCallState(){
+				
+				@Override
+				public void call(
+						AppEngPacket appEngPacket )
+				{
+					appEngPacket.clientPacketData( manager, appEngPacket, Minecraft.getMinecraft().thePlayer );
+				}
+			};
+			
+			pack.setCallParam(callState);			
+			PacketThreadUtil.checkThreadAndEnqueue( pack, handler, Minecraft.getMinecraft() );
+			callState.call( pack );
 		}
 		catch( InstantiationException e )
 		{

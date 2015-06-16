@@ -18,24 +18,25 @@
 
 package appeng.client.texture;
 
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 
-import net.minecraft.util.IIcon;
 
-
-public class FlippableIcon implements IIcon
+public class FlippableIcon implements IAESprite
 {
 
-	protected IIcon original;
+	protected IAESprite original;
 	boolean flip_u;
 	boolean flip_v;
 
-	public FlippableIcon( IIcon o )
-	{
-		if( o == null )
-		{
-			throw new IllegalArgumentException( "Cannot create a wrapper icon with a null icon." );
-		}
 
+	@Override
+	public TextureAtlasSprite getAtlas()
+	{
+		return original.getAtlas();
+	}
+	
+	public FlippableIcon( IAESprite o )
+	{
 		this.original = o;
 		this.flip_u = false;
 		this.flip_v = false;
@@ -119,7 +120,7 @@ public class FlippableIcon implements IIcon
 		return this.original.getIconName();
 	}
 
-	public IIcon getOriginal()
+	public IAESprite getOriginal()
 	{
 		return this.original;
 	}

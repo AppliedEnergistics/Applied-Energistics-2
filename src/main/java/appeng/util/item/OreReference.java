@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Set;
 
 import net.minecraft.item.ItemStack;
-
 import appeng.api.storage.data.IAEItemStack;
 
 

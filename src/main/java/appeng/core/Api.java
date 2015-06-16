@@ -19,8 +19,6 @@
 package appeng.core;
 
 
-import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.api.IAppEngApi;
 import appeng.api.definitions.Blocks;
 import appeng.api.definitions.Items;
@@ -32,6 +30,7 @@ import appeng.api.networking.IGridBlock;
 import appeng.api.networking.IGridConnection;
 import appeng.api.networking.IGridNode;
 import appeng.api.storage.IStorageHelper;
+import appeng.api.util.AEPartLocation;
 import appeng.core.api.ApiPart;
 import appeng.core.api.ApiStorage;
 import appeng.core.features.registries.RegistryContainer;
@@ -129,6 +128,6 @@ public final class Api implements IAppEngApi
 	@Override
 	public IGridConnection createGridConnection( IGridNode a, IGridNode b ) throws FailedConnection
 	{
-		return new GridConnection( a, b, ForgeDirection.UNKNOWN );
+		return new GridConnection( a, b, AEPartLocation.INTERNAL );
 	}
 }

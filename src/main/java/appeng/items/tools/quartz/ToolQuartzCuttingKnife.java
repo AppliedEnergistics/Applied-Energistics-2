@@ -21,20 +21,21 @@ package appeng.items.tools.quartz;
 
 import java.util.EnumSet;
 
-import com.google.common.base.Optional;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.api.implementations.guiobjects.IGuiItem;
 import appeng.api.implementations.guiobjects.IGuiItemObject;
+import appeng.api.util.AEPartLocation;
 import appeng.core.features.AEFeature;
 import appeng.core.sync.GuiBridge;
 import appeng.items.AEBaseItem;
 import appeng.items.contents.QuartzKnifeObj;
 import appeng.util.Platform;
+
+import com.google.common.base.Optional;
 
 
 public class ToolQuartzCuttingKnife extends AEBaseItem implements IGuiItem
@@ -52,11 +53,19 @@ public class ToolQuartzCuttingKnife extends AEBaseItem implements IGuiItem
 	}
 
 	@Override
-	public boolean onItemUse( ItemStack is, EntityPlayer p, World w, int x, int y, int z, int s, float hitX, float hitY, float hitZ )
+	public boolean onItemUse(
+			ItemStack stack,
+			EntityPlayer p,
+			World worldIn,
+			BlockPos pos,
+			EnumFacing side,
+			float hitX,
+			float hitY,
+			float hitZ )
 	{
 		if( Platform.isServer() )
 		{
-			Platform.openGUI( p, null, ForgeDirection.UNKNOWN, GuiBridge.GUI_QUARTZ_KNIFE );
+			Platform.openGUI( p, null, AEPartLocation.INTERNAL, GuiBridge.GUI_QUARTZ_KNIFE );
 		}
 		return true;
 	}
@@ -66,16 +75,10 @@ public class ToolQuartzCuttingKnife extends AEBaseItem implements IGuiItem
 	{
 		if( Platform.isServer() )
 		{
-			Platform.openGUI( p, null, ForgeDirection.UNKNOWN, GuiBridge.GUI_QUARTZ_KNIFE );
+			Platform.openGUI( p, null, AEPartLocation.INTERNAL, GuiBridge.GUI_QUARTZ_KNIFE );
 		}
 		p.swingItem();
 		return it;
-	}
-
-	@Override
-	public boolean doesContainerItemLeaveCraftingGrid( ItemStack par1ItemStack )
-	{
-		return false;
 	}
 
 	@Override
@@ -104,7 +107,7 @@ public class ToolQuartzCuttingKnife extends AEBaseItem implements IGuiItem
 	}
 
 	@Override
-	public IGuiItemObject getGuiObject( ItemStack is, World world, int x, int y, int z )
+	public IGuiItemObject getGuiObject( ItemStack is, World world, BlockPos pos )
 	{
 		return new QuartzKnifeObj( is );
 	}

@@ -19,14 +19,14 @@
 package appeng.client.render.blocks;
 
 
-import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.IItemRenderer.ItemRenderType;
-
 import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.block.networking.BlockEnergyCell;
 import appeng.client.render.BaseBlockRender;
+import appeng.client.render.IRenderHelper;
 import appeng.tile.networking.TileEnergyCell;
 
 
@@ -39,7 +39,7 @@ public class RenderBlockEnergyCube extends BaseBlockRender<BlockEnergyCell, Tile
 	}
 
 	@Override
-	public void renderInventory( BlockEnergyCell blk, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj )
+	public void renderInventory( BlockEnergyCell blk, ItemStack is, IRenderHelper renderer, ItemRenderType type, Object[] obj )
 	{
 		IAEItemPowerStorage myItem = (IAEItemPowerStorage) is.getItem();
 		double internalCurrentPower = myItem.getAECurrentPower( is );
@@ -56,18 +56,16 @@ public class RenderBlockEnergyCube extends BaseBlockRender<BlockEnergyCell, Tile
 			meta = 0;
 		}
 
-		renderer.setOverrideBlockTexture( blk.getIcon( 0, meta ) );
+		renderer.setOverrideBlockTexture( renderer.getIcon( blk.getStateFromMeta( meta ) )[0] );
 		super.renderInventory( blk, is, renderer, type, obj );
 		renderer.setOverrideBlockTexture( null );
 	}
 
 	@Override
-	public boolean renderInWorld( BlockEnergyCell blk, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
+	public boolean renderInWorld( BlockEnergyCell blk, IBlockAccess world, BlockPos pos, IRenderHelper renderer )
 	{
-		int meta = world.getBlockMetadata( x, y, z );
-
-		renderer.overrideBlockTexture = blk.getIcon( 0, meta );
-		boolean out = renderer.renderStandardBlock( blk, x, y, z );
+		renderer.overrideBlockTexture = renderer.getIcon( world.getBlockState( pos ) )[0];// blk.getIcon( 0, meta );
+		boolean out = renderer.renderStandardBlock( blk, pos );
 		renderer.overrideBlockTexture = null;
 
 		return out;

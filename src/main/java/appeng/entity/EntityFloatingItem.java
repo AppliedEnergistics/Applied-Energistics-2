@@ -28,7 +28,6 @@ import net.minecraft.world.World;
 public final class EntityFloatingItem extends EntityItem
 {
 
-	public static int ageStatic = 0;
 	private final Entity parent;
 	int superDeath = 0;
 	float progress = 0;
@@ -58,7 +57,7 @@ public final class EntityFloatingItem extends EntityItem
 		}
 		this.superDeath++;
 
-		this.age = ageStatic;
+		this.setNoDespawn();
 	}
 
 	public void setProgress( float progress )

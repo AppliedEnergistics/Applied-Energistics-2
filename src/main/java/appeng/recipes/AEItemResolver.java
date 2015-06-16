@@ -20,7 +20,6 @@ package appeng.recipes;
 
 
 import net.minecraft.item.ItemStack;
-
 import appeng.api.AEApi;
 import appeng.api.definitions.IDefinitions;
 import appeng.api.definitions.IItems;

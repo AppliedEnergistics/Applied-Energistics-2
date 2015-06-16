@@ -19,23 +19,22 @@
 package appeng.tile.crafting;
 
 
+import io.netty.buffer.ByteBuf;
+
 import java.io.IOException;
 import java.util.List;
-
-import io.netty.buffer.ByteBuf;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
-import net.minecraftforge.common.util.ForgeDirection;
-
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
-
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
@@ -53,9 +52,9 @@ import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
-import appeng.api.parts.ISimplifiedBundle;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AECableType;
+import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
 import appeng.container.ContainerNull;
@@ -85,9 +84,8 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 	private final AppEngInternalInventory inv = new AppEngInternalInventory( this, 9 + 2 );
 	private final IConfigManager settings;
 	private final UpgradeInventory upgrades;
-	public ISimplifiedBundle lightCache;
 	private boolean isPowered = false;
-	private ForgeDirection pushDirection = ForgeDirection.UNKNOWN;
+	private AEPartLocation pushDirection = AEPartLocation.INTERNAL;
 	private ItemStack myPattern = null;
 	private ICraftingPatternDetails myPlan = null;
 	private double progress = 0;
@@ -113,7 +111,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 	}
 
 	@Override
-	public boolean pushPattern( ICraftingPatternDetails patternDetails, InventoryCrafting table, ForgeDirection where )
+	public boolean pushPattern( ICraftingPatternDetails patternDetails, InventoryCrafting table, EnumFacing where )
 	{
 		if( this.myPattern == null )
 		{
@@ -127,7 +125,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 			{
 				this.forcePlan = true;
 				this.myPlan = patternDetails;
-				this.pushDirection = where;
+				this.pushDirection = AEPartLocation.fromFacing( where );
 
 				for( int x = 0; x < table.getSizeInventory(); x++ )
 				{
@@ -183,7 +181,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 			this.craftingInv.setInventorySlotContents( x, this.inv.getStackInSlot( x ) );
 		}
 
-		return this.myPlan.getOutput( this.craftingInv, this.getWorldObj() ) != null;
+		return this.myPlan.getOutput( this.craftingInv, this.getWorld() ) != null;
 	}
 
 	@Override
@@ -241,14 +239,14 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 
 			if( myPat != null && myPat.getItem() instanceof ItemEncodedPattern )
 			{
-				World w = this.getWorldObj();
+				World w = this.getWorld();
 				ItemEncodedPattern iep = (ItemEncodedPattern) myPat.getItem();
 				ICraftingPatternDetails ph = iep.getPatternForItem( myPat, w );
 				if( ph != null && ph.isCraftable() )
 				{
 					this.forcePlan = true;
 					this.myPlan = ph;
-					this.pushDirection = ForgeDirection.getOrientation( data.getInteger( "pushDirection" ) );
+					this.pushDirection = AEPartLocation.fromOrdinal( data.getInteger( "pushDirection" ) );
 				}
 			}
 		}
@@ -274,7 +272,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 		{
 			if( !Platform.isSameItem( is, this.myPattern ) )
 			{
-				World w = this.getWorldObj();
+				World w = this.getWorld();
 				ItemEncodedPattern iep = (ItemEncodedPattern) is.getItem();
 				ICraftingPatternDetails ph = iep.getPatternForItem( is, w );
 
@@ -292,14 +290,14 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 			this.forcePlan = false;
 			this.myPlan = null;
 			this.myPattern = null;
-			this.pushDirection = ForgeDirection.UNKNOWN;
+			this.pushDirection = AEPartLocation.INTERNAL;
 		}
 
 		this.updateSleepiness();
 	}
 
 	@Override
-	public AECableType getCableConnectionType( ForgeDirection dir )
+	public AECableType getCableConnectionType( AEPartLocation dir )
 	{
 		return AECableType.COVERED;
 	}
@@ -360,7 +358,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 
 		if( this.hasPattern() )
 		{
-			return this.myPlan.isValidItemForSlot( i, itemstack, this.getWorldObj() );
+			return this.myPlan.isValidItemForSlot( i, itemstack, this.getWorld() );
 		}
 
 		return false;
@@ -381,13 +379,13 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 	}
 
 	@Override
-	public boolean canExtractItem( int slotIndex, ItemStack extractedItem, int side )
+	public boolean canExtractItem( int slotIndex, ItemStack extractedItem, EnumFacing side )
 	{
 		return slotIndex == 9;
 	}
 
 	@Override
-	public int[] getAccessibleSlotsBySide( ForgeDirection whichSide )
+	public int[] getAccessibleSlotsBySide( EnumFacing whichSide )
 	{
 		return SIDES;
 	}
@@ -398,9 +396,12 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 	}
 
 	@Override
-	public void getDrops( World w, int x, int y, int z, List<ItemStack> drops )
+	public void getDrops(
+			World w,
+			BlockPos pos,
+			List<ItemStack> drops )
 	{
-		super.getDrops( w, x, y, z, drops );
+		super.getDrops( w, pos, drops );
 
 		for( int h = 0; h < this.upgrades.getSizeInventory(); h++ )
 		{
@@ -487,10 +488,10 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 			}
 
 			this.progress = 0;
-			ItemStack output = this.myPlan.getOutput( this.craftingInv, this.getWorldObj() );
+			ItemStack output = this.myPlan.getOutput( this.craftingInv, this.getWorld() );
 			if( output != null )
 			{
-				FMLCommonHandler.instance().firePlayerCraftingEvent( Platform.getPlayer( (WorldServer) this.getWorldObj() ), output, this.craftingInv );
+				FMLCommonHandler.instance().firePlayerCraftingEvent( Platform.getPlayer( (WorldServer) this.getWorld() ), output, this.craftingInv );
 
 				this.pushOut( output.copy() );
 
@@ -503,16 +504,16 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 				{
 					this.forcePlan = false;
 					this.myPlan = null;
-					this.pushDirection = ForgeDirection.UNKNOWN;
+					this.pushDirection = AEPartLocation.INTERNAL;
 				}
 
 				this.ejectHeldItems();
 
 				try
 				{
-					TargetPoint where = new TargetPoint( this.worldObj.provider.dimensionId, this.xCoord, this.yCoord, this.zCoord, 32 );
+					TargetPoint where = new TargetPoint( this.worldObj.provider.getDimensionId(), pos.getX(), pos.getY(), pos.getZ(), 32 );
 					IAEItemStack item = AEItemStack.create( output );
-					NetworkHandler.instance.sendToAllAround( new PacketAssemblerAnimation( this.xCoord, this.yCoord, this.zCoord, (byte) speed, item ), where );
+					NetworkHandler.instance.sendToAllAround( new PacketAssemblerAnimation( pos, (byte) speed, item ), where );
 				}
 				catch( IOException e )
 				{
@@ -563,16 +564,16 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 
 	private void pushOut( ItemStack output )
 	{
-		if( this.pushDirection == ForgeDirection.UNKNOWN )
+		if( this.pushDirection == AEPartLocation.INTERNAL )
 		{
-			for( ForgeDirection d : ForgeDirection.VALID_DIRECTIONS )
+			for( EnumFacing d : EnumFacing.VALUES )
 			{
 				output = this.pushTo( output, d );
 			}
 		}
 		else
 		{
-			output = this.pushTo( output, this.pushDirection );
+			output = this.pushTo( output, this.pushDirection.getFacing() );
 		}
 
 		if( output == null && this.forcePlan )
@@ -584,14 +585,14 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 		this.inv.setInventorySlotContents( 9, output );
 	}
 
-	private ItemStack pushTo( ItemStack output, ForgeDirection d )
+	private ItemStack pushTo( ItemStack output, EnumFacing d )
 	{
 		if( output == null )
 		{
 			return output;
 		}
 
-		TileEntity te = this.getWorldObj().getTileEntity( this.xCoord + d.offsetX, this.yCoord + d.offsetY, this.zCoord + d.offsetZ );
+		TileEntity te = this.getWorld().getTileEntity( pos.offset( d ) );
 
 		if( te == null )
 		{

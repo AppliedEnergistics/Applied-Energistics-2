@@ -28,8 +28,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
-import net.minecraftforge.common.util.ForgeDirection;
-
+import appeng.api.util.AEPartLocation;
 import appeng.items.tools.powered.ToolMassCannon;
 import appeng.util.Platform;
 
@@ -43,11 +42,11 @@ public final class DispenserMatterCannon extends BehaviorDefaultDispenseItem
 		Item i = dispensedItem.getItem();
 		if( i instanceof ToolMassCannon )
 		{
-			EnumFacing enumfacing = BlockDispenser.func_149937_b( dispenser.getBlockMetadata() );
-			ForgeDirection dir = ForgeDirection.UNKNOWN;
-			for( ForgeDirection d : ForgeDirection.VALID_DIRECTIONS )
+			EnumFacing enumfacing = BlockDispenser.getFacing( dispenser.getBlockMetadata() );
+			AEPartLocation dir = AEPartLocation.INTERNAL;
+			for( AEPartLocation d : AEPartLocation.SIDE_LOCATIONS )
 			{
-				if( enumfacing.getFrontOffsetX() == d.offsetX && enumfacing.getFrontOffsetY() == d.offsetY && enumfacing.getFrontOffsetZ() == d.offsetZ )
+				if( enumfacing.getFrontOffsetX() == d.xOffset && enumfacing.getFrontOffsetY() == d.yOffset && enumfacing.getFrontOffsetZ() == d.zOffset )
 				{
 					dir = d;
 				}
@@ -61,9 +60,9 @@ public final class DispenserMatterCannon extends BehaviorDefaultDispenseItem
 				EntityPlayer p = Platform.getPlayer( (WorldServer) w );
 				Platform.configurePlayer( p, dir, dispenser.getBlockTileEntity() );
 
-				p.posX += dir.offsetX;
-				p.posY += dir.offsetY;
-				p.posZ += dir.offsetZ;
+				p.posX += dir.xOffset;
+				p.posY += dir.yOffset;
+				p.posZ += dir.zOffset;
 
 				dispensedItem = tm.onItemRightClick( dispensedItem, w, p );
 			}

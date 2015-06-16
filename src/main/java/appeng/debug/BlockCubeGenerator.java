@@ -22,10 +22,10 @@ package appeng.debug;
 import java.util.EnumSet;
 
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
-
 import appeng.block.AEBaseTileBlock;
 import appeng.core.features.AEFeature;
 
@@ -39,11 +39,18 @@ public class BlockCubeGenerator extends AEBaseTileBlock
 		this.setTileEntity( TileCubeGenerator.class );
 		this.setFeature( EnumSet.of( AEFeature.UnsupportedDeveloperTools, AEFeature.Creative ) );
 	}
-
+		
 	@Override
-	public boolean onActivated( World w, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ )
+	public boolean onActivated(
+			World w,
+			BlockPos pos,
+			EntityPlayer player,
+			EnumFacing side,
+			float hitX,
+			float hitY,
+			float hitZ )
 	{
-		TileCubeGenerator tcg = this.getTileEntity( w, x, y, z );
+		TileCubeGenerator tcg = this.getTileEntity( w, pos );
 		if( tcg != null )
 		{
 			tcg.click( player );
@@ -51,10 +58,5 @@ public class BlockCubeGenerator extends AEBaseTileBlock
 
 		return true;
 	}
-
-	@Override
-	public void registerBlockIcons( IIconRegister iconRegistry )
-	{
-		this.registerNoIcons();
-	}
+	
 }

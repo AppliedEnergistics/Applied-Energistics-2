@@ -19,10 +19,9 @@
 package appeng.client.render;
 
 
-import net.minecraft.util.IIcon;
-import net.minecraftforge.common.util.ForgeDirection;
-
+import appeng.api.util.AEPartLocation;
 import appeng.client.texture.FlippableIcon;
+import appeng.client.texture.IAESprite;
 import appeng.client.texture.TmpFlippableIcon;
 
 
@@ -59,7 +58,7 @@ public class BlockRenderInfo
 		this.westIcon = west;
 	}
 
-	public void setTemporaryRenderIcon( IIcon icon )
+	public void setTemporaryRenderIcon( IAESprite icon )
 	{
 		if( icon == null )
 		{
@@ -77,18 +76,18 @@ public class BlockRenderInfo
 		}
 	}
 
-	public void setTemporaryRenderIcons( IIcon nTopIcon, IIcon nBottomIcon, IIcon nSouthIcon, IIcon nNorthIcon, IIcon nEastIcon, IIcon nWestIcon )
+	public void setTemporaryRenderIcons( IAESprite nTopIcon, IAESprite nBottomIcon, IAESprite nSouthIcon, IAESprite nNorthIcon, IAESprite nEastIcon, IAESprite nWestIcon )
 	{
-		this.tmpTopIcon.setOriginal( nTopIcon == null ? this.getTexture( ForgeDirection.UP ) : nTopIcon );
-		this.tmpBottomIcon.setOriginal( nBottomIcon == null ? this.getTexture( ForgeDirection.DOWN ) : nBottomIcon );
-		this.tmpSouthIcon.setOriginal( nSouthIcon == null ? this.getTexture( ForgeDirection.SOUTH ) : nSouthIcon );
-		this.tmpNorthIcon.setOriginal( nNorthIcon == null ? this.getTexture( ForgeDirection.NORTH ) : nNorthIcon );
-		this.tmpEastIcon.setOriginal( nEastIcon == null ? this.getTexture( ForgeDirection.EAST ) : nEastIcon );
-		this.tmpWestIcon.setOriginal( nWestIcon == null ? this.getTexture( ForgeDirection.WEST ) : nWestIcon );
+		this.tmpTopIcon.setOriginal( nTopIcon == null ? this.getTexture( AEPartLocation.UP ) : nTopIcon );
+		this.tmpBottomIcon.setOriginal( nBottomIcon == null ? this.getTexture( AEPartLocation.DOWN ) : nBottomIcon );
+		this.tmpSouthIcon.setOriginal( nSouthIcon == null ? this.getTexture( AEPartLocation.SOUTH ) : nSouthIcon );
+		this.tmpNorthIcon.setOriginal( nNorthIcon == null ? this.getTexture( AEPartLocation.NORTH ) : nNorthIcon );
+		this.tmpEastIcon.setOriginal( nEastIcon == null ? this.getTexture( AEPartLocation.EAST ) : nEastIcon );
+		this.tmpWestIcon.setOriginal( nWestIcon == null ? this.getTexture( AEPartLocation.WEST ) : nWestIcon );
 		this.useTmp = true;
 	}
 
-	public FlippableIcon getTexture( ForgeDirection dir )
+	public FlippableIcon getTexture( AEPartLocation dir )
 	{
 		if( this.useTmp )
 		{

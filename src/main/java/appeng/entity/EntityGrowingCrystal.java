@@ -25,9 +25,9 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
-
 import appeng.api.implementations.items.IGrowableCrystal;
 import appeng.api.implementations.tiles.ICrystalGrowthAccelerator;
 import appeng.client.EffectType;
@@ -50,6 +50,7 @@ public final class EntityGrowingCrystal extends EntityItem
 	public EntityGrowingCrystal( World w, double x, double y, double z, ItemStack is )
 	{
 		super( w, x, y, z, is );
+		this.setNoDespawn();
 	}
 
 	@Override
@@ -61,12 +62,7 @@ public final class EntityGrowingCrystal extends EntityItem
 		{
 			return;
 		}
-
-		if( this.age > 600 )
-		{
-			this.age = 100;
-		}
-
+		
 		ItemStack is = this.getEntityItem();
 		Item gc = is.getItem();
 
@@ -76,7 +72,7 @@ public final class EntityGrowingCrystal extends EntityItem
 			int i = MathHelper.floor_double( this.posY );
 			int k = MathHelper.floor_double( this.posZ );
 
-			Block blk = this.worldObj.getBlock( j, i, k );
+			Block blk = this.worldObj.getBlockState( new BlockPos( j, i, k ) ).getBlock();
 			Material mat = blk.getMaterial();
 			IGrowableCrystal cry = (IGrowableCrystal) is.getItem();
 
@@ -194,7 +190,7 @@ public final class EntityGrowingCrystal extends EntityItem
 
 	private boolean isAccelerated( int x, int y, int z )
 	{
-		TileEntity te = this.worldObj.getTileEntity( x, y, z );
+		TileEntity te = this.worldObj.getTileEntity( new BlockPos( x, y, z ) );
 
 		return te instanceof ICrystalGrowthAccelerator && ( (ICrystalGrowthAccelerator) te ).isPowered();
 	}

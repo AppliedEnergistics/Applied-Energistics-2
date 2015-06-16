@@ -22,24 +22,19 @@ package appeng.parts.automation;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import com.google.common.collect.Lists;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.WorldServer;
-import net.minecraftforge.common.util.ForgeDirection;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.networking.IGridNode;
@@ -58,7 +53,10 @@ import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartRenderHelper;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.api.util.AEPartLocation;
+import appeng.client.render.IRenderHelper;
 import appeng.client.texture.CableBusTextures;
+import appeng.client.texture.IAESprite;
 import appeng.core.settings.TickRates;
 import appeng.core.sync.packets.PacketTransitionEffect;
 import appeng.hooks.TickHandler;
@@ -68,13 +66,15 @@ import appeng.server.ServerHelper;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 
+import com.google.common.collect.Lists;
+
 
 public class PartAnnihilationPlane extends PartBasicState implements IGridTickable, Callable<TickRateModulation>
 {
-	private final static IIcon SIDE_ICON = CableBusTextures.PartPlaneSides.getIcon();
-	private final static IIcon BACK_ICON = CableBusTextures.PartTransitionPlaneBack.getIcon();
-	private final static IIcon STATUS_ICON = CableBusTextures.PartMonitorSidesStatus.getIcon();
-	private final static IIcon ACTIVE_ICON = CableBusTextures.BlockAnnihilationPlaneOn.getIcon();
+	private final static IAESprite SIDE_ICON = CableBusTextures.PartPlaneSides.getIcon();
+	private final static IAESprite BACK_ICON = CableBusTextures.PartTransitionPlaneBack.getIcon();
+	private final static IAESprite STATUS_ICON = CableBusTextures.PartMonitorSidesStatus.getIcon();
+	private final static IAESprite ACTIVE_ICON = CableBusTextures.BlockAnnihilationPlaneOn.getIcon();
 
 	private final BaseActionSource mySrc = new MachineSource( this );
 	private boolean isAccepting = true;
@@ -105,29 +105,27 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 		{
 			final TileEntity te = host.getTile();
 
-			final int x = te.xCoord;
-			final int y = te.yCoord;
-			final int z = te.zCoord;
+			BlockPos pos = te.getPos();
 
-			final ForgeDirection e = bch.getWorldX();
-			final ForgeDirection u = bch.getWorldY();
+			final EnumFacing e = bch.getWorldX();
+			final EnumFacing u = bch.getWorldY();
 
-			if( this.isAnnihilationPlane( te.getWorldObj().getTileEntity( x - e.offsetX, y - e.offsetY, z - e.offsetZ ), this.side ) )
+			if( this.isAnnihilationPlane( te.getWorld().getTileEntity( pos.offset( e.getOpposite() ) ), this.side ) )
 			{
 				minX = 0;
 			}
 
-			if( this.isAnnihilationPlane( te.getWorldObj().getTileEntity( x + e.offsetX, y + e.offsetY, z + e.offsetZ ), this.side ) )
+			if( this.isAnnihilationPlane( te.getWorld().getTileEntity( pos.offset( e ) ), this.side ) )
 			{
 				maxX = 16;
 			}
 
-			if( this.isAnnihilationPlane( te.getWorldObj().getTileEntity( x - u.offsetX, y - u.offsetY, z - u.offsetZ ), this.side ) )
+			if( this.isAnnihilationPlane( te.getWorld().getTileEntity( pos.offset( u.getOpposite() ) ), this.side ) )
 			{
 				minY = 0;
 			}
 
-			if( this.isAnnihilationPlane( te.getWorldObj().getTileEntity( x + u.offsetX, y + u.offsetY, z + u.offsetZ ), this.side ) )
+			if( this.isAnnihilationPlane( te.getWorld().getTileEntity( pos.offset( e ) ), this.side ) )
 			{
 				maxY = 16;
 			}
@@ -139,9 +137,9 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderInventory( IPartRenderHelper rh, RenderBlocks renderer )
+	public void renderInventory( IPartRenderHelper rh, IRenderHelper renderer )
 	{
-		rh.setTexture( SIDE_ICON, SIDE_ICON, BACK_ICON, this.is.getIconIndex(), SIDE_ICON, SIDE_ICON );
+		rh.setTexture( SIDE_ICON, SIDE_ICON, BACK_ICON, renderer.getIcon( is ), SIDE_ICON, SIDE_ICON );
 
 		rh.setBounds( 1, 1, 15, 15, 15, 16 );
 		rh.renderInventoryBox( renderer );
@@ -152,57 +150,57 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderStatic( int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer )
+	public void renderStatic( BlockPos pos, IPartRenderHelper rh, IRenderHelper renderer )
 	{
-		this.renderStaticWithIcon( x, y, z, rh, renderer, ACTIVE_ICON );
+		this.renderStaticWithIcon( pos, rh, renderer, ACTIVE_ICON );
 	}
 
-	protected void renderStaticWithIcon( int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer, IIcon activeIcon )
+	protected void renderStaticWithIcon( BlockPos opos, IPartRenderHelper rh, IRenderHelper renderer, IAESprite activeIcon )
 	{
 		int minX = 1;
 		int minY = 1;
 		int maxX = 15;
 		int maxY = 15;
 
-		final ForgeDirection e = rh.getWorldX();
-		final ForgeDirection u = rh.getWorldY();
+		final EnumFacing e = rh.getWorldX();
+		final EnumFacing u = rh.getWorldY();
 
 		final TileEntity te = this.getHost().getTile();
-
-		if( this.isAnnihilationPlane( te.getWorldObj().getTileEntity( x - e.offsetX, y - e.offsetY, z - e.offsetZ ), this.side ) )
+		BlockPos pos = te.getPos();
+		
+		if( this.isAnnihilationPlane( te.getWorld().getTileEntity( pos.offset( e.getOpposite() ) ), this.side ) )
 		{
 			minX = 0;
 		}
-
-		if( this.isAnnihilationPlane( te.getWorldObj().getTileEntity( x + e.offsetX, y + e.offsetY, z + e.offsetZ ), this.side ) )
+	
+		if( this.isAnnihilationPlane( te.getWorld().getTileEntity( pos.offset( e ) ), this.side ) )
 		{
 			maxX = 16;
 		}
 
-		if( this.isAnnihilationPlane( te.getWorldObj().getTileEntity( x - u.offsetX, y - u.offsetY, z - u.offsetZ ), this.side ) )
+		if( this.isAnnihilationPlane( te.getWorld().getTileEntity( pos.offset( u.getOpposite() ) ), this.side ) )
 		{
 			minY = 0;
 		}
 
-		if( this.isAnnihilationPlane( te.getWorldObj().getTileEntity( x + u.offsetX, y + u.offsetY, z + u.offsetZ ), this.side ) )
+		if( this.isAnnihilationPlane( te.getWorld().getTileEntity( pos.offset( e) ), this.side ) )
 		{
 			maxY = 16;
 		}
 
 		final boolean isActive = ( this.clientFlags & ( PartBasicState.POWERED_FLAG | PartBasicState.CHANNEL_FLAG ) ) == ( PartBasicState.POWERED_FLAG | PartBasicState.CHANNEL_FLAG );
 
-		this.renderCache = rh.useSimplifiedRendering( x, y, z, this, this.renderCache );
-		rh.setTexture( SIDE_ICON, SIDE_ICON, BACK_ICON, isActive ? activeIcon : this.is.getIconIndex(), SIDE_ICON, SIDE_ICON );
+		rh.setTexture( SIDE_ICON, SIDE_ICON, BACK_ICON, isActive ? activeIcon : renderer.getIcon( is ), SIDE_ICON, SIDE_ICON );
 
 		rh.setBounds( minX, minY, 15, maxX, maxY, 16 );
-		rh.renderBlock( x, y, z, renderer );
+		rh.renderBlock( opos, renderer );
 
-		rh.setTexture( STATUS_ICON, STATUS_ICON, BACK_ICON, isActive ? activeIcon : this.is.getIconIndex(), STATUS_ICON, STATUS_ICON );
+		rh.setTexture( STATUS_ICON, STATUS_ICON, BACK_ICON, isActive ? activeIcon : renderer.getIcon( is ), STATUS_ICON, STATUS_ICON );
 
 		rh.setBounds( 5, 5, 14, 11, 11, 15 );
-		rh.renderBlock( x, y, z, renderer );
+		rh.renderBlock( opos, renderer );
 
-		this.renderLights( x, y, z, rh, renderer );
+		this.renderLights( opos, rh, renderer );
 	}
 
 	@Override
@@ -225,16 +223,17 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 		if( this.isAccepting && entity instanceof EntityItem && !entity.isDead && Platform.isServer() && this.proxy.isActive() )
 		{
 			boolean capture = false;
+			BlockPos pos = tile.getPos();
 
 			switch( this.side )
 			{
 				case DOWN:
 				case UP:
-					if( entity.posX > this.tile.xCoord && entity.posX < this.tile.xCoord + 1 )
+					if( entity.posX > pos.getX() && entity.posX < pos.getX() + 1 )
 					{
-						if( entity.posZ > this.tile.zCoord && entity.posZ < this.tile.zCoord + 1 )
+						if( entity.posZ > pos.getZ() && entity.posZ < pos.getZ() + 1 )
 						{
-							if( ( entity.posY > this.tile.yCoord + 0.9 && this.side == ForgeDirection.UP ) || ( entity.posY < this.tile.yCoord + 0.1 && this.side == ForgeDirection.DOWN ) )
+							if( ( entity.posY > pos.getY() + 0.9 && this.side == AEPartLocation.UP ) || ( entity.posY < pos.getY() + 0.1 && this.side == AEPartLocation.DOWN ) )
 							{
 								capture = true;
 							}
@@ -243,11 +242,11 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 					break;
 				case SOUTH:
 				case NORTH:
-					if( entity.posX > this.tile.xCoord && entity.posX < this.tile.xCoord + 1 )
+					if( entity.posX > pos.getX() && entity.posX < pos.getX() + 1 )
 					{
-						if( entity.posY > this.tile.yCoord && entity.posY < this.tile.yCoord + 1 )
+						if( entity.posY > pos.getY() && entity.posY < pos.getY() + 1 )
 						{
-							if( ( entity.posZ > this.tile.zCoord + 0.9 && this.side == ForgeDirection.SOUTH ) || ( entity.posZ < this.tile.zCoord + 0.1 && this.side == ForgeDirection.NORTH ) )
+							if( ( entity.posZ > pos.getZ() + 0.9 && this.side == AEPartLocation.SOUTH ) || ( entity.posZ < pos.getZ() + 0.1 && this.side == AEPartLocation.NORTH ) )
 							{
 								capture = true;
 							}
@@ -256,11 +255,11 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 					break;
 				case EAST:
 				case WEST:
-					if( entity.posZ > this.tile.zCoord && entity.posZ < this.tile.zCoord + 1 )
+					if( entity.posZ > pos.getZ() && entity.posZ < pos.getZ() + 1 )
 					{
-						if( entity.posY > this.tile.yCoord && entity.posY < this.tile.yCoord + 1 )
+						if( entity.posY > pos.getY() && entity.posY < pos.getY() + 1 )
 						{
-							if( ( entity.posX > this.tile.xCoord + 0.9 && this.side == ForgeDirection.EAST ) || ( entity.posX < this.tile.xCoord + 0.1 && this.side == ForgeDirection.WEST ) )
+							if( ( entity.posX > pos.getX() + 0.9 && this.side == AEPartLocation.EAST ) || ( entity.posX < pos.getX() + 0.1 && this.side == AEPartLocation.WEST ) )
 							{
 								capture = true;
 							}
@@ -274,7 +273,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 
 			if( capture )
 			{
-				ServerHelper.proxy.sendToAllNearExcept( null, this.tile.xCoord, this.tile.yCoord, this.tile.zCoord, 64, this.tile.getWorldObj(), new PacketTransitionEffect( entity.posX, entity.posY, entity.posZ, this.side, false ) );
+				ServerHelper.proxy.sendToAllNearExcept( null, pos.getX(), pos.getY(), pos.getZ(), 64, this.tile.getWorld(), new PacketTransitionEffect( entity.posX, entity.posY, entity.posZ, this.side, false ) );
 				this.storeEntityItem( (EntityItem) entity );
 			}
 		}
@@ -332,16 +331,13 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 		}
 
 		final TileEntity tileEntity = this.getTile();
-		final WorldServer world = (WorldServer) tileEntity.getWorldObj();
+		final WorldServer world = (WorldServer) tileEntity.getWorld();
 
-		final int x = tileEntity.xCoord + this.side.offsetX;
-		final int y = tileEntity.yCoord + this.side.offsetY;
-		final int z = tileEntity.zCoord + this.side.offsetZ;
-
-		Platform.spawnDrops( world, x, y, z, Lists.newArrayList( overflow.getItemStack() ) );
+		BlockPos pos = tileEntity.getPos().offset( side.getFacing() );
+		Platform.spawnDrops( world, pos, Lists.newArrayList( overflow.getItemStack() ) );
 	}
 
-	protected boolean isAnnihilationPlane( TileEntity blockTileEntity, ForgeDirection side )
+	protected boolean isAnnihilationPlane( TileEntity blockTileEntity, AEPartLocation side )
 	{
 		if( blockTileEntity instanceof IPartHost )
 		{
@@ -374,18 +370,16 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 			try
 			{
 				final TileEntity te = this.getTile();
-				final WorldServer w = (WorldServer) te.getWorldObj();
+				final WorldServer w = (WorldServer) te.getWorld();
 
-				final int x = te.xCoord + this.side.offsetX;
-				final int y = te.yCoord + this.side.offsetY;
-				final int z = te.zCoord + this.side.offsetZ;
+				BlockPos pos = te.getPos().offset( side.getFacing() );
 
 				final IEnergyGrid energy = this.proxy.getEnergy();
 
-				if( this.canHandleBlock( w, x, y, z ) )
+				if( this.canHandleBlock( w, pos ) )
 				{
-					final List<ItemStack> items = this.obtainBlockDrops( w, x, y, z );
-					final float requiredPower = this.calculateEnergyUsage( w, x, y, z, items );
+					final List<ItemStack> items = this.obtainBlockDrops( w, pos );
+					final float requiredPower = this.calculateEnergyUsage( w, pos, items );
 
 					final boolean hasPower = energy.extractAEPower( requiredPower, Actionable.SIMULATE, PowerMultiplier.CONFIG ) > requiredPower - 0.1;
 					final boolean canStore = this.canStoreItemStacks( items );
@@ -395,13 +389,13 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 						if( modulate )
 						{
 							energy.extractAEPower( requiredPower, Actionable.MODULATE, PowerMultiplier.CONFIG );
-							this.breakBlockAndStoreItems( w, x, y, z, items );
-							ServerHelper.proxy.sendToAllNearExcept( null, x, y, z, 64, w, new PacketTransitionEffect( x, y, z, this.side, true ) );
+							this.breakBlockAndStoreItems( w, pos, items );
+							ServerHelper.proxy.sendToAllNearExcept( null, pos.getX(),pos.getY(),pos.getZ(), 64, w, new PacketTransitionEffect( pos.getX(),pos.getY(),pos.getZ(), this.side, true ) );
 						}
 						else
 						{
 							this.breaking = true;
-							TickHandler.INSTANCE.addCallable( this.tile.getWorldObj(), this );
+							TickHandler.INSTANCE.addCallable( this.tile.getWorld(), this );
 						}
 						return TickRateModulation.URGENT;
 					}
@@ -438,30 +432,30 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 	/**
 	 * Checks if this plane can handle the block at the specific coordinates.
 	 */
-	protected boolean canHandleBlock( WorldServer w, int x, int y, int z )
+	protected boolean canHandleBlock( WorldServer w, BlockPos pos )
 	{
-		final Block block = w.getBlock( x, y, z );
+		final Block block = w.getBlockState( pos ).getBlock();
 		final Material material = block.getMaterial();
-		final float hardness = block.getBlockHardness( w, x, y, z );
+		final float hardness = block.getBlockHardness( w, pos );
 		final boolean ignoreMaterials = material == Material.air || material == Material.lava || material == Material.water || material.isLiquid();
 		final boolean ignoreBlocks = block == Blocks.bedrock || block == Blocks.end_portal || block == Blocks.end_portal_frame || block == Blocks.command_block;
 
-		return !ignoreMaterials && !ignoreBlocks && !w.isAirBlock( x, y, z ) && w.blockExists( x, y, z ) && w.canMineBlock( Platform.getPlayer( w ), x, y, z ) && hardness >= 0f;
+		return !ignoreMaterials && !ignoreBlocks && !w.isAirBlock( pos ) && w.isBlockLoaded( pos ) && w.canMineBlockBody( Platform.getPlayer( w ), pos ) && hardness >= 0f;
 	}
 
-	protected List<ItemStack> obtainBlockDrops( WorldServer w, int x, int y, int z )
+	protected List<ItemStack> obtainBlockDrops( WorldServer w, BlockPos pos )
 	{
-		final ItemStack[] out = Platform.getBlockDrops( w, x, y, z );
+		final ItemStack[] out = Platform.getBlockDrops( w, pos );
 		return Lists.newArrayList( out );
 	}
 
 	/**
 	 * Checks if this plane can handle the block at the specific coordinates.
 	 */
-	protected float calculateEnergyUsage( WorldServer w, int x, int y, int z, List<ItemStack> items )
+	protected float calculateEnergyUsage( WorldServer w, BlockPos pos, List<ItemStack> items )
 	{
-		final Block block = w.getBlock( x, y, z );
-		final float hardness = block.getBlockHardness( w, x, y, z );
+		final Block block = w.getBlockState( pos ).getBlock();
+		final float hardness = block.getBlockHardness( w, pos );
 
 		float requiredEnergy = 1 + hardness;
 		for( final ItemStack is : items )
@@ -508,11 +502,11 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 		return canStore;
 	}
 
-	protected void breakBlockAndStoreItems( WorldServer w, int x, int y, int z, List<ItemStack> items )
+	protected void breakBlockAndStoreItems( WorldServer w, BlockPos pos, List<ItemStack> items )
 	{
-		w.setBlock( x, y, z, Platform.AIR_BLOCK, 0, 3 );
-
-		final AxisAlignedBB box = AxisAlignedBB.getBoundingBox( x - 0.2, y - 0.2, z - 0.2, x + 1.2, y + 1.2, z + 1.2 );
+		w.setBlockToAir( pos );
+		
+		final AxisAlignedBB box = AxisAlignedBB.fromBounds( pos.getX() - 0.2, pos.getY() - 0.2, pos.getZ() - 0.2, pos.getX() + 1.2, pos.getY() + 1.2, pos.getZ() + 1.2 );
 		for( final Object ei : w.getEntitiesWithinAABB( EntityItem.class, box ) )
 		{
 			if( ei instanceof EntityItem )

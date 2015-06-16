@@ -40,8 +40,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
-
+import net.minecraft.util.EnumFacing;
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.SecurityPermissions;
@@ -865,7 +864,7 @@ public abstract class AEBaseContainer extends Container
 
 					ais.setStackSize( myItem.getMaxStackSize() );
 
-					InventoryAdaptor adp = InventoryAdaptor.getAdaptor( player, ForgeDirection.UNKNOWN );
+					InventoryAdaptor adp = InventoryAdaptor.getAdaptor( player, EnumFacing.UP );
 					myItem.stackSize = (int) ais.getStackSize();
 					myItem = adp.simulateAdd( myItem );
 
@@ -1073,7 +1072,7 @@ public abstract class AEBaseContainer extends Container
 
 						ais.setStackSize( myItem.getMaxStackSize() );
 
-						InventoryAdaptor adp = InventoryAdaptor.getAdaptor( player, ForgeDirection.UNKNOWN );
+						InventoryAdaptor adp = InventoryAdaptor.getAdaptor( player, EnumFacing.UP );
 						myItem.stackSize = (int) ais.getStackSize();
 						myItem = adp.simulateAdd( myItem );
 

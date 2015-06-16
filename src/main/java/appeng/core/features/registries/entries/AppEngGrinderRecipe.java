@@ -20,7 +20,6 @@ package appeng.core.features.registries.entries;
 
 
 import net.minecraft.item.ItemStack;
-
 import appeng.api.features.IGrinderEntry;
 
 

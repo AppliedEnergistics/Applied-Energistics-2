@@ -23,14 +23,13 @@ import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.gui.IUpdatePlayerListBox;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.ForgeChunkManager.Ticket;
 import net.minecraftforge.common.ForgeChunkManager.Type;
-
-import cpw.mods.fml.common.FMLCommonHandler;
-
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.tile.AEBaseTile;
@@ -39,7 +38,7 @@ import appeng.tile.events.TileEventType;
 import appeng.util.Platform;
 
 
-public class TileChunkLoader extends AEBaseTile
+public class TileChunkLoader extends AEBaseTile implements IUpdatePlayerListBox
 {
 
 	boolean requestTicket = true;
@@ -79,7 +78,7 @@ public class TileChunkLoader extends AEBaseTile
 		}
 
 		AELog.info( "New Ticket " + this.ct.toString() );
-		ForgeChunkManager.forceChunk( this.ct, new ChunkCoordIntPair( this.xCoord >> 4, this.zCoord >> 4 ) );
+		ForgeChunkManager.forceChunk( this.ct, new ChunkCoordIntPair( this.pos.getX() >> 4, this.pos.getZ() >> 4 ) );
 	}
 
 	@Override

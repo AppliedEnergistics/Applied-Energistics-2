@@ -26,7 +26,6 @@ package appeng.api.storage;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-
 import appeng.api.config.FuzzyMode;
 import appeng.api.storage.data.IAEItemStack;
 

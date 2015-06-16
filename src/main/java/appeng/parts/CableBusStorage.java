@@ -19,11 +19,10 @@
 package appeng.parts;
 
 
-import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.api.implementations.parts.IPartCable;
 import appeng.api.parts.IFacadePart;
 import appeng.api.parts.IPart;
+import appeng.api.util.AEPartLocation;
 
 
 /**
@@ -46,7 +45,7 @@ public class CableBusStorage
 		this.center = center;
 	}
 
-	protected IPart getSide( ForgeDirection side )
+	protected IPart getSide( AEPartLocation side )
 	{
 		int x = side.ordinal();
 		if( this.sides != null && this.sides.length > x )
@@ -57,7 +56,7 @@ public class CableBusStorage
 		return null;
 	}
 
-	protected void setSide( ForgeDirection side, IPart part )
+	protected void setSide( AEPartLocation side, IPart part )
 	{
 		int x = side.ordinal();
 

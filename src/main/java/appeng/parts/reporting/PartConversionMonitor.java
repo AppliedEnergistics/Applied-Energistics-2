@@ -25,9 +25,8 @@ import java.util.List;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.Vec3;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.PlayerSource;
 import appeng.api.storage.IMEMonitor;
@@ -144,13 +143,13 @@ public class PartConversionMonitor extends PartStorageMonitor
 				if( retrieved != null )
 				{
 					ItemStack newItems = retrieved.getItemStack();
-					InventoryAdaptor adaptor = InventoryAdaptor.getAdaptor( player, ForgeDirection.UNKNOWN );
+					InventoryAdaptor adaptor = InventoryAdaptor.getAdaptor( player, EnumFacing.UP );
 					newItems = adaptor.addItems( newItems );
 					if( newItems != null )
 					{
 						TileEntity te = this.tile;
 						List<ItemStack> list = Collections.singletonList( newItems );
-						Platform.spawnDrops( player.worldObj, te.xCoord + this.side.offsetX, te.yCoord + this.side.offsetY, te.zCoord + this.side.offsetZ, list );
+						Platform.spawnDrops( player.worldObj, te.getPos().offset( side.getFacing() ), list );
 					}
 
 					if( player.openContainer != null )

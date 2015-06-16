@@ -28,20 +28,14 @@ import java.util.WeakHashMap;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
-import com.google.common.base.Stopwatch;
-import com.google.common.collect.LinkedListMultimap;
-import com.google.common.collect.Multimap;
-
 import net.minecraft.world.World;
 import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.event.world.WorldEvent;
-
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.TickEvent;
-import cpw.mods.fml.common.gameevent.TickEvent.Phase;
-import cpw.mods.fml.common.gameevent.TickEvent.Type;
-import cpw.mods.fml.common.gameevent.TickEvent.WorldTickEvent;
-
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
+import net.minecraftforge.fml.common.gameevent.TickEvent.Type;
+import net.minecraftforge.fml.common.gameevent.TickEvent.WorldTickEvent;
 import appeng.api.AEApi;
 import appeng.api.networking.IGridNode;
 import appeng.api.parts.CableRenderMode;
@@ -51,11 +45,14 @@ import appeng.core.AELog;
 import appeng.core.CommonHelper;
 import appeng.core.sync.packets.PacketPaintedEntity;
 import appeng.crafting.CraftingJob;
-import appeng.entity.EntityFloatingItem;
 import appeng.me.Grid;
 import appeng.me.NetworkList;
 import appeng.tile.AEBaseTile;
 import appeng.util.Platform;
+
+import com.google.common.base.Stopwatch;
+import com.google.common.collect.LinkedListMultimap;
+import com.google.common.collect.Multimap;
 
 
 public class TickHandler
@@ -170,7 +167,7 @@ public class TickHandler
 	@SubscribeEvent
 	public void onChunkLoad( ChunkEvent.Load load )
 	{
-		for( Object te : load.getChunk().chunkTileEntityMap.values() )
+		for( Object te : load.getChunk().getTileEntityMap().values() )
 		{
 			if( te instanceof AEBaseTile )
 			{
@@ -186,7 +183,6 @@ public class TickHandler
 		if( ev.type == Type.CLIENT && ev.phase == Phase.START )
 		{
 			this.tickColors( this.cliPlayerColors );
-			EntityFloatingItem.ageStatic = ( EntityFloatingItem.ageStatic + 1 ) % 60000;
 			CableRenderMode currentMode = AEApi.instance().partHelper().getCableRenderMode();
 			if( currentMode != this.crm )
 			{

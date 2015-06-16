@@ -2,6 +2,7 @@ package appeng.api.features;
 
 
 import java.util.List;
+
 import javax.annotation.Nonnull;
 
 import net.minecraft.item.ItemStack;

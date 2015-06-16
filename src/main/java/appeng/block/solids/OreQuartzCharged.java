@@ -21,16 +21,12 @@ package appeng.block.solids;
 
 import java.util.Random;
 
-import javax.annotation.Nullable;
-
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
 import appeng.api.AEApi;
 import appeng.api.exceptions.MissingDefinition;
 import appeng.client.render.effects.ChargedOreFX;
@@ -46,10 +42,12 @@ public class OreQuartzCharged extends OreQuartz
 		this.setBoostBrightnessLow( 2 );
 		this.setBoostBrightnessHigh( 5 );
 	}
-
-	@Nullable
+	
 	@Override
-	public Item getItemDropped( int id, Random rand, int meta )
+	public Item getItemDropped(
+			IBlockState state,
+			Random rand,
+			int fortune )
 	{
 		for( Item charged : AEApi.instance().definitions().materials().certusQuartzCrystalCharged().maybeItem().asSet() )
 		{
@@ -60,7 +58,8 @@ public class OreQuartzCharged extends OreQuartz
 	}
 
 	@Override
-	public int damageDropped( int id )
+	public int damageDropped(
+			IBlockState state )
 	{
 		for ( ItemStack crystalStack : AEApi.instance().definitions().materials().certusQuartzCrystalCharged().maybeStack( 1 ).asSet() )
 		{
@@ -71,8 +70,11 @@ public class OreQuartzCharged extends OreQuartz
 	}
 
 	@Override
-	@SideOnly( Side.CLIENT )
-	public void randomDisplayTick( World w, int x, int y, int z, Random r )
+	public void randomDisplayTick(
+			World w,
+			BlockPos pos,
+			IBlockState state,
+			Random r )
 	{
 		if ( !AEConfig.instance.enableEffects )
 		{
@@ -110,7 +112,7 @@ public class OreQuartzCharged extends OreQuartz
 
 		if( CommonHelper.proxy.shouldAddParticles( r ) )
 		{
-			ChargedOreFX fx = new ChargedOreFX( w, x + xOff, y + yOff, z + zOff, 0.0f, 0.0f, 0.0f );
+			ChargedOreFX fx = new ChargedOreFX( w, pos.getX() + xOff, pos.getY() + yOff, pos.getZ() + zOff, 0.0f, 0.0f, 0.0f );
 			Minecraft.getMinecraft().effectRenderer.addEffect( fx );
 		}
 	}

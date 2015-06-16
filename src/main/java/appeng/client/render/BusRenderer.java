@@ -22,21 +22,20 @@ package appeng.client.render;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.lwjgl.opengl.GL11;
-
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.client.IItemRenderer;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import org.lwjgl.opengl.GL11;
 
 import appeng.api.parts.IAlphaPassItem;
 import appeng.api.parts.IFacadePart;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartItem;
+import appeng.api.util.AEPartLocation;
 import appeng.client.ClientHelper;
 import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
@@ -50,7 +49,7 @@ public class BusRenderer implements IItemRenderer
 
 	public static final BusRenderer INSTANCE = new BusRenderer();
 	private static final Map<Integer, IPart> RENDER_PART = new HashMap<Integer, IPart>();
-	public final RenderBlocksWorkaround renderer = new RenderBlocksWorkaround();
+	public  IRenderHelper renderer;
 
 	@Override
 	public boolean handleRenderType( ItemStack item, ItemRenderType type )
@@ -113,24 +112,23 @@ public class BusRenderer implements IItemRenderer
 		GL11.glScaled( 1.2, 1.2, 1. );
 
 		GL11.glColor4f( 1, 1, 1, 1 );
-		Tessellator.instance.setColorOpaque_F( 1, 1, 1 );
-		Tessellator.instance.setBrightness( 14 << 20 | 14 << 4 );
+		renderer.setColorOpaque_F( 1, 1, 1 );
+		renderer.setBrightness( 14 << 20 | 14 << 4 );
 
 		BusRenderHelper.INSTANCE.setBounds( 0, 0, 0, 1, 1, 1 );
 		BusRenderHelper.INSTANCE.setTexture( null );
 		BusRenderHelper.INSTANCE.setInvColor( 0xffffff );
 		this.renderer.blockAccess = ClientHelper.proxy.getWorld();
 
-		BusRenderHelper.INSTANCE.setOrientation( ForgeDirection.EAST, ForgeDirection.UP, ForgeDirection.SOUTH );
+		BusRenderHelper.INSTANCE.setOrientation( EnumFacing.EAST, EnumFacing.UP, EnumFacing.SOUTH );
 
 		this.renderer.uvRotateBottom = this.renderer.uvRotateEast = this.renderer.uvRotateNorth = this.renderer.uvRotateSouth = this.renderer.uvRotateTop = this.renderer.uvRotateWest = 0;
-		this.renderer.useInventoryTint = false;
 		this.renderer.overrideBlockTexture = null;
 
 		if( item.getItem() instanceof IFacadeItem )
 		{
 			IFacadeItem fi = (IFacadeItem) item.getItem();
-			IFacadePart fp = fi.createPartFromItemStack( item, ForgeDirection.SOUTH );
+			IFacadePart fp = fi.createPartFromItemStack( item, AEPartLocation.SOUTH );
 
 			if( type == ItemRenderType.EQUIPPED_FIRST_PERSON )
 			{

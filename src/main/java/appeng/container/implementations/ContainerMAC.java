@@ -23,7 +23,6 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
-
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
@@ -64,7 +63,7 @@ public class ContainerMAC extends ContainerUpgradeable implements IProgressProvi
 
 		if( is.getItem() instanceof ItemEncodedPattern )
 		{
-			World w = this.getTileEntity().getWorldObj();
+			World w = this.getTileEntity().getWorld();
 			ItemEncodedPattern iep = (ItemEncodedPattern) is.getItem();
 			ICraftingPatternDetails ph = iep.getPatternForItem( is, w );
 			if( ph.isCraftable() )

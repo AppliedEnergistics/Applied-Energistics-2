@@ -28,13 +28,13 @@ public abstract class UniversalElectricity extends ThermalExpansion implements I
 {
 
 	@Override
-	public final boolean canConnect(ForgeDirection direction)
+	public final boolean canConnect(AEPartLocation direction)
 	{
 		return internalCanAcceptPower && getPowerSides().contains( direction );
 	}
 
 	@Override
-	public final float receiveElectricity(ForgeDirection from, ElectricityPack receive, boolean doReceive)
+	public final float receiveElectricity(AEPartLocation from, ElectricityPack receive, boolean doReceive)
 	{
 		float accepted = 0;
 		double receivedPower = receive.getWatts();
@@ -56,7 +56,7 @@ public abstract class UniversalElectricity extends ThermalExpansion implements I
 	}
 
 	@Override
-	public final float getRequest(ForgeDirection direction)
+	public final float getRequest(AEPartLocation direction)
 	{
 		return (float) getExternalPowerDemand( PowerUnits.KJ );
 	}
@@ -68,13 +68,13 @@ public abstract class UniversalElectricity extends ThermalExpansion implements I
 	}
 
 	@Override
-	public final ElectricityPack provideElectricity(ForgeDirection from, ElectricityPack request, boolean doProvide)
+	public final ElectricityPack provideElectricity(AEPartLocation from, ElectricityPack request, boolean doProvide)
 	{
 		return null; // cannot be dis-charged
 	}
 
 	@Override
-	public final float getProvide(ForgeDirection direction)
+	public final float getProvide(AEPartLocation direction)
 	{
 		return 0;
 	}

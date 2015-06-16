@@ -22,7 +22,7 @@ package appeng.items.tools.powered.powersink;
 import com.google.common.base.Optional;
 
 
-public abstract class AEBasePoweredItem extends RedstoneFlux
+public abstract class AEBasePoweredItem extends AERootPoweredItem
 {
 	public AEBasePoweredItem( double powerCapacity, Optional<String> subName )
 	{

@@ -25,17 +25,18 @@ import java.util.List;
 import java.util.Random;
 
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import appeng.api.AEApi;
+import appeng.api.util.AEAxisAlignedBB;
 import appeng.block.AEBaseTileBlock;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.blocks.RenderBlockCharger;
@@ -69,7 +70,14 @@ public class BlockCharger extends AEBaseTileBlock implements ICustomCollision
 	}
 
 	@Override
-	public boolean onActivated( World w, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ )
+	public boolean onActivated(
+			World w,
+			BlockPos pos,
+			EntityPlayer player,
+			EnumFacing side,
+			float hitX,
+			float hitY,
+			float hitZ )
 	{
 		if( player.isSneaking() )
 		{
@@ -78,7 +86,7 @@ public class BlockCharger extends AEBaseTileBlock implements ICustomCollision
 
 		if( Platform.isServer() )
 		{
-			TileCharger tc = this.getTileEntity( w, x, y, z );
+			TileCharger tc = this.getTileEntity( w, pos );
 			if( tc != null )
 			{
 				tc.activate( player );
@@ -87,10 +95,14 @@ public class BlockCharger extends AEBaseTileBlock implements ICustomCollision
 
 		return true;
 	}
-
-	@Override
+	
+	@Override	
 	@SideOnly( Side.CLIENT )
-	public void randomDisplayTick( World w, int x, int y, int z, Random r )
+	public void randomDisplayTick(
+			World w,
+			BlockPos pos,
+			IBlockState state,
+			Random r )
 	{
 		if( !AEConfig.instance.enableEffects )
 		{
@@ -102,7 +114,7 @@ public class BlockCharger extends AEBaseTileBlock implements ICustomCollision
 			return;
 		}
 
-		AEBaseTile tile = this.getTileEntity( w, x, y, z );
+		AEBaseTile tile = this.getTileEntity( w, pos );
 		if( tile instanceof TileCharger )
 		{
 			TileCharger tc = (TileCharger) tile;
@@ -117,7 +129,7 @@ public class BlockCharger extends AEBaseTileBlock implements ICustomCollision
 				{
 					if( CommonHelper.proxy.shouldAddParticles( r ) )
 					{
-						LightningFX fx = new LightningFX( w, xOff + 0.5 + x, yOff + 0.5 + y, zOff + 0.5 + z, 0.0D, 0.0D, 0.0D );
+						LightningFX fx = new LightningFX( w, xOff + 0.5 + pos.getX(), yOff + 0.5 + pos.getY(), zOff + 0.5 + pos.getZ(), 0.0D, 0.0D, 0.0D );
 						Minecraft.getMinecraft().effectRenderer.addEffect( fx );
 					}
 				}
@@ -126,27 +138,31 @@ public class BlockCharger extends AEBaseTileBlock implements ICustomCollision
 	}
 
 	@Override
-	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool( World w, int x, int y, int z, Entity e, boolean isVisual )
+	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool(
+			World w,
+			BlockPos pos,
+			Entity thePlayer,
+			boolean b )
 	{
-		TileCharger tile = this.getTileEntity( w, x, y, z );
+		TileCharger tile = this.getTileEntity( w, pos );
 		if( tile != null )
 		{
 			double twoPixels = 2.0 / 16.0;
-			ForgeDirection up = tile.getUp();
-			ForgeDirection forward = tile.getForward();
-			AxisAlignedBB bb = AxisAlignedBB.getBoundingBox( twoPixels, twoPixels, twoPixels, 1.0 - twoPixels, 1.0 - twoPixels, 1.0 - twoPixels );
+			EnumFacing up = tile.getUp();
+			EnumFacing forward = tile.getForward();
+			AEAxisAlignedBB bb = AEAxisAlignedBB.fromBounds( twoPixels, twoPixels, twoPixels, 1.0 - twoPixels, 1.0 - twoPixels, 1.0 - twoPixels );
 
-			if( up.offsetX != 0 )
+			if( up.getFrontOffsetX() != 0 )
 			{
 				bb.minX = 0;
 				bb.maxX = 1;
 			}
-			if( up.offsetY != 0 )
+			if( up.getFrontOffsetY() != 0 )
 			{
 				bb.minY = 0;
 				bb.maxY = 1;
 			}
-			if( up.offsetZ != 0 )
+			if( up.getFrontOffsetZ() != 0 )
 			{
 				bb.minZ = 0;
 				bb.maxZ = 1;
@@ -176,14 +192,19 @@ public class BlockCharger extends AEBaseTileBlock implements ICustomCollision
 					break;
 			}
 
-			return Collections.singletonList( bb );
+			return Collections.singletonList( bb.getBoundingBox() );
 		}
-		return Collections.singletonList( AxisAlignedBB.getBoundingBox( 0.0, 0, 0.0, 1.0, 1.0, 1.0 ) );
+		return Collections.singletonList( AxisAlignedBB.fromBounds( 0.0, 0, 0.0, 1.0, 1.0, 1.0 ) );
 	}
 
 	@Override
-	public void addCollidingBlockToList( World w, int x, int y, int z, AxisAlignedBB bb, List<AxisAlignedBB> out, Entity e )
+	public void addCollidingBlockToList(
+			World w,
+			BlockPos pos,
+			AxisAlignedBB bb,
+			List<AxisAlignedBB> out,
+			Entity e )
 	{
-		out.add( AxisAlignedBB.getBoundingBox( 0.0, 0.0, 0.0, 1.0, 1.0, 1.0 ) );
+		out.add( AxisAlignedBB.fromBounds( 0.0, 0.0, 0.0, 1.0, 1.0, 1.0 ) );
 	}
 }

@@ -19,17 +19,8 @@
 package appeng.client.render.items;
 
 
-import org.lwjgl.opengl.GL11;
-
-import net.minecraft.client.renderer.ItemRenderer;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
 import net.minecraftforge.client.IItemRenderer;
-
-import appeng.api.util.AEColor;
-import appeng.client.texture.ExtraItemTextures;
-import appeng.items.tools.powered.ToolColorApplicator;
 
 
 public class ToolColorApplicatorRender implements IItemRenderer
@@ -50,7 +41,8 @@ public class ToolColorApplicatorRender implements IItemRenderer
 	@Override
 	public void renderItem( ItemRenderType type, ItemStack item, Object... data )
 	{
-		IIcon par2Icon = item.getIconIndex();
+		/*
+		TextureAtlasSprite par2Icon = item.getIconIndex();
 
 		float f4 = par2Icon.getMinU();
 		float f5 = par2Icon.getMaxU();
@@ -101,9 +93,9 @@ public class ToolColorApplicatorRender implements IItemRenderer
 			GL11.glRotatef( 180F, 1.0F, 0.0F, 0.0F );
 		}
 
-		IIcon dark = ExtraItemTextures.ToolColorApplicatorTip_Dark.getIcon();
-		IIcon med = ExtraItemTextures.ToolColorApplicatorTip_Medium.getIcon();
-		IIcon light = ExtraItemTextures.ToolColorApplicatorTip_Light.getIcon();
+		TextureAtlasSprite dark = ExtraItemTextures.ToolColorApplicatorTip_Dark.getIcon();
+		TextureAtlasSprite med = ExtraItemTextures.ToolColorApplicatorTip_Medium.getIcon();
+		TextureAtlasSprite light = ExtraItemTextures.ToolColorApplicatorTip_Light.getIcon();
 
 		GL11.glScalef( 1F / 16F, 1F / 16F, 1F );
 		if( type != ItemRenderType.INVENTORY )
@@ -158,5 +150,6 @@ public class ToolColorApplicatorRender implements IItemRenderer
 
 		GL11.glPopAttrib();
 		GL11.glPopMatrix();
+		*/
 	}
 }

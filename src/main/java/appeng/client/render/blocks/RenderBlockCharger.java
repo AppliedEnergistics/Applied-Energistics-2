@@ -21,22 +21,24 @@ package appeng.client.render.blocks;
 
 import java.util.EnumSet;
 
+import net.minecraft.block.Block;
+import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.world.IBlockAccess;
+import net.minecraftforge.client.IItemRenderer.ItemRenderType;
+
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
-import net.minecraft.block.Block;
-import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.RenderBlocks;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.IBlockAccess;
-import net.minecraftforge.client.IItemRenderer.ItemRenderType;
-import net.minecraftforge.common.util.ForgeDirection;
-
+import appeng.api.util.AEPartLocation;
 import appeng.api.util.IOrientable;
 import appeng.block.misc.BlockCharger;
 import appeng.client.render.BaseBlockRender;
+import appeng.client.render.IRenderHelper;
 import appeng.client.texture.ExtraBlockTextures;
 import appeng.core.AELog;
 import appeng.tile.misc.TileCharger;
@@ -52,70 +54,68 @@ public class RenderBlockCharger extends BaseBlockRender<BlockCharger, TileCharge
 	}
 
 	@Override
-	public void renderInventory( BlockCharger blk, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj )
+	public void renderInventory( BlockCharger blk, ItemStack is, IRenderHelper renderer, ItemRenderType type, Object[] obj )
 	{
-		final Tessellator tess = Tessellator.instance;
-
 		renderer.renderAllFaces = true;
 		this.setInvRenderBounds( renderer, 6, 1, 0, 10, 15, 2 );
-		this.renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, tess, 0xffffff, renderer );
+		this.renderInvBlock( EnumSet.allOf( AEPartLocation.class ), blk, is, 0xffffff, renderer );
 
 		blk.getRendererInstance().setTemporaryRenderIcons( ExtraBlockTextures.BlockChargerInside.getIcon(), null, null, null, null, null );
 
 		this.setInvRenderBounds( renderer, 2, 0, 2, 14, 3, 14 );
-		this.renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, tess, 0xffffff, renderer );
+		this.renderInvBlock( EnumSet.allOf( AEPartLocation.class ), blk, is,  0xffffff, renderer );
 
 		this.setInvRenderBounds( renderer, 3, 3, 3, 13, 4, 13 );
-		this.renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, tess, 0xffffff, renderer );
+		this.renderInvBlock( EnumSet.allOf( AEPartLocation.class ), blk, is,  0xffffff, renderer );
 
 		blk.getRendererInstance().setTemporaryRenderIcon( null );
 
 		blk.getRendererInstance().setTemporaryRenderIcons( null, ExtraBlockTextures.BlockChargerInside.getIcon(), null, null, null, null );
 
 		this.setInvRenderBounds( renderer, 2, 13, 2, 14, 16, 14 );
-		this.renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, tess, 0xffffff, renderer );
+		this.renderInvBlock( EnumSet.allOf( AEPartLocation.class ), blk, is,  0xffffff, renderer );
 
 		this.setInvRenderBounds( renderer, 3, 12, 3, 13, 13, 13 );
-		this.renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, tess, 0xffffff, renderer );
+		this.renderInvBlock( EnumSet.allOf( AEPartLocation.class ), blk, is,  0xffffff, renderer );
 
 		renderer.renderAllFaces = false;
 		blk.getRendererInstance().setTemporaryRenderIcon( null );
 	}
 
 	@Override
-	public boolean renderInWorld( BlockCharger block, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
+	public boolean renderInWorld( BlockCharger block, IBlockAccess world, BlockPos pos, IRenderHelper renderer )
 	{
-		this.preRenderInWorld( block, world, x, y, z, renderer );
+		this.preRenderInWorld( block, world, pos, renderer );
 
-		final BlockCharger blk = (BlockCharger) block;
+		final BlockCharger blk = block;
 
-		final IOrientable te = this.getOrientable( block, world, x, y, z );
+		final IOrientable te = this.getOrientable( block, world, pos );
 
-		final ForgeDirection fdy = te.getUp();
-		final ForgeDirection fdz = te.getForward();
-		final ForgeDirection fdx = Platform.crossProduct( fdz, fdy ).getOpposite();
+		final EnumFacing fdy = te.getUp();
+		final EnumFacing fdz = te.getForward();
+		final EnumFacing fdx = Platform.crossProduct( fdz, fdy ).getOpposite();
 
 		renderer.renderAllFaces = true;
 		this.renderBlockBounds( renderer, 6, 1, 0, 10, 15, 2, fdx, fdy, fdz );
-		boolean out = renderer.renderStandardBlock( blk, x, y, z );
+		boolean out = renderer.renderStandardBlock( blk, pos );
 
 		blk.getRendererInstance().setTemporaryRenderIcons( ExtraBlockTextures.BlockChargerInside.getIcon(), null, null, null, null, null );
 
 		this.renderBlockBounds( renderer, 2, 0, 2, 14, 3, 14, fdx, fdy, fdz );
-		out = renderer.renderStandardBlock( blk, x, y, z );
+		out = renderer.renderStandardBlock( blk, pos );
 
 		this.renderBlockBounds( renderer, 3, 3, 3, 13, 4, 13, fdx, fdy, fdz );
-		out = renderer.renderStandardBlock( blk, x, y, z );
+		out = renderer.renderStandardBlock( blk, pos );
 
 		blk.getRendererInstance().setTemporaryRenderIcon( null );
 
 		blk.getRendererInstance().setTemporaryRenderIcons( null, ExtraBlockTextures.BlockChargerInside.getIcon(), null, null, null, null );
 
 		this.renderBlockBounds( renderer, 2, 13, 2, 14, 16, 14, fdx, fdy, fdz );
-		out = renderer.renderStandardBlock( blk, x, y, z );
+		out = renderer.renderStandardBlock( blk, pos );
 
 		this.renderBlockBounds( renderer, 3, 12, 3, 13, 13, 13, fdx, fdy, fdz );
-		out = renderer.renderStandardBlock( blk, x, y, z );
+		out = renderer.renderStandardBlock( blk, pos );
 
 		renderer.renderAllFaces = false;
 		blk.getRendererInstance().setTemporaryRenderIcon( null );
@@ -125,7 +125,7 @@ public class RenderBlockCharger extends BaseBlockRender<BlockCharger, TileCharge
 	}
 
 	@Override
-	public void renderTile( BlockCharger block, TileCharger tile, Tessellator tess, double x, double y, double z, float f, RenderBlocks renderer )
+	public void renderTile( BlockCharger block, TileCharger tile, WorldRenderer tess, double x, double y, double z, float f, IRenderHelper renderer )
 	{
 		ItemStack sis = null;
 		if( tile instanceof IInventory )
@@ -140,20 +140,22 @@ public class RenderBlockCharger extends BaseBlockRender<BlockCharger, TileCharge
 
 			try
 			{
-				GL11.glTranslatef( 0.5f, 0.45f, 0.5f );
+				GL11.glTranslatef( 0.5f, 0.35f, 0.5f );
 				GL11.glScalef( 1.0f / 1.1f, 1.0f / 1.1f, 1.0f / 1.1f );
 				GL11.glScalef( 1.0f, 1.0f, 1.0f );
 
 				final Block blk = Block.getBlockFromItem( sis.getItem() );
-				if( sis.getItemSpriteNumber() == 0 && block != null && RenderBlocks.renderItemIn3d( blk.getRenderType() ) )
+				/*
+				if( sis.getItemSpriteNumber() == 0 && block != null && IRenderHelper.renderItemIn3d( blk.getRenderType() ) )
 				{
 					GL11.glRotatef( 25.0f, 1.0f, 0.0f, 0.0f );
 					GL11.glRotatef( 15.0f, 0.0f, 1.0f, 0.0f );
 					GL11.glRotatef( 30.0f, 0.0f, 1.0f, 0.0f );
 				}
-
+				*/
+				
 				// << 20 | light << 4;
-				final int br = tile.getWorldObj().getLightBrightnessForSkyBlocks( tile.xCoord, tile.yCoord, tile.zCoord, 0 );
+				final int br = tile.getWorld().getCombinedLight( tile.getPos(), 0 );
 				final int var11 = br % 65536;
 				final int var12 = br / 65536;
 

@@ -32,7 +32,13 @@ public class AEGlassMaterial extends Material
 	{
 		super( color );
 	}
-
+	
+	@Override
+	public boolean isSolid()
+	{
+		return false;
+	}
+	
 	@Override
 	public boolean isOpaque()
 	{

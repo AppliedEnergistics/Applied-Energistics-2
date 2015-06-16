@@ -22,8 +22,7 @@ package appeng.core;
 import java.util.HashMap;
 import java.util.Map;
 
-import cpw.mods.fml.common.event.FMLInterModComms;
-
+import net.minecraftforge.fml.common.event.FMLInterModComms;
 import appeng.api.config.TunnelType;
 import appeng.core.api.IIMCProcessor;
 import appeng.core.api.imc.IMCBlackListSpatial;

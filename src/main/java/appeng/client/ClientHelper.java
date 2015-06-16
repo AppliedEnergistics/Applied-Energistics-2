@@ -21,43 +21,51 @@ package appeng.client;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
-
-import org.lwjgl.opengl.GL11;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.RenderBlocks;
+import net.minecraft.client.renderer.ItemMeshDefinition;
+import net.minecraft.client.renderer.ItemModelMesher;
+import net.minecraft.client.renderer.block.statemap.DefaultStateMapper;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.resources.model.ModelBakery;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
-import net.minecraft.item.ItemBlock;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
-import net.minecraftforge.client.ForgeHooksClient;
-import net.minecraftforge.client.IItemRenderer;
-import net.minecraftforge.client.MinecraftForgeClient;
+import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.MouseEvent;
 import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.common.registry.GameRegistry.UniqueIdentifier;
 
-import cpw.mods.fml.client.registry.ClientRegistry;
-import cpw.mods.fml.client.registry.RenderingRegistry;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import org.lwjgl.opengl.GL11;
 
 import appeng.api.parts.CableRenderMode;
+import appeng.api.parts.IPartItem;
 import appeng.api.util.AEColor;
 import appeng.block.AEBaseBlock;
 import appeng.client.render.BaseBlockRender;
+import appeng.client.render.BlockRenderInfo;
+import appeng.client.render.IRenderHelper;
 import appeng.client.render.TESRWrapper;
-import appeng.client.render.WorldRender;
+import appeng.client.render.blocks.RendererCableBus;
 import appeng.client.render.effects.AssemblerFX;
 import appeng.client.render.effects.CraftingFx;
 import appeng.client.render.effects.EnergyFx;
@@ -69,6 +77,7 @@ import appeng.client.texture.ExtraBlockTextures;
 import appeng.client.texture.ExtraItemTextures;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
+import appeng.core.AppEng;
 import appeng.core.CommonHelper;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketAssemblerAnimation;
@@ -77,9 +86,11 @@ import appeng.entity.EntityFloatingItem;
 import appeng.entity.EntityTinyTNTPrimed;
 import appeng.entity.RenderFloatingItem;
 import appeng.entity.RenderTinyTNTPrimed;
+import appeng.facade.IFacadeItem;
 import appeng.helpers.IMouseWheelItem;
 import appeng.hooks.TickHandler;
 import appeng.hooks.TickHandler.PlayerColor;
+import appeng.items.AEBaseItem;
 import appeng.server.ServerHelper;
 import appeng.transformer.MissingCoreMod;
 import appeng.util.Platform;
@@ -88,9 +99,85 @@ import appeng.util.Platform;
 public class ClientHelper extends ServerHelper
 {
 
-	private static final RenderItem ITEM_RENDERER = new RenderItem();
-	private static final RenderBlocks BLOCK_RENDERER = new RenderBlocks();
+	private static final RenderItem ITEM_RENDERER = Minecraft.getMinecraft().getRenderItem();
+	private static final IRenderHelper BLOCK_RENDERER = new IRenderHelper();
 
+	private static class IconReg
+	{
+		public IconReg(
+				Object item2,
+				int meta2,
+				String name2 )
+		{
+			meta = meta2;
+			name = name2;
+			item = item2;
+			loc = null;
+		}
+		
+		public IconReg(
+				Item item2,
+				int meta2,
+				String name2,
+				ModelResourceLocation res )
+		{
+			meta = meta2;
+			name = name2;
+			item = item2;
+			loc = res;
+		}
+
+		public final String name;
+		public final Object item;
+		public final int meta;
+		public final ModelResourceLocation loc;
+	};
+	
+	public Map<Object,List<IconReg>> iconRegistrations = new HashMap();
+	public List<IconReg> iconTmp = new ArrayList<>();
+	public List<ResourceLocation> extraIcons = new ArrayList<>();
+
+	@Override
+	public ResourceLocation addIcon( String string )
+	{
+		ModelResourceLocation n = new ModelResourceLocation( new ResourceLocation( AppEng.MOD_ID, string ), "inventory" );
+		extraIcons.add( n );
+		return n;
+	}
+	
+	@Override
+	public void configureIcon(Object item, String name )
+	{
+		iconTmp.add( new IconReg( item, 0, name ) );
+	}
+
+	public ModelResourceLocation setIcon(
+			Item item,
+			String name )
+	{
+		List<IconReg> reg = iconRegistrations.get( item );
+		if ( reg == null)
+			iconRegistrations.put( item , reg = new LinkedList<IconReg>() );
+		
+		ModelResourceLocation res = new ModelResourceLocation( new ResourceLocation( AppEng.MOD_ID, name ), "inventory" );
+		reg.add( new IconReg(item,-1,name,res) );
+		return res;
+	}
+	
+	public ModelResourceLocation setIcon(
+			Item item,
+			int meta,
+			String name )
+	{
+		List<IconReg> reg = iconRegistrations.get( item );
+		if ( reg == null)
+			iconRegistrations.put( item , reg = new LinkedList<IconReg>() );
+		
+		ModelResourceLocation res = new ModelResourceLocation( new ResourceLocation( AppEng.MOD_ID, name ), "inventory" );
+		reg.add( new IconReg(item,meta,name,res) );
+		return res;
+	}
+	
 	@SubscribeEvent
 	public void postPlayerRender( RenderLivingEvent.Pre p )
 	{
@@ -107,7 +194,7 @@ public class ClientHelper extends ServerHelper
 	}
 
 	@Override
-	public void init()
+	public void preinit()
 	{
 		MinecraftForge.EVENT_BUS.register( this );
 	}
@@ -274,7 +361,7 @@ public class ClientHelper extends ServerHelper
 
 			// set all this stuff and then do shit? meh?
 			entityitem.hoverStart = 0;
-			entityitem.age = 0;
+			entityitem.setNoDespawn();
 			entityitem.rotationYaw = 0;
 
 			GL11.glPushMatrix();
@@ -282,76 +369,128 @@ public class ClientHelper extends ServerHelper
 			GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
 			// GL11.glDisable( GL11.GL_CULL_FACE );
 
-			if( itemstack.isItemEnchanted() || itemstack.getItem().requiresMultipleRenderPasses() )
-			{
-				GL11.glTranslatef( 0.0f, -0.05f, -0.25f );
-				GL11.glScalef( 1.0f / 1.5f, 1.0f / 1.5f, 1.0f / 1.5f );
-				// GL11.glTranslated( -8.0, -12.2, -10.6 );
-				GL11.glScalef( 1.0f, -1.0f, 0.005f );
-				// GL11.glScalef( 1.0f , -1.0f, 1.0f );
-
-				Block block = Block.getBlockFromItem( itemstack.getItem() );
-				if( ( itemstack.getItemSpriteNumber() == 0 && block != null && RenderBlocks.renderItemIn3d( block.getRenderType() ) ) )
-				{
-					GL11.glRotatef( 25.0f, 1.0f, 0.0f, 0.0f );
-					GL11.glRotatef( 15.0f, 0.0f, 1.0f, 0.0f );
-					GL11.glRotatef( 30.0f, 0.0f, 1.0f, 0.0f );
-				}
-
-				IItemRenderer customRenderer = MinecraftForgeClient.getItemRenderer( itemstack, IItemRenderer.ItemRenderType.ENTITY );
-				if( customRenderer != null && !( itemstack.getItem() instanceof ItemBlock ) )
-				{
-					if( customRenderer.shouldUseRenderHelper( IItemRenderer.ItemRenderType.ENTITY, itemstack, IItemRenderer.ItemRendererHelper.BLOCK_3D ) )
-					{
-						GL11.glTranslatef( 0, -0.04F, 0 );
-						GL11.glScalef( 0.7f, 0.7f, 0.7f );
-						GL11.glRotatef( 35, 1, 0, 0 );
-						GL11.glRotatef( 45, 0, 1, 0 );
-						GL11.glRotatef( -90, 0, 1, 0 );
-					}
-				}
-				else if( itemstack.getItem() instanceof ItemBlock )
-				{
-					GL11.glTranslatef( 0, -0.04F, 0 );
-					GL11.glScalef( 1.1f, 1.1f, 1.1f );
-					GL11.glRotatef( -90, 0, 1, 0 );
-				}
-				else
-				{
-					GL11.glTranslatef( 0, -0.14F, 0 );
-					GL11.glScalef( 0.8f, 0.8f, 0.8f );
-				}
-
-				RenderItem.renderInFrame = true;
-				RenderManager.instance.renderEntityWithPosYaw( entityitem, 0.0D, 0.0D, 0.0D, 0.0F, 0.0F );
-				RenderItem.renderInFrame = false;
-			}
-			else
-			{
-				GL11.glScalef( 1.0f / 42.0f, 1.0f / 42.0f, 1.0f / 42.0f );
-				GL11.glTranslated( -8.0, -10.2, -10.4 );
-				GL11.glScalef( 1.0f, 1.0f, 0.005f );
-
-				RenderItem.renderInFrame = false;
-				FontRenderer fr = Minecraft.getMinecraft().fontRenderer;
-				if( !ForgeHooksClient.renderInventoryItem( BLOCK_RENDERER, Minecraft.getMinecraft().renderEngine, itemstack, true, 0, 0, 0 ) )
-				{
-					ITEM_RENDERER.renderItemIntoGUI( fr, Minecraft.getMinecraft().renderEngine, itemstack, 0, 0, false );
-				}
-			}
+			// TODO RENDER ITEM FOR STORAGE MONITOR!
 
 			GL11.glPopMatrix();
 		}
 	}
 
+	final ModelResourceLocation partRenderer = new ModelResourceLocation( new ResourceLocation( AppEng.MOD_ID, "DynamicPartRenderer" ), "inventory" );
+	
 	@Override
 	public void postInit()
 	{
-		RenderingRegistry.registerBlockHandler( WorldRender.INSTANCE );
-		RenderManager.instance.entityRenderMap.put( EntityTinyTNTPrimed.class, new RenderTinyTNTPrimed() );
-		RenderManager.instance.entityRenderMap.put( EntityFloatingItem.class, new RenderFloatingItem() );
+		//RenderingRegistry.registerBlockHandler( WorldRender.INSTANCE );
+		RenderManager inst = Minecraft.getMinecraft().getRenderManager();
+		
+		inst.entityRenderMap.put( EntityTinyTNTPrimed.class, new RenderTinyTNTPrimed(inst) );
+		inst.entityRenderMap.put( EntityFloatingItem.class, new RenderFloatingItem(inst) );
+
+		String MODID = AppEng.MOD_ID+":";
+
+		final ItemModelMesher mesher = Minecraft.getMinecraft().getRenderItem().getItemModelMesher();
+		ItemMeshDefinition imd = new ItemMeshDefinition(){
+			
+			@Override
+			public ModelResourceLocation getModelLocation(
+					ItemStack stack )
+			{
+				return partRenderer;
+			}
+		};
+		
+		for ( IconReg reg: iconTmp )
+		{
+			if ( reg.item instanceof IPartItem || reg.item instanceof IFacadeItem )
+			{
+				mesher.register( reg.item instanceof Item ? (Item)reg.item : Item.getItemFromBlock( (Block)reg.item ), imd );
+				continue;
+			}
+
+			if ( reg.item instanceof AEBaseBlock )
+			{
+				final BlockRenderInfo renderer = ((AEBaseBlock)reg.item).getRendererInstance();
+				if ( renderer == null ) 
+					continue;
+				
+				addIcon( reg.name );
+				
+				mesher.register( reg.item instanceof Item ? (Item)reg.item : Item.getItemFromBlock( (Block)reg.item ), new ItemMeshDefinition(){
+					
+					@Override
+					public ModelResourceLocation getModelLocation(
+							ItemStack stack )
+					{
+						return renderer.rendererInstance.getResourcePath();
+					}
+				} );
+				continue;
+			}
+
+			if ( reg.name == null ) continue;			
+			
+			if ( reg.item instanceof AEBaseItem )
+				( (AEBaseItem) reg.item).registerIcons( this, reg.name );
+			else if ( reg.item instanceof Item ) 
+				this.setIcon( (Item)reg.item, 0, reg.name );
+		}
+		
+		for ( List<IconReg> reg : iconRegistrations.values() )
+		{
+			String[] names = new String[reg.size()];
+			
+			Item it = null;
+			
+			int offset=0;
+			for ( IconReg r : reg )
+			{
+				it = ( Item ) r.item;
+				
+				if ( r.meta >= 0 )
+					mesher.register( (Item)r.item, r.meta, r.loc );
+				
+				names[offset++] = MODID +  r.name;
+			}
+			
+			ModelBakery.addVariantName( it, names );
+		}
 	}
 
+    @SubscribeEvent
+    public void onModelBakeEvent(
+            ModelBakeEvent event )
+    {
+		// inventory renderer
+    	SmartModel buses = new SmartModel( new BlockRenderInfo( ( new RendererCableBus() ) ) );
+		event.modelRegistry.putObject( partRenderer, buses );			
+		
+		for ( IconReg reg: iconTmp )
+		{
+			if ( reg.item instanceof IPartItem || reg.item instanceof IFacadeItem)
+			{
+				UniqueIdentifier i  = GameRegistry.findUniqueIdentifierFor( (Item)reg.item );
+				event.modelRegistry.putObject( new ModelResourceLocation( new ResourceLocation(i.modId ,i.name),"inventory"), buses );					
+			}
+			
+			if ( reg.item instanceof AEBaseBlock )
+			{
+				BlockRenderInfo renderer = ((AEBaseBlock)reg.item).getRendererInstance();
+				if ( renderer == null ) 
+					continue;
+				
+				SmartModel sm = new SmartModel( renderer );
+				event.modelRegistry.putObject( renderer.rendererInstance.getResourcePath(), sm  );
+				
+				Map data = new DefaultStateMapper().putStateModelLocations( (Block)reg.item );
+				for ( Object Loc : data.values()  )
+				{
+					ModelResourceLocation res = (ModelResourceLocation)Loc;
+					event.modelRegistry.putObject( res, sm );			
+				}
+			}
+		}
+	}
+    
 	@Override
 	public CableRenderMode getRenderMode()
 	{
@@ -421,7 +560,26 @@ public class ClientHelper extends ServerHelper
 	@SubscribeEvent
 	public void updateTextureSheet( TextureStitchEvent.Pre ev )
 	{
-		if( ev.map.getTextureType() == 1 )
+		for ( IconReg reg: iconTmp )
+		{
+			if ( reg.item instanceof AEBaseItem )
+			{
+				((AEBaseItem)reg.item).registerCustomIcon( ev.map );
+			}
+			else if ( reg.item instanceof AEBaseBlock )
+			{
+				BlockRenderInfo renderer = ((AEBaseBlock)reg.item).getRendererInstance();
+				if ( renderer == null ) 
+					continue;
+				
+				( (AEBaseBlock) reg.item).registerBlockIcons( ev.map, reg.name );
+			}
+		}
+		
+		for ( ResourceLocation res : extraIcons )
+			ev.map.registerSprite( res );
+		
+		//if( ev.map.getTextureType() == ITEM_RENDERER )
 		{
 			for( ExtraItemTextures et : ExtraItemTextures.values() )
 			{
@@ -429,7 +587,7 @@ public class ClientHelper extends ServerHelper
 			}
 		}
 
-		if( ev.map.getTextureType() == 0 )
+		//if( ev.map. == BLOCK_RENDERER )
 		{
 			for( ExtraBlockTextures et : ExtraBlockTextures.values() )
 			{
@@ -442,4 +600,6 @@ public class ClientHelper extends ServerHelper
 			}
 		}
 	}
+
+
 }

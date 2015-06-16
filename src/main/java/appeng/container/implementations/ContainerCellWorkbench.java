@@ -27,7 +27,7 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-
+import net.minecraft.util.IChatComponent;
 import appeng.api.AEApi;
 import appeng.api.config.CopyMode;
 import appeng.api.config.FuzzyMode;
@@ -147,7 +147,7 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 		ItemStack is = this.workBench.getInventoryByName( "cell" ).getStackInSlot( 0 );
 		if( Platform.isServer() )
 		{
-			if( this.workBench.getWorldObj().getTileEntity( this.workBench.xCoord, this.workBench.yCoord, this.workBench.zCoord ) != this.workBench )
+			if( this.workBench.getWorld().getTileEntity( this.workBench.getPos() ) != this.workBench )
 			{
 				this.isContainerValid = false;
 			}
@@ -295,13 +295,13 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 		}
 
 		@Override
-		public String getInventoryName()
+		public String getName()
 		{
 			return "Upgrades";
 		}
 
 		@Override
-		public boolean hasCustomInventoryName()
+		public boolean hasCustomName()
 		{
 			return false;
 		}
@@ -325,19 +325,56 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 		}
 
 		@Override
-		public void openInventory()
+		public void openInventory(
+				EntityPlayer player )
 		{
+			
 		}
-
+		
 		@Override
-		public void closeInventory()
+		public void closeInventory(
+				EntityPlayer player )
 		{
+			
 		}
 
 		@Override
 		public boolean isItemValidForSlot( int i, ItemStack itemstack )
 		{
 			return ContainerCellWorkbench.this.getCellUpgradeInventory().isItemValidForSlot( i, itemstack );
+		}
+
+		@Override
+		public IChatComponent getDisplayName()
+		{
+			return null;
+		}
+
+		@Override
+		public int getField(
+				int id )
+		{
+			return 0;
+		}
+
+		@Override
+		public void setField(
+				int id,
+				int value )
+		{
+			
+		}
+
+		@Override
+		public int getFieldCount()
+		{
+			return 0;
+		}
+
+		@Override
+		public void clear()
+		{
+			ContainerCellWorkbench.this.getCellUpgradeInventory().clear();			
 		}
 	}
 }

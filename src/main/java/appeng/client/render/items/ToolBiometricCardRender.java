@@ -19,22 +19,11 @@
 package appeng.client.render.items;
 
 
-import com.mojang.authlib.GameProfile;
-
-import org.lwjgl.opengl.GL11;
-
-import net.minecraft.client.renderer.ItemRenderer;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
 import net.minecraftforge.client.IItemRenderer;
 
-import appeng.api.implementations.items.IBiometricCard;
-import appeng.api.util.AEColor;
-import appeng.client.texture.ExtraItemTextures;
 
-
-public class ToolBiometricCardRender implements IItemRenderer
+public class ToolBiometricCardRender implements IItemRenderer // TileEntityItemStackRenderer
 {
 
 	@Override
@@ -52,7 +41,8 @@ public class ToolBiometricCardRender implements IItemRenderer
 	@Override
 	public void renderItem( ItemRenderType type, ItemStack item, Object... data )
 	{
-		IIcon par2Icon = item.getIconIndex();
+		/*
+		TextureAtlasSprite par2Icon = item.getIconIndex();
 
 		float f4 = par2Icon.getMinU();
 		float f5 = par2Icon.getMaxU();
@@ -154,5 +144,6 @@ public class ToolBiometricCardRender implements IItemRenderer
 
 		GL11.glPopAttrib();
 		GL11.glPopMatrix();
+		*/
 	}
 }

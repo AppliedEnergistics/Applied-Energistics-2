@@ -28,11 +28,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.minecraft.item.ItemStack;
-
-import com.google.common.base.Optional;
-
 import appeng.api.definitions.IItemDefinition;
 import appeng.api.util.AEItemDefinition;
+
+import com.google.common.base.Optional;
 
 
 public enum Upgrades

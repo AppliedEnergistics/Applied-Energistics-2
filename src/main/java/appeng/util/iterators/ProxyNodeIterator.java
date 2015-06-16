@@ -21,10 +21,9 @@ package appeng.util.iterators;
 
 import java.util.Iterator;
 
-import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
+import appeng.api.util.AEPartLocation;
 
 
 public final class ProxyNodeIterator implements Iterator<IGridNode>
@@ -46,7 +45,7 @@ public final class ProxyNodeIterator implements Iterator<IGridNode>
 	public IGridNode next()
 	{
 		IGridHost host = this.hosts.next();
-		return host.getGridNode( ForgeDirection.UNKNOWN );
+		return host.getGridNode( AEPartLocation.INTERNAL );
 	}
 
 	@Override

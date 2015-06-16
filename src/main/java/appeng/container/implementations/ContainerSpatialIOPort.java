@@ -20,12 +20,11 @@ package appeng.container.implementations;
 
 
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.spatial.ISpatialCache;
+import appeng.api.util.AEPartLocation;
 import appeng.container.AEBaseContainer;
 import appeng.container.guisync.GuiSync;
 import appeng.container.slot.SlotOutput;
@@ -56,7 +55,7 @@ public class ContainerSpatialIOPort extends AEBaseContainer
 
 		if( Platform.isServer() )
 		{
-			this.network = spatialIOPort.getGridNode( ForgeDirection.UNKNOWN ).getGrid();
+			this.network = spatialIOPort.getGridNode( AEPartLocation.INTERNAL ).getGrid();
 		}
 
 		this.addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.SPATIAL_STORAGE_CELLS, spatialIOPort, 0, 52, 48, this.invPlayer ) );

@@ -20,7 +20,6 @@ package appeng.items.contents;
 
 
 import net.minecraft.item.ItemStack;
-
 import appeng.parts.automation.StackUpgradeInventory;
 import appeng.util.Platform;
 

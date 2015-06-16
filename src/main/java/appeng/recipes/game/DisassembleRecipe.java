@@ -25,14 +25,12 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import com.google.common.base.Optional;
-
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
-
+import net.minecraftforge.common.ForgeHooks;
 import appeng.api.AEApi;
 import appeng.api.definitions.IBlocks;
 import appeng.api.definitions.IDefinitions;
@@ -43,6 +41,8 @@ import appeng.api.storage.IMEInventory;
 import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
+
+import com.google.common.base.Optional;
 
 
 public final class DisassembleRecipe implements IRecipe
@@ -172,5 +172,12 @@ public final class DisassembleRecipe implements IRecipe
 	public ItemStack getRecipeOutput() // no default output..
 	{
 		return null;
+	}
+
+	@Override
+	public ItemStack[] getRemainingItems(
+			InventoryCrafting inv )
+	{
+        return ForgeHooks.defaultRecipeGetRemainingItems(inv);
 	}
 }

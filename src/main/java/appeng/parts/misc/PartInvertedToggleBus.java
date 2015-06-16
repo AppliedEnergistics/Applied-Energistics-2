@@ -20,7 +20,6 @@ package appeng.parts.misc;
 
 
 import net.minecraft.item.ItemStack;
-
 import appeng.helpers.Reflected;
 
 

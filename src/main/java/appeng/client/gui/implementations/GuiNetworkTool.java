@@ -23,7 +23,6 @@ import java.io.IOException;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
-
 import appeng.api.implementations.guiobjects.INetworkTool;
 import appeng.client.gui.AEBaseGui;
 import appeng.client.gui.widgets.GuiToggleButton;
@@ -46,7 +45,7 @@ public class GuiNetworkTool extends AEBaseGui
 	}
 
 	@Override
-	protected void actionPerformed( GuiButton btn )
+	protected void actionPerformed( GuiButton btn ) throws IOException
 	{
 		super.actionPerformed( btn );
 

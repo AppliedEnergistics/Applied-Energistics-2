@@ -19,13 +19,12 @@
 package appeng.core.features;
 
 
-import com.google.common.base.Optional;
-import com.google.common.base.Preconditions;
-
 import net.minecraft.tileentity.TileEntity;
-
 import appeng.api.definitions.ITileDefinition;
 import appeng.block.AEBaseTileBlock;
+
+import com.google.common.base.Optional;
+import com.google.common.base.Preconditions;
 
 
 public final class TileDefinition extends BlockDefinition implements ITileDefinition

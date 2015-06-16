@@ -22,19 +22,15 @@ package appeng.core.sync;
 import java.lang.reflect.Constructor;
 import java.util.List;
 
-import com.google.common.collect.Lists;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-
-import cpw.mods.fml.common.network.IGuiHandler;
-import cpw.mods.fml.relauncher.ReflectionHelper;
-
+import net.minecraftforge.fml.common.network.IGuiHandler;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import appeng.api.AEApi;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.definitions.IComparableDefinition;
@@ -53,6 +49,7 @@ import appeng.api.networking.security.ISecurityGrid;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
 import appeng.api.storage.ITerminalHost;
+import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.client.gui.GuiNull;
 import appeng.container.AEBaseContainer;
@@ -118,6 +115,8 @@ import appeng.tile.storage.TileDrive;
 import appeng.tile.storage.TileIOPort;
 import appeng.tile.storage.TileSkyChest;
 import appeng.util.Platform;
+
+import com.google.common.collect.Lists;
 
 
 public enum GuiBridge implements IGuiHandler
@@ -247,7 +246,7 @@ public enum GuiBridge implements IGuiHandler
 	@Override
 	public Object getServerGuiElement( int ordinal, EntityPlayer player, World w, int x, int y, int z )
 	{
-		ForgeDirection side = ForgeDirection.getOrientation( ordinal & 0x07 );
+		AEPartLocation side = AEPartLocation.fromOrdinal( ordinal & 0x07 );
 		GuiBridge ID = values()[ordinal >> 4];
 		boolean stem = ( ( ordinal >> 3 ) & 1 ) == 1;
 		if( ID.type.isItem() )
@@ -269,7 +268,7 @@ public enum GuiBridge implements IGuiHandler
 		}
 		if( ID.type.isTile() )
 		{
-			TileEntity TE = w.getTileEntity( x, y, z );
+			TileEntity TE = w.getTileEntity( new BlockPos(x,y,z) );
 			if( TE instanceof IPartHost )
 			{
 				( (IPartHost) TE ).getPart( side );
@@ -296,7 +295,7 @@ public enum GuiBridge implements IGuiHandler
 		{
 			if( it.getItem() instanceof IGuiItem )
 			{
-				return ( (IGuiItem) it.getItem() ).getGuiObject( it, w, x, y, z );
+				return ( (IGuiItem) it.getItem() ).getGuiObject( it, w, new BlockPos(x,y,z) );
 			}
 
 			IWirelessTermHandler wh = AEApi.instance().registries().wireless().getWirelessTerminalHandler( it );
@@ -319,7 +318,7 @@ public enum GuiBridge implements IGuiHandler
 		return this.tileClass.isInstance( tE );
 	}
 
-	private Object updateGui( Object newContainer, World w, int x, int y, int z, ForgeDirection side, Object myItem )
+	private Object updateGui( Object newContainer, World w, int x, int y, int z, AEPartLocation side, Object myItem )
 	{
 		if( newContainer instanceof AEBaseContainer )
 		{
@@ -335,7 +334,7 @@ public enum GuiBridge implements IGuiHandler
 		return newContainer;
 	}
 
-	public Object ConstructContainer( InventoryPlayer inventory, ForgeDirection side, Object tE )
+	public Object ConstructContainer( InventoryPlayer inventory, AEPartLocation side, Object tE )
 	{
 		try
 		{
@@ -429,7 +428,7 @@ public enum GuiBridge implements IGuiHandler
 	@Override
 	public Object getClientGuiElement( int ordinal, EntityPlayer player, World w, int x, int y, int z )
 	{
-		ForgeDirection side = ForgeDirection.getOrientation( ordinal & 0x07 );
+		AEPartLocation side = AEPartLocation.fromOrdinal( ordinal & 0x07 );
 		GuiBridge ID = values()[ordinal >> 4];
 		boolean stem = ( ( ordinal >> 3 ) & 1 ) == 1;
 		if( ID.type.isItem() )
@@ -451,7 +450,7 @@ public enum GuiBridge implements IGuiHandler
 		}
 		if( ID.type.isTile() )
 		{
-			TileEntity TE = w.getTileEntity( x, y, z );
+			TileEntity TE = w.getTileEntity( new BlockPos(x,y,z) );
 			if( TE instanceof IPartHost )
 			{
 				( (IPartHost) TE ).getPart( side );
@@ -472,7 +471,7 @@ public enum GuiBridge implements IGuiHandler
 		return new GuiNull( new ContainerNull() );
 	}
 
-	public Object ConstructGui( InventoryPlayer inventory, ForgeDirection side, Object tE )
+	public Object ConstructGui( InventoryPlayer inventory, AEPartLocation side, Object tE )
 	{
 		try
 		{
@@ -497,18 +496,19 @@ public enum GuiBridge implements IGuiHandler
 		}
 	}
 
-	public boolean hasPermissions( TileEntity te, int x, int y, int z, ForgeDirection side, EntityPlayer player )
+	public boolean hasPermissions( TileEntity te, int x, int y, int z, AEPartLocation side, EntityPlayer player )
 	{
 		World w = player.getEntityWorld();
+		BlockPos pos = new  BlockPos(x,y,z);
 
-		if( Platform.hasPermissions( te != null ? new DimensionalCoord( te ) : new DimensionalCoord( player.worldObj, x, y, z ), player ) )
+		if( Platform.hasPermissions( te != null ? new DimensionalCoord( te ) : new DimensionalCoord( player.worldObj, pos ), player ) )
 		{
 			if( this.type.isItem() )
 			{
 				ItemStack it = player.inventory.getCurrentItem();
 				if( it != null && it.getItem() instanceof IGuiItem )
 				{
-					Object myItem = ( (IGuiItem) it.getItem() ).getGuiObject( it, w, x, y, z );
+					Object myItem = ( (IGuiItem) it.getItem() ).getGuiObject( it, w, pos );
 					if( this.CorrectTileOrPart( myItem ) )
 					{
 						return true;
@@ -518,7 +518,7 @@ public enum GuiBridge implements IGuiHandler
 
 			if( this.type.isTile() )
 			{
-				TileEntity TE = w.getTileEntity( x, y, z );
+				TileEntity TE = w.getTileEntity( pos );
 				if( TE instanceof IPartHost )
 				{
 					( (IPartHost) TE ).getPart( side );

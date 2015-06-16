@@ -21,13 +21,12 @@ package appeng.debug;
 
 import java.util.EnumSet;
 
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
-
-import appeng.client.texture.MissingIcon;
 import appeng.core.features.AEFeature;
 import appeng.items.AEBaseItem;
 import appeng.util.Platform;
@@ -43,13 +42,15 @@ public class ToolMeteoritePlacer extends AEBaseItem
 	}
 
 	@Override
-	public void registerIcons( IIconRegister par1IconRegister )
-	{
-		this.itemIcon = new MissingIcon( this );
-	}
-
-	@Override
-	public boolean onItemUseFirst( ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ )
+	public boolean onItemUseFirst(
+			ItemStack stack,
+			EntityPlayer player,
+			World world,
+			BlockPos pos,
+			EnumFacing side,
+			float hitX,
+			float hitY,
+			float hitZ )
 	{
 		if( Platform.isClient() )
 		{
@@ -57,7 +58,7 @@ public class ToolMeteoritePlacer extends AEBaseItem
 		}
 
 		MeteoritePlacer mp = new MeteoritePlacer();
-		boolean worked = mp.spawnMeteorite( new StandardWorld( world ), x, y, z );
+		boolean worked = mp.spawnMeteorite( new StandardWorld( world ), pos.getX(),pos.getY(),pos.getZ() );
 
 		if( !worked )
 		{

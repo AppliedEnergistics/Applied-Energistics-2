@@ -26,9 +26,7 @@ import java.util.concurrent.Callable;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunkProvider;
-
-import cpw.mods.fml.common.IWorldGenerator;
-
+import net.minecraftforge.fml.common.IWorldGenerator;
 import appeng.api.features.IWorldGen.WorldGenType;
 import appeng.core.AEConfig;
 import appeng.core.WorldSettings;
@@ -87,7 +85,7 @@ public final class MeteoriteWorldGen implements IWorldGenerator
 								continue;
 							}
 
-							if( WorldSettings.getInstance().hasGenerated( w.provider.dimensionId, cx, cz ) )
+							if( WorldSettings.getInstance().hasGenerated( w.provider.getDimensionId(), cx, cz ) )
 							{
 								MeteoritePlacer mp2 = new MeteoritePlacer();
 								mp2.spawnMeteorite( new ChunkOnly( w, cx, cz ), mp.getSettings() );
@@ -111,7 +109,7 @@ public final class MeteoriteWorldGen implements IWorldGenerator
 
 	private Collection<NBTTagCompound> getNearByMeteorites( World w, int chunkX, int chunkZ )
 	{
-		return WorldSettings.getInstance().getNearByMeteorites( w.provider.dimensionId, chunkX, chunkZ );
+		return WorldSettings.getInstance().getNearByMeteorites( w.provider.getDimensionId(), chunkX, chunkZ );
 	}
 
 	class MeteoriteSpawn implements Callable
@@ -154,7 +152,7 @@ public final class MeteoriteWorldGen implements IWorldGenerator
 				MeteoriteWorldGen.this.tryMeteorite( this.w, this.depth, this.x, this.z );
 			}
 
-			WorldSettings.getInstance().setGenerated( this.w.provider.dimensionId, chunkX, chunkZ );
+			WorldSettings.getInstance().setGenerated( this.w.provider.getDimensionId(), chunkX, chunkZ );
 			WorldSettings.getInstance().getCompass().updateArea( this.w, chunkX, chunkZ );
 
 			return null;

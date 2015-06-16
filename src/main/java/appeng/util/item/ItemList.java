@@ -27,15 +27,14 @@ import java.util.List;
 import java.util.NavigableMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 
-import com.google.common.collect.Lists;
-
 import net.minecraftforge.oredict.OreDictionary;
-
 import appeng.api.config.FuzzyMode;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
+
+import com.google.common.collect.Lists;
 
 
 public final class ItemList<StackType extends IAEStack> implements IItemList<StackType>

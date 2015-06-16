@@ -22,8 +22,10 @@ package appeng.block.solids;
 import java.util.EnumSet;
 
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.IBlockAccess;
-
 import appeng.api.util.IOrientable;
 import appeng.api.util.IOrientableBlock;
 import appeng.block.AEBaseBlock;
@@ -31,6 +33,7 @@ import appeng.core.features.AEFeature;
 import appeng.helpers.MetaRotation;
 
 
+// TODO Quartz Rotation.
 public class BlockQuartzPillar extends AEBaseBlock implements IOrientableBlock
 {
 
@@ -41,14 +44,35 @@ public class BlockQuartzPillar extends AEBaseBlock implements IOrientableBlock
 	}
 
 	@Override
+	public int getMetaFromState(
+			IBlockState state )
+	{
+		return 0;
+	}
+	
+	@Override
+	public IBlockState getStateFromMeta(
+			int meta )
+	{
+		return getDefaultState();
+	}
+	
+	@Override
+	protected IProperty[] getAEStates()
+	{
+		return new IProperty[]{ AXIS_ORIENTATION };
+	}
+
+	@Override
 	public boolean usesMetadata()
 	{
 		return true;
 	}
 
 	@Override
-	public IOrientable getOrientable( final IBlockAccess w, final int x, final int y, final int z )
+	public IOrientable getOrientable( final IBlockAccess w,BlockPos pos )
 	{
-		return new MetaRotation( w, x, y, z );
+		return new MetaRotation( w, pos,false );
 	}
+	
 }

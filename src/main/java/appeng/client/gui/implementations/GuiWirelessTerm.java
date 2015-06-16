@@ -20,7 +20,6 @@ package appeng.client.gui.implementations;
 
 
 import net.minecraft.entity.player.InventoryPlayer;
-
 import appeng.api.implementations.guiobjects.IPortableCell;
 
 

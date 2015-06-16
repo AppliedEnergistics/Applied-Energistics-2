@@ -28,7 +28,6 @@ import java.util.Set;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -37,8 +36,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.data.MCDataOutput;
 import codechicken.lib.raytracer.IndexedCuboid6;
@@ -51,7 +48,6 @@ import codechicken.multipart.NormalOcclusionTest;
 import codechicken.multipart.NormallyOccludedPart;
 import codechicken.multipart.TMultiPart;
 import codechicken.multipart.scalatraits.TIInventoryTile;
-
 import appeng.api.implementations.parts.IPartCable;
 import appeng.api.networking.IGridNode;
 import appeng.api.parts.IFacadeContainer;
@@ -65,6 +61,7 @@ import appeng.api.parts.SelectedPart;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalCoord;
+import appeng.api.util.ForgeDirection;
 import appeng.client.render.BusRenderHelper;
 import appeng.client.render.BusRenderer;
 import appeng.core.AEConfig;
@@ -596,9 +593,9 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 	{
 		// mark the chunk for save...
 		TileEntity te = this.tile();
-		if( te != null && te.getWorldObj() != null )
+		if( te != null && te.getWorld() != null )
 		{
-			te.getWorldObj().getChunkFromBlockCoords( this.x(), this.z() ).isModified = true;
+			te.getWorld().getChunkFromBlockCoords( this.x(), this.z() ).isModified = true;
 		}
 	}
 

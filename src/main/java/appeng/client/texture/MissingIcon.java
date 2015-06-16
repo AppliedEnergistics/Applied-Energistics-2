@@ -21,21 +21,18 @@ package appeng.client.texture;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.util.IIcon;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 
-public class MissingIcon implements IIcon
+public class MissingIcon implements IAESprite
 {
-
-	final boolean isBlock;
-
+	TextureAtlasSprite missing;
+ 
 	public MissingIcon( Object forWhat )
 	{
-		this.isBlock = forWhat instanceof Block;
 	}
 
 	@Override
@@ -45,11 +42,17 @@ public class MissingIcon implements IIcon
 	}
 
 	@SideOnly( Side.CLIENT )
-	public IIcon getMissing()
+	public static TextureAtlasSprite getMissing()
 	{
-		return ( (TextureMap) Minecraft.getMinecraft().getTextureManager().getTexture( this.isBlock ? TextureMap.locationBlocksTexture : TextureMap.locationItemsTexture ) ).getAtlasSprite( "missingno" );
+		return ( (TextureMap) Minecraft.getMinecraft().getTextureManager().getTexture( TextureMap.locationBlocksTexture ) ).getAtlasSprite( "missingno" );
 	}
 
+	@Override
+	public TextureAtlasSprite getAtlas()
+	{
+		return getMissing();
+	}
+	
 	@Override
 	public int getIconHeight()
 	{

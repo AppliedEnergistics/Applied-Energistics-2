@@ -19,11 +19,9 @@
 package appeng.integration.modules;
 
 
-import cpw.mods.fml.common.event.FMLInterModComms;
-
+import net.minecraftforge.fml.common.event.FMLInterModComms;
 import mcp.mobius.waila.api.IWailaDataProvider;
 import mcp.mobius.waila.api.IWailaRegistrar;
-
 import appeng.integration.BaseModule;
 import appeng.integration.modules.waila.PartWailaDataProvider;
 import appeng.integration.modules.waila.TileWailaDataProvider;

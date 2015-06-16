@@ -21,11 +21,10 @@ package appeng.client.texture;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+import appeng.core.AppEng;
 
 
 public enum ExtraBlockTextures
@@ -89,7 +88,7 @@ public enum ExtraBlockTextures
 	BlockPaint2( "BlockPaint2" ), BlockPaint3( "BlockPaint3" );
 
 	private final String name;
-	public IIcon IIcon;
+	public IAESprite IIcon;
 
 	ExtraBlockTextures( String name )
 	{
@@ -102,9 +101,9 @@ public enum ExtraBlockTextures
 	}
 
 	@SideOnly( Side.CLIENT )
-	public static IIcon getMissing()
+	public static IAESprite getMissing()
 	{
-		return ( (TextureMap) Minecraft.getMinecraft().getTextureManager().getTexture( TextureMap.locationBlocksTexture ) ).getAtlasSprite( "missingno" );
+		return new BaseIcon( ( (TextureMap) Minecraft.getMinecraft().getTextureManager().getTexture( TextureMap.locationBlocksTexture ) ).getAtlasSprite( "missingno" ) );
 	}
 
 	public String getName()
@@ -112,13 +111,13 @@ public enum ExtraBlockTextures
 		return this.name;
 	}
 
-	public IIcon getIcon()
+	public IAESprite getIcon()
 	{
 		return this.IIcon;
 	}
 
 	public void registerIcon( TextureMap map )
 	{
-		this.IIcon = map.registerIcon( "appliedenergistics2:" + this.name );
+		IIcon = new BaseIcon( map.registerSprite( new ResourceLocation( AppEng.MOD_ID, "blocks/" + name ) ) );
 	}
 }

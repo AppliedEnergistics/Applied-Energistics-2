@@ -19,27 +19,29 @@
 package appeng.helpers;
 
 
+import net.minecraft.block.BlockTorch;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.api.util.IOrientable;
+import appeng.block.AEBaseBlock;
 
 
 public class MetaRotation implements IOrientable
 {
 
+	final boolean useFacing;
 	final IBlockAccess w;
-	final int x;
-	final int y;
-	final int z;
+	final BlockPos pos;
 
-	public MetaRotation( IBlockAccess world, int x, int y, int z )
+	public MetaRotation( IBlockAccess world, BlockPos pos, boolean FullFacing )
 	{
 		this.w = world;
-		this.x = x;
-		this.y = y;
-		this.z = z;
+		this.pos = pos;
+		this.useFacing = FullFacing;
 	}
 
 	@Override
@@ -49,27 +51,52 @@ public class MetaRotation implements IOrientable
 	}
 
 	@Override
-	public ForgeDirection getForward()
+	public EnumFacing getForward()
 	{
-		if( this.getUp().offsetY == 0 )
+		if( this.getUp().getFrontOffsetY() == 0 )
 		{
-			return ForgeDirection.UP;
+			return EnumFacing.UP;
 		}
-		return ForgeDirection.SOUTH;
+		return EnumFacing.SOUTH;
 	}
 
 	@Override
-	public ForgeDirection getUp()
+	public EnumFacing getUp()
 	{
-		return ForgeDirection.getOrientation( this.w.getBlockMetadata( this.x, this.y, this.z ) );
+		IBlockState state = w.getBlockState( pos );
+		
+		if (useFacing )
+		{
+			EnumFacing f = state == null ? EnumFacing.UP : (EnumFacing) state.getValue( BlockTorch.FACING );
+			return f;
+		}
+		
+		Axis a = state == null ? null : (Axis) state.getValue( AEBaseBlock.AXIS_ORIENTATION );
+		
+		if ( a == null )
+			a = Axis.Y;
+		
+		switch( a )
+		{
+			case X:
+				return EnumFacing.EAST;
+			case Z:
+				return EnumFacing.SOUTH;
+			default:
+			case Y:
+				return EnumFacing.UP;
+		}
 	}
 
 	@Override
-	public void setOrientation( ForgeDirection forward, ForgeDirection up )
+	public void setOrientation( EnumFacing forward, EnumFacing up )
 	{
 		if( this.w instanceof World )
 		{
-			( (World) this.w ).setBlockMetadataWithNotify( this.x, this.y, this.z, up.ordinal(), 1 + 2 );
+			if ( useFacing )
+				( (World) this.w ).setBlockState( pos, w.getBlockState( pos ).withProperty( BlockTorch.FACING, up ) );
+			else
+				( (World) this.w ).setBlockState( pos, w.getBlockState( pos ).withProperty( AEBaseBlock.AXIS_ORIENTATION, up.getAxis() ) );
 		}
 		else
 		{

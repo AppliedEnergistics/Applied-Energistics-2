@@ -31,11 +31,12 @@ import java.util.HashSet;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.regex.Pattern;
+
 import javax.annotation.Nonnull;
 
-import com.google.common.base.Preconditions;
-
 import org.apache.commons.io.FileUtils;
+
+import com.google.common.base.Preconditions;
 
 
 /**

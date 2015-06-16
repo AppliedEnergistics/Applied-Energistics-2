@@ -21,15 +21,13 @@ package appeng.items.materials;
 
 import java.util.EnumSet;
 
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
-
-import cpw.mods.fml.common.registry.EntityRegistry;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
+import net.minecraftforge.fml.common.registry.EntityRegistry;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import appeng.core.AppEng;
 import appeng.core.features.AEFeature;
 import appeng.core.features.MaterialStackSrc;
@@ -85,9 +83,9 @@ public enum MaterialType
 	BlankPattern( 52 ), CardCrafting( 53 );
 
 	private final EnumSet<AEFeature> features;
-	// IIcon for the material.
+	// TextureAtlasSprite for the material.
 	@SideOnly( Side.CLIENT )
-	public IIcon IIcon;
+	public TextureAtlasSprite IIcon;
 	public Item itemInstance;
 	public int damageValue;
 	// stack!

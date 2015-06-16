@@ -28,8 +28,6 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.ICrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
@@ -54,6 +52,7 @@ import appeng.api.storage.IMEMonitorHandlerReceiver;
 import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
+import appeng.api.util.AEPartLocation;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.container.AEBaseContainer;
@@ -122,7 +121,7 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 				}
 				else if( monitorable instanceof IGridHost )
 				{
-					IGridNode node = ( (IGridHost) monitorable ).getGridNode( ForgeDirection.UNKNOWN );
+					IGridNode node = ( (IGridHost) monitorable ).getGridNode( AEPartLocation.INTERNAL );
 					if( node != null )
 					{
 						this.networkNode = node;

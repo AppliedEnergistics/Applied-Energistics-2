@@ -19,30 +19,29 @@
 package appeng.tile.misc;
 
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import com.google.common.collect.ImmutableList;
-
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
-
-import net.minecraft.block.Block;
-import net.minecraft.init.Blocks;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.EnumSkyBlock;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.api.util.AEColor;
 import appeng.helpers.Splotch;
 import appeng.items.misc.ItemPaintBall;
 import appeng.tile.AEBaseTile;
 import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
+
+import com.google.common.collect.ImmutableList;
 
 
 public class TilePaint extends AEBaseTile
@@ -53,6 +52,12 @@ public class TilePaint extends AEBaseTile
 	int isLit = 0;
 	List<Splotch> dots = null;
 
+	@Override
+	public boolean canBeRotated()
+	{
+		return false;
+	}
+	
 	@TileEvent( TileEventType.WORLD_NBT_WRITE )
 	public void writeToNBT_TilePaint( NBTTagCompound data )
 	{
@@ -127,7 +132,7 @@ public class TilePaint extends AEBaseTile
 
 		if( this.worldObj != null )
 		{
-			this.worldObj.updateLightByType( EnumSkyBlock.Block, this.xCoord, this.yCoord, this.zCoord );
+			this.worldObj.getLightFor( EnumSkyBlock.BLOCK, pos );
 		}
 	}
 
@@ -151,7 +156,7 @@ public class TilePaint extends AEBaseTile
 			return;
 		}
 
-		for( ForgeDirection side : ForgeDirection.VALID_DIRECTIONS )
+		for( EnumFacing side : EnumFacing.VALUES )
 		{
 			if( !this.isSideValid( side ) )
 			{
@@ -162,13 +167,14 @@ public class TilePaint extends AEBaseTile
 		this.updateData();
 	}
 
-	public boolean isSideValid( ForgeDirection side )
+	public boolean isSideValid( EnumFacing side )
 	{
-		Block blk = this.worldObj.getBlock( this.xCoord + side.offsetX, this.yCoord + side.offsetY, this.zCoord + side.offsetZ );
-		return blk.isSideSolid( this.worldObj, this.xCoord + side.offsetX, this.yCoord + side.offsetY, this.zCoord + side.offsetZ, side.getOpposite() );
+		BlockPos p = pos.offset( side );
+		IBlockState blk = this.worldObj.getBlockState( p );
+		return blk.getBlock().isSideSolid( this.worldObj, p, side.getOpposite() );
 	}
 
-	private void removeSide( ForgeDirection side )
+	private void removeSide( EnumFacing side )
 	{
 		Iterator<Splotch> i = this.dots.iterator();
 		while( i.hasNext() )
@@ -204,11 +210,11 @@ public class TilePaint extends AEBaseTile
 
 		if( this.dots == null )
 		{
-			this.worldObj.setBlock( this.xCoord, this.yCoord, this.zCoord, Blocks.air );
+			this.worldObj.setBlockToAir( pos );
 		}
 	}
 
-	public void cleanSide( ForgeDirection side )
+	public void cleanSide( EnumFacing side )
 	{
 		if( this.dots == null )
 		{
@@ -225,10 +231,12 @@ public class TilePaint extends AEBaseTile
 		return this.isLit;
 	}
 
-	public void addBlot( ItemStack type, ForgeDirection side, Vec3 hitVec )
+	public void addBlot( ItemStack type, EnumFacing side, Vec3 hitVec )
 	{
-		Block blk = this.worldObj.getBlock( this.xCoord + side.offsetX, this.yCoord + side.offsetY, this.zCoord + side.offsetZ );
-		if( blk.isSideSolid( this.worldObj, this.xCoord + side.offsetX, this.yCoord + side.offsetY, this.zCoord + side.offsetZ, side.getOpposite() ) )
+		BlockPos p = pos.offset(side);
+		
+		IBlockState blk = this.worldObj.getBlockState(  p );
+		if( blk.getBlock().isSideSolid( this.worldObj, p, side.getOpposite() ) )
 		{
 			ItemPaintBall ipb = (ItemPaintBall) type.getItem();
 

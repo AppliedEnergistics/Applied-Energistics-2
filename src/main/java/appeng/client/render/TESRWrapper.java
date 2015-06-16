@@ -19,16 +19,14 @@
 package appeng.client.render;
 
 
-import org.lwjgl.opengl.GL11;
-
 import net.minecraft.block.Block;
-import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import org.lwjgl.opengl.GL11;
 
 import appeng.block.AEBaseBlock;
 import appeng.core.AELog;
@@ -39,7 +37,7 @@ import appeng.tile.AEBaseTile;
 public class TESRWrapper extends TileEntitySpecialRenderer
 {
 
-	public final RenderBlocks renderBlocksInstance = new RenderBlocks();
+	public final IRenderHelper renderBlocksInstance = new IRenderHelper();
 
 	private final BaseBlockRender blkRender;
 	private final double maxDistance;
@@ -51,7 +49,7 @@ public class TESRWrapper extends TileEntitySpecialRenderer
 	}
 
 	@Override
-	public final void renderTileEntityAt( TileEntity te, double x, double y, double z, float f )
+	public final void renderTileEntityAt( TileEntity te, double x, double y, double z, float f, int something )
 	{
 		if( te instanceof AEBaseTile )
 		{
@@ -64,14 +62,14 @@ public class TESRWrapper extends TileEntitySpecialRenderer
 					return;
 				}
 
-				Tessellator tess = Tessellator.instance;
+				Tessellator tess = Tessellator.getInstance();
 
 				try
 				{
 					GL11.glPushMatrix();
 
-					this.renderBlocksInstance.blockAccess = te.getWorldObj();
-					this.blkRender.renderTile( (AEBaseBlock) b, (AEBaseTile) te, tess, x, y, z, f, this.renderBlocksInstance );
+					this.renderBlocksInstance.blockAccess = te.getWorld();
+					this.blkRender.renderTile( (AEBaseBlock) b, (AEBaseTile) te, tess.getWorldRenderer(), x, y, z, f, this.renderBlocksInstance );
 
 					GL11.glPopMatrix();
 				}

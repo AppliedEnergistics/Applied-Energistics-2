@@ -24,16 +24,11 @@ import java.util.Random;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
-import appeng.api.util.IOrientable;
-import appeng.api.util.IOrientableBlock;
 import appeng.block.AEBaseTileBlock;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.blocks.RenderBlockQuartzAccelerator;
@@ -41,12 +36,11 @@ import appeng.client.render.effects.LightningFX;
 import appeng.core.AEConfig;
 import appeng.core.CommonHelper;
 import appeng.core.features.AEFeature;
-import appeng.helpers.MetaRotation;
 import appeng.tile.misc.TileQuartzGrowthAccelerator;
 import appeng.util.Platform;
 
 
-public class BlockQuartzGrowthAccelerator extends AEBaseTileBlock implements IOrientableBlock
+public class BlockQuartzGrowthAccelerator extends AEBaseTileBlock
 {
 
 	public BlockQuartzGrowthAccelerator()
@@ -64,42 +58,50 @@ public class BlockQuartzGrowthAccelerator extends AEBaseTileBlock implements IOr
 	}
 
 	@Override
-	@SideOnly( Side.CLIENT )
-	public void randomDisplayTick( World w, int x, int y, int z, Random r )
+	public void randomDisplayTick(
+			World w,
+			BlockPos pos,
+			IBlockState state,
+			Random r )
 	{
 		if( !AEConfig.instance.enableEffects )
 		{
 			return;
 		}
 
-		TileQuartzGrowthAccelerator cga = this.getTileEntity( w, x, y, z );
+		TileQuartzGrowthAccelerator cga = this.getTileEntity( w, pos );
 
 		if( cga != null && cga.hasPower && CommonHelper.proxy.shouldAddParticles( r ) )
 		{
 			double d0 = r.nextFloat() - 0.5F;
 			double d1 = r.nextFloat() - 0.5F;
 
-			ForgeDirection up = cga.getUp();
-			ForgeDirection forward = cga.getForward();
-			ForgeDirection west = Platform.crossProduct( forward, up );
+			EnumFacing up = cga.getUp();
+			EnumFacing forward = cga.getForward();
+			EnumFacing west = Platform.crossProduct( forward, up );
 
-			double rx = 0.5 + x;
-			double ry = 0.5 + y;
-			double rz = 0.5 + z;
+			double rx = 0.5 + pos.getX();
+			double ry = 0.5 + pos.getY();
+			double rz = 0.5 + pos.getZ();
 
 			double dx = 0;
 			double dz = 0;
 
-			rx += up.offsetX * d0;
-			ry += up.offsetY * d0;
-			rz += up.offsetZ * d0;
+			rx += up.getFrontOffsetX() * d0;
+			ry += up.getFrontOffsetY() * d0;
+			rz += up.getFrontOffsetZ() * d0;
 
+			int x = pos.getX();
+			int y = pos.getY();
+			int z = pos.getZ();
+			
 			switch( r.nextInt( 4 ) )
 			{
 				case 0:
 					dx = 0.6;
 					dz = d1;
-					if( !w.getBlock( x + west.offsetX, y + west.offsetY, z + west.offsetZ ).isAir( w, x + west.offsetX, y + west.offsetY, z + west.offsetZ ) )
+					BlockPos pt = new BlockPos( x + west.getFrontOffsetX(), y + west.getFrontOffsetY(), z + west.getFrontOffsetZ() );					 
+					if( !w.getBlockState(pt).getBlock().isAir( w, pt) )
 					{
 						return;
 					}
@@ -107,7 +109,8 @@ public class BlockQuartzGrowthAccelerator extends AEBaseTileBlock implements IOr
 				case 1:
 					dx = d1;
 					dz += 0.6;
-					if( !w.getBlock( x + forward.offsetX, y + forward.offsetY, z + forward.offsetZ ).isAir( w, x + forward.offsetX, y + forward.offsetY, z + forward.offsetZ ) )
+					pt = new BlockPos( x + forward.getFrontOffsetX(), y + forward.getFrontOffsetY(), z + forward.getFrontOffsetZ() );					 
+					if( !w.getBlockState(pt).getBlock().isAir( w, pt) )
 					{
 						return;
 					}
@@ -115,7 +118,8 @@ public class BlockQuartzGrowthAccelerator extends AEBaseTileBlock implements IOr
 				case 2:
 					dx = d1;
 					dz = -0.6;
-					if( !w.getBlock( x - forward.offsetX, y - forward.offsetY, z - forward.offsetZ ).isAir( w, x - forward.offsetX, y - forward.offsetY, z - forward.offsetZ ) )
+					pt = new BlockPos( x - forward.getFrontOffsetX(), y - forward.getFrontOffsetY(), z - forward.getFrontOffsetZ() );					 
+					if( !w.getBlockState(pt).getBlock().isAir( w, pt) )
 					{
 						return;
 					}
@@ -123,35 +127,25 @@ public class BlockQuartzGrowthAccelerator extends AEBaseTileBlock implements IOr
 				case 3:
 					dx = -0.6;
 					dz = d1;
-					if( !w.getBlock( x - west.offsetX, y - west.offsetY, z - west.offsetZ ).isAir( w, x - west.offsetX, y - west.offsetY, z - west.offsetZ ) )
+					pt = new BlockPos( x - west.getFrontOffsetX(), y - west.getFrontOffsetY(), z - west.getFrontOffsetZ() );					 
+					if( !w.getBlockState(pt).getBlock().isAir( w, pt) )
 					{
 						return;
 					}
 					break;
 			}
 
-			rx += dx * west.offsetX;
-			ry += dx * west.offsetY;
-			rz += dx * west.offsetZ;
+			rx += dx * west.getFrontOffsetX();
+			ry += dx * west.getFrontOffsetY();
+			rz += dx * west.getFrontOffsetZ();
 
-			rx += dz * forward.offsetX;
-			ry += dz * forward.offsetY;
-			rz += dz * forward.offsetZ;
+			rx += dz * forward.getFrontOffsetX();
+			ry += dz * forward.getFrontOffsetY();
+			rz += dz * forward.getFrontOffsetZ();
 
 			LightningFX fx = new LightningFX( w, rx, ry, rz, 0.0D, 0.0D, 0.0D );
 			Minecraft.getMinecraft().effectRenderer.addEffect( fx );
 		}
 	}
 
-	@Override
-	public boolean usesMetadata()
-	{
-		return true;
-	}
-
-	@Override
-	public IOrientable getOrientable( final IBlockAccess w, final int x, final int y, final int z )
-	{
-		return new MetaRotation( w, x, y, z );
-	}
 }

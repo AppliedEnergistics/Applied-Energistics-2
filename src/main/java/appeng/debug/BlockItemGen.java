@@ -22,8 +22,6 @@ package appeng.debug;
 import java.util.EnumSet;
 
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
-
 import appeng.block.AEBaseTileBlock;
 import appeng.core.features.AEFeature;
 
@@ -37,10 +35,5 @@ public class BlockItemGen extends AEBaseTileBlock
 		this.setTileEntity( TileItemGen.class );
 		this.setFeature( EnumSet.of( AEFeature.UnsupportedDeveloperTools, AEFeature.Creative ) );
 	}
-
-	@Override
-	public void registerBlockIcons( IIconRegister iconRegistry )
-	{
-		this.registerNoIcons();
-	}
+	
 }

@@ -30,27 +30,24 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import com.google.common.base.Joiner;
-import com.google.common.base.Stopwatch;
-
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
-import cpw.mods.fml.common.ObfuscationReflectionHelper;
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 
 import appeng.api.storage.data.IAEItemStack;
 import appeng.client.gui.widgets.GuiScrollbar;
@@ -80,6 +77,9 @@ import appeng.integration.IntegrationRegistry;
 import appeng.integration.IntegrationType;
 import appeng.integration.abstraction.INEI;
 
+import com.google.common.base.Joiner;
+import com.google.common.base.Stopwatch;
+
 
 public abstract class AEBaseGui extends GuiContainer
 {
@@ -87,7 +87,7 @@ public abstract class AEBaseGui extends GuiContainer
 	protected final List<InternalSlotME> meSlots = new LinkedList<InternalSlotME>();
 	// drag y
 	final Set<Slot> drag_click = new HashSet<Slot>();
-	final AppEngRenderItem aeRenderItem = new AppEngRenderItem();
+	final AppEngRenderItem aeRenderItem = new AppEngRenderItem(Minecraft.getMinecraft().renderEngine,Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getModelManager());
 	protected GuiScrollbar myScrollBar = null;
 	boolean disableShiftClick = false;
 	Stopwatch dbl_clickTimer = Stopwatch.createStarted();
@@ -279,6 +279,7 @@ public abstract class AEBaseGui extends GuiContainer
 			this.zLevel = 0.0F;
 			itemRender.zLevel = 0.0F;
 		}
+		RenderHelper.enableStandardItemLighting();
 		GL11.glPopAttrib();
 	}
 
@@ -334,7 +335,7 @@ public abstract class AEBaseGui extends GuiContainer
 	}
 
 	@Override
-	protected void mouseClicked( int xCoord, int yCoord, int btn )
+	protected void mouseClicked( int xCoord, int yCoord, int btn ) throws IOException
 	{
 		this.drag_click.clear();
 
@@ -576,7 +577,7 @@ public abstract class AEBaseGui extends GuiContainer
 				final List<Slot> slots = this.getInventorySlots();
 				for( Slot inventorySlot : slots )
 				{
-					if( inventorySlot != null && inventorySlot.canTakeStack( this.mc.thePlayer ) && inventorySlot.getHasStack() && inventorySlot.inventory == slot.inventory && Container.func_94527_a( inventorySlot, this.dbl_whichItem, true ) )
+					if( inventorySlot != null && inventorySlot.canTakeStack( this.mc.thePlayer ) && inventorySlot.getHasStack() && inventorySlot.inventory == slot.inventory && Container.canAddItemToSlot( inventorySlot, this.dbl_whichItem, true ) )
 					{
 						this.handleMouseClick( inventorySlot, inventorySlot.slotNumber, ctrlDown, 1 );
 					}
@@ -657,7 +658,7 @@ public abstract class AEBaseGui extends GuiContainer
 		for( Slot slot : slots )
 		{
 			// isPointInRegion
-			if( this.func_146978_c( slot.xDisplayPosition, slot.yDisplayPosition, 16, 16, mouseX, mouseY ) )
+			if( this.isPointInRegion( slot.xDisplayPosition, slot.yDisplayPosition, 16, 16, mouseX, mouseY ) )
 			{
 				return slot;
 			}
@@ -669,7 +670,7 @@ public abstract class AEBaseGui extends GuiContainer
 	public abstract void drawBG( int offsetX, int offsetY, int mouseX, int mouseY );
 
 	@Override
-	public void handleMouseInput()
+	public void handleMouseInput() throws IOException
 	{
 		super.handleMouseInput();
 
@@ -728,7 +729,7 @@ public abstract class AEBaseGui extends GuiContainer
 		GL11.glEnable( GL12.GL_RESCALE_NORMAL );
 		GL11.glEnable( GL11.GL_DEPTH_TEST );
 		RenderHelper.enableGUIStandardItemLighting();
-		itemRender.renderItemAndEffectIntoGUI( this.fontRendererObj, this.mc.renderEngine, is, x, y );
+		itemRender.renderItemAndEffectIntoGUI( is, x, y );
 		GL11.glPopAttrib();
 
 		itemRender.zLevel = 0.0F;
@@ -803,7 +804,6 @@ public abstract class AEBaseGui extends GuiContainer
 						this.bindTexture( "guis/states.png" );
 
 						GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS );
-						Tessellator tessellator = Tessellator.instance;
 						try
 						{
 							int uv_y = (int) Math.floor( aes.getIcon() / 16 );
@@ -821,15 +821,18 @@ public abstract class AEBaseGui extends GuiContainer
 							float par5 = 16;
 							float par6 = 16;
 
+					        Tessellator tessellator = Tessellator.getInstance();
+					        WorldRenderer worldrenderer = tessellator.getWorldRenderer();
+					        
 							float f = 0.00390625F;
 							float f1 = 0.00390625F;
-							tessellator.startDrawingQuads();
-							tessellator.setColorRGBA_F( 1.0f, 1.0f, 1.0f, aes.getOpacityOfIcon() );
-							tessellator.addVertexWithUV( par1 + 0, par2 + par6, this.zLevel, ( par3 + 0 ) * f, ( par4 + par6 ) * f1 );
-							tessellator.addVertexWithUV( par1 + par5, par2 + par6, this.zLevel, ( par3 + par5 ) * f, ( par4 + par6 ) * f1 );
-							tessellator.addVertexWithUV( par1 + par5, par2 + 0, this.zLevel, ( par3 + par5 ) * f, ( par4 + 0 ) * f1 );
-							tessellator.addVertexWithUV( par1 + 0, par2 + 0, this.zLevel, ( par3 + 0 ) * f, ( par4 + 0 ) * f1 );
-							tessellator.setColorRGBA_F( 1.0f, 1.0f, 1.0f, 1.0f );
+							worldrenderer.startDrawingQuads();
+							worldrenderer.setColorRGBA_F( 1.0f, 1.0f, 1.0f, aes.getOpacityOfIcon() );
+							worldrenderer.addVertexWithUV( par1 + 0, par2 + par6, this.zLevel, ( par3 + 0 ) * f, ( par4 + par6 ) * f1 );
+							worldrenderer.addVertexWithUV( par1 + par5, par2 + par6, this.zLevel, ( par3 + par5 ) * f, ( par4 + par6 ) * f1 );
+							worldrenderer.addVertexWithUV( par1 + par5, par2 + 0, this.zLevel, ( par3 + par5 ) * f, ( par4 + 0 ) * f1 );
+							worldrenderer.addVertexWithUV( par1 + 0, par2 + 0, this.zLevel, ( par3 + 0 ) * f, ( par4 + 0 ) * f1 );
+							worldrenderer.setColorRGBA_F( 1.0f, 1.0f, 1.0f, 1.0f );
 							tessellator.draw();
 						}
 						catch( Exception err )

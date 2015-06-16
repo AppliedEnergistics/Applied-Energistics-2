@@ -23,10 +23,11 @@ import java.util.EnumSet;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumWorldBlockLayer;
 import net.minecraft.world.World;
-
 import appeng.block.AEBaseTileBlock;
-import appeng.client.render.BaseBlockRender;
 import appeng.client.render.blocks.RenderQNB;
 import appeng.core.features.AEFeature;
 import appeng.helpers.ICustomCollision;
@@ -48,9 +49,19 @@ public abstract class BlockQuantumBase extends AEBaseTileBlock implements ICusto
 	}
 
 	@Override
-	public void onNeighborBlockChange( World w, int x, int y, int z, Block pointlessNumber )
+	public EnumWorldBlockLayer getBlockLayer()
 	{
-		TileQuantumBridge bridge = this.getTileEntity( w, x, y, z );
+		return EnumWorldBlockLayer.CUTOUT;
+	}
+	
+	@Override
+	public void onNeighborBlockChange(
+			World w,
+			BlockPos pos,
+			IBlockState state,
+			Block neighborBlock )
+	{
+		TileQuantumBridge bridge = this.getTileEntity( w, pos );
 		if( bridge != null )
 		{
 			bridge.neighborUpdate();
@@ -58,15 +69,18 @@ public abstract class BlockQuantumBase extends AEBaseTileBlock implements ICusto
 	}
 
 	@Override
-	public void breakBlock( World w, int x, int y, int z, Block a, int b )
+	public void breakBlock(
+			World w,
+			BlockPos pos,
+			IBlockState state )
 	{
-		TileQuantumBridge bridge = this.getTileEntity( w, x, y, z );
+		TileQuantumBridge bridge = this.getTileEntity( w, pos );
 		if( bridge != null )
 		{
 			bridge.breakCluster();
 		}
 
-		super.breakBlock( w, x, y, z, a, b );
+		super.breakBlock( w, pos, state );
 	}
 
 	@Override

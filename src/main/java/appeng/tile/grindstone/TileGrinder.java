@@ -22,14 +22,13 @@ package appeng.tile.grindstone;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.util.ForgeDirection;
-
+import net.minecraft.util.EnumFacing;
 import appeng.api.AEApi;
 import appeng.api.features.IGrinderEntry;
 import appeng.api.implementations.tiles.ICrankable;
-import appeng.api.util.WorldCoord;
 import appeng.tile.AEBaseInvTile;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.tile.inventory.InvOperation;
@@ -47,10 +46,11 @@ public class TileGrinder extends AEBaseInvTile implements ICrankable
 	int points;
 
 	@Override
-	public void setOrientation( ForgeDirection inForward, ForgeDirection inUp )
+	public void setOrientation( EnumFacing inForward, EnumFacing inUp )
 	{
 		super.setOrientation( inForward, inUp );
-		this.getBlockType().onNeighborBlockChange( this.worldObj, this.xCoord, this.yCoord, this.zCoord, Platform.AIR_BLOCK );
+		IBlockState state = worldObj.getBlockState( pos );
+		this.getBlockType().onNeighborBlockChange( this.worldObj, pos, state, state.getBlock() );
 	}
 
 	@Override
@@ -66,7 +66,7 @@ public class TileGrinder extends AEBaseInvTile implements ICrankable
 	}
 
 	@Override
-	public boolean canInsertItem( int slotIndex, ItemStack insertingItem, int side )
+	public boolean canInsertItem( int slotIndex, ItemStack insertingItem, EnumFacing side )
 	{
 		if( AEApi.instance().registries().grinder().getRecipeForInput( insertingItem ) == null )
 		{
@@ -77,13 +77,13 @@ public class TileGrinder extends AEBaseInvTile implements ICrankable
 	}
 
 	@Override
-	public boolean canExtractItem( int slotIndex, ItemStack extractedItem, int side )
+	public boolean canExtractItem( int slotIndex, ItemStack extractedItem, EnumFacing side )
 	{
 		return slotIndex >= 3 && slotIndex <= 5;
 	}
 
 	@Override
-	public int[] getAccessibleSlotsBySide( ForgeDirection side )
+	public int[] getAccessibleSlotsBySide( EnumFacing side )
 	{
 		return this.sides;
 	}
@@ -152,7 +152,7 @@ public class TileGrinder extends AEBaseInvTile implements ICrankable
 			}
 
 			this.points = 0;
-			InventoryAdaptor sia = InventoryAdaptor.getAdaptor( new WrapperInventoryRange( this, 3, 3, true ), ForgeDirection.EAST );
+			InventoryAdaptor sia = InventoryAdaptor.getAdaptor( new WrapperInventoryRange( this, 3, 3, true ), EnumFacing.EAST );
 
 			this.addItem( sia, r.getOutput() );
 
@@ -182,19 +182,15 @@ public class TileGrinder extends AEBaseInvTile implements ICrankable
 		ItemStack notAdded = sia.addItems( output );
 		if( notAdded != null )
 		{
-			WorldCoord wc = new WorldCoord( this.xCoord, this.yCoord, this.zCoord );
-
-			wc.add( this.getForward(), 1 );
-
 			List<ItemStack> out = new ArrayList<ItemStack>();
 			out.add( notAdded );
 
-			Platform.spawnDrops( this.worldObj, wc.x, wc.y, wc.z, out );
+			Platform.spawnDrops( this.worldObj, pos.offset( this.getForward() ), out );
 		}
 	}
 
 	@Override
-	public boolean canCrankAttach( ForgeDirection directionToCrank )
+	public boolean canCrankAttach( EnumFacing directionToCrank )
 	{
 		return this.getUp() == directionToCrank;
 	}

@@ -22,13 +22,15 @@ package appeng.block.crafting;
 import java.util.EnumSet;
 
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumWorldBlockLayer;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+import appeng.api.util.AEPartLocation;
 import appeng.block.AEBaseTileBlock;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.blocks.RenderBlockAssembler;
@@ -41,8 +43,6 @@ import appeng.util.Platform;
 public class BlockMolecularAssembler extends AEBaseTileBlock
 {
 
-	public static boolean booleanAlphaPass = false;
-
 	public BlockMolecularAssembler()
 	{
 		super( Material.iron );
@@ -54,18 +54,10 @@ public class BlockMolecularAssembler extends AEBaseTileBlock
 	}
 
 	@Override
-	public int getRenderBlockPass()
-	{
-		return 1;
+	public boolean canRenderInLayer(net.minecraft.util.EnumWorldBlockLayer layer) {
+		return  layer == EnumWorldBlockLayer.CUTOUT_MIPPED;		
 	}
-
-	@Override
-	public boolean canRenderInPass( int pass )
-	{
-		booleanAlphaPass = pass == 1;
-		return pass == 0 || pass == 1;
-	}
-
+	
 	@Override
 	@SideOnly( Side.CLIENT )
 	public Class<? extends BaseBlockRender> getRenderer()
@@ -74,12 +66,20 @@ public class BlockMolecularAssembler extends AEBaseTileBlock
 	}
 
 	@Override
-	public boolean onActivated( World w, int x, int y, int z, EntityPlayer p, int side, float hitX, float hitY, float hitZ )
+	public boolean onBlockActivated(
+			World w,
+			BlockPos pos,
+			IBlockState state,
+			EntityPlayer p,
+			EnumFacing side,
+			float hitX,
+			float hitY,
+			float hitZ )
 	{
-		TileMolecularAssembler tg = this.getTileEntity( w, x, y, z );
+		TileMolecularAssembler tg = this.getTileEntity( w, pos );
 		if( tg != null && !p.isSneaking() )
 		{
-			Platform.openGUI( p, tg, ForgeDirection.getOrientation( side ), GuiBridge.GUI_MAC );
+			Platform.openGUI( p, tg, AEPartLocation.fromFacing( side ), GuiBridge.GUI_MAC );
 			return true;
 		}
 		return false;

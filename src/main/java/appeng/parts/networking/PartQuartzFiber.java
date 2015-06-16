@@ -22,18 +22,15 @@ package appeng.parts.networking;
 import java.util.EnumSet;
 import java.util.Set;
 
-import org.lwjgl.opengl.GL11;
-
-import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.BlockPos;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import org.lwjgl.opengl.GL11;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.GridFlags;
@@ -44,6 +41,9 @@ import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartRenderHelper;
 import appeng.api.util.AECableType;
+import appeng.api.util.AEPartLocation;
+import appeng.client.render.IRenderHelper;
+import appeng.client.texture.IAESprite;
 import appeng.me.GridAccessException;
 import appeng.me.helpers.AENetworkProxy;
 import appeng.parts.AEBasePart;
@@ -64,7 +64,7 @@ public class PartQuartzFiber extends AEBasePart implements IEnergyGridProvider
 	}
 
 	@Override
-	public AECableType getCableConnectionType( ForgeDirection dir )
+	public AECableType getCableConnectionType( AEPartLocation dir )
 	{
 		return AECableType.GLASS;
 	}
@@ -77,11 +77,11 @@ public class PartQuartzFiber extends AEBasePart implements IEnergyGridProvider
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderInventory( IPartRenderHelper rh, RenderBlocks renderer )
+	public void renderInventory( IPartRenderHelper rh, IRenderHelper renderer )
 	{
 		GL11.glTranslated( -0.2, -0.3, 0.0 );
 
-		rh.setTexture( this.is.getIconIndex() );
+		rh.setTexture( renderer.getIcon( is ) );
 		rh.setBounds( 6.0f, 6.0f, 5.0f, 10.0f, 10.0f, 11.0f );
 		rh.renderInventoryBox( renderer );
 		rh.setTexture( null );
@@ -89,12 +89,12 @@ public class PartQuartzFiber extends AEBasePart implements IEnergyGridProvider
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderStatic( int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer )
+	public void renderStatic( BlockPos pos, IPartRenderHelper rh, IRenderHelper renderer )
 	{
-		IIcon myIcon = this.is.getIconIndex();
+		IAESprite myIcon = renderer.getIcon( is );
 		rh.setTexture( myIcon );
 		rh.setBounds( 6, 6, 10, 10, 10, 16 );
-		rh.renderBlock( x, y, z, renderer );
+		rh.renderBlock( pos, renderer );
 		rh.setTexture( null );
 	}
 
@@ -127,10 +127,10 @@ public class PartQuartzFiber extends AEBasePart implements IEnergyGridProvider
 	}
 
 	@Override
-	public void setPartHostInfo( ForgeDirection side, IPartHost host, TileEntity tile )
+	public void setPartHostInfo( AEPartLocation side, IPartHost host, TileEntity tile )
 	{
 		super.setPartHostInfo( side, host, tile );
-		this.outerProxy.setValidSides( EnumSet.of( side ) );
+		this.outerProxy.setValidSides( EnumSet.of( side.getFacing() ) );
 	}
 
 	@Override
@@ -146,7 +146,7 @@ public class PartQuartzFiber extends AEBasePart implements IEnergyGridProvider
 	}
 
 	@Override
-	public void onPlacement( EntityPlayer player, ItemStack held, ForgeDirection side )
+	public void onPlacement( EntityPlayer player, ItemStack held, AEPartLocation side )
 	{
 		super.onPlacement( player, held, side );
 		this.outerProxy.setOwner( player );

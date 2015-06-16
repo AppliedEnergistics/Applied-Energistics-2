@@ -25,10 +25,9 @@ import java.util.Random;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-
-import cpw.mods.fml.common.SidedProxy;
-
+import net.minecraftforge.fml.common.SidedProxy;
 import appeng.api.parts.CableRenderMode;
 import appeng.block.AEBaseBlock;
 import appeng.client.EffectType;
@@ -41,7 +40,7 @@ public abstract class CommonHelper
 	@SidedProxy( clientSide = "appeng.client.ClientHelper", serverSide = "appeng.server.ServerHelper" )
 	public static CommonHelper proxy;
 
-	public abstract void init();
+	public abstract void preinit();
 
 	public abstract World getWorld();
 
@@ -68,4 +67,9 @@ public abstract class CommonHelper
 	public abstract void updateRenderMode( EntityPlayer player );
 
 	public abstract void missingCoreMod();
+	
+	public abstract void configureIcon(Object item, String name );
+
+	public abstract ResourceLocation addIcon(
+			String string );
 }

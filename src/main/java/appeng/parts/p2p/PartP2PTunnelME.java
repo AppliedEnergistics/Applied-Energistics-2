@@ -27,8 +27,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.api.AEApi;
 import appeng.api.exceptions.FailedConnection;
 import appeng.api.networking.GridFlags;
@@ -38,6 +36,7 @@ import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPartHost;
 import appeng.api.util.AECableType;
+import appeng.api.util.AEPartLocation;
 import appeng.core.AELog;
 import appeng.core.settings.TickRates;
 import appeng.hooks.TickHandler;
@@ -92,7 +91,7 @@ public class PartP2PTunnelME extends PartP2PTunnel<PartP2PTunnelME> implements I
 	}
 
 	@Override
-	public AECableType getCableConnectionType( ForgeDirection dir )
+	public AECableType getCableConnectionType( AEPartLocation dir )
 	{
 		return AECableType.DENSE;
 	}
@@ -112,10 +111,10 @@ public class PartP2PTunnelME extends PartP2PTunnel<PartP2PTunnelME> implements I
 	}
 
 	@Override
-	public void setPartHostInfo( ForgeDirection side, IPartHost host, TileEntity tile )
+	public void setPartHostInfo( AEPartLocation side, IPartHost host, TileEntity tile )
 	{
 		super.setPartHostInfo( side, host, tile );
-		this.outerProxy.setValidSides( EnumSet.of( side ) );
+		this.outerProxy.setValidSides( EnumSet.of( side.getFacing() ) );
 	}
 
 	@Override
@@ -125,7 +124,7 @@ public class PartP2PTunnelME extends PartP2PTunnel<PartP2PTunnelME> implements I
 	}
 
 	@Override
-	public void onPlacement( EntityPlayer player, ItemStack held, ForgeDirection side )
+	public void onPlacement( EntityPlayer player, ItemStack held, AEPartLocation side )
 	{
 		super.onPlacement( player, held, side );
 		this.outerProxy.setOwner( player );
@@ -148,19 +147,19 @@ public class PartP2PTunnelME extends PartP2PTunnel<PartP2PTunnelME> implements I
 				if( !this.proxy.getEnergy().isNetworkPowered() )
 				{
 					this.connection.markDestroy();
-					TickHandler.INSTANCE.addCallable( this.tile.getWorldObj(), this.connection );
+					TickHandler.INSTANCE.addCallable( this.tile.getWorld(), this.connection );
 				}
 				else
 				{
 					if( this.proxy.isActive() )
 					{
 						this.connection.markCreate();
-						TickHandler.INSTANCE.addCallable( this.tile.getWorldObj(), this.connection );
+						TickHandler.INSTANCE.addCallable( this.tile.getWorld(), this.connection );
 					}
 					else
 					{
 						this.connection.markDestroy();
-						TickHandler.INSTANCE.addCallable( this.tile.getWorldObj(), this.connection );
+						TickHandler.INSTANCE.addCallable( this.tile.getWorld(), this.connection );
 					}
 				}
 
@@ -233,7 +232,9 @@ public class PartP2PTunnelME extends PartP2PTunnel<PartP2PTunnelME> implements I
 					{
 						final TileEntity start = this.getTile();
 						final TileEntity end = me.getTile();
-						AELog.warning( "Failed to establish a ME P2P Tunnel between the tunnels at [x=%d, y=%d, z=%d] and [x=%d, y=%d, z=%d]", start.xCoord, start.yCoord, start.zCoord, end.xCoord, end.yCoord, end.zCoord );
+						AELog.warning( "Failed to establish a ME P2P Tunnel between the tunnels at [x=%d, y=%d, z=%d] and [x=%d, y=%d, z=%d]", 
+							start.getPos().getX(), start.getPos().getY(), start.getPos().getZ(), 
+							end.getPos().getX(), end.getPos().getY(), end.getPos().getZ() );
 						// :(
 					}
 				}

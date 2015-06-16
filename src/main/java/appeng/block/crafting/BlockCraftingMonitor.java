@@ -22,19 +22,18 @@ package appeng.block.crafting;
 import java.util.List;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
-import net.minecraftforge.common.util.ForgeDirection;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
+import net.minecraft.util.EnumFacing;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import appeng.api.AEApi;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.blocks.RenderBlockCraftingCPUMonitor;
 import appeng.client.texture.ExtraBlockTextures;
+import appeng.client.texture.IAESprite;
 import appeng.tile.crafting.TileCraftingMonitorTile;
 
 
@@ -42,6 +41,7 @@ public class BlockCraftingMonitor extends BlockCraftingUnit
 {
 	public BlockCraftingMonitor()
 	{
+		super( CraftingUnitType.MONITOR );
 		this.setTileEntity( TileCraftingMonitorTile.class );
 	}
 
@@ -52,24 +52,19 @@ public class BlockCraftingMonitor extends BlockCraftingUnit
 	}
 
 	@Override
-	public IIcon getIcon( int direction, int metadata )
+	public IAESprite getIcon(
+			EnumFacing side,
+			IBlockState state )
 	{
-		if( direction != ForgeDirection.SOUTH.ordinal() )
+		if( side != EnumFacing.SOUTH )
 		{
 			for( Block craftingUnitBlock : AEApi.instance().definitions().blocks().craftingUnit().maybeBlock().asSet() )
 			{
-				return craftingUnitBlock.getIcon( direction, metadata );
+				return ( (BlockCraftingUnit)craftingUnitBlock ).getIcon( side, state );
 			}
 		}
-
-		switch( metadata )
-		{
-			default:
-			case 0:
-				return super.getIcon( 0, 0 );
-			case FLAG_FORMED:
-				return ExtraBlockTextures.BlockCraftingMonitorFit_Light.getIcon();
-		}
+		
+		return ExtraBlockTextures.BlockCraftingMonitorFit_Light.getIcon();
 	}
 
 	@Override

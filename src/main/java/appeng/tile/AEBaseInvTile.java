@@ -27,8 +27,10 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.common.util.ForgeDirection;
-
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.IChatComponent;
 import appeng.block.AEBaseBlock;
 import appeng.tile.events.TileEventType;
 import appeng.tile.inventory.IAEAppEngInventory;
@@ -104,7 +106,7 @@ public abstract class AEBaseInvTile extends AEBaseTile implements ISidedInventor
 	 * Returns the name of the inventory
 	 */
 	@Override
-	public String getInventoryName()
+	public String getName()
 	{
 		return this.getCustomName();
 	}
@@ -113,9 +115,9 @@ public abstract class AEBaseInvTile extends AEBaseTile implements ISidedInventor
 	 * Returns if the inventory is named
 	 */
 	@Override
-	public boolean hasCustomInventoryName()
+	public boolean hasCustomName()
 	{
-		return this.hasCustomName();
+		return getInternalInventory().hasCustomName();
 	}
 
 	@Override
@@ -129,17 +131,19 @@ public abstract class AEBaseInvTile extends AEBaseTile implements ISidedInventor
 	{
 		final double squaredMCReach = 64.0D;
 
-		return this.worldObj.getTileEntity( this.xCoord, this.yCoord, this.zCoord ) == this && p.getDistanceSq( this.xCoord + 0.5D, this.yCoord + 0.5D, this.zCoord + 0.5D ) <= squaredMCReach;
+		return this.worldObj.getTileEntity( pos ) == this && p.getDistanceSq( pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D ) <= squaredMCReach;
 	}
 
 	@Override
-	public void openInventory()
-	{
-	}
-
+	public void openInventory(EntityPlayer player) {
+				
+	};
+	
 	@Override
-	public void closeInventory()
+	public void closeInventory(
+			EntityPlayer player )
 	{
+		
 	}
 
 	@Override
@@ -152,28 +156,63 @@ public abstract class AEBaseInvTile extends AEBaseTile implements ISidedInventor
 	public abstract void onChangeInventory( IInventory inv, int slot, InvOperation mc, ItemStack removed, ItemStack added );
 
 	@Override
-	public final int[] getAccessibleSlotsFromSide( int side )
+	public int[] getSlotsForFace(
+			EnumFacing side )
 	{
-		Block blk = this.worldObj.getBlock( this.xCoord, this.yCoord, this.zCoord );
+		Block blk = this.worldObj.getBlockState( pos ).getBlock();
 		if( blk instanceof AEBaseBlock )
 		{
-			ForgeDirection mySide = ForgeDirection.getOrientation( side );
-			return this.getAccessibleSlotsBySide( ( (AEBaseBlock) blk ).mapRotation( this, mySide ) );
+			return this.getAccessibleSlotsBySide( ( (AEBaseBlock) blk ).mapRotation( this, side ) );
 		}
-		return this.getAccessibleSlotsBySide( ForgeDirection.getOrientation( side ) );
+		return this.getAccessibleSlotsBySide( side );
 	}
 
 	@Override
-	public boolean canInsertItem( int slotIndex, ItemStack insertingItem, int side )
+	public boolean canInsertItem( int slotIndex, ItemStack insertingItem, EnumFacing side )
 	{
 		return this.isItemValidForSlot( slotIndex, insertingItem );
 	}
 
 	@Override
-	public boolean canExtractItem( int slotIndex, ItemStack extractedItem, int side )
+	public boolean canExtractItem( int slotIndex, ItemStack extractedItem, EnumFacing side )
 	{
 		return true;
 	}
+	
+	@Override
+	public void clear()
+	{
+		this.getInternalInventory().clear();
+	}
+	
+	@Override
+	public int getField(
+			int id )
+	{
+		return 0;
+	}
+	@Override
+	public void setField(
+			int id,
+			int value )
+	{
+		
+	}
+	
+	@Override
+	public int getFieldCount()
+	{
+		return 0;
+	}
+	
+	@Override
+	public IChatComponent getDisplayName()
+	{
+		if ( hasCustomName() )
+			return new ChatComponentText(getName());
+		return new ChatComponentTranslation( getBlockType().getUnlocalizedName() );
+	}
 
-	public abstract int[] getAccessibleSlotsBySide( ForgeDirection whichSide );
+	
+	public abstract int[] getAccessibleSlotsBySide( EnumFacing whichSide );
 }

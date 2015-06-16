@@ -23,7 +23,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-
 import appeng.container.AEBaseContainer;
 import appeng.tile.inventory.AppEngInternalInventory;
 
@@ -141,7 +140,7 @@ public class AppEngSlot extends Slot
 	}
 
 	@Override
-	public boolean func_111238_b()
+	public boolean canBeHovered()
 	{
 		return this.isEnabled();
 	}

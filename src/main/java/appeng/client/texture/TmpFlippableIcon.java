@@ -19,21 +19,17 @@
 package appeng.client.texture;
 
 
-import net.minecraft.init.Blocks;
-import net.minecraft.util.IIcon;
 
 
 public class TmpFlippableIcon extends FlippableIcon
 {
-
-	private static final IIcon NULL_ICON = new MissingIcon( Blocks.diamond_block );
-
+	
 	public TmpFlippableIcon()
 	{
-		super( NULL_ICON );
+		super( null );
 	}
 
-	public void setOriginal( IIcon i )
+	public void setOriginal( IAESprite i )
 	{
 		this.setFlip( false, false );
 
@@ -55,7 +51,7 @@ public class TmpFlippableIcon extends FlippableIcon
 
 		if( i == null )
 		{
-			this.original = NULL_ICON;
+			this.original = null;
 		}
 		else
 		{

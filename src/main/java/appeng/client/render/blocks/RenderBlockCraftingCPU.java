@@ -22,21 +22,23 @@ package appeng.client.render.blocks;
 import java.util.EnumSet;
 
 import net.minecraft.block.Block;
-import net.minecraft.client.renderer.RenderBlocks;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumWorldBlockLayer;
 import net.minecraft.world.IBlockAccess;
-import net.minecraftforge.common.util.ForgeDirection;
-
+import net.minecraftforge.client.MinecraftForgeClient;
 import appeng.api.AEApi;
 import appeng.api.util.AEColor;
+import appeng.api.util.AEPartLocation;
 import appeng.block.crafting.BlockCraftingMonitor;
 import appeng.block.crafting.BlockCraftingUnit;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.BusRenderHelper;
 import appeng.client.render.BusRenderer;
+import appeng.client.render.IRenderHelper;
 import appeng.client.texture.ExtraBlockTextures;
+import appeng.client.texture.IAESprite;
 import appeng.tile.crafting.TileCraftingMonitorTile;
 import appeng.tile.crafting.TileCraftingTile;
 
@@ -55,29 +57,35 @@ public class RenderBlockCraftingCPU<B extends BlockCraftingUnit, T extends TileC
 	}
 
 	@Override
-	public boolean renderInWorld( B blk, IBlockAccess w, int x, int y, int z, RenderBlocks renderer )
+	public boolean renderInWorld( B blk, IBlockAccess w, BlockPos pos, IRenderHelper renderer )
 	{
-		IIcon theIcon = null;
+		IAESprite theIcon = null;
 		boolean formed = false;
 		boolean emitsLight = false;
 
-		TileCraftingTile ct = blk.getTileEntity( w, x, y, z );
+		TileCraftingTile ct = blk.getTileEntity( w, pos );
 		if( ct != null && ct.isFormed() )
 		{
 			formed = true;
 			emitsLight = ct.isPowered();
 		}
-		int meta = w.getBlockMetadata( x, y, z ) & 3;
-
+		
 		boolean isMonitor = blk.getClass() == BlockCraftingMonitor.class;
-		theIcon = blk.getIcon( ForgeDirection.SOUTH.ordinal(), meta | ( formed ? 8 : 0 ) );
+		theIcon = renderer.getIcon( w.getBlockState( pos ) )[EnumFacing.SOUTH.ordinal()];// blk.getIcon( AEPartLocation.SOUTH.ordinal(), meta | ( formed ? 8 : 0 ) );
 
-		IIcon nonForward = theIcon;
+		int meta = 1;
+		for( Block craftingBlock : AEApi.instance().definitions().blocks().craftingUnit().maybeBlock().asSet() )
+		{
+			if ( craftingBlock == blk )
+				meta = 0;
+		}
+		
+		IAESprite nonForward = theIcon;
 		if( isMonitor )
 		{
 			for( Block craftingBlock : AEApi.instance().definitions().blocks().craftingUnit().maybeBlock().asSet() )
 			{
-				nonForward = craftingBlock.getIcon( 0, meta | ( formed ? 8 : 0 ) );
+				nonForward = renderer.getIcon( craftingBlock.getDefaultState() )[EnumFacing.SOUTH.ordinal()]; // craftingBlock.getIcon( 0, meta | ( formed ? 8 : 0 ) );
 			}
 		}
 
@@ -85,42 +93,32 @@ public class RenderBlockCraftingCPU<B extends BlockCraftingUnit, T extends TileC
 		{
 			renderer = BusRenderer.INSTANCE.renderer;
 			BusRenderHelper i = BusRenderHelper.INSTANCE;
-			BusRenderer.INSTANCE.renderer.isFacade = true;
 
 			renderer.blockAccess = w;
-			i.setPass( 0 );
-			i.setOrientation( ForgeDirection.EAST, ForgeDirection.UP, ForgeDirection.SOUTH );
+			i.setPass( MinecraftForgeClient.getRenderLayer() == EnumWorldBlockLayer.TRANSLUCENT ? 1 : 0 );
+			i.setOrientation( EnumFacing.EAST, EnumFacing.UP, EnumFacing.SOUTH );
 
-			try
+			float highX = this.isConnected( w, pos, EnumFacing.EAST ) ? 16 : 13.01f;
+			float lowX = this.isConnected( w, pos, EnumFacing.WEST ) ? 0 : 2.99f;
+
+			float highY = this.isConnected( w, pos, EnumFacing.UP ) ? 16 : 13.01f;
+			float lowY = this.isConnected( w, pos, EnumFacing.DOWN ) ? 0 : 2.99f;
+
+			float highZ = this.isConnected( w, pos, EnumFacing.SOUTH ) ? 16 : 13.01f;
+			float lowZ = this.isConnected( w, pos, EnumFacing.NORTH ) ? 0 : 2.99f;
+
+			this.renderCorner( i, renderer, w, pos, EnumFacing.UP, EnumFacing.EAST, EnumFacing.NORTH );
+			this.renderCorner( i, renderer, w, pos, EnumFacing.UP, EnumFacing.EAST, EnumFacing.SOUTH );
+			this.renderCorner( i, renderer, w, pos, EnumFacing.UP, EnumFacing.WEST, EnumFacing.NORTH );
+			this.renderCorner( i, renderer, w, pos, EnumFacing.UP, EnumFacing.WEST, EnumFacing.SOUTH );
+			this.renderCorner( i, renderer, w, pos, EnumFacing.DOWN, EnumFacing.EAST, EnumFacing.NORTH );
+			this.renderCorner( i, renderer, w, pos, EnumFacing.DOWN, EnumFacing.EAST, EnumFacing.SOUTH );
+			this.renderCorner( i, renderer, w, pos, EnumFacing.DOWN, EnumFacing.WEST, EnumFacing.NORTH );
+			this.renderCorner( i, renderer, w, pos, EnumFacing.DOWN, EnumFacing.WEST, EnumFacing.SOUTH );
+
+			for( EnumFacing side : EnumFacing.VALUES )
 			{
-				ct.lightCache = i.useSimplifiedRendering( x, y, z, null, ct.lightCache );
-			}
-			catch( Throwable ignored )
-			{
-
-			}
-
-			float highX = this.isConnected( w, x, y, z, ForgeDirection.EAST ) ? 16 : 13.01f;
-			float lowX = this.isConnected( w, x, y, z, ForgeDirection.WEST ) ? 0 : 2.99f;
-
-			float highY = this.isConnected( w, x, y, z, ForgeDirection.UP ) ? 16 : 13.01f;
-			float lowY = this.isConnected( w, x, y, z, ForgeDirection.DOWN ) ? 0 : 2.99f;
-
-			float highZ = this.isConnected( w, x, y, z, ForgeDirection.SOUTH ) ? 16 : 13.01f;
-			float lowZ = this.isConnected( w, x, y, z, ForgeDirection.NORTH ) ? 0 : 2.99f;
-
-			this.renderCorner( i, renderer, w, x, y, z, ForgeDirection.UP, ForgeDirection.EAST, ForgeDirection.NORTH );
-			this.renderCorner( i, renderer, w, x, y, z, ForgeDirection.UP, ForgeDirection.EAST, ForgeDirection.SOUTH );
-			this.renderCorner( i, renderer, w, x, y, z, ForgeDirection.UP, ForgeDirection.WEST, ForgeDirection.NORTH );
-			this.renderCorner( i, renderer, w, x, y, z, ForgeDirection.UP, ForgeDirection.WEST, ForgeDirection.SOUTH );
-			this.renderCorner( i, renderer, w, x, y, z, ForgeDirection.DOWN, ForgeDirection.EAST, ForgeDirection.NORTH );
-			this.renderCorner( i, renderer, w, x, y, z, ForgeDirection.DOWN, ForgeDirection.EAST, ForgeDirection.SOUTH );
-			this.renderCorner( i, renderer, w, x, y, z, ForgeDirection.DOWN, ForgeDirection.WEST, ForgeDirection.NORTH );
-			this.renderCorner( i, renderer, w, x, y, z, ForgeDirection.DOWN, ForgeDirection.WEST, ForgeDirection.SOUTH );
-
-			for( ForgeDirection side : ForgeDirection.VALID_DIRECTIONS )
-			{
-				i.setBounds( this.fso( side, lowX, ForgeDirection.WEST ), this.fso( side, lowY, ForgeDirection.DOWN ), this.fso( side, lowZ, ForgeDirection.NORTH ), this.fso( side, highX, ForgeDirection.EAST ), this.fso( side, highY, ForgeDirection.UP ), this.fso( side, highZ, ForgeDirection.SOUTH ) );
+				i.setBounds( this.fso( side, lowX, EnumFacing.WEST ), this.fso( side, lowY, EnumFacing.DOWN ), this.fso( side, lowZ, EnumFacing.NORTH ), this.fso( side, highX, EnumFacing.EAST ), this.fso( side, highY, EnumFacing.UP ), this.fso( side, highZ, EnumFacing.SOUTH ) );
 				i.prepareBounds( renderer );
 
 				boolean LocalEmit = emitsLight;
@@ -129,12 +127,11 @@ public class RenderBlockCraftingCPU<B extends BlockCraftingUnit, T extends TileC
 					LocalEmit = false;
 				}
 
-				this.handleSide( blk, meta, x, y, z, i, renderer, ct.getForward() == side ? theIcon : nonForward, LocalEmit, isMonitor, side, w );
+				this.handleSide( blk, meta, pos, i, renderer, ct.getForward() == side ? theIcon : nonForward, LocalEmit, isMonitor, side, w );
 			}
 
-			BusRenderer.INSTANCE.renderer.isFacade = false;
-			i.setFacesToRender( EnumSet.allOf( ForgeDirection.class ) );
-			i.normalRendering();
+			//BusRenderer.INSTANCE.renderer.isFacade = false;
+			i.setFacesToRender( EnumSet.allOf( EnumFacing.class ) );
 
 			return true;
 		}
@@ -144,16 +141,16 @@ public class RenderBlockCraftingCPU<B extends BlockCraftingUnit, T extends TileC
 			double o = 16.0 / 16.0;
 			renderer.setRenderBounds( a, a, a, o, o, o );
 
-			return renderer.renderStandardBlock( blk, x, y, z );
+			return renderer.renderStandardBlock( blk, pos );
 		}
 	}
 
-	private boolean isConnected( IBlockAccess w, int x, int y, int z, ForgeDirection side )
+	private boolean isConnected( IBlockAccess w, BlockPos pos, EnumFacing side )
 	{
-		final int tileYPos = y + side.offsetY;
+		final int tileYPos = pos.getY() + side.getFrontOffsetY();
 		if( 0 <= tileYPos && tileYPos <= 255 )
 		{
-			final TileEntity tile = w.getTileEntity( x + side.offsetX, tileYPos, z + side.offsetZ );
+			final TileEntity tile = w.getTileEntity( pos.offset( side ) );
 
 			return tile instanceof TileCraftingTile;
 		}
@@ -163,32 +160,32 @@ public class RenderBlockCraftingCPU<B extends BlockCraftingUnit, T extends TileC
 		}
 	}
 
-	private void renderCorner( BusRenderHelper i, RenderBlocks renderer, IBlockAccess w, int x, int y, int z, ForgeDirection up, ForgeDirection east, ForgeDirection south )
+	private void renderCorner( BusRenderHelper i, IRenderHelper renderer, IBlockAccess w, BlockPos pos, EnumFacing up, EnumFacing east, EnumFacing south )
 	{
-		if( this.isConnected( w, x, y, z, up ) )
+		if( this.isConnected( w, pos, up ) )
 		{
 			return;
 		}
-		if( this.isConnected( w, x, y, z, east ) )
+		if( this.isConnected( w, pos, east ) )
 		{
 			return;
 		}
-		if( this.isConnected( w, x, y, z, south ) )
+		if( this.isConnected( w, pos, south ) )
 		{
 			return;
 		}
 
-		i.setBounds( this.gso( east, 3, ForgeDirection.WEST ), this.gso( up, 3, ForgeDirection.DOWN ), this.gso( south, 3, ForgeDirection.NORTH ), this.gso( east, 13, ForgeDirection.EAST ), this.gso( up, 13, ForgeDirection.UP ), this.gso( south, 13, ForgeDirection.SOUTH ) );
+		i.setBounds( this.gso( east, 3, EnumFacing.WEST ), this.gso( up, 3, EnumFacing.DOWN ), this.gso( south, 3, EnumFacing.NORTH ), this.gso( east, 13, EnumFacing.EAST ), this.gso( up, 13, EnumFacing.UP ), this.gso( south, 13, EnumFacing.SOUTH ) );
 		i.prepareBounds( renderer );
 		i.setTexture( ExtraBlockTextures.BlockCraftingUnitRing.getIcon() );
-		i.renderBlockCurrentBounds( x, y, z, renderer );
+		i.renderBlockCurrentBounds( pos, renderer );
 	}
 
-	private float fso( ForgeDirection side, float def, ForgeDirection target )
+	private float fso( EnumFacing side, float def, EnumFacing target )
 	{
 		if( side == target )
 		{
-			if( side.offsetX > 0 || side.offsetY > 0 || side.offsetZ > 0 )
+			if( side.getFrontOffsetX() > 0 || side.getFrontOffsetY() > 0 || side.getFrontOffsetZ() > 0 )
 			{
 				return 16;
 			}
@@ -197,9 +194,9 @@ public class RenderBlockCraftingCPU<B extends BlockCraftingUnit, T extends TileC
 		return def;
 	}
 
-	private void handleSide( B blk, int meta, int x, int y, int z, BusRenderHelper i, RenderBlocks renderer, IIcon color, boolean emitsLight, boolean isMonitor, ForgeDirection side, IBlockAccess w )
+	private void handleSide( B blk, int meta, BlockPos pos, BusRenderHelper i, IRenderHelper renderer, IAESprite color, boolean emitsLight, boolean isMonitor, EnumFacing side, IBlockAccess w )
 	{
-		if( this.isConnected( w, x, y, z, side ) )
+		if( this.isConnected( w, pos, side ) )
 		{
 			return;
 		}
@@ -209,7 +206,7 @@ public class RenderBlockCraftingCPU<B extends BlockCraftingUnit, T extends TileC
 		if( meta == 0 && blk.getClass() == BlockCraftingUnit.class )
 		{
 			i.setTexture( ExtraBlockTextures.BlockCraftingUnitFit.getIcon() );
-			i.renderBlockCurrentBounds( x, y, z, renderer );
+			i.renderBlockCurrentBounds( pos, renderer );
 		}
 		else
 		{
@@ -222,7 +219,7 @@ public class RenderBlockCraftingCPU<B extends BlockCraftingUnit, T extends TileC
 				i.setTexture( ExtraBlockTextures.BlockCraftingFitSolid.getIcon() );
 			}
 
-			i.renderBlockCurrentBounds( x, y, z, renderer );
+			i.renderBlockCurrentBounds( pos, renderer );
 
 			if( color != null )
 			{
@@ -232,67 +229,68 @@ public class RenderBlockCraftingCPU<B extends BlockCraftingUnit, T extends TileC
 				{
 					if( color == ExtraBlockTextures.BlockCraftingMonitorFit_Light.getIcon() )
 					{
-						int b = w.getLightBrightnessForSkyBlocks( x + side.offsetX, y + side.offsetY, z + side.offsetZ, 0 );
+						int b = w.getCombinedLight( pos.offset( side ), 0 );
 
-						TileCraftingMonitorTile sr = blk.getTileEntity( w, x, y, z );
+						TileCraftingMonitorTile sr = blk.getTileEntity( w, pos );
 						AEColor col = sr.getColor();
 
-						Tessellator.instance.setBrightness( b );
-						Tessellator.instance.setColorOpaque_I( col.whiteVariant );
-						i.renderFace( x, y, z, color, side, renderer );
+						renderer.setBrightness( b );
+						renderer.setColorOpaque_I( col.whiteVariant );
+						i.renderFace( pos, color, side, renderer );
 
-						Tessellator.instance.setColorOpaque_I( col.mediumVariant );
-						i.renderFace( x, y, z, ExtraBlockTextures.BlockCraftingMonitorFit_Medium.getIcon(), side, renderer );
+						renderer.setColorOpaque_I( col.mediumVariant );
+						i.renderFace( pos, ExtraBlockTextures.BlockCraftingMonitorFit_Medium.getIcon(), side, renderer );
 
-						Tessellator.instance.setColorOpaque_I( col.blackVariant );
-						i.renderFace( x, y, z, ExtraBlockTextures.BlockCraftingMonitorFit_Dark.getIcon(), side, renderer );
+						renderer.setColorOpaque_I( col.blackVariant );
+						i.renderFace( pos, ExtraBlockTextures.BlockCraftingMonitorFit_Dark.getIcon(), side, renderer );
 					}
 					else
 					{
-						i.renderBlockCurrentBounds( x, y, z, renderer );
+						i.renderBlockCurrentBounds( pos, renderer );
 					}
 				}
 				else
 				{
 					if( isMonitor )
 					{
-						TileCraftingMonitorTile sr = blk.getTileEntity( w, x, y, z );
+						TileCraftingMonitorTile sr = blk.getTileEntity( w, pos );
 						AEColor col = sr.getColor();
+						
+						renderer.setColorOpaque_I( col.whiteVariant );
+						renderer.setBrightness( 13 << 20 | 13 << 4 );
+						i.renderFace( pos, color, side, renderer );
 
-						Tessellator.instance.setColorOpaque_I( col.whiteVariant );
-						Tessellator.instance.setBrightness( 13 << 20 | 13 << 4 );
-						i.renderFace( x, y, z, color, side, renderer );
+						renderer.setColorOpaque_I( col.mediumVariant );
+						renderer.setBrightness( 13 << 20 | 13 << 4 );
+						i.renderFace( pos, ExtraBlockTextures.BlockCraftingMonitorFit_Medium.getIcon(), side, renderer );
 
-						Tessellator.instance.setColorOpaque_I( col.mediumVariant );
-						Tessellator.instance.setBrightness( 13 << 20 | 13 << 4 );
-						i.renderFace( x, y, z, ExtraBlockTextures.BlockCraftingMonitorFit_Medium.getIcon(), side, renderer );
-
-						Tessellator.instance.setColorOpaque_I( col.blackVariant );
-						Tessellator.instance.setBrightness( 13 << 20 | 13 << 4 );
-						i.renderFace( x, y, z, ExtraBlockTextures.BlockCraftingMonitorFit_Dark.getIcon(), side, renderer );
+						renderer.setColorOpaque_I( col.blackVariant );
+						renderer.setBrightness( 13 << 20 | 13 << 4 );
+						i.renderFace( pos, ExtraBlockTextures.BlockCraftingMonitorFit_Dark.getIcon(), side, renderer );
 					}
 					else
 					{
-						Tessellator.instance.setColorOpaque_F( 1.0f, 1.0f, 1.0f );
-						Tessellator.instance.setBrightness( 13 << 20 | 13 << 4 );
-						i.renderFace( x, y, z, color, side, renderer );
+						AEPartLocation aeDir = AEPartLocation.fromFacing( side );
+						renderer.setColorOpaque_F( 1.0f, 1.0f, 1.0f );
+						renderer.setBrightness( 13 << 20 | 13 << 4 );
+						i.renderFace( pos, color, side, renderer );
 					}
 				}
 			}
 		}
 
-		for( ForgeDirection a : ForgeDirection.VALID_DIRECTIONS )
+		for( EnumFacing a : EnumFacing.VALUES )
 		{
 			if( a == side || a == side.getOpposite() )
 			{
 				continue;
 			}
 
-			if( ( side.offsetX != 0 || side.offsetZ != 0 ) && ( a == ForgeDirection.NORTH || a == ForgeDirection.EAST || a == ForgeDirection.WEST || a == ForgeDirection.SOUTH ) )
+			if( ( side.getFrontOffsetX() != 0 || side.getFrontOffsetZ() != 0 ) && ( a == EnumFacing.NORTH || a == EnumFacing.EAST || a == EnumFacing.WEST || a == EnumFacing.SOUTH ) )
 			{
 				i.setTexture( ExtraBlockTextures.BlockCraftingUnitRingLongRotated.getIcon() );
 			}
-			else if( ( side.offsetY != 0 ) && ( a == ForgeDirection.EAST || a == ForgeDirection.WEST ) )
+			else if( ( side.getFrontOffsetY() != 0 ) && ( a == EnumFacing.EAST || a == EnumFacing.WEST ) )
 			{
 				i.setTexture( ExtraBlockTextures.BlockCraftingUnitRingLongRotated.getIcon() );
 			}
@@ -303,7 +301,8 @@ public class RenderBlockCraftingCPU<B extends BlockCraftingUnit, T extends TileC
 
 			double width = 3.0 / 16.0;
 
-			if( !( i.getBound( a ) < 0.001 || i.getBound( a ) > 15.999 ) )
+			AEPartLocation dir = AEPartLocation.fromFacing( a );
+			if( !( i.getBound( dir ) < 0.001 || i.getBound( dir ) > 15.999 ) )
 			{
 				switch( a )
 				{
@@ -344,21 +343,20 @@ public class RenderBlockCraftingCPU<B extends BlockCraftingUnit, T extends TileC
 						renderer.uvRotateWest = 1;
 						renderer.uvRotateEast = 1;
 						break;
-					case UNKNOWN:
 					default:
 				}
 
-				i.renderBlockCurrentBounds( x, y, z, renderer );
+				i.renderBlockCurrentBounds( pos, renderer );
 				i.prepareBounds( renderer );
 			}
 		}
 	}
 
-	private float gso( ForgeDirection side, float def, ForgeDirection target )
+	private float gso( EnumFacing side, float def, EnumFacing target )
 	{
 		if( side != target )
 		{
-			if( side.offsetX > 0 || side.offsetY > 0 || side.offsetZ > 0 )
+			if( side.getFrontOffsetX() > 0 || side.getFrontOffsetY() > 0 || side.getFrontOffsetZ() > 0 )
 			{
 				return 16;
 			}

@@ -21,11 +21,11 @@ package appeng.client.gui.widgets;
 
 import java.util.regex.Pattern;
 
-import org.lwjgl.opengl.GL11;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.util.StatCollector;
+
+import org.lwjgl.opengl.GL11;
 
 import appeng.client.texture.ExtraBlockTextures;
 
@@ -68,7 +68,7 @@ public class GuiToggleButton extends GuiButton implements ITooltip
 
 			GL11.glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 			par1Minecraft.renderEngine.bindTexture( ExtraBlockTextures.GuiTexture( "guis/states.png" ) );
-			this.field_146123_n = par2 >= this.xPosition && par3 >= this.yPosition && par2 < this.xPosition + this.width && par3 < this.yPosition + this.height;
+			this.hovered = par2 >= this.xPosition && par3 >= this.yPosition && par2 < this.xPosition + this.width && par3 < this.yPosition + this.height;
 
 			int uv_y = (int) Math.floor( iconIndex / 16 );
 			int uv_x = iconIndex - uv_y * 16;

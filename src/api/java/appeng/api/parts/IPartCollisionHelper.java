@@ -24,7 +24,7 @@
 package appeng.api.parts;
 
 
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 
 public interface IPartCollisionHelper
@@ -47,17 +47,17 @@ public interface IPartCollisionHelper
 	/**
 	 * @return east in world space.
 	 */
-	ForgeDirection getWorldX();
+	EnumFacing getWorldX();
 
 	/**
 	 * @return up in world space.
 	 */
-	ForgeDirection getWorldY();
+	EnumFacing getWorldY();
 
 	/**
 	 * @return forward in world space.
 	 */
-	ForgeDirection getWorldZ();
+	EnumFacing getWorldZ();
 
 	/**
 	 * @return true if this test is to get the BB Collision information.

@@ -22,13 +22,11 @@ package appeng.worldgen;
 import java.util.Random;
 
 import net.minecraft.block.Block;
-import net.minecraft.init.Blocks;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.feature.WorldGenMinable;
-
-import cpw.mods.fml.common.IWorldGenerator;
-
+import net.minecraftforge.fml.common.IWorldGenerator;
 import appeng.api.AEApi;
 import appeng.api.definitions.IBlockDefinition;
 import appeng.api.definitions.IBlocks;
@@ -51,8 +49,8 @@ public final class QuartzWorldGen implements IWorldGenerator
 		final Block ore = oreDefinition.maybeBlock().orNull();
 		final Block charged = chargedDefinition.maybeBlock().orNull();
 
-		this.oreNormal = new WorldGenMinable( ore, 0, AEConfig.instance.quartzOresPerCluster, Blocks.stone );
-		this.oreCharged = new WorldGenMinable( charged, 0, AEConfig.instance.quartzOresPerCluster, Blocks.stone );
+		this.oreNormal = new WorldGenMinable( ore.getDefaultState(), AEConfig.instance.quartzOresPerCluster );
+		this.oreCharged = new WorldGenMinable( charged.getDefaultState(), AEConfig.instance.quartzOresPerCluster );
 	}
 
 	@Override
@@ -64,7 +62,7 @@ public final class QuartzWorldGen implements IWorldGenerator
 		{
 			int x = ( chunkX << 4 ) + 8;
 			int z = ( chunkZ << 4 ) + 8;
-			seaLevel = w.getHeightValue( x, z );
+			seaLevel = w.getHorizon( new BlockPos( x, 0, z)  ).getY();
 		}
 
 		if( this.oreNormal == null || this.oreCharged == null )
@@ -85,7 +83,7 @@ public final class QuartzWorldGen implements IWorldGenerator
 				int cx = chunkX * 16 + r.nextInt( 22 );
 				int cy = r.nextInt( 40 * seaLevel / 64 ) + r.nextInt( 22 * seaLevel / 64 ) + 12 * seaLevel / 64;
 				int cz = chunkZ * 16 + r.nextInt( 22 );
-				whichOre.generate( w, r, cx, cy, cz );
+				whichOre.generate( w, r, new BlockPos( cx, cy, cz ) );
 			}
 		}
 	}

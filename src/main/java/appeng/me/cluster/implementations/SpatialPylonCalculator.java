@@ -20,8 +20,8 @@ package appeng.me.cluster.implementations;
 
 
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
-
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.WorldCoord;
 import appeng.me.cluster.IAECluster;
@@ -63,7 +63,7 @@ public class SpatialPylonCalculator extends MBCalculator
 			{
 				for( int z = min.z; z <= max.z; z++ )
 				{
-					IAEMultiBlock te = (IAEMultiBlock) w.getTileEntity( x, y, z );
+					IAEMultiBlock te = (IAEMultiBlock) w.getTileEntity( new BlockPos( x, y, z ) );
 
 					if( !te.isValid() )
 					{
@@ -93,7 +93,7 @@ public class SpatialPylonCalculator extends MBCalculator
 			{
 				for( int z = min.z; z <= max.z; z++ )
 				{
-					TileSpatialPylon te = (TileSpatialPylon) w.getTileEntity( x, y, z );
+					TileSpatialPylon te = (TileSpatialPylon) w.getTileEntity( new BlockPos( x, y, z ) );
 					te.updateStatus( c );
 					c.line.add( ( te ) );
 				}

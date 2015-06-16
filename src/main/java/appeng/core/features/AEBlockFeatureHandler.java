@@ -21,15 +21,15 @@ package appeng.core.features;
 
 import java.util.EnumSet;
 
-import com.google.common.base.Optional;
-
-import cpw.mods.fml.common.registry.GameRegistry;
-
+import net.minecraftforge.fml.common.registry.GameData;
+import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.relauncher.Side;
 import appeng.api.definitions.IBlockDefinition;
 import appeng.block.AEBaseBlock;
 import appeng.core.CommonHelper;
 import appeng.core.CreativeTab;
-import appeng.util.Platform;
+
+import com.google.common.base.Optional;
 
 
 public final class AEBlockFeatureHandler implements IFeatureHandler
@@ -62,20 +62,27 @@ public final class AEBlockFeatureHandler implements IFeatureHandler
 	}
 
 	@Override
-	public void register()
+	public void register(Side side)
 	{
 		if( this.enabled )
 		{
 			String name = this.extractor.get();
 			this.featured.setCreativeTab( CreativeTab.instance );
-			this.featured.setBlockName( /* "tile." */"appliedenergistics2." + name );
-			this.featured.setBlockTextureName( "appliedenergistics2:" + name );
+			this.featured.setUnlocalizedName( /* "tile." */"appliedenergistics2." + name );
+			this.featured.setBlockTextureName(  name );
 
 			final String registryName = "tile." + name;
 
 			// Bypass the forge magic with null to register our own itemblock later.
 			GameRegistry.registerBlock( this.featured, null, registryName );
 			GameRegistry.registerItem( this.definition.maybeItem().get(), registryName );
+			
+			// register the block/item conversion...
+            if ( this.featured != null && this.definition.maybeItem().isPresent() )
+            	GameData.getBlockItemMap().put( this.featured, this.definition.maybeItem().get() );
+            
+            if ( side == Side.CLIENT)
+            	CommonHelper.proxy.configureIcon( this.featured, name );
 		}
 	}
 }

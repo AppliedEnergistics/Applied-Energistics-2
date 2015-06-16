@@ -19,20 +19,23 @@
 package appeng.client.render.blocks;
 
 
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
-
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelChest;
-import net.minecraft.client.renderer.RenderBlocks;
-import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.IItemRenderer.ItemRenderType;
 
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
+
 import appeng.block.storage.BlockSkyChest;
+import appeng.block.storage.BlockSkyChest.SkyChestType;
 import appeng.client.render.BaseBlockRender;
+import appeng.client.render.IRenderHelper;
 import appeng.tile.storage.TileSkyChest;
 
 
@@ -51,44 +54,44 @@ public class RenderBlockSkyChest extends BaseBlockRender<BlockSkyChest, TileSkyC
 	}
 
 	@Override
-	public void renderInventory( BlockSkyChest blk, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj )
+	public void renderInventory( BlockSkyChest blk, ItemStack is, IRenderHelper renderer, ItemRenderType type, Object[] obj )
 	{
-		GL11.glEnable( GL12.GL_RESCALE_NORMAL );
-		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
+		//GL11.glEnable( GL12.GL_RESCALE_NORMAL );
+		//GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
 
-		final int metaData = is.getItemDamage();
-		final ResourceLocation loc = METADATA_TO_TEXTURE[metaData];
+		//final int metaData = is.getItemDamage();
+		//final ResourceLocation loc = METADATA_TO_TEXTURE[metaData];
 
-		Minecraft.getMinecraft().getTextureManager().bindTexture( loc );
+		//Minecraft.getMinecraft().getTextureManager().bindTexture( loc );
 
-		final float lidAngle = 0.0f;
+		//final float lidAngle = 0.0f;
 
-		GL11.glScalef( 1.0F, -1F, -1F );
-		GL11.glTranslatef( -0.0F, -1.0F, -1.0F );
+		//GL11.glScalef( 1.0F, -1F, -1F );
+		//GL11.glTranslatef( -0.0F, -1.0F, -1.0F );
 
-		this.model.chestLid.offsetY = -( 0.9f / 16.0f );
-		this.model.chestLid.rotateAngleX = -( ( lidAngle * 3.141593F ) / 2.0F );
-		this.model.renderAll();
+		//this.model.chestLid.offsetY = -( 0.9f / 16.0f );
+		//this.model.chestLid.rotateAngleX = -( ( lidAngle * 3.141593F ) / 2.0F );
+		//this.model.renderAll();
 
-		GL11.glDisable( GL12.GL_RESCALE_NORMAL );
-		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
+		//GL11.glDisable( GL12.GL_RESCALE_NORMAL );
+		//GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
 	}
 
 	@Override
-	public boolean renderInWorld( BlockSkyChest blk, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
+	public boolean renderInWorld( BlockSkyChest blk, IBlockAccess world, BlockPos pos, IRenderHelper renderer )
 	{
 		return true;
 	}
 
 	@Override
-	public void renderTile( BlockSkyChest block, TileSkyChest tile, Tessellator tess, double x, double y, double z, float partialTick, RenderBlocks renderer )
+	public void renderTile( BlockSkyChest block, TileSkyChest tile, WorldRenderer tess, double x, double y, double z, float partialTick, IRenderHelper renderer )
 	{
 		if( !( tile instanceof TileSkyChest ) )
 		{
 			return;
 		}
 
-		final TileSkyChest skyChest = (TileSkyChest) tile;
+		final TileSkyChest skyChest = tile;
 
 		if( !skyChest.hasWorldObj() )
 		{
@@ -98,8 +101,8 @@ public class RenderBlockSkyChest extends BaseBlockRender<BlockSkyChest, TileSkyC
 		GL11.glEnable( GL12.GL_RESCALE_NORMAL );
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
 
-		final int metaData = tile.getWorldObj().getBlockMetadata( tile.xCoord, tile.yCoord, tile.zCoord );
-		final ResourceLocation loc = METADATA_TO_TEXTURE[metaData];
+		final IBlockState metaData = tile.getWorld().getBlockState( tile.getPos() );
+		final ResourceLocation loc = METADATA_TO_TEXTURE[ ((BlockSkyChest)metaData.getBlock()).type == SkyChestType.BLOCK ? 1 : 0 ];
 
 		Minecraft.getMinecraft().getTextureManager().bindTexture( loc );
 

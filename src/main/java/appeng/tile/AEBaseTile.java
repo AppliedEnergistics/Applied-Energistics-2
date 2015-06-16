@@ -19,6 +19,9 @@
 package appeng.tile;
 
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -31,9 +34,7 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
-
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -42,9 +43,9 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.api.implementations.tiles.ISegmentedInventory;
 import appeng.api.util.ICommonTile;
 import appeng.api.util.IConfigManager;
@@ -70,9 +71,19 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	private int renderFragment = 0;
 	@Nullable
 	public String customName;
-	private ForgeDirection forward = ForgeDirection.UNKNOWN;
-	private ForgeDirection up = ForgeDirection.UNKNOWN;
+	private EnumFacing forward = null;
+	private EnumFacing up = null;
 
+	@Override
+	public boolean shouldRefresh(
+			World world,
+			BlockPos pos,
+			IBlockState oldState,
+			IBlockState newSate )
+	{
+		return newSate.getBlock() != oldState.getBlock(); // state dosn't change tile entities in AE2.
+	}
+	
 	public static void registerTileItem( Class<? extends TileEntity> c, ItemStackSrc wat )
 	{
 		ITEM_STACKS.put( c, wat );
@@ -86,7 +97,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 
 	public boolean notLoaded()
 	{
-		return !this.worldObj.blockExists( this.xCoord, this.yCoord, this.zCoord );
+		return !this.worldObj.isBlockLoaded( pos );
 	}
 
 	@Nonnull
@@ -136,8 +147,8 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 		{
 			if( this.canBeRotated() )
 			{
-				this.forward = ForgeDirection.valueOf( data.getString( "orientation_forward" ) );
-				this.up = ForgeDirection.valueOf( data.getString( "orientation_up" ) );
+				this.forward = EnumFacing.valueOf( data.getString( "forward" ) );
+				this.up = EnumFacing.valueOf( data.getString( "up" ) );
 			}
 		}
 		catch( IllegalArgumentException ignored )
@@ -158,8 +169,8 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 
 		if( this.canBeRotated() )
 		{
-			data.setString( "orientation_forward", this.forward.name() );
-			data.setString( "orientation_up", this.up.name() );
+			data.setString( "forward", this.forward.name() );
+			data.setString( "up", this.up.name() );
 		}
 
 		if( this.customName != null )
@@ -173,8 +184,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 		}
 	}
 
-	@Override
-	public final void updateEntity()
+	public final void update()
 	{
 		for( AETileEventHandler h : this.getHandlerListFor( TileEventType.TICK ) )
 		{
@@ -204,13 +214,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 
 		stream.capacity( stream.readableBytes() );
 		data.setByteArray( "X", stream.array() );
-		return new S35PacketUpdateTileEntity( this.xCoord, this.yCoord, this.zCoord, 64, data );
-	}
-
-	@Override
-	public final boolean canUpdate()
-	{
-		return this.hasHandlerFor( TileEventType.TICK );
+		return new S35PacketUpdateTileEntity( pos, 64, data );
 	}
 
 	private boolean hasHandlerFor( TileEventType type )
@@ -224,9 +228,9 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	public void onDataPacket( NetworkManager net, S35PacketUpdateTileEntity pkt )
 	{
 		// / pkt.actionType
-		if( pkt.func_148853_f() == 64 )
+		if( pkt.getTileEntityType() == 64 )
 		{
-			ByteBuf stream = Unpooled.copiedBuffer( pkt.func_148857_g().getByteArray( "X" ) );
+			ByteBuf stream = Unpooled.copiedBuffer( pkt.getNbtCompound().getByteArray( "X" ) );
 			if( this.readFromStream( stream ) )
 			{
 				this.markForUpdate();
@@ -252,12 +256,12 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 
 			if( this.canBeRotated() )
 			{
-				ForgeDirection old_Forward = this.forward;
-				ForgeDirection old_Up = this.up;
+				EnumFacing old_Forward = this.forward;
+				EnumFacing old_Up = this.up;
 
 				byte orientation = data.readByte();
-				this.forward = ForgeDirection.getOrientation( orientation & 0x7 );
-				this.up = ForgeDirection.getOrientation( orientation >> 3 );
+				this.forward = EnumFacing.VALUES[ orientation & 0x7 ];
+				this.up = EnumFacing.VALUES[ orientation >> 3 ];
 
 				output = this.forward != old_Forward || this.up != old_Up;
 			}
@@ -296,8 +300,8 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 			// TODO: Optimize Network Load
 			if( this.worldObj != null )
 			{
-				AELog.blockUpdate( this.xCoord, this.yCoord, this.zCoord, this );
-				this.worldObj.markBlockForUpdate( this.xCoord, this.yCoord, this.zCoord );
+				AELog.blockUpdate( pos, this );
+				this.worldObj.markBlockForUpdate( pos );
 			}
 		}
 	}
@@ -403,27 +407,27 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	}
 
 	@Override
-	public ForgeDirection getForward()
+	public EnumFacing getForward()
 	{
 		return this.forward;
 	}
 
 	@Override
-	public ForgeDirection getUp()
+	public EnumFacing getUp()
 	{
 		return this.up;
 	}
 
 	@Override
-	public void setOrientation( ForgeDirection inForward, ForgeDirection inUp )
+	public void setOrientation( EnumFacing inForward, EnumFacing inUp )
 	{
 		this.forward = inForward;
 		this.up = inUp;
 		this.markForUpdate();
-		Platform.notifyBlocksOfNeighbors( this.worldObj, this.xCoord, this.yCoord, this.zCoord );
+		Platform.notifyBlocksOfNeighbors( this.worldObj, pos );
 	}
 
-	public void onPlacement( ItemStack stack, EntityPlayer player, int side )
+	public void onPlacement( ItemStack stack, EntityPlayer player, EnumFacing side )
 	{
 		if( stack.hasTagCompound() )
 		{
@@ -480,7 +484,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	 * @param drops drops of tile entity
 	 */
 	@Override
-	public void getDrops( World w, int x, int y, int z, List<ItemStack> drops )
+	public void getDrops( World w, BlockPos pos, List<ItemStack> drops )
 	{
 		if( this instanceof IInventory )
 		{
@@ -497,7 +501,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 		}
 	}
 
-	public void getNoDrops( World w, int x, int y, int z, List<ItemStack> drops )
+	public void getNoDrops( World w, BlockPos pos, List<ItemStack> drops )
 	{
 
 	}
@@ -566,7 +570,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 
 	public void securityBreak()
 	{
-		this.worldObj.func_147480_a( this.xCoord, this.yCoord, this.zCoord, true );
+		this.worldObj.destroyBlock( pos, true );
 		this.disableDrops();
 	}
 

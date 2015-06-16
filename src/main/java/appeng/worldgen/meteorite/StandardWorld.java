@@ -2,9 +2,11 @@ package appeng.worldgen.meteorite;
 
 
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
-
 import appeng.util.Platform;
 
 
@@ -45,17 +47,7 @@ public class StandardWorld implements IMeteoriteWorld
 	@Override
 	public boolean hasNoSky()
 	{
-		return !this.w.provider.hasNoSky;
-	}
-
-	@Override
-	public int getBlockMetadata( int x, int y, int z )
-	{
-		if( this.range( x, y, z ) )
-		{
-			return this.w.getBlockMetadata( x, y, z );
-		}
-		return 0;
+		return !this.w.provider.getHasNoSky();
 	}
 
 	@Override
@@ -63,7 +55,7 @@ public class StandardWorld implements IMeteoriteWorld
 	{
 		if( this.range( x, y, z ) )
 		{
-			return this.w.getBlock( x, y, z );
+			return this.w.getBlockState( new BlockPos( x, y, z ) ).getBlock();
 		}
 		return Platform.AIR_BLOCK;
 	}
@@ -73,7 +65,7 @@ public class StandardWorld implements IMeteoriteWorld
 	{
 		if( this.range( x, y, z ) )
 		{
-			return this.w.canBlockSeeTheSky( x, y, z );
+			return this.w.canBlockSeeSky( new BlockPos(x,y,z) );
 		}
 		return false;
 	}
@@ -83,7 +75,7 @@ public class StandardWorld implements IMeteoriteWorld
 	{
 		if( this.range( x, y, z ) )
 		{
-			return this.w.getTileEntity( x, y, z );
+			return this.w.getTileEntity( new BlockPos( x, y, z)  );
 		}
 		return null;
 	}
@@ -99,16 +91,7 @@ public class StandardWorld implements IMeteoriteWorld
 	{
 		if( this.range( x, y, z ) )
 		{
-			this.w.setBlock( x, y, z, blk );
-		}
-	}
-
-	@Override
-	public void setBlock( int x, int y, int z, Block block, int meta, int flags )
-	{
-		if( this.range( x, y, z ) )
-		{
-			this.w.setBlock( x, y, z, block, meta, flags );
+			this.w.setBlockState( new BlockPos( x, y, z ), blk.getDefaultState() );
 		}
 	}
 
@@ -121,5 +104,32 @@ public class StandardWorld implements IMeteoriteWorld
 	public boolean range( int x, int y, int z )
 	{
 		return true;
+	}
+
+	@Override
+	public void setBlock(
+			int x,
+			int y,
+			int z,
+			IBlockState state,
+			int l )
+	{
+		if( this.range( x, y, z ) )
+		{
+			this.w.setBlockState( new BlockPos( x, y, z ), state, l );
+		}
+	}
+
+	@Override
+	public IBlockState getBlockState(
+			int x,
+			int y,
+			int z )
+	{
+		if( this.range( x, y, z ) )
+		{
+			return this.w.getBlockState( new BlockPos(x,y,z) );
+		}
+		return Blocks.air.getDefaultState();
 	}
 }

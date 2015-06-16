@@ -22,14 +22,13 @@ package appeng.container.implementations;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import com.google.common.collect.ImmutableSet;
-
 import net.minecraft.entity.player.InventoryPlayer;
-
 import appeng.api.networking.crafting.ICraftingCPU;
 import appeng.api.networking.crafting.ICraftingGrid;
 import appeng.api.storage.ITerminalHost;
 import appeng.container.guisync.GuiSync;
+
+import com.google.common.collect.ImmutableSet;
 
 
 public class ContainerCraftingStatus extends ContainerCraftingCPU

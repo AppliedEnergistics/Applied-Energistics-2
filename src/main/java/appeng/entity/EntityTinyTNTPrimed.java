@@ -20,21 +20,21 @@ package appeng.entity;
 
 
 import io.netty.buffer.ByteBuf;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.item.EntityTNTPrimed;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
-
-import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
-
+import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import appeng.api.AEApi;
 import appeng.core.AEConfig;
 import appeng.core.CommonHelper;
@@ -57,7 +57,7 @@ public final class EntityTinyTNTPrimed extends EntityTNTPrimed implements IEntit
 	{
 		super( w, x, y, z, igniter );
 		this.setSize( 0.55F, 0.55F );
-		this.yOffset = this.height / 2.0F;
+		//this.yOffset = this.height / 2.0F;
 	}
 
 	/**
@@ -113,7 +113,7 @@ public final class EntityTinyTNTPrimed extends EntityTNTPrimed implements IEntit
 		}
 		else
 		{
-			this.worldObj.spawnParticle( "smoke", this.posX, this.posY, this.posZ, 0.0D, 0.0D, 0.0D );
+			this.worldObj.spawnParticle( EnumParticleTypes.SMOKE_NORMAL, this.posX, this.posY, this.posZ, 0.0D, 0.0D, 0.0D );
 		}
 		this.fuse--;
 	}
@@ -128,7 +128,7 @@ public final class EntityTinyTNTPrimed extends EntityTNTPrimed implements IEntit
 			return;
 		}
 
-		for( Object e : this.worldObj.getEntitiesWithinAABBExcludingEntity( this, AxisAlignedBB.getBoundingBox( this.posX - 1.5, this.posY - 1.5f, this.posZ - 1.5, this.posX + 1.5, this.posY + 1.5, this.posZ + 1.5 ) ) )
+		for( Object e : this.worldObj.getEntitiesWithinAABBExcludingEntity( this, AxisAlignedBB.fromBounds( this.posX - 1.5, this.posY - 1.5f, this.posZ - 1.5, this.posX + 1.5, this.posY + 1.5, this.posZ + 1.5 ) ) )
 		{
 			if( e instanceof Entity )
 			{
@@ -139,7 +139,7 @@ public final class EntityTinyTNTPrimed extends EntityTNTPrimed implements IEntit
 		if( AEConfig.instance.isFeatureEnabled( AEFeature.TinyTNTBlockDamage ) )
 		{
 			this.posY -= 0.25;
-			Explosion ex = new Explosion( this.worldObj, this, this.posX, this.posY, this.posZ, 0.2f );
+			Explosion ex = new Explosion( this.worldObj, this, this.posX, this.posY, this.posZ, 0.2f, false, false );
 
 			for( int x = (int) ( this.posX - 2 ); x <= this.posX + 2; x++ )
 			{
@@ -147,12 +147,14 @@ public final class EntityTinyTNTPrimed extends EntityTNTPrimed implements IEntit
 				{
 					for( int z = (int) ( this.posZ - 2 ); z <= this.posZ + 2; z++ )
 					{
-						Block block = this.worldObj.getBlock( x, y, z );
-						if( block != null && !block.isAir( this.worldObj, x, y, z ) )
+						BlockPos point = new BlockPos( x,y,z);
+						IBlockState state = this.worldObj.getBlockState( point );
+						Block block = state.getBlock();
+						if( block != null && !block.isAir( this.worldObj, point ) )
 						{
 							float strength = (float) ( 2.3f - ( ( ( x + 0.5f ) - this.posX ) * ( ( x + 0.5f ) - this.posX ) + ( ( y + 0.5f ) - this.posY ) * ( ( y + 0.5f ) - this.posY ) + ( ( z + 0.5f ) - this.posZ ) * ( ( z + 0.5f ) - this.posZ ) ) );
 
-							float resistance = block.getExplosionResistance( this, this.worldObj, x, y, z, this.posX, this.posY, this.posZ );
+							float resistance = block.getExplosionResistance( this.worldObj, point, this, ex );
 							strength -= ( resistance + 0.3F ) * 0.11f;
 
 							if( strength > 0.01 )
@@ -161,10 +163,10 @@ public final class EntityTinyTNTPrimed extends EntityTNTPrimed implements IEntit
 								{
 									if( block.canDropFromExplosion( ex ) )
 									{
-										block.dropBlockAsItemWithChance( this.worldObj, x, y, z, this.worldObj.getBlockMetadata( x, y, z ), 1.0F / 1.0f, 0 );
+										block.dropBlockAsItemWithChance( this.worldObj, point, state, 1.0F / 1.0f, 0 );
 									}
 
-									block.onBlockExploded( this.worldObj, x, y, z, ex );
+									block.onBlockExploded( this.worldObj, point, ex );
 								}
 							}
 						}

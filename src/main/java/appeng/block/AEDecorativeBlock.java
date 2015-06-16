@@ -20,8 +20,6 @@ package appeng.block;
 
 
 import net.minecraft.block.material.Material;
-import net.minecraft.util.IIcon;
-import net.minecraft.world.IBlockAccess;
 
 
 public class AEDecorativeBlock extends AEBaseBlock
@@ -31,15 +29,4 @@ public class AEDecorativeBlock extends AEBaseBlock
 		super( mat );
 	}
 
-	@Override
-	public int getRenderType()
-	{
-		return 0;
-	}
-
-	@Override
-	public IIcon getIcon( IBlockAccess w, int x, int y, int z, int s )
-	{
-		return super.unmappedGetIcon( w, x, y, z, s );
-	}
 }

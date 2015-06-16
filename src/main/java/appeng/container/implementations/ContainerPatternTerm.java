@@ -36,8 +36,7 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraftforge.common.util.ForgeDirection;
-
+import net.minecraft.util.EnumFacing;
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.definitions.IDefinitions;
@@ -349,7 +348,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 			IAEItemStack out = packetPatternSlot.slotItem.copy();
 
 			InventoryAdaptor inv = new AdaptorPlayerHand( this.getPlayerInv().player );
-			InventoryAdaptor playerInv = InventoryAdaptor.getAdaptor( this.getPlayerInv().player, ForgeDirection.UNKNOWN );
+			InventoryAdaptor playerInv = InventoryAdaptor.getAdaptor( this.getPlayerInv().player, EnumFacing.UP );
 			if( packetPatternSlot.shift )
 			{
 				inv = playerInv;

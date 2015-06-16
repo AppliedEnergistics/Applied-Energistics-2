@@ -22,16 +22,14 @@ package appeng.tile.misc;
 import java.util.EnumSet;
 import java.util.List;
 
-import com.google.common.collect.ImmutableSet;
-
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.api.config.Actionable;
 import appeng.api.config.Upgrades;
 import appeng.api.implementations.tiles.ITileStorageMonitorable;
@@ -51,6 +49,7 @@ import appeng.api.storage.IStorageMonitorable;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AECableType;
+import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
 import appeng.helpers.DualityInterface;
@@ -63,12 +62,14 @@ import appeng.tile.inventory.InvOperation;
 import appeng.util.Platform;
 import appeng.util.inv.IInventoryDestination;
 
+import com.google.common.collect.ImmutableSet;
+
 
 public class TileInterface extends AENetworkInvTile implements IGridTickable, ITileStorageMonitorable, IStorageMonitorable, IInventoryDestination, IInterfaceHost, IPriorityHost
 {
 
 	final DualityInterface duality = new DualityInterface( this.gridProxy, this );
-	ForgeDirection pointAt = ForgeDirection.UNKNOWN;
+	AEPartLocation pointAt = AEPartLocation.INTERNAL;
 
 	@MENetworkEventSubscribe
 	public void stateChange( MENetworkChannelsChanged c )
@@ -82,7 +83,7 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, IT
 		this.duality.notifyNeighbors();
 	}
 
-	public void setSide( ForgeDirection axis )
+	public void setSide( AEPartLocation axis )
 	{
 		if( Platform.isClient() )
 		{
@@ -95,9 +96,9 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, IT
 		}
 		else if( this.pointAt == axis || this.pointAt == axis.getOpposite() )
 		{
-			this.pointAt = ForgeDirection.UNKNOWN;
+			this.pointAt = AEPartLocation.INTERNAL;
 		}
-		else if( this.pointAt == ForgeDirection.UNKNOWN )
+		else if( this.pointAt == AEPartLocation.INTERNAL )
 		{
 			this.pointAt = axis.getOpposite();
 		}
@@ -106,18 +107,26 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, IT
 			this.pointAt = Platform.rotateAround( this.pointAt, axis );
 		}
 
-		if( ForgeDirection.UNKNOWN == this.pointAt )
+		if( AEPartLocation.INTERNAL == this.pointAt )
 		{
-			this.setOrientation( this.pointAt, this.pointAt );
+			this.setOrientation( EnumFacing.UP, EnumFacing.UP );
 		}
 		else
 		{
-			this.setOrientation( this.pointAt.offsetY != 0 ? ForgeDirection.SOUTH : ForgeDirection.UP, this.pointAt.getOpposite() );
+			this.setOrientation( this.pointAt.yOffset != 0 ? EnumFacing.SOUTH : EnumFacing.UP, this.pointAt.getOpposite().getFacing() );
 		}
 
-		this.gridProxy.setValidSides( EnumSet.complementOf( EnumSet.of( this.pointAt ) ) );
+		configureNodeSides();		
 		this.markForUpdate();
 		this.markDirty();
+	}
+
+	private void configureNodeSides()
+	{
+		if ( this.pointAt == AEPartLocation.INTERNAL )
+			this.gridProxy.setValidSides( EnumSet.allOf(EnumFacing.class) );
+		else
+			this.gridProxy.setValidSides( EnumSet.complementOf( EnumSet.of( this.pointAt.getFacing() ) ) );
 	}
 
 	@Override
@@ -127,7 +136,10 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, IT
 	}
 
 	@Override
-	public void getDrops( World w, int x, int y, int z, List<ItemStack> drops )
+	public void getDrops(
+			World w,
+			BlockPos pos,
+			List<ItemStack> drops )
 	{
 		this.duality.addDrops( drops );
 	}
@@ -141,7 +153,7 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, IT
 	@Override
 	public void onReady()
 	{
-		this.gridProxy.setValidSides( EnumSet.complementOf( EnumSet.of( this.pointAt ) ) );
+		configureNodeSides();		
 		super.onReady();
 		this.duality.initialize();
 	}
@@ -158,20 +170,20 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, IT
 	{
 		int val = data.getInteger( "pointAt" );
 
-		if( val >= 0 && val < ForgeDirection.values().length )
+		if( val >= 0 && val < AEPartLocation.values().length )
 		{
-			this.pointAt = ForgeDirection.values()[val];
+			this.pointAt = AEPartLocation.values()[val];
 		}
 		else
 		{
-			this.pointAt = ForgeDirection.UNKNOWN;
+			this.pointAt = AEPartLocation.INTERNAL;
 		}
 
 		this.duality.readFromNBT( data );
 	}
 
 	@Override
-	public AECableType getCableConnectionType( ForgeDirection dir )
+	public AECableType getCableConnectionType( AEPartLocation dir )
 	{
 		return this.duality.getCableConnectionType( dir );
 	}
@@ -231,9 +243,9 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, IT
 	}
 
 	@Override
-	public int[] getAccessibleSlotsBySide( ForgeDirection side )
+	public int[] getAccessibleSlotsBySide( EnumFacing side )
 	{
-		return this.duality.getAccessibleSlotsFromSide( side.ordinal() );
+		return this.duality.getSlotsForFace( side );
 	}
 
 	@Override
@@ -243,13 +255,13 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, IT
 	}
 
 	@Override
-	public EnumSet<ForgeDirection> getTargets()
+	public EnumSet<EnumFacing> getTargets()
 	{
-		if( this.pointAt == null || this.pointAt == ForgeDirection.UNKNOWN )
+		if( this.pointAt == null || this.pointAt == AEPartLocation.INTERNAL )
 		{
-			return EnumSet.complementOf( EnumSet.of( ForgeDirection.UNKNOWN ) );
+			return EnumSet.allOf( EnumFacing.class );
 		}
-		return EnumSet.of( this.pointAt );
+		return EnumSet.of( this.pointAt.getFacing() );
 	}
 
 	@Override
@@ -259,7 +271,7 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, IT
 	}
 
 	@Override
-	public IStorageMonitorable getMonitorable( ForgeDirection side, BaseActionSource src )
+	public IStorageMonitorable getMonitorable( EnumFacing side, BaseActionSource src )
 	{
 		return this.duality.getMonitorable( side, src, this );
 	}

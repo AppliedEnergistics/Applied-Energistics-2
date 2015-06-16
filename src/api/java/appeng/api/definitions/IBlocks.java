@@ -57,7 +57,15 @@ public interface IBlocks
 
 	IBlockDefinition skyStone();
 
+	IBlockDefinition skyStoneBlock();
+
+	IBlockDefinition skyStoneBrick();
+
+	IBlockDefinition skyStoneSmallBrick();
+
 	IBlockDefinition skyChest();
+
+	IBlockDefinition skyChestBlock();
 
 	IBlockDefinition skyCompass();
 
@@ -77,6 +85,7 @@ public interface IBlocks
 
 	IBlockDefinition quartzPillarStair();
 
+	/*
 	IBlockDefinition skyStoneSlab();
 
 	IBlockDefinition skyStoneBlockSlab();
@@ -92,7 +101,8 @@ public interface IBlocks
 	IBlockDefinition chiseledQuartzSlab();
 
 	IBlockDefinition quartzPillarSlab();
-
+*/
+	
 	/*
 	 * misc
 	 */

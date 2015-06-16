@@ -19,8 +19,7 @@
 package appeng.parts.layers;
 
 
-import net.minecraftforge.common.util.ForgeDirection;
-
+import net.minecraft.util.EnumFacing;
 import appeng.api.implementations.tiles.ITileStorageMonitorable;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.parts.IPart;
@@ -32,7 +31,7 @@ public class LayerITileStorageMonitorable extends LayerBase implements ITileStor
 {
 
 	@Override
-	public IStorageMonitorable getMonitorable( ForgeDirection side, BaseActionSource src )
+	public IStorageMonitorable getMonitorable( EnumFacing side, BaseActionSource src )
 	{
 		IPart part = this.getPart( side );
 		if( part instanceof ITileStorageMonitorable )

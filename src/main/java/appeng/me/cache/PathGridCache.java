@@ -26,8 +26,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridBlock;
@@ -42,6 +40,7 @@ import appeng.api.networking.events.MENetworkControllerChange;
 import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.pathing.ControllerState;
 import appeng.api.networking.pathing.IPathingGrid;
+import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
@@ -187,7 +186,7 @@ public class PathGridCache implements IPathingGrid
 					if( controllerIterator.hasNext() )
 					{
 						final TileController controller = controllerIterator.next();
-						controller.getGridNode( ForgeDirection.UNKNOWN ).beginVisit( new ControllerChannelUpdater() );
+						controller.getGridNode( AEPartLocation.INTERNAL ).beginVisit( new ControllerChannelUpdater() );
 					}
 				}
 
@@ -278,7 +277,7 @@ public class PathGridCache implements IPathingGrid
 		}
 		else
 		{
-			IGridNode startingNode = this.controllers.iterator().next().getGridNode( ForgeDirection.UNKNOWN );
+			IGridNode startingNode = this.controllers.iterator().next().getGridNode( AEPartLocation.INTERNAL );
 			if( startingNode == null )
 			{
 				this.controllerState = ControllerState.CONTROLLER_CONFLICT;

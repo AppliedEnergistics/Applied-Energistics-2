@@ -19,19 +19,16 @@
 package appeng.debug;
 
 
-import java.util.Collection;
 import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.List;
 
-import net.minecraft.block.Block;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
-
-import appeng.api.util.WorldCoord;
-import appeng.client.texture.MissingIcon;
 import appeng.core.AELog;
 import appeng.core.features.AEFeature;
 import appeng.items.AEBaseItem;
@@ -47,49 +44,49 @@ public class ToolEraser extends AEBaseItem
 	{
 		this.setFeature( EnumSet.of( AEFeature.UnsupportedDeveloperTools, AEFeature.Creative ) );
 	}
-
+	
 	@Override
-	public void registerIcons( IIconRegister par1IconRegister )
-	{
-		this.itemIcon = new MissingIcon( this );
-	}
-
-	@Override
-	public boolean onItemUseFirst( ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ )
+	public boolean onItemUseFirst(
+			ItemStack stack,
+			EntityPlayer player,
+			World world,
+			BlockPos pos,
+			EnumFacing side,
+			float hitX,
+			float hitY,
+			float hitZ )
 	{
 		if( Platform.isClient() )
 		{
 			return false;
 		}
 
-		Block blk = world.getBlock( x, y, z );
-		int meta = world.getBlockMetadata( x, y, z );
+		IBlockState state = world.getBlockState( pos );
 
 		int blocks = 0;
-		List<WorldCoord> next = new LinkedList<WorldCoord>();
-		next.add( new WorldCoord( x, y, z ) );
+		List<BlockPos> next = new LinkedList<BlockPos>();
+		next.add( pos );
 
 		while( blocks < BLOCK_ERASE_LIMIT && !next.isEmpty() )
 		{
-			List<WorldCoord> c = next;
-			next = new LinkedList<WorldCoord>();
+			List<BlockPos> c = next;
+			next = new LinkedList<BlockPos>();
 
-			for( WorldCoord wc : c )
+			for( BlockPos wc : c )
 			{
-				Block c_blk = world.getBlock( wc.x, wc.y, wc.z );
-				int c_meta = world.getBlockMetadata( wc.x, wc.y, wc.z );
+				IBlockState c_state = world.getBlockState( wc );
 
-				if( c_blk == blk && c_meta == meta )
+				if( state == c_state )
 				{
 					blocks++;
-					world.setBlock( wc.x, wc.y, wc.z, Platform.AIR_BLOCK );
+					world.setBlockToAir( wc );
 
-					this.wrappedAdd( world, wc.x + 1, wc.y, wc.z, next );
-					this.wrappedAdd( world, wc.x - 1, wc.y, wc.z, next );
-					this.wrappedAdd( world, wc.x, wc.y + 1, wc.z, next );
-					this.wrappedAdd( world, wc.x, wc.y - 1, wc.z, next );
-					this.wrappedAdd( world, wc.x, wc.y, wc.z + 1, next );
-					this.wrappedAdd( world, wc.x, wc.y, wc.z - 1, next );
+					next.add( wc.add( 1, 0, 0 ) );
+					next.add( wc.add( -1, 0, 0 ) );
+					next.add( wc.add( 0, 1, 0 ) );
+					next.add( wc.add( 0, -1, 0 ) );
+					next.add( wc.add( 0, 0, 1 ) );
+					next.add( wc.add( 0, 0, -1 ) );
 				}
 			}
 		}
@@ -97,10 +94,5 @@ public class ToolEraser extends AEBaseItem
 		AELog.info( "Delete " + blocks + " blocks" );
 
 		return true;
-	}
-
-	private void wrappedAdd( World world, int i, int y, int z, Collection<WorldCoord> next )
-	{
-		next.add( new WorldCoord( i, y, z ) );
 	}
 }

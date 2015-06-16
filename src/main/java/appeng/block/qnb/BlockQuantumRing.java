@@ -20,15 +20,13 @@ package appeng.block.qnb;
 
 
 import java.util.Collections;
-import java.util.EnumSet;
 import java.util.List;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
-
-import appeng.core.features.AEFeature;
 import appeng.tile.qnb.TileQuantumBridge;
 
 
@@ -41,10 +39,14 @@ public class BlockQuantumRing extends BlockQuantumBase
 	}
 
 	@Override
-	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool( World w, int x, int y, int z, Entity e, boolean isVisual )
+	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool(
+			World w,
+			BlockPos pos,
+			Entity thePlayer,
+			boolean b )
 	{
 		double onePixel = 2.0 / 16.0;
-		TileQuantumBridge bridge = this.getTileEntity( w, x, y, z );
+		TileQuantumBridge bridge = this.getTileEntity( w, pos );
 		if( bridge != null && bridge.isCorner() )
 		{
 			onePixel = 4.0 / 16.0;
@@ -53,14 +55,19 @@ public class BlockQuantumRing extends BlockQuantumBase
 		{
 			onePixel = 1.0 / 16.0;
 		}
-		return Collections.singletonList( AxisAlignedBB.getBoundingBox( onePixel, onePixel, onePixel, 1.0 - onePixel, 1.0 - onePixel, 1.0 - onePixel ) );
+		return Collections.singletonList( AxisAlignedBB.fromBounds( onePixel, onePixel, onePixel, 1.0 - onePixel, 1.0 - onePixel, 1.0 - onePixel ) );
 	}
 
 	@Override
-	public void addCollidingBlockToList( World w, int x, int y, int z, AxisAlignedBB bb, List<AxisAlignedBB> out, Entity e )
+	public void addCollidingBlockToList(
+			World w,
+			BlockPos pos,
+			AxisAlignedBB bb,
+			List<AxisAlignedBB> out,
+			Entity e )
 	{
 		double onePixel = 2.0 / 16.0;
-		TileQuantumBridge bridge = this.getTileEntity( w, x, y, z );
+		TileQuantumBridge bridge = this.getTileEntity( w, pos );
 		if( bridge != null && bridge.isCorner() )
 		{
 			onePixel = 4.0 / 16.0;
@@ -69,6 +76,6 @@ public class BlockQuantumRing extends BlockQuantumBase
 		{
 			onePixel = 1.0 / 16.0;
 		}
-		out.add( AxisAlignedBB.getBoundingBox( onePixel, onePixel, onePixel, 1.0 - onePixel, 1.0 - onePixel, 1.0 - onePixel ) );
+		out.add( AxisAlignedBB.fromBounds( onePixel, onePixel, onePixel, 1.0 - onePixel, 1.0 - onePixel, 1.0 - onePixel ) );
 	}
 }

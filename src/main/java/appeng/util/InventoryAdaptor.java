@@ -26,8 +26,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityChest;
-import net.minecraftforge.common.util.ForgeDirection;
-
+import net.minecraft.util.EnumFacing;
 import appeng.api.config.FuzzyMode;
 import appeng.integration.IntegrationRegistry;
 import appeng.integration.IntegrationType;
@@ -44,7 +43,7 @@ public abstract class InventoryAdaptor implements Iterable<ItemSlot>
 {
 
 	// returns an appropriate adaptor, or null
-	public static InventoryAdaptor getAdaptor( Object te, ForgeDirection d )
+	public static InventoryAdaptor getAdaptor( Object te, EnumFacing d )
 	{
 		if( te == null )
 		{
@@ -75,7 +74,7 @@ public abstract class InventoryAdaptor implements Iterable<ItemSlot>
 		else if( te instanceof ISidedInventory )
 		{
 			ISidedInventory si = (ISidedInventory) te;
-			int[] slots = si.getAccessibleSlotsFromSide( d.ordinal() );
+			int[] slots = si.getSlotsForFace( d );
 			if( si.getSizeInventory() > 0 && slots != null && slots.length > 0 )
 			{
 				return new AdaptorIInventory( new WrapperMCISidedInventory( si, d ) );

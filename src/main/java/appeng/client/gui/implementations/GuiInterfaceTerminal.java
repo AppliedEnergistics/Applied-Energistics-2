@@ -19,6 +19,7 @@
 package appeng.client.gui.implementations;
 
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -28,14 +29,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 
-import com.google.common.collect.HashMultimap;
-
-import org.lwjgl.opengl.GL11;
-
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+
+import org.lwjgl.opengl.GL11;
 
 import appeng.api.AEApi;
 import appeng.client.gui.AEBaseGui;
@@ -47,6 +46,8 @@ import appeng.container.implementations.ContainerInterfaceTerminal;
 import appeng.core.localization.GuiText;
 import appeng.parts.reporting.PartMonitor;
 import appeng.util.Platform;
+
+import com.google.common.collect.HashMultimap;
 
 
 public class GuiInterfaceTerminal extends AEBaseGui
@@ -142,7 +143,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 	}
 
 	@Override
-	protected void mouseClicked( int xCoord, int yCoord, int btn )
+	protected void mouseClicked( int xCoord, int yCoord, int btn ) throws IOException
 	{
 		this.searchField.mouseClicked( xCoord, yCoord, btn );
 
@@ -185,7 +186,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 	}
 
 	@Override
-	protected void keyTyped( char character, int key )
+	protected void keyTyped( char character, int key ) throws IOException
 	{
 		if( !this.checkHotbarKeys( key ) )
 		{
@@ -213,7 +214,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 			this.refreshList = true;
 		}
 
-		for( Object oKey : in.func_150296_c() )
+		for( Object oKey : in.getKeySet() )
 		{
 			String key = (String) oKey;
 			if( key.startsWith( "=" ) )

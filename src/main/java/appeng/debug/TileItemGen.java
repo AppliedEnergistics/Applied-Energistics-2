@@ -28,7 +28,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-
+import net.minecraft.util.IChatComponent;
 import appeng.tile.AEBaseTile;
 
 
@@ -104,13 +104,13 @@ public class TileItemGen extends AEBaseTile implements IInventory
 	}
 
 	@Override
-	public String getInventoryName()
+	public String getName()
 	{
 		return null;
 	}
 
 	@Override
-	public boolean hasCustomInventoryName()
+	public boolean hasCustomName()
 	{
 		return false;
 	}
@@ -128,20 +128,55 @@ public class TileItemGen extends AEBaseTile implements IInventory
 	}
 
 	@Override
-	public void openInventory()
+	public void openInventory(
+			EntityPlayer player )
 	{
-
+		
 	}
-
+	
 	@Override
-	public void closeInventory()
+	public void closeInventory(
+			EntityPlayer player )
 	{
-
+		
 	}
-
+	
 	@Override
 	public boolean isItemValidForSlot( int i, ItemStack itemstack )
 	{
 		return false;
+	}
+
+	@Override
+	public IChatComponent getDisplayName()
+	{
+		return null;
+	}
+
+	@Override
+	public int getField(
+			int id )
+	{
+		return 0;
+	}
+
+	@Override
+	public void setField(
+			int id,
+			int value )
+	{
+		
+	}
+
+	@Override
+	public int getFieldCount()
+	{
+		return 0;
+	}
+
+	@Override
+	public void clear()
+	{
+		
 	}
 }

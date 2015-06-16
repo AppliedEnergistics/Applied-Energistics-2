@@ -23,16 +23,17 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityHanging;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.Teleporter;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
-
 import appeng.api.AEApi;
 import appeng.api.util.WorldCoord;
 import appeng.core.stats.Achievements;
@@ -103,7 +104,7 @@ public class StorageHelper
 		}
 
 		// load the chunk!
-		WorldServer.class.cast( newWorld ).getChunkProvider().loadChunk( MathHelper.floor_double( link.x ) >> 4, MathHelper.floor_double( link.z ) >> 4 );
+		WorldServer.class.cast( newWorld ).getChunkProvider().provideChunk( MathHelper.floor_double( link.x ) >> 4, MathHelper.floor_double( link.z ) >> 4 );
 
 		boolean diffDestination = newWorld != oldWorld;
 		if( diffDestination )
@@ -115,7 +116,7 @@ public class StorageHelper
 					Achievements.SpatialIOExplorer.addToPlayer( player );
 				}
 
-				player.mcServer.getConfigurationManager().transferPlayerToDimension( player, link.dim.provider.dimensionId, new METeleporter( newWorld, link ) );
+				player.mcServer.getConfigurationManager().transferPlayerToDimension( player, link.dim.provider.getDimensionId(), new METeleporter( newWorld, link ) );
 			}
 			else
 			{
@@ -125,7 +126,7 @@ public class StorageHelper
 				if( ( entity.addedToChunk ) && ( oldWorld.getChunkProvider().chunkExists( entX, entZ ) ) )
 				{
 					oldWorld.getChunkFromChunkCoords( entX, entZ ).removeEntity( entity );
-					oldWorld.getChunkFromChunkCoords( entX, entZ ).isModified = true;
+					oldWorld.getChunkFromChunkCoords( entX, entZ ).setModified( true );
 				}
 
 				Entity newEntity = EntityList.createEntityByName( EntityList.getEntityString( entity ), newWorld );
@@ -138,13 +139,11 @@ public class StorageHelper
 					if( entity instanceof EntityHanging )
 					{
 						EntityHanging h = (EntityHanging) entity;
-						h.field_146063_b += link.xOff;
-						h.field_146064_c += link.yOff;
-						h.field_146062_d += link.zOff;
+						h.setPosition( link.x, link.y, link.z ); // TODO: VERIFIY THIS WORKS
 					}
 
-					newEntity.copyDataFrom( entity, true );
-					newEntity.dimension = newWorld.provider.dimensionId;
+					newEntity.copyDataFromOld( entity );
+					newEntity.dimension = newWorld.provider.getDimensionId();
 					newEntity.forceSpawn = true;
 
 					entity.isDead = true;
@@ -183,8 +182,8 @@ public class StorageHelper
 		{
 			for( int z = minZ; z < maxZ; z++ )
 			{
-				visitor.visit( minX, y, z );
-				visitor.visit( maxX, y, z );
+				visitor.visit( new BlockPos( minX, y, z ) );
+				visitor.visit( new BlockPos( maxX, y, z ) );
 			}
 		}
 
@@ -192,8 +191,8 @@ public class StorageHelper
 		{
 			for( int z = minZ; z < maxZ; z++ )
 			{
-				visitor.visit( x, minY, z );
-				visitor.visit( x, maxY, z );
+				visitor.visit( new BlockPos( x, minY, z ) );
+				visitor.visit( new BlockPos( x, maxY, z ) );
 			}
 		}
 
@@ -201,8 +200,8 @@ public class StorageHelper
 		{
 			for( int y = minY; y < maxY; y++ )
 			{
-				visitor.visit( x, y, minZ );
-				visitor.visit( x, y, maxZ );
+				visitor.visit( new BlockPos( x, y, minZ ) );
+				visitor.visit( new BlockPos( x, y, maxZ ) );
 			}
 		}
 	}
@@ -211,12 +210,12 @@ public class StorageHelper
 	{
 		for( Block matrixFrameBlock : AEApi.instance().definitions().blocks().matrixFrame().maybeBlock().asSet() )
 		{
-			this.transverseEdges( i - 1, j - 1, k - 1, i + scaleX + 1, j + scaleY + 1, k + scaleZ + 1, new WrapInMatrixFrame( matrixFrameBlock, 0, dst ) );
+			this.transverseEdges( i - 1, j - 1, k - 1, i + scaleX + 1, j + scaleY + 1, k + scaleZ + 1, new WrapInMatrixFrame( matrixFrameBlock.getDefaultState(), dst ) );
 		}
 
-		AxisAlignedBB srcBox = AxisAlignedBB.getBoundingBox( x, y, z, x + scaleX + 1, y + scaleY + 1, z + scaleZ + 1 );
+		AxisAlignedBB srcBox = AxisAlignedBB.fromBounds( x, y, z, x + scaleX + 1, y + scaleY + 1, z + scaleZ + 1 );
 
-		AxisAlignedBB dstBox = AxisAlignedBB.getBoundingBox( i, j, k, i + scaleX + 1, j + scaleY + 1, k + scaleZ + 1 );
+		AxisAlignedBB dstBox = AxisAlignedBB.fromBounds( i, j, k, i + scaleX + 1, j + scaleY + 1, k + scaleZ + 1 );
 
 		CachedPlane cDst = new CachedPlane( dst, i, j, k, i + scaleX, j + scaleY, k + scaleZ );
 		CachedPlane cSrc = new CachedPlane( src, x, y, z, x + scaleX, y + scaleY, z + scaleZ );
@@ -239,12 +238,12 @@ public class StorageHelper
 
 		for( WorldCoord wc : cDst.updates )
 		{
-			cDst.world.notifyBlockOfNeighborChange( wc.x, wc.y, wc.z, Platform.AIR_BLOCK );
+			cSrc.world.notifyBlockOfStateChange( wc.getPos(), Platform.AIR_BLOCK );
 		}
 
 		for( WorldCoord wc : cSrc.updates )
 		{
-			cSrc.world.notifyBlockOfNeighborChange( wc.x, wc.y, wc.z, Platform.AIR_BLOCK );
+			cSrc.world.notifyBlockOfStateChange( wc.getPos(), Platform.AIR_BLOCK );
 		}
 
 		this.transverseEdges( x - 1, y - 1, z - 1, x + scaleX + 1, y + scaleY + 1, z + scaleZ + 1, new TriggerUpdates( src ) );
@@ -273,10 +272,10 @@ public class StorageHelper
 		}
 
 		@Override
-		public void visit( int x, int y, int z )
+		public void visit( BlockPos pos )
 		{
-			Block blk = this.dst.getBlock( x, y, z );
-			blk.onNeighborBlockChange( this.dst, x, y, z, Platform.AIR_BLOCK );
+			Block blk = this.dst.getBlockState( pos ).getBlock();
+			blk.onNeighborBlockChange( this.dst, pos, Platform.AIR_BLOCK.getDefaultState(), Platform.AIR_BLOCK);
 		}
 	}
 
@@ -285,20 +284,18 @@ public class StorageHelper
 	{
 
 		final World dst;
-		final Block blkID;
-		final int Meta;
+		final IBlockState state;
 
-		public WrapInMatrixFrame( Block blockID, int metaData, World dst2 )
+		public WrapInMatrixFrame( IBlockState state, World dst2 )
 		{
 			this.dst = dst2;
-			this.blkID = blockID;
-			this.Meta = metaData;
+			this.state = state;
 		}
 
 		@Override
-		public void visit( int x, int y, int z )
+		public void visit( BlockPos pos )
 		{
-			this.dst.setBlock( x, y, z, this.blkID, this.Meta, 3 );
+			this.dst.setBlockState( pos, state );
 		}
 	}
 
@@ -339,14 +336,18 @@ public class StorageHelper
 		}
 
 		@Override
-		public void placeInPortal( Entity par1Entity, double par2, double par4, double par6, float par8 )
+		public void placeInPortal(
+				Entity par1Entity,
+				float rotationYaw )
 		{
 			par1Entity.setLocationAndAngles( this.destination.x, this.destination.y, this.destination.z, par1Entity.rotationYaw, 0.0F );
 			par1Entity.motionX = par1Entity.motionY = par1Entity.motionZ = 0.0D;
 		}
 
 		@Override
-		public boolean placeInExistingPortal( Entity par1Entity, double par2, double par4, double par6, float par8 )
+		public boolean placeInExistingPortal(
+				Entity entityIn,
+				float p_180620_2_ )
 		{
 			return false;
 		}

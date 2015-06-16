@@ -25,7 +25,6 @@ package appeng.api.implementations.guiobjects;
 
 
 import net.minecraft.inventory.IInventory;
-
 import appeng.api.networking.IGridHost;
 
 

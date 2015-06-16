@@ -19,25 +19,23 @@
 package appeng.parts;
 
 
-import java.io.IOException;
-
 import io.netty.buffer.ByteBuf;
 
-import net.minecraft.client.renderer.RenderBlocks;
-import net.minecraft.client.renderer.Tessellator;
+import java.io.IOException;
+
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
-import net.minecraftforge.common.util.ForgeDirection;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import appeng.api.implementations.IPowerChannelState;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.events.MENetworkChannelsChanged;
 import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.parts.IPartRenderHelper;
+import appeng.client.render.IRenderHelper;
 import appeng.client.texture.CableBusTextures;
 import appeng.me.GridAccessException;
 
@@ -69,34 +67,33 @@ public abstract class PartBasicState extends AEBasePart implements IPowerChannel
 	}
 
 	@SideOnly( Side.CLIENT )
-	public void renderLights( int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer )
+	public void renderLights( BlockPos pos, IPartRenderHelper rh, IRenderHelper renderer )
 	{
-		rh.normalRendering();
-		this.setColors( ( this.clientFlags & ( this.POWERED_FLAG | this.CHANNEL_FLAG ) ) == ( this.POWERED_FLAG | this.CHANNEL_FLAG ), ( this.clientFlags & this.POWERED_FLAG ) == this.POWERED_FLAG );
-		rh.renderFace( x, y, z, CableBusTextures.PartMonitorSidesStatusLights.getIcon(), ForgeDirection.EAST, renderer );
-		rh.renderFace( x, y, z, CableBusTextures.PartMonitorSidesStatusLights.getIcon(), ForgeDirection.WEST, renderer );
-		rh.renderFace( x, y, z, CableBusTextures.PartMonitorSidesStatusLights.getIcon(), ForgeDirection.UP, renderer );
-		rh.renderFace( x, y, z, CableBusTextures.PartMonitorSidesStatusLights.getIcon(), ForgeDirection.DOWN, renderer );
+		this.setColors( renderer, ( this.clientFlags & ( this.POWERED_FLAG | this.CHANNEL_FLAG ) ) == ( this.POWERED_FLAG | this.CHANNEL_FLAG ), ( this.clientFlags & this.POWERED_FLAG ) == this.POWERED_FLAG );
+		rh.renderFace( pos, CableBusTextures.PartMonitorSidesStatusLights.getIcon(), EnumFacing.EAST, renderer );
+		rh.renderFace( pos, CableBusTextures.PartMonitorSidesStatusLights.getIcon(), EnumFacing.WEST, renderer );
+		rh.renderFace( pos, CableBusTextures.PartMonitorSidesStatusLights.getIcon(), EnumFacing.UP, renderer );
+		rh.renderFace( pos, CableBusTextures.PartMonitorSidesStatusLights.getIcon(), EnumFacing.DOWN, renderer );
 	}
 
-	public void setColors( boolean hasChan, boolean hasPower )
+	public void setColors( IRenderHelper renderer, boolean hasChan, boolean hasPower )
 	{
 		if( hasChan )
 		{
 			int l = 14;
-			Tessellator.instance.setBrightness( l << 20 | l << 4 );
-			Tessellator.instance.setColorOpaque_I( this.getColor().blackVariant );
+			renderer.setBrightness( l << 20 | l << 4 );
+			renderer.setColorOpaque_I( this.getColor().blackVariant );
 		}
 		else if( hasPower )
 		{
 			int l = 9;
-			Tessellator.instance.setBrightness( l << 20 | l << 4 );
-			Tessellator.instance.setColorOpaque_I( this.getColor().whiteVariant );
+			renderer.setBrightness( l << 20 | l << 4 );
+			renderer.setColorOpaque_I( this.getColor().whiteVariant );
 		}
 		else
 		{
-			Tessellator.instance.setBrightness( 0 );
-			Tessellator.instance.setColorOpaque_I( 0x000000 );
+			renderer.setBrightness( 0 );
+			renderer.setColorOpaque_I( 0x000000 );
 		}
 	}
 
@@ -147,9 +144,9 @@ public abstract class PartBasicState extends AEBasePart implements IPowerChannel
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public IIcon getBreakingTexture()
+	public TextureAtlasSprite getBreakingTexture( IRenderHelper renderer )
 	{
-		return CableBusTextures.PartTransitionPlaneBack.getIcon();
+		return CableBusTextures.PartTransitionPlaneBack.getIcon().getAtlas();
 	}
 
 	@Override

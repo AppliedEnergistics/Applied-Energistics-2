@@ -21,18 +21,18 @@ package appeng.util.inv;
 
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 
 public class WrapperMCISidedInventory extends WrapperInventoryRange implements IInventoryWrapper
 {
 
 	final ISidedInventory side;
-	private final ForgeDirection dir;
+	private final EnumFacing dir;
 
-	public WrapperMCISidedInventory( ISidedInventory a, ForgeDirection d )
+	public WrapperMCISidedInventory( ISidedInventory a, EnumFacing d )
 	{
-		super( a, a.getAccessibleSlotsFromSide( d.ordinal() ), false );
+		super( a, a.getSlotsForFace( d ), false );
 		this.side = a;
 		this.dir = d;
 	}
@@ -58,7 +58,7 @@ public class WrapperMCISidedInventory extends WrapperInventoryRange implements I
 
 		if( this.side.isItemValidForSlot( this.slots[i], itemstack ) )
 		{
-			return this.side.canInsertItem( this.slots[i], itemstack, this.dir.ordinal() );
+			return this.side.canInsertItem( this.slots[i], itemstack, this.dir );
 		}
 
 		return false;
@@ -72,6 +72,6 @@ public class WrapperMCISidedInventory extends WrapperInventoryRange implements I
 			return false;
 		}
 
-		return this.side.canExtractItem( this.slots[i], is, this.dir.ordinal() );
+		return this.side.canExtractItem( this.slots[i], is, this.dir );
 	}
 }

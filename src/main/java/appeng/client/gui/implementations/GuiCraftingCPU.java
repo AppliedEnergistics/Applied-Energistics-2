@@ -26,14 +26,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import com.google.common.base.Joiner;
-
-import org.apache.commons.lang3.time.DurationFormatUtils;
-import org.lwjgl.opengl.GL11;
-
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
+
+import org.apache.commons.lang3.time.DurationFormatUtils;
+import org.lwjgl.opengl.GL11;
 
 import appeng.api.AEApi;
 import appeng.api.config.SortDir;
@@ -53,6 +51,8 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketValueConfig;
 import appeng.util.Platform;
 import appeng.util.ReadableNumberConverter;
+
+import com.google.common.base.Joiner;
 
 
 public class GuiCraftingCPU extends AEBaseGui implements ISortSource
@@ -115,7 +115,7 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 	}
 
 	@Override
-	protected void actionPerformed( GuiButton btn )
+	protected void actionPerformed( GuiButton btn ) throws IOException
 	{
 		super.actionPerformed( btn );
 

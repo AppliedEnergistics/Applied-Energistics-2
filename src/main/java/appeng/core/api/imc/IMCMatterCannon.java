@@ -34,9 +34,7 @@ package appeng.core.api.imc;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-
-import cpw.mods.fml.common.event.FMLInterModComms.IMCMessage;
-
+import net.minecraftforge.fml.common.event.FMLInterModComms.IMCMessage;
 import appeng.api.AEApi;
 import appeng.core.api.IIMCProcessor;
 

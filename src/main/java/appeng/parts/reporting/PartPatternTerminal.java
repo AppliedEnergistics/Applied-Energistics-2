@@ -25,7 +25,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-
 import appeng.api.implementations.ICraftingPatternItem;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.storage.data.IAEItemStack;
@@ -94,9 +93,9 @@ public class PartPatternTerminal extends PartTerminal
 		int z = (int) p.posZ;
 		if( this.getHost().getTile() != null )
 		{
-			x = this.tile.xCoord;
-			y = this.tile.yCoord;
-			z = this.tile.zCoord;
+			x = this.tile.getPos().getX();
+			y = this.tile.getPos().getY();
+			z = this.tile.getPos().getZ();
 		}
 
 		if( GuiBridge.GUI_PATTERN_TERMINAL.hasPermissions( this.getHost().getTile(), x, y, z, this.side, p ) )
@@ -115,7 +114,7 @@ public class PartPatternTerminal extends PartTerminal
 			if( is != null && is.getItem() instanceof ICraftingPatternItem )
 			{
 				ICraftingPatternItem pattern = (ICraftingPatternItem) is.getItem();
-				ICraftingPatternDetails details = pattern.getPatternForItem( is, this.getHost().getTile().getWorldObj() );
+				ICraftingPatternDetails details = pattern.getPatternForItem( is, this.getHost().getTile().getWorld() );
 				if( details != null )
 				{
 					this.setCraftingRecipe( details.isCraftable() );

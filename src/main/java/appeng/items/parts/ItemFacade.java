@@ -26,6 +26,7 @@ import java.util.List;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockGlass;
 import net.minecraft.block.BlockStainedGlass;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -33,26 +34,25 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumWorldBlockLayer;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraftforge.client.MinecraftForgeClient;
-import net.minecraftforge.common.util.ForgeDirection;
-
-import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.common.registry.GameRegistry.UniqueIdentifier;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
+import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.common.registry.GameRegistry.UniqueIdentifier;
 import appeng.api.AEApi;
 import appeng.api.exceptions.MissingDefinition;
 import appeng.api.parts.IAlphaPassItem;
+import appeng.api.util.AEPartLocation;
 import appeng.block.solids.OreQuartz;
-import appeng.client.render.BusRenderer;
+import appeng.client.texture.BaseIcon;
+import appeng.core.AppEng;
 import appeng.core.FacadeConfig;
 import appeng.core.features.AEFeature;
 import appeng.facade.FacadePart;
 import appeng.facade.IFacadeItem;
 import appeng.items.AEBaseItem;
-import appeng.util.Platform;
 
 
 public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassItem
@@ -64,23 +64,20 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 	{
 		this.setFeature( EnumSet.of( AEFeature.Facades ) );
 		this.setHasSubtypes( true );
-		if( Platform.isClient() )
-		{
-			MinecraftForgeClient.registerItemRenderer( this, BusRenderer.INSTANCE );
-		}
 	}
 
 	@Override
-	@SideOnly( Side.CLIENT )
-	public int getSpriteNumber()
+	public boolean onItemUseFirst(
+			ItemStack is,
+			EntityPlayer player,
+			World world,
+			BlockPos pos,
+			EnumFacing side,
+			float hitX,
+			float hitY,
+			float hitZ )
 	{
-		return 0;
-	}
-
-	@Override
-	public boolean onItemUse( ItemStack is, EntityPlayer player, World w, int x, int y, int z, int side, float hitX, float hitY, float hitZ )
-	{
-		return AEApi.instance().partHelper().placeBus( is, x, y, z, side, player, w );
+		return AEApi.instance().partHelper().placeBus( is, pos, side, player, world );
 	}
 
 	@Override
@@ -160,7 +157,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 
 		int metadata = l.getItem().getMetadata( l.getItemDamage() );
 
-		boolean hasTile = b.hasTileEntity( metadata );
+		boolean hasTile = b.hasTileEntity( b.getStateFromMeta( metadata ) );
 		boolean enableGlass = b instanceof BlockGlass || b instanceof BlockStainedGlass;
 		boolean disableOre = b instanceof OreQuartz;
 
@@ -188,7 +185,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 	}
 
 	@Override
-	public FacadePart createPartFromItemStack( ItemStack is, ForgeDirection side )
+	public FacadePart createPartFromItemStack( ItemStack is, AEPartLocation side )
 	{
 		ItemStack in = this.getTextureItem( is );
 		if( in != null )
@@ -232,6 +229,9 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 		{
 			if( data.hasKey( "modid" ) && data.hasKey( "itemname" ) )
 			{
+				if ( data.getString( "modid" ).equals( "minecraft" ) )
+					return Block.getBlockFromName( data.getString( "itemname" ) );
+				
 				return GameRegistry.findBlock( data.getString( "modid" ), data.getString( "itemname" ) );
 			}
 			else
@@ -287,11 +287,18 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 		}
 
 		Block blk = Block.getBlockFromItem( out.getItem() );
-		if( blk != null && blk.canRenderInPass( 1 ) )
+		if( blk != null && blk.canRenderInLayer( EnumWorldBlockLayer.TRANSLUCENT ) )
 		{
 			return true;
 		}
 
 		return false;
+	}
+	
+	@Override
+	public void registerCustomIcon(			
+			TextureMap map )
+	{
+		myIcon = new BaseIcon( map.registerSprite( new ResourceLocation( AppEng.MOD_ID, "blocks/ItemFacade" ) ));		
 	}
 }

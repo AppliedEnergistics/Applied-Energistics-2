@@ -24,12 +24,12 @@
 package appeng.api.parts;
 
 
-import java.io.IOException;
-
 import io.netty.buffer.ByteBuf;
 
+import java.io.IOException;
+
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.common.util.ForgeDirection;
+import appeng.api.util.AEPartLocation;
 
 
 /**
@@ -50,12 +50,12 @@ public interface IFacadeContainer
 	/**
 	 * Removed the facade on the given side, or does nothing.
 	 */
-	void removeFacade( IPartHost host, ForgeDirection side );
+	void removeFacade( IPartHost host, AEPartLocation side );
 
 	/**
 	 * @return the {@link IFacadePart} for a given side, or null.
 	 */
-	IFacadePart getFacade( ForgeDirection s );
+	IFacadePart getFacade( AEPartLocation s );
 
 	/**
 	 * rotate the facades left.

@@ -23,21 +23,13 @@ import java.util.LinkedList;
 import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityChest;
-import net.minecraft.util.IIcon;
-import net.minecraftforge.common.util.ForgeDirection;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
-import buildcraft.api.transport.IPipeConnection;
-import buildcraft.api.transport.IPipeTile.PipeType;
-
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.IChatComponent;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.events.MENetworkBootingStatusChange;
 import appeng.api.networking.events.MENetworkChannelsChanged;
@@ -47,22 +39,17 @@ import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.core.settings.TickRates;
-import appeng.integration.IntegrationRegistry;
-import appeng.integration.IntegrationType;
-import appeng.integration.abstraction.IBC;
 import appeng.me.GridAccessException;
 import appeng.me.cache.helpers.TunnelCollection;
 import appeng.tile.inventory.AppEngNullInventory;
-import appeng.transformer.annotations.Integration.Interface;
-import appeng.transformer.annotations.Integration.Method;
 import appeng.util.Platform;
-import appeng.util.inv.WrapperBCPipe;
 import appeng.util.inv.WrapperChainedInventory;
 import appeng.util.inv.WrapperMCISidedInventory;
 
 
-@Interface( iface = "buildcraft.api.transport.IPipeConnection", iname = "BC" )
-public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeConnection, ISidedInventory, IGridTickable
+// TODO: BUILD CRAFT INTEGRATION
+// @Interface( iface = "buildcraft.api.transport.IPipeConnection", iname = "BC" ) IPipeConnection
+public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements ISidedInventory, IGridTickable
 {
 
 	final LinkedList<IInventory> which = new LinkedList<IInventory>();
@@ -132,7 +119,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 
 		if( this.proxy.isActive() )
 		{
-			TileEntity te = this.tile.getWorldObj().getTileEntity( this.tile.xCoord + this.side.offsetX, this.tile.yCoord + this.side.offsetY, this.tile.zCoord + this.side.offsetZ );
+			TileEntity te = this.tile.getWorld().getTileEntity( this.tile.getPos().offset( side.getFacing() ) );
 
 			if( this.which.contains( this ) )
 			{
@@ -141,6 +128,8 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 
 			this.which.add( this );
 
+			/*
+			// TODO: BUILD CRAFT INTEGRATION
 			if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.BC ) )
 			{
 				IBC buildcraft = (IBC) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.BC );
@@ -150,7 +139,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 					{
 						try
 						{
-							output = new WrapperBCPipe( te, this.side.getOpposite() );
+							output = new WrapperBCPipe( te, this.side.getFacing().getOpposite() );
 						}
 						catch( Throwable ignore )
 						{
@@ -158,7 +147,8 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 					}
 				}
 			}
-
+			*/
+			
 			/*
 			 * if ( AppEng.INSTANCE.isIntegrationEnabled( "TE" ) ) { ITE thermal = (ITE) AppEng.INSTANCE.getIntegration(
 			 * "TE" ); if ( thermal != null ) { if ( thermal.isPipe( te, side.getOpposite() ) ) { try { output = new
@@ -173,7 +163,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 				}
 				else if( te instanceof ISidedInventory )
 				{
-					output = new WrapperMCISidedInventory( (ISidedInventory) te, this.side.getOpposite() );
+					output = new WrapperMCISidedInventory( (ISidedInventory) te, this.side.getFacing().getOpposite() );
 				}
 				else if( te instanceof IInventory )
 				{
@@ -253,13 +243,6 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 	}
 
 	@Override
-	@SideOnly( Side.CLIENT )
-	public IIcon getTypeTexture()
-	{
-		return Blocks.hopper.getBlockTextureFromSide( 0 );
-	}
-
-	@Override
 	public void onTunnelNetworkChange()
 	{
 		if( !this.output )
@@ -283,7 +266,8 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 	}
 
 	@Override
-	public int[] getAccessibleSlotsFromSide( int var1 )
+	public int[] getSlotsForFace(
+			EnumFacing side )
 	{
 		int[] slots = new int[this.getSizeInventory()];
 		for( int x = 0; x < this.getSizeInventory(); x++ )
@@ -324,13 +308,13 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 	}
 
 	@Override
-	public String getInventoryName()
+	public String getName()
 	{
 		return null;
 	}
 
 	@Override
-	public boolean hasCustomInventoryName()
+	public boolean hasCustomName()
 	{
 		return false;
 	}
@@ -354,12 +338,12 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 	}
 
 	@Override
-	public void openInventory()
+	public void openInventory(EntityPlayer p)
 	{
 	}
 
 	@Override
-	public void closeInventory()
+	public void closeInventory(EntityPlayer p)
 	{
 	}
 
@@ -370,13 +354,13 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 	}
 
 	@Override
-	public boolean canInsertItem( int i, ItemStack itemstack, int j )
+	public boolean canInsertItem( int i, ItemStack itemstack, EnumFacing j )
 	{
 		return this.getDestination().isItemValidForSlot( i, itemstack );
 	}
 
 	@Override
-	public boolean canExtractItem( int i, ItemStack itemstack, int j )
+	public boolean canExtractItem( int i, ItemStack itemstack, EnumFacing j )
 	{
 		return false;
 	}
@@ -387,9 +371,45 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 	}
 
 	@Override
+	public int getField(
+			int id )
+	{
+		return 0;
+	}
+
+	@Override
+	public void setField(
+			int id,
+			int value )
+	{
+		
+	}
+
+	@Override
+	public int getFieldCount()
+	{
+		return 0;
+	}
+
+	@Override
+	public void clear()
+	{
+		// probobly not...
+	}
+
+	@Override
+	public IChatComponent getDisplayName()
+	{
+		return null;
+	}
+
+	/*
+	// TODO: BUILD CRAFT INTEGRATION
+	@Override
 	@Method( iname = "BC" )
-	public ConnectOverride overridePipeConnection( PipeType type, ForgeDirection with )
+	public ConnectOverride overridePipeConnection( PipeType type, AEPartLocation with )
 	{
 		return this.side == with && type == PipeType.ITEM ? ConnectOverride.CONNECT : ConnectOverride.DEFAULT;
 	}
+	*/
 }

@@ -28,13 +28,13 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
-import com.google.common.collect.ImmutableList;
-
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
+
+import com.google.common.collect.ImmutableList;
 
 
 /**
@@ -55,13 +55,13 @@ public class MEMonitorHandler<StackType extends IAEStack> implements IMEMonitor<
 	public MEMonitorHandler( IMEInventoryHandler<StackType> t )
 	{
 		this.internalHandler = t;
-		this.cachedList = (IItemList<StackType>) t.getChannel().createList();
+		this.cachedList = t.getChannel().createList();
 	}
 
 	public MEMonitorHandler( IMEInventoryHandler<StackType> t, StorageChannel chan )
 	{
 		this.internalHandler = t;
-		this.cachedList = (IItemList<StackType>) chan.createList();
+		this.cachedList = chan.createList();
 	}
 
 	@Override

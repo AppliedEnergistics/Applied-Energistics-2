@@ -21,28 +21,30 @@ package appeng.items.misc;
 
 import java.util.EnumSet;
 import java.util.List;
+
 import javax.annotation.Nullable;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.ItemMeshDefinition;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
-
-import cpw.mods.fml.common.registry.EntityRegistry;
-
+import net.minecraftforge.fml.common.registry.EntityRegistry;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import appeng.api.AEApi;
 import appeng.api.definitions.IMaterials;
 import appeng.api.implementations.items.IGrowableCrystal;
 import appeng.api.recipes.ResolverResult;
+import appeng.client.ClientHelper;
 import appeng.core.AppEng;
 import appeng.core.features.AEFeature;
 import appeng.core.localization.ButtonToolTips;
@@ -63,9 +65,9 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 	public static final int FLUIX = SINGLE_OFFSET * 2;
 	public static final int FINAL_STAGE = SINGLE_OFFSET * 3;
 
-	final IIcon[] certus = new IIcon[3];
-	final IIcon[] fluix = new IIcon[3];
-	final IIcon[] nether = new IIcon[3];
+	final ModelResourceLocation[] certus = new ModelResourceLocation[3];
+	final ModelResourceLocation[] fluix = new ModelResourceLocation[3];
+	final ModelResourceLocation[] nether = new ModelResourceLocation[3];
 
 	public ItemCrystalSeed()
 	{
@@ -75,6 +77,71 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 		EntityRegistry.registerModEntity( EntityGrowingCrystal.class, EntityGrowingCrystal.class.getSimpleName(), EntityIds.get( EntityGrowingCrystal.class ), AppEng.instance(), 16, 4, true );
 	}
 
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void registerIcons( ClientHelper ir, String name )
+	{
+		String preFix = name+".";
+
+		this.certus[0] = ir.setIcon( this, preFix + "Certus" );
+		this.certus[1] = ir.setIcon( this, preFix + "Certus2" );
+		this.certus[2] = ir.setIcon( this, preFix + "Certus3" );
+
+		this.nether[0] = ir.setIcon( this, preFix + "Nether" );
+		this.nether[1] = ir.setIcon( this, preFix + "Nether2" );
+		this.nether[2] = ir.setIcon( this, preFix + "Nether3" );
+
+		this.fluix[0] = ir.setIcon( this, preFix + "Fluix" );
+		this.fluix[1] = ir.setIcon( this, preFix + "Fluix2" );
+		this.fluix[2] = ir.setIcon( this, preFix + "Fluix3" );
+		
+		Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register( this, new ItemMeshDefinition(){
+			
+			@Override
+			public ModelResourceLocation getModelLocation(
+					ItemStack stack )
+			{
+				ModelResourceLocation[] list = null;
+
+				int damage = getProgress( stack );
+
+				if( damage < CERTUS + SINGLE_OFFSET )
+				{
+					list = certus;
+				}
+				else if( damage < NETHER + SINGLE_OFFSET )
+				{
+					damage -= NETHER;
+					list = nether;
+				}
+
+				else if( damage < FLUIX + SINGLE_OFFSET )
+				{
+					damage -= FLUIX;
+					list = fluix;
+				}
+
+				if( list == null )
+				{
+					return new ModelResourceLocation( "diamond" );
+				}
+
+				if( damage < LEVEL_OFFSET )
+				{
+					return list[0];
+				}
+				else if( damage < LEVEL_OFFSET * 2 )
+				{
+					return list[1];
+				}
+				else
+				{
+					return list[2];
+				}
+			}
+		});
+	}
+	
 	@Nullable
 	public static ResolverResult getResolver( int certus2 )
 	{
@@ -221,72 +288,6 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 	}
 
 	@Override
-	public IIcon getIcon( ItemStack stack, int pass )
-	{
-		return this.getIconIndex( stack );
-	}
-
-	@Override
-	public IIcon getIconIndex( ItemStack stack )
-	{
-		IIcon[] list = null;
-
-		int damage = this.getProgress( stack );
-
-		if( damage < CERTUS + SINGLE_OFFSET )
-		{
-			list = this.certus;
-		}
-		else if( damage < NETHER + SINGLE_OFFSET )
-		{
-			damage -= NETHER;
-			list = this.nether;
-		}
-
-		else if( damage < FLUIX + SINGLE_OFFSET )
-		{
-			damage -= FLUIX;
-			list = this.fluix;
-		}
-
-		if( list == null )
-		{
-			return Items.diamond.getIconFromDamage( 0 );
-		}
-
-		if( damage < LEVEL_OFFSET )
-		{
-			return list[0];
-		}
-		else if( damage < LEVEL_OFFSET * 2 )
-		{
-			return list[1];
-		}
-		else
-		{
-			return list[2];
-		}
-	}
-
-	@Override
-	public void registerIcons( IIconRegister ir )
-	{
-		String preFix = "appliedenergistics2:ItemCrystalSeed.";
-
-		this.certus[0] = ir.registerIcon( preFix + "Certus" );
-		this.certus[1] = ir.registerIcon( preFix + "Certus2" );
-		this.certus[2] = ir.registerIcon( preFix + "Certus3" );
-
-		this.nether[0] = ir.registerIcon( preFix + "Nether" );
-		this.nether[1] = ir.registerIcon( preFix + "Nether2" );
-		this.nether[2] = ir.registerIcon( preFix + "Nether3" );
-
-		this.fluix[0] = ir.registerIcon( preFix + "Fluix" );
-		this.fluix[1] = ir.registerIcon( preFix + "Fluix2" );
-		this.fluix[2] = ir.registerIcon( preFix + "Fluix3" );
-	}
-
-	@Override
 	public boolean hasCustomEntity( ItemStack stack )
 	{
 		return true;
@@ -303,7 +304,9 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 
 		if( location instanceof EntityItem )
 		{
-			egc.delayBeforeCanPickup = ( (EntityItem) location ).delayBeforeCanPickup;
+			// TODO: DELAY BEFORE PICKUP
+			// NEEDS FIXING?!?!
+			// egc.delayBeforeCanPickup = ( (EntityItem) location ).delayBeforeCanPickup;
 		}
 
 		return egc;

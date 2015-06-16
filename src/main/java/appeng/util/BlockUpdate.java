@@ -21,6 +21,7 @@ package appeng.util;
 
 import java.util.concurrent.Callable;
 
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 
 
@@ -28,24 +29,20 @@ public class BlockUpdate implements Callable
 {
 
 	final World w;
-	final int x;
-	final int y;
-	final int z;
+	final BlockPos pos;
 
-	public BlockUpdate( World w, int x, int y, int z )
+	public BlockUpdate( World w, BlockPos pos )
 	{
 		this.w = w;
-		this.x = x;
-		this.y = y;
-		this.z = z;
+		this.pos=pos;
 	}
 
 	@Override
 	public Object call() throws Exception
 	{
-		if( this.w.blockExists( this.x, this.y, this.z ) )
+		if( this.w.isBlockLoaded( this.pos ) )
 		{
-			this.w.notifyBlocksOfNeighborChange( this.x, this.y, this.z, Platform.AIR_BLOCK );
+			this.w.notifyNeighborsOfStateChange( this.pos, Platform.AIR_BLOCK );
 		}
 
 		return true;

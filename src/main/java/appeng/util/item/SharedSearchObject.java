@@ -21,7 +21,6 @@ package appeng.util.item;
 
 import net.minecraft.item.Item;
 import net.minecraft.nbt.NBTTagCompound;
-
 import appeng.util.Platform;
 
 

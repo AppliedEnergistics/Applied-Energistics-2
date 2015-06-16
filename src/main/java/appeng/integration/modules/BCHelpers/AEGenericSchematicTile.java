@@ -23,11 +23,9 @@ import java.util.ArrayList;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import buildcraft.api.blueprints.IBuilderContext;
 import buildcraft.api.blueprints.SchematicTile;
-
+import appeng.api.util.ForgeDirection;
 import appeng.api.util.ICommonTile;
 import appeng.tile.AEBaseTile;
 import appeng.util.Platform;

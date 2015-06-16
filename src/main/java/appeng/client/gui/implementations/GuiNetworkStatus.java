@@ -19,15 +19,16 @@
 package appeng.client.gui.implementations;
 
 
+import java.io.IOException;
 import java.util.List;
-
-import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+
+import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.GL11;
 
 import appeng.api.config.Settings;
 import appeng.api.config.SortDir;
@@ -66,7 +67,7 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 	}
 
 	@Override
-	protected void actionPerformed( GuiButton btn )
+	protected void actionPerformed( GuiButton btn ) throws IOException
 	{
 		super.actionPerformed( btn );
 

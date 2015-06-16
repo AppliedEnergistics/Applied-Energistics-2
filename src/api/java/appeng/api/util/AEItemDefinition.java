@@ -30,8 +30,8 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.IBlockAccess;
-
 import appeng.api.definitions.IBlockDefinition;
 import appeng.api.definitions.IComparableDefinition;
 import appeng.api.definitions.IItemDefinition;
@@ -98,14 +98,12 @@ public interface AEItemDefinition
 	 * Compare Block with world.
 	 *
 	 * @param world world of block
-	 * @param x     x pos of block
-	 * @param y     y pos of block
-	 * @param z     z pos of block
+	 * @param pos in world.
 	 *
 	 * @return if the block is placed in the world at the specific location.
 	 *
 	 * @deprecated use {@link IComparableDefinition#isSameAs(IBlockAccess, int, int, int)} }
 	 */
 	@Deprecated
-	boolean sameAsBlock( IBlockAccess world, int x, int y, int z );
+	boolean sameAsBlock( IBlockAccess world, BlockPos pos  );
 }

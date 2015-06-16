@@ -23,9 +23,11 @@ import java.util.EnumSet;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumWorldBlockLayer;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-
+import appeng.api.util.AEPartLocation;
 import appeng.block.AEBaseTileBlock;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.blocks.RendererSecurity;
@@ -47,20 +49,33 @@ public class BlockSecurity extends AEBaseTileBlock
 	}
 
 	@Override
+	public EnumWorldBlockLayer getBlockLayer()
+	{
+		return EnumWorldBlockLayer.CUTOUT;
+	}
+
+	@Override
 	protected Class<? extends BaseBlockRender> getRenderer()
 	{
 		return RendererSecurity.class;
 	}
-
+	
 	@Override
-	public boolean onActivated( World w, int x, int y, int z, EntityPlayer p, int side, float hitX, float hitY, float hitZ )
+	public boolean onActivated(
+			World w,
+			BlockPos pos,
+			EntityPlayer p,
+			EnumFacing side,
+			float hitX,
+			float hitY,
+			float hitZ )
 	{
 		if( p.isSneaking() )
 		{
 			return false;
 		}
 
-		TileSecurity tg = this.getTileEntity( w, x, y, z );
+		TileSecurity tg = this.getTileEntity( w, pos );
 		if( tg != null )
 		{
 			if( Platform.isClient() )
@@ -68,7 +83,7 @@ public class BlockSecurity extends AEBaseTileBlock
 				return true;
 			}
 
-			Platform.openGUI( p, tg, ForgeDirection.getOrientation( side ), GuiBridge.GUI_SECURITY );
+			Platform.openGUI( p, tg, AEPartLocation.fromFacing( side ), GuiBridge.GUI_SECURITY );
 			return true;
 		}
 		return false;

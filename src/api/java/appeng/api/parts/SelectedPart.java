@@ -24,7 +24,7 @@
 package appeng.api.parts;
 
 
-import net.minecraftforge.common.util.ForgeDirection;
+import appeng.api.util.AEPartLocation;
 
 
 /**
@@ -44,25 +44,25 @@ public class SelectedPart
 	public final IFacadePart facade;
 
 	/**
-	 * side the part is mounted too, or {@link ForgeDirection}.UNKNOWN for cables.
+	 * side the part is mounted too, or {@link AEPartLocation}.UNKNOWN for cables.
 	 */
-	public final ForgeDirection side;
+	public final AEPartLocation side;
 
 	public SelectedPart()
 	{
 		this.part = null;
 		this.facade = null;
-		this.side = ForgeDirection.UNKNOWN;
+		this.side = AEPartLocation.INTERNAL;
 	}
 
-	public SelectedPart( IPart part, ForgeDirection side )
+	public SelectedPart( IPart part, AEPartLocation side )
 	{
 		this.part = part;
 		this.facade = null;
 		this.side = side;
 	}
 
-	public SelectedPart( IFacadePart facade, ForgeDirection side )
+	public SelectedPart( IFacadePart facade, AEPartLocation side )
 	{
 		this.part = null;
 		this.facade = facade;

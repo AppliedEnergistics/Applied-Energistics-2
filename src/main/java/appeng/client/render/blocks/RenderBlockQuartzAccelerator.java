@@ -19,14 +19,14 @@
 package appeng.client.render.blocks;
 
 
-import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.IBlockAccess;
-
 import appeng.block.misc.BlockQuartzGrowthAccelerator;
 import appeng.client.render.BaseBlockRender;
+import appeng.client.render.IRenderHelper;
 import appeng.client.texture.ExtraBlockTextures;
+import appeng.client.texture.IAESprite;
 import appeng.tile.misc.TileQuartzGrowthAccelerator;
 
 
@@ -39,20 +39,20 @@ public class RenderBlockQuartzAccelerator extends BaseBlockRender<BlockQuartzGro
 	}
 
 	@Override
-	public boolean renderInWorld( BlockQuartzGrowthAccelerator blk, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
+	public boolean renderInWorld( BlockQuartzGrowthAccelerator blk, IBlockAccess world, BlockPos pos, IRenderHelper renderer )
 	{
-		TileEntity te = world.getTileEntity( x, y, z );
+		TileEntity te = world.getTileEntity( pos );
 		if( te instanceof TileQuartzGrowthAccelerator )
 		{
 			if( ( (TileQuartzGrowthAccelerator) te ).hasPower )
 			{
-				IIcon top_Bottom = ExtraBlockTextures.BlockQuartzGrowthAcceleratorOn.getIcon();
-				IIcon side = ExtraBlockTextures.BlockQuartzGrowthAcceleratorSideOn.getIcon();
+				IAESprite top_Bottom = ExtraBlockTextures.BlockQuartzGrowthAcceleratorOn.getIcon();
+				IAESprite side = ExtraBlockTextures.BlockQuartzGrowthAcceleratorSideOn.getIcon();
 				blk.getRendererInstance().setTemporaryRenderIcons( top_Bottom, top_Bottom, side, side, side, side );
 			}
 		}
 
-		boolean out = super.renderInWorld( blk, world, x, y, z, renderer );
+		boolean out = super.renderInWorld( blk, world, pos, renderer );
 		blk.getRendererInstance().setTemporaryRenderIcon( null );
 
 		return out;

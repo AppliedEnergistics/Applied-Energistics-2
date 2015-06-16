@@ -20,11 +20,10 @@ package appeng.tile.storage;
 
 
 import io.netty.buffer.ByteBuf;
-
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.util.ForgeDirection;
-
+import net.minecraft.util.EnumFacing;
 import appeng.tile.AEBaseInvTile;
 import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
@@ -77,7 +76,7 @@ public class TileSkyChest extends AEBaseInvTile
 	}
 
 	@Override
-	public void openInventory()
+	public void openInventory( EntityPlayer player )
 	{
 		if( Platform.isClient() )
 		{
@@ -88,13 +87,13 @@ public class TileSkyChest extends AEBaseInvTile
 
 		if( this.playerOpen == 1 )
 		{
-			this.getWorldObj().playSoundEffect( this.xCoord + 0.5D, this.yCoord + 0.5D, this.zCoord + 0.5D, "random.chestopen", 0.5F, this.getWorldObj().rand.nextFloat() * 0.1F + 0.9F );
+			this.getWorld().playSoundEffect( pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, "random.chestopen", 0.5F, this.getWorld().rand.nextFloat() * 0.1F + 0.9F );
 			this.markForUpdate();
 		}
 	}
 
 	@Override
-	public void closeInventory()
+	public void closeInventory( EntityPlayer player )
 	{
 		if( Platform.isClient() )
 		{
@@ -110,7 +109,7 @@ public class TileSkyChest extends AEBaseInvTile
 
 		if( this.playerOpen == 0 )
 		{
-			this.getWorldObj().playSoundEffect( this.xCoord + 0.5D, this.yCoord + 0.5D, this.zCoord + 0.5D, "random.chestclosed", 0.5F, this.getWorldObj().rand.nextFloat() * 0.1F + 0.9F );
+			this.getWorld().playSoundEffect( pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, "random.chestclosed", 0.5F, this.getWorld().rand.nextFloat() * 0.1F + 0.9F );
 			this.markForUpdate();
 		}
 	}
@@ -122,7 +121,7 @@ public class TileSkyChest extends AEBaseInvTile
 	}
 
 	@Override
-	public int[] getAccessibleSlotsBySide( ForgeDirection side )
+	public int[] getAccessibleSlotsBySide( EnumFacing side )
 	{
 		return this.sides;
 	}

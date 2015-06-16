@@ -25,7 +25,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-
 import appeng.client.texture.CableBusTextures;
 import appeng.core.sync.GuiBridge;
 import appeng.helpers.Reflected;
@@ -84,9 +83,9 @@ public class PartCraftingTerminal extends PartTerminal
 		int z = (int) p.posZ;
 		if( this.getHost().getTile() != null )
 		{
-			x = this.tile.xCoord;
-			y = this.tile.yCoord;
-			z = this.tile.zCoord;
+			x = this.tile.getPos().getX();
+			y = this.tile.getPos().getY();
+			z = this.tile.getPos().getZ();
 		}
 
 		if( GuiBridge.GUI_CRAFTING_TERMINAL.hasPermissions( this.getHost().getTile(), x, y, z, this.side, p ) )

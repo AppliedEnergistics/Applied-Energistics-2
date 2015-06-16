@@ -21,17 +21,17 @@ package appeng.client.render.blocks;
 
 import java.util.EnumSet;
 
-import net.minecraft.client.renderer.RenderBlocks;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.IItemRenderer.ItemRenderType;
-import net.minecraftforge.common.util.ForgeDirection;
-
+import appeng.api.util.AEPartLocation;
 import appeng.block.storage.BlockDrive;
 import appeng.client.render.BaseBlockRender;
+import appeng.client.render.IRenderHelper;
 import appeng.client.texture.ExtraBlockTextures;
+import appeng.client.texture.IAESprite;
 import appeng.tile.storage.TileDrive;
 import appeng.util.Platform;
 
@@ -45,31 +45,30 @@ public class RenderDrive extends BaseBlockRender<BlockDrive, TileDrive>
 	}
 
 	@Override
-	public void renderInventory( BlockDrive block, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj )
+	public void renderInventory( BlockDrive block, ItemStack is, IRenderHelper renderer, ItemRenderType type, Object[] obj )
 	{
-		renderer.overrideBlockTexture = ExtraBlockTextures.getMissing();
-		this.renderInvBlock( EnumSet.of( ForgeDirection.SOUTH ), block, is, Tessellator.instance, 0x000000, renderer );
+		renderer.overrideBlockTexture = ExtraBlockTextures.White.getIcon();
+		this.renderInvBlock( EnumSet.of( AEPartLocation.SOUTH ), block, is, 0x000000, renderer );
 
 		renderer.overrideBlockTexture = null;
 		super.renderInventory( block, is, renderer, type, obj );
 	}
 
 	@Override
-	public boolean renderInWorld( BlockDrive imb, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
+	public boolean renderInWorld( BlockDrive imb, IBlockAccess world, BlockPos pos, IRenderHelper renderer )
 	{
-		TileDrive sp = imb.getTileEntity( world, x, y, z );
+		TileDrive sp = imb.getTileEntity( world, pos );
 		renderer.setRenderBounds( 0, 0, 0, 1, 1, 1 );
 
-		ForgeDirection up = sp.getUp();
-		ForgeDirection forward = sp.getForward();
-		ForgeDirection west = Platform.crossProduct( forward, up );
+		EnumFacing up = sp.getUp();
+		EnumFacing forward = sp.getForward();
+		EnumFacing west = Platform.crossProduct( forward, up );
 
-		boolean result = super.renderInWorld( imb, world, x, y, z, renderer );
-		Tessellator tess = Tessellator.instance;
+		boolean result = super.renderInWorld( imb, world, pos, renderer );
 
-		IIcon ico = ExtraBlockTextures.MEStorageCellTextures.getIcon();
+		IAESprite ico = ExtraBlockTextures.MEStorageCellTextures.getIcon();
 
-		int b = world.getLightBrightnessForSkyBlocks( x + forward.offsetX, y + forward.offsetY, z + forward.offsetZ, 0 );
+		int b = world.getCombinedLight( pos.offset( forward ), 0 );
 
 		for( int yy = 0; yy < 5; yy++ )
 		{
@@ -80,7 +79,7 @@ public class RenderDrive extends BaseBlockRender<BlockDrive, TileDrive>
 
 				int spin = 0;
 
-				switch( forward.offsetX + forward.offsetY * 2 + forward.offsetZ * 3 )
+				switch( forward.getFrontOffsetX() + forward.getFrontOffsetY() * 2 + forward.getFrontOffsetZ() * 3 )
 				{
 					case 1:
 						switch( up )
@@ -191,6 +190,7 @@ public class RenderDrive extends BaseBlockRender<BlockDrive, TileDrive>
 						}
 						break;
 				}
+
 
 				double u1 = ico.getInterpolatedU( ( spin % 4 < 2 ) ? 1 : 6 );
 				double u2 = ico.getInterpolatedU( ( ( spin + 1 ) % 4 < 2 ) ? 1 : 6 );
@@ -210,49 +210,53 @@ public class RenderDrive extends BaseBlockRender<BlockDrive, TileDrive>
 				double v3 = ico.getInterpolatedV( ( ( spin + 3 ) % 4 < 2 ) ? m : mx );
 				double v4 = ico.getInterpolatedV( ( ( spin ) % 4 < 2 ) ? m : mx );
 
-				tess.setBrightness( b );
-				tess.setColorOpaque_I( 0xffffff );
-				switch( forward.offsetX + forward.offsetY * 2 + forward.offsetZ * 3 )
+				int x= pos.getX();
+				int y= pos.getY();
+				int z= pos.getZ();
+				
+				renderer.setBrightness( b );
+				renderer.setColorOpaque_I( 0xffffff );
+				switch( forward.getFrontOffsetX() + forward.getFrontOffsetY() * 2 + forward.getFrontOffsetZ() * 3 )
 				{
 					case 1:
-						tess.addVertexWithUV( x + renderer.renderMaxX, y + renderer.renderMaxY, z + renderer.renderMinZ, u1, v1 );
-						tess.addVertexWithUV( x + renderer.renderMaxX, y + renderer.renderMaxY, z + renderer.renderMaxZ, u2, v2 );
-						tess.addVertexWithUV( x + renderer.renderMaxX, y + renderer.renderMinY, z + renderer.renderMaxZ, u3, v3 );
-						tess.addVertexWithUV( x + renderer.renderMaxX, y + renderer.renderMinY, z + renderer.renderMinZ, u4, v4 );
+						renderer.addVertexWithUV( forward,x + renderer.renderMaxX, y + renderer.renderMaxY, z + renderer.renderMinZ, u1, v1 );
+						renderer.addVertexWithUV( forward,x + renderer.renderMaxX, y + renderer.renderMaxY, z + renderer.renderMaxZ, u2, v2 );
+						renderer.addVertexWithUV( forward,x + renderer.renderMaxX, y + renderer.renderMinY, z + renderer.renderMaxZ, u3, v3 );
+						renderer.addVertexWithUV( forward,x + renderer.renderMaxX, y + renderer.renderMinY, z + renderer.renderMinZ, u4, v4 );
 						break;
 					case -1:
-						tess.addVertexWithUV( x + renderer.renderMaxX, y + renderer.renderMinY, z + renderer.renderMinZ, u1, v1 );
-						tess.addVertexWithUV( x + renderer.renderMaxX, y + renderer.renderMinY, z + renderer.renderMaxZ, u2, v2 );
-						tess.addVertexWithUV( x + renderer.renderMaxX, y + renderer.renderMaxY, z + renderer.renderMaxZ, u3, v3 );
-						tess.addVertexWithUV( x + renderer.renderMaxX, y + renderer.renderMaxY, z + renderer.renderMinZ, u4, v4 );
+						renderer.addVertexWithUV( forward,x + renderer.renderMaxX, y + renderer.renderMinY, z + renderer.renderMinZ, u1, v1 );
+						renderer.addVertexWithUV( forward,x + renderer.renderMaxX, y + renderer.renderMinY, z + renderer.renderMaxZ, u2, v2 );
+						renderer.addVertexWithUV( forward,x + renderer.renderMaxX, y + renderer.renderMaxY, z + renderer.renderMaxZ, u3, v3 );
+						renderer.addVertexWithUV( forward,x + renderer.renderMaxX, y + renderer.renderMaxY, z + renderer.renderMinZ, u4, v4 );
 						break;
 					case -2:
-						tess.addVertexWithUV( x + renderer.renderMaxX, y + renderer.renderMaxY, z + renderer.renderMinZ, u1, v1 );
-						tess.addVertexWithUV( x + renderer.renderMaxX, y + renderer.renderMaxY, z + renderer.renderMaxZ, u2, v2 );
-						tess.addVertexWithUV( x + renderer.renderMinX, y + renderer.renderMaxY, z + renderer.renderMaxZ, u3, v3 );
-						tess.addVertexWithUV( x + renderer.renderMinX, y + renderer.renderMaxY, z + renderer.renderMinZ, u4, v4 );
+						renderer.addVertexWithUV( forward,x + renderer.renderMaxX, y + renderer.renderMaxY, z + renderer.renderMinZ, u1, v1 );
+						renderer.addVertexWithUV( forward,x + renderer.renderMaxX, y + renderer.renderMaxY, z + renderer.renderMaxZ, u2, v2 );
+						renderer.addVertexWithUV( forward,x + renderer.renderMinX, y + renderer.renderMaxY, z + renderer.renderMaxZ, u3, v3 );
+						renderer.addVertexWithUV( forward,x + renderer.renderMinX, y + renderer.renderMaxY, z + renderer.renderMinZ, u4, v4 );
 						break;
 					case 2:
-						tess.addVertexWithUV( x + renderer.renderMinX, y + renderer.renderMaxY, z + renderer.renderMinZ, u1, v1 );
-						tess.addVertexWithUV( x + renderer.renderMinX, y + renderer.renderMaxY, z + renderer.renderMaxZ, u2, v2 );
-						tess.addVertexWithUV( x + renderer.renderMaxX, y + renderer.renderMaxY, z + renderer.renderMaxZ, u3, v3 );
-						tess.addVertexWithUV( x + renderer.renderMaxX, y + renderer.renderMaxY, z + renderer.renderMinZ, u4, v4 );
+						renderer.addVertexWithUV( forward,x + renderer.renderMinX, y + renderer.renderMaxY, z + renderer.renderMinZ, u1, v1 );
+						renderer.addVertexWithUV( forward,x + renderer.renderMinX, y + renderer.renderMaxY, z + renderer.renderMaxZ, u2, v2 );
+						renderer.addVertexWithUV( forward,x + renderer.renderMaxX, y + renderer.renderMaxY, z + renderer.renderMaxZ, u3, v3 );
+						renderer.addVertexWithUV( forward,x + renderer.renderMaxX, y + renderer.renderMaxY, z + renderer.renderMinZ, u4, v4 );
 						break;
 					case 3:
-						tess.addVertexWithUV( x + renderer.renderMaxX, y + renderer.renderMinY, z + renderer.renderMaxZ, u1, v1 );
-						tess.addVertexWithUV( x + renderer.renderMaxX, y + renderer.renderMaxY, z + renderer.renderMaxZ, u2, v2 );
-						tess.addVertexWithUV( x + renderer.renderMinX, y + renderer.renderMaxY, z + renderer.renderMaxZ, u3, v3 );
-						tess.addVertexWithUV( x + renderer.renderMinX, y + renderer.renderMinY, z + renderer.renderMaxZ, u4, v4 );
+						renderer.addVertexWithUV( forward,x + renderer.renderMaxX, y + renderer.renderMinY, z + renderer.renderMaxZ, u1, v1 );
+						renderer.addVertexWithUV( forward,x + renderer.renderMaxX, y + renderer.renderMaxY, z + renderer.renderMaxZ, u2, v2 );
+						renderer.addVertexWithUV( forward,x + renderer.renderMinX, y + renderer.renderMaxY, z + renderer.renderMaxZ, u3, v3 );
+						renderer.addVertexWithUV( forward,x + renderer.renderMinX, y + renderer.renderMinY, z + renderer.renderMaxZ, u4, v4 );
 						break;
 					case -3:
-						tess.addVertexWithUV( x + renderer.renderMinX, y + renderer.renderMinY, z + renderer.renderMaxZ, u1, v1 );
-						tess.addVertexWithUV( x + renderer.renderMinX, y + renderer.renderMaxY, z + renderer.renderMaxZ, u2, v2 );
-						tess.addVertexWithUV( x + renderer.renderMaxX, y + renderer.renderMaxY, z + renderer.renderMaxZ, u3, v3 );
-						tess.addVertexWithUV( x + renderer.renderMaxX, y + renderer.renderMinY, z + renderer.renderMaxZ, u4, v4 );
+						renderer.addVertexWithUV( forward,x + renderer.renderMinX, y + renderer.renderMinY, z + renderer.renderMaxZ, u1, v1 );
+						renderer.addVertexWithUV( forward,x + renderer.renderMinX, y + renderer.renderMaxY, z + renderer.renderMaxZ, u2, v2 );
+						renderer.addVertexWithUV( forward,x + renderer.renderMaxX, y + renderer.renderMaxY, z + renderer.renderMaxZ, u3, v3 );
+						renderer.addVertexWithUV( forward,x + renderer.renderMaxX, y + renderer.renderMinY, z + renderer.renderMaxZ, u4, v4 );
 						break;
 				}
 
-				if( ( forward == ForgeDirection.UP && up == ForgeDirection.SOUTH ) || forward == ForgeDirection.DOWN )
+				if( ( forward == EnumFacing.UP && up == EnumFacing.SOUTH ) || forward == EnumFacing.DOWN )
 				{
 					this.selectFace( renderer, west, up, forward, 3 + xx * 7, 4 + xx * 7, 1 + yy * 3, 2 + yy * 3 );
 				}
@@ -263,7 +267,7 @@ public class RenderDrive extends BaseBlockRender<BlockDrive, TileDrive>
 
 				if( stat != 0 )
 				{
-					IIcon whiteIcon = ExtraBlockTextures.White.getIcon();
+					IAESprite whiteIcon = ExtraBlockTextures.White.getIcon();
 					u1 = whiteIcon.getInterpolatedU( ( spin % 4 < 2 ) ? 1 : 6 );
 					u2 = whiteIcon.getInterpolatedU( ( ( spin + 1 ) % 4 < 2 ) ? 1 : 6 );
 					u3 = whiteIcon.getInterpolatedU( ( ( spin + 2 ) % 4 < 2 ) ? 1 : 6 );
@@ -276,63 +280,63 @@ public class RenderDrive extends BaseBlockRender<BlockDrive, TileDrive>
 
 					if( sp.isPowered() )
 					{
-						tess.setBrightness( 15 << 20 | 15 << 4 );
+						renderer.setBrightness( 15 << 20 | 15 << 4 );
 					}
 					else
 					{
-						tess.setBrightness( 0 );
+						renderer.setBrightness( 0 );
 					}
 
 					if( stat == 1 )
 					{
-						Tessellator.instance.setColorOpaque_I( 0x00ff00 );
+						renderer.setColorOpaque_I( 0x00ff00 );
 					}
 					if( stat == 2 )
 					{
-						Tessellator.instance.setColorOpaque_I( 0xffaa00 );
+						renderer.setColorOpaque_I( 0xffaa00 );
 					}
 					if( stat == 3 )
 					{
-						Tessellator.instance.setColorOpaque_I( 0xff0000 );
+						renderer.setColorOpaque_I( 0xff0000 );
 					}
 
-					switch( forward.offsetX + forward.offsetY * 2 + forward.offsetZ * 3 )
+					switch( forward.getFrontOffsetX() + forward.getFrontOffsetY() * 2 + forward.getFrontOffsetZ() * 3 )
 					{
 						case 1:
-							tess.addVertexWithUV( x + renderer.renderMaxX, y + renderer.renderMaxY, z + renderer.renderMinZ, u1, v1 );
-							tess.addVertexWithUV( x + renderer.renderMaxX, y + renderer.renderMaxY, z + renderer.renderMaxZ, u2, v2 );
-							tess.addVertexWithUV( x + renderer.renderMaxX, y + renderer.renderMinY, z + renderer.renderMaxZ, u3, v3 );
-							tess.addVertexWithUV( x + renderer.renderMaxX, y + renderer.renderMinY, z + renderer.renderMinZ, u4, v4 );
+							renderer.addVertexWithUV( forward, x + renderer.renderMaxX, y + renderer.renderMaxY, z + renderer.renderMinZ, u1, v1 );
+							renderer.addVertexWithUV( forward,x + renderer.renderMaxX, y + renderer.renderMaxY, z + renderer.renderMaxZ, u2, v2 );
+							renderer.addVertexWithUV( forward,x + renderer.renderMaxX, y + renderer.renderMinY, z + renderer.renderMaxZ, u3, v3 );
+							renderer.addVertexWithUV( forward,x + renderer.renderMaxX, y + renderer.renderMinY, z + renderer.renderMinZ, u4, v4 );
 							break;
 						case -1:
-							tess.addVertexWithUV( x + renderer.renderMaxX, y + renderer.renderMinY, z + renderer.renderMinZ, u1, v1 );
-							tess.addVertexWithUV( x + renderer.renderMaxX, y + renderer.renderMinY, z + renderer.renderMaxZ, u2, v2 );
-							tess.addVertexWithUV( x + renderer.renderMaxX, y + renderer.renderMaxY, z + renderer.renderMaxZ, u3, v3 );
-							tess.addVertexWithUV( x + renderer.renderMaxX, y + renderer.renderMaxY, z + renderer.renderMinZ, u4, v4 );
+							renderer.addVertexWithUV( forward,x + renderer.renderMaxX, y + renderer.renderMinY, z + renderer.renderMinZ, u1, v1 );
+							renderer.addVertexWithUV( forward,x + renderer.renderMaxX, y + renderer.renderMinY, z + renderer.renderMaxZ, u2, v2 );
+							renderer.addVertexWithUV( forward,x + renderer.renderMaxX, y + renderer.renderMaxY, z + renderer.renderMaxZ, u3, v3 );
+							renderer.addVertexWithUV( forward,x + renderer.renderMaxX, y + renderer.renderMaxY, z + renderer.renderMinZ, u4, v4 );
 							break;
 						case -2:
-							tess.addVertexWithUV( x + renderer.renderMaxX, y + renderer.renderMaxY, z + renderer.renderMinZ, u1, v1 );
-							tess.addVertexWithUV( x + renderer.renderMaxX, y + renderer.renderMaxY, z + renderer.renderMaxZ, u2, v2 );
-							tess.addVertexWithUV( x + renderer.renderMinX, y + renderer.renderMaxY, z + renderer.renderMaxZ, u3, v3 );
-							tess.addVertexWithUV( x + renderer.renderMinX, y + renderer.renderMaxY, z + renderer.renderMinZ, u4, v4 );
+							renderer.addVertexWithUV( forward,x + renderer.renderMaxX, y + renderer.renderMaxY, z + renderer.renderMinZ, u1, v1 );
+							renderer.addVertexWithUV( forward,x + renderer.renderMaxX, y + renderer.renderMaxY, z + renderer.renderMaxZ, u2, v2 );
+							renderer.addVertexWithUV( forward,x + renderer.renderMinX, y + renderer.renderMaxY, z + renderer.renderMaxZ, u3, v3 );
+							renderer.addVertexWithUV( forward,x + renderer.renderMinX, y + renderer.renderMaxY, z + renderer.renderMinZ, u4, v4 );
 							break;
 						case 2:
-							tess.addVertexWithUV( x + renderer.renderMinX, y + renderer.renderMaxY, z + renderer.renderMinZ, u1, v1 );
-							tess.addVertexWithUV( x + renderer.renderMinX, y + renderer.renderMaxY, z + renderer.renderMaxZ, u2, v2 );
-							tess.addVertexWithUV( x + renderer.renderMaxX, y + renderer.renderMaxY, z + renderer.renderMaxZ, u3, v3 );
-							tess.addVertexWithUV( x + renderer.renderMaxX, y + renderer.renderMaxY, z + renderer.renderMinZ, u4, v4 );
+							renderer.addVertexWithUV( forward,x + renderer.renderMinX, y + renderer.renderMaxY, z + renderer.renderMinZ, u1, v1 );
+							renderer.addVertexWithUV( forward,x + renderer.renderMinX, y + renderer.renderMaxY, z + renderer.renderMaxZ, u2, v2 );
+							renderer.addVertexWithUV( forward,x + renderer.renderMaxX, y + renderer.renderMaxY, z + renderer.renderMaxZ, u3, v3 );
+							renderer.addVertexWithUV( forward,x + renderer.renderMaxX, y + renderer.renderMaxY, z + renderer.renderMinZ, u4, v4 );
 							break;
 						case 3:
-							tess.addVertexWithUV( x + renderer.renderMaxX, y + renderer.renderMinY, z + renderer.renderMaxZ, u1, v1 );
-							tess.addVertexWithUV( x + renderer.renderMaxX, y + renderer.renderMaxY, z + renderer.renderMaxZ, u2, v2 );
-							tess.addVertexWithUV( x + renderer.renderMinX, y + renderer.renderMaxY, z + renderer.renderMaxZ, u3, v3 );
-							tess.addVertexWithUV( x + renderer.renderMinX, y + renderer.renderMinY, z + renderer.renderMaxZ, u4, v4 );
+							renderer.addVertexWithUV( forward,x + renderer.renderMaxX, y + renderer.renderMinY, z + renderer.renderMaxZ, u1, v1 );
+							renderer.addVertexWithUV( forward,x + renderer.renderMaxX, y + renderer.renderMaxY, z + renderer.renderMaxZ, u2, v2 );
+							renderer.addVertexWithUV( forward,x + renderer.renderMinX, y + renderer.renderMaxY, z + renderer.renderMaxZ, u3, v3 );
+							renderer.addVertexWithUV( forward,x + renderer.renderMinX, y + renderer.renderMinY, z + renderer.renderMaxZ, u4, v4 );
 							break;
 						case -3:
-							tess.addVertexWithUV( x + renderer.renderMinX, y + renderer.renderMinY, z + renderer.renderMaxZ, u1, v1 );
-							tess.addVertexWithUV( x + renderer.renderMinX, y + renderer.renderMaxY, z + renderer.renderMaxZ, u2, v2 );
-							tess.addVertexWithUV( x + renderer.renderMaxX, y + renderer.renderMaxY, z + renderer.renderMaxZ, u3, v3 );
-							tess.addVertexWithUV( x + renderer.renderMaxX, y + renderer.renderMinY, z + renderer.renderMaxZ, u4, v4 );
+							renderer.addVertexWithUV( forward,x + renderer.renderMinX, y + renderer.renderMinY, z + renderer.renderMaxZ, u1, v1 );
+							renderer.addVertexWithUV( forward,x + renderer.renderMinX, y + renderer.renderMaxY, z + renderer.renderMaxZ, u2, v2 );
+							renderer.addVertexWithUV( forward,x + renderer.renderMaxX, y + renderer.renderMaxY, z + renderer.renderMaxZ, u3, v3 );
+							renderer.addVertexWithUV( forward,x + renderer.renderMaxX, y + renderer.renderMinY, z + renderer.renderMaxZ, u4, v4 );
 							break;
 					}
 				}

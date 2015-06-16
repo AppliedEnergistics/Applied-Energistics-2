@@ -29,10 +29,10 @@ import java.util.Set;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.Vec3;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.api.util.AEColor;
+import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 
 
@@ -50,7 +50,7 @@ public interface IPartHost
 	IFacadeContainer getFacadeContainer();
 
 	/**
-	 * Test if you can add a part to the specified side of the Part Host, {@link ForgeDirection}.UNKNOWN is used to
+	 * Test if you can add a part to the specified side of the Part Host, {@link AEPartLocation}.UNKNOWN is used to
 	 * represent the cable in the middle.
 	 *
 	 * @param part to be added part
@@ -58,7 +58,7 @@ public interface IPartHost
 	 *
 	 * @return returns false if the part cannot be added.
 	 */
-	boolean canAddPart( ItemStack part, ForgeDirection side );
+	boolean canAddPart( ItemStack part, AEPartLocation side );
 
 	/**
 	 * try to add a new part to the specified side, returns false if it failed to be added.
@@ -68,19 +68,28 @@ public interface IPartHost
 	 * @param owner with owning player
 	 *
 	 * @return null if the item failed to add, the side it was placed on other wise ( may different for cables,
-	 * {@link ForgeDirection}.UNKNOWN )
+	 * {@link AEPartLocation}.UNKNOWN )
 	 */
-	ForgeDirection addPart( ItemStack is, ForgeDirection side, EntityPlayer owner );
+	AEPartLocation addPart( ItemStack is, AEPartLocation side, EntityPlayer owner );
 
 	/**
-	 * Get part by side ( center is {@link ForgeDirection}.UNKNOWN )
+	 * Get part by side ( center is {@link AEPartLocation}.UNKNOWN )
 	 *
 	 * @param side side of part
 	 *
 	 * @return the part located on the specified side, or null if there is no part.
 	 */
-	IPart getPart( ForgeDirection side );
+	IPart getPart( AEPartLocation side );
 
+	/**
+	 * Get part by side, this method cannot aquire the center part, you must use the other varient of getPart.
+	 *
+	 * @param side side of part
+	 *
+	 * @return the part located on the specified side, or null if there is no part.
+	 */
+	IPart getPart( EnumFacing side );
+	
 	/**
 	 * removes the part on the side, this doesn't drop it or anything, if you don't do something with it, its just
 	 * "gone" and its never coming back; think about it.
@@ -90,7 +99,7 @@ public interface IPartHost
 	 * @param side           side of part
 	 * @param suppressUpdate - used if you need to replace a part's INSTANCE, without really removing it first.
 	 */
-	void removePart( ForgeDirection side, boolean suppressUpdate );
+	void removePart( AEPartLocation side, boolean suppressUpdate );
 
 	/**
 	 * something changed, might want to send a packet to clients to update state.
@@ -123,7 +132,7 @@ public interface IPartHost
 	 *
 	 * @return returns if microblocks are blocking this cable path.
 	 */
-	boolean isBlocked( ForgeDirection side );
+	boolean isBlocked( EnumFacing side );
 
 	/**
 	 * finds the part located at the position ( pos must be relative, not global )
@@ -151,7 +160,7 @@ public interface IPartHost
 	 *
 	 * @return true of the part host is receiving redstone from an external source.
 	 */
-	boolean hasRedstone( ForgeDirection side );
+	boolean hasRedstone( AEPartLocation side );
 
 	/**
 	 * returns false if this block contains any parts or facades, true other wise.
@@ -179,4 +188,5 @@ public interface IPartHost
 	 * @return true if tile is in world
 	 */
 	boolean isInWorld();
+
 }

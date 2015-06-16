@@ -25,8 +25,7 @@ package appeng.api.storage;
 
 
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
-
+import net.minecraft.util.EnumFacing;
 import appeng.api.networking.security.BaseActionSource;
 
 
@@ -45,7 +44,7 @@ public interface IExternalStorageHandler
 	 *
 	 * @return true, if it can get a handler via getInventory
 	 */
-	boolean canHandle( TileEntity te, ForgeDirection d, StorageChannel channel, BaseActionSource mySrc );
+	boolean canHandle( TileEntity te, EnumFacing d, StorageChannel channel, BaseActionSource mySrc );
 
 	/**
 	 * if this can handle the given inventory, return the a IMEInventory implementing class for it, if not return null
@@ -60,5 +59,5 @@ public interface IExternalStorageHandler
 	 *
 	 * @return The Handler for the inventory
 	 */
-	IMEInventory getInventory( TileEntity te, ForgeDirection d, StorageChannel channel, BaseActionSource src );
+	IMEInventory getInventory( TileEntity te, EnumFacing d, StorageChannel channel, BaseActionSource src );
 }

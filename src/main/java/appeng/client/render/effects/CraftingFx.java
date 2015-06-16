@@ -20,16 +20,15 @@ package appeng.client.render.effects;
 
 
 import net.minecraft.client.particle.EntityBreakingFX;
-import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
-import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+import appeng.api.util.AEPartLocation;
 import appeng.client.texture.ExtraBlockTextures;
 
 
@@ -37,7 +36,7 @@ import appeng.client.texture.ExtraBlockTextures;
 public class CraftingFx extends EntityBreakingFX
 {
 
-	private final IIcon particleTextureIndex;
+	private final TextureAtlasSprite particleTextureIndex;
 
 	private final int startBlkX;
 	private final int startBlkY;
@@ -52,7 +51,7 @@ public class CraftingFx extends EntityBreakingFX
 		this.particleRed = 1;
 		this.particleAlpha = 1.3f;
 		this.particleScale = 1.5f;
-		this.particleTextureIndex = ExtraBlockTextures.BlockEnergyParticle.getIcon();
+		this.particleTextureIndex = ExtraBlockTextures.BlockEnergyParticle.getIcon().getAtlas();
 		this.particleMaxAge /= 1.2;
 
 		this.startBlkX = MathHelper.floor_double( this.posX );
@@ -69,8 +68,8 @@ public class CraftingFx extends EntityBreakingFX
 	}
 
 	@Override
-	public void renderParticle( Tessellator par1Tessellator, float partialTick, float x, float y, float z, float rx, float rz )
-	{
+    public void func_180434_a(WorldRenderer par1Tessellator, Entity p_180434_2_, float partialTick, float x, float y, float z, float rx, float rz)
+    {
 		if( partialTick < 0 || partialTick > 1 )
 		{
 			return;
@@ -105,11 +104,11 @@ public class CraftingFx extends EntityBreakingFX
 		}
 	}
 
-	public void fromItem( ForgeDirection d )
+	public void fromItem( AEPartLocation d )
 	{
-		this.posX += 0.2 * d.offsetX;
-		this.posY += 0.2 * d.offsetY;
-		this.posZ += 0.2 * d.offsetZ;
+		this.posX += 0.2 * d.xOffset;
+		this.posY += 0.2 * d.yOffset;
+		this.posZ += 0.2 * d.zOffset;
 		this.particleScale *= 0.8f;
 	}
 

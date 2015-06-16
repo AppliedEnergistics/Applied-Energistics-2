@@ -21,10 +21,10 @@ package appeng.client.gui.implementations;
 
 import java.io.IOException;
 
-import org.lwjgl.input.Mouse;
-
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
+
+import org.lwjgl.input.Mouse;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.ActionItems;
@@ -106,7 +106,7 @@ public class GuiStorageBus extends GuiUpgradeable
 	}
 
 	@Override
-	protected void actionPerformed( GuiButton btn )
+	protected void actionPerformed( GuiButton btn ) throws IOException
 	{
 		super.actionPerformed( btn );
 

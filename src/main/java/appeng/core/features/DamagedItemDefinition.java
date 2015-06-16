@@ -21,14 +21,14 @@ package appeng.core.features;
 
 import javax.annotation.Nonnull;
 
-import com.google.common.base.Optional;
-import com.google.common.base.Preconditions;
-
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.IBlockAccess;
-
 import appeng.api.definitions.IItemDefinition;
+
+import com.google.common.base.Optional;
+import com.google.common.base.Preconditions;
 
 
 public final class DamagedItemDefinition implements IItemDefinition
@@ -68,7 +68,7 @@ public final class DamagedItemDefinition implements IItemDefinition
 	}
 
 	@Override
-	public boolean isSameAs( IBlockAccess world, int x, int y, int z )
+	public boolean isSameAs( IBlockAccess world, BlockPos pos )
 	{
 		return false;
 	}

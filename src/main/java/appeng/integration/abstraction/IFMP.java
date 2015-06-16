@@ -21,9 +21,7 @@ package appeng.integration.abstraction;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.tileentity.TileEntity;
-
-import cpw.mods.fml.common.eventhandler.Event;
-
+import net.minecraftforge.fml.common.eventhandler.Event;
 import appeng.api.parts.IPartHost;
 import appeng.parts.CableBusContainer;
 

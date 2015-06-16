@@ -21,18 +21,18 @@ package appeng.core.features;
 
 import java.lang.reflect.Constructor;
 
-import com.google.common.base.Optional;
-import com.google.common.base.Preconditions;
-import com.google.common.collect.ObjectArrays;
-
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.IBlockAccess;
-
 import appeng.api.definitions.IBlockDefinition;
 import appeng.block.AEBaseBlock;
+
+import com.google.common.base.Optional;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ObjectArrays;
 
 
 public class BlockDefinition extends ItemDefinition implements IBlockDefinition
@@ -151,8 +151,8 @@ public class BlockDefinition extends ItemDefinition implements IBlockDefinition
 	}
 
 	@Override
-	public final boolean isSameAs( IBlockAccess world, int x, int y, int z )
+	public final boolean isSameAs( IBlockAccess world, BlockPos pos )
 	{
-		return this.enabled && world.getBlock( x, y, z ) == this.block;
+		return this.enabled && world.getBlockState( pos ).getBlock() == this.block;
 	}
 }

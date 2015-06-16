@@ -19,16 +19,15 @@
 package appeng.core.sync.packets;
 
 
-import java.io.IOException;
-
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
+import java.io.IOException;
+
 import net.minecraft.entity.player.EntityPlayer;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
+import net.minecraft.util.BlockPos;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.client.EffectType;
 import appeng.core.CommonHelper;
@@ -57,15 +56,15 @@ public class PacketAssemblerAnimation extends AppEngPacket
 	}
 
 	// api
-	public PacketAssemblerAnimation( int x, int y, int z, byte rate, IAEItemStack is ) throws IOException
+	public PacketAssemblerAnimation( BlockPos pos, byte rate, IAEItemStack is ) throws IOException
 	{
 
 		ByteBuf data = Unpooled.buffer();
 
 		data.writeInt( this.getPacketID() );
-		data.writeInt( this.x = x );
-		data.writeInt( this.y = y );
-		data.writeInt( this.z = z );
+		data.writeInt( this.x = pos.getX() );
+		data.writeInt( this.y = pos.getY() );
+		data.writeInt( this.z = pos.getZ() );
 		data.writeByte( this.rate = rate );
 		is.writeToPacket( data );
 		this.is = is;

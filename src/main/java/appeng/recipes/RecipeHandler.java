@@ -30,18 +30,14 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-import javax.annotation.Nonnull;
 
-import com.google.common.base.Optional;
-import com.google.common.collect.HashMultimap;
+import javax.annotation.Nonnull;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-
-import cpw.mods.fml.common.LoaderState;
-import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.common.registry.GameRegistry.UniqueIdentifier;
-
+import net.minecraftforge.fml.common.LoaderState;
+import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.common.registry.GameRegistry.UniqueIdentifier;
 import appeng.api.AEApi;
 import appeng.api.definitions.IBlocks;
 import appeng.api.definitions.IDefinitions;
@@ -63,6 +59,9 @@ import appeng.items.misc.ItemCrystalSeed;
 import appeng.items.parts.ItemMultiPart;
 import appeng.recipes.handlers.IWebsiteSerializer;
 import appeng.recipes.handlers.OreRegistration;
+
+import com.google.common.base.Optional;
+import com.google.common.collect.HashMultimap;
 
 
 /**
@@ -357,7 +356,7 @@ public class RecipeHandler implements IRecipeHandler
 	@Override
 	public void injectRecipes()
 	{
-		if( cpw.mods.fml.common.Loader.instance().hasReachedState( LoaderState.POSTINITIALIZATION ) )
+		if( net.minecraftforge.fml.common.Loader.instance().hasReachedState( LoaderState.POSTINITIALIZATION ) )
 		{
 			throw new IllegalStateException( "Recipes must now be loaded in Init." );
 		}

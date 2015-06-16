@@ -25,7 +25,6 @@ import java.util.WeakHashMap;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-
 import appeng.api.AEApi;
 import appeng.api.features.IItemComparison;
 import appeng.api.storage.data.IAETagCompound;
@@ -130,7 +129,7 @@ public class AESharedNBT extends NBTTagCompound implements IAETagCompound
 		AESharedNBT x = new AESharedNBT( itemID, damageValue );
 
 		// c.getTags()
-		for( Object o : c.func_150296_c() )
+		for( Object o : c.getKeySet() )
 		{
 			String name = (String) o;
 			x.setTag( name, c.getTag( name ).copy() );

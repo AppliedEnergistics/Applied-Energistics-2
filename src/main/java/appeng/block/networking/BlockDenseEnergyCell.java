@@ -21,8 +21,6 @@ package appeng.block.networking;
 
 import java.util.EnumSet;
 
-import net.minecraft.util.IIcon;
-
 import appeng.client.texture.ExtraBlockTextures;
 import appeng.core.features.AEFeature;
 import appeng.tile.networking.TileDenseEnergyCell;
@@ -38,10 +36,11 @@ public class BlockDenseEnergyCell extends BlockEnergyCell
 	}
 
 	@Override
-	public IIcon getIcon( int direction, int metadata )
+	public appeng.client.texture.IAESprite getIcon(net.minecraft.util.EnumFacing side, net.minecraft.block.state.IBlockState state)
 	{
-		switch( metadata )
+		switch( (int)state.getValue( ENERGY_STORAGE ) )
 		{
+			default:
 			case 0:
 				return ExtraBlockTextures.MEDenseEnergyCell0.getIcon();
 			case 1:
@@ -59,9 +58,8 @@ public class BlockDenseEnergyCell extends BlockEnergyCell
 			case 7:
 				return ExtraBlockTextures.MEDenseEnergyCell7.getIcon();
 		}
-		return super.getIcon( direction, metadata );
 	}
-
+	
 	@Override
 	public double getMaxPower()
 	{

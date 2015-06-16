@@ -19,8 +19,7 @@
 package appeng.helpers;
 
 
-import net.minecraftforge.common.util.ForgeDirection;
-
+import net.minecraft.util.EnumFacing;
 import appeng.api.util.IOrientable;
 
 
@@ -39,19 +38,19 @@ public class NullRotation implements IOrientable
 	}
 
 	@Override
-	public ForgeDirection getForward()
+	public EnumFacing getForward()
 	{
-		return ForgeDirection.SOUTH;
+		return EnumFacing.SOUTH;
 	}
 
 	@Override
-	public ForgeDirection getUp()
+	public EnumFacing getUp()
 	{
-		return ForgeDirection.UP;
+		return EnumFacing.UP;
 	}
 
 	@Override
-	public void setOrientation( ForgeDirection forward, ForgeDirection up )
+	public void setOrientation( EnumFacing forward, EnumFacing up )
 	{
 
 	}

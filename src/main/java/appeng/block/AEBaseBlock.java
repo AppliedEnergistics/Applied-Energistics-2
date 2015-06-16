@@ -23,12 +23,14 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
-import com.google.common.base.Optional;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.properties.PropertyEnum;
+import net.minecraft.block.state.BlockState;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.resources.IResource;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
@@ -36,24 +38,27 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
+import net.minecraftforge.common.property.ExtendedBlockState;
+import net.minecraftforge.common.property.IExtendedBlockState;
+import net.minecraftforge.common.property.IUnlistedProperty;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+import appeng.api.util.AEPartLocation;
 import appeng.api.util.IOrientable;
 import appeng.api.util.IOrientableBlock;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.BlockRenderInfo;
-import appeng.client.render.WorldRender;
+import appeng.client.texture.BaseIcon;
 import appeng.client.texture.FlippableIcon;
-import appeng.client.texture.MissingIcon;
+import appeng.client.texture.IAESprite;
+import appeng.core.AppEng;
 import appeng.core.features.AEBlockFeatureHandler;
 import appeng.core.features.AEFeature;
 import appeng.core.features.FeatureNameExtractor;
@@ -64,9 +69,13 @@ import appeng.helpers.ICustomCollision;
 import appeng.util.LookDirection;
 import appeng.util.Platform;
 
+import com.google.common.base.Optional;
+
 
 public abstract class AEBaseBlock extends Block implements IAEFeature
 {
+    public static final PropertyEnum AXIS_ORIENTATION = PropertyEnum.create("axis", EnumFacing.Axis.class);
+	
 	private final String featureFullName;
 	protected final Optional<String> featureSubName;
 	protected boolean isOpaque = true;
@@ -76,7 +85,13 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 	private IFeatureHandler handler;
 	@SideOnly( Side.CLIENT )
 	BlockRenderInfo renderInfo;
-
+	
+	@Override
+	public boolean isVisuallyOpaque()
+	{
+		return isOpaque && isFullSize;
+	}
+	
 	protected AEBaseBlock( Material mat )
 	{
 		this( mat, Optional.<String>absent() );
@@ -117,13 +132,29 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 		return this.featureFullName;
 	}
 
-	public void registerNoIcons()
+	public static final UnlistedBlockPos AE_BLOCK_POS = new UnlistedBlockPos();
+	public static final UnlistedBlockAccess AE_BLOCK_ACCESS = new UnlistedBlockAccess();
+	
+	@Override
+	final protected BlockState createBlockState()
 	{
-		final BlockRenderInfo info = this.getRendererInstance();
-		final FlippableIcon i = new FlippableIcon( new MissingIcon( this ) );
-		info.updateIcons( i, i, i, i, i, i );
+		return new ExtendedBlockState( this, getAEStates(), new IUnlistedProperty[] { AE_BLOCK_POS, AE_BLOCK_ACCESS} );
 	}
 
+	@Override
+	final public IBlockState getExtendedState(
+			IBlockState state,
+			IBlockAccess world,
+			BlockPos pos )
+	{
+		return ((IExtendedBlockState)super.getExtendedState( state, world, pos ) ).withProperty( AE_BLOCK_POS, pos  ).withProperty( AE_BLOCK_ACCESS, world );
+	}
+	
+	protected IProperty[] getAEStates()
+	{
+		return new IProperty[0];
+	}
+	
 	@SideOnly( Side.CLIENT )
 	public BlockRenderInfo getRendererInstance()
 	{
@@ -134,7 +165,9 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 
 		try
 		{
-			final BaseBlockRender renderer = this.getRenderer().newInstance();
+			Class<? extends BaseBlockRender> re = this.getRenderer();
+			if ( re == null ) return null; // use 1.8 models.
+			final BaseBlockRender renderer = re.newInstance();
 			this.renderInfo = new BlockRenderInfo( renderer );
 
 			return this.renderInfo;
@@ -148,16 +181,20 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 			throw new IllegalStateException( "Failed to create a new instance of " + this.getRenderer() + " because of permissions.", e );
 		}
 	}
+	
+	@Override
+	public int colorMultiplier(
+			IBlockAccess worldIn,
+			BlockPos pos,
+			int colorTint )
+	{
+		return colorTint;
+	}
 
 	@SideOnly( Side.CLIENT )
 	protected Class<? extends BaseBlockRender> getRenderer()
 	{
 		return BaseBlockRender.class;
-	}
-
-	public IIcon unmappedGetIcon( IBlockAccess w, int x, int y, int z, int s )
-	{
-		return super.getIcon( w, x, y, z, s );
 	}
 
 	protected void setFeature( EnumSet<AEFeature> f )
@@ -187,34 +224,14 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 	{
 		return this.isOpaque;
 	}
-
+	
 	@Override
-	public boolean renderAsNormalBlock()
+	public boolean isNormalCube()
 	{
 		return this.isFullSize && this.isOpaque;
 	}
-
-	@Override
-	@SideOnly( Side.CLIENT )
-	public int getRenderType()
-	{
-		return WorldRender.INSTANCE.getRenderId();
-	}
-
-	@Override
-	public IIcon getIcon( IBlockAccess w, int x, int y, int z, int s )
-	{
-		return this.getIcon( this.mapRotation( w, x, y, z, s ), w.getBlockMetadata( x, y, z ) );
-	}
-
-	@Override
-	@SideOnly( Side.CLIENT )
-	public IIcon getIcon( int direction, int metadata )
-	{
-		return this.getRendererInstance().getTexture( ForgeDirection.getOrientation( direction ) );
-	}
-
-	protected ICustomCollision getCustomCollision( World w, int x, int y, int z )
+	
+	protected ICustomCollision getCustomCollision( World w, BlockPos pos  )
 	{
 		if( this instanceof ICustomCollision )
 		{
@@ -223,42 +240,61 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 		return null;
 	}
 
-	@Override
-	@SuppressWarnings( "unchecked" )
-	// NOTE: WAS FINAL, changed for Immibis
-	public void addCollisionBoxesToList( World w, int x, int y, int z, AxisAlignedBB bb, List out, Entity e )
+	@SideOnly( Side.CLIENT )
+	public IAESprite getIcon( IBlockAccess w, BlockPos pos, EnumFacing side )
 	{
-		final ICustomCollision collisionHandler = this.getCustomCollision( w, x, y, z );
+		IBlockState state =w.getBlockState( pos );
+		IOrientable ori = getOrientable( w, pos );
+		
+		if ( ori == null )
+			return getIcon( side,state );
+		
+		return this.getIcon( this.mapRotation( ori, side ), state );
+	}
+
+	@SideOnly( Side.CLIENT )
+	public IAESprite getIcon( EnumFacing side, IBlockState state )
+	{
+		return this.getRendererInstance().getTexture( AEPartLocation.fromFacing( side ) );
+	}
+
+	@Override
+	public void addCollisionBoxesToList(
+			World w,
+			BlockPos pos,
+			IBlockState state,
+			AxisAlignedBB bb,
+			List out,
+			Entity e )
+	{
+		final ICustomCollision collisionHandler = this.getCustomCollision( w, pos );
 
 		if( collisionHandler != null && bb != null )
 		{
 			List<AxisAlignedBB> tmp = new ArrayList<AxisAlignedBB>();
-			collisionHandler.addCollidingBlockToList( w, x, y, z, bb, tmp, e );
+			collisionHandler.addCollidingBlockToList( w, pos, bb, tmp, e );
 			for( AxisAlignedBB b : tmp )
 			{
-				b.minX += x;
-				b.minY += y;
-				b.minZ += z;
-				b.maxX += x;
-				b.maxY += y;
-				b.maxZ += z;
-				if( bb.intersectsWith( b ) )
+				AxisAlignedBB offset = b.offset( pos.getX(), pos.getY(), pos.getZ() );
+				if( bb.intersectsWith( offset ) )
 				{
-					out.add( b );
+					out.add( offset );
 				}
 			}
 		}
 		else
 		{
-			super.addCollisionBoxesToList( w, x, y, z, bb, out, e );
+			super.addCollisionBoxesToList( w, pos, state, bb, out, e );
 		}
 	}
-
+	
 	@Override
 	@SideOnly( Side.CLIENT )
-	public final AxisAlignedBB getSelectedBoundingBoxFromPool( World w, int x, int y, int z )
+	public AxisAlignedBB getSelectedBoundingBox(
+			World w,
+			BlockPos pos )
 	{
-		final ICustomCollision collisionHandler = this.getCustomCollision( w, x, y, z );
+		final ICustomCollision collisionHandler = this.getCustomCollision( w, pos );
 
 		if( collisionHandler != null )
 		{
@@ -267,7 +303,7 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 				final EntityPlayer player = Minecraft.getMinecraft().thePlayer;
 				final LookDirection ld = Platform.getPlayerRay( player, Platform.getEyeOffset( player ) );
 
-				final Iterable<AxisAlignedBB> bbs = collisionHandler.getSelectedBoundingBoxesFromPool( w, x, y, z, Minecraft.getMinecraft().thePlayer, true );
+				final Iterable<AxisAlignedBB> bbs = collisionHandler.getSelectedBoundingBoxesFromPool( w, pos, Minecraft.getMinecraft().thePlayer, true );
 				AxisAlignedBB br = null;
 
 				double lastDist = 0;
@@ -276,7 +312,7 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 				{
 					this.setBlockBounds( (float) bb.minX, (float) bb.minY, (float) bb.minZ, (float) bb.maxX, (float) bb.maxY, (float) bb.maxZ );
 
-					MovingObjectPosition r = super.collisionRayTrace( w, x, y, z, ld.a, ld.b );
+					MovingObjectPosition r = super.collisionRayTrace( w, pos, ld.a, ld.b );
 
 					this.setBlockBounds( 0, 0, 0, 1, 1, 1 );
 
@@ -298,15 +334,21 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 
 				if( br != null )
 				{
-					br.setBounds( br.minX + x, br.minY + y, br.minZ + z, br.maxX + x, br.maxY + y, br.maxZ + z );
+					br = AxisAlignedBB.fromBounds( br.minX + pos.getX(), br.minY + pos.getY(), br.minZ + pos.getZ(), br.maxX + pos.getX(), br.maxY + pos.getY(), br.maxZ + pos.getZ() );
 					return br;
 				}
 			}
 
-			final AxisAlignedBB b = AxisAlignedBB.getBoundingBox( 16d, 16d, 16d, 0d, 0d, 0d );
+			AxisAlignedBB b = null; // new AxisAlignedBB( 16d, 16d, 16d, 0d, 0d, 0d );
 
-			for( AxisAlignedBB bx : collisionHandler.getSelectedBoundingBoxesFromPool( w, x, y, z, null, false ) )
+			for( AxisAlignedBB bx : collisionHandler.getSelectedBoundingBoxesFromPool( w, pos, null, false ) )
 			{
+				if ( b == null )
+				{
+					b = bx;
+					continue;
+				}
+				
 				final double minX = Math.min( b.minX, bx.minX );
 				final double minY = Math.min( b.minY, bx.minY );
 				final double minZ = Math.min( b.minZ, bx.minZ );
@@ -314,15 +356,18 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 				final double maxY = Math.max( b.maxY, bx.maxY );
 				final double maxZ = Math.max( b.maxZ, bx.maxZ );
 
-				b.setBounds( minX, minY, minZ, maxX, maxY, maxZ );
+				b = AxisAlignedBB.fromBounds( minX, minY, minZ, maxX, maxY, maxZ );
 			}
 
-			b.setBounds( b.minX + x, b.minY + y, b.minZ + z, b.maxX + x, b.maxY + y, b.maxZ + z );
+			if ( b == null )
+				b = new AxisAlignedBB( 16d, 16d, 16d, 0d, 0d, 0d );
+			else
+				b = AxisAlignedBB.fromBounds( b.minX + pos.getX(), b.minY + pos.getY(), b.minZ + pos.getZ(), b.maxX+ pos.getX(), b.maxY + pos.getY(), b.maxZ + pos.getZ() );
 
 			return b;
 		}
 
-		return super.getSelectedBoundingBoxFromPool( w, x, y, z );
+		return super.getSelectedBoundingBox( w, pos );
 	}
 
 	@Override
@@ -332,13 +377,17 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 	}
 
 	@Override
-	public MovingObjectPosition collisionRayTrace( World w, int x, int y, int z, Vec3 a, Vec3 b )
+	public MovingObjectPosition collisionRayTrace(
+			World w,
+			BlockPos pos,
+			Vec3 a,
+			Vec3 b )
 	{
-		final ICustomCollision collisionHandler = this.getCustomCollision( w, x, y, z );
+		final ICustomCollision collisionHandler = this.getCustomCollision( w, pos );
 
 		if( collisionHandler != null )
 		{
-			final Iterable<AxisAlignedBB> bbs = collisionHandler.getSelectedBoundingBoxesFromPool( w, x, y, z, null, true );
+			final Iterable<AxisAlignedBB> bbs = collisionHandler.getSelectedBoundingBoxesFromPool( w, pos, null, true );
 			MovingObjectPosition br = null;
 
 			double lastDist = 0;
@@ -347,7 +396,7 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 			{
 				this.setBlockBounds( (float) bb.minX, (float) bb.minY, (float) bb.minZ, (float) bb.maxX, (float) bb.maxY, (float) bb.maxZ );
 
-				MovingObjectPosition r = super.collisionRayTrace( w, x, y, z, a, b );
+				MovingObjectPosition r = super.collisionRayTrace( w, pos, a, b );
 
 				this.setBlockBounds( 0, 0, 0, 1, 1, 1 );
 
@@ -375,14 +424,14 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 		}
 
 		this.setBlockBounds( 0, 0, 0, 1, 1, 1 );
-		return super.collisionRayTrace( w, x, y, z, a, b );
+		return super.collisionRayTrace( w, pos, a, b );
 	}
 
-	public boolean onActivated( World w, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ )
+	public boolean onActivated( World w, BlockPos pos, EntityPlayer player, EnumFacing side, float hitX, float hitY, float hitZ )
 	{
 		return false;
 	}
-
+	
 	@Override
 	@SideOnly( Side.CLIENT )
 	@SuppressWarnings( "unchecked" )
@@ -396,56 +445,39 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 	{
 		return this.isInventory;
 	}
-
+	
 	@Override
-	public int getComparatorInputOverride( World w, int x, int y, int z, int s )
+	public int getComparatorInputOverride(
+			World worldIn,
+			BlockPos pos )
 	{
 		return 0;
 	}
-
+	
 	@Override
-	@SideOnly( Side.CLIENT )
-	public void registerBlockIcons( IIconRegister iconRegistry )
-	{
-		final BlockRenderInfo info = this.getRendererInstance();
-		final FlippableIcon topIcon;
-		final FlippableIcon bottomIcon;
-		final FlippableIcon sideIcon;
-		final FlippableIcon eastIcon;
-		final FlippableIcon westIcon;
-		final FlippableIcon southIcon;
-		final FlippableIcon northIcon;
-
-		this.blockIcon = topIcon = this.optionalIcon( iconRegistry, this.getTextureName(), null );
-		bottomIcon = this.optionalIcon( iconRegistry, this.getTextureName() + "Bottom", topIcon );
-		sideIcon = this.optionalIcon( iconRegistry, this.getTextureName() + "Side", topIcon );
-		eastIcon = this.optionalIcon( iconRegistry, this.getTextureName() + "East", sideIcon );
-		westIcon = this.optionalIcon( iconRegistry, this.getTextureName() + "West", sideIcon );
-		southIcon = this.optionalIcon( iconRegistry, this.getTextureName() + "Front", sideIcon );
-		northIcon = this.optionalIcon( iconRegistry, this.getTextureName() + "Back", sideIcon );
-
-		info.updateIcons( bottomIcon, topIcon, northIcon, southIcon, eastIcon, westIcon );
-	}
-
-	@Override
-	public final boolean isNormalCube( IBlockAccess world, int x, int y, int z )
+	public boolean isNormalCube(
+			IBlockAccess world,
+			BlockPos pos )
 	{
 		return this.isFullSize;
 	}
 
-	public IOrientable getOrientable( IBlockAccess w, int x, int y, int z )
+	public IOrientable getOrientable( IBlockAccess w, BlockPos pos )
 	{
 		if( this instanceof IOrientableBlock )
 		{
-			return ( (IOrientableBlock) this ).getOrientable( w, x, y, z );
+			return ( (IOrientableBlock) this ).getOrientable( w, pos );
 		}
 		return null;
 	}
 
 	@Override
-	public final boolean rotateBlock( World w, int x, int y, int z, ForgeDirection axis )
+	public boolean rotateBlock(
+			World w,
+			BlockPos pos,
+			EnumFacing axis )
 	{
-		final IOrientable rotatable = this.getOrientable( w, x, y, z );
+		final IOrientable rotatable = this.getOrientable( w, pos );
 
 		if( rotatable != null && rotatable.canBeRotated() )
 		{
@@ -456,15 +488,15 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 			}
 			else
 			{
-				ForgeDirection forward = rotatable.getForward();
-				ForgeDirection up = rotatable.getUp();
+				EnumFacing forward = rotatable.getForward();
+				EnumFacing up = rotatable.getUp();
 
 				for( int rs = 0; rs < 4; rs++ )
 				{
 					forward = Platform.rotateAround( forward, axis );
 					up = Platform.rotateAround( up, axis );
 
-					if( this.isValidOrientation( w, x, y, z, forward, up ) )
+					if( this.isValidOrientation( w, pos, forward, up ) )
 					{
 						rotatable.setOrientation( forward, up );
 						return true;
@@ -473,7 +505,7 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 			}
 		}
 
-		return super.rotateBlock( w, x, y, z, axis );
+		return super.rotateBlock( w, pos, axis );
 	}
 
 	protected boolean hasCustomRotation()
@@ -481,129 +513,26 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 		return false;
 	}
 
-	protected void customRotateBlock( IOrientable rotatable, ForgeDirection axis )
+	protected void customRotateBlock( IOrientable rotatable, EnumFacing axis )
 	{
 
 	}
 
-	public boolean isValidOrientation( World w, int x, int y, int z, ForgeDirection forward, ForgeDirection up )
+	public boolean isValidOrientation( World w, BlockPos pos, EnumFacing forward, EnumFacing up )
 	{
 		return true;
 	}
 
 	@Override
-	public ForgeDirection[] getValidRotations( World w, int x, int y, int z )
+	public EnumFacing[] getValidRotations( World w, BlockPos pos )
 	{
-		return new ForgeDirection[0];
-	}
-
-	@SideOnly( Side.CLIENT )
-	private FlippableIcon optionalIcon( IIconRegister ir, String name, IIcon substitute )
-	{
-		// if the input is an flippable IIcon find the original.
-		while( substitute instanceof FlippableIcon )
-		{
-			substitute = ( (FlippableIcon) substitute ).getOriginal();
-		}
-
-		if( substitute != null )
-		{
-			try
-			{
-				ResourceLocation resLoc = new ResourceLocation( name );
-				resLoc = new ResourceLocation( resLoc.getResourceDomain(), String.format( "%s/%s%s", "textures/blocks", resLoc.getResourcePath(), ".png" ) );
-
-				IResource res = Minecraft.getMinecraft().getResourceManager().getResource( resLoc );
-				if( res != null )
-				{
-					return new FlippableIcon( ir.registerIcon( name ) );
-				}
-			}
-			catch( Throwable e )
-			{
-				return new FlippableIcon( substitute );
-			}
-		}
-
-		return new FlippableIcon( ir.registerIcon( name ) );
+		return new EnumFacing[0];
 	}
 
 	@SideOnly( Side.CLIENT )
 	public void getCheckedSubBlocks( Item item, CreativeTabs tabs, List<ItemStack> itemStacks )
 	{
 		super.getSubBlocks( item, tabs, itemStacks );
-	}
-
-	int mapRotation( IBlockAccess w, int x, int y, int z, int s )
-	{
-		final IOrientable ori = this.getOrientable( w, x, y, z );
-
-		if( ori != null && ori.canBeRotated() )
-		{
-			return this.mapRotation( ori, ForgeDirection.getOrientation( s ) ).ordinal();
-		}
-
-		return s;
-	}
-
-	public ForgeDirection mapRotation( IOrientable ori, ForgeDirection dir )
-	{
-		// case DOWN: return bottomIcon;
-		// case UP: return blockIcon;
-		// case NORTH: return northIcon;
-		// case SOUTH: return southIcon;
-		// case WEST: return sideIcon;
-		// case EAST: return sideIcon;
-
-		final ForgeDirection forward = ori.getForward();
-		final ForgeDirection up = ori.getUp();
-		ForgeDirection west = ForgeDirection.UNKNOWN;
-
-		if( forward == null || up == null )
-		{
-			return dir;
-		}
-
-		int west_x = forward.offsetY * up.offsetZ - forward.offsetZ * up.offsetY;
-		int west_y = forward.offsetZ * up.offsetX - forward.offsetX * up.offsetZ;
-		int west_z = forward.offsetX * up.offsetY - forward.offsetY * up.offsetX;
-
-		for( ForgeDirection dx : ForgeDirection.VALID_DIRECTIONS )
-		{
-			if( dx.offsetX == west_x && dx.offsetY == west_y && dx.offsetZ == west_z )
-			{
-				west = dx;
-			}
-		}
-
-		if( dir == forward )
-		{
-			return ForgeDirection.SOUTH;
-		}
-		if( dir == forward.getOpposite() )
-		{
-			return ForgeDirection.NORTH;
-		}
-
-		if( dir == up )
-		{
-			return ForgeDirection.UP;
-		}
-		if( dir == up.getOpposite() )
-		{
-			return ForgeDirection.DOWN;
-		}
-
-		if( dir == west )
-		{
-			return ForgeDirection.WEST;
-		}
-		if( dir == west.getOpposite() )
-		{
-			return ForgeDirection.EAST;
-		}
-
-		return ForgeDirection.UNKNOWN;
 	}
 
 	@SideOnly( Side.CLIENT )
@@ -630,6 +559,139 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 	public boolean hasSubtypes()
 	{
 		return this.hasSubtypes;
+	}
+
+	public EnumFacing mapRotation(
+			IOrientable  ori,
+			EnumFacing dir )
+	{
+		// case DOWN: return bottomIcon;
+		// case UP: return blockIcon;
+		// case NORTH: return northIcon;
+		// case SOUTH: return southIcon;
+		// case WEST: return sideIcon;
+		// case EAST: return sideIcon;
+
+		final EnumFacing forward = ori.getForward();
+		final EnumFacing up = ori.getUp();
+		EnumFacing west = null;
+
+		if( forward == null || up == null )
+		{
+			return dir;
+		}
+
+		int west_x = forward.getFrontOffsetY() * up.getFrontOffsetZ() - forward.getFrontOffsetZ() * up.getFrontOffsetY();
+		int west_y = forward.getFrontOffsetZ() * up.getFrontOffsetX() - forward.getFrontOffsetX() * up.getFrontOffsetZ();
+		int west_z = forward.getFrontOffsetX() * up.getFrontOffsetY() - forward.getFrontOffsetY() * up.getFrontOffsetX();
+
+		for( EnumFacing dx : EnumFacing.VALUES )
+		{
+			if( dx.getFrontOffsetX() == west_x && dx.getFrontOffsetY() == west_y && dx.getFrontOffsetZ() == west_z )
+			{
+				west = dx;
+			}
+		}
+		
+		if ( west == null )
+			return dir;
+
+		if( dir == forward )
+		{
+			return EnumFacing.SOUTH;
+		}
+		if( dir == forward.getOpposite() )
+		{
+			return EnumFacing.NORTH;
+		}
+
+		if( dir == up )
+		{
+			return EnumFacing.UP;
+		}
+		if( dir == up.getOpposite() )
+		{
+			return EnumFacing.DOWN;
+		}
+
+		if( dir == west )
+		{
+			return EnumFacing.WEST;
+		}
+		if( dir == west.getOpposite() )
+		{
+			return EnumFacing.EAST;
+		}
+
+		return null;
+	}
+
+	@SideOnly( Side.CLIENT )
+	public void registerBlockIcons(
+			TextureMap clientHelper,
+			String name )
+	{
+		final BlockRenderInfo info = this.getRendererInstance();
+		final FlippableIcon blockIcon;
+		final FlippableIcon topIcon;
+		final FlippableIcon bottomIcon;
+		final FlippableIcon sideIcon;
+		final FlippableIcon eastIcon;
+		final FlippableIcon westIcon;
+		final FlippableIcon southIcon;
+		final FlippableIcon northIcon;
+
+		blockIcon = topIcon = this.optionalIcon( clientHelper, this.getTextureName(), null );
+		bottomIcon = this.optionalIcon( clientHelper, this.getTextureName() + "Bottom", topIcon );
+		sideIcon = this.optionalIcon( clientHelper, this.getTextureName() + "Side", topIcon );
+		eastIcon = this.optionalIcon( clientHelper, this.getTextureName() + "East", sideIcon );
+		westIcon = this.optionalIcon( clientHelper, this.getTextureName() + "West", sideIcon );
+		southIcon = this.optionalIcon( clientHelper, this.getTextureName() + "Front", sideIcon );
+		northIcon = this.optionalIcon( clientHelper, this.getTextureName() + "Back", sideIcon );
+
+		info.updateIcons( bottomIcon, topIcon, northIcon, southIcon, eastIcon, westIcon );
+	}
+
+	@SideOnly( Side.CLIENT )
+	private FlippableIcon optionalIcon( TextureMap ir, String name, IAESprite substitute )
+	{
+		// if the input is an flippable IAESprite find the original.
+		while( substitute instanceof FlippableIcon )
+		{
+			substitute = ( (FlippableIcon) substitute ).getOriginal();
+		}
+
+		if( substitute != null )
+		{
+			try
+			{
+				ResourceLocation resLoc = new ResourceLocation( AppEng.MOD_ID, String.format( "%s/%s%s", "textures/blocks", name, ".png" ) );
+
+				IResource res = Minecraft.getMinecraft().getResourceManager().getResource( resLoc );
+				if( res != null )
+				{
+					return new FlippableIcon( new BaseIcon( ir.registerSprite( new ResourceLocation(AppEng.MOD_ID, "blocks/" + name ) ) ) );
+				}
+			}
+			catch( Throwable e )
+			{
+				return new FlippableIcon( substitute );
+			}
+		}
+
+		ResourceLocation resLoc = new ResourceLocation(AppEng.MOD_ID, "blocks/" + name );
+		return new FlippableIcon(new BaseIcon( ir.registerSprite( resLoc ) ) );
+	}
+	
+	String textureName;
+	public void setBlockTextureName( String texture )
+	{
+		textureName = texture;
+	}
+	
+	private String getTextureName()
+	{
+		return textureName;
 	}
 
 }

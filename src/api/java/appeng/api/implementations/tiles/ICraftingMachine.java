@@ -25,8 +25,7 @@ package appeng.api.implementations.tiles;
 
 
 import net.minecraft.inventory.InventoryCrafting;
-import net.minecraftforge.common.util.ForgeDirection;
-
+import net.minecraft.util.EnumFacing;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 
 
@@ -42,7 +41,7 @@ public interface ICraftingMachine
 	 *
 	 * @return if it was accepted, all or nothing.
 	 */
-	boolean pushPattern( ICraftingPatternDetails patternDetails, InventoryCrafting table, ForgeDirection ejectionDirection );
+	boolean pushPattern( ICraftingPatternDetails patternDetails, InventoryCrafting table, EnumFacing ejectionDirection );
 
 	/**
 	 * check if the crafting machine is accepting pushes via pushPattern, if this is false, all calls to push will fail,

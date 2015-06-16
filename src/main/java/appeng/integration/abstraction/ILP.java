@@ -23,7 +23,6 @@ import java.util.List;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-
 import appeng.api.storage.IMEInventory;
 
 

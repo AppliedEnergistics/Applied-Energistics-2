@@ -22,11 +22,12 @@ package appeng.block.solids;
 import java.util.EnumSet;
 
 import net.minecraft.block.material.Material;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumWorldBlockLayer;
 import net.minecraft.world.IBlockAccess;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import appeng.block.AEBaseBlock;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.blocks.RenderQuartzGlass;
@@ -43,6 +44,12 @@ public class BlockQuartzGlass extends AEBaseBlock
 		this.isOpaque = false;
 		this.setFeature( EnumSet.of( AEFeature.DecorativeQuartzBlocks ) );
 	}
+	
+	@Override
+	public EnumWorldBlockLayer getBlockLayer()
+	{
+		return EnumWorldBlockLayer.CUTOUT;
+	}
 
 	@Override
 	@SideOnly( Side.CLIENT )
@@ -52,16 +59,19 @@ public class BlockQuartzGlass extends AEBaseBlock
 	}
 
 	@Override
-	public boolean shouldSideBeRendered( IBlockAccess w, int x, int y, int z, int side )
+	public boolean shouldSideBeRendered(
+			IBlockAccess w,
+			BlockPos pos,
+			EnumFacing side )
 	{
-		Material mat = w.getBlock( x, y, z ).getMaterial();
+		Material mat = w.getBlockState( pos ).getBlock().getMaterial();
 		if( mat == Material.glass || mat == AEGlassMaterial.INSTANCE )
 		{
-			if( w.getBlock( x, y, z ).getRenderType() == this.getRenderType() )
+			if( w.getBlockState( pos ).getBlock().getRenderType() == this.getRenderType() )
 			{
 				return false;
 			}
 		}
-		return super.shouldSideBeRendered( w, x, y, z, side );
+		return super.shouldSideBeRendered( w, pos, side );
 	}
 }

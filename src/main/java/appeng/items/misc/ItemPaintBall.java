@@ -22,17 +22,19 @@ package appeng.items.misc;
 import java.util.EnumSet;
 import java.util.List;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.ItemMeshDefinition;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.client.MinecraftForgeClient;
-
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import appeng.api.util.AEColor;
-import appeng.client.render.items.PaintBallRender;
+import appeng.client.ClientHelper;
 import appeng.core.features.AEFeature;
 import appeng.core.localization.GuiText;
 import appeng.items.AEBaseItem;
-import appeng.util.Platform;
 
 
 public class ItemPaintBall extends AEBaseItem
@@ -44,13 +46,30 @@ public class ItemPaintBall extends AEBaseItem
 	{
 		this.setFeature( EnumSet.of( AEFeature.PaintBalls ) );
 		this.setHasSubtypes( true );
-
-		if( Platform.isClient() )
-		{
-			MinecraftForgeClient.registerItemRenderer( this, new PaintBallRender() );
-		}
 	}
 
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void registerIcons( ClientHelper ir, String name )
+	{
+		final ModelResourceLocation sloc = ir.setIcon( this, name + "Shimmer" );
+		final ModelResourceLocation loc = ir.setIcon( this, name );
+		
+		
+		Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register( this, new ItemMeshDefinition(){
+			
+			@Override
+			public ModelResourceLocation getModelLocation(
+					ItemStack stack )
+			{
+				if ( isLumen(stack) )
+					return sloc;
+				
+				return loc;
+			}
+		});
+	}
+	
 	@Override
 	public String getItemStackDisplayName( ItemStack is )
 	{
@@ -60,6 +79,31 @@ public class ItemPaintBall extends AEBaseItem
 	public String getExtraName( ItemStack is )
 	{
 		return ( is.getItemDamage() >= DAMAGE_THRESHOLD ? GuiText.Lumen.getLocal() + ' ' : "" ) + this.getColor( is );
+	}
+	
+	@Override
+	public int getColorFromItemStack(
+			ItemStack stack,
+			int renderPass )
+	{
+		AEColor col = getColor(stack);
+		
+		int colorValue = stack.getItemDamage() >= 20 ? col.mediumVariant : col.mediumVariant;
+		int r = ( colorValue >> 16 ) & 0xff;
+		int g = ( colorValue >> 8 ) & 0xff;
+		int b = ( colorValue ) & 0xff;
+	
+		int full = (int) ( 255 * 0.3 );
+		float fail = 0.7f;
+	
+		if( stack.getItemDamage() >= 20 )
+		{
+			return  (int)( full + r * fail ) << 16 |  (int)( full + g * fail ) << 8 |  (int)( full + b * fail ) | 0xff << 24;
+		}
+		else
+		{
+			return r << 16 | g << 8 | b | 0xff << 24 ;
+		}
 	}
 
 	public AEColor getColor( ItemStack is )

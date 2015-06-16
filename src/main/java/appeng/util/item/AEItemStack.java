@@ -19,6 +19,8 @@
 package appeng.util.item;
 
 
+import io.netty.buffer.ByteBuf;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
@@ -29,18 +31,14 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-import io.netty.buffer.ByteBuf;
-
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
-
-import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.common.registry.GameRegistry.UniqueIdentifier;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
+import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.common.registry.GameRegistry.UniqueIdentifier;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import appeng.api.config.FuzzyMode;
 import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEItemStack;
@@ -95,7 +93,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 		 * Kinda hackery
 		 */
 		this.def.damageValue = this.def.getDamageValueHack( is );
-		this.def.displayDamage = is.getItemDamageForDisplay();
+		this.def.displayDamage = ( int ) ( is.getItem().getDurabilityForDisplay( is ) * Integer.MAX_VALUE );
 		this.def.maxDamage = is.getMaxDamage();
 
 		NBTTagCompound tagCompound = is.getTagCompound();
@@ -286,12 +284,18 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 						}
 						else if( mode == FuzzyMode.PERCENT_99 )
 						{
-							return ( a.getItemDamageForDisplay() > 1 ) == ( b.getItemDamageForDisplay() > 1 );
+							Item ai = a.getItem();
+							Item bi = b.getItem();
+							
+							return ( ai.getDurabilityForDisplay( a ) < 0.001f ) == ( bi.getDurabilityForDisplay( b ) < 0.001f );
 						}
 						else
 						{
-							float percentDamageOfA = 1.0f - (float) a.getItemDamageForDisplay() / (float) a.getMaxDamage();
-							float percentDamageOfB = 1.0f - (float) b.getItemDamageForDisplay() / (float) b.getMaxDamage();
+							Item ai = a.getItem();
+							Item bi = b.getItem();
+							
+							float percentDamageOfA = 1.0f - (float) ai.getDurabilityForDisplay(a);
+							float percentDamageOfB = 1.0f - (float) bi.getDurabilityForDisplay(b);
 
 							return ( percentDamageOfA > mode.breakPoint ) == ( percentDamageOfB > mode.breakPoint );
 						}
@@ -340,12 +344,18 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 						}
 						else if( mode == FuzzyMode.PERCENT_99 )
 						{
-							return ( a.getItemDamageForDisplay() > 1 ) == ( o.getItemDamageForDisplay() > 1 );
+							Item ai = a.getItem();
+							Item bi = o.getItem();
+
+							return ( ai.getDurabilityForDisplay( a ) < 0.001f ) == ( bi.getDurabilityForDisplay( o ) < 0.001f );
 						}
 						else
 						{
-							float percentDamageOfA = 1.0f - (float) a.getItemDamageForDisplay() / (float) a.getMaxDamage();
-							float percentDamageOfB = 1.0f - (float) o.getItemDamageForDisplay() / (float) o.getMaxDamage();
+							Item ai = a.getItem();
+							Item bi = o.getItem();
+
+							float percentDamageOfA = 1.0f - (float) ai.getDurabilityForDisplay(a);
+							float percentDamageOfB = 1.0f - (float) bi.getDurabilityForDisplay(o);
 
 							return ( percentDamageOfA > mode.breakPoint ) == ( percentDamageOfB > mode.breakPoint );
 						}

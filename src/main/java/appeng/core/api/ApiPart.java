@@ -28,7 +28,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import com.google.common.base.Joiner;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.world.World;
 
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
@@ -39,18 +45,10 @@ import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
-import net.minecraftforge.client.MinecraftForgeClient;
-
 import appeng.api.parts.CableRenderMode;
 import appeng.api.parts.IPartHelper;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.LayerBase;
-import appeng.client.render.BusRenderer;
 import appeng.core.AELog;
 import appeng.core.CommonHelper;
 import appeng.integration.IntegrationRegistry;
@@ -59,6 +57,8 @@ import appeng.integration.abstraction.IFMP;
 import appeng.parts.PartPlacement;
 import appeng.tile.networking.TileCableBus;
 import appeng.util.Platform;
+
+import com.google.common.base.Joiner;
 
 
 public class ApiPart implements IPartHelper
@@ -333,14 +333,15 @@ public class ApiPart implements IPartHelper
 	{
 		if( Platform.isClient() && i instanceof Item )
 		{
-			MinecraftForgeClient.registerItemRenderer( (Item) i, BusRenderer.INSTANCE );
+			CommonHelper.proxy.configureIcon( i, null );
+			// MinecraftForgeClient.registerItemRenderer( (Item) i, BusRenderer.INSTANCE );
 		}
 	}
 
 	@Override
-	public boolean placeBus( ItemStack is, int x, int y, int z, int side, EntityPlayer player, World w )
+	public boolean placeBus( ItemStack is, BlockPos pos, EnumFacing side, EntityPlayer player, World w )
 	{
-		return PartPlacement.place( is, x, y, z, side, player, w, PartPlacement.PlaceType.PLACE_ITEM, 0 );
+		return PartPlacement.place( is, pos, side, player, w, PartPlacement.PlaceType.PLACE_ITEM, 0 );
 	}
 
 	@Override

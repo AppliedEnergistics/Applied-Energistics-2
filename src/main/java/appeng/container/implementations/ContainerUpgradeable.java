@@ -23,8 +23,8 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
-
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.SecurityPermissions;
@@ -74,19 +74,19 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 		if( te instanceof TileEntity )
 		{
 			TileEntity myTile = (TileEntity) te;
-			w = myTile.getWorldObj();
-			xCoord = myTile.xCoord;
-			yCoord = myTile.yCoord;
-			zCoord = myTile.zCoord;
+			w = myTile.getWorld();
+			xCoord = myTile.getPos().getX();
+			yCoord = myTile.getPos().getY();
+			zCoord = myTile.getPos().getZ();
 		}
 
 		if( te instanceof IPart )
 		{
 			TileEntity mk = te.getTile();
-			w = mk.getWorldObj();
-			xCoord = mk.xCoord;
-			yCoord = mk.yCoord;
-			zCoord = mk.zCoord;
+			w = mk.getWorld();
+			xCoord = mk.getPos().getX();
+			yCoord = mk.getPos().getY();
+			zCoord = mk.getPos().getZ();
 		}
 
 		IInventory pi = this.getPlayerInv();
@@ -97,7 +97,7 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 			{
 				this.lockPlayerInventorySlot( x );
 				this.tbSlot = x;
-				this.tbInventory = (NetworkToolViewer) ( (IGuiItem) pii.getItem() ).getGuiObject( pii, w, xCoord, yCoord, zCoord );
+				this.tbInventory = (NetworkToolViewer) ( (IGuiItem) pii.getItem() ).getGuiObject( pii, w, new BlockPos( xCoord, yCoord, zCoord ) );
 				break;
 			}
 		}

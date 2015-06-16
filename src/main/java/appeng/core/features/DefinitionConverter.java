@@ -7,8 +7,8 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.IBlockAccess;
-
 import appeng.api.definitions.IBlockDefinition;
 import appeng.api.definitions.IComparableDefinition;
 import appeng.api.definitions.IItemDefinition;
@@ -86,7 +86,7 @@ public final class DefinitionConverter
 		}
 
 		@Override
-		public boolean sameAsBlock( IBlockAccess world, int x, int y, int z )
+		public boolean sameAsBlock( IBlockAccess world, BlockPos pos )
 		{
 			return false;
 		}
@@ -139,9 +139,9 @@ public final class DefinitionConverter
 		}
 
 		@Override
-		public boolean sameAsBlock( IBlockAccess world, int x, int y, int z )
+		public boolean sameAsBlock( IBlockAccess world, BlockPos pos )
 		{
-			return this.definition.isSameAs( world, x, y, z );
+			return this.definition.isSameAs( world, pos );
 		}
 	}
 

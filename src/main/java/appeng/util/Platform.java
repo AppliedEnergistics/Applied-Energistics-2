@@ -32,10 +32,12 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.WeakHashMap;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
@@ -62,26 +64,24 @@ import net.minecraft.stats.Achievement;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.StatCollector;
 import net.minecraft.util.Vec3;
+import net.minecraft.world.ILockableContainer;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.util.FakePlayerFactory;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.ModContainer;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
-
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.ModContainer;
-import cpw.mods.fml.relauncher.ReflectionHelper;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
-import buildcraft.api.tools.IToolWrench;
-
 import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
@@ -117,6 +117,7 @@ import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IAETagCompound;
 import appeng.api.storage.data.IItemList;
 import appeng.api.util.AEColor;
+import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
@@ -212,31 +213,59 @@ public class Platform
 		return df.format( p ) + ' ' + level + unitName + ( isRate ? "/t" : "" );
 	}
 
-	public static ForgeDirection crossProduct( ForgeDirection forward, ForgeDirection up )
+	public static AEPartLocation crossProduct( AEPartLocation forward, AEPartLocation up )
 	{
-		int west_x = forward.offsetY * up.offsetZ - forward.offsetZ * up.offsetY;
-		int west_y = forward.offsetZ * up.offsetX - forward.offsetX * up.offsetZ;
-		int west_z = forward.offsetX * up.offsetY - forward.offsetY * up.offsetX;
+		int west_x = forward.yOffset * up.zOffset - forward.zOffset * up.yOffset;
+		int west_y = forward.zOffset * up.xOffset - forward.xOffset * up.zOffset;
+		int west_z = forward.xOffset * up.yOffset - forward.yOffset * up.xOffset;
 
 		switch( west_x + west_y * 2 + west_z * 3 )
 		{
 			case 1:
-				return ForgeDirection.EAST;
+				return AEPartLocation.EAST;
 			case -1:
-				return ForgeDirection.WEST;
+				return AEPartLocation.WEST;
 
 			case 2:
-				return ForgeDirection.UP;
+				return AEPartLocation.UP;
 			case -2:
-				return ForgeDirection.DOWN;
+				return AEPartLocation.DOWN;
 
 			case 3:
-				return ForgeDirection.SOUTH;
+				return AEPartLocation.SOUTH;
 			case -3:
-				return ForgeDirection.NORTH;
+				return AEPartLocation.NORTH;
 		}
 
-		return ForgeDirection.UNKNOWN;
+		return AEPartLocation.INTERNAL;
+	}
+
+	public static EnumFacing crossProduct( EnumFacing forward, EnumFacing up )
+	{
+		int west_x = forward.getFrontOffsetY() * up.getFrontOffsetZ() - forward.getFrontOffsetZ() * up.getFrontOffsetY();
+		int west_y = forward.getFrontOffsetZ() * up.getFrontOffsetX() - forward.getFrontOffsetX() * up.getFrontOffsetZ();
+		int west_z = forward.getFrontOffsetX() * up.getFrontOffsetY() - forward.getFrontOffsetY() * up.getFrontOffsetX();
+
+		switch( west_x + west_y * 2 + west_z * 3 )
+		{
+			case 1:
+				return EnumFacing.EAST;
+			case -1:
+				return EnumFacing.WEST;
+
+			case 2:
+				return EnumFacing.UP;
+			case -2:
+				return EnumFacing.DOWN;
+
+			case 3:
+				return EnumFacing.SOUTH;
+			case -3:
+				return EnumFacing.NORTH;
+		}
+
+		//something is better then nothing?
+		return EnumFacing.NORTH;
 	}
 
 	public static <T extends Enum> T rotateEnum( T ce, boolean backwards, EnumSet validOptions )
@@ -339,7 +368,7 @@ public class Platform
 		return false;
 	}
 
-	public static void openGUI( @Nonnull EntityPlayer p, @Nullable TileEntity tile, @Nullable ForgeDirection side, @Nonnull GuiBridge type )
+	public static void openGUI( @Nonnull EntityPlayer p, @Nullable TileEntity tile, @Nullable AEPartLocation side, @Nonnull GuiBridge type )
 	{
 		if( isClient() )
 		{
@@ -351,12 +380,12 @@ public class Platform
 		int z = (int) p.posZ;
 		if( tile != null )
 		{
-			x = tile.xCoord;
-			y = tile.yCoord;
-			z = tile.zCoord;
+			x = tile.getPos().getX();
+			y = tile.getPos().getY();
+			z = tile.getPos().getZ();
 		}
 
-		if( ( type.getType().isItem() && tile == null ) || type.hasPermissions( tile, x, y, z, side, p ) )
+		if( ( type.getType().isItem() && tile == null ) || type.hasPermissions( tile, x,y,z, side, p ) )
 		{
 			if( tile == null && type.getType() == GuiHostType.ITEM )
 			{
@@ -368,7 +397,7 @@ public class Platform
 			}
 			else
 			{
-				p.openGui( AppEng.instance(), type.ordinal() << 4 | ( side.ordinal() ), tile.getWorldObj(), x, y, z );
+				p.openGui( AppEng.instance(), type.ordinal() << 4 | ( side.ordinal() ), tile.getWorld(), x, y, z );
 			}
 		}
 	}
@@ -383,17 +412,17 @@ public class Platform
 
 	public static boolean hasPermissions( DimensionalCoord dc, EntityPlayer player )
 	{
-		return dc.getWorld().canMineBlock( player, dc.x, dc.y, dc.z );
+		return dc.getWorld().canMineBlockBody( player, dc.getPos() );
 	}
 
 	/*
 	 * Checks to see if a block is air?
 	 */
-	public static boolean isBlockAir( World w, int x, int y, int z )
+	public static boolean isBlockAir( World w, BlockPos pos )
 	{
 		try
 		{
-			return w.getBlock( x, y, z ).isAir( w, x, y, z );
+			return w.getBlockState( pos ).getBlock().isAir( w, pos );
 		}
 		catch( Throwable e )
 		{
@@ -464,8 +493,8 @@ public class Platform
 					NBTTagCompound ctA = (NBTTagCompound) left;
 					NBTTagCompound ctB = (NBTTagCompound) right;
 
-					Set<String> cA = ctA.func_150296_c();
-					Set<String> cB = ctB.func_150296_c();
+					Set<String> cA = ctA.getKeySet();
+					Set<String> cB = ctB.getKeySet();
 
 					if( cA.size() != cB.size() )
 					{
@@ -523,22 +552,22 @@ public class Platform
 				}
 
 				case 1: // ( A instanceof NBTTagByte )
-					return ( (NBTBase.NBTPrimitive) left ).func_150287_d() == ( (NBTBase.NBTPrimitive) right ).func_150287_d();
+					return ( (NBTBase.NBTPrimitive) left ).getByte() == ( (NBTBase.NBTPrimitive) right ).getByte();
 
 				case 4: // else if ( A instanceof NBTTagLong )
-					return ( (NBTBase.NBTPrimitive) left ).func_150291_c() == ( (NBTBase.NBTPrimitive) right ).func_150291_c();
+					return ( (NBTBase.NBTPrimitive) left ).getLong() == ( (NBTBase.NBTPrimitive) right ).getLong();
 
 				case 8: // else if ( A instanceof NBTTagString )
-					return ( (NBTTagString) left ).func_150285_a_().equals( ( (NBTTagString) right ).func_150285_a_() ) || ( (NBTTagString) left ).func_150285_a_().equals( ( (NBTTagString) right ).func_150285_a_() );
+					return ( (NBTTagString) left ).getString().equals( ( (NBTTagString) right ).getString() ) || ( (NBTTagString) left ).getString().equals( ( (NBTTagString) right ).getString() );
 
 				case 6: // else if ( A instanceof NBTTagDouble )
-					return ( (NBTBase.NBTPrimitive) left ).func_150286_g() == ( (NBTBase.NBTPrimitive) right ).func_150286_g();
+					return ( (NBTBase.NBTPrimitive) left ).getDouble() == ( (NBTBase.NBTPrimitive) right ).getDouble();
 
 				case 5: // else if ( A instanceof NBTTagFloat )
-					return ( (NBTBase.NBTPrimitive) left ).func_150288_h() == ( (NBTBase.NBTPrimitive) right ).func_150288_h();
+					return ( (NBTBase.NBTPrimitive) left ).getFloat() == ( (NBTBase.NBTPrimitive) right ).getFloat();
 
 				case 3: // else if ( A instanceof NBTTagInt )
-					return ( (NBTBase.NBTPrimitive) left ).func_150287_d() == ( (NBTBase.NBTPrimitive) right ).func_150287_d();
+					return ( (NBTBase.NBTPrimitive) left ).getInt() == ( (NBTBase.NBTPrimitive) right ).getInt();
 
 				default:
 					return left.equals( right );
@@ -599,7 +628,7 @@ public class Platform
 			{
 				NBTTagCompound ctA = (NBTTagCompound) nbt;
 
-				Set<String> cA = ctA.func_150296_c();
+				Set<String> cA = ctA.getKeySet();
 
 				for( String name : cA )
 				{
@@ -624,22 +653,22 @@ public class Platform
 			}
 
 			case 1: // ( A instanceof NBTTagByte )
-				return hash + ( (NBTBase.NBTPrimitive) nbt ).func_150290_f();
+				return hash + ( (NBTBase.NBTPrimitive) nbt ).getByte();
 
 			case 4: // else if ( A instanceof NBTTagLong )
-				return hash + (int) ( (NBTBase.NBTPrimitive) nbt ).func_150291_c();
+				return hash + (int) ( (NBTBase.NBTPrimitive) nbt ).getLong();
 
 			case 8: // else if ( A instanceof NBTTagString )
-				return hash + ( (NBTTagString) nbt ).func_150285_a_().hashCode();
+				return hash + ( (NBTTagString) nbt ).getString().hashCode();
 
 			case 6: // else if ( A instanceof NBTTagDouble )
-				return hash + (int) ( (NBTBase.NBTPrimitive) nbt ).func_150286_g();
+				return hash + (int) ( (NBTBase.NBTPrimitive) nbt ).getDouble();
 
 			case 5: // else if ( A instanceof NBTTagFloat )
-				return hash + (int) ( (NBTBase.NBTPrimitive) nbt ).func_150288_h();
+				return hash + (int) ( (NBTBase.NBTPrimitive) nbt ).getFloat();
 
 			case 3: // else if ( A instanceof NBTTagInt )
-				return hash + ( (NBTBase.NBTPrimitive) nbt ).func_150287_d();
+				return hash + ( (NBTBase.NBTPrimitive) nbt ).getInt();
 
 			default:
 				return hash;
@@ -665,14 +694,14 @@ public class Platform
 		return null;
 	}
 
-	public static ItemStack[] getBlockDrops( World w, int x, int y, int z )
+	public static ItemStack[] getBlockDrops( World w, BlockPos pos )
 	{
 		List<ItemStack> out = new ArrayList<ItemStack>();
-		Block which = w.getBlock( x, y, z );
+		IBlockState state = w.getBlockState( pos );
 
-		if( which != null )
+		if( state != null )
 		{
-			out = which.getDrops( w, x, y, z, w.getBlockMetadata( x, y, z ), 0 );
+			out = state.getBlock().getDrops( w, pos, state, 0 );
 		}
 
 		if( out == null )
@@ -682,26 +711,26 @@ public class Platform
 		return out.toArray( new ItemStack[out.size()] );
 	}
 
-	public static ForgeDirection cycleOrientations( ForgeDirection dir, boolean upAndDown )
+	public static AEPartLocation cycleOrientations( AEPartLocation dir, boolean upAndDown )
 	{
 		if( upAndDown )
 		{
 			switch( dir )
 			{
 				case NORTH:
-					return ForgeDirection.SOUTH;
+					return AEPartLocation.SOUTH;
 				case SOUTH:
-					return ForgeDirection.EAST;
+					return AEPartLocation.EAST;
 				case EAST:
-					return ForgeDirection.WEST;
+					return AEPartLocation.WEST;
 				case WEST:
-					return ForgeDirection.NORTH;
+					return AEPartLocation.NORTH;
 				case UP:
-					return ForgeDirection.UP;
+					return AEPartLocation.UP;
 				case DOWN:
-					return ForgeDirection.DOWN;
-				case UNKNOWN:
-					return ForgeDirection.UNKNOWN;
+					return AEPartLocation.DOWN;
+				case INTERNAL:
+					return AEPartLocation.INTERNAL;
 			}
 		}
 		else
@@ -709,23 +738,23 @@ public class Platform
 			switch( dir )
 			{
 				case UP:
-					return ForgeDirection.DOWN;
+					return AEPartLocation.DOWN;
 				case DOWN:
-					return ForgeDirection.NORTH;
+					return AEPartLocation.NORTH;
 				case NORTH:
-					return ForgeDirection.SOUTH;
+					return AEPartLocation.SOUTH;
 				case SOUTH:
-					return ForgeDirection.EAST;
+					return AEPartLocation.EAST;
 				case EAST:
-					return ForgeDirection.WEST;
+					return AEPartLocation.WEST;
 				case WEST:
-					return ForgeDirection.UP;
-				case UNKNOWN:
-					return ForgeDirection.UNKNOWN;
+					return AEPartLocation.UP;
+				case INTERNAL:
+					return AEPartLocation.INTERNAL;
 			}
 		}
 
-		return ForgeDirection.UNKNOWN;
+		return AEPartLocation.INTERNAL;
 	}
 
 	/*
@@ -746,7 +775,7 @@ public class Platform
 	/*
 	 * Generates Item entities in the world similar to how items are generally dropped.
 	 */
-	public static void spawnDrops( World w, int x, int y, int z, List<ItemStack> drops )
+	public static void spawnDrops( World w, BlockPos pos, List<ItemStack> drops )
 	{
 		if( isServer() )
 		{
@@ -759,7 +788,7 @@ public class Platform
 						double offset_x = ( getRandomInt() % 32 - 16 ) / 82;
 						double offset_y = ( getRandomInt() % 32 - 16 ) / 82;
 						double offset_z = ( getRandomInt() % 32 - 16 ) / 82;
-						EntityItem ei = new EntityItem( w, 0.5 + offset_x + x, 0.5 + offset_y + y, 0.2 + offset_z + z, i.copy() );
+						EntityItem ei = new EntityItem( w, 0.5 + offset_x + pos.getX(), 0.5 + offset_y + pos.getY(), 0.2 + offset_z + pos.getZ(), i.copy() );
 						w.spawnEntityInWorld( ei );
 					}
 				}
@@ -787,11 +816,14 @@ public class Platform
 	{
 		TileEntityChest teA = (TileEntityChest) te;
 		TileEntity teB = null;
-		Block myBlockID = teA.getWorldObj().getBlock( teA.xCoord, teA.yCoord, teA.zCoord );
+		IBlockState myBlockID = teA.getWorld().getBlockState( teA.getPos() );
 
-		if( teA.getWorldObj().getBlock( teA.xCoord + 1, teA.yCoord, teA.zCoord ) == myBlockID )
+		BlockPos posX = teA.getPos().offset( EnumFacing.EAST );
+		BlockPos negX = teA.getPos().offset( EnumFacing.WEST );
+		
+		if( teA.getWorld().getBlockState( posX ) == myBlockID )
 		{
-			teB = teA.getWorldObj().getTileEntity( teA.xCoord + 1, teA.yCoord, teA.zCoord );
+			teB = teA.getWorld().getTileEntity( posX );
 			if( !( teB instanceof TileEntityChest ) )
 			{
 				teB = null;
@@ -800,9 +832,9 @@ public class Platform
 
 		if( teB == null )
 		{
-			if( teA.getWorldObj().getBlock( teA.xCoord - 1, teA.yCoord, teA.zCoord ) == myBlockID )
+			if( teA.getWorld().getBlockState( negX ) == myBlockID )
 			{
-				teB = teA.getWorldObj().getTileEntity( teA.xCoord - 1, teA.yCoord, teA.zCoord );
+				teB = teA.getWorld().getTileEntity( negX );
 				if( !( teB instanceof TileEntityChest ) )
 				{
 					teB = null;
@@ -816,11 +848,14 @@ public class Platform
 			}
 		}
 
+		BlockPos posY = teA.getPos().offset( EnumFacing.SOUTH );
+		BlockPos negY = teA.getPos().offset( EnumFacing.NORTH );
+		
 		if( teB == null )
 		{
-			if( teA.getWorldObj().getBlock( teA.xCoord, teA.yCoord, teA.zCoord + 1 ) == myBlockID )
+			if( teA.getWorld().getBlockState( posY ) == myBlockID )
 			{
-				teB = teA.getWorldObj().getTileEntity( teA.xCoord, teA.yCoord, teA.zCoord + 1 );
+				teB = teA.getWorld().getTileEntity(posY);
 				if( !( teB instanceof TileEntityChest ) )
 				{
 					teB = null;
@@ -830,9 +865,9 @@ public class Platform
 
 		if( teB == null )
 		{
-			if( teA.getWorldObj().getBlock( teA.xCoord, teA.yCoord, teA.zCoord - 1 ) == myBlockID )
+			if( teA.getWorld().getBlockState( negY ) == myBlockID )
 			{
-				teB = teA.getWorldObj().getTileEntity( teA.xCoord, teA.yCoord, teA.zCoord - 1 );
+				teB = teA.getWorld().getTileEntity( negY );
 				if( !( teB instanceof TileEntityChest ) )
 				{
 					teB = null;
@@ -851,7 +886,7 @@ public class Platform
 			return teA;
 		}
 
-		return new InventoryLargeChest( "", teA, (IInventory) teB );
+		return new InventoryLargeChest( "", teA, (ILockableContainer) teB );
 	}
 
 	public static boolean isModLoaded( String modid )
@@ -995,17 +1030,20 @@ public class Platform
 		return false;
 	}
 
-	public static boolean isWrench( EntityPlayer player, ItemStack eq, int x, int y, int z )
+	public static boolean isWrench( EntityPlayer player, ItemStack eq, BlockPos pos )
 	{
 		if( eq != null )
 		{
 			try
 			{
+				// TODO: Build Craft Wrench?
+				/*
 				if( eq.getItem() instanceof IToolWrench )
 				{
 					IToolWrench wrench = (IToolWrench) eq.getItem();
 					return wrench.canWrench( player, x, y, z );
 				}
+				*/
 			}
 			catch( Throwable ignore )
 			{ // explodes without BC
@@ -1015,7 +1053,7 @@ public class Platform
 			if( eq.getItem() instanceof IAEWrench )
 			{
 				IAEWrench wrench = (IAEWrench) eq.getItem();
-				return wrench.canWrench( eq, player, x, y, z );
+				return wrench.canWrench( eq, player, pos );
 			}
 		}
 		return false;
@@ -1114,9 +1152,9 @@ public class Platform
 		return null; // wtf?
 	}
 
-	public static ForgeDirection rotateAround( ForgeDirection forward, ForgeDirection axis )
+	public static AEPartLocation rotateAround( AEPartLocation forward, AEPartLocation axis )
 	{
-		if( axis == ForgeDirection.UNKNOWN || forward == ForgeDirection.UNKNOWN )
+		if( axis == AEPartLocation.INTERNAL || forward == AEPartLocation.INTERNAL )
 		{
 			return forward;
 		}
@@ -1131,13 +1169,13 @@ public class Platform
 					case UP:
 						return forward;
 					case NORTH:
-						return ForgeDirection.EAST;
+						return AEPartLocation.EAST;
 					case SOUTH:
-						return ForgeDirection.WEST;
+						return AEPartLocation.WEST;
 					case EAST:
-						return ForgeDirection.NORTH;
+						return AEPartLocation.NORTH;
 					case WEST:
-						return ForgeDirection.SOUTH;
+						return AEPartLocation.SOUTH;
 					default:
 						break;
 				}
@@ -1146,13 +1184,13 @@ public class Platform
 				switch( axis )
 				{
 					case NORTH:
-						return ForgeDirection.WEST;
+						return AEPartLocation.WEST;
 					case SOUTH:
-						return ForgeDirection.EAST;
+						return AEPartLocation.EAST;
 					case EAST:
-						return ForgeDirection.SOUTH;
+						return AEPartLocation.SOUTH;
 					case WEST:
-						return ForgeDirection.NORTH;
+						return AEPartLocation.NORTH;
 					default:
 						break;
 				}
@@ -1161,13 +1199,13 @@ public class Platform
 				switch( axis )
 				{
 					case UP:
-						return ForgeDirection.WEST;
+						return AEPartLocation.WEST;
 					case DOWN:
-						return ForgeDirection.EAST;
+						return AEPartLocation.EAST;
 					case EAST:
-						return ForgeDirection.UP;
+						return AEPartLocation.UP;
 					case WEST:
-						return ForgeDirection.DOWN;
+						return AEPartLocation.DOWN;
 					default:
 						break;
 				}
@@ -1176,13 +1214,13 @@ public class Platform
 				switch( axis )
 				{
 					case UP:
-						return ForgeDirection.EAST;
+						return AEPartLocation.EAST;
 					case DOWN:
-						return ForgeDirection.WEST;
+						return AEPartLocation.WEST;
 					case EAST:
-						return ForgeDirection.DOWN;
+						return AEPartLocation.DOWN;
 					case WEST:
-						return ForgeDirection.UP;
+						return AEPartLocation.UP;
 					default:
 						break;
 				}
@@ -1191,13 +1229,13 @@ public class Platform
 				switch( axis )
 				{
 					case UP:
-						return ForgeDirection.NORTH;
+						return AEPartLocation.NORTH;
 					case DOWN:
-						return ForgeDirection.SOUTH;
+						return AEPartLocation.SOUTH;
 					case NORTH:
-						return ForgeDirection.UP;
+						return AEPartLocation.UP;
 					case SOUTH:
-						return ForgeDirection.DOWN;
+						return AEPartLocation.DOWN;
 					default:
 						break;
 				}
@@ -1205,13 +1243,115 @@ public class Platform
 				switch( axis )
 				{
 					case UP:
-						return ForgeDirection.SOUTH;
+						return AEPartLocation.SOUTH;
 					case DOWN:
-						return ForgeDirection.NORTH;
+						return AEPartLocation.NORTH;
 					case NORTH:
-						return ForgeDirection.DOWN;
+						return AEPartLocation.DOWN;
 					case SOUTH:
-						return ForgeDirection.UP;
+						return AEPartLocation.UP;
+					default:
+						break;
+				}
+			default:
+				break;
+		}
+		return forward;
+	}
+
+	public static EnumFacing rotateAround( EnumFacing forward, EnumFacing axis )
+	{
+		switch( forward )
+		{
+			case DOWN:
+				switch( axis )
+				{
+					case DOWN:
+						return forward;
+					case UP:
+						return forward;
+					case NORTH:
+						return EnumFacing.EAST;
+					case SOUTH:
+						return EnumFacing.WEST;
+					case EAST:
+						return EnumFacing.NORTH;
+					case WEST:
+						return EnumFacing.SOUTH;
+					default:
+						break;
+				}
+				break;
+			case UP:
+				switch( axis )
+				{
+					case NORTH:
+						return EnumFacing.WEST;
+					case SOUTH:
+						return EnumFacing.EAST;
+					case EAST:
+						return EnumFacing.SOUTH;
+					case WEST:
+						return EnumFacing.NORTH;
+					default:
+						break;
+				}
+				break;
+			case NORTH:
+				switch( axis )
+				{
+					case UP:
+						return EnumFacing.WEST;
+					case DOWN:
+						return EnumFacing.EAST;
+					case EAST:
+						return EnumFacing.UP;
+					case WEST:
+						return EnumFacing.DOWN;
+					default:
+						break;
+				}
+				break;
+			case SOUTH:
+				switch( axis )
+				{
+					case UP:
+						return EnumFacing.EAST;
+					case DOWN:
+						return EnumFacing.WEST;
+					case EAST:
+						return EnumFacing.DOWN;
+					case WEST:
+						return EnumFacing.UP;
+					default:
+						break;
+				}
+				break;
+			case EAST:
+				switch( axis )
+				{
+					case UP:
+						return EnumFacing.NORTH;
+					case DOWN:
+						return EnumFacing.SOUTH;
+					case NORTH:
+						return EnumFacing.UP;
+					case SOUTH:
+						return EnumFacing.DOWN;
+					default:
+						break;
+				}
+			case WEST:
+				switch( axis )
+				{
+					case UP:
+						return EnumFacing.SOUTH;
+					case DOWN:
+						return EnumFacing.NORTH;
+					case NORTH:
+						return EnumFacing.DOWN;
+					case SOUTH:
+						return EnumFacing.UP;
 					default:
 						break;
 				}
@@ -1265,12 +1405,18 @@ public class Platform
 				}
 				else if( mode == FuzzyMode.PERCENT_99 )
 				{
-					return ( a.getItemDamageForDisplay() > 1 ) == ( b.getItemDamageForDisplay() > 1 );
+					Item ai = a.getItem();
+					Item bi = b.getItem();
+					
+					return ( ai.getDurabilityForDisplay(a) > 1 ) == ( bi.getDurabilityForDisplay(b) > 1 );
 				}
 				else
 				{
-					float percentDamagedOfA = 1.0f - (float) a.getItemDamageForDisplay() / (float) a.getMaxDamage();
-					float percentDamagedOfB = 1.0f - (float) b.getItemDamageForDisplay() / (float) b.getMaxDamage();
+					Item ai = a.getItem();
+					Item bi = b.getItem();
+					
+					float percentDamagedOfA = 1.0f - (float) ai.getDurabilityForDisplay(a);
+					float percentDamagedOfB = 1.0f - (float) bi.getDurabilityForDisplay(b);
 
 					return ( percentDamagedOfA > mode.breakPoint ) == ( percentDamagedOfB > mode.breakPoint );
 				}
@@ -1320,30 +1466,34 @@ public class Platform
 		return a.isItemEqual( b );
 	}
 
-	public static LookDirection getPlayerRay( EntityPlayer player, float eyeOffset )
+	public static LookDirection getPlayerRay( EntityPlayer playerIn, float eyeOffset )
 	{
-		float f = 1.0F;
-		float f1 = player.prevRotationPitch + ( player.rotationPitch - player.prevRotationPitch ) * f;
-		float f2 = player.prevRotationYaw + ( player.rotationYaw - player.prevRotationYaw ) * f;
-		double d0 = player.prevPosX + ( player.posX - player.prevPosX ) * f;
-		double d1 = eyeOffset;
-		double d2 = player.prevPosZ + ( player.posZ - player.prevPosZ ) * f;
+		double reachDistance = 5.0d;
 
-		Vec3 vec3 = Vec3.createVectorHelper( d0, d1, d2 );
-		float f3 = MathHelper.cos( -f2 * 0.017453292F - (float) Math.PI );
-		float f4 = MathHelper.sin( -f2 * 0.017453292F - (float) Math.PI );
-		float f5 = -MathHelper.cos( -f1 * 0.017453292F );
-		float f6 = MathHelper.sin( -f1 * 0.017453292F );
-		float f7 = f4 * f5;
-		float f8 = f3 * f5;
-		double d3 = 5.0D;
+		final double x = playerIn.prevPosX + ( playerIn.posX - playerIn.prevPosX );
+		final double y = playerIn.prevPosY + ( playerIn.posY - playerIn.prevPosY ) + playerIn.getEyeHeight();
+		final double z = playerIn.prevPosZ + ( playerIn.posZ - playerIn.prevPosZ );
 
-		if( player instanceof EntityPlayerMP )
+		final float playerPitch = playerIn.prevRotationPitch + ( playerIn.rotationPitch - playerIn.prevRotationPitch );
+		final float playerYaw = playerIn.prevRotationYaw + ( playerIn.rotationYaw - playerIn.prevRotationYaw );
+
+		final float yawRayX = MathHelper.sin( -playerYaw * 0.017453292f - ( float ) Math.PI );
+		final float yawRayZ = MathHelper.cos( -playerYaw * 0.017453292f - ( float ) Math.PI );
+
+		final float pitchMultiplier = -MathHelper.cos( -playerPitch * 0.017453292F );
+		final float eyeRayY = MathHelper.sin( -playerPitch * 0.017453292F );
+		final float eyeRayX = yawRayX * pitchMultiplier;
+		final float eyeRayZ = yawRayZ * pitchMultiplier;
+
+		if ( playerIn instanceof EntityPlayerMP )
 		{
-			d3 = ( (EntityPlayerMP) player ).theItemInWorldManager.getBlockReachDistance();
+			reachDistance = ( ( EntityPlayerMP ) playerIn ).theItemInWorldManager.getBlockReachDistance();
 		}
-		Vec3 vec31 = vec3.addVector( f7 * d3, f6 * d3, f8 * d3 );
-		return new LookDirection( vec3, vec31 );
+
+		final Vec3 from = new Vec3( x, y, z );
+		final Vec3 to = from.addVector( eyeRayX * reachDistance, eyeRayY * reachDistance, eyeRayZ * reachDistance );
+
+		return new LookDirection( from, to );
 	}
 
 	public static MovingObjectPosition rayTrace( EntityPlayer p, boolean hitBlocks, boolean hitEntities )
@@ -1354,9 +1504,9 @@ public class Platform
 		float f1 = p.prevRotationPitch + ( p.rotationPitch - p.prevRotationPitch ) * f;
 		float f2 = p.prevRotationYaw + ( p.rotationYaw - p.prevRotationYaw ) * f;
 		double d0 = p.prevPosX + ( p.posX - p.prevPosX ) * f;
-		double d1 = p.prevPosY + ( p.posY - p.prevPosY ) * f + 1.62D - p.yOffset;
+		double d1 = p.prevPosY + ( p.posY - p.prevPosY ) * f + 1.62D - p.getYOffset();
 		double d2 = p.prevPosZ + ( p.posZ - p.prevPosZ ) * f;
-		Vec3 vec3 = Vec3.createVectorHelper( d0, d1, d2 );
+		Vec3 vec3 = new Vec3( d0, d1, d2 );
 		float f3 = MathHelper.cos( -f2 * 0.017453292F - (float) Math.PI );
 		float f4 = MathHelper.sin( -f2 * 0.017453292F - (float) Math.PI );
 		float f5 = -MathHelper.cos( -f1 * 0.017453292F );
@@ -1367,7 +1517,7 @@ public class Platform
 
 		Vec3 vec31 = vec3.addVector( f7 * d3, f6 * d3, f8 * d3 );
 
-		AxisAlignedBB bb = AxisAlignedBB.getBoundingBox( Math.min( vec3.xCoord, vec31.xCoord ), Math.min( vec3.yCoord, vec31.yCoord ), Math.min( vec3.zCoord, vec31.zCoord ), Math.max( vec3.xCoord, vec31.xCoord ), Math.max( vec3.yCoord, vec31.yCoord ), Math.max( vec3.zCoord, vec31.zCoord ) ).expand( 16, 16, 16 );
+		AxisAlignedBB bb = AxisAlignedBB.fromBounds( Math.min( vec3.xCoord, vec31.xCoord ), Math.min( vec3.yCoord, vec31.yCoord ), Math.min( vec3.zCoord, vec31.zCoord ), Math.max( vec3.xCoord, vec31.xCoord ), Math.max( vec3.yCoord, vec31.yCoord ), Math.max( vec3.zCoord, vec31.zCoord ) ).expand( 16, 16, 16 );
 
 		Entity entity = null;
 		double closest = 9999999.0D;
@@ -1391,7 +1541,7 @@ public class Platform
 						}
 
 						f1 = 0.3F;
-						AxisAlignedBB boundingBox = entity1.boundingBox.expand( f1, f1, f1 );
+						AxisAlignedBB boundingBox = entity1.getBoundingBox().expand( f1, f1, f1 );
 						MovingObjectPosition movingObjectPosition = boundingBox.calculateIntercept( vec3, vec31 );
 
 						if( movingObjectPosition != null )
@@ -1414,7 +1564,7 @@ public class Platform
 
 		if( hitBlocks )
 		{
-			vec = Vec3.createVectorHelper( d0, d1, d2 );
+			vec = new Vec3( d0, d1, d2 );
 			pos = w.rayTraceBlocks( vec3, vec31, true );
 		}
 
@@ -1634,11 +1784,11 @@ public class Platform
 
 			if( target instanceof ISidedInventory )
 			{
-				for( ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS )
+				for( EnumFacing dir : EnumFacing.VALUES )
 				{
 					int offset = 0;
 
-					int[] sides = ( (ISidedInventory) target ).getAccessibleSlotsFromSide( dir.ordinal() );
+					int[] sides = ( (ISidedInventory) target ).getSlotsForFace( dir );
 
 					if( sides == null )
 					{
@@ -1729,17 +1879,17 @@ public class Platform
 		return !gs.hasPermission( playerID, SecurityPermissions.BUILD );
 	}
 
-	public static void configurePlayer( EntityPlayer player, ForgeDirection side, TileEntity tile )
+	public static void configurePlayer( EntityPlayer player, AEPartLocation side, TileEntity tile )
 	{
 		float pitch = 0.0f;
 		float yaw = 0.0f;
-		player.yOffset = 1.8f;
+		// player.yOffset = 1.8f;
 
 		switch( side )
 		{
 			case DOWN:
 				pitch = 90.0f;
-				player.yOffset = -1.8f;
+				// player.getYOffset() = -1.8f;
 				break;
 			case EAST:
 				yaw = -90.0f;
@@ -1750,7 +1900,7 @@ public class Platform
 			case SOUTH:
 				yaw = 0.0f;
 				break;
-			case UNKNOWN:
+			case INTERNAL:
 				break;
 			case UP:
 				pitch = 90.0f;
@@ -1760,9 +1910,9 @@ public class Platform
 				break;
 		}
 
-		player.posX = tile.xCoord + 0.5;
-		player.posY = tile.yCoord + 0.5;
-		player.posZ = tile.zCoord + 0.5;
+		player.posX = tile.getPos().getX() + 0.5;
+		player.posY = tile.getPos().getY() + 0.5;
+		player.posZ = tile.getPos().getZ() + 0.5;
 
 		player.rotationPitch = player.prevCameraPitch = player.cameraPitch = pitch;
 		player.rotationYaw = player.prevCameraYaw = player.cameraYaw = yaw;
@@ -1909,11 +2059,11 @@ public class Platform
 		return ci;
 	}
 
-	public static void notifyBlocksOfNeighbors( World worldObj, int xCoord, int yCoord, int zCoord )
+	public static void notifyBlocksOfNeighbors( World worldObj, BlockPos pos )
 	{
 		if( !worldObj.isRemote )
 		{
-			TickHandler.INSTANCE.addCallable( worldObj, new BlockUpdate( worldObj, xCoord, yCoord, zCoord ) );
+			TickHandler.INSTANCE.addCallable( worldObj, new BlockUpdate( worldObj, pos ) );
 		}
 	}
 
@@ -1973,7 +2123,7 @@ public class Platform
 	{
 		try
 		{
-			WorldServer ws = (WorldServer) c.worldObj;
+			WorldServer ws = (WorldServer) c.getWorld();
 			PlayerManager pm = ws.getPlayerManager();
 
 			if( getOrCreateChunkWatcher == null )
@@ -2006,26 +2156,26 @@ public class Platform
 		}
 	}
 
-	public static AxisAlignedBB getPrimaryBox( ForgeDirection side, int facadeThickness )
+	public static AxisAlignedBB getPrimaryBox( AEPartLocation side, int facadeThickness )
 	{
 		switch( side )
 		{
 			case DOWN:
-				return AxisAlignedBB.getBoundingBox( 0.0, 0.0, 0.0, 1.0, ( facadeThickness ) / 16.0, 1.0 );
+				return AxisAlignedBB.fromBounds( 0.0, 0.0, 0.0, 1.0, ( facadeThickness ) / 16.0, 1.0 );
 			case EAST:
-				return AxisAlignedBB.getBoundingBox( ( 16.0 - facadeThickness ) / 16.0, 0.0, 0.0, 1.0, 1.0, 1.0 );
+				return AxisAlignedBB.fromBounds( ( 16.0 - facadeThickness ) / 16.0, 0.0, 0.0, 1.0, 1.0, 1.0 );
 			case NORTH:
-				return AxisAlignedBB.getBoundingBox( 0.0, 0.0, 0.0, 1.0, 1.0, ( facadeThickness ) / 16.0 );
+				return AxisAlignedBB.fromBounds( 0.0, 0.0, 0.0, 1.0, 1.0, ( facadeThickness ) / 16.0 );
 			case SOUTH:
-				return AxisAlignedBB.getBoundingBox( 0.0, 0.0, ( 16.0 - facadeThickness ) / 16.0, 1.0, 1.0, 1.0 );
+				return AxisAlignedBB.fromBounds( 0.0, 0.0, ( 16.0 - facadeThickness ) / 16.0, 1.0, 1.0, 1.0 );
 			case UP:
-				return AxisAlignedBB.getBoundingBox( 0.0, ( 16.0 - facadeThickness ) / 16.0, 0.0, 1.0, 1.0, 1.0 );
+				return AxisAlignedBB.fromBounds( 0.0, ( 16.0 - facadeThickness ) / 16.0, 0.0, 1.0, 1.0, 1.0 );
 			case WEST:
-				return AxisAlignedBB.getBoundingBox( 0.0, 0.0, 0.0, ( facadeThickness ) / 16.0, 1.0, 1.0 );
+				return AxisAlignedBB.fromBounds( 0.0, 0.0, 0.0, ( facadeThickness ) / 16.0, 1.0, 1.0 );
 			default:
 				break;
 		}
-		return AxisAlignedBB.getBoundingBox( 0, 0, 0, 1, 1, 1 );
+		return AxisAlignedBB.fromBounds( 0, 0, 0, 1, 1, 1 );
 	}
 
 	public static float getEyeOffset( EntityPlayer player )

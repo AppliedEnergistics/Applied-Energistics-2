@@ -19,13 +19,13 @@
 package appeng.client.render.blocks;
 
 
-import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.IItemRenderer.ItemRenderType;
-
 import appeng.block.solids.OreQuartz;
 import appeng.client.render.BaseBlockRender;
+import appeng.client.render.IRenderHelper;
 import appeng.client.texture.ExtraBlockTextures;
 import appeng.tile.AEBaseTile;
 
@@ -39,7 +39,7 @@ public class RenderQuartzOre extends BaseBlockRender<OreQuartz, AEBaseTile>
 	}
 
 	@Override
-	public void renderInventory( OreQuartz blk, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj )
+	public void renderInventory( OreQuartz blk, ItemStack is, IRenderHelper renderer, ItemRenderType type, Object[] obj )
 	{
 		super.renderInventory( blk, is, renderer, type, obj );
 		blk.getRendererInstance().setTemporaryRenderIcon( ExtraBlockTextures.OreQuartzStone.getIcon() );
@@ -48,15 +48,15 @@ public class RenderQuartzOre extends BaseBlockRender<OreQuartz, AEBaseTile>
 	}
 
 	@Override
-	public boolean renderInWorld( OreQuartz block, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
+	public boolean renderInWorld( OreQuartz block, IBlockAccess world, BlockPos pos, IRenderHelper renderer )
 	{
-		OreQuartz blk = (OreQuartz) block;
+		OreQuartz blk = block;
 		blk.setEnhanceBrightness( true );
-		super.renderInWorld( block, world, x, y, z, renderer );
+		super.renderInWorld( block, world, pos, renderer );
 		blk.setEnhanceBrightness( false );
 
 		blk.getRendererInstance().setTemporaryRenderIcon( ExtraBlockTextures.OreQuartzStone.getIcon() );
-		boolean out = super.renderInWorld( block, world, x, y, z, renderer );
+		boolean out = super.renderInWorld( block, world, pos, renderer );
 		blk.getRendererInstance().setTemporaryRenderIcon( null );
 
 		return out;

@@ -21,7 +21,7 @@ package appeng.items.contents;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-
+import net.minecraft.util.IChatComponent;
 import appeng.api.implementations.guiobjects.INetworkTool;
 import appeng.api.implementations.items.IUpgradeModule;
 import appeng.api.networking.IGridHost;
@@ -78,15 +78,15 @@ public class NetworkToolViewer implements INetworkTool
 	}
 
 	@Override
-	public String getInventoryName()
+	public String getName()
 	{
-		return this.inv.getInventoryName();
+		return this.inv.getName();
 	}
 
 	@Override
-	public boolean hasCustomInventoryName()
+	public boolean hasCustomName()
 	{
-		return this.inv.hasCustomInventoryName();
+		return this.inv.hasCustomName();
 	}
 
 	@Override
@@ -109,15 +109,15 @@ public class NetworkToolViewer implements INetworkTool
 	}
 
 	@Override
-	public void openInventory()
+	public void openInventory(EntityPlayer player)
 	{
-		this.inv.openInventory();
+		this.inv.openInventory(player);
 	}
 
 	@Override
-	public void closeInventory()
+	public void closeInventory(EntityPlayer player)
 	{
-		this.inv.closeInventory();
+		this.inv.closeInventory(player);
 	}
 
 	@Override
@@ -136,5 +136,38 @@ public class NetworkToolViewer implements INetworkTool
 	public IGridHost getGridHost()
 	{
 		return this.gh;
+	}
+
+	@Override
+	public int getField(
+			int id )
+	{
+		return inv.getField( id );
+	}
+
+	@Override
+	public void setField(
+			int id,
+			int value )
+	{
+		inv.setField( id, value );
+	}
+
+	@Override
+	public int getFieldCount()
+	{
+		return inv.getFieldCount();
+	}
+
+	@Override
+	public void clear()
+	{
+		inv.clear();
+	}
+
+	@Override
+	public IChatComponent getDisplayName()
+	{
+		return inv.getDisplayName();
 	}
 }

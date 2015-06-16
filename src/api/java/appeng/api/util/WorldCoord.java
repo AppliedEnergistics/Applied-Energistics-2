@@ -25,7 +25,7 @@ package appeng.api.util;
 
 
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.BlockPos;
 
 
 /**
@@ -41,7 +41,7 @@ public class WorldCoord
 
 	public WorldCoord( TileEntity s )
 	{
-		this( s.xCoord, s.yCoord, s.zCoord );
+		this( s.getPos() );
 	}
 
 	public WorldCoord( int _x, int _y, int _z )
@@ -51,11 +51,19 @@ public class WorldCoord
 		this.z = _z;
 	}
 
-	public WorldCoord subtract( ForgeDirection direction, int length )
+	public WorldCoord(
+			BlockPos pos )
 	{
-		this.x -= direction.offsetX * length;
-		this.y -= direction.offsetY * length;
-		this.z -= direction.offsetZ * length;
+		x = pos.getX();
+		y = pos.getY();
+		z = pos.getZ();
+	}
+
+	public WorldCoord subtract( AEPartLocation direction, int length )
+	{
+		this.x -= direction.xOffset * length;
+		this.y -= direction.yOffset * length;
+		this.z -= direction.zOffset * length;
 		return this;
 	}
 
@@ -94,7 +102,7 @@ public class WorldCoord
 	/**
 	 * Will Return NULL if it's at some diagonal!
 	 */
-	public ForgeDirection directionTo( WorldCoord loc )
+	public AEPartLocation directionTo( WorldCoord loc )
 	{
 		int ox = this.x - loc.x;
 		int oy = this.y - loc.y;
@@ -104,34 +112,34 @@ public class WorldCoord
 		int ylen = Math.abs( oy );
 		int zlen = Math.abs( oz );
 
-		if( loc.isEqual( this.copy().add( ForgeDirection.EAST, xlen ) ) )
+		if( loc.isEqual( this.copy().add( AEPartLocation.EAST, xlen ) ) )
 		{
-			return ForgeDirection.EAST;
+			return AEPartLocation.EAST;
 		}
 
-		if( loc.isEqual( this.copy().add( ForgeDirection.WEST, xlen ) ) )
+		if( loc.isEqual( this.copy().add( AEPartLocation.WEST, xlen ) ) )
 		{
-			return ForgeDirection.WEST;
+			return AEPartLocation.WEST;
 		}
 
-		if( loc.isEqual( this.copy().add( ForgeDirection.NORTH, zlen ) ) )
+		if( loc.isEqual( this.copy().add( AEPartLocation.NORTH, zlen ) ) )
 		{
-			return ForgeDirection.NORTH;
+			return AEPartLocation.NORTH;
 		}
 
-		if( loc.isEqual( this.copy().add( ForgeDirection.SOUTH, zlen ) ) )
+		if( loc.isEqual( this.copy().add( AEPartLocation.SOUTH, zlen ) ) )
 		{
-			return ForgeDirection.SOUTH;
+			return AEPartLocation.SOUTH;
 		}
 
-		if( loc.isEqual( this.copy().add( ForgeDirection.UP, ylen ) ) )
+		if( loc.isEqual( this.copy().add( AEPartLocation.UP, ylen ) ) )
 		{
-			return ForgeDirection.UP;
+			return AEPartLocation.UP;
 		}
 
-		if( loc.isEqual( this.copy().add( ForgeDirection.DOWN, ylen ) ) )
+		if( loc.isEqual( this.copy().add( AEPartLocation.DOWN, ylen ) ) )
 		{
-			return ForgeDirection.DOWN;
+			return AEPartLocation.DOWN;
 		}
 
 		return null;
@@ -142,11 +150,11 @@ public class WorldCoord
 		return this.x == c.x && this.y == c.y && this.z == c.z;
 	}
 
-	public WorldCoord add( ForgeDirection direction, int length )
+	public WorldCoord add( AEPartLocation direction, int length )
 	{
-		this.x += direction.offsetX * length;
-		this.y += direction.offsetY * length;
-		this.z += direction.offsetZ * length;
+		this.x += direction.xOffset * length;
+		this.y += direction.yOffset * length;
+		this.z += direction.zOffset * length;
 		return this;
 	}
 
@@ -167,6 +175,11 @@ public class WorldCoord
 		return obj instanceof WorldCoord && this.isEqual( (WorldCoord) obj );
 	}
 
+	public BlockPos getPos()
+	{
+		return new BlockPos(x,y,z);
+	}
+	
 	@Override
 	public String toString()
 	{

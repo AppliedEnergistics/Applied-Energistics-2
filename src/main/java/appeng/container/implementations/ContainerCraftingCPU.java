@@ -25,8 +25,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.ICrafting;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.api.AEApi;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridHost;
@@ -38,6 +36,7 @@ import appeng.api.networking.storage.IBaseMonitor;
 import appeng.api.storage.IMEMonitorHandlerReceiver;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
+import appeng.api.util.AEPartLocation;
 import appeng.container.AEBaseContainer;
 import appeng.container.guisync.GuiSync;
 import appeng.core.AELog;
@@ -70,8 +69,8 @@ public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorH
 
 		if( host != null )
 		{
-			this.findNode( host, ForgeDirection.UNKNOWN );
-			for( ForgeDirection d : ForgeDirection.VALID_DIRECTIONS )
+			this.findNode( host, AEPartLocation.INTERNAL );
+			for( AEPartLocation d : AEPartLocation.SIDE_LOCATIONS )
 			{
 				this.findNode( host, d );
 			}
@@ -88,7 +87,7 @@ public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorH
 		}
 	}
 
-	private void findNode( IGridHost host, ForgeDirection d )
+	private void findNode( IGridHost host, AEPartLocation d )
 	{
 		if( this.network == null )
 		{

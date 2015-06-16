@@ -27,16 +27,13 @@ import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.common.ChestGenHooks;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.RecipeSorter;
 import net.minecraftforge.oredict.RecipeSorter.Category;
-
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.common.registry.VillagerRegistry;
-
 import appeng.api.AEApi;
 import appeng.api.IAppEngApi;
 import appeng.api.config.Upgrades;
@@ -74,7 +71,6 @@ import appeng.core.features.registries.entries.CreativeCellHandler;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.PlayerMessages;
 import appeng.core.stats.PlayerStatsRegistration;
-import appeng.hooks.AETrading;
 import appeng.hooks.TickHandler;
 import appeng.integration.IntegrationRegistry;
 import appeng.integration.IntegrationType;
@@ -165,7 +161,7 @@ public final class Registration
 		// Register all detected handlers and features (items, blocks) in pre-init
 		for( IFeatureHandler handler : definitions.getFeatureHandlerRegistry().getRegisteredFeatureHandlers() )
 		{
-			handler.register();
+			handler.register(event.getSide() );
 		}
 
 		for( IAEFeature feature : definitions.getFeatureRegistry().getRegisteredFeatures() )
@@ -698,7 +694,8 @@ public final class Registration
 		// add villager trading to black smiths for a few basic materials
 		if( AEConfig.instance.isFeatureEnabled( AEFeature.VillagerTrading ) )
 		{
-			VillagerRegistry.instance().registerVillageTradeHandler( 3, new AETrading() );
+			// TODO: VILLAGER TRADING
+			// VillagerRegistry.instance().getRegisteredVillagers()..registerVillageTradeHandler( 3, new AETrading() );
 		}
 
 		if( AEConfig.instance.isFeatureEnabled( AEFeature.CertusQuartzWorldGen ) )
