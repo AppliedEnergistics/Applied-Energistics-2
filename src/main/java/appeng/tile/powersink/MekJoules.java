@@ -19,51 +19,45 @@
 package appeng.tile.powersink;
 
 
-import mekanism.api.energy.IStrictEnergyAcceptor;
-import appeng.api.config.PowerUnits;
-import appeng.api.util.ForgeDirection;
-import appeng.transformer.annotations.Integration.Interface;
-
-
-@Interface( iname = "Mekanism", iface = "mekanism.api.energy.IStrictEnergyAcceptor" )
-public abstract class MekJoules extends RedstoneFlux implements IStrictEnergyAcceptor
-{
-
-	@Override
-	public double getEnergy()
-	{
-		return 0;
-	}
-
-	@Override
-	public void setEnergy( double energy )
-	{
-		double extra = this.injectExternalPower( PowerUnits.MK, energy );
-		this.internalCurrentPower += PowerUnits.MK.convertTo( PowerUnits.AE, extra );
-	}
-
-	@Override
-	public double getMaxEnergy()
-	{
-		return this.getExternalPowerDemand( PowerUnits.MK, 100000 );
-	}
-
-	@Override
-	public double transferEnergyToAcceptor( ForgeDirection side, double amount )
-	{
-		double demand = this.getExternalPowerDemand( PowerUnits.MK, Double.MAX_VALUE );
-		if( amount > demand )
-		{
-			amount = demand;
-		}
-
-		double overflow = this.injectExternalPower( PowerUnits.MK, amount );
-		return amount - overflow;
-	}
-
-	@Override
-	public boolean canReceiveEnergy( ForgeDirection side )
-	{
-		return this.getPowerSides().contains( side );
-	}
-}
+//@Interface( iname = "Mekanism", iface = "mekanism.api.energy.IStrictEnergyAcceptor" )
+//public abstract class MekJoules extends RedstoneFlux implements IStrictEnergyAcceptor
+//{
+//
+//	@Override
+//	public double getEnergy()
+//	{
+//		return 0;
+//	}
+//
+//	@Override
+//	public void setEnergy( double energy )
+//	{
+//		double extra = this.injectExternalPower( PowerUnits.MK, energy );
+//		this.internalCurrentPower += PowerUnits.MK.convertTo( PowerUnits.AE, extra );
+//	}
+//
+//	@Override
+//	public double getMaxEnergy()
+//	{
+//		return this.getExternalPowerDemand( PowerUnits.MK, 100000 );
+//	}
+//
+//	@Override
+//	public double transferEnergyToAcceptor( ForgeDirection side, double amount )
+//	{
+//		double demand = this.getExternalPowerDemand( PowerUnits.MK, Double.MAX_VALUE );
+//		if( amount > demand )
+//		{
+//			amount = demand;
+//		}
+//
+//		double overflow = this.injectExternalPower( PowerUnits.MK, amount );
+//		return amount - overflow;
+//	}
+//
+//	@Override
+//	public boolean canReceiveEnergy( ForgeDirection side )
+//	{
+//		return this.getPowerSides().contains( side );
+//	}
+//}

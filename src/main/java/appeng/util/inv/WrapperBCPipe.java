@@ -19,105 +19,95 @@
 package appeng.util.inv;
 
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import appeng.api.util.ForgeDirection;
-import appeng.integration.IntegrationRegistry;
-import appeng.integration.IntegrationType;
-import appeng.integration.abstraction.IBC;
-
-
-public class WrapperBCPipe implements IInventory
-{
-
-	private final IBC bc;
-	private final TileEntity ad;
-	private final ForgeDirection dir;
-
-	public WrapperBCPipe( TileEntity te, ForgeDirection d )
-	{
-		this.bc = (IBC) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.BC );
-		this.ad = te;
-		this.dir = d;
-	}
-
-	@Override
-	public int getSizeInventory()
-	{
-		return 1;
-	}
-
-	@Override
-	public ItemStack getStackInSlot( int i )
-	{
-		return null;
-	}
-
-	@Override
-	public ItemStack decrStackSize( int i, int j )
-	{
-		return null;
-	}
-
-	@Override
-	public ItemStack getStackInSlotOnClosing( int i )
-	{
-		return null;
-	}
-
-	@Override
-	public void setInventorySlotContents( int i, ItemStack itemstack )
-	{
-		this.bc.addItemsToPipe( this.ad, itemstack, this.dir );
-	}
-
-	@Override
-	public String getInventoryName()
-	{
-		return "BC Pipe Wrapper";
-	}
-
-	@Override
-	public boolean hasCustomInventoryName()
-	{
-		return false;
-	}
-
-	@Override
-	public int getInventoryStackLimit()
-	{
-		return 64;
-	}
-
-	@Override
-	public void markDirty()
-	{
-
-	}
-
-	@Override
-	public boolean isUseableByPlayer( EntityPlayer entityplayer )
-	{
-		return false;
-	}
-
-	@Override
-	public void openInventory()
-	{
-
-	}
-
-	@Override
-	public void closeInventory()
-	{
-
-	}
-
-	@Override
-	public boolean isItemValidForSlot( int i, ItemStack itemstack )
-	{
-		return this.bc.canAddItemsToPipe( this.ad, itemstack, this.dir );
-	}
-}
+//public class WrapperBCPipe implements IInventory
+//{
+//
+//	private final IBC bc;
+//	private final TileEntity ad;
+//	private final ForgeDirection dir;
+//
+//	public WrapperBCPipe( TileEntity te, ForgeDirection d )
+//	{
+//		this.bc = (IBC) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.BC );
+//		this.ad = te;
+//		this.dir = d;
+//	}
+//
+//	@Override
+//	public int getSizeInventory()
+//	{
+//		return 1;
+//	}
+//
+//	@Override
+//	public ItemStack getStackInSlot( int i )
+//	{
+//		return null;
+//	}
+//
+//	@Override
+//	public ItemStack decrStackSize( int i, int j )
+//	{
+//		return null;
+//	}
+//
+//	@Override
+//	public ItemStack getStackInSlotOnClosing( int i )
+//	{
+//		return null;
+//	}
+//
+//	@Override
+//	public void setInventorySlotContents( int i, ItemStack itemstack )
+//	{
+//		this.bc.addItemsToPipe( this.ad, itemstack, this.dir );
+//	}
+//
+//	@Override
+//	public String getInventoryName()
+//	{
+//		return "BC Pipe Wrapper";
+//	}
+//
+//	@Override
+//	public boolean hasCustomInventoryName()
+//	{
+//		return false;
+//	}
+//
+//	@Override
+//	public int getInventoryStackLimit()
+//	{
+//		return 64;
+//	}
+//
+//	@Override
+//	public void markDirty()
+//	{
+//
+//	}
+//
+//	@Override
+//	public boolean isUseableByPlayer( EntityPlayer entityplayer )
+//	{
+//		return false;
+//	}
+//
+//	@Override
+//	public void openInventory()
+//	{
+//
+//	}
+//
+//	@Override
+//	public void closeInventory()
+//	{
+//
+//	}
+//
+//	@Override
+//	public boolean isItemValidForSlot( int i, ItemStack itemstack )
+//	{
+//		return this.bc.canAddItemsToPipe( this.ad, itemstack, this.dir );
+//	}
+//}

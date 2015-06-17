@@ -83,45 +83,45 @@ configurations {
 
 dependencies {
     // installable
-    mods "mcp.mobius.waila:Waila:${waila_version}_${minecraft_version}:dev"
-    mods "mcp.mobius.jabba:Jabba:${jabba_version}_${minecraft_version}:dev"
-    mods "codechicken:EnderStorage:${minecraft_version}-${enderstorage_version}:dev"
-    mods "codechicken:Translocator:${minecraft_version}-${translocator_version}:dev"
-    mods "net.industrial-craft:industrialcraft-2:${ic2_version}-experimental:dev"
-    mods "com.enderio:EnderIO:${minecraft_version}-${enderio_version}:dev"
-    mods "net.mcft.copy.betterstorage:BetterStorage:${minecraft_version}-${betterstorage_version}:deobf"
-    mods "inventorytweaks:InventoryTweaks:${invtweaks_version}:deobf"
-    mods "li.cil.oc:OpenComputers:MC${minecraft_version}-${opencomputers_version}:dev"
+//    mods "mcp.mobius.waila:Waila:${waila_version}_${minecraft_version}:dev"
+//    mods "mcp.mobius.jabba:Jabba:${jabba_version}_${minecraft_version}:dev"
+//    mods "codechicken:EnderStorage:${minecraft_version}-${enderstorage_version}:dev"
+//    mods "codechicken:Translocator:${minecraft_version}-${translocator_version}:dev"
+//    mods "net.industrial-craft:industrialcraft-2:${ic2_version}-experimental:dev"
+//    mods "com.enderio:EnderIO:${minecraft_version}-${enderio_version}:dev"
+//    mods "net.mcft.copy.betterstorage:BetterStorage:${minecraft_version}-${betterstorage_version}:deobf"
+//    mods "inventorytweaks:InventoryTweaks:${invtweaks_version}:deobf"
+//    mods "li.cil.oc:OpenComputers:MC${minecraft_version}-${opencomputers_version}:dev"
 
 //    mods name: 'CoFHLib', version: "[${minecraft_version}]${cofhlib_version}-dev", ext: 'jar'
 //    mods name: 'CoFHCore', version: "[${minecraft_version}]${cofhcore_version}-dev", ext: 'jar'
 //    mods name: 'ThermalExpansion', version: "[${minecraft_version}]${texpansion_version}-dev", ext: 'jar'
 //    mods name: 'ThermalFoundation', version: "[${minecraft_version}]${tfoundation_version}-dev", ext: 'jar'
 
-    compile "codechicken:ForgeMultipart:${minecraft_version}-${fmp_version}:dev"
-    compile "codechicken:CodeChickenLib:${minecraft_version}-${code_chicken_lib_version}:dev"
-    compile "codechicken:CodeChickenCore:${minecraft_version}-${code_chicken_core_version}:dev"
-    compile "codechicken:NotEnoughItems:${minecraft_version}-${nei_version}:dev"
-    compile "com.mod-buildcraft:buildcraft:${bc_version}:dev"
+//    compile "codechicken:ForgeMultipart:${minecraft_version}-${fmp_version}:dev"
+//    compile "codechicken:CodeChickenLib:${minecraft_version}-${code_chicken_lib_version}:dev"
+//    compile "codechicken:CodeChickenCore:${minecraft_version}-${code_chicken_core_version}:dev"
+//    compile "codechicken:NotEnoughItems:${minecraft_version}-${nei_version}:dev"
+//    compile "com.mod-buildcraft:buildcraft:${bc_version}:dev"
 
     // provided APIs
-    compile "li.cil.oc:OpenComputers:MC${minecraft_version}-${opencomputers_version}:api"
-    compile "net.industrial-craft:industrialcraft-2:${ic2_version}-experimental:api"
-    compile "net.mcft.copy.betterstorage:BetterStorage:${minecraft_version}-${betterstorage_version}:api"
+//    compile "li.cil.oc:OpenComputers:MC${minecraft_version}-${opencomputers_version}:api"
+//    compile "net.industrial-craft:industrialcraft-2:${ic2_version}-experimental:api"
+//    compile "net.mcft.copy.betterstorage:BetterStorage:${minecraft_version}-${betterstorage_version}:api"
 
     // self compiled APIs
-    compile "appeng:Waila:${waila_version}_${minecraft_version}:api"
-    compile "appeng:RotaryCraft:${rotarycraft_version}:api"
-    compile "appeng:mekanism:${minecraft_version}-${mekansim_version}:api"
-    compile "appeng:InventoryTweaks:${invtweaks_version}:api"
+//    compile "appeng:Waila:${waila_version}_${minecraft_version}:api"
+//    compile "appeng:RotaryCraft:${rotarycraft_version}:api"
+//    compile "appeng:mekanism:${minecraft_version}-${mekansim_version}:api"
+//    compile "appeng:InventoryTweaks:${invtweaks_version}:api"
 
     // self compiled stubs
-    compile(group: 'api', name: 'coloredlightscore', version: "${api_coloredlightscore_version}")
-    compile(group: 'api', name: 'craftguide', version: "${api_craftguide_version}")
-    compile(group: 'api', name: 'immibis', version: "${api_immibis_version}")
-    compile(group: 'api', name: 'mfr', version: "${api_mfr_version}")
-    compile(group: 'api', name: 'railcraft', version: "${api_railcraft_version}")
-    compile(group: 'api', name: 'rf', version: "${api_rf_version}")
+//    compile(group: 'api', name: 'coloredlightscore', version: "${api_coloredlightscore_version}")
+//    compile(group: 'api', name: 'craftguide', version: "${api_craftguide_version}")
+//    compile(group: 'api', name: 'immibis', version: "${api_immibis_version}")
+//    compile(group: 'api', name: 'mfr', version: "${api_mfr_version}")
+//    compile(group: 'api', name: 'railcraft', version: "${api_railcraft_version}")
+//    compile(group: 'api', name: 'rf', version: "${api_rf_version}")
 
     testCompile "junit:junit:4.11"
 }

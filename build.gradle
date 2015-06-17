@@ -45,11 +45,7 @@ buildscript {
     }
 }
 
-configurations.all {
-    resolutionStrategy.cacheDynamicVersionsFor 7200, 'hours'
-}
-
-sourceCompatibility = JavaVersion.VERSION_1_6
+sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_6
 
 version = aeversion + "-" + aechannel + "-" + aebuild
@@ -87,6 +83,8 @@ minecraft {
 
     // used when launching minecraft in dev env
     runDir = "run"
+
+    mappings = "snapshot_20141130"
 }
 
 sourceSets {
@@ -94,6 +92,10 @@ sourceSets {
         java {
             srcDirs += 'src/api/java'
             srcDirs += 'src/main/java/'
+
+            // excludes integration due to not being available upon port
+            exclude 'appeng/integration/**'
+            exclude 'appeng/fmp/**'
         }
 
         resources {

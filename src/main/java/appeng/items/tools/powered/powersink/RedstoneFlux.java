@@ -19,45 +19,35 @@
 package appeng.items.tools.powered.powersink;
 
 
-import com.google.common.base.Optional;
-
-import net.minecraft.item.ItemStack;
-
-import cofh.api.energy.IEnergyContainerItem;
-
-import appeng.api.config.PowerUnits;
-import appeng.transformer.annotations.Integration.Interface;
-
-
-@Interface( iface = "cofh.api.energy.IEnergyContainerItem", iname = "RFItem" )
-public abstract class RedstoneFlux extends IC2 implements IEnergyContainerItem
-{
-	public RedstoneFlux( double powerCapacity, Optional<String> subName )
-	{
-		super( powerCapacity, subName );
-	}
-
-	@Override
-	public int receiveEnergy( ItemStack is, int maxReceive, boolean simulate )
-	{
-		return maxReceive - (int) this.injectExternalPower( PowerUnits.RF, is, maxReceive, simulate );
-	}
-
-	@Override
-	public int extractEnergy( ItemStack container, int maxExtract, boolean simulate )
-	{
-		return 0;
-	}
-
-	@Override
-	public int getEnergyStored( ItemStack is )
-	{
-		return (int) PowerUnits.AE.convertTo( PowerUnits.RF, this.getAECurrentPower( is ) );
-	}
-
-	@Override
-	public int getMaxEnergyStored( ItemStack is )
-	{
-		return (int) PowerUnits.AE.convertTo( PowerUnits.RF, this.getAEMaxPower( is ) );
-	}
-}
+//@Interface( iface = "cofh.api.energy.IEnergyContainerItem", iname = "RFItem" )
+//public abstract class RedstoneFlux extends IC2 implements IEnergyContainerItem
+//{
+//	public RedstoneFlux( double powerCapacity, Optional<String> subName )
+//	{
+//		super( powerCapacity, subName );
+//	}
+//
+//	@Override
+//	public int receiveEnergy( ItemStack is, int maxReceive, boolean simulate )
+//	{
+//		return maxReceive - (int) this.injectExternalPower( PowerUnits.RF, is, maxReceive, simulate );
+//	}
+//
+//	@Override
+//	public int extractEnergy( ItemStack container, int maxExtract, boolean simulate )
+//	{
+//		return 0;
+//	}
+//
+//	@Override
+//	public int getEnergyStored( ItemStack is )
+//	{
+//		return (int) PowerUnits.AE.convertTo( PowerUnits.RF, this.getAECurrentPower( is ) );
+//	}
+//
+//	@Override
+//	public int getMaxEnergyStored( ItemStack is )
+//	{
+//		return (int) PowerUnits.AE.convertTo( PowerUnits.RF, this.getAEMaxPower( is ) );
+//	}
+//}

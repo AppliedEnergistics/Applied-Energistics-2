@@ -19,15 +19,14 @@
 package appeng.util.item;
 
 
-import io.netty.buffer.ByteBuf;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-
 import javax.annotation.Nonnull;
+
+import io.netty.buffer.ByteBuf;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompressedStreamTools;
@@ -35,6 +34,7 @@ import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
+
 import appeng.api.config.FuzzyMode;
 import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
@@ -302,7 +302,7 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 		{
 			FluidStack is = (FluidStack) ia;
 
-			if( is.fluidID == this.fluid.getID() )
+			if( is.getFluidID() == this.fluid.getID() )
 			{
 				NBTTagCompound ta = (NBTTagCompound) this.tagCompound;
 				NBTTagCompound tb = is.tag;
