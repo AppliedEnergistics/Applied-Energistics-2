@@ -25,14 +25,12 @@ import java.util.Random;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
-import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-import appeng.api.util.IOrientable;
 import appeng.api.util.IOrientableBlock;
 import appeng.block.AEBaseTileBlock;
 import appeng.client.render.BaseBlockRender;
@@ -41,7 +39,6 @@ import appeng.client.render.effects.LightningFX;
 import appeng.core.AEConfig;
 import appeng.core.CommonHelper;
 import appeng.core.features.AEFeature;
-import appeng.helpers.MetaRotation;
 import appeng.tile.misc.TileQuartzGrowthAccelerator;
 import appeng.util.Platform;
 
@@ -144,14 +141,14 @@ public class BlockQuartzGrowthAccelerator extends AEBaseTileBlock implements IOr
 	}
 
 	@Override
+	/**
+	 * TODO: remove with 1.8 or later
+	 *
+	 * @Deprecated no longer true, only kept to prevent missing blocks.
+	 */
+	@Deprecated
 	public boolean usesMetadata()
 	{
 		return true;
-	}
-
-	@Override
-	public IOrientable getOrientable( final IBlockAccess w, final int x, final int y, final int z )
-	{
-		return new MetaRotation( w, x, y, z );
 	}
 }
