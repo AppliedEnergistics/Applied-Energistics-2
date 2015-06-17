@@ -42,7 +42,6 @@ import appeng.util.Platform;
 
 public class BlockQuartzGrowthAccelerator extends AEBaseTileBlock
 {
-
 	public BlockQuartzGrowthAccelerator()
 	{
 		super( Material.rock );
@@ -147,5 +146,4 @@ public class BlockQuartzGrowthAccelerator extends AEBaseTileBlock
 			Minecraft.getMinecraft().effectRenderer.addEffect( fx );
 		}
 	}
-
 }
