@@ -34,18 +34,15 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.RecipeSorter;
 import net.minecraftforge.oredict.RecipeSorter.Category;
+
 import appeng.api.AEApi;
 import appeng.api.IAppEngApi;
 import appeng.api.config.Upgrades;
-import appeng.api.definitions.Blocks;
 import appeng.api.definitions.IBlocks;
 import appeng.api.definitions.IDefinitions;
 import appeng.api.definitions.IItems;
 import appeng.api.definitions.IMaterials;
 import appeng.api.definitions.IParts;
-import appeng.api.definitions.Items;
-import appeng.api.definitions.Materials;
-import appeng.api.definitions.Parts;
 import appeng.api.features.IRecipeHandlerRegistry;
 import appeng.api.features.IRegistryContainer;
 import appeng.api.features.IWirelessTermHandler;
@@ -62,7 +59,6 @@ import appeng.api.networking.ticking.ITickManager;
 import appeng.api.parts.IPartHelper;
 import appeng.block.networking.BlockCableBus;
 import appeng.core.features.AEFeature;
-import appeng.core.features.DefinitionConverter;
 import appeng.core.features.IAEFeature;
 import appeng.core.features.IFeatureHandler;
 import appeng.core.features.registries.P2PTunnelRegistry;
@@ -118,12 +114,10 @@ public final class Registration
 	public static final Registration INSTANCE = new Registration();
 
 	private final RecipeHandler recipeHandler;
-	private final DefinitionConverter converter;
 	public BiomeGenBase storageBiome;
 
 	private Registration()
 	{
-		this.converter = new DefinitionConverter();
 		this.recipeHandler = new RecipeHandler();
 	}
 
@@ -142,21 +136,6 @@ public final class Registration
 		MinecraftForge.EVENT_BUS.register( OreDictionaryHandler.INSTANCE );
 
 		final ApiDefinitions definitions = api.definitions();
-
-		final IBlocks apiBlocks = definitions.blocks();
-		final IItems apiItems = definitions.items();
-		final IMaterials apiMaterials = definitions.materials();
-		final IParts apiParts = definitions.parts();
-
-		final Items items = api.items();
-		final Materials materials = api.materials();
-		final Parts parts = api.parts();
-		final Blocks blocks = api.blocks();
-
-		this.assignMaterials( materials, apiMaterials );
-		this.assignParts( parts, apiParts );
-		this.assignBlocks( blocks, apiBlocks );
-		this.assignItems( items, apiItems );
 
 		// Register all detected handlers and features (items, blocks) in pre-init
 		for( IFeatureHandler handler : definitions.getFeatureHandlerRegistry().getRegisteredFeatureHandlers() )
@@ -236,269 +215,6 @@ public final class Registration
 
 		registry.addNewCraftHandler( "shaped", Shaped.class );
 		registry.addNewCraftHandler( "shapeless", Shapeless.class );
-	}
-
-	/**
-	 * Assigns materials from the new API to the old API
-	 *
-	 * Uses direct cast, since its only a temporary solution anyways
-	 *
-	 * @param target old API
-	 * @param source new API
-	 *
-	 * @deprecated to be removed when the public definition API is removed
-	 */
-	@Deprecated
-	private void assignMaterials( Materials target, IMaterials source )
-	{
-		target.materialCell2SpatialPart = this.converter.of( source.cell2SpatialPart() );
-		target.materialCell16SpatialPart = this.converter.of( source.cell16SpatialPart() );
-		target.materialCell128SpatialPart = this.converter.of( source.cell128SpatialPart() );
-
-		target.materialSilicon = this.converter.of( source.silicon() );
-		target.materialSkyDust = this.converter.of( source.skyDust() );
-
-		target.materialCalcProcessorPress = this.converter.of( source.calcProcessorPress() );
-		target.materialEngProcessorPress = this.converter.of( source.engProcessorPress() );
-		target.materialLogicProcessorPress = this.converter.of( source.logicProcessorPress() );
-
-		target.materialCalcProcessorPrint = this.converter.of( source.calcProcessorPrint() );
-		target.materialEngProcessorPrint = this.converter.of( source.engProcessorPrint() );
-		target.materialLogicProcessorPrint = this.converter.of( source.logicProcessorPrint() );
-
-		target.materialSiliconPress = this.converter.of( source.siliconPress() );
-		target.materialSiliconPrint = this.converter.of( source.siliconPrint() );
-
-		target.materialNamePress = this.converter.of( source.namePress() );
-
-		target.materialLogicProcessor = this.converter.of( source.logicProcessor() );
-		target.materialCalcProcessor = this.converter.of( source.calcProcessor() );
-		target.materialEngProcessor = this.converter.of( source.engProcessor() );
-
-		target.materialBasicCard = this.converter.of( source.basicCard() );
-		target.materialAdvCard = this.converter.of( source.advCard() );
-
-		target.materialPurifiedCertusQuartzCrystal = this.converter.of( source.purifiedCertusQuartzCrystal() );
-		target.materialPurifiedNetherQuartzCrystal = this.converter.of( source.purifiedNetherQuartzCrystal() );
-		target.materialPurifiedFluixCrystal = this.converter.of( source.purifiedFluixCrystal() );
-
-		target.materialCell1kPart = this.converter.of( source.cell1kPart() );
-		target.materialCell4kPart = this.converter.of( source.cell4kPart() );
-		target.materialCell16kPart = this.converter.of( source.cell16kPart() );
-		target.materialCell64kPart = this.converter.of( source.cell64kPart() );
-		target.materialEmptyStorageCell = this.converter.of( source.emptyStorageCell() );
-
-		target.materialCardRedstone = this.converter.of( source.cardRedstone() );
-		target.materialCardSpeed = this.converter.of( source.cardSpeed() );
-		target.materialCardCapacity = this.converter.of( source.cardCapacity() );
-		target.materialCardFuzzy = this.converter.of( source.cardFuzzy() );
-		target.materialCardInverter = this.converter.of( source.cardInverter() );
-		target.materialCardCrafting = this.converter.of( source.cardCrafting() );
-
-		target.materialEnderDust = this.converter.of( source.enderDust() );
-		target.materialFlour = this.converter.of( source.flour() );
-		target.materialGoldDust = this.converter.of( source.goldDust() );
-		target.materialIronDust = this.converter.of( source.ironDust() );
-		target.materialFluixDust = this.converter.of( source.fluixDust() );
-		target.materialCertusQuartzDust = this.converter.of( source.certusQuartzDust() );
-		target.materialNetherQuartzDust = this.converter.of( source.netherQuartzDust() );
-
-		target.materialMatterBall = this.converter.of( source.matterBall() );
-		target.materialIronNugget = this.converter.of( source.ironNugget() );
-
-		target.materialCertusQuartzCrystal = this.converter.of( source.certusQuartzCrystal() );
-		target.materialCertusQuartzCrystalCharged = this.converter.of( source.certusQuartzCrystalCharged() );
-		target.materialFluixCrystal = this.converter.of( source.fluixCrystal() );
-		target.materialFluixPearl = this.converter.of( source.fluixPearl() );
-
-		target.materialWoodenGear = this.converter.of( source.woodenGear() );
-
-		target.materialWireless = this.converter.of( source.wireless() );
-		target.materialWirelessBooster = this.converter.of( source.wirelessBooster() );
-
-		target.materialAnnihilationCore = this.converter.of( source.annihilationCore() );
-		target.materialFormationCore = this.converter.of( source.formationCore() );
-
-		target.materialSingularity = this.converter.of( source.singularity() );
-		target.materialQESingularity = this.converter.of( source.qESingularity() );
-		target.materialBlankPattern = this.converter.of( source.blankPattern() );
-	}
-
-	/**
-	 * Assigns parts from the new API to the old API
-	 *
-	 * @param target old API
-	 * @param source new API
-	 *
-	 * @deprecated to be removed when the public definition API is removed
-	 */
-	@Deprecated
-	private void assignParts( Parts target, IParts source )
-	{
-		target.partCableSmart = source.cableSmart();
-		target.partCableCovered = source.cableCovered();
-		target.partCableGlass = source.cableGlass();
-		target.partCableDense = source.cableDense();
-		//		target.partLumenCableSmart = source.lumenCableSmart();
-		//		target.partLumenCableCovered = source.lumenCableCovered();
-		//		target.partLumenCableGlass = source.lumenCableGlass();
-		//		target.partLumenCableDense = source.lumenCableDense();
-		target.partQuartzFiber = this.converter.of( source.quartzFiber() );
-		target.partToggleBus = this.converter.of( source.toggleBus() );
-		target.partInvertedToggleBus = this.converter.of( source.invertedToggleBus() );
-		target.partStorageBus = this.converter.of( source.storageBus() );
-		target.partImportBus = this.converter.of( source.importBus() );
-		target.partExportBus = this.converter.of( source.exportBus() );
-		target.partInterface = this.converter.of( source.iface() );
-		target.partLevelEmitter = this.converter.of( source.levelEmitter() );
-		target.partAnnihilationPlane = this.converter.of( source.annihilationPlane() );
-		target.partFormationPlane = this.converter.of( source.formationPlane() );
-
-		target.partCableAnchor = this.converter.of( source.cableAnchor() );
-		target.partP2PTunnelLight = target.partCableAnchor;
-		target.partP2PTunnelRF = target.partP2PTunnelLight;
-		target.partP2PTunnelEU = target.partP2PTunnelRF;
-		target.partP2PTunnelLiquids = target.partP2PTunnelEU;
-		target.partP2PTunnelItems = target.partP2PTunnelLiquids;
-		target.partP2PTunnelRedstone = target.partP2PTunnelItems;
-		target.partP2PTunnelME = target.partP2PTunnelRedstone;
-		target.partMonitor = this.converter.of( source.monitor() );
-		target.partSemiDarkMonitor = this.converter.of( source.semiDarkMonitor() );
-		target.partDarkMonitor = this.converter.of( source.darkMonitor() );
-		target.partInterfaceTerminal = this.converter.of( source.interfaceTerminal() );
-		target.partPatternTerminal = this.converter.of( source.patternTerminal() );
-		target.partCraftingTerminal = this.converter.of( source.craftingTerminal() );
-		target.partTerminal = this.converter.of( source.terminal() );
-		target.partStorageMonitor = this.converter.of( source.storageMonitor() );
-		target.partConversionMonitor = this.converter.of( source.conversionMonitor() );
-	}
-
-	/**
-	 * Assigns blocks from the new API to the old API
-	 *
-	 * @param target old API
-	 * @param source new API
-	 *
-	 * @deprecated to be removed when the public definition API is removed
-	 */
-	@Deprecated
-	private void assignBlocks( Blocks target, IBlocks source )
-	{
-		target.blockMultiPart = this.converter.of( source.multiPart() );
-
-		target.blockCraftingUnit = this.converter.of( source.craftingUnit() );
-		target.blockCraftingAccelerator = this.converter.of( source.craftingAccelerator() );
-		target.blockCraftingMonitor = this.converter.of( source.craftingMonitor() );
-		target.blockCraftingStorage1k = this.converter.of( source.craftingStorage1k() );
-		target.blockCraftingStorage4k = this.converter.of( source.craftingStorage4k() );
-		target.blockCraftingStorage16k = this.converter.of( source.craftingStorage16k() );
-		target.blockCraftingStorage64k = this.converter.of( source.craftingStorage64k() );
-		target.blockMolecularAssembler = this.converter.of( source.molecularAssembler() );
-
-		target.blockQuartzOre = this.converter.of( source.quartzOre() );
-		target.blockQuartzOreCharged = this.converter.of( source.quartzOreCharged() );
-		target.blockMatrixFrame = this.converter.of( source.matrixFrame() );
-		target.blockQuartz = this.converter.of( source.quartz() );
-		target.blockFluix = this.converter.of( source.fluix() );
-		target.blockSkyStone = this.converter.of( source.skyStone() );
-		target.blockSkyChest = this.converter.of( source.skyChest() );
-		target.blockSkyCompass = this.converter.of( source.skyCompass() );
-
-		target.blockQuartzGlass = this.converter.of( source.quartzGlass() );
-		target.blockQuartzVibrantGlass = this.converter.of( source.quartzVibrantGlass() );
-		target.blockQuartzPillar = this.converter.of( source.quartzPillar() );
-		target.blockQuartzChiseled = this.converter.of( source.quartzChiseled() );
-		target.blockQuartzTorch = this.converter.of( source.quartzTorch() );
-		target.blockLightDetector = this.converter.of( source.lightDetector() );
-		target.blockCharger = this.converter.of( source.charger() );
-		target.blockQuartzGrowthAccelerator = this.converter.of( source.quartzGrowthAccelerator() );
-
-		target.blockGrindStone = this.converter.of( source.grindStone() );
-		target.blockCrankHandle = this.converter.of( source.crankHandle() );
-		target.blockInscriber = this.converter.of( source.inscriber() );
-		target.blockWireless = this.converter.of( source.wireless() );
-		target.blockTinyTNT = this.converter.of( source.tinyTNT() );
-
-		target.blockQuantumRing = this.converter.of( source.quantumRing() );
-		target.blockQuantumLink = this.converter.of( source.quantumLink() );
-
-		target.blockSpatialPylon = this.converter.of( source.spatialPylon() );
-		target.blockSpatialIOPort = this.converter.of( source.spatialIOPort() );
-
-		target.blockController = this.converter.of( source.controller() );
-		target.blockDrive = this.converter.of( source.drive() );
-		target.blockChest = this.converter.of( source.chest() );
-		target.blockInterface = this.converter.of( source.iface() );
-		target.blockCellWorkbench = this.converter.of( source.cellWorkbench() );
-		target.blockIOPort = this.converter.of( source.iOPort() );
-		target.blockCondenser = this.converter.of( source.condenser() );
-		target.blockEnergyAcceptor = this.converter.of( source.energyAcceptor() );
-		target.blockVibrationChamber = this.converter.of( source.vibrationChamber() );
-
-		target.blockEnergyCell = this.converter.of( source.energyCell() );
-		target.blockEnergyCellDense = this.converter.of( source.energyCellDense() );
-		target.blockEnergyCellCreative = this.converter.of( source.energyCellCreative() );
-
-		target.blockSecurity = this.converter.of( source.security() );
-		target.blockPaint = this.converter.of( source.paint() );
-	}
-
-	/**
-	 * Assigns materials from the new API to the old API
-	 *
-	 * @param target old API
-	 * @param source new API
-	 *
-	 * @deprecated to be removed when the public definition API is removed
-	 */
-	@Deprecated
-	private void assignItems( Items target, IItems source )
-	{
-		target.itemCellCreative = this.converter.of( source.cellCreative() );
-		target.itemViewCell = this.converter.of( source.viewCell() );
-		target.itemEncodedPattern = this.converter.of( source.encodedPattern() );
-
-		target.itemCell1k = this.converter.of( source.cell1k() );
-		target.itemCell4k = this.converter.of( source.cell4k() );
-		target.itemCell16k = this.converter.of( source.cell16k() );
-		target.itemCell64k = this.converter.of( source.cell64k() );
-
-		target.itemSpatialCell2 = this.converter.of( source.spatialCell2() );
-		target.itemSpatialCell16 = this.converter.of( source.spatialCell16() );
-		target.itemSpatialCell128 = this.converter.of( source.spatialCell128() );
-
-		target.itemCertusQuartzKnife = this.converter.of( source.certusQuartzKnife() );
-		target.itemCertusQuartzWrench = this.converter.of( source.certusQuartzWrench() );
-		target.itemCertusQuartzAxe = this.converter.of( source.certusQuartzAxe() );
-		target.itemCertusQuartzHoe = this.converter.of( source.certusQuartzHoe() );
-		target.itemCertusQuartzPick = this.converter.of( source.certusQuartzPick() );
-		target.itemCertusQuartzShovel = this.converter.of( source.certusQuartzShovel() );
-		target.itemCertusQuartzSword = this.converter.of( source.certusQuartzSword() );
-
-		target.itemNetherQuartzKnife = this.converter.of( source.netherQuartzKnife() );
-		target.itemNetherQuartzWrench = this.converter.of( source.netherQuartzWrench() );
-		target.itemNetherQuartzAxe = this.converter.of( source.netherQuartzAxe() );
-		target.itemNetherQuartzHoe = this.converter.of( source.netherQuartzHoe() );
-		target.itemNetherQuartzPick = this.converter.of( source.netherQuartzPick() );
-		target.itemNetherQuartzShovel = this.converter.of( source.netherQuartzShovel() );
-		target.itemNetherQuartzSword = this.converter.of( source.netherQuartzSword() );
-
-		target.itemMassCannon = this.converter.of( source.massCannon() );
-		target.itemMemoryCard = this.converter.of( source.memoryCard() );
-		target.itemChargedStaff = this.converter.of( source.chargedStaff() );
-		target.itemEntropyManipulator = this.converter.of( source.entropyManipulator() );
-		target.itemColorApplicator = this.converter.of( source.colorApplicator() );
-
-		target.itemWirelessTerminal = this.converter.of( source.wirelessTerminal() );
-		target.itemNetworkTool = this.converter.of( source.networkTool() );
-		target.itemPortableCell = this.converter.of( source.portableCell() );
-		target.itemBiometricCard = this.converter.of( source.biometricCard() );
-
-		target.itemFacade = this.converter.of( source.facade() );
-		target.itemCrystalSeed = this.converter.of( source.crystalSeed() );
-
-		target.itemPaintBall = source.coloredPaintBall();
-		target.itemLumenPaintBall = source.coloredLumenPaintBall();
 	}
 
 	public void initialize( FMLInitializationEvent event )

@@ -27,11 +27,11 @@ package appeng.api.config;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.minecraft.item.ItemStack;
-import appeng.api.definitions.IItemDefinition;
-import appeng.api.util.AEItemDefinition;
-
 import com.google.common.base.Optional;
+
+import net.minecraft.item.ItemStack;
+
+import appeng.api.definitions.IItemDefinition;
 
 
 public enum Upgrades
@@ -46,17 +46,8 @@ public enum Upgrades
 	 */
 	FUZZY( 1 ), SPEED( 1 ), INVERTER( 1 );
 
-	/**
-	 * @deprecated use {@link Upgrades#getTier()}
-	 */
-	@Deprecated
-	public final int tier;
-
-	/**
-	 * @deprecated use {@link Upgrades#getSupported()}
-	 */
-	@Deprecated
-	private final Map<ItemStack, Integer> supportedMax = new HashMap<ItemStack, Integer>();
+	private final int tier;
+	private final Map<ItemStack, Integer> supportedMax = new HashMap<>();
 
 	Upgrades( int tier )
 	{
@@ -74,7 +65,7 @@ public enum Upgrades
 	/**
 	 * Registers a specific amount of this upgrade into a specific machine
 	 *
-	 * @param item         machine in which this upgrade can be installed
+	 * @param item machine in which this upgrade can be installed
 	 * @param maxSupported amount how many upgrades can be installed
 	 */
 	public void registerItem( IItemDefinition item, int maxSupported )
@@ -89,7 +80,7 @@ public enum Upgrades
 	/**
 	 * Registers a specific amount of this upgrade into a specific machine
 	 *
-	 * @param stack        machine in which this upgrade can be installed
+	 * @param stack machine in which this upgrade can be installed
 	 * @param maxSupported amount how many upgrades can be installed
 	 */
 	public void registerItem( ItemStack stack, int maxSupported )
@@ -97,28 +88,6 @@ public enum Upgrades
 		if( stack != null )
 		{
 			this.supportedMax.put( stack, maxSupported );
-		}
-	}
-
-	/**
-	 * Registers a specific amount of this upgrade into a specific machine
-	 *
-	 * @param item         machine in which this upgrade can be installed
-	 * @param maxSupported amount how many upgrades can be installed
-	 *
-	 * @deprecated use {@link Upgrades#registerItem(IItemDefinition, int)}
-	 */
-	@Deprecated
-	public void registerItem( AEItemDefinition item, int maxSupported )
-	{
-		if( item != null )
-		{
-			final ItemStack stack = item.stack( 1 );
-
-			if( stack != null )
-			{
-				this.registerItem( stack, maxSupported );
-			}
 		}
 	}
 

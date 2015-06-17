@@ -20,10 +20,6 @@ package appeng.core;
 
 
 import appeng.api.IAppEngApi;
-import appeng.api.definitions.Blocks;
-import appeng.api.definitions.Items;
-import appeng.api.definitions.Materials;
-import appeng.api.definitions.Parts;
 import appeng.api.exceptions.FailedConnection;
 import appeng.api.features.IRegistryContainer;
 import appeng.api.networking.IGridBlock;
@@ -48,18 +44,10 @@ public final class Api implements IAppEngApi
 	// private MovableTileRegistry MovableRegistry = new MovableTileRegistry();
 	private final IRegistryContainer registryContainer;
 	private final IStorageHelper storageHelper;
-	private final Materials materials;
-	private final Items items;
-	private final Blocks blocks;
-	private final Parts parts;
 	private final ApiDefinitions definitions;
 
 	private Api()
 	{
-		this.parts = new Parts();
-		this.blocks = new Blocks();
-		this.items = new Items();
-		this.materials = new Materials();
 		this.storageHelper = new ApiStorage();
 		this.registryContainer = new RegistryContainer();
 		this.partHelper = new ApiPart();
@@ -82,30 +70,6 @@ public final class Api implements IAppEngApi
 	public ApiPart partHelper()
 	{
 		return this.partHelper;
-	}
-
-	@Override
-	public Items items()
-	{
-		return this.items;
-	}
-
-	@Override
-	public Materials materials()
-	{
-		return this.materials;
-	}
-
-	@Override
-	public Blocks blocks()
-	{
-		return this.blocks;
-	}
-
-	@Override
-	public Parts parts()
-	{
-		return this.parts;
 	}
 
 	@Override

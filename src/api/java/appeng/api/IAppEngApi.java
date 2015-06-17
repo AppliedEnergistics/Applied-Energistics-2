@@ -24,11 +24,7 @@
 package appeng.api;
 
 
-import appeng.api.definitions.Blocks;
 import appeng.api.definitions.IDefinitions;
-import appeng.api.definitions.Items;
-import appeng.api.definitions.Materials;
-import appeng.api.definitions.Parts;
 import appeng.api.exceptions.FailedConnection;
 import appeng.api.features.IRegistryContainer;
 import appeng.api.networking.IGridBlock;
@@ -40,7 +36,6 @@ import appeng.api.storage.IStorageHelper;
 
 public interface IAppEngApi
 {
-
 	/**
 	 * @return Registry Container for the numerous registries in AE2.
 	 */
@@ -55,38 +50,6 @@ public interface IAppEngApi
 	 * @return helper for working with grids, and buses.
 	 */
 	IPartHelper partHelper();
-
-	/**
-	 * @return an accessible list of all of AE's Items
-	 *
-	 * @deprecated use {@link appeng.api.definitions.IDefinitions#items()}
-	 */
-	@Deprecated
-	Items items();
-
-	/**
-	 * @return an accessible list of all of AE's materials; materials are items
-	 *
-	 * @deprecated use {@link appeng.api.definitions.IDefinitions#materials()}
-	 */
-	@Deprecated
-	Materials materials();
-
-	/**
-	 * @return an accessible list of all of AE's blocks
-	 *
-	 * @deprecated use {@link appeng.api.definitions.IDefinitions#blocks()}
-	 */
-	@Deprecated
-	Blocks blocks();
-
-	/**
-	 * @return an accessible list of all of AE's parts, parts are items
-	 *
-	 * @deprecated use {@link appeng.api.definitions.IDefinitions#parts()}
-	 */
-	@Deprecated
-	Parts parts();
 
 	/**
 	 * @return an accessible list of all AE definitions
