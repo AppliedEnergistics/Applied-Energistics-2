@@ -60,7 +60,6 @@ final class PlayerData implements IWorldPlayerData, IOnWorldStartable, IOnWorldS
 	public PlayerData( @Nonnull final File configFile, @Nonnull final String configVersion )
 	{
 		Preconditions.checkNotNull( configFile );
-		Preconditions.checkArgument( configFile.isFile() );
 		Preconditions.checkNotNull( configVersion );
 		Preconditions.checkArgument( !configVersion.isEmpty() );
 

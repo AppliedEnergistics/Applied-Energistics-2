@@ -32,7 +32,7 @@ import appeng.services.CompassService;
  * @version rv3 - 30.05.2015
  * @since rv3 30.05.2015
  */
-final class CompassData implements IWorldCompassData, IOnWorldStartable, IOnWorldStoppable
+final class CompassData implements IWorldCompassData, IOnWorldStoppable
 {
 	@Nonnull
 	private final CompassService service;
@@ -40,7 +40,6 @@ final class CompassData implements IWorldCompassData, IOnWorldStartable, IOnWorl
 	public CompassData( @Nonnull final File compassDirectory, @Nonnull final CompassService service )
 	{
 		Preconditions.checkNotNull( compassDirectory );
-		Preconditions.checkArgument( compassDirectory.isDirectory() );
 		Preconditions.checkNotNull( service );
 
 		this.service = service;
@@ -50,12 +49,6 @@ final class CompassData implements IWorldCompassData, IOnWorldStartable, IOnWorl
 	public CompassService service()
 	{
 		return this.service;
-	}
-
-	@Override
-	public void onWorldStart()
-	{
-
 	}
 
 	@Override

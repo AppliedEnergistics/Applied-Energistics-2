@@ -58,7 +58,6 @@ public final class CompassService
 	public CompassService( @Nonnull final File worldCompassFolder, @Nonnull final ThreadFactory factory )
 	{
 		Preconditions.checkNotNull( worldCompassFolder );
-		Preconditions.checkArgument( worldCompassFolder.isDirectory() );
 
 		this.worldCompassFolder = worldCompassFolder;
 		this.executor = Executors.newSingleThreadExecutor( factory );
