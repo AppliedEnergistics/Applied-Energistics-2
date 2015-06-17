@@ -19,15 +19,14 @@
 package appeng.core.features;
 
 
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
-import net.minecraft.world.IBlockAccess;
-import appeng.api.definitions.IItemDefinition;
-import appeng.util.Platform;
-
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
+
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+
+import appeng.api.definitions.IItemDefinition;
+import appeng.util.Platform;
 
 
 public class ItemDefinition implements IItemDefinition
@@ -67,11 +66,5 @@ public class ItemDefinition implements IItemDefinition
 	public final boolean isSameAs( ItemStack comparableStack )
 	{
 		return this.enabled && Platform.isSameItemType( comparableStack, this.maybeStack( 1 ).get() );
-	}
-
-	@Override
-	public boolean isSameAs( IBlockAccess world, BlockPos pos )
-	{
-		return false;
 	}
 }

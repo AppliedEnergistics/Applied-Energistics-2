@@ -66,10 +66,4 @@ public final class DamagedItemDefinition implements IItemDefinition
 
 		return comparableStack.getItem() == this.source.getItem() && comparableStack.getItemDamage() == this.source.getDamage();
 	}
-
-	@Override
-	public boolean isSameAs( IBlockAccess world, BlockPos pos )
-	{
-		return false;
-	}
 }

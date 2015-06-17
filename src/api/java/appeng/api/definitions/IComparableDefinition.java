@@ -2,8 +2,6 @@ package appeng.api.definitions;
 
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
-import net.minecraft.world.IBlockAccess;
 
 
 /**
@@ -23,17 +21,4 @@ public interface IComparableDefinition
 	 * @return true if the item stack is a matching item.
 	 */
 	boolean isSameAs( ItemStack comparableStack );
-
-	/**
-	 * Compare Block with world.
-	 *
-	 * @param world world of block
-	 * @param pos in world.
-	 *
-	 * @return if the block is placed in the world at the specific location.
-	 *
-	 * @deprecated moved to {@link IBlockDefinition}. Is removed in the next major release rv3
-	 */
-	@Deprecated
-	boolean isSameAs( IBlockAccess world, BlockPos pos );
 }
