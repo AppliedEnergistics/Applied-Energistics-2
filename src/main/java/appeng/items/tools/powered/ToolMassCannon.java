@@ -22,6 +22,8 @@ package appeng.items.tools.powered;
 import java.util.EnumSet;
 import java.util.List;
 
+import com.google.common.base.Optional;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDispenser;
 import net.minecraft.entity.Entity;
@@ -36,11 +38,11 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
+
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
@@ -75,8 +77,6 @@ import appeng.me.storage.CellInventoryHandler;
 import appeng.tile.misc.TilePaint;
 import appeng.util.LookDirection;
 import appeng.util.Platform;
-
-import com.google.common.base.Optional;
 
 
 public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
@@ -480,12 +480,6 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 	public int getBytes( ItemStack cellItem )
 	{
 		return 512;
-	}
-
-	@Override
-	public int BytePerType( ItemStack cell )
-	{
-		return 8;
 	}
 
 	@Override

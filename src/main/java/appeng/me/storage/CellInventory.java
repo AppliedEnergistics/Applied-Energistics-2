@@ -65,7 +65,7 @@ public class CellInventory implements ICellInventory
 	protected int storedItemCount = 0;
 	protected IItemList<IAEItemStack> cellItems;
 	protected ItemStack i;
-	protected IStorageCell CellType;
+	protected IStorageCell cellType;
 
 	protected CellInventory( NBTTagCompound data, ISaveProvider container )
 	{
@@ -92,22 +92,22 @@ public class CellInventory implements ICellInventory
 			throw new AppEngException( "ItemStack was used as a cell, but was not a cell!" );
 		}
 
-		this.CellType = null;
+		this.cellType = null;
 		this.i = o;
 
 		Item type = this.i.getItem();
 		if( type instanceof IStorageCell )
 		{
-			this.CellType = (IStorageCell) this.i.getItem();
-			this.maxItemTypes = this.CellType.getTotalTypes( this.i );
+			this.cellType = (IStorageCell) this.i.getItem();
+			this.maxItemTypes = this.cellType.getTotalTypes( this.i );
 		}
 
-		if( this.CellType == null )
+		if( this.cellType == null )
 		{
 			throw new AppEngException( "ItemStack was used as a cell, but was not a cell!" );
 		}
 
-		if( !this.CellType.isStorageCell( this.i ) )
+		if( !this.cellType.isStorageCell( this.i ) )
 		{
 			throw new AppEngException( "ItemStack was used as a cell, but was not a cell!" );
 		}
@@ -210,7 +210,7 @@ public class CellInventory implements ICellInventory
 			return null;
 		}
 
-		if( isBlackListed( input ) || this.CellType.isBlackListed( this.i, input ) )
+		if( isBlackListed( input ) || this.cellType.isBlackListed( this.i, input ) )
 		{
 			return input;
 		}
@@ -484,31 +484,31 @@ public class CellInventory implements ICellInventory
 	@Override
 	public double getIdleDrain()
 	{
-		return this.CellType.getIdleDrain();
+		return this.cellType.getIdleDrain();
 	}
 
 	@Override
 	public FuzzyMode getFuzzyMode()
 	{
-		return this.CellType.getFuzzyMode( this.i );
+		return this.cellType.getFuzzyMode( this.i );
 	}
 
 	@Override
 	public IInventory getConfigInventory()
 	{
-		return this.CellType.getConfigInventory( this.i );
+		return this.cellType.getConfigInventory( this.i );
 	}
 
 	@Override
 	public IInventory getUpgradesInventory()
 	{
-		return this.CellType.getUpgradesInventory( this.i );
+		return this.cellType.getUpgradesInventory( this.i );
 	}
 
 	@Override
 	public int getBytesPerType()
 	{
-		return this.CellType.BytePerType( this.i );
+		return this.cellType.getBytesPerType( this.i );
 	}
 
 	@Override
@@ -521,7 +521,7 @@ public class CellInventory implements ICellInventory
 	@Override
 	public long getTotalBytes()
 	{
-		return this.CellType.getBytes( this.i );
+		return this.cellType.getBytes( this.i );
 	}
 
 	@Override

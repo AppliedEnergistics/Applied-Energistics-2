@@ -28,6 +28,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.google.common.base.Optional;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockColored;
 import net.minecraft.block.BlockDispenser;
@@ -47,6 +49,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.oredict.OreDictionary;
+
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
@@ -80,8 +83,6 @@ import appeng.tile.misc.TilePaint;
 import appeng.util.ItemSorters;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
-
-import com.google.common.base.Optional;
 
 
 public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCell, IItemGroup, IBlockTool, IMouseWheelItem
@@ -461,12 +462,6 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 	public int getBytes( ItemStack cellItem )
 	{
 		return 512;
-	}
-
-	@Override
-	public int BytePerType( ItemStack cell )
-	{
-		return 8;
 	}
 
 	@Override
