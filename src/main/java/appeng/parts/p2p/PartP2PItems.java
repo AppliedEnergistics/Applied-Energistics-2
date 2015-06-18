@@ -136,7 +136,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements ISidedI
 			if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.BuildCraftTransport ) )
 			{
 				final IBuildCraftTransport buildcraft = (IBuildCraftTransport) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.BuildCraftTransport );
-				if( buildcraft.isPipe( te, this.side.getOpposite() ) )
+				if( buildcraft.isPipe( te, this.side.getOpposite().getFacing() ) )
 				{
 					try
 					{

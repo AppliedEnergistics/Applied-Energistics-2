@@ -22,13 +22,14 @@ package appeng.integration.abstraction;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 import appeng.api.parts.IFacadePart;
+import appeng.api.util.AEPartLocation;
+import appeng.client.texture.IAESprite;
 
 
 /**
@@ -61,7 +62,7 @@ public interface IBuildCraftTransport
 	 * @return ae facade through bc facade system
 	 */
 	@Nullable
-	IFacadePart createFacadePart( @Nullable Block blk, int meta, @Nonnull ForgeDirection side );
+	IFacadePart createFacadePart( @Nullable IBlockState blk, @Nonnull AEPartLocation side );
 
 	/**
 	 * @param held create facade for that item
@@ -71,7 +72,7 @@ public interface IBuildCraftTransport
 	 *
 	 * @throws IllegalArgumentException if {@code held} is {@code null}
 	 */
-	IFacadePart createFacadePart( @Nonnull ItemStack held, @Nonnull ForgeDirection side );
+	IFacadePart createFacadePart( @Nonnull ItemStack held, @Nonnull AEPartLocation side );
 
 	/**
 	 * @param facade buildcraft facade
@@ -85,9 +86,9 @@ public interface IBuildCraftTransport
 
 	/**
 	 * @return texture of buildcraft cobblestone structure pipe or null if something bad happens
-	 */
+//	 */
 	@Nullable
-	IIcon getCobbleStructurePipeTexture();
+	IAESprite getCobbleStructurePipeTexture();
 
 	/**
 	 * @param te  the to be checked {@link TileEntity}
@@ -97,7 +98,7 @@ public interface IBuildCraftTransport
 	 *
 	 * @throws NullPointerException if {@code dir} is {@code null}
 	 */
-	boolean isPipe( @Nullable TileEntity te, @Nonnull ForgeDirection dir );
+	boolean isPipe( @Nullable TileEntity te, @Nonnull EnumFacing dir );
 
 	/**
 	 * checks weather if the {@code te} is injectable and simulates to inject the item
@@ -108,7 +109,7 @@ public interface IBuildCraftTransport
 	 *
 	 * @return {@code true} if items were simulated successfully being added
 	 */
-	boolean canAddItemsToPipe( TileEntity te, ItemStack is, ForgeDirection dir );
+	boolean canAddItemsToPipe( TileEntity te, ItemStack is, EnumFacing dir );
 
 	/**
 	 * checks weather if the {@code te} is injectable, simulates the inject and tries to inject the item
@@ -119,5 +120,5 @@ public interface IBuildCraftTransport
 	 *
 	 * @return {@code true} if items were added to the buildcraft pipe
 	 */
-	boolean addItemsToPipe( @Nullable TileEntity te, @Nullable ItemStack is, @Nonnull ForgeDirection dir );
+	boolean addItemsToPipe( @Nullable TileEntity te, @Nullable ItemStack is, @Nonnull EnumFacing dir );
 }

@@ -23,7 +23,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.IChatComponent;
 
 import appeng.integration.IntegrationRegistry;
 import appeng.integration.IntegrationType;
@@ -34,9 +35,9 @@ public class WrapperBCPipe implements IInventory
 {
 	private final IBuildCraftTransport bc;
 	private final TileEntity ad;
-	private final ForgeDirection dir;
+	private final EnumFacing dir;
 
-	public WrapperBCPipe( TileEntity te, ForgeDirection d )
+	public WrapperBCPipe( TileEntity te, EnumFacing d )
 	{
 		this.bc = (IBuildCraftTransport) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.BuildCraftTransport );
 		this.ad = te;
@@ -77,18 +78,6 @@ public class WrapperBCPipe implements IInventory
 	}
 
 	@Override
-	public String getInventoryName()
-	{
-		return "BC Pipe Wrapper";
-	}
-
-	@Override
-	public boolean hasCustomInventoryName()
-	{
-		return false;
-	}
-
-	@Override
 	public int getInventoryStackLimit()
 	{
 		return 64;
@@ -101,26 +90,68 @@ public class WrapperBCPipe implements IInventory
 	}
 
 	@Override
+	public void openInventory( EntityPlayer player )
+	{
+
+	}
+
+	@Override
+	public void closeInventory( EntityPlayer player )
+	{
+
+	}
+
+	@Override
 	public boolean isUseableByPlayer( EntityPlayer entityplayer )
 	{
 		return false;
 	}
 
 	@Override
-	public void openInventory()
-	{
-
-	}
-
-	@Override
-	public void closeInventory()
-	{
-
-	}
-
-	@Override
 	public boolean isItemValidForSlot( int i, ItemStack itemstack )
 	{
 		return this.bc.canAddItemsToPipe( this.ad, itemstack, this.dir );
+	}
+
+	@Override
+	public int getField( int id )
+	{
+		return 0;
+	}
+
+	@Override
+	public void setField( int id, int value )
+	{
+
+	}
+
+	@Override
+	public int getFieldCount()
+	{
+		return 0;
+	}
+
+	@Override
+	public void clear()
+	{
+
+	}
+
+	@Override
+	public String getName()
+	{
+		return null;
+	}
+
+	@Override
+	public boolean hasCustomName()
+	{
+		return false;
+	}
+
+	@Override
+	public IChatComponent getDisplayName()
+	{
+		return null;
 	}
 }

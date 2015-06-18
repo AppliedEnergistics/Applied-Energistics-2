@@ -21,8 +21,9 @@ package appeng.core;
 
 import java.io.File;
 import java.util.concurrent.TimeUnit;
-
 import javax.annotation.Nonnull;
+
+import com.google.common.base.Stopwatch;
 
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
@@ -36,6 +37,7 @@ import net.minecraftforge.fml.common.event.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
+
 import appeng.core.crash.CrashInfo;
 import appeng.core.crash.IntegrationCrashEnhancement;
 import appeng.core.crash.ModCrashEnhancement;
@@ -48,8 +50,6 @@ import appeng.server.AECommand;
 import appeng.services.VersionChecker;
 import appeng.services.version.VersionCheckerConfig;
 import appeng.util.Platform;
-
-import com.google.common.base.Stopwatch;
 
 
 @Mod( modid = AppEng.MOD_ID, acceptedMinecraftVersions = "[1.8]", name = AppEng.MOD_NAME, version = AEConfig.VERSION, dependencies = AppEng.MOD_DEPENDENCIES, guiFactory = "appeng.client.gui.config.AEConfigGuiFactory" )
@@ -76,7 +76,7 @@ public final class AppEng
 
 	private File configDirectory;
 
-	AppEng()
+	private AppEng()
 	{
 		this.imcHandler = new IMCHandler();
 

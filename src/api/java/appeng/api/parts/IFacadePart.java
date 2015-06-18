@@ -31,6 +31,7 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
 import appeng.api.util.AEPartLocation;
 import appeng.client.render.IRenderHelper;
 
@@ -52,20 +53,18 @@ public interface IFacadePart
 	 * used to collide, and pick the part
 	 *
 	 * @param ch collision helper
-	 * @param e  colliding entity
+	 * @param e colliding entity
 	 */
 	void getBoxes( IPartCollisionHelper ch, Entity e );
 
 	/**
 	 * render the part.
 	 *
-	 * @param x           x pos of part
-	 * @param y           y pos of part
-	 * @param z           z pos of part
-	 * @param instance    render helper
-	 * @param renderer    renderer
-	 * @param fc          face container
-	 * @param busBounds   bounding box
+	 * @param pos pos of part
+	 * @param instance render helper
+	 * @param renderer renderer
+	 * @param fc face container
+	 * @param busBounds bounding box
 	 * @param renderStilt if to render stilt
 	 */
 	@SideOnly( Side.CLIENT )

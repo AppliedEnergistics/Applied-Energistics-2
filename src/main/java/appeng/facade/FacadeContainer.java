@@ -24,6 +24,7 @@ import java.io.IOException;
 import io.netty.buffer.ByteBuf;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -140,9 +141,9 @@ public class FacadeContainer implements IFacadeContainer
 				if( isBC && IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.BuildCraftTransport ) )
 				{
 					final IBuildCraftTransport bc = (IBuildCraftTransport) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.BuildCraftTransport );
-					final IFacadePart created = bc.createFacadePart( Block.getStateById( ids[0] ), ids[1], side );
+					final IBlockState state = Block.getStateById( ids[0] );
+					final IFacadePart created = bc.createFacadePart( state, side );
 					changed = changed || this.storage.getFacade( x ) == null;
-					this.storage.setFacade( x, bc.createFacadePart( Block.getStateById( id[0] ), ids[1], side ) );
 
 					this.storage.setFacade( x, created );
 				}

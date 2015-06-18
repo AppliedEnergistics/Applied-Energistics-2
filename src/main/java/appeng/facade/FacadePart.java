@@ -36,6 +36,7 @@ import net.minecraft.util.EnumWorldBlockLayer;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
 import appeng.api.AEApi;
 import appeng.api.parts.IBoxProvider;
 import appeng.api.parts.IFacadeContainer;
@@ -129,7 +130,7 @@ public class FacadePart implements IFacadePart, IBoxProvider
 					if( this.notAEFacade() && IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.BuildCraftTransport ) )
 					{
 						IBuildCraftTransport bc = (IBuildCraftTransport) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.BuildCraftTransport );
-						myIcon = bc.getFacadeTexture();
+						myIcon = bc.getCobbleStructurePipeTexture();
 					}
 
 					if( myIcon == null )
@@ -217,14 +218,8 @@ public class FacadePart implements IFacadePart, IBoxProvider
 						else
 						{*/
 						IAESprite[] icon_down = renderer.getIcon( blk.getDefaultState() );
-						
-							instance.setTexture(
-									icon_down[EnumFacing.DOWN.ordinal()],
-									icon_down[EnumFacing.UP.ordinal()],
-									icon_down[EnumFacing.NORTH.ordinal()],
-									icon_down[EnumFacing.SOUTH.ordinal()],
-									icon_down[EnumFacing.WEST.ordinal()],
-									icon_down[EnumFacing.EAST.ordinal()] );
+
+						instance.setTexture( icon_down[EnumFacing.DOWN.ordinal()], icon_down[EnumFacing.UP.ordinal()], icon_down[EnumFacing.NORTH.ordinal()], icon_down[EnumFacing.SOUTH.ordinal()], icon_down[EnumFacing.WEST.ordinal()], icon_down[EnumFacing.EAST.ordinal()] );
 						//}
 
 						if( busBounds == null )
@@ -348,7 +343,7 @@ public class FacadePart implements IFacadePart, IBoxProvider
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderInventory( IPartRenderHelper instance, RenderBlocks renderer )
+	public void renderInventory( IPartRenderHelper instance, IRenderHelper renderer )
 	{
 		if( this.facade != null )
 		{
@@ -356,47 +351,42 @@ public class FacadePart implements IFacadePart, IBoxProvider
 
 			try
 			{
-				if( fi != null )
+				ItemStack randomItem = fi.getTextureItem( this.facade );
+
+				instance.setTexture( renderer.getIcon( facade ) );
+				instance.setBounds( 7, 7, 4, 9, 9, 14 );
+				instance.renderInventoryBox( renderer );
+				instance.setTexture( null );
+
+				if( randomItem != null )
 				{
-					ItemStack randomItem = fi.getTextureItem( this.facade );
-
-					instance.setTexture( this.facade.getIconIndex() );
-					instance.setBounds( 7, 7, 4, 9, 9, 14 );
-					instance.renderInventoryBox( renderer );
-					instance.setTexture( null );
-
-					if( randomItem != null )
+					if( randomItem.getItem() instanceof ItemBlock )
 					{
-						if( randomItem.getItem() instanceof ItemBlock )
+						ItemBlock ib = (ItemBlock) randomItem.getItem();
+						Block blk = Block.getBlockFromItem( ib );
+
+						try
 						{
-							ItemBlock ib = (ItemBlock) randomItem.getItem();
-							Block blk = Block.getBlockFromItem( ib );
-
-							try
-							{
-								int color = ib.getColorFromItemStack( randomItem, 0 );
-								GL11.glColor4f( 1.0f, 1.0f, 1.0f, 1.0F );
-								instance.setInvColor( color );
-							}
-							catch( Throwable error )
-							{
-								GL11.glColor4f( 1.0f, 1.0f, 1.0f, 1.0F );
-								instance.setInvColor( 0xffffff );
-							}
-
-							Tessellator.instance.setBrightness( 15 << 20 | 15 << 4 );
-							Tessellator.instance.setColorOpaque_F( 1, 1, 1 );
-							instance.setTexture( blk.getIcon( this.side.ordinal(), ib.getMetadata( randomItem.getItemDamage() ) ) );
-
-							instance.setBounds( 0, 0, 14, 16, 16, 16 );
-							instance.renderInventoryBox( renderer );
-
-							instance.setTexture( null );
+							int color = ib.getColorFromItemStack( randomItem, 0 );
+							instance.setInvColor( color );
 						}
+						catch( Throwable error )
+						{
+							instance.setInvColor( 0xffffff );
+						}
+
+						renderer.setBrightness( 15 << 20 | 15 << 4 );
+						renderer.setColorOpaque_F( 1, 1, 1 );
+						instance.setTexture( renderer.getIcon( blk.getDefaultState() )[side.ordinal()] );
+
+						instance.setBounds( 0, 0, 14, 16, 16, 16 );
+						instance.renderInventoryBox( renderer );
+
+						instance.setTexture( null );
 					}
 				}
 			}
-			catch( Exception ignored )
+			catch( Throwable ignored )
 			{
 
 			}
@@ -404,7 +394,7 @@ public class FacadePart implements IFacadePart, IBoxProvider
 	}
 
 	@Override
-	public ForgeDirection getSide()
+	public AEPartLocation getSide()
 	{
 		return this.side;
 	}

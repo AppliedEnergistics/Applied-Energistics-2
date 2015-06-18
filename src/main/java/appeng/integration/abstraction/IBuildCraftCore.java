@@ -24,15 +24,14 @@ import javax.annotation.Nullable;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
+import net.minecraft.util.BlockPos;
 
 
 /**
  * Contains wrench behaviour
  *
- * and registers the engines as P2P attunements for RF tunnels
- * (since BC 7, they are part of BC Core)
- * The attunement is currently not public anymore,
- * because it was only used internally
+ * and registers the engines as P2P attunements for RF tunnels (since BC 7, they are part of BC Core) The attunement is currently not public anymore, because it
+ * was only used internally
  *
  * @author AlgorithmX2
  * @version rv3
@@ -50,26 +49,22 @@ public interface IBuildCraftCore
 	/**
 	 * @param wrench to be checked item, must be an {@link buildcraft.api.tools.IToolWrench}
 	 * @param wrencher wrenching player, can be probably {@code null}, but not sure
-	 * @param x x pos
-	 * @param y y pos
-	 * @param z z pos
+	 * @param pos pos
 	 *
 	 * @return {@code true} if player can wrench with that {@code wrench}
 	 *
 	 * @throws NullPointerException if {@code wrench} is {@code null}
-	 * @throws ClassCastException if {@code wrench} is not an {@link buildcraft.api.tools.IToolWrench}
+	 * @throws ClassCastException   if {@code wrench} is not an {@link buildcraft.api.tools.IToolWrench}
 	 */
-	boolean canWrench( @Nonnull Item wrench, EntityPlayer wrencher, int x, int y, int z );
+	boolean canWrench( @Nonnull Item wrench, EntityPlayer wrencher, BlockPos pos );
 
 	/**
 	 * @param wrench to be checked item, must be an {@link buildcraft.api.tools.IToolWrench}
 	 * @param wrencher wrenching player, can be probably {@code null}, but not sure
-	 * @param x x pos
-	 * @param y y pos
-	 * @param z z pos
+	 * @param pos pos
 	 *
 	 * @throws NullPointerException if {@code wrench} is {@code null}
-	 * @throws ClassCastException if {@code wrench} is not an {@link buildcraft.api.tools.IToolWrench}
+	 * @throws ClassCastException   if {@code wrench} is not an {@link buildcraft.api.tools.IToolWrench}
 	 */
-	void wrenchUsed( @Nonnull Item wrench, EntityPlayer wrencher, int x, int y, int z );
+	void wrenchUsed( @Nonnull Item wrench, EntityPlayer wrencher, BlockPos pos );
 }
