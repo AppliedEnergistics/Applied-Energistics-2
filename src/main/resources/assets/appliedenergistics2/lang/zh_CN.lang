@@ -61,6 +61,16 @@ tile.appliedenergistics2.SkyStoneBrickStairBlock.name=陨石石砖楼梯
 tile.appliedenergistics2.SkyStoneSmallBrickStairBlock.name=陨石砖块楼梯
 tile.appliedenergistics2.SkyStoneStairBlock.name=陨石楼梯
 
+// Slabs
+tile.appliedenergistics2.ChiseledQuartzSlabBlock.name=錾制赛特斯石英台阶
+tile.appliedenergistics2.FluixSlabBlock.name=福鲁伊克斯台阶
+tile.appliedenergistics2.QuartzPillarSlabBlock.name=竖纹赛特斯石英台阶
+tile.appliedenergistics2.QuartzSlabBlock.name=赛特斯石英台阶
+tile.appliedenergistics2.SkyStoneBlockSlabBlock.name=陨石块台阶
+tile.appliedenergistics2.SkyStoneBrickSlabBlock.name=陨石石砖台阶
+tile.appliedenergistics2.SkyStoneSmallBrickSlabBlock.name=陨石砖块台阶
+tile.appliedenergistics2.SkyStoneSlabBlock.name=陨石台阶
+
 // Chat Messages
 chat.appliedenergistics2.ChestCannotReadStorageCell=ME箱子无法读取存储元件.
 chat.appliedenergistics2.SettingCleared=设置已清除.
@@ -184,6 +194,7 @@ gui.appliedenergistics2.Lumen=光通
 gui.appliedenergistics2.Empty=空
 gui.appliedenergistics2.Stored=现存
 gui.appliedenergistics2.Cancel=取消
+gui.appliedenergistics2.ETAFormat=HH:mm:ss
 gui.appliedenergistics2.Crafting=正在合成
 gui.appliedenergistics2.Scheduled=计划合成
 gui.appliedenergistics2.CraftingStatus=合成情况
@@ -302,8 +313,8 @@ gui.tooltips.appliedenergistics2.ReportInaccessibleItemsNo=否: 只显示可以�
 gui.tooltips.appliedenergistics2.BlockPlacement=方块放置方式
 gui.tooltips.appliedenergistics2.BlockPlacementYes=方块将被放置.
 gui.tooltips.appliedenergistics2.BlockPlacementNo=方块将以物品形式掉落.
-gui.tooltips.appliedenergistics2.ItemsStored=Items Stored: %s
-gui.tooltips.appliedenergistics2.ItemsRequestable=Items Requestable: %s
+gui.tooltips.appliedenergistics2.ItemsStored=存储物品: %s
+gui.tooltips.appliedenergistics2.ItemsRequestable=可请求: %s
 
 // 单位
 gui.appliedenergistics2.units.appliedenergstics=AE
@@ -413,6 +424,7 @@ item.appliedenergistics2.ItemMaterial.SkyDust.name=陨石粉
 item.appliedenergistics2.ItemMaterial.CardCrafting.name=合成卡
 
 item.appliedenergistics2.ItemPart.AnnihilationPlane.name=ME破坏面板
+item.appliedenergistics2.ItemPart.IdentityAnnihilationPlane.name=ME精准破坏面板
 item.appliedenergistics2.ItemPart.CableAnchor.name=线缆锚
 item.appliedenergistics2.ItemPart.CableCovered.name=ME包层线缆
 item.appliedenergistics2.ItemPart.CableGlass.name=ME玻璃线缆
