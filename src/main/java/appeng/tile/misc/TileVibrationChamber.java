@@ -21,6 +21,7 @@ package appeng.tile.misc;
 
 import io.netty.buffer.ByteBuf;
 
+import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -143,7 +144,7 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 	@Override
 	public boolean canExtractItem( int slotIndex, ItemStack extractedItem, int side )
 	{
-		return true;
+		return extractedItem.getItem() == Items.bucket;
 	}
 
 	@Override
