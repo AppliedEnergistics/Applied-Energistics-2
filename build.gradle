@@ -100,6 +100,7 @@ sourceSets {
             srcDir "src/main/resources/"
             include "assets/appliedenergistics2/recipes/*.recipe",
                     "assets/appliedenergistics2/recipes/README.html",
+                    "assets/appliedenergistics2/oredict/*.oredict",
                     "assets/appliedenergistics2/lang/*.lang",
                     "assets/appliedenergistics2/textures/blocks/*",
                     "assets/appliedenergistics2/textures/guis/*",

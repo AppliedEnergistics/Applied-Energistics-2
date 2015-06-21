@@ -1,0 +1,11 @@
+# Forge Ore Dictionary
+# logWood, slabWood, stairWood, treeSapling, treeLeaves,
+# oreGold, oreIron, oreLapis, oreDiamond, oreRedstone, oreEmerald, oreQuartz, oreCoal,
+# stone, cobblestone, record, stickWood, plankWood,
+# dyeBlack, dyeRed, dyeGreen, dyeBrown, dyeBlue, dyePurple, dyeCyan, dyeLightGray, dyeGray, dyePink, dyeLime, dyeYellow, dyeLightBlue, dyeMagenta, dyeOrange, dyeWhite
+
+# Minecraft Ore Dict Entries
+# Renamed for less clashing
+ore=mc:quartz -> crystalNetherQuartz
+ore=mc:wool:* -> blockWool
+ore=mc:stained_hardened_clay:* -> blockStainedHardenedClay
