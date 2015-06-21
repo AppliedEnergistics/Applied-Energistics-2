@@ -35,7 +35,6 @@ import appeng.util.iterators.InvIterator;
 
 public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 {
-
 	protected final int size;
 	protected final ItemStack[] inv;
 	public boolean enableClientEvents = false;
