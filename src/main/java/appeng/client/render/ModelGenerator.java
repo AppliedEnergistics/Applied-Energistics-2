@@ -3,8 +3,6 @@ package appeng.client.render;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
-
-import javax.vecmath.Tuple3f;
 import javax.vecmath.Vector3f;
 
 import net.minecraft.block.Block;
@@ -13,7 +11,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.BlockFaceUV;
 import net.minecraft.client.renderer.block.model.BlockPartFace;
-import net.minecraft.client.renderer.block.model.BlockPartRotation;
 import net.minecraft.client.renderer.block.model.FaceBakery;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -23,11 +20,11 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.EnumWorldBlockLayer;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.model.IColoredBakedQuad;
+
 import appeng.block.AEBaseBlock;
 import appeng.client.texture.BaseIcon;
 import appeng.client.texture.IAESprite;
