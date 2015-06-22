@@ -29,7 +29,7 @@ import appeng.api.AEApi;
 import appeng.api.util.AEPartLocation;
 import appeng.block.solids.BlockQuartzGlass;
 import appeng.client.render.BaseBlockRender;
-import appeng.client.render.IRenderHelper;
+import appeng.client.render.ModelGenerator;
 import appeng.client.texture.ExtraBlockTextures;
 import appeng.client.texture.OffsetIcon;
 import appeng.tile.AEBaseTile;
@@ -58,7 +58,7 @@ public class RenderQuartzGlass extends BaseBlockRender<BlockQuartzGlass, AEBaseT
 	}
 
 	@Override
-	public void renderInventory( BlockQuartzGlass block, ItemStack is, IRenderHelper renderer, ItemRenderType type, Object[] obj )
+	public void renderInventory( BlockQuartzGlass block, ItemStack is, ModelGenerator renderer, ItemRenderType type, Object[] obj )
 	{
 		renderer.overrideBlockTexture = ExtraBlockTextures.GlassFrame.getIcon();
 		super.renderInventory( block, is, renderer, type, obj );
@@ -67,7 +67,7 @@ public class RenderQuartzGlass extends BaseBlockRender<BlockQuartzGlass, AEBaseT
 	}
 
 	@Override
-	public boolean renderInWorld( BlockQuartzGlass imb, IBlockAccess world, BlockPos pos, IRenderHelper renderer )
+	public boolean renderInWorld( BlockQuartzGlass imb, IBlockAccess world, BlockPos pos, ModelGenerator renderer )
 	{
 		renderer.setRenderBounds( 0, 0, 0, 1, 1, 1 );
 
@@ -130,7 +130,7 @@ public class RenderQuartzGlass extends BaseBlockRender<BlockQuartzGlass, AEBaseT
 		return result;
 	}
 
-	private void renderEdge( BlockQuartzGlass imb, IBlockAccess world, BlockPos pos, IRenderHelper renderer, AEPartLocation side, AEPartLocation direction )
+	private void renderEdge( BlockQuartzGlass imb, IBlockAccess world, BlockPos pos, ModelGenerator renderer, AEPartLocation side, AEPartLocation direction )
 	{
 		if( !this.isFlush( imb, world, pos.getX() + side.xOffset, pos.getY() + side.yOffset, pos.getZ() + side.zOffset ) )
 		{

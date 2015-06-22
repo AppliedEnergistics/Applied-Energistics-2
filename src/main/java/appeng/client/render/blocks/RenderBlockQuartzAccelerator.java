@@ -24,7 +24,7 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import appeng.block.misc.BlockQuartzGrowthAccelerator;
 import appeng.client.render.BaseBlockRender;
-import appeng.client.render.IRenderHelper;
+import appeng.client.render.ModelGenerator;
 import appeng.client.texture.ExtraBlockTextures;
 import appeng.client.texture.IAESprite;
 import appeng.tile.misc.TileQuartzGrowthAccelerator;
@@ -39,7 +39,7 @@ public class RenderBlockQuartzAccelerator extends BaseBlockRender<BlockQuartzGro
 	}
 
 	@Override
-	public boolean renderInWorld( BlockQuartzGrowthAccelerator blk, IBlockAccess world, BlockPos pos, IRenderHelper renderer )
+	public boolean renderInWorld( BlockQuartzGrowthAccelerator blk, IBlockAccess world, BlockPos pos, ModelGenerator renderer )
 	{
 		TileEntity te = world.getTileEntity( pos );
 		if( te instanceof TileQuartzGrowthAccelerator )

@@ -63,7 +63,7 @@ import appeng.api.util.AEColor;
 import appeng.block.AEBaseBlock;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.BlockRenderInfo;
-import appeng.client.render.IRenderHelper;
+import appeng.client.render.ModelGenerator;
 import appeng.client.render.TESRWrapper;
 import appeng.client.render.blocks.RendererCableBus;
 import appeng.client.render.effects.AssemblerFX;
@@ -100,7 +100,7 @@ public class ClientHelper extends ServerHelper
 {
 
 	private static final RenderItem ITEM_RENDERER = Minecraft.getMinecraft().getRenderItem();
-	private static final IRenderHelper BLOCK_RENDERER = new IRenderHelper();
+	private static final ModelGenerator BLOCK_RENDERER = new ModelGenerator();
 
 	private static class IconReg
 	{

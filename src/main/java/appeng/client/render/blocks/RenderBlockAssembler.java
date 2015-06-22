@@ -37,7 +37,7 @@ import appeng.api.util.IOrientable;
 import appeng.block.crafting.BlockMolecularAssembler;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.BusRenderer;
-import appeng.client.render.IRenderHelper;
+import appeng.client.render.ModelGenerator;
 import appeng.client.texture.ExtraBlockTextures;
 import appeng.client.texture.IAESprite;
 import appeng.client.texture.TaughtIcon;
@@ -55,7 +55,7 @@ public class RenderBlockAssembler extends BaseBlockRender<BlockMolecularAssemble
 	}
 
 	@Override
-	public void renderInventory( BlockMolecularAssembler blk, ItemStack is, IRenderHelper renderer, ItemRenderType type, Object[] obj )
+	public void renderInventory( BlockMolecularAssembler blk, ItemStack is, ModelGenerator renderer, ItemRenderType type, Object[] obj )
 	{
 		renderer.setOverrideBlockTexture( renderer.getIcon( blk.getStateFromMeta( is.getMetadata() ) )[0] );
 
@@ -102,7 +102,7 @@ public class RenderBlockAssembler extends BaseBlockRender<BlockMolecularAssemble
 	}
 
 	@Override
-	public boolean renderInWorld( BlockMolecularAssembler block, IBlockAccess world, BlockPos pos, IRenderHelper renderer )
+	public boolean renderInWorld( BlockMolecularAssembler block, IBlockAccess world, BlockPos pos, ModelGenerator renderer )
 	{
 		BlockMolecularAssembler blk = block;
 		TileMolecularAssembler tma = blk.getTileEntity( world, pos );
@@ -194,7 +194,7 @@ public class RenderBlockAssembler extends BaseBlockRender<BlockMolecularAssemble
 		return true;
 	}
 
-	public void renderCableAt( double thickness, IBlockAccess world, BlockPos pos, BlockMolecularAssembler block, IRenderHelper renderer, double pull, boolean covered )
+	public void renderCableAt( double thickness, IBlockAccess world, BlockPos pos, BlockMolecularAssembler block, ModelGenerator renderer, double pull, boolean covered )
 	{
 		IAESprite texture = null;
 
@@ -243,7 +243,7 @@ public class RenderBlockAssembler extends BaseBlockRender<BlockMolecularAssemble
 		block.getRendererInstance().setTemporaryRenderIcon( null );
 	}
 
-	IAESprite getConnectedCable( IBlockAccess world, BlockPos pos, EnumFacing side, boolean covered,IRenderHelper renderer )
+	IAESprite getConnectedCable( IBlockAccess world, BlockPos pos, EnumFacing side, boolean covered,ModelGenerator renderer )
 	{
 		final int tileYPos = pos.getY() + side.getFrontOffsetY();
 		if( -1 < tileYPos && tileYPos < 256 )

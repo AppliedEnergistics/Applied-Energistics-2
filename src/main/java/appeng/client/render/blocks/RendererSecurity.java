@@ -30,7 +30,7 @@ import appeng.api.util.AEColor;
 import appeng.api.util.AEPartLocation;
 import appeng.block.misc.BlockSecurity;
 import appeng.client.render.BaseBlockRender;
-import appeng.client.render.IRenderHelper;
+import appeng.client.render.ModelGenerator;
 import appeng.client.texture.ExtraBlockTextures;
 import appeng.client.texture.IAESprite;
 import appeng.tile.misc.TileSecurity;
@@ -45,7 +45,7 @@ public class RendererSecurity extends BaseBlockRender<BlockSecurity, TileSecurit
 	}
 
 	@Override
-	public void renderInventory( BlockSecurity block, ItemStack is, IRenderHelper renderer, ItemRenderType type, Object[] obj )
+	public void renderInventory( BlockSecurity block, ItemStack is, ModelGenerator renderer, ItemRenderType type, Object[] obj )
 	{
 		renderer.overrideBlockTexture = ExtraBlockTextures.getMissing();
 		this.renderInvBlock( EnumSet.of( AEPartLocation.SOUTH ), block, is, 0x000000, renderer );
@@ -58,7 +58,7 @@ public class RendererSecurity extends BaseBlockRender<BlockSecurity, TileSecurit
 	}
 
 	@Override
-	public boolean renderInWorld( BlockSecurity imb, IBlockAccess world, BlockPos pos, IRenderHelper renderer )
+	public boolean renderInWorld( BlockSecurity imb, IBlockAccess world, BlockPos pos, ModelGenerator renderer )
 	{
 		TileSecurity sp = imb.getTileEntity( world, pos );
 		renderer.setRenderBounds( 0, 0, 0, 1, 1, 1 );

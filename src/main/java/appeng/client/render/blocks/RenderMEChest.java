@@ -32,7 +32,7 @@ import appeng.api.util.AEColor;
 import appeng.api.util.AEPartLocation;
 import appeng.block.storage.BlockChest;
 import appeng.client.render.BaseBlockRender;
-import appeng.client.render.IRenderHelper;
+import appeng.client.render.ModelGenerator;
 import appeng.client.texture.ExtraBlockTextures;
 import appeng.client.texture.FlippableIcon;
 import appeng.client.texture.IAESprite;
@@ -50,7 +50,7 @@ public class RenderMEChest extends BaseBlockRender<BlockChest, TileChest>
 	}
 
 	@Override
-	public void renderInventory( BlockChest block, ItemStack is, IRenderHelper renderer, ItemRenderType type, Object[] obj )
+	public void renderInventory( BlockChest block, ItemStack is, ModelGenerator renderer, ItemRenderType type, Object[] obj )
 	{
 		renderer.setBrightness( 0 );
 		renderer.overrideBlockTexture = ExtraBlockTextures.White.getIcon();
@@ -64,7 +64,7 @@ public class RenderMEChest extends BaseBlockRender<BlockChest, TileChest>
 	}
 
 	@Override
-	public boolean renderInWorld( BlockChest imb, IBlockAccess world, BlockPos pos, IRenderHelper renderer )
+	public boolean renderInWorld( BlockChest imb, IBlockAccess world, BlockPos pos, ModelGenerator renderer )
 	{
 		TileChest sp = imb.getTileEntity( world, pos );
 		renderer.setRenderBounds( 0, 0, 0, 1, 1, 1 );

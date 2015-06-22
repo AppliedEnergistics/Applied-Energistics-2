@@ -37,7 +37,7 @@ import appeng.api.util.AEColor;
 import appeng.api.util.AEPartLocation;
 import appeng.block.qnb.BlockQuantumBase;
 import appeng.client.render.BaseBlockRender;
-import appeng.client.render.IRenderHelper;
+import appeng.client.render.ModelGenerator;
 import appeng.client.texture.ExtraBlockTextures;
 import appeng.client.texture.IAESprite;
 import appeng.tile.qnb.TileQuantumBridge;
@@ -47,7 +47,7 @@ public class RenderQNB extends BaseBlockRender<BlockQuantumBase, TileQuantumBrid
 {
 
 	@Override
-	public void renderInventory( BlockQuantumBase block, ItemStack item, IRenderHelper renderer, ItemRenderType type, Object[] obj )
+	public void renderInventory( BlockQuantumBase block, ItemStack item, ModelGenerator renderer, ItemRenderType type, Object[] obj )
 	{
 		float minPx = 2.0f / 16.0f;
 		float maxPx = 14.0f / 16.0f;
@@ -57,7 +57,7 @@ public class RenderQNB extends BaseBlockRender<BlockQuantumBase, TileQuantumBrid
 	}
 
 	@Override
-	public boolean renderInWorld( BlockQuantumBase block, IBlockAccess world, BlockPos pos, IRenderHelper renderer )
+	public boolean renderInWorld( BlockQuantumBase block, IBlockAccess world, BlockPos pos, ModelGenerator renderer )
 	{
 		TileQuantumBridge tqb = block.getTileEntity( world, pos );
 		if( tqb == null )
@@ -161,7 +161,7 @@ public class RenderQNB extends BaseBlockRender<BlockQuantumBase, TileQuantumBrid
 		return true;
 	}
 
-	private void renderCableAt( double thickness, IBlockAccess world, BlockPos pos, BlockQuantumBase block, IRenderHelper renderer, IAESprite texture, double pull, Collection<AEPartLocation> connections )
+	private void renderCableAt( double thickness, IBlockAccess world, BlockPos pos, BlockQuantumBase block, ModelGenerator renderer, IAESprite texture, double pull, Collection<AEPartLocation> connections )
 	{
 		block.getRendererInstance().setTemporaryRenderIcon( texture );
 

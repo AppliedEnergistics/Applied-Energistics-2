@@ -26,7 +26,7 @@ import net.minecraft.world.IBlockAccess;
 import appeng.block.networking.BlockController;
 import appeng.block.networking.BlockController.ControllerBlockState;
 import appeng.client.render.BaseBlockRender;
-import appeng.client.render.IRenderHelper;
+import appeng.client.render.ModelGenerator;
 import appeng.client.texture.ExtraBlockTextures;
 import appeng.tile.networking.TileController;
 
@@ -40,7 +40,7 @@ public class RenderBlockController extends BaseBlockRender<BlockController, Tile
 	}
 
 	@Override
-	public boolean renderInWorld( BlockController blk, IBlockAccess world, BlockPos pos, IRenderHelper renderer )
+	public boolean renderInWorld( BlockController blk, IBlockAccess world, BlockPos pos, ModelGenerator renderer )
 	{
 
 		boolean xx = this.getTileEntity( world,  pos.offset( EnumFacing.WEST ) ) instanceof TileController && this.getTileEntity( world, pos.offset( EnumFacing.EAST ) ) instanceof TileController;

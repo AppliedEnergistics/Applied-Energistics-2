@@ -31,7 +31,7 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import appeng.client.render.IRenderHelper;
+import appeng.client.render.ModelGenerator;
 import appeng.client.texture.IAESprite;
 
 
@@ -63,7 +63,7 @@ public interface IPartRenderHelper
 	 * @param renderer renderer of part
 	 */
 	@SideOnly( Side.CLIENT )
-	void renderFace( BlockPos pos, IAESprite ico, EnumFacing face, IRenderHelper renderer );
+	void renderFace( BlockPos pos, IAESprite ico, EnumFacing face, ModelGenerator renderer );
 
 	/**
 	 * static renderer
@@ -77,7 +77,7 @@ public interface IPartRenderHelper
 	 * @param renderer      renderer
 	 */
 	@SideOnly( Side.CLIENT )
-	void renderFaceCutout( BlockPos pos, IAESprite ico, EnumFacing face, float edgeThickness, IRenderHelper renderer );
+	void renderFaceCutout( BlockPos pos, IAESprite ico, EnumFacing face, float edgeThickness, ModelGenerator renderer );
 
 	/**
 	 * static renderer
@@ -90,7 +90,7 @@ public interface IPartRenderHelper
 	 * @param renderer renderer
 	 */
 	@SideOnly( Side.CLIENT )
-	void renderBlock( BlockPos pos, IRenderHelper renderer );
+	void renderBlock( BlockPos pos, ModelGenerator renderer );
 
 	/**
 	 * render a single face in inventory renderer.
@@ -100,7 +100,7 @@ public interface IPartRenderHelper
 	 * @param renderer  renderer
 	 */
 	@SideOnly( Side.CLIENT )
-	void renderInventoryFace( IAESprite IIcon, EnumFacing direction, IRenderHelper renderer );
+	void renderInventoryFace( IAESprite IIcon, EnumFacing direction, ModelGenerator renderer );
 
 	/**
 	 * render a box in inventory renderer.
@@ -108,7 +108,7 @@ public interface IPartRenderHelper
 	 * @param renderer renderer
 	 */
 	@SideOnly( Side.CLIENT )
-	void renderInventoryBox( IRenderHelper renderer );
+	void renderInventoryBox( ModelGenerator renderer );
 
 	/**
 	 * inventory, and static renderer.
@@ -168,7 +168,7 @@ public interface IPartRenderHelper
 	 * @param z        z pos of part
 	 * @param renderer renderer of part
 	 */
-	void renderBlockCurrentBounds( BlockPos pos, IRenderHelper renderer );
+	void renderBlockCurrentBounds( BlockPos pos, ModelGenerator renderer );
 
 	/**
 	 * allow you to enable your part to render during the alpha pass or the standard pass.

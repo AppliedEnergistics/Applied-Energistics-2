@@ -49,7 +49,7 @@ public class BusRenderer implements IItemRenderer
 
 	public static final BusRenderer INSTANCE = new BusRenderer();
 	private static final Map<Integer, IPart> RENDER_PART = new HashMap<Integer, IPart>();
-	public  IRenderHelper renderer;
+	public ModelGenerator renderer;
 
 	@Override
 	public boolean handleRenderType( ItemStack item, ItemRenderType type )

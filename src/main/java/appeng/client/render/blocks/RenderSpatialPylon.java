@@ -28,7 +28,7 @@ import appeng.api.util.AEPartLocation;
 import appeng.block.spatial.BlockSpatialPylon;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.BlockRenderInfo;
-import appeng.client.render.IRenderHelper;
+import appeng.client.render.ModelGenerator;
 import appeng.client.texture.ExtraBlockTextures;
 import appeng.client.texture.IAESprite;
 import appeng.tile.spatial.TileSpatialPylon;
@@ -43,7 +43,7 @@ public class RenderSpatialPylon extends BaseBlockRender<BlockSpatialPylon, TileS
 	}
 
 	@Override
-	public void renderInventory( BlockSpatialPylon block, ItemStack is, IRenderHelper renderer, ItemRenderType type, Object[] obj )
+	public void renderInventory( BlockSpatialPylon block, ItemStack is, ModelGenerator renderer, ItemRenderType type, Object[] obj )
 	{
 		renderer.overrideBlockTexture = ExtraBlockTextures.BlockSpatialPylon_dim.getIcon();
 		super.renderInventory( block, is, renderer, type, obj );
@@ -52,7 +52,7 @@ public class RenderSpatialPylon extends BaseBlockRender<BlockSpatialPylon, TileS
 	}
 
 	@Override
-	public boolean renderInWorld( BlockSpatialPylon imb, IBlockAccess world, BlockPos pos, IRenderHelper renderer )
+	public boolean renderInWorld( BlockSpatialPylon imb, IBlockAccess world, BlockPos pos, ModelGenerator renderer )
 	{
 		renderer.setRenderBounds( 0, 0, 0, 1, 1, 1 );
 
@@ -164,7 +164,7 @@ public class RenderSpatialPylon extends BaseBlockRender<BlockSpatialPylon, TileS
 		return result;
 	}
 
-	private IAESprite getBlockTextureFromSideOutside( BlockSpatialPylon blk, TileSpatialPylon sp, int displayBits, EnumFacing ori, EnumFacing dir, IRenderHelper renderer )
+	private IAESprite getBlockTextureFromSideOutside( BlockSpatialPylon blk, TileSpatialPylon sp, int displayBits, EnumFacing ori, EnumFacing dir, ModelGenerator renderer )
 	{
 
 		if( ori == dir || ori.getOpposite() == dir )
@@ -188,7 +188,7 @@ public class RenderSpatialPylon extends BaseBlockRender<BlockSpatialPylon, TileS
 		return renderer.getIcon( blk.getDefaultState() )[0];// blk.getIcon( 0, 0 );
 	}
 
-	private IAESprite getBlockTextureFromSideInside( BlockSpatialPylon blk, TileSpatialPylon sp, int displayBits, EnumFacing ori, EnumFacing dir, IRenderHelper renderer )
+	private IAESprite getBlockTextureFromSideInside( BlockSpatialPylon blk, TileSpatialPylon sp, int displayBits, EnumFacing ori, EnumFacing dir, ModelGenerator renderer )
 	{
 		boolean good = ( displayBits & TileSpatialPylon.DISPLAY_ENABLED ) == TileSpatialPylon.DISPLAY_ENABLED;
 

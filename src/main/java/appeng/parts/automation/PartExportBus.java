@@ -47,7 +47,7 @@ import appeng.api.parts.IPartRenderHelper;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.client.render.IRenderHelper;
+import appeng.client.render.ModelGenerator;
 import appeng.client.texture.CableBusTextures;
 import appeng.core.AELog;
 import appeng.core.settings.TickRates;
@@ -192,7 +192,7 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderInventory( IPartRenderHelper rh, IRenderHelper renderer )
+	public void renderInventory( IPartRenderHelper rh, ModelGenerator renderer )
 	{
 
 		rh.setTexture( CableBusTextures.PartExportSides.getIcon(), CableBusTextures.PartExportSides.getIcon(), CableBusTextures.PartMonitorBack.getIcon(), renderer.getIcon( is ), CableBusTextures.PartExportSides.getIcon(), CableBusTextures.PartExportSides.getIcon() );
@@ -209,7 +209,7 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderStatic( BlockPos pos, IPartRenderHelper rh, IRenderHelper renderer )
+	public void renderStatic( BlockPos pos, IPartRenderHelper rh, ModelGenerator renderer )
 	{
 		rh.setTexture( CableBusTextures.PartExportSides.getIcon(), CableBusTextures.PartExportSides.getIcon(), CableBusTextures.PartMonitorBack.getIcon(), renderer.getIcon( is ), CableBusTextures.PartExportSides.getIcon(), CableBusTextures.PartExportSides.getIcon() );
 

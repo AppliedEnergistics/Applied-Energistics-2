@@ -35,7 +35,7 @@ import appeng.api.networking.events.MENetworkChannelsChanged;
 import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.parts.IPartRenderHelper;
-import appeng.client.render.IRenderHelper;
+import appeng.client.render.ModelGenerator;
 import appeng.client.texture.CableBusTextures;
 import appeng.me.GridAccessException;
 
@@ -67,7 +67,7 @@ public abstract class PartBasicState extends AEBasePart implements IPowerChannel
 	}
 
 	@SideOnly( Side.CLIENT )
-	public void renderLights( BlockPos pos, IPartRenderHelper rh, IRenderHelper renderer )
+	public void renderLights( BlockPos pos, IPartRenderHelper rh, ModelGenerator renderer )
 	{
 		this.setColors( renderer, ( this.clientFlags & ( this.POWERED_FLAG | this.CHANNEL_FLAG ) ) == ( this.POWERED_FLAG | this.CHANNEL_FLAG ), ( this.clientFlags & this.POWERED_FLAG ) == this.POWERED_FLAG );
 		rh.renderFace( pos, CableBusTextures.PartMonitorSidesStatusLights.getIcon(), EnumFacing.EAST, renderer );
@@ -76,7 +76,7 @@ public abstract class PartBasicState extends AEBasePart implements IPowerChannel
 		rh.renderFace( pos, CableBusTextures.PartMonitorSidesStatusLights.getIcon(), EnumFacing.DOWN, renderer );
 	}
 
-	public void setColors( IRenderHelper renderer, boolean hasChan, boolean hasPower )
+	public void setColors( ModelGenerator renderer, boolean hasChan, boolean hasPower )
 	{
 		if( hasChan )
 		{
@@ -144,7 +144,7 @@ public abstract class PartBasicState extends AEBasePart implements IPowerChannel
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public TextureAtlasSprite getBreakingTexture( IRenderHelper renderer )
+	public TextureAtlasSprite getBreakingTexture( ModelGenerator renderer )
 	{
 		return CableBusTextures.PartTransitionPlaneBack.getIcon().getAtlas();
 	}

@@ -63,7 +63,7 @@ import appeng.api.util.AEColor;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
-import appeng.client.render.IRenderHelper;
+import appeng.client.render.ModelGenerator;
 import appeng.helpers.ICustomNameObject;
 import appeng.helpers.IPriorityHost;
 import appeng.me.helpers.AENetworkProxy;
@@ -145,7 +145,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderInventory( IPartRenderHelper rh, IRenderHelper renderer )
+	public void renderInventory( IPartRenderHelper rh, ModelGenerator renderer )
 	{
 		rh.setBounds( 1, 1, 1, 15, 15, 15 );
 		rh.renderInventoryBox( renderer );
@@ -197,7 +197,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderStatic( BlockPos pos, IPartRenderHelper rh, IRenderHelper renderer )
+	public void renderStatic( BlockPos pos, IPartRenderHelper rh, ModelGenerator renderer )
 	{
 		rh.setBounds( 1, 1, 1, 15, 15, 15 );
 		rh.renderBlock( pos, renderer );
@@ -216,7 +216,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderDynamic( double x, double y, double z, IPartRenderHelper rh, IRenderHelper renderer )
+	public void renderDynamic( double x, double y, double z, IPartRenderHelper rh, ModelGenerator renderer )
 	{
 
 	}
@@ -543,7 +543,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public TextureAtlasSprite getBreakingTexture(IRenderHelper renderer)
+	public TextureAtlasSprite getBreakingTexture(ModelGenerator renderer)
 	{
 		return null;
 	}

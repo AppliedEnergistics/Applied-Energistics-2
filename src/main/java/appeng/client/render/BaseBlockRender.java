@@ -284,7 +284,7 @@ public class BaseBlockRender<B extends AEBaseBlock, T extends AEBaseTile>
 		return this.renderDistance;
 	}
 
-	public void renderInventory( B block, ItemStack item, IRenderHelper renderer, ItemRenderType type, Object[] data )
+	public void renderInventory( B block, ItemStack item, ModelGenerator renderer, ItemRenderType type, Object[] data )
 	{
 		BlockRenderInfo info = block.getRendererInstance();
 		if( info.isValid() )
@@ -330,7 +330,7 @@ public class BaseBlockRender<B extends AEBaseBlock, T extends AEBaseTile>
 		return ORIENTATION_MAP[a][b][c];
 	}
 
-	public void renderInvBlock( EnumSet<AEPartLocation> sides, B block, ItemStack item,  int color, IRenderHelper tess )
+	public void renderInvBlock( EnumSet<AEPartLocation> sides, B block, ItemStack item,  int color, ModelGenerator tess )
 	{
 		int meta = 0;
 		if( block != null && block.hasSubtypes() && item != null )
@@ -396,7 +396,7 @@ public class BaseBlockRender<B extends AEBaseBlock, T extends AEBaseTile>
 		return ExtraBlockTextures.getMissing();
 	}
 
-	public boolean renderInWorld( B block, IBlockAccess world, BlockPos pos, IRenderHelper renderer )
+	public boolean renderInWorld( B block, IBlockAccess world, BlockPos pos, ModelGenerator renderer )
 	{
 		this.preRenderInWorld( block, world, pos, renderer );
 
@@ -406,7 +406,7 @@ public class BaseBlockRender<B extends AEBaseBlock, T extends AEBaseTile>
 		return o;
 	}
 
-	public void preRenderInWorld( B block, IBlockAccess world, BlockPos pos, IRenderHelper renderer )
+	public void preRenderInWorld( B block, IBlockAccess world, BlockPos pos, ModelGenerator renderer )
 	{
 		EnumFacing forward = EnumFacing.SOUTH;
 		EnumFacing up = EnumFacing.UP;
@@ -429,7 +429,7 @@ public class BaseBlockRender<B extends AEBaseBlock, T extends AEBaseTile>
 		}
 	}
 
-	public void postRenderInWorld( IRenderHelper renderer )
+	public void postRenderInWorld( ModelGenerator renderer )
 	{
 		renderer.uvRotateBottom = renderer.uvRotateEast = renderer.uvRotateNorth = renderer.uvRotateSouth = renderer.uvRotateTop = renderer.uvRotateWest = 0;
 	}
@@ -440,12 +440,12 @@ public class BaseBlockRender<B extends AEBaseBlock, T extends AEBaseTile>
 		return block.getOrientable( w, pos );
 	}
 
-	protected void setInvRenderBounds( IRenderHelper renderer, int i, int j, int k, int l, int m, int n )
+	protected void setInvRenderBounds( ModelGenerator renderer, int i, int j, int k, int l, int m, int n )
 	{
 		renderer.setRenderBounds( i / 16.0, j / 16.0, k / 16.0, l / 16.0, m / 16.0, n / 16.0 );
 	}
 
-	protected void renderBlockBounds( IRenderHelper renderer,
+	protected void renderBlockBounds( ModelGenerator renderer,
 
 			double minX, double minY, double minZ,
 
@@ -495,7 +495,7 @@ public class BaseBlockRender<B extends AEBaseBlock, T extends AEBaseTile>
 	}
 
 	@SideOnly( Side.CLIENT )
-	protected void renderCutoutFace( B block, IAESprite ico, BlockPos pos, IRenderHelper tess, EnumFacing orientation, float edgeThickness )
+	protected void renderCutoutFace( B block, IAESprite ico, BlockPos pos, ModelGenerator tess, EnumFacing orientation, float edgeThickness )
 	{
 		double offsetX = 0.0;
 		double offsetY = 0.0;
@@ -586,7 +586,7 @@ public class BaseBlockRender<B extends AEBaseBlock, T extends AEBaseTile>
 	}
 
 	@SideOnly( Side.CLIENT )
-	private void renderFace(  EnumFacing face, IRenderHelper tess, double offsetX, double offsetY, double offsetZ, double ax, double ay, double az, double bx, double by, double bz, double ua, double ub, double va, double vb, IAESprite ico, boolean flip )
+	private void renderFace(  EnumFacing face, ModelGenerator tess, double offsetX, double offsetY, double offsetZ, double ax, double ay, double az, double bx, double by, double bz, double ua, double ub, double va, double vb, IAESprite ico, boolean flip )
 	{
 		if( flip )
 		{
@@ -605,7 +605,7 @@ public class BaseBlockRender<B extends AEBaseBlock, T extends AEBaseTile>
 	}
 
 	@SideOnly( Side.CLIENT )
-	protected void renderFace( BlockPos pos, B block, IAESprite ico, IRenderHelper renderer, EnumFacing orientation )
+	protected void renderFace( BlockPos pos, B block, IAESprite ico, ModelGenerator renderer, EnumFacing orientation )
 	{
 		switch( orientation )
 		{
@@ -632,7 +632,7 @@ public class BaseBlockRender<B extends AEBaseBlock, T extends AEBaseTile>
 		}
 	}
 
-	public void selectFace( IRenderHelper renderer, EnumFacing west, EnumFacing up, EnumFacing forward, int u1, int u2, int v1, int v2 )
+	public void selectFace( ModelGenerator renderer, EnumFacing west, EnumFacing up, EnumFacing forward, int u1, int u2, int v1, int v2 )
 	{
 		v1 = 16 - v1;
 		v2 = 16 - v2;
@@ -670,7 +670,7 @@ public class BaseBlockRender<B extends AEBaseBlock, T extends AEBaseTile>
 		return ( 16.0 - uv ) / 16.0;
 	}
 
-	public void renderTile( B block, T tile, WorldRenderer tess, double x, double y, double z, float f, IRenderHelper renderer )
+	public void renderTile( B block, T tile, WorldRenderer tess, double x, double y, double z, float f, ModelGenerator renderer )
 	{
 		AEPartLocation forward = AEPartLocation.SOUTH;
 		AEPartLocation up = AEPartLocation.UP;

@@ -46,7 +46,7 @@ import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartRenderHelper;
 import appeng.api.parts.PartItemStack;
 import appeng.api.util.AEPartLocation;
-import appeng.client.render.IRenderHelper;
+import appeng.client.render.ModelGenerator;
 import appeng.client.texture.CableBusTextures;
 import appeng.client.texture.IAESprite;
 import appeng.core.AEConfig;
@@ -123,7 +123,7 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderInventory( IPartRenderHelper rh, IRenderHelper renderer )
+	public void renderInventory( IPartRenderHelper rh, ModelGenerator renderer )
 	{
 		rh.setTexture( this.getTypeTexture(renderer) );
 
@@ -140,7 +140,7 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 	 * @param renderer 
 	 * @return If enabled it returns the icon of an AE quartz block, else vanilla quartz block icon
 	 */
-	protected IAESprite getTypeTexture(IRenderHelper renderer )
+	protected IAESprite getTypeTexture(ModelGenerator renderer )
 	{
 		final Optional<Block> maybeBlock = AEApi.instance().definitions().blocks().quartz().maybeBlock();
 		if( maybeBlock.isPresent() )
@@ -155,7 +155,7 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderStatic( BlockPos pos, IPartRenderHelper rh, IRenderHelper renderer )
+	public void renderStatic( BlockPos pos, IPartRenderHelper rh, ModelGenerator renderer )
 	{
 		rh.setTexture( this.getTypeTexture(renderer) );
 
@@ -440,7 +440,7 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public TextureAtlasSprite getBreakingTexture( IRenderHelper renderer )
+	public TextureAtlasSprite getBreakingTexture( ModelGenerator renderer )
 	{
 		return CableBusTextures.BlockP2PTunnel2.getIcon().getAtlas();
 	}

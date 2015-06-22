@@ -54,7 +54,7 @@ import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartRenderHelper;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AEPartLocation;
-import appeng.client.render.IRenderHelper;
+import appeng.client.render.ModelGenerator;
 import appeng.client.texture.CableBusTextures;
 import appeng.client.texture.IAESprite;
 import appeng.core.settings.TickRates;
@@ -137,7 +137,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderInventory( IPartRenderHelper rh, IRenderHelper renderer )
+	public void renderInventory( IPartRenderHelper rh, ModelGenerator renderer )
 	{
 		rh.setTexture( SIDE_ICON, SIDE_ICON, BACK_ICON, renderer.getIcon( is ), SIDE_ICON, SIDE_ICON );
 
@@ -150,12 +150,12 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderStatic( BlockPos pos, IPartRenderHelper rh, IRenderHelper renderer )
+	public void renderStatic( BlockPos pos, IPartRenderHelper rh, ModelGenerator renderer )
 	{
 		this.renderStaticWithIcon( pos, rh, renderer, ACTIVE_ICON );
 	}
 
-	protected void renderStaticWithIcon( BlockPos opos, IPartRenderHelper rh, IRenderHelper renderer, IAESprite activeIcon )
+	protected void renderStaticWithIcon( BlockPos opos, IPartRenderHelper rh, ModelGenerator renderer, IAESprite activeIcon )
 	{
 		int minX = 1;
 		int minY = 1;

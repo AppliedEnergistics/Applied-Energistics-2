@@ -57,7 +57,7 @@ import appeng.api.storage.IStorageMonitorable;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.IConfigManager;
-import appeng.client.render.IRenderHelper;
+import appeng.client.render.ModelGenerator;
 import appeng.client.texture.CableBusTextures;
 import appeng.core.sync.GuiBridge;
 import appeng.helpers.DualityInterface;
@@ -111,7 +111,7 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISto
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderInventory( IPartRenderHelper rh, IRenderHelper renderer )
+	public void renderInventory( IPartRenderHelper rh, ModelGenerator renderer )
 	{
 		rh.setTexture( CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorBack.getIcon(), renderer.getIcon( is ), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon() );
 
@@ -133,7 +133,7 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISto
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderStatic( BlockPos pos, IPartRenderHelper rh, IRenderHelper renderer )
+	public void renderStatic( BlockPos pos, IPartRenderHelper rh, ModelGenerator renderer )
 	{
 		rh.setTexture( CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorBack.getIcon(), renderer.getIcon( is ), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon() );
 
@@ -215,7 +215,7 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISto
 	}
 
 	@Override
-	public TextureAtlasSprite getBreakingTexture(IRenderHelper renderer)
+	public TextureAtlasSprite getBreakingTexture(ModelGenerator renderer)
 	{
 		return renderer.getIcon( is ).getAtlas();
 	}

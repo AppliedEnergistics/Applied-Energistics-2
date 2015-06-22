@@ -33,14 +33,14 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import org.lwjgl.opengl.GL11;
 
-import appeng.client.render.IRenderHelper;
+import appeng.client.render.ModelGenerator;
 
 
 @SideOnly( Side.CLIENT )
 public class RenderTinyTNTPrimed extends Render
 {
 
-	private final IRenderHelper blockRenderer = new IRenderHelper();
+	private final ModelGenerator blockRenderer = new ModelGenerator();
 
     public RenderTinyTNTPrimed(RenderManager p_i46134_1_)
     {

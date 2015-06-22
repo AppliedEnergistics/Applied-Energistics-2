@@ -35,7 +35,7 @@ import appeng.client.texture.MissingIcon;
 import appeng.items.AEBaseItem;
 import appeng.items.parts.ItemMultiPart;
 
-public class IRenderHelper
+public class ModelGenerator
 {
 
 	private static final class CachedModel implements IBakedModel

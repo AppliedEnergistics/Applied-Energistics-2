@@ -45,7 +45,7 @@ import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartRenderHelper;
 import appeng.api.parts.PartItemStack;
 import appeng.api.util.AEPartLocation;
-import appeng.client.render.IRenderHelper;
+import appeng.client.render.ModelGenerator;
 import appeng.client.texture.IAESprite;
 
 
@@ -82,7 +82,7 @@ public class PartCableAnchor implements IPart
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderInventory( IPartRenderHelper instance, IRenderHelper renderer )
+	public void renderInventory( IPartRenderHelper instance, ModelGenerator renderer )
 	{
 		instance.setTexture( renderer.getIcon( is ) );
 		instance.setBounds( 7, 7, 4, 9, 9, 14 );
@@ -92,7 +92,7 @@ public class PartCableAnchor implements IPart
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderStatic( BlockPos pos, IPartRenderHelper rh, IRenderHelper renderer )
+	public void renderStatic( BlockPos pos, IPartRenderHelper rh, ModelGenerator renderer )
 	{
 		IAESprite myIcon =  renderer.getIcon( is );
 		rh.setTexture( myIcon );
@@ -110,13 +110,13 @@ public class PartCableAnchor implements IPart
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderDynamic( double x, double y, double z, IPartRenderHelper rh, IRenderHelper renderer )
+	public void renderDynamic( double x, double y, double z, IPartRenderHelper rh, ModelGenerator renderer )
 	{
 
 	}
 
 	@Override
-	public TextureAtlasSprite getBreakingTexture( IRenderHelper renderer)
+	public TextureAtlasSprite getBreakingTexture( ModelGenerator renderer)
 	{
 		return null;
 	}

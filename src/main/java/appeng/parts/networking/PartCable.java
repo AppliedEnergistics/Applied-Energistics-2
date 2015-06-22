@@ -55,7 +55,7 @@ import appeng.api.util.AEColoredItemDefinition;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.IReadOnlyCollection;
 import appeng.block.AEBaseBlock;
-import appeng.client.render.IRenderHelper;
+import appeng.client.render.ModelGenerator;
 import appeng.client.texture.CableBusTextures;
 import appeng.client.texture.FlippableIcon;
 import appeng.client.texture.IAESprite;
@@ -259,7 +259,7 @@ public class PartCable extends AEBasePart implements IPartCable
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderInventory( IPartRenderHelper rh, IRenderHelper renderer )
+	public void renderInventory( IPartRenderHelper rh, ModelGenerator renderer )
 	{
 		GL11.glTranslated( -0.0, -0.0, 0.3 );
 
@@ -269,12 +269,12 @@ public class PartCable extends AEBasePart implements IPartCable
 		rh.setTexture( null );
 	}
 
-	public IAESprite getTexture( AEColor c,IRenderHelper renderer )
+	public IAESprite getTexture( AEColor c,ModelGenerator renderer )
 	{
 		return this.getGlassTexture( c,renderer );
 	}
 
-	public IAESprite getGlassTexture( AEColor c,IRenderHelper renderer )
+	public IAESprite getGlassTexture( AEColor c,ModelGenerator renderer )
 	{
 		switch( c )
 		{
@@ -327,7 +327,7 @@ public class PartCable extends AEBasePart implements IPartCable
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderStatic( BlockPos pos, IPartRenderHelper rh, IRenderHelper renderer )
+	public void renderStatic( BlockPos pos, IPartRenderHelper rh, ModelGenerator renderer )
 	{
 		boolean useCovered = false;
 		boolean requireDetailed = false;
@@ -598,12 +598,12 @@ public class PartCable extends AEBasePart implements IPartCable
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public TextureAtlasSprite getBreakingTexture( IRenderHelper renderer )
+	public TextureAtlasSprite getBreakingTexture( ModelGenerator renderer )
 	{
 		return this.getTexture( this.getCableColor(), renderer ).getAtlas();
 	}
 
-	public IAESprite getCoveredTexture( AEColor c, IRenderHelper renderer )
+	public IAESprite getCoveredTexture( AEColor c, ModelGenerator renderer )
 	{
 		switch( c )
 		{
@@ -654,7 +654,7 @@ public class PartCable extends AEBasePart implements IPartCable
 	}
 
 	@SideOnly( Side.CLIENT )
-	public void renderGlassConnection( BlockPos pos, IPartRenderHelper rh, IRenderHelper renderer, AEPartLocation of )
+	public void renderGlassConnection( BlockPos pos, IPartRenderHelper rh, ModelGenerator renderer, AEPartLocation of )
 	{
 		TileEntity te = this.tile.getWorld().getTileEntity( pos.offset( of.getFacing() ) );
 		IPartHost partHost = te instanceof IPartHost ? (IPartHost) te : null;
@@ -730,7 +730,7 @@ public class PartCable extends AEBasePart implements IPartCable
 	}
 
 	@SideOnly( Side.CLIENT )
-	public void renderCoveredConnection( BlockPos pos, IPartRenderHelper rh, IRenderHelper renderer, int channels, AEPartLocation of )
+	public void renderCoveredConnection( BlockPos pos, IPartRenderHelper rh, ModelGenerator renderer, int channels, AEPartLocation of )
 	{
 		TileEntity te = this.tile.getWorld().getTileEntity( pos.offset( of.getFacing() ) );
 		IPartHost partHost = te instanceof IPartHost ? (IPartHost) te : null;
@@ -811,7 +811,7 @@ public class PartCable extends AEBasePart implements IPartCable
 	}
 
 	@SideOnly( Side.CLIENT )
-	public void renderSmartConnection( BlockPos pos, IPartRenderHelper rh, IRenderHelper renderer, int channels, AEPartLocation of )
+	public void renderSmartConnection( BlockPos pos, IPartRenderHelper rh, ModelGenerator renderer, int channels, AEPartLocation of )
 	{
 		TileEntity te = this.tile.getWorld().getTileEntity( pos.offset( of.getFacing() ) );
 		IPartHost partHost = te instanceof IPartHost ? (IPartHost) te : null;
@@ -935,7 +935,7 @@ public class PartCable extends AEBasePart implements IPartCable
 		}
 	}
 
-	public IAESprite getSmartTexture( AEColor c, IRenderHelper renderer )
+	public IAESprite getSmartTexture( AEColor c, ModelGenerator renderer )
 	{
 		switch( c )
 		{
@@ -981,7 +981,7 @@ public class PartCable extends AEBasePart implements IPartCable
 	}
 
 	@SideOnly( Side.CLIENT )
-	protected void setSmartConnectionRotations( AEPartLocation of, IRenderHelper renderer )
+	protected void setSmartConnectionRotations( AEPartLocation of, ModelGenerator renderer )
 	{
 		switch( of )
 		{
@@ -1056,7 +1056,7 @@ public class PartCable extends AEBasePart implements IPartCable
 	}
 
 	@SideOnly( Side.CLIENT )
-	protected void renderAllFaces( AEBaseBlock blk, BlockPos pos, IPartRenderHelper rh, IRenderHelper renderer )
+	protected void renderAllFaces( AEBaseBlock blk, BlockPos pos, IPartRenderHelper rh, ModelGenerator renderer )
 	{
 		rh.setBounds( (float) renderer.renderMinX * 16.0f, (float) renderer.renderMinY * 16.0f, (float) renderer.renderMinZ * 16.0f, (float) renderer.renderMaxX * 16.0f, (float) renderer.renderMaxY * 16.0f, (float) renderer.renderMaxZ * 16.0f );
 		rh.renderFace( pos, blk.getRendererInstance().getTexture( AEPartLocation.WEST ), EnumFacing.WEST, renderer );

@@ -43,7 +43,7 @@ import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartRenderHelper;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
-import appeng.client.render.IRenderHelper;
+import appeng.client.render.ModelGenerator;
 import appeng.client.texture.CableBusTextures;
 import appeng.helpers.Reflected;
 import appeng.me.helpers.AENetworkProxy;
@@ -70,7 +70,7 @@ public class PartToggleBus extends PartBasicState
 	}
 
 	@Override
-	public void setColors( IRenderHelper renderer, boolean hasChan, boolean hasPower )
+	public void setColors( ModelGenerator renderer, boolean hasChan, boolean hasPower )
 	{
 		this.hasRedstone = ( this.clientFlags & this.REDSTONE_FLAG ) == this.REDSTONE_FLAG;
 		super.setColors( renderer, hasChan && this.hasRedstone, hasPower && this.hasRedstone );
@@ -88,7 +88,7 @@ public class PartToggleBus extends PartBasicState
 	}
 
 	@Override
-	public TextureAtlasSprite getBreakingTexture( IRenderHelper renderer )
+	public TextureAtlasSprite getBreakingTexture( ModelGenerator renderer )
 	{
 		return renderer.getIcon( is  ).getAtlas();
 	}
@@ -120,7 +120,7 @@ public class PartToggleBus extends PartBasicState
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderInventory( IPartRenderHelper rh, IRenderHelper renderer )
+	public void renderInventory( IPartRenderHelper rh, ModelGenerator renderer )
 	{
 		GL11.glTranslated( -0.2, -0.3, 0.0 );
 
@@ -145,7 +145,7 @@ public class PartToggleBus extends PartBasicState
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderStatic( BlockPos pos, IPartRenderHelper rh, IRenderHelper renderer )
+	public void renderStatic( BlockPos pos, IPartRenderHelper rh, ModelGenerator renderer )
 	{
 		rh.setTexture( renderer.getIcon( is ) );
 

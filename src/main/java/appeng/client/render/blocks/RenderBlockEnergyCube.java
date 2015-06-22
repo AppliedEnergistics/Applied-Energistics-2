@@ -26,7 +26,7 @@ import net.minecraftforge.client.IItemRenderer.ItemRenderType;
 import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.block.networking.BlockEnergyCell;
 import appeng.client.render.BaseBlockRender;
-import appeng.client.render.IRenderHelper;
+import appeng.client.render.ModelGenerator;
 import appeng.tile.networking.TileEnergyCell;
 
 
@@ -39,7 +39,7 @@ public class RenderBlockEnergyCube extends BaseBlockRender<BlockEnergyCell, Tile
 	}
 
 	@Override
-	public void renderInventory( BlockEnergyCell blk, ItemStack is, IRenderHelper renderer, ItemRenderType type, Object[] obj )
+	public void renderInventory( BlockEnergyCell blk, ItemStack is, ModelGenerator renderer, ItemRenderType type, Object[] obj )
 	{
 		IAEItemPowerStorage myItem = (IAEItemPowerStorage) is.getItem();
 		double internalCurrentPower = myItem.getAECurrentPower( is );
@@ -62,7 +62,7 @@ public class RenderBlockEnergyCube extends BaseBlockRender<BlockEnergyCell, Tile
 	}
 
 	@Override
-	public boolean renderInWorld( BlockEnergyCell blk, IBlockAccess world, BlockPos pos, IRenderHelper renderer )
+	public boolean renderInWorld( BlockEnergyCell blk, IBlockAccess world, BlockPos pos, ModelGenerator renderer )
 	{
 		renderer.overrideBlockTexture = renderer.getIcon( world.getBlockState( pos ) )[0];// blk.getIcon( 0, meta );
 		boolean out = renderer.renderStandardBlock( blk, pos );

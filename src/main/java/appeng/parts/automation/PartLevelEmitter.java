@@ -70,7 +70,7 @@ import appeng.api.storage.data.IItemList;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.IConfigManager;
-import appeng.client.render.IRenderHelper;
+import appeng.client.render.ModelGenerator;
 import appeng.client.texture.CableBusTextures;
 import appeng.client.texture.IAESprite;
 import appeng.core.sync.GuiBridge;
@@ -192,7 +192,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 	}
 
 	@Override
-	public TextureAtlasSprite getBreakingTexture( IRenderHelper renderer )
+	public TextureAtlasSprite getBreakingTexture( ModelGenerator renderer )
 	{
 		return renderer.getIcon( is ).getAtlas();
 	}
@@ -412,13 +412,13 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderInventory( IPartRenderHelper rh, IRenderHelper renderer )
+	public void renderInventory( IPartRenderHelper rh, ModelGenerator renderer )
 	{
 		rh.setTexture( renderer.getIcon( is ) );		
 		this.renderTorchAtAngle( 0, -0.5, 0, renderer );
 	}
 
-	public void renderTorchAtAngle( double baseX, double baseY, double baseZ, IRenderHelper renderer )
+	public void renderTorchAtAngle( double baseX, double baseY, double baseZ, ModelGenerator renderer )
 	{
 		boolean isOn = this.isLevelEmitterOn();
 		IAESprite offTexture = renderer.getIcon( is );
@@ -527,7 +527,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 		this.addVertexWithUV(t,renderer, var36, baseY + 1.0D, baseZ - var44, var17, var18 );
 	}
 
-	public void addVertexWithUV( EnumFacing face, IRenderHelper renderer, double x, double y, double z, double u, double v )
+	public void addVertexWithUV( EnumFacing face, ModelGenerator renderer, double x, double y, double z, double u, double v )
 	{
 		x -= this.centerX;
 		y -= this.centerY;
@@ -578,7 +578,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderStatic( BlockPos pos, IPartRenderHelper rh, IRenderHelper renderer )
+	public void renderStatic( BlockPos pos, IPartRenderHelper rh, ModelGenerator renderer )
 	{
 		rh.setTexture( renderer.getIcon( is ) );
 		// rh.setTexture( CableBusTextures.ItemPartLevelEmitterOn.getIcon() );

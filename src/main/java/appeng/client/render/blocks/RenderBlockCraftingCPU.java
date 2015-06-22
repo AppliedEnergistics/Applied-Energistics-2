@@ -36,7 +36,7 @@ import appeng.block.crafting.BlockCraftingUnit;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.BusRenderHelper;
 import appeng.client.render.BusRenderer;
-import appeng.client.render.IRenderHelper;
+import appeng.client.render.ModelGenerator;
 import appeng.client.texture.ExtraBlockTextures;
 import appeng.client.texture.IAESprite;
 import appeng.tile.crafting.TileCraftingMonitorTile;
@@ -57,7 +57,7 @@ public class RenderBlockCraftingCPU<B extends BlockCraftingUnit, T extends TileC
 	}
 
 	@Override
-	public boolean renderInWorld( B blk, IBlockAccess w, BlockPos pos, IRenderHelper renderer )
+	public boolean renderInWorld( B blk, IBlockAccess w, BlockPos pos, ModelGenerator renderer )
 	{
 		IAESprite theIcon = null;
 		boolean formed = false;
@@ -160,7 +160,7 @@ public class RenderBlockCraftingCPU<B extends BlockCraftingUnit, T extends TileC
 		}
 	}
 
-	private void renderCorner( BusRenderHelper i, IRenderHelper renderer, IBlockAccess w, BlockPos pos, EnumFacing up, EnumFacing east, EnumFacing south )
+	private void renderCorner( BusRenderHelper i, ModelGenerator renderer, IBlockAccess w, BlockPos pos, EnumFacing up, EnumFacing east, EnumFacing south )
 	{
 		if( this.isConnected( w, pos, up ) )
 		{
@@ -194,7 +194,7 @@ public class RenderBlockCraftingCPU<B extends BlockCraftingUnit, T extends TileC
 		return def;
 	}
 
-	private void handleSide( B blk, int meta, BlockPos pos, BusRenderHelper i, IRenderHelper renderer, IAESprite color, boolean emitsLight, boolean isMonitor, EnumFacing side, IBlockAccess w )
+	private void handleSide( B blk, int meta, BlockPos pos, BusRenderHelper i, ModelGenerator renderer, IAESprite color, boolean emitsLight, boolean isMonitor, EnumFacing side, IBlockAccess w )
 	{
 		if( this.isConnected( w, pos, side ) )
 		{

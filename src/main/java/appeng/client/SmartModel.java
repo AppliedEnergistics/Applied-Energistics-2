@@ -23,7 +23,7 @@ import appeng.api.util.AEPartLocation;
 import appeng.block.AEBaseBlock;
 import appeng.block.AEBaseTileBlock;
 import appeng.client.render.BlockRenderInfo;
-import appeng.client.render.IRenderHelper;
+import appeng.client.render.ModelGenerator;
 import appeng.client.texture.MissingIcon;
 
 // net.minecraft.client.renderer.tileentity.TileEntityItemStackRenderer
@@ -97,7 +97,7 @@ public class SmartModel implements IBakedModel, ISmartBlockModel,ISmartItemModel
 	public IBakedModel handleItemState(
 			ItemStack stack )
 	{
-		IRenderHelper helper = new IRenderHelper();
+		ModelGenerator helper = new ModelGenerator();
 		Block blk = Block.getBlockFromItem( stack.getItem() );
 		helper.setRenderBoundsFromBlock( blk );
 		AERenderer.rendererInstance.renderInventory( blk instanceof AEBaseBlock ? (AEBaseBlock) blk : null, stack, helper, ItemRenderType.INVENTORY, null );
@@ -109,7 +109,7 @@ public class SmartModel implements IBakedModel, ISmartBlockModel,ISmartItemModel
 	public IBakedModel handleBlockState(
 			IBlockState state )
 	{
-		IRenderHelper helper = new IRenderHelper();
+		ModelGenerator helper = new ModelGenerator();
 		Block blk = state.getBlock();
 		BlockPos pos = ( (IExtendedBlockState)state ).getValue( AEBaseTileBlock.AE_BLOCK_POS );
 		IBlockAccess world = ( (IExtendedBlockState)state ).getValue( AEBaseTileBlock.AE_BLOCK_ACCESS);

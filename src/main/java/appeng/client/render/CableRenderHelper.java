@@ -50,7 +50,7 @@ public class CableRenderHelper
 	public void renderStatic( CableBusContainer cableBusContainer, IFacadeContainer iFacadeContainer )
 	{
 		TileEntity te = cableBusContainer.getTile();
-		IRenderHelper renderer = BusRenderer.INSTANCE.renderer;
+		ModelGenerator renderer = BusRenderer.INSTANCE.renderer;
 
 		if( renderer.overrideBlockTexture != null )
 		{

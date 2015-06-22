@@ -26,7 +26,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import appeng.api.parts.IPartRenderHelper;
-import appeng.client.render.IRenderHelper;
+import appeng.client.render.ModelGenerator;
 import appeng.client.texture.CableBusTextures;
 import appeng.client.texture.IAESprite;
 
@@ -52,7 +52,7 @@ public abstract class AbstractPartDisplay extends AbstractPartReporting
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderInventory( IPartRenderHelper rh, IRenderHelper renderer )
+	public void renderInventory( IPartRenderHelper rh, ModelGenerator renderer )
 	{
 		rh.setBounds( 2, 2, 14, 14, 14, 16 );
 
@@ -77,7 +77,7 @@ public abstract class AbstractPartDisplay extends AbstractPartReporting
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderStatic( BlockPos pos, IPartRenderHelper rh, IRenderHelper renderer )
+	public void renderStatic( BlockPos pos, IPartRenderHelper rh, ModelGenerator renderer )
 	{
 		final IAESprite sideTexture = CableBusTextures.PartMonitorSides.getIcon();
 		final IAESprite backTexture = CableBusTextures.PartMonitorBack.getIcon();

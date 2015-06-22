@@ -24,7 +24,7 @@ import net.minecraft.world.IBlockAccess;
 import appeng.block.misc.BlockInterface;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.BlockRenderInfo;
-import appeng.client.render.IRenderHelper;
+import appeng.client.render.ModelGenerator;
 import appeng.client.texture.ExtraBlockTextures;
 import appeng.client.texture.IAESprite;
 import appeng.tile.misc.TileInterface;
@@ -39,7 +39,7 @@ public class RenderBlockInterface extends BaseBlockRender<BlockInterface, TileIn
 	}
 
 	@Override
-	public boolean renderInWorld( BlockInterface block, IBlockAccess world, BlockPos pos, IRenderHelper renderer )
+	public boolean renderInWorld( BlockInterface block, IBlockAccess world, BlockPos pos, ModelGenerator renderer )
 	{
 		TileInterface ti = block.getTileEntity( world, pos );
 		BlockRenderInfo info = block.getRendererInstance();

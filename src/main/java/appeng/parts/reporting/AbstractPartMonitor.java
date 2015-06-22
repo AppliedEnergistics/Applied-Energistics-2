@@ -53,7 +53,7 @@ import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.api.util.AEPartLocation;
 import appeng.client.ClientHelper;
-import appeng.client.render.IRenderHelper;
+import appeng.client.render.ModelGenerator;
 import appeng.core.AELog;
 import appeng.core.localization.PlayerMessages;
 import appeng.helpers.Reflected;
@@ -257,7 +257,7 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderDynamic( double x, double y, double z, IPartRenderHelper rh, IRenderHelper renderer )
+	public void renderDynamic( double x, double y, double z, IPartRenderHelper rh, ModelGenerator renderer )
 	{
 		if( this.dspList == null )
 		{

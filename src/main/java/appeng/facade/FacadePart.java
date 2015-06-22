@@ -46,7 +46,7 @@ import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartRenderHelper;
 import appeng.api.util.AEPartLocation;
 import appeng.client.render.BusRenderHelper;
-import appeng.client.render.IRenderHelper;
+import appeng.client.render.ModelGenerator;
 import appeng.client.render.RenderBlocksWorkaround;
 import appeng.client.texture.IAESprite;
 import appeng.core.AELog;
@@ -102,7 +102,7 @@ public class FacadePart implements IFacadePart, IBoxProvider
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderStatic( BlockPos pos, IPartRenderHelper instance2, IRenderHelper renderer, IFacadeContainer fc, AxisAlignedBB busBounds, boolean renderStilt )
+	public void renderStatic( BlockPos pos, IPartRenderHelper instance2, ModelGenerator renderer, IFacadeContainer fc, AxisAlignedBB busBounds, boolean renderStilt )
 	{
 		if( this.facade != null )
 		{
@@ -343,7 +343,7 @@ public class FacadePart implements IFacadePart, IBoxProvider
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderInventory( IPartRenderHelper instance, IRenderHelper renderer )
+	public void renderInventory( IPartRenderHelper instance, ModelGenerator renderer )
 	{
 		if( this.facade != null )
 		{
@@ -553,7 +553,7 @@ public class FacadePart implements IFacadePart, IBoxProvider
 	}
 
 	@SideOnly( Side.CLIENT )
-	private void renderSegmentBlockCurrentBounds( IPartRenderHelper instance, BlockPos pos, IRenderHelper renderer, double minX, double minY, double minZ, double maxX, double maxY, double maxZ )
+	private void renderSegmentBlockCurrentBounds( IPartRenderHelper instance, BlockPos pos, ModelGenerator renderer, double minX, double minY, double minZ, double maxX, double maxY, double maxZ )
 	{
 		double oldMinX = renderer.renderMinX;
 		double oldMinY = renderer.renderMinY;

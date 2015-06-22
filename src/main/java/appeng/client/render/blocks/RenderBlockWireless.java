@@ -31,7 +31,7 @@ import appeng.api.util.AEPartLocation;
 import appeng.block.networking.BlockWireless;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.BlockRenderInfo;
-import appeng.client.render.IRenderHelper;
+import appeng.client.render.ModelGenerator;
 import appeng.client.texture.CableBusTextures;
 import appeng.client.texture.ExtraBlockTextures;
 import appeng.client.texture.IAESprite;
@@ -54,7 +54,7 @@ public class RenderBlockWireless extends BaseBlockRender<BlockWireless, TileWire
 	}
 
 	@Override
-	public void renderInventory( BlockWireless blk, ItemStack is, IRenderHelper renderer, ItemRenderType type, Object[] obj )
+	public void renderInventory( BlockWireless blk, ItemStack is, ModelGenerator renderer, ItemRenderType type, Object[] obj )
 	{
 		this.blk = blk;
 		center = new BlockPos(0,0,0);
@@ -101,7 +101,7 @@ public class RenderBlockWireless extends BaseBlockRender<BlockWireless, TileWire
 	}
 
 	@Override
-	public boolean renderInWorld( BlockWireless blk, IBlockAccess world, BlockPos pos, IRenderHelper renderer )
+	public boolean renderInWorld( BlockWireless blk, IBlockAccess world, BlockPos pos, ModelGenerator renderer )
 	{
 		TileWireless tw = blk.getTileEntity( world, pos );
 		this.blk = blk;
@@ -208,7 +208,7 @@ public class RenderBlockWireless extends BaseBlockRender<BlockWireless, TileWire
 		return true;
 	}
 
-	private void renderTorchAtAngle( IRenderHelper renderer, EnumFacing x, EnumFacing y, EnumFacing z )
+	private void renderTorchAtAngle( ModelGenerator renderer, EnumFacing x, EnumFacing y, EnumFacing z )
 	{
 		IAESprite r = ( this.hasChan ? CableBusTextures.BlockWirelessOn.getIcon() : renderer.getIcon( blk.getDefaultState() )[0] );
 		IAESprite sides = new OffsetIcon( r, 0.0f, -2.0f );

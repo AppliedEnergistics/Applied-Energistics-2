@@ -38,7 +38,7 @@ public final class WorldRender implements ISimpleBlockRenderingHandler
 
 	public static final WorldRender INSTANCE = new WorldRender();
 	public final HashMap<AEBaseBlock, BaseBlockRender> blockRenders = new HashMap<AEBaseBlock, BaseBlockRender>();
-	private final IRenderHelper renderer = new IRenderHelper();
+	private final ModelGenerator renderer = new ModelGenerator();
 	boolean hasError = false;
 
 	private WorldRender()
@@ -51,13 +51,13 @@ public final class WorldRender implements ISimpleBlockRenderingHandler
 	}
 
 	@Override
-	public void renderInventoryBlock( Block block, int metadata, int modelID, IRenderHelper renderer )
+	public void renderInventoryBlock( Block block, int metadata, int modelID, ModelGenerator renderer )
 	{
 		// wtf is this for?
 	}
 
 	@Override
-	public boolean renderWorldBlock( IBlockAccess world, BlockPos pos, Block block, int modelId, IRenderHelper renderer )
+	public boolean renderWorldBlock( IBlockAccess world, BlockPos pos, Block block, int modelId, ModelGenerator renderer )
 	{
 		AEBaseBlock blk = (AEBaseBlock) block;
 		renderer.setRenderBoundsFromBlock( block );

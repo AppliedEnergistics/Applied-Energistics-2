@@ -42,7 +42,7 @@ import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartRenderHelper;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
-import appeng.client.render.IRenderHelper;
+import appeng.client.render.ModelGenerator;
 import appeng.client.texture.IAESprite;
 import appeng.me.GridAccessException;
 import appeng.me.helpers.AENetworkProxy;
@@ -77,7 +77,7 @@ public class PartQuartzFiber extends AEBasePart implements IEnergyGridProvider
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderInventory( IPartRenderHelper rh, IRenderHelper renderer )
+	public void renderInventory( IPartRenderHelper rh, ModelGenerator renderer )
 	{
 		GL11.glTranslated( -0.2, -0.3, 0.0 );
 
@@ -89,7 +89,7 @@ public class PartQuartzFiber extends AEBasePart implements IEnergyGridProvider
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderStatic( BlockPos pos, IPartRenderHelper rh, IRenderHelper renderer )
+	public void renderStatic( BlockPos pos, IPartRenderHelper rh, ModelGenerator renderer )
 	{
 		IAESprite myIcon = renderer.getIcon( is );
 		rh.setTexture( myIcon );

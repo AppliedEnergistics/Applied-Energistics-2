@@ -33,7 +33,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import appeng.api.util.AEPartLocation;
-import appeng.client.render.IRenderHelper;
+import appeng.client.render.ModelGenerator;
 
 
 /**
@@ -68,7 +68,7 @@ public interface IFacadePart
 	 * @param renderStilt if to render stilt
 	 */
 	@SideOnly( Side.CLIENT )
-	void renderStatic( BlockPos pos, IPartRenderHelper instance, IRenderHelper renderer, IFacadeContainer fc, AxisAlignedBB busBounds, boolean renderStilt );
+	void renderStatic( BlockPos pos, IPartRenderHelper instance, ModelGenerator renderer, IFacadeContainer fc, AxisAlignedBB busBounds, boolean renderStilt );
 
 	/**
 	 * render the part in inventory.
@@ -77,7 +77,7 @@ public interface IFacadePart
 	 * @param renderer renderer
 	 */
 	@SideOnly( Side.CLIENT )
-	void renderInventory( IPartRenderHelper instance, IRenderHelper renderer );
+	void renderInventory( IPartRenderHelper instance, ModelGenerator renderer );
 
 	/**
 	 * @return side the facade is in

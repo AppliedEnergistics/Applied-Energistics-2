@@ -28,7 +28,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.IItemRenderer.ItemRenderType;
 import appeng.block.misc.BlockPaint;
 import appeng.client.render.BaseBlockRender;
-import appeng.client.render.IRenderHelper;
+import appeng.client.render.ModelGenerator;
 import appeng.client.texture.ExtraBlockTextures;
 import appeng.client.texture.IAESprite;
 import appeng.helpers.Splotch;
@@ -44,13 +44,13 @@ public class RenderBlockPaint extends BaseBlockRender<BlockPaint, TilePaint>
 	}
 
 	@Override
-	public void renderInventory( BlockPaint block, ItemStack is, IRenderHelper renderer, ItemRenderType type, Object[] obj )
+	public void renderInventory( BlockPaint block, ItemStack is, ModelGenerator renderer, ItemRenderType type, Object[] obj )
 	{
 
 	}
 
 	@Override
-	public boolean renderInWorld( BlockPaint imb, IBlockAccess world, BlockPos pos, IRenderHelper tess )
+	public boolean renderInWorld( BlockPaint imb, IBlockAccess world, BlockPos pos, ModelGenerator tess )
 	{
 		TilePaint tp = imb.getTileEntity( world, pos );
 		boolean out = false;

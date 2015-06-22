@@ -35,7 +35,7 @@ import org.lwjgl.opengl.GL12;
 import appeng.block.storage.BlockSkyChest;
 import appeng.block.storage.BlockSkyChest.SkyChestType;
 import appeng.client.render.BaseBlockRender;
-import appeng.client.render.IRenderHelper;
+import appeng.client.render.ModelGenerator;
 import appeng.tile.storage.TileSkyChest;
 
 
@@ -54,7 +54,7 @@ public class RenderBlockSkyChest extends BaseBlockRender<BlockSkyChest, TileSkyC
 	}
 
 	@Override
-	public void renderInventory( BlockSkyChest blk, ItemStack is, IRenderHelper renderer, ItemRenderType type, Object[] obj )
+	public void renderInventory( BlockSkyChest blk, ItemStack is, ModelGenerator renderer, ItemRenderType type, Object[] obj )
 	{
 		//GL11.glEnable( GL12.GL_RESCALE_NORMAL );
 		//GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
@@ -78,13 +78,13 @@ public class RenderBlockSkyChest extends BaseBlockRender<BlockSkyChest, TileSkyC
 	}
 
 	@Override
-	public boolean renderInWorld( BlockSkyChest blk, IBlockAccess world, BlockPos pos, IRenderHelper renderer )
+	public boolean renderInWorld( BlockSkyChest blk, IBlockAccess world, BlockPos pos, ModelGenerator renderer )
 	{
 		return true;
 	}
 
 	@Override
-	public void renderTile( BlockSkyChest block, TileSkyChest tile, WorldRenderer tess, double x, double y, double z, float partialTick, IRenderHelper renderer )
+	public void renderTile( BlockSkyChest block, TileSkyChest tile, WorldRenderer tess, double x, double y, double z, float partialTick, ModelGenerator renderer )
 	{
 		if( !( tile instanceof TileSkyChest ) )
 		{

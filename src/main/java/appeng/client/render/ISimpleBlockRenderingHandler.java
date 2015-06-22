@@ -11,13 +11,13 @@ public interface ISimpleBlockRenderingHandler
 			Block block,
 			int metadata,
 			int modelID,
-			IRenderHelper renderer );
+			ModelGenerator renderer );
 
 	boolean renderWorldBlock(
 			IBlockAccess world,
 			BlockPos pos,
 			Block block,
 			int modelId,
-			IRenderHelper renderer );
+			ModelGenerator renderer );
 
 }

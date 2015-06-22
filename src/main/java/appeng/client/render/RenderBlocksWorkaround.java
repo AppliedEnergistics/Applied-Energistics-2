@@ -27,7 +27,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 
 @SideOnly( Side.CLIENT )
-public class RenderBlocksWorkaround extends IRenderHelper
+public class RenderBlocksWorkaround extends ModelGenerator
 {
 
 	public boolean flipTexture;

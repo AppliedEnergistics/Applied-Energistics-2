@@ -69,7 +69,7 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.IConfigManager;
-import appeng.client.render.IRenderHelper;
+import appeng.client.render.ModelGenerator;
 import appeng.client.texture.CableBusTextures;
 import appeng.core.AEConfig;
 import appeng.core.sync.GuiBridge;
@@ -265,7 +265,7 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderInventory( IPartRenderHelper rh, IRenderHelper renderer )
+	public void renderInventory( IPartRenderHelper rh, ModelGenerator renderer )
 	{
 		rh.setTexture( CableBusTextures.PartPlaneSides.getIcon(), CableBusTextures.PartPlaneSides.getIcon(), CableBusTextures.PartTransitionPlaneBack.getIcon(), renderer.getIcon( is ), CableBusTextures.PartPlaneSides.getIcon(), CableBusTextures.PartPlaneSides.getIcon() );
 
@@ -278,7 +278,7 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderStatic( BlockPos opos, IPartRenderHelper rh, IRenderHelper renderer )
+	public void renderStatic( BlockPos opos, IPartRenderHelper rh, ModelGenerator renderer )
 	{
 		int minX = 1;
 		int minY = 1;

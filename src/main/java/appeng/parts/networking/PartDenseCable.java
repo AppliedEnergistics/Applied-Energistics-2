@@ -45,7 +45,7 @@ import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.api.util.AEPartLocation;
 import appeng.block.AEBaseBlock;
-import appeng.client.render.IRenderHelper;
+import appeng.client.render.ModelGenerator;
 import appeng.client.texture.CableBusTextures;
 import appeng.client.texture.FlippableIcon;
 import appeng.client.texture.IAESprite;
@@ -156,7 +156,7 @@ public class PartDenseCable extends PartCable
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderInventory( IPartRenderHelper rh, IRenderHelper renderer )
+	public void renderInventory( IPartRenderHelper rh, ModelGenerator renderer )
 	{
 		GL11.glTranslated( -0.0, -0.0, 0.3 );
 		rh.setBounds( 4.0f, 4.0f, 2.0f, 12.0f, 12.0f, 14.0f );
@@ -203,7 +203,7 @@ public class PartDenseCable extends PartCable
 	}
 
 	@Override
-	public IAESprite getTexture( AEColor c, IRenderHelper renderer )
+	public IAESprite getTexture( AEColor c, ModelGenerator renderer )
 	{
 		if( c == AEColor.Transparent )
 		{
@@ -215,7 +215,7 @@ public class PartDenseCable extends PartCable
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderStatic( BlockPos pos, IPartRenderHelper rh, IRenderHelper renderer )
+	public void renderStatic( BlockPos pos, IPartRenderHelper rh, ModelGenerator renderer )
 	{
 		rh.setTexture( this.getTexture( this.getCableColor(), renderer ) );
 
@@ -359,7 +359,7 @@ public class PartDenseCable extends PartCable
 	}
 
 	@SideOnly( Side.CLIENT )
-	public void renderDenseConnection( BlockPos pos, IPartRenderHelper rh, IRenderHelper renderer, int channels, AEPartLocation of )
+	public void renderDenseConnection( BlockPos pos, IPartRenderHelper rh, ModelGenerator renderer, int channels, AEPartLocation of )
 	{
 		TileEntity te = this.tile.getWorld().getTileEntity( pos.offset( of.getFacing() ) );
 		IPartHost partHost = te instanceof IPartHost ? (IPartHost) te : null;
@@ -465,7 +465,7 @@ public class PartDenseCable extends PartCable
 		return false;
 	}
 
-	private IAESprite getDenseTexture( AEColor c, IRenderHelper renderer )
+	private IAESprite getDenseTexture( AEColor c, ModelGenerator renderer )
 	{
 		switch( c )
 		{

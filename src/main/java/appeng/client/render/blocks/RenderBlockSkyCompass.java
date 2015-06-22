@@ -32,7 +32,7 @@ import org.lwjgl.opengl.GL11;
 
 import appeng.block.misc.BlockSkyCompass;
 import appeng.client.render.BaseBlockRender;
-import appeng.client.render.IRenderHelper;
+import appeng.client.render.ModelGenerator;
 import appeng.client.render.model.ModelCompass;
 import appeng.hooks.CompassManager;
 import appeng.hooks.CompassResult;
@@ -51,7 +51,7 @@ public class RenderBlockSkyCompass extends BaseBlockRender<BlockSkyCompass, Tile
 	}
 
 	@Override
-	public void renderInventory( BlockSkyCompass blk, ItemStack is, IRenderHelper renderer, ItemRenderType type, Object[] obj )
+	public void renderInventory( BlockSkyCompass blk, ItemStack is, ModelGenerator renderer, ItemRenderType type, Object[] obj )
 	{
 		/*
 		if( type == ItemRenderType.INVENTORY )
@@ -173,13 +173,13 @@ public class RenderBlockSkyCompass extends BaseBlockRender<BlockSkyCompass, Tile
 	}
 
 	@Override
-	public boolean renderInWorld( BlockSkyCompass blk, IBlockAccess world, BlockPos pos, IRenderHelper renderer )
+	public boolean renderInWorld( BlockSkyCompass blk, IBlockAccess world, BlockPos pos, ModelGenerator renderer )
 	{
 		return true;
 	}
 
 	@Override
-	public void renderTile( BlockSkyCompass block, TileSkyCompass tile, WorldRenderer tess, double x, double y, double z, float partialTick, IRenderHelper renderer )
+	public void renderTile( BlockSkyCompass block, TileSkyCompass tile, WorldRenderer tess, double x, double y, double z, float partialTick, ModelGenerator renderer )
 	{
 		if( !( tile instanceof TileSkyCompass ) )
 		{

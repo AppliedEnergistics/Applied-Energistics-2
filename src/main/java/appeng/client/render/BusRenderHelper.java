@@ -34,7 +34,6 @@ import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartRenderHelper;
 import appeng.api.util.AEPartLocation;
 import appeng.block.AEBaseBlock;
-import appeng.block.networking.BlockCableBus;
 import appeng.client.texture.IAESprite;
 import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
@@ -359,7 +358,7 @@ public final class BusRenderHelper implements IPartRenderHelper
 	}
 
 	@Override
-	public void renderInventoryBox( IRenderHelper renderer )
+	public void renderInventoryBox( ModelGenerator renderer )
 	{
 		renderer.setRenderBounds( this.minX / 16.0, this.minY / 16.0, this.minZ / 16.0, this.maxX / 16.0, this.maxY / 16.0, this.maxZ / 16.0 );
 
@@ -370,7 +369,7 @@ public final class BusRenderHelper implements IPartRenderHelper
 	}
 
 	@Override
-	public void renderInventoryFace( IAESprite icon, EnumFacing face, IRenderHelper renderer )
+	public void renderInventoryFace( IAESprite icon, EnumFacing face, ModelGenerator renderer )
 	{
 		renderer.setRenderBounds( this.minX / 16.0, this.minY / 16.0, this.minZ / 16.0, this.maxX / 16.0, this.maxY / 16.0, this.maxZ / 16.0 );
 		this.setTexture( icon );
@@ -382,7 +381,7 @@ public final class BusRenderHelper implements IPartRenderHelper
 	}
 
 	@Override
-	public void renderBlock( BlockPos pos, IRenderHelper renderer )
+	public void renderBlock( BlockPos pos, ModelGenerator renderer )
 	{
 		if( !this.renderThis() )
 		{
@@ -423,7 +422,7 @@ public final class BusRenderHelper implements IPartRenderHelper
 		throw new MissingDefinition( "Tried to access the multi part block without it being defined." );
 	}
 
-	public void prepareBounds( IRenderHelper renderer )
+	public void prepareBounds( ModelGenerator renderer )
 	{
 		this.bbr.renderBlockBounds( renderer, this.minX, this.minY, this.minZ, this.maxX, this.maxY, this.maxZ, this.ax, this.ay, this.az );
 	}
@@ -435,7 +434,7 @@ public final class BusRenderHelper implements IPartRenderHelper
 	}
 
 	@Override
-	public void renderBlockCurrentBounds( BlockPos pos, IRenderHelper renderer )
+	public void renderBlockCurrentBounds( BlockPos pos, ModelGenerator renderer )
 	{
 		if( !this.renderThis() )
 		{
@@ -449,7 +448,7 @@ public final class BusRenderHelper implements IPartRenderHelper
 	}
 
 	@Override
-	public void renderFaceCutout( BlockPos pos, IAESprite ico, EnumFacing face, float edgeThickness, IRenderHelper renderer )
+	public void renderFaceCutout( BlockPos pos, IAESprite ico, EnumFacing face, float edgeThickness, ModelGenerator renderer )
 	{
 		if( !this.renderThis() )
 		{
@@ -487,7 +486,7 @@ public final class BusRenderHelper implements IPartRenderHelper
 	}
 
 	@Override
-	public void renderFace( BlockPos pos, IAESprite ico, EnumFacing face, IRenderHelper renderer )
+	public void renderFace( BlockPos pos, IAESprite ico, EnumFacing face, ModelGenerator renderer )
 	{
 		if( !this.renderThis() )
 		{

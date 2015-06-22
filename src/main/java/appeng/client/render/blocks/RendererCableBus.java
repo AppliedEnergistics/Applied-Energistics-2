@@ -38,7 +38,7 @@ import appeng.client.ClientHelper;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.BusRenderHelper;
 import appeng.client.render.BusRenderer;
-import appeng.client.render.IRenderHelper;
+import appeng.client.render.ModelGenerator;
 import appeng.facade.IFacadeItem;
 import appeng.tile.AEBaseTile;
 import appeng.tile.networking.TileCableBus;
@@ -54,7 +54,7 @@ public class RendererCableBus extends BaseBlockRender<BlockCableBus, TileCableBu
 	}
 
 	@Override
-	public void renderInventory( BlockCableBus blk, ItemStack item, IRenderHelper renderer, ItemRenderType type, Object[] obj )
+	public void renderInventory( BlockCableBus blk, ItemStack item, ModelGenerator renderer, ItemRenderType type, Object[] obj )
 	{
 		renderer.setColorOpaque_F( 1, 1, 1 );
 		renderer.setBrightness( 14 << 20 | 14 << 4 );
@@ -118,7 +118,7 @@ public class RendererCableBus extends BaseBlockRender<BlockCableBus, TileCableBu
 	private static final Map<Integer, IPart> RENDER_PART = new HashMap<Integer, IPart>();
 	
 	@Override
-	public boolean renderInWorld( BlockCableBus block, IBlockAccess world, BlockPos pos, IRenderHelper renderer )
+	public boolean renderInWorld( BlockCableBus block, IBlockAccess world, BlockPos pos, ModelGenerator renderer )
 	{
 		AEBaseTile t = block.getTileEntity( world, pos );
 
@@ -136,7 +136,7 @@ public class RendererCableBus extends BaseBlockRender<BlockCableBus, TileCableBu
 	}
 
 	@Override
-	public void renderTile( BlockCableBus block, TileCableBus t, WorldRenderer tess, double x, double y, double z, float f, IRenderHelper renderer )
+	public void renderTile( BlockCableBus block, TileCableBus t, WorldRenderer tess, double x, double y, double z, float f, ModelGenerator renderer )
 	{
 		if( t instanceof TileCableBus )
 		{

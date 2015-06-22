@@ -42,7 +42,7 @@ import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.api.util.AEPartLocation;
 import appeng.block.AEBaseBlock;
-import appeng.client.render.IRenderHelper;
+import appeng.client.render.ModelGenerator;
 import appeng.client.texture.FlippableIcon;
 import appeng.client.texture.IAESprite;
 import appeng.client.texture.OffsetIcon;
@@ -124,7 +124,7 @@ public class PartCableSmart extends PartCable
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderInventory( IPartRenderHelper rh, IRenderHelper renderer )
+	public void renderInventory( IPartRenderHelper rh, ModelGenerator renderer )
 	{
 		GL11.glTranslated( -0.0, -0.0, 0.3 );
 
@@ -173,14 +173,14 @@ public class PartCableSmart extends PartCable
 	}
 
 	@Override
-	public IAESprite getTexture( AEColor c, IRenderHelper renderer )
+	public IAESprite getTexture( AEColor c, ModelGenerator renderer )
 	{
 		return this.getSmartTexture( c, renderer );
 	}
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderStatic( BlockPos pos, IPartRenderHelper rh, IRenderHelper renderer )
+	public void renderStatic( BlockPos pos, IPartRenderHelper rh, ModelGenerator renderer )
 	{
 		rh.setTexture( this.getTexture( this.getCableColor(), renderer ) );
 

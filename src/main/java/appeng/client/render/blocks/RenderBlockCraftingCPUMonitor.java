@@ -33,7 +33,7 @@ import org.lwjgl.opengl.GL12;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.block.crafting.BlockCraftingMonitor;
 import appeng.client.ClientHelper;
-import appeng.client.render.IRenderHelper;
+import appeng.client.render.ModelGenerator;
 import appeng.core.AELog;
 import appeng.tile.crafting.TileCraftingMonitorTile;
 import appeng.util.IWideReadableNumberConverter;
@@ -57,7 +57,7 @@ public class RenderBlockCraftingCPUMonitor extends RenderBlockCraftingCPU<BlockC
 	}
 
 	@Override
-	public void renderTile( BlockCraftingMonitor block, TileCraftingMonitorTile tile, WorldRenderer tess, double x, double y, double z, float f, IRenderHelper renderer )
+	public void renderTile( BlockCraftingMonitor block, TileCraftingMonitorTile tile, WorldRenderer tess, double x, double y, double z, float f, ModelGenerator renderer )
 	{
 		if( tile instanceof TileCraftingMonitorTile )
 		{

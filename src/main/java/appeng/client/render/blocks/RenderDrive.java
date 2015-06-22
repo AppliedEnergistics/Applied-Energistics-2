@@ -29,7 +29,7 @@ import net.minecraftforge.client.IItemRenderer.ItemRenderType;
 import appeng.api.util.AEPartLocation;
 import appeng.block.storage.BlockDrive;
 import appeng.client.render.BaseBlockRender;
-import appeng.client.render.IRenderHelper;
+import appeng.client.render.ModelGenerator;
 import appeng.client.texture.ExtraBlockTextures;
 import appeng.client.texture.IAESprite;
 import appeng.tile.storage.TileDrive;
@@ -45,7 +45,7 @@ public class RenderDrive extends BaseBlockRender<BlockDrive, TileDrive>
 	}
 
 	@Override
-	public void renderInventory( BlockDrive block, ItemStack is, IRenderHelper renderer, ItemRenderType type, Object[] obj )
+	public void renderInventory( BlockDrive block, ItemStack is, ModelGenerator renderer, ItemRenderType type, Object[] obj )
 	{
 		renderer.overrideBlockTexture = ExtraBlockTextures.White.getIcon();
 		this.renderInvBlock( EnumSet.of( AEPartLocation.SOUTH ), block, is, 0x000000, renderer );
@@ -55,7 +55,7 @@ public class RenderDrive extends BaseBlockRender<BlockDrive, TileDrive>
 	}
 
 	@Override
-	public boolean renderInWorld( BlockDrive imb, IBlockAccess world, BlockPos pos, IRenderHelper renderer )
+	public boolean renderInWorld( BlockDrive imb, IBlockAccess world, BlockPos pos, ModelGenerator renderer )
 	{
 		TileDrive sp = imb.getTileEntity( world, pos );
 		renderer.setRenderBounds( 0, 0, 0, 1, 1, 1 );

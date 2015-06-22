@@ -38,7 +38,7 @@ import appeng.api.util.AEPartLocation;
 import appeng.api.util.IOrientable;
 import appeng.block.misc.BlockCharger;
 import appeng.client.render.BaseBlockRender;
-import appeng.client.render.IRenderHelper;
+import appeng.client.render.ModelGenerator;
 import appeng.client.texture.ExtraBlockTextures;
 import appeng.core.AELog;
 import appeng.tile.misc.TileCharger;
@@ -54,7 +54,7 @@ public class RenderBlockCharger extends BaseBlockRender<BlockCharger, TileCharge
 	}
 
 	@Override
-	public void renderInventory( BlockCharger blk, ItemStack is, IRenderHelper renderer, ItemRenderType type, Object[] obj )
+	public void renderInventory( BlockCharger blk, ItemStack is, ModelGenerator renderer, ItemRenderType type, Object[] obj )
 	{
 		renderer.renderAllFaces = true;
 		this.setInvRenderBounds( renderer, 6, 1, 0, 10, 15, 2 );
@@ -83,7 +83,7 @@ public class RenderBlockCharger extends BaseBlockRender<BlockCharger, TileCharge
 	}
 
 	@Override
-	public boolean renderInWorld( BlockCharger block, IBlockAccess world, BlockPos pos, IRenderHelper renderer )
+	public boolean renderInWorld( BlockCharger block, IBlockAccess world, BlockPos pos, ModelGenerator renderer )
 	{
 		this.preRenderInWorld( block, world, pos, renderer );
 
@@ -125,7 +125,7 @@ public class RenderBlockCharger extends BaseBlockRender<BlockCharger, TileCharge
 	}
 
 	@Override
-	public void renderTile( BlockCharger block, TileCharger tile, WorldRenderer tess, double x, double y, double z, float f, IRenderHelper renderer )
+	public void renderTile( BlockCharger block, TileCharger tile, WorldRenderer tess, double x, double y, double z, float f, ModelGenerator renderer )
 	{
 		ItemStack sis = null;
 		if( tile instanceof IInventory )

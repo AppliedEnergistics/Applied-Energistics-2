@@ -21,7 +21,6 @@ package appeng.client.render.blocks;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.texture.TextureMap;
@@ -35,7 +34,7 @@ import org.lwjgl.opengl.GL11;
 
 import appeng.block.grindstone.BlockCrank;
 import appeng.client.render.BaseBlockRender;
-import appeng.client.render.IRenderHelper;
+import appeng.client.render.ModelGenerator;
 import appeng.tile.grindstone.TileCrank;
 
 
@@ -48,7 +47,7 @@ public class RenderBlockCrank extends BaseBlockRender<BlockCrank, TileCrank>
 	}
 
 	@Override
-	public void renderInventory( BlockCrank blk, ItemStack is, IRenderHelper renderer, ItemRenderType type, Object[] obj )
+	public void renderInventory( BlockCrank blk, ItemStack is, ModelGenerator renderer, ItemRenderType type, Object[] obj )
 	{
 		renderer.renderAllFaces = true;
 
@@ -62,13 +61,13 @@ public class RenderBlockCrank extends BaseBlockRender<BlockCrank, TileCrank>
 	}
 
 	@Override
-	public boolean renderInWorld( BlockCrank imb, IBlockAccess world, BlockPos pos, IRenderHelper renderer )
+	public boolean renderInWorld( BlockCrank imb, IBlockAccess world, BlockPos pos, ModelGenerator renderer )
 	{
 		return true;
 	}
 
 	@Override
-	public void renderTile( BlockCrank blk, TileCrank tile, WorldRenderer tess, double x, double y, double z, float f, IRenderHelper renderBlocks )
+	public void renderTile( BlockCrank blk, TileCrank tile, WorldRenderer tess, double x, double y, double z, float f, ModelGenerator renderBlocks )
 	{
 		TileCrank tc = tile;
 		if( tc.getUp() == null || tc.getUp() == null )

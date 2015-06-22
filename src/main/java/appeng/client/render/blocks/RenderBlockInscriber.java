@@ -42,7 +42,7 @@ import appeng.api.util.IOrientable;
 import appeng.block.AEBaseBlock;
 import appeng.block.misc.BlockInscriber;
 import appeng.client.render.BaseBlockRender;
-import appeng.client.render.IRenderHelper;
+import appeng.client.render.ModelGenerator;
 import appeng.client.texture.ExtraBlockTextures;
 import appeng.client.texture.IAESprite;
 import appeng.core.AELog;
@@ -66,7 +66,7 @@ public class RenderBlockInscriber extends BaseBlockRender<BlockInscriber, TileIn
 	}
 
 	@Override
-	public void renderInventory( BlockInscriber blk, ItemStack is, IRenderHelper renderer, ItemRenderType type, Object[] obj )
+	public void renderInventory( BlockInscriber blk, ItemStack is, ModelGenerator renderer, ItemRenderType type, Object[] obj )
 	{
 		renderer.renderAllFaces = true;
 		this.setInvRenderBounds( renderer, 6, 1, 0, 10, 15, 2 );
@@ -105,7 +105,7 @@ public class RenderBlockInscriber extends BaseBlockRender<BlockInscriber, TileIn
 	}
 
 	@Override
-	public boolean renderInWorld( BlockInscriber block, IBlockAccess world, BlockPos pos, IRenderHelper renderer )
+	public boolean renderInWorld( BlockInscriber block, IBlockAccess world, BlockPos pos, ModelGenerator renderer )
 	{
 		this.preRenderInWorld( block, world, pos, renderer );
 
@@ -150,7 +150,7 @@ public class RenderBlockInscriber extends BaseBlockRender<BlockInscriber, TileIn
 	}
 
 	@Override
-	public void renderTile( BlockInscriber block, TileInscriber tile, WorldRenderer tess, double x, double y, double z, float f, IRenderHelper renderer )
+	public void renderTile( BlockInscriber block, TileInscriber tile, WorldRenderer tess, double x, double y, double z, float f, ModelGenerator renderer )
 	{
 		TileInscriber inv = tile;
 
@@ -264,7 +264,7 @@ public class RenderBlockInscriber extends BaseBlockRender<BlockInscriber, TileIn
 		}
 	}
 
-	public void renderItem( ItemStack sis, float o, AEBaseBlock block, AEBaseTile tile, WorldRenderer tess, double x, double y, double z, float f, IRenderHelper renderer )
+	public void renderItem( ItemStack sis, float o, AEBaseBlock block, AEBaseTile tile, WorldRenderer tess, double x, double y, double z, float f, ModelGenerator renderer )
 	{
 		if( sis != null )
 		{

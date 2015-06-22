@@ -37,7 +37,7 @@ import appeng.tile.AEBaseTile;
 public class TESRWrapper extends TileEntitySpecialRenderer
 {
 
-	public final IRenderHelper renderBlocksInstance = new IRenderHelper();
+	public final ModelGenerator renderBlocksInstance = new ModelGenerator();
 
 	private final BaseBlockRender blkRender;
 	private final double maxDistance;

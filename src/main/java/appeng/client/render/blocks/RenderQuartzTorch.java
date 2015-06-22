@@ -31,7 +31,7 @@ import appeng.api.util.IOrientable;
 import appeng.api.util.IOrientableBlock;
 import appeng.block.AEBaseBlock;
 import appeng.client.render.BaseBlockRender;
-import appeng.client.render.IRenderHelper;
+import appeng.client.render.ModelGenerator;
 import appeng.tile.AEBaseTile;
 
 
@@ -44,7 +44,7 @@ public class RenderQuartzTorch extends BaseBlockRender<AEBaseBlock, AEBaseTile>
 	}
 
 	@Override
-	public void renderInventory( AEBaseBlock blk, ItemStack is, IRenderHelper renderer, ItemRenderType type, Object[] obj )
+	public void renderInventory( AEBaseBlock blk, ItemStack is, ModelGenerator renderer, ItemRenderType type, Object[] obj )
 	{
 		float Point2 = 6.0f / 16.0f;
 		float Point3 = 7.0f / 16.0f;
@@ -93,7 +93,7 @@ public class RenderQuartzTorch extends BaseBlockRender<AEBaseBlock, AEBaseTile>
 	}
 
 	@Override
-	public boolean renderInWorld( AEBaseBlock blk, IBlockAccess world, BlockPos pos, IRenderHelper renderer )
+	public boolean renderInWorld( AEBaseBlock blk, IBlockAccess world, BlockPos pos, ModelGenerator renderer )
 	{
 		IOrientable te = ( (IOrientableBlock) blk ).getOrientable( world, pos );
 

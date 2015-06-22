@@ -44,7 +44,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import appeng.api.networking.IGridNode;
 import appeng.api.util.AEPartLocation;
-import appeng.client.render.IRenderHelper;
+import appeng.client.render.ModelGenerator;
 
 
 public interface IPart extends IBoxProvider
@@ -73,7 +73,7 @@ public interface IPart extends IBoxProvider
 	 * @param renderer renderer
 	 */
 	@SideOnly( Side.CLIENT )
-	void renderInventory( IPartRenderHelper rh, IRenderHelper renderer );
+	void renderInventory( IPartRenderHelper rh, ModelGenerator renderer );
 
 	/**
 	 * render world renderer ( preferred )
@@ -87,7 +87,7 @@ public interface IPart extends IBoxProvider
 	 * @param renderer renderer
 	 */
 	@SideOnly( Side.CLIENT )
-	void renderStatic( BlockPos pos, IPartRenderHelper rh, IRenderHelper renderer );
+	void renderStatic( BlockPos pos, IPartRenderHelper rh, ModelGenerator renderer );
 
 	/**
 	 * render TESR.
@@ -101,14 +101,14 @@ public interface IPart extends IBoxProvider
 	 * @param renderer renderer
 	 */
 	@SideOnly( Side.CLIENT )
-	void renderDynamic( double x, double y, double z, IPartRenderHelper rh, IRenderHelper renderer );
+	void renderDynamic( double x, double y, double z, IPartRenderHelper rh, ModelGenerator renderer );
 
 	/**
 	 * @return the Block sheet icon used when rendering the breaking particles, return null to use the ItemStack
 	 * texture.
 	 */
 	@SideOnly( Side.CLIENT )
-	TextureAtlasSprite getBreakingTexture(IRenderHelper renderer);
+	TextureAtlasSprite getBreakingTexture(ModelGenerator renderer);
 
 	/**
 	 * return true only if your part require dynamic rendering, must be consistent.
