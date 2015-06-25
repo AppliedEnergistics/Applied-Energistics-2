@@ -161,5 +161,7 @@ final class StorageData implements IWorldGridStorageData, IOnWorldStartable, IOn
 				this.config.get( GRID_STORAGE_CATEGORY, String.valueOf( thisStorage.getID() ), value ).set( value );
 			}
 		}
+
+		this.config.save();
 	}
 }
