@@ -52,7 +52,7 @@ tile.appliedenergistics2.BlockMolecularAssembler.name=분자 조합기
 
 // Stairs
 tile.appliedenergistics2.ChiseledQuartzStairBlock.name=Chiseled Certus Quartz Stairs
-tile.appliedenergistics2.FluixStairBlock.name=Fluix Stairs
+tile.appliedenergistics2.stair.fluix.name=Fluix Stairs
 tile.appliedenergistics2.QuartzPillarStairBlock.name=Certus Quartz Pillar Stairs
 tile.appliedenergistics2.QuartzStairBlock.name=세투스 석영 계단
 tile.appliedenergistics2.SkyStoneBlockStairBlock.name=스카이 스톤 블록 계단

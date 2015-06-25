@@ -53,7 +53,7 @@ tile.appliedenergistics2.BlockMolecularAssembler.name=Assembleur moléculaire
 
 // Stairs
 tile.appliedenergistics2.ChiseledQuartzStairBlock.name=Escaliers de Quartz Certus ciselé
-tile.appliedenergistics2.FluixStairBlock.name=Escaliers de Fluix
+tile.appliedenergistics2.stair.fluix.name=Escaliers de Fluix
 tile.appliedenergistics2.QuartzPillarStairBlock.name=Escaliers de pilier de Quartz Certus
 tile.appliedenergistics2.QuartzStairBlock.name=Escaliers de Quartz Certus
 tile.appliedenergistics2.SkyStoneBlockStairBlock.name=Escaliers de bloc de pierre de ciel

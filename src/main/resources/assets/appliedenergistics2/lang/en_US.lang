@@ -52,10 +52,10 @@ tile.appliedenergistics2.BlockCraftingUnit.name=Crafting Unit
 tile.appliedenergistics2.BlockMolecularAssembler.name=Molecular Assembler
 
 // Stairs
-tile.appliedenergistics2.ChiseledQuartzStairBlock.name=Chiseled Certus Quartz Stairs
-tile.appliedenergistics2.FluixStairBlock.name=Fluix Stairs
-tile.appliedenergistics2.QuartzPillarStairBlock.name=Certus Quartz Pillar Stairs
-tile.appliedenergistics2.QuartzStairBlock.name=Certus Quartz Stairs
+tile.appliedenergistics2.stair.fluix.name=Fluix Stairs
+tile.appliedenergistics2.stair.quartz.certus.name=Certus Quartz Stairs
+tile.appliedenergistics2.stair.quartz.certus.chiseled.name=Chiseled Certus Quartz Stairs
+tile.appliedenergistics2.stair.quartz.certus.pillar.name=Certus Quartz Pillar Stairs
 tile.appliedenergistics2.SkyStoneBlockStairBlock.name=Sky Stone Block Stairs
 tile.appliedenergistics2.SkyStoneBrickStairBlock.name=Sky Stone Brick Stairs
 tile.appliedenergistics2.SkyStoneSmallBrickStairBlock.name=Sky Stone Small Brick Stairs

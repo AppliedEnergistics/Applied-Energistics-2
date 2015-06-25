@@ -53,7 +53,7 @@ tile.appliedenergistics2.BlockMolecularAssembler.name=分子装配室
 
 // 楼梯
 tile.appliedenergistics2.ChiseledQuartzStairBlock.name=錾制赛特斯石英楼梯
-tile.appliedenergistics2.FluixStairBlock.name=福鲁伊克斯楼梯
+tile.appliedenergistics2.stair.fluix.name=福鲁伊克斯楼梯
 tile.appliedenergistics2.QuartzPillarStairBlock.name=竖纹赛特斯石英楼梯
 tile.appliedenergistics2.QuartzStairBlock.name=赛特斯石英楼梯
 tile.appliedenergistics2.SkyStoneBlockStairBlock.name=陨石块楼梯

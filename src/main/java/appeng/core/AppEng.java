@@ -58,6 +58,10 @@ public final class AppEng
 {
 	public static final String MOD_ID = "appliedenergistics2";
 	public static final String MOD_NAME = "Applied Energistics 2";
+
+	public static final String MODID = "appliedenergistics2";
+	public static final String ASSETS = "appliedenergistics2:";
+
 	public static final String MOD_DEPENDENCIES =
 			// a few mods, AE should load after, probably.
 			// required-after:AppliedEnergistics2API|all;
@@ -69,6 +73,17 @@ public final class AppEng
 					+ net.minecraftforge.common.ForgeVersion.minorVersion + '.' // minorVersion
 					+ net.minecraftforge.common.ForgeVersion.revisionVersion + '.' // revisionVersion
 					+ net.minecraftforge.common.ForgeVersion.buildVersion + ",)"; // buildVersion
+
+//	public static final String nameCustomWall = "custom_wall";
+//	public static final BlockWall blockCustomWall = new BlockWall( Blocks.cobblestone);
+//	public static final ItemMultiTexture itemCustomWall = new ItemMultiTexture(blockCustomWall, blockCustomWall, new Function<ItemStack, String>()
+//	{
+//		@Override
+//		public String apply(ItemStack stack)
+//		{
+//			return BlockWall.EnumType.byMetadata(stack.getMetadata()).getUnlocalizedName();
+//		}
+//	});
 
 	@Nonnull
 	private static final AppEng INSTANCE = new AppEng();
@@ -138,8 +153,44 @@ public final class AppEng
 			this.startService( "AE2 VersionChecker", versionCheckerThread );
 		}
 
+//		blockCustomWall.setUnlocalizedName(MODID + ".customWall");
+//		GameRegistry.registerBlock( blockCustomWall, null, nameCustomWall );
+//		GameRegistry.registerItem(itemCustomWall, nameCustomWall);
+//		GameData.getBlockItemMap().put( blockCustomWall, itemCustomWall );
+//
+//		if (event.getSide() == Side.CLIENT)
+//			preInitClient(event);
+
 		AELog.info( "Pre Initialization ( ended after " + watch.elapsed( TimeUnit.MILLISECONDS ) + "ms )" );
 	}
+
+//	@SideOnly(Side.CLIENT)
+//	public void preInitClient(FMLPreInitializationEvent event)
+//	{
+//		ModelLoader.setCustomStateMapper( blockCustomWall, new IStateMapper()
+//		{
+//			StateMap stateMap = new StateMap.Builder().setProperty( BlockWall.VARIANT ).setBuilderSuffix( "_wall" ).build();
+//
+//			@Override
+//			public Map<IBlockState, ModelResourceLocation> putStateModelLocations( Block block )
+//			{
+//				Map<IBlockState, ModelResourceLocation> map = (Map<IBlockState, ModelResourceLocation>) stateMap.putStateModelLocations( block );
+//				Map<IBlockState, ModelResourceLocation> newMap = Maps.newHashMap();
+//
+//				for( Map.Entry<IBlockState, ModelResourceLocation> e : map.entrySet() )
+//				{
+//					ModelResourceLocation loc = e.getValue();
+//					newMap.put( e.getKey(), new ModelResourceLocation( ASSETS + loc.getResourcePath(), loc.getVariant() ) );
+//				}
+//
+//				return newMap;
+//			}
+//		} );
+//		Item customWallItem = Item.getItemFromBlock(blockCustomWall);
+//		ModelLoader.setCustomModelResourceLocation(customWallItem, 0, new ModelResourceLocation(ASSETS + "cobblestone_wall", "inventory"));
+//		ModelLoader.setCustomModelResourceLocation(customWallItem, 1, new ModelResourceLocation(ASSETS + "mossy_cobblestone_wall", "inventory"));
+//		ModelBakery.addVariantName( customWallItem, ASSETS + "cobblestone_wall", ASSETS + "mossy_cobblestone_wall" );
+//	}
 
 	private void startService( String serviceName, Thread thread )
 	{

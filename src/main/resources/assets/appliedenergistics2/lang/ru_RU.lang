@@ -53,7 +53,7 @@ tile.appliedenergistics2.BlockMolecularAssembler.name=Молекулярный �
 
 // Stairs
 tile.appliedenergistics2.ChiseledQuartzStairBlock.name=Ступеньки из резного истинного кварца
-tile.appliedenergistics2.FluixStairBlock.name=Изменчивые ступеньки
+tile.appliedenergistics2.stair.fluix.name=Изменчивые ступеньки
 tile.appliedenergistics2.QuartzPillarStairBlock.name=Ступеньки из колонны истинного кварца
 tile.appliedenergistics2.QuartzStairBlock.name=Ступеньки из истинного кварца
 tile.appliedenergistics2.SkyStoneBlockStairBlock.name=Ступеньки из блока небесного камня

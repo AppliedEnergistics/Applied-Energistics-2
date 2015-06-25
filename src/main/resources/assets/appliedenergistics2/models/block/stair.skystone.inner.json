@@ -1,0 +1,6 @@
+{
+  "parent": "block/inner_stairs",
+  "textures": {
+    "all": "appliedenergistics2:blocks/BlockSkystone.Stone"
+  }
+}

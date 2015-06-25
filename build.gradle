@@ -94,8 +94,9 @@ sourceSets {
             srcDirs += 'src/main/java/'
 
             // excludes integration due to not being available upon port
-            exclude 'appeng/integration/**'
+            exclude 'appeng/integration/modules/**'
             exclude 'appeng/fmp/**'
+            exclude 'appeng/parts/layers/**'
         }
 
         resources {
@@ -103,6 +104,9 @@ sourceSets {
             include "assets/appliedenergistics2/recipes/*.recipe",
                     "assets/appliedenergistics2/recipes/README.html",
                     "assets/appliedenergistics2/lang/*.lang",
+                    "assets/appliedenergistics2/blockstates/*.json",
+                    "assets/appliedenergistics2/models/block/*.json",
+                    "assets/appliedenergistics2/models/item/*.json",
                     "assets/appliedenergistics2/textures/blocks/*",
                     "assets/appliedenergistics2/textures/guis/*",
                     "assets/appliedenergistics2/textures/models/*",

@@ -3,8 +3,12 @@ package appeng.services.version.github;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.apache.commons.io.IOUtils;
 
@@ -13,9 +17,6 @@ import appeng.services.version.Channel;
 import appeng.services.version.Version;
 import appeng.services.version.VersionCheckerConfig;
 import appeng.services.version.VersionParser;
-
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 
 public final class ReleaseFetcher
@@ -49,12 +50,16 @@ public final class ReleaseFetcher
 
 			return latestFitRelease;
 		}
-		catch( Exception e )
+		catch( MalformedURLException e )
 		{
 			AELog.error( e );
-
-			return EXCEPTIONAL_RELEASE;
 		}
+		catch( IOException e )
+		{
+			AELog.warning( "Could not connect to %s.", GITHUB_RELEASES_URL );
+		}
+
+		return EXCEPTIONAL_RELEASE;
 	}
 
 	private String getRawReleases( URL url ) throws IOException

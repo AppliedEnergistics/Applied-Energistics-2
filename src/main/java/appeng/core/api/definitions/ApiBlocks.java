@@ -212,14 +212,14 @@ public final class ApiBlocks implements IBlocks
 		this.lightDetector = constructor.registerTileDefinition( new BlockLightDetector() );
 		this.paint = constructor.registerTileDefinition( new BlockPaint() );
 
-		this.skyStoneStair = makeStairs( constructor,skyStone_stone, "skystone_stone" ) ;
-		this.skyStoneBlockStair = makeStairs( constructor,skyStone_block, "skystone_block" ) ;
-		this.skyStoneBrickStair = makeStairs( constructor,skyStone_brick, "skystone_brick" ) ;
-		this.skyStoneSmallBrickStair = makeStairs( constructor, skyStone_smallbrick, "skystone_smallbrick" ) ;
+		this.skyStoneStair = makeStairs( constructor,skyStone_stone, "skystone" ) ;
+		this.skyStoneBlockStair = makeStairs( constructor,skyStone_block, "skystone.block" ) ;
+		this.skyStoneBrickStair = makeStairs( constructor,skyStone_brick, "skystone.brick" ) ;
+		this.skyStoneSmallBrickStair = makeStairs( constructor, skyStone_smallbrick, "skystone.brick.small" ) ;
 		this.fluixStair = makeStairs( constructor, fluix, "fluix" ) ;
-		this.quartzStair = makeStairs( constructor,quartz, "quartz" ) ;
-		this.chiseledQuartzStair = makeStairs( constructor, quartzChiseled, "quartz_chiseled" ) ;
-		this.quartzPillarStair = makeStairs( constructor, quartzPillar, "quartz_pillar" ) ;
+		this.quartzStair = makeStairs( constructor,quartz, "quartz.certus" ) ;
+		this.chiseledQuartzStair = makeStairs( constructor, quartzChiseled, "quartz.certus.chiseled" ) ;
+		this.quartzPillarStair = makeStairs( constructor, quartzPillar, "quartz.certus.pillar" ) ;
 
 		// TODO Re-Add Slabs...
 		/*
@@ -239,8 +239,7 @@ public final class ApiBlocks implements IBlocks
 		this.cubeGenerator = constructor.registerBlockDefinition( new BlockCubeGenerator() );
 	}
 
-	private IBlockDefinition makeStairs(DefinitionConstructor constructor,
-			IBlockDefinition block, String name )
+	private IBlockDefinition makeStairs(DefinitionConstructor constructor, IBlockDefinition block, String name )
 	{
 		if ( block.maybeBlock().isPresent() )
 			return constructor.registerBlockDefinition(  new BlockStairCommon( block.maybeBlock().get(), name ));

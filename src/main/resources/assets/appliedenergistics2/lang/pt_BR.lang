@@ -53,7 +53,7 @@ tile.appliedenergistics2.BlockMolecularAssembler.name=Montador Molecular
 
 // Escadas
 tile.appliedenergistics2.ChiseledQuartzStairBlock.name=Escadas de Quartzo Certus Talhadas
-tile.appliedenergistics2.FluixStairBlock.name=Escadas de Fluix 
+tile.appliedenergistics2.stair.fluix.name=Escadas de Fluix
 tile.appliedenergistics2.QuartzPillarStairBlock.name=Escadas de Pilar de Quartzo Certus 
 tile.appliedenergistics2.QuartzStairBlock.name=Escadas de Quartzo Certus 
 tile.appliedenergistics2.SkyStoneBlockStairBlock.name=Escadas de Bloco de Pedra do Céu 
