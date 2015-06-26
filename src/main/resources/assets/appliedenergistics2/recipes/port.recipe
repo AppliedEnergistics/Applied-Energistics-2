@@ -140,7 +140,7 @@ shaped=
 
 shaped=
 	mc:iron_ingot cable mc:iron_ingot,
-	ae2:BlockQuartzGlass  ae2:BlockFluix ae2:BlockQuartzGlass,
+	ae2:BlockQuartzGlass  ae2:fluix ae2:BlockQuartzGlass,
 	mc:iron_ingot cable mc:iron_ingot
 	-> ae2:BlockQuartzGrowthAccelerator
 

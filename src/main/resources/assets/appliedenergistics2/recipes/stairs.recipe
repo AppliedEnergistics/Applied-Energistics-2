@@ -5,9 +5,9 @@ shaped=
     -> 4 ae2:ChiseledQuartzStairBlock
 
 shaped=
-    ae2:BlockFluix _              _,
-    ae2:BlockFluix ae2:BlockFluix _,
-    ae2:BlockFluix ae2:BlockFluix ae2:BlockFluix
+    ae2:fluix _         _,
+    ae2:fluix ae2:fluix _,
+    ae2:fluix ae2:fluix ae2:fluix
     -> 4 ae2:FluixStairBlock
 
 shaped=

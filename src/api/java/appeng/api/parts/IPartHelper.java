@@ -33,10 +33,8 @@ import net.minecraft.world.World;
 
 public interface IPartHelper
 {
-
 	/**
-	 * Register a new layer with the part layer system, this allows you to write
-	 * an in between between tile entities and parts.
+	 * Register a new layer with the part layer system, this allows you to write an in between between tile entities and parts.
 	 *
 	 * AE By Default includes,
 	 *
@@ -54,11 +52,9 @@ public interface IPartHelper
 	 *
 	 * 7. IPipeConnection BC Pipe Connections
 	 *
-	 * As long as a valid layer is registered for a interface you can simply
-	 * implement that interface on a part get implement it.
+	 * As long as a valid layer is registered for a interface you can simply implement that interface on a part get implement it.
 	 *
-	 * @return true on success, false on failure, usually a error will be logged
-	 * as well.
+	 * @return true on success, false on failure, usually a error will be logged as well.
 	 */
 	boolean registerNewLayer( String string, String layerInterface );
 
@@ -70,11 +66,11 @@ public interface IPartHelper
 	/**
 	 * use in use item, to try and place a IBusItem
 	 *
-	 * @param is     ItemStack of an item which implements {@link IPartItem}
-	 * @param BlockPos	pos of part
-	 * @param side   side which the part should be on
+	 * @param is ItemStack of an item which implements {@link IPartItem}
+	 * @param pos pos of part
+	 * @param side side which the part should be on
 	 * @param player player placing part
-	 * @param world  part in world
+	 * @param world part in world
 	 *
 	 * @return true if placing was successful
 	 */

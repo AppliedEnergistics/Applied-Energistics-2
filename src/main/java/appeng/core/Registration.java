@@ -68,8 +68,6 @@ import appeng.core.localization.GuiText;
 import appeng.core.localization.PlayerMessages;
 import appeng.core.stats.PlayerStatsRegistration;
 import appeng.hooks.TickHandler;
-import appeng.integration.IntegrationRegistry;
-import appeng.integration.IntegrationType;
 import appeng.items.materials.ItemMultiMaterial;
 import appeng.me.cache.CraftingGridCache;
 import appeng.me.cache.EnergyGridCache;
@@ -229,25 +227,26 @@ public final class Registration
 		final Runnable recipeLoader = new RecipeLoader( this.recipeHandler );
 		recipeLoader.run();
 
-		partHelper.registerNewLayer( "appeng.parts.layers.LayerISidedInventory", "net.minecraft.inventory.ISidedInventory" );
-		partHelper.registerNewLayer( "appeng.parts.layers.LayerIFluidHandler", "net.minecraftforge.fluids.IFluidHandler" );
-		partHelper.registerNewLayer( "appeng.parts.layers.LayerITileStorageMonitorable", "appeng.api.implementations.tiles.ITileStorageMonitorable" );
+		// TODO readd layers
+//		partHelper.registerNewLayer( "appeng.parts.layers.LayerISidedInventory", "net.minecraft.inventory.ISidedInventory" );
+//		partHelper.registerNewLayer( "appeng.parts.layers.LayerIFluidHandler", "net.minecraftforge.fluids.IFluidHandler" );
+//		partHelper.registerNewLayer( "appeng.parts.layers.LayerITileStorageMonitorable", "appeng.api.implementations.tiles.ITileStorageMonitorable" );
 
-		if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.IC2 ) )
-		{
-			partHelper.registerNewLayer( "appeng.parts.layers.LayerIEnergySink", "ic2.api.energy.tile.IEnergySink" );
-			partHelper.registerNewLayer( "appeng.parts.layers.LayerIEnergySource", "ic2.api.energy.tile.IEnergySource" );
-		}
-
-		if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.RF ) )
-		{
-			partHelper.registerNewLayer( "appeng.parts.layers.LayerIEnergyHandler", "cofh.api.energy.IEnergyReceiver" );
-		}
-
-		if ( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.OpenComputers ) )
-		{
-			partHelper.registerNewLayer( "appeng.parts.layers.LayerSidedEnvironment", "li.cil.oc.api.network.SidedEnvironment" );
-		}
+//		if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.IC2 ) )
+//		{
+//			partHelper.registerNewLayer( "appeng.parts.layers.LayerIEnergySink", "ic2.api.energy.tile.IEnergySink" );
+//			partHelper.registerNewLayer( "appeng.parts.layers.LayerIEnergySource", "ic2.api.energy.tile.IEnergySource" );
+//		}
+//
+//		if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.RF ) )
+//		{
+//			partHelper.registerNewLayer( "appeng.parts.layers.LayerIEnergyHandler", "cofh.api.energy.IEnergyReceiver" );
+//		}
+//
+//		if ( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.OpenComputers ) )
+//		{
+//			partHelper.registerNewLayer( "appeng.parts.layers.LayerSidedEnvironment", "li.cil.oc.api.network.SidedEnvironment" );
+//		}
 
 		FMLCommonHandler.instance().bus().register( TickHandler.INSTANCE );
 		MinecraftForge.EVENT_BUS.register( TickHandler.INSTANCE );

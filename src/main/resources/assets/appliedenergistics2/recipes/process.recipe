@@ -92,7 +92,7 @@ shaped=
 	shaped=
 		oredictionary:crystalFluix oredictionary:crystalFluix,
 		oredictionary:crystalFluix oredictionary:crystalFluix
-		-> ae2:BlockFluix
+		-> ae2:fluix
 	
 
 # Pure Storage Blocks
@@ -112,7 +112,7 @@ shaped=
 		ae2:ItemMaterial.PurifiedFluixCrystal ae2:ItemMaterial.PurifiedFluixCrystal ae2:ItemMaterial.PurifiedFluixCrystal,
 		ae2:ItemMaterial.PurifiedFluixCrystal _                                      ae2:ItemMaterial.PurifiedFluixCrystal,
 		ae2:ItemMaterial.PurifiedFluixCrystal ae2:ItemMaterial.PurifiedFluixCrystal ae2:ItemMaterial.PurifiedFluixCrystal
-		-> ae2:BlockFluix
+		-> ae2:fluix
 
 
 
@@ -142,7 +142,7 @@ shaped=
 		-> 4 ae2:ItemMaterial.CertusQuartzCrystal
 
 	shapeless=
-		ae2:BlockFluix
+		ae2:fluix
 		-> 4 ae2:ItemMaterial.FluixCrystal
 
 # Quantum Pearl
