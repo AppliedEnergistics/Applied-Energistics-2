@@ -31,6 +31,9 @@ import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableSet;
+
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
@@ -47,6 +50,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
+
 import appeng.api.config.Upgrades;
 import appeng.api.implementations.IUpgradeableHost;
 import appeng.api.implementations.items.IItemGroup;
@@ -60,13 +64,9 @@ import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
 import appeng.core.features.IStackSrc;
 import appeng.core.features.MaterialStackSrc;
-import appeng.core.features.NameResolver;
 import appeng.items.AEBaseItem;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
-
-import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableSet;
 
 
 public final class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, IUpgradeModule
@@ -75,11 +75,9 @@ public final class ItemMultiMaterial extends AEBaseItem implements IStorageCompo
 	public static ItemMultiMaterial instance;
 
 	private final Map<Integer, MaterialType> dmgToMaterial = new HashMap<Integer, MaterialType>();
-	private final NameResolver nameResolver;
 
 	public ItemMultiMaterial()
 	{
-		this.nameResolver = new NameResolver( this.getClass() );
 		this.setFeature( EnumSet.of( AEFeature.Core ) );
 		this.setHasSubtypes( true );
 		instance = this;
@@ -140,6 +138,19 @@ public final class ItemMultiMaterial extends AEBaseItem implements IStorageCompo
 		}
 	}
 
+	@Override
+	@SideOnly( Side.CLIENT )
+	public void registerIcons( ClientHelper proxy, String name )
+	{
+		for( MaterialType type : MaterialType.values() )
+		{
+			if( type != MaterialType.InvalidType )
+			{
+				proxy.setIcon( this, type.damageValue, name + "." + type.name() );
+			}
+		}
+	}
+
 	public MaterialType getTypeByStack( ItemStack is )
 	{
 		if( this.dmgToMaterial.containsKey( is.getItemDamage() ) )
@@ -176,7 +187,7 @@ public final class ItemMultiMaterial extends AEBaseItem implements IStorageCompo
 		Preconditions.checkState( !mat.isRegistered(), "Cannot create the same material twice." );
 
 		boolean enabled = true;
-		
+
 		for( AEFeature f : mat.getFeature() )
 		{
 			enabled = enabled && AEConfig.instance.isFeatureEnabled( f );
@@ -190,7 +201,6 @@ public final class ItemMultiMaterial extends AEBaseItem implements IStorageCompo
 			mat.markReady();
 			int newMaterialNum = mat.damageValue;
 
-			
 			if( this.dmgToMaterial.get( newMaterialNum ) == null )
 			{
 				this.dmgToMaterial.put( newMaterialNum, mat );
@@ -265,35 +275,6 @@ public final class ItemMultiMaterial extends AEBaseItem implements IStorageCompo
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerIcons(
-			ClientHelper proxy,
-			String name )
-	{
-		for ( MaterialType type : MaterialType.values()  )
-		{
-			if ( type != MaterialType.InvalidType )
-				proxy.setIcon( this, type.damageValue, name +"."+ type.name() );
-		}
-	}
-	
-	private String nameOf( ItemStack is )
-	{
-		if( is == null )
-		{
-			return "null";
-		}
-
-		MaterialType mt = this.getTypeByStack( is );
-		if( mt == null )
-		{
-			return "null";
-		}
-
-		return this.nameResolver.getName( mt.name() );
-	}
-
-	@Override
 	public void getSubItems( Item par1, CreativeTabs par2CreativeTabs, List cList )
 	{
 		List<MaterialType> types = Arrays.asList( MaterialType.values() );
@@ -317,15 +298,7 @@ public final class ItemMultiMaterial extends AEBaseItem implements IStorageCompo
 	}
 
 	@Override
-	public boolean onItemUseFirst(
-			ItemStack is,
-			EntityPlayer player,
-			World world,
-			BlockPos pos,
-			EnumFacing side,
-			float hitX,
-			float hitY,
-			float hitZ )
+	public boolean onItemUseFirst( ItemStack is, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ )
 	{
 		if( player.isSneaking() )
 		{
@@ -403,6 +376,22 @@ public final class ItemMultiMaterial extends AEBaseItem implements IStorageCompo
 		}
 
 		return eqi;
+	}
+
+	private String nameOf( ItemStack is )
+	{
+		if( is == null )
+		{
+			return "null";
+		}
+
+		MaterialType mt = this.getTypeByStack( is );
+		if( mt == null )
+		{
+			return "null";
+		}
+
+		return mt.name();
 	}
 
 	@Override

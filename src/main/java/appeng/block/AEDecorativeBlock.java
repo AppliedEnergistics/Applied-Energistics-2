@@ -22,11 +22,10 @@ package appeng.block;
 import net.minecraft.block.material.Material;
 
 
-public class AEDecorativeBlock extends AEBaseBlock
+public abstract class AEDecorativeBlock extends AEBaseBlock
 {
 	public AEDecorativeBlock( Material mat )
 	{
 		super( mat );
 	}
-
 }

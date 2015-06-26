@@ -33,6 +33,7 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+
 import appeng.api.parts.CableRenderMode;
 import appeng.block.AEBaseBlock;
 import appeng.client.EffectType;
@@ -49,13 +50,13 @@ public class ServerHelper extends CommonHelper
 	private EntityPlayer renderModeBased;
 
 	@Override
-	public void configureIcon(Object item, String name )
-	{
-		
-	}
-	
-	@Override
 	public void preinit()
+	{
+
+	}
+
+	@Override
+	public void init()
 	{
 
 	}
@@ -155,6 +156,37 @@ public class ServerHelper extends CommonHelper
 		return this.renderModeForPlayer( this.renderModeBased );
 	}
 
+	@Override
+	public void triggerUpdates()
+	{
+
+	}
+
+	@Override
+	public void updateRenderMode( EntityPlayer player )
+	{
+		this.renderModeBased = player;
+	}
+
+	@Override
+	public void missingCoreMod()
+	{
+		throw new IllegalStateException( "Unable to Load Core Mod, please verify that AE2 is properly install in the mods folder, with a .jar extension." );
+	}
+
+	@Override
+	public void configureIcon( Object item, String name )
+	{
+
+	}
+
+	@Override
+	public ResourceLocation addIcon( String string )
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	protected CableRenderMode renderModeForPlayer( EntityPlayer player )
 	{
 		if( player != null )
@@ -175,31 +207,5 @@ public class ServerHelper extends CommonHelper
 		}
 
 		return CableRenderMode.Standard;
-	}
-
-	@Override
-	public void triggerUpdates()
-	{
-
-	}
-
-	@Override
-	public void updateRenderMode( EntityPlayer player )
-	{
-		this.renderModeBased = player;
-	}
-
-	@Override
-	public void missingCoreMod()
-	{
-		throw new IllegalStateException( "Unable to Load Core Mod, please verify that AE2 is properly install in the mods folder, with a .jar extension." );
-	}
-
-	@Override
-	public ResourceLocation addIcon(
-			String string )
-	{
-		// TODO Auto-generated method stub
-		return null;
 	}
 }

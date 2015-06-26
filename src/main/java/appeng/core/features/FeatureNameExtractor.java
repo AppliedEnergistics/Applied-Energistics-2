@@ -55,6 +55,10 @@ public class FeatureNameExtractor
 		{
 			name = "stair";
 		}
+		else if ( name.startsWith( "BlockFluix" ) )
+		{
+			name = "fluix";
+		}
 
 		if( this.subName.isPresent() )
 		{

@@ -29,9 +29,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import com.google.common.base.Preconditions;
 
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.creativetab.CreativeTabs;
@@ -44,6 +45,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
 import appeng.api.AEApi;
 import appeng.api.implementations.items.IItemGroup;
 import appeng.api.parts.IPart;
@@ -57,13 +59,10 @@ import appeng.core.AEConfig;
 import appeng.core.AppEng;
 import appeng.core.features.AEFeature;
 import appeng.core.features.ItemStackSrc;
-import appeng.core.features.NameResolver;
 import appeng.core.localization.GuiText;
 import appeng.integration.IntegrationRegistry;
 import appeng.integration.IntegrationType;
 import appeng.items.AEBaseItem;
-
-import com.google.common.base.Preconditions;
 
 
 public final class ItemMultiPart extends AEBaseItem implements IPartItem, IItemGroup
@@ -71,7 +70,6 @@ public final class ItemMultiPart extends AEBaseItem implements IPartItem, IItemG
 	private static final Comparator<Entry<Integer, PartTypeWithVariant>> REGISTERED_COMPARATOR = new RegisteredComparator();
 	
 	public static ItemMultiPart instance;
-	private final NameResolver nameResolver;
 	private final Map<Integer, PartTypeWithVariant> registered;
 	private final Map<Integer, PartTypeWithVariant> unregistered;
 
@@ -82,7 +80,6 @@ public final class ItemMultiPart extends AEBaseItem implements IPartItem, IItemG
 		this.registered = new HashMap<Integer, PartTypeWithVariant>();
 		this.unregistered = new HashMap<Integer, PartTypeWithVariant>();
 
-		this.nameResolver = new NameResolver( this.getClass() );
 		this.setFeature( EnumSet.of( AEFeature.Core ) );
 		partHelper.setItemBusRenderer( this );
 		this.setHasSubtypes( true );
@@ -258,7 +255,7 @@ public final class ItemMultiPart extends AEBaseItem implements IPartItem, IItemG
 		final PartType stackType = this.getTypeByStack( is );
 		final String typeName = stackType.name();
 
-		return this.nameResolver.getName( typeName );
+		return typeName;
 	}
 
 	@Nonnull

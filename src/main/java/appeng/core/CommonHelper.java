@@ -28,6 +28,7 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.SidedProxy;
+
 import appeng.api.parts.CableRenderMode;
 import appeng.block.AEBaseBlock;
 import appeng.client.EffectType;
@@ -41,6 +42,8 @@ public abstract class CommonHelper
 	public static CommonHelper proxy;
 
 	public abstract void preinit();
+
+	public abstract void init();
 
 	public abstract World getWorld();
 
