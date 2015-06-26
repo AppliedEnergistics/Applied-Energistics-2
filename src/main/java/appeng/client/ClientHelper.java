@@ -123,8 +123,8 @@ public class ClientHelper extends ServerHelper
 	@Override
 	public void init()
 	{
-		Item fluixItem = GameRegistry.findItem( "appliedenergistics2", "BlockFluix" );
-		ModelResourceLocation itemModelResourceLocation = new ModelResourceLocation( "appliedenergistics2:BlockFluix", "inventory" );
+		Item fluixItem = GameRegistry.findItem( "appliedenergistics2", "fluix" );
+		ModelResourceLocation itemModelResourceLocation = new ModelResourceLocation( "appliedenergistics2:fluix", "inventory" );
 		final int DEFAULT_ITEM_SUBTYPE = 0;
 		Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register( fluixItem, DEFAULT_ITEM_SUBTYPE, itemModelResourceLocation );
 	}

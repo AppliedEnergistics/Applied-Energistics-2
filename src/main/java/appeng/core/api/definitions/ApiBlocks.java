@@ -19,6 +19,8 @@
 package appeng.core.api.definitions;
 
 
+import net.minecraft.block.Block;
+
 import appeng.api.definitions.IBlockDefinition;
 import appeng.api.definitions.IBlocks;
 import appeng.api.definitions.ITileDefinition;
@@ -173,8 +175,8 @@ public final class ApiBlocks implements IBlocks
 		this.skyStone_block = constructor.registerBlockDefinition( new BlockSkyStone( SkystoneType.block ) );
 		this.skyStone_brick = constructor.registerBlockDefinition( new BlockSkyStone( SkystoneType.brick ) );
 		this.skyStone_smallbrick = constructor.registerBlockDefinition( new BlockSkyStone( SkystoneType.smallbrick ) );
-		this.skyChest = constructor.registerBlockDefinition( new BlockSkyChest(SkyChestType.STONE) );
-		this.skyChestBlock = constructor.registerBlockDefinition( new BlockSkyChest(SkyChestType.BLOCK) );
+		this.skyChest = constructor.registerBlockDefinition( new BlockSkyChest( SkyChestType.STONE ) );
+		this.skyChestBlock = constructor.registerBlockDefinition( new BlockSkyChest( SkyChestType.BLOCK ) );
 		this.skyCompass = constructor.registerBlockDefinition( new BlockSkyCompass() );
 		this.grindStone = constructor.registerTileDefinition( new BlockGrinder() );
 		this.crankHandle = constructor.registerTileDefinition( new BlockCrank() );
@@ -201,25 +203,25 @@ public final class ApiBlocks implements IBlocks
 		this.energyCell = constructor.registerTileDefinition( new BlockEnergyCell() );
 		this.energyCellDense = constructor.registerTileDefinition( new BlockDenseEnergyCell() );
 		this.energyCellCreative = constructor.registerTileDefinition( new BlockCreativeEnergyCell() );
-		this.craftingUnit = constructor.registerTileDefinition( new BlockCraftingUnit(CraftingUnitType.UNIT) );
-		this.craftingAccelerator = constructor.registerTileDefinition( new BlockCraftingUnit(CraftingUnitType.ACCELERATOR) );
-		this.craftingStorage1k = constructor.registerTileDefinition( new BlockCraftingStorage(CraftingUnitType.STORAGE_1K) );
-		this.craftingStorage4k = constructor.registerTileDefinition( new BlockCraftingStorage(CraftingUnitType.STORAGE_4K) );
-		this.craftingStorage16k = constructor.registerTileDefinition( new BlockCraftingStorage(CraftingUnitType.STORAGE_16K) );
-		this.craftingStorage64k = constructor.registerTileDefinition( new BlockCraftingStorage(CraftingUnitType.STORAGE_64K) );
+		this.craftingUnit = constructor.registerTileDefinition( new BlockCraftingUnit( CraftingUnitType.UNIT ) );
+		this.craftingAccelerator = constructor.registerTileDefinition( new BlockCraftingUnit( CraftingUnitType.ACCELERATOR ) );
+		this.craftingStorage1k = constructor.registerTileDefinition( new BlockCraftingStorage( CraftingUnitType.STORAGE_1K ) );
+		this.craftingStorage4k = constructor.registerTileDefinition( new BlockCraftingStorage( CraftingUnitType.STORAGE_4K ) );
+		this.craftingStorage16k = constructor.registerTileDefinition( new BlockCraftingStorage( CraftingUnitType.STORAGE_16K ) );
+		this.craftingStorage64k = constructor.registerTileDefinition( new BlockCraftingStorage( CraftingUnitType.STORAGE_64K ) );
 		this.craftingMonitor = constructor.registerTileDefinition( new BlockCraftingMonitor() );
 		this.molecularAssembler = constructor.registerTileDefinition( new BlockMolecularAssembler() );
 		this.lightDetector = constructor.registerTileDefinition( new BlockLightDetector() );
 		this.paint = constructor.registerTileDefinition( new BlockPaint() );
 
-		this.skyStoneStair = makeStairs( constructor,skyStone_stone, "skystone" ) ;
-		this.skyStoneBlockStair = makeStairs( constructor,skyStone_block, "skystone.block" ) ;
-		this.skyStoneBrickStair = makeStairs( constructor,skyStone_brick, "skystone.brick" ) ;
-		this.skyStoneSmallBrickStair = makeStairs( constructor, skyStone_smallbrick, "skystone.brick.small" ) ;
-		this.fluixStair = makeStairs( constructor, fluix, "fluix" ) ;
-		this.quartzStair = makeStairs( constructor,quartz, "quartz.certus" ) ;
-		this.chiseledQuartzStair = makeStairs( constructor, quartzChiseled, "quartz.certus.chiseled" ) ;
-		this.quartzPillarStair = makeStairs( constructor, quartzPillar, "quartz.certus.pillar" ) ;
+		this.skyStoneStair = makeStairs( constructor, skyStone_stone, "skystone" );
+		this.skyStoneBlockStair = makeStairs( constructor, skyStone_block, "skystone.block" );
+		this.skyStoneBrickStair = makeStairs( constructor, skyStone_brick, "skystone.brick" );
+		this.skyStoneSmallBrickStair = makeStairs( constructor, skyStone_smallbrick, "skystone.brick.small" );
+		this.fluixStair = makeStairs( constructor, fluix, "fluix" );
+		this.quartzStair = makeStairs( constructor, quartz, "quartz.certus" );
+		this.chiseledQuartzStair = makeStairs( constructor, quartzChiseled, "quartz.certus.chiseled" );
+		this.quartzPillarStair = makeStairs( constructor, quartzPillar, "quartz.certus.pillar" );
 
 		// TODO Re-Add Slabs...
 		/*
@@ -232,17 +234,20 @@ public final class ApiBlocks implements IBlocks
 		this.chiseledQuartzSlab = constructor.registerBlockDefinition( new AEBaseSlabBlock( chiseledQuartz, EnumSet.of(AEFeature.DecorativeQuartzBlocks), false, "ChiseledQuartzSlabBlock" ) );;
 		this.quartzPillarSlab = constructor.registerBlockDefinition( new AEBaseSlabBlock( quartzPillar, EnumSet.of(AEFeature.DecorativeQuartzBlocks), false, "QuartzPillarSlabBlock" ) )
 		*/
-		
+
 		this.itemGen = constructor.registerBlockDefinition( new BlockItemGen() );
 		this.chunkLoader = constructor.registerBlockDefinition( new BlockChunkloader() );
 		this.phantomNode = constructor.registerBlockDefinition( new BlockPhantomNode() );
 		this.cubeGenerator = constructor.registerBlockDefinition( new BlockCubeGenerator() );
 	}
 
-	private IBlockDefinition makeStairs(DefinitionConstructor constructor, IBlockDefinition block, String name )
+	private IBlockDefinition makeStairs( DefinitionConstructor constructor, IBlockDefinition definition, String name )
 	{
-		if ( block.maybeBlock().isPresent() )
-			return constructor.registerBlockDefinition(  new BlockStairCommon( block.maybeBlock().get(), name ));
+		for( Block block : definition.maybeBlock().asSet() )
+		{
+			return constructor.registerBlockDefinition( new BlockStairCommon( block, name ) );
+		}
+
 		return null;
 	}
 
@@ -445,7 +450,7 @@ public final class ApiBlocks implements IBlocks
 		return this.quartzPillarSlab;
 	}
 */
-	
+
 	@Override
 	public ITileDefinition grindStone()
 	{
@@ -675,5 +680,4 @@ public final class ApiBlocks implements IBlocks
 	{
 		return this.cubeGenerator;
 	}
-
 }

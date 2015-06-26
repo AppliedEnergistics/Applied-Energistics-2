@@ -22,11 +22,12 @@ package appeng.block.stair;
 import java.util.EnumSet;
 
 import net.minecraft.block.Block;
+
 import appeng.block.AEBaseStairBlock;
 import appeng.core.features.AEFeature;
 
 
-public class BlockStairCommon extends AEBaseStairBlock
+public final class BlockStairCommon extends AEBaseStairBlock
 {
 	public BlockStairCommon( Block material, String type )
 	{

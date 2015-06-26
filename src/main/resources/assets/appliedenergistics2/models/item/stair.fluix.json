@@ -1,5 +1,5 @@
 {
-  "parent": "block/stair.fluix",
+  "parent": "appliedenergistics2:block/stair.fluix",
   "display": {
     "thirdperson": {
       "rotation": [ 10, -45, 170 ],
