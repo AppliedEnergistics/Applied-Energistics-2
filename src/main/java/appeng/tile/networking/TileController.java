@@ -70,15 +70,15 @@ public class TileController extends AENetworkPowerTile
 
 	public void onNeighborChange( boolean force )
 	{
-		boolean xx = this.worldObj.getTileEntity( this.xCoord - 1, this.yCoord, this.zCoord ) instanceof TileController && this.worldObj.getTileEntity( this.xCoord + 1, this.yCoord, this.zCoord ) instanceof TileController;
-		boolean yy = this.worldObj.getTileEntity( this.xCoord, this.yCoord - 1, this.zCoord ) instanceof TileController && this.worldObj.getTileEntity( this.xCoord, this.yCoord + 1, this.zCoord ) instanceof TileController;
-		boolean zz = this.worldObj.getTileEntity( this.xCoord, this.yCoord, this.zCoord - 1 ) instanceof TileController && this.worldObj.getTileEntity( this.xCoord, this.yCoord, this.zCoord + 1 ) instanceof TileController;
+		final boolean xx = checkController( this.xCoord - 1, this.yCoord, this.zCoord ) && checkController( this.xCoord + 1, this.yCoord, this.zCoord );
+		final boolean yy = checkController( this.xCoord, this.yCoord - 1, this.zCoord ) && checkController( this.xCoord, this.yCoord + 1, this.zCoord );
+		final boolean zz = checkController( this.xCoord, this.yCoord, this.zCoord - 1 ) && checkController( this.xCoord, this.yCoord, this.zCoord + 1 );
 
 		// int meta = world.getBlockMetadata( xCoord, yCoord, zCoord );
 		// boolean hasPower = meta > 0;
 		// boolean isConflict = meta == 2;
 
-		boolean oldValid = this.isValid;
+		final boolean oldValid = this.isValid;
 
 		this.isValid = ( xx && !yy && !zz ) || ( !xx && yy && !zz ) || ( !xx && !yy && zz ) || ( ( xx ? 1 : 0 ) + ( yy ? 1 : 0 ) + ( zz ? 1 : 0 ) <= 1 );
 
@@ -92,9 +92,10 @@ public class TileController extends AENetworkPowerTile
 			{
 				this.gridProxy.setValidSides( EnumSet.noneOf( ForgeDirection.class ) );
 			}
+
+			this.updateMeta();
 		}
 
-		this.updateMeta();
 	}
 
 	private void updateMeta()
@@ -123,7 +124,10 @@ public class TileController extends AENetworkPowerTile
 			meta = 0;
 		}
 
-		this.worldObj.setBlockMetadataWithNotify( this.xCoord, this.yCoord, this.zCoord, meta, 2 );
+		if( checkController( this.xCoord, this.yCoord, this.zCoord ) && this.worldObj.getBlockMetadata( this.xCoord, this.yCoord, this.zCoord ) != meta )
+		{
+			this.worldObj.setBlockMetadataWithNotify( this.xCoord, this.yCoord, this.zCoord, meta, 2 );
+		}
 	}
 
 	@Override
@@ -199,6 +203,20 @@ public class TileController extends AENetworkPowerTile
 	@Override
 	public int[] getAccessibleSlotsBySide( ForgeDirection side )
 	{
-		return this.ACCESSIBLE_SLOTS_BY_SIDE;
+		return ACCESSIBLE_SLOTS_BY_SIDE;
+	}
+
+	/**
+	 * Check for a controller at this coordinates as well as is it loaded.
+	 *
+	 * @return true if there is a loaded controller
+	 */
+	private boolean checkController( int x, int y, int z )
+	{
+		if( this.worldObj.getChunkProvider().chunkExists( this.xCoord >> 4, this.zCoord >> 4 ) )
+		{
+			return this.worldObj.getTileEntity( x, y, z ) instanceof TileController;
+		}
+		return false;
 	}
 }
