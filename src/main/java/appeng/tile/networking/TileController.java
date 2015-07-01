@@ -23,6 +23,7 @@ import java.util.EnumSet;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import appeng.api.config.Actionable;
 import appeng.api.networking.GridFlags;
@@ -72,15 +73,15 @@ public class TileController extends AENetworkPowerTile
 
 	public void onNeighborChange( boolean force )
 	{
-		boolean xx = this.worldObj.getTileEntity( pos.offset( EnumFacing.EAST ) ) instanceof TileController && this.worldObj.getTileEntity( pos.offset( EnumFacing.WEST ) ) instanceof TileController;
-		boolean yy = this.worldObj.getTileEntity( pos.offset( EnumFacing.UP ) ) instanceof TileController && this.worldObj.getTileEntity( pos.offset( EnumFacing.DOWN ) ) instanceof TileController;
-		boolean zz = this.worldObj.getTileEntity( pos.offset( EnumFacing.NORTH ) ) instanceof TileController && this.worldObj.getTileEntity( pos.offset( EnumFacing.SOUTH ) ) instanceof TileController;
+		final boolean xx = checkController( pos.offset( EnumFacing.EAST ) ) && checkController( pos.offset( EnumFacing.WEST ) );
+		final boolean yy = checkController( pos.offset( EnumFacing.UP ) ) && checkController( pos.offset( EnumFacing.DOWN ) );
+		final boolean zz = checkController( pos.offset( EnumFacing.NORTH ) ) && checkController(  pos.offset( EnumFacing.SOUTH ) );
 
 		// int meta = world.getBlockMetadata( xCoord, yCoord, zCoord );
 		// boolean hasPower = meta > 0;
 		// boolean isConflict = meta == 2;
 
-		boolean oldValid = this.isValid;
+		final boolean oldValid = this.isValid;
 
 		this.isValid = ( xx && !yy && !zz ) || ( !xx && yy && !zz ) || ( !xx && !yy && zz ) || ( ( xx ? 1 : 0 ) + ( yy ? 1 : 0 ) + ( zz ? 1 : 0 ) <= 1 );
 
@@ -94,9 +95,10 @@ public class TileController extends AENetworkPowerTile
 			{
 				this.gridProxy.setValidSides( EnumSet.noneOf( EnumFacing.class ) );
 			}
+
+			this.updateMeta();
 		}
 
-		this.updateMeta();
 	}
 
 	private void updateMeta()
@@ -124,8 +126,12 @@ public class TileController extends AENetworkPowerTile
 		{
 			metaState = ControllerBlockState.OFFLINE;
 		}
-
-		this.worldObj.setBlockState( pos, worldObj.getBlockState( pos ).withProperty( BlockController.CONTROLLER_STATE, metaState ) );
+		
+		if( checkController( pos ) && this.worldObj.getBlockState( pos ).getValue( BlockController.CONTROLLER_STATE ) != metaState )
+		{
+			this.worldObj.setBlockState( pos, worldObj.getBlockState( pos ).withProperty( BlockController.CONTROLLER_STATE, metaState ) );
+		}
+		
 	}
 
 	@Override
@@ -201,6 +207,21 @@ public class TileController extends AENetworkPowerTile
 	@Override
 	public int[] getAccessibleSlotsBySide( EnumFacing whichSide )
 	{
-		return this.ACCESSIBLE_SLOTS_BY_SIDE;
+		return ACCESSIBLE_SLOTS_BY_SIDE;
+	}
+
+	/**
+	 * Check for a controller at this coordinates as well as is it loaded.
+	 *
+	 * @return true if there is a loaded controller
+	 */
+	private boolean checkController( BlockPos pos )
+	{
+		if( this.worldObj.getChunkProvider().chunkExists( this.xCoord >> 4, this.zCoord >> 4 ) )
+		{
+			return this.worldObj.getTileEntity( pos ) instanceof TileController;
+		}
+		
+		return false;
 	}
 }
