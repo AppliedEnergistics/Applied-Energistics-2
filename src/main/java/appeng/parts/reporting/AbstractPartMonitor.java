@@ -350,7 +350,7 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 			GL11.glRotatef( 180.0f, 0.0f, 1.0f, 0.0f );
 		}
 
-		GL11.glPushMatrix();
+		// GL11.glPushMatrix();
 		try
 		{
 			final ItemStack sis = ais.getItemStack();
@@ -374,8 +374,13 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 		{
 			AELog.error( e );
 		}
+		finally
+		{
+			GL11.glEnable( GL11.GL_LIGHTING );
+			GL11.glEnable( GL12.GL_RESCALE_NORMAL );
+		}
 
-		GL11.glPopMatrix();
+		// GL11.glPopMatrix();
 
 		GL11.glTranslatef( 0.0f, 0.14f, -0.24f );
 		GL11.glScalef( 1.0f / 62.0f, 1.0f / 62.0f, 1.0f / 62.0f );
