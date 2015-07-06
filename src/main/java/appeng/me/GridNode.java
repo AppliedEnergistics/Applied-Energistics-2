@@ -588,6 +588,7 @@ public class GridNode implements IGridNode, IPathItem
 	{
 		this.myStorage = s;
 		this.usedChannels = 0;
+		this.lastUsedChannels = 0;
 	}
 
 	@Override
