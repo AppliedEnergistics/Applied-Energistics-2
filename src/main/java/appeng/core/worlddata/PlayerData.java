@@ -93,17 +93,13 @@ final class PlayerData implements IWorldPlayerData, IOnWorldStartable, IOnWorldS
 	public int getPlayerID( @Nonnull final GameProfile profile )
 	{
 		Preconditions.checkNotNull( profile );
+		Preconditions.checkNotNull( this.config.getCategory( "players" ) );
+		Preconditions.checkState( profile.isComplete() );
 
 		final ConfigCategory players = this.config.getCategory( "players" );
-
-		if( players == null || !profile.isComplete() )
-		{
-			return -1;
-		}
-
 		final String uuid = profile.getId().toString();
-
 		final Property maybePlayerID = players.get( uuid );
+
 		if( maybePlayerID != null && maybePlayerID.isIntValue() )
 		{
 			return maybePlayerID.getInt();
