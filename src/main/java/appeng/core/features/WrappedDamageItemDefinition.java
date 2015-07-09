@@ -37,7 +37,6 @@ public final class WrappedDamageItemDefinition implements ITileDefinition
 {
 	private final ITileDefinition definition;
 	private final int damage;
-	private final boolean enabled;
 
 	public WrappedDamageItemDefinition( ITileDefinition definition, int damage )
 	{
@@ -46,7 +45,6 @@ public final class WrappedDamageItemDefinition implements ITileDefinition
 
 		this.definition = definition;
 		this.damage = damage;
-		this.enabled = definition.isEnabled();
 	}
 
 	@Override
@@ -82,7 +80,7 @@ public final class WrappedDamageItemDefinition implements ITileDefinition
 	@Override
 	public boolean isEnabled()
 	{
-		return this.enabled;
+		return this.definition.isEnabled();
 	}
 
 	@Override
