@@ -21,6 +21,7 @@ package appeng.core.features;
 
 import java.lang.reflect.Constructor;
 
+import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ObjectArrays;
@@ -38,8 +39,8 @@ import appeng.block.AEBaseBlock;
 
 public class BlockDefinition extends ItemDefinition implements IBlockDefinition
 {
-	private final Block block;
-	private final boolean enabled;
+	private static final ItemBlockTransformer ITEMBLOCK_TRANSFORMER = new ItemBlockTransformer();
+	private final Optional<Block> block;
 
 	public BlockDefinition( final String identifier, Block block, ActivityState state )
 	{
@@ -48,8 +49,14 @@ public class BlockDefinition extends ItemDefinition implements IBlockDefinition
 		Preconditions.checkNotNull( block );
 		Preconditions.checkNotNull( state );
 
-		this.block = block;
-		this.enabled = state == ActivityState.Enabled;
+		if( state == ActivityState.Enabled )
+		{
+			this.block = Optional.of( block );
+		}
+		else
+		{
+			this.block = Optional.absent();
+		}
 	}
 
 	/**
@@ -93,7 +100,7 @@ public class BlockDefinition extends ItemDefinition implements IBlockDefinition
 	 *
 	 * TODO: throw an exception instead of returning null? As this could cause issue later on.
 	 *
-	 * @param block     the block to create the {@link ItemBlock} from
+	 * @param block the block to create the {@link ItemBlock} from
 	 * @param itemclass the class used to construct it.
 	 *
 	 * @return an {@link Item} for the block. Actually always a sub type of {@link ItemBlock}
@@ -122,38 +129,51 @@ public class BlockDefinition extends ItemDefinition implements IBlockDefinition
 	@Override
 	public final Optional<Block> maybeBlock()
 	{
-		return Optional.of( this.block );
+		return this.block;
 	}
 
 	@Override
 	public final Optional<ItemBlock> maybeItemBlock()
 	{
-		if( this.enabled )
-		{
-			return Optional.of( new ItemBlock( this.block ) );
-		}
-		else
-		{
-			return Optional.absent();
-		}
+		return this.block.transform( ITEMBLOCK_TRANSFORMER );
 	}
 
 	@Override
 	public final Optional<ItemStack> maybeStack( int stackSize )
 	{
-		if( this.enabled )
-		{
-			return Optional.of( new ItemStack( this.block ) );
-		}
-		else
-		{
-			return Optional.absent();
-		}
+		return this.block.transform( new ItemStackTransformer( stackSize ) );
 	}
 
 	@Override
 	public final boolean isSameAs( IBlockAccess world, BlockPos pos )
 	{
-		return this.enabled && world.getBlockState( pos ).getBlock() == this.block;
+		return this.isEnabled() && world.getBlockState( pos ).getBlock() == this.block.get();
+	}
+
+	private static class ItemBlockTransformer implements Function<Block, ItemBlock>
+	{
+		@Override
+		public ItemBlock apply( Block input )
+		{
+			return new ItemBlock( input );
+		}
+	}
+
+	private static class ItemStackTransformer implements Function<Block, ItemStack>
+	{
+		private final int stackSize;
+
+		public ItemStackTransformer( int stackSize )
+		{
+			Preconditions.checkArgument( stackSize > 0 );
+
+			this.stackSize = stackSize;
+		}
+
+		@Override
+		public ItemStack apply( Block input )
+		{
+			return new ItemStack( input, this.stackSize );
+		}
 	}
 }

@@ -21,6 +21,7 @@ package appeng.core.features;
 
 import javax.annotation.Nonnull;
 
+import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 
@@ -32,7 +33,8 @@ import appeng.block.AEBaseTileBlock;
 
 public final class TileDefinition extends BlockDefinition implements ITileDefinition
 {
-	private final AEBaseTileBlock block;
+	private static final TileEntityTransformer TILEENTITY_TRANSFORMER = new TileEntityTransformer();
+	private final Optional<AEBaseTileBlock> block;
 
 	public TileDefinition( @Nonnull final String identifier, AEBaseTileBlock block, ActivityState state )
 	{
@@ -40,14 +42,30 @@ public final class TileDefinition extends BlockDefinition implements ITileDefini
 
 		Preconditions.checkNotNull( block );
 
-		this.block = block;
+		if( state == ActivityState.Enabled )
+		{
+			this.block = Optional.of( block );
+		}
+		else
+		{
+			this.block = Optional.absent();
+		}
 	}
 
 	@Override
 	public Optional<? extends Class<? extends TileEntity>> maybeEntity()
 	{
-		final Class<? extends TileEntity> entity = this.block.getTileEntityClass();
+		return this.block.transform( TILEENTITY_TRANSFORMER );
+	}
 
-		return Optional.of( entity );
+	private static class TileEntityTransformer implements Function<AEBaseTileBlock, Class<? extends TileEntity>>
+	{
+		@Override
+		public Class<? extends TileEntity> apply( AEBaseTileBlock input )
+		{
+			final Class<? extends TileEntity> entity = input.getTileEntityClass();
+
+			return entity;
+		}
 	}
 }

@@ -52,7 +52,7 @@ import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.api.util.IOrientable;
 import appeng.core.AELog;
-import appeng.core.features.ItemStackSrc;
+import appeng.core.features.IStackSrc;
 import appeng.helpers.ICustomNameObject;
 import appeng.helpers.IPriorityHost;
 import appeng.tile.events.AETileEventHandler;
@@ -67,7 +67,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 
 	public static final ThreadLocal<WeakReference<AEBaseTile>> DROP_NO_ITEMS = new ThreadLocal<WeakReference<AEBaseTile>>();
 	private static final Map<Class<? extends AEBaseTile>, Map<TileEventType, List<AETileEventHandler>>> HANDLERS = new HashMap<Class<? extends AEBaseTile>, Map<TileEventType, List<AETileEventHandler>>>();
-	private static final Map<Class<? extends TileEntity>, ItemStackSrc> ITEM_STACKS = new HashMap<Class<? extends TileEntity>, ItemStackSrc>();
+	private static final Map<Class<? extends TileEntity>, IStackSrc> ITEM_STACKS = new HashMap<Class<? extends TileEntity>, IStackSrc>();
 	private int renderFragment = 0;
 	@Nullable
 	public String customName;
@@ -84,7 +84,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 		return newSate.getBlock() != oldState.getBlock(); // state dosn't change tile entities in AE2.
 	}
 	
-	public static void registerTileItem( Class<? extends TileEntity> c, ItemStackSrc wat )
+	public static void registerTileItem( Class<? extends TileEntity> c, IStackSrc wat )
 	{
 		ITEM_STACKS.put( c, wat );
 	}
@@ -109,7 +109,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	@Nullable
 	protected ItemStack getItemFromTile( Object obj )
 	{
-		ItemStackSrc src = ITEM_STACKS.get( obj.getClass() );
+		IStackSrc src = ITEM_STACKS.get( obj.getClass() );
 		if( src == null )
 		{
 			return null;

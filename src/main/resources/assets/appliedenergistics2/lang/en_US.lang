@@ -450,6 +450,7 @@ item.appliedenergistics2.ItemPart.InvertedToggleBus.name=ME Inverted Toggle Bus
 item.appliedenergistics2.ItemPart.ToggleBus.name=ME Toggle Bus
 item.appliedenergistics2.ItemPart.CraftingMonitor.name=ME Crafting Monitor
 item.appliedenergistics2.ItemPart.InterfaceTerminal.name=ME Interface Terminal
+item.appliedenergistics2.ItemPart.InvalidType.name=Disabled Item
 
 item.appliedenergistics2.ItemSpatialStorageCell.128Cubed.name=128³ Spatial Storage Cell
 item.appliedenergistics2.ItemSpatialStorageCell.16Cubed.name=16³ Spatial Storage Cell

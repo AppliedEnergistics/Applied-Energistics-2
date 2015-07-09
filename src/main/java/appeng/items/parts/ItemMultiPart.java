@@ -157,7 +157,10 @@ public final class ItemMultiPart extends AEBaseItem implements IPartItem, IItemG
 			throw new IllegalStateException( "Meta Overlap detected with type " + mat + " and damage " + partDamage + ". Found " + registeredPartType + " there already." );
 		}
 
-		this.registered.put( partDamage, pti );
+		if( enabled )
+		{
+			this.registered.put( partDamage, pti );
+		}
 	}
 
 	public int getDamageByType( PartType t )
@@ -175,16 +178,13 @@ public final class ItemMultiPart extends AEBaseItem implements IPartItem, IItemG
 	}
 
 	@Override
-	public boolean onItemUse(
-			ItemStack is,
-			EntityPlayer player,
-			World w,
-			BlockPos pos,
-			EnumFacing side,
-			float hitX,
-			float hitY,
-			float hitZ )
+	public boolean onItemUse( ItemStack is, EntityPlayer player, World w, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ ) 
 	{
+		if( this.getTypeByStack( is ) == PartType.InvalidType )
+		{
+			return false;
+		}
+		
 		return AEApi.instance().partHelper().placeBus( is, pos, side, player, w );
 	}
 
@@ -410,7 +410,6 @@ public final class ItemMultiPart extends AEBaseItem implements IPartItem, IItemG
 					'}';
 		}
 	}
-
 
 	private static final class RegisteredComparator implements Comparator<Entry<Integer, PartTypeWithVariant>>
 	{

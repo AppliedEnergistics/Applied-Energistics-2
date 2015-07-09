@@ -51,6 +51,7 @@ import appeng.api.util.IOrientable;
 import appeng.block.networking.BlockCableBus;
 import appeng.core.features.AEFeature;
 import appeng.core.features.AETileBlockFeatureHandler;
+import appeng.core.features.ActivityState;
 import appeng.core.features.IAEFeature;
 import appeng.core.features.ItemStackSrc;
 import appeng.helpers.ICustomCollision;
@@ -90,8 +91,6 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements IAEFeature,
 	protected void setTileEntity( Class<? extends TileEntity> c )
 	{
 		this.tileEntityType = c;
-
-		AEBaseTile.registerTileItem( c, new ItemStackSrc( this, 0 ) );
 		this.isInventory = IInventory.class.isAssignableFrom( c );
 		this.setTileProvider( this.hasBlockTileEntity() );
 	}

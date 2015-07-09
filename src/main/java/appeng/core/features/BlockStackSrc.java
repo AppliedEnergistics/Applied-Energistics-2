@@ -23,25 +23,26 @@ import javax.annotation.Nullable;
 
 import com.google.common.base.Preconditions;
 
+import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 
-public class ItemStackSrc implements IStackSrc
+public class BlockStackSrc implements IStackSrc
 {
 
-	private final Item item;
+	public final Block block;
 	public final int damage;
 	private final boolean enabled;
 
-	public ItemStackSrc( Item item, int damage, ActivityState state )
+	public BlockStackSrc( Block block, int damage, ActivityState state )
 	{
-		Preconditions.checkNotNull( item );
+		Preconditions.checkNotNull( block );
 		Preconditions.checkArgument( damage >= 0 );
 		Preconditions.checkNotNull( state );
 		Preconditions.checkArgument( state == ActivityState.Enabled || state == ActivityState.Disabled );
 
-		this.item = item;
+		this.block = block;
 		this.damage = damage;
 		this.enabled = state == ActivityState.Enabled;
 	}
@@ -50,13 +51,13 @@ public class ItemStackSrc implements IStackSrc
 	@Override
 	public ItemStack stack( int i )
 	{
-		return new ItemStack( this.item, i, this.damage );
+		return new ItemStack( this.block, i, this.damage );
 	}
 
 	@Override
 	public Item getItem()
 	{
-		return this.item;
+		return null;
 	}
 
 	@Override
