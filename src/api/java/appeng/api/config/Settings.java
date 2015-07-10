@@ -54,13 +54,15 @@ public enum Settings
 
 	INTERFACE_TERMINAL( EnumSet.of( YesNo.YES, YesNo.NO ) ), CRAFT_VIA_REDSTONE( EnumSet.of( YesNo.YES, YesNo.NO ) ),
 
-	STORAGE_FILTER( EnumSet.allOf( StorageFilter.class ) ), PLACE_BLOCK( EnumSet.of( YesNo.YES, YesNo.NO ) );
+	STORAGE_FILTER( EnumSet.allOf( StorageFilter.class ) ), PLACE_BLOCK( EnumSet.of( YesNo.YES, YesNo.NO ) ),
+
+	SCHEDULING_MODE( EnumSet.allOf( SchedulingMode.class ) );
 
 	private final EnumSet<? extends Enum<?>> values;
 
 	Settings( @Nonnull EnumSet<? extends Enum<?>> possibleOptions )
 	{
-		if ( possibleOptions.isEmpty() )
+		if( possibleOptions.isEmpty() )
 		{
 			throw new IllegalArgumentException( "Tried to instantiate an empty setting." );
 		}

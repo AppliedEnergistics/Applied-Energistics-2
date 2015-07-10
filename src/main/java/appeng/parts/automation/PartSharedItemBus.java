@@ -37,19 +37,14 @@ import appeng.util.Platform;
 public abstract class PartSharedItemBus extends PartUpgradeable implements IGridTickable
 {
 
-	final AppEngInternalAEInventory config = new AppEngInternalAEInventory( this, 9 );
-	int adaptorHash = 0;
-	InventoryAdaptor adaptor;
-	boolean lastRedstone = false;
+	protected final AppEngInternalAEInventory config = new AppEngInternalAEInventory( this, 9 );
+	private int adaptorHash = 0;
+	private InventoryAdaptor adaptor;
+	private boolean lastRedstone = false;
 
 	public PartSharedItemBus( ItemStack is )
 	{
 		super( is );
-	}
-
-	protected int availableSlots()
-	{
-		return Math.min( 1 + this.getInstalledUpgrades( Upgrades.CAPACITY ) * 4, this.config.getSizeInventory() );
 	}
 
 	@Override
@@ -83,6 +78,80 @@ public abstract class PartSharedItemBus extends PartUpgradeable implements IGrid
 		return super.getInventoryByName( name );
 	}
 
+	@Override
+	public void onNeighborChanged()
+	{
+		this.updateState();
+		if( this.lastRedstone != this.host.hasRedstone( this.side ) )
+		{
+			this.lastRedstone = !this.lastRedstone;
+			if( this.lastRedstone && this.getRSMode() == RedstoneMode.SIGNAL_PULSE )
+			{
+				this.doBusWork();
+			}
+		}
+	}
+
+	protected InventoryAdaptor getHandler()
+	{
+		final TileEntity self = this.getHost().getTile();
+		final TileEntity target = this.getTileEntity( self, self.xCoord + this.side.offsetX, self.yCoord + this.side.offsetY, self.zCoord + this.side.offsetZ );
+
+		final int newAdaptorHash = Platform.generateTileHash( target );
+
+		if( this.adaptorHash == newAdaptorHash && newAdaptorHash != 0 )
+		{
+			return this.adaptor;
+		}
+
+		this.adaptorHash = newAdaptorHash;
+		this.adaptor = InventoryAdaptor.getAdaptor( target, this.side.getOpposite() );
+
+		return this.adaptor;
+	}
+
+	protected int availableSlots()
+	{
+		return Math.min( 1 + this.getInstalledUpgrades( Upgrades.CAPACITY ) * 4, this.config.getSizeInventory() );
+	}
+
+	protected int calculateItemsToSend()
+	{
+		switch( this.getInstalledUpgrades( Upgrades.SPEED ) )
+		{
+			default:
+			case 0:
+				return 1;
+			case 1:
+				return 8;
+			case 2:
+				return 32;
+			case 3:
+				return 64;
+			case 4:
+				return 96;
+		}
+	}
+
+	/**
+	 * Checks if the bus can actually do something.
+	 *
+	 * Currently this tests if the chunk for the target is actually loaded.
+	 *
+	 * @return true, if the the bus should do its work.
+	 */
+	protected boolean canDoBusWork()
+	{
+		final TileEntity self = this.getHost().getTile();
+		final TileEntity target = this.getTileEntity( self, self.xCoord + this.side.offsetX, self.yCoord + this.side.offsetY, self.zCoord + this.side.offsetZ );
+
+		final World world = target.getWorldObj();
+		final int xCoordinate = target.xCoord;
+		final int zCoordinate = target.zCoord;
+
+		return world != null && world.getChunkProvider().chunkExists( xCoordinate >> 4, zCoordinate >> 4 );
+	}
+
 	private void updateState()
 	{
 		try
@@ -102,27 +171,9 @@ public abstract class PartSharedItemBus extends PartUpgradeable implements IGrid
 		}
 	}
 
-	InventoryAdaptor getHandler()
-	{
-		TileEntity self = this.getHost().getTile();
-		TileEntity target = this.getTileEntity( self, self.xCoord + this.side.offsetX, self.yCoord + this.side.offsetY, self.zCoord + this.side.offsetZ );
-
-		int newAdaptorHash = Platform.generateTileHash( target );
-
-		if( this.adaptorHash == newAdaptorHash && newAdaptorHash != 0 )
-		{
-			return this.adaptor;
-		}
-
-		this.adaptorHash = newAdaptorHash;
-		this.adaptor = InventoryAdaptor.getAdaptor( target, this.side.getOpposite() );
-
-		return this.adaptor;
-	}
-
 	private TileEntity getTileEntity( TileEntity self, int x, int y, int z )
 	{
-		World w = self.getWorldObj();
+		final World w = self.getWorldObj();
 
 		if( w.getChunkProvider().chunkExists( x >> 4, z >> 4 ) )
 		{
@@ -132,19 +183,5 @@ public abstract class PartSharedItemBus extends PartUpgradeable implements IGrid
 		return null;
 	}
 
-	@Override
-	public void onNeighborChanged()
-	{
-		this.updateState();
-		if( this.lastRedstone != this.host.hasRedstone( this.side ) )
-		{
-			this.lastRedstone = !this.lastRedstone;
-			if( this.lastRedstone && this.getRSMode() == RedstoneMode.SIGNAL_PULSE )
-			{
-				this.doBusWork();
-			}
-		}
-	}
-
-	abstract TickRateModulation doBusWork();
+	protected abstract TickRateModulation doBusWork();
 }

@@ -26,6 +26,7 @@ import net.minecraft.entity.player.InventoryPlayer;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.RedstoneMode;
+import appeng.api.config.SchedulingMode;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.api.config.YesNo;
@@ -36,6 +37,7 @@ import appeng.container.implementations.ContainerUpgradeable;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketConfigButton;
+import appeng.parts.automation.PartExportBus;
 import appeng.parts.automation.PartImportBus;
 
 
@@ -48,6 +50,7 @@ public class GuiUpgradeable extends AEBaseGui
 	GuiImgButton redstoneMode;
 	GuiImgButton fuzzyMode;
 	GuiImgButton craftMode;
+	GuiImgButton schedulingMode;
 
 	public GuiUpgradeable( InventoryPlayer inventoryPlayer, IUpgradeableHost te )
 	{
@@ -81,10 +84,12 @@ public class GuiUpgradeable extends AEBaseGui
 		this.redstoneMode = new GuiImgButton( this.guiLeft - 18, this.guiTop + 8, Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE );
 		this.fuzzyMode = new GuiImgButton( this.guiLeft - 18, this.guiTop + 28, Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL );
 		this.craftMode = new GuiImgButton( this.guiLeft - 18, this.guiTop + 48, Settings.CRAFT_ONLY, YesNo.NO );
+		this.schedulingMode = new GuiImgButton( this.guiLeft - 18, this.guiTop + 68, Settings.SCHEDULING_MODE, SchedulingMode.DEFAULT );
 
 		this.buttonList.add( this.craftMode );
 		this.buttonList.add( this.redstoneMode );
 		this.buttonList.add( this.fuzzyMode );
+		this.buttonList.add( this.schedulingMode );
 	}
 
 	@Override
@@ -106,6 +111,11 @@ public class GuiUpgradeable extends AEBaseGui
 		if( this.craftMode != null )
 		{
 			this.craftMode.set( this.cvb.cMode );
+		}
+
+		if( this.schedulingMode != null )
+		{
+			this.schedulingMode.set( this.cvb.schedulingMode );
 		}
 	}
 
@@ -139,6 +149,10 @@ public class GuiUpgradeable extends AEBaseGui
 		if( this.craftMode != null )
 		{
 			this.craftMode.setVisibility( this.bc.getInstalledUpgrades( Upgrades.CRAFTING ) > 0 );
+		}
+		if( this.schedulingMode != null )
+		{
+			this.schedulingMode.setVisibility(this.bc.getInstalledUpgrades( Upgrades.CAPACITY ) > 0 && this.bc instanceof PartExportBus );
 		}
 	}
 
@@ -177,6 +191,11 @@ public class GuiUpgradeable extends AEBaseGui
 		if( btn == this.fuzzyMode )
 		{
 			NetworkHandler.instance.sendToServer( new PacketConfigButton( this.fuzzyMode.getSetting(), backwards ) );
+		}
+
+		if( btn == this.schedulingMode )
+		{
+			NetworkHandler.instance.sendToServer( new PacketConfigButton( this.schedulingMode.getSetting(), backwards ) );
 		}
 	}
 }
