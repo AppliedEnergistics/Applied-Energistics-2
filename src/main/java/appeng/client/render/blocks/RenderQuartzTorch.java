@@ -93,9 +93,9 @@ public class RenderQuartzTorch extends BaseBlockRender<AEBaseBlock, AEBaseTile>
 	}
 
 	@Override
-	public boolean renderInWorld( AEBaseBlock blk, IBlockAccess world, BlockPos pos, ModelGenerator renderer )
+	public boolean renderInWorld( AEBaseBlock block, IBlockAccess world, BlockPos pos, ModelGenerator renderer )
 	{
-		IOrientable te = ( (IOrientableBlock) blk ).getOrientable( world, pos );
+		IOrientable te = ( (IOrientableBlock) block ).getOrientable( world, pos );
 
 		float Point2 = 6.0f / 16.0f;
 		float Point3 = 7.0f / 16.0f;
@@ -143,19 +143,19 @@ public class RenderQuartzTorch extends BaseBlockRender<AEBaseBlock, AEBaseTile>
 			super.renderInWorld( blk, world, pos, renderer );
 		}
 
-		blk.getRendererInstance().setTemporaryRenderIcon( renderer.getIcon( Blocks.hopper.getDefaultState() )[0] );
+		block.getRendererInstance().setTemporaryRenderIcon( renderer.getIcon( Blocks.hopper.getDefaultState() )[0] );
 
 		renderer.setRenderBounds( Point2 + xOff, bottom + yOff, Point2 + zOff, Point13 + xOff, top + yOff, Point3 + zOff );
-		boolean out = renderer.renderStandardBlock( blk, pos );
+		boolean out = renderer.renderStandardBlock( block, pos );
 
 		renderer.setRenderBounds( Point2 + xOff, bottom + yOff, Point12 + zOff, Point13 + xOff, top + yOff, Point13 + zOff );
-		renderer.renderStandardBlock( blk, pos );
+		renderer.renderStandardBlock( block, pos );
 
 		renderer.setRenderBounds( Point2 + xOff, bottom + yOff, Point3 + zOff, Point3 + xOff, top + yOff, Point12 + zOff );
-		renderer.renderStandardBlock( blk, pos );
+		renderer.renderStandardBlock( block, pos );
 
 		renderer.setRenderBounds( Point12 + xOff, bottom + yOff, Point3 + zOff, Point13 + xOff, top + yOff, Point12 + zOff );
-		renderer.renderStandardBlock( blk, pos );
+		renderer.renderStandardBlock( block, pos );
 
 		if( te != null )
 		{
@@ -164,46 +164,46 @@ public class RenderQuartzTorch extends BaseBlockRender<AEBaseBlock, AEBaseTile>
 			{
 				case EAST:
 					renderer.setRenderBounds( 0, bottom + yOff, bottom + zOff, Point2 + xOff, top + yOff, top + zOff );
-					renderer.renderStandardBlock( blk, pos );
+					renderer.renderStandardBlock( block, pos );
 					break;
 				case WEST:
 					renderer.setRenderBounds( Point13 + xOff, bottom + yOff, bottom + zOff, 1.0, top + yOff, top + zOff );
-					renderer.renderStandardBlock( blk, pos );
+					renderer.renderStandardBlock( block, pos );
 					break;
 				case NORTH:
 					renderer.setRenderBounds( bottom + xOff, bottom + yOff, Point13 + zOff, top + xOff, top + yOff, 1.0 );
-					renderer.renderStandardBlock( blk, pos );
+					renderer.renderStandardBlock( block, pos );
 					break;
 				case SOUTH:
 					renderer.setRenderBounds( bottom + xOff, bottom + yOff, 0, top + xOff, top + yOff, Point2 + zOff );
-					renderer.renderStandardBlock( blk, pos );
+					renderer.renderStandardBlock( block, pos );
 					break;
 				case UP:
 					renderer.setRenderBounds( Point2, 0, Point2, Point3, bottom + yOff, Point3 );
-					renderer.renderStandardBlock( blk, pos );
+					renderer.renderStandardBlock( block, pos );
 					renderer.setRenderBounds( Point2, 0, Point12, Point3, bottom + yOff, Point13 );
-					renderer.renderStandardBlock( blk, pos );
+					renderer.renderStandardBlock( block, pos );
 					renderer.setRenderBounds( Point12, 0, Point2, Point13, bottom + yOff, Point3 );
-					renderer.renderStandardBlock( blk, pos );
+					renderer.renderStandardBlock( block, pos );
 					renderer.setRenderBounds( Point12, 0, Point12, Point13, bottom + yOff, Point13 );
-					renderer.renderStandardBlock( blk, pos );
+					renderer.renderStandardBlock( block, pos );
 					break;
 				case DOWN:
 					renderer.setRenderBounds( Point2, top + yOff, Point2, Point3, 1.0, Point3 );
-					renderer.renderStandardBlock( blk, pos );
+					renderer.renderStandardBlock( block, pos );
 					renderer.setRenderBounds( Point2, top + yOff, Point12, Point3, 1.0, Point13 );
-					renderer.renderStandardBlock( blk, pos );
+					renderer.renderStandardBlock( block, pos );
 					renderer.setRenderBounds( Point12, top + yOff, Point2, Point13, 1.0, Point3 );
-					renderer.renderStandardBlock( blk, pos );
+					renderer.renderStandardBlock( block, pos );
 					renderer.setRenderBounds( Point12, top + yOff, Point12, Point13, 1.0, Point13 );
-					renderer.renderStandardBlock( blk, pos );
+					renderer.renderStandardBlock( block, pos );
 					break;
 				default:
 			}
 		}
 
 		renderer.renderAllFaces = false;
-		blk.getRendererInstance().setTemporaryRenderIcon( null );
+		block.getRendererInstance().setTemporaryRenderIcon( null );
 
 		return out;
 	}
