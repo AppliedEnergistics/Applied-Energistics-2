@@ -37,19 +37,14 @@ import appeng.util.Platform;
 public abstract class PartSharedItemBus extends PartUpgradeable implements IGridTickable
 {
 
-	final AppEngInternalAEInventory config = new AppEngInternalAEInventory( this, 9 );
-	int adaptorHash = 0;
-	InventoryAdaptor adaptor;
-	boolean lastRedstone = false;
+	protected final AppEngInternalAEInventory config = new AppEngInternalAEInventory( this, 9 );
+	private int adaptorHash = 0;
+	private InventoryAdaptor adaptor;
+	private boolean lastRedstone = false;
 
 	public PartSharedItemBus( ItemStack is )
 	{
 		super( is );
-	}
-
-	protected int availableSlots()
-	{
-		return Math.min( 1 + this.getInstalledUpgrades( Upgrades.CAPACITY ) * 4, this.config.getSizeInventory() );
 	}
 
 	@Override
@@ -83,31 +78,26 @@ public abstract class PartSharedItemBus extends PartUpgradeable implements IGrid
 		return super.getInventoryByName( name );
 	}
 
-	private void updateState()
+	@Override
+	public void onNeighborChanged()
 	{
-		try
+		this.updateState();
+		if( this.lastRedstone != this.host.hasRedstone( this.side ) )
 		{
-			if( !this.isSleeping() )
+			this.lastRedstone = !this.lastRedstone;
+			if( this.lastRedstone && this.getRSMode() == RedstoneMode.SIGNAL_PULSE )
 			{
-				this.proxy.getTick().wakeDevice( this.proxy.getNode() );
+				this.doBusWork();
 			}
-			else
-			{
-				this.proxy.getTick().sleepDevice( this.proxy.getNode() );
-			}
-		}
-		catch( GridAccessException e )
-		{
-			// :P
 		}
 	}
 
-	InventoryAdaptor getHandler()
+	protected InventoryAdaptor getHandler()
 	{
-		TileEntity self = this.getHost().getTile();
-		TileEntity target = this.getTileEntity( self, self.getPos().offset( side.getFacing() ) );
+		final TileEntity self = this.getHost().getTile();
+		final TileEntity target = this.getTileEntity( self, self.getPos().offset( side.getFacing() ) );
 
-		int newAdaptorHash = Platform.generateTileHash( target );
+		final int newAdaptorHash = Platform.generateTileHash( target );
 
 		if( this.adaptorHash == newAdaptorHash && newAdaptorHash != 0 )
 		{
@@ -128,23 +118,82 @@ public abstract class PartSharedItemBus extends PartUpgradeable implements IGrid
 		{
 			return w.getTileEntity( pos );
 		}
+		
+		return null;
+	}
+
+	protected int availableSlots()
+	{
+		return Math.min( 1 + this.getInstalledUpgrades( Upgrades.CAPACITY ) * 4, this.config.getSizeInventory() );
+	}
+
+	protected int calculateItemsToSend()
+	{
+		switch( this.getInstalledUpgrades( Upgrades.SPEED ) )
+		{
+			default:
+			case 0:
+				return 1;
+			case 1:
+				return 8;
+			case 2:
+				return 32;
+			case 3:
+				return 64;
+			case 4:
+				return 96;
+		}
+	}
+
+	/**
+	 * Checks if the bus can actually do something.
+	 *
+	 * Currently this tests if the chunk for the target is actually loaded.
+	 *
+	 * @return true, if the the bus should do its work.
+	 */
+	protected boolean canDoBusWork()
+	{
+		final TileEntity self = this.getHost().getTile();
+		final TileEntity target = this.getTileEntity( self, self.getPos().offset( this.side.getFacing() ) );
+
+		final World world = target.getWorld();
+		final int xCoordinate = target.getPos().getX();
+		final int zCoordinate = target.getPos().getZ();
+
+		return world != null && world.getChunkProvider().chunkExists( xCoordinate >> 4, zCoordinate >> 4 );
+	}
+
+	private void updateState()
+	{
+		try
+		{
+			if( !this.isSleeping() )
+			{
+				this.proxy.getTick().wakeDevice( this.proxy.getNode() );
+			}
+			else
+			{
+				this.proxy.getTick().sleepDevice( this.proxy.getNode() );
+			}
+		}
+		catch( GridAccessException e )
+		{
+			// :P
+		}
+	}
+
+	private TileEntity getTileEntity( TileEntity self, int x, int y, int z )
+	{
+		final World w = self.getWorldObj();
+
+		if( w.getChunkProvider().chunkExists( x >> 4, z >> 4 ) )
+		{
+			return w.getTileEntity( x, y, z );
+		}
 
 		return null;
 	}
 
-	@Override
-	public void onNeighborChanged()
-	{
-		this.updateState();
-		if( this.lastRedstone != this.host.hasRedstone( this.side ) )
-		{
-			this.lastRedstone = !this.lastRedstone;
-			if( this.lastRedstone && this.getRSMode() == RedstoneMode.SIGNAL_PULSE )
-			{
-				this.doBusWork();
-			}
-		}
-	}
-
-	abstract TickRateModulation doBusWork();
+	protected abstract TickRateModulation doBusWork();
 }

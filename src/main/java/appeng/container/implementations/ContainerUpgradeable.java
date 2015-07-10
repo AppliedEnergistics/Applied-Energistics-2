@@ -27,6 +27,7 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.RedstoneMode;
+import appeng.api.config.SchedulingMode;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
@@ -58,6 +59,8 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 	public FuzzyMode fzMode = FuzzyMode.IGNORE_ALL;
 	@GuiSync( 5 )
 	public YesNo cMode = YesNo.NO;
+	@GuiSync( 6 )
+	public SchedulingMode schedulingMode = SchedulingMode.DEFAULT;
 	int tbSlot;
 	NetworkToolViewer tbInventory;
 
@@ -217,6 +220,7 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 		if( this.upgradeable instanceof PartExportBus )
 		{
 			this.cMode = (YesNo) cm.getSetting( Settings.CRAFT_ONLY );
+			this.schedulingMode = (SchedulingMode) cm.getSetting( Settings.SCHEDULING_MODE );
 		}
 	}
 
