@@ -1,9 +1,14 @@
+
 package appeng.api.features;
 
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+
 import javax.annotation.Nonnull;
+
+import com.google.common.base.Optional;
 
 import net.minecraft.item.ItemStack;
 
@@ -12,22 +17,26 @@ import net.minecraft.item.ItemStack;
  * Lets you manipulate Inscriber Recipes, by adding or editing existing ones.
  *
  * @author thatsIch
- * @version rv2
+ * @version rv3
  * @since rv2
  */
 public interface IInscriberRegistry
 {
 	/**
-	 * Current list of registered recipes, you can modify this if you want too.
-	 * Will never contain a null recipe
+	 * An immutable copy of currently registered recipes.
+	 *
+	 * Use the provided methods to actually modify the inscriber recipes.
+	 *
+	 * @see IInscriberRegistry#addRecipe(IInscriberRecipe)
+	 * @see IInscriberRegistry#removeRecipe(IInscriberRecipe)
 	 *
 	 * @return currentlyRegisteredRecipes
 	 */
 	@Nonnull
-	List<IInscriberRecipe> getRecipes();
+	Collection<IInscriberRecipe> getRecipes();
 
 	/**
-	 * Optional items which are used in the top or bottom slot
+	 * Optional items which are used in the top or bottom slot.
 	 *
 	 * @return set of all optional items
 	 */
@@ -35,7 +44,7 @@ public interface IInscriberRegistry
 	Set<ItemStack> getOptionals();
 
 	/**
-	 * Get all registered items which are valid inputs
+	 * Get all registered items which are valid inputs.
 	 *
 	 * @return set of all input items
 	 */
@@ -43,7 +52,7 @@ public interface IInscriberRegistry
 	Set<ItemStack> getInputs();
 
 	/**
-	 * Extensible way to create an inscriber recipe
+	 * Extensible way to create an inscriber recipe.
 	 *
 	 * @return builder for inscriber recipes
 	 */
@@ -61,9 +70,10 @@ public interface IInscriberRegistry
 	void addRecipe( IInscriberRecipe recipe );
 
 	/**
-	 * Removes a recipe from the registry
+	 * Removes all equal recipes from the registry.
 	 *
-	 * @param toBeRemovedRecipe to be removed recipe, can be null, makes just no sense
+	 * @param toBeRemovedRecipe to be removed recipe, can be null, makes just no sense.
 	 */
 	void removeRecipe( IInscriberRecipe toBeRemovedRecipe );
+
 }
