@@ -23,6 +23,7 @@ import net.mcft.copy.betterstorage.api.crate.ICrateStorage;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import appeng.api.AEApi;
+import appeng.integration.BaseModule;
 import appeng.integration.IIntegrationModule;
 import appeng.integration.abstraction.IBetterStorage;
 import appeng.integration.modules.helpers.BSCrateHandler;
@@ -30,10 +31,15 @@ import appeng.integration.modules.helpers.BSCrateStorageAdaptor;
 import appeng.util.InventoryAdaptor;
 
 
-public class BetterStorage implements IIntegrationModule, IBetterStorage
+public class BetterStorage extends BaseModule implements IIntegrationModule, IBetterStorage
 {
 
 	public static BetterStorage instance;
+
+	public BetterStorage()
+	{
+		this.testClassExistence( net.mcft.copy.betterstorage.api.crate.ICrateStorage.class );
+	}
 
 	@Override
 	public boolean isStorageCrate( Object te )
