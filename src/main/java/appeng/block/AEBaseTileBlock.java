@@ -50,6 +50,7 @@ import appeng.api.implementations.items.MemoryCardMessages;
 import appeng.api.implementations.tiles.IColorableTile;
 import appeng.api.util.AEColor;
 import appeng.api.util.IOrientable;
+import appeng.block.networking.BlockCableBus;
 import appeng.core.features.AEFeature;
 import appeng.core.features.AETileBlockFeatureHandler;
 import appeng.core.features.IAEFeature;
@@ -288,7 +289,7 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements IAEFeature,
 					return false;
 				}
 
-				if( is.getItem() instanceof IMemoryCard )
+				if( is.getItem() instanceof IMemoryCard && !( this instanceof BlockCableBus ) )
 				{
 					final IMemoryCard memoryCard = (IMemoryCard) is.getItem();
 					if( player.isSneaking() )
