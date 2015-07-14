@@ -73,16 +73,20 @@ import appeng.recipes.handlers.OreRegistration;
  */
 public class RecipeHandler implements IRecipeHandler
 {
-
-	public final List<String> tokens = new LinkedList<String>();
 	final RecipeData data;
+	private final List<String> tokens = new LinkedList<String>();
 
 	public RecipeHandler()
 	{
 		this.data = new RecipeData();
 	}
 
-	RecipeHandler( RecipeHandler parent )
+	/**
+	 * Called recursively from parent
+	 *
+	 * @param parent owner of this handler
+	 */
+	private RecipeHandler( RecipeHandler parent )
 	{
 		this.data = parent.data;
 	}

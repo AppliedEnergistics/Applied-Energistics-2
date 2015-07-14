@@ -2,25 +2,6 @@
 alias=mc -> minecraft
 alias=ae2 -> appliedenergistics2
 
-# Forge Ore Dictionary
-# logWood, slabWood, stairWood, treeSapling, treeLeaves,
-# oreGold, oreIron, oreLapis, oreDiamond, oreRedstone, oreEmerald, oreQuartz, oreCoal,
-# stone, cobblestone, record, stickWood, plankWood,
-# dyeBlack, dyeRed, dyeGreen, dyeBrown, dyeBlue, dyePurple, dyeCyan, dyeLightGray, dyeGray, dyePink, dyeLime, dyeYellow, dyeLightBlue, dyeMagenta, dyeOrange, dyeWhite
-
-# AE2 Ore Dictionary
-ore=ae2:ItemMaterial.CertusQuartzCrystal -> crystalCertusQuartz
-ore=ae2:ItemMaterial.FluixCrystal -> crystalFluix
-ore=ae2:ItemMaterial.PurifiedFluixCrystal -> crystalPureFluix
-ore=mc:quartz -> crystalNetherQuartz
-ore=mc:wool:* -> blockWool
-ore=mc:stained_hardened_clay:* -> blockStainedHardenedClay
-ore=ae2:ItemMaterial.NetherQuartzDust -> dustNetherQuartz
-ore=ae2:ItemMaterial.CertusQuartzDust -> dustCertusQuartz
-ore=ae2:ItemMaterial.FluixDust -> dustFluix
-ore=ae2:tile.OreQuartz -> oreCertusQuartz
-ore=ae2:tile.OreQuartzCharged -> oreCertusQuartz
-
 group= mc:iron_ingot oredictionary:ingotCopper oredictionary:ingotTin oredictionary:ingotSilver oredictionary:ingotLead oredictionary:ingotBronze oredictionary:ingotBrass oredictionary:ingotNickel oredictionary:ingotInvar oredictionary:ingotAluminium -> metalIngots
 group= oredictionary:dustEnder oredictionary:dustEnderPearl -> dustEnder
 
@@ -42,10 +23,6 @@ exceptions=false
 
 # Error on Missing Items ( default is no because AE2 allows you to enable/disable items without modifying recipes. )
 erroronmissing=true
-
-ore= ae2:ItemPart.SemiDarkMonitor -> itemIlluminatedPanel
-ore= ae2:ItemPart.Monitor -> itemIlluminatedPanel
-ore= ae2:ItemPart.DarkMonitor -> itemIlluminatedPanel
 
 group= oredictionary:itemIlluminatedPanel -> monitor
 group= ae2:BlockInterface ae2:ItemPart.Interface -> interface
