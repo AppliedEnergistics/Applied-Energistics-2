@@ -274,8 +274,12 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 
 			if( capture )
 			{
-				ServerHelper.proxy.sendToAllNearExcept( null, this.tile.xCoord, this.tile.yCoord, this.tile.zCoord, 64, this.tile.getWorldObj(), new PacketTransitionEffect( entity.posX, entity.posY, entity.posZ, this.side, false ) );
-				this.storeEntityItem( (EntityItem) entity );
+				final boolean changed = this.storeEntityItem( (EntityItem) entity );
+
+				if( changed )
+				{
+					ServerHelper.proxy.sendToAllNearExcept( null, this.tile.xCoord, this.tile.yCoord, this.tile.zCoord, 64, this.tile.getWorldObj(), new PacketTransitionEffect( entity.posX, entity.posY, entity.posZ, this.side, false ) );
+				}
 			}
 		}
 	}
@@ -291,21 +295,25 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 	 *
 	 * @param entityItem {@link EntityItem} to store
 	 */
-	private void storeEntityItem( EntityItem entityItem )
+	private boolean storeEntityItem( EntityItem entityItem )
 	{
 		if( !entityItem.isDead )
 		{
-			this.storeItemStack( entityItem.getEntityItem() );
-			entityItem.setDead();
+			final IAEItemStack overflow = this.storeItemStack( entityItem.getEntityItem() );
+
+			return this.handleOverflow( entityItem, overflow );
 		}
+
+		return false;
 	}
 
 	/**
 	 * Stores an {@link ItemStack} inside the network.
 	 *
 	 * @param item {@link ItemStack} to store
+	 * @return the leftover items, which could not be stored inside the network
 	 */
-	private void storeItemStack( ItemStack item )
+	private IAEItemStack storeItemStack( ItemStack item )
 	{
 		final IAEItemStack itemToStore = AEItemStack.create( item );
 		try
@@ -314,31 +322,43 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 			final IEnergyGrid energy = this.proxy.getEnergy();
 			final IAEItemStack overflow = Platform.poweredInsert( energy, storage.getItemInventory(), itemToStore, this.mySrc );
 
-			this.spawnOverflowItemStack( overflow );
-
 			this.isAccepting = overflow == null;
+
+			return overflow;
 		}
 		catch( final GridAccessException e1 )
 		{
 			// :P
 		}
+
+		return null;
 	}
 
-	private void spawnOverflowItemStack( IAEItemStack overflow )
+	/**
+	 * Handles a possible overflow or none at all.
+	 * It will update the entity to match the leftover stack size as well as mark it as dead without any leftover
+	 * amount.
+	 *
+	 * @param entityItem the entity to update or destroy
+	 * @param overflow the leftover {@link IAEItemStack}
+	 * @return true, if the entity was changed otherwise false.
+	 */
+	private boolean handleOverflow( EntityItem entityItem, IAEItemStack overflow )
 	{
-		if( overflow == null )
+		if( overflow == null || overflow.getStackSize() == 0 )
 		{
-			return;
+			entityItem.setDead();
+			return true;
 		}
 
-		final TileEntity tileEntity = this.getTile();
-		final WorldServer world = (WorldServer) tileEntity.getWorldObj();
+		final int oldStackSize = entityItem.getEntityItem().stackSize;
+		final int newStackSize = (int) overflow.getStackSize();
+		final boolean changed = oldStackSize != newStackSize;
 
-		final int x = tileEntity.xCoord + this.side.offsetX;
-		final int y = tileEntity.yCoord + this.side.offsetY;
-		final int z = tileEntity.zCoord + this.side.offsetZ;
+		entityItem.getEntityItem().stackSize = newStackSize;
 
-		Platform.spawnDrops( world, x, y, z, Lists.newArrayList( overflow.getItemStack() ) );
+		return changed;
+
 	}
 
 	protected boolean isAnnihilationPlane( TileEntity blockTileEntity, ForgeDirection side )
