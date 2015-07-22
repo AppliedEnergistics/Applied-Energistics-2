@@ -108,11 +108,11 @@ public class AEItemResolver implements ISubItemResolver
 				}
 				if( itemName.equalsIgnoreCase( "ItemCrystalSeed.Nether" ) )
 				{
-					return new ResolverResult( "ItemCrystalSeed", ItemCrystalSeed.NETHER );
+					return ItemCrystalSeed.getResolver( ItemCrystalSeed.NETHER );
 				}
 				if( itemName.equalsIgnoreCase( "ItemCrystalSeed.Fluix" ) )
 				{
-					return new ResolverResult( "ItemCrystalSeed", ItemCrystalSeed.FLUIX );
+					return ItemCrystalSeed.getResolver( ItemCrystalSeed.FLUIX );
 				}
 
 				return null;
