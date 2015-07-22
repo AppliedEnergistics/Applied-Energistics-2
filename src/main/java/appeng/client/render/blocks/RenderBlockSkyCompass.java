@@ -19,6 +19,9 @@
 package appeng.client.render.blocks;
 
 
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.item.ItemStack;
@@ -73,7 +76,7 @@ public class RenderBlockSkyCompass extends BaseBlockRender<BlockSkyCompass, Tile
 			}
 		}
 
-		GL11.glEnable( 32826 ); // GL_RESCALE_NORMAL_EXT
+		GL11.glEnable( GL12.GL_RESCALE_NORMAL );
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
 
 		ResourceLocation loc = new ResourceLocation( "appliedenergistics2", "textures/models/compass.png" );
@@ -167,7 +170,7 @@ public class RenderBlockSkyCompass extends BaseBlockRender<BlockSkyCompass, Tile
 			this.model.renderAll( ( now / 50000.0f ) * (float) Math.PI * 500.0f );
 		}
 
-		GL11.glDisable( 32826 ); // GL_RESCALE_NORMAL_EXT
+		GL11.glDisable( GL12.GL_RESCALE_NORMAL );
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
 		*/
 	}
@@ -193,8 +196,9 @@ public class RenderBlockSkyCompass extends BaseBlockRender<BlockSkyCompass, Tile
 			return;
 		}
 
-		GL11.glEnable( 32826 /* GL_RESCALE_NORMAL_EXT */);
+		GL11.glEnable( GL12.GL_RESCALE_NORMAL );
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
+		GL11.glCullFace( GL11.GL_FRONT );
 
 		ResourceLocation loc = new ResourceLocation( "appliedenergistics2", "textures/models/compass.png" );
 
@@ -235,7 +239,8 @@ public class RenderBlockSkyCompass extends BaseBlockRender<BlockSkyCompass, Tile
 			this.model.renderAll( ( now / 500000.0f ) * (float) Math.PI * 500.0f );
 		}
 
-		GL11.glDisable( 32826 /* GL_RESCALE_NORMAL_EXT */);
+		GL11.glCullFace( GL11.GL_BACK );
+		GL11.glDisable( GL12.GL_RESCALE_NORMAL );
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
 	}
 
