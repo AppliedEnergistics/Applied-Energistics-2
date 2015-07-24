@@ -29,6 +29,7 @@ import appeng.api.definitions.ITileDefinition;
 import appeng.block.AEBaseTileBlock;
 import appeng.core.CommonHelper;
 import appeng.core.CreativeTab;
+import appeng.tile.AEBaseTile;
 import appeng.util.Platform;
 
 
@@ -82,6 +83,7 @@ public final class AETileBlockFeatureHandler implements IFeatureHandler
 			GameRegistry.registerBlock( this.featured, null, registryName );
 			GameRegistry.registerItem( this.definition.maybeItem().get(), registryName );
 			GameRegistry.registerTileEntity( this.featured.getTileEntityClass(), this.featured.toString() );
+			AEBaseTile.registerTileItem( this.featured.getTileEntityClass(), new BlockStackSrc( this.featured, 0, ActivityState.from( this.isFeatureAvailable() ) ) );
 		}
 	}
 }

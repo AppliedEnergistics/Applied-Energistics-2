@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -21,6 +21,7 @@ package appeng.client.render;
 
 import java.util.HashMap;
 import java.util.Map;
+import javax.annotation.Nullable;
 
 import org.lwjgl.opengl.GL11;
 
@@ -164,6 +165,7 @@ public class BusRenderer implements IItemRenderer
 		GL11.glPopMatrix();
 	}
 
+	@Nullable
 	public IPart getRenderer( ItemStack is, IPartItem c )
 	{
 		int id = ( Item.getIdFromItem( is.getItem() ) << Platform.DEF_OFFSET ) | is.getItemDamage();

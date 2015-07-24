@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -19,6 +19,7 @@
 package appeng.core.features;
 
 
+import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 
@@ -32,46 +33,68 @@ import appeng.util.Platform;
 
 public class ItemDefinition implements IItemDefinition
 {
-	private final Item item;
-	private final boolean enabled;
+	private final Optional<Item> item;
 
 	public ItemDefinition( Item item, ActivityState state )
 	{
 		Preconditions.checkNotNull( item );
 		Preconditions.checkNotNull( state );
 
-		this.item = item;
-		this.enabled = state == ActivityState.Enabled;
+		if( state == ActivityState.Enabled )
+		{
+			this.item = Optional.of( item );
+		}
+		else
+		{
+			this.item = Optional.absent();
+		}
 	}
 
 	@Override
 	public final Optional<Item> maybeItem()
 	{
-		return Optional.of( this.item );
+		return this.item;
 	}
 
 	@Override
 	public Optional<ItemStack> maybeStack( int stackSize )
 	{
-		if( this.enabled )
-		{
-			return Optional.of( new ItemStack( this.item ) );
-		}
-		else
-		{
-			return Optional.absent();
-		}
+		return this.item.transform( new ItemStackTransformer( stackSize ) );
+	}
+
+	@Override
+	public boolean isEnabled()
+	{
+		return this.item.isPresent();
 	}
 
 	@Override
 	public final boolean isSameAs( ItemStack comparableStack )
 	{
-		return this.enabled && Platform.isSameItemType( comparableStack, this.maybeStack( 1 ).get() );
+		return this.isEnabled() && Platform.isSameItemType( comparableStack, this.maybeStack( 1 ).get() );
 	}
 
 	@Override
 	public boolean isSameAs( IBlockAccess world, int x, int y, int z )
 	{
 		return false;
+	}
+
+	private static class ItemStackTransformer implements Function<Item, ItemStack>
+	{
+		private final int stackSize;
+
+		public ItemStackTransformer( int stackSize )
+		{
+			Preconditions.checkArgument( stackSize > 0 );
+
+			this.stackSize = stackSize;
+		}
+
+		@Override
+		public ItemStack apply( Item input )
+		{
+			return new ItemStack( input, this.stackSize );
+		}
 	}
 }

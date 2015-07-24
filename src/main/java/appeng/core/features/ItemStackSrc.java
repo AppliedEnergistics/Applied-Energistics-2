@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -21,7 +21,8 @@ package appeng.core.features;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.block.Block;
+import com.google.common.base.Preconditions;
+
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
@@ -29,39 +30,27 @@ import net.minecraft.item.ItemStack;
 public class ItemStackSrc implements IStackSrc
 {
 
-	public final Item item;
-	public final Block block;
+	private final Item item;
 	public final int damage;
+	private final boolean enabled;
 
-	public ItemStackSrc( Item i, int dmg )
+	public ItemStackSrc( Item item, int damage, ActivityState state )
 	{
-		this.block = null;
-		this.item = i;
-		this.damage = dmg;
-	}
+		Preconditions.checkNotNull( item );
+		Preconditions.checkArgument( damage >= 0 );
+		Preconditions.checkNotNull( state );
+		Preconditions.checkArgument( state == ActivityState.Enabled || state == ActivityState.Disabled );
 
-	public ItemStackSrc( Block b, int dmg )
-	{
-		this.item = null;
-		this.block = b;
-		this.damage = dmg;
+		this.item = item;
+		this.damage = damage;
+		this.enabled = state == ActivityState.Enabled;
 	}
 
 	@Nullable
 	@Override
 	public ItemStack stack( int i )
 	{
-		if( this.block != null )
-		{
-			return new ItemStack( this.block, i, this.damage );
-		}
-
-		if( this.item != null )
-		{
-			return new ItemStack( this.item, i, this.damage );
-		}
-
-		return null;
+		return new ItemStack( this.item, i, this.damage );
 	}
 
 	@Override
@@ -74,5 +63,11 @@ public class ItemStackSrc implements IStackSrc
 	public int getDamage()
 	{
 		return this.damage;
+	}
+
+	@Override
+	public boolean isEnabled()
+	{
+		return this.enabled;
 	}
 }

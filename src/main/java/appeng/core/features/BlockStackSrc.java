@@ -19,46 +19,56 @@
 package appeng.core.features;
 
 
+import javax.annotation.Nullable;
+
 import com.google.common.base.Preconditions;
 
+import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
-import appeng.items.materials.MaterialType;
 
-
-public class MaterialStackSrc implements IStackSrc
+public class BlockStackSrc implements IStackSrc
 {
-	private final MaterialType src;
 
-	public MaterialStackSrc( MaterialType src )
+	public final Block block;
+	public final int damage;
+	private final boolean enabled;
+
+	public BlockStackSrc( Block block, int damage, ActivityState state )
 	{
-		Preconditions.checkNotNull( src );
+		Preconditions.checkNotNull( block );
+		Preconditions.checkArgument( damage >= 0 );
+		Preconditions.checkNotNull( state );
+		Preconditions.checkArgument( state == ActivityState.Enabled || state == ActivityState.Disabled );
 
-		this.src = src;
+		this.block = block;
+		this.damage = damage;
+		this.enabled = state == ActivityState.Enabled;
 	}
 
+	@Nullable
 	@Override
-	public ItemStack stack( int stackSize )
+	public ItemStack stack( int i )
 	{
-		return this.src.stack( stackSize );
+		return new ItemStack( this.block, i, this.damage );
 	}
 
 	@Override
 	public Item getItem()
 	{
-		return this.src.itemInstance;
+		return null;
 	}
 
 	@Override
 	public int getDamage()
 	{
-		return this.src.damageValue;
+		return this.damage;
 	}
 
 	@Override
 	public boolean isEnabled()
 	{
-		return true;
+		return this.enabled;
 	}
 }
