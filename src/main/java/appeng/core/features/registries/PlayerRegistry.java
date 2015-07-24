@@ -35,13 +35,18 @@ public class PlayerRegistry implements IPlayerRegistry
 	@Override
 	public int getID( GameProfile username )
 	{
+		if( username == null || !username.isComplete() )
+		{
+			return -1;
+		}
+
 		return WorldData.instance().playerData().getPlayerID( username );
 	}
 
 	@Override
 	public int getID( EntityPlayer player )
 	{
-		return WorldData.instance().playerData().getPlayerID( player.getGameProfile() );
+		return this.getID( player.getGameProfile() );
 	}
 
 	@Nullable
