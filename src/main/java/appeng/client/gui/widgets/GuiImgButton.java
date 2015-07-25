@@ -39,6 +39,7 @@ import appeng.api.config.OperationMode;
 import appeng.api.config.PowerUnits;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.RelativeDirection;
+import appeng.api.config.SchedulingMode;
 import appeng.api.config.SearchBoxMode;
 import appeng.api.config.Settings;
 import appeng.api.config.SortDir;
@@ -158,6 +159,10 @@ public class GuiImgButton extends GuiButton implements ITooltip
 
 			this.registerApp( 16 * 14, Settings.PLACE_BLOCK, YesNo.YES, ButtonToolTips.BlockPlacement, ButtonToolTips.BlockPlacementYes );
 			this.registerApp( 16 * 14 + 1, Settings.PLACE_BLOCK, YesNo.NO, ButtonToolTips.BlockPlacement, ButtonToolTips.BlockPlacementNo );
+
+			this.registerApp( 16 * 15, Settings.SCHEDULING_MODE, SchedulingMode.DEFAULT, ButtonToolTips.SchedulingMode, ButtonToolTips.SchedulingModeDefault );
+			this.registerApp( 16 * 15 + 1, Settings.SCHEDULING_MODE, SchedulingMode.ROUNDROBIN, ButtonToolTips.SchedulingMode, ButtonToolTips.SchedulingModeRoundRobin );
+			this.registerApp( 16 * 15 + 2, Settings.SCHEDULING_MODE, SchedulingMode.RANDOM, ButtonToolTips.SchedulingMode, ButtonToolTips.SchedulingModeRandom );
 		}
 	}
 

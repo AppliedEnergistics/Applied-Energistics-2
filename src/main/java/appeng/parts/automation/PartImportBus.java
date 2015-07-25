@@ -59,8 +59,8 @@ import appeng.util.inv.IInventoryDestination;
 public class PartImportBus extends PartSharedItemBus implements IInventoryDestination
 {
 	private final BaseActionSource source;
-	IMEInventory<IAEItemStack> destination = null;
-	IAEItemStack lastItemChecked = null;
+	private IMEInventory<IAEItemStack> destination = null;
+	private IAEItemStack lastItemChecked = null;
 	private int itemToSend; // used in tickingRequest
 	private boolean worked; // used in tickingRequest
 
@@ -82,7 +82,7 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 			return false;
 		}
 
-		IAEItemStack out = this.destination.injectItems( this.lastItemChecked = AEApi.instance().storage().createItemStack( stack ), Actionable.SIMULATE, this.source );
+		final IAEItemStack out = this.destination.injectItems( this.lastItemChecked = AEApi.instance().storage().createItemStack( stack ), Actionable.SIMULATE, this.source );
 		if( out == null )
 		{
 			return true;
@@ -173,50 +173,32 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 	}
 
 	@Override
-	TickRateModulation doBusWork()
+	protected TickRateModulation doBusWork()
 	{
-		if( !this.proxy.isActive() )
+		if( !this.proxy.isActive() || !this.canDoBusWork() )
 		{
 			return TickRateModulation.IDLE;
 		}
 
 		this.worked = false;
 
-		InventoryAdaptor myAdaptor = this.getHandler();
-		FuzzyMode fzMode = (FuzzyMode) this.getConfigManager().getSetting( Settings.FUZZY_MODE );
+		final InventoryAdaptor myAdaptor = this.getHandler();
+		final FuzzyMode fzMode = (FuzzyMode) this.getConfigManager().getSetting( Settings.FUZZY_MODE );
 
 		if( myAdaptor != null )
 		{
 			try
 			{
-				switch( this.getInstalledUpgrades( Upgrades.SPEED ) )
-				{
-					default:
-					case 0:
-						this.itemToSend = 1;
-						break;
-					case 1:
-						this.itemToSend = 8;
-						break;
-					case 2:
-						this.itemToSend = 32;
-						break;
-					case 3:
-						this.itemToSend = 64;
-						break;
-					case 4:
-						this.itemToSend = 96;
-						break;
-				}
-
+				this.itemToSend = this.calculateItemsToSend();
 				this.itemToSend = Math.min( this.itemToSend, (int) ( 0.01 + this.proxy.getEnergy().extractAEPower( this.itemToSend, Actionable.SIMULATE, PowerMultiplier.CONFIG ) ) );
-				IMEMonitor<IAEItemStack> inv = this.proxy.getStorage().getItemInventory();
-				IEnergyGrid energy = this.proxy.getEnergy();
+
+				final IMEMonitor<IAEItemStack> inv = this.proxy.getStorage().getItemInventory();
+				final IEnergyGrid energy = this.proxy.getEnergy();
 
 				boolean Configured = false;
 				for( int x = 0; x < this.availableSlots(); x++ )
 				{
-					IAEItemStack ais = this.config.getAEStackInSlot( x );
+					final IAEItemStack ais = this.config.getAEStackInSlot( x );
 					if( ais != null && this.itemToSend > 0 )
 					{
 						Configured = true;
@@ -256,14 +238,9 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 
 	private boolean importStuff( InventoryAdaptor myAdaptor, IAEItemStack whatToImport, IMEMonitor<IAEItemStack> inv, IEnergySource energy, FuzzyMode fzMode )
 	{
-		int toSend = this.itemToSend;
-
-		if( toSend > 64 )
-		{
-			toSend = 64;
-		}
-
+		final int toSend = Math.min( this.itemToSend, 64 );
 		ItemStack newItems;
+
 		if( this.getInstalledUpgrades( Upgrades.FUZZY ) > 0 )
 		{
 			newItems = myAdaptor.removeSimilarItems( toSend, whatToImport == null ? null : whatToImport.getItemStack(), fzMode, this.configDestination( inv ) );

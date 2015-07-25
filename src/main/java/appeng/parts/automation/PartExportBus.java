@@ -35,6 +35,7 @@ import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.RedstoneMode;
+import appeng.api.config.SchedulingMode;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.api.config.YesNo;
@@ -66,10 +67,11 @@ import appeng.util.item.AEItemStack;
 
 public class PartExportBus extends PartSharedItemBus implements ICraftingRequester
 {
-	final MultiCraftingTracker cratingTracker = new MultiCraftingTracker( this, 9 );
-	final BaseActionSource mySrc;
-	long itemToSend = 1;
-	boolean didSomething = false;
+	private final MultiCraftingTracker craftingTracker = new MultiCraftingTracker( this, 9 );
+	private final BaseActionSource mySrc;
+	private long itemToSend = 1;
+	private boolean didSomething = false;
+	private int nextSlot = 0;
 
 	@Reflected
 	public PartExportBus( ItemStack is )
@@ -79,6 +81,7 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 		this.getConfigManager().registerSetting( Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE );
 		this.getConfigManager().registerSetting( Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL );
 		this.getConfigManager().registerSetting( Settings.CRAFT_ONLY, YesNo.NO );
+		this.getConfigManager().registerSetting( Settings.SCHEDULING_MODE, SchedulingMode.DEFAULT );
 		this.mySrc = new MachineSource( this );
 	}
 
@@ -86,76 +89,64 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 	public void readFromNBT( NBTTagCompound extra )
 	{
 		super.readFromNBT( extra );
-		this.cratingTracker.readFromNBT( extra );
+		this.craftingTracker.readFromNBT( extra );
+		this.nextSlot = extra.getInteger( "nextSlot" );
 	}
 
 	@Override
 	public void writeToNBT( NBTTagCompound extra )
 	{
 		super.writeToNBT( extra );
-		this.cratingTracker.writeToNBT( extra );
+		this.craftingTracker.writeToNBT( extra );
+		extra.setInteger( "nextSlot", this.nextSlot );
 	}
 
 	@Override
-	TickRateModulation doBusWork()
+	protected TickRateModulation doBusWork()
 	{
-		if( !this.proxy.isActive() )
+		if( !this.proxy.isActive() || !this.canDoBusWork() )
 		{
 			return TickRateModulation.IDLE;
 		}
 
-		this.itemToSend = 1;
+		this.itemToSend = this.calculateItemsToSend();
 		this.didSomething = false;
-
-		switch( this.getInstalledUpgrades( Upgrades.SPEED ) )
-		{
-			default:
-			case 0:
-				this.itemToSend = 1;
-				break;
-			case 1:
-				this.itemToSend = 8;
-				break;
-			case 2:
-				this.itemToSend = 32;
-				break;
-			case 3:
-				this.itemToSend = 64;
-				break;
-			case 4:
-				this.itemToSend = 96;
-				break;
-		}
 
 		try
 		{
-			InventoryAdaptor d = this.getHandler();
-			IMEMonitor<IAEItemStack> inv = this.proxy.getStorage().getItemInventory();
-			IEnergyGrid energy = this.proxy.getEnergy();
-			ICraftingGrid cg = this.proxy.getCrafting();
-			FuzzyMode fzMode = (FuzzyMode) this.getConfigManager().getSetting( Settings.FUZZY_MODE );
+			final InventoryAdaptor destination = this.getHandler();
+			final IMEMonitor<IAEItemStack> inv = this.proxy.getStorage().getItemInventory();
+			final IEnergyGrid energy = this.proxy.getEnergy();
+			final ICraftingGrid cg = this.proxy.getCrafting();
+			final FuzzyMode fzMode = (FuzzyMode) this.getConfigManager().getSetting( Settings.FUZZY_MODE );
+			final SchedulingMode schedulingMode = (SchedulingMode) this.getConfigManager().getSetting( Settings.SCHEDULING_MODE );
 
-			if( d != null )
+			if( destination != null )
 			{
-				for( int x = 0; x < this.availableSlots() && this.itemToSend > 0; x++ )
+				int x = 0;
+
+				for( x = 0; x < this.availableSlots() && this.itemToSend > 0; x++ )
 				{
-					IAEItemStack ais = this.config.getAEStackInSlot( x );
+					int slotToExport = this.getStartingSlot( schedulingMode, x );
+
+					final IAEItemStack ais = this.config.getAEStackInSlot( slotToExport );
+
 					if( ais == null || this.itemToSend <= 0 || this.craftOnly() )
 					{
 						if( this.isCraftingEnabled() )
 						{
-							this.didSomething = this.cratingTracker.handleCrafting( x, this.itemToSend, ais, d, this.getTile().getWorldObj(), this.proxy.getGrid(), cg, this.mySrc ) || this.didSomething;
+							this.didSomething = this.craftingTracker.handleCrafting( slotToExport, this.itemToSend, ais, destination, this.getTile().getWorldObj(), this.proxy.getGrid(), cg, this.mySrc ) || this.didSomething;
 						}
 						continue;
 					}
 
-					long before = this.itemToSend;
+					final long before = this.itemToSend;
 
 					if( this.getInstalledUpgrades( Upgrades.FUZZY ) > 0 )
 					{
 						for( IAEItemStack o : ImmutableList.copyOf( inv.getStorageList().findFuzzy( ais, fzMode ) ) )
 						{
-							this.pushItemIntoTarget( d, energy, inv, o );
+							this.pushItemIntoTarget( destination, energy, inv, o );
 							if( this.itemToSend <= 0 )
 							{
 								break;
@@ -164,14 +155,20 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 					}
 					else
 					{
-						this.pushItemIntoTarget( d, energy, inv, ais );
+						this.pushItemIntoTarget( destination, energy, inv, ais );
 					}
 
 					if( this.itemToSend == before && this.isCraftingEnabled() )
 					{
-						this.didSomething = this.cratingTracker.handleCrafting( x, this.itemToSend, ais, d, this.getTile().getWorldObj(), this.proxy.getGrid(), cg, this.mySrc ) || this.didSomething;
+						this.didSomething = this.craftingTracker.handleCrafting( slotToExport, this.itemToSend, ais, destination, this.getTile().getWorldObj(), this.proxy.getGrid(), cg, this.mySrc ) || this.didSomething;
 					}
 				}
+
+				this.updateSchedulingMode( schedulingMode, x );
+			}
+			else
+			{
+				return TickRateModulation.SLEEP;
 			}
 		}
 		catch( GridAccessException e )
@@ -195,7 +192,6 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 	@SideOnly( Side.CLIENT )
 	public void renderInventory( IPartRenderHelper rh, RenderBlocks renderer )
 	{
-
 		rh.setTexture( CableBusTextures.PartExportSides.getIcon(), CableBusTextures.PartExportSides.getIcon(), CableBusTextures.PartMonitorBack.getIcon(), this.is.getIconIndex(), CableBusTextures.PartExportSides.getIcon(), CableBusTextures.PartExportSides.getIcon() );
 
 		rh.setBounds( 4, 4, 12, 12, 12, 14 );
@@ -262,12 +258,6 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 	}
 
 	@Override
-	protected boolean isSleeping()
-	{
-		return this.getHandler() == null || super.isSleeping();
-	}
-
-	@Override
 	public RedstoneMode getRSMode()
 	{
 		return (RedstoneMode) this.getConfigManager().getSetting( Settings.REDSTONE_CONTROLLED );
@@ -279,66 +269,24 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 		return this.doBusWork();
 	}
 
-	private boolean craftOnly()
-	{
-		return this.getConfigManager().getSetting( Settings.CRAFT_ONLY ) == YesNo.YES;
-	}
-
-	private boolean isCraftingEnabled()
-	{
-		return this.getInstalledUpgrades( Upgrades.CRAFTING ) > 0;
-	}
-
-	private void pushItemIntoTarget( InventoryAdaptor d, IEnergyGrid energy, IMEInventory<IAEItemStack> inv, IAEItemStack ais )
-	{
-		ItemStack is = ais.getItemStack();
-		is.stackSize = (int) this.itemToSend;
-
-		ItemStack o = d.simulateAdd( is );
-		long canFit = o == null ? this.itemToSend : this.itemToSend - o.stackSize;
-
-		if( canFit > 0 )
-		{
-			ais = ais.copy();
-			ais.setStackSize( canFit );
-			IAEItemStack itemsToAdd = Platform.poweredExtraction( energy, inv, ais, this.mySrc );
-
-			if( itemsToAdd != null )
-			{
-				this.itemToSend -= itemsToAdd.getStackSize();
-
-				ItemStack failed = d.addItems( itemsToAdd.getItemStack() );
-				if( failed != null )
-				{
-					ais.setStackSize( failed.stackSize );
-					inv.injectItems( ais, Actionable.MODULATE, this.mySrc );
-				}
-				else
-				{
-					this.didSomething = true;
-				}
-			}
-		}
-	}
-
 	@Override
 	public ImmutableSet<ICraftingLink> getRequestedJobs()
 	{
-		return this.cratingTracker.getRequestedJobs();
+		return this.craftingTracker.getRequestedJobs();
 	}
 
 	@Override
 	public IAEItemStack injectCraftedItems( ICraftingLink link, IAEItemStack items, Actionable mode )
 	{
-		InventoryAdaptor d = this.getHandler();
+		final InventoryAdaptor d = this.getHandler();
 
 		try
 		{
 			if( d != null && this.proxy.isActive() )
 			{
-				IEnergyGrid energy = this.proxy.getEnergy();
+				final IEnergyGrid energy = this.proxy.getEnergy();
+				final double power = items.getStackSize();
 
-				double power = items.getStackSize();
 				if( energy.extractAEPower( power, mode, PowerMultiplier.CONFIG ) > power - 0.01 )
 				{
 					if( mode == Actionable.MODULATE )
@@ -360,6 +308,77 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 	@Override
 	public void jobStateChange( ICraftingLink link )
 	{
-		this.cratingTracker.jobStateChange( link );
+		this.craftingTracker.jobStateChange( link );
+	}
+
+	@Override
+	protected boolean isSleeping()
+	{
+		return this.getHandler() == null || super.isSleeping();
+	}
+
+	private boolean craftOnly()
+	{
+		return this.getConfigManager().getSetting( Settings.CRAFT_ONLY ) == YesNo.YES;
+	}
+
+	private boolean isCraftingEnabled()
+	{
+		return this.getInstalledUpgrades( Upgrades.CRAFTING ) > 0;
+	}
+
+	private void pushItemIntoTarget( InventoryAdaptor d, IEnergyGrid energy, IMEInventory<IAEItemStack> inv, IAEItemStack ais )
+	{
+		final ItemStack is = ais.getItemStack();
+		is.stackSize = (int) this.itemToSend;
+
+		final ItemStack o = d.simulateAdd( is );
+		long canFit = o == null ? this.itemToSend : this.itemToSend - o.stackSize;
+
+		if( canFit > 0 )
+		{
+			ais = ais.copy();
+			ais.setStackSize( canFit );
+			IAEItemStack itemsToAdd = Platform.poweredExtraction( energy, inv, ais, this.mySrc );
+
+			if( itemsToAdd != null )
+			{
+				this.itemToSend -= itemsToAdd.getStackSize();
+
+				final ItemStack failed = d.addItems( itemsToAdd.getItemStack() );
+				if( failed != null )
+				{
+					ais.setStackSize( failed.stackSize );
+					inv.injectItems( ais, Actionable.MODULATE, this.mySrc );
+				}
+				else
+				{
+					this.didSomething = true;
+				}
+			}
+		}
+	}
+
+	private int getStartingSlot( SchedulingMode schedulingMode, int x )
+	{
+		if( schedulingMode == SchedulingMode.RANDOM )
+		{
+			return Platform.getRandom().nextInt( this.availableSlots() );
+		}
+
+		if( schedulingMode == SchedulingMode.ROUNDROBIN )
+		{
+			return ( this.nextSlot + x ) % this.availableSlots();
+		}
+
+		return x;
+	}
+
+	private void updateSchedulingMode( SchedulingMode schedulingMode, int x )
+	{
+		if( schedulingMode == SchedulingMode.ROUNDROBIN )
+		{
+			this.nextSlot = ( this.nextSlot + x ) % this.availableSlots();
+		}
 	}
 }
