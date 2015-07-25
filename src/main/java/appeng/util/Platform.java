@@ -1867,6 +1867,13 @@ public class Platform
 			{
 				return true;
 			}
+
+			// IC2 uses 32767 as a wildcard meta in its recipes
+			if( that.getItemDamage() == 32767 || other.getItemDamage() == 32767 )
+			{
+				return true;
+			}
+
 			return that.getItemDamage() == other.getItemDamage();
 		}
 		return false;
