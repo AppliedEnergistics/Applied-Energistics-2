@@ -21,10 +21,11 @@ package appeng.core.sync.packets;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-
+import net.minecraftforge.event.ForgeEventFactory;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 import appeng.api.AEApi;
 import appeng.api.definitions.IComparableDefinition;
 import appeng.api.definitions.IItems;
@@ -89,8 +90,12 @@ public class PacketClick extends AppEngPacket
 		{
 			if( is.getItem() instanceof ToolNetworkTool )
 			{
-				ToolNetworkTool tnt = (ToolNetworkTool) is.getItem();
-				tnt.serverSideToolLogic( is, player, player.worldObj, this.x, this.y, this.z, this.side, this.hitX, this.hitY, this.hitZ );
+				PlayerInteractEvent event = ForgeEventFactory.onPlayerInteract( player, Action.RIGHT_CLICK_BLOCK, this.x, this.y, this.z, this.side, player.worldObj );
+				if ( !event.isCanceled() )
+				{
+					ToolNetworkTool tnt = (ToolNetworkTool) is.getItem();
+					tnt.serverSideToolLogic( is, player, player.worldObj, this.x, this.y, this.z, this.side, this.hitX, this.hitY, this.hitZ );
+				}
 			}
 
 			else if( maybeMemoryCard.isSameAs( is ) )
