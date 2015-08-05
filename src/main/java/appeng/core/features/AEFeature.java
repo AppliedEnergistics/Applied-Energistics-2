@@ -97,6 +97,7 @@ public enum AEFeature
 	P2PTunnelLiquids( "P2PTunnels" ),
 	P2PTunnelLight( "P2PTunnels" ),
 	P2PTunnelOpenComputers( "P2PTunnels" ),
+	P2PTunnelPressure( "P2PTunnels" ),
 
 	MassCannonBlockDamage( "BlockFeatures" ),
 	TinyTNTBlockDamage( "BlockFeatures" ),

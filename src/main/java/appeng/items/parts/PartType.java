@@ -154,7 +154,9 @@ public enum PartType
 
 	P2PTunnelLight( 467, EnumSet.of( AEFeature.P2PTunnel, AEFeature.P2PTunnelLight ), EnumSet.noneOf( IntegrationType.class ), PartP2PLight.class, GuiText.LightTunnel ),
 
-	//P2PTunnelOpenComputers( 468, EnumSet.of( AEFeature.P2PTunnel, AEFeature.P2PTunnelOpenComputers ), EnumSet.of( IntegrationType.OpenComputers ), PartP2POpenComputers.class, GuiText.OCTunnel ),
+//	P2PTunnelOpenComputers( 468, EnumSet.of( AEFeature.P2PTunnel, AEFeature.P2PTunnelOpenComputers ), EnumSet.of( IntegrationType.OpenComputers ), PartP2POpenComputers.class, GuiText.OCTunnel ),
+
+//	P2PTunnelPressure( 469, EnumSet.of( AEFeature.P2PTunnel, AEFeature.P2PTunnelPressure ), EnumSet.of( IntegrationType.PneumaticCraft ), PartP2PPressure.class, GuiText.PressureTunnel ),
 
 	InterfaceTerminal( 480, EnumSet.of( AEFeature.InterfaceTerminal ), EnumSet.noneOf( IntegrationType.class ), PartInterfaceTerminal.class );
 

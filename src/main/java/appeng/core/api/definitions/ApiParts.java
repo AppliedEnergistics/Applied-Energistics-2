@@ -60,7 +60,8 @@ public final class ApiParts implements IParts
 	//private final IItemDefinition p2PTunnelEU;
 	//private final IItemDefinition p2PTunnelRF;
 	private final IItemDefinition p2PTunnelLight;
-	//private final IItemDefinition p2PTunnelOpenComputers;
+//	private final IItemDefinition p2PTunnelOpenComputers;
+//	private final IItemDefinition p2PTunnelPneumaticCraft;
 	private final IItemDefinition cableAnchor;
 	private final IItemDefinition monitor;
 	private final IItemDefinition semiDarkMonitor;
@@ -104,6 +105,7 @@ public final class ApiParts implements IParts
 		//this.p2PTunnelRF = new DamagedItemDefinition( itemMultiPart.createPart( PartType.P2PTunnelRF ) );
 		this.p2PTunnelLight = new DamagedItemDefinition( "part.tunnel.light", itemMultiPart.createPart( PartType.P2PTunnelLight ) );
 		//this.p2PTunnelOpenComputers = new DamagedItemDefinition( itemMultiPart.createPart( PartType.P2PTunnelOpenComputers ) );
+//		this.p2PTunnelPneumaticCraft = new DamagedItemDefinition( itemMultiPart.createPart( PartType.P2PTunnelPressure ) );
 		this.cableAnchor = new DamagedItemDefinition( "part.cable_anchor", itemMultiPart.createPart( PartType.CableAnchor ) );
 		this.monitor = new DamagedItemDefinition( "part.monitor", itemMultiPart.createPart( PartType.Monitor ) );
 		this.semiDarkMonitor = new DamagedItemDefinition( "part.monitor.semi_dark", itemMultiPart.createPart( PartType.SemiDarkMonitor ) );
@@ -283,6 +285,12 @@ public final class ApiParts implements IParts
 	public IItemDefinition p2PTunnelOpenComputers()
 	{
 		return this.p2PTunnelOpenComputers;
+	}
+
+	@Override
+	public IItemDefinition p2PTunnelPneumaticCraft()
+	{
+		return this.p2PTunnelPneumaticCraft;
 	}
 */
 	

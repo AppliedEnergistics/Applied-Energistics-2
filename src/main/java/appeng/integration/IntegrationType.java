@@ -63,7 +63,9 @@ public enum IntegrationType
 
 	BetterStorage( IntegrationSide.BOTH, "BetterStorage", "betterstorage" ),
 
-	OpenComputers( IntegrationSide.BOTH, "OpenComputers", "OpenComputers" );
+	OpenComputers( IntegrationSide.BOTH, "OpenComputers", "OpenComputers" ),
+
+	PneumaticCraft( IntegrationSide.BOTH, "PneumaticCraft", "PneumaticCraft" );
 
 	public final IntegrationSide side;
 	public final String dspName;
