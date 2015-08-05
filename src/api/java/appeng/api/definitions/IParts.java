@@ -86,6 +86,8 @@ public interface IParts
 
 	IItemDefinition p2PTunnelOpenComputers();
 
+	IItemDefinition p2PTunnelPneumaticCraft();
+
 	IItemDefinition cableAnchor();
 
 	IItemDefinition monitor();

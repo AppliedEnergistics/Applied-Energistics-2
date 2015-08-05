@@ -34,5 +34,6 @@ public enum TunnelType
 	ITEM, // Item Tunnel
 	LIGHT, // Light Tunnel
 	BUNDLED_REDSTONE, // Bundled Redstone Tunnel
-	COMPUTER_MESSAGE // Computer Message Tunnel
+	COMPUTER_MESSAGE, // Computer Message Tunnel
+	PRESSURE // PneumaticCraft Tunnel
 }
