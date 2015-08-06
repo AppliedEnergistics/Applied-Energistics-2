@@ -349,7 +349,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 		final Class<? extends AEBaseTile> clazz = this.getClass();
 		final Map<TileEventType, List<AETileEventHandler>> storedHandlers = HANDLERS.get( clazz );
 
-		if ( storedHandlers == null )
+		if( storedHandlers == null )
 		{
 			final Map<TileEventType, List<AETileEventHandler>> newStoredHandlers = new EnumMap<TileEventType, List<AETileEventHandler>>( TileEventType.class );
 
@@ -373,7 +373,8 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	}
 
 	@Nonnull
-	private List<AETileEventHandler> getHandlers( Map<TileEventType, List<AETileEventHandler>> eventToHandlers, TileEventType event ) {
+	private List<AETileEventHandler> getHandlers( Map<TileEventType, List<AETileEventHandler>> eventToHandlers, TileEventType event )
+	{
 		final List<AETileEventHandler> oldHandlers = eventToHandlers.get( event );
 
 		if( oldHandlers == null )
@@ -434,7 +435,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	/**
 	 * depending on the from, different settings will be accepted, don't call this with null
 	 *
-	 * @param from     source of settings
+	 * @param from source of settings
 	 * @param compound compound of source
 	 */
 	public void uploadSettings( SettingsFrom from, NBTTagCompound compound )
@@ -473,10 +474,10 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	/**
 	 * returns the contents of the tile entity, into the world, defaults to dropping everything in the inventory.
 	 *
-	 * @param w     world
-	 * @param x     x pos of tile entity
-	 * @param y     y pos of tile entity
-	 * @param z     z pos of tile entity
+	 * @param w world
+	 * @param x x pos of tile entity
+	 * @param y y pos of tile entity
+	 * @param z z pos of tile entity
 	 * @param drops drops of tile entity
 	 */
 	@Override

@@ -79,7 +79,7 @@ public enum AEFeature
 
 	AEFeature( String cat )
 	{
-		this(cat, true);
+		this( cat, true );
 	}
 
 	AEFeature( String cat, boolean defaultValue )

@@ -279,7 +279,9 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	public boolean isBlocked( ForgeDirection side )
 	{
 		return !this.ImmibisMicroblocks_isSideOpen( side.ordinal() );
-	}	@Override
+	}
+
+	@Override
 	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool( World w, int x, int y, int z, Entity e, boolean visual )
 	{
 		return this.cb.getSelectedBoundingBoxesFromPool( false, true, e, visual );
@@ -334,7 +336,9 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 		}
 
 		this.getWorldObj().setBlock( this.xCoord, this.yCoord, this.zCoord, Platform.AIR_BLOCK );
-	}	@Override
+	}
+
+	@Override
 	public void addCollidingBlockToList( World w, int x, int y, int z, AxisAlignedBB bb, List<AxisAlignedBB> out, Entity e )
 	{
 		for( AxisAlignedBB bx : this.getSelectedBoundingBoxesFromPool( w, x, y, z, e, false ) )
@@ -373,8 +377,5 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	{
 		return this.cb.recolourBlock( side, colour, who );
 	}
-
-
-
 
 }

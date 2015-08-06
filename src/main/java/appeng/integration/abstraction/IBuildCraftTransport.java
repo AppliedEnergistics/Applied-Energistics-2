@@ -90,7 +90,7 @@ public interface IBuildCraftTransport
 	IIcon getCobbleStructurePipeTexture();
 
 	/**
-	 * @param te  the to be checked {@link TileEntity}
+	 * @param te the to be checked {@link TileEntity}
 	 * @param dir direction of the {@link TileEntity}
 	 *
 	 * @return {@code true} if {@code te} is a buildcraft pipe, but not plugged

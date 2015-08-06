@@ -46,11 +46,11 @@ public final class Press extends InscriberProcess
 	@Override
 	public void register() throws RegistrationError, MissingIngredientError
 	{
-		if ( this.getImprintable() == null )
+		if( this.getImprintable() == null )
 		{
 			return;
 		}
-		if ( this.getOutput() == null )
+		if( this.getOutput() == null )
 		{
 			return;
 		}

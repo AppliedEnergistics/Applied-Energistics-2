@@ -176,7 +176,7 @@ public final class ItemMultiMaterial extends AEBaseItem implements IStorageCompo
 		Preconditions.checkState( !mat.isRegistered(), "Cannot create the same material twice." );
 
 		boolean enabled = true;
-		
+
 		for( AEFeature f : mat.getFeature() )
 		{
 			enabled = enabled && AEConfig.instance.isFeatureEnabled( f );
@@ -190,7 +190,6 @@ public final class ItemMultiMaterial extends AEBaseItem implements IStorageCompo
 			mat.markReady();
 			int newMaterialNum = mat.damageValue;
 
-			
 			if( this.dmgToMaterial.get( newMaterialNum ) == null )
 			{
 				this.dmgToMaterial.put( newMaterialNum, mat );

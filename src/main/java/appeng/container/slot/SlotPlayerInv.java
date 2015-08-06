@@ -21,8 +21,8 @@ package appeng.container.slot;
 
 import net.minecraft.inventory.IInventory;
 
-// there is nothing special about this slot, its simply used to represent the players inventory, vs a container slot.
 
+// there is nothing special about this slot, its simply used to represent the players inventory, vs a container slot.
 
 public class SlotPlayerInv extends AppEngSlot
 {

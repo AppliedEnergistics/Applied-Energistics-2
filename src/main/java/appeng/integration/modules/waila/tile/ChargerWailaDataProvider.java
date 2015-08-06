@@ -46,10 +46,10 @@ public final class ChargerWailaDataProvider extends BaseWailaDataProvider
 	/**
 	 * Displays the holding item and its tooltip
 	 *
-	 * @param itemStack      stack of charger
+	 * @param itemStack stack of charger
 	 * @param currentToolTip unmodified tooltip
-	 * @param accessor       wrapper information
-	 * @param config         config option
+	 * @param accessor wrapper information
+	 * @param config config option
 	 *
 	 * @return modified tooltip
 	 */

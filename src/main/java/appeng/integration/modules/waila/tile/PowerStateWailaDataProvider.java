@@ -44,10 +44,10 @@ public final class PowerStateWailaDataProvider extends BaseWailaDataProvider
 	/**
 	 * Adds state to the tooltip
 	 *
-	 * @param itemStack      stack of power state
+	 * @param itemStack stack of power state
 	 * @param currentToolTip to be added to tooltip
-	 * @param accessor       wrapper for various information
-	 * @param config         config settings
+	 * @param accessor wrapper for various information
+	 * @param config config settings
 	 *
 	 * @return modified tooltip
 	 */

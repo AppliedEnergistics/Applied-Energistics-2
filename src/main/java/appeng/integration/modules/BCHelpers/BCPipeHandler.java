@@ -37,7 +37,7 @@ public class BCPipeHandler implements IExternalStorageHandler
 	@Override
 	public boolean canHandle( TileEntity te, ForgeDirection d, StorageChannel chan, BaseActionSource mySrc )
 	{
-		if ( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.BuildCraftTransport ) )
+		if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.BuildCraftTransport ) )
 		{
 			final IBuildCraftTransport bc = (IBuildCraftTransport) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.BuildCraftTransport );
 

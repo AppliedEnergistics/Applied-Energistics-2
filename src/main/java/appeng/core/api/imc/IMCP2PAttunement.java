@@ -18,12 +18,12 @@
 
 /* Example:
 
-FMLInterModComms.sendMessage( "appliedenergistics2", "add-p2p-attunement-me", new ItemStack( myBlockOrItem ) );
-FMLInterModComms.sendMessage( "appliedenergistics2", "add-p2p-attunement-bc-power", new ItemStack( myBlockOrItem ) );
-FMLInterModComms.sendMessage( "appliedenergistics2", "add-p2p-attunement-ic2-power", new ItemStack( myBlockOrItem ) );
-FMLInterModComms.sendMessage( "appliedenergistics2", "add-p2p-attunement-redstone", new ItemStack( myBlockOrItem ) );
-FMLInterModComms.sendMessage( "appliedenergistics2", "add-p2p-attunement-fluid", new ItemStack( myBlockOrItem ) );
-FMLInterModComms.sendMessage( "appliedenergistics2", "add-p2p-attunement-item", new ItemStack( myBlockOrItem ) );
+ FMLInterModComms.sendMessage( "appliedenergistics2", "add-p2p-attunement-me", new ItemStack( myBlockOrItem ) );
+ FMLInterModComms.sendMessage( "appliedenergistics2", "add-p2p-attunement-bc-power", new ItemStack( myBlockOrItem ) );
+ FMLInterModComms.sendMessage( "appliedenergistics2", "add-p2p-attunement-ic2-power", new ItemStack( myBlockOrItem ) );
+ FMLInterModComms.sendMessage( "appliedenergistics2", "add-p2p-attunement-redstone", new ItemStack( myBlockOrItem ) );
+ FMLInterModComms.sendMessage( "appliedenergistics2", "add-p2p-attunement-fluid", new ItemStack( myBlockOrItem ) );
+ FMLInterModComms.sendMessage( "appliedenergistics2", "add-p2p-attunement-item", new ItemStack( myBlockOrItem ) );
 
  */
 

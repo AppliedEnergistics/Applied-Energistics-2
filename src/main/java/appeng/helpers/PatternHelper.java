@@ -373,7 +373,6 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 		ACCEPT, DECLINE, TEST
 	}
 
-
 	static class TestLookup
 	{
 

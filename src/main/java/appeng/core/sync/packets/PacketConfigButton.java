@@ -67,7 +67,7 @@ public final class PacketConfigButton extends AppEngPacket
 	public void serverPacketData( INetworkInfo manager, AppEngPacket packet, EntityPlayer player )
 	{
 		EntityPlayerMP sender = (EntityPlayerMP) player;
-		if ( sender.openContainer instanceof AEBaseContainer )
+		if( sender.openContainer instanceof AEBaseContainer )
 		{
 			final AEBaseContainer baseContainer = (AEBaseContainer) sender.openContainer;
 			if( baseContainer.getTarget() instanceof IConfigurableObject )

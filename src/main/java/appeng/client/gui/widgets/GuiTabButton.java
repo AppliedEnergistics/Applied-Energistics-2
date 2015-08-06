@@ -56,11 +56,11 @@ public class GuiTabButton extends GuiButton implements ITooltip
 	/**
 	 * Using itemstack as an icon
 	 *
-	 * @param x       x pos of button
-	 * @param y       y pos of button
-	 * @param ico     used icon
+	 * @param x x pos of button
+	 * @param y y pos of button
+	 * @param ico used icon
 	 * @param message mouse over message
-	 * @param ir      renderer
+	 * @param ir renderer
 	 */
 	public GuiTabButton( int x, int y, ItemStack ico, String message, RenderItem ir )
 	{

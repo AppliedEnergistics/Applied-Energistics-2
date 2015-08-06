@@ -30,7 +30,7 @@ public enum PlayerMessages
 	isNowLocked, isNowUnlocked,
 	AmmoDepleted,
 	CommunicationError, OutOfRange, DeviceNotPowered, DeviceNotWirelessTerminal, DeviceNotLinked, StationCanNotBeLocated,
-	SettingCleared,;
+	SettingCleared, ;
 
 	public IChatComponent get()
 	{

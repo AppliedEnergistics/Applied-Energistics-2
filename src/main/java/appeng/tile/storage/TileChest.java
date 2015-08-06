@@ -866,7 +866,6 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 		private static final long serialVersionUID = 7995805326136526631L;
 	}
 
-
 	class ChestNetNotifier<T extends IAEStack<T>> implements IMEMonitorHandlerReceiver<T>
 	{
 
@@ -918,7 +917,6 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 			// not used here
 		}
 	}
-
 
 	class ChestMonitorHandler<T extends IAEStack> extends MEMonitorHandler<T>
 	{

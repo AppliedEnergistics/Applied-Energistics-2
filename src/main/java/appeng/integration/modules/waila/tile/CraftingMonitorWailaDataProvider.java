@@ -45,10 +45,10 @@ public final class CraftingMonitorWailaDataProvider extends BaseWailaDataProvide
 	/**
 	 * Displays the item currently crafted by the CPU cluster
 	 *
-	 * @param itemStack      stack of crafting monitor
+	 * @param itemStack stack of crafting monitor
 	 * @param currentToolTip unmodified tooltip
-	 * @param accessor       information wrapper
-	 * @param config         config option
+	 * @param accessor information wrapper
+	 * @param config config option
 	 *
 	 * @return modified tooltip
 	 */

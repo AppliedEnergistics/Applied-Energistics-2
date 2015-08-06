@@ -87,7 +87,6 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 
 		/*
 		 * Super hackery.
-		 *
 		 * is.itemID = appeng.api.Materials.matQuartz.itemID; damageValue = is.getItemDamage(); is.itemID = itemID;
 		 */
 
@@ -478,7 +477,8 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 	{
 		if( ia instanceof AEItemStack )
 		{
-			return ( (AEItemStack) ia ).def.equals( this.def );// && def.tagCompound == ((AEItemStack) ia).def.tagCompound;
+			return ( (AEItemStack) ia ).def.equals( this.def );// && def.tagCompound == ((AEItemStack)
+																// ia).def.tagCompound;
 		}
 		else if( ia instanceof ItemStack )
 		{

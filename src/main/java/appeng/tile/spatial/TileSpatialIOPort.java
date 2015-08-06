@@ -179,7 +179,7 @@ public class TileSpatialIOPort extends AENetworkInvTile implements Callable
 	@Override
 	public boolean isItemValidForSlot( int i, ItemStack itemstack )
 	{
-		return ( i == 0 && this.isSpatialCell( itemstack ) );
+		return( i == 0 && this.isSpatialCell( itemstack ) );
 	}
 
 	@Override

@@ -1,3 +1,4 @@
+
 package appeng.core.features.registries.entries;
 
 
@@ -94,7 +95,7 @@ public class InscriberRecipe implements IInscriberRecipe
 		{
 			return true;
 		}
-		if( !(o instanceof IInscriberRecipe) )
+		if( !( o instanceof IInscriberRecipe ) )
 		{
 			return false;
 		}
@@ -113,7 +114,7 @@ public class InscriberRecipe implements IInscriberRecipe
 		{
 			return false;
 		}
-		if( !this.maybeBot.equals( that.getBottomOptional()) )
+		if( !this.maybeBot.equals( that.getBottomOptional() ) )
 		{
 			return false;
 		}

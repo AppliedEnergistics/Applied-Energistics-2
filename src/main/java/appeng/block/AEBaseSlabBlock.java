@@ -56,21 +56,22 @@ public class AEBaseSlabBlock extends BlockSlab implements IAEFeature
 		this.setResistance( block.getExplosionResistance( null ) * 5.0F / 3.0F );
 		this.setStepSound( block.stepSound );
 		this.useNeighborBrightness = true;
-		if (!field_150004_a) this.doubleSlabs = new AEBaseSlabBlock( block, meta, features, true, name + ".double" ).setSlabs(this);
+		if( !field_150004_a )
+			this.doubleSlabs = new AEBaseSlabBlock( block, meta, features, true, name + ".double" ).setSlabs( this );
 		this.features = !field_150004_a ? new SlabBlockFeatureHandler( features, this ) : null;
 	}
 
-	public AEBaseSlabBlock setSlabs(AEBaseSlabBlock slabs)
+	public AEBaseSlabBlock setSlabs( AEBaseSlabBlock slabs )
 	{
 		this.slabs = slabs;
 		return this;
 	}
-	
+
 	public AEBaseSlabBlock slabs()
 	{
 		return slabs;
 	}
-	
+
 	public AEBaseSlabBlock doubleSlabs()
 	{
 		return doubleSlabs;
@@ -89,36 +90,40 @@ public class AEBaseSlabBlock extends BlockSlab implements IAEFeature
 	}
 
 	@Override
-	public IIcon getIcon(int dir, int meta)
+	public IIcon getIcon( int dir, int meta )
 	{
 		return block.getIcon( dir, this.meta );
 	}
 
 	@Override
-	public String func_150002_b(int p_150002_1_)
+	public String func_150002_b( int p_150002_1_ )
 	{
 		return this.getUnlocalizedName();
 	}
 
 	@Override
-	public void registerBlockIcons(IIconRegister reg) { }
-
-	@Override
-	public Item getItemDropped(int meta, Random rand, int fortune)
+	public void registerBlockIcons( IIconRegister reg )
 	{
-		return this.field_150004_a ? Item.getItemFromBlock(this.slabs) : Item.getItemFromBlock(this);
 	}
 
 	@Override
-	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z)
+	public Item getItemDropped( int meta, Random rand, int fortune )
 	{
-		AEBaseSlabBlock block = (AEBaseSlabBlock) world.getBlock(x, y, z);
+		return this.field_150004_a ? Item.getItemFromBlock( this.slabs ) : Item.getItemFromBlock( this );
+	}
 
-		if (block == null) return null;
-		if (block.field_150004_a) block = this.slabs;
+	@Override
+	public ItemStack getPickBlock( MovingObjectPosition target, World world, int x, int y, int z )
+	{
+		AEBaseSlabBlock block = (AEBaseSlabBlock) world.getBlock( x, y, z );
 
-		int meta = world.getBlockMetadata(x, y, z) & 7;
-		return new ItemStack(block, 1, meta);
+		if( block == null )
+			return null;
+		if( block.field_150004_a )
+			block = this.slabs;
+
+		int meta = world.getBlockMetadata( x, y, z ) & 7;
+		return new ItemStack( block, 1, meta );
 	}
 
 	public String name()

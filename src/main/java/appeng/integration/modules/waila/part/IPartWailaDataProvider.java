@@ -34,7 +34,8 @@ import appeng.api.parts.IPart;
 
 
 /**
- * An abstraction layer of the {@link appeng.integration.modules.waila.part.IPartWailaDataProvider} for {@link appeng.api.parts.IPart}.
+ * An abstraction layer of the {@link appeng.integration.modules.waila.part.IPartWailaDataProvider} for
+ * {@link appeng.api.parts.IPart}.
  *
  * @author thatsIch
  * @version rv2

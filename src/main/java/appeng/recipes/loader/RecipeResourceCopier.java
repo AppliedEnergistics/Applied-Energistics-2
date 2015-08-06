@@ -78,9 +78,9 @@ public class RecipeResourceCopier
 	 *
 	 * @param destination destination folder to which the recipes are copied to
 	 *
-	 * @throws URISyntaxException       {@see #getResourceListing}
-	 * @throws IOException              {@see #getResourceListing} and if copying the detected resource to file is not possible
-	 * @throws NullPointerException     if either parameter is <tt>null</tt>
+	 * @throws URISyntaxException {@see #getResourceListing}
+	 * @throws IOException {@see #getResourceListing} and if copying the detected resource to file is not possible
+	 * @throws NullPointerException if either parameter is <tt>null</tt>
 	 * @throws IllegalArgumentException if destination is not a directory
 	 */
 	public void copyTo( @Nonnull File destination ) throws URISyntaxException, IOException
@@ -113,12 +113,12 @@ public class RecipeResourceCopier
 	 * Works for regular files and also JARs.
 	 *
 	 * @param clazz Any java class that lives in the same place as the resources you want.
-	 * @param path  Should end with "/", but not start with one.
+	 * @param path Should end with "/", but not start with one.
 	 *
 	 * @return Just the name of each member item, not the full paths.
 	 *
-	 * @throws URISyntaxException            if it is a file path and the URL can not be converted to URI
-	 * @throws IOException                   if jar path can not be decoded
+	 * @throws URISyntaxException if it is a file path and the URL can not be converted to URI
+	 * @throws IOException if jar path can not be decoded
 	 * @throws UnsupportedOperationException if it is neither in jar nor in file path
 	 */
 	@Nonnull
@@ -136,28 +136,31 @@ public class RecipeResourceCopier
 
 		if( dirURL == null )
 		{
-		/*
-		 * In case of a jar file, we can't actually find a directory.
-         * Have to assume the same jar as clazz.
-         */
+			/*
+			 * In case of a jar file, we can't actually find a directory.
+			 * Have to assume the same jar as clazz.
+			 */
 			final String me = DOT_COMPILE_PATTERN.matcher( clazz.getName() ).replaceAll( "/" ) + ".class";
 			dirURL = clazz.getClassLoader().getResource( me );
 		}
 
 		if( dirURL != null && dirURL.getProtocol().equals( "jar" ) )
 		{
-		/* A JAR path */
-			final String jarPath = dirURL.getPath().substring( 5, dirURL.getPath().indexOf( '!' ) ); //strip out only the JAR file
+			/* A JAR path */
+			final String jarPath = dirURL.getPath().substring( 5, dirURL.getPath().indexOf( '!' ) ); // strip out only
+																										// the JAR file
 			final JarFile jar = new JarFile( URLDecoder.decode( jarPath, "UTF-8" ) );
 			try
 			{
-				final Enumeration<JarEntry> entries = jar.entries(); //gives ALL entries in jar
-				final Collection<String> result = new HashSet<String>( INITIAL_RESOURCE_CAPACITY ); //avoid duplicates in case it is a subdirectory
+				final Enumeration<JarEntry> entries = jar.entries(); // gives ALL entries in jar
+				final Collection<String> result = new HashSet<String>( INITIAL_RESOURCE_CAPACITY ); // avoid duplicates
+																									// in case it is a
+																									// subdirectory
 				while( entries.hasMoreElements() )
 				{
 					final String name = entries.nextElement().getName();
 					if( name.startsWith( path ) )
-					{ //filter according to the path
+					{ // filter according to the path
 						String entry = name.substring( path.length() );
 						final int checkSubDir = entry.indexOf( '/' );
 						if( checkSubDir >= 0 )

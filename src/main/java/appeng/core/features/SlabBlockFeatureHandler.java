@@ -42,7 +42,7 @@ public class SlabBlockFeatureHandler implements IFeatureHandler
 	{
 		final ActivityState state = new FeaturedActiveChecker( features ).getActivityState();
 		this.slabs = slabs;
-		this.extractor = new FeatureNameExtractor( slabs.getClass(), Optional.<String>absent());
+		this.extractor = new FeatureNameExtractor( slabs.getClass(), Optional.<String>absent() );
 		this.enabled = state == ActivityState.Enabled;
 		this.definition = new BlockDefinition( slabs, state );
 	}
@@ -65,8 +65,8 @@ public class SlabBlockFeatureHandler implements IFeatureHandler
 		if( this.enabled )
 		{
 			this.slabs.setCreativeTab( CreativeTab.instance );
-			GameRegistry.registerBlock( slabs, AEBaseItemBlockSlab.class, "tile." + slabs.name(), slabs, slabs.doubleSlabs(), false);
-			GameRegistry.registerBlock( slabs.doubleSlabs(), AEBaseItemBlockSlab.class, "tile." + slabs.name() + ".double", slabs, slabs.doubleSlabs(), true);
+			GameRegistry.registerBlock( slabs, AEBaseItemBlockSlab.class, "tile." + slabs.name(), slabs, slabs.doubleSlabs(), false );
+			GameRegistry.registerBlock( slabs.doubleSlabs(), AEBaseItemBlockSlab.class, "tile." + slabs.name() + ".double", slabs, slabs.doubleSlabs(), true );
 		}
 	}
 }

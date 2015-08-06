@@ -87,7 +87,7 @@ public final class CompassRegion
 
 	private File getFile()
 	{
-		final String fileName = this.encoder.encode( this.world, this.lowX, this.lowZ);
+		final String fileName = this.encoder.encode( this.world, this.lowX, this.lowZ );
 
 		return new File( this.worldCompassFolder, fileName );
 	}

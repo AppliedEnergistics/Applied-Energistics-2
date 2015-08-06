@@ -1,3 +1,4 @@
+
 package appeng.recipes.handlers;
 
 
@@ -78,7 +79,7 @@ public abstract class InscriberProcess implements ICraftHandler, IWebsiteSeriali
 	{
 		String pattern = "inscriber ";
 
-		if ( this.output != null )
+		if( this.output != null )
 		{
 			pattern += this.output.getQty() + '\n';
 			pattern += handler.getName( this.output ) + '\n';
@@ -89,7 +90,7 @@ public abstract class InscriberProcess implements ICraftHandler, IWebsiteSeriali
 			pattern += handler.getName( this.topOptional ) + '\n';
 		}
 
-		if ( this.imprintable != null )
+		if( this.imprintable != null )
 		{
 			pattern += handler.getName( this.imprintable );
 		}

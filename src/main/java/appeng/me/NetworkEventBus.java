@@ -162,7 +162,6 @@ public class NetworkEventBus
 		private static final long serialVersionUID = -3079021487019171205L;
 	}
 
-
 	class EventMethod
 	{
 
@@ -198,7 +197,6 @@ public class NetworkEventBus
 			}
 		}
 	}
-
 
 	class MENetworkEventInfo
 	{

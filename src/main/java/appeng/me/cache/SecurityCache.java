@@ -141,13 +141,13 @@ public class SecurityCache implements ISecurityGrid
 	public void populateGridStorage( IGridStorage destinationStorage )
 	{
 
-	}	@Override
+	}
+
+	@Override
 	public boolean isAvailable()
 	{
 		return this.securityProvider.size() == 1 && this.securityProvider.get( 0 ).isSecurityEnabled();
 	}
-
-
 
 	@Override
 	public boolean hasPermission( EntityPlayer player, SecurityPermissions perm )

@@ -46,11 +46,11 @@ public final class Inscribe extends InscriberProcess
 	@Override
 	public void register() throws RegistrationError, MissingIngredientError
 	{
-		if ( this.getImprintable() == null )
+		if( this.getImprintable() == null )
 		{
 			return;
 		}
-		if ( this.getOutput() == null )
+		if( this.getOutput() == null )
 		{
 			return;
 		}
@@ -58,8 +58,8 @@ public final class Inscribe extends InscriberProcess
 		final ItemStack[] realInput = this.getImprintable().getItemStackSet();
 		final List<ItemStack> inputs = new ArrayList<ItemStack>( realInput.length );
 		Collections.addAll( inputs, realInput );
-		final ItemStack top = (this.getTopOptional() == null) ? null : this.getTopOptional().getItemStack();
-		final ItemStack bot = (this.getBotOptional() == null) ? null : this.getBotOptional().getItemStack();
+		final ItemStack top = ( this.getTopOptional() == null ) ? null : this.getTopOptional().getItemStack();
+		final ItemStack bot = ( this.getBotOptional() == null ) ? null : this.getBotOptional().getItemStack();
 		final ItemStack output = this.getOutput().getItemStack();
 		final InscriberProcessType type = InscriberProcessType.Inscribe;
 

@@ -62,7 +62,7 @@ public class OreQuartzCharged extends OreQuartz
 	@Override
 	public int damageDropped( int id )
 	{
-		for ( ItemStack crystalStack : AEApi.instance().definitions().materials().certusQuartzCrystalCharged().maybeStack( 1 ).asSet() )
+		for( ItemStack crystalStack : AEApi.instance().definitions().materials().certusQuartzCrystalCharged().maybeStack( 1 ).asSet() )
 		{
 			return crystalStack.getItemDamage();
 		}
@@ -74,7 +74,7 @@ public class OreQuartzCharged extends OreQuartz
 	@SideOnly( Side.CLIENT )
 	public void randomDisplayTick( World w, int x, int y, int z, Random r )
 	{
-		if ( !AEConfig.instance.enableEffects )
+		if( !AEConfig.instance.enableEffects )
 		{
 			return;
 		}

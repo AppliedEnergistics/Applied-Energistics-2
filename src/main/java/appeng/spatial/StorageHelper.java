@@ -58,7 +58,7 @@ public class StorageHelper
 	 * Mostly from dimensional doors.. which mostly got it form X-Comp.
 	 *
 	 * @param entity to be teleported entity
-	 * @param link   destination
+	 * @param link destination
 	 *
 	 * @return teleported entity
 	 */
@@ -207,7 +207,9 @@ public class StorageHelper
 		}
 	}
 
-	public void swapRegions( World src /** over world **/, World dst /** storage cell **/, int x, int y, int z, int i, int j, int k, int scaleX, int scaleY, int scaleZ )
+	public void swapRegions( World src /** over world **/
+	, World dst /** storage cell **/
+	, int x, int y, int z, int i, int j, int k, int scaleX, int scaleY, int scaleZ )
 	{
 		for( Block matrixFrameBlock : AEApi.instance().definitions().blocks().matrixFrame().maybeBlock().asSet() )
 		{
@@ -254,9 +256,9 @@ public class StorageHelper
 		this.transverseEdges( i, j, k, i + scaleX, j + scaleY, k + scaleZ, new TriggerUpdates( dst ) );
 
 		/*
-		 * IChunkProvider cp = destination.getChunkProvider(); if ( cp instanceof ChunkProviderServer ) { ChunkProviderServer
+		 * IChunkProvider cp = destination.getChunkProvider(); if ( cp instanceof ChunkProviderServer ) {
+		 * ChunkProviderServer
 		 * srv = (ChunkProviderServer) cp; srv.unloadAllChunks(); }
-		 *
 		 * cp.unloadQueuedChunks();
 		 */
 
@@ -280,7 +282,6 @@ public class StorageHelper
 		}
 	}
 
-
 	static class WrapInMatrixFrame implements ISpatialVisitor
 	{
 
@@ -301,7 +302,6 @@ public class StorageHelper
 			this.dst.setBlock( x, y, z, this.blkID, this.Meta, 3 );
 		}
 	}
-
 
 	static class TelDestination
 	{
@@ -325,7 +325,6 @@ public class StorageHelper
 			this.zOff = tileZ;
 		}
 	}
-
 
 	static class METeleporter extends Teleporter
 	{

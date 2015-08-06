@@ -1,3 +1,4 @@
+
 package appeng.services.version;
 
 
@@ -14,8 +15,8 @@ public abstract class BaseVersion implements Version
 
 	/**
 	 * @param revision revision in natural number
-	 * @param channel  channel
-	 * @param build    build in natural number
+	 * @param channel channel
+	 * @param build build in natural number
 	 *
 	 * @throws AssertionError if assertion are enabled and revision or build are not natural numbers
 	 */

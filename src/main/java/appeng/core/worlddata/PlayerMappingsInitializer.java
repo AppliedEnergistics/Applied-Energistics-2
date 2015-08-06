@@ -51,7 +51,7 @@ class PlayerMappingsInitializer
 	 * where the UUIDs were introduced.
 	 *
 	 * @param playerList the category for the player list, generally extracted using the "players" tag
-	 * @param log        the logger used to warn the server or user of faulty entries
+	 * @param log the logger used to warn the server or user of faulty entries
 	 */
 	PlayerMappingsInitializer( ConfigCategory playerList, FMLRelaunchLog log )
 	{

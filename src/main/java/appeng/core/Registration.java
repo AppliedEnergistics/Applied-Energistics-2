@@ -343,10 +343,10 @@ public final class Registration
 		target.partCableCovered = source.cableCovered();
 		target.partCableGlass = source.cableGlass();
 		target.partCableDense = source.cableDense();
-		//		target.partLumenCableSmart = source.lumenCableSmart();
-		//		target.partLumenCableCovered = source.lumenCableCovered();
-		//		target.partLumenCableGlass = source.lumenCableGlass();
-		//		target.partLumenCableDense = source.lumenCableDense();
+		// target.partLumenCableSmart = source.lumenCableSmart();
+		// target.partLumenCableCovered = source.lumenCableCovered();
+		// target.partLumenCableGlass = source.lumenCableGlass();
+		// target.partLumenCableDense = source.lumenCableDense();
 		target.partQuartzFiber = this.converter.of( source.quartzFiber() );
 		target.partToggleBus = this.converter.of( source.toggleBus() );
 		target.partInvertedToggleBus = this.converter.of( source.invertedToggleBus() );
@@ -532,7 +532,7 @@ public final class Registration
 			partHelper.registerNewLayer( "appeng.parts.layers.LayerIEnergyHandler", "cofh.api.energy.IEnergyReceiver" );
 		}
 
-		if ( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.OpenComputers ) )
+		if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.OpenComputers ) )
 		{
 			partHelper.registerNewLayer( "appeng.parts.layers.LayerSidedEnvironment", "li.cil.oc.api.network.SidedEnvironment" );
 		}

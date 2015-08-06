@@ -45,10 +45,10 @@ public final class StorageMonitorWailaDataProvider extends BasePartWailaDataProv
 	 * Displays the stack if present and if the monitor is locked.
 	 * Can handle fluids and items.
 	 *
-	 * @param part           maybe storage monitor
+	 * @param part maybe storage monitor
 	 * @param currentToolTip to be written to tooltip
-	 * @param accessor       information wrapper
-	 * @param config         config option
+	 * @param accessor information wrapper
+	 * @param config config option
 	 *
 	 * @return modified tooltip
 	 */

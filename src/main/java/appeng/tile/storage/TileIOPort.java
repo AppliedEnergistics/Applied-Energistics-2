@@ -555,10 +555,10 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 	/**
 	 * Adds the items in the upgrade slots to the drop list.
 	 *
-	 * @param w     world
-	 * @param x     x pos of tile entity
-	 * @param y     y pos of tile entity
-	 * @param z     z pos of tile entity
+	 * @param w world
+	 * @param x x pos of tile entity
+	 * @param y y pos of tile entity
+	 * @param z z pos of tile entity
 	 * @param drops drops of tile entity
 	 */
 	@Override

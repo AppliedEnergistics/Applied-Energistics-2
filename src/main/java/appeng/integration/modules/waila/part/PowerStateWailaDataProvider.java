@@ -41,10 +41,10 @@ public final class PowerStateWailaDataProvider extends BasePartWailaDataProvider
 	/**
 	 * Adds state to the tooltip
 	 *
-	 * @param part           part with state
+	 * @param part part with state
 	 * @param currentToolTip to be added to tooltip
-	 * @param accessor       wrapper for various information
-	 * @param config         config settings
+	 * @param accessor wrapper for various information
+	 * @param config config settings
 	 *
 	 * @return modified tooltip
 	 */
@@ -64,7 +64,7 @@ public final class PowerStateWailaDataProvider extends BasePartWailaDataProvider
 	/**
 	 * Gets the corresponding tool tip for different values of {@code #isActive} and {@code #isPowered}
 	 *
-	 * @param isActive  if part is active
+	 * @param isActive if part is active
 	 * @param isPowered if part is powered
 	 *
 	 * @return tooltip of the state

@@ -185,12 +185,9 @@ public class Ingredient implements IIngredient
 		/*
 		 * Object o = Item.itemRegistry.getObject( nameSpace + ":" + itemName ); if ( o instanceof Item ) return new
 		 * ItemStack( (Item) o, qty, meta );
-		 *
 		 * if ( o instanceof Block ) return new ItemStack( (Block) o, qty, meta );
-		 *
 		 * o = Item.itemRegistry.getObject( nameSpace + ":item." + itemName ); if ( o instanceof Item ) return new
 		 * ItemStack( (Item) o, qty, meta );
-		 *
 		 * o = Block.blockRegistry.getObject( nameSpace + ":tile." + itemName ); if ( o instanceof Block && (!(o
 		 * instanceof BlockAir)) ) return new ItemStack( (Block) o, qty, meta );
 		 */

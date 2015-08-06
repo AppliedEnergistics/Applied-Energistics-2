@@ -56,8 +56,8 @@ public final class PowerStorageWailaDataProvider extends BaseWailaDataProvider
 	/**
 	 * Used cache for power if the power was not transmitted through the server.
 	 * <p/>
-	 * This is useful, when a player just started to look at a tile
-	 * and thus just requested the new information from the server.
+	 * This is useful, when a player just started to look at a tile and thus just requested the new information from the
+	 * server.
 	 * <p/>
 	 * The cache will be updated from the server.
 	 */
@@ -67,18 +67,18 @@ public final class PowerStorageWailaDataProvider extends BaseWailaDataProvider
 	 * Adds the current and max power to the tool tip
 	 * Will ignore if the tile has an energy buffer ( &gt; 0 )
 	 *
-	 * @param itemStack      stack of power storage
+	 * @param itemStack stack of power storage
 	 * @param currentToolTip current tool tip
-	 * @param accessor       wrapper for various world information
-	 * @param config         config to react to various settings
+	 * @param accessor wrapper for various world information
+	 * @param config config to react to various settings
 	 *
 	 * @return modified tool tip
 	 */
 	@Override
 	public List<String> getWailaBody( ItemStack itemStack, List<String> currentToolTip, IWailaDataAccessor accessor, IWailaConfigHandler config )
 	{
-		//Removes RF tooltip on WAILA 1.5.9+
-		((ITaggedList<String, String>) currentToolTip).removeEntries("RFEnergyStorage");
+		// Removes RF tooltip on WAILA 1.5.9+
+		( (ITaggedList<String, String>) currentToolTip ).removeEntries( "RFEnergyStorage" );
 
 		final TileEntity te = accessor.getTileEntity();
 		if( te instanceof IAEPowerStorage )
@@ -106,17 +106,16 @@ public final class PowerStorageWailaDataProvider extends BaseWailaDataProvider
 	/**
 	 * Called on server to transfer information from server to client.
 	 * <p/>
-	 * If the {@link net.minecraft.tileentity.TileEntity} is a {@link appeng.api.networking.energy.IAEPowerStorage},
-	 * it writes the power information to the {@code #tag}
-	 * using the {@code #ID_CURRENT_POWER} key.
+	 * If the {@link net.minecraft.tileentity.TileEntity} is a {@link appeng.api.networking.energy.IAEPowerStorage}, it
+	 * writes the power information to the {@code #tag} using the {@code #ID_CURRENT_POWER} key.
 	 *
 	 * @param player player looking at the power storage
-	 * @param te     power storage
-	 * @param tag    transferred tag which is send to the client
-	 * @param world  world of the power storage
-	 * @param x      x pos of the power storage
-	 * @param y      y pos of the power storage
-	 * @param z      z pos of the power storage
+	 * @param te power storage
+	 * @param tag transferred tag which is send to the client
+	 * @param world world of the power storage
+	 * @param x x pos of the power storage
+	 * @param y y pos of the power storage
+	 * @param z z pos of the power storage
 	 *
 	 * @return tag send to the client
 	 */
@@ -141,11 +140,10 @@ public final class PowerStorageWailaDataProvider extends BaseWailaDataProvider
 	/**
 	 * Determines the current power.
 	 * <p/>
-	 * If the client received power information on the server, they are used,
-	 * else if the cache contains a previous stored value, this will be used.
-	 * Default value is 0.
+	 * If the client received power information on the server, they are used, else if the cache contains a previous
+	 * stored value, this will be used. Default value is 0.
 	 *
-	 * @param te  te to be looked at
+	 * @param te te to be looked at
 	 * @param tag tag maybe containing the channel information
 	 *
 	 * @return used channels on the cable

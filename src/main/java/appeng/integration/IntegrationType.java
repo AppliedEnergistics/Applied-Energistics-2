@@ -29,9 +29,9 @@ public enum IntegrationType
 
 	BuildCraftCore( IntegrationSide.BOTH, "BuildCraft Core", "BuildCraft|Core" ),
 
-	BuildCraftTransport( IntegrationSide.BOTH, "BuildCraft Transport", "BuildCraft|Transport"),
+	BuildCraftTransport( IntegrationSide.BOTH, "BuildCraft Transport", "BuildCraft|Transport" ),
 
-	BuildCraftBuilder( IntegrationSide.BOTH, "BuildCraft Builders", "BuildCraft|Builders"),
+	BuildCraftBuilder( IntegrationSide.BOTH, "BuildCraft Builders", "BuildCraft|Builders" ),
 
 	RF( IntegrationSide.BOTH, "RedstoneFlux Power - Tiles", "CoFHAPI" ),
 

@@ -54,7 +54,7 @@ public class DefinitionConstructor
 
 		if( definition instanceof ITileDefinition )
 		{
-			return ( (ITileDefinition) definition );
+			return( (ITileDefinition) definition );
 		}
 
 		throw new IllegalStateException( "No tile definition for " + feature );
@@ -66,7 +66,7 @@ public class DefinitionConstructor
 
 		if( definition instanceof IBlockDefinition )
 		{
-			return ( (IBlockDefinition) definition );
+			return( (IBlockDefinition) definition );
 		}
 
 		throw new IllegalStateException( "No block definition for " + feature );

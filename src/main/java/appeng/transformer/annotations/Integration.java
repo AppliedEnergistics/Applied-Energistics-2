@@ -34,7 +34,6 @@ public @interface Integration
 		Interface[] value();
 	}
 
-
 	@Retention( RetentionPolicy.RUNTIME )
 	@Target( ElementType.TYPE )
 	@interface Interface
@@ -43,7 +42,6 @@ public @interface Integration
 
 		String iname();
 	}
-
 
 	@Retention( RetentionPolicy.RUNTIME )
 	@Target( ElementType.METHOD )

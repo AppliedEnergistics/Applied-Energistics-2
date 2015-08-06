@@ -368,33 +368,32 @@ public class PartDenseCable extends PartCable
 		boolean isGlass = false;
 		AEColor myColor = this.getCableColor();
 		/*
-		 * ( ghh != null && partHost != null && ghh.getCableConnectionType( of ) == AECableType.GLASS && partHost.getPart(
-		 * of.getOpposite() ) == null ) { isGlass = true; rh.setTexture( getGlassTexture( myColor = partHost.getColor() ) );
+		 * ( ghh != null && partHost != null && ghh.getCableConnectionType( of ) == AECableType.GLASS &&
+		 * partHost.getPart(
+		 * of.getOpposite() ) == null ) { isGlass = true; rh.setTexture( getGlassTexture( myColor = partHost.getColor()
+		 * ) );
 		 * } else if ( partHost == null && ghh != null && ghh.getCableConnectionType( of ) != AECableType.GLASS ) {
 		 * rh.setTexture( getSmartTexture( myColor ) ); switch (of) { case DOWN: rh.setBounds( 3, 0, 3, 13, 4, 13 );
 		 * break; case EAST: rh.setBounds( 12, 3, 3, 16, 13, 13 ); break; case NORTH: rh.setBounds( 3, 3, 0, 13, 13, 4
 		 * ); break; case SOUTH: rh.setBounds( 3, 3, 12, 13, 13, 16 ); break; case UP: rh.setBounds( 3, 12, 3, 13, 16,
 		 * 13 ); break; case WEST: rh.setBounds( 0, 3, 3, 4, 13, 13 ); break; default: return; } rh.renderBlock( x, y,
 		 * z, renderer );
-		 *
 		 * if ( true ) { setSmartConnectionRotations( of, renderer ); IIcon firstIcon = new TaughtIcon( getChannelTex(
-		 * channels, false ).getIcon(), -0.2f ); IIcon secondIcon = new TaughtIcon( getChannelTex( channels, true ).getIcon(),
+		 * channels, false ).getIcon(), -0.2f ); IIcon secondIcon = new TaughtIcon( getChannelTex( channels, true
+		 * ).getIcon(),
 		 * -0.2f );
-		 *
 		 * if ( of == ForgeDirection.EAST || of == ForgeDirection.WEST ) { AEBaseBlock blk = (AEBaseBlock)
 		 * rh.getBlock(); FlippableIcon ico = blk.getRendererInstance().getTexture( ForgeDirection.EAST ); ico.setFlip(
 		 * false, true ); }
-		 *
 		 * Tessellator.INSTANCE.setBrightness( 15 << 20 | 15 << 5 ); Tessellator.INSTANCE.setColorOpaque_I(
-		 * myColor.mediumVariant ); rh.setTexture( firstIcon, firstIcon, firstIcon, firstIcon, firstIcon, firstIcon ); renderAllFaces( (AEBaseBlock)
+		 * myColor.mediumVariant ); rh.setTexture( firstIcon, firstIcon, firstIcon, firstIcon, firstIcon, firstIcon );
+		 * renderAllFaces( (AEBaseBlock)
 		 * rh.getBlock(), x, y, z, renderer );
-		 *
-		 * Tessellator.INSTANCE.setColorOpaque_I( myColor.whiteVariant ); rh.setTexture( secondIcon, secondIcon, secondIcon, secondIcon, secondIcon,
+		 * Tessellator.INSTANCE.setColorOpaque_I( myColor.whiteVariant ); rh.setTexture( secondIcon, secondIcon,
+		 * secondIcon, secondIcon, secondIcon,
 		 * secondIcon ); renderAllFaces( (AEBaseBlock) rh.getBlock(), x, y, z, renderer );
-		 *
 		 * renderer.uvRotateBottom = renderer.uvRotateEast = renderer.uvRotateNorth = renderer.uvRotateSouth =
 		 * renderer.uvRotateTop = renderer.uvRotateWest = 0; }
-		 *
 		 * rh.setTexture( getTexture( getCableColor() ) ); }
 		 */
 

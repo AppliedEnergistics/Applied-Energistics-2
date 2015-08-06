@@ -42,10 +42,10 @@ public final class PartAccessor
 	/**
 	 * Hits a {@link appeng.api.parts.IPartHost} with {@link net.minecraft.util.MovingObjectPosition}.
 	 * <p/>
-	 * You can derive the looked at {@link appeng.api.parts.IPart} by doing that.
-	 * If a facade is being looked at, it is defined as being absent.
+	 * You can derive the looked at {@link appeng.api.parts.IPart} by doing that. If a facade is being looked at, it is
+	 * defined as being absent.
 	 *
-	 * @param te  being looked at {@link net.minecraft.tileentity.TileEntity}
+	 * @param te being looked at {@link net.minecraft.tileentity.TileEntity}
 	 * @param mop type of ray-trace
 	 *
 	 * @return maybe the looked at {@link appeng.api.parts.IPart}

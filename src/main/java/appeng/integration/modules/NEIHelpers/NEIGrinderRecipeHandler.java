@@ -196,7 +196,7 @@ public class NEIGrinderRecipeHandler extends TemplateRecipeHandler
 
 			if( recipe.getOptionalOutput() != null )
 			{
-				final int chancePercent = (int) (recipe.getOptionalChance() * 100);
+				final int chancePercent = (int) ( recipe.getOptionalChance() * 100 );
 
 				this.hasOptional = true;
 				this.displayChance = String.format( GuiText.OfSecondOutput.getLocal(), chancePercent );

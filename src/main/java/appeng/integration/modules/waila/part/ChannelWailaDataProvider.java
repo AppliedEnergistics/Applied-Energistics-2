@@ -54,8 +54,8 @@ public final class ChannelWailaDataProvider extends BasePartWailaDataProvider
 	/**
 	 * Used cache for channels if the channel was not transmitted through the server.
 	 * <p/>
-	 * This is useful, when a player just started to look at a tile
-	 * and thus just requested the new information from the server.
+	 * This is useful, when a player just started to look at a tile and thus just requested the new information from the
+	 * server.
 	 * <p/>
 	 * The cache will be updated from the server.
 	 */
@@ -64,10 +64,10 @@ public final class ChannelWailaDataProvider extends BasePartWailaDataProvider
 	/**
 	 * Adds the used and max channel to the tool tip
 	 *
-	 * @param part           being looked at part
+	 * @param part being looked at part
 	 * @param currentToolTip current tool tip
-	 * @param accessor       wrapper for various world information
-	 * @param config         config to react to various settings
+	 * @param accessor wrapper for various world information
+	 * @param config config to react to various settings
 	 *
 	 * @return modified tool tip
 	 */
@@ -91,12 +91,11 @@ public final class ChannelWailaDataProvider extends BasePartWailaDataProvider
 	/**
 	 * Determines the source of the channel.
 	 * <p/>
-	 * If the client received information of the channels on the server, they are used,
-	 * else if the cache contains a previous stored value, this will be used.
-	 * Default value is 0.
+	 * If the client received information of the channels on the server, they are used, else if the cache contains a
+	 * previous stored value, this will be used. Default value is 0.
 	 *
-	 * @param part  part to be looked at
-	 * @param tag   tag maybe containing the channel information
+	 * @param part part to be looked at
+	 * @param tag tag maybe containing the channel information
 	 * @param cache cache with previous knowledge
 	 *
 	 * @return used channels on the cable
@@ -125,18 +124,17 @@ public final class ChannelWailaDataProvider extends BasePartWailaDataProvider
 	/**
 	 * Called on server to transfer information from server to client.
 	 * <p/>
-	 * If the part is a cable,
-	 * it writes the channel information in the {@code #tag}
-	 * using the {@code ID_USED_CHANNELS} key.
+	 * If the part is a cable, it writes the channel information in the {@code #tag} using the {@code ID_USED_CHANNELS}
+	 * key.
 	 *
 	 * @param player player looking at the part
-	 * @param part   part being looked at
-	 * @param te     host of the part
-	 * @param tag    transferred tag which is send to the client
-	 * @param world  world of the part
-	 * @param x      x pos of the part
-	 * @param y      y pos of the part
-	 * @param z      z pos of the part
+	 * @param part part being looked at
+	 * @param te host of the part
+	 * @param tag transferred tag which is send to the client
+	 * @param world world of the part
+	 * @param x x pos of the part
+	 * @param y y pos of the part
+	 * @param z z pos of the part
 	 *
 	 * @return tag send to the client
 	 */

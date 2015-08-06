@@ -1,3 +1,4 @@
+
 package appeng.services.version;
 
 
@@ -9,8 +10,8 @@ public final class DefaultVersion extends BaseVersion
 {
 	/**
 	 * @param revision natural number
-	 * @param channel  either alpha, beta or release
-	 * @param build    natural number
+	 * @param channel either alpha, beta or release
+	 * @param build natural number
 	 */
 	public DefaultVersion( int revision, Channel channel, int build )
 	{

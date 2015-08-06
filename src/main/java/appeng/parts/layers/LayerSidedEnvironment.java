@@ -18,6 +18,7 @@
 
 package appeng.parts.layers;
 
+
 import javax.annotation.Nullable;
 
 import net.minecraftforge.common.util.ForgeDirection;
@@ -41,10 +42,10 @@ public class LayerSidedEnvironment extends LayerBase implements SidedEnvironment
 {
 	@Nullable
 	@Override
-	public Node sidedNode(ForgeDirection side)
+	public Node sidedNode( ForgeDirection side )
 	{
 		final IPart part = this.getPart( side );
-		if ( part instanceof SidedEnvironment )
+		if( part instanceof SidedEnvironment )
 		{
 			return ( (SidedEnvironment) part ).sidedNode( side );
 		}
@@ -52,10 +53,10 @@ public class LayerSidedEnvironment extends LayerBase implements SidedEnvironment
 	}
 
 	@Override
-	public boolean canConnect(ForgeDirection side)
+	public boolean canConnect( ForgeDirection side )
 	{
 		final IPart part = this.getPart( side );
-		if ( part instanceof SidedEnvironment )
+		if( part instanceof SidedEnvironment )
 		{
 			return ( (SidedEnvironment) part ).canConnect( side );
 		}

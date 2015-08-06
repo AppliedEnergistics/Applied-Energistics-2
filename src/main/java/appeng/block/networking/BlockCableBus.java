@@ -455,7 +455,8 @@ public class BlockCableBus extends AEBaseTileBlock implements IRedNetConnection
 			return this.cb( world, x, y, z ).recolourBlock( side, AEColor.values()[colour], who );
 		}
 		catch( Throwable ignored )
-		{}
+		{
+		}
 		return false;
 	}
 

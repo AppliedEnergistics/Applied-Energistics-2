@@ -18,7 +18,7 @@
 
 /* Example:
 
-FMLInterModComms.sendMessage( "appliedenergistics2", "whitelist-spatial", "mymod.tileentities.MyTileEntity" );
+ FMLInterModComms.sendMessage( "appliedenergistics2", "whitelist-spatial", "mymod.tileentities.MyTileEntity" );
 
  */
 

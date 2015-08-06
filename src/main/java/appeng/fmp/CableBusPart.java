@@ -453,7 +453,7 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IMask
 		double r = Math.abs( a - 0.5 );
 		r = Math.max( Math.abs( b - 0.5 ), r );
 		r = Math.max( Math.abs( c - 0.5 ), r );
-		return ( 8 * (int) Math.max( Math.abs( d - 0.5 ), r ) );
+		return( 8 * (int) Math.max( Math.abs( d - 0.5 ), r ) );
 	}
 
 	// @Override

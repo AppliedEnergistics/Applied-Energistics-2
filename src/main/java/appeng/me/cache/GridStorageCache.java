@@ -380,7 +380,6 @@ public class GridStorageCache implements IStorageGrid
 		}
 	}
 
-
 	private class CellChangeTracker
 	{
 

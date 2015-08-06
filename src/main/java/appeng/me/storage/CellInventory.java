@@ -419,7 +419,7 @@ public class CellInventory implements ICellInventory
 		}
 
 		// clean any old crusty stuff...
-		for(; x < oldStoredItems && x < this.maxItemTypes; x++ )
+		for( ; x < oldStoredItems && x < this.maxItemTypes; x++ )
 		{
 			this.tagCompound.removeTag( itemSlots[x] );
 			this.tagCompound.removeTag( itemSlotCount[x] );

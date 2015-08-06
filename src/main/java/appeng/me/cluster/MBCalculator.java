@@ -153,7 +153,7 @@ public abstract class MBCalculator
 	/**
 	 * construct the correct cluster, usually very simple.
 	 *
-	 * @param w   world
+	 * @param w world
 	 * @param min min world coord
 	 * @param max max world coord
 	 *
@@ -171,8 +171,8 @@ public abstract class MBCalculator
 	/**
 	 * configure the multi-block tiles, most of the important stuff is in here.
 	 *
-	 * @param c   updated cluster
-	 * @param w   in world
+	 * @param c updated cluster
+	 * @param w in world
 	 * @param min min world coord
 	 * @param max max world coord
 	 */

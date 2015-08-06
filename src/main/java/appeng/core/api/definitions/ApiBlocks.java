@@ -241,14 +241,15 @@ public final class ApiBlocks implements IBlocks
 
 		this.quartzPillarStair = constructor.registerBlockDefinition( new QuartzPillarStairBlock( quartzPillar ) );
 
-		this.skyStoneSlab = constructor.registerBlockDefinition( new AEBaseSlabBlock( skyStone, 0, EnumSet.of(AEFeature.DecorativeQuartzBlocks), false, "SkyStoneSlabBlock" ) );
-		this.skyStoneBlockSlab = constructor.registerBlockDefinition( new AEBaseSlabBlock( skyStone, 1, EnumSet.of(AEFeature.DecorativeQuartzBlocks), false, "SkyStoneBlockSlabBlock" ) );
-		this.skyStoneBrickSlab = constructor.registerBlockDefinition( new AEBaseSlabBlock( skyStone, 2, EnumSet.of(AEFeature.DecorativeQuartzBlocks), false, "SkyStoneBrickSlabBlock" ) );
-		this.skyStoneSmallBrickSlab = constructor.registerBlockDefinition( new AEBaseSlabBlock( skyStone, 3, EnumSet.of(AEFeature.DecorativeQuartzBlocks), false, "SkyStoneSmallBrickSlabBlock" ) );
-		this.fluixSlab = constructor.registerBlockDefinition( new AEBaseSlabBlock( fluixBlock, 0, EnumSet.of(AEFeature.DecorativeQuartzBlocks), false, "FluixSlabBlock" ) );
-		this.quartzSlab = constructor.registerBlockDefinition( new AEBaseSlabBlock( quartzBlock, 0, EnumSet.of(AEFeature.DecorativeQuartzBlocks), false, "QuartzSlabBlock" ) );
-		this.chiseledQuartzSlab = constructor.registerBlockDefinition( new AEBaseSlabBlock( chiseledQuartz, 0, EnumSet.of(AEFeature.DecorativeQuartzBlocks), false, "ChiseledQuartzSlabBlock" ) );;
-		this.quartzPillarSlab = constructor.registerBlockDefinition( new AEBaseSlabBlock( quartzPillar, 0, EnumSet.of(AEFeature.DecorativeQuartzBlocks), false, "QuartzPillarSlabBlock" ) );
+		this.skyStoneSlab = constructor.registerBlockDefinition( new AEBaseSlabBlock( skyStone, 0, EnumSet.of( AEFeature.DecorativeQuartzBlocks ), false, "SkyStoneSlabBlock" ) );
+		this.skyStoneBlockSlab = constructor.registerBlockDefinition( new AEBaseSlabBlock( skyStone, 1, EnumSet.of( AEFeature.DecorativeQuartzBlocks ), false, "SkyStoneBlockSlabBlock" ) );
+		this.skyStoneBrickSlab = constructor.registerBlockDefinition( new AEBaseSlabBlock( skyStone, 2, EnumSet.of( AEFeature.DecorativeQuartzBlocks ), false, "SkyStoneBrickSlabBlock" ) );
+		this.skyStoneSmallBrickSlab = constructor.registerBlockDefinition( new AEBaseSlabBlock( skyStone, 3, EnumSet.of( AEFeature.DecorativeQuartzBlocks ), false, "SkyStoneSmallBrickSlabBlock" ) );
+		this.fluixSlab = constructor.registerBlockDefinition( new AEBaseSlabBlock( fluixBlock, 0, EnumSet.of( AEFeature.DecorativeQuartzBlocks ), false, "FluixSlabBlock" ) );
+		this.quartzSlab = constructor.registerBlockDefinition( new AEBaseSlabBlock( quartzBlock, 0, EnumSet.of( AEFeature.DecorativeQuartzBlocks ), false, "QuartzSlabBlock" ) );
+		this.chiseledQuartzSlab = constructor.registerBlockDefinition( new AEBaseSlabBlock( chiseledQuartz, 0, EnumSet.of( AEFeature.DecorativeQuartzBlocks ), false, "ChiseledQuartzSlabBlock" ) );
+		;
+		this.quartzPillarSlab = constructor.registerBlockDefinition( new AEBaseSlabBlock( quartzPillar, 0, EnumSet.of( AEFeature.DecorativeQuartzBlocks ), false, "QuartzPillarSlabBlock" ) );
 
 		this.itemGen = constructor.registerBlockDefinition( new BlockItemGen() );
 		this.chunkLoader = constructor.registerBlockDefinition( new BlockChunkloader() );

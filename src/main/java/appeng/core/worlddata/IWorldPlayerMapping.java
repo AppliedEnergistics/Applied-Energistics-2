@@ -48,7 +48,7 @@ public interface IWorldPlayerMapping
 	/**
 	 * Put in new players when they join the server
 	 *
-	 * @param id   id of new player
+	 * @param id id of new player
 	 * @param uuid UUID of new player
 	 */
 	void put( int id, @Nonnull UUID uuid );

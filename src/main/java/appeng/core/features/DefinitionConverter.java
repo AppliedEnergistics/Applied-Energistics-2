@@ -1,3 +1,4 @@
+
 package appeng.core.features;
 
 
@@ -92,7 +93,6 @@ public final class DefinitionConverter
 		}
 	}
 
-
 	private static class AEItem extends AEComparable
 	{
 		private final IItemDefinition definition;
@@ -119,7 +119,6 @@ public final class DefinitionConverter
 		}
 	}
 
-
 	private static class AEBlock extends AEItem
 	{
 		private final IBlockDefinition definition;
@@ -144,7 +143,6 @@ public final class DefinitionConverter
 			return this.definition.isSameAs( world, x, y, z );
 		}
 	}
-
 
 	private static class AETile extends AEBlock
 	{

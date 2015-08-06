@@ -118,7 +118,7 @@ public final class Api implements IAppEngApi
 	@Override
 	public IGridNode createGridNode( IGridBlock blk )
 	{
-		if ( Platform.isClient() )
+		if( Platform.isClient() )
 		{
 			throw new IllegalStateException( "Grid features for " + blk + " are server side only." );
 		}

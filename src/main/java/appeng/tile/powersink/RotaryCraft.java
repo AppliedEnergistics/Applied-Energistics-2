@@ -34,7 +34,8 @@ import appeng.transformer.annotations.Integration.Interface;
 import appeng.transformer.annotations.Integration.InterfaceList;
 import appeng.transformer.annotations.Integration.Method;
 
-@InterfaceList( value = { @Interface( iname = "RotaryCraft", iface = "Reika.RotaryCraft.API.Power.AdvancedShaftPowerReceiver" ), @Interface( iname = "RotaryCraft", iface = "Reika.RotaryCraft.API.Interfaces.Transducerable") } )
+
+@InterfaceList( value = { @Interface( iname = "RotaryCraft", iface = "Reika.RotaryCraft.API.Power.AdvancedShaftPowerReceiver" ), @Interface( iname = "RotaryCraft", iface = "Reika.RotaryCraft.API.Interfaces.Transducerable" ) } )
 public abstract class RotaryCraft extends IC2 implements AdvancedShaftPowerReceiver, Transducerable
 {
 
@@ -175,7 +176,6 @@ public abstract class RotaryCraft extends IC2 implements AdvancedShaftPowerRecei
 		{
 			out = String.format( "Receiving %d W @ %d rad/s.", power, omega );
 		}
-
 
 		ArrayList<String> messages = new ArrayList<String>( 1 );
 		messages.add( out );

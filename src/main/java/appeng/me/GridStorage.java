@@ -43,12 +43,13 @@ public class GridStorage implements IGridStorage
 	private final WeakHashMap<GridStorage, Boolean> divided = new WeakHashMap<GridStorage, Boolean>();
 	public boolean isDirty = false;
 	private WeakReference<IGrid> internalGrid = null;
+
 	// lost...
 
 	/**
 	 * for use with world settings
 	 *
-	 * @param id  ID of grid storage
+	 * @param id ID of grid storage
 	 * @param gss grid storage search
 	 */
 	public GridStorage( long id, GridStorageSearch gss )
@@ -62,8 +63,8 @@ public class GridStorage implements IGridStorage
 	 * for use with world settings
 	 *
 	 * @param input array of bytes string
-	 * @param id    ID of grid storage
-	 * @param gss   grid storage search
+	 * @param id ID of grid storage
+	 * @param gss grid storage search
 	 */
 	public GridStorage( String input, long id, GridStorageSearch gss )
 	{
