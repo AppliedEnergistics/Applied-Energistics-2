@@ -20,13 +20,15 @@ package appeng.me.cache.helpers;
 
 
 import java.util.HashMap;
-import java.util.concurrent.Callable;
+
+import net.minecraft.world.World;
 
 import appeng.api.networking.IGridNode;
 import appeng.parts.p2p.PartP2PTunnelME;
+import appeng.util.IWorldCallable;
 
 
-public class Connections implements Callable
+public class Connections implements IWorldCallable<Void>
 {
 
 	public final HashMap<IGridNode, TunnelConnection> connections = new HashMap<IGridNode, TunnelConnection>();
@@ -40,7 +42,7 @@ public class Connections implements Callable
 	}
 
 	@Override
-	public Object call() throws Exception
+	public Void call( World world ) throws Exception
 	{
 		this.me.updateConnections( this );
 

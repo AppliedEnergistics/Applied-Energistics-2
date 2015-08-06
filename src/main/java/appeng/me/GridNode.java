@@ -25,7 +25,6 @@ import java.util.Deque;
 import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -52,6 +51,7 @@ import appeng.api.util.IReadOnlyCollection;
 import appeng.core.worlddata.WorldData;
 import appeng.hooks.TickHandler;
 import appeng.me.pathfinding.IPathItem;
+import appeng.util.IWorldCallable;
 import appeng.util.ReadOnlyCollection;
 
 
@@ -669,7 +669,7 @@ public class GridNode implements IGridNode, IPathItem
 		return this.lastUsedChannels;
 	}
 
-	private static class MachineSecurityBreak implements Callable<Void>
+	private static class MachineSecurityBreak implements IWorldCallable<Void>
 	{
 		private final GridNode node;
 
@@ -679,7 +679,7 @@ public class GridNode implements IGridNode, IPathItem
 		}
 
 		@Override
-		public Void call() throws Exception
+		public Void call(World world) throws Exception
 		{
 			this.node.getMachine().securityBreak();
 
