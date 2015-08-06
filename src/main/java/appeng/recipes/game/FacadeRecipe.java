@@ -38,7 +38,6 @@ import com.google.common.base.Optional;
 
 public final class FacadeRecipe implements IRecipe
 {
-
 	private final IComparableDefinition anchor;
 	private final Optional<Item> maybeFacade;
 

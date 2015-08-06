@@ -35,7 +35,7 @@ public class OreDictionaryHandler
 
 	public static final OreDictionaryHandler INSTANCE = new OreDictionaryHandler();
 
-	private final List<IOreListener> ol = new ArrayList<IOreListener>();
+	private final List<IOreListener> oreListeners = new ArrayList<IOreListener>();
 
 	private boolean enableRebaking = false;
 
@@ -49,7 +49,7 @@ public class OreDictionaryHandler
 
 		if( this.shouldCare( event.Name ) )
 		{
-			for( IOreListener v : this.ol )
+			for( IOreListener v : this.oreListeners )
 			{
 				v.oreRegistered( event.Name, event.Ore );
 			}
@@ -101,7 +101,7 @@ public class OreDictionaryHandler
 	 */
 	public void observe( IOreListener n )
 	{
-		this.ol.add( n );
+		this.oreListeners.add( n );
 
 		// notify the listener of any ore already in existence.
 		for( String name : OreDictionary.getOreNames() )

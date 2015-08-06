@@ -36,7 +36,6 @@ import appeng.api.recipes.IIngredient;
 
 public class ShapedRecipe implements IRecipe, IRecipeBakeable
 {
-
 	// Added in for future ease of change, but hard coded for now.
 	private static final int MAX_CRAFT_GRID_WIDTH = 3;
 	private static final int MAX_CRAFT_GRID_HEIGHT = 3;

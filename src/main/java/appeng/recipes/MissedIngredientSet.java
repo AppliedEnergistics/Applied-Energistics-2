@@ -26,10 +26,15 @@ public class MissedIngredientSet extends Throwable
 {
 
 	private static final long serialVersionUID = 2672951714376345807L;
-	final ResolverResultSet rrs;
+	private final ResolverResultSet resolverResultSet;
 
 	public MissedIngredientSet( ResolverResultSet ro )
 	{
-		this.rrs = ro;
+		this.resolverResultSet = ro;
+	}
+
+	public ResolverResultSet getResolverResultSet()
+	{
+		return this.resolverResultSet;
 	}
 }

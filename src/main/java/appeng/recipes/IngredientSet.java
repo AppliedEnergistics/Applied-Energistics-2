@@ -22,6 +22,8 @@ package appeng.recipes;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.google.common.base.Preconditions;
+
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 import appeng.api.exceptions.MissingIngredientError;
@@ -33,16 +35,22 @@ import appeng.api.recipes.ResolverResultSet;
 public class IngredientSet implements IIngredient
 {
 
-	final int qty = 0;
-	final String name;
-	final List<ItemStack> items;
-	final boolean isInside = false;
-	ItemStack[] baked;
+	private final int qty;
+	private final String name;
+	private final List<ItemStack> items;
+	private final boolean isInside = false;
+	private ItemStack[] baked;
 
-	public IngredientSet( ResolverResultSet rr )
+	public IngredientSet( ResolverResultSet rr, int qty )
 	{
+		Preconditions.checkNotNull( rr );
+		Preconditions.checkNotNull( rr.name );
+		Preconditions.checkNotNull( rr.results );
+		Preconditions.checkState( qty > 0 );
+
 		this.name = rr.name;
 		this.items = rr.results;
+		this.qty = qty;
 	}
 
 	@Override
@@ -107,7 +115,7 @@ public class IngredientSet implements IIngredient
 	@Override
 	public int getQty()
 	{
-		return 0;
+		return this.qty;
 	}
 
 	@Override
