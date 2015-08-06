@@ -22,15 +22,14 @@ package appeng.block;
 import java.util.EnumSet;
 import java.util.Random;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockSlab;
 import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
+
 import appeng.core.features.AEFeature;
 import appeng.core.features.IAEFeature;
 import appeng.core.features.IFeatureHandler;

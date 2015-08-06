@@ -27,9 +27,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 
 import appeng.api.definitions.IBlockDefinition;
 import appeng.block.AEBaseBlock;
-import appeng.core.CommonHelper;
 import appeng.core.CreativeTab;
-import appeng.util.Platform;
 
 
 public final class AEBlockFeatureHandler implements IFeatureHandler

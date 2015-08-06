@@ -29,7 +29,6 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.IItemRenderer.ItemRenderType;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import appeng.block.AEBaseTileBlock;
 import appeng.block.misc.BlockPaint;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.texture.ExtraBlockTextures;

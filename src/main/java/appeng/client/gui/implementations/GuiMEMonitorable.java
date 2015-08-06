@@ -63,7 +63,6 @@ import appeng.helpers.WirelessTerminalGuiObject;
 import appeng.integration.IntegrationRegistry;
 import appeng.integration.IntegrationType;
 import appeng.parts.reporting.AbstractPartTerminal;
-import appeng.parts.reporting.PartTerminal;
 import appeng.tile.misc.TileSecurity;
 import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;

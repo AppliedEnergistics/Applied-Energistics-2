@@ -22,6 +22,7 @@ package appeng.core;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+
 import javax.annotation.Nonnull;
 
 import com.google.common.base.Preconditions;

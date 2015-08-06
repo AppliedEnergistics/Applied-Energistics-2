@@ -20,6 +20,7 @@ package appeng.services.compass;
 
 
 import java.util.concurrent.ThreadFactory;
+
 import javax.annotation.Nonnull;
 
 import com.google.common.base.Preconditions;

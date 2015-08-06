@@ -24,7 +24,6 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockAccess;
 
-import appeng.block.AEBaseBlock;
 import appeng.block.networking.BlockController;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.texture.ExtraBlockTextures;

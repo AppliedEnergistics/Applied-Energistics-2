@@ -20,6 +20,7 @@ package appeng.client.render;
 
 
 import java.util.EnumSet;
+
 import javax.annotation.Nullable;
 
 import com.google.common.base.Function;

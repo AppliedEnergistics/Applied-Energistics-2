@@ -22,6 +22,7 @@ package appeng.services.compass;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.annotation.Nonnull;
 
 import com.google.common.base.Preconditions;

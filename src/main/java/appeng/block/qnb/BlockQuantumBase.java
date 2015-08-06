@@ -26,7 +26,6 @@ import net.minecraft.block.material.Material;
 import net.minecraft.world.World;
 
 import appeng.block.AEBaseTileBlock;
-import appeng.client.render.BaseBlockRender;
 import appeng.client.render.blocks.RenderQNB;
 import appeng.core.features.AEFeature;
 import appeng.helpers.ICustomCollision;

@@ -101,7 +101,6 @@ import appeng.parts.automation.PartLevelEmitter;
 import appeng.parts.misc.PartStorageBus;
 import appeng.parts.reporting.PartCraftingTerminal;
 import appeng.parts.reporting.PartInterfaceTerminal;
-import appeng.parts.reporting.PartPanel;
 import appeng.parts.reporting.PartPatternTerminal;
 import appeng.tile.crafting.TileCraftingTile;
 import appeng.tile.crafting.TileMolecularAssembler;

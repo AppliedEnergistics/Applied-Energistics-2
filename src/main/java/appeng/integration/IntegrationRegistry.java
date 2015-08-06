@@ -21,6 +21,7 @@ package appeng.integration;
 
 import java.util.Collection;
 import java.util.LinkedList;
+
 import javax.annotation.Nonnull;
 
 import cpw.mods.fml.relauncher.FMLLaunchHandler;
