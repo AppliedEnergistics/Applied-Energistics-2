@@ -57,7 +57,9 @@ public class AEBaseSlabBlock extends BlockSlab implements IAEFeature
 		this.setStepSound( block.stepSound );
 		this.useNeighborBrightness = true;
 		if( !field_150004_a )
+		{
 			this.doubleSlabs = new AEBaseSlabBlock( block, meta, features, true, name + ".double" ).setSlabs( this );
+		}
 		this.features = !field_150004_a ? new SlabBlockFeatureHandler( features, this ) : null;
 	}
 
@@ -118,9 +120,13 @@ public class AEBaseSlabBlock extends BlockSlab implements IAEFeature
 		AEBaseSlabBlock block = (AEBaseSlabBlock) world.getBlock( x, y, z );
 
 		if( block == null )
+		{
 			return null;
+		}
 		if( block.field_150004_a )
+		{
 			block = this.slabs;
+		}
 
 		int meta = world.getBlockMetadata( x, y, z ) & 7;
 		return new ItemStack( block, 1, meta );
