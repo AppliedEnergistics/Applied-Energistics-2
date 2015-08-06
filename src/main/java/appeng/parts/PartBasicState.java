@@ -72,7 +72,7 @@ public abstract class PartBasicState extends AEBasePart implements IPowerChannel
 	public void renderLights( int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer )
 	{
 		rh.normalRendering();
-		this.setColors( ( this.clientFlags & ( this.POWERED_FLAG | this.CHANNEL_FLAG ) ) == ( this.POWERED_FLAG | this.CHANNEL_FLAG ), ( this.clientFlags & this.POWERED_FLAG ) == this.POWERED_FLAG );
+		this.setColors( ( this.clientFlags & ( POWERED_FLAG | CHANNEL_FLAG ) ) == ( POWERED_FLAG | CHANNEL_FLAG ), ( this.clientFlags & POWERED_FLAG ) == POWERED_FLAG );
 		rh.renderFace( x, y, z, CableBusTextures.PartMonitorSidesStatusLights.getIcon(), ForgeDirection.EAST, renderer );
 		rh.renderFace( x, y, z, CableBusTextures.PartMonitorSidesStatusLights.getIcon(), ForgeDirection.WEST, renderer );
 		rh.renderFace( x, y, z, CableBusTextures.PartMonitorSidesStatusLights.getIcon(), ForgeDirection.UP, renderer );
@@ -111,12 +111,12 @@ public abstract class PartBasicState extends AEBasePart implements IPowerChannel
 		{
 			if( this.proxy.getEnergy().isNetworkPowered() )
 			{
-				this.clientFlags |= this.POWERED_FLAG;
+				this.clientFlags |= POWERED_FLAG;
 			}
 
 			if( this.proxy.getNode().meetsChannelRequirements() )
 			{
-				this.clientFlags |= this.CHANNEL_FLAG;
+				this.clientFlags |= CHANNEL_FLAG;
 			}
 
 			this.clientFlags = this.populateFlags( this.clientFlags );
@@ -155,12 +155,12 @@ public abstract class PartBasicState extends AEBasePart implements IPowerChannel
 	@Override
 	public boolean isPowered()
 	{
-		return ( this.clientFlags & this.POWERED_FLAG ) == this.POWERED_FLAG;
+		return ( this.clientFlags & POWERED_FLAG ) == POWERED_FLAG;
 	}
 
 	@Override
 	public boolean isActive()
 	{
-		return ( this.clientFlags & this.CHANNEL_FLAG ) == this.CHANNEL_FLAG;
+		return ( this.clientFlags & CHANNEL_FLAG ) == CHANNEL_FLAG;
 	}
 }

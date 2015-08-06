@@ -72,14 +72,14 @@ public class PartToggleBus extends PartBasicState
 	@Override
 	public void setColors( boolean hasChan, boolean hasPower )
 	{
-		this.hasRedstone = ( this.clientFlags & this.REDSTONE_FLAG ) == this.REDSTONE_FLAG;
+		this.hasRedstone = ( this.clientFlags & REDSTONE_FLAG ) == REDSTONE_FLAG;
 		super.setColors( hasChan && this.hasRedstone, hasPower && this.hasRedstone );
 	}
 
 	@Override
 	protected int populateFlags( int cf )
 	{
-		return cf | ( this.getIntention() ? this.REDSTONE_FLAG : 0 );
+		return cf | ( this.getIntention() ? REDSTONE_FLAG : 0 );
 	}
 
 	protected boolean getIntention()
