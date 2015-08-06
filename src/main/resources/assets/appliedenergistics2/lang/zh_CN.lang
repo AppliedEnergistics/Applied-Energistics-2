@@ -313,6 +313,10 @@ gui.tooltips.appliedenergistics2.ReportInaccessibleItemsNo=否: 只显示可以�
 gui.tooltips.appliedenergistics2.BlockPlacement=方块放置方式
 gui.tooltips.appliedenergistics2.BlockPlacementYes=方块将被放置.
 gui.tooltips.appliedenergistics2.BlockPlacementNo=方块将以物品形式掉落.
+gui.tooltips.appliedenergistics2.SchedulingMode=调度模式
+gui.tooltips.appliedenergistics2.SchedulingModeDefault=输出第一个物品直到系统中没有该物品,再输出下一个.
+gui.tooltips.appliedenergistics2.SchedulingModeRoundRobin=循环输出模式.
+gui.tooltips.appliedenergistics2.SchedulingModeRandom=随机输出模式.
 gui.tooltips.appliedenergistics2.ItemsStored=存储物品: %s
 gui.tooltips.appliedenergistics2.ItemsRequestable=可请求: %s
 
