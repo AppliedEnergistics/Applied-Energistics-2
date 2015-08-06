@@ -25,9 +25,14 @@ import net.minecraftforge.oredict.OreDictionary;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 import appeng.api.AEApi;
+import appeng.api.IAppEngApi;
 import appeng.api.config.TunnelType;
+import appeng.api.parts.IPartHelper;
 import appeng.helpers.Reflected;
 import appeng.integration.BaseModule;
+import appeng.integration.IntegrationHelper;
+import appeng.integration.IntegrationRegistry;
+import appeng.integration.IntegrationType;
 
 
 public final class RF extends BaseModule
@@ -35,17 +40,25 @@ public final class RF extends BaseModule
 	@Reflected
 	public static RF instance;
 
+	@Reflected
 	public RF()
 	{
-		this.testClassExistence( cofh.api.energy.IEnergyReceiver.class );
-		this.testClassExistence( cofh.api.energy.IEnergyProvider.class );
-		this.testClassExistence( cofh.api.energy.IEnergyHandler.class );
-		this.testClassExistence( cofh.api.energy.IEnergyConnection.class );
+		IntegrationHelper.testClassExistence( this, cofh.api.energy.IEnergyReceiver.class );
+		IntegrationHelper.testClassExistence( this, cofh.api.energy.IEnergyProvider.class );
+		IntegrationHelper.testClassExistence( this, cofh.api.energy.IEnergyHandler.class );
+		IntegrationHelper.testClassExistence( this, cofh.api.energy.IEnergyConnection.class );
 	}
 
 	@Override
 	public void init()
 	{
+		final IAppEngApi api = AEApi.instance();
+		final IPartHelper partHelper = api.partHelper();
+
+		if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.RF ) )
+		{
+			partHelper.registerNewLayer( "appeng.parts.layers.LayerIEnergyHandler", "cofh.api.energy.IEnergyReceiver" );
+		}
 	}
 
 	@Override

@@ -24,7 +24,9 @@ import cpw.mods.fml.common.event.FMLInterModComms;
 import mcp.mobius.waila.api.IWailaDataProvider;
 import mcp.mobius.waila.api.IWailaRegistrar;
 
+import appeng.helpers.Reflected;
 import appeng.integration.BaseModule;
+import appeng.integration.IntegrationHelper;
 import appeng.integration.modules.waila.PartWailaDataProvider;
 import appeng.integration.modules.waila.TileWailaDataProvider;
 import appeng.tile.AEBaseTile;
@@ -32,7 +34,18 @@ import appeng.tile.AEBaseTile;
 
 public class Waila extends BaseModule
 {
+	@Reflected
 	public static Waila instance;
+
+	@Reflected
+	public Waila()
+	{
+		IntegrationHelper.testClassExistence( this, mcp.mobius.waila.api.IWailaDataProvider.class );
+		IntegrationHelper.testClassExistence( this, mcp.mobius.waila.api.IWailaRegistrar.class );
+		IntegrationHelper.testClassExistence( this, mcp.mobius.waila.api.IWailaConfigHandler.class );
+		IntegrationHelper.testClassExistence( this, mcp.mobius.waila.api.IWailaDataAccessor.class );
+		IntegrationHelper.testClassExistence( this, mcp.mobius.waila.api.ITaggedList.class );
+	}
 
 	public static void register( IWailaRegistrar registrar )
 	{
@@ -51,15 +64,11 @@ public class Waila extends BaseModule
 	@Override
 	public void init() throws Throwable
 	{
-		this.testClassExistence( IWailaDataProvider.class );
-		this.testClassExistence( IWailaRegistrar.class );
-
 		FMLInterModComms.sendMessage( "Waila", "register", this.getClass().getName() + ".register" );
 	}
 
 	@Override
 	public void postInit()
 	{
-		// :P
 	}
 }

@@ -25,7 +25,9 @@ import powercrystals.minefactoryreloaded.api.IDeepStorageUnit;
 
 import appeng.api.AEApi;
 import appeng.api.storage.IMEInventory;
+import appeng.helpers.Reflected;
 import appeng.integration.BaseModule;
+import appeng.integration.IntegrationHelper;
 import appeng.integration.abstraction.IDSU;
 import appeng.integration.modules.helpers.MFRDSUHandler;
 import appeng.integration.modules.helpers.MinefactoryReloadedDeepStorageUnit;
@@ -33,7 +35,14 @@ import appeng.integration.modules.helpers.MinefactoryReloadedDeepStorageUnit;
 
 public class DSU extends BaseModule implements IDSU
 {
+	@Reflected
 	public static DSU instance;
+
+	@Reflected
+	public DSU()
+	{
+		IntegrationHelper.testClassExistence( this, powercrystals.minefactoryreloaded.api.IDeepStorageUnit.class );
+	}
 
 	@Override
 	public IMEInventory getDSU( TileEntity te )
@@ -50,7 +59,6 @@ public class DSU extends BaseModule implements IDSU
 	@Override
 	public void init()
 	{
-		this.testClassExistence( IDeepStorageUnit.class );
 	}
 
 	@Override

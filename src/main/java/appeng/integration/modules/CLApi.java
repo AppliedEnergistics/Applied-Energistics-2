@@ -20,19 +20,26 @@ package appeng.integration.modules;
 
 
 import appeng.api.util.AEColor;
+import appeng.helpers.Reflected;
 import appeng.integration.BaseModule;
+import appeng.integration.IntegrationHelper;
 import appeng.integration.abstraction.ICLApi;
 
 
 public class CLApi extends BaseModule implements ICLApi
 {
-
+	@Reflected
 	public static CLApi instance;
+
+	@Reflected
+	public CLApi()
+	{
+		IntegrationHelper.testClassExistence( this, coloredlightscore.src.api.CLApi.class );
+	}
 
 	@Override
 	public void init() throws Throwable
 	{
-		this.testClassExistence( coloredlightscore.src.api.CLApi.class );
 	}
 
 	@Override

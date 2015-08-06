@@ -31,7 +31,6 @@ import net.minecraft.world.World;
 
 import mods.immibis.core.api.multipart.ICoverSystem;
 import mods.immibis.core.api.multipart.IMultipartTile;
-import mods.immibis.core.api.multipart.IPartContainer;
 
 import appeng.api.AEApi;
 import appeng.api.definitions.IBlockDefinition;
@@ -40,6 +39,7 @@ import appeng.api.parts.IPartItem;
 import appeng.core.AELog;
 import appeng.helpers.Reflected;
 import appeng.integration.BaseModule;
+import appeng.integration.IntegrationHelper;
 import appeng.integration.abstraction.IImmibisMicroblocks;
 
 
@@ -53,13 +53,17 @@ public class ImmibisMicroblocks extends BaseModule implements IImmibisMicroblock
 	private Class<?> MicroblockAPIUtils;
 	private Method mergeIntoMicroblockContainer;
 
+	@Reflected
+	public ImmibisMicroblocks()
+	{
+		IntegrationHelper.testClassExistence( this, mods.immibis.core.api.multipart.IMultipartTile.class );
+		IntegrationHelper.testClassExistence( this, mods.immibis.core.api.multipart.ICoverSystem.class );
+		IntegrationHelper.testClassExistence( this, mods.immibis.core.api.multipart.IPartContainer.class );
+	}
+
 	@Override
 	public void init() throws Throwable
 	{
-		this.testClassExistence( IMultipartTile.class );
-		this.testClassExistence( ICoverSystem.class );
-		this.testClassExistence( IPartContainer.class );
-
 		try
 		{
 			this.MicroblockAPIUtils = Class.forName( "mods.immibis.microblocks.api.MicroblockAPIUtils" );

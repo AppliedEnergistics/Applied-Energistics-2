@@ -48,13 +48,14 @@ import appeng.core.features.AEFeature;
 import appeng.core.sync.GuiBridge;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketClick;
+import appeng.integration.IntegrationType;
 import appeng.items.AEBaseItem;
 import appeng.items.contents.NetworkToolViewer;
 import appeng.transformer.annotations.Integration.Interface;
 import appeng.util.Platform;
 
 
-@Interface( iface = "buildcraft.api.tools.IToolWrench", iname = "BuildCraftCore" )
+@Interface( iface = "buildcraft.api.tools.IToolWrench", iname = IntegrationType.BuildCraftCore )
 public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench, IToolWrench
 {
 

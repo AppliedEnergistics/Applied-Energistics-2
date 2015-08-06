@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -16,32 +16,14 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.integration.modules;
+package appeng.integration;
 
 
-import appeng.helpers.Reflected;
-import appeng.integration.BaseModule;
-import appeng.integration.IntegrationHelper;
-
-
-public class RFItem extends BaseModule
+public class IntegrationHelper
 {
-	@Reflected
-	public static RFItem instance;
 
-	@Reflected
-	public RFItem()
+	public static void testClassExistence( Object o, Class<?> clz )
 	{
-		IntegrationHelper.testClassExistence( this, cofh.api.energy.IEnergyContainerItem.class );
-	}
-
-	@Override
-	public void init()
-	{
-	}
-
-	@Override
-	public void postInit()
-	{
+		clz.isInstance( o );
 	}
 }

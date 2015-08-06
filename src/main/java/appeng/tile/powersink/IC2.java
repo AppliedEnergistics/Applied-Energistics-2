@@ -34,7 +34,7 @@ import appeng.transformer.annotations.Integration.Interface;
 import appeng.util.Platform;
 
 
-@Interface( iname = "IC2", iface = "ic2.api.energy.tile.IEnergySink" )
+@Interface( iname = IntegrationType.IC2, iface = "ic2.api.energy.tile.IEnergySink" )
 public abstract class IC2 extends AERootPoweredTile implements IEnergySink
 {
 

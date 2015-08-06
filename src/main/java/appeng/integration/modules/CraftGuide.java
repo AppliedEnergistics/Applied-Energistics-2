@@ -56,6 +56,7 @@ import appeng.api.features.IInscriberRecipe;
 import appeng.api.recipes.IIngredient;
 import appeng.helpers.Reflected;
 import appeng.integration.IIntegrationModule;
+import appeng.integration.IntegrationHelper;
 import appeng.recipes.game.ShapedRecipe;
 import appeng.recipes.game.ShapelessRecipe;
 
@@ -135,6 +136,33 @@ public final class CraftGuide extends CraftGuideAPIObject implements IIntegratio
 
 	@Reflected
 	public static CraftGuide instance;
+
+	public CraftGuide()
+	{
+		IntegrationHelper.testClassExistence( this, uristqwerty.CraftGuide.CraftGuideLog.class );
+		IntegrationHelper.testClassExistence( this, uristqwerty.CraftGuide.DefaultRecipeTemplate.class );
+		IntegrationHelper.testClassExistence( this, uristqwerty.CraftGuide.RecipeGeneratorImplementation.class );
+		IntegrationHelper.testClassExistence( this, uristqwerty.CraftGuide.api.ChanceSlot.class );
+		IntegrationHelper.testClassExistence( this, uristqwerty.CraftGuide.api.CraftGuideAPIObject.class );
+		IntegrationHelper.testClassExistence( this, uristqwerty.CraftGuide.api.ItemSlot.class );
+		IntegrationHelper.testClassExistence( this, uristqwerty.CraftGuide.api.RecipeGenerator.class );
+		IntegrationHelper.testClassExistence( this, uristqwerty.CraftGuide.api.RecipeProvider.class );
+		IntegrationHelper.testClassExistence( this, uristqwerty.CraftGuide.api.RecipeTemplate.class );
+		IntegrationHelper.testClassExistence( this, uristqwerty.CraftGuide.api.Slot.class );
+		IntegrationHelper.testClassExistence( this, uristqwerty.CraftGuide.api.SlotType.class );
+		IntegrationHelper.testClassExistence( this, uristqwerty.gui_craftguide.texture.DynamicTexture.class );
+		IntegrationHelper.testClassExistence( this, uristqwerty.gui_craftguide.texture.TextureClip.class );
+	}
+
+	@Override
+	public void init() throws Throwable
+	{
+	}
+
+	@Override
+	public void postInit()
+	{
+	}
 
 	@Override
 	public void generateRecipes( RecipeGenerator generator )
@@ -427,16 +455,5 @@ public final class CraftGuide extends CraftGuideAPIObject implements IIntegratio
 		}
 
 		return null;
-	}
-
-	@Override
-	public void init() throws Throwable
-	{
-	}
-
-	@Override
-	public void postInit()
-	{
-
 	}
 }

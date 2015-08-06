@@ -77,7 +77,7 @@ import appeng.transformer.annotations.Integration.Method;
 import appeng.util.Platform;
 
 
-@Interface( iface = "powercrystals.minefactoryreloaded.api.rednet.connectivity.IRedNetConnection", iname = "MFR" )
+@Interface( iface = "powercrystals.minefactoryreloaded.api.rednet.connectivity.IRedNetConnection", iname = IntegrationType.MFR )
 public class BlockCableBus extends AEBaseTileBlock implements IRedNetConnection
 {
 
@@ -506,7 +506,7 @@ public class BlockCableBus extends AEBaseTileBlock implements IRedNetConnection
 	}
 
 	@Override
-	@Method( iname = "MFR" )
+	@Method( iname = IntegrationType.MFR )
 	public RedNetConnectionType getConnectionType( World world, int x, int y, int z, ForgeDirection side )
 	{
 		return this.cb( world, x, y, z ).canConnectRedstone( EnumSet.allOf( ForgeDirection.class ) ) ? RedNetConnectionType.CableSingle : RedNetConnectionType.None;

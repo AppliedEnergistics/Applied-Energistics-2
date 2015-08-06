@@ -33,6 +33,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import cofh.api.energy.IEnergyReceiver;
 
 import appeng.api.config.PowerUnits;
+import appeng.integration.IntegrationType;
 import appeng.integration.modules.helpers.NullRFHandler;
 import appeng.me.GridAccessException;
 import appeng.transformer.annotations.Integration.Interface;
@@ -40,7 +41,7 @@ import appeng.transformer.annotations.Integration.InterfaceList;
 import appeng.util.Platform;
 
 
-@InterfaceList( value = { @Interface( iface = "cofh.api.energy.IEnergyReceiver", iname = "RF" ) } )
+@InterfaceList( value = { @Interface( iface = "cofh.api.energy.IEnergyReceiver", iname = IntegrationType.RF ) } )
 public final class PartP2PRFPower extends PartP2PTunnel<PartP2PRFPower> implements IEnergyReceiver
 {
 	private static final ThreadLocal<Stack<PartP2PRFPower>> THREAD_STACK = new ThreadLocal<Stack<PartP2PRFPower>>();
