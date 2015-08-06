@@ -2063,7 +2063,7 @@ public class Platform
 	{
 		if( !worldObj.isRemote )
 		{
-			TickHandler.INSTANCE.addCallable( worldObj, new BlockUpdate( worldObj, pos ) );
+			TickHandler.INSTANCE.addCallable( worldObj, new BlockUpdate( pos ) );
 		}
 	}
 

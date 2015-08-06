@@ -19,25 +19,60 @@
 package appeng.parts.p2p;
 
 
-//@InterfaceList(value = { @Interface(iface = "li.cil.oc.api.network.Environment", iname = "OpenComputers"), @Interface(iface = "li.cil.oc.api.network.SidedEnvironment", iname = "OpenComputers") })
+//import javax.annotation.Nullable;
+//
+//import net.minecraft.item.ItemStack;
+//import net.minecraft.nbt.NBTTagCompound;
+//import net.minecraft.util.IIcon;
+//import net.minecraft.world.World;
+//import net.minecraftforge.common.util.ForgeDirection;
+//
+//import cpw.mods.fml.relauncher.Side;
+//import cpw.mods.fml.relauncher.SideOnly;
+//
+//import li.cil.oc.api.API;
+//import li.cil.oc.api.Items;
+//import li.cil.oc.api.Network;
+//import li.cil.oc.api.network.Environment;
+//import li.cil.oc.api.network.Message;
+//import li.cil.oc.api.network.Node;
+//import li.cil.oc.api.network.SidedEnvironment;
+//import li.cil.oc.api.network.Visibility;
+//
+//import appeng.api.networking.IGridNode;
+//import appeng.api.networking.ticking.IGridTickable;
+//import appeng.api.networking.ticking.TickRateModulation;
+//import appeng.api.networking.ticking.TickingRequest;
+//import appeng.core.AELog;
+//import appeng.core.settings.TickRates;
+//import appeng.hooks.TickHandler;
+//import appeng.integration.IntegrationRegistry;
+//import appeng.integration.IntegrationType;
+//import appeng.me.GridAccessException;
+//import appeng.transformer.annotations.Integration.Interface;
+//import appeng.transformer.annotations.Integration.InterfaceList;
+//import appeng.util.IWorldCallable;
+//
+//
+//@InterfaceList( value = { @Interface( iface = "li.cil.oc.api.network.Environment", iname = "OpenComputers" ), @Interface( iface = "li.cil.oc.api.network.SidedEnvironment", iname = "OpenComputers" ) } )
 //public final class PartP2POpenComputers extends PartP2PTunnel<PartP2POpenComputers> implements IGridTickable, Environment, SidedEnvironment
 //{
 //	@Nullable
 //	private final Node node;
 //
-//	private final Callable<Void> updateCallback;
+//	private final IWorldCallable<Void> updateCallback;
 //
-//	public PartP2POpenComputers(ItemStack is)
+//	public PartP2POpenComputers( ItemStack is )
 //	{
 //		super( is );
 //
-//		if ( !IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.OpenComputers ) )
+//		if( !IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.OpenComputers ) )
 //		{
 //			throw new RuntimeException( "OpenComputers is not installed!" );
 //		}
 //
 //		// Avoid NPE when called in pre-init phase (part population).
-//		if ( API.network != null )
+//		if( API.network != null )
 //		{
 //			this.node = Network.newNode( this, Visibility.None ).create();
 //		}
@@ -50,8 +85,8 @@ package appeng.parts.p2p;
 //	}
 //
 //	@Override
-//	@SideOnly(Side.CLIENT)
-//	public TextureAtlasSprite getTypeTexture()
+//	@SideOnly( Side.CLIENT )
+//	public IIcon getTypeTexture()
 //	{
 //		return Items.get( "adapter" ).block().getBlockTextureFromSide( 2 );
 //	}
@@ -60,7 +95,7 @@ package appeng.parts.p2p;
 //	public void removeFromWorld()
 //	{
 //		super.removeFromWorld();
-//		if ( this.node != null)
+//		if( this.node != null )
 //		{
 //			this.node.remove();
 //		}
@@ -81,20 +116,20 @@ package appeng.parts.p2p;
 //	}
 //
 //	@Override
-//	public void readFromNBT(NBTTagCompound data)
+//	public void readFromNBT( NBTTagCompound data )
 //	{
 //		super.readFromNBT( data );
-//		if ( this.node != null)
+//		if( this.node != null )
 //		{
 //			this.node.load( data );
 //		}
 //	}
 //
 //	@Override
-//	public void writeToNBT(NBTTagCompound data)
+//	public void writeToNBT( NBTTagCompound data )
 //	{
 //		super.writeToNBT( data );
-//		if ( this.node != null)
+//		if( this.node != null )
 //		{
 //			this.node.save( data );
 //		}
@@ -113,9 +148,9 @@ package appeng.parts.p2p;
 //		{
 //			if( !this.proxy.getPath().isNetworkBooting() )
 //			{
-//				if ( this.node() != null ) // Client side doesn't have nodes.
+//				if( this.node() != null ) // Client side doesn't have nodes.
 //				{
-//					TickHandler.INSTANCE.addCallable( this.tile.getWorld(), this.updateCallback );
+//					TickHandler.INSTANCE.addCallable( this.tile.getWorldObj(), this.updateCallback );
 //				}
 //
 //				return TickRateModulation.SLEEP;
@@ -131,14 +166,14 @@ package appeng.parts.p2p;
 //
 //	private void updateConnections()
 //	{
-//		if ( this.proxy.isPowered() && this.proxy.isActive() )
+//		if( this.proxy.isPowered() && this.proxy.isActive() )
 //		{
 //			// Make sure we're connected to existing OC nodes in the world.
 //			Network.joinOrCreateNetwork( this.getTile() );
 //
-//			if ( this.output )
+//			if( this.output )
 //			{
-//				if ( this.getInput() != null && this.node != null )
+//				if( this.getInput() != null && this.node != null )
 //				{
 //					Network.joinOrCreateNetwork( this.getInput().getTile() );
 //					this.node.connect( this.getInput().node() );
@@ -148,22 +183,22 @@ package appeng.parts.p2p;
 //			{
 //				try
 //				{
-//					for ( PartP2POpenComputers output : this.getOutputs() )
+//					for( PartP2POpenComputers output : this.getOutputs() )
 //					{
-//						if ( this.node != null )
+//						if( this.node != null )
 //						{
 //							Network.joinOrCreateNetwork( output.getTile() );
 //							this.node.connect( output.node() );
 //						}
 //					}
 //				}
-//				catch ( GridAccessException e )
+//				catch( GridAccessException e )
 //				{
 //					AELog.error( e );
 //				}
 //			}
 //		}
-//		else if ( this.node != null )
+//		else if( this.node != null )
 //		{
 //			this.node.remove();
 //		}
@@ -177,35 +212,38 @@ package appeng.parts.p2p;
 //	}
 //
 //	@Override
-//	public void onConnect(Node node) {
+//	public void onConnect( Node node )
+//	{
 //	}
 //
 //	@Override
-//	public void onDisconnect(Node node) {
+//	public void onDisconnect( Node node )
+//	{
 //	}
 //
 //	@Override
-//	public void onMessage(Message message) {
+//	public void onMessage( Message message )
+//	{
 //	}
 //
 //	@Nullable
 //	@Override
-//	public Node sidedNode(ForgeDirection side)
+//	public Node sidedNode( ForgeDirection side )
 //	{
 //		return side == this.side ? this.node : null;
 //	}
 //
 //	@Override
-//	public boolean canConnect(ForgeDirection side)
+//	public boolean canConnect( ForgeDirection side )
 //	{
 //		return side == this.side;
 //	}
 //
-//	private final class UpdateCallback implements Callable<Void>
+//	private final class UpdateCallback implements IWorldCallable<Void>
 //	{
 //		@Nullable
 //		@Override
-//		public Void call() throws Exception
+//		public Void call( World world ) throws Exception
 //		{
 //			PartP2POpenComputers.this.updateConnections();
 //

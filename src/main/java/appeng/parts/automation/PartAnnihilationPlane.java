@@ -20,7 +20,6 @@ package appeng.parts.automation;
 
 
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -32,6 +31,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -63,13 +63,14 @@ import appeng.hooks.TickHandler;
 import appeng.me.GridAccessException;
 import appeng.parts.PartBasicState;
 import appeng.server.ServerHelper;
+import appeng.util.IWorldCallable;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 
 import com.google.common.collect.Lists;
 
 
-public class PartAnnihilationPlane extends PartBasicState implements IGridTickable, Callable<TickRateModulation>
+public class PartAnnihilationPlane extends PartBasicState implements IGridTickable, IWorldCallable<TickRateModulation>
 {
 	private final static IAESprite SIDE_ICON = CableBusTextures.PartPlaneSides.getIcon();
 	private final static IAESprite BACK_ICON = CableBusTextures.PartTransitionPlaneBack.getIcon();
@@ -86,7 +87,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 	}
 
 	@Override
-	public TickRateModulation call() throws Exception
+	public TickRateModulation call(World world) throws Exception
 	{
 		this.breaking = false;
 		return this.breakBlock( true );
