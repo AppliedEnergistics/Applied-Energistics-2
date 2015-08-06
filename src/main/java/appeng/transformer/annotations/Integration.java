@@ -24,6 +24,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import appeng.integration.IntegrationType;
+
 
 public @interface Integration
 {
@@ -41,7 +43,7 @@ public @interface Integration
 	{
 		String iface();
 
-		String iname();
+		IntegrationType iname();
 	}
 
 
@@ -49,6 +51,6 @@ public @interface Integration
 	@Target( ElementType.METHOD )
 	@interface Method
 	{
-		String iname();
+		IntegrationType iname();
 	}
 }

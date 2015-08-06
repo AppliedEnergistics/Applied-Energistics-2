@@ -38,7 +38,7 @@ public final class IntegrationNode
 	IntegrationStage failedStage = IntegrationStage.PRE_INIT;
 	Throwable exception = null;
 	String name = null;
-	Class classValue = null;
+	Class<?> classValue = null;
 	Object instance;
 	IIntegrationModule mod = null;
 

@@ -19,7 +19,16 @@
 package appeng.tile.powersink;
 
 
-//@Interface( iname = "RF", iface = "cofh.api.energy.IEnergyReceiver" )
+//import net.minecraftforge.common.util.ForgeDirection;
+//
+//import cofh.api.energy.IEnergyReceiver;
+//
+//import appeng.api.config.PowerUnits;
+//import appeng.integration.IntegrationType;
+//import appeng.transformer.annotations.Integration.Interface;
+//
+//
+//@Interface( iname = IntegrationType.RF, iface = "cofh.api.energy.IEnergyReceiver" )
 //public abstract class RedstoneFlux extends RotaryCraft implements IEnergyReceiver
 //{
 //	@Override

@@ -21,6 +21,8 @@ package appeng.parts.automation;
 
 import java.util.List;
 
+import com.google.common.collect.Lists;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
@@ -35,6 +37,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.networking.IGridNode;
@@ -66,8 +69,6 @@ import appeng.server.ServerHelper;
 import appeng.util.IWorldCallable;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
-
-import com.google.common.collect.Lists;
 
 
 public class PartAnnihilationPlane extends PartBasicState implements IGridTickable, IWorldCallable<TickRateModulation>
@@ -363,10 +364,6 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 	/**
 	 * Spawns an overflow item as new {@link EntityItem} into the {@link World}
 	 *
-	 * @param w the world to spawn it
-	 * @param x x coordinate
-	 * @param y y coordinate
-	 * @param z coordinate
 	 * @param overflow the item to spawn
 	 */
 	private void spawnOverflow( IAEItemStack overflow )
@@ -377,10 +374,12 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 		}
 
 		final TileEntity te = this.getTile();
-		final WorldServer w = (WorldServer) te.getWorldObj();
-		final double x = te.xCoord + this.side.offsetX + .5d;
-		final double y = te.yCoord + this.side.offsetY + .5d;
-		final double z = te.zCoord + this.side.offsetZ + .5d;
+		final WorldServer w = (WorldServer) te.getWorld();
+		final BlockPos offset = te.getPos().offset( this.side.getFacing() );
+		final BlockPos add = offset.add( .5, .5, .5 );
+		final double x = add.getX();
+		final double y = add.getY();
+		final double z = add.getZ();
 
 		final EntityItem overflowEntity = new EntityItem( w, x, y, z, overflow.getItemStack() );
 		overflowEntity.motionX = 0;

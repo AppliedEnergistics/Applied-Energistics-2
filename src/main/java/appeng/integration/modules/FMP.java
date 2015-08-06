@@ -47,6 +47,7 @@ import appeng.fmp.CableBusPart;
 import appeng.fmp.FMPEvent;
 import appeng.fmp.FMPPlacementHelper;
 import appeng.fmp.PartRegistry;
+import appeng.helpers.Reflected;
 import appeng.integration.IIntegrationModule;
 import appeng.integration.abstraction.IFMP;
 import appeng.integration.modules.helpers.FMPPacketEvent;
@@ -55,7 +56,7 @@ import appeng.parts.CableBusContainer;
 
 public class FMP implements IIntegrationModule, IPartFactory, IPartConverter, IFMP
 {
-
+	@Reflected
 	public static FMP instance;
 
 	@Override

@@ -38,11 +38,12 @@ package appeng.parts.p2p;
 //import appeng.api.networking.ticking.TickRateModulation;
 //import appeng.api.networking.ticking.TickingRequest;
 //import appeng.core.settings.TickRates;
+//import appeng.integration.IntegrationType;
 //import appeng.transformer.annotations.Integration.Interface;
 //import appeng.util.Platform;
 //
 //
-//@Interface( iface = "pneumaticCraft.api.tileentity.ISidedPneumaticMachine", iname = "PneumaticCraft" )
+//@Interface( iface = "pneumaticCraft.api.tileentity.ISidedPneumaticMachine", iname = IntegrationType.PneumaticCraft )
 //public final class PartP2PPressure extends PartP2PTunnel<PartP2PPressure> implements ISidedPneumaticMachine, IGridTickable
 //{
 //	private static final String PRESSURE_NBT_TAG = "pneumaticCraft";

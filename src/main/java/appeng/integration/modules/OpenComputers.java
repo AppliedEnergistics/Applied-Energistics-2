@@ -21,27 +21,43 @@ package appeng.integration.modules;
 import li.cil.oc.api.Items;
 
 import appeng.api.AEApi;
+import appeng.api.IAppEngApi;
 import appeng.api.config.TunnelType;
 import appeng.api.features.IP2PTunnelRegistry;
+import appeng.api.parts.IPartHelper;
+import appeng.helpers.Reflected;
 import appeng.integration.BaseModule;
+import appeng.integration.IntegrationHelper;
+import appeng.integration.IntegrationRegistry;
+import appeng.integration.IntegrationType;
+
 
 public class OpenComputers extends BaseModule
 {
+	@Reflected
 	public static OpenComputers instance;
 
+	@Reflected
 	public OpenComputers()
 	{
-		this.testClassExistence( li.cil.oc.api.Items.class );
-		this.testClassExistence( li.cil.oc.api.Network.class );
-		this.testClassExistence( li.cil.oc.api.network.Environment.class );
-		this.testClassExistence( li.cil.oc.api.network.SidedEnvironment.class );
-		this.testClassExistence( li.cil.oc.api.network.Node.class );
-		this.testClassExistence( li.cil.oc.api.network.Message.class );
+		IntegrationHelper.testClassExistence( this, li.cil.oc.api.Items.class );
+		IntegrationHelper.testClassExistence( this, li.cil.oc.api.Network.class );
+		IntegrationHelper.testClassExistence( this, li.cil.oc.api.network.Environment.class );
+		IntegrationHelper.testClassExistence( this, li.cil.oc.api.network.SidedEnvironment.class );
+		IntegrationHelper.testClassExistence( this, li.cil.oc.api.network.Node.class );
+		IntegrationHelper.testClassExistence( this, li.cil.oc.api.network.Message.class );
 	}
 
 	@Override
 	public void init()
 	{
+		final IAppEngApi api = AEApi.instance();
+		final IPartHelper partHelper = api.partHelper();
+
+		if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.OpenComputers ) )
+		{
+			partHelper.registerNewLayer( "appeng.parts.layers.LayerSidedEnvironment", "li.cil.oc.api.network.SidedEnvironment" );
+		}
 	}
 
 	@Override

@@ -21,26 +21,34 @@ package appeng.integration.modules;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.fml.common.event.FMLInterModComms;
+
+import cpw.mods.fml.common.event.FMLInterModComms;
+
+import appeng.helpers.Reflected;
 import appeng.integration.BaseModule;
+import appeng.integration.IntegrationHelper;
 import appeng.integration.abstraction.IMekanism;
 
 
 public final class Mekanism extends BaseModule implements IMekanism
 {
-
+	@Reflected
 	public static Mekanism instance;
+
+	@Reflected
+	public Mekanism()
+	{
+		IntegrationHelper.testClassExistence( this, mekanism.api.energy.IStrictEnergyAcceptor.class );
+	}
 
 	@Override
 	public void init() throws Throwable
 	{
-		this.testClassExistence( mekanism.api.energy.IStrictEnergyAcceptor.class );
 	}
 
 	@Override
 	public void postInit()
 	{
-
 	}
 
 	@Override

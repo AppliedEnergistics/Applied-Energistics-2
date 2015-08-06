@@ -27,25 +27,41 @@ import ic2.api.energy.tile.IEnergyTile;
 import ic2.api.recipe.RecipeInputItemStack;
 
 import appeng.api.AEApi;
+import appeng.api.IAppEngApi;
 import appeng.api.config.TunnelType;
 import appeng.api.features.IP2PTunnelRegistry;
+import appeng.api.parts.IPartHelper;
+import appeng.helpers.Reflected;
 import appeng.integration.BaseModule;
+import appeng.integration.IntegrationHelper;
+import appeng.integration.IntegrationRegistry;
+import appeng.integration.IntegrationType;
 import appeng.integration.abstraction.IIC2;
 
 
 public class IC2 extends BaseModule implements IIC2
 {
-
+	@Reflected
 	public static IC2 instance;
 
+	@Reflected
 	public IC2()
 	{
-		this.testClassExistence( IEnergyTile.class );
+		IntegrationHelper.testClassExistence( this, ic2.api.energy.tile.IEnergyTile.class );
+		IntegrationHelper.testClassExistence( this, ic2.api.recipe.RecipeInputItemStack.class );
 	}
 
 	@Override
 	public void init()
 	{
+		final IAppEngApi api = AEApi.instance();
+		final IPartHelper partHelper = api.partHelper();
+
+		if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.IC2 ) )
+		{
+			partHelper.registerNewLayer( "appeng.parts.layers.LayerIEnergySink", "ic2.api.energy.tile.IEnergySink" );
+			partHelper.registerNewLayer( "appeng.parts.layers.LayerIEnergySource", "ic2.api.energy.tile.IEnergySource" );
+		}
 	}
 
 	@Override

@@ -67,9 +67,10 @@ import appeng.tile.networking.TileCableBus;
 import appeng.tile.networking.TileCableBusTESR;
 import appeng.util.Platform;
 
+
 // TODO: MFR INTEGRATION
-//@Interface( iface = "powercrystals.minefactoryreloaded.api.rednet.connectivity.IRedNetConnection", iname = "MFR" )
-public class BlockCableBus extends AEBaseTileBlock // implements IRedNetConnection
+//@Interface( iface = "powercrystals.minefactoryreloaded.api.rednet.connectivity.IRedNetConnection", iname = IntegrationType.MFR )
+public class BlockCableBus extends AEBaseTileBlock //implements IRedNetConnection
 {
 
 	private static final ICableBusContainer NULL_CABLE_BUS = new NullCableBusContainer();
@@ -475,14 +476,17 @@ public class BlockCableBus extends AEBaseTileBlock // implements IRedNetConnecti
 			CommonHelper.proxy.bindTileEntitySpecialRenderer( tesrTile, this );
 		}
 	}
-
-	/*
-	 *  // TODO MFR INTEGRATION
-		@Override
-		@Method( iname = "MFR" )
-		public RedNetConnectionType getConnectionType( World world, int x, int y, int z, AEPartLocation side )
-		{
-			return this.cb( world, x, y, z ).canConnectRedstone( EnumSet.allOf( AEPartLocation.class ) ) ? RedNetConnectionType.CableSingle : RedNetConnectionType.None;
-		}
-	*/
+	
+//	TODO MFR Integration
+//	@Override
+//	@Method( iname = IntegrationType.MFR )
+//	public RedNetConnectionType getConnectionType( World world, int x, int y, int z, ForgeDirection side )
+//	{
+//		return this.cb( world, x, y, z ).canConnectRedstone( EnumSet.allOf( ForgeDirection.class ) ) ? RedNetConnectionType.CableSingle : RedNetConnectionType.None;
+//	}
+//
+//	public void setRenderColor( int color )
+//	{
+//		this.myColorMultiplier = color;
+//	}
 }

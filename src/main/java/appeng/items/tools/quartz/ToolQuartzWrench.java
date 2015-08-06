@@ -30,14 +30,15 @@ import net.minecraft.world.World;
 import appeng.api.implementations.items.IAEWrench;
 import appeng.api.util.DimensionalCoord;
 import appeng.core.features.AEFeature;
+import appeng.integration.IntegrationType;
 import appeng.items.AEBaseItem;
 import appeng.util.Platform;
 
 import com.google.common.base.Optional;
 
 // TODO BC Integration
-//@Interface( iface = "buildcraft.api.tools.IToolWrench", iname = "BuildCraftCore" )
-public class ToolQuartzWrench extends AEBaseItem implements IAEWrench
+//@Interface( iface = "buildcraft.api.tools.IToolWrench", iname = IntegrationType.BuildCraftCore )
+public class ToolQuartzWrench extends AEBaseItem implements IAEWrench /*, IToolWrench */
 {
 
 	public ToolQuartzWrench( AEFeature type )

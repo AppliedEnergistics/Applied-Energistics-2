@@ -52,9 +52,9 @@ import appeng.util.inv.WrapperChainedInventory;
 import appeng.util.inv.WrapperMCISidedInventory;
 
 
-// TODO: BC Integration 
-//@Integration.Interface( iface = "buildcraft.api.transport.IPipeConnection", iname = "BuildCraftTransport" )
-public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements ISidedInventory, IGridTickable
+// TODO: BC Integration
+//@Interface( iface = "buildcraft.api.transport.IPipeConnection", iname = IntegrationType.BuildCraftTransport )
+public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements /*IPipeConnection,*/ ISidedInventory, IGridTickable
 {
 
 	final LinkedList<IInventory> which = new LinkedList<IInventory>();
@@ -370,11 +370,17 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements ISidedI
 	}
 
 	@Override
-	public int getField(
-			int id )
+	public int getField( int id )
 	{
 		return 0;
 	}
+
+//	@Override
+//	@Method( iname = IntegrationType.BuildCraftTransport )
+//	public ConnectOverride overridePipeConnection( PipeType type, ForgeDirection with )
+//	{
+//		return 0;
+//	}
 
 	@Override
 	public void setField(

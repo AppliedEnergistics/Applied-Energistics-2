@@ -19,7 +19,23 @@
 package appeng.items.tools.powered.powersink;
 
 
-//@InterfaceList( value = { @Interface( iface = "ic2.api.item.ISpecialElectricItem", iname = "IC2" ), @Interface( iface = "ic2.api.item.IElectricItemManager", iname = "IC2" ) } )
+//import com.google.common.base.Optional;
+//
+//import net.minecraft.entity.EntityLivingBase;
+//import net.minecraft.item.Item;
+//import net.minecraft.item.ItemStack;
+//
+//import ic2.api.item.IElectricItemManager;
+//import ic2.api.item.ISpecialElectricItem;
+//
+//import appeng.api.config.PowerUnits;
+//import appeng.integration.IntegrationType;
+//import appeng.transformer.annotations.Integration.Interface;
+//import appeng.transformer.annotations.Integration.InterfaceList;
+//import appeng.transformer.annotations.Integration.Method;
+//
+//
+//@InterfaceList( value = { @Interface( iface = "ic2.api.item.ISpecialElectricItem", iname = IntegrationType.IC2 ), @Interface( iface = "ic2.api.item.IElectricItemManager", iname = IntegrationType.IC2 ) } )
 //public abstract class IC2 extends AERootPoweredItem implements IElectricItemManager, ISpecialElectricItem
 //{
 //	public IC2( double powerCapacity, Optional<String> subName )
@@ -120,7 +136,7 @@ package appeng.items.tools.powered.powersink;
 //	}
 //
 //	@Override
-//	@Method( iname = "IC2" )
+//	@Method( iname = IntegrationType.IC2 )
 //	public IElectricItemManager getManager( ItemStack itemStack )
 //	{
 //		return this;

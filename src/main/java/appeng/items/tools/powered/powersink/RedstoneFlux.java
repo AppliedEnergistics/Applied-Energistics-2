@@ -19,7 +19,18 @@
 package appeng.items.tools.powered.powersink;
 
 
-//@Interface( iface = "cofh.api.energy.IEnergyContainerItem", iname = "RFItem" )
+//import com.google.common.base.Optional;
+//
+//import net.minecraft.item.ItemStack;
+//
+//import cofh.api.energy.IEnergyContainerItem;
+//
+//import appeng.api.config.PowerUnits;
+//import appeng.integration.IntegrationType;
+//import appeng.transformer.annotations.Integration.Interface;
+//
+//
+//@Interface( iface = "cofh.api.energy.IEnergyContainerItem", iname = IntegrationType.RFItem )
 //public abstract class RedstoneFlux extends IC2 implements IEnergyContainerItem
 //{
 //	public RedstoneFlux( double powerCapacity, Optional<String> subName )

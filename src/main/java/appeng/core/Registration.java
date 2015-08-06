@@ -243,7 +243,7 @@ public final class Registration
 //			partHelper.registerNewLayer( "appeng.parts.layers.LayerIEnergyHandler", "cofh.api.energy.IEnergyReceiver" );
 //		}
 //
-//		if ( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.OpenComputers ) )
+//		if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.OpenComputers ) )
 //		{
 //			partHelper.registerNewLayer( "appeng.parts.layers.LayerSidedEnvironment", "li.cil.oc.api.network.SidedEnvironment" );
 //		}

@@ -54,7 +54,7 @@ package appeng.parts.p2p;
 //import appeng.util.IWorldCallable;
 //
 //
-//@InterfaceList( value = { @Interface( iface = "li.cil.oc.api.network.Environment", iname = "OpenComputers" ), @Interface( iface = "li.cil.oc.api.network.SidedEnvironment", iname = "OpenComputers" ) } )
+//@InterfaceList( value = { @Interface( iface = "li.cil.oc.api.network.Environment", iname = IntegrationType.OpenComputers ), @Interface( iface = "li.cil.oc.api.network.SidedEnvironment", iname = IntegrationType.OpenComputers ) } )
 //public final class PartP2POpenComputers extends PartP2PTunnel<PartP2POpenComputers> implements IGridTickable, Environment, SidedEnvironment
 //{
 //	@Nullable

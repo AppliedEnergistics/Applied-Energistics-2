@@ -32,6 +32,8 @@ public enum IntegrationRegistry
 {
 	INSTANCE;
 
+	private static final String PACKAGE_PREFIX = "appeng.integration.modules.";
+
 	private final Collection<IntegrationNode> modules = new LinkedList<IntegrationNode>();
 
 	public void add( IntegrationType type )
@@ -46,7 +48,7 @@ public enum IntegrationRegistry
 			return;
 		}
 
-		this.modules.add( new IntegrationNode( type.dspName, type.modID, type, "appeng.integration.modules." + type.name() ) );
+		this.modules.add( new IntegrationNode( type.dspName, type.modID, type, PACKAGE_PREFIX + type.name() ) );
 	}
 
 	public void init()

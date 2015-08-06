@@ -19,7 +19,29 @@
 package appeng.parts.p2p;
 
 
-//@InterfaceList( value = { @Interface( iface = "cofh.api.energy.IEnergyReceiver", iname = "RF" ) } )
+//import java.util.Stack;
+//
+//import net.minecraft.init.Blocks;
+//import net.minecraft.item.ItemStack;
+//import net.minecraft.tileentity.TileEntity;
+//import net.minecraft.util.IIcon;
+//import net.minecraftforge.common.util.ForgeDirection;
+//
+//import cpw.mods.fml.relauncher.Side;
+//import cpw.mods.fml.relauncher.SideOnly;
+//
+//import cofh.api.energy.IEnergyReceiver;
+//
+//import appeng.api.config.PowerUnits;
+//import appeng.integration.IntegrationType;
+//import appeng.integration.modules.helpers.NullRFHandler;
+//import appeng.me.GridAccessException;
+//import appeng.transformer.annotations.Integration.Interface;
+//import appeng.transformer.annotations.Integration.InterfaceList;
+//import appeng.util.Platform;
+//
+//
+//@InterfaceList( value = { @Interface( iface = "cofh.api.energy.IEnergyReceiver", iname = IntegrationType.RF ) } )
 //public final class PartP2PRFPower extends PartP2PTunnel<PartP2PRFPower> implements IEnergyReceiver
 //{
 //	private static final ThreadLocal<Stack<PartP2PRFPower>> THREAD_STACK = new ThreadLocal<Stack<PartP2PRFPower>>();
@@ -37,7 +59,7 @@ package appeng.parts.p2p;
 //
 //	@Override
 //	@SideOnly( Side.CLIENT )
-//	public TextureAtlasSprite getTypeTexture()
+//	public IIcon getTypeTexture()
 //	{
 //		return Blocks.iron_block.getBlockTextureFromSide( 0 );
 //	}
@@ -148,7 +170,7 @@ package appeng.parts.p2p;
 //			if( !this.cachedTarget )
 //			{
 //				TileEntity self = this.getTile();
-//				TileEntity te = self.getWorld().getTileEntity( self.xCoord + this.side.offsetX, self.yCoord + this.side.offsetY, self.zCoord + this.side.offsetZ );
+//				TileEntity te = self.getWorldObj().getTileEntity( self.xCoord + this.side.offsetX, self.yCoord + this.side.offsetY, self.zCoord + this.side.offsetZ );
 //				this.outputTarget = te instanceof IEnergyReceiver ? (IEnergyReceiver) te : null;
 //				this.cachedTarget = true;
 //			}

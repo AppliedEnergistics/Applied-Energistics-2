@@ -19,7 +19,24 @@
 package appeng.tile.powersink;
 
 
-//@InterfaceList( value = { @Interface( iname = "RotaryCraft", iface = "Reika.RotaryCraft.API.Power.AdvancedShaftPowerReceiver" ), @Interface( iname = "RotaryCraft", iface = "Reika.RotaryCraft.API.Interfaces.Transducerable") } )
+//import java.util.ArrayList;
+//
+//import net.minecraft.world.World;
+//import net.minecraftforge.common.util.ForgeDirection;
+//
+//import Reika.RotaryCraft.API.Interfaces.Transducerable;
+//import Reika.RotaryCraft.API.Power.AdvancedShaftPowerReceiver;
+//
+//import appeng.api.config.PowerUnits;
+//import appeng.integration.IntegrationType;
+//import appeng.tile.TileEvent;
+//import appeng.tile.events.TileEventType;
+//import appeng.transformer.annotations.Integration.Interface;
+//import appeng.transformer.annotations.Integration.InterfaceList;
+//import appeng.transformer.annotations.Integration.Method;
+//
+//
+//@InterfaceList( value = { @Interface( iname = IntegrationType.RotaryCraft, iface = "Reika.RotaryCraft.API.Power.AdvancedShaftPowerReceiver" ), @Interface( iname = IntegrationType.RotaryCraft, iface = "Reika.RotaryCraft.API.Interfaces.Transducerable" ) } )
 //public abstract class RotaryCraft extends IC2 implements AdvancedShaftPowerReceiver, Transducerable
 //{
 //
@@ -31,7 +48,7 @@ package appeng.tile.powersink;
 //	private long currentPower = 0;
 //
 //	@TileEvent( TileEventType.TICK )
-//	@Method( iname = "RotaryCraft" )
+//	@Method( iname = IntegrationType.RotaryCraft )
 //	public void Tick_RotaryCraft()
 //	{
 //		if( this.worldObj != null && !this.worldObj.isRemote && this.currentPower > 0 )
@@ -144,23 +161,22 @@ package appeng.tile.powersink;
 //	public final ArrayList<String> getMessages( World world, int x, int y, int z, int side )
 //	{
 //		String out;
-//		if( power >= 1000000000 )
+//		if( this.power >= 1000000000 )
 //		{
-//			out = String.format( "Receiving %.3f GW @ %d rad/s.", power / 1000000000.0D, omega );
+//			out = String.format( "Receiving %.3f GW @ %d rad/s.", this.power / 1000000000.0D, this.omega );
 //		}
-//		else if( power >= 1000000 )
+//		else if( this.power >= 1000000 )
 //		{
-//			out = String.format( "Receiving %.3f MW @ %d rad/s.", power / 1000000.0D, omega );
+//			out = String.format( "Receiving %.3f MW @ %d rad/s.", this.power / 1000000.0D, this.omega );
 //		}
-//		else if( power >= 1000 )
+//		else if( this.power >= 1000 )
 //		{
-//			out = String.format( "Receiving %.3f kW @ %d rad/s.", power / 1000.0D, omega );
+//			out = String.format( "Receiving %.3f kW @ %d rad/s.", this.power / 1000.0D, this.omega );
 //		}
 //		else
 //		{
-//			out = String.format( "Receiving %d W @ %d rad/s.", power, omega );
+//			out = String.format( "Receiving %d W @ %d rad/s.", this.power, this.omega );
 //		}
-//
 //
 //		ArrayList<String> messages = new ArrayList<String>( 1 );
 //		messages.add( out );

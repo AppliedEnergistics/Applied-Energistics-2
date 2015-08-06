@@ -19,7 +19,16 @@
 package appeng.tile.powersink;
 
 
-//@Interface( iname = "Mekanism", iface = "mekanism.api.energy.IStrictEnergyAcceptor" )
+//import net.minecraftforge.common.util.ForgeDirection;
+//
+//import mekanism.api.energy.IStrictEnergyAcceptor;
+//
+//import appeng.api.config.PowerUnits;
+//import appeng.integration.IntegrationType;
+//import appeng.transformer.annotations.Integration.Interface;
+//
+//
+//@Interface( iname = IntegrationType.Mekanism, iface = "mekanism.api.energy.IStrictEnergyAcceptor" )
 //public abstract class MekJoules extends RedstoneFlux implements IStrictEnergyAcceptor
 //{
 //

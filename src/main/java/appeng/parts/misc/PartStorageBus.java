@@ -73,6 +73,7 @@ import appeng.core.sync.GuiBridge;
 import appeng.helpers.IInterfaceHost;
 import appeng.helpers.IPriorityHost;
 import appeng.helpers.Reflected;
+import appeng.integration.IntegrationType;
 import appeng.me.GridAccessException;
 import appeng.me.storage.MEInventoryHandler;
 import appeng.me.storage.MEMonitorIInventory;
@@ -85,8 +86,8 @@ import appeng.util.prioitylist.PrecisePriorityList;
 
 
 // TODO: BC Integration
-//@Interface( iname = "BuildCraftTransport", iface = "buildcraft.api.transport.IPipeConnection" )
-public class PartStorageBus extends PartUpgradeable implements IGridTickable, ICellContainer, IMEMonitorHandlerReceiver<IAEItemStack>, IPriorityHost
+//@Interface( iname = IntegrationType.BuildCraftTransport, iface = "buildcraft.api.transport.IPipeConnection" )
+public class PartStorageBus extends PartUpgradeable implements IGridTickable, ICellContainer, IMEMonitorHandlerReceiver<IAEItemStack> /*, IPipeConnection*/, IPriorityHost
 {
 	final BaseActionSource mySrc;
 	final AppEngInternalAEInventory Config = new AppEngInternalAEInventory( this, 63 );
@@ -561,7 +562,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	// TODO: BC PIPE INTEGRATION
 	/*
 	@Override
-	@Method( iname = "BuildCraftTransport" )
+	@Method( iname = IntegrationType.BuildCraftTransport )
 	public ConnectOverride overridePipeConnection( PipeType type, ForgeDirection with )
 	{
 		return type == PipeType.ITEM && with == this.side ? ConnectOverride.CONNECT : ConnectOverride.DISCONNECT;
