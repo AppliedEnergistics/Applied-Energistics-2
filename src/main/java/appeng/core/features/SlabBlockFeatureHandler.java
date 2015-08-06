@@ -65,8 +65,8 @@ public class SlabBlockFeatureHandler implements IFeatureHandler
 		if( this.enabled )
 		{
 			this.slabs.setCreativeTab( CreativeTab.instance );
-			GameRegistry.registerBlock( slabs, AEBaseItemBlockSlab.class, "tile." + slabs.name(), slabs, slabs.doubleSlabs(), false );
-			GameRegistry.registerBlock( slabs.doubleSlabs(), AEBaseItemBlockSlab.class, "tile." + slabs.name() + ".double", slabs, slabs.doubleSlabs(), true );
+			GameRegistry.registerBlock( this.slabs, AEBaseItemBlockSlab.class, "tile." + this.slabs.name(), this.slabs, this.slabs.doubleSlabs(), false );
+			GameRegistry.registerBlock( this.slabs.doubleSlabs(), AEBaseItemBlockSlab.class, "tile." + this.slabs.name() + ".double", this.slabs, this.slabs.doubleSlabs(), true );
 		}
 	}
 }

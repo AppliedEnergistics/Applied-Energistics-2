@@ -56,11 +56,11 @@ public class AEBaseSlabBlock extends BlockSlab implements IAEFeature
 		this.setResistance( block.getExplosionResistance( null ) * 5.0F / 3.0F );
 		this.setStepSound( block.stepSound );
 		this.useNeighborBrightness = true;
-		if( !field_150004_a )
+		if( !this.field_150004_a )
 		{
 			this.doubleSlabs = new AEBaseSlabBlock( block, meta, features, true, name + ".double" ).setSlabs( this );
 		}
-		this.features = !field_150004_a ? new SlabBlockFeatureHandler( features, this ) : null;
+		this.features = !this.field_150004_a ? new SlabBlockFeatureHandler( features, this ) : null;
 	}
 
 	public AEBaseSlabBlock setSlabs( AEBaseSlabBlock slabs )
@@ -71,12 +71,12 @@ public class AEBaseSlabBlock extends BlockSlab implements IAEFeature
 
 	public AEBaseSlabBlock slabs()
 	{
-		return slabs;
+		return this.slabs;
 	}
 
 	public AEBaseSlabBlock doubleSlabs()
 	{
-		return doubleSlabs;
+		return this.doubleSlabs;
 	}
 
 	@Override
@@ -94,7 +94,7 @@ public class AEBaseSlabBlock extends BlockSlab implements IAEFeature
 	@Override
 	public IIcon getIcon( int dir, int meta )
 	{
-		return block.getIcon( dir, this.meta );
+		return this.block.getIcon( dir, this.meta );
 	}
 
 	@Override
@@ -134,6 +134,6 @@ public class AEBaseSlabBlock extends BlockSlab implements IAEFeature
 
 	public String name()
 	{
-		return name;
+		return this.name;
 	}
 }

@@ -666,7 +666,7 @@ public class GridNode implements IGridNode, IPathItem
 
 	public int getLastUsedChannels()
 	{
-		return lastUsedChannels;
+		return this.lastUsedChannels;
 	}
 
 	private static class MachineSecurityBreak implements Callable<Void>

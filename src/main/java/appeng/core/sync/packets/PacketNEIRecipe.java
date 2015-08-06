@@ -219,7 +219,7 @@ public class PacketNEIRecipe extends AppEngPacket
 									// If that doesn't work, grab from the player's inventory
 									if( whichItem == null && playerInventory != null )
 									{
-										whichItem = extractItemFromPlayerInventory( player, realForFake, patternItem );
+										whichItem = this.extractItemFromPlayerInventory( player, realForFake, patternItem );
 									}
 
 									craftMatrix.setInventorySlotContents( x, whichItem );

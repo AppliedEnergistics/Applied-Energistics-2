@@ -1285,24 +1285,24 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 	private void updateElapsedTime( IAEItemStack is )
 	{
 		final long nextStartTime = System.nanoTime();
-		this.elapsedTime = this.getElapsedTime() + nextStartTime - lastTime;
+		this.elapsedTime = this.getElapsedTime() + nextStartTime - this.lastTime;
 		this.lastTime = nextStartTime;
 		this.remainingItemCount = this.getRemainingItemCount() - is.getStackSize();
 	}
 
 	public long getElapsedTime()
 	{
-		return elapsedTime;
+		return this.elapsedTime;
 	}
 
 	public long getRemainingItemCount()
 	{
-		return remainingItemCount;
+		return this.remainingItemCount;
 	}
 
 	public long getStartItemCount()
 	{
-		return startItemCount;
+		return this.startItemCount;
 	}
 
 	static class TaskProgress
