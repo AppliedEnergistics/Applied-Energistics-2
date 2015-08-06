@@ -32,7 +32,6 @@ import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.util.IOrientable;
 import appeng.api.util.IOrientableBlock;
 import appeng.block.AEBaseBlock;
-import appeng.block.misc.BlockQuartzTorch;
 import appeng.client.render.BaseBlockRender;
 import appeng.tile.AEBaseTile;
 

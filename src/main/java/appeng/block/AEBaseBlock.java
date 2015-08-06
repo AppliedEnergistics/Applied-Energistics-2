@@ -56,7 +56,6 @@ import appeng.client.texture.FlippableIcon;
 import appeng.client.texture.MissingIcon;
 import appeng.core.features.AEBlockFeatureHandler;
 import appeng.core.features.AEFeature;
-import appeng.core.features.ActivityState;
 import appeng.core.features.FeatureNameExtractor;
 import appeng.core.features.IAEFeature;
 import appeng.core.features.IFeatureHandler;
