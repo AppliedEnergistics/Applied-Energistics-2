@@ -19,9 +19,9 @@
 package appeng.parts;
 
 
-import io.netty.buffer.ByteBuf;
-
 import java.io.IOException;
+
+import io.netty.buffer.ByteBuf;
 
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.item.ItemStack;
@@ -29,6 +29,7 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
 import appeng.api.implementations.IPowerChannelState;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.events.MENetworkChannelsChanged;
@@ -69,7 +70,7 @@ public abstract class PartBasicState extends AEBasePart implements IPowerChannel
 	@SideOnly( Side.CLIENT )
 	public void renderLights( BlockPos pos, IPartRenderHelper rh, ModelGenerator renderer )
 	{
-		this.setColors( renderer, ( this.clientFlags & ( this.POWERED_FLAG | this.CHANNEL_FLAG ) ) == ( this.POWERED_FLAG | this.CHANNEL_FLAG ), ( this.clientFlags & this.POWERED_FLAG ) == this.POWERED_FLAG );
+		this.setColors( renderer, ( this.clientFlags & ( POWERED_FLAG | CHANNEL_FLAG ) ) == ( POWERED_FLAG | CHANNEL_FLAG ), ( this.clientFlags & POWERED_FLAG ) == POWERED_FLAG );
 		rh.renderFace( pos, CableBusTextures.PartMonitorSidesStatusLights.getIcon(), EnumFacing.EAST, renderer );
 		rh.renderFace( pos, CableBusTextures.PartMonitorSidesStatusLights.getIcon(), EnumFacing.WEST, renderer );
 		rh.renderFace( pos, CableBusTextures.PartMonitorSidesStatusLights.getIcon(), EnumFacing.UP, renderer );
@@ -108,12 +109,12 @@ public abstract class PartBasicState extends AEBasePart implements IPowerChannel
 		{
 			if( this.proxy.getEnergy().isNetworkPowered() )
 			{
-				this.clientFlags |= this.POWERED_FLAG;
+				this.clientFlags |= POWERED_FLAG;
 			}
 
 			if( this.proxy.getNode().meetsChannelRequirements() )
 			{
-				this.clientFlags |= this.CHANNEL_FLAG;
+				this.clientFlags |= CHANNEL_FLAG;
 			}
 
 			this.clientFlags = this.populateFlags( this.clientFlags );
@@ -152,12 +153,12 @@ public abstract class PartBasicState extends AEBasePart implements IPowerChannel
 	@Override
 	public boolean isPowered()
 	{
-		return ( this.clientFlags & this.POWERED_FLAG ) == this.POWERED_FLAG;
+		return ( this.clientFlags & POWERED_FLAG ) == POWERED_FLAG;
 	}
 
 	@Override
 	public boolean isActive()
 	{
-		return ( this.clientFlags & this.CHANNEL_FLAG ) == this.CHANNEL_FLAG;
+		return ( this.clientFlags & CHANNEL_FLAG ) == CHANNEL_FLAG;
 	}
 }

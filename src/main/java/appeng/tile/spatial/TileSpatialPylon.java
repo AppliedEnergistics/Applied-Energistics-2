@@ -136,27 +136,27 @@ public class TileSpatialPylon extends AENetworkTile implements IAEMultiBlock
 		{
 			if( this.cluster.min.equals( this.getLocation() ) )
 			{
-				this.displayBits = this.DISPLAY_END_MIN;
+				this.displayBits = DISPLAY_END_MIN;
 			}
 			else if( this.cluster.max.equals( this.getLocation() ) )
 			{
-				this.displayBits = this.DISPLAY_END_MAX;
+				this.displayBits = DISPLAY_END_MAX;
 			}
 			else
 			{
-				this.displayBits = this.DISPLAY_MIDDLE;
+				this.displayBits = DISPLAY_MIDDLE;
 			}
 
 			switch( this.cluster.currentAxis )
 			{
 				case X:
-					this.displayBits |= this.DISPLAY_X;
+					this.displayBits |= DISPLAY_X;
 					break;
 				case Y:
-					this.displayBits |= this.DISPLAY_Y;
+					this.displayBits |= DISPLAY_Y;
 					break;
 				case Z:
-					this.displayBits |= this.DISPLAY_Z;
+					this.displayBits |= DISPLAY_Z;
 					break;
 				default:
 					this.displayBits = 0;
@@ -167,12 +167,12 @@ public class TileSpatialPylon extends AENetworkTile implements IAEMultiBlock
 			{
 				if( this.gridProxy.getEnergy().isNetworkPowered() )
 				{
-					this.displayBits |= this.DISPLAY_POWERED_ENABLED;
+					this.displayBits |= DISPLAY_POWERED_ENABLED;
 				}
 
 				if( this.cluster.isValid && this.gridProxy.isActive() )
 				{
-					this.displayBits |= this.DISPLAY_ENABLED;
+					this.displayBits |= DISPLAY_ENABLED;
 				}
 			}
 			catch( GridAccessException e )
@@ -208,7 +208,7 @@ public class TileSpatialPylon extends AENetworkTile implements IAEMultiBlock
 
 	public int getLightValue()
 	{
-		if( ( this.displayBits & this.DISPLAY_POWERED_ENABLED ) == this.DISPLAY_POWERED_ENABLED )
+		if( ( this.displayBits & DISPLAY_POWERED_ENABLED ) == DISPLAY_POWERED_ENABLED )
 		{
 			return 8;
 		}

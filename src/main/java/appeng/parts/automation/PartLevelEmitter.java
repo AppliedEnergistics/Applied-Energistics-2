@@ -153,7 +153,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 	{
 		if( Platform.isClient() )
 		{
-			return ( this.clientFlags & this.FLAG_ON ) == this.FLAG_ON;
+			return ( this.clientFlags & FLAG_ON ) == FLAG_ON;
 		}
 
 		if( !this.proxy.isActive() )
@@ -188,7 +188,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 	@Override
 	protected int populateFlags( int cf )
 	{
-		return cf | ( this.prevState ? this.FLAG_ON : 0 );
+		return cf | ( this.prevState ? FLAG_ON : 0 );
 	}
 
 	@Override
