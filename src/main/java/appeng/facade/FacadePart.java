@@ -20,6 +20,7 @@ package appeng.facade;
 
 
 import java.util.EnumSet;
+
 import javax.annotation.Nullable;
 
 import net.minecraft.block.Block;

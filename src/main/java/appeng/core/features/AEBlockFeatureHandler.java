@@ -29,7 +29,6 @@ import net.minecraftforge.fml.relauncher.Side;
 
 import appeng.api.definitions.IBlockDefinition;
 import appeng.block.AEBaseBlock;
-import appeng.core.CommonHelper;
 import appeng.core.CreativeTab;
 
 

@@ -22,6 +22,8 @@ package appeng.decorative.solid;
 import java.util.EnumSet;
 import java.util.Random;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.Item;

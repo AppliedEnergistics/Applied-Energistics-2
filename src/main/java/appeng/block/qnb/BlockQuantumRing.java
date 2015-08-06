@@ -27,6 +27,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
+
 import appeng.tile.qnb.TileQuantumBridge;
 
 

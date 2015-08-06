@@ -23,6 +23,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.IBlockAccess;
+
 import appeng.block.networking.BlockController;
 import appeng.block.networking.BlockController.ControllerBlockState;
 import appeng.client.render.BaseBlockRender;
