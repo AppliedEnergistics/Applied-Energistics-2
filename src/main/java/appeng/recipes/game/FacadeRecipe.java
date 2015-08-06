@@ -38,7 +38,6 @@ import appeng.items.parts.ItemFacade;
 
 public final class FacadeRecipe implements IRecipe
 {
-
 	private final IComparableDefinition anchor;
 	private final Optional<Item> maybeFacade;
 

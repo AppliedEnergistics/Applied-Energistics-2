@@ -21,6 +21,8 @@ package appeng.recipes;
 
 import java.util.List;
 
+import com.google.common.base.Preconditions;
+
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -41,17 +43,19 @@ import appeng.api.recipes.ResolverResultSet;
 public class Ingredient implements IIngredient
 {
 
-	public final boolean isAir;
-
-	public final String nameSpace;
-	public final String itemName;
-	public final int meta;
-	public final int qty;
-	NBTTagCompound nbt = null;
-	ItemStack[] baked;
+	private final boolean isAir;
+	private final String nameSpace;
+	private final String itemName;
+	private final int meta;
+	private final int qty;
+	private NBTTagCompound nbt = null;
+	private ItemStack[] baked;
 
 	public Ingredient( RecipeHandler handler, String input, int qty ) throws RecipeError, MissedIngredientSet
 	{
+		Preconditions.checkNotNull( handler );
+		Preconditions.checkNotNull( input );
+		Preconditions.checkState( qty > 0 );
 
 		// works no matter wat!
 		this.qty = qty;
@@ -134,7 +138,7 @@ public class Ingredient implements IIngredient
 			throw new RecipeError( input + " : Needs at least Namespace and Name." );
 		}
 
-		handler.data.knownItem.add( this.toString() );
+		handler.getData().knownItem.add( this.toString() );
 	}
 
 	@Override

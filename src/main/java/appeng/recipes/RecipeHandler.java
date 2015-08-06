@@ -34,6 +34,7 @@ import java.util.zip.ZipOutputStream;
 import javax.annotation.Nonnull;
 
 import com.google.common.base.Optional;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.HashMultimap;
 
 import net.minecraft.item.Item;
@@ -74,7 +75,7 @@ import appeng.recipes.handlers.OreRegistration;
  */
 public class RecipeHandler implements IRecipeHandler
 {
-	final RecipeData data;
+	private final RecipeData data;
 	private final List<String> tokens = new LinkedList<String>();
 
 	public RecipeHandler()
@@ -89,12 +90,13 @@ public class RecipeHandler implements IRecipeHandler
 	 */
 	private RecipeHandler( RecipeHandler parent )
 	{
+		Preconditions.checkNotNull( parent );
 		this.data = parent.data;
 	}
 
 	private void addCrafting( ICraftHandler ch )
 	{
-		this.data.Handlers.add( ch );
+		this.data.handlers.add( ch );
 	}
 
 	public String getName( @Nonnull IIngredient i )
@@ -120,6 +122,8 @@ public class RecipeHandler implements IRecipeHandler
 
 	public String getName( ItemStack is ) throws RecipeError
 	{
+		Preconditions.checkNotNull( is );
+
 		UniqueIdentifier id = GameRegistry.findUniqueIdentifierFor( is.getItem() );
 		String realName = id.modId + ':' + id.name;
 
@@ -226,6 +230,8 @@ public class RecipeHandler implements IRecipeHandler
 
 	public String alias( String in )
 	{
+		Preconditions.checkNotNull( in );
+
 		String out = this.data.aliases.get( in );
 
 		if( out != null )
@@ -239,6 +245,9 @@ public class RecipeHandler implements IRecipeHandler
 	@Override
 	public void parseRecipes( IRecipeLoader loader, String path )
 	{
+		Preconditions.checkNotNull( loader );
+		Preconditions.checkNotNull( path );
+
 		try
 		{
 			BufferedReader reader = null;
@@ -370,7 +379,7 @@ public class RecipeHandler implements IRecipeHandler
 		Map<Class, Integer> processed = new HashMap<Class, Integer>();
 		try
 		{
-			for( ICraftHandler ch : this.data.Handlers )
+			for( ICraftHandler ch : this.data.handlers )
 			{
 				try
 				{
@@ -509,7 +518,7 @@ public class RecipeHandler implements IRecipeHandler
 	{
 		List<IWebsiteSerializer> out = new LinkedList<IWebsiteSerializer>();
 
-		for( ICraftHandler ch : this.data.Handlers )
+		for( ICraftHandler ch : this.data.handlers )
 		{
 			try
 			{
@@ -525,6 +534,11 @@ public class RecipeHandler implements IRecipeHandler
 		}
 
 		return out;
+	}
+
+	RecipeData getData()
+	{
+		return this.data;
 	}
 
 	private void processTokens( IRecipeLoader loader, String file, int line ) throws RecipeError
@@ -563,7 +577,7 @@ public class RecipeHandler implements IRecipeHandler
 
 					if( inputs.size() == 1 && inputs.get( 0 ).size() > 0 && post.size() == 1 )
 					{
-						this.data.groups.put( post.get( 0 ), new GroupIngredient( post.get( 0 ), inputs.get( 0 ) ) );
+						this.data.groups.put( post.get( 0 ), new GroupIngredient( post.get( 0 ), inputs.get( 0 ), 1 ) );
 					}
 					else
 					{
@@ -749,7 +763,7 @@ public class RecipeHandler implements IRecipeHandler
 		}
 		catch( MissedIngredientSet grp )
 		{
-			return new IngredientSet( grp.rrs );
+			return new IngredientSet( grp.getResolverResultSet(), qty );
 		}
 	}
 
