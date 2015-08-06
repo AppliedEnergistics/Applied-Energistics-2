@@ -19,6 +19,7 @@ public class StackUpgradeInventory extends UpgradeInventory
 		this.stack = stack;
 	}
 
+	@Override
 	public int getMaxInstalled( Upgrades upgrades )
 	{
 		int max = 0;
