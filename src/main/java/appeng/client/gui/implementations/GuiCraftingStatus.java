@@ -117,7 +117,7 @@ public class GuiCraftingStatus extends GuiCraftingCPU
 		{
 			try
 			{
-				NetworkHandler.instance.sendToServer( new PacketValueConfig( "Terminal.Cpu", backwards ? "Prev" : "Next" ) );
+				NetworkHandler.INSTANCE.sendToServer( new PacketValueConfig( "Terminal.Cpu", backwards ? "Prev" : "Next" ) );
 			}
 			catch( final IOException e )
 			{
@@ -127,7 +127,7 @@ public class GuiCraftingStatus extends GuiCraftingCPU
 
 		if( btn == this.originalGuiBtn )
 		{
-			NetworkHandler.instance.sendToServer( new PacketSwitchGuis( this.originalGui ) );
+			NetworkHandler.INSTANCE.sendToServer( new PacketSwitchGuis( this.originalGui ) );
 		}
 	}
 

@@ -20,50 +20,39 @@ package appeng.core.sync.packets;
 
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
-import net.minecraft.entity.player.EntityPlayer;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
 import appeng.container.AEBaseContainer;
 import appeng.core.sync.AppEngPacket;
-import appeng.core.sync.network.INetworkInfo;
 
 
-public class PacketPartialItem extends AppEngPacket
+public class PacketPartialItem extends AppEngPacket<PacketPartialItem>
 {
 
-	private final short pageNum;
-	private final byte[] data;
+	private short pageNum;
+	private byte[] data;
 
 	// automatic.
-	public PacketPartialItem( final ByteBuf stream )
+	public PacketPartialItem()
 	{
-		this.pageNum = stream.readShort();
-		stream.readBytes( this.data = new byte[stream.readableBytes()] );
 	}
 
 	// api
 	public PacketPartialItem( final int page, final int maxPages, final byte[] buf )
 	{
-
-		final ByteBuf data = Unpooled.buffer();
-
 		this.pageNum = (short) ( page | ( maxPages << 8 ) );
 		this.data = buf;
-		data.writeInt( this.getPacketID() );
-		data.writeShort( this.pageNum );
-		data.writeBytes( buf );
-
-		this.configureWrite( data );
 	}
 
 	@Override
-	public void serverPacketData( final INetworkInfo manager, final AppEngPacket packet, final EntityPlayer player )
+	public PacketPartialItem onMessage( PacketPartialItem message, MessageContext ctx )
 	{
-		if( player.openContainer instanceof AEBaseContainer )
+		if( ctx.getServerHandler().playerEntity.openContainer instanceof AEBaseContainer )
 		{
-			( (AEBaseContainer) player.openContainer ).postPartial( this );
+			( (AEBaseContainer) ctx.getServerHandler().playerEntity.openContainer ).postPartial( message );
 		}
+		return null;
 	}
 
 	public int getPageCount()
@@ -80,5 +69,19 @@ public class PacketPartialItem extends AppEngPacket
 	{
 		System.arraycopy( this.data, 0, buffer, cursor, this.data.length );
 		return cursor + this.data.length;
+	}
+
+	@Override
+	public void fromBytes( ByteBuf buf )
+	{
+		this.pageNum = buf.readShort();
+		buf.readBytes( this.data = new byte[buf.readableBytes()] );
+	}
+
+	@Override
+	public void toBytes( ByteBuf buf )
+	{
+		buf.writeShort( this.pageNum );
+		buf.writeBytes( this.data );
 	}
 }

@@ -94,11 +94,11 @@ public class GuiFormationPlane extends GuiUpgradeable
 
 		if( btn == this.priority )
 		{
-			NetworkHandler.instance.sendToServer( new PacketSwitchGuis( GuiBridge.GUI_PRIORITY ) );
+			NetworkHandler.INSTANCE.sendToServer( new PacketSwitchGuis( GuiBridge.GUI_PRIORITY ) );
 		}
 		else if( btn == this.placeMode )
 		{
-			NetworkHandler.instance.sendToServer( new PacketConfigButton( this.placeMode.getSetting(), backwards ) );
+			NetworkHandler.INSTANCE.sendToServer( new PacketConfigButton( this.placeMode.getSetting(), backwards ) );
 		}
 	}
 }

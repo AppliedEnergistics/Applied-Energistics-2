@@ -19,7 +19,6 @@
 package appeng.tile.crafting;
 
 
-import java.io.IOException;
 import java.util.List;
 
 import io.netty.buffer.ByteBuf;
@@ -508,16 +507,9 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 
 				this.ejectHeldItems();
 
-				try
-				{
-					final TargetPoint where = new TargetPoint( this.worldObj.provider.dimensionId, this.xCoord, this.yCoord, this.zCoord, 32 );
-					final IAEItemStack item = AEItemStack.create( output );
-					NetworkHandler.instance.sendToAllAround( new PacketAssemblerAnimation( this.xCoord, this.yCoord, this.zCoord, (byte) speed, item ), where );
-				}
-				catch( final IOException e )
-				{
-					// ;P
-				}
+				final TargetPoint where = new TargetPoint( this.worldObj.provider.dimensionId, this.xCoord, this.yCoord, this.zCoord, 32 );
+				final IAEItemStack item = AEItemStack.create( output );
+				NetworkHandler.INSTANCE.sendToAllAround( new PacketAssemblerAnimation( this.xCoord, this.yCoord, this.zCoord, (byte) speed, item ), where );
 
 				this.markDirty();
 				this.updateSleepiness();

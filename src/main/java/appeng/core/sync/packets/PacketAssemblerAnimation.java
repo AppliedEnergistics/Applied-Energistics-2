@@ -22,65 +22,92 @@ package appeng.core.sync.packets;
 import java.io.IOException;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
-import net.minecraft.entity.player.EntityPlayer;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
 import appeng.api.storage.data.IAEItemStack;
 import appeng.client.EffectType;
 import appeng.core.CommonHelper;
 import appeng.core.sync.AppEngPacket;
-import appeng.core.sync.network.INetworkInfo;
 import appeng.util.item.AEItemStack;
 
 
-public class PacketAssemblerAnimation extends AppEngPacket
+public class PacketAssemblerAnimation extends AppEngPacket<PacketAssemblerAnimation>
 {
 
-	private final int x;
-	private final int y;
-	private final int z;
-	public final byte rate;
-	public final IAEItemStack is;
+	private int x;
+	private int y;
+	private int z;
+	private byte rate;
+	private IAEItemStack is;
 
 	// automatic.
-	public PacketAssemblerAnimation( final ByteBuf stream ) throws IOException
+	public PacketAssemblerAnimation()
 	{
-		this.x = stream.readInt();
-		this.y = stream.readInt();
-		this.z = stream.readInt();
-		this.rate = stream.readByte();
-		this.is = AEItemStack.loadItemStackFromPacket( stream );
 	}
 
 	// api
-	public PacketAssemblerAnimation( final int x, final int y, final int z, final byte rate, final IAEItemStack is ) throws IOException
+	public PacketAssemblerAnimation( int x, int y, int z, byte rate, IAEItemStack is )
 	{
-
-		final ByteBuf data = Unpooled.buffer();
-
-		data.writeInt( this.getPacketID() );
-		data.writeInt( this.x = x );
-		data.writeInt( this.y = y );
-		data.writeInt( this.z = z );
-		data.writeByte( this.rate = rate );
-		is.writeToPacket( data );
+		this.x = x;
+		this.y = y;
+		this.z = z;
+		this.rate = rate;
 		this.is = is;
-
-		this.configureWrite( data );
 	}
 
 	@Override
-	@SideOnly( Side.CLIENT )
-	public void clientPacketData( final INetworkInfo network, final AppEngPacket packet, final EntityPlayer player )
+	public PacketAssemblerAnimation onMessage( PacketAssemblerAnimation message, MessageContext ctx )
 	{
 		final double d0 = 0.5d;// + ((double) (Platform.getRandomFloat() - 0.5F) * 0.26D);
 		final double d1 = 0.5d;// + ((double) (Platform.getRandomFloat() - 0.5F) * 0.26D);
 		final double d2 = 0.5d;// + ((double) (Platform.getRandomFloat() - 0.5F) * 0.26D);
 
-		CommonHelper.proxy.spawnEffect( EffectType.Assembler, player.getEntityWorld(), this.x + d0, this.y + d1, this.z + d2, this );
+		CommonHelper.proxy.spawnEffect( EffectType.Assembler, ctx.getServerHandler().playerEntity.getEntityWorld(), message.x + d0, message.y + d1, message.z +
+				d2, message );
+
+		return null;
+	}
+
+	@Override
+	public void fromBytes( ByteBuf buf )
+	{
+		this.x = buf.readInt();
+		this.y = buf.readInt();
+		this.z = buf.readInt();
+		this.rate = buf.readByte();
+		try
+		{
+			this.is = AEItemStack.loadItemStackFromPacket( buf );
+		}
+		catch( IOException e )
+		{
+		}
+	}
+
+	@Override
+	public void toBytes( ByteBuf buf )
+	{
+		buf.writeInt( this.x );
+		buf.writeInt( this.y );
+		buf.writeInt( this.z );
+		buf.writeByte( this.getRate() );
+		try
+		{
+			this.is.writeToPacket( buf );
+		}
+		catch( IOException e )
+		{
+		}
+	}
+
+	public byte getRate()
+	{
+		return rate;
+	}
+
+	public IAEItemStack getIs()
+	{
+		return is;
 	}
 }

@@ -265,7 +265,7 @@ public abstract class AEBaseContainer extends Container
 				{
 					final PacketPartialItem ppi = new PacketPartialItem( page, miniPackets.size(), packet );
 					page++;
-					NetworkHandler.instance.sendToServer( ppi );
+					NetworkHandler.INSTANCE.sendToServer( ppi );
 				}
 			}
 			catch( final IOException e )
@@ -1103,14 +1103,7 @@ public abstract class AEBaseContainer extends Container
 	{
 		if( Platform.isServer() )
 		{
-			try
-			{
-				NetworkHandler.instance.sendTo( new PacketInventoryAction( InventoryAction.UPDATE_HAND, 0, AEItemStack.create( p.inventory.getItemStack() ) ), p );
-			}
-			catch( final IOException e )
-			{
-				AELog.error( e );
-			}
+			NetworkHandler.INSTANCE.sendTo( new PacketInventoryAction( InventoryAction.UPDATE_HAND, 0, AEItemStack.create( p.inventory.getItemStack() ) ), p );
 		}
 	}
 
@@ -1174,7 +1167,7 @@ public abstract class AEBaseContainer extends Container
 					{
 						try
 						{
-							NetworkHandler.instance.sendTo( new PacketValueConfig( "CustomName", this.getCustomName() ), (EntityPlayerMP) this.getInventoryPlayer().player );
+							NetworkHandler.INSTANCE.sendTo( new PacketValueConfig( "CustomName", this.getCustomName() ), (EntityPlayerMP) this.getInventoryPlayer().player );
 						}
 						catch( final IOException e )
 						{

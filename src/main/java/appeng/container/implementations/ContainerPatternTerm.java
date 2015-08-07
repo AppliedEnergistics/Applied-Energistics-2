@@ -351,13 +351,13 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 
 	public void craftOrGetItem( final PacketPatternSlot packetPatternSlot )
 	{
-		if( packetPatternSlot.slotItem != null && this.getCellInventory() != null )
+		if( packetPatternSlot.getSlotItem() != null && this.getCellInventory() != null )
 		{
-			final IAEItemStack out = packetPatternSlot.slotItem.copy();
+			final IAEItemStack out = packetPatternSlot.getSlotItem().copy();
 			InventoryAdaptor inv = new AdaptorPlayerHand( this.getPlayerInv().player );
 			final InventoryAdaptor playerInv = InventoryAdaptor.getAdaptor( this.getPlayerInv().player, ForgeDirection.UNKNOWN );
 
-			if( packetPatternSlot.shift )
+			if( packetPatternSlot.isShift() )
 			{
 				inv = playerInv;
 			}
@@ -386,7 +386,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 
 			for( int x = 0; x < 9; x++ )
 			{
-				ic.setInventorySlotContents( x, packetPatternSlot.pattern[x] == null ? null : packetPatternSlot.pattern[x].getItemStack() );
+				ic.setInventorySlotContents( x, packetPatternSlot.getPattern()[x] == null ? null : packetPatternSlot.getPattern()[x].getItemStack() );
 			}
 
 			final IRecipe r = Platform.findMatchingRecipe( ic, p.worldObj );

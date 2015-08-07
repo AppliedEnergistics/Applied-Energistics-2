@@ -19,128 +19,70 @@
 package appeng.core.sync.network;
 
 
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.network.NetHandlerPlayServer;
-
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
-import cpw.mods.fml.common.network.FMLEventChannel;
-import cpw.mods.fml.common.network.FMLNetworkEvent.ClientCustomPacketEvent;
-import cpw.mods.fml.common.network.FMLNetworkEvent.ServerConnectionFromClientEvent;
-import cpw.mods.fml.common.network.FMLNetworkEvent.ServerCustomPacketEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
+import cpw.mods.fml.relauncher.Side;
 
-import appeng.core.sync.AppEngPacket;
-import appeng.core.worlddata.WorldData;
+import appeng.core.sync.packets.PacketAssemblerAnimation;
+import appeng.core.sync.packets.PacketClick;
+import appeng.core.sync.packets.PacketCompassRequest;
+import appeng.core.sync.packets.PacketCompassResponse;
+import appeng.core.sync.packets.PacketCompressedNBT;
+import appeng.core.sync.packets.PacketConfigButton;
+import appeng.core.sync.packets.PacketCraftRequest;
+import appeng.core.sync.packets.PacketInventoryAction;
+import appeng.core.sync.packets.PacketLightning;
+import appeng.core.sync.packets.PacketMEInventoryUpdate;
+import appeng.core.sync.packets.PacketMatterCannon;
+import appeng.core.sync.packets.PacketMockExplosion;
+import appeng.core.sync.packets.PacketMultiPart;
+import appeng.core.sync.packets.PacketNEIRecipe;
+import appeng.core.sync.packets.PacketNewStorageDimension;
+import appeng.core.sync.packets.PacketPaintedEntity;
+import appeng.core.sync.packets.PacketPartPlacement;
+import appeng.core.sync.packets.PacketPartialItem;
+import appeng.core.sync.packets.PacketPatternSlot;
+import appeng.core.sync.packets.PacketProgressBar;
+import appeng.core.sync.packets.PacketSwapSlots;
+import appeng.core.sync.packets.PacketSwitchGuis;
+import appeng.core.sync.packets.PacketTransitionEffect;
+import appeng.core.sync.packets.PacketValueConfig;
 
 
 public class NetworkHandler
 {
+	public static final SimpleNetworkWrapper INSTANCE = NetworkRegistry.INSTANCE.newSimpleChannel( "AE2" );
 
-	public static NetworkHandler instance;
-
-	private final FMLEventChannel ec;
-	private final String myChannelName;
-
-	private final IPacketHandler clientHandler;
-	private final IPacketHandler serveHandler;
-
-	public NetworkHandler( final String channelName )
+	public static void init()
 	{
-		FMLCommonHandler.instance().bus().register( this );
-		this.ec = NetworkRegistry.INSTANCE.newEventDrivenChannel( this.myChannelName = channelName );
-		this.ec.register( this );
-
-		this.clientHandler = this.createClientSide();
-		this.serveHandler = this.createServerSide();
-	}
-
-	private IPacketHandler createClientSide()
-	{
-		try
-		{
-			return new AppEngClientPacketHandler();
-		}
-		catch( final Throwable t )
-		{
-			return null;
-		}
-	}
-
-	private IPacketHandler createServerSide()
-	{
-		try
-		{
-			return new AppEngServerPacketHandler();
-		}
-		catch( final Throwable t )
-		{
-			return null;
-		}
-	}
-
-	@SubscribeEvent
-	public void newConnection( final ServerConnectionFromClientEvent ev )
-	{
-		WorldData.instance().dimensionData().sendToPlayer( ev.manager );
-	}
-
-	@SubscribeEvent
-	public void newConnection( final PlayerLoggedInEvent loginEvent )
-	{
-		if( loginEvent.player instanceof EntityPlayerMP )
-		{
-			WorldData.instance().dimensionData().sendToPlayer( null );
-		}
-	}
-
-	@SubscribeEvent
-	public void serverPacket( final ServerCustomPacketEvent ev )
-	{
-		final NetHandlerPlayServer srv = (NetHandlerPlayServer) ev.packet.handler();
-		if( this.serveHandler != null )
-		{
-			this.serveHandler.onPacketData( null, ev.packet, srv.playerEntity );
-		}
-	}
-
-	@SubscribeEvent
-	public void clientPacket( final ClientCustomPacketEvent ev )
-	{
-		if( this.clientHandler != null )
-		{
-			this.clientHandler.onPacketData( null, ev.packet, null );
-		}
-	}
-
-	public String getChannel()
-	{
-		return this.myChannelName;
-	}
-
-	public void sendToAll( final AppEngPacket message )
-	{
-		this.ec.sendToAll( message.getProxy() );
-	}
-
-	public void sendTo( final AppEngPacket message, final EntityPlayerMP player )
-	{
-		this.ec.sendTo( message.getProxy(), player );
-	}
-
-	public void sendToAllAround( final AppEngPacket message, final NetworkRegistry.TargetPoint point )
-	{
-		this.ec.sendToAllAround( message.getProxy(), point );
-	}
-
-	public void sendToDimension( final AppEngPacket message, final int dimensionId )
-	{
-		this.ec.sendToDimension( message.getProxy(), dimensionId );
-	}
-
-	public void sendToServer( final AppEngPacket message )
-	{
-		this.ec.sendToServer( message.getProxy() );
+		int disc = 0;
+		NetworkHandler.INSTANCE.registerMessage( PacketAssemblerAnimation.class, PacketAssemblerAnimation.class, disc, Side.CLIENT );
+		NetworkHandler.INSTANCE.registerMessage( PacketClick.class, PacketClick.class, disc++, Side.SERVER );
+		NetworkHandler.INSTANCE.registerMessage( PacketCompassRequest.class, PacketCompassRequest.class, disc++, Side.SERVER );
+		NetworkHandler.INSTANCE.registerMessage( PacketCompassResponse.class, PacketCompassResponse.class, disc++, Side.CLIENT );
+		NetworkHandler.INSTANCE.registerMessage( PacketCompressedNBT.class, PacketCompressedNBT.class, disc++, Side.CLIENT );
+		NetworkHandler.INSTANCE.registerMessage( PacketConfigButton.class, PacketConfigButton.class, disc++, Side.SERVER );
+		NetworkHandler.INSTANCE.registerMessage( PacketCraftRequest.class, PacketCraftRequest.class, disc++, Side.SERVER );
+		NetworkHandler.INSTANCE.registerMessage( PacketInventoryAction.class, PacketInventoryAction.class, disc++, Side.SERVER );
+		NetworkHandler.INSTANCE.registerMessage( PacketInventoryAction.class, PacketInventoryAction.class, disc++, Side.CLIENT );
+		NetworkHandler.INSTANCE.registerMessage( PacketLightning.class, PacketLightning.class, disc++, Side.CLIENT );
+		NetworkHandler.INSTANCE.registerMessage( PacketMatterCannon.class, PacketMatterCannon.class, disc++, Side.CLIENT );
+		NetworkHandler.INSTANCE.registerMessage( PacketMEInventoryUpdate.class, PacketMEInventoryUpdate.class, disc++, Side.CLIENT );
+		NetworkHandler.INSTANCE.registerMessage( PacketMockExplosion.class, PacketMockExplosion.class, disc++, Side.CLIENT );
+		NetworkHandler.INSTANCE.registerMessage( PacketMultiPart.class, PacketMultiPart.class, disc++, Side.SERVER );
+		NetworkHandler.INSTANCE.registerMessage( PacketNEIRecipe.class, PacketNEIRecipe.class, disc++, Side.SERVER );
+		NetworkHandler.INSTANCE.registerMessage( PacketNewStorageDimension.class, PacketNewStorageDimension.class, disc++, Side.CLIENT );
+		NetworkHandler.INSTANCE.registerMessage( PacketPaintedEntity.class, PacketPaintedEntity.class, disc++, Side.CLIENT );
+		NetworkHandler.INSTANCE.registerMessage( PacketPartialItem.class, PacketPartialItem.class, disc++, Side.SERVER );
+		NetworkHandler.INSTANCE.registerMessage( PacketPartPlacement.class, PacketPartPlacement.class, disc++, Side.SERVER );
+		NetworkHandler.INSTANCE.registerMessage( PacketPatternSlot.class, PacketPatternSlot.class, disc++, Side.SERVER );
+		NetworkHandler.INSTANCE.registerMessage( PacketProgressBar.class, PacketProgressBar.class, disc++, Side.SERVER );
+		NetworkHandler.INSTANCE.registerMessage( PacketProgressBar.class, PacketProgressBar.class, disc++, Side.CLIENT );
+		NetworkHandler.INSTANCE.registerMessage( PacketSwapSlots.class, PacketSwapSlots.class, disc++, Side.SERVER );
+		NetworkHandler.INSTANCE.registerMessage( PacketSwitchGuis.class, PacketSwitchGuis.class, disc++, Side.SERVER );
+		NetworkHandler.INSTANCE.registerMessage( PacketSwitchGuis.class, PacketSwitchGuis.class, disc++, Side.CLIENT );
+		NetworkHandler.INSTANCE.registerMessage( PacketTransitionEffect.class, PacketTransitionEffect.class, disc++, Side.CLIENT );
+		NetworkHandler.INSTANCE.registerMessage( PacketValueConfig.class, PacketValueConfig.class, disc++, Side.SERVER );
+		NetworkHandler.INSTANCE.registerMessage( PacketValueConfig.class, PacketValueConfig.class, disc++, Side.CLIENT );
 	}
 }

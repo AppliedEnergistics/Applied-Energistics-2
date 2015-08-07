@@ -184,14 +184,7 @@ public final class ContainerInterfaceTerminal extends AEBaseContainer
 
 		if( !this.data.hasNoTags() )
 		{
-			try
-			{
-				NetworkHandler.instance.sendTo( new PacketCompressedNBT( this.data ), (EntityPlayerMP) this.getPlayerInv().player );
-			}
-			catch( final IOException e )
-			{
-				// :P
-			}
+			NetworkHandler.INSTANCE.sendTo( new PacketCompressedNBT( this.data ), (EntityPlayerMP) this.getPlayerInv().player );
 
 			this.data = new NBTTagCompound();
 		}

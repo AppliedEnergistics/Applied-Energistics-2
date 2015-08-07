@@ -20,45 +20,45 @@ package appeng.core.sync.packets;
 
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.MinecraftForge;
 
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
+
 import appeng.core.sync.AppEngPacket;
-import appeng.core.sync.network.INetworkInfo;
 import appeng.integration.IntegrationRegistry;
 import appeng.integration.IntegrationType;
 import appeng.integration.abstraction.IFMP;
 
 
-public class PacketMultiPart extends AppEngPacket
+public class PacketMultiPart extends AppEngPacket<PacketMultiPart>
 {
 
 	// automatic.
-	public PacketMultiPart( final ByteBuf stream )
-	{
-	}
-
-	// api
 	public PacketMultiPart()
 	{
-		final ByteBuf data = Unpooled.buffer();
-
-		data.writeInt( this.getPacketID() );
-
-		this.configureWrite( data );
 	}
 
 	@Override
-	public void serverPacketData( final INetworkInfo manager, final AppEngPacket packet, final EntityPlayer player )
+	public PacketMultiPart onMessage( PacketMultiPart message, MessageContext ctx )
 	{
 		final IFMP fmp = (IFMP) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.FMP );
 		if( fmp != null )
 		{
-			final EntityPlayerMP sender = (EntityPlayerMP) player;
+			final EntityPlayerMP sender = (EntityPlayerMP) ctx.getServerHandler().playerEntity;
 			MinecraftForge.EVENT_BUS.post( fmp.newFMPPacketEvent( sender ) ); // when received it just posts this event.
 		}
+		return null;
+	}
+
+	@Override
+	public void fromBytes( ByteBuf buf )
+	{
+	}
+
+	@Override
+	public void toBytes( ByteBuf buf )
+	{
 	}
 }

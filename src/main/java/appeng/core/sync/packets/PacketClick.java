@@ -20,10 +20,11 @@ package appeng.core.sync.packets;
 
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
 import appeng.api.AEApi;
 import appeng.api.definitions.IComparableDefinition;
@@ -31,55 +32,42 @@ import appeng.api.definitions.IItems;
 import appeng.api.implementations.items.IMemoryCard;
 import appeng.api.implementations.items.MemoryCardMessages;
 import appeng.core.sync.AppEngPacket;
-import appeng.core.sync.network.INetworkInfo;
 import appeng.items.tools.ToolNetworkTool;
 import appeng.items.tools.powered.ToolColorApplicator;
 
 
-public class PacketClick extends AppEngPacket
+public class PacketClick extends AppEngPacket<PacketClick>
 {
 
-	private final int x;
-	private final int y;
-	private final int z;
-	private final int side;
-	private final float hitX;
-	private final float hitY;
-	private final float hitZ;
+	private int x;
+	private int y;
+	private int z;
+	private int side;
+	private float hitX;
+	private float hitY;
+	private float hitZ;
 
 	// automatic.
-	public PacketClick( final ByteBuf stream )
+	public PacketClick()
 	{
-		this.x = stream.readInt();
-		this.y = stream.readInt();
-		this.z = stream.readInt();
-		this.side = stream.readInt();
-		this.hitX = stream.readFloat();
-		this.hitY = stream.readFloat();
-		this.hitZ = stream.readFloat();
 	}
 
 	// api
 	public PacketClick( final int x, final int y, final int z, final int side, final float hitX, final float hitY, final float hitZ )
 	{
-
-		final ByteBuf data = Unpooled.buffer();
-
-		data.writeInt( this.getPacketID() );
-		data.writeInt( this.x = x );
-		data.writeInt( this.y = y );
-		data.writeInt( this.z = z );
-		data.writeInt( this.side = side );
-		data.writeFloat( this.hitX = hitX );
-		data.writeFloat( this.hitY = hitY );
-		data.writeFloat( this.hitZ = hitZ );
-
-		this.configureWrite( data );
+		this.x = x;
+		this.y = y;
+		this.z = z;
+		this.side = side;
+		this.hitX = hitX;
+		this.hitY = hitY;
+		this.hitZ = hitZ;
 	}
 
 	@Override
-	public void serverPacketData( final INetworkInfo manager, final AppEngPacket packet, final EntityPlayer player )
+	public PacketClick onMessage( PacketClick message, MessageContext ctx )
 	{
+		final EntityPlayer player = ctx.getServerHandler().playerEntity;
 		final ItemStack is = player.inventory.getCurrentItem();
 		final IItems items = AEApi.instance().definitions().items();
 		final IComparableDefinition maybeMemoryCard = items.memoryCard();
@@ -90,7 +78,8 @@ public class PacketClick extends AppEngPacket
 			if( is.getItem() instanceof ToolNetworkTool )
 			{
 				final ToolNetworkTool tnt = (ToolNetworkTool) is.getItem();
-				tnt.serverSideToolLogic( is, player, player.worldObj, this.x, this.y, this.z, this.side, this.hitX, this.hitY, this.hitZ );
+				tnt.serverSideToolLogic( is, player, player.worldObj, message.x, message.y, message.z, message.side, message.hitX, message.hitY,
+						message.hitZ );
 			}
 
 			else if( maybeMemoryCard.isSameAs( is ) )
@@ -106,5 +95,31 @@ public class PacketClick extends AppEngPacket
 				mem.cycleColors( is, mem.getColor( is ), 1 );
 			}
 		}
+
+		return null;
+	}
+
+	@Override
+	public void fromBytes( ByteBuf buf )
+	{
+		this.x = buf.readInt();
+		this.y = buf.readInt();
+		this.z = buf.readInt();
+		this.side = buf.readInt();
+		this.hitX = buf.readFloat();
+		this.hitY = buf.readFloat();
+		this.hitZ = buf.readFloat();
+	}
+
+	@Override
+	public void toBytes( ByteBuf buf )
+	{
+		buf.writeInt( this.x );
+		buf.writeInt( this.y );
+		buf.writeInt( this.z );
+		buf.writeInt( this.side );
+		buf.writeFloat( this.hitX );
+		buf.writeFloat( this.hitY );
+		buf.writeFloat( this.hitZ );
 	}
 }

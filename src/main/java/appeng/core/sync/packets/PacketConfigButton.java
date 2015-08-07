@@ -20,32 +20,29 @@ package appeng.core.sync.packets;
 
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
 import appeng.api.config.Settings;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.container.AEBaseContainer;
 import appeng.core.sync.AppEngPacket;
-import appeng.core.sync.network.INetworkInfo;
 import appeng.helpers.Reflected;
 import appeng.util.Platform;
 
 
-public final class PacketConfigButton extends AppEngPacket
+public final class PacketConfigButton extends AppEngPacket<PacketConfigButton>
 {
-	private final Settings option;
-	private final boolean rotationDirection;
+	private Settings option;
+	private boolean rotationDirection;
 
 	// automatic.
 	@Reflected
-	public PacketConfigButton( final ByteBuf stream )
+	public PacketConfigButton()
 	{
-		this.option = Settings.values()[stream.readInt()];
-		this.rotationDirection = stream.readBoolean();
 	}
 
 	// api
@@ -53,29 +50,38 @@ public final class PacketConfigButton extends AppEngPacket
 	{
 		this.option = option;
 		this.rotationDirection = rotationDirection;
-
-		final ByteBuf data = Unpooled.buffer();
-
-		data.writeInt( this.getPacketID() );
-		data.writeInt( option.ordinal() );
-		data.writeBoolean( rotationDirection );
-
-		this.configureWrite( data );
 	}
 
 	@Override
-	public void serverPacketData( final INetworkInfo manager, final AppEngPacket packet, final EntityPlayer player )
+	public PacketConfigButton onMessage( PacketConfigButton message, MessageContext ctx )
 	{
-		final EntityPlayerMP sender = (EntityPlayerMP) player;
+		final EntityPlayerMP sender = ctx.getServerHandler().playerEntity;
+
 		if( sender.openContainer instanceof AEBaseContainer )
 		{
 			final AEBaseContainer baseContainer = (AEBaseContainer) sender.openContainer;
 			if( baseContainer.getTarget() instanceof IConfigurableObject )
 			{
 				final IConfigManager cm = ( (IConfigurableObject) baseContainer.getTarget() ).getConfigManager();
-				final Enum<?> newState = Platform.rotateEnum( cm.getSetting( this.option ), this.rotationDirection, this.option.getPossibleValues() );
-				cm.putSetting( this.option, newState );
+				final Enum<?> newState = Platform.rotateEnum( cm.getSetting( message.option ), message.rotationDirection,
+						message.option.getPossibleValues() );
+				cm.putSetting( message.option, newState );
 			}
 		}
+		return null;
+	}
+
+	@Override
+	public void fromBytes( ByteBuf buf )
+	{
+		this.option = Settings.values()[buf.readInt()];
+		this.rotationDirection = buf.readBoolean();
+	}
+
+	@Override
+	public void toBytes( ByteBuf buf )
+	{
+		buf.writeInt( option.ordinal() );
+		buf.writeBoolean( rotationDirection );
 	}
 }

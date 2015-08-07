@@ -263,11 +263,11 @@ public class ContainerCraftConfirm extends AEBaseContainer
 					{
 						if( g instanceof EntityPlayer )
 						{
-							NetworkHandler.instance.sendTo( a, (EntityPlayerMP) g );
-							NetworkHandler.instance.sendTo( b, (EntityPlayerMP) g );
+							NetworkHandler.INSTANCE.sendTo( a, (EntityPlayerMP) g );
+							NetworkHandler.INSTANCE.sendTo( b, (EntityPlayerMP) g );
 							if( c != null )
 							{
-								NetworkHandler.instance.sendTo( c, (EntityPlayerMP) g );
+								NetworkHandler.INSTANCE.sendTo( c, (EntityPlayerMP) g );
 							}
 						}
 					}
@@ -350,9 +350,10 @@ public class ContainerCraftConfirm extends AEBaseContainer
 			final ICraftingGrid cc = this.getGrid().getCache( ICraftingGrid.class );
 			final ICraftingLink g = cc.submitJob( this.result, null, this.getSelectedCpu() == -1 ? null : this.cpus.get( this.getSelectedCpu() ).getCpu(), true, this.getActionSrc() );
 			this.setAutoStart( false );
+
 			if( g != null && originalGui != null && this.getOpenContext() != null )
 			{
-				NetworkHandler.instance.sendTo( new PacketSwitchGuis( originalGui ), (EntityPlayerMP) this.getInventoryPlayer().player );
+				NetworkHandler.INSTANCE.sendTo( new PacketSwitchGuis( originalGui ), (EntityPlayerMP) this.getInventoryPlayer().player );
 
 				final TileEntity te = this.getOpenContext().getTile();
 				Platform.openGUI( this.getInventoryPlayer().player, te, this.getOpenContext().getSide(), originalGui );

@@ -28,91 +28,105 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
 import appeng.client.gui.implementations.GuiInterfaceTerminal;
 import appeng.core.sync.AppEngPacket;
-import appeng.core.sync.network.INetworkInfo;
 
 
-public class PacketCompressedNBT extends AppEngPacket
+public class PacketCompressedNBT extends AppEngPacket<PacketCompressedNBT>
 {
 
 	// input.
-	private final NBTTagCompound in;
+	private NBTTagCompound in;
 	// output...
-	private final ByteBuf data;
-	private final GZIPOutputStream compressFrame;
+	private ByteBuf data;
+	private GZIPOutputStream compressFrame;
 
 	// automatic.
-	public PacketCompressedNBT( final ByteBuf stream ) throws IOException
+	public PacketCompressedNBT()
+	{
+	}
+
+	// api
+	public PacketCompressedNBT( NBTTagCompound din )
+	{
+		this.in = din;
+	}
+
+	@Override
+	public void fromBytes( final ByteBuf buf )
 	{
 		this.data = null;
 		this.compressFrame = null;
 
-		final GZIPInputStream gzReader = new GZIPInputStream( new InputStream()
+		final GZIPInputStream gzReader;
+		try
 		{
-
-			@Override
-			public int read() throws IOException
+			gzReader = new GZIPInputStream( new InputStream()
 			{
-				if( stream.readableBytes() <= 0 )
+
+				@Override
+				public int read() throws IOException
 				{
-					return -1;
+					if( buf.readableBytes() <= 0 )
+					{
+						return -1;
+					}
+
+					return buf.readByte() & 0xff;
 				}
+			} );
 
-				return stream.readByte() & 0xff;
-			}
-		} );
-
-		final DataInputStream inStream = new DataInputStream( gzReader );
-		this.in = CompressedStreamTools.read( inStream );
-		inStream.close();
-	}
-
-	// api
-	public PacketCompressedNBT( final NBTTagCompound din ) throws IOException
-	{
-
-		this.data = Unpooled.buffer( 2048 );
-		this.data.writeInt( this.getPacketID() );
-
-		this.in = din;
-
-		this.compressFrame = new GZIPOutputStream( new OutputStream()
+			final DataInputStream inStream = new DataInputStream( gzReader );
+			this.in = CompressedStreamTools.read( inStream );
+			inStream.close();
+		}
+		catch( IOException e )
 		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
-			@Override
-			public void write( final int value ) throws IOException
-			{
-				PacketCompressedNBT.this.data.writeByte( value );
-			}
-		} );
-
-		CompressedStreamTools.write( din, new DataOutputStream( this.compressFrame ) );
-		this.compressFrame.close();
-
-		this.configureWrite( this.data );
 	}
 
 	@Override
-	@SideOnly( Side.CLIENT )
-	public void clientPacketData( final INetworkInfo network, final AppEngPacket packet, final EntityPlayer player )
+	public void toBytes( ByteBuf buf )
+	{
+		try
+		{
+			this.compressFrame = new GZIPOutputStream( new OutputStream()
+			{
+
+				@Override
+				public void write( int value ) throws IOException
+				{
+					PacketCompressedNBT.this.data.writeByte( value );
+				}
+			} );
+			CompressedStreamTools.write( this.in, new DataOutputStream( this.compressFrame ) );
+			this.compressFrame.close();
+		}
+		catch( IOException e )
+		{
+		}
+	}
+
+	@Override
+	public PacketCompressedNBT onMessage( PacketCompressedNBT message, MessageContext ctx )
 	{
 		final GuiScreen gs = Minecraft.getMinecraft().currentScreen;
 
 		if( gs instanceof GuiInterfaceTerminal )
 		{
-			( (GuiInterfaceTerminal) gs ).postUpdate( this.in );
+			( (GuiInterfaceTerminal) gs ).postUpdate( message.in );
 		}
+		return null;
 	}
 }

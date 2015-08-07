@@ -20,45 +20,36 @@ package appeng.core.sync.packets;
 
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
 import appeng.client.ClientHelper;
 import appeng.client.render.effects.EnergyFx;
 import appeng.core.CommonHelper;
 import appeng.core.sync.AppEngPacket;
-import appeng.core.sync.network.INetworkInfo;
 import appeng.util.Platform;
 
 
-public class PacketTransitionEffect extends AppEngPacket
+public class PacketTransitionEffect extends AppEngPacket<PacketTransitionEffect>
 {
 
-	private final boolean mode;
-	private final double x;
-	private final double y;
-	private final double z;
-	private final ForgeDirection d;
+	private boolean mode;
+	private double x;
+	private double y;
+	private double z;
+	private ForgeDirection d;
 
 	// automatic.
-	public PacketTransitionEffect( final ByteBuf stream )
+	public PacketTransitionEffect()
 	{
-		this.x = stream.readFloat();
-		this.y = stream.readFloat();
-		this.z = stream.readFloat();
-		this.d = ForgeDirection.getOrientation( stream.readByte() );
-		this.mode = stream.readBoolean();
 	}
 
 	// api
@@ -69,49 +60,63 @@ public class PacketTransitionEffect extends AppEngPacket
 		this.z = z;
 		this.d = dir;
 		this.mode = wasBlock;
-
-		final ByteBuf data = Unpooled.buffer();
-
-		data.writeInt( this.getPacketID() );
-		data.writeFloat( (float) x );
-		data.writeFloat( (float) y );
-		data.writeFloat( (float) z );
-		data.writeByte( this.d.ordinal() );
-		data.writeBoolean( wasBlock );
-
-		this.configureWrite( data );
 	}
 
 	@Override
-	@SideOnly( Side.CLIENT )
-	public void clientPacketData( final INetworkInfo network, final AppEngPacket packet, final EntityPlayer player )
+	public PacketTransitionEffect onMessage( PacketTransitionEffect message, MessageContext ctx )
 	{
 		final World world = ClientHelper.proxy.getWorld();
 
-		for( int zz = 0; zz < ( this.mode ? 32 : 8 ); zz++ )
+		for( int zz = 0; zz < ( message.mode ? 32 : 8 ); zz++ )
 		{
 			if( CommonHelper.proxy.shouldAddParticles( Platform.getRandom() ) )
 			{
-				final EnergyFx fx = new EnergyFx( world, this.x + ( this.mode ? ( Platform.getRandomInt() % 100 ) * 0.01 : ( Platform.getRandomInt() % 100 ) * 0.005 - 0.25 ), this.y + ( this.mode ? ( Platform.getRandomInt() % 100 ) * 0.01 : ( Platform.getRandomInt() % 100 ) * 0.005 - 0.25 ), this.z + ( this.mode ? ( Platform.getRandomInt() % 100 ) * 0.01 : ( Platform.getRandomInt() % 100 ) * 0.005 - 0.25 ), Items.diamond );
+				final EnergyFx fx = new EnergyFx( world, message.x + ( message.mode ? ( Platform.getRandomInt() % 100 ) * 0.01 : (
+						Platform.getRandomInt() % 100 ) * 0.005 - 0.25 ), message.y + ( message.mode ? ( Platform.getRandomInt() % 100 ) * 0.01
+						: ( Platform.getRandomInt() % 100 ) * 0.005 - 0.25 ), message.z + ( message.mode ? ( Platform.getRandomInt() % 100 ) *
+						0.01 : ( Platform.getRandomInt() % 100 ) * 0.005 - 0.25 ), Items.diamond );
 
-				if( !this.mode )
+				if( !message.mode )
 				{
-					fx.fromItem( this.d );
+					fx.fromItem( message.d );
 				}
 
-				fx.motionX = -0.1 * this.d.offsetX;
-				fx.motionY = -0.1 * this.d.offsetY;
-				fx.motionZ = -0.1 * this.d.offsetZ;
+				fx.motionX = -0.1 * message.d.offsetX;
+				fx.motionY = -0.1 * message.d.offsetY;
+				fx.motionZ = -0.1 * message.d.offsetZ;
 
 				Minecraft.getMinecraft().effectRenderer.addEffect( fx );
 			}
 		}
 
-		if( this.mode )
+		if( message.mode )
 		{
-			final Block block = world.getBlock( (int) this.x, (int) this.y, (int) this.z );
+			final Block block = world.getBlock( (int) message.x, (int) message.y, (int) message.z );
 
-			Minecraft.getMinecraft().getSoundHandler().playSound( new PositionedSoundRecord( new ResourceLocation( block.stepSound.getBreakSound() ), ( block.stepSound.getVolume() + 1.0F ) / 2.0F, block.stepSound.getPitch() * 0.8F, (float) this.x + 0.5F, (float) this.y + 0.5F, (float) this.z + 0.5F ) );
+			Minecraft.getMinecraft().getSoundHandler().playSound( new PositionedSoundRecord( new ResourceLocation(
+					block.stepSound.getBreakSound() ), ( block.stepSound.getVolume() + 1.0F ) / 2.0F, block.stepSound.getPitch() *
+					0.8F, (float) message.x + 0.5F, (float) message.y + 0.5F, (float) message.z + 0.5F ) );
 		}
+		return null;
+	}
+
+	@Override
+	public void fromBytes( ByteBuf buf )
+	{
+		this.x = buf.readFloat();
+		this.y = buf.readFloat();
+		this.z = buf.readFloat();
+		this.d = ForgeDirection.getOrientation( buf.readByte() );
+		this.mode = buf.readBoolean();
+	}
+
+	@Override
+	public void toBytes( ByteBuf buf )
+	{
+		buf.writeFloat( (float) x );
+		buf.writeFloat( (float) y );
+		buf.writeFloat( (float) z );
+		buf.writeByte( this.d.ordinal() );
+		buf.writeBoolean( this.mode );
 	}
 }

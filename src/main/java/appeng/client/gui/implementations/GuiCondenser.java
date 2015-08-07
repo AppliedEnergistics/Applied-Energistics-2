@@ -59,7 +59,7 @@ public class GuiCondenser extends AEBaseGui
 
 		if( this.mode == btn )
 		{
-			NetworkHandler.instance.sendToServer( new PacketConfigButton( Settings.CONDENSER_OUTPUT, backwards ) );
+			NetworkHandler.INSTANCE.sendToServer( new PacketConfigButton( Settings.CONDENSER_OUTPUT, backwards ) );
 		}
 	}
 

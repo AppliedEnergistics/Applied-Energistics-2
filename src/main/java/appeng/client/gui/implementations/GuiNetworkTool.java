@@ -54,7 +54,7 @@ public class GuiNetworkTool extends AEBaseGui
 		{
 			if( btn == this.tFacades )
 			{
-				NetworkHandler.instance.sendToServer( new PacketValueConfig( "NetworkTool", "Toggle" ) );
+				NetworkHandler.INSTANCE.sendToServer( new PacketValueConfig( "NetworkTool", "Toggle" ) );
 			}
 		}
 		catch( final IOException e )

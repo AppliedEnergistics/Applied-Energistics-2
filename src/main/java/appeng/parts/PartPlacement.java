@@ -137,7 +137,7 @@ public class PartPlacement
 				else
 				{
 					player.swingItem();
-					NetworkHandler.instance.sendToServer( new PacketPartPlacement( x, y, z, face, getEyeOffset( player ) ) );
+					NetworkHandler.INSTANCE.sendToServer( new PacketPartPlacement( x, y, z, face, getEyeOffset( player ) ) );
 				}
 				return true;
 			}
@@ -188,7 +188,7 @@ public class PartPlacement
 					else
 					{
 						player.swingItem();
-						NetworkHandler.instance.sendToServer( new PacketPartPlacement( x, y, z, face, getEyeOffset( player ) ) );
+						NetworkHandler.INSTANCE.sendToServer( new PacketPartPlacement( x, y, z, face, getEyeOffset( player ) ) );
 						return true;
 					}
 				}
@@ -223,7 +223,7 @@ public class PartPlacement
 						{
 							if( world.isRemote )
 							{
-								NetworkHandler.instance.sendToServer( new PacketPartPlacement( x, y, z, face, getEyeOffset( player ) ) );
+								NetworkHandler.INSTANCE.sendToServer( new PacketPartPlacement( x, y, z, face, getEyeOffset( player ) ) );
 							}
 							return true;
 						}
@@ -300,7 +300,7 @@ public class PartPlacement
 				else
 				{
 					player.swingItem();
-					NetworkHandler.instance.sendToServer( new PacketPartPlacement( x, y, z, face, getEyeOffset( player ) ) );
+					NetworkHandler.INSTANCE.sendToServer( new PacketPartPlacement( x, y, z, face, getEyeOffset( player ) ) );
 					return true;
 				}
 			}
@@ -387,7 +387,7 @@ public class PartPlacement
 		else
 		{
 			player.swingItem();
-			NetworkHandler.instance.sendToServer( new PacketPartPlacement( x, y, z, face, getEyeOffset( player ) ) );
+			NetworkHandler.INSTANCE.sendToServer( new PacketPartPlacement( x, y, z, face, getEyeOffset( player ) ) );
 		}
 		return true;
 	}
@@ -468,7 +468,7 @@ public class PartPlacement
 
 				if( event.entityPlayer.isSneaking() && held != null && supportedItem )
 				{
-					NetworkHandler.instance.sendToServer( new PacketClick( event.x, event.y, event.z, event.face, 0, 0, 0 ) );
+					NetworkHandler.INSTANCE.sendToServer( new PacketClick( event.x, event.y, event.z, event.face, 0, 0, 0 ) );
 				}
 			}
 		}

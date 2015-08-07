@@ -22,11 +22,12 @@ package appeng.core.sync.packets;
 import java.util.concurrent.Future;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
+
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridHost;
@@ -39,40 +40,31 @@ import appeng.container.implementations.ContainerCraftConfirm;
 import appeng.core.AELog;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.GuiBridge;
-import appeng.core.sync.network.INetworkInfo;
 import appeng.util.Platform;
 
 
-public class PacketCraftRequest extends AppEngPacket
+public class PacketCraftRequest extends AppEngPacket<PacketCraftRequest>
 {
 
-	private final long amount;
-	private final boolean heldShift;
+	private long amount;
+	private boolean heldShift;
 
 	// automatic.
-	public PacketCraftRequest( final ByteBuf stream )
+	public PacketCraftRequest()
 	{
-		this.heldShift = stream.readBoolean();
-		this.amount = stream.readLong();
 	}
 
 	public PacketCraftRequest( final int craftAmt, final boolean shift )
 	{
 		this.amount = craftAmt;
 		this.heldShift = shift;
-
-		final ByteBuf data = Unpooled.buffer();
-
-		data.writeInt( this.getPacketID() );
-		data.writeBoolean( shift );
-		data.writeLong( this.amount );
-
-		this.configureWrite( data );
 	}
 
 	@Override
-	public void serverPacketData( final INetworkInfo manager, final AppEngPacket packet, final EntityPlayer player )
+	public PacketCraftRequest onMessage( PacketCraftRequest message, MessageContext ctx )
 	{
+		final EntityPlayer player = ctx.getServerHandler().playerEntity;
+
 		if( player.openContainer instanceof ContainerCraftAmount )
 		{
 			final ContainerCraftAmount cca = (ContainerCraftAmount) player.openContainer;
@@ -83,18 +75,19 @@ public class PacketCraftRequest extends AppEngPacket
 				final IGridNode gn = gh.getGridNode( ForgeDirection.UNKNOWN );
 				if( gn == null )
 				{
-					return;
+					return null;
 				}
 
 				final IGrid g = gn.getGrid();
 				if( g == null || cca.getItemToCraft() == null )
 				{
-					return;
+					return null;
 				}
 
 				cca.getItemToCraft().setStackSize( this.amount );
 
 				Future<ICraftingJob> futureJob = null;
+
 				try
 				{
 					final ICraftingGrid cg = g.getCache( ICraftingGrid.class );
@@ -109,6 +102,7 @@ public class PacketCraftRequest extends AppEngPacket
 						if( player.openContainer instanceof ContainerCraftConfirm )
 						{
 							final ContainerCraftConfirm ccc = (ContainerCraftConfirm) player.openContainer;
+
 							ccc.setAutoStart( this.heldShift );
 							ccc.setJob( futureJob );
 							cca.detectAndSendChanges();
@@ -125,5 +119,21 @@ public class PacketCraftRequest extends AppEngPacket
 				}
 			}
 		}
+
+		return null;
+	}
+
+	@Override
+	public void fromBytes( ByteBuf buf )
+	{
+		this.heldShift = buf.readBoolean();
+		this.amount = buf.readLong();
+	}
+
+	@Override
+	public void toBytes( ByteBuf buf )
+	{
+		buf.writeBoolean( this.heldShift );
+		buf.writeLong( this.amount );
 	}
 }

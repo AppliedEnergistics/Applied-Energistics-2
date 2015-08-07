@@ -20,68 +20,68 @@ package appeng.core.sync.packets;
 
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.EntityPlayer;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
 import appeng.client.ClientHelper;
 import appeng.client.render.effects.LightningFX;
 import appeng.core.AEConfig;
 import appeng.core.sync.AppEngPacket;
-import appeng.core.sync.network.INetworkInfo;
 import appeng.util.Platform;
 
 
-public class PacketLightning extends AppEngPacket
+public class PacketLightning extends AppEngPacket<PacketLightning>
 {
 
-	private final double x;
-	private final double y;
-	private final double z;
+	private float x;
+	private float y;
+	private float z;
 
 	// automatic.
-	public PacketLightning( final ByteBuf stream )
+	public PacketLightning()
 	{
-		this.x = stream.readFloat();
-		this.y = stream.readFloat();
-		this.z = stream.readFloat();
 	}
 
 	// api
 	public PacketLightning( final double x, final double y, final double z )
 	{
-		this.x = x;
-		this.y = y;
-		this.z = z;
-
-		final ByteBuf data = Unpooled.buffer();
-
-		data.writeInt( this.getPacketID() );
-		data.writeFloat( (float) x );
-		data.writeFloat( (float) y );
-		data.writeFloat( (float) z );
-
-		this.configureWrite( data );
+		this.x = (float) x;
+		this.y = (float) y;
+		this.z = (float) z;
 	}
 
 	@Override
-	@SideOnly( Side.CLIENT )
-	public void clientPacketData( final INetworkInfo network, final AppEngPacket packet, final EntityPlayer player )
+	public PacketLightning onMessage( PacketLightning message, MessageContext ctx )
 	{
 		try
 		{
 			if( Platform.isClient() && AEConfig.instance.enableEffects )
 			{
-				final LightningFX fx = new LightningFX( ClientHelper.proxy.getWorld(), this.x, this.y, this.z, 0.0f, 0.0f, 0.0f );
+				final LightningFX fx = new LightningFX( ClientHelper.proxy.getWorld(), message.x, message.y, message.z, 0.0f, 0.0f, 0.0f );
 				Minecraft.getMinecraft().effectRenderer.addEffect( fx );
 			}
 		}
 		catch( final Exception ignored )
 		{
 		}
+		return null;
+	}
+
+	@Override
+	public void fromBytes( ByteBuf buf )
+	{
+		this.x = buf.readFloat();
+		this.y = buf.readFloat();
+		this.z = buf.readFloat();
+	}
+
+	@Override
+	public void toBytes( ByteBuf buf )
+	{
+		buf.writeFloat( this.x );
+		buf.writeFloat( this.y );
+		buf.writeFloat( this.z );
 	}
 }

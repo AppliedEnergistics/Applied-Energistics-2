@@ -20,54 +20,54 @@ package appeng.core.sync.packets;
 
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.DimensionManager;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
 import appeng.core.AEConfig;
 import appeng.core.sync.AppEngPacket;
-import appeng.core.sync.network.INetworkInfo;
 
 
-public class PacketNewStorageDimension extends AppEngPacket
+public class PacketNewStorageDimension extends AppEngPacket<PacketNewStorageDimension>
 {
 
-	private final int newDim;
+	private int newDim;
 
 	// automatic.
-	public PacketNewStorageDimension( final ByteBuf stream )
+	public PacketNewStorageDimension()
 	{
-		this.newDim = stream.readInt();
 	}
 
 	// api
 	public PacketNewStorageDimension( final int newDim )
 	{
 		this.newDim = newDim;
-
-		final ByteBuf data = Unpooled.buffer();
-
-		data.writeInt( this.getPacketID() );
-		data.writeInt( newDim );
-
-		this.configureWrite( data );
 	}
 
 	@Override
-	@SideOnly( Side.CLIENT )
-	public void clientPacketData( final INetworkInfo network, final AppEngPacket packet, final EntityPlayer player )
+	public PacketNewStorageDimension onMessage( PacketNewStorageDimension message, MessageContext ctx )
 	{
 		try
 		{
-			DimensionManager.registerDimension( this.newDim, AEConfig.instance.storageProviderID );
+			DimensionManager.registerDimension( message.newDim, AEConfig.instance.storageProviderID );
 		}
 		catch( final IllegalArgumentException iae )
 		{
 			// ok!
 		}
+		return null;
+	}
+
+	@Override
+	public void fromBytes( ByteBuf buf )
+	{
+		this.newDim = buf.readInt();
+	}
+
+	@Override
+	public void toBytes( ByteBuf buf )
+	{
+		buf.writeInt( newDim );
 	}
 }

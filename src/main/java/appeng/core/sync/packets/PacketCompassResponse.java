@@ -20,59 +20,74 @@ package appeng.core.sync.packets;
 
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
-import net.minecraft.entity.player.EntityPlayer;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
 import appeng.core.sync.AppEngPacket;
-import appeng.core.sync.network.INetworkInfo;
 import appeng.hooks.CompassManager;
 import appeng.hooks.CompassResult;
 
 
-public class PacketCompassResponse extends AppEngPacket
+public class PacketCompassResponse extends AppEngPacket<PacketCompassResponse>
 {
 
-	private final long attunement;
-	private final int cx;
-	private final int cz;
-	private final int cdy;
-
+	private long attunement;
+	private int cx;
+	private int cz;
+	private int cdy;
 	private CompassResult cr;
+	private boolean hasResult;
+	private boolean spin;
+	private double radians;
 
 	// automatic.
-	public PacketCompassResponse( final ByteBuf stream )
+	public PacketCompassResponse()
 	{
-		this.attunement = stream.readLong();
-		this.cx = stream.readInt();
-		this.cz = stream.readInt();
-		this.cdy = stream.readInt();
-
-		this.cr = new CompassResult( stream.readBoolean(), stream.readBoolean(), stream.readDouble() );
 	}
 
 	// api
 	public PacketCompassResponse( final PacketCompassRequest req, final boolean hasResult, final boolean spin, final double radians )
 	{
+		this.attunement = req.getAttunement();
+		this.cx = req.getCx();
+		this.cz = req.getCz();
+		this.cdy = req.getCdy();
+		this.hasResult = hasResult;
+		this.spin = spin;
+		this.radians = radians;
 
-		final ByteBuf data = Unpooled.buffer();
-
-		data.writeInt( this.getPacketID() );
-		data.writeLong( this.attunement = req.attunement );
-		data.writeInt( this.cx = req.cx );
-		data.writeInt( this.cz = req.cz );
-		data.writeInt( this.cdy = req.cdy );
-
-		data.writeBoolean( hasResult );
-		data.writeBoolean( spin );
-		data.writeDouble( radians );
-
-		this.configureWrite( data );
 	}
 
 	@Override
-	public void clientPacketData( final INetworkInfo network, final AppEngPacket packet, final EntityPlayer player )
+	public PacketCompassResponse onMessage( PacketCompassResponse message, MessageContext ctx )
 	{
-		CompassManager.INSTANCE.postResult( this.attunement, this.cx << 4, this.cdy << 5, this.cz << 4, this.cr );
+		CompassManager.INSTANCE.postResult( message.attunement, message.cx << 4, message.cdy << 5, message.cz << 4, message.cr );
+		return null;
+	}
+
+	@Override
+	public void fromBytes( ByteBuf buf )
+	{
+
+		this.attunement = buf.readLong();
+		this.cx = buf.readInt();
+		this.cz = buf.readInt();
+		this.cdy = buf.readInt();
+
+		this.cr = new CompassResult( buf.readBoolean(), buf.readBoolean(), buf.readDouble() );
+	}
+
+	@Override
+	public void toBytes( ByteBuf buf )
+	{
+		buf.writeLong( this.attunement );
+		buf.writeInt( this.cx );
+		buf.writeInt( this.cz );
+		buf.writeInt( this.cdy );
+
+		buf.writeBoolean( this.hasResult );
+		buf.writeBoolean( this.spin );
+		buf.writeDouble( this.radians );
+
 	}
 }

@@ -286,7 +286,7 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 				}
 
 				pos.entityHit.attackEntityFrom( DamageSource.causePlayerDamage( p ), 0 );
-				NetworkHandler.instance.sendToAll( marker.getPacket() );
+				NetworkHandler.INSTANCE.sendToAll( marker.getPacket() );
 			}
 			else if( pos.typeOfHit == MovingObjectType.BLOCK )
 			{

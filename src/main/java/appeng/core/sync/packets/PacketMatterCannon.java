@@ -20,43 +20,32 @@ package appeng.core.sync.packets;
 
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.world.World;
 
 import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
 import appeng.client.render.effects.MatterCannonFX;
 import appeng.core.sync.AppEngPacket;
-import appeng.core.sync.network.INetworkInfo;
 
 
-public class PacketMatterCannon extends AppEngPacket
+public class PacketMatterCannon extends AppEngPacket<PacketMatterCannon>
 {
 
-	private final double x;
-	private final double y;
-	private final double z;
-	private final double dx;
-	private final double dy;
-	private final double dz;
-	private final byte len;
+	private float x;
+	private float y;
+	private float z;
+	private float dx;
+	private float dy;
+	private float dz;
+	private byte len;
 
 	// automatic.
-	public PacketMatterCannon( final ByteBuf stream )
+	public PacketMatterCannon()
 	{
-		this.x = stream.readFloat();
-		this.y = stream.readFloat();
-		this.z = stream.readFloat();
-		this.dx = stream.readFloat();
-		this.dy = stream.readFloat();
-		this.dz = stream.readFloat();
-		this.len = stream.readByte();
 	}
 
 	// api
@@ -65,39 +54,25 @@ public class PacketMatterCannon extends AppEngPacket
 		final float dl = dx * dx + dy * dy + dz * dz;
 		final float dlz = (float) Math.sqrt( dl );
 
-		this.x = x;
-		this.y = y;
-		this.z = z;
+		this.x = (float) x;
+		this.y = (float) y;
+		this.z = (float) z;
 		this.dx = dx / dlz;
 		this.dy = dy / dlz;
 		this.dz = dz / dlz;
 		this.len = len;
-
-		final ByteBuf data = Unpooled.buffer();
-
-		data.writeInt( this.getPacketID() );
-		data.writeFloat( (float) x );
-		data.writeFloat( (float) y );
-		data.writeFloat( (float) z );
-		data.writeFloat( (float) this.dx );
-		data.writeFloat( (float) this.dy );
-		data.writeFloat( (float) this.dz );
-		data.writeByte( len );
-
-		this.configureWrite( data );
 	}
 
 	@Override
-	@SideOnly( Side.CLIENT )
-	public void clientPacketData( final INetworkInfo network, final AppEngPacket packet, final EntityPlayer player )
+	public PacketMatterCannon onMessage( PacketMatterCannon message, MessageContext ctx )
 	{
 		try
 		{
-
 			final World world = FMLClientHandler.instance().getClient().theWorld;
-			for( int a = 1; a < this.len; a++ )
+			for( int a = 1; a < message.len; a++ )
 			{
-				final MatterCannonFX fx = new MatterCannonFX( world, this.x + this.dx * a, this.y + this.dy * a, this.z + this.dz * a, Items.diamond );
+				final MatterCannonFX fx = new MatterCannonFX( world, message.x + message.dx * a, message.y + message.dy * a, message.z + message.dz * a,
+						Items.diamond );
 
 				Minecraft.getMinecraft().effectRenderer.addEffect( fx );
 			}
@@ -105,5 +80,30 @@ public class PacketMatterCannon extends AppEngPacket
 		catch( final Exception ignored )
 		{
 		}
+		return null;
+	}
+
+	@Override
+	public void fromBytes( ByteBuf buf )
+	{
+		this.x = buf.readFloat();
+		this.y = buf.readFloat();
+		this.z = buf.readFloat();
+		this.dx = buf.readFloat();
+		this.dy = buf.readFloat();
+		this.dz = buf.readFloat();
+		this.len = buf.readByte();
+	}
+
+	@Override
+	public void toBytes( ByteBuf buf )
+	{
+		buf.writeFloat( x );
+		buf.writeFloat( y );
+		buf.writeFloat( z );
+		buf.writeFloat( this.dx );
+		buf.writeFloat( this.dy );
+		buf.writeFloat( this.dz );
+		buf.writeByte( len );
 	}
 }

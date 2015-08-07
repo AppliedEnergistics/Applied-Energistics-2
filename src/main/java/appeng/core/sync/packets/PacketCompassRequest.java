@@ -20,65 +20,97 @@ package appeng.core.sync.packets;
 
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
+
 import appeng.api.util.DimensionalCoord;
 import appeng.core.sync.AppEngPacket;
-import appeng.core.sync.network.INetworkInfo;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.worlddata.WorldData;
 import appeng.services.compass.ICompassCallback;
 
 
-public class PacketCompassRequest extends AppEngPacket implements ICompassCallback
+public class PacketCompassRequest extends AppEngPacket<PacketCompassRequest> implements ICompassCallback
 {
 
-	final long attunement;
-	final int cx;
-	final int cz;
-	final int cdy;
-
+	private long attunement;
+	private int cx;
+	private int cz;
+	private int cdy;
 	private EntityPlayer talkBackTo;
 
 	// automatic.
-	public PacketCompassRequest( final ByteBuf stream )
+	public PacketCompassRequest()
 	{
-		this.attunement = stream.readLong();
-		this.cx = stream.readInt();
-		this.cz = stream.readInt();
-		this.cdy = stream.readInt();
 	}
 
 	// api
 	public PacketCompassRequest( final long attunement, final int cx, final int cz, final int cdy )
 	{
-
-		final ByteBuf data = Unpooled.buffer();
-
-		data.writeInt( this.getPacketID() );
-		data.writeLong( this.attunement = attunement );
-		data.writeInt( this.cx = cx );
-		data.writeInt( this.cz = cz );
-		data.writeInt( this.cdy = cdy );
-
-		this.configureWrite( data );
+		this.attunement = attunement;
+		this.cx = cx;
+		this.cz = cz;
+		this.cdy = cdy;
 	}
 
 	@Override
-	public void calculatedDirection( final boolean hasResult, final boolean spin, final double radians, final double dist )
+	public void calculatedDirection( boolean hasResult, boolean spin, double radians, double dist )
 	{
-		NetworkHandler.instance.sendTo( new PacketCompassResponse( this, hasResult, spin, radians ), (EntityPlayerMP) this.talkBackTo );
+		this.talkBackTo = Minecraft.getMinecraft().thePlayer;
+		NetworkHandler.INSTANCE.sendTo( new PacketCompassResponse( this, hasResult, spin, radians ), (EntityPlayerMP) this.talkBackTo );
 	}
 
 	@Override
-	public void serverPacketData( final INetworkInfo manager, final AppEngPacket packet, final EntityPlayer player )
+	public PacketCompassRequest onMessage( PacketCompassRequest message, MessageContext ctx )
 	{
-		this.talkBackTo = player;
+		message.talkBackTo = ctx.getServerHandler().playerEntity;
 
-		final DimensionalCoord loc = new DimensionalCoord( player.worldObj, this.cx << 4, this.cdy << 5, this.cz << 4 );
-		WorldData.instance().compassData().service().getCompassDirection( loc, 174, this );
+		final DimensionalCoord loc = new DimensionalCoord( ctx.getServerHandler().playerEntity.worldObj, message.cx << 4, message.cdy << 5, message.cz << 4 );
+		WorldData.instance().compassData().service().getCompassDirection( loc, 174, message );
+
+		return null;
+	}
+
+	@Override
+	public void fromBytes( ByteBuf buf )
+	{
+		this.attunement = buf.readLong();
+		this.cx = buf.readInt();
+		this.cz = buf.readInt();
+		this.cdy = buf.readInt();
+	}
+
+	@Override
+	public void toBytes( ByteBuf buf )
+	{
+		buf.writeLong( this.attunement );
+		buf.writeInt( this.cx );
+		buf.writeInt( this.cz );
+		buf.writeInt( this.cdy );
+
+	}
+
+	public long getAttunement()
+	{
+		return attunement;
+	}
+
+	public int getCx()
+	{
+		return cx;
+	}
+
+	public int getCz()
+	{
+		return cz;
+	}
+
+	public int getCdy()
+	{
+		return cdy;
 	}
 }

@@ -20,18 +20,17 @@ package appeng.core.sync.packets;
 
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
 import appeng.core.CommonHelper;
 import appeng.core.sync.AppEngPacket;
-import appeng.core.sync.network.INetworkInfo;
 import appeng.parts.PartPlacement;
 
 
-public class PacketPartPlacement extends AppEngPacket
+public class PacketPartPlacement extends AppEngPacket<PacketPartPlacement>
 {
 
 	private int x;
@@ -41,37 +40,50 @@ public class PacketPartPlacement extends AppEngPacket
 	private float eyeHeight;
 
 	// automatic.
-	public PacketPartPlacement( final ByteBuf stream )
+	public PacketPartPlacement()
 	{
-		this.x = stream.readInt();
-		this.y = stream.readInt();
-		this.z = stream.readInt();
-		this.face = stream.readByte();
-		this.eyeHeight = stream.readFloat();
 	}
 
 	// api
 	public PacketPartPlacement( final int x, final int y, final int z, final int face, final float eyeHeight )
 	{
-		final ByteBuf data = Unpooled.buffer();
-
-		data.writeInt( this.getPacketID() );
-		data.writeInt( x );
-		data.writeInt( y );
-		data.writeInt( z );
-		data.writeByte( face );
-		data.writeFloat( eyeHeight );
-
-		this.configureWrite( data );
+		this.x = x;
+		this.y = y;
+		this.z = z;
+		this.face = face;
+		this.eyeHeight = eyeHeight;
 	}
 
 	@Override
-	public void serverPacketData( final INetworkInfo manager, final AppEngPacket packet, final EntityPlayer player )
+	public PacketPartPlacement onMessage( PacketPartPlacement message, MessageContext ctx )
 	{
-		final EntityPlayerMP sender = (EntityPlayerMP) player;
+		final EntityPlayerMP sender = (EntityPlayerMP) ctx.getServerHandler().playerEntity;
 		CommonHelper.proxy.updateRenderMode( sender );
-		PartPlacement.setEyeHeight( this.eyeHeight );
-		PartPlacement.place( sender.getHeldItem(), this.x, this.y, this.z, this.face, sender, sender.worldObj, PartPlacement.PlaceType.INTERACT_FIRST_PASS, 0 );
+
+		PartPlacement.setEyeHeight( message.eyeHeight );
+		PartPlacement.place( sender.getHeldItem(), message.x, message.y, message.z, message.face, sender, sender.worldObj,
+				PartPlacement.PlaceType.INTERACT_FIRST_PASS, 0 );
 		CommonHelper.proxy.updateRenderMode( null );
+		return null;
+	}
+
+	@Override
+	public void fromBytes( ByteBuf buf )
+	{
+		this.x = buf.readInt();
+		this.y = buf.readInt();
+		this.z = buf.readInt();
+		this.face = buf.readByte();
+		this.eyeHeight = buf.readFloat();
+	}
+
+	@Override
+	public void toBytes( ByteBuf buf )
+	{
+		buf.writeInt( x );
+		buf.writeInt( y );
+		buf.writeInt( z );
+		buf.writeByte( face );
+		buf.writeFloat( eyeHeight );
 	}
 }

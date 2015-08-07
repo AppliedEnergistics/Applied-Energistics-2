@@ -554,7 +554,7 @@ public class GuiCraftConfirm extends AEBaseGui
 		{
 			try
 			{
-				NetworkHandler.instance.sendToServer( new PacketValueConfig( "Terminal.Cpu", backwards ? "Prev" : "Next" ) );
+				NetworkHandler.INSTANCE.sendToServer( new PacketValueConfig( "Terminal.Cpu", backwards ? "Prev" : "Next" ) );
 			}
 			catch( final IOException e )
 			{
@@ -564,14 +564,14 @@ public class GuiCraftConfirm extends AEBaseGui
 
 		if( btn == this.cancel )
 		{
-			NetworkHandler.instance.sendToServer( new PacketSwitchGuis( this.OriginalGui ) );
+			NetworkHandler.INSTANCE.sendToServer( new PacketSwitchGuis( this.OriginalGui ) );
 		}
 
 		if( btn == this.start )
 		{
 			try
 			{
-				NetworkHandler.instance.sendToServer( new PacketValueConfig( "Terminal.Start", "Start" ) );
+				NetworkHandler.INSTANCE.sendToServer( new PacketValueConfig( "Terminal.Start", "Start" ) );
 			}
 			catch( final Throwable e )
 			{

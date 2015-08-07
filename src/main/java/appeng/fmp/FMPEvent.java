@@ -126,7 +126,7 @@ public class FMPEvent
 		else
 		{
 			player.swingItem();
-			NetworkHandler.instance.sendToServer( new PacketMultiPart() );
+			NetworkHandler.INSTANCE.sendToServer( new PacketMultiPart() );
 		}
 		return true;
 	}

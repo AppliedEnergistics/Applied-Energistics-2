@@ -20,46 +20,53 @@ package appeng.core.sync.packets;
 
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
-import net.minecraft.entity.player.EntityPlayer;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
 import appeng.container.AEBaseContainer;
 import appeng.core.sync.AppEngPacket;
-import appeng.core.sync.network.INetworkInfo;
 
 
-public class PacketSwapSlots extends AppEngPacket
+public class PacketSwapSlots extends AppEngPacket<PacketSwapSlots>
 {
 
-	private final int slotA;
-	private final int slotB;
+	private int slotA;
+	private int slotB;
 
 	// automatic.
-	public PacketSwapSlots( final ByteBuf stream )
+	public PacketSwapSlots()
 	{
-		this.slotA = stream.readInt();
-		this.slotB = stream.readInt();
 	}
 
 	// api
 	public PacketSwapSlots( final int slotA, final int slotB )
 	{
-		final ByteBuf data = Unpooled.buffer();
-
-		data.writeInt( this.getPacketID() );
-		data.writeInt( this.slotA = slotA );
-		data.writeInt( this.slotB = slotB );
-
-		this.configureWrite( data );
+		this.slotA = slotA;
+		this.slotB = slotB;
 	}
 
 	@Override
-	public void serverPacketData( final INetworkInfo manager, final AppEngPacket packet, final EntityPlayer player )
+	public PacketSwapSlots onMessage( PacketSwapSlots message, MessageContext ctx )
 	{
-		if( player != null && player.openContainer instanceof AEBaseContainer )
+		if( ctx.getServerHandler().playerEntity != null && ctx.getServerHandler().playerEntity.openContainer instanceof AEBaseContainer )
 		{
-			( (AEBaseContainer) player.openContainer ).swapSlotContents( this.slotA, this.slotB );
+			( (AEBaseContainer) ctx.getServerHandler().playerEntity.openContainer ).swapSlotContents( message.slotA, message.slotB );
 		}
+		return null;
+	}
+
+	@Override
+	public void fromBytes( ByteBuf buf )
+	{
+		this.slotA = buf.readInt();
+		this.slotB = buf.readInt();
+	}
+
+	@Override
+	public void toBytes( ByteBuf buf )
+	{
+		buf.writeInt( this.slotA );
+		buf.writeInt( this.slotB );
+
 	}
 }

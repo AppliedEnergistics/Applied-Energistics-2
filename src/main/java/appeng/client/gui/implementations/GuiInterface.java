@@ -101,17 +101,17 @@ public class GuiInterface extends GuiUpgradeable
 
 		if( btn == this.priority )
 		{
-			NetworkHandler.instance.sendToServer( new PacketSwitchGuis( GuiBridge.GUI_PRIORITY ) );
+			NetworkHandler.INSTANCE.sendToServer( new PacketSwitchGuis( GuiBridge.GUI_PRIORITY ) );
 		}
 
 		if( btn == this.interfaceMode )
 		{
-			NetworkHandler.instance.sendToServer( new PacketConfigButton( Settings.INTERFACE_TERMINAL, backwards ) );
+			NetworkHandler.INSTANCE.sendToServer( new PacketConfigButton( Settings.INTERFACE_TERMINAL, backwards ) );
 		}
 
 		if( btn == this.BlockMode )
 		{
-			NetworkHandler.instance.sendToServer( new PacketConfigButton( this.BlockMode.getSetting(), backwards ) );
+			NetworkHandler.INSTANCE.sendToServer( new PacketConfigButton( this.BlockMode.getSetting(), backwards ) );
 		}
 	}
 }

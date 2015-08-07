@@ -20,32 +20,25 @@ package appeng.core.sync.packets;
 
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
 import appeng.core.CommonHelper;
 import appeng.core.sync.AppEngPacket;
-import appeng.core.sync.network.INetworkInfo;
 
 
-public class PacketMockExplosion extends AppEngPacket
+public class PacketMockExplosion extends AppEngPacket<PacketMockExplosion>
 {
 
-	private final double x;
-	private final double y;
-	private final double z;
+	private double x;
+	private double y;
+	private double z;
 
 	// automatic.
-	public PacketMockExplosion( final ByteBuf stream )
+	public PacketMockExplosion()
 	{
-		this.x = stream.readDouble();
-		this.y = stream.readDouble();
-		this.z = stream.readDouble();
 	}
 
 	// api
@@ -54,22 +47,29 @@ public class PacketMockExplosion extends AppEngPacket
 		this.x = x;
 		this.y = y;
 		this.z = z;
-
-		final ByteBuf data = Unpooled.buffer();
-
-		data.writeInt( this.getPacketID() );
-		data.writeDouble( x );
-		data.writeDouble( y );
-		data.writeDouble( z );
-
-		this.configureWrite( data );
 	}
 
 	@Override
-	@SideOnly( Side.CLIENT )
-	public void clientPacketData( final INetworkInfo network, final AppEngPacket packet, final EntityPlayer player )
+	public PacketMockExplosion onMessage( PacketMockExplosion message, MessageContext ctx )
 	{
 		final World world = CommonHelper.proxy.getWorld();
-		world.spawnParticle( "largeexplode", this.x, this.y, this.z, 1.0D, 0.0D, 0.0D );
+		world.spawnParticle( "largeexplode", message.x, message.y, message.z, 1.0D, 0.0D, 0.0D );
+		return null;
+	}
+
+	@Override
+	public void fromBytes( ByteBuf buf )
+	{
+		this.x = buf.readDouble();
+		this.y = buf.readDouble();
+		this.z = buf.readDouble();
+	}
+
+	@Override
+	public void toBytes( ByteBuf buf )
+	{
+		buf.writeDouble( x );
+		buf.writeDouble( y );
+		buf.writeDouble( z );
 	}
 }

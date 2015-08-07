@@ -210,7 +210,7 @@ public final class AppEng
 		AEConfig.instance.save();
 
 		NetworkRegistry.INSTANCE.registerGuiHandler( this, GuiBridge.GUI_Handler );
-		NetworkHandler.instance = new NetworkHandler( "AE2" );
+//		NetworkHandler.instance = new NetworkHandler( "AE2" );
 
 		AELog.info( "Post Initialization ( ended after " + start.elapsed( TimeUnit.MILLISECONDS ) + "ms )" );
 	}

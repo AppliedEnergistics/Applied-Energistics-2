@@ -20,30 +20,29 @@ package appeng.core.sync.packets;
 
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.tileentity.TileEntity;
+
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
+import cpw.mods.fml.relauncher.Side;
 
 import appeng.client.gui.AEBaseGui;
 import appeng.container.AEBaseContainer;
 import appeng.container.ContainerOpenContext;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.GuiBridge;
-import appeng.core.sync.network.INetworkInfo;
 import appeng.util.Platform;
 
 
-public class PacketSwitchGuis extends AppEngPacket
+public class PacketSwitchGuis extends AppEngPacket<PacketSwitchGuis>
 {
 
-	private final GuiBridge newGui;
+	private GuiBridge newGui;
 
 	// automatic.
-	public PacketSwitchGuis( final ByteBuf stream )
+	public PacketSwitchGuis()
 	{
-		this.newGui = GuiBridge.values()[stream.readInt()];
 	}
 
 	// api
@@ -55,34 +54,43 @@ public class PacketSwitchGuis extends AppEngPacket
 		{
 			AEBaseGui.setSwitchingGuis( true );
 		}
-
-		final ByteBuf data = Unpooled.buffer();
-
-		data.writeInt( this.getPacketID() );
-		data.writeInt( newGui.ordinal() );
-
-		this.configureWrite( data );
 	}
 
 	@Override
-	public void serverPacketData( final INetworkInfo manager, final AppEngPacket packet, final EntityPlayer player )
+	public PacketSwitchGuis onMessage( PacketSwitchGuis message, MessageContext ctx )
 	{
-		final Container c = player.openContainer;
-		if( c instanceof AEBaseContainer )
+		if( ctx.side == Side.CLIENT )
 		{
-			final AEBaseContainer bc = (AEBaseContainer) c;
-			final ContainerOpenContext context = bc.getOpenContext();
-			if( context != null )
+			AEBaseGui.setSwitchingGuis( true );
+		}
+		else
+		{
+			final Container c = ctx.getServerHandler().playerEntity.openContainer;
+			if( c instanceof AEBaseContainer )
 			{
-				final TileEntity te = context.getTile();
-				Platform.openGUI( player, te, context.getSide(), this.newGui );
+				final AEBaseContainer bc = (AEBaseContainer) c;
+				final ContainerOpenContext context = bc.getOpenContext();
+
+				if( context != null )
+				{
+					final TileEntity te = context.getTile();
+					Platform.openGUI( ctx.getServerHandler().playerEntity, te, context.getSide(), message.newGui );
+				}
 			}
 		}
+		return null;
 	}
 
 	@Override
-	public void clientPacketData( final INetworkInfo network, final AppEngPacket packet, final EntityPlayer player )
+	public void fromBytes( ByteBuf buf )
+	{
+		this.newGui = GuiBridge.values()[buf.readInt()];
+	}
+
+	@Override
+	public void toBytes( ByteBuf buf )
 	{
 		AEBaseGui.setSwitchingGuis( true );
+		buf.writeInt( newGui.ordinal() );
 	}
 }

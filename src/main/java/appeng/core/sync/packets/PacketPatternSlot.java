@@ -22,79 +22,60 @@ package appeng.core.sync.packets;
 import java.io.IOException;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInventory;
+
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
 import appeng.api.AEApi;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.container.implementations.ContainerPatternTerm;
 import appeng.core.sync.AppEngPacket;
-import appeng.core.sync.network.INetworkInfo;
 import appeng.util.item.AEItemStack;
 
 
-public class PacketPatternSlot extends AppEngPacket
+public class PacketPatternSlot extends AppEngPacket<PacketPatternSlot>
 {
 
-	public final IAEItemStack slotItem;
-
-	public final IAEItemStack[] pattern = new IAEItemStack[9];
-
-	public final boolean shift;
+	private IInventory pat;
+	private IAEItemStack slotItem;
+	private IAEItemStack[] pattern = new IAEItemStack[9];
+	private boolean shift;
 
 	// automatic.
-	public PacketPatternSlot( final ByteBuf stream ) throws IOException
+	public PacketPatternSlot()
 	{
-
-		this.shift = stream.readBoolean();
-
-		this.slotItem = this.readItem( stream );
-
-		for( int x = 0; x < 9; x++ )
-		{
-			this.pattern[x] = this.readItem( stream );
-		}
 	}
 
-	private IAEItemStack readItem( final ByteBuf stream ) throws IOException
+	private IAEItemStack readItem( final ByteBuf stream )
 	{
 		final boolean hasItem = stream.readBoolean();
 
 		if( hasItem )
 		{
-			return AEItemStack.loadItemStackFromPacket( stream );
+			try
+			{
+				return AEItemStack.loadItemStackFromPacket( stream );
+			}
+			catch( IOException e )
+			{
+				return null;
+			}
 		}
 
 		return null;
 	}
 
 	// api
-	public PacketPatternSlot( final IInventory pat, final IAEItemStack slotItem, final boolean shift ) throws IOException
+	public PacketPatternSlot( IInventory pat, IAEItemStack slotItem, boolean shift )
 	{
-
+		this.pat = pat;
 		this.slotItem = slotItem;
 		this.shift = shift;
-
-		final ByteBuf data = Unpooled.buffer();
-
-		data.writeInt( this.getPacketID() );
-
-		data.writeBoolean( shift );
-
-		this.writeItem( slotItem, data );
-		for( int x = 0; x < 9; x++ )
-		{
-			this.pattern[x] = AEApi.instance().storage().createItemStack( pat.getStackInSlot( x ) );
-			this.writeItem( this.pattern[x], data );
-		}
-
-		this.configureWrite( data );
 	}
 
-	private void writeItem( final IAEItemStack slotItem, final ByteBuf data ) throws IOException
+	private void writeItem( IAEItemStack slotItem, ByteBuf data )
 	{
 		if( slotItem == null )
 		{
@@ -103,18 +84,70 @@ public class PacketPatternSlot extends AppEngPacket
 		else
 		{
 			data.writeBoolean( true );
-			slotItem.writeToPacket( data );
+			try
+			{
+				slotItem.writeToPacket( data );
+			}
+			catch( IOException e )
+			{
+			}
 		}
 	}
 
 	@Override
-	public void serverPacketData( final INetworkInfo manager, final AppEngPacket packet, final EntityPlayer player )
+	public PacketPatternSlot onMessage( PacketPatternSlot message, MessageContext ctx )
 	{
-		final EntityPlayerMP sender = (EntityPlayerMP) player;
+		final EntityPlayerMP sender = (EntityPlayerMP) ctx.getServerHandler().playerEntity;
 		if( sender.openContainer instanceof ContainerPatternTerm )
 		{
 			final ContainerPatternTerm patternTerminal = (ContainerPatternTerm) sender.openContainer;
-			patternTerminal.craftOrGetItem( this );
+			patternTerminal.craftOrGetItem( message );
 		}
+		return null;
+	}
+
+	@Override
+	public void fromBytes( ByteBuf buf )
+	{
+		this.shift = buf.readBoolean();
+		this.slotItem = this.readItem( buf );
+
+		for( int x = 0; x < 9; x++ )
+		{
+			this.pattern[x] = this.readItem( buf );
+		}
+	}
+
+	@Override
+	public void toBytes( ByteBuf buf )
+	{
+		buf.writeBoolean( shift );
+
+		this.writeItem( slotItem, buf );
+		for( int x = 0; x < 9; x++ )
+		{
+			this.pattern[x] = AEApi.instance().storage().createItemStack( pat.getStackInSlot( x ) );
+			this.writeItem( this.pattern[x], buf );
+		}
+	}
+
+	public IInventory getPat()
+	{
+		return pat;
+	}
+
+	public IAEItemStack getSlotItem()
+	{
+		return slotItem;
+	}
+
+	public IAEItemStack[] getPattern()
+	{
+		return pattern;
+	}
+
+	public boolean isShift()
+	{
+		return shift;
 	}
 }

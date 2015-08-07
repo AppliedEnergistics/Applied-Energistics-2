@@ -115,7 +115,7 @@ public class NEICraftingHandler implements IOverlayHandler
 					}
 				}
 
-				NetworkHandler.instance.sendToServer( new PacketNEIRecipe( recipe ) );
+				NetworkHandler.INSTANCE.sendToServer( new PacketNEIRecipe( recipe ) );
 			}
 		}
 		catch( final Exception ignored )

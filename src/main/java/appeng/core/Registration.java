@@ -41,6 +41,7 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.VillagerRegistry;
+import cpw.mods.fml.relauncher.Side;
 
 import appeng.api.AEApi;
 import appeng.api.IAppEngApi;
@@ -79,6 +80,31 @@ import appeng.core.features.registries.entries.CreativeCellHandler;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.PlayerMessages;
 import appeng.core.stats.PlayerStatsRegistration;
+import appeng.core.sync.network.NetworkHandler;
+import appeng.core.sync.packets.PacketAssemblerAnimation;
+import appeng.core.sync.packets.PacketClick;
+import appeng.core.sync.packets.PacketCompassRequest;
+import appeng.core.sync.packets.PacketCompassResponse;
+import appeng.core.sync.packets.PacketCompressedNBT;
+import appeng.core.sync.packets.PacketConfigButton;
+import appeng.core.sync.packets.PacketCraftRequest;
+import appeng.core.sync.packets.PacketInventoryAction;
+import appeng.core.sync.packets.PacketLightning;
+import appeng.core.sync.packets.PacketMEInventoryUpdate;
+import appeng.core.sync.packets.PacketMatterCannon;
+import appeng.core.sync.packets.PacketMockExplosion;
+import appeng.core.sync.packets.PacketMultiPart;
+import appeng.core.sync.packets.PacketNEIRecipe;
+import appeng.core.sync.packets.PacketNewStorageDimension;
+import appeng.core.sync.packets.PacketPaintedEntity;
+import appeng.core.sync.packets.PacketPartPlacement;
+import appeng.core.sync.packets.PacketPartialItem;
+import appeng.core.sync.packets.PacketPatternSlot;
+import appeng.core.sync.packets.PacketProgressBar;
+import appeng.core.sync.packets.PacketSwapSlots;
+import appeng.core.sync.packets.PacketSwitchGuis;
+import appeng.core.sync.packets.PacketTransitionEffect;
+import appeng.core.sync.packets.PacketValueConfig;
 import appeng.hooks.AETrading;
 import appeng.hooks.TickHandler;
 import appeng.items.materials.ItemMultiMaterial;
@@ -766,5 +792,7 @@ public final class Registration
 		 * initial recipe bake, if ore dictionary changes after this it re-bakes.
 		 */
 		OreDictionaryHandler.INSTANCE.bakeRecipes();
+
+		NetworkHandler.init();
 	}
 }

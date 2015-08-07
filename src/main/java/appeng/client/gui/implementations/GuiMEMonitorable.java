@@ -170,7 +170,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 	{
 		if( btn == this.craftingStatusBtn )
 		{
-			NetworkHandler.instance.sendToServer( new PacketSwitchGuis( GuiBridge.GUI_CRAFTING_STATUS ) );
+			NetworkHandler.INSTANCE.sendToServer( new PacketSwitchGuis( GuiBridge.GUI_CRAFTING_STATUS ) );
 		}
 
 		if( btn instanceof GuiImgButton )
@@ -195,7 +195,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 				{
 					try
 					{
-						NetworkHandler.instance.sendToServer( new PacketValueConfig( iBtn.getSetting().name(), next.name() ) );
+						NetworkHandler.INSTANCE.sendToServer( new PacketValueConfig( iBtn.getSetting().name(), next.name() ) );
 					}
 					catch( final IOException e )
 					{

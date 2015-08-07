@@ -74,22 +74,22 @@ public class GuiPatternTerm extends GuiMEMonitorable
 
 			if( this.tabCraftButton == btn || this.tabProcessButton == btn )
 			{
-				NetworkHandler.instance.sendToServer( new PacketValueConfig( "PatternTerminal.CraftMode", this.tabProcessButton == btn ? CRAFTMODE_CRFTING : CRAFTMODE_PROCESSING ) );
+				NetworkHandler.INSTANCE.sendToServer( new PacketValueConfig( "PatternTerminal.CraftMode", this.tabProcessButton == btn ? CRAFTMODE_CRFTING : CRAFTMODE_PROCESSING ) );
 			}
 
 			if( this.encodeBtn == btn )
 			{
-				NetworkHandler.instance.sendToServer( new PacketValueConfig( "PatternTerminal.Encode", "1" ) );
+				NetworkHandler.INSTANCE.sendToServer( new PacketValueConfig( "PatternTerminal.Encode", "1" ) );
 			}
 
 			if( this.clearBtn == btn )
 			{
-				NetworkHandler.instance.sendToServer( new PacketValueConfig( "PatternTerminal.Clear", "1" ) );
+				NetworkHandler.INSTANCE.sendToServer( new PacketValueConfig( "PatternTerminal.Clear", "1" ) );
 			}
 
 			if( this.substitutionsEnabledBtn == btn || this.substitutionsDisabledBtn == btn )
 			{
-				NetworkHandler.instance.sendToServer( new PacketValueConfig( "PatternTerminal.Substitute", this.substitutionsEnabledBtn == btn ? SUBSITUTION_DISABLE : SUBSITUTION_ENABLE ) );
+				NetworkHandler.INSTANCE.sendToServer( new PacketValueConfig( "PatternTerminal.Substitute", this.substitutionsEnabledBtn == btn ? SUBSITUTION_DISABLE : SUBSITUTION_ENABLE ) );
 			}
 		}
 		catch( final IOException e )

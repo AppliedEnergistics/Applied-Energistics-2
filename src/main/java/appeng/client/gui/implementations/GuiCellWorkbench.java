@@ -176,15 +176,15 @@ public class GuiCellWorkbench extends GuiUpgradeable
 		{
 			if( btn == this.copyMode )
 			{
-				NetworkHandler.instance.sendToServer( new PacketValueConfig( "CellWorkbench.Action", "CopyMode" ) );
+				NetworkHandler.INSTANCE.sendToServer( new PacketValueConfig( "CellWorkbench.Action", "CopyMode" ) );
 			}
 			else if( btn == this.partition )
 			{
-				NetworkHandler.instance.sendToServer( new PacketValueConfig( "CellWorkbench.Action", "Partition" ) );
+				NetworkHandler.INSTANCE.sendToServer( new PacketValueConfig( "CellWorkbench.Action", "Partition" ) );
 			}
 			else if( btn == this.clear )
 			{
-				NetworkHandler.instance.sendToServer( new PacketValueConfig( "CellWorkbench.Action", "Clear" ) );
+				NetworkHandler.INSTANCE.sendToServer( new PacketValueConfig( "CellWorkbench.Action", "Clear" ) );
 			}
 			else if( btn == this.fuzzyMode )
 			{
@@ -193,7 +193,7 @@ public class GuiCellWorkbench extends GuiUpgradeable
 				FuzzyMode fz = (FuzzyMode) this.fuzzyMode.getCurrentValue();
 				fz = Platform.rotateEnum( fz, backwards, Settings.FUZZY_MODE.getPossibleValues() );
 
-				NetworkHandler.instance.sendToServer( new PacketValueConfig( "CellWorkbench.Fuzzy", fz.name() ) );
+				NetworkHandler.INSTANCE.sendToServer( new PacketValueConfig( "CellWorkbench.Fuzzy", fz.name() ) );
 			}
 			else
 			{

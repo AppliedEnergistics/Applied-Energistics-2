@@ -81,7 +81,7 @@ public class GuiQuartzKnife extends AEBaseGui
 			{
 				final String Out = this.name.getText();
 				( (ContainerQuartzKnife) this.inventorySlots ).setName( Out );
-				NetworkHandler.instance.sendToServer( new PacketValueConfig( "QuartzKnife.Name", Out ) );
+				NetworkHandler.INSTANCE.sendToServer( new PacketValueConfig( "QuartzKnife.Name", Out ) );
 			}
 			catch( final IOException e )
 			{

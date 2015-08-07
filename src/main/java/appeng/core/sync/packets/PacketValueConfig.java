@@ -19,20 +19,19 @@
 package appeng.core.sync.packets;
 
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
+
+import cpw.mods.fml.common.network.ByteBufUtils;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
+import cpw.mods.fml.relauncher.Side;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.Settings;
@@ -52,158 +51,154 @@ import appeng.container.implementations.ContainerQuartzKnife;
 import appeng.container.implementations.ContainerSecurity;
 import appeng.container.implementations.ContainerStorageBus;
 import appeng.core.sync.AppEngPacket;
-import appeng.core.sync.network.INetworkInfo;
 import appeng.helpers.IMouseWheelItem;
 
 
-public class PacketValueConfig extends AppEngPacket
+public class PacketValueConfig extends AppEngPacket<PacketValueConfig>
 {
 
-	private final String Name;
-	private final String Value;
+	private String name;
+	private String value;
 
 	// automatic.
-	public PacketValueConfig( final ByteBuf stream ) throws IOException
+	public PacketValueConfig()
 	{
-		final DataInputStream dis = new DataInputStream( new ByteArrayInputStream( stream.array(), stream.readerIndex(), stream.readableBytes() ) );
-		this.Name = dis.readUTF();
-		this.Value = dis.readUTF();
-		// dis.close();
 	}
 
 	// api
 	public PacketValueConfig( final String name, final String value ) throws IOException
 	{
-		this.Name = name;
-		this.Value = value;
-
-		final ByteBuf data = Unpooled.buffer();
-
-		data.writeInt( this.getPacketID() );
-
-		final ByteArrayOutputStream bos = new ByteArrayOutputStream();
-		final DataOutputStream dos = new DataOutputStream( bos );
-		dos.writeUTF( name );
-		dos.writeUTF( value );
-		// dos.close();
-
-		data.writeBytes( bos.toByteArray() );
-
-		this.configureWrite( data );
+		this.name = name;
+		this.value = value;
 	}
 
 	@Override
-	public void serverPacketData( final INetworkInfo manager, final AppEngPacket packet, final EntityPlayer player )
+	public PacketValueConfig onMessage( PacketValueConfig message, MessageContext ctx )
 	{
+		if( ctx.side == Side.CLIENT )
+		{
+			this.clientHandling( message, ctx );
+		}
+		else
+		{
+			this.serverHandling( message, ctx );
+		}
+		return null;
+	}
+
+	public void serverHandling( PacketValueConfig message, MessageContext ctx )
+	{
+		final EntityPlayer player = ctx.getServerHandler().playerEntity;
 		final Container c = player.openContainer;
 
-		if( this.Name.equals( "Item" ) && player.getHeldItem() != null && player.getHeldItem().getItem() instanceof IMouseWheelItem )
+		if( message.name.equals( "Item" ) && player.getHeldItem() != null && player.getHeldItem().getItem() instanceof
+				IMouseWheelItem )
 		{
 			final ItemStack is = player.getHeldItem();
 			final IMouseWheelItem si = (IMouseWheelItem) is.getItem();
-			si.onWheel( is, this.Value.equals( "WheelUp" ) );
+			si.onWheel( is, message.value.equals( "WheelUp" ) );
 		}
-		else if( this.Name.equals( "Terminal.Cpu" ) && c instanceof ContainerCraftingStatus )
+		else if( message.name.equals( "Terminal.Cpu" ) && c instanceof ContainerCraftingStatus )
 		{
 			final ContainerCraftingStatus qk = (ContainerCraftingStatus) c;
-			qk.cycleCpu( this.Value.equals( "Next" ) );
+			qk.cycleCpu( message.value.equals( "Next" ) );
 		}
-		else if( this.Name.equals( "Terminal.Cpu" ) && c instanceof ContainerCraftConfirm )
+		else if( message.name.equals( "Terminal.Cpu" ) && c instanceof ContainerCraftConfirm )
 		{
 			final ContainerCraftConfirm qk = (ContainerCraftConfirm) c;
-			qk.cycleCpu( this.Value.equals( "Next" ) );
+			qk.cycleCpu( message.value.equals( "Next" ) );
 		}
-		else if( this.Name.equals( "Terminal.Start" ) && c instanceof ContainerCraftConfirm )
+		else if( message.name.equals( "Terminal.Start" ) && c instanceof ContainerCraftConfirm )
 		{
 			final ContainerCraftConfirm qk = (ContainerCraftConfirm) c;
 			qk.startJob();
 		}
-		else if( this.Name.equals( "TileCrafting.Cancel" ) && c instanceof ContainerCraftingCPU )
+		else if( message.name.equals( "TileCrafting.Cancel" ) && c instanceof ContainerCraftingCPU )
 		{
 			final ContainerCraftingCPU qk = (ContainerCraftingCPU) c;
 			qk.cancelCrafting();
 		}
-		else if( this.Name.equals( "QuartzKnife.Name" ) && c instanceof ContainerQuartzKnife )
+		else if( message.name.equals( "QuartzKnife.Name" ) && c instanceof ContainerQuartzKnife )
 		{
 			final ContainerQuartzKnife qk = (ContainerQuartzKnife) c;
-			qk.setName( this.Value );
+			qk.setName( message.value );
 		}
-		else if( this.Name.equals( "TileSecurity.ToggleOption" ) && c instanceof ContainerSecurity )
+		else if( message.name.equals( "TileSecurity.ToggleOption" ) && c instanceof ContainerSecurity )
 		{
 			final ContainerSecurity sc = (ContainerSecurity) c;
-			sc.toggleSetting( this.Value, player );
+			sc.toggleSetting( message.value, player );
 		}
-		else if( this.Name.equals( "PriorityHost.Priority" ) && c instanceof ContainerPriority )
+		else if( message.name.equals( "PriorityHost.Priority" ) && c instanceof ContainerPriority )
 		{
 			final ContainerPriority pc = (ContainerPriority) c;
-			pc.setPriority( Integer.parseInt( this.Value ), player );
+			pc.setPriority( Integer.parseInt( message.value ), player );
 		}
-		else if( this.Name.equals( "LevelEmitter.Value" ) && c instanceof ContainerLevelEmitter )
+		else if( message.name.equals( "LevelEmitter.Value" ) && c instanceof ContainerLevelEmitter )
 		{
 			final ContainerLevelEmitter lvc = (ContainerLevelEmitter) c;
-			lvc.setLevel( Long.parseLong( this.Value ), player );
+			lvc.setLevel( Long.parseLong( message.value ), player );
 		}
-		else if( this.Name.startsWith( "PatternTerminal." ) && c instanceof ContainerPatternTerm )
+		else if( message.name.startsWith( "PatternTerminal." ) && c instanceof ContainerPatternTerm )
 		{
 			final ContainerPatternTerm cpt = (ContainerPatternTerm) c;
-			if( this.Name.equals( "PatternTerminal.CraftMode" ) )
+			if( message.name.equals( "PatternTerminal.CraftMode" ) )
 			{
-				cpt.getPatternTerminal().setCraftingRecipe( this.Value.equals( "1" ) );
+				cpt.getPatternTerminal().setCraftingRecipe( message.value.equals( "1" ) );
 			}
-			else if( this.Name.equals( "PatternTerminal.Encode" ) )
+			else if( message.name.equals( "PatternTerminal.Encode" ) )
 			{
 				cpt.encode();
 			}
-			else if( this.Name.equals( "PatternTerminal.Clear" ) )
+			else if( message.name.equals( "PatternTerminal.Clear" ) )
 			{
 				cpt.clear();
 			}
-			else if( this.Name.equals( "PatternTerminal.Substitute" ) )
+			else if( message.name.equals( "PatternTerminal.Substitute" ) )
 			{
-				cpt.getPatternTerminal().setSubstitution( this.Value.equals( "1" ) );
+				cpt.getPatternTerminal().setSubstitution( message.value.equals( "1" ) );
 			}
 		}
-		else if( this.Name.startsWith( "StorageBus." ) && c instanceof ContainerStorageBus )
+		else if( message.name.startsWith( "StorageBus." ) && c instanceof ContainerStorageBus )
 		{
 			final ContainerStorageBus ccw = (ContainerStorageBus) c;
-			if( this.Name.equals( "StorageBus.Action" ) )
+			if( message.name.equals( "StorageBus.Action" ) )
 			{
-				if( this.Value.equals( "Partition" ) )
+				if( message.value.equals( "Partition" ) )
 				{
 					ccw.partition();
 				}
-				else if( this.Value.equals( "Clear" ) )
+				else if( message.value.equals( "Clear" ) )
 				{
 					ccw.clear();
 				}
 			}
 		}
-		else if( this.Name.startsWith( "CellWorkbench." ) && c instanceof ContainerCellWorkbench )
+		else if( message.name.startsWith( "CellWorkbench." ) && c instanceof ContainerCellWorkbench )
 		{
 			final ContainerCellWorkbench ccw = (ContainerCellWorkbench) c;
-			if( this.Name.equals( "CellWorkbench.Action" ) )
+			if( message.name.equals( "CellWorkbench.Action" ) )
 			{
-				if( this.Value.equals( "CopyMode" ) )
+				if( message.value.equals( "CopyMode" ) )
 				{
 					ccw.nextWorkBenchCopyMode();
 				}
-				else if( this.Value.equals( "Partition" ) )
+				else if( message.value.equals( "Partition" ) )
 				{
 					ccw.partition();
 				}
-				else if( this.Value.equals( "Clear" ) )
+				else if( message.value.equals( "Clear" ) )
 				{
 					ccw.clear();
 				}
 			}
-			else if( this.Name.equals( "CellWorkbench.Fuzzy" ) )
+			else if( message.name.equals( "CellWorkbench.Fuzzy" ) )
 			{
-				ccw.setFuzzy( FuzzyMode.valueOf( this.Value ) );
+				ccw.setFuzzy( FuzzyMode.valueOf( message.value ) );
 			}
 		}
 		else if( c instanceof ContainerNetworkTool )
 		{
-			if( this.Name.equals( "NetworkTool" ) && this.Value.equals( "Toggle" ) )
+			if( message.name.equals( "NetworkTool" ) && message.value.equals( "Toggle" ) )
 			{
 				( (ContainerNetworkTool) c ).toggleFacadeMode();
 			}
@@ -214,13 +209,13 @@ public class PacketValueConfig extends AppEngPacket
 
 			for( final Settings e : cm.getSettings() )
 			{
-				if( e.name().equals( this.Name ) )
+				if( e.name().equals( message.name ) )
 				{
 					final Enum<?> def = cm.getSetting( e );
 
 					try
 					{
-						cm.putSetting( e, Enum.valueOf( def.getClass(), this.Value ) );
+						cm.putSetting( e, Enum.valueOf( def.getClass(), message.value ) );
 					}
 					catch( final IllegalArgumentException err )
 					{
@@ -233,20 +228,19 @@ public class PacketValueConfig extends AppEngPacket
 		}
 	}
 
-	@Override
-	public void clientPacketData( final INetworkInfo network, final AppEngPacket packet, final EntityPlayer player )
+	public void clientHandling( PacketValueConfig message, MessageContext ctx )
 	{
-		final Container c = player.openContainer;
+		final Container c = Minecraft.getMinecraft().thePlayer.openContainer;
 
-		if( this.Name.equals( "CustomName" ) && c instanceof AEBaseContainer )
+		if( message.name.equals( "CustomName" ) && c instanceof AEBaseContainer )
 		{
-			( (AEBaseContainer) c ).setCustomName( this.Value );
+			( (AEBaseContainer) c ).setCustomName( message.value );
 		}
-		else if( this.Name.startsWith( "SyncDat." ) )
+		else if( message.name.startsWith( "SyncDat." ) )
 		{
-			( (AEBaseContainer) c ).stringSync( Integer.parseInt( this.Name.substring( 8 ) ), this.Value );
+			( (AEBaseContainer) c ).stringSync( Integer.parseInt( message.name.substring( 8 ) ), message.value );
 		}
-		else if( this.Name.equals( "CraftingStatus" ) && this.Value.equals( "Clear" ) )
+		else if( message.name.equals( "CraftingStatus" ) && message.value.equals( "Clear" ) )
 		{
 			final GuiScreen gs = Minecraft.getMinecraft().currentScreen;
 			if( gs instanceof GuiCraftingCPU )
@@ -260,13 +254,13 @@ public class PacketValueConfig extends AppEngPacket
 
 			for( final Settings e : cm.getSettings() )
 			{
-				if( e.name().equals( this.Name ) )
+				if( e.name().equals( message.name ) )
 				{
 					final Enum<?> def = cm.getSetting( e );
 
 					try
 					{
-						cm.putSetting( e, Enum.valueOf( def.getClass(), this.Value ) );
+						cm.putSetting( e, Enum.valueOf( def.getClass(), message.value ) );
 					}
 					catch( final IllegalArgumentException err )
 					{
@@ -277,5 +271,19 @@ public class PacketValueConfig extends AppEngPacket
 				}
 			}
 		}
+	}
+
+	@Override
+	public void fromBytes( ByteBuf buf )
+	{
+		this.name = ByteBufUtils.readUTF8String( buf );
+		this.value = ByteBufUtils.readUTF8String( buf );
+	}
+
+	@Override
+	public void toBytes( ByteBuf buf )
+	{
+		ByteBufUtils.writeUTF8String( buf, this.name );
+		ByteBufUtils.writeUTF8String( buf, this.value );
 	}
 }

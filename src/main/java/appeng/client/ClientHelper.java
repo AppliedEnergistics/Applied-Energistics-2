@@ -184,7 +184,7 @@ public class ClientHelper extends ServerHelper
 	{
 		final PacketAssemblerAnimation paa = (PacketAssemblerAnimation) o;
 
-		final AssemblerFX fx = new AssemblerFX( Minecraft.getMinecraft().theWorld, posX, posY, posZ, 0.0D, 0.0D, 0.0D, paa.rate, paa.is );
+		final AssemblerFX fx = new AssemblerFX( Minecraft.getMinecraft().theWorld, posX, posY, posZ, 0.0D, 0.0D, 0.0D, paa.getRate(), paa.getIs() );
 		Minecraft.getMinecraft().effectRenderer.addEffect( fx );
 	}
 
@@ -408,7 +408,7 @@ public class ClientHelper extends ServerHelper
 		{
 			try
 			{
-				NetworkHandler.instance.sendToServer( new PacketValueConfig( "Item", me.dwheel > 0 ? "WheelUp" : "WheelDown" ) );
+				NetworkHandler.INSTANCE.sendToServer( new PacketValueConfig( "Item", me.dwheel > 0 ? "WheelUp" : "WheelDown" ) );
 				me.setCanceled( true );
 			}
 			catch( final IOException e )

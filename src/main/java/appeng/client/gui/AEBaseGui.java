@@ -367,7 +367,7 @@ public abstract class AEBaseGui extends GuiContainer
 				for( final Slot dr : this.drag_click )
 				{
 					final PacketInventoryAction p = new PacketInventoryAction( c == 0 ? InventoryAction.PICKUP_OR_SET_DOWN : InventoryAction.PLACE_SINGLE, dr.slotNumber, 0 );
-					NetworkHandler.instance.sendToServer( p );
+					NetworkHandler.INSTANCE.sendToServer( p );
 				}
 			}
 		}
@@ -392,7 +392,7 @@ public abstract class AEBaseGui extends GuiContainer
 			}
 
 			final PacketInventoryAction p = new PacketInventoryAction( action, slotIdx, 0 );
-			NetworkHandler.instance.sendToServer( p );
+			NetworkHandler.INSTANCE.sendToServer( p );
 
 			return;
 		}
@@ -406,7 +406,7 @@ public abstract class AEBaseGui extends GuiContainer
 
 			try
 			{
-				NetworkHandler.instance.sendToServer( ( (SlotPatternTerm) slot ).getRequest( key == 1 ) );
+				NetworkHandler.INSTANCE.sendToServer( ( (SlotPatternTerm) slot ).getRequest( key == 1 ) );
 			}
 			catch( final IOException e )
 			{
@@ -431,7 +431,7 @@ public abstract class AEBaseGui extends GuiContainer
 			}
 
 			final PacketInventoryAction p = new PacketInventoryAction( action, slotIdx, 0 );
-			NetworkHandler.instance.sendToServer( p );
+			NetworkHandler.INSTANCE.sendToServer( p );
 
 			return;
 		}
@@ -455,7 +455,7 @@ public abstract class AEBaseGui extends GuiContainer
 
 				( (AEBaseContainer) this.inventorySlots ).setTargetStack( stack );
 				final PacketInventoryAction p = new PacketInventoryAction( InventoryAction.MOVE_REGION, slotNum, 0 );
-				NetworkHandler.instance.sendToServer( p );
+				NetworkHandler.INSTANCE.sendToServer( p );
 				return;
 			}
 		}
@@ -490,7 +490,8 @@ public abstract class AEBaseGui extends GuiContainer
 			if( action != null )
 			{
 				final PacketInventoryAction p = new PacketInventoryAction( action, slot.getSlotIndex(), ( (SlotDisconnected) slot ).getSlot().getId() );
-				NetworkHandler.instance.sendToServer( p );
+
+				NetworkHandler.INSTANCE.sendToServer( p );
 			}
 
 			return;
@@ -544,7 +545,7 @@ public abstract class AEBaseGui extends GuiContainer
 			{
 				( (AEBaseContainer) this.inventorySlots ).setTargetStack( stack );
 				final PacketInventoryAction p = new PacketInventoryAction( action, this.getInventorySlots().size(), 0 );
-				NetworkHandler.instance.sendToServer( p );
+				NetworkHandler.INSTANCE.sendToServer( p );
 			}
 
 			return;
@@ -631,7 +632,7 @@ public abstract class AEBaseGui extends GuiContainer
 						{
 							if( s.getSlotIndex() == j && s.inventory == ( (AEBaseContainer) this.inventorySlots ).getPlayerInv() )
 							{
-								NetworkHandler.instance.sendToServer( new PacketSwapSlots( s.slotNumber, theSlot.slotNumber ) );
+								NetworkHandler.INSTANCE.sendToServer( new PacketSwapSlots( s.slotNumber, theSlot.slotNumber ) );
 								return true;
 							}
 						}
@@ -700,7 +701,7 @@ public abstract class AEBaseGui extends GuiContainer
 				for( int h = 0; h < times; h++ )
 				{
 					final PacketInventoryAction p = new PacketInventoryAction( direction, inventorySize, 0 );
-					NetworkHandler.instance.sendToServer( p );
+					NetworkHandler.INSTANCE.sendToServer( p );
 				}
 			}
 		}

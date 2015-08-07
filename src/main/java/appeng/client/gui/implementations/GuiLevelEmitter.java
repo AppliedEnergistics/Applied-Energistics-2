@@ -175,12 +175,12 @@ public class GuiLevelEmitter extends GuiUpgradeable
 
 		if( btn == this.craftingMode )
 		{
-			NetworkHandler.instance.sendToServer( new PacketConfigButton( this.craftingMode.getSetting(), backwards ) );
+			NetworkHandler.INSTANCE.sendToServer( new PacketConfigButton( this.craftingMode.getSetting(), backwards ) );
 		}
 
 		if( btn == this.levelMode )
 		{
-			NetworkHandler.instance.sendToServer( new PacketConfigButton( this.levelMode.getSetting(), backwards ) );
+			NetworkHandler.INSTANCE.sendToServer( new PacketConfigButton( this.levelMode.getSetting(), backwards ) );
 		}
 
 		final boolean isPlus = btn == this.plus1 || btn == this.plus10 || btn == this.plus100 || btn == this.plus1000;
@@ -224,7 +224,7 @@ public class GuiLevelEmitter extends GuiUpgradeable
 
 			this.level.setText( Out = Long.toString( result ) );
 
-			NetworkHandler.instance.sendToServer( new PacketValueConfig( "LevelEmitter.Value", Out ) );
+			NetworkHandler.INSTANCE.sendToServer( new PacketValueConfig( "LevelEmitter.Value", Out ) );
 		}
 		catch( final NumberFormatException e )
 		{
@@ -265,7 +265,7 @@ public class GuiLevelEmitter extends GuiUpgradeable
 						Out = "0";
 					}
 
-					NetworkHandler.instance.sendToServer( new PacketValueConfig( "LevelEmitter.Value", Out ) );
+					NetworkHandler.INSTANCE.sendToServer( new PacketValueConfig( "LevelEmitter.Value", Out ) );
 				}
 				catch( final IOException e )
 				{

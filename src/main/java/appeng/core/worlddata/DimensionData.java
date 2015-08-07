@@ -113,7 +113,7 @@ final class DimensionData implements IWorldDimensionData, IOnWorldStartable, IOn
 		this.storageCellDimensionIDs.add( newStorageCellID );
 		DimensionManager.registerDimension( newStorageCellID, AEConfig.instance.storageProviderID );
 
-		NetworkHandler.instance.sendToAll( new PacketNewStorageDimension( newStorageCellID ) );
+		NetworkHandler.INSTANCE.sendToAll( new PacketNewStorageDimension( newStorageCellID ) );
 
 		final String[] values = new String[this.storageCellDimensionIDs.size()];
 
@@ -153,19 +153,20 @@ final class DimensionData implements IWorldDimensionData, IOnWorldStartable, IOn
 	@Override
 	public void sendToPlayer( @Nullable final NetworkManager manager )
 	{
-		if( manager != null )
+		// if( manager != null )
+		// {
+		// for( final int newDim : this.config.get( PACKAGE_DEST_CATEGORY, PACKAGE_KEY_CATEGORY, PACKAGE_DEF_CATEGORY
+		// ).getIntList() )
+		// {
+		// manager.scheduleOutboundPacket( ( new PacketNewStorageDimension( newDim ) ) );
+		// }
+		// }
+		// else
+		// {
+		for( final TickHandler.PlayerColor pc : TickHandler.INSTANCE.getPlayerColors().values() )
 		{
-			for( final int newDim : this.config.get( PACKAGE_DEST_CATEGORY, PACKAGE_KEY_CATEGORY, PACKAGE_DEF_CATEGORY ).getIntList() )
-			{
-				manager.scheduleOutboundPacket( ( new PacketNewStorageDimension( newDim ) ).getProxy() );
-			}
+			NetworkHandler.INSTANCE.sendToAll( pc.getPacket() );
 		}
-		else
-		{
-			for( final TickHandler.PlayerColor pc : TickHandler.INSTANCE.getPlayerColors().values() )
-			{
-				NetworkHandler.instance.sendToAll( pc.getPacket() );
-			}
-		}
+		// }
 	}
 }

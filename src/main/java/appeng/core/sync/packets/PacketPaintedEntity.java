@@ -20,50 +20,56 @@ package appeng.core.sync.packets;
 
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
-import net.minecraft.entity.player.EntityPlayer;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
 import appeng.api.util.AEColor;
 import appeng.core.sync.AppEngPacket;
-import appeng.core.sync.network.INetworkInfo;
 import appeng.hooks.TickHandler;
 import appeng.hooks.TickHandler.PlayerColor;
 
 
-public class PacketPaintedEntity extends AppEngPacket
+public class PacketPaintedEntity extends AppEngPacket<PacketPaintedEntity>
 {
 
-	private final AEColor myColor;
-	private final int entityId;
+	private AEColor myColor;
+	private int entityId;
 	private int ticks;
 
 	// automatic.
-	public PacketPaintedEntity( final ByteBuf stream )
+	public PacketPaintedEntity()
 	{
-		this.entityId = stream.readInt();
-		this.myColor = AEColor.values()[stream.readByte()];
-		this.ticks = stream.readInt();
 	}
 
 	// api
 	public PacketPaintedEntity( final int myEntity, final AEColor myColor, final int ticksLeft )
 	{
-
-		final ByteBuf data = Unpooled.buffer();
-
-		data.writeInt( this.getPacketID() );
-		data.writeInt( this.entityId = myEntity );
-		data.writeByte( ( this.myColor = myColor ).ordinal() );
-		data.writeInt( ticksLeft );
-
-		this.configureWrite( data );
+		this.entityId = myEntity;
+		this.myColor = myColor;
+		this.ticks = ticksLeft;
 	}
 
 	@Override
-	public void clientPacketData( final INetworkInfo network, final AppEngPacket packet, final EntityPlayer player )
+	public PacketPaintedEntity onMessage( PacketPaintedEntity message, MessageContext ctx )
 	{
-		final PlayerColor pc = new PlayerColor( this.entityId, this.myColor, this.ticks );
-		TickHandler.INSTANCE.getPlayerColors().put( this.entityId, pc );
+		final PlayerColor pc = new PlayerColor( message.entityId, message.myColor, message.ticks );
+		TickHandler.INSTANCE.getPlayerColors().put( message.entityId, pc );
+		return null;
+	}
+
+	@Override
+	public void fromBytes( ByteBuf buf )
+	{
+		this.entityId = buf.readInt();
+		this.myColor = AEColor.values()[buf.readByte()];
+		this.ticks = buf.readInt();
+	}
+
+	@Override
+	public void toBytes( ByteBuf buf )
+	{
+		buf.writeInt( this.entityId );
+		buf.writeByte( this.myColor.ordinal() );
+		buf.writeInt( this.ticks );
 	}
 }

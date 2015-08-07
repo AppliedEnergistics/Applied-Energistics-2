@@ -20,27 +20,25 @@ package appeng.core.sync.packets;
 
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
+
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
+import cpw.mods.fml.relauncher.Side;
 
 import appeng.container.AEBaseContainer;
 import appeng.core.sync.AppEngPacket;
-import appeng.core.sync.network.INetworkInfo;
 
 
-public class PacketProgressBar extends AppEngPacket
+public class PacketProgressBar extends AppEngPacket<PacketProgressBar>
 {
 
-	private final short id;
-	private final long value;
+	private short id;
+	private long value;
 
 	// automatic.
-	public PacketProgressBar( final ByteBuf stream )
+	public PacketProgressBar()
 	{
-		this.id = stream.readShort();
-		this.value = stream.readLong();
 	}
 
 	// api
@@ -48,33 +46,41 @@ public class PacketProgressBar extends AppEngPacket
 	{
 		this.id = (short) shortID;
 		this.value = value;
-
-		final ByteBuf data = Unpooled.buffer();
-
-		data.writeInt( this.getPacketID() );
-		data.writeShort( shortID );
-		data.writeLong( value );
-
-		this.configureWrite( data );
 	}
 
 	@Override
-	public void serverPacketData( final INetworkInfo manager, final AppEngPacket packet, final EntityPlayer player )
+	public PacketProgressBar onMessage( PacketProgressBar message, MessageContext ctx )
 	{
-		final Container c = player.openContainer;
-		if( c instanceof AEBaseContainer )
+		if( ctx.side == Side.CLIENT )
 		{
-			( (AEBaseContainer) c ).updateFullProgressBar( this.id, this.value );
+			final Container c = ctx.getServerHandler().playerEntity.openContainer;
+			if( c instanceof AEBaseContainer )
+			{
+				( (AEBaseContainer) c ).updateFullProgressBar( message.id, message.value );
+			}
 		}
+		else
+		{
+			final Container c = ctx.getServerHandler().playerEntity.openContainer;
+			if( c instanceof AEBaseContainer )
+			{
+				( (AEBaseContainer) c ).updateFullProgressBar( message.id, message.value );
+			}
+		}
+		return null;
 	}
 
 	@Override
-	public void clientPacketData( final INetworkInfo network, final AppEngPacket packet, final EntityPlayer player )
+	public void fromBytes( ByteBuf buf )
 	{
-		final Container c = player.openContainer;
-		if( c instanceof AEBaseContainer )
-		{
-			( (AEBaseContainer) c ).updateFullProgressBar( this.id, this.value );
-		}
+		this.id = buf.readShort();
+		this.value = buf.readLong();
+	}
+
+	@Override
+	public void toBytes( ByteBuf buf )
+	{
+		buf.writeShort( this.id );
+		buf.writeLong( value );
 	}
 }

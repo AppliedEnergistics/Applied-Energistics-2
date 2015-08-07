@@ -76,7 +76,7 @@ public class CompassManager
 
 	private void requestUpdate( final CompassRequest r )
 	{
-		NetworkHandler.instance.sendToServer( new PacketCompassRequest( r.attunement, r.cx, r.cz, r.cdy ) );
+		NetworkHandler.INSTANCE.sendToServer( new PacketCompassRequest( r.attunement, r.cx, r.cz, r.cdy ) );
 	}
 
 	private static class CompassRequest
