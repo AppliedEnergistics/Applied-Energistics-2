@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -31,6 +31,7 @@ package appeng.core.api.imc;
 
 
 import java.util.Arrays;
+import java.util.Locale;
 
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.event.FMLInterModComms.IMCMessage;
@@ -45,7 +46,7 @@ public class IMCP2PAttunement implements IIMCProcessor
 	@Override
 	public void process( IMCMessage m )
 	{
-		String key = m.key.substring( "add-p2p-attunement-".length() ).replace( '-', '_' ).toUpperCase();
+		String key = m.key.substring( "add-p2p-attunement-".length() ).replace( '-', '_' ).toUpperCase( Locale.ENGLISH );
 
 		TunnelType type = TunnelType.valueOf( key );
 

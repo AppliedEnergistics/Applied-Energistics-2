@@ -22,7 +22,6 @@ package appeng.core;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-
 import javax.annotation.Nonnull;
 
 import org.apache.commons.io.FileUtils;

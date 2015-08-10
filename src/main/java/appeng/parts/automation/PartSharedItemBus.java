@@ -155,7 +155,7 @@ public abstract class PartSharedItemBus extends PartUpgradeable implements IGrid
 	protected boolean canDoBusWork()
 	{
 		final TileEntity self = this.getHost().getTile();
-		final BlockPos selfPos = self.getPos().offset( this.side.getFacing() )
+		final BlockPos selfPos = self.getPos().offset( this.side.getFacing() );
 		final int xCoordinate = selfPos.getX();
 		final int zCoordinate = selfPos.getZ();
 

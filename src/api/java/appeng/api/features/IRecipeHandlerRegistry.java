@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2013 AlgorithmX2
+ * Copyright (c) 2013 - 2015 AlgorithmX2
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -24,11 +24,19 @@
 package appeng.api.features;
 
 
+import javax.annotation.Nullable;
+
 import appeng.api.recipes.ICraftHandler;
 import appeng.api.recipes.IRecipeHandler;
 import appeng.api.recipes.ISubItemResolver;
 
 
+/**
+ * @author AlgorithmX2
+ * @author thatsIch
+ * @version rv3 - 10.08.2015
+ * @since rv0
+ */
 public interface IRecipeHandlerRegistry
 {
 
@@ -37,7 +45,7 @@ public interface IRecipeHandlerRegistry
 	 *
 	 * MUST BE CALLED IN PRE-INIT
 	 *
-	 * @param name    name of crafthandler
+	 * @param name name of crafthandler
 	 * @param handler class of crafthandler
 	 */
 	void addNewCraftHandler( String name, Class<? extends ICraftHandler> handler );
@@ -56,6 +64,7 @@ public interface IRecipeHandlerRegistry
 	 *
 	 * @return A recipe handler by name, returns null on failure.
 	 */
+	@Nullable
 	ICraftHandler getCraftHandlerFor( String name );
 
 	/**
@@ -67,9 +76,10 @@ public interface IRecipeHandlerRegistry
 	 * resolve sub items by name.
 	 *
 	 * @param nameSpace namespace of item
-	 * @param itemName  full name of item
+	 * @param itemName full name of item
 	 *
-	 * @return ResolverResult or ResolverResultSet
+	 * @return ResolverResult or ResolverResultSet or null if could not resolve
 	 */
+	@Nullable
 	Object resolveItem( String nameSpace, String itemName );
 }
