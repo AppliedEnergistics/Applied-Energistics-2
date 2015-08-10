@@ -20,6 +20,7 @@ package appeng.core;
 
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import cpw.mods.fml.common.event.FMLInterModComms;
@@ -35,6 +36,10 @@ import appeng.core.api.imc.IMCSpatial;
 
 /**
  * Handles the delegation of the corresponding IMC messages to the suitable IMC processors
+ *
+ * @author thatsIch
+ * @version rv3 - 10.08.2015
+ * @since rv1
  */
 public class IMCHandler
 {
@@ -43,8 +48,7 @@ public class IMCHandler
 	/**
 	 * Contains the processors,
 	 *
-	 * is mutable,
-	 * but write access only by the constructor
+	 * is mutable, but write access only by the constructor
 	 */
 	private final Map<String, IIMCProcessor> processors;
 
@@ -62,13 +66,12 @@ public class IMCHandler
 
 		for( TunnelType type : TunnelType.values() )
 		{
-			this.processors.put( "add-p2p-attunement-" + type.name().replace( '_', '-' ).toLowerCase(), new IMCP2PAttunement() );
+			this.processors.put( "add-p2p-attunement-" + type.name().replace( '_', '-' ).toLowerCase( Locale.ENGLISH ), new IMCP2PAttunement() );
 		}
 	}
 
 	/**
-	 * Tries to find every message matching the internal IMC keys.
-	 * When found the corresponding handler will process the attached message.
+	 * Tries to find every message matching the internal IMC keys. When found the corresponding handler will process the attached message.
 	 *
 	 * @param event Event carrying the identifier and message for the handlers
 	 */
@@ -80,7 +83,7 @@ public class IMCHandler
 
 			try
 			{
-				IIMCProcessor handler = this.processors.get( key );
+				final IIMCProcessor handler = this.processors.get( key );
 				if( handler != null )
 				{
 					handler.process( message );
@@ -90,7 +93,7 @@ public class IMCHandler
 					throw new IllegalStateException( "Invalid IMC Called: " + key );
 				}
 			}
-			catch( Throwable t )
+			catch( Exception t )
 			{
 				AELog.warning( "Problem detected when processing IMC " + key + " from " + message.getSender() );
 				AELog.error( t );

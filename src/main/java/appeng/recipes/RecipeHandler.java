@@ -26,11 +26,11 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-
 import javax.annotation.Nonnull;
 
 import com.google.common.base.Optional;
@@ -69,7 +69,7 @@ import appeng.recipes.handlers.OreRegistration;
 /**
  * @author AlgorithmX2
  * @author thatsIch
- * @version rv2
+ * @version rv3 - 10.08.2015
  * @since rv0
  */
 public class RecipeHandler implements IRecipeHandler
@@ -446,7 +446,7 @@ public class RecipeHandler implements IRecipeHandler
 					try
 					{
 
-						Ingredient i = new Ingredient( this, s, 1 );
+						IIngredient i = new Ingredient( this, s, 1 );
 
 						for( ItemStack is : i.getItemStackSet() )
 						{
@@ -541,7 +541,7 @@ public class RecipeHandler implements IRecipeHandler
 			int split = this.tokens.indexOf( "->" );
 			if( split != -1 )
 			{
-				String operation = this.tokens.remove( 0 ).toLowerCase();
+				final String operation = this.tokens.remove( 0 ).toLowerCase( Locale.ENGLISH );
 
 				if( operation.equals( "alias" ) )
 				{
@@ -678,7 +678,7 @@ public class RecipeHandler implements IRecipeHandler
 		this.tokens.clear();
 	}
 
-	private List<List<IIngredient>> parseLines( List<String> subList ) throws RecipeError
+	private List<List<IIngredient>> parseLines( Iterable<String> subList ) throws RecipeError
 	{
 		List<List<IIngredient>> out = new LinkedList<List<IIngredient>>();
 		List<IIngredient> cList = new LinkedList<IIngredient>();
@@ -753,7 +753,7 @@ public class RecipeHandler implements IRecipeHandler
 		}
 	}
 
-	private boolean isNumber( String v )
+	private boolean isNumber( CharSequence v )
 	{
 		if( v.length() <= 0 )
 		{
