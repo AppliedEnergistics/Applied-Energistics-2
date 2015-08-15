@@ -47,7 +47,9 @@ public enum TickRates
 
 	LightTunnel( 5, 120 ),
 
-	OpenComputersTunnel( 1, 5 );
+	OpenComputersTunnel( 1, 5 ),
+
+	PressureTunnel( 1, 120 );
 
 	public int min;
 	public int max;
