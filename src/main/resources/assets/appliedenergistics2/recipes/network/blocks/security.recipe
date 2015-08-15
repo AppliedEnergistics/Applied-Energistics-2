@@ -1,0 +1,5 @@
+shaped=
+    mc:iron_ingot ae2:BlockChest mc:iron_ingot,
+    cable ae2:ItemMaterial.Cell16kPart cable,
+    mc:iron_ingot ae2:ItemMaterial.EngProcessor mc:iron_ingot
+    -> ae2:BlockSecurity

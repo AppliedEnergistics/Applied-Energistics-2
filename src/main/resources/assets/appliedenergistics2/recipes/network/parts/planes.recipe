@@ -1,0 +1,25 @@
+shaped=
+    fluixCrystal fluixCrystal fluixCrystal,
+    mc:iron_ingot ae2:ItemMaterial.FormationCore mc:iron_ingot
+    -> ae2:ItemPart.FormationPlane
+
+shaped=
+    fluixCrystal fluixCrystal fluixCrystal,
+    mc:iron_ingot ae2:ItemMaterial.AnnihilationCore mc:iron_ingot
+    -> ae2:ItemPart.AnnihilationPlane
+
+shaped=
+    mc:iron_ingot fluixCrystal,
+    ae2:ItemMaterial.AnnihilationCore fluixCrystal,
+    mc:iron_ingot fluixCrystal
+    -> ae2:ItemPart.AnnihilationPlane
+
+shaped=
+    mc:iron_ingot fluixCrystal,
+    ae2:ItemMaterial.FormationCore fluixCrystal,
+    mc:iron_ingot fluixCrystal
+    -> ae2:ItemPart.FormationPlane
+
+shapeless=
+    ae2:ItemPart.AnnihilationPlane ae2:ItemMaterial.FluixPearl
+    -> ae2:ItemPart.IdentityAnnihilationPlane

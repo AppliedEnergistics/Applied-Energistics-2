@@ -1,0 +1,35 @@
+shaped=
+    mc:gold_ingot mc:iron_ingot _,
+    mc:redstone ae2:ItemMaterial.CalcProcessor mc:iron_ingot,
+    mc:gold_ingot mc:iron_ingot _
+    -> 2 ae2:ItemMaterial.BasicCard
+    
+shaped=
+    oredictionary:gemDiamond mc:iron_ingot _,
+    mc:redstone ae2:ItemMaterial.CalcProcessor mc:iron_ingot,
+    oredictionary:gemDiamond mc:iron_ingot _
+    -> 2 ae2:ItemMaterial.AdvCard
+
+shapeless=
+    ae2:ItemMaterial.BasicCard certusCrystal
+    -> ae2:ItemMaterial.CardCapacity
+
+shapeless=
+    ae2:ItemMaterial.BasicCard mc:redstone_torch
+    -> ae2:ItemMaterial.CardRedstone
+
+shapeless=
+    ae2:ItemMaterial.AdvCard wool
+    -> ae2:ItemMaterial.CardFuzzy
+
+shapeless=
+    ae2:ItemMaterial.AdvCard mc:redstone_torch
+    -> ae2:ItemMaterial.CardInverter
+
+shapeless=
+    ae2:ItemMaterial.AdvCard fluixCrystal
+    -> ae2:ItemMaterial.CardSpeed
+    
+shapeless=
+    ae2:ItemMaterial.BasicCard mc:crafting_table
+    -> ae2:ItemMaterial.CardCrafting

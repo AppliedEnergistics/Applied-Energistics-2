@@ -1,0 +1,11 @@
+shaped=
+    glass ae2:ItemPart.Terminal glass,
+    cable _ cable,
+    mc:iron_ingot fluixCrystal mc:iron_ingot,
+    -> ae2:BlockChest
+
+shaped=
+    mc:iron_ingot ae2:ItemMaterial.EngProcessor mc:iron_ingot,
+    cable _ cable,
+    mc:iron_ingot ae2:ItemMaterial.EngProcessor mc:iron_ingot
+    -> ae2:BlockDrive

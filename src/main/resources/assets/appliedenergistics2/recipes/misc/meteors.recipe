@@ -1,0 +1,5 @@
+shaped=
+    _ mc:iron_ingot _,
+    mc:iron_ingot ae2:ItemMaterial.CertusQuartzCrystalCharged mc:iron_ingot,
+    _ mc:iron_ingot _
+    -> ae2:BlockSkyCompass

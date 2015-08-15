@@ -1,0 +1,5 @@
+shaped=
+    mc:iron_ingot mc:iron_ingot ae2:ItemMaterial.FormationCore,
+    ae2:ItemMaterial.Cell4kPart ae2:BlockEnergyCell _,
+    mc:iron_ingot _ _
+    -> ae2:ToolMassCannon

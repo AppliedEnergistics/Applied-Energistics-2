@@ -1,0 +1,17 @@
+shaped=
+    _ mc:glowstone_dust ae2:BlockQuartzGlass,
+    mc:iron_ingot mc:redstone ae2:BlockQuartzGlass,
+    _ mc:glowstone_dust ae2:BlockQuartzGlass
+    -> 3 ae2:ItemPart.SemiDarkMonitor
+
+shapeless=
+    ae2:ItemPart.DarkMonitor
+    -> ae2:ItemPart.SemiDarkMonitor
+
+shapeless=
+    ae2:ItemPart.SemiDarkMonitor
+    -> ae2:ItemPart.Monitor
+
+shapeless=
+    ae2:ItemPart.Monitor
+    -> ae2:ItemPart.DarkMonitor

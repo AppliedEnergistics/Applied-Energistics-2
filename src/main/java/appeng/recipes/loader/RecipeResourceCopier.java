@@ -88,22 +88,60 @@ public class RecipeResourceCopier
 		Preconditions.checkNotNull( destination );
 		Preconditions.checkArgument( destination.isDirectory() );
 
-		final String[] listing = this.getResourceListing( this.getClass(), this.root );
+		this.copyTo( destination, this.root );
+	}
+
+	/**
+	 * @see {RecipeResourceCopier#copyTo(File)}
+	 *
+	 * @param destination destination folder to which the recipes are copied to
+	 * @param directory the folder to copy.
+	 *
+	 * @throws URISyntaxException {@see #getResourceListing}
+	 * @throws IOException {@see #getResourceListing} and if copying the detected resource to file is not possible
+	 */
+	private void copyTo( File destination, String directory ) throws URISyntaxException, IOException
+	{
+		assert destination != null;
+		assert directory != null;
+
+		final String[] listing = this.getResourceListing( this.getClass(), directory );
 		for( String list : listing )
 		{
 			if( list.endsWith( ".recipe" ) || list.endsWith( ".html" ) )
 			{
-				final InputStream inStream = this.getClass().getResourceAsStream( '/' + this.root + list );
-				final File outFile = new File( destination, list );
-				if( !outFile.exists() )
-				{
-					if( inStream != null )
-					{
-						FileUtils.copyInputStreamToFile( inStream, outFile );
-						inStream.close();
-					}
-				}
+				this.copyFile( destination, directory, list );
 			}
+			else if( !list.contains( "." ) )
+			{
+				final File subDirectory = new File( destination, list );
+				FileUtils.forceMkdir( subDirectory );
+				this.copyTo( subDirectory, directory + list + "/" );
+			}
+		}
+	}
+
+	/**
+	 * Copies a single file inside a folder to the destination.
+	 *
+	 * @param destination folder to which the file is copied to
+	 * @param directory the directory containing the file
+	 * @param fileName the fily to copy
+	 *
+	 * @throws IOException if copying the file is not possible
+	 */
+	private void copyFile( File destination, String directory, String fileName ) throws IOException
+	{
+		assert destination != null;
+		assert fileName != null;
+
+		final InputStream inStream = this.getClass().getResourceAsStream( '/' + directory + fileName );
+		final File outFile = new File( destination, fileName );
+
+		if( !outFile.exists() && inStream != null )
+		{
+			FileUtils.copyInputStreamToFile( inStream, outFile );
+			inStream.close();
 		}
 	}
 
