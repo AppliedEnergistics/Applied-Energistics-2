@@ -1,20 +1,3 @@
-
-alias=mc -> minecraft
-alias=ae2 -> appliedenergistics2
-
-group= mc:iron_ingot oredictionary:ingotCopper oredictionary:ingotTin oredictionary:ingotSilver oredictionary:ingotLead oredictionary:ingotBronze oredictionary:ingotBrass oredictionary:ingotNickel oredictionary:ingotInvar oredictionary:ingotAluminium -> metalIngots
-group= oredictionary:dustEnder oredictionary:dustEnderPearl -> dustEnder
-
-group=oredictionary:blockGlass oredictionary:glass mc:glass -> glass
-group=oredictionary:wool  mc:wool:* -> wool
-
-group=oredictionary:crystalCertusQuartz oredictionary:crystalNetherQuartz ae2:ItemMaterial.CertusQuartzCrystalCharged -> crystalQuartz
-group=oredictionary:dustCertusQuartz oredictionary:dustNetherQuartz -> dustQuartz
-
-group=oredictionary:crystalCertusQuartz ae2:ItemMaterial.CertusQuartzCrystalCharged ae2:ItemMaterial.PurifiedCertusQuartzCrystal -> certusCrystal
-group=oredictionary:crystalNetherQuartz ae2:ItemMaterial.PurifiedNetherQuartzCrystal -> netherCrystal
-group=oredictionary:crystalFluix ae2:ItemMaterial.PurifiedFluixCrystal -> fluixCrystal
-
 # Crash on Issues
 crash=false
 
@@ -24,26 +7,15 @@ exceptions=false
 # Error on Missing Items ( default is no because AE2 allows you to enable/disable items without modifying recipes. )
 erroronmissing=true
 
-group= oredictionary:itemIlluminatedPanel -> monitor
-group= ae2:BlockInterface ae2:ItemPart.Interface -> interface
+# Important, keep in this order
+import=aliases.recipe
+import=oredict.recipe
+import=groups.recipe
 
-group= ae2:ToolCertusQuartzCuttingKnife:* ae2:ToolNetherQuartzCuttingKnife:* -> knife
-group= ae2:ToolCertusQuartzWrench ae2:ToolNetherQuartzWrench -> wrench
-
-group= ae2:CableGlass ae2:CableCovered ae2:CableSmart -> cable
-group= ae2:CableDense -> densecable
-
-import=tools.recipe
-import=process.recipe
-import=storagecells.recipe
-import=port.recipe
-import=new.recipe
-import=dyes_glass.recipe
-import=dyes_covered.recipe
-import=dyes_smart.recipe
-import=dyes_dense.recipe
-import=paint_balls.recipe
-import=crafting.recipe
-import=vanilla_enhance.recipe
-import=stairs.recipe
-import=slabs.recipe
+# All actual recipes
+import=decorative/index.recipe
+import=materials/index.recipe
+import=misc/index.recipe
+import=network/index.recipe
+import=processing/index.recipe
+import=tools/index.recipe

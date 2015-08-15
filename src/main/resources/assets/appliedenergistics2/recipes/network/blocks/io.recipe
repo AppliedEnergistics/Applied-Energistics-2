@@ -1,0 +1,11 @@
+shaped=
+    mc:iron_ingot glass mc:iron_ingot,
+    glass oredictionary:dustFluix glass,
+    mc:iron_ingot glass mc:iron_ingot
+    -> ae2:BlockCondenser
+
+shaped=
+    glass glass glass,
+    ae2:BlockDrive cable ae2:BlockDrive,
+    mc:iron_ingot ae2:ItemMaterial.LogicProcessor mc:iron_ingot
+    -> ae2:BlockIOPort

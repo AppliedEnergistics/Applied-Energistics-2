@@ -1,0 +1,8 @@
+shapeless=
+    certusCrystal ae2:ItemMaterial.EmptyStorageCell -> ae2:ItemViewCell
+
+shaped=
+    ae2:BlockQuartzGlass mc:redstone ae2:BlockQuartzGlass,
+    mc:redstone certusCrystal mc:redstone,
+    mc:iron_ingot mc:iron_ingot mc:iron_ingot
+    -> ae2:ItemViewCell

@@ -1,0 +1,13 @@
+shaped=
+    mc:iron_ingot ae2:ItemMaterial.FormationCore mc:iron_ingot,
+    _ mc:piston _
+    -> ae2:ItemPart.ExportBus
+
+shaped=
+    _ ae2:ItemMaterial.AnnihilationCore _,
+    mc:iron_ingot mc:sticky_piston mc:iron_ingot
+    -> ae2:ItemPart.ImportBus
+    
+shapeless=
+    interface mc:sticky_piston mc:piston
+    -> ae2:ItemPart.StorageBus

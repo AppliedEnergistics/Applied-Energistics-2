@@ -1,0 +1,13 @@
+shaped=
+    _ mc:redstone _,
+    cable mc:lever cable,
+    _ mc:redstone _
+    -> ae2:ItemPart.ToggleBus
+
+shapeless=
+    ae2:ItemPart.ToggleBus
+    -> ae2:ItemPart.InvertedToggleBus
+
+shapeless=
+    ae2:ItemPart.InvertedToggleBus
+    -> ae2:ItemPart.ToggleBus
