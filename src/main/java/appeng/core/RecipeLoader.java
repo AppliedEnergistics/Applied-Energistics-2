@@ -22,7 +22,6 @@ package appeng.core;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-
 import javax.annotation.Nonnull;
 
 import com.google.common.base.Preconditions;
@@ -70,11 +69,11 @@ public class RecipeLoader implements Runnable
 		final File readmeGenDest = new File( generatedRecipesDir, "README.html" );
 		final File readmeUserDest = new File( userRecipesDir, "README.html" );
 
-        final IRecipeLoader oreDictLoader = new JarLoader("/assets/appliedenergistics2/oredict/");
-        this.handler.parseRecipes(oreDictLoader, "vanilla.oredict" );
-        this.handler.parseRecipes(oreDictLoader, "ae2.oredict" );
+		final IRecipeLoader oreDictLoader = new JarLoader( "/assets/appliedenergistics2/oredict/" );
+		this.handler.parseRecipes( oreDictLoader, "vanilla.oredict" );
+		this.handler.parseRecipes( oreDictLoader, "ae2.oredict" );
 
-        // generates generated and user recipes dir
+		// generates generated and user recipes dir
 		// will clean the generated every time to keep it up to date
 		// copies over the recipes in the jar over to the generated folder
 		// copies over the readmes

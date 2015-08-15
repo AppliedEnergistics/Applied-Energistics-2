@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -19,8 +19,12 @@
 package appeng.core.features.registries;
 
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Locale;
+import java.util.Map;
+import javax.annotation.Nullable;
 
 import appeng.api.features.IRecipeHandlerRegistry;
 import appeng.api.recipes.ICraftHandler;
@@ -30,16 +34,21 @@ import appeng.core.AELog;
 import appeng.recipes.RecipeHandler;
 
 
+/**
+ * @author AlgorithmX2
+ * @author thatsIch
+ * @version rv3 - 10.08.2015
+ * @since rv0
+ */
 public class RecipeHandlerRegistry implements IRecipeHandlerRegistry
 {
-
-	final HashMap<String, Class<? extends ICraftHandler>> handlers = new HashMap<String, Class<? extends ICraftHandler>>();
-	final LinkedList<ISubItemResolver> resolvers = new LinkedList<ISubItemResolver>();
+	private final Map<String, Class<? extends ICraftHandler>> handlers = new HashMap<String, Class<? extends ICraftHandler>>( 20 );
+	private final Collection<ISubItemResolver> resolvers = new LinkedList<ISubItemResolver>();
 
 	@Override
 	public void addNewCraftHandler( String name, Class<? extends ICraftHandler> handler )
 	{
-		this.handlers.put( name.toLowerCase(), handler );
+		this.handlers.put( name.toLowerCase( Locale.ENGLISH ), handler );
 	}
 
 	@Override
@@ -48,6 +57,7 @@ public class RecipeHandlerRegistry implements IRecipeHandlerRegistry
 		this.resolvers.add( sir );
 	}
 
+	@Nullable
 	@Override
 	public ICraftHandler getCraftHandlerFor( String name )
 	{
@@ -64,7 +74,9 @@ public class RecipeHandlerRegistry implements IRecipeHandlerRegistry
 		{
 			AELog.severe( "Error Caused when trying to construct " + clz.getName() );
 			AELog.error( e );
+
 			this.handlers.put( name, null ); // clear it..
+
 			return null;
 		}
 	}
@@ -75,6 +87,7 @@ public class RecipeHandlerRegistry implements IRecipeHandlerRegistry
 		return new RecipeHandler();
 	}
 
+	@Nullable
 	@Override
 	public Object resolveItem( String nameSpace, String itemName )
 	{
