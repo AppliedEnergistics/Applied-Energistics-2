@@ -159,6 +159,7 @@ public class RenderBlockInscriber extends BaseBlockRender<BlockInscriber, TileIn
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
 		GL11.glDisable( GL11.GL_LIGHTING );
 		GL11.glDisable( GL12.GL_RESCALE_NORMAL );
+		GL11.glCullFace( GL11.GL_FRONT );
 
 		Minecraft mc = Minecraft.getMinecraft();
 		mc.renderEngine.bindTexture( TextureMap.locationBlocksTexture );
@@ -224,6 +225,9 @@ public class RenderBlockInscriber extends BaseBlockRender<BlockInscriber, TileIn
 
 		tess.draw();
 
+		GL11.glCullFace( GL11.GL_BACK );
+		GL11.glEnable( GL11.GL_LIGHTING );
+		GL11.glEnable( GL12.GL_RESCALE_NORMAL );
 		GL11.glPopMatrix();
 
 		int items = 0;
