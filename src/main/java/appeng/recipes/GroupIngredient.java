@@ -23,6 +23,8 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.google.common.base.Preconditions;
+
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
@@ -35,16 +37,22 @@ import appeng.api.recipes.IIngredient;
 public class GroupIngredient implements IIngredient
 {
 
-	final String name;
-	final List<IIngredient> ingredients;
-	int qty = 0;
-	ItemStack[] baked;
+	private final String name;
+	private final List<IIngredient> ingredients;
+	private final int qty;
+	private ItemStack[] baked;
 
 	boolean isInside = false;
 
-	public GroupIngredient( String myName, List<IIngredient> ingredients ) throws RecipeError
+	public GroupIngredient( String myName, List<IIngredient> ingredients, int qty ) throws RecipeError
 	{
+		Preconditions.checkNotNull( myName );
+		Preconditions.checkNotNull( ingredients );
+		Preconditions.checkState( !ingredients.isEmpty() );
+		Preconditions.checkState( qty > 0 );
+
 		this.name = myName;
+		this.qty = qty;
 
 		for( IIngredient ingredient : ingredients )
 		{
@@ -59,9 +67,8 @@ public class GroupIngredient implements IIngredient
 
 	public IIngredient copy( int qty ) throws RecipeError
 	{
-		GroupIngredient gi = new GroupIngredient( this.name, this.ingredients );
-		gi.qty = qty;
-		return gi;
+		Preconditions.checkState( qty > 0 );
+		return new GroupIngredient( this.name, this.ingredients, qty );
 	}
 
 	@Override
@@ -144,7 +151,7 @@ public class GroupIngredient implements IIngredient
 	@Override
 	public int getQty()
 	{
-		return 0;
+		return this.qty;
 	}
 
 	@Override
