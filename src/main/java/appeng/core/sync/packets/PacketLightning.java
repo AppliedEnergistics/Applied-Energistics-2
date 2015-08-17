@@ -23,16 +23,18 @@ import io.netty.buffer.ByteBuf;
 
 import net.minecraft.client.Minecraft;
 
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
 import appeng.client.ClientHelper;
 import appeng.client.render.effects.LightningFX;
 import appeng.core.AEConfig;
 import appeng.core.sync.AppEngPacket;
+import appeng.core.sync.AppEngPacketHandler;
 import appeng.util.Platform;
 
 
-public class PacketLightning extends AppEngPacket<PacketLightning>
+public class PacketLightning implements AppEngPacket, AppEngPacketHandler<PacketLightning, IMessage>
 {
 
 	private float x;
@@ -53,7 +55,7 @@ public class PacketLightning extends AppEngPacket<PacketLightning>
 	}
 
 	@Override
-	public PacketLightning onMessage( PacketLightning message, MessageContext ctx )
+	public IMessage onMessage( PacketLightning message, MessageContext ctx )
 	{
 		try
 		{

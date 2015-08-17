@@ -26,13 +26,15 @@ import net.minecraft.init.Items;
 import net.minecraft.world.World;
 
 import cpw.mods.fml.client.FMLClientHandler;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
 import appeng.client.render.effects.MatterCannonFX;
 import appeng.core.sync.AppEngPacket;
+import appeng.core.sync.AppEngPacketHandler;
 
 
-public class PacketMatterCannon extends AppEngPacket<PacketMatterCannon>
+public class PacketMatterCannon implements AppEngPacket, AppEngPacketHandler<PacketMatterCannon, IMessage>
 {
 
 	private float x;
@@ -64,7 +66,7 @@ public class PacketMatterCannon extends AppEngPacket<PacketMatterCannon>
 	}
 
 	@Override
-	public PacketMatterCannon onMessage( PacketMatterCannon message, MessageContext ctx )
+	public IMessage onMessage( PacketMatterCannon message, MessageContext ctx )
 	{
 		try
 		{

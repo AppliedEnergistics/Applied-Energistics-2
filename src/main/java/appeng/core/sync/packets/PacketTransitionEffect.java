@@ -29,16 +29,18 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
 import appeng.client.ClientHelper;
 import appeng.client.render.effects.EnergyFx;
 import appeng.core.CommonHelper;
 import appeng.core.sync.AppEngPacket;
+import appeng.core.sync.AppEngPacketHandler;
 import appeng.util.Platform;
 
 
-public class PacketTransitionEffect extends AppEngPacket<PacketTransitionEffect>
+public class PacketTransitionEffect implements AppEngPacket, AppEngPacketHandler<PacketTransitionEffect, IMessage>
 {
 
 	private boolean mode;
@@ -63,7 +65,7 @@ public class PacketTransitionEffect extends AppEngPacket<PacketTransitionEffect>
 	}
 
 	@Override
-	public PacketTransitionEffect onMessage( PacketTransitionEffect message, MessageContext ctx )
+	public IMessage onMessage( PacketTransitionEffect message, MessageContext ctx )
 	{
 		final World world = ClientHelper.proxy.getWorld();
 

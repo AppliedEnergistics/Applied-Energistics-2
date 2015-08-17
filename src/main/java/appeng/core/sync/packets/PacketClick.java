@@ -24,6 +24,7 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
 import appeng.api.AEApi;
@@ -32,11 +33,12 @@ import appeng.api.definitions.IItems;
 import appeng.api.implementations.items.IMemoryCard;
 import appeng.api.implementations.items.MemoryCardMessages;
 import appeng.core.sync.AppEngPacket;
+import appeng.core.sync.AppEngPacketHandler;
 import appeng.items.tools.ToolNetworkTool;
 import appeng.items.tools.powered.ToolColorApplicator;
 
 
-public class PacketClick extends AppEngPacket<PacketClick>
+public class PacketClick implements AppEngPacket, AppEngPacketHandler<PacketClick, IMessage>
 {
 
 	private int x;
@@ -65,7 +67,7 @@ public class PacketClick extends AppEngPacket<PacketClick>
 	}
 
 	@Override
-	public PacketClick onMessage( PacketClick message, MessageContext ctx )
+	public IMessage onMessage( PacketClick message, MessageContext ctx )
 	{
 		final EntityPlayer player = ctx.getServerHandler().playerEntity;
 		final ItemStack is = player.inventory.getCurrentItem();

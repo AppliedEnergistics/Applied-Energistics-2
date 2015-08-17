@@ -24,15 +24,17 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.MinecraftForge;
 
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
 import appeng.core.sync.AppEngPacket;
+import appeng.core.sync.AppEngPacketHandler;
 import appeng.integration.IntegrationRegistry;
 import appeng.integration.IntegrationType;
 import appeng.integration.abstraction.IFMP;
 
 
-public class PacketMultiPart extends AppEngPacket<PacketMultiPart>
+public class PacketMultiPart implements AppEngPacket, AppEngPacketHandler<PacketMultiPart, IMessage>
 {
 
 	// automatic.
@@ -41,7 +43,7 @@ public class PacketMultiPart extends AppEngPacket<PacketMultiPart>
 	}
 
 	@Override
-	public PacketMultiPart onMessage( PacketMultiPart message, MessageContext ctx )
+	public IMessage onMessage( PacketMultiPart message, MessageContext ctx )
 	{
 		final IFMP fmp = (IFMP) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.FMP );
 		if( fmp != null )

@@ -26,16 +26,18 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInventory;
 
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
 import appeng.api.AEApi;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.container.implementations.ContainerPatternTerm;
 import appeng.core.sync.AppEngPacket;
+import appeng.core.sync.AppEngPacketHandler;
 import appeng.util.item.AEItemStack;
 
 
-public class PacketPatternSlot extends AppEngPacket<PacketPatternSlot>
+public class PacketPatternSlot implements AppEngPacket, AppEngPacketHandler<PacketPatternSlot, IMessage>
 {
 
 	private IInventory pat;
@@ -95,7 +97,7 @@ public class PacketPatternSlot extends AppEngPacket<PacketPatternSlot>
 	}
 
 	@Override
-	public PacketPatternSlot onMessage( PacketPatternSlot message, MessageContext ctx )
+	public IMessage onMessage( PacketPatternSlot message, MessageContext ctx )
 	{
 		final EntityPlayerMP sender = (EntityPlayerMP) ctx.getServerHandler().playerEntity;
 		if( sender.openContainer instanceof ContainerPatternTerm )

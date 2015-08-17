@@ -36,6 +36,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.oredict.OreDictionary;
 
 import cpw.mods.fml.common.network.ByteBufUtils;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
 import appeng.api.config.Actionable;
@@ -51,6 +52,7 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.container.ContainerNull;
 import appeng.core.sync.AppEngPacket;
+import appeng.core.sync.AppEngPacketHandler;
 import appeng.helpers.IContainerCraftingPacket;
 import appeng.items.storage.ItemViewCell;
 import appeng.util.InventoryAdaptor;
@@ -59,7 +61,7 @@ import appeng.util.item.AEItemStack;
 import appeng.util.prioitylist.IPartitionList;
 
 
-public class PacketNEIRecipe extends AppEngPacket<PacketNEIRecipe>
+public class PacketNEIRecipe implements AppEngPacket, AppEngPacketHandler<PacketNEIRecipe, IMessage>
 {
 
 	private ItemStack[][] recipeStack;
@@ -284,7 +286,7 @@ public class PacketNEIRecipe extends AppEngPacket<PacketNEIRecipe>
 	}
 
 	@Override
-	public PacketNEIRecipe onMessage( PacketNEIRecipe message, MessageContext ctx )
+	public IMessage onMessage( PacketNEIRecipe message, MessageContext ctx )
 	{
 		EntityPlayerMP player = (EntityPlayerMP) ctx.getServerHandler().playerEntity;
 		Container con = player.openContainer;

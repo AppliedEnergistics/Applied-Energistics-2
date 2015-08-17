@@ -21,14 +21,16 @@ package appeng.core.sync.packets;
 
 import io.netty.buffer.ByteBuf;
 
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
 import appeng.core.sync.AppEngPacket;
+import appeng.core.sync.AppEngPacketHandler;
 import appeng.hooks.CompassManager;
 import appeng.hooks.CompassResult;
 
 
-public class PacketCompassResponse extends AppEngPacket<PacketCompassResponse>
+public class PacketCompassResponse implements AppEngPacket, AppEngPacketHandler<PacketCompassResponse, IMessage>
 {
 
 	private long attunement;
@@ -59,7 +61,7 @@ public class PacketCompassResponse extends AppEngPacket<PacketCompassResponse>
 	}
 
 	@Override
-	public PacketCompassResponse onMessage( PacketCompassResponse message, MessageContext ctx )
+	public IMessage onMessage( PacketCompassResponse message, MessageContext ctx )
 	{
 		CompassManager.INSTANCE.postResult( message.attunement, message.cx << 4, message.cdy << 5, message.cz << 4, message.cr );
 		return null;

@@ -23,16 +23,18 @@ import java.io.IOException;
 
 import io.netty.buffer.ByteBuf;
 
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
 import appeng.api.storage.data.IAEItemStack;
 import appeng.client.EffectType;
 import appeng.core.CommonHelper;
 import appeng.core.sync.AppEngPacket;
+import appeng.core.sync.AppEngPacketHandler;
 import appeng.util.item.AEItemStack;
 
 
-public class PacketAssemblerAnimation extends AppEngPacket<PacketAssemblerAnimation>
+public class PacketAssemblerAnimation implements AppEngPacket, AppEngPacketHandler<PacketAssemblerAnimation, IMessage>
 {
 
 	private int x;
@@ -57,7 +59,7 @@ public class PacketAssemblerAnimation extends AppEngPacket<PacketAssemblerAnimat
 	}
 
 	@Override
-	public PacketAssemblerAnimation onMessage( PacketAssemblerAnimation message, MessageContext ctx )
+	public IMessage onMessage( PacketAssemblerAnimation message, MessageContext ctx )
 	{
 		final double d0 = 0.5d;// + ((double) (Platform.getRandomFloat() - 0.5F) * 0.26D);
 		final double d1 = 0.5d;// + ((double) (Platform.getRandomFloat() - 0.5F) * 0.26D);

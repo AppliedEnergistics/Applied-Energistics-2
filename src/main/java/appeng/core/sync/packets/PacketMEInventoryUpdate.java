@@ -33,6 +33,7 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
 import appeng.api.storage.data.IAEItemStack;
@@ -41,10 +42,11 @@ import appeng.client.gui.implementations.GuiCraftingCPU;
 import appeng.client.gui.implementations.GuiMEMonitorable;
 import appeng.client.gui.implementations.GuiNetworkStatus;
 import appeng.core.sync.AppEngPacket;
+import appeng.core.sync.AppEngPacketHandler;
 import appeng.util.item.AEItemStack;
 
 
-public class PacketMEInventoryUpdate extends AppEngPacket<PacketMEInventoryUpdate>
+public class PacketMEInventoryUpdate implements AppEngPacket, AppEngPacketHandler<PacketMEInventoryUpdate, IMessage>
 {
 	private static final int UNCOMPRESSED_PACKET_BYTE_LIMIT = 16 * 1024 * 1024;
 	private static final int OPERATION_BYTE_LIMIT = 2 * 1024;
@@ -120,7 +122,7 @@ public class PacketMEInventoryUpdate extends AppEngPacket<PacketMEInventoryUpdat
 	}
 
 	@Override
-	public PacketMEInventoryUpdate onMessage( PacketMEInventoryUpdate message, MessageContext ctx )
+	public IMessage onMessage( PacketMEInventoryUpdate message, MessageContext ctx )
 	{
 		final GuiScreen gs = Minecraft.getMinecraft().currentScreen;
 

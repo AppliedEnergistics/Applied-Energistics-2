@@ -23,13 +23,15 @@ import io.netty.buffer.ByteBuf;
 
 import net.minecraft.world.World;
 
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
 import appeng.core.CommonHelper;
 import appeng.core.sync.AppEngPacket;
+import appeng.core.sync.AppEngPacketHandler;
 
 
-public class PacketMockExplosion extends AppEngPacket<PacketMockExplosion>
+public class PacketMockExplosion implements AppEngPacket, AppEngPacketHandler<PacketMockExplosion, IMessage>
 {
 
 	private double x;
@@ -50,7 +52,7 @@ public class PacketMockExplosion extends AppEngPacket<PacketMockExplosion>
 	}
 
 	@Override
-	public PacketMockExplosion onMessage( PacketMockExplosion message, MessageContext ctx )
+	public IMessage onMessage( PacketMockExplosion message, MessageContext ctx )
 	{
 		final World world = CommonHelper.proxy.getWorld();
 		world.spawnParticle( "largeexplode", message.x, message.y, message.z, 1.0D, 0.0D, 0.0D );

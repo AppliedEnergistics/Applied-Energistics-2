@@ -23,13 +23,15 @@ import io.netty.buffer.ByteBuf;
 
 import net.minecraftforge.common.DimensionManager;
 
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
 import appeng.core.AEConfig;
 import appeng.core.sync.AppEngPacket;
+import appeng.core.sync.AppEngPacketHandler;
 
 
-public class PacketNewStorageDimension extends AppEngPacket<PacketNewStorageDimension>
+public class PacketNewStorageDimension implements AppEngPacket, AppEngPacketHandler<PacketNewStorageDimension, IMessage>
 {
 
 	private int newDim;
@@ -46,7 +48,7 @@ public class PacketNewStorageDimension extends AppEngPacket<PacketNewStorageDime
 	}
 
 	@Override
-	public PacketNewStorageDimension onMessage( PacketNewStorageDimension message, MessageContext ctx )
+	public IMessage onMessage( PacketNewStorageDimension message, MessageContext ctx )
 	{
 		try
 		{

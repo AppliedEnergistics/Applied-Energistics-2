@@ -20,10 +20,9 @@ package appeng.core.sync;
 
 
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 
 
-public abstract class AppEngPacket<T extends IMessage> implements IMessage, IMessageHandler<T, T>
+public interface AppEngPacket extends IMessage
 {
 
 	// AppEngPacketHandlerBase.PacketTypes id;

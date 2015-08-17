@@ -23,6 +23,7 @@ import io.netty.buffer.ByteBuf;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
 import appeng.api.config.Settings;
@@ -30,11 +31,12 @@ import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.container.AEBaseContainer;
 import appeng.core.sync.AppEngPacket;
+import appeng.core.sync.AppEngPacketHandler;
 import appeng.helpers.Reflected;
 import appeng.util.Platform;
 
 
-public final class PacketConfigButton extends AppEngPacket<PacketConfigButton>
+public final class PacketConfigButton implements AppEngPacket, AppEngPacketHandler<PacketConfigButton, IMessage>
 {
 	private Settings option;
 	private boolean rotationDirection;
@@ -53,7 +55,7 @@ public final class PacketConfigButton extends AppEngPacket<PacketConfigButton>
 	}
 
 	@Override
-	public PacketConfigButton onMessage( PacketConfigButton message, MessageContext ctx )
+	public IMessage onMessage( PacketConfigButton message, MessageContext ctx )
 	{
 		final EntityPlayerMP sender = ctx.getServerHandler().playerEntity;
 
