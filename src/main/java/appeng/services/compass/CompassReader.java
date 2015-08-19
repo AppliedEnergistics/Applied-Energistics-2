@@ -55,8 +55,16 @@ public final class CompassReader
 
 	public void setHasBeacon( int cx, int cz, int cdy, boolean hasBeacon )
 	{
-		CompassRegion r = this.getRegion( cx, cz );
+		final CompassRegion r = this.getRegion( cx, cz );
+
 		r.setHasBeacon( cx, cz, cdy, hasBeacon );
+	}
+
+	public boolean hasBeacon( int cx, int cz )
+	{
+		final CompassRegion r = this.getRegion( cx, cz );
+
+		return r.hasBeacon( cx, cz );
 	}
 
 	private CompassRegion getRegion( int cx, int cz )
@@ -66,6 +74,7 @@ public final class CompassReader
 		pos |= ( cz >> 10 );
 
 		CompassRegion cr = this.regions.get( pos );
+
 		if( cr == null )
 		{
 			cr = new CompassRegion( cx, cz, this.dimensionId, this.worldCompassFolder );
@@ -73,11 +82,5 @@ public final class CompassReader
 		}
 
 		return cr;
-	}
-
-	public boolean hasBeacon( int cx, int cz )
-	{
-		CompassRegion r = this.getRegion( cx, cz );
-		return r.hasBeacon( cx, cz );
 	}
 }
