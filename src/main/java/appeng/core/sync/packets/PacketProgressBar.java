@@ -21,6 +21,7 @@ package appeng.core.sync.packets;
 
 import io.netty.buffer.ByteBuf;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.inventory.Container;
 
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
@@ -55,7 +56,7 @@ public class PacketProgressBar implements AppEngPacket, AppEngPacketHandler<Pack
 	{
 		if( ctx.side == Side.CLIENT )
 		{
-			final Container c = ctx.getServerHandler().playerEntity.openContainer;
+			final Container c = Minecraft.getMinecraft().thePlayer.openContainer;
 			if( c instanceof AEBaseContainer )
 			{
 				( (AEBaseContainer) c ).updateFullProgressBar( message.id, message.value );

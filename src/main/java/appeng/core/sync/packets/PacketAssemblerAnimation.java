@@ -23,10 +23,13 @@ import java.io.IOException;
 
 import io.netty.buffer.ByteBuf;
 
+import net.minecraft.world.World;
+
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
 import appeng.api.storage.data.IAEItemStack;
+import appeng.client.ClientHelper;
 import appeng.client.EffectType;
 import appeng.core.CommonHelper;
 import appeng.core.sync.AppEngPacket;
@@ -64,9 +67,9 @@ public class PacketAssemblerAnimation implements AppEngPacket, AppEngPacketHandl
 		final double d0 = 0.5d;// + ((double) (Platform.getRandomFloat() - 0.5F) * 0.26D);
 		final double d1 = 0.5d;// + ((double) (Platform.getRandomFloat() - 0.5F) * 0.26D);
 		final double d2 = 0.5d;// + ((double) (Platform.getRandomFloat() - 0.5F) * 0.26D);
+		final World world = ClientHelper.proxy.getWorld();
 
-		CommonHelper.proxy.spawnEffect( EffectType.Assembler, ctx.getServerHandler().playerEntity.getEntityWorld(), message.x + d0, message.y + d1, message.z +
-				d2, message );
+		CommonHelper.proxy.spawnEffect( EffectType.Assembler, world, message.x + d0, message.y + d1, message.z + d2, message );
 
 		return null;
 	}

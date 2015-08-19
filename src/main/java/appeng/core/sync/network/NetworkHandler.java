@@ -56,7 +56,7 @@ public class NetworkHandler
 	public static void init()
 	{
 		int disc = 0;
-		NetworkHandler.INSTANCE.registerMessage( PacketAssemblerAnimation.class, PacketAssemblerAnimation.class, disc, Side.CLIENT );
+		NetworkHandler.INSTANCE.registerMessage( PacketAssemblerAnimation.class, PacketAssemblerAnimation.class, disc++, Side.CLIENT );
 		NetworkHandler.INSTANCE.registerMessage( PacketClick.class, PacketClick.class, disc++, Side.SERVER );
 		NetworkHandler.INSTANCE.registerMessage( PacketCompassRequest.class, PacketCompassRequest.class, disc++, Side.SERVER );
 		NetworkHandler.INSTANCE.registerMessage( PacketCompassResponse.class, PacketCompassResponse.class, disc++, Side.CLIENT );
