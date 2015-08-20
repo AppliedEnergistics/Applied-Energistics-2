@@ -52,49 +52,13 @@ public final class CompassRegion
 		this.worldCompassFolder = worldCompassFolder;
 		this.encoder = new MeteorDataNameEncoder( 0 );
 
-		int region_x = cx >> 10;
-		int region_z = cz >> 10;
+		final int region_x = cx >> 10;
+		final int region_z = cz >> 10;
 
 		this.lowX = region_x << 10;
 		this.lowZ = region_z << 10;
 
 		this.openFile( false );
-	}
-
-	private void openFile( boolean create )
-	{
-		if( this.hasFile )
-		{
-			return;
-		}
-
-		final File file = this.getFile();
-		if( create || this.isFileExistent( file ) )
-		{
-			try
-			{
-				this.raf = new RandomAccessFile( file, "rw" );
-				FileChannel fc = this.raf.getChannel();
-				this.buffer = fc.map( FileChannel.MapMode.READ_WRITE, 0, 0x400 * 0x400 );// fc.size() );
-				this.hasFile = true;
-			}
-			catch( Throwable t )
-			{
-				throw new CompassException( t );
-			}
-		}
-	}
-
-	private File getFile()
-	{
-		final String fileName = this.encoder.encode( this.world, this.lowX, this.lowZ );
-
-		return new File( this.worldCompassFolder, fileName );
-	}
-
-	private boolean isFileExistent( File file )
-	{
-		return file.exists() && file.isFile();
 	}
 
 	public void close()
@@ -122,7 +86,7 @@ public final class CompassRegion
 			cx &= 0x3FF;
 			cz &= 0x3FF;
 
-			int val = this.read( cx, cz );
+			final int val = this.read( cx, cz );
 			if( val != 0 )
 			{
 				return true;
@@ -130,6 +94,87 @@ public final class CompassRegion
 		}
 
 		return false;
+	}
+
+	public void setHasBeacon( int cx, int cz, int cdy, boolean hasBeacon )
+	{
+		cx &= 0x3FF;
+		cz &= 0x3FF;
+
+		this.openFile( hasBeacon );
+
+		if( this.hasFile )
+		{
+			int val = this.read( cx, cz );
+			final int originalVal = val;
+
+			if( hasBeacon )
+			{
+				val |= 1 << cdy;
+			}
+			else
+			{
+				val &= ~( 1 << cdy );
+			}
+
+			if( originalVal != val )
+			{
+				this.write( cx, cz, val );
+			}
+		}
+	}
+
+	@Override
+	protected void finalize() throws Throwable
+	{
+		try
+		{
+			if( this.raf != null )
+			{
+				this.raf.close();
+			}
+		}
+		finally
+		{
+			super.finalize();
+		}
+
+	}
+
+	private void openFile( boolean create )
+	{
+		if( this.hasFile )
+		{
+			return;
+		}
+
+		final File file = this.getFile();
+		if( create || this.isFileExistent( file ) )
+		{
+			try
+			{
+				this.raf = new RandomAccessFile( file, "rw" );
+				final FileChannel fc = this.raf.getChannel();
+				this.buffer = fc.map( FileChannel.MapMode.READ_WRITE, 0, 0x400 * 0x400 );// fc.size() );
+				this.hasFile = true;
+			}
+			catch( final Throwable t )
+			{
+				throw new CompassException( t );
+			}
+		}
+	}
+
+	private File getFile()
+	{
+		final String fileName = this.encoder.encode( this.world, this.lowX, this.lowZ );
+
+		return new File( this.worldCompassFolder, fileName );
+	}
+
+	private boolean isFileExistent( File file )
+	{
+		return file.exists() && file.isFile();
 	}
 
 	private int read( int cx, int cz )
@@ -147,34 +192,6 @@ public final class CompassRegion
 		catch( Throwable t )
 		{
 			throw new CompassException( t );
-		}
-	}
-
-	public void setHasBeacon( int cx, int cz, int cdy, boolean hasBeacon )
-	{
-		cx &= 0x3FF;
-		cz &= 0x3FF;
-
-		this.openFile( hasBeacon );
-
-		if( this.hasFile )
-		{
-			int val = this.read( cx, cz );
-			int originalVal = val;
-
-			if( hasBeacon )
-			{
-				val |= 1 << cdy;
-			}
-			else
-			{
-				val &= ~( 1 << cdy );
-			}
-
-			if( originalVal != val )
-			{
-				this.write( cx, cz, val );
-			}
 		}
 	}
 
