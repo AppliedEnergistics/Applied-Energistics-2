@@ -26,6 +26,7 @@ import javax.annotation.Nonnull;
 
 import com.google.common.base.Stopwatch;
 
+import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
@@ -48,8 +49,13 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.worlddata.WorldData;
 import appeng.hooks.TickHandler;
 import appeng.integration.IntegrationRegistry;
+import appeng.recipes.CustomRecipeConfig;
+import appeng.recipes.CustomRecipeForgeConfiguration;
 import appeng.server.AECommand;
 import appeng.services.VersionChecker;
+import appeng.services.export.ExportConfig;
+import appeng.services.export.ExportProcess;
+import appeng.services.export.ForgeExportConfig;
 import appeng.services.version.VersionCheckerConfig;
 import appeng.util.Platform;
 
@@ -77,15 +83,28 @@ public final class AppEng
 	@Nonnull
 	private static final AppEng INSTANCE = new AppEng();
 
-	private final IMCHandler imcHandler;
+	private final Registration registration;
 
 	private File configDirectory;
+	private CustomRecipeConfig customRecipeConfig;
+
+	/**
+	 * Folder for recipes
+	 *
+	 * used for CSV item names and the recipes
+	 */
+	private File recipeDirectory;
+
+	/**
+	 * determined in pre-init but used in init
+	 */
+	private ExportConfig exportConfig;
 
 	private AppEng()
 	{
-		this.imcHandler = new IMCHandler();
-
 		FMLCommonHandler.instance().registerCrashCallable( new ModCrashEnhancement( CrashInfo.MOD_VERSION ) );
+
+		this.registration = new Registration();
 	}
 
 	@Nonnull
@@ -95,9 +114,10 @@ public final class AppEng
 		return INSTANCE;
 	}
 
-	public final File getConfigDirectory()
+	@Nonnull
+	public final Registration getRegistration()
 	{
-		return this.configDirectory;
+		return this.registration;
 	}
 
 	@EventHandler
@@ -110,14 +130,19 @@ public final class AppEng
 
 		final Stopwatch watch = Stopwatch.createStarted();
 		this.configDirectory = new File( event.getModConfigurationDirectory().getPath(), "AppliedEnergistics2" );
+		this.recipeDirectory = new File( this.configDirectory, "recipes" );
 
 		final File configFile = new File( this.configDirectory, "AppliedEnergistics2.cfg" );
 		final File facadeFile = new File( this.configDirectory, "Facades.cfg" );
 		final File versionFile = new File( this.configDirectory, "VersionChecker.cfg" );
+		final File recipeFile = new File( this.configDirectory, "CustomRecipes.cfg" );
+		final Configuration recipeConfiguration = new Configuration( recipeFile );
 
 		AEConfig.instance = new AEConfig( configFile );
 		FacadeConfig.instance = new FacadeConfig( facadeFile );
 		final VersionCheckerConfig versionCheckerConfig = new VersionCheckerConfig( versionFile );
+		this.customRecipeConfig = new CustomRecipeForgeConfiguration( recipeConfiguration );
+		this.exportConfig = new ForgeExportConfig( recipeConfiguration );
 
 		AELog.info( "Pre Initialization ( started )" );
 
@@ -132,9 +157,9 @@ public final class AppEng
 			CommonHelper.proxy.preinit();
 		}
 
-		Registration.INSTANCE.preInitialize( event );
+		this.registration.preInitialize( event );
 
-		if( versionCheckerConfig.isEnabled() )
+		if( versionCheckerConfig.isVersionCheckingEnabled() )
 		{
 			final VersionChecker versionChecker = new VersionChecker( versionCheckerConfig );
 			final Thread versionCheckerThread = new Thread( versionChecker );
@@ -157,23 +182,31 @@ public final class AppEng
 	@EventHandler
 	private void init( final FMLInitializationEvent event )
 	{
-		final Stopwatch star = Stopwatch.createStarted();
+		final Stopwatch start = Stopwatch.createStarted();
 		AELog.info( "Initialization ( started )" );
 
-		Registration.INSTANCE.initialize( event );
+		if( exportConfig.isExportingItemNamesEnabled() )
+		{
+			final ExportProcess process = new ExportProcess( this.recipeDirectory, exportConfig );
+			final Thread exportProcessThread = new Thread( process );
+
+			this.startService( "AE2 CSV Export", exportProcessThread );
+		}
+
+		this.registration.initialize( event, this.recipeDirectory, this.customRecipeConfig );
 		IntegrationRegistry.INSTANCE.init();
 		CommonHelper.proxy.init();
 
-		AELog.info( "Initialization ( ended after " + star.elapsed( TimeUnit.MILLISECONDS ) + "ms )" );
+		AELog.info( "Initialization ( ended after " + start.elapsed( TimeUnit.MILLISECONDS ) + "ms )" );
 	}
 
 	@EventHandler
 	private void postInit( final FMLPostInitializationEvent event )
 	{
-		final Stopwatch star = Stopwatch.createStarted();
+		final Stopwatch start = Stopwatch.createStarted();
 		AELog.info( "Post Initialization ( started )" );
 
-		Registration.INSTANCE.postInit( event );
+		this.registration.postInit( event );
 		IntegrationRegistry.INSTANCE.postInit();
 		FMLCommonHandler.instance().registerCrashCallable( new IntegrationCrashEnhancement() );
 
@@ -183,19 +216,15 @@ public final class AppEng
 		NetworkRegistry.INSTANCE.registerGuiHandler( this, GuiBridge.GUI_Handler );
 		NetworkHandler.instance = new NetworkHandler( "AE2" );
 
-		AELog.info( "Post Initialization ( ended after " + star.elapsed( TimeUnit.MILLISECONDS ) + "ms )" );
-
-//		System.out.println( "REGISTRY:" );
-//		for( Block block : GameData.getBlockRegistry().typeSafeIterable() )
-//		{
-//			System.out.println( "block = " + block + ", " + block.getUnlocalizedName() + ", " + block.getLocalizedName() );
-//		}
+		AELog.info( "Post Initialization ( ended after " + start.elapsed( TimeUnit.MILLISECONDS ) + "ms )" );
 	}
 
 	@EventHandler
 	private void handleIMCEvent( final FMLInterModComms.IMCEvent event )
 	{
-		this.imcHandler.handleIMCEvent( event );
+		final IMCHandler imcHandler = new IMCHandler();
+
+		imcHandler.handleIMCEvent( event );
 	}
 
 	@EventHandler

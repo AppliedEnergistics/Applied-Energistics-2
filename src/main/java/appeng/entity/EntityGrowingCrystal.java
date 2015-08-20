@@ -58,7 +58,7 @@ public final class EntityGrowingCrystal extends EntityItem
 	{
 		super.onUpdate();
 
-		if( !AEConfig.instance.isFeatureEnabled( AEFeature.inWorldPurification ) )
+		if( !AEConfig.instance.isFeatureEnabled( AEFeature.InWorldPurification ) )
 		{
 			return;
 		}

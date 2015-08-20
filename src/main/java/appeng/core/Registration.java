@@ -19,6 +19,12 @@
 package appeng.core;
 
 
+import java.io.File;
+
+import javax.annotation.Nonnull;
+
+import com.google.common.base.Preconditions;
+
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -80,6 +86,7 @@ import appeng.me.cache.TickManagerCache;
 import appeng.me.storage.AEExternalHandler;
 import appeng.parts.PartPlacement;
 import appeng.recipes.AEItemResolver;
+import appeng.recipes.CustomRecipeConfig;
 import appeng.recipes.RecipeHandler;
 import appeng.recipes.game.DisassembleRecipe;
 import appeng.recipes.game.FacadeRecipe;
@@ -109,14 +116,17 @@ import appeng.worldgen.QuartzWorldGen;
 
 public final class Registration
 {
-	public static final Registration INSTANCE = new Registration();
-
 	private final RecipeHandler recipeHandler;
-	public BiomeGenBase storageBiome;
+	private BiomeGenBase storageBiome;
 
-	private Registration()
+	Registration()
 	{
 		this.recipeHandler = new RecipeHandler();
+	}
+
+	public BiomeGenBase getStorageBiome()
+	{
+		return this.storageBiome;
 	}
 
 	public void preInitialize( final FMLPreInitializationEvent event )
@@ -138,7 +148,7 @@ public final class Registration
 		// Register all detected handlers and features (items, blocks) in pre-init
 		for( final IFeatureHandler handler : definitions.getFeatureHandlerRegistry().getRegisteredFeatureHandlers() )
 		{
-			handler.register(event.getSide() );
+			handler.register( event.getSide() );
 		}
 
 		for( final IAEFeature feature : definitions.getFeatureRegistry().getRegisteredFeatures() )
@@ -215,8 +225,13 @@ public final class Registration
 		registry.addNewCraftHandler( "shapeless", Shapeless.class );
 	}
 
-	public void initialize( final FMLInitializationEvent event )
+	public void initialize( @Nonnull final FMLInitializationEvent event, @Nonnull final File recipeDirectory, @Nonnull final CustomRecipeConfig customRecipeConfig )
 	{
+		Preconditions.checkNotNull( event );
+		Preconditions.checkNotNull( recipeDirectory );
+		Preconditions.checkArgument( !recipeDirectory.isFile() );
+		Preconditions.checkNotNull( customRecipeConfig );
+
 		final IAppEngApi api = AEApi.instance();
 		final IPartHelper partHelper = api.partHelper();
 		final IRegistryContainer registries = api.registries();
@@ -224,29 +239,33 @@ public final class Registration
 		// Perform ore camouflage!
 		MultiItem.instance.makeUnique();
 
-		final Runnable recipeLoader = new RecipeLoader( this.recipeHandler );
+		final Runnable recipeLoader = new RecipeLoader( recipeDirectory, customRecipeConfig, this.recipeHandler );
 		recipeLoader.run();
 
 		// TODO readd layers
-//		partHelper.registerNewLayer( "appeng.parts.layers.LayerISidedInventory", "net.minecraft.inventory.ISidedInventory" );
-//		partHelper.registerNewLayer( "appeng.parts.layers.LayerIFluidHandler", "net.minecraftforge.fluids.IFluidHandler" );
-//		partHelper.registerNewLayer( "appeng.parts.layers.LayerITileStorageMonitorable", "appeng.api.implementations.tiles.ITileStorageMonitorable" );
+		// partHelper.registerNewLayer( "appeng.parts.layers.LayerISidedInventory",
+		// "net.minecraft.inventory.ISidedInventory" );
+		// partHelper.registerNewLayer( "appeng.parts.layers.LayerIFluidHandler",
+		// "net.minecraftforge.fluids.IFluidHandler" );
+		// partHelper.registerNewLayer( "appeng.parts.layers.LayerITileStorageMonitorable",
+		// "appeng.api.implementations.tiles.ITileStorageMonitorable" );
 
-//		if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.IC2 ) )
-//		{
-//			partHelper.registerNewLayer( "appeng.parts.layers.LayerIEnergySink", "ic2.api.energy.tile.IEnergySink" );
-//			partHelper.registerNewLayer( "appeng.parts.layers.LayerIEnergySource", "ic2.api.energy.tile.IEnergySource" );
-//		}
-//
-//		if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.RF ) )
-//		{
-//			partHelper.registerNewLayer( "appeng.parts.layers.LayerIEnergyHandler", "cofh.api.energy.IEnergyReceiver" );
-//		}
-//
-//		if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.OpenComputers ) )
-//		{
-//			partHelper.registerNewLayer( "appeng.parts.layers.LayerSidedEnvironment", "li.cil.oc.api.network.SidedEnvironment" );
-//		}
+		// if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.IC2 ) )
+		// {
+		// partHelper.registerNewLayer( "appeng.parts.layers.LayerIEnergySink", "ic2.api.energy.tile.IEnergySink" );
+		// partHelper.registerNewLayer( "appeng.parts.layers.LayerIEnergySource", "ic2.api.energy.tile.IEnergySource" );
+		// }
+		//
+		// if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.RF ) )
+		// {
+		// partHelper.registerNewLayer( "appeng.parts.layers.LayerIEnergyHandler", "cofh.api.energy.IEnergyReceiver" );
+		// }
+		//
+		// if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.OpenComputers ) )
+		// {
+		// partHelper.registerNewLayer( "appeng.parts.layers.LayerSidedEnvironment",
+		// "li.cil.oc.api.network.SidedEnvironment" );
+		// }
 
 		FMLCommonHandler.instance().bus().register( TickHandler.INSTANCE );
 		MinecraftForge.EVENT_BUS.register( TickHandler.INSTANCE );
@@ -283,13 +302,13 @@ public final class Registration
 		registration.registerAchievementHandlers();
 		registration.registerAchievements();
 
-		if( AEConfig.instance.isFeatureEnabled( AEFeature.enableDisassemblyCrafting ) )
+		if( AEConfig.instance.isFeatureEnabled( AEFeature.EnableDisassemblyCrafting ) )
 		{
 			GameRegistry.addRecipe( new DisassembleRecipe() );
 			RecipeSorter.register( "appliedenergistics2:disassemble", DisassembleRecipe.class, Category.SHAPELESS, "after:minecraft:shapeless" );
 		}
 
-		if( AEConfig.instance.isFeatureEnabled( AEFeature.enableFacadeCrafting ) )
+		if( AEConfig.instance.isFeatureEnabled( AEFeature.EnableFacadeCrafting ) )
 		{
 			GameRegistry.addRecipe( new FacadeRecipe() );
 			RecipeSorter.register( "appliedenergistics2:facade", FacadeRecipe.class, Category.SHAPED, "after:minecraft:shaped" );

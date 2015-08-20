@@ -109,4 +109,12 @@ public final class AELog
 			log( Level.INFO, format, data );
 		}
 	}
+
+	public static void debug( String format, Object... data )
+	{
+		if( AEConfig.instance.isFeatureEnabled( AEFeature.DebugLogging ) )
+		{
+			log( Level.DEBUG, format, data );
+		}
+	}
 }

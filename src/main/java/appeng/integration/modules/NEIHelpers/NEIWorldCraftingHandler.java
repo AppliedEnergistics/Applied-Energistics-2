@@ -221,17 +221,17 @@ public class NEIWorldCraftingHandler implements ICraftingHandler, IUsageHandler
 			this.addRecipe( materials.engProcessorPress(), GuiText.inWorldCraftingPresses.getLocal() );
 		}
 
-		if( AEConfig.instance.isFeatureEnabled( AEFeature.inWorldFluix ) )
+		if( AEConfig.instance.isFeatureEnabled( AEFeature.InWorldFluix ) )
 		{
 			this.addRecipe( materials.fluixCrystal(), GuiText.inWorldFluix.getLocal() );
 		}
 
-		if( AEConfig.instance.isFeatureEnabled( AEFeature.inWorldSingularity ) )
+		if( AEConfig.instance.isFeatureEnabled( AEFeature.InWorldSingularity ) )
 		{
 			this.addRecipe( materials.qESingularity(), GuiText.inWorldSingularity.getLocal() );
 		}
 
-		if( AEConfig.instance.isFeatureEnabled( AEFeature.inWorldPurification ) )
+		if( AEConfig.instance.isFeatureEnabled( AEFeature.InWorldPurification ) )
 		{
 			this.addRecipe( materials.purifiedCertusQuartzCrystal(), GuiText.inWorldPurificationCertus.getLocal() );
 			this.addRecipe( materials.purifiedNetherQuartzCrystal(), GuiText.inWorldPurificationNether.getLocal() );

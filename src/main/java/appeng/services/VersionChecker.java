@@ -74,7 +74,13 @@ public final class VersionChecker implements Runnable
 	{
 		Thread.yield();
 
+		// persist the config
+		this.config.save();
+
+		// retrieve data
 		final String rawLastCheck = this.config.lastCheck();
+
+		// process data
 		final long lastCheck = Long.parseLong( rawLastCheck );
 		final Date now = new Date();
 		final long nowInMs = now.getTime();

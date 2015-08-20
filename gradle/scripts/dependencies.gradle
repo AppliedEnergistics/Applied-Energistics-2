@@ -135,5 +135,5 @@ dependencies {
 //    compile(group: 'api', name: 'railcraft', version: "${api_railcraft_version}")
 //    compile(group: 'api', name: 'rf', version: "${api_rf_version}")
 
-    testCompile "junit:junit:4.11"
+    testCompile "junit:junit:4.12"
 }

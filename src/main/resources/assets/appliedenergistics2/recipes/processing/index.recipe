@@ -1,6 +1,6 @@
 import=processing/factorization.recipe
 import=processing/grind.recipe
-import=processing/hydralicraft.recipe
+import=processing/hydraulicraft.recipe
 import=processing/ic2.recipe
 import=processing/mekanism.recipe
 import=processing/rotarycraft.recipe

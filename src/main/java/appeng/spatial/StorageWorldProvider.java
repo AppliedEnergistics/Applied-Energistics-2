@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -23,6 +23,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.WorldProvider;
+import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.biome.WorldChunkManagerHell;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunkProvider;
@@ -30,6 +31,7 @@ import net.minecraftforge.client.IRenderHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import appeng.client.render.SpatialSkyRender;
+import appeng.core.AppEng;
 import appeng.core.Registration;
 
 
@@ -44,7 +46,11 @@ public class StorageWorldProvider extends WorldProvider
 	@Override
 	protected void registerWorldChunkManager()
 	{
-		super.worldChunkMgr = new WorldChunkManagerHell( Registration.INSTANCE.storageBiome, 0.0F );
+		final AppEng ae2internal = AppEng.instance();
+		final Registration ae2registration = ae2internal.getRegistration();
+		final BiomeGenBase storageBiome = ae2registration.getStorageBiome();
+
+		super.worldChunkMgr = new WorldChunkManagerHell( storageBiome, 0.0F );
 	}
 
 	@Override

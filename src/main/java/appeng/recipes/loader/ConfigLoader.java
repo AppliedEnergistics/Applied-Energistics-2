@@ -23,7 +23,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
-
 import javax.annotation.Nonnull;
 
 import appeng.api.recipes.IRecipeLoader;
@@ -31,6 +30,9 @@ import appeng.api.recipes.IRecipeLoader;
 import com.google.common.base.Preconditions;
 
 
+/**
+ * Loads the recipes from the config folder
+ */
 public final class ConfigLoader implements IRecipeLoader
 {
 	private final File generatedRecipesDir;

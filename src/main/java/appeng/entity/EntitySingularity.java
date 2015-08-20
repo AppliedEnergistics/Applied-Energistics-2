@@ -73,7 +73,7 @@ public final class EntitySingularity extends AEBaseEntityItem
 			return;
 		}
 
-		if( !AEConfig.instance.isFeatureEnabled( AEFeature.inWorldSingularity ) )
+		if( !AEConfig.instance.isFeatureEnabled( AEFeature.InWorldSingularity ) )
 		{
 			return;
 		}
