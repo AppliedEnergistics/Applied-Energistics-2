@@ -65,7 +65,7 @@ public final class VersionCheckerConfig
 		this.shouldPostChangelog = this.config.getBoolean( "changelog", "client", true, "If true, the player is getting a notification including changelog. Only happens if notification are enabled." );
 	}
 
-	public boolean isEnabled()
+	public boolean isVersionCheckingEnabled()
 	{
 		return this.isEnabled;
 	}
@@ -76,8 +76,7 @@ public final class VersionCheckerConfig
 	}
 
 	/**
-	 * Stores the current date in milli seconds into the "lastCheck" field of the config
-	 * and makes it persistent.
+	 * Stores the current date in milli seconds into the "lastCheck" field of the config and makes it persistent.
 	 */
 	public void updateLastCheck()
 	{
@@ -108,5 +107,13 @@ public final class VersionCheckerConfig
 	public boolean shouldPostChangelog()
 	{
 		return this.shouldPostChangelog;
+	}
+
+	public void save()
+	{
+		if( this.config.hasChanged() )
+		{
+			this.config.save();
+		}
 	}
 }
