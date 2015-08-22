@@ -1,0 +1,11 @@
+shaped=
+    mc:iron_ingot cable mc:iron_ingot,
+    ae2:BlockQuartzGlass  ae2:BlockFluix ae2:BlockQuartzGlass,
+    mc:iron_ingot cable mc:iron_ingot
+    -> ae2:BlockQuartzGrowthAccelerator
+
+shaped=
+    mc:iron_ingot fluixCrystal mc:iron_ingot,
+    mc:iron_ingot _ _,
+    mc:iron_ingot fluixCrystal mc:iron_ingot
+    -> ae2:BlockCharger

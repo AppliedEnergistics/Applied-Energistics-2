@@ -1,0 +1,15 @@
+inscribe=
+    mc:iron_block ae2:ItemMaterial.LogicProcessorPress
+    -> ae2:ItemMaterial.LogicProcessorPress
+
+inscribe=
+    mc:iron_block ae2:ItemMaterial.CalcProcessorPress
+    -> ae2:ItemMaterial.CalcProcessorPress
+
+inscribe=
+    mc:iron_block ae2:ItemMaterial.EngProcessorPress
+    -> ae2:ItemMaterial.EngProcessorPress
+
+inscribe=
+    mc:iron_block ae2:ItemMaterial.SiliconPress
+    -> ae2:ItemMaterial.SiliconPress

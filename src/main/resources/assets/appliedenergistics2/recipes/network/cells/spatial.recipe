@@ -1,0 +1,26 @@
+shapeless=
+    ae2:ItemMaterial.Cell2SpatialPart ae2:ItemMaterial.EmptyStorageCell -> ae2:ItemSpatialStorageCell.2Cubed
+
+shapeless=
+    ae2:ItemMaterial.Cell16SpatialPart ae2:ItemMaterial.EmptyStorageCell -> ae2:ItemSpatialStorageCell.16Cubed
+
+shapeless=
+    ae2:ItemMaterial.Cell128SpatialPart ae2:ItemMaterial.EmptyStorageCell -> ae2:ItemSpatialStorageCell.128Cubed
+
+shaped=
+    ae2:BlockQuartzGlass mc:redstone ae2:BlockQuartzGlass,
+    mc:redstone ae2:ItemMaterial.Cell2SpatialPart mc:redstone,
+    mc:iron_ingot mc:iron_ingot mc:iron_ingot
+    -> ae2:ItemSpatialStorageCell.2Cubed
+
+shaped=
+    ae2:BlockQuartzGlass mc:redstone ae2:BlockQuartzGlass,
+    mc:redstone ae2:ItemMaterial.Cell16SpatialPart mc:redstone,
+    mc:iron_ingot mc:iron_ingot mc:iron_ingot
+    -> ae2:ItemSpatialStorageCell.16Cubed
+
+shaped=
+    ae2:BlockQuartzGlass mc:redstone ae2:BlockQuartzGlass,
+    mc:redstone ae2:ItemMaterial.Cell128SpatialPart mc:redstone,
+    mc:iron_ingot mc:iron_ingot mc:iron_ingot
+    -> ae2:ItemSpatialStorageCell.128Cubed

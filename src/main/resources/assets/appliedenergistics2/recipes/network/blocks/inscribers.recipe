@@ -1,0 +1,5 @@
+shaped=
+    mc:iron_ingot mc:sticky_piston mc:iron_ingot,
+    fluixCrystal _ mc:iron_ingot,
+    mc:iron_ingot mc:sticky_piston mc:iron_ingot
+    -> ae2:BlockInscriber

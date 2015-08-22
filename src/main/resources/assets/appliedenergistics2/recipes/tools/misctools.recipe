@@ -1,0 +1,11 @@
+shaped=
+    ae2:ItemMaterial.CertusQuartzCrystalCharged _ _,
+    _ mc:iron_ingot _,
+    _ _ mc:iron_ingot
+    -> ae2:ToolChargedStaff
+
+shaped=
+    fluixCrystal ae2:BlockEnergyCell _,
+    ae2:ItemMaterial.EngProcessor mc:iron_ingot _,
+    _ _ mc:iron_ingot
+    -> ae2:ToolEntropyManipulator

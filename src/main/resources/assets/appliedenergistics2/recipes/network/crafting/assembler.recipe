@@ -1,0 +1,5 @@
+shaped=
+    mc:iron_ingot ae2:BlockQuartzGlass mc:iron_ingot,
+    ae2:ItemMaterial.AnnihilationCore mc:crafting_table ae2:ItemMaterial.FormationCore,
+    mc:iron_ingot ae2:BlockQuartzGlass mc:iron_ingot
+    -> ae2:BlockMolecularAssembler

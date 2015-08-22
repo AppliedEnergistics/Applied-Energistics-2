@@ -1,0 +1,5 @@
+shaped=
+    ae2:BlockQuartzGlass mc:redstone ae2:BlockQuartzGlass,
+    mc:redstone _ mc:redstone,
+    mc:iron_ingot mc:iron_ingot mc:iron_ingot
+    -> ae2:ItemMaterial.EmptyStorageCell

@@ -1,0 +1,5 @@
+shaped=
+    _ mc:iron_ingot _,
+    mc:iron_ingot ae2:ItemMaterial.EngProcessor mc:iron_ingot,
+    fluixCrystal fluixCrystal fluixCrystal
+    -> ae2:ItemPart.P2PTunnelME

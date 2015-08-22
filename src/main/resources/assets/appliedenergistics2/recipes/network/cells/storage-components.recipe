@@ -1,0 +1,23 @@
+shaped=
+    mc:redstone certusCrystal mc:redstone,
+    certusCrystal ae2:ItemMaterial.LogicProcessor certusCrystal,
+    mc:redstone certusCrystal mc:redstone
+    -> ae2:ItemMaterial.Cell1kPart
+
+shaped=
+    mc:redstone ae2:ItemMaterial.CalcProcessor mc:redstone,
+    ae2:ItemMaterial.Cell1kPart ae2:BlockQuartzGlass ae2:ItemMaterial.Cell1kPart,
+    mc:redstone ae2:ItemMaterial.Cell1kPart mc:redstone
+    -> ae2:ItemMaterial.Cell4kPart
+
+shaped=
+    mc:glowstone_dust ae2:ItemMaterial.EngProcessor mc:glowstone_dust,
+    ae2:ItemMaterial.Cell4kPart ae2:BlockQuartzGlass ae2:ItemMaterial.Cell4kPart,
+    mc:glowstone_dust ae2:ItemMaterial.Cell4kPart mc:glowstone_dust
+    -> ae2:ItemMaterial.Cell16kPart
+
+shaped=
+    mc:glowstone_dust ae2:ItemMaterial.EngProcessor mc:glowstone_dust,
+    ae2:ItemMaterial.Cell16kPart ae2:BlockQuartzGlass ae2:ItemMaterial.Cell16kPart,
+    mc:glowstone_dust ae2:ItemMaterial.Cell16kPart mc:glowstone_dust
+    -> ae2:ItemMaterial.Cell64kPart

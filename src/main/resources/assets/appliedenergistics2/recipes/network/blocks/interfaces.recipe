@@ -1,0 +1,13 @@
+shapeless=
+    ae2:ItemPart.Interface
+    -> ae2:BlockInterface
+
+shapeless=
+    ae2:BlockInterface
+    -> ae2:ItemPart.Interface
+
+shaped=
+    mc:iron_ingot glass mc:iron_ingot,
+    ae2:ItemMaterial.AnnihilationCore _ ae2:ItemMaterial.FormationCore,
+    mc:iron_ingot glass mc:iron_ingot
+    -> ae2:BlockInterface
