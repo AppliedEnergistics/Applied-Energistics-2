@@ -25,7 +25,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.WeakHashMap;
-import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 import com.google.common.base.Stopwatch;
@@ -55,6 +54,7 @@ import appeng.entity.EntityFloatingItem;
 import appeng.me.Grid;
 import appeng.me.NetworkList;
 import appeng.tile.AEBaseTile;
+import appeng.util.IWorldCallable;
 import appeng.util.Platform;
 
 
@@ -62,9 +62,9 @@ public class TickHandler
 {
 
 	public static final TickHandler INSTANCE = new TickHandler();
-	final Queue<Callable> serverQueue = new LinkedList<Callable>();
+	final Queue<IWorldCallable<?>> serverQueue = new LinkedList<IWorldCallable<?>>();
 	final Multimap<World, CraftingJob> craftingJobs = LinkedListMultimap.create();
-	private final WeakHashMap<World, Queue<Callable>> callQueue = new WeakHashMap<World, Queue<Callable>>();
+	private final WeakHashMap<World, Queue<IWorldCallable<?>>> callQueue = new WeakHashMap<World, Queue<IWorldCallable<?>>>();
 	private final HandlerRep server = new HandlerRep();
 	private final HandlerRep client = new HandlerRep();
 	private final HashMap<Integer, PlayerColor> cliPlayerColors = new HashMap<Integer, PlayerColor>();
@@ -80,7 +80,7 @@ public class TickHandler
 		return this.cliPlayerColors;
 	}
 
-	public void addCallable( World w, Callable c )
+	public void addCallable( World w, IWorldCallable<?> c )
 	{
 		if( w == null )
 		{
@@ -88,11 +88,12 @@ public class TickHandler
 		}
 		else
 		{
-			Queue<Callable> queue = this.callQueue.get( w );
+			Queue<IWorldCallable<?>> queue = this.callQueue.get( w );
 
 			if( queue == null )
 			{
-				this.callQueue.put( w, queue = new LinkedList<Callable>() );
+				queue = new LinkedList<IWorldCallable<?>>();
+				this.callQueue.put( w, queue );
 			}
 
 			queue.add( c );
@@ -239,13 +240,15 @@ public class TickHandler
 			}
 
 			// cross world queue.
-			this.processQueue( this.serverQueue );
+			this.processQueue( this.serverQueue, null );
 		}
 
 		// world synced queue(s)
 		if( ev.type == Type.WORLD && ev.phase == Phase.START )
 		{
-			this.processQueue( this.callQueue.get( ( (WorldTickEvent) ev ).world ) );
+			final World world = ( (WorldTickEvent) ev ).world;
+			final Queue<IWorldCallable<?>> queue = this.callQueue.get( world );
+			this.processQueue( queue, world );
 		}
 	}
 
@@ -263,7 +266,7 @@ public class TickHandler
 		}
 	}
 
-	private void processQueue( Queue<Callable> queue )
+	private void processQueue( Queue<IWorldCallable<?>> queue, World world )
 	{
 		if( queue == null )
 		{
@@ -272,12 +275,12 @@ public class TickHandler
 
 		Stopwatch sw = Stopwatch.createStarted();
 
-		Callable c = null;
+		IWorldCallable<?> c = null;
 		while( ( c = queue.poll() ) != null )
 		{
 			try
 			{
-				c.call();
+				c.call( world );
 
 				if( sw.elapsed( TimeUnit.MILLISECONDS ) > 50 )
 				{

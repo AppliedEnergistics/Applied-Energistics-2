@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -19,31 +19,31 @@
 package appeng.util;
 
 
+import java.util.concurrent.Callable;
+
+import javax.annotation.Nullable;
+
 import net.minecraft.world.World;
 
 
-public class BlockUpdate implements IWorldCallable<Boolean>
+/**
+ * An interface similar to {@link Callable}, but allowing to pass the {@link World} when calling.
+ *
+ * @see Callable
+ * @author yueh
+ * @version rv3
+ * @since rv3
+ */
+public interface IWorldCallable<T>
 {
-
-	final int x;
-	final int y;
-	final int z;
-
-	public BlockUpdate( int x, int y, int z )
-	{
-		this.x = x;
-		this.y = y;
-		this.z = z;
-	}
-
-	@Override
-	public Boolean call( World world ) throws Exception
-	{
-		if( world.blockExists( this.x, this.y, this.z ) )
-		{
-			world.notifyBlocksOfNeighborChange( this.x, this.y, this.z, Platform.AIR_BLOCK );
-		}
-
-		return true;
-	}
+	/**
+	 * Similar to {@link Callable#call()}
+	 *
+	 * @see Callable#call()
+	 * @param world
+	 * @return
+	 * @throws Exception
+	 */
+	@Nullable
+	T call( @Nullable World world ) throws Exception;
 }

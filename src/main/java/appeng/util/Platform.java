@@ -1911,7 +1911,7 @@ public class Platform
 	{
 		if( !worldObj.isRemote )
 		{
-			TickHandler.INSTANCE.addCallable( worldObj, new BlockUpdate( worldObj, xCoord, yCoord, zCoord ) );
+			TickHandler.INSTANCE.addCallable( worldObj, new BlockUpdate( xCoord, yCoord, zCoord ) );
 		}
 	}
 

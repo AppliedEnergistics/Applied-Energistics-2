@@ -19,13 +19,12 @@
 package appeng.parts.p2p;
 
 
-import java.util.concurrent.Callable;
-
 import javax.annotation.Nullable;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.IIcon;
+import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import cpw.mods.fml.relauncher.Side;
@@ -52,6 +51,7 @@ import appeng.integration.IntegrationType;
 import appeng.me.GridAccessException;
 import appeng.transformer.annotations.Integration.Interface;
 import appeng.transformer.annotations.Integration.InterfaceList;
+import appeng.util.IWorldCallable;
 
 
 @InterfaceList( value = { @Interface( iface = "li.cil.oc.api.network.Environment", iname = "OpenComputers" ), @Interface( iface = "li.cil.oc.api.network.SidedEnvironment", iname = "OpenComputers" ) } )
@@ -60,7 +60,7 @@ public final class PartP2POpenComputers extends PartP2PTunnel<PartP2POpenCompute
 	@Nullable
 	private final Node node;
 
-	private final Callable<Void> updateCallback;
+	private final IWorldCallable<Void> updateCallback;
 
 	public PartP2POpenComputers( ItemStack is )
 	{
@@ -239,11 +239,11 @@ public final class PartP2POpenComputers extends PartP2PTunnel<PartP2POpenCompute
 		return side == this.side;
 	}
 
-	private final class UpdateCallback implements Callable<Void>
+	private final class UpdateCallback implements IWorldCallable<Void>
 	{
 		@Nullable
 		@Override
-		public Void call() throws Exception
+		public Void call( World world ) throws Exception
 		{
 			PartP2POpenComputers.this.updateConnections();
 

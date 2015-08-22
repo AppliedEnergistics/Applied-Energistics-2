@@ -19,11 +19,10 @@
 package appeng.tile.spatial;
 
 
-import java.util.concurrent.Callable;
-
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import appeng.api.config.Actionable;
@@ -46,10 +45,11 @@ import appeng.tile.events.TileEventType;
 import appeng.tile.grid.AENetworkInvTile;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.tile.inventory.InvOperation;
+import appeng.util.IWorldCallable;
 import appeng.util.Platform;
 
 
-public class TileSpatialIOPort extends AENetworkInvTile implements Callable
+public class TileSpatialIOPort extends AENetworkInvTile implements IWorldCallable<Void>
 {
 
 	final int[] sides = { 0, 1 };
@@ -122,9 +122,8 @@ public class TileSpatialIOPort extends AENetworkInvTile implements Callable
 	}
 
 	@Override
-	public Object call() throws Exception
+	public Void call( World world ) throws Exception
 	{
-
 		ItemStack cell = this.getStackInSlot( 0 );
 		if( this.isSpatialCell( cell ) && this.getStackInSlot( 1 ) == null )
 		{
