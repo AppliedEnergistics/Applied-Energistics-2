@@ -313,9 +313,9 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 			{
 				this.craftingCPUClusters.add( cluster );
 
-				if( cluster.myLastLink != null )
+				if( cluster.getLastCraftingLink() != null )
 				{
-					this.addLink( (CraftingLink) cluster.myLastLink );
+					this.addLink( (CraftingLink) cluster.getLastCraftingLink() );
 				}
 			}
 		}
@@ -640,7 +640,7 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 			while( this.iterator.hasNext() && this.cpuCluster == null )
 			{
 				this.cpuCluster = this.iterator.next();
-				if( !this.cpuCluster.isActive() || this.cpuCluster.isDestroyed )
+				if( !this.cpuCluster.isActive() || this.cpuCluster.isDestroyed() )
 				{
 					this.cpuCluster = null;
 				}
