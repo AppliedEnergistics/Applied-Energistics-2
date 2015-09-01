@@ -55,9 +55,13 @@ public enum GuiText
 
 	inWorldFluix, inWorldPurificationCertus, inWorldPurificationNether,
 
-	inWorldPurificationFluix, inWorldSingularity, ChargedQuartz, OfSecondOutput,
+	inWorldPurificationFluix, inWorldSingularity, ChargedQuartz,
 
-	NoSecondOutput, Stores, Next, SelectAmount, Lumen, Empty,
+	NoSecondOutput,
+	OfSecondOutput,
+	MultipleOutputs,
+
+	Stores, Next, SelectAmount, Lumen, Empty,
 
 	ConfirmCrafting, Stored, Crafting, Scheduled, CraftingStatus, Cancel, ETA, ETAFormat,
 
