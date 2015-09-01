@@ -109,6 +109,7 @@ public class NEIGrinderRecipeHandler extends TemplateRecipeHandler
 	public String getGuiTexture()
 	{
 		ResourceLocation loc = new ResourceLocation( "appliedenergistics2", "textures/guis/grinder.png" );
+
 		return loc.toString();
 	}
 
@@ -194,13 +195,22 @@ public class NEIGrinderRecipeHandler extends TemplateRecipeHandler
 			this.result = new PositionedStack( recipe.getOutput(), -30 + 107, 47 );
 			this.ingredients = new ArrayList<PositionedStack>();
 
-			if( recipe.getOptionalOutput() != null )
+			final ItemStack optionalOutput = recipe.getOptionalOutput();
+			final int optionalChancePercent = (int) ( recipe.getOptionalChance() * 100 );
+			if( optionalOutput != null )
 			{
-				final int chancePercent = (int) ( recipe.getOptionalChance() * 100 );
-
 				this.hasOptional = true;
-				this.displayChance = String.format( GuiText.OfSecondOutput.getLocal(), chancePercent );
-				this.ingredients.add( new PositionedStack( recipe.getOptionalOutput(), -30 + 107 + 18, 47 ) );
+				this.displayChance = String.format( GuiText.OfSecondOutput.getLocal(), optionalChancePercent );
+				this.ingredients.add( new PositionedStack( optionalOutput, -30 + 107 + 18, 47 ) );
+			}
+
+			final ItemStack secondOptionalOutput = recipe.getSecondOptionalOutput();
+			final int secondOptionalChancePercent = (int) ( recipe.getSecondOptionalChance() * 100 );
+			if( secondOptionalOutput != null )
+			{
+				this.hasOptional = true;
+				this.displayChance = String.format( GuiText.MultipleOutputs.getLocal(), optionalChancePercent, secondOptionalChancePercent );
+				this.ingredients.add( new PositionedStack( secondOptionalOutput, -30 + 107 + 18 + 18, 47 ) );
 			}
 
 			if( recipe.getInput() != null )
