@@ -6,7 +6,7 @@ shaped=
 
 shaped=
     mc:iron_ingot ae2:BlockQuartzGlass mc:iron_ingot,
-    ae2:BlockQuartzGlass  fluixCrystal ae2:BlockQuartzGlass,
+    ae2:BlockQuartzGlass fluixCrystal ae2:BlockQuartzGlass,
     mc:iron_ingot ae2:BlockQuartzGlass mc:iron_ingot
     -> ae2:BlockEnergyAcceptor
     

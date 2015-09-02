@@ -1,7 +1,7 @@
 shaped=
     oredictionary:crystalCertusQuartz oredictionary:crystalCertusQuartz,
     oredictionary:crystalCertusQuartz oredictionary:stickWood,
-    _oredictionary:stickWood
+    _ oredictionary:stickWood
     -> ae2:ToolCertusQuartzAxe
 
 shaped=
@@ -37,5 +37,5 @@ shaped=
 shaped=
     _ _ oredictionary:stickWood,
     mc:iron_ingot oredictionary:stickWood _,
-    oredictionary:crystalCertusQuartz oredictionary:crystalCertusQuartz  _
+    oredictionary:crystalCertusQuartz oredictionary:crystalCertusQuartz _
     -> ae2:ToolCertusQuartzCuttingKnife
