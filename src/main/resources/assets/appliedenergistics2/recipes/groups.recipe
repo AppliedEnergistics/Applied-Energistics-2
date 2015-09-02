@@ -11,7 +11,7 @@ group= mc:iron_ingot oredictionary:ingotCopper oredictionary:ingotTin orediction
 group= oredictionary:dustEnder oredictionary:dustEnderPearl -> dustEnder
 
 group=oredictionary:blockGlass oredictionary:glass mc:glass -> glass
-group=oredictionary:wool  mc:wool:* -> wool
+group=oredictionary:wool mc:wool:* -> wool
 
 group=oredictionary:crystalCertusQuartz oredictionary:crystalNetherQuartz ae2:ItemMaterial.CertusQuartzCrystalCharged -> crystalQuartz
 group=oredictionary:dustCertusQuartz oredictionary:dustNetherQuartz -> dustQuartz
