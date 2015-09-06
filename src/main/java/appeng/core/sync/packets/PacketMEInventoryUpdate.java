@@ -20,9 +20,12 @@ package appeng.core.sync.packets;
 
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.BufferOverflowException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 import javax.annotation.Nullable;
@@ -55,14 +58,9 @@ public class PacketMEInventoryUpdate implements AppEngPacket, AppEngPacketHandle
 
 	// input.
 	@Nullable
-	private List<IAEItemStack> list;
+	private List<IAEItemStack> list = new LinkedList<IAEItemStack>();
 	// output...
 	private byte ref;
-
-	@Nullable
-	private ByteBuf data = Unpooled.buffer( OPERATION_BYTE_LIMIT );
-	@Nullable
-	private GZIPOutputStream compressFrame;
 
 	private int writtenBytes = 0;
 	private boolean empty = true;
@@ -81,44 +79,121 @@ public class PacketMEInventoryUpdate implements AppEngPacket, AppEngPacketHandle
 
 	public void appendItem( IAEItemStack is ) throws IOException, BufferOverflowException
 	{
-		is.writeToPacket( this.data );
+		// is.writeToPacket( this.data );
+		this.list.add( is.copy() );
 	}
 
 	public int getLength()
 	{
-		return this.data.readableBytes();
+		return this.writtenBytes;
 	}
 
 	public boolean isEmpty()
 	{
-		return this.data.readableBytes() == 0;
+		return this.empty;
 	}
 
 	@Override
 	public void fromBytes( final ByteBuf buf )
 	{
-		this.list = new LinkedList<IAEItemStack>();
 		this.ref = buf.readByte();
 
-		while( buf.readableBytes() > 0 )
+		try
 		{
-			try
+			final GZIPInputStream gzReader = new GZIPInputStream( new InputStream()
 			{
-				this.list.add( AEItemStack.loadItemStackFromPacket( buf ) );
-			}
-			catch( IOException e )
+				@Override
+				public int read() throws IOException
+				{
+					if( buf.readableBytes() <= 0 )
+					{
+						return -1;
+					}
+
+					return buf.readByte() & STREAM_MASK;
+				}
+			} );
+
+			final ByteBuf uncompressed = Unpooled.buffer( buf.readableBytes() );
+			byte[] tmp = new byte[TEMP_BUFFER_SIZE];
+
+			while( gzReader.available() != 0 )
 			{
+				int bytes = gzReader.read( tmp );
+				if( bytes > 0 )
+				{
+					uncompressed.writeBytes( tmp, 0, bytes );
+				}
 			}
+
+			gzReader.close();
+
+			while( uncompressed.readableBytes() > 0 )
+			{
+				this.list.add( AEItemStack.loadItemStackFromPacket( uncompressed ) );
+			}
+		}
+		catch( IOException e )
+		{
 		}
 
 		this.empty = this.list.isEmpty();
 	}
 
 	@Override
-	public void toBytes( ByteBuf buf )
+	public void toBytes( final ByteBuf buf )
 	{
 		buf.writeByte( this.ref );
-		buf.writeBytes( this.data );
+
+		OutputStream compressFrame = null;
+
+		try
+		{
+			compressFrame = new GZIPOutputStream( new OutputStream()
+			{
+				@Override
+				public void write( int value ) throws IOException
+				{
+					buf.writeByte( value );
+				}
+			} );
+
+			for( IAEItemStack iaeItemStack : this.list )
+			{
+				final ByteBuf tmp = Unpooled.buffer( OPERATION_BYTE_LIMIT );
+
+				iaeItemStack.writeToPacket( tmp );
+
+				if( this.writtenBytes + tmp.readableBytes() > UNCOMPRESSED_PACKET_BYTE_LIMIT )
+				{
+					throw new BufferOverflowException();
+				}
+				else
+				{
+					this.writtenBytes += tmp.readableBytes();
+					compressFrame.write( tmp.array(), 0, tmp.readableBytes() );
+					this.empty = false;
+				}
+
+			}
+			compressFrame.flush();
+		}
+		catch( IOException e1 )
+		{
+		}
+		finally
+		{
+			if( compressFrame != null )
+			{
+				try
+				{
+					compressFrame.close();
+				}
+				catch( IOException e )
+				{
+				}
+			}
+		}
 	}
 
 	@Override
