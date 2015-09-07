@@ -19,6 +19,11 @@
 package appeng.core.sync.network;
 
 
+import net.minecraft.entity.player.EntityPlayerMP;
+
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
+import cpw.mods.fml.common.network.FMLNetworkEvent.ServerConnectionFromClientEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.relauncher.Side;
@@ -47,6 +52,7 @@ import appeng.core.sync.packets.PacketSwapSlots;
 import appeng.core.sync.packets.PacketSwitchGuis;
 import appeng.core.sync.packets.PacketTransitionEffect;
 import appeng.core.sync.packets.PacketValueConfig;
+import appeng.core.worlddata.WorldData;
 
 
 public class NetworkHandler
@@ -84,5 +90,20 @@ public class NetworkHandler
 		NetworkHandler.INSTANCE.registerMessage( PacketTransitionEffect.class, PacketTransitionEffect.class, disc++, Side.CLIENT );
 		NetworkHandler.INSTANCE.registerMessage( PacketValueConfig.class, PacketValueConfig.class, disc++, Side.SERVER );
 		NetworkHandler.INSTANCE.registerMessage( PacketValueConfig.class, PacketValueConfig.class, disc++, Side.CLIENT );
+	}
+
+	@SubscribeEvent
+	public void newConnection( ServerConnectionFromClientEvent ev )
+	{
+		WorldData.instance().dimensionData().sendToPlayer( ev.manager );
+	}
+
+	@SubscribeEvent
+	public void newConnection( PlayerLoggedInEvent loginEvent )
+	{
+		if( loginEvent.player instanceof EntityPlayerMP )
+		{
+			WorldData.instance().dimensionData().sendToPlayer( null );
+		}
 	}
 }
