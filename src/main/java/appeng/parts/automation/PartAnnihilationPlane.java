@@ -87,7 +87,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 	}
 
 	@Override
-	public TickRateModulation call(World world) throws Exception
+	public TickRateModulation call( World world ) throws Exception
 	{
 		this.breaking = false;
 		return this.breakBlock( true );
@@ -358,7 +358,36 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 		entityItem.getEntityItem().stackSize = newStackSize;
 
 		return changed;
+	}
 
+	/**
+	 * Spawns an overflow item as new {@link EntityItem} into the {@link World}
+	 *
+	 * @param w the world to spawn it
+	 * @param x x coordinate
+	 * @param y y coordinate
+	 * @param z coordinate
+	 * @param overflow the item to spawn
+	 */
+	private void spawnOverflow( IAEItemStack overflow )
+	{
+		if( overflow == null )
+		{
+			return;
+		}
+
+		final TileEntity te = this.getTile();
+		final WorldServer w = (WorldServer) te.getWorldObj();
+		final double x = te.xCoord + this.side.offsetX + .5d;
+		final double y = te.yCoord + this.side.offsetY + .5d;
+		final double z = te.zCoord + this.side.offsetZ + .5d;
+
+		final EntityItem overflowEntity = new EntityItem( w, x, y, z, overflow.getItemStack() );
+		overflowEntity.motionX = 0;
+		overflowEntity.motionY = 0;
+		overflowEntity.motionZ = 0;
+
+		w.spawnEntityInWorld( overflowEntity );
 	}
 
 	protected boolean isAnnihilationPlane( TileEntity blockTileEntity, AEPartLocation side )
@@ -542,7 +571,8 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 
 		for( final ItemStack snaggedItem : items )
 		{
-			this.storeItemStack( snaggedItem );
+			final IAEItemStack overflow = this.storeItemStack( snaggedItem );
+			this.spawnOverflow( overflow );
 		}
 	}
 }
