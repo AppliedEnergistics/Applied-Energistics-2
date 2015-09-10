@@ -118,7 +118,7 @@ public final class GrinderRecipeManager implements IGrinderRegistry, IOreListene
 		}
 
 		this.log( "Allow Grinding of " + Platform.getItemDisplayName( in ) + " to " + Platform.getItemDisplayName( out ) + " with optional " + Platform.getItemDisplayName( optional ) + " for " + cost );
-		this.injectRecipe( new AppEngGrinderRecipe( this.copy( in ), this.copy( out ), this.copy( optional ), chance, cost ) );
+		this.injectRecipe( new AppEngGrinderRecipe( this.copy( in ), this.copy( out ), this.copy( optional ), this.copy( optional2 ), chance, chance2, cost ) );
 	}
 
 	private void injectRecipe( AppEngGrinderRecipe appEngGrinderRecipe )
