@@ -100,18 +100,22 @@ import appeng.util.item.AEItemStack;
 public class DualityInterface implements IGridTickable, IStorageMonitorable, IInventoryDestination, IAEAppEngInventory, IConfigManagerHost, ICraftingProvider, IUpgradeableHost, IPriorityHost
 {
 
+	public static final int NUMBER_OF_STORAGE_SLOTS = 9;
+	public static final int NUMBER_OF_CONFIG_SLOTS = 9;
+	public static final int NUMBER_OF_PATTERN_SLOTS = 9;
+
 	private static final Collection<Block> BAD_BLOCKS = new HashSet<Block>( 100 );
-	final int[] sides = new int[] { 0, 1, 2, 3, 4, 5, 6, 7 };
-	final IAEItemStack[] requireWork = new IAEItemStack[] { null, null, null, null, null, null, null, null };
+	final int[] sides = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 };
+	final IAEItemStack[] requireWork = new IAEItemStack[] { null, null, null, null, null, null, null, null, null };
 	final MultiCraftingTracker craftingTracker;
 	final AENetworkProxy gridProxy;
 	final IInterfaceHost iHost;
 	final BaseActionSource mySource;
 	final BaseActionSource interfaceRequestSource;
 	final ConfigManager cm = new ConfigManager( this );
-	final AppEngInternalAEInventory config = new AppEngInternalAEInventory( this, 8 );
-	final AppEngInternalInventory storage = new AppEngInternalInventory( this, 8 );
-	final AppEngInternalInventory patterns = new AppEngInternalInventory( this, 9 );
+	final AppEngInternalAEInventory config = new AppEngInternalAEInventory( this, NUMBER_OF_CONFIG_SLOTS );
+	final AppEngInternalInventory storage = new AppEngInternalInventory( this, NUMBER_OF_STORAGE_SLOTS );
+	final AppEngInternalInventory patterns = new AppEngInternalInventory( this, NUMBER_OF_PATTERN_SLOTS );
 	final WrapperInvSlot slotInv = new WrapperInvSlot( this.storage );
 	final MEMonitorPassThrough<IAEItemStack> items = new MEMonitorPassThrough<IAEItemStack>( new NullInventory<IAEItemStack>(), StorageChannel.ITEMS );
 	final MEMonitorPassThrough<IAEFluidStack> fluids = new MEMonitorPassThrough<IAEFluidStack>( new NullInventory<IAEFluidStack>(), StorageChannel.FLUIDS );
@@ -279,7 +283,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 
 		boolean had = this.hasWorkToDo();
 
-		for( int x = 0; x < 8; x++ )
+		for( int x = 0; x < NUMBER_OF_CONFIG_SLOTS; x++ )
 		{
 			this.updatePlan( x );
 		}
@@ -616,7 +620,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 	{
 		boolean didSomething = false;
 
-		for( int x = 0; x < 8; x++ )
+		for( int x = 0; x < NUMBER_OF_STORAGE_SLOTS; x++ )
 		{
 			if( this.requireWork[x] != null )
 			{
