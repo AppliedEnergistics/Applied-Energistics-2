@@ -40,6 +40,7 @@ import appeng.util.Platform;
 import appeng.util.item.AEFluidStack;
 import appeng.util.item.AEItemStack;
 import appeng.util.item.ItemList;
+import appeng.util.item.FluidList;
 
 
 public class ApiStorage implements IStorageHelper
@@ -66,13 +67,13 @@ public class ApiStorage implements IStorageHelper
 	@Override
 	public IItemList<IAEItemStack> createItemList()
 	{
-		return new ItemList<IAEItemStack>( IAEItemStack.class );
+		return new ItemList();
 	}
 
 	@Override
 	public IItemList<IAEFluidStack> createFluidList()
 	{
-		return new ItemList<IAEFluidStack>( IAEFluidStack.class );
+		return new FluidList();
 	}
 
 	@Override

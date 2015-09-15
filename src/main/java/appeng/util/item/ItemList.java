@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -19,125 +19,84 @@
 package appeng.util.item;
 
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
+import java.util.Map;
 import java.util.NavigableMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 
+import net.minecraft.item.Item;
 import net.minecraftforge.oredict.OreDictionary;
 import appeng.api.config.FuzzyMode;
-import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 
 import com.google.common.collect.Lists;
 
 
-public final class ItemList<StackType extends IAEStack> implements IItemList<StackType>
+public final class ItemList implements IItemList<IAEItemStack>
 {
 
-	private final NavigableMap<StackType, StackType> records = new ConcurrentSkipListMap<StackType, StackType>();
-	private final Class<? extends IAEStack> clz;
-
-	// private int currentPriority = Integer.MIN_VALUE;
-	public Throwable stacktrace;
-	int iteration = Integer.MIN_VALUE;
-
-	public ItemList( Class<? extends IAEStack> cla )
-	{
-		this.clz = cla;
-	}
+	private final Map<Item, NavigableMap<IAEItemStack, IAEItemStack>> records = new IdentityHashMap<Item, NavigableMap<IAEItemStack, IAEItemStack>>();
 
 	@Override
-	public synchronized void add( StackType option )
+	public void add( IAEItemStack option )
 	{
-		if( this.checkStackType( option ) )
+		if( option == null )
 		{
 			return;
 		}
 
-		StackType st = this.records.get( option );
+		final IAEItemStack st = this.getItemRecord( option.getItem() ).get( option );
 
 		if( st != null )
 		{
-			// st.setPriority( currentPriority );
 			st.add( option );
 			return;
 		}
 
-		StackType opt = (StackType) option.copy();
-		// opt.setPriority( currentPriority );
-		this.records.put( opt, opt );
-	}
+		final IAEItemStack opt = option.copy();
 
-	private boolean checkStackType( StackType st )
-	{
-		if( st == null )
-		{
-			return true;
-		}
-
-		if( !this.clz.isInstance( st ) )
-		{
-			throw new IllegalArgumentException( "WRONG TYPE - got " + st.getClass().getName() + " expected " + this.clz.getName() );
-		}
-
-		return false;
+		this.putItemRecord( opt );
 	}
 
 	@Override
-	public synchronized StackType findPrecise( StackType i )
+	public IAEItemStack findPrecise( IAEItemStack itemStack )
 	{
-		if( this.checkStackType( i ) )
+		if( itemStack == null )
 		{
 			return null;
 		}
 
-		StackType is = this.records.get( i );
-		if( is != null )
-		{
-			return is;
-		}
-
-		return null;
+		return this.getItemRecord( itemStack.getItem() ).get( itemStack );
 	}
 
 	@Override
-	public Collection<StackType> findFuzzy( StackType filter, FuzzyMode fuzzy )
+	public Collection<IAEItemStack> findFuzzy( IAEItemStack filter, FuzzyMode fuzzy )
 	{
-		if( this.checkStackType( filter ) )
+		if( filter == null )
 		{
-			return new ArrayList<StackType>();
+			return Collections.emptyList();
 		}
 
-		if( filter instanceof IAEFluidStack )
-		{
-			List<StackType> result = Lists.newArrayList();
+		final AEItemStack ais = (AEItemStack) filter;
 
-			if( filter.equals( this ) )
-			{
-				result.add( filter );
-			}
-
-			return result;
-		}
-
-		AEItemStack ais = (AEItemStack) filter;
 		if( ais.isOre() )
 		{
-			OreReference or = ais.def.isOre;
+			final OreReference or = ais.def.isOre;
+
 			if( or.getAEEquivalents().size() == 1 )
 			{
-				IAEItemStack is = or.getAEEquivalents().get( 0 );
+				final IAEItemStack is = or.getAEEquivalents().get( 0 );
+
 				return this.findFuzzyDamage( (AEItemStack) is, fuzzy, is.getItemDamage() == OreDictionary.WILDCARD_VALUE );
 			}
 			else
 			{
-				Collection<StackType> output = new LinkedList<StackType>();
+				final Collection<IAEItemStack> output = new LinkedList<IAEItemStack>();
 
 				for( IAEItemStack is : or.getAEEquivalents() )
 				{
@@ -157,123 +116,141 @@ public final class ItemList<StackType extends IAEStack> implements IItemList<Sta
 		return !this.iterator().hasNext();
 	}
 
-	public Collection<StackType> findFuzzyDamage( AEItemStack filter, FuzzyMode fuzzy, boolean ignoreMeta )
-	{
-		StackType low = (StackType) filter.getLow( fuzzy, ignoreMeta );
-		StackType high = (StackType) filter.getHigh( fuzzy, ignoreMeta );
-		return this.records.subMap( low, true, high, true ).descendingMap().values();
-	}
-
 	@Override
-	public synchronized void addStorage( StackType option ) // adds a stack as
-	// stored.
+	public void addStorage( IAEItemStack option )
 	{
-		if( this.checkStackType( option ) )
+		if( option == null )
 		{
 			return;
 		}
 
-		StackType st = this.records.get( option );
+		final IAEItemStack st = this.getItemRecord( option.getItem() ).get( option );
 
 		if( st != null )
 		{
-			// st.setPriority( currentPriority );
 			st.incStackSize( option.getStackSize() );
 			return;
 		}
 
-		StackType opt = (StackType) option.copy();
-		// opt.setPriority( currentPriority );
-		this.records.put( opt, opt );
+		final IAEItemStack opt = option.copy();
+
+		this.putItemRecord( opt );
 	}
 
 	/*
-	 * public synchronized void clean() { Iterator<StackType> i = iterator(); while (i.hasNext()) { StackType AEI =
+	 * public void clean() { Iterator<StackType> i = iterator(); while (i.hasNext()) { StackType AEI =
 	 * i.next(); if ( !AEI.isMeaningful() ) i.remove(); } }
 	 */
 
 	@Override
-	public synchronized void addCrafting( StackType option ) // adds a stack as
-	// craftable.
+	public void addCrafting( IAEItemStack option )
 	{
-		if( this.checkStackType( option ) )
+		if( option == null )
 		{
 			return;
 		}
 
-		StackType st = this.records.get( option );
+		final IAEItemStack st = this.getItemRecord( option.getItem() ).get( option );
 
 		if( st != null )
 		{
-			// st.setPriority( currentPriority );
 			st.setCraftable( true );
 			return;
 		}
 
-		StackType opt = (StackType) option.copy();
-		// opt.setPriority( currentPriority );
+		final IAEItemStack opt = option.copy();
 		opt.setStackSize( 0 );
 		opt.setCraftable( true );
 
-		this.records.put( opt, opt );
+		this.putItemRecord( opt );
 	}
 
 	@Override
-	public synchronized void addRequestable( StackType option ) // adds a stack
-	// as
-	// requestable.
+	public void addRequestable( IAEItemStack option )
 	{
-		if( this.checkStackType( option ) )
+		if( option == null )
 		{
 			return;
 		}
 
-		StackType st = this.records.get( option );
+		final IAEItemStack st = this.getItemRecord( option.getItem() ).get( option );
 
 		if( st != null )
 		{
-			// st.setPriority( currentPriority );
-			( (IAEItemStack) st ).setCountRequestable( st.getCountRequestable() + option.getCountRequestable() );
+			st.setCountRequestable( st.getCountRequestable() + option.getCountRequestable() );
 			return;
 		}
 
-		StackType opt = (StackType) option.copy();
-		// opt.setPriority( currentPriority );
+		final IAEItemStack opt = option.copy();
 		opt.setStackSize( 0 );
 		opt.setCraftable( false );
-		opt.setCountRequestable( opt.getCountRequestable() );
+		opt.setCountRequestable( option.getCountRequestable() );
 
-		this.records.put( opt, opt );
+		this.putItemRecord( opt );
 	}
 
 	@Override
-	public synchronized StackType getFirstItem()
+	public IAEItemStack getFirstItem()
 	{
-		for( StackType stackType : this )
+		for( IAEItemStack stackType : this )
 		{
 			return stackType;
 		}
+
 		return null;
 	}
 
 	@Override
-	public synchronized int size()
+	public int size()
 	{
-		return this.records.values().size();
+		int size = 0;
+
+		for( Map<IAEItemStack, IAEItemStack> element : this.records.values() )
+		{
+			size += element.size();
+		}
+
+		return size;
 	}
 
 	@Override
-	public synchronized Iterator<StackType> iterator()
+	public Iterator<IAEItemStack> iterator()
 	{
-		return new MeaningfulIterator<StackType>( this.records.values().iterator() );
+		return new MeaningfulItemIterator<IAEItemStack>( this.records.values().iterator() );
 	}
 
 	@Override
-	public synchronized void resetStatus()
+	public void resetStatus()
 	{
-		for( StackType i : this )
+		for( IAEItemStack i : this )
 		{
 			i.reset();
 		}
+	}
+
+	private NavigableMap<IAEItemStack, IAEItemStack> getItemRecord( Item item )
+	{
+		NavigableMap<IAEItemStack, IAEItemStack> itemRecords = this.records.get( item );
+
+		if( itemRecords == null )
+		{
+			itemRecords = new ConcurrentSkipListMap<IAEItemStack, IAEItemStack>();
+			this.records.put( item, itemRecords );
+		}
+
+		return itemRecords;
+	}
+
+	private IAEItemStack putItemRecord( IAEItemStack itemStack )
+	{
+		return this.getItemRecord( itemStack.getItem() ).put( itemStack, itemStack );
+	}
+
+	private Collection<IAEItemStack> findFuzzyDamage( AEItemStack filter, FuzzyMode fuzzy, boolean ignoreMeta )
+	{
+		final IAEItemStack low = filter.getLow( fuzzy, ignoreMeta );
+		final IAEItemStack high = filter.getHigh( fuzzy, ignoreMeta );
+
+		return this.getItemRecord( filter.getItem() ).subMap( low, true, high, true ).descendingMap().values();
 	}
 }

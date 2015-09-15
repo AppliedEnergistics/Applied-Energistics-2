@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -20,17 +20,18 @@ package appeng.util.item;
 
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 import appeng.api.storage.data.IAEStack;
 
 
-public class MeaningfulIterator<StackType extends IAEStack> implements Iterator<StackType>
+public class MeaningfulFluidIterator<T extends IAEStack> implements Iterator<T>
 {
 
-	private final Iterator<StackType> parent;
-	private StackType next;
+	private final Iterator<T> parent;
+	private T next;
 
-	public MeaningfulIterator( Iterator<StackType> iterator )
+	public MeaningfulFluidIterator( Iterator<T> iterator )
 	{
 		this.parent = iterator;
 	}
@@ -51,12 +52,18 @@ public class MeaningfulIterator<StackType extends IAEStack> implements Iterator<
 			}
 		}
 
+		this.next = null;
 		return false;
 	}
 
 	@Override
-	public StackType next()
+	public T next()
 	{
+		if( this.next == null )
+		{
+			throw new NoSuchElementException();
+		}
+
 		return this.next;
 	}
 
