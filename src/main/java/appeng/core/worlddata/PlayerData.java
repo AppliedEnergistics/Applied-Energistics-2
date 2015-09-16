@@ -19,7 +19,6 @@
 package appeng.core.worlddata;
 
 
-import java.io.File;
 import java.util.UUID;
 
 import javax.annotation.Nonnull;
@@ -57,13 +56,11 @@ final class PlayerData implements IWorldPlayerData, IOnWorldStartable, IOnWorldS
 
 	private int lastPlayerID;
 
-	public PlayerData( @Nonnull final File configFile, @Nonnull final String configVersion )
+	public PlayerData( @Nonnull final Configuration configFile )
 	{
 		Preconditions.checkNotNull( configFile );
-		Preconditions.checkNotNull( configVersion );
-		Preconditions.checkArgument( !configVersion.isEmpty() );
 
-		this.config = new Configuration( configFile, configVersion );
+		this.config = configFile;
 
 		final ConfigCategory playerList = this.config.getCategory( "players" );
 		this.playerMapping = new PlayerMapping( playerList );

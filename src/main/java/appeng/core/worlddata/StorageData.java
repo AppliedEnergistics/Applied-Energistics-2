@@ -19,7 +19,6 @@
 package appeng.core.worlddata;
 
 
-import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -55,13 +54,11 @@ final class StorageData implements IWorldGridStorageData, IOnWorldStartable, IOn
 
 	private long lastGridStorage;
 
-	public StorageData( @Nonnull final File settingsFile, @Nonnull final String version )
+	public StorageData( @Nonnull final Configuration settingsFile )
 	{
 		Preconditions.checkNotNull( settingsFile );
-		Preconditions.checkNotNull( version );
-		Preconditions.checkArgument( !version.isEmpty() );
 
-		this.config = new Configuration( settingsFile, version );
+		this.config = settingsFile;
 	}
 
 	/**
