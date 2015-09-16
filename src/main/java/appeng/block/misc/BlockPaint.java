@@ -37,7 +37,6 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 import appeng.block.AEBaseTileBlock;
-import appeng.client.render.BaseBlockRender;
 import appeng.client.render.blocks.RenderBlockPaint;
 import appeng.core.features.AEFeature;
 import appeng.tile.misc.TilePaint;
@@ -59,9 +58,10 @@ public class BlockPaint extends AEBaseTileBlock
 	}
 
 	@Override
-	protected Class<? extends BaseBlockRender> getRenderer()
+	@SideOnly( Side.CLIENT )
+	protected RenderBlockPaint getRenderer()
 	{
-		return RenderBlockPaint.class;
+		return new RenderBlockPaint();
 	}
 
 	@Override

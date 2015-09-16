@@ -46,7 +46,7 @@ public class ItemRenderer implements IItemRenderer
 	public void renderItem( final ItemRenderType type, final ItemStack item, final Object... data )
 	{
 		GL11.glPushMatrix();
-		GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS );
+		GL11.glPushAttrib( GL11.GL_ENABLE_BIT | GL11.GL_COLOR_BUFFER_BIT );
 		GL11.glEnable( GL11.GL_ALPHA_TEST );
 		GL11.glEnable( GL11.GL_DEPTH_TEST );
 		GL11.glEnable( GL11.GL_BLEND );

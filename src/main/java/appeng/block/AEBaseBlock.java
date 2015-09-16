@@ -61,6 +61,7 @@ import appeng.core.features.IAEFeature;
 import appeng.core.features.IFeatureHandler;
 import appeng.helpers.AEGlassMaterial;
 import appeng.helpers.ICustomCollision;
+import appeng.tile.AEBaseTile;
 import appeng.util.LookDirection;
 import appeng.util.Platform;
 
@@ -132,27 +133,21 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 			return this.renderInfo;
 		}
 
-		try
-		{
-			final BaseBlockRender renderer = this.getRenderer().newInstance();
-			this.renderInfo = new BlockRenderInfo( renderer );
+		final BaseBlockRender<? extends AEBaseBlock, ? extends AEBaseTile> renderer = this.getRenderer();
+		this.renderInfo = new BlockRenderInfo( renderer );
 
-			return this.renderInfo;
-		}
-		catch( final InstantiationException e )
-		{
-			throw new IllegalStateException( "Failed to create a new instance of an illegal class " + this.getRenderer(), e );
-		}
-		catch( final IllegalAccessException e )
-		{
-			throw new IllegalStateException( "Failed to create a new instance of " + this.getRenderer() + " because of permissions.", e );
-		}
+		return this.renderInfo;
 	}
 
+	/**
+	 * Factory method to create a new render instance.
+	 *
+	 * @return the newly created instance.
+	 */
 	@SideOnly( Side.CLIENT )
-	protected Class<? extends BaseBlockRender> getRenderer()
+	protected BaseBlockRender<? extends AEBaseBlock, ? extends AEBaseTile> getRenderer()
 	{
-		return BaseBlockRender.class;
+		return new BaseBlockRender<AEBaseBlock, AEBaseTile>();
 	}
 
 	IIcon unmappedGetIcon( final IBlockAccess w, final int x, final int y, final int z, final int s )

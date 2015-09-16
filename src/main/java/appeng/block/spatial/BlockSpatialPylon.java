@@ -25,8 +25,10 @@ import net.minecraft.block.Block;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 import appeng.block.AEBaseTileBlock;
-import appeng.client.render.BaseBlockRender;
 import appeng.client.render.blocks.RenderSpatialPylon;
 import appeng.core.features.AEFeature;
 import appeng.helpers.AEGlassMaterial;
@@ -65,8 +67,9 @@ public class BlockSpatialPylon extends AEBaseTileBlock
 	}
 
 	@Override
-	protected Class<? extends BaseBlockRender> getRenderer()
+	@SideOnly( Side.CLIENT )
+	protected RenderSpatialPylon getRenderer()
 	{
-		return RenderSpatialPylon.class;
+		return new RenderSpatialPylon();
 	}
 }

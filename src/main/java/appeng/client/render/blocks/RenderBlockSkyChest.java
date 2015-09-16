@@ -85,12 +85,7 @@ public class RenderBlockSkyChest extends BaseBlockRender<BlockSkyChest, TileSkyC
 	@Override
 	public void renderTile( final BlockSkyChest block, final TileSkyChest skyChest, final Tessellator tess, final double x, final double y, final double z, final float partialTick, final RenderBlocks renderer )
 	{
-		if( skyChest == null )
-		{
-			return;
-		}
-
-		if( !skyChest.hasWorldObj() )
+		if( skyChest == null || !skyChest.hasWorldObj() )
 		{
 			return;
 		}

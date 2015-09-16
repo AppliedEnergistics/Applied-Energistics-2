@@ -43,6 +43,7 @@ import appeng.tile.misc.TileSkyCompass;
 
 public class RenderBlockSkyCompass extends BaseBlockRender<BlockSkyCompass, TileSkyCompass>
 {
+	private static final ResourceLocation TEXTURE_SKY_COMPASS = new ResourceLocation( "appliedenergistics2", "textures/models/compass.png" );
 
 	private final ModelCompass model = new ModelCompass();
 
@@ -57,8 +58,8 @@ public class RenderBlockSkyCompass extends BaseBlockRender<BlockSkyCompass, Tile
 		if( type == ItemRenderType.INVENTORY )
 		{
 			boolean isGood = false;
-
 			final IInventory inv = Minecraft.getMinecraft().thePlayer.inventory;
+
 			for( int x = 0; x < inv.getSizeInventory(); x++ )
 			{
 				if( inv.getStackInSlot( x ) == is )
@@ -76,9 +77,7 @@ public class RenderBlockSkyCompass extends BaseBlockRender<BlockSkyCompass, Tile
 		GL11.glEnable( GL12.GL_RESCALE_NORMAL );
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
 
-		final ResourceLocation loc = new ResourceLocation( "appliedenergistics2", "textures/models/compass.png" );
-
-		Minecraft.getMinecraft().getTextureManager().bindTexture( loc );
+		Minecraft.getMinecraft().getTextureManager().bindTexture( TEXTURE_SKY_COMPASS );
 
 		if( type == ItemRenderType.ENTITY )
 		{
@@ -108,6 +107,7 @@ public class RenderBlockSkyCompass extends BaseBlockRender<BlockSkyCompass, Tile
 		}
 
 		long now = System.currentTimeMillis();
+
 		if( type == ItemRenderType.EQUIPPED_FIRST_PERSON || type == ItemRenderType.INVENTORY || type == ItemRenderType.EQUIPPED )
 		{
 			EntityPlayer p = Minecraft.getMinecraft().thePlayer;
@@ -145,12 +145,14 @@ public class RenderBlockSkyCompass extends BaseBlockRender<BlockSkyCompass, Tile
 					{
 						final float offRads = rYaw / 180.0f * (float) Math.PI;
 						final float adjustment = (float) Math.PI * 0.74f;
+
 						this.model.renderAll( (float) this.flipidiy( cr.getRad() + offRads + adjustment ) );
 					}
 					else
 					{
 						final float offRads = rYaw / 180.0f * (float) Math.PI;
 						final float adjustment = (float) Math.PI * -0.74f;
+
 						this.model.renderAll( (float) this.flipidiy( cr.getRad() + offRads + adjustment ) );
 					}
 				}
@@ -194,9 +196,7 @@ public class RenderBlockSkyCompass extends BaseBlockRender<BlockSkyCompass, Tile
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
 		GL11.glCullFace( GL11.GL_FRONT );
 
-		final ResourceLocation loc = new ResourceLocation( "appliedenergistics2", "textures/models/compass.png" );
-
-		Minecraft.getMinecraft().getTextureManager().bindTexture( loc );
+		Minecraft.getMinecraft().getTextureManager().bindTexture( TEXTURE_SKY_COMPASS );
 
 		this.applyTESRRotation( x, y, z, skyCompass.getUp(), skyCompass.getForward() );
 
@@ -204,8 +204,8 @@ public class RenderBlockSkyCompass extends BaseBlockRender<BlockSkyCompass, Tile
 		GL11.glTranslatef( 0.5F, -1.5F, -0.5F );
 
 		long now = System.currentTimeMillis();
-
 		CompassResult cr = null;
+
 		if( skyCompass.getForward() == ForgeDirection.UP || skyCompass.getForward() == ForgeDirection.DOWN )
 		{
 			cr = CompassManager.INSTANCE.getCompassDirection( 0, skyCompass.xCoord, skyCompass.yCoord, skyCompass.zCoord );

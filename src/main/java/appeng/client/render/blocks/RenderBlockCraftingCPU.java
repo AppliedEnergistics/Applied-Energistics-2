@@ -57,21 +57,20 @@ public class RenderBlockCraftingCPU<B extends BlockCraftingUnit, T extends TileC
 	@Override
 	public boolean renderInWorld( final B blk, final IBlockAccess w, final int x, final int y, final int z, RenderBlocks renderer )
 	{
-		boolean formed = false;
-		boolean emitsLight = false;
+		final TileCraftingTile craftingTile = blk.getTileEntity( w, x, y, z );
 
-		final TileCraftingTile ct = blk.getTileEntity( w, x, y, z );
-		if( ct != null && ct.isFormed() )
+		if( craftingTile == null )
 		{
-			formed = true;
-			emitsLight = ct.isPowered();
+			return false;
 		}
-		final int meta = w.getBlockMetadata( x, y, z ) & 3;
 
+		final boolean formed = craftingTile.isFormed();
+		final boolean emitsLight = craftingTile.isPowered();
+		final int meta = w.getBlockMetadata( x, y, z ) & 3;
 		final boolean isMonitor = blk.getClass() == BlockCraftingMonitor.class;
 		final IIcon theIcon = blk.getIcon( ForgeDirection.SOUTH.ordinal(), meta | ( formed ? 8 : 0 ) );
-
 		IIcon nonForward = theIcon;
+
 		if( isMonitor )
 		{
 			for( final Block craftingBlock : AEApi.instance().definitions().blocks().craftingUnit().maybeBlock().asSet() )
@@ -92,7 +91,7 @@ public class RenderBlockCraftingCPU<B extends BlockCraftingUnit, T extends TileC
 
 			try
 			{
-				ct.setLightCache( i.useSimplifiedRendering( x, y, z, null, ct.getLightCache() ) );
+				craftingTile.setLightCache( i.useSimplifiedRendering( x, y, z, null, craftingTile.getLightCache() ) );
 			}
 			catch( final Throwable ignored )
 			{
@@ -122,13 +121,14 @@ public class RenderBlockCraftingCPU<B extends BlockCraftingUnit, T extends TileC
 				i.setBounds( this.fso( side, lowX, ForgeDirection.WEST ), this.fso( side, lowY, ForgeDirection.DOWN ), this.fso( side, lowZ, ForgeDirection.NORTH ), this.fso( side, highX, ForgeDirection.EAST ), this.fso( side, highY, ForgeDirection.UP ), this.fso( side, highZ, ForgeDirection.SOUTH ) );
 				i.prepareBounds( renderer );
 
-				boolean LocalEmit = emitsLight;
-				if( blk instanceof BlockCraftingMonitor && ct.getForward() != side )
+				boolean localEmit = emitsLight;
+
+				if( blk instanceof BlockCraftingMonitor && craftingTile.getForward() != side )
 				{
-					LocalEmit = false;
+					localEmit = false;
 				}
 
-				this.handleSide( blk, meta, x, y, z, i, renderer, ct.getForward() == side ? theIcon : nonForward, LocalEmit, isMonitor, side, w );
+				this.handleSide( blk, meta, x, y, z, i, renderer, craftingTile.getForward() == side ? theIcon : nonForward, localEmit, isMonitor, side, w );
 			}
 
 			BusRenderer.INSTANCE.getRenderer().setFacade( false );
@@ -150,6 +150,7 @@ public class RenderBlockCraftingCPU<B extends BlockCraftingUnit, T extends TileC
 	private boolean isConnected( final IBlockAccess w, final int x, final int y, final int z, final ForgeDirection side )
 	{
 		final int tileYPos = y + side.offsetY;
+
 		if( 0 <= tileYPos && tileYPos <= 255 )
 		{
 			final TileEntity tile = w.getTileEntity( x + side.offsetX, tileYPos, z + side.offsetZ );
@@ -164,15 +165,7 @@ public class RenderBlockCraftingCPU<B extends BlockCraftingUnit, T extends TileC
 
 	private void renderCorner( final BusRenderHelper i, final RenderBlocks renderer, final IBlockAccess w, final int x, final int y, final int z, final ForgeDirection up, final ForgeDirection east, final ForgeDirection south )
 	{
-		if( this.isConnected( w, x, y, z, up ) )
-		{
-			return;
-		}
-		if( this.isConnected( w, x, y, z, east ) )
-		{
-			return;
-		}
-		if( this.isConnected( w, x, y, z, south ) )
+		if( this.isConnected( w, x, y, z, up ) || this.isConnected( w, x, y, z, east ) || this.isConnected( w, x, y, z, south ) )
 		{
 			return;
 		}
@@ -303,6 +296,7 @@ public class RenderBlockCraftingCPU<B extends BlockCraftingUnit, T extends TileC
 			if( !( i.getBound( a ) < 0.001 || i.getBound( a ) > 15.999 ) )
 			{
 				final double width = 3.0 / 16.0;
+
 				switch( a )
 				{
 					case DOWN:

@@ -108,13 +108,14 @@ public class RenderBlockInscriber extends BaseBlockRender<BlockInscriber, TileIn
 	@Override
 	public boolean renderInWorld( final BlockInscriber block, final IBlockAccess world, final int x, final int y, final int z, final RenderBlocks renderer )
 	{
-		this.preRenderInWorld( block, world, x, y, z, renderer );
-
 		final IOrientable te = this.getOrientable( block, world, x, y, z );
+
 		if( te == null )
 		{
 			return false;
 		}
+
+		this.preRenderInWorld( block, world, x, y, z, renderer );
 
 		final ForgeDirection fdy = te.getUp();
 		final ForgeDirection fdz = te.getForward();
@@ -278,6 +279,7 @@ public class RenderBlockInscriber extends BaseBlockRender<BlockInscriber, TileIn
 		if( sis != null )
 		{
 			sis = sis.copy();
+
 			GL11.glPushMatrix();
 			// fix to inscriber
 			this.applyTESRRotation( x, y, z, tile.getForward(), tile.getUp() );
@@ -318,6 +320,11 @@ public class RenderBlockInscriber extends BaseBlockRender<BlockInscriber, TileIn
 			catch( final Exception err )
 			{
 				AELog.error( err );
+			}
+			finally
+			{
+				GL11.glEnable( GL11.GL_LIGHTING );
+				GL11.glEnable( GL12.GL_RESCALE_NORMAL );
 			}
 
 			GL11.glPopMatrix();

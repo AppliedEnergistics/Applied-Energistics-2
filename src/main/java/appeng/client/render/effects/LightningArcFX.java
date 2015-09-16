@@ -51,8 +51,8 @@ public class LightningArcFX extends LightningFX
 		final double lastDirectionX = this.rx * i;
 		final double lastDirectionY = this.ry * i;
 		final double lastDirectionZ = this.rz * i;
-
 		final double len = Math.sqrt( lastDirectionX * lastDirectionX + lastDirectionY * lastDirectionY + lastDirectionZ * lastDirectionZ );
+
 		for( int s = 0; s < this.getSteps(); s++ )
 		{
 			final double[][] localSteps = this.getPrecomputedSteps();

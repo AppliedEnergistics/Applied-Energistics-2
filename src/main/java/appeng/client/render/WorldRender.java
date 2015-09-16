@@ -20,6 +20,7 @@ package appeng.client.render;
 
 
 import java.util.HashMap;
+import java.util.Map;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
@@ -41,7 +42,7 @@ public final class WorldRender implements ISimpleBlockRenderingHandler
 {
 
 	public static final WorldRender INSTANCE = new WorldRender();
-	private final HashMap<AEBaseBlock, BaseBlockRender> blockRenders = new HashMap<AEBaseBlock, BaseBlockRender>();
+	private final Map<AEBaseBlock, BaseBlockRender> blockRenders = new HashMap<AEBaseBlock, BaseBlockRender>();
 	private final int renderID = RenderingRegistry.getNextAvailableRenderId();
 	private final RenderBlocks renderer = new RenderBlocks();
 	private boolean hasError = false;

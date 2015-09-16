@@ -85,6 +85,7 @@ public class CableRenderHelper
 			 * snag list of boxes...
 			 */
 			final List<AxisAlignedBB> boxes = new ArrayList<AxisAlignedBB>();
+
 			for( final ForgeDirection s : ForgeDirection.values() )
 			{
 				final IPart part = cableBusContainer.getPart( s );
@@ -120,6 +121,7 @@ public class CableRenderHelper
 			for( final ForgeDirection s : ForgeDirection.VALID_DIRECTIONS )
 			{
 				final IFacadePart fPart = iFacadeContainer.getFacade( s );
+
 				if( fPart != null )
 				{
 					fPart.setThinFacades( useThinFacades );
@@ -214,6 +216,7 @@ public class CableRenderHelper
 		for( final ForgeDirection s : ForgeDirection.values() )
 		{
 			final IPart part = cableBusContainer.getPart( s );
+
 			if( part != null )
 			{
 				final ForgeDirection ax;

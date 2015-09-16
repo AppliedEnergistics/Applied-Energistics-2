@@ -58,8 +58,9 @@ public class ToolColorApplicatorRender implements IItemRenderer
 		float f7 = par2Icon.getMaxV();
 
 		final Tessellator tessellator = Tessellator.instance;
+
 		GL11.glPushMatrix();
-		GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS );
+		GL11.glPushAttrib( GL11.GL_ENABLE_BIT | GL11.GL_COLOR_BUFFER_BIT );
 
 		if( type == ItemRenderType.INVENTORY )
 		{
@@ -106,10 +107,12 @@ public class ToolColorApplicatorRender implements IItemRenderer
 		final IIcon light = ExtraItemTextures.ToolColorApplicatorTip_Light.getIcon();
 
 		GL11.glScalef( 1F / 16F, 1F / 16F, 1F );
+
 		if( type != ItemRenderType.INVENTORY )
 		{
 			GL11.glTranslatef( 2, 0, 0 );
 		}
+
 		GL11.glDisable( GL11.GL_LIGHTING );
 
 		final AEColor col = ( (ToolColorApplicator) item.getItem() ).getActiveColor( item );

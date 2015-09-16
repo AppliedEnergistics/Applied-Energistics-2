@@ -34,7 +34,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 import appeng.block.AEBaseItemBlock;
 import appeng.block.AEBaseItemBlockChargeable;
 import appeng.block.AEBaseTileBlock;
-import appeng.client.render.BaseBlockRender;
 import appeng.client.render.blocks.RenderBlockEnergyCube;
 import appeng.client.texture.ExtraBlockTextures;
 import appeng.core.features.AEFeature;
@@ -55,9 +54,10 @@ public class BlockEnergyCell extends AEBaseTileBlock
 	}
 
 	@Override
-	protected Class<? extends BaseBlockRender> getRenderer()
+	@SideOnly( Side.CLIENT )
+	protected RenderBlockEnergyCube getRenderer()
 	{
-		return RenderBlockEnergyCube.class;
+		return new RenderBlockEnergyCube();
 	}
 
 	@Override

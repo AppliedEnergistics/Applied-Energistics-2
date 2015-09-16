@@ -283,8 +283,8 @@ public class BaseBlockRender<B extends AEBaseBlock, T extends AEBaseTile>
 	public void renderInventory( final B block, final ItemStack item, final RenderBlocks renderer, final ItemRenderType type, final Object[] data )
 	{
 		final Tessellator tess = Tessellator.instance;
-
 		final BlockRenderInfo info = block.getRendererInstance();
+
 		if( info.isValid() )
 		{
 			if( block.hasSubtypes() )
@@ -330,8 +330,14 @@ public class BaseBlockRender<B extends AEBaseBlock, T extends AEBaseTile>
 
 	public void renderInvBlock( final EnumSet<ForgeDirection> sides, final B block, final ItemStack item, final Tessellator tess, final int color, final RenderBlocks renderer )
 	{
+		if( block == null )
+		{
+			return;
+		}
+
 		int meta = 0;
-		if( block != null && block.hasSubtypes() && item != null )
+
+		if( block.hasSubtypes() && item != null )
 		{
 			meta = item.getItemDamage();
 		}
@@ -400,6 +406,7 @@ public class BaseBlockRender<B extends AEBaseBlock, T extends AEBaseTile>
 				return o;
 			}
 		}
+
 		return ExtraBlockTextures.getMissing();
 	}
 
@@ -410,6 +417,7 @@ public class BaseBlockRender<B extends AEBaseBlock, T extends AEBaseTile>
 		final boolean o = renderer.renderStandardBlock( block, x, y, z );
 
 		this.postRenderInWorld( renderer );
+
 		return o;
 	}
 
@@ -418,6 +426,7 @@ public class BaseBlockRender<B extends AEBaseBlock, T extends AEBaseTile>
 
 		final BlockRenderInfo info = block.getRendererInstance();
 		final IOrientable te = this.getOrientable( block, world, x, y, z );
+
 		if( te != null )
 		{
 			final ForgeDirection forward = te.getForward();
@@ -450,13 +459,7 @@ public class BaseBlockRender<B extends AEBaseBlock, T extends AEBaseTile>
 		renderer.setRenderBounds( i / 16.0, j / 16.0, k / 16.0, l / 16.0, m / 16.0, n / 16.0 );
 	}
 
-	protected void renderBlockBounds( final RenderBlocks renderer,
-
-			double minX, double minY, double minZ,
-
-			double maxX, double maxY, double maxZ,
-
-			final ForgeDirection x, final ForgeDirection y, final ForgeDirection z )
+	protected void renderBlockBounds( final RenderBlocks renderer, double minX, double minY, double minZ, double maxX, double maxY, double maxZ, final ForgeDirection x, final ForgeDirection y, final ForgeDirection z )
 	{
 		minX /= 16.0;
 		minY /= 16.0;
@@ -763,6 +766,7 @@ public class BaseBlockRender<B extends AEBaseBlock, T extends AEBaseTile>
 		if( itemstack != null )
 		{
 			final EntityItem entityitem = new EntityItem( par1EntityItemFrame.getWorldObj(), 0.0D, 0.0D, 0.0D, itemstack );
+
 			entityitem.getEntityItem().stackSize = 1;
 
 			// set all this stuff and then do shit? meh?

@@ -66,6 +66,7 @@ public class RenderSpatialPylon extends BaseBlockRender<BlockSpatialPylon, TileS
 			if( ( displayBits & TileSpatialPylon.DISPLAY_Z ) == TileSpatialPylon.DISPLAY_X )
 			{
 				ori = ForgeDirection.EAST;
+
 				if( ( displayBits & TileSpatialPylon.DISPLAY_MIDDLE ) == TileSpatialPylon.DISPLAY_END_MAX )
 				{
 					renderer.uvRotateEast = 1;

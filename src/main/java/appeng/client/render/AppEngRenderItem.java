@@ -67,17 +67,21 @@ public class AppEngRenderItem extends RenderItem
 				final double health = is.getItem().getDurabilityForDisplay( is );
 				final int j1 = (int) Math.round( 13.0D - health * 13.0D );
 				final int k = (int) Math.round( 255.0D - health * 255.0D );
+
 				GL11.glDisable( GL11.GL_LIGHTING );
 				GL11.glDisable( GL11.GL_DEPTH_TEST );
 				GL11.glDisable( GL11.GL_TEXTURE_2D );
 				GL11.glDisable( GL11.GL_ALPHA_TEST );
 				GL11.glDisable( GL11.GL_BLEND );
+
 				final Tessellator tessellator = Tessellator.instance;
 				final int l = 255 - k << 16 | k << 8;
 				final int i1 = ( 255 - k ) / 4 << 16 | 16128;
+
 				this.renderQuad( tessellator, par4 + 2, par5 + 13, 13, 2, 0 );
 				this.renderQuad( tessellator, par4 + 2, par5 + 13, 12, 1, i1 );
 				this.renderQuad( tessellator, par4 + 2, par5 + 13, j1, 1, l );
+
 				GL11.glEnable( GL11.GL_ALPHA_TEST );
 				GL11.glEnable( GL11.GL_TEXTURE_2D );
 				GL11.glEnable( GL11.GL_LIGHTING );
@@ -88,19 +92,23 @@ public class AppEngRenderItem extends RenderItem
 			if( is.stackSize == 0 )
 			{
 				final String craftLabelText = AEConfig.instance.useTerminalUseLargeFont() ? GuiText.LargeFontCraft.getLocal() : GuiText.SmallFontCraft.getLocal();
+
 				GL11.glDisable( GL11.GL_LIGHTING );
 				GL11.glDisable( GL11.GL_DEPTH_TEST );
 				GL11.glPushMatrix();
 				GL11.glScaled( scaleFactor, scaleFactor, scaleFactor );
+
 				final int X = (int) ( ( (float) par4 + offset + 16.0f - fontRenderer.getStringWidth( craftLabelText ) * scaleFactor ) * inverseScaleFactor );
 				final int Y = (int) ( ( (float) par5 + offset + 16.0f - 7.0f * scaleFactor ) * inverseScaleFactor );
 				fontRenderer.drawStringWithShadow( craftLabelText, X, Y, 16777215 );
+
 				GL11.glPopMatrix();
 				GL11.glEnable( GL11.GL_LIGHTING );
 				GL11.glEnable( GL11.GL_DEPTH_TEST );
 			}
 
 			final long amount = this.aeStack != null ? this.aeStack.getStackSize() : is.stackSize;
+
 			if( amount != 0 )
 			{
 				final String stackSize = this.getToBeRenderedStackSize( amount );
@@ -109,9 +117,11 @@ public class AppEngRenderItem extends RenderItem
 				GL11.glDisable( GL11.GL_DEPTH_TEST );
 				GL11.glPushMatrix();
 				GL11.glScaled( scaleFactor, scaleFactor, scaleFactor );
+
 				final int X = (int) ( ( (float) par4 + offset + 16.0f - fontRenderer.getStringWidth( stackSize ) * scaleFactor ) * inverseScaleFactor );
 				final int Y = (int) ( ( (float) par5 + offset + 16.0f - 7.0f * scaleFactor ) * inverseScaleFactor );
 				fontRenderer.drawStringWithShadow( stackSize, X, Y, 16777215 );
+
 				GL11.glPopMatrix();
 				GL11.glEnable( GL11.GL_LIGHTING );
 				GL11.glEnable( GL11.GL_DEPTH_TEST );

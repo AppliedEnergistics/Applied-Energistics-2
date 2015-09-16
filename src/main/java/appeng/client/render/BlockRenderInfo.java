@@ -22,14 +22,16 @@ package appeng.client.render;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import appeng.block.AEBaseBlock;
 import appeng.client.texture.FlippableIcon;
 import appeng.client.texture.TmpFlippableIcon;
+import appeng.tile.AEBaseTile;
 
 
 public class BlockRenderInfo
 {
 
-	private final BaseBlockRender rendererInstance;
+	private final BaseBlockRender<? extends AEBaseBlock, ? extends AEBaseTile> rendererInstance;
 	private final TmpFlippableIcon tmpTopIcon = new TmpFlippableIcon();
 	private final TmpFlippableIcon tmpBottomIcon = new TmpFlippableIcon();
 	private final TmpFlippableIcon tmpSouthIcon = new TmpFlippableIcon();
@@ -44,7 +46,7 @@ public class BlockRenderInfo
 	private FlippableIcon eastIcon = null;
 	private FlippableIcon westIcon = null;
 
-	public BlockRenderInfo( final BaseBlockRender inst )
+	public BlockRenderInfo( final BaseBlockRender<? extends AEBaseBlock, ? extends AEBaseTile> inst )
 	{
 		this.rendererInstance = inst;
 	}

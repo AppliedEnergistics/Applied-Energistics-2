@@ -202,9 +202,7 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 
 		if( this.tooltip >= 0 && toolTip.length() > 0 )
 		{
-			GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS );
 			this.drawTooltip( toolPosX, toolPosY + 10, 0, toolTip );
-			GL11.glPopAttrib();
 		}
 	}
 

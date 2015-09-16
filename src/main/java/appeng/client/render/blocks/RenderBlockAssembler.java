@@ -203,42 +203,48 @@ public class RenderBlockAssembler extends BaseBlockRender<BlockMolecularAssemble
 	{
 		IIcon texture = null;
 
-		block.getRendererInstance().setTemporaryRenderIcon( texture = this.getConnectedCable( world, x, y, z, ForgeDirection.WEST, covered ) );
+		texture = this.getConnectedCable( world, x, y, z, ForgeDirection.WEST, covered );
+		block.getRendererInstance().setTemporaryRenderIcon( texture );
 		if( texture != null )
 		{
 			renderer.setRenderBounds( 0.0D, 0.5D - thickness, 0.5D - thickness, 0.5D - thickness - pull, 0.5D + thickness, 0.5D + thickness );
 			renderer.renderStandardBlock( block, x, y, z );
 		}
 
-		block.getRendererInstance().setTemporaryRenderIcon( texture = this.getConnectedCable( world, x, y, z, ForgeDirection.EAST, covered ) );
+		texture = this.getConnectedCable( world, x, y, z, ForgeDirection.EAST, covered );
+		block.getRendererInstance().setTemporaryRenderIcon( texture );
 		if( texture != null )
 		{
 			renderer.setRenderBounds( 0.5D + thickness + pull, 0.5D - thickness, 0.5D - thickness, 1.0D, 0.5D + thickness, 0.5D + thickness );
 			renderer.renderStandardBlock( block, x, y, z );
 		}
 
-		block.getRendererInstance().setTemporaryRenderIcon( texture = this.getConnectedCable( world, x, y, z, ForgeDirection.NORTH, covered ) );
+		texture = this.getConnectedCable( world, x, y, z, ForgeDirection.NORTH, covered );
+		block.getRendererInstance().setTemporaryRenderIcon( texture );
 		if( texture != null )
 		{
 			renderer.setRenderBounds( 0.5D - thickness, 0.5D - thickness, 0.0D, 0.5D + thickness, 0.5D + thickness, 0.5D - thickness - pull );
 			renderer.renderStandardBlock( block, x, y, z );
 		}
 
-		block.getRendererInstance().setTemporaryRenderIcon( texture = this.getConnectedCable( world, x, y, z, ForgeDirection.SOUTH, covered ) );
+		texture = this.getConnectedCable( world, x, y, z, ForgeDirection.SOUTH, covered );
+		block.getRendererInstance().setTemporaryRenderIcon( texture );
 		if( texture != null )
 		{
 			renderer.setRenderBounds( 0.5D - thickness, 0.5D - thickness, 0.5D + thickness + pull, 0.5D + thickness, 0.5D + thickness, 1.0D );
 			renderer.renderStandardBlock( block, x, y, z );
 		}
 
-		block.getRendererInstance().setTemporaryRenderIcon( texture = this.getConnectedCable( world, x, y, z, ForgeDirection.DOWN, covered ) );
+		texture = this.getConnectedCable( world, x, y, z, ForgeDirection.DOWN, covered );
+		block.getRendererInstance().setTemporaryRenderIcon( texture );
 		if( texture != null )
 		{
 			renderer.setRenderBounds( 0.5D - thickness, 0.0D, 0.5D - thickness, 0.5D + thickness, 0.5D - thickness - pull, 0.5D + thickness );
 			renderer.renderStandardBlock( block, x, y, z );
 		}
 
-		block.getRendererInstance().setTemporaryRenderIcon( texture = this.getConnectedCable( world, x, y, z, ForgeDirection.UP, covered ) );
+		texture = this.getConnectedCable( world, x, y, z, ForgeDirection.UP, covered );
+		block.getRendererInstance().setTemporaryRenderIcon( texture );
 		if( texture != null )
 		{
 			renderer.setRenderBounds( 0.5D - thickness, 0.5D + thickness + pull, 0.5D - thickness, 0.5D + thickness, 1.0D, 0.5D + thickness );
@@ -251,6 +257,7 @@ public class RenderBlockAssembler extends BaseBlockRender<BlockMolecularAssemble
 	private IIcon getConnectedCable( final IBlockAccess world, final int x, final int y, final int z, final ForgeDirection side, final boolean covered )
 	{
 		final int tileYPos = y + side.offsetY;
+
 		if( -1 < tileYPos && tileYPos < 256 )
 		{
 			final TileEntity ne = world.getTileEntity( x + side.offsetX, tileYPos, z + side.offsetZ );
@@ -258,9 +265,11 @@ public class RenderBlockAssembler extends BaseBlockRender<BlockMolecularAssemble
 			{
 				final IPartHost ph = (IPartHost) ne;
 				final IPart pcx = ph.getPart( ForgeDirection.UNKNOWN );
+
 				if( pcx instanceof PartCable )
 				{
 					final PartCable pc = (PartCable) pcx;
+
 					if( pc.isConnected( side.getOpposite() ) )
 					{
 						if( covered )

@@ -42,17 +42,22 @@ public class RenderBlockQuartzAccelerator extends BaseBlockRender<BlockQuartzGro
 	public boolean renderInWorld( final BlockQuartzGrowthAccelerator blk, final IBlockAccess world, final int x, final int y, final int z, final RenderBlocks renderer )
 	{
 		final TileEntity te = world.getTileEntity( x, y, z );
+
 		if( te instanceof TileQuartzGrowthAccelerator )
 		{
-			if( ( (TileQuartzGrowthAccelerator) te ).isPowered() )
+			final TileQuartzGrowthAccelerator tileCGA = (TileQuartzGrowthAccelerator) te;
+
+			if( tileCGA.isPowered() )
 			{
 				final IIcon top_Bottom = ExtraBlockTextures.BlockQuartzGrowthAcceleratorOn.getIcon();
 				final IIcon side = ExtraBlockTextures.BlockQuartzGrowthAcceleratorSideOn.getIcon();
+
 				blk.getRendererInstance().setTemporaryRenderIcons( top_Bottom, top_Bottom, side, side, side, side );
 			}
 		}
 
 		final boolean out = super.renderInWorld( blk, world, x, y, z, renderer );
+
 		blk.getRendererInstance().setTemporaryRenderIcon( null );
 
 		return out;

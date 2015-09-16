@@ -31,7 +31,6 @@ import net.minecraft.world.World;
 
 public class LightningFX extends EntityFX
 {
-
 	private static final Random RANDOM_GENERATOR = new Random();
 	private static final int STEPS = 5;
 
@@ -62,6 +61,7 @@ public class LightningFX extends EntityFX
 		double lastDirectionX = ( RANDOM_GENERATOR.nextDouble() - 0.5 ) * 0.9;
 		double lastDirectionY = ( RANDOM_GENERATOR.nextDouble() - 0.5 ) * 0.9;
 		double lastDirectionZ = ( RANDOM_GENERATOR.nextDouble() - 0.5 ) * 0.9;
+
 		for( int s = 0; s < LightningFX.STEPS; s++ )
 		{
 			this.precomputedSteps[s][0] = lastDirectionX = ( lastDirectionX + ( RANDOM_GENERATOR.nextDouble() - 0.5 ) * 0.9 ) / 2.0;
@@ -86,7 +86,9 @@ public class LightningFX extends EntityFX
 	public void renderParticle( final Tessellator tess, final float l, final float rX, final float rY, final float rZ, final float rYZ, final float rXY )
 	{
 		final float j = 1.0f;
+
 		tess.setColorRGBA_F( this.particleRed * j * 0.9f, this.particleGreen * j * 0.95f, this.particleBlue * j, this.particleAlpha );
+
 		if( this.particleAge == 3 )
 		{
 			this.regen();
@@ -190,10 +192,6 @@ public class LightningFX extends EntityFX
 				}
 			}
 		}
-		/*
-		 * GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS ); GL11.glDisable( GL11.GL_CULL_FACE ); tess.draw();
-		 * GL11.glPopAttrib(); tess.startDrawingQuads();
-		 */
 	}
 
 	private void clear()
@@ -210,7 +208,9 @@ public class LightningFX extends EntityFX
 			tess.addVertexWithUV( this.verticesWithUV[0], this.verticesWithUV[1], this.verticesWithUV[2], f6, f8 );
 			tess.addVertexWithUV( b[0], b[1], b[2], f6, f8 );
 		}
+
 		this.hasData = true;
+
 		for( int x = 0; x < 3; x++ )
 		{
 			this.vertices[x] = a[x];

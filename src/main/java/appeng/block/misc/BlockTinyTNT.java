@@ -40,9 +40,10 @@ import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 
 import cpw.mods.fml.common.registry.EntityRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 import appeng.block.AEBaseBlock;
-import appeng.client.render.BaseBlockRender;
 import appeng.client.render.blocks.RenderTinyTNT;
 import appeng.client.texture.FullIcon;
 import appeng.core.AppEng;
@@ -70,9 +71,10 @@ public class BlockTinyTNT extends AEBaseBlock implements ICustomCollision
 	}
 
 	@Override
-	protected Class<? extends BaseBlockRender> getRenderer()
+	@SideOnly( Side.CLIENT )
+	protected RenderTinyTNT getRenderer()
 	{
-		return RenderTinyTNT.class;
+		return new RenderTinyTNT();
 	}
 
 	@Override

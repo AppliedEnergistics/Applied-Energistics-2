@@ -33,7 +33,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 import appeng.api.util.IOrientableBlock;
 import appeng.block.AEBaseTileBlock;
-import appeng.client.render.BaseBlockRender;
 import appeng.client.render.blocks.RenderBlockQuartzAccelerator;
 import appeng.client.render.effects.LightningFX;
 import appeng.core.AEConfig;
@@ -55,9 +54,10 @@ public class BlockQuartzGrowthAccelerator extends AEBaseTileBlock implements IOr
 	}
 
 	@Override
-	protected Class<? extends BaseBlockRender> getRenderer()
+	@SideOnly( Side.CLIENT )
+	protected RenderBlockQuartzAccelerator getRenderer()
 	{
-		return RenderBlockQuartzAccelerator.class;
+		return new RenderBlockQuartzAccelerator();
 	}
 
 	@Override

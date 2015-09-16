@@ -39,7 +39,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 import appeng.api.util.IOrientable;
 import appeng.api.util.IOrientableBlock;
 import appeng.block.AEBaseBlock;
-import appeng.client.render.BaseBlockRender;
 import appeng.client.render.blocks.RenderQuartzTorch;
 import appeng.client.render.effects.LightningFX;
 import appeng.core.AEConfig;
@@ -63,9 +62,10 @@ public class BlockQuartzTorch extends AEBaseBlock implements IOrientableBlock, I
 	}
 
 	@Override
-	protected Class<? extends BaseBlockRender> getRenderer()
+	@SideOnly( Side.CLIENT )
+	protected RenderQuartzTorch getRenderer()
 	{
-		return RenderQuartzTorch.class;
+		return new RenderQuartzTorch();
 	}
 
 	@Override

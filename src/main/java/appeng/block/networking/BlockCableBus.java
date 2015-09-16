@@ -54,7 +54,6 @@ import appeng.api.parts.PartItemStack;
 import appeng.api.parts.SelectedPart;
 import appeng.api.util.AEColor;
 import appeng.block.AEBaseTileBlock;
-import appeng.client.render.BaseBlockRender;
 import appeng.client.render.BusRenderHelper;
 import appeng.client.render.blocks.RendererCableBus;
 import appeng.client.texture.ExtraBlockTextures;
@@ -414,9 +413,10 @@ public class BlockCableBus extends AEBaseTileBlock implements IRedNetConnection
 	}
 
 	@Override
-	protected Class<? extends BaseBlockRender> getRenderer()
+	@SideOnly( Side.CLIENT )
+	protected RendererCableBus getRenderer()
 	{
-		return RendererCableBus.class;
+		return new RendererCableBus();
 	}
 
 	@Override

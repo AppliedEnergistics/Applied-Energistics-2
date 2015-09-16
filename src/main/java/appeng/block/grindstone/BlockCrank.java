@@ -31,9 +31,11 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 import appeng.api.implementations.tiles.ICrankable;
 import appeng.block.AEBaseTileBlock;
-import appeng.client.render.BaseBlockRender;
 import appeng.client.render.blocks.RenderBlockCrank;
 import appeng.core.features.AEFeature;
 import appeng.core.stats.Stats;
@@ -56,9 +58,10 @@ public class BlockCrank extends AEBaseTileBlock
 	}
 
 	@Override
-	public Class<? extends BaseBlockRender> getRenderer()
+	@SideOnly( Side.CLIENT )
+	public RenderBlockCrank getRenderer()
 	{
-		return RenderBlockCrank.class;
+		return new RenderBlockCrank();
 	}
 
 	@Override

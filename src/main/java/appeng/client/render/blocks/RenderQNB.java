@@ -45,14 +45,19 @@ import appeng.tile.qnb.TileQuantumBridge;
 
 public class RenderQNB extends BaseBlockRender<BlockQuantumBase, TileQuantumBridge>
 {
+	private static final float DEFAULT_RENDER_MIN = 2.0f / 16.0f;
+	private static final float DEFAULT_RENDER_MAX = 14.0f / 16.0f;
+
+	private static final float CORNER_POWERED_RENDER_MIN = 3.9f / 16.0f;
+	private static final float CORNER_POWERED_RENDER_MAX = 12.1f / 16.0f;
+
+	private static final float CENTER_POWERED_RENDER_MIN = -0.01f / 16.0f;
+	private static final float CENTER_POWERED_RENDER_MAX = 16.01f / 16.0f;
 
 	@Override
 	public void renderInventory( final BlockQuantumBase block, final ItemStack item, final RenderBlocks renderer, final ItemRenderType type, final Object[] obj )
 	{
-		final float minPx = 2.0f / 16.0f;
-		final float maxPx = 14.0f / 16.0f;
-		renderer.setRenderBounds( minPx, minPx, minPx, maxPx, maxPx, maxPx );
-
+		renderer.setRenderBounds( DEFAULT_RENDER_MIN, DEFAULT_RENDER_MIN, DEFAULT_RENDER_MIN, DEFAULT_RENDER_MAX, DEFAULT_RENDER_MAX, DEFAULT_RENDER_MAX );
 		super.renderInventory( block, item, renderer, type, obj );
 	}
 
@@ -60,6 +65,7 @@ public class RenderQNB extends BaseBlockRender<BlockQuantumBase, TileQuantumBrid
 	public boolean renderInWorld( final BlockQuantumBase block, final IBlockAccess world, final int x, final int y, final int z, final RenderBlocks renderer )
 	{
 		final TileQuantumBridge tqb = block.getTileEntity( world, x, y, z );
+
 		if( tqb == null )
 		{
 			return false;
@@ -86,37 +92,28 @@ public class RenderQNB extends BaseBlockRender<BlockQuantumBase, TileQuantumBrid
 					this.renderCableAt( 0.188D, world, x, y, z, block, renderer, transCoveredCable.getIconIndex( parts.cableCovered().stack( AEColor.Transparent, 1 ) ), 0.1875D, sides );
 				}
 
-				final float renderMin = 2.0f / 16.0f;
-				final float renderMax = 14.0f / 16.0f;
-				renderer.setRenderBounds( renderMin, renderMin, renderMin, renderMax, renderMax, renderMax );
+				renderer.setRenderBounds( DEFAULT_RENDER_MIN, DEFAULT_RENDER_MIN, DEFAULT_RENDER_MIN, DEFAULT_RENDER_MAX, DEFAULT_RENDER_MAX, DEFAULT_RENDER_MAX );
 				renderer.renderStandardBlock( block, x, y, z );
 			}
 			else
 			{
 				if( !tqb.isFormed() )
 				{
-					final float renderMin = 2.0f / 16.0f;
-					final float renderMax = 14.0f / 16.0f;
-					renderer.setRenderBounds( renderMin, renderMin, renderMin, renderMax, renderMax, renderMax );
+					renderer.setRenderBounds( DEFAULT_RENDER_MIN, DEFAULT_RENDER_MIN, DEFAULT_RENDER_MIN, DEFAULT_RENDER_MAX, DEFAULT_RENDER_MAX, DEFAULT_RENDER_MAX );
 					renderer.renderStandardBlock( block, x, y, z );
 				}
 				else if( tqb.isCorner() )
 				{
 					final Item transCoveredCable = parts.cableCovered().item( AEColor.Transparent );
+
 					this.renderCableAt( 0.188D, world, x, y, z, block, renderer, transCoveredCable.getIconIndex( parts.cableCovered().stack( AEColor.Transparent, 1 ) ), 0.05D, tqb.getConnections() );
 
-					float renderMin = 4.0f / 16.0f;
-					float renderMax = 12.0f / 16.0f;
-
-					renderer.setRenderBounds( renderMin, renderMin, renderMin, renderMax, renderMax, renderMax );
+					renderer.setRenderBounds( DEFAULT_RENDER_MIN, DEFAULT_RENDER_MIN, DEFAULT_RENDER_MIN, DEFAULT_RENDER_MAX, DEFAULT_RENDER_MAX, DEFAULT_RENDER_MAX );
 					renderer.renderStandardBlock( block, x, y, z );
 
 					if( tqb.isPowered() )
 					{
-
-						renderMin = 3.9f / 16.0f;
-						renderMax = 12.1f / 16.0f;
-						renderer.setRenderBounds( renderMin, renderMin, renderMin, renderMax, renderMax, renderMax );
+						renderer.setRenderBounds( CORNER_POWERED_RENDER_MIN, CORNER_POWERED_RENDER_MIN, CORNER_POWERED_RENDER_MIN, CORNER_POWERED_RENDER_MAX, CORNER_POWERED_RENDER_MAX, CORNER_POWERED_RENDER_MAX );
 
 						Tessellator.instance.setColorOpaque_F( 1.0F, 1.0F, 1.0F );
 						final int bn = 15;
@@ -129,22 +126,18 @@ public class RenderQNB extends BaseBlockRender<BlockQuantumBase, TileQuantumBrid
 				}
 				else
 				{
-					float renderMin = 2.0f / 16.0f;
-					float renderMax = 14.0f / 16.0f;
-					renderer.setRenderBounds( 0, renderMin, renderMin, 1, renderMax, renderMax );
+					renderer.setRenderBounds( 0, DEFAULT_RENDER_MIN, DEFAULT_RENDER_MIN, 1, DEFAULT_RENDER_MAX, DEFAULT_RENDER_MAX );
 					renderer.renderStandardBlock( block, x, y, z );
 
-					renderer.setRenderBounds( renderMin, 0, renderMin, renderMax, 1, renderMax );
+					renderer.setRenderBounds( DEFAULT_RENDER_MIN, 0, DEFAULT_RENDER_MIN, DEFAULT_RENDER_MAX, 1, DEFAULT_RENDER_MAX );
 					renderer.renderStandardBlock( block, x, y, z );
 
-					renderer.setRenderBounds( renderMin, renderMin, 0, renderMax, renderMax, 1 );
+					renderer.setRenderBounds( DEFAULT_RENDER_MIN, DEFAULT_RENDER_MIN, 0, DEFAULT_RENDER_MAX, DEFAULT_RENDER_MAX, 1 );
 					renderer.renderStandardBlock( block, x, y, z );
 
 					if( tqb.isPowered() )
 					{
-						renderMin = -0.01f / 16.0f;
-						renderMax = 16.01f / 16.0f;
-						renderer.setRenderBounds( renderMin, renderMin, renderMin, renderMax, renderMax, renderMax );
+						renderer.setRenderBounds( CENTER_POWERED_RENDER_MIN, CENTER_POWERED_RENDER_MIN, CENTER_POWERED_RENDER_MIN, CENTER_POWERED_RENDER_MAX, CENTER_POWERED_RENDER_MAX, CENTER_POWERED_RENDER_MAX );
 
 						Tessellator.instance.setColorOpaque_F( 1.0F, 1.0F, 1.0F );
 						final int bn = 15;

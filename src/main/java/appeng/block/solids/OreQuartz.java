@@ -31,10 +31,12 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 import appeng.api.AEApi;
 import appeng.api.exceptions.MissingDefinition;
 import appeng.block.AEBaseBlock;
-import appeng.client.render.BaseBlockRender;
 import appeng.client.render.blocks.RenderQuartzOre;
 import appeng.core.features.AEFeature;
 
@@ -57,9 +59,10 @@ public class OreQuartz extends AEBaseBlock
 	}
 
 	@Override
-	protected Class<? extends BaseBlockRender> getRenderer()
+	@SideOnly( Side.CLIENT )
+	protected RenderQuartzOre getRenderer()
 	{
-		return RenderQuartzOre.class;
+		return new RenderQuartzOre();
 	}
 
 	@Override

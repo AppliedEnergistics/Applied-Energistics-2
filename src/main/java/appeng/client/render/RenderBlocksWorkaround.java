@@ -689,7 +689,6 @@ public class RenderBlocksWorkaround extends RenderBlocks
 
 	private static class LightingCache implements ISimplifiedBundle
 	{
-
 		public final int[] aoXPos;
 		public final int[] aoXNeg;
 		public final int[] aoYPos;

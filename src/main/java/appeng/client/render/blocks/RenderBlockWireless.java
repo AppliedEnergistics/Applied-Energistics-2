@@ -64,6 +64,7 @@ public class RenderBlockWireless extends BaseBlockRender<BlockWireless, TileWire
 		this.centerZ = 0;
 		this.hasChan = false;
 		this.hasPower = false;
+
 		final BlockRenderInfo ri = blk.getRendererInstance();
 		final Tessellator tess = Tessellator.instance;
 
@@ -111,6 +112,7 @@ public class RenderBlockWireless extends BaseBlockRender<BlockWireless, TileWire
 	{
 		final TileWireless tw = blk.getTileEntity( world, x, y, z );
 		this.blk = blk;
+
 		if( tw != null )
 		{
 			this.hasChan = ( tw.getClientFlags() & ( TileWireless.POWERED_FLAG | TileWireless.CHANNEL_FLAG ) ) == ( TileWireless.POWERED_FLAG | TileWireless.CHANNEL_FLAG );

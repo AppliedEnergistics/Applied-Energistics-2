@@ -50,8 +50,13 @@ public class PaintBallRender implements IItemRenderer
 	@Override
 	public void renderItem( final ItemRenderType type, final ItemStack item, final Object... data )
 	{
-		IIcon par2Icon = item.getIconIndex();
-		if( item.getItemDamage() >= 20 )
+		final IIcon par2Icon;
+
+		if( item.getItemDamage() < 20 )
+		{
+			par2Icon = item.getIconIndex();
+		}
+		else
 		{
 			par2Icon = ExtraItemTextures.ItemPaintBallShimmer.getIcon();
 		}
@@ -64,8 +69,8 @@ public class PaintBallRender implements IItemRenderer
 		final ItemPaintBall ipb = (ItemPaintBall) item.getItem();
 
 		final Tessellator tessellator = Tessellator.instance;
+
 		GL11.glPushMatrix();
-		GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS );
 
 		final AEColor col = ipb.getColor( item );
 
@@ -122,7 +127,15 @@ public class PaintBallRender implements IItemRenderer
 
 		GL11.glColor4f( 1, 1, 1, 1.0F );
 
-		GL11.glPopAttrib();
+		if( type == ItemRenderType.INVENTORY )
+		{
+			GL11.glDisable( GL11.GL_ALPHA_TEST );
+		}
+		else
+		{
+			GL11.glEnable( GL11.GL_CULL_FACE );
+		}
+
 		GL11.glPopMatrix();
 	}
 }

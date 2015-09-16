@@ -89,6 +89,7 @@ public class CraftingFx extends EntityBreakingFX
 		final int blkX = MathHelper.floor_double( offX );
 		final int blkY = MathHelper.floor_double( offY );
 		final int blkZ = MathHelper.floor_double( offZ );
+
 		if( blkX == this.startBlkX && blkY == this.startBlkY && blkZ == this.startBlkZ )
 		{
 			offX -= interpPosX;

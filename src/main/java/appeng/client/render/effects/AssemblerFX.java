@@ -76,6 +76,7 @@ public class AssemblerFX extends EntityFX
 	public void renderParticle( final Tessellator tess, final float l, final float rX, final float rY, final float rZ, final float rYZ, final float rXY )
 	{
 		this.time += l;
+
 		if( this.time > 4.0 )
 		{
 			this.time -= 4.0;

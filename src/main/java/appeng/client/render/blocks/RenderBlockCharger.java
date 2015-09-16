@@ -124,48 +124,59 @@ public class RenderBlockCharger extends BaseBlockRender<BlockCharger, TileCharge
 	@Override
 	public void renderTile( final BlockCharger block, final TileCharger tile, final Tessellator tess, final double x, final double y, final double z, final float f, final RenderBlocks renderer )
 	{
+		if( tile == null )
+		{
+			return;
+		}
+
 		final ItemStack sis = tile.getStackInSlot( 0 );
 
-		if( sis != null )
+		if( sis == null )
 		{
-			GL11.glPushMatrix();
-			this.applyTESRRotation( x, y, z, tile.getForward(), tile.getUp() );
-
-			try
-			{
-				GL11.glTranslatef( 0.5f, 0.45f, 0.5f );
-				GL11.glScalef( 1.0f / 1.1f, 1.0f / 1.1f, 1.0f / 1.1f );
-				GL11.glScalef( 1.0f, 1.0f, 1.0f );
-
-				final Block blk = Block.getBlockFromItem( sis.getItem() );
-				if( sis.getItemSpriteNumber() == 0 && block != null && RenderBlocks.renderItemIn3d( blk.getRenderType() ) )
-				{
-					GL11.glRotatef( 25.0f, 1.0f, 0.0f, 0.0f );
-					GL11.glRotatef( 15.0f, 0.0f, 1.0f, 0.0f );
-					GL11.glRotatef( 30.0f, 0.0f, 1.0f, 0.0f );
-				}
-
-				// << 20 | light << 4;
-				final int br = tile.getWorldObj().getLightBrightnessForSkyBlocks( tile.xCoord, tile.yCoord, tile.zCoord, 0 );
-				final int var11 = br % 65536;
-				final int var12 = br / 65536;
-
-				OpenGlHelper.setLightmapTextureCoords( OpenGlHelper.lightmapTexUnit, var11, var12 );
-
-				GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
-
-				GL11.glDisable( GL11.GL_LIGHTING );
-				GL11.glDisable( GL12.GL_RESCALE_NORMAL );
-				tess.setColorOpaque_F( 1.0f, 1.0f, 1.0f );
-
-				this.doRenderItem( sis, tile );
-			}
-			catch( final Exception err )
-			{
-				AELog.error( err );
-			}
-
-			GL11.glPopMatrix();
+			return;
 		}
+
+		GL11.glPushMatrix();
+		this.applyTESRRotation( x, y, z, tile.getForward(), tile.getUp() );
+
+		try
+		{
+			GL11.glTranslatef( 0.5f, 0.45f, 0.5f );
+			GL11.glScalef( 1.0f / 1.1f, 1.0f / 1.1f, 1.0f / 1.1f );
+			GL11.glScalef( 1.0f, 1.0f, 1.0f );
+
+			final Block blk = Block.getBlockFromItem( sis.getItem() );
+
+			if( sis.getItemSpriteNumber() == 0 && block != null && RenderBlocks.renderItemIn3d( blk.getRenderType() ) )
+			{
+				GL11.glRotatef( 25.0f, 1.0f, 0.0f, 0.0f );
+				GL11.glRotatef( 15.0f, 0.0f, 1.0f, 0.0f );
+				GL11.glRotatef( 30.0f, 0.0f, 1.0f, 0.0f );
+			}
+			final int br = tile.getWorldObj().getLightBrightnessForSkyBlocks( tile.xCoord, tile.yCoord, tile.zCoord, 0 );
+			final int var11 = br % 65536;
+			final int var12 = br / 65536;
+
+			OpenGlHelper.setLightmapTextureCoords( OpenGlHelper.lightmapTexUnit, var11, var12 );
+
+			GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
+
+			GL11.glDisable( GL11.GL_LIGHTING );
+			GL11.glDisable( GL12.GL_RESCALE_NORMAL );
+			tess.setColorOpaque_F( 1.0f, 1.0f, 1.0f );
+
+			this.doRenderItem( sis, tile );
+		}
+		catch( final Exception err )
+		{
+			AELog.error( err );
+		}
+		finally
+		{
+			GL11.glEnable( GL12.GL_RESCALE_NORMAL );
+			GL11.glEnable( GL11.GL_LIGHTING );
+		}
+
+		GL11.glPopMatrix();
 	}
 }

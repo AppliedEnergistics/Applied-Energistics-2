@@ -37,7 +37,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 import appeng.api.AEApi;
 import appeng.block.AEBaseTileBlock;
-import appeng.client.render.BaseBlockRender;
 import appeng.client.render.blocks.RenderBlockCharger;
 import appeng.client.render.effects.LightningFX;
 import appeng.core.AEConfig;
@@ -63,9 +62,10 @@ public class BlockCharger extends AEBaseTileBlock implements ICustomCollision
 	}
 
 	@Override
-	protected Class<? extends BaseBlockRender> getRenderer()
+	@SideOnly( Side.CLIENT )
+	protected RenderBlockCharger getRenderer()
 	{
-		return RenderBlockCharger.class;
+		return new RenderBlockCharger();
 	}
 
 	@Override

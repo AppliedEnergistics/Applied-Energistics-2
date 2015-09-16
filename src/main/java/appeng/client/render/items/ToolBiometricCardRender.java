@@ -60,8 +60,9 @@ public class ToolBiometricCardRender implements IItemRenderer
 		final float f7 = par2Icon.getMaxV();
 
 		final Tessellator tessellator = Tessellator.instance;
+
 		GL11.glPushMatrix();
-		GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS );
+		GL11.glPushAttrib( GL11.GL_ENABLE_BIT | GL11.GL_COLOR_BUFFER_BIT );
 
 		if( type == ItemRenderType.INVENTORY )
 		{
@@ -96,6 +97,7 @@ public class ToolBiometricCardRender implements IItemRenderer
 		final float v = ExtraItemTextures.White.getIcon().getInterpolatedV( 8.1 );
 
 		String username = "";
+
 		if( item.getItem() instanceof IBiometricCard )
 		{
 			final GameProfile gp = ( (IBiometricCard) item.getItem() ).getProfile( item );
@@ -119,6 +121,7 @@ public class ToolBiometricCardRender implements IItemRenderer
 		}
 
 		final float z = 0;
+
 		for( int x = 0; x < 8; x++ )// 8
 		{
 			for( int y = 0; y < 6; y++ )// 6
@@ -150,6 +153,7 @@ public class ToolBiometricCardRender implements IItemRenderer
 				tessellator.addVertexWithUV( x, y + 1, z, u, v );
 			}
 		}
+
 		tessellator.draw();
 
 		GL11.glPopAttrib();

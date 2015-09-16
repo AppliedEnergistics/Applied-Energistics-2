@@ -70,6 +70,7 @@ public class RendererSecurity extends BaseBlockRender<BlockSecurity, TileSecurit
 		final boolean result = renderer.renderStandardBlock( imb, x, y, z );
 
 		int b = world.getLightBrightnessForSkyBlocks( x + up.offsetX, y + up.offsetY, z + up.offsetZ, 0 );
+
 		if( sp.isActive() )
 		{
 			b = 15 << 20 | 15 << 4;
@@ -82,6 +83,7 @@ public class RendererSecurity extends BaseBlockRender<BlockSecurity, TileSecurit
 		Tessellator.instance.setColorOpaque_I( sp.getColor().whiteVariant );
 		IIcon ico = sp.isActive() ? ExtraBlockTextures.BlockMESecurityOn_Light.getIcon() : ExtraBlockTextures.MEChest.getIcon();
 		this.renderFace( x, y, z, imb, ico, renderer, up );
+
 		if( sp.isActive() )
 		{
 			Tessellator.instance.setColorOpaque_I( sp.getColor().mediumVariant );

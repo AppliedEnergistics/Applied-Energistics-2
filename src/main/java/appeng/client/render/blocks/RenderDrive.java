@@ -58,15 +58,15 @@ public class RenderDrive extends BaseBlockRender<BlockDrive, TileDrive>
 	public boolean renderInWorld( final BlockDrive imb, final IBlockAccess world, final int x, final int y, final int z, final RenderBlocks renderer )
 	{
 		final TileDrive sp = imb.getTileEntity( world, x, y, z );
-		renderer.setRenderBounds( 0, 0, 0, 1, 1, 1 );
-
 		final ForgeDirection up = sp.getUp();
 		final ForgeDirection forward = sp.getForward();
 		final ForgeDirection west = Platform.crossProduct( forward, up );
 
-		final boolean result = super.renderInWorld( imb, world, x, y, z, renderer );
-		final Tessellator tess = Tessellator.instance;
+		renderer.setRenderBounds( 0, 0, 0, 1, 1, 1 );
 
+		final boolean result = super.renderInWorld( imb, world, x, y, z, renderer );
+
+		final Tessellator tess = Tessellator.instance;
 		final IIcon ico = ExtraBlockTextures.MEStorageCellTextures.getIcon();
 
 		final int b = world.getLightBrightnessForSkyBlocks( x + forward.offsetX, y + forward.offsetY, z + forward.offsetZ, 0 );
@@ -76,6 +76,7 @@ public class RenderDrive extends BaseBlockRender<BlockDrive, TileDrive>
 			for( int xx = 0; xx < 2; xx++ )
 			{
 				final int stat = sp.getCellStatus( yy * 2 + ( 1 - xx ) );
+
 				this.selectFace( renderer, west, up, forward, 2 + xx * 7, 7 + xx * 7, 1 + yy * 3, 3 + yy * 3 );
 
 				int spin = 0;

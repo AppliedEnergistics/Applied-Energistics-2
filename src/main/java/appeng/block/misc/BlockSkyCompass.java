@@ -37,7 +37,6 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 import appeng.block.AEBaseTileBlock;
-import appeng.client.render.BaseBlockRender;
 import appeng.client.render.blocks.RenderBlockSkyCompass;
 import appeng.core.features.AEFeature;
 import appeng.helpers.ICustomCollision;
@@ -57,9 +56,10 @@ public class BlockSkyCompass extends AEBaseTileBlock implements ICustomCollision
 	}
 
 	@Override
-	protected Class<? extends BaseBlockRender> getRenderer()
+	@SideOnly( Side.CLIENT )
+	protected RenderBlockSkyCompass getRenderer()
 	{
-		return RenderBlockSkyCompass.class;
+		return new RenderBlockSkyCompass();
 	}
 
 	@Override
