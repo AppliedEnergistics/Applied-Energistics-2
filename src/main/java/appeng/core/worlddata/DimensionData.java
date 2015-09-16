@@ -19,7 +19,6 @@
 package appeng.core.worlddata;
 
 
-import java.io.File;
 import java.util.List;
 
 import javax.annotation.Nonnull;
@@ -64,13 +63,11 @@ final class DimensionData implements IWorldDimensionData, IOnWorldStartable, IOn
 	private final Configuration config;
 	private final List<Integer> storageCellDimensionIDs;
 
-	DimensionData( @Nonnull final File parentFile, @Nonnull final String configVersion )
+	DimensionData( @Nonnull final Configuration parentFile )
 	{
 		Preconditions.checkNotNull( parentFile );
-		Preconditions.checkNotNull( configVersion );
-		Preconditions.checkArgument( !configVersion.isEmpty() );
 
-		this.config = new Configuration( parentFile, configVersion );
+		this.config = parentFile;
 
 		final int[] storageCellIDs = this.storageCellIDsProperty().getIntList();
 
