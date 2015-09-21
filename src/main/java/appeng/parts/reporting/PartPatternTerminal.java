@@ -47,6 +47,7 @@ public class PartPatternTerminal extends AbstractPartTerminal
 	private final AppEngInternalInventory pattern = new AppEngInternalInventory( this, 2 );
 
 	private boolean craftingMode = true;
+	private boolean substitute = false;
 
 	@Reflected
 	public PartPatternTerminal( final ItemStack is )
@@ -71,6 +72,7 @@ public class PartPatternTerminal extends AbstractPartTerminal
 	{
 		super.readFromNBT( data );
 		this.setCraftingRecipe( data.getBoolean( "craftingMode" ) );
+		this.setSubstitution( data.getBoolean( "substitute" ) );
 		this.pattern.readFromNBT( data, "pattern" );
 		this.output.readFromNBT( data, "outputList" );
 		this.crafting.readFromNBT( data, "craftingGrid" );
@@ -81,6 +83,7 @@ public class PartPatternTerminal extends AbstractPartTerminal
 	{
 		super.writeToNBT( data );
 		data.setBoolean( "craftingMode", this.craftingMode );
+		data.setBoolean( "substitute", this.substitute );
 		this.pattern.writeToNBT( data, "pattern" );
 		this.output.writeToNBT( data, "outputList" );
 		this.crafting.writeToNBT( data, "craftingGrid" );
@@ -119,6 +122,7 @@ public class PartPatternTerminal extends AbstractPartTerminal
 				if( details != null )
 				{
 					this.setCraftingRecipe( details.isCraftable() );
+					this.setSubstitution( details.canSubstitute() );
 
 					for( int x = 0; x < this.crafting.getSizeInventory() && x < details.getInputs().length; x++ )
 					{
@@ -166,6 +170,16 @@ public class PartPatternTerminal extends AbstractPartTerminal
 	{
 		this.craftingMode = craftingMode;
 		this.fixCraftingRecipes();
+	}
+
+	public boolean isSubstitution()
+	{
+		return this.substitute;
+	}
+
+	public void setSubstitution( boolean canSubstitute )
+	{
+		this.substitute = canSubstitute;
 	}
 
 	@Override

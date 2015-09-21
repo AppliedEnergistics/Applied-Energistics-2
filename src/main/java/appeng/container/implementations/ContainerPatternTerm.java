@@ -71,15 +71,17 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 {
 
 	public final PartPatternTerminal ct;
-	final AppEngInternalInventory cOut = new AppEngInternalInventory( null, 1 );
-	final IInventory crafting;
-	final SlotFakeCraftingMatrix[] craftingSlots = new SlotFakeCraftingMatrix[9];
-	final OptionalSlotFake[] outputSlots = new OptionalSlotFake[3];
-	final SlotPatternTerm craftSlot;
-	final SlotRestrictedInput patternSlotIN;
-	final SlotRestrictedInput patternSlotOUT;
+	private final AppEngInternalInventory cOut = new AppEngInternalInventory( null, 1 );
+	private final IInventory crafting;
+	private final SlotFakeCraftingMatrix[] craftingSlots = new SlotFakeCraftingMatrix[9];
+	private final OptionalSlotFake[] outputSlots = new OptionalSlotFake[3];
+	private final SlotPatternTerm craftSlot;
+	private final SlotRestrictedInput patternSlotIN;
+	private final SlotRestrictedInput patternSlotOUT;
 	@GuiSync( 97 )
 	public boolean craftingMode = true;
+	@GuiSync( 96 )
+	public boolean substitute = false;
 
 	public ContainerPatternTerm( final InventoryPlayer ip, final ITerminalHost monitorable )
 	{
@@ -88,6 +90,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 
 		final IInventory patternInv = this.ct.getInventoryByName( "pattern" );
 		final IInventory output = this.ct.getInventoryByName( "output" );
+
 		this.crafting = this.ct.getInventoryByName( "crafting" );
 
 		for( int y = 0; y < 3; y++ )
@@ -156,6 +159,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 	public ItemStack getAndUpdateOutput()
 	{
 		final InventoryCrafting ic = new InventoryCrafting( this, 3, 3 );
+
 		for( int x = 0; x < ic.getSizeInventory(); x++ )
 		{
 			ic.setInventorySlotContents( x, this.crafting.getStackInSlot( x ) );
@@ -238,6 +242,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 		encodedValue.setTag( "in", tagIn );
 		encodedValue.setTag( "out", tagOut );
 		encodedValue.setBoolean( "crafting", this.craftingMode );
+		encodedValue.setBoolean( "substitute", this.substitute );
 
 		output.setTagCompound( encodedValue );
 	}
@@ -269,6 +274,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 		if( this.craftingMode )
 		{
 			final ItemStack out = this.getAndUpdateOutput();
+
 			if( out != null && out.stackSize > 0 )
 			{
 				return new ItemStack[] { out };
@@ -282,6 +288,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 			for( final OptionalSlotFake outputSlot : this.outputSlots )
 			{
 				final ItemStack out = outputSlot.getStack();
+
 				if( out != null && out.stackSize > 0 )
 				{
 					list.add( out );
@@ -347,9 +354,9 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 		if( packetPatternSlot.slotItem != null && this.cellInv != null )
 		{
 			final IAEItemStack out = packetPatternSlot.slotItem.copy();
-
 			InventoryAdaptor inv = new AdaptorPlayerHand( this.getPlayerInv().player );
 			final InventoryAdaptor playerInv = InventoryAdaptor.getAdaptor( this.getPlayerInv().player, ForgeDirection.UNKNOWN );
+
 			if( packetPatternSlot.shift )
 			{
 				inv = playerInv;
@@ -376,6 +383,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 
 			final InventoryCrafting ic = new InventoryCrafting( new ContainerNull(), 3, 3 );
 			final InventoryCrafting real = new InventoryCrafting( new ContainerNull(), 3, 3 );
+
 			for( int x = 0; x < 9; x++ )
 			{
 				ic.setInventorySlotContents( x, packetPatternSlot.pattern[x] == null ? null : packetPatternSlot.pattern[x].getItemStack() );
@@ -412,6 +420,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 				for( int x = 0; x < real.getSizeInventory(); x++ )
 				{
 					final ItemStack failed = playerInv.addItems( real.getStackInSlot( x ) );
+
 					if( failed != null )
 					{
 						p.dropPlayerItemWithRandomChoice( failed, false );
@@ -450,6 +459,8 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 				this.craftingMode = this.ct.isCraftingRecipe();
 				this.updateOrderOfOutputSlots();
 			}
+
+			this.substitute = this.ct.isSubstitution();
 		}
 	}
 
@@ -518,5 +529,13 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 	public boolean useRealItems()
 	{
 		return false;
+	}
+
+	public void toggleSubstitute()
+	{
+		this.substitute = !this.substitute;
+
+		this.detectAndSendChanges();
+		this.getAndUpdateOutput();
 	}
 }

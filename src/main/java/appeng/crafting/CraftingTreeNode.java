@@ -20,8 +20,11 @@ package appeng.crafting;
 
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+
+import com.google.common.collect.Lists;
 
 import net.minecraft.world.World;
 
@@ -41,8 +44,8 @@ public class CraftingTreeNode
 
 	// what slot!
 	final int slot;
-	final CraftingJob job;
-	final IItemList<IAEItemStack> used = AEApi.instance().storage().createItemList();
+	private final CraftingJob job;
+	private final IItemList<IAEItemStack> used = AEApi.instance().storage().createItemList();
 	// parent node.
 	private final CraftingTreeProcess parent;
 	private final World world;
@@ -50,14 +53,13 @@ public class CraftingTreeNode
 	private final IAEItemStack what;
 	// what are the crafting patterns for this?
 	private final ArrayList<CraftingTreeProcess> nodes = new ArrayList<CraftingTreeProcess>();
-	int bytes = 0;
-	boolean canEmit = false;
-	boolean cannotUse = false;
-	long missing = 0;
-	long howManyEmitted = 0;
-	boolean exhausted = false;
-
-	boolean sim;
+	private int bytes = 0;
+	private boolean canEmit = false;
+	private boolean cannotUse = false;
+	private long missing = 0;
+	private long howManyEmitted = 0;
+	private boolean exhausted = false;
+	private boolean sim;
 
 	public CraftingTreeNode( final ICraftingGrid cc, final CraftingJob job, final IAEItemStack wat, final CraftingTreeProcess par, final int slot, final int depth )
 	{
@@ -69,6 +71,7 @@ public class CraftingTreeNode
 		this.sim = false;
 
 		this.canEmit = cc.canEmitFor( this.what );
+
 		if( this.canEmit )
 		{
 			return; // if you can emit for something, you can't make it with patterns.
@@ -87,6 +90,7 @@ public class CraftingTreeNode
 	boolean notRecursive( final ICraftingPatternDetails details )
 	{
 		IAEItemStack[] o = details.getCondensedOutputs();
+
 		for( final IAEItemStack i : o )
 		{
 			if( i.equals( this.what ) )
@@ -96,6 +100,7 @@ public class CraftingTreeNode
 		}
 
 		o = details.getCondensedInputs();
+
 		for( final IAEItemStack i : o )
 		{
 			if( i.equals( this.what ) )
@@ -121,12 +126,32 @@ public class CraftingTreeNode
 		this.what.setStackSize( l );
 		if( this.slot >= 0 && this.parent != null && this.parent.details.isCraftable() )
 		{
-			for( IAEItemStack fuzz : inv.getItemList().findFuzzy( this.what, FuzzyMode.IGNORE_ALL ) )
+			final Collection<IAEItemStack> itemList;
+			final IItemList<IAEItemStack> inventoryList = inv.getItemList();
+
+			if( this.parent.details.canSubstitute() )
+			{
+				itemList = inventoryList.findFuzzy( this.what, FuzzyMode.IGNORE_ALL );
+			}
+			else
+			{
+				itemList = Lists.newArrayList();
+
+				final IAEItemStack item = inventoryList.findPrecise( this.what );
+
+				if( item != null )
+				{
+					itemList.add( item );
+				}
+			}
+
+			for( IAEItemStack fuzz : itemList )
 			{
 				if( this.parent.details.isValidItemForSlot( this.slot, fuzz.getItemStack(), this.world ) )
 				{
 					fuzz = fuzz.copy();
 					fuzz.setStackSize( l );
+
 					final IAEItemStack available = inv.extractItems( fuzz, Actionable.MODULATE, src );
 
 					if( available != null )
@@ -134,6 +159,7 @@ public class CraftingTreeNode
 						if( !this.exhausted )
 						{
 							final IAEItemStack is = this.job.checkUse( available );
+
 							if( is != null )
 							{
 								thingsUsed.add( is.copy() );
@@ -161,6 +187,7 @@ public class CraftingTreeNode
 				if( !this.exhausted )
 				{
 					final IAEItemStack is = this.job.checkUse( available );
+
 					if( is != null )
 					{
 						thingsUsed.add( is.copy() );
@@ -202,6 +229,7 @@ public class CraftingTreeNode
 				pro.request( inv, pro.getTimes( l, madeWhat.getStackSize() ), src );
 
 				madeWhat.setStackSize( l );
+
 				final IAEItemStack available = inv.extractItems( madeWhat, Actionable.MODULATE, src );
 
 				if( available != null )
