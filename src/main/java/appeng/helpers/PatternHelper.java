@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
@@ -44,20 +46,21 @@ import appeng.util.item.AEItemStack;
 public class PatternHelper implements ICraftingPatternDetails, Comparable<PatternHelper>
 {
 
-	final ItemStack patternItem;
-	final InventoryCrafting crafting = new InventoryCrafting( new ContainerNull(), 3, 3 );
-	final InventoryCrafting testFrame = new InventoryCrafting( new ContainerNull(), 3, 3 );
-	final ItemStack correctOutput;
-	final IRecipe standardRecipe;
-	final IAEItemStack[] condensedInputs;
-	final IAEItemStack[] condensedOutputs;
-	final IAEItemStack[] inputs;
-	final IAEItemStack[] outputs;
-	final boolean isCrafting;
-	final HashSet<TestLookup> failCache = new HashSet<TestLookup>();
-	final HashSet<TestLookup> passCache = new HashSet<TestLookup>();
+	private final ItemStack patternItem;
+	private final InventoryCrafting crafting = new InventoryCrafting( new ContainerNull(), 3, 3 );
+	private final InventoryCrafting testFrame = new InventoryCrafting( new ContainerNull(), 3, 3 );
+	private final ItemStack correctOutput;
+	private final IRecipe standardRecipe;
+	private final IAEItemStack[] condensedInputs;
+	private final IAEItemStack[] condensedOutputs;
+	private final IAEItemStack[] inputs;
+	private final IAEItemStack[] outputs;
+	private final boolean isCrafting;
+	private final boolean canSubstitute;
+	private final Set<TestLookup> failCache = new HashSet<TestLookup>();
+	private final Set<TestLookup> passCache = new HashSet<TestLookup>();
 	private final IAEItemStack pattern;
-	public int priority = 0;
+	private int priority = 0;
 
 	public PatternHelper( final ItemStack is, final World w )
 	{
@@ -71,6 +74,8 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 		final NBTTagList inTag = encodedValue.getTagList( "in", 10 );
 		final NBTTagList outTag = encodedValue.getTagList( "out", 10 );
 		this.isCrafting = encodedValue.getBoolean( "crafting" );
+
+		this.canSubstitute = encodedValue.getBoolean( "substitute" );
 		this.patternItem = is;
 		this.pattern = AEItemStack.create( is );
 
@@ -80,6 +85,7 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 		for( int x = 0; x < inTag.tagCount(); x++ )
 		{
 			final ItemStack gs = ItemStack.loadItemStackFromNBT( inTag.getCompoundTagAt( x ) );
+
 			this.crafting.setInventorySlotContents( x, gs );
 
 			if( gs != null && ( !this.isCrafting || !gs.hasTagCompound() ) )
@@ -94,6 +100,7 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 		if( this.isCrafting )
 		{
 			this.standardRecipe = Platform.findMatchingRecipe( this.crafting, w );
+
 			if( this.standardRecipe != null )
 			{
 				this.correctOutput = this.standardRecipe.getCraftingResult( this.crafting );
@@ -112,6 +119,7 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 			for( int x = 0; x < outTag.tagCount(); x++ )
 			{
 				final ItemStack gs = ItemStack.loadItemStackFromNBT( outTag.getCompoundTagAt( x ) );
+
 				if( gs != null )
 				{
 					out.add( AEApi.instance().storage().createItemStack( gs ) );
@@ -122,7 +130,8 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 		this.outputs = out.toArray( new IAEItemStack[out.size()] );
 		this.inputs = in.toArray( new IAEItemStack[in.size()] );
 
-		final HashMap<IAEItemStack, IAEItemStack> tmpOutputs = new HashMap<IAEItemStack, IAEItemStack>();
+		final Map<IAEItemStack, IAEItemStack> tmpOutputs = new HashMap<IAEItemStack, IAEItemStack>();
+
 		for( final IAEItemStack io : this.outputs )
 		{
 			if( io == null )
@@ -131,6 +140,7 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 			}
 
 			final IAEItemStack g = tmpOutputs.get( io );
+
 			if( g == null )
 			{
 				tmpOutputs.put( io, io.copy() );
@@ -141,7 +151,8 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 			}
 		}
 
-		final HashMap<IAEItemStack, IAEItemStack> tmpInputs = new HashMap<IAEItemStack, IAEItemStack>();
+		final Map<IAEItemStack, IAEItemStack> tmpInputs = new HashMap<IAEItemStack, IAEItemStack>();
+
 		for( final IAEItemStack io : this.inputs )
 		{
 			if( io == null )
@@ -150,6 +161,7 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 			}
 
 			final IAEItemStack g = tmpInputs.get( io );
+
 			if( g == null )
 			{
 				tmpInputs.put( io, io.copy() );
@@ -167,6 +179,7 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 
 		this.condensedInputs = new IAEItemStack[tmpInputs.size()];
 		int offset = 0;
+
 		for( final IAEItemStack io : tmpInputs.values() )
 		{
 			this.condensedInputs[offset] = io;
@@ -175,6 +188,7 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 
 		offset = 0;
 		this.condensedOutputs = new IAEItemStack[tmpOutputs.size()];
+
 		for( final IAEItemStack io : tmpOutputs.values() )
 		{
 			this.condensedOutputs[offset] = io;
@@ -286,7 +300,7 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 	@Override
 	public boolean canSubstitute()
 	{
-		return false;
+		return this.canSubstitute;
 	}
 
 	@Override
@@ -367,18 +381,38 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 		return this.pattern.hashCode();
 	}
 
-	enum TestStatus
+	@Override
+	public boolean equals( final Object obj )
+	{
+		if( obj == null )
+		{
+			return false;
+		}
+		if( this.getClass() != obj.getClass() )
+		{
+			return false;
+		}
+
+		final PatternHelper other = (PatternHelper) obj;
+
+		if( this.pattern != null && other.pattern != null )
+		{
+			return this.pattern.equals( other.pattern );
+		}
+		return false;
+	}
+
+	private enum TestStatus
 	{
 		ACCEPT, DECLINE, TEST
 	}
 
-
-	static class TestLookup
+	private static final class TestLookup
 	{
 
-		final int slot;
-		final int ref;
-		final int hash;
+		private final int slot;
+		private final int ref;
+		private final int hash;
 
 		public TestLookup( final int slot, final ItemStack i )
 		{
@@ -407,6 +441,7 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 			if( obj instanceof TestLookup )
 			{
 				final TestLookup b = (TestLookup) obj;
+
 				equality = b.slot == this.slot && b.ref == this.ref;
 			}
 			else
@@ -416,24 +451,5 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 
 			return equality;
 		}
-	}
-
-	@Override
-	public boolean equals( final Object obj )
-	{
-		if( obj == null )
-		{
-			return false;
-		}
-		if( this.getClass() != obj.getClass() )
-		{
-			return false;
-		}
-		final PatternHelper other = (PatternHelper) obj;
-		if( this.pattern != null && other.pattern != null )
-		{
-			return this.pattern.equals( other.pattern );
-		}
-		return false;
 	}
 }

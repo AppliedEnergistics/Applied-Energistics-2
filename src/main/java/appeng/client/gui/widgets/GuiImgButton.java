@@ -34,6 +34,7 @@ import appeng.api.config.ActionItems;
 import appeng.api.config.CondenserOutput;
 import appeng.api.config.FullnessMode;
 import appeng.api.config.FuzzyMode;
+import appeng.api.config.ItemSubstitution;
 import appeng.api.config.LevelType;
 import appeng.api.config.OperationMode;
 import appeng.api.config.PowerUnits;
@@ -129,7 +130,8 @@ public class GuiImgButton extends GuiButton implements ITooltip
 			this.registerApp( 6, Settings.ACTIONS, ActionItems.STASH, ButtonToolTips.Stash, ButtonToolTips.StashDesc );
 
 			this.registerApp( 8, Settings.ACTIONS, ActionItems.ENCODE, ButtonToolTips.Encode, ButtonToolTips.EncodeDescription );
-			this.registerApp( 4 + 3 * 16, Settings.ACTIONS, ActionItems.SUBSTITUTION, ButtonToolTips.Substitutions, ButtonToolTips.SubstitutionsDesc );
+			this.registerApp( 4 + 3 * 16, Settings.ACTIONS, ItemSubstitution.ENABLED, ButtonToolTips.Substitutions, ButtonToolTips.SubstitutionsDescEnabled );
+			this.registerApp( 7 + 3 * 16, Settings.ACTIONS, ItemSubstitution.DISABLED, ButtonToolTips.Substitutions, ButtonToolTips.SubstitutionsDescDisabled );
 
 			this.registerApp( 16, Settings.VIEW_MODE, ViewItems.STORED, ButtonToolTips.View, ButtonToolTips.StoredItems );
 			this.registerApp( 18, Settings.VIEW_MODE, ViewItems.ALL, ButtonToolTips.View, ButtonToolTips.StoredCraftable );

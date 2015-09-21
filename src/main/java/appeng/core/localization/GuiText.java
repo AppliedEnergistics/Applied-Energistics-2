@@ -47,9 +47,20 @@ public enum GuiText
 	// tunnel names
 	METunnel, ItemTunnel, RedstoneTunnel, EUTunnel, FluidTunnel, OCTunnel, LightTunnel, RFTunnel, PressureTunnel,
 
-	StoredSize, CopyMode, CopyModeDesc, PatternTerminal, CraftingPattern,
+	StoredSize, CopyMode, CopyModeDesc, PatternTerminal,
 
-	ProcessingPattern, Crafts, Creates, And, With, MolecularAssembler,
+	// Pattern tooltips
+	CraftingPattern,
+	ProcessingPattern,
+	Crafts,
+	Creates,
+	And,
+	With,
+	Substitute,
+	Yes,
+	No,
+
+	MolecularAssembler,
 
 	StoredPower, MaxPower, RequiredPower, Efficiency, InWorldCrafting,
 

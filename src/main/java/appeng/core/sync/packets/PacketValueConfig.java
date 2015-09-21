@@ -58,8 +58,8 @@ import appeng.helpers.IMouseWheelItem;
 public class PacketValueConfig extends AppEngPacket
 {
 
-	public final String Name;
-	public final String Value;
+	private final String Name;
+	private final String Value;
 
 	// automatic.
 	public PacketValueConfig( final ByteBuf stream ) throws IOException
@@ -156,6 +156,10 @@ public class PacketValueConfig extends AppEngPacket
 			else if( this.Name.equals( "PatternTerminal.Clear" ) )
 			{
 				cpt.clear();
+			}
+			else if( this.Name.equals( "PatternTerminal.Substitute" ) )
+			{
+				cpt.ct.setSubstitution( this.Value.equals( "1" ) );
 			}
 		}
 		else if( this.Name.startsWith( "StorageBus." ) && c instanceof ContainerStorageBus )

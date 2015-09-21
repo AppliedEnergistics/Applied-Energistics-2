@@ -164,6 +164,7 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 		}
 
 		final boolean isCrafting = details.isCraftable();
+		final boolean substitute = details.canSubstitute();
 
 		final IAEItemStack[] in = details.getCondensedInputs();
 		final IAEItemStack[] out = details.getCondensedOutputs();
@@ -195,6 +196,11 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 			lines.add( ( first ? with : and ) + anIn.getStackSize() + ' ' + Platform.getItemDisplayName( anIn ) );
 			first = false;
 		}
+
+		final String substitutionLabel = GuiText.Substitute.getLocal() + " ";
+		final String canSubstitute = substitute ? GuiText.Yes.getLocal() : GuiText.No.getLocal();
+
+		lines.add( substitutionLabel + canSubstitute );
 	}
 
 	@Override
