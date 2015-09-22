@@ -111,11 +111,16 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
 				}
 			}
 
+			// We need to ignore prioritized inventories in the second pass. If they were not able to store everything
+			// during the first pass, they will do so in the second, but as this is stateless we will just report twice
+			// the amount of storable items.
+			// ignores craftingcache on the second pass.
 			ii = invList.iterator();
 			while( ii.hasNext() && input != null )
 			{
 				IMEInventoryHandler<T> inv = ii.next();
-				if( inv.validForPass( 2 ) && inv.canAccept( input ) )// ignore crafting on the second pass.
+
+				if( inv.validForPass( 2 ) && inv.canAccept( input ) && !inv.isPrioritized( input ) )
 				{
 					input = inv.injectItems( input, type, src );
 				}
