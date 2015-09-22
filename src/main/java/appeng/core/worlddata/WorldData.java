@@ -30,6 +30,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 
 import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.common.config.Configuration;
 
 import appeng.core.AEConfig;
 import appeng.services.CompassService;
@@ -39,7 +40,8 @@ import appeng.services.compass.CompassThreadFactory;
 /**
  * Singleton access to anything related to world-based data.
  *
- * Data will change depending which world is loaded. Will probably not affect SMP at all since only one world is loaded, but SSP more, cause they play on
+ * Data will change depending which world is loaded. Will probably not affect SMP at all since only one world is loaded,
+ * but SSP more, cause they play on
  * different worlds.
  *
  * @author thatsIch
@@ -69,6 +71,8 @@ public final class WorldData implements IWorldData
 	private final File spawnDirectory;
 	private final File compassDirectory;
 
+	private final Configuration sharedConfig;
+
 	private WorldData( @Nonnull final File worldDirectory )
 	{
 		Preconditions.checkNotNull( worldDirectory );
@@ -79,10 +83,11 @@ public final class WorldData implements IWorldData
 		this.compassDirectory = new File( this.ae2directory, COMPASS_DIR_NAME );
 
 		final File settingsFile = new File( this.ae2directory, SETTING_FILE_NAME );
+		this.sharedConfig = new Configuration( settingsFile, AEConfig.VERSION );
 
-		final PlayerData playerData = new PlayerData( settingsFile, AEConfig.VERSION );
-		final DimensionData dimensionData = new DimensionData( settingsFile, AEConfig.VERSION );
-		final StorageData storageData = new StorageData( settingsFile, AEConfig.VERSION );
+		final PlayerData playerData = new PlayerData( this.sharedConfig );
+		final DimensionData dimensionData = new DimensionData( this.sharedConfig );
+		final StorageData storageData = new StorageData( this.sharedConfig );
 
 		final ThreadFactory compassThreadFactory = new CompassThreadFactory();
 		final CompassService compassService = new CompassService( this.compassDirectory, compassThreadFactory );
