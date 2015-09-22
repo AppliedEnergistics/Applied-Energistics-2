@@ -28,6 +28,8 @@ import net.minecraft.tileentity.TileEntity;
 
 import appeng.api.AEApi;
 import appeng.api.storage.IMEInventory;
+import appeng.helpers.Reflected;
+import appeng.integration.BaseModule;
 import appeng.integration.IIntegrationModule;
 import appeng.integration.abstraction.IFZ;
 import appeng.integration.modules.helpers.FactorizationBarrel;
@@ -38,9 +40,9 @@ import appeng.util.Platform;
 /**
  * 100% Hacks.
  */
-public class FZ implements IFZ, IIntegrationModule
+public class FZ extends BaseModule implements IFZ, IIntegrationModule
 {
-
+	@Reflected
 	public static FZ instance;
 
 	private static Class<?> day_BarrelClass;

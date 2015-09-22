@@ -28,6 +28,7 @@ import Reika.RotaryCraft.API.Interfaces.Transducerable;
 import Reika.RotaryCraft.API.Power.AdvancedShaftPowerReceiver;
 
 import appeng.api.config.PowerUnits;
+import appeng.integration.IntegrationType;
 import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
 import appeng.transformer.annotations.Integration.Interface;
@@ -35,7 +36,7 @@ import appeng.transformer.annotations.Integration.InterfaceList;
 import appeng.transformer.annotations.Integration.Method;
 
 
-@InterfaceList( value = { @Interface( iname = "RotaryCraft", iface = "Reika.RotaryCraft.API.Power.AdvancedShaftPowerReceiver" ), @Interface( iname = "RotaryCraft", iface = "Reika.RotaryCraft.API.Interfaces.Transducerable" ) } )
+@InterfaceList( value = { @Interface( iname = IntegrationType.RotaryCraft, iface = "Reika.RotaryCraft.API.Power.AdvancedShaftPowerReceiver" ), @Interface( iname = IntegrationType.RotaryCraft, iface = "Reika.RotaryCraft.API.Interfaces.Transducerable" ) } )
 public abstract class RotaryCraft extends IC2 implements AdvancedShaftPowerReceiver, Transducerable
 {
 
@@ -47,7 +48,7 @@ public abstract class RotaryCraft extends IC2 implements AdvancedShaftPowerRecei
 	private long currentPower = 0;
 
 	@TileEvent( TileEventType.TICK )
-	@Method( iname = "RotaryCraft" )
+	@Method( iname = IntegrationType.RotaryCraft )
 	public void Tick_RotaryCraft()
 	{
 		if( this.worldObj != null && !this.worldObj.isRemote && this.currentPower > 0 )

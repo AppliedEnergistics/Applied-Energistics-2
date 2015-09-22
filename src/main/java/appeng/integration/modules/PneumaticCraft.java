@@ -31,6 +31,7 @@ import appeng.api.features.IP2PTunnelRegistry;
 import appeng.api.parts.IPartHelper;
 import appeng.helpers.Reflected;
 import appeng.integration.BaseModule;
+import appeng.integration.IntegrationHelper;
 import appeng.integration.IntegrationRegistry;
 import appeng.integration.IntegrationType;
 
@@ -45,10 +46,10 @@ public class PneumaticCraft extends BaseModule
 	@Reflected
 	public PneumaticCraft()
 	{
-		this.testClassExistence( pneumaticCraft.api.block.BlockSupplier.class );
-		this.testClassExistence( pneumaticCraft.api.tileentity.ISidedPneumaticMachine.class );
-		this.testClassExistence( pneumaticCraft.api.tileentity.AirHandlerSupplier.class );
-		this.testClassExistence( pneumaticCraft.api.tileentity.IAirHandler.class );
+		IntegrationHelper.testClassExistence( this, pneumaticCraft.api.block.BlockSupplier.class );
+		IntegrationHelper.testClassExistence( this, pneumaticCraft.api.tileentity.ISidedPneumaticMachine.class );
+		IntegrationHelper.testClassExistence( this, pneumaticCraft.api.tileentity.AirHandlerSupplier.class );
+		IntegrationHelper.testClassExistence( this, pneumaticCraft.api.tileentity.IAirHandler.class );
 	}
 
 	@Override

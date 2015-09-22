@@ -24,19 +24,22 @@ import net.minecraft.item.ItemStack;
 import mods.railcraft.api.crafting.IRockCrusherRecipe;
 import mods.railcraft.api.crafting.RailcraftCraftingManager;
 
+import appeng.helpers.Reflected;
 import appeng.integration.BaseModule;
+import appeng.integration.IntegrationHelper;
 import appeng.integration.abstraction.IRC;
 
 
 public class RC extends BaseModule implements IRC
 {
-
+	@Reflected
 	public static RC instance;
 
+	@Reflected
 	public RC()
 	{
-		this.testClassExistence( RailcraftCraftingManager.class );
-		this.testClassExistence( IRockCrusherRecipe.class );
+		IntegrationHelper.testClassExistence( this, mods.railcraft.api.crafting.RailcraftCraftingManager.class );
+		IntegrationHelper.testClassExistence( this, mods.railcraft.api.crafting.IRockCrusherRecipe.class );
 	}
 
 	@Override
@@ -49,13 +52,10 @@ public class RC extends BaseModule implements IRC
 	@Override
 	public void init()
 	{
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void postInit()
 	{
-
 	}
 }

@@ -28,10 +28,7 @@ import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 
 import buildcraft.api.blueprints.BuilderAPI;
-import buildcraft.api.blueprints.IBuilderContext;
 import buildcraft.api.blueprints.ISchematicRegistry;
-import buildcraft.api.blueprints.SchematicBlock;
-import buildcraft.api.blueprints.SchematicTile;
 
 import appeng.api.AEApi;
 import appeng.api.definitions.IBlockDefinition;
@@ -41,6 +38,7 @@ import appeng.api.util.IOrientableBlock;
 import appeng.core.AELog;
 import appeng.helpers.Reflected;
 import appeng.integration.BaseModule;
+import appeng.integration.IntegrationHelper;
 import appeng.integration.modules.BCHelpers.AECableSchematicTile;
 import appeng.integration.modules.BCHelpers.AEGenericSchematicTile;
 import appeng.integration.modules.BCHelpers.AERotatableBlockSchematic;
@@ -62,11 +60,11 @@ public class BuildCraftBuilder extends BaseModule
 	@Reflected
 	public BuildCraftBuilder()
 	{
-		this.testClassExistence( BuilderAPI.class );
-		this.testClassExistence( IBuilderContext.class );
-		this.testClassExistence( ISchematicRegistry.class );
-		this.testClassExistence( SchematicTile.class );
-		this.testClassExistence( SchematicBlock.class );
+		IntegrationHelper.testClassExistence( this, buildcraft.api.blueprints.BuilderAPI.class );
+		IntegrationHelper.testClassExistence( this, buildcraft.api.blueprints.IBuilderContext.class );
+		IntegrationHelper.testClassExistence( this, buildcraft.api.blueprints.ISchematicRegistry.class );
+		IntegrationHelper.testClassExistence( this, buildcraft.api.blueprints.SchematicTile.class );
+		IntegrationHelper.testClassExistence( this, buildcraft.api.blueprints.SchematicBlock.class );
 	}
 
 	@Override
@@ -85,7 +83,6 @@ public class BuildCraftBuilder extends BaseModule
 	@Override
 	public void postInit()
 	{
-
 	}
 
 	private void initBuilderSupport()

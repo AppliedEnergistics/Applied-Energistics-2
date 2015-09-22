@@ -34,12 +34,13 @@ import buildcraft.api.tools.IToolWrench;
 import appeng.api.implementations.items.IAEWrench;
 import appeng.api.util.DimensionalCoord;
 import appeng.core.features.AEFeature;
+import appeng.integration.IntegrationType;
 import appeng.items.AEBaseItem;
 import appeng.transformer.annotations.Integration.Interface;
 import appeng.util.Platform;
 
 
-@Interface( iface = "buildcraft.api.tools.IToolWrench", iname = "BuildCraftCore" )
+@Interface( iface = "buildcraft.api.tools.IToolWrench", iname = IntegrationType.BuildCraftCore )
 public class ToolQuartzWrench extends AEBaseItem implements IAEWrench, IToolWrench
 {
 

@@ -42,6 +42,7 @@ import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
 import appeng.helpers.Reflected;
 import appeng.integration.BaseModule;
+import appeng.integration.IntegrationHelper;
 import appeng.integration.abstraction.INEI;
 import appeng.integration.modules.NEIHelpers.NEIAEShapedRecipeHandler;
 import appeng.integration.modules.NEIHelpers.NEIAEShapelessRecipeHandler;
@@ -61,15 +62,19 @@ public class NEI extends BaseModule implements INEI, IContainerTooltipHandler
 	private final Class<?> apiClass;
 
 	// recipe handler...
-	Method registerRecipeHandler;
-	Method registerUsageHandler;
+	private Method registerRecipeHandler;
+	private Method registerUsageHandler;
 
 	@Reflected
 	public NEI() throws ClassNotFoundException
 	{
-		this.testClassExistence( GuiContainerManager.class );
-		this.testClassExistence( codechicken.nei.recipe.ICraftingHandler.class );
-		this.testClassExistence( codechicken.nei.recipe.IUsageHandler.class );
+		IntegrationHelper.testClassExistence( this, codechicken.nei.api.API.class );
+		IntegrationHelper.testClassExistence( this, codechicken.nei.api.IStackPositioner.class );
+		IntegrationHelper.testClassExistence( this, codechicken.nei.guihook.GuiContainerManager.class );
+		IntegrationHelper.testClassExistence( this, codechicken.nei.guihook.IContainerTooltipHandler.class );
+		IntegrationHelper.testClassExistence( this, codechicken.nei.recipe.ICraftingHandler.class );
+		IntegrationHelper.testClassExistence( this, codechicken.nei.recipe.IUsageHandler.class );
+
 		this.apiClass = Class.forName( "codechicken.nei.api.API" );
 	}
 
@@ -96,7 +101,7 @@ public class NEI extends BaseModule implements INEI, IContainerTooltipHandler
 		// crafting terminal...
 		Method registerGuiOverlay = this.apiClass.getDeclaredMethod( "registerGuiOverlay", Class.class, String.class, IStackPositioner.class );
 		Class overlayHandler = Class.forName( "codechicken.nei.api.IOverlayHandler" );
-		Class defaultHandler = NEICraftingHandler.class;
+		Class<NEICraftingHandler> defaultHandler = NEICraftingHandler.class;
 
 		Method registrar = this.apiClass.getDeclaredMethod( "registerGuiOverlayHandler", Class.class, overlayHandler, String.class );
 		registerGuiOverlay.invoke( this.apiClass, GuiCraftingTerm.class, "crafting", new TerminalCraftingSlotFinder() );

@@ -19,30 +19,29 @@
 package appeng.integration.modules;
 
 
-import powercrystals.minefactoryreloaded.api.rednet.connectivity.IRedNetConnection;
-
+import appeng.helpers.Reflected;
 import appeng.integration.BaseModule;
+import appeng.integration.IntegrationHelper;
 
 
 public class MFR extends BaseModule
 {
-
+	@Reflected
 	public static MFR instance;
 
+	@Reflected
 	public MFR()
 	{
-		this.testClassExistence( IRedNetConnection.class );
+		IntegrationHelper.testClassExistence( this, powercrystals.minefactoryreloaded.api.rednet.connectivity.IRedNetConnection.class );
 	}
 
 	@Override
 	public void init() throws Throwable
 	{
-
 	}
 
 	@Override
 	public void postInit()
 	{
-
 	}
 }

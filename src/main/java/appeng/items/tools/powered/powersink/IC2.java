@@ -29,12 +29,13 @@ import ic2.api.item.IElectricItemManager;
 import ic2.api.item.ISpecialElectricItem;
 
 import appeng.api.config.PowerUnits;
+import appeng.integration.IntegrationType;
 import appeng.transformer.annotations.Integration.Interface;
 import appeng.transformer.annotations.Integration.InterfaceList;
 import appeng.transformer.annotations.Integration.Method;
 
 
-@InterfaceList( value = { @Interface( iface = "ic2.api.item.ISpecialElectricItem", iname = "IC2" ), @Interface( iface = "ic2.api.item.IElectricItemManager", iname = "IC2" ) } )
+@InterfaceList( value = { @Interface( iface = "ic2.api.item.ISpecialElectricItem", iname = IntegrationType.IC2 ), @Interface( iface = "ic2.api.item.IElectricItemManager", iname = IntegrationType.IC2 ) } )
 public abstract class IC2 extends AERootPoweredItem implements IElectricItemManager, ISpecialElectricItem
 {
 	public IC2( double powerCapacity, Optional<String> subName )
@@ -135,7 +136,7 @@ public abstract class IC2 extends AERootPoweredItem implements IElectricItemMana
 	}
 
 	@Override
-	@Method( iname = "IC2" )
+	@Method( iname = IntegrationType.IC2 )
 	public IElectricItemManager getManager( ItemStack itemStack )
 	{
 		return this;

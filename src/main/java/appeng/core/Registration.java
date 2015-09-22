@@ -521,22 +521,6 @@ public final class Registration
 		partHelper.registerNewLayer( "appeng.parts.layers.LayerIFluidHandler", "net.minecraftforge.fluids.IFluidHandler" );
 		partHelper.registerNewLayer( "appeng.parts.layers.LayerITileStorageMonitorable", "appeng.api.implementations.tiles.ITileStorageMonitorable" );
 
-		if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.IC2 ) )
-		{
-			partHelper.registerNewLayer( "appeng.parts.layers.LayerIEnergySink", "ic2.api.energy.tile.IEnergySink" );
-			partHelper.registerNewLayer( "appeng.parts.layers.LayerIEnergySource", "ic2.api.energy.tile.IEnergySource" );
-		}
-
-		if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.RF ) )
-		{
-			partHelper.registerNewLayer( "appeng.parts.layers.LayerIEnergyHandler", "cofh.api.energy.IEnergyReceiver" );
-		}
-
-		if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.OpenComputers ) )
-		{
-			partHelper.registerNewLayer( "appeng.parts.layers.LayerSidedEnvironment", "li.cil.oc.api.network.SidedEnvironment" );
-		}
-
 		FMLCommonHandler.instance().bus().register( TickHandler.INSTANCE );
 		MinecraftForge.EVENT_BUS.register( TickHandler.INSTANCE );
 

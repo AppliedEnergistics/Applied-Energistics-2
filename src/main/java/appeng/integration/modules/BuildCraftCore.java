@@ -25,7 +25,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
-import buildcraft.BuildCraftTransport;
 import buildcraft.api.tools.IToolWrench;
 
 import appeng.api.AEApi;
@@ -33,6 +32,7 @@ import appeng.api.config.TunnelType;
 import appeng.api.features.IP2PTunnelRegistry;
 import appeng.helpers.Reflected;
 import appeng.integration.BaseModule;
+import appeng.integration.IntegrationHelper;
 import appeng.integration.abstraction.IBuildCraftCore;
 
 
@@ -45,9 +45,9 @@ public final class BuildCraftCore extends BaseModule implements IBuildCraftCore
 	@Reflected
 	public BuildCraftCore()
 	{
-		this.testClassExistence( buildcraft.BuildCraftCore.class );
-		this.testClassExistence( BuildCraftTransport.class );
-		this.testClassExistence( IToolWrench.class );
+		IntegrationHelper.testClassExistence( this, buildcraft.BuildCraftCore.class );
+		IntegrationHelper.testClassExistence( this, buildcraft.BuildCraftTransport.class );
+		IntegrationHelper.testClassExistence( this, buildcraft.api.tools.IToolWrench.class );
 	}
 
 	@Override
@@ -71,7 +71,6 @@ public final class BuildCraftCore extends BaseModule implements IBuildCraftCore
 	@Override
 	public void init()
 	{
-
 	}
 
 	@Override

@@ -32,6 +32,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 import appeng.api.config.PowerUnits;
+import appeng.integration.IntegrationType;
 import appeng.me.GridAccessException;
 import appeng.me.cache.helpers.TunnelCollection;
 import appeng.transformer.annotations.Integration.Interface;
@@ -39,7 +40,7 @@ import appeng.transformer.annotations.Integration.InterfaceList;
 import appeng.util.Platform;
 
 
-@InterfaceList( value = { @Interface( iface = "ic2.api.energy.tile.IEnergySink", iname = "IC2" ), @Interface( iface = "ic2.api.energy.tile.IEnergySource", iname = "IC2" ) } )
+@InterfaceList( value = { @Interface( iface = "ic2.api.energy.tile.IEnergySink", iname = IntegrationType.IC2 ), @Interface( iface = "ic2.api.energy.tile.IEnergySource", iname = IntegrationType.IC2 ) } )
 public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements ic2.api.energy.tile.IEnergySink, ic2.api.energy.tile.IEnergySource
 {
 

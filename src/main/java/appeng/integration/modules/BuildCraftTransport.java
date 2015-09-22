@@ -33,7 +33,6 @@ import cpw.mods.fml.common.event.FMLInterModComms;
 
 import buildcraft.api.facades.IFacadeItem;
 import buildcraft.api.transport.IInjectable;
-import buildcraft.api.transport.IPipeConnection;
 import buildcraft.api.transport.IPipeTile;
 import buildcraft.transport.ItemFacade;
 import buildcraft.transport.PipeIconProvider;
@@ -48,6 +47,7 @@ import appeng.api.parts.IFacadePart;
 import appeng.facade.FacadePart;
 import appeng.helpers.Reflected;
 import appeng.integration.BaseModule;
+import appeng.integration.IntegrationHelper;
 import appeng.integration.abstraction.IBuildCraftTransport;
 import appeng.integration.modules.BCHelpers.BCPipeHandler;
 
@@ -66,14 +66,14 @@ public class BuildCraftTransport extends BaseModule implements IBuildCraftTransp
 	@Reflected
 	public BuildCraftTransport()
 	{
-		this.testClassExistence( buildcraft.BuildCraftTransport.class );
-		this.testClassExistence( IFacadeItem.class );
-		this.testClassExistence( IInjectable.class );
-		this.testClassExistence( IPipeConnection.class );
-		this.testClassExistence( IPipeTile.class );
-		this.testClassExistence( ItemFacade.class );
-		this.testClassExistence( PipeIconProvider.class );
-		this.testClassExistence( IPipeTile.PipeType.class );
+		IntegrationHelper.testClassExistence( this, buildcraft.BuildCraftTransport.class );
+		IntegrationHelper.testClassExistence( this, buildcraft.api.facades.IFacadeItem.class );
+		IntegrationHelper.testClassExistence( this, buildcraft.api.transport.IInjectable.class );
+		IntegrationHelper.testClassExistence( this, buildcraft.api.transport.IPipeConnection.class );
+		IntegrationHelper.testClassExistence( this, buildcraft.api.transport.IPipeTile.class );
+		IntegrationHelper.testClassExistence( this, buildcraft.api.transport.IPipeTile.PipeType.class );
+		IntegrationHelper.testClassExistence( this, buildcraft.transport.ItemFacade.class );
+		IntegrationHelper.testClassExistence( this, buildcraft.transport.PipeIconProvider.class );
 	}
 
 	@Override
