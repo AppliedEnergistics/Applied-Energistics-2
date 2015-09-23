@@ -79,6 +79,7 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 {
 	private static final IWideReadableNumberConverter NUMBER_CONVERTER = ReadableNumberConverter.INSTANCE;
 	private IAEItemStack configuredItem;
+	private String lastHumanReadableText;
 	private boolean isLocked;
 	private IStackWatcher myWatcher;
 	@SideOnly( Side.CLIENT )
@@ -177,6 +178,7 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 
 		final TileEntity te = this.tile;
 		final ItemStack eq = player.getCurrentEquippedItem();
+
 		if( Platform.isWrench( player, eq, te.xCoord, te.yCoord, te.zCoord ) )
 		{
 			this.isLocked = !this.isLocked;
@@ -249,6 +251,7 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 	protected void finalize() throws Throwable
 	{
 		super.finalize();
+
 		if( this.dspList != null )
 		{
 			GLAllocation.deleteDisplayLists( this.dspList );
@@ -272,6 +275,7 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 		}
 
 		final IAEItemStack ais = (IAEItemStack) this.getDisplayed();
+
 		if( ais != null )
 		{
 			GL11.glPushMatrix();
@@ -310,46 +314,41 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 		// GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS );
 
 		final ForgeDirection d = this.side;
+
 		GL11.glTranslated( d.offsetX * 0.77, d.offsetY * 0.77, d.offsetZ * 0.77 );
 
-		if( d == ForgeDirection.UP )
+		switch( d )
 		{
-			GL11.glScalef( 1.0f, -1.0f, 1.0f );
-			GL11.glRotatef( 90.0f, 1.0f, 0.0f, 0.0f );
-			GL11.glRotatef( this.getSpin() * 90.0F, 0, 0, 1 );
+			case UP:
+				GL11.glScalef( 1.0f, -1.0f, 1.0f );
+				GL11.glRotatef( 90.0f, 1.0f, 0.0f, 0.0f );
+				GL11.glRotatef( this.getSpin() * 90.0F, 0, 0, 1 );
+				break;
+			case DOWN:
+				GL11.glScalef( 1.0f, -1.0f, 1.0f );
+				GL11.glRotatef( -90.0f, 1.0f, 0.0f, 0.0f );
+				GL11.glRotatef( this.getSpin() * -90.0F, 0, 0, 1 );
+				break;
+			case EAST:
+				GL11.glScalef( -1.0f, -1.0f, -1.0f );
+				GL11.glRotatef( -90.0f, 0.0f, 1.0f, 0.0f );
+				break;
+			case WEST:
+				GL11.glScalef( -1.0f, -1.0f, -1.0f );
+				GL11.glRotatef( 90.0f, 0.0f, 1.0f, 0.0f );
+				break;
+			case NORTH:
+				GL11.glScalef( -1.0f, -1.0f, -1.0f );
+				break;
+			case SOUTH:
+				GL11.glScalef( -1.0f, -1.0f, -1.0f );
+				GL11.glRotatef( 180.0f, 0.0f, 1.0f, 0.0f );
+				break;
+
+			default:
+				break;
 		}
 
-		if( d == ForgeDirection.DOWN )
-		{
-			GL11.glScalef( 1.0f, -1.0f, 1.0f );
-			GL11.glRotatef( -90.0f, 1.0f, 0.0f, 0.0f );
-			GL11.glRotatef( this.getSpin() * -90.0F, 0, 0, 1 );
-		}
-
-		if( d == ForgeDirection.EAST )
-		{
-			GL11.glScalef( -1.0f, -1.0f, -1.0f );
-			GL11.glRotatef( -90.0f, 0.0f, 1.0f, 0.0f );
-		}
-
-		if( d == ForgeDirection.WEST )
-		{
-			GL11.glScalef( -1.0f, -1.0f, -1.0f );
-			GL11.glRotatef( 90.0f, 0.0f, 1.0f, 0.0f );
-		}
-
-		if( d == ForgeDirection.NORTH )
-		{
-			GL11.glScalef( -1.0f, -1.0f, -1.0f );
-		}
-
-		if( d == ForgeDirection.SOUTH )
-		{
-			GL11.glScalef( -1.0f, -1.0f, -1.0f );
-			GL11.glRotatef( 180.0f, 0.0f, 1.0f, 0.0f );
-		}
-
-		// GL11.glPushMatrix();
 		try
 		{
 			final ItemStack sis = ais.getItemStack();
@@ -378,8 +377,6 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 			GL11.glEnable( GL11.GL_LIGHTING );
 			GL11.glEnable( GL12.GL_RESCALE_NORMAL );
 		}
-
-		// GL11.glPopMatrix();
 
 		GL11.glTranslatef( 0.0f, 0.14f, -0.24f );
 		GL11.glScalef( 1.0f / 62.0f, 1.0f / 62.0f, 1.0f / 62.0f );
@@ -422,7 +419,14 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 				this.configuredItem.setStackSize( fullStack.getStackSize() );
 			}
 
-			this.getHost().markForUpdate();
+			final long stackSize = this.configuredItem.getStackSize();
+			final String humanReadableText = NUMBER_CONVERTER.toWideReadableForm( stackSize );
+
+			if( !humanReadableText.equals( this.lastHumanReadableText ) )
+			{
+				this.lastHumanReadableText = humanReadableText;
+				this.getHost().markForUpdate();
+			}
 		}
 	}
 
