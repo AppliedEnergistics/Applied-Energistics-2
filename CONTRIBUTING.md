@@ -11,19 +11,31 @@ top of things.
 
 Applied Energistics 2 crashing, have a suggestion, found a bug?  Create an issue now!
 
-1. Make sure your issue hasn't already been answered or fixed.  Also think about whether your issue is a valid one before submitting it.
-2. Go to [the issues page](https://github.com/AppliedEnergistics/Applied-Energistics-2/issues)
-3. Click new issue
-4. Enter your Issue's title (something that summarizes your issue), and then create a detailed description of the issue.
-	* To help in resolving your issues please try to include the follow if applicable:
-		* The problem that is happening?
-		* What was expected?
-		* How to reproduce the problem?
-		* Server or Single Player?
-		* Mod Pack using and version?
-		* Crash log (Please make sure to use [pastebin](http://pastebin.com/) for the log file) 
-		* Screen shots or Pictures of the problem
+1. Make sure your issue has not already been answered or fixed and you are using the latest version. Also think about whether your issue is a valid one before submitting it.
+2. Go to [the issues page](https://github.com/AppliedEnergistics/Applied-Energistics-2/issues) and click [new issue](https://github.com/AppliedEnergistics/Applied-Energistics-2/issues/new)
+3. Enter your a title of your issue (something that summarizes your issue), and then create a detailed description of the issue.
+    * Do not tag it with something like `[Feature]` or `[Bug]`. When it is applicable, we will take care of it.
+    * The following details are required. Not including them can cause the issue to be closed.
+        * Forge version
+        * AE2 version
+        * Crash log, when reporting a crash (Please make sure to use [pastebin](http://pastebin.com/))
+            * Do not post an excerpt of what you consider important, instead:
+            * Post the full log
+        * Other mods and their version, when reporting an issue between AE and another mod
+            * Also consider updating these before submitting a new issue, it might be already fixed
+        * A detailed description of the bug or feature
+    * To further help in resolving your issues please try to include the follow if applicable:
+        * What was expected?
+        * How to reproduce the problem?
+            * This is usually a great detail and allows us to fix it way faster
+        * Server or Single Player?
+        * Screen shots or Pictures of the problem
+        * Mod Pack using and version?
+            * Keep in mind that some mods might use an outdated version of AE2
+            * If so you should report it to your modpack
 5. Click `Submit New Issue`, and wait for feedback!
+
+Providing as many details as possible does help us to find and resolve the issue faster and also you getting a fixed version as fast as possible.
 
 ### Submitting Changes
 
@@ -55,10 +67,8 @@ Applied Energistics 2 crashing, have a suggestion, found a bug?  Create an issue
     from our issue tracker.  The body describes the behavior without the patch,
     why this is a problem, and how the patch fixes the problem when applied.
 ````
-* Always fully test your changes. If they are large engouh in scope, then fully
-	test AE2.
-* Describing the process you used to test your changes in detail will help speed
-  up this process.
+* Always fully test your changes. If they are large engouh in scope, then fully test AE2.
+* Describing the process you used to test your changes in detail will help speed up this process.
 
 ## Making Trivial Changes
 
@@ -96,6 +106,9 @@ Applied Energistics does not follow standard Java syntax. The guidelines below i
 the styling guidelines used by AE. 
 
 PRs that do not conform to these standards will be rejected.
+
+You can find presets for Eclipse and IntelliJ IDEA in the `codeformat` folder.
+We try to keep them up to date, but in case you find them not formatting it correctly, then please report it 
 
 ### Whitespace
 
