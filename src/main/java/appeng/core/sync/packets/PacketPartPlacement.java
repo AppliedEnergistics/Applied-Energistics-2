@@ -23,7 +23,6 @@ import io.netty.buffer.ByteBuf;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
 import appeng.core.CommonHelper;
@@ -32,7 +31,7 @@ import appeng.core.sync.AppEngPacketHandler;
 import appeng.parts.PartPlacement;
 
 
-public class PacketPartPlacement implements AppEngPacket, AppEngPacketHandler<PacketPartPlacement, IMessage>
+public class PacketPartPlacement implements AppEngPacket, AppEngPacketHandler<PacketPartPlacement, AppEngPacket>
 {
 
 	private int x;
@@ -57,7 +56,7 @@ public class PacketPartPlacement implements AppEngPacket, AppEngPacketHandler<Pa
 	}
 
 	@Override
-	public IMessage onMessage( PacketPartPlacement message, MessageContext ctx )
+	public AppEngPacket onMessage( PacketPartPlacement message, MessageContext ctx )
 	{
 		final EntityPlayerMP sender = (EntityPlayerMP) ctx.getServerHandler().playerEntity;
 		CommonHelper.proxy.updateRenderMode( sender );

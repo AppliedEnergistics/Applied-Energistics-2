@@ -25,7 +25,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
 import appeng.api.util.DimensionalCoord;
@@ -36,7 +35,7 @@ import appeng.core.worlddata.WorldData;
 import appeng.services.compass.ICompassCallback;
 
 
-public class PacketCompassRequest implements AppEngPacket, AppEngPacketHandler<PacketCompassRequest, IMessage>, ICompassCallback
+public class PacketCompassRequest implements AppEngPacket, AppEngPacketHandler<PacketCompassRequest, AppEngPacket>, ICompassCallback
 {
 
 	private long attunement;
@@ -67,7 +66,7 @@ public class PacketCompassRequest implements AppEngPacket, AppEngPacketHandler<P
 	}
 
 	@Override
-	public IMessage onMessage( PacketCompassRequest message, MessageContext ctx )
+	public AppEngPacket onMessage( PacketCompassRequest message, MessageContext ctx )
 	{
 		message.talkBackTo = ctx.getServerHandler().playerEntity;
 

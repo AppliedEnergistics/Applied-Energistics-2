@@ -21,7 +21,6 @@ package appeng.core.sync.packets;
 
 import io.netty.buffer.ByteBuf;
 
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
 import appeng.api.util.AEColor;
@@ -31,7 +30,7 @@ import appeng.hooks.TickHandler;
 import appeng.hooks.TickHandler.PlayerColor;
 
 
-public class PacketPaintedEntity implements AppEngPacket, AppEngPacketHandler<PacketPaintedEntity, IMessage>
+public class PacketPaintedEntity implements AppEngPacket, AppEngPacketHandler<PacketPaintedEntity, AppEngPacket>
 {
 
 	private AEColor myColor;
@@ -52,7 +51,7 @@ public class PacketPaintedEntity implements AppEngPacket, AppEngPacketHandler<Pa
 	}
 
 	@Override
-	public IMessage onMessage( PacketPaintedEntity message, MessageContext ctx )
+	public AppEngPacket onMessage( PacketPaintedEntity message, MessageContext ctx )
 	{
 		final PlayerColor pc = new PlayerColor( message.entityId, message.myColor, message.ticks );
 		TickHandler.INSTANCE.getPlayerColors().put( message.entityId, pc );

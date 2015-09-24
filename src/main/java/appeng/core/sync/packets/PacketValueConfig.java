@@ -30,7 +30,6 @@ import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 
 import cpw.mods.fml.common.network.ByteBufUtils;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import cpw.mods.fml.relauncher.Side;
 
@@ -56,7 +55,7 @@ import appeng.core.sync.AppEngPacketHandler;
 import appeng.helpers.IMouseWheelItem;
 
 
-public class PacketValueConfig implements AppEngPacket, AppEngPacketHandler<PacketValueConfig, IMessage>
+public class PacketValueConfig implements AppEngPacket, AppEngPacketHandler<PacketValueConfig, AppEngPacket>
 {
 
 	private String name;
@@ -75,7 +74,7 @@ public class PacketValueConfig implements AppEngPacket, AppEngPacketHandler<Pack
 	}
 
 	@Override
-	public IMessage onMessage( PacketValueConfig message, MessageContext ctx )
+	public AppEngPacket onMessage( PacketValueConfig message, MessageContext ctx )
 	{
 		if( ctx.side == Side.CLIENT )
 		{

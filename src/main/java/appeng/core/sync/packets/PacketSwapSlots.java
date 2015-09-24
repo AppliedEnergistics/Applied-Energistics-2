@@ -21,7 +21,6 @@ package appeng.core.sync.packets;
 
 import io.netty.buffer.ByteBuf;
 
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
 import appeng.container.AEBaseContainer;
@@ -29,7 +28,7 @@ import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.AppEngPacketHandler;
 
 
-public class PacketSwapSlots implements AppEngPacket, AppEngPacketHandler<PacketSwapSlots, IMessage>
+public class PacketSwapSlots implements AppEngPacket, AppEngPacketHandler<PacketSwapSlots, AppEngPacket>
 {
 
 	private int slotA;
@@ -48,7 +47,7 @@ public class PacketSwapSlots implements AppEngPacket, AppEngPacketHandler<Packet
 	}
 
 	@Override
-	public IMessage onMessage( PacketSwapSlots message, MessageContext ctx )
+	public AppEngPacket onMessage( PacketSwapSlots message, MessageContext ctx )
 	{
 		if( ctx.getServerHandler().playerEntity != null && ctx.getServerHandler().playerEntity.openContainer instanceof AEBaseContainer )
 		{

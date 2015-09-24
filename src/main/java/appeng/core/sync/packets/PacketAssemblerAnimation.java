@@ -25,7 +25,6 @@ import io.netty.buffer.ByteBuf;
 
 import net.minecraft.world.World;
 
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
 import appeng.api.storage.data.IAEItemStack;
@@ -37,7 +36,7 @@ import appeng.core.sync.AppEngPacketHandler;
 import appeng.util.item.AEItemStack;
 
 
-public class PacketAssemblerAnimation implements AppEngPacket, AppEngPacketHandler<PacketAssemblerAnimation, IMessage>
+public class PacketAssemblerAnimation implements AppEngPacket, AppEngPacketHandler<PacketAssemblerAnimation, AppEngPacket>
 {
 
 	private int x;
@@ -62,7 +61,7 @@ public class PacketAssemblerAnimation implements AppEngPacket, AppEngPacketHandl
 	}
 
 	@Override
-	public IMessage onMessage( PacketAssemblerAnimation message, MessageContext ctx )
+	public AppEngPacket onMessage( PacketAssemblerAnimation message, MessageContext ctx )
 	{
 		final double d0 = 0.5d;// + ((double) (Platform.getRandomFloat() - 0.5F) * 0.26D);
 		final double d1 = 0.5d;// + ((double) (Platform.getRandomFloat() - 0.5F) * 0.26D);

@@ -21,7 +21,6 @@ package appeng.core.sync.packets;
 
 import io.netty.buffer.ByteBuf;
 
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
 import appeng.container.AEBaseContainer;
@@ -29,7 +28,7 @@ import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.AppEngPacketHandler;
 
 
-public class PacketPartialItem implements AppEngPacket, AppEngPacketHandler<PacketPartialItem, IMessage>
+public class PacketPartialItem implements AppEngPacket, AppEngPacketHandler<PacketPartialItem, AppEngPacket>
 {
 
 	private short pageNum;
@@ -48,7 +47,7 @@ public class PacketPartialItem implements AppEngPacket, AppEngPacketHandler<Pack
 	}
 
 	@Override
-	public IMessage onMessage( PacketPartialItem message, MessageContext ctx )
+	public AppEngPacket onMessage( PacketPartialItem message, MessageContext ctx )
 	{
 		if( ctx.getServerHandler().playerEntity.openContainer instanceof AEBaseContainer )
 		{

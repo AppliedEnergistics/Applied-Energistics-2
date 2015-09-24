@@ -24,7 +24,6 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.inventory.Container;
 
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import cpw.mods.fml.relauncher.Side;
 
@@ -33,7 +32,7 @@ import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.AppEngPacketHandler;
 
 
-public class PacketProgressBar implements AppEngPacket, AppEngPacketHandler<PacketProgressBar, IMessage>
+public class PacketProgressBar implements AppEngPacket, AppEngPacketHandler<PacketProgressBar, AppEngPacket>
 {
 
 	private short id;
@@ -52,7 +51,7 @@ public class PacketProgressBar implements AppEngPacket, AppEngPacketHandler<Pack
 	}
 
 	@Override
-	public IMessage onMessage( PacketProgressBar message, MessageContext ctx )
+	public AppEngPacket onMessage( PacketProgressBar message, MessageContext ctx )
 	{
 		if( ctx.side == Side.CLIENT )
 		{

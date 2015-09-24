@@ -26,7 +26,6 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.tileentity.TileEntity;
 
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import cpw.mods.fml.relauncher.Side;
 
@@ -43,7 +42,7 @@ import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 
 
-public class PacketInventoryAction implements AppEngPacket, AppEngPacketHandler<PacketInventoryAction, IMessage>
+public class PacketInventoryAction implements AppEngPacket, AppEngPacketHandler<PacketInventoryAction, AppEngPacket>
 {
 
 	private InventoryAction action;
@@ -80,7 +79,7 @@ public class PacketInventoryAction implements AppEngPacket, AppEngPacketHandler<
 	}
 
 	@Override
-	public IMessage onMessage( PacketInventoryAction message, MessageContext ctx )
+	public AppEngPacket onMessage( PacketInventoryAction message, MessageContext ctx )
 	{
 		if( ctx.side == Side.CLIENT )
 		{

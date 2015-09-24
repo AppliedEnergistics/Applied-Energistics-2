@@ -24,7 +24,6 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.inventory.Container;
 import net.minecraft.tileentity.TileEntity;
 
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import cpw.mods.fml.relauncher.Side;
 
@@ -37,7 +36,7 @@ import appeng.core.sync.GuiBridge;
 import appeng.util.Platform;
 
 
-public class PacketSwitchGuis implements AppEngPacket, AppEngPacketHandler<PacketSwitchGuis, IMessage>
+public class PacketSwitchGuis implements AppEngPacket, AppEngPacketHandler<PacketSwitchGuis, AppEngPacket>
 {
 
 	private GuiBridge newGui;
@@ -59,7 +58,7 @@ public class PacketSwitchGuis implements AppEngPacket, AppEngPacketHandler<Packe
 	}
 
 	@Override
-	public IMessage onMessage( PacketSwitchGuis message, MessageContext ctx )
+	public AppEngPacket onMessage( PacketSwitchGuis message, MessageContext ctx )
 	{
 		if( ctx.side == Side.CLIENT )
 		{

@@ -34,7 +34,6 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
 import appeng.client.gui.implementations.GuiInterfaceTerminal;
@@ -42,7 +41,7 @@ import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.AppEngPacketHandler;
 
 
-public class PacketCompressedNBT implements AppEngPacket, AppEngPacketHandler<PacketCompressedNBT, IMessage>
+public class PacketCompressedNBT implements AppEngPacket, AppEngPacketHandler<PacketCompressedNBT, AppEngPacket>
 {
 
 	// input.
@@ -121,7 +120,7 @@ public class PacketCompressedNBT implements AppEngPacket, AppEngPacketHandler<Pa
 	}
 
 	@Override
-	public IMessage onMessage( PacketCompressedNBT message, MessageContext ctx )
+	public AppEngPacket onMessage( PacketCompressedNBT message, MessageContext ctx )
 	{
 		final GuiScreen gs = Minecraft.getMinecraft().currentScreen;
 

@@ -26,7 +26,6 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInventory;
 
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
 import appeng.api.AEApi;
@@ -37,7 +36,7 @@ import appeng.core.sync.AppEngPacketHandler;
 import appeng.util.item.AEItemStack;
 
 
-public class PacketPatternSlot implements AppEngPacket, AppEngPacketHandler<PacketPatternSlot, IMessage>
+public class PacketPatternSlot implements AppEngPacket, AppEngPacketHandler<PacketPatternSlot, AppEngPacket>
 {
 
 	private IInventory pat;
@@ -77,27 +76,8 @@ public class PacketPatternSlot implements AppEngPacket, AppEngPacketHandler<Pack
 		this.shift = shift;
 	}
 
-	private void writeItem( IAEItemStack slotItem, ByteBuf data )
-	{
-		if( slotItem == null )
-		{
-			data.writeBoolean( false );
-		}
-		else
-		{
-			data.writeBoolean( true );
-			try
-			{
-				slotItem.writeToPacket( data );
-			}
-			catch( IOException e )
-			{
-			}
-		}
-	}
-
 	@Override
-	public IMessage onMessage( PacketPatternSlot message, MessageContext ctx )
+	public AppEngPacket onMessage( PacketPatternSlot message, MessageContext ctx )
 	{
 		final EntityPlayerMP sender = (EntityPlayerMP) ctx.getServerHandler().playerEntity;
 		if( sender.openContainer instanceof ContainerPatternTerm )
@@ -151,5 +131,24 @@ public class PacketPatternSlot implements AppEngPacket, AppEngPacketHandler<Pack
 	public boolean isShift()
 	{
 		return shift;
+	}
+
+	private void writeItem( IAEItemStack slotItem, ByteBuf data )
+	{
+		if( slotItem == null )
+		{
+			data.writeBoolean( false );
+		}
+		else
+		{
+			data.writeBoolean( true );
+			try
+			{
+				slotItem.writeToPacket( data );
+			}
+			catch( IOException e )
+			{
+			}
+		}
 	}
 }

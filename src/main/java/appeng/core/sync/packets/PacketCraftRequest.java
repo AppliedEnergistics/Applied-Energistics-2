@@ -27,7 +27,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
 import appeng.api.networking.IGrid;
@@ -45,7 +44,7 @@ import appeng.core.sync.GuiBridge;
 import appeng.util.Platform;
 
 
-public class PacketCraftRequest implements AppEngPacket, AppEngPacketHandler<PacketCraftRequest, IMessage>
+public class PacketCraftRequest implements AppEngPacket, AppEngPacketHandler<PacketCraftRequest, AppEngPacket>
 {
 
 	private long amount;
@@ -63,7 +62,7 @@ public class PacketCraftRequest implements AppEngPacket, AppEngPacketHandler<Pac
 	}
 
 	@Override
-	public IMessage onMessage( PacketCraftRequest message, MessageContext ctx )
+	public AppEngPacket onMessage( PacketCraftRequest message, MessageContext ctx )
 	{
 		final EntityPlayer player = ctx.getServerHandler().playerEntity;
 
