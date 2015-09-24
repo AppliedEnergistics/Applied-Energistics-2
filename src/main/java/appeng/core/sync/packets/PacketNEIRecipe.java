@@ -53,6 +53,7 @@ import appeng.container.ContainerNull;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.AppEngPacketHandler;
 import appeng.helpers.IContainerCraftingPacket;
+import appeng.helpers.Reflected;
 import appeng.items.storage.ItemViewCell;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
@@ -66,9 +67,10 @@ public class PacketNEIRecipe implements AppEngPacket, AppEngPacketHandler<Packet
 	private ItemStack[][] recipeStack;
 	private NBTTagCompound recipe;
 
-	// automatic.
+	@Reflected
 	public PacketNEIRecipe()
 	{
+		// automatic.
 	}
 
 	// api
@@ -247,14 +249,14 @@ public class PacketNEIRecipe implements AppEngPacket, AppEngPacketHandler<Packet
 	@Override
 	public void fromBytes( ByteBuf buf )
 	{
-		NBTTagCompound recipe = ByteBufUtils.readTag( buf );
+		final NBTTagCompound recipe = ByteBufUtils.readTag( buf );
 
 		if( recipe != null )
 		{
 			this.recipeStack = new ItemStack[9][];
 			for( int x = 0; x < this.recipeStack.length; x++ )
 			{
-				NBTTagList list = recipe.getTagList( "#" + x, 10 );
+				final NBTTagList list = recipe.getTagList( "#" + x, 10 );
 				if( list.tagCount() > 0 )
 				{
 					this.recipeStack[x] = new ItemStack[list.tagCount()];
@@ -287,8 +289,8 @@ public class PacketNEIRecipe implements AppEngPacket, AppEngPacketHandler<Packet
 	@Override
 	public AppEngPacket onMessage( PacketNEIRecipe message, MessageContext ctx )
 	{
-		EntityPlayerMP player = (EntityPlayerMP) ctx.getServerHandler().playerEntity;
-		Container con = player.openContainer;
+		final EntityPlayerMP player = (EntityPlayerMP) ctx.getServerHandler().playerEntity;
+		final Container con = player.openContainer;
 
 		if( con instanceof IContainerCraftingPacket )
 		{
@@ -321,7 +323,7 @@ public class PacketNEIRecipe implements AppEngPacket, AppEngPacketHandler<Packet
 						}
 					}
 
-					IRecipe r = Platform.findMatchingRecipe( testInv, player.worldObj );
+					final IRecipe r = Platform.findMatchingRecipe( testInv, player.worldObj );
 
 					if( r != null && security.hasPermission( player, SecurityPermissions.EXTRACT ) )
 					{
@@ -341,7 +343,7 @@ public class PacketNEIRecipe implements AppEngPacket, AppEngPacketHandler<Packet
 								if( currentItem != null )
 								{
 									testInv.setInventorySlotContents( x, currentItem );
-									ItemStack newItemStack = r.matches( testInv, player.worldObj ) ? r.getCraftingResult( testInv ) : null;
+									final ItemStack newItemStack = r.matches( testInv, player.worldObj ) ? r.getCraftingResult( testInv ) : null;
 									testInv.setInventorySlotContents( x, patternItem );
 
 									if( newItemStack == null || !Platform.isSameItemPrecise( newItemStack, is ) )
@@ -376,7 +378,7 @@ public class PacketNEIRecipe implements AppEngPacket, AppEngPacketHandler<Packet
 									{
 										for( int y = 0; y < message.recipeStack[x].length; y++ )
 										{
-											IAEItemStack request = AEItemStack.create( message.recipeStack[x][y] );
+											final IAEItemStack request = AEItemStack.create( message.recipeStack[x][y] );
 											if( request != null )
 											{
 												if( filter == null || filter.isListed( request ) )

@@ -25,6 +25,7 @@ import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.AppEngPacketHandler;
+import appeng.helpers.Reflected;
 import appeng.hooks.CompassManager;
 import appeng.hooks.CompassResult;
 
@@ -41,9 +42,10 @@ public class PacketCompassResponse implements AppEngPacket, AppEngPacketHandler<
 	private boolean spin;
 	private double radians;
 
-	// automatic.
+	@Reflected
 	public PacketCompassResponse()
 	{
+		// automatic.
 	}
 
 	// api

@@ -53,6 +53,7 @@ import appeng.container.implementations.ContainerStorageBus;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.AppEngPacketHandler;
 import appeng.helpers.IMouseWheelItem;
+import appeng.helpers.Reflected;
 
 
 public class PacketValueConfig implements AppEngPacket, AppEngPacketHandler<PacketValueConfig, AppEngPacket>
@@ -61,9 +62,10 @@ public class PacketValueConfig implements AppEngPacket, AppEngPacketHandler<Pack
 	private String name;
 	private String value;
 
-	// automatic.
+	@Reflected
 	public PacketValueConfig()
 	{
+		// automatic.
 	}
 
 	// api

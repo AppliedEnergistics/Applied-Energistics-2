@@ -28,6 +28,7 @@ import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import appeng.core.CommonHelper;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.AppEngPacketHandler;
+import appeng.helpers.Reflected;
 
 
 public class PacketMockExplosion implements AppEngPacket, AppEngPacketHandler<PacketMockExplosion, AppEngPacket>
@@ -37,9 +38,10 @@ public class PacketMockExplosion implements AppEngPacket, AppEngPacketHandler<Pa
 	private double y;
 	private double z;
 
-	// automatic.
+	@Reflected
 	public PacketMockExplosion()
 	{
+		// automatic.
 	}
 
 	// api
@@ -69,8 +71,8 @@ public class PacketMockExplosion implements AppEngPacket, AppEngPacketHandler<Pa
 	@Override
 	public void toBytes( ByteBuf buf )
 	{
-		buf.writeDouble( x );
-		buf.writeDouble( y );
-		buf.writeDouble( z );
+		buf.writeDouble( this.x );
+		buf.writeDouble( this.y );
+		buf.writeDouble( this.z );
 	}
 }

@@ -45,6 +45,7 @@ import appeng.client.gui.implementations.GuiMEMonitorable;
 import appeng.client.gui.implementations.GuiNetworkStatus;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.AppEngPacketHandler;
+import appeng.helpers.Reflected;
 import appeng.util.item.AEItemStack;
 
 
@@ -57,7 +58,7 @@ public class PacketMEInventoryUpdate implements AppEngPacket, AppEngPacketHandle
 
 	// input.
 	@Nullable
-	private List<IAEItemStack> list = new LinkedList<IAEItemStack>();
+	private final List<IAEItemStack> list = new LinkedList<IAEItemStack>();
 	// output...
 	private byte ref;
 
@@ -65,6 +66,7 @@ public class PacketMEInventoryUpdate implements AppEngPacket, AppEngPacketHandle
 	private boolean empty = true;
 
 	// automatic.
+	@Reflected
 	public PacketMEInventoryUpdate()
 	{
 		this( (byte) 0 );
@@ -114,11 +116,11 @@ public class PacketMEInventoryUpdate implements AppEngPacket, AppEngPacketHandle
 			} );
 
 			final ByteBuf uncompressed = Unpooled.buffer( buf.readableBytes() );
-			byte[] tmp = new byte[TEMP_BUFFER_SIZE];
+			final byte[] tmp = new byte[TEMP_BUFFER_SIZE];
 
 			while( gzReader.available() != 0 )
 			{
-				int bytes = gzReader.read( tmp );
+				final int bytes = gzReader.read( tmp );
 				if( bytes > 0 )
 				{
 					uncompressed.writeBytes( tmp, 0, bytes );
@@ -157,7 +159,7 @@ public class PacketMEInventoryUpdate implements AppEngPacket, AppEngPacketHandle
 				}
 			} );
 
-			for( IAEItemStack iaeItemStack : this.list )
+			for( final IAEItemStack iaeItemStack : this.list )
 			{
 				final ByteBuf tmp = Unpooled.buffer( OPERATION_BYTE_LIMIT );
 
@@ -177,7 +179,7 @@ public class PacketMEInventoryUpdate implements AppEngPacket, AppEngPacketHandle
 			}
 			compressFrame.flush();
 		}
-		catch( IOException e1 )
+		catch( final IOException e1 )
 		{
 		}
 		finally

@@ -39,6 +39,7 @@ import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import appeng.client.gui.implementations.GuiInterfaceTerminal;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.AppEngPacketHandler;
+import appeng.helpers.Reflected;
 
 
 public class PacketCompressedNBT implements AppEngPacket, AppEngPacketHandler<PacketCompressedNBT, AppEngPacket>
@@ -50,9 +51,10 @@ public class PacketCompressedNBT implements AppEngPacket, AppEngPacketHandler<Pa
 	private ByteBuf data;
 	private GZIPOutputStream compressFrame;
 
-	// automatic.
+	@Reflected
 	public PacketCompressedNBT()
 	{
+		// automatic.
 	}
 
 	// api

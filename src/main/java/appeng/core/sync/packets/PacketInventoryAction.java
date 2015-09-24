@@ -38,6 +38,7 @@ import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.AppEngPacketHandler;
 import appeng.core.sync.GuiBridge;
 import appeng.helpers.InventoryAction;
+import appeng.helpers.Reflected;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 
@@ -50,9 +51,10 @@ public class PacketInventoryAction implements AppEngPacket, AppEngPacketHandler<
 	private long id;
 	private IAEItemStack slotItem;
 
-	// automatic.
+	@Reflected
 	public PacketInventoryAction()
 	{
+		// automatic.
 	}
 
 	// api
@@ -97,21 +99,22 @@ public class PacketInventoryAction implements AppEngPacket, AppEngPacketHandler<
 		}
 		else
 		{
-			EntityPlayerMP sender = (EntityPlayerMP) ctx.getServerHandler().playerEntity;
+			final EntityPlayerMP sender = (EntityPlayerMP) ctx.getServerHandler().playerEntity;
 			if( sender.openContainer instanceof AEBaseContainer )
 			{
-				AEBaseContainer baseContainer = (AEBaseContainer) sender.openContainer;
+				final AEBaseContainer baseContainer = (AEBaseContainer) sender.openContainer;
 				if( message.action == InventoryAction.AUTO_CRAFT )
 				{
-					ContainerOpenContext context = baseContainer.getOpenContext();
+
+					final ContainerOpenContext context = baseContainer.getOpenContext();
 					if( context != null )
 					{
-						TileEntity te = context.getTile();
+						final TileEntity te = context.getTile();
 						Platform.openGUI( sender, te, baseContainer.getOpenContext().getSide(), GuiBridge.GUI_CRAFTING_AMOUNT );
 
 						if( sender.openContainer instanceof ContainerCraftAmount )
 						{
-							ContainerCraftAmount cca = (ContainerCraftAmount) sender.openContainer;
+							final ContainerCraftAmount cca = (ContainerCraftAmount) sender.openContainer;
 
 							if( baseContainer.getTargetStack() != null )
 							{
@@ -139,7 +142,7 @@ public class PacketInventoryAction implements AppEngPacket, AppEngPacketHandler<
 		this.action = InventoryAction.values()[buf.readInt()];
 		this.slot = buf.readInt();
 		this.id = buf.readLong();
-		boolean hasItem = buf.readBoolean();
+		final boolean hasItem = buf.readBoolean();
 		if( hasItem )
 		{
 			try
@@ -159,11 +162,11 @@ public class PacketInventoryAction implements AppEngPacket, AppEngPacketHandler<
 	@Override
 	public void toBytes( ByteBuf buf )
 	{
-		buf.writeInt( action.ordinal() );
-		buf.writeInt( slot );
+		buf.writeInt( this.action.ordinal() );
+		buf.writeInt( this.slot );
 		buf.writeLong( this.id );
 
-		if( slotItem == null )
+		if( this.slotItem == null )
 		{
 			buf.writeBoolean( false );
 		}
@@ -172,7 +175,7 @@ public class PacketInventoryAction implements AppEngPacket, AppEngPacketHandler<
 			buf.writeBoolean( true );
 			try
 			{
-				slotItem.writeToPacket( buf );
+				this.slotItem.writeToPacket( buf );
 			}
 			catch( IOException e )
 			{

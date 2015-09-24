@@ -32,6 +32,7 @@ import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.AppEngPacketHandler;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.worlddata.WorldData;
+import appeng.helpers.Reflected;
 import appeng.services.compass.ICompassCallback;
 
 
@@ -44,9 +45,10 @@ public class PacketCompassRequest implements AppEngPacket, AppEngPacketHandler<P
 	private int cdy;
 	private EntityPlayer talkBackTo;
 
-	// automatic.
+	@Reflected
 	public PacketCompassRequest()
 	{
+		// automatic.
 	}
 
 	// api
@@ -97,21 +99,21 @@ public class PacketCompassRequest implements AppEngPacket, AppEngPacketHandler<P
 
 	public long getAttunement()
 	{
-		return attunement;
+		return this.attunement;
 	}
 
 	public int getCx()
 	{
-		return cx;
+		return this.cx;
 	}
 
 	public int getCz()
 	{
-		return cz;
+		return this.cz;
 	}
 
 	public int getCdy()
 	{
-		return cdy;
+		return this.cdy;
 	}
 }

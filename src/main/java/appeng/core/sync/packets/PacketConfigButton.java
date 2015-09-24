@@ -40,10 +40,10 @@ public final class PacketConfigButton implements AppEngPacket, AppEngPacketHandl
 	private Settings option;
 	private boolean rotationDirection;
 
-	// automatic.
 	@Reflected
 	public PacketConfigButton()
 	{
+		// automatic.
 	}
 
 	// api
@@ -82,7 +82,7 @@ public final class PacketConfigButton implements AppEngPacket, AppEngPacketHandl
 	@Override
 	public void toBytes( ByteBuf buf )
 	{
-		buf.writeInt( option.ordinal() );
-		buf.writeBoolean( rotationDirection );
+		buf.writeInt( this.option.ordinal() );
+		buf.writeBoolean( this.rotationDirection );
 	}
 }

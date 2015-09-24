@@ -28,6 +28,7 @@ import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import appeng.core.CommonHelper;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.AppEngPacketHandler;
+import appeng.helpers.Reflected;
 import appeng.parts.PartPlacement;
 
 
@@ -40,9 +41,10 @@ public class PacketPartPlacement implements AppEngPacket, AppEngPacketHandler<Pa
 	private int face;
 	private float eyeHeight;
 
-	// automatic.
+	@Reflected
 	public PacketPartPlacement()
 	{
+		// automatic.
 	}
 
 	// api
@@ -81,10 +83,10 @@ public class PacketPartPlacement implements AppEngPacket, AppEngPacketHandler<Pa
 	@Override
 	public void toBytes( ByteBuf buf )
 	{
-		buf.writeInt( x );
-		buf.writeInt( y );
-		buf.writeInt( z );
-		buf.writeByte( face );
-		buf.writeFloat( eyeHeight );
+		buf.writeInt( this.x );
+		buf.writeInt( this.y );
+		buf.writeInt( this.z );
+		buf.writeByte( this.face );
+		buf.writeFloat( this.eyeHeight );
 	}
 }

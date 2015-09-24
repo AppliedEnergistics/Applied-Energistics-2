@@ -26,6 +26,7 @@ import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import appeng.container.AEBaseContainer;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.AppEngPacketHandler;
+import appeng.helpers.Reflected;
 
 
 public class PacketSwapSlots implements AppEngPacket, AppEngPacketHandler<PacketSwapSlots, AppEngPacket>
@@ -34,9 +35,10 @@ public class PacketSwapSlots implements AppEngPacket, AppEngPacketHandler<Packet
 	private int slotA;
 	private int slotB;
 
-	// automatic.
+	@Reflected
 	public PacketSwapSlots()
 	{
+		// automatic.
 	}
 
 	// api

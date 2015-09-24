@@ -28,6 +28,7 @@ import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.AppEngPacketHandler;
+import appeng.helpers.Reflected;
 import appeng.integration.IntegrationRegistry;
 import appeng.integration.IntegrationType;
 import appeng.integration.abstraction.IFMP;
@@ -36,9 +37,10 @@ import appeng.integration.abstraction.IFMP;
 public class PacketMultiPart implements AppEngPacket, AppEngPacketHandler<PacketMultiPart, AppEngPacket>
 {
 
-	// automatic.
+	@Reflected
 	public PacketMultiPart()
 	{
+		// automatic.
 	}
 
 	@Override

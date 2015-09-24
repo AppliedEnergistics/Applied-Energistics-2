@@ -41,6 +41,7 @@ import appeng.core.AELog;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.AppEngPacketHandler;
 import appeng.core.sync.GuiBridge;
+import appeng.helpers.Reflected;
 import appeng.util.Platform;
 
 
@@ -50,9 +51,10 @@ public class PacketCraftRequest implements AppEngPacket, AppEngPacketHandler<Pac
 	private long amount;
 	private boolean heldShift;
 
-	// automatic.
+	@Reflected
 	public PacketCraftRequest()
 	{
+		// automatic.
 	}
 
 	public PacketCraftRequest( final int craftAmt, final boolean shift )

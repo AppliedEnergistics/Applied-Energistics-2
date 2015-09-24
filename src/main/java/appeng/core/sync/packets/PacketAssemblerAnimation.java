@@ -33,6 +33,7 @@ import appeng.client.EffectType;
 import appeng.core.CommonHelper;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.AppEngPacketHandler;
+import appeng.helpers.Reflected;
 import appeng.util.item.AEItemStack;
 
 
@@ -45,9 +46,10 @@ public class PacketAssemblerAnimation implements AppEngPacket, AppEngPacketHandl
 	private byte rate;
 	private IAEItemStack is;
 
-	// automatic.
+	@Reflected
 	public PacketAssemblerAnimation()
 	{
+		// automatic.
 	}
 
 	// api
@@ -107,11 +109,11 @@ public class PacketAssemblerAnimation implements AppEngPacket, AppEngPacketHandl
 
 	public byte getRate()
 	{
-		return rate;
+		return this.rate;
 	}
 
 	public IAEItemStack getIs()
 	{
-		return is;
+		return this.is;
 	}
 }

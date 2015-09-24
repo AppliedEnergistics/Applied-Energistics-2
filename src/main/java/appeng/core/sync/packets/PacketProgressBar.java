@@ -30,6 +30,7 @@ import cpw.mods.fml.relauncher.Side;
 import appeng.container.AEBaseContainer;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.AppEngPacketHandler;
+import appeng.helpers.Reflected;
 
 
 public class PacketProgressBar implements AppEngPacket, AppEngPacketHandler<PacketProgressBar, AppEngPacket>
@@ -38,9 +39,10 @@ public class PacketProgressBar implements AppEngPacket, AppEngPacketHandler<Pack
 	private short id;
 	private long value;
 
-	// automatic.
+	@Reflected
 	public PacketProgressBar()
 	{
+		// automatic.
 	}
 
 	// api
@@ -83,6 +85,6 @@ public class PacketProgressBar implements AppEngPacket, AppEngPacketHandler<Pack
 	public void toBytes( ByteBuf buf )
 	{
 		buf.writeShort( this.id );
-		buf.writeLong( value );
+		buf.writeLong( this.value );
 	}
 }

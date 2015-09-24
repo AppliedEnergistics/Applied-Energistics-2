@@ -30,6 +30,7 @@ import appeng.client.render.effects.LightningFX;
 import appeng.core.AEConfig;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.AppEngPacketHandler;
+import appeng.helpers.Reflected;
 import appeng.util.Platform;
 
 
@@ -40,9 +41,10 @@ public class PacketLightning implements AppEngPacket, AppEngPacketHandler<Packet
 	private float y;
 	private float z;
 
-	// automatic.
+	@Reflected
 	public PacketLightning()
 	{
+		// automatic.
 	}
 
 	// api

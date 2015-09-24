@@ -31,6 +31,7 @@ import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import appeng.client.render.effects.MatterCannonFX;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.AppEngPacketHandler;
+import appeng.helpers.Reflected;
 
 
 public class PacketMatterCannon implements AppEngPacket, AppEngPacketHandler<PacketMatterCannon, AppEngPacket>
@@ -44,9 +45,10 @@ public class PacketMatterCannon implements AppEngPacket, AppEngPacketHandler<Pac
 	private float dz;
 	private byte len;
 
-	// automatic.
+	@Reflected
 	public PacketMatterCannon()
 	{
+		// automatic.
 	}
 
 	// api
@@ -99,12 +101,12 @@ public class PacketMatterCannon implements AppEngPacket, AppEngPacketHandler<Pac
 	@Override
 	public void toBytes( ByteBuf buf )
 	{
-		buf.writeFloat( x );
-		buf.writeFloat( y );
-		buf.writeFloat( z );
+		buf.writeFloat( this.x );
+		buf.writeFloat( this.y );
+		buf.writeFloat( this.z );
 		buf.writeFloat( this.dx );
 		buf.writeFloat( this.dy );
 		buf.writeFloat( this.dz );
-		buf.writeByte( len );
+		buf.writeByte( this.len );
 	}
 }

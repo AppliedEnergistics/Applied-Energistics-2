@@ -33,6 +33,7 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.container.implementations.ContainerPatternTerm;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.AppEngPacketHandler;
+import appeng.helpers.Reflected;
 import appeng.util.item.AEItemStack;
 
 
@@ -41,12 +42,13 @@ public class PacketPatternSlot implements AppEngPacket, AppEngPacketHandler<Pack
 
 	private IInventory pat;
 	private IAEItemStack slotItem;
-	private IAEItemStack[] pattern = new IAEItemStack[9];
+	private final IAEItemStack[] pattern = new IAEItemStack[9];
 	private boolean shift;
 
-	// automatic.
+	@Reflected
 	public PacketPatternSlot()
 	{
+		// automatic.
 	}
 
 	private IAEItemStack readItem( final ByteBuf stream )
@@ -103,34 +105,34 @@ public class PacketPatternSlot implements AppEngPacket, AppEngPacketHandler<Pack
 	@Override
 	public void toBytes( ByteBuf buf )
 	{
-		buf.writeBoolean( shift );
+		buf.writeBoolean( this.shift );
 
-		this.writeItem( slotItem, buf );
+		this.writeItem( this.slotItem, buf );
 		for( int x = 0; x < 9; x++ )
 		{
-			this.pattern[x] = AEApi.instance().storage().createItemStack( pat.getStackInSlot( x ) );
+			this.pattern[x] = AEApi.instance().storage().createItemStack( this.pat.getStackInSlot( x ) );
 			this.writeItem( this.pattern[x], buf );
 		}
 	}
 
 	public IInventory getPat()
 	{
-		return pat;
+		return this.pat;
 	}
 
 	public IAEItemStack getSlotItem()
 	{
-		return slotItem;
+		return this.slotItem;
 	}
 
 	public IAEItemStack[] getPattern()
 	{
-		return pattern;
+		return this.pattern;
 	}
 
 	public boolean isShift()
 	{
-		return shift;
+		return this.shift;
 	}
 
 	private void writeItem( IAEItemStack slotItem, ByteBuf data )

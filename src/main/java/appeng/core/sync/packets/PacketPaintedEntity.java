@@ -26,6 +26,7 @@ import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import appeng.api.util.AEColor;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.AppEngPacketHandler;
+import appeng.helpers.Reflected;
 import appeng.hooks.TickHandler;
 import appeng.hooks.TickHandler.PlayerColor;
 
@@ -37,9 +38,10 @@ public class PacketPaintedEntity implements AppEngPacket, AppEngPacketHandler<Pa
 	private int entityId;
 	private int ticks;
 
-	// automatic.
+	@Reflected
 	public PacketPaintedEntity()
 	{
+		// automatic.
 	}
 
 	// api

@@ -36,6 +36,7 @@ import appeng.client.render.effects.EnergyFx;
 import appeng.core.CommonHelper;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.AppEngPacketHandler;
+import appeng.helpers.Reflected;
 import appeng.util.Platform;
 
 
@@ -48,9 +49,10 @@ public class PacketTransitionEffect implements AppEngPacket, AppEngPacketHandler
 	private double z;
 	private ForgeDirection d;
 
-	// automatic.
+	@Reflected
 	public PacketTransitionEffect()
 	{
+		// automatic.
 	}
 
 	// api
@@ -74,8 +76,8 @@ public class PacketTransitionEffect implements AppEngPacket, AppEngPacketHandler
 			{
 				final EnergyFx fx = new EnergyFx( world, message.x + ( message.mode ? ( Platform.getRandomInt() % 100 ) * 0.01 : (
 						Platform.getRandomInt() % 100 ) * 0.005 - 0.25 ), message.y + ( message.mode ? ( Platform.getRandomInt() % 100 ) * 0.01
-						: ( Platform.getRandomInt() % 100 ) * 0.005 - 0.25 ), message.z + ( message.mode ? ( Platform.getRandomInt() % 100 ) *
-						0.01 : ( Platform.getRandomInt() % 100 ) * 0.005 - 0.25 ), Items.diamond );
+								: ( Platform.getRandomInt() % 100 ) * 0.005 - 0.25 ), message.z + ( message.mode ? ( Platform.getRandomInt() % 100 ) *
+										0.01 : ( Platform.getRandomInt() % 100 ) * 0.005 - 0.25 ), Items.diamond );
 
 				if( !message.mode )
 				{
@@ -114,9 +116,9 @@ public class PacketTransitionEffect implements AppEngPacket, AppEngPacketHandler
 	@Override
 	public void toBytes( ByteBuf buf )
 	{
-		buf.writeFloat( (float) x );
-		buf.writeFloat( (float) y );
-		buf.writeFloat( (float) z );
+		buf.writeFloat( (float) this.x );
+		buf.writeFloat( (float) this.y );
+		buf.writeFloat( (float) this.z );
 		buf.writeByte( this.d.ordinal() );
 		buf.writeBoolean( this.mode );
 	}

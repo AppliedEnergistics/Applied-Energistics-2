@@ -33,6 +33,7 @@ import appeng.container.ContainerOpenContext;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.AppEngPacketHandler;
 import appeng.core.sync.GuiBridge;
+import appeng.helpers.Reflected;
 import appeng.util.Platform;
 
 
@@ -41,9 +42,10 @@ public class PacketSwitchGuis implements AppEngPacket, AppEngPacketHandler<Packe
 
 	private GuiBridge newGui;
 
-	// automatic.
+	@Reflected
 	public PacketSwitchGuis()
 	{
+		// automatic.
 	}
 
 	// api
@@ -91,7 +93,6 @@ public class PacketSwitchGuis implements AppEngPacket, AppEngPacketHandler<Packe
 	@Override
 	public void toBytes( ByteBuf buf )
 	{
-		AEBaseGui.setSwitchingGuis( true );
-		buf.writeInt( newGui.ordinal() );
+		buf.writeInt( this.newGui.ordinal() );
 	}
 }

@@ -28,6 +28,7 @@ import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import appeng.core.AEConfig;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.AppEngPacketHandler;
+import appeng.helpers.Reflected;
 
 
 public class PacketNewStorageDimension implements AppEngPacket, AppEngPacketHandler<PacketNewStorageDimension, AppEngPacket>
@@ -35,9 +36,10 @@ public class PacketNewStorageDimension implements AppEngPacket, AppEngPacketHand
 
 	private int newDim;
 
-	// automatic.
+	@Reflected
 	public PacketNewStorageDimension()
 	{
+		// automatic.
 	}
 
 	// api
@@ -69,6 +71,6 @@ public class PacketNewStorageDimension implements AppEngPacket, AppEngPacketHand
 	@Override
 	public void toBytes( ByteBuf buf )
 	{
-		buf.writeInt( newDim );
+		buf.writeInt( this.newDim );
 	}
 }

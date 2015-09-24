@@ -33,6 +33,7 @@ import appeng.api.implementations.items.IMemoryCard;
 import appeng.api.implementations.items.MemoryCardMessages;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.AppEngPacketHandler;
+import appeng.helpers.Reflected;
 import appeng.items.tools.ToolNetworkTool;
 import appeng.items.tools.powered.ToolColorApplicator;
 
@@ -48,9 +49,10 @@ public class PacketClick implements AppEngPacket, AppEngPacketHandler<PacketClic
 	private float hitY;
 	private float hitZ;
 
-	// automatic.
+	@Reflected
 	public PacketClick()
 	{
+		// automatic.
 	}
 
 	// api

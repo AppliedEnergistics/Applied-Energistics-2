@@ -26,6 +26,7 @@ import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import appeng.container.AEBaseContainer;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.AppEngPacketHandler;
+import appeng.helpers.Reflected;
 
 
 public class PacketPartialItem implements AppEngPacket, AppEngPacketHandler<PacketPartialItem, AppEngPacket>
@@ -34,9 +35,10 @@ public class PacketPartialItem implements AppEngPacket, AppEngPacketHandler<Pack
 	private short pageNum;
 	private byte[] data;
 
-	// automatic.
+	@Reflected
 	public PacketPartialItem()
 	{
+		// automatic.
 	}
 
 	// api
