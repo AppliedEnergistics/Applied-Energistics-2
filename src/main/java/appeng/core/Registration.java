@@ -76,8 +76,6 @@ import appeng.core.localization.PlayerMessages;
 import appeng.core.stats.PlayerStatsRegistration;
 import appeng.hooks.AETrading;
 import appeng.hooks.TickHandler;
-import appeng.integration.IntegrationRegistry;
-import appeng.integration.IntegrationType;
 import appeng.items.materials.ItemMultiMaterial;
 import appeng.me.cache.CraftingGridCache;
 import appeng.me.cache.EnergyGridCache;
