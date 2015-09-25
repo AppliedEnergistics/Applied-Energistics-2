@@ -61,7 +61,7 @@ public class RenderBlockPaint extends BaseBlockRender<BlockPaint, TilePaint>
 			int y = pos.getY();
 			int z = pos.getZ();
 
-			IAESprite[] icoSet = new IAESprite[] { imb.getIcon( EnumFacing.UP, imb.getDefaultState() ), ExtraBlockTextures.BlockPaint2.getIcon(), ExtraBlockTextures.BlockPaint3.getIcon() };
+			IAESprite[] icoSet = { imb.getIcon( EnumFacing.UP, imb.getDefaultState() ), ExtraBlockTextures.BlockPaint2.getIcon(), ExtraBlockTextures.BlockPaint3.getIcon() };
 
 			int lumen = 14 << 20 | 14 << 4;
 			int brightness = imb.getMixedBrightnessForBlock( world, pos );

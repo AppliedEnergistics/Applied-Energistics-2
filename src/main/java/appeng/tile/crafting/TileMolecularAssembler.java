@@ -78,7 +78,7 @@ import appeng.util.item.AEItemStack;
 
 public class TileMolecularAssembler extends AENetworkInvTile implements IUpgradeableHost, IConfigManagerHost, IGridTickable, ICraftingMachine, IPowerChannelState
 {
-	private static final int[] SIDES = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+	private static final int[] SIDES = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
 	private final InventoryCrafting craftingInv;
 	private final AppEngInternalInventory inv = new AppEngInternalInventory( this, 9 + 2 );

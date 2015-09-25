@@ -70,7 +70,7 @@ import appeng.util.Platform;
 public class PartCable extends AEBasePart implements IPartCable
 {
 
-	final int[] channelsOnSide = new int[] { 0, 0, 0, 0, 0, 0 };
+	final int[] channelsOnSide = { 0, 0, 0, 0, 0, 0 };
 
 	EnumSet<AEPartLocation> connections = EnumSet.noneOf( AEPartLocation.class );
 	boolean powered = false;

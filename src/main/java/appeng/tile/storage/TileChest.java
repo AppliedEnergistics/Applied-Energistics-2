@@ -96,9 +96,9 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 {
 
 	static final ChestNoHandler NO_HANDLER = new ChestNoHandler();
-	static final int[] SIDES = new int[] { 0 };
-	static final int[] FRONT = new int[] { 1 };
-	static final int[] NO_SLOTS = new int[] {};
+	static final int[] SIDES = { 0 };
+	static final int[] FRONT = { 1 };
+	static final int[] NO_SLOTS = {};
 	final AppEngInternalInventory inv = new AppEngInternalInventory( this, 2 );
 	final BaseActionSource mySrc = new MachineSource( this );
 	final IConfigManager config = new ConfigManager( this );

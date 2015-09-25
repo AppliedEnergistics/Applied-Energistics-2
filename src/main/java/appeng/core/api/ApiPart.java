@@ -284,10 +284,10 @@ public class ApiPart implements IPartHelper
 			defineClassMethod.setAccessible( true );
 			try
 			{
-				Object[] argsA = new Object[] { name, name, b };
+				Object[] argsA = { name, name, b };
 				b = (byte[]) runTransformersMethod.invoke( loader, argsA );
 
-				Object[] args = new Object[] { name, b, 0, b.length };
+				Object[] args = { name, b, 0, b.length };
 				clazz = (Class) defineClassMethod.invoke( loader, args );
 			}
 			finally

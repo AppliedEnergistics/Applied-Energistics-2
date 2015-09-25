@@ -81,7 +81,7 @@ public class RenderBlockWireless extends BaseBlockRender<BlockWireless, TileWire
 
 		ri.setTemporaryRenderIcons( r, r, ExtraBlockTextures.BlockWirelessInside.getIcon(), ExtraBlockTextures.BlockWirelessInside.getIcon(), r, r );
 
-		AEPartLocation[] sides = new AEPartLocation[] { AEPartLocation.EAST, AEPartLocation.WEST, AEPartLocation.UP, AEPartLocation.DOWN };
+		AEPartLocation[] sides = { AEPartLocation.EAST, AEPartLocation.WEST, AEPartLocation.UP, AEPartLocation.DOWN };
 
 		int s = 1;
 
@@ -136,7 +136,7 @@ public class RenderBlockWireless extends BaseBlockRender<BlockWireless, TileWire
 
 			ri.setTemporaryRenderIcons( r, r, ExtraBlockTextures.BlockWirelessInside.getIcon(), ExtraBlockTextures.BlockWirelessInside.getIcon(), r, r );
 
-			AEPartLocation[] sides = new AEPartLocation[] { AEPartLocation.EAST, AEPartLocation.WEST, AEPartLocation.UP, AEPartLocation.DOWN };
+			AEPartLocation[] sides = { AEPartLocation.EAST, AEPartLocation.WEST, AEPartLocation.UP, AEPartLocation.DOWN };
 
 			int s = 1;
 

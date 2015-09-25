@@ -189,7 +189,7 @@ public class Platform
 
 		int offset = 0;
 		String level = "";
-		String[] preFixes = new String[] { "k", "M", "G", "T", "P", "T", "P", "E", "Z", "Y" };
+		String[] preFixes = { "k", "M", "G", "T", "P", "T", "P", "E", "Z", "Y" };
 		String unitName = displayUnits.name();
 
 		if( displayUnits == PowerUnits.WA )

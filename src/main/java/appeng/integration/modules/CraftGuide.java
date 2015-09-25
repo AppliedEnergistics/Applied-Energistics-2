@@ -68,7 +68,7 @@ public final class CraftGuide extends CraftGuideAPIObject implements IIntegratio
 	private static final int TEXTURE_HEIGHT = 58;
 	private static final int GRINDER_RATIO = 10000;
 
-	private static final Slot[] GRINDER_SLOTS = new ItemSlot[] {
+	private static final Slot[] GRINDER_SLOTS = {
 			new ItemSlot( 3, 21, SLOT_SIZE, SLOT_SIZE ).drawOwnBackground(),
 			new ItemSlot( 41, 21, SLOT_SIZE, SLOT_SIZE, true ).drawOwnBackground().setSlotType( SlotType.OUTPUT_SLOT ),
 			new ChanceSlot( 59, 12, SLOT_SIZE, SLOT_SIZE, true ).setRatio( GRINDER_RATIO ).setFormatString( " (%1$.2f%% chance)" ).drawOwnBackground().setSlotType( SlotType.OUTPUT_SLOT ),
@@ -76,14 +76,14 @@ public final class CraftGuide extends CraftGuideAPIObject implements IIntegratio
 			new ItemSlot( 22, 12, SLOT_SIZE, SLOT_SIZE ).setSlotType( SlotType.MACHINE_SLOT ),
 			new ItemSlot( 22, 30, SLOT_SIZE, SLOT_SIZE ).setSlotType( SlotType.MACHINE_SLOT )
 	};
-	private static final Slot[] INSCRIBER_SLOTS = new ItemSlot[] {
+	private static final Slot[] INSCRIBER_SLOTS = {
 			new ItemSlot( 12, 21, SLOT_SIZE, SLOT_SIZE ).drawOwnBackground(),
 			new ItemSlot( 21, 3, SLOT_SIZE, SLOT_SIZE ).drawOwnBackground(),
 			new ItemSlot( 21, 39, SLOT_SIZE, SLOT_SIZE ).drawOwnBackground(),
 			new ItemSlot( 50, 21, SLOT_SIZE, SLOT_SIZE, true ).drawOwnBackground().setSlotType( SlotType.OUTPUT_SLOT ),
 			new ItemSlot( 31, 21, SLOT_SIZE, SLOT_SIZE ).setSlotType( SlotType.MACHINE_SLOT )
 	};
-	private static final Slot[] SHAPELESS_CRAFTING_SLOTS = new ItemSlot[] {
+	private static final Slot[] SHAPELESS_CRAFTING_SLOTS = {
 			new ItemSlot( 3, 3, SLOT_SIZE, SLOT_SIZE ),
 			new ItemSlot( 21, 3, SLOT_SIZE, SLOT_SIZE ),
 			new ItemSlot( 39, 3, SLOT_SIZE, SLOT_SIZE ),
@@ -95,7 +95,7 @@ public final class CraftGuide extends CraftGuideAPIObject implements IIntegratio
 			new ItemSlot( 39, 39, SLOT_SIZE, SLOT_SIZE ),
 			new ItemSlot( 59, 21, SLOT_SIZE, SLOT_SIZE, true ).setSlotType( SlotType.OUTPUT_SLOT ),
 	};
-	private static final Slot[] CRAFTING_SLOTS_OWN_BG = new ItemSlot[] {
+	private static final Slot[] CRAFTING_SLOTS_OWN_BG = {
 			new ItemSlot( 3, 3, SLOT_SIZE, SLOT_SIZE ).drawOwnBackground(),
 			new ItemSlot( 21, 3, SLOT_SIZE, SLOT_SIZE ).drawOwnBackground(),
 			new ItemSlot( 39, 3, SLOT_SIZE, SLOT_SIZE ).drawOwnBackground(),
@@ -107,14 +107,14 @@ public final class CraftGuide extends CraftGuideAPIObject implements IIntegratio
 			new ItemSlot( 39, 39, SLOT_SIZE, SLOT_SIZE ).drawOwnBackground(),
 			new ItemSlot( 59, 21, SLOT_SIZE, SLOT_SIZE, true ).setSlotType( SlotType.OUTPUT_SLOT ).drawOwnBackground(),
 	};
-	private static final Slot[] SMALL_CRAFTING_SLOTS_OWN_BG = new ItemSlot[] {
+	private static final Slot[] SMALL_CRAFTING_SLOTS_OWN_BG = {
 			new ItemSlot( 12, 12, SLOT_SIZE, SLOT_SIZE ).drawOwnBackground(),
 			new ItemSlot( 30, 12, SLOT_SIZE, SLOT_SIZE ).drawOwnBackground(),
 			new ItemSlot( 12, 30, SLOT_SIZE, SLOT_SIZE ).drawOwnBackground(),
 			new ItemSlot( 30, 30, SLOT_SIZE, SLOT_SIZE ).drawOwnBackground(),
 			new ItemSlot( 59, 21, SLOT_SIZE, SLOT_SIZE, true ).setSlotType( SlotType.OUTPUT_SLOT ).drawOwnBackground(),
 	};
-	private static final Slot[] CRTAFTING_SLOTS = new ItemSlot[] {
+	private static final Slot[] CRTAFTING_SLOTS = {
 			new ItemSlot( 3, 3, SLOT_SIZE, SLOT_SIZE ),
 			new ItemSlot( 21, 3, SLOT_SIZE, SLOT_SIZE ),
 			new ItemSlot( 39, 3, SLOT_SIZE, SLOT_SIZE ),
@@ -126,7 +126,7 @@ public final class CraftGuide extends CraftGuideAPIObject implements IIntegratio
 			new ItemSlot( 39, 39, SLOT_SIZE, SLOT_SIZE ),
 			new ItemSlot( 59, 21, SLOT_SIZE, SLOT_SIZE, true ).setSlotType( SlotType.OUTPUT_SLOT ),
 	};
-	private static final Slot[] SMALL_CRAFTING_SLOTS = new ItemSlot[] {
+	private static final Slot[] SMALL_CRAFTING_SLOTS = {
 			new ItemSlot( 12, 12, SLOT_SIZE, SLOT_SIZE ),
 			new ItemSlot( 30, 12, SLOT_SIZE, SLOT_SIZE ),
 			new ItemSlot( 12, 30, SLOT_SIZE, SLOT_SIZE ),

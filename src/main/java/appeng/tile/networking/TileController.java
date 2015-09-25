@@ -46,7 +46,7 @@ import appeng.tile.inventory.InvOperation;
 public class TileController extends AENetworkPowerTile
 {
 	private static final IInventory NULL_INVENTORY = new AppEngInternalInventory( null, 0 );
-	private static final int[] ACCESSIBLE_SLOTS_BY_SIDE = new int[] {};
+	private static final int[] ACCESSIBLE_SLOTS_BY_SIDE = {};
 
 	private boolean isValid = false;
 

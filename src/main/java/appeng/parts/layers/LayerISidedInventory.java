@@ -49,7 +49,7 @@ public class LayerISidedInventory extends LayerBase implements ISidedInventory
 {
 
 	// a simple empty array for empty stuff..
-	private static final int[] NULL_SIDES = new int[] {};
+	private static final int[] NULL_SIDES = {};
 
 	InvLayerData invLayer = null;
 

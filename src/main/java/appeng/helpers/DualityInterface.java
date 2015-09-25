@@ -106,8 +106,8 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 	public static final int NUMBER_OF_PATTERN_SLOTS = 9;
 
 	private static final Collection<Block> BAD_BLOCKS = new HashSet<Block>( 100 );
-	final int[] sides = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 };
-	final IAEItemStack[] requireWork = new IAEItemStack[] { null, null, null, null, null, null, null, null, null };
+	final int[] sides = { 0, 1, 2, 3, 4, 5, 6, 7, 8 };
+	final IAEItemStack[] requireWork = { null, null, null, null, null, null, null, null, null };
 	final MultiCraftingTracker craftingTracker;
 	final AENetworkProxy gridProxy;
 	final IInterfaceHost iHost;
@@ -315,7 +315,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 
 	public void updateCraftingList()
 	{
-		Boolean[] accountedFor = new Boolean[] { false, false, false, false, false, false, false, false, false }; // 9...
+		Boolean[] accountedFor = { false, false, false, false, false, false, false, false, false }; // 9...
 
 		assert ( accountedFor.length == this.patterns.getSizeInventory() );
 
