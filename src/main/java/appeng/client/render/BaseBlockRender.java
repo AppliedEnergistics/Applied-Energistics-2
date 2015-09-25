@@ -415,15 +415,13 @@ public class BaseBlockRender<B extends AEBaseBlock, T extends AEBaseTile>
 
 	public void preRenderInWorld( B block, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
 	{
-		ForgeDirection forward = ForgeDirection.SOUTH;
-		ForgeDirection up = ForgeDirection.UP;
 
 		BlockRenderInfo info = block.getRendererInstance();
 		IOrientable te = this.getOrientable( block, world, x, y, z );
 		if( te != null )
 		{
-			forward = te.getForward();
-			up = te.getUp();
+			ForgeDirection forward = te.getForward();
+			ForgeDirection up = te.getUp();
 
 			renderer.uvRotateBottom = info.getTexture( ForgeDirection.DOWN ).setFlip( getOrientation( ForgeDirection.DOWN, forward, up ) );
 			renderer.uvRotateTop = info.getTexture( ForgeDirection.UP ).setFlip( getOrientation( ForgeDirection.UP, forward, up ) );
@@ -510,9 +508,7 @@ public class BaseBlockRender<B extends AEBaseBlock, T extends AEBaseTile>
 		double offsetY = 0.0;
 		double offsetZ = 0.0;
 		double layerAX = 0.0;
-		double layerAY = 0.0;
 		double layerAZ = 0.0;
-		double layerBX = 0.0;
 		double layerBY = 0.0;
 		double layerBZ = 0.0;
 
@@ -569,6 +565,8 @@ public class BaseBlockRender<B extends AEBaseBlock, T extends AEBaseTile>
 		offsetY += y;
 		offsetZ += z;
 
+		double layerBX = 0.0;
+		double layerAY = 0.0;
 		this.renderFace( tess, offsetX, offsetY, offsetZ, layerAX, layerAY, layerAZ, layerBX, layerBY, layerBZ,
 				// u -> u
 				0, 1.0,
@@ -681,11 +679,11 @@ public class BaseBlockRender<B extends AEBaseBlock, T extends AEBaseTile>
 
 	public void renderTile( B block, T tile, Tessellator tess, double x, double y, double z, float f, RenderBlocks renderer )
 	{
-		ForgeDirection forward = ForgeDirection.SOUTH;
-		ForgeDirection up = ForgeDirection.UP;
 
 		renderer.uvRotateBottom = renderer.uvRotateTop = renderer.uvRotateEast = renderer.uvRotateWest = renderer.uvRotateNorth = renderer.uvRotateSouth = 0;
 
+		ForgeDirection up = ForgeDirection.UP;
+		ForgeDirection forward = ForgeDirection.SOUTH;
 		this.applyTESRRotation( x, y, z, forward, up );
 
 		Minecraft.getMinecraft().getTextureManager().bindTexture( TextureMap.locationBlocksTexture );

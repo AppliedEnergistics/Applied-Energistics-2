@@ -205,7 +205,6 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 
 	private void recalculateDisplay()
 	{
-		int oldState = 0;
 
 		boolean currentActive = this.gridProxy.isActive();
 		if( currentActive )
@@ -235,6 +234,7 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 			this.state |= ( this.getCellStatus( x ) << ( 3 * x ) );
 		}
 
+		int oldState = 0;
 		if( oldState != this.state )
 		{
 			this.markForUpdate();

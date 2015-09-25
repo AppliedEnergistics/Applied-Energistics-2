@@ -98,7 +98,6 @@ public class GuiInterfaceTerminal extends AEBaseGui
 		this.fontRendererObj.drawString( this.getGuiDisplayName( GuiText.InterfaceTerminal.getLocal() ), 8, 6, 4210752 );
 		this.fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
 
-		int offset = 17;
 		int ex = this.myScrollBar.getCurrentScroll();
 
 		Iterator<Object> o = this.inventorySlots.inventorySlots.iterator();
@@ -110,6 +109,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 			}
 		}
 
+		int offset = 17;
 		for( int x = 0; x < LINES_ON_PAGE && ex + x < this.lines.size(); x++ )
 		{
 			Object lineObj = this.lines.get( ex + x );

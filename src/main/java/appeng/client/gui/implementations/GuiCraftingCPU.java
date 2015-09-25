@@ -154,15 +154,14 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 	{
 		this.cancel.enabled = !this.visual.isEmpty();
 
-		int x = 0;
-		int y = 0;
-
 		final int gx = ( this.width - this.xSize ) / 2;
 		final int gy = ( this.height - this.ySize ) / 2;
-		final int offY = 23;
 
 		this.tooltip = -1;
 
+		final int offY = 23;
+		int y = 0;
+		int x = 0;
 		for( int z = 0; z <= 4 * 5; z++ )
 		{
 			int minX = gx + 9 + x * 67;
@@ -192,7 +191,6 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 	@Override
 	public void drawFG( int offsetX, int offsetY, int mouseX, int mouseY )
 	{
-		final ReadableNumberConverter converter = ReadableNumberConverter.INSTANCE;
 		String title = this.getGuiDisplayName( GuiText.CraftingStatus.getLocal() );
 
 		if( this.craftingCpu.eta > 0 && !this.visual.isEmpty() )
@@ -216,6 +214,7 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 
 		int offY = 23;
 
+		final ReadableNumberConverter converter = ReadableNumberConverter.INSTANCE;
 		for( int z = viewStart; z < Math.min( viewEnd, this.visual.size() ); z++ )
 		{
 			IAEItemStack refStack = this.visual.get( z );// repo.getReferenceItem( z );
@@ -229,18 +228,18 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 				final IAEItemStack pendingStack = this.pending.findPrecise( refStack );
 
 				int lines = 0;
-				boolean active = false;
-				boolean scheduled = false;
 
 				if( stored != null && stored.getStackSize() > 0 )
 				{
 					lines++;
 				}
+				boolean active = false;
 				if( activeStack != null && activeStack.getStackSize() > 0 )
 				{
 					lines++;
 					active = true;
 				}
+				boolean scheduled = false;
 				if( pendingStack != null && pendingStack.getStackSize() > 0 )
 				{
 					lines++;

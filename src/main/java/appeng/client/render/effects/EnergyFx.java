@@ -79,7 +79,6 @@ public class EnergyFx extends EntityBreakingFX
 		float f11 = (float) ( this.prevPosX + ( this.posX - this.prevPosX ) * par2 - interpPosX );
 		float f12 = (float) ( this.prevPosY + ( this.posY - this.prevPosY ) * par2 - interpPosY );
 		float f13 = (float) ( this.prevPosZ + ( this.posZ - this.prevPosZ ) * par2 - interpPosZ );
-		float f14 = 1.0F;
 
 		int blkX = MathHelper.floor_double( this.posX );
 		int blkY = MathHelper.floor_double( this.posY );
@@ -87,6 +86,7 @@ public class EnergyFx extends EntityBreakingFX
 
 		if( blkX == this.startBlkX && blkY == this.startBlkY && blkZ == this.startBlkZ )
 		{
+			float f14 = 1.0F;
 			par1Tessellator.setColorRGBA_F( this.particleRed * f14, this.particleGreen * f14, this.particleBlue * f14, this.particleAlpha );
 			par1Tessellator.addVertexWithUV( f11 - par3 * f10 - par6 * f10, f12 - par4 * f10, f13 - par5 * f10 - par7 * f10, f7, f9 );
 			par1Tessellator.addVertexWithUV( f11 - par3 * f10 + par6 * f10, f12 + par4 * f10, f13 - par5 * f10 + par7 * f10, f7, f8 );

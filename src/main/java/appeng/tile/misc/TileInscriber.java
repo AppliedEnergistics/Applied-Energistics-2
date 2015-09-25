@@ -454,10 +454,9 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 		}
 		else
 		{
-			IEnergyGrid eg;
 			try
 			{
-				eg = this.gridProxy.getEnergy();
+				IEnergyGrid eg = this.gridProxy.getEnergy();
 				IEnergySource src = this;
 
 				// Base 1, increase by 1 for each card

@@ -40,13 +40,12 @@ public class AppEngClientPacketHandler extends AppEngPacketHandlerBase implement
 	public void onPacketData( INetworkInfo network, FMLProxyPacket packet, EntityPlayer player )
 	{
 		ByteBuf stream = packet.payload();
-		int packetType = -1;
 
 		player = Minecraft.getMinecraft().thePlayer;
 
 		try
 		{
-			packetType = stream.readInt();
+			int packetType = stream.readInt();
 			AppEngPacket pack = PacketTypes.getPacket( packetType ).parsePacket( stream );
 			pack.clientPacketData( network, pack, player );
 		}

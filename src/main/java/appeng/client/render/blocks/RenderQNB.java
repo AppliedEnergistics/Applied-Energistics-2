@@ -118,8 +118,8 @@ public class RenderQNB extends BaseBlockRender<BlockQuantumBase, TileQuantumBrid
 						renderMax = 12.1f / 16.0f;
 						renderer.setRenderBounds( renderMin, renderMin, renderMin, renderMax, renderMax, renderMax );
 
-						int bn = 15;
 						Tessellator.instance.setColorOpaque_F( 1.0F, 1.0F, 1.0F );
+						int bn = 15;
 						Tessellator.instance.setBrightness( bn << 20 | bn << 4 );
 						for( ForgeDirection side : ForgeDirection.VALID_DIRECTIONS )
 						{
@@ -146,8 +146,8 @@ public class RenderQNB extends BaseBlockRender<BlockQuantumBase, TileQuantumBrid
 						renderMax = 16.01f / 16.0f;
 						renderer.setRenderBounds( renderMin, renderMin, renderMin, renderMax, renderMax, renderMax );
 
-						int bn = 15;
 						Tessellator.instance.setColorOpaque_F( 1.0F, 1.0F, 1.0F );
+						int bn = 15;
 						Tessellator.instance.setBrightness( bn << 20 | bn << 4 );
 						for( ForgeDirection side : ForgeDirection.VALID_DIRECTIONS )
 						{

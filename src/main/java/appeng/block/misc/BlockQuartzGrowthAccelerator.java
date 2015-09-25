@@ -84,13 +84,12 @@ public class BlockQuartzGrowthAccelerator extends AEBaseTileBlock implements IOr
 			double ry = 0.5 + y;
 			double rz = 0.5 + z;
 
-			double dx = 0;
-			double dz = 0;
-
 			rx += up.offsetX * d0;
 			ry += up.offsetY * d0;
 			rz += up.offsetZ * d0;
 
+			double dz = 0;
+			double dx = 0;
 			switch( r.nextInt( 4 ) )
 			{
 				case 0:

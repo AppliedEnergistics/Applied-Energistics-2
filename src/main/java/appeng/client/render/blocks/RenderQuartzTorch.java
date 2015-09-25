@@ -49,17 +49,11 @@ public class RenderQuartzTorch extends BaseBlockRender<AEBaseBlock, AEBaseTile>
 	{
 		Tessellator tess = Tessellator.instance;
 
-		float Point2 = 6.0f / 16.0f;
 		float Point3 = 7.0f / 16.0f;
-		float Point13 = 10.0f / 16.0f;
 		float Point12 = 9.0f / 16.0f;
 
-		float singlePixel = 1.0f / 16.0f;
 		float renderBottom = 5.0f / 16.0f;
 		float renderTop = 10.0f / 16.0f;
-
-		float bottom = 7.0f / 16.0f;
-		float top = 8.0f / 16.0f;
 
 		float xOff = 0.0f;
 		float yOff = 0.0f;
@@ -68,6 +62,7 @@ public class RenderQuartzTorch extends BaseBlockRender<AEBaseBlock, AEBaseTile>
 		renderer.setRenderBounds( Point3 + xOff, renderBottom + yOff, Point3 + zOff, Point12 + xOff, renderTop + yOff, Point12 + zOff );
 		this.renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, tess, 0xffffff, renderer );
 
+		float singlePixel = 1.0f / 16.0f;
 		renderer.setRenderBounds( Point3 + xOff, renderTop + yOff, Point3 + zOff, Point3 + singlePixel + xOff, renderTop + singlePixel + yOff, Point3 + singlePixel + zOff );
 		this.renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, tess, 0xffffff, renderer );
 
@@ -78,6 +73,10 @@ public class RenderQuartzTorch extends BaseBlockRender<AEBaseBlock, AEBaseTile>
 		blk.getRendererInstance().setTemporaryRenderIcon( Blocks.hopper.getIcon( 0, 0 ) );
 		renderer.renderAllFaces = true;
 
+		float top = 8.0f / 16.0f;
+		float bottom = 7.0f / 16.0f;
+		float Point13 = 10.0f / 16.0f;
+		float Point2 = 6.0f / 16.0f;
 		renderer.setRenderBounds( Point2 + xOff, bottom + yOff, Point2 + zOff, Point13 + xOff, top + yOff, Point3 + zOff );
 
 		this.renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, tess, 0xffffff, renderer );
@@ -100,23 +99,10 @@ public class RenderQuartzTorch extends BaseBlockRender<AEBaseBlock, AEBaseTile>
 	{
 		IOrientable te = ( (IOrientableBlock) block ).getOrientable( world, x, y, z );
 
-		float Point2 = 6.0f / 16.0f;
-		float Point3 = 7.0f / 16.0f;
-		float Point13 = 10.0f / 16.0f;
-		float Point12 = 9.0f / 16.0f;
-
-		float singlePixel = 1.0f / 16.0f;
-		float renderBottom = 5.0f / 16.0f;
-		float renderTop = 10.0f / 16.0f;
-
-		float bottom = 7.0f / 16.0f;
-		float top = 8.0f / 16.0f;
-
-		float xOff = 0.0f;
-		float yOff = 0.0f;
-		float zOff = 0.0f;
-
 		renderer.renderAllFaces = true;
+		float zOff = 0.0f;
+		float yOff = 0.0f;
+		float xOff = 0.0f;
 		if( te != null )
 		{
 			ForgeDirection forward = te.getUp();
@@ -125,10 +111,15 @@ public class RenderQuartzTorch extends BaseBlockRender<AEBaseBlock, AEBaseTile>
 			zOff = forward.offsetZ * -( 4.0f / 16.0f );
 		}
 
+		float renderTop = 10.0f / 16.0f;
+		float renderBottom = 5.0f / 16.0f;
+		float Point12 = 9.0f / 16.0f;
+		float Point3 = 7.0f / 16.0f;
 		renderer.setRenderBounds( Point3 + xOff, renderBottom + yOff, Point3 + zOff, Point12 + xOff, renderTop + yOff, Point12 + zOff );
 		super.renderInWorld( block, world, x, y, z, renderer );
 
 		int r = ( x + y + z ) % 2;
+		float singlePixel = 1.0f / 16.0f;
 		if( r == 0 )
 		{
 			renderer.setRenderBounds( Point3 + xOff, renderTop + yOff, Point3 + zOff, Point3 + singlePixel + xOff, renderTop + singlePixel + yOff, Point3 + singlePixel + zOff );
@@ -148,6 +139,10 @@ public class RenderQuartzTorch extends BaseBlockRender<AEBaseBlock, AEBaseTile>
 
 		block.getRendererInstance().setTemporaryRenderIcon( Blocks.hopper.getIcon( 0, 0 ) );
 
+		float top = 8.0f / 16.0f;
+		float bottom = 7.0f / 16.0f;
+		float Point13 = 10.0f / 16.0f;
+		float Point2 = 6.0f / 16.0f;
 		renderer.setRenderBounds( Point2 + xOff, bottom + yOff, Point2 + zOff, Point13 + xOff, top + yOff, Point3 + zOff );
 		boolean out = renderer.renderStandardBlock( block, x, y, z );
 

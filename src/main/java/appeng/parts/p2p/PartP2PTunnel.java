@@ -88,10 +88,9 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 			return null;
 		}
 
-		PartP2PTunnel tunnel;
 		try
 		{
-			tunnel = this.proxy.getP2P().getInput( this.freq );
+			PartP2PTunnel tunnel = this.proxy.getP2P().getInput( this.freq );
 			if( this.getClass().isInstance( tunnel ) )
 			{
 				return (T) tunnel;

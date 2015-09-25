@@ -217,7 +217,6 @@ public class ContainerCraftConfirm extends AEBaseContainer
 
 					for( IAEItemStack out : plan )
 					{
-						IAEItemStack m = null;
 
 						IAEItemStack o = out.copy();
 						o.reset();
@@ -230,6 +229,7 @@ public class ContainerCraftConfirm extends AEBaseContainer
 						IStorageGrid sg = this.getGrid().getCache( IStorageGrid.class );
 						IMEInventory<IAEItemStack> items = sg.getItemInventory();
 
+						IAEItemStack m = null;
 						if( c != null && this.result.isSimulation() )
 						{
 							m = o.copy();

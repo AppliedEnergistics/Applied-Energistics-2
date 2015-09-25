@@ -128,9 +128,8 @@ public class QuantumCalculator extends MBCalculator
 				{
 					TileQuantumBridge te = (TileQuantumBridge) w.getTileEntity( x, y, z );
 
-					byte flags;
-
 					num++;
+					byte flags;
 					if( num == 5 )
 					{
 						flags = num;

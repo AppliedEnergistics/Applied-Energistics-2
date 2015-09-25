@@ -193,8 +193,6 @@ public final class PartP2PRFPower extends PartP2PTunnel<PartP2PRFPower> implemen
 			return 0;
 		}
 
-		int total = 0;
-
 		Stack<PartP2PRFPower> stack = this.getDepth();
 
 		for( PartP2PRFPower t : stack )
@@ -207,6 +205,7 @@ public final class PartP2PRFPower extends PartP2PTunnel<PartP2PRFPower> implemen
 
 		stack.push( this );
 
+		int total = 0;
 		try
 		{
 			for( PartP2PRFPower t : this.getOutputs() )
@@ -235,8 +234,6 @@ public final class PartP2PRFPower extends PartP2PTunnel<PartP2PRFPower> implemen
 			return 0;
 		}
 
-		int total = 0;
-
 		Stack<PartP2PRFPower> stack = this.getDepth();
 
 		for( PartP2PRFPower t : stack )
@@ -249,6 +246,7 @@ public final class PartP2PRFPower extends PartP2PTunnel<PartP2PRFPower> implemen
 
 		stack.push( this );
 
+		int total = 0;
 		try
 		{
 			for( PartP2PRFPower t : this.getOutputs() )

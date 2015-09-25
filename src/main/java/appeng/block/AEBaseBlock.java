@@ -408,21 +408,15 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 	public void registerBlockIcons( IIconRegister iconRegistry )
 	{
 		final BlockRenderInfo info = this.getRendererInstance();
-		final FlippableIcon topIcon;
-		final FlippableIcon bottomIcon;
-		final FlippableIcon sideIcon;
-		final FlippableIcon eastIcon;
-		final FlippableIcon westIcon;
-		final FlippableIcon southIcon;
-		final FlippableIcon northIcon;
+		final FlippableIcon topIcon = this.optionalIcon( iconRegistry, this.getTextureName(), null );
+		final FlippableIcon bottomIcon = this.optionalIcon( iconRegistry, this.getTextureName() + "Bottom", topIcon );
+		final FlippableIcon sideIcon = this.optionalIcon( iconRegistry, this.getTextureName() + "Side", topIcon );
+		final FlippableIcon eastIcon = this.optionalIcon( iconRegistry, this.getTextureName() + "East", sideIcon );
+		final FlippableIcon westIcon = this.optionalIcon( iconRegistry, this.getTextureName() + "West", sideIcon );
+		final FlippableIcon southIcon = this.optionalIcon( iconRegistry, this.getTextureName() + "Front", sideIcon );
+		final FlippableIcon northIcon = this.optionalIcon( iconRegistry, this.getTextureName() + "Back", sideIcon );
 
-		this.blockIcon = topIcon = this.optionalIcon( iconRegistry, this.getTextureName(), null );
-		bottomIcon = this.optionalIcon( iconRegistry, this.getTextureName() + "Bottom", topIcon );
-		sideIcon = this.optionalIcon( iconRegistry, this.getTextureName() + "Side", topIcon );
-		eastIcon = this.optionalIcon( iconRegistry, this.getTextureName() + "East", sideIcon );
-		westIcon = this.optionalIcon( iconRegistry, this.getTextureName() + "West", sideIcon );
-		southIcon = this.optionalIcon( iconRegistry, this.getTextureName() + "Front", sideIcon );
-		northIcon = this.optionalIcon( iconRegistry, this.getTextureName() + "Back", sideIcon );
+		this.blockIcon = topIcon;
 
 		info.updateIcons( bottomIcon, topIcon, northIcon, southIcon, eastIcon, westIcon );
 	}
@@ -557,7 +551,6 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 
 		final ForgeDirection forward = ori.getForward();
 		final ForgeDirection up = ori.getUp();
-		ForgeDirection west = ForgeDirection.UNKNOWN;
 
 		if( forward == null || up == null )
 		{
@@ -568,6 +561,7 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 		int west_y = forward.offsetZ * up.offsetX - forward.offsetX * up.offsetZ;
 		int west_z = forward.offsetX * up.offsetY - forward.offsetY * up.offsetX;
 
+		ForgeDirection west = ForgeDirection.UNKNOWN;
 		for( ForgeDirection dx : ForgeDirection.VALID_DIRECTIONS )
 		{
 			if( dx.offsetX == west_x && dx.offsetY == west_y && dx.offsetZ == west_z )

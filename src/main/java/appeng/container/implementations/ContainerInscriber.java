@@ -153,7 +153,6 @@ public class ContainerInscriber extends ContainerUpgradeable implements IProgres
 
 		if( ( s == this.top && bot != null ) || ( s == this.bottom && top != null ) )
 		{
-			boolean isValid = false;
 			ItemStack otherSlot = null;
 			if( s == this.top )
 			{
@@ -172,6 +171,7 @@ public class ContainerInscriber extends ContainerUpgradeable implements IProgres
 			}
 
 			// everything else
+			boolean isValid = false;
 			for( IInscriberRecipe recipe : AEApi.instance().registries().inscriber().getRecipes() )
 			{
 				if( Platform.isSameItemPrecise( recipe.getTopOptional().orNull(), otherSlot ) )

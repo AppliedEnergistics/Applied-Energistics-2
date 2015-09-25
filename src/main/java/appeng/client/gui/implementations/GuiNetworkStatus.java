@@ -91,14 +91,14 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 	@Override
 	public void drawScreen( int mouseX, int mouseY, float btn )
 	{
-		int x = 0;
-		int y = 0;
 
 		int gx = ( this.width - this.xSize ) / 2;
 		int gy = ( this.height - this.ySize ) / 2;
 
 		this.tooltip = -1;
 
+		int y = 0;
+		int x = 0;
 		for( int z = 0; z <= 4 * 5; z++ )
 		{
 			int minX = gx + 14 + x * 31;

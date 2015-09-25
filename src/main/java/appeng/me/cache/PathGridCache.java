@@ -308,9 +308,9 @@ public class PathGridCache implements IPathingGrid
 
 	private int calculateRequiredChannels()
 	{
-		int depth = 0;
 		this.semiOpen.clear();
 
+		int depth = 0;
 		for( IGridNode nodes : this.requireChannels )
 		{
 			if( !this.semiOpen.contains( nodes ) )

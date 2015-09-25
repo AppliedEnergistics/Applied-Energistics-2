@@ -187,9 +187,6 @@ public class Platform
 		PowerUnits displayUnits = AEConfig.instance.selectedPowerUnit();
 		p = PowerUnits.AE.convertTo( displayUnits, p );
 
-		int offset = 0;
-		String level = "";
-		String[] preFixes = { "k", "M", "G", "T", "P", "T", "P", "E", "Z", "Y" };
 		String unitName = displayUnits.name();
 
 		if( displayUnits == PowerUnits.WA )
@@ -202,6 +199,20 @@ public class Platform
 			unitName = "J";
 		}
 
+		String[] preFixes = new String[] { 
+				"k",
+				"M",
+				"G",
+				"T",
+				"P",
+				"T",
+				"P",
+				"E",
+				"Z",
+				"Y"
+		};
+		String level = "";
+		int offset = 0;
 		while( p > 1000 && offset < preFixes.length )
 		{
 			p /= 1000;
@@ -1372,9 +1383,8 @@ public class Platform
 		if( hitEntities )
 		{
 			List list = w.getEntitiesWithinAABBExcludingEntity( p, bb );
-			int l;
 
-			for( l = 0; l < list.size(); ++l )
+			for( int l = 0; l < list.size(); ++l )
 			{
 				Entity entity1 = (Entity) list.get( l );
 
@@ -1634,7 +1644,6 @@ public class Platform
 			{
 				for( ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS )
 				{
-					int offset = 0;
 
 					int[] sides = ( (ISidedInventory) target ).getAccessibleSlotsFromSide( dir.ordinal() );
 
@@ -1643,6 +1652,7 @@ public class Platform
 						return 0;
 					}
 
+					int offset = 0;
 					for( int side : sides )
 					{
 						int c = ( side << ( offset % 8 ) ) ^ ( 1 << dir.ordinal() );
@@ -1729,10 +1739,10 @@ public class Platform
 
 	public static void configurePlayer( EntityPlayer player, ForgeDirection side, TileEntity tile )
 	{
-		float pitch = 0.0f;
-		float yaw = 0.0f;
 		player.yOffset = 1.8f;
 
+		float yaw = 0.0f;
+		float pitch = 0.0f;
 		switch( side )
 		{
 			case DOWN:

@@ -100,10 +100,9 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	{
 		if( this.cb.requiresDynamicRender )
 		{
-			TileCableBus tcb;
 			try
 			{
-				tcb = (TileCableBus) BlockCableBus.tesrTile.newInstance();
+				TileCableBus tcb = (TileCableBus) BlockCableBus.tesrTile.newInstance();
 				tcb.copyFrom( this );
 				this.getWorldObj().setTileEntity( this.xCoord, this.yCoord, this.zCoord, tcb );
 			}

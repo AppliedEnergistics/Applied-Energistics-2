@@ -211,9 +211,8 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 		Entity entity = null;
 		List list = w.getEntitiesWithinAABBExcludingEntity( p, bb );
 		double closest = 9999999.0D;
-		int l;
 
-		for( l = 0; l < list.size(); ++l )
+		for( int l = 0; l < list.size(); ++l )
 		{
 			Entity entity1 = (Entity) list.get( l );
 
@@ -335,9 +334,8 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 			Entity entity = null;
 			List list = w.getEntitiesWithinAABBExcludingEntity( p, bb );
 			double closest = 9999999.0D;
-			int l;
 
-			for( l = 0; l < list.size(); ++l )
+			for( int l = 0; l < list.size(); ++l )
 			{
 				Entity entity1 = (Entity) list.get( l );
 
