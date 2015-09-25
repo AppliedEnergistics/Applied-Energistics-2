@@ -69,8 +69,7 @@ public class RenderBlockCrank extends BaseBlockRender<BlockCrank, TileCrank>
 	@Override
 	public void renderTile( BlockCrank blk, TileCrank tile, WorldRenderer tess, double x, double y, double z, float f, ModelGenerator renderBlocks )
 	{
-		TileCrank tc = tile;
-		if( tc.getUp() == null || tc.getUp() == null )
+		if( tile.getUp() == null )
 		{
 			return;
 		}
@@ -91,7 +90,7 @@ public class RenderBlockCrank extends BaseBlockRender<BlockCrank, TileCrank>
 		this.applyTESRRotation( x, y, z, tile.getForward(), tile.getUp() );
 
 		GL11.glTranslated( 0.5, 0, 0.5 );
-		GL11.glRotatef( tc.visibleRotation, 0, 1, 0 );
+		GL11.glRotatef( tile.visibleRotation, 0, 1, 0 );
 		GL11.glScalef( -1, 1, 1 );
 		GL11.glTranslated( -0.5, 0, -0.5 );
 

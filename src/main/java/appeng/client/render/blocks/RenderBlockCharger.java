@@ -87,8 +87,6 @@ public class RenderBlockCharger extends BaseBlockRender<BlockCharger, TileCharge
 	{
 		this.preRenderInWorld( block, world, pos, renderer );
 
-		final BlockCharger blk = block;
-
 		final IOrientable te = this.getOrientable( block, world, pos );
 
 		final EnumFacing fdy = te.getUp();
@@ -97,28 +95,28 @@ public class RenderBlockCharger extends BaseBlockRender<BlockCharger, TileCharge
 
 		renderer.renderAllFaces = true;
 		this.renderBlockBounds( renderer, 6, 1, 0, 10, 15, 2, fdx, fdy, fdz );
-		boolean out = renderer.renderStandardBlock( blk, pos );
+		boolean out = renderer.renderStandardBlock( block, pos );
 
-		blk.getRendererInstance().setTemporaryRenderIcons( ExtraBlockTextures.BlockChargerInside.getIcon(), null, null, null, null, null );
+		block.getRendererInstance().setTemporaryRenderIcons( ExtraBlockTextures.BlockChargerInside.getIcon(), null, null, null, null, null );
 
 		this.renderBlockBounds( renderer, 2, 0, 2, 14, 3, 14, fdx, fdy, fdz );
-		out = renderer.renderStandardBlock( blk, pos );
+		out = renderer.renderStandardBlock( block, pos );
 
 		this.renderBlockBounds( renderer, 3, 3, 3, 13, 4, 13, fdx, fdy, fdz );
-		out = renderer.renderStandardBlock( blk, pos );
+		out = renderer.renderStandardBlock( block, pos );
 
-		blk.getRendererInstance().setTemporaryRenderIcon( null );
+		block.getRendererInstance().setTemporaryRenderIcon( null );
 
-		blk.getRendererInstance().setTemporaryRenderIcons( null, ExtraBlockTextures.BlockChargerInside.getIcon(), null, null, null, null );
+		block.getRendererInstance().setTemporaryRenderIcons( null, ExtraBlockTextures.BlockChargerInside.getIcon(), null, null, null, null );
 
 		this.renderBlockBounds( renderer, 2, 13, 2, 14, 16, 14, fdx, fdy, fdz );
-		out = renderer.renderStandardBlock( blk, pos );
+		out = renderer.renderStandardBlock( block, pos );
 
 		this.renderBlockBounds( renderer, 3, 12, 3, 13, 13, 13, fdx, fdy, fdz );
-		out = renderer.renderStandardBlock( blk, pos );
+		out = renderer.renderStandardBlock( block, pos );
 
 		renderer.renderAllFaces = false;
-		blk.getRendererInstance().setTemporaryRenderIcon( null );
+		block.getRendererInstance().setTemporaryRenderIcon( null );
 
 		this.postRenderInWorld( renderer );
 		return out;
@@ -127,11 +125,7 @@ public class RenderBlockCharger extends BaseBlockRender<BlockCharger, TileCharge
 	@Override
 	public void renderTile( BlockCharger block, TileCharger tile, WorldRenderer tess, double x, double y, double z, float f, ModelGenerator renderer )
 	{
-		ItemStack sis = null;
-		if( tile instanceof IInventory )
-		{
-			sis = ( (IInventory) tile ).getStackInSlot( 0 );
-		}
+		final ItemStack sis = tile.getStackInSlot( 0 );
 
 		if( sis != null )
 		{

@@ -84,14 +84,12 @@ public class RenderBlockSkyChest extends BaseBlockRender<BlockSkyChest, TileSkyC
 	}
 
 	@Override
-	public void renderTile( BlockSkyChest block, TileSkyChest tile, WorldRenderer tess, double x, double y, double z, float partialTick, ModelGenerator renderer )
+	public void renderTile( BlockSkyChest block, TileSkyChest skyChest, WorldRenderer tess, double x, double y, double z, float partialTick, ModelGenerator renderer )
 	{
-		if( !( tile instanceof TileSkyChest ) )
+		if(  skyChest == null )
 		{
 			return;
 		}
-
-		final TileSkyChest skyChest = tile;
 
 		if( !skyChest.hasWorldObj() )
 		{
@@ -101,7 +99,7 @@ public class RenderBlockSkyChest extends BaseBlockRender<BlockSkyChest, TileSkyC
 		GL11.glEnable( GL12.GL_RESCALE_NORMAL );
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
 
-		final IBlockState metaData = tile.getWorld().getBlockState( tile.getPos() );
+		final IBlockState metaData = skyChest.getWorld().getBlockState( skyChest.getPos() );
 		final ResourceLocation loc = METADATA_TO_TEXTURE[ ((BlockSkyChest)metaData.getBlock()).type == SkyChestType.BLOCK ? 1 : 0 ];
 
 		Minecraft.getMinecraft().getTextureManager().bindTexture( loc );

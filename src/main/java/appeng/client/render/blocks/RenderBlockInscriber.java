@@ -109,8 +109,6 @@ public class RenderBlockInscriber extends BaseBlockRender<BlockInscriber, TileIn
 	{
 		this.preRenderInWorld( block, world, pos, renderer );
 
-		final BlockInscriber blk = block;
-
 		final IOrientable te = this.getOrientable( block, world, pos );
 		if( te == null )
 		{
@@ -125,25 +123,25 @@ public class RenderBlockInscriber extends BaseBlockRender<BlockInscriber, TileIn
 
 		// sides...
 		this.renderBlockBounds( renderer, 3, 1, 0, 13, 15, 3, fdx, fdy, fdz );
-		boolean out = renderer.renderStandardBlock( blk, pos );
+		boolean out = renderer.renderStandardBlock( block, pos );
 
 		this.renderBlockBounds( renderer, 0, 1, 0, 3, 15, 16, fdx, fdy, fdz );
-		out = renderer.renderStandardBlock( blk, pos );
+		out = renderer.renderStandardBlock( block, pos );
 
 		this.renderBlockBounds( renderer, 13, 1, 0, 16, 15, 16, fdx, fdy, fdz );
-		out = renderer.renderStandardBlock( blk, pos );
+		out = renderer.renderStandardBlock( block, pos );
 
 		// top bottom..
 		this.renderBlockBounds( renderer, 1, 0, 1, 15, 4, 15, fdx, fdy, fdz );
-		out = renderer.renderStandardBlock( blk, pos );
+		out = renderer.renderStandardBlock( block, pos );
 
 		this.renderBlockBounds( renderer, 1, 12, 1, 15, 16, 15, fdx, fdy, fdz );
-		out = renderer.renderStandardBlock( blk, pos );
+		out = renderer.renderStandardBlock( block, pos );
 
-		blk.getRendererInstance().setTemporaryRenderIcon( null );
+		block.getRendererInstance().setTemporaryRenderIcon( null );
 
 		renderer.renderAllFaces = false;
-		blk.getRendererInstance().setTemporaryRenderIcon( null );
+		block.getRendererInstance().setTemporaryRenderIcon( null );
 
 		this.postRenderInWorld( renderer );
 		return out;
@@ -152,8 +150,6 @@ public class RenderBlockInscriber extends BaseBlockRender<BlockInscriber, TileIn
 	@Override
 	public void renderTile( BlockInscriber block, TileInscriber tile, WorldRenderer tess, double x, double y, double z, float f, ModelGenerator renderer )
 	{
-		TileInscriber inv = tile;
-
 		GL11.glPushMatrix();
 		this.applyTESRRotation( x, y, z, tile.getForward(), tile.getUp() );
 
@@ -162,7 +158,7 @@ public class RenderBlockInscriber extends BaseBlockRender<BlockInscriber, TileIn
 		GL11.glDisable( GL12.GL_RESCALE_NORMAL );
 		GL11.glCullFace( GL11.GL_FRONT );
 
-		Minecraft mc = Minecraft.getMinecraft();
+		final Minecraft mc = Minecraft.getMinecraft();
 		mc.renderEngine.bindTexture( TextureMap.locationBlocksTexture );
 
 		// << 20 | light << 4;
@@ -172,37 +168,34 @@ public class RenderBlockInscriber extends BaseBlockRender<BlockInscriber, TileIn
 
 		OpenGlHelper.setLightmapTextureCoords( OpenGlHelper.lightmapTexUnit, var11, var12 );
 
-		final float TwoPx = 2.0f / 16.0f;
-		float middle = 0.5f;
-
-		float press = 0.2f;
-		final float base = 0.4f;
-
 		long absoluteProgress = 0;
 
-		if( inv.smash )
+		if( tile.smash )
 		{
-			long currentTime = System.currentTimeMillis();
-			absoluteProgress = currentTime - inv.clientStart;
+			final long currentTime = System.currentTimeMillis();
+			absoluteProgress = currentTime - tile.clientStart;
 			if( absoluteProgress > 800 )
 			{
-				inv.smash = false;
+				tile.smash = false;
 			}
 		}
 
-		float relativeProgress = absoluteProgress % 800 / 400.0f;
+		final float relativeProgress = absoluteProgress % 800 / 400.0f;
 		float progress = relativeProgress;
 
 		if( progress > 1.0f )
 		{
 			progress = 1.0f - ( progress - 1.0f );
 		}
+		float press = 0.2f;
 		press -= progress / 5.0f;
 
 		IAESprite ic = ExtraBlockTextures.BlockInscriberInside.getIcon();
 		tess.startDrawingQuads();
 
+		float middle = 0.5f;
 		middle += 0.02f;
+		final float TwoPx = 2.0f / 16.0f;
 		tess.addVertexWithUV( TwoPx, middle + press, TwoPx, ic.getInterpolatedU( 2 ), ic.getInterpolatedV( 2 ) );
 		tess.addVertexWithUV( 1.0 - TwoPx, middle + press, TwoPx, ic.getInterpolatedU( 14 ), ic.getInterpolatedV( 2 ) );
 		tess.addVertexWithUV( 1.0 - TwoPx, middle + press, 1.0 - TwoPx, ic.getInterpolatedU( 14 ), ic.getInterpolatedV( 13 ) );
@@ -210,6 +203,7 @@ public class RenderBlockInscriber extends BaseBlockRender<BlockInscriber, TileIn
 
 		tess.addVertexWithUV( TwoPx, middle + press, 1.0 - TwoPx, ic.getInterpolatedU( 2 ), ic.getInterpolatedV( 3 ) );
 		tess.addVertexWithUV( 1.0 - TwoPx, middle + press, 1.0 - TwoPx, ic.getInterpolatedU( 14 ), ic.getInterpolatedV( 3 ) );
+		final float base = 0.4f;
 		tess.addVertexWithUV( 1.0 - TwoPx, middle + base, 1.0 - TwoPx, ic.getInterpolatedU( 14 ), ic.getInterpolatedV( 3 - 16 * ( press - base ) ) );
 		tess.addVertexWithUV( TwoPx, middle + base, 1.0 - TwoPx, ic.getInterpolatedU( 2 ), ic.getInterpolatedV( 3 - 16 * ( press - base ) ) );
 
@@ -232,26 +226,26 @@ public class RenderBlockInscriber extends BaseBlockRender<BlockInscriber, TileIn
 		GL11.glPopMatrix();
 
 		int items = 0;
-		if( inv.getStackInSlot( 0 ) != null )
+		if( tile.getStackInSlot( 0 ) != null )
 		{
 			items++;
 		}
-		if( inv.getStackInSlot( 1 ) != null )
+		if( tile.getStackInSlot( 1 ) != null )
 		{
 			items++;
 		}
-		if( inv.getStackInSlot( 2 ) != null )
+		if( tile.getStackInSlot( 2 ) != null )
 		{
 			items++;
 		}
 
 		if( relativeProgress > 1.0f || items == 0 )
 		{
-			ItemStack is = inv.getStackInSlot( 3 );
+			ItemStack is = tile.getStackInSlot( 3 );
 
 			if( is == null )
 			{
-				IInscriberRecipe ir = inv.getTask();
+				final IInscriberRecipe ir = tile.getTask();
 				if( ir != null )
 				{
 					is = ir.getOutput().copy();
@@ -262,9 +256,9 @@ public class RenderBlockInscriber extends BaseBlockRender<BlockInscriber, TileIn
 		}
 		else
 		{
-			this.renderItem( inv.getStackInSlot( 0 ), press, block, tile, tess, x, y, z, f, renderer );
-			this.renderItem( inv.getStackInSlot( 1 ), -press, block, tile, tess, x, y, z, f, renderer );
-			this.renderItem( inv.getStackInSlot( 2 ), 0.0f, block, tile, tess, x, y, z, f, renderer );
+			this.renderItem( tile.getStackInSlot( 0 ), press, block, tile, tess, x, y, z, f, renderer );
+			this.renderItem( tile.getStackInSlot( 1 ), -press, block, tile, tess, x, y, z, f, renderer );
+			this.renderItem( tile.getStackInSlot( 2 ), 0.0f, block, tile, tess, x, y, z, f, renderer );
 		}
 	}
 

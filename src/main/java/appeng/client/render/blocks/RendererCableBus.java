@@ -136,12 +136,12 @@ public class RendererCableBus extends BaseBlockRender<BlockCableBus, TileCableBu
 	}
 
 	@Override
-	public void renderTile( BlockCableBus block, TileCableBus t, WorldRenderer tess, double x, double y, double z, float f, ModelGenerator renderer )
+	public void renderTile( BlockCableBus block, TileCableBus cableBus, WorldRenderer tess, double x, double y, double z, float f, ModelGenerator renderer )
 	{
-		if( t instanceof TileCableBus )
+		if( cableBus != null )
 		{
 			BusRenderer.INSTANCE.renderer.overrideBlockTexture = null;
-			t.cb.renderDynamic( x, y, z );
+			cableBus.cb.renderDynamic( x, y, z );
 		}
 	}
 }
