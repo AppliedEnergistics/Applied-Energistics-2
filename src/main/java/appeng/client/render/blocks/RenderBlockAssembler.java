@@ -103,10 +103,9 @@ public class RenderBlockAssembler extends BaseBlockRender<BlockMolecularAssemble
 	}
 
 	@Override
-	public boolean renderInWorld( BlockMolecularAssembler block, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
+	public boolean renderInWorld( BlockMolecularAssembler maBlock, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
 	{
-		BlockMolecularAssembler blk = (BlockMolecularAssembler) block;
-		TileMolecularAssembler tma = blk.getTileEntity( world, x, y, z );
+		TileMolecularAssembler tma = maBlock.getTileEntity( world, x, y, z );
 
 		if( BlockMolecularAssembler.booleanAlphaPass )
 		{
@@ -116,12 +115,12 @@ public class RenderBlockAssembler extends BaseBlockRender<BlockMolecularAssemble
 				TaughtIcon lights = new TaughtIcon( ExtraBlockTextures.BlockMolecularAssemblerLights.getIcon(), -2.0f );
 				Tessellator.instance.setColorRGBA_F( 1, 1, 1, 0.3f );
 				Tessellator.instance.setBrightness( 14 << 20 | 14 << 4 );
-				renderer.renderFaceXNeg( blk, x, y, z, lights );
-				renderer.renderFaceXPos( blk, x, y, z, lights );
-				renderer.renderFaceYNeg( blk, x, y, z, lights );
-				renderer.renderFaceYPos( blk, x, y, z, lights );
-				renderer.renderFaceZNeg( blk, x, y, z, lights );
-				renderer.renderFaceZPos( blk, x, y, z, lights );
+				renderer.renderFaceXNeg( maBlock, x, y, z, lights );
+				renderer.renderFaceXPos( maBlock, x, y, z, lights );
+				renderer.renderFaceYNeg( maBlock, x, y, z, lights );
+				renderer.renderFaceYPos( maBlock, x, y, z, lights );
+				renderer.renderFaceZNeg( maBlock, x, y, z, lights );
+				renderer.renderFaceZPos( maBlock, x, y, z, lights );
 				return true;
 			}
 			return false;
@@ -130,12 +129,12 @@ public class RenderBlockAssembler extends BaseBlockRender<BlockMolecularAssemble
 		BusRenderer.INSTANCE.renderer.blockAccess = renderer.blockAccess;
 		renderer = BusRenderer.INSTANCE.renderer;
 
-		this.preRenderInWorld( block, world, x, y, z, renderer );
+		this.preRenderInWorld( maBlock, world, x, y, z, renderer );
 
 		tma.lightCache = BusRenderHelper.INSTANCE.useSimplifiedRendering( x, y, z, this, tma.lightCache );
 
 		BusRenderer.INSTANCE.renderer.isFacade = true;
-		IOrientable te = this.getOrientable( block, world, x, y, z );
+		IOrientable te = this.getOrientable( maBlock, world, x, y, z );
 
 		ForgeDirection fdy = te.getUp();
 		ForgeDirection fdz = te.getForward();
@@ -143,54 +142,54 @@ public class RenderBlockAssembler extends BaseBlockRender<BlockMolecularAssemble
 
 		renderer.renderAllFaces = true;
 
-		this.renderCableAt( 0.11D, world, x, y, z, block, renderer, 0.141D, false );
-		this.renderCableAt( 0.188D, world, x, y, z, block, renderer, 0.1875D, true );
+		this.renderCableAt( 0.11D, world, x, y, z, maBlock, renderer, 0.141D, false );
+		this.renderCableAt( 0.188D, world, x, y, z, maBlock, renderer, 0.1875D, true );
 
-		blk.getRendererInstance().setTemporaryRenderIcon( blk.getIcon( 0, 0 ) );
+		maBlock.getRendererInstance().setTemporaryRenderIcon( maBlock.getIcon( 0, 0 ) );
 
 		this.renderBlockBounds( renderer, 2, 14, 0, 14, 16, 2, fdx, fdy, fdz );
-		renderer.renderStandardBlock( blk, x, y, z );
+		renderer.renderStandardBlock( maBlock, x, y, z );
 
 		this.renderBlockBounds( renderer, 0, 14, 2, 2, 16, 14, fdx, fdy, fdz );
-		renderer.renderStandardBlock( blk, x, y, z );
+		renderer.renderStandardBlock( maBlock, x, y, z );
 
 		this.renderBlockBounds( renderer, 2, 0, 14, 14, 2, 16, fdx, fdy, fdz );
-		renderer.renderStandardBlock( blk, x, y, z );
+		renderer.renderStandardBlock( maBlock, x, y, z );
 
 		this.renderBlockBounds( renderer, 14, 0, 2, 16, 2, 14, fdx, fdy, fdz );
-		renderer.renderStandardBlock( blk, x, y, z );
+		renderer.renderStandardBlock( maBlock, x, y, z );
 
 		// sides...
 		this.renderBlockBounds( renderer, 0, 0, 0, 16, 2, 2, fdx, fdy, fdz );
-		renderer.renderStandardBlock( blk, x, y, z );
+		renderer.renderStandardBlock( maBlock, x, y, z );
 
 		this.renderBlockBounds( renderer, 0, 2, 0, 2, 16, 2, fdx, fdy, fdz );
-		renderer.renderStandardBlock( blk, x, y, z );
+		renderer.renderStandardBlock( maBlock, x, y, z );
 
 		this.renderBlockBounds( renderer, 0, 0, 2, 2, 2, 16, fdx, fdy, fdz );
-		renderer.renderStandardBlock( blk, x, y, z );
+		renderer.renderStandardBlock( maBlock, x, y, z );
 
 		this.renderBlockBounds( renderer, 0, 14, 14, 16, 16, 16, fdx, fdy, fdz );
-		renderer.renderStandardBlock( blk, x, y, z );
+		renderer.renderStandardBlock( maBlock, x, y, z );
 
 		this.renderBlockBounds( renderer, 14, 0, 14, 16, 14, 16, fdx, fdy, fdz );
-		renderer.renderStandardBlock( blk, x, y, z );
+		renderer.renderStandardBlock( maBlock, x, y, z );
 
 		this.renderBlockBounds( renderer, 14, 14, 0, 16, 16, 14, fdx, fdy, fdz );
-		renderer.renderStandardBlock( blk, x, y, z );
+		renderer.renderStandardBlock( maBlock, x, y, z );
 
 		this.renderBlockBounds( renderer, 14, 2, 0, 16, 14, 2, fdx, fdy, fdz );
-		renderer.renderStandardBlock( blk, x, y, z );
+		renderer.renderStandardBlock( maBlock, x, y, z );
 
 		this.renderBlockBounds( renderer, 0, 2, 14, 2, 14, 16, fdx, fdy, fdz );
-		renderer.renderStandardBlock( blk, x, y, z );
+		renderer.renderStandardBlock( maBlock, x, y, z );
 
 		this.renderBlockBounds( renderer, 1, 1, 1, 15, 15, 15, fdx, fdy, fdz );
-		renderer.renderStandardBlock( blk, x, y, z );
+		renderer.renderStandardBlock( maBlock, x, y, z );
 
 		BusRenderHelper.INSTANCE.normalRendering();
 
-		blk.getRendererInstance().setTemporaryRenderIcon( null );
+		maBlock.getRendererInstance().setTemporaryRenderIcon( null );
 
 		renderer.renderAllFaces = false;
 		BusRenderer.INSTANCE.renderer.isFacade = false;

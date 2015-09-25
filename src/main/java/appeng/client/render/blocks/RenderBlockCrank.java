@@ -67,8 +67,7 @@ public class RenderBlockCrank extends BaseBlockRender<BlockCrank, TileCrank>
 	@Override
 	public void renderTile( BlockCrank blk, TileCrank tile, Tessellator tess, double x, double y, double z, float f, RenderBlocks renderBlocks )
 	{
-		TileCrank tc = (TileCrank) tile;
-		if( tc.getUp() == null || tc.getUp() == ForgeDirection.UNKNOWN )
+		if( tile.getUp() == null || tile.getUp() == ForgeDirection.UNKNOWN )
 		{
 			return;
 		}
@@ -90,21 +89,21 @@ public class RenderBlockCrank extends BaseBlockRender<BlockCrank, TileCrank>
 		this.applyTESRRotation( x, y, z, tile.getForward(), tile.getUp() );
 
 		GL11.glTranslated( 0.5, 0, 0.5 );
-		GL11.glRotatef( tc.visibleRotation, 0, 1, 0 );
+		GL11.glRotatef( tile.visibleRotation, 0, 1, 0 );
 		GL11.glTranslated( -0.5, 0, -0.5 );
 
-		tess.setTranslation( -tc.xCoord, -tc.yCoord, -tc.zCoord );
+		tess.setTranslation( -tile.xCoord, -tile.yCoord, -tile.zCoord );
 		tess.startDrawingQuads();
 		renderBlocks.renderAllFaces = true;
-		renderBlocks.blockAccess = tc.getWorldObj();
+		renderBlocks.blockAccess = tile.getWorldObj();
 
 		renderBlocks.setRenderBounds( 0.5D - 0.05, 0.5D - 0.5, 0.5D - 0.05, 0.5D + 0.05, 0.5D + 0.1, 0.5D + 0.05 );
 
-		renderBlocks.renderStandardBlock( blk, tc.xCoord, tc.yCoord, tc.zCoord );
+		renderBlocks.renderStandardBlock( blk, tile.xCoord, tile.yCoord, tile.zCoord );
 
 		renderBlocks.setRenderBounds( 0.70D - 0.15, 0.55D - 0.05, 0.5D - 0.05, 0.70D + 0.15, 0.55D + 0.05, 0.5D + 0.05 );
 
-		renderBlocks.renderStandardBlock( blk, tc.xCoord, tc.yCoord, tc.zCoord );
+		renderBlocks.renderStandardBlock( blk, tile.xCoord, tile.yCoord, tile.zCoord );
 
 		tess.draw();
 		tess.setTranslation( 0, 0, 0 );

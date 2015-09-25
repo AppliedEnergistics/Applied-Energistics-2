@@ -59,15 +59,14 @@ public class RenderBlockCraftingCPUMonitor extends RenderBlockCraftingCPU<BlockC
 	@Override
 	public void renderTile( BlockCraftingMonitor block, TileCraftingMonitorTile tile, Tessellator tess, double x, double y, double z, float f, RenderBlocks renderer )
 	{
-		if( tile instanceof TileCraftingMonitorTile )
+		if( tile != null )
 		{
-			TileCraftingMonitorTile cmt = (TileCraftingMonitorTile) tile;
-			IAEItemStack ais = cmt.getJobProgress();
+			final IAEItemStack ais = tile.getJobProgress();
 
-			if( cmt.dspList == null )
+			if( tile.dspList == null )
 			{
-				cmt.updateList = true;
-				cmt.dspList = GLAllocation.generateDisplayLists( 1 );
+				tile.updateList = true;
+				tile.dspList = GLAllocation.generateDisplayLists( 1 );
 			}
 
 			if( ais != null )
@@ -75,16 +74,16 @@ public class RenderBlockCraftingCPUMonitor extends RenderBlockCraftingCPU<BlockC
 				GL11.glPushMatrix();
 				GL11.glTranslated( x + 0.5, y + 0.5, z + 0.5 );
 
-				if( cmt.updateList )
+				if( tile.updateList )
 				{
-					cmt.updateList = false;
-					GL11.glNewList( cmt.dspList, GL11.GL_COMPILE_AND_EXECUTE );
-					this.tesrRenderScreen( tess, cmt, ais );
+					tile.updateList = false;
+					GL11.glNewList( tile.dspList, GL11.GL_COMPILE_AND_EXECUTE );
+					this.tesrRenderScreen( tess, tile, ais );
 					GL11.glEndList();
 				}
 				else
 				{
-					GL11.glCallList( cmt.dspList );
+					GL11.glCallList( tile.dspList );
 				}
 
 				GL11.glPopMatrix();
