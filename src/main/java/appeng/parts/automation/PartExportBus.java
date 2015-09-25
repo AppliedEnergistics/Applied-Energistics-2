@@ -175,6 +175,13 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 			// :P
 		}
 
+		final int failedAttempts = this.craftingTracker.getFailedCraftingAttempts();
+
+		if( this.isCraftingEnabled() && failedAttempts > 0 )
+		{
+			return this.getFailedCraftingPenalty( failedAttempts );
+		}
+
 		return this.didSomething ? TickRateModulation.FASTER : TickRateModulation.SLOWER;
 	}
 
@@ -378,5 +385,19 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 		{
 			this.nextSlot = ( this.nextSlot + x ) % this.availableSlots();
 		}
+	}
+
+	private TickRateModulation getFailedCraftingPenalty( int failedAttempts )
+	{
+		if( failedAttempts > 5 )
+		{
+			return TickRateModulation.SLOWER;
+		}
+		else if( failedAttempts > 1 )
+		{
+			return TickRateModulation.SAME;
+		}
+
+		return TickRateModulation.FASTER;
 	}
 }

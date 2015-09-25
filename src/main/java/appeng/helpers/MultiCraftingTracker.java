@@ -32,7 +32,6 @@ import appeng.api.networking.crafting.ICraftingLink;
 import appeng.api.networking.crafting.ICraftingRequester;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.parts.automation.NonNullArrayIterator;
 import appeng.util.InventoryAdaptor;
 
 import com.google.common.collect.ImmutableSet;
@@ -41,11 +40,12 @@ import com.google.common.collect.ImmutableSet;
 public class MultiCraftingTracker
 {
 
-	final int size;
-	final ICraftingRequester owner;
+	private final int size;
+	private final ICraftingRequester owner;
 
-	Future<ICraftingJob>[] jobs = null;
-	ICraftingLink[] links = null;
+	private Future<ICraftingJob>[] jobs = null;
+	private ICraftingLink[] links = null;
+	private int failedCraftingAttempts = 0;
 
 	public MultiCraftingTracker( ICraftingRequester o, int size )
 	{
@@ -53,11 +53,17 @@ public class MultiCraftingTracker
 		this.size = size;
 	}
 
+	public int getFailedCraftingAttempts()
+	{
+		return failedCraftingAttempts;
+	}
+
 	public void readFromNBT( NBTTagCompound extra )
 	{
 		for( int x = 0; x < this.size; x++ )
 		{
-			NBTTagCompound link = extra.getCompoundTag( "links-" + x );
+			final NBTTagCompound link = extra.getCompoundTag( "links-" + x );
+
 			if( link != null && !link.hasNoTags() )
 			{
 				this.setLink( x, AEApi.instance().storage().loadCraftingLink( link, this.owner ) );
@@ -65,65 +71,27 @@ public class MultiCraftingTracker
 		}
 	}
 
-	void setLink( int slot, ICraftingLink l )
-	{
-		if( this.links == null )
-		{
-			this.links = new ICraftingLink[this.size];
-		}
-
-		this.links[slot] = l;
-
-		boolean hasStuff = false;
-		for( int x = 0; x < this.links.length; x++ )
-		{
-			ICraftingLink g = this.links[x];
-
-			if( g == null || g.isCanceled() || g.isDone() )
-			{
-				this.links[x] = null;
-			}
-			else
-			{
-				hasStuff = true;
-			}
-		}
-
-		if( !hasStuff )
-		{
-			this.links = null;
-		}
-	}
-
 	public void writeToNBT( NBTTagCompound extra )
 	{
 		for( int x = 0; x < this.size; x++ )
 		{
-			ICraftingLink link = this.getLink( x );
+			final ICraftingLink link = this.getLink( x );
+
 			if( link != null )
 			{
-				NBTTagCompound ln = new NBTTagCompound();
+				final NBTTagCompound ln = new NBTTagCompound();
 				link.writeToNBT( ln );
 				extra.setTag( "links-" + x, ln );
 			}
 		}
 	}
 
-	ICraftingLink getLink( int slot )
-	{
-		if( this.links == null )
-		{
-			return null;
-		}
-
-		return this.links[slot];
-	}
-
 	public boolean handleCrafting( int x, long itemToCraft, IAEItemStack ais, InventoryAdaptor d, World w, IGrid g, ICraftingGrid cg, BaseActionSource mySrc )
 	{
 		if( ais != null && d.simulateAdd( ais.getItemStack() ) == null )
 		{
-			Future<ICraftingJob> craftingJob = this.getJob( x );
+			final Future<ICraftingJob> craftingJob = this.getJob( x );
+
 			if( this.getLink( x ) != null )
 			{
 				return false;
@@ -131,6 +99,7 @@ public class MultiCraftingTracker
 			else if( craftingJob != null )
 			{
 				ICraftingJob job = null;
+
 				try
 				{
 					if( craftingJob.isDone() )
@@ -140,8 +109,20 @@ public class MultiCraftingTracker
 
 					if( job != null )
 					{
+						final ICraftingLink link = cg.submitJob( job, this.owner, null, false, mySrc );
+
 						this.setJob( x, null );
-						this.setLink( x, cg.submitJob( job, this.owner, null, false, mySrc ) );
+
+						if( link != null )
+						{
+							this.failedCraftingAttempts = Math.max( 0, this.failedCraftingAttempts - 1 );
+
+							this.setLink( x, link );
+						}
+						else
+						{
+							this.failedCraftingAttempts = Math.min( 10, this.failedCraftingAttempts + 1 );
+						}
 						return true;
 					}
 				}
@@ -158,47 +139,14 @@ public class MultiCraftingTracker
 			{
 				if( this.getLink( x ) == null )
 				{
-					IAEItemStack aisC = ais.copy();
+					final IAEItemStack aisC = ais.copy();
 					aisC.setStackSize( itemToCraft );
+
 					this.setJob( x, cg.beginCraftingJob( w, g, mySrc, aisC, null ) );
 				}
 			}
 		}
 		return false;
-	}
-
-	Future<ICraftingJob> getJob( int slot )
-	{
-		if( this.jobs == null )
-		{
-			return null;
-		}
-
-		return this.jobs[slot];
-	}
-
-	void setJob( int slot, Future<ICraftingJob> l )
-	{
-		if( this.jobs == null )
-		{
-			this.jobs = new Future[this.size];
-		}
-
-		this.jobs[slot] = l;
-
-		boolean hasStuff = false;
-		for( Future<ICraftingJob> job : this.jobs )
-		{
-			if( job != null )
-			{
-				hasStuff = true;
-			}
-		}
-
-		if( !hasStuff )
-		{
-			this.jobs = null;
-		}
 	}
 
 	public ImmutableSet<ICraftingLink> getRequestedJobs()
@@ -208,7 +156,7 @@ public class MultiCraftingTracker
 			return ImmutableSet.of();
 		}
 
-		return ImmutableSet.copyOf( new NonNullArrayIterator( this.links ) );
+		return ImmutableSet.copyOf( new NonNullArrayIterator<ICraftingLink>( this.links ) );
 	}
 
 	public void jobStateChange( ICraftingLink link )
@@ -274,5 +222,80 @@ public class MultiCraftingTracker
 	public boolean isBusy( int slot )
 	{
 		return this.getLink( slot ) != null || this.getJob( slot ) != null;
+	}
+
+	private ICraftingLink getLink( int slot )
+	{
+		if( this.links == null )
+		{
+			return null;
+		}
+
+		return this.links[slot];
+	}
+
+	private void setLink( int slot, ICraftingLink l )
+	{
+		if( this.links == null )
+		{
+			this.links = new ICraftingLink[this.size];
+		}
+
+		this.links[slot] = l;
+
+		boolean hasStuff = false;
+		for( int x = 0; x < this.links.length; x++ )
+		{
+			final ICraftingLink g = this.links[x];
+
+			if( g == null || g.isCanceled() || g.isDone() )
+			{
+				this.links[x] = null;
+			}
+			else
+			{
+				hasStuff = true;
+			}
+		}
+
+		if( !hasStuff )
+		{
+			this.links = null;
+		}
+	}
+
+	private Future<ICraftingJob> getJob( int slot )
+	{
+		if( this.jobs == null )
+		{
+			return null;
+		}
+
+		return this.jobs[slot];
+	}
+
+	private void setJob( int slot, Future<ICraftingJob> l )
+	{
+		if( this.jobs == null )
+		{
+			this.jobs = new Future[this.size];
+		}
+
+		this.jobs[slot] = l;
+
+		boolean hasStuff = false;
+
+		for( Future<ICraftingJob> job : this.jobs )
+		{
+			if( job != null )
+			{
+				hasStuff = true;
+			}
+		}
+
+		if( !hasStuff )
+		{
+			this.jobs = null;
+		}
 	}
 }
