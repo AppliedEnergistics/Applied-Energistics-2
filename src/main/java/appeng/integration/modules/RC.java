@@ -25,12 +25,12 @@ import mods.railcraft.api.crafting.IRockCrusherRecipe;
 import mods.railcraft.api.crafting.RailcraftCraftingManager;
 
 import appeng.helpers.Reflected;
-import appeng.integration.BaseModule;
+import appeng.integration.IIntegrationModule;
 import appeng.integration.IntegrationHelper;
 import appeng.integration.abstraction.IRC;
 
 
-public class RC extends BaseModule implements IRC
+public class RC implements IRC, IIntegrationModule
 {
 	@Reflected
 	public static RC instance;

@@ -24,14 +24,14 @@ import mcp.mobius.waila.api.IWailaDataProvider;
 import mcp.mobius.waila.api.IWailaRegistrar;
 
 import appeng.helpers.Reflected;
-import appeng.integration.BaseModule;
+import appeng.integration.IIntegrationModule;
 import appeng.integration.IntegrationHelper;
 import appeng.integration.modules.waila.PartWailaDataProvider;
 import appeng.integration.modules.waila.TileWailaDataProvider;
 import appeng.tile.AEBaseTile;
 
 
-public class Waila extends BaseModule
+public class Waila implements IIntegrationModule
 {
 	@Reflected
 	public static Waila instance;

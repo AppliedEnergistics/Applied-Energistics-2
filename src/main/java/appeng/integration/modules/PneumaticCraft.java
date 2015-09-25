@@ -30,13 +30,13 @@ import appeng.api.config.TunnelType;
 import appeng.api.features.IP2PTunnelRegistry;
 import appeng.api.parts.IPartHelper;
 import appeng.helpers.Reflected;
-import appeng.integration.BaseModule;
+import appeng.integration.IIntegrationModule;
 import appeng.integration.IntegrationHelper;
 import appeng.integration.IntegrationRegistry;
 import appeng.integration.IntegrationType;
 
 
-public class PneumaticCraft extends BaseModule
+public class PneumaticCraft implements IIntegrationModule
 {
 	@Reflected
 	public static PneumaticCraft instance;

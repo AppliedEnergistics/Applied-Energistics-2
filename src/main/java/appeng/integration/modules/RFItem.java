@@ -20,11 +20,11 @@ package appeng.integration.modules;
 
 
 import appeng.helpers.Reflected;
-import appeng.integration.BaseModule;
+import appeng.integration.IIntegrationModule;
 import appeng.integration.IntegrationHelper;
 
 
-public class RFItem extends BaseModule
+public class RFItem implements IIntegrationModule
 {
 	@Reflected
 	public static RFItem instance;

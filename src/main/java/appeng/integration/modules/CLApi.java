@@ -21,12 +21,12 @@ package appeng.integration.modules;
 
 import appeng.api.util.AEColor;
 import appeng.helpers.Reflected;
-import appeng.integration.BaseModule;
+import appeng.integration.IIntegrationModule;
 import appeng.integration.IntegrationHelper;
 import appeng.integration.abstraction.ICLApi;
 
 
-public class CLApi extends BaseModule implements ICLApi
+public class CLApi implements ICLApi, IIntegrationModule
 {
 	@Reflected
 	public static CLApi instance;

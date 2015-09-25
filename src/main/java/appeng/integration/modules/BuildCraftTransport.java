@@ -46,7 +46,7 @@ import appeng.api.features.IP2PTunnelRegistry;
 import appeng.api.parts.IFacadePart;
 import appeng.facade.FacadePart;
 import appeng.helpers.Reflected;
-import appeng.integration.BaseModule;
+import appeng.integration.IIntegrationModule;
 import appeng.integration.IntegrationHelper;
 import appeng.integration.abstraction.IBuildCraftTransport;
 import appeng.integration.modules.BCHelpers.BCPipeHandler;
@@ -58,7 +58,7 @@ import appeng.integration.modules.BCHelpers.BCPipeHandler;
  * @since rv3 12.06.2015
  */
 @Reflected
-public class BuildCraftTransport extends BaseModule implements IBuildCraftTransport
+public class BuildCraftTransport implements IBuildCraftTransport, IIntegrationModule
 {
 	@Reflected
 	public static BuildCraftTransport instance;

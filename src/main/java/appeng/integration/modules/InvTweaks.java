@@ -24,12 +24,12 @@ import net.minecraftforge.fml.common.Loader;
 import invtweaks.api.InvTweaksAPI;
 
 import appeng.helpers.Reflected;
-import appeng.integration.BaseModule;
+import appeng.integration.IIntegrationModule;
 import appeng.integration.IntegrationHelper;
 import appeng.integration.abstraction.IInvTweaks;
 
 
-public class InvTweaks extends BaseModule implements IInvTweaks
+public class InvTweaks implements IInvTweaks, IIntegrationModule
 {
 	@Reflected
 	public static InvTweaks instance;
