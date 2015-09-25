@@ -87,7 +87,7 @@ public class RenderBlockWireless extends BaseBlockRender<BlockWireless, TileWire
 
 		ri.setTemporaryRenderIcons( r, r, ExtraBlockTextures.BlockWirelessInside.getIcon(), ExtraBlockTextures.BlockWirelessInside.getIcon(), r, r );
 
-		ForgeDirection[] sides = new ForgeDirection[] { ForgeDirection.EAST, ForgeDirection.WEST, ForgeDirection.UP, ForgeDirection.DOWN };
+		ForgeDirection[] sides = { ForgeDirection.EAST, ForgeDirection.WEST, ForgeDirection.UP, ForgeDirection.DOWN };
 
 		int s = 1;
 
@@ -144,7 +144,7 @@ public class RenderBlockWireless extends BaseBlockRender<BlockWireless, TileWire
 
 			ri.setTemporaryRenderIcons( r, r, ExtraBlockTextures.BlockWirelessInside.getIcon(), ExtraBlockTextures.BlockWirelessInside.getIcon(), r, r );
 
-			ForgeDirection[] sides = new ForgeDirection[] { ForgeDirection.EAST, ForgeDirection.WEST, ForgeDirection.UP, ForgeDirection.DOWN };
+			ForgeDirection[] sides = { ForgeDirection.EAST, ForgeDirection.WEST, ForgeDirection.UP, ForgeDirection.DOWN };
 
 			int s = 1;
 

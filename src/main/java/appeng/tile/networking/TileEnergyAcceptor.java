@@ -37,7 +37,7 @@ public class TileEnergyAcceptor extends AENetworkPowerTile
 {
 
 	static final AppEngInternalInventory INTERNAL_INVENTORY = new AppEngInternalInventory( null, 0 );
-	final int[] sides = new int[] {};
+	final int[] sides = {};
 
 	public TileEnergyAcceptor()
 	{

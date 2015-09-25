@@ -44,8 +44,8 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 {
 
 	static final ThreadLocal<Stack<PartP2PLiquids>> DEPTH = new ThreadLocal<Stack<PartP2PLiquids>>();
-	private static final FluidTankInfo[] ACTIVE_TANK = new FluidTankInfo[] { new FluidTankInfo( null, 10000 ) };
-	private static final FluidTankInfo[] INACTIVE_TANK = new FluidTankInfo[] { new FluidTankInfo( null, 0 ) };
+	private static final FluidTankInfo[] ACTIVE_TANK = { new FluidTankInfo( null, 10000 ) };
+	private static final FluidTankInfo[] INACTIVE_TANK = { new FluidTankInfo( null, 0 ) };
 	IFluidHandler cachedTank;
 	private int tmpUsed;
 

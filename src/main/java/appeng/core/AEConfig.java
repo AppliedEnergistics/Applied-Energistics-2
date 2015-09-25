@@ -59,9 +59,9 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 	public static AEConfig instance;
 	public final IConfigManager settings = new ConfigManager( this );
 	public final EnumSet<AEFeature> featureFlags = EnumSet.noneOf( AEFeature.class );
-	public final int[] craftByStacks = new int[] { 1, 10, 100, 1000 };
-	public final int[] priorityByStacks = new int[] { 1, 10, 100, 1000 };
-	public final int[] levelByStacks = new int[] { 1, 10, 100, 1000 };
+	public final int[] craftByStacks = { 1, 10, 100, 1000 };
+	public final int[] priorityByStacks = { 1, 10, 100, 1000 };
+	public final int[] levelByStacks = { 1, 10, 100, 1000 };
 	private final double WirelessHighWirelessCount = 64;
 	private final File configFile;
 	public int storageBiomeID = -1;
@@ -98,7 +98,7 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 	public boolean updatable = false;
 	public double meteoriteClusterChance = 0.1;
 	public double meteoriteSpawnChance = 0.3;
-	public int[] meteoriteDimensionWhitelist = new int[] { 0 };
+	public int[] meteoriteDimensionWhitelist = { 0 };
 	public int craftingCalculationTimePerTick = 5;
 	PowerUnits selectedPowerUnit = PowerUnits.AE;
 	private double WirelessBaseCost = 8;

@@ -91,7 +91,7 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IMask
 	private static final double LONGER = 10.0 / 16.0;
 	private static final double MIN_DIRECTION = 0;
 	private static final double MAX_DIRECTION = 1.0;
-	private static final Cuboid6[] SIDE_TESTS = new Cuboid6[] {
+	private static final Cuboid6[] SIDE_TESTS = {
 
 			// DOWN(0, -1, 0),
 			new Cuboid6( SHORTER, MIN_DIRECTION, SHORTER, LONGER, SHORTER, LONGER ),
