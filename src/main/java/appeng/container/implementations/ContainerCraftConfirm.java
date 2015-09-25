@@ -180,7 +180,7 @@ public class ContainerCraftConfirm extends AEBaseContainer
 			this.sendCPUs();
 		}
 
-		this.noCPU = this.cpus.size() == 0;
+		this.noCPU = this.cpus.isEmpty();
 
 		super.detectAndSendChanges();
 

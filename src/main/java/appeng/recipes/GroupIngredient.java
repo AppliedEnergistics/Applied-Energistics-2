@@ -111,7 +111,7 @@ public class GroupIngredient implements IIngredient
 			this.isInside = false;
 		}
 
-		if( out.size() == 0 )
+		if( out.isEmpty() )
 		{
 			throw new MissingIngredientError( this.toString() + " - group could not be resolved to any items." );
 		}
