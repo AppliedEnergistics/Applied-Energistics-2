@@ -32,14 +32,14 @@ import appeng.api.config.TunnelType;
 import appeng.api.features.IP2PTunnelRegistry;
 import appeng.api.parts.IPartHelper;
 import appeng.helpers.Reflected;
-import appeng.integration.BaseModule;
+import appeng.integration.IIntegrationModule;
 import appeng.integration.IntegrationHelper;
 import appeng.integration.IntegrationRegistry;
 import appeng.integration.IntegrationType;
 import appeng.integration.abstraction.IIC2;
 
 
-public class IC2 extends BaseModule implements IIC2
+public class IC2 implements IIC2, IIntegrationModule
 {
 	@Reflected
 	public static IC2 instance;

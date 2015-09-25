@@ -24,7 +24,6 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import appeng.api.AEApi;
 import appeng.helpers.Reflected;
-import appeng.integration.BaseModule;
 import appeng.integration.IIntegrationModule;
 import appeng.integration.IntegrationHelper;
 import appeng.integration.abstraction.IBetterStorage;
@@ -33,7 +32,7 @@ import appeng.integration.modules.helpers.BSCrateStorageAdaptor;
 import appeng.util.InventoryAdaptor;
 
 
-public class BetterStorage extends BaseModule implements IIntegrationModule, IBetterStorage
+public class BetterStorage implements IIntegrationModule, IBetterStorage
 {
 	@Reflected
 	public static BetterStorage instance;

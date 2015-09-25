@@ -26,14 +26,14 @@ import powercrystals.minefactoryreloaded.api.IDeepStorageUnit;
 import appeng.api.AEApi;
 import appeng.api.storage.IMEInventory;
 import appeng.helpers.Reflected;
-import appeng.integration.BaseModule;
+import appeng.integration.IIntegrationModule;
 import appeng.integration.IntegrationHelper;
 import appeng.integration.abstraction.IDSU;
 import appeng.integration.modules.helpers.MFRDSUHandler;
 import appeng.integration.modules.helpers.MinefactoryReloadedDeepStorageUnit;
 
 
-public class DSU extends BaseModule implements IDSU
+public class DSU implements IDSU, IIntegrationModule
 {
 	@Reflected
 	public static DSU instance;
