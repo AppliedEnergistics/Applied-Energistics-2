@@ -21,7 +21,6 @@ package appeng.me.storage;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 
 import appeng.api.AEApi;
 import appeng.api.config.FuzzyMode;
@@ -34,7 +33,6 @@ import appeng.api.storage.IMEInventory;
 import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
-import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 import appeng.util.prioitylist.FuzzyPriorityList;
 import appeng.util.prioitylist.PrecisePriorityList;
@@ -43,11 +41,12 @@ import appeng.util.prioitylist.PrecisePriorityList;
 public class CellInventoryHandler extends MEInventoryHandler<IAEItemStack> implements ICellInventoryHandler
 {
 
-	CellInventoryHandler( final IMEInventory c )
+	CellInventoryHandler( final IMEInventory<IAEItemStack> c )
 	{
 		super( c, StorageChannel.ITEMS );
 
 		final ICellInventory ci = this.getCellInv();
+
 		if( ci != null )
 		{
 			final IItemList<IAEItemStack> priorityList = AEApi.instance().storage().createItemList();
@@ -135,11 +134,6 @@ public class CellInventoryHandler extends MEInventoryHandler<IAEItemStack> imple
 	public IncludeExclude getIncludeExcludeMode()
 	{
 		return this.getWhitelist();
-	}
-
-	NBTTagCompound openNbtData()
-	{
-		return Platform.openNbtData( this.getCellInv().getItemStack() );
 	}
 
 	public int getStatusForCell()
