@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.parts.automation;
+package appeng.helpers;
 
 
 import java.util.Iterator;
@@ -27,8 +27,8 @@ import scala.NotImplementedError;
 public class NonNullArrayIterator<E> implements Iterator<E>
 {
 
-	final E[] g;
-	int offset = 0;
+	private final E[] g;
+	private int offset = 0;
 
 	public NonNullArrayIterator( E[] o )
 	{
@@ -49,8 +49,9 @@ public class NonNullArrayIterator<E> implements Iterator<E>
 	@Override
 	public E next()
 	{
-		E result = this.g[this.offset];
+		final E result = this.g[this.offset];
 		this.offset++;
+
 		return result;
 	}
 
