@@ -3,12 +3,9 @@ package appeng.api.features;
 
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
-
-import com.google.common.base.Optional;
 
 import net.minecraft.item.ItemStack;
 
