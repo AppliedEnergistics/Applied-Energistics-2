@@ -75,7 +75,7 @@ public class IngredientSet implements IIngredient
 		List<ItemStack> out = new LinkedList<ItemStack>();
 		out.addAll( this.items );
 
-		if( out.size() == 0 )
+		if( out.isEmpty() )
 		{
 			throw new MissingIngredientError( this.toString() + " - group could not be resolved to any items." );
 		}

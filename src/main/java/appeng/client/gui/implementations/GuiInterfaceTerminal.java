@@ -190,7 +190,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 	{
 		if( !this.checkHotbarKeys( key ) )
 		{
-			if( character == ' ' && this.searchField.getText().length() == 0 )
+			if( character == ' ' && this.searchField.getText().isEmpty() )
 			{
 				return;
 			}

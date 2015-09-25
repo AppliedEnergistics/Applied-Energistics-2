@@ -178,7 +178,7 @@ public final class InscriberRegistry implements IInscriberRegistry
 			{
 				throw new IllegalStateException( "Input must be defined." );
 			}
-			if( this.inputs.size() == 0 )
+			if( this.inputs.isEmpty() )
 			{
 				throw new IllegalStateException( "Input must have a size." );
 			}

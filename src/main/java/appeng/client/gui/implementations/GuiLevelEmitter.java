@@ -210,7 +210,7 @@ public class GuiLevelEmitter extends GuiUpgradeable
 				this.level.setText( Out );
 			}
 
-			if( Out.length() == 0 )
+			if( Out.isEmpty() )
 			{
 				Out = "0";
 			}
@@ -260,7 +260,7 @@ public class GuiLevelEmitter extends GuiUpgradeable
 						this.level.setText( Out );
 					}
 
-					if( Out.length() == 0 )
+					if( Out.isEmpty() )
 					{
 						Out = "0";
 					}
