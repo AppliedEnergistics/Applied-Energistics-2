@@ -48,20 +48,20 @@ public class PartIdentityAnnihilationPlane extends PartAnnihilationPlane
 
 	private static final float SILK_TOUCH_FACTOR = 16;
 
-	public PartIdentityAnnihilationPlane( ItemStack is )
+	public PartIdentityAnnihilationPlane( final ItemStack is )
 	{
 		super( is );
 	}
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderStatic( int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer )
+	public void renderStatic( final int x, final int y, final int z, final IPartRenderHelper rh, final RenderBlocks renderer )
 	{
 		this.renderStaticWithIcon( x, y, z, rh, renderer, ACTIVE_ICON );
 	}
 
 	@Override
-	protected boolean isAnnihilationPlane( TileEntity blockTileEntity, ForgeDirection side )
+	protected boolean isAnnihilationPlane( final TileEntity blockTileEntity, final ForgeDirection side )
 	{
 		if( blockTileEntity instanceof IPartHost )
 		{
@@ -72,7 +72,7 @@ public class PartIdentityAnnihilationPlane extends PartAnnihilationPlane
 	}
 
 	@Override
-	protected float calculateEnergyUsage( WorldServer w, int x, int y, int z, List<ItemStack> items )
+	protected float calculateEnergyUsage( final WorldServer w, final int x, final int y, final int z, final List<ItemStack> items )
 	{
 		final float requiredEnergy = super.calculateEnergyUsage( w, x, y, z, items );
 
@@ -80,7 +80,7 @@ public class PartIdentityAnnihilationPlane extends PartAnnihilationPlane
 	}
 
 	@Override
-	protected List<ItemStack> obtainBlockDrops( WorldServer w, int x, int y, int z )
+	protected List<ItemStack> obtainBlockDrops( final WorldServer w, final int x, final int y, final int z )
 	{
 		final FakePlayer fakePlayer = FakePlayerFactory.getMinecraft( w );
 		final Block block = w.getBlock( x, y, z );
@@ -98,7 +98,7 @@ public class PartIdentityAnnihilationPlane extends PartAnnihilationPlane
 				{
 					meta = blockMeta;
 				}
-				ItemStack itemstack = new ItemStack( item, 1, meta );
+				final ItemStack itemstack = new ItemStack( item, 1, meta );
 				out.add( itemstack );
 			}
 			return out;

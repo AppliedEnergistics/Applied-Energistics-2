@@ -37,23 +37,23 @@ public class FacadeConfig extends Configuration
 	public static FacadeConfig instance;
 	final Pattern replacementPattern;
 
-	public FacadeConfig( File facadeFile )
+	public FacadeConfig( final File facadeFile )
 	{
 		super( facadeFile );
 		this.replacementPattern = Pattern.compile( "[^a-zA-Z0-9]" );
 	}
 
-	public boolean checkEnabled( Block id, int metadata, boolean automatic )
+	public boolean checkEnabled( final Block id, final int metadata, final boolean automatic )
 	{
 		if( id == null )
 		{
 			return false;
 		}
 
-		UniqueIdentifier blk = GameRegistry.findUniqueIdentifierFor( id );
+		final UniqueIdentifier blk = GameRegistry.findUniqueIdentifierFor( id );
 		if( blk == null )
 		{
-			for( Field f : Block.class.getFields() )
+			for( final Field f : Block.class.getFields() )
 			{
 				try
 				{
@@ -62,7 +62,7 @@ public class FacadeConfig extends Configuration
 						return this.get( "minecraft", f.getName() + ( metadata == 0 ? "" : "." + metadata ), automatic ).getBoolean( automatic );
 					}
 				}
-				catch( Throwable e )
+				catch( final Throwable e )
 				{
 					// :P
 				}
@@ -70,8 +70,8 @@ public class FacadeConfig extends Configuration
 		}
 		else
 		{
-			Matcher mod = this.replacementPattern.matcher( blk.modId );
-			Matcher name = this.replacementPattern.matcher( blk.name );
+			final Matcher mod = this.replacementPattern.matcher( blk.modId );
+			final Matcher name = this.replacementPattern.matcher( blk.name );
 			return this.get( mod.replaceAll( "" ), name.replaceAll( "" ) + ( metadata == 0 ? "" : "." + metadata ), automatic ).getBoolean( automatic );
 		}
 

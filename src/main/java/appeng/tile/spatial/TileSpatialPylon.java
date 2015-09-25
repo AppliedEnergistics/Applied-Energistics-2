@@ -99,7 +99,7 @@ public class TileSpatialPylon extends AENetworkTile implements IAEMultiBlock
 	}
 
 	@Override
-	public void disconnect( boolean b )
+	public void disconnect( final boolean b )
 	{
 		if( this.cluster != null )
 		{
@@ -120,7 +120,7 @@ public class TileSpatialPylon extends AENetworkTile implements IAEMultiBlock
 		return true;
 	}
 
-	public void updateStatus( SpatialPylonCluster c )
+	public void updateStatus( final SpatialPylonCluster c )
 	{
 		this.cluster = c;
 		this.gridProxy.setValidSides( c == null ? EnumSet.noneOf( ForgeDirection.class ) : EnumSet.allOf( ForgeDirection.class ) );
@@ -129,7 +129,7 @@ public class TileSpatialPylon extends AENetworkTile implements IAEMultiBlock
 
 	public void recalculateDisplay()
 	{
-		int oldBits = this.displayBits;
+		final int oldBits = this.displayBits;
 
 		this.displayBits = 0;
 
@@ -176,7 +176,7 @@ public class TileSpatialPylon extends AENetworkTile implements IAEMultiBlock
 					this.displayBits |= DISPLAY_ENABLED;
 				}
 			}
-			catch( GridAccessException e )
+			catch( final GridAccessException e )
 			{
 				// nothing?
 			}
@@ -192,7 +192,7 @@ public class TileSpatialPylon extends AENetworkTile implements IAEMultiBlock
 	public void markForUpdate()
 	{
 		super.markForUpdate();
-		boolean hasLight = this.getLightValue() > 0;
+		final boolean hasLight = this.getLightValue() > 0;
 		if( hasLight != this.didHaveLight )
 		{
 			this.didHaveLight = hasLight;
@@ -217,27 +217,27 @@ public class TileSpatialPylon extends AENetworkTile implements IAEMultiBlock
 	}
 
 	@TileEvent( TileEventType.NETWORK_READ )
-	public boolean readFromStream_TileSpatialPylon( ByteBuf data )
+	public boolean readFromStream_TileSpatialPylon( final ByteBuf data )
 	{
-		int old = this.displayBits;
+		final int old = this.displayBits;
 		this.displayBits = data.readByte();
 		return old != this.displayBits;
 	}
 
 	@TileEvent( TileEventType.NETWORK_WRITE )
-	public void writeToStream_TileSpatialPylon( ByteBuf data )
+	public void writeToStream_TileSpatialPylon( final ByteBuf data )
 	{
 		data.writeByte( this.displayBits );
 	}
 
 	@MENetworkEventSubscribe
-	public void powerRender( MENetworkPowerStatusChange c )
+	public void powerRender( final MENetworkPowerStatusChange c )
 	{
 		this.recalculateDisplay();
 	}
 
 	@MENetworkEventSubscribe
-	public void activeRender( MENetworkChannelsChanged c )
+	public void activeRender( final MENetworkChannelsChanged c )
 	{
 		this.recalculateDisplay();
 	}

@@ -50,19 +50,19 @@ import appeng.util.Platform;
 public class PartCableCovered extends PartCable
 {
 	@Reflected
-	public PartCableCovered( ItemStack is )
+	public PartCableCovered( final ItemStack is )
 	{
 		super( is );
 	}
 
 	@MENetworkEventSubscribe
-	public void channelUpdated( MENetworkChannelsChanged c )
+	public void channelUpdated( final MENetworkChannelsChanged c )
 	{
 		this.getHost().markForUpdate();
 	}
 
 	@MENetworkEventSubscribe
-	public void powerRender( MENetworkPowerStatusChange c )
+	public void powerRender( final MENetworkPowerStatusChange c )
 	{
 		this.getHost().markForUpdate();
 	}
@@ -74,13 +74,13 @@ public class PartCableCovered extends PartCable
 	}
 
 	@Override
-	public void getBoxes( IPartCollisionHelper bch )
+	public void getBoxes( final IPartCollisionHelper bch )
 	{
 		bch.addBox( 5.0, 5.0, 5.0, 11.0, 11.0, 11.0 );
 
 		if( Platform.isServer() )
 		{
-			IGridNode n = this.getGridNode();
+			final IGridNode n = this.getGridNode();
 			if( n != null )
 			{
 				this.connections = n.getConnectedSides();
@@ -91,7 +91,7 @@ public class PartCableCovered extends PartCable
 			}
 		}
 
-		for( ForgeDirection of : this.connections )
+		for( final ForgeDirection of : this.connections )
 		{
 			switch( of )
 			{
@@ -120,7 +120,7 @@ public class PartCableCovered extends PartCable
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderInventory( IPartRenderHelper rh, RenderBlocks renderer )
+	public void renderInventory( final IPartRenderHelper rh, final RenderBlocks renderer )
 	{
 		GL11.glTranslated( -0.0, -0.0, 0.3 );
 
@@ -130,7 +130,7 @@ public class PartCableCovered extends PartCable
 
 		OffsetIcon main = new OffsetIcon( this.getTexture( this.getCableColor() ), offU, offV );
 
-		for( ForgeDirection side : EnumSet.of( ForgeDirection.UP, ForgeDirection.DOWN ) )
+		for( final ForgeDirection side : EnumSet.of( ForgeDirection.UP, ForgeDirection.DOWN ) )
 		{
 			rh.renderInventoryFace( main, side, renderer );
 		}
@@ -139,14 +139,14 @@ public class PartCableCovered extends PartCable
 		offV = 0;
 		main = new OffsetIcon( this.getTexture( this.getCableColor() ), offU, offV );
 
-		for( ForgeDirection side : EnumSet.of( ForgeDirection.EAST, ForgeDirection.WEST ) )
+		for( final ForgeDirection side : EnumSet.of( ForgeDirection.EAST, ForgeDirection.WEST ) )
 		{
 			rh.renderInventoryFace( main, side, renderer );
 		}
 
 		main = new OffsetIcon( this.getTexture( this.getCableColor() ), 0, 0 );
 
-		for( ForgeDirection side : EnumSet.of( ForgeDirection.SOUTH, ForgeDirection.NORTH ) )
+		for( final ForgeDirection side : EnumSet.of( ForgeDirection.SOUTH, ForgeDirection.NORTH ) )
 		{
 			rh.renderInventoryFace( main, side, renderer );
 		}
@@ -155,25 +155,25 @@ public class PartCableCovered extends PartCable
 	}
 
 	@Override
-	public IIcon getTexture( AEColor c )
+	public IIcon getTexture( final AEColor c )
 	{
 		return this.getCoveredTexture( c );
 	}
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderStatic( int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer )
+	public void renderStatic( final int x, final int y, final int z, final IPartRenderHelper rh, final RenderBlocks renderer )
 	{
 		this.renderCache = rh.useSimplifiedRendering( x, y, z, this, this.renderCache );
 		rh.setTexture( this.getTexture( this.getCableColor() ) );
 
-		EnumSet<ForgeDirection> sides = this.connections.clone();
+		final EnumSet<ForgeDirection> sides = this.connections.clone();
 
 		boolean hasBuses = false;
-		IPartHost ph = this.getHost();
-		for( ForgeDirection of : EnumSet.complementOf( this.connections ) )
+		final IPartHost ph = this.getHost();
+		for( final ForgeDirection of : EnumSet.complementOf( this.connections ) )
 		{
-			IPart bp = ph.getPart( of );
+			final IPart bp = ph.getPart( of );
 			if( bp instanceof IGridHost )
 			{
 				if( of != ForgeDirection.UNKNOWN )
@@ -182,7 +182,7 @@ public class PartCableCovered extends PartCable
 					hasBuses = true;
 				}
 
-				int len = bp.cableConnectionRenderTo();
+				final int len = bp.cableConnectionRenderTo();
 				if( len < 8 )
 				{
 					switch( of )
@@ -215,7 +215,7 @@ public class PartCableCovered extends PartCable
 
 		if( sides.size() != 2 || !this.nonLinear( sides ) || hasBuses )
 		{
-			for( ForgeDirection of : this.connections )
+			for( final ForgeDirection of : this.connections )
 			{
 				this.renderCoveredConnection( x, y, z, rh, renderer, this.channelsOnSide[of.ordinal()], of );
 			}
@@ -226,9 +226,9 @@ public class PartCableCovered extends PartCable
 		}
 		else
 		{
-			IIcon def = this.getTexture( this.getCableColor() );
-			IIcon off = new OffsetIcon( def, 0, -12 );
-			for( ForgeDirection of : this.connections )
+			final IIcon def = this.getTexture( this.getCableColor() );
+			final IIcon off = new OffsetIcon( def, 0, -12 );
+			for( final ForgeDirection of : this.connections )
 			{
 				switch( of )
 				{

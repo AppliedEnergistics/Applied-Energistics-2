@@ -54,9 +54,9 @@ public class TilePaint extends AEBaseTile
 	List<Splotch> dots = null;
 
 	@TileEvent( TileEventType.WORLD_NBT_WRITE )
-	public void writeToNBT_TilePaint( NBTTagCompound data )
+	public void writeToNBT_TilePaint( final NBTTagCompound data )
 	{
-		ByteBuf myDat = Unpooled.buffer();
+		final ByteBuf myDat = Unpooled.buffer();
 		this.writeBuffer( myDat );
 		if( myDat.hasArray() )
 		{
@@ -64,7 +64,7 @@ public class TilePaint extends AEBaseTile
 		}
 	}
 
-	void writeBuffer( ByteBuf out )
+	void writeBuffer( final ByteBuf out )
 	{
 		if( this.dots == null )
 		{
@@ -74,14 +74,14 @@ public class TilePaint extends AEBaseTile
 
 		out.writeByte( this.dots.size() );
 
-		for( Splotch s : this.dots )
+		for( final Splotch s : this.dots )
 		{
 			s.writeToStream( out );
 		}
 	}
 
 	@TileEvent( TileEventType.WORLD_NBT_READ )
-	public void readFromNBT_TilePaint( NBTTagCompound data )
+	public void readFromNBT_TilePaint( final NBTTagCompound data )
 	{
 		if( data.hasKey( "dots" ) )
 		{
@@ -89,9 +89,9 @@ public class TilePaint extends AEBaseTile
 		}
 	}
 
-	void readBuffer( ByteBuf in )
+	void readBuffer( final ByteBuf in )
 	{
-		byte howMany = in.readByte();
+		final byte howMany = in.readByte();
 
 		if( howMany == 0 )
 		{
@@ -107,7 +107,7 @@ public class TilePaint extends AEBaseTile
 		}
 
 		this.isLit = 0;
-		for( Splotch s : this.dots )
+		for( final Splotch s : this.dots )
 		{
 			if( s.lumen )
 			{
@@ -132,13 +132,13 @@ public class TilePaint extends AEBaseTile
 	}
 
 	@TileEvent( TileEventType.NETWORK_WRITE )
-	public void writeToStream_TilePaint( ByteBuf data )
+	public void writeToStream_TilePaint( final ByteBuf data )
 	{
 		this.writeBuffer( data );
 	}
 
 	@TileEvent( TileEventType.NETWORK_READ )
-	public boolean readFromStream_TilePaint( ByteBuf data )
+	public boolean readFromStream_TilePaint( final ByteBuf data )
 	{
 		this.readBuffer( data );
 		return true;
@@ -151,7 +151,7 @@ public class TilePaint extends AEBaseTile
 			return;
 		}
 
-		for( ForgeDirection side : ForgeDirection.VALID_DIRECTIONS )
+		for( final ForgeDirection side : ForgeDirection.VALID_DIRECTIONS )
 		{
 			if( !this.isSideValid( side ) )
 			{
@@ -162,18 +162,18 @@ public class TilePaint extends AEBaseTile
 		this.updateData();
 	}
 
-	public boolean isSideValid( ForgeDirection side )
+	public boolean isSideValid( final ForgeDirection side )
 	{
-		Block blk = this.worldObj.getBlock( this.xCoord + side.offsetX, this.yCoord + side.offsetY, this.zCoord + side.offsetZ );
+		final Block blk = this.worldObj.getBlock( this.xCoord + side.offsetX, this.yCoord + side.offsetY, this.zCoord + side.offsetZ );
 		return blk.isSideSolid( this.worldObj, this.xCoord + side.offsetX, this.yCoord + side.offsetY, this.zCoord + side.offsetZ, side.getOpposite() );
 	}
 
-	private void removeSide( ForgeDirection side )
+	private void removeSide( final ForgeDirection side )
 	{
-		Iterator<Splotch> i = this.dots.iterator();
+		final Iterator<Splotch> i = this.dots.iterator();
 		while( i.hasNext() )
 		{
-			Splotch s = i.next();
+			final Splotch s = i.next();
 			if( s.side == side )
 			{
 				i.remove();
@@ -187,7 +187,7 @@ public class TilePaint extends AEBaseTile
 	private void updateData()
 	{
 		this.isLit = 0;
-		for( Splotch s : this.dots )
+		for( final Splotch s : this.dots )
 		{
 			if( s.lumen )
 			{
@@ -208,7 +208,7 @@ public class TilePaint extends AEBaseTile
 		}
 	}
 
-	public void cleanSide( ForgeDirection side )
+	public void cleanSide( final ForgeDirection side )
 	{
 		if( this.dots == null )
 		{
@@ -225,15 +225,15 @@ public class TilePaint extends AEBaseTile
 		return this.isLit;
 	}
 
-	public void addBlot( ItemStack type, ForgeDirection side, Vec3 hitVec )
+	public void addBlot( final ItemStack type, final ForgeDirection side, final Vec3 hitVec )
 	{
-		Block blk = this.worldObj.getBlock( this.xCoord + side.offsetX, this.yCoord + side.offsetY, this.zCoord + side.offsetZ );
+		final Block blk = this.worldObj.getBlock( this.xCoord + side.offsetX, this.yCoord + side.offsetY, this.zCoord + side.offsetZ );
 		if( blk.isSideSolid( this.worldObj, this.xCoord + side.offsetX, this.yCoord + side.offsetY, this.zCoord + side.offsetZ, side.getOpposite() ) )
 		{
-			ItemPaintBall ipb = (ItemPaintBall) type.getItem();
+			final ItemPaintBall ipb = (ItemPaintBall) type.getItem();
 
-			AEColor col = ipb.getColor( type );
-			boolean lit = ipb.isLumen( type );
+			final AEColor col = ipb.getColor( type );
+			final boolean lit = ipb.isLumen( type );
 
 			if( this.dots == null )
 			{

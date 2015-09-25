@@ -58,13 +58,13 @@ public class PartCableAnchor implements IPart
 	IPartHost host = null;
 	ForgeDirection mySide = ForgeDirection.UP;
 
-	public PartCableAnchor( ItemStack is )
+	public PartCableAnchor( final ItemStack is )
 	{
 		this.is = is;
 	}
 
 	@Override
-	public void getBoxes( IPartCollisionHelper bch )
+	public void getBoxes( final IPartCollisionHelper bch )
 	{
 		if( this.host != null && this.host.getFacadeContainer().getFacade( this.mySide ) != null )
 		{
@@ -77,14 +77,14 @@ public class PartCableAnchor implements IPart
 	}
 
 	@Override
-	public ItemStack getItemStack( PartItemStack wrenched )
+	public ItemStack getItemStack( final PartItemStack wrenched )
 	{
 		return this.is;
 	}
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderInventory( IPartRenderHelper instance, RenderBlocks renderer )
+	public void renderInventory( final IPartRenderHelper instance, final RenderBlocks renderer )
 	{
 		instance.setTexture( this.is.getIconIndex() );
 		instance.setBounds( 7, 7, 4, 9, 9, 14 );
@@ -94,10 +94,10 @@ public class PartCableAnchor implements IPart
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderStatic( int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer )
+	public void renderStatic( final int x, final int y, final int z, final IPartRenderHelper rh, final RenderBlocks renderer )
 	{
 		this.renderCache = rh.useSimplifiedRendering( x, y, z, this, this.renderCache );
-		IIcon myIcon = this.is.getIconIndex();
+		final IIcon myIcon = this.is.getIconIndex();
 		rh.setTexture( myIcon );
 		if( this.host != null && this.host.getFacadeContainer().getFacade( this.mySide ) != null )
 		{
@@ -113,7 +113,7 @@ public class PartCableAnchor implements IPart
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderDynamic( double x, double y, double z, IPartRenderHelper rh, RenderBlocks renderer )
+	public void renderDynamic( final double x, final double y, final double z, final IPartRenderHelper rh, final RenderBlocks renderer )
 	{
 
 	}
@@ -143,13 +143,13 @@ public class PartCableAnchor implements IPart
 	}
 
 	@Override
-	public void writeToNBT( NBTTagCompound data )
+	public void writeToNBT( final NBTTagCompound data )
 	{
 
 	}
 
 	@Override
-	public void readFromNBT( NBTTagCompound data )
+	public void readFromNBT( final NBTTagCompound data )
 	{
 
 	}
@@ -161,7 +161,7 @@ public class PartCableAnchor implements IPart
 	}
 
 	@Override
-	public boolean isLadder( EntityLivingBase entity )
+	public boolean isLadder( final EntityLivingBase entity )
 	{
 		return this.mySide.offsetY == 0 && ( entity.isCollidedHorizontally || !entity.onGround );
 	}
@@ -185,13 +185,13 @@ public class PartCableAnchor implements IPart
 	}
 
 	@Override
-	public void writeToStream( ByteBuf data ) throws IOException
+	public void writeToStream( final ByteBuf data ) throws IOException
 	{
 
 	}
 
 	@Override
-	public boolean readFromStream( ByteBuf data ) throws IOException
+	public boolean readFromStream( final ByteBuf data ) throws IOException
 	{
 		return false;
 	}
@@ -203,7 +203,7 @@ public class PartCableAnchor implements IPart
 	}
 
 	@Override
-	public void onEntityCollision( Entity entity )
+	public void onEntityCollision( final Entity entity )
 	{
 
 	}
@@ -227,26 +227,26 @@ public class PartCableAnchor implements IPart
 	}
 
 	@Override
-	public void setPartHostInfo( ForgeDirection side, IPartHost host, TileEntity tile )
+	public void setPartHostInfo( final ForgeDirection side, final IPartHost host, final TileEntity tile )
 	{
 		this.host = host;
 		this.mySide = side;
 	}
 
 	@Override
-	public boolean onActivate( EntityPlayer player, Vec3 pos )
+	public boolean onActivate( final EntityPlayer player, final Vec3 pos )
 	{
 		return false;
 	}
 
 	@Override
-	public boolean onShiftActivate( EntityPlayer player, Vec3 pos )
+	public boolean onShiftActivate( final EntityPlayer player, final Vec3 pos )
 	{
 		return false;
 	}
 
 	@Override
-	public void getDrops( List<ItemStack> drops, boolean wrenched )
+	public void getDrops( final List<ItemStack> drops, final boolean wrenched )
 	{
 
 	}
@@ -259,19 +259,19 @@ public class PartCableAnchor implements IPart
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void randomDisplayTick( World world, int x, int y, int z, Random r )
+	public void randomDisplayTick( final World world, final int x, final int y, final int z, final Random r )
 	{
 
 	}
 
 	@Override
-	public void onPlacement( EntityPlayer player, ItemStack held, ForgeDirection side )
+	public void onPlacement( final EntityPlayer player, final ItemStack held, final ForgeDirection side )
 	{
 
 	}
 
 	@Override
-	public boolean canBePlacedOn( BusSupport what )
+	public boolean canBePlacedOn( final BusSupport what )
 	{
 		return what == BusSupport.CABLE || what == BusSupport.DENSE_CABLE;
 	}

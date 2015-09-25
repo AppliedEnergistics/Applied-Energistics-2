@@ -34,12 +34,12 @@ public class CraftingLinkNexus
 	CraftingLink req;
 	CraftingLink cpu;
 
-	public CraftingLinkNexus( String craftID )
+	public CraftingLinkNexus( final String craftID )
 	{
 		this.CraftID = craftID;
 	}
 
-	public boolean isDead( IGrid g, CraftingGridCache craftingGridCache )
+	public boolean isDead( final IGrid g, final CraftingGridCache craftingGridCache )
 	{
 		if( this.canceled || this.done )
 		{
@@ -52,8 +52,8 @@ public class CraftingLinkNexus
 		}
 		else
 		{
-			boolean hasCpu = craftingGridCache.hasCpu( this.cpu.cpu );
-			boolean hasMachine = this.req.req.getActionableNode().getGrid() == g;
+			final boolean hasCpu = craftingGridCache.hasCpu( this.cpu.cpu );
+			final boolean hasMachine = this.req.req.getActionableNode().getGrid() == g;
 
 			if( hasCpu && hasMachine )
 			{
@@ -93,7 +93,7 @@ public class CraftingLinkNexus
 		}
 	}
 
-	public void remove( CraftingLink craftingLink )
+	public void remove( final CraftingLink craftingLink )
 	{
 		if( this.req == craftingLink )
 		{
@@ -105,7 +105,7 @@ public class CraftingLinkNexus
 		}
 	}
 
-	public void add( CraftingLink craftingLink )
+	public void add( final CraftingLink craftingLink )
 	{
 		if( craftingLink.cpu != null )
 		{
@@ -146,7 +146,7 @@ public class CraftingLinkNexus
 		}
 	}
 
-	public boolean isMachine( IGridHost machine )
+	public boolean isMachine( final IGridHost machine )
 	{
 		return this.req == machine;
 	}

@@ -31,7 +31,7 @@ public class DefaultPriorityList<T extends IAEStack<T>> implements IPartitionLis
 	static final List NULL_LIST = new ArrayList();
 
 	@Override
-	public boolean isListed( T input )
+	public boolean isListed( final T input )
 	{
 		return false;
 	}

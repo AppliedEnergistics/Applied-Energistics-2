@@ -41,7 +41,7 @@ public abstract class IC2 extends AERootPoweredTile implements IEnergySink
 	boolean isInIC2 = false;
 
 	@Override
-	public final boolean acceptsEnergyFrom( TileEntity emitter, ForgeDirection direction )
+	public final boolean acceptsEnergyFrom( final TileEntity emitter, final ForgeDirection direction )
 	{
 		return this.getPowerSides().contains( direction );
 	}
@@ -59,11 +59,11 @@ public abstract class IC2 extends AERootPoweredTile implements IEnergySink
 	}
 
 	@Override
-	public final double injectEnergy( ForgeDirection directionFrom, double amount, double voltage )
+	public final double injectEnergy( final ForgeDirection directionFrom, final double amount, final double voltage )
 	{
 		// just store the excess in the current block, if I return the waste,
 		// IC2 will just disintegrate it - Oct 20th 2013
-		double overflow = PowerUnits.EU.convertTo( PowerUnits.AE, this.injectExternalPower( PowerUnits.EU, amount ) );
+		final double overflow = PowerUnits.EU.convertTo( PowerUnits.AE, this.injectExternalPower( PowerUnits.EU, amount ) );
 		this.internalCurrentPower += overflow;
 		return 0; // see above comment.
 	}
@@ -79,7 +79,7 @@ public abstract class IC2 extends AERootPoweredTile implements IEnergySink
 	{
 		if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.IC2 ) )
 		{
-			IIC2 ic2Integration = (IIC2) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.IC2 );
+			final IIC2 ic2Integration = (IIC2) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.IC2 );
 			if( this.isInIC2 && Platform.isServer() && ic2Integration != null )
 			{
 				ic2Integration.removeFromEnergyNet( this );
@@ -106,7 +106,7 @@ public abstract class IC2 extends AERootPoweredTile implements IEnergySink
 	{
 		if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.IC2 ) )
 		{
-			IIC2 ic2Integration = (IIC2) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.IC2 );
+			final IIC2 ic2Integration = (IIC2) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.IC2 );
 			if( !this.isInIC2 && Platform.isServer() && ic2Integration != null )
 			{
 				ic2Integration.addToEnergyNet( this );
@@ -116,7 +116,7 @@ public abstract class IC2 extends AERootPoweredTile implements IEnergySink
 	}
 
 	@Override
-	protected void setPowerSides( EnumSet<ForgeDirection> sides )
+	protected void setPowerSides( final EnumSet<ForgeDirection> sides )
 	{
 		super.setPowerSides( sides );
 		this.removeFromENet();

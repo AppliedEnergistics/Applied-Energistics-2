@@ -45,7 +45,7 @@ public final class WirelessRegistry implements IWirelessTermRegistry
 	}
 
 	@Override
-	public void registerWirelessHandler( IWirelessTermHandler handler )
+	public void registerWirelessHandler( final IWirelessTermHandler handler )
 	{
 		if( handler != null )
 		{
@@ -54,9 +54,9 @@ public final class WirelessRegistry implements IWirelessTermRegistry
 	}
 
 	@Override
-	public boolean isWirelessTerminal( ItemStack is )
+	public boolean isWirelessTerminal( final ItemStack is )
 	{
-		for( IWirelessTermHandler h : this.handlers )
+		for( final IWirelessTermHandler h : this.handlers )
 		{
 			if( h.canHandle( is ) )
 			{
@@ -67,9 +67,9 @@ public final class WirelessRegistry implements IWirelessTermRegistry
 	}
 
 	@Override
-	public IWirelessTermHandler getWirelessTerminalHandler( ItemStack is )
+	public IWirelessTermHandler getWirelessTerminalHandler( final ItemStack is )
 	{
-		for( IWirelessTermHandler h : this.handlers )
+		for( final IWirelessTermHandler h : this.handlers )
 		{
 			if( h.canHandle( is ) )
 			{
@@ -80,7 +80,7 @@ public final class WirelessRegistry implements IWirelessTermRegistry
 	}
 
 	@Override
-	public void openWirelessTerminalGui( ItemStack item, World w, EntityPlayer player )
+	public void openWirelessTerminalGui( final ItemStack item, final World w, final EntityPlayer player )
 	{
 		if( Platform.isClient() )
 		{

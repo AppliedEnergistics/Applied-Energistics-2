@@ -28,13 +28,13 @@ public class PrecisePriorityList<T extends IAEStack<T>> implements IPartitionLis
 
 	final IItemList<T> list;
 
-	public PrecisePriorityList( IItemList<T> in )
+	public PrecisePriorityList( final IItemList<T> in )
 	{
 		this.list = in;
 	}
 
 	@Override
-	public boolean isListed( T input )
+	public boolean isListed( final T input )
 	{
 		return this.list.findPrecise( input ) != null;
 	}

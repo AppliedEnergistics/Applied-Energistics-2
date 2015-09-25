@@ -33,12 +33,12 @@ public abstract class MBCalculator
 
 	private final IAEMultiBlock target;
 
-	public MBCalculator( IAEMultiBlock t )
+	public MBCalculator( final IAEMultiBlock t )
 	{
 		this.target = t;
 	}
 
-	public void calculateMultiblock( World world, WorldCoord loc )
+	public void calculateMultiblock( final World world, final WorldCoord loc )
 	{
 		if( Platform.isClient() )
 		{
@@ -47,8 +47,8 @@ public abstract class MBCalculator
 
 		try
 		{
-			WorldCoord min = loc.copy();
-			WorldCoord max = loc.copy();
+			final WorldCoord min = loc.copy();
+			final WorldCoord max = loc.copy();
 
 			// find size of MB structure...
 			while( this.isValidTileAt( world, min.x - 1, min.y, min.z ) )
@@ -90,14 +90,14 @@ public abstract class MBCalculator
 							return;
 						}
 					}
-					catch( Exception err )
+					catch( final Exception err )
 					{
 						this.disconnect();
 						return;
 					}
 
 					boolean updateGrid = false;
-					IAECluster cluster = this.target.getCluster();
+					final IAECluster cluster = this.target.getCluster();
 					if( cluster == null )
 					{
 						this.updateTiles( c, world, min, max );
@@ -114,7 +114,7 @@ public abstract class MBCalculator
 				}
 			}
 		}
-		catch( Throwable err )
+		catch( final Throwable err )
 		{
 			AELog.error( err );
 		}
@@ -122,7 +122,7 @@ public abstract class MBCalculator
 		this.disconnect();
 	}
 
-	public boolean isValidTileAt( World w, int x, int y, int z )
+	public boolean isValidTileAt( final World w, final int x, final int y, final int z )
 	{
 		return this.isValidTile( w.getTileEntity( x, y, z ) );
 	}
@@ -137,9 +137,9 @@ public abstract class MBCalculator
 	 */
 	public abstract boolean checkMultiblockScale( WorldCoord min, WorldCoord max );
 
-	public boolean verifyUnownedRegion( World w, WorldCoord min, WorldCoord max )
+	public boolean verifyUnownedRegion( final World w, final WorldCoord min, final WorldCoord max )
 	{
-		for( ForgeDirection side : ForgeDirection.VALID_DIRECTIONS )
+		for( final ForgeDirection side : ForgeDirection.VALID_DIRECTIONS )
 		{
 			if( this.verifyUnownedRegionInner( w, min.x, min.y, min.z, max.x, max.y, max.z, side ) )
 			{
@@ -187,7 +187,7 @@ public abstract class MBCalculator
 	 */
 	public abstract boolean isValidTile( TileEntity te );
 
-	public boolean verifyUnownedRegionInner( World w, int minX, int minY, int minZ, int maxX, int maxY, int maxZ, ForgeDirection side )
+	public boolean verifyUnownedRegionInner( final World w, int minX, int minY, int minZ, int maxX, int maxY, int maxZ, final ForgeDirection side )
 	{
 		switch( side )
 		{
@@ -225,7 +225,7 @@ public abstract class MBCalculator
 			{
 				for( int z = minZ; z <= maxZ; z++ )
 				{
-					TileEntity te = w.getTileEntity( x, y, z );
+					final TileEntity te = w.getTileEntity( x, y, z );
 					if( this.isValidTile( te ) )
 					{
 						return true;

@@ -41,12 +41,12 @@ public final class NameResolver
 
 	private final Class<? extends AEBaseItem> withOriginalName;
 
-	public NameResolver( Class<? extends AEBaseItem> withOriginalName )
+	public NameResolver( final Class<? extends AEBaseItem> withOriginalName )
 	{
 		this.withOriginalName = withOriginalName;
 	}
 
-	public String getName( String subName )
+	public String getName( final String subName )
 	{
 		String name = this.withOriginalName.getSimpleName();
 

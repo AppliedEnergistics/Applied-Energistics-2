@@ -44,7 +44,7 @@ public class NetworkMonitor<T extends IAEStack<T>> extends MEMonitorHandler<T>
 	private final StorageChannel myChannel;
 	boolean sendEvent = false;
 
-	public NetworkMonitor( GridStorageCache cache, StorageChannel chan )
+	public NetworkMonitor( final GridStorageCache cache, final StorageChannel chan )
 	{
 		super( null, chan );
 		this.myGridCache = cache;
@@ -55,11 +55,11 @@ public class NetworkMonitor<T extends IAEStack<T>> extends MEMonitorHandler<T>
 	{
 		this.hasChanged = true;
 
-		Iterator<Entry<IMEMonitorHandlerReceiver<T>, Object>> i = this.getListeners();
+		final Iterator<Entry<IMEMonitorHandlerReceiver<T>, Object>> i = this.getListeners();
 		while( i.hasNext() )
 		{
-			Entry<IMEMonitorHandlerReceiver<T>, Object> o = i.next();
-			IMEMonitorHandlerReceiver<T> receiver = o.getKey();
+			final Entry<IMEMonitorHandlerReceiver<T>, Object> o = i.next();
+			final IMEMonitorHandlerReceiver<T> receiver = o.getKey();
 
 			if( receiver.isValid( o.getValue() ) )
 			{
@@ -96,12 +96,12 @@ public class NetworkMonitor<T extends IAEStack<T>> extends MEMonitorHandler<T>
 	}
 
 	@Override
-	protected void postChangesToListeners( Iterable<T> changes, BaseActionSource src )
+	protected void postChangesToListeners( final Iterable<T> changes, final BaseActionSource src )
 	{
 		this.postChange( true, changes, src );
 	}
 
-	protected void postChange( boolean add, Iterable<T> changes, BaseActionSource src )
+	protected void postChange( final boolean add, final Iterable<T> changes, final BaseActionSource src )
 	{
 		if( DEPTH.contains( this ) )
 		{
@@ -113,9 +113,9 @@ public class NetworkMonitor<T extends IAEStack<T>> extends MEMonitorHandler<T>
 		this.sendEvent = true;
 		this.notifyListenersOfChange( changes, src );
 
-		IItemList<T> myStorageList = this.getStorageList();
+		final IItemList<T> myStorageList = this.getStorageList();
 
-		for( T changedItem : changes )
+		for( final T changedItem : changes )
 		{
 			T difference = changedItem;
 
@@ -126,7 +126,7 @@ public class NetworkMonitor<T extends IAEStack<T>> extends MEMonitorHandler<T>
 
 			if( this.myGridCache.interestManager.containsKey( changedItem ) )
 			{
-				Collection<ItemWatcher> list = this.myGridCache.interestManager.get( changedItem );
+				final Collection<ItemWatcher> list = this.myGridCache.interestManager.get( changedItem );
 				if( !list.isEmpty() )
 				{
 					IAEStack fullStack = myStorageList.findPrecise( changedItem );
@@ -138,7 +138,7 @@ public class NetworkMonitor<T extends IAEStack<T>> extends MEMonitorHandler<T>
 
 					this.myGridCache.interestManager.enableTransactions();
 
-					for( ItemWatcher iw : list )
+					for( final ItemWatcher iw : list )
 					{
 						iw.getHost().onStackChange( myStorageList, fullStack, difference, src, this.getChannel() );
 					}

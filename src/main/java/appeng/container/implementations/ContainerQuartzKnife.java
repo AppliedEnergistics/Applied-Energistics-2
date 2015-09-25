@@ -48,7 +48,7 @@ public class ContainerQuartzKnife extends AEBaseContainer implements IAEAppEngIn
 	final QuartzKnifeOutput output;
 	String myName = "";
 
-	public ContainerQuartzKnife( InventoryPlayer ip, QuartzKnifeObj te )
+	public ContainerQuartzKnife( final InventoryPlayer ip, final QuartzKnifeObj te )
 	{
 		super( ip, null, null );
 		this.toolInv = te;
@@ -61,7 +61,7 @@ public class ContainerQuartzKnife extends AEBaseContainer implements IAEAppEngIn
 		this.bindPlayerInventory( ip, 0, 184 - /* height of player inventory */82 );
 	}
 
-	public void setName( String value )
+	public void setName( final String value )
 	{
 		this.myName = value;
 	}
@@ -69,7 +69,7 @@ public class ContainerQuartzKnife extends AEBaseContainer implements IAEAppEngIn
 	@Override
 	public void detectAndSendChanges()
 	{
-		ItemStack currentItem = this.getPlayerInv().getCurrentItem();
+		final ItemStack currentItem = this.getPlayerInv().getCurrentItem();
 
 		if( currentItem != this.toolInv.getItemStack() )
 		{
@@ -94,7 +94,7 @@ public class ContainerQuartzKnife extends AEBaseContainer implements IAEAppEngIn
 	}
 
 	@Override
-	public void onContainerClosed( EntityPlayer par1EntityPlayer )
+	public void onContainerClosed( final EntityPlayer par1EntityPlayer )
 	{
 		if( this.inSlot.getStackInSlot( 0 ) != null )
 		{
@@ -109,7 +109,7 @@ public class ContainerQuartzKnife extends AEBaseContainer implements IAEAppEngIn
 	}
 
 	@Override
-	public void onChangeInventory( IInventory inv, int slot, InvOperation mc, ItemStack removedStack, ItemStack newStack )
+	public void onChangeInventory( final IInventory inv, final int slot, final InvOperation mc, final ItemStack removedStack, final ItemStack newStack )
 	{
 
 	}
@@ -121,9 +121,9 @@ public class ContainerQuartzKnife extends AEBaseContainer implements IAEAppEngIn
 	}
 
 	@Override
-	public ItemStack getStackInSlot( int var1 )
+	public ItemStack getStackInSlot( final int var1 )
 	{
-		ItemStack input = this.inSlot.getStackInSlot( 0 );
+		final ItemStack input = this.inSlot.getStackInSlot( 0 );
 		if( input == null )
 		{
 			return null;
@@ -133,7 +133,7 @@ public class ContainerQuartzKnife extends AEBaseContainer implements IAEAppEngIn
 		{
 			if( this.myName.length() > 0 )
 			{
-				for( ItemStack namePressStack : AEApi.instance().definitions().materials().namePress().maybeStack( 1 ).asSet() )
+				for( final ItemStack namePressStack : AEApi.instance().definitions().materials().namePress().maybeStack( 1 ).asSet() )
 				{
 					final NBTTagCompound compound = Platform.openNbtData( namePressStack );
 					compound.setString( "InscribeName", this.myName );
@@ -147,9 +147,9 @@ public class ContainerQuartzKnife extends AEBaseContainer implements IAEAppEngIn
 	}
 
 	@Override
-	public ItemStack decrStackSize( int var1, int var2 )
+	public ItemStack decrStackSize( final int var1, final int var2 )
 	{
-		ItemStack is = this.getStackInSlot( 0 );
+		final ItemStack is = this.getStackInSlot( 0 );
 		if( is != null )
 		{
 			if( this.makePlate() )
@@ -164,7 +164,7 @@ public class ContainerQuartzKnife extends AEBaseContainer implements IAEAppEngIn
 	{
 		if( this.inSlot.decrStackSize( 0, 1 ) != null )
 		{
-			ItemStack item = this.toolInv.getItemStack();
+			final ItemStack item = this.toolInv.getItemStack();
 			item.damageItem( 1, this.getPlayerInv().player );
 
 			if( item.stackSize == 0 )
@@ -179,13 +179,13 @@ public class ContainerQuartzKnife extends AEBaseContainer implements IAEAppEngIn
 	}
 
 	@Override
-	public ItemStack getStackInSlotOnClosing( int var1 )
+	public ItemStack getStackInSlotOnClosing( final int var1 )
 	{
 		return null;
 	}
 
 	@Override
-	public void setInventorySlotContents( int var1, ItemStack var2 )
+	public void setInventorySlotContents( final int var1, final ItemStack var2 )
 	{
 		if( var2 == null && Platform.isServer() )
 		{
@@ -218,7 +218,7 @@ public class ContainerQuartzKnife extends AEBaseContainer implements IAEAppEngIn
 	}
 
 	@Override
-	public boolean isUseableByPlayer( EntityPlayer var1 )
+	public boolean isUseableByPlayer( final EntityPlayer var1 )
 	{
 		return false;
 	}
@@ -236,7 +236,7 @@ public class ContainerQuartzKnife extends AEBaseContainer implements IAEAppEngIn
 	}
 
 	@Override
-	public boolean isItemValidForSlot( int var1, ItemStack var2 )
+	public boolean isItemValidForSlot( final int var1, final ItemStack var2 )
 	{
 		return false;
 	}

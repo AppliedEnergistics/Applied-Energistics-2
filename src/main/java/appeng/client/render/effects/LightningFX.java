@@ -40,13 +40,13 @@ public class LightningFX extends EntityFX
 	float currentPoint = 0;
 	boolean hasData = false;
 
-	public LightningFX( World w, double x, double y, double z, double r, double g, double b )
+	public LightningFX( final World w, final double x, final double y, final double z, final double r, final double g, final double b )
 	{
 		this( w, x, y, z, r, g, b, 6 );
 		this.regen();
 	}
 
-	protected LightningFX( World w, double x, double y, double z, double r, double g, double b, int maxAge )
+	protected LightningFX( final World w, final double x, final double y, final double z, final double r, final double g, final double b, final int maxAge )
 	{
 		super( w, x, y, z, r, g, b );
 		this.Steps = new double[this.steps][3];
@@ -76,39 +76,39 @@ public class LightningFX extends EntityFX
 	}
 
 	@Override
-	public int getBrightnessForRender( float par1 )
+	public int getBrightnessForRender( final float par1 )
 	{
-		int j1 = 13;
+		final int j1 = 13;
 		return j1 << 20 | j1 << 4;
 	}
 
 	@Override
-	public void renderParticle( Tessellator tess, float l, float rX, float rY, float rZ, float rYZ, float rXY )
+	public void renderParticle( final Tessellator tess, final float l, final float rX, final float rY, final float rZ, final float rYZ, final float rXY )
 	{
-		float j = 1.0f;
+		final float j = 1.0f;
 		tess.setColorRGBA_F( this.particleRed * j * 0.9f, this.particleGreen * j * 0.95f, this.particleBlue * j, this.particleAlpha );
 		if( this.particleAge == 3 )
 		{
 			this.regen();
 		}
 		double f6 = this.particleTextureIndexX / 16.0;
-		double f7 = f6 + 0.0324375F;
+		final double f7 = f6 + 0.0324375F;
 		double f8 = this.particleTextureIndexY / 16.0;
-		double f9 = f8 + 0.0324375F;
+		final double f9 = f8 + 0.0324375F;
 
 		f6 = f7;
 		f8 = f9;
 
 		double scale = 0.02;// 0.02F * this.particleScale;
 
-		double[] a = new double[3];
-		double[] b = new double[3];
+		final double[] a = new double[3];
+		final double[] b = new double[3];
 
 		double ox = 0;
 		double oy = 0;
 		double oz = 0;
 
-		EntityPlayer p = Minecraft.getMinecraft().thePlayer;
+		final EntityPlayer p = Minecraft.getMinecraft().thePlayer;
 		double offX = -rZ;
 		double offY = MathHelper.cos( (float) ( Math.PI / 2.0f + p.rotationPitch * 0.017453292F ) );
 		double offZ = rX;
@@ -142,13 +142,13 @@ public class LightningFX extends EntityFX
 
 				for( int s = 0; s < this.steps; s++ )
 				{
-					double xN = x + this.Steps[s][0];
-					double yN = y + this.Steps[s][1];
-					double zN = z + this.Steps[s][2];
+					final double xN = x + this.Steps[s][0];
+					final double yN = y + this.Steps[s][1];
+					final double zN = z + this.Steps[s][2];
 
-					double xD = xN - x;
-					double yD = yN - y;
-					double zD = zN - z;
+					final double xD = xN - x;
+					final double yD = yN - y;
+					final double zD = zN - z;
 
 					if( cycle == 0 )
 					{
@@ -169,7 +169,7 @@ public class LightningFX extends EntityFX
 						oz = ( xD * 0 ) - ( 1 * yD );
 					}
 
-					double ss = Math.sqrt( ox * ox + oy * oy + oz * oz ) / ( ( ( (double) this.steps - (double) s ) / this.steps ) * scale );
+					final double ss = Math.sqrt( ox * ox + oy * oy + oz * oz ) / ( ( ( (double) this.steps - (double) s ) / this.steps ) * scale );
 					ox /= ss;
 					oy /= ss;
 					oz /= ss;
@@ -201,7 +201,7 @@ public class LightningFX extends EntityFX
 		this.hasData = false;
 	}
 
-	private void draw( Tessellator tess, double[] a, double[] b, double f6, double f8 )
+	private void draw( final Tessellator tess, final double[] a, final double[] b, final double f6, final double f8 )
 	{
 		if( this.hasData )
 		{

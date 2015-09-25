@@ -43,7 +43,7 @@ public class AppEngInternalAEInventory implements IInventory, Iterable<ItemStack
 	final int size;
 	int maxStack;
 
-	public AppEngInternalAEInventory( IAEAppEngInventory te, int s )
+	public AppEngInternalAEInventory( final IAEAppEngInventory te, final int s )
 	{
 		this.te = te;
 		this.size = s;
@@ -63,30 +63,30 @@ public class AppEngInternalAEInventory implements IInventory, Iterable<ItemStack
 		return true;
 	}
 
-	public void setMaxStackSize( int s )
+	public void setMaxStackSize( final int s )
 	{
 		this.maxStack = s;
 	}
 
-	public IAEItemStack getAEStackInSlot( int var1 )
+	public IAEItemStack getAEStackInSlot( final int var1 )
 	{
 		return this.inv[var1];
 	}
 
-	public void writeToNBT( NBTTagCompound data, String name )
+	public void writeToNBT( final NBTTagCompound data, final String name )
 	{
-		NBTTagCompound c = new NBTTagCompound();
+		final NBTTagCompound c = new NBTTagCompound();
 		this.writeToNBT( c );
 		data.setTag( name, c );
 	}
 
-	public void writeToNBT( NBTTagCompound target )
+	public void writeToNBT( final NBTTagCompound target )
 	{
 		for( int x = 0; x < this.size; x++ )
 		{
 			try
 			{
-				NBTTagCompound c = new NBTTagCompound();
+				final NBTTagCompound c = new NBTTagCompound();
 
 				if( this.inv[x] != null )
 				{
@@ -95,35 +95,35 @@ public class AppEngInternalAEInventory implements IInventory, Iterable<ItemStack
 
 				target.setTag( "#" + x, c );
 			}
-			catch( Exception ignored )
+			catch( final Exception ignored )
 			{
 			}
 		}
 	}
 
-	public void readFromNBT( NBTTagCompound data, String name )
+	public void readFromNBT( final NBTTagCompound data, final String name )
 	{
-		NBTTagCompound c = data.getCompoundTag( name );
+		final NBTTagCompound c = data.getCompoundTag( name );
 		if( c != null )
 		{
 			this.readFromNBT( c );
 		}
 	}
 
-	public void readFromNBT( NBTTagCompound target )
+	public void readFromNBT( final NBTTagCompound target )
 	{
 		for( int x = 0; x < this.size; x++ )
 		{
 			try
 			{
-				NBTTagCompound c = target.getCompoundTag( "#" + x );
+				final NBTTagCompound c = target.getCompoundTag( "#" + x );
 
 				if( c != null )
 				{
 					this.inv[x] = AEItemStack.loadItemStackFromNBT( c );
 				}
 			}
-			catch( Exception e )
+			catch( final Exception e )
 			{
 				AELog.error( e );
 			}
@@ -137,7 +137,7 @@ public class AppEngInternalAEInventory implements IInventory, Iterable<ItemStack
 	}
 
 	@Override
-	public ItemStack getStackInSlot( int var1 )
+	public ItemStack getStackInSlot( final int var1 )
 	{
 		if( this.inv[var1] == null )
 		{
@@ -148,11 +148,11 @@ public class AppEngInternalAEInventory implements IInventory, Iterable<ItemStack
 	}
 
 	@Override
-	public ItemStack decrStackSize( int slot, int qty )
+	public ItemStack decrStackSize( final int slot, final int qty )
 	{
 		if( this.inv[slot] != null )
 		{
-			ItemStack split = this.getStackInSlot( slot );
+			final ItemStack split = this.getStackInSlot( slot );
 			ItemStack ns = null;
 
 			if( qty >= split.stackSize )
@@ -177,15 +177,15 @@ public class AppEngInternalAEInventory implements IInventory, Iterable<ItemStack
 	}
 
 	@Override
-	public ItemStack getStackInSlotOnClosing( int var1 )
+	public ItemStack getStackInSlotOnClosing( final int var1 )
 	{
 		return null;
 	}
 
 	@Override
-	public void setInventorySlotContents( int slot, ItemStack newItemStack )
+	public void setInventorySlotContents( final int slot, final ItemStack newItemStack )
 	{
-		ItemStack oldStack = this.getStackInSlot( slot );
+		final ItemStack oldStack = this.getStackInSlot( slot );
 		this.inv[slot] = AEApi.instance().storage().createItemStack( newItemStack );
 
 		if( this.te != null && Platform.isServer() )
@@ -245,7 +245,7 @@ public class AppEngInternalAEInventory implements IInventory, Iterable<ItemStack
 	}
 
 	@Override
-	public boolean isUseableByPlayer( EntityPlayer var1 )
+	public boolean isUseableByPlayer( final EntityPlayer var1 )
 	{
 		return true;
 	}
@@ -261,7 +261,7 @@ public class AppEngInternalAEInventory implements IInventory, Iterable<ItemStack
 	}
 
 	@Override
-	public boolean isItemValidForSlot( int i, ItemStack itemstack )
+	public boolean isItemValidForSlot( final int i, final ItemStack itemstack )
 	{
 		return true;
 	}

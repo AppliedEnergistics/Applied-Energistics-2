@@ -43,7 +43,7 @@ public class RenderSpatialPylon extends BaseBlockRender<BlockSpatialPylon, TileS
 	}
 
 	@Override
-	public void renderInventory( BlockSpatialPylon block, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj )
+	public void renderInventory( final BlockSpatialPylon block, final ItemStack is, final RenderBlocks renderer, final ItemRenderType type, final Object[] obj )
 	{
 		renderer.overrideBlockTexture = ExtraBlockTextures.BlockSpatialPylon_dim.getIcon();
 		super.renderInventory( block, is, renderer, type, obj );
@@ -52,13 +52,13 @@ public class RenderSpatialPylon extends BaseBlockRender<BlockSpatialPylon, TileS
 	}
 
 	@Override
-	public boolean renderInWorld( BlockSpatialPylon imb, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
+	public boolean renderInWorld( final BlockSpatialPylon imb, final IBlockAccess world, final int x, final int y, final int z, final RenderBlocks renderer )
 	{
 		renderer.setRenderBounds( 0, 0, 0, 1, 1, 1 );
 
-		TileSpatialPylon sp = imb.getTileEntity( world, x, y, z );
+		final TileSpatialPylon sp = imb.getTileEntity( world, x, y, z );
 
-		int displayBits = ( sp == null ) ? 0 : sp.getDisplayBits();
+		final int displayBits = ( sp == null ) ? 0 : sp.getDisplayBits();
 
 		if( displayBits != 0 )
 		{
@@ -123,19 +123,19 @@ public class RenderSpatialPylon extends BaseBlockRender<BlockSpatialPylon, TileS
 				}
 			}
 
-			BlockRenderInfo bri = imb.getRendererInstance();
+			final BlockRenderInfo bri = imb.getRendererInstance();
 			bri.setTemporaryRenderIcon( null );
 			bri.setTemporaryRenderIcons( this.getBlockTextureFromSideOutside( imb, sp, displayBits, ori, ForgeDirection.UP ), this.getBlockTextureFromSideOutside( imb, sp, displayBits, ori, ForgeDirection.DOWN ), this.getBlockTextureFromSideOutside( imb, sp, displayBits, ori, ForgeDirection.SOUTH ), this.getBlockTextureFromSideOutside( imb, sp, displayBits, ori, ForgeDirection.NORTH ), this.getBlockTextureFromSideOutside( imb, sp, displayBits, ori, ForgeDirection.EAST ), this.getBlockTextureFromSideOutside( imb, sp, displayBits, ori, ForgeDirection.WEST ) );
 
-			boolean r = renderer.renderStandardBlock( imb, x, y, z );
+			final boolean r = renderer.renderStandardBlock( imb, x, y, z );
 
 			if( ( displayBits & TileSpatialPylon.DISPLAY_POWERED_ENABLED ) == TileSpatialPylon.DISPLAY_POWERED_ENABLED )
 			{
-				int bn = 15;
+				final int bn = 15;
 				Tessellator.instance.setBrightness( bn << 20 | bn << 4 );
 				Tessellator.instance.setColorOpaque_I( 0xffffff );
 
-				for( ForgeDirection d : ForgeDirection.VALID_DIRECTIONS )
+				for( final ForgeDirection d : ForgeDirection.VALID_DIRECTIONS )
 				{
 					this.renderFace( x, y, z, imb, this.getBlockTextureFromSideInside( imb, sp, displayBits, ori, d ), renderer, d );
 				}
@@ -164,7 +164,7 @@ public class RenderSpatialPylon extends BaseBlockRender<BlockSpatialPylon, TileS
 		return result;
 	}
 
-	private IIcon getBlockTextureFromSideOutside( BlockSpatialPylon blk, TileSpatialPylon sp, int displayBits, ForgeDirection ori, ForgeDirection dir )
+	private IIcon getBlockTextureFromSideOutside( final BlockSpatialPylon blk, final TileSpatialPylon sp, final int displayBits, final ForgeDirection ori, final ForgeDirection dir )
 	{
 
 		if( ori == dir || ori.getOpposite() == dir )
@@ -188,9 +188,9 @@ public class RenderSpatialPylon extends BaseBlockRender<BlockSpatialPylon, TileS
 		return blk.getIcon( 0, 0 );
 	}
 
-	private IIcon getBlockTextureFromSideInside( BlockSpatialPylon blk, TileSpatialPylon sp, int displayBits, ForgeDirection ori, ForgeDirection dir )
+	private IIcon getBlockTextureFromSideInside( final BlockSpatialPylon blk, final TileSpatialPylon sp, final int displayBits, final ForgeDirection ori, final ForgeDirection dir )
 	{
-		boolean good = ( displayBits & TileSpatialPylon.DISPLAY_ENABLED ) == TileSpatialPylon.DISPLAY_ENABLED;
+		final boolean good = ( displayBits & TileSpatialPylon.DISPLAY_ENABLED ) == TileSpatialPylon.DISPLAY_ENABLED;
 
 		if( ori == dir || ori.getOpposite() == dir )
 		{

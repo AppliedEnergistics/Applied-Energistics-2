@@ -45,7 +45,7 @@ public class AEBaseSlabBlock extends BlockSlab implements IAEFeature
 	private AEBaseSlabBlock doubleSlabs;
 	private final String name;
 
-	public AEBaseSlabBlock( AEBaseBlock block, int meta, EnumSet<AEFeature> features, boolean isDoubleSlab, String name )
+	public AEBaseSlabBlock( final AEBaseBlock block, final int meta, final EnumSet<AEFeature> features, final boolean isDoubleSlab, final String name )
 	{
 		super( isDoubleSlab, block.getMaterial() );
 		this.block = block;
@@ -63,7 +63,7 @@ public class AEBaseSlabBlock extends BlockSlab implements IAEFeature
 		this.features = !this.field_150004_a ? new SlabBlockFeatureHandler( features, this ) : null;
 	}
 
-	public AEBaseSlabBlock setSlabs( AEBaseSlabBlock slabs )
+	public AEBaseSlabBlock setSlabs( final AEBaseSlabBlock slabs )
 	{
 		this.slabs = slabs;
 		return this;
@@ -92,30 +92,30 @@ public class AEBaseSlabBlock extends BlockSlab implements IAEFeature
 	}
 
 	@Override
-	public IIcon getIcon( int dir, int meta )
+	public IIcon getIcon( final int dir, final int meta )
 	{
 		return this.block.getIcon( dir, this.meta );
 	}
 
 	@Override
-	public String func_150002_b( int p_150002_1_ )
+	public String func_150002_b( final int p_150002_1_ )
 	{
 		return this.getUnlocalizedName();
 	}
 
 	@Override
-	public void registerBlockIcons( IIconRegister reg )
+	public void registerBlockIcons( final IIconRegister reg )
 	{
 	}
 
 	@Override
-	public Item getItemDropped( int meta, Random rand, int fortune )
+	public Item getItemDropped( final int meta, final Random rand, final int fortune )
 	{
 		return this.field_150004_a ? Item.getItemFromBlock( this.slabs ) : Item.getItemFromBlock( this );
 	}
 
 	@Override
-	public ItemStack getPickBlock( MovingObjectPosition target, World world, int x, int y, int z )
+	public ItemStack getPickBlock( final MovingObjectPosition target, final World world, final int x, final int y, final int z )
 	{
 		AEBaseSlabBlock block = (AEBaseSlabBlock) world.getBlock( x, y, z );
 
@@ -128,7 +128,7 @@ public class AEBaseSlabBlock extends BlockSlab implements IAEFeature
 			block = this.slabs;
 		}
 
-		int meta = world.getBlockMetadata( x, y, z ) & 7;
+		final int meta = world.getBlockMetadata( x, y, z ) & 7;
 		return new ItemStack( block, 1, meta );
 	}
 

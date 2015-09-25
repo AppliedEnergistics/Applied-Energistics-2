@@ -42,13 +42,13 @@ public class DefinitionConstructor
 	private final FeatureRegistry features;
 	private final FeatureHandlerRegistry handlers;
 
-	public DefinitionConstructor( FeatureRegistry features, FeatureHandlerRegistry handlers )
+	public DefinitionConstructor( final FeatureRegistry features, final FeatureHandlerRegistry handlers )
 	{
 		this.features = features;
 		this.handlers = handlers;
 	}
 
-	public final ITileDefinition registerTileDefinition( IAEFeature feature )
+	public final ITileDefinition registerTileDefinition( final IAEFeature feature )
 	{
 		final IBlockDefinition definition = this.registerBlockDefinition( feature );
 
@@ -60,7 +60,7 @@ public class DefinitionConstructor
 		throw new IllegalStateException( "No tile definition for " + feature );
 	}
 
-	public final IBlockDefinition registerBlockDefinition( IAEFeature feature )
+	public final IBlockDefinition registerBlockDefinition( final IAEFeature feature )
 	{
 		final IItemDefinition definition = this.registerItemDefinition( feature );
 
@@ -72,7 +72,7 @@ public class DefinitionConstructor
 		throw new IllegalStateException( "No block definition for " + feature );
 	}
 
-	public final IItemDefinition registerItemDefinition( IAEFeature feature )
+	public final IItemDefinition registerItemDefinition( final IAEFeature feature )
 	{
 		final IFeatureHandler handler = feature.handler();
 
@@ -87,13 +87,13 @@ public class DefinitionConstructor
 		return definition;
 	}
 
-	public final AEColoredItemDefinition constructColoredDefinition( IItemDefinition target, int offset )
+	public final AEColoredItemDefinition constructColoredDefinition( final IItemDefinition target, final int offset )
 	{
 		final ColoredItemDefinition definition = new ColoredItemDefinition();
 
-		for( Item targetItem : target.maybeItem().asSet() )
+		for( final Item targetItem : target.maybeItem().asSet() )
 		{
-			for( AEColor color : AEColor.VALID_COLORS )
+			for( final AEColor color : AEColor.VALID_COLORS )
 			{
 				final ActivityState state = ActivityState.from( target.isEnabled() );
 
@@ -104,11 +104,11 @@ public class DefinitionConstructor
 		return definition;
 	}
 
-	public final AEColoredItemDefinition constructColoredDefinition( ItemMultiPart target, PartType type )
+	public final AEColoredItemDefinition constructColoredDefinition( final ItemMultiPart target, final PartType type )
 	{
 		final ColoredItemDefinition definition = new ColoredItemDefinition();
 
-		for( AEColor color : AEColor.values() )
+		for( final AEColor color : AEColor.values() )
 		{
 			final ItemStackSrc multiPartSource = target.createPart( type, color );
 

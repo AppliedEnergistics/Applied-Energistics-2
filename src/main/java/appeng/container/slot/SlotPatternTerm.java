@@ -40,7 +40,7 @@ public class SlotPatternTerm extends SlotCraftingTerm
 	final int groupNum;
 	final IOptionalSlotHost host;
 
-	public SlotPatternTerm( EntityPlayer player, BaseActionSource mySrc, IEnergySource energySrc, IStorageMonitorable storage, IInventory cMatrix, IInventory secondMatrix, IInventory output, int x, int y, IOptionalSlotHost h, int groupNumber, IContainerCraftingPacket c )
+	public SlotPatternTerm( final EntityPlayer player, final BaseActionSource mySrc, final IEnergySource energySrc, final IStorageMonitorable storage, final IInventory cMatrix, final IInventory secondMatrix, final IInventory output, final int x, final int y, final IOptionalSlotHost h, final int groupNumber, final IContainerCraftingPacket c )
 	{
 		super( player, mySrc, energySrc, storage, cMatrix, secondMatrix, output, x, y, c );
 
@@ -48,7 +48,7 @@ public class SlotPatternTerm extends SlotCraftingTerm
 		this.groupNum = groupNumber;
 	}
 
-	public AppEngPacket getRequest( boolean shift ) throws IOException
+	public AppEngPacket getRequest( final boolean shift ) throws IOException
 	{
 		return new PacketPatternSlot( this.pattern, AEApi.instance().storage().createItemStack( this.getStack() ), shift );
 	}

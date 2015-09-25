@@ -59,7 +59,7 @@ public abstract class RotaryCraft extends IC2 implements AdvancedShaftPowerRecei
 	}
 
 	@Override
-	public final boolean addPower( int torque, int omega, long power, ForgeDirection side )
+	public final boolean addPower( final int torque, final int omega, final long power, final ForgeDirection side )
 	{
 		this.omega = omega;
 		this.torque = torque;
@@ -102,12 +102,12 @@ public abstract class RotaryCraft extends IC2 implements AdvancedShaftPowerRecei
 	}
 
 	@Override
-	public final void setIORenderAlpha( int io )
+	public final void setIORenderAlpha( final int io )
 	{
 		this.alpha = io;
 	}
 
-	public final boolean canReadFromBlock( int x, int y, int z )
+	public final boolean canReadFromBlock( final int x, final int y, final int z )
 	{
 		ForgeDirection side = ForgeDirection.UNKNOWN;
 
@@ -140,7 +140,7 @@ public abstract class RotaryCraft extends IC2 implements AdvancedShaftPowerRecei
 	}
 
 	@Override
-	public final boolean canReadFrom( ForgeDirection side )
+	public final boolean canReadFrom( final ForgeDirection side )
 	{
 		return this.getPowerSides().contains( side );
 	}
@@ -152,15 +152,15 @@ public abstract class RotaryCraft extends IC2 implements AdvancedShaftPowerRecei
 	}
 
 	@Override
-	public final int getMinTorque( int available )
+	public final int getMinTorque( final int available )
 	{
 		return 1;
 	}
 
 	@Override
-	public final ArrayList<String> getMessages( World world, int x, int y, int z, int side )
+	public final ArrayList<String> getMessages( final World world, final int x, final int y, final int z, final int side )
 	{
-		String out;
+		final String out;
 		if( this.power >= 1000000000 )
 		{
 			out = String.format( "Receiving %.3f GW @ %d rad/s.", this.power / 1000000000.0D, this.omega );
@@ -178,7 +178,7 @@ public abstract class RotaryCraft extends IC2 implements AdvancedShaftPowerRecei
 			out = String.format( "Receiving %d W @ %d rad/s.", this.power, this.omega );
 		}
 
-		ArrayList<String> messages = new ArrayList<String>( 1 );
+		final ArrayList<String> messages = new ArrayList<String>( 1 );
 		messages.add( out );
 		return messages;
 	}

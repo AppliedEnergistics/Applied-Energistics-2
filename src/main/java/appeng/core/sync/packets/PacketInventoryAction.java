@@ -50,12 +50,12 @@ public class PacketInventoryAction extends AppEngPacket
 	public final IAEItemStack slotItem;
 
 	// automatic.
-	public PacketInventoryAction( ByteBuf stream ) throws IOException
+	public PacketInventoryAction( final ByteBuf stream ) throws IOException
 	{
 		this.action = InventoryAction.values()[stream.readInt()];
 		this.slot = stream.readInt();
 		this.id = stream.readLong();
-		boolean hasItem = stream.readBoolean();
+		final boolean hasItem = stream.readBoolean();
 		if( hasItem )
 		{
 			this.slotItem = AEItemStack.loadItemStackFromPacket( stream );
@@ -67,7 +67,7 @@ public class PacketInventoryAction extends AppEngPacket
 	}
 
 	// api
-	public PacketInventoryAction( InventoryAction action, int slot, IAEItemStack slotItem ) throws IOException
+	public PacketInventoryAction( final InventoryAction action, final int slot, final IAEItemStack slotItem ) throws IOException
 	{
 
 		if( Platform.isClient() )
@@ -80,7 +80,7 @@ public class PacketInventoryAction extends AppEngPacket
 		this.id = 0;
 		this.slotItem = slotItem;
 
-		ByteBuf data = Unpooled.buffer();
+		final ByteBuf data = Unpooled.buffer();
 
 		data.writeInt( this.getPacketID() );
 		data.writeInt( action.ordinal() );
@@ -101,14 +101,14 @@ public class PacketInventoryAction extends AppEngPacket
 	}
 
 	// api
-	public PacketInventoryAction( InventoryAction action, int slot, long id )
+	public PacketInventoryAction( final InventoryAction action, final int slot, final long id )
 	{
 		this.action = action;
 		this.slot = slot;
 		this.id = id;
 		this.slotItem = null;
 
-		ByteBuf data = Unpooled.buffer();
+		final ByteBuf data = Unpooled.buffer();
 
 		data.writeInt( this.getPacketID() );
 		data.writeInt( action.ordinal() );
@@ -120,23 +120,23 @@ public class PacketInventoryAction extends AppEngPacket
 	}
 
 	@Override
-	public void serverPacketData( INetworkInfo manager, AppEngPacket packet, EntityPlayer player )
+	public void serverPacketData( final INetworkInfo manager, final AppEngPacket packet, final EntityPlayer player )
 	{
-		EntityPlayerMP sender = (EntityPlayerMP) player;
+		final EntityPlayerMP sender = (EntityPlayerMP) player;
 		if( sender.openContainer instanceof AEBaseContainer )
 		{
-			AEBaseContainer baseContainer = (AEBaseContainer) sender.openContainer;
+			final AEBaseContainer baseContainer = (AEBaseContainer) sender.openContainer;
 			if( this.action == InventoryAction.AUTO_CRAFT )
 			{
-				ContainerOpenContext context = baseContainer.openContext;
+				final ContainerOpenContext context = baseContainer.openContext;
 				if( context != null )
 				{
-					TileEntity te = context.getTile();
+					final TileEntity te = context.getTile();
 					Platform.openGUI( sender, te, baseContainer.openContext.side, GuiBridge.GUI_CRAFTING_AMOUNT );
 
 					if( sender.openContainer instanceof ContainerCraftAmount )
 					{
-						ContainerCraftAmount cca = (ContainerCraftAmount) sender.openContainer;
+						final ContainerCraftAmount cca = (ContainerCraftAmount) sender.openContainer;
 
 						if( baseContainer.getTargetStack() != null )
 						{
@@ -156,7 +156,7 @@ public class PacketInventoryAction extends AppEngPacket
 	}
 
 	@Override
-	public void clientPacketData( INetworkInfo network, AppEngPacket packet, EntityPlayer player )
+	public void clientPacketData( final INetworkInfo network, final AppEngPacket packet, final EntityPlayer player )
 	{
 		if( this.action == InventoryAction.UPDATE_HAND )
 		{

@@ -35,7 +35,7 @@ public class TilePhantomNode extends AENetworkTile
 	boolean crashMode = false;
 
 	@Override
-	public IGridNode getGridNode( ForgeDirection dir )
+	public IGridNode getGridNode( final ForgeDirection dir )
 	{
 		if( !this.crashMode )
 		{

@@ -40,7 +40,7 @@ public class AppEngSlot extends Slot
 	public hasCalculatedValidness isValid;
 	public boolean isDisplay = false;
 
-	public AppEngSlot( IInventory inv, int idx, int x, int y )
+	public AppEngSlot( final IInventory inv, final int idx, final int x, final int y )
 	{
 		super( inv, idx, x, y );
 		this.defX = x;
@@ -71,7 +71,7 @@ public class AppEngSlot extends Slot
 	}
 
 	@Override
-	public boolean isItemValid( ItemStack par1ItemStack )
+	public boolean isItemValid( final ItemStack par1ItemStack )
 	{
 		if( this.isEnabled() )
 		{
@@ -102,7 +102,7 @@ public class AppEngSlot extends Slot
 	}
 
 	@Override
-	public void putStack( ItemStack par1ItemStack )
+	public void putStack( final ItemStack par1ItemStack )
 	{
 		if( this.isEnabled() )
 		{
@@ -131,7 +131,7 @@ public class AppEngSlot extends Slot
 	}
 
 	@Override
-	public boolean canTakeStack( EntityPlayer par1EntityPlayer )
+	public boolean canTakeStack( final EntityPlayer par1EntityPlayer )
 	{
 		if( this.isEnabled() )
 		{

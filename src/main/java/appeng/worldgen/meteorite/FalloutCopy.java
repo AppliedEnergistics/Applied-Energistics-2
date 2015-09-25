@@ -18,7 +18,7 @@ public class FalloutCopy extends Fallout
 	private final int meta;
 	private final MeteoriteBlockPutter putter;
 
-	public FalloutCopy( IMeteoriteWorld w, int x, int y, int z, MeteoriteBlockPutter putter, IBlockDefinition skyStoneDefinition )
+	public FalloutCopy( final IMeteoriteWorld w, final int x, final int y, final int z, final MeteoriteBlockPutter putter, final IBlockDefinition skyStoneDefinition )
 	{
 		super( putter, skyStoneDefinition );
 		this.putter = putter;
@@ -27,9 +27,9 @@ public class FalloutCopy extends Fallout
 	}
 
 	@Override
-	public void getRandomFall( IMeteoriteWorld w, int x, int y, int z )
+	public void getRandomFall( final IMeteoriteWorld w, final int x, final int y, final int z )
 	{
-		double a = Math.random();
+		final double a = Math.random();
 		if( a > SPECIFIED_BLOCK_THRESHOLD )
 		{
 			this.putter.put( w, x, y, z, this.block, this.meta );
@@ -40,15 +40,15 @@ public class FalloutCopy extends Fallout
 		}
 	}
 
-	public void getOther( IMeteoriteWorld w, int x, int y, int z, double a )
+	public void getOther( final IMeteoriteWorld w, final int x, final int y, final int z, final double a )
 	{
 
 	}
 
 	@Override
-	public void getRandomInset( IMeteoriteWorld w, int x, int y, int z )
+	public void getRandomInset( final IMeteoriteWorld w, final int x, final int y, final int z )
 	{
-		double a = Math.random();
+		final double a = Math.random();
 		if( a > SPECIFIED_BLOCK_THRESHOLD )
 		{
 			this.putter.put( w, x, y, z, this.block, this.meta );

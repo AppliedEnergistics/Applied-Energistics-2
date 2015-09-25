@@ -46,13 +46,13 @@ public class BlockChunkloader extends AEBaseTileBlock implements LoadingCallback
 	}
 
 	@Override
-	public void ticketsLoaded( List<Ticket> tickets, World world )
+	public void ticketsLoaded( final List<Ticket> tickets, final World world )
 	{
 
 	}
 
 	@Override
-	public void registerBlockIcons( IIconRegister iconRegistry )
+	public void registerBlockIcons( final IIconRegister iconRegistry )
 	{
 		this.registerNoIcons();
 	}

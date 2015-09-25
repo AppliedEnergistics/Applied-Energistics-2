@@ -43,7 +43,7 @@ public abstract class AERootPoweredItem extends AEBaseItem implements IAEItemPow
 	private static final String POWER_NBT_KEY = "internalCurrentPower";
 	private final double powerCapacity;
 
-	public AERootPoweredItem( double powerCapacity, Optional<String> subName )
+	public AERootPoweredItem( final double powerCapacity, final Optional<String> subName )
 	{
 		super( subName );
 		this.setMaxDamage( 32 );
@@ -54,18 +54,18 @@ public abstract class AERootPoweredItem extends AEBaseItem implements IAEItemPow
 	}
 
 	@Override
-	public void addCheckedInformation( ItemStack stack, EntityPlayer player, List<String> lines, boolean displayMoreInfo )
+	public void addCheckedInformation( final ItemStack stack, final EntityPlayer player, final List<String> lines, final boolean displayMoreInfo )
 	{
-		NBTTagCompound tag = stack.getTagCompound();
+		final NBTTagCompound tag = stack.getTagCompound();
 		double internalCurrentPower = 0;
-		double internalMaxPower = this.getAEMaxPower( stack );
+		final double internalMaxPower = this.getAEMaxPower( stack );
 
 		if( tag != null )
 		{
 			internalCurrentPower = tag.getDouble( "internalCurrentPower" );
 		}
 
-		double percent = internalCurrentPower / internalMaxPower;
+		final double percent = internalCurrentPower / internalMaxPower;
 
 		lines.add( GuiText.StoredEnergy.getLocal() + ':' + MessageFormat.format( " {0,number,#} ", internalCurrentPower ) + Platform.gui_localize( PowerUnits.AE.unlocalizedName ) + " - " + MessageFormat.format( " {0,number,#.##%} ", percent ) );
 	}
@@ -77,7 +77,7 @@ public abstract class AERootPoweredItem extends AEBaseItem implements IAEItemPow
 	}
 
 	@Override
-	protected void getCheckedSubItems( Item sameItem, CreativeTabs creativeTab, List<ItemStack> itemStacks )
+	protected void getCheckedSubItems( final Item sameItem, final CreativeTabs creativeTab, final List<ItemStack> itemStacks )
 	{
 		super.getCheckedSubItems( sameItem, creativeTab, itemStacks );
 
@@ -96,29 +96,29 @@ public abstract class AERootPoweredItem extends AEBaseItem implements IAEItemPow
 	}
 
 	@Override
-	public double getDurabilityForDisplay( ItemStack is )
+	public double getDurabilityForDisplay( final ItemStack is )
 	{
 		return 1 - this.getAECurrentPower( is ) / this.getAEMaxPower( is );
 	}
 
 	@Override
-	public boolean isDamaged( ItemStack stack )
+	public boolean isDamaged( final ItemStack stack )
 	{
 		return true;
 	}
 
 	@Override
-	public void setDamage( ItemStack stack, int damage )
+	public void setDamage( final ItemStack stack, final int damage )
 	{
 
 	}
 
-	private double getInternalBattery( ItemStack is, batteryOperation op, double adjustment )
+	private double getInternalBattery( final ItemStack is, final batteryOperation op, final double adjustment )
 	{
-		NBTTagCompound data = Platform.openNbtData( is );
+		final NBTTagCompound data = Platform.openNbtData( is );
 
 		double currentStorage = data.getDouble( POWER_NBT_KEY );
-		double maxStorage = this.getAEMaxPower( is );
+		final double maxStorage = this.getAEMaxPower( is );
 
 		switch( op )
 		{
@@ -126,7 +126,7 @@ public abstract class AERootPoweredItem extends AEBaseItem implements IAEItemPow
 				currentStorage += adjustment;
 				if( currentStorage > maxStorage )
 				{
-					double diff = currentStorage - maxStorage;
+					final double diff = currentStorage - maxStorage;
 					data.setDouble( POWER_NBT_KEY, maxStorage );
 					return diff;
 				}
@@ -151,11 +151,11 @@ public abstract class AERootPoweredItem extends AEBaseItem implements IAEItemPow
 	/**
 	 * inject external
 	 */
-	double injectExternalPower( PowerUnits input, ItemStack is, double amount, boolean simulate )
+	double injectExternalPower( final PowerUnits input, final ItemStack is, final double amount, final boolean simulate )
 	{
 		if( simulate )
 		{
-			int requiredEU = (int) PowerUnits.AE.convertTo( PowerUnits.EU, this.getAEMaxPower( is ) - this.getAECurrentPower( is ) );
+			final int requiredEU = (int) PowerUnits.AE.convertTo( PowerUnits.EU, this.getAEMaxPower( is ) - this.getAECurrentPower( is ) );
 			if( amount < requiredEU )
 			{
 				return 0;
@@ -164,37 +164,37 @@ public abstract class AERootPoweredItem extends AEBaseItem implements IAEItemPow
 		}
 		else
 		{
-			double powerRemainder = this.injectAEPower( is, PowerUnits.EU.convertTo( PowerUnits.AE, amount ) );
+			final double powerRemainder = this.injectAEPower( is, PowerUnits.EU.convertTo( PowerUnits.AE, amount ) );
 			return PowerUnits.AE.convertTo( PowerUnits.EU, powerRemainder );
 		}
 	}
 
 	@Override
-	public double injectAEPower( ItemStack is, double amt )
+	public double injectAEPower( final ItemStack is, final double amt )
 	{
 		return this.getInternalBattery( is, batteryOperation.INJECT, amt );
 	}
 
 	@Override
-	public double extractAEPower( ItemStack is, double amt )
+	public double extractAEPower( final ItemStack is, final double amt )
 	{
 		return this.getInternalBattery( is, batteryOperation.EXTRACT, amt );
 	}
 
 	@Override
-	public double getAEMaxPower( ItemStack is )
+	public double getAEMaxPower( final ItemStack is )
 	{
 		return this.powerCapacity;
 	}
 
 	@Override
-	public double getAECurrentPower( ItemStack is )
+	public double getAECurrentPower( final ItemStack is )
 	{
 		return this.getInternalBattery( is, batteryOperation.STORAGE, 0 );
 	}
 
 	@Override
-	public AccessRestriction getPowerFlow( ItemStack is )
+	public AccessRestriction getPowerFlow( final ItemStack is )
 	{
 		return AccessRestriction.WRITE;
 	}

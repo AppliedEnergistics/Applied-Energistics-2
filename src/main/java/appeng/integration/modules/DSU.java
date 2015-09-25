@@ -45,13 +45,13 @@ public class DSU implements IDSU, IIntegrationModule
 	}
 
 	@Override
-	public IMEInventory getDSU( TileEntity te )
+	public IMEInventory getDSU( final TileEntity te )
 	{
 		return new MinefactoryReloadedDeepStorageUnit( te );
 	}
 
 	@Override
-	public boolean isDSU( TileEntity te )
+	public boolean isDSU( final TileEntity te )
 	{
 		return te instanceof IDeepStorageUnit;
 	}

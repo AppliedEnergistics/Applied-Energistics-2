@@ -38,18 +38,18 @@ public class RenderTinyTNT extends BaseBlockRender<BlockTinyTNT, AEBaseTile>
 	}
 
 	@Override
-	public void renderInventory( BlockTinyTNT block, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj )
+	public void renderInventory( final BlockTinyTNT block, final ItemStack is, final RenderBlocks renderer, final ItemRenderType type, final Object[] obj )
 	{
 		renderer.setRenderBounds( 0.25f, 0.0f, 0.25f, 0.75f, 0.5f, 0.75f );
 		super.renderInventory( block, is, renderer, type, obj );
 	}
 
 	@Override
-	public boolean renderInWorld( BlockTinyTNT imb, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
+	public boolean renderInWorld( final BlockTinyTNT imb, final IBlockAccess world, final int x, final int y, final int z, final RenderBlocks renderer )
 	{
 		renderer.renderAllFaces = true;
 		renderer.setRenderBounds( 0.25f, 0.0f, 0.25f, 0.75f, 0.5f, 0.75f );
-		boolean out = super.renderInWorld( imb, world, x, y, z, renderer );
+		final boolean out = super.renderInWorld( imb, world, x, y, z, renderer );
 		renderer.renderAllFaces = false;
 		return out;
 	}

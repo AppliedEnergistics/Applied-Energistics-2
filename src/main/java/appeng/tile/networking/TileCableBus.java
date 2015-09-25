@@ -68,23 +68,23 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	private int oldLV = -1; // on re-calculate light when it changes
 
 	@TileEvent( TileEventType.WORLD_NBT_READ )
-	public void readFromNBT_TileCableBus( NBTTagCompound data )
+	public void readFromNBT_TileCableBus( final NBTTagCompound data )
 	{
 		this.cb.readFromNBT( data );
 	}
 
 	@TileEvent( TileEventType.WORLD_NBT_WRITE )
-	public void writeToNBT_TileCableBus( NBTTagCompound data )
+	public void writeToNBT_TileCableBus( final NBTTagCompound data )
 	{
 		this.cb.writeToNBT( data );
 	}
 
 	@TileEvent( TileEventType.NETWORK_READ )
-	public boolean readFromStream_TileCableBus( ByteBuf data ) throws IOException
+	public boolean readFromStream_TileCableBus( final ByteBuf data ) throws IOException
 	{
-		boolean ret = this.cb.readFromStream( data );
+		final boolean ret = this.cb.readFromStream( data );
 
-		int newLV = this.cb.getLightValue();
+		final int newLV = this.cb.getLightValue();
 		if( newLV != this.oldLV )
 		{
 			this.oldLV = newLV;
@@ -102,27 +102,27 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 		{
 			try
 			{
-				TileCableBus tcb = (TileCableBus) BlockCableBus.tesrTile.newInstance();
+				final TileCableBus tcb = (TileCableBus) BlockCableBus.tesrTile.newInstance();
 				tcb.copyFrom( this );
 				this.getWorldObj().setTileEntity( this.xCoord, this.yCoord, this.zCoord, tcb );
 			}
-			catch( Throwable ignored )
+			catch( final Throwable ignored )
 			{
 
 			}
 		}
 	}
 
-	protected void copyFrom( TileCableBus oldTile )
+	protected void copyFrom( final TileCableBus oldTile )
 	{
-		CableBusContainer tmpCB = this.cb;
+		final CableBusContainer tmpCB = this.cb;
 		this.cb = oldTile.cb;
 		this.oldLV = oldTile.oldLV;
 		oldTile.cb = tmpCB;
 	}
 
 	@TileEvent( TileEventType.NETWORK_WRITE )
-	public void writeToStream_TileCableBus( ByteBuf data ) throws IOException
+	public void writeToStream_TileCableBus( final ByteBuf data ) throws IOException
 	{
 		this.cb.writeToStream( data );
 	}
@@ -148,13 +148,13 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	}
 
 	@Override
-	public IGridNode getGridNode( ForgeDirection dir )
+	public IGridNode getGridNode( final ForgeDirection dir )
 	{
 		return this.cb.getGridNode( dir );
 	}
 
 	@Override
-	public AECableType getCableConnectionType( ForgeDirection side )
+	public AECableType getCableConnectionType( final ForgeDirection side )
 	{
 		return this.cb.getCableConnectionType( side );
 	}
@@ -174,7 +174,7 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 			return;
 		}
 
-		int newLV = this.cb.getLightValue();
+		final int newLV = this.cb.getLightValue();
 		if( newLV != this.oldLV )
 		{
 			this.oldLV = newLV;
@@ -192,13 +192,13 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	}
 
 	@Override
-	public void getDrops( World w, int x, int y, int z, List drops )
+	public void getDrops( final World w, final int x, final int y, final int z, final List drops )
 	{
 		this.cb.getDrops( drops );
 	}
 
 	@Override
-	public void getNoDrops( World w, int x, int y, int z, List<ItemStack> drops )
+	public void getNoDrops( final World w, final int x, final int y, final int z, final List<ItemStack> drops )
 	{
 		this.cb.getNoDrops( drops );
 	}
@@ -233,25 +233,25 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	}
 
 	@Override
-	public boolean canAddPart( ItemStack is, ForgeDirection side )
+	public boolean canAddPart( final ItemStack is, final ForgeDirection side )
 	{
 		return this.cb.canAddPart( is, side );
 	}
 
 	@Override
-	public ForgeDirection addPart( ItemStack is, ForgeDirection side, EntityPlayer player )
+	public ForgeDirection addPart( final ItemStack is, final ForgeDirection side, final EntityPlayer player )
 	{
 		return this.cb.addPart( is, side, player );
 	}
 
 	@Override
-	public IPart getPart( ForgeDirection side )
+	public IPart getPart( final ForgeDirection side )
 	{
 		return this.cb.getPart( side );
 	}
 
 	@Override
-	public void removePart( ForgeDirection side, boolean suppressUpdate )
+	public void removePart( final ForgeDirection side, final boolean suppressUpdate )
 	{
 		this.cb.removePart( side, suppressUpdate );
 	}
@@ -275,19 +275,19 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	}
 
 	@Override
-	public boolean isBlocked( ForgeDirection side )
+	public boolean isBlocked( final ForgeDirection side )
 	{
 		return !this.ImmibisMicroblocks_isSideOpen( side.ordinal() );
 	}
 
 	@Override
-	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool( World w, int x, int y, int z, Entity e, boolean visual )
+	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool( final World w, final int x, final int y, final int z, final Entity e, final boolean visual )
 	{
 		return this.cb.getSelectedBoundingBoxesFromPool( false, true, e, visual );
 	}
 
 	@Override
-	public SelectedPart selectPart( Vec3 pos )
+	public SelectedPart selectPart( final Vec3 pos )
 	{
 		return this.cb.selectPart( pos );
 	}
@@ -305,7 +305,7 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	}
 
 	@Override
-	public boolean hasRedstone( ForgeDirection side )
+	public boolean hasRedstone( final ForgeDirection side )
 	{
 		return this.cb.hasRedstone( side );
 	}
@@ -327,7 +327,7 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	{
 		if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.ImmibisMicroblocks ) )
 		{
-			IImmibisMicroblocks imb = (IImmibisMicroblocks) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.ImmibisMicroblocks );
+			final IImmibisMicroblocks imb = (IImmibisMicroblocks) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.ImmibisMicroblocks );
 			if( imb != null && imb.leaveParts( this ) )
 			{
 				return;
@@ -338,9 +338,9 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	}
 
 	@Override
-	public void addCollidingBlockToList( World w, int x, int y, int z, AxisAlignedBB bb, List<AxisAlignedBB> out, Entity e )
+	public void addCollidingBlockToList( final World w, final int x, final int y, final int z, final AxisAlignedBB bb, final List<AxisAlignedBB> out, final Entity e )
 	{
-		for( AxisAlignedBB bx : this.getSelectedBoundingBoxesFromPool( w, x, y, z, e, false ) )
+		for( final AxisAlignedBB bx : this.getSelectedBoundingBoxesFromPool( w, x, y, z, e, false ) )
 		{
 			out.add( AxisAlignedBB.getBoundingBox( bx.minX, bx.minY, bx.minZ, bx.maxX, bx.maxY, bx.maxZ ) );
 		}
@@ -361,7 +361,7 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 		return this.cb.isInWorld();
 	}
 
-	public boolean ImmibisMicroblocks_isSideOpen( int side )
+	public boolean ImmibisMicroblocks_isSideOpen( final int side )
 	{
 		return true;
 	}
@@ -372,7 +372,7 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	}
 
 	@Override
-	public boolean recolourBlock( ForgeDirection side, AEColor colour, EntityPlayer who )
+	public boolean recolourBlock( final ForgeDirection side, final AEColor colour, final EntityPlayer who )
 	{
 		return this.cb.recolourBlock( side, colour, who );
 	}

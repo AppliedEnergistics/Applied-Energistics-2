@@ -51,7 +51,7 @@ public class RenderBlockCharger extends BaseBlockRender<BlockCharger, TileCharge
 	}
 
 	@Override
-	public void renderInventory( BlockCharger blk, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj )
+	public void renderInventory( final BlockCharger blk, final ItemStack is, final RenderBlocks renderer, final ItemRenderType type, final Object[] obj )
 	{
 		final Tessellator tess = Tessellator.instance;
 
@@ -82,7 +82,7 @@ public class RenderBlockCharger extends BaseBlockRender<BlockCharger, TileCharge
 	}
 
 	@Override
-	public boolean renderInWorld( BlockCharger block, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
+	public boolean renderInWorld( final BlockCharger block, final IBlockAccess world, final int x, final int y, final int z, final RenderBlocks renderer )
 	{
 		this.preRenderInWorld( block, world, x, y, z, renderer );
 
@@ -122,7 +122,7 @@ public class RenderBlockCharger extends BaseBlockRender<BlockCharger, TileCharge
 	}
 
 	@Override
-	public void renderTile( BlockCharger block, TileCharger tile, Tessellator tess, double x, double y, double z, float f, RenderBlocks renderer )
+	public void renderTile( final BlockCharger block, final TileCharger tile, final Tessellator tess, final double x, final double y, final double z, final float f, final RenderBlocks renderer )
 	{
 		final ItemStack sis = tile.getStackInSlot( 0 );
 
@@ -160,7 +160,7 @@ public class RenderBlockCharger extends BaseBlockRender<BlockCharger, TileCharge
 
 				this.doRenderItem( sis, tile );
 			}
-			catch( Exception err )
+			catch( final Exception err )
 			{
 				AELog.error( err );
 			}

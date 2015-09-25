@@ -46,14 +46,14 @@ import appeng.client.texture.CableBusTextures;
 public abstract class AbstractPartDisplay extends AbstractPartReporting
 {
 
-	public AbstractPartDisplay( ItemStack is )
+	public AbstractPartDisplay( final ItemStack is )
 	{
 		super( is, true );
 	}
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderInventory( IPartRenderHelper rh, RenderBlocks renderer )
+	public void renderInventory( final IPartRenderHelper rh, final RenderBlocks renderer )
 	{
 		rh.setBounds( 2, 2, 14, 14, 14, 16 );
 
@@ -78,7 +78,7 @@ public abstract class AbstractPartDisplay extends AbstractPartReporting
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderStatic( int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer )
+	public void renderStatic( final int x, final int y, final int z, final IPartRenderHelper rh, final RenderBlocks renderer )
 	{
 		this.renderCache = rh.useSimplifiedRendering( x, y, z, this, this.renderCache );
 

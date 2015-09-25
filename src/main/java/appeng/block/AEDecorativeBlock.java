@@ -26,7 +26,7 @@ import net.minecraft.world.IBlockAccess;
 
 public class AEDecorativeBlock extends AEBaseBlock
 {
-	public AEDecorativeBlock( Material mat )
+	public AEDecorativeBlock( final Material mat )
 	{
 		super( mat );
 	}
@@ -38,7 +38,7 @@ public class AEDecorativeBlock extends AEBaseBlock
 	}
 
 	@Override
-	public IIcon getIcon( IBlockAccess w, int x, int y, int z, int s )
+	public IIcon getIcon( final IBlockAccess w, final int x, final int y, final int z, final int s )
 	{
 		return super.unmappedGetIcon( w, x, y, z, s );
 	}

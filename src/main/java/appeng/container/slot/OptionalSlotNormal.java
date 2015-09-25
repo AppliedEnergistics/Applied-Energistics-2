@@ -28,7 +28,7 @@ public class OptionalSlotNormal extends AppEngSlot
 	final int groupNum;
 	final IOptionalSlotHost host;
 
-	public OptionalSlotNormal( IInventory inv, IOptionalSlotHost containerBus, int slot, int xPos, int yPos, int groupNum )
+	public OptionalSlotNormal( final IInventory inv, final IOptionalSlotHost containerBus, final int slot, final int xPos, final int yPos, final int groupNum )
 	{
 		super( inv, slot, xPos, yPos );
 		this.groupNum = groupNum;

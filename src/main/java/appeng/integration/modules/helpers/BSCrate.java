@@ -37,21 +37,21 @@ public class BSCrate implements IMEInventory<IAEItemStack>
 	private final ICrateStorage crateStorage;
 	private final ForgeDirection side;
 
-	public BSCrate( Object object, ForgeDirection d )
+	public BSCrate( final Object object, final ForgeDirection d )
 	{
 		this.crateStorage = (ICrateStorage) object;
 		this.side = d;
 	}
 
 	@Override
-	public IAEItemStack injectItems( IAEItemStack input, Actionable mode, BaseActionSource src )
+	public IAEItemStack injectItems( final IAEItemStack input, final Actionable mode, final BaseActionSource src )
 	{
 		if( mode == Actionable.SIMULATE )
 		{
 			return null;
 		}
 
-		ItemStack failed = this.crateStorage.insertItems( input.getItemStack() );
+		final ItemStack failed = this.crateStorage.insertItems( input.getItemStack() );
 		if( failed == null )
 		{
 			return null;
@@ -61,22 +61,22 @@ public class BSCrate implements IMEInventory<IAEItemStack>
 	}
 
 	@Override
-	public IAEItemStack extractItems( IAEItemStack request, Actionable mode, BaseActionSource src )
+	public IAEItemStack extractItems( final IAEItemStack request, final Actionable mode, final BaseActionSource src )
 	{
 		if( mode == Actionable.SIMULATE )
 		{
-			int howMany = this.crateStorage.getItemCount( request.getItemStack() );
+			final int howMany = this.crateStorage.getItemCount( request.getItemStack() );
 			return howMany > request.getStackSize() ? request : request.copy().setStackSize( howMany );
 		}
 
-		ItemStack obtained = this.crateStorage.extractItems( request.getItemStack(), (int) request.getStackSize() );
+		final ItemStack obtained = this.crateStorage.extractItems( request.getItemStack(), (int) request.getStackSize() );
 		return AEItemStack.create( obtained );
 	}
 
 	@Override
-	public IItemList getAvailableItems( IItemList out )
+	public IItemList getAvailableItems( final IItemList out )
 	{
-		for( ItemStack is : this.crateStorage.getContents() )
+		for( final ItemStack is : this.crateStorage.getContents() )
 		{
 			out.add( AEItemStack.create( is ) );
 		}

@@ -45,7 +45,7 @@ public class GuiIOPort extends GuiUpgradeable
 	GuiImgButton fullMode;
 	GuiImgButton operationMode;
 
-	public GuiIOPort( InventoryPlayer inventoryPlayer, TileIOPort te )
+	public GuiIOPort( final InventoryPlayer inventoryPlayer, final TileIOPort te )
 	{
 		super( new ContainerIOPort( inventoryPlayer, te ) );
 		this.ySize = 166;
@@ -64,7 +64,7 @@ public class GuiIOPort extends GuiUpgradeable
 	}
 
 	@Override
-	public void drawFG( int offsetX, int offsetY, int mouseX, int mouseY )
+	public void drawFG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
 		this.fontRendererObj.drawString( this.getGuiDisplayName( GuiText.IOPort.getLocal() ), 8, 6, 4210752 );
 		this.fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
@@ -86,18 +86,18 @@ public class GuiIOPort extends GuiUpgradeable
 	}
 
 	@Override
-	public void drawBG( int offsetX, int offsetY, int mouseX, int mouseY )
+	public void drawBG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
 		super.drawBG( offsetX, offsetY, mouseX, mouseY );
 
 		final IDefinitions definitions = AEApi.instance().definitions();
 
-		for( ItemStack cell1kStack : definitions.items().cell1k().maybeStack( 1 ).asSet() )
+		for( final ItemStack cell1kStack : definitions.items().cell1k().maybeStack( 1 ).asSet() )
 		{
 			this.drawItem( offsetX + 66 - 8, offsetY + 17, cell1kStack );
 		}
 
-		for( ItemStack driveStack : definitions.blocks().drive().maybeStack( 1 ).asSet() )
+		for( final ItemStack driveStack : definitions.blocks().drive().maybeStack( 1 ).asSet() )
 		{
 			this.drawItem( offsetX + 94 + 8, offsetY + 17, driveStack );
 		}
@@ -110,11 +110,11 @@ public class GuiIOPort extends GuiUpgradeable
 	}
 
 	@Override
-	protected void actionPerformed( GuiButton btn )
+	protected void actionPerformed( final GuiButton btn )
 	{
 		super.actionPerformed( btn );
 
-		boolean backwards = Mouse.isButtonDown( 1 );
+		final boolean backwards = Mouse.isButtonDown( 1 );
 
 		if( btn == this.fullMode )
 		{

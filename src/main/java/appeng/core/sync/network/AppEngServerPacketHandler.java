@@ -36,29 +36,29 @@ public final class AppEngServerPacketHandler extends AppEngPacketHandlerBase imp
 {
 
 	@Override
-	public void onPacketData( INetworkInfo manager, FMLProxyPacket packet, EntityPlayer player )
+	public void onPacketData( final INetworkInfo manager, final FMLProxyPacket packet, final EntityPlayer player )
 	{
-		ByteBuf stream = packet.payload();
+		final ByteBuf stream = packet.payload();
 
 		try
 		{
-			int packetType = stream.readInt();
-			AppEngPacket pack = PacketTypes.getPacket( packetType ).parsePacket( stream );
+			final int packetType = stream.readInt();
+			final AppEngPacket pack = PacketTypes.getPacket( packetType ).parsePacket( stream );
 			pack.serverPacketData( manager, pack, player );
 		}
-		catch( InstantiationException e )
+		catch( final InstantiationException e )
 		{
 			AELog.error( e );
 		}
-		catch( IllegalAccessException e )
+		catch( final IllegalAccessException e )
 		{
 			AELog.error( e );
 		}
-		catch( IllegalArgumentException e )
+		catch( final IllegalArgumentException e )
 		{
 			AELog.error( e );
 		}
-		catch( InvocationTargetException e )
+		catch( final InvocationTargetException e )
 		{
 			AELog.error( e );
 		}

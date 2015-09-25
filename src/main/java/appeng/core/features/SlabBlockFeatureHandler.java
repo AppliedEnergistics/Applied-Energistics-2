@@ -38,7 +38,7 @@ public class SlabBlockFeatureHandler implements IFeatureHandler
 	private final boolean enabled;
 	private final BlockDefinition definition;
 
-	public SlabBlockFeatureHandler( EnumSet<AEFeature> features, AEBaseSlabBlock slabs )
+	public SlabBlockFeatureHandler( final EnumSet<AEFeature> features, final AEBaseSlabBlock slabs )
 	{
 		final ActivityState state = new FeaturedActiveChecker( features ).getActivityState();
 		this.slabs = slabs;

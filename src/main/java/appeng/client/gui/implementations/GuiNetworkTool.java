@@ -39,14 +39,14 @@ public class GuiNetworkTool extends AEBaseGui
 
 	GuiToggleButton tFacades;
 
-	public GuiNetworkTool( InventoryPlayer inventoryPlayer, INetworkTool te )
+	public GuiNetworkTool( final InventoryPlayer inventoryPlayer, final INetworkTool te )
 	{
 		super( new ContainerNetworkTool( inventoryPlayer, te ) );
 		this.ySize = 166;
 	}
 
 	@Override
-	protected void actionPerformed( GuiButton btn )
+	protected void actionPerformed( final GuiButton btn )
 	{
 		super.actionPerformed( btn );
 
@@ -57,7 +57,7 @@ public class GuiNetworkTool extends AEBaseGui
 				NetworkHandler.instance.sendToServer( new PacketValueConfig( "NetworkTool", "Toggle" ) );
 			}
 		}
-		catch( IOException e )
+		catch( final IOException e )
 		{
 			AELog.error( e );
 		}
@@ -74,7 +74,7 @@ public class GuiNetworkTool extends AEBaseGui
 	}
 
 	@Override
-	public void drawFG( int offsetX, int offsetY, int mouseX, int mouseY )
+	public void drawFG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
 		if( this.tFacades != null )
 		{
@@ -86,7 +86,7 @@ public class GuiNetworkTool extends AEBaseGui
 	}
 
 	@Override
-	public void drawBG( int offsetX, int offsetY, int mouseX, int mouseY )
+	public void drawBG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
 		this.bindTexture( "guis/toolbox.png" );
 		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize );

@@ -35,13 +35,13 @@ public class MFRDSUHandler implements IExternalStorageHandler
 {
 
 	@Override
-	public boolean canHandle( TileEntity te, ForgeDirection d, StorageChannel chan, BaseActionSource mySrc )
+	public boolean canHandle( final TileEntity te, final ForgeDirection d, final StorageChannel chan, final BaseActionSource mySrc )
 	{
 		return chan == StorageChannel.ITEMS && DSU.instance.isDSU( te );
 	}
 
 	@Override
-	public IMEInventory getInventory( TileEntity te, ForgeDirection d, StorageChannel chan, BaseActionSource src )
+	public IMEInventory getInventory( final TileEntity te, final ForgeDirection d, final StorageChannel chan, final BaseActionSource src )
 	{
 		if( chan == StorageChannel.ITEMS )
 		{

@@ -41,7 +41,7 @@ public class ToolQuartzCuttingKnife extends AEBaseItem implements IGuiItem
 {
 	private final AEFeature type;
 
-	public ToolQuartzCuttingKnife( AEFeature type )
+	public ToolQuartzCuttingKnife( final AEFeature type )
 	{
 		super( Optional.of( type.name() ) );
 
@@ -52,7 +52,7 @@ public class ToolQuartzCuttingKnife extends AEBaseItem implements IGuiItem
 	}
 
 	@Override
-	public boolean onItemUse( ItemStack is, EntityPlayer p, World w, int x, int y, int z, int s, float hitX, float hitY, float hitZ )
+	public boolean onItemUse( final ItemStack is, final EntityPlayer p, final World w, final int x, final int y, final int z, final int s, final float hitX, final float hitY, final float hitZ )
 	{
 		if( Platform.isServer() )
 		{
@@ -62,7 +62,7 @@ public class ToolQuartzCuttingKnife extends AEBaseItem implements IGuiItem
 	}
 
 	@Override
-	public ItemStack onItemRightClick( ItemStack it, World w, EntityPlayer p )
+	public ItemStack onItemRightClick( final ItemStack it, final World w, final EntityPlayer p )
 	{
 		if( Platform.isServer() )
 		{
@@ -73,13 +73,13 @@ public class ToolQuartzCuttingKnife extends AEBaseItem implements IGuiItem
 	}
 
 	@Override
-	public boolean doesContainerItemLeaveCraftingGrid( ItemStack par1ItemStack )
+	public boolean doesContainerItemLeaveCraftingGrid( final ItemStack par1ItemStack )
 	{
 		return false;
 	}
 
 	@Override
-	public boolean getIsRepairable( ItemStack a, ItemStack b )
+	public boolean getIsRepairable( final ItemStack a, final ItemStack b )
 	{
 		return Platform.canRepair( this.type, a, b );
 	}
@@ -91,20 +91,20 @@ public class ToolQuartzCuttingKnife extends AEBaseItem implements IGuiItem
 	}
 
 	@Override
-	public ItemStack getContainerItem( ItemStack itemStack )
+	public ItemStack getContainerItem( final ItemStack itemStack )
 	{
 		itemStack.setItemDamage( itemStack.getItemDamage() + 1 );
 		return itemStack;
 	}
 
 	@Override
-	public boolean hasContainerItem( ItemStack stack )
+	public boolean hasContainerItem( final ItemStack stack )
 	{
 		return true;
 	}
 
 	@Override
-	public IGuiItemObject getGuiObject( ItemStack is, World world, int x, int y, int z )
+	public IGuiItemObject getGuiObject( final ItemStack is, final World world, final int x, final int y, final int z )
 	{
 		return new QuartzKnifeObj( is );
 	}

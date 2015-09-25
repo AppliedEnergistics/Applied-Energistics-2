@@ -46,13 +46,13 @@ public class MovableTileRegistry implements IMovableRegistry
 	private final IMovableHandler nullHandler = new DefaultSpatialHandler();
 
 	@Override
-	public void blacklistBlock( Block blk )
+	public void blacklistBlock( final Block blk )
 	{
 		this.blacklisted.add( blk );
 	}
 
 	@Override
-	public void whiteListTileEntity( Class<? extends TileEntity> c )
+	public void whiteListTileEntity( final Class<? extends TileEntity> c )
 	{
 		if( c.getName().equals( TileEntity.class.getName() ) )
 		{
@@ -63,9 +63,9 @@ public class MovableTileRegistry implements IMovableRegistry
 	}
 
 	@Override
-	public boolean askToMove( TileEntity te )
+	public boolean askToMove( final TileEntity te )
 	{
-		Class myClass = te.getClass();
+		final Class myClass = te.getClass();
 		IMovableHandler canMove = this.Valid.get( myClass );
 
 		if( canMove == null )
@@ -87,12 +87,12 @@ public class MovableTileRegistry implements IMovableRegistry
 		return false;
 	}
 
-	private IMovableHandler testClass( Class myClass, TileEntity te )
+	private IMovableHandler testClass( final Class myClass, final TileEntity te )
 	{
 		IMovableHandler handler = null;
 
 		// ask handlers...
-		for( IMovableHandler han : this.handlers )
+		for( final IMovableHandler han : this.handlers )
 		{
 			if( han.canHandle( myClass, te ) )
 			{
@@ -116,7 +116,7 @@ public class MovableTileRegistry implements IMovableRegistry
 		}
 
 		// if you are on the white list your opted in.
-		for( Class<? extends TileEntity> testClass : this.test )
+		for( final Class<? extends TileEntity> testClass : this.test )
 		{
 			if( testClass.isAssignableFrom( myClass ) )
 			{
@@ -130,26 +130,26 @@ public class MovableTileRegistry implements IMovableRegistry
 	}
 
 	@Override
-	public void doneMoving( TileEntity te )
+	public void doneMoving( final TileEntity te )
 	{
 		if( te instanceof IMovableTile )
 		{
-			IMovableTile mt = (IMovableTile) te;
+			final IMovableTile mt = (IMovableTile) te;
 			mt.doneMoving();
 		}
 	}
 
 	@Override
-	public void addHandler( IMovableHandler han )
+	public void addHandler( final IMovableHandler han )
 	{
 		this.handlers.add( han );
 	}
 
 	@Override
-	public IMovableHandler getHandler( TileEntity te )
+	public IMovableHandler getHandler( final TileEntity te )
 	{
-		Class myClass = te.getClass();
-		IMovableHandler h = this.Valid.get( myClass );
+		final Class myClass = te.getClass();
+		final IMovableHandler h = this.Valid.get( myClass );
 		return h == null ? this.dsh : h;
 	}
 
@@ -160,7 +160,7 @@ public class MovableTileRegistry implements IMovableRegistry
 	}
 
 	@Override
-	public boolean isBlacklisted( Block blk )
+	public boolean isBlacklisted( final Block blk )
 	{
 		return this.blacklisted.contains( blk );
 	}

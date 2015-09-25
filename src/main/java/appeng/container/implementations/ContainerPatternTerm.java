@@ -81,13 +81,13 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 	@GuiSync( 97 )
 	public boolean craftingMode = true;
 
-	public ContainerPatternTerm( InventoryPlayer ip, ITerminalHost monitorable )
+	public ContainerPatternTerm( final InventoryPlayer ip, final ITerminalHost monitorable )
 	{
 		super( ip, monitorable, false );
 		this.ct = (PartPatternTerminal) monitorable;
 
-		IInventory patternInv = this.ct.getInventoryByName( "pattern" );
-		IInventory output = this.ct.getInventoryByName( "output" );
+		final IInventory patternInv = this.ct.getInventoryByName( "pattern" );
+		final IInventory output = this.ct.getInventoryByName( "output" );
 		this.crafting = this.ct.getInventoryByName( "crafting" );
 
 		for( int y = 0; y < 3; y++ )
@@ -140,14 +140,14 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 	}
 
 	@Override
-	public void putStackInSlot( int par1, ItemStack par2ItemStack )
+	public void putStackInSlot( final int par1, final ItemStack par2ItemStack )
 	{
 		super.putStackInSlot( par1, par2ItemStack );
 		this.getAndUpdateOutput();
 	}
 
 	@Override
-	public void putStacksInSlots( ItemStack[] par1ArrayOfItemStack )
+	public void putStacksInSlots( final ItemStack[] par1ArrayOfItemStack )
 	{
 		super.putStacksInSlots( par1ArrayOfItemStack );
 		this.getAndUpdateOutput();
@@ -155,13 +155,13 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 
 	public ItemStack getAndUpdateOutput()
 	{
-		InventoryCrafting ic = new InventoryCrafting( this, 3, 3 );
+		final InventoryCrafting ic = new InventoryCrafting( this, 3, 3 );
 		for( int x = 0; x < ic.getSizeInventory(); x++ )
 		{
 			ic.setInventorySlotContents( x, this.crafting.getStackInSlot( x ) );
 		}
 
-		ItemStack is = CraftingManager.getInstance().findMatchingRecipe( ic, this.getPlayerInv().player.worldObj );
+		final ItemStack is = CraftingManager.getInstance().findMatchingRecipe( ic, this.getPlayerInv().player.worldObj );
 		this.cOut.setInventorySlotContents( 0, is );
 		return is;
 	}
@@ -173,7 +173,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 	}
 
 	@Override
-	public void onChangeInventory( IInventory inv, int slot, InvOperation mc, ItemStack removedStack, ItemStack newStack )
+	public void onChangeInventory( final IInventory inv, final int slot, final InvOperation mc, final ItemStack removedStack, final ItemStack newStack )
 	{
 
 	}
@@ -182,8 +182,8 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 	{
 		ItemStack output = this.patternSlotOUT.getStack();
 
-		ItemStack[] in = this.getInputs();
-		ItemStack[] out = this.getOutputs();
+		final ItemStack[] in = this.getInputs();
+		final ItemStack[] out = this.getOutputs();
 
 		// if there is no input, this would be silly.
 		if( in == null || out == null )
@@ -212,7 +212,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 			}
 
 			// add a new encoded pattern.
-			for( ItemStack encodedPatternStack : AEApi.instance().definitions().items().encodedPattern().maybeStack( 1 ).asSet() )
+			for( final ItemStack encodedPatternStack : AEApi.instance().definitions().items().encodedPattern().maybeStack( 1 ).asSet() )
 			{
 				output = encodedPatternStack;
 				this.patternSlotOUT.putStack( output );
@@ -220,17 +220,17 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 		}
 
 		// encode the slot.
-		NBTTagCompound encodedValue = new NBTTagCompound();
+		final NBTTagCompound encodedValue = new NBTTagCompound();
 
-		NBTTagList tagIn = new NBTTagList();
-		NBTTagList tagOut = new NBTTagList();
+		final NBTTagList tagIn = new NBTTagList();
+		final NBTTagList tagOut = new NBTTagList();
 
-		for( ItemStack i : in )
+		for( final ItemStack i : in )
 		{
 			tagIn.appendTag( this.createItemTag( i ) );
 		}
 
-		for( ItemStack i : out )
+		for( final ItemStack i : out )
 		{
 			tagOut.appendTag( this.createItemTag( i ) );
 		}
@@ -244,7 +244,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 
 	private ItemStack[] getInputs()
 	{
-		ItemStack[] input = new ItemStack[9];
+		final ItemStack[] input = new ItemStack[9];
 		boolean hasValue = false;
 
 		for( int x = 0; x < this.craftingSlots.length; x++ )
@@ -268,7 +268,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 	{
 		if( this.craftingMode )
 		{
-			ItemStack out = this.getAndUpdateOutput();
+			final ItemStack out = this.getAndUpdateOutput();
 			if( out != null && out.stackSize > 0 )
 			{
 				return new ItemStack[] { out };
@@ -276,12 +276,12 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 		}
 		else
 		{
-			List<ItemStack> list = new ArrayList<ItemStack>( 3 );
+			final List<ItemStack> list = new ArrayList<ItemStack>( 3 );
 			boolean hasValue = false;
 
-			for( OptionalSlotFake outputSlot : this.outputSlots )
+			for( final OptionalSlotFake outputSlot : this.outputSlots )
 			{
-				ItemStack out = outputSlot.getStack();
+				final ItemStack out = outputSlot.getStack();
 				if( out != null && out.stackSize > 0 )
 				{
 					list.add( out );
@@ -298,7 +298,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 		return null;
 	}
 
-	private boolean isPattern( ItemStack output )
+	private boolean isPattern( final ItemStack output )
 	{
 		if( output == null )
 		{
@@ -313,9 +313,9 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 		return isPattern;
 	}
 
-	private NBTBase createItemTag( ItemStack i )
+	private NBTBase createItemTag( final ItemStack i )
 	{
-		NBTTagCompound c = new NBTTagCompound();
+		final NBTTagCompound c = new NBTTagCompound();
 
 		if( i != null )
 		{
@@ -326,7 +326,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 	}
 
 	@Override
-	public boolean isSlotEnabled( int idx )
+	public boolean isSlotEnabled( final int idx )
 	{
 		if( idx == 1 )
 		{
@@ -342,14 +342,14 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 		}
 	}
 
-	public void craftOrGetItem( PacketPatternSlot packetPatternSlot )
+	public void craftOrGetItem( final PacketPatternSlot packetPatternSlot )
 	{
 		if( packetPatternSlot.slotItem != null && this.cellInv != null )
 		{
-			IAEItemStack out = packetPatternSlot.slotItem.copy();
+			final IAEItemStack out = packetPatternSlot.slotItem.copy();
 
 			InventoryAdaptor inv = new AdaptorPlayerHand( this.getPlayerInv().player );
-			InventoryAdaptor playerInv = InventoryAdaptor.getAdaptor( this.getPlayerInv().player, ForgeDirection.UNKNOWN );
+			final InventoryAdaptor playerInv = InventoryAdaptor.getAdaptor( this.getPlayerInv().player, ForgeDirection.UNKNOWN );
 			if( packetPatternSlot.shift )
 			{
 				inv = playerInv;
@@ -360,8 +360,8 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 				return;
 			}
 
-			IAEItemStack extracted = Platform.poweredExtraction( this.powerSrc, this.cellInv, out, this.mySrc );
-			EntityPlayer p = this.getPlayerInv().player;
+			final IAEItemStack extracted = Platform.poweredExtraction( this.powerSrc, this.cellInv, out, this.mySrc );
+			final EntityPlayer p = this.getPlayerInv().player;
 
 			if( extracted != null )
 			{
@@ -374,44 +374,44 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 				return;
 			}
 
-			InventoryCrafting ic = new InventoryCrafting( new ContainerNull(), 3, 3 );
-			InventoryCrafting real = new InventoryCrafting( new ContainerNull(), 3, 3 );
+			final InventoryCrafting ic = new InventoryCrafting( new ContainerNull(), 3, 3 );
+			final InventoryCrafting real = new InventoryCrafting( new ContainerNull(), 3, 3 );
 			for( int x = 0; x < 9; x++ )
 			{
 				ic.setInventorySlotContents( x, packetPatternSlot.pattern[x] == null ? null : packetPatternSlot.pattern[x].getItemStack() );
 			}
 
-			IRecipe r = Platform.findMatchingRecipe( ic, p.worldObj );
+			final IRecipe r = Platform.findMatchingRecipe( ic, p.worldObj );
 
 			if( r == null )
 			{
 				return;
 			}
 
-			IMEMonitor<IAEItemStack> storage = this.ct.getItemInventory();
-			IItemList<IAEItemStack> all = storage.getStorageList();
+			final IMEMonitor<IAEItemStack> storage = this.ct.getItemInventory();
+			final IItemList<IAEItemStack> all = storage.getStorageList();
 
-			ItemStack is = r.getCraftingResult( ic );
+			final ItemStack is = r.getCraftingResult( ic );
 
 			for( int x = 0; x < ic.getSizeInventory(); x++ )
 			{
 				if( ic.getStackInSlot( x ) != null )
 				{
-					ItemStack pulled = Platform.extractItemsByRecipe( this.powerSrc, this.mySrc, storage, p.worldObj, r, is, ic, ic.getStackInSlot( x ), x, all, Actionable.MODULATE, ItemViewCell.createFilter( this.getViewCells() ) );
+					final ItemStack pulled = Platform.extractItemsByRecipe( this.powerSrc, this.mySrc, storage, p.worldObj, r, is, ic, ic.getStackInSlot( x ), x, all, Actionable.MODULATE, ItemViewCell.createFilter( this.getViewCells() ) );
 					real.setInventorySlotContents( x, pulled );
 				}
 			}
 
-			IRecipe rr = Platform.findMatchingRecipe( real, p.worldObj );
+			final IRecipe rr = Platform.findMatchingRecipe( real, p.worldObj );
 
 			if( rr == r && Platform.isSameItemPrecise( rr.getCraftingResult( real ), is ) )
 			{
-				SlotCrafting sc = new SlotCrafting( p, real, this.cOut, 0, 0, 0 );
+				final SlotCrafting sc = new SlotCrafting( p, real, this.cOut, 0, 0, 0 );
 				sc.onPickupFromSlot( p, is );
 
 				for( int x = 0; x < real.getSizeInventory(); x++ )
 				{
-					ItemStack failed = playerInv.addItems( real.getStackInSlot( x ) );
+					final ItemStack failed = playerInv.addItems( real.getStackInSlot( x ) );
 					if( failed != null )
 					{
 						p.dropPlayerItemWithRandomChoice( failed, false );
@@ -429,7 +429,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 			{
 				for( int x = 0; x < real.getSizeInventory(); x++ )
 				{
-					ItemStack failed = real.getStackInSlot( x );
+					final ItemStack failed = real.getStackInSlot( x );
 					if( failed != null )
 					{
 						this.cellInv.injectItems( AEItemStack.create( failed ), Actionable.MODULATE, new MachineSource( this.ct ) );
@@ -454,7 +454,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 	}
 
 	@Override
-	public void onUpdate( String field, Object oldValue, Object newValue )
+	public void onUpdate( final String field, final Object oldValue, final Object newValue )
 	{
 		super.onUpdate( field, oldValue, newValue );
 
@@ -466,19 +466,19 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 	}
 
 	@Override
-	public void onSlotChange( Slot s )
+	public void onSlotChange( final Slot s )
 	{
 		if( s == this.patternSlotOUT && Platform.isServer() )
 		{
-			for( Object crafter : this.crafters )
+			for( final Object crafter : this.crafters )
 			{
-				ICrafting icrafting = (ICrafting) crafter;
+				final ICrafting icrafting = (ICrafting) crafter;
 
-				for( Object g : this.inventorySlots )
+				for( final Object g : this.inventorySlots )
 				{
 					if( g instanceof OptionalSlotFake || g instanceof SlotFakeCraftingMatrix )
 					{
-						Slot sri = (Slot) g;
+						final Slot sri = (Slot) g;
 						icrafting.sendSlotContents( this, sri.slotNumber, sri.getStack() );
 					}
 				}
@@ -490,12 +490,12 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 
 	public void clear()
 	{
-		for( Slot s : this.craftingSlots )
+		for( final Slot s : this.craftingSlots )
 		{
 			s.putStack( null );
 		}
 
-		for( Slot s : this.outputSlots )
+		for( final Slot s : this.outputSlots )
 		{
 			s.putStack( null );
 		}
@@ -505,7 +505,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 	}
 
 	@Override
-	public IInventory getInventoryByName( String name )
+	public IInventory getInventoryByName( final String name )
 	{
 		if( name.equals( "player" ) )
 		{

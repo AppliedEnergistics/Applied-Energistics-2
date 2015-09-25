@@ -40,7 +40,7 @@ public enum PartRegistry
 	private final Class<? extends AEBaseBlock> blk;
 	private final Class<? extends TMultiPart> part;
 
-	PartRegistry( String name, Class<? extends AEBaseBlock> blk, Class<? extends TMultiPart> part )
+	PartRegistry( final String name, final Class<? extends AEBaseBlock> blk, final Class<? extends TMultiPart> part )
 	{
 		this.name = name;
 		this.blk = blk;
@@ -48,9 +48,9 @@ public enum PartRegistry
 	}
 
 	@Nullable
-	public static TMultiPart getPartByBlock( Block block, int meta )
+	public static TMultiPart getPartByBlock( final Block block, final int meta )
 	{
-		for( PartRegistry pr : values() )
+		for( final PartRegistry pr : values() )
 		{
 			if( pr.blk.isInstance( block ) )
 			{
@@ -60,7 +60,7 @@ public enum PartRegistry
 		return null;
 	}
 
-	public TMultiPart construct( int meta )
+	public TMultiPart construct( final int meta )
 	{
 		try
 		{
@@ -73,7 +73,7 @@ public enum PartRegistry
 				return this.part.getConstructor( int.class ).newInstance( meta );
 			}
 		}
-		catch( Throwable t )
+		catch( final Throwable t )
 		{
 			throw new IllegalStateException( t );
 		}

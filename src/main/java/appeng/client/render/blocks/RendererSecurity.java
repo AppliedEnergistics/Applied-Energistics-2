@@ -45,7 +45,7 @@ public class RendererSecurity extends BaseBlockRender<BlockSecurity, TileSecurit
 	}
 
 	@Override
-	public void renderInventory( BlockSecurity block, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj )
+	public void renderInventory( final BlockSecurity block, final ItemStack is, final RenderBlocks renderer, final ItemRenderType type, final Object[] obj )
 	{
 		renderer.overrideBlockTexture = ExtraBlockTextures.getMissing();
 		this.renderInvBlock( EnumSet.of( ForgeDirection.SOUTH ), block, is, Tessellator.instance, 0x000000, renderer );
@@ -58,16 +58,16 @@ public class RendererSecurity extends BaseBlockRender<BlockSecurity, TileSecurit
 	}
 
 	@Override
-	public boolean renderInWorld( BlockSecurity imb, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
+	public boolean renderInWorld( final BlockSecurity imb, final IBlockAccess world, final int x, final int y, final int z, final RenderBlocks renderer )
 	{
-		TileSecurity sp = imb.getTileEntity( world, x, y, z );
+		final TileSecurity sp = imb.getTileEntity( world, x, y, z );
 		renderer.setRenderBounds( 0, 0, 0, 1, 1, 1 );
 
-		ForgeDirection up = sp.getUp();
+		final ForgeDirection up = sp.getUp();
 
 		this.preRenderInWorld( imb, world, x, y, z, renderer );
 
-		boolean result = renderer.renderStandardBlock( imb, x, y, z );
+		final boolean result = renderer.renderStandardBlock( imb, x, y, z );
 
 		int b = world.getLightBrightnessForSkyBlocks( x + up.offsetX, y + up.offsetY, z + up.offsetZ, 0 );
 		if( sp.isActive() )

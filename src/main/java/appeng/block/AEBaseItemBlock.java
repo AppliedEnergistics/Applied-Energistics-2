@@ -49,7 +49,7 @@ public class AEBaseItemBlock extends ItemBlock
 
 	private final AEBaseBlock blockType;
 
-	public AEBaseItemBlock( Block id )
+	public AEBaseItemBlock( final Block id )
 	{
 		super( id );
 		this.blockType = (AEBaseBlock) id;
@@ -62,7 +62,7 @@ public class AEBaseItemBlock extends ItemBlock
 	}
 
 	@Override
-	public int getMetadata( int dmg )
+	public int getMetadata( final int dmg )
 	{
 		if( this.hasSubtypes )
 		{
@@ -74,31 +74,31 @@ public class AEBaseItemBlock extends ItemBlock
 	@Override
 	@SideOnly( Side.CLIENT )
 	@SuppressWarnings( "unchecked" )
-	public final void addInformation( ItemStack itemStack, EntityPlayer player, List toolTip, boolean advancedTooltips )
+	public final void addInformation( final ItemStack itemStack, final EntityPlayer player, final List toolTip, final boolean advancedTooltips )
 	{
 		this.addCheckedInformation( itemStack, player, toolTip, advancedTooltips );
 	}
 
 	@SideOnly( Side.CLIENT )
-	public void addCheckedInformation( ItemStack itemStack, EntityPlayer player, List<String> toolTip, boolean advancedToolTips )
+	public void addCheckedInformation( final ItemStack itemStack, final EntityPlayer player, final List<String> toolTip, final boolean advancedToolTips )
 	{
 		this.blockType.addInformation( itemStack, player, toolTip, advancedToolTips );
 	}
 
 	@Override
-	public boolean isBookEnchantable( ItemStack itemstack1, ItemStack itemstack2 )
+	public boolean isBookEnchantable( final ItemStack itemstack1, final ItemStack itemstack2 )
 	{
 		return false;
 	}
 
 	@Override
-	public String getUnlocalizedName( ItemStack is )
+	public String getUnlocalizedName( final ItemStack is )
 	{
 		return this.blockType.getUnlocalizedName( is );
 	}
 
 	@Override
-	public boolean placeBlockAt( ItemStack stack, EntityPlayer player, World w, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int metadata )
+	public boolean placeBlockAt( final ItemStack stack, final EntityPlayer player, final World w, final int x, final int y, final int z, final int side, final float hitX, final float hitY, final float hitZ, final int metadata )
 	{
 		ForgeDirection up = ForgeDirection.UNKNOWN;
 		ForgeDirection forward = ForgeDirection.UNKNOWN;
@@ -133,7 +133,7 @@ public class AEBaseItemBlock extends ItemBlock
 			{
 				up = ForgeDirection.UP;
 
-				byte rotation = (byte) ( MathHelper.floor_double( ( player.rotationYaw * 4F ) / 360F + 2.5D ) & 3 );
+				final byte rotation = (byte) ( MathHelper.floor_double( ( player.rotationYaw * 4F ) / 360F + 2.5D ) & 3 );
 
 				switch( rotation )
 				{
@@ -186,7 +186,7 @@ public class AEBaseItemBlock extends ItemBlock
 		{
 			if( this.blockType instanceof AEBaseTileBlock && !( this.blockType instanceof BlockLightDetector ) )
 			{
-				AEBaseTile tile = ( (AEBaseTileBlock) this.blockType ).getTileEntity( w, x, y, z );
+				final AEBaseTile tile = ( (AEBaseTileBlock) this.blockType ).getTileEntity( w, x, y, z );
 				ori = tile;
 
 				if( tile == null )

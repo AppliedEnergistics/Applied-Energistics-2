@@ -39,7 +39,7 @@ public class ItemSlot
 		return this.itemStack == null ? ( this.aeItemStack == null ? null : ( this.itemStack = this.aeItemStack.getItemStack() ) ) : this.itemStack;
 	}
 
-	public void setItemStack( ItemStack is )
+	public void setItemStack( final ItemStack is )
 	{
 		this.aeItemStack = null;
 		this.itemStack = is;
@@ -50,7 +50,7 @@ public class ItemSlot
 		return this.aeItemStack == null ? ( this.itemStack == null ? null : ( this.aeItemStack = AEItemStack.create( this.itemStack ) ) ) : this.aeItemStack;
 	}
 
-	public void setAEItemStack( IAEItemStack is )
+	public void setAEItemStack( final IAEItemStack is )
 	{
 		this.aeItemStack = is;
 		this.itemStack = null;

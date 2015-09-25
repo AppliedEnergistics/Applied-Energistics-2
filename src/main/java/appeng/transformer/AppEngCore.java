@@ -57,7 +57,7 @@ public final class AppEngCore extends DummyModContainer implements IFMLLoadingPl
 	}
 
 	@EventHandler
-	public void load( FMLInitializationEvent event )
+	public void load( final FMLInitializationEvent event )
 	{
 	}
 
@@ -81,7 +81,7 @@ public final class AppEngCore extends DummyModContainer implements IFMLLoadingPl
 	}
 
 	@Override
-	public void injectData( Map<String, Object> data )
+	public void injectData( final Map<String, Object> data )
 	{
 
 	}
@@ -117,7 +117,7 @@ public final class AppEngCore extends DummyModContainer implements IFMLLoadingPl
 	}
 
 	@Override
-	public boolean registerBus( EventBus bus, LoadController controller )
+	public boolean registerBus( final EventBus bus, final LoadController controller )
 	{
 		return true;
 	}

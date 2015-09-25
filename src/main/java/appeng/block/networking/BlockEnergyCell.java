@@ -61,7 +61,7 @@ public class BlockEnergyCell extends AEBaseTileBlock
 	}
 
 	@Override
-	public IIcon getIcon( int direction, int metadata )
+	public IIcon getIcon( final int direction, final int metadata )
 	{
 		switch( metadata )
 		{
@@ -87,12 +87,12 @@ public class BlockEnergyCell extends AEBaseTileBlock
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void getCheckedSubBlocks( Item item, CreativeTabs tabs, List<ItemStack> itemStacks )
+	public void getCheckedSubBlocks( final Item item, final CreativeTabs tabs, final List<ItemStack> itemStacks )
 	{
 		super.getCheckedSubBlocks( item, tabs, itemStacks );
 
-		ItemStack charged = new ItemStack( this, 1 );
-		NBTTagCompound tag = Platform.openNbtData( charged );
+		final ItemStack charged = new ItemStack( this, 1 );
+		final NBTTagCompound tag = Platform.openNbtData( charged );
 		tag.setDouble( "internalCurrentPower", this.getMaxPower() );
 		tag.setDouble( "internalMaxPower", this.getMaxPower() );
 

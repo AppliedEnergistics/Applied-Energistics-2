@@ -30,17 +30,17 @@ public class ControllerChannelUpdater implements IGridConnectionVisitor
 {
 
 	@Override
-	public boolean visitNode( IGridNode n )
+	public boolean visitNode( final IGridNode n )
 	{
-		GridNode gn = (GridNode) n;
+		final GridNode gn = (GridNode) n;
 		gn.finalizeChannels();
 		return true;
 	}
 
 	@Override
-	public void visitConnection( IGridConnection gcc )
+	public void visitConnection( final IGridConnection gcc )
 	{
-		GridConnection gc = (GridConnection) gcc;
+		final GridConnection gc = (GridConnection) gcc;
 		gc.finalizeChannels();
 	}
 }

@@ -96,28 +96,28 @@ public abstract class AEBaseGui extends GuiContainer
 	boolean useNEI = false;
 	private boolean subGui;
 
-	public AEBaseGui( Container container )
+	public AEBaseGui( final Container container )
 	{
 		super( container );
 		this.subGui = switchingGuis;
 		switchingGuis = false;
 	}
 
-	protected static String join( Collection<String> toolTip, String delimiter )
+	protected static String join( final Collection<String> toolTip, final String delimiter )
 	{
 		final Joiner joiner = Joiner.on( delimiter );
 
 		return joiner.join( toolTip );
 	}
 
-	protected int getQty( GuiButton btn )
+	protected int getQty( final GuiButton btn )
 	{
 		try
 		{
-			DecimalFormat df = new DecimalFormat( "+#;-#" );
+			final DecimalFormat df = new DecimalFormat( "+#;-#" );
 			return df.parse( btn.displayString ).intValue();
 		}
-		catch( ParseException e )
+		catch( final ParseException e )
 		{
 			return 0;
 		}
@@ -134,7 +134,7 @@ public abstract class AEBaseGui extends GuiContainer
 		super.initGui();
 
 		final List<Slot> slots = this.getInventorySlots();
-		Iterator<Slot> i = slots.iterator();
+		final Iterator<Slot> i = slots.iterator();
 		while( i.hasNext() )
 		{
 			if( i.next() instanceof SlotME )
@@ -143,7 +143,7 @@ public abstract class AEBaseGui extends GuiContainer
 			}
 		}
 
-		for( InternalSlotME me : this.meSlots )
+		for( final InternalSlotME me : this.meSlots )
 		{
 			slots.add( new SlotME( me ) );
 		}
@@ -156,22 +156,22 @@ public abstract class AEBaseGui extends GuiContainer
 	}
 
 	@Override
-	public void drawScreen( int mouseX, int mouseY, float btn )
+	public void drawScreen( final int mouseX, final int mouseY, final float btn )
 	{
 		super.drawScreen( mouseX, mouseY, btn );
 
-		boolean hasClicked = Mouse.isButtonDown( 0 );
+		final boolean hasClicked = Mouse.isButtonDown( 0 );
 		if( hasClicked && this.myScrollBar != null )
 		{
 			this.myScrollBar.click( this, mouseX - this.guiLeft, mouseY - this.guiTop );
 		}
 
-		for( Object c : this.buttonList )
+		for( final Object c : this.buttonList )
 		{
 			if( c instanceof ITooltip )
 			{
-				ITooltip tooltip = (ITooltip) c;
-				int x = tooltip.xPos(); // ((GuiImgButton) c).xPosition;
+				final ITooltip tooltip = (ITooltip) c;
+				final int x = tooltip.xPos(); // ((GuiImgButton) c).xPosition;
 				int y = tooltip.yPos(); // ((GuiImgButton) c).yPosition;
 
 				if( x < mouseX && x + tooltip.getWidth() > mouseX && tooltip.isVisible() )
@@ -183,7 +183,7 @@ public abstract class AEBaseGui extends GuiContainer
 							y = 15;
 						}
 
-						String msg = tooltip.getMessage();
+						final String msg = tooltip.getMessage();
 						if( msg != null )
 						{
 							this.drawTooltip( x + 11, y + 4, 0, msg );
@@ -194,14 +194,14 @@ public abstract class AEBaseGui extends GuiContainer
 		}
 	}
 
-	public void drawTooltip( int par2, int par3, int forceWidth, String message )
+	public void drawTooltip( final int par2, final int par3, final int forceWidth, final String message )
 	{
 		GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS );
 		GL11.glDisable( GL12.GL_RESCALE_NORMAL );
 		RenderHelper.disableStandardItemLighting();
 		GL11.glDisable( GL11.GL_LIGHTING );
 		GL11.glDisable( GL11.GL_DEPTH_TEST );
-		String[] var4 = message.split( "\n" );
+		final String[] var4 = message.split( "\n" );
 
 		if( var4.length > 0 )
 		{
@@ -240,14 +240,14 @@ public abstract class AEBaseGui extends GuiContainer
 
 			this.zLevel = 300.0F;
 			itemRender.zLevel = 300.0F;
-			int var10 = -267386864;
+			final int var10 = -267386864;
 			this.drawGradientRect( var6 - 3, var7 - 4, var6 + var5 + 3, var7 - 3, var10, var10 );
 			this.drawGradientRect( var6 - 3, var7 + var9 + 3, var6 + var5 + 3, var7 + var9 + 4, var10, var10 );
 			this.drawGradientRect( var6 - 3, var7 - 3, var6 + var5 + 3, var7 + var9 + 3, var10, var10 );
 			this.drawGradientRect( var6 - 4, var7 - 3, var6 - 3, var7 + var9 + 3, var10, var10 );
 			this.drawGradientRect( var6 + var5 + 3, var7 - 3, var6 + var5 + 4, var7 + var9 + 3, var10, var10 );
-			int var11 = 1347420415;
-			int var12 = ( var11 & 16711422 ) >> 1 | var11 & -16777216;
+			final int var11 = 1347420415;
+			final int var12 = ( var11 & 16711422 ) >> 1 | var11 & -16777216;
 			this.drawGradientRect( var6 - 3, var7 - 3 + 1, var6 - 3 + 1, var7 + var9 + 3 - 1, var11, var12 );
 			this.drawGradientRect( var6 + var5 + 2, var7 - 3 + 1, var6 + var5 + 3, var7 + var9 + 3 - 1, var11, var12 );
 			this.drawGradientRect( var6 - 3, var7 - 3, var6 + var5 + 3, var7 - 3 + 1, var11, var11 );
@@ -283,10 +283,10 @@ public abstract class AEBaseGui extends GuiContainer
 	}
 
 	@Override
-	protected final void drawGuiContainerForegroundLayer( int x, int y )
+	protected final void drawGuiContainerForegroundLayer( final int x, final int y )
 	{
-		int ox = this.guiLeft; // (width - xSize) / 2;
-		int oy = this.guiTop; // (height - ySize) / 2;
+		final int ox = this.guiLeft; // (width - xSize) / 2;
+		final int oy = this.guiTop; // (height - ySize) / 2;
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
 
 		if( this.myScrollBar != null )
@@ -300,19 +300,19 @@ public abstract class AEBaseGui extends GuiContainer
 	public abstract void drawFG( int offsetX, int offsetY, int mouseX, int mouseY );
 
 	@Override
-	protected final void drawGuiContainerBackgroundLayer( float f, int x, int y )
+	protected final void drawGuiContainerBackgroundLayer( final float f, final int x, final int y )
 	{
-		int ox = this.guiLeft; // (width - xSize) / 2;
-		int oy = this.guiTop; // (height - ySize) / 2;
+		final int ox = this.guiLeft; // (width - xSize) / 2;
+		final int oy = this.guiTop; // (height - ySize) / 2;
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
 		this.drawBG( ox, oy, x, y );
 
 		final List<Slot> slots = this.getInventorySlots();
-		for( Slot slot : slots )
+		for( final Slot slot : slots )
 		{
 			if( slot instanceof OptionalSlotFake )
 			{
-				OptionalSlotFake fs = (OptionalSlotFake) slot;
+				final OptionalSlotFake fs = (OptionalSlotFake) slot;
 				if( fs.renderDisabled() )
 				{
 					if( fs.isEnabled() )
@@ -334,15 +334,15 @@ public abstract class AEBaseGui extends GuiContainer
 	}
 
 	@Override
-	protected void mouseClicked( int xCoord, int yCoord, int btn )
+	protected void mouseClicked( final int xCoord, final int yCoord, final int btn )
 	{
 		this.drag_click.clear();
 
 		if( btn == 1 )
 		{
-			for( Object o : this.buttonList )
+			for( final Object o : this.buttonList )
 			{
-				GuiButton guibutton = (GuiButton) o;
+				final GuiButton guibutton = (GuiButton) o;
 				if( guibutton.mousePressed( this.mc, xCoord, yCoord ) )
 				{
 					super.mouseClicked( xCoord, yCoord, 0 );
@@ -355,19 +355,19 @@ public abstract class AEBaseGui extends GuiContainer
 	}
 
 	@Override
-	protected void mouseClickMove( int x, int y, int c, long d )
+	protected void mouseClickMove( final int x, final int y, final int c, final long d )
 	{
-		Slot slot = this.getSlot( x, y );
-		ItemStack itemstack = this.mc.thePlayer.inventory.getItemStack();
+		final Slot slot = this.getSlot( x, y );
+		final ItemStack itemstack = this.mc.thePlayer.inventory.getItemStack();
 
 		if( slot instanceof SlotFake && itemstack != null )
 		{
 			this.drag_click.add( slot );
 			if( this.drag_click.size() > 1 )
 			{
-				for( Slot dr : this.drag_click )
+				for( final Slot dr : this.drag_click )
 				{
-					PacketInventoryAction p = new PacketInventoryAction( c == 0 ? InventoryAction.PICKUP_OR_SET_DOWN : InventoryAction.PLACE_SINGLE, dr.slotNumber, 0 );
+					final PacketInventoryAction p = new PacketInventoryAction( c == 0 ? InventoryAction.PICKUP_OR_SET_DOWN : InventoryAction.PLACE_SINGLE, dr.slotNumber, 0 );
 					NetworkHandler.instance.sendToServer( p );
 				}
 			}
@@ -379,9 +379,9 @@ public abstract class AEBaseGui extends GuiContainer
 	}
 
 	@Override
-	protected void handleMouseClick( Slot slot, int slotIdx, int ctrlDown, int key )
+	protected void handleMouseClick( final Slot slot, final int slotIdx, final int ctrlDown, final int key )
 	{
-		EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+		final EntityPlayer player = Minecraft.getMinecraft().thePlayer;
 
 		if( slot instanceof SlotFake )
 		{
@@ -392,7 +392,7 @@ public abstract class AEBaseGui extends GuiContainer
 				return;
 			}
 
-			PacketInventoryAction p = new PacketInventoryAction( action, slotIdx, 0 );
+			final PacketInventoryAction p = new PacketInventoryAction( action, slotIdx, 0 );
 			NetworkHandler.instance.sendToServer( p );
 
 			return;
@@ -409,7 +409,7 @@ public abstract class AEBaseGui extends GuiContainer
 			{
 				NetworkHandler.instance.sendToServer( ( (SlotPatternTerm) slot ).getRequest( key == 1 ) );
 			}
-			catch( IOException e )
+			catch( final IOException e )
 			{
 				AELog.error( e );
 			}
@@ -431,7 +431,7 @@ public abstract class AEBaseGui extends GuiContainer
 				action = ctrlDown == 1 ? InventoryAction.CRAFT_STACK : InventoryAction.CRAFT_ITEM;
 			}
 
-			PacketInventoryAction p = new PacketInventoryAction( action, slotIdx, 0 );
+			final PacketInventoryAction p = new PacketInventoryAction( action, slotIdx, 0 );
 			NetworkHandler.instance.sendToServer( p );
 
 			return;
@@ -455,7 +455,7 @@ public abstract class AEBaseGui extends GuiContainer
 				}
 
 				( (AEBaseContainer) this.inventorySlots ).setTargetStack( stack );
-				PacketInventoryAction p = new PacketInventoryAction( InventoryAction.MOVE_REGION, slotNum, 0 );
+				final PacketInventoryAction p = new PacketInventoryAction( InventoryAction.MOVE_REGION, slotNum, 0 );
 				NetworkHandler.instance.sendToServer( p );
 				return;
 			}
@@ -490,7 +490,7 @@ public abstract class AEBaseGui extends GuiContainer
 
 			if( action != null )
 			{
-				PacketInventoryAction p = new PacketInventoryAction( action, slot.getSlotIndex(), ( (SlotDisconnected) slot ).mySlot.id );
+				final PacketInventoryAction p = new PacketInventoryAction( action, slot.getSlotIndex(), ( (SlotDisconnected) slot ).mySlot.id );
 				NetworkHandler.instance.sendToServer( p );
 			}
 
@@ -528,7 +528,7 @@ public abstract class AEBaseGui extends GuiContainer
 					}
 					else if( player.capabilities.isCreativeMode )
 					{
-						IAEItemStack slotItem = ( (SlotME) slot ).getAEStack();
+						final IAEItemStack slotItem = ( (SlotME) slot ).getAEStack();
 						if( slotItem != null )
 						{
 							action = InventoryAction.CREATIVE_DUPLICATE;
@@ -544,7 +544,7 @@ public abstract class AEBaseGui extends GuiContainer
 			if( action != null )
 			{
 				( (AEBaseContainer) this.inventorySlots ).setTargetStack( stack );
-				PacketInventoryAction p = new PacketInventoryAction( action, this.getInventorySlots().size(), 0 );
+				final PacketInventoryAction p = new PacketInventoryAction( action, this.getInventorySlots().size(), 0 );
 				NetworkHandler.instance.sendToServer( p );
 			}
 
@@ -574,7 +574,7 @@ public abstract class AEBaseGui extends GuiContainer
 				// a replica of the weird broken vanilla feature.
 
 				final List<Slot> slots = this.getInventorySlots();
-				for( Slot inventorySlot : slots )
+				for( final Slot inventorySlot : slots )
 				{
 					if( inventorySlot != null && inventorySlot.canTakeStack( this.mc.thePlayer ) && inventorySlot.getHasStack() && inventorySlot.inventory == slot.inventory && Container.func_94527_a( inventorySlot, this.dbl_whichItem, true ) )
 					{
@@ -590,15 +590,15 @@ public abstract class AEBaseGui extends GuiContainer
 	}
 
 	@Override
-	protected boolean checkHotbarKeys( int keyCode )
+	protected boolean checkHotbarKeys( final int keyCode )
 	{
-		Slot theSlot;
+		final Slot theSlot;
 
 		try
 		{
 			theSlot = ObfuscationReflectionHelper.getPrivateValue( GuiContainer.class, this, "theSlot", "field_147006_u", "f" );
 		}
-		catch( Throwable t )
+		catch( final Throwable t )
 		{
 			return false;
 		}
@@ -610,7 +610,7 @@ public abstract class AEBaseGui extends GuiContainer
 				if( keyCode == this.mc.gameSettings.keyBindsHotbar[j].getKeyCode() )
 				{
 					final List<Slot> slots = this.getInventorySlots();
-					for( Slot s : slots )
+					for( final Slot s : slots )
 					{
 						if( s.getSlotIndex() == j && s.inventory == ( (AEBaseContainer) this.inventorySlots ).getPlayerInv() )
 						{
@@ -628,7 +628,7 @@ public abstract class AEBaseGui extends GuiContainer
 					}
 					else
 					{
-						for( Slot s : slots )
+						for( final Slot s : slots )
 						{
 							if( s.getSlotIndex() == j && s.inventory == ( (AEBaseContainer) this.inventorySlots ).getPlayerInv() )
 							{
@@ -651,10 +651,10 @@ public abstract class AEBaseGui extends GuiContainer
 		this.subGui = true; // in case the gui is reopened later ( i'm looking at you NEI )
 	}
 
-	protected Slot getSlot( int mouseX, int mouseY )
+	protected Slot getSlot( final int mouseX, final int mouseY )
 	{
 		final List<Slot> slots = this.getInventorySlots();
-		for( Slot slot : slots )
+		for( final Slot slot : slots )
 		{
 			// isPointInRegion
 			if( this.func_146978_c( slot.xDisplayPosition, slot.yDisplayPosition, 16, 16, mouseX, mouseY ) )
@@ -673,11 +673,11 @@ public abstract class AEBaseGui extends GuiContainer
 	{
 		super.handleMouseInput();
 
-		int i = Mouse.getEventDWheel();
+		final int i = Mouse.getEventDWheel();
 		if( i != 0 && isShiftKeyDown() )
 		{
-			int x = Mouse.getEventX() * this.width / this.mc.displayWidth;
-			int y = this.height - Mouse.getEventY() * this.height / this.mc.displayHeight - 1;
+			final int x = Mouse.getEventX() * this.width / this.mc.displayWidth;
+			final int y = this.height - Mouse.getEventY() * this.height / this.mc.displayHeight - 1;
 			this.mouseWheelEvent( x, y, i / Math.abs( i ) );
 		}
 		else if( i != 0 && this.myScrollBar != null )
@@ -686,21 +686,21 @@ public abstract class AEBaseGui extends GuiContainer
 		}
 	}
 
-	protected void mouseWheelEvent( int x, int y, int wheel )
+	protected void mouseWheelEvent( final int x, final int y, final int wheel )
 	{
-		Slot slot = this.getSlot( x, y );
+		final Slot slot = this.getSlot( x, y );
 		if( slot instanceof SlotME )
 		{
-			IAEItemStack item = ( (SlotME) slot ).getAEStack();
+			final IAEItemStack item = ( (SlotME) slot ).getAEStack();
 			if( item != null )
 			{
 				( (AEBaseContainer) this.inventorySlots ).setTargetStack( item );
-				InventoryAction direction = wheel > 0 ? InventoryAction.ROLL_DOWN : InventoryAction.ROLL_UP;
-				int times = Math.abs( wheel );
+				final InventoryAction direction = wheel > 0 ? InventoryAction.ROLL_DOWN : InventoryAction.ROLL_UP;
+				final int times = Math.abs( wheel );
 				final int inventorySize = this.getInventorySlots().size();
 				for( int h = 0; h < times; h++ )
 				{
-					PacketInventoryAction p = new PacketInventoryAction( direction, inventorySize, 0 );
+					final PacketInventoryAction p = new PacketInventoryAction( direction, inventorySize, 0 );
 					NetworkHandler.instance.sendToServer( p );
 				}
 			}
@@ -712,13 +712,13 @@ public abstract class AEBaseGui extends GuiContainer
 		return true;
 	}
 
-	public void bindTexture( String base, String file )
+	public void bindTexture( final String base, final String file )
 	{
-		ResourceLocation loc = new ResourceLocation( base, "textures/" + file );
+		final ResourceLocation loc = new ResourceLocation( base, "textures/" + file );
 		this.mc.getTextureManager().bindTexture( loc );
 	}
 
-	protected void drawItem( int x, int y, ItemStack is )
+	protected void drawItem( final int x, final int y, final ItemStack is )
 	{
 		this.zLevel = 100.0F;
 		itemRender.zLevel = 100.0F;
@@ -735,7 +735,7 @@ public abstract class AEBaseGui extends GuiContainer
 		this.zLevel = 0.0F;
 	}
 
-	protected String getGuiDisplayName( String in )
+	protected String getGuiDisplayName( final String in )
 	{
 		return this.hasCustomInventoryName() ? this.getInventoryName() : in;
 	}
@@ -754,16 +754,16 @@ public abstract class AEBaseGui extends GuiContainer
 		return ( (AEBaseContainer) this.inventorySlots ).customName;
 	}
 
-	public void a( Slot s )
+	public void a( final Slot s )
 	{
 		this.drawSlot( s );
 	}
 
-	public void drawSlot( Slot s )
+	public void drawSlot( final Slot s )
 	{
 		if( s instanceof SlotME )
 		{
-			RenderItem pIR = this.setItemRender( this.aeRenderItem );
+			final RenderItem pIR = this.setItemRender( this.aeRenderItem );
 			try
 			{
 				this.zLevel = 100.0F;
@@ -783,7 +783,7 @@ public abstract class AEBaseGui extends GuiContainer
 
 				this.safeDrawSlot( s );
 			}
-			catch( Exception err )
+			catch( final Exception err )
 			{
 				AELog.warning( "[AppEng] AE prevented crash while drawing slot: " + err.toString() );
 			}
@@ -794,45 +794,45 @@ public abstract class AEBaseGui extends GuiContainer
 		{
 			try
 			{
-				ItemStack is = s.getStack();
+				final ItemStack is = s.getStack();
 				if( s instanceof AppEngSlot && ( ( (AppEngSlot) s ).renderIconWithItem() || is == null ) && ( ( (AppEngSlot) s ).shouldDisplay() ) )
 				{
-					AppEngSlot aes = (AppEngSlot) s;
+					final AppEngSlot aes = (AppEngSlot) s;
 					if( aes.getIcon() >= 0 )
 					{
 						this.bindTexture( "guis/states.png" );
 
 						GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS );
-						Tessellator tessellator = Tessellator.instance;
+						final Tessellator tessellator = Tessellator.instance;
 						try
 						{
-							int uv_y = (int) Math.floor( aes.getIcon() / 16 );
-							int uv_x = aes.getIcon() - uv_y * 16;
+							final int uv_y = (int) Math.floor( aes.getIcon() / 16 );
+							final int uv_x = aes.getIcon() - uv_y * 16;
 
 							GL11.glEnable( GL11.GL_BLEND );
 							GL11.glDisable( GL11.GL_LIGHTING );
 							GL11.glEnable( GL11.GL_TEXTURE_2D );
 							GL11.glBlendFunc( GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA );
 							GL11.glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
-							float par1 = aes.xDisplayPosition;
-							float par2 = aes.yDisplayPosition;
-							float par3 = uv_x * 16;
-							float par4 = uv_y * 16;
+							final float par1 = aes.xDisplayPosition;
+							final float par2 = aes.yDisplayPosition;
+							final float par3 = uv_x * 16;
+							final float par4 = uv_y * 16;
 
 							tessellator.startDrawingQuads();
 							tessellator.setColorRGBA_F( 1.0f, 1.0f, 1.0f, aes.getOpacityOfIcon() );
-							float f1 = 0.00390625F;
-							float f = 0.00390625F;
-							float par6 = 16;
+							final float f1 = 0.00390625F;
+							final float f = 0.00390625F;
+							final float par6 = 16;
 							tessellator.addVertexWithUV( par1 + 0, par2 + par6, this.zLevel, ( par3 + 0 ) * f, ( par4 + par6 ) * f1 );
-							float par5 = 16;
+							final float par5 = 16;
 							tessellator.addVertexWithUV( par1 + par5, par2 + par6, this.zLevel, ( par3 + par5 ) * f, ( par4 + par6 ) * f1 );
 							tessellator.addVertexWithUV( par1 + par5, par2 + 0, this.zLevel, ( par3 + par5 ) * f, ( par4 + 0 ) * f1 );
 							tessellator.addVertexWithUV( par1 + 0, par2 + 0, this.zLevel, ( par3 + 0 ) * f, ( par4 + 0 ) * f1 );
 							tessellator.setColorRGBA_F( 1.0f, 1.0f, 1.0f, 1.0f );
 							tessellator.draw();
 						}
-						catch( Exception err )
+						catch( final Exception err )
 						{
 						}
 						GL11.glPopAttrib();
@@ -850,7 +850,7 @@ public abstract class AEBaseGui extends GuiContainer
 							{
 								isValid = ( (SlotRestrictedInput) s ).isValid( is, this.mc.theWorld );
 							}
-							catch( Exception err )
+							catch( final Exception err )
 							{
 								AELog.error( err );
 							}
@@ -884,7 +884,7 @@ public abstract class AEBaseGui extends GuiContainer
 
 				return;
 			}
-			catch( Exception err )
+			catch( final Exception err )
 			{
 				AELog.warning( "[AppEng] AE prevented crash while drawing slot: " + err.toString() );
 			}
@@ -893,7 +893,7 @@ public abstract class AEBaseGui extends GuiContainer
 		this.safeDrawSlot( s );
 	}
 
-	private RenderItem setItemRender( RenderItem item )
+	private RenderItem setItemRender( final RenderItem item )
 	{
 		if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.NEI ) )
 		{
@@ -901,7 +901,7 @@ public abstract class AEBaseGui extends GuiContainer
 		}
 		else
 		{
-			RenderItem ri = itemRender;
+			final RenderItem ri = itemRender;
 			itemRender = item;
 			return ri;
 		}
@@ -912,24 +912,24 @@ public abstract class AEBaseGui extends GuiContainer
 		return true;
 	}
 
-	private void safeDrawSlot( Slot s )
+	private void safeDrawSlot( final Slot s )
 	{
 		try
 		{
 			GuiContainer.class.getDeclaredMethod( "func_146977_a_original", Slot.class ).invoke( this, s );
 		}
-		catch( Exception err )
+		catch( final Exception err )
 		{
 		}
 	}
 
-	public void bindTexture( String file )
+	public void bindTexture( final String file )
 	{
-		ResourceLocation loc = new ResourceLocation( "appliedenergistics2", "textures/" + file );
+		final ResourceLocation loc = new ResourceLocation( "appliedenergistics2", "textures/" + file );
 		this.mc.getTextureManager().bindTexture( loc );
 	}
 
-	public void func_146977_a( Slot s )
+	public void func_146977_a( final Slot s )
 	{
 		this.drawSlot( s );
 	}

@@ -28,7 +28,7 @@ public class PartPanel extends AbstractPartPanel
 {
 
 	@Reflected
-	public PartPanel( ItemStack is )
+	public PartPanel( final ItemStack is )
 	{
 		super( is );
 	}

@@ -39,13 +39,13 @@ public abstract class AEBaseInvTile extends AEBaseTile implements ISidedInventor
 {
 
 	@TileEvent( TileEventType.WORLD_NBT_READ )
-	public void readFromNBT_AEBaseInvTile( net.minecraft.nbt.NBTTagCompound data )
+	public void readFromNBT_AEBaseInvTile( final net.minecraft.nbt.NBTTagCompound data )
 	{
-		IInventory inv = this.getInternalInventory();
-		NBTTagCompound opt = data.getCompoundTag( "inv" );
+		final IInventory inv = this.getInternalInventory();
+		final NBTTagCompound opt = data.getCompoundTag( "inv" );
 		for( int x = 0; x < inv.getSizeInventory(); x++ )
 		{
-			NBTTagCompound item = opt.getCompoundTag( "item" + x );
+			final NBTTagCompound item = opt.getCompoundTag( "item" + x );
 			inv.setInventorySlotContents( x, ItemStack.loadItemStackFromNBT( item ) );
 		}
 	}
@@ -53,14 +53,14 @@ public abstract class AEBaseInvTile extends AEBaseTile implements ISidedInventor
 	public abstract IInventory getInternalInventory();
 
 	@TileEvent( TileEventType.WORLD_NBT_WRITE )
-	public void writeToNBT_AEBaseInvTile( net.minecraft.nbt.NBTTagCompound data )
+	public void writeToNBT_AEBaseInvTile( final net.minecraft.nbt.NBTTagCompound data )
 	{
-		IInventory inv = this.getInternalInventory();
-		NBTTagCompound opt = new NBTTagCompound();
+		final IInventory inv = this.getInternalInventory();
+		final NBTTagCompound opt = new NBTTagCompound();
 		for( int x = 0; x < inv.getSizeInventory(); x++ )
 		{
-			NBTTagCompound item = new NBTTagCompound();
-			ItemStack is = this.getStackInSlot( x );
+			final NBTTagCompound item = new NBTTagCompound();
+			final ItemStack is = this.getStackInSlot( x );
 			if( is != null )
 			{
 				is.writeToNBT( item );
@@ -77,25 +77,25 @@ public abstract class AEBaseInvTile extends AEBaseTile implements ISidedInventor
 	}
 
 	@Override
-	public ItemStack getStackInSlot( int i )
+	public ItemStack getStackInSlot( final int i )
 	{
 		return this.getInternalInventory().getStackInSlot( i );
 	}
 
 	@Override
-	public ItemStack decrStackSize( int i, int j )
+	public ItemStack decrStackSize( final int i, final int j )
 	{
 		return this.getInternalInventory().decrStackSize( i, j );
 	}
 
 	@Override
-	public ItemStack getStackInSlotOnClosing( int i )
+	public ItemStack getStackInSlotOnClosing( final int i )
 	{
 		return null;
 	}
 
 	@Override
-	public void setInventorySlotContents( int i, @Nullable ItemStack itemstack )
+	public void setInventorySlotContents( final int i, @Nullable final ItemStack itemstack )
 	{
 		this.getInternalInventory().setInventorySlotContents( i, itemstack );
 	}
@@ -125,7 +125,7 @@ public abstract class AEBaseInvTile extends AEBaseTile implements ISidedInventor
 	}
 
 	@Override
-	public boolean isUseableByPlayer( EntityPlayer p )
+	public boolean isUseableByPlayer( final EntityPlayer p )
 	{
 		final double squaredMCReach = 64.0D;
 
@@ -143,7 +143,7 @@ public abstract class AEBaseInvTile extends AEBaseTile implements ISidedInventor
 	}
 
 	@Override
-	public boolean isItemValidForSlot( int i, ItemStack itemstack )
+	public boolean isItemValidForSlot( final int i, final ItemStack itemstack )
 	{
 		return true;
 	}
@@ -152,25 +152,25 @@ public abstract class AEBaseInvTile extends AEBaseTile implements ISidedInventor
 	public abstract void onChangeInventory( IInventory inv, int slot, InvOperation mc, ItemStack removed, ItemStack added );
 
 	@Override
-	public final int[] getAccessibleSlotsFromSide( int side )
+	public final int[] getAccessibleSlotsFromSide( final int side )
 	{
-		Block blk = this.worldObj.getBlock( this.xCoord, this.yCoord, this.zCoord );
+		final Block blk = this.worldObj.getBlock( this.xCoord, this.yCoord, this.zCoord );
 		if( blk instanceof AEBaseBlock )
 		{
-			ForgeDirection mySide = ForgeDirection.getOrientation( side );
+			final ForgeDirection mySide = ForgeDirection.getOrientation( side );
 			return this.getAccessibleSlotsBySide( ( (AEBaseBlock) blk ).mapRotation( this, mySide ) );
 		}
 		return this.getAccessibleSlotsBySide( ForgeDirection.getOrientation( side ) );
 	}
 
 	@Override
-	public boolean canInsertItem( int slotIndex, ItemStack insertingItem, int side )
+	public boolean canInsertItem( final int slotIndex, final ItemStack insertingItem, final int side )
 	{
 		return this.isItemValidForSlot( slotIndex, insertingItem );
 	}
 
 	@Override
-	public boolean canExtractItem( int slotIndex, ItemStack extractedItem, int side )
+	public boolean canExtractItem( final int slotIndex, final ItemStack extractedItem, final int side )
 	{
 		return true;
 	}

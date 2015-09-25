@@ -45,9 +45,9 @@ public class BlockSpatialIOPort extends AEBaseTileBlock
 	}
 
 	@Override
-	public final void onNeighborBlockChange( World w, int x, int y, int z, Block junk )
+	public final void onNeighborBlockChange( final World w, final int x, final int y, final int z, final Block junk )
 	{
-		TileSpatialIOPort te = this.getTileEntity( w, x, y, z );
+		final TileSpatialIOPort te = this.getTileEntity( w, x, y, z );
 		if( te != null )
 		{
 			te.updateRedstoneState();
@@ -55,14 +55,14 @@ public class BlockSpatialIOPort extends AEBaseTileBlock
 	}
 
 	@Override
-	public boolean onActivated( World w, int x, int y, int z, EntityPlayer p, int side, float hitX, float hitY, float hitZ )
+	public boolean onActivated( final World w, final int x, final int y, final int z, final EntityPlayer p, final int side, final float hitX, final float hitY, final float hitZ )
 	{
 		if( p.isSneaking() )
 		{
 			return false;
 		}
 
-		TileSpatialIOPort tg = this.getTileEntity( w, x, y, z );
+		final TileSpatialIOPort tg = this.getTileEntity( w, x, y, z );
 		if( tg != null )
 		{
 			if( Platform.isServer() )

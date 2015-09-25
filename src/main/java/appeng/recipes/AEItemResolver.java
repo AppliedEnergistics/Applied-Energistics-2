@@ -42,7 +42,7 @@ public class AEItemResolver implements ISubItemResolver
 {
 
 	@Override
-	public Object resolveItemByName( String nameSpace, String itemName )
+	public Object resolveItemByName( final String nameSpace, final String itemName )
 	{
 
 		if( nameSpace.equals( AppEng.MOD_ID ) )
@@ -121,8 +121,8 @@ public class AEItemResolver implements ISubItemResolver
 
 			if( itemName.startsWith( "ItemMaterial." ) )
 			{
-				String materialName = itemName.substring( itemName.indexOf( '.' ) + 1 );
-				MaterialType mt = MaterialType.valueOf( materialName );
+				final String materialName = itemName.substring( itemName.indexOf( '.' ) + 1 );
+				final MaterialType mt = MaterialType.valueOf( materialName );
 				// itemName = itemName.substring( 0, itemName.indexOf( "." ) );
 				if( mt.itemInstance == ItemMultiMaterial.instance && mt.damageValue >= 0 && mt.isRegistered() )
 				{
@@ -132,10 +132,10 @@ public class AEItemResolver implements ISubItemResolver
 
 			if( itemName.startsWith( "ItemPart." ) )
 			{
-				String partName = itemName.substring( itemName.indexOf( '.' ) + 1 );
-				PartType pt = PartType.valueOf( partName );
+				final String partName = itemName.substring( itemName.indexOf( '.' ) + 1 );
+				final PartType pt = PartType.valueOf( partName );
 				// itemName = itemName.substring( 0, itemName.indexOf( "." ) );
-				int dVal = ItemMultiPart.instance.getDamageByType( pt );
+				final int dVal = ItemMultiPart.instance.getDamageByType( pt );
 				if( dVal >= 0 )
 				{
 					return new ResolverResult( "ItemMultiPart", dVal );
@@ -146,7 +146,7 @@ public class AEItemResolver implements ISubItemResolver
 		return null;
 	}
 
-	private Object paintBall( AEColoredItemDefinition partType, String substring, boolean lumen )
+	private Object paintBall( final AEColoredItemDefinition partType, final String substring, final boolean lumen )
 	{
 		AEColor col;
 
@@ -154,7 +154,7 @@ public class AEItemResolver implements ISubItemResolver
 		{
 			col = AEColor.valueOf( substring );
 		}
-		catch( Throwable t )
+		catch( final Throwable t )
 		{
 			col = AEColor.Transparent;
 		}
@@ -164,11 +164,11 @@ public class AEItemResolver implements ISubItemResolver
 			return null;
 		}
 
-		ItemStack is = partType.stack( col, 1 );
+		final ItemStack is = partType.stack( col, 1 );
 		return new ResolverResult( "ItemPaintBall", ( lumen ? 20 : 0 ) + is.getItemDamage() );
 	}
 
-	private Object cableItem( AEColoredItemDefinition partType, String substring )
+	private Object cableItem( final AEColoredItemDefinition partType, final String substring )
 	{
 		AEColor col;
 
@@ -176,12 +176,12 @@ public class AEItemResolver implements ISubItemResolver
 		{
 			col = AEColor.valueOf( substring );
 		}
-		catch( Throwable t )
+		catch( final Throwable t )
 		{
 			col = AEColor.Transparent;
 		}
 
-		ItemStack is = partType.stack( col, 1 );
+		final ItemStack is = partType.stack( col, 1 );
 		return new ResolverResult( "ItemMultiPart", is.getItemDamage() );
 	}
 }

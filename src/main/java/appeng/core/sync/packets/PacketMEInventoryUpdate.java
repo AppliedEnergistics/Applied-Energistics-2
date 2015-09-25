@@ -83,7 +83,7 @@ public class PacketMEInventoryUpdate extends AppEngPacket
 
 		// int originalBytes = stream.readableBytes();
 
-		GZIPInputStream gzReader = new GZIPInputStream( new InputStream()
+		final GZIPInputStream gzReader = new GZIPInputStream( new InputStream()
 		{
 			@Override
 			public int read() throws IOException
@@ -97,11 +97,11 @@ public class PacketMEInventoryUpdate extends AppEngPacket
 			}
 		} );
 
-		ByteBuf uncompressed = Unpooled.buffer( stream.readableBytes() );
-		byte[] tmp = new byte[TEMP_BUFFER_SIZE];
+		final ByteBuf uncompressed = Unpooled.buffer( stream.readableBytes() );
+		final byte[] tmp = new byte[TEMP_BUFFER_SIZE];
 		while( gzReader.available() != 0 )
 		{
-			int bytes = gzReader.read( tmp );
+			final int bytes = gzReader.read( tmp );
 			if( bytes > 0 )
 			{
 				uncompressed.writeBytes( tmp, 0, bytes );
@@ -127,7 +127,7 @@ public class PacketMEInventoryUpdate extends AppEngPacket
 	}
 
 	// api
-	public PacketMEInventoryUpdate( byte ref ) throws IOException
+	public PacketMEInventoryUpdate( final byte ref ) throws IOException
 	{
 		this.ref = ref;
 		this.data = Unpooled.buffer( OPERATION_BYTE_LIMIT );
@@ -137,7 +137,7 @@ public class PacketMEInventoryUpdate extends AppEngPacket
 		this.compressFrame = new GZIPOutputStream( new OutputStream()
 		{
 			@Override
-			public void write( int value ) throws IOException
+			public void write( final int value ) throws IOException
 			{
 				PacketMEInventoryUpdate.this.data.writeByte( value );
 			}
@@ -148,9 +148,9 @@ public class PacketMEInventoryUpdate extends AppEngPacket
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void clientPacketData( INetworkInfo network, AppEngPacket packet, EntityPlayer player )
+	public void clientPacketData( final INetworkInfo network, final AppEngPacket packet, final EntityPlayer player )
 	{
-		GuiScreen gs = Minecraft.getMinecraft().currentScreen;
+		final GuiScreen gs = Minecraft.getMinecraft().currentScreen;
 
 		if( gs instanceof GuiCraftConfirm )
 		{
@@ -184,7 +184,7 @@ public class PacketMEInventoryUpdate extends AppEngPacket
 			this.configureWrite( this.data );
 			return super.getProxy();
 		}
-		catch( IOException e )
+		catch( final IOException e )
 		{
 			AELog.error( e );
 		}
@@ -192,9 +192,9 @@ public class PacketMEInventoryUpdate extends AppEngPacket
 		return null;
 	}
 
-	public void appendItem( IAEItemStack is ) throws IOException, BufferOverflowException
+	public void appendItem( final IAEItemStack is ) throws IOException, BufferOverflowException
 	{
-		ByteBuf tmp = Unpooled.buffer( OPERATION_BYTE_LIMIT );
+		final ByteBuf tmp = Unpooled.buffer( OPERATION_BYTE_LIMIT );
 		is.writeToPacket( tmp );
 
 		this.compressFrame.flush();

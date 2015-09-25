@@ -37,7 +37,7 @@ public class DriveWatcher<T extends IAEStack<T>> extends MEInventoryHandler<T>
 	final ICellHandler handler;
 	final IChestOrDrive cord;
 
-	public DriveWatcher( IMEInventory<T> i, ItemStack is, ICellHandler han, IChestOrDrive cod )
+	public DriveWatcher( final IMEInventory<T> i, final ItemStack is, final ICellHandler han, final IChestOrDrive cod )
 	{
 		super( i, i.getChannel() );
 		this.is = is;
@@ -46,15 +46,15 @@ public class DriveWatcher<T extends IAEStack<T>> extends MEInventoryHandler<T>
 	}
 
 	@Override
-	public T injectItems( T input, Actionable type, BaseActionSource src )
+	public T injectItems( final T input, final Actionable type, final BaseActionSource src )
 	{
-		long size = input.getStackSize();
+		final long size = input.getStackSize();
 
-		T a = super.injectItems( input, type, src );
+		final T a = super.injectItems( input, type, src );
 
 		if( a == null || a.getStackSize() != size )
 		{
-			int newStatus = this.handler.getStatusForCell( this.is, this.getInternal() );
+			final int newStatus = this.handler.getStatusForCell( this.is, this.getInternal() );
 
 			if( newStatus != this.oldStatus )
 			{
@@ -66,13 +66,13 @@ public class DriveWatcher<T extends IAEStack<T>> extends MEInventoryHandler<T>
 	}
 
 	@Override
-	public T extractItems( T request, Actionable type, BaseActionSource src )
+	public T extractItems( final T request, final Actionable type, final BaseActionSource src )
 	{
-		T a = super.extractItems( request, type, src );
+		final T a = super.extractItems( request, type, src );
 
 		if( a != null )
 		{
-			int newStatus = this.handler.getStatusForCell( this.is, this.getInternal() );
+			final int newStatus = this.handler.getStatusForCell( this.is, this.getInternal() );
 
 			if( newStatus != this.oldStatus )
 			{

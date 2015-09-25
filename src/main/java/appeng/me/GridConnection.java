@@ -50,11 +50,11 @@ public class GridConnection implements IGridConnection, IPathItem
 	private ForgeDirection fromAtoB;
 	private GridNode sideB;
 
-	public GridConnection( IGridNode aNode, IGridNode bNode, ForgeDirection fromAtoB ) throws FailedConnection
+	public GridConnection( final IGridNode aNode, final IGridNode bNode, final ForgeDirection fromAtoB ) throws FailedConnection
 	{
 
-		GridNode a = (GridNode) aNode;
-		GridNode b = (GridNode) bNode;
+		final GridNode a = (GridNode) aNode;
+		final GridNode b = (GridNode) bNode;
 
 		if( Platform.securityCheck( a, b ) )
 		{
@@ -94,41 +94,41 @@ public class GridConnection implements IGridConnection, IPathItem
 		{
 			if( a.getMyGrid() == null )
 			{
-				GridPropagator gp = new GridPropagator( b.getInternalGrid() );
+				final GridPropagator gp = new GridPropagator( b.getInternalGrid() );
 				a.beginVisit( gp );
 			}
 			else if( b.getMyGrid() == null )
 			{
-				GridPropagator gp = new GridPropagator( a.getInternalGrid() );
+				final GridPropagator gp = new GridPropagator( a.getInternalGrid() );
 				b.beginVisit( gp );
 			}
 			else if( this.isNetworkABetter( a, b ) )
 			{
-				GridPropagator gp = new GridPropagator( a.getInternalGrid() );
+				final GridPropagator gp = new GridPropagator( a.getInternalGrid() );
 				b.beginVisit( gp );
 			}
 			else
 			{
-				GridPropagator gp = new GridPropagator( b.getInternalGrid() );
+				final GridPropagator gp = new GridPropagator( b.getInternalGrid() );
 				a.beginVisit( gp );
 			}
 		}
 
 		// a connection was destroyed RE-PATH!!
-		IPathingGrid p = this.sideA.getInternalGrid().getCache( IPathingGrid.class );
+		final IPathingGrid p = this.sideA.getInternalGrid().getCache( IPathingGrid.class );
 		p.repath();
 
 		this.sideA.addConnection( this );
 		this.sideB.addConnection( this );
 	}
 
-	private boolean isNetworkABetter( GridNode a, GridNode b )
+	private boolean isNetworkABetter( final GridNode a, final GridNode b )
 	{
 		return a.getMyGrid().getPriority() > b.getMyGrid().getPriority() || a.getMyGrid().size() > b.getMyGrid().size();
 	}
 
 	@Override
-	public IGridNode getOtherSide( IGridNode gridNode )
+	public IGridNode getOtherSide( final IGridNode gridNode )
 	{
 		if( gridNode == this.sideA )
 		{
@@ -143,7 +143,7 @@ public class GridConnection implements IGridConnection, IPathItem
 	}
 
 	@Override
-	public ForgeDirection getDirection( IGridNode side )
+	public ForgeDirection getDirection( final IGridNode side )
 	{
 		if( this.fromAtoB == ForgeDirection.UNKNOWN )
 		{
@@ -164,7 +164,7 @@ public class GridConnection implements IGridConnection, IPathItem
 	public void destroy()
 	{
 		// a connection was destroyed RE-PATH!!
-		IPathingGrid p = this.sideA.getInternalGrid().getCache( IPathingGrid.class );
+		final IPathingGrid p = this.sideA.getInternalGrid().getCache( IPathingGrid.class );
 		p.repath();
 
 		this.sideA.removeConnection( this );
@@ -209,7 +209,7 @@ public class GridConnection implements IGridConnection, IPathItem
 	}
 
 	@Override
-	public void setControllerRoute( IPathItem fast, boolean zeroOut )
+	public void setControllerRoute( final IPathItem fast, final boolean zeroOut )
 	{
 		if( zeroOut )
 		{
@@ -218,7 +218,7 @@ public class GridConnection implements IGridConnection, IPathItem
 
 		if( this.sideB == fast )
 		{
-			GridNode tmp = this.sideA;
+			final GridNode tmp = this.sideA;
 			this.sideA = this.sideB;
 			this.sideB = tmp;
 			this.fromAtoB = this.fromAtoB.getOpposite();
@@ -238,7 +238,7 @@ public class GridConnection implements IGridConnection, IPathItem
 	}
 
 	@Override
-	public void incrementChannelCount( int usedChannels )
+	public void incrementChannelCount( final int usedChannels )
 	{
 		this.channelData += usedChannels;
 	}

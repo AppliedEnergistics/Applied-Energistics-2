@@ -77,7 +77,7 @@ public class BuildCraftTransport implements IBuildCraftTransport, IIntegrationMo
 	}
 
 	@Override
-	public boolean isFacade( ItemStack is )
+	public boolean isFacade( final ItemStack is )
 	{
 		if( is == null )
 		{
@@ -89,7 +89,7 @@ public class BuildCraftTransport implements IBuildCraftTransport, IIntegrationMo
 
 	@Nullable
 	@Override
-	public IFacadePart createFacadePart( Block blk, int meta, @Nonnull ForgeDirection side )
+	public IFacadePart createFacadePart( final Block blk, final int meta, @Nonnull final ForgeDirection side )
 	{
 		try
 		{
@@ -98,7 +98,7 @@ public class BuildCraftTransport implements IBuildCraftTransport, IIntegrationMo
 
 			return new FacadePart( facade, side );
 		}
-		catch( Exception ignored )
+		catch( final Exception ignored )
 		{
 
 		}
@@ -107,14 +107,14 @@ public class BuildCraftTransport implements IBuildCraftTransport, IIntegrationMo
 	}
 
 	@Override
-	public IFacadePart createFacadePart( @Nonnull ItemStack fs, @Nonnull ForgeDirection side )
+	public IFacadePart createFacadePart( @Nonnull final ItemStack fs, @Nonnull final ForgeDirection side )
 	{
 		return new FacadePart( fs, side );
 	}
 
 	@Nullable
 	@Override
-	public ItemStack getTextureForFacade( @Nonnull ItemStack facade )
+	public ItemStack getTextureForFacade( @Nonnull final ItemStack facade )
 	{
 		final Item maybeFacadeItem = facade.getItem();
 
@@ -142,7 +142,7 @@ public class BuildCraftTransport implements IBuildCraftTransport, IIntegrationMo
 		{
 			return buildcraft.BuildCraftTransport.instance.pipeIconProvider.getIcon( PipeIconProvider.TYPE.PipeStructureCobblestone.ordinal() ); // Structure
 		}
-		catch( Exception ignored )
+		catch( final Exception ignored )
 		{
 		}
 		return null;
@@ -150,7 +150,7 @@ public class BuildCraftTransport implements IBuildCraftTransport, IIntegrationMo
 	}
 
 	@Override
-	public boolean isPipe( TileEntity te, @Nonnull ForgeDirection dir )
+	public boolean isPipe( final TileEntity te, @Nonnull final ForgeDirection dir )
 	{
 		if( te instanceof IPipeTile )
 		{
@@ -162,14 +162,14 @@ public class BuildCraftTransport implements IBuildCraftTransport, IIntegrationMo
 	}
 
 	@Override
-	public boolean canAddItemsToPipe( TileEntity te, ItemStack is, ForgeDirection dir )
+	public boolean canAddItemsToPipe( final TileEntity te, final ItemStack is, final ForgeDirection dir )
 	{
 		if( is != null && te != null && te instanceof IInjectable )
 		{
-			IInjectable pt = (IInjectable) te;
+			final IInjectable pt = (IInjectable) te;
 			if( pt.canInjectItems( dir ) )
 			{
-				int amt = pt.injectItem( is, false, dir, null );
+				final int amt = pt.injectItem( is, false, dir, null );
 				if( amt == is.stackSize )
 				{
 					return true;
@@ -181,14 +181,14 @@ public class BuildCraftTransport implements IBuildCraftTransport, IIntegrationMo
 	}
 
 	@Override
-	public boolean addItemsToPipe( @Nullable TileEntity te, @Nullable ItemStack is, @Nonnull ForgeDirection dir )
+	public boolean addItemsToPipe( @Nullable final TileEntity te, @Nullable final ItemStack is, @Nonnull final ForgeDirection dir )
 	{
 		if( is != null && te != null && te instanceof IInjectable )
 		{
-			IInjectable pt = (IInjectable) te;
+			final IInjectable pt = (IInjectable) te;
 			if( pt.canInjectItems( dir ) )
 			{
-				int amt = pt.injectItem( is, false, dir, null );
+				final int amt = pt.injectItem( is, false, dir, null );
 				if( amt == is.stackSize )
 				{
 					pt.injectItem( is, true, dir, null );
@@ -200,7 +200,7 @@ public class BuildCraftTransport implements IBuildCraftTransport, IIntegrationMo
 		return false;
 	}
 
-	private void addFacade( ItemStack item )
+	private void addFacade( final ItemStack item )
 	{
 		if( item != null )
 		{
@@ -239,7 +239,7 @@ public class BuildCraftTransport implements IBuildCraftTransport, IIntegrationMo
 
 	private void registerLiquidsP2P()
 	{
-		IP2PTunnelRegistry reg = AEApi.instance().registries().p2pTunnel();
+		final IP2PTunnelRegistry reg = AEApi.instance().registries().p2pTunnel();
 		reg.addNewAttunement( new ItemStack( buildcraft.BuildCraftTransport.pipeFluidsCobblestone ), TunnelType.FLUID );
 		reg.addNewAttunement( new ItemStack( buildcraft.BuildCraftTransport.pipeFluidsEmerald ), TunnelType.FLUID );
 		reg.addNewAttunement( new ItemStack( buildcraft.BuildCraftTransport.pipeFluidsGold ), TunnelType.FLUID );
@@ -283,7 +283,7 @@ public class BuildCraftTransport implements IBuildCraftTransport, IIntegrationMo
 		this.addFacadeStack( blocks.quartzChiseled() );
 		this.addFacadeStack( blocks.quartzPillar() );
 
-		for( Block skyStoneBlock : blocks.skyStone().maybeBlock().asSet() )
+		for( final Block skyStoneBlock : blocks.skyStone().maybeBlock().asSet() )
 		{
 			this.addFacade( new ItemStack( skyStoneBlock, 1, 0 ) );
 			this.addFacade( new ItemStack( skyStoneBlock, 1, 1 ) );
@@ -292,9 +292,9 @@ public class BuildCraftTransport implements IBuildCraftTransport, IIntegrationMo
 		}
 	}
 
-	private void addFacadeStack( IItemDefinition definition )
+	private void addFacadeStack( final IItemDefinition definition )
 	{
-		for( ItemStack facadeStack : definition.maybeStack( 1 ).asSet() )
+		for( final ItemStack facadeStack : definition.maybeStack( 1 ).asSet() )
 		{
 			this.addFacade( facadeStack );
 		}

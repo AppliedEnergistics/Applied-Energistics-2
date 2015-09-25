@@ -31,7 +31,7 @@ public final class AECommand extends CommandBase
 {
 	private final MinecraftServer srv;
 
-	public AECommand( MinecraftServer server )
+	public AECommand( final MinecraftServer server )
 	{
 		this.srv = server;
 	}
@@ -46,7 +46,7 @@ public final class AECommand extends CommandBase
 	 * wtf?
 	 */
 	@Override
-	public int compareTo( Object arg0 )
+	public int compareTo( final Object arg0 )
 	{
 		return 1;
 	}
@@ -58,13 +58,13 @@ public final class AECommand extends CommandBase
 	}
 
 	@Override
-	public String getCommandUsage( ICommandSender icommandsender )
+	public String getCommandUsage( final ICommandSender icommandsender )
 	{
 		return "commands.ae2.usage";
 	}
 
 	@Override
-	public void processCommand( ICommandSender sender, String[] args )
+	public void processCommand( final ICommandSender sender, final String[] args )
 	{
 		if( args.length == 0 )
 		{
@@ -76,15 +76,15 @@ public final class AECommand extends CommandBase
 			{
 				if( args.length > 1 )
 				{
-					Commands c = Commands.valueOf( args[1] );
+					final Commands c = Commands.valueOf( args[1] );
 					throw new WrongUsageException( c.command.getHelp( this.srv ) );
 				}
 			}
-			catch( WrongUsageException wrong )
+			catch( final WrongUsageException wrong )
 			{
 				throw wrong;
 			}
-			catch( Throwable er )
+			catch( final Throwable er )
 			{
 				throw new WrongUsageException( "commands.ae2.usage" );
 			}
@@ -97,7 +97,7 @@ public final class AECommand extends CommandBase
 		{
 			try
 			{
-				Commands c = Commands.valueOf( args[0] );
+				final Commands c = Commands.valueOf( args[0] );
 				if( sender.canCommandSenderUseCommand( c.level, this.getCommandName() ) )
 				{
 					c.command.call( this.srv, args, sender );
@@ -107,11 +107,11 @@ public final class AECommand extends CommandBase
 					throw new WrongUsageException( "commands.ae2.permissions" );
 				}
 			}
-			catch( WrongUsageException wrong )
+			catch( final WrongUsageException wrong )
 			{
 				throw wrong;
 			}
-			catch( Throwable er )
+			catch( final Throwable er )
 			{
 				throw new WrongUsageException( "commands.ae2.usage" );
 			}

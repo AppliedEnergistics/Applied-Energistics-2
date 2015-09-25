@@ -39,16 +39,16 @@ public class RenderBlockController extends BaseBlockRender<BlockController, Tile
 	}
 
 	@Override
-	public boolean renderInWorld( BlockController blk, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
+	public boolean renderInWorld( final BlockController blk, final IBlockAccess world, final int x, final int y, final int z, final RenderBlocks renderer )
 	{
 
-		boolean xx = this.getTileEntity( world, x - 1, y, z ) instanceof TileController && this.getTileEntity( world, x + 1, y, z ) instanceof TileController;
-		boolean yy = this.getTileEntity( world, x, y - 1, z ) instanceof TileController && this.getTileEntity( world, x, y + 1, z ) instanceof TileController;
-		boolean zz = this.getTileEntity( world, x, y, z - 1 ) instanceof TileController && this.getTileEntity( world, x, y, z + 1 ) instanceof TileController;
+		final boolean xx = this.getTileEntity( world, x - 1, y, z ) instanceof TileController && this.getTileEntity( world, x + 1, y, z ) instanceof TileController;
+		final boolean yy = this.getTileEntity( world, x, y - 1, z ) instanceof TileController && this.getTileEntity( world, x, y + 1, z ) instanceof TileController;
+		final boolean zz = this.getTileEntity( world, x, y, z - 1 ) instanceof TileController && this.getTileEntity( world, x, y, z + 1 ) instanceof TileController;
 
-		int meta = world.getBlockMetadata( x, y, z );
-		boolean hasPower = meta > 0;
-		boolean isConflict = meta == 2;
+		final int meta = world.getBlockMetadata( x, y, z );
+		final boolean hasPower = meta > 0;
+		final boolean isConflict = meta == 2;
 
 		ExtraBlockTextures lights = null;
 
@@ -123,7 +123,7 @@ public class RenderBlockController extends BaseBlockRender<BlockController, Tile
 		}
 		else if( ( xx ? 1 : 0 ) + ( yy ? 1 : 0 ) + ( zz ? 1 : 0 ) >= 2 )
 		{
-			int v = ( Math.abs( x ) + Math.abs( y ) + Math.abs( z ) ) % 2;
+			final int v = ( Math.abs( x ) + Math.abs( y ) + Math.abs( z ) ) % 2;
 			renderer.uvRotateEast = renderer.uvRotateBottom = renderer.uvRotateNorth = renderer.uvRotateSouth = renderer.uvRotateTop = renderer.uvRotateWest = 0;
 
 			if( v == 0 )
@@ -155,7 +155,7 @@ public class RenderBlockController extends BaseBlockRender<BlockController, Tile
 			}
 		}
 
-		boolean out = renderer.renderStandardBlock( blk, x, y, z );
+		final boolean out = renderer.renderStandardBlock( blk, x, y, z );
 		if( lights != null )
 		{
 			Tessellator.instance.setColorOpaque_F( 1.0f, 1.0f, 1.0f );
@@ -173,7 +173,7 @@ public class RenderBlockController extends BaseBlockRender<BlockController, Tile
 		return out;
 	}
 
-	private TileEntity getTileEntity( IBlockAccess world, int x, int y, int z )
+	private TileEntity getTileEntity( final IBlockAccess world, final int x, final int y, final int z )
 	{
 		if( y >= 0 )
 		{

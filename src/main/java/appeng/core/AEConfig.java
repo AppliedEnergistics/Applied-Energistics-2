@@ -108,7 +108,7 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 	private double WirelessBoosterRangeMultiplier = 1;
 	private double WirelessBoosterExp = 1.5;
 
-	public AEConfig( File configFile )
+	public AEConfig( final File configFile )
 	{
 		super( configFile );
 		this.configFile = configFile;
@@ -125,7 +125,7 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 		final double DEFAULT_RF_EXCHANGE = 0.5;
 		PowerUnits.RF.conversionRatio = this.get( "PowerRatios", "ThermalExpansion", DEFAULT_RF_EXCHANGE ).getDouble( DEFAULT_RF_EXCHANGE );
 
-		double usageEffective = this.get( "PowerRatios", "UsageMultiplier", 1.0 ).getDouble( 1.0 );
+		final double usageEffective = this.get( "PowerRatios", "UsageMultiplier", 1.0 ).getDouble( 1.0 );
 		PowerMultiplier.CONFIG.multiplier = Math.max( 0.01, usageEffective );
 
 		CondenserOutput.MATTER_BALLS.requiredPower = this.get( "Condenser", "MatterBalls", 256 ).getInt( 256 );
@@ -169,7 +169,7 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 
 		this.clientSync();
 
-		for( AEFeature feature : AEFeature.values() )
+		for( final AEFeature feature : AEFeature.values() )
 		{
 			if( feature.isVisible )
 			{
@@ -184,10 +184,10 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 			}
 		}
 
-		ModContainer imb = cpw.mods.fml.common.Loader.instance().getIndexedModList().get( "ImmibisCore" );
+		final ModContainer imb = cpw.mods.fml.common.Loader.instance().getIndexedModList().get( "ImmibisCore" );
 		if( imb != null )
 		{
-			List<String> version = Arrays.asList( "59.0.0", "59.0.1", "59.0.2" );
+			final List<String> version = Arrays.asList( "59.0.0", "59.0.1", "59.0.2" );
 			if( version.contains( imb.getVersion() ) )
 			{
 				this.featureFlags.remove( AEFeature.AlphaPass );
@@ -198,12 +198,12 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 		{
 			this.selectedPowerUnit = PowerUnits.valueOf( this.get( "Client", "PowerUnit", this.selectedPowerUnit.name(), this.getListComment( this.selectedPowerUnit ) ).getString() );
 		}
-		catch( Throwable t )
+		catch( final Throwable t )
 		{
 			this.selectedPowerUnit = PowerUnits.AE;
 		}
 
-		for( TickRates tr : TickRates.values() )
+		for( final TickRates tr : TickRates.values() )
 		{
 			tr.Load( this );
 		}
@@ -234,11 +234,11 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 		// load buttons..
 		for( int btnNum = 0; btnNum < 4; btnNum++ )
 		{
-			Property cmb = this.get( "Client", "craftAmtButton" + ( btnNum + 1 ), this.craftByStacks[btnNum] );
-			Property pmb = this.get( "Client", "priorityAmtButton" + ( btnNum + 1 ), this.priorityByStacks[btnNum] );
-			Property lmb = this.get( "Client", "levelAmtButton" + ( btnNum + 1 ), this.levelByStacks[btnNum] );
+			final Property cmb = this.get( "Client", "craftAmtButton" + ( btnNum + 1 ), this.craftByStacks[btnNum] );
+			final Property pmb = this.get( "Client", "priorityAmtButton" + ( btnNum + 1 ), this.priorityByStacks[btnNum] );
+			final Property lmb = this.get( "Client", "levelAmtButton" + ( btnNum + 1 ), this.levelByStacks[btnNum] );
 
-			int buttonCap = (int) ( Math.pow( 10, btnNum + 1 ) - 1 );
+			final int buttonCap = (int) ( Math.pow( 10, btnNum + 1 ) - 1 );
 
 			this.craftByStacks[btnNum] = Math.abs( cmb.getInt( this.craftByStacks[btnNum] ) );
 			this.priorityByStacks[btnNum] = Math.abs( pmb.getInt( this.priorityByStacks[btnNum] ) );
@@ -253,18 +253,18 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 			this.levelByStacks[btnNum] = Math.min( this.levelByStacks[btnNum], buttonCap );
 		}
 
-		for( Settings e : this.settings.getSettings() )
+		for( final Settings e : this.settings.getSettings() )
 		{
-			String Category = "Client"; // e.getClass().getSimpleName();
+			final String Category = "Client"; // e.getClass().getSimpleName();
 			Enum<?> value = this.settings.getSetting( e );
 
-			Property p = this.get( Category, e.name(), value.name(), this.getListComment( value ) );
+			final Property p = this.get( Category, e.name(), value.name(), this.getListComment( value ) );
 
 			try
 			{
 				value = Enum.valueOf( value.getClass(), p.getString() );
 			}
-			catch( IllegalArgumentException er )
+			catch( final IllegalArgumentException er )
 			{
 				AELog.info( "Invalid value '" + p.getString() + "' for " + e.name() + " using '" + value.name() + "' instead" );
 			}
@@ -273,17 +273,17 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 		}
 	}
 
-	private String getListComment( Enum value )
+	private String getListComment( final Enum value )
 	{
 		String comment = null;
 
 		if( value != null )
 		{
-			EnumSet set = EnumSet.allOf( value.getClass() );
+			final EnumSet set = EnumSet.allOf( value.getClass() );
 
-			for( Object Oeg : set )
+			for( final Object Oeg : set )
 			{
-				Enum eg = (Enum) Oeg;
+				final Enum eg = (Enum) Oeg;
 				if( comment == null )
 				{
 					comment = "Possible Values: " + eg.name();
@@ -298,30 +298,30 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 		return comment;
 	}
 
-	public boolean isFeatureEnabled( AEFeature f )
+	public boolean isFeatureEnabled( final AEFeature f )
 	{
 		return this.featureFlags.contains( f );
 	}
 
-	public double wireless_getDrainRate( double range )
+	public double wireless_getDrainRate( final double range )
 	{
 		return this.WirelessTerminalDrainMultiplier * range;
 	}
 
-	public double wireless_getMaxRange( int boosters )
+	public double wireless_getMaxRange( final int boosters )
 	{
 		return this.WirelessBaseRange + this.WirelessBoosterRangeMultiplier * Math.pow( boosters, this.WirelessBoosterExp );
 	}
 
-	public double wireless_getPowerDrain( int boosters )
+	public double wireless_getPowerDrain( final int boosters )
 	{
 		return this.WirelessBaseCost + this.WirelessCostMultiplier * Math.pow( boosters, 1 + boosters / this.WirelessHighWirelessCount );
 	}
 
 	@Override
-	public Property get( String category, String key, String defaultValue, String comment, Property.Type type )
+	public Property get( final String category, final String key, final String defaultValue, final String comment, final Property.Type type )
 	{
-		Property prop = super.get( category, key, defaultValue, comment, type );
+		final Property prop = super.get( category, key, defaultValue, comment, type );
 
 		if( prop != null )
 		{
@@ -352,7 +352,7 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 	}
 
 	@SubscribeEvent
-	public void onConfigChanged( ConfigChangedEvent.OnConfigChangedEvent eventArgs )
+	public void onConfigChanged( final ConfigChangedEvent.OnConfigChangedEvent eventArgs )
 	{
 		if( eventArgs.modID.equals( AppEng.MOD_ID ) )
 		{
@@ -370,7 +370,7 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 		return this.configFile.toString();
 	}
 
-	public boolean useAEVersion( MaterialType mt )
+	public boolean useAEVersion( final MaterialType mt )
 	{
 		if( this.isFeatureEnabled( AEFeature.WebsiteRecipes ) )
 		{
@@ -378,21 +378,21 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 		}
 
 		this.setCategoryComment( "OreCamouflage", "AE2 Automatically uses alternative ores present in your instance of MC to blend better with its surroundings, if you prefer you can disable this selectively using these flags; Its important to note, that some if these items even if enabled may not be craftable in game because other items are overriding their recipes." );
-		Property p = this.get( "OreCamouflage", mt.name(), true );
+		final Property p = this.get( "OreCamouflage", mt.name(), true );
 		p.comment = "OreDictionary Names: " + mt.getOreName();
 
 		return !p.getBoolean( true );
 	}
 
 	@Override
-	public void updateSetting( IConfigManager manager, Enum setting, Enum newValue )
+	public void updateSetting( final IConfigManager manager, final Enum setting, final Enum newValue )
 	{
-		for( Settings e : this.settings.getSettings() )
+		for( final Settings e : this.settings.getSettings() )
 		{
 			if( e == setting )
 			{
-				String Category = "Client";
-				Property p = this.get( Category, e.name(), this.settings.getSetting( e ).name(), this.getListComment( newValue ) );
+				final String Category = "Client";
+				final Property p = this.get( Category, e.name(), this.settings.getSetting( e ).name(), this.getListComment( newValue ) );
 				p.set( newValue.name() );
 			}
 		}
@@ -403,19 +403,19 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 		}
 	}
 
-	public int getFreeMaterial( int varID )
+	public int getFreeMaterial( final int varID )
 	{
 		return this.getFreeIDSLot( varID, "materials" );
 	}
 
-	public int getFreeIDSLot( int varID, String category )
+	public int getFreeIDSLot( final int varID, final String category )
 	{
 		boolean alreadyUsed = false;
 		int min = 0;
 
-		for( Property p : this.getCategory( category ).getValues().values() )
+		for( final Property p : this.getCategory( category ).getValues().values() )
 		{
-			int thisInt = p.getInt();
+			final int thisInt = p.getInt();
 
 			if( varID == thisInt )
 			{
@@ -438,7 +438,7 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 		return varID;
 	}
 
-	public int getFreePart( int varID )
+	public int getFreePart( final int varID )
 	{
 		return this.getFreeIDSLot( varID, "parts" );
 	}
@@ -454,31 +454,31 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 		return this.useLargeFonts;
 	}
 
-	public int craftItemsByStackAmounts( int i )
+	public int craftItemsByStackAmounts( final int i )
 	{
 		return this.craftByStacks[i];
 	}
 
-	public int priorityByStacksAmounts( int i )
+	public int priorityByStacksAmounts( final int i )
 	{
 		return this.priorityByStacks[i];
 	}
 
-	public int levelByStackAmounts( int i )
+	public int levelByStackAmounts( final int i )
 	{
 		return this.levelByStacks[i];
 	}
 
-	public Enum getSetting( String category, Class<? extends Enum> class1, Enum myDefault )
+	public Enum getSetting( final String category, final Class<? extends Enum> class1, final Enum myDefault )
 	{
-		String name = class1.getSimpleName();
-		Property p = this.get( category, name, myDefault.name() );
+		final String name = class1.getSimpleName();
+		final Property p = this.get( category, name, myDefault.name() );
 
 		try
 		{
 			return (Enum) class1.getField( p.toString() ).get( class1 );
 		}
-		catch( Throwable t )
+		catch( final Throwable t )
 		{
 			// :{
 		}
@@ -486,9 +486,9 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 		return myDefault;
 	}
 
-	public void setSetting( String category, Enum s )
+	public void setSetting( final String category, final Enum s )
 	{
-		String name = s.getClass().getSimpleName();
+		final String name = s.getClass().getSimpleName();
 		this.get( category, name, s.name() ).set( s.name() );
 		this.save();
 	}
@@ -498,7 +498,7 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 		return this.selectedPowerUnit;
 	}
 
-	public void nextPowerUnit( boolean backwards )
+	public void nextPowerUnit( final boolean backwards )
 	{
 		this.selectedPowerUnit = Platform.rotateEnum( this.selectedPowerUnit, backwards, Settings.POWER_UNITS.getPossibleValues() );
 		this.save();

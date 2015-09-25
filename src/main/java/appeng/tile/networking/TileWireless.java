@@ -65,35 +65,35 @@ public class TileWireless extends AENetworkInvTile implements IWirelessAccessPoi
 	}
 
 	@Override
-	public void setOrientation( ForgeDirection inForward, ForgeDirection inUp )
+	public void setOrientation( final ForgeDirection inForward, final ForgeDirection inUp )
 	{
 		super.setOrientation( inForward, inUp );
 		this.gridProxy.setValidSides( EnumSet.of( this.getForward().getOpposite() ) );
 	}
 
 	@MENetworkEventSubscribe
-	public void chanRender( MENetworkChannelsChanged c )
+	public void chanRender( final MENetworkChannelsChanged c )
 	{
 		this.markForUpdate();
 	}
 
 	@MENetworkEventSubscribe
-	public void powerRender( MENetworkPowerStatusChange c )
+	public void powerRender( final MENetworkPowerStatusChange c )
 	{
 		this.markForUpdate();
 	}
 
 	@TileEvent( TileEventType.NETWORK_READ )
-	public boolean readFromStream_TileWireless( ByteBuf data )
+	public boolean readFromStream_TileWireless( final ByteBuf data )
 	{
-		int old = this.clientFlags;
+		final int old = this.clientFlags;
 		this.clientFlags = data.readByte();
 
 		return old != this.clientFlags;
 	}
 
 	@TileEvent( TileEventType.NETWORK_WRITE )
-	public void writeToStream_TileWireless( ByteBuf data )
+	public void writeToStream_TileWireless( final ByteBuf data )
 	{
 		this.clientFlags = 0;
 
@@ -109,7 +109,7 @@ public class TileWireless extends AENetworkInvTile implements IWirelessAccessPoi
 				this.clientFlags |= CHANNEL_FLAG;
 			}
 		}
-		catch( GridAccessException e )
+		catch( final GridAccessException e )
 		{
 			// meh
 		}
@@ -118,7 +118,7 @@ public class TileWireless extends AENetworkInvTile implements IWirelessAccessPoi
 	}
 
 	@Override
-	public AECableType getCableConnectionType( ForgeDirection dir )
+	public AECableType getCableConnectionType( final ForgeDirection dir )
 	{
 		return AECableType.SMART;
 	}
@@ -136,19 +136,19 @@ public class TileWireless extends AENetworkInvTile implements IWirelessAccessPoi
 	}
 
 	@Override
-	public boolean isItemValidForSlot( int i, ItemStack itemstack )
+	public boolean isItemValidForSlot( final int i, final ItemStack itemstack )
 	{
 		return AEApi.instance().definitions().materials().wirelessBooster().isSameAs( itemstack );
 	}
 
 	@Override
-	public void onChangeInventory( IInventory inv, int slot, InvOperation mc, ItemStack removed, ItemStack added )
+	public void onChangeInventory( final IInventory inv, final int slot, final InvOperation mc, final ItemStack removed, final ItemStack added )
 	{
 		// :P
 	}
 
 	@Override
-	public int[] getAccessibleSlotsBySide( ForgeDirection side )
+	public int[] getAccessibleSlotsBySide( final ForgeDirection side )
 	{
 		return this.sides;
 	}
@@ -167,7 +167,7 @@ public class TileWireless extends AENetworkInvTile implements IWirelessAccessPoi
 
 	private int getBoosters()
 	{
-		ItemStack boosters = this.inv.getStackInSlot( 0 );
+		final ItemStack boosters = this.inv.getStackInSlot( 0 );
 		return boosters == null ? 0 : boosters.stackSize;
 	}
 
@@ -201,7 +201,7 @@ public class TileWireless extends AENetworkInvTile implements IWirelessAccessPoi
 		{
 			return this.gridProxy.getGrid();
 		}
-		catch( GridAccessException e )
+		catch( final GridAccessException e )
 		{
 			return null;
 		}

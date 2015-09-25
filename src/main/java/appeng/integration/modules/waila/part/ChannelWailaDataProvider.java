@@ -72,7 +72,7 @@ public final class ChannelWailaDataProvider extends BasePartWailaDataProvider
 	 * @return modified tool tip
 	 */
 	@Override
-	public List<String> getWailaBody( IPart part, List<String> currentToolTip, IWailaDataAccessor accessor, IWailaConfigHandler config )
+	public List<String> getWailaBody( final IPart part, final List<String> currentToolTip, final IWailaDataAccessor accessor, final IWailaConfigHandler config )
 	{
 		if( part instanceof PartCableSmart || part instanceof PartDenseCable )
 		{
@@ -100,7 +100,7 @@ public final class ChannelWailaDataProvider extends BasePartWailaDataProvider
 	 *
 	 * @return used channels on the cable
 	 */
-	private byte getUsedChannels( IPart part, NBTTagCompound tag, TObjectByteMap<IPart> cache )
+	private byte getUsedChannels( final IPart part, final NBTTagCompound tag, final TObjectByteMap<IPart> cache )
 	{
 		final byte usedChannels;
 
@@ -139,7 +139,7 @@ public final class ChannelWailaDataProvider extends BasePartWailaDataProvider
 	 * @return tag send to the client
 	 */
 	@Override
-	public NBTTagCompound getNBTData( EntityPlayerMP player, IPart part, TileEntity te, NBTTagCompound tag, World world, int x, int y, int z )
+	public NBTTagCompound getNBTData( final EntityPlayerMP player, final IPart part, final TileEntity te, final NBTTagCompound tag, final World world, final int x, final int y, final int z )
 	{
 		if( part instanceof PartCableSmart || part instanceof PartDenseCable )
 		{

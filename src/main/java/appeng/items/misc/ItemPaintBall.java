@@ -52,17 +52,17 @@ public class ItemPaintBall extends AEBaseItem
 	}
 
 	@Override
-	public String getItemStackDisplayName( ItemStack is )
+	public String getItemStackDisplayName( final ItemStack is )
 	{
 		return super.getItemStackDisplayName( is ) + " - " + this.getExtraName( is );
 	}
 
-	public String getExtraName( ItemStack is )
+	public String getExtraName( final ItemStack is )
 	{
 		return ( is.getItemDamage() >= DAMAGE_THRESHOLD ? GuiText.Lumen.getLocal() + ' ' : "" ) + this.getColor( is );
 	}
 
-	public AEColor getColor( ItemStack is )
+	public AEColor getColor( final ItemStack is )
 	{
 		int dmg = is.getItemDamage();
 		if( dmg >= DAMAGE_THRESHOLD )
@@ -79,9 +79,9 @@ public class ItemPaintBall extends AEBaseItem
 	}
 
 	@Override
-	protected void getCheckedSubItems( Item sameItem, CreativeTabs creativeTab, List<ItemStack> itemStacks )
+	protected void getCheckedSubItems( final Item sameItem, final CreativeTabs creativeTab, final List<ItemStack> itemStacks )
 	{
-		for( AEColor c : AEColor.values() )
+		for( final AEColor c : AEColor.values() )
 		{
 			if( c != AEColor.Transparent )
 			{
@@ -89,7 +89,7 @@ public class ItemPaintBall extends AEBaseItem
 			}
 		}
 
-		for( AEColor c : AEColor.values() )
+		for( final AEColor c : AEColor.values() )
 		{
 			if( c != AEColor.Transparent )
 			{
@@ -98,9 +98,9 @@ public class ItemPaintBall extends AEBaseItem
 		}
 	}
 
-	public boolean isLumen( ItemStack is )
+	public boolean isLumen( final ItemStack is )
 	{
-		int dmg = is.getItemDamage();
+		final int dmg = is.getItemDamage();
 		return dmg >= DAMAGE_THRESHOLD;
 	}
 }

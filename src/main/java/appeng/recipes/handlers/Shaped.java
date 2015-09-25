@@ -46,7 +46,7 @@ public class Shaped implements ICraftHandler, IWebsiteSerializer
 	private int cols;
 
 	@Override
-	public void setup( List<List<IIngredient>> input, List<List<IIngredient>> output ) throws RecipeError
+	public void setup( final List<List<IIngredient>> input, final List<List<IIngredient>> output ) throws RecipeError
 	{
 		if( output.size() == 1 && output.get( 0 ).size() == 1 )
 		{
@@ -56,7 +56,7 @@ public class Shaped implements ICraftHandler, IWebsiteSerializer
 				this.cols = input.get( 0 ).size();
 				if( this.cols <= 3 && this.cols >= 1 )
 				{
-					for( List<IIngredient> anInput : input )
+					for( final List<IIngredient> anInput : input )
 					{
 						if( anInput.size() != this.cols )
 						{
@@ -87,11 +87,11 @@ public class Shaped implements ICraftHandler, IWebsiteSerializer
 	public void register() throws RegistrationError, MissingIngredientError
 	{
 		char first = 'A';
-		List<Object> args = new ArrayList<Object>();
+		final List<Object> args = new ArrayList<Object>();
 
 		for( int y = 0; y < this.rows; y++ )
 		{
-			StringBuilder row = new StringBuilder();
+			final StringBuilder row = new StringBuilder();
 			for( int x = 0; x < this.cols; x++ )
 			{
 				if( this.inputs.get( y ).get( x ).isAir() )
@@ -110,13 +110,13 @@ public class Shaped implements ICraftHandler, IWebsiteSerializer
 			args.add( y, row.toString() );
 		}
 
-		ItemStack outIS = this.output.getItemStack();
+		final ItemStack outIS = this.output.getItemStack();
 
 		try
 		{
 			GameRegistry.addRecipe( new ShapedRecipe( outIS, args.toArray( new Object[args.size()] ) ) );
 		}
-		catch( Throwable e )
+		catch( final Throwable e )
 		{
 			AELog.error( e );
 			throw new RegistrationError( "Error while adding shaped recipe." );
@@ -124,7 +124,7 @@ public class Shaped implements ICraftHandler, IWebsiteSerializer
 	}
 
 	@Override
-	public String getPattern( RecipeHandler h )
+	public String getPattern( final RecipeHandler h )
 	{
 		String o = "shaped " + this.output.getQty() + ' ' + this.cols + 'x' + this.rows + '\n';
 
@@ -134,7 +134,7 @@ public class Shaped implements ICraftHandler, IWebsiteSerializer
 		{
 			for( int x = 0; x < this.cols; x++ )
 			{
-				IIngredient i = this.inputs.get( y ).get( x );
+				final IIngredient i = this.inputs.get( y ).get( x );
 
 				if( i.isAir() )
 				{
@@ -151,17 +151,17 @@ public class Shaped implements ICraftHandler, IWebsiteSerializer
 	}
 
 	@Override
-	public boolean canCraft( ItemStack reqOutput ) throws RegistrationError, MissingIngredientError
+	public boolean canCraft( final ItemStack reqOutput ) throws RegistrationError, MissingIngredientError
 	{
 		for( int y = 0; y < this.rows; y++ )
 		{
 			for( int x = 0; x < this.cols; x++ )
 			{
-				IIngredient i = this.inputs.get( y ).get( x );
+				final IIngredient i = this.inputs.get( y ).get( x );
 
 				if( !i.isAir() )
 				{
-					for( ItemStack r : i.getItemStackSet() )
+					for( final ItemStack r : i.getItemStackSet() )
 					{
 						if( Platform.isSameItemPrecise( r, reqOutput ) )
 						{

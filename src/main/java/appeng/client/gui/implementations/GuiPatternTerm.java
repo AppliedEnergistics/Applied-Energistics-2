@@ -49,7 +49,7 @@ public class GuiPatternTerm extends GuiMEMonitorable
 	GuiImgButton encodeBtn;
 	GuiImgButton clearBtn;
 
-	public GuiPatternTerm( InventoryPlayer inventoryPlayer, ITerminalHost te )
+	public GuiPatternTerm( final InventoryPlayer inventoryPlayer, final ITerminalHost te )
 	{
 		super( inventoryPlayer, te, new ContainerPatternTerm( inventoryPlayer, te ) );
 		this.container = (ContainerPatternTerm) this.inventorySlots;
@@ -57,7 +57,7 @@ public class GuiPatternTerm extends GuiMEMonitorable
 	}
 
 	@Override
-	protected void actionPerformed( GuiButton btn )
+	protected void actionPerformed( final GuiButton btn )
 	{
 		super.actionPerformed( btn );
 
@@ -79,7 +79,7 @@ public class GuiPatternTerm extends GuiMEMonitorable
 				NetworkHandler.instance.sendToServer( new PacketValueConfig( "PatternTerminal.Clear", "1" ) );
 			}
 		}
-		catch( IOException e )
+		catch( final IOException e )
 		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -109,7 +109,7 @@ public class GuiPatternTerm extends GuiMEMonitorable
 	}
 
 	@Override
-	public void drawFG( int offsetX, int offsetY, int mouseX, int mouseY )
+	public void drawFG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
 		if( !this.container.craftingMode )
 		{
@@ -137,7 +137,7 @@ public class GuiPatternTerm extends GuiMEMonitorable
 	}
 
 	@Override
-	protected void repositionSlot( AppEngSlot s )
+	protected void repositionSlot( final AppEngSlot s )
 	{
 		if( s.isPlayerSide() )
 		{

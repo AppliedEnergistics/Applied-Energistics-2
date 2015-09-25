@@ -34,7 +34,7 @@ public class MetaRotation implements IOrientable
 	final int y;
 	final int z;
 
-	public MetaRotation( IBlockAccess world, int x, int y, int z )
+	public MetaRotation( final IBlockAccess world, final int x, final int y, final int z )
 	{
 		this.w = world;
 		this.x = x;
@@ -65,7 +65,7 @@ public class MetaRotation implements IOrientable
 	}
 
 	@Override
-	public void setOrientation( ForgeDirection forward, ForgeDirection up )
+	public void setOrientation( final ForgeDirection forward, final ForgeDirection up )
 	{
 		if( this.w instanceof World )
 		{

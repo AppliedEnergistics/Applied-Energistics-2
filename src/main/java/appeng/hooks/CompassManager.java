@@ -32,28 +32,28 @@ public class CompassManager
 	public static final CompassManager INSTANCE = new CompassManager();
 	final HashMap<CompassRequest, CompassResult> requests = new HashMap<CompassRequest, CompassResult>();
 
-	public void postResult( long attunement, int x, int y, int z, CompassResult result )
+	public void postResult( final long attunement, final int x, final int y, final int z, final CompassResult result )
 	{
-		CompassRequest r = new CompassRequest( attunement, x, y, z );
+		final CompassRequest r = new CompassRequest( attunement, x, y, z );
 		this.requests.put( r, result );
 	}
 
-	public CompassResult getCompassDirection( long attunement, int x, int y, int z )
+	public CompassResult getCompassDirection( final long attunement, final int x, final int y, final int z )
 	{
-		long now = System.currentTimeMillis();
+		final long now = System.currentTimeMillis();
 
-		Iterator<CompassResult> i = this.requests.values().iterator();
+		final Iterator<CompassResult> i = this.requests.values().iterator();
 		while( i.hasNext() )
 		{
-			CompassResult res = i.next();
-			long diff = now - res.time;
+			final CompassResult res = i.next();
+			final long diff = now - res.time;
 			if( diff > 20000 )
 			{
 				i.remove();
 			}
 		}
 
-		CompassRequest r = new CompassRequest( attunement, x, y, z );
+		final CompassRequest r = new CompassRequest( attunement, x, y, z );
 		CompassResult res = this.requests.get( r );
 
 		if( res == null )
@@ -74,7 +74,7 @@ public class CompassManager
 		return res;
 	}
 
-	private void requestUpdate( CompassRequest r )
+	private void requestUpdate( final CompassRequest r )
 	{
 		NetworkHandler.instance.sendToServer( new PacketCompassRequest( r.attunement, r.cx, r.cz, r.cdy ) );
 	}
@@ -89,7 +89,7 @@ public class CompassManager
 		final int cdy;
 		final int cz;
 
-		public CompassRequest( long attunement, int x, int y, int z )
+		public CompassRequest( final long attunement, final int x, final int y, final int z )
 		{
 			this.attunement = attunement;
 			this.cx = x >> 4;
@@ -105,7 +105,7 @@ public class CompassManager
 		}
 
 		@Override
-		public boolean equals( Object obj )
+		public boolean equals( final Object obj )
 		{
 			if( obj == null )
 			{
@@ -115,7 +115,7 @@ public class CompassManager
 			{
 				return false;
 			}
-			CompassRequest other = (CompassRequest) obj;
+			final CompassRequest other = (CompassRequest) obj;
 			return this.attunement == other.attunement && this.cx == other.cx && this.cdy == other.cdy && this.cz == other.cz;
 		}
 	}

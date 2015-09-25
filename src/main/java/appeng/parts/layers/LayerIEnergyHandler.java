@@ -34,9 +34,9 @@ public class LayerIEnergyHandler extends LayerBase implements IEnergyHandler
 {
 
 	@Override
-	public int receiveEnergy( ForgeDirection from, int maxReceive, boolean simulate )
+	public int receiveEnergy( final ForgeDirection from, final int maxReceive, final boolean simulate )
 	{
-		IPart part = this.getPart( from );
+		final IPart part = this.getPart( from );
 		if( part instanceof IEnergyReceiver )
 		{
 			return ( (IEnergyReceiver) part ).receiveEnergy( from, maxReceive, simulate );
@@ -46,9 +46,9 @@ public class LayerIEnergyHandler extends LayerBase implements IEnergyHandler
 	}
 
 	@Override
-	public int extractEnergy( ForgeDirection from, int maxExtract, boolean simulate )
+	public int extractEnergy( final ForgeDirection from, final int maxExtract, final boolean simulate )
 	{
-		IPart part = this.getPart( from );
+		final IPart part = this.getPart( from );
 		if( part instanceof IEnergyProvider )
 		{
 			return ( (IEnergyProvider) part ).extractEnergy( from, maxExtract, simulate );
@@ -58,9 +58,9 @@ public class LayerIEnergyHandler extends LayerBase implements IEnergyHandler
 	}
 
 	@Override
-	public int getEnergyStored( ForgeDirection from )
+	public int getEnergyStored( final ForgeDirection from )
 	{
-		IPart part = this.getPart( from );
+		final IPart part = this.getPart( from );
 		if( part instanceof IEnergyProvider )
 		{
 			return ( (IEnergyProvider) part ).getEnergyStored( from );
@@ -70,9 +70,9 @@ public class LayerIEnergyHandler extends LayerBase implements IEnergyHandler
 	}
 
 	@Override
-	public int getMaxEnergyStored( ForgeDirection from )
+	public int getMaxEnergyStored( final ForgeDirection from )
 	{
-		IPart part = this.getPart( from );
+		final IPart part = this.getPart( from );
 		if( part instanceof IEnergyProvider )
 		{
 			return ( (IEnergyProvider) part ).getMaxEnergyStored( from );
@@ -82,9 +82,9 @@ public class LayerIEnergyHandler extends LayerBase implements IEnergyHandler
 	}
 
 	@Override
-	public boolean canConnectEnergy( ForgeDirection from )
+	public boolean canConnectEnergy( final ForgeDirection from )
 	{
-		IPart part = this.getPart( from );
+		final IPart part = this.getPart( from );
 		if( part instanceof IEnergyConnection )
 		{
 			return ( (IEnergyConnection) part ).canConnectEnergy( from );

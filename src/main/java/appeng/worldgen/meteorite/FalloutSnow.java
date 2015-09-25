@@ -13,7 +13,7 @@ public class FalloutSnow extends FalloutCopy
 	public static final double ICE_THRESHOLD = 0.5;
 	private final MeteoriteBlockPutter putter;
 
-	public FalloutSnow( IMeteoriteWorld w, int x, int y, int z, MeteoriteBlockPutter putter, IBlockDefinition skyStoneDefinition )
+	public FalloutSnow( final IMeteoriteWorld w, final int x, final int y, final int z, final MeteoriteBlockPutter putter, final IBlockDefinition skyStoneDefinition )
 	{
 		super( w, x, y, z, putter, skyStoneDefinition );
 		this.putter = putter;
@@ -26,7 +26,7 @@ public class FalloutSnow extends FalloutCopy
 	}
 
 	@Override
-	public void getOther( IMeteoriteWorld w, int x, int y, int z, double a )
+	public void getOther( final IMeteoriteWorld w, final int x, final int y, final int z, final double a )
 	{
 		if( a > SNOW_THRESHOLD )
 		{

@@ -165,7 +165,7 @@ public final class CraftGuide extends CraftGuideAPIObject implements IIntegratio
 	}
 
 	@Override
-	public void generateRecipes( RecipeGenerator generator )
+	public void generateRecipes( final RecipeGenerator generator )
 	{
 		final RecipeTemplate craftingTemplate;
 		final RecipeTemplate smallTemplate;
@@ -214,13 +214,13 @@ public final class CraftGuide extends CraftGuideAPIObject implements IIntegratio
 		return (List<IRecipe>) CraftingManager.getInstance().getRecipeList();
 	}
 
-	private void addCraftingRecipes( RecipeTemplate template, RecipeTemplate templateSmall, RecipeTemplate templateShapeless, RecipeGenerator generator )
+	private void addCraftingRecipes( final RecipeTemplate template, final RecipeTemplate templateSmall, final RecipeTemplate templateShapeless, final RecipeGenerator generator )
 	{
 		final List<IRecipe> recipes = this.getUncheckedRecipes();
 
 		int errCount = 0;
 
-		for( IRecipe recipe : recipes )
+		for( final IRecipe recipe : recipes )
 		{
 			try
 			{
@@ -243,7 +243,7 @@ public final class CraftGuide extends CraftGuideAPIObject implements IIntegratio
 					generator.addRecipe( template, items );
 				}
 			}
-			catch( Exception e )
+			catch( final Exception e )
 			{
 				if( errCount >= 5 )
 				{
@@ -260,12 +260,12 @@ public final class CraftGuide extends CraftGuideAPIObject implements IIntegratio
 		}
 	}
 
-	private void addGrinderRecipes( IAppEngApi api, ItemStack grindstone, RecipeGenerator generator )
+	private void addGrinderRecipes( final IAppEngApi api, final ItemStack grindstone, final RecipeGenerator generator )
 	{
 		final ItemStack handle = api.definitions().blocks().crankHandle().maybeStack( 1 ).orNull();
 		final RecipeTemplate grinderTemplate = generator.createRecipeTemplate( GRINDER_SLOTS, grindstone );
 
-		for( IGrinderEntry recipe : api.registries().grinder().getRecipes() )
+		for( final IGrinderEntry recipe : api.registries().grinder().getRecipes() )
 		{
 			generator.addRecipe( grinderTemplate, new Object[] {
 					recipe.getInput(),
@@ -284,11 +284,11 @@ public final class CraftGuide extends CraftGuideAPIObject implements IIntegratio
 		}
 	}
 
-	private void addInscriberRecipes( IAppEngApi api, ItemStack inscriber, RecipeGenerator generator )
+	private void addInscriberRecipes( final IAppEngApi api, final ItemStack inscriber, final RecipeGenerator generator )
 	{
 		final RecipeTemplate inscriberTemplate = generator.createRecipeTemplate( INSCRIBER_SLOTS, inscriber );
 
-		for( IInscriberRecipe recipe : api.registries().inscriber().getRecipes() )
+		for( final IInscriberRecipe recipe : api.registries().inscriber().getRecipes() )
 		{
 			generator.addRecipe( inscriberTemplate, new Object[] {
 					recipe.getInputs(),
@@ -300,7 +300,7 @@ public final class CraftGuide extends CraftGuideAPIObject implements IIntegratio
 		}
 	}
 
-	private Object[] getCraftingShapelessRecipe( List<?> items, ItemStack recipeOutput )
+	private Object[] getCraftingShapelessRecipe( final List<?> items, final ItemStack recipeOutput )
 	{
 		final Object[] output = new Object[10];
 
@@ -319,11 +319,11 @@ public final class CraftGuide extends CraftGuideAPIObject implements IIntegratio
 				{
 					output[i] = this.toCG( ( (IIngredient) output[i] ).getItemStackSet() );
 				}
-				catch( RegistrationError ignored )
+				catch( final RegistrationError ignored )
 				{
 
 				}
-				catch( MissingIngredientError ignored )
+				catch( final MissingIngredientError ignored )
 				{
 
 				}
@@ -335,7 +335,7 @@ public final class CraftGuide extends CraftGuideAPIObject implements IIntegratio
 		return output;
 	}
 
-	private Object[] getSmallShapedRecipe( int width, int height, Object[] items, ItemStack recipeOutput )
+	private Object[] getSmallShapedRecipe( final int width, final int height, final Object[] items, final ItemStack recipeOutput )
 	{
 		final Object[] output = new Object[5];
 
@@ -357,11 +357,11 @@ public final class CraftGuide extends CraftGuideAPIObject implements IIntegratio
 					{
 						output[i] = this.toCG( ( (IIngredient) output[i] ).getItemStackSet() );
 					}
-					catch( RegistrationError ignored )
+					catch( final RegistrationError ignored )
 					{
 
 					}
-					catch( MissingIngredientError ignored )
+					catch( final MissingIngredientError ignored )
 					{
 
 					}
@@ -374,7 +374,7 @@ public final class CraftGuide extends CraftGuideAPIObject implements IIntegratio
 		return output;
 	}
 
-	private Object[] getCraftingShapedRecipe( int width, int height, Object[] items, ItemStack recipeOutput )
+	private Object[] getCraftingShapedRecipe( final int width, final int height, final Object[] items, final ItemStack recipeOutput )
 	{
 		final Object[] output = new Object[10];
 
@@ -396,11 +396,11 @@ public final class CraftGuide extends CraftGuideAPIObject implements IIntegratio
 					{
 						output[i] = this.toCG( ( (IIngredient) output[i] ).getItemStackSet() );
 					}
-					catch( RegistrationError ignored )
+					catch( final RegistrationError ignored )
 					{
 
 					}
-					catch( MissingIngredientError ignored )
+					catch( final MissingIngredientError ignored )
 					{
 
 					}
@@ -413,7 +413,7 @@ public final class CraftGuide extends CraftGuideAPIObject implements IIntegratio
 		return output;
 	}
 
-	private Object toCG( ItemStack[] itemStackSet )
+	private Object toCG( final ItemStack[] itemStackSet )
 	{
 		final List<ItemStack> list = Arrays.asList( itemStackSet );
 
@@ -430,7 +430,7 @@ public final class CraftGuide extends CraftGuideAPIObject implements IIntegratio
 	}
 
 	@Nullable
-	private Object[] getCraftingRecipe( IRecipe recipe, boolean allowSmallGrid )
+	private Object[] getCraftingRecipe( final IRecipe recipe, final boolean allowSmallGrid )
 	{
 		if( recipe instanceof ShapelessRecipe )
 		{

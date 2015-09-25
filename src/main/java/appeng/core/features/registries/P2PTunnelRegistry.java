@@ -108,7 +108,7 @@ public final class P2PTunnelRegistry implements IP2PTunnelRegistry
 		this.addNewAttunement( this.getModItem( "EnderIO", "itemLiquidConduit", OreDictionary.WILDCARD_VALUE ), TunnelType.FLUID );
 		this.addNewAttunement( this.getModItem( "ThermalDynamics", "ThermalDynamics_16", 0 ), TunnelType.FLUID );
 
-		for( AEColor c : AEColor.values() )
+		for( final AEColor c : AEColor.values() )
 		{
 			this.addNewAttunement( parts.cableGlass().stack( c, 1 ), TunnelType.ME );
 			this.addNewAttunement( parts.cableCovered().stack( c, 1 ), TunnelType.ME );
@@ -118,7 +118,7 @@ public final class P2PTunnelRegistry implements IP2PTunnelRegistry
 	}
 
 	@Override
-	public void addNewAttunement( @Nullable ItemStack trigger, @Nullable TunnelType type )
+	public void addNewAttunement( @Nullable final ItemStack trigger, @Nullable final TunnelType type )
 	{
 		if( type == null || trigger == null )
 		{
@@ -130,7 +130,7 @@ public final class P2PTunnelRegistry implements IP2PTunnelRegistry
 
 	@Nullable
 	@Override
-	public TunnelType getTunnelTypeByItem( ItemStack trigger )
+	public TunnelType getTunnelTypeByItem( final ItemStack trigger )
 	{
 		if( trigger != null )
 		{
@@ -139,7 +139,7 @@ public final class P2PTunnelRegistry implements IP2PTunnelRegistry
 				return TunnelType.FLUID;
 			}
 
-			for( ItemStack is : this.tunnels.keySet() )
+			for( final ItemStack is : this.tunnels.keySet() )
 			{
 				if( is.getItem() == trigger.getItem() && is.getItemDamage() == OreDictionary.WILDCARD_VALUE )
 				{
@@ -157,9 +157,9 @@ public final class P2PTunnelRegistry implements IP2PTunnelRegistry
 	}
 
 	@Nullable
-	private ItemStack getModItem( String modID, String name, int meta )
+	private ItemStack getModItem( final String modID, final String name, final int meta )
 	{
-		ItemStack myItemStack = GameRegistry.findItemStack( modID, name, 1 );
+		final ItemStack myItemStack = GameRegistry.findItemStack( modID, name, 1 );
 
 		if( myItemStack == null )
 		{
@@ -170,9 +170,9 @@ public final class P2PTunnelRegistry implements IP2PTunnelRegistry
 		return myItemStack;
 	}
 
-	private void addNewAttunement( IItemDefinition definition, TunnelType type )
+	private void addNewAttunement( final IItemDefinition definition, final TunnelType type )
 	{
-		for( ItemStack definitionStack : definition.maybeStack( 1 ).asSet() )
+		for( final ItemStack definitionStack : definition.maybeStack( 1 ).asSet() )
 		{
 			this.addNewAttunement( definitionStack, type );
 		}

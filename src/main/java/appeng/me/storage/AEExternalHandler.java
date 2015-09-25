@@ -37,7 +37,7 @@ public class AEExternalHandler implements IExternalStorageHandler
 {
 
 	@Override
-	public boolean canHandle( TileEntity te, ForgeDirection d, StorageChannel channel, BaseActionSource mySrc )
+	public boolean canHandle( final TileEntity te, final ForgeDirection d, final StorageChannel channel, final BaseActionSource mySrc )
 	{
 		if( channel == StorageChannel.ITEMS && te instanceof ITileStorageMonitorable )
 		{
@@ -48,7 +48,7 @@ public class AEExternalHandler implements IExternalStorageHandler
 	}
 
 	@Override
-	public IMEInventory getInventory( TileEntity te, ForgeDirection d, StorageChannel channel, BaseActionSource src )
+	public IMEInventory getInventory( final TileEntity te, final ForgeDirection d, final StorageChannel channel, final BaseActionSource src )
 	{
 		if( te instanceof TileCondenser )
 		{
@@ -64,12 +64,12 @@ public class AEExternalHandler implements IExternalStorageHandler
 
 		if( te instanceof ITileStorageMonitorable )
 		{
-			ITileStorageMonitorable iface = (ITileStorageMonitorable) te;
-			IStorageMonitorable sm = iface.getMonitorable( d, src );
+			final ITileStorageMonitorable iface = (ITileStorageMonitorable) te;
+			final IStorageMonitorable sm = iface.getMonitorable( d, src );
 
 			if( channel == StorageChannel.ITEMS && sm != null )
 			{
-				IMEInventory<IAEItemStack> ii = sm.getItemInventory();
+				final IMEInventory<IAEItemStack> ii = sm.getItemInventory();
 				if( ii != null )
 				{
 					return ii;
@@ -78,7 +78,7 @@ public class AEExternalHandler implements IExternalStorageHandler
 
 			if( channel == StorageChannel.FLUIDS && sm != null )
 			{
-				IMEInventory<IAEFluidStack> fi = sm.getFluidInventory();
+				final IMEInventory<IAEFluidStack> fi = sm.getFluidInventory();
 				if( fi != null )
 				{
 					return fi;

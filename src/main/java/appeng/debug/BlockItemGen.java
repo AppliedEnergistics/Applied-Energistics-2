@@ -39,7 +39,7 @@ public class BlockItemGen extends AEBaseTileBlock
 	}
 
 	@Override
-	public void registerBlockIcons( IIconRegister iconRegistry )
+	public void registerBlockIcons( final IIconRegister iconRegistry )
 	{
 		this.registerNoIcons();
 	}

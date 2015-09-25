@@ -39,7 +39,7 @@ public class PartStorageMonitor extends AbstractPartMonitor
 	private static final CableBusTextures FRONT_COLORED_ICON_LOCKED = CableBusTextures.PartStorageMonitor_Colored_Locked;
 
 	@Reflected
-	public PartStorageMonitor( ItemStack is )
+	public PartStorageMonitor( final ItemStack is )
 	{
 		super( is );
 	}

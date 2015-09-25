@@ -31,9 +31,9 @@ public class TerminalCraftingSlotFinder implements IStackPositioner
 {
 
 	@Override
-	public ArrayList<PositionedStack> positionStacks( ArrayList<PositionedStack> a )
+	public ArrayList<PositionedStack> positionStacks( final ArrayList<PositionedStack> a )
 	{
-		for( PositionedStack ps : a )
+		for( final PositionedStack ps : a )
 		{
 			if( ps != null )
 			{

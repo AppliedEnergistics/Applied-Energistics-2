@@ -48,7 +48,7 @@ public abstract class AEBaseItem extends Item implements IAEFeature
 		this.setNoRepair();
 	}
 
-	public AEBaseItem( Optional<String> subName )
+	public AEBaseItem( final Optional<String> subName )
 	{
 		this.subName = subName;
 		this.fullName = new FeatureNameExtractor( this.getClass(), subName ).get();
@@ -72,37 +72,37 @@ public abstract class AEBaseItem extends Item implements IAEFeature
 		// override!
 	}
 
-	public void setFeature( EnumSet<AEFeature> f )
+	public void setFeature( final EnumSet<AEFeature> f )
 	{
 		this.feature = new ItemFeatureHandler( f, this, this, this.subName );
 	}
 
 	@Override
 	@SuppressWarnings( "unchecked" )
-	public final void addInformation( ItemStack stack, EntityPlayer player, List lines, boolean displayMoreInfo )
+	public final void addInformation( final ItemStack stack, final EntityPlayer player, final List lines, final boolean displayMoreInfo )
 	{
 		this.addCheckedInformation( stack, player, lines, displayMoreInfo );
 	}
 
 	@Override
 	@SuppressWarnings( "unchecked" )
-	public final void getSubItems( Item sameItem, CreativeTabs creativeTab, List itemStacks )
+	public final void getSubItems( final Item sameItem, final CreativeTabs creativeTab, final List itemStacks )
 	{
 		this.getCheckedSubItems( sameItem, creativeTab, itemStacks );
 	}
 
 	@Override
-	public boolean isBookEnchantable( ItemStack itemstack1, ItemStack itemstack2 )
+	public boolean isBookEnchantable( final ItemStack itemstack1, final ItemStack itemstack2 )
 	{
 		return false;
 	}
 
-	protected void addCheckedInformation( ItemStack stack, EntityPlayer player, List<String> lines, boolean displayMoreInfo )
+	protected void addCheckedInformation( final ItemStack stack, final EntityPlayer player, final List<String> lines, final boolean displayMoreInfo )
 	{
 		super.addInformation( stack, player, lines, displayMoreInfo );
 	}
 
-	protected void getCheckedSubItems( Item sameItem, CreativeTabs creativeTab, List<ItemStack> itemStacks )
+	protected void getCheckedSubItems( final Item sameItem, final CreativeTabs creativeTab, final List<ItemStack> itemStacks )
 	{
 		super.getSubItems( sameItem, creativeTab, itemStacks );
 	}

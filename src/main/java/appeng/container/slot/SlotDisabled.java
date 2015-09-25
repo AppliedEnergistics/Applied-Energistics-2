@@ -27,19 +27,19 @@ import net.minecraft.item.ItemStack;
 public class SlotDisabled extends AppEngSlot
 {
 
-	public SlotDisabled( IInventory par1iInventory, int slotIndex, int x, int y )
+	public SlotDisabled( final IInventory par1iInventory, final int slotIndex, final int x, final int y )
 	{
 		super( par1iInventory, slotIndex, x, y );
 	}
 
 	@Override
-	public boolean isItemValid( ItemStack par1ItemStack )
+	public boolean isItemValid( final ItemStack par1ItemStack )
 	{
 		return false;
 	}
 
 	@Override
-	public boolean canTakeStack( EntityPlayer par1EntityPlayer )
+	public boolean canTakeStack( final EntityPlayer par1EntityPlayer )
 	{
 		return false;
 	}

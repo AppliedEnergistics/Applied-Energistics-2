@@ -50,26 +50,26 @@ public abstract class PartBasicState extends AEBasePart implements IPowerChannel
 
 	protected int clientFlags = 0; // sent as byte.
 
-	public PartBasicState( ItemStack is )
+	public PartBasicState( final ItemStack is )
 	{
 		super( is );
 		this.proxy.setFlags( GridFlags.REQUIRE_CHANNEL );
 	}
 
 	@MENetworkEventSubscribe
-	public void chanRender( MENetworkChannelsChanged c )
+	public void chanRender( final MENetworkChannelsChanged c )
 	{
 		this.getHost().markForUpdate();
 	}
 
 	@MENetworkEventSubscribe
-	public void powerRender( MENetworkPowerStatusChange c )
+	public void powerRender( final MENetworkPowerStatusChange c )
 	{
 		this.getHost().markForUpdate();
 	}
 
 	@SideOnly( Side.CLIENT )
-	public void renderLights( int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer )
+	public void renderLights( final int x, final int y, final int z, final IPartRenderHelper rh, final RenderBlocks renderer )
 	{
 		rh.normalRendering();
 		this.setColors( ( this.clientFlags & ( POWERED_FLAG | CHANNEL_FLAG ) ) == ( POWERED_FLAG | CHANNEL_FLAG ), ( this.clientFlags & POWERED_FLAG ) == POWERED_FLAG );
@@ -79,17 +79,17 @@ public abstract class PartBasicState extends AEBasePart implements IPowerChannel
 		rh.renderFace( x, y, z, CableBusTextures.PartMonitorSidesStatusLights.getIcon(), ForgeDirection.DOWN, renderer );
 	}
 
-	public void setColors( boolean hasChan, boolean hasPower )
+	public void setColors( final boolean hasChan, final boolean hasPower )
 	{
 		if( hasChan )
 		{
-			int l = 14;
+			final int l = 14;
 			Tessellator.instance.setBrightness( l << 20 | l << 4 );
 			Tessellator.instance.setColorOpaque_I( this.getColor().blackVariant );
 		}
 		else if( hasPower )
 		{
-			int l = 9;
+			final int l = 9;
 			Tessellator.instance.setBrightness( l << 20 | l << 4 );
 			Tessellator.instance.setColorOpaque_I( this.getColor().whiteVariant );
 		}
@@ -101,7 +101,7 @@ public abstract class PartBasicState extends AEBasePart implements IPowerChannel
 	}
 
 	@Override
-	public void writeToStream( ByteBuf data ) throws IOException
+	public void writeToStream( final ByteBuf data ) throws IOException
 	{
 		super.writeToStream( data );
 
@@ -121,7 +121,7 @@ public abstract class PartBasicState extends AEBasePart implements IPowerChannel
 
 			this.clientFlags = this.populateFlags( this.clientFlags );
 		}
-		catch( GridAccessException e )
+		catch( final GridAccessException e )
 		{
 			// meh
 		}
@@ -129,17 +129,17 @@ public abstract class PartBasicState extends AEBasePart implements IPowerChannel
 		data.writeByte( (byte) this.clientFlags );
 	}
 
-	protected int populateFlags( int cf )
+	protected int populateFlags( final int cf )
 	{
 		return cf;
 	}
 
 	@Override
-	public boolean readFromStream( ByteBuf data ) throws IOException
+	public boolean readFromStream( final ByteBuf data ) throws IOException
 	{
-		boolean eh = super.readFromStream( data );
+		final boolean eh = super.readFromStream( data );
 
-		int old = this.clientFlags;
+		final int old = this.clientFlags;
 		this.clientFlags = data.readByte();
 
 		return eh || old != this.clientFlags;

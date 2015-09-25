@@ -63,7 +63,7 @@ public class ItemRepo
 	private String NEIWord = null;
 	private boolean hasPower;
 
-	public ItemRepo( IScrollSource src, ISortSource sortSrc )
+	public ItemRepo( final IScrollSource src, final ISortSource sortSrc )
 	{
 		this.src = src;
 		this.sortSrc = sortSrc;
@@ -91,14 +91,14 @@ public class ItemRepo
 		return this.dsp.get( idx );
 	}
 
-	void setSearch( String search )
+	void setSearch( final String search )
 	{
 		this.searchString = search == null ? "" : search;
 	}
 
-	public void postUpdate( IAEItemStack is )
+	public void postUpdate( final IAEItemStack is )
 	{
-		IAEItemStack st = this.list.findPrecise( is );
+		final IAEItemStack st = this.list.findPrecise( is );
 
 		if( st != null )
 		{
@@ -111,7 +111,7 @@ public class ItemRepo
 		}
 	}
 
-	public void setViewCell( ItemStack[] list )
+	public void setViewCell( final ItemStack[] list )
 	{
 		this.myPartitionList = ItemViewCell.createFilter( list );
 		this.updateView();
@@ -125,15 +125,15 @@ public class ItemRepo
 		this.view.ensureCapacity( this.list.size() );
 		this.dsp.ensureCapacity( this.list.size() );
 
-		Enum viewMode = this.sortSrc.getSortDisplay();
-		Enum searchMode = AEConfig.instance.settings.getSetting( Settings.SEARCH_MODE );
+		final Enum viewMode = this.sortSrc.getSortDisplay();
+		final Enum searchMode = AEConfig.instance.settings.getSetting( Settings.SEARCH_MODE );
 		if( searchMode == SearchBoxMode.NEI_AUTOSEARCH || searchMode == SearchBoxMode.NEI_MANUAL_SEARCH )
 		{
 			this.updateNEI( this.searchString );
 		}
 
 		this.innerSearch = this.searchString;
-		boolean terminalSearchToolTips = AEConfig.instance.settings.getSetting( Settings.SEARCH_TOOLTIPS ) != YesNo.NO;
+		final boolean terminalSearchToolTips = AEConfig.instance.settings.getSetting( Settings.SEARCH_TOOLTIPS ) != YesNo.NO;
 		// boolean terminalSearchMods = Configuration.INSTANCE.settings.getSetting( Settings.SEARCH_MODS ) != YesNo.NO;
 
 		boolean searchMod = false;
@@ -148,13 +148,13 @@ public class ItemRepo
 		{
 			m = Pattern.compile( this.innerSearch.toLowerCase(), Pattern.CASE_INSENSITIVE );
 		}
-		catch( Throwable ignore )
+		catch( final Throwable ignore )
 		{
 			try
 			{
 				m = Pattern.compile( Pattern.quote( this.innerSearch.toLowerCase() ), Pattern.CASE_INSENSITIVE );
 			}
-			catch( Throwable __ )
+			catch( final Throwable __ )
 			{
 				return;
 			}
@@ -187,7 +187,7 @@ public class ItemRepo
 				continue;
 			}
 
-			String dspName = searchMod ? Platform.getModId( is ) : Platform.getItemDisplayName( is );
+			final String dspName = searchMod ? Platform.getModId( is ) : Platform.getItemDisplayName( is );
 			notDone = true;
 
 			if( m.matcher( dspName.toLowerCase() ).find() )
@@ -198,7 +198,7 @@ public class ItemRepo
 
 			if( terminalSearchToolTips && notDone )
 			{
-				for( Object lp : Platform.getTooltip( is ) )
+				for( final Object lp : Platform.getTooltip( is ) )
 				{
 					if( lp instanceof String && m.matcher( (CharSequence) lp ).find() )
 					{
@@ -215,8 +215,8 @@ public class ItemRepo
 			 */
 		}
 
-		Enum SortBy = this.sortSrc.getSortBy();
-		Enum SortDir = this.sortSrc.getSortDir();
+		final Enum SortBy = this.sortSrc.getSortBy();
+		final Enum SortDir = this.sortSrc.getSortDir();
 
 		ItemSorters.Direction = (appeng.api.config.SortDir) SortDir;
 		ItemSorters.init();
@@ -238,31 +238,31 @@ public class ItemRepo
 			Collections.sort( this.view, ItemSorters.CONFIG_BASED_SORT_BY_NAME );
 		}
 
-		for( IAEItemStack is : this.view )
+		for( final IAEItemStack is : this.view )
 		{
 			this.dsp.add( is.getItemStack() );
 		}
 	}
 
-	private void updateNEI( String filter )
+	private void updateNEI( final String filter )
 	{
 		try
 		{
 			if( this.NEIWord == null || !this.NEIWord.equals( filter ) )
 			{
-				Class c = ReflectionHelper.getClass( this.getClass().getClassLoader(), "codechicken.nei.LayoutManager" );
-				Field fldSearchField = c.getField( "searchField" );
-				Object searchField = fldSearchField.get( c );
+				final Class c = ReflectionHelper.getClass( this.getClass().getClassLoader(), "codechicken.nei.LayoutManager" );
+				final Field fldSearchField = c.getField( "searchField" );
+				final Object searchField = fldSearchField.get( c );
 
-				Method a = searchField.getClass().getMethod( "setText", String.class );
-				Method b = searchField.getClass().getMethod( "onTextChange", String.class );
+				final Method a = searchField.getClass().getMethod( "setText", String.class );
+				final Method b = searchField.getClass().getMethod( "onTextChange", String.class );
 
 				this.NEIWord = filter;
 				a.invoke( searchField, filter );
 				b.invoke( searchField, "" );
 			}
 		}
-		catch( Throwable ignore )
+		catch( final Throwable ignore )
 		{
 
 		}
@@ -283,7 +283,7 @@ public class ItemRepo
 		return this.hasPower;
 	}
 
-	public void setPower( boolean hasPower )
+	public void setPower( final boolean hasPower )
 	{
 		this.hasPower = hasPower;
 	}

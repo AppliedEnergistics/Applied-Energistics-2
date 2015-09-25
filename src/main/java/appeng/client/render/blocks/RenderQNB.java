@@ -47,19 +47,19 @@ public class RenderQNB extends BaseBlockRender<BlockQuantumBase, TileQuantumBrid
 {
 
 	@Override
-	public void renderInventory( BlockQuantumBase block, ItemStack item, RenderBlocks renderer, ItemRenderType type, Object[] obj )
+	public void renderInventory( final BlockQuantumBase block, final ItemStack item, final RenderBlocks renderer, final ItemRenderType type, final Object[] obj )
 	{
-		float minPx = 2.0f / 16.0f;
-		float maxPx = 14.0f / 16.0f;
+		final float minPx = 2.0f / 16.0f;
+		final float maxPx = 14.0f / 16.0f;
 		renderer.setRenderBounds( minPx, minPx, minPx, maxPx, maxPx, maxPx );
 
 		super.renderInventory( block, item, renderer, type, obj );
 	}
 
 	@Override
-	public boolean renderInWorld( BlockQuantumBase block, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
+	public boolean renderInWorld( final BlockQuantumBase block, final IBlockAccess world, final int x, final int y, final int z, final RenderBlocks renderer )
 	{
-		TileQuantumBridge tqb = block.getTileEntity( world, x, y, z );
+		final TileQuantumBridge tqb = block.getTileEntity( world, x, y, z );
 		if( tqb == null )
 		{
 			return false;
@@ -71,23 +71,23 @@ public class RenderQNB extends BaseBlockRender<BlockQuantumBase, TileQuantumBrid
 		final IBlocks blocks = definitions.blocks();
 		final IParts parts = definitions.parts();
 
-		for( Block linkBlock : blocks.quantumLink().maybeBlock().asSet() )
+		for( final Block linkBlock : blocks.quantumLink().maybeBlock().asSet() )
 		{
 			if( tqb.getBlockType() == linkBlock )
 			{
 				if( tqb.isFormed() )
 				{
-					EnumSet<ForgeDirection> sides = tqb.getConnections();
+					final EnumSet<ForgeDirection> sides = tqb.getConnections();
 
-					Item transGlassCable = parts.cableGlass().item( AEColor.Transparent );
+					final Item transGlassCable = parts.cableGlass().item( AEColor.Transparent );
 					this.renderCableAt( 0.11D, world, x, y, z, block, renderer, transGlassCable.getIconIndex( parts.cableGlass().stack( AEColor.Transparent, 1 ) ), 0.141D, sides );
 
-					Item transCoveredCable = parts.cableCovered().item( AEColor.Transparent );
+					final Item transCoveredCable = parts.cableCovered().item( AEColor.Transparent );
 					this.renderCableAt( 0.188D, world, x, y, z, block, renderer, transCoveredCable.getIconIndex( parts.cableCovered().stack( AEColor.Transparent, 1 ) ), 0.1875D, sides );
 				}
 
-				float renderMin = 2.0f / 16.0f;
-				float renderMax = 14.0f / 16.0f;
+				final float renderMin = 2.0f / 16.0f;
+				final float renderMax = 14.0f / 16.0f;
 				renderer.setRenderBounds( renderMin, renderMin, renderMin, renderMax, renderMax, renderMax );
 				renderer.renderStandardBlock( block, x, y, z );
 			}
@@ -95,14 +95,14 @@ public class RenderQNB extends BaseBlockRender<BlockQuantumBase, TileQuantumBrid
 			{
 				if( !tqb.isFormed() )
 				{
-					float renderMin = 2.0f / 16.0f;
-					float renderMax = 14.0f / 16.0f;
+					final float renderMin = 2.0f / 16.0f;
+					final float renderMax = 14.0f / 16.0f;
 					renderer.setRenderBounds( renderMin, renderMin, renderMin, renderMax, renderMax, renderMax );
 					renderer.renderStandardBlock( block, x, y, z );
 				}
 				else if( tqb.isCorner() )
 				{
-					Item transCoveredCable = parts.cableCovered().item( AEColor.Transparent );
+					final Item transCoveredCable = parts.cableCovered().item( AEColor.Transparent );
 					this.renderCableAt( 0.188D, world, x, y, z, block, renderer, transCoveredCable.getIconIndex( parts.cableCovered().stack( AEColor.Transparent, 1 ) ), 0.05D, tqb.getConnections() );
 
 					float renderMin = 4.0f / 16.0f;
@@ -119,9 +119,9 @@ public class RenderQNB extends BaseBlockRender<BlockQuantumBase, TileQuantumBrid
 						renderer.setRenderBounds( renderMin, renderMin, renderMin, renderMax, renderMax, renderMax );
 
 						Tessellator.instance.setColorOpaque_F( 1.0F, 1.0F, 1.0F );
-						int bn = 15;
+						final int bn = 15;
 						Tessellator.instance.setBrightness( bn << 20 | bn << 4 );
-						for( ForgeDirection side : ForgeDirection.VALID_DIRECTIONS )
+						for( final ForgeDirection side : ForgeDirection.VALID_DIRECTIONS )
 						{
 							this.renderFace( x, y, z, block, ExtraBlockTextures.BlockQRingCornerLight.getIcon(), renderer, side );
 						}
@@ -147,9 +147,9 @@ public class RenderQNB extends BaseBlockRender<BlockQuantumBase, TileQuantumBrid
 						renderer.setRenderBounds( renderMin, renderMin, renderMin, renderMax, renderMax, renderMax );
 
 						Tessellator.instance.setColorOpaque_F( 1.0F, 1.0F, 1.0F );
-						int bn = 15;
+						final int bn = 15;
 						Tessellator.instance.setBrightness( bn << 20 | bn << 4 );
-						for( ForgeDirection side : ForgeDirection.VALID_DIRECTIONS )
+						for( final ForgeDirection side : ForgeDirection.VALID_DIRECTIONS )
 						{
 							this.renderFace( x, y, z, block, ExtraBlockTextures.BlockQRingEdgeLight.getIcon(), renderer, side );
 						}
@@ -162,7 +162,7 @@ public class RenderQNB extends BaseBlockRender<BlockQuantumBase, TileQuantumBrid
 		return true;
 	}
 
-	private void renderCableAt( double thickness, IBlockAccess world, int x, int y, int z, BlockQuantumBase block, RenderBlocks renderer, IIcon texture, double pull, Collection<ForgeDirection> connections )
+	private void renderCableAt( final double thickness, final IBlockAccess world, final int x, final int y, final int z, final BlockQuantumBase block, final RenderBlocks renderer, final IIcon texture, final double pull, final Collection<ForgeDirection> connections )
 	{
 		block.getRendererInstance().setTemporaryRenderIcon( texture );
 

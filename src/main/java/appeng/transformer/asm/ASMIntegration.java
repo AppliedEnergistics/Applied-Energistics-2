@@ -52,7 +52,7 @@ public final class ASMIntegration implements IClassTransformer
 		 * Side, Display Name, ModID ClassPostFix
 		 */
 
-		for( IntegrationType type : IntegrationType.values() )
+		for( final IntegrationType type : IntegrationType.values() )
 		{
 			IntegrationRegistry.INSTANCE.add( type );
 		}
@@ -70,7 +70,7 @@ public final class ASMIntegration implements IClassTransformer
 
 	@Nullable
 	@Override
-	public byte[] transform( String name, String transformedName, byte[] basicClass )
+	public byte[] transform( final String name, final String transformedName, final byte[] basicClass )
 	{
 		if( basicClass == null || transformedName.startsWith( "appeng.transformer" ) )
 		{
@@ -79,22 +79,22 @@ public final class ASMIntegration implements IClassTransformer
 
 		if( transformedName.startsWith( "appeng." ) )
 		{
-			ClassNode classNode = new ClassNode();
-			ClassReader classReader = new ClassReader( basicClass );
+			final ClassNode classNode = new ClassNode();
+			final ClassReader classReader = new ClassReader( basicClass );
 			classReader.accept( classNode, 0 );
 
 			try
 			{
-				boolean reWrite = this.removeOptionals( classNode );
+				final boolean reWrite = this.removeOptionals( classNode );
 
 				if( reWrite )
 				{
-					ClassWriter writer = new ClassWriter( ClassWriter.COMPUTE_MAXS );
+					final ClassWriter writer = new ClassWriter( ClassWriter.COMPUTE_MAXS );
 					classNode.accept( writer );
 					return writer.toByteArray();
 				}
 			}
-			catch( Throwable t )
+			catch( final Throwable t )
 			{
 				t.printStackTrace();
 			}
@@ -102,13 +102,13 @@ public final class ASMIntegration implements IClassTransformer
 		return basicClass;
 	}
 
-	private boolean removeOptionals( ClassNode classNode )
+	private boolean removeOptionals( final ClassNode classNode )
 	{
 		boolean changed = false;
 
 		if( classNode.visibleAnnotations != null )
 		{
-			for( AnnotationNode an : classNode.visibleAnnotations )
+			for( final AnnotationNode an : classNode.visibleAnnotations )
 			{
 				if( this.hasAnnotation( an, Integration.Interface.class ) )
 				{
@@ -119,7 +119,7 @@ public final class ASMIntegration implements IClassTransformer
 				}
 				else if( this.hasAnnotation( an, Integration.InterfaceList.class ) )
 				{
-					for( Object o : ( (Iterable) an.values.get( 1 ) ) )
+					for( final Object o : ( (Iterable) an.values.get( 1 ) ) )
 					{
 						if( this.stripInterface( classNode, Integration.InterfaceList.class, (AnnotationNode) o ) )
 						{
@@ -130,14 +130,14 @@ public final class ASMIntegration implements IClassTransformer
 			}
 		}
 
-		Iterator<MethodNode> i = classNode.methods.iterator();
+		final Iterator<MethodNode> i = classNode.methods.iterator();
 		while( i.hasNext() )
 		{
-			MethodNode mn = i.next();
+			final MethodNode mn = i.next();
 
 			if( mn.visibleAnnotations != null )
 			{
-				for( AnnotationNode an : mn.visibleAnnotations )
+				for( final AnnotationNode an : mn.visibleAnnotations )
 				{
 					if( this.hasAnnotation( an, Integration.Method.class ) )
 					{
@@ -158,12 +158,12 @@ public final class ASMIntegration implements IClassTransformer
 		return changed;
 	}
 
-	private boolean hasAnnotation( AnnotationNode ann, Class<?> annotation )
+	private boolean hasAnnotation( final AnnotationNode ann, final Class<?> annotation )
 	{
 		return ann.desc.equals( Type.getDescriptor( annotation ) );
 	}
 
-	private boolean stripInterface( ClassNode classNode, Class<?> class1, AnnotationNode an )
+	private boolean stripInterface( final ClassNode classNode, final Class<?> class1, final AnnotationNode an )
 	{
 		if( an.values.size() != 4 )
 		{
@@ -213,7 +213,7 @@ public final class ASMIntegration implements IClassTransformer
 		return false;
 	}
 
-	private boolean stripMethod( ClassNode classNode, MethodNode mn, Iterator<MethodNode> i, Class class1, AnnotationNode an )
+	private boolean stripMethod( final ClassNode classNode, final MethodNode mn, final Iterator<MethodNode> i, final Class class1, final AnnotationNode an )
 	{
 		if( an.values.size() != 2 )
 		{
@@ -229,7 +229,7 @@ public final class ASMIntegration implements IClassTransformer
 
 		if( iName != null )
 		{
-			IntegrationType type = IntegrationType.valueOf( iName );
+			final IntegrationType type = IntegrationType.valueOf( iName );
 			if( !IntegrationRegistry.INSTANCE.isEnabled( type ) )
 			{
 				this.log( "Removing Method " + mn.name + " from " + classNode.name + " because " + iName + " integration is disabled." );
@@ -249,7 +249,7 @@ public final class ASMIntegration implements IClassTransformer
 		return false;
 	}
 
-	private void log( String string )
+	private void log( final String string )
 	{
 		FMLRelaunchLog.log( "AE2-CORE", Level.INFO, string );
 	}

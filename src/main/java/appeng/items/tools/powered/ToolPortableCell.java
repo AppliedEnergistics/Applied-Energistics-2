@@ -66,7 +66,7 @@ public class ToolPortableCell extends AEBasePoweredItem implements IStorageCell,
 	}
 
 	@Override
-	public ItemStack onItemRightClick( ItemStack item, World w, EntityPlayer player )
+	public ItemStack onItemRightClick( final ItemStack item, final World w, final EntityPlayer player )
 	{
 		Platform.openGUI( player, null, ForgeDirection.UNKNOWN, GuiBridge.GUI_PORTABLE_CELL );
 		return item;
@@ -80,15 +80,15 @@ public class ToolPortableCell extends AEBasePoweredItem implements IStorageCell,
 	}
 
 	@Override
-	public void addCheckedInformation( ItemStack stack, EntityPlayer player, List<String> lines, boolean displayMoreInfo )
+	public void addCheckedInformation( final ItemStack stack, final EntityPlayer player, final List<String> lines, final boolean displayMoreInfo )
 	{
 		super.addCheckedInformation( stack, player, lines, displayMoreInfo );
 
-		IMEInventory<IAEItemStack> cdi = AEApi.instance().registries().cell().getCellInventory( stack, null, StorageChannel.ITEMS );
+		final IMEInventory<IAEItemStack> cdi = AEApi.instance().registries().cell().getCellInventory( stack, null, StorageChannel.ITEMS );
 
 		if( cdi instanceof CellInventoryHandler )
 		{
-			ICellInventory cd = ( (ICellInventoryHandler) cdi ).getCellInv();
+			final ICellInventory cd = ( (ICellInventoryHandler) cdi ).getCellInv();
 			if( cd != null )
 			{
 				lines.add( cd.getUsedBytes() + " " + GuiText.Of.getLocal() + ' ' + cd.getTotalBytes() + ' ' + GuiText.BytesUsed.getLocal() );
@@ -98,31 +98,31 @@ public class ToolPortableCell extends AEBasePoweredItem implements IStorageCell,
 	}
 
 	@Override
-	public int getBytes( ItemStack cellItem )
+	public int getBytes( final ItemStack cellItem )
 	{
 		return 512;
 	}
 
 	@Override
-	public int BytePerType( ItemStack cell )
+	public int BytePerType( final ItemStack cell )
 	{
 		return 8;
 	}
 
 	@Override
-	public int getBytesPerType( ItemStack cellItem )
+	public int getBytesPerType( final ItemStack cellItem )
 	{
 		return 8;
 	}
 
 	@Override
-	public int getTotalTypes( ItemStack cellItem )
+	public int getTotalTypes( final ItemStack cellItem )
 	{
 		return 27;
 	}
 
 	@Override
-	public boolean isBlackListed( ItemStack cellItem, IAEItemStack requestedAddition )
+	public boolean isBlackListed( final ItemStack cellItem, final IAEItemStack requestedAddition )
 	{
 		return false;
 	}
@@ -134,7 +134,7 @@ public class ToolPortableCell extends AEBasePoweredItem implements IStorageCell,
 	}
 
 	@Override
-	public boolean isStorageCell( ItemStack i )
+	public boolean isStorageCell( final ItemStack i )
 	{
 		return true;
 	}
@@ -146,51 +146,51 @@ public class ToolPortableCell extends AEBasePoweredItem implements IStorageCell,
 	}
 
 	@Override
-	public String getUnlocalizedGroupName( Set<ItemStack> others, ItemStack is )
+	public String getUnlocalizedGroupName( final Set<ItemStack> others, final ItemStack is )
 	{
 		return GuiText.StorageCells.getUnlocalized();
 	}
 
 	@Override
-	public boolean isEditable( ItemStack is )
+	public boolean isEditable( final ItemStack is )
 	{
 		return true;
 	}
 
 	@Override
-	public IInventory getUpgradesInventory( ItemStack is )
+	public IInventory getUpgradesInventory( final ItemStack is )
 	{
 		return new CellUpgrades( is, 2 );
 	}
 
 	@Override
-	public IInventory getConfigInventory( ItemStack is )
+	public IInventory getConfigInventory( final ItemStack is )
 	{
 		return new CellConfig( is );
 	}
 
 	@Override
-	public FuzzyMode getFuzzyMode( ItemStack is )
+	public FuzzyMode getFuzzyMode( final ItemStack is )
 	{
-		String fz = Platform.openNbtData( is ).getString( "FuzzyMode" );
+		final String fz = Platform.openNbtData( is ).getString( "FuzzyMode" );
 		try
 		{
 			return FuzzyMode.valueOf( fz );
 		}
-		catch( Throwable t )
+		catch( final Throwable t )
 		{
 			return FuzzyMode.IGNORE_ALL;
 		}
 	}
 
 	@Override
-	public void setFuzzyMode( ItemStack is, FuzzyMode fzMode )
+	public void setFuzzyMode( final ItemStack is, final FuzzyMode fzMode )
 	{
 		Platform.openNbtData( is ).setString( "FuzzyMode", fzMode.name() );
 	}
 
 	@Override
-	public IGuiItemObject getGuiObject( ItemStack is, World w, int x, int y, int z )
+	public IGuiItemObject getGuiObject( final ItemStack is, final World w, final int x, final int y, final int z )
 	{
 		return new PortableCellViewer( is, x );
 	}

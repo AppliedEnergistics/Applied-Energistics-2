@@ -55,21 +55,21 @@ public class FMPEvent
 	private final ThreadLocal<Object> placing = new ThreadLocal<Object>();
 
 	@SubscribeEvent
-	public void ServerFMPEvent( FMPPacketEvent event )
+	public void ServerFMPEvent( final FMPPacketEvent event )
 	{
 		FMPEvent.place( event.sender, event.sender.worldObj );
 	}
 
-	public static boolean place( EntityPlayer player, World world )
+	public static boolean place( final EntityPlayer player, final World world )
 	{
-		MovingObjectPosition hit = RayTracer.reTrace( world, player );
+		final MovingObjectPosition hit = RayTracer.reTrace( world, player );
 		if( hit == null )
 		{
 			return false;
 		}
 
-		BlockCoord pos = new BlockCoord( hit.blockX, hit.blockY, hit.blockZ ).offset( hit.sideHit );
-		ItemStack held = player.getHeldItem();
+		final BlockCoord pos = new BlockCoord( hit.blockX, hit.blockY, hit.blockZ ).offset( hit.sideHit );
+		final ItemStack held = player.getHeldItem();
 
 		if( held == null )
 		{
@@ -80,7 +80,7 @@ public class FMPEvent
 		TMultiPart part = null;
 		if( held.getItem() instanceof AEBaseItemBlock )
 		{
-			AEBaseItemBlock ib = (AEBaseItemBlock) held.getItem();
+			final AEBaseItemBlock ib = (AEBaseItemBlock) held.getItem();
 			blk = Block.getBlockFromItem( ib );
 			part = PartRegistry.getPartByBlock( blk, hit.sideHit );
 		}
@@ -93,8 +93,8 @@ public class FMPEvent
 		if( world.isRemote && !player.isSneaking() )// attempt to use block activated like normal and tell the server
 		// the right stuff
 		{
-			Vector3 f = new Vector3( hit.hitVec ).add( -hit.blockX, -hit.blockY, -hit.blockZ );
-			Block block = world.getBlock( hit.blockX, hit.blockY, hit.blockZ );
+			final Vector3 f = new Vector3( hit.hitVec ).add( -hit.blockX, -hit.blockY, -hit.blockZ );
+			final Block block = world.getBlock( hit.blockX, hit.blockY, hit.blockZ );
 			if( block != null && !ignoreActivate( block ) && block.onBlockActivated( world, hit.blockX, hit.blockY, hit.blockZ, player, hit.sideHit, (float) f.x, (float) f.y, (float) f.z ) )
 			{
 				player.swingItem();
@@ -103,7 +103,7 @@ public class FMPEvent
 			}
 		}
 
-		TileMultipart tile = TileMultipart.getOrConvertTile( world, pos );
+		final TileMultipart tile = TileMultipart.getOrConvertTile( world, pos );
 		if( tile == null || !tile.canAddPart( part ) )
 		{
 			return false;
@@ -134,7 +134,7 @@ public class FMPEvent
 	/**
 	 * Because vanilla is weird.
 	 */
-	private static boolean ignoreActivate( Block block )
+	private static boolean ignoreActivate( final Block block )
 	{
 		if( block instanceof BlockFence )
 		{
@@ -144,7 +144,7 @@ public class FMPEvent
 	}
 
 	@SubscribeEvent
-	public void playerInteract( PlayerInteractEvent event )
+	public void playerInteract( final PlayerInteractEvent event )
 	{
 		if( event.action == Action.RIGHT_CLICK_BLOCK && event.entityPlayer.worldObj.isRemote )
 		{

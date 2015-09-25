@@ -30,7 +30,7 @@ public class FullIcon implements IIcon
 
 	private final IIcon p;
 
-	public FullIcon( IIcon o )
+	public FullIcon( final IIcon o )
 	{
 		if( o == null )
 		{
@@ -68,7 +68,7 @@ public class FullIcon implements IIcon
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public float getInterpolatedU( double d0 )
+	public float getInterpolatedU( final double d0 )
 	{
 		if( d0 > 8.0 )
 		{
@@ -93,7 +93,7 @@ public class FullIcon implements IIcon
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public float getInterpolatedV( double d0 )
+	public float getInterpolatedV( final double d0 )
 	{
 		if( d0 > 8.0 )
 		{

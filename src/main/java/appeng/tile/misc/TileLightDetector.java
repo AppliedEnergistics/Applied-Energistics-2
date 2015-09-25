@@ -49,7 +49,7 @@ public class TileLightDetector extends AEBaseTile
 
 	public void updateLight()
 	{
-		int val = this.worldObj.getBlockLightValue( this.xCoord, this.yCoord, this.zCoord );
+		final int val = this.worldObj.getBlockLightValue( this.xCoord, this.yCoord, this.zCoord );
 
 		if( this.lastLight != val )
 		{

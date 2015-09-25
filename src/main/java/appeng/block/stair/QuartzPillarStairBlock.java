@@ -29,7 +29,7 @@ import appeng.core.features.AEFeature;
 
 public class QuartzPillarStairBlock extends AEBaseStairBlock
 {
-	public QuartzPillarStairBlock( Block block )
+	public QuartzPillarStairBlock( final Block block )
 	{
 		super( block, 0, EnumSet.of( AEFeature.DecorativeQuartzBlocks ) );
 	}

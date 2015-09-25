@@ -129,12 +129,12 @@ public final class Registration
 		this.recipeHandler = new RecipeHandler();
 	}
 
-	public void preInitialize( FMLPreInitializationEvent event )
+	public void preInitialize( final FMLPreInitializationEvent event )
 	{
 		this.registerSpatial( false );
 
 		final Api api = Api.INSTANCE;
-		IRecipeHandlerRegistry recipeRegistry = api.registries().recipes();
+		final IRecipeHandlerRegistry recipeRegistry = api.registries().recipes();
 		this.registerCraftHandlers( recipeRegistry );
 
 		RecipeSorter.register( "AE2-Facade", FacadeRecipe.class, Category.SHAPED, "" );
@@ -161,25 +161,25 @@ public final class Registration
 		this.assignItems( items, apiItems );
 
 		// Register all detected handlers and features (items, blocks) in pre-init
-		for( IFeatureHandler handler : definitions.getFeatureHandlerRegistry().getRegisteredFeatureHandlers() )
+		for( final IFeatureHandler handler : definitions.getFeatureHandlerRegistry().getRegisteredFeatureHandlers() )
 		{
 			handler.register();
 		}
 
-		for( IAEFeature feature : definitions.getFeatureRegistry().getRegisteredFeatures() )
+		for( final IAEFeature feature : definitions.getFeatureRegistry().getRegisteredFeatures() )
 		{
 			feature.postInit();
 		}
 	}
 
-	private void registerSpatial( boolean force )
+	private void registerSpatial( final boolean force )
 	{
 		if( !AEConfig.instance.isFeatureEnabled( AEFeature.SpatialIO ) )
 		{
 			return;
 		}
 
-		AEConfig config = AEConfig.instance;
+		final AEConfig config = AEConfig.instance;
 
 		if( this.storageBiome == null )
 		{
@@ -219,7 +219,7 @@ public final class Registration
 		}
 	}
 
-	private void registerCraftHandlers( IRecipeHandlerRegistry registry )
+	private void registerCraftHandlers( final IRecipeHandlerRegistry registry )
 	{
 		registry.addNewSubItemResolver( new AEItemResolver() );
 
@@ -251,7 +251,7 @@ public final class Registration
 	 * @deprecated to be removed when the public definition API is removed
 	 */
 	@Deprecated
-	private void assignMaterials( Materials target, IMaterials source )
+	private void assignMaterials( final Materials target, final IMaterials source )
 	{
 		target.materialCell2SpatialPart = this.converter.of( source.cell2SpatialPart() );
 		target.materialCell16SpatialPart = this.converter.of( source.cell16SpatialPart() );
@@ -335,7 +335,7 @@ public final class Registration
 	 * @deprecated to be removed when the public definition API is removed
 	 */
 	@Deprecated
-	private void assignParts( Parts target, IParts source )
+	private void assignParts( final Parts target, final IParts source )
 	{
 		target.partCableSmart = source.cableSmart();
 		target.partCableCovered = source.cableCovered();
@@ -384,7 +384,7 @@ public final class Registration
 	 * @deprecated to be removed when the public definition API is removed
 	 */
 	@Deprecated
-	private void assignBlocks( Blocks target, IBlocks source )
+	private void assignBlocks( final Blocks target, final IBlocks source )
 	{
 		target.blockMultiPart = this.converter.of( source.multiPart() );
 
@@ -454,7 +454,7 @@ public final class Registration
 	 * @deprecated to be removed when the public definition API is removed
 	 */
 	@Deprecated
-	private void assignItems( Items target, IItems source )
+	private void assignItems( final Items target, final IItems source )
 	{
 		target.itemCellCreative = this.converter.of( source.cellCreative() );
 		target.itemViewCell = this.converter.of( source.viewCell() );
@@ -503,7 +503,7 @@ public final class Registration
 		target.itemLumenPaintBall = source.coloredLumenPaintBall();
 	}
 
-	public void initialize( FMLInitializationEvent event )
+	public void initialize( final FMLInitializationEvent event )
 	{
 		final IAppEngApi api = AEApi.instance();
 		final IPartHelper partHelper = api.partHelper();
@@ -522,11 +522,11 @@ public final class Registration
 		FMLCommonHandler.instance().bus().register( TickHandler.INSTANCE );
 		MinecraftForge.EVENT_BUS.register( TickHandler.INSTANCE );
 
-		PartPlacement pp = new PartPlacement();
+		final PartPlacement pp = new PartPlacement();
 		MinecraftForge.EVENT_BUS.register( pp );
 		FMLCommonHandler.instance().bus().register( pp );
 
-		IGridCacheRegistry gcr = registries.gridCache();
+		final IGridCacheRegistry gcr = registries.gridCache();
 		gcr.registerGridCache( ITickManager.class, TickManagerCache.class );
 		gcr.registerGridCache( IEnergyGrid.class, EnergyGridCache.class );
 		gcr.registerGridCache( IPathingGrid.class, PathGridCache.class );
@@ -541,7 +541,7 @@ public final class Registration
 		registries.cell().addCellHandler( new BasicCellHandler() );
 		registries.cell().addCellHandler( new CreativeCellHandler() );
 
-		for( ItemStack ammoStack : api.definitions().materials().matterBall().maybeStack( 1 ).asSet() )
+		for( final ItemStack ammoStack : api.definitions().materials().matterBall().maybeStack( 1 ).asSet() )
 		{
 			final double weight = 32;
 
@@ -567,7 +567,7 @@ public final class Registration
 		}
 	}
 
-	public void postInit( FMLPostInitializationEvent event )
+	public void postInit( final FMLPostInitializationEvent event )
 	{
 		this.registerSpatial( true );
 
@@ -586,7 +586,7 @@ public final class Registration
 		GuiText.values();
 
 		Api.INSTANCE.partHelper().initFMPSupport();
-		for( Block block : blocks.multiPart().maybeBlock().asSet() )
+		for( final Block block : blocks.multiPart().maybeBlock().asSet() )
 		{
 			( (BlockCableBus) block ).setupTile();
 		}
@@ -656,22 +656,22 @@ public final class Registration
 		// Inscriber
 		Upgrades.SPEED.registerItem( blocks.inscriber(), 3 );
 
-		for( Item wirelessTerminalItem : items.wirelessTerminal().maybeItem().asSet() )
+		for( final Item wirelessTerminalItem : items.wirelessTerminal().maybeItem().asSet() )
 		{
 			registries.wireless().registerWirelessHandler( (IWirelessTermHandler) wirelessTerminalItem );
 		}
 
 		if( AEConfig.instance.isFeatureEnabled( AEFeature.ChestLoot ) )
 		{
-			ChestGenHooks d = ChestGenHooks.getInfo( ChestGenHooks.MINESHAFT_CORRIDOR );
+			final ChestGenHooks d = ChestGenHooks.getInfo( ChestGenHooks.MINESHAFT_CORRIDOR );
 
 			final IMaterials materials = definitions.materials();
 
-			for( ItemStack crystal : materials.certusQuartzCrystal().maybeStack( 1 ).asSet() )
+			for( final ItemStack crystal : materials.certusQuartzCrystal().maybeStack( 1 ).asSet() )
 			{
 				d.addItem( new WeightedRandomChestContent( crystal, 1, 4, 2 ) );
 			}
-			for( ItemStack dust : materials.certusQuartzDust().maybeStack( 1 ).asSet() )
+			for( final ItemStack dust : materials.certusQuartzDust().maybeStack( 1 ).asSet() )
 			{
 				d.addItem( new WeightedRandomChestContent( dust, 1, 4, 2 ) );
 			}
@@ -693,7 +693,7 @@ public final class Registration
 			GameRegistry.registerWorldGenerator( new MeteoriteWorldGen(), 0 );
 		}
 
-		IMovableRegistry mr = registries.movable();
+		final IMovableRegistry mr = registries.movable();
 
 		/**
 		 * You can't move bed rock.
@@ -731,7 +731,7 @@ public final class Registration
 		/**
 		 * world gen
 		 */
-		for( WorldGenType type : WorldGenType.values() )
+		for( final WorldGenType type : WorldGenType.values() )
 		{
 			registries.worldgen().disableWorldGenForProviderID( type, StorageWorldProvider.class );
 
@@ -743,7 +743,7 @@ public final class Registration
 		}
 
 		// whitelist from config
-		for( int dimension : AEConfig.instance.meteoriteDimensionWhitelist )
+		for( final int dimension : AEConfig.instance.meteoriteDimensionWhitelist )
 		{
 			registries.worldgen().enableWorldGenForDimension( WorldGenType.Meteorites, dimension );
 		}

@@ -33,21 +33,21 @@ public final class ColoredItemDefinition implements AEColoredItemDefinition
 
 	final ItemStackSrc[] colors = new ItemStackSrc[17];
 
-	public void add( AEColor v, ItemStackSrc is )
+	public void add( final AEColor v, final ItemStackSrc is )
 	{
 		this.colors[v.ordinal()] = is;
 	}
 
 	@Override
-	public Block block( AEColor color )
+	public Block block( final AEColor color )
 	{
 		return null;
 	}
 
 	@Override
-	public Item item( AEColor color )
+	public Item item( final AEColor color )
 	{
-		ItemStackSrc is = this.colors[color.ordinal()];
+		final ItemStackSrc is = this.colors[color.ordinal()];
 
 		if( is == null )
 		{
@@ -58,15 +58,15 @@ public final class ColoredItemDefinition implements AEColoredItemDefinition
 	}
 
 	@Override
-	public Class<? extends TileEntity> entity( AEColor color )
+	public Class<? extends TileEntity> entity( final AEColor color )
 	{
 		return null;
 	}
 
 	@Override
-	public ItemStack stack( AEColor color, int stackSize )
+	public ItemStack stack( final AEColor color, final int stackSize )
 	{
-		ItemStackSrc is = this.colors[color.ordinal()];
+		final ItemStackSrc is = this.colors[color.ordinal()];
 
 		if( is == null )
 		{
@@ -77,9 +77,9 @@ public final class ColoredItemDefinition implements AEColoredItemDefinition
 	}
 
 	@Override
-	public ItemStack[] allStacks( int stackSize )
+	public ItemStack[] allStacks( final int stackSize )
 	{
-		ItemStack[] is = new ItemStack[this.colors.length];
+		final ItemStack[] is = new ItemStack[this.colors.length];
 		for( int x = 0; x < is.length; x++ )
 		{
 			is[x] = this.colors[x].stack( 1 );
@@ -88,9 +88,9 @@ public final class ColoredItemDefinition implements AEColoredItemDefinition
 	}
 
 	@Override
-	public boolean sameAs( AEColor color, ItemStack comparableItem )
+	public boolean sameAs( final AEColor color, final ItemStack comparableItem )
 	{
-		ItemStackSrc is = this.colors[color.ordinal()];
+		final ItemStackSrc is = this.colors[color.ordinal()];
 
 		if( comparableItem == null || is == null )
 		{

@@ -74,7 +74,7 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 	private int nextSlot = 0;
 
 	@Reflected
-	public PartExportBus( ItemStack is )
+	public PartExportBus( final ItemStack is )
 	{
 		super( is );
 
@@ -86,7 +86,7 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 	}
 
 	@Override
-	public void readFromNBT( NBTTagCompound extra )
+	public void readFromNBT( final NBTTagCompound extra )
 	{
 		super.readFromNBT( extra );
 		this.craftingTracker.readFromNBT( extra );
@@ -94,7 +94,7 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 	}
 
 	@Override
-	public void writeToNBT( NBTTagCompound extra )
+	public void writeToNBT( final NBTTagCompound extra )
 	{
 		super.writeToNBT( extra );
 		this.craftingTracker.writeToNBT( extra );
@@ -127,7 +127,7 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 
 				for( x = 0; x < this.availableSlots() && this.itemToSend > 0; x++ )
 				{
-					int slotToExport = this.getStartingSlot( schedulingMode, x );
+					final int slotToExport = this.getStartingSlot( schedulingMode, x );
 
 					final IAEItemStack ais = this.config.getAEStackInSlot( slotToExport );
 
@@ -144,7 +144,7 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 
 					if( this.getInstalledUpgrades( Upgrades.FUZZY ) > 0 )
 					{
-						for( IAEItemStack o : ImmutableList.copyOf( inv.getStorageList().findFuzzy( ais, fzMode ) ) )
+						for( final IAEItemStack o : ImmutableList.copyOf( inv.getStorageList().findFuzzy( ais, fzMode ) ) )
 						{
 							this.pushItemIntoTarget( destination, energy, inv, o );
 							if( this.itemToSend <= 0 )
@@ -171,7 +171,7 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 				return TickRateModulation.SLEEP;
 			}
 		}
-		catch( GridAccessException e )
+		catch( final GridAccessException e )
 		{
 			// :P
 		}
@@ -187,7 +187,7 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 	}
 
 	@Override
-	public void getBoxes( IPartCollisionHelper bch )
+	public void getBoxes( final IPartCollisionHelper bch )
 	{
 		bch.addBox( 4, 4, 12, 12, 12, 14 );
 		bch.addBox( 5, 5, 14, 11, 11, 15 );
@@ -197,7 +197,7 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderInventory( IPartRenderHelper rh, RenderBlocks renderer )
+	public void renderInventory( final IPartRenderHelper rh, final RenderBlocks renderer )
 	{
 		rh.setTexture( CableBusTextures.PartExportSides.getIcon(), CableBusTextures.PartExportSides.getIcon(), CableBusTextures.PartMonitorBack.getIcon(), this.is.getIconIndex(), CableBusTextures.PartExportSides.getIcon(), CableBusTextures.PartExportSides.getIcon() );
 
@@ -213,7 +213,7 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderStatic( int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer )
+	public void renderStatic( final int x, final int y, final int z, final IPartRenderHelper rh, final RenderBlocks renderer )
 	{
 		this.renderCache = rh.useSimplifiedRendering( x, y, z, this, this.renderCache );
 		rh.setTexture( CableBusTextures.PartExportSides.getIcon(), CableBusTextures.PartExportSides.getIcon(), CableBusTextures.PartMonitorBack.getIcon(), this.is.getIconIndex(), CableBusTextures.PartExportSides.getIcon(), CableBusTextures.PartExportSides.getIcon() );
@@ -242,7 +242,7 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 	}
 
 	@Override
-	public boolean onPartActivate( EntityPlayer player, Vec3 pos )
+	public boolean onPartActivate( final EntityPlayer player, final Vec3 pos )
 	{
 		if( !player.isSneaking() )
 		{
@@ -259,7 +259,7 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 	}
 
 	@Override
-	public TickingRequest getTickingRequest( IGridNode node )
+	public TickingRequest getTickingRequest( final IGridNode node )
 	{
 		return new TickingRequest( TickRates.ExportBus.min, TickRates.ExportBus.max, this.isSleeping(), false );
 	}
@@ -271,7 +271,7 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 	}
 
 	@Override
-	public TickRateModulation tickingRequest( IGridNode node, int ticksSinceLastCall )
+	public TickRateModulation tickingRequest( final IGridNode node, final int ticksSinceLastCall )
 	{
 		return this.doBusWork();
 	}
@@ -283,7 +283,7 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 	}
 
 	@Override
-	public IAEItemStack injectCraftedItems( ICraftingLink link, IAEItemStack items, Actionable mode )
+	public IAEItemStack injectCraftedItems( final ICraftingLink link, final IAEItemStack items, final Actionable mode )
 	{
 		final InventoryAdaptor d = this.getHandler();
 
@@ -304,7 +304,7 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 				}
 			}
 		}
-		catch( GridAccessException e )
+		catch( final GridAccessException e )
 		{
 			AELog.error( e );
 		}
@@ -313,7 +313,7 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 	}
 
 	@Override
-	public void jobStateChange( ICraftingLink link )
+	public void jobStateChange( final ICraftingLink link )
 	{
 		this.craftingTracker.jobStateChange( link );
 	}
@@ -334,19 +334,19 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 		return this.getInstalledUpgrades( Upgrades.CRAFTING ) > 0;
 	}
 
-	private void pushItemIntoTarget( InventoryAdaptor d, IEnergyGrid energy, IMEInventory<IAEItemStack> inv, IAEItemStack ais )
+	private void pushItemIntoTarget( final InventoryAdaptor d, final IEnergyGrid energy, final IMEInventory<IAEItemStack> inv, IAEItemStack ais )
 	{
 		final ItemStack is = ais.getItemStack();
 		is.stackSize = (int) this.itemToSend;
 
 		final ItemStack o = d.simulateAdd( is );
-		long canFit = o == null ? this.itemToSend : this.itemToSend - o.stackSize;
+		final long canFit = o == null ? this.itemToSend : this.itemToSend - o.stackSize;
 
 		if( canFit > 0 )
 		{
 			ais = ais.copy();
 			ais.setStackSize( canFit );
-			IAEItemStack itemsToAdd = Platform.poweredExtraction( energy, inv, ais, this.mySrc );
+			final IAEItemStack itemsToAdd = Platform.poweredExtraction( energy, inv, ais, this.mySrc );
 
 			if( itemsToAdd != null )
 			{
@@ -366,7 +366,7 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 		}
 	}
 
-	private int getStartingSlot( SchedulingMode schedulingMode, int x )
+	private int getStartingSlot( final SchedulingMode schedulingMode, final int x )
 	{
 		if( schedulingMode == SchedulingMode.RANDOM )
 		{
@@ -381,7 +381,7 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 		return x;
 	}
 
-	private void updateSchedulingMode( SchedulingMode schedulingMode, int x )
+	private void updateSchedulingMode( final SchedulingMode schedulingMode, final int x )
 	{
 		if( schedulingMode == SchedulingMode.ROUNDROBIN )
 		{
@@ -389,7 +389,7 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 		}
 	}
 
-	private TickRateModulation getFailedCraftingPenalty( int failedAttempts )
+	private TickRateModulation getFailedCraftingPenalty( final int failedAttempts )
 	{
 		if( failedAttempts > 5 )
 		{

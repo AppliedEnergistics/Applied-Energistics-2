@@ -32,7 +32,7 @@ public class GridNodeCollection implements IReadOnlyCollection<IGridNode>
 {
 	private final Map<Class<? extends IGridHost>, MachineSet> machines;
 
-	public GridNodeCollection( Map<Class<? extends IGridHost>, MachineSet> machines )
+	public GridNodeCollection( final Map<Class<? extends IGridHost>, MachineSet> machines )
 	{
 		this.machines = machines;
 	}
@@ -48,7 +48,7 @@ public class GridNodeCollection implements IReadOnlyCollection<IGridNode>
 	{
 		int size = 0;
 
-		for( Set<IGridNode> o : this.machines.values() )
+		for( final Set<IGridNode> o : this.machines.values() )
 		{
 			size += o.size();
 		}
@@ -59,7 +59,7 @@ public class GridNodeCollection implements IReadOnlyCollection<IGridNode>
 	@Override
 	public boolean isEmpty()
 	{
-		for( Set<IGridNode> o : this.machines.values() )
+		for( final Set<IGridNode> o : this.machines.values() )
 		{
 			if( !o.isEmpty() )
 			{
@@ -71,17 +71,17 @@ public class GridNodeCollection implements IReadOnlyCollection<IGridNode>
 	}
 
 	@Override
-	public boolean contains( Object maybeGridNode )
+	public boolean contains( final Object maybeGridNode )
 	{
 		final boolean doesContainNode;
 
 		if( maybeGridNode instanceof IGridNode )
 		{
 			final IGridNode node = (IGridNode) maybeGridNode;
-			IGridHost machine = node.getMachine();
-			Class<? extends IGridHost> machineClass = machine.getClass();
+			final IGridHost machine = node.getMachine();
+			final Class<? extends IGridHost> machineClass = machine.getClass();
 
-			MachineSet machineSet = this.machines.get( machineClass );
+			final MachineSet machineSet = this.machines.get( machineClass );
 
 			doesContainNode = machineSet != null && machineSet.contains( maybeGridNode );
 		}

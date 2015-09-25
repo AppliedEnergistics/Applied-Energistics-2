@@ -33,7 +33,7 @@ public class MachineSet extends HashSet<IGridNode> implements IMachineSet
 
 	private final Class<? extends IGridHost> machine;
 
-	MachineSet( Class<? extends IGridHost> m )
+	MachineSet( final Class<? extends IGridHost> m )
 	{
 		this.machine = m;
 	}

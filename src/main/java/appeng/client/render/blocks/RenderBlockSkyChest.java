@@ -51,7 +51,7 @@ public class RenderBlockSkyChest extends BaseBlockRender<BlockSkyChest, TileSkyC
 	}
 
 	@Override
-	public void renderInventory( BlockSkyChest blk, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj )
+	public void renderInventory( final BlockSkyChest blk, final ItemStack is, final RenderBlocks renderer, final ItemRenderType type, final Object[] obj )
 	{
 		GL11.glEnable( GL12.GL_RESCALE_NORMAL );
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
@@ -74,13 +74,13 @@ public class RenderBlockSkyChest extends BaseBlockRender<BlockSkyChest, TileSkyC
 	}
 
 	@Override
-	public boolean renderInWorld( BlockSkyChest blk, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
+	public boolean renderInWorld( final BlockSkyChest blk, final IBlockAccess world, final int x, final int y, final int z, final RenderBlocks renderer )
 	{
 		return true;
 	}
 
 	@Override
-	public void renderTile( BlockSkyChest block, TileSkyChest skyChest, Tessellator tess, double x, double y, double z, float partialTick, RenderBlocks renderer )
+	public void renderTile( final BlockSkyChest block, final TileSkyChest skyChest, final Tessellator tess, final double x, final double y, final double z, final float partialTick, final RenderBlocks renderer )
 	{
 		if(  skyChest == null )
 		{

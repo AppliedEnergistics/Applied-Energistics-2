@@ -30,21 +30,21 @@ import appeng.tile.grindstone.TileGrinder;
 public class GuiGrinder extends AEBaseGui
 {
 
-	public GuiGrinder( InventoryPlayer inventoryPlayer, TileGrinder te )
+	public GuiGrinder( final InventoryPlayer inventoryPlayer, final TileGrinder te )
 	{
 		super( new ContainerGrinder( inventoryPlayer, te ) );
 		this.ySize = 176;
 	}
 
 	@Override
-	public void drawFG( int offsetX, int offsetY, int mouseX, int mouseY )
+	public void drawFG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
 		this.fontRendererObj.drawString( this.getGuiDisplayName( GuiText.GrindStone.getLocal() ), 8, 6, 4210752 );
 		this.fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
 	}
 
 	@Override
-	public void drawBG( int offsetX, int offsetY, int mouseX, int mouseY )
+	public void drawBG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
 		this.bindTexture( "guis/grinder.png" );
 		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize );

@@ -28,7 +28,7 @@ public final class ChainedIterator<T> implements Iterator<T>
 
 	private int offset = 0;
 
-	public ChainedIterator( T... list )
+	public ChainedIterator( final T... list )
 	{
 		this.list = list;
 	}
@@ -42,7 +42,7 @@ public final class ChainedIterator<T> implements Iterator<T>
 	@Override
 	public T next()
 	{
-		T result = this.list[this.offset];
+		final T result = this.list[this.offset];
 		this.offset++;
 		return result;
 	}

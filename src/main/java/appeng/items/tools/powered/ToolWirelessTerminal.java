@@ -59,7 +59,7 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 	}
 
 	@Override
-	public ItemStack onItemRightClick( ItemStack item, World w, EntityPlayer player )
+	public ItemStack onItemRightClick( final ItemStack item, final World w, final EntityPlayer player )
 	{
 		AEApi.instance().registries().wireless().openWirelessTerminalGui( item, w, player );
 		return item;
@@ -73,16 +73,16 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 	}
 
 	@Override
-	public void addCheckedInformation( ItemStack stack, EntityPlayer player, List<String> lines, boolean displayMoreInfo )
+	public void addCheckedInformation( final ItemStack stack, final EntityPlayer player, final List<String> lines, final boolean displayMoreInfo )
 	{
 		super.addCheckedInformation( stack, player, lines, displayMoreInfo );
 
 		if( stack.hasTagCompound() )
 		{
-			NBTTagCompound tag = Platform.openNbtData( stack );
+			final NBTTagCompound tag = Platform.openNbtData( stack );
 			if( tag != null )
 			{
-				String encKey = tag.getString( "encryptionKey" );
+				final String encKey = tag.getString( "encryptionKey" );
 
 				if( encKey == null || encKey.isEmpty() )
 				{
@@ -101,19 +101,19 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 	}
 
 	@Override
-	public boolean canHandle( ItemStack is )
+	public boolean canHandle( final ItemStack is )
 	{
 		return AEApi.instance().definitions().items().wirelessTerminal().isSameAs( is );
 	}
 
 	@Override
-	public boolean usePower( EntityPlayer player, double amount, ItemStack is )
+	public boolean usePower( final EntityPlayer player, final double amount, final ItemStack is )
 	{
 		return this.extractAEPower( is, amount ) >= amount - 0.5;
 	}
 
 	@Override
-	public boolean hasPower( EntityPlayer player, double amt, ItemStack is )
+	public boolean hasPower( final EntityPlayer player, final double amt, final ItemStack is )
 	{
 		return this.getAECurrentPower( is ) >= amt;
 	}
@@ -125,9 +125,9 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 		{
 
 			@Override
-			public void updateSetting( IConfigManager manager, Enum settingName, Enum newValue )
+			public void updateSetting( final IConfigManager manager, final Enum settingName, final Enum newValue )
 			{
-				NBTTagCompound data = Platform.openNbtData( target );
+				final NBTTagCompound data = Platform.openNbtData( target );
 				manager.writeToNBT( data );
 			}
 		} );
@@ -141,16 +141,16 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 	}
 
 	@Override
-	public String getEncryptionKey( ItemStack item )
+	public String getEncryptionKey( final ItemStack item )
 	{
-		NBTTagCompound tag = Platform.openNbtData( item );
+		final NBTTagCompound tag = Platform.openNbtData( item );
 		return tag.getString( "encryptionKey" );
 	}
 
 	@Override
-	public void setEncryptionKey( ItemStack item, String encKey, String name )
+	public void setEncryptionKey( final ItemStack item, final String encKey, final String name )
 	{
-		NBTTagCompound tag = Platform.openNbtData( item );
+		final NBTTagCompound tag = Platform.openNbtData( item );
 		tag.setString( "encryptionKey", encKey );
 		tag.setString( "name", name );
 	}

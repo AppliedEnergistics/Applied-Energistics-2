@@ -49,7 +49,7 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 	IFluidHandler cachedTank;
 	private int tmpUsed;
 
-	public PartP2PLiquids( ItemStack is )
+	public PartP2PLiquids( final ItemStack is )
 	{
 		super( is );
 	}
@@ -78,7 +78,7 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 		this.cachedTank = null;
 		if( this.output )
 		{
-			PartP2PLiquids in = this.getInput();
+			final PartP2PLiquids in = this.getInput();
 			if( in != null )
 			{
 				in.onTunnelNetworkChange();
@@ -87,11 +87,11 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 	}
 
 	@Override
-	public int fill( ForgeDirection from, FluidStack resource, boolean doFill )
+	public int fill( final ForgeDirection from, final FluidStack resource, final boolean doFill )
 	{
-		Stack<PartP2PLiquids> stack = this.getDepth();
+		final Stack<PartP2PLiquids> stack = this.getDepth();
 
-		for( PartP2PLiquids t : stack )
+		for( final PartP2PLiquids t : stack )
 		{
 			if( t == this )
 			{
@@ -101,14 +101,14 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 
 		stack.push( this );
 
-		List<PartP2PLiquids> list = this.getOutputs( resource.getFluid() );
+		final List<PartP2PLiquids> list = this.getOutputs( resource.getFluid() );
 		int requestTotal = 0;
 
 		Iterator<PartP2PLiquids> i = list.iterator();
 		while( i.hasNext() )
 		{
-			PartP2PLiquids l = i.next();
-			IFluidHandler tank = l.getTarget();
+			final PartP2PLiquids l = i.next();
+			final IFluidHandler tank = l.getTarget();
 			if( tank != null )
 			{
 				l.tmpUsed = tank.fill( l.side.getOpposite(), resource.copy(), false );
@@ -154,16 +154,16 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 		int used = 0;
 		while( i.hasNext() )
 		{
-			PartP2PLiquids l = i.next();
+			final PartP2PLiquids l = i.next();
 
-			FluidStack insert = resource.copy();
+			final FluidStack insert = resource.copy();
 			insert.amount = (int) Math.ceil( insert.amount * ( (double) l.tmpUsed / (double) requestTotal ) );
 			if( insert.amount > available )
 			{
 				insert.amount = available;
 			}
 
-			IFluidHandler tank = l.getTarget();
+			final IFluidHandler tank = l.getTarget();
 			if( tank != null )
 			{
 				l.tmpUsed = tank.fill( l.side.getOpposite(), insert.copy(), true );
@@ -197,15 +197,15 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 		return s;
 	}
 
-	List<PartP2PLiquids> getOutputs( Fluid input )
+	List<PartP2PLiquids> getOutputs( final Fluid input )
 	{
-		List<PartP2PLiquids> outs = new LinkedList<PartP2PLiquids>();
+		final List<PartP2PLiquids> outs = new LinkedList<PartP2PLiquids>();
 
 		try
 		{
-			for( PartP2PLiquids l : this.getOutputs() )
+			for( final PartP2PLiquids l : this.getOutputs() )
 			{
-				IFluidHandler handler = l.getTarget();
+				final IFluidHandler handler = l.getTarget();
 				if( handler != null )
 				{
 					if( handler.canFill( l.side.getOpposite(), input ) )
@@ -215,7 +215,7 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 				}
 			}
 		}
-		catch( GridAccessException e )
+		catch( final GridAccessException e )
 		{
 			// :P
 		}
@@ -235,7 +235,7 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 			return this.cachedTank;
 		}
 
-		TileEntity te = this.tile.getWorldObj().getTileEntity( this.tile.xCoord + this.side.offsetX, this.tile.yCoord + this.side.offsetY, this.tile.zCoord + this.side.offsetZ );
+		final TileEntity te = this.tile.getWorldObj().getTileEntity( this.tile.xCoord + this.side.offsetX, this.tile.yCoord + this.side.offsetY, this.tile.zCoord + this.side.offsetZ );
 		if( te instanceof IFluidHandler )
 		{
 			return this.cachedTank = (IFluidHandler) te;
@@ -245,31 +245,31 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 	}
 
 	@Override
-	public FluidStack drain( ForgeDirection from, FluidStack resource, boolean doDrain )
+	public FluidStack drain( final ForgeDirection from, final FluidStack resource, final boolean doDrain )
 	{
 		return null;
 	}
 
 	@Override
-	public FluidStack drain( ForgeDirection from, int maxDrain, boolean doDrain )
+	public FluidStack drain( final ForgeDirection from, final int maxDrain, final boolean doDrain )
 	{
 		return null;
 	}
 
 	@Override
-	public boolean canFill( ForgeDirection from, Fluid fluid )
+	public boolean canFill( final ForgeDirection from, final Fluid fluid )
 	{
 		return !this.output && from == this.side && !this.getOutputs( fluid ).isEmpty();
 	}
 
 	@Override
-	public boolean canDrain( ForgeDirection from, Fluid fluid )
+	public boolean canDrain( final ForgeDirection from, final Fluid fluid )
 	{
 		return false;
 	}
 
 	@Override
-	public FluidTankInfo[] getTankInfo( ForgeDirection from )
+	public FluidTankInfo[] getTankInfo( final ForgeDirection from )
 	{
 		if( from == this.side )
 		{
@@ -282,7 +282,7 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 	{
 		if( this.output )
 		{
-			PartP2PLiquids tun = this.getInput();
+			final PartP2PLiquids tun = this.getInput();
 			if( tun != null )
 			{
 				return ACTIVE_TANK;
@@ -297,7 +297,7 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 					return ACTIVE_TANK;
 				}
 			}
-			catch( GridAccessException e )
+			catch( final GridAccessException e )
 			{
 				// :(
 			}

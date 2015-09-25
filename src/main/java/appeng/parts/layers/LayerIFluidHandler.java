@@ -34,9 +34,9 @@ public class LayerIFluidHandler extends LayerBase implements IFluidHandler
 	static final FluidTankInfo[] EMPTY_LIST = new FluidTankInfo[0];
 
 	@Override
-	public int fill( ForgeDirection from, FluidStack resource, boolean doFill )
+	public int fill( final ForgeDirection from, final FluidStack resource, final boolean doFill )
 	{
-		IPart part = this.getPart( from );
+		final IPart part = this.getPart( from );
 		if( part instanceof IFluidHandler )
 		{
 			return ( (IFluidHandler) part ).fill( from, resource, doFill );
@@ -45,9 +45,9 @@ public class LayerIFluidHandler extends LayerBase implements IFluidHandler
 	}
 
 	@Override
-	public FluidStack drain( ForgeDirection from, FluidStack resource, boolean doDrain )
+	public FluidStack drain( final ForgeDirection from, final FluidStack resource, final boolean doDrain )
 	{
-		IPart part = this.getPart( from );
+		final IPart part = this.getPart( from );
 		if( part instanceof IFluidHandler )
 		{
 			return ( (IFluidHandler) part ).drain( from, resource, doDrain );
@@ -56,9 +56,9 @@ public class LayerIFluidHandler extends LayerBase implements IFluidHandler
 	}
 
 	@Override
-	public FluidStack drain( ForgeDirection from, int maxDrain, boolean doDrain )
+	public FluidStack drain( final ForgeDirection from, final int maxDrain, final boolean doDrain )
 	{
-		IPart part = this.getPart( from );
+		final IPart part = this.getPart( from );
 		if( part instanceof IFluidHandler )
 		{
 			return ( (IFluidHandler) part ).drain( from, maxDrain, doDrain );
@@ -67,9 +67,9 @@ public class LayerIFluidHandler extends LayerBase implements IFluidHandler
 	}
 
 	@Override
-	public boolean canFill( ForgeDirection from, net.minecraftforge.fluids.Fluid fluid )
+	public boolean canFill( final ForgeDirection from, final net.minecraftforge.fluids.Fluid fluid )
 	{
-		IPart part = this.getPart( from );
+		final IPart part = this.getPart( from );
 		if( part instanceof IFluidHandler )
 		{
 			return ( (IFluidHandler) part ).canFill( from, fluid );
@@ -78,9 +78,9 @@ public class LayerIFluidHandler extends LayerBase implements IFluidHandler
 	}
 
 	@Override
-	public boolean canDrain( ForgeDirection from, net.minecraftforge.fluids.Fluid fluid )
+	public boolean canDrain( final ForgeDirection from, final net.minecraftforge.fluids.Fluid fluid )
 	{
-		IPart part = this.getPart( from );
+		final IPart part = this.getPart( from );
 		if( part instanceof IFluidHandler )
 		{
 			return ( (IFluidHandler) part ).canDrain( from, fluid );
@@ -89,9 +89,9 @@ public class LayerIFluidHandler extends LayerBase implements IFluidHandler
 	}
 
 	@Override
-	public FluidTankInfo[] getTankInfo( ForgeDirection from )
+	public FluidTankInfo[] getTankInfo( final ForgeDirection from )
 	{
-		IPart part = this.getPart( from );
+		final IPart part = this.getPart( from );
 		if( part instanceof IFluidHandler )
 		{
 			return ( (IFluidHandler) part ).getTankInfo( from );

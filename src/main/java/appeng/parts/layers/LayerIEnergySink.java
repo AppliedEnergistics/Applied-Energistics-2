@@ -40,7 +40,7 @@ public class LayerIEnergySink extends LayerBase implements IEnergySink
 
 	private TileEntity getEnergySinkTile()
 	{
-		IPartHost host = (IPartHost) this;
+		final IPartHost host = (IPartHost) this;
 		return host.getTile();
 	}
 
@@ -56,7 +56,7 @@ public class LayerIEnergySink extends LayerBase implements IEnergySink
 
 	private boolean isTileValid()
 	{
-		TileEntity te = this.getEnergySinkTile();
+		final TileEntity te = this.getEnergySinkTile();
 
 		if( te == null )
 		{
@@ -105,9 +105,9 @@ public class LayerIEnergySink extends LayerBase implements IEnergySink
 		}
 
 		int interested = 0;
-		for( ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS )
+		for( final ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS )
 		{
-			IPart part = this.getPart( dir );
+			final IPart part = this.getPart( dir );
 			if( part instanceof IEnergyTile )
 			{
 				interested++;
@@ -132,14 +132,14 @@ public class LayerIEnergySink extends LayerBase implements IEnergySink
 	}
 
 	@Override
-	public boolean acceptsEnergyFrom( TileEntity emitter, ForgeDirection direction )
+	public boolean acceptsEnergyFrom( final TileEntity emitter, final ForgeDirection direction )
 	{
 		if( !this.isInIC2() )
 		{
 			return false;
 		}
 
-		IPart part = this.getPart( direction );
+		final IPart part = this.getPart( direction );
 		if( part instanceof IEnergySink )
 		{
 			return ( (IEnergyAcceptor) part ).acceptsEnergyFrom( emitter, direction );
@@ -162,9 +162,9 @@ public class LayerIEnergySink extends LayerBase implements IEnergySink
 
 		// this is a flawed implementation, that requires a change to the IC2 API.
 
-		for( ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS )
+		for( final ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS )
 		{
-			IPart part = this.getPart( dir );
+			final IPart part = this.getPart( dir );
 			if( part instanceof IEnergySink )
 			{
 				// use lower number cause ic2 deletes power it sends that isn't received.
@@ -182,16 +182,16 @@ public class LayerIEnergySink extends LayerBase implements IEnergySink
 	}
 
 	@Override
-	public double injectEnergy( ForgeDirection directionFrom, double amount, double voltage )
+	public double injectEnergy( final ForgeDirection directionFrom, final double amount, final double voltage )
 	{
 		if( !this.isInIC2() )
 		{
 			return amount;
 		}
 
-		for( ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS )
+		for( final ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS )
 		{
-			IPart part = this.getPart( dir );
+			final IPart part = this.getPart( dir );
 			if( part instanceof IEnergySink )
 			{
 				return ( (IEnergySink) part ).injectEnergy( directionFrom, amount, voltage );

@@ -54,7 +54,7 @@ public class ContainerSecurity extends ContainerMEMonitorable implements IAEAppE
 	@GuiSync( 0 )
 	public int security = 0;
 
-	public ContainerSecurity( InventoryPlayer ip, ITerminalHost monitorable )
+	public ContainerSecurity( final InventoryPlayer ip, final ITerminalHost monitorable )
 	{
 		super( ip, monitorable, false );
 
@@ -68,16 +68,16 @@ public class ContainerSecurity extends ContainerMEMonitorable implements IAEAppE
 		this.bindPlayerInventory( ip, 0, 0 );
 	}
 
-	public void toggleSetting( String value, EntityPlayer player )
+	public void toggleSetting( final String value, final EntityPlayer player )
 	{
 		try
 		{
-			SecurityPermissions permission = SecurityPermissions.valueOf( value );
+			final SecurityPermissions permission = SecurityPermissions.valueOf( value );
 
-			ItemStack a = this.configSlot.getStack();
+			final ItemStack a = this.configSlot.getStack();
 			if( a != null && a.getItem() instanceof IBiometricCard )
 			{
-				IBiometricCard bc = (IBiometricCard) a.getItem();
+				final IBiometricCard bc = (IBiometricCard) a.getItem();
 				if( bc.hasPermission( a, permission ) )
 				{
 					bc.removePermission( a, permission );
@@ -88,7 +88,7 @@ public class ContainerSecurity extends ContainerMEMonitorable implements IAEAppE
 				}
 			}
 		}
-		catch( EnumConstantNotPresentException ex )
+		catch( final EnumConstantNotPresentException ex )
 		{
 			// :(
 		}
@@ -101,12 +101,12 @@ public class ContainerSecurity extends ContainerMEMonitorable implements IAEAppE
 
 		this.security = 0;
 
-		ItemStack a = this.configSlot.getStack();
+		final ItemStack a = this.configSlot.getStack();
 		if( a != null && a.getItem() instanceof IBiometricCard )
 		{
-			IBiometricCard bc = (IBiometricCard) a.getItem();
+			final IBiometricCard bc = (IBiometricCard) a.getItem();
 
-			for( SecurityPermissions sp : bc.getPermissions( a ) )
+			for( final SecurityPermissions sp : bc.getPermissions( a ) )
 			{
 				this.security |= ( 1 << sp.ordinal() );
 			}
@@ -118,7 +118,7 @@ public class ContainerSecurity extends ContainerMEMonitorable implements IAEAppE
 	}
 
 	@Override
-	public void onContainerClosed( EntityPlayer player )
+	public void onContainerClosed( final EntityPlayer player )
 	{
 		super.onContainerClosed( player );
 
@@ -140,13 +140,13 @@ public class ContainerSecurity extends ContainerMEMonitorable implements IAEAppE
 	}
 
 	@Override
-	public void onChangeInventory( IInventory inv, int slot, InvOperation mc, ItemStack removedStack, ItemStack newStack )
+	public void onChangeInventory( final IInventory inv, final int slot, final InvOperation mc, final ItemStack removedStack, final ItemStack newStack )
 	{
 		if( !this.wirelessOut.getHasStack() )
 		{
 			if( this.wirelessIn.getHasStack() )
 			{
-				ItemStack term = this.wirelessIn.getStack().copy();
+				final ItemStack term = this.wirelessIn.getStack().copy();
 				INetworkEncodable networkEncodable = null;
 
 				if( term.getItem() instanceof INetworkEncodable )
@@ -154,7 +154,7 @@ public class ContainerSecurity extends ContainerMEMonitorable implements IAEAppE
 					networkEncodable = (INetworkEncodable) term.getItem();
 				}
 
-				IWirelessTermHandler wTermHandler = AEApi.instance().registries().wireless().getWirelessTerminalHandler( term );
+				final IWirelessTermHandler wTermHandler = AEApi.instance().registries().wireless().getWirelessTerminalHandler( term );
 				if( wTermHandler != null )
 				{
 					networkEncodable = wTermHandler;
@@ -168,9 +168,9 @@ public class ContainerSecurity extends ContainerMEMonitorable implements IAEAppE
 					this.wirelessOut.putStack( term );
 
 					// update the two slots in question...
-					for( Object crafter : this.crafters )
+					for( final Object crafter : this.crafters )
 					{
-						ICrafting icrafting = (ICrafting) crafter;
+						final ICrafting icrafting = (ICrafting) crafter;
 						icrafting.sendSlotContents( this, this.wirelessIn.slotNumber, this.wirelessIn.getStack() );
 						icrafting.sendSlotContents( this, this.wirelessOut.slotNumber, this.wirelessOut.getStack() );
 					}

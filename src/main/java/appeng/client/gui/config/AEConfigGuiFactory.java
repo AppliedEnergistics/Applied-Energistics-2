@@ -31,7 +31,7 @@ public class AEConfigGuiFactory implements IModGuiFactory
 {
 
 	@Override
-	public void initialize( Minecraft minecraftInstance )
+	public void initialize( final Minecraft minecraftInstance )
 	{
 
 	}
@@ -49,7 +49,7 @@ public class AEConfigGuiFactory implements IModGuiFactory
 	}
 
 	@Override
-	public RuntimeOptionGuiHandler getHandlerFor( RuntimeOptionCategoryElement element )
+	public RuntimeOptionGuiHandler getHandlerFor( final RuntimeOptionCategoryElement element )
 	{
 		return null;
 	}

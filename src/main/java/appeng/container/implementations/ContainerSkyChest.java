@@ -35,7 +35,7 @@ public class ContainerSkyChest extends AEBaseContainer
 
 	final TileSkyChest chest;
 
-	public ContainerSkyChest( InventoryPlayer ip, TileSkyChest chest )
+	public ContainerSkyChest( final InventoryPlayer ip, final TileSkyChest chest )
 	{
 		super( ip, chest, null );
 		this.chest = chest;
@@ -54,7 +54,7 @@ public class ContainerSkyChest extends AEBaseContainer
 	}
 
 	@Override
-	public void onContainerClosed( EntityPlayer par1EntityPlayer )
+	public void onContainerClosed( final EntityPlayer par1EntityPlayer )
 	{
 		super.onContainerClosed( par1EntityPlayer );
 		this.chest.closeInventory();

@@ -44,12 +44,12 @@ public class BlockRenderInfo
 	private FlippableIcon eastIcon = null;
 	private FlippableIcon westIcon = null;
 
-	public BlockRenderInfo( BaseBlockRender inst )
+	public BlockRenderInfo( final BaseBlockRender inst )
 	{
 		this.rendererInstance = inst;
 	}
 
-	public void updateIcons( FlippableIcon bottom, FlippableIcon top, FlippableIcon north, FlippableIcon south, FlippableIcon east, FlippableIcon west )
+	public void updateIcons( final FlippableIcon bottom, final FlippableIcon top, final FlippableIcon north, final FlippableIcon south, final FlippableIcon east, final FlippableIcon west )
 	{
 		this.topIcon = top;
 		this.bottomIcon = bottom;
@@ -59,7 +59,7 @@ public class BlockRenderInfo
 		this.westIcon = west;
 	}
 
-	public void setTemporaryRenderIcon( IIcon icon )
+	public void setTemporaryRenderIcon( final IIcon icon )
 	{
 		if( icon == null )
 		{
@@ -77,7 +77,7 @@ public class BlockRenderInfo
 		}
 	}
 
-	public void setTemporaryRenderIcons( IIcon nTopIcon, IIcon nBottomIcon, IIcon nSouthIcon, IIcon nNorthIcon, IIcon nEastIcon, IIcon nWestIcon )
+	public void setTemporaryRenderIcons( final IIcon nTopIcon, final IIcon nBottomIcon, final IIcon nSouthIcon, final IIcon nNorthIcon, final IIcon nEastIcon, final IIcon nWestIcon )
 	{
 		this.tmpTopIcon.setOriginal( nTopIcon == null ? this.getTexture( ForgeDirection.UP ) : nTopIcon );
 		this.tmpBottomIcon.setOriginal( nBottomIcon == null ? this.getTexture( ForgeDirection.DOWN ) : nBottomIcon );
@@ -88,7 +88,7 @@ public class BlockRenderInfo
 		this.useTmp = true;
 	}
 
-	public FlippableIcon getTexture( ForgeDirection dir )
+	public FlippableIcon getTexture( final ForgeDirection dir )
 	{
 		if( this.useTmp )
 		{

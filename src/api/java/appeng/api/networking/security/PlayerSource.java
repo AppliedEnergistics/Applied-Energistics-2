@@ -33,7 +33,7 @@ public class PlayerSource extends BaseActionSource
 	public final EntityPlayer player;
 	public final IActionHost via;
 
-	public PlayerSource( EntityPlayer p, IActionHost v )
+	public PlayerSource( final EntityPlayer p, final IActionHost v )
 	{
 		this.player = p;
 		this.via = v;

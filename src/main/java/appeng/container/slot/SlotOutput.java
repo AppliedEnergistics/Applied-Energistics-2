@@ -26,14 +26,14 @@ import net.minecraft.item.ItemStack;
 public class SlotOutput extends AppEngSlot
 {
 
-	public SlotOutput( IInventory a, int b, int c, int d, int i )
+	public SlotOutput( final IInventory a, final int b, final int c, final int d, final int i )
 	{
 		super( a, b, c, d );
 		this.IIcon = i;
 	}
 
 	@Override
-	public boolean isItemValid( ItemStack i )
+	public boolean isItemValid( final ItemStack i )
 	{
 		return false;
 	}

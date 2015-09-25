@@ -25,7 +25,7 @@ import net.minecraft.inventory.IInventory;
 public class SlotFakeBlacklist extends SlotFakeTypeOnly
 {
 
-	public SlotFakeBlacklist( IInventory inv, int idx, int x, int y )
+	public SlotFakeBlacklist( final IInventory inv, final int idx, final int x, final int y )
 	{
 		super( inv, idx, x, y );
 	}

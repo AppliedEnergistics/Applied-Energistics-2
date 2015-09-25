@@ -39,7 +39,7 @@ public class MENetworkSpatialEvent extends MENetworkEvent
 	 * @param SpatialIO   ( INSTANCE of the SpatialIO block )
 	 * @param EnergyUsage ( the amount of energy that the SpatialIO uses)
 	 */
-	public MENetworkSpatialEvent( IGridHost SpatialIO, double EnergyUsage )
+	public MENetworkSpatialEvent( final IGridHost SpatialIO, final double EnergyUsage )
 	{
 		this.host = SpatialIO;
 		this.spatialEnergyUsage = EnergyUsage;

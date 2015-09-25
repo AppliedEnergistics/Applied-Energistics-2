@@ -27,15 +27,15 @@ public class GridPropagator implements IGridVisitor
 {
 	private final Grid g;
 
-	public GridPropagator( Grid g )
+	public GridPropagator( final Grid g )
 	{
 		this.g = g;
 	}
 
 	@Override
-	public boolean visitNode( IGridNode n )
+	public boolean visitNode( final IGridNode n )
 	{
-		GridNode gn = (GridNode) n;
+		final GridNode gn = (GridNode) n;
 		if( gn.getMyGrid() != this.g || this.g.getPivot() == n )
 		{
 			gn.setGrid( this.g );

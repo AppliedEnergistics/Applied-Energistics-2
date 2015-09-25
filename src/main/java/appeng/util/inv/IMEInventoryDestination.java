@@ -32,13 +32,13 @@ public class IMEInventoryDestination implements IInventoryDestination
 
 	final IMEInventory<IAEItemStack> me;
 
-	public IMEInventoryDestination( IMEInventory<IAEItemStack> o )
+	public IMEInventoryDestination( final IMEInventory<IAEItemStack> o )
 	{
 		this.me = o;
 	}
 
 	@Override
-	public boolean canInsert( ItemStack stack )
+	public boolean canInsert( final ItemStack stack )
 	{
 
 		if( stack == null )
@@ -46,7 +46,7 @@ public class IMEInventoryDestination implements IInventoryDestination
 			return false;
 		}
 
-		IAEItemStack failed = this.me.injectItems( AEItemStack.create( stack ), Actionable.SIMULATE, null );
+		final IAEItemStack failed = this.me.injectItems( AEItemStack.create( stack ), Actionable.SIMULATE, null );
 
 		if( failed == null )
 		{

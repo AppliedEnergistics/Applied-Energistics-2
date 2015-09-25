@@ -46,15 +46,15 @@ public class IMCP2PAttunement implements IIMCProcessor
 {
 
 	@Override
-	public void process( IMCMessage m )
+	public void process( final IMCMessage m )
 	{
-		String key = m.key.substring( "add-p2p-attunement-".length() ).replace( '-', '_' ).toUpperCase( Locale.ENGLISH );
+		final String key = m.key.substring( "add-p2p-attunement-".length() ).replace( '-', '_' ).toUpperCase( Locale.ENGLISH );
 
-		TunnelType type = TunnelType.valueOf( key );
+		final TunnelType type = TunnelType.valueOf( key );
 
 		if( type != null )
 		{
-			ItemStack is = m.getItemStackValue();
+			final ItemStack is = m.getItemStackValue();
 			if( is != null )
 			{
 				AEApi.instance().registries().p2pTunnel().addNewAttunement( is, type );

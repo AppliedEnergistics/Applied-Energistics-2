@@ -13,7 +13,7 @@ public final class DefaultFormattedRelease implements FormattedRelease
 	private final Version version;
 	private final String changelog;
 
-	public DefaultFormattedRelease( Version version, String changelog )
+	public DefaultFormattedRelease( final Version version, final String changelog )
 	{
 		this.version = version;
 		this.changelog = changelog;

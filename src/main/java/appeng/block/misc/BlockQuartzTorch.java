@@ -69,28 +69,28 @@ public class BlockQuartzTorch extends AEBaseBlock implements IOrientableBlock, I
 	}
 
 	@Override
-	public boolean isValidOrientation( World w, int x, int y, int z, ForgeDirection forward, ForgeDirection up )
+	public boolean isValidOrientation( final World w, final int x, final int y, final int z, final ForgeDirection forward, final ForgeDirection up )
 	{
 		return this.canPlaceAt( w, x, y, z, up.getOpposite() );
 	}
 
-	private boolean canPlaceAt( World w, int x, int y, int z, ForgeDirection dir )
+	private boolean canPlaceAt( final World w, final int x, final int y, final int z, final ForgeDirection dir )
 	{
 		return w.isSideSolid( x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ, dir.getOpposite(), false );
 	}
 
 	@Override
-	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool( World w, int x, int y, int z, Entity e, boolean isVisual )
+	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool( final World w, final int x, final int y, final int z, final Entity e, final boolean isVisual )
 	{
-		ForgeDirection up = this.getOrientable( w, x, y, z ).getUp();
-		double xOff = -0.3 * up.offsetX;
-		double yOff = -0.3 * up.offsetY;
-		double zOff = -0.3 * up.offsetZ;
+		final ForgeDirection up = this.getOrientable( w, x, y, z ).getUp();
+		final double xOff = -0.3 * up.offsetX;
+		final double yOff = -0.3 * up.offsetY;
+		final double zOff = -0.3 * up.offsetZ;
 		return Collections.singletonList( AxisAlignedBB.getBoundingBox( xOff + 0.3, yOff + 0.3, zOff + 0.3, xOff + 0.7, yOff + 0.7, zOff + 0.7 ) );
 	}
 
 	@Override
-	public void addCollidingBlockToList( World w, int x, int y, int z, AxisAlignedBB bb, List out, Entity e )
+	public void addCollidingBlockToList( final World w, final int x, final int y, final int z, final AxisAlignedBB bb, final List out, final Entity e )
 	{/*
 	 * double xOff = -0.15 * getUp().offsetX; double yOff = -0.15 * getUp().offsetY; double zOff = -0.15 *
 	 * getUp().offsetZ; out.add( AxisAlignedBB.getBoundingBox( xOff + (double) x + 0.15, yOff + (double) y + 0.15, zOff
@@ -100,7 +100,7 @@ public class BlockQuartzTorch extends AEBaseBlock implements IOrientableBlock, I
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void randomDisplayTick( World w, int x, int y, int z, Random r )
+	public void randomDisplayTick( final World w, final int x, final int y, final int z, final Random r )
 	{
 		if( !AEConfig.instance.enableEffects )
 		{
@@ -112,15 +112,15 @@ public class BlockQuartzTorch extends AEBaseBlock implements IOrientableBlock, I
 			return;
 		}
 
-		ForgeDirection up = this.getOrientable( w, x, y, z ).getUp();
-		double xOff = -0.3 * up.offsetX;
-		double yOff = -0.3 * up.offsetY;
-		double zOff = -0.3 * up.offsetZ;
+		final ForgeDirection up = this.getOrientable( w, x, y, z ).getUp();
+		final double xOff = -0.3 * up.offsetX;
+		final double yOff = -0.3 * up.offsetY;
+		final double zOff = -0.3 * up.offsetZ;
 		for( int bolts = 0; bolts < 3; bolts++ )
 		{
 			if( CommonHelper.proxy.shouldAddParticles( r ) )
 			{
-				LightningFX fx = new LightningFX( w, xOff + 0.5 + x, yOff + 0.5 + y, zOff + 0.5 + z, 0.0D, 0.0D, 0.0D );
+				final LightningFX fx = new LightningFX( w, xOff + 0.5 + x, yOff + 0.5 + y, zOff + 0.5 + z, 0.0D, 0.0D, 0.0D );
 
 				Minecraft.getMinecraft().effectRenderer.addEffect( fx );
 			}
@@ -128,16 +128,16 @@ public class BlockQuartzTorch extends AEBaseBlock implements IOrientableBlock, I
 	}
 
 	@Override
-	public void onNeighborBlockChange( World w, int x, int y, int z, Block id )
+	public void onNeighborBlockChange( final World w, final int x, final int y, final int z, final Block id )
 	{
-		ForgeDirection up = this.getOrientable( w, x, y, z ).getUp();
+		final ForgeDirection up = this.getOrientable( w, x, y, z ).getUp();
 		if( !this.canPlaceAt( w, x, y, z, up.getOpposite() ) )
 		{
 			this.dropTorch( w, x, y, z );
 		}
 	}
 
-	private void dropTorch( World w, int x, int y, int z )
+	private void dropTorch( final World w, final int x, final int y, final int z )
 	{
 		w.func_147480_a( x, y, z, true );
 		// w.destroyBlock( x, y, z, true );
@@ -145,9 +145,9 @@ public class BlockQuartzTorch extends AEBaseBlock implements IOrientableBlock, I
 	}
 
 	@Override
-	public boolean canPlaceBlockAt( World w, int x, int y, int z )
+	public boolean canPlaceBlockAt( final World w, final int x, final int y, final int z )
 	{
-		for( ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS )
+		for( final ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS )
 		{
 			if( this.canPlaceAt( w, x, y, z, dir ) )
 			{

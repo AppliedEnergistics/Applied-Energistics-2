@@ -72,38 +72,38 @@ public class NEIWorldCraftingHandler implements ICraftingHandler, IUsageHandler
 	}
 
 	@Override
-	public void drawBackground( int recipe )
+	public void drawBackground( final int recipe )
 	{
 		GL11.glColor4f( 1, 1, 1, 1 );// nothing.
 	}
 
 	@Override
-	public void drawForeground( int recipe )
+	public void drawForeground( final int recipe )
 	{
 		if( this.outputs.size() > recipe )
 		{
 			// PositionedStack cr = this.outputs.get( recipe );
-			String details = this.details.get( this.offsets.get( recipe ) );
+			final String details = this.details.get( this.offsets.get( recipe ) );
 
-			FontRenderer fr = Minecraft.getMinecraft().fontRenderer;
+			final FontRenderer fr = Minecraft.getMinecraft().fontRenderer;
 			fr.drawSplitString( details, 10, 25, 150, 0 );
 		}
 	}
 
 	@Override
-	public List<PositionedStack> getIngredientStacks( int recipeIndex )
+	public List<PositionedStack> getIngredientStacks( final int recipeIndex )
 	{
 		return new ArrayList<PositionedStack>();
 	}
 
 	@Override
-	public List<PositionedStack> getOtherStacks( int recipeIndex )
+	public List<PositionedStack> getOtherStacks( final int recipeIndex )
 	{
 		return new ArrayList<PositionedStack>();
 	}
 
 	@Override
-	public PositionedStack getResultStack( int recipe )
+	public PositionedStack getResultStack( final int recipe )
 	{
 		return this.outputs.get( recipe );
 	}
@@ -115,19 +115,19 @@ public class NEIWorldCraftingHandler implements ICraftingHandler, IUsageHandler
 	}
 
 	@Override
-	public boolean hasOverlay( GuiContainer gui, Container container, int recipe )
+	public boolean hasOverlay( final GuiContainer gui, final Container container, final int recipe )
 	{
 		return false;
 	}
 
 	@Override
-	public IRecipeOverlayRenderer getOverlayRenderer( GuiContainer gui, int recipe )
+	public IRecipeOverlayRenderer getOverlayRenderer( final GuiContainer gui, final int recipe )
 	{
 		return null;
 	}
 
 	@Override
-	public IOverlayHandler getOverlayHandler( GuiContainer gui, int recipe )
+	public IOverlayHandler getOverlayHandler( final GuiContainer gui, final int recipe )
 	{
 		return null;
 	}
@@ -139,39 +139,39 @@ public class NEIWorldCraftingHandler implements ICraftingHandler, IUsageHandler
 	}
 
 	@Override
-	public List<String> handleTooltip( GuiRecipe gui, List<String> currentToolTip, int recipe )
+	public List<String> handleTooltip( final GuiRecipe gui, final List<String> currentToolTip, final int recipe )
 	{
 		return currentToolTip;
 	}
 
 	@Override
-	public List<String> handleItemTooltip( GuiRecipe gui, ItemStack stack, List<String> currentToolTip, int recipe )
+	public List<String> handleItemTooltip( final GuiRecipe gui, final ItemStack stack, final List<String> currentToolTip, final int recipe )
 	{
 		return currentToolTip;
 	}
 
 	@Override
-	public boolean keyTyped( GuiRecipe gui, char keyChar, int keyCode, int recipe )
+	public boolean keyTyped( final GuiRecipe gui, final char keyChar, final int keyCode, final int recipe )
 	{
 		return false;
 	}
 
 	@Override
-	public boolean mouseClicked( GuiRecipe gui, int button, int recipe )
+	public boolean mouseClicked( final GuiRecipe gui, final int button, final int recipe )
 	{
 		return false;
 	}
 
 	@Override
-	public IUsageHandler getUsageHandler( String inputId, Object... ingredients )
+	public IUsageHandler getUsageHandler( final String inputId, final Object... ingredients )
 	{
 		return this;
 	}
 
 	@Override
-	public ICraftingHandler getRecipeHandler( String outputId, Object... results )
+	public ICraftingHandler getRecipeHandler( final String outputId, final Object... results )
 	{
-		NEIWorldCraftingHandler g = this.newInstance();
+		final NEIWorldCraftingHandler g = this.newInstance();
 		if( results.length > 0 && results[0] instanceof ItemStack )
 		{
 			g.target = (ItemStack) results[0];
@@ -187,11 +187,11 @@ public class NEIWorldCraftingHandler implements ICraftingHandler, IUsageHandler
 		{
 			return this.getClass().newInstance();
 		}
-		catch( InstantiationException e )
+		catch( final InstantiationException e )
 		{
 			throw new IllegalStateException( e );
 		}
-		catch( IllegalAccessException e )
+		catch( final IllegalAccessException e )
 		{
 			throw new IllegalStateException( e );
 		}
@@ -239,9 +239,9 @@ public class NEIWorldCraftingHandler implements ICraftingHandler, IUsageHandler
 		}
 	}
 
-	private void addRecipe( IItemDefinition def, String msg )
+	private void addRecipe( final IItemDefinition def, final String msg )
 	{
-		for( ItemStack definitionStack : def.maybeStack( 1 ).asSet() )
+		for( final ItemStack definitionStack : def.maybeStack( 1 ).asSet() )
 		{
 			if( NEIServerUtils.areStacksSameTypeCrafting( definitionStack, this.target ) )
 			{

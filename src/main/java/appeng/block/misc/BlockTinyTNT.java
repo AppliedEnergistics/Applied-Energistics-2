@@ -83,13 +83,13 @@ public class BlockTinyTNT extends AEBaseBlock implements ICustomCollision
 	}
 
 	@Override
-	public IIcon getIcon( int direction, int metadata )
+	public IIcon getIcon( final int direction, final int metadata )
 	{
 		return new FullIcon( Blocks.tnt.getIcon( direction, metadata ) );
 	}
 
 	@Override
-	public boolean onActivated( World w, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ )
+	public boolean onActivated( final World w, final int x, final int y, final int z, final EntityPlayer player, final int side, final float hitX, final float hitY, final float hitZ )
 	{
 		if( player.getCurrentEquippedItem() != null && player.getCurrentEquippedItem().getItem() == Items.flint_and_steel )
 		{
@@ -105,23 +105,23 @@ public class BlockTinyTNT extends AEBaseBlock implements ICustomCollision
 	}
 
 	@Override
-	public void registerBlockIcons( IIconRegister iconRegistry )
+	public void registerBlockIcons( final IIconRegister iconRegistry )
 	{
 		// no images required.
 	}
 
-	public void startFuse( World w, int x, int y, int z, EntityLivingBase igniter )
+	public void startFuse( final World w, final int x, final int y, final int z, final EntityLivingBase igniter )
 	{
 		if( !w.isRemote )
 		{
-			EntityTinyTNTPrimed primedTinyTNTEntity = new EntityTinyTNTPrimed( w, x + 0.5F, y + 0.5F, z + 0.5F, igniter );
+			final EntityTinyTNTPrimed primedTinyTNTEntity = new EntityTinyTNTPrimed( w, x + 0.5F, y + 0.5F, z + 0.5F, igniter );
 			w.spawnEntityInWorld( primedTinyTNTEntity );
 			w.playSoundAtEntity( primedTinyTNTEntity, "game.tnt.primed", 1.0F, 1.0F );
 		}
 	}
 
 	@Override
-	public void onBlockAdded( World w, int x, int y, int z )
+	public void onBlockAdded( final World w, final int x, final int y, final int z )
 	{
 		super.onBlockAdded( w, x, y, z );
 
@@ -133,7 +133,7 @@ public class BlockTinyTNT extends AEBaseBlock implements ICustomCollision
 	}
 
 	@Override
-	public void onNeighborBlockChange( World w, int x, int y, int z, Block id )
+	public void onNeighborBlockChange( final World w, final int x, final int y, final int z, final Block id )
 	{
 		if( w.isBlockIndirectlyGettingPowered( x, y, z ) )
 		{
@@ -143,22 +143,22 @@ public class BlockTinyTNT extends AEBaseBlock implements ICustomCollision
 	}
 
 	@Override
-	public void onBlockDestroyedByExplosion( World w, int x, int y, int z, Explosion exp )
+	public void onBlockDestroyedByExplosion( final World w, final int x, final int y, final int z, final Explosion exp )
 	{
 		if( !w.isRemote )
 		{
-			EntityTinyTNTPrimed primedTinyTNTEntity = new EntityTinyTNTPrimed( w, x + 0.5F, y + 0.5F, z + 0.5F, exp.getExplosivePlacedBy() );
+			final EntityTinyTNTPrimed primedTinyTNTEntity = new EntityTinyTNTPrimed( w, x + 0.5F, y + 0.5F, z + 0.5F, exp.getExplosivePlacedBy() );
 			primedTinyTNTEntity.fuse = w.rand.nextInt( primedTinyTNTEntity.fuse / 4 ) + primedTinyTNTEntity.fuse / 8;
 			w.spawnEntityInWorld( primedTinyTNTEntity );
 		}
 	}
 
 	@Override
-	public void onEntityCollidedWithBlock( World w, int x, int y, int z, Entity entity )
+	public void onEntityCollidedWithBlock( final World w, final int x, final int y, final int z, final Entity entity )
 	{
 		if( entity instanceof EntityArrow && !w.isRemote )
 		{
-			EntityArrow entityarrow = (EntityArrow) entity;
+			final EntityArrow entityarrow = (EntityArrow) entity;
 
 			if( entityarrow.isBurning() )
 			{
@@ -169,19 +169,19 @@ public class BlockTinyTNT extends AEBaseBlock implements ICustomCollision
 	}
 
 	@Override
-	public boolean canDropFromExplosion( Explosion exp )
+	public boolean canDropFromExplosion( final Explosion exp )
 	{
 		return false;
 	}
 
 	@Override
-	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool( World w, int x, int y, int z, Entity e, boolean isVisual )
+	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool( final World w, final int x, final int y, final int z, final Entity e, final boolean isVisual )
 	{
 		return Collections.singletonList( AxisAlignedBB.getBoundingBox( 0.25, 0, 0.25, 0.75, 0.5, 0.75 ) );
 	}
 
 	@Override
-	public void addCollidingBlockToList( World w, int x, int y, int z, AxisAlignedBB bb, List<AxisAlignedBB> out, Entity e )
+	public void addCollidingBlockToList( final World w, final int x, final int y, final int z, final AxisAlignedBB bb, final List<AxisAlignedBB> out, final Entity e )
 	{
 		out.add( AxisAlignedBB.getBoundingBox( 0.25, 0, 0.25, 0.75, 0.5, 0.75 ) );
 	}

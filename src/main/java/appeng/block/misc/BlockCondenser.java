@@ -45,7 +45,7 @@ public class BlockCondenser extends AEBaseTileBlock
 	}
 
 	@Override
-	public boolean onActivated( World w, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ )
+	public boolean onActivated( final World w, final int x, final int y, final int z, final EntityPlayer player, final int side, final float hitX, final float hitY, final float hitZ )
 	{
 		if( player.isSneaking() )
 		{
@@ -54,7 +54,7 @@ public class BlockCondenser extends AEBaseTileBlock
 
 		if( Platform.isServer() )
 		{
-			TileCondenser tc = this.getTileEntity( w, x, y, z );
+			final TileCondenser tc = this.getTileEntity( w, x, y, z );
 			if( tc != null && !player.isSneaking() )
 			{
 				Platform.openGUI( player, tc, ForgeDirection.getOrientation( side ), GuiBridge.GUI_CONDENSER );

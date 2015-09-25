@@ -51,12 +51,12 @@ public class TileCraftingMonitorTile extends TileCraftingTile implements IColora
 	AEColor paintedColor = AEColor.Transparent;
 
 	@TileEvent( TileEventType.NETWORK_READ )
-	public boolean readFromStream_TileCraftingMonitorTile( ByteBuf data ) throws IOException
+	public boolean readFromStream_TileCraftingMonitorTile( final ByteBuf data ) throws IOException
 	{
-		AEColor oldPaintedColor = this.paintedColor;
+		final AEColor oldPaintedColor = this.paintedColor;
 		this.paintedColor = AEColor.values()[data.readByte()];
 
-		boolean hasItem = data.readBoolean();
+		final boolean hasItem = data.readBoolean();
 
 		if( hasItem )
 		{
@@ -72,7 +72,7 @@ public class TileCraftingMonitorTile extends TileCraftingTile implements IColora
 	}
 
 	@TileEvent( TileEventType.NETWORK_WRITE )
-	public void writeToStream_TileCraftingMonitorTile( ByteBuf data ) throws IOException
+	public void writeToStream_TileCraftingMonitorTile( final ByteBuf data ) throws IOException
 	{
 		data.writeByte( this.paintedColor.ordinal() );
 
@@ -88,7 +88,7 @@ public class TileCraftingMonitorTile extends TileCraftingTile implements IColora
 	}
 
 	@TileEvent( TileEventType.WORLD_NBT_READ )
-	public void readFromNBT_TileCraftingMonitorTile( NBTTagCompound data )
+	public void readFromNBT_TileCraftingMonitorTile( final NBTTagCompound data )
 	{
 		if( data.hasKey( "paintedColor" ) )
 		{
@@ -97,7 +97,7 @@ public class TileCraftingMonitorTile extends TileCraftingTile implements IColora
 	}
 
 	@TileEvent( TileEventType.WORLD_NBT_WRITE )
-	public void writeToNBT_TileCraftingMonitorTile( NBTTagCompound data )
+	public void writeToNBT_TileCraftingMonitorTile( final NBTTagCompound data )
 	{
 		data.setByte( "paintedColor", (byte) this.paintedColor.ordinal() );
 	}
@@ -114,7 +114,7 @@ public class TileCraftingMonitorTile extends TileCraftingTile implements IColora
 		return true;
 	}
 
-	public void setJob( IAEItemStack is )
+	public void setJob( final IAEItemStack is )
 	{
 		if( ( is == null ) != ( this.dspPlay == null ) )
 		{
@@ -149,7 +149,7 @@ public class TileCraftingMonitorTile extends TileCraftingTile implements IColora
 	}
 
 	@Override
-	public boolean recolourBlock( ForgeDirection side, AEColor newPaintedColor, EntityPlayer who )
+	public boolean recolourBlock( final ForgeDirection side, final AEColor newPaintedColor, final EntityPlayer who )
 	{
 		if( this.paintedColor == newPaintedColor )
 		{

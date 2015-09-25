@@ -49,7 +49,7 @@ public class ContainerSpatialIOPort extends AEBaseContainer
 	IGrid network;
 	int delay = 40;
 
-	public ContainerSpatialIOPort( InventoryPlayer ip, TileSpatialIOPort spatialIOPort )
+	public ContainerSpatialIOPort( final InventoryPlayer ip, final TileSpatialIOPort spatialIOPort )
 	{
 		super( ip, spatialIOPort, null );
 		this.spatialIOPort = spatialIOPort;
@@ -77,8 +77,8 @@ public class ContainerSpatialIOPort extends AEBaseContainer
 			{
 				this.delay = 0;
 
-				IEnergyGrid eg = this.network.getCache( IEnergyGrid.class );
-				ISpatialCache sc = this.network.getCache( ISpatialCache.class );
+				final IEnergyGrid eg = this.network.getCache( IEnergyGrid.class );
+				final ISpatialCache sc = this.network.getCache( ISpatialCache.class );
 				if( eg != null )
 				{
 					this.currentPower = (long) ( 100.0 * eg.getStoredPower() );

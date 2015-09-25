@@ -50,7 +50,7 @@ public class ToolReplicatorCard extends AEBaseItem
 	}
 
 	@Override
-	public boolean onItemUseFirst( ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ )
+	public boolean onItemUseFirst( final ItemStack stack, final EntityPlayer player, final World world, int x, int y, int z, final int side, final float hitX, final float hitY, final float hitZ )
 	{
 		if( Platform.isClient() )
 		{
@@ -61,7 +61,7 @@ public class ToolReplicatorCard extends AEBaseItem
 		{
 			if( world.getTileEntity( x, y, z ) instanceof IGridHost )
 			{
-				NBTTagCompound tag = new NBTTagCompound();
+				final NBTTagCompound tag = new NBTTagCompound();
 				tag.setInteger( "x", x );
 				tag.setInteger( "y", y );
 				tag.setInteger( "z", z );
@@ -76,49 +76,49 @@ public class ToolReplicatorCard extends AEBaseItem
 		}
 		else
 		{
-			NBTTagCompound ish = stack.getTagCompound();
+			final NBTTagCompound ish = stack.getTagCompound();
 			if( ish != null )
 			{
-				int src_x = ish.getInteger( "x" );
-				int src_y = ish.getInteger( "y" );
-				int src_z = ish.getInteger( "z" );
-				int src_side = ish.getInteger( "side" );
-				int dimid = ish.getInteger( "dimid" );
-				World src_w = DimensionManager.getWorld( dimid );
+				final int src_x = ish.getInteger( "x" );
+				final int src_y = ish.getInteger( "y" );
+				final int src_z = ish.getInteger( "z" );
+				final int src_side = ish.getInteger( "side" );
+				final int dimid = ish.getInteger( "dimid" );
+				final World src_w = DimensionManager.getWorld( dimid );
 
-				TileEntity te = src_w.getTileEntity( src_x, src_y, src_z );
+				final TileEntity te = src_w.getTileEntity( src_x, src_y, src_z );
 				if( te instanceof IGridHost )
 				{
-					IGridHost gh = (IGridHost) te;
-					ForgeDirection sideOff = ForgeDirection.getOrientation( src_side );
-					ForgeDirection currentSideOff = ForgeDirection.getOrientation( side );
-					IGridNode n = gh.getGridNode( sideOff );
+					final IGridHost gh = (IGridHost) te;
+					final ForgeDirection sideOff = ForgeDirection.getOrientation( src_side );
+					final ForgeDirection currentSideOff = ForgeDirection.getOrientation( side );
+					final IGridNode n = gh.getGridNode( sideOff );
 					if( n != null )
 					{
-						IGrid g = n.getGrid();
+						final IGrid g = n.getGrid();
 						if( g != null )
 						{
-							ISpatialCache sc = g.getCache( ISpatialCache.class );
+							final ISpatialCache sc = g.getCache( ISpatialCache.class );
 							if( sc.isValidRegion() )
 							{
-								DimensionalCoord min = sc.getMin();
-								DimensionalCoord max = sc.getMax();
+								final DimensionalCoord min = sc.getMin();
+								final DimensionalCoord max = sc.getMax();
 
 								x += currentSideOff.offsetX;
 								y += currentSideOff.offsetY;
 								z += currentSideOff.offsetZ;
 
-								int min_x = min.x;
-								int min_y = min.y;
-								int min_z = min.z;
+								final int min_x = min.x;
+								final int min_y = min.y;
+								final int min_z = min.z;
 
-								int rel_x = min.x - src_x + x;
-								int rel_y = min.y - src_y + y;
-								int rel_z = min.z - src_z + z;
+								final int rel_x = min.x - src_x + x;
+								final int rel_y = min.y - src_y + y;
+								final int rel_z = min.z - src_z + z;
 
-								int scale_x = max.x - min.x;
-								int scale_y = max.y - min.y;
-								int scale_z = max.z - min.z;
+								final int scale_x = max.x - min.x;
+								final int scale_y = max.y - min.y;
+								final int scale_z = max.z - min.z;
 
 								for( int i = 1; i < scale_x; i++ )
 								{
@@ -126,15 +126,15 @@ public class ToolReplicatorCard extends AEBaseItem
 									{
 										for( int k = 1; k < scale_z; k++ )
 										{
-											Block blk = src_w.getBlock( min_x + i, min_y + j, min_z + k );
-											int meta = src_w.getBlockMetadata( min_x + i, min_y + j, min_z + k );
+											final Block blk = src_w.getBlock( min_x + i, min_y + j, min_z + k );
+											final int meta = src_w.getBlockMetadata( min_x + i, min_y + j, min_z + k );
 											world.setBlock( i + rel_x, j + rel_y, k + rel_z, blk, meta, 4 );
 
 											if( blk != null && blk.hasTileEntity( meta ) )
 											{
-												TileEntity ote = src_w.getTileEntity( min_x + i, min_y + j, min_z + k );
-												TileEntity nte = blk.createTileEntity( world, meta );
-												NBTTagCompound data = new NBTTagCompound();
+												final TileEntity ote = src_w.getTileEntity( min_x + i, min_y + j, min_z + k );
+												final TileEntity nte = blk.createTileEntity( world, meta );
+												final NBTTagCompound data = new NBTTagCompound();
 												ote.writeToNBT( data );
 												nte.readFromNBT( (NBTTagCompound) data.copy() );
 												world.setTileEntity( i + rel_x, j + rel_y, k + rel_z, nte );
@@ -172,7 +172,7 @@ public class ToolReplicatorCard extends AEBaseItem
 		return true;
 	}
 
-	private void outputMsg( ICommandSender player, String string )
+	private void outputMsg( final ICommandSender player, final String string )
 	{
 		player.addChatMessage( new ChatComponentText( string ) );
 	}

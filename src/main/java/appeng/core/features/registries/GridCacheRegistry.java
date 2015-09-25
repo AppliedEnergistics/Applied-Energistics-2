@@ -35,7 +35,7 @@ public final class GridCacheRegistry implements IGridCacheRegistry
 	private final Map<Class<? extends IGridCache>, Class<? extends IGridCache>> caches = new HashMap<Class<? extends IGridCache>, Class<? extends IGridCache>>();
 
 	@Override
-	public void registerGridCache( Class<? extends IGridCache> iface, Class<? extends IGridCache> implementation )
+	public void registerGridCache( final Class<? extends IGridCache> iface, final Class<? extends IGridCache> implementation )
 	{
 		if( iface.isAssignableFrom( implementation ) )
 		{
@@ -48,33 +48,33 @@ public final class GridCacheRegistry implements IGridCacheRegistry
 	}
 
 	@Override
-	public HashMap<Class<? extends IGridCache>, IGridCache> createCacheInstance( IGrid g )
+	public HashMap<Class<? extends IGridCache>, IGridCache> createCacheInstance( final IGrid g )
 	{
-		HashMap<Class<? extends IGridCache>, IGridCache> map = new HashMap<Class<? extends IGridCache>, IGridCache>();
+		final HashMap<Class<? extends IGridCache>, IGridCache> map = new HashMap<Class<? extends IGridCache>, IGridCache>();
 
-		for( Class<? extends IGridCache> iface : this.caches.keySet() )
+		for( final Class<? extends IGridCache> iface : this.caches.keySet() )
 		{
 			try
 			{
-				Constructor<? extends IGridCache> c = this.caches.get( iface ).getConstructor( IGrid.class );
+				final Constructor<? extends IGridCache> c = this.caches.get( iface ).getConstructor( IGrid.class );
 				map.put( iface, c.newInstance( g ) );
 			}
-			catch( NoSuchMethodException e )
+			catch( final NoSuchMethodException e )
 			{
 				AELog.severe( "Grid Caches must have a constructor with IGrid as the single param." );
 				throw new IllegalArgumentException( e );
 			}
-			catch( InvocationTargetException e )
+			catch( final InvocationTargetException e )
 			{
 				AELog.severe( "Grid Caches must have a constructor with IGrid as the single param." );
 				throw new IllegalStateException( e );
 			}
-			catch( InstantiationException e )
+			catch( final InstantiationException e )
 			{
 				AELog.severe( "Grid Caches must have a constructor with IGrid as the single param." );
 				throw new IllegalStateException( e );
 			}
-			catch( IllegalAccessException e )
+			catch( final IllegalAccessException e )
 			{
 				AELog.severe( "Grid Caches must have a constructor with IGrid as the single param." );
 				throw new IllegalStateException( e );

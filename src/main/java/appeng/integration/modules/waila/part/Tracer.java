@@ -48,14 +48,14 @@ public final class Tracer
 	 *
 	 * @return trace movement. Can be null
 	 */
-	public MovingObjectPosition retraceBlock( World world, EntityPlayerMP player, int x, int y, int z )
+	public MovingObjectPosition retraceBlock( final World world, final EntityPlayerMP player, final int x, final int y, final int z )
 	{
-		Block block = world.getBlock( x, y, z );
+		final Block block = world.getBlock( x, y, z );
 
-		Vec3 headVec = this.getCorrectedHeadVec( player );
-		Vec3 lookVec = player.getLook( 1.0F );
-		double reach = this.getBlockReachDistance_server( player );
-		Vec3 endVec = headVec.addVector( lookVec.xCoord * reach, lookVec.yCoord * reach, lookVec.zCoord * reach );
+		final Vec3 headVec = this.getCorrectedHeadVec( player );
+		final Vec3 lookVec = player.getLook( 1.0F );
+		final double reach = this.getBlockReachDistance_server( player );
+		final Vec3 endVec = headVec.addVector( lookVec.xCoord * reach, lookVec.yCoord * reach, lookVec.zCoord * reach );
 
 		return block.collisionRayTrace( world, x, y, z, headVec, endVec );
 	}
@@ -67,9 +67,9 @@ public final class Tracer
 	 *
 	 * @return view point of player
 	 */
-	private Vec3 getCorrectedHeadVec( EntityPlayer player )
+	private Vec3 getCorrectedHeadVec( final EntityPlayer player )
 	{
-		Vec3 v = Vec3.createVectorHelper( player.posX, player.posY, player.posZ );
+		final Vec3 v = Vec3.createVectorHelper( player.posX, player.posY, player.posZ );
 		if( player.worldObj.isRemote )
 		{
 			// compatibility with eye height changing mods
@@ -91,7 +91,7 @@ public final class Tracer
 	 *
 	 * @return block reach distance of player
 	 */
-	private double getBlockReachDistance_server( EntityPlayerMP player )
+	private double getBlockReachDistance_server( final EntityPlayerMP player )
 	{
 		return player.theItemInWorldManager.getBlockReachDistance();
 	}

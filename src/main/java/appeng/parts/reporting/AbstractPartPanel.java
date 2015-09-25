@@ -49,7 +49,7 @@ public abstract class AbstractPartPanel extends AbstractPartReporting
 	private static final CableBusTextures FRONT_DARK_ICON = CableBusTextures.PartMonitor_Colored;
 	private static final CableBusTextures FRONT_COLORED_ICON = CableBusTextures.PartMonitor_Colored;
 
-	public AbstractPartPanel( ItemStack is )
+	public AbstractPartPanel( final ItemStack is )
 	{
 		super( is, false );
 	}
@@ -80,7 +80,7 @@ public abstract class AbstractPartPanel extends AbstractPartReporting
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderInventory( IPartRenderHelper rh, RenderBlocks renderer )
+	public void renderInventory( final IPartRenderHelper rh, final RenderBlocks renderer )
 	{
 		rh.setBounds( 2, 2, 14, 14, 14, 16 );
 
@@ -99,7 +99,7 @@ public abstract class AbstractPartPanel extends AbstractPartReporting
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderStatic( int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer )
+	public void renderStatic( final int x, final int y, final int z, final IPartRenderHelper rh, final RenderBlocks renderer )
 	{
 		final IIcon sideTexture = CableBusTextures.PartMonitorSides.getIcon();
 		final IIcon backTexture = CableBusTextures.PartMonitorBack.getIcon();

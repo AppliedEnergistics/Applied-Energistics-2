@@ -52,9 +52,9 @@ public class SpatialSkyRender extends IRenderHandler
 	}
 
 	@Override
-	public void render( float partialTicks, WorldClient world, Minecraft mc )
+	public void render( final float partialTicks, final WorldClient world, final Minecraft mc )
 	{
-		long now = System.currentTimeMillis();
+		final long now = System.currentTimeMillis();
 		if( now - this.cycle > 2000 )
 		{
 			this.cycle = now;
@@ -74,7 +74,7 @@ public class SpatialSkyRender extends IRenderHandler
 		GL11.glDisable( GL11.GL_BLEND );
 		GL11.glDepthMask( false );
 		GL11.glColor4f( 0.0f, 0.0f, 0.0f, 1.0f );
-		Tessellator tessellator = Tessellator.instance;
+		final Tessellator tessellator = Tessellator.instance;
 
 		for( int i = 0; i < 6; ++i )
 		{
@@ -142,7 +142,7 @@ public class SpatialSkyRender extends IRenderHandler
 
 	private void renderTwinkles()
 	{
-		Tessellator tessellator = Tessellator.instance;
+		final Tessellator tessellator = Tessellator.instance;
 		tessellator.startDrawingQuads();
 
 		for( int i = 0; i < 50; ++i )
@@ -150,7 +150,7 @@ public class SpatialSkyRender extends IRenderHandler
 			double iX = this.random.nextFloat() * 2.0F - 1.0F;
 			double iY = this.random.nextFloat() * 2.0F - 1.0F;
 			double iZ = this.random.nextFloat() * 2.0F - 1.0F;
-			double d3 = 0.05F + this.random.nextFloat() * 0.1F;
+			final double d3 = 0.05F + this.random.nextFloat() * 0.1F;
 			double dist = iX * iX + iY * iY + iZ * iZ;
 
 			if( dist < 1.0D && dist > 0.01D )
@@ -159,30 +159,30 @@ public class SpatialSkyRender extends IRenderHandler
 				iX *= dist;
 				iY *= dist;
 				iZ *= dist;
-				double x = iX * 100.0D;
-				double y = iY * 100.0D;
-				double z = iZ * 100.0D;
-				double d8 = Math.atan2( iX, iZ );
-				double d9 = Math.sin( d8 );
-				double d10 = Math.cos( d8 );
-				double d11 = Math.atan2( Math.sqrt( iX * iX + iZ * iZ ), iY );
-				double d12 = Math.sin( d11 );
-				double d13 = Math.cos( d11 );
-				double d14 = this.random.nextDouble() * Math.PI * 2.0D;
-				double d15 = Math.sin( d14 );
-				double d16 = Math.cos( d14 );
+				final double x = iX * 100.0D;
+				final double y = iY * 100.0D;
+				final double z = iZ * 100.0D;
+				final double d8 = Math.atan2( iX, iZ );
+				final double d9 = Math.sin( d8 );
+				final double d10 = Math.cos( d8 );
+				final double d11 = Math.atan2( Math.sqrt( iX * iX + iZ * iZ ), iY );
+				final double d12 = Math.sin( d11 );
+				final double d13 = Math.cos( d11 );
+				final double d14 = this.random.nextDouble() * Math.PI * 2.0D;
+				final double d15 = Math.sin( d14 );
+				final double d16 = Math.cos( d14 );
 
 				for( int j = 0; j < 4; ++j )
 				{
-					double d17 = 0.0D;
-					double d18 = ( ( j & 2 ) - 1 ) * d3;
-					double d19 = ( ( j + 1 & 2 ) - 1 ) * d3;
-					double d20 = d18 * d16 - d19 * d15;
-					double d21 = d19 * d16 + d18 * d15;
-					double d22 = d20 * d12 + d17 * d13;
-					double d23 = d17 * d12 - d20 * d13;
-					double d24 = d23 * d9 - d21 * d10;
-					double d25 = d21 * d9 + d23 * d10;
+					final double d17 = 0.0D;
+					final double d18 = ( ( j & 2 ) - 1 ) * d3;
+					final double d19 = ( ( j + 1 & 2 ) - 1 ) * d3;
+					final double d20 = d18 * d16 - d19 * d15;
+					final double d21 = d19 * d16 + d18 * d15;
+					final double d22 = d20 * d12 + d17 * d13;
+					final double d23 = d17 * d12 - d20 * d13;
+					final double d24 = d23 * d9 - d21 * d10;
+					final double d25 = d21 * d9 + d23 * d10;
 					tessellator.addVertex( x + d24, y + d22, z + d25 );
 				}
 			}

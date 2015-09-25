@@ -29,7 +29,7 @@ public class FlippableIcon implements IIcon
 	boolean flip_u;
 	boolean flip_v;
 
-	public FlippableIcon( IIcon o )
+	public FlippableIcon( final IIcon o )
 	{
 		if( o == null )
 		{
@@ -74,7 +74,7 @@ public class FlippableIcon implements IIcon
 	}
 
 	@Override
-	public float getInterpolatedU( double px )
+	public float getInterpolatedU( final double px )
 	{
 		if( this.flip_u )
 		{
@@ -104,7 +104,7 @@ public class FlippableIcon implements IIcon
 	}
 
 	@Override
-	public float getInterpolatedV( double px )
+	public float getInterpolatedV( final double px )
 	{
 		if( this.flip_v )
 		{
@@ -124,13 +124,13 @@ public class FlippableIcon implements IIcon
 		return this.original;
 	}
 
-	public void setFlip( boolean u, boolean v )
+	public void setFlip( final boolean u, final boolean v )
 	{
 		this.flip_u = u;
 		this.flip_v = v;
 	}
 
-	public int setFlip( int orientation )
+	public int setFlip( final int orientation )
 	{
 		this.flip_u = ( orientation & 8 ) == 8;
 		this.flip_v = ( orientation & 16 ) == 16;

@@ -39,7 +39,7 @@ public class AdaptorBCPipe extends InventoryAdaptor
 	private final TileEntity i;
 	private final ForgeDirection d;
 
-	public AdaptorBCPipe( TileEntity s, ForgeDirection dd )
+	public AdaptorBCPipe( final TileEntity s, final ForgeDirection dd )
 	{
 		this.buildCraft = (IBuildCraftTransport) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.BuildCraftTransport );
 		if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.BuildCraftTransport ) )
@@ -56,31 +56,31 @@ public class AdaptorBCPipe extends InventoryAdaptor
 	}
 
 	@Override
-	public ItemStack removeItems( int amount, ItemStack filter, IInventoryDestination destination )
+	public ItemStack removeItems( final int amount, final ItemStack filter, final IInventoryDestination destination )
 	{
 		return null;
 	}
 
 	@Override
-	public ItemStack simulateRemove( int amount, ItemStack filter, IInventoryDestination destination )
+	public ItemStack simulateRemove( final int amount, final ItemStack filter, final IInventoryDestination destination )
 	{
 		return null;
 	}
 
 	@Override
-	public ItemStack removeSimilarItems( int amount, ItemStack filter, FuzzyMode fuzzyMode, IInventoryDestination destination )
+	public ItemStack removeSimilarItems( final int amount, final ItemStack filter, final FuzzyMode fuzzyMode, final IInventoryDestination destination )
 	{
 		return null;
 	}
 
 	@Override
-	public ItemStack simulateSimilarRemove( int amount, ItemStack filter, FuzzyMode fuzzyMode, IInventoryDestination destination )
+	public ItemStack simulateSimilarRemove( final int amount, final ItemStack filter, final FuzzyMode fuzzyMode, final IInventoryDestination destination )
 	{
 		return null;
 	}
 
 	@Override
-	public ItemStack addItems( ItemStack toBeAdded )
+	public ItemStack addItems( final ItemStack toBeAdded )
 	{
 		if( this.i == null )
 		{
@@ -103,7 +103,7 @@ public class AdaptorBCPipe extends InventoryAdaptor
 	}
 
 	@Override
-	public ItemStack simulateAdd( ItemStack toBeSimulated )
+	public ItemStack simulateAdd( final ItemStack toBeSimulated )
 	{
 		if( this.i == null )
 		{

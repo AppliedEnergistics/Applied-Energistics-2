@@ -47,7 +47,7 @@ public class Waila implements IIntegrationModule
 		IntegrationHelper.testClassExistence( this, mcp.mobius.waila.api.ITaggedList.class );
 	}
 
-	public static void register( IWailaRegistrar registrar )
+	public static void register( final IWailaRegistrar registrar )
 	{
 		final IWailaDataProvider partHost = new PartWailaDataProvider();
 

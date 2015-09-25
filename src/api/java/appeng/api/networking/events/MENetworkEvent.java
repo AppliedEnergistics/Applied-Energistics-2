@@ -71,7 +71,7 @@ public class MENetworkEvent
 	 *
 	 * @param v current number of visitors
 	 */
-	public void setVisitedObjects( int v )
+	public void setVisitedObjects( final int v )
 	{
 		this.visited = v;
 	}

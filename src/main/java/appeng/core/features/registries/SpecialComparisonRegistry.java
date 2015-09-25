@@ -40,11 +40,11 @@ public class SpecialComparisonRegistry implements ISpecialComparisonRegistry
 	}
 
 	@Override
-	public IItemComparison getSpecialComparison( ItemStack stack )
+	public IItemComparison getSpecialComparison( final ItemStack stack )
 	{
-		for( IItemComparisonProvider i : this.CompRegistry )
+		for( final IItemComparisonProvider i : this.CompRegistry )
 		{
-			IItemComparison comp = i.getComparison( stack );
+			final IItemComparison comp = i.getComparison( stack );
 			if( comp != null )
 			{
 				return comp;
@@ -55,7 +55,7 @@ public class SpecialComparisonRegistry implements ISpecialComparisonRegistry
 	}
 
 	@Override
-	public void addComparisonProvider( IItemComparisonProvider prov )
+	public void addComparisonProvider( final IItemComparisonProvider prov )
 	{
 		this.CompRegistry.add( prov );
 	}

@@ -151,7 +151,7 @@ public final class WorldData implements IWorldData
 			throw new IllegalStateException( "Failed to create " + this.spawnDirectory.getAbsolutePath() );
 		}
 
-		for( IOnWorldStartable startable : this.startables )
+		for( final IOnWorldStartable startable : this.startables )
 		{
 			startable.onWorldStart();
 		}
@@ -164,7 +164,7 @@ public final class WorldData implements IWorldData
 	{
 		Preconditions.checkNotNull( instance );
 
-		for( IOnWorldStoppable stoppable : this.stoppables )
+		for( final IOnWorldStoppable stoppable : this.stoppables )
 		{
 			stoppable.onWorldStop();
 		}

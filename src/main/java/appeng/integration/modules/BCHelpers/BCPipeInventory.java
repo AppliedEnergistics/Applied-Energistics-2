@@ -39,14 +39,14 @@ public class BCPipeInventory implements IMEInventory<IAEItemStack>
 	final TileEntity te;
 	final ForgeDirection direction;
 
-	public BCPipeInventory( TileEntity te, ForgeDirection direction )
+	public BCPipeInventory( final TileEntity te, final ForgeDirection direction )
 	{
 		this.te = te;
 		this.direction = direction;
 	}
 
 	@Override
-	public IAEItemStack injectItems( IAEItemStack input, Actionable mode, BaseActionSource src )
+	public IAEItemStack injectItems( final IAEItemStack input, final Actionable mode, final BaseActionSource src )
 	{
 		if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.BuildCraftTransport ) )
 		{
@@ -71,13 +71,13 @@ public class BCPipeInventory implements IMEInventory<IAEItemStack>
 	}
 
 	@Override
-	public IAEItemStack extractItems( IAEItemStack request, Actionable mode, BaseActionSource src )
+	public IAEItemStack extractItems( final IAEItemStack request, final Actionable mode, final BaseActionSource src )
 	{
 		return null;
 	}
 
 	@Override
-	public IItemList<IAEItemStack> getAvailableItems( IItemList<IAEItemStack> out )
+	public IItemList<IAEItemStack> getAvailableItems( final IItemList<IAEItemStack> out )
 	{
 		return out;
 	}

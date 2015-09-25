@@ -29,7 +29,7 @@ public class AppEngException extends Exception
 
 	private static final long serialVersionUID = -9051434206368465494L;
 
-	public AppEngException( String t )
+	public AppEngException( final String t )
 	{
 		super( t );
 	}

@@ -9,7 +9,7 @@ import net.minecraft.item.ItemSlab;
 public class AEBaseItemBlockSlab extends ItemSlab
 {
 
-	public AEBaseItemBlockSlab( Block block, AEBaseSlabBlock singleSlab, AEBaseSlabBlock doubleSlab, Boolean isDoubleSlab )
+	public AEBaseItemBlockSlab( final Block block, final AEBaseSlabBlock singleSlab, final AEBaseSlabBlock doubleSlab, final Boolean isDoubleSlab )
 	{
 		super( block, singleSlab, doubleSlab, isDoubleSlab );
 	}

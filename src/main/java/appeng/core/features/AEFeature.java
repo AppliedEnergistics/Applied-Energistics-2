@@ -77,12 +77,12 @@ public enum AEFeature
 	public final boolean isVisible;
 	public final boolean defaultValue;
 
-	AEFeature( String cat )
+	AEFeature( final String cat )
 	{
 		this( cat, true );
 	}
 
-	AEFeature( String cat, boolean defaultValue )
+	AEFeature( final String cat, final boolean defaultValue )
 	{
 		this.category = cat;
 		this.isVisible = !this.name().equals( "Core" );

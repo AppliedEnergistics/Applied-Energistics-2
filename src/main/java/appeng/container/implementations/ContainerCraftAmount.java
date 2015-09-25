@@ -42,7 +42,7 @@ public class ContainerCraftAmount extends AEBaseContainer
 	final ITerminalHost priHost;
 	public IAEItemStack whatToMake;
 
-	public ContainerCraftAmount( InventoryPlayer ip, ITerminalHost te )
+	public ContainerCraftAmount( final InventoryPlayer ip, final ITerminalHost te )
 	{
 		super( ip, te );
 		this.priHost = te;
@@ -60,7 +60,7 @@ public class ContainerCraftAmount extends AEBaseContainer
 
 	public IGrid getGrid()
 	{
-		IActionHost h = ( (IActionHost) this.getTarget() );
+		final IActionHost h = ( (IActionHost) this.getTarget() );
 		return h.getActionableNode().getGrid();
 	}
 

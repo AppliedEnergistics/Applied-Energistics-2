@@ -41,31 +41,31 @@ public class ItemCreativeStorageCell extends AEBaseItem implements ICellWorkbenc
 	}
 
 	@Override
-	public boolean isEditable( ItemStack is )
+	public boolean isEditable( final ItemStack is )
 	{
 		return true;
 	}
 
 	@Override
-	public IInventory getUpgradesInventory( ItemStack is )
+	public IInventory getUpgradesInventory( final ItemStack is )
 	{
 		return null;
 	}
 
 	@Override
-	public IInventory getConfigInventory( ItemStack is )
+	public IInventory getConfigInventory( final ItemStack is )
 	{
 		return new CellConfig( is );
 	}
 
 	@Override
-	public FuzzyMode getFuzzyMode( ItemStack is )
+	public FuzzyMode getFuzzyMode( final ItemStack is )
 	{
 		return FuzzyMode.IGNORE_ALL;
 	}
 
 	@Override
-	public void setFuzzyMode( ItemStack is, FuzzyMode fzMode )
+	public void setFuzzyMode( final ItemStack is, final FuzzyMode fzMode )
 	{
 
 	}

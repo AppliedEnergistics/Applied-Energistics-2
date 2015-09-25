@@ -32,7 +32,7 @@ public final class InvIterator implements Iterator<ItemStack>
 
 	private int counter = 0;
 
-	public InvIterator( IInventory inventory )
+	public InvIterator( final IInventory inventory )
 	{
 		this.inventory = inventory;
 		this.size = this.inventory.getSizeInventory();
@@ -47,7 +47,7 @@ public final class InvIterator implements Iterator<ItemStack>
 	@Override
 	public ItemStack next()
 	{
-		ItemStack result = this.inventory.getStackInSlot( this.counter );
+		final ItemStack result = this.inventory.getStackInSlot( this.counter );
 		this.counter++;
 
 		return result;

@@ -46,7 +46,7 @@ public class BlockQuartzLamp extends BlockQuartzGlass
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void randomDisplayTick( World w, int x, int y, int z, Random r )
+	public void randomDisplayTick( final World w, final int x, final int y, final int z, final Random r )
 	{
 		if( !AEConfig.instance.enableEffects )
 		{
@@ -55,11 +55,11 @@ public class BlockQuartzLamp extends BlockQuartzGlass
 
 		if( CommonHelper.proxy.shouldAddParticles( r ) )
 		{
-			double d0 = ( r.nextFloat() - 0.5F ) * 0.96D;
-			double d1 = ( r.nextFloat() - 0.5F ) * 0.96D;
-			double d2 = ( r.nextFloat() - 0.5F ) * 0.96D;
+			final double d0 = ( r.nextFloat() - 0.5F ) * 0.96D;
+			final double d1 = ( r.nextFloat() - 0.5F ) * 0.96D;
+			final double d2 = ( r.nextFloat() - 0.5F ) * 0.96D;
 
-			VibrantFX fx = new VibrantFX( w, 0.5 + x + d0, 0.5 + y + d1, 0.5 + z + d2, 0.0D, 0.0D, 0.0D );
+			final VibrantFX fx = new VibrantFX( w, 0.5 + x + d0, 0.5 + y + d1, 0.5 + z + d2, 0.0D, 0.0D, 0.0D );
 
 			Minecraft.getMinecraft().effectRenderer.addEffect( fx );
 		}

@@ -29,13 +29,13 @@ public class SlotInaccessible extends AppEngSlot
 
 	ItemStack dspStack = null;
 
-	public SlotInaccessible( IInventory i, int slotIdx, int x, int y )
+	public SlotInaccessible( final IInventory i, final int slotIdx, final int x, final int y )
 	{
 		super( i, slotIdx, x, y );
 	}
 
 	@Override
-	public boolean isItemValid( ItemStack i )
+	public boolean isItemValid( final ItemStack i )
 	{
 		return false;
 	}
@@ -48,7 +48,7 @@ public class SlotInaccessible extends AppEngSlot
 	}
 
 	@Override
-	public boolean canTakeStack( EntityPlayer par1EntityPlayer )
+	public boolean canTakeStack( final EntityPlayer par1EntityPlayer )
 	{
 		return false;
 	}
@@ -58,7 +58,7 @@ public class SlotInaccessible extends AppEngSlot
 	{
 		if( this.dspStack == null )
 		{
-			ItemStack dsp = super.getDisplayStack();
+			final ItemStack dsp = super.getDisplayStack();
 			if( dsp != null )
 			{
 				this.dspStack = dsp.copy();

@@ -41,7 +41,7 @@ public class SyncData
 	private final int channel;
 	private Object clientVersion;
 
-	public SyncData( AEBaseContainer container, Field field, GuiSync annotation )
+	public SyncData( final AEBaseContainer container, final Field field, final GuiSync annotation )
 	{
 		this.clientVersion = null;
 		this.source = container;
@@ -54,11 +54,11 @@ public class SyncData
 		return this.channel;
 	}
 
-	public void tick( ICrafting c )
+	public void tick( final ICrafting c )
 	{
 		try
 		{
-			Object val = this.field.get( this.source );
+			final Object val = this.field.get( this.source );
 			if( val != null && this.clientVersion == null )
 			{
 				this.send( c, val );
@@ -68,21 +68,21 @@ public class SyncData
 				this.send( c, val );
 			}
 		}
-		catch( IllegalArgumentException e )
+		catch( final IllegalArgumentException e )
 		{
 			AELog.error( e );
 		}
-		catch( IllegalAccessException e )
+		catch( final IllegalAccessException e )
 		{
 			AELog.error( e );
 		}
-		catch( IOException e )
+		catch( final IOException e )
 		{
 			AELog.error( e );
 		}
 	}
 
-	private void send( ICrafting o, Object val ) throws IOException
+	private void send( final ICrafting o, final Object val ) throws IOException
 	{
 		if( val instanceof String )
 		{
@@ -111,11 +111,11 @@ public class SyncData
 		this.clientVersion = val;
 	}
 
-	public void update( Object val )
+	public void update( final Object val )
 	{
 		try
 		{
-			Object oldValue = this.field.get( this.source );
+			final Object oldValue = this.field.get( this.source );
 			if( val instanceof String )
 			{
 				this.updateString( oldValue, (String) val );
@@ -125,40 +125,40 @@ public class SyncData
 				this.updateValue( oldValue, (Long) val );
 			}
 		}
-		catch( IllegalArgumentException e )
+		catch( final IllegalArgumentException e )
 		{
 			AELog.error( e );
 		}
-		catch( IllegalAccessException e )
+		catch( final IllegalAccessException e )
 		{
 			AELog.error( e );
 		}
 	}
 
-	private void updateString( Object oldValue, String val )
+	private void updateString( final Object oldValue, final String val )
 	{
 		try
 		{
 			this.field.set( this.source, val );
 		}
-		catch( IllegalArgumentException e )
+		catch( final IllegalArgumentException e )
 		{
 			AELog.error( e );
 		}
-		catch( IllegalAccessException e )
+		catch( final IllegalAccessException e )
 		{
 			AELog.error( e );
 		}
 	}
 
-	private void updateValue( Object oldValue, long val )
+	private void updateValue( final Object oldValue, final long val )
 	{
 		try
 		{
 			if( this.field.getType().isEnum() )
 			{
-				EnumSet<? extends Enum> valList = EnumSet.allOf( (Class<? extends Enum>) this.field.getType() );
-				for( Enum e : valList )
+				final EnumSet<? extends Enum> valList = EnumSet.allOf( (Class<? extends Enum>) this.field.getType() );
+				for( final Enum e : valList )
 				{
 					if( e.ordinal() == val )
 					{
@@ -197,11 +197,11 @@ public class SyncData
 
 			this.source.onUpdate( this.field.getName(), oldValue, this.field.get( this.source ) );
 		}
-		catch( IllegalArgumentException e )
+		catch( final IllegalArgumentException e )
 		{
 			AELog.error( e );
 		}
-		catch( IllegalAccessException e )
+		catch( final IllegalAccessException e )
 		{
 			AELog.error( e );
 		}

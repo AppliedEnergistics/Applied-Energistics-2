@@ -61,7 +61,7 @@ public class PacketCompressedNBT extends AppEngPacket
 		this.data = null;
 		this.compressFrame = null;
 
-		GZIPInputStream gzReader = new GZIPInputStream( new InputStream()
+		final GZIPInputStream gzReader = new GZIPInputStream( new InputStream()
 		{
 
 			@Override
@@ -76,13 +76,13 @@ public class PacketCompressedNBT extends AppEngPacket
 			}
 		} );
 
-		DataInputStream inStream = new DataInputStream( gzReader );
+		final DataInputStream inStream = new DataInputStream( gzReader );
 		this.in = CompressedStreamTools.read( inStream );
 		inStream.close();
 	}
 
 	// api
-	public PacketCompressedNBT( NBTTagCompound din ) throws IOException
+	public PacketCompressedNBT( final NBTTagCompound din ) throws IOException
 	{
 
 		this.data = Unpooled.buffer( 2048 );
@@ -94,7 +94,7 @@ public class PacketCompressedNBT extends AppEngPacket
 		{
 
 			@Override
-			public void write( int value ) throws IOException
+			public void write( final int value ) throws IOException
 			{
 				PacketCompressedNBT.this.data.writeByte( value );
 			}
@@ -108,9 +108,9 @@ public class PacketCompressedNBT extends AppEngPacket
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void clientPacketData( INetworkInfo network, AppEngPacket packet, EntityPlayer player )
+	public void clientPacketData( final INetworkInfo network, final AppEngPacket packet, final EntityPlayer player )
 	{
-		GuiScreen gs = Minecraft.getMinecraft().currentScreen;
+		final GuiScreen gs = Minecraft.getMinecraft().currentScreen;
 
 		if( gs instanceof GuiInterfaceTerminal )
 		{

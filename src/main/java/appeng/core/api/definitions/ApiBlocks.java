@@ -166,7 +166,7 @@ public final class ApiBlocks implements IBlocks
 
 	private final Set<IOrientableBlock> orientables;
 
-	public ApiBlocks( DefinitionConstructor constructor )
+	public ApiBlocks( final DefinitionConstructor constructor )
 	{
 		final BlockLightDetector lightDetector = new BlockLightDetector();
 		final BlockQuartzPillar quartzPillar = new BlockQuartzPillar();

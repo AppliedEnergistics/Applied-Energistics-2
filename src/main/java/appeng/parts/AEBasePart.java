@@ -85,7 +85,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 	protected IPartHost host = null;
 	protected ForgeDirection side = null;
 
-	public AEBasePart( ItemStack is )
+	public AEBasePart( final ItemStack is )
 	{
 		Preconditions.checkNotNull( is );
 
@@ -100,13 +100,13 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 	}
 
 	@Override
-	public IGridNode getGridNode( ForgeDirection dir )
+	public IGridNode getGridNode( final ForgeDirection dir )
 	{
 		return this.proxy.getNode();
 	}
 
 	@Override
-	public AECableType getCableConnectionType( ForgeDirection dir )
+	public AECableType getCableConnectionType( final ForgeDirection dir )
 	{
 		return AECableType.GLASS;
 	}
@@ -116,7 +116,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 	{
 		if( this.is.stackSize > 0 )
 		{
-			List<ItemStack> items = new ArrayList<ItemStack>();
+			final List<ItemStack> items = new ArrayList<ItemStack>();
 			items.add( this.is.copy() );
 			this.host.removePart( this.side, false );
 			Platform.spawnDrops( this.tile.getWorldObj(), this.tile.xCoord, this.tile.yCoord, this.tile.zCoord, items );
@@ -134,20 +134,20 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 	}
 
 	@Override
-	public void getBoxes( IPartCollisionHelper bch )
+	public void getBoxes( final IPartCollisionHelper bch )
 	{
 
 	}
 
 	@Override
-	public int getInstalledUpgrades( Upgrades u )
+	public int getInstalledUpgrades( final Upgrades u )
 	{
 		return 0;
 	}
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderInventory( IPartRenderHelper rh, RenderBlocks renderer )
+	public void renderInventory( final IPartRenderHelper rh, final RenderBlocks renderer )
 	{
 		rh.setBounds( 1, 1, 1, 15, 15, 15 );
 		rh.renderInventoryBox( renderer );
@@ -199,7 +199,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderStatic( int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer )
+	public void renderStatic( final int x, final int y, final int z, final IPartRenderHelper rh, final RenderBlocks renderer )
 	{
 		rh.setBounds( 1, 1, 1, 15, 15, 15 );
 		rh.renderBlock( x, y, z, renderer );
@@ -211,24 +211,24 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 		return this.is.hasDisplayName();
 	}
 
-	public void addEntityCrashInfo( CrashReportCategory crashreportcategory )
+	public void addEntityCrashInfo( final CrashReportCategory crashreportcategory )
 	{
 		crashreportcategory.addCrashSection( "Part Side", this.side );
 	}
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderDynamic( double x, double y, double z, IPartRenderHelper rh, RenderBlocks renderer )
+	public void renderDynamic( final double x, final double y, final double z, final IPartRenderHelper rh, final RenderBlocks renderer )
 	{
 
 	}
 
 	@Override
-	public ItemStack getItemStack( PartItemStack type )
+	public ItemStack getItemStack( final PartItemStack type )
 	{
 		if( type == PartItemStack.Network )
 		{
-			ItemStack copy = this.is.copy();
+			final ItemStack copy = this.is.copy();
 			copy.setTagCompound( null );
 			return copy;
 		}
@@ -254,13 +254,13 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 	}
 
 	@Override
-	public void readFromNBT( NBTTagCompound data )
+	public void readFromNBT( final NBTTagCompound data )
 	{
 		this.proxy.readFromNBT( data );
 	}
 
 	@Override
-	public void writeToNBT( NBTTagCompound data )
+	public void writeToNBT( final NBTTagCompound data )
 	{
 		this.proxy.writeToNBT( data );
 	}
@@ -278,13 +278,13 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 	}
 
 	@Override
-	public void writeToStream( ByteBuf data ) throws IOException
+	public void writeToStream( final ByteBuf data ) throws IOException
 	{
 
 	}
 
 	@Override
-	public boolean readFromStream( ByteBuf data ) throws IOException
+	public boolean readFromStream( final ByteBuf data ) throws IOException
 	{
 		return false;
 	}
@@ -296,7 +296,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 	}
 
 	@Override
-	public void onEntityCollision( Entity entity )
+	public void onEntityCollision( final Entity entity )
 	{
 
 	}
@@ -314,7 +314,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 	}
 
 	@Override
-	public void setPartHostInfo( ForgeDirection side, IPartHost host, TileEntity tile )
+	public void setPartHostInfo( final ForgeDirection side, final IPartHost host, final TileEntity tile )
 	{
 		this.side = side;
 		this.tile = tile;
@@ -329,7 +329,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void randomDisplayTick( World world, int x, int y, int z, Random r )
+	public void randomDisplayTick( final World world, final int x, final int y, final int z, final Random r )
 	{
 
 	}
@@ -341,7 +341,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 	}
 
 	@Override
-	public void getDrops( List<ItemStack> drops, boolean wrenched )
+	public void getDrops( final List<ItemStack> drops, final boolean wrenched )
 	{
 
 	}
@@ -353,7 +353,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 	}
 
 	@Override
-	public boolean isLadder( EntityLivingBase entity )
+	public boolean isLadder( final EntityLivingBase entity )
 	{
 		return false;
 	}
@@ -365,7 +365,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 	}
 
 	@Override
-	public IInventory getInventoryByName( String name )
+	public IInventory getInventoryByName( final String name )
 	{
 		return null;
 	}
@@ -376,11 +376,11 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 	 * @param from source of settings
 	 * @param compound compound of source
 	 */
-	public void uploadSettings( SettingsFrom from, NBTTagCompound compound )
+	public void uploadSettings( final SettingsFrom from, final NBTTagCompound compound )
 	{
 		if( compound != null )
 		{
-			IConfigManager cm = this.getConfigManager();
+			final IConfigManager cm = this.getConfigManager();
 			if( cm != null )
 			{
 				cm.readFromNBT( compound );
@@ -389,15 +389,15 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 
 		if( this instanceof IPriorityHost )
 		{
-			IPriorityHost pHost = (IPriorityHost) this;
+			final IPriorityHost pHost = (IPriorityHost) this;
 			pHost.setPriority( compound.getInteger( "priority" ) );
 		}
 
-		IInventory inv = this.getInventoryByName( "config" );
+		final IInventory inv = this.getInventoryByName( "config" );
 		if( inv instanceof AppEngInternalAEInventory )
 		{
-			AppEngInternalAEInventory target = (AppEngInternalAEInventory) inv;
-			AppEngInternalAEInventory tmp = new AppEngInternalAEInventory( null, target.getSizeInventory() );
+			final AppEngInternalAEInventory target = (AppEngInternalAEInventory) inv;
+			final AppEngInternalAEInventory tmp = new AppEngInternalAEInventory( null, target.getSizeInventory() );
 			tmp.readFromNBT( compound, "config" );
 			for( int x = 0; x < tmp.getSizeInventory(); x++ )
 			{
@@ -413,11 +413,11 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 	 *
 	 * @return compound of source
 	 */
-	public NBTTagCompound downloadSettings( SettingsFrom from )
+	public NBTTagCompound downloadSettings( final SettingsFrom from )
 	{
-		NBTTagCompound output = new NBTTagCompound();
+		final NBTTagCompound output = new NBTTagCompound();
 
-		IConfigManager cm = this.getConfigManager();
+		final IConfigManager cm = this.getConfigManager();
 		if( cm != null )
 		{
 			cm.writeToNBT( output );
@@ -425,11 +425,11 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 
 		if( this instanceof IPriorityHost )
 		{
-			IPriorityHost pHost = (IPriorityHost) this;
+			final IPriorityHost pHost = (IPriorityHost) this;
 			output.setInteger( "priority", pHost.getPriority() );
 		}
 
-		IInventory inv = this.getInventoryByName( "config" );
+		final IInventory inv = this.getInventoryByName( "config" );
 		if( inv instanceof AppEngInternalAEInventory )
 		{
 			( (AppEngInternalAEInventory) inv ).writeToNBT( output, "config" );
@@ -443,13 +443,13 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 		return true;
 	}
 
-	private boolean useMemoryCard( EntityPlayer player )
+	private boolean useMemoryCard( final EntityPlayer player )
 	{
-		ItemStack memCardIS = player.inventory.getCurrentItem();
+		final ItemStack memCardIS = player.inventory.getCurrentItem();
 
 		if( memCardIS != null && this.useStandardMemoryCard() && memCardIS.getItem() instanceof IMemoryCard )
 		{
-			IMemoryCard memoryCard = (IMemoryCard) memCardIS.getItem();
+			final IMemoryCard memoryCard = (IMemoryCard) memCardIS.getItem();
 
 			ItemStack is = this.getItemStack( PartItemStack.Network );
 
@@ -457,17 +457,17 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 			final IDefinitions definitions = AEApi.instance().definitions();
 			if( definitions.parts().iface().isSameAs( is ) )
 			{
-				for( ItemStack iface : definitions.blocks().iface().maybeStack( 1 ).asSet() )
+				for( final ItemStack iface : definitions.blocks().iface().maybeStack( 1 ).asSet() )
 				{
 					is = iface;
 				}
 			}
 
-			String name = is.getUnlocalizedName();
+			final String name = is.getUnlocalizedName();
 
 			if( player.isSneaking() )
 			{
-				NBTTagCompound data = this.downloadSettings( SettingsFrom.MEMORY_CARD );
+				final NBTTagCompound data = this.downloadSettings( SettingsFrom.MEMORY_CARD );
 				if( data != null )
 				{
 					memoryCard.setMemoryCardContents( memCardIS, name, data );
@@ -476,8 +476,8 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 			}
 			else
 			{
-				String storedName = memoryCard.getSettingsName( memCardIS );
-				NBTTagCompound data = memoryCard.getData( memCardIS );
+				final String storedName = memoryCard.getSettingsName( memCardIS );
+				final NBTTagCompound data = memoryCard.getData( memCardIS );
 				if( name.equals( storedName ) )
 				{
 					this.uploadSettings( SettingsFrom.MEMORY_CARD, data );
@@ -494,7 +494,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 	}
 
 	@Override
-	public final boolean onActivate( EntityPlayer player, Vec3 pos )
+	public final boolean onActivate( final EntityPlayer player, final Vec3 pos )
 	{
 		if( this.useMemoryCard( player ) )
 		{
@@ -505,7 +505,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 	}
 
 	@Override
-	public final boolean onShiftActivate( EntityPlayer player, Vec3 pos )
+	public final boolean onShiftActivate( final EntityPlayer player, final Vec3 pos )
 	{
 		if( this.useMemoryCard( player ) )
 		{
@@ -515,24 +515,24 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 		return this.onPartShiftActivate( player, pos );
 	}
 
-	public boolean onPartActivate( EntityPlayer player, Vec3 pos )
+	public boolean onPartActivate( final EntityPlayer player, final Vec3 pos )
 	{
 		return false;
 	}
 
-	public boolean onPartShiftActivate( EntityPlayer player, Vec3 pos )
+	public boolean onPartShiftActivate( final EntityPlayer player, final Vec3 pos )
 	{
 		return false;
 	}
 
 	@Override
-	public void onPlacement( EntityPlayer player, ItemStack held, ForgeDirection side )
+	public void onPlacement( final EntityPlayer player, final ItemStack held, final ForgeDirection side )
 	{
 		this.proxy.setOwner( player );
 	}
 
 	@Override
-	public boolean canBePlacedOn( BusSupport what )
+	public boolean canBePlacedOn( final BusSupport what )
 	{
 		return what == BusSupport.CABLE;
 	}

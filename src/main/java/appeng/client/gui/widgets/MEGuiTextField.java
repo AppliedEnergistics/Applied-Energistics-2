@@ -50,7 +50,7 @@ public class MEGuiTextField extends GuiTextField
 	 * @param width absolute width
 	 * @param height absolute height
 	 */
-	public MEGuiTextField( FontRenderer fontRenderer, int xPos, int yPos, int width, int height )
+	public MEGuiTextField( final FontRenderer fontRenderer, final int xPos, final int yPos, final int width, final int height )
 	{
 		super( fontRenderer, xPos + PADDING, yPos + PADDING, width - 2 * PADDING - fontRenderer.getCharWidth( '_' ), height - 2 * PADDING );
 
@@ -61,7 +61,7 @@ public class MEGuiTextField extends GuiTextField
 	}
 
 	@Override
-	public void mouseClicked( int xPos, int yPos, int button )
+	public void mouseClicked( final int xPos, final int yPos, final int button )
 	{
 		super.mouseClicked( xPos, yPos, button );
 
@@ -78,7 +78,7 @@ public class MEGuiTextField extends GuiTextField
 	 *
 	 * @return true if mouse position is within the text field area
 	 */
-	public boolean isMouseIn( int xCoord, int yCoord )
+	public boolean isMouseIn( final int xCoord, final int yCoord )
 	{
 		final boolean withinXRange = this._xPos <= xCoord && xCoord < this._xPos + this._width;
 		final boolean withinYRange = this._yPos <= yCoord && yCoord < this._yPos + this._height;

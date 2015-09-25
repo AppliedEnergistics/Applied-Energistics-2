@@ -44,7 +44,7 @@ public final class UUIDMatcher
 	 *
 	 * @return true, if the potential {@link java.util.UUID} is indeed an {@link java.util.UUID}
 	 */
-	public boolean isUUID( CharSequence potential )
+	public boolean isUUID( final CharSequence potential )
 	{
 		return PATTERN.matcher( potential ).matches();
 	}

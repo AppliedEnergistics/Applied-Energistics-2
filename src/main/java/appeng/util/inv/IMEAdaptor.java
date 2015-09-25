@@ -43,7 +43,7 @@ public class IMEAdaptor extends InventoryAdaptor
 	final BaseActionSource src;
 	int maxSlots = 0;
 
-	public IMEAdaptor( IMEInventory<IAEItemStack> input, BaseActionSource src )
+	public IMEAdaptor( final IMEInventory<IAEItemStack> input, final BaseActionSource src )
 	{
 		this.target = input;
 		this.src = src;
@@ -61,18 +61,18 @@ public class IMEAdaptor extends InventoryAdaptor
 	}
 
 	@Override
-	public ItemStack removeItems( int amount, ItemStack filter, IInventoryDestination destination )
+	public ItemStack removeItems( final int amount, final ItemStack filter, final IInventoryDestination destination )
 	{
 		return this.doRemoveItems( amount, filter, destination, Actionable.MODULATE );
 	}
 
-	public ItemStack doRemoveItems( int amount, ItemStack filter, IInventoryDestination destination, Actionable type )
+	public ItemStack doRemoveItems( final int amount, final ItemStack filter, final IInventoryDestination destination, final Actionable type )
 	{
 		IAEItemStack req = null;
 
 		if( filter == null )
 		{
-			IItemList<IAEItemStack> list = this.getList();
+			final IItemList<IAEItemStack> list = this.getList();
 			if( !list.isEmpty() )
 			{
 				req = list.getFirstItem();
@@ -100,13 +100,13 @@ public class IMEAdaptor extends InventoryAdaptor
 	}
 
 	@Override
-	public ItemStack simulateRemove( int amount, ItemStack filter, IInventoryDestination destination )
+	public ItemStack simulateRemove( final int amount, final ItemStack filter, final IInventoryDestination destination )
 	{
 		return this.doRemoveItems( amount, filter, destination, Actionable.SIMULATE );
 	}
 
 	@Override
-	public ItemStack removeSimilarItems( int amount, ItemStack filter, FuzzyMode fuzzyMode, IInventoryDestination destination )
+	public ItemStack removeSimilarItems( final int amount, final ItemStack filter, final FuzzyMode fuzzyMode, final IInventoryDestination destination )
 	{
 		if( filter == null )
 		{
@@ -115,9 +115,9 @@ public class IMEAdaptor extends InventoryAdaptor
 		return this.doRemoveItemsFuzzy( amount, filter, destination, Actionable.MODULATE, fuzzyMode );
 	}
 
-	public ItemStack doRemoveItemsFuzzy( int amount, ItemStack filter, IInventoryDestination destination, Actionable type, FuzzyMode fuzzyMode )
+	public ItemStack doRemoveItemsFuzzy( final int amount, final ItemStack filter, final IInventoryDestination destination, final Actionable type, final FuzzyMode fuzzyMode )
 	{
-		IAEItemStack reqFilter = AEItemStack.create( filter );
+		final IAEItemStack reqFilter = AEItemStack.create( filter );
 		if( reqFilter == null )
 		{
 			return null;
@@ -125,7 +125,7 @@ public class IMEAdaptor extends InventoryAdaptor
 
 		IAEItemStack out = null;
 
-		for( IAEItemStack req : ImmutableList.copyOf( this.getList().findFuzzy( reqFilter, fuzzyMode ) ) )
+		for( final IAEItemStack req : ImmutableList.copyOf( this.getList().findFuzzy( reqFilter, fuzzyMode ) ) )
 		{
 			if( req != null )
 			{
@@ -142,7 +142,7 @@ public class IMEAdaptor extends InventoryAdaptor
 	}
 
 	@Override
-	public ItemStack simulateSimilarRemove( int amount, ItemStack filter, FuzzyMode fuzzyMode, IInventoryDestination destination )
+	public ItemStack simulateSimilarRemove( final int amount, final ItemStack filter, final FuzzyMode fuzzyMode, final IInventoryDestination destination )
 	{
 		if( filter == null )
 		{
@@ -152,12 +152,12 @@ public class IMEAdaptor extends InventoryAdaptor
 	}
 
 	@Override
-	public ItemStack addItems( ItemStack toBeAdded )
+	public ItemStack addItems( final ItemStack toBeAdded )
 	{
-		IAEItemStack in = AEItemStack.create( toBeAdded );
+		final IAEItemStack in = AEItemStack.create( toBeAdded );
 		if( in != null )
 		{
-			IAEItemStack out = this.target.injectItems( in, Actionable.MODULATE, this.src );
+			final IAEItemStack out = this.target.injectItems( in, Actionable.MODULATE, this.src );
 			if( out != null )
 			{
 				return out.getItemStack();
@@ -167,12 +167,12 @@ public class IMEAdaptor extends InventoryAdaptor
 	}
 
 	@Override
-	public ItemStack simulateAdd( ItemStack toBeSimulated )
+	public ItemStack simulateAdd( final ItemStack toBeSimulated )
 	{
-		IAEItemStack in = AEItemStack.create( toBeSimulated );
+		final IAEItemStack in = AEItemStack.create( toBeSimulated );
 		if( in != null )
 		{
-			IAEItemStack out = this.target.injectItems( in, Actionable.SIMULATE, this.src );
+			final IAEItemStack out = this.target.injectItems( in, Actionable.SIMULATE, this.src );
 			if( out != null )
 			{
 				return out.getItemStack();

@@ -66,7 +66,7 @@ public final class VersionChecker implements Runnable
 	private static final int MS_TO_SEC = 1000;
 	private final VersionCheckerConfig config;
 
-	public VersionChecker( VersionCheckerConfig config )
+	public VersionChecker( final VersionCheckerConfig config )
 	{
 		this.config = config;
 	}
@@ -94,7 +94,7 @@ public final class VersionChecker implements Runnable
 	 * @param nowInMs now in milli seconds
 	 * @param lastAfterInterval last version check including the interval defined in the config
 	 */
-	private void processInterval( long nowInMs, long lastAfterInterval )
+	private void processInterval( final long nowInMs, final long lastAfterInterval )
 	{
 		if( nowInMs > lastAfterInterval )
 		{
@@ -121,7 +121,7 @@ public final class VersionChecker implements Runnable
 	 * @param modVersion version of mod
 	 * @param githubRelease release retrieved through github
 	 */
-	private void processVersions( Version modVersion, FormattedRelease githubRelease )
+	private void processVersions( final Version modVersion, final FormattedRelease githubRelease )
 	{
 		final Version githubVersion = githubRelease.version();
 		final String modFormatted = modVersion.formatted();
@@ -156,7 +156,7 @@ public final class VersionChecker implements Runnable
 	 * @param ghFormatted retrieved github version formatted as rv2-beta-8
 	 * @param changelog retrieved github changelog
 	 */
-	private void interactWithVersionCheckerMod( String modFormatted, String ghFormatted, String changelog )
+	private void interactWithVersionCheckerMod( final String modFormatted, final String ghFormatted, final String changelog )
 	{
 		if( Loader.isModLoaded( "VersionChecker" ) )
 		{

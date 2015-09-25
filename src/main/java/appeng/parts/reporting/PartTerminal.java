@@ -27,7 +27,7 @@ import appeng.client.texture.CableBusTextures;
 public class PartTerminal extends AbstractPartTerminal
 {
 
-	public PartTerminal( ItemStack is )
+	public PartTerminal( final ItemStack is )
 	{
 		super( is );
 	}

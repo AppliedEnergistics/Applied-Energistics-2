@@ -38,13 +38,13 @@ public class EnergyWatcher implements IEnergyWatcher
 	final IEnergyWatcherHost myObject;
 	final HashSet<EnergyThreshold> myInterests = new HashSet<EnergyThreshold>();
 
-	public EnergyWatcher( EnergyGridCache cache, IEnergyWatcherHost host )
+	public EnergyWatcher( final EnergyGridCache cache, final IEnergyWatcherHost host )
 	{
 		this.gsc = cache;
 		this.myObject = host;
 	}
 
-	public void post( EnergyGridCache energyGridCache )
+	public void post( final EnergyGridCache energyGridCache )
 	{
 		this.myObject.onThresholdPass( energyGridCache );
 	}
@@ -67,7 +67,7 @@ public class EnergyWatcher implements IEnergyWatcher
 	}
 
 	@Override
-	public boolean contains( Object o )
+	public boolean contains( final Object o )
 	{
 		return this.myInterests.contains( o );
 	}
@@ -85,42 +85,42 @@ public class EnergyWatcher implements IEnergyWatcher
 	}
 
 	@Override
-	public <T> T[] toArray( T[] a )
+	public <T> T[] toArray( final T[] a )
 	{
 		return this.myInterests.toArray( a );
 	}
 
 	@Override
-	public boolean add( Double e )
+	public boolean add( final Double e )
 	{
 		if( this.myInterests.contains( e ) )
 		{
 			return false;
 		}
 
-		EnergyThreshold eh = new EnergyThreshold( e, this );
+		final EnergyThreshold eh = new EnergyThreshold( e, this );
 		return this.gsc.interests.add( eh ) && this.myInterests.add( eh );
 	}
 
 	@Override
-	public boolean remove( Object o )
+	public boolean remove( final Object o )
 	{
-		EnergyThreshold eh = new EnergyThreshold( (Double) o, this );
+		final EnergyThreshold eh = new EnergyThreshold( (Double) o, this );
 		return this.myInterests.remove( eh ) && this.gsc.interests.remove( eh );
 	}
 
 	@Override
-	public boolean containsAll( Collection<?> c )
+	public boolean containsAll( final Collection<?> c )
 	{
 		return this.myInterests.containsAll( c );
 	}
 
 	@Override
-	public boolean addAll( Collection<? extends Double> c )
+	public boolean addAll( final Collection<? extends Double> c )
 	{
 		boolean didChange = false;
 
-		for( Double o : c )
+		for( final Double o : c )
 		{
 			didChange = this.add( o ) || didChange;
 		}
@@ -129,10 +129,10 @@ public class EnergyWatcher implements IEnergyWatcher
 	}
 
 	@Override
-	public boolean removeAll( Collection<?> c )
+	public boolean removeAll( final Collection<?> c )
 	{
 		boolean didSomething = false;
-		for( Object o : c )
+		for( final Object o : c )
 		{
 			didSomething = this.remove( o ) || didSomething;
 		}
@@ -140,10 +140,10 @@ public class EnergyWatcher implements IEnergyWatcher
 	}
 
 	@Override
-	public boolean retainAll( Collection<?> c )
+	public boolean retainAll( final Collection<?> c )
 	{
 		boolean changed = false;
-		Iterator<Double> i = this.iterator();
+		final Iterator<Double> i = this.iterator();
 
 		while( i.hasNext() )
 		{
@@ -160,7 +160,7 @@ public class EnergyWatcher implements IEnergyWatcher
 	@Override
 	public void clear()
 	{
-		Iterator<EnergyThreshold> i = this.myInterests.iterator();
+		final Iterator<EnergyThreshold> i = this.myInterests.iterator();
 		while( i.hasNext() )
 		{
 			this.gsc.interests.remove( i.next() );
@@ -175,7 +175,7 @@ public class EnergyWatcher implements IEnergyWatcher
 		final Iterator<EnergyThreshold> interestIterator;
 		EnergyThreshold myLast;
 
-		public EnergyWatcherIterator( EnergyWatcher parent, Iterator<EnergyThreshold> i )
+		public EnergyWatcherIterator( final EnergyWatcher parent, final Iterator<EnergyThreshold> i )
 		{
 			this.watcher = parent;
 			this.interestIterator = i;

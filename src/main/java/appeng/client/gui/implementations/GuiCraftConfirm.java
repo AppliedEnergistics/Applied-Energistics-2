@@ -74,7 +74,7 @@ public class GuiCraftConfirm extends AEBaseGui
 	GuiButton selectCPU;
 	int tooltip = -1;
 
-	public GuiCraftConfirm( InventoryPlayer inventoryPlayer, ITerminalHost te )
+	public GuiCraftConfirm( final InventoryPlayer inventoryPlayer, final ITerminalHost te )
 	{
 		super( new ContainerCraftConfirm( inventoryPlayer, te ) );
 		this.xSize = 238;
@@ -131,25 +131,25 @@ public class GuiCraftConfirm extends AEBaseGui
 	}
 
 	@Override
-	public void drawScreen( int mouseX, int mouseY, float btn )
+	public void drawScreen( final int mouseX, final int mouseY, final float btn )
 	{
 		this.updateCPUButtonText();
 
 		this.start.enabled = !( this.ccc.noCPU || this.isSimulation() );
 		this.selectCPU.enabled = !this.isSimulation();
 
-		int gx = ( this.width - this.xSize ) / 2;
-		int gy = ( this.height - this.ySize ) / 2;
+		final int gx = ( this.width - this.xSize ) / 2;
+		final int gy = ( this.height - this.ySize ) / 2;
 
 		this.tooltip = -1;
 
-		int offY = 23;
+		final int offY = 23;
 		int y = 0;
 		int x = 0;
 		for( int z = 0; z <= 4 * 5; z++ )
 		{
-			int minX = gx + 9 + x * 67;
-			int minY = gy + 22 + y * offY;
+			final int minX = gx + 9 + x * 67;
+			final int minY = gy + 22 + y * offY;
 
 			if( minX < mouseX && minX + 67 > mouseX )
 			{
@@ -179,7 +179,7 @@ public class GuiCraftConfirm extends AEBaseGui
 		{
 			if( this.ccc.myName.length() > 0 )
 			{
-				String name = this.ccc.myName.substring( 0, Math.min( 20, this.ccc.myName.length() ) );
+				final String name = this.ccc.myName.substring( 0, Math.min( 20, this.ccc.myName.length() ) );
 				btnTextText = GuiText.CraftingCPU.getLocal() + ": " + name;
 			}
 			else
@@ -202,11 +202,11 @@ public class GuiCraftConfirm extends AEBaseGui
 	}
 
 	@Override
-	public void drawFG( int offsetX, int offsetY, int mouseX, int mouseY )
+	public void drawFG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
-		long BytesUsed = this.ccc.bytesUsed;
-		String byteUsed = NumberFormat.getInstance().format( BytesUsed );
-		String Add = BytesUsed > 0 ? ( byteUsed + ' ' + GuiText.BytesUsed.getLocal() ) : GuiText.CalculatingWait.getLocal();
+		final long BytesUsed = this.ccc.bytesUsed;
+		final String byteUsed = NumberFormat.getInstance().format( BytesUsed );
+		final String Add = BytesUsed > 0 ? ( byteUsed + ' ' + GuiText.BytesUsed.getLocal() ) : GuiText.CalculatingWait.getLocal();
 		this.fontRendererObj.drawString( GuiText.CraftingPlan.getLocal() + " - " + Add, 8, 7, 4210752 );
 
 		String dsp = null;
@@ -220,36 +220,36 @@ public class GuiCraftConfirm extends AEBaseGui
 			dsp = this.ccc.cpuBytesAvail > 0 ? ( GuiText.Bytes.getLocal() + ": " + this.ccc.cpuBytesAvail + " : " + GuiText.CoProcessors.getLocal() + ": " + this.ccc.cpuCoProcessors ) : GuiText.Bytes.getLocal() + ": N/A : " + GuiText.CoProcessors.getLocal() + ": N/A";
 		}
 
-		int offset = ( 219 - this.fontRendererObj.getStringWidth( dsp ) ) / 2;
+		final int offset = ( 219 - this.fontRendererObj.getStringWidth( dsp ) ) / 2;
 		this.fontRendererObj.drawString( dsp, offset, 165, 4210752 );
 
-		int sectionLength = 67;
+		final int sectionLength = 67;
 
 		int x = 0;
 		int y = 0;
-		int xo = 9;
-		int yo = 22;
-		int viewStart = this.myScrollBar.getCurrentScroll() * 3;
-		int viewEnd = viewStart + 3 * this.rows;
+		final int xo = 9;
+		final int yo = 22;
+		final int viewStart = this.myScrollBar.getCurrentScroll() * 3;
+		final int viewEnd = viewStart + 3 * this.rows;
 
 		String dspToolTip = "";
-		List<String> lineList = new LinkedList<String>();
+		final List<String> lineList = new LinkedList<String>();
 		int toolPosX = 0;
 		int toolPosY = 0;
 
-		int offY = 23;
+		final int offY = 23;
 
 		for( int z = viewStart; z < Math.min( viewEnd, this.visual.size() ); z++ )
 		{
-			IAEItemStack refStack = this.visual.get( z );// repo.getReferenceItem( z );
+			final IAEItemStack refStack = this.visual.get( z );// repo.getReferenceItem( z );
 			if( refStack != null )
 			{
 				GL11.glPushMatrix();
 				GL11.glScaled( 0.5, 0.5, 0.5 );
 
-				IAEItemStack stored = this.storage.findPrecise( refStack );
-				IAEItemStack pendingStack = this.pending.findPrecise( refStack );
-				IAEItemStack missingStack = this.missing.findPrecise( refStack );
+				final IAEItemStack stored = this.storage.findPrecise( refStack );
+				final IAEItemStack pendingStack = this.pending.findPrecise( refStack );
+				final IAEItemStack missingStack = this.missing.findPrecise( refStack );
 
 				int lines = 0;
 
@@ -266,7 +266,7 @@ public class GuiCraftConfirm extends AEBaseGui
 					lines++;
 				}
 
-				int negY = ( ( lines - 1 ) * 5 ) / 2;
+				final int negY = ( ( lines - 1 ) * 5 ) / 2;
 				int downY = 0;
 
 				if( stored != null && stored.getStackSize() > 0 )
@@ -282,7 +282,7 @@ public class GuiCraftConfirm extends AEBaseGui
 					}
 
 					str = GuiText.FromStorage.getLocal() + ": " + str;
-					int w = 4 + this.fontRendererObj.getStringWidth( str );
+					final int w = 4 + this.fontRendererObj.getStringWidth( str );
 					this.fontRendererObj.drawString( str, (int) ( ( x * ( 1 + sectionLength ) + xo + sectionLength - 19 - ( w * 0.5 ) ) * 2 ), ( y * offY + yo + 6 - negY + downY ) * 2, 4210752 );
 
 					if( this.tooltip == z - viewStart )
@@ -307,7 +307,7 @@ public class GuiCraftConfirm extends AEBaseGui
 					}
 
 					str = GuiText.Missing.getLocal() + ": " + str;
-					int w = 4 + this.fontRendererObj.getStringWidth( str );
+					final int w = 4 + this.fontRendererObj.getStringWidth( str );
 					this.fontRendererObj.drawString( str, (int) ( ( x * ( 1 + sectionLength ) + xo + sectionLength - 19 - ( w * 0.5 ) ) * 2 ), ( y * offY + yo + 6 - negY + downY ) * 2, 4210752 );
 
 					if( this.tooltip == z - viewStart )
@@ -332,7 +332,7 @@ public class GuiCraftConfirm extends AEBaseGui
 					}
 
 					str = GuiText.ToCraft.getLocal() + ": " + str;
-					int w = 4 + this.fontRendererObj.getStringWidth( str );
+					final int w = 4 + this.fontRendererObj.getStringWidth( str );
 					this.fontRendererObj.drawString( str, (int) ( ( x * ( 1 + sectionLength ) + xo + sectionLength - 19 - ( w * 0.5 ) ) * 2 ), ( y * offY + yo + 6 - negY + downY ) * 2, 4210752 );
 
 					if( this.tooltip == z - viewStart )
@@ -342,10 +342,10 @@ public class GuiCraftConfirm extends AEBaseGui
 				}
 
 				GL11.glPopMatrix();
-				int posX = x * ( 1 + sectionLength ) + xo + sectionLength - 19;
-				int posY = y * offY + yo;
+				final int posX = x * ( 1 + sectionLength ) + xo + sectionLength - 19;
+				final int posY = y * offY + yo;
 
-				ItemStack is = refStack.copy().getItemStack();
+				final ItemStack is = refStack.copy().getItemStack();
 
 				if( this.tooltip == z - viewStart )
 				{
@@ -364,8 +364,8 @@ public class GuiCraftConfirm extends AEBaseGui
 
 				if( red )
 				{
-					int startX = x * ( 1 + sectionLength ) + xo;
-					int startY = posY - 4;
+					final int startX = x * ( 1 + sectionLength ) + xo;
+					final int startY = posY - 4;
 					drawRect( startX, startY, startX + sectionLength, startY + offY, 0x1AFF0000 );
 				}
 
@@ -388,7 +388,7 @@ public class GuiCraftConfirm extends AEBaseGui
 	}
 
 	@Override
-	public void drawBG( int offsetX, int offsetY, int mouseX, int mouseY )
+	public void drawBG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
 		this.setScrollBar();
 		this.bindTexture( "guis/craftingreport.png" );
@@ -397,41 +397,41 @@ public class GuiCraftConfirm extends AEBaseGui
 
 	private void setScrollBar()
 	{
-		int size = this.visual.size();
+		final int size = this.visual.size();
 
 		this.myScrollBar.setTop( 19 ).setLeft( 218 ).setHeight( 114 );
 		this.myScrollBar.setRange( 0, ( size + 2 ) / 3 - this.rows, 1 );
 	}
 
-	public void postUpdate( List<IAEItemStack> list, byte ref )
+	public void postUpdate( final List<IAEItemStack> list, final byte ref )
 	{
 		switch( ref )
 		{
 			case 0:
-				for( IAEItemStack l : list )
+				for( final IAEItemStack l : list )
 				{
 					this.handleInput( this.storage, l );
 				}
 				break;
 
 			case 1:
-				for( IAEItemStack l : list )
+				for( final IAEItemStack l : list )
 				{
 					this.handleInput( this.pending, l );
 				}
 				break;
 
 			case 2:
-				for( IAEItemStack l : list )
+				for( final IAEItemStack l : list )
 				{
 					this.handleInput( this.missing, l );
 				}
 				break;
 		}
 
-		for( IAEItemStack l : list )
+		for( final IAEItemStack l : list )
 		{
-			long amt = this.getTotal( l );
+			final long amt = this.getTotal( l );
 
 			if( amt <= 0 )
 			{
@@ -439,7 +439,7 @@ public class GuiCraftConfirm extends AEBaseGui
 			}
 			else
 			{
-				IAEItemStack is = this.findVisualStack( l );
+				final IAEItemStack is = this.findVisualStack( l );
 				is.setStackSize( amt );
 			}
 		}
@@ -447,7 +447,7 @@ public class GuiCraftConfirm extends AEBaseGui
 		this.setScrollBar();
 	}
 
-	private void handleInput( IItemList<IAEItemStack> s, IAEItemStack l )
+	private void handleInput( final IItemList<IAEItemStack> s, final IAEItemStack l )
 	{
 		IAEItemStack a = s.findPrecise( l );
 
@@ -473,11 +473,11 @@ public class GuiCraftConfirm extends AEBaseGui
 		}
 	}
 
-	private long getTotal( IAEItemStack is )
+	private long getTotal( final IAEItemStack is )
 	{
-		IAEItemStack a = this.storage.findPrecise( is );
-		IAEItemStack c = this.pending.findPrecise( is );
-		IAEItemStack m = this.missing.findPrecise( is );
+		final IAEItemStack a = this.storage.findPrecise( is );
+		final IAEItemStack c = this.pending.findPrecise( is );
+		final IAEItemStack m = this.missing.findPrecise( is );
 
 		long total = 0;
 
@@ -499,12 +499,12 @@ public class GuiCraftConfirm extends AEBaseGui
 		return total;
 	}
 
-	private void deleteVisualStack( IAEItemStack l )
+	private void deleteVisualStack( final IAEItemStack l )
 	{
-		Iterator<IAEItemStack> i = this.visual.iterator();
+		final Iterator<IAEItemStack> i = this.visual.iterator();
 		while( i.hasNext() )
 		{
-			IAEItemStack o = i.next();
+			final IAEItemStack o = i.next();
 			if( o.equals( l ) )
 			{
 				i.remove();
@@ -513,9 +513,9 @@ public class GuiCraftConfirm extends AEBaseGui
 		}
 	}
 
-	private IAEItemStack findVisualStack( IAEItemStack l )
+	private IAEItemStack findVisualStack( final IAEItemStack l )
 	{
-		for( IAEItemStack o : this.visual )
+		for( final IAEItemStack o : this.visual )
 		{
 			if( o.equals( l ) )
 			{
@@ -523,13 +523,13 @@ public class GuiCraftConfirm extends AEBaseGui
 			}
 		}
 
-		IAEItemStack stack = l.copy();
+		final IAEItemStack stack = l.copy();
 		this.visual.add( stack );
 		return stack;
 	}
 
 	@Override
-	protected void keyTyped( char character, int key )
+	protected void keyTyped( final char character, final int key )
 	{
 		if( !this.checkHotbarKeys( key ) )
 		{
@@ -542,11 +542,11 @@ public class GuiCraftConfirm extends AEBaseGui
 	}
 
 	@Override
-	protected void actionPerformed( GuiButton btn )
+	protected void actionPerformed( final GuiButton btn )
 	{
 		super.actionPerformed( btn );
 
-		boolean backwards = Mouse.isButtonDown( 1 );
+		final boolean backwards = Mouse.isButtonDown( 1 );
 
 		if( btn == this.selectCPU )
 		{
@@ -554,7 +554,7 @@ public class GuiCraftConfirm extends AEBaseGui
 			{
 				NetworkHandler.instance.sendToServer( new PacketValueConfig( "Terminal.Cpu", backwards ? "Prev" : "Next" ) );
 			}
-			catch( IOException e )
+			catch( final IOException e )
 			{
 				AELog.error( e );
 			}
@@ -571,7 +571,7 @@ public class GuiCraftConfirm extends AEBaseGui
 			{
 				NetworkHandler.instance.sendToServer( new PacketValueConfig( "Terminal.Start", "Start" ) );
 			}
-			catch( Throwable e )
+			catch( final Throwable e )
 			{
 				AELog.error( e );
 			}

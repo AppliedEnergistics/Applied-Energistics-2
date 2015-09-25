@@ -37,7 +37,7 @@ public class GuiVibrationChamber extends AEBaseGui
 	final ContainerVibrationChamber cvc;
 	GuiProgressBar pb;
 
-	public GuiVibrationChamber( InventoryPlayer inventoryPlayer, TileVibrationChamber te )
+	public GuiVibrationChamber( final InventoryPlayer inventoryPlayer, final TileVibrationChamber te )
 	{
 		super( new ContainerVibrationChamber( inventoryPlayer, te ) );
 		this.cvc = (ContainerVibrationChamber) this.inventorySlots;
@@ -54,7 +54,7 @@ public class GuiVibrationChamber extends AEBaseGui
 	}
 
 	@Override
-	public void drawFG( int offsetX, int offsetY, int mouseX, int mouseY )
+	public void drawFG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
 		this.fontRendererObj.drawString( this.getGuiDisplayName( GuiText.VibrationChamber.getLocal() ), 8, 6, 4210752 );
 		this.fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
@@ -63,17 +63,17 @@ public class GuiVibrationChamber extends AEBaseGui
 
 		if( this.cvc.getCurrentProgress() > 0 )
 		{
-			int i1 = this.cvc.getCurrentProgress();
+			final int i1 = this.cvc.getCurrentProgress();
 			this.bindTexture( "guis/vibchamber.png" );
 			GL11.glColor3f( 1, 1, 1 );
-			int l = -15;
-			int k = 25;
+			final int l = -15;
+			final int k = 25;
 			this.drawTexturedModalRect( k + 56, l + 36 + 12 - i1, 176, 12 - i1, 14, i1 + 2 );
 		}
 	}
 
 	@Override
-	public void drawBG( int offsetX, int offsetY, int mouseX, int mouseY )
+	public void drawBG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
 		this.bindTexture( "guis/vibchamber.png" );
 		this.pb.xPosition = 99 + this.guiLeft;

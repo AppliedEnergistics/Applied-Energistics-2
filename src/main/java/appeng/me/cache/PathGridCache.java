@@ -77,7 +77,7 @@ public class PathGridCache implements IPathingGrid
 	int lastChannels = 0;
 	private HashSet<IPathItem> semiOpen = new HashSet<IPathItem>();
 
-	public PathGridCache( IGrid g )
+	public PathGridCache( final IGrid g )
 	{
 		this.myGrid = g;
 	}
@@ -104,9 +104,9 @@ public class PathGridCache implements IPathingGrid
 
 			if( !AEConfig.instance.isFeatureEnabled( AEFeature.Channels ) )
 			{
-				int used = this.calculateRequiredChannels();
+				final int used = this.calculateRequiredChannels();
 
-				int nodes = this.myGrid.getNodes().size();
+				final int nodes = this.myGrid.getNodes().size();
 				this.ticksUntilReady = 20 + Math.max( 0, nodes / 100 - 20 );
 				this.channelsByBlocks = nodes * used;
 				this.channelPowerUsage = this.channelsByBlocks / 128.0;
@@ -115,14 +115,14 @@ public class PathGridCache implements IPathingGrid
 			}
 			else if( this.controllerState == ControllerState.NO_CONTROLLER )
 			{
-				int requiredChannels = this.calculateRequiredChannels();
+				final int requiredChannels = this.calculateRequiredChannels();
 				int used = requiredChannels;
 				if( requiredChannels > 8 )
 				{
 					used = 0;
 				}
 
-				int nodes = this.myGrid.getNodes().size();
+				final int nodes = this.myGrid.getNodes().size();
 				this.channelsInUse = used;
 
 				this.ticksUntilReady = 20 + Math.max( 0, nodes / 100 - 20 );
@@ -138,22 +138,22 @@ public class PathGridCache implements IPathingGrid
 			}
 			else
 			{
-				int nodes = this.myGrid.getNodes().size();
+				final int nodes = this.myGrid.getNodes().size();
 				this.ticksUntilReady = 20 + Math.max( 0, nodes / 100 - 20 );
-				HashSet<IPathItem> closedList = new HashSet<IPathItem>();
+				final HashSet<IPathItem> closedList = new HashSet<IPathItem>();
 				this.semiOpen = new HashSet<IPathItem>();
 
 				// myGrid.getPivot().beginVisit( new AdHocChannelUpdater( 0 )
 				// );
-				for( IGridNode node : this.myGrid.getMachines( TileController.class ) )
+				for( final IGridNode node : this.myGrid.getMachines( TileController.class ) )
 				{
 					closedList.add( (IPathItem) node );
-					for( IGridConnection gcc : node.getConnections() )
+					for( final IGridConnection gcc : node.getConnections() )
 					{
-						GridConnection gc = (GridConnection) gcc;
+						final GridConnection gc = (GridConnection) gcc;
 						if( !( gc.getOtherSide( node ).getMachine() instanceof TileController ) )
 						{
-							List<IPathItem> open = new LinkedList<IPathItem>();
+							final List<IPathItem> open = new LinkedList<IPathItem>();
 							closedList.add( gc );
 							open.add( gc );
 							gc.setControllerRoute( (GridNode) node, true );
@@ -166,10 +166,10 @@ public class PathGridCache implements IPathingGrid
 
 		if( !this.active.isEmpty() || this.ticksUntilReady > 0 )
 		{
-			Iterator<PathSegment> i = this.active.iterator();
+			final Iterator<PathSegment> i = this.active.iterator();
 			while( i.hasNext() )
 			{
-				PathSegment pat = i.next();
+				final PathSegment pat = i.next();
 				if( pat.step() )
 				{
 					pat.isDead = true;
@@ -202,7 +202,7 @@ public class PathGridCache implements IPathingGrid
 	}
 
 	@Override
-	public void removeNode( IGridNode gridNode, IGridHost machine )
+	public void removeNode( final IGridNode gridNode, final IGridHost machine )
 	{
 		if( machine instanceof TileController )
 		{
@@ -210,7 +210,7 @@ public class PathGridCache implements IPathingGrid
 			this.recalculateControllerNextTick = true;
 		}
 
-		EnumSet<GridFlags> flags = gridNode.getGridBlock().getFlags();
+		final EnumSet<GridFlags> flags = gridNode.getGridBlock().getFlags();
 
 		if( flags.contains( GridFlags.REQUIRE_CHANNEL ) )
 		{
@@ -226,7 +226,7 @@ public class PathGridCache implements IPathingGrid
 	}
 
 	@Override
-	public void addNode( IGridNode gridNode, IGridHost machine )
+	public void addNode( final IGridNode gridNode, final IGridHost machine )
 	{
 		if( machine instanceof TileController )
 		{
@@ -234,7 +234,7 @@ public class PathGridCache implements IPathingGrid
 			this.recalculateControllerNextTick = true;
 		}
 
-		EnumSet<GridFlags> flags = gridNode.getGridBlock().getFlags();
+		final EnumSet<GridFlags> flags = gridNode.getGridBlock().getFlags();
 
 		if( flags.contains( GridFlags.REQUIRE_CHANNEL ) )
 		{
@@ -250,19 +250,19 @@ public class PathGridCache implements IPathingGrid
 	}
 
 	@Override
-	public void onSplit( IGridStorage storageB )
+	public void onSplit( final IGridStorage storageB )
 	{
 
 	}
 
 	@Override
-	public void onJoin( IGridStorage storageB )
+	public void onJoin( final IGridStorage storageB )
 	{
 
 	}
 
 	@Override
-	public void populateGridStorage( IGridStorage storage )
+	public void populateGridStorage( final IGridStorage storage )
 	{
 
 	}
@@ -270,7 +270,7 @@ public class PathGridCache implements IPathingGrid
 	private void recalcController()
 	{
 		this.recalculateControllerNextTick = false;
-		ControllerState old = this.controllerState;
+		final ControllerState old = this.controllerState;
 
 		if( this.controllers.isEmpty() )
 		{
@@ -278,15 +278,15 @@ public class PathGridCache implements IPathingGrid
 		}
 		else
 		{
-			IGridNode startingNode = this.controllers.iterator().next().getGridNode( ForgeDirection.UNKNOWN );
+			final IGridNode startingNode = this.controllers.iterator().next().getGridNode( ForgeDirection.UNKNOWN );
 			if( startingNode == null )
 			{
 				this.controllerState = ControllerState.CONTROLLER_CONFLICT;
 				return;
 			}
 
-			DimensionalCoord dc = startingNode.getGridBlock().getLocation();
-			ControllerValidator cv = new ControllerValidator( dc.x, dc.y, dc.z );
+			final DimensionalCoord dc = startingNode.getGridBlock().getLocation();
+			final ControllerValidator cv = new ControllerValidator( dc.x, dc.y, dc.z );
 
 			startingNode.beginVisit( cv );
 
@@ -311,12 +311,12 @@ public class PathGridCache implements IPathingGrid
 		this.semiOpen.clear();
 
 		int depth = 0;
-		for( IGridNode nodes : this.requireChannels )
+		for( final IGridNode nodes : this.requireChannels )
 		{
 			if( !this.semiOpen.contains( nodes ) )
 			{
-				IGridBlock gb = nodes.getGridBlock();
-				EnumSet<GridFlags> flags = gb.getFlags();
+				final IGridBlock gb = nodes.getGridBlock();
+				final EnumSet<GridFlags> flags = gb.getFlags();
 
 				if( flags.contains( GridFlags.COMPRESSED_CHANNEL ) && !this.blockDense.isEmpty() )
 				{
@@ -327,8 +327,8 @@ public class PathGridCache implements IPathingGrid
 
 				if( flags.contains( GridFlags.MULTIBLOCK ) )
 				{
-					IGridMultiblock gmb = (IGridMultiblock) gb;
-					Iterator<IGridNode> i = gmb.getMultiblockNodes();
+					final IGridMultiblock gmb = (IGridMultiblock) gb;
+					final Iterator<IGridNode> i = gmb.getMultiblockNodes();
 					while( i.hasNext() )
 					{
 						this.semiOpen.add( (IPathItem) i.next() );
@@ -344,17 +344,17 @@ public class PathGridCache implements IPathingGrid
 	{
 		if( this.lastChannels != this.channelsInUse && AEConfig.instance.isFeatureEnabled( AEFeature.Channels ) )
 		{
-			Achievements currentBracket = this.getAchievementBracket( this.channelsInUse );
-			Achievements lastBracket = this.getAchievementBracket( this.lastChannels );
+			final Achievements currentBracket = this.getAchievementBracket( this.channelsInUse );
+			final Achievements lastBracket = this.getAchievementBracket( this.lastChannels );
 			if( currentBracket != lastBracket && currentBracket != null )
 			{
-				Set<Integer> players = new HashSet<Integer>();
-				for( IGridNode n : this.requireChannels )
+				final Set<Integer> players = new HashSet<Integer>();
+				for( final IGridNode n : this.requireChannels )
 				{
 					players.add( n.getPlayerID() );
 				}
 
-				for( int id : players )
+				for( final int id : players )
 				{
 					Platform.addStat( id, currentBracket.getAchievement() );
 				}
@@ -363,7 +363,7 @@ public class PathGridCache implements IPathingGrid
 		this.lastChannels = this.channelsInUse;
 	}
 
-	private Achievements getAchievementBracket( int ch )
+	private Achievements getAchievementBracket( final int ch )
 	{
 		if( ch < 8 )
 		{
@@ -384,9 +384,9 @@ public class PathGridCache implements IPathingGrid
 	}
 
 	@MENetworkEventSubscribe
-	void updateNodReq( MENetworkChannelChanged ev )
+	void updateNodReq( final MENetworkChannelChanged ev )
 	{
-		IGridNode gridNode = ev.node;
+		final IGridNode gridNode = ev.node;
 
 		if( gridNode.getGridBlock().getFlags().contains( GridFlags.REQUIRE_CHANNEL ) )
 		{

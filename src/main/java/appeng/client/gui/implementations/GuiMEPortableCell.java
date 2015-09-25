@@ -28,7 +28,7 @@ import appeng.container.implementations.ContainerMEPortableCell;
 public class GuiMEPortableCell extends GuiMEMonitorable
 {
 
-	public GuiMEPortableCell( InventoryPlayer inventoryPlayer, IPortableCell te )
+	public GuiMEPortableCell( final InventoryPlayer inventoryPlayer, final IPortableCell te )
 	{
 		super( inventoryPlayer, te, new ContainerMEPortableCell( inventoryPlayer, te ) );
 	}

@@ -33,7 +33,7 @@ public class FeatureNameExtractor
 	private final Class<?> clazz;
 	private final Optional<String> subName;
 
-	public FeatureNameExtractor( Class<?> clazz, Optional<String> subName )
+	public FeatureNameExtractor( final Class<?> clazz, final Optional<String> subName )
 	{
 		this.clazz = clazz;
 		this.subName = subName;

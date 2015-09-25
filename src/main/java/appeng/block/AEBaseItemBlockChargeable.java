@@ -42,18 +42,18 @@ import appeng.util.Platform;
 public class AEBaseItemBlockChargeable extends AEBaseItemBlock implements IAEItemPowerStorage
 {
 
-	public AEBaseItemBlockChargeable( Block id )
+	public AEBaseItemBlockChargeable( final Block id )
 	{
 		super( id );
 	}
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void addCheckedInformation( ItemStack itemStack, EntityPlayer player, List<String> toolTip, boolean advancedTooltips )
+	public void addCheckedInformation( final ItemStack itemStack, final EntityPlayer player, final List<String> toolTip, final boolean advancedTooltips )
 	{
 		final NBTTagCompound tag = itemStack.getTagCompound();
 		double internalCurrentPower = 0;
-		double internalMaxPower = this.getMaxEnergyCapacity();
+		final double internalMaxPower = this.getMaxEnergyCapacity();
 
 		if( tag != null )
 		{
@@ -69,7 +69,7 @@ public class AEBaseItemBlockChargeable extends AEBaseItemBlock implements IAEIte
 	{
 		final Block blockID = Block.getBlockFromItem( this );
 		final IBlockDefinition energyCell = Api.INSTANCE.definitions().blocks().energyCell();
-		for( Block block : energyCell.maybeBlock().asSet() )
+		for( final Block block : energyCell.maybeBlock().asSet() )
 		{
 			if( blockID == block )
 			{
@@ -85,10 +85,10 @@ public class AEBaseItemBlockChargeable extends AEBaseItemBlock implements IAEIte
 	}
 
 	@Override
-	public double injectAEPower( ItemStack is, double amt )
+	public double injectAEPower( final ItemStack is, double amt )
 	{
 		double internalCurrentPower = this.getInternal( is );
-		double internalMaxPower = this.getMaxEnergyCapacity();
+		final double internalMaxPower = this.getMaxEnergyCapacity();
 		internalCurrentPower += amt;
 		if( internalCurrentPower > internalMaxPower )
 		{
@@ -102,20 +102,20 @@ public class AEBaseItemBlockChargeable extends AEBaseItemBlock implements IAEIte
 		return 0;
 	}
 
-	private double getInternal( ItemStack is )
+	private double getInternal( final ItemStack is )
 	{
 		final NBTTagCompound nbt = Platform.openNbtData( is );
 		return nbt.getDouble( "internalCurrentPower" );
 	}
 
-	private void setInternal( ItemStack is, double amt )
+	private void setInternal( final ItemStack is, final double amt )
 	{
 		final NBTTagCompound nbt = Platform.openNbtData( is );
 		nbt.setDouble( "internalCurrentPower", amt );
 	}
 
 	@Override
-	public double extractAEPower( ItemStack is, double amt )
+	public double extractAEPower( final ItemStack is, double amt )
 	{
 		double internalCurrentPower = this.getInternal( is );
 		if( internalCurrentPower > amt )
@@ -131,19 +131,19 @@ public class AEBaseItemBlockChargeable extends AEBaseItemBlock implements IAEIte
 	}
 
 	@Override
-	public double getAEMaxPower( ItemStack is )
+	public double getAEMaxPower( final ItemStack is )
 	{
 		return this.getMaxEnergyCapacity();
 	}
 
 	@Override
-	public double getAECurrentPower( ItemStack is )
+	public double getAECurrentPower( final ItemStack is )
 	{
 		return this.getInternal( is );
 	}
 
 	@Override
-	public AccessRestriction getPowerFlow( ItemStack is )
+	public AccessRestriction getPowerFlow( final ItemStack is )
 	{
 		return AccessRestriction.WRITE;
 	}

@@ -42,7 +42,7 @@ public enum Stats
 	{
 	}
 
-	public void addToPlayer( EntityPlayer player, int howMany )
+	public void addToPlayer( final EntityPlayer player, final int howMany )
 	{
 		player.addStat( this.getStat(), howMany );
 	}

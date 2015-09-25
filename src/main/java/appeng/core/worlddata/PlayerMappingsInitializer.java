@@ -53,7 +53,7 @@ class PlayerMappingsInitializer
 	 * @param playerList the category for the player list, generally extracted using the "players" tag
 	 * @param log the logger used to warn the server or user of faulty entries
 	 */
-	PlayerMappingsInitializer( ConfigCategory playerList, FMLRelaunchLog log )
+	PlayerMappingsInitializer( final ConfigCategory playerList, final FMLRelaunchLog log )
 	{
 		// Matcher for UUIDs
 		final UUIDMatcher matcher = new UUIDMatcher();
@@ -65,7 +65,7 @@ class PlayerMappingsInitializer
 		this.playerMappings = new HashMap<Integer, UUID>( capacity );
 
 		// Iterates through every pair of UUID to ID
-		for( Map.Entry<String, Property> entry : playerList.getValues().entrySet() )
+		for( final Map.Entry<String, Property> entry : playerList.getValues().entrySet() )
 		{
 			final String maybeUUID = entry.getKey();
 			final int id = entry.getValue().getInt();

@@ -80,12 +80,12 @@ public enum CableBusTextures
 	private final String name;
 	public IIcon IIcon;
 
-	CableBusTextures( String name )
+	CableBusTextures( final String name )
 	{
 		this.name = name;
 	}
 
-	public static ResourceLocation GuiTexture( String string )
+	public static ResourceLocation GuiTexture( final String string )
 	{
 		return null;
 	}
@@ -106,7 +106,7 @@ public enum CableBusTextures
 		return this.IIcon;
 	}
 
-	public void registerIcon( TextureMap map )
+	public void registerIcon( final TextureMap map )
 	{
 		this.IIcon = map.registerIcon( "appliedenergistics2:" + this.name );
 	}

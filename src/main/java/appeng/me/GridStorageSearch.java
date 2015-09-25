@@ -33,7 +33,7 @@ public class GridStorageSearch
 	 *
 	 * @param id ID of grid storage search
 	 */
-	public GridStorageSearch( long id )
+	public GridStorageSearch( final long id )
 	{
 		this.id = id;
 	}
@@ -45,7 +45,7 @@ public class GridStorageSearch
 	}
 
 	@Override
-	public boolean equals( Object obj )
+	public boolean equals( final Object obj )
 	{
 		if( obj == null )
 		{
@@ -56,7 +56,7 @@ public class GridStorageSearch
 			return false;
 		}
 
-		GridStorageSearch other = (GridStorageSearch) obj;
+		final GridStorageSearch other = (GridStorageSearch) obj;
 		if( this.id == other.id )
 		{
 			return true;

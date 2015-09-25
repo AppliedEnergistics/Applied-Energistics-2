@@ -38,13 +38,13 @@ public class ItemEncodedPatternRenderer implements IItemRenderer
 	boolean recursive;
 
 	@Override
-	public boolean handleRenderType( ItemStack item, ItemRenderType type )
+	public boolean handleRenderType( final ItemStack item, final ItemRenderType type )
 	{
-		boolean isShiftHeld = Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) || Keyboard.isKeyDown( Keyboard.KEY_RSHIFT );
+		final boolean isShiftHeld = Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) || Keyboard.isKeyDown( Keyboard.KEY_RSHIFT );
 
 		if( !this.recursive && type == IItemRenderer.ItemRenderType.INVENTORY && isShiftHeld )
 		{
-			ItemEncodedPattern iep = (ItemEncodedPattern) item.getItem();
+			final ItemEncodedPattern iep = (ItemEncodedPattern) item.getItem();
 			if( iep.getOutput( item ) != null )
 			{
 				return true;
@@ -55,20 +55,20 @@ public class ItemEncodedPatternRenderer implements IItemRenderer
 	}
 
 	@Override
-	public boolean shouldUseRenderHelper( ItemRenderType type, ItemStack item, ItemRendererHelper helper )
+	public boolean shouldUseRenderHelper( final ItemRenderType type, final ItemStack item, final ItemRendererHelper helper )
 	{
 		return false;
 	}
 
 	@Override
-	public void renderItem( ItemRenderType type, ItemStack item, Object... data )
+	public void renderItem( final ItemRenderType type, final ItemStack item, final Object... data )
 	{
 		this.recursive = true;
 
-		ItemEncodedPattern iep = (ItemEncodedPattern) item.getItem();
+		final ItemEncodedPattern iep = (ItemEncodedPattern) item.getItem();
 
-		ItemStack is = iep.getOutput( item );
-		Minecraft mc = Minecraft.getMinecraft();
+		final ItemStack is = iep.getOutput( item );
+		final Minecraft mc = Minecraft.getMinecraft();
 
 		GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS );
 		RenderHelper.enableGUIStandardItemLighting();

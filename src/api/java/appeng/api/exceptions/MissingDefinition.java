@@ -3,7 +3,7 @@ package appeng.api.exceptions;
 
 public class MissingDefinition extends RuntimeException
 {
-	public MissingDefinition( String message )
+	public MissingDefinition( final String message )
 	{
 		super( message );
 	}

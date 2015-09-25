@@ -49,13 +49,13 @@ public class CLApi implements ICLApi, IIntegrationModule
 	}
 
 	@Override
-	public int colorLight( AEColor color, int light )
+	public int colorLight( final AEColor color, final int light )
 	{
-		int mv = color.mediumVariant;
+		final int mv = color.mediumVariant;
 
-		float r = ( mv >> 16 ) & 0xff;
-		float g = ( mv >> 8 ) & 0xff;
-		float b = ( mv ) & 0xff;
+		final float r = ( mv >> 16 ) & 0xff;
+		final float g = ( mv >> 8 ) & 0xff;
+		final float b = ( mv ) & 0xff;
 
 		return coloredlightscore.src.api.CLApi.makeRGBLightValue( r / 255.0f, g / 255.0f, b / 255.0f, light / 15.0f );
 	}

@@ -36,17 +36,17 @@ public class PacketPartialItem extends AppEngPacket
 	final byte[] data;
 
 	// automatic.
-	public PacketPartialItem( ByteBuf stream )
+	public PacketPartialItem( final ByteBuf stream )
 	{
 		this.pageNum = stream.readShort();
 		stream.readBytes( this.data = new byte[stream.readableBytes()] );
 	}
 
 	// api
-	public PacketPartialItem( int page, int maxPages, byte[] buf )
+	public PacketPartialItem( final int page, final int maxPages, final byte[] buf )
 	{
 
-		ByteBuf data = Unpooled.buffer();
+		final ByteBuf data = Unpooled.buffer();
 
 		this.pageNum = (short) ( page | ( maxPages << 8 ) );
 		this.data = buf;
@@ -58,7 +58,7 @@ public class PacketPartialItem extends AppEngPacket
 	}
 
 	@Override
-	public void serverPacketData( INetworkInfo manager, AppEngPacket packet, EntityPlayer player )
+	public void serverPacketData( final INetworkInfo manager, final AppEngPacket packet, final EntityPlayer player )
 	{
 		if( player.openContainer instanceof AEBaseContainer )
 		{
@@ -76,7 +76,7 @@ public class PacketPartialItem extends AppEngPacket
 		return this.data.length;
 	}
 
-	public int write( byte[] buffer, int cursor )
+	public int write( final byte[] buffer, final int cursor )
 	{
 		System.arraycopy( this.data, 0, buffer, cursor, this.data.length );
 		return cursor + this.data.length;

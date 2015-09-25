@@ -51,10 +51,10 @@ public final class BlockVibrationChamber extends AEBaseTileBlock
 	}
 
 	@Override
-	public IIcon getIcon( IBlockAccess w, int x, int y, int z, int s )
+	public IIcon getIcon( final IBlockAccess w, final int x, final int y, final int z, final int s )
 	{
-		IIcon ico = super.getIcon( w, x, y, z, s );
-		TileVibrationChamber tvc = this.getTileEntity( w, x, y, z );
+		final IIcon ico = super.getIcon( w, x, y, z, s );
+		final TileVibrationChamber tvc = this.getTileEntity( w, x, y, z );
 
 		if( tvc != null && tvc.isOn && ico == this.getRendererInstance().getTexture( ForgeDirection.SOUTH ) )
 		{
@@ -65,7 +65,7 @@ public final class BlockVibrationChamber extends AEBaseTileBlock
 	}
 
 	@Override
-	public boolean onActivated( World w, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ )
+	public boolean onActivated( final World w, final int x, final int y, final int z, final EntityPlayer player, final int side, final float hitX, final float hitY, final float hitZ )
 	{
 		if( player.isSneaking() )
 		{
@@ -74,7 +74,7 @@ public final class BlockVibrationChamber extends AEBaseTileBlock
 
 		if( Platform.isServer() )
 		{
-			TileVibrationChamber tc = this.getTileEntity( w, x, y, z );
+			final TileVibrationChamber tc = this.getTileEntity( w, x, y, z );
 			if( tc != null && !player.isSneaking() )
 			{
 				Platform.openGUI( player, tc, ForgeDirection.getOrientation( side ), GuiBridge.GUI_VIBRATION_CHAMBER );
@@ -86,36 +86,36 @@ public final class BlockVibrationChamber extends AEBaseTileBlock
 	}
 
 	@Override
-	public void randomDisplayTick( World w, int x, int y, int z, Random r )
+	public void randomDisplayTick( final World w, final int x, final int y, final int z, final Random r )
 	{
 		if( !AEConfig.instance.enableEffects )
 		{
 			return;
 		}
 
-		AEBaseTile tile = this.getTileEntity( w, x, y, z );
+		final AEBaseTile tile = this.getTileEntity( w, x, y, z );
 		if( tile instanceof TileVibrationChamber )
 		{
-			TileVibrationChamber tc = (TileVibrationChamber) tile;
+			final TileVibrationChamber tc = (TileVibrationChamber) tile;
 			if( tc.isOn )
 			{
 				float f1 = x + 0.5F;
 				float f2 = y + 0.5F;
 				float f3 = z + 0.5F;
 
-				ForgeDirection forward = tc.getForward();
-				ForgeDirection up = tc.getUp();
+				final ForgeDirection forward = tc.getForward();
+				final ForgeDirection up = tc.getUp();
 
-				int west_x = forward.offsetY * up.offsetZ - forward.offsetZ * up.offsetY;
-				int west_y = forward.offsetZ * up.offsetX - forward.offsetX * up.offsetZ;
-				int west_z = forward.offsetX * up.offsetY - forward.offsetY * up.offsetX;
+				final int west_x = forward.offsetY * up.offsetZ - forward.offsetZ * up.offsetY;
+				final int west_y = forward.offsetZ * up.offsetX - forward.offsetX * up.offsetZ;
+				final int west_z = forward.offsetX * up.offsetY - forward.offsetY * up.offsetX;
 
 				f1 += forward.offsetX * 0.6;
 				f2 += forward.offsetY * 0.6;
 				f3 += forward.offsetZ * 0.6;
 
-				float ox = r.nextFloat();
-				float oy = r.nextFloat() * 0.2f;
+				final float ox = r.nextFloat();
+				final float oy = r.nextFloat() * 0.2f;
 
 				f1 += up.offsetX * ( -0.3 + oy );
 				f2 += up.offsetY * ( -0.3 + oy );

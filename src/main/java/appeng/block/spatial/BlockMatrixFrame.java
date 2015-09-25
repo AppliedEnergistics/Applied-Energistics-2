@@ -64,45 +64,45 @@ public class BlockMatrixFrame extends AEBaseBlock implements ICustomCollision
 	}
 
 	@Override
-	public void registerBlockIcons( IIconRegister iconRegistry )
+	public void registerBlockIcons( final IIconRegister iconRegistry )
 	{
 
 	}
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void getCheckedSubBlocks( Item item, CreativeTabs tabs, List<ItemStack> itemStacks )
+	public void getCheckedSubBlocks( final Item item, final CreativeTabs tabs, final List<ItemStack> itemStacks )
 	{
 		// do nothing
 	}
 
 	@Override
-	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool( World w, int x, int y, int z, Entity e, boolean isVisual )
+	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool( final World w, final int x, final int y, final int z, final Entity e, final boolean isVisual )
 	{
 		return Arrays.asList( new AxisAlignedBB[] {} );// AxisAlignedBB.getBoundingBox( 0.25, 0, 0.25, 0.75, 0.5, 0.75 )
 		// } );
 	}
 
 	@Override
-	public void addCollidingBlockToList( World w, int x, int y, int z, AxisAlignedBB bb, List<AxisAlignedBB> out, Entity e )
+	public void addCollidingBlockToList( final World w, final int x, final int y, final int z, final AxisAlignedBB bb, final List<AxisAlignedBB> out, final Entity e )
 	{
 		out.add( AxisAlignedBB.getBoundingBox( 0.0, 0.0, 0.0, 1.0, 1.0, 1.0 ) );
 	}
 
 	@Override
-	public boolean canPlaceBlockAt( World world, int x, int y, int z )
+	public boolean canPlaceBlockAt( final World world, final int x, final int y, final int z )
 	{
 		return false;
 	}
 
 	@Override
-	public void onBlockExploded( World world, int x, int y, int z, Explosion explosion )
+	public void onBlockExploded( final World world, final int x, final int y, final int z, final Explosion explosion )
 	{
 		// Don't explode.
 	}
 
 	@Override
-	public boolean canEntityDestroy( IBlockAccess world, int x, int y, int z, Entity entity )
+	public boolean canEntityDestroy( final IBlockAccess world, final int x, final int y, final int z, final Entity entity )
 	{
 		return false;
 	}

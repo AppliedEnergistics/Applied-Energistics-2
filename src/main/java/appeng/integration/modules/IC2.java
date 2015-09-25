@@ -67,7 +67,7 @@ public class IC2 implements IIC2, IIntegrationModule
 	@Override
 	public void postInit()
 	{
-		IP2PTunnelRegistry reg = AEApi.instance().registries().p2pTunnel();
+		final IP2PTunnelRegistry reg = AEApi.instance().registries().p2pTunnel();
 		reg.addNewAttunement( this.getItem( "copperCableItem" ), TunnelType.IC2_POWER );
 		reg.addNewAttunement( this.getItem( "insulatedCopperCableItem" ), TunnelType.IC2_POWER );
 		reg.addNewAttunement( this.getItem( "goldCableItem" ), TunnelType.IC2_POWER );
@@ -85,25 +85,25 @@ public class IC2 implements IIC2, IIntegrationModule
 	}
 
 	@Override
-	public void addToEnergyNet( TileEntity appEngTile )
+	public void addToEnergyNet( final TileEntity appEngTile )
 	{
 		MinecraftForge.EVENT_BUS.post( new ic2.api.energy.event.EnergyTileLoadEvent( (IEnergyTile) appEngTile ) );
 	}
 
 	@Override
-	public void removeFromEnergyNet( TileEntity appEngTile )
+	public void removeFromEnergyNet( final TileEntity appEngTile )
 	{
 		MinecraftForge.EVENT_BUS.post( new ic2.api.energy.event.EnergyTileUnloadEvent( (IEnergyTile) appEngTile ) );
 	}
 
 	@Override
-	public ItemStack getItem( String name )
+	public ItemStack getItem( final String name )
 	{
 		return ic2.api.item.IC2Items.getItem( name );
 	}
 
 	@Override
-	public void maceratorRecipe( ItemStack in, ItemStack out )
+	public void maceratorRecipe( final ItemStack in, final ItemStack out )
 	{
 		ic2.api.recipe.Recipes.macerator.addRecipe( new RecipeInputItemStack( in, in.stackSize ), null, out );
 	}

@@ -82,18 +82,18 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 	public boolean requiresDynamicRender = false;
 	boolean inWorld = false;
 
-	public CableBusContainer( IPartHost host )
+	public CableBusContainer( final IPartHost host )
 	{
 		this.tcb = host;
 	}
 
 	public static boolean isLoading()
 	{
-		Boolean is = IS_LOADING.get();
+		final Boolean is = IS_LOADING.get();
 		return is != null && is;
 	}
 
-	public void setHost( IPartHost host )
+	public void setHost( final IPartHost host )
 	{
 		this.tcb.clearContainer();
 		this.tcb = host;
@@ -101,7 +101,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 
 	public void rotateLeft()
 	{
-		IPart[] newSides = new IPart[6];
+		final IPart[] newSides = new IPart[6];
 
 		newSides[ForgeDirection.UP.ordinal()] = this.getSide( ForgeDirection.UP );
 		newSides[ForgeDirection.DOWN.ordinal()] = this.getSide( ForgeDirection.DOWN );
@@ -111,7 +111,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 		newSides[ForgeDirection.WEST.ordinal()] = this.getSide( ForgeDirection.SOUTH );
 		newSides[ForgeDirection.NORTH.ordinal()] = this.getSide( ForgeDirection.WEST );
 
-		for( ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS )
+		for( final ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS )
 		{
 			this.setSide( dir, newSides[dir.ordinal()] );
 		}
@@ -126,7 +126,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 	}
 
 	@Override
-	public boolean canAddPart( ItemStack is, ForgeDirection side )
+	public boolean canAddPart( ItemStack is, final ForgeDirection side )
 	{
 		if( PartPlacement.isFacade( is, side ) != null )
 		{
@@ -135,18 +135,18 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 
 		if( is.getItem() instanceof IPartItem )
 		{
-			IPartItem bi = (IPartItem) is.getItem();
+			final IPartItem bi = (IPartItem) is.getItem();
 
 			is = is.copy();
 			is.stackSize = 1;
 
-			IPart bp = bi.createPartFromItemStack( is );
+			final IPart bp = bi.createPartFromItemStack( is );
 			if( bp != null )
 			{
 				if( bp instanceof IPartCable )
 				{
 					boolean canPlace = true;
-					for( ForgeDirection d : ForgeDirection.VALID_DIRECTIONS )
+					for( final ForgeDirection d : ForgeDirection.VALID_DIRECTIONS )
 					{
 						if( this.getPart( d ) != null && !this.getPart( d ).canBePlacedOn( ( (IPartCable) bp ).supportsBuses() ) )
 						{
@@ -163,7 +163,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 				}
 				else if( !( bp instanceof IPartCable ) && side != ForgeDirection.UNKNOWN )
 				{
-					IPart cable = this.getPart( ForgeDirection.UNKNOWN );
+					final IPart cable = this.getPart( ForgeDirection.UNKNOWN );
 					if( cable != null && !bp.canBePlacedOn( ( (IPartCable) cable ).supportsBuses() ) )
 					{
 						return false;
@@ -177,22 +177,22 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 	}
 
 	@Override
-	public ForgeDirection addPart( ItemStack is, ForgeDirection side, EntityPlayer player )
+	public ForgeDirection addPart( ItemStack is, final ForgeDirection side, final EntityPlayer player )
 	{
 		if( this.canAddPart( is, side ) )
 		{
 			if( is.getItem() instanceof IPartItem )
 			{
-				IPartItem bi = (IPartItem) is.getItem();
+				final IPartItem bi = (IPartItem) is.getItem();
 
 				is = is.copy();
 				is.stackSize = 1;
 
-				IPart bp = bi.createPartFromItemStack( is );
+				final IPart bp = bi.createPartFromItemStack( is );
 				if( bp instanceof IPartCable )
 				{
 					boolean canPlace = true;
-					for( ForgeDirection d : ForgeDirection.VALID_DIRECTIONS )
+					for( final ForgeDirection d : ForgeDirection.VALID_DIRECTIONS )
 					{
 						if( this.getPart( d ) != null && !this.getPart( d ).canBePlacedOn( ( (IPartCable) bp ).supportsBuses() ) )
 						{
@@ -223,22 +223,22 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 						bp.addToWorld();
 					}
 
-					IGridNode cn = this.getCenter().getGridNode();
+					final IGridNode cn = this.getCenter().getGridNode();
 					if( cn != null )
 					{
-						for( ForgeDirection ins : ForgeDirection.VALID_DIRECTIONS )
+						for( final ForgeDirection ins : ForgeDirection.VALID_DIRECTIONS )
 						{
-							IPart sbp = this.getPart( ins );
+							final IPart sbp = this.getPart( ins );
 							if( sbp != null )
 							{
-								IGridNode sn = sbp.getGridNode();
+								final IGridNode sn = sbp.getGridNode();
 								if( sn != null )
 								{
 									try
 									{
 										new GridConnection( cn, sn, ForgeDirection.UNKNOWN );
 									}
-									catch( FailedConnection e )
+									catch( final FailedConnection e )
 									{
 										// ekk!
 
@@ -259,7 +259,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 				}
 				else if( bp != null && !( bp instanceof IPartCable ) && side != ForgeDirection.UNKNOWN )
 				{
-					IPart cable = this.getPart( ForgeDirection.UNKNOWN );
+					final IPart cable = this.getPart( ForgeDirection.UNKNOWN );
 					if( cable != null && !bp.canBePlacedOn( ( (IPartCable) cable ).supportsBuses() ) )
 					{
 						return null;
@@ -280,8 +280,8 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 
 					if( this.getCenter() != null )
 					{
-						IGridNode cn = this.getCenter().getGridNode();
-						IGridNode sn = bp.getGridNode();
+						final IGridNode cn = this.getCenter().getGridNode();
+						final IGridNode sn = bp.getGridNode();
 
 						if( cn != null && sn != null )
 						{
@@ -289,7 +289,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 							{
 								new GridConnection( cn, sn, ForgeDirection.UNKNOWN );
 							}
-							catch( FailedConnection e )
+							catch( final FailedConnection e )
 							{
 								// ekk!
 
@@ -313,7 +313,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 	}
 
 	@Override
-	public IPart getPart( ForgeDirection side )
+	public IPart getPart( final ForgeDirection side )
 	{
 		if( side == ForgeDirection.UNKNOWN )
 		{
@@ -323,7 +323,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 	}
 
 	@Override
-	public void removePart( ForgeDirection side, boolean suppressUpdate )
+	public void removePart( final ForgeDirection side, final boolean suppressUpdate )
 	{
 		if( side == ForgeDirection.UNKNOWN )
 		{
@@ -375,7 +375,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 	{
 		if( this.getCenter() != null )
 		{
-			IPartCable c = this.getCenter();
+			final IPartCable c = this.getCenter();
 			return c.getCableColor();
 		}
 		return AEColor.Transparent;
@@ -388,22 +388,22 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 	}
 
 	@Override
-	public boolean isBlocked( ForgeDirection side )
+	public boolean isBlocked( final ForgeDirection side )
 	{
 		return this.tcb.isBlocked( side );
 	}
 
 	@Override
-	public SelectedPart selectPart( Vec3 pos )
+	public SelectedPart selectPart( final Vec3 pos )
 	{
-		for( ForgeDirection side : ForgeDirection.values() )
+		for( final ForgeDirection side : ForgeDirection.values() )
 		{
-			IPart p = this.getPart( side );
+			final IPart p = this.getPart( side );
 			if( p != null )
 			{
-				List<AxisAlignedBB> boxes = new LinkedList<AxisAlignedBB>();
+				final List<AxisAlignedBB> boxes = new LinkedList<AxisAlignedBB>();
 
-				IPartCollisionHelper bch = new BusCollisionHelper( boxes, side, null, true );
+				final IPartCollisionHelper bch = new BusCollisionHelper( boxes, side, null, true );
 				p.getBoxes( bch );
 				for( AxisAlignedBB bb : boxes )
 				{
@@ -418,15 +418,15 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 
 		if( AEApi.instance().partHelper().getCableRenderMode().opaqueFacades )
 		{
-			IFacadeContainer fc = this.getFacadeContainer();
-			for( ForgeDirection side : ForgeDirection.VALID_DIRECTIONS )
+			final IFacadeContainer fc = this.getFacadeContainer();
+			for( final ForgeDirection side : ForgeDirection.VALID_DIRECTIONS )
 			{
-				IFacadePart p = fc.getFacade( side );
+				final IFacadePart p = fc.getFacade( side );
 				if( p != null )
 				{
-					List<AxisAlignedBB> boxes = new LinkedList<AxisAlignedBB>();
+					final List<AxisAlignedBB> boxes = new LinkedList<AxisAlignedBB>();
 
-					IPartCollisionHelper bch = new BusCollisionHelper( boxes, side, null, true );
+					final IPartCollisionHelper bch = new BusCollisionHelper( boxes, side, null, true );
 					p.getBoxes( bch, null );
 					for( AxisAlignedBB bb : boxes )
 					{
@@ -454,12 +454,12 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 	{
 		if( this.getCenter() == null )
 		{
-			List<ItemStack> facades = new LinkedList<ItemStack>();
+			final List<ItemStack> facades = new LinkedList<ItemStack>();
 
-			IFacadeContainer fc = this.getFacadeContainer();
-			for( ForgeDirection d : ForgeDirection.VALID_DIRECTIONS )
+			final IFacadeContainer fc = this.getFacadeContainer();
+			for( final ForgeDirection d : ForgeDirection.VALID_DIRECTIONS )
 			{
-				IFacadePart fp = fc.getFacade( d );
+				final IFacadePart fp = fc.getFacade( d );
 				if( fp != null )
 				{
 					facades.add( fp.getItemStack() );
@@ -469,7 +469,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 
 			if( !facades.isEmpty() )
 			{
-				TileEntity te = this.tcb.getTile();
+				final TileEntity te = this.tcb.getTile();
 				Platform.spawnDrops( te.getWorldObj(), te.xCoord, te.yCoord, te.zCoord, facades );
 			}
 		}
@@ -478,7 +478,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 	}
 
 	@Override
-	public boolean hasRedstone( ForgeDirection side )
+	public boolean hasRedstone( final ForgeDirection side )
 	{
 		if( this.hasRedstone == YesNo.UNDECIDED )
 		{
@@ -491,10 +491,10 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 	@Override
 	public boolean isEmpty()
 	{
-		IFacadeContainer fc = this.getFacadeContainer();
-		for( ForgeDirection s : ForgeDirection.values() )
+		final IFacadeContainer fc = this.getFacadeContainer();
+		for( final ForgeDirection s : ForgeDirection.values() )
 		{
-			IPart part = this.getPart( s );
+			final IPart part = this.getPart( s );
 			if( part != null )
 			{
 				return false;
@@ -502,7 +502,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 
 			if( s != ForgeDirection.UNKNOWN )
 			{
-				IFacadePart fp = fc.getFacade( s );
+				final IFacadePart fp = fc.getFacade( s );
 				if( fp != null )
 				{
 					return false;
@@ -538,16 +538,16 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 
 	private void updateRedstone()
 	{
-		TileEntity te = this.getTile();
+		final TileEntity te = this.getTile();
 		this.hasRedstone = te.getWorldObj().isBlockIndirectlyGettingPowered( te.xCoord, te.yCoord, te.zCoord ) ? YesNo.YES : YesNo.NO;
 	}
 
 	public void updateDynamicRender()
 	{
 		this.requiresDynamicRender = false;
-		for( ForgeDirection s : ForgeDirection.VALID_DIRECTIONS )
+		for( final ForgeDirection s : ForgeDirection.VALID_DIRECTIONS )
 		{
-			IPart p = this.getPart( s );
+			final IPart p = this.getPart( s );
 			if( p != null )
 			{
 				this.requiresDynamicRender = this.requiresDynamicRender || p.requireDynamicRender();
@@ -562,9 +562,9 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 	{
 		if( this.getCenter() != null )
 		{
-			EnumSet<ForgeDirection> sides = EnumSet.allOf( ForgeDirection.class );
+			final EnumSet<ForgeDirection> sides = EnumSet.allOf( ForgeDirection.class );
 
-			for( ForgeDirection s : ForgeDirection.VALID_DIRECTIONS )
+			for( final ForgeDirection s : ForgeDirection.VALID_DIRECTIONS )
 			{
 				if( this.getPart( s ) != null || this.isBlocked( s ) )
 				{
@@ -573,7 +573,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 			}
 
 			this.getCenter().setValidSides( sides );
-			IGridNode n = this.getCenter().getGridNode();
+			final IGridNode n = this.getCenter().getGridNode();
 			if( n != null )
 			{
 				n.updateState();
@@ -591,13 +591,13 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 		this.inWorld = true;
 		IS_LOADING.set( true );
 
-		TileEntity te = this.getTile();
+		final TileEntity te = this.getTile();
 
 		// start with the center, then install the side parts into the grid.
 		for( int x = 6; x >= 0; x-- )
 		{
-			ForgeDirection s = ForgeDirection.getOrientation( x );
-			IPart part = this.getPart( s );
+			final ForgeDirection s = ForgeDirection.getOrientation( x );
+			final IPart part = this.getPart( s );
 
 			if( part != null )
 			{
@@ -606,24 +606,24 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 
 				if( s != ForgeDirection.UNKNOWN )
 				{
-					IGridNode sn = part.getGridNode();
+					final IGridNode sn = part.getGridNode();
 					if( sn != null )
 					{
 						// this is a really stupid if statement, why was this
 						// here?
 						// if ( !sn.getConnections().iterator().hasNext() )
 
-						IPart center = this.getPart( ForgeDirection.UNKNOWN );
+						final IPart center = this.getPart( ForgeDirection.UNKNOWN );
 						if( center != null )
 						{
-							IGridNode cn = center.getGridNode();
+							final IGridNode cn = center.getGridNode();
 							if( cn != null )
 							{
 								try
 								{
 									AEApi.instance().createGridConnection( cn, sn );
 								}
-								catch( FailedConnection e )
+								catch( final FailedConnection e )
 								{
 									// ekk
 								}
@@ -648,9 +648,9 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 
 		this.inWorld = false;
 
-		for( ForgeDirection s : ForgeDirection.values() )
+		for( final ForgeDirection s : ForgeDirection.values() )
 		{
-			IPart part = this.getPart( s );
+			final IPart part = this.getPart( s );
 			if( part != null )
 			{
 				part.removeFromWorld();
@@ -661,12 +661,12 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 	}
 
 	@Override
-	public IGridNode getGridNode( ForgeDirection side )
+	public IGridNode getGridNode( final ForgeDirection side )
 	{
-		IPart part = this.getPart( side );
+		final IPart part = this.getPart( side );
 		if( part != null )
 		{
-			IGridNode n = part.getExternalFacingNode();
+			final IGridNode n = part.getExternalFacingNode();
 			if( n != null )
 			{
 				return n;
@@ -682,12 +682,12 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 	}
 
 	@Override
-	public AECableType getCableConnectionType( ForgeDirection dir )
+	public AECableType getCableConnectionType( final ForgeDirection dir )
 	{
-		IPart part = this.getPart( dir );
+		final IPart part = this.getPart( dir );
 		if( part instanceof IGridHost )
 		{
-			AECableType t = ( (IGridHost) part ).getCableConnectionType( dir );
+			final AECableType t = ( (IGridHost) part ).getCableConnectionType( dir );
 			if( t != null && t != AECableType.NONE )
 			{
 				return t;
@@ -696,7 +696,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 
 		if( this.getCenter() != null )
 		{
-			IPartCable c = this.getCenter();
+			final IPartCable c = this.getCenter();
 			return c.getCableConnectionType();
 		}
 		return AECableType.NONE;
@@ -705,9 +705,9 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 	@Override
 	public void securityBreak()
 	{
-		for( ForgeDirection d : ForgeDirection.values() )
+		for( final ForgeDirection d : ForgeDirection.values() )
 		{
-			IPart p = this.getPart( d );
+			final IPart p = this.getPart( d );
 			if( p instanceof IGridHost )
 			{
 				( (IGridHost) p ).securityBreak();
@@ -715,16 +715,16 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 		}
 	}
 
-	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool( boolean ignoreConnections, boolean includeFacades, Entity e, boolean visual )
+	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool( final boolean ignoreConnections, final boolean includeFacades, final Entity e, final boolean visual )
 	{
-		List<AxisAlignedBB> boxes = new LinkedList<AxisAlignedBB>();
+		final List<AxisAlignedBB> boxes = new LinkedList<AxisAlignedBB>();
 
-		IFacadeContainer fc = this.getFacadeContainer();
-		for( ForgeDirection s : ForgeDirection.values() )
+		final IFacadeContainer fc = this.getFacadeContainer();
+		for( final ForgeDirection s : ForgeDirection.values() )
 		{
-			IPartCollisionHelper bch = new BusCollisionHelper( boxes, s, e, visual );
+			final IPartCollisionHelper bch = new BusCollisionHelper( boxes, s, e, visual );
 
-			IPart part = this.getPart( s );
+			final IPart part = this.getPart( s );
 			if( part != null )
 			{
 				if( ignoreConnections && part instanceof IPartCable )
@@ -741,7 +741,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 			{
 				if( includeFacades && s != null && s != ForgeDirection.UNKNOWN )
 				{
-					IFacadePart fp = fc.getFacade( s );
+					final IFacadePart fp = fc.getFacade( s );
 					if( fp != null )
 					{
 						fp.getBoxes( bch, e );
@@ -754,25 +754,25 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 	}
 
 	@Override
-	public int isProvidingStrongPower( ForgeDirection side )
+	public int isProvidingStrongPower( final ForgeDirection side )
 	{
-		IPart part = this.getPart( side );
+		final IPart part = this.getPart( side );
 		return part != null ? part.isProvidingStrongPower() : 0;
 	}
 
 	@Override
-	public int isProvidingWeakPower( ForgeDirection side )
+	public int isProvidingWeakPower( final ForgeDirection side )
 	{
-		IPart part = this.getPart( side );
+		final IPart part = this.getPart( side );
 		return part != null ? part.isProvidingWeakPower() : 0;
 	}
 
 	@Override
-	public boolean canConnectRedstone( EnumSet<ForgeDirection> enumSet )
+	public boolean canConnectRedstone( final EnumSet<ForgeDirection> enumSet )
 	{
-		for( ForgeDirection dir : enumSet )
+		for( final ForgeDirection dir : enumSet )
 		{
-			IPart part = this.getPart( dir );
+			final IPart part = this.getPart( dir );
 			if( part != null && part.canConnectRedstone() )
 			{
 				return true;
@@ -782,11 +782,11 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 	}
 
 	@Override
-	public void onEntityCollision( Entity entity )
+	public void onEntityCollision( final Entity entity )
 	{
-		for( ForgeDirection s : ForgeDirection.values() )
+		for( final ForgeDirection s : ForgeDirection.values() )
 		{
-			IPart part = this.getPart( s );
+			final IPart part = this.getPart( s );
 			if( part != null )
 			{
 				part.onEntityCollision( entity );
@@ -795,9 +795,9 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 	}
 
 	@Override
-	public boolean activate( EntityPlayer player, Vec3 pos )
+	public boolean activate( final EntityPlayer player, final Vec3 pos )
 	{
-		SelectedPart p = this.selectPart( pos );
+		final SelectedPart p = this.selectPart( pos );
 		if( p != null && p.part != null )
 		{
 			return p.part.onActivate( player, pos );
@@ -810,9 +810,9 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 	{
 		this.hasRedstone = YesNo.UNDECIDED;
 
-		for( ForgeDirection s : ForgeDirection.values() )
+		for( final ForgeDirection s : ForgeDirection.values() )
 		{
-			IPart part = this.getPart( s );
+			final IPart part = this.getPart( s );
 			if( part != null )
 			{
 				part.onNeighborChanged();
@@ -821,7 +821,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 	}
 
 	@Override
-	public boolean isSolidOnSide( ForgeDirection side )
+	public boolean isSolidOnSide( final ForgeDirection side )
 	{
 		if( side == null || side == ForgeDirection.UNKNOWN )
 		{
@@ -829,23 +829,23 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 		}
 
 		// facades are solid..
-		IFacadePart fp = this.getFacadeContainer().getFacade( side );
+		final IFacadePart fp = this.getFacadeContainer().getFacade( side );
 		if( fp != null )
 		{
 			return true;
 		}
 
 		// buses can be too.
-		IPart part = this.getPart( side );
+		final IPart part = this.getPart( side );
 		return part != null && part.isSolid();
 	}
 
 	@Override
-	public boolean isLadder( EntityLivingBase entity )
+	public boolean isLadder( final EntityLivingBase entity )
 	{
-		for( ForgeDirection side : ForgeDirection.values() )
+		for( final ForgeDirection side : ForgeDirection.values() )
 		{
-			IPart p = this.getPart( side );
+			final IPart p = this.getPart( side );
 			if( p != null )
 			{
 				if( p.isLadder( entity ) )
@@ -859,11 +859,11 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 	}
 
 	@Override
-	public void randomDisplayTick( World world, int x, int y, int z, Random r )
+	public void randomDisplayTick( final World world, final int x, final int y, final int z, final Random r )
 	{
-		for( ForgeDirection side : ForgeDirection.values() )
+		for( final ForgeDirection side : ForgeDirection.values() )
 		{
-			IPart p = this.getPart( side );
+			final IPart p = this.getPart( side );
 			if( p != null )
 			{
 				p.randomDisplayTick( world, x, y, z, r );
@@ -876,9 +876,9 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 	{
 		int light = 0;
 
-		for( ForgeDirection d : ForgeDirection.values() )
+		for( final ForgeDirection d : ForgeDirection.values() )
 		{
-			IPart p = this.getPart( d );
+			final IPart p = this.getPart( d );
 			if( p != null )
 			{
 				light = Math.max( p.getLightLevel(), light );
@@ -894,23 +894,23 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 	}
 
 	@SideOnly( Side.CLIENT )
-	public void renderStatic( double x, double y, double z )
+	public void renderStatic( final double x, final double y, final double z )
 	{
 		CableRenderHelper.getInstance().renderStatic( this, this.getFacadeContainer() );
 	}
 
 	@SideOnly( Side.CLIENT )
-	public void renderDynamic( double x, double y, double z )
+	public void renderDynamic( final double x, final double y, final double z )
 	{
 		CableRenderHelper.getInstance().renderDynamic( this, x, y, z );
 	}
 
-	public void writeToStream( ByteBuf data ) throws IOException
+	public void writeToStream( final ByteBuf data ) throws IOException
 	{
 		int sides = 0;
 		for( int x = 0; x < 7; x++ )
 		{
-			IPart p = this.getPart( ForgeDirection.getOrientation( x ) );
+			final IPart p = this.getPart( ForgeDirection.getOrientation( x ) );
 			if( p != null )
 			{
 				sides |= ( 1 << x );
@@ -921,10 +921,10 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 
 		for( int x = 0; x < 7; x++ )
 		{
-			IPart p = this.getPart( ForgeDirection.getOrientation( x ) );
+			final IPart p = this.getPart( ForgeDirection.getOrientation( x ) );
 			if( p != null )
 			{
-				ItemStack is = p.getItemStack( PartItemStack.Network );
+				final ItemStack is = p.getItemStack( PartItemStack.Network );
 
 				data.writeShort( Item.getIdFromItem( is.getItem() ) );
 				data.writeShort( is.getItemDamage() );
@@ -936,9 +936,9 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 		this.getFacadeContainer().writeToStream( data );
 	}
 
-	public boolean readFromStream( ByteBuf data ) throws IOException
+	public boolean readFromStream( final ByteBuf data ) throws IOException
 	{
-		byte sides = data.readByte();
+		final byte sides = data.readByte();
 
 		boolean updateBlock = false;
 
@@ -949,12 +949,12 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 			{
 				IPart p = this.getPart( side );
 
-				short itemID = data.readShort();
-				short dmgValue = data.readShort();
+				final short itemID = data.readShort();
+				final short dmgValue = data.readShort();
 
-				Item myItem = Item.getItemById( itemID );
+				final Item myItem = Item.getItemById( itemID );
 
-				ItemStack current = p != null ? p.getItemStack( PartItemStack.Network ) : null;
+				final ItemStack current = p != null ? p.getItemStack( PartItemStack.Network ) : null;
 				if( current != null && current.getItem() == myItem && current.getItemDamage() == dmgValue )
 				{
 					if( p.readFromStream( data ) )
@@ -991,22 +991,22 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 		return updateBlock;
 	}
 
-	public void writeToNBT( NBTTagCompound data )
+	public void writeToNBT( final NBTTagCompound data )
 	{
 		data.setInteger( "hasRedstone", this.hasRedstone.ordinal() );
 
-		IFacadeContainer fc = this.getFacadeContainer();
-		for( ForgeDirection s : ForgeDirection.values() )
+		final IFacadeContainer fc = this.getFacadeContainer();
+		for( final ForgeDirection s : ForgeDirection.values() )
 		{
 			fc.writeToNBT( data );
 
-			IPart part = this.getPart( s );
+			final IPart part = this.getPart( s );
 			if( part != null )
 			{
-				NBTTagCompound def = new NBTTagCompound();
+				final NBTTagCompound def = new NBTTagCompound();
 				part.getItemStack( PartItemStack.World ).writeToNBT( def );
 
-				NBTTagCompound extra = new NBTTagCompound();
+				final NBTTagCompound extra = new NBTTagCompound();
 				part.writeToNBT( extra );
 
 				data.setTag( "def:" + this.getSide( part ).ordinal(), def );
@@ -1015,7 +1015,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 		}
 	}
 
-	ForgeDirection getSide( IPart part )
+	ForgeDirection getSide( final IPart part )
 	{
 		if( this.getCenter() == part )
 		{
@@ -1023,7 +1023,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 		}
 		else
 		{
-			for( ForgeDirection side : ForgeDirection.VALID_DIRECTIONS )
+			for( final ForgeDirection side : ForgeDirection.VALID_DIRECTIONS )
 			{
 				if( this.getSide( side ) == part )
 				{
@@ -1035,7 +1035,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 		throw new IllegalStateException( "Uhh Bad Part (" + part + ") on Side." );
 	}
 
-	public void readFromNBT( NBTTagCompound data )
+	public void readFromNBT( final NBTTagCompound data )
 	{
 		if( data.hasKey( "hasRedstone" ) )
 		{
@@ -1046,18 +1046,18 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 		{
 			ForgeDirection side = ForgeDirection.getOrientation( x );
 
-			NBTTagCompound def = data.getCompoundTag( "def:" + side.ordinal() );
-			NBTTagCompound extra = data.getCompoundTag( "extra:" + side.ordinal() );
+			final NBTTagCompound def = data.getCompoundTag( "def:" + side.ordinal() );
+			final NBTTagCompound extra = data.getCompoundTag( "extra:" + side.ordinal() );
 			if( def != null && extra != null )
 			{
 				IPart p = this.getPart( side );
-				ItemStack iss = ItemStack.loadItemStackFromNBT( def );
+				final ItemStack iss = ItemStack.loadItemStackFromNBT( def );
 				if( iss == null )
 				{
 					continue;
 				}
 
-				ItemStack current = p == null ? null : p.getItemStack( PartItemStack.World );
+				final ItemStack current = p == null ? null : p.getItemStack( PartItemStack.World );
 
 				if( Platform.isSameItemType( iss, current ) )
 				{
@@ -1087,11 +1087,11 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 		this.getFacadeContainer().readFromNBT( data );
 	}
 
-	public List getDrops( List drops )
+	public List getDrops( final List drops )
 	{
-		for( ForgeDirection s : ForgeDirection.values() )
+		for( final ForgeDirection s : ForgeDirection.values() )
 		{
-			IPart part = this.getPart( s );
+			final IPart part = this.getPart( s );
 			if( part != null )
 			{
 				drops.add( part.getItemStack( PartItemStack.Break ) );
@@ -1100,7 +1100,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 
 			if( s != ForgeDirection.UNKNOWN )
 			{
-				IFacadePart fp = this.getFacadeContainer().getFacade( s );
+				final IFacadePart fp = this.getFacadeContainer().getFacade( s );
 				if( fp != null )
 				{
 					drops.add( fp.getItemStack() );
@@ -1111,11 +1111,11 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 		return drops;
 	}
 
-	public List getNoDrops( List drops )
+	public List getNoDrops( final List drops )
 	{
-		for( ForgeDirection s : ForgeDirection.values() )
+		for( final ForgeDirection s : ForgeDirection.values() )
 		{
-			IPart part = this.getPart( s );
+			final IPart part = this.getPart( s );
 			if( part != null )
 			{
 				part.getDrops( drops, false );
@@ -1126,12 +1126,12 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 	}
 
 	@Override
-	public boolean recolourBlock( ForgeDirection side, AEColor colour, EntityPlayer who )
+	public boolean recolourBlock( final ForgeDirection side, final AEColor colour, final EntityPlayer who )
 	{
-		IPart cable = this.getPart( ForgeDirection.UNKNOWN );
+		final IPart cable = this.getPart( ForgeDirection.UNKNOWN );
 		if( cable != null )
 		{
-			IPartCable pc = (IPartCable) cable;
+			final IPartCable pc = (IPartCable) cable;
 			return pc.changeColor( colour, who );
 		}
 		return false;

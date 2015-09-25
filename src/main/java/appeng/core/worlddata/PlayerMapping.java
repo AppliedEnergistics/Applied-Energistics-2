@@ -46,7 +46,7 @@ final class PlayerMapping implements IWorldPlayerMapping
 	 */
 	private final Map<Integer, UUID> mappings;
 
-	public PlayerMapping( ConfigCategory category, FMLRelaunchLog log )
+	public PlayerMapping( final ConfigCategory category, final FMLRelaunchLog log )
 	{
 		final PlayerMappingsInitializer init = new PlayerMappingsInitializer( category, log );
 
@@ -55,7 +55,7 @@ final class PlayerMapping implements IWorldPlayerMapping
 
 	@Nonnull
 	@Override
-	public Optional<UUID> get( int id )
+	public Optional<UUID> get( final int id )
 	{
 		final UUID maybe = this.mappings.get( id );
 
@@ -63,7 +63,7 @@ final class PlayerMapping implements IWorldPlayerMapping
 	}
 
 	@Override
-	public void put( int id, @Nonnull UUID uuid )
+	public void put( final int id, @Nonnull final UUID uuid )
 	{
 		Preconditions.checkNotNull( uuid );
 

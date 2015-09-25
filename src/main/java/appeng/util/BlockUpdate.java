@@ -29,7 +29,7 @@ public class BlockUpdate implements IWorldCallable<Boolean>
 	final int y;
 	final int z;
 
-	public BlockUpdate( int x, int y, int z )
+	public BlockUpdate( final int x, final int y, final int z )
 	{
 		this.x = x;
 		this.y = y;
@@ -37,7 +37,7 @@ public class BlockUpdate implements IWorldCallable<Boolean>
 	}
 
 	@Override
-	public Boolean call( World world ) throws Exception
+	public Boolean call( final World world ) throws Exception
 	{
 		if( world.blockExists( this.x, this.y, this.z ) )
 		{

@@ -58,7 +58,7 @@ import appeng.util.Platform;
 public class PartDenseCable extends PartCable
 {
 	@Reflected
-	public PartDenseCable( ItemStack is )
+	public PartDenseCable( final ItemStack is )
 	{
 		super( is );
 
@@ -78,17 +78,17 @@ public class PartDenseCable extends PartCable
 	}
 
 	@Override
-	public void getBoxes( IPartCollisionHelper bch )
+	public void getBoxes( final IPartCollisionHelper bch )
 	{
-		boolean noLadder = !bch.isBBCollision();
-		double min = noLadder ? 3.0 : 4.9;
-		double max = noLadder ? 13.0 : 11.1;
+		final boolean noLadder = !bch.isBBCollision();
+		final double min = noLadder ? 3.0 : 4.9;
+		final double max = noLadder ? 13.0 : 11.1;
 
 		bch.addBox( min, min, min, max, max, max );
 
 		if( Platform.isServer() )
 		{
-			IGridNode n = this.getGridNode();
+			final IGridNode n = this.getGridNode();
 			if( n != null )
 			{
 				this.connections = n.getConnectedSides();
@@ -99,7 +99,7 @@ public class PartDenseCable extends PartCable
 			}
 		}
 
-		for( ForgeDirection of : this.connections )
+		for( final ForgeDirection of : this.connections )
 		{
 			if( this.isDense( of ) )
 			{
@@ -156,7 +156,7 @@ public class PartDenseCable extends PartCable
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderInventory( IPartRenderHelper rh, RenderBlocks renderer )
+	public void renderInventory( final IPartRenderHelper rh, final RenderBlocks renderer )
 	{
 		GL11.glTranslated( -0.0, -0.0, 0.3 );
 		rh.setBounds( 4.0f, 4.0f, 2.0f, 12.0f, 12.0f, 14.0f );
@@ -168,7 +168,7 @@ public class PartDenseCable extends PartCable
 		OffsetIcon ch1 = new OffsetIcon( this.getChannelTex( 4, false ).getIcon(), offU, offV );
 		OffsetIcon ch2 = new OffsetIcon( this.getChannelTex( 4, true ).getIcon(), offU, offV );
 
-		for( ForgeDirection side : EnumSet.of( ForgeDirection.UP, ForgeDirection.DOWN ) )
+		for( final ForgeDirection side : EnumSet.of( ForgeDirection.UP, ForgeDirection.DOWN ) )
 		{
 			rh.renderInventoryFace( main, side, renderer );
 			rh.renderInventoryFace( ch1, side, renderer );
@@ -181,7 +181,7 @@ public class PartDenseCable extends PartCable
 		ch1 = new OffsetIcon( this.getChannelTex( 4, false ).getIcon(), offU, offV );
 		ch2 = new OffsetIcon( this.getChannelTex( 4, true ).getIcon(), offU, offV );
 
-		for( ForgeDirection side : EnumSet.of( ForgeDirection.EAST, ForgeDirection.WEST ) )
+		for( final ForgeDirection side : EnumSet.of( ForgeDirection.EAST, ForgeDirection.WEST ) )
 		{
 			rh.renderInventoryFace( main, side, renderer );
 			rh.renderInventoryFace( ch1, side, renderer );
@@ -192,7 +192,7 @@ public class PartDenseCable extends PartCable
 		ch1 = new OffsetIcon( this.getChannelTex( 4, false ).getIcon(), 0, 0 );
 		ch2 = new OffsetIcon( this.getChannelTex( 4, true ).getIcon(), 0, 0 );
 
-		for( ForgeDirection side : EnumSet.of( ForgeDirection.SOUTH, ForgeDirection.NORTH ) )
+		for( final ForgeDirection side : EnumSet.of( ForgeDirection.SOUTH, ForgeDirection.NORTH ) )
 		{
 			rh.renderInventoryFace( main, side, renderer );
 			rh.renderInventoryFace( ch1, side, renderer );
@@ -203,7 +203,7 @@ public class PartDenseCable extends PartCable
 	}
 
 	@Override
-	public IIcon getTexture( AEColor c )
+	public IIcon getTexture( final AEColor c )
 	{
 		if( c == AEColor.Transparent )
 		{
@@ -215,15 +215,15 @@ public class PartDenseCable extends PartCable
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderStatic( int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer )
+	public void renderStatic( final int x, final int y, final int z, final IPartRenderHelper rh, final RenderBlocks renderer )
 	{
 		this.renderCache = rh.useSimplifiedRendering( x, y, z, this, this.renderCache );
 		rh.setTexture( this.getTexture( this.getCableColor() ) );
 
-		EnumSet<ForgeDirection> sides = this.connections.clone();
+		final EnumSet<ForgeDirection> sides = this.connections.clone();
 
 		boolean hasBuses = false;
-		for( ForgeDirection of : this.connections )
+		for( final ForgeDirection of : this.connections )
 		{
 			if( !this.isDense( of ) )
 			{
@@ -233,7 +233,7 @@ public class PartDenseCable extends PartCable
 
 		if( sides.size() != 2 || !this.nonLinear( sides ) || hasBuses )
 		{
-			for( ForgeDirection of : this.connections )
+			for( final ForgeDirection of : this.connections )
 			{
 				if( this.isDense( of ) )
 				{
@@ -257,21 +257,21 @@ public class PartDenseCable extends PartCable
 		{
 			ForgeDirection selectedSide = ForgeDirection.UNKNOWN;
 
-			for( ForgeDirection of : this.connections )
+			for( final ForgeDirection of : this.connections )
 			{
 				selectedSide = of;
 				break;
 			}
 
-			int channels = this.channelsOnSide[selectedSide.ordinal()];
-			IIcon def = this.getTexture( this.getCableColor() );
-			IIcon off = new OffsetIcon( def, 0, -12 );
+			final int channels = this.channelsOnSide[selectedSide.ordinal()];
+			final IIcon def = this.getTexture( this.getCableColor() );
+			final IIcon off = new OffsetIcon( def, 0, -12 );
 
-			IIcon firstIcon = new TaughtIcon( this.getChannelTex( channels, false ).getIcon(), -0.2f );
-			IIcon firstOffset = new OffsetIcon( firstIcon, 0, -12 );
+			final IIcon firstIcon = new TaughtIcon( this.getChannelTex( channels, false ).getIcon(), -0.2f );
+			final IIcon firstOffset = new OffsetIcon( firstIcon, 0, -12 );
 
-			IIcon secondIcon = new TaughtIcon( this.getChannelTex( channels, true ).getIcon(), -0.2f );
-			IIcon secondOffset = new OffsetIcon( secondIcon, 0, -12 );
+			final IIcon secondIcon = new TaughtIcon( this.getChannelTex( channels, true ).getIcon(), -0.2f );
+			final IIcon secondOffset = new OffsetIcon( secondIcon, 0, -12 );
 
 			switch( selectedSide )
 			{
@@ -306,8 +306,8 @@ public class PartDenseCable extends PartCable
 					renderer.uvRotateSouth = 0;
 					renderer.uvRotateNorth = 0;
 
-					AEBaseBlock blk = (AEBaseBlock) rh.getBlock();
-					FlippableIcon ico = blk.getRendererInstance().getTexture( ForgeDirection.EAST );
+					final AEBaseBlock blk = (AEBaseBlock) rh.getBlock();
+					final FlippableIcon ico = blk.getRendererInstance().getTexture( ForgeDirection.EAST );
 					ico.setFlip( false, true );
 
 					renderer.setRenderBounds( 0, 3 / 16.0, 3 / 16.0, 16 / 16.0, 13 / 16.0, 13 / 16.0 );
@@ -315,8 +315,8 @@ public class PartDenseCable extends PartCable
 
 					Tessellator.instance.setBrightness( 15 << 20 | 15 << 4 );
 
-					FlippableIcon fpA = new FlippableIcon( firstIcon );
-					FlippableIcon fpB = new FlippableIcon( secondIcon );
+					final FlippableIcon fpA = new FlippableIcon( firstIcon );
+					final FlippableIcon fpB = new FlippableIcon( secondIcon );
 
 					fpA.setFlip( true, false );
 					fpB.setFlip( true, false );
@@ -360,11 +360,11 @@ public class PartDenseCable extends PartCable
 	}
 
 	@SideOnly( Side.CLIENT )
-	public void renderDenseConnection( int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer, int channels, ForgeDirection of )
+	public void renderDenseConnection( final int x, final int y, final int z, final IPartRenderHelper rh, final RenderBlocks renderer, final int channels, final ForgeDirection of )
 	{
-		TileEntity te = this.tile.getWorldObj().getTileEntity( x + of.offsetX, y + of.offsetY, z + of.offsetZ );
-		IPartHost partHost = te instanceof IPartHost ? (IPartHost) te : null;
-		IGridHost ghh = te instanceof IGridHost ? (IGridHost) te : null;
+		final TileEntity te = this.tile.getWorldObj().getTileEntity( x + of.offsetX, y + of.offsetY, z + of.offsetZ );
+		final IPartHost partHost = te instanceof IPartHost ? (IPartHost) te : null;
+		final IGridHost ghh = te instanceof IGridHost ? (IGridHost) te : null;
 		AEColor myColor = this.getCableColor();
 		/*
 		 * ( ghh != null && partHost != null && ghh.getCableConnectionType( of ) == AECableType.GLASS &&
@@ -433,13 +433,13 @@ public class PartDenseCable extends PartCable
 		rh.renderBlock( x, y, z, renderer );
 
 		rh.setFacesToRender( EnumSet.allOf( ForgeDirection.class ) );
-		boolean isGlass = false;
+		final boolean isGlass = false;
 		if( !isGlass )
 		{
 			this.setSmartConnectionRotations( of, renderer );
 
-			IIcon firstIcon = new TaughtIcon( this.getChannelTex( channels, false ).getIcon(), -0.2f );
-			IIcon secondIcon = new TaughtIcon( this.getChannelTex( channels, true ).getIcon(), -0.2f );
+			final IIcon firstIcon = new TaughtIcon( this.getChannelTex( channels, false ).getIcon(), -0.2f );
+			final IIcon secondIcon = new TaughtIcon( this.getChannelTex( channels, true ).getIcon(), -0.2f );
 
 			Tessellator.instance.setBrightness( 15 << 20 | 15 << 4 );
 			Tessellator.instance.setColorOpaque_I( myColor.blackVariant );
@@ -454,18 +454,18 @@ public class PartDenseCable extends PartCable
 		}
 	}
 
-	private boolean isSmart( ForgeDirection of )
+	private boolean isSmart( final ForgeDirection of )
 	{
-		TileEntity te = this.tile.getWorldObj().getTileEntity( this.tile.xCoord + of.offsetX, this.tile.yCoord + of.offsetY, this.tile.zCoord + of.offsetZ );
+		final TileEntity te = this.tile.getWorldObj().getTileEntity( this.tile.xCoord + of.offsetX, this.tile.yCoord + of.offsetY, this.tile.zCoord + of.offsetZ );
 		if( te instanceof IGridHost )
 		{
-			AECableType t = ( (IGridHost) te ).getCableConnectionType( of.getOpposite() );
+			final AECableType t = ( (IGridHost) te ).getCableConnectionType( of.getOpposite() );
 			return t == AECableType.SMART;
 		}
 		return false;
 	}
 
-	private IIcon getDenseTexture( AEColor c )
+	private IIcon getDenseTexture( final AEColor c )
 	{
 		switch( c )
 		{
@@ -507,25 +507,25 @@ public class PartDenseCable extends PartCable
 		return this.is.getIconIndex();
 	}
 
-	private boolean isDense( ForgeDirection of )
+	private boolean isDense( final ForgeDirection of )
 	{
-		TileEntity te = this.tile.getWorldObj().getTileEntity( this.tile.xCoord + of.offsetX, this.tile.yCoord + of.offsetY, this.tile.zCoord + of.offsetZ );
+		final TileEntity te = this.tile.getWorldObj().getTileEntity( this.tile.xCoord + of.offsetX, this.tile.yCoord + of.offsetY, this.tile.zCoord + of.offsetZ );
 		if( te instanceof IGridHost )
 		{
-			AECableType t = ( (IGridHost) te ).getCableConnectionType( of.getOpposite() );
+			final AECableType t = ( (IGridHost) te ).getCableConnectionType( of.getOpposite() );
 			return t == AECableType.DENSE;
 		}
 		return false;
 	}
 
 	@MENetworkEventSubscribe
-	public void channelUpdated( MENetworkChannelsChanged c )
+	public void channelUpdated( final MENetworkChannelsChanged c )
 	{
 		this.getHost().markForUpdate();
 	}
 
 	@MENetworkEventSubscribe
-	public void powerRender( MENetworkPowerStatusChange c )
+	public void powerRender( final MENetworkPowerStatusChange c )
 	{
 		this.getHost().markForUpdate();
 	}

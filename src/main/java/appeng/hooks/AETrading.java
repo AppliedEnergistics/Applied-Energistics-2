@@ -40,7 +40,7 @@ public class AETrading implements IVillageTradeHandler
 {
 
 	@Override
-	public void manipulateTradesForVillager( EntityVillager villager, MerchantRecipeList recipeList, Random random )
+	public void manipulateTradesForVillager( final EntityVillager villager, final MerchantRecipeList recipeList, final Random random )
 	{
 		final IMaterials materials = AEApi.instance().definitions().materials();
 
@@ -51,17 +51,17 @@ public class AETrading implements IVillageTradeHandler
 		this.addTrade( recipeList, materials.certusQuartzDust(), materials.certusQuartzCrystal(), random, 2 );
 	}
 
-	private void addMerchant( MerchantRecipeList list, IItemDefinition item, int emera, Random rand, int greed )
+	private void addMerchant( final MerchantRecipeList list, final IItemDefinition item, final int emera, final Random rand, final int greed )
 	{
-		for( ItemStack itemStack : item.maybeStack( 1 ).asSet() )
+		for( final ItemStack itemStack : item.maybeStack( 1 ).asSet() )
 		{
 			// Sell
-			ItemStack from = itemStack.copy();
-			ItemStack to = new ItemStack( Items.emerald );
+			final ItemStack from = itemStack.copy();
+			final ItemStack to = new ItemStack( Items.emerald );
 
-			int multiplier = ( Math.abs( rand.nextInt() ) % 6 );
+			final int multiplier = ( Math.abs( rand.nextInt() ) % 6 );
 			final int emeraldCost = emera + ( Math.abs( rand.nextInt() ) % greed ) - multiplier;
-			int mood = rand.nextInt() % 2;
+			final int mood = rand.nextInt() % 2;
 
 			from.stackSize = multiplier + mood;
 			to.stackSize = multiplier * emeraldCost - mood;
@@ -75,8 +75,8 @@ public class AETrading implements IVillageTradeHandler
 			this.addToList( list, from, to );
 
 			// Buy
-			ItemStack reverseTo = from.copy();
-			ItemStack reverseFrom = to.copy();
+			final ItemStack reverseTo = from.copy();
+			final ItemStack reverseFrom = to.copy();
 
 			reverseFrom.stackSize *= rand.nextFloat() * 3.0f + 1.0f;
 
@@ -84,7 +84,7 @@ public class AETrading implements IVillageTradeHandler
 		}
 	}
 
-	private void addTrade( MerchantRecipeList list, IItemDefinition inputDefinition, IItemDefinition outputDefinition, Random rand, int conversionVariance )
+	private void addTrade( final MerchantRecipeList list, final IItemDefinition inputDefinition, final IItemDefinition outputDefinition, final Random rand, final int conversionVariance )
 	{
 		final Optional<ItemStack> maybeInputStack = inputDefinition.maybeStack( 1 );
 		final Optional<ItemStack> maybeOutputStack = outputDefinition.maybeStack( 1 );
@@ -92,8 +92,8 @@ public class AETrading implements IVillageTradeHandler
 		if( maybeInputStack.isPresent() && maybeOutputStack.isPresent() )
 		{
 			// Sell
-			ItemStack inputStack = maybeInputStack.get().copy();
-			ItemStack outputStack = maybeOutputStack.get().copy();
+			final ItemStack inputStack = maybeInputStack.get().copy();
+			final ItemStack outputStack = maybeOutputStack.get().copy();
 
 			inputStack.stackSize = 1 + ( Math.abs( rand.nextInt() ) % ( 1 + conversionVariance ) );
 			outputStack.stackSize = 1;
@@ -102,7 +102,7 @@ public class AETrading implements IVillageTradeHandler
 		}
 	}
 
-	private void addToList( MerchantRecipeList l, ItemStack a, ItemStack b )
+	private void addToList( final MerchantRecipeList l, final ItemStack a, final ItemStack b )
 	{
 		if( a.stackSize < 1 )
 		{

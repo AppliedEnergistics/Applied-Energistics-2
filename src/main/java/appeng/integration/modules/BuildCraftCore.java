@@ -51,19 +51,19 @@ public final class BuildCraftCore implements IBuildCraftCore, IIntegrationModule
 	}
 
 	@Override
-	public boolean isWrench( Item eq )
+	public boolean isWrench( final Item eq )
 	{
 		return eq instanceof IToolWrench;
 	}
 
 	@Override
-	public boolean canWrench( @Nonnull Item wrench, EntityPlayer wrencher, int x, int y, int z )
+	public boolean canWrench( @Nonnull final Item wrench, final EntityPlayer wrencher, final int x, final int y, final int z )
 	{
 		return ( (IToolWrench) wrench ).canWrench( wrencher, x, y, z );
 	}
 
 	@Override
-	public void wrenchUsed( @Nonnull Item wrench, EntityPlayer wrencher, int x, int y, int z )
+	public void wrenchUsed( @Nonnull final Item wrench, final EntityPlayer wrencher, final int x, final int y, final int z )
 	{
 		( (IToolWrench) wrench ).wrenchUsed( wrencher, x, y, z );
 	}

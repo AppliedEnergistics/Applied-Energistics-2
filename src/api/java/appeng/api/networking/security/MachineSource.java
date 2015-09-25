@@ -29,7 +29,7 @@ public class MachineSource extends BaseActionSource
 
 	public final IActionHost via;
 
-	public MachineSource( IActionHost v )
+	public MachineSource( final IActionHost v )
 	{
 		this.via = v;
 	}

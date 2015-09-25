@@ -69,14 +69,14 @@ final class PlayerData implements IWorldPlayerData, IOnWorldStartable, IOnWorldS
 
 	@Nullable
 	@Override
-	public EntityPlayer getPlayerFromID( int playerID )
+	public EntityPlayer getPlayerFromID( final int playerID )
 	{
 		final Optional<UUID> maybe = this.playerMapping.get( playerID );
 
 		if( maybe.isPresent() )
 		{
 			final UUID uuid = maybe.get();
-			for( EntityPlayer player : CommonHelper.proxy.getPlayers() )
+			for( final EntityPlayer player : CommonHelper.proxy.getPlayers() )
 			{
 				if( player.getUniqueID().equals( uuid ) )
 				{

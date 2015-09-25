@@ -45,7 +45,7 @@ public class RenderBlockCrank extends BaseBlockRender<BlockCrank, TileCrank>
 	}
 
 	@Override
-	public void renderInventory( BlockCrank blk, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj )
+	public void renderInventory( final BlockCrank blk, final ItemStack is, final RenderBlocks renderer, final ItemRenderType type, final Object[] obj )
 	{
 		renderer.renderAllFaces = true;
 
@@ -59,13 +59,13 @@ public class RenderBlockCrank extends BaseBlockRender<BlockCrank, TileCrank>
 	}
 
 	@Override
-	public boolean renderInWorld( BlockCrank imb, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
+	public boolean renderInWorld( final BlockCrank imb, final IBlockAccess world, final int x, final int y, final int z, final RenderBlocks renderer )
 	{
 		return true;
 	}
 
 	@Override
-	public void renderTile( BlockCrank blk, TileCrank tile, Tessellator tess, double x, double y, double z, float f, RenderBlocks renderBlocks )
+	public void renderTile( final BlockCrank blk, final TileCrank tile, final Tessellator tess, final double x, final double y, final double z, final float f, final RenderBlocks renderBlocks )
 	{
 		if( tile.getUp() == null || tile.getUp() == ForgeDirection.UNKNOWN )
 		{

@@ -29,7 +29,7 @@ import appeng.core.features.AEFeature;
 
 public class FluixStairBlock extends AEBaseStairBlock
 {
-	public FluixStairBlock( Block block )
+	public FluixStairBlock( final Block block )
 	{
 		super( block, 0, EnumSet.of( AEFeature.DecorativeQuartzBlocks ) );
 	}

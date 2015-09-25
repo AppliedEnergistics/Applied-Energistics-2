@@ -63,9 +63,9 @@ public class FMP implements IIntegrationModule, IPartFactory, IPartConverter, IF
 	public static FMP instance;
 
 	@Override
-	public TMultiPart createPart( String name, boolean client )
+	public TMultiPart createPart( final String name, final boolean client )
 	{
-		for( PartRegistry pr : PartRegistry.values() )
+		for( final PartRegistry pr : PartRegistry.values() )
 		{
 			if( pr.getName().equals( name ) )
 			{
@@ -77,15 +77,15 @@ public class FMP implements IIntegrationModule, IPartFactory, IPartConverter, IF
 	}
 
 	@Override
-	public TMultiPart convert( World world, BlockCoord pos )
+	public TMultiPart convert( final World world, final BlockCoord pos )
 	{
-		Block blk = world.getBlock( pos.x, pos.y, pos.z );
-		int meta = world.getBlockMetadata( pos.x, pos.y, pos.z );
+		final Block blk = world.getBlock( pos.x, pos.y, pos.z );
+		final int meta = world.getBlockMetadata( pos.x, pos.y, pos.z );
 
-		TMultiPart part = PartRegistry.getPartByBlock( blk, meta );
+		final TMultiPart part = PartRegistry.getPartByBlock( blk, meta );
 		if( part instanceof CableBusPart )
 		{
-			CableBusPart cbp = (CableBusPart) part;
+			final CableBusPart cbp = (CableBusPart) part;
 			cbp.convertFromTile( world.getTileEntity( pos.x, pos.y, pos.z ) );
 		}
 
@@ -104,9 +104,9 @@ public class FMP implements IIntegrationModule, IPartFactory, IPartConverter, IF
 		return blockTypes;
 	}
 
-	private void addBlockTypes( Collection<Block> blockTypes, IBlockDefinition definition )
+	private void addBlockTypes( final Collection<Block> blockTypes, final IBlockDefinition definition )
 	{
-		for( Block block : definition.maybeBlock().asSet() )
+		for( final Block block : definition.maybeBlock().asSet() )
 		{
 			blockTypes.add( block );
 		}
@@ -125,9 +125,9 @@ public class FMP implements IIntegrationModule, IPartFactory, IPartConverter, IF
 		this.createAndRegister( blocks.skyStone(), 2 );
 		this.createAndRegister( blocks.skyStone(), 3 );
 
-		PartRegistry[] reg = PartRegistry.values();
+		final PartRegistry[] reg = PartRegistry.values();
 
-		String[] data = new String[reg.length];
+		final String[] data = new String[reg.length];
 		for( int x = 0; x < data.length; x++ )
 		{
 			data[x] = reg[x].getName();
@@ -139,9 +139,9 @@ public class FMP implements IIntegrationModule, IPartFactory, IPartConverter, IF
 		MultipartGenerator.registerPassThroughInterface( "appeng.helpers.AEMultiTile" );
 	}
 
-	private void createAndRegister( IBlockDefinition definition, int i )
+	private void createAndRegister( final IBlockDefinition definition, final int i )
 	{
-		for( Block block : definition.maybeBlock().asSet() )
+		for( final Block block : definition.maybeBlock().asSet() )
 		{
 			BlockMicroMaterial.createAndRegister( block, i );
 		}
@@ -154,19 +154,19 @@ public class FMP implements IIntegrationModule, IPartFactory, IPartConverter, IF
 	}
 
 	@Override
-	public IPartHost getOrCreateHost( TileEntity tile )
+	public IPartHost getOrCreateHost( final TileEntity tile )
 	{
 		try
 		{
-			BlockCoord loc = new BlockCoord( tile.xCoord, tile.yCoord, tile.zCoord );
+			final BlockCoord loc = new BlockCoord( tile.xCoord, tile.yCoord, tile.zCoord );
 
-			TileMultipart mp = TileMultipart.getOrConvertTile( tile.getWorldObj(), loc );
+			final TileMultipart mp = TileMultipart.getOrConvertTile( tile.getWorldObj(), loc );
 			if( mp != null )
 			{
-				scala.collection.Iterator<TMultiPart> i = mp.partList().iterator();
+				final scala.collection.Iterator<TMultiPart> i = mp.partList().iterator();
 				while( i.hasNext() )
 				{
-					TMultiPart p = i.next();
+					final TMultiPart p = i.next();
 					if( p instanceof CableBusPart )
 					{
 						return (IPartHost) p;
@@ -176,7 +176,7 @@ public class FMP implements IIntegrationModule, IPartFactory, IPartConverter, IF
 				return new FMPPlacementHelper( mp );
 			}
 		}
-		catch( Throwable t )
+		catch( final Throwable t )
 		{
 			AELog.error( t );
 		}
@@ -184,15 +184,15 @@ public class FMP implements IIntegrationModule, IPartFactory, IPartConverter, IF
 	}
 
 	@Override
-	public CableBusContainer getCableContainer( TileEntity te )
+	public CableBusContainer getCableContainer( final TileEntity te )
 	{
 		if( te instanceof TileMultipart )
 		{
-			TileMultipart mp = (TileMultipart) te;
-			scala.collection.Iterator<TMultiPart> i = mp.partList().iterator();
+			final TileMultipart mp = (TileMultipart) te;
+			final scala.collection.Iterator<TMultiPart> i = mp.partList().iterator();
 			while( i.hasNext() )
 			{
-				TMultiPart p = i.next();
+				final TMultiPart p = i.next();
 				if( p instanceof CableBusPart )
 				{
 					return ( (CableBusPart) p ).cb;
@@ -203,13 +203,13 @@ public class FMP implements IIntegrationModule, IPartFactory, IPartConverter, IF
 	}
 
 	@Override
-	public void registerPassThrough( Class<?> layerInterface )
+	public void registerPassThrough( final Class<?> layerInterface )
 	{
 		try
 		{
 			MultipartGenerator.registerPassThroughInterface( layerInterface.getName() );
 		}
-		catch( Throwable t )
+		catch( final Throwable t )
 		{
 			AELog.severe( "Failed to register " + layerInterface.getName() + " with FMP, some features may not work with MultiParts." );
 			AELog.error( t );
@@ -217,7 +217,7 @@ public class FMP implements IIntegrationModule, IPartFactory, IPartConverter, IF
 	}
 
 	@Override
-	public Event newFMPPacketEvent( EntityPlayerMP sender )
+	public Event newFMPPacketEvent( final EntityPlayerMP sender )
 	{
 		return new FMPPacketEvent( sender );
 	}

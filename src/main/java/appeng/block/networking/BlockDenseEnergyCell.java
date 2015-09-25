@@ -38,7 +38,7 @@ public class BlockDenseEnergyCell extends BlockEnergyCell
 	}
 
 	@Override
-	public IIcon getIcon( int direction, int metadata )
+	public IIcon getIcon( final int direction, final int metadata )
 	{
 		switch( metadata )
 		{

@@ -51,7 +51,7 @@ public class Ingredient implements IIngredient
 	private NBTTagCompound nbt = null;
 	private ItemStack[] baked;
 
-	public Ingredient( RecipeHandler handler, String input, int qty ) throws RecipeError, MissedIngredientSet
+	public Ingredient( final RecipeHandler handler, final String input, final int qty ) throws RecipeError, MissedIngredientSet
 	{
 		Preconditions.checkNotNull( handler );
 		Preconditions.checkNotNull( input );
@@ -70,7 +70,7 @@ public class Ingredient implements IIngredient
 		}
 
 		this.isAir = false;
-		String[] parts = input.split( ":" );
+		final String[] parts = input.split( ":" );
 		if( parts.length >= 2 )
 		{
 			this.nameSpace = handler.alias( parts[0] );
@@ -92,10 +92,10 @@ public class Ingredient implements IIngredient
 				{
 					try
 					{
-						Object ro = AEApi.instance().registries().recipes().resolveItem( this.nameSpace, tmpName );
+						final Object ro = AEApi.instance().registries().recipes().resolveItem( this.nameSpace, tmpName );
 						if( ro instanceof ResolverResult )
 						{
-							ResolverResult rr = (ResolverResult) ro;
+							final ResolverResult rr = (ResolverResult) ro;
 							tmpName = rr.itemName;
 							sel = rr.damageValue;
 							this.nbt = rr.compound;
@@ -105,7 +105,7 @@ public class Ingredient implements IIngredient
 							throw new MissedIngredientSet( (ResolverResultSet) ro );
 						}
 					}
-					catch( IllegalArgumentException e )
+					catch( final IllegalArgumentException e )
 					{
 						throw new RecipeError( tmpName + " is not a valid ae2 item definition." );
 					}
@@ -125,7 +125,7 @@ public class Ingredient implements IIngredient
 					{
 						this.meta = Integer.parseInt( parts[2] );
 					}
-					catch( NumberFormatException e )
+					catch( final NumberFormatException e )
 					{
 						throw new RecipeError( "Invalid Metadata." );
 					}
@@ -168,7 +168,7 @@ public class Ingredient implements IIngredient
 
 		if( blk != null )
 		{
-			Item it = Item.getItemFromBlock( blk );
+			final Item it = Item.getItemFromBlock( blk );
 			if( it != null )
 			{
 				return this.makeItemStack( it, this.qty, this.meta, this.nbt );
@@ -199,9 +199,9 @@ public class Ingredient implements IIngredient
 		throw new MissingIngredientError( "Unable to find item: " + this.toString() );
 	}
 
-	private ItemStack makeItemStack( Item it, int quantity, int damageValue, NBTTagCompound compound )
+	private ItemStack makeItemStack( final Item it, final int quantity, final int damageValue, final NBTTagCompound compound )
 	{
-		ItemStack is = new ItemStack( it, quantity, damageValue );
+		final ItemStack is = new ItemStack( it, quantity, damageValue );
 		is.setTagCompound( compound );
 		return is;
 	}
@@ -216,13 +216,13 @@ public class Ingredient implements IIngredient
 
 		if( this.nameSpace.equalsIgnoreCase( "oreDictionary" ) )
 		{
-			List<ItemStack> ores = OreDictionary.getOres( this.itemName );
-			ItemStack[] set = ores.toArray( new ItemStack[ores.size()] );
+			final List<ItemStack> ores = OreDictionary.getOres( this.itemName );
+			final ItemStack[] set = ores.toArray( new ItemStack[ores.size()] );
 
 			// clone and set qty.
 			for( int x = 0; x < set.length; x++ )
 			{
-				ItemStack is = set[x].copy();
+				final ItemStack is = set[x].copy();
 				is.stackSize = this.qty;
 				set[x] = is;
 			}

@@ -42,7 +42,7 @@ public class SpatialPylonCluster implements IAECluster
 	public boolean hasPower;
 	public boolean hasChannel;
 
-	public SpatialPylonCluster( DimensionalCoord min, DimensionalCoord max )
+	public SpatialPylonCluster( final DimensionalCoord min, final DimensionalCoord max )
 	{
 		this.min = min.copy();
 		this.max = max.copy();
@@ -66,9 +66,9 @@ public class SpatialPylonCluster implements IAECluster
 	}
 
 	@Override
-	public void updateStatus( boolean updateGrid )
+	public void updateStatus( final boolean updateGrid )
 	{
-		for( TileSpatialPylon r : this.line )
+		for( final TileSpatialPylon r : this.line )
 		{
 			r.recalculateDisplay();
 		}
@@ -84,7 +84,7 @@ public class SpatialPylonCluster implements IAECluster
 		}
 		this.isDestroyed = true;
 
-		for( TileSpatialPylon r : this.line )
+		for( final TileSpatialPylon r : this.line )
 		{
 			r.updateStatus( null );
 		}

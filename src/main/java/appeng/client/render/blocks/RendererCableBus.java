@@ -42,15 +42,15 @@ public class RendererCableBus extends BaseBlockRender<BlockCableBus, TileCableBu
 	}
 
 	@Override
-	public void renderInventory( BlockCableBus blk, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj )
+	public void renderInventory( final BlockCableBus blk, final ItemStack is, final RenderBlocks renderer, final ItemRenderType type, final Object[] obj )
 	{
 		// nothing.
 	}
 
 	@Override
-	public boolean renderInWorld( BlockCableBus block, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
+	public boolean renderInWorld( final BlockCableBus block, final IBlockAccess world, final int x, final int y, final int z, final RenderBlocks renderer )
 	{
-		AEBaseTile t = block.getTileEntity( world, x, y, z );
+		final AEBaseTile t = block.getTileEntity( world, x, y, z );
 
 		if( t instanceof TileCableBus )
 		{
@@ -65,7 +65,7 @@ public class RendererCableBus extends BaseBlockRender<BlockCableBus, TileCableBu
 	}
 
 	@Override
-	public void renderTile( BlockCableBus block, TileCableBus cableBus, Tessellator tess, double x, double y, double z, float f, RenderBlocks renderer )
+	public void renderTile( final BlockCableBus block, final TileCableBus cableBus, final Tessellator tess, final double x, final double y, final double z, final float f, final RenderBlocks renderer )
 	{
 		if( cableBus != null )
 		{

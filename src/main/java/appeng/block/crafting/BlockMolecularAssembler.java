@@ -60,7 +60,7 @@ public class BlockMolecularAssembler extends AEBaseTileBlock
 	}
 
 	@Override
-	public boolean canRenderInPass( int pass )
+	public boolean canRenderInPass( final int pass )
 	{
 		booleanAlphaPass = pass == 1;
 		return pass == 0 || pass == 1;
@@ -74,9 +74,9 @@ public class BlockMolecularAssembler extends AEBaseTileBlock
 	}
 
 	@Override
-	public boolean onActivated( World w, int x, int y, int z, EntityPlayer p, int side, float hitX, float hitY, float hitZ )
+	public boolean onActivated( final World w, final int x, final int y, final int z, final EntityPlayer p, final int side, final float hitX, final float hitY, final float hitZ )
 	{
-		TileMolecularAssembler tg = this.getTileEntity( w, x, y, z );
+		final TileMolecularAssembler tg = this.getTileEntity( w, x, y, z );
 		if( tg != null && !p.isSneaking() )
 		{
 			Platform.openGUI( p, tg, ForgeDirection.getOrientation( side ), GuiBridge.GUI_MAC );

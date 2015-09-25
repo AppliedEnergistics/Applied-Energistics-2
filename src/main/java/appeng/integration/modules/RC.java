@@ -43,9 +43,9 @@ public class RC implements IRC, IIntegrationModule
 	}
 
 	@Override
-	public void rockCrusher( ItemStack input, ItemStack output )
+	public void rockCrusher( final ItemStack input, final ItemStack output )
 	{
-		IRockCrusherRecipe re = RailcraftCraftingManager.rockCrusher.createNewRecipe( input, true, true );
+		final IRockCrusherRecipe re = RailcraftCraftingManager.rockCrusher.createNewRecipe( input, true, true );
 		re.addOutput( output, 1.0f );
 	}
 

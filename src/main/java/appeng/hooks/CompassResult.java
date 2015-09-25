@@ -29,7 +29,7 @@ public class CompassResult
 
 	public boolean requested = false;
 
-	public CompassResult( boolean hasResult, boolean spin, double rad )
+	public CompassResult( final boolean hasResult, final boolean spin, final double rad )
 	{
 		this.hasResult = hasResult;
 		this.spin = spin;

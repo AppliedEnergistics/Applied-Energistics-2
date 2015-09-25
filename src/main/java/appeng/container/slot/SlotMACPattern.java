@@ -30,14 +30,14 @@ public class SlotMACPattern extends AppEngSlot
 
 	final ContainerMAC mac;
 
-	public SlotMACPattern( ContainerMAC mac, IInventory i, int slotIdx, int x, int y )
+	public SlotMACPattern( final ContainerMAC mac, final IInventory i, final int slotIdx, final int x, final int y )
 	{
 		super( i, slotIdx, x, y );
 		this.mac = mac;
 	}
 
 	@Override
-	public boolean isItemValid( ItemStack i )
+	public boolean isItemValid( final ItemStack i )
 	{
 		return this.mac.isValidItemForSlot( this.getSlotIndex(), i );
 	}

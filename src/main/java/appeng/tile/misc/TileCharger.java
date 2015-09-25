@@ -71,21 +71,21 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable
 	}
 
 	@Override
-	public AECableType getCableConnectionType( ForgeDirection dir )
+	public AECableType getCableConnectionType( final ForgeDirection dir )
 	{
 		return AECableType.COVERED;
 	}
 
 	@TileEvent( TileEventType.NETWORK_READ )
-	public boolean readFromStream_TileCharger( ByteBuf data )
+	public boolean readFromStream_TileCharger( final ByteBuf data )
 	{
 		try
 		{
-			IAEItemStack item = AEItemStack.loadItemStackFromPacket( data );
-			ItemStack is = item.getItemStack();
+			final IAEItemStack item = AEItemStack.loadItemStackFromPacket( data );
+			final ItemStack is = item.getItemStack();
 			this.inv.setInventorySlotContents( 0, is );
 		}
-		catch( Throwable t )
+		catch( final Throwable t )
 		{
 			this.inv.setInventorySlotContents( 0, null );
 		}
@@ -93,9 +93,9 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable
 	}
 
 	@TileEvent( TileEventType.NETWORK_WRITE )
-	public void writeToStream_TileCharger( ByteBuf data ) throws IOException
+	public void writeToStream_TileCharger( final ByteBuf data ) throws IOException
 	{
-		AEItemStack is = AEItemStack.create( this.getStackInSlot( 0 ) );
+		final AEItemStack is = AEItemStack.create( this.getStackInSlot( 0 ) );
 		if( is != null )
 		{
 			is.writeToPacket( data );
@@ -120,7 +120,7 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable
 		}
 		this.tickTickTimer = 0;
 
-		ItemStack myItem = this.getStackInSlot( 0 );
+		final ItemStack myItem = this.getStackInSlot( 0 );
 
 		// charge from the network!
 		if( this.internalCurrentPower < 1499 )
@@ -130,7 +130,7 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable
 				this.injectExternalPower( PowerUnits.AE, this.gridProxy.getEnergy().extractAEPower( Math.min( 150.0, 1500.0 - this.internalCurrentPower ), Actionable.MODULATE, PowerMultiplier.ONE ) );
 				this.tickTickTimer = 20; // keep ticking...
 			}
-			catch( GridAccessException e )
+			catch( final GridAccessException e )
 			{
 				// continue!
 			}
@@ -145,12 +145,12 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable
 
 		if( this.internalCurrentPower > 149 && Platform.isChargeable( myItem ) )
 		{
-			IAEItemPowerStorage ps = (IAEItemPowerStorage) myItem.getItem();
+			final IAEItemPowerStorage ps = (IAEItemPowerStorage) myItem.getItem();
 			if( ps.getAEMaxPower( myItem ) > ps.getAECurrentPower( myItem ) )
 			{
-				double oldPower = this.internalCurrentPower;
+				final double oldPower = this.internalCurrentPower;
 
-				double adjustment = ps.injectAEPower( myItem, this.extractAEPower( 150.0, Actionable.MODULATE, PowerMultiplier.CONFIG ) );
+				final double adjustment = ps.injectAEPower( myItem, this.extractAEPower( 150.0, Actionable.MODULATE, PowerMultiplier.CONFIG ) );
 				this.internalCurrentPower += adjustment;
 				if( oldPower > this.internalCurrentPower )
 				{
@@ -165,7 +165,7 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable
 			{
 				this.extractAEPower( this.internalMaxPower, Actionable.MODULATE, PowerMultiplier.CONFIG );// 1500
 
-				for( ItemStack charged : materials.certusQuartzCrystalCharged().maybeStack( myItem.stackSize ).asSet() )
+				for( final ItemStack charged : materials.certusQuartzCrystalCharged().maybeStack( myItem.stackSize ).asSet() )
 				{
 					this.setInventorySlotContents( 0, charged );
 				}
@@ -174,7 +174,7 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable
 	}
 
 	@Override
-	public void setOrientation( ForgeDirection inForward, ForgeDirection inUp )
+	public void setOrientation( final ForgeDirection inForward, final ForgeDirection inUp )
 	{
 		super.setOrientation( inForward, inUp );
 		this.gridProxy.setValidSides( EnumSet.of( this.getUp(), this.getUp().getOpposite() ) );
@@ -198,7 +198,7 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable
 	{
 		this.injectExternalPower( PowerUnits.AE, 150 );
 
-		ItemStack myItem = this.getStackInSlot( 0 );
+		final ItemStack myItem = this.getStackInSlot( 0 );
 		if( this.internalCurrentPower > 1499 )
 		{
 			final IMaterials materials = AEApi.instance().definitions().materials();
@@ -207,7 +207,7 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable
 			{
 				this.extractAEPower( this.internalMaxPower, Actionable.MODULATE, PowerMultiplier.CONFIG );// 1500
 
-				for( ItemStack charged : materials.certusQuartzCrystalCharged().maybeStack( myItem.stackSize ).asSet() )
+				for( final ItemStack charged : materials.certusQuartzCrystalCharged().maybeStack( myItem.stackSize ).asSet() )
 				{
 					this.setInventorySlotContents( 0, charged );
 				}
@@ -216,7 +216,7 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable
 	}
 
 	@Override
-	public boolean canCrankAttach( ForgeDirection directionToCrank )
+	public boolean canCrankAttach( final ForgeDirection directionToCrank )
 	{
 		return this.getUp() == directionToCrank || this.getUp().getOpposite() == directionToCrank;
 	}
@@ -234,7 +234,7 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable
 	}
 
 	@Override
-	public boolean isItemValidForSlot( int i, ItemStack itemstack )
+	public boolean isItemValidForSlot( final int i, final ItemStack itemstack )
 	{
 		final IItemDefinition cert = AEApi.instance().definitions().materials().certusQuartzCrystal();
 
@@ -242,17 +242,17 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable
 	}
 
 	@Override
-	public void onChangeInventory( IInventory inv, int slot, InvOperation mc, ItemStack removed, ItemStack added )
+	public void onChangeInventory( final IInventory inv, final int slot, final InvOperation mc, final ItemStack removed, final ItemStack added )
 	{
 		this.markForUpdate();
 	}
 
 	@Override
-	public boolean canExtractItem( int slotIndex, ItemStack extractedItem, int side )
+	public boolean canExtractItem( final int slotIndex, final ItemStack extractedItem, final int side )
 	{
 		if( Platform.isChargeable( extractedItem ) )
 		{
-			IAEItemPowerStorage ips = (IAEItemPowerStorage) extractedItem.getItem();
+			final IAEItemPowerStorage ips = (IAEItemPowerStorage) extractedItem.getItem();
 			if( ips.getAECurrentPower( extractedItem ) >= ips.getAEMaxPower( extractedItem ) )
 			{
 				return true;
@@ -263,19 +263,19 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable
 	}
 
 	@Override
-	public int[] getAccessibleSlotsBySide( ForgeDirection whichSide )
+	public int[] getAccessibleSlotsBySide( final ForgeDirection whichSide )
 	{
 		return this.sides;
 	}
 
-	public void activate( EntityPlayer player )
+	public void activate( final EntityPlayer player )
 	{
 		if( !Platform.hasPermissions( new DimensionalCoord( this ), player ) )
 		{
 			return;
 		}
 
-		ItemStack myItem = this.getStackInSlot( 0 );
+		final ItemStack myItem = this.getStackInSlot( 0 );
 		if( myItem == null )
 		{
 			ItemStack held = player.inventory.getCurrentItem();
@@ -288,7 +288,7 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable
 		}
 		else
 		{
-			List<ItemStack> drops = new ArrayList<ItemStack>();
+			final List<ItemStack> drops = new ArrayList<ItemStack>();
 			drops.add( myItem );
 			this.setInventorySlotContents( 0, null );
 			Platform.spawnDrops( this.worldObj, this.xCoord + this.getForward().offsetX, this.yCoord + this.getForward().offsetY, this.zCoord + this.getForward().offsetZ, drops );

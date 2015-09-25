@@ -65,7 +65,7 @@ public class BlockCraftingUnit extends AEBaseTileBlock
 	}
 
 	@Override
-	public IIcon getIcon( int direction, int metadata )
+	public IIcon getIcon( final int direction, final int metadata )
 	{
 		switch( metadata )
 		{
@@ -82,9 +82,9 @@ public class BlockCraftingUnit extends AEBaseTileBlock
 	}
 
 	@Override
-	public boolean onActivated( World w, int x, int y, int z, EntityPlayer p, int side, float hitX, float hitY, float hitZ )
+	public boolean onActivated( final World w, final int x, final int y, final int z, final EntityPlayer p, final int side, final float hitX, final float hitY, final float hitZ )
 	{
-		TileCraftingTile tg = this.getTileEntity( w, x, y, z );
+		final TileCraftingTile tg = this.getTileEntity( w, x, y, z );
 		if( tg != null && !p.isSneaking() && tg.isFormed() && tg.isActive() )
 		{
 			if( Platform.isClient() )
@@ -101,24 +101,24 @@ public class BlockCraftingUnit extends AEBaseTileBlock
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void getCheckedSubBlocks( Item item, CreativeTabs tabs, List<ItemStack> itemStacks )
+	public void getCheckedSubBlocks( final Item item, final CreativeTabs tabs, final List<ItemStack> itemStacks )
 	{
 		itemStacks.add( new ItemStack( this, 1, 0 ) );
 		itemStacks.add( new ItemStack( this, 1, 1 ) );
 	}
 
 	@Override
-	public void setRenderStateByMeta( int itemDamage )
+	public void setRenderStateByMeta( final int itemDamage )
 	{
-		IIcon front = this.getIcon( ForgeDirection.SOUTH.ordinal(), itemDamage );
-		IIcon other = this.getIcon( ForgeDirection.NORTH.ordinal(), itemDamage );
+		final IIcon front = this.getIcon( ForgeDirection.SOUTH.ordinal(), itemDamage );
+		final IIcon other = this.getIcon( ForgeDirection.NORTH.ordinal(), itemDamage );
 		this.getRendererInstance().setTemporaryRenderIcons( other, other, front, other, other, other );
 	}
 
 	@Override
-	public void breakBlock( World w, int x, int y, int z, Block a, int b )
+	public void breakBlock( final World w, final int x, final int y, final int z, final Block a, final int b )
 	{
-		TileCraftingTile cp = this.getTileEntity( w, x, y, z );
+		final TileCraftingTile cp = this.getTileEntity( w, x, y, z );
 		if( cp != null )
 		{
 			cp.breakCluster();
@@ -128,7 +128,7 @@ public class BlockCraftingUnit extends AEBaseTileBlock
 	}
 
 	@Override
-	public String getUnlocalizedName( ItemStack is )
+	public String getUnlocalizedName( final ItemStack is )
 	{
 		if( is.getItemDamage() == 1 )
 		{
@@ -138,15 +138,15 @@ public class BlockCraftingUnit extends AEBaseTileBlock
 		return this.getItemUnlocalizedName( is );
 	}
 
-	protected String getItemUnlocalizedName( ItemStack is )
+	protected String getItemUnlocalizedName( final ItemStack is )
 	{
 		return super.getUnlocalizedName( is );
 	}
 
 	@Override
-	public void onNeighborBlockChange( World w, int x, int y, int z, Block junk )
+	public void onNeighborBlockChange( final World w, final int x, final int y, final int z, final Block junk )
 	{
-		TileCraftingTile cp = this.getTileEntity( w, x, y, z );
+		final TileCraftingTile cp = this.getTileEntity( w, x, y, z );
 		if( cp != null )
 		{
 			cp.updateMultiBlock();
@@ -154,15 +154,15 @@ public class BlockCraftingUnit extends AEBaseTileBlock
 	}
 
 	@Override
-	public int damageDropped( int meta )
+	public int damageDropped( final int meta )
 	{
 		return meta & 3;
 	}
 
 	@Override
-	public int getDamageValue( World w, int x, int y, int z )
+	public int getDamageValue( final World w, final int x, final int y, final int z )
 	{
-		int meta = w.getBlockMetadata( x, y, z );
+		final int meta = w.getBlockMetadata( x, y, z );
 		return this.damageDropped( meta );
 	}
 }

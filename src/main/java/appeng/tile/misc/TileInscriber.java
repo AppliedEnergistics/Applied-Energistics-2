@@ -111,13 +111,13 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 	}
 
 	@Override
-	public AECableType getCableConnectionType( ForgeDirection dir )
+	public AECableType getCableConnectionType( final ForgeDirection dir )
 	{
 		return AECableType.COVERED;
 	}
 
 	@TileEvent( TileEventType.WORLD_NBT_WRITE )
-	public void writeToNBT_TileInscriber( NBTTagCompound data )
+	public void writeToNBT_TileInscriber( final NBTTagCompound data )
 	{
 		this.inv.writeToNBT( data, "inscriberInv" );
 		this.upgrades.writeToNBT( data, "upgrades" );
@@ -125,7 +125,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 	}
 
 	@TileEvent( TileEventType.WORLD_NBT_READ )
-	public void readFromNBT_TileInscriber( NBTTagCompound data )
+	public void readFromNBT_TileInscriber( final NBTTagCompound data )
 	{
 		this.inv.readFromNBT( data, "inscriberInv" );
 		this.upgrades.readFromNBT( data, "upgrades" );
@@ -133,12 +133,12 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 	}
 
 	@TileEvent( TileEventType.NETWORK_READ )
-	public boolean readFromStream_TileInscriber( ByteBuf data ) throws IOException
+	public boolean readFromStream_TileInscriber( final ByteBuf data ) throws IOException
 	{
-		int slot = data.readByte();
+		final int slot = data.readByte();
 
-		boolean oldSmash = this.smash;
-		boolean newSmash = ( slot & 64 ) == 64;
+		final boolean oldSmash = this.smash;
+		final boolean newSmash = ( slot & 64 ) == 64;
 
 		if( oldSmash != newSmash && newSmash )
 		{
@@ -162,7 +162,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 	}
 
 	@TileEvent( TileEventType.NETWORK_WRITE )
-	public void writeToStream_TileInscriber( ByteBuf data ) throws IOException
+	public void writeToStream_TileInscriber( final ByteBuf data ) throws IOException
 	{
 		int slot = this.smash ? 64 : 0;
 
@@ -179,14 +179,14 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 		{
 			if( ( slot & ( 1 << num ) ) > 0 )
 			{
-				AEItemStack st = AEItemStack.create( this.inv.getStackInSlot( num ) );
+				final AEItemStack st = AEItemStack.create( this.inv.getStackInSlot( num ) );
 				st.writeToPacket( data );
 			}
 		}
 	}
 
 	@Override
-	public void setOrientation( ForgeDirection inForward, ForgeDirection inUp )
+	public void setOrientation( final ForgeDirection inForward, final ForgeDirection inUp )
 	{
 		super.setOrientation( inForward, inUp );
 		this.gridProxy.setValidSides( EnumSet.complementOf( EnumSet.of( this.getForward() ) ) );
@@ -194,13 +194,13 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 	}
 
 	@Override
-	public void getDrops( World w, int x, int y, int z, List<ItemStack> drops )
+	public void getDrops( final World w, final int x, final int y, final int z, final List<ItemStack> drops )
 	{
 		super.getDrops( w, x, y, z, drops );
 
 		for( int h = 0; h < this.upgrades.getSizeInventory(); h++ )
 		{
-			ItemStack is = this.upgrades.getStackInSlot( h );
+			final ItemStack is = this.upgrades.getStackInSlot( h );
 			if( is != null )
 			{
 				drops.add( is );
@@ -227,7 +227,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 	}
 
 	@Override
-	public boolean isItemValidForSlot( int i, ItemStack itemstack )
+	public boolean isItemValidForSlot( final int i, final ItemStack itemstack )
 	{
 		if( this.smash )
 		{
@@ -241,7 +241,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 				return true;
 			}
 
-			for( ItemStack optionals : AEApi.instance().registries().inscriber().getOptionals() )
+			for( final ItemStack optionals : AEApi.instance().registries().inscriber().getOptionals() )
 			{
 				if( Platform.isSameItemPrecise( optionals, itemstack ) )
 				{
@@ -254,7 +254,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 	}
 
 	@Override
-	public void onChangeInventory( IInventory inv, int slot, InvOperation mc, ItemStack removed, ItemStack added )
+	public void onChangeInventory( final IInventory inv, final int slot, final InvOperation mc, final ItemStack removed, final ItemStack added )
 	{
 		try
 		{
@@ -273,14 +273,14 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 				this.gridProxy.getTick().wakeDevice( this.gridProxy.getNode() );
 			}
 		}
-		catch( GridAccessException e )
+		catch( final GridAccessException e )
 		{
 			// :P
 		}
 	}
 
 	@Override
-	public boolean canExtractItem( int slotIndex, ItemStack extractedItem, int side )
+	public boolean canExtractItem( final int slotIndex, final ItemStack extractedItem, final int side )
 	{
 		if( this.smash )
 		{
@@ -291,7 +291,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 	}
 
 	@Override
-	public int[] getAccessibleSlotsBySide( ForgeDirection d )
+	public int[] getAccessibleSlotsBySide( final ForgeDirection d )
 	{
 		if( d == ForgeDirection.UP )
 		{
@@ -307,7 +307,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 	}
 
 	@Override
-	public TickingRequest getTickingRequest( IGridNode node )
+	public TickingRequest getTickingRequest( final IGridNode node )
 	{
 		return new TickingRequest( TickRates.Inscriber.min, TickRates.Inscriber.max, !this.hasWork(), false );
 	}
@@ -326,8 +326,8 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 	@Nullable
 	public IInscriberRecipe getTask()
 	{
-		ItemStack plateA = this.getStackInSlot( 0 );
-		ItemStack plateB = this.getStackInSlot( 1 );
+		final ItemStack plateA = this.getStackInSlot( 0 );
+		final ItemStack plateB = this.getStackInSlot( 1 );
 		ItemStack renamedItem = this.getStackInSlot( 2 );
 
 		if( plateA != null && plateA.stackSize > 1 )
@@ -346,8 +346,8 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 		}
 
 		final IComparableDefinition namePress = AEApi.instance().definitions().materials().namePress();
-		boolean isNameA = namePress.isSameAs( plateA );
-		boolean isNameB = namePress.isSameAs( plateB );
+		final boolean isNameA = namePress.isSameAs( plateA );
+		final boolean isNameB = namePress.isSameAs( plateB );
 
 		if( ( isNameA || isNameB ) && ( isNameA || plateA == null ) && ( isNameB || plateB == null ) )
 		{
@@ -357,13 +357,13 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 
 				if( plateA != null )
 				{
-					NBTTagCompound tag = Platform.openNbtData( plateA );
+					final NBTTagCompound tag = Platform.openNbtData( plateA );
 					name += tag.getString( "InscribeName" );
 				}
 
 				if( plateB != null )
 				{
-					NBTTagCompound tag = Platform.openNbtData( plateB );
+					final NBTTagCompound tag = Platform.openNbtData( plateB );
 					if( name.length() > 0 )
 					{
 						name += " ";
@@ -371,11 +371,11 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 					name += tag.getString( "InscribeName" );
 				}
 
-				ItemStack startingItem = renamedItem.copy();
+				final ItemStack startingItem = renamedItem.copy();
 				renamedItem = renamedItem.copy();
-				NBTTagCompound tag = Platform.openNbtData( renamedItem );
+				final NBTTagCompound tag = Platform.openNbtData( renamedItem );
 
-				NBTTagCompound display = tag.getCompoundTag( "display" );
+				final NBTTagCompound display = tag.getCompoundTag( "display" );
 				tag.setTag( "display", display );
 
 				if( name.length() > 0 )
@@ -394,18 +394,18 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 			}
 		}
 
-		for( IInscriberRecipe recipe : AEApi.instance().registries().inscriber().getRecipes() )
+		for( final IInscriberRecipe recipe : AEApi.instance().registries().inscriber().getRecipes() )
 		{
 
-			boolean matchA = ( plateA == null && !recipe.getTopOptional().isPresent() ) || ( Platform.isSameItemPrecise( plateA, recipe.getTopOptional().orNull() ) ) && // and...
+			final boolean matchA = ( plateA == null && !recipe.getTopOptional().isPresent() ) || ( Platform.isSameItemPrecise( plateA, recipe.getTopOptional().orNull() ) ) && // and...
 			( plateB == null && !recipe.getBottomOptional().isPresent() ) | ( Platform.isSameItemPrecise( plateB, recipe.getBottomOptional().orNull() ) );
 
-			boolean matchB = ( plateB == null && !recipe.getTopOptional().isPresent() ) || ( Platform.isSameItemPrecise( plateB, recipe.getTopOptional().orNull() ) ) && // and...
+			final boolean matchB = ( plateB == null && !recipe.getTopOptional().isPresent() ) || ( Platform.isSameItemPrecise( plateB, recipe.getTopOptional().orNull() ) ) && // and...
 			( plateA == null && !recipe.getBottomOptional().isPresent() ) | ( Platform.isSameItemPrecise( plateA, recipe.getBottomOptional().orNull() ) );
 
 			if( matchA || matchB )
 			{
-				for( ItemStack option : recipe.getInputs() )
+				for( final ItemStack option : recipe.getInputs() )
 				{
 					if( Platform.isSameItemPrecise( option, this.getStackInSlot( 2 ) ) )
 					{
@@ -418,7 +418,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 	}
 
 	@Override
-	public TickRateModulation tickingRequest( IGridNode node, int ticksSinceLastCall )
+	public TickRateModulation tickingRequest( final IGridNode node, final int ticksSinceLastCall )
 	{
 		if( this.smash )
 		{
@@ -429,7 +429,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 				if( out != null )
 				{
 					final ItemStack outputCopy = out.getOutput().copy();
-					InventoryAdaptor ad = InventoryAdaptor.getAdaptor( new WrapperInventoryRange( this.inv, 3, 1, true ), ForgeDirection.UNKNOWN );
+					final InventoryAdaptor ad = InventoryAdaptor.getAdaptor( new WrapperInventoryRange( this.inv, 3, 1, true ), ForgeDirection.UNKNOWN );
 
 					if( ad.addItems( outputCopy ) == null )
 					{
@@ -456,13 +456,13 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 		{
 			try
 			{
-				IEnergyGrid eg = this.gridProxy.getEnergy();
+				final IEnergyGrid eg = this.gridProxy.getEnergy();
 				IEnergySource src = this;
 
 				// Base 1, increase by 1 for each card
-				int speedFactor = 1 + this.upgrades.getInstalledUpgrades( Upgrades.SPEED );
-				int powerConsumption = 10 * speedFactor;
-				double powerThreshold = powerConsumption - 0.01;
+				final int speedFactor = 1 + this.upgrades.getInstalledUpgrades( Upgrades.SPEED );
+				final int powerConsumption = 10 * speedFactor;
+				final double powerThreshold = powerConsumption - 0.01;
 				double powerReq = this.extractAEPower( powerConsumption, Actionable.SIMULATE, PowerMultiplier.CONFIG );
 
 				if( powerReq <= powerThreshold )
@@ -485,7 +485,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 					}
 				}
 			}
-			catch( GridAccessException e )
+			catch( final GridAccessException e )
 			{
 				// :P
 			}
@@ -493,11 +493,11 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 			if( this.processingTime > this.maxProcessingTime )
 			{
 				this.processingTime = this.maxProcessingTime;
-				IInscriberRecipe out = this.getTask();
+				final IInscriberRecipe out = this.getTask();
 				if( out != null )
 				{
-					ItemStack outputCopy = out.getOutput().copy();
-					InventoryAdaptor ad = InventoryAdaptor.getAdaptor( new WrapperInventoryRange( this.inv, 3, 1, true ), ForgeDirection.UNKNOWN );
+					final ItemStack outputCopy = out.getOutput().copy();
+					final InventoryAdaptor ad = InventoryAdaptor.getAdaptor( new WrapperInventoryRange( this.inv, 3, 1, true ), ForgeDirection.UNKNOWN );
 					if( ad.simulateAdd( outputCopy ) == null )
 					{
 						this.smash = true;
@@ -518,7 +518,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 	}
 
 	@Override
-	public IInventory getInventoryByName( String name )
+	public IInventory getInventoryByName( final String name )
 	{
 		if( name.equals( "inv" ) )
 		{
@@ -534,13 +534,13 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 	}
 
 	@Override
-	public int getInstalledUpgrades( Upgrades u )
+	public int getInstalledUpgrades( final Upgrades u )
 	{
 		return this.upgrades.getInstalledUpgrades( u );
 	}
 
 	@Override
-	public void updateSetting( IConfigManager manager, Enum settingName, Enum newValue )
+	public void updateSetting( final IConfigManager manager, final Enum settingName, final Enum newValue )
 	{
 	}
 }

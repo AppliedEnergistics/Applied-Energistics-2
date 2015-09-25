@@ -33,31 +33,31 @@ import appeng.transformer.annotations.Integration.Interface;
 @Interface( iface = "cofh.api.energy.IEnergyContainerItem", iname = IntegrationType.RFItem )
 public abstract class RedstoneFlux extends IC2 implements IEnergyContainerItem
 {
-	public RedstoneFlux( double powerCapacity, Optional<String> subName )
+	public RedstoneFlux( final double powerCapacity, final Optional<String> subName )
 	{
 		super( powerCapacity, subName );
 	}
 
 	@Override
-	public int receiveEnergy( ItemStack is, int maxReceive, boolean simulate )
+	public int receiveEnergy( final ItemStack is, final int maxReceive, final boolean simulate )
 	{
 		return maxReceive - (int) this.injectExternalPower( PowerUnits.RF, is, maxReceive, simulate );
 	}
 
 	@Override
-	public int extractEnergy( ItemStack container, int maxExtract, boolean simulate )
+	public int extractEnergy( final ItemStack container, final int maxExtract, final boolean simulate )
 	{
 		return 0;
 	}
 
 	@Override
-	public int getEnergyStored( ItemStack is )
+	public int getEnergyStored( final ItemStack is )
 	{
 		return (int) PowerUnits.AE.convertTo( PowerUnits.RF, this.getAECurrentPower( is ) );
 	}
 
 	@Override
-	public int getMaxEnergyStored( ItemStack is )
+	public int getMaxEnergyStored( final ItemStack is )
 	{
 		return (int) PowerUnits.AE.convertTo( PowerUnits.RF, this.getAEMaxPower( is ) );
 	}

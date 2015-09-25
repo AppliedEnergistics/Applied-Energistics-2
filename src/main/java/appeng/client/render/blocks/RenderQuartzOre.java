@@ -39,7 +39,7 @@ public class RenderQuartzOre extends BaseBlockRender<OreQuartz, AEBaseTile>
 	}
 
 	@Override
-	public void renderInventory( OreQuartz blk, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj )
+	public void renderInventory( final OreQuartz blk, final ItemStack is, final RenderBlocks renderer, final ItemRenderType type, final Object[] obj )
 	{
 		super.renderInventory( blk, is, renderer, type, obj );
 		blk.getRendererInstance().setTemporaryRenderIcon( ExtraBlockTextures.OreQuartzStone.getIcon() );
@@ -48,7 +48,7 @@ public class RenderQuartzOre extends BaseBlockRender<OreQuartz, AEBaseTile>
 	}
 
 	@Override
-	public boolean renderInWorld( OreQuartz quartz, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
+	public boolean renderInWorld( final OreQuartz quartz, final IBlockAccess world, final int x, final int y, final int z, final RenderBlocks renderer )
 	{
 		quartz.setEnhanceBrightness( true );
 		super.renderInWorld( quartz, world, x, y, z, renderer );

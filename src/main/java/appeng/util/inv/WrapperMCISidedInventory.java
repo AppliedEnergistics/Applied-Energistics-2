@@ -30,7 +30,7 @@ public class WrapperMCISidedInventory extends WrapperInventoryRange implements I
 	final ISidedInventory side;
 	private final ForgeDirection dir;
 
-	public WrapperMCISidedInventory( ISidedInventory a, ForgeDirection d )
+	public WrapperMCISidedInventory( final ISidedInventory a, final ForgeDirection d )
 	{
 		super( a, a.getAccessibleSlotsFromSide( d.ordinal() ), false );
 		this.side = a;
@@ -38,7 +38,7 @@ public class WrapperMCISidedInventory extends WrapperInventoryRange implements I
 	}
 
 	@Override
-	public ItemStack decrStackSize( int var1, int var2 )
+	public ItemStack decrStackSize( final int var1, final int var2 )
 	{
 		if( this.canRemoveItemFromSlot( var1, this.getStackInSlot( var1 ) ) )
 		{
@@ -48,7 +48,7 @@ public class WrapperMCISidedInventory extends WrapperInventoryRange implements I
 	}
 
 	@Override
-	public boolean isItemValidForSlot( int i, ItemStack itemstack )
+	public boolean isItemValidForSlot( final int i, final ItemStack itemstack )
 	{
 
 		if( this.ignoreValidItems )
@@ -65,7 +65,7 @@ public class WrapperMCISidedInventory extends WrapperInventoryRange implements I
 	}
 
 	@Override
-	public boolean canRemoveItemFromSlot( int i, ItemStack is )
+	public boolean canRemoveItemFromSlot( final int i, final ItemStack is )
 	{
 		if( is == null )
 		{

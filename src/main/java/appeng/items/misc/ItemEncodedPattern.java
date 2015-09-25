@@ -60,7 +60,7 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 	}
 
 	@Override
-	public ItemStack onItemRightClick( ItemStack stack, World w, EntityPlayer player )
+	public ItemStack onItemRightClick( final ItemStack stack, final World w, final EntityPlayer player )
 	{
 		this.clearPattern( stack, player );
 
@@ -68,12 +68,12 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 	}
 
 	@Override
-	public boolean onItemUseFirst( ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ )
+	public boolean onItemUseFirst( final ItemStack stack, final EntityPlayer player, final World world, final int x, final int y, final int z, final int side, final float hitX, final float hitY, final float hitZ )
 	{
 		return this.clearPattern( stack, player );
 	}
 
-	private boolean clearPattern( ItemStack stack, EntityPlayer player )
+	private boolean clearPattern( final ItemStack stack, final EntityPlayer player )
 	{
 		if( player.isSneaking() )
 		{
@@ -82,13 +82,13 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 				return false;
 			}
 
-			InventoryPlayer inv = player.inventory;
+			final InventoryPlayer inv = player.inventory;
 
 			for( int s = 0; s < player.inventory.getSizeInventory(); s++ )
 			{
 				if( inv.getStackInSlot( s ) == stack )
 				{
-					for( ItemStack blankPattern : AEApi.instance().definitions().materials().blankPattern().maybeStack( stack.stackSize ).asSet() )
+					for( final ItemStack blankPattern : AEApi.instance().definitions().materials().blankPattern().maybeStack( stack.stackSize ).asSet() )
 					{
 						inv.setInventorySlotContents( s, blankPattern );
 					}
@@ -102,9 +102,9 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 	}
 
 	@Override
-	public void addCheckedInformation( ItemStack stack, EntityPlayer player, List<String> lines, boolean displayMoreInfo )
+	public void addCheckedInformation( final ItemStack stack, final EntityPlayer player, final List<String> lines, final boolean displayMoreInfo )
 	{
-		ICraftingPatternDetails details = this.getPatternForItem( stack, player.worldObj );
+		final ICraftingPatternDetails details = this.getPatternForItem( stack, player.worldObj );
 
 		if( details == null )
 		{
@@ -112,17 +112,17 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 			return;
 		}
 
-		boolean isCrafting = details.isCraftable();
+		final boolean isCrafting = details.isCraftable();
 
-		IAEItemStack[] in = details.getCondensedInputs();
-		IAEItemStack[] out = details.getCondensedOutputs();
+		final IAEItemStack[] in = details.getCondensedInputs();
+		final IAEItemStack[] out = details.getCondensedOutputs();
 
-		String label = ( isCrafting ? GuiText.Crafts.getLocal() : GuiText.Creates.getLocal() ) + ": ";
-		String and = ' ' + GuiText.And.getLocal() + ' ';
-		String with = GuiText.With.getLocal() + ": ";
+		final String label = ( isCrafting ? GuiText.Crafts.getLocal() : GuiText.Creates.getLocal() ) + ": ";
+		final String and = ' ' + GuiText.And.getLocal() + ' ';
+		final String with = GuiText.With.getLocal() + ": ";
 
 		boolean first = true;
-		for( IAEItemStack anOut : out )
+		for( final IAEItemStack anOut : out )
 		{
 			if( anOut == null )
 			{
@@ -134,7 +134,7 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 		}
 
 		first = true;
-		for( IAEItemStack anIn : in )
+		for( final IAEItemStack anIn : in )
 		{
 			if( anIn == null )
 			{
@@ -147,19 +147,19 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 	}
 
 	@Override
-	public ICraftingPatternDetails getPatternForItem( ItemStack is, World w )
+	public ICraftingPatternDetails getPatternForItem( final ItemStack is, final World w )
 	{
 		try
 		{
 			return new PatternHelper( is, w );
 		}
-		catch( Throwable t )
+		catch( final Throwable t )
 		{
 			return null;
 		}
 	}
 
-	public ItemStack getOutput( ItemStack item )
+	public ItemStack getOutput( final ItemStack item )
 	{
 		ItemStack out = SIMPLE_CACHE.get( item );
 		if( out != null )
@@ -167,13 +167,13 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 			return out;
 		}
 
-		World w = CommonHelper.proxy.getWorld();
+		final World w = CommonHelper.proxy.getWorld();
 		if( w == null )
 		{
 			return null;
 		}
 
-		ICraftingPatternDetails details = this.getPatternForItem( item, w );
+		final ICraftingPatternDetails details = this.getPatternForItem( item, w );
 
 		if( details == null )
 		{

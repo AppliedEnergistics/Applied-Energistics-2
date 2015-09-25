@@ -72,7 +72,7 @@ public enum ButtonToolTips
 		this.root = "gui.tooltips.appliedenergistics2";
 	}
 
-	ButtonToolTips( String r )
+	ButtonToolTips( final String r )
 	{
 		this.root = r;
 	}

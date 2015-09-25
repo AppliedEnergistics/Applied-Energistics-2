@@ -62,11 +62,11 @@ public class StorageHelper
 	 *
 	 * @return teleported entity
 	 */
-	public Entity teleportEntity( Entity entity, TelDestination link )
+	public Entity teleportEntity( Entity entity, final TelDestination link )
 	{
-		WorldServer oldWorld;
-		WorldServer newWorld;
-		EntityPlayerMP player;
+		final WorldServer oldWorld;
+		final WorldServer newWorld;
+		final EntityPlayerMP player;
 
 		try
 		{
@@ -74,7 +74,7 @@ public class StorageHelper
 			newWorld = (WorldServer) link.dim;
 			player = ( entity instanceof EntityPlayerMP ) ? (EntityPlayerMP) entity : null;
 		}
-		catch( Throwable e )
+		catch( final Throwable e )
 		{
 			return entity;
 		}
@@ -105,7 +105,7 @@ public class StorageHelper
 		// load the chunk!
 		WorldServer.class.cast( newWorld ).getChunkProvider().loadChunk( MathHelper.floor_double( link.x ) >> 4, MathHelper.floor_double( link.z ) >> 4 );
 
-		boolean diffDestination = newWorld != oldWorld;
+		final boolean diffDestination = newWorld != oldWorld;
 		if( diffDestination )
 		{
 			if( player != null )
@@ -119,8 +119,8 @@ public class StorageHelper
 			}
 			else
 			{
-				int entX = entity.chunkCoordX;
-				int entZ = entity.chunkCoordZ;
+				final int entX = entity.chunkCoordX;
+				final int entZ = entity.chunkCoordZ;
 
 				if( ( entity.addedToChunk ) && ( oldWorld.getChunkProvider().chunkExists( entX, entZ ) ) )
 				{
@@ -128,7 +128,7 @@ public class StorageHelper
 					oldWorld.getChunkFromChunkCoords( entX, entZ ).isModified = true;
 				}
 
-				Entity newEntity = EntityList.createEntityByName( EntityList.getEntityString( entity ), newWorld );
+				final Entity newEntity = EntityList.createEntityByName( EntityList.getEntityString( entity ), newWorld );
 				if( newEntity != null )
 				{
 					entity.lastTickPosX = entity.prevPosX = entity.posX = link.x;
@@ -137,7 +137,7 @@ public class StorageHelper
 
 					if( entity instanceof EntityHanging )
 					{
-						EntityHanging h = (EntityHanging) entity;
+						final EntityHanging h = (EntityHanging) entity;
 						h.field_146063_b += link.xOff;
 						h.field_146064_c += link.yOff;
 						h.field_146062_d += link.zOff;
@@ -177,7 +177,7 @@ public class StorageHelper
 		return entity;
 	}
 
-	public void transverseEdges( int minX, int minY, int minZ, int maxX, int maxY, int maxZ, ISpatialVisitor visitor )
+	public void transverseEdges( final int minX, final int minY, final int minZ, final int maxX, final int maxY, final int maxZ, final ISpatialVisitor visitor )
 	{
 		for( int y = minY; y < maxY; y++ )
 		{
@@ -207,44 +207,44 @@ public class StorageHelper
 		}
 	}
 
-	public void swapRegions( World src /** over world **/
-	, World dst /** storage cell **/
-	, int x, int y, int z, int i, int j, int k, int scaleX, int scaleY, int scaleZ )
+	public void swapRegions( final World src /** over world **/
+	, final World dst /** storage cell **/
+	, final int x, final int y, final int z, final int i, final int j, final int k, final int scaleX, final int scaleY, final int scaleZ )
 	{
-		for( Block matrixFrameBlock : AEApi.instance().definitions().blocks().matrixFrame().maybeBlock().asSet() )
+		for( final Block matrixFrameBlock : AEApi.instance().definitions().blocks().matrixFrame().maybeBlock().asSet() )
 		{
 			this.transverseEdges( i - 1, j - 1, k - 1, i + scaleX + 1, j + scaleY + 1, k + scaleZ + 1, new WrapInMatrixFrame( matrixFrameBlock, 0, dst ) );
 		}
 
-		AxisAlignedBB srcBox = AxisAlignedBB.getBoundingBox( x, y, z, x + scaleX + 1, y + scaleY + 1, z + scaleZ + 1 );
+		final AxisAlignedBB srcBox = AxisAlignedBB.getBoundingBox( x, y, z, x + scaleX + 1, y + scaleY + 1, z + scaleZ + 1 );
 
-		AxisAlignedBB dstBox = AxisAlignedBB.getBoundingBox( i, j, k, i + scaleX + 1, j + scaleY + 1, k + scaleZ + 1 );
+		final AxisAlignedBB dstBox = AxisAlignedBB.getBoundingBox( i, j, k, i + scaleX + 1, j + scaleY + 1, k + scaleZ + 1 );
 
-		CachedPlane cDst = new CachedPlane( dst, i, j, k, i + scaleX, j + scaleY, k + scaleZ );
-		CachedPlane cSrc = new CachedPlane( src, x, y, z, x + scaleX, y + scaleY, z + scaleZ );
+		final CachedPlane cDst = new CachedPlane( dst, i, j, k, i + scaleX, j + scaleY, k + scaleZ );
+		final CachedPlane cSrc = new CachedPlane( src, x, y, z, x + scaleX, y + scaleY, z + scaleZ );
 
 		// do nearly all the work... swaps blocks, tiles, and block ticks
 		cSrc.swap( cDst );
 
-		List<Entity> srcE = src.getEntitiesWithinAABB( Entity.class, srcBox );
-		List<Entity> dstE = dst.getEntitiesWithinAABB( Entity.class, dstBox );
+		final List<Entity> srcE = src.getEntitiesWithinAABB( Entity.class, srcBox );
+		final List<Entity> dstE = dst.getEntitiesWithinAABB( Entity.class, dstBox );
 
-		for( Entity e : dstE )
+		for( final Entity e : dstE )
 		{
 			this.teleportEntity( e, new TelDestination( src, srcBox, e.posX, e.posY, e.posZ, -i + x, -j + y, -k + z ) );
 		}
 
-		for( Entity e : srcE )
+		for( final Entity e : srcE )
 		{
 			this.teleportEntity( e, new TelDestination( dst, dstBox, e.posX, e.posY, e.posZ, -x + i, -y + j, -z + k ) );
 		}
 
-		for( WorldCoord wc : cDst.updates )
+		for( final WorldCoord wc : cDst.updates )
 		{
 			cDst.world.notifyBlockOfNeighborChange( wc.x, wc.y, wc.z, Platform.AIR_BLOCK );
 		}
 
-		for( WorldCoord wc : cSrc.updates )
+		for( final WorldCoord wc : cSrc.updates )
 		{
 			cSrc.world.notifyBlockOfNeighborChange( wc.x, wc.y, wc.z, Platform.AIR_BLOCK );
 		}
@@ -269,15 +269,15 @@ public class StorageHelper
 
 		final World dst;
 
-		public TriggerUpdates( World dst2 )
+		public TriggerUpdates( final World dst2 )
 		{
 			this.dst = dst2;
 		}
 
 		@Override
-		public void visit( int x, int y, int z )
+		public void visit( final int x, final int y, final int z )
 		{
-			Block blk = this.dst.getBlock( x, y, z );
+			final Block blk = this.dst.getBlock( x, y, z );
 			blk.onNeighborBlockChange( this.dst, x, y, z, Platform.AIR_BLOCK );
 		}
 	}
@@ -289,7 +289,7 @@ public class StorageHelper
 		final Block blkID;
 		final int Meta;
 
-		public WrapInMatrixFrame( Block blockID, int metaData, World dst2 )
+		public WrapInMatrixFrame( final Block blockID, final int metaData, final World dst2 )
 		{
 			this.dst = dst2;
 			this.blkID = blockID;
@@ -297,7 +297,7 @@ public class StorageHelper
 		}
 
 		@Override
-		public void visit( int x, int y, int z )
+		public void visit( final int x, final int y, final int z )
 		{
 			this.dst.setBlock( x, y, z, this.blkID, this.Meta, 3 );
 		}
@@ -314,7 +314,7 @@ public class StorageHelper
 		final int yOff;
 		final int zOff;
 
-		TelDestination( World dimension, AxisAlignedBB srcBox, double x, double y, double z, int tileX, int tileY, int tileZ )
+		TelDestination( final World dimension, final AxisAlignedBB srcBox, final double x, final double y, final double z, final int tileX, final int tileY, final int tileZ )
 		{
 			this.dim = dimension;
 			this.x = Math.min( srcBox.maxX - 0.5, Math.max( srcBox.minX + 0.5, x + tileX ) );
@@ -331,33 +331,33 @@ public class StorageHelper
 
 		final TelDestination destination;
 
-		public METeleporter( WorldServer par1WorldServer, TelDestination d )
+		public METeleporter( final WorldServer par1WorldServer, final TelDestination d )
 		{
 			super( par1WorldServer );
 			this.destination = d;
 		}
 
 		@Override
-		public void placeInPortal( Entity par1Entity, double par2, double par4, double par6, float par8 )
+		public void placeInPortal( final Entity par1Entity, final double par2, final double par4, final double par6, final float par8 )
 		{
 			par1Entity.setLocationAndAngles( this.destination.x, this.destination.y, this.destination.z, par1Entity.rotationYaw, 0.0F );
 			par1Entity.motionX = par1Entity.motionY = par1Entity.motionZ = 0.0D;
 		}
 
 		@Override
-		public boolean placeInExistingPortal( Entity par1Entity, double par2, double par4, double par6, float par8 )
+		public boolean placeInExistingPortal( final Entity par1Entity, final double par2, final double par4, final double par6, final float par8 )
 		{
 			return false;
 		}
 
 		@Override
-		public boolean makePortal( Entity par1Entity )
+		public boolean makePortal( final Entity par1Entity )
 		{
 			return false;
 		}
 
 		@Override
-		public void removeStalePortalLocations( long par1 )
+		public void removeStalePortalLocations( final long par1 )
 		{
 
 		}

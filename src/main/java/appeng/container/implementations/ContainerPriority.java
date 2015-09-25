@@ -45,20 +45,20 @@ public class ContainerPriority extends AEBaseContainer
 	@GuiSync( 2 )
 	public long PriorityValue = -1;
 
-	public ContainerPriority( InventoryPlayer ip, IPriorityHost te )
+	public ContainerPriority( final InventoryPlayer ip, final IPriorityHost te )
 	{
 		super( ip, (TileEntity) ( te instanceof TileEntity ? te : null ), (IPart) ( te instanceof IPart ? te : null ) );
 		this.priHost = te;
 	}
 
 	@SideOnly( Side.CLIENT )
-	public void setTextField( GuiTextField level )
+	public void setTextField( final GuiTextField level )
 	{
 		this.textField = level;
 		this.textField.setText( String.valueOf( this.PriorityValue ) );
 	}
 
-	public void setPriority( int newValue, EntityPlayer player )
+	public void setPriority( final int newValue, final EntityPlayer player )
 	{
 		this.priHost.setPriority( newValue );
 		this.PriorityValue = newValue;
@@ -77,7 +77,7 @@ public class ContainerPriority extends AEBaseContainer
 	}
 
 	@Override
-	public void onUpdate( String field, Object oldValue, Object newValue )
+	public void onUpdate( final String field, final Object oldValue, final Object newValue )
 	{
 		if( field.equals( "PriorityValue" ) )
 		{

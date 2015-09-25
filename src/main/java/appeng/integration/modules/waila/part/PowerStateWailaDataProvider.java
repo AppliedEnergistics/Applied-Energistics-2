@@ -49,7 +49,7 @@ public final class PowerStateWailaDataProvider extends BasePartWailaDataProvider
 	 * @return modified tooltip
 	 */
 	@Override
-	public List<String> getWailaBody( IPart part, List<String> currentToolTip, IWailaDataAccessor accessor, IWailaConfigHandler config )
+	public List<String> getWailaBody( final IPart part, final List<String> currentToolTip, final IWailaDataAccessor accessor, final IWailaConfigHandler config )
 	{
 		if( part instanceof IPowerChannelState )
 		{
@@ -69,7 +69,7 @@ public final class PowerStateWailaDataProvider extends BasePartWailaDataProvider
 	 *
 	 * @return tooltip of the state
 	 */
-	private String getToolTip( boolean isActive, boolean isPowered )
+	private String getToolTip( final boolean isActive, final boolean isPowered )
 	{
 		final String result;
 

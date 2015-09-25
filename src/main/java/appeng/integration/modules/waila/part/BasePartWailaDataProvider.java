@@ -43,31 +43,31 @@ import appeng.api.parts.IPart;
 public abstract class BasePartWailaDataProvider implements IPartWailaDataProvider
 {
 	@Override
-	public ItemStack getWailaStack( IPart part, IWailaConfigHandler config, ItemStack partStack )
+	public ItemStack getWailaStack( final IPart part, final IWailaConfigHandler config, final ItemStack partStack )
 	{
 		return null;
 	}
 
 	@Override
-	public List<String> getWailaHead( IPart part, List<String> currentToolTip, IWailaDataAccessor accessor, IWailaConfigHandler config )
+	public List<String> getWailaHead( final IPart part, final List<String> currentToolTip, final IWailaDataAccessor accessor, final IWailaConfigHandler config )
 	{
 		return currentToolTip;
 	}
 
 	@Override
-	public List<String> getWailaBody( IPart part, List<String> currentToolTip, IWailaDataAccessor accessor, IWailaConfigHandler config )
+	public List<String> getWailaBody( final IPart part, final List<String> currentToolTip, final IWailaDataAccessor accessor, final IWailaConfigHandler config )
 	{
 		return currentToolTip;
 	}
 
 	@Override
-	public List<String> getWailaTail( IPart part, List<String> currentToolTip, IWailaDataAccessor accessor, IWailaConfigHandler config )
+	public List<String> getWailaTail( final IPart part, final List<String> currentToolTip, final IWailaDataAccessor accessor, final IWailaConfigHandler config )
 	{
 		return currentToolTip;
 	}
 
 	@Override
-	public NBTTagCompound getNBTData( EntityPlayerMP player, IPart part, TileEntity te, NBTTagCompound tag, World world, int x, int y, int z )
+	public NBTTagCompound getNBTData( final EntityPlayerMP player, final IPart part, final TileEntity te, final NBTTagCompound tag, final World world, final int x, final int y, final int z )
 	{
 		return tag;
 	}

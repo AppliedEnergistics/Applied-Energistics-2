@@ -60,7 +60,7 @@ public class InvTweaks implements IInvTweaks, IIntegrationModule
 	}
 
 	@Override
-	public int compareItems( ItemStack i, ItemStack j )
+	public int compareItems( final ItemStack i, final ItemStack j )
 	{
 		return api.compareItems( i, j );
 	}

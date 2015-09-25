@@ -49,21 +49,21 @@ public class ToolEraser extends AEBaseItem
 	}
 
 	@Override
-	public void registerIcons( IIconRegister par1IconRegister )
+	public void registerIcons( final IIconRegister par1IconRegister )
 	{
 		this.itemIcon = new MissingIcon( this );
 	}
 
 	@Override
-	public boolean onItemUseFirst( ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ )
+	public boolean onItemUseFirst( final ItemStack stack, final EntityPlayer player, final World world, final int x, final int y, final int z, final int side, final float hitX, final float hitY, final float hitZ )
 	{
 		if( Platform.isClient() )
 		{
 			return false;
 		}
 
-		Block blk = world.getBlock( x, y, z );
-		int meta = world.getBlockMetadata( x, y, z );
+		final Block blk = world.getBlock( x, y, z );
+		final int meta = world.getBlockMetadata( x, y, z );
 
 		List<WorldCoord> next = new LinkedList<WorldCoord>();
 		next.add( new WorldCoord( x, y, z ) );
@@ -71,13 +71,13 @@ public class ToolEraser extends AEBaseItem
 		int blocks = 0;
 		while( blocks < BLOCK_ERASE_LIMIT && !next.isEmpty() )
 		{
-			List<WorldCoord> c = next;
+			final List<WorldCoord> c = next;
 			next = new LinkedList<WorldCoord>();
 
-			for( WorldCoord wc : c )
+			for( final WorldCoord wc : c )
 			{
-				Block c_blk = world.getBlock( wc.x, wc.y, wc.z );
-				int c_meta = world.getBlockMetadata( wc.x, wc.y, wc.z );
+				final Block c_blk = world.getBlock( wc.x, wc.y, wc.z );
+				final int c_meta = world.getBlockMetadata( wc.x, wc.y, wc.z );
 
 				if( c_blk == blk && c_meta == meta )
 				{
@@ -99,7 +99,7 @@ public class ToolEraser extends AEBaseItem
 		return true;
 	}
 
-	private void wrappedAdd( World world, int i, int y, int z, Collection<WorldCoord> next )
+	private void wrappedAdd( final World world, final int i, final int y, final int z, final Collection<WorldCoord> next )
 	{
 		next.add( new WorldCoord( i, y, z ) );
 	}

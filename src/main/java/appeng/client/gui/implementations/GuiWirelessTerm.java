@@ -27,7 +27,7 @@ import appeng.api.implementations.guiobjects.IPortableCell;
 public class GuiWirelessTerm extends GuiMEPortableCell
 {
 
-	public GuiWirelessTerm( InventoryPlayer inventoryPlayer, IPortableCell te )
+	public GuiWirelessTerm( final InventoryPlayer inventoryPlayer, final IPortableCell te )
 	{
 		super( inventoryPlayer, te );
 		this.maxRows = Integer.MAX_VALUE;

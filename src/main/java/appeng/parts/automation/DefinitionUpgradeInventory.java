@@ -13,7 +13,7 @@ public final class DefinitionUpgradeInventory extends UpgradeInventory
 {
 	private final IItemDefinition definition;
 
-	public DefinitionUpgradeInventory( IItemDefinition definition, IAEAppEngInventory parent, int s )
+	public DefinitionUpgradeInventory( final IItemDefinition definition, final IAEAppEngInventory parent, final int s )
 	{
 		super( parent, s );
 
@@ -21,11 +21,11 @@ public final class DefinitionUpgradeInventory extends UpgradeInventory
 	}
 
 	@Override
-	public int getMaxInstalled( Upgrades upgrades )
+	public int getMaxInstalled( final Upgrades upgrades )
 	{
 		int max = 0;
 
-		for( ItemStack stack : upgrades.getSupported().keySet() )
+		for( final ItemStack stack : upgrades.getSupported().keySet() )
 		{
 			if( this.definition.isSameAs( stack ) )
 			{

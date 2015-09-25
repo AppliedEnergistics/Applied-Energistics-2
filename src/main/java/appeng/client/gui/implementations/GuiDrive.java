@@ -37,14 +37,14 @@ public class GuiDrive extends AEBaseGui
 
 	GuiTabButton priority;
 
-	public GuiDrive( InventoryPlayer inventoryPlayer, TileDrive te )
+	public GuiDrive( final InventoryPlayer inventoryPlayer, final TileDrive te )
 	{
 		super( new ContainerDrive( inventoryPlayer, te ) );
 		this.ySize = 199;
 	}
 
 	@Override
-	protected void actionPerformed( GuiButton par1GuiButton )
+	protected void actionPerformed( final GuiButton par1GuiButton )
 	{
 		super.actionPerformed( par1GuiButton );
 
@@ -63,14 +63,14 @@ public class GuiDrive extends AEBaseGui
 	}
 
 	@Override
-	public void drawFG( int offsetX, int offsetY, int mouseX, int mouseY )
+	public void drawFG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
 		this.fontRendererObj.drawString( this.getGuiDisplayName( GuiText.Drive.getLocal() ), 8, 6, 4210752 );
 		this.fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
 	}
 
 	@Override
-	public void drawBG( int offsetX, int offsetY, int mouseX, int mouseY )
+	public void drawBG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
 		this.bindTexture( "guis/drive.png" );
 		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize );

@@ -56,9 +56,9 @@ public class BlockChest extends AEBaseTileBlock
 	}
 
 	@Override
-	public boolean onActivated( World w, int x, int y, int z, EntityPlayer p, int side, float hitX, float hitY, float hitZ )
+	public boolean onActivated( final World w, final int x, final int y, final int z, final EntityPlayer p, final int side, final float hitX, final float hitY, final float hitZ )
 	{
-		TileChest tg = this.getTileEntity( w, x, y, z );
+		final TileChest tg = this.getTileEntity( w, x, y, z );
 		if( tg != null && !p.isSneaking() )
 		{
 			if( Platform.isClient() )
@@ -72,10 +72,10 @@ public class BlockChest extends AEBaseTileBlock
 			}
 			else
 			{
-				ItemStack cell = tg.getStackInSlot( 1 );
+				final ItemStack cell = tg.getStackInSlot( 1 );
 				if( cell != null )
 				{
-					ICellHandler ch = AEApi.instance().registries().cell().getHandler( cell );
+					final ICellHandler ch = AEApi.instance().registries().cell().getHandler( cell );
 
 					tg.openGui( p, ch, cell, side );
 				}

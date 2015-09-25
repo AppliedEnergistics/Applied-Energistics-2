@@ -39,10 +39,10 @@ public class BlockQuantumRing extends BlockQuantumBase
 	}
 
 	@Override
-	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool( World w, int x, int y, int z, Entity e, boolean isVisual )
+	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool( final World w, final int x, final int y, final int z, final Entity e, final boolean isVisual )
 	{
 		double onePixel = 2.0 / 16.0;
-		TileQuantumBridge bridge = this.getTileEntity( w, x, y, z );
+		final TileQuantumBridge bridge = this.getTileEntity( w, x, y, z );
 		if( bridge != null && bridge.isCorner() )
 		{
 			onePixel = 4.0 / 16.0;
@@ -55,10 +55,10 @@ public class BlockQuantumRing extends BlockQuantumBase
 	}
 
 	@Override
-	public void addCollidingBlockToList( World w, int x, int y, int z, AxisAlignedBB bb, List<AxisAlignedBB> out, Entity e )
+	public void addCollidingBlockToList( final World w, final int x, final int y, final int z, final AxisAlignedBB bb, final List<AxisAlignedBB> out, final Entity e )
 	{
 		double onePixel = 2.0 / 16.0;
-		TileQuantumBridge bridge = this.getTileEntity( w, x, y, z );
+		final TileQuantumBridge bridge = this.getTileEntity( w, x, y, z );
 		if( bridge != null && bridge.isCorner() )
 		{
 			onePixel = 4.0 / 16.0;

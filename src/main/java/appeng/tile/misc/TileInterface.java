@@ -71,18 +71,18 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, IT
 	ForgeDirection pointAt = ForgeDirection.UNKNOWN;
 
 	@MENetworkEventSubscribe
-	public void stateChange( MENetworkChannelsChanged c )
+	public void stateChange( final MENetworkChannelsChanged c )
 	{
 		this.duality.notifyNeighbors();
 	}
 
 	@MENetworkEventSubscribe
-	public void stateChange( MENetworkPowerStatusChange c )
+	public void stateChange( final MENetworkPowerStatusChange c )
 	{
 		this.duality.notifyNeighbors();
 	}
 
-	public void setSide( ForgeDirection axis )
+	public void setSide( final ForgeDirection axis )
 	{
 		if( Platform.isClient() )
 		{
@@ -127,7 +127,7 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, IT
 	}
 
 	@Override
-	public void getDrops( World w, int x, int y, int z, List<ItemStack> drops )
+	public void getDrops( final World w, final int x, final int y, final int z, final List<ItemStack> drops )
 	{
 		this.duality.addDrops( drops );
 	}
@@ -147,16 +147,16 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, IT
 	}
 
 	@TileEvent( TileEventType.WORLD_NBT_WRITE )
-	public void writeToNBT_TileInterface( NBTTagCompound data )
+	public void writeToNBT_TileInterface( final NBTTagCompound data )
 	{
 		data.setInteger( "pointAt", this.pointAt.ordinal() );
 		this.duality.writeToNBT( data );
 	}
 
 	@TileEvent( TileEventType.WORLD_NBT_READ )
-	public void readFromNBT_TileInterface( NBTTagCompound data )
+	public void readFromNBT_TileInterface( final NBTTagCompound data )
 	{
-		int val = data.getInteger( "pointAt" );
+		final int val = data.getInteger( "pointAt" );
 
 		if( val >= 0 && val < ForgeDirection.values().length )
 		{
@@ -171,7 +171,7 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, IT
 	}
 
 	@Override
-	public AECableType getCableConnectionType( ForgeDirection dir )
+	public AECableType getCableConnectionType( final ForgeDirection dir )
 	{
 		return this.duality.getCableConnectionType( dir );
 	}
@@ -183,7 +183,7 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, IT
 	}
 
 	@Override
-	public boolean canInsert( ItemStack stack )
+	public boolean canInsert( final ItemStack stack )
 	{
 		return this.duality.canInsert( stack );
 	}
@@ -201,19 +201,19 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, IT
 	}
 
 	@Override
-	public IInventory getInventoryByName( String name )
+	public IInventory getInventoryByName( final String name )
 	{
 		return this.duality.getInventoryByName( name );
 	}
 
 	@Override
-	public TickingRequest getTickingRequest( IGridNode node )
+	public TickingRequest getTickingRequest( final IGridNode node )
 	{
 		return this.duality.getTickingRequest( node );
 	}
 
 	@Override
-	public TickRateModulation tickingRequest( IGridNode node, int ticksSinceLastCall )
+	public TickRateModulation tickingRequest( final IGridNode node, final int ticksSinceLastCall )
 	{
 		return this.duality.tickingRequest( node, ticksSinceLastCall );
 	}
@@ -225,13 +225,13 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, IT
 	}
 
 	@Override
-	public void onChangeInventory( IInventory inv, int slot, InvOperation mc, ItemStack removed, ItemStack added )
+	public void onChangeInventory( final IInventory inv, final int slot, final InvOperation mc, final ItemStack removed, final ItemStack added )
 	{
 		this.duality.onChangeInventory( inv, slot, mc, removed, added );
 	}
 
 	@Override
-	public int[] getAccessibleSlotsBySide( ForgeDirection side )
+	public int[] getAccessibleSlotsBySide( final ForgeDirection side )
 	{
 		return this.duality.getAccessibleSlotsFromSide( side.ordinal() );
 	}
@@ -259,7 +259,7 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, IT
 	}
 
 	@Override
-	public IStorageMonitorable getMonitorable( ForgeDirection side, BaseActionSource src )
+	public IStorageMonitorable getMonitorable( final ForgeDirection side, final BaseActionSource src )
 	{
 		return this.duality.getMonitorable( side, src, this );
 	}
@@ -271,7 +271,7 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, IT
 	}
 
 	@Override
-	public boolean pushPattern( ICraftingPatternDetails patternDetails, InventoryCrafting table )
+	public boolean pushPattern( final ICraftingPatternDetails patternDetails, final InventoryCrafting table )
 	{
 		return this.duality.pushPattern( patternDetails, table );
 	}
@@ -283,13 +283,13 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, IT
 	}
 
 	@Override
-	public void provideCrafting( ICraftingProviderHelper craftingTracker )
+	public void provideCrafting( final ICraftingProviderHelper craftingTracker )
 	{
 		this.duality.provideCrafting( craftingTracker );
 	}
 
 	@Override
-	public int getInstalledUpgrades( Upgrades u )
+	public int getInstalledUpgrades( final Upgrades u )
 	{
 		return this.duality.getInstalledUpgrades( u );
 	}
@@ -301,13 +301,13 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, IT
 	}
 
 	@Override
-	public IAEItemStack injectCraftedItems( ICraftingLink link, IAEItemStack items, Actionable mode )
+	public IAEItemStack injectCraftedItems( final ICraftingLink link, final IAEItemStack items, final Actionable mode )
 	{
 		return this.duality.injectCraftedItems( link, items, mode );
 	}
 
 	@Override
-	public void jobStateChange( ICraftingLink link )
+	public void jobStateChange( final ICraftingLink link )
 	{
 		this.duality.jobStateChange( link );
 	}
@@ -319,7 +319,7 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, IT
 	}
 
 	@Override
-	public void setPriority( int newValue )
+	public void setPriority( final int newValue )
 	{
 		this.duality.setPriority( newValue );
 	}

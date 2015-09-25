@@ -63,7 +63,7 @@ public final class Inscribe extends InscriberProcess
 		final ItemStack output = this.getOutput().getItemStack();
 		final InscriberProcessType type = InscriberProcessType.Inscribe;
 
-		IInscriberRecipe recipe = new InscriberRecipe( inputs, output, top, bot, type );
+		final IInscriberRecipe recipe = new InscriberRecipe( inputs, output, top, bot, type );
 
 		AEApi.instance().registries().inscriber().addRecipe( recipe );
 	}

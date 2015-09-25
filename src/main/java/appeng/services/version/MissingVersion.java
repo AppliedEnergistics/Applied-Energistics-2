@@ -18,7 +18,7 @@ public final class MissingVersion extends BaseVersion
 	 * @return false
 	 */
 	@Override
-	public boolean isNewerAs( Version maybeOlder )
+	public boolean isNewerAs( final Version maybeOlder )
 	{
 		return false;
 	}

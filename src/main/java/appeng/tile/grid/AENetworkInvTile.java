@@ -37,13 +37,13 @@ public abstract class AENetworkInvTile extends AEBaseInvTile implements IActionH
 	protected final AENetworkProxy gridProxy = new AENetworkProxy( this, "proxy", this.getItemFromTile( this ), true );
 
 	@TileEvent( TileEventType.WORLD_NBT_READ )
-	public void readFromNBT_AENetwork( NBTTagCompound data )
+	public void readFromNBT_AENetwork( final NBTTagCompound data )
 	{
 		this.gridProxy.readFromNBT( data );
 	}
 
 	@TileEvent( TileEventType.WORLD_NBT_WRITE )
-	public void writeToNBT_AENetwork( NBTTagCompound data )
+	public void writeToNBT_AENetwork( final NBTTagCompound data )
 	{
 		this.gridProxy.writeToNBT( data );
 	}
@@ -61,7 +61,7 @@ public abstract class AENetworkInvTile extends AEBaseInvTile implements IActionH
 	}
 
 	@Override
-	public IGridNode getGridNode( ForgeDirection dir )
+	public IGridNode getGridNode( final ForgeDirection dir )
 	{
 		return this.gridProxy.getNode();
 	}

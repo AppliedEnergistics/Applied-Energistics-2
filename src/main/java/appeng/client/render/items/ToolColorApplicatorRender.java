@@ -36,28 +36,28 @@ public class ToolColorApplicatorRender implements IItemRenderer
 {
 
 	@Override
-	public boolean handleRenderType( ItemStack item, ItemRenderType type )
+	public boolean handleRenderType( final ItemStack item, final ItemRenderType type )
 	{
 		return true;
 	}
 
 	@Override
-	public boolean shouldUseRenderHelper( ItemRenderType type, ItemStack item, ItemRendererHelper helper )
+	public boolean shouldUseRenderHelper( final ItemRenderType type, final ItemStack item, final ItemRendererHelper helper )
 	{
 		return helper == ItemRendererHelper.ENTITY_BOBBING || helper == ItemRendererHelper.ENTITY_ROTATION;
 	}
 
 	@Override
-	public void renderItem( ItemRenderType type, ItemStack item, Object... data )
+	public void renderItem( final ItemRenderType type, final ItemStack item, final Object... data )
 	{
-		IIcon par2Icon = item.getIconIndex();
+		final IIcon par2Icon = item.getIconIndex();
 
 		float f4 = par2Icon.getMinU();
 		float f5 = par2Icon.getMaxU();
 		float f6 = par2Icon.getMinV();
 		float f7 = par2Icon.getMaxV();
 
-		Tessellator tessellator = Tessellator.instance;
+		final Tessellator tessellator = Tessellator.instance;
 		GL11.glPushMatrix();
 		GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS );
 
@@ -91,7 +91,7 @@ public class ToolColorApplicatorRender implements IItemRenderer
 			{
 				GL11.glTranslatef( -0.5F, -0.3F, 0.01F );
 			}
-			float f12 = 0.0625F;
+			final float f12 = 0.0625F;
 			ItemRenderer.renderItemIn2D( tessellator, f5, f6, f4, f7, par2Icon.getIconWidth(), par2Icon.getIconHeight(), f12 );
 
 			GL11.glDisable( GL11.GL_CULL_FACE );
@@ -101,9 +101,9 @@ public class ToolColorApplicatorRender implements IItemRenderer
 			GL11.glRotatef( 180F, 1.0F, 0.0F, 0.0F );
 		}
 
-		IIcon dark = ExtraItemTextures.ToolColorApplicatorTip_Dark.getIcon();
-		IIcon med = ExtraItemTextures.ToolColorApplicatorTip_Medium.getIcon();
-		IIcon light = ExtraItemTextures.ToolColorApplicatorTip_Light.getIcon();
+		final IIcon dark = ExtraItemTextures.ToolColorApplicatorTip_Dark.getIcon();
+		final IIcon med = ExtraItemTextures.ToolColorApplicatorTip_Medium.getIcon();
+		final IIcon light = ExtraItemTextures.ToolColorApplicatorTip_Light.getIcon();
 
 		GL11.glScalef( 1F / 16F, 1F / 16F, 1F );
 		if( type != ItemRenderType.INVENTORY )
@@ -112,7 +112,7 @@ public class ToolColorApplicatorRender implements IItemRenderer
 		}
 		GL11.glDisable( GL11.GL_LIGHTING );
 
-		AEColor col = ( (ToolColorApplicator) item.getItem() ).getActiveColor( item );
+		final AEColor col = ( (ToolColorApplicator) item.getItem() ).getActiveColor( item );
 
 		if( col != null )
 		{

@@ -29,7 +29,7 @@ public class FMPPacketEvent extends Event
 
 	public final EntityPlayerMP sender;
 
-	public FMPPacketEvent( EntityPlayerMP sender )
+	public FMPPacketEvent( final EntityPlayerMP sender )
 	{
 		this.sender = sender;
 	}

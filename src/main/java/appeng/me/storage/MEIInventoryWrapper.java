@@ -39,20 +39,20 @@ public class MEIInventoryWrapper implements IMEInventory<IAEItemStack>
 	protected final IInventory target;
 	protected final InventoryAdaptor adaptor;
 
-	public MEIInventoryWrapper( IInventory m, InventoryAdaptor ia )
+	public MEIInventoryWrapper( final IInventory m, final InventoryAdaptor ia )
 	{
 		this.target = m;
 		this.adaptor = ia;
 	}
 
 	@Override
-	public IAEItemStack injectItems( IAEItemStack iox, Actionable mode, BaseActionSource src )
+	public IAEItemStack injectItems( final IAEItemStack iox, final Actionable mode, final BaseActionSource src )
 	{
-		ItemStack input = iox.getItemStack();
+		final ItemStack input = iox.getItemStack();
 
 		if( this.adaptor != null )
 		{
-			ItemStack is = mode == Actionable.SIMULATE ? this.adaptor.simulateAdd( input ) : this.adaptor.addItems( input );
+			final ItemStack is = mode == Actionable.SIMULATE ? this.adaptor.simulateAdd( input ) : this.adaptor.addItems( input );
 			if( is == null )
 			{
 				return null;
@@ -60,17 +60,17 @@ public class MEIInventoryWrapper implements IMEInventory<IAEItemStack>
 			return AEItemStack.create( is );
 		}
 
-		ItemStack out = Platform.cloneItemStack( input );
+		final ItemStack out = Platform.cloneItemStack( input );
 
 		if( mode == Actionable.MODULATE ) // absolutely no need for a first run in simulate mode.
 		{
 			for( int x = 0; x < this.target.getSizeInventory(); x++ )
 			{
-				ItemStack t = this.target.getStackInSlot( x );
+				final ItemStack t = this.target.getStackInSlot( x );
 
 				if( Platform.isSameItem( t, input ) )
 				{
-					int oriStack = t.stackSize;
+					final int oriStack = t.stackSize;
 					t.stackSize += out.stackSize;
 
 					this.target.setInventorySlotContents( x, t );
@@ -126,9 +126,9 @@ public class MEIInventoryWrapper implements IMEInventory<IAEItemStack>
 	}
 
 	@Override
-	public IAEItemStack extractItems( IAEItemStack request, Actionable mode, BaseActionSource src )
+	public IAEItemStack extractItems( final IAEItemStack request, final Actionable mode, final BaseActionSource src )
 	{
-		ItemStack Req = request.getItemStack();
+		final ItemStack Req = request.getItemStack();
 
 		int request_stackSize = Req.stackSize;
 
@@ -152,7 +152,7 @@ public class MEIInventoryWrapper implements IMEInventory<IAEItemStack>
 			// try to find matching inventories that already have it...
 			for( int x = 0; x < this.target.getSizeInventory(); x++ )
 			{
-				ItemStack sub = this.target.getStackInSlot( x );
+				final ItemStack sub = this.target.getStackInSlot( x );
 
 				if( Platform.isSameItem( sub, Req ) )
 				{
@@ -207,7 +207,7 @@ public class MEIInventoryWrapper implements IMEInventory<IAEItemStack>
 	}
 
 	@Override
-	public IItemList<IAEItemStack> getAvailableItems( IItemList<IAEItemStack> out )
+	public IItemList<IAEItemStack> getAvailableItems( final IItemList<IAEItemStack> out )
 	{
 		for( int x = 0; x < this.target.getSizeInventory(); x++ )
 		{

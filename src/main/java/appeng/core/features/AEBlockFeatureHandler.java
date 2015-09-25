@@ -37,7 +37,7 @@ public final class AEBlockFeatureHandler implements IFeatureHandler
 	private final boolean enabled;
 	private final BlockDefinition definition;
 
-	public AEBlockFeatureHandler( EnumSet<AEFeature> features, AEBaseBlock featured, Optional<String> subName )
+	public AEBlockFeatureHandler( final EnumSet<AEFeature> features, final AEBaseBlock featured, final Optional<String> subName )
 	{
 		final ActivityState state = new FeaturedActiveChecker( features ).getActivityState();
 
@@ -64,7 +64,7 @@ public final class AEBlockFeatureHandler implements IFeatureHandler
 	{
 		if( this.enabled )
 		{
-			String name = this.extractor.get();
+			final String name = this.extractor.get();
 			this.featured.setCreativeTab( CreativeTab.instance );
 			this.featured.setBlockName( /* "tile." */"appliedenergistics2." + name );
 			this.featured.setBlockTextureName( "appliedenergistics2:" + name );

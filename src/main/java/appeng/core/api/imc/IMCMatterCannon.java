@@ -45,13 +45,13 @@ public class IMCMatterCannon implements IIMCProcessor
 {
 
 	@Override
-	public void process( IMCMessage m )
+	public void process( final IMCMessage m )
 	{
-		NBTTagCompound msg = m.getNBTValue();
-		NBTTagCompound item = (NBTTagCompound) msg.getTag( "item" );
+		final NBTTagCompound msg = m.getNBTValue();
+		final NBTTagCompound item = (NBTTagCompound) msg.getTag( "item" );
 
-		ItemStack ammo = ItemStack.loadItemStackFromNBT( item );
-		double weight = msg.getDouble( "weight" );
+		final ItemStack ammo = ItemStack.loadItemStackFromNBT( item );
+		final double weight = msg.getDouble( "weight" );
 
 		if( ammo == null )
 		{
