@@ -81,14 +81,12 @@ public class RenderBlockSkyChest extends BaseBlockRender<BlockSkyChest, TileSkyC
 	}
 
 	@Override
-	public void renderTile( BlockSkyChest block, TileSkyChest tile, Tessellator tess, double x, double y, double z, float partialTick, RenderBlocks renderer )
+	public void renderTile( BlockSkyChest block, TileSkyChest skyChest, Tessellator tess, double x, double y, double z, float partialTick, RenderBlocks renderer )
 	{
-		if( !( tile instanceof TileSkyChest ) )
+		if(  skyChest == null )
 		{
 			return;
 		}
-
-		final TileSkyChest skyChest = (TileSkyChest) tile;
 
 		if( !skyChest.hasWorldObj() )
 		{
@@ -98,7 +96,7 @@ public class RenderBlockSkyChest extends BaseBlockRender<BlockSkyChest, TileSkyC
 		GL11.glEnable( GL12.GL_RESCALE_NORMAL );
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
 
-		final int metaData = tile.getWorldObj().getBlockMetadata( tile.xCoord, tile.yCoord, tile.zCoord );
+		final int metaData = skyChest.getWorldObj().getBlockMetadata( skyChest.xCoord, skyChest.yCoord, skyChest.zCoord );
 		final ResourceLocation loc = METADATA_TO_TEXTURE[metaData];
 
 		Minecraft.getMinecraft().getTextureManager().bindTexture( loc );

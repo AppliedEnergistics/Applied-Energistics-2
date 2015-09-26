@@ -179,14 +179,12 @@ public class RenderBlockSkyCompass extends BaseBlockRender<BlockSkyCompass, Tile
 	}
 
 	@Override
-	public void renderTile( BlockSkyCompass block, TileSkyCompass tile, Tessellator tess, double x, double y, double z, float partialTick, RenderBlocks renderer )
+	public void renderTile( BlockSkyCompass block, TileSkyCompass skyCompass, Tessellator tess, double x, double y, double z, float partialTick, RenderBlocks renderer )
 	{
-		if( !( tile instanceof TileSkyCompass ) )
+		if( skyCompass == null )
 		{
 			return;
 		}
-
-		TileSkyCompass skyCompass = (TileSkyCompass) tile;
 
 		if( !skyCompass.hasWorldObj() )
 		{
@@ -197,7 +195,7 @@ public class RenderBlockSkyCompass extends BaseBlockRender<BlockSkyCompass, Tile
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
 		GL11.glCullFace( GL11.GL_FRONT );
 
-		ResourceLocation loc = new ResourceLocation( "appliedenergistics2", "textures/models/compass.png" );
+		final ResourceLocation loc = new ResourceLocation( "appliedenergistics2", "textures/models/compass.png" );
 
 		Minecraft.getMinecraft().getTextureManager().bindTexture( loc );
 
@@ -211,7 +209,7 @@ public class RenderBlockSkyCompass extends BaseBlockRender<BlockSkyCompass, Tile
 		CompassResult cr = null;
 		if( skyCompass.getForward() == ForgeDirection.UP || skyCompass.getForward() == ForgeDirection.DOWN )
 		{
-			cr = CompassManager.INSTANCE.getCompassDirection( 0, tile.xCoord, tile.yCoord, tile.zCoord );
+			cr = CompassManager.INSTANCE.getCompassDirection( 0, skyCompass.xCoord, skyCompass.yCoord, skyCompass.zCoord );
 		}
 		else
 		{
