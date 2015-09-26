@@ -31,13 +31,13 @@ import appeng.api.AEApi;
 import appeng.api.config.TunnelType;
 import appeng.api.features.IP2PTunnelRegistry;
 import appeng.helpers.Reflected;
-import appeng.integration.BaseModule;
+import appeng.integration.IIntegrationModule;
 import appeng.integration.IntegrationHelper;
 import appeng.integration.abstraction.IBuildCraftCore;
 
 
 @Reflected
-public final class BuildCraftCore extends BaseModule implements IBuildCraftCore
+public final class BuildCraftCore implements IBuildCraftCore, IIntegrationModule
 {
 	@Reflected
 	public static BuildCraftCore instance;

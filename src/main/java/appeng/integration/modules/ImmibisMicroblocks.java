@@ -38,12 +38,12 @@ import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartItem;
 import appeng.core.AELog;
 import appeng.helpers.Reflected;
-import appeng.integration.BaseModule;
+import appeng.integration.IIntegrationModule;
 import appeng.integration.IntegrationHelper;
 import appeng.integration.abstraction.IImmibisMicroblocks;
 
 
-public class ImmibisMicroblocks extends BaseModule implements IImmibisMicroblocks
+public class ImmibisMicroblocks implements IImmibisMicroblocks, IIntegrationModule
 {
 	@Reflected
 	public static ImmibisMicroblocks instance;

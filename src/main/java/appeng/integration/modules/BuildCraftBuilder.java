@@ -37,7 +37,7 @@ import appeng.api.definitions.ITileDefinition;
 import appeng.api.util.IOrientableBlock;
 import appeng.core.AELog;
 import appeng.helpers.Reflected;
-import appeng.integration.BaseModule;
+import appeng.integration.IIntegrationModule;
 import appeng.integration.IntegrationHelper;
 import appeng.integration.modules.BCHelpers.AECableSchematicTile;
 import appeng.integration.modules.BCHelpers.AEGenericSchematicTile;
@@ -52,7 +52,7 @@ import appeng.integration.modules.BCHelpers.AERotatableBlockSchematic;
  * @since rv3 12.06.2015
  */
 @Reflected
-public class BuildCraftBuilder extends BaseModule
+public class BuildCraftBuilder implements IIntegrationModule
 {
 	@Reflected
 	public static BuildCraftBuilder instance;

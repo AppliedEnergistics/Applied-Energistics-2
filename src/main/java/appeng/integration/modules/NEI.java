@@ -41,7 +41,7 @@ import appeng.client.gui.implementations.GuiPatternTerm;
 import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
 import appeng.helpers.Reflected;
-import appeng.integration.BaseModule;
+import appeng.integration.IIntegrationModule;
 import appeng.integration.IntegrationHelper;
 import appeng.integration.abstraction.INEI;
 import appeng.integration.modules.NEIHelpers.NEIAEShapedRecipeHandler;
@@ -54,7 +54,7 @@ import appeng.integration.modules.NEIHelpers.NEIWorldCraftingHandler;
 import appeng.integration.modules.NEIHelpers.TerminalCraftingSlotFinder;
 
 
-public class NEI extends BaseModule implements INEI, IContainerTooltipHandler
+public class NEI implements INEI, IContainerTooltipHandler, IIntegrationModule
 {
 	@Reflected
 	public static NEI instance;

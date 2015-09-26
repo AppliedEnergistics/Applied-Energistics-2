@@ -25,12 +25,12 @@ import net.minecraft.nbt.NBTTagCompound;
 import cpw.mods.fml.common.event.FMLInterModComms;
 
 import appeng.helpers.Reflected;
-import appeng.integration.BaseModule;
+import appeng.integration.IIntegrationModule;
 import appeng.integration.IntegrationHelper;
 import appeng.integration.abstraction.IMekanism;
 
 
-public final class Mekanism extends BaseModule implements IMekanism
+public final class Mekanism implements IMekanism, IIntegrationModule
 {
 	@Reflected
 	public static Mekanism instance;

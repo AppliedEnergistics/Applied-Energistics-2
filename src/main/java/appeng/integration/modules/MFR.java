@@ -20,11 +20,11 @@ package appeng.integration.modules;
 
 
 import appeng.helpers.Reflected;
-import appeng.integration.BaseModule;
+import appeng.integration.IIntegrationModule;
 import appeng.integration.IntegrationHelper;
 
 
-public class MFR extends BaseModule
+public class MFR implements IIntegrationModule
 {
 	@Reflected
 	public static MFR instance;
