@@ -44,7 +44,7 @@ import appeng.client.texture.CableBusTextures;
 
 public class PartIdentityAnnihilationPlane extends PartAnnihilationPlane
 {
-	private final static IIcon ACTIVE_ICON = CableBusTextures.BlockIdentityAnnihilationPlaneOn.getIcon();
+	private static final IIcon ACTIVE_ICON = CableBusTextures.BlockIdentityAnnihilationPlaneOn.getIcon();
 
 	private static final float SILK_TOUCH_FACTOR = 16;
 

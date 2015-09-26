@@ -57,30 +57,30 @@ import appeng.util.ReadableNumberConverter;
 
 public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 {
-	private final static int GUI_HEIGHT = 184;
-	private final static int GUI_WIDTH = 238;
+	private static final int GUI_HEIGHT = 184;
+	private static final int GUI_WIDTH = 238;
 
-	private final static int DISPLAYED_ROWS = 6;
+	private static final int DISPLAYED_ROWS = 6;
 
-	private final static int TEXT_COLOR = 0x404040;
-	private final static int BACKGROUND_ALPHA = 0x5A000000;
+	private static final int TEXT_COLOR = 0x404040;
+	private static final int BACKGROUND_ALPHA = 0x5A000000;
 
-	private final static int SECTION_LENGTH = 67;
+	private static final int SECTION_LENGTH = 67;
 
-	private final static int SCROLLBAR_TOP = 19;
-	private final static int SCROLLBAR_LEFT = 218;
-	private final static int SCROLLBAR_HEIGHT = 137;
+	private static final int SCROLLBAR_TOP = 19;
+	private static final int SCROLLBAR_LEFT = 218;
+	private static final int SCROLLBAR_HEIGHT = 137;
 
-	private final static int CANCEL_LEFT_OFFSET = 163;
-	private final static int CANCEL_TOP_OFFSET = 25;
-	private final static int CANCEL_HEIGHT = 20;
-	private final static int CANCEL_WIDTH = 50;
+	private static final int CANCEL_LEFT_OFFSET = 163;
+	private static final int CANCEL_TOP_OFFSET = 25;
+	private static final int CANCEL_HEIGHT = 20;
+	private static final int CANCEL_WIDTH = 50;
 
-	private final static int TITLE_TOP_OFFSET = 7;
-	private final static int TITLE_LEFT_OFFSET = 8;
+	private static final int TITLE_TOP_OFFSET = 7;
+	private static final int TITLE_LEFT_OFFSET = 8;
 
-	private final static int ITEMSTACK_LEFT_OFFSET = 9;
-	private final static int ITEMSTACK_TOP_OFFSET = 22;
+	private static final int ITEMSTACK_LEFT_OFFSET = 9;
+	private static final int ITEMSTACK_TOP_OFFSET = 22;
 
 	private final ContainerCraftingCPU craftingCpu;
 

@@ -39,9 +39,9 @@ import appeng.tile.storage.TileSkyChest;
 public class RenderBlockSkyChest extends BaseBlockRender<BlockSkyChest, TileSkyChest>
 {
 
-	private final static ResourceLocation SKY_STONE_CHEST = new ResourceLocation( "appliedenergistics2", "textures/models/skychest.png" );
-	private final static ResourceLocation SKY_BLOCK_CHEST = new ResourceLocation( "appliedenergistics2", "textures/models/skyblockchest.png" );
-	private final static ResourceLocation[] METADATA_TO_TEXTURE = {
+	private static final ResourceLocation SKY_STONE_CHEST = new ResourceLocation( "appliedenergistics2", "textures/models/skychest.png" );
+	private static final ResourceLocation SKY_BLOCK_CHEST = new ResourceLocation( "appliedenergistics2", "textures/models/skyblockchest.png" );
+	private static final ResourceLocation[] METADATA_TO_TEXTURE = {
 			SKY_STONE_CHEST,
 			SKY_BLOCK_CHEST
 	};

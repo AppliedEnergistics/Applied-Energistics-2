@@ -128,6 +128,6 @@ public abstract class AbstractPartPanel extends AbstractPartReporting
 	 *
 	 * @return the brightness to be used.
 	 */
-	abstract protected int getBrightnessColor();
+	protected abstract int getBrightnessColor();
 
 }
