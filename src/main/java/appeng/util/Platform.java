@@ -199,7 +199,7 @@ public class Platform
 			unitName = "J";
 		}
 
-		final String[] preFixes = new String[] { 
+		final String[] preFixes = {
 				"k",
 				"M",
 				"G",
