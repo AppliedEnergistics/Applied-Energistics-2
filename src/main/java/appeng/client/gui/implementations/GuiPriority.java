@@ -221,7 +221,7 @@ public class GuiPriority extends AEBaseGui
 				this.priority.setText( out );
 			}
 
-			if( out.length() == 0 )
+			if( out.isEmpty() )
 			{
 				out = "0";
 			}
@@ -267,7 +267,7 @@ public class GuiPriority extends AEBaseGui
 						this.priority.setText( out );
 					}
 
-					if( out.length() == 0 )
+					if( out.isEmpty() )
 					{
 						out = "0";
 					}

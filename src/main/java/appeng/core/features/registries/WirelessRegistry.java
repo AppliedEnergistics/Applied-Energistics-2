@@ -95,7 +95,7 @@ public final class WirelessRegistry implements IWirelessTermRegistry
 
 		final IWirelessTermHandler handler = this.getWirelessTerminalHandler( item );
 		final String unparsedKey = handler.getEncryptionKey( item );
-		if( unparsedKey.length() == 0 )
+		if( unparsedKey.isEmpty() )
 		{
 			player.addChatMessage( PlayerMessages.DeviceNotLinked.get() );
 			return;

@@ -201,7 +201,7 @@ public class GuiCraftAmount extends AEBaseGui
 						this.amountToCraft.setText( out );
 					}
 
-					if( out.length() == 0 )
+					if( out.isEmpty() )
 					{
 						out = "0";
 					}
@@ -275,7 +275,7 @@ public class GuiCraftAmount extends AEBaseGui
 				this.amountToCraft.setText( out );
 			}
 
-			if( out.length() == 0 )
+			if( out.isEmpty() )
 			{
 				out = "0";
 			}

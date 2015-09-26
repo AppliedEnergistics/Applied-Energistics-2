@@ -82,7 +82,7 @@ public class ApiPart implements IPartHelper
 
 	public Class getCombinedInstance( String base )
 	{
-		if( this.desc.size() == 0 )
+		if( this.desc.isEmpty() )
 		{
 			try
 			{
