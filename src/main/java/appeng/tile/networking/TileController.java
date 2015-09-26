@@ -70,9 +70,9 @@ public class TileController extends AENetworkPowerTile
 
 	public void onNeighborChange( final boolean force )
 	{
-		final boolean xx = checkController( this.xCoord - 1, this.yCoord, this.zCoord ) && checkController( this.xCoord + 1, this.yCoord, this.zCoord );
-		final boolean yy = checkController( this.xCoord, this.yCoord - 1, this.zCoord ) && checkController( this.xCoord, this.yCoord + 1, this.zCoord );
-		final boolean zz = checkController( this.xCoord, this.yCoord, this.zCoord - 1 ) && checkController( this.xCoord, this.yCoord, this.zCoord + 1 );
+		final boolean xx = this.checkController( this.xCoord - 1, this.yCoord, this.zCoord ) && this.checkController( this.xCoord + 1, this.yCoord, this.zCoord );
+		final boolean yy = this.checkController( this.xCoord, this.yCoord - 1, this.zCoord ) && this.checkController( this.xCoord, this.yCoord + 1, this.zCoord );
+		final boolean zz = this.checkController( this.xCoord, this.yCoord, this.zCoord - 1 ) && this.checkController( this.xCoord, this.yCoord, this.zCoord + 1 );
 
 		// int meta = world.getBlockMetadata( xCoord, yCoord, zCoord );
 		// boolean hasPower = meta > 0;
@@ -124,7 +124,7 @@ public class TileController extends AENetworkPowerTile
 			meta = 0;
 		}
 
-		if( checkController( this.xCoord, this.yCoord, this.zCoord ) && this.worldObj.getBlockMetadata( this.xCoord, this.yCoord, this.zCoord ) != meta )
+		if( this.checkController( this.xCoord, this.yCoord, this.zCoord ) && this.worldObj.getBlockMetadata( this.xCoord, this.yCoord, this.zCoord ) != meta )
 		{
 			this.worldObj.setBlockMetadataWithNotify( this.xCoord, this.yCoord, this.zCoord, meta, 2 );
 		}
