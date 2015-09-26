@@ -364,10 +364,6 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 	/**
 	 * Spawns an overflow item as new {@link EntityItem} into the {@link World}
 	 *
-	 * @param w the world to spawn it
-	 * @param x x coordinate
-	 * @param y y coordinate
-	 * @param z coordinate
 	 * @param overflow the item to spawn
 	 */
 	private void spawnOverflow( final IAEItemStack overflow )
