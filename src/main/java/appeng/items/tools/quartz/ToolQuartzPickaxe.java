@@ -38,7 +38,7 @@ public class ToolQuartzPickaxe extends ItemPickaxe implements IAEFeature
 	private final AEFeature type;
 	private final IFeatureHandler feature;
 
-	public ToolQuartzPickaxe( AEFeature type )
+	public ToolQuartzPickaxe( final AEFeature type )
 	{
 		super( ToolMaterial.IRON );
 
@@ -59,7 +59,7 @@ public class ToolQuartzPickaxe extends ItemPickaxe implements IAEFeature
 	}
 
 	@Override
-	public boolean getIsRepairable( ItemStack a, ItemStack b )
+	public boolean getIsRepairable( final ItemStack a, final ItemStack b )
 	{
 		return Platform.canRepair( this.type, a, b );
 	}

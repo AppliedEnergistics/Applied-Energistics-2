@@ -51,7 +51,7 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements i
 	double OutputVoltageA;
 	double OutputVoltageB;
 
-	public PartP2PIC2Power( ItemStack is )
+	public PartP2PIC2Power( final ItemStack is )
 	{
 		super( is );
 	}
@@ -64,7 +64,7 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements i
 	}
 
 	@Override
-	public void readFromNBT( NBTTagCompound tag )
+	public void readFromNBT( final NBTTagCompound tag )
 	{
 		super.readFromNBT( tag );
 		this.OutputEnergyA = tag.getDouble( "OutputPacket" );
@@ -74,7 +74,7 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements i
 	}
 
 	@Override
-	public void writeToNBT( NBTTagCompound tag )
+	public void writeToNBT( final NBTTagCompound tag )
 	{
 		super.writeToNBT( tag );
 		tag.setDouble( "OutputPacket", this.OutputEnergyA );
@@ -96,7 +96,7 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements i
 	}
 
 	@Override
-	public boolean acceptsEnergyFrom( TileEntity emitter, ForgeDirection direction )
+	public boolean acceptsEnergyFrom( final TileEntity emitter, final ForgeDirection direction )
 	{
 		if( !this.output )
 		{
@@ -106,7 +106,7 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements i
 	}
 
 	@Override
-	public boolean emitsEnergyTo( TileEntity receiver, ForgeDirection direction )
+	public boolean emitsEnergyTo( final TileEntity receiver, final ForgeDirection direction )
 	{
 		if( this.output )
 		{
@@ -125,7 +125,7 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements i
 
 		try
 		{
-			for( PartP2PIC2Power t : this.getOutputs() )
+			for( final PartP2PIC2Power t : this.getOutputs() )
 			{
 				if( t.OutputEnergyA <= 0.0001 || t.OutputEnergyB <= 0.0001 )
 				{
@@ -133,7 +133,7 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements i
 				}
 			}
 		}
-		catch( GridAccessException e )
+		catch( final GridAccessException e )
 		{
 			return 0;
 		}
@@ -148,14 +148,14 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements i
 	}
 
 	@Override
-	public double injectEnergy( ForgeDirection directionFrom, double amount, double voltage )
+	public double injectEnergy( final ForgeDirection directionFrom, final double amount, final double voltage )
 	{
-		TunnelCollection<PartP2PIC2Power> outs;
+		final TunnelCollection<PartP2PIC2Power> outs;
 		try
 		{
 			outs = this.getOutputs();
 		}
-		catch( GridAccessException e )
+		catch( final GridAccessException e )
 		{
 			return amount;
 		}
@@ -165,8 +165,8 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements i
 			return amount;
 		}
 
-		LinkedList<PartP2PIC2Power> options = new LinkedList<PartP2PIC2Power>();
-		for( PartP2PIC2Power o : outs )
+		final LinkedList<PartP2PIC2Power> options = new LinkedList<PartP2PIC2Power>();
+		for( final PartP2PIC2Power o : outs )
 		{
 			if( o.OutputEnergyA <= 0.01 )
 			{
@@ -176,7 +176,7 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements i
 
 		if( options.isEmpty() )
 		{
-			for( PartP2PIC2Power o : outs )
+			for( final PartP2PIC2Power o : outs )
 			{
 				if( o.OutputEnergyB <= 0.01 )
 				{
@@ -187,7 +187,7 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements i
 
 		if( options.isEmpty() )
 		{
-			for( PartP2PIC2Power o : outs )
+			for( final PartP2PIC2Power o : outs )
 			{
 				options.add( o );
 			}
@@ -198,7 +198,7 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements i
 			return amount;
 		}
 
-		PartP2PIC2Power x = Platform.pickRandom( options );
+		final PartP2PIC2Power x = Platform.pickRandom( options );
 
 		if( x != null && x.OutputEnergyA <= 0.001 )
 		{
@@ -235,7 +235,7 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements i
 	}
 
 	@Override
-	public void drawEnergy( double amount )
+	public void drawEnergy( final double amount )
 	{
 		this.OutputEnergyA -= amount;
 		if( this.OutputEnergyA < 0.001 )
@@ -258,7 +258,7 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements i
 		return 4;
 	}
 
-	private int calculateTierFromVoltage( double voltage )
+	private int calculateTierFromVoltage( final double voltage )
 	{
 		return ic2.api.energy.EnergyNet.instance.getTierFromPower( voltage );
 	}

@@ -27,7 +27,7 @@ public final class ReleaseFetcher
 	private final VersionCheckerConfig config;
 	private final VersionParser parser;
 
-	public ReleaseFetcher( VersionCheckerConfig config, VersionParser parser )
+	public ReleaseFetcher( final VersionCheckerConfig config, final VersionParser parser )
 	{
 		this.config = config;
 		this.parser = parser;
@@ -50,7 +50,7 @@ public final class ReleaseFetcher
 
 			return latestFitRelease;
 		}
-		catch( Exception e )
+		catch( final Exception e )
 		{
 			AELog.error( e );
 
@@ -58,18 +58,18 @@ public final class ReleaseFetcher
 		}
 	}
 
-	private String getRawReleases( URL url ) throws IOException
+	private String getRawReleases( final URL url ) throws IOException
 	{
 		return IOUtils.toString( url );
 	}
 
-	private FormattedRelease getLatestFitRelease( Iterable<Release> releases )
+	private FormattedRelease getLatestFitRelease( final Iterable<Release> releases )
 	{
 		final String levelInConfig = this.config.level();
 		final Channel level = Channel.valueOf( levelInConfig );
 		final int levelOrdinal = level.ordinal();
 
-		for( Release release : releases )
+		for( final Release release : releases )
 		{
 			final String rawVersion = release.tag_name;
 			final String changelog = release.body;

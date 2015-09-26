@@ -52,7 +52,7 @@ public class PacketTransitionEffect extends AppEngPacket
 	final ForgeDirection d;
 
 	// automatic.
-	public PacketTransitionEffect( ByteBuf stream )
+	public PacketTransitionEffect( final ByteBuf stream )
 	{
 		this.x = stream.readFloat();
 		this.y = stream.readFloat();
@@ -62,7 +62,7 @@ public class PacketTransitionEffect extends AppEngPacket
 	}
 
 	// api
-	public PacketTransitionEffect( double x, double y, double z, ForgeDirection dir, boolean wasBlock )
+	public PacketTransitionEffect( final double x, final double y, final double z, final ForgeDirection dir, final boolean wasBlock )
 	{
 		this.x = x;
 		this.y = y;
@@ -70,7 +70,7 @@ public class PacketTransitionEffect extends AppEngPacket
 		this.d = dir;
 		this.mode = wasBlock;
 
-		ByteBuf data = Unpooled.buffer();
+		final ByteBuf data = Unpooled.buffer();
 
 		data.writeInt( this.getPacketID() );
 		data.writeFloat( (float) x );
@@ -84,15 +84,15 @@ public class PacketTransitionEffect extends AppEngPacket
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void clientPacketData( INetworkInfo network, AppEngPacket packet, EntityPlayer player )
+	public void clientPacketData( final INetworkInfo network, final AppEngPacket packet, final EntityPlayer player )
 	{
-		World world = ClientHelper.proxy.getWorld();
+		final World world = ClientHelper.proxy.getWorld();
 
 		for( int zz = 0; zz < ( this.mode ? 32 : 8 ); zz++ )
 		{
 			if( CommonHelper.proxy.shouldAddParticles( Platform.getRandom() ) )
 			{
-				EnergyFx fx = new EnergyFx( world, this.x + ( this.mode ? ( Platform.getRandomInt() % 100 ) * 0.01 : ( Platform.getRandomInt() % 100 ) * 0.005 - 0.25 ), this.y + ( this.mode ? ( Platform.getRandomInt() % 100 ) * 0.01 : ( Platform.getRandomInt() % 100 ) * 0.005 - 0.25 ), this.z + ( this.mode ? ( Platform.getRandomInt() % 100 ) * 0.01 : ( Platform.getRandomInt() % 100 ) * 0.005 - 0.25 ), Items.diamond );
+				final EnergyFx fx = new EnergyFx( world, this.x + ( this.mode ? ( Platform.getRandomInt() % 100 ) * 0.01 : ( Platform.getRandomInt() % 100 ) * 0.005 - 0.25 ), this.y + ( this.mode ? ( Platform.getRandomInt() % 100 ) * 0.01 : ( Platform.getRandomInt() % 100 ) * 0.005 - 0.25 ), this.z + ( this.mode ? ( Platform.getRandomInt() % 100 ) * 0.01 : ( Platform.getRandomInt() % 100 ) * 0.005 - 0.25 ), Items.diamond );
 
 				if( !this.mode )
 				{
@@ -109,7 +109,7 @@ public class PacketTransitionEffect extends AppEngPacket
 
 		if( this.mode )
 		{
-			Block block = world.getBlock( (int) this.x, (int) this.y, (int) this.z );
+			final Block block = world.getBlock( (int) this.x, (int) this.y, (int) this.z );
 
 			Minecraft.getMinecraft().getSoundHandler().playSound( new PositionedSoundRecord( new ResourceLocation( block.stepSound.getBreakSound() ), ( block.stepSound.getVolume() + 1.0F ) / 2.0F, block.stepSound.getPitch() * 0.8F, (float) this.x + 0.5F, (float) this.y + 0.5F, (float) this.z + 0.5F ) );
 		}

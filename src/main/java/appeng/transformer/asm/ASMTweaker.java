@@ -67,7 +67,7 @@ public final class ASMTweaker implements IClassTransformer
 
 	@Nullable
 	@Override
-	public byte[] transform( String name, String transformedName, byte[] basicClass )
+	public byte[] transform( final String name, final String transformedName, final byte[] basicClass )
 	{
 		if( basicClass == null )
 		{
@@ -78,11 +78,11 @@ public final class ASMTweaker implements IClassTransformer
 		{
 			if( transformedName != null && this.privateToPublicMethods.containsKey( transformedName ) )
 			{
-				ClassNode classNode = new ClassNode();
-				ClassReader classReader = new ClassReader( basicClass );
+				final ClassNode classNode = new ClassNode();
+				final ClassReader classReader = new ClassReader( basicClass );
 				classReader.accept( classNode, 0 );
 
-				for( PublicLine set : this.privateToPublicMethods.get( transformedName ) )
+				for( final PublicLine set : this.privateToPublicMethods.get( transformedName ) )
 				{
 					this.makePublic( classNode, set );
 				}
@@ -90,11 +90,11 @@ public final class ASMTweaker implements IClassTransformer
 				// CALL VIRTUAL!
 				if( transformedName.equals( "net.minecraft.client.gui.inventory.GuiContainer" ) )
 				{
-					for( MethodNode mn : classNode.methods )
+					for( final MethodNode mn : classNode.methods )
 					{
 						if( mn.name.equals( "func_146977_a" ) || ( mn.name.equals( "a" ) && mn.desc.equals( "(Lzk;)V" ) ) )
 						{
-							MethodNode newNode = new MethodNode( Opcodes.ACC_PUBLIC, "func_146977_a_original", mn.desc, mn.signature, EXCEPTIONS );
+							final MethodNode newNode = new MethodNode( Opcodes.ACC_PUBLIC, "func_146977_a_original", mn.desc, mn.signature, EXCEPTIONS );
 							newNode.instructions.add( new VarInsnNode( Opcodes.ALOAD, 0 ) );
 							newNode.instructions.add( new VarInsnNode( Opcodes.ALOAD, 1 ) );
 							newNode.instructions.add( new MethodInsnNode( Opcodes.INVOKESPECIAL, classNode.name, mn.name, mn.desc, false ) );
@@ -105,17 +105,17 @@ public final class ASMTweaker implements IClassTransformer
 						}
 					}
 
-					for( MethodNode mn : classNode.methods )
+					for( final MethodNode mn : classNode.methods )
 					{
 						if( mn.name.equals( "func_73863_a" ) || mn.name.equals( "drawScreen" ) || ( mn.name.equals( "a" ) && mn.desc.equals( "(IIF)V" ) ) )
 						{
-							Iterator<AbstractInsnNode> i = mn.instructions.iterator();
+							final Iterator<AbstractInsnNode> i = mn.instructions.iterator();
 							while( i.hasNext() )
 							{
-								AbstractInsnNode in = i.next();
+								final AbstractInsnNode in = i.next();
 								if( in.getOpcode() == Opcodes.INVOKESPECIAL )
 								{
-									MethodInsnNode n = (MethodInsnNode) in;
+									final MethodInsnNode n = (MethodInsnNode) in;
 									if( n.name.equals( "func_146977_a" ) || ( n.name.equals( "a" ) && n.desc.equals( "(Lzk;)V" ) ) )
 									{
 										this.log( n.name + n.desc + " - Invoke Virtual" );
@@ -129,21 +129,21 @@ public final class ASMTweaker implements IClassTransformer
 					}
 				}
 
-				ClassWriter writer = new ClassWriter( ClassWriter.COMPUTE_MAXS );
+				final ClassWriter writer = new ClassWriter( ClassWriter.COMPUTE_MAXS );
 				classNode.accept( writer );
 				return writer.toByteArray();
 			}
 		}
-		catch( Throwable ignored )
+		catch( final Throwable ignored )
 		{
 		}
 
 		return basicClass;
 	}
 
-	private void makePublic( ClassNode classNode, PublicLine set )
+	private void makePublic( final ClassNode classNode, final PublicLine set )
 	{
-		for( MethodNode mn : classNode.methods )
+		for( final MethodNode mn : classNode.methods )
 		{
 			if( mn.name.equals( set.name ) && mn.desc.equals( set.desc ) )
 			{
@@ -153,7 +153,7 @@ public final class ASMTweaker implements IClassTransformer
 		}
 	}
 
-	private void log( String string )
+	private void log( final String string )
 	{
 		FMLRelaunchLog.log( "AE2-CORE", Level.INFO, string );
 	}
@@ -163,7 +163,7 @@ public final class ASMTweaker implements IClassTransformer
 		private final String name;
 		private final String desc;
 
-		public PublicLine( String name, String desc )
+		public PublicLine( final String name, final String desc )
 		{
 			this.name = name;
 			this.desc = desc;

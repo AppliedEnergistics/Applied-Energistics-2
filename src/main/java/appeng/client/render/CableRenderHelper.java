@@ -45,10 +45,10 @@ public class CableRenderHelper
 		return INSTANCE;
 	}
 
-	public void renderStatic( CableBusContainer cableBusContainer, IFacadeContainer iFacadeContainer )
+	public void renderStatic( final CableBusContainer cableBusContainer, final IFacadeContainer iFacadeContainer )
 	{
-		TileEntity te = cableBusContainer.getTile();
-		RenderBlocksWorkaround renderer = BusRenderer.INSTANCE.renderer;
+		final TileEntity te = cableBusContainer.getTile();
+		final RenderBlocksWorkaround renderer = BusRenderer.INSTANCE.renderer;
 
 		if( renderer.overrideBlockTexture != null )
 		{
@@ -60,9 +60,9 @@ public class CableRenderHelper
 			renderer.blockAccess = Minecraft.getMinecraft().theWorld;
 		}
 
-		for( ForgeDirection s : ForgeDirection.values() )
+		for( final ForgeDirection s : ForgeDirection.values() )
 		{
-			IPart part = cableBusContainer.getPart( s );
+			final IPart part = cableBusContainer.getPart( s );
 			if( part != null )
 			{
 				this.setSide( s );
@@ -84,24 +84,24 @@ public class CableRenderHelper
 			/**
 			 * snag list of boxes...
 			 */
-			List<AxisAlignedBB> boxes = new ArrayList<AxisAlignedBB>();
-			for( ForgeDirection s : ForgeDirection.values() )
+			final List<AxisAlignedBB> boxes = new ArrayList<AxisAlignedBB>();
+			for( final ForgeDirection s : ForgeDirection.values() )
 			{
-				IPart part = cableBusContainer.getPart( s );
+				final IPart part = cableBusContainer.getPart( s );
 				if( part != null )
 				{
 					this.setSide( s );
-					BusRenderHelper brh = BusRenderHelper.INSTANCE;
-					BusCollisionHelper bch = new BusCollisionHelper( boxes, brh.getWorldX(), brh.getWorldY(), brh.getWorldZ(), null, true );
+					final BusRenderHelper brh = BusRenderHelper.INSTANCE;
+					final BusCollisionHelper bch = new BusCollisionHelper( boxes, brh.getWorldX(), brh.getWorldY(), brh.getWorldZ(), null, true );
 					part.getBoxes( bch );
 				}
 			}
 
 			boolean useThinFacades = false;
-			double min = 2.0 / 16.0;
-			double max = 14.0 / 16.0;
+			final double min = 2.0 / 16.0;
+			final double max = 14.0 / 16.0;
 
-			for( AxisAlignedBB bb : boxes )
+			for( final AxisAlignedBB bb : boxes )
 			{
 				int o = 0;
 				o += bb.maxX > max ? 1 : 0;
@@ -117,15 +117,15 @@ public class CableRenderHelper
 				}
 			}
 
-			for( ForgeDirection s : ForgeDirection.VALID_DIRECTIONS )
+			for( final ForgeDirection s : ForgeDirection.VALID_DIRECTIONS )
 			{
-				IFacadePart fPart = iFacadeContainer.getFacade( s );
+				final IFacadePart fPart = iFacadeContainer.getFacade( s );
 				if( fPart != null )
 				{
 					fPart.setThinFacades( useThinFacades );
-					AxisAlignedBB pb = fPart.getPrimaryBox();
+					final AxisAlignedBB pb = fPart.getPrimaryBox();
 					AxisAlignedBB b = null;
-					for( AxisAlignedBB bb : boxes )
+					for( final AxisAlignedBB bb : boxes )
 					{
 						if( bb.intersectsWith( pb ) )
 						{
@@ -160,11 +160,11 @@ public class CableRenderHelper
 		}
 	}
 
-	private void setSide( ForgeDirection s )
+	private void setSide( final ForgeDirection s )
 	{
-		ForgeDirection ax;
-		ForgeDirection ay;
-		ForgeDirection az;
+		final ForgeDirection ax;
+		final ForgeDirection ay;
+		final ForgeDirection az;
 
 		switch( s )
 		{
@@ -209,16 +209,16 @@ public class CableRenderHelper
 		BusRenderHelper.INSTANCE.setOrientation( ax, ay, az );
 	}
 
-	public void renderDynamic( CableBusContainer cableBusContainer, double x, double y, double z )
+	public void renderDynamic( final CableBusContainer cableBusContainer, final double x, final double y, final double z )
 	{
-		for( ForgeDirection s : ForgeDirection.values() )
+		for( final ForgeDirection s : ForgeDirection.values() )
 		{
-			IPart part = cableBusContainer.getPart( s );
+			final IPart part = cableBusContainer.getPart( s );
 			if( part != null )
 			{
-				ForgeDirection ax;
-				ForgeDirection ay;
-				ForgeDirection az;
+				final ForgeDirection ax;
+				final ForgeDirection ay;
+				final ForgeDirection az;
 
 				switch( s )
 				{

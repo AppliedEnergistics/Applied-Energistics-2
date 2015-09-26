@@ -93,14 +93,14 @@ public class ModelCompass extends ModelBase
 		this.setRotation( this.Base, 0F, 0F, 0F );
 	}
 
-	private void setRotation( ModelRenderer model, float x, float y, float z )
+	private void setRotation( final ModelRenderer model, final float x, final float y, final float z )
 	{
 		model.rotateAngleX = x;
 		model.rotateAngleY = y;
 		model.rotateAngleZ = z;
 	}
 
-	public void renderAll( float rad )
+	public void renderAll( final float rad )
 	{
 		this.setRotation( this.Pointer, 0F, 0F, 0F );
 

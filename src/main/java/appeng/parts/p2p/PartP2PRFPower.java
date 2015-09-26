@@ -52,7 +52,7 @@ public final class PartP2PRFPower extends PartP2PTunnel<PartP2PRFPower> implemen
 	private boolean cachedTarget = false;
 	private IEnergyReceiver outputTarget;
 
-	public PartP2PRFPower( ItemStack is )
+	public PartP2PRFPower( final ItemStack is )
 	{
 		super( is );
 	}
@@ -79,7 +79,7 @@ public final class PartP2PRFPower extends PartP2PTunnel<PartP2PRFPower> implemen
 	}
 
 	@Override
-	public int receiveEnergy( ForgeDirection from, int maxReceive, boolean simulate )
+	public int receiveEnergy( final ForgeDirection from, int maxReceive, final boolean simulate )
 	{
 		if( this.output )
 		{
@@ -88,9 +88,9 @@ public final class PartP2PRFPower extends PartP2PTunnel<PartP2PRFPower> implemen
 
 		if( this.isActive() )
 		{
-			Stack<PartP2PRFPower> stack = this.getDepth();
+			final Stack<PartP2PRFPower> stack = this.getDepth();
 
-			for( PartP2PRFPower t : stack )
+			for( final PartP2PRFPower t : stack )
 			{
 				if( t == this )
 				{
@@ -104,11 +104,11 @@ public final class PartP2PRFPower extends PartP2PTunnel<PartP2PRFPower> implemen
 
 			try
 			{
-				for( PartP2PRFPower t : this.getOutputs() )
+				for( final PartP2PRFPower t : this.getOutputs() )
 				{
 					if( Platform.getRandomInt() % 2 > 0 )
 					{
-						int receiver = t.getOutput().receiveEnergy( t.side.getOpposite(), maxReceive, simulate );
+						final int receiver = t.getOutput().receiveEnergy( t.side.getOpposite(), maxReceive, simulate );
 						maxReceive -= receiver;
 						total += receiver;
 
@@ -121,9 +121,9 @@ public final class PartP2PRFPower extends PartP2PTunnel<PartP2PRFPower> implemen
 
 				if( maxReceive > 0 )
 				{
-					for( PartP2PRFPower t : this.getOutputs() )
+					for( final PartP2PRFPower t : this.getOutputs() )
 					{
-						int receiver = t.getOutput().receiveEnergy( t.side.getOpposite(), maxReceive, simulate );
+						final int receiver = t.getOutput().receiveEnergy( t.side.getOpposite(), maxReceive, simulate );
 						maxReceive -= receiver;
 						total += receiver;
 
@@ -136,7 +136,7 @@ public final class PartP2PRFPower extends PartP2PTunnel<PartP2PRFPower> implemen
 
 				this.queueTunnelDrain( PowerUnits.RF, total );
 			}
-			catch( GridAccessException ignored )
+			catch( final GridAccessException ignored )
 			{
 			}
 
@@ -169,8 +169,8 @@ public final class PartP2PRFPower extends PartP2PTunnel<PartP2PRFPower> implemen
 		{
 			if( !this.cachedTarget )
 			{
-				TileEntity self = this.getTile();
-				TileEntity te = self.getWorldObj().getTileEntity( self.xCoord + this.side.offsetX, self.yCoord + this.side.offsetY, self.zCoord + this.side.offsetZ );
+				final TileEntity self = this.getTile();
+				final TileEntity te = self.getWorldObj().getTileEntity( self.xCoord + this.side.offsetX, self.yCoord + this.side.offsetY, self.zCoord + this.side.offsetZ );
 				this.outputTarget = te instanceof IEnergyReceiver ? (IEnergyReceiver) te : null;
 				this.cachedTarget = true;
 			}
@@ -186,16 +186,16 @@ public final class PartP2PRFPower extends PartP2PTunnel<PartP2PRFPower> implemen
 	}
 
 	@Override
-	public int getEnergyStored( ForgeDirection from )
+	public int getEnergyStored( final ForgeDirection from )
 	{
 		if( this.output || !this.isActive() )
 		{
 			return 0;
 		}
 
-		Stack<PartP2PRFPower> stack = this.getDepth();
+		final Stack<PartP2PRFPower> stack = this.getDepth();
 
-		for( PartP2PRFPower t : stack )
+		for( final PartP2PRFPower t : stack )
 		{
 			if( t == this )
 			{
@@ -208,12 +208,12 @@ public final class PartP2PRFPower extends PartP2PTunnel<PartP2PRFPower> implemen
 		int total = 0;
 		try
 		{
-			for( PartP2PRFPower t : this.getOutputs() )
+			for( final PartP2PRFPower t : this.getOutputs() )
 			{
 				total += t.getOutput().getEnergyStored( t.side.getOpposite() );
 			}
 		}
-		catch( GridAccessException e )
+		catch( final GridAccessException e )
 		{
 			return 0;
 		}
@@ -227,16 +227,16 @@ public final class PartP2PRFPower extends PartP2PTunnel<PartP2PRFPower> implemen
 	}
 
 	@Override
-	public int getMaxEnergyStored( ForgeDirection from )
+	public int getMaxEnergyStored( final ForgeDirection from )
 	{
 		if( this.output || !this.isActive() )
 		{
 			return 0;
 		}
 
-		Stack<PartP2PRFPower> stack = this.getDepth();
+		final Stack<PartP2PRFPower> stack = this.getDepth();
 
-		for( PartP2PRFPower t : stack )
+		for( final PartP2PRFPower t : stack )
 		{
 			if( t == this )
 			{
@@ -249,12 +249,12 @@ public final class PartP2PRFPower extends PartP2PTunnel<PartP2PRFPower> implemen
 		int total = 0;
 		try
 		{
-			for( PartP2PRFPower t : this.getOutputs() )
+			for( final PartP2PRFPower t : this.getOutputs() )
 			{
 				total += t.getOutput().getMaxEnergyStored( t.side.getOpposite() );
 			}
 		}
-		catch( GridAccessException e )
+		catch( final GridAccessException e )
 		{
 			return 0;
 		}
@@ -268,7 +268,7 @@ public final class PartP2PRFPower extends PartP2PTunnel<PartP2PRFPower> implemen
 	}
 
 	@Override
-	public boolean canConnectEnergy( ForgeDirection from )
+	public boolean canConnectEnergy( final ForgeDirection from )
 	{
 		return true;
 	}

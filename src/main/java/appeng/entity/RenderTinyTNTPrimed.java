@@ -46,12 +46,12 @@ public class RenderTinyTNTPrimed extends Render
 	}
 
 	@Override
-	public void doRender( Entity tnt, double x, double y, double z, float unused, float life )
+	public void doRender( final Entity tnt, final double x, final double y, final double z, final float unused, final float life )
 	{
 		this.renderPrimedTNT( (EntityTinyTNTPrimed) tnt, x, y, z, life );
 	}
 
-	public void renderPrimedTNT( EntityTinyTNTPrimed tnt, double x, double y, double z, float life )
+	public void renderPrimedTNT( final EntityTinyTNTPrimed tnt, final double x, final double y, final double z, final float life )
 	{
 		GL11.glPushMatrix();
 		GL11.glTranslatef( (float) x, (float) y - 0.25f, (float) z );
@@ -73,7 +73,7 @@ public class RenderTinyTNTPrimed extends Render
 
 			f2 *= f2;
 			f2 *= f2;
-			float f3 = 1.0F + f2 * 0.3F;
+			final float f3 = 1.0F + f2 * 0.3F;
 			GL11.glScalef( f3, f3, f3 );
 		}
 
@@ -100,7 +100,7 @@ public class RenderTinyTNTPrimed extends Render
 	}
 
 	@Override
-	protected ResourceLocation getEntityTexture( Entity entity )
+	protected ResourceLocation getEntityTexture( final Entity entity )
 	{
 		return TextureMap.locationBlocksTexture;
 	}

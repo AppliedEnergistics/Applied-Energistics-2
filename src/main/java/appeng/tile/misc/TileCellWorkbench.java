@@ -64,19 +64,19 @@ public class TileCellWorkbench extends AEBaseTile implements IUpgradeableHost, I
 	{
 		if( this.cacheUpgrades == null )
 		{
-			ICellWorkbenchItem cell = this.getCell();
+			final ICellWorkbenchItem cell = this.getCell();
 			if( cell == null )
 			{
 				return null;
 			}
 
-			ItemStack is = this.cell.getStackInSlot( 0 );
+			final ItemStack is = this.cell.getStackInSlot( 0 );
 			if( is == null )
 			{
 				return null;
 			}
 
-			IInventory inv = cell.getUpgradesInventory( is );
+			final IInventory inv = cell.getUpgradesInventory( is );
 			if( inv == null )
 			{
 				return null;
@@ -103,7 +103,7 @@ public class TileCellWorkbench extends AEBaseTile implements IUpgradeableHost, I
 	}
 
 	@TileEvent( TileEventType.WORLD_NBT_WRITE )
-	public void writeToNBT_TileCellWorkbench( NBTTagCompound data )
+	public void writeToNBT_TileCellWorkbench( final NBTTagCompound data )
 	{
 		this.cell.writeToNBT( data, "cell" );
 		this.config.writeToNBT( data, "config" );
@@ -111,7 +111,7 @@ public class TileCellWorkbench extends AEBaseTile implements IUpgradeableHost, I
 	}
 
 	@TileEvent( TileEventType.WORLD_NBT_READ )
-	public void readFromNBT_TileCellWorkbench( NBTTagCompound data )
+	public void readFromNBT_TileCellWorkbench( final NBTTagCompound data )
 	{
 		this.cell.readFromNBT( data, "cell" );
 		this.config.readFromNBT( data, "config" );
@@ -119,7 +119,7 @@ public class TileCellWorkbench extends AEBaseTile implements IUpgradeableHost, I
 	}
 
 	@Override
-	public IInventory getInventoryByName( String name )
+	public IInventory getInventoryByName( final String name )
 	{
 		if( name.equals( "config" ) )
 		{
@@ -135,13 +135,13 @@ public class TileCellWorkbench extends AEBaseTile implements IUpgradeableHost, I
 	}
 
 	@Override
-	public int getInstalledUpgrades( Upgrades u )
+	public int getInstalledUpgrades( final Upgrades u )
 	{
 		return 0;
 	}
 
 	@Override
-	public void onChangeInventory( IInventory inv, int slot, InvOperation mc, ItemStack removedStack, ItemStack newStack )
+	public void onChangeInventory( final IInventory inv, final int slot, final InvOperation mc, final ItemStack removedStack, final ItemStack newStack )
 	{
 		if( inv == this.cell && !this.locked )
 		{
@@ -150,7 +150,7 @@ public class TileCellWorkbench extends AEBaseTile implements IUpgradeableHost, I
 			this.cacheUpgrades = null;
 			this.cacheConfig = null;
 
-			IInventory configInventory = this.getCellConfigInventory();
+			final IInventory configInventory = this.getCellConfigInventory();
 			if( configInventory != null )
 			{
 				boolean cellHasConfig = false;
@@ -194,7 +194,7 @@ public class TileCellWorkbench extends AEBaseTile implements IUpgradeableHost, I
 		}
 		else if( inv == this.config && !this.locked )
 		{
-			IInventory c = this.getCellConfigInventory();
+			final IInventory c = this.getCellConfigInventory();
 			if( c != null )
 			{
 				for( int x = 0; x < this.config.getSizeInventory(); x++ )
@@ -211,19 +211,19 @@ public class TileCellWorkbench extends AEBaseTile implements IUpgradeableHost, I
 	{
 		if( this.cacheConfig == null )
 		{
-			ICellWorkbenchItem cell = this.getCell();
+			final ICellWorkbenchItem cell = this.getCell();
 			if( cell == null )
 			{
 				return null;
 			}
 
-			ItemStack is = this.cell.getStackInSlot( 0 );
+			final ItemStack is = this.cell.getStackInSlot( 0 );
 			if( is == null )
 			{
 				return null;
 			}
 
-			IInventory inv = cell.getConfigInventory( is );
+			final IInventory inv = cell.getConfigInventory( is );
 			if( inv == null )
 			{
 				return null;
@@ -235,7 +235,7 @@ public class TileCellWorkbench extends AEBaseTile implements IUpgradeableHost, I
 	}
 
 	@Override
-	public void getDrops( World w, int x, int y, int z, List<ItemStack> drops )
+	public void getDrops( final World w, final int x, final int y, final int z, final List<ItemStack> drops )
 	{
 		super.getDrops( w, x, y, z, drops );
 
@@ -252,7 +252,7 @@ public class TileCellWorkbench extends AEBaseTile implements IUpgradeableHost, I
 	}
 
 	@Override
-	public void updateSetting( IConfigManager manager, Enum settingName, Enum newValue )
+	public void updateSetting( final IConfigManager manager, final Enum settingName, final Enum newValue )
 	{
 		// nothing here..
 	}

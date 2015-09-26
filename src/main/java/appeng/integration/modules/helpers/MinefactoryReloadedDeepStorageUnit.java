@@ -39,21 +39,21 @@ public class MinefactoryReloadedDeepStorageUnit implements IMEInventory<IAEItemS
 	final IDeepStorageUnit dsu;
 	final TileEntity te;
 
-	public MinefactoryReloadedDeepStorageUnit( TileEntity ta )
+	public MinefactoryReloadedDeepStorageUnit( final TileEntity ta )
 	{
 		this.te = ta;
 		this.dsu = (IDeepStorageUnit) ta;
 	}
 
 	@Override
-	public IAEItemStack injectItems( IAEItemStack input, Actionable mode, BaseActionSource src )
+	public IAEItemStack injectItems( final IAEItemStack input, final Actionable mode, final BaseActionSource src )
 	{
-		ItemStack is = this.dsu.getStoredItemType();
+		final ItemStack is = this.dsu.getStoredItemType();
 		if( is != null )
 		{
 			if( input.equals( is ) )
 			{
-				long max = this.dsu.getMaxStoredCount();
+				final long max = this.dsu.getMaxStoredCount();
 				long storedItems = is.stackSize;
 				if( max == storedItems )
 				{
@@ -63,7 +63,7 @@ public class MinefactoryReloadedDeepStorageUnit implements IMEInventory<IAEItemS
 				storedItems += input.getStackSize();
 				if( storedItems > max )
 				{
-					IAEItemStack overflow = AEItemStack.create( is );
+					final IAEItemStack overflow = AEItemStack.create( is );
 					overflow.setStackSize( (int) ( storedItems - max ) );
 					if( mode == Actionable.MODULATE )
 					{
@@ -97,7 +97,7 @@ public class MinefactoryReloadedDeepStorageUnit implements IMEInventory<IAEItemS
 	}
 
 	@Override
-	public IAEItemStack extractItems( IAEItemStack request, Actionable mode, BaseActionSource src )
+	public IAEItemStack extractItems( final IAEItemStack request, final Actionable mode, final BaseActionSource src )
 	{
 		ItemStack is = this.dsu.getStoredItemType();
 		if( request.equals( is ) )
@@ -124,9 +124,9 @@ public class MinefactoryReloadedDeepStorageUnit implements IMEInventory<IAEItemS
 	}
 
 	@Override
-	public IItemList<IAEItemStack> getAvailableItems( IItemList<IAEItemStack> out )
+	public IItemList<IAEItemStack> getAvailableItems( final IItemList<IAEItemStack> out )
 	{
-		ItemStack is = this.dsu.getStoredItemType();
+		final ItemStack is = this.dsu.getStoredItemType();
 		if( is != null )
 		{
 			out.add( AEItemStack.create( is ) );

@@ -56,7 +56,7 @@ public class RenderBlockAssembler extends BaseBlockRender<BlockMolecularAssemble
 	}
 
 	@Override
-	public void renderInventory( BlockMolecularAssembler blk, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj )
+	public void renderInventory( final BlockMolecularAssembler blk, final ItemStack is, final RenderBlocks renderer, final ItemRenderType type, final Object[] obj )
 	{
 		renderer.setOverrideBlockTexture( blk.getIcon( 0, 0 ) );
 
@@ -103,16 +103,16 @@ public class RenderBlockAssembler extends BaseBlockRender<BlockMolecularAssemble
 	}
 
 	@Override
-	public boolean renderInWorld( BlockMolecularAssembler maBlock, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
+	public boolean renderInWorld( final BlockMolecularAssembler maBlock, final IBlockAccess world, final int x, final int y, final int z, RenderBlocks renderer )
 	{
-		TileMolecularAssembler tma = maBlock.getTileEntity( world, x, y, z );
+		final TileMolecularAssembler tma = maBlock.getTileEntity( world, x, y, z );
 
 		if( BlockMolecularAssembler.booleanAlphaPass )
 		{
 			if( tma.isPowered() )
 			{
 				this.renderBlockBounds( renderer, 1, 1, 1, 15, 15, 15, ForgeDirection.WEST, ForgeDirection.UP, ForgeDirection.SOUTH );
-				TaughtIcon lights = new TaughtIcon( ExtraBlockTextures.BlockMolecularAssemblerLights.getIcon(), -2.0f );
+				final TaughtIcon lights = new TaughtIcon( ExtraBlockTextures.BlockMolecularAssemblerLights.getIcon(), -2.0f );
 				Tessellator.instance.setColorRGBA_F( 1, 1, 1, 0.3f );
 				Tessellator.instance.setBrightness( 14 << 20 | 14 << 4 );
 				renderer.renderFaceXNeg( maBlock, x, y, z, lights );
@@ -134,11 +134,11 @@ public class RenderBlockAssembler extends BaseBlockRender<BlockMolecularAssemble
 		tma.lightCache = BusRenderHelper.INSTANCE.useSimplifiedRendering( x, y, z, this, tma.lightCache );
 
 		BusRenderer.INSTANCE.renderer.isFacade = true;
-		IOrientable te = this.getOrientable( maBlock, world, x, y, z );
+		final IOrientable te = this.getOrientable( maBlock, world, x, y, z );
 
-		ForgeDirection fdy = te.getUp();
-		ForgeDirection fdz = te.getForward();
-		ForgeDirection fdx = Platform.crossProduct( fdz, fdy ).getOpposite();
+		final ForgeDirection fdy = te.getUp();
+		final ForgeDirection fdz = te.getForward();
+		final ForgeDirection fdx = Platform.crossProduct( fdz, fdy ).getOpposite();
 
 		renderer.renderAllFaces = true;
 
@@ -199,7 +199,7 @@ public class RenderBlockAssembler extends BaseBlockRender<BlockMolecularAssemble
 		return true;
 	}
 
-	public void renderCableAt( double thickness, IBlockAccess world, int x, int y, int z, BlockMolecularAssembler block, RenderBlocks renderer, double pull, boolean covered )
+	public void renderCableAt( final double thickness, final IBlockAccess world, final int x, final int y, final int z, final BlockMolecularAssembler block, final RenderBlocks renderer, final double pull, final boolean covered )
 	{
 		IIcon texture = null;
 
@@ -248,19 +248,19 @@ public class RenderBlockAssembler extends BaseBlockRender<BlockMolecularAssemble
 		block.getRendererInstance().setTemporaryRenderIcon( null );
 	}
 
-	IIcon getConnectedCable( IBlockAccess world, int x, int y, int z, ForgeDirection side, boolean covered )
+	IIcon getConnectedCable( final IBlockAccess world, final int x, final int y, final int z, final ForgeDirection side, final boolean covered )
 	{
 		final int tileYPos = y + side.offsetY;
 		if( -1 < tileYPos && tileYPos < 256 )
 		{
-			TileEntity ne = world.getTileEntity( x + side.offsetX, tileYPos, z + side.offsetZ );
+			final TileEntity ne = world.getTileEntity( x + side.offsetX, tileYPos, z + side.offsetZ );
 			if( ne instanceof IGridHost && ne instanceof IPartHost )
 			{
-				IPartHost ph = (IPartHost) ne;
-				IPart pcx = ph.getPart( ForgeDirection.UNKNOWN );
+				final IPartHost ph = (IPartHost) ne;
+				final IPart pcx = ph.getPart( ForgeDirection.UNKNOWN );
 				if( pcx instanceof PartCable )
 				{
-					PartCable pc = (PartCable) pcx;
+					final PartCable pc = (PartCable) pcx;
 					if( pc.isConnected( side.getOpposite() ) )
 					{
 						if( covered )
@@ -277,7 +277,7 @@ public class RenderBlockAssembler extends BaseBlockRender<BlockMolecularAssemble
 	}
 
 	@Override
-	public void getBoxes( IPartCollisionHelper bch )
+	public void getBoxes( final IPartCollisionHelper bch )
 	{
 		bch.addBox( 0, 0, 0, 16, 16, 16 );
 	}

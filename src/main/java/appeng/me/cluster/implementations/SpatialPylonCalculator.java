@@ -35,26 +35,26 @@ public class SpatialPylonCalculator extends MBCalculator
 
 	private final TileSpatialPylon tqb;
 
-	public SpatialPylonCalculator( IAEMultiBlock t )
+	public SpatialPylonCalculator( final IAEMultiBlock t )
 	{
 		super( t );
 		this.tqb = (TileSpatialPylon) t;
 	}
 
 	@Override
-	public boolean checkMultiblockScale( WorldCoord min, WorldCoord max )
+	public boolean checkMultiblockScale( final WorldCoord min, final WorldCoord max )
 	{
 		return ( min.x == max.x && min.y == max.y && min.z != max.z ) || ( min.x == max.x && min.y != max.y && min.z == max.z ) || ( min.x != max.x && min.y == max.y && min.z == max.z );
 	}
 
 	@Override
-	public IAECluster createCluster( World w, WorldCoord min, WorldCoord max )
+	public IAECluster createCluster( final World w, final WorldCoord min, final WorldCoord max )
 	{
 		return new SpatialPylonCluster( new DimensionalCoord( w, min.x, min.y, min.z ), new DimensionalCoord( w, max.x, max.y, max.z ) );
 	}
 
 	@Override
-	public boolean verifyInternalStructure( World w, WorldCoord min, WorldCoord max )
+	public boolean verifyInternalStructure( final World w, final WorldCoord min, final WorldCoord max )
 	{
 
 		for( int x = min.x; x <= max.x; x++ )
@@ -63,7 +63,7 @@ public class SpatialPylonCalculator extends MBCalculator
 			{
 				for( int z = min.z; z <= max.z; z++ )
 				{
-					IAEMultiBlock te = (IAEMultiBlock) w.getTileEntity( x, y, z );
+					final IAEMultiBlock te = (IAEMultiBlock) w.getTileEntity( x, y, z );
 
 					if( !te.isValid() )
 					{
@@ -83,9 +83,9 @@ public class SpatialPylonCalculator extends MBCalculator
 	}
 
 	@Override
-	public void updateTiles( IAECluster cl, World w, WorldCoord min, WorldCoord max )
+	public void updateTiles( final IAECluster cl, final World w, final WorldCoord min, final WorldCoord max )
 	{
-		SpatialPylonCluster c = (SpatialPylonCluster) cl;
+		final SpatialPylonCluster c = (SpatialPylonCluster) cl;
 
 		for( int x = min.x; x <= max.x; x++ )
 		{
@@ -93,7 +93,7 @@ public class SpatialPylonCalculator extends MBCalculator
 			{
 				for( int z = min.z; z <= max.z; z++ )
 				{
-					TileSpatialPylon te = (TileSpatialPylon) w.getTileEntity( x, y, z );
+					final TileSpatialPylon te = (TileSpatialPylon) w.getTileEntity( x, y, z );
 					te.updateStatus( c );
 					c.line.add( ( te ) );
 				}
@@ -102,7 +102,7 @@ public class SpatialPylonCalculator extends MBCalculator
 	}
 
 	@Override
-	public boolean isValidTile( TileEntity te )
+	public boolean isValidTile( final TileEntity te )
 	{
 		return te instanceof TileSpatialPylon;
 	}

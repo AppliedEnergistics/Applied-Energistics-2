@@ -171,12 +171,12 @@ public enum PartType
 	private final GuiText extraName;
 	public Constructor<? extends IPart> constructor;
 
-	PartType( int baseMetaValue, Set<AEFeature> features, Set<IntegrationType> integrations, Class<? extends IPart> c )
+	PartType( final int baseMetaValue, final Set<AEFeature> features, final Set<IntegrationType> integrations, final Class<? extends IPart> c )
 	{
 		this( baseMetaValue, features, integrations, c, null );
 	}
 
-	PartType( int baseMetaValue, Set<AEFeature> features, Set<IntegrationType> integrations, Class<? extends IPart> c, GuiText en )
+	PartType( final int baseMetaValue, final Set<AEFeature> features, final Set<IntegrationType> integrations, final Class<? extends IPart> c, final GuiText en )
 	{
 		this.features = Collections.unmodifiableSet( features );
 		this.integrations = Collections.unmodifiableSet( integrations );

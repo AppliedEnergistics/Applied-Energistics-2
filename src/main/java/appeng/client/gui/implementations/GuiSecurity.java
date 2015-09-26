@@ -43,7 +43,7 @@ public class GuiSecurity extends GuiMEMonitorable
 	GuiToggleButton build;
 	GuiToggleButton security;
 
-	public GuiSecurity( InventoryPlayer inventoryPlayer, ITerminalHost te )
+	public GuiSecurity( final InventoryPlayer inventoryPlayer, final ITerminalHost te )
 	{
 		super( inventoryPlayer, te, new ContainerSecurity( inventoryPlayer, te ) );
 		this.customSortOrder = false;
@@ -55,7 +55,7 @@ public class GuiSecurity extends GuiMEMonitorable
 	}
 
 	@Override
-	protected void actionPerformed( net.minecraft.client.gui.GuiButton btn )
+	protected void actionPerformed( final net.minecraft.client.gui.GuiButton btn )
 	{
 		super.actionPerformed( btn );
 
@@ -88,7 +88,7 @@ public class GuiSecurity extends GuiMEMonitorable
 			{
 				NetworkHandler.instance.sendToServer( new PacketValueConfig( "TileSecurity.ToggleOption", toggleSetting.name() ) );
 			}
-			catch( IOException e )
+			catch( final IOException e )
 			{
 				AELog.error( e );
 			}
@@ -100,7 +100,7 @@ public class GuiSecurity extends GuiMEMonitorable
 	{
 		super.initGui();
 
-		int top = this.guiTop + this.ySize - 116;
+		final int top = this.guiTop + this.ySize - 116;
 		this.buttonList.add( this.inject = new GuiToggleButton( this.guiLeft + 56, top, 11 * 16, 12 * 16, SecurityPermissions.INJECT.getUnlocalizedName(), SecurityPermissions.INJECT.getUnlocalizedTip() ) );
 
 		this.buttonList.add( this.extract = new GuiToggleButton( this.guiLeft + 56 + 18, top, 11 * 16 + 1, 12 * 16 + 1, SecurityPermissions.EXTRACT.getUnlocalizedName(), SecurityPermissions.EXTRACT.getUnlocalizedTip() ) );
@@ -113,7 +113,7 @@ public class GuiSecurity extends GuiMEMonitorable
 	}
 
 	@Override
-	public void drawFG( int offsetX, int offsetY, int mouseX, int mouseY )
+	public void drawFG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
 		super.drawFG( offsetX, offsetY, mouseX, mouseY );
 		this.fontRendererObj.drawString( GuiText.SecurityCardEditor.getLocal(), 8, this.ySize - 96 + 1 - this.reservedSpace, 4210752 );
@@ -122,7 +122,7 @@ public class GuiSecurity extends GuiMEMonitorable
 	@Override
 	protected String getBackground()
 	{
-		ContainerSecurity cs = (ContainerSecurity) this.inventorySlots;
+		final ContainerSecurity cs = (ContainerSecurity) this.inventorySlots;
 
 		this.inject.setState( ( cs.security & ( 1 << SecurityPermissions.INJECT.ordinal() ) ) > 0 );
 		this.extract.setState( ( cs.security & ( 1 << SecurityPermissions.EXTRACT.ordinal() ) ) > 0 );

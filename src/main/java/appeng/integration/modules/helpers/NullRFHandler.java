@@ -28,25 +28,25 @@ public class NullRFHandler implements IEnergyReceiver
 {
 
 	@Override
-	public int receiveEnergy( ForgeDirection from, int maxReceive, boolean simulate )
+	public int receiveEnergy( final ForgeDirection from, final int maxReceive, final boolean simulate )
 	{
 		return 0;
 	}
 
 	@Override
-	public int getEnergyStored( ForgeDirection from )
+	public int getEnergyStored( final ForgeDirection from )
 	{
 		return 0;
 	}
 
 	@Override
-	public int getMaxEnergyStored( ForgeDirection from )
+	public int getMaxEnergyStored( final ForgeDirection from )
 	{
 		return 0;
 	}
 
 	@Override
-	public boolean canConnectEnergy( ForgeDirection from )
+	public boolean canConnectEnergy( final ForgeDirection from )
 	{
 		return true;
 	}

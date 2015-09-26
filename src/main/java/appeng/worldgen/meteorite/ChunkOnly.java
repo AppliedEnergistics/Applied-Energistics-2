@@ -17,7 +17,7 @@ public class ChunkOnly extends StandardWorld
 	final int cz;
 	int verticalBits = 0;
 
-	public ChunkOnly( World w, int cx, int cz )
+	public ChunkOnly( final World w, final int cx, final int cz )
 	{
 		super( w );
 		this.target = w.getChunkFromChunkCoords( cx, cz );
@@ -26,31 +26,31 @@ public class ChunkOnly extends StandardWorld
 	}
 
 	@Override
-	public int minX( int in )
+	public int minX( final int in )
 	{
 		return Math.max( in, this.cx << 4 );
 	}
 
 	@Override
-	public int minZ( int in )
+	public int minZ( final int in )
 	{
 		return Math.max( in, this.cz << 4 );
 	}
 
 	@Override
-	public int maxX( int in )
+	public int maxX( final int in )
 	{
 		return Math.min( in, ( this.cx + 1 ) << 4 );
 	}
 
 	@Override
-	public int maxZ( int in )
+	public int maxZ( final int in )
 	{
 		return Math.min( in, ( this.cz + 1 ) << 4 );
 	}
 
 	@Override
-	public int getBlockMetadata( int x, int y, int z )
+	public int getBlockMetadata( final int x, final int y, final int z )
 	{
 		if( this.range( x, y, z ) )
 		{
@@ -60,7 +60,7 @@ public class ChunkOnly extends StandardWorld
 	}
 
 	@Override
-	public Block getBlock( int x, int y, int z )
+	public Block getBlock( final int x, final int y, final int z )
 	{
 		if( this.range( x, y, z ) )
 		{
@@ -70,7 +70,7 @@ public class ChunkOnly extends StandardWorld
 	}
 
 	@Override
-	public void setBlock( int x, int y, int z, Block blk )
+	public void setBlock( final int x, final int y, final int z, final Block blk )
 	{
 		if( this.range( x, y, z ) )
 		{
@@ -80,7 +80,7 @@ public class ChunkOnly extends StandardWorld
 	}
 
 	@Override
-	public void setBlock( int x, int y, int z, Block block, int meta, int flags )
+	public void setBlock( final int x, final int y, final int z, final Block block, final int meta, final int flags )
 	{
 		if( this.range( x, y, z ) )
 		{
@@ -99,7 +99,7 @@ public class ChunkOnly extends StandardWorld
 	}
 
 	@Override
-	public boolean range( int x, int y, int z )
+	public boolean range( final int x, final int y, final int z )
 	{
 		return this.cx == ( x >> 4 ) && this.cz == ( z >> 4 );
 	}

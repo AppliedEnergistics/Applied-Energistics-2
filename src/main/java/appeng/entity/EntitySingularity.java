@@ -45,18 +45,18 @@ public final class EntitySingularity extends AEBaseEntityItem
 	private static int randTickSeed = 0;
 
 	@Reflected
-	public EntitySingularity( World w )
+	public EntitySingularity( final World w )
 	{
 		super( w );
 	}
 
-	public EntitySingularity( World w, double x, double y, double z, ItemStack is )
+	public EntitySingularity( final World w, final double x, final double y, final double z, final ItemStack is )
 	{
 		super( w, x, y, z, is );
 	}
 
 	@Override
-	public boolean attackEntityFrom( DamageSource src, float dmg )
+	public boolean attackEntityFrom( final DamageSource src, final float dmg )
 	{
 		if( src.isExplosion() )
 		{
@@ -79,24 +79,24 @@ public final class EntitySingularity extends AEBaseEntityItem
 			return;
 		}
 
-		ItemStack item = this.getEntityItem();
+		final ItemStack item = this.getEntityItem();
 
 		final IMaterials materials = AEApi.instance().definitions().materials();
 
 		if( materials.singularity().isSameAs( item ) )
 		{
-			AxisAlignedBB region = AxisAlignedBB.getBoundingBox( this.posX - 4, this.posY - 4, this.posZ - 4, this.posX + 4, this.posY + 4, this.posZ + 4 );
-			List<Entity> l = this.getCheckedEntitiesWithinAABBExcludingEntity( region );
+			final AxisAlignedBB region = AxisAlignedBB.getBoundingBox( this.posX - 4, this.posY - 4, this.posZ - 4, this.posX + 4, this.posY + 4, this.posZ + 4 );
+			final List<Entity> l = this.getCheckedEntitiesWithinAABBExcludingEntity( region );
 
-			for( Entity e : l )
+			for( final Entity e : l )
 			{
 				if( e instanceof EntityItem )
 				{
-					ItemStack other = ( (EntityItem) e ).getEntityItem();
+					final ItemStack other = ( (EntityItem) e ).getEntityItem();
 					if( other != null )
 					{
 						boolean matches = false;
-						for( ItemStack is : OreDictionary.getOres( "dustEnder" ) )
+						for( final ItemStack is : OreDictionary.getOres( "dustEnder" ) )
 						{
 							if( OreDictionary.itemMatches( other, is, false ) )
 							{
@@ -108,7 +108,7 @@ public final class EntitySingularity extends AEBaseEntityItem
 						// check... other name.
 						if( !matches )
 						{
-							for( ItemStack is : OreDictionary.getOres( "dustEnderPearl" ) )
+							for( final ItemStack is : OreDictionary.getOres( "dustEnderPearl" ) )
 							{
 								if( OreDictionary.itemMatches( other, is, false ) )
 								{
@@ -128,9 +128,9 @@ public final class EntitySingularity extends AEBaseEntityItem
 									e.setDead();
 								}
 
-								for( ItemStack singularityStack : materials.qESingularity().maybeStack( 2 ).asSet() )
+								for( final ItemStack singularityStack : materials.qESingularity().maybeStack( 2 ).asSet() )
 								{
-									NBTTagCompound cmp = Platform.openNbtData( singularityStack );
+									final NBTTagCompound cmp = Platform.openNbtData( singularityStack );
 									cmp.setLong( "freq", ( new Date() ).getTime() * 100 + ( randTickSeed ) % 100 );
 									randTickSeed++;
 									item.stackSize--;

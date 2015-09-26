@@ -37,7 +37,7 @@ public class ItemSorters
 	{
 
 		@Override
-		public int compare( IAEItemStack o1, IAEItemStack o2 )
+		public int compare( final IAEItemStack o1, final IAEItemStack o2 )
 		{
 			if( Direction == SortDir.ASCENDING )
 			{
@@ -50,10 +50,10 @@ public class ItemSorters
 	{
 
 		@Override
-		public int compare( IAEItemStack o1, IAEItemStack o2 )
+		public int compare( final IAEItemStack o1, final IAEItemStack o2 )
 		{
-			AEItemStack op1 = (AEItemStack) o1;
-			AEItemStack op2 = (AEItemStack) o2;
+			final AEItemStack op1 = (AEItemStack) o1;
+			final AEItemStack op2 = (AEItemStack) o2;
 
 			if( Direction == SortDir.ASCENDING )
 			{
@@ -62,7 +62,7 @@ public class ItemSorters
 			return this.secondarySort( op1.getModID().compareToIgnoreCase( op2.getModID() ), o2, o1 );
 		}
 
-		private int secondarySort( int compareToIgnoreCase, IAEItemStack o1, IAEItemStack o2 )
+		private int secondarySort( final int compareToIgnoreCase, final IAEItemStack o1, final IAEItemStack o2 )
 		{
 			if( compareToIgnoreCase == 0 )
 			{
@@ -76,7 +76,7 @@ public class ItemSorters
 	{
 
 		@Override
-		public int compare( IAEItemStack o1, IAEItemStack o2 )
+		public int compare( final IAEItemStack o1, final IAEItemStack o2 )
 		{
 			if( Direction == SortDir.ASCENDING )
 			{
@@ -90,14 +90,14 @@ public class ItemSorters
 	{
 
 		@Override
-		public int compare( IAEItemStack o1, IAEItemStack o2 )
+		public int compare( final IAEItemStack o1, final IAEItemStack o2 )
 		{
 			if( api == null )
 			{
 				return CONFIG_BASED_SORT_BY_NAME.compare( o1, o2 );
 			}
 
-			int cmp = api.compareItems( o1.getItemStack(), o2.getItemStack() );
+			final int cmp = api.compareItems( o1.getItemStack(), o2.getItemStack() );
 
 			if( Direction == SortDir.ASCENDING )
 			{
@@ -124,7 +124,7 @@ public class ItemSorters
 		}
 	}
 
-	public static int compareInt( int a, int b )
+	public static int compareInt( final int a, final int b )
 	{
 		if( a == b )
 		{
@@ -137,7 +137,7 @@ public class ItemSorters
 		return 1;
 	}
 
-	public static int compareLong( long a, long b )
+	public static int compareLong( final long a, final long b )
 	{
 		if( a == b )
 		{
@@ -150,7 +150,7 @@ public class ItemSorters
 		return 1;
 	}
 
-	public static int compareDouble( double a, double b )
+	public static int compareDouble( final double a, final double b )
 	{
 		if( a == b )
 		{

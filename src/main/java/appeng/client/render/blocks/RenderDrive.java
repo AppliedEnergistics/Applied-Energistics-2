@@ -45,7 +45,7 @@ public class RenderDrive extends BaseBlockRender<BlockDrive, TileDrive>
 	}
 
 	@Override
-	public void renderInventory( BlockDrive block, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj )
+	public void renderInventory( final BlockDrive block, final ItemStack is, final RenderBlocks renderer, final ItemRenderType type, final Object[] obj )
 	{
 		renderer.overrideBlockTexture = ExtraBlockTextures.getMissing();
 		this.renderInvBlock( EnumSet.of( ForgeDirection.SOUTH ), block, is, Tessellator.instance, 0x000000, renderer );
@@ -55,27 +55,27 @@ public class RenderDrive extends BaseBlockRender<BlockDrive, TileDrive>
 	}
 
 	@Override
-	public boolean renderInWorld( BlockDrive imb, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
+	public boolean renderInWorld( final BlockDrive imb, final IBlockAccess world, final int x, final int y, final int z, final RenderBlocks renderer )
 	{
-		TileDrive sp = imb.getTileEntity( world, x, y, z );
+		final TileDrive sp = imb.getTileEntity( world, x, y, z );
 		renderer.setRenderBounds( 0, 0, 0, 1, 1, 1 );
 
-		ForgeDirection up = sp.getUp();
-		ForgeDirection forward = sp.getForward();
-		ForgeDirection west = Platform.crossProduct( forward, up );
+		final ForgeDirection up = sp.getUp();
+		final ForgeDirection forward = sp.getForward();
+		final ForgeDirection west = Platform.crossProduct( forward, up );
 
-		boolean result = super.renderInWorld( imb, world, x, y, z, renderer );
-		Tessellator tess = Tessellator.instance;
+		final boolean result = super.renderInWorld( imb, world, x, y, z, renderer );
+		final Tessellator tess = Tessellator.instance;
 
-		IIcon ico = ExtraBlockTextures.MEStorageCellTextures.getIcon();
+		final IIcon ico = ExtraBlockTextures.MEStorageCellTextures.getIcon();
 
-		int b = world.getLightBrightnessForSkyBlocks( x + forward.offsetX, y + forward.offsetY, z + forward.offsetZ, 0 );
+		final int b = world.getLightBrightnessForSkyBlocks( x + forward.offsetX, y + forward.offsetY, z + forward.offsetZ, 0 );
 
 		for( int yy = 0; yy < 5; yy++ )
 		{
 			for( int xx = 0; xx < 2; xx++ )
 			{
-				int stat = sp.getCellStatus( yy * 2 + ( 1 - xx ) );
+				final int stat = sp.getCellStatus( yy * 2 + ( 1 - xx ) );
 				this.selectFace( renderer, west, up, forward, 2 + xx * 7, 7 + xx * 7, 1 + yy * 3, 3 + yy * 3 );
 
 				int spin = 0;
@@ -263,7 +263,7 @@ public class RenderDrive extends BaseBlockRender<BlockDrive, TileDrive>
 
 				if( stat != 0 )
 				{
-					IIcon whiteIcon = ExtraBlockTextures.White.getIcon();
+					final IIcon whiteIcon = ExtraBlockTextures.White.getIcon();
 					u1 = whiteIcon.getInterpolatedU( ( spin % 4 < 2 ) ? 1 : 6 );
 					u2 = whiteIcon.getInterpolatedU( ( ( spin + 1 ) % 4 < 2 ) ? 1 : 6 );
 					u3 = whiteIcon.getInterpolatedU( ( ( spin + 2 ) % 4 < 2 ) ? 1 : 6 );

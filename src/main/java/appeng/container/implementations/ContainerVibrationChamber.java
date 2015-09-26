@@ -40,7 +40,7 @@ public class ContainerVibrationChamber extends AEBaseContainer implements IProgr
 	@GuiSync( 1 )
 	public int burnSpeed = 100;
 
-	public ContainerVibrationChamber( InventoryPlayer ip, TileVibrationChamber vibrationChamber )
+	public ContainerVibrationChamber( final InventoryPlayer ip, final TileVibrationChamber vibrationChamber )
 	{
 		super( ip, vibrationChamber, null );
 		this.vibrationChamber = vibrationChamber;

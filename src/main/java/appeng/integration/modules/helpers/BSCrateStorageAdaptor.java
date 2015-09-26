@@ -39,18 +39,18 @@ public class BSCrateStorageAdaptor extends InventoryAdaptor
 	final ICrateStorage cs;
 	final ForgeDirection side;
 
-	public BSCrateStorageAdaptor( Object te, ForgeDirection d )
+	public BSCrateStorageAdaptor( final Object te, final ForgeDirection d )
 	{
 		this.cs = (ICrateStorage) te;
 		this.side = d;
 	}
 
 	@Override
-	public ItemStack removeItems( int amount, ItemStack filter, IInventoryDestination destination )
+	public ItemStack removeItems( final int amount, final ItemStack filter, final IInventoryDestination destination )
 	{
 		ItemStack target = null;
 
-		for( ItemStack is : this.cs.getContents() )
+		for( final ItemStack is : this.cs.getContents() )
 		{
 			if( is != null )
 			{
@@ -67,7 +67,7 @@ public class BSCrateStorageAdaptor extends InventoryAdaptor
 
 		if( target != null )
 		{
-			ItemStack f = Platform.cloneItemStack( target );
+			final ItemStack f = Platform.cloneItemStack( target );
 			f.stackSize = amount;
 			return this.cs.extractItems( f, amount );
 		}
@@ -76,11 +76,11 @@ public class BSCrateStorageAdaptor extends InventoryAdaptor
 	}
 
 	@Override
-	public ItemStack simulateRemove( int amount, ItemStack filter, IInventoryDestination destination )
+	public ItemStack simulateRemove( final int amount, final ItemStack filter, final IInventoryDestination destination )
 	{
 		ItemStack target = null;
 
-		for( ItemStack is : this.cs.getContents() )
+		for( final ItemStack is : this.cs.getContents() )
 		{
 			if( is != null )
 			{
@@ -106,7 +106,7 @@ public class BSCrateStorageAdaptor extends InventoryAdaptor
 			{
 				cnt = amount;
 			}
-			ItemStack c = target.copy();
+			final ItemStack c = target.copy();
 			c.stackSize = cnt;
 			return c;
 		}
@@ -115,11 +115,11 @@ public class BSCrateStorageAdaptor extends InventoryAdaptor
 	}
 
 	@Override
-	public ItemStack removeSimilarItems( int amount, ItemStack filter, FuzzyMode fuzzyMode, IInventoryDestination destination )
+	public ItemStack removeSimilarItems( final int amount, final ItemStack filter, final FuzzyMode fuzzyMode, final IInventoryDestination destination )
 	{
 		ItemStack target = null;
 
-		for( ItemStack is : this.cs.getContents() )
+		for( final ItemStack is : this.cs.getContents() )
 		{
 			if( is != null )
 			{
@@ -136,7 +136,7 @@ public class BSCrateStorageAdaptor extends InventoryAdaptor
 
 		if( target != null )
 		{
-			ItemStack f = Platform.cloneItemStack( target );
+			final ItemStack f = Platform.cloneItemStack( target );
 			f.stackSize = amount;
 			return this.cs.extractItems( f, amount );
 		}
@@ -145,11 +145,11 @@ public class BSCrateStorageAdaptor extends InventoryAdaptor
 	}
 
 	@Override
-	public ItemStack simulateSimilarRemove( int amount, ItemStack filter, FuzzyMode fuzzyMode, IInventoryDestination destination )
+	public ItemStack simulateSimilarRemove( final int amount, final ItemStack filter, final FuzzyMode fuzzyMode, final IInventoryDestination destination )
 	{
 		ItemStack target = null;
 
-		for( ItemStack is : this.cs.getContents() )
+		for( final ItemStack is : this.cs.getContents() )
 		{
 			if( is != null )
 			{
@@ -175,7 +175,7 @@ public class BSCrateStorageAdaptor extends InventoryAdaptor
 			{
 				cnt = amount;
 			}
-			ItemStack c = target.copy();
+			final ItemStack c = target.copy();
 			c.stackSize = cnt;
 			return c;
 		}
@@ -184,16 +184,16 @@ public class BSCrateStorageAdaptor extends InventoryAdaptor
 	}
 
 	@Override
-	public ItemStack addItems( ItemStack toBeAdded )
+	public ItemStack addItems( final ItemStack toBeAdded )
 	{
 		return this.cs.insertItems( toBeAdded );
 	}
 
 	@Override
-	public ItemStack simulateAdd( ItemStack toBeSimulated )
+	public ItemStack simulateAdd( final ItemStack toBeSimulated )
 	{
-		int items = this.cs.getSpaceForItem( toBeSimulated );
-		ItemStack cloned = Platform.cloneItemStack( toBeSimulated );
+		final int items = this.cs.getSpaceForItem( toBeSimulated );
+		final ItemStack cloned = Platform.cloneItemStack( toBeSimulated );
 		if( toBeSimulated.stackSize <= items )
 		{
 			return null;

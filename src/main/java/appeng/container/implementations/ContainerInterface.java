@@ -44,7 +44,7 @@ public class ContainerInterface extends ContainerUpgradeable
 	@GuiSync( 4 )
 	public YesNo iTermMode = YesNo.YES;
 
-	public ContainerInterface( InventoryPlayer ip, IInterfaceHost te )
+	public ContainerInterface( final InventoryPlayer ip, final IInterfaceHost te )
 	{
 		super( ip, te.getInterfaceDuality().getHost() );
 
@@ -92,7 +92,7 @@ public class ContainerInterface extends ContainerUpgradeable
 	}
 
 	@Override
-	protected void loadSettingsFromHost( IConfigManager cm )
+	protected void loadSettingsFromHost( final IConfigManager cm )
 	{
 		this.bMode = (YesNo) cm.getSetting( Settings.BLOCK );
 		this.iTermMode = (YesNo) cm.getSetting( Settings.INTERFACE_TERMINAL );

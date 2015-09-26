@@ -53,13 +53,13 @@ public class RenderBlockSkyCompass extends BaseBlockRender<BlockSkyCompass, Tile
 	}
 
 	@Override
-	public void renderInventory( BlockSkyCompass blk, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj )
+	public void renderInventory( final BlockSkyCompass blk, final ItemStack is, final RenderBlocks renderer, ItemRenderType type, final Object[] obj )
 	{
 		if( type == ItemRenderType.INVENTORY )
 		{
 			boolean isGood = false;
 
-			IInventory inv = Minecraft.getMinecraft().thePlayer.inventory;
+			final IInventory inv = Minecraft.getMinecraft().thePlayer.inventory;
 			for( int x = 0; x < inv.getSizeInventory(); x++ )
 			{
 				if( inv.getStackInSlot( x ) == is )
@@ -77,7 +77,7 @@ public class RenderBlockSkyCompass extends BaseBlockRender<BlockSkyCompass, Tile
 		GL11.glEnable( GL12.GL_RESCALE_NORMAL );
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
 
-		ResourceLocation loc = new ResourceLocation( "appliedenergistics2", "textures/models/compass.png" );
+		final ResourceLocation loc = new ResourceLocation( "appliedenergistics2", "textures/models/compass.png" );
 
 		Minecraft.getMinecraft().getTextureManager().bindTexture( loc );
 
@@ -120,10 +120,10 @@ public class RenderBlockSkyCompass extends BaseBlockRender<BlockSkyCompass, Tile
 				rYaw = p.renderYawOffset;
 			}
 
-			int x = (int) p.posX;
-			int y = (int) p.posY;
-			int z = (int) p.posZ;
-			CompassResult cr = CompassManager.INSTANCE.getCompassDirection( 0, x, y, z );
+			final int x = (int) p.posX;
+			final int y = (int) p.posY;
+			final int z = (int) p.posZ;
+			final CompassResult cr = CompassManager.INSTANCE.getCompassDirection( 0, x, y, z );
 
 			for( int i = 0; i < 3; i++ )
 			{
@@ -144,14 +144,14 @@ public class RenderBlockSkyCompass extends BaseBlockRender<BlockSkyCompass, Tile
 				{
 					if( type == ItemRenderType.EQUIPPED_FIRST_PERSON )
 					{
-						float offRads = rYaw / 180.0f * (float) Math.PI;
-						float adjustment = (float) Math.PI * 0.74f;
+						final float offRads = rYaw / 180.0f * (float) Math.PI;
+						final float adjustment = (float) Math.PI * 0.74f;
 						this.model.renderAll( (float) this.flipidiy( cr.rad + offRads + adjustment ) );
 					}
 					else
 					{
-						float offRads = rYaw / 180.0f * (float) Math.PI;
-						float adjustment = (float) Math.PI * -0.74f;
+						final float offRads = rYaw / 180.0f * (float) Math.PI;
+						final float adjustment = (float) Math.PI * -0.74f;
 						this.model.renderAll( (float) this.flipidiy( cr.rad + offRads + adjustment ) );
 					}
 				}
@@ -173,13 +173,13 @@ public class RenderBlockSkyCompass extends BaseBlockRender<BlockSkyCompass, Tile
 	}
 
 	@Override
-	public boolean renderInWorld( BlockSkyCompass blk, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
+	public boolean renderInWorld( final BlockSkyCompass blk, final IBlockAccess world, final int x, final int y, final int z, final RenderBlocks renderer )
 	{
 		return true;
 	}
 
 	@Override
-	public void renderTile( BlockSkyCompass block, TileSkyCompass skyCompass, Tessellator tess, double x, double y, double z, float partialTick, RenderBlocks renderer )
+	public void renderTile( final BlockSkyCompass block, final TileSkyCompass skyCompass, final Tessellator tess, final double x, final double y, final double z, final float partialTick, final RenderBlocks renderer )
 	{
 		if( skyCompass == null )
 		{
@@ -239,10 +239,10 @@ public class RenderBlockSkyCompass extends BaseBlockRender<BlockSkyCompass, Tile
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
 	}
 
-	private double flipidiy( double rad )
+	private double flipidiy( final double rad )
 	{
-		double x = Math.cos( rad );
-		double y = Math.sin( rad );
+		final double x = Math.cos( rad );
+		final double y = Math.sin( rad );
 		return Math.atan2( -y, x );
 	}
 }

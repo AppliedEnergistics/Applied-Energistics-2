@@ -41,7 +41,7 @@ public class LayerIEnergySource extends LayerBase implements IEnergySource
 
 	private TileEntity getEnergySourceTile()
 	{
-		IPartHost host = (IPartHost) this;
+		final IPartHost host = (IPartHost) this;
 		return host.getTile();
 	}
 
@@ -56,7 +56,7 @@ public class LayerIEnergySource extends LayerBase implements IEnergySource
 
 	private boolean isTileValid()
 	{
-		TileEntity te = this.getEnergySourceTile();
+		final TileEntity te = this.getEnergySourceTile();
 		if( te == null )
 		{
 			return false;
@@ -103,9 +103,9 @@ public class LayerIEnergySource extends LayerBase implements IEnergySource
 		}
 
 		int interested = 0;
-		for( ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS )
+		for( final ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS )
 		{
-			IPart part = this.getPart( dir );
+			final IPart part = this.getPart( dir );
 			if( part instanceof IEnergyTile )
 			{
 				interested++;
@@ -130,14 +130,14 @@ public class LayerIEnergySource extends LayerBase implements IEnergySource
 	}
 
 	@Override
-	public boolean emitsEnergyTo( TileEntity receiver, ForgeDirection direction )
+	public boolean emitsEnergyTo( final TileEntity receiver, final ForgeDirection direction )
 	{
 		if( !this.isInIC2() )
 		{
 			return false;
 		}
 
-		IPart part = this.getPart( direction );
+		final IPart part = this.getPart( direction );
 		if( part instanceof IEnergySink )
 		{
 			return ( (IEnergyEmitter) part ).emitsEnergyTo( receiver, direction );
@@ -160,9 +160,9 @@ public class LayerIEnergySource extends LayerBase implements IEnergySource
 
 		// this is a flawed implementation, that requires a change to the IC2 API.
 
-		for( ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS )
+		for( final ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS )
 		{
-			IPart part = this.getPart( dir );
+			final IPart part = this.getPart( dir );
 			if( part instanceof IEnergySource )
 			{
 				// use lower number cause ic2 deletes power it sends that isn't received.
@@ -174,13 +174,13 @@ public class LayerIEnergySource extends LayerBase implements IEnergySource
 	}
 
 	@Override
-	public void drawEnergy( double amount )
+	public void drawEnergy( final double amount )
 	{
 		// this is a flawed implementation, that requires a change to the IC2 API.
 
-		for( ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS )
+		for( final ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS )
 		{
-			IPart part = this.getPart( dir );
+			final IPart part = this.getPart( dir );
 			if( part instanceof IEnergySource )
 			{
 				( (IEnergySource) part ).drawEnergy( amount );
@@ -194,9 +194,9 @@ public class LayerIEnergySource extends LayerBase implements IEnergySource
 	{
 		// this is a flawed implementation, that requires a change to the IC2 API.
 
-		for( ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS )
+		for( final ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS )
 		{
-			IPart part = this.getPart( dir );
+			final IPart part = this.getPart( dir );
 			if( part instanceof IEnergySource )
 			{
 				return ( (IEnergySource) part ).getSourceTier();

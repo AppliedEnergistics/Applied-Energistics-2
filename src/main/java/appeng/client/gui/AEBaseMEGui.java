@@ -36,28 +36,28 @@ import appeng.core.localization.ButtonToolTips;
 public abstract class AEBaseMEGui extends AEBaseGui
 {
 
-	public AEBaseMEGui( Container container )
+	public AEBaseMEGui( final Container container )
 	{
 		super( container );
 	}
 
-	public List<String> handleItemTooltip( ItemStack stack, int mouseX, int mouseY, List<String> currentToolTip )
+	public List<String> handleItemTooltip( final ItemStack stack, final int mouseX, final int mouseY, final List<String> currentToolTip )
 	{
 		if( stack != null )
 		{
-			Slot s = this.getSlot( mouseX, mouseY );
+			final Slot s = this.getSlot( mouseX, mouseY );
 			if( s instanceof SlotME )
 			{
-				int BigNumber = AEConfig.instance.useTerminalUseLargeFont() ? 999 : 9999;
+				final int BigNumber = AEConfig.instance.useTerminalUseLargeFont() ? 999 : 9999;
 
 				IAEItemStack myStack = null;
 
 				try
 				{
-					SlotME theSlotField = (SlotME) s;
+					final SlotME theSlotField = (SlotME) s;
 					myStack = theSlotField.getAEStack();
 				}
-				catch( Throwable ignore )
+				catch( final Throwable ignore )
 				{
 				}
 
@@ -97,28 +97,28 @@ public abstract class AEBaseMEGui extends AEBaseGui
 	// Vanilla version...
 	// protected void drawItemStackTooltip(ItemStack stack, int x, int y)
 	@Override
-	protected void renderToolTip( ItemStack stack, int x, int y )
+	protected void renderToolTip( final ItemStack stack, final int x, final int y )
 	{
-		Slot s = this.getSlot( x, y );
+		final Slot s = this.getSlot( x, y );
 		if( s instanceof SlotME && stack != null )
 		{
-			int BigNumber = AEConfig.instance.useTerminalUseLargeFont() ? 999 : 9999;
+			final int BigNumber = AEConfig.instance.useTerminalUseLargeFont() ? 999 : 9999;
 
 			IAEItemStack myStack = null;
 
 			try
 			{
-				SlotME theSlotField = (SlotME) s;
+				final SlotME theSlotField = (SlotME) s;
 				myStack = theSlotField.getAEStack();
 			}
-			catch( Throwable ignore )
+			catch( final Throwable ignore )
 			{
 			}
 
 			if( myStack != null )
 			{
 				@SuppressWarnings( "unchecked" )
-				List<String> currentToolTip = stack.getTooltip( this.mc.thePlayer, this.mc.gameSettings.advancedItemTooltips );
+				final List<String> currentToolTip = stack.getTooltip( this.mc.thePlayer, this.mc.gameSettings.advancedItemTooltips );
 
 				if( myStack.getStackSize() > BigNumber || ( myStack.getStackSize() > 1 && stack.isItemDamaged() ) )
 				{
@@ -134,7 +134,7 @@ public abstract class AEBaseMEGui extends AEBaseGui
 			}
 			else if( stack.stackSize > BigNumber )
 			{
-				List var4 = stack.getTooltip( this.mc.thePlayer, this.mc.gameSettings.advancedItemTooltips );
+				final List var4 = stack.getTooltip( this.mc.thePlayer, this.mc.gameSettings.advancedItemTooltips );
 				var4.add( "Items Stored: " + NumberFormat.getNumberInstance( Locale.US ).format( stack.stackSize ) );
 				this.drawTooltip( x, y, 0, join( var4, "\n" ) );
 				return;

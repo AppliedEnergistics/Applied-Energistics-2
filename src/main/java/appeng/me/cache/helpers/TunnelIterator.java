@@ -32,7 +32,7 @@ public class TunnelIterator<T extends PartP2PTunnel> implements Iterator<T>
 	final Class targetType;
 	T Next;
 
-	public TunnelIterator( Collection<T> tunnelSources, Class clz )
+	public TunnelIterator( final Collection<T> tunnelSources, final Class clz )
 	{
 		this.wrapped = tunnelSources.iterator();
 		this.targetType = clz;
@@ -61,7 +61,7 @@ public class TunnelIterator<T extends PartP2PTunnel> implements Iterator<T>
 	@Override
 	public T next()
 	{
-		T tmp = this.Next;
+		final T tmp = this.Next;
 		this.Next = null;
 		return tmp;
 	}

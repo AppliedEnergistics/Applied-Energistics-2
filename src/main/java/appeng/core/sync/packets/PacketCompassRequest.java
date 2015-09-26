@@ -44,7 +44,7 @@ public class PacketCompassRequest extends AppEngPacket implements ICompassCallba
 	EntityPlayer talkBackTo;
 
 	// automatic.
-	public PacketCompassRequest( ByteBuf stream )
+	public PacketCompassRequest( final ByteBuf stream )
 	{
 		this.attunement = stream.readLong();
 		this.cx = stream.readInt();
@@ -53,10 +53,10 @@ public class PacketCompassRequest extends AppEngPacket implements ICompassCallba
 	}
 
 	// api
-	public PacketCompassRequest( long attunement, int cx, int cz, int cdy )
+	public PacketCompassRequest( final long attunement, final int cx, final int cz, final int cdy )
 	{
 
-		ByteBuf data = Unpooled.buffer();
+		final ByteBuf data = Unpooled.buffer();
 
 		data.writeInt( this.getPacketID() );
 		data.writeLong( this.attunement = attunement );
@@ -68,17 +68,17 @@ public class PacketCompassRequest extends AppEngPacket implements ICompassCallba
 	}
 
 	@Override
-	public void calculatedDirection( boolean hasResult, boolean spin, double radians, double dist )
+	public void calculatedDirection( final boolean hasResult, final boolean spin, final double radians, final double dist )
 	{
 		NetworkHandler.instance.sendTo( new PacketCompassResponse( this, hasResult, spin, radians ), (EntityPlayerMP) this.talkBackTo );
 	}
 
 	@Override
-	public void serverPacketData( INetworkInfo manager, AppEngPacket packet, EntityPlayer player )
+	public void serverPacketData( final INetworkInfo manager, final AppEngPacket packet, final EntityPlayer player )
 	{
 		this.talkBackTo = player;
 
-		DimensionalCoord loc = new DimensionalCoord( player.worldObj, this.cx << 4, this.cdy << 5, this.cz << 4 );
+		final DimensionalCoord loc = new DimensionalCoord( player.worldObj, this.cx << 4, this.cdy << 5, this.cz << 4 );
 		WorldData.instance().compassData().service().getCompassDirection( loc, 174, this );
 	}
 }

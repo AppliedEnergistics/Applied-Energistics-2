@@ -102,19 +102,19 @@ public class BlockCableBus extends AEBaseTileBlock implements IRedNetConnection
 	}
 
 	@Override
-	public void randomDisplayTick( World world, int x, int y, int z, Random r )
+	public void randomDisplayTick( final World world, final int x, final int y, final int z, final Random r )
 	{
 		this.cb( world, x, y, z ).randomDisplayTick( world, x, y, z, r );
 	}
 
 	@Override
-	public void onNeighborBlockChange( World w, int x, int y, int z, Block meh )
+	public void onNeighborBlockChange( final World w, final int x, final int y, final int z, final Block meh )
 	{
 		this.cb( w, x, y, z ).onNeighborChanged();
 	}
 
 	@Override
-	public Item getItemDropped( int i, Random r, int k )
+	public Item getItemDropped( final int i, final Random r, final int k )
 	{
 		return null;
 	}
@@ -130,13 +130,13 @@ public class BlockCableBus extends AEBaseTileBlock implements IRedNetConnection
 	}
 
 	@Override
-	public int colorMultiplier( IBlockAccess world, int x, int y, int z )
+	public int colorMultiplier( final IBlockAccess world, final int x, final int y, final int z )
 	{
 		return this.myColorMultiplier;
 	}
 
 	@Override
-	public int isProvidingWeakPower( IBlockAccess w, int x, int y, int z, int side )
+	public int isProvidingWeakPower( final IBlockAccess w, final int x, final int y, final int z, final int side )
 	{
 		return this.cb( w, x, y, z ).isProvidingWeakPower( ForgeDirection.getOrientation( side ).getOpposite() );
 	}
@@ -148,21 +148,21 @@ public class BlockCableBus extends AEBaseTileBlock implements IRedNetConnection
 	}
 
 	@Override
-	public void onEntityCollidedWithBlock( World w, int x, int y, int z, Entity e )
+	public void onEntityCollidedWithBlock( final World w, final int x, final int y, final int z, final Entity e )
 	{
 		this.cb( w, x, y, z ).onEntityCollision( e );
 	}
 
 	@Override
-	public int isProvidingStrongPower( IBlockAccess w, int x, int y, int z, int side )
+	public int isProvidingStrongPower( final IBlockAccess w, final int x, final int y, final int z, final int side )
 	{
 		return this.cb( w, x, y, z ).isProvidingStrongPower( ForgeDirection.getOrientation( side ).getOpposite() );
 	}
 
 	@Override
-	public int getLightValue( IBlockAccess world, int x, int y, int z )
+	public int getLightValue( final IBlockAccess world, final int x, final int y, final int z )
 	{
-		Block block = world.getBlock( x, y, z );
+		final Block block = world.getBlock( x, y, z );
 		if( block != null && block != this )
 		{
 			return block.getLightValue( world, x, y, z );
@@ -175,30 +175,30 @@ public class BlockCableBus extends AEBaseTileBlock implements IRedNetConnection
 	}
 
 	@Override
-	public boolean isLadder( IBlockAccess world, int x, int y, int z, EntityLivingBase entity )
+	public boolean isLadder( final IBlockAccess world, final int x, final int y, final int z, final EntityLivingBase entity )
 	{
 		return this.cb( world, x, y, z ).isLadder( entity );
 	}
 
 	@Override
-	public boolean isSideSolid( IBlockAccess w, int x, int y, int z, ForgeDirection side )
+	public boolean isSideSolid( final IBlockAccess w, final int x, final int y, final int z, final ForgeDirection side )
 	{
 		return this.cb( w, x, y, z ).isSolidOnSide( side );
 	}
 
 	@Override
-	public boolean isReplaceable( IBlockAccess world, int x, int y, int z )
+	public boolean isReplaceable( final IBlockAccess world, final int x, final int y, final int z )
 	{
 		return this.cb( world, x, y, z ).isEmpty();
 	}
 
 	@SuppressWarnings( "deprecation" )
 	@Override
-	public boolean removedByPlayer( World world, EntityPlayer player, int x, int y, int z )
+	public boolean removedByPlayer( final World world, final EntityPlayer player, final int x, final int y, final int z )
 	{
 		if( player.capabilities.isCreativeMode )
 		{
-			AEBaseTile tile = this.getTileEntity( world, x, y, z );
+			final AEBaseTile tile = this.getTileEntity( world, x, y, z );
 			if( tile != null )
 			{
 				tile.disableDrops();
@@ -209,7 +209,7 @@ public class BlockCableBus extends AEBaseTileBlock implements IRedNetConnection
 	}
 
 	@Override
-	public boolean canConnectRedstone( IBlockAccess w, int x, int y, int z, int side )
+	public boolean canConnectRedstone( final IBlockAccess w, final int x, final int y, final int z, final int side )
 	{
 		switch( side )
 		{
@@ -229,7 +229,7 @@ public class BlockCableBus extends AEBaseTileBlock implements IRedNetConnection
 	}
 
 	@Override
-	public boolean canRenderInPass( int pass )
+	public boolean canRenderInPass( final int pass )
 	{
 		BusRenderHelper.INSTANCE.setPass( pass );
 
@@ -242,10 +242,10 @@ public class BlockCableBus extends AEBaseTileBlock implements IRedNetConnection
 	}
 
 	@Override
-	public ItemStack getPickBlock( MovingObjectPosition target, World world, int x, int y, int z, EntityPlayer player )
+	public ItemStack getPickBlock( final MovingObjectPosition target, final World world, final int x, final int y, final int z, final EntityPlayer player )
 	{
-		Vec3 v3 = target.hitVec.addVector( -x, -y, -z );
-		SelectedPart sp = this.cb( world, x, y, z ).selectPart( v3 );
+		final Vec3 v3 = target.hitVec.addVector( -x, -y, -z );
+		final SelectedPart sp = this.cb( world, x, y, z ).selectPart( v3 );
 
 		if( sp.part != null )
 		{
@@ -261,24 +261,24 @@ public class BlockCableBus extends AEBaseTileBlock implements IRedNetConnection
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public boolean addHitEffects( World world, MovingObjectPosition target, EffectRenderer effectRenderer )
+	public boolean addHitEffects( final World world, final MovingObjectPosition target, final EffectRenderer effectRenderer )
 	{
-		Object object = this.cb( world, target.blockX, target.blockY, target.blockZ );
+		final Object object = this.cb( world, target.blockX, target.blockY, target.blockZ );
 		if( object instanceof IPartHost )
 		{
-			IPartHost host = (IPartHost) object;
+			final IPartHost host = (IPartHost) object;
 
-			for( ForgeDirection side : ForgeDirection.values() )
+			for( final ForgeDirection side : ForgeDirection.values() )
 			{
-				IPart p = host.getPart( side );
-				IIcon ico = this.getIcon( p );
+				final IPart p = host.getPart( side );
+				final IIcon ico = this.getIcon( p );
 
 				if( ico == null )
 				{
 					continue;
 				}
 
-				byte b0 = (byte) ( Platform.getRandomInt() % 2 == 0 ? 1 : 0 );
+				final byte b0 = (byte) ( Platform.getRandomInt() % 2 == 0 ? 1 : 0 );
 
 				for( int i1 = 0; i1 < b0; ++i1 )
 				{
@@ -286,14 +286,14 @@ public class BlockCableBus extends AEBaseTileBlock implements IRedNetConnection
 					{
 						for( int k1 = 0; k1 < b0; ++k1 )
 						{
-							double d0 = target.blockX + ( i1 + 0.5D ) / b0;
-							double d1 = target.blockY + ( j1 + 0.5D ) / b0;
-							double d2 = target.blockZ + ( k1 + 0.5D ) / b0;
+							final double d0 = target.blockX + ( i1 + 0.5D ) / b0;
+							final double d1 = target.blockY + ( j1 + 0.5D ) / b0;
+							final double d2 = target.blockZ + ( k1 + 0.5D ) / b0;
 
-							double dd0 = target.hitVec.xCoord;
-							double dd1 = target.hitVec.yCoord;
-							double dd2 = target.hitVec.zCoord;
-							EntityDiggingFX fx = ( new EntityDiggingFX( world, dd0, dd1, dd2, d0 - target.blockX - 0.5D, d1 - target.blockY - 0.5D, d2 - target.blockZ - 0.5D, this, 0 ) ).applyColourMultiplier( target.blockX, target.blockY, target.blockZ );
+							final double dd0 = target.hitVec.xCoord;
+							final double dd1 = target.hitVec.yCoord;
+							final double dd2 = target.hitVec.zCoord;
+							final EntityDiggingFX fx = ( new EntityDiggingFX( world, dd0, dd1, dd2, d0 - target.blockX - 0.5D, d1 - target.blockY - 0.5D, d2 - target.blockZ - 0.5D, this, 0 ) ).applyColourMultiplier( target.blockX, target.blockY, target.blockZ );
 
 							fx.setParticleIcon( ico );
 
@@ -309,24 +309,24 @@ public class BlockCableBus extends AEBaseTileBlock implements IRedNetConnection
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public boolean addDestroyEffects( World world, int x, int y, int z, int meta, EffectRenderer effectRenderer )
+	public boolean addDestroyEffects( final World world, final int x, final int y, final int z, final int meta, final EffectRenderer effectRenderer )
 	{
-		Object object = this.cb( world, x, y, z );
+		final Object object = this.cb( world, x, y, z );
 		if( object instanceof IPartHost )
 		{
-			IPartHost host = (IPartHost) object;
+			final IPartHost host = (IPartHost) object;
 
-			for( ForgeDirection side : ForgeDirection.values() )
+			for( final ForgeDirection side : ForgeDirection.values() )
 			{
-				IPart p = host.getPart( side );
-				IIcon ico = this.getIcon( p );
+				final IPart p = host.getPart( side );
+				final IIcon ico = this.getIcon( p );
 
 				if( ico == null )
 				{
 					continue;
 				}
 
-				byte b0 = 3;
+				final byte b0 = 3;
 
 				for( int i1 = 0; i1 < b0; ++i1 )
 				{
@@ -334,10 +334,10 @@ public class BlockCableBus extends AEBaseTileBlock implements IRedNetConnection
 					{
 						for( int k1 = 0; k1 < b0; ++k1 )
 						{
-							double d0 = x + ( i1 + 0.5D ) / b0;
-							double d1 = y + ( j1 + 0.5D ) / b0;
-							double d2 = z + ( k1 + 0.5D ) / b0;
-							EntityDiggingFX fx = ( new EntityDiggingFX( world, d0, d1, d2, d0 - x - 0.5D, d1 - y - 0.5D, d2 - z - 0.5D, this, meta ) ).applyColourMultiplier( x, y, z );
+							final double d0 = x + ( i1 + 0.5D ) / b0;
+							final double d1 = y + ( j1 + 0.5D ) / b0;
+							final double d2 = z + ( k1 + 0.5D ) / b0;
+							final EntityDiggingFX fx = ( new EntityDiggingFX( world, d0, d1, d2, d0 - x - 0.5D, d1 - y - 0.5D, d2 - z - 0.5D, this, meta ) ).applyColourMultiplier( x, y, z );
 
 							fx.setParticleIcon( ico );
 
@@ -352,7 +352,7 @@ public class BlockCableBus extends AEBaseTileBlock implements IRedNetConnection
 	}
 
 	@Override
-	public void onNeighborChange( IBlockAccess w, int x, int y, int z, int tileX, int tileY, int tileZ )
+	public void onNeighborChange( final IBlockAccess w, final int x, final int y, final int z, final int tileX, final int tileY, final int tileZ )
 	{
 		if( Platform.isServer() )
 		{
@@ -360,7 +360,7 @@ public class BlockCableBus extends AEBaseTileBlock implements IRedNetConnection
 		}
 	}
 
-	private IIcon getIcon( IPart p )
+	private IIcon getIcon( final IPart p )
 	{
 		if( p == null )
 		{
@@ -369,18 +369,18 @@ public class BlockCableBus extends AEBaseTileBlock implements IRedNetConnection
 
 		try
 		{
-			IIcon ico = p.getBreakingTexture();
+			final IIcon ico = p.getBreakingTexture();
 			if( ico != null )
 			{
 				return ico;
 			}
 		}
-		catch( Throwable t )
+		catch( final Throwable t )
 		{
 			// nothing.
 		}
 
-		ItemStack is = p.getItemStack( PartItemStack.Network );
+		final ItemStack is = p.getItemStack( PartItemStack.Network );
 		if( is == null || is.getItem() == null )
 		{
 			return null;
@@ -389,9 +389,9 @@ public class BlockCableBus extends AEBaseTileBlock implements IRedNetConnection
 		return is.getItem().getIcon( is, 0 );
 	}
 
-	private ICableBusContainer cb( IBlockAccess w, int x, int y, int z )
+	private ICableBusContainer cb( final IBlockAccess w, final int x, final int y, final int z )
 	{
-		TileEntity te = w.getTileEntity( x, y, z );
+		final TileEntity te = w.getTileEntity( x, y, z );
 		ICableBusContainer out = null;
 
 		if( te instanceof TileCableBus )
@@ -413,15 +413,15 @@ public class BlockCableBus extends AEBaseTileBlock implements IRedNetConnection
 	}
 
 	@Override
-	public IIcon getIcon( IBlockAccess w, int x, int y, int z, int s )
+	public IIcon getIcon( final IBlockAccess w, final int x, final int y, final int z, final int s )
 	{
 		return this.getIcon( s, 0 );
 	}
 
 	@Override
-	public IIcon getIcon( int direction, int metadata )
+	public IIcon getIcon( final int direction, final int metadata )
 	{
-		IIcon i = super.getIcon( direction, metadata );
+		final IIcon i = super.getIcon( direction, metadata );
 		if( i != null )
 		{
 			return i;
@@ -431,30 +431,30 @@ public class BlockCableBus extends AEBaseTileBlock implements IRedNetConnection
 	}
 
 	@Override
-	public boolean onActivated( World w, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ )
+	public boolean onActivated( final World w, final int x, final int y, final int z, final EntityPlayer player, final int side, final float hitX, final float hitY, final float hitZ )
 	{
 		return this.cb( w, x, y, z ).activate( player, Vec3.createVectorHelper( hitX, hitY, hitZ ) );
 	}
 
 	@Override
-	public void registerBlockIcons( IIconRegister iconRegistry )
+	public void registerBlockIcons( final IIconRegister iconRegistry )
 	{
 
 	}
 
 	@Override
-	public boolean recolourBlock( World world, int x, int y, int z, ForgeDirection side, int colour )
+	public boolean recolourBlock( final World world, final int x, final int y, final int z, final ForgeDirection side, final int colour )
 	{
 		return this.recolourBlock( world, x, y, z, side, colour, null );
 	}
 
-	public boolean recolourBlock( World world, int x, int y, int z, ForgeDirection side, int colour, EntityPlayer who )
+	public boolean recolourBlock( final World world, final int x, final int y, final int z, final ForgeDirection side, final int colour, final EntityPlayer who )
 	{
 		try
 		{
 			return this.cb( world, x, y, z ).recolourBlock( side, AEColor.values()[colour], who );
 		}
-		catch( Throwable ignored )
+		catch( final Throwable ignored )
 		{
 		}
 		return false;
@@ -462,15 +462,15 @@ public class BlockCableBus extends AEBaseTileBlock implements IRedNetConnection
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void getCheckedSubBlocks( Item item, CreativeTabs tabs, List<ItemStack> itemStacks )
+	public void getCheckedSubBlocks( final Item item, final CreativeTabs tabs, final List<ItemStack> itemStacks )
 	{
 		// do nothing
 	}
 
 	@Override
-	public <T extends AEBaseTile> T getTileEntity( IBlockAccess w, int x, int y, int z )
+	public <T extends AEBaseTile> T getTileEntity( final IBlockAccess w, final int x, final int y, final int z )
 	{
-		TileEntity te = w.getTileEntity( x, y, z );
+		final TileEntity te = w.getTileEntity( x, y, z );
 
 		if( noTesrTile.isInstance( te ) )
 		{
@@ -486,7 +486,7 @@ public class BlockCableBus extends AEBaseTileBlock implements IRedNetConnection
 	}
 
 	@Override
-	protected void setFeature( EnumSet<AEFeature> f )
+	protected void setFeature( final EnumSet<AEFeature> f )
 	{
 		final AECableBusFeatureHandler featureHandler = new AECableBusFeatureHandler( f, this, this.featureSubName );
 		this.setHandler( featureHandler );
@@ -507,12 +507,12 @@ public class BlockCableBus extends AEBaseTileBlock implements IRedNetConnection
 
 	@Override
 	@Method( iname = IntegrationType.MFR )
-	public RedNetConnectionType getConnectionType( World world, int x, int y, int z, ForgeDirection side )
+	public RedNetConnectionType getConnectionType( final World world, final int x, final int y, final int z, final ForgeDirection side )
 	{
 		return this.cb( world, x, y, z ).canConnectRedstone( EnumSet.allOf( ForgeDirection.class ) ) ? RedNetConnectionType.CableSingle : RedNetConnectionType.None;
 	}
 
-	public void setRenderColor( int color )
+	public void setRenderColor( final int color )
 	{
 		this.myColorMultiplier = color;
 	}

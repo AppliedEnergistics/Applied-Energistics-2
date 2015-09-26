@@ -52,11 +52,11 @@ public class BlockCraftingMonitor extends BlockCraftingUnit
 	}
 
 	@Override
-	public IIcon getIcon( int direction, int metadata )
+	public IIcon getIcon( final int direction, final int metadata )
 	{
 		if( direction != ForgeDirection.SOUTH.ordinal() )
 		{
-			for( Block craftingUnitBlock : AEApi.instance().definitions().blocks().craftingUnit().maybeBlock().asSet() )
+			for( final Block craftingUnitBlock : AEApi.instance().definitions().blocks().craftingUnit().maybeBlock().asSet() )
 			{
 				return craftingUnitBlock.getIcon( direction, metadata );
 			}
@@ -74,7 +74,7 @@ public class BlockCraftingMonitor extends BlockCraftingUnit
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void getCheckedSubBlocks( Item item, CreativeTabs tabs, List<ItemStack> itemStacks )
+	public void getCheckedSubBlocks( final Item item, final CreativeTabs tabs, final List<ItemStack> itemStacks )
 	{
 		itemStacks.add( new ItemStack( this, 1, 0 ) );
 	}

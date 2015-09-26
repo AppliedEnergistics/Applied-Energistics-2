@@ -31,11 +31,11 @@ public class AERotatableBlockSchematic extends SchematicBlock
 {
 
 	@Override
-	public void rotateLeft( IBuilderContext context )
+	public void rotateLeft( final IBuilderContext context )
 	{
 		if( this.meta < 6 )
 		{
-			ForgeDirection d = Platform.rotateAround( ForgeDirection.values()[this.meta], ForgeDirection.DOWN );
+			final ForgeDirection d = Platform.rotateAround( ForgeDirection.values()[this.meta], ForgeDirection.DOWN );
 			this.meta = d.ordinal();
 		}
 	}

@@ -92,12 +92,12 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 	private GuiButton cancel;
 	private int tooltip = -1;
 
-	public GuiCraftingCPU( InventoryPlayer inventoryPlayer, Object te )
+	public GuiCraftingCPU( final InventoryPlayer inventoryPlayer, final Object te )
 	{
 		this( new ContainerCraftingCPU( inventoryPlayer, te ) );
 	}
 
-	protected GuiCraftingCPU( ContainerCraftingCPU container )
+	protected GuiCraftingCPU( final ContainerCraftingCPU container )
 	{
 		super( container );
 		this.craftingCpu = container;
@@ -115,7 +115,7 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 	}
 
 	@Override
-	protected void actionPerformed( GuiButton btn )
+	protected void actionPerformed( final GuiButton btn )
 	{
 		super.actionPerformed( btn );
 
@@ -125,7 +125,7 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 			{
 				NetworkHandler.instance.sendToServer( new PacketValueConfig( "TileCrafting.Cancel", "Cancel" ) );
 			}
-			catch( IOException e )
+			catch( final IOException e )
 			{
 				AELog.error( e );
 			}
@@ -143,14 +143,14 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 
 	private void setScrollBar()
 	{
-		int size = this.visual.size();
+		final int size = this.visual.size();
 
 		this.myScrollBar.setTop( SCROLLBAR_TOP ).setLeft( SCROLLBAR_LEFT ).setHeight( SCROLLBAR_HEIGHT );
 		this.myScrollBar.setRange( 0, ( size + 2 ) / 3 - DISPLAYED_ROWS, 1 );
 	}
 
 	@Override
-	public void drawScreen( int mouseX, int mouseY, float btn )
+	public void drawScreen( final int mouseX, final int mouseY, final float btn )
 	{
 		this.cancel.enabled = !this.visual.isEmpty();
 
@@ -164,8 +164,8 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 		int x = 0;
 		for( int z = 0; z <= 4 * 5; z++ )
 		{
-			int minX = gx + 9 + x * 67;
-			int minY = gy + 22 + y * offY;
+			final int minX = gx + 9 + x * 67;
+			final int minY = gy + 22 + y * offY;
 
 			if( minX < mouseX && minX + 67 > mouseX )
 			{
@@ -189,7 +189,7 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 	}
 
 	@Override
-	public void drawFG( int offsetX, int offsetY, int mouseX, int mouseY )
+	public void drawFG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
 		String title = this.getGuiDisplayName( GuiText.CraftingStatus.getLocal() );
 
@@ -208,16 +208,16 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 		final int viewEnd = viewStart + 3 * 6;
 
 		String dspToolTip = "";
-		List<String> lineList = new LinkedList<String>();
+		final List<String> lineList = new LinkedList<String>();
 		int toolPosX = 0;
 		int toolPosY = 0;
 
-		int offY = 23;
+		final int offY = 23;
 
 		final ReadableNumberConverter converter = ReadableNumberConverter.INSTANCE;
 		for( int z = viewStart; z < Math.min( viewEnd, this.visual.size() ); z++ )
 		{
-			IAEItemStack refStack = this.visual.get( z );// repo.getReferenceItem( z );
+			final IAEItemStack refStack = this.visual.get( z );// repo.getReferenceItem( z );
 			if( refStack != null )
 			{
 				GL11.glPushMatrix();
@@ -248,19 +248,19 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 
 				if( AEConfig.instance.useColoredCraftingStatus && ( active || scheduled ) )
 				{
-					int bgColor = ( active ? AEColor.Green.blackVariant : AEColor.Yellow.blackVariant ) | BACKGROUND_ALPHA;
-					int startX = ( x * ( 1 + SECTION_LENGTH ) + ITEMSTACK_LEFT_OFFSET ) * 2;
-					int startY = ( ( y * offY + ITEMSTACK_TOP_OFFSET ) - 3 ) * 2;
+					final int bgColor = ( active ? AEColor.Green.blackVariant : AEColor.Yellow.blackVariant ) | BACKGROUND_ALPHA;
+					final int startX = ( x * ( 1 + SECTION_LENGTH ) + ITEMSTACK_LEFT_OFFSET ) * 2;
+					final int startY = ( ( y * offY + ITEMSTACK_TOP_OFFSET ) - 3 ) * 2;
 					drawRect( startX, startY, startX + ( SECTION_LENGTH * 2 ), startY + ( offY * 2 ) - 2, bgColor );
 				}
 
-				int negY = ( ( lines - 1 ) * 5 ) / 2;
+				final int negY = ( ( lines - 1 ) * 5 ) / 2;
 				int downY = 0;
 
 				if( stored != null && stored.getStackSize() > 0 )
 				{
 					final String str = GuiText.Stored.getLocal() + ": " + converter.toWideReadableForm( stored.getStackSize() );
-					int w = 4 + this.fontRendererObj.getStringWidth( str );
+					final int w = 4 + this.fontRendererObj.getStringWidth( str );
 					this.fontRendererObj.drawString( str, (int) ( ( x * ( 1 + SECTION_LENGTH ) + ITEMSTACK_LEFT_OFFSET + SECTION_LENGTH - 19 - ( w * 0.5 ) ) * 2 ), ( y * offY + ITEMSTACK_TOP_OFFSET + 6 - negY + downY ) * 2, TEXT_COLOR );
 
 					if( this.tooltip == z - viewStart )
@@ -300,10 +300,10 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 				}
 
 				GL11.glPopMatrix();
-				int posX = x * ( 1 + SECTION_LENGTH ) + ITEMSTACK_LEFT_OFFSET + SECTION_LENGTH - 19;
-				int posY = y * offY + ITEMSTACK_TOP_OFFSET;
+				final int posX = x * ( 1 + SECTION_LENGTH ) + ITEMSTACK_LEFT_OFFSET + SECTION_LENGTH - 19;
+				final int posY = y * offY + ITEMSTACK_TOP_OFFSET;
 
-				ItemStack is = refStack.copy().getItemStack();
+				final ItemStack is = refStack.copy().getItemStack();
 
 				if( this.tooltip == z - viewStart )
 				{
@@ -339,41 +339,41 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 	}
 
 	@Override
-	public void drawBG( int offsetX, int offsetY, int mouseX, int mouseY )
+	public void drawBG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
 		this.bindTexture( "guis/craftingcpu.png" );
 		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize );
 	}
 
-	public void postUpdate( List<IAEItemStack> list, byte ref )
+	public void postUpdate( final List<IAEItemStack> list, final byte ref )
 	{
 		switch( ref )
 		{
 			case 0:
-				for( IAEItemStack l : list )
+				for( final IAEItemStack l : list )
 				{
 					this.handleInput( this.storage, l );
 				}
 				break;
 
 			case 1:
-				for( IAEItemStack l : list )
+				for( final IAEItemStack l : list )
 				{
 					this.handleInput( this.active, l );
 				}
 				break;
 
 			case 2:
-				for( IAEItemStack l : list )
+				for( final IAEItemStack l : list )
 				{
 					this.handleInput( this.pending, l );
 				}
 				break;
 		}
 
-		for( IAEItemStack l : list )
+		for( final IAEItemStack l : list )
 		{
-			long amt = this.getTotal( l );
+			final long amt = this.getTotal( l );
 
 			if( amt <= 0 )
 			{
@@ -381,7 +381,7 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 			}
 			else
 			{
-				IAEItemStack is = this.findVisualStack( l );
+				final IAEItemStack is = this.findVisualStack( l );
 				is.setStackSize( amt );
 			}
 		}
@@ -389,7 +389,7 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 		this.setScrollBar();
 	}
 
-	private void handleInput( IItemList<IAEItemStack> s, IAEItemStack l )
+	private void handleInput( final IItemList<IAEItemStack> s, final IAEItemStack l )
 	{
 		IAEItemStack a = s.findPrecise( l );
 
@@ -415,7 +415,7 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 		}
 	}
 
-	private long getTotal( IAEItemStack is )
+	private long getTotal( final IAEItemStack is )
 	{
 		final IAEItemStack a = this.storage.findPrecise( is );
 		final IAEItemStack b = this.active.findPrecise( is );
@@ -441,13 +441,13 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 		return total;
 	}
 
-	private void deleteVisualStack( IAEItemStack l )
+	private void deleteVisualStack( final IAEItemStack l )
 	{
 		final Iterator<IAEItemStack> i = this.visual.iterator();
 
 		while( i.hasNext() )
 		{
-			IAEItemStack o = i.next();
+			final IAEItemStack o = i.next();
 			if( o.equals( l ) )
 			{
 				i.remove();
@@ -456,9 +456,9 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 		}
 	}
 
-	private IAEItemStack findVisualStack( IAEItemStack l )
+	private IAEItemStack findVisualStack( final IAEItemStack l )
 	{
-		for( IAEItemStack o : this.visual )
+		for( final IAEItemStack o : this.visual )
 		{
 			if( o.equals( l ) )
 			{

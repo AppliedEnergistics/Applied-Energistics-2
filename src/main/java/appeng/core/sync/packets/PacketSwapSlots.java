@@ -36,16 +36,16 @@ public class PacketSwapSlots extends AppEngPacket
 	final int slotB;
 
 	// automatic.
-	public PacketSwapSlots( ByteBuf stream )
+	public PacketSwapSlots( final ByteBuf stream )
 	{
 		this.slotA = stream.readInt();
 		this.slotB = stream.readInt();
 	}
 
 	// api
-	public PacketSwapSlots( int slotA, int slotB )
+	public PacketSwapSlots( final int slotA, final int slotB )
 	{
-		ByteBuf data = Unpooled.buffer();
+		final ByteBuf data = Unpooled.buffer();
 
 		data.writeInt( this.getPacketID() );
 		data.writeInt( this.slotA = slotA );
@@ -55,7 +55,7 @@ public class PacketSwapSlots extends AppEngPacket
 	}
 
 	@Override
-	public void serverPacketData( INetworkInfo manager, AppEngPacket packet, EntityPlayer player )
+	public void serverPacketData( final INetworkInfo manager, final AppEngPacket packet, final EntityPlayer player )
 	{
 		if( player != null && player.openContainer instanceof AEBaseContainer )
 		{

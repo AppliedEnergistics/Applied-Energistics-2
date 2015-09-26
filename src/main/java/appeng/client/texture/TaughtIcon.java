@@ -32,7 +32,7 @@ public class TaughtIcon implements IIcon
 
 	private final IIcon icon;
 
-	public TaughtIcon( IIcon icon, float tightness )
+	public TaughtIcon( final IIcon icon, final float tightness )
 	{
 		if( icon == null )
 		{
@@ -71,7 +71,7 @@ public class TaughtIcon implements IIcon
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public float getInterpolatedU( double d0 )
+	public float getInterpolatedU( final double d0 )
 	{
 		return this.u( d0 );
 	}
@@ -92,7 +92,7 @@ public class TaughtIcon implements IIcon
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public float getInterpolatedV( double d0 )
+	public float getInterpolatedV( final double d0 )
 	{
 		return this.v( d0 );
 	}

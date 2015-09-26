@@ -42,19 +42,19 @@ public final class PacketConfigButton extends AppEngPacket
 
 	// automatic.
 	@Reflected
-	public PacketConfigButton( ByteBuf stream )
+	public PacketConfigButton( final ByteBuf stream )
 	{
 		this.option = Settings.values()[stream.readInt()];
 		this.rotationDirection = stream.readBoolean();
 	}
 
 	// api
-	public PacketConfigButton( Settings option, boolean rotationDirection )
+	public PacketConfigButton( final Settings option, final boolean rotationDirection )
 	{
 		this.option = option;
 		this.rotationDirection = rotationDirection;
 
-		ByteBuf data = Unpooled.buffer();
+		final ByteBuf data = Unpooled.buffer();
 
 		data.writeInt( this.getPacketID() );
 		data.writeInt( option.ordinal() );
@@ -64,16 +64,16 @@ public final class PacketConfigButton extends AppEngPacket
 	}
 
 	@Override
-	public void serverPacketData( INetworkInfo manager, AppEngPacket packet, EntityPlayer player )
+	public void serverPacketData( final INetworkInfo manager, final AppEngPacket packet, final EntityPlayer player )
 	{
-		EntityPlayerMP sender = (EntityPlayerMP) player;
+		final EntityPlayerMP sender = (EntityPlayerMP) player;
 		if( sender.openContainer instanceof AEBaseContainer )
 		{
 			final AEBaseContainer baseContainer = (AEBaseContainer) sender.openContainer;
 			if( baseContainer.getTarget() instanceof IConfigurableObject )
 			{
-				IConfigManager cm = ( (IConfigurableObject) baseContainer.getTarget() ).getConfigManager();
-				Enum<?> newState = Platform.rotateEnum( cm.getSetting( this.option ), this.rotationDirection, this.option.getPossibleValues() );
+				final IConfigManager cm = ( (IConfigurableObject) baseContainer.getTarget() ).getConfigManager();
+				final Enum<?> newState = Platform.rotateEnum( cm.getSetting( this.option ), this.rotationDirection, this.option.getPossibleValues() );
 				cm.putSetting( this.option, newState );
 			}
 		}

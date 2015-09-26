@@ -66,27 +66,27 @@ public class BlockPaint extends AEBaseTileBlock
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void getCheckedSubBlocks( Item item, CreativeTabs tabs, List<ItemStack> itemStacks )
+	public void getCheckedSubBlocks( final Item item, final CreativeTabs tabs, final List<ItemStack> itemStacks )
 	{
 		// do nothing
 	}
 
 	@Override
-	public AxisAlignedBB getCollisionBoundingBoxFromPool( World world, int x, int y, int z )
+	public AxisAlignedBB getCollisionBoundingBoxFromPool( final World world, final int x, final int y, final int z )
 	{
 		return null;
 	}
 
 	@Override
-	public boolean canCollideCheck( int metadata, boolean isHoldingRightClick )
+	public boolean canCollideCheck( final int metadata, final boolean isHoldingRightClick )
 	{
 		return false;
 	}
 
 	@Override
-	public void onNeighborBlockChange( World w, int x, int y, int z, Block junk )
+	public void onNeighborBlockChange( final World w, final int x, final int y, final int z, final Block junk )
 	{
-		TilePaint tp = this.getTileEntity( w, x, y, z );
+		final TilePaint tp = this.getTileEntity( w, x, y, z );
 
 		if( tp != null )
 		{
@@ -95,19 +95,19 @@ public class BlockPaint extends AEBaseTileBlock
 	}
 
 	@Override
-	public Item getItemDropped( int meta, Random random, int fortune )
+	public Item getItemDropped( final int meta, final Random random, final int fortune )
 	{
 		return null;
 	}
 
 	@Override
-	public void dropBlockAsItemWithChance( World world, int x, int y, int z, int meta, float chance, int fortune )
+	public void dropBlockAsItemWithChance( final World world, final int x, final int y, final int z, final int meta, final float chance, final int fortune )
 	{
 
 	}
 
 	@Override
-	public void fillWithRain( World w, int x, int y, int z )
+	public void fillWithRain( final World w, final int x, final int y, final int z )
 	{
 		if( Platform.isServer() )
 		{
@@ -116,9 +116,9 @@ public class BlockPaint extends AEBaseTileBlock
 	}
 
 	@Override
-	public int getLightValue( IBlockAccess w, int x, int y, int z )
+	public int getLightValue( final IBlockAccess w, final int x, final int y, final int z )
 	{
-		TilePaint tp = this.getTileEntity( w, x, y, z );
+		final TilePaint tp = this.getTileEntity( w, x, y, z );
 
 		if( tp != null )
 		{
@@ -129,13 +129,13 @@ public class BlockPaint extends AEBaseTileBlock
 	}
 
 	@Override
-	public boolean isReplaceable( IBlockAccess world, int x, int y, int z )
+	public boolean isReplaceable( final IBlockAccess world, final int x, final int y, final int z )
 	{
 		return true;
 	}
 
 	@Override
-	public boolean isAir( IBlockAccess world, int x, int y, int z )
+	public boolean isAir( final IBlockAccess world, final int x, final int y, final int z )
 	{
 		return true;
 	}

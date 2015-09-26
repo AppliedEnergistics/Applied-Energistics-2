@@ -78,11 +78,11 @@ public class BlockSkyStone extends AEBaseBlock implements IOrientableBlock
 	}
 
 	@SubscribeEvent
-	public void breakFaster( PlayerEvent.BreakSpeed event )
+	public void breakFaster( final PlayerEvent.BreakSpeed event )
 	{
 		if( event.block == this && event.entityPlayer != null )
 		{
-			ItemStack is = event.entityPlayer.inventory.getCurrentItem();
+			final ItemStack is = event.entityPlayer.inventory.getCurrentItem();
 			int level = -1;
 
 			if( is != null && is.getItem() != null )
@@ -98,13 +98,13 @@ public class BlockSkyStone extends AEBaseBlock implements IOrientableBlock
 	}
 
 	@Override
-	public int damageDropped( int meta )
+	public int damageDropped( final int meta )
 	{
 		return meta;
 	}
 
 	@Override
-	public ItemStack getPickBlock( MovingObjectPosition target, World world, int x, int y, int z, EntityPlayer player )
+	public ItemStack getPickBlock( final MovingObjectPosition target, final World world, final int x, final int y, final int z, final EntityPlayer player )
 	{
 		final ItemStack is = super.getPickBlock( target, world, x, y, z, player );
 		is.setItemDamage( world.getBlockMetadata( x, y, z ) );
@@ -113,7 +113,7 @@ public class BlockSkyStone extends AEBaseBlock implements IOrientableBlock
 	}
 
 	@Override
-	public void onBlockAdded( World w, int x, int y, int z )
+	public void onBlockAdded( final World w, final int x, final int y, final int z )
 	{
 		super.onBlockAdded( w, x, y, z );
 		if( Platform.isServer() )
@@ -140,7 +140,7 @@ public class BlockSkyStone extends AEBaseBlock implements IOrientableBlock
 	}
 
 	@Override
-	public String getUnlocalizedName( ItemStack is )
+	public String getUnlocalizedName( final ItemStack is )
 	{
 		if( is.getItemDamage() == 1 )
 		{
@@ -162,7 +162,7 @@ public class BlockSkyStone extends AEBaseBlock implements IOrientableBlock
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void registerBlockIcons( IIconRegister ir )
+	public void registerBlockIcons( final IIconRegister ir )
 	{
 		super.registerBlockIcons( ir );
 		this.block = ir.registerIcon( this.getTextureName() + ".Block" );
@@ -172,7 +172,7 @@ public class BlockSkyStone extends AEBaseBlock implements IOrientableBlock
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public IIcon getIcon( int direction, int metadata )
+	public IIcon getIcon( final int direction, final int metadata )
 	{
 		if( metadata == 1 )
 		{
@@ -190,14 +190,14 @@ public class BlockSkyStone extends AEBaseBlock implements IOrientableBlock
 	}
 
 	@Override
-	public void setRenderStateByMeta( int metadata )
+	public void setRenderStateByMeta( final int metadata )
 	{
 		this.getRendererInstance().setTemporaryRenderIcon( this.getIcon( 0, metadata ) );
 	}
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void getCheckedSubBlocks( Item item, CreativeTabs tabs, List<ItemStack> itemStacks )
+	public void getCheckedSubBlocks( final Item item, final CreativeTabs tabs, final List<ItemStack> itemStacks )
 	{
 		super.getCheckedSubBlocks( item, tabs, itemStacks );
 
@@ -207,7 +207,7 @@ public class BlockSkyStone extends AEBaseBlock implements IOrientableBlock
 	}
 
 	@Override
-	public void breakBlock( World w, int x, int y, int z, Block b, int metadata )
+	public void breakBlock( final World w, final int x, final int y, final int z, final Block b, final int metadata )
 	{
 		super.breakBlock( w, x, y, z, b, metadata );
 		if( Platform.isServer() )

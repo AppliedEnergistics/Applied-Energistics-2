@@ -103,7 +103,7 @@ public final class ApiMaterials implements IMaterials
 	private final IItemDefinition qESingularity;
 	private final IItemDefinition blankPattern;
 
-	public ApiMaterials( DefinitionConstructor constructor )
+	public ApiMaterials( final DefinitionConstructor constructor )
 	{
 		final ItemMultiMaterial itemMultiMaterial = new ItemMultiMaterial();
 		constructor.registerItemDefinition( itemMultiMaterial );

@@ -34,13 +34,13 @@ public class PartInterfaceTerminal extends AbstractPartDisplay
 	private static final CableBusTextures FRONT_DARK_ICON = CableBusTextures.PartInterfaceTerm_Dark;
 	private static final CableBusTextures FRONT_COLORED_ICON = CableBusTextures.PartInterfaceTerm_Colored;
 
-	public PartInterfaceTerminal( ItemStack is )
+	public PartInterfaceTerminal( final ItemStack is )
 	{
 		super( is );
 	}
 
 	@Override
-	public boolean onPartActivate( EntityPlayer player, Vec3 pos )
+	public boolean onPartActivate( final EntityPlayer player, final Vec3 pos )
 	{
 		if( !super.onPartActivate( player, pos ) )
 		{

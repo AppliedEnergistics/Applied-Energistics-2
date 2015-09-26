@@ -56,7 +56,7 @@ public class TileController extends AENetworkPowerTile
 	}
 
 	@Override
-	public AECableType getCableConnectionType( ForgeDirection dir )
+	public AECableType getCableConnectionType( final ForgeDirection dir )
 	{
 		return AECableType.DENSE;
 	}
@@ -68,7 +68,7 @@ public class TileController extends AENetworkPowerTile
 		super.onReady();
 	}
 
-	public void onNeighborChange( boolean force )
+	public void onNeighborChange( final boolean force )
 	{
 		final boolean xx = checkController( this.xCoord - 1, this.yCoord, this.zCoord ) && checkController( this.xCoord + 1, this.yCoord, this.zCoord );
 		final boolean yy = checkController( this.xCoord, this.yCoord - 1, this.zCoord ) && checkController( this.xCoord, this.yCoord + 1, this.zCoord );
@@ -119,7 +119,7 @@ public class TileController extends AENetworkPowerTile
 				}
 			}
 		}
-		catch( GridAccessException e )
+		catch( final GridAccessException e )
 		{
 			meta = 0;
 		}
@@ -131,13 +131,13 @@ public class TileController extends AENetworkPowerTile
 	}
 
 	@Override
-	protected double getFunnelPowerDemand( double maxReceived )
+	protected double getFunnelPowerDemand( final double maxReceived )
 	{
 		try
 		{
 			return this.gridProxy.getEnergy().getEnergyDemand( 8000 );
 		}
-		catch( GridAccessException e )
+		catch( final GridAccessException e )
 		{
 			// no grid? use local...
 			return super.getFunnelPowerDemand( maxReceived );
@@ -145,18 +145,18 @@ public class TileController extends AENetworkPowerTile
 	}
 
 	@Override
-	protected double funnelPowerIntoStorage( double power, Actionable mode )
+	protected double funnelPowerIntoStorage( final double power, final Actionable mode )
 	{
 		try
 		{
-			double ret = this.gridProxy.getEnergy().injectPower( power, mode );
+			final double ret = this.gridProxy.getEnergy().injectPower( power, mode );
 			if( mode == Actionable.SIMULATE )
 			{
 				return ret;
 			}
 			return 0;
 		}
-		catch( GridAccessException e )
+		catch( final GridAccessException e )
 		{
 			// no grid? use local...
 			return super.funnelPowerIntoStorage( power, mode );
@@ -164,26 +164,26 @@ public class TileController extends AENetworkPowerTile
 	}
 
 	@Override
-	protected void PowerEvent( PowerEventType x )
+	protected void PowerEvent( final PowerEventType x )
 	{
 		try
 		{
 			this.gridProxy.getGrid().postEvent( new MENetworkPowerStorage( this, x ) );
 		}
-		catch( GridAccessException e )
+		catch( final GridAccessException e )
 		{
 			// not ready!
 		}
 	}
 
 	@MENetworkEventSubscribe
-	public void onControllerChange( MENetworkControllerChange status )
+	public void onControllerChange( final MENetworkControllerChange status )
 	{
 		this.updateMeta();
 	}
 
 	@MENetworkEventSubscribe
-	public void onPowerChange( MENetworkPowerStatusChange status )
+	public void onPowerChange( final MENetworkPowerStatusChange status )
 	{
 		this.updateMeta();
 	}
@@ -195,13 +195,13 @@ public class TileController extends AENetworkPowerTile
 	}
 
 	@Override
-	public void onChangeInventory( IInventory inv, int slot, InvOperation mc, ItemStack removed, ItemStack added )
+	public void onChangeInventory( final IInventory inv, final int slot, final InvOperation mc, final ItemStack removed, final ItemStack added )
 	{
 
 	}
 
 	@Override
-	public int[] getAccessibleSlotsBySide( ForgeDirection side )
+	public int[] getAccessibleSlotsBySide( final ForgeDirection side )
 	{
 		return ACCESSIBLE_SLOTS_BY_SIDE;
 	}
@@ -211,7 +211,7 @@ public class TileController extends AENetworkPowerTile
 	 *
 	 * @return true if there is a loaded controller
 	 */
-	private boolean checkController( int x, int y, int z )
+	private boolean checkController( final int x, final int y, final int z )
 	{
 		if( this.worldObj.getChunkProvider().chunkExists( this.xCoord >> 4, this.zCoord >> 4 ) )
 		{

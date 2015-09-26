@@ -23,22 +23,22 @@ import appeng.api.util.AEItemDefinition;
 @Deprecated
 public final class DefinitionConverter
 {
-	public AEItemDefinition of( ITileDefinition definition )
+	public AEItemDefinition of( final ITileDefinition definition )
 	{
 		return new AETile( definition );
 	}
 
-	public AEItemDefinition of( IBlockDefinition definition )
+	public AEItemDefinition of( final IBlockDefinition definition )
 	{
 		return new AEBlock( definition );
 	}
 
-	public AEItemDefinition of( IItemDefinition definition )
+	public AEItemDefinition of( final IItemDefinition definition )
 	{
 		return new AEItem( definition );
 	}
 
-	public AEItemDefinition of( IComparableDefinition definition )
+	public AEItemDefinition of( final IComparableDefinition definition )
 	{
 		return new AEComparable( definition );
 	}
@@ -47,7 +47,7 @@ public final class DefinitionConverter
 	{
 		private final IComparableDefinition definition;
 
-		public AEComparable( IComparableDefinition definition )
+		public AEComparable( final IComparableDefinition definition )
 		{
 			this.definition = definition;
 		}
@@ -75,19 +75,19 @@ public final class DefinitionConverter
 
 		@Nullable
 		@Override
-		public ItemStack stack( int stackSize )
+		public ItemStack stack( final int stackSize )
 		{
 			return null;
 		}
 
 		@Override
-		public boolean sameAsStack( ItemStack comparableItem )
+		public boolean sameAsStack( final ItemStack comparableItem )
 		{
 			return this.definition.isSameAs( comparableItem );
 		}
 
 		@Override
-		public boolean sameAsBlock( IBlockAccess world, int x, int y, int z )
+		public boolean sameAsBlock( final IBlockAccess world, final int x, final int y, final int z )
 		{
 			return false;
 		}
@@ -97,7 +97,7 @@ public final class DefinitionConverter
 	{
 		private final IItemDefinition definition;
 
-		public AEItem( IItemDefinition definition )
+		public AEItem( final IItemDefinition definition )
 		{
 			super( definition );
 
@@ -106,7 +106,7 @@ public final class DefinitionConverter
 
 		@Nullable
 		@Override
-		public ItemStack stack( int stackSize )
+		public ItemStack stack( final int stackSize )
 		{
 			return this.definition.maybeStack( stackSize ).orNull();
 		}
@@ -123,7 +123,7 @@ public final class DefinitionConverter
 	{
 		private final IBlockDefinition definition;
 
-		public AEBlock( IBlockDefinition definition )
+		public AEBlock( final IBlockDefinition definition )
 		{
 			super( definition );
 
@@ -138,7 +138,7 @@ public final class DefinitionConverter
 		}
 
 		@Override
-		public boolean sameAsBlock( IBlockAccess world, int x, int y, int z )
+		public boolean sameAsBlock( final IBlockAccess world, final int x, final int y, final int z )
 		{
 			return this.definition.isSameAs( world, x, y, z );
 		}
@@ -148,7 +148,7 @@ public final class DefinitionConverter
 	{
 		private final ITileDefinition definition;
 
-		public AETile( ITileDefinition definition )
+		public AETile( final ITileDefinition definition )
 		{
 			super( definition );
 

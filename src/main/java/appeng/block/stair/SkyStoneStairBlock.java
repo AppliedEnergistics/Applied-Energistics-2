@@ -29,7 +29,7 @@ import appeng.core.features.AEFeature;
 
 public class SkyStoneStairBlock extends AEBaseStairBlock
 {
-	public SkyStoneStairBlock( Block block, Integer meta )
+	public SkyStoneStairBlock( final Block block, final Integer meta )
 	{
 		super( block, meta, EnumSet.of( AEFeature.DecorativeQuartzBlocks ) );
 	}

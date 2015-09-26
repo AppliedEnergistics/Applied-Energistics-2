@@ -62,7 +62,7 @@ public final class PartP2POpenComputers extends PartP2PTunnel<PartP2POpenCompute
 
 	private final IWorldCallable<Void> updateCallback;
 
-	public PartP2POpenComputers( ItemStack is )
+	public PartP2POpenComputers( final ItemStack is )
 	{
 		super( is );
 
@@ -109,14 +109,14 @@ public final class PartP2POpenComputers extends PartP2PTunnel<PartP2POpenCompute
 		{
 			this.proxy.getTick().wakeDevice( this.proxy.getNode() );
 		}
-		catch( GridAccessException e )
+		catch( final GridAccessException e )
 		{
 			// ignore
 		}
 	}
 
 	@Override
-	public void readFromNBT( NBTTagCompound data )
+	public void readFromNBT( final NBTTagCompound data )
 	{
 		super.readFromNBT( data );
 		if( this.node != null )
@@ -126,7 +126,7 @@ public final class PartP2POpenComputers extends PartP2PTunnel<PartP2POpenCompute
 	}
 
 	@Override
-	public void writeToNBT( NBTTagCompound data )
+	public void writeToNBT( final NBTTagCompound data )
 	{
 		super.writeToNBT( data );
 		if( this.node != null )
@@ -136,13 +136,13 @@ public final class PartP2POpenComputers extends PartP2PTunnel<PartP2POpenCompute
 	}
 
 	@Override
-	public TickingRequest getTickingRequest( IGridNode node )
+	public TickingRequest getTickingRequest( final IGridNode node )
 	{
 		return new TickingRequest( TickRates.OpenComputersTunnel.min, TickRates.OpenComputersTunnel.max, true, false );
 	}
 
 	@Override
-	public TickRateModulation tickingRequest( IGridNode node, int ticksSinceLastCall )
+	public TickRateModulation tickingRequest( final IGridNode node, final int ticksSinceLastCall )
 	{
 		try
 		{
@@ -156,7 +156,7 @@ public final class PartP2POpenComputers extends PartP2PTunnel<PartP2POpenCompute
 				return TickRateModulation.SLEEP;
 			}
 		}
-		catch( GridAccessException e )
+		catch( final GridAccessException e )
 		{
 			// ignore
 		}
@@ -183,7 +183,7 @@ public final class PartP2POpenComputers extends PartP2PTunnel<PartP2POpenCompute
 			{
 				try
 				{
-					for( PartP2POpenComputers output : this.getOutputs() )
+					for( final PartP2POpenComputers output : this.getOutputs() )
 					{
 						if( this.node != null )
 						{
@@ -192,7 +192,7 @@ public final class PartP2POpenComputers extends PartP2PTunnel<PartP2POpenCompute
 						}
 					}
 				}
-				catch( GridAccessException e )
+				catch( final GridAccessException e )
 				{
 					AELog.error( e );
 				}
@@ -212,29 +212,29 @@ public final class PartP2POpenComputers extends PartP2PTunnel<PartP2POpenCompute
 	}
 
 	@Override
-	public void onConnect( Node node )
+	public void onConnect( final Node node )
 	{
 	}
 
 	@Override
-	public void onDisconnect( Node node )
+	public void onDisconnect( final Node node )
 	{
 	}
 
 	@Override
-	public void onMessage( Message message )
+	public void onMessage( final Message message )
 	{
 	}
 
 	@Nullable
 	@Override
-	public Node sidedNode( ForgeDirection side )
+	public Node sidedNode( final ForgeDirection side )
 	{
 		return side == this.side ? this.node : null;
 	}
 
 	@Override
-	public boolean canConnect( ForgeDirection side )
+	public boolean canConnect( final ForgeDirection side )
 	{
 		return side == this.side;
 	}
@@ -243,7 +243,7 @@ public final class PartP2POpenComputers extends PartP2PTunnel<PartP2POpenCompute
 	{
 		@Nullable
 		@Override
-		public Void call( World world ) throws Exception
+		public Void call( final World world ) throws Exception
 		{
 			PartP2POpenComputers.this.updateConnections();
 

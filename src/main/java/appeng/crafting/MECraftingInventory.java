@@ -59,7 +59,7 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack>
 		this.par = null;
 	}
 
-	public MECraftingInventory( MECraftingInventory parent )
+	public MECraftingInventory( final MECraftingInventory parent )
 	{
 		this.target = parent;
 		this.logExtracted = parent.logExtracted;
@@ -98,7 +98,7 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack>
 		this.par = parent;
 	}
 
-	public MECraftingInventory( IMEMonitor<IAEItemStack> target, BaseActionSource src, boolean logExtracted, boolean logInjections, boolean logMissing )
+	public MECraftingInventory( final IMEMonitor<IAEItemStack> target, final BaseActionSource src, final boolean logExtracted, final boolean logInjections, final boolean logMissing )
 	{
 		this.target = target;
 		this.logExtracted = logExtracted;
@@ -133,7 +133,7 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack>
 		}
 
 		this.localCache = AEApi.instance().storage().createItemList();
-		for( IAEItemStack is : target.getStorageList() )
+		for( final IAEItemStack is : target.getStorageList() )
 		{
 			this.localCache.add( target.extractItems( is, Actionable.SIMULATE, src ) );
 		}
@@ -141,7 +141,7 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack>
 		this.par = null;
 	}
 
-	public MECraftingInventory( IMEInventory<IAEItemStack> target, boolean logExtracted, boolean logInjections, boolean logMissing )
+	public MECraftingInventory( final IMEInventory<IAEItemStack> target, final boolean logExtracted, final boolean logInjections, final boolean logMissing )
 	{
 		this.target = target;
 		this.logExtracted = logExtracted;
@@ -180,7 +180,7 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack>
 	}
 
 	@Override
-	public IAEItemStack injectItems( IAEItemStack input, Actionable mode, BaseActionSource src )
+	public IAEItemStack injectItems( final IAEItemStack input, final Actionable mode, final BaseActionSource src )
 	{
 		if( input == null )
 		{
@@ -200,14 +200,14 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack>
 	}
 
 	@Override
-	public IAEItemStack extractItems( IAEItemStack request, Actionable mode, BaseActionSource src )
+	public IAEItemStack extractItems( final IAEItemStack request, final Actionable mode, final BaseActionSource src )
 	{
 		if( request == null )
 		{
 			return null;
 		}
 
-		IAEItemStack list = this.localCache.findPrecise( request );
+		final IAEItemStack list = this.localCache.findPrecise( request );
 		if( list == null || list.getStackSize() == 0 )
 		{
 			return null;
@@ -227,7 +227,7 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack>
 			return request;
 		}
 
-		IAEItemStack ret = request.copy();
+		final IAEItemStack ret = request.copy();
 		ret.setStackSize( list.getStackSize() );
 
 		if( mode == Actionable.MODULATE )
@@ -243,9 +243,9 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack>
 	}
 
 	@Override
-	public IItemList<IAEItemStack> getAvailableItems( IItemList<IAEItemStack> out )
+	public IItemList<IAEItemStack> getAvailableItems( final IItemList<IAEItemStack> out )
 	{
-		for( IAEItemStack is : this.localCache )
+		for( final IAEItemStack is : this.localCache )
 		{
 			out.add( is );
 		}
@@ -264,15 +264,15 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack>
 		return this.localCache;
 	}
 
-	public boolean commit( BaseActionSource src )
+	public boolean commit( final BaseActionSource src )
 	{
-		IItemList<IAEItemStack> added = AEApi.instance().storage().createItemList();
-		IItemList<IAEItemStack> pulled = AEApi.instance().storage().createItemList();
+		final IItemList<IAEItemStack> added = AEApi.instance().storage().createItemList();
+		final IItemList<IAEItemStack> pulled = AEApi.instance().storage().createItemList();
 		boolean failed = false;
 
 		if( this.logInjections )
 		{
-			for( IAEItemStack inject : this.injectedCache )
+			for( final IAEItemStack inject : this.injectedCache )
 			{
 				IAEItemStack result = null;
 				added.add( result = this.target.injectItems( inject, Actionable.MODULATE, src ) );
@@ -287,7 +287,7 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack>
 
 		if( failed )
 		{
-			for( IAEItemStack is : added )
+			for( final IAEItemStack is : added )
 			{
 				this.target.extractItems( is, Actionable.MODULATE, src );
 			}
@@ -297,7 +297,7 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack>
 
 		if( this.logExtracted )
 		{
-			for( IAEItemStack extra : this.extractedCache )
+			for( final IAEItemStack extra : this.extractedCache )
 			{
 				IAEItemStack result = null;
 				pulled.add( result = this.target.extractItems( extra, Actionable.MODULATE, src ) );
@@ -312,12 +312,12 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack>
 
 		if( failed )
 		{
-			for( IAEItemStack is : added )
+			for( final IAEItemStack is : added )
 			{
 				this.target.extractItems( is, Actionable.MODULATE, src );
 			}
 
-			for( IAEItemStack is : pulled )
+			for( final IAEItemStack is : pulled )
 			{
 				this.target.injectItems( is, Actionable.MODULATE, src );
 			}
@@ -327,7 +327,7 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack>
 
 		if( this.logMissing && this.par != null )
 		{
-			for( IAEItemStack extra : this.missingCache )
+			for( final IAEItemStack extra : this.missingCache )
 			{
 				this.par.addMissing( extra );
 			}
@@ -336,14 +336,14 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack>
 		return true;
 	}
 
-	public void addMissing( IAEItemStack extra )
+	public void addMissing( final IAEItemStack extra )
 	{
 		this.missingCache.add( extra );
 	}
 
-	public void ignore( IAEItemStack what )
+	public void ignore( final IAEItemStack what )
 	{
-		IAEItemStack list = this.localCache.findPrecise( what );
+		final IAEItemStack list = this.localCache.findPrecise( what );
 		if( list != null )
 		{
 			list.setStackSize( 0 );

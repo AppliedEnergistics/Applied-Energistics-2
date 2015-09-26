@@ -37,31 +37,31 @@ public class AppEngClientPacketHandler extends AppEngPacketHandlerBase implement
 {
 
 	@Override
-	public void onPacketData( INetworkInfo network, FMLProxyPacket packet, EntityPlayer player )
+	public void onPacketData( final INetworkInfo network, final FMLProxyPacket packet, EntityPlayer player )
 	{
-		ByteBuf stream = packet.payload();
+		final ByteBuf stream = packet.payload();
 
 		player = Minecraft.getMinecraft().thePlayer;
 
 		try
 		{
-			int packetType = stream.readInt();
-			AppEngPacket pack = PacketTypes.getPacket( packetType ).parsePacket( stream );
+			final int packetType = stream.readInt();
+			final AppEngPacket pack = PacketTypes.getPacket( packetType ).parsePacket( stream );
 			pack.clientPacketData( network, pack, player );
 		}
-		catch( InstantiationException e )
+		catch( final InstantiationException e )
 		{
 			AELog.error( e );
 		}
-		catch( IllegalAccessException e )
+		catch( final IllegalAccessException e )
 		{
 			AELog.error( e );
 		}
-		catch( IllegalArgumentException e )
+		catch( final IllegalArgumentException e )
 		{
 			AELog.error( e );
 		}
-		catch( InvocationTargetException e )
+		catch( final InvocationTargetException e )
 		{
 			AELog.error( e );
 		}

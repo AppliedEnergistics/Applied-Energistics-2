@@ -43,7 +43,7 @@ public class NetworkList implements Collection<Grid>
 	}
 
 	@Override
-	public boolean contains( Object o )
+	public boolean contains( final Object o )
 	{
 		return this.networks.contains( o );
 	}
@@ -61,47 +61,47 @@ public class NetworkList implements Collection<Grid>
 	}
 
 	@Override
-	public <T> T[] toArray( T[] a )
+	public <T> T[] toArray( final T[] a )
 	{
 		return this.networks.toArray( a );
 	}
 
 	@Override
-	public boolean add( Grid e )
+	public boolean add( final Grid e )
 	{
 		this.copy();
 		return this.networks.add( e );
 	}
 
 	@Override
-	public boolean remove( Object o )
+	public boolean remove( final Object o )
 	{
 		this.copy();
 		return this.networks.remove( o );
 	}
 
 	@Override
-	public boolean containsAll( Collection<?> c )
+	public boolean containsAll( final Collection<?> c )
 	{
 		return this.networks.containsAll( c );
 	}
 
 	@Override
-	public boolean addAll( Collection<? extends Grid> c )
+	public boolean addAll( final Collection<? extends Grid> c )
 	{
 		this.copy();
 		return this.networks.addAll( c );
 	}
 
 	@Override
-	public boolean removeAll( Collection<?> c )
+	public boolean removeAll( final Collection<?> c )
 	{
 		this.copy();
 		return this.networks.removeAll( c );
 	}
 
 	@Override
-	public boolean retainAll( Collection<?> c )
+	public boolean retainAll( final Collection<?> c )
 	{
 		this.copy();
 		return this.networks.retainAll( c );
@@ -115,7 +115,7 @@ public class NetworkList implements Collection<Grid>
 
 	private void copy()
 	{
-		List<Grid> old = this.networks;
+		final List<Grid> old = this.networks;
 		this.networks = new LinkedList<Grid>();
 		this.networks.addAll( old );
 	}

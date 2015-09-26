@@ -38,7 +38,7 @@ public abstract class AppEngPacket
 	AppEngPacketHandlerBase.PacketTypes id;
 	private ByteBuf p;
 
-	public void serverPacketData( INetworkInfo manager, AppEngPacket packet, EntityPlayer player )
+	public void serverPacketData( final INetworkInfo manager, final AppEngPacket packet, final EntityPlayer player )
 	{
 		throw new UnsupportedOperationException( "This packet ( " + this.getPacketID() + " does not implement a server side handler." );
 	}
@@ -48,12 +48,12 @@ public abstract class AppEngPacket
 		return AppEngPacketHandlerBase.PacketTypes.getID( this.getClass() ).ordinal();
 	}
 
-	public void clientPacketData( INetworkInfo network, AppEngPacket packet, EntityPlayer player )
+	public void clientPacketData( final INetworkInfo network, final AppEngPacket packet, final EntityPlayer player )
 	{
 		throw new UnsupportedOperationException( "This packet ( " + this.getPacketID() + " does not implement a client side handler." );
 	}
 
-	protected void configureWrite( ByteBuf data )
+	protected void configureWrite( final ByteBuf data )
 	{
 		data.capacity( data.readableBytes() );
 		this.p = data;
@@ -66,7 +66,7 @@ public abstract class AppEngPacket
 			throw new IllegalArgumentException( "Sorry AE2 made a " + this.p.array().length + " byte packet by accident!" );
 		}
 
-		FMLProxyPacket pp = new FMLProxyPacket( this.p, NetworkHandler.instance.getChannel() );
+		final FMLProxyPacket pp = new FMLProxyPacket( this.p, NetworkHandler.instance.getChannel() );
 
 		if( AEConfig.instance.isFeatureEnabled( AEFeature.PacketLogging ) )
 		{

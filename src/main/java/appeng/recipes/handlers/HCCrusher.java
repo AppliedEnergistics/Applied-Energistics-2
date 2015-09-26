@@ -43,11 +43,11 @@ public class HCCrusher implements ICraftHandler, IWebsiteSerializer
 	IIngredient[] pro_output;
 
 	@Override
-	public void setup( List<List<IIngredient>> input, List<List<IIngredient>> output ) throws RecipeError
+	public void setup( final List<List<IIngredient>> input, final List<List<IIngredient>> output ) throws RecipeError
 	{
 		if( input.size() == 1 && output.size() == 1 )
 		{
-			int outs = output.get( 0 ).size();
+			final int outs = output.get( 0 ).size();
 			if( input.get( 0 ).size() == 1 && outs == 1 )
 			{
 				this.pro_input = input.get( 0 ).get( 0 );
@@ -61,16 +61,16 @@ public class HCCrusher implements ICraftHandler, IWebsiteSerializer
 	@Override
 	public void register() throws RegistrationError, MissingIngredientError
 	{
-		for( ItemStack beginStack : this.pro_input.getItemStackSet() )
+		for( final ItemStack beginStack : this.pro_input.getItemStackSet() )
 		{
 			try
 			{
-				NBTTagCompound toRegister = new NBTTagCompound();
+				final NBTTagCompound toRegister = new NBTTagCompound();
 
-				ItemStack endStack = this.pro_output[0].getItemStack();
+				final ItemStack endStack = this.pro_output[0].getItemStack();
 
-				NBTTagCompound itemFrom = new NBTTagCompound();
-				NBTTagCompound itemTo = new NBTTagCompound();
+				final NBTTagCompound itemFrom = new NBTTagCompound();
+				final NBTTagCompound itemTo = new NBTTagCompound();
 
 				beginStack.writeToNBT( itemFrom );
 				endStack.writeToNBT( itemTo );
@@ -81,7 +81,7 @@ public class HCCrusher implements ICraftHandler, IWebsiteSerializer
 
 				FMLInterModComms.sendMessage( "HydCraft", "registerCrushingRecipe", toRegister );
 			}
-			catch( java.lang.RuntimeException err )
+			catch( final java.lang.RuntimeException err )
 			{
 				AELog.info( "Hydraulicraft not happy - " + err.getMessage() );
 			}
@@ -89,13 +89,13 @@ public class HCCrusher implements ICraftHandler, IWebsiteSerializer
 	}
 
 	@Override
-	public String getPattern( RecipeHandler h )
+	public String getPattern( final RecipeHandler h )
 	{
 		return null;
 	}
 
 	@Override
-	public boolean canCraft( ItemStack output ) throws RegistrationError, MissingIngredientError
+	public boolean canCraft( final ItemStack output ) throws RegistrationError, MissingIngredientError
 	{
 		return Platform.isSameItemPrecise( this.pro_output[0].getItemStack(), output );
 	}

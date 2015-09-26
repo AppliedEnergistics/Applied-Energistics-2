@@ -34,7 +34,7 @@ public final class CompassReader
 	private final int dimensionId;
 	private final File worldCompassFolder;
 
-	public CompassReader( int dimensionId, @Nonnull final File worldCompassFolder )
+	public CompassReader( final int dimensionId, @Nonnull final File worldCompassFolder )
 	{
 		Preconditions.checkNotNull( worldCompassFolder );
 		Preconditions.checkArgument( worldCompassFolder.isDirectory() );
@@ -45,7 +45,7 @@ public final class CompassReader
 
 	public void close()
 	{
-		for( CompassRegion r : this.regions.values() )
+		for( final CompassRegion r : this.regions.values() )
 		{
 			r.close();
 		}
@@ -53,21 +53,21 @@ public final class CompassReader
 		this.regions.clear();
 	}
 
-	public void setHasBeacon( int cx, int cz, int cdy, boolean hasBeacon )
+	public void setHasBeacon( final int cx, final int cz, final int cdy, final boolean hasBeacon )
 	{
 		final CompassRegion r = this.getRegion( cx, cz );
 
 		r.setHasBeacon( cx, cz, cdy, hasBeacon );
 	}
 
-	public boolean hasBeacon( int cx, int cz )
+	public boolean hasBeacon( final int cx, final int cz )
 	{
 		final CompassRegion r = this.getRegion( cx, cz );
 
 		return r.hasBeacon( cx, cz );
 	}
 
-	private CompassRegion getRegion( int cx, int cz )
+	private CompassRegion getRegion( final int cx, final int cz )
 	{
 		long pos = cx >> 10;
 		pos <<= 32;

@@ -38,12 +38,12 @@ public class WrapperChainedInventory implements IInventory
 	private List<IInventory> l;
 	private Map<Integer, InvOffset> offsets;
 
-	public WrapperChainedInventory( IInventory... inventories )
+	public WrapperChainedInventory( final IInventory... inventories )
 	{
 		this.setInventory( inventories );
 	}
 
-	public void setInventory( IInventory... a )
+	public void setInventory( final IInventory... a )
 	{
 		this.l = ImmutableList.copyOf( a );
 		this.calculateSizes();
@@ -54,9 +54,9 @@ public class WrapperChainedInventory implements IInventory
 		this.offsets = new HashMap<Integer, WrapperChainedInventory.InvOffset>();
 
 		int offset = 0;
-		for( IInventory in : this.l )
+		for( final IInventory in : this.l )
 		{
-			InvOffset io = new InvOffset();
+			final InvOffset io = new InvOffset();
 			io.offset = offset;
 			io.size = in.getSizeInventory();
 			io.i = in;
@@ -72,12 +72,12 @@ public class WrapperChainedInventory implements IInventory
 		this.fullSize = offset;
 	}
 
-	public WrapperChainedInventory( List<IInventory> inventories )
+	public WrapperChainedInventory( final List<IInventory> inventories )
 	{
 		this.setInventory( inventories );
 	}
 
-	public void setInventory( List<IInventory> a )
+	public void setInventory( final List<IInventory> a )
 	{
 		this.l = a;
 		this.calculateSizes();
@@ -87,7 +87,7 @@ public class WrapperChainedInventory implements IInventory
 	{
 		if( this.l.size() > 1 )
 		{
-			List<IInventory> newOrder = new ArrayList<IInventory>( this.l.size() );
+			final List<IInventory> newOrder = new ArrayList<IInventory>( this.l.size() );
 			newOrder.add( this.l.get( this.l.size() - 1 ) );
 			for( int x = 0; x < this.l.size() - 1; x++ )
 			{
@@ -97,9 +97,9 @@ public class WrapperChainedInventory implements IInventory
 		}
 	}
 
-	public IInventory getInv( int idx )
+	public IInventory getInv( final int idx )
 	{
-		InvOffset io = this.offsets.get( idx );
+		final InvOffset io = this.offsets.get( idx );
 		if( io != null )
 		{
 			return io.i;
@@ -107,9 +107,9 @@ public class WrapperChainedInventory implements IInventory
 		return null;
 	}
 
-	public int getInvSlot( int idx )
+	public int getInvSlot( final int idx )
 	{
-		InvOffset io = this.offsets.get( idx );
+		final InvOffset io = this.offsets.get( idx );
 		if( io != null )
 		{
 			return idx - io.offset;
@@ -124,9 +124,9 @@ public class WrapperChainedInventory implements IInventory
 	}
 
 	@Override
-	public ItemStack getStackInSlot( int idx )
+	public ItemStack getStackInSlot( final int idx )
 	{
-		InvOffset io = this.offsets.get( idx );
+		final InvOffset io = this.offsets.get( idx );
 		if( io != null )
 		{
 			return io.i.getStackInSlot( idx - io.offset );
@@ -135,9 +135,9 @@ public class WrapperChainedInventory implements IInventory
 	}
 
 	@Override
-	public ItemStack decrStackSize( int idx, int var2 )
+	public ItemStack decrStackSize( final int idx, final int var2 )
 	{
-		InvOffset io = this.offsets.get( idx );
+		final InvOffset io = this.offsets.get( idx );
 		if( io != null )
 		{
 			return io.i.decrStackSize( idx - io.offset, var2 );
@@ -146,9 +146,9 @@ public class WrapperChainedInventory implements IInventory
 	}
 
 	@Override
-	public ItemStack getStackInSlotOnClosing( int idx )
+	public ItemStack getStackInSlotOnClosing( final int idx )
 	{
-		InvOffset io = this.offsets.get( idx );
+		final InvOffset io = this.offsets.get( idx );
 		if( io != null )
 		{
 			return io.i.getStackInSlotOnClosing( idx - io.offset );
@@ -157,9 +157,9 @@ public class WrapperChainedInventory implements IInventory
 	}
 
 	@Override
-	public void setInventorySlotContents( int idx, ItemStack var2 )
+	public void setInventorySlotContents( final int idx, final ItemStack var2 )
 	{
-		InvOffset io = this.offsets.get( idx );
+		final InvOffset io = this.offsets.get( idx );
 		if( io != null )
 		{
 			io.i.setInventorySlotContents( idx - io.offset, var2 );
@@ -183,7 +183,7 @@ public class WrapperChainedInventory implements IInventory
 	{
 		int smallest = 64;
 
-		for( IInventory i : this.l )
+		for( final IInventory i : this.l )
 		{
 			smallest = Math.min( smallest, i.getInventoryStackLimit() );
 		}
@@ -194,14 +194,14 @@ public class WrapperChainedInventory implements IInventory
 	@Override
 	public void markDirty()
 	{
-		for( IInventory i : this.l )
+		for( final IInventory i : this.l )
 		{
 			i.markDirty();
 		}
 	}
 
 	@Override
-	public boolean isUseableByPlayer( EntityPlayer var1 )
+	public boolean isUseableByPlayer( final EntityPlayer var1 )
 	{
 		return false;
 	}
@@ -217,9 +217,9 @@ public class WrapperChainedInventory implements IInventory
 	}
 
 	@Override
-	public boolean isItemValidForSlot( int idx, ItemStack itemstack )
+	public boolean isItemValidForSlot( final int idx, final ItemStack itemstack )
 	{
-		InvOffset io = this.offsets.get( idx );
+		final InvOffset io = this.offsets.get( idx );
 		if( io != null )
 		{
 			return io.i.isItemValidForSlot( idx - io.offset, itemstack );

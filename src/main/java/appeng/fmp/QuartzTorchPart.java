@@ -43,12 +43,12 @@ public class QuartzTorchPart extends McSidedMetaPart implements IRandomDisplayTi
 		this( ForgeDirection.DOWN.ordinal() );
 	}
 
-	public QuartzTorchPart( int meta )
+	public QuartzTorchPart( final int meta )
 	{
 		super( meta );
 	}
 
-	public static McBlockPart placement( World world, BlockCoord pos, int side )
+	public static McBlockPart placement( final World world, BlockCoord pos, final int side )
 	{
 		pos = pos.copy().offset( side );
 		if( !world.isSideSolid( pos.x, pos.y, pos.z, ForgeDirection.getOrientation( side ) ) )
@@ -77,23 +77,23 @@ public class QuartzTorchPart extends McSidedMetaPart implements IRandomDisplayTi
 		return this.getBounds( this.meta );
 	}
 
-	public Cuboid6 getBounds( int meta )
+	public Cuboid6 getBounds( final int meta )
 	{
-		ForgeDirection up = ForgeDirection.getOrientation( meta );
-		double xOff = -0.3 * up.offsetX;
-		double yOff = -0.3 * up.offsetY;
-		double zOff = -0.3 * up.offsetZ;
+		final ForgeDirection up = ForgeDirection.getOrientation( meta );
+		final double xOff = -0.3 * up.offsetX;
+		final double yOff = -0.3 * up.offsetY;
+		final double zOff = -0.3 * up.offsetZ;
 		return new Cuboid6( xOff + 0.3, yOff + 0.3, zOff + 0.3, xOff + 0.7, yOff + 0.7, zOff + 0.7 );
 	}
 
 	@Override
-	public int sideForMeta( int meta )
+	public int sideForMeta( final int meta )
 	{
 		return ForgeDirection.getOrientation( meta ).getOpposite().ordinal();
 	}
 
 	@Override
-	public void randomDisplayTick( Random r )
+	public void randomDisplayTick( final Random r )
 	{
 		this.getBlock().randomDisplayTick( this.world(), this.x(), this.y(), this.z(), r );
 	}
@@ -101,7 +101,7 @@ public class QuartzTorchPart extends McSidedMetaPart implements IRandomDisplayTi
 	@Override
 	public Block getBlock()
 	{
-		for( Block torchBlock : AEApi.instance().definitions().blocks().quartzTorch().maybeBlock().asSet() )
+		for( final Block torchBlock : AEApi.instance().definitions().blocks().quartzTorch().maybeBlock().asSet() )
 		{
 			return torchBlock;
 		}

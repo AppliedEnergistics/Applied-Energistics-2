@@ -31,7 +31,7 @@ public class ContainerDrive extends AEBaseContainer
 
 	final TileDrive drive;
 
-	public ContainerDrive( InventoryPlayer ip, TileDrive drive )
+	public ContainerDrive( final InventoryPlayer ip, final TileDrive drive )
 	{
 		super( ip, drive, null );
 		this.drive = drive;

@@ -15,18 +15,18 @@ public class BlockUpgradeInventory extends UpgradeInventory
 {
 	private final Block block;
 
-	public BlockUpgradeInventory( Block block, IAEAppEngInventory parent, int s )
+	public BlockUpgradeInventory( final Block block, final IAEAppEngInventory parent, final int s )
 	{
 		super( parent, s );
 		this.block = block;
 	}
 
 	@Override
-	public int getMaxInstalled( Upgrades upgrades )
+	public int getMaxInstalled( final Upgrades upgrades )
 	{
 		int max = 0;
 
-		for( ItemStack is : upgrades.getSupported().keySet() )
+		for( final ItemStack is : upgrades.getSupported().keySet() )
 		{
 			final Item encodedItem = is.getItem();
 

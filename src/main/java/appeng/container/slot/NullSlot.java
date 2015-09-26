@@ -34,19 +34,19 @@ public class NullSlot extends Slot
 	}
 
 	@Override
-	public void onSlotChange( ItemStack par1ItemStack, ItemStack par2ItemStack )
+	public void onSlotChange( final ItemStack par1ItemStack, final ItemStack par2ItemStack )
 	{
 
 	}
 
 	@Override
-	public void onPickupFromSlot( EntityPlayer par1EntityPlayer, ItemStack par2ItemStack )
+	public void onPickupFromSlot( final EntityPlayer par1EntityPlayer, final ItemStack par2ItemStack )
 	{
 
 	}
 
 	@Override
-	public boolean isItemValid( ItemStack par1ItemStack )
+	public boolean isItemValid( final ItemStack par1ItemStack )
 	{
 		return false;
 	}
@@ -58,7 +58,7 @@ public class NullSlot extends Slot
 	}
 
 	@Override
-	public void putStack( ItemStack par1ItemStack )
+	public void putStack( final ItemStack par1ItemStack )
 	{
 
 	}
@@ -76,19 +76,19 @@ public class NullSlot extends Slot
 	}
 
 	@Override
-	public ItemStack decrStackSize( int par1 )
+	public ItemStack decrStackSize( final int par1 )
 	{
 		return null;
 	}
 
 	@Override
-	public boolean isSlotInInventory( IInventory par1IInventory, int par2 )
+	public boolean isSlotInInventory( final IInventory par1IInventory, final int par2 )
 	{
 		return false;
 	}
 
 	@Override
-	public boolean canTakeStack( EntityPlayer par1EntityPlayer )
+	public boolean canTakeStack( final EntityPlayer par1EntityPlayer )
 	{
 		return false;
 	}

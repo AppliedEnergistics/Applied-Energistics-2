@@ -53,7 +53,7 @@ public class FMPPlacementHelper implements IPartHost
 	private TileMultipart myMP;
 	private CableBusPart myPart;
 
-	public FMPPlacementHelper( TileMultipart mp )
+	public FMPPlacementHelper( final TileMultipart mp )
 	{
 		this.myMP = mp;
 	}
@@ -69,11 +69,11 @@ public class FMPPlacementHelper implements IPartHost
 	}
 
 	@Override
-	public boolean canAddPart( ItemStack part, ForgeDirection side )
+	public boolean canAddPart( final ItemStack part, final ForgeDirection side )
 	{
-		CableBusPart myPart = this.getPart();
+		final CableBusPart myPart = this.getPart();
 
-		boolean returnValue = this.hasPart && myPart.canAddPart( part, side );
+		final boolean returnValue = this.hasPart && myPart.canAddPart( part, side );
 
 		this.removePart();
 
@@ -82,10 +82,10 @@ public class FMPPlacementHelper implements IPartHost
 
 	private CableBusPart getPart()
 	{
-		scala.collection.Iterator<TMultiPart> i = this.myMP.partList().iterator();
+		final scala.collection.Iterator<TMultiPart> i = this.myMP.partList().iterator();
 		while( i.hasNext() )
 		{
-			TMultiPart p = i.next();
+			final TMultiPart p = i.next();
 			if( p instanceof CableBusPart )
 			{
 				this.myPart = (CableBusPart) p;
@@ -97,7 +97,7 @@ public class FMPPlacementHelper implements IPartHost
 			this.myPart = (CableBusPart) PartRegistry.CableBusPart.construct( 0 );
 		}
 
-		BlockCoord loc = new BlockCoord( this.myMP.xCoord, this.myMP.yCoord, this.myMP.zCoord );
+		final BlockCoord loc = new BlockCoord( this.myMP.xCoord, this.myMP.yCoord, this.myMP.zCoord );
 
 		if( this.myMP.canAddPart( this.myPart ) && Platform.isServer() )
 		{
@@ -112,10 +112,10 @@ public class FMPPlacementHelper implements IPartHost
 	{
 		if( this.myPart.isEmpty() )
 		{
-			scala.collection.Iterator<TMultiPart> i = this.myMP.partList().iterator();
+			final scala.collection.Iterator<TMultiPart> i = this.myMP.partList().iterator();
 			while( i.hasNext() )
 			{
-				TMultiPart p = i.next();
+				final TMultiPart p = i.next();
 				if( p == this.myPart )
 				{
 					this.myMP = this.myMP.remPart( this.myPart );
@@ -128,11 +128,11 @@ public class FMPPlacementHelper implements IPartHost
 	}
 
 	@Override
-	public ForgeDirection addPart( ItemStack is, ForgeDirection side, EntityPlayer owner )
+	public ForgeDirection addPart( final ItemStack is, final ForgeDirection side, final EntityPlayer owner )
 	{
-		CableBusPart myPart = this.getPart();
+		final CableBusPart myPart = this.getPart();
 
-		ForgeDirection returnValue = this.hasPart ? myPart.addPart( is, side, owner ) : null;
+		final ForgeDirection returnValue = this.hasPart ? myPart.addPart( is, side, owner ) : null;
 
 		this.removePart();
 
@@ -140,7 +140,7 @@ public class FMPPlacementHelper implements IPartHost
 	}
 
 	@Override
-	public IPart getPart( ForgeDirection side )
+	public IPart getPart( final ForgeDirection side )
 	{
 		if( this.myPart == null )
 		{
@@ -150,7 +150,7 @@ public class FMPPlacementHelper implements IPartHost
 	}
 
 	@Override
-	public void removePart( ForgeDirection side, boolean suppressUpdate )
+	public void removePart( final ForgeDirection side, final boolean suppressUpdate )
 	{
 		if( this.myPart == null )
 		{
@@ -206,11 +206,11 @@ public class FMPPlacementHelper implements IPartHost
 	}
 
 	@Override
-	public boolean isBlocked( ForgeDirection side )
+	public boolean isBlocked( final ForgeDirection side )
 	{
 		this.getPart();
 
-		boolean returnValue = this.myPart.isBlocked( side );
+		final boolean returnValue = this.myPart.isBlocked( side );
 
 		this.removePart();
 
@@ -218,7 +218,7 @@ public class FMPPlacementHelper implements IPartHost
 	}
 
 	@Override
-	public SelectedPart selectPart( Vec3 pos )
+	public SelectedPart selectPart( final Vec3 pos )
 	{
 		if( this.myPart == null )
 		{
@@ -248,7 +248,7 @@ public class FMPPlacementHelper implements IPartHost
 	}
 
 	@Override
-	public boolean hasRedstone( ForgeDirection side )
+	public boolean hasRedstone( final ForgeDirection side )
 	{
 		if( this.myPart == null )
 		{
@@ -311,13 +311,13 @@ public class FMPPlacementHelper implements IPartHost
 	{
 
 		@Override
-		public IFacadePart getFacade( int x )
+		public IFacadePart getFacade( final int x )
 		{
 			return null;
 		}
 
 		@Override
-		public void setFacade( int x, IFacadePart facade )
+		public void setFacade( final int x, final IFacadePart facade )
 		{
 
 		}

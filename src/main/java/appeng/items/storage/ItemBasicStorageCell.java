@@ -63,7 +63,7 @@ public final class ItemBasicStorageCell extends AEBaseItem implements IStorageCe
 	private final int perType;
 	private final double idleDrain;
 
-	public ItemBasicStorageCell( MaterialType whichCell, int kilobytes )
+	public ItemBasicStorageCell( final MaterialType whichCell, final int kilobytes )
 	{
 		super( Optional.of( kilobytes + "k" ) );
 
@@ -97,14 +97,14 @@ public final class ItemBasicStorageCell extends AEBaseItem implements IStorageCe
 	}
 
 	@Override
-	public void addCheckedInformation( ItemStack stack, EntityPlayer player, List<String> lines, boolean displayMoreInfo )
+	public void addCheckedInformation( final ItemStack stack, final EntityPlayer player, final List<String> lines, final boolean displayMoreInfo )
 	{
-		IMEInventoryHandler<?> inventory = AEApi.instance().registries().cell().getCellInventory( stack, null, StorageChannel.ITEMS );
+		final IMEInventoryHandler<?> inventory = AEApi.instance().registries().cell().getCellInventory( stack, null, StorageChannel.ITEMS );
 
 		if( inventory instanceof ICellInventoryHandler )
 		{
-			ICellInventoryHandler handler = (ICellInventoryHandler) inventory;
-			ICellInventory cellInventory = handler.getCellInv();
+			final ICellInventoryHandler handler = (ICellInventoryHandler) inventory;
+			final ICellInventory cellInventory = handler.getCellInv();
 
 			if( cellInventory != null )
 			{
@@ -114,7 +114,7 @@ public final class ItemBasicStorageCell extends AEBaseItem implements IStorageCe
 
 				if( handler.isPreformatted() )
 				{
-					String list = ( handler.getIncludeExcludeMode() == IncludeExclude.WHITELIST ? GuiText.Included : GuiText.Excluded ).getLocal();
+					final String list = ( handler.getIncludeExcludeMode() == IncludeExclude.WHITELIST ? GuiText.Included : GuiText.Excluded ).getLocal();
 
 					if( handler.isFuzzy() )
 					{
@@ -130,31 +130,31 @@ public final class ItemBasicStorageCell extends AEBaseItem implements IStorageCe
 	}
 
 	@Override
-	public int getBytes( ItemStack cellItem )
+	public int getBytes( final ItemStack cellItem )
 	{
 		return this.totalBytes;
 	}
 
 	@Override
-	public int BytePerType( ItemStack cell )
+	public int BytePerType( final ItemStack cell )
 	{
 		return this.perType;
 	}
 
 	@Override
-	public int getBytesPerType( ItemStack cellItem )
+	public int getBytesPerType( final ItemStack cellItem )
 	{
 		return this.perType;
 	}
 
 	@Override
-	public int getTotalTypes( ItemStack cellItem )
+	public int getTotalTypes( final ItemStack cellItem )
 	{
 		return 63;
 	}
 
 	@Override
-	public boolean isBlackListed( ItemStack cellItem, IAEItemStack requestedAddition )
+	public boolean isBlackListed( final ItemStack cellItem, final IAEItemStack requestedAddition )
 	{
 		return false;
 	}
@@ -166,7 +166,7 @@ public final class ItemBasicStorageCell extends AEBaseItem implements IStorageCe
 	}
 
 	@Override
-	public boolean isStorageCell( ItemStack i )
+	public boolean isStorageCell( final ItemStack i )
 	{
 		return true;
 	}
@@ -178,57 +178,57 @@ public final class ItemBasicStorageCell extends AEBaseItem implements IStorageCe
 	}
 
 	@Override
-	public String getUnlocalizedGroupName( Set<ItemStack> others, ItemStack is )
+	public String getUnlocalizedGroupName( final Set<ItemStack> others, final ItemStack is )
 	{
 		return GuiText.StorageCells.getUnlocalized();
 	}
 
 	@Override
-	public boolean isEditable( ItemStack is )
+	public boolean isEditable( final ItemStack is )
 	{
 		return true;
 	}
 
 	@Override
-	public IInventory getUpgradesInventory( ItemStack is )
+	public IInventory getUpgradesInventory( final ItemStack is )
 	{
 		return new CellUpgrades( is, 2 );
 	}
 
 	@Override
-	public IInventory getConfigInventory( ItemStack is )
+	public IInventory getConfigInventory( final ItemStack is )
 	{
 		return new CellConfig( is );
 	}
 
 	@Override
-	public FuzzyMode getFuzzyMode( ItemStack is )
+	public FuzzyMode getFuzzyMode( final ItemStack is )
 	{
-		String fz = Platform.openNbtData( is ).getString( "FuzzyMode" );
+		final String fz = Platform.openNbtData( is ).getString( "FuzzyMode" );
 		try
 		{
 			return FuzzyMode.valueOf( fz );
 		}
-		catch( Throwable t )
+		catch( final Throwable t )
 		{
 			return FuzzyMode.IGNORE_ALL;
 		}
 	}
 
 	@Override
-	public void setFuzzyMode( ItemStack is, FuzzyMode fzMode )
+	public void setFuzzyMode( final ItemStack is, final FuzzyMode fzMode )
 	{
 		Platform.openNbtData( is ).setString( "FuzzyMode", fzMode.name() );
 	}
 
 	@Override
-	public ItemStack onItemRightClick( ItemStack stack, World world, EntityPlayer player )
+	public ItemStack onItemRightClick( final ItemStack stack, final World world, final EntityPlayer player )
 	{
 		this.disassembleDrive( stack, world, player );
 		return stack;
 	}
 
-	private boolean disassembleDrive( ItemStack stack, World world, EntityPlayer player )
+	private boolean disassembleDrive( final ItemStack stack, final World world, final EntityPlayer player )
 	{
 		if( player.isSneaking() )
 		{
@@ -237,18 +237,18 @@ public final class ItemBasicStorageCell extends AEBaseItem implements IStorageCe
 				return false;
 			}
 
-			InventoryPlayer playerInventory = player.inventory;
-			IMEInventoryHandler inv = AEApi.instance().registries().cell().getCellInventory( stack, null, StorageChannel.ITEMS );
+			final InventoryPlayer playerInventory = player.inventory;
+			final IMEInventoryHandler inv = AEApi.instance().registries().cell().getCellInventory( stack, null, StorageChannel.ITEMS );
 			if( inv != null && playerInventory.getCurrentItem() == stack )
 			{
-				InventoryAdaptor ia = InventoryAdaptor.getAdaptor( player, ForgeDirection.UNKNOWN );
-				IItemList<IAEItemStack> list = inv.getAvailableItems( StorageChannel.ITEMS.createList() );
+				final InventoryAdaptor ia = InventoryAdaptor.getAdaptor( player, ForgeDirection.UNKNOWN );
+				final IItemList<IAEItemStack> list = inv.getAvailableItems( StorageChannel.ITEMS.createList() );
 				if( list.isEmpty() && ia != null )
 				{
 					playerInventory.setInventorySlotContents( playerInventory.currentItem, null );
 
 					// drop core
-					ItemStack extraB = ia.addItems( this.component.stack( 1 ) );
+					final ItemStack extraB = ia.addItems( this.component.stack( 1 ) );
 					if( extraB != null )
 					{
 						player.dropPlayerItemWithRandomChoice( extraB, false );
@@ -267,7 +267,7 @@ public final class ItemBasicStorageCell extends AEBaseItem implements IStorageCe
 					}
 
 					// drop empty storage cell case
-					for( ItemStack storageCellStack : AEApi.instance().definitions().materials().emptyStorageCell().maybeStack( 1 ).asSet() )
+					for( final ItemStack storageCellStack : AEApi.instance().definitions().materials().emptyStorageCell().maybeStack( 1 ).asSet() )
 					{
 						final ItemStack extraA = ia.addItems( storageCellStack );
 						if( extraA != null )
@@ -289,15 +289,15 @@ public final class ItemBasicStorageCell extends AEBaseItem implements IStorageCe
 	}
 
 	@Override
-	public boolean onItemUseFirst( ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ )
+	public boolean onItemUseFirst( final ItemStack stack, final EntityPlayer player, final World world, final int x, final int y, final int z, final int side, final float hitX, final float hitY, final float hitZ )
 	{
 		return this.disassembleDrive( stack, world, player );
 	}
 
 	@Override
-	public ItemStack getContainerItem( ItemStack itemStack )
+	public ItemStack getContainerItem( final ItemStack itemStack )
 	{
-		for( ItemStack stack : AEApi.instance().definitions().materials().emptyStorageCell().maybeStack( 1 ).asSet() )
+		for( final ItemStack stack : AEApi.instance().definitions().materials().emptyStorageCell().maybeStack( 1 ).asSet() )
 		{
 			return stack;
 		}
@@ -306,7 +306,7 @@ public final class ItemBasicStorageCell extends AEBaseItem implements IStorageCe
 	}
 
 	@Override
-	public boolean hasContainerItem( ItemStack stack )
+	public boolean hasContainerItem( final ItemStack stack )
 	{
 		return AEConfig.instance.isFeatureEnabled( AEFeature.enableDisassemblyCrafting );
 	}

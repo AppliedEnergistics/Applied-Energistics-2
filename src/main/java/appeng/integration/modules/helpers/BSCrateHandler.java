@@ -33,13 +33,13 @@ public class BSCrateHandler implements IExternalStorageHandler
 {
 
 	@Override
-	public boolean canHandle( TileEntity te, ForgeDirection d, StorageChannel channel, BaseActionSource mySrc )
+	public boolean canHandle( final TileEntity te, final ForgeDirection d, final StorageChannel channel, final BaseActionSource mySrc )
 	{
 		return channel == StorageChannel.ITEMS && te instanceof ICrateStorage;
 	}
 
 	@Override
-	public IMEInventory getInventory( TileEntity te, ForgeDirection d, StorageChannel channel, BaseActionSource src )
+	public IMEInventory getInventory( final TileEntity te, final ForgeDirection d, final StorageChannel channel, final BaseActionSource src )
 	{
 		if( channel == StorageChannel.ITEMS )
 		{

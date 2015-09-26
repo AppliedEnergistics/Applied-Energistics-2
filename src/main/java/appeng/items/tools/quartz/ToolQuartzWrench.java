@@ -44,7 +44,7 @@ import appeng.util.Platform;
 public class ToolQuartzWrench extends AEBaseItem implements IAEWrench, IToolWrench
 {
 
-	public ToolQuartzWrench( AEFeature type )
+	public ToolQuartzWrench( final AEFeature type )
 	{
 		super( Optional.of( type.name() ) );
 
@@ -54,9 +54,9 @@ public class ToolQuartzWrench extends AEBaseItem implements IAEWrench, IToolWren
 	}
 
 	@Override
-	public boolean onItemUseFirst( ItemStack is, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ )
+	public boolean onItemUseFirst( final ItemStack is, final EntityPlayer player, final World world, final int x, final int y, final int z, final int side, final float hitX, final float hitY, final float hitZ )
 	{
-		Block b = world.getBlock( x, y, z );
+		final Block b = world.getBlock( x, y, z );
 		if( b != null && !player.isSneaking() && Platform.hasPermissions( new DimensionalCoord( world, x, y, z ), player ) )
 		{
 			if( Platform.isClient() )
@@ -64,7 +64,7 @@ public class ToolQuartzWrench extends AEBaseItem implements IAEWrench, IToolWren
 				return !world.isRemote;
 			}
 
-			ForgeDirection mySide = ForgeDirection.getOrientation( side );
+			final ForgeDirection mySide = ForgeDirection.getOrientation( side );
 			if( b.rotateBlock( world, x, y, z, mySide ) )
 			{
 				b.onNeighborBlockChange( world, x, y, z, Platform.AIR_BLOCK );
@@ -77,25 +77,25 @@ public class ToolQuartzWrench extends AEBaseItem implements IAEWrench, IToolWren
 
 	@Override
 	// public boolean shouldPassSneakingClickToBlock(World w, int x, int y, int z)
-	public boolean doesSneakBypassUse( World world, int x, int y, int z, EntityPlayer player )
+	public boolean doesSneakBypassUse( final World world, final int x, final int y, final int z, final EntityPlayer player )
 	{
 		return true;
 	}
 
 	@Override
-	public boolean canWrench( ItemStack is, EntityPlayer player, int x, int y, int z )
+	public boolean canWrench( final ItemStack is, final EntityPlayer player, final int x, final int y, final int z )
 	{
 		return true;
 	}
 
 	@Override
-	public boolean canWrench( EntityPlayer player, int x, int y, int z )
+	public boolean canWrench( final EntityPlayer player, final int x, final int y, final int z )
 	{
 		return true;
 	}
 
 	@Override
-	public void wrenchUsed( EntityPlayer player, int x, int y, int z )
+	public void wrenchUsed( final EntityPlayer player, final int x, final int y, final int z )
 	{
 		player.swingItem();
 	}

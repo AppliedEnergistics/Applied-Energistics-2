@@ -32,13 +32,13 @@ public class TunnelCollection<T extends PartP2PTunnel> implements Iterable<T>
 	final Class clz;
 	Collection<T> tunnelSources;
 
-	public TunnelCollection( Collection<T> src, Class c )
+	public TunnelCollection( final Collection<T> src, final Class c )
 	{
 		this.tunnelSources = src;
 		this.clz = c;
 	}
 
-	public void setSource( Collection<T> c )
+	public void setSource( final Collection<T> c )
 	{
 		this.tunnelSources = c;
 	}
@@ -58,7 +58,7 @@ public class TunnelCollection<T extends PartP2PTunnel> implements Iterable<T>
 		return new TunnelIterator<T>( this.tunnelSources, this.clz );
 	}
 
-	public boolean matches( Class<? extends PartP2PTunnel> c )
+	public boolean matches( final Class<? extends PartP2PTunnel> c )
 	{
 		return this.clz == c;
 	}

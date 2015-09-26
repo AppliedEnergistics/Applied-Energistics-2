@@ -30,18 +30,18 @@ import net.minecraft.world.World;
 
 public abstract class AEBaseEntityItem extends EntityItem
 {
-	public AEBaseEntityItem( World world )
+	public AEBaseEntityItem( final World world )
 	{
 		super( world );
 	}
 
-	public AEBaseEntityItem( World world, double x, double y, double z, ItemStack stack )
+	public AEBaseEntityItem( final World world, final double x, final double y, final double z, final ItemStack stack )
 	{
 		super( world, x, y, z, stack );
 	}
 
 	@SuppressWarnings( "unchecked" )
-	public List<Entity> getCheckedEntitiesWithinAABBExcludingEntity( AxisAlignedBB region )
+	public List<Entity> getCheckedEntitiesWithinAABBExcludingEntity( final AxisAlignedBB region )
 	{
 		return this.worldObj.getEntitiesWithinAABBExcludingEntity( this, region );
 	}

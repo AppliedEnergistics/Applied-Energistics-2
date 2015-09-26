@@ -44,13 +44,13 @@ public class PartP2PRedstone extends PartP2PTunnel<PartP2PRedstone>
 	int power;
 	boolean recursive = false;
 
-	public PartP2PRedstone( ItemStack is )
+	public PartP2PRedstone( final ItemStack is )
 	{
 		super( is );
 	}
 
 	@MENetworkEventSubscribe
-	public void changeStateA( MENetworkBootingStatusChange bs )
+	public void changeStateA( final MENetworkBootingStatusChange bs )
 	{
 		this.setNetworkReady();
 	}
@@ -59,7 +59,7 @@ public class PartP2PRedstone extends PartP2PTunnel<PartP2PRedstone>
 	{
 		if( this.output )
 		{
-			PartP2PRedstone in = this.getInput();
+			final PartP2PRedstone in = this.getInput();
 			if( in != null )
 			{
 				this.putInput( in.power );
@@ -67,7 +67,7 @@ public class PartP2PRedstone extends PartP2PTunnel<PartP2PRedstone>
 		}
 	}
 
-	protected void putInput( Object o )
+	protected void putInput( final Object o )
 	{
 		if( this.recursive )
 		{
@@ -77,7 +77,7 @@ public class PartP2PRedstone extends PartP2PTunnel<PartP2PRedstone>
 		this.recursive = true;
 		if( this.output && this.proxy.isActive() )
 		{
-			int newPower = (Integer) o;
+			final int newPower = (Integer) o;
 			if( this.power != newPower )
 			{
 				this.power = newPower;
@@ -89,11 +89,11 @@ public class PartP2PRedstone extends PartP2PTunnel<PartP2PRedstone>
 
 	public void notifyNeighbors()
 	{
-		World worldObj = this.tile.getWorldObj();
+		final World worldObj = this.tile.getWorldObj();
 
-		int xCoord = this.tile.xCoord;
-		int yCoord = this.tile.yCoord;
-		int zCoord = this.tile.zCoord;
+		final int xCoord = this.tile.xCoord;
+		final int yCoord = this.tile.yCoord;
+		final int zCoord = this.tile.zCoord;
 
 		Platform.notifyBlocksOfNeighbors( worldObj, xCoord, yCoord, zCoord );
 
@@ -107,13 +107,13 @@ public class PartP2PRedstone extends PartP2PTunnel<PartP2PRedstone>
 	}
 
 	@MENetworkEventSubscribe
-	public void changeStateB( MENetworkChannelsChanged bs )
+	public void changeStateB( final MENetworkChannelsChanged bs )
 	{
 		this.setNetworkReady();
 	}
 
 	@MENetworkEventSubscribe
-	public void changeStateC( MENetworkPowerStatusChange bs )
+	public void changeStateC( final MENetworkPowerStatusChange bs )
 	{
 		this.setNetworkReady();
 	}
@@ -126,14 +126,14 @@ public class PartP2PRedstone extends PartP2PTunnel<PartP2PRedstone>
 	}
 
 	@Override
-	public void readFromNBT( NBTTagCompound tag )
+	public void readFromNBT( final NBTTagCompound tag )
 	{
 		super.readFromNBT( tag );
 		this.power = tag.getInteger( "power" );
 	}
 
 	@Override
-	public void writeToNBT( NBTTagCompound tag )
+	public void writeToNBT( final NBTTagCompound tag )
 	{
 		super.writeToNBT( tag );
 		tag.setInteger( "power", this.power );
@@ -155,11 +155,11 @@ public class PartP2PRedstone extends PartP2PTunnel<PartP2PRedstone>
 	{
 		if( !this.output )
 		{
-			int x = this.tile.xCoord + this.side.offsetX;
-			int y = this.tile.yCoord + this.side.offsetY;
-			int z = this.tile.zCoord + this.side.offsetZ;
+			final int x = this.tile.xCoord + this.side.offsetX;
+			final int y = this.tile.yCoord + this.side.offsetY;
+			final int z = this.tile.zCoord + this.side.offsetZ;
 
-			Block b = this.tile.getWorldObj().getBlock( x, y, z );
+			final Block b = this.tile.getWorldObj().getBlock( x, y, z );
 			if( b != null && !this.output )
 			{
 				int srcSide = this.side.ordinal();
@@ -196,16 +196,16 @@ public class PartP2PRedstone extends PartP2PTunnel<PartP2PRedstone>
 		return this.output ? this.power : 0;
 	}
 
-	private void sendToOutput( int power )
+	private void sendToOutput( final int power )
 	{
 		try
 		{
-			for( PartP2PRedstone rs : this.getOutputs() )
+			for( final PartP2PRedstone rs : this.getOutputs() )
 			{
 				rs.putInput( power );
 			}
 		}
-		catch( GridAccessException e )
+		catch( final GridAccessException e )
 		{
 			// :P
 		}

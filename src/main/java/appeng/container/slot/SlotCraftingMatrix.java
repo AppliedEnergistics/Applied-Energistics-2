@@ -29,7 +29,7 @@ public class SlotCraftingMatrix extends AppEngSlot
 
 	final Container c;
 
-	public SlotCraftingMatrix( Container c, IInventory par1iInventory, int par2, int par3, int par4 )
+	public SlotCraftingMatrix( final Container c, final IInventory par1iInventory, final int par2, final int par3, final int par4 )
 	{
 		super( par1iInventory, par2, par3, par4 );
 		this.c = c;
@@ -43,7 +43,7 @@ public class SlotCraftingMatrix extends AppEngSlot
 	}
 
 	@Override
-	public void putStack( ItemStack par1ItemStack )
+	public void putStack( final ItemStack par1ItemStack )
 	{
 		super.putStack( par1ItemStack );
 		this.c.onCraftMatrixChanged( this.inventory );
@@ -56,9 +56,9 @@ public class SlotCraftingMatrix extends AppEngSlot
 	}
 
 	@Override
-	public ItemStack decrStackSize( int par1 )
+	public ItemStack decrStackSize( final int par1 )
 	{
-		ItemStack is = super.decrStackSize( par1 );
+		final ItemStack is = super.decrStackSize( par1 );
 		this.c.onCraftMatrixChanged( this.inventory );
 		return is;
 	}

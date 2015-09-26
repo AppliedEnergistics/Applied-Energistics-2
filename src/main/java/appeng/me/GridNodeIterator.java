@@ -37,7 +37,7 @@ public class GridNodeIterator implements Iterator<IGridNode>
 	private final Iterator<MachineSet> outerIterator;
 	private Iterator<IGridNode> innerIterator;
 
-	public GridNodeIterator( Map<Class<? extends IGridHost>, MachineSet> machines )
+	public GridNodeIterator( final Map<Class<? extends IGridHost>, MachineSet> machines )
 	{
 		this.outerIterator = machines.values().iterator();
 		this.innerHasNext();

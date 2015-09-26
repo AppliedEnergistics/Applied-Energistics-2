@@ -31,7 +31,7 @@ public final class ProxyNodeIterator implements Iterator<IGridNode>
 {
 	private final Iterator<IGridHost> hosts;
 
-	public ProxyNodeIterator( Iterator<IGridHost> hosts )
+	public ProxyNodeIterator( final Iterator<IGridHost> hosts )
 	{
 		this.hosts = hosts;
 	}
@@ -45,7 +45,7 @@ public final class ProxyNodeIterator implements Iterator<IGridNode>
 	@Override
 	public IGridNode next()
 	{
-		IGridHost host = this.hosts.next();
+		final IGridHost host = this.hosts.next();
 		return host.getGridNode( ForgeDirection.UNKNOWN );
 	}
 

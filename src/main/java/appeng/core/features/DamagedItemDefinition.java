@@ -37,7 +37,7 @@ public final class DamagedItemDefinition implements IItemDefinition
 	private static final ItemTransformer ITEM_TRANSFORMER = new ItemTransformer();
 	private final Optional<IStackSrc> source;
 
-	public DamagedItemDefinition( @Nonnull IStackSrc source )
+	public DamagedItemDefinition( @Nonnull final IStackSrc source )
 	{
 		Preconditions.checkNotNull( source );
 
@@ -58,7 +58,7 @@ public final class DamagedItemDefinition implements IItemDefinition
 	}
 
 	@Override
-	public Optional<ItemStack> maybeStack( int stackSize )
+	public Optional<ItemStack> maybeStack( final int stackSize )
 	{
 		return this.source.transform( new ItemStackTransformer( stackSize ) );
 	}
@@ -70,7 +70,7 @@ public final class DamagedItemDefinition implements IItemDefinition
 	}
 
 	@Override
-	public boolean isSameAs( ItemStack comparableStack )
+	public boolean isSameAs( final ItemStack comparableStack )
 	{
 		if( comparableStack == null )
 		{
@@ -81,7 +81,7 @@ public final class DamagedItemDefinition implements IItemDefinition
 	}
 
 	@Override
-	public boolean isSameAs( IBlockAccess world, int x, int y, int z )
+	public boolean isSameAs( final IBlockAccess world, final int x, final int y, final int z )
 	{
 		return false;
 	}
@@ -89,7 +89,7 @@ public final class DamagedItemDefinition implements IItemDefinition
 	private static class ItemTransformer implements Function<IStackSrc, Item>
 	{
 		@Override
-		public Item apply( IStackSrc input )
+		public Item apply( final IStackSrc input )
 		{
 			return input.getItem();
 		}
@@ -99,7 +99,7 @@ public final class DamagedItemDefinition implements IItemDefinition
 	{
 		private final int stackSize;
 
-		public ItemStackTransformer( int stackSize )
+		public ItemStackTransformer( final int stackSize )
 		{
 			Preconditions.checkArgument( stackSize > 0 );
 
@@ -107,7 +107,7 @@ public final class DamagedItemDefinition implements IItemDefinition
 		}
 
 		@Override
-		public ItemStack apply( IStackSrc input )
+		public ItemStack apply( final IStackSrc input )
 		{
 			return input.stack( this.stackSize );
 		}

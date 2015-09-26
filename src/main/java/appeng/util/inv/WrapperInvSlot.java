@@ -29,17 +29,17 @@ public class WrapperInvSlot
 
 	private final IInventory inv;
 
-	public WrapperInvSlot( IInventory inv )
+	public WrapperInvSlot( final IInventory inv )
 	{
 		this.inv = inv;
 	}
 
-	public IInventory getWrapper( int slot )
+	public IInventory getWrapper( final int slot )
 	{
 		return new InternalInterfaceWrapper( this.inv, slot );
 	}
 
-	protected boolean isItemValid( ItemStack itemstack )
+	protected boolean isItemValid( final ItemStack itemstack )
 	{
 		return true;
 	}
@@ -50,7 +50,7 @@ public class WrapperInvSlot
 		private final IInventory inv;
 		private final int slot;
 
-		public InternalInterfaceWrapper( IInventory target, int slot )
+		public InternalInterfaceWrapper( final IInventory target, final int slot )
 		{
 			this.inv = target;
 			this.slot = slot;
@@ -63,25 +63,25 @@ public class WrapperInvSlot
 		}
 
 		@Override
-		public ItemStack getStackInSlot( int i )
+		public ItemStack getStackInSlot( final int i )
 		{
 			return this.inv.getStackInSlot( this.slot );
 		}
 
 		@Override
-		public ItemStack decrStackSize( int i, int num )
+		public ItemStack decrStackSize( final int i, final int num )
 		{
 			return this.inv.decrStackSize( this.slot, num );
 		}
 
 		@Override
-		public ItemStack getStackInSlotOnClosing( int i )
+		public ItemStack getStackInSlotOnClosing( final int i )
 		{
 			return this.inv.getStackInSlotOnClosing( this.slot );
 		}
 
 		@Override
-		public void setInventorySlotContents( int i, ItemStack itemstack )
+		public void setInventorySlotContents( final int i, final ItemStack itemstack )
 		{
 			this.inv.setInventorySlotContents( this.slot, itemstack );
 		}
@@ -111,7 +111,7 @@ public class WrapperInvSlot
 		}
 
 		@Override
-		public boolean isUseableByPlayer( EntityPlayer entityplayer )
+		public boolean isUseableByPlayer( final EntityPlayer entityplayer )
 		{
 			return this.inv.isUseableByPlayer( entityplayer );
 		}
@@ -129,7 +129,7 @@ public class WrapperInvSlot
 		}
 
 		@Override
-		public boolean isItemValidForSlot( int i, ItemStack itemstack )
+		public boolean isItemValidForSlot( final int i, final ItemStack itemstack )
 		{
 			return WrapperInvSlot.this.isItemValid( itemstack ) && this.inv.isItemValidForSlot( this.slot, itemstack );
 		}

@@ -29,7 +29,7 @@ public final class CellUpgrades extends StackUpgradeInventory
 {
 	final ItemStack is;
 
-	public CellUpgrades( ItemStack is, int upgrades )
+	public CellUpgrades( final ItemStack is, final int upgrades )
 	{
 		super( is, null, upgrades );
 		this.is = is;

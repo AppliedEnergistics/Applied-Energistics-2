@@ -37,7 +37,7 @@ public class GuiScrollbar implements IScrollSource
 	private int minScroll = 0;
 	private int currentScroll = 0;
 
-	public void draw( AEBaseGui g )
+	public void draw( final AEBaseGui g )
 	{
 		g.bindTexture( "minecraft", "gui/container/creative_inventory/tabs.png" );
 		GL11.glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
@@ -48,7 +48,7 @@ public class GuiScrollbar implements IScrollSource
 		}
 		else
 		{
-			int offset = ( this.currentScroll - this.minScroll ) * ( this.height - 15 ) / this.getRange();
+			final int offset = ( this.currentScroll - this.minScroll ) * ( this.height - 15 ) / this.getRange();
 			g.drawTexturedModalRect( this.displayX, offset + this.displayY, 232, 0, this.width, 15 );
 		}
 	}
@@ -63,7 +63,7 @@ public class GuiScrollbar implements IScrollSource
 		return this.displayX;
 	}
 
-	public GuiScrollbar setLeft( int v )
+	public GuiScrollbar setLeft( final int v )
 	{
 		this.displayX = v;
 		return this;
@@ -74,7 +74,7 @@ public class GuiScrollbar implements IScrollSource
 		return this.displayY;
 	}
 
-	public GuiScrollbar setTop( int v )
+	public GuiScrollbar setTop( final int v )
 	{
 		this.displayY = v;
 		return this;
@@ -85,7 +85,7 @@ public class GuiScrollbar implements IScrollSource
 		return this.width;
 	}
 
-	public GuiScrollbar setWidth( int v )
+	public GuiScrollbar setWidth( final int v )
 	{
 		this.width = v;
 		return this;
@@ -96,13 +96,13 @@ public class GuiScrollbar implements IScrollSource
 		return this.height;
 	}
 
-	public GuiScrollbar setHeight( int v )
+	public GuiScrollbar setHeight( final int v )
 	{
 		this.height = v;
 		return this;
 	}
 
-	public void setRange( int min, int max, int pageSize )
+	public void setRange( final int min, final int max, final int pageSize )
 	{
 		this.minScroll = min;
 		this.maxScroll = max;
@@ -127,7 +127,7 @@ public class GuiScrollbar implements IScrollSource
 		return this.currentScroll;
 	}
 
-	public void click( AEBaseGui aeBaseGui, int x, int y )
+	public void click( final AEBaseGui aeBaseGui, final int x, final int y )
 	{
 		if( this.getRange() == 0 )
 		{

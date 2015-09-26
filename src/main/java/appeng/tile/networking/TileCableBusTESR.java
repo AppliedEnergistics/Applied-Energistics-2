@@ -32,11 +32,11 @@ public class TileCableBusTESR extends TileCableBus
 		{
 			try
 			{
-				TileCableBus tcb = (TileCableBus) BlockCableBus.noTesrTile.newInstance();
+				final TileCableBus tcb = (TileCableBus) BlockCableBus.noTesrTile.newInstance();
 				tcb.copyFrom( this );
 				this.getWorldObj().setTileEntity( this.xCoord, this.yCoord, this.zCoord, tcb );
 			}
-			catch( Throwable ignored )
+			catch( final Throwable ignored )
 			{
 
 			}

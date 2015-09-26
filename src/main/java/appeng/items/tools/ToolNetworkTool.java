@@ -69,18 +69,18 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench, 
 	}
 
 	@Override
-	public IGuiItemObject getGuiObject( ItemStack is, World world, int x, int y, int z )
+	public IGuiItemObject getGuiObject( final ItemStack is, final World world, final int x, final int y, final int z )
 	{
-		TileEntity te = world.getTileEntity( x, y, z );
+		final TileEntity te = world.getTileEntity( x, y, z );
 		return new NetworkToolViewer( is, (IGridHost) ( te instanceof IGridHost ? te : null ) );
 	}
 
 	@Override
-	public ItemStack onItemRightClick( ItemStack it, World w, EntityPlayer p )
+	public ItemStack onItemRightClick( final ItemStack it, final World w, final EntityPlayer p )
 	{
 		if( Platform.isClient() )
 		{
-			MovingObjectPosition mop = ClientHelper.proxy.getMOP();
+			final MovingObjectPosition mop = ClientHelper.proxy.getMOP();
 
 			if( mop == null )
 			{
@@ -88,9 +88,9 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench, 
 			}
 			else
 			{
-				int i = mop.blockX;
-				int j = mop.blockY;
-				int k = mop.blockZ;
+				final int i = mop.blockX;
+				final int j = mop.blockY;
+				final int k = mop.blockZ;
 
 				if( w.getBlock( i, j, k ).isAir( w, i, j, k ) )
 				{
@@ -103,13 +103,13 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench, 
 	}
 
 	@Override
-	public boolean onItemUseFirst( ItemStack is, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ )
+	public boolean onItemUseFirst( final ItemStack is, final EntityPlayer player, final World world, final int x, final int y, final int z, final int side, final float hitX, final float hitY, final float hitZ )
 	{
-		MovingObjectPosition mop = new MovingObjectPosition( x, y, z, side, Vec3.createVectorHelper( hitX, hitY, hitZ ) );
-		TileEntity te = world.getTileEntity( x, y, z );
+		final MovingObjectPosition mop = new MovingObjectPosition( x, y, z, side, Vec3.createVectorHelper( hitX, hitY, hitZ ) );
+		final TileEntity te = world.getTileEntity( x, y, z );
 		if( te instanceof IPartHost )
 		{
-			SelectedPart part = ( (IPartHost) te ).selectPart( mop.hitVec );
+			final SelectedPart part = ( (IPartHost) te ).selectPart( mop.hitVec );
 			if( part.part != null )
 			{
 				if( part.part instanceof INetworkToolAgent && !( (INetworkToolAgent) part.part ).showNetworkInfo( mop ) )
@@ -131,12 +131,12 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench, 
 	}
 
 	@Override
-	public boolean doesSneakBypassUse( World world, int x, int y, int z, EntityPlayer player )
+	public boolean doesSneakBypassUse( final World world, final int x, final int y, final int z, final EntityPlayer player )
 	{
 		return true;
 	}
 
-	public boolean serverSideToolLogic( ItemStack is, EntityPlayer p, World w, int x, int y, int z, int side, float hitX, float hitY, float hitZ )
+	public boolean serverSideToolLogic( final ItemStack is, final EntityPlayer p, final World w, final int x, final int y, final int z, final int side, final float hitX, final float hitY, final float hitZ )
 	{
 		if( side >= 0 )
 		{
@@ -145,10 +145,10 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench, 
 				return false;
 			}
 
-			Block b = w.getBlock( x, y, z );
+			final Block b = w.getBlock( x, y, z );
 			if( b != null && !p.isSneaking() )
 			{
-				TileEntity te = w.getTileEntity( x, y, z );
+				final TileEntity te = w.getTileEntity( x, y, z );
 				if( !( te instanceof IGridHost ) )
 				{
 					if( b.rotateBlock( w, x, y, z, ForgeDirection.getOrientation( side ) ) )
@@ -167,7 +167,7 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench, 
 					return true;
 				}
 
-				TileEntity te = w.getTileEntity( x, y, z );
+				final TileEntity te = w.getTileEntity( x, y, z );
 
 				if( te instanceof IGridHost )
 				{
@@ -194,19 +194,19 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench, 
 	}
 
 	@Override
-	public boolean canWrench( ItemStack is, EntityPlayer player, int x, int y, int z )
+	public boolean canWrench( final ItemStack is, final EntityPlayer player, final int x, final int y, final int z )
 	{
 		return true;
 	}
 
 	@Override
-	public boolean canWrench( EntityPlayer player, int x, int y, int z )
+	public boolean canWrench( final EntityPlayer player, final int x, final int y, final int z )
 	{
 		return true;
 	}
 
 	@Override
-	public void wrenchUsed( EntityPlayer player, int x, int y, int z )
+	public void wrenchUsed( final EntityPlayer player, final int x, final int y, final int z )
 	{
 		player.swingItem();
 	}

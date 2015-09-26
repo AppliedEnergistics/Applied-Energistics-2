@@ -45,7 +45,7 @@ public class RenderQuartzGlass extends BaseBlockRender<BlockQuartzGlass, AEBaseT
 		super( false, 0 );
 		if( offsets == null )
 		{
-			Random r = new Random( 924 );
+			final Random r = new Random( 924 );
 			offsets = new byte[10][10][10];
 			for( int x = 0; x < 10; x++ )
 			{
@@ -58,7 +58,7 @@ public class RenderQuartzGlass extends BaseBlockRender<BlockQuartzGlass, AEBaseT
 	}
 
 	@Override
-	public void renderInventory( BlockQuartzGlass block, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj )
+	public void renderInventory( final BlockQuartzGlass block, final ItemStack is, final RenderBlocks renderer, final ItemRenderType type, final Object[] obj )
 	{
 		renderer.overrideBlockTexture = ExtraBlockTextures.GlassFrame.getIcon();
 		super.renderInventory( block, is, renderer, type, obj );
@@ -67,16 +67,16 @@ public class RenderQuartzGlass extends BaseBlockRender<BlockQuartzGlass, AEBaseT
 	}
 
 	@Override
-	public boolean renderInWorld( BlockQuartzGlass imb, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
+	public boolean renderInWorld( final BlockQuartzGlass imb, final IBlockAccess world, final int x, final int y, final int z, final RenderBlocks renderer )
 	{
 		renderer.setRenderBounds( 0, 0, 0, 1, 1, 1 );
 
-		int cx = Math.abs( x % 10 );
-		int cy = Math.abs( y % 10 );
-		int cz = Math.abs( z % 10 );
+		final int cx = Math.abs( x % 10 );
+		final int cy = Math.abs( y % 10 );
+		final int cz = Math.abs( z % 10 );
 
-		int u = offsets[cx][cy][cz] % 4;
-		int v = offsets[9 - cx][9 - cy][9 - cz] % 4;
+		final int u = offsets[cx][cy][cz] % 4;
+		final int v = offsets[9 - cx][9 - cy][9 - cz] % 4;
 
 		switch( Math.abs( ( offsets[cx][cy][cz] + ( x + y + z ) ) % 4 ) )
 		{
@@ -94,7 +94,7 @@ public class RenderQuartzGlass extends BaseBlockRender<BlockQuartzGlass, AEBaseT
 				break;
 		}
 
-		boolean result = renderer.renderStandardBlock( imb, x, y, z );
+		final boolean result = renderer.renderStandardBlock( imb, x, y, z );
 
 		renderer.overrideBlockTexture = null;
 		this.renderEdge( imb, world, x, y, z, renderer, ForgeDirection.UP, ForgeDirection.EAST );
@@ -130,7 +130,7 @@ public class RenderQuartzGlass extends BaseBlockRender<BlockQuartzGlass, AEBaseT
 		return result;
 	}
 
-	private void renderEdge( BlockQuartzGlass imb, IBlockAccess world, int x, int y, int z, RenderBlocks renderer, ForgeDirection side, ForgeDirection direction )
+	private void renderEdge( final BlockQuartzGlass imb, final IBlockAccess world, final int x, final int y, final int z, final RenderBlocks renderer, final ForgeDirection side, final ForgeDirection direction )
 	{
 		if( !this.isFlush( imb, world, x + side.offsetX, y + side.offsetY, z + side.offsetZ ) )
 		{
@@ -214,22 +214,22 @@ public class RenderQuartzGlass extends BaseBlockRender<BlockQuartzGlass, AEBaseT
 		}
 	}
 
-	private boolean isFlush( BlockQuartzGlass imb, IBlockAccess world, int x, int y, int z )
+	private boolean isFlush( final BlockQuartzGlass imb, final IBlockAccess world, final int x, final int y, final int z )
 	{
 		return this.isGlass( imb, world, x, y, z );
 	}
 
-	private boolean isGlass( BlockQuartzGlass imb, IBlockAccess world, int x, int y, int z )
+	private boolean isGlass( final BlockQuartzGlass imb, final IBlockAccess world, final int x, final int y, final int z )
 	{
 		return this.isQuartzGlass( world, x, y, z ) || this.isVibrantQuartzGlass( world, x, y, z );
 	}
 
-	private boolean isQuartzGlass( IBlockAccess world, int x, int y, int z )
+	private boolean isQuartzGlass( final IBlockAccess world, final int x, final int y, final int z )
 	{
 		return AEApi.instance().definitions().blocks().quartzGlass().isSameAs( world, x, y, z );
 	}
 
-	private boolean isVibrantQuartzGlass( IBlockAccess world, int x, int y, int z )
+	private boolean isVibrantQuartzGlass( final IBlockAccess world, final int x, final int y, final int z )
 	{
 		return AEApi.instance().definitions().blocks().quartzVibrantGlass().isSameAs( world, x, y, z );
 	}

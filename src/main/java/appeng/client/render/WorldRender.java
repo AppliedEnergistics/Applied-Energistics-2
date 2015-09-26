@@ -50,27 +50,27 @@ public final class WorldRender implements ISimpleBlockRenderingHandler
 	{
 	}
 
-	void setRender( AEBaseBlock in, BaseBlockRender r )
+	void setRender( final AEBaseBlock in, final BaseBlockRender r )
 	{
 		this.blockRenders.put( in, r );
 	}
 
 	@Override
-	public void renderInventoryBlock( Block block, int metadata, int modelID, RenderBlocks renderer )
+	public void renderInventoryBlock( final Block block, final int metadata, final int modelID, final RenderBlocks renderer )
 	{
 		// wtf is this for?
 	}
 
 	@Override
-	public boolean renderWorldBlock( IBlockAccess world, int x, int y, int z, Block block, int modelId, RenderBlocks renderer )
+	public boolean renderWorldBlock( final IBlockAccess world, final int x, final int y, final int z, final Block block, final int modelId, final RenderBlocks renderer )
 	{
-		AEBaseBlock blk = (AEBaseBlock) block;
+		final AEBaseBlock blk = (AEBaseBlock) block;
 		renderer.setRenderBoundsFromBlock( block );
 		return this.getRender( blk ).renderInWorld( blk, world, x, y, z, renderer );
 	}
 
 	@Override
-	public boolean shouldRender3DInInventory( int modelId )
+	public boolean shouldRender3DInInventory( final int modelId )
 	{
 		return true;
 	}
@@ -81,17 +81,17 @@ public final class WorldRender implements ISimpleBlockRenderingHandler
 		return this.renderID;
 	}
 
-	private BaseBlockRender getRender( AEBaseBlock block )
+	private BaseBlockRender getRender( final AEBaseBlock block )
 	{
 		return block.getRendererInstance().rendererInstance;
 	}
 
-	public void renderItemBlock( ItemStack item, ItemRenderType type, Object[] data )
+	public void renderItemBlock( final ItemStack item, final ItemRenderType type, final Object[] data )
 	{
-		Block blk = Block.getBlockFromItem( item.getItem() );
+		final Block blk = Block.getBlockFromItem( item.getItem() );
 		if( blk instanceof AEBaseBlock )
 		{
-			AEBaseBlock block = (AEBaseBlock) blk;
+			final AEBaseBlock block = (AEBaseBlock) blk;
 			this.renderer.setRenderBoundsFromBlock( block );
 
 			this.renderer.uvRotateBottom = this.renderer.uvRotateEast = this.renderer.uvRotateNorth = this.renderer.uvRotateSouth = this.renderer.uvRotateTop = this.renderer.uvRotateWest = 0;

@@ -33,7 +33,7 @@ public class MissingIcon implements IIcon
 
 	final boolean isBlock;
 
-	public MissingIcon( Object forWhat )
+	public MissingIcon( final Object forWhat )
 	{
 		this.isBlock = forWhat instanceof Block;
 	}
@@ -69,7 +69,7 @@ public class MissingIcon implements IIcon
 	}
 
 	@Override
-	public float getInterpolatedU( double var1 )
+	public float getInterpolatedU( final double var1 )
 	{
 		return this.getMissing().getInterpolatedU( var1 );
 	}
@@ -87,7 +87,7 @@ public class MissingIcon implements IIcon
 	}
 
 	@Override
-	public float getInterpolatedV( double var1 )
+	public float getInterpolatedV( final double var1 )
 	{
 		return this.getMissing().getInterpolatedV( var1 );
 	}

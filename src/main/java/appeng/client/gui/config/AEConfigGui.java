@@ -36,16 +36,16 @@ import appeng.core.AppEng;
 public class AEConfigGui extends GuiConfig
 {
 
-	public AEConfigGui( GuiScreen parent )
+	public AEConfigGui( final GuiScreen parent )
 	{
 		super( parent, getConfigElements(), AppEng.MOD_ID, false, false, GuiConfig.getAbridgedConfigPath( AEConfig.instance.getFilePath() ) );
 	}
 
 	private static List<IConfigElement> getConfigElements()
 	{
-		List<IConfigElement> list = new ArrayList<IConfigElement>();
+		final List<IConfigElement> list = new ArrayList<IConfigElement>();
 
-		for( String cat : AEConfig.instance.getCategoryNames() )
+		for( final String cat : AEConfig.instance.getCategoryNames() )
 		{
 			if( cat.equals( "versionchecker" ) )
 			{
@@ -57,14 +57,14 @@ public class AEConfigGui extends GuiConfig
 				continue;
 			}
 
-			ConfigCategory cc = AEConfig.instance.getCategory( cat );
+			final ConfigCategory cc = AEConfig.instance.getCategory( cat );
 
 			if( cc.isChild() )
 			{
 				continue;
 			}
 
-			ConfigElement ce = new ConfigElement( cc );
+			final ConfigElement ce = new ConfigElement( cc );
 			list.add( ce );
 		}
 

@@ -31,7 +31,7 @@ public class AdaptorPlayerInventory implements IInventory
 	private final int min = 0;
 	private final int size = 36;
 
-	public AdaptorPlayerInventory( IInventory playerInv, boolean swap )
+	public AdaptorPlayerInventory( final IInventory playerInv, final boolean swap )
 	{
 
 		if( swap )
@@ -51,25 +51,25 @@ public class AdaptorPlayerInventory implements IInventory
 	}
 
 	@Override
-	public ItemStack getStackInSlot( int var1 )
+	public ItemStack getStackInSlot( final int var1 )
 	{
 		return this.src.getStackInSlot( var1 + this.min );
 	}
 
 	@Override
-	public ItemStack decrStackSize( int var1, int var2 )
+	public ItemStack decrStackSize( final int var1, final int var2 )
 	{
 		return this.src.decrStackSize( this.min + var1, var2 );
 	}
 
 	@Override
-	public ItemStack getStackInSlotOnClosing( int var1 )
+	public ItemStack getStackInSlotOnClosing( final int var1 )
 	{
 		return this.src.getStackInSlotOnClosing( this.min + var1 );
 	}
 
 	@Override
-	public void setInventorySlotContents( int var1, ItemStack var2 )
+	public void setInventorySlotContents( final int var1, final ItemStack var2 )
 	{
 		this.src.setInventorySlotContents( var1 + this.min, var2 );
 	}
@@ -99,7 +99,7 @@ public class AdaptorPlayerInventory implements IInventory
 	}
 
 	@Override
-	public boolean isUseableByPlayer( EntityPlayer var1 )
+	public boolean isUseableByPlayer( final EntityPlayer var1 )
 	{
 		return this.src.isUseableByPlayer( var1 );
 	}
@@ -117,7 +117,7 @@ public class AdaptorPlayerInventory implements IInventory
 	}
 
 	@Override
-	public boolean isItemValidForSlot( int i, ItemStack itemstack )
+	public boolean isItemValidForSlot( final int i, final ItemStack itemstack )
 	{
 		return this.src.isItemValidForSlot( i, itemstack );
 	}

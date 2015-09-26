@@ -41,13 +41,13 @@ public class PacketSwitchGuis extends AppEngPacket
 	final GuiBridge newGui;
 
 	// automatic.
-	public PacketSwitchGuis( ByteBuf stream )
+	public PacketSwitchGuis( final ByteBuf stream )
 	{
 		this.newGui = GuiBridge.values()[stream.readInt()];
 	}
 
 	// api
-	public PacketSwitchGuis( GuiBridge newGui )
+	public PacketSwitchGuis( final GuiBridge newGui )
 	{
 		this.newGui = newGui;
 
@@ -56,7 +56,7 @@ public class PacketSwitchGuis extends AppEngPacket
 			AEBaseGui.switchingGuis = true;
 		}
 
-		ByteBuf data = Unpooled.buffer();
+		final ByteBuf data = Unpooled.buffer();
 
 		data.writeInt( this.getPacketID() );
 		data.writeInt( newGui.ordinal() );
@@ -65,23 +65,23 @@ public class PacketSwitchGuis extends AppEngPacket
 	}
 
 	@Override
-	public void serverPacketData( INetworkInfo manager, AppEngPacket packet, EntityPlayer player )
+	public void serverPacketData( final INetworkInfo manager, final AppEngPacket packet, final EntityPlayer player )
 	{
-		Container c = player.openContainer;
+		final Container c = player.openContainer;
 		if( c instanceof AEBaseContainer )
 		{
-			AEBaseContainer bc = (AEBaseContainer) c;
-			ContainerOpenContext context = bc.openContext;
+			final AEBaseContainer bc = (AEBaseContainer) c;
+			final ContainerOpenContext context = bc.openContext;
 			if( context != null )
 			{
-				TileEntity te = context.getTile();
+				final TileEntity te = context.getTile();
 				Platform.openGUI( player, te, context.side, this.newGui );
 			}
 		}
 	}
 
 	@Override
-	public void clientPacketData( INetworkInfo network, AppEngPacket packet, EntityPlayer player )
+	public void clientPacketData( final INetworkInfo network, final AppEngPacket packet, final EntityPlayer player )
 	{
 		AEBaseGui.switchingGuis = true;
 	}

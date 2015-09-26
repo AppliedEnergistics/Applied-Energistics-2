@@ -48,7 +48,7 @@ public class PacketClick extends AppEngPacket
 	final float hitZ;
 
 	// automatic.
-	public PacketClick( ByteBuf stream )
+	public PacketClick( final ByteBuf stream )
 	{
 		this.x = stream.readInt();
 		this.y = stream.readInt();
@@ -60,10 +60,10 @@ public class PacketClick extends AppEngPacket
 	}
 
 	// api
-	public PacketClick( int x, int y, int z, int side, float hitX, float hitY, float hitZ )
+	public PacketClick( final int x, final int y, final int z, final int side, final float hitX, final float hitY, final float hitZ )
 	{
 
-		ByteBuf data = Unpooled.buffer();
+		final ByteBuf data = Unpooled.buffer();
 
 		data.writeInt( this.getPacketID() );
 		data.writeInt( this.x = x );
@@ -78,9 +78,9 @@ public class PacketClick extends AppEngPacket
 	}
 
 	@Override
-	public void serverPacketData( INetworkInfo manager, AppEngPacket packet, EntityPlayer player )
+	public void serverPacketData( final INetworkInfo manager, final AppEngPacket packet, final EntityPlayer player )
 	{
-		ItemStack is = player.inventory.getCurrentItem();
+		final ItemStack is = player.inventory.getCurrentItem();
 		final IItems items = AEApi.instance().definitions().items();
 		final IComparableDefinition maybeMemoryCard = items.memoryCard();
 		final IComparableDefinition maybeColorApplicator = items.colorApplicator();
@@ -89,20 +89,20 @@ public class PacketClick extends AppEngPacket
 		{
 			if( is.getItem() instanceof ToolNetworkTool )
 			{
-				ToolNetworkTool tnt = (ToolNetworkTool) is.getItem();
+				final ToolNetworkTool tnt = (ToolNetworkTool) is.getItem();
 				tnt.serverSideToolLogic( is, player, player.worldObj, this.x, this.y, this.z, this.side, this.hitX, this.hitY, this.hitZ );
 			}
 
 			else if( maybeMemoryCard.isSameAs( is ) )
 			{
-				IMemoryCard mem = (IMemoryCard) is.getItem();
+				final IMemoryCard mem = (IMemoryCard) is.getItem();
 				mem.notifyUser( player, MemoryCardMessages.SETTINGS_CLEARED );
 				is.setTagCompound( null );
 			}
 
 			else if( maybeColorApplicator.isSameAs( is ) )
 			{
-				ToolColorApplicator mem = (ToolColorApplicator) is.getItem();
+				final ToolColorApplicator mem = (ToolColorApplicator) is.getItem();
 				mem.cycleColors( is, mem.getColor( is ), 1 );
 			}
 		}

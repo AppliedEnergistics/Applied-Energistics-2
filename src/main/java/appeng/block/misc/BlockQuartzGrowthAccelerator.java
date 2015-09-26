@@ -62,23 +62,23 @@ public class BlockQuartzGrowthAccelerator extends AEBaseTileBlock implements IOr
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void randomDisplayTick( World w, int x, int y, int z, Random r )
+	public void randomDisplayTick( final World w, final int x, final int y, final int z, final Random r )
 	{
 		if( !AEConfig.instance.enableEffects )
 		{
 			return;
 		}
 
-		TileQuartzGrowthAccelerator cga = this.getTileEntity( w, x, y, z );
+		final TileQuartzGrowthAccelerator cga = this.getTileEntity( w, x, y, z );
 
 		if( cga != null && cga.hasPower && CommonHelper.proxy.shouldAddParticles( r ) )
 		{
-			double d0 = r.nextFloat() - 0.5F;
-			double d1 = r.nextFloat() - 0.5F;
+			final double d0 = r.nextFloat() - 0.5F;
+			final double d1 = r.nextFloat() - 0.5F;
 
-			ForgeDirection up = cga.getUp();
-			ForgeDirection forward = cga.getForward();
-			ForgeDirection west = Platform.crossProduct( forward, up );
+			final ForgeDirection up = cga.getUp();
+			final ForgeDirection forward = cga.getForward();
+			final ForgeDirection west = Platform.crossProduct( forward, up );
 
 			double rx = 0.5 + x;
 			double ry = 0.5 + y;
@@ -134,7 +134,7 @@ public class BlockQuartzGrowthAccelerator extends AEBaseTileBlock implements IOr
 			ry += dz * forward.offsetY;
 			rz += dz * forward.offsetZ;
 
-			LightningFX fx = new LightningFX( w, rx, ry, rz, 0.0D, 0.0D, 0.0D );
+			final LightningFX fx = new LightningFX( w, rx, ry, rz, 0.0D, 0.0D, 0.0D );
 			Minecraft.getMinecraft().effectRenderer.addEffect( fx );
 		}
 	}

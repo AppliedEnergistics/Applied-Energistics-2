@@ -37,7 +37,7 @@ public class GuiMAC extends GuiUpgradeable
 	final ContainerMAC container;
 	GuiProgressBar pb;
 
-	public GuiMAC( InventoryPlayer inventoryPlayer, TileMolecularAssembler te )
+	public GuiMAC( final InventoryPlayer inventoryPlayer, final TileMolecularAssembler te )
 	{
 		super( new ContainerMAC( inventoryPlayer, te ) );
 		this.ySize = 197;
@@ -61,14 +61,14 @@ public class GuiMAC extends GuiUpgradeable
 	}
 
 	@Override
-	public void drawFG( int offsetX, int offsetY, int mouseX, int mouseY )
+	public void drawFG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
 		this.pb.setFullMsg( this.container.getCurrentProgress() + "%" );
 		super.drawFG( offsetX, offsetY, mouseX, mouseY );
 	}
 
 	@Override
-	public void drawBG( int offsetX, int offsetY, int mouseX, int mouseY )
+	public void drawBG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
 		this.pb.xPosition = 148 + this.guiLeft;
 		this.pb.yPosition = 48 + this.guiTop;

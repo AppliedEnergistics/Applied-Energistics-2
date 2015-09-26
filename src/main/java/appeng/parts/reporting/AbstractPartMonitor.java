@@ -88,13 +88,13 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 	private Integer dspList;
 
 	@Reflected
-	public AbstractPartMonitor( ItemStack is )
+	public AbstractPartMonitor( final ItemStack is )
 	{
 		super( is );
 	}
 
 	@Override
-	public void readFromNBT( NBTTagCompound data )
+	public void readFromNBT( final NBTTagCompound data )
 	{
 		super.readFromNBT( data );
 
@@ -105,7 +105,7 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 	}
 
 	@Override
-	public void writeToNBT( NBTTagCompound data )
+	public void writeToNBT( final NBTTagCompound data )
 	{
 		super.writeToNBT( data );
 
@@ -121,7 +121,7 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 	}
 
 	@Override
-	public void writeToStream( ByteBuf data ) throws IOException
+	public void writeToStream( final ByteBuf data ) throws IOException
 	{
 		super.writeToStream( data );
 
@@ -134,7 +134,7 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 	}
 
 	@Override
-	public boolean readFromStream( ByteBuf data ) throws IOException
+	public boolean readFromStream( final ByteBuf data ) throws IOException
 	{
 		boolean needRedraw = super.readFromStream( data );
 
@@ -159,7 +159,7 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 	}
 
 	@Override
-	public boolean onPartActivate( EntityPlayer player, Vec3 pos )
+	public boolean onPartActivate( final EntityPlayer player, final Vec3 pos )
 	{
 		if( Platform.isClient() )
 		{
@@ -225,12 +225,12 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 		}
 	}
 
-	protected void extractItem( EntityPlayer player )
+	protected void extractItem( final EntityPlayer player )
 	{
 
 	}
 
-	private void updateReportingValue( IMEMonitor<IAEItemStack> itemInventory )
+	private void updateReportingValue( final IMEMonitor<IAEItemStack> itemInventory )
 	{
 		if( this.configuredItem != null )
 		{
@@ -260,7 +260,7 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderDynamic( double x, double y, double z, IPartRenderHelper rh, RenderBlocks renderer )
+	public void renderDynamic( final double x, final double y, final double z, final IPartRenderHelper rh, final RenderBlocks renderer )
 	{
 		if( this.dspList == null )
 		{
@@ -309,7 +309,7 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 		return this.configuredItem;
 	}
 
-	private void tesrRenderScreen( Tessellator tess, IAEItemStack ais )
+	private void tesrRenderScreen( final Tessellator tess, final IAEItemStack ais )
 	{
 		// GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS );
 
@@ -399,14 +399,14 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 	}
 
 	@Override
-	public void updateWatcher( IStackWatcher newWatcher )
+	public void updateWatcher( final IStackWatcher newWatcher )
 	{
 		this.myWatcher = newWatcher;
 		this.configureWatchers();
 	}
 
 	@Override
-	public void onStackChange( IItemList o, IAEStack fullStack, IAEStack diffStack, BaseActionSource src, StorageChannel chan )
+	public void onStackChange( final IItemList o, final IAEStack fullStack, final IAEStack diffStack, final BaseActionSource src, final StorageChannel chan )
 	{
 		if( this.configuredItem != null )
 		{
@@ -431,7 +431,7 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 	}
 
 	@Override
-	public boolean showNetworkInfo( MovingObjectPosition where )
+	public boolean showNetworkInfo( final MovingObjectPosition where )
 	{
 		return false;
 	}

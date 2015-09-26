@@ -52,7 +52,7 @@ public class GridStorage implements IGridStorage
 	 * @param id ID of grid storage
 	 * @param gss grid storage search
 	 */
-	public GridStorage( long id, GridStorageSearch gss )
+	public GridStorage( final long id, final GridStorageSearch gss )
 	{
 		this.myID = id;
 		this.mySearchEntry = gss;
@@ -66,7 +66,7 @@ public class GridStorage implements IGridStorage
 	 * @param id ID of grid storage
 	 * @param gss grid storage search
 	 */
-	public GridStorage( String input, long id, GridStorageSearch gss )
+	public GridStorage( final String input, final long id, final GridStorageSearch gss )
 	{
 		this.myID = id;
 		this.mySearchEntry = gss;
@@ -74,10 +74,10 @@ public class GridStorage implements IGridStorage
 
 		try
 		{
-			byte[] byteData = javax.xml.bind.DatatypeConverter.parseBase64Binary( input );
+			final byte[] byteData = javax.xml.bind.DatatypeConverter.parseBase64Binary( input );
 			myTag = CompressedStreamTools.readCompressed( new ByteArrayInputStream( byteData ) );
 		}
-		catch( Throwable t )
+		catch( final Throwable t )
 		{
 			myTag = new NBTTagCompound();
 		}
@@ -99,7 +99,7 @@ public class GridStorage implements IGridStorage
 	{
 		this.isDirty = false;
 
-		Grid currentGrid = (Grid) this.getGrid();
+		final Grid currentGrid = (Grid) this.getGrid();
 		if( currentGrid != null )
 		{
 			currentGrid.saveState();
@@ -107,11 +107,11 @@ public class GridStorage implements IGridStorage
 
 		try
 		{
-			ByteArrayOutputStream out = new ByteArrayOutputStream();
+			final ByteArrayOutputStream out = new ByteArrayOutputStream();
 			CompressedStreamTools.writeCompressed( this.data, out );
 			return javax.xml.bind.DatatypeConverter.printBase64Binary( out.toByteArray() );
 		}
-		catch( IOException e )
+		catch( final IOException e )
 		{
 			AELog.error( e );
 		}
@@ -124,7 +124,7 @@ public class GridStorage implements IGridStorage
 		return this.internalGrid == null ? null : this.internalGrid.get();
 	}
 
-	public void setGrid( Grid grid )
+	public void setGrid( final Grid grid )
 	{
 		this.internalGrid = new WeakReference<IGrid>( grid );
 	}
@@ -146,12 +146,12 @@ public class GridStorage implements IGridStorage
 		this.isDirty = true;
 	}
 
-	public void addDivided( GridStorage gs )
+	public void addDivided( final GridStorage gs )
 	{
 		this.divided.put( gs, true );
 	}
 
-	public boolean hasDivided( GridStorage myStorage )
+	public boolean hasDivided( final GridStorage myStorage )
 	{
 		return this.divided.containsKey( myStorage );
 	}

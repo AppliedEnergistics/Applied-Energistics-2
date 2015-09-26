@@ -42,7 +42,7 @@ public final class ItemList implements IItemList<IAEItemStack>
 	private final Map<Item, NavigableMap<IAEItemStack, IAEItemStack>> records = new IdentityHashMap<Item, NavigableMap<IAEItemStack, IAEItemStack>>();
 
 	@Override
-	public void add( IAEItemStack option )
+	public void add( final IAEItemStack option )
 	{
 		if( option == null )
 		{
@@ -63,7 +63,7 @@ public final class ItemList implements IItemList<IAEItemStack>
 	}
 
 	@Override
-	public IAEItemStack findPrecise( IAEItemStack itemStack )
+	public IAEItemStack findPrecise( final IAEItemStack itemStack )
 	{
 		if( itemStack == null )
 		{
@@ -74,7 +74,7 @@ public final class ItemList implements IItemList<IAEItemStack>
 	}
 
 	@Override
-	public Collection<IAEItemStack> findFuzzy( IAEItemStack filter, FuzzyMode fuzzy )
+	public Collection<IAEItemStack> findFuzzy( final IAEItemStack filter, final FuzzyMode fuzzy )
 	{
 		if( filter == null )
 		{
@@ -97,7 +97,7 @@ public final class ItemList implements IItemList<IAEItemStack>
 			{
 				final Collection<IAEItemStack> output = new LinkedList<IAEItemStack>();
 
-				for( IAEItemStack is : or.getAEEquivalents() )
+				for( final IAEItemStack is : or.getAEEquivalents() )
 				{
 					output.addAll( this.findFuzzyDamage( (AEItemStack) is, fuzzy, is.getItemDamage() == OreDictionary.WILDCARD_VALUE ) );
 				}
@@ -116,7 +116,7 @@ public final class ItemList implements IItemList<IAEItemStack>
 	}
 
 	@Override
-	public void addStorage( IAEItemStack option )
+	public void addStorage( final IAEItemStack option )
 	{
 		if( option == null )
 		{
@@ -142,7 +142,7 @@ public final class ItemList implements IItemList<IAEItemStack>
 	 */
 
 	@Override
-	public void addCrafting( IAEItemStack option )
+	public void addCrafting( final IAEItemStack option )
 	{
 		if( option == null )
 		{
@@ -165,7 +165,7 @@ public final class ItemList implements IItemList<IAEItemStack>
 	}
 
 	@Override
-	public void addRequestable( IAEItemStack option )
+	public void addRequestable( final IAEItemStack option )
 	{
 		if( option == null )
 		{
@@ -191,7 +191,7 @@ public final class ItemList implements IItemList<IAEItemStack>
 	@Override
 	public IAEItemStack getFirstItem()
 	{
-		for( IAEItemStack stackType : this )
+		for( final IAEItemStack stackType : this )
 		{
 			return stackType;
 		}
@@ -204,7 +204,7 @@ public final class ItemList implements IItemList<IAEItemStack>
 	{
 		int size = 0;
 
-		for( Map<IAEItemStack, IAEItemStack> element : this.records.values() )
+		for( final Map<IAEItemStack, IAEItemStack> element : this.records.values() )
 		{
 			size += element.size();
 		}
@@ -221,13 +221,13 @@ public final class ItemList implements IItemList<IAEItemStack>
 	@Override
 	public void resetStatus()
 	{
-		for( IAEItemStack i : this )
+		for( final IAEItemStack i : this )
 		{
 			i.reset();
 		}
 	}
 
-	private NavigableMap<IAEItemStack, IAEItemStack> getItemRecord( Item item )
+	private NavigableMap<IAEItemStack, IAEItemStack> getItemRecord( final Item item )
 	{
 		NavigableMap<IAEItemStack, IAEItemStack> itemRecords = this.records.get( item );
 
@@ -240,12 +240,12 @@ public final class ItemList implements IItemList<IAEItemStack>
 		return itemRecords;
 	}
 
-	private IAEItemStack putItemRecord( IAEItemStack itemStack )
+	private IAEItemStack putItemRecord( final IAEItemStack itemStack )
 	{
 		return this.getItemRecord( itemStack.getItem() ).put( itemStack, itemStack );
 	}
 
-	private Collection<IAEItemStack> findFuzzyDamage( AEItemStack filter, FuzzyMode fuzzy, boolean ignoreMeta )
+	private Collection<IAEItemStack> findFuzzyDamage( final AEItemStack filter, final FuzzyMode fuzzy, final boolean ignoreMeta )
 	{
 		final IAEItemStack low = filter.getLow( fuzzy, ignoreMeta );
 		final IAEItemStack high = filter.getHigh( fuzzy, ignoreMeta );

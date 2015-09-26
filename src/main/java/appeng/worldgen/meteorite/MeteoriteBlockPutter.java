@@ -8,9 +8,9 @@ import net.minecraft.init.Blocks;
 
 public class MeteoriteBlockPutter
 {
-	public boolean put( IMeteoriteWorld w, int i, int j, int k, Block blk )
+	public boolean put( final IMeteoriteWorld w, final int i, final int j, final int k, final Block blk )
 	{
-		Block original = w.getBlock( i, j, k );
+		final Block original = w.getBlock( i, j, k );
 
 		if( original == Blocks.bedrock || original == blk )
 		{
@@ -21,7 +21,7 @@ public class MeteoriteBlockPutter
 		return true;
 	}
 
-	public void put( IMeteoriteWorld w, int i, int j, int k, Block blk, int meta )
+	public void put( final IMeteoriteWorld w, final int i, final int j, final int k, final Block blk, final int meta )
 	{
 		if( w.getBlock( i, j, k ) == Blocks.bedrock )
 		{

@@ -40,7 +40,7 @@ public final class ItemFeatureHandler implements IFeatureHandler
 	private final boolean enabled;
 	private final ItemDefinition definition;
 
-	public ItemFeatureHandler( EnumSet<AEFeature> features, Item item, IAEFeature featured, Optional<String> subName )
+	public ItemFeatureHandler( final EnumSet<AEFeature> features, final Item item, final IAEFeature featured, final Optional<String> subName )
 	{
 		final ActivityState state = new FeaturedActiveChecker( features ).getActivityState();
 

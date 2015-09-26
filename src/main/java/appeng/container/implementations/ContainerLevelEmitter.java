@@ -54,20 +54,20 @@ public class ContainerLevelEmitter extends ContainerUpgradeable
 	@GuiSync( 4 )
 	public YesNo cmType;
 
-	public ContainerLevelEmitter( InventoryPlayer ip, PartLevelEmitter te )
+	public ContainerLevelEmitter( final InventoryPlayer ip, final PartLevelEmitter te )
 	{
 		super( ip, te );
 		this.lvlEmitter = te;
 	}
 
 	@SideOnly( Side.CLIENT )
-	public void setTextField( GuiTextField level )
+	public void setTextField( final GuiTextField level )
 	{
 		this.textField = level;
 		this.textField.setText( String.valueOf( this.EmitterValue ) );
 	}
 
-	public void setLevel( long l, EntityPlayer player )
+	public void setLevel( final long l, final EntityPlayer player )
 	{
 		this.lvlEmitter.setReportingValue( l );
 		this.EmitterValue = l;
@@ -76,8 +76,7 @@ public class ContainerLevelEmitter extends ContainerUpgradeable
 	@Override
 	protected void setupConfig()
 	{
-
-		IInventory upgrades = this.upgradeable.getInventoryByName( "upgrades" );
+		final IInventory upgrades = this.upgradeable.getInventoryByName( "upgrades" );
 		if( this.availableUpgrades() > 0 )
 		{
 			this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 0, 187, 8, this.invPlayer ) ).setNotDraggable() );
@@ -95,9 +94,10 @@ public class ContainerLevelEmitter extends ContainerUpgradeable
 			this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 3, 187, 8 + 18 * 3, this.invPlayer ) ).setNotDraggable() );
 		}
 
-		IInventory inv = this.upgradeable.getInventoryByName( "config" );
-		int y = 40;
-		int x = 80 + 44;
+		final IInventory inv = this.upgradeable.getInventoryByName( "config" );
+		final int y = 40;
+		final int x = 80 + 44;
+		
 		this.addSlotToContainer( new SlotFakeTypeOnly( inv, 0, x, y ) );
 	}
 
@@ -132,7 +132,7 @@ public class ContainerLevelEmitter extends ContainerUpgradeable
 	}
 
 	@Override
-	public void onUpdate( String field, Object oldValue, Object newValue )
+	public void onUpdate( final String field, final Object oldValue, final Object newValue )
 	{
 		if( field.equals( "EmitterValue" ) )
 		{

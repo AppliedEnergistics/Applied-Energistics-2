@@ -48,7 +48,7 @@ public class MEInventoryHandler<T extends IAEStack<T>> implements IMEInventoryHa
 	private boolean hasReadAccess;
 	private boolean hasWriteAccess;
 
-	public MEInventoryHandler( IMEInventory<T> i, StorageChannel channel )
+	public MEInventoryHandler( final IMEInventory<T> i, final StorageChannel channel )
 	{
 		this.channel = channel;
 
@@ -74,7 +74,7 @@ public class MEInventoryHandler<T extends IAEStack<T>> implements IMEInventoryHa
 		return this.myWhitelist;
 	}
 
-	public void setWhitelist( IncludeExclude myWhitelist )
+	public void setWhitelist( final IncludeExclude myWhitelist )
 	{
 		this.myWhitelist = myWhitelist;
 	}
@@ -84,7 +84,7 @@ public class MEInventoryHandler<T extends IAEStack<T>> implements IMEInventoryHa
 		return this.myAccess;
 	}
 
-	public void setBaseAccess( AccessRestriction myAccess )
+	public void setBaseAccess( final AccessRestriction myAccess )
 	{
 		this.myAccess = myAccess;
 		this.cachedAccessRestriction = this.myAccess.restrictPermissions( this.internal.getAccess() );
@@ -97,13 +97,13 @@ public class MEInventoryHandler<T extends IAEStack<T>> implements IMEInventoryHa
 		return this.myPartitionList;
 	}
 
-	public void setPartitionList( IPartitionList<T> myPartitionList )
+	public void setPartitionList( final IPartitionList<T> myPartitionList )
 	{
 		this.myPartitionList = myPartitionList;
 	}
 
 	@Override
-	public T injectItems( T input, Actionable type, BaseActionSource src )
+	public T injectItems( final T input, final Actionable type, final BaseActionSource src )
 	{
 		if( !this.canAccept( input ) )
 		{
@@ -114,7 +114,7 @@ public class MEInventoryHandler<T extends IAEStack<T>> implements IMEInventoryHa
 	}
 
 	@Override
-	public T extractItems( T request, Actionable type, BaseActionSource src )
+	public T extractItems( final T request, final Actionable type, final BaseActionSource src )
 	{
 		if( !this.hasReadAccess )
 		{
@@ -125,7 +125,7 @@ public class MEInventoryHandler<T extends IAEStack<T>> implements IMEInventoryHa
 	}
 
 	@Override
-	public IItemList<T> getAvailableItems( IItemList<T> out )
+	public IItemList<T> getAvailableItems( final IItemList<T> out )
 	{
 		if( !this.hasReadAccess )
 		{
@@ -148,7 +148,7 @@ public class MEInventoryHandler<T extends IAEStack<T>> implements IMEInventoryHa
 	}
 
 	@Override
-	public boolean isPrioritized( T input )
+	public boolean isPrioritized( final T input )
 	{
 		if( this.myWhitelist == IncludeExclude.WHITELIST )
 		{
@@ -158,7 +158,7 @@ public class MEInventoryHandler<T extends IAEStack<T>> implements IMEInventoryHa
 	}
 
 	@Override
-	public boolean canAccept( T input )
+	public boolean canAccept( final T input )
 	{
 		if( !this.hasWriteAccess )
 		{
@@ -182,7 +182,7 @@ public class MEInventoryHandler<T extends IAEStack<T>> implements IMEInventoryHa
 		return this.myPriority;
 	}
 
-	public void setPriority( int myPriority )
+	public void setPriority( final int myPriority )
 	{
 		this.myPriority = myPriority;
 	}
@@ -194,7 +194,7 @@ public class MEInventoryHandler<T extends IAEStack<T>> implements IMEInventoryHa
 	}
 
 	@Override
-	public boolean validForPass( int i )
+	public boolean validForPass( final int i )
 	{
 		return true;
 	}

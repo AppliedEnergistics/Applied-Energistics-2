@@ -45,29 +45,29 @@ public class RenderBlockPaint extends BaseBlockRender<BlockPaint, TilePaint>
 	}
 
 	@Override
-	public void renderInventory( BlockPaint block, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj )
+	public void renderInventory( final BlockPaint block, final ItemStack is, final RenderBlocks renderer, final ItemRenderType type, final Object[] obj )
 	{
 
 	}
 
 	@Override
-	public boolean renderInWorld( BlockPaint imb, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
+	public boolean renderInWorld( final BlockPaint imb, final IBlockAccess world, final int x, final int y, final int z, final RenderBlocks renderer )
 	{
-		TilePaint tp = imb.getTileEntity( world, x, y, z );
+		final TilePaint tp = imb.getTileEntity( world, x, y, z );
 		boolean out = false;
 		if( tp != null )
 		{
 			// super.renderInWorld( imb, world, x, y, z, renderer );
 
-			IIcon[] icoSet = { imb.getIcon( 0, 0 ), ExtraBlockTextures.BlockPaint2.getIcon(), ExtraBlockTextures.BlockPaint3.getIcon() };
+			final IIcon[] icoSet = { imb.getIcon( 0, 0 ), ExtraBlockTextures.BlockPaint2.getIcon(), ExtraBlockTextures.BlockPaint3.getIcon() };
 
-			Tessellator tess = Tessellator.instance;
+			final Tessellator tess = Tessellator.instance;
 
-			int brightness = imb.getMixedBrightnessForBlock( world, x, y, z );
+			final int brightness = imb.getMixedBrightnessForBlock( world, x, y, z );
 
-			EnumSet<ForgeDirection> validSides = EnumSet.noneOf( ForgeDirection.class );
+			final EnumSet<ForgeDirection> validSides = EnumSet.noneOf( ForgeDirection.class );
 
-			for( ForgeDirection side : ForgeDirection.VALID_DIRECTIONS )
+			for( final ForgeDirection side : ForgeDirection.VALID_DIRECTIONS )
 			{
 				if( tp.isSideValid( side ) )
 				{
@@ -76,8 +76,8 @@ public class RenderBlockPaint extends BaseBlockRender<BlockPaint, TilePaint>
 			}
 
 			double offsetConstant = 0.001;
-			int lumen = 14 << 20 | 14 << 4;
-			for( Splotch s : tp.getDots() )
+			final int lumen = 14 << 20 | 14 << 4;
+			for( final Splotch s : tp.getDots() )
 			{
 				if( !validSides.contains( s.side ) )
 				{
@@ -98,7 +98,7 @@ public class RenderBlockPaint extends BaseBlockRender<BlockPaint, TilePaint>
 				double offset = offsetConstant;
 				offsetConstant += 0.001;
 
-				double buffer = 0.1;
+				final double buffer = 0.1;
 
 				double pos_x = s.x();
 				double pos_y = s.y();
@@ -124,7 +124,7 @@ public class RenderBlockPaint extends BaseBlockRender<BlockPaint, TilePaint>
 					pos_y += z;
 				}
 
-				IIcon ico = icoSet[s.getSeed() % icoSet.length];
+				final IIcon ico = icoSet[s.getSeed() % icoSet.length];
 
 				switch( s.side )
 				{

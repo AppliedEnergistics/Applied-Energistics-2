@@ -36,13 +36,13 @@ public class Connections implements IWorldCallable<Void>
 	public boolean create = false;
 	public boolean destroy = false;
 
-	public Connections( PartP2PTunnelME o )
+	public Connections( final PartP2PTunnelME o )
 	{
 		this.me = o;
 	}
 
 	@Override
-	public Void call( World world ) throws Exception
+	public Void call( final World world ) throws Exception
 	{
 		this.me.updateConnections( this );
 

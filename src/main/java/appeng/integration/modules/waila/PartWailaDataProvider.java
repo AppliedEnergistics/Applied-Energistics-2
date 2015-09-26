@@ -83,7 +83,7 @@ public final class PartWailaDataProvider implements IWailaDataProvider
 	}
 
 	@Override
-	public ItemStack getWailaStack( IWailaDataAccessor accessor, IWailaConfigHandler config )
+	public ItemStack getWailaStack( final IWailaDataAccessor accessor, final IWailaConfigHandler config )
 	{
 		final TileEntity te = accessor.getTileEntity();
 		final MovingObjectPosition mop = accessor.getPosition();
@@ -96,7 +96,7 @@ public final class PartWailaDataProvider implements IWailaDataProvider
 
 			ItemStack wailaStack = null;
 
-			for( IPartWailaDataProvider provider : this.providers )
+			for( final IPartWailaDataProvider provider : this.providers )
 			{
 				wailaStack = provider.getWailaStack( part, config, wailaStack );
 			}
@@ -107,7 +107,7 @@ public final class PartWailaDataProvider implements IWailaDataProvider
 	}
 
 	@Override
-	public List<String> getWailaHead( ItemStack itemStack, List<String> currentToolTip, IWailaDataAccessor accessor, IWailaConfigHandler config )
+	public List<String> getWailaHead( final ItemStack itemStack, final List<String> currentToolTip, final IWailaDataAccessor accessor, final IWailaConfigHandler config )
 	{
 		final TileEntity te = accessor.getTileEntity();
 		final MovingObjectPosition mop = accessor.getPosition();
@@ -118,7 +118,7 @@ public final class PartWailaDataProvider implements IWailaDataProvider
 		{
 			final IPart part = maybePart.get();
 
-			for( IPartWailaDataProvider provider : this.providers )
+			for( final IPartWailaDataProvider provider : this.providers )
 			{
 				provider.getWailaHead( part, currentToolTip, accessor, config );
 			}
@@ -128,7 +128,7 @@ public final class PartWailaDataProvider implements IWailaDataProvider
 	}
 
 	@Override
-	public List<String> getWailaBody( ItemStack itemStack, List<String> currentToolTip, IWailaDataAccessor accessor, IWailaConfigHandler config )
+	public List<String> getWailaBody( final ItemStack itemStack, final List<String> currentToolTip, final IWailaDataAccessor accessor, final IWailaConfigHandler config )
 	{
 		final TileEntity te = accessor.getTileEntity();
 		final MovingObjectPosition mop = accessor.getPosition();
@@ -139,7 +139,7 @@ public final class PartWailaDataProvider implements IWailaDataProvider
 		{
 			final IPart part = maybePart.get();
 
-			for( IPartWailaDataProvider provider : this.providers )
+			for( final IPartWailaDataProvider provider : this.providers )
 			{
 				provider.getWailaBody( part, currentToolTip, accessor, config );
 			}
@@ -149,7 +149,7 @@ public final class PartWailaDataProvider implements IWailaDataProvider
 	}
 
 	@Override
-	public List<String> getWailaTail( ItemStack itemStack, List<String> currentToolTip, IWailaDataAccessor accessor, IWailaConfigHandler config )
+	public List<String> getWailaTail( final ItemStack itemStack, final List<String> currentToolTip, final IWailaDataAccessor accessor, final IWailaConfigHandler config )
 	{
 		final TileEntity te = accessor.getTileEntity();
 		final MovingObjectPosition mop = accessor.getPosition();
@@ -160,7 +160,7 @@ public final class PartWailaDataProvider implements IWailaDataProvider
 		{
 			final IPart part = maybePart.get();
 
-			for( IPartWailaDataProvider provider : this.providers )
+			for( final IPartWailaDataProvider provider : this.providers )
 			{
 				provider.getWailaTail( part, currentToolTip, accessor, config );
 			}
@@ -170,7 +170,7 @@ public final class PartWailaDataProvider implements IWailaDataProvider
 	}
 
 	@Override
-	public NBTTagCompound getNBTData( EntityPlayerMP player, TileEntity te, NBTTagCompound tag, World world, int x, int y, int z )
+	public NBTTagCompound getNBTData( final EntityPlayerMP player, final TileEntity te, final NBTTagCompound tag, final World world, final int x, final int y, final int z )
 	{
 		final MovingObjectPosition mop = this.tracer.retraceBlock( world, player, x, y, z );
 
@@ -182,7 +182,7 @@ public final class PartWailaDataProvider implements IWailaDataProvider
 			{
 				final IPart part = maybePart.get();
 
-				for( IPartWailaDataProvider provider : this.providers )
+				for( final IPartWailaDataProvider provider : this.providers )
 				{
 					provider.getNBTData( player, part, te, tag, world, x, y, z );
 				}

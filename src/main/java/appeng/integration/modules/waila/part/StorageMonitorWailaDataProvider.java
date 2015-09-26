@@ -53,7 +53,7 @@ public final class StorageMonitorWailaDataProvider extends BasePartWailaDataProv
 	 * @return modified tooltip
 	 */
 	@Override
-	public List<String> getWailaBody( IPart part, List<String> currentToolTip, IWailaDataAccessor accessor, IWailaConfigHandler config )
+	public List<String> getWailaBody( final IPart part, final List<String> currentToolTip, final IWailaDataAccessor accessor, final IWailaConfigHandler config )
 	{
 		if( part instanceof IPartStorageMonitor )
 		{
@@ -64,12 +64,12 @@ public final class StorageMonitorWailaDataProvider extends BasePartWailaDataProv
 
 			if( displayed instanceof IAEItemStack )
 			{
-				IAEItemStack ais = (IAEItemStack) displayed;
+				final IAEItemStack ais = (IAEItemStack) displayed;
 				currentToolTip.add( WailaText.Showing.getLocal() + ": " + ais.getItemStack().getDisplayName() );
 			}
 			else if( displayed instanceof IAEFluidStack )
 			{
-				IAEFluidStack ais = (IAEFluidStack) displayed;
+				final IAEFluidStack ais = (IAEFluidStack) displayed;
 				currentToolTip.add( WailaText.Showing.getLocal() + ": " + ais.getFluid().getLocalizedName( ais.getFluidStack() ) );
 			}
 

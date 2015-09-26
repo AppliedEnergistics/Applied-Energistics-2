@@ -41,13 +41,13 @@ public class CreativeCellHandler implements ICellHandler
 {
 
 	@Override
-	public boolean isCell( ItemStack is )
+	public boolean isCell( final ItemStack is )
 	{
 		return is != null && is.getItem() instanceof ItemCreativeStorageCell;
 	}
 
 	@Override
-	public IMEInventoryHandler getCellInventory( ItemStack is, ISaveProvider container, StorageChannel channel )
+	public IMEInventoryHandler getCellInventory( final ItemStack is, final ISaveProvider container, final StorageChannel channel )
 	{
 		if( channel == StorageChannel.ITEMS && is != null && is.getItem() instanceof ItemCreativeStorageCell )
 		{
@@ -75,19 +75,19 @@ public class CreativeCellHandler implements ICellHandler
 	}
 
 	@Override
-	public void openChestGui( EntityPlayer player, IChestOrDrive chest, ICellHandler cellHandler, IMEInventoryHandler inv, ItemStack is, StorageChannel chan )
+	public void openChestGui( final EntityPlayer player, final IChestOrDrive chest, final ICellHandler cellHandler, final IMEInventoryHandler inv, final ItemStack is, final StorageChannel chan )
 	{
 		Platform.openGUI( player, (TileEntity) chest, chest.getUp(), GuiBridge.GUI_ME );
 	}
 
 	@Override
-	public int getStatusForCell( ItemStack is, IMEInventory handler )
+	public int getStatusForCell( final ItemStack is, final IMEInventory handler )
 	{
 		return 2;
 	}
 
 	@Override
-	public double cellIdleDrain( ItemStack is, IMEInventory handler )
+	public double cellIdleDrain( final ItemStack is, final IMEInventory handler )
 	{
 		return 0;
 	}

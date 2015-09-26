@@ -39,13 +39,13 @@ public class AENetworkTile extends AEBaseTile implements IActionHost, IGridProxy
 	protected final AENetworkProxy gridProxy = this.createProxy();
 
 	@TileEvent( TileEventType.WORLD_NBT_READ )
-	public void readFromNBT_AENetwork( NBTTagCompound data )
+	public void readFromNBT_AENetwork( final NBTTagCompound data )
 	{
 		this.gridProxy.readFromNBT( data );
 	}
 
 	@TileEvent( TileEventType.WORLD_NBT_WRITE )
-	public void writeToNBT_AENetwork( NBTTagCompound data )
+	public void writeToNBT_AENetwork( final NBTTagCompound data )
 	{
 		this.gridProxy.writeToNBT( data );
 	}
@@ -56,13 +56,13 @@ public class AENetworkTile extends AEBaseTile implements IActionHost, IGridProxy
 	}
 
 	@Override
-	public IGridNode getGridNode( ForgeDirection dir )
+	public IGridNode getGridNode( final ForgeDirection dir )
 	{
 		return this.gridProxy.getNode();
 	}
 
 	@Override
-	public AECableType getCableConnectionType( ForgeDirection dir )
+	public AECableType getCableConnectionType( final ForgeDirection dir )
 	{
 		return AECableType.SMART;
 	}

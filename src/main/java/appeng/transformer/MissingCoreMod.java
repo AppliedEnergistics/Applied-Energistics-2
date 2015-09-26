@@ -38,22 +38,22 @@ public final class MissingCoreMod extends CustomModLoadingErrorDisplayException
 	private boolean deobf = false;
 
 	@Override
-	public void initGui( GuiErrorScreen errorScreen, FontRenderer fontRenderer )
+	public void initGui( final GuiErrorScreen errorScreen, final FontRenderer fontRenderer )
 	{
-		Class<?> clz = errorScreen.getClass();
+		final Class<?> clz = errorScreen.getClass();
 		try
 		{
 			clz.getField( "mc" );
 			this.deobf = true;
 		}
-		catch( Throwable ignored )
+		catch( final Throwable ignored )
 		{
 
 		}
 	}
 
 	@Override
-	public void drawScreen( GuiErrorScreen errorScreen, FontRenderer fontRenderer, int mouseRelX, int mouseRelY, float tickTime )
+	public void drawScreen( final GuiErrorScreen errorScreen, final FontRenderer fontRenderer, final int mouseRelX, final int mouseRelY, final float tickTime )
 	{
 		int offset = 10;
 		this.drawCenteredString( fontRenderer, "Sorry, couldn't load AE2 properly.", errorScreen.width / 2, offset, COLOR_WHITE );
@@ -90,7 +90,7 @@ public final class MissingCoreMod extends CustomModLoadingErrorDisplayException
 		}
 	}
 
-	private void drawCenteredString( FontRenderer fontRenderer, String string, int x, int y, int colour )
+	private void drawCenteredString( final FontRenderer fontRenderer, final String string, final int x, final int y, final int colour )
 	{
 		final String reEncoded = string.replaceAll( "\\P{InBasic_Latin}", "" );
 		final int reEncodedWidth = fontRenderer.getStringWidth( reEncoded );

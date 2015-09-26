@@ -32,7 +32,7 @@ public class ItemListIgnoreCrafting<T extends IAEStack> implements IItemList<T>
 
 	final IItemList<T> target;
 
-	public ItemListIgnoreCrafting( IItemList<T> cla )
+	public ItemListIgnoreCrafting( final IItemList<T> cla )
 	{
 		this.target = cla;
 	}
@@ -50,13 +50,13 @@ public class ItemListIgnoreCrafting<T extends IAEStack> implements IItemList<T>
 	}
 
 	@Override
-	public T findPrecise( T i )
+	public T findPrecise( final T i )
 	{
 		return this.target.findPrecise( i );
 	}
 
 	@Override
-	public Collection<T> findFuzzy( T input, FuzzyMode fuzzy )
+	public Collection<T> findFuzzy( final T input, final FuzzyMode fuzzy )
 	{
 		return this.target.findFuzzy( input, fuzzy );
 	}
@@ -68,19 +68,19 @@ public class ItemListIgnoreCrafting<T extends IAEStack> implements IItemList<T>
 	}
 
 	@Override
-	public void addStorage( T option )
+	public void addStorage( final T option )
 	{
 		this.target.addStorage( option );
 	}
 
 	@Override
-	public void addCrafting( T option )
+	public void addCrafting( final T option )
 	{
 		// nothing.
 	}
 
 	@Override
-	public void addRequestable( T option )
+	public void addRequestable( final T option )
 	{
 		this.target.addRequestable( option );
 	}

@@ -62,7 +62,7 @@ public class RenderBlocksWorkaround extends RenderBlocks
 				{
 					this.fColor = Tessellator.class.getDeclaredField( "color" );
 				}
-				catch( Throwable t )
+				catch( final Throwable t )
 				{
 					this.fColor = Tessellator.class.getDeclaredField( "field_78402_m" );
 				}
@@ -70,7 +70,7 @@ public class RenderBlocksWorkaround extends RenderBlocks
 			}
 			return (Integer) this.fColor.get( Tessellator.instance );
 		}
-		catch( Throwable t )
+		catch( final Throwable t )
 		{
 			return 0;
 		}
@@ -86,7 +86,7 @@ public class RenderBlocksWorkaround extends RenderBlocks
 				{
 					this.fBrightness = Tessellator.class.getDeclaredField( "brightness" );
 				}
-				catch( Throwable t )
+				catch( final Throwable t )
 				{
 					this.fBrightness = Tessellator.class.getDeclaredField( "field_78401_l" );
 				}
@@ -94,18 +94,18 @@ public class RenderBlocksWorkaround extends RenderBlocks
 			}
 			return (Integer) this.fBrightness.get( Tessellator.instance );
 		}
-		catch( Throwable t )
+		catch( final Throwable t )
 		{
 			return 0;
 		}
 	}
 
-	public void setTexture( IIcon ico )
+	public void setTexture( final IIcon ico )
 	{
 		this.lightState.rXPos = this.lightState.rXNeg = this.lightState.rYPos = this.lightState.rYNeg = this.lightState.rZPos = this.lightState.rZNeg = ico;
 	}
 
-	public void setTexture( IIcon rYNeg, IIcon rYPos, IIcon rZNeg, IIcon rZPos, IIcon rXNeg, IIcon rXPos )
+	public void setTexture( final IIcon rYNeg, final IIcon rYPos, final IIcon rZNeg, final IIcon rZPos, final IIcon rXNeg, final IIcon rXPos )
 	{
 		this.lightState.rXPos = rXPos;
 		this.lightState.rXNeg = rXNeg;
@@ -115,7 +115,7 @@ public class RenderBlocksWorkaround extends RenderBlocks
 		this.lightState.rZNeg = rZNeg;
 	}
 
-	public boolean renderStandardBlockNoCalculations( Block b, int x, int y, int z )
+	public boolean renderStandardBlockNoCalculations( final Block b, final int x, final int y, final int z )
 	{
 		Tessellator.instance.setBrightness( this.lightState.bXPos );
 		this.restoreAO( this.lightState.aoXPos, this.lightState.foXPos );
@@ -144,7 +144,7 @@ public class RenderBlocksWorkaround extends RenderBlocks
 		return true;
 	}
 
-	private void restoreAO( int[] z, float[] c )
+	private void restoreAO( final int[] z, final float[] c )
 	{
 		this.brightnessBottomLeft = z[0];
 		this.brightnessBottomRight = z[1];
@@ -166,7 +166,7 @@ public class RenderBlocksWorkaround extends RenderBlocks
 		this.colorBlueTopRight = c[11];
 	}
 
-	private void saveAO( int[] z, float[] c )
+	private void saveAO( final int[] z, final float[] c )
 	{
 		z[0] = this.brightnessBottomLeft;
 		z[1] = this.brightnessBottomRight;
@@ -189,7 +189,7 @@ public class RenderBlocksWorkaround extends RenderBlocks
 	}
 
 	@Override
-	public boolean renderStandardBlock( Block blk, int x, int y, int z )
+	public boolean renderStandardBlock( final Block blk, final int x, final int y, final int z )
 	{
 		try
 		{
@@ -201,12 +201,12 @@ public class RenderBlocksWorkaround extends RenderBlocks
 			else
 			{
 				this.enableAO = this.lightState.isAO;
-				boolean out = this.renderStandardBlockNoCalculations( blk, x, y, z );
+				final boolean out = this.renderStandardBlockNoCalculations( blk, x, y, z );
 				this.enableAO = false;
 				return out;
 			}
 		}
-		catch( Throwable t )
+		catch( final Throwable t )
 		{
 			AELog.error( t );
 			// meh
@@ -215,7 +215,7 @@ public class RenderBlocksWorkaround extends RenderBlocks
 	}
 
 	@Override
-	public void renderFaceYNeg( Block par1Block, double par2, double par4, double par6, IIcon par8Icon )
+	public void renderFaceYNeg( final Block par1Block, final double par2, final double par4, final double par6, final IIcon par8Icon )
 	{
 		if( this.faces.contains( ForgeDirection.DOWN ) )
 		{
@@ -226,18 +226,18 @@ public class RenderBlocksWorkaround extends RenderBlocks
 
 			if( this.isFacade )
 			{
-				Tessellator tessellator = Tessellator.instance;
+				final Tessellator tessellator = Tessellator.instance;
 
-				double d3 = par8Icon.getInterpolatedU( this.renderMinX * 16.0D );
-				double d4 = par8Icon.getInterpolatedU( this.renderMaxX * 16.0D );
-				double d5 = par8Icon.getInterpolatedV( this.renderMinZ * 16.0D );
-				double d6 = par8Icon.getInterpolatedV( this.renderMaxZ * 16.0D );
+				final double d3 = par8Icon.getInterpolatedU( this.renderMinX * 16.0D );
+				final double d4 = par8Icon.getInterpolatedU( this.renderMaxX * 16.0D );
+				final double d5 = par8Icon.getInterpolatedV( this.renderMinZ * 16.0D );
+				final double d6 = par8Icon.getInterpolatedV( this.renderMaxZ * 16.0D );
 
-				double d11 = par2 + this.renderMinX;
-				double d12 = par2 + this.renderMaxX;
-				double d13 = par4 + this.renderMinY;
-				double d14 = par6 + this.renderMinZ;
-				double d15 = par6 + this.renderMaxZ;
+				final double d11 = par2 + this.renderMinX;
+				final double d12 = par2 + this.renderMaxX;
+				final double d13 = par4 + this.renderMinY;
+				final double d14 = par6 + this.renderMinZ;
+				final double d15 = par6 + this.renderMaxZ;
 
 				if( this.enableAO )
 				{
@@ -273,7 +273,7 @@ public class RenderBlocksWorkaround extends RenderBlocks
 	}
 
 	@Override
-	public void renderFaceYPos( Block par1Block, double par2, double par4, double par6, IIcon par8Icon )
+	public void renderFaceYPos( final Block par1Block, final double par2, final double par4, final double par6, final IIcon par8Icon )
 	{
 		if( this.faces.contains( ForgeDirection.UP ) )
 		{
@@ -284,18 +284,18 @@ public class RenderBlocksWorkaround extends RenderBlocks
 
 			if( this.isFacade )
 			{
-				Tessellator tessellator = Tessellator.instance;
+				final Tessellator tessellator = Tessellator.instance;
 
-				double d3 = par8Icon.getInterpolatedU( this.renderMinX * 16.0D );
-				double d4 = par8Icon.getInterpolatedU( this.renderMaxX * 16.0D );
-				double d5 = par8Icon.getInterpolatedV( this.renderMinZ * 16.0D );
-				double d6 = par8Icon.getInterpolatedV( this.renderMaxZ * 16.0D );
+				final double d3 = par8Icon.getInterpolatedU( this.renderMinX * 16.0D );
+				final double d4 = par8Icon.getInterpolatedU( this.renderMaxX * 16.0D );
+				final double d5 = par8Icon.getInterpolatedV( this.renderMinZ * 16.0D );
+				final double d6 = par8Icon.getInterpolatedV( this.renderMaxZ * 16.0D );
 
-				double d11 = par2 + this.renderMinX;
-				double d12 = par2 + this.renderMaxX;
-				double d13 = par4 + this.renderMaxY;
-				double d14 = par6 + this.renderMinZ;
-				double d15 = par6 + this.renderMaxZ;
+				final double d11 = par2 + this.renderMinX;
+				final double d12 = par2 + this.renderMaxX;
+				final double d13 = par4 + this.renderMaxY;
+				final double d14 = par6 + this.renderMinZ;
+				final double d15 = par6 + this.renderMaxZ;
 
 				if( this.enableAO )
 				{
@@ -331,7 +331,7 @@ public class RenderBlocksWorkaround extends RenderBlocks
 	}
 
 	@Override
-	public void renderFaceZNeg( Block par1Block, double par2, double par4, double par6, IIcon par8Icon )
+	public void renderFaceZNeg( final Block par1Block, final double par2, final double par4, final double par6, final IIcon par8Icon )
 	{
 		if( this.faces.contains( ForgeDirection.NORTH ) )
 		{
@@ -342,18 +342,18 @@ public class RenderBlocksWorkaround extends RenderBlocks
 
 			if( this.isFacade )
 			{
-				Tessellator tessellator = Tessellator.instance;
+				final Tessellator tessellator = Tessellator.instance;
 
-				double d3 = par8Icon.getInterpolatedU( 16.0D - this.renderMinX * 16.0D );
-				double d4 = par8Icon.getInterpolatedU( 16.0D - this.renderMaxX * 16.0D );
-				double d5 = par8Icon.getInterpolatedV( 16.0D - this.renderMaxY * 16.0D );
-				double d6 = par8Icon.getInterpolatedV( 16.0D - this.renderMinY * 16.0D );
+				final double d3 = par8Icon.getInterpolatedU( 16.0D - this.renderMinX * 16.0D );
+				final double d4 = par8Icon.getInterpolatedU( 16.0D - this.renderMaxX * 16.0D );
+				final double d5 = par8Icon.getInterpolatedV( 16.0D - this.renderMaxY * 16.0D );
+				final double d6 = par8Icon.getInterpolatedV( 16.0D - this.renderMinY * 16.0D );
 
-				double d11 = par2 + this.renderMinX;
-				double d12 = par2 + this.renderMaxX;
-				double d13 = par4 + this.renderMinY;
-				double d14 = par4 + this.renderMaxY;
-				double d15 = par6 + this.renderMinZ;
+				final double d11 = par2 + this.renderMinX;
+				final double d12 = par2 + this.renderMaxX;
+				final double d13 = par4 + this.renderMinY;
+				final double d14 = par4 + this.renderMaxY;
+				final double d15 = par6 + this.renderMinZ;
 
 				if( this.enableAO )
 				{
@@ -389,7 +389,7 @@ public class RenderBlocksWorkaround extends RenderBlocks
 	}
 
 	@Override
-	public void renderFaceZPos( Block par1Block, double par2, double par4, double par6, IIcon par8Icon )
+	public void renderFaceZPos( final Block par1Block, final double par2, final double par4, final double par6, final IIcon par8Icon )
 	{
 		if( this.faces.contains( ForgeDirection.SOUTH ) )
 		{
@@ -400,18 +400,18 @@ public class RenderBlocksWorkaround extends RenderBlocks
 
 			if( this.isFacade )
 			{
-				Tessellator tessellator = Tessellator.instance;
+				final Tessellator tessellator = Tessellator.instance;
 
-				double d3 = par8Icon.getInterpolatedU( this.renderMinX * 16.0D );
-				double d4 = par8Icon.getInterpolatedU( this.renderMaxX * 16.0D );
-				double d5 = par8Icon.getInterpolatedV( 16.0D - this.renderMaxY * 16.0D );
-				double d6 = par8Icon.getInterpolatedV( 16.0D - this.renderMinY * 16.0D );
+				final double d3 = par8Icon.getInterpolatedU( this.renderMinX * 16.0D );
+				final double d4 = par8Icon.getInterpolatedU( this.renderMaxX * 16.0D );
+				final double d5 = par8Icon.getInterpolatedV( 16.0D - this.renderMaxY * 16.0D );
+				final double d6 = par8Icon.getInterpolatedV( 16.0D - this.renderMinY * 16.0D );
 
-				double d11 = par2 + this.renderMinX;
-				double d12 = par2 + this.renderMaxX;
-				double d13 = par4 + this.renderMinY;
-				double d14 = par4 + this.renderMaxY;
-				double d15 = par6 + this.renderMaxZ;
+				final double d11 = par2 + this.renderMinX;
+				final double d12 = par2 + this.renderMaxX;
+				final double d13 = par4 + this.renderMinY;
+				final double d14 = par4 + this.renderMaxY;
+				final double d15 = par6 + this.renderMaxZ;
 
 				if( this.enableAO )
 				{
@@ -447,7 +447,7 @@ public class RenderBlocksWorkaround extends RenderBlocks
 	}
 
 	@Override
-	public void renderFaceXNeg( Block par1Block, double par2, double par4, double par6, IIcon par8Icon )
+	public void renderFaceXNeg( final Block par1Block, final double par2, final double par4, final double par6, final IIcon par8Icon )
 	{
 		if( this.faces.contains( ForgeDirection.WEST ) )
 		{
@@ -458,18 +458,18 @@ public class RenderBlocksWorkaround extends RenderBlocks
 
 			if( this.isFacade )
 			{
-				Tessellator tessellator = Tessellator.instance;
+				final Tessellator tessellator = Tessellator.instance;
 
-				double d3 = par8Icon.getInterpolatedU( this.renderMinZ * 16.0D );
-				double d4 = par8Icon.getInterpolatedU( this.renderMaxZ * 16.0D );
-				double d5 = par8Icon.getInterpolatedV( 16.0D - this.renderMaxY * 16.0D );
-				double d6 = par8Icon.getInterpolatedV( 16.0D - this.renderMinY * 16.0D );
+				final double d3 = par8Icon.getInterpolatedU( this.renderMinZ * 16.0D );
+				final double d4 = par8Icon.getInterpolatedU( this.renderMaxZ * 16.0D );
+				final double d5 = par8Icon.getInterpolatedV( 16.0D - this.renderMaxY * 16.0D );
+				final double d6 = par8Icon.getInterpolatedV( 16.0D - this.renderMinY * 16.0D );
 
-				double d11 = par2 + this.renderMinX;
-				double d12 = par4 + this.renderMinY;
-				double d13 = par4 + this.renderMaxY;
-				double d14 = par6 + this.renderMinZ;
-				double d15 = par6 + this.renderMaxZ;
+				final double d11 = par2 + this.renderMinX;
+				final double d12 = par4 + this.renderMinY;
+				final double d13 = par4 + this.renderMaxY;
+				final double d14 = par6 + this.renderMinZ;
+				final double d15 = par6 + this.renderMaxZ;
 
 				if( this.enableAO )
 				{
@@ -505,7 +505,7 @@ public class RenderBlocksWorkaround extends RenderBlocks
 	}
 
 	@Override
-	public void renderFaceXPos( Block par1Block, double par2, double par4, double par6, IIcon par8Icon )
+	public void renderFaceXPos( final Block par1Block, final double par2, final double par4, final double par6, final IIcon par8Icon )
 	{
 		if( this.faces.contains( ForgeDirection.EAST ) )
 		{
@@ -516,18 +516,18 @@ public class RenderBlocksWorkaround extends RenderBlocks
 
 			if( this.isFacade )
 			{
-				Tessellator tessellator = Tessellator.instance;
+				final Tessellator tessellator = Tessellator.instance;
 
-				double d3 = par8Icon.getInterpolatedU( 16.0D - this.renderMinZ * 16.0D );
-				double d4 = par8Icon.getInterpolatedU( 16.0D - this.renderMaxZ * 16.0D );
-				double d5 = par8Icon.getInterpolatedV( 16.0D - this.renderMaxY * 16.0D );
-				double d6 = par8Icon.getInterpolatedV( 16.0D - this.renderMinY * 16.0D );
+				final double d3 = par8Icon.getInterpolatedU( 16.0D - this.renderMinZ * 16.0D );
+				final double d4 = par8Icon.getInterpolatedU( 16.0D - this.renderMaxZ * 16.0D );
+				final double d5 = par8Icon.getInterpolatedV( 16.0D - this.renderMaxY * 16.0D );
+				final double d6 = par8Icon.getInterpolatedV( 16.0D - this.renderMinY * 16.0D );
 
-				double d11 = par2 + this.renderMaxX;
-				double d12 = par4 + this.renderMinY;
-				double d13 = par4 + this.renderMaxY;
-				double d14 = par6 + this.renderMinZ;
-				double d15 = par6 + this.renderMaxZ;
+				final double d11 = par2 + this.renderMaxX;
+				final double d12 = par4 + this.renderMinY;
+				final double d13 = par4 + this.renderMaxY;
+				final double d14 = par6 + this.renderMinZ;
+				final double d15 = par6 + this.renderMaxZ;
 
 				if( this.enableAO )
 				{
@@ -562,41 +562,41 @@ public class RenderBlocksWorkaround extends RenderBlocks
 		}
 	}
 
-	private void partialLightingColoring( double u, double v )
+	private void partialLightingColoring( final double u, final double v )
 	{
-		double rA = this.colorRedTopLeft * u + ( 1.0 - u ) * this.colorRedTopRight;
-		double rB = this.colorRedBottomLeft * u + ( 1.0 - u ) * this.colorRedBottomRight;
-		float r = (float) ( rA * v + rB * ( 1.0 - v ) );
+		final double rA = this.colorRedTopLeft * u + ( 1.0 - u ) * this.colorRedTopRight;
+		final double rB = this.colorRedBottomLeft * u + ( 1.0 - u ) * this.colorRedBottomRight;
+		final float r = (float) ( rA * v + rB * ( 1.0 - v ) );
 
-		double gA = this.colorGreenTopLeft * u + ( 1.0 - u ) * this.colorGreenTopRight;
-		double gB = this.colorGreenBottomLeft * u + ( 1.0 - u ) * this.colorGreenBottomRight;
-		float g = (float) ( gA * v + gB * ( 1.0 - v ) );
+		final double gA = this.colorGreenTopLeft * u + ( 1.0 - u ) * this.colorGreenTopRight;
+		final double gB = this.colorGreenBottomLeft * u + ( 1.0 - u ) * this.colorGreenBottomRight;
+		final float g = (float) ( gA * v + gB * ( 1.0 - v ) );
 
-		double bA = this.colorBlueTopLeft * u + ( 1.0 - u ) * this.colorBlueTopRight;
-		double bB = this.colorBlueBottomLeft * u + ( 1.0 - u ) * this.colorBlueBottomRight;
-		float b = (float) ( bA * v + bB * ( 1.0 - v ) );
+		final double bA = this.colorBlueTopLeft * u + ( 1.0 - u ) * this.colorBlueTopRight;
+		final double bB = this.colorBlueBottomLeft * u + ( 1.0 - u ) * this.colorBlueBottomRight;
+		final float b = (float) ( bA * v + bB * ( 1.0 - v ) );
 
-		double highA = ( this.brightnessTopLeft >> 16 & 255 ) * u + ( 1.0 - u ) * ( this.brightnessTopRight >> 16 & 255 );
-		double highB = ( this.brightnessBottomLeft >> 16 & 255 ) * u + ( 1.0 - u ) * ( this.brightnessBottomRight >> 16 & 255 );
-		int high = ( (int) ( highA * v + highB * ( 1.0 - v ) ) ) & 255;
+		final double highA = ( this.brightnessTopLeft >> 16 & 255 ) * u + ( 1.0 - u ) * ( this.brightnessTopRight >> 16 & 255 );
+		final double highB = ( this.brightnessBottomLeft >> 16 & 255 ) * u + ( 1.0 - u ) * ( this.brightnessBottomRight >> 16 & 255 );
+		final int high = ( (int) ( highA * v + highB * ( 1.0 - v ) ) ) & 255;
 
-		double lowA = ( ( this.brightnessTopLeft & 255 ) ) * u + ( 1.0 - u ) * ( ( this.brightnessTopRight & 255 ) );
-		double lowB = ( ( this.brightnessBottomLeft & 255 ) ) * u + ( 1.0 - u ) * ( ( this.brightnessBottomRight & 255 ) );
-		int low = ( (int) ( lowA * v + lowB * ( 1.0 - v ) ) ) & 255;
+		final double lowA = ( ( this.brightnessTopLeft & 255 ) ) * u + ( 1.0 - u ) * ( ( this.brightnessTopRight & 255 ) );
+		final double lowB = ( ( this.brightnessBottomLeft & 255 ) ) * u + ( 1.0 - u ) * ( ( this.brightnessBottomRight & 255 ) );
+		final int low = ( (int) ( lowA * v + lowB * ( 1.0 - v ) ) ) & 255;
 
-		int out = ( high << 16 ) | low;
+		final int out = ( high << 16 ) | low;
 
 		Tessellator.instance.setColorRGBA_F( r, g, b, this.opacity );
 		Tessellator.instance.setBrightness( out );
 	}
 
-	public boolean similarLighting( Block blk, IBlockAccess w, int x, int y, int z, ISimplifiedBundle sim )
+	public boolean similarLighting( final Block blk, final IBlockAccess w, final int x, final int y, final int z, final ISimplifiedBundle sim )
 	{
-		int lh = this.getLightingHash( blk, w, x, y, z );
+		final int lh = this.getLightingHash( blk, w, x, y, z );
 		return ( (LightingCache) sim ).lightHash == lh;
 	}
 
-	private int getLightingHash( Block blk, IBlockAccess w, int x, int y, int z )
+	private int getLightingHash( final Block blk, final IBlockAccess w, final int x, final int y, final int z )
 	{
 		int o = 0;
 
@@ -616,7 +616,7 @@ public class RenderBlocksWorkaround extends RenderBlocks
 		return Arrays.hashCode( this.lightHashTmp );
 	}
 
-	public void populate( ISimplifiedBundle sim )
+	public void populate( final ISimplifiedBundle sim )
 	{
 		this.lightState = new LightingCache( (LightingCache) sim );
 	}
@@ -656,7 +656,7 @@ public class RenderBlocksWorkaround extends RenderBlocks
 		public int bZNeg;
 		public int lightHash;
 
-		public LightingCache( LightingCache secondCSrc )
+		public LightingCache( final LightingCache secondCSrc )
 		{
 			this.rXPos = secondCSrc.rXPos;
 			this.rXNeg = secondCSrc.rXNeg;

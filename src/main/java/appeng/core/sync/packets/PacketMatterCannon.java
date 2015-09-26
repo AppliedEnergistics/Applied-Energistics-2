@@ -48,7 +48,7 @@ public class PacketMatterCannon extends AppEngPacket
 	final byte len;
 
 	// automatic.
-	public PacketMatterCannon( ByteBuf stream )
+	public PacketMatterCannon( final ByteBuf stream )
 	{
 		this.x = stream.readFloat();
 		this.y = stream.readFloat();
@@ -60,10 +60,10 @@ public class PacketMatterCannon extends AppEngPacket
 	}
 
 	// api
-	public PacketMatterCannon( double x, double y, double z, float dx, float dy, float dz, byte len )
+	public PacketMatterCannon( final double x, final double y, final double z, final float dx, final float dy, final float dz, final byte len )
 	{
-		float dl = dx * dx + dy * dy + dz * dz;
-		float dlz = (float) Math.sqrt( dl );
+		final float dl = dx * dx + dy * dy + dz * dz;
+		final float dlz = (float) Math.sqrt( dl );
 
 		this.x = x;
 		this.y = y;
@@ -73,7 +73,7 @@ public class PacketMatterCannon extends AppEngPacket
 		this.dz = dz / dlz;
 		this.len = len;
 
-		ByteBuf data = Unpooled.buffer();
+		final ByteBuf data = Unpooled.buffer();
 
 		data.writeInt( this.getPacketID() );
 		data.writeFloat( (float) x );
@@ -89,20 +89,20 @@ public class PacketMatterCannon extends AppEngPacket
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void clientPacketData( INetworkInfo network, AppEngPacket packet, EntityPlayer player )
+	public void clientPacketData( final INetworkInfo network, final AppEngPacket packet, final EntityPlayer player )
 	{
 		try
 		{
 
-			World world = FMLClientHandler.instance().getClient().theWorld;
+			final World world = FMLClientHandler.instance().getClient().theWorld;
 			for( int a = 1; a < this.len; a++ )
 			{
-				MatterCannonFX fx = new MatterCannonFX( world, this.x + this.dx * a, this.y + this.dy * a, this.z + this.dz * a, Items.diamond );
+				final MatterCannonFX fx = new MatterCannonFX( world, this.x + this.dx * a, this.y + this.dy * a, this.z + this.dz * a, Items.diamond );
 
 				Minecraft.getMinecraft().effectRenderer.addEffect( fx );
 			}
 		}
-		catch( Exception ignored )
+		catch( final Exception ignored )
 		{
 		}
 	}

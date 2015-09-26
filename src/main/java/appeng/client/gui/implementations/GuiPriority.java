@@ -67,7 +67,7 @@ public class GuiPriority extends AEBaseGui
 
 	GuiBridge OriginalGui;
 
-	public GuiPriority( InventoryPlayer inventoryPlayer, IPriorityHost te )
+	public GuiPriority( final InventoryPlayer inventoryPlayer, final IPriorityHost te )
 	{
 		super( new ContainerPriority( inventoryPlayer, te ) );
 	}
@@ -77,10 +77,10 @@ public class GuiPriority extends AEBaseGui
 	{
 		super.initGui();
 
-		int a = AEConfig.instance.priorityByStacksAmounts( 0 );
-		int b = AEConfig.instance.priorityByStacksAmounts( 1 );
-		int c = AEConfig.instance.priorityByStacksAmounts( 2 );
-		int d = AEConfig.instance.priorityByStacksAmounts( 3 );
+		final int a = AEConfig.instance.priorityByStacksAmounts( 0 );
+		final int b = AEConfig.instance.priorityByStacksAmounts( 1 );
+		final int c = AEConfig.instance.priorityByStacksAmounts( 2 );
+		final int d = AEConfig.instance.priorityByStacksAmounts( 3 );
 
 		this.buttonList.add( this.plus1 = new GuiButton( 0, this.guiLeft + 20, this.guiTop + 32, 22, 20, "+" + a ) );
 		this.buttonList.add( this.plus10 = new GuiButton( 0, this.guiLeft + 48, this.guiTop + 32, 28, 20, "+" + b ) );
@@ -93,14 +93,14 @@ public class GuiPriority extends AEBaseGui
 		this.buttonList.add( this.minus1000 = new GuiButton( 0, this.guiLeft + 120, this.guiTop + 69, 38, 20, "-" + d ) );
 
 		ItemStack myIcon = null;
-		Object target = ( (AEBaseContainer) this.inventorySlots ).getTarget();
+		final Object target = ( (AEBaseContainer) this.inventorySlots ).getTarget();
 		final IDefinitions definitions = AEApi.instance().definitions();
 		final IParts parts = definitions.parts();
 		final IBlocks blocks = definitions.blocks();
 
 		if( target instanceof PartStorageBus )
 		{
-			for( ItemStack storageBusStack : parts.storageBus().maybeStack( 1 ).asSet() )
+			for( final ItemStack storageBusStack : parts.storageBus().maybeStack( 1 ).asSet() )
 			{
 				myIcon = storageBusStack;
 			}
@@ -109,7 +109,7 @@ public class GuiPriority extends AEBaseGui
 
 		if( target instanceof PartFormationPlane )
 		{
-			for( ItemStack formationPlaneStack : parts.formationPlane().maybeStack( 1 ).asSet() )
+			for( final ItemStack formationPlaneStack : parts.formationPlane().maybeStack( 1 ).asSet() )
 			{
 				myIcon = formationPlaneStack;
 			}
@@ -118,7 +118,7 @@ public class GuiPriority extends AEBaseGui
 
 		if( target instanceof TileDrive )
 		{
-			for( ItemStack driveStack : blocks.drive().maybeStack( 1 ).asSet() )
+			for( final ItemStack driveStack : blocks.drive().maybeStack( 1 ).asSet() )
 			{
 				myIcon = driveStack;
 			}
@@ -128,7 +128,7 @@ public class GuiPriority extends AEBaseGui
 
 		if( target instanceof TileChest )
 		{
-			for( ItemStack chestStack : blocks.chest().maybeStack( 1 ).asSet() )
+			for( final ItemStack chestStack : blocks.chest().maybeStack( 1 ).asSet() )
 			{
 				myIcon = chestStack;
 			}
@@ -138,7 +138,7 @@ public class GuiPriority extends AEBaseGui
 
 		if( target instanceof TileInterface )
 		{
-			for( ItemStack interfaceStack : blocks.iface().maybeStack( 1 ).asSet() )
+			for( final ItemStack interfaceStack : blocks.iface().maybeStack( 1 ).asSet() )
 			{
 				myIcon = interfaceStack;
 			}
@@ -148,7 +148,7 @@ public class GuiPriority extends AEBaseGui
 
 		if( target instanceof PartInterface )
 		{
-			for( ItemStack interfaceStack : parts.iface().maybeStack( 1 ).asSet() )
+			for( final ItemStack interfaceStack : parts.iface().maybeStack( 1 ).asSet() )
 			{
 				myIcon = interfaceStack;
 			}
@@ -170,13 +170,13 @@ public class GuiPriority extends AEBaseGui
 	}
 
 	@Override
-	public void drawFG( int offsetX, int offsetY, int mouseX, int mouseY )
+	public void drawFG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
 		this.fontRendererObj.drawString( GuiText.Priority.getLocal(), 8, 6, 4210752 );
 	}
 
 	@Override
-	public void drawBG( int offsetX, int offsetY, int mouseX, int mouseY )
+	public void drawBG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
 		this.bindTexture( "guis/priority.png" );
 		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize );
@@ -185,7 +185,7 @@ public class GuiPriority extends AEBaseGui
 	}
 
 	@Override
-	protected void actionPerformed( GuiButton btn )
+	protected void actionPerformed( final GuiButton btn )
 	{
 		super.actionPerformed( btn );
 
@@ -194,8 +194,8 @@ public class GuiPriority extends AEBaseGui
 			NetworkHandler.instance.sendToServer( new PacketSwitchGuis( this.OriginalGui ) );
 		}
 
-		boolean isPlus = btn == this.plus1 || btn == this.plus10 || btn == this.plus100 || btn == this.plus1000;
-		boolean isMinus = btn == this.minus1 || btn == this.minus10 || btn == this.minus100 || btn == this.minus1000;
+		final boolean isPlus = btn == this.plus1 || btn == this.plus10 || btn == this.plus100 || btn == this.plus1000;
+		final boolean isMinus = btn == this.minus1 || btn == this.minus10 || btn == this.minus100 || btn == this.minus1000;
 
 		if( isPlus || isMinus )
 		{
@@ -203,7 +203,7 @@ public class GuiPriority extends AEBaseGui
 		}
 	}
 
-	private void addQty( int i )
+	private void addQty( final int i )
 	{
 		try
 		{
@@ -233,19 +233,19 @@ public class GuiPriority extends AEBaseGui
 
 			NetworkHandler.instance.sendToServer( new PacketValueConfig( "PriorityHost.Priority", out ) );
 		}
-		catch( NumberFormatException e )
+		catch( final NumberFormatException e )
 		{
 			// nope..
 			this.priority.setText( "0" );
 		}
-		catch( IOException e )
+		catch( final IOException e )
 		{
 			AELog.error( e );
 		}
 	}
 
 	@Override
-	protected void keyTyped( char character, int key )
+	protected void keyTyped( final char character, final int key )
 	{
 		if( !this.checkHotbarKeys( key ) )
 		{
@@ -274,7 +274,7 @@ public class GuiPriority extends AEBaseGui
 
 					NetworkHandler.instance.sendToServer( new PacketValueConfig( "PriorityHost.Priority", out ) );
 				}
-				catch( IOException e )
+				catch( final IOException e )
 				{
 					AELog.error( e );
 				}

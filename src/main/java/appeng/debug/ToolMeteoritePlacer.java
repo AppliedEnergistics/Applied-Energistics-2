@@ -43,21 +43,21 @@ public class ToolMeteoritePlacer extends AEBaseItem
 	}
 
 	@Override
-	public void registerIcons( IIconRegister par1IconRegister )
+	public void registerIcons( final IIconRegister par1IconRegister )
 	{
 		this.itemIcon = new MissingIcon( this );
 	}
 
 	@Override
-	public boolean onItemUseFirst( ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ )
+	public boolean onItemUseFirst( final ItemStack stack, final EntityPlayer player, final World world, final int x, final int y, final int z, final int side, final float hitX, final float hitY, final float hitZ )
 	{
 		if( Platform.isClient() )
 		{
 			return false;
 		}
 
-		MeteoritePlacer mp = new MeteoritePlacer();
-		boolean worked = mp.spawnMeteorite( new StandardWorld( world ), x, y, z );
+		final MeteoritePlacer mp = new MeteoritePlacer();
+		final boolean worked = mp.spawnMeteorite( new StandardWorld( world ), x, y, z );
 
 		if( !worked )
 		{

@@ -35,9 +35,9 @@ public class LayerPressure extends LayerBase implements ISidedPneumaticMachine
 
 	@Nullable
 	@Override
-	public IAirHandler getAirHandler( ForgeDirection side )
+	public IAirHandler getAirHandler( final ForgeDirection side )
 	{
-		IPart part = this.getPart( side );
+		final IPart part = this.getPart( side );
 		if( part instanceof ISidedPneumaticMachine )
 		{
 			return ( (ISidedPneumaticMachine) part ).getAirHandler( side );

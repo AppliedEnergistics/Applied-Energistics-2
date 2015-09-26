@@ -38,7 +38,7 @@ public class ToolQuartzHoe extends ItemHoe implements IAEFeature
 	private final AEFeature feature;
 	private final IFeatureHandler handler;
 
-	public ToolQuartzHoe( AEFeature feature )
+	public ToolQuartzHoe( final AEFeature feature )
 	{
 		super( ToolMaterial.IRON );
 
@@ -59,7 +59,7 @@ public class ToolQuartzHoe extends ItemHoe implements IAEFeature
 	}
 
 	@Override
-	public boolean getIsRepairable( ItemStack a, ItemStack b )
+	public boolean getIsRepairable( final ItemStack a, final ItemStack b )
 	{
 		return Platform.canRepair( this.feature, a, b );
 	}

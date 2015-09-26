@@ -70,7 +70,7 @@ public class ImmibisMicroblocks implements IImmibisMicroblocks, IIntegrationModu
 			this.mergeIntoMicroblockContainer = this.MicroblockAPIUtils.getMethod( "mergeIntoMicroblockContainer", ItemStack.class, EntityPlayer.class, World.class, int.class, int.class, int.class, int.class, Block.class, int.class );
 			this.canConvertTiles = true;
 		}
-		catch( Throwable t )
+		catch( final Throwable t )
 		{
 			AELog.error( t );
 		}
@@ -83,7 +83,7 @@ public class ImmibisMicroblocks implements IImmibisMicroblocks, IIntegrationModu
 	}
 
 	@Override
-	public IPartHost getOrCreateHost( EntityPlayer player, int side, TileEntity te )
+	public IPartHost getOrCreateHost( final EntityPlayer player, final int side, final TileEntity te )
 	{
 		final World w = te.getWorldObj();
 		final int x = te.xCoord;
@@ -110,7 +110,7 @@ public class ImmibisMicroblocks implements IImmibisMicroblocks, IIntegrationModu
 					// int.class, int.class, int.class, int.class, Block.class, int.class );
 					this.mergeIntoMicroblockContainer.invoke( null, multiPartStack, player, w, x, y, z, side, multiPartBlock, 0 );
 				}
-				catch( Throwable e )
+				catch( final Throwable e )
 				{
 					this.canConvertTiles = false;
 					return null;
@@ -128,11 +128,11 @@ public class ImmibisMicroblocks implements IImmibisMicroblocks, IIntegrationModu
 	}
 
 	@Override
-	public boolean leaveParts( TileEntity te )
+	public boolean leaveParts( final TileEntity te )
 	{
 		if( te instanceof IMultipartTile )
 		{
-			ICoverSystem ci = ( (IMultipartTile) te ).getCoverSystem();
+			final ICoverSystem ci = ( (IMultipartTile) te ).getCoverSystem();
 			if( ci != null )
 			{
 				ci.convertToContainerBlock();

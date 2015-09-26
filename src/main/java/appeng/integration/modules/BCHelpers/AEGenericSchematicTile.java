@@ -37,13 +37,13 @@ public class AEGenericSchematicTile extends SchematicTile
 {
 
 	@Override
-	public void storeRequirements( IBuilderContext context, int x, int y, int z )
+	public void storeRequirements( final IBuilderContext context, final int x, final int y, final int z )
 	{
-		TileEntity tile = context.world().getTileEntity( x, y, z );
-		ArrayList<ItemStack> list = new ArrayList<ItemStack>();
+		final TileEntity tile = context.world().getTileEntity( x, y, z );
+		final ArrayList<ItemStack> list = new ArrayList<ItemStack>();
 		if( tile instanceof AEBaseTile )
 		{
-			ICommonTile tcb = (ICommonTile) tile;
+			final ICommonTile tcb = (ICommonTile) tile;
 			tcb.getDrops( tile.getWorldObj(), tile.xCoord, tile.yCoord, tile.zCoord, list );
 		}
 
@@ -51,12 +51,12 @@ public class AEGenericSchematicTile extends SchematicTile
 	}
 
 	@Override
-	public void rotateLeft( IBuilderContext context )
+	public void rotateLeft( final IBuilderContext context )
 	{
 		if( this.tileNBT.hasKey( "orientation_forward" ) && this.tileNBT.hasKey( "orientation_up" ) )
 		{
-			String forward = this.tileNBT.getString( "orientation_forward" );
-			String up = this.tileNBT.getString( "orientation_up" );
+			final String forward = this.tileNBT.getString( "orientation_forward" );
+			final String up = this.tileNBT.getString( "orientation_up" );
 
 			if( forward != null && up != null )
 			{
@@ -71,7 +71,7 @@ public class AEGenericSchematicTile extends SchematicTile
 					this.tileNBT.setString( "orientation_forward", fdForward.name() );
 					this.tileNBT.setString( "orientation_up", fdUp.name() );
 				}
-				catch( Throwable ignored )
+				catch( final Throwable ignored )
 				{
 
 				}

@@ -42,12 +42,12 @@ public final class EntityGrowingCrystal extends EntityItem
 
 	private int progress_1000 = 0;
 
-	public EntityGrowingCrystal( World w )
+	public EntityGrowingCrystal( final World w )
 	{
 		super( w );
 	}
 
-	public EntityGrowingCrystal( World w, double x, double y, double z, ItemStack is )
+	public EntityGrowingCrystal( final World w, final double x, final double y, final double z, final ItemStack is )
 	{
 		super( w, x, y, z, is );
 	}
@@ -67,23 +67,23 @@ public final class EntityGrowingCrystal extends EntityItem
 			this.age = 100;
 		}
 
-		ItemStack is = this.getEntityItem();
-		Item gc = is.getItem();
+		final ItemStack is = this.getEntityItem();
+		final Item gc = is.getItem();
 
 		if( gc instanceof IGrowableCrystal ) // if it changes this just stops being an issue...
 		{
-			int j = MathHelper.floor_double( this.posX );
-			int i = MathHelper.floor_double( this.posY );
-			int k = MathHelper.floor_double( this.posZ );
+			final int j = MathHelper.floor_double( this.posX );
+			final int i = MathHelper.floor_double( this.posY );
+			final int k = MathHelper.floor_double( this.posZ );
 
-			Block blk = this.worldObj.getBlock( j, i, k );
-			Material mat = blk.getMaterial();
-			IGrowableCrystal cry = (IGrowableCrystal) is.getItem();
+			final Block blk = this.worldObj.getBlock( j, i, k );
+			final Material mat = blk.getMaterial();
+			final IGrowableCrystal cry = (IGrowableCrystal) is.getItem();
 
-			float multiplier = cry.getMultiplier( blk, mat );
-			int speed = (int) Math.max( 1, this.getSpeed( j, i, k ) * multiplier );
+			final float multiplier = cry.getMultiplier( blk, mat );
+			final int speed = (int) Math.max( 1, this.getSpeed( j, i, k ) * multiplier );
 
-			boolean isClient = Platform.isClient();
+			final boolean isClient = Platform.isClient();
 
 			if( mat.isLiquid() )
 			{
@@ -152,7 +152,7 @@ public final class EntityGrowingCrystal extends EntityItem
 		}
 	}
 
-	private int getSpeed( int x, int y, int z )
+	private int getSpeed( final int x, final int y, final int z )
 	{
 		final int per = 80;
 		final float mul = 0.3f;
@@ -192,9 +192,9 @@ public final class EntityGrowingCrystal extends EntityItem
 		return qty;
 	}
 
-	private boolean isAccelerated( int x, int y, int z )
+	private boolean isAccelerated( final int x, final int y, final int z )
 	{
-		TileEntity te = this.worldObj.getTileEntity( x, y, z );
+		final TileEntity te = this.worldObj.getTileEntity( x, y, z );
 
 		return te instanceof ICrystalGrowthAccelerator && ( (ICrystalGrowthAccelerator) te ).isPowered();
 	}

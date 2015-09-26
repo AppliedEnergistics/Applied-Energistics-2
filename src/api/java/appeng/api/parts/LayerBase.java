@@ -46,7 +46,7 @@ public abstract class LayerBase extends TileEntity // implements IPartHost
 	 *
 	 * @return the part for the requested side.
 	 */
-	public IPart getPart( ForgeDirection side )
+	public IPart getPart( final ForgeDirection side )
 	{
 		return null; // place holder.
 	}

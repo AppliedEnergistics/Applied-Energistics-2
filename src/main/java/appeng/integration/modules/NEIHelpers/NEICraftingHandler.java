@@ -47,50 +47,50 @@ public class NEICraftingHandler implements IOverlayHandler
 	final int offsetX;
 	final int offsetY;
 
-	public NEICraftingHandler( int x, int y )
+	public NEICraftingHandler( final int x, final int y )
 	{
 		this.offsetX = x;
 		this.offsetY = y;
 	}
 
 	@Override
-	public void overlayRecipe( GuiContainer gui, IRecipeHandler recipe, int recipeIndex, boolean shift )
+	public void overlayRecipe( final GuiContainer gui, final IRecipeHandler recipe, final int recipeIndex, final boolean shift )
 	{
 		try
 		{
-			List ingredients = recipe.getIngredientStacks( recipeIndex );
+			final List ingredients = recipe.getIngredientStacks( recipeIndex );
 			this.overlayRecipe( gui, ingredients, shift );
 		}
-		catch( Exception ignored )
+		catch( final Exception ignored )
 		{
 		}
-		catch( Error ignored )
+		catch( final Error ignored )
 		{
 		}
 	}
 
-	public void overlayRecipe( GuiContainer gui, List<PositionedStack> ingredients, boolean shift )
+	public void overlayRecipe( final GuiContainer gui, final List<PositionedStack> ingredients, final boolean shift )
 	{
 		try
 		{
-			NBTTagCompound recipe = new NBTTagCompound();
+			final NBTTagCompound recipe = new NBTTagCompound();
 
 			if( gui instanceof GuiCraftingTerm || gui instanceof GuiPatternTerm )
 			{
-				for( PositionedStack positionedStack : ingredients )
+				for( final PositionedStack positionedStack : ingredients )
 				{
-					int col = ( positionedStack.relx - 25 ) / 18;
-					int row = ( positionedStack.rely - 6 ) / 18;
+					final int col = ( positionedStack.relx - 25 ) / 18;
+					final int row = ( positionedStack.rely - 6 ) / 18;
 					if( positionedStack.items != null && positionedStack.items.length > 0 )
 					{
-						for( Slot slot : (List<Slot>) gui.inventorySlots.inventorySlots )
+						for( final Slot slot : (List<Slot>) gui.inventorySlots.inventorySlots )
 						{
 							if( slot instanceof SlotCraftingMatrix || slot instanceof SlotFakeCraftingMatrix )
 							{
 								if( slot.getSlotIndex() == col + row * 3 )
 								{
-									NBTTagList tags = new NBTTagList();
-									List<ItemStack> list = new LinkedList<ItemStack>();
+									final NBTTagList tags = new NBTTagList();
+									final List<ItemStack> list = new LinkedList<ItemStack>();
 
 									// prefer pure crystals.
 									for( int x = 0; x < positionedStack.items.length; x++ )
@@ -105,9 +105,9 @@ public class NEICraftingHandler implements IOverlayHandler
 										}
 									}
 
-									for( ItemStack is : list )
+									for( final ItemStack is : list )
 									{
-										NBTTagCompound tag = new NBTTagCompound();
+										final NBTTagCompound tag = new NBTTagCompound();
 										is.writeToNBT( tag );
 										tags.appendTag( tag );
 									}
@@ -123,10 +123,10 @@ public class NEICraftingHandler implements IOverlayHandler
 				NetworkHandler.instance.sendToServer( new PacketNEIRecipe( recipe ) );
 			}
 		}
-		catch( Exception ignored )
+		catch( final Exception ignored )
 		{
 		}
-		catch( Error ignored )
+		catch( final Error ignored )
 		{
 		}
 	}

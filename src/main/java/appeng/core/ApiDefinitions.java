@@ -40,7 +40,7 @@ public final class ApiDefinitions implements IDefinitions
 	private final FeatureHandlerRegistry handlers;
 	private final FeatureRegistry features;
 
-	public ApiDefinitions( IPartHelper partHelper )
+	public ApiDefinitions( final IPartHelper partHelper )
 	{
 		this.features = new FeatureRegistry();
 		this.handlers = new FeatureHandlerRegistry();

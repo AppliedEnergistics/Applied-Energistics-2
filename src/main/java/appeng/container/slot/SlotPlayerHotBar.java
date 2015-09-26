@@ -25,7 +25,7 @@ import net.minecraft.inventory.IInventory;
 public class SlotPlayerHotBar extends AppEngSlot
 {
 
-	public SlotPlayerHotBar( IInventory par1iInventory, int par2, int par3, int par4 )
+	public SlotPlayerHotBar( final IInventory par1iInventory, final int par2, final int par3, final int par4 )
 	{
 		super( par1iInventory, par2, par3, par4 );
 		this.isPlayerSide = true;

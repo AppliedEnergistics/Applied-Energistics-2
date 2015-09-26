@@ -54,7 +54,7 @@ public class GuiCellWorkbench extends GuiUpgradeable
 	GuiImgButton partition;
 	GuiToggleButton copyMode;
 
-	public GuiCellWorkbench( InventoryPlayer inventoryPlayer, TileCellWorkbench te )
+	public GuiCellWorkbench( final InventoryPlayer inventoryPlayer, final TileCellWorkbench te )
 	{
 		super( new ContainerCellWorkbench( inventoryPlayer, te ) );
 		this.workbench = (ContainerCellWorkbench) this.inventorySlots;
@@ -77,7 +77,7 @@ public class GuiCellWorkbench extends GuiUpgradeable
 	}
 
 	@Override
-	public void drawBG( int offsetX, int offsetY, int mouseX, int mouseY )
+	public void drawBG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
 		this.handleButtonVisibility();
 
@@ -95,7 +95,7 @@ public class GuiCellWorkbench extends GuiUpgradeable
 				this.drawTexturedModalRect( offsetX + 177, offsetY, 177, 0, 35, 7 + 8 * 18 );
 				this.drawTexturedModalRect( offsetX + 177, offsetY + ( 7 + ( 8 ) * 18 ), 177, 151, 35, 7 );
 
-				int dx = this.workbench.availableUpgrades() - 8;
+				final int dx = this.workbench.availableUpgrades() - 8;
 				this.drawTexturedModalRect( offsetX + 177 + 27, offsetY, 186, 0, 35 - 8, 7 + dx * 18 );
 				if( dx == 8 )
 				{
@@ -114,7 +114,7 @@ public class GuiCellWorkbench extends GuiUpgradeable
 				this.drawTexturedModalRect( offsetX + 177 + 27, offsetY, 186, 0, 35 - 8, 7 + 8 * 18 );
 				this.drawTexturedModalRect( offsetX + 177 + 27, offsetY + ( 7 + ( 8 ) * 18 ), 186, 151, 35 - 8, 7 );
 
-				int dx = this.workbench.availableUpgrades() - 16;
+				final int dx = this.workbench.availableUpgrades() - 16;
 				this.drawTexturedModalRect( offsetX + 177 + 27 + 18, offsetY, 186, 0, 35 - 8, 7 + dx * 18 );
 				if( dx == 8 )
 				{
@@ -138,10 +138,10 @@ public class GuiCellWorkbench extends GuiUpgradeable
 		this.copyMode.setState( this.workbench.copyMode == CopyMode.CLEAR_ON_REMOVE );
 
 		boolean hasFuzzy = false;
-		IInventory inv = this.workbench.getCellUpgradeInventory();
+		final IInventory inv = this.workbench.getCellUpgradeInventory();
 		for( int x = 0; x < inv.getSizeInventory(); x++ )
 		{
-			ItemStack is = inv.getStackInSlot( x );
+			final ItemStack is = inv.getStackInSlot( x );
 			if( is != null && is.getItem() instanceof IUpgradeModule )
 			{
 				if( ( (IUpgradeModule) is.getItem() ).getType( is ) == Upgrades.FUZZY )
@@ -172,7 +172,7 @@ public class GuiCellWorkbench extends GuiUpgradeable
 	}
 
 	@Override
-	protected void actionPerformed( GuiButton btn )
+	protected void actionPerformed( final GuiButton btn )
 	{
 		try
 		{
@@ -190,7 +190,7 @@ public class GuiCellWorkbench extends GuiUpgradeable
 			}
 			else if( btn == this.fuzzyMode )
 			{
-				boolean backwards = Mouse.isButtonDown( 1 );
+				final boolean backwards = Mouse.isButtonDown( 1 );
 
 				FuzzyMode fz = (FuzzyMode) this.fuzzyMode.getCurrentValue();
 				fz = Platform.rotateEnum( fz, backwards, Settings.FUZZY_MODE.getPossibleValues() );
@@ -202,7 +202,7 @@ public class GuiCellWorkbench extends GuiUpgradeable
 				super.actionPerformed( btn );
 			}
 		}
-		catch( IOException ignored )
+		catch( final IOException ignored )
 		{
 		}
 	}

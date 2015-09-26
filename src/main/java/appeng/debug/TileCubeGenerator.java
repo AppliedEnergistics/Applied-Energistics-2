@@ -49,7 +49,7 @@ public class TileCubeGenerator extends AEBaseTile
 
 			if( this.countdown % 20 == 0 )
 			{
-				for( EntityPlayer e : CommonHelper.proxy.getPlayers() )
+				for( final EntityPlayer e : CommonHelper.proxy.getPlayers() )
 				{
 					e.addChatMessage( new ChatComponentText( "Spawning in... " + ( this.countdown / 20 ) ) );
 				}
@@ -66,10 +66,10 @@ public class TileCubeGenerator extends AEBaseTile
 	{
 		this.worldObj.setBlock( this.xCoord, this.yCoord, this.zCoord, Platform.AIR_BLOCK, 0, 3 );
 
-		Item i = this.is.getItem();
-		int side = ForgeDirection.UP.ordinal();
+		final Item i = this.is.getItem();
+		final int side = ForgeDirection.UP.ordinal();
 
-		int half = (int) Math.floor( this.size / 2 );
+		final int half = (int) Math.floor( this.size / 2 );
 
 		for( int y = 0; y < this.size; y++ )
 		{
@@ -83,11 +83,11 @@ public class TileCubeGenerator extends AEBaseTile
 		}
 	}
 
-	public void click( EntityPlayer player )
+	public void click( final EntityPlayer player )
 	{
 		if( Platform.isServer() )
 		{
-			ItemStack hand = player.inventory.getCurrentItem();
+			final ItemStack hand = player.inventory.getCurrentItem();
 			this.who = player;
 
 			if( hand == null )

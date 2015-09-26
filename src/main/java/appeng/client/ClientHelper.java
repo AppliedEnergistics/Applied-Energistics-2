@@ -92,16 +92,16 @@ public class ClientHelper extends ServerHelper
 	private static final RenderBlocks BLOCK_RENDERER = new RenderBlocks();
 
 	@SubscribeEvent
-	public void postPlayerRender( RenderLivingEvent.Pre p )
+	public void postPlayerRender( final RenderLivingEvent.Pre p )
 	{
-		PlayerColor player = TickHandler.INSTANCE.getPlayerColors().get( p.entity.getEntityId() );
+		final PlayerColor player = TickHandler.INSTANCE.getPlayerColors().get( p.entity.getEntityId() );
 		if( player != null )
 		{
-			AEColor col = player.myColor;
+			final AEColor col = player.myColor;
 
-			float r = 0xff & ( col.mediumVariant >> 16 );
-			float g = 0xff & ( col.mediumVariant >> 8 );
-			float b = 0xff & ( col.mediumVariant );
+			final float r = 0xff & ( col.mediumVariant >> 16 );
+			final float g = 0xff & ( col.mediumVariant >> 8 );
+			final float b = 0xff & ( col.mediumVariant );
 			GL11.glColor3f( r / 255.0f, g / 255.0f, b / 255.0f );
 		}
 	}
@@ -126,9 +126,9 @@ public class ClientHelper extends ServerHelper
 	}
 
 	@Override
-	public void bindTileEntitySpecialRenderer( Class tile, AEBaseBlock blk )
+	public void bindTileEntitySpecialRenderer( final Class tile, final AEBaseBlock blk )
 	{
-		BaseBlockRender bbr = blk.getRendererInstance().rendererInstance;
+		final BaseBlockRender bbr = blk.getRendererInstance().rendererInstance;
 		if( bbr.hasTESR() && tile != null )
 		{
 			ClientRegistry.bindTileEntitySpecialRenderer( tile, new TESRWrapper( bbr ) );
@@ -140,7 +140,7 @@ public class ClientHelper extends ServerHelper
 	{
 		if( Platform.isClient() )
 		{
-			List<EntityPlayer> o = new ArrayList<EntityPlayer>();
+			final List<EntityPlayer> o = new ArrayList<EntityPlayer>();
 			o.add( Minecraft.getMinecraft().thePlayer );
 			return o;
 		}
@@ -151,7 +151,7 @@ public class ClientHelper extends ServerHelper
 	}
 
 	@Override
-	public void spawnEffect( EffectType effect, World worldObj, double posX, double posY, double posZ, Object o )
+	public void spawnEffect( final EffectType effect, final World worldObj, final double posX, final double posY, final double posZ, final Object o )
 	{
 		if( AEConfig.instance.enableEffects )
 		{
@@ -180,34 +180,34 @@ public class ClientHelper extends ServerHelper
 		}
 	}
 
-	private void spawnAssembler( World worldObj, double posX, double posY, double posZ, Object o )
+	private void spawnAssembler( final World worldObj, final double posX, final double posY, final double posZ, final Object o )
 	{
-		PacketAssemblerAnimation paa = (PacketAssemblerAnimation) o;
+		final PacketAssemblerAnimation paa = (PacketAssemblerAnimation) o;
 
-		AssemblerFX fx = new AssemblerFX( Minecraft.getMinecraft().theWorld, posX, posY, posZ, 0.0D, 0.0D, 0.0D, paa.rate, paa.is );
+		final AssemblerFX fx = new AssemblerFX( Minecraft.getMinecraft().theWorld, posX, posY, posZ, 0.0D, 0.0D, 0.0D, paa.rate, paa.is );
 		Minecraft.getMinecraft().effectRenderer.addEffect( fx );
 	}
 
-	private void spawnVibrant( World w, double x, double y, double z )
+	private void spawnVibrant( final World w, final double x, final double y, final double z )
 	{
 		if( CommonHelper.proxy.shouldAddParticles( Platform.getRandom() ) )
 		{
-			double d0 = ( Platform.getRandomFloat() - 0.5F ) * 0.26D;
-			double d1 = ( Platform.getRandomFloat() - 0.5F ) * 0.26D;
-			double d2 = ( Platform.getRandomFloat() - 0.5F ) * 0.26D;
+			final double d0 = ( Platform.getRandomFloat() - 0.5F ) * 0.26D;
+			final double d1 = ( Platform.getRandomFloat() - 0.5F ) * 0.26D;
+			final double d2 = ( Platform.getRandomFloat() - 0.5F ) * 0.26D;
 
-			VibrantFX fx = new VibrantFX( w, x + d0, y + d1, z + d2, 0.0D, 0.0D, 0.0D );
+			final VibrantFX fx = new VibrantFX( w, x + d0, y + d1, z + d2, 0.0D, 0.0D, 0.0D );
 			Minecraft.getMinecraft().effectRenderer.addEffect( fx );
 		}
 	}
 
-	private void spawnCrafting( World w, double posX, double posY, double posZ )
+	private void spawnCrafting( final World w, final double posX, final double posY, final double posZ )
 	{
-		float x = (float) ( ( ( Platform.getRandomInt() % 100 ) * 0.01 ) - 0.5 ) * 0.7f;
-		float y = (float) ( ( ( Platform.getRandomInt() % 100 ) * 0.01 ) - 0.5 ) * 0.7f;
-		float z = (float) ( ( ( Platform.getRandomInt() % 100 ) * 0.01 ) - 0.5 ) * 0.7f;
+		final float x = (float) ( ( ( Platform.getRandomInt() % 100 ) * 0.01 ) - 0.5 ) * 0.7f;
+		final float y = (float) ( ( ( Platform.getRandomInt() % 100 ) * 0.01 ) - 0.5 ) * 0.7f;
+		final float z = (float) ( ( ( Platform.getRandomInt() % 100 ) * 0.01 ) - 0.5 ) * 0.7f;
 
-		CraftingFx fx = new CraftingFx( w, posX + x, posY + y, posZ + z, Items.diamond );
+		final CraftingFx fx = new CraftingFx( w, posX + x, posY + y, posZ + z, Items.diamond );
 
 		fx.motionX = -x * 0.2;
 		fx.motionY = -y * 0.2;
@@ -216,13 +216,13 @@ public class ClientHelper extends ServerHelper
 		Minecraft.getMinecraft().effectRenderer.addEffect( fx );
 	}
 
-	private void spawnEnergy( World w, double posX, double posY, double posZ )
+	private void spawnEnergy( final World w, final double posX, final double posY, final double posZ )
 	{
-		float x = (float) ( ( ( Platform.getRandomInt() % 100 ) * 0.01 ) - 0.5 ) * 0.7f;
-		float y = (float) ( ( ( Platform.getRandomInt() % 100 ) * 0.01 ) - 0.5 ) * 0.7f;
-		float z = (float) ( ( ( Platform.getRandomInt() % 100 ) * 0.01 ) - 0.5 ) * 0.7f;
+		final float x = (float) ( ( ( Platform.getRandomInt() % 100 ) * 0.01 ) - 0.5 ) * 0.7f;
+		final float y = (float) ( ( ( Platform.getRandomInt() % 100 ) * 0.01 ) - 0.5 ) * 0.7f;
+		final float z = (float) ( ( ( Platform.getRandomInt() % 100 ) * 0.01 ) - 0.5 ) * 0.7f;
 
-		EnergyFx fx = new EnergyFx( w, posX + x, posY + y, posZ + z, Items.diamond );
+		final EnergyFx fx = new EnergyFx( w, posX + x, posY + y, posZ + z, Items.diamond );
 
 		fx.motionX = -x * 0.1;
 		fx.motionY = -y * 0.1;
@@ -231,22 +231,22 @@ public class ClientHelper extends ServerHelper
 		Minecraft.getMinecraft().effectRenderer.addEffect( fx );
 	}
 
-	private void spawnLightning( World worldObj, double posX, double posY, double posZ )
+	private void spawnLightning( final World worldObj, final double posX, final double posY, final double posZ )
 	{
-		LightningFX fx = new LightningFX( worldObj, posX, posY + 0.3f, posZ, 0.0f, 0.0f, 0.0f );
+		final LightningFX fx = new LightningFX( worldObj, posX, posY + 0.3f, posZ, 0.0f, 0.0f, 0.0f );
 		Minecraft.getMinecraft().effectRenderer.addEffect( fx );
 	}
 
-	private void spawnLightningArc( World worldObj, double posX, double posY, double posZ, Vec3 second )
+	private void spawnLightningArc( final World worldObj, final double posX, final double posY, final double posZ, final Vec3 second )
 	{
-		LightningFX fx = new LightningArcFX( worldObj, posX, posY, posZ, second.xCoord, second.yCoord, second.zCoord, 0.0f, 0.0f, 0.0f );
+		final LightningFX fx = new LightningArcFX( worldObj, posX, posY, posZ, second.xCoord, second.yCoord, second.zCoord, 0.0f, 0.0f, 0.0f );
 		Minecraft.getMinecraft().effectRenderer.addEffect( fx );
 	}
 
 	@Override
-	public boolean shouldAddParticles( Random r )
+	public boolean shouldAddParticles( final Random r )
 	{
-		int setting = Minecraft.getMinecraft().gameSettings.particleSetting;
+		final int setting = Minecraft.getMinecraft().gameSettings.particleSetting;
 		if( setting == 2 )
 		{
 			return false;
@@ -265,11 +265,11 @@ public class ClientHelper extends ServerHelper
 	}
 
 	@Override
-	public void doRenderItem( ItemStack itemstack, World w )
+	public void doRenderItem( final ItemStack itemstack, final World w )
 	{
 		if( itemstack != null )
 		{
-			EntityItem entityitem = new EntityItem( w, 0.0D, 0.0D, 0.0D, itemstack );
+			final EntityItem entityitem = new EntityItem( w, 0.0D, 0.0D, 0.0D, itemstack );
 			entityitem.getEntityItem().stackSize = 1;
 
 			// set all this stuff and then do shit? meh?
@@ -290,7 +290,7 @@ public class ClientHelper extends ServerHelper
 				GL11.glScalef( 1.0f, -1.0f, 0.005f );
 				// GL11.glScalef( 1.0f , -1.0f, 1.0f );
 
-				Block block = Block.getBlockFromItem( itemstack.getItem() );
+				final Block block = Block.getBlockFromItem( itemstack.getItem() );
 				if( ( itemstack.getItemSpriteNumber() == 0 && block != null && RenderBlocks.renderItemIn3d( block.getRenderType() ) ) )
 				{
 					GL11.glRotatef( 25.0f, 1.0f, 0.0f, 0.0f );
@@ -298,7 +298,7 @@ public class ClientHelper extends ServerHelper
 					GL11.glRotatef( 30.0f, 0.0f, 1.0f, 0.0f );
 				}
 
-				IItemRenderer customRenderer = MinecraftForgeClient.getItemRenderer( itemstack, IItemRenderer.ItemRenderType.ENTITY );
+				final IItemRenderer customRenderer = MinecraftForgeClient.getItemRenderer( itemstack, IItemRenderer.ItemRenderType.ENTITY );
 				if( customRenderer != null && !( itemstack.getItem() instanceof ItemBlock ) )
 				{
 					if( customRenderer.shouldUseRenderHelper( IItemRenderer.ItemRenderType.ENTITY, itemstack, IItemRenderer.ItemRendererHelper.BLOCK_3D ) )
@@ -333,7 +333,7 @@ public class ClientHelper extends ServerHelper
 				GL11.glScalef( 1.0f, 1.0f, 0.005f );
 
 				RenderItem.renderInFrame = false;
-				FontRenderer fr = Minecraft.getMinecraft().fontRenderer;
+				final FontRenderer fr = Minecraft.getMinecraft().fontRenderer;
 				if( !ForgeHooksClient.renderInventoryItem( BLOCK_RENDERER, Minecraft.getMinecraft().renderEngine, itemstack, true, 0, 0, 0 ) )
 				{
 					ITEM_RENDERER.renderItemIntoGUI( fr, Minecraft.getMinecraft().renderEngine, itemstack, 0, 0, false );
@@ -360,8 +360,8 @@ public class ClientHelper extends ServerHelper
 			return super.getRenderMode();
 		}
 
-		Minecraft mc = Minecraft.getMinecraft();
-		EntityPlayer player = mc.thePlayer;
+		final Minecraft mc = Minecraft.getMinecraft();
+		final EntityPlayer player = mc.thePlayer;
 
 		return this.renderModeForPlayer( player );
 	}
@@ -369,19 +369,19 @@ public class ClientHelper extends ServerHelper
 	@Override
 	public void triggerUpdates()
 	{
-		Minecraft mc = Minecraft.getMinecraft();
+		final Minecraft mc = Minecraft.getMinecraft();
 		if( mc == null || mc.thePlayer == null || mc.theWorld == null )
 		{
 			return;
 		}
 
-		EntityPlayer player = mc.thePlayer;
+		final EntityPlayer player = mc.thePlayer;
 
-		int x = (int) player.posX;
-		int y = (int) player.posY;
-		int z = (int) player.posZ;
+		final int x = (int) player.posX;
+		final int y = (int) player.posY;
+		final int z = (int) player.posZ;
 
-		int range = 16 * 16;
+		final int range = 16 * 16;
 
 		mc.theWorld.markBlockRangeForRenderUpdate( x - range, y - range, z - range, x + range, y + range, z + range );
 	}
@@ -393,16 +393,16 @@ public class ClientHelper extends ServerHelper
 	}
 
 	@SubscribeEvent
-	public void wheelEvent( MouseEvent me )
+	public void wheelEvent( final MouseEvent me )
 	{
 		if( me.isCanceled() || me.dwheel == 0 )
 		{
 			return;
 		}
 
-		Minecraft mc = Minecraft.getMinecraft();
-		EntityPlayer player = mc.thePlayer;
-		ItemStack is = player.getHeldItem();
+		final Minecraft mc = Minecraft.getMinecraft();
+		final EntityPlayer player = mc.thePlayer;
+		final ItemStack is = player.getHeldItem();
 
 		if( is != null && is.getItem() instanceof IMouseWheelItem && player.isSneaking() )
 		{
@@ -411,7 +411,7 @@ public class ClientHelper extends ServerHelper
 				NetworkHandler.instance.sendToServer( new PacketValueConfig( "Item", me.dwheel > 0 ? "WheelUp" : "WheelDown" ) );
 				me.setCanceled( true );
 			}
-			catch( IOException e )
+			catch( final IOException e )
 			{
 				AELog.error( e );
 			}
@@ -419,11 +419,11 @@ public class ClientHelper extends ServerHelper
 	}
 
 	@SubscribeEvent
-	public void updateTextureSheet( TextureStitchEvent.Pre ev )
+	public void updateTextureSheet( final TextureStitchEvent.Pre ev )
 	{
 		if( ev.map.getTextureType() == 1 )
 		{
-			for( ExtraItemTextures et : ExtraItemTextures.values() )
+			for( final ExtraItemTextures et : ExtraItemTextures.values() )
 			{
 				et.registerIcon( ev.map );
 			}
@@ -431,12 +431,12 @@ public class ClientHelper extends ServerHelper
 
 		if( ev.map.getTextureType() == 0 )
 		{
-			for( ExtraBlockTextures et : ExtraBlockTextures.values() )
+			for( final ExtraBlockTextures et : ExtraBlockTextures.values() )
 			{
 				et.registerIcon( ev.map );
 			}
 
-			for( CableBusTextures cb : CableBusTextures.values() )
+			for( final CableBusTextures cb : CableBusTextures.values() )
 			{
 				cb.registerIcon( ev.map );
 			}

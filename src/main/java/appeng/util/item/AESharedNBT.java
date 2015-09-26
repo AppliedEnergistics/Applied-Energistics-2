@@ -48,13 +48,13 @@ public class AESharedNBT extends NBTTagCompound implements IAETagCompound
 	private int hash;
 	private IItemComparison comp;
 
-	private AESharedNBT( Item itemID, int damageValue )
+	private AESharedNBT( final Item itemID, final int damageValue )
 	{
 		this.item = itemID;
 		this.meta = damageValue;
 	}
 
-	public AESharedNBT( int fakeValue )
+	public AESharedNBT( final int fakeValue )
 	{
 		this.item = null;
 		this.meta = 0;
@@ -72,14 +72,14 @@ public class AESharedNBT extends NBTTagCompound implements IAETagCompound
 	/*
 	 * Returns an NBT Compound that is used for accelerating comparisons.
 	 */
-	public static synchronized NBTTagCompound getSharedTagCompound( NBTTagCompound tagCompound, ItemStack s )
+	public static synchronized NBTTagCompound getSharedTagCompound( final NBTTagCompound tagCompound, final ItemStack s )
 	{
 		if( tagCompound.hasNoTags() )
 		{
 			return null;
 		}
 
-		Item item = s.getItem();
+		final Item item = s.getItem();
 		int meta = -1;
 		if( s.getItem() != null && s.isItemStackDamageable() && s.getHasSubtypes() )
 		{
@@ -91,12 +91,12 @@ public class AESharedNBT extends NBTTagCompound implements IAETagCompound
 			return tagCompound;
 		}
 
-		SharedSearchObject sso = new SharedSearchObject( item, meta, tagCompound );
+		final SharedSearchObject sso = new SharedSearchObject( item, meta, tagCompound );
 
-		WeakReference<SharedSearchObject> c = SHARED_TAG_COMPOUND.get( sso );
+		final WeakReference<SharedSearchObject> c = SHARED_TAG_COMPOUND.get( sso );
 		if( c != null )
 		{
-			SharedSearchObject cg = c.get();
+			final SharedSearchObject cg = c.get();
 			if( cg != null )
 			{
 				return cg.shared; // I don't think I really need to check this
@@ -104,7 +104,7 @@ public class AESharedNBT extends NBTTagCompound implements IAETagCompound
 			// as its already certain to exist..
 		}
 
-		AESharedNBT clone = AESharedNBT.createFromCompound( item, meta, tagCompound );
+		final AESharedNBT clone = AESharedNBT.createFromCompound( item, meta, tagCompound );
 		sso.compound = (NBTTagCompound) sso.compound.copy(); // prevent
 		// modification
 		// of data based
@@ -120,25 +120,25 @@ public class AESharedNBT extends NBTTagCompound implements IAETagCompound
 	/*
 	 * returns true if the compound is part of the shared compound system ( and can thus be compared directly ).
 	 */
-	public static boolean isShared( NBTTagCompound ta )
+	public static boolean isShared( final NBTTagCompound ta )
 	{
 		return ta instanceof AESharedNBT;
 	}
 
-	public static AESharedNBT createFromCompound( Item itemID, int damageValue, NBTTagCompound c )
+	public static AESharedNBT createFromCompound( final Item itemID, final int damageValue, final NBTTagCompound c )
 	{
-		AESharedNBT x = new AESharedNBT( itemID, damageValue );
+		final AESharedNBT x = new AESharedNBT( itemID, damageValue );
 
 		// c.getTags()
-		for( Object o : c.func_150296_c() )
+		for( final Object o : c.func_150296_c() )
 		{
-			String name = (String) o;
+			final String name = (String) o;
 			x.setTag( name, c.getTag( name ).copy() );
 		}
 
 		x.hash = Platform.NBTOrderlessHash( c );
 
-		ItemStack isc = new ItemStack( itemID, 1, damageValue );
+		final ItemStack isc = new ItemStack( itemID, 1, damageValue );
 		isc.setTagCompound( c );
 		x.comp = AEApi.instance().registries().specialComparison().getSpecialComparison( isc );
 
@@ -163,7 +163,7 @@ public class AESharedNBT extends NBTTagCompound implements IAETagCompound
 	}
 
 	@Override
-	public boolean equals( Object par1Obj )
+	public boolean equals( final Object par1Obj )
 	{
 		if( par1Obj instanceof AESharedNBT )
 		{
@@ -172,12 +172,12 @@ public class AESharedNBT extends NBTTagCompound implements IAETagCompound
 		return super.equals( par1Obj );
 	}
 
-	public boolean matches( Item item, int meta, int orderlessHash )
+	public boolean matches( final Item item, final int meta, final int orderlessHash )
 	{
 		return item == this.item && this.meta == meta && this.hash == orderlessHash;
 	}
 
-	public boolean comparePreciseWithRegistry( AESharedNBT tagCompound )
+	public boolean comparePreciseWithRegistry( final AESharedNBT tagCompound )
 	{
 		if( this == tagCompound )
 		{
@@ -192,7 +192,7 @@ public class AESharedNBT extends NBTTagCompound implements IAETagCompound
 		return false;
 	}
 
-	public boolean compareFuzzyWithRegistry( AESharedNBT tagCompound )
+	public boolean compareFuzzyWithRegistry( final AESharedNBT tagCompound )
 	{
 		if( this == tagCompound )
 		{

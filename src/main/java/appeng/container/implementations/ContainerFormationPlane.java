@@ -43,7 +43,7 @@ public class ContainerFormationPlane extends ContainerUpgradeable
 	@GuiSync( 6 )
 	public YesNo placeMode;
 
-	public ContainerFormationPlane( InventoryPlayer ip, PartFormationPlane te )
+	public ContainerFormationPlane( final InventoryPlayer ip, final PartFormationPlane te )
 	{
 		super( ip, te );
 		this.storageBus = te;
@@ -58,10 +58,10 @@ public class ContainerFormationPlane extends ContainerUpgradeable
 	@Override
 	protected void setupConfig()
 	{
-		int xo = 8;
-		int yo = 23 + 6;
+		final int xo = 8;
+		final int yo = 23 + 6;
 
-		IInventory config = this.upgradeable.getInventoryByName( "config" );
+		final IInventory config = this.upgradeable.getInventoryByName( "config" );
 		for( int y = 0; y < 7; y++ )
 		{
 			for( int x = 0; x < 9; x++ )
@@ -77,7 +77,7 @@ public class ContainerFormationPlane extends ContainerUpgradeable
 			}
 		}
 
-		IInventory upgrades = this.upgradeable.getInventoryByName( "upgrades" );
+		final IInventory upgrades = this.upgradeable.getInventoryByName( "upgrades" );
 		this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 0, 187, 8, this.invPlayer ) ).setNotDraggable() );
 		this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 1, 187, 8 + 18, this.invPlayer ) ).setNotDraggable() );
 		this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 2, 187, 8 + 18 * 2, this.invPlayer ) ).setNotDraggable() );
@@ -112,9 +112,9 @@ public class ContainerFormationPlane extends ContainerUpgradeable
 	}
 
 	@Override
-	public boolean isSlotEnabled( int idx )
+	public boolean isSlotEnabled( final int idx )
 	{
-		int upgrades = this.upgradeable.getInstalledUpgrades( Upgrades.CAPACITY );
+		final int upgrades = this.upgradeable.getInstalledUpgrades( Upgrades.CAPACITY );
 
 		return upgrades > idx;
 	}

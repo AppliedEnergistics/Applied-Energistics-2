@@ -47,7 +47,7 @@ public class BlockCraftingStorage extends BlockCraftingUnit
 	}
 
 	@Override
-	public IIcon getIcon( int direction, int metadata )
+	public IIcon getIcon( final int direction, final int metadata )
 	{
 		switch( metadata & ( ~4 ) )
 		{
@@ -75,7 +75,7 @@ public class BlockCraftingStorage extends BlockCraftingUnit
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void getCheckedSubBlocks( Item item, CreativeTabs tabs, List<ItemStack> itemStacks )
+	public void getCheckedSubBlocks( final Item item, final CreativeTabs tabs, final List<ItemStack> itemStacks )
 	{
 		itemStacks.add( new ItemStack( this, 1, 0 ) );
 		itemStacks.add( new ItemStack( this, 1, 1 ) );
@@ -84,7 +84,7 @@ public class BlockCraftingStorage extends BlockCraftingUnit
 	}
 
 	@Override
-	public String getUnlocalizedName( ItemStack is )
+	public String getUnlocalizedName( final ItemStack is )
 	{
 		if( is.getItemDamage() == 1 )
 		{

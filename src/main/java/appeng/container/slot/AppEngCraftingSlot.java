@@ -54,7 +54,7 @@ public class AppEngCraftingSlot extends AppEngSlot
 	 */
 	private int amountCrafted;
 
-	public AppEngCraftingSlot( EntityPlayer par1EntityPlayer, IInventory par2IInventory, IInventory par3IInventory, int par4, int par5, int par6 )
+	public AppEngCraftingSlot( final EntityPlayer par1EntityPlayer, final IInventory par2IInventory, final IInventory par3IInventory, final int par4, final int par5, final int par6 )
 	{
 		super( par3IInventory, par4, par5, par6 );
 		this.thePlayer = par1EntityPlayer;
@@ -65,7 +65,7 @@ public class AppEngCraftingSlot extends AppEngSlot
 	 * Check if the stack is a valid item for this slot. Always true beside for the armor slots.
 	 */
 	@Override
-	public boolean isItemValid( ItemStack par1ItemStack )
+	public boolean isItemValid( final ItemStack par1ItemStack )
 	{
 		return false;
 	}
@@ -75,7 +75,7 @@ public class AppEngCraftingSlot extends AppEngSlot
 	 * internal count then calls onCrafting(item).
 	 */
 	@Override
-	protected void onCrafting( ItemStack par1ItemStack, int par2 )
+	protected void onCrafting( final ItemStack par1ItemStack, final int par2 )
 	{
 		this.amountCrafted += par2;
 		this.onCrafting( par1ItemStack );
@@ -85,7 +85,7 @@ public class AppEngCraftingSlot extends AppEngSlot
 	 * the itemStack passed in is the output - ie, iron ingots, and pickaxes, not ore and wood.
 	 */
 	@Override
-	protected void onCrafting( ItemStack par1ItemStack )
+	protected void onCrafting( final ItemStack par1ItemStack )
 	{
 		par1ItemStack.onCrafting( this.thePlayer.worldObj, this.thePlayer, this.amountCrafted );
 		this.amountCrafted = 0;
@@ -142,14 +142,14 @@ public class AppEngCraftingSlot extends AppEngSlot
 	}
 
 	@Override
-	public void onPickupFromSlot( EntityPlayer par1EntityPlayer, ItemStack par2ItemStack )
+	public void onPickupFromSlot( final EntityPlayer par1EntityPlayer, final ItemStack par2ItemStack )
 	{
 		FMLCommonHandler.instance().firePlayerCraftingEvent( par1EntityPlayer, par2ItemStack, this.craftMatrix );
 		this.onCrafting( par2ItemStack );
 
 		for( int i = 0; i < this.craftMatrix.getSizeInventory(); ++i )
 		{
-			ItemStack itemstack1 = this.craftMatrix.getStackInSlot( i );
+			final ItemStack itemstack1 = this.craftMatrix.getStackInSlot( i );
 
 			if( itemstack1 != null )
 			{
@@ -157,7 +157,7 @@ public class AppEngCraftingSlot extends AppEngSlot
 
 				if( itemstack1.getItem().hasContainerItem( itemstack1 ) )
 				{
-					ItemStack itemstack2 = itemstack1.getItem().getContainerItem( itemstack1 );
+					final ItemStack itemstack2 = itemstack1.getItem().getContainerItem( itemstack1 );
 
 					if( itemstack2 != null && itemstack2.isItemStackDamageable() && itemstack2.getItemDamage() > itemstack2.getMaxDamage() )
 					{
@@ -186,7 +186,7 @@ public class AppEngCraftingSlot extends AppEngSlot
 	 * stack.
 	 */
 	@Override
-	public ItemStack decrStackSize( int par1 )
+	public ItemStack decrStackSize( final int par1 )
 	{
 		if( this.getHasStack() )
 		{

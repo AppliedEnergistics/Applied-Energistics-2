@@ -46,7 +46,7 @@ public class NetworkHandler
 	final IPacketHandler clientHandler;
 	final IPacketHandler serveHandler;
 
-	public NetworkHandler( String channelName )
+	public NetworkHandler( final String channelName )
 	{
 		FMLCommonHandler.instance().bus().register( this );
 		this.ec = NetworkRegistry.INSTANCE.newEventDrivenChannel( this.myChannelName = channelName );
@@ -62,7 +62,7 @@ public class NetworkHandler
 		{
 			return new AppEngClientPacketHandler();
 		}
-		catch( Throwable t )
+		catch( final Throwable t )
 		{
 			return null;
 		}
@@ -74,20 +74,20 @@ public class NetworkHandler
 		{
 			return new AppEngServerPacketHandler();
 		}
-		catch( Throwable t )
+		catch( final Throwable t )
 		{
 			return null;
 		}
 	}
 
 	@SubscribeEvent
-	public void newConnection( ServerConnectionFromClientEvent ev )
+	public void newConnection( final ServerConnectionFromClientEvent ev )
 	{
 		WorldData.instance().dimensionData().sendToPlayer( ev.manager );
 	}
 
 	@SubscribeEvent
-	public void newConnection( PlayerLoggedInEvent loginEvent )
+	public void newConnection( final PlayerLoggedInEvent loginEvent )
 	{
 		if( loginEvent.player instanceof EntityPlayerMP )
 		{
@@ -96,9 +96,9 @@ public class NetworkHandler
 	}
 
 	@SubscribeEvent
-	public void serverPacket( ServerCustomPacketEvent ev )
+	public void serverPacket( final ServerCustomPacketEvent ev )
 	{
-		NetHandlerPlayServer srv = (NetHandlerPlayServer) ev.packet.handler();
+		final NetHandlerPlayServer srv = (NetHandlerPlayServer) ev.packet.handler();
 		if( this.serveHandler != null )
 		{
 			this.serveHandler.onPacketData( null, ev.packet, srv.playerEntity );
@@ -106,7 +106,7 @@ public class NetworkHandler
 	}
 
 	@SubscribeEvent
-	public void clientPacket( ClientCustomPacketEvent ev )
+	public void clientPacket( final ClientCustomPacketEvent ev )
 	{
 		if( this.clientHandler != null )
 		{
@@ -119,27 +119,27 @@ public class NetworkHandler
 		return this.myChannelName;
 	}
 
-	public void sendToAll( AppEngPacket message )
+	public void sendToAll( final AppEngPacket message )
 	{
 		this.ec.sendToAll( message.getProxy() );
 	}
 
-	public void sendTo( AppEngPacket message, EntityPlayerMP player )
+	public void sendTo( final AppEngPacket message, final EntityPlayerMP player )
 	{
 		this.ec.sendTo( message.getProxy(), player );
 	}
 
-	public void sendToAllAround( AppEngPacket message, NetworkRegistry.TargetPoint point )
+	public void sendToAllAround( final AppEngPacket message, final NetworkRegistry.TargetPoint point )
 	{
 		this.ec.sendToAllAround( message.getProxy(), point );
 	}
 
-	public void sendToDimension( AppEngPacket message, int dimensionId )
+	public void sendToDimension( final AppEngPacket message, final int dimensionId )
 	{
 		this.ec.sendToDimension( message.getProxy(), dimensionId );
 	}
 
-	public void sendToServer( AppEngPacket message )
+	public void sendToServer( final AppEngPacket message )
 	{
 		this.ec.sendToServer( message.getProxy() );
 	}

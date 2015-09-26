@@ -54,13 +54,13 @@ public enum TickRates
 	public int min;
 	public int max;
 
-	TickRates( int min, int max )
+	TickRates( final int min, final int max )
 	{
 		this.min = min;
 		this.max = max;
 	}
 
-	public void Load( AEConfig config )
+	public void Load( final AEConfig config )
 	{
 		config.addCustomCategoryComment( "TickRates", " Min / Max Tickrates for dynamic ticking, most of these components also use sleeping, to prevent constant ticking, adjust with care, non standard rates are not supported or tested." );
 		this.min = config.get( "TickRates", this.name() + ".min", this.min ).getInt( this.min );

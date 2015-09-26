@@ -90,7 +90,7 @@ public enum GuiText
 		this.root = "gui.appliedenergistics2";
 	}
 
-	GuiText( String r )
+	GuiText( final String r )
 	{
 		this.root = r;
 	}

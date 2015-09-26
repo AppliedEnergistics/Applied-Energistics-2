@@ -40,18 +40,18 @@ public class RenderBlockInterface extends BaseBlockRender<BlockInterface, TileIn
 	}
 
 	@Override
-	public boolean renderInWorld( BlockInterface block, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
+	public boolean renderInWorld( final BlockInterface block, final IBlockAccess world, final int x, final int y, final int z, final RenderBlocks renderer )
 	{
-		TileInterface ti = block.getTileEntity( world, x, y, z );
-		BlockRenderInfo info = block.getRendererInstance();
+		final TileInterface ti = block.getTileEntity( world, x, y, z );
+		final BlockRenderInfo info = block.getRendererInstance();
 
 		if( ti != null && ti.getForward() != ForgeDirection.UNKNOWN )
 		{
-			IIcon side = ExtraBlockTextures.BlockInterfaceAlternateArrow.getIcon();
+			final IIcon side = ExtraBlockTextures.BlockInterfaceAlternateArrow.getIcon();
 			info.setTemporaryRenderIcons( ExtraBlockTextures.BlockInterfaceAlternate.getIcon(), block.getIcon( 0, 0 ), side, side, side, side );
 		}
 
-		boolean fz = super.renderInWorld( block, world, x, y, z, renderer );
+		final boolean fz = super.renderInWorld( block, world, x, y, z, renderer );
 
 		info.setTemporaryRenderIcon( null );
 

@@ -41,12 +41,12 @@ public enum ExtraItemTextures
 	private final String name;
 	public IIcon IIcon;
 
-	ExtraItemTextures( String name )
+	ExtraItemTextures( final String name )
 	{
 		this.name = name;
 	}
 
-	public static ResourceLocation GuiTexture( String string )
+	public static ResourceLocation GuiTexture( final String string )
 	{
 		return new ResourceLocation( "appliedenergistics2", "textures/" + string );
 	}
@@ -67,7 +67,7 @@ public enum ExtraItemTextures
 		return this.IIcon;
 	}
 
-	public void registerIcon( TextureMap map )
+	public void registerIcon( final TextureMap map )
 	{
 		this.IIcon = map.registerIcon( "appliedenergistics2:" + this.name );
 	}

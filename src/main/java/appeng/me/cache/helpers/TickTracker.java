@@ -44,7 +44,7 @@ public class TickTracker implements Comparable<TickTracker>
 	public long lastTick;
 	public int current_rate;
 
-	public TickTracker( TickingRequest req, IGridNode node, IGridTickable gt, long currentTick, TickManagerCache tickManagerCache )
+	public TickTracker( final TickingRequest req, final IGridNode node, final IGridTickable gt, final long currentTick, final TickManagerCache tickManagerCache )
 	{
 		this.request = req;
 		this.gt = gt;
@@ -59,7 +59,7 @@ public class TickTracker implements Comparable<TickTracker>
 		return( this.LastFiveTicksTime / 5 );
 	}
 
-	public void setRate( int rate )
+	public void setRate( final int rate )
 	{
 		this.current_rate = rate;
 
@@ -75,18 +75,18 @@ public class TickTracker implements Comparable<TickTracker>
 	}
 
 	@Override
-	public int compareTo( @Nonnull TickTracker t )
+	public int compareTo( @Nonnull final TickTracker t )
 	{
-		int nextTick = (int) ( ( this.lastTick - this.host.getCurrentTick() ) + this.current_rate );
-		int ts_nextTick = (int) ( ( t.lastTick - this.host.getCurrentTick() ) + t.current_rate );
+		final int nextTick = (int) ( ( this.lastTick - this.host.getCurrentTick() ) + this.current_rate );
+		final int ts_nextTick = (int) ( ( t.lastTick - this.host.getCurrentTick() ) + t.current_rate );
 		return nextTick - ts_nextTick;
 	}
 
-	public void addEntityCrashInfo( CrashReportCategory crashreportcategory )
+	public void addEntityCrashInfo( final CrashReportCategory crashreportcategory )
 	{
 		if( this.gt instanceof AEBasePart )
 		{
-			AEBasePart part = (AEBasePart) this.gt;
+			final AEBasePart part = (AEBasePart) this.gt;
 			part.addEntityCrashInfo( crashreportcategory );
 		}
 
@@ -97,7 +97,7 @@ public class TickTracker implements Comparable<TickTracker>
 		crashreportcategory.addCrashSection( "GridBlockType", this.node.getGridBlock().getClass().getName() );
 		crashreportcategory.addCrashSection( "ConnectedSides", this.node.getConnectedSides() );
 
-		DimensionalCoord dc = this.node.getGridBlock().getLocation();
+		final DimensionalCoord dc = this.node.getGridBlock().getLocation();
 		if( dc != null )
 		{
 			crashreportcategory.addCrashSection( "Location", dc );

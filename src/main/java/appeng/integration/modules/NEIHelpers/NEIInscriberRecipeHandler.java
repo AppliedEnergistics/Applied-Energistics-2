@@ -59,13 +59,13 @@ public class NEIInscriberRecipeHandler extends TemplateRecipeHandler
 	}
 
 	@Override
-	public void loadCraftingRecipes( String outputId, Object... results )
+	public void loadCraftingRecipes( final String outputId, final Object... results )
 	{
 		if( ( outputId.equals( "inscriber" ) ) && ( this.getClass() == NEIInscriberRecipeHandler.class ) )
 		{
-			for( IInscriberRecipe recipe : AEApi.instance().registries().inscriber().getRecipes() )
+			for( final IInscriberRecipe recipe : AEApi.instance().registries().inscriber().getRecipes() )
 			{
-				CachedInscriberRecipe cachedRecipe = new CachedInscriberRecipe( recipe );
+				final CachedInscriberRecipe cachedRecipe = new CachedInscriberRecipe( recipe );
 				cachedRecipe.computeVisuals();
 				this.arecipes.add( cachedRecipe );
 			}
@@ -77,13 +77,13 @@ public class NEIInscriberRecipeHandler extends TemplateRecipeHandler
 	}
 
 	@Override
-	public void loadCraftingRecipes( ItemStack result )
+	public void loadCraftingRecipes( final ItemStack result )
 	{
-		for( IInscriberRecipe recipe : AEApi.instance().registries().inscriber().getRecipes() )
+		for( final IInscriberRecipe recipe : AEApi.instance().registries().inscriber().getRecipes() )
 		{
 			if( NEIServerUtils.areStacksSameTypeCrafting( recipe.getOutput(), result ) )
 			{
-				CachedInscriberRecipe cachedRecipe = new CachedInscriberRecipe( recipe );
+				final CachedInscriberRecipe cachedRecipe = new CachedInscriberRecipe( recipe );
 				cachedRecipe.computeVisuals();
 				this.arecipes.add( cachedRecipe );
 			}
@@ -91,11 +91,11 @@ public class NEIInscriberRecipeHandler extends TemplateRecipeHandler
 	}
 
 	@Override
-	public void loadUsageRecipes( ItemStack ingredient )
+	public void loadUsageRecipes( final ItemStack ingredient )
 	{
-		for( IInscriberRecipe recipe : AEApi.instance().registries().inscriber().getRecipes() )
+		for( final IInscriberRecipe recipe : AEApi.instance().registries().inscriber().getRecipes() )
 		{
-			CachedInscriberRecipe cachedRecipe = new CachedInscriberRecipe( recipe );
+			final CachedInscriberRecipe cachedRecipe = new CachedInscriberRecipe( recipe );
 
 			if( ( cachedRecipe.contains( cachedRecipe.ingredients, ingredient.getItem() ) ) )
 			{
@@ -112,7 +112,7 @@ public class NEIInscriberRecipeHandler extends TemplateRecipeHandler
 	@Override
 	public String getGuiTexture()
 	{
-		ResourceLocation loc = new ResourceLocation( "appliedenergistics2", "textures/guis/inscriber.png" );
+		final ResourceLocation loc = new ResourceLocation( "appliedenergistics2", "textures/guis/inscriber.png" );
 		return loc.toString();
 	}
 
@@ -129,7 +129,7 @@ public class NEIInscriberRecipeHandler extends TemplateRecipeHandler
 	}
 
 	@Override
-	public void drawBackground( int recipe )
+	public void drawBackground( final int recipe )
 	{
 		GL11.glColor4f( 1, 1, 1, 1 );
 		GuiDraw.changeTexture( this.getGuiTexture() );
@@ -137,19 +137,19 @@ public class NEIInscriberRecipeHandler extends TemplateRecipeHandler
 	}
 
 	@Override
-	public boolean hasOverlay( GuiContainer gui, Container container, int recipe )
+	public boolean hasOverlay( final GuiContainer gui, final Container container, final int recipe )
 	{
 		return false;
 	}
 
 	@Override
-	public IRecipeOverlayRenderer getOverlayRenderer( GuiContainer gui, int recipe )
+	public IRecipeOverlayRenderer getOverlayRenderer( final GuiContainer gui, final int recipe )
 	{
 		return null;
 	}
 
 	@Override
-	public IOverlayHandler getOverlayHandler( GuiContainer gui, int recipe )
+	public IOverlayHandler getOverlayHandler( final GuiContainer gui, final int recipe )
 	{
 		return null;
 	}
@@ -166,19 +166,19 @@ public class NEIInscriberRecipeHandler extends TemplateRecipeHandler
 		public final List<PositionedStack> ingredients;
 		public final PositionedStack result;
 
-		public CachedInscriberRecipe( IInscriberRecipe recipe )
+		public CachedInscriberRecipe( final IInscriberRecipe recipe )
 		{
 			this.result = new PositionedStack( recipe.getOutput(), 108, 29 );
 			this.ingredients = new ArrayList<PositionedStack>();
 
-			for( ItemStack top : recipe.getTopOptional().asSet() )
+			for( final ItemStack top : recipe.getTopOptional().asSet() )
 			{
 				this.ingredients.add( new PositionedStack( top, 40, 5 ) );
 			}
 
 			this.ingredients.add( new PositionedStack( recipe.getInputs(), 40 + 18, 28 ) );
 
-			for( ItemStack bot : recipe.getBottomOptional().asSet() )
+			for( final ItemStack bot : recipe.getBottomOptional().asSet() )
 			{
 				this.ingredients.add( new PositionedStack( bot, 40, 51 ) );
 			}
@@ -198,7 +198,7 @@ public class NEIInscriberRecipeHandler extends TemplateRecipeHandler
 
 		public void computeVisuals()
 		{
-			for( PositionedStack p : this.ingredients )
+			for( final PositionedStack p : this.ingredients )
 			{
 				p.generatePermutations();
 			}

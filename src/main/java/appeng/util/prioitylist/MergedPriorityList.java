@@ -31,7 +31,7 @@ public final class MergedPriorityList<T extends IAEStack<T>> implements IPartiti
 	private final Collection<IPartitionList<T>> positive = new ArrayList<IPartitionList<T>>();
 	private final Collection<IPartitionList<T>> negative = new ArrayList<IPartitionList<T>>();
 
-	public void addNewList( IPartitionList<T> list, boolean isWhitelist )
+	public void addNewList( final IPartitionList<T> list, final boolean isWhitelist )
 	{
 		if( isWhitelist )
 		{
@@ -44,9 +44,9 @@ public final class MergedPriorityList<T extends IAEStack<T>> implements IPartiti
 	}
 
 	@Override
-	public boolean isListed( T input )
+	public boolean isListed( final T input )
 	{
-		for( IPartitionList<T> l : this.negative )
+		for( final IPartitionList<T> l : this.negative )
 		{
 			if( l.isListed( input ) )
 			{
@@ -56,7 +56,7 @@ public final class MergedPriorityList<T extends IAEStack<T>> implements IPartiti
 
 		if( !this.positive.isEmpty() )
 		{
-			for( IPartitionList<T> l : this.positive )
+			for( final IPartitionList<T> l : this.positive )
 			{
 				if( l.isListed( input ) )
 				{

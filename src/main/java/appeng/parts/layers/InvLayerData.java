@@ -37,14 +37,14 @@ public class InvLayerData
 	private final List<ISidedInventory> inventories;
 	private final List<InvSot> slots;
 
-	public InvLayerData( int[][] a, List<ISidedInventory> b, List<InvSot> c )
+	public InvLayerData( final int[][] a, final List<ISidedInventory> b, final List<InvSot> c )
 	{
 		this.sides = a;
 		this.inventories = b;
 		this.slots = c;
 	}
 
-	public ItemStack decreaseStackSize( int slot, int amount )
+	public ItemStack decreaseStackSize( final int slot, final int amount )
 	{
 		if( this.isSlotValid( slot ) )
 		{
@@ -61,7 +61,7 @@ public class InvLayerData
 	 *
 	 * @return true, if the slot exists.
 	 */
-	boolean isSlotValid( int slot )
+	boolean isSlotValid( final int slot )
 	{
 		return this.slots != null && slot >= 0 && slot < this.slots.size();
 	}
@@ -76,7 +76,7 @@ public class InvLayerData
 		return this.slots.size();
 	}
 
-	public ItemStack getStackInSlot( int slot )
+	public ItemStack getStackInSlot( final int slot )
 	{
 		if( this.isSlotValid( slot ) )
 		{
@@ -86,7 +86,7 @@ public class InvLayerData
 		return null;
 	}
 
-	public boolean isItemValidForSlot( int slot, ItemStack itemstack )
+	public boolean isItemValidForSlot( final int slot, final ItemStack itemstack )
 	{
 		if( this.isSlotValid( slot ) )
 		{
@@ -96,7 +96,7 @@ public class InvLayerData
 		return false;
 	}
 
-	public void setInventorySlotContents( int slot, ItemStack itemstack )
+	public void setInventorySlotContents( final int slot, final ItemStack itemstack )
 	{
 		if( this.isSlotValid( slot ) )
 		{
@@ -104,7 +104,7 @@ public class InvLayerData
 		}
 	}
 
-	public boolean canExtractItem( int slot, ItemStack itemstack, int side )
+	public boolean canExtractItem( final int slot, final ItemStack itemstack, final int side )
 	{
 		if( this.isSlotValid( slot ) )
 		{
@@ -114,7 +114,7 @@ public class InvLayerData
 		return false;
 	}
 
-	public boolean canInsertItem( int slot, ItemStack itemstack, int side )
+	public boolean canInsertItem( final int slot, final ItemStack itemstack, final int side )
 	{
 		if( this.isSlotValid( slot ) )
 		{
@@ -128,14 +128,14 @@ public class InvLayerData
 	{
 		if( this.inventories != null )
 		{
-			for( IInventory inv : this.inventories )
+			for( final IInventory inv : this.inventories )
 			{
 				inv.markDirty();
 			}
 		}
 	}
 
-	public int[] getAccessibleSlotsFromSide( int side )
+	public int[] getAccessibleSlotsFromSide( final int side )
 	{
 		if( this.sides == null || side < 0 || side > 5 )
 		{

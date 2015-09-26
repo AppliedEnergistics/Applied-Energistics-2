@@ -36,7 +36,7 @@ public class NetworkToolViewer implements INetworkTool
 	final ItemStack is;
 	final IGridHost gh;
 
-	public NetworkToolViewer( ItemStack is, IGridHost gHost )
+	public NetworkToolViewer( final ItemStack is, final IGridHost gHost )
 	{
 		this.is = is;
 		this.gh = gHost;
@@ -54,25 +54,25 @@ public class NetworkToolViewer implements INetworkTool
 	}
 
 	@Override
-	public ItemStack getStackInSlot( int i )
+	public ItemStack getStackInSlot( final int i )
 	{
 		return this.inv.getStackInSlot( i );
 	}
 
 	@Override
-	public ItemStack decrStackSize( int i, int j )
+	public ItemStack decrStackSize( final int i, final int j )
 	{
 		return this.inv.decrStackSize( i, j );
 	}
 
 	@Override
-	public ItemStack getStackInSlotOnClosing( int i )
+	public ItemStack getStackInSlotOnClosing( final int i )
 	{
 		return this.inv.getStackInSlotOnClosing( i );
 	}
 
 	@Override
-	public void setInventorySlotContents( int i, ItemStack itemstack )
+	public void setInventorySlotContents( final int i, final ItemStack itemstack )
 	{
 		this.inv.setInventorySlotContents( i, itemstack );
 	}
@@ -103,7 +103,7 @@ public class NetworkToolViewer implements INetworkTool
 	}
 
 	@Override
-	public boolean isUseableByPlayer( EntityPlayer entityplayer )
+	public boolean isUseableByPlayer( final EntityPlayer entityplayer )
 	{
 		return this.inv.isUseableByPlayer( entityplayer );
 	}
@@ -121,7 +121,7 @@ public class NetworkToolViewer implements INetworkTool
 	}
 
 	@Override
-	public boolean isItemValidForSlot( int i, ItemStack itemstack )
+	public boolean isItemValidForSlot( final int i, final ItemStack itemstack )
 	{
 		return this.inv.isItemValidForSlot( i, itemstack ) && itemstack.getItem() instanceof IUpgradeModule && ( (IUpgradeModule) itemstack.getItem() ).getType( itemstack ) != null;
 	}

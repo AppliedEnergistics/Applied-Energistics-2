@@ -41,7 +41,7 @@ public class CraftingWatcher implements ICraftingWatcher
 	final ICraftingWatcherHost host;
 	final HashSet<IAEStack> myInterests = new HashSet<IAEStack>();
 
-	public CraftingWatcher( CraftingGridCache cache, ICraftingWatcherHost host )
+	public CraftingWatcher( final CraftingGridCache cache, final ICraftingWatcherHost host )
 	{
 		this.gsc = cache;
 		this.host = host;
@@ -65,7 +65,7 @@ public class CraftingWatcher implements ICraftingWatcher
 	}
 
 	@Override
-	public boolean contains( Object o )
+	public boolean contains( final Object o )
 	{
 		return this.myInterests.contains( o );
 	}
@@ -86,13 +86,13 @@ public class CraftingWatcher implements ICraftingWatcher
 
 	@Nonnull
 	@Override
-	public <T> T[] toArray( @Nonnull T[] a )
+	public <T> T[] toArray( @Nonnull final T[] a )
 	{
 		return this.myInterests.toArray( a );
 	}
 
 	@Override
-	public boolean add( IAEStack e )
+	public boolean add( final IAEStack e )
 	{
 		if( this.myInterests.contains( e ) )
 		{
@@ -103,23 +103,23 @@ public class CraftingWatcher implements ICraftingWatcher
 	}
 
 	@Override
-	public boolean remove( Object o )
+	public boolean remove( final Object o )
 	{
 		return this.myInterests.remove( o ) && this.gsc.interestManager.remove( (IAEStack) o, this );
 	}
 
 	@Override
-	public boolean containsAll( @Nonnull Collection<?> c )
+	public boolean containsAll( @Nonnull final Collection<?> c )
 	{
 		return this.myInterests.containsAll( c );
 	}
 
 	@Override
-	public boolean addAll( @Nonnull Collection<? extends IAEStack> c )
+	public boolean addAll( @Nonnull final Collection<? extends IAEStack> c )
 	{
 		boolean didChange = false;
 
-		for( IAEStack o : c )
+		for( final IAEStack o : c )
 		{
 			didChange = this.add( o ) || didChange;
 		}
@@ -128,10 +128,10 @@ public class CraftingWatcher implements ICraftingWatcher
 	}
 
 	@Override
-	public boolean removeAll( @Nonnull Collection<?> c )
+	public boolean removeAll( @Nonnull final Collection<?> c )
 	{
 		boolean didSomething = false;
-		for( Object o : c )
+		for( final Object o : c )
 		{
 			didSomething = this.remove( o ) || didSomething;
 		}
@@ -139,10 +139,10 @@ public class CraftingWatcher implements ICraftingWatcher
 	}
 
 	@Override
-	public boolean retainAll( @Nonnull Collection<?> c )
+	public boolean retainAll( @Nonnull final Collection<?> c )
 	{
 		boolean changed = false;
-		Iterator<IAEStack> i = this.iterator();
+		final Iterator<IAEStack> i = this.iterator();
 
 		while( i.hasNext() )
 		{
@@ -159,7 +159,7 @@ public class CraftingWatcher implements ICraftingWatcher
 	@Override
 	public void clear()
 	{
-		Iterator<IAEStack> i = this.myInterests.iterator();
+		final Iterator<IAEStack> i = this.myInterests.iterator();
 		while( i.hasNext() )
 		{
 			this.gsc.interestManager.remove( i.next(), this );
@@ -174,7 +174,7 @@ public class CraftingWatcher implements ICraftingWatcher
 		final Iterator<IAEStack> interestIterator;
 		IAEStack myLast;
 
-		public ItemWatcherIterator( CraftingWatcher parent, Iterator<IAEStack> i )
+		public ItemWatcherIterator( final CraftingWatcher parent, final Iterator<IAEStack> i )
 		{
 			this.watcher = parent;
 			this.interestIterator = i;

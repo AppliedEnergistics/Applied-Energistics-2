@@ -42,7 +42,7 @@ public class MENetworkPowerStorage extends MENetworkEvent
 	public final IAEPowerStorage storage;
 	public final PowerEventType type;
 
-	public MENetworkPowerStorage( IAEPowerStorage t, PowerEventType y )
+	public MENetworkPowerStorage( final IAEPowerStorage t, final PowerEventType y )
 	{
 		this.storage = t;
 		this.type = y;

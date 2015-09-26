@@ -39,9 +39,9 @@ public abstract class MekJoules extends RedstoneFlux implements IStrictEnergyAcc
 	}
 
 	@Override
-	public void setEnergy( double energy )
+	public void setEnergy( final double energy )
 	{
-		double extra = this.injectExternalPower( PowerUnits.MK, energy );
+		final double extra = this.injectExternalPower( PowerUnits.MK, energy );
 		this.internalCurrentPower += PowerUnits.MK.convertTo( PowerUnits.AE, extra );
 	}
 
@@ -52,20 +52,20 @@ public abstract class MekJoules extends RedstoneFlux implements IStrictEnergyAcc
 	}
 
 	@Override
-	public double transferEnergyToAcceptor( ForgeDirection side, double amount )
+	public double transferEnergyToAcceptor( final ForgeDirection side, double amount )
 	{
-		double demand = this.getExternalPowerDemand( PowerUnits.MK, Double.MAX_VALUE );
+		final double demand = this.getExternalPowerDemand( PowerUnits.MK, Double.MAX_VALUE );
 		if( amount > demand )
 		{
 			amount = demand;
 		}
 
-		double overflow = this.injectExternalPower( PowerUnits.MK, amount );
+		final double overflow = this.injectExternalPower( PowerUnits.MK, amount );
 		return amount - overflow;
 	}
 
 	@Override
-	public boolean canReceiveEnergy( ForgeDirection side )
+	public boolean canReceiveEnergy( final ForgeDirection side )
 	{
 		return this.getPowerSides().contains( side );
 	}

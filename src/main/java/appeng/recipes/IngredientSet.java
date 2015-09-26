@@ -42,7 +42,7 @@ public class IngredientSet implements IIngredient
 	private final boolean isInside = false;
 	private ItemStack[] baked;
 
-	public IngredientSet( ResolverResultSet rr, int qty )
+	public IngredientSet( final ResolverResultSet rr, final int qty )
 	{
 		Preconditions.checkNotNull( rr );
 		Preconditions.checkNotNull( rr.name );
@@ -73,7 +73,7 @@ public class IngredientSet implements IIngredient
 			return new ItemStack[0];
 		}
 
-		List<ItemStack> out = new LinkedList<ItemStack>();
+		final List<ItemStack> out = new LinkedList<ItemStack>();
 		out.addAll( this.items );
 
 		if( out.isEmpty() )
@@ -81,7 +81,7 @@ public class IngredientSet implements IIngredient
 			throw new MissingIngredientError( this.toString() + " - group could not be resolved to any items." );
 		}
 
-		for( ItemStack is : out )
+		for( final ItemStack is : out )
 		{
 			is.stackSize = this.qty;
 		}

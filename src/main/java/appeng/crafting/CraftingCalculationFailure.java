@@ -29,7 +29,7 @@ public class CraftingCalculationFailure extends RuntimeException
 
 	final IAEItemStack missing;
 
-	public CraftingCalculationFailure( IAEItemStack what, long howMany )
+	public CraftingCalculationFailure( final IAEItemStack what, final long howMany )
 	{
 		super( "this should have been caught!" );
 		this.missing = what.copy();

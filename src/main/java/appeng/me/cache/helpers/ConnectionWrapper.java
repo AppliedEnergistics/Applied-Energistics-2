@@ -27,7 +27,7 @@ public class ConnectionWrapper
 
 	public IGridConnection connection;
 
-	public ConnectionWrapper( IGridConnection gc )
+	public ConnectionWrapper( final IGridConnection gc )
 	{
 		this.connection = gc;
 	}

@@ -52,7 +52,7 @@ public final class Mekanism implements IMekanism, IIntegrationModule
 	}
 
 	@Override
-	public void addCrusherRecipe( ItemStack in, ItemStack out )
+	public void addCrusherRecipe( final ItemStack in, final ItemStack out )
 	{
 		final NBTTagCompound sendTag = this.convertToSimpleRecipe( in, out );
 
@@ -60,14 +60,14 @@ public final class Mekanism implements IMekanism, IIntegrationModule
 	}
 
 	@Override
-	public void addEnrichmentChamberRecipe( ItemStack in, ItemStack out )
+	public void addEnrichmentChamberRecipe( final ItemStack in, final ItemStack out )
 	{
 		final NBTTagCompound sendTag = this.convertToSimpleRecipe( in, out );
 
 		FMLInterModComms.sendMessage( "mekanism", "EnrichmentChamberRecipe", sendTag );
 	}
 
-	private NBTTagCompound convertToSimpleRecipe( ItemStack in, ItemStack out )
+	private NBTTagCompound convertToSimpleRecipe( final ItemStack in, final ItemStack out )
 	{
 		final NBTTagCompound sendTag = new NBTTagCompound();
 		final NBTTagCompound inputTagDummy = new NBTTagCompound();

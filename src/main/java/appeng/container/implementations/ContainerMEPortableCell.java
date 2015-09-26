@@ -38,12 +38,12 @@ public class ContainerMEPortableCell extends ContainerMEMonitorable
 	private int ticks = 0;
 	private final int slot;
 
-	public ContainerMEPortableCell( InventoryPlayer ip, IPortableCell monitorable )
+	public ContainerMEPortableCell( final InventoryPlayer ip, final IPortableCell monitorable )
 	{
 		super( ip, monitorable, false );
 		if( monitorable instanceof IInventorySlotAware )
 		{
-			int slotIndex = ( (IInventorySlotAware) monitorable ).getInventorySlot();
+			final int slotIndex = ( (IInventorySlotAware) monitorable ).getInventorySlot();
 			this.lockPlayerInventorySlot( slotIndex );
 			this.slot = slotIndex;
 		}
@@ -59,7 +59,7 @@ public class ContainerMEPortableCell extends ContainerMEMonitorable
 	@Override
 	public void detectAndSendChanges()
 	{
-		ItemStack currentItem = this.slot < 0 ? this.getPlayerInv().getCurrentItem() : this.getPlayerInv().getStackInSlot( this.slot );
+		final ItemStack currentItem = this.slot < 0 ? this.getPlayerInv().getCurrentItem() : this.getPlayerInv().getStackInSlot( this.slot );
 
 		if( this.civ != null )
 		{

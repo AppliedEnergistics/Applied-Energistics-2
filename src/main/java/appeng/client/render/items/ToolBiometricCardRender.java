@@ -38,28 +38,28 @@ public class ToolBiometricCardRender implements IItemRenderer
 {
 
 	@Override
-	public boolean handleRenderType( ItemStack item, ItemRenderType type )
+	public boolean handleRenderType( final ItemStack item, final ItemRenderType type )
 	{
 		return true;
 	}
 
 	@Override
-	public boolean shouldUseRenderHelper( ItemRenderType type, ItemStack item, ItemRendererHelper helper )
+	public boolean shouldUseRenderHelper( final ItemRenderType type, final ItemStack item, final ItemRendererHelper helper )
 	{
 		return helper == ItemRendererHelper.ENTITY_BOBBING || helper == ItemRendererHelper.ENTITY_ROTATION;
 	}
 
 	@Override
-	public void renderItem( ItemRenderType type, ItemStack item, Object... data )
+	public void renderItem( final ItemRenderType type, final ItemStack item, final Object... data )
 	{
-		IIcon par2Icon = item.getIconIndex();
+		final IIcon par2Icon = item.getIconIndex();
 
-		float f4 = par2Icon.getMinU();
-		float f5 = par2Icon.getMaxU();
-		float f6 = par2Icon.getMinV();
-		float f7 = par2Icon.getMaxV();
+		final float f4 = par2Icon.getMinU();
+		final float f5 = par2Icon.getMaxU();
+		final float f6 = par2Icon.getMinV();
+		final float f7 = par2Icon.getMaxV();
 
-		Tessellator tessellator = Tessellator.instance;
+		final Tessellator tessellator = Tessellator.instance;
 		GL11.glPushMatrix();
 		GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS );
 
@@ -82,7 +82,7 @@ public class ToolBiometricCardRender implements IItemRenderer
 		else
 		{
 			GL11.glTranslatef( -0.5F, -0.3F, 0.01F );
-			float f12 = 0.0625F;
+			final float f12 = 0.0625F;
 			ItemRenderer.renderItemIn2D( tessellator, f5, f6, f4, f7, par2Icon.getIconWidth(), par2Icon.getIconHeight(), f12 );
 
 			GL11.glDisable( GL11.GL_CULL_FACE );
@@ -92,19 +92,19 @@ public class ToolBiometricCardRender implements IItemRenderer
 			GL11.glRotatef( 180F, 1.0F, 0.0F, 0.0F );
 		}
 
-		float u = ExtraItemTextures.White.getIcon().getInterpolatedU( 8.1 );
-		float v = ExtraItemTextures.White.getIcon().getInterpolatedV( 8.1 );
+		final float u = ExtraItemTextures.White.getIcon().getInterpolatedU( 8.1 );
+		final float v = ExtraItemTextures.White.getIcon().getInterpolatedV( 8.1 );
 
 		String username = "";
 		if( item.getItem() instanceof IBiometricCard )
 		{
-			GameProfile gp = ( (IBiometricCard) item.getItem() ).getProfile( item );
+			final GameProfile gp = ( (IBiometricCard) item.getItem() ).getProfile( item );
 			if( gp != null )
 			{
 				username = gp.getName();
 			}
 		}
-		int hash = username.length() > 0 ? username.hashCode() : 0;
+		final int hash = username.length() > 0 ? username.hashCode() : 0;
 
 		GL11.glScalef( 1F / 16F, 1F / 16F, 1F );
 		GL11.glTranslatef( 4, 6, 0 );
@@ -118,7 +118,7 @@ public class ToolBiometricCardRender implements IItemRenderer
 			col = AEColor.Black;
 		}
 
-		float z = 0;
+		final float z = 0;
 		for( int x = 0; x < 8; x++ )// 8
 		{
 			for( int y = 0; y < 6; y++ )// 6
@@ -140,7 +140,7 @@ public class ToolBiometricCardRender implements IItemRenderer
 				}
 				else
 				{
-					float scale = 0.3f / 255.0f;
+					final float scale = 0.3f / 255.0f;
 					tessellator.setColorOpaque_F( ( ( col.blackVariant >> 16 ) & 0xff ) * scale, ( ( col.blackVariant >> 8 ) & 0xff ) * scale, ( col.blackVariant & 0xff ) * scale );
 				}
 

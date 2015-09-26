@@ -39,7 +39,7 @@ public class CraftingLink implements ICraftingLink
 	boolean done = false;
 	CraftingLinkNexus tie;
 
-	public CraftingLink( NBTTagCompound data, ICraftingRequester req )
+	public CraftingLink( final NBTTagCompound data, final ICraftingRequester req )
 	{
 		this.CraftID = data.getString( "CraftID" );
 		this.canceled = data.getBoolean( "canceled" );
@@ -55,7 +55,7 @@ public class CraftingLink implements ICraftingLink
 		this.cpu = null;
 	}
 
-	public CraftingLink( NBTTagCompound data, ICraftingCPU cpu )
+	public CraftingLink( final NBTTagCompound data, final ICraftingCPU cpu )
 	{
 		this.CraftID = data.getString( "CraftID" );
 		this.canceled = data.getBoolean( "canceled" );
@@ -138,7 +138,7 @@ public class CraftingLink implements ICraftingLink
 	}
 
 	@Override
-	public void writeToNBT( NBTTagCompound tag )
+	public void writeToNBT( final NBTTagCompound tag )
 	{
 		tag.setString( "CraftID", this.CraftID );
 		tag.setBoolean( "canceled", this.canceled );
@@ -153,7 +153,7 @@ public class CraftingLink implements ICraftingLink
 		return this.CraftID;
 	}
 
-	public void setNexus( CraftingLinkNexus n )
+	public void setNexus( final CraftingLinkNexus n )
 	{
 		if( this.tie != null )
 		{
@@ -175,7 +175,7 @@ public class CraftingLink implements ICraftingLink
 		}
 	}
 
-	public IAEItemStack injectItems( IAEItemStack input, Actionable mode )
+	public IAEItemStack injectItems( final IAEItemStack input, final Actionable mode )
 	{
 		if( this.tie == null || this.tie.req == null || this.tie.req.req == null )
 		{

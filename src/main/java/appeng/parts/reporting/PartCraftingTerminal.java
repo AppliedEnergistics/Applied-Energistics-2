@@ -41,13 +41,13 @@ public class PartCraftingTerminal extends AbstractPartTerminal
 	private final AppEngInternalInventory craftingGrid = new AppEngInternalInventory( this, 9 );
 
 	@Reflected
-	public PartCraftingTerminal( ItemStack is )
+	public PartCraftingTerminal( final ItemStack is )
 	{
 		super( is );
 	}
 
 	@Override
-	public void getDrops( List<ItemStack> drops, boolean wrenched )
+	public void getDrops( final List<ItemStack> drops, final boolean wrenched )
 	{
 		super.getDrops( drops, wrenched );
 
@@ -61,21 +61,21 @@ public class PartCraftingTerminal extends AbstractPartTerminal
 	}
 
 	@Override
-	public void readFromNBT( NBTTagCompound data )
+	public void readFromNBT( final NBTTagCompound data )
 	{
 		super.readFromNBT( data );
 		this.craftingGrid.readFromNBT( data, "craftingGrid" );
 	}
 
 	@Override
-	public void writeToNBT( NBTTagCompound data )
+	public void writeToNBT( final NBTTagCompound data )
 	{
 		super.writeToNBT( data );
 		this.craftingGrid.writeToNBT( data, "craftingGrid" );
 	}
 
 	@Override
-	public GuiBridge getGui( EntityPlayer p )
+	public GuiBridge getGui( final EntityPlayer p )
 	{
 		int x = (int) p.posX;
 		int y = (int) p.posY;
@@ -95,7 +95,7 @@ public class PartCraftingTerminal extends AbstractPartTerminal
 	}
 
 	@Override
-	public IInventory getInventoryByName( String name )
+	public IInventory getInventoryByName( final String name )
 	{
 		if( name.equals( "crafting" ) )
 		{

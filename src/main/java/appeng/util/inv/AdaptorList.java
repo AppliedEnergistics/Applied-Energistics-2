@@ -35,18 +35,18 @@ public class AdaptorList extends InventoryAdaptor
 
 	private final List<ItemStack> i;
 
-	public AdaptorList( List<ItemStack> s )
+	public AdaptorList( final List<ItemStack> s )
 	{
 		this.i = s;
 	}
 
 	@Override
-	public ItemStack removeItems( int amount, ItemStack filter, IInventoryDestination destination )
+	public ItemStack removeItems( int amount, final ItemStack filter, final IInventoryDestination destination )
 	{
-		int s = this.i.size();
+		final int s = this.i.size();
 		for( int x = 0; x < s; x++ )
 		{
-			ItemStack is = this.i.get( x );
+			final ItemStack is = this.i.get( x );
 			if( is != null && ( filter == null || Platform.isSameItemPrecise( is, filter ) ) )
 			{
 				if( amount > is.stackSize )
@@ -60,7 +60,7 @@ public class AdaptorList extends InventoryAdaptor
 
 				if( amount > 0 )
 				{
-					ItemStack rv = is.copy();
+					final ItemStack rv = is.copy();
 					rv.stackSize = amount;
 					is.stackSize -= amount;
 
@@ -78,9 +78,9 @@ public class AdaptorList extends InventoryAdaptor
 	}
 
 	@Override
-	public ItemStack simulateRemove( int amount, ItemStack filter, IInventoryDestination destination )
+	public ItemStack simulateRemove( int amount, final ItemStack filter, final IInventoryDestination destination )
 	{
-		for( ItemStack is : this.i )
+		for( final ItemStack is : this.i )
 		{
 			if( is != null && ( filter == null || Platform.isSameItemPrecise( is, filter ) ) )
 			{
@@ -95,7 +95,7 @@ public class AdaptorList extends InventoryAdaptor
 
 				if( amount > 0 )
 				{
-					ItemStack rv = is.copy();
+					final ItemStack rv = is.copy();
 					rv.stackSize = amount;
 					return rv;
 				}
@@ -105,12 +105,12 @@ public class AdaptorList extends InventoryAdaptor
 	}
 
 	@Override
-	public ItemStack removeSimilarItems( int amount, ItemStack filter, FuzzyMode fuzzyMode, IInventoryDestination destination )
+	public ItemStack removeSimilarItems( int amount, final ItemStack filter, final FuzzyMode fuzzyMode, final IInventoryDestination destination )
 	{
-		int s = this.i.size();
+		final int s = this.i.size();
 		for( int x = 0; x < s; x++ )
 		{
-			ItemStack is = this.i.get( x );
+			final ItemStack is = this.i.get( x );
 			if( is != null && ( filter == null || Platform.isSameItemFuzzy( is, filter, fuzzyMode ) ) )
 			{
 				if( amount > is.stackSize )
@@ -124,7 +124,7 @@ public class AdaptorList extends InventoryAdaptor
 
 				if( amount > 0 )
 				{
-					ItemStack rv = is.copy();
+					final ItemStack rv = is.copy();
 					rv.stackSize = amount;
 					is.stackSize -= amount;
 
@@ -142,9 +142,9 @@ public class AdaptorList extends InventoryAdaptor
 	}
 
 	@Override
-	public ItemStack simulateSimilarRemove( int amount, ItemStack filter, FuzzyMode fuzzyMode, IInventoryDestination destination )
+	public ItemStack simulateSimilarRemove( int amount, final ItemStack filter, final FuzzyMode fuzzyMode, final IInventoryDestination destination )
 	{
-		for( ItemStack is : this.i )
+		for( final ItemStack is : this.i )
 		{
 			if( is != null && ( filter == null || Platform.isSameItemFuzzy( is, filter, fuzzyMode ) ) )
 			{
@@ -159,7 +159,7 @@ public class AdaptorList extends InventoryAdaptor
 
 				if( amount > 0 )
 				{
-					ItemStack rv = is.copy();
+					final ItemStack rv = is.copy();
 					rv.stackSize = amount;
 					return rv;
 				}
@@ -169,7 +169,7 @@ public class AdaptorList extends InventoryAdaptor
 	}
 
 	@Override
-	public ItemStack addItems( ItemStack toBeAdded )
+	public ItemStack addItems( final ItemStack toBeAdded )
 	{
 		if( toBeAdded == null )
 		{
@@ -180,9 +180,9 @@ public class AdaptorList extends InventoryAdaptor
 			return null;
 		}
 
-		ItemStack left = toBeAdded.copy();
+		final ItemStack left = toBeAdded.copy();
 
-		for( ItemStack is : this.i )
+		for( final ItemStack is : this.i )
 		{
 			if( Platform.isSameItem( is, left ) )
 			{
@@ -196,7 +196,7 @@ public class AdaptorList extends InventoryAdaptor
 	}
 
 	@Override
-	public ItemStack simulateAdd( ItemStack toBeSimulated )
+	public ItemStack simulateAdd( final ItemStack toBeSimulated )
 	{
 		return null;
 	}
@@ -204,7 +204,7 @@ public class AdaptorList extends InventoryAdaptor
 	@Override
 	public boolean containsItems()
 	{
-		for( ItemStack is : this.i )
+		for( final ItemStack is : this.i )
 		{
 			if( is != null )
 			{

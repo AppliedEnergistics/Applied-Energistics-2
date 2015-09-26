@@ -59,7 +59,7 @@ public final class PartP2PPressure extends PartP2PTunnel<PartP2PPressure> implem
 	private final IAirHandler handler;
 	private boolean isConnected = false;
 
-	public PartP2PPressure( ItemStack is )
+	public PartP2PPressure( final ItemStack is )
 	{
 		super( is );
 		this.handler = AirHandlerSupplier.getAirHandler( MAX_PRESSURE, MAX_PRESSURE, VOLUME );
@@ -73,7 +73,7 @@ public final class PartP2PPressure extends PartP2PTunnel<PartP2PPressure> implem
 
 	@Nullable
 	@Override
-	public IAirHandler getAirHandler( ForgeDirection side )
+	public IAirHandler getAirHandler( final ForgeDirection side )
 	{
 		if( side == this.side )
 		{
@@ -110,13 +110,13 @@ public final class PartP2PPressure extends PartP2PTunnel<PartP2PPressure> implem
 	}
 
 	@Override
-	public TickingRequest getTickingRequest( IGridNode node )
+	public TickingRequest getTickingRequest( final IGridNode node )
 	{
 		return new TickingRequest( TickRates.PressureTunnel.min, TickRates.PressureTunnel.max, false, false );
 	}
 
 	@Override
-	public TickRateModulation tickingRequest( IGridNode node, int TicksSinceLastCall )
+	public TickRateModulation tickingRequest( final IGridNode node, final int TicksSinceLastCall )
 	{
 		if( this.proxy.isPowered() && this.proxy.isActive() )
 		{
@@ -133,7 +133,7 @@ public final class PartP2PPressure extends PartP2PTunnel<PartP2PPressure> implem
 	}
 
 	@Override
-	public void writeToNBT( NBTTagCompound data )
+	public void writeToNBT( final NBTTagCompound data )
 	{
 		super.writeToNBT( data );
 		final NBTTagCompound pneumaticNBT = new NBTTagCompound();
@@ -143,7 +143,7 @@ public final class PartP2PPressure extends PartP2PTunnel<PartP2PPressure> implem
 	}
 
 	@Override
-	public void readFromNBT( NBTTagCompound data )
+	public void readFromNBT( final NBTTagCompound data )
 	{
 		super.readFromNBT( data );
 		this.getInternalHandler().readFromNBTI( data.getCompoundTag( PRESSURE_NBT_TAG ) );

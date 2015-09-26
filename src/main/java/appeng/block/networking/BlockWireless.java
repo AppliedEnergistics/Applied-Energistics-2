@@ -60,14 +60,14 @@ public class BlockWireless extends AEBaseTileBlock implements ICustomCollision
 	}
 
 	@Override
-	public boolean onActivated( World w, int x, int y, int z, EntityPlayer p, int side, float hitX, float hitY, float hitZ )
+	public boolean onActivated( final World w, final int x, final int y, final int z, final EntityPlayer p, final int side, final float hitX, final float hitY, final float hitZ )
 	{
 		if( p.isSneaking() )
 		{
 			return false;
 		}
 
-		TileWireless tg = this.getTileEntity( w, x, y, z );
+		final TileWireless tg = this.getTileEntity( w, x, y, z );
 		if( tg != null )
 		{
 			if( Platform.isServer() )
@@ -80,12 +80,12 @@ public class BlockWireless extends AEBaseTileBlock implements ICustomCollision
 	}
 
 	@Override
-	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool( World w, int x, int y, int z, Entity e, boolean isVisual )
+	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool( final World w, final int x, final int y, final int z, final Entity e, final boolean isVisual )
 	{
-		TileWireless tile = this.getTileEntity( w, x, y, z );
+		final TileWireless tile = this.getTileEntity( w, x, y, z );
 		if( tile != null )
 		{
-			ForgeDirection forward = tile.getForward();
+			final ForgeDirection forward = tile.getForward();
 
 			double minX = 0;
 			double minY = 0;
@@ -142,12 +142,12 @@ public class BlockWireless extends AEBaseTileBlock implements ICustomCollision
 	}
 
 	@Override
-	public void addCollidingBlockToList( World w, int x, int y, int z, AxisAlignedBB bb, List<AxisAlignedBB> out, Entity e )
+	public void addCollidingBlockToList( final World w, final int x, final int y, final int z, final AxisAlignedBB bb, final List<AxisAlignedBB> out, final Entity e )
 	{
-		TileWireless tile = this.getTileEntity( w, x, y, z );
+		final TileWireless tile = this.getTileEntity( w, x, y, z );
 		if( tile != null )
 		{
-			ForgeDirection forward = tile.getForward();
+			final ForgeDirection forward = tile.getForward();
 
 			double minX = 0;
 			double minY = 0;

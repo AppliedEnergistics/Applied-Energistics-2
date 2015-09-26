@@ -74,7 +74,7 @@ public class PartCable extends AEBasePart implements IPartCable
 	EnumSet<ForgeDirection> connections = EnumSet.noneOf( ForgeDirection.class );
 	boolean powered = false;
 
-	public PartCable( ItemStack is )
+	public PartCable( final ItemStack is )
 	{
 		super( is );
 		this.proxy.setFlags( GridFlags.PREFERRED );
@@ -101,7 +101,7 @@ public class PartCable extends AEBasePart implements IPartCable
 	}
 
 	@Override
-	public boolean changeColor( AEColor newColor, EntityPlayer who )
+	public boolean changeColor( final AEColor newColor, final EntityPlayer who )
 	{
 		if( this.getCableColor() != newColor )
 		{
@@ -132,7 +132,7 @@ public class PartCable extends AEBasePart implements IPartCable
 			{
 				hasPermission = this.proxy.getSecurity().hasPermission( who, SecurityPermissions.BUILD );
 			}
-			catch( GridAccessException e )
+			catch( final GridAccessException e )
 			{
 				// :P
 			}
@@ -153,13 +153,13 @@ public class PartCable extends AEBasePart implements IPartCable
 	}
 
 	@Override
-	public void setValidSides( EnumSet<ForgeDirection> sides )
+	public void setValidSides( final EnumSet<ForgeDirection> sides )
 	{
 		this.proxy.setValidSides( sides );
 	}
 
 	@Override
-	public boolean isConnected( ForgeDirection side )
+	public boolean isConnected( final ForgeDirection side )
 	{
 		return this.connections.contains( side );
 	}
@@ -170,13 +170,13 @@ public class PartCable extends AEBasePart implements IPartCable
 	}
 
 	@Override
-	public void getBoxes( IPartCollisionHelper bch )
+	public void getBoxes( final IPartCollisionHelper bch )
 	{
 		bch.addBox( 6.0, 6.0, 6.0, 10.0, 10.0, 10.0 );
 
 		if( Platform.isServer() )
 		{
-			IGridNode n = this.getGridNode();
+			final IGridNode n = this.getGridNode();
 			if( n != null )
 			{
 				this.connections = n.getConnectedSides();
@@ -187,15 +187,15 @@ public class PartCable extends AEBasePart implements IPartCable
 			}
 		}
 
-		IPartHost ph = this.getHost();
+		final IPartHost ph = this.getHost();
 		if( ph != null )
 		{
-			for( ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS )
+			for( final ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS )
 			{
-				IPart p = ph.getPart( dir );
+				final IPart p = ph.getPart( dir );
 				if( p instanceof IGridHost )
 				{
-					double dist = p.cableConnectionRenderTo();
+					final double dist = p.cableConnectionRenderTo();
 
 					if( dist > 8 )
 					{
@@ -228,7 +228,7 @@ public class PartCable extends AEBasePart implements IPartCable
 			}
 		}
 
-		for( ForgeDirection of : this.connections )
+		for( final ForgeDirection of : this.connections )
 		{
 			switch( of )
 			{
@@ -257,7 +257,7 @@ public class PartCable extends AEBasePart implements IPartCable
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderInventory( IPartRenderHelper rh, RenderBlocks renderer )
+	public void renderInventory( final IPartRenderHelper rh, final RenderBlocks renderer )
 	{
 		GL11.glTranslated( -0.0, -0.0, 0.3 );
 
@@ -267,12 +267,12 @@ public class PartCable extends AEBasePart implements IPartCable
 		rh.setTexture( null );
 	}
 
-	public IIcon getTexture( AEColor c )
+	public IIcon getTexture( final AEColor c )
 	{
 		return this.getGlassTexture( c );
 	}
 
-	public IIcon getGlassTexture( AEColor c )
+	public IIcon getGlassTexture( final AEColor c )
 	{
 		switch( c )
 		{
@@ -325,19 +325,19 @@ public class PartCable extends AEBasePart implements IPartCable
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderStatic( int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer )
+	public void renderStatic( final int x, final int y, final int z, final IPartRenderHelper rh, final RenderBlocks renderer )
 	{
 		this.renderCache = rh.useSimplifiedRendering( x, y, z, this, this.renderCache );
 		boolean useCovered = false;
 		boolean requireDetailed = false;
 
-		for( ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS )
+		for( final ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS )
 		{
-			IPart p = this.getHost().getPart( dir );
+			final IPart p = this.getHost().getPart( dir );
 			if( p instanceof IGridHost )
 			{
-				IGridHost igh = (IGridHost) p;
-				AECableType type = igh.getCableConnectionType( dir.getOpposite() );
+				final IGridHost igh = (IGridHost) p;
+				final AECableType type = igh.getCableConnectionType( dir.getOpposite() );
 				if( type == AECableType.COVERED || type == AECableType.SMART )
 				{
 					useCovered = true;
@@ -346,9 +346,9 @@ public class PartCable extends AEBasePart implements IPartCable
 			}
 			else if( this.connections.contains( dir ) )
 			{
-				TileEntity te = this.tile.getWorldObj().getTileEntity( x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ );
-				IPartHost partHost = te instanceof IPartHost ? (IPartHost) te : null;
-				IGridHost gh = te instanceof IGridHost ? (IGridHost) te : null;
+				final TileEntity te = this.tile.getWorldObj().getTileEntity( x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ );
+				final IPartHost partHost = te instanceof IPartHost ? (IPartHost) te : null;
+				final IGridHost gh = te instanceof IGridHost ? (IGridHost) te : null;
 				if( partHost == null && gh != null && gh.getCableConnectionType( dir ) != AECableType.GLASS )
 				{
 					requireDetailed = true;
@@ -365,13 +365,13 @@ public class PartCable extends AEBasePart implements IPartCable
 			rh.setTexture( this.getTexture( this.getCableColor() ) );
 		}
 
-		IPartHost ph = this.getHost();
-		for( ForgeDirection of : EnumSet.complementOf( this.connections ) )
+		final IPartHost ph = this.getHost();
+		for( final ForgeDirection of : EnumSet.complementOf( this.connections ) )
 		{
-			IPart bp = ph.getPart( of );
+			final IPart bp = ph.getPart( of );
 			if( bp instanceof IGridHost )
 			{
-				int len = bp.cableConnectionRenderTo();
+				final int len = bp.cableConnectionRenderTo();
 				if( len < 8 )
 				{
 					switch( of )
@@ -415,17 +415,17 @@ public class PartCable extends AEBasePart implements IPartCable
 				rh.renderBlock( x, y, z, renderer );
 			}
 
-			for( ForgeDirection of : this.connections )
+			for( final ForgeDirection of : this.connections )
 			{
 				this.renderGlassConnection( x, y, z, rh, renderer, of );
 			}
 		}
 		else
 		{
-			IIcon def = this.getTexture( this.getCableColor() );
+			final IIcon def = this.getTexture( this.getCableColor() );
 			rh.setTexture( def );
 
-			for( ForgeDirection of : this.connections )
+			for( final ForgeDirection of : this.connections )
 			{
 				rh.setFacesToRender( EnumSet.complementOf( EnumSet.of( of, of.getOpposite() ) ) );
 				switch( of )
@@ -457,18 +457,18 @@ public class PartCable extends AEBasePart implements IPartCable
 	}
 
 	@Override
-	public void writeToNBT( NBTTagCompound data )
+	public void writeToNBT( final NBTTagCompound data )
 	{
 		super.writeToNBT( data );
 
 		if( Platform.isServer() )
 		{
-			IGridNode node = this.getGridNode();
+			final IGridNode node = this.getGridNode();
 
 			if( node != null )
 			{
 				int howMany = 0;
-				for( IGridConnection gc : node.getConnections() )
+				for( final IGridConnection gc : node.getConnections() )
 				{
 					howMany = Math.max( gc.getUsedChannels(), howMany );
 				}
@@ -479,23 +479,23 @@ public class PartCable extends AEBasePart implements IPartCable
 	}
 
 	@Override
-	public void writeToStream( ByteBuf data ) throws IOException
+	public void writeToStream( final ByteBuf data ) throws IOException
 	{
 		int cs = 0;
 		int sideOut = 0;
 
-		IGridNode n = this.getGridNode();
+		final IGridNode n = this.getGridNode();
 		if( n != null )
 		{
-			for( ForgeDirection thisSide : ForgeDirection.VALID_DIRECTIONS )
+			for( final ForgeDirection thisSide : ForgeDirection.VALID_DIRECTIONS )
 			{
-				IPart part = this.getHost().getPart( thisSide );
+				final IPart part = this.getHost().getPart( thisSide );
 				if( part != null )
 				{
 					if( part.getGridNode() != null )
 					{
-						IReadOnlyCollection<IGridConnection> set = part.getGridNode().getConnections();
-						for( IGridConnection gc : set )
+						final IReadOnlyCollection<IGridConnection> set = part.getGridNode().getConnections();
+						for( final IGridConnection gc : set )
 						{
 							if( this.proxy.getNode().hasFlag( GridFlags.DENSE_CAPACITY ) && gc.getOtherSide( this.proxy.getNode() ).hasFlag( GridFlags.DENSE_CAPACITY ) )
 							{
@@ -510,13 +510,13 @@ public class PartCable extends AEBasePart implements IPartCable
 				}
 			}
 
-			for( IGridConnection gc : n.getConnections() )
+			for( final IGridConnection gc : n.getConnections() )
 			{
-				ForgeDirection side = gc.getDirection( n );
+				final ForgeDirection side = gc.getDirection( n );
 				if( side != ForgeDirection.UNKNOWN )
 				{
-					boolean isTier2a = this.proxy.getNode().hasFlag( GridFlags.DENSE_CAPACITY );
-					boolean isTier2b = gc.getOtherSide( this.proxy.getNode() ).hasFlag( GridFlags.DENSE_CAPACITY );
+					final boolean isTier2a = this.proxy.getNode().hasFlag( GridFlags.DENSE_CAPACITY );
+					final boolean isTier2b = gc.getOtherSide( this.proxy.getNode() ).hasFlag( GridFlags.DENSE_CAPACITY );
 
 					if( isTier2a && isTier2b )
 					{
@@ -538,7 +538,7 @@ public class PartCable extends AEBasePart implements IPartCable
 				cs |= ( 1 << ForgeDirection.UNKNOWN.ordinal() );
 			}
 		}
-		catch( GridAccessException e )
+		catch( final GridAccessException e )
 		{
 			// aww...
 		}
@@ -548,21 +548,21 @@ public class PartCable extends AEBasePart implements IPartCable
 	}
 
 	@Override
-	public boolean readFromStream( ByteBuf data ) throws IOException
+	public boolean readFromStream( final ByteBuf data ) throws IOException
 	{
-		int cs = data.readByte();
-		int sideOut = data.readInt();
+		final int cs = data.readByte();
+		final int sideOut = data.readInt();
 
-		EnumSet<ForgeDirection> myC = this.connections.clone();
-		boolean wasPowered = this.powered;
+		final EnumSet<ForgeDirection> myC = this.connections.clone();
+		final boolean wasPowered = this.powered;
 		this.powered = false;
 		boolean channelsChanged = false;
 
-		for( ForgeDirection d : ForgeDirection.values() )
+		for( final ForgeDirection d : ForgeDirection.values() )
 		{
 			if( d != ForgeDirection.UNKNOWN )
 			{
-				int ch = ( sideOut >> ( d.ordinal() * 4 ) ) & 0xF;
+				final int ch = ( sideOut >> ( d.ordinal() * 4 ) ) & 0xF;
 				if( ch != this.channelsOnSide[d.ordinal()] )
 				{
 					channelsChanged = true;
@@ -572,7 +572,7 @@ public class PartCable extends AEBasePart implements IPartCable
 
 			if( d == ForgeDirection.UNKNOWN )
 			{
-				int id = 1 << d.ordinal();
+				final int id = 1 << d.ordinal();
 				if( id == ( cs & id ) )
 				{
 					this.powered = true;
@@ -580,7 +580,7 @@ public class PartCable extends AEBasePart implements IPartCable
 			}
 			else
 			{
-				int id = 1 << d.ordinal();
+				final int id = 1 << d.ordinal();
 				if( id == ( cs & id ) )
 				{
 					this.connections.add( d );
@@ -602,7 +602,7 @@ public class PartCable extends AEBasePart implements IPartCable
 		return this.getTexture( this.getCableColor() );
 	}
 
-	public IIcon getCoveredTexture( AEColor c )
+	public IIcon getCoveredTexture( final AEColor c )
 	{
 		switch( c )
 		{
@@ -647,17 +647,17 @@ public class PartCable extends AEBasePart implements IPartCable
 		return coveredCable.item( AEColor.Transparent ).getIconIndex( coveredCableStack );
 	}
 
-	protected boolean nonLinear( EnumSet<ForgeDirection> sides )
+	protected boolean nonLinear( final EnumSet<ForgeDirection> sides )
 	{
 		return ( sides.contains( ForgeDirection.EAST ) && sides.contains( ForgeDirection.WEST ) ) || ( sides.contains( ForgeDirection.NORTH ) && sides.contains( ForgeDirection.SOUTH ) ) || ( sides.contains( ForgeDirection.UP ) && sides.contains( ForgeDirection.DOWN ) );
 	}
 
 	@SideOnly( Side.CLIENT )
-	public void renderGlassConnection( int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer, ForgeDirection of )
+	public void renderGlassConnection( final int x, final int y, final int z, final IPartRenderHelper rh, final RenderBlocks renderer, final ForgeDirection of )
 	{
-		TileEntity te = this.tile.getWorldObj().getTileEntity( x + of.offsetX, y + of.offsetY, z + of.offsetZ );
-		IPartHost partHost = te instanceof IPartHost ? (IPartHost) te : null;
-		IGridHost gh = te instanceof IGridHost ? (IGridHost) te : null;
+		final TileEntity te = this.tile.getWorldObj().getTileEntity( x + of.offsetX, y + of.offsetY, z + of.offsetZ );
+		final IPartHost partHost = te instanceof IPartHost ? (IPartHost) te : null;
+		final IGridHost gh = te instanceof IGridHost ? (IGridHost) te : null;
 
 		rh.setFacesToRender( EnumSet.complementOf( EnumSet.of( of ) ) );
 
@@ -729,11 +729,11 @@ public class PartCable extends AEBasePart implements IPartCable
 	}
 
 	@SideOnly( Side.CLIENT )
-	public void renderCoveredConnection( int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer, int channels, ForgeDirection of )
+	public void renderCoveredConnection( final int x, final int y, final int z, final IPartRenderHelper rh, final RenderBlocks renderer, final int channels, final ForgeDirection of )
 	{
-		TileEntity te = this.tile.getWorldObj().getTileEntity( x + of.offsetX, y + of.offsetY, z + of.offsetZ );
-		IPartHost partHost = te instanceof IPartHost ? (IPartHost) te : null;
-		IGridHost ghh = te instanceof IGridHost ? (IGridHost) te : null;
+		final TileEntity te = this.tile.getWorldObj().getTileEntity( x + of.offsetX, y + of.offsetY, z + of.offsetZ );
+		final IPartHost partHost = te instanceof IPartHost ? (IPartHost) te : null;
+		final IGridHost ghh = te instanceof IGridHost ? (IGridHost) te : null;
 
 		rh.setFacesToRender( EnumSet.complementOf( EnumSet.of( of ) ) );
 		if( ghh != null && partHost != null && ghh.getCableConnectionType( of.getOpposite() ) == AECableType.GLASS && partHost.getPart( of.getOpposite() ) == null && partHost.getColor() != AEColor.Transparent )
@@ -810,11 +810,11 @@ public class PartCable extends AEBasePart implements IPartCable
 	}
 
 	@SideOnly( Side.CLIENT )
-	public void renderSmartConnection( int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer, int channels, ForgeDirection of )
+	public void renderSmartConnection( final int x, final int y, final int z, final IPartRenderHelper rh, final RenderBlocks renderer, final int channels, final ForgeDirection of )
 	{
-		TileEntity te = this.tile.getWorldObj().getTileEntity( x + of.offsetX, y + of.offsetY, z + of.offsetZ );
-		IPartHost partHost = te instanceof IPartHost ? (IPartHost) te : null;
-		IGridHost ghh = te instanceof IGridHost ? (IGridHost) te : null;
+		final TileEntity te = this.tile.getWorldObj().getTileEntity( x + of.offsetX, y + of.offsetY, z + of.offsetZ );
+		final IPartHost partHost = te instanceof IPartHost ? (IPartHost) te : null;
+		final IGridHost ghh = te instanceof IGridHost ? (IGridHost) te : null;
 		AEColor myColor = this.getCableColor();
 
 		rh.setFacesToRender( EnumSet.complementOf( EnumSet.of( of ) ) );
@@ -854,13 +854,13 @@ public class PartCable extends AEBasePart implements IPartCable
 			rh.renderBlock( x, y, z, renderer );
 
 			this.setSmartConnectionRotations( of, renderer );
-			IIcon firstIcon = new TaughtIcon( this.getChannelTex( channels, false ).getIcon(), -0.2f );
-			IIcon secondIcon = new TaughtIcon( this.getChannelTex( channels, true ).getIcon(), -0.2f );
+			final IIcon firstIcon = new TaughtIcon( this.getChannelTex( channels, false ).getIcon(), -0.2f );
+			final IIcon secondIcon = new TaughtIcon( this.getChannelTex( channels, true ).getIcon(), -0.2f );
 
 			if( of == ForgeDirection.EAST || of == ForgeDirection.WEST )
 			{
-				AEBaseBlock blk = (AEBaseBlock) rh.getBlock();
-				FlippableIcon ico = blk.getRendererInstance().getTexture( ForgeDirection.EAST );
+				final AEBaseBlock blk = (AEBaseBlock) rh.getBlock();
+				final FlippableIcon ico = blk.getRendererInstance().getTexture( ForgeDirection.EAST );
 				ico.setFlip( false, true );
 			}
 
@@ -918,8 +918,8 @@ public class PartCable extends AEBasePart implements IPartCable
 		{
 			this.setSmartConnectionRotations( of, renderer );
 
-			IIcon firstIcon = new TaughtIcon( this.getChannelTex( channels, false ).getIcon(), -0.2f );
-			IIcon secondIcon = new TaughtIcon( this.getChannelTex( channels, true ).getIcon(), -0.2f );
+			final IIcon firstIcon = new TaughtIcon( this.getChannelTex( channels, false ).getIcon(), -0.2f );
+			final IIcon secondIcon = new TaughtIcon( this.getChannelTex( channels, true ).getIcon(), -0.2f );
 
 			Tessellator.instance.setBrightness( 15 << 20 | 15 << 4 );
 			Tessellator.instance.setColorOpaque_I( myColor.blackVariant );
@@ -934,7 +934,7 @@ public class PartCable extends AEBasePart implements IPartCable
 		}
 	}
 
-	public IIcon getSmartTexture( AEColor c )
+	public IIcon getSmartTexture( final AEColor c )
 	{
 		switch( c )
 		{
@@ -980,7 +980,7 @@ public class PartCable extends AEBasePart implements IPartCable
 	}
 
 	@SideOnly( Side.CLIENT )
-	protected void setSmartConnectionRotations( ForgeDirection of, RenderBlocks renderer )
+	protected void setSmartConnectionRotations( final ForgeDirection of, final RenderBlocks renderer )
 	{
 		switch( of )
 		{
@@ -1013,7 +1013,7 @@ public class PartCable extends AEBasePart implements IPartCable
 		}
 	}
 
-	protected CableBusTextures getChannelTex( int i, boolean b )
+	protected CableBusTextures getChannelTex( int i, final boolean b )
 	{
 		if( !this.powered )
 		{
@@ -1055,7 +1055,7 @@ public class PartCable extends AEBasePart implements IPartCable
 	}
 
 	@SideOnly( Side.CLIENT )
-	protected void renderAllFaces( AEBaseBlock blk, int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer )
+	protected void renderAllFaces( final AEBaseBlock blk, final int x, final int y, final int z, final IPartRenderHelper rh, final RenderBlocks renderer )
 	{
 		rh.setBounds( (float) renderer.renderMinX * 16.0f, (float) renderer.renderMinY * 16.0f, (float) renderer.renderMinZ * 16.0f, (float) renderer.renderMaxX * 16.0f, (float) renderer.renderMaxY * 16.0f, (float) renderer.renderMaxZ * 16.0f );
 		rh.renderFace( x, y, z, blk.getRendererInstance().getTexture( ForgeDirection.WEST ), ForgeDirection.WEST, renderer );

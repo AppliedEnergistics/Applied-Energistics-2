@@ -98,14 +98,14 @@ public final class AppEng
 	}
 
 	@EventHandler
-	private void preInit( FMLPreInitializationEvent event )
+	private void preInit( final FMLPreInitializationEvent event )
 	{
 		if( !Loader.isModLoaded( "appliedenergistics2-core" ) )
 		{
 			CommonHelper.proxy.missingCoreMod();
 		}
 
-		Stopwatch watch = Stopwatch.createStarted();
+		final Stopwatch watch = Stopwatch.createStarted();
 		this.configDirectory = new File( event.getModConfigurationDirectory().getPath(), "AppliedEnergistics2" );
 
 		final File configFile = new File( this.configDirectory, "AppliedEnergistics2.cfg" );
@@ -142,7 +142,7 @@ public final class AppEng
 		AELog.info( "Pre Initialization ( ended after " + watch.elapsed( TimeUnit.MILLISECONDS ) + "ms )" );
 	}
 
-	private void startService( String serviceName, Thread thread )
+	private void startService( final String serviceName, final Thread thread )
 	{
 		thread.setName( serviceName );
 		thread.setPriority( Thread.MIN_PRIORITY );
@@ -152,9 +152,9 @@ public final class AppEng
 	}
 
 	@EventHandler
-	private void init( FMLInitializationEvent event )
+	private void init( final FMLInitializationEvent event )
 	{
-		Stopwatch star = Stopwatch.createStarted();
+		final Stopwatch star = Stopwatch.createStarted();
 		AELog.info( "Initialization ( started )" );
 
 		Registration.INSTANCE.initialize( event );
@@ -164,9 +164,9 @@ public final class AppEng
 	}
 
 	@EventHandler
-	private void postInit( FMLPostInitializationEvent event )
+	private void postInit( final FMLPostInitializationEvent event )
 	{
-		Stopwatch star = Stopwatch.createStarted();
+		final Stopwatch star = Stopwatch.createStarted();
 		AELog.info( "Post Initialization ( started )" );
 
 		Registration.INSTANCE.postInit( event );
@@ -183,26 +183,26 @@ public final class AppEng
 	}
 
 	@EventHandler
-	private void handleIMCEvent( FMLInterModComms.IMCEvent event )
+	private void handleIMCEvent( final FMLInterModComms.IMCEvent event )
 	{
 		this.imcHandler.handleIMCEvent( event );
 	}
 
 	@EventHandler
-	private void serverAboutToStart( FMLServerAboutToStartEvent evt )
+	private void serverAboutToStart( final FMLServerAboutToStartEvent evt )
 	{
 		WorldData.onServerAboutToStart();
 	}
 
 	@EventHandler
-	private void serverStopping( FMLServerStoppingEvent event )
+	private void serverStopping( final FMLServerStoppingEvent event )
 	{
 		WorldData.instance().onServerStopping();
 		TickHandler.INSTANCE.shutdown();
 	}
 
 	@EventHandler
-	private void serverStarting( FMLServerStartingEvent evt )
+	private void serverStarting( final FMLServerStartingEvent evt )
 	{
 		evt.registerServerCommand( new AECommand( evt.getServer() ) );
 	}

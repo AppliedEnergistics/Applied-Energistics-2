@@ -35,7 +35,7 @@ public class MEPassThrough<T extends IAEStack<T>> implements IMEInventoryHandler
 	protected final StorageChannel channel;
 	private IMEInventory<T> internal;
 
-	public MEPassThrough( IMEInventory<T> i, StorageChannel channel )
+	public MEPassThrough( final IMEInventory<T> i, final StorageChannel channel )
 	{
 		this.channel = channel;
 		this.setInternal( i );
@@ -46,25 +46,25 @@ public class MEPassThrough<T extends IAEStack<T>> implements IMEInventoryHandler
 		return this.internal;
 	}
 
-	public void setInternal( IMEInventory<T> i )
+	public void setInternal( final IMEInventory<T> i )
 	{
 		this.internal = i;
 	}
 
 	@Override
-	public T injectItems( T input, Actionable type, BaseActionSource src )
+	public T injectItems( final T input, final Actionable type, final BaseActionSource src )
 	{
 		return this.internal.injectItems( input, type, src );
 	}
 
 	@Override
-	public T extractItems( T request, Actionable type, BaseActionSource src )
+	public T extractItems( final T request, final Actionable type, final BaseActionSource src )
 	{
 		return this.internal.extractItems( request, type, src );
 	}
 
 	@Override
-	public IItemList<T> getAvailableItems( IItemList out )
+	public IItemList<T> getAvailableItems( final IItemList out )
 	{
 		return this.internal.getAvailableItems( out );
 	}
@@ -82,13 +82,13 @@ public class MEPassThrough<T extends IAEStack<T>> implements IMEInventoryHandler
 	}
 
 	@Override
-	public boolean isPrioritized( T input )
+	public boolean isPrioritized( final T input )
 	{
 		return false;
 	}
 
 	@Override
-	public boolean canAccept( T input )
+	public boolean canAccept( final T input )
 	{
 		return true;
 	}
@@ -106,7 +106,7 @@ public class MEPassThrough<T extends IAEStack<T>> implements IMEInventoryHandler
 	}
 
 	@Override
-	public boolean validForPass( int i )
+	public boolean validForPass( final int i )
 	{
 		return true;
 	}

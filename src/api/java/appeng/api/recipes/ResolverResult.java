@@ -34,14 +34,14 @@ public class ResolverResult
 	public final int damageValue;
 	public final NBTTagCompound compound;
 
-	public ResolverResult( String name, int damage )
+	public ResolverResult( final String name, final int damage )
 	{
 		this.itemName = name;
 		this.damageValue = damage;
 		this.compound = null;
 	}
 
-	public ResolverResult( String name, int damage, NBTTagCompound data )
+	public ResolverResult( final String name, final int damage, final NBTTagCompound data )
 	{
 		this.itemName = name;
 		this.damageValue = damage;

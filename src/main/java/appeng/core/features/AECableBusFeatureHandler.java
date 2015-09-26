@@ -42,7 +42,7 @@ public final class AECableBusFeatureHandler implements IFeatureHandler
 	private final boolean enabled;
 	private final TileDefinition definition;
 
-	public AECableBusFeatureHandler( EnumSet<AEFeature> features, BlockCableBus featured, Optional<String> subName )
+	public AECableBusFeatureHandler( final EnumSet<AEFeature> features, final BlockCableBus featured, final Optional<String> subName )
 	{
 		final ActivityState state = new FeaturedActiveChecker( features ).getActivityState();
 
@@ -72,7 +72,7 @@ public final class AECableBusFeatureHandler implements IFeatureHandler
 	{
 		if( this.enabled )
 		{
-			String name = this.extractor.get();
+			final String name = this.extractor.get();
 			this.featured.setCreativeTab( CreativeTab.instance );
 			this.featured.setBlockName( /* "tile." */"appliedenergistics2." + name );
 			this.featured.setBlockTextureName( "appliedenergistics2:" + name );

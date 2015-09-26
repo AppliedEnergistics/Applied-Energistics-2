@@ -39,28 +39,28 @@ public class InWorldToolOperationResult
 		this.Drops = null;
 	}
 
-	public InWorldToolOperationResult( ItemStack block, List<ItemStack> drops )
+	public InWorldToolOperationResult( final ItemStack block, final List<ItemStack> drops )
 	{
 		this.BlockItem = block;
 		this.Drops = drops;
 	}
 
-	public InWorldToolOperationResult( ItemStack block )
+	public InWorldToolOperationResult( final ItemStack block )
 	{
 		this.BlockItem = block;
 		this.Drops = null;
 	}
 
-	public static InWorldToolOperationResult getBlockOperationResult( ItemStack[] items )
+	public static InWorldToolOperationResult getBlockOperationResult( final ItemStack[] items )
 	{
-		List<ItemStack> temp = new ArrayList<ItemStack>();
+		final List<ItemStack> temp = new ArrayList<ItemStack>();
 		ItemStack b = null;
 
-		for( ItemStack l : items )
+		for( final ItemStack l : items )
 		{
 			if( b == null )
 			{
-				Block bl = Block.getBlockFromItem( l.getItem() );
+				final Block bl = Block.getBlockFromItem( l.getItem() );
 
 				if( bl != null && !( bl instanceof BlockAir ) )
 				{

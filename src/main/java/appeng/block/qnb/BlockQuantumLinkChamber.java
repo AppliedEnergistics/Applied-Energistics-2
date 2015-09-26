@@ -50,9 +50,9 @@ public class BlockQuantumLinkChamber extends BlockQuantumBase
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void randomDisplayTick( World w, int bx, int by, int bz, Random r )
+	public void randomDisplayTick( final World w, final int bx, final int by, final int bz, final Random r )
 	{
-		TileQuantumBridge bridge = this.getTileEntity( w, bx, by, bz );
+		final TileQuantumBridge bridge = this.getTileEntity( w, bx, by, bz );
 		if( bridge != null )
 		{
 			if( bridge.hasQES() )
@@ -66,14 +66,14 @@ public class BlockQuantumLinkChamber extends BlockQuantumBase
 	}
 
 	@Override
-	public boolean onActivated( World w, int x, int y, int z, EntityPlayer p, int side, float hitX, float hitY, float hitZ )
+	public boolean onActivated( final World w, final int x, final int y, final int z, final EntityPlayer p, final int side, final float hitX, final float hitY, final float hitZ )
 	{
 		if( p.isSneaking() )
 		{
 			return false;
 		}
 
-		TileQuantumBridge tg = this.getTileEntity( w, x, y, z );
+		final TileQuantumBridge tg = this.getTileEntity( w, x, y, z );
 		if( tg != null )
 		{
 			if( Platform.isServer() )
@@ -86,16 +86,16 @@ public class BlockQuantumLinkChamber extends BlockQuantumBase
 	}
 
 	@Override
-	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool( World w, int x, int y, int z, Entity e, boolean isVisual )
+	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool( final World w, final int x, final int y, final int z, final Entity e, final boolean isVisual )
 	{
-		double onePixel = 2.0 / 16.0;
+		final double onePixel = 2.0 / 16.0;
 		return Collections.singletonList( AxisAlignedBB.getBoundingBox( onePixel, onePixel, onePixel, 1.0 - onePixel, 1.0 - onePixel, 1.0 - onePixel ) );
 	}
 
 	@Override
-	public void addCollidingBlockToList( World w, int x, int y, int z, AxisAlignedBB bb, List<AxisAlignedBB> out, Entity e )
+	public void addCollidingBlockToList( final World w, final int x, final int y, final int z, final AxisAlignedBB bb, final List<AxisAlignedBB> out, final Entity e )
 	{
-		double onePixel = 2.0 / 16.0;
+		final double onePixel = 2.0 / 16.0;
 		out.add( AxisAlignedBB.getBoundingBox( onePixel, onePixel, onePixel, 1.0 - onePixel, 1.0 - onePixel, 1.0 - onePixel ) );
 	}
 }

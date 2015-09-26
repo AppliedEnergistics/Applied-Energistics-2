@@ -25,7 +25,7 @@ import net.minecraft.inventory.IInventory;
 public class SlotNormal extends AppEngSlot
 {
 
-	public SlotNormal( IInventory inv, int slot, int xPos, int yPos )
+	public SlotNormal( final IInventory inv, final int slot, final int xPos, final int yPos )
 	{
 		super( inv, slot, xPos, yPos );
 	}

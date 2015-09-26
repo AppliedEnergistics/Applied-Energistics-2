@@ -113,7 +113,7 @@ public final class ApiItems implements IItems
 	private final IItemDefinition toolDebugCard;
 	private final IItemDefinition toolReplicatorCard;
 
-	public ApiItems( DefinitionConstructor constructor )
+	public ApiItems( final DefinitionConstructor constructor )
 	{
 		this.certusQuartzAxe = constructor.registerItemDefinition( new ToolQuartzAxe( AEFeature.CertusQuartzTools ) );
 		this.certusQuartzHoe = constructor.registerItemDefinition( new ToolQuartzHoe( AEFeature.CertusQuartzTools ) );

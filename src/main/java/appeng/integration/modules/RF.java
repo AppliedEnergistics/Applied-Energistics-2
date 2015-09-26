@@ -80,7 +80,7 @@ public final class RF implements IIntegrationModule
 		this.registerRFAttunement( "EnderIO", "blockPowerMonitor", 0 );
 	}
 
-	private void registerRFAttunement( String mod, String name, int dmg )
+	private void registerRFAttunement( final String mod, final String name, final int dmg )
 	{
 		assert mod != null;
 		assert !mod.isEmpty();

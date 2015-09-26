@@ -30,21 +30,21 @@ import appeng.tile.qnb.TileQuantumBridge;
 public class GuiQNB extends AEBaseGui
 {
 
-	public GuiQNB( InventoryPlayer inventoryPlayer, TileQuantumBridge te )
+	public GuiQNB( final InventoryPlayer inventoryPlayer, final TileQuantumBridge te )
 	{
 		super( new ContainerQNB( inventoryPlayer, te ) );
 		this.ySize = 166;
 	}
 
 	@Override
-	public void drawFG( int offsetX, int offsetY, int mouseX, int mouseY )
+	public void drawFG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
 		this.fontRendererObj.drawString( this.getGuiDisplayName( GuiText.QuantumLinkChamber.getLocal() ), 8, 6, 4210752 );
 		this.fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
 	}
 
 	@Override
-	public void drawBG( int offsetX, int offsetY, int mouseX, int mouseY )
+	public void drawBG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
 		this.bindTexture( "guis/chest.png" );
 		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize );

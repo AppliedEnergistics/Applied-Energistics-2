@@ -49,9 +49,9 @@ public class OreQuartzCharged extends OreQuartz
 
 	@Nullable
 	@Override
-	public Item getItemDropped( int id, Random rand, int meta )
+	public Item getItemDropped( final int id, final Random rand, final int meta )
 	{
-		for( Item charged : AEApi.instance().definitions().materials().certusQuartzCrystalCharged().maybeItem().asSet() )
+		for( final Item charged : AEApi.instance().definitions().materials().certusQuartzCrystalCharged().maybeItem().asSet() )
 		{
 			return charged;
 		}
@@ -60,9 +60,9 @@ public class OreQuartzCharged extends OreQuartz
 	}
 
 	@Override
-	public int damageDropped( int id )
+	public int damageDropped( final int id )
 	{
-		for( ItemStack crystalStack : AEApi.instance().definitions().materials().certusQuartzCrystalCharged().maybeStack( 1 ).asSet() )
+		for( final ItemStack crystalStack : AEApi.instance().definitions().materials().certusQuartzCrystalCharged().maybeStack( 1 ).asSet() )
 		{
 			return crystalStack.getItemDamage();
 		}
@@ -72,7 +72,7 @@ public class OreQuartzCharged extends OreQuartz
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void randomDisplayTick( World w, int x, int y, int z, Random r )
+	public void randomDisplayTick( final World w, final int x, final int y, final int z, final Random r )
 	{
 		if( !AEConfig.instance.enableEffects )
 		{
@@ -110,7 +110,7 @@ public class OreQuartzCharged extends OreQuartz
 
 		if( CommonHelper.proxy.shouldAddParticles( r ) )
 		{
-			ChargedOreFX fx = new ChargedOreFX( w, x + xOff, y + yOff, z + zOff, 0.0f, 0.0f, 0.0f );
+			final ChargedOreFX fx = new ChargedOreFX( w, x + xOff, y + yOff, z + zOff, 0.0f, 0.0f, 0.0f );
 			Minecraft.getMinecraft().effectRenderer.addEffect( fx );
 		}
 	}

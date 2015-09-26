@@ -37,7 +37,7 @@ public final class ConfigManager implements IConfigManager
 	private final Map<Settings, Enum<?>> settings = new EnumMap<Settings, Enum<?>>( Settings.class );
 	private final IConfigManagerHost target;
 
-	public ConfigManager( IConfigManagerHost tile )
+	public ConfigManager( final IConfigManagerHost tile )
 	{
 		this.target = tile;
 	}
@@ -49,15 +49,15 @@ public final class ConfigManager implements IConfigManager
 	}
 
 	@Override
-	public void registerSetting( Settings settingName, Enum defaultValue )
+	public void registerSetting( final Settings settingName, final Enum defaultValue )
 	{
 		this.settings.put( settingName, defaultValue );
 	}
 
 	@Override
-	public Enum<?> getSetting( Settings settingName )
+	public Enum<?> getSetting( final Settings settingName )
 	{
-		Enum<?> oldValue = this.settings.get( settingName );
+		final Enum<?> oldValue = this.settings.get( settingName );
 
 		if( oldValue != null )
 		{
@@ -68,9 +68,9 @@ public final class ConfigManager implements IConfigManager
 	}
 
 	@Override
-	public Enum<?> putSetting( Settings settingName, Enum newValue )
+	public Enum<?> putSetting( final Settings settingName, final Enum newValue )
 	{
-		Enum<?> oldValue = this.getSetting( settingName );
+		final Enum<?> oldValue = this.getSetting( settingName );
 		this.settings.put( settingName, newValue );
 		this.target.updateSetting( this, settingName, newValue );
 		return oldValue;
@@ -82,9 +82,9 @@ public final class ConfigManager implements IConfigManager
 	 * @param tagCompound to be written to compound
 	 */
 	@Override
-	public void writeToNBT( NBTTagCompound tagCompound )
+	public void writeToNBT( final NBTTagCompound tagCompound )
 	{
-		for( Map.Entry<Settings, Enum<?>> entry : this.settings.entrySet() )
+		for( final Map.Entry<Settings, Enum<?>> entry : this.settings.entrySet() )
 		{
 			tagCompound.setString( entry.getKey().name(), this.settings.get( entry.getKey() ).toString() );
 		}
@@ -96,9 +96,9 @@ public final class ConfigManager implements IConfigManager
 	 * @param tagCompound to be read from compound
 	 */
 	@Override
-	public void readFromNBT( NBTTagCompound tagCompound )
+	public void readFromNBT( final NBTTagCompound tagCompound )
 	{
-		for( Map.Entry<Settings, Enum<?>> entry : this.settings.entrySet() )
+		for( final Map.Entry<Settings, Enum<?>> entry : this.settings.entrySet() )
 		{
 			try
 			{
@@ -116,14 +116,14 @@ public final class ConfigManager implements IConfigManager
 						value = LevelEmitterMode.STORABLE_AMOUNT.toString();
 					}
 
-					Enum<?> oldValue = this.settings.get( entry.getKey() );
+					final Enum<?> oldValue = this.settings.get( entry.getKey() );
 
-					Enum<?> newValue = Enum.valueOf( oldValue.getClass(), value );
+					final Enum<?> newValue = Enum.valueOf( oldValue.getClass(), value );
 
 					this.putSetting( entry.getKey(), newValue );
 				}
 			}
-			catch( IllegalArgumentException e )
+			catch( final IllegalArgumentException e )
 			{
 				AELog.error( e );
 			}

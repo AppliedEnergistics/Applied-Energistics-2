@@ -50,9 +50,9 @@ public class OreReference
 			this.aeOtherOptions = new ArrayList<IAEItemStack>( this.otherOptions.size() );
 
 			// SUMMON AE STACKS!
-			for( String oreName : this.otherOptions )
+			for( final String oreName : this.otherOptions )
 			{
-				for( ItemStack is : OreHelper.INSTANCE.getCachedOres( oreName ) )
+				for( final ItemStack is : OreHelper.INSTANCE.getCachedOres( oreName ) )
 				{
 					if( is.getItem() != null )
 					{

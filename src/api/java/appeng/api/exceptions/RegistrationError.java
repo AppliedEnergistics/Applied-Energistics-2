@@ -29,7 +29,7 @@ public class RegistrationError extends Exception
 
 	private static final long serialVersionUID = -6602870588617670263L;
 
-	public RegistrationError( String n )
+	public RegistrationError( final String n )
 	{
 		super( n );
 	}

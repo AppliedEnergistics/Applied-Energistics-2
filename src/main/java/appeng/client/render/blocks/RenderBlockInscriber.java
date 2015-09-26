@@ -63,7 +63,7 @@ public class RenderBlockInscriber extends BaseBlockRender<BlockInscriber, TileIn
 	}
 
 	@Override
-	public void renderInventory( BlockInscriber blk, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj )
+	public void renderInventory( final BlockInscriber blk, final ItemStack is, final RenderBlocks renderer, final ItemRenderType type, final Object[] obj )
 	{
 		final Tessellator tess = Tessellator.instance;
 
@@ -104,7 +104,7 @@ public class RenderBlockInscriber extends BaseBlockRender<BlockInscriber, TileIn
 	}
 
 	@Override
-	public boolean renderInWorld( BlockInscriber block, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
+	public boolean renderInWorld( final BlockInscriber block, final IBlockAccess world, final int x, final int y, final int z, final RenderBlocks renderer )
 	{
 		this.preRenderInWorld( block, world, x, y, z, renderer );
 
@@ -147,7 +147,7 @@ public class RenderBlockInscriber extends BaseBlockRender<BlockInscriber, TileIn
 	}
 
 	@Override
-	public void renderTile( BlockInscriber block, TileInscriber tile, Tessellator tess, double x, double y, double z, float f, RenderBlocks renderer )
+	public void renderTile( final BlockInscriber block, final TileInscriber tile, final Tessellator tess, final double x, final double y, final double z, final float f, final RenderBlocks renderer )
 	{
 		GL11.glPushMatrix();
 		this.applyTESRRotation( x, y, z, tile.getForward(), tile.getUp() );
@@ -261,7 +261,7 @@ public class RenderBlockInscriber extends BaseBlockRender<BlockInscriber, TileIn
 		}
 	}
 
-	public void renderItem( ItemStack sis, float o, AEBaseBlock block, AEBaseTile tile, Tessellator tess, double x, double y, double z, float f, RenderBlocks renderer )
+	public void renderItem( ItemStack sis, final float o, final AEBaseBlock block, final AEBaseTile tile, final Tessellator tess, final double x, final double y, final double z, final float f, final RenderBlocks renderer )
 	{
 		if( sis != null )
 		{
@@ -301,7 +301,7 @@ public class RenderBlockInscriber extends BaseBlockRender<BlockInscriber, TileIn
 
 				this.doRenderItem( sis, tile );
 			}
-			catch( Exception err )
+			catch( final Exception err )
 			{
 				AELog.error( err );
 			}

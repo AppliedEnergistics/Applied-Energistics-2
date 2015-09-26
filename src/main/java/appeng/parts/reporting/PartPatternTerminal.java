@@ -49,13 +49,13 @@ public class PartPatternTerminal extends AbstractPartTerminal
 	private boolean craftingMode = true;
 
 	@Reflected
-	public PartPatternTerminal( ItemStack is )
+	public PartPatternTerminal( final ItemStack is )
 	{
 		super( is );
 	}
 
 	@Override
-	public void getDrops( List<ItemStack> drops, boolean wrenched )
+	public void getDrops( final List<ItemStack> drops, final boolean wrenched )
 	{
 		for( final ItemStack is : this.pattern )
 		{
@@ -67,7 +67,7 @@ public class PartPatternTerminal extends AbstractPartTerminal
 	}
 
 	@Override
-	public void readFromNBT( NBTTagCompound data )
+	public void readFromNBT( final NBTTagCompound data )
 	{
 		super.readFromNBT( data );
 		this.setCraftingRecipe( data.getBoolean( "craftingMode" ) );
@@ -77,7 +77,7 @@ public class PartPatternTerminal extends AbstractPartTerminal
 	}
 
 	@Override
-	public void writeToNBT( NBTTagCompound data )
+	public void writeToNBT( final NBTTagCompound data )
 	{
 		super.writeToNBT( data );
 		data.setBoolean( "craftingMode", this.craftingMode );
@@ -87,7 +87,7 @@ public class PartPatternTerminal extends AbstractPartTerminal
 	}
 
 	@Override
-	public GuiBridge getGui( EntityPlayer p )
+	public GuiBridge getGui( final EntityPlayer p )
 	{
 		int x = (int) p.posX;
 		int y = (int) p.posY;
@@ -107,7 +107,7 @@ public class PartPatternTerminal extends AbstractPartTerminal
 	}
 
 	@Override
-	public void onChangeInventory( IInventory inv, int slot, InvOperation mc, ItemStack removedStack, ItemStack newStack )
+	public void onChangeInventory( final IInventory inv, final int slot, final InvOperation mc, final ItemStack removedStack, final ItemStack newStack )
 	{
 		if( inv == this.pattern && slot == 1 )
 		{
@@ -162,14 +162,14 @@ public class PartPatternTerminal extends AbstractPartTerminal
 		return this.craftingMode;
 	}
 
-	public void setCraftingRecipe( boolean craftingMode )
+	public void setCraftingRecipe( final boolean craftingMode )
 	{
 		this.craftingMode = craftingMode;
 		this.fixCraftingRecipes();
 	}
 
 	@Override
-	public IInventory getInventoryByName( String name )
+	public IInventory getInventoryByName( final String name )
 	{
 		if( name.equals( "crafting" ) )
 		{

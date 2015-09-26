@@ -64,21 +64,21 @@ public class BlockSkyCompass extends AEBaseTileBlock implements ICustomCollision
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public IIcon getIcon( int direction, int metadata )
+	public IIcon getIcon( final int direction, final int metadata )
 	{
 		return Blocks.iron_block.getIcon( direction, metadata );
 	}
 
 	@Override
-	public void registerBlockIcons( IIconRegister iconRegistry )
+	public void registerBlockIcons( final IIconRegister iconRegistry )
 	{
 		// :P
 	}
 
 	@Override
-	public boolean isValidOrientation( World w, int x, int y, int z, ForgeDirection forward, ForgeDirection up )
+	public boolean isValidOrientation( final World w, final int x, final int y, final int z, final ForgeDirection forward, final ForgeDirection up )
 	{
-		TileSkyCompass sc = this.getTileEntity( w, x, y, z );
+		final TileSkyCompass sc = this.getTileEntity( w, x, y, z );
 		if( sc != null )
 		{
 			return false;
@@ -86,23 +86,23 @@ public class BlockSkyCompass extends AEBaseTileBlock implements ICustomCollision
 		return this.canPlaceAt( w, x, y, z, forward.getOpposite() );
 	}
 
-	private boolean canPlaceAt( World w, int x, int y, int z, ForgeDirection dir )
+	private boolean canPlaceAt( final World w, final int x, final int y, final int z, final ForgeDirection dir )
 	{
 		return w.isSideSolid( x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ, dir.getOpposite(), false );
 	}
 
 	@Override
-	public void onNeighborBlockChange( World w, int x, int y, int z, Block id )
+	public void onNeighborBlockChange( final World w, final int x, final int y, final int z, final Block id )
 	{
-		TileSkyCompass sc = this.getTileEntity( w, x, y, z );
-		ForgeDirection up = sc.getForward();
+		final TileSkyCompass sc = this.getTileEntity( w, x, y, z );
+		final ForgeDirection up = sc.getForward();
 		if( !this.canPlaceAt( w, x, y, z, up.getOpposite() ) )
 		{
 			this.dropTorch( w, x, y, z );
 		}
 	}
 
-	private void dropTorch( World w, int x, int y, int z )
+	private void dropTorch( final World w, final int x, final int y, final int z )
 	{
 		w.func_147480_a( x, y, z, true );
 		// w.destroyBlock( x, y, z, true );
@@ -110,9 +110,9 @@ public class BlockSkyCompass extends AEBaseTileBlock implements ICustomCollision
 	}
 
 	@Override
-	public boolean canPlaceBlockAt( World w, int x, int y, int z )
+	public boolean canPlaceBlockAt( final World w, final int x, final int y, final int z )
 	{
-		for( ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS )
+		for( final ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS )
 		{
 			if( this.canPlaceAt( w, x, y, z, dir ) )
 			{
@@ -123,12 +123,12 @@ public class BlockSkyCompass extends AEBaseTileBlock implements ICustomCollision
 	}
 
 	@Override
-	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool( World w, int x, int y, int z, Entity e, boolean isVisual )
+	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool( final World w, final int x, final int y, final int z, final Entity e, final boolean isVisual )
 	{
-		TileSkyCompass tile = this.getTileEntity( w, x, y, z );
+		final TileSkyCompass tile = this.getTileEntity( w, x, y, z );
 		if( tile != null )
 		{
-			ForgeDirection forward = tile.getForward();
+			final ForgeDirection forward = tile.getForward();
 
 			double minX = 0;
 			double minY = 0;
@@ -185,7 +185,7 @@ public class BlockSkyCompass extends AEBaseTileBlock implements ICustomCollision
 	}
 
 	@Override
-	public void addCollidingBlockToList( World w, int x, int y, int z, AxisAlignedBB bb, List out, Entity e )
+	public void addCollidingBlockToList( final World w, final int x, final int y, final int z, final AxisAlignedBB bb, final List out, final Entity e )
 	{
 
 	}

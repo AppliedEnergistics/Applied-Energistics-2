@@ -63,26 +63,26 @@ public class PacketValueConfig extends AppEngPacket
 	public final String Value;
 
 	// automatic.
-	public PacketValueConfig( ByteBuf stream ) throws IOException
+	public PacketValueConfig( final ByteBuf stream ) throws IOException
 	{
-		DataInputStream dis = new DataInputStream( new ByteArrayInputStream( stream.array(), stream.readerIndex(), stream.readableBytes() ) );
+		final DataInputStream dis = new DataInputStream( new ByteArrayInputStream( stream.array(), stream.readerIndex(), stream.readableBytes() ) );
 		this.Name = dis.readUTF();
 		this.Value = dis.readUTF();
 		// dis.close();
 	}
 
 	// api
-	public PacketValueConfig( String name, String value ) throws IOException
+	public PacketValueConfig( final String name, final String value ) throws IOException
 	{
 		this.Name = name;
 		this.Value = value;
 
-		ByteBuf data = Unpooled.buffer();
+		final ByteBuf data = Unpooled.buffer();
 
 		data.writeInt( this.getPacketID() );
 
-		ByteArrayOutputStream bos = new ByteArrayOutputStream();
-		DataOutputStream dos = new DataOutputStream( bos );
+		final ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		final DataOutputStream dos = new DataOutputStream( bos );
 		dos.writeUTF( name );
 		dos.writeUTF( value );
 		// dos.close();
@@ -93,59 +93,59 @@ public class PacketValueConfig extends AppEngPacket
 	}
 
 	@Override
-	public void serverPacketData( INetworkInfo manager, AppEngPacket packet, EntityPlayer player )
+	public void serverPacketData( final INetworkInfo manager, final AppEngPacket packet, final EntityPlayer player )
 	{
-		Container c = player.openContainer;
+		final Container c = player.openContainer;
 
 		if( this.Name.equals( "Item" ) && player.getHeldItem() != null && player.getHeldItem().getItem() instanceof IMouseWheelItem )
 		{
-			ItemStack is = player.getHeldItem();
-			IMouseWheelItem si = (IMouseWheelItem) is.getItem();
+			final ItemStack is = player.getHeldItem();
+			final IMouseWheelItem si = (IMouseWheelItem) is.getItem();
 			si.onWheel( is, this.Value.equals( "WheelUp" ) );
 		}
 		else if( this.Name.equals( "Terminal.Cpu" ) && c instanceof ContainerCraftingStatus )
 		{
-			ContainerCraftingStatus qk = (ContainerCraftingStatus) c;
+			final ContainerCraftingStatus qk = (ContainerCraftingStatus) c;
 			qk.cycleCpu( this.Value.equals( "Next" ) );
 		}
 		else if( this.Name.equals( "Terminal.Cpu" ) && c instanceof ContainerCraftConfirm )
 		{
-			ContainerCraftConfirm qk = (ContainerCraftConfirm) c;
+			final ContainerCraftConfirm qk = (ContainerCraftConfirm) c;
 			qk.cycleCpu( this.Value.equals( "Next" ) );
 		}
 		else if( this.Name.equals( "Terminal.Start" ) && c instanceof ContainerCraftConfirm )
 		{
-			ContainerCraftConfirm qk = (ContainerCraftConfirm) c;
+			final ContainerCraftConfirm qk = (ContainerCraftConfirm) c;
 			qk.startJob();
 		}
 		else if( this.Name.equals( "TileCrafting.Cancel" ) && c instanceof ContainerCraftingCPU )
 		{
-			ContainerCraftingCPU qk = (ContainerCraftingCPU) c;
+			final ContainerCraftingCPU qk = (ContainerCraftingCPU) c;
 			qk.cancelCrafting();
 		}
 		else if( this.Name.equals( "QuartzKnife.Name" ) && c instanceof ContainerQuartzKnife )
 		{
-			ContainerQuartzKnife qk = (ContainerQuartzKnife) c;
+			final ContainerQuartzKnife qk = (ContainerQuartzKnife) c;
 			qk.setName( this.Value );
 		}
 		else if( this.Name.equals( "TileSecurity.ToggleOption" ) && c instanceof ContainerSecurity )
 		{
-			ContainerSecurity sc = (ContainerSecurity) c;
+			final ContainerSecurity sc = (ContainerSecurity) c;
 			sc.toggleSetting( this.Value, player );
 		}
 		else if( this.Name.equals( "PriorityHost.Priority" ) && c instanceof ContainerPriority )
 		{
-			ContainerPriority pc = (ContainerPriority) c;
+			final ContainerPriority pc = (ContainerPriority) c;
 			pc.setPriority( Integer.parseInt( this.Value ), player );
 		}
 		else if( this.Name.equals( "LevelEmitter.Value" ) && c instanceof ContainerLevelEmitter )
 		{
-			ContainerLevelEmitter lvc = (ContainerLevelEmitter) c;
+			final ContainerLevelEmitter lvc = (ContainerLevelEmitter) c;
 			lvc.setLevel( Long.parseLong( this.Value ), player );
 		}
 		else if( this.Name.startsWith( "PatternTerminal." ) && c instanceof ContainerPatternTerm )
 		{
-			ContainerPatternTerm cpt = (ContainerPatternTerm) c;
+			final ContainerPatternTerm cpt = (ContainerPatternTerm) c;
 			if( this.Name.equals( "PatternTerminal.CraftMode" ) )
 			{
 				cpt.ct.setCraftingRecipe( this.Value.equals( "1" ) );
@@ -161,7 +161,7 @@ public class PacketValueConfig extends AppEngPacket
 		}
 		else if( this.Name.startsWith( "StorageBus." ) && c instanceof ContainerStorageBus )
 		{
-			ContainerStorageBus ccw = (ContainerStorageBus) c;
+			final ContainerStorageBus ccw = (ContainerStorageBus) c;
 			if( this.Name.equals( "StorageBus.Action" ) )
 			{
 				if( this.Value.equals( "Partition" ) )
@@ -176,7 +176,7 @@ public class PacketValueConfig extends AppEngPacket
 		}
 		else if( this.Name.startsWith( "CellWorkbench." ) && c instanceof ContainerCellWorkbench )
 		{
-			ContainerCellWorkbench ccw = (ContainerCellWorkbench) c;
+			final ContainerCellWorkbench ccw = (ContainerCellWorkbench) c;
 			if( this.Name.equals( "CellWorkbench.Action" ) )
 			{
 				if( this.Value.equals( "CopyMode" ) )
@@ -206,19 +206,19 @@ public class PacketValueConfig extends AppEngPacket
 		}
 		else if( c instanceof IConfigurableObject )
 		{
-			IConfigManager cm = ( (IConfigurableObject) c ).getConfigManager();
+			final IConfigManager cm = ( (IConfigurableObject) c ).getConfigManager();
 
-			for( Settings e : cm.getSettings() )
+			for( final Settings e : cm.getSettings() )
 			{
 				if( e.name().equals( this.Name ) )
 				{
-					Enum<?> def = cm.getSetting( e );
+					final Enum<?> def = cm.getSetting( e );
 
 					try
 					{
 						cm.putSetting( e, Enum.valueOf( def.getClass(), this.Value ) );
 					}
-					catch( IllegalArgumentException err )
+					catch( final IllegalArgumentException err )
 					{
 						// :P
 					}
@@ -230,9 +230,9 @@ public class PacketValueConfig extends AppEngPacket
 	}
 
 	@Override
-	public void clientPacketData( INetworkInfo network, AppEngPacket packet, EntityPlayer player )
+	public void clientPacketData( final INetworkInfo network, final AppEngPacket packet, final EntityPlayer player )
 	{
-		Container c = player.openContainer;
+		final Container c = player.openContainer;
 
 		if( this.Name.equals( "CustomName" ) && c instanceof AEBaseContainer )
 		{
@@ -244,7 +244,7 @@ public class PacketValueConfig extends AppEngPacket
 		}
 		else if( this.Name.equals( "CraftingStatus" ) && this.Value.equals( "Clear" ) )
 		{
-			GuiScreen gs = Minecraft.getMinecraft().currentScreen;
+			final GuiScreen gs = Minecraft.getMinecraft().currentScreen;
 			if( gs instanceof GuiCraftingCPU )
 			{
 				( (GuiCraftingCPU) gs ).clearItems();
@@ -252,19 +252,19 @@ public class PacketValueConfig extends AppEngPacket
 		}
 		else if( c instanceof IConfigurableObject )
 		{
-			IConfigManager cm = ( (IConfigurableObject) c ).getConfigManager();
+			final IConfigManager cm = ( (IConfigurableObject) c ).getConfigManager();
 
-			for( Settings e : cm.getSettings() )
+			for( final Settings e : cm.getSettings() )
 			{
 				if( e.name().equals( this.Name ) )
 				{
-					Enum<?> def = cm.getSetting( e );
+					final Enum<?> def = cm.getSetting( e );
 
 					try
 					{
 						cm.putSetting( e, Enum.valueOf( def.getClass(), this.Value ) );
 					}
-					catch( IllegalArgumentException err )
+					catch( final IllegalArgumentException err )
 					{
 						// :P
 					}

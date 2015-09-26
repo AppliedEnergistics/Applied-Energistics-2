@@ -44,9 +44,9 @@ public class BlockSpatialPylon extends AEBaseTileBlock
 	}
 
 	@Override
-	public void onNeighborBlockChange( World w, int x, int y, int z, Block junk )
+	public void onNeighborBlockChange( final World w, final int x, final int y, final int z, final Block junk )
 	{
-		TileSpatialPylon tsp = this.getTileEntity( w, x, y, z );
+		final TileSpatialPylon tsp = this.getTileEntity( w, x, y, z );
 		if( tsp != null )
 		{
 			tsp.onNeighborBlockChange();
@@ -54,9 +54,9 @@ public class BlockSpatialPylon extends AEBaseTileBlock
 	}
 
 	@Override
-	public int getLightValue( IBlockAccess w, int x, int y, int z )
+	public int getLightValue( final IBlockAccess w, final int x, final int y, final int z )
 	{
-		TileSpatialPylon tsp = this.getTileEntity( w, x, y, z );
+		final TileSpatialPylon tsp = this.getTileEntity( w, x, y, z );
 		if( tsp != null )
 		{
 			return tsp.getLightValue();

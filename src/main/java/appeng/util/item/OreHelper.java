@@ -48,7 +48,7 @@ public class OreHelper
 	private final LoadingCache<String, List<ItemStack>> oreDictCache = CacheBuilder.newBuilder().build( new CacheLoader<String, List<ItemStack>>()
 	{
 		@Override
-		public List<ItemStack> load( String oreName )
+		public List<ItemStack> load( final String oreName )
 		{
 			return OreDictionary.getOres( oreName );
 		}
@@ -63,9 +63,9 @@ public class OreHelper
 	 *
 	 * @return true if an ore entry exists, false otherwise
 	 */
-	public OreReference isOre( ItemStack itemStack )
+	public OreReference isOre( final ItemStack itemStack )
 	{
-		ItemRef ir = new ItemRef( itemStack );
+		final ItemRef ir = new ItemRef( itemStack );
 
 		if( !this.references.containsKey( ir ) )
 		{
@@ -73,9 +73,9 @@ public class OreHelper
 			final Collection<Integer> ores = ref.getOres();
 			final Collection<String> set = ref.getEquivalents();
 
-			Set<String> toAdd = new HashSet<String>();
+			final Set<String> toAdd = new HashSet<String>();
 
-			for( String ore : OreDictionary.getOreNames() )
+			for( final String ore : OreDictionary.getOreNames() )
 			{
 				// skip ore if it is a match already or null.
 				if( ore == null || toAdd.contains( ore ) )
@@ -83,7 +83,7 @@ public class OreHelper
 					continue;
 				}
 
-				for( ItemStack oreItem : this.oreDictCache.getUnchecked( ore ) )
+				for( final ItemStack oreItem : this.oreDictCache.getUnchecked( ore ) )
 				{
 					if( OreDictionary.itemMatches( oreItem, itemStack, false ) )
 					{
@@ -93,7 +93,7 @@ public class OreHelper
 				}
 			}
 
-			for( String ore : toAdd )
+			for( final String ore : toAdd )
 			{
 				set.add( ore );
 				ores.add( OreDictionary.getOreID( ore ) );
@@ -112,15 +112,15 @@ public class OreHelper
 		return this.references.get( ir );
 	}
 
-	public boolean sameOre( AEItemStack aeItemStack, IAEItemStack is )
+	public boolean sameOre( final AEItemStack aeItemStack, final IAEItemStack is )
 	{
-		OreReference a = aeItemStack.def.isOre;
-		OreReference b = aeItemStack.def.isOre;
+		final OreReference a = aeItemStack.def.isOre;
+		final OreReference b = aeItemStack.def.isOre;
 
 		return this.sameOre( a, b );
 	}
 
-	public boolean sameOre( OreReference a, OreReference b )
+	public boolean sameOre( final OreReference a, final OreReference b )
 	{
 		if( a == null || b == null )
 		{
@@ -132,8 +132,8 @@ public class OreHelper
 			return true;
 		}
 
-		Collection<Integer> bOres = b.getOres();
-		for( Integer ore : a.getOres() )
+		final Collection<Integer> bOres = b.getOres();
+		for( final Integer ore : a.getOres() )
 		{
 			if( bOres.contains( ore ) )
 			{
@@ -144,17 +144,17 @@ public class OreHelper
 		return false;
 	}
 
-	public boolean sameOre( AEItemStack aeItemStack, ItemStack o )
+	public boolean sameOre( final AEItemStack aeItemStack, final ItemStack o )
 	{
-		OreReference a = aeItemStack.def.isOre;
+		final OreReference a = aeItemStack.def.isOre;
 		if( a == null )
 		{
 			return false;
 		}
 
-		for( String oreName : a.getEquivalents() )
+		for( final String oreName : a.getEquivalents() )
 		{
-			for( ItemStack oreItem : this.oreDictCache.getUnchecked( oreName ) )
+			for( final ItemStack oreItem : this.oreDictCache.getUnchecked( oreName ) )
 			{
 				if( OreDictionary.itemMatches( oreItem, o, false ) )
 				{
@@ -166,7 +166,7 @@ public class OreHelper
 		return false;
 	}
 
-	public List<ItemStack> getCachedOres( String oreName )
+	public List<ItemStack> getCachedOres( final String oreName )
 	{
 		return this.oreDictCache.getUnchecked( oreName );
 	}
@@ -178,7 +178,7 @@ public class OreHelper
 		private final int damage;
 		private final int hash;
 
-		ItemRef( ItemStack stack )
+		ItemRef( final ItemStack stack )
 		{
 			this.ref = stack.getItem();
 
@@ -201,7 +201,7 @@ public class OreHelper
 		}
 
 		@Override
-		public boolean equals( Object obj )
+		public boolean equals( final Object obj )
 		{
 			if( obj == null )
 			{
@@ -211,7 +211,7 @@ public class OreHelper
 			{
 				return false;
 			}
-			ItemRef other = (ItemRef) obj;
+			final ItemRef other = (ItemRef) obj;
 			return this.damage == other.damage && this.ref == other.ref;
 		}
 

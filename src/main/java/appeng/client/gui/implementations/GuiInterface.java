@@ -45,7 +45,7 @@ public class GuiInterface extends GuiUpgradeable
 	GuiImgButton BlockMode;
 	GuiToggleButton interfaceMode;
 
-	public GuiInterface( InventoryPlayer inventoryPlayer, IInterfaceHost te )
+	public GuiInterface( final InventoryPlayer inventoryPlayer, final IInterfaceHost te )
 	{
 		super( new ContainerInterface( inventoryPlayer, te ) );
 		this.ySize = 211;
@@ -65,7 +65,7 @@ public class GuiInterface extends GuiUpgradeable
 	}
 
 	@Override
-	public void drawFG( int offsetX, int offsetY, int mouseX, int mouseY )
+	public void drawFG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
 		if( this.BlockMode != null )
 		{
@@ -93,11 +93,11 @@ public class GuiInterface extends GuiUpgradeable
 	}
 
 	@Override
-	protected void actionPerformed( GuiButton btn )
+	protected void actionPerformed( final GuiButton btn )
 	{
 		super.actionPerformed( btn );
 
-		boolean backwards = Mouse.isButtonDown( 1 );
+		final boolean backwards = Mouse.isButtonDown( 1 );
 
 		if( btn == this.priority )
 		{

@@ -47,11 +47,11 @@ public class ShapedRecipe implements IRecipe, IRecipeBakeable
 	private boolean mirrored = true;
 	private boolean disable = false;
 
-	public ShapedRecipe( ItemStack result, Object... recipe )
+	public ShapedRecipe( final ItemStack result, Object... recipe )
 	{
 		this.output = result.copy();
 
-		StringBuilder shape = new StringBuilder();
+		final StringBuilder shape = new StringBuilder();
 		int idx = 0;
 
 		if( recipe[idx] instanceof Boolean )
@@ -69,10 +69,10 @@ public class ShapedRecipe implements IRecipe, IRecipeBakeable
 
 		if( recipe[idx] instanceof String[] )
 		{
-			String[] parts = ( (String[]) recipe[idx] );
+			final String[] parts = ( (String[]) recipe[idx] );
 			idx++;
 
-			for( String s : parts )
+			for( final String s : parts )
 			{
 				this.width = s.length();
 				shape.append( s );
@@ -84,7 +84,7 @@ public class ShapedRecipe implements IRecipe, IRecipeBakeable
 		{
 			while( recipe[idx] instanceof String )
 			{
-				String s = (String) recipe[idx];
+				final String s = (String) recipe[idx];
 				idx++;
 				shape.append( s );
 				this.width = s.length();
@@ -94,8 +94,8 @@ public class ShapedRecipe implements IRecipe, IRecipeBakeable
 
 		if( this.width * this.height != shape.length() )
 		{
-			StringBuilder ret = new StringBuilder( "Invalid shaped ore recipe: " );
-			for( Object tmp : recipe )
+			final StringBuilder ret = new StringBuilder( "Invalid shaped ore recipe: " );
+			for( final Object tmp : recipe )
 			{
 				ret.append( tmp ).append( ", " );
 			}
@@ -103,12 +103,12 @@ public class ShapedRecipe implements IRecipe, IRecipeBakeable
 			throw new IllegalStateException( ret.toString() );
 		}
 
-		Map<Character, IIngredient> itemMap = new HashMap<Character, IIngredient>();
+		final Map<Character, IIngredient> itemMap = new HashMap<Character, IIngredient>();
 
 		for( ; idx < recipe.length; idx += 2 )
 		{
-			Character chr = (Character) recipe[idx];
-			Object in = recipe[idx + 1];
+			final Character chr = (Character) recipe[idx];
+			final Object in = recipe[idx + 1];
 
 			if( in instanceof IIngredient )
 			{
@@ -116,8 +116,8 @@ public class ShapedRecipe implements IRecipe, IRecipeBakeable
 			}
 			else
 			{
-				StringBuilder ret = new StringBuilder( "Invalid shaped ore recipe: " );
-				for( Object tmp : recipe )
+				final StringBuilder ret = new StringBuilder( "Invalid shaped ore recipe: " );
+				for( final Object tmp : recipe )
 				{
 					ret.append( tmp ).append( ", " );
 				}
@@ -128,7 +128,7 @@ public class ShapedRecipe implements IRecipe, IRecipeBakeable
 
 		this.input = new Object[this.width * this.height];
 		int x = 0;
-		for( char chr : shape.toString().toCharArray() )
+		for( final char chr : shape.toString().toCharArray() )
 		{
 			this.input[x] = itemMap.get( chr );
 			x++;
@@ -141,7 +141,7 @@ public class ShapedRecipe implements IRecipe, IRecipeBakeable
 	}
 
 	@Override
-	public boolean matches( InventoryCrafting inv, World world )
+	public boolean matches( final InventoryCrafting inv, final World world )
 	{
 		if( this.disable )
 		{
@@ -168,7 +168,7 @@ public class ShapedRecipe implements IRecipe, IRecipeBakeable
 	}
 
 	@Override
-	public ItemStack getCraftingResult( InventoryCrafting var1 )
+	public ItemStack getCraftingResult( final InventoryCrafting var1 )
 	{
 		return this.output.copy();
 	}
@@ -186,7 +186,7 @@ public class ShapedRecipe implements IRecipe, IRecipeBakeable
 	}
 
 	@SuppressWarnings( "unchecked" )
-	private boolean checkMatch( InventoryCrafting inv, int startX, int startY, boolean mirror )
+	private boolean checkMatch( final InventoryCrafting inv, final int startX, final int startY, final boolean mirror )
 	{
 		if( this.disable )
 		{
@@ -197,8 +197,8 @@ public class ShapedRecipe implements IRecipe, IRecipeBakeable
 		{
 			for( int y = 0; y < MAX_CRAFT_GRID_HEIGHT; y++ )
 			{
-				int subX = x - startX;
-				int subY = y - startY;
+				final int subX = x - startX;
+				final int subY = y - startY;
 				Object target = null;
 
 				if( subX >= 0 && subY >= 0 && subX < this.width && subY < this.height )
@@ -213,7 +213,7 @@ public class ShapedRecipe implements IRecipe, IRecipeBakeable
 					}
 				}
 
-				ItemStack slot = inv.getStackInRowAndColumn( x, y );
+				final ItemStack slot = inv.getStackInRowAndColumn( x, y );
 
 				if( target instanceof IIngredient )
 				{
@@ -221,16 +221,16 @@ public class ShapedRecipe implements IRecipe, IRecipeBakeable
 
 					try
 					{
-						for( ItemStack item : ( (IIngredient) target ).getItemStackSet() )
+						for( final ItemStack item : ( (IIngredient) target ).getItemStackSet() )
 						{
 							matched = matched || this.checkItemEquals( item, slot );
 						}
 					}
-					catch( RegistrationError e )
+					catch( final RegistrationError e )
 					{
 						// :P
 					}
-					catch( MissingIngredientError e )
+					catch( final MissingIngredientError e )
 					{
 						// :P
 					}
@@ -244,7 +244,7 @@ public class ShapedRecipe implements IRecipe, IRecipeBakeable
 				{
 					boolean matched = false;
 
-					for( ItemStack item : (Iterable<ItemStack>) target )
+					for( final ItemStack item : (Iterable<ItemStack>) target )
 					{
 						matched = matched || this.checkItemEquals( item, slot );
 					}
@@ -264,7 +264,7 @@ public class ShapedRecipe implements IRecipe, IRecipeBakeable
 		return true;
 	}
 
-	private boolean checkItemEquals( ItemStack target, ItemStack input )
+	private boolean checkItemEquals( final ItemStack target, final ItemStack input )
 	{
 		if( input == null && target != null || input != null && target == null )
 		{
@@ -273,7 +273,7 @@ public class ShapedRecipe implements IRecipe, IRecipeBakeable
 		return( target.getItem() == input.getItem() && ( target.getItemDamage() == OreDictionary.WILDCARD_VALUE || target.getItemDamage() == input.getItemDamage() ) );
 	}
 
-	public ShapedRecipe setMirrored( boolean mirror )
+	public ShapedRecipe setMirrored( final boolean mirror )
 	{
 		this.mirrored = mirror;
 		return this;
@@ -311,7 +311,7 @@ public class ShapedRecipe implements IRecipe, IRecipeBakeable
 		try
 		{
 			this.disable = false;
-			for( Object o : this.input )
+			for( final Object o : this.input )
 			{
 				if( o instanceof IIngredient )
 				{
@@ -319,7 +319,7 @@ public class ShapedRecipe implements IRecipe, IRecipeBakeable
 				}
 			}
 		}
-		catch( MissingIngredientError err )
+		catch( final MissingIngredientError err )
 		{
 			this.disable = true;
 		}

@@ -44,7 +44,7 @@ public class GroupIngredient implements IIngredient
 
 	boolean isInside = false;
 
-	public GroupIngredient( String myName, List<IIngredient> ingredients, int qty ) throws RecipeError
+	public GroupIngredient( final String myName, final List<IIngredient> ingredients, final int qty ) throws RecipeError
 	{
 		Preconditions.checkNotNull( myName );
 		Preconditions.checkNotNull( ingredients );
@@ -54,7 +54,7 @@ public class GroupIngredient implements IIngredient
 		this.name = myName;
 		this.qty = qty;
 
-		for( IIngredient ingredient : ingredients )
+		for( final IIngredient ingredient : ingredients )
 		{
 			if( ingredient.isAir() )
 			{
@@ -65,7 +65,7 @@ public class GroupIngredient implements IIngredient
 		this.ingredients = ingredients;
 	}
 
-	public IIngredient copy( int qty ) throws RecipeError
+	public IIngredient copy( final int qty ) throws RecipeError
 	{
 		Preconditions.checkState( qty > 0 );
 		return new GroupIngredient( this.name, this.ingredients, qty );
@@ -90,17 +90,17 @@ public class GroupIngredient implements IIngredient
 			return new ItemStack[0];
 		}
 
-		List<ItemStack> out = new LinkedList<ItemStack>();
+		final List<ItemStack> out = new LinkedList<ItemStack>();
 		this.isInside = true;
 		try
 		{
-			for( IIngredient i : this.ingredients )
+			for( final IIngredient i : this.ingredients )
 			{
 				try
 				{
 					out.addAll( Arrays.asList( i.getItemStackSet() ) );
 				}
-				catch( MissingIngredientError mir )
+				catch( final MissingIngredientError mir )
 				{
 					// oh well this is a group!
 				}
@@ -116,7 +116,7 @@ public class GroupIngredient implements IIngredient
 			throw new MissingIngredientError( this.toString() + " - group could not be resolved to any items." );
 		}
 
-		for( ItemStack is : out )
+		for( final ItemStack is : out )
 		{
 			is.stackSize = this.qty;
 		}

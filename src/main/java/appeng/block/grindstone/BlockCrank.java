@@ -62,7 +62,7 @@ public class BlockCrank extends AEBaseTileBlock
 	}
 
 	@Override
-	public boolean onActivated( World w, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ )
+	public boolean onActivated( final World w, final int x, final int y, final int z, final EntityPlayer player, final int side, final float hitX, final float hitY, final float hitZ )
 	{
 		if( player instanceof FakePlayer || player == null )
 		{
@@ -70,7 +70,7 @@ public class BlockCrank extends AEBaseTileBlock
 			return true;
 		}
 
-		AEBaseTile tile = this.getTileEntity( w, x, y, z );
+		final AEBaseTile tile = this.getTileEntity( w, x, y, z );
 		if( tile instanceof TileCrank )
 		{
 			if( ( (TileCrank) tile ).power() )
@@ -82,19 +82,19 @@ public class BlockCrank extends AEBaseTileBlock
 		return true;
 	}
 
-	private void dropCrank( World world, int x, int y, int z )
+	private void dropCrank( final World world, final int x, final int y, final int z )
 	{
 		world.func_147480_a( x, y, z, true ); // w.destroyBlock( x, y, z, true );
 		world.markBlockForUpdate( x, y, z );
 	}
 
 	@Override
-	public void onBlockPlacedBy( World world, int x, int y, int z, EntityLivingBase placer, ItemStack itemStack )
+	public void onBlockPlacedBy( final World world, final int x, final int y, final int z, final EntityLivingBase placer, final ItemStack itemStack )
 	{
-		AEBaseTile tile = this.getTileEntity( world, x, y, z );
+		final AEBaseTile tile = this.getTileEntity( world, x, y, z );
 		if( tile != null )
 		{
-			ForgeDirection mnt = this.findCrankable( world, x, y, z );
+			final ForgeDirection mnt = this.findCrankable( world, x, y, z );
 			ForgeDirection forward = ForgeDirection.UP;
 			if( mnt == ForgeDirection.UP || mnt == ForgeDirection.DOWN )
 			{
@@ -109,15 +109,15 @@ public class BlockCrank extends AEBaseTileBlock
 	}
 
 	@Override
-	public boolean isValidOrientation( World world, int x, int y, int z, ForgeDirection forward, ForgeDirection up )
+	public boolean isValidOrientation( final World world, final int x, final int y, final int z, final ForgeDirection forward, final ForgeDirection up )
 	{
-		TileEntity te = world.getTileEntity( x, y, z );
+		final TileEntity te = world.getTileEntity( x, y, z );
 		return !( te instanceof TileCrank ) || this.isCrankable( world, x, y, z, up.getOpposite() );
 	}
 
-	private ForgeDirection findCrankable( World world, int x, int y, int z )
+	private ForgeDirection findCrankable( final World world, final int x, final int y, final int z )
 	{
-		for( ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS )
+		for( final ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS )
 		{
 			if( this.isCrankable( world, x, y, z, dir ) )
 			{
@@ -127,17 +127,17 @@ public class BlockCrank extends AEBaseTileBlock
 		return ForgeDirection.UNKNOWN;
 	}
 
-	private boolean isCrankable( World world, int x, int y, int z, ForgeDirection offset )
+	private boolean isCrankable( final World world, final int x, final int y, final int z, final ForgeDirection offset )
 	{
-		TileEntity te = world.getTileEntity( x + offset.offsetX, y + offset.offsetY, z + offset.offsetZ );
+		final TileEntity te = world.getTileEntity( x + offset.offsetX, y + offset.offsetY, z + offset.offsetZ );
 
 		return te instanceof ICrankable && ( (ICrankable) te ).canCrankAttach( offset.getOpposite() );
 	}
 
 	@Override
-	public void onNeighborBlockChange( World world, int x, int y, int z, Block block )
+	public void onNeighborBlockChange( final World world, final int x, final int y, final int z, final Block block )
 	{
-		AEBaseTile tile = this.getTileEntity( world, x, y, z );
+		final AEBaseTile tile = this.getTileEntity( world, x, y, z );
 		if( tile != null )
 		{
 			if( !this.isCrankable( world, x, y, z, tile.getUp().getOpposite() ) )
@@ -152,7 +152,7 @@ public class BlockCrank extends AEBaseTileBlock
 	}
 
 	@Override
-	public boolean canPlaceBlockAt( World world, int x, int y, int z )
+	public boolean canPlaceBlockAt( final World world, final int x, final int y, final int z )
 	{
 		return this.findCrankable( world, x, y, z ) != ForgeDirection.UNKNOWN;
 	}

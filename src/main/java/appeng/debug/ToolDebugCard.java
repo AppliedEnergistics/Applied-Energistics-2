@@ -60,7 +60,7 @@ public class ToolDebugCard extends AEBaseItem
 	}
 
 	@Override
-	public boolean onItemUseFirst( ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ )
+	public boolean onItemUseFirst( final ItemStack stack, final EntityPlayer player, final World world, final int x, final int y, final int z, final int side, final float hitX, final float hitY, final float hitZ )
 	{
 		if( Platform.isClient() )
 		{
@@ -72,7 +72,7 @@ public class ToolDebugCard extends AEBaseItem
 			int grids = 0;
 			int totalNodes = 0;
 
-			for( Grid g : TickHandler.INSTANCE.getGridList() )
+			for( final Grid g : TickHandler.INSTANCE.getGridList() )
 			{
 				grids++;
 				totalNodes += g.getNodes().size();
@@ -83,42 +83,42 @@ public class ToolDebugCard extends AEBaseItem
 		}
 		else
 		{
-			TileEntity te = world.getTileEntity( x, y, z );
+			final TileEntity te = world.getTileEntity( x, y, z );
 
 			if( te instanceof IGridHost )
 			{
-				GridNode node = (GridNode) ( (IGridHost) te ).getGridNode( ForgeDirection.getOrientation( side ) );
+				final GridNode node = (GridNode) ( (IGridHost) te ).getGridNode( ForgeDirection.getOrientation( side ) );
 				if( node != null )
 				{
-					Grid g = node.getInternalGrid();
-					IGridNode center = g.getPivot();
+					final Grid g = node.getInternalGrid();
+					final IGridNode center = g.getPivot();
 					this.outputMsg( player, "This Node: " + node.toString() );
 					this.outputMsg( player, "Center Node: " + center.toString() );
 
-					IPathingGrid pg = g.getCache( IPathingGrid.class );
+					final IPathingGrid pg = g.getCache( IPathingGrid.class );
 					if( pg.getControllerState() == ControllerState.CONTROLLER_ONLINE )
 					{
 
 						Set<IGridNode> next = new HashSet<IGridNode>();
 						next.add( node );
 
-						int maxLength = 10000;
+						final int maxLength = 10000;
 
 						int length = 0;
 						outer:
 						while( !next.isEmpty() )
 						{
-							Iterable<IGridNode> current = next;
+							final Iterable<IGridNode> current = next;
 							next = new HashSet<IGridNode>();
 
-							for( IGridNode n : current )
+							for( final IGridNode n : current )
 							{
 								if( n.getMachine() instanceof TileController )
 								{
 									break outer;
 								}
 
-								for( IGridConnection c : n.getConnections() )
+								for( final IGridConnection c : n.getConnections() )
 								{
 									next.add( c.getOtherSide( n ) );
 								}
@@ -140,12 +140,12 @@ public class ToolDebugCard extends AEBaseItem
 						this.outputMsg( player, "Freq: " + ( (PartP2PTunnel) center.getMachine() ).freq );
 					}
 
-					TickManagerCache tmc = g.getCache( ITickManager.class );
-					for( Class<? extends IGridHost> c : g.getMachineClasses() )
+					final TickManagerCache tmc = g.getCache( ITickManager.class );
+					for( final Class<? extends IGridHost> c : g.getMachineClasses() )
 					{
 						int o = 0;
 						long nanos = 0;
-						for( IGridNode oj : g.getMachines( c ) )
+						for( final IGridNode oj : g.getMachines( c ) )
 						{
 							o++;
 							nanos += tmc.getAvgNanoTime( oj );
@@ -173,15 +173,15 @@ public class ToolDebugCard extends AEBaseItem
 
 			if( te instanceof IPartHost )
 			{
-				IPart center = ( (IPartHost) te ).getPart( ForgeDirection.UNKNOWN );
+				final IPart center = ( (IPartHost) te ).getPart( ForgeDirection.UNKNOWN );
 				( (IPartHost) te ).markForUpdate();
 				if( center != null )
 				{
-					GridNode n = (GridNode) center.getGridNode();
+					final GridNode n = (GridNode) center.getGridNode();
 					this.outputMsg( player, "Node Channels: " + n.usedChannels() );
-					for( IGridConnection gc : n.getConnections() )
+					for( final IGridConnection gc : n.getConnections() )
 					{
-						ForgeDirection fd = gc.getDirection( n );
+						final ForgeDirection fd = gc.getDirection( n );
 						if( fd != ForgeDirection.UNKNOWN )
 						{
 							this.outputMsg( player, fd.toString() + ": " + gc.getUsedChannels() );
@@ -192,15 +192,15 @@ public class ToolDebugCard extends AEBaseItem
 
 			if( te instanceof IAEPowerStorage )
 			{
-				IAEPowerStorage ps = (IAEPowerStorage) te;
+				final IAEPowerStorage ps = (IAEPowerStorage) te;
 				this.outputMsg( player, "Energy: " + ps.getAECurrentPower() + " / " + ps.getAEMaxPower() );
 
 				if( te instanceof IGridHost )
 				{
-					IGridNode node = ( (IGridHost) te ).getGridNode( ForgeDirection.getOrientation( side ) );
+					final IGridNode node = ( (IGridHost) te ).getGridNode( ForgeDirection.getOrientation( side ) );
 					if( node != null && node.getGrid() != null )
 					{
-						IEnergyGrid eg = node.getGrid().getCache( IEnergyGrid.class );
+						final IEnergyGrid eg = node.getGrid().getCache( IEnergyGrid.class );
 						this.outputMsg( player, "GridEnergy: " + eg.getStoredPower() + " : " + eg.getEnergyDemand( Double.MAX_VALUE ) );
 					}
 				}
@@ -209,14 +209,14 @@ public class ToolDebugCard extends AEBaseItem
 		return true;
 	}
 
-	private void outputMsg( ICommandSender player, String string )
+	private void outputMsg( final ICommandSender player, final String string )
 	{
 		player.addChatMessage( new ChatComponentText( string ) );
 	}
 
-	public String timeMeasurement( long nanos )
+	public String timeMeasurement( final long nanos )
 	{
-		long ms = nanos / 100000;
+		final long ms = nanos / 100000;
 		if( nanos <= 100000 )
 		{
 			return nanos + "ns";

@@ -44,15 +44,15 @@ public class ExternalStorageRegistry implements IExternalStorageRegistry
 	}
 
 	@Override
-	public void addExternalStorageInterface( IExternalStorageHandler ei )
+	public void addExternalStorageInterface( final IExternalStorageHandler ei )
 	{
 		this.Handlers.add( ei );
 	}
 
 	@Override
-	public IExternalStorageHandler getHandler( TileEntity te, ForgeDirection d, StorageChannel chan, BaseActionSource mySrc )
+	public IExternalStorageHandler getHandler( final TileEntity te, final ForgeDirection d, final StorageChannel chan, final BaseActionSource mySrc )
 	{
-		for( IExternalStorageHandler x : this.Handlers )
+		for( final IExternalStorageHandler x : this.Handlers )
 		{
 			if( x.canHandle( te, d, chan, mySrc ) )
 			{

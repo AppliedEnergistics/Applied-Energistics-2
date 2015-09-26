@@ -75,7 +75,7 @@ public final class PowerStorageWailaDataProvider extends BaseWailaDataProvider
 	 * @return modified tool tip
 	 */
 	@Override
-	public List<String> getWailaBody( ItemStack itemStack, List<String> currentToolTip, IWailaDataAccessor accessor, IWailaConfigHandler config )
+	public List<String> getWailaBody( final ItemStack itemStack, final List<String> currentToolTip, final IWailaDataAccessor accessor, final IWailaConfigHandler config )
 	{
 		// Removes RF tooltip on WAILA 1.5.9+
 		( (ITaggedList<String, String>) currentToolTip ).removeEntries( "RFEnergyStorage" );
@@ -120,7 +120,7 @@ public final class PowerStorageWailaDataProvider extends BaseWailaDataProvider
 	 * @return tag send to the client
 	 */
 	@Override
-	public NBTTagCompound getNBTData( EntityPlayerMP player, TileEntity te, NBTTagCompound tag, World world, int x, int y, int z )
+	public NBTTagCompound getNBTData( final EntityPlayerMP player, final TileEntity te, final NBTTagCompound tag, final World world, final int x, final int y, final int z )
 	{
 		if( te instanceof IAEPowerStorage )
 		{
@@ -148,7 +148,7 @@ public final class PowerStorageWailaDataProvider extends BaseWailaDataProvider
 	 *
 	 * @return used channels on the cable
 	 */
-	private long getInternalCurrentPower( NBTTagCompound tag, TileEntity te )
+	private long getInternalCurrentPower( final NBTTagCompound tag, final TileEntity te )
 	{
 		final long internalCurrentPower;
 

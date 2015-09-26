@@ -32,7 +32,7 @@ public class WrapperTEPipe implements IInventory
 	final TileEntity ad;
 	final ForgeDirection dir;
 
-	public WrapperTEPipe( TileEntity te, ForgeDirection d )
+	public WrapperTEPipe( final TileEntity te, final ForgeDirection d )
 	{
 		this.ad = te;
 		this.dir = d;
@@ -45,25 +45,25 @@ public class WrapperTEPipe implements IInventory
 	}
 
 	@Override
-	public ItemStack getStackInSlot( int i )
+	public ItemStack getStackInSlot( final int i )
 	{
 		return null;
 	}
 
 	@Override
-	public ItemStack decrStackSize( int i, int j )
+	public ItemStack decrStackSize( final int i, final int j )
 	{
 		return null;
 	}
 
 	@Override
-	public ItemStack getStackInSlotOnClosing( int i )
+	public ItemStack getStackInSlotOnClosing( final int i )
 	{
 		return null;
 	}
 
 	@Override
-	public void setInventorySlotContents( int i, ItemStack itemstack )
+	public void setInventorySlotContents( final int i, final ItemStack itemstack )
 	{
 		// ITE.addItemsToPipe( ad, itemstack, dir );
 	}
@@ -93,7 +93,7 @@ public class WrapperTEPipe implements IInventory
 	}
 
 	@Override
-	public boolean isUseableByPlayer( EntityPlayer entityplayer )
+	public boolean isUseableByPlayer( final EntityPlayer entityplayer )
 	{
 		return false;
 	}
@@ -111,7 +111,7 @@ public class WrapperTEPipe implements IInventory
 	}
 
 	@Override
-	public boolean isItemValidForSlot( int i, ItemStack itemstack )
+	public boolean isItemValidForSlot( final int i, final ItemStack itemstack )
 	{
 		return false;
 	}

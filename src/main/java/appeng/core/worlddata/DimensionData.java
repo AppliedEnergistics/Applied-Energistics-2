@@ -72,7 +72,7 @@ final class DimensionData implements IWorldDimensionData, IOnWorldStartable, IOn
 		final int[] storageCellIDs = this.storageCellIDsProperty().getIntList();
 
 		this.storageCellDimensionIDs = Lists.newArrayList();
-		for( int storageCellID : storageCellIDs )
+		for( final int storageCellID : storageCellIDs )
 		{
 			this.storageCellDimensionIDs.add( storageCellID );
 		}
@@ -86,7 +86,7 @@ final class DimensionData implements IWorldDimensionData, IOnWorldStartable, IOn
 	@Override
 	public void onWorldStart()
 	{
-		for( Integer storageCellDimID : this.storageCellDimensionIDs )
+		for( final Integer storageCellDimID : this.storageCellDimensionIDs )
 		{
 			DimensionManager.registerDimension( storageCellDimID, AEConfig.instance.storageProviderID );
 		}
@@ -99,7 +99,7 @@ final class DimensionData implements IWorldDimensionData, IOnWorldStartable, IOn
 	{
 		this.config.save();
 
-		for( Integer storageCellDimID : this.storageCellDimensionIDs )
+		for( final Integer storageCellDimID : this.storageCellDimensionIDs )
 		{
 			DimensionManager.unregisterDimension( storageCellDimID );
 		}
@@ -108,14 +108,14 @@ final class DimensionData implements IWorldDimensionData, IOnWorldStartable, IOn
 	}
 
 	@Override
-	public void addStorageCell( int newStorageCellID )
+	public void addStorageCell( final int newStorageCellID )
 	{
 		this.storageCellDimensionIDs.add( newStorageCellID );
 		DimensionManager.registerDimension( newStorageCellID, AEConfig.instance.storageProviderID );
 
 		NetworkHandler.instance.sendToAll( new PacketNewStorageDimension( newStorageCellID ) );
 
-		String[] values = new String[this.storageCellDimensionIDs.size()];
+		final String[] values = new String[this.storageCellDimensionIDs.size()];
 
 		for( int x = 0; x < values.length; x++ )
 		{
@@ -127,7 +127,7 @@ final class DimensionData implements IWorldDimensionData, IOnWorldStartable, IOn
 	}
 
 	@Override
-	public WorldCoord getStoredSize( int dim )
+	public WorldCoord getStoredSize( final int dim )
 	{
 		final String category = STORAGE_CELL_CATEGORY + dim;
 
@@ -139,7 +139,7 @@ final class DimensionData implements IWorldDimensionData, IOnWorldStartable, IOn
 	}
 
 	@Override
-	public void setStoredSize( int dim, int targetX, int targetY, int targetZ )
+	public void setStoredSize( final int dim, final int targetX, final int targetY, final int targetZ )
 	{
 		final String category = STORAGE_CELL_CATEGORY + dim;
 
@@ -155,14 +155,14 @@ final class DimensionData implements IWorldDimensionData, IOnWorldStartable, IOn
 	{
 		if( manager != null )
 		{
-			for( int newDim : this.config.get( PACKAGE_DEST_CATEGORY, PACKAGE_KEY_CATEGORY, PACKAGE_DEF_CATEGORY ).getIntList() )
+			for( final int newDim : this.config.get( PACKAGE_DEST_CATEGORY, PACKAGE_KEY_CATEGORY, PACKAGE_DEF_CATEGORY ).getIntList() )
 			{
 				manager.scheduleOutboundPacket( ( new PacketNewStorageDimension( newDim ) ).getProxy() );
 			}
 		}
 		else
 		{
-			for( TickHandler.PlayerColor pc : TickHandler.INSTANCE.getPlayerColors().values() )
+			for( final TickHandler.PlayerColor pc : TickHandler.INSTANCE.getPlayerColors().values() )
 			{
 				NetworkHandler.instance.sendToAll( pc.getPacket() );
 			}

@@ -46,11 +46,11 @@ public class RenderFloatingItem extends RenderItem
 	}
 
 	@Override
-	public void doRender( EntityItem entityItem, double x, double y, double z, float yaw, float partialTick )
+	public void doRender( final EntityItem entityItem, final double x, final double y, final double z, final float yaw, final float partialTick )
 	{
 		if( entityItem instanceof EntityFloatingItem )
 		{
-			EntityFloatingItem efi = (EntityFloatingItem) entityItem;
+			final EntityFloatingItem efi = (EntityFloatingItem) entityItem;
 			if( efi.progress > 0.0 )
 			{
 				GL11.glPushMatrix();

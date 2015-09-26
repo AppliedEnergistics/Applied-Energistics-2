@@ -44,13 +44,13 @@ public class BetterStorage implements IIntegrationModule, IBetterStorage
 	}
 
 	@Override
-	public boolean isStorageCrate( Object te )
+	public boolean isStorageCrate( final Object te )
 	{
 		return te instanceof ICrateStorage;
 	}
 
 	@Override
-	public InventoryAdaptor getAdaptor( Object te, ForgeDirection d )
+	public InventoryAdaptor getAdaptor( final Object te, final ForgeDirection d )
 	{
 		if( te instanceof ICrateStorage )
 		{

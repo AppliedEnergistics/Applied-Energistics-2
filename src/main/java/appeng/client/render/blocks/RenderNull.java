@@ -38,13 +38,13 @@ public class RenderNull extends BaseBlockRender<AEBaseBlock, AEBaseTile>
 	}
 
 	@Override
-	public void renderInventory( AEBaseBlock block, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj )
+	public void renderInventory( final AEBaseBlock block, final ItemStack is, final RenderBlocks renderer, final ItemRenderType type, final Object[] obj )
 	{
 
 	}
 
 	@Override
-	public boolean renderInWorld( AEBaseBlock block, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
+	public boolean renderInWorld( final AEBaseBlock block, final IBlockAccess world, final int x, final int y, final int z, final RenderBlocks renderer )
 	{
 		return true;
 	}

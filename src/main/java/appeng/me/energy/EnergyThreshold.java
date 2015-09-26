@@ -30,7 +30,7 @@ public class EnergyThreshold implements Comparable<EnergyThreshold>
 	public final IEnergyWatcher watcher;
 	final int hash;
 
-	public EnergyThreshold( double lim, IEnergyWatcher wat )
+	public EnergyThreshold( final double lim, final IEnergyWatcher wat )
 	{
 		this.Limit = lim;
 		this.watcher = wat;
@@ -52,7 +52,7 @@ public class EnergyThreshold implements Comparable<EnergyThreshold>
 	}
 
 	@Override
-	public int compareTo( EnergyThreshold o )
+	public int compareTo( final EnergyThreshold o )
 	{
 		return ItemSorters.compareDouble( this.Limit, o.Limit );
 	}

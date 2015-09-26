@@ -54,7 +54,7 @@ public final class ChargerWailaDataProvider extends BaseWailaDataProvider
 	 * @return modified tooltip
 	 */
 	@Override
-	public List<String> getWailaBody( ItemStack itemStack, List<String> currentToolTip, IWailaDataAccessor accessor, IWailaConfigHandler config )
+	public List<String> getWailaBody( final ItemStack itemStack, final List<String> currentToolTip, final IWailaDataAccessor accessor, final IWailaConfigHandler config )
 	{
 		final TileEntity te = accessor.getTileEntity();
 		if( te instanceof TileCharger )

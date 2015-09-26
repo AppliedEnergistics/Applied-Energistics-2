@@ -71,7 +71,7 @@ public class AENetworkProxy implements IGridBlock
 	private double idleDraw = 1.0;
 	private EntityPlayer owner;
 
-	public AENetworkProxy( IGridProxyable te, String nbtName, ItemStack visual, boolean inWorld )
+	public AENetworkProxy( final IGridProxyable te, final String nbtName, final ItemStack visual, final boolean inWorld )
 	{
 		this.gp = te;
 		this.nbtName = nbtName;
@@ -80,12 +80,12 @@ public class AENetworkProxy implements IGridBlock
 		this.validSides = EnumSet.allOf( ForgeDirection.class );
 	}
 
-	public void setVisualRepresentation( ItemStack is )
+	public void setVisualRepresentation( final ItemStack is )
 	{
 		this.myRepInstance = is;
 	}
 
-	public void writeToNBT( NBTTagCompound tag )
+	public void writeToNBT( final NBTTagCompound tag )
 	{
 		if( this.node != null )
 		{
@@ -93,7 +93,7 @@ public class AENetworkProxy implements IGridBlock
 		}
 	}
 
-	public void setValidSides( EnumSet<ForgeDirection> validSides )
+	public void setValidSides( final EnumSet<ForgeDirection> validSides )
 	{
 		this.validSides = validSides;
 		if( this.node != null )
@@ -133,7 +133,7 @@ public class AENetworkProxy implements IGridBlock
 		// send orientation based directionality to the node.
 		if( this.gp instanceof IOrientable )
 		{
-			IOrientable ori = (IOrientable) this.gp;
+			final IOrientable ori = (IOrientable) this.gp;
 			if( ori.canBeRotated() )
 			{
 				ori.setOrientation( ori.getForward(), ori.getUp() );
@@ -155,7 +155,7 @@ public class AENetworkProxy implements IGridBlock
 		return this.node;
 	}
 
-	public void readFromNBT( NBTTagCompound tag )
+	public void readFromNBT( final NBTTagCompound tag )
 	{
 		this.data = tag;
 		if( this.node != null && this.data != null )
@@ -175,12 +175,12 @@ public class AENetworkProxy implements IGridBlock
 
 	public IPathingGrid getPath() throws GridAccessException
 	{
-		IGrid grid = this.getGrid();
+		final IGrid grid = this.getGrid();
 		if( grid == null )
 		{
 			throw new GridAccessException();
 		}
-		IPathingGrid pg = grid.getCache( IPathingGrid.class );
+		final IPathingGrid pg = grid.getCache( IPathingGrid.class );
 		if( pg == null )
 		{
 			throw new GridAccessException();
@@ -201,7 +201,7 @@ public class AENetworkProxy implements IGridBlock
 		{
 			throw new GridAccessException();
 		}
-		IGrid grid = this.node.getGrid();
+		final IGrid grid = this.node.getGrid();
 		if( grid == null )
 		{
 			throw new GridAccessException();
@@ -211,12 +211,12 @@ public class AENetworkProxy implements IGridBlock
 
 	public ITickManager getTick() throws GridAccessException
 	{
-		IGrid grid = this.getGrid();
+		final IGrid grid = this.getGrid();
 		if( grid == null )
 		{
 			throw new GridAccessException();
 		}
-		ITickManager pg = grid.getCache( ITickManager.class );
+		final ITickManager pg = grid.getCache( ITickManager.class );
 		if( pg == null )
 		{
 			throw new GridAccessException();
@@ -226,13 +226,13 @@ public class AENetworkProxy implements IGridBlock
 
 	public IStorageGrid getStorage() throws GridAccessException
 	{
-		IGrid grid = this.getGrid();
+		final IGrid grid = this.getGrid();
 		if( grid == null )
 		{
 			throw new GridAccessException();
 		}
 
-		IStorageGrid pg = grid.getCache( IStorageGrid.class );
+		final IStorageGrid pg = grid.getCache( IStorageGrid.class );
 
 		if( pg == null )
 		{
@@ -244,13 +244,13 @@ public class AENetworkProxy implements IGridBlock
 
 	public P2PCache getP2P() throws GridAccessException
 	{
-		IGrid grid = this.getGrid();
+		final IGrid grid = this.getGrid();
 		if( grid == null )
 		{
 			throw new GridAccessException();
 		}
 
-		P2PCache pg = grid.getCache( P2PCache.class );
+		final P2PCache pg = grid.getCache( P2PCache.class );
 
 		if( pg == null )
 		{
@@ -262,13 +262,13 @@ public class AENetworkProxy implements IGridBlock
 
 	public ISecurityGrid getSecurity() throws GridAccessException
 	{
-		IGrid grid = this.getGrid();
+		final IGrid grid = this.getGrid();
 		if( grid == null )
 		{
 			throw new GridAccessException();
 		}
 
-		ISecurityGrid sg = grid.getCache( ISecurityGrid.class );
+		final ISecurityGrid sg = grid.getCache( ISecurityGrid.class );
 
 		if( sg == null )
 		{
@@ -280,13 +280,13 @@ public class AENetworkProxy implements IGridBlock
 
 	public ICraftingGrid getCrafting() throws GridAccessException
 	{
-		IGrid grid = this.getGrid();
+		final IGrid grid = this.getGrid();
 		if( grid == null )
 		{
 			throw new GridAccessException();
 		}
 
-		ICraftingGrid sg = grid.getCache( ICraftingGrid.class );
+		final ICraftingGrid sg = grid.getCache( ICraftingGrid.class );
 
 		if( sg == null )
 		{
@@ -327,7 +327,7 @@ public class AENetworkProxy implements IGridBlock
 	}
 
 	@Override
-	public void onGridNotification( GridNotification notification )
+	public void onGridNotification( final GridNotification notification )
 	{
 		if( this.gp instanceof PartCable )
 		{
@@ -336,7 +336,7 @@ public class AENetworkProxy implements IGridBlock
 	}
 
 	@Override
-	public void setNetworkStatus( IGrid grid, int channelsInUse )
+	public void setNetworkStatus( final IGrid grid, final int channelsInUse )
 	{
 
 	}
@@ -365,16 +365,16 @@ public class AENetworkProxy implements IGridBlock
 		return this.myRepInstance;
 	}
 
-	public void setFlags( GridFlags... requireChannel )
+	public void setFlags( final GridFlags... requireChannel )
 	{
-		EnumSet<GridFlags> flags = EnumSet.noneOf( GridFlags.class );
+		final EnumSet<GridFlags> flags = EnumSet.noneOf( GridFlags.class );
 
 		Collections.addAll( flags, requireChannel );
 
 		this.flags = flags;
 	}
 
-	public void setIdlePowerUsage( double idle )
+	public void setIdlePowerUsage( final double idle )
 	{
 		this.idleDraw = idle;
 
@@ -382,10 +382,10 @@ public class AENetworkProxy implements IGridBlock
 		{
 			try
 			{
-				IGrid g = this.getGrid();
+				final IGrid g = this.getGrid();
 				g.postEvent( new MENetworkPowerIdleChange( this.node ) );
 			}
-			catch( GridAccessException e )
+			catch( final GridAccessException e )
 			{
 				// not ready for this yet..
 			}
@@ -413,7 +413,7 @@ public class AENetworkProxy implements IGridBlock
 		{
 			return this.getEnergy().isNetworkPowered();
 		}
-		catch( GridAccessException e )
+		catch( final GridAccessException e )
 		{
 			return false;
 		}
@@ -421,12 +421,12 @@ public class AENetworkProxy implements IGridBlock
 
 	public IEnergyGrid getEnergy() throws GridAccessException
 	{
-		IGrid grid = this.getGrid();
+		final IGrid grid = this.getGrid();
 		if( grid == null )
 		{
 			throw new GridAccessException();
 		}
-		IEnergyGrid eg = grid.getCache( IEnergyGrid.class );
+		final IEnergyGrid eg = grid.getCache( IEnergyGrid.class );
 		if( eg == null )
 		{
 			throw new GridAccessException();
@@ -434,7 +434,7 @@ public class AENetworkProxy implements IGridBlock
 		return eg;
 	}
 
-	public void setOwner( EntityPlayer player )
+	public void setOwner( final EntityPlayer player )
 	{
 		this.owner = player;
 	}

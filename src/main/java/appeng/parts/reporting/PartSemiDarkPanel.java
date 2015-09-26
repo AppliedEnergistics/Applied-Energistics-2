@@ -28,7 +28,7 @@ public class PartSemiDarkPanel extends AbstractPartPanel
 {
 
 	@Reflected
-	public PartSemiDarkPanel( ItemStack is )
+	public PartSemiDarkPanel( final ItemStack is )
 	{
 		super( is );
 	}

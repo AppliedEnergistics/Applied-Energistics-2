@@ -38,7 +38,7 @@ public class FactorizationBarrel implements IMEInventory<IAEItemStack>
 	final IFZ fProxy;
 	private final TileEntity te;
 
-	public FactorizationBarrel( IFZ proxy, TileEntity tile )
+	public FactorizationBarrel( final IFZ proxy, final TileEntity tile )
 	{
 		this.te = tile;
 		this.fProxy = proxy;
@@ -50,7 +50,7 @@ public class FactorizationBarrel implements IMEInventory<IAEItemStack>
 	}
 
 	@Override
-	public IAEItemStack injectItems( IAEItemStack input, Actionable mode, BaseActionSource src )
+	public IAEItemStack injectItems( final IAEItemStack input, final Actionable mode, final BaseActionSource src )
 	{
 		if( input == null )
 		{
@@ -61,7 +61,7 @@ public class FactorizationBarrel implements IMEInventory<IAEItemStack>
 			return null;
 		}
 
-		ItemStack shared = input.getItemStack();
+		final ItemStack shared = input.getItemStack();
 		if( shared.isItemDamaged() )
 		{
 			return input;
@@ -77,15 +77,15 @@ public class FactorizationBarrel implements IMEInventory<IAEItemStack>
 
 		if( this.containsItemType( input, mode == Actionable.SIMULATE ) )
 		{
-			int max = this.fProxy.barrelGetMaxItemCount( this.te );
-			int newTotal = (int) this.storedItemCount() + (int) input.getStackSize();
+			final int max = this.fProxy.barrelGetMaxItemCount( this.te );
+			final int newTotal = (int) this.storedItemCount() + (int) input.getStackSize();
 			if( newTotal > max )
 			{
 				if( mode == Actionable.MODULATE )
 				{
 					this.fProxy.barrelSetCount( this.te, max );
 				}
-				IAEItemStack result = input.copy();
+				final IAEItemStack result = input.copy();
 				result.setStackSize( newTotal - max );
 				return result;
 			}
@@ -107,9 +107,9 @@ public class FactorizationBarrel implements IMEInventory<IAEItemStack>
 		return this.fProxy.barrelGetItem( this.te ) == null ? 1 : 0;
 	}
 
-	public boolean containsItemType( IAEItemStack i, boolean acceptEmpty )
+	public boolean containsItemType( final IAEItemStack i, final boolean acceptEmpty )
 	{
-		ItemStack currentItem = this.fProxy.barrelGetItem( this.te );
+		final ItemStack currentItem = this.fProxy.barrelGetItem( this.te );
 
 		// empty barrels want your love too!
 		if( acceptEmpty && currentItem == null )
@@ -126,11 +126,11 @@ public class FactorizationBarrel implements IMEInventory<IAEItemStack>
 	}
 
 	@Override
-	public IAEItemStack extractItems( IAEItemStack request, Actionable mode, BaseActionSource src )
+	public IAEItemStack extractItems( final IAEItemStack request, final Actionable mode, final BaseActionSource src )
 	{
 		if( this.containsItemType( request, false ) )
 		{
-			int howMany = (int) this.storedItemCount();
+			final int howMany = (int) this.storedItemCount();
 			if( request.getStackSize() >= howMany )
 			{
 				if( mode == Actionable.MODULATE )
@@ -139,7 +139,7 @@ public class FactorizationBarrel implements IMEInventory<IAEItemStack>
 					this.fProxy.barrelSetCount( this.te, 0 );
 				}
 
-				IAEItemStack r = request.copy();
+				final IAEItemStack r = request.copy();
 				r.setStackSize( howMany );
 				return r;
 			}
@@ -156,9 +156,9 @@ public class FactorizationBarrel implements IMEInventory<IAEItemStack>
 	}
 
 	@Override
-	public IItemList<IAEItemStack> getAvailableItems( IItemList out )
+	public IItemList<IAEItemStack> getAvailableItems( final IItemList out )
 	{
-		ItemStack i = this.fProxy.barrelGetItem( this.te );
+		final ItemStack i = this.fProxy.barrelGetItem( this.te );
 		if( i != null )
 		{
 			i.stackSize = this.fProxy.barrelGetItemCount( this.te );

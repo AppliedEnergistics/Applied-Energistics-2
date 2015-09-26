@@ -71,7 +71,7 @@ public class PneumaticCraft implements IIntegrationModule
 		this.registerPressureAttunement( "advancedPressureTube" );
 	}
 
-	private void registerPressureAttunement( String itemID )
+	private void registerPressureAttunement( final String itemID )
 	{
 		final IP2PTunnelRegistry registry = AEApi.instance().registries().p2pTunnel();
 		final ItemStack modItem = GameRegistry.findItemStack( PNEUMATIC_CRAFT_MOD_ID, itemID, 1 );

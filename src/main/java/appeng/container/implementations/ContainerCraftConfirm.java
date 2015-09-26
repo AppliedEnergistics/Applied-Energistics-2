@@ -89,13 +89,13 @@ public class ContainerCraftConfirm extends AEBaseContainer
 	public String myName = "";
 	protected long cpuIdx = Long.MIN_VALUE;
 
-	public ContainerCraftConfirm( InventoryPlayer ip, ITerminalHost te )
+	public ContainerCraftConfirm( final InventoryPlayer ip, final ITerminalHost te )
 	{
 		super( ip, te );
 		this.priHost = te;
 	}
 
-	public void cycleCpu( boolean next )
+	public void cycleCpu( final boolean next )
 	{
 		if( next )
 		{
@@ -137,15 +137,15 @@ public class ContainerCraftConfirm extends AEBaseContainer
 			return;
 		}
 
-		ICraftingGrid cc = this.getGrid().getCache( ICraftingGrid.class );
-		ImmutableSet<ICraftingCPU> cpuSet = cc.getCpus();
+		final ICraftingGrid cc = this.getGrid().getCache( ICraftingGrid.class );
+		final ImmutableSet<ICraftingCPU> cpuSet = cc.getCpus();
 
 		int matches = 0;
 		boolean changed = false;
-		for( ICraftingCPU c : cpuSet )
+		for( final ICraftingCPU c : cpuSet )
 		{
 			boolean found = false;
-			for( CraftingCPURecord ccr : this.cpus )
+			for( final CraftingCPURecord ccr : this.cpus )
 			{
 				if( ccr.cpu == c )
 				{
@@ -153,7 +153,7 @@ public class ContainerCraftConfirm extends AEBaseContainer
 				}
 			}
 
-			boolean matched = this.cpuMatches( c );
+			final boolean matched = this.cpuMatches( c );
 
 			if( matched )
 			{
@@ -169,7 +169,7 @@ public class ContainerCraftConfirm extends AEBaseContainer
 		if( changed || this.cpus.size() != matches )
 		{
 			this.cpus.clear();
-			for( ICraftingCPU c : cpuSet )
+			for( final ICraftingCPU c : cpuSet )
 			{
 				if( this.cpuMatches( c ) )
 				{
@@ -206,28 +206,28 @@ public class ContainerCraftConfirm extends AEBaseContainer
 
 				try
 				{
-					PacketMEInventoryUpdate a = new PacketMEInventoryUpdate( (byte) 0 );
-					PacketMEInventoryUpdate b = new PacketMEInventoryUpdate( (byte) 1 );
-					PacketMEInventoryUpdate c = this.result.isSimulation() ? new PacketMEInventoryUpdate( (byte) 2 ) : null;
+					final PacketMEInventoryUpdate a = new PacketMEInventoryUpdate( (byte) 0 );
+					final PacketMEInventoryUpdate b = new PacketMEInventoryUpdate( (byte) 1 );
+					final PacketMEInventoryUpdate c = this.result.isSimulation() ? new PacketMEInventoryUpdate( (byte) 2 ) : null;
 
-					IItemList<IAEItemStack> plan = AEApi.instance().storage().createItemList();
+					final IItemList<IAEItemStack> plan = AEApi.instance().storage().createItemList();
 					this.result.populatePlan( plan );
 
 					this.bytesUsed = this.result.getByteTotal();
 
-					for( IAEItemStack out : plan )
+					for( final IAEItemStack out : plan )
 					{
 
 						IAEItemStack o = out.copy();
 						o.reset();
 						o.setStackSize( out.getStackSize() );
 
-						IAEItemStack p = out.copy();
+						final IAEItemStack p = out.copy();
 						p.reset();
 						p.setStackSize( out.getCountRequestable() );
 
-						IStorageGrid sg = this.getGrid().getCache( IStorageGrid.class );
-						IMEInventory<IAEItemStack> items = sg.getItemInventory();
+						final IStorageGrid sg = this.getGrid().getCache( IStorageGrid.class );
+						final IMEInventory<IAEItemStack> items = sg.getItemInventory();
 
 						IAEItemStack m = null;
 						if( c != null && this.result.isSimulation() )
@@ -260,7 +260,7 @@ public class ContainerCraftConfirm extends AEBaseContainer
 						}
 					}
 
-					for( Object g : this.crafters )
+					for( final Object g : this.crafters )
 					{
 						if( g instanceof EntityPlayer )
 						{
@@ -273,12 +273,12 @@ public class ContainerCraftConfirm extends AEBaseContainer
 						}
 					}
 				}
-				catch( IOException e )
+				catch( final IOException e )
 				{
 					// :P
 				}
 			}
-			catch( Throwable e )
+			catch( final Throwable e )
 			{
 				this.getPlayerInv().player.addChatMessage( new ChatComponentText( "Error: " + e.toString() ) );
 				AELog.error( e );
@@ -293,11 +293,11 @@ public class ContainerCraftConfirm extends AEBaseContainer
 
 	public IGrid getGrid()
 	{
-		IActionHost h = ( (IActionHost) this.getTarget() );
+		final IActionHost h = ( (IActionHost) this.getTarget() );
 		return h.getActionableNode().getGrid();
 	}
 
-	private boolean cpuMatches( ICraftingCPU c )
+	private boolean cpuMatches( final ICraftingCPU c )
 	{
 		return c.getAvailableStorage() >= this.bytesUsed && !c.isBusy();
 	}
@@ -325,7 +325,7 @@ public class ContainerCraftConfirm extends AEBaseContainer
 	{
 		GuiBridge originalGui = null;
 
-		IActionHost ah = this.getActionHost();
+		final IActionHost ah = this.getActionHost();
 		if( ah instanceof WirelessTerminalGuiObject )
 		{
 			originalGui = GuiBridge.GUI_WIRELESS_TERM;
@@ -348,14 +348,14 @@ public class ContainerCraftConfirm extends AEBaseContainer
 
 		if( this.result != null && !this.simulation )
 		{
-			ICraftingGrid cc = this.getGrid().getCache( ICraftingGrid.class );
-			ICraftingLink g = cc.submitJob( this.result, null, this.selectedCpu == -1 ? null : this.cpus.get( this.selectedCpu ).cpu, true, this.getActionSrc() );
+			final ICraftingGrid cc = this.getGrid().getCache( ICraftingGrid.class );
+			final ICraftingLink g = cc.submitJob( this.result, null, this.selectedCpu == -1 ? null : this.cpus.get( this.selectedCpu ).cpu, true, this.getActionSrc() );
 			this.autoStart = false;
 			if( g != null && originalGui != null && this.openContext != null )
 			{
 				NetworkHandler.instance.sendTo( new PacketSwitchGuis( originalGui ), (EntityPlayerMP) this.invPlayer.player );
 
-				TileEntity te = this.openContext.getTile();
+				final TileEntity te = this.openContext.getTile();
 				Platform.openGUI( this.invPlayer.player, te, this.openContext.side, originalGui );
 			}
 		}
@@ -367,7 +367,7 @@ public class ContainerCraftConfirm extends AEBaseContainer
 	}
 
 	@Override
-	public void removeCraftingFromCrafters( ICrafting c )
+	public void removeCraftingFromCrafters( final ICrafting c )
 	{
 		super.removeCraftingFromCrafters( c );
 		if( this.job != null )
@@ -378,7 +378,7 @@ public class ContainerCraftConfirm extends AEBaseContainer
 	}
 
 	@Override
-	public void onContainerClosed( EntityPlayer par1EntityPlayer )
+	public void onContainerClosed( final EntityPlayer par1EntityPlayer )
 	{
 		super.onContainerClosed( par1EntityPlayer );
 		if( this.job != null )

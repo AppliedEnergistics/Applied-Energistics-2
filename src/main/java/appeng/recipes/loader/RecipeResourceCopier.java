@@ -66,7 +66,7 @@ public class RecipeResourceCopier
 	 *
 	 * @throws NullPointerException if root is <tt>null</tt>
 	 */
-	public RecipeResourceCopier( @Nonnull String root )
+	public RecipeResourceCopier( @Nonnull final String root )
 	{
 		Preconditions.checkNotNull( root );
 
@@ -83,7 +83,7 @@ public class RecipeResourceCopier
 	 * @throws NullPointerException if either parameter is <tt>null</tt>
 	 * @throws IllegalArgumentException if destination is not a directory
 	 */
-	public void copyTo( @Nonnull File destination ) throws URISyntaxException, IOException
+	public void copyTo( @Nonnull final File destination ) throws URISyntaxException, IOException
 	{
 		Preconditions.checkNotNull( destination );
 		Preconditions.checkArgument( destination.isDirectory() );
@@ -100,13 +100,13 @@ public class RecipeResourceCopier
 	 * @throws URISyntaxException {@see #getResourceListing}
 	 * @throws IOException {@see #getResourceListing} and if copying the detected resource to file is not possible
 	 */
-	private void copyTo( File destination, String directory ) throws URISyntaxException, IOException
+	private void copyTo( final File destination, final String directory ) throws URISyntaxException, IOException
 	{
 		assert destination != null;
 		assert directory != null;
 
 		final String[] listing = this.getResourceListing( this.getClass(), directory );
-		for( String list : listing )
+		for( final String list : listing )
 		{
 			if( list.endsWith( ".recipe" ) || list.endsWith( ".html" ) )
 			{
@@ -130,7 +130,7 @@ public class RecipeResourceCopier
 	 *
 	 * @throws IOException if copying the file is not possible
 	 */
-	private void copyFile( File destination, String directory, String fileName ) throws IOException
+	private void copyFile( final File destination, final String directory, final String fileName ) throws IOException
 	{
 		assert destination != null;
 		assert fileName != null;
@@ -160,7 +160,7 @@ public class RecipeResourceCopier
 	 * @throws UnsupportedOperationException if it is neither in jar nor in file path
 	 */
 	@Nonnull
-	private String[] getResourceListing( Class<?> clazz, String path ) throws URISyntaxException, IOException
+	private String[] getResourceListing( final Class<?> clazz, final String path ) throws URISyntaxException, IOException
 	{
 		assert clazz != null;
 		assert path != null;

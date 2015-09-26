@@ -46,9 +46,9 @@ public class BlockGrinder extends AEBaseTileBlock
 	}
 
 	@Override
-	public boolean onActivated( World w, int x, int y, int z, EntityPlayer p, int side, float hitX, float hitY, float hitZ )
+	public boolean onActivated( final World w, final int x, final int y, final int z, final EntityPlayer p, final int side, final float hitX, final float hitY, final float hitZ )
 	{
-		TileGrinder tg = this.getTileEntity( w, x, y, z );
+		final TileGrinder tg = this.getTileEntity( w, x, y, z );
 		if( tg != null && !p.isSneaking() )
 		{
 			Platform.openGUI( p, tg, ForgeDirection.getOrientation( side ), GuiBridge.GUI_GRINDER );

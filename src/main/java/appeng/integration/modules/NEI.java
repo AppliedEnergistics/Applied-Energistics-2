@@ -99,20 +99,20 @@ public class NEI implements INEI, IContainerTooltipHandler, IIntegrationModule
 		GuiContainerManager.addTooltipHandler( this );
 
 		// crafting terminal...
-		Method registerGuiOverlay = this.apiClass.getDeclaredMethod( "registerGuiOverlay", Class.class, String.class, IStackPositioner.class );
-		Class overlayHandler = Class.forName( "codechicken.nei.api.IOverlayHandler" );
+		final Method registerGuiOverlay = this.apiClass.getDeclaredMethod( "registerGuiOverlay", Class.class, String.class, IStackPositioner.class );
+		final Class overlayHandler = Class.forName( "codechicken.nei.api.IOverlayHandler" );
 
-		Method registrar = this.apiClass.getDeclaredMethod( "registerGuiOverlayHandler", Class.class, overlayHandler, String.class );
+		final Method registrar = this.apiClass.getDeclaredMethod( "registerGuiOverlayHandler", Class.class, overlayHandler, String.class );
 		registerGuiOverlay.invoke( this.apiClass, GuiCraftingTerm.class, "crafting", new TerminalCraftingSlotFinder() );
 		registerGuiOverlay.invoke( this.apiClass, GuiPatternTerm.class, "crafting", new TerminalCraftingSlotFinder() );
 
-		Class<NEICraftingHandler> defaultHandler = NEICraftingHandler.class;
-		Constructor defaultConstructor = defaultHandler.getConstructor( int.class, int.class );
+		final Class<NEICraftingHandler> defaultHandler = NEICraftingHandler.class;
+		final Constructor defaultConstructor = defaultHandler.getConstructor( int.class, int.class );
 		registrar.invoke( this.apiClass, GuiCraftingTerm.class, defaultConstructor.newInstance( 6, 75 ), "crafting" );
 		registrar.invoke( this.apiClass, GuiPatternTerm.class, defaultConstructor.newInstance( 6, 75 ), "crafting" );
 	}
 
-	public void registerRecipeHandler( Object o ) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException
+	public void registerRecipeHandler( final Object o ) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException
 	{
 		this.registerRecipeHandler.invoke( this.apiClass, o );
 		this.registerUsageHandler.invoke( this.apiClass, o );
@@ -125,58 +125,58 @@ public class NEI implements INEI, IContainerTooltipHandler, IIntegrationModule
 	}
 
 	@Override
-	public void drawSlot( Slot s )
+	public void drawSlot( final Slot s )
 	{
 		if( s == null )
 		{
 			return;
 		}
 
-		ItemStack stack = s.getStack();
+		final ItemStack stack = s.getStack();
 
 		if( stack == null )
 		{
 			return;
 		}
 
-		Minecraft mc = Minecraft.getMinecraft();
-		FontRenderer fontRenderer = mc.fontRenderer;
-		int x = s.xDisplayPosition;
-		int y = s.yDisplayPosition;
+		final Minecraft mc = Minecraft.getMinecraft();
+		final FontRenderer fontRenderer = mc.fontRenderer;
+		final int x = s.xDisplayPosition;
+		final int y = s.yDisplayPosition;
 
 		GuiContainerManager.drawItems.renderItemAndEffectIntoGUI( fontRenderer, mc.getTextureManager(), stack, x, y );
 		GuiContainerManager.drawItems.renderItemOverlayIntoGUI( fontRenderer, mc.getTextureManager(), stack, x, y, String.valueOf( stack.stackSize ) );
 	}
 
 	@Override
-	public RenderItem setItemRender( RenderItem renderItem )
+	public RenderItem setItemRender( final RenderItem renderItem )
 	{
 		try
 		{
-			RenderItem ri = GuiContainerManager.drawItems;
+			final RenderItem ri = GuiContainerManager.drawItems;
 			GuiContainerManager.drawItems = renderItem;
 			return ri;
 		}
-		catch( Throwable t )
+		catch( final Throwable t )
 		{
 			throw new IllegalStateException( "Invalid version of NEI, please update", t );
 		}
 	}
 
 	@Override
-	public List<String> handleTooltip( GuiContainer arg0, int arg1, int arg2, List<String> current )
+	public List<String> handleTooltip( final GuiContainer arg0, final int arg1, final int arg2, final List<String> current )
 	{
 		return current;
 	}
 
 	@Override
-	public List<String> handleItemDisplayName( GuiContainer arg0, ItemStack arg1, List<String> current )
+	public List<String> handleItemDisplayName( final GuiContainer arg0, final ItemStack arg1, final List<String> current )
 	{
 		return current;
 	}
 
 	@Override
-	public List<String> handleItemTooltip( GuiContainer guiScreen, ItemStack stack, int mouseX, int mouseY, List<String> currentToolTip )
+	public List<String> handleItemTooltip( final GuiContainer guiScreen, final ItemStack stack, final int mouseX, final int mouseY, final List<String> currentToolTip )
 	{
 		if( guiScreen instanceof AEBaseMEGui )
 		{

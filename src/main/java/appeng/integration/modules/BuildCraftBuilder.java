@@ -74,7 +74,7 @@ public class BuildCraftBuilder implements IIntegrationModule
 		{
 			this.initBuilderSupport();
 		}
-		catch( Exception builderSupport )
+		catch( final Exception builderSupport )
 		{
 			// not supported?
 		}
@@ -92,7 +92,7 @@ public class BuildCraftBuilder implements IIntegrationModule
 		final IBlocks blocks = AEApi.instance().definitions().blocks();
 		final IBlockDefinition maybeMultiPart = blocks.multiPart();
 
-		for( Method blockDefinition : blocks.getClass().getMethods() )
+		for( final Method blockDefinition : blocks.getClass().getMethods() )
 		{
 			try
 			{
@@ -117,11 +117,11 @@ public class BuildCraftBuilder implements IIntegrationModule
 					schematicRegistry.registerSchematicBlock( block, AEGenericSchematicTile.class );
 				}
 			}
-			catch( InvocationTargetException ignore )
+			catch( final InvocationTargetException ignore )
 			{
 				AELog.warning( "Encountered problems while initializing the BuildCraft Builder support. Can not invoke the method %s", blockDefinition );
 			}
-			catch( IllegalAccessException ignore )
+			catch( final IllegalAccessException ignore )
 			{
 				AELog.warning( "Encountered problems while initializing the BuildCraft Builder support. Can not access the method %s", blockDefinition );
 			}

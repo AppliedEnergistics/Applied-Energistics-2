@@ -39,7 +39,7 @@ public abstract class PartUpgradeable extends PartBasicState implements IAEAppEn
 	private final IConfigManager manager;
 	private final UpgradeInventory upgrades;
 
-	public PartUpgradeable( ItemStack is )
+	public PartUpgradeable( final ItemStack is )
 	{
 		super( is );
 		this.upgrades = new StackUpgradeInventory( this.is, this, this.getUpgradeSlots() );
@@ -53,13 +53,13 @@ public abstract class PartUpgradeable extends PartBasicState implements IAEAppEn
 	}
 
 	@Override
-	public void updateSetting( IConfigManager manager, Enum settingName, Enum newValue )
+	public void updateSetting( final IConfigManager manager, final Enum settingName, final Enum newValue )
 	{
 
 	}
 
 	@Override
-	public void onChangeInventory( IInventory inv, int slot, InvOperation mc, ItemStack removedStack, ItemStack newStack )
+	public void onChangeInventory( final IInventory inv, final int slot, final InvOperation mc, final ItemStack removedStack, final ItemStack newStack )
 	{
 		if( inv == this.upgrades )
 		{
@@ -109,7 +109,7 @@ public abstract class PartUpgradeable extends PartBasicState implements IAEAppEn
 	}
 
 	@Override
-	public int getInstalledUpgrades( Upgrades u )
+	public int getInstalledUpgrades( final Upgrades u )
 	{
 		return this.upgrades.getInstalledUpgrades( u );
 	}
@@ -121,7 +121,7 @@ public abstract class PartUpgradeable extends PartBasicState implements IAEAppEn
 	}
 
 	@Override
-	public void readFromNBT( net.minecraft.nbt.NBTTagCompound extra )
+	public void readFromNBT( final net.minecraft.nbt.NBTTagCompound extra )
 	{
 		super.readFromNBT( extra );
 		this.manager.readFromNBT( extra );
@@ -129,7 +129,7 @@ public abstract class PartUpgradeable extends PartBasicState implements IAEAppEn
 	}
 
 	@Override
-	public void writeToNBT( net.minecraft.nbt.NBTTagCompound extra )
+	public void writeToNBT( final net.minecraft.nbt.NBTTagCompound extra )
 	{
 		super.writeToNBT( extra );
 		this.manager.writeToNBT( extra );
@@ -137,9 +137,9 @@ public abstract class PartUpgradeable extends PartBasicState implements IAEAppEn
 	}
 
 	@Override
-	public void getDrops( List<ItemStack> drops, boolean wrenched )
+	public void getDrops( final List<ItemStack> drops, final boolean wrenched )
 	{
-		for( ItemStack is : this.upgrades )
+		for( final ItemStack is : this.upgrades )
 		{
 			if( is != null )
 			{
@@ -155,7 +155,7 @@ public abstract class PartUpgradeable extends PartBasicState implements IAEAppEn
 	}
 
 	@Override
-	public IInventory getInventoryByName( String name )
+	public IInventory getInventoryByName( final String name )
 	{
 		if( name.equals( "upgrades" ) )
 		{

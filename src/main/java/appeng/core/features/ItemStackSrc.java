@@ -34,7 +34,7 @@ public class ItemStackSrc implements IStackSrc
 	public final int damage;
 	private final boolean enabled;
 
-	public ItemStackSrc( Item item, int damage, ActivityState state )
+	public ItemStackSrc( final Item item, final int damage, final ActivityState state )
 	{
 		Preconditions.checkNotNull( item );
 		Preconditions.checkArgument( damage >= 0 );
@@ -48,7 +48,7 @@ public class ItemStackSrc implements IStackSrc
 
 	@Nullable
 	@Override
-	public ItemStack stack( int i )
+	public ItemStack stack( final int i )
 	{
 		return new ItemStack( this.item, i, this.damage );
 	}

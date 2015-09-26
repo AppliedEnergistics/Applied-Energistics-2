@@ -43,7 +43,7 @@ public class ContainerCondenser extends AEBaseContainer implements IProgressProv
 	@GuiSync( 2 )
 	public CondenserOutput output = CondenserOutput.TRASH;
 
-	public ContainerCondenser( InventoryPlayer ip, TileCondenser condenser )
+	public ContainerCondenser( final InventoryPlayer ip, final TileCondenser condenser )
 	{
 		super( ip, condenser, null );
 		this.condenser = condenser;
@@ -60,8 +60,8 @@ public class ContainerCondenser extends AEBaseContainer implements IProgressProv
 	{
 		if( Platform.isServer() )
 		{
-			double maxStorage = this.condenser.getStorage();
-			double requiredEnergy = this.condenser.getRequiredPower();
+			final double maxStorage = this.condenser.getStorage();
+			final double requiredEnergy = this.condenser.getRequiredPower();
 
 			this.requiredEnergy = requiredEnergy == 0 ? (int) maxStorage : (int) Math.min( requiredEnergy, maxStorage );
 			this.storedPower = (int) this.condenser.storedPower;

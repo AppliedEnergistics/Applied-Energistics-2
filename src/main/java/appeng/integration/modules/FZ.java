@@ -51,7 +51,7 @@ public class FZ implements IFZ, IIntegrationModule
 	private static Field day_item;
 
 	@Override
-	public ItemStack barrelGetItem( TileEntity te )
+	public ItemStack barrelGetItem( final TileEntity te )
 	{
 		try
 		{
@@ -69,17 +69,17 @@ public class FZ implements IFZ, IIntegrationModule
 
 			return i;
 		}
-		catch( IllegalArgumentException ignored )
+		catch( final IllegalArgumentException ignored )
 		{
 		}
-		catch( IllegalAccessException ignored )
+		catch( final IllegalAccessException ignored )
 		{
 		}
 		return null;
 	}
 
 	@Override
-	public int barrelGetMaxItemCount( TileEntity te )
+	public int barrelGetMaxItemCount( final TileEntity te )
 	{
 		try
 		{
@@ -88,20 +88,20 @@ public class FZ implements IFZ, IIntegrationModule
 				return (Integer) day_getMaxSize.invoke( te );
 			}
 		}
-		catch( IllegalAccessException ignored )
+		catch( final IllegalAccessException ignored )
 		{
 		}
-		catch( IllegalArgumentException ignored )
+		catch( final IllegalArgumentException ignored )
 		{
 		}
-		catch( InvocationTargetException ignored )
+		catch( final InvocationTargetException ignored )
 		{
 		}
 		return 0;
 	}
 
 	@Override
-	public int barrelGetItemCount( TileEntity te )
+	public int barrelGetItemCount( final TileEntity te )
 	{
 		try
 		{
@@ -110,20 +110,20 @@ public class FZ implements IFZ, IIntegrationModule
 				return (Integer) day_getItemCount.invoke( te );
 			}
 		}
-		catch( IllegalAccessException ignored )
+		catch( final IllegalAccessException ignored )
 		{
 		}
-		catch( IllegalArgumentException ignored )
+		catch( final IllegalArgumentException ignored )
 		{
 		}
-		catch( InvocationTargetException ignored )
+		catch( final InvocationTargetException ignored )
 		{
 		}
 		return 0;
 	}
 
 	@Override
-	public void setItemType( TileEntity te, ItemStack input )
+	public void setItemType( final TileEntity te, final ItemStack input )
 	{
 		try
 		{
@@ -132,16 +132,16 @@ public class FZ implements IFZ, IIntegrationModule
 				day_item.set( te, input == null ? null : input.copy() );
 			}
 		}
-		catch( IllegalArgumentException ignored )
+		catch( final IllegalArgumentException ignored )
 		{
 		}
-		catch( IllegalAccessException ignored )
+		catch( final IllegalAccessException ignored )
 		{
 		}
 	}
 
 	@Override
-	public void barrelSetCount( TileEntity te, int max )
+	public void barrelSetCount( final TileEntity te, final int max )
 	{
 		try
 		{
@@ -152,43 +152,43 @@ public class FZ implements IFZ, IIntegrationModule
 
 			te.markDirty();
 		}
-		catch( IllegalAccessException ignored )
+		catch( final IllegalAccessException ignored )
 		{
 		}
-		catch( IllegalArgumentException ignored )
+		catch( final IllegalArgumentException ignored )
 		{
 		}
-		catch( InvocationTargetException ignored )
+		catch( final InvocationTargetException ignored )
 		{
 		}
 	}
 
 	@Override
-	public IMEInventory getFactorizationBarrel( TileEntity te )
+	public IMEInventory getFactorizationBarrel( final TileEntity te )
 	{
 		return new FactorizationBarrel( this, te );
 	}
 
 	@Override
-	public boolean isBarrel( TileEntity te )
+	public boolean isBarrel( final TileEntity te )
 	{
 		return day_BarrelClass.isAssignableFrom( te.getClass() );
 	}
 
 	@Override
-	public void grinderRecipe( ItemStack in, ItemStack out )
+	public void grinderRecipe( final ItemStack in, final ItemStack out )
 	{
 		try
 		{
-			Class<?> c = Class.forName( "factorization.oreprocessing.TileEntityGrinder" );
-			Method m = c.getMethod( "addRecipe", Object.class, ItemStack.class, float.class );
+			final Class<?> c = Class.forName( "factorization.oreprocessing.TileEntityGrinder" );
+			final Method m = c.getMethod( "addRecipe", Object.class, ItemStack.class, float.class );
 
-			float amt = out.stackSize;
+			final float amt = out.stackSize;
 			out.stackSize = 1;
 
 			m.invoke( c, in, out, amt );
 		}
-		catch( Throwable t )
+		catch( final Throwable t )
 		{
 			// AELog.info( "" );
 			// throw new RuntimeException( t );

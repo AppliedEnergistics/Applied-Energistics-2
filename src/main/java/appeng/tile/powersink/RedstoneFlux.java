@@ -32,7 +32,7 @@ import appeng.transformer.annotations.Integration.Interface;
 public abstract class RedstoneFlux extends RotaryCraft implements IEnergyReceiver
 {
 	@Override
-	public final int receiveEnergy( ForgeDirection from, int maxReceive, boolean simulate )
+	public final int receiveEnergy( final ForgeDirection from, final int maxReceive, final boolean simulate )
 	{
 		final int networkRFDemand = (int) Math.floor( this.getExternalPowerDemand( PowerUnits.RF, maxReceive ) );
 		final int usedRF = Math.min( maxReceive, networkRFDemand );
@@ -46,19 +46,19 @@ public abstract class RedstoneFlux extends RotaryCraft implements IEnergyReceive
 	}
 
 	@Override
-	public final int getEnergyStored( ForgeDirection from )
+	public final int getEnergyStored( final ForgeDirection from )
 	{
 		return (int) Math.floor( PowerUnits.AE.convertTo( PowerUnits.RF, this.getAECurrentPower() ) );
 	}
 
 	@Override
-	public final int getMaxEnergyStored( ForgeDirection from )
+	public final int getMaxEnergyStored( final ForgeDirection from )
 	{
 		return (int) Math.floor( PowerUnits.AE.convertTo( PowerUnits.RF, this.getAEMaxPower() ) );
 	}
 
 	@Override
-	public final boolean canConnectEnergy( ForgeDirection from )
+	public final boolean canConnectEnergy( final ForgeDirection from )
 	{
 		return this.getPowerSides().contains( from );
 	}

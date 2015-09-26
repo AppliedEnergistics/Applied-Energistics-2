@@ -44,18 +44,18 @@ public class TESRWrapper extends TileEntitySpecialRenderer
 	private final BaseBlockRender blkRender;
 	private final double maxDistance;
 
-	public TESRWrapper( BaseBlockRender render )
+	public TESRWrapper( final BaseBlockRender render )
 	{
 		this.blkRender = render;
 		this.maxDistance = this.blkRender.getTesrRenderDistance();
 	}
 
 	@Override
-	public final void renderTileEntityAt( TileEntity te, double x, double y, double z, float f )
+	public final void renderTileEntityAt( final TileEntity te, final double x, final double y, final double z, final float f )
 	{
 		if( te instanceof AEBaseTile )
 		{
-			Block b = te.getBlockType();
+			final Block b = te.getBlockType();
 
 			if( b instanceof AEBaseBlock && ( (AEBaseTile) te ).requiresTESR() )
 			{
@@ -64,7 +64,7 @@ public class TESRWrapper extends TileEntitySpecialRenderer
 					return;
 				}
 
-				Tessellator tess = Tessellator.instance;
+				final Tessellator tess = Tessellator.instance;
 
 				try
 				{
@@ -75,7 +75,7 @@ public class TESRWrapper extends TileEntitySpecialRenderer
 
 					GL11.glPopMatrix();
 				}
-				catch( Throwable t )
+				catch( final Throwable t )
 				{
 					AELog.severe( "Hi, Looks like there was a crash while rendering something..." );
 					t.printStackTrace();

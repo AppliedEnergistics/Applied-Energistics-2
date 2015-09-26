@@ -38,7 +38,7 @@ public final class WrappedDamageItemDefinition implements ITileDefinition
 	private final ITileDefinition definition;
 	private final int damage;
 
-	public WrappedDamageItemDefinition( ITileDefinition definition, int damage )
+	public WrappedDamageItemDefinition( final ITileDefinition definition, final int damage )
 	{
 		Preconditions.checkNotNull( definition );
 		Preconditions.checkArgument( damage >= 0 );
@@ -84,7 +84,7 @@ public final class WrappedDamageItemDefinition implements ITileDefinition
 	}
 
 	@Override
-	public boolean isSameAs( ItemStack comparableStack )
+	public boolean isSameAs( final ItemStack comparableStack )
 	{
 		if( comparableStack == null )
 		{
@@ -98,7 +98,7 @@ public final class WrappedDamageItemDefinition implements ITileDefinition
 	}
 
 	@Override
-	public boolean isSameAs( IBlockAccess world, int x, int y, int z )
+	public boolean isSameAs( final IBlockAccess world, final int x, final int y, final int z )
 	{
 		return this.definition.isSameAs( world, x, y, z ) && world.getBlockMetadata( x, y, z ) == this.damage;
 	}
@@ -108,7 +108,7 @@ public final class WrappedDamageItemDefinition implements ITileDefinition
 		private final int stackSize;
 		private final int damage;
 
-		public BlockTransformFunction( int stackSize, int damage )
+		public BlockTransformFunction( final int stackSize, final int damage )
 		{
 			Preconditions.checkArgument( stackSize > 0 );
 			Preconditions.checkArgument( damage >= 0 );
@@ -118,7 +118,7 @@ public final class WrappedDamageItemDefinition implements ITileDefinition
 		}
 
 		@Override
-		public ItemStack apply( Block input )
+		public ItemStack apply( final Block input )
 		{
 			Preconditions.checkNotNull( input );
 

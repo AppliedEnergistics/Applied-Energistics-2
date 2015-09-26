@@ -33,7 +33,7 @@ public class MeaningfulItemIterator<T extends IAEItemStack> implements Iterator<
 	private Iterator<T> innerIterater = null;
 	private T next;
 
-	public MeaningfulItemIterator( Iterator<NavigableMap<T, T>> iterator )
+	public MeaningfulItemIterator( final Iterator<NavigableMap<T, T>> iterator )
 	{
 		this.parent = iterator;
 

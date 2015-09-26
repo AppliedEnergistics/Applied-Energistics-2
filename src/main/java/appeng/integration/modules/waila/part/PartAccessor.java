@@ -50,7 +50,7 @@ public final class PartAccessor
 	 *
 	 * @return maybe the looked at {@link appeng.api.parts.IPart}
 	 */
-	public Optional<IPart> getMaybePart( TileEntity te, MovingObjectPosition mop )
+	public Optional<IPart> getMaybePart( final TileEntity te, final MovingObjectPosition mop )
 	{
 		if( te instanceof IPartHost )
 		{

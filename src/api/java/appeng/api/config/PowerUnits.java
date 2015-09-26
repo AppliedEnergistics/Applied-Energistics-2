@@ -41,7 +41,7 @@ public enum PowerUnits
 	 */
 	public double conversionRatio = 1.0;
 
-	PowerUnits( String un )
+	PowerUnits( final String un )
 	{
 		this.unlocalizedName = un;
 	}
@@ -58,7 +58,7 @@ public enum PowerUnits
 	 *
 	 * @return value converted to target units, from this units.
 	 */
-	public double convertTo( PowerUnits target, double value )
+	public double convertTo( final PowerUnits target, final double value )
 	{
 		return ( value * this.conversionRatio ) / target.conversionRatio;
 	}
