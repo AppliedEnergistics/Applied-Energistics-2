@@ -64,7 +64,7 @@ public class PacketCraftRequest implements AppEngPacket, AppEngPacketHandler<Pac
 	}
 
 	@Override
-	public AppEngPacket onMessage( PacketCraftRequest message, MessageContext ctx )
+	public AppEngPacket onMessage( final PacketCraftRequest message, final MessageContext ctx )
 	{
 		final EntityPlayer player = ctx.getServerHandler().playerEntity;
 
@@ -127,14 +127,14 @@ public class PacketCraftRequest implements AppEngPacket, AppEngPacketHandler<Pac
 	}
 
 	@Override
-	public void fromBytes( ByteBuf buf )
+	public void fromBytes( final ByteBuf buf )
 	{
 		this.heldShift = buf.readBoolean();
 		this.amount = buf.readLong();
 	}
 
 	@Override
-	public void toBytes( ByteBuf buf )
+	public void toBytes( final ByteBuf buf )
 	{
 		buf.writeBoolean( this.heldShift );
 		buf.writeLong( this.amount );

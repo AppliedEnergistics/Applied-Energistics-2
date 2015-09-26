@@ -76,7 +76,7 @@ public class PacketValueConfig implements AppEngPacket, AppEngPacketHandler<Pack
 	}
 
 	@Override
-	public AppEngPacket onMessage( PacketValueConfig message, MessageContext ctx )
+	public AppEngPacket onMessage( final PacketValueConfig message, final MessageContext ctx )
 	{
 		if( ctx.side == Side.CLIENT )
 		{
@@ -89,7 +89,7 @@ public class PacketValueConfig implements AppEngPacket, AppEngPacketHandler<Pack
 		return null;
 	}
 
-	public void serverHandling( PacketValueConfig message, MessageContext ctx )
+	public void serverHandling( final PacketValueConfig message, final MessageContext ctx )
 	{
 		final EntityPlayer player = ctx.getServerHandler().playerEntity;
 		final Container c = player.openContainer;
@@ -231,7 +231,7 @@ public class PacketValueConfig implements AppEngPacket, AppEngPacketHandler<Pack
 		}
 	}
 
-	public void clientHandling( PacketValueConfig message, MessageContext ctx )
+	public void clientHandling( final PacketValueConfig message, final MessageContext ctx )
 	{
 		final Container c = Minecraft.getMinecraft().thePlayer.openContainer;
 
@@ -277,14 +277,14 @@ public class PacketValueConfig implements AppEngPacket, AppEngPacketHandler<Pack
 	}
 
 	@Override
-	public void fromBytes( ByteBuf buf )
+	public void fromBytes( final ByteBuf buf )
 	{
 		this.name = ByteBufUtils.readUTF8String( buf );
 		this.value = ByteBufUtils.readUTF8String( buf );
 	}
 
 	@Override
-	public void toBytes( ByteBuf buf )
+	public void toBytes( final ByteBuf buf )
 	{
 		ByteBufUtils.writeUTF8String( buf, this.name );
 		ByteBufUtils.writeUTF8String( buf, this.value );

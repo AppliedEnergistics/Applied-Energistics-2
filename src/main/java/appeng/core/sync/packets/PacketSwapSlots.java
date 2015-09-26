@@ -49,7 +49,7 @@ public class PacketSwapSlots implements AppEngPacket, AppEngPacketHandler<Packet
 	}
 
 	@Override
-	public AppEngPacket onMessage( PacketSwapSlots message, MessageContext ctx )
+	public AppEngPacket onMessage( final PacketSwapSlots message, final MessageContext ctx )
 	{
 		if( ctx.getServerHandler().playerEntity != null && ctx.getServerHandler().playerEntity.openContainer instanceof AEBaseContainer )
 		{
@@ -59,14 +59,14 @@ public class PacketSwapSlots implements AppEngPacket, AppEngPacketHandler<Packet
 	}
 
 	@Override
-	public void fromBytes( ByteBuf buf )
+	public void fromBytes( final ByteBuf buf )
 	{
 		this.slotA = buf.readInt();
 		this.slotB = buf.readInt();
 	}
 
 	@Override
-	public void toBytes( ByteBuf buf )
+	public void toBytes( final ByteBuf buf )
 	{
 		buf.writeInt( this.slotA );
 		buf.writeInt( this.slotB );

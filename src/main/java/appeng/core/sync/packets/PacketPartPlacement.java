@@ -58,7 +58,7 @@ public class PacketPartPlacement implements AppEngPacket, AppEngPacketHandler<Pa
 	}
 
 	@Override
-	public AppEngPacket onMessage( PacketPartPlacement message, MessageContext ctx )
+	public AppEngPacket onMessage( final PacketPartPlacement message, final MessageContext ctx )
 	{
 		final EntityPlayerMP sender = (EntityPlayerMP) ctx.getServerHandler().playerEntity;
 		CommonHelper.proxy.updateRenderMode( sender );
@@ -71,7 +71,7 @@ public class PacketPartPlacement implements AppEngPacket, AppEngPacketHandler<Pa
 	}
 
 	@Override
-	public void fromBytes( ByteBuf buf )
+	public void fromBytes( final ByteBuf buf )
 	{
 		this.x = buf.readInt();
 		this.y = buf.readInt();
@@ -81,7 +81,7 @@ public class PacketPartPlacement implements AppEngPacket, AppEngPacketHandler<Pa
 	}
 
 	@Override
-	public void toBytes( ByteBuf buf )
+	public void toBytes( final ByteBuf buf )
 	{
 		buf.writeInt( this.x );
 		buf.writeInt( this.y );

@@ -49,7 +49,7 @@ public class PacketNewStorageDimension implements AppEngPacket, AppEngPacketHand
 	}
 
 	@Override
-	public AppEngPacket onMessage( PacketNewStorageDimension message, MessageContext ctx )
+	public AppEngPacket onMessage( final PacketNewStorageDimension message, final MessageContext ctx )
 	{
 		try
 		{
@@ -63,13 +63,13 @@ public class PacketNewStorageDimension implements AppEngPacket, AppEngPacketHand
 	}
 
 	@Override
-	public void fromBytes( ByteBuf buf )
+	public void fromBytes( final ByteBuf buf )
 	{
 		this.newDim = buf.readInt();
 	}
 
 	@Override
-	public void toBytes( ByteBuf buf )
+	public void toBytes( final ByteBuf buf )
 	{
 		buf.writeInt( this.newDim );
 	}

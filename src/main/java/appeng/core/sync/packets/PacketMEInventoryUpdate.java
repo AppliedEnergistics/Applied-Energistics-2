@@ -73,12 +73,12 @@ public class PacketMEInventoryUpdate implements AppEngPacket, AppEngPacketHandle
 	}
 
 	// api
-	public PacketMEInventoryUpdate( byte ref )
+	public PacketMEInventoryUpdate( final byte ref )
 	{
 		this.ref = ref;
 	}
 
-	public void appendItem( IAEItemStack is ) throws IOException, BufferOverflowException
+	public void appendItem( final IAEItemStack is ) throws IOException, BufferOverflowException
 	{
 		// is.writeToPacket( this.data );
 		this.list.add( is.copy() );
@@ -134,7 +134,7 @@ public class PacketMEInventoryUpdate implements AppEngPacket, AppEngPacketHandle
 				this.list.add( AEItemStack.loadItemStackFromPacket( uncompressed ) );
 			}
 		}
-		catch( IOException e )
+		catch( final IOException e )
 		{
 		}
 
@@ -153,7 +153,7 @@ public class PacketMEInventoryUpdate implements AppEngPacket, AppEngPacketHandle
 			compressFrame = new GZIPOutputStream( new OutputStream()
 			{
 				@Override
-				public void write( int value ) throws IOException
+				public void write( final int value ) throws IOException
 				{
 					buf.writeByte( value );
 				}
@@ -190,7 +190,7 @@ public class PacketMEInventoryUpdate implements AppEngPacket, AppEngPacketHandle
 				{
 					compressFrame.close();
 				}
-				catch( IOException e )
+				catch( final IOException e )
 				{
 				}
 			}
@@ -198,7 +198,7 @@ public class PacketMEInventoryUpdate implements AppEngPacket, AppEngPacketHandle
 	}
 
 	@Override
-	public AppEngPacket onMessage( PacketMEInventoryUpdate message, MessageContext ctx )
+	public AppEngPacket onMessage( final PacketMEInventoryUpdate message, final MessageContext ctx )
 	{
 		final GuiScreen gs = Minecraft.getMinecraft().currentScreen;
 

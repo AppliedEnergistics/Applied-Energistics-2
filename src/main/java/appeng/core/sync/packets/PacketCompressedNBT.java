@@ -58,7 +58,7 @@ public class PacketCompressedNBT implements AppEngPacket, AppEngPacketHandler<Pa
 	}
 
 	// api
-	public PacketCompressedNBT( NBTTagCompound din )
+	public PacketCompressedNBT( final NBTTagCompound din )
 	{
 		this.in = din;
 	}
@@ -91,7 +91,7 @@ public class PacketCompressedNBT implements AppEngPacket, AppEngPacketHandler<Pa
 			this.in = CompressedStreamTools.read( inStream );
 			inStream.close();
 		}
-		catch( IOException e )
+		catch( final IOException e )
 		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -100,7 +100,7 @@ public class PacketCompressedNBT implements AppEngPacket, AppEngPacketHandler<Pa
 	}
 
 	@Override
-	public void toBytes( ByteBuf buf )
+	public void toBytes( final ByteBuf buf )
 	{
 		try
 		{
@@ -108,7 +108,7 @@ public class PacketCompressedNBT implements AppEngPacket, AppEngPacketHandler<Pa
 			{
 
 				@Override
-				public void write( int value ) throws IOException
+				public void write( final int value ) throws IOException
 				{
 					PacketCompressedNBT.this.data.writeByte( value );
 				}
@@ -116,13 +116,13 @@ public class PacketCompressedNBT implements AppEngPacket, AppEngPacketHandler<Pa
 			CompressedStreamTools.write( this.in, new DataOutputStream( this.compressFrame ) );
 			this.compressFrame.close();
 		}
-		catch( IOException e )
+		catch( final IOException e )
 		{
 		}
 	}
 
 	@Override
-	public AppEngPacket onMessage( PacketCompressedNBT message, MessageContext ctx )
+	public AppEngPacket onMessage( final PacketCompressedNBT message, final MessageContext ctx )
 	{
 		final GuiScreen gs = Minecraft.getMinecraft().currentScreen;
 

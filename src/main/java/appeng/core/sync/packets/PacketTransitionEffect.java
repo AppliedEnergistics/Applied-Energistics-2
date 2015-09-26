@@ -66,7 +66,7 @@ public class PacketTransitionEffect implements AppEngPacket, AppEngPacketHandler
 	}
 
 	@Override
-	public AppEngPacket onMessage( PacketTransitionEffect message, MessageContext ctx )
+	public AppEngPacket onMessage( final PacketTransitionEffect message, final MessageContext ctx )
 	{
 		final World world = ClientHelper.proxy.getWorld();
 
@@ -104,7 +104,7 @@ public class PacketTransitionEffect implements AppEngPacket, AppEngPacketHandler
 	}
 
 	@Override
-	public void fromBytes( ByteBuf buf )
+	public void fromBytes( final ByteBuf buf )
 	{
 		this.x = buf.readFloat();
 		this.y = buf.readFloat();
@@ -114,7 +114,7 @@ public class PacketTransitionEffect implements AppEngPacket, AppEngPacketHandler
 	}
 
 	@Override
-	public void toBytes( ByteBuf buf )
+	public void toBytes( final ByteBuf buf )
 	{
 		buf.writeFloat( (float) this.x );
 		buf.writeFloat( (float) this.y );

@@ -61,14 +61,14 @@ public class PacketCompassRequest implements AppEngPacket, AppEngPacketHandler<P
 	}
 
 	@Override
-	public void calculatedDirection( boolean hasResult, boolean spin, double radians, double dist )
+	public void calculatedDirection( final boolean hasResult, final boolean spin, final double radians, final double dist )
 	{
 		this.talkBackTo = Minecraft.getMinecraft().thePlayer;
 		NetworkHandler.INSTANCE.sendTo( new PacketCompassResponse( this, hasResult, spin, radians ), (EntityPlayerMP) this.talkBackTo );
 	}
 
 	@Override
-	public AppEngPacket onMessage( PacketCompassRequest message, MessageContext ctx )
+	public AppEngPacket onMessage( final PacketCompassRequest message, final MessageContext ctx )
 	{
 		message.talkBackTo = ctx.getServerHandler().playerEntity;
 
@@ -79,7 +79,7 @@ public class PacketCompassRequest implements AppEngPacket, AppEngPacketHandler<P
 	}
 
 	@Override
-	public void fromBytes( ByteBuf buf )
+	public void fromBytes( final ByteBuf buf )
 	{
 		this.attunement = buf.readLong();
 		this.cx = buf.readInt();
@@ -88,7 +88,7 @@ public class PacketCompassRequest implements AppEngPacket, AppEngPacketHandler<P
 	}
 
 	@Override
-	public void toBytes( ByteBuf buf )
+	public void toBytes( final ByteBuf buf )
 	{
 		buf.writeLong( this.attunement );
 		buf.writeInt( this.cx );

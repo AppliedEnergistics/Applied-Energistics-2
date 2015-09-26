@@ -53,7 +53,7 @@ public class PacketMockExplosion implements AppEngPacket, AppEngPacketHandler<Pa
 	}
 
 	@Override
-	public AppEngPacket onMessage( PacketMockExplosion message, MessageContext ctx )
+	public AppEngPacket onMessage( final PacketMockExplosion message, final MessageContext ctx )
 	{
 		final World world = CommonHelper.proxy.getWorld();
 		world.spawnParticle( "largeexplode", message.x, message.y, message.z, 1.0D, 0.0D, 0.0D );
@@ -61,7 +61,7 @@ public class PacketMockExplosion implements AppEngPacket, AppEngPacketHandler<Pa
 	}
 
 	@Override
-	public void fromBytes( ByteBuf buf )
+	public void fromBytes( final ByteBuf buf )
 	{
 		this.x = buf.readDouble();
 		this.y = buf.readDouble();
@@ -69,7 +69,7 @@ public class PacketMockExplosion implements AppEngPacket, AppEngPacketHandler<Pa
 	}
 
 	@Override
-	public void toBytes( ByteBuf buf )
+	public void toBytes( final ByteBuf buf )
 	{
 		buf.writeDouble( this.x );
 		buf.writeDouble( this.y );

@@ -53,7 +53,7 @@ public class PacketAssemblerAnimation implements AppEngPacket, AppEngPacketHandl
 	}
 
 	// api
-	public PacketAssemblerAnimation( int x, int y, int z, byte rate, IAEItemStack is )
+	public PacketAssemblerAnimation( final int x, final int y, final int z, final byte rate, final IAEItemStack is )
 	{
 		this.x = x;
 		this.y = y;
@@ -63,7 +63,7 @@ public class PacketAssemblerAnimation implements AppEngPacket, AppEngPacketHandl
 	}
 
 	@Override
-	public AppEngPacket onMessage( PacketAssemblerAnimation message, MessageContext ctx )
+	public AppEngPacket onMessage( final PacketAssemblerAnimation message, final MessageContext ctx )
 	{
 		final double d0 = 0.5d;// + ((double) (Platform.getRandomFloat() - 0.5F) * 0.26D);
 		final double d1 = 0.5d;// + ((double) (Platform.getRandomFloat() - 0.5F) * 0.26D);
@@ -76,7 +76,7 @@ public class PacketAssemblerAnimation implements AppEngPacket, AppEngPacketHandl
 	}
 
 	@Override
-	public void fromBytes( ByteBuf buf )
+	public void fromBytes( final ByteBuf buf )
 	{
 		this.x = buf.readInt();
 		this.y = buf.readInt();
@@ -86,13 +86,13 @@ public class PacketAssemblerAnimation implements AppEngPacket, AppEngPacketHandl
 		{
 			this.is = AEItemStack.loadItemStackFromPacket( buf );
 		}
-		catch( IOException e )
+		catch( final IOException e )
 		{
 		}
 	}
 
 	@Override
-	public void toBytes( ByteBuf buf )
+	public void toBytes( final ByteBuf buf )
 	{
 		buf.writeInt( this.x );
 		buf.writeInt( this.y );
@@ -102,7 +102,7 @@ public class PacketAssemblerAnimation implements AppEngPacket, AppEngPacketHandl
 		{
 			this.is.writeToPacket( buf );
 		}
-		catch( IOException e )
+		catch( final IOException e )
 		{
 		}
 	}

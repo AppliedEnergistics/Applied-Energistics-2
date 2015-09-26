@@ -45,7 +45,6 @@ import appeng.core.crash.IntegrationCrashEnhancement;
 import appeng.core.crash.ModCrashEnhancement;
 import appeng.core.features.AEFeature;
 import appeng.core.sync.GuiBridge;
-import appeng.core.sync.network.NetworkHandler;
 import appeng.core.worlddata.WorldData;
 import appeng.hooks.TickHandler;
 import appeng.integration.IntegrationRegistry;

@@ -61,7 +61,7 @@ public class PacketPatternSlot implements AppEngPacket, AppEngPacketHandler<Pack
 			{
 				return AEItemStack.loadItemStackFromPacket( stream );
 			}
-			catch( IOException e )
+			catch( final IOException e )
 			{
 				return null;
 			}
@@ -71,7 +71,7 @@ public class PacketPatternSlot implements AppEngPacket, AppEngPacketHandler<Pack
 	}
 
 	// api
-	public PacketPatternSlot( IInventory pat, IAEItemStack slotItem, boolean shift )
+	public PacketPatternSlot( final IInventory pat, final IAEItemStack slotItem, final boolean shift )
 	{
 		this.pat = pat;
 		this.slotItem = slotItem;
@@ -79,7 +79,7 @@ public class PacketPatternSlot implements AppEngPacket, AppEngPacketHandler<Pack
 	}
 
 	@Override
-	public AppEngPacket onMessage( PacketPatternSlot message, MessageContext ctx )
+	public AppEngPacket onMessage( final PacketPatternSlot message, final MessageContext ctx )
 	{
 		final EntityPlayerMP sender = (EntityPlayerMP) ctx.getServerHandler().playerEntity;
 		if( sender.openContainer instanceof ContainerPatternTerm )
@@ -91,7 +91,7 @@ public class PacketPatternSlot implements AppEngPacket, AppEngPacketHandler<Pack
 	}
 
 	@Override
-	public void fromBytes( ByteBuf buf )
+	public void fromBytes( final ByteBuf buf )
 	{
 		this.shift = buf.readBoolean();
 		this.slotItem = this.readItem( buf );
@@ -103,7 +103,7 @@ public class PacketPatternSlot implements AppEngPacket, AppEngPacketHandler<Pack
 	}
 
 	@Override
-	public void toBytes( ByteBuf buf )
+	public void toBytes( final ByteBuf buf )
 	{
 		buf.writeBoolean( this.shift );
 
@@ -135,7 +135,7 @@ public class PacketPatternSlot implements AppEngPacket, AppEngPacketHandler<Pack
 		return this.shift;
 	}
 
-	private void writeItem( IAEItemStack slotItem, ByteBuf data )
+	private void writeItem( final IAEItemStack slotItem, final ByteBuf data )
 	{
 		if( slotItem == null )
 		{
@@ -148,7 +148,7 @@ public class PacketPatternSlot implements AppEngPacket, AppEngPacketHandler<Pack
 			{
 				slotItem.writeToPacket( data );
 			}
-			catch( IOException e )
+			catch( final IOException e )
 			{
 			}
 		}

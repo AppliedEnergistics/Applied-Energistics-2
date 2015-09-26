@@ -54,7 +54,7 @@ public final class PacketConfigButton implements AppEngPacket, AppEngPacketHandl
 	}
 
 	@Override
-	public AppEngPacket onMessage( PacketConfigButton message, MessageContext ctx )
+	public AppEngPacket onMessage( final PacketConfigButton message, final MessageContext ctx )
 	{
 		final EntityPlayerMP sender = ctx.getServerHandler().playerEntity;
 
@@ -73,14 +73,14 @@ public final class PacketConfigButton implements AppEngPacket, AppEngPacketHandl
 	}
 
 	@Override
-	public void fromBytes( ByteBuf buf )
+	public void fromBytes( final ByteBuf buf )
 	{
 		this.option = Settings.values()[buf.readInt()];
 		this.rotationDirection = buf.readBoolean();
 	}
 
 	@Override
-	public void toBytes( ByteBuf buf )
+	public void toBytes( final ByteBuf buf )
 	{
 		buf.writeInt( this.option.ordinal() );
 		buf.writeBoolean( this.rotationDirection );

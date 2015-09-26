@@ -44,7 +44,7 @@ public class PacketMultiPart implements AppEngPacket, AppEngPacketHandler<Packet
 	}
 
 	@Override
-	public AppEngPacket onMessage( PacketMultiPart message, MessageContext ctx )
+	public AppEngPacket onMessage( final PacketMultiPart message, final MessageContext ctx )
 	{
 		final IFMP fmp = (IFMP) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.FMP );
 		if( fmp != null )
@@ -56,12 +56,12 @@ public class PacketMultiPart implements AppEngPacket, AppEngPacketHandler<Packet
 	}
 
 	@Override
-	public void fromBytes( ByteBuf buf )
+	public void fromBytes( final ByteBuf buf )
 	{
 	}
 
 	@Override
-	public void toBytes( ByteBuf buf )
+	public void toBytes( final ByteBuf buf )
 	{
 	}
 }

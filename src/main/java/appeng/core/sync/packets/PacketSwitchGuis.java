@@ -60,7 +60,7 @@ public class PacketSwitchGuis implements AppEngPacket, AppEngPacketHandler<Packe
 	}
 
 	@Override
-	public AppEngPacket onMessage( PacketSwitchGuis message, MessageContext ctx )
+	public AppEngPacket onMessage( final PacketSwitchGuis message, final MessageContext ctx )
 	{
 		if( ctx.side == Side.CLIENT )
 		{
@@ -85,13 +85,13 @@ public class PacketSwitchGuis implements AppEngPacket, AppEngPacketHandler<Packe
 	}
 
 	@Override
-	public void fromBytes( ByteBuf buf )
+	public void fromBytes( final ByteBuf buf )
 	{
 		this.newGui = GuiBridge.values()[buf.readInt()];
 	}
 
 	@Override
-	public void toBytes( ByteBuf buf )
+	public void toBytes( final ByteBuf buf )
 	{
 		buf.writeInt( this.newGui.ordinal() );
 	}

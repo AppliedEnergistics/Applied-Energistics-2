@@ -93,13 +93,13 @@ public class NetworkHandler
 	}
 
 	@SubscribeEvent
-	public void newConnection( ServerConnectionFromClientEvent ev )
+	public void newConnection( final ServerConnectionFromClientEvent ev )
 	{
 		WorldData.instance().dimensionData().sendToPlayer( ev.manager );
 	}
 
 	@SubscribeEvent
-	public void newConnection( PlayerLoggedInEvent loginEvent )
+	public void newConnection( final PlayerLoggedInEvent loginEvent )
 	{
 		if( loginEvent.player instanceof EntityPlayerMP )
 		{

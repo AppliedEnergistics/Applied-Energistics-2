@@ -53,7 +53,7 @@ public class PacketPaintedEntity implements AppEngPacket, AppEngPacketHandler<Pa
 	}
 
 	@Override
-	public AppEngPacket onMessage( PacketPaintedEntity message, MessageContext ctx )
+	public AppEngPacket onMessage( final PacketPaintedEntity message, final MessageContext ctx )
 	{
 		final PlayerColor pc = new PlayerColor( message.entityId, message.myColor, message.ticks );
 		TickHandler.INSTANCE.getPlayerColors().put( message.entityId, pc );
@@ -61,7 +61,7 @@ public class PacketPaintedEntity implements AppEngPacket, AppEngPacketHandler<Pa
 	}
 
 	@Override
-	public void fromBytes( ByteBuf buf )
+	public void fromBytes( final ByteBuf buf )
 	{
 		this.entityId = buf.readInt();
 		this.myColor = AEColor.values()[buf.readByte()];
@@ -69,7 +69,7 @@ public class PacketPaintedEntity implements AppEngPacket, AppEngPacketHandler<Pa
 	}
 
 	@Override
-	public void toBytes( ByteBuf buf )
+	public void toBytes( final ByteBuf buf )
 	{
 		buf.writeInt( this.entityId );
 		buf.writeByte( this.myColor.ordinal() );

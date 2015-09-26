@@ -74,7 +74,7 @@ public class PacketNEIRecipe implements AppEngPacket, AppEngPacketHandler<Packet
 	}
 
 	// api
-	public PacketNEIRecipe( NBTTagCompound recipe ) throws IOException
+	public PacketNEIRecipe( final NBTTagCompound recipe ) throws IOException
 	{
 		this.recipe = recipe;
 	}
@@ -215,7 +215,7 @@ public class PacketNEIRecipe implements AppEngPacket, AppEngPacketHandler<Packet
 	 * @param patternItem which {@link ItemStack} to extract
 	 * @return null or a found {@link ItemStack}
 	 */
-	private ItemStack extractItemFromPlayerInventory( EntityPlayer player, Actionable mode, ItemStack patternItem )
+	private ItemStack extractItemFromPlayerInventory( final EntityPlayer player, final Actionable mode, final ItemStack patternItem )
 	{
 		final InventoryAdaptor ia = InventoryAdaptor.getAdaptor( player, ForgeDirection.UNKNOWN );
 		final AEItemStack request = AEItemStack.create( patternItem );
@@ -247,7 +247,7 @@ public class PacketNEIRecipe implements AppEngPacket, AppEngPacketHandler<Packet
 	}
 
 	@Override
-	public void fromBytes( ByteBuf buf )
+	public void fromBytes( final ByteBuf buf )
 	{
 		final NBTTagCompound recipe = ByteBufUtils.readTag( buf );
 
@@ -270,7 +270,7 @@ public class PacketNEIRecipe implements AppEngPacket, AppEngPacketHandler<Packet
 	}
 
 	@Override
-	public void toBytes( ByteBuf buf )
+	public void toBytes( final ByteBuf buf )
 	{
 		ByteBufUtils.writeTag( buf, this.recipe );
 		// ByteArrayOutputStream bytes = new ByteArrayOutputStream();
@@ -287,7 +287,7 @@ public class PacketNEIRecipe implements AppEngPacket, AppEngPacketHandler<Packet
 	}
 
 	@Override
-	public AppEngPacket onMessage( PacketNEIRecipe message, MessageContext ctx )
+	public AppEngPacket onMessage( final PacketNEIRecipe message, final MessageContext ctx )
 	{
 		final EntityPlayerMP player = (EntityPlayerMP) ctx.getServerHandler().playerEntity;
 		final Container con = player.openContainer;

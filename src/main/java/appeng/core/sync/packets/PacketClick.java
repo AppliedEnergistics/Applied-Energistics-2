@@ -68,7 +68,7 @@ public class PacketClick implements AppEngPacket, AppEngPacketHandler<PacketClic
 	}
 
 	@Override
-	public AppEngPacket onMessage( PacketClick message, MessageContext ctx )
+	public AppEngPacket onMessage( final PacketClick message, final MessageContext ctx )
 	{
 		final EntityPlayer player = ctx.getServerHandler().playerEntity;
 		final ItemStack is = player.inventory.getCurrentItem();
@@ -103,7 +103,7 @@ public class PacketClick implements AppEngPacket, AppEngPacketHandler<PacketClic
 	}
 
 	@Override
-	public void fromBytes( ByteBuf buf )
+	public void fromBytes( final ByteBuf buf )
 	{
 		this.x = buf.readInt();
 		this.y = buf.readInt();
@@ -115,7 +115,7 @@ public class PacketClick implements AppEngPacket, AppEngPacketHandler<PacketClic
 	}
 
 	@Override
-	public void toBytes( ByteBuf buf )
+	public void toBytes( final ByteBuf buf )
 	{
 		buf.writeInt( this.x );
 		buf.writeInt( this.y );

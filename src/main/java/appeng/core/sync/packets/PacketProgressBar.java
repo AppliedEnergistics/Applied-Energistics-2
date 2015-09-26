@@ -53,7 +53,7 @@ public class PacketProgressBar implements AppEngPacket, AppEngPacketHandler<Pack
 	}
 
 	@Override
-	public AppEngPacket onMessage( PacketProgressBar message, MessageContext ctx )
+	public AppEngPacket onMessage( final PacketProgressBar message, final MessageContext ctx )
 	{
 		if( ctx.side == Side.CLIENT )
 		{
@@ -75,14 +75,14 @@ public class PacketProgressBar implements AppEngPacket, AppEngPacketHandler<Pack
 	}
 
 	@Override
-	public void fromBytes( ByteBuf buf )
+	public void fromBytes( final ByteBuf buf )
 	{
 		this.id = buf.readShort();
 		this.value = buf.readLong();
 	}
 
 	@Override
-	public void toBytes( ByteBuf buf )
+	public void toBytes( final ByteBuf buf )
 	{
 		buf.writeShort( this.id );
 		buf.writeLong( this.value );

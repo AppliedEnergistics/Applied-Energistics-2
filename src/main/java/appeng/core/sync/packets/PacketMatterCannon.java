@@ -67,7 +67,7 @@ public class PacketMatterCannon implements AppEngPacket, AppEngPacketHandler<Pac
 	}
 
 	@Override
-	public AppEngPacket onMessage( PacketMatterCannon message, MessageContext ctx )
+	public AppEngPacket onMessage( final PacketMatterCannon message, final MessageContext ctx )
 	{
 		try
 		{
@@ -87,7 +87,7 @@ public class PacketMatterCannon implements AppEngPacket, AppEngPacketHandler<Pac
 	}
 
 	@Override
-	public void fromBytes( ByteBuf buf )
+	public void fromBytes( final ByteBuf buf )
 	{
 		this.x = buf.readFloat();
 		this.y = buf.readFloat();
@@ -99,7 +99,7 @@ public class PacketMatterCannon implements AppEngPacket, AppEngPacketHandler<Pac
 	}
 
 	@Override
-	public void toBytes( ByteBuf buf )
+	public void toBytes( final ByteBuf buf )
 	{
 		buf.writeFloat( this.x );
 		buf.writeFloat( this.y );

@@ -49,7 +49,7 @@ public class PacketPartialItem implements AppEngPacket, AppEngPacketHandler<Pack
 	}
 
 	@Override
-	public AppEngPacket onMessage( PacketPartialItem message, MessageContext ctx )
+	public AppEngPacket onMessage( final PacketPartialItem message, final MessageContext ctx )
 	{
 		if( ctx.getServerHandler().playerEntity.openContainer instanceof AEBaseContainer )
 		{
@@ -75,14 +75,14 @@ public class PacketPartialItem implements AppEngPacket, AppEngPacketHandler<Pack
 	}
 
 	@Override
-	public void fromBytes( ByteBuf buf )
+	public void fromBytes( final ByteBuf buf )
 	{
 		this.pageNum = buf.readShort();
 		buf.readBytes( this.data = new byte[buf.readableBytes()] );
 	}
 
 	@Override
-	public void toBytes( ByteBuf buf )
+	public void toBytes( final ByteBuf buf )
 	{
 		buf.writeShort( this.pageNum );
 		buf.writeBytes( this.data );

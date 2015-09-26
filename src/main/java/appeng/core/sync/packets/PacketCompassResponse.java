@@ -62,14 +62,14 @@ public class PacketCompassResponse implements AppEngPacket, AppEngPacketHandler<
 	}
 
 	@Override
-	public AppEngPacket onMessage( PacketCompassResponse message, MessageContext ctx )
+	public AppEngPacket onMessage( final PacketCompassResponse message, final MessageContext ctx )
 	{
 		CompassManager.INSTANCE.postResult( message.attunement, message.cx << 4, message.cdy << 5, message.cz << 4, message.cr );
 		return null;
 	}
 
 	@Override
-	public void fromBytes( ByteBuf buf )
+	public void fromBytes( final ByteBuf buf )
 	{
 
 		this.attunement = buf.readLong();
@@ -81,7 +81,7 @@ public class PacketCompassResponse implements AppEngPacket, AppEngPacketHandler<
 	}
 
 	@Override
-	public void toBytes( ByteBuf buf )
+	public void toBytes( final ByteBuf buf )
 	{
 		buf.writeLong( this.attunement );
 		buf.writeInt( this.cx );

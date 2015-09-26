@@ -58,7 +58,7 @@ public class PacketInventoryAction implements AppEngPacket, AppEngPacketHandler<
 	}
 
 	// api
-	public PacketInventoryAction( InventoryAction action, int slot, IAEItemStack slotItem )
+	public PacketInventoryAction( final InventoryAction action, final int slot, final IAEItemStack slotItem )
 	{
 		if( Platform.isClient() )
 		{
@@ -81,7 +81,7 @@ public class PacketInventoryAction implements AppEngPacket, AppEngPacketHandler<
 	}
 
 	@Override
-	public AppEngPacket onMessage( PacketInventoryAction message, MessageContext ctx )
+	public AppEngPacket onMessage( final PacketInventoryAction message, final MessageContext ctx )
 	{
 		if( ctx.side == Side.CLIENT )
 		{
@@ -137,7 +137,7 @@ public class PacketInventoryAction implements AppEngPacket, AppEngPacketHandler<
 	}
 
 	@Override
-	public void fromBytes( ByteBuf buf )
+	public void fromBytes( final ByteBuf buf )
 	{
 		this.action = InventoryAction.values()[buf.readInt()];
 		this.slot = buf.readInt();
@@ -149,7 +149,7 @@ public class PacketInventoryAction implements AppEngPacket, AppEngPacketHandler<
 			{
 				this.slotItem = AEItemStack.loadItemStackFromPacket( buf );
 			}
-			catch( IOException e )
+			catch( final IOException e )
 			{
 			}
 		}
@@ -160,7 +160,7 @@ public class PacketInventoryAction implements AppEngPacket, AppEngPacketHandler<
 	}
 
 	@Override
-	public void toBytes( ByteBuf buf )
+	public void toBytes( final ByteBuf buf )
 	{
 		buf.writeInt( this.action.ordinal() );
 		buf.writeInt( this.slot );
@@ -177,7 +177,7 @@ public class PacketInventoryAction implements AppEngPacket, AppEngPacketHandler<
 			{
 				this.slotItem.writeToPacket( buf );
 			}
-			catch( IOException e )
+			catch( final IOException e )
 			{
 			}
 		}
