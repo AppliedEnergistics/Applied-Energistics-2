@@ -475,7 +475,6 @@ public abstract class AEBaseContainer extends Container
 			return null;
 		}
 
-		ItemStack tis = null;
 		AppEngSlot clickSlot = (AppEngSlot) this.inventorySlots.get( idx ); // require AE SLots!
 
 		if( clickSlot instanceof SlotDisabled || clickSlot instanceof SlotInaccessible )
@@ -484,7 +483,7 @@ public abstract class AEBaseContainer extends Container
 		}
 		if( clickSlot != null && clickSlot.getHasStack() )
 		{
-			tis = clickSlot.getStack();
+			ItemStack tis = clickSlot.getStack();
 
 			if( tis == null )
 			{

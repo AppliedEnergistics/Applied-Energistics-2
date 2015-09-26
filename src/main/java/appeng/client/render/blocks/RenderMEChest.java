@@ -85,7 +85,6 @@ public class RenderMEChest extends BaseBlockRender<BlockChest, TileChest>
 
 		this.selectFace( renderer, west, up, forward, 5, 16 - 5, 9, 12 );
 
-		int offsetU = -4;
 		int offsetV = 8;
 		if( stat == 0 )
 		{
@@ -96,6 +95,7 @@ public class RenderMEChest extends BaseBlockRender<BlockChest, TileChest>
 		Tessellator.instance.setBrightness( b );
 		Tessellator.instance.setColorOpaque_I( 0xffffff );
 
+		int offsetU = -4;
 		FlippableIcon flippableIcon = new FlippableIcon( new OffsetIcon( ExtraBlockTextures.MEStorageCellTextures.getIcon(), offsetU, offsetV ) );
 		if( forward == ForgeDirection.EAST && ( up == ForgeDirection.NORTH || up == ForgeDirection.SOUTH ) )
 		{

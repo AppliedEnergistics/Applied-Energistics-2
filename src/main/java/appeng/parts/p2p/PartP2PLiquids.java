@@ -149,9 +149,9 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 		}
 
 		int available = resource.amount;
-		int used = 0;
 
 		i = list.iterator();
+		int used = 0;
 		while( i.hasNext() )
 		{
 			PartP2PLiquids l = i.next();

@@ -818,14 +818,14 @@ public abstract class AEBaseGui extends GuiContainer
 							float par2 = aes.yDisplayPosition;
 							float par3 = uv_x * 16;
 							float par4 = uv_y * 16;
-							float par5 = 16;
-							float par6 = 16;
 
-							float f = 0.00390625F;
-							float f1 = 0.00390625F;
 							tessellator.startDrawingQuads();
 							tessellator.setColorRGBA_F( 1.0f, 1.0f, 1.0f, aes.getOpacityOfIcon() );
+							float f1 = 0.00390625F;
+							float f = 0.00390625F;
+							float par6 = 16;
 							tessellator.addVertexWithUV( par1 + 0, par2 + par6, this.zLevel, ( par3 + 0 ) * f, ( par4 + par6 ) * f1 );
+							float par5 = 16;
 							tessellator.addVertexWithUV( par1 + par5, par2 + par6, this.zLevel, ( par3 + par5 ) * f, ( par4 + par6 ) * f1 );
 							tessellator.addVertexWithUV( par1 + par5, par2 + 0, this.zLevel, ( par3 + par5 ) * f, ( par4 + 0 ) * f1 );
 							tessellator.addVertexWithUV( par1 + 0, par2 + 0, this.zLevel, ( par3 + 0 ) * f, ( par4 + 0 ) * f1 );

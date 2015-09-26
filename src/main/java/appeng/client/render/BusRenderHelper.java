@@ -396,7 +396,6 @@ public final class BusRenderHelper implements IPartRenderHelper
 	{
 		ForgeDirection forward = this.az;
 		ForgeDirection up = this.ay;
-		ForgeDirection west = ForgeDirection.UNKNOWN;
 
 		if( forward == null || up == null )
 		{
@@ -407,6 +406,7 @@ public final class BusRenderHelper implements IPartRenderHelper
 		int west_y = forward.offsetZ * up.offsetX - forward.offsetX * up.offsetZ;
 		int west_z = forward.offsetX * up.offsetY - forward.offsetY * up.offsetX;
 
+		ForgeDirection west = ForgeDirection.UNKNOWN;
 		for( ForgeDirection dx : ForgeDirection.VALID_DIRECTIONS )
 		{
 			if( dx.offsetX == west_x && dx.offsetY == west_y && dx.offsetZ == west_z )

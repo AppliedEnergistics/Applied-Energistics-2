@@ -58,7 +58,6 @@ public class ToolBiometricCardRender implements IItemRenderer
 		float f5 = par2Icon.getMaxU();
 		float f6 = par2Icon.getMinV();
 		float f7 = par2Icon.getMaxV();
-		float f12 = 0.0625F;
 
 		Tessellator tessellator = Tessellator.instance;
 		GL11.glPushMatrix();
@@ -83,6 +82,7 @@ public class ToolBiometricCardRender implements IItemRenderer
 		else
 		{
 			GL11.glTranslatef( -0.5F, -0.3F, 0.01F );
+			float f12 = 0.0625F;
 			ItemRenderer.renderItemIn2D( tessellator, f5, f6, f4, f7, par2Icon.getIconWidth(), par2Icon.getIconHeight(), f12 );
 
 			GL11.glDisable( GL11.GL_CULL_FACE );
@@ -111,7 +111,6 @@ public class ToolBiometricCardRender implements IItemRenderer
 		GL11.glDisable( GL11.GL_LIGHTING );
 
 		tessellator.startDrawingQuads();
-		float z = 0;
 
 		AEColor col = AEColor.values()[Math.abs( 3 + hash ) % AEColor.values().length];
 		if( hash == 0 )
@@ -119,12 +118,12 @@ public class ToolBiometricCardRender implements IItemRenderer
 			col = AEColor.Black;
 		}
 
+		float z = 0;
 		for( int x = 0; x < 8; x++ )// 8
 		{
 			for( int y = 0; y < 6; y++ )// 6
 			{
 				boolean isLit = false;
-				float scale = 0.3f / 255.0f;
 
 				if( x == 0 || y == 0 || x == 7 || y == 5 )
 				{
@@ -141,6 +140,7 @@ public class ToolBiometricCardRender implements IItemRenderer
 				}
 				else
 				{
+					float scale = 0.3f / 255.0f;
 					tessellator.setColorOpaque_F( ( ( col.blackVariant >> 16 ) & 0xff ) * scale, ( ( col.blackVariant >> 8 ) & 0xff ) * scale, ( col.blackVariant & 0xff ) * scale );
 				}
 

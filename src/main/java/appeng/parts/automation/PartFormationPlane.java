@@ -284,9 +284,6 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 	public void renderStatic( int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer )
 	{
 		int minX = 1;
-		int minY = 1;
-		int maxX = 15;
-		int maxY = 15;
 
 		ForgeDirection e = rh.getWorldX();
 		ForgeDirection u = rh.getWorldY();
@@ -298,16 +295,19 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 			minX = 0;
 		}
 
+		int maxX = 15;
 		if( this.isTransitionPlane( te.getWorldObj().getTileEntity( x + e.offsetX, y + e.offsetY, z + e.offsetZ ), this.side ) )
 		{
 			maxX = 16;
 		}
 
+		int minY = 1;
 		if( this.isTransitionPlane( te.getWorldObj().getTileEntity( x - u.offsetX, y - u.offsetY, z - u.offsetZ ), this.side ) )
 		{
 			minY = 0;
 		}
 
+		int maxY = 15;
 		if( this.isTransitionPlane( te.getWorldObj().getTileEntity( x + u.offsetX, y + u.offsetY, z + u.offsetZ ), this.side ) )
 		{
 			maxY = 16;

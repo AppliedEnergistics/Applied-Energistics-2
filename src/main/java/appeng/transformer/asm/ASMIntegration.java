@@ -171,7 +171,6 @@ public final class ASMIntegration implements IClassTransformer
 		}
 
 		String iFace = null;
-		String iName = null;
 
 		if( an.values.get( 0 ).equals( "iface" ) )
 		{
@@ -182,6 +181,7 @@ public final class ASMIntegration implements IClassTransformer
 			iFace = (String) an.values.get( 3 );
 		}
 
+		String iName = null;
 		if( an.values.get( 0 ).equals( "iname" ) )
 		{
 			iName = ( (String[]) an.values.get( 1 ) )[1];

@@ -59,10 +59,10 @@ public class RenderSpatialPylon extends BaseBlockRender<BlockSpatialPylon, TileS
 		TileSpatialPylon sp = imb.getTileEntity( world, x, y, z );
 
 		int displayBits = ( sp == null ) ? 0 : sp.getDisplayBits();
-		ForgeDirection ori = ForgeDirection.UNKNOWN;
 
 		if( displayBits != 0 )
 		{
+			ForgeDirection ori = ForgeDirection.UNKNOWN;
 			if( ( displayBits & TileSpatialPylon.DISPLAY_Z ) == TileSpatialPylon.DISPLAY_X )
 			{
 				ori = ForgeDirection.EAST;

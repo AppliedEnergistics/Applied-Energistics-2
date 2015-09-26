@@ -59,9 +59,6 @@ public class GuiVibrationChamber extends AEBaseGui
 		this.fontRendererObj.drawString( this.getGuiDisplayName( GuiText.VibrationChamber.getLocal() ), 8, 6, 4210752 );
 		this.fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
 
-		int k = 25;
-		int l = -15;
-
 		this.pb.setFullMsg( this.cvc.aePerTick * this.cvc.getCurrentProgress() / 100 + " AE/t" );
 
 		if( this.cvc.getCurrentProgress() > 0 )
@@ -69,6 +66,8 @@ public class GuiVibrationChamber extends AEBaseGui
 			int i1 = this.cvc.getCurrentProgress();
 			this.bindTexture( "guis/vibchamber.png" );
 			GL11.glColor3f( 1, 1, 1 );
+			int l = -15;
+			int k = 25;
 			this.drawTexturedModalRect( k + 56, l + 36 + 12 - i1, 176, 12 - i1, 14, i1 + 2 );
 		}
 	}

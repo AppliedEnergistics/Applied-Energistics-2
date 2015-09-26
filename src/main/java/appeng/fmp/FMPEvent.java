@@ -70,15 +70,14 @@ public class FMPEvent
 
 		BlockCoord pos = new BlockCoord( hit.blockX, hit.blockY, hit.blockZ ).offset( hit.sideHit );
 		ItemStack held = player.getHeldItem();
-		TMultiPart part = null;
-
-		Block blk = null;
 
 		if( held == null )
 		{
 			return false;
 		}
 
+		Block blk = null;
+		TMultiPart part = null;
 		if( held.getItem() instanceof AEBaseItemBlock )
 		{
 			AEBaseItemBlock ib = (AEBaseItemBlock) held.getItem();

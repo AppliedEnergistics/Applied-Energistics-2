@@ -101,12 +101,12 @@ public class NEI implements INEI, IContainerTooltipHandler, IIntegrationModule
 		// crafting terminal...
 		Method registerGuiOverlay = this.apiClass.getDeclaredMethod( "registerGuiOverlay", Class.class, String.class, IStackPositioner.class );
 		Class overlayHandler = Class.forName( "codechicken.nei.api.IOverlayHandler" );
-		Class<NEICraftingHandler> defaultHandler = NEICraftingHandler.class;
 
 		Method registrar = this.apiClass.getDeclaredMethod( "registerGuiOverlayHandler", Class.class, overlayHandler, String.class );
 		registerGuiOverlay.invoke( this.apiClass, GuiCraftingTerm.class, "crafting", new TerminalCraftingSlotFinder() );
 		registerGuiOverlay.invoke( this.apiClass, GuiPatternTerm.class, "crafting", new TerminalCraftingSlotFinder() );
 
+		Class<NEICraftingHandler> defaultHandler = NEICraftingHandler.class;
 		Constructor defaultConstructor = defaultHandler.getConstructor( int.class, int.class );
 		registrar.invoke( this.apiClass, GuiCraftingTerm.class, defaultConstructor.newInstance( 6, 75 ), "crafting" );
 		registrar.invoke( this.apiClass, GuiPatternTerm.class, defaultConstructor.newInstance( 6, 75 ), "crafting" );

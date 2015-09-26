@@ -57,7 +57,6 @@ public class RenderBlockCraftingCPU<B extends BlockCraftingUnit, T extends TileC
 	@Override
 	public boolean renderInWorld( B blk, IBlockAccess w, int x, int y, int z, RenderBlocks renderer )
 	{
-		IIcon theIcon = null;
 		boolean formed = false;
 		boolean emitsLight = false;
 
@@ -70,7 +69,7 @@ public class RenderBlockCraftingCPU<B extends BlockCraftingUnit, T extends TileC
 		int meta = w.getBlockMetadata( x, y, z ) & 3;
 
 		boolean isMonitor = blk.getClass() == BlockCraftingMonitor.class;
-		theIcon = blk.getIcon( ForgeDirection.SOUTH.ordinal(), meta | ( formed ? 8 : 0 ) );
+		IIcon theIcon = blk.getIcon( ForgeDirection.SOUTH.ordinal(), meta | ( formed ? 8 : 0 ) );
 
 		IIcon nonForward = theIcon;
 		if( isMonitor )
@@ -301,10 +300,9 @@ public class RenderBlockCraftingCPU<B extends BlockCraftingUnit, T extends TileC
 				i.setTexture( ExtraBlockTextures.BlockCraftingUnitRingLong.getIcon() );
 			}
 
-			double width = 3.0 / 16.0;
-
 			if( !( i.getBound( a ) < 0.001 || i.getBound( a ) > 15.999 ) )
 			{
+				double width = 3.0 / 16.0;
 				switch( a )
 				{
 					case DOWN:

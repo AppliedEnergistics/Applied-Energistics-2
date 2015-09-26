@@ -61,12 +61,11 @@ public class RenderBlockSkyChest extends BaseBlockRender<BlockSkyChest, TileSkyC
 
 		Minecraft.getMinecraft().getTextureManager().bindTexture( loc );
 
-		final float lidAngle = 0.0f;
-
 		GL11.glScalef( 1.0F, -1F, -1F );
 		GL11.glTranslatef( -0.0F, -1.0F, -1.0F );
 
 		this.model.chestLid.offsetY = -( 0.9f / 16.0f );
+		final float lidAngle = 0.0f;
 		this.model.chestLid.rotateAngleX = -( ( lidAngle * 3.141593F ) / 2.0F );
 		this.model.renderAll();
 

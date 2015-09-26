@@ -63,10 +63,7 @@ public class RenderBlockPaint extends BaseBlockRender<BlockPaint, TilePaint>
 
 			Tessellator tess = Tessellator.instance;
 
-			int lumen = 14 << 20 | 14 << 4;
 			int brightness = imb.getMixedBrightnessForBlock( world, x, y, z );
-
-			double offsetConstant = 0.001;
 
 			EnumSet<ForgeDirection> validSides = EnumSet.noneOf( ForgeDirection.class );
 
@@ -78,6 +75,8 @@ public class RenderBlockPaint extends BaseBlockRender<BlockPaint, TilePaint>
 				}
 			}
 
+			double offsetConstant = 0.001;
+			int lumen = 14 << 20 | 14 << 4;
 			for( Splotch s : tp.getDots() )
 			{
 				if( !validSides.contains( s.side ) )

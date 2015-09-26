@@ -365,7 +365,6 @@ public class PartDenseCable extends PartCable
 		TileEntity te = this.tile.getWorldObj().getTileEntity( x + of.offsetX, y + of.offsetY, z + of.offsetZ );
 		IPartHost partHost = te instanceof IPartHost ? (IPartHost) te : null;
 		IGridHost ghh = te instanceof IGridHost ? (IGridHost) te : null;
-		boolean isGlass = false;
 		AEColor myColor = this.getCableColor();
 		/*
 		 * ( ghh != null && partHost != null && ghh.getCableConnectionType( of ) == AECableType.GLASS &&
@@ -434,6 +433,7 @@ public class PartDenseCable extends PartCable
 		rh.renderBlock( x, y, z, renderer );
 
 		rh.setFacesToRender( EnumSet.allOf( ForgeDirection.class ) );
+		boolean isGlass = false;
 		if( !isGlass )
 		{
 			this.setSmartConnectionRotations( of, renderer );

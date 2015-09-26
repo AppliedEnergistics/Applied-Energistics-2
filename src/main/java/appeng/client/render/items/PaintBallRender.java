@@ -60,7 +60,6 @@ public class PaintBallRender implements IItemRenderer
 		float f5 = par2Icon.getMaxU();
 		float f6 = par2Icon.getMinV();
 		float f7 = par2Icon.getMaxV();
-		float f12 = 0.0625F;
 
 		ItemPaintBall ipb = (ItemPaintBall) item.getItem();
 
@@ -75,11 +74,10 @@ public class PaintBallRender implements IItemRenderer
 		int g = ( colorValue >> 8 ) & 0xff;
 		int b = ( colorValue ) & 0xff;
 
-		int full = (int) ( 255 * 0.3 );
-		float fail = 0.7f;
-
 		if( item.getItemDamage() >= 20 )
 		{
+			float fail = 0.7f;
+			int full = (int) ( 255 * 0.3 );
 			GL11.glColor4ub( (byte) ( full + r * fail ), (byte) ( full + g * fail ), (byte) ( full + b * fail ), (byte) 255 );
 		}
 		else
@@ -112,6 +110,7 @@ public class PaintBallRender implements IItemRenderer
 			{
 				GL11.glTranslatef( -0.5F, -0.3F, 0.01F );
 			}
+			float f12 = 0.0625F;
 			ItemRenderer.renderItemIn2D( tessellator, f5, f6, f4, f7, par2Icon.getIconWidth(), par2Icon.getIconHeight(), f12 );
 
 			GL11.glDisable( GL11.GL_CULL_FACE );

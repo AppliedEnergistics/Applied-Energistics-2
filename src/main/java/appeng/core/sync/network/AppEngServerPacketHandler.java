@@ -39,11 +39,10 @@ public final class AppEngServerPacketHandler extends AppEngPacketHandlerBase imp
 	public void onPacketData( INetworkInfo manager, FMLProxyPacket packet, EntityPlayer player )
 	{
 		ByteBuf stream = packet.payload();
-		int packetType = -1;
 
 		try
 		{
-			packetType = stream.readInt();
+			int packetType = stream.readInt();
 			AppEngPacket pack = PacketTypes.getPacket( packetType ).parsePacket( stream );
 			pack.serverPacketData( manager, pack, player );
 		}

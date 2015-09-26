@@ -119,7 +119,6 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 	public boolean onItemUse( ItemStack is, EntityPlayer p, World w, int x, int y, int z, int side, float hitX, float hitY, float hitZ )
 	{
 		Block blk = w.getBlock( x, y, z );
-		double powerPerUse = 100;
 
 		ItemStack paintBall = this.getColor( is );
 
@@ -143,6 +142,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 				return false;
 			}
 
+			double powerPerUse = 100;
 			if( paintBall != null && paintBall.getItem() instanceof ItemSnowball )
 			{
 				ForgeDirection orientation = ForgeDirection.getOrientation( side );

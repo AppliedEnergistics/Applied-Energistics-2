@@ -128,7 +128,6 @@ public class MEIInventoryWrapper implements IMEInventory<IAEItemStack>
 	@Override
 	public IAEItemStack extractItems( IAEItemStack request, Actionable mode, BaseActionSource src )
 	{
-		ItemStack Gathered = null;
 		ItemStack Req = request.getItemStack();
 
 		int request_stackSize = Req.stackSize;
@@ -140,6 +139,7 @@ public class MEIInventoryWrapper implements IMEInventory<IAEItemStack>
 
 		Req.stackSize = request_stackSize;
 
+		ItemStack Gathered = null;
 		if( this.adaptor != null )
 		{
 			Gathered = this.adaptor.removeItems( Req.stackSize, Req, null );

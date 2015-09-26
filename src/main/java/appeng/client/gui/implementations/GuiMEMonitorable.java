@@ -393,9 +393,9 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 	@Override
 	public void drawBG( int offsetX, int offsetY, int mouseX, int mouseY )
 	{
-		int x_width = 197;
 
 		this.bindTexture( this.getBackground() );
+		int x_width = 197;
 		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, x_width, 18 );
 
 		if( this.viewCell || ( this instanceof GuiSecurity ) )

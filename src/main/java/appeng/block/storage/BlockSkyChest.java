@@ -140,7 +140,6 @@ public class BlockSkyChest extends AEBaseTileBlock implements ICustomCollision
 	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool( World w, int x, int y, int z, Entity e, boolean isVisual )
 	{
 		TileSkyChest sk = this.getTileEntity( w, x, y, z );
-		double sc = 0.06;
 		ForgeDirection o = ForgeDirection.UNKNOWN;
 
 		if( sk != null )
@@ -152,6 +151,7 @@ public class BlockSkyChest extends AEBaseTileBlock implements ICustomCollision
 		double offsetY = o.offsetY == 0 ? 0.06 : 0.0;
 		double offsetZ = o.offsetZ == 0 ? 0.06 : 0.0;
 
+		double sc = 0.06;
 		return Collections.singletonList( AxisAlignedBB.getBoundingBox( Math.max( 0.0, offsetX - o.offsetX * sc ), Math.max( 0.0, offsetY - o.offsetY * sc ), Math.max( 0.0, offsetZ - o.offsetZ * sc ), Math.min( 1.0, ( 1.0 - offsetX ) - o.offsetX * sc ), Math.min( 1.0, ( 1.0 - offsetY ) - o.offsetY * sc ), Math.min( 1.0, ( 1.0 - offsetZ ) - o.offsetZ * sc ) ) );
 	}
 

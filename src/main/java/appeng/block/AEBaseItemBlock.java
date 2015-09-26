@@ -103,8 +103,6 @@ public class AEBaseItemBlock extends ItemBlock
 		ForgeDirection up = ForgeDirection.UNKNOWN;
 		ForgeDirection forward = ForgeDirection.UNKNOWN;
 
-		IOrientable ori = null;
-
 		if( this.blockType instanceof AEBaseTileBlock )
 		{
 			if( this.blockType instanceof BlockLightDetector )
@@ -167,6 +165,7 @@ public class AEBaseItemBlock extends ItemBlock
 			}
 		}
 
+		IOrientable ori = null;
 		if( this.blockType instanceof IOrientableBlock )
 		{
 			ori = ( (IOrientableBlock) this.blockType ).getOrientable( w, x, y, z );

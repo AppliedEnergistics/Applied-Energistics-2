@@ -133,11 +133,11 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 
 	protected void setupConfig()
 	{
-		int x = 80;
-		int y = 40;
 		this.setupUpgrades();
 
 		IInventory inv = this.upgradeable.getInventoryByName( "config" );
+		int y = 40;
+		int x = 80;
 		this.addSlotToContainer( new SlotFakeTypeOnly( inv, 0, x, y ) );
 
 		if( this.supportCapacity() )

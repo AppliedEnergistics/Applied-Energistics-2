@@ -65,10 +65,10 @@ public class ToolEraser extends AEBaseItem
 		Block blk = world.getBlock( x, y, z );
 		int meta = world.getBlockMetadata( x, y, z );
 
-		int blocks = 0;
 		List<WorldCoord> next = new LinkedList<WorldCoord>();
 		next.add( new WorldCoord( x, y, z ) );
 
+		int blocks = 0;
 		while( blocks < BLOCK_ERASE_LIMIT && !next.isEmpty() )
 		{
 			List<WorldCoord> c = next;

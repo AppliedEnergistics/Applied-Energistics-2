@@ -59,11 +59,8 @@ public class LayerISidedInventory extends LayerBase implements ISidedInventory
 	public void notifyNeighbors()
 	{
 		// cache of inventory state.
-		int[][] sideData = null;
-		List<ISidedInventory> inventories = null;
-		List<InvSot> slots = null;
 
-		inventories = new ArrayList<ISidedInventory>();
+		List<ISidedInventory> inventories = new ArrayList<ISidedInventory>();
 		int slotCount = 0;
 
 		for( ForgeDirection side : ForgeDirection.VALID_DIRECTIONS )
@@ -77,6 +74,8 @@ public class LayerISidedInventory extends LayerBase implements ISidedInventory
 			}
 		}
 
+		List<InvSot> slots = null;
+		int[][] sideData = null;
 		if( inventories.isEmpty() || slotCount == 0 )
 		{
 			inventories = null;
