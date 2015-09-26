@@ -30,7 +30,7 @@ public class InvLayerData
 {
 
 	// a simple empty array for empty stuff..
-	private static final int[] NULL_SIDES = new int[] {};
+	private static final int[] NULL_SIDES = {};
 
 	// cache of inventory state.
 	private final int[][] sides;

@@ -59,7 +59,7 @@ public class RenderBlockPaint extends BaseBlockRender<BlockPaint, TilePaint>
 		{
 			// super.renderInWorld( imb, world, x, y, z, renderer );
 
-			IIcon[] icoSet = new IIcon[] { imb.getIcon( 0, 0 ), ExtraBlockTextures.BlockPaint2.getIcon(), ExtraBlockTextures.BlockPaint3.getIcon() };
+			IIcon[] icoSet = { imb.getIcon( 0, 0 ), ExtraBlockTextures.BlockPaint2.getIcon(), ExtraBlockTextures.BlockPaint3.getIcon() };
 
 			Tessellator tess = Tessellator.instance;
 

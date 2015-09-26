@@ -51,7 +51,7 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 {
 	private static final int FUEL_SLOT_INDEX = 0;
 	private static final double POWER_PER_TICK = 5;
-	private static final int[] ACCESSIBLE_SLOTS = new int[] { FUEL_SLOT_INDEX };
+	private static final int[] ACCESSIBLE_SLOTS = { FUEL_SLOT_INDEX };
 	private static final int MAX_BURN_SPEED = 200;
 	private static final double DILATION_SCALING = 100.0;
 	private static final int MIN_BURN_SPEED = 20;

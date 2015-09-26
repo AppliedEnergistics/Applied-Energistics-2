@@ -69,7 +69,7 @@ import appeng.util.Platform;
 public class PartCable extends AEBasePart implements IPartCable
 {
 
-	final int[] channelsOnSide = new int[] { 0, 0, 0, 0, 0, 0 };
+	final int[] channelsOnSide = { 0, 0, 0, 0, 0, 0 };
 
 	EnumSet<ForgeDirection> connections = EnumSet.noneOf( ForgeDirection.class );
 	boolean powered = false;

@@ -56,8 +56,8 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 {
 	private static final IBlockDefinition RING_DEFINITION = AEApi.instance().definitions().blocks().quantumRing();
 	public final byte corner = 16;
-	final int[] sidesRing = new int[] {};
-	final int[] sidesLink = new int[] { 0 };
+	final int[] sidesRing = {};
+	final int[] sidesLink = { 0 };
 	final AppEngInternalInventory internalInventory = new AppEngInternalInventory( this, 1 );
 	final byte hasSingularity = 32;
 	final byte powered = 64;

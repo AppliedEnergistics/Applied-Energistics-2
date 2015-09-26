@@ -108,7 +108,7 @@ public class BlockDefinition extends ItemDefinition implements IBlockDefinition
 	{
 		try
 		{
-			Object[] itemCtorArgs = new Object[] {};
+			Object[] itemCtorArgs = {};
 			Class<?>[] ctorArgClasses = new Class<?>[itemCtorArgs.length + 1];
 			ctorArgClasses[0] = Block.class;
 			for( int idx = 1; idx < ctorArgClasses.length; idx++ )

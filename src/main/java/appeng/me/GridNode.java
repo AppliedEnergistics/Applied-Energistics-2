@@ -58,7 +58,7 @@ import appeng.util.ReadOnlyCollection;
 public class GridNode implements IGridNode, IPathItem
 {
 	private static final MENetworkChannelsChanged EVENT = new MENetworkChannelsChanged();
-	private static final int[] CHANNEL_COUNT = new int[] { 0, 8, 32 };
+	private static final int[] CHANNEL_COUNT = { 0, 8, 32 };
 
 	private final List<IGridConnection> connections = new LinkedList<IGridConnection>();
 	private final IGridBlock gridProxy;

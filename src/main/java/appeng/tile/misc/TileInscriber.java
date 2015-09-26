@@ -81,9 +81,9 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 {
 
 	public final int maxProcessingTime = 100;
-	final int[] top = new int[] { 0 };
-	final int[] bottom = new int[] { 1 };
-	final int[] sides = new int[] { 2, 3 };
+	final int[] top = { 0 };
+	final int[] bottom = { 1 };
+	final int[] sides = { 2, 3 };
 	final AppEngInternalInventory inv = new AppEngInternalInventory( this, 4 );
 	private final IConfigManager settings;
 	private final UpgradeInventory upgrades;
