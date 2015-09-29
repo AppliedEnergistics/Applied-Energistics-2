@@ -59,7 +59,6 @@ public final class AppEng
 	public static final String MOD_ID = "appliedenergistics2";
 	public static final String MOD_NAME = "Applied Energistics 2";
 
-	public static final String MODID = "appliedenergistics2";
 	public static final String ASSETS = "appliedenergistics2:";
 
 	public static final String MOD_DEPENDENCIES =
@@ -162,6 +161,7 @@ public final class AppEng
 
 		Registration.INSTANCE.initialize( event );
 		IntegrationRegistry.INSTANCE.init();
+		CommonHelper.proxy.init();
 
 		AELog.info( "Initialization ( ended after " + star.elapsed( TimeUnit.MILLISECONDS ) + "ms )" );
 	}
@@ -183,6 +183,12 @@ public final class AppEng
 		NetworkHandler.instance = new NetworkHandler( "AE2" );
 
 		AELog.info( "Post Initialization ( ended after " + star.elapsed( TimeUnit.MILLISECONDS ) + "ms )" );
+
+//		System.out.println( "REGISTRY:" );
+//		for( Block block : GameData.getBlockRegistry().typeSafeIterable() )
+//		{
+//			System.out.println( "block = " + block + ", " + block.getUnlocalizedName() + ", " + block.getLocalizedName() );
+//		}
 	}
 
 	@EventHandler

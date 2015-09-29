@@ -24,6 +24,7 @@ import java.util.Random;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
@@ -47,7 +48,7 @@ public abstract class CommonHelper
 
 	public abstract World getWorld();
 
-	public abstract void bindTileEntitySpecialRenderer( Class tile, AEBaseBlock blk );
+	public abstract void bindTileEntitySpecialRenderer( Class <? extends TileEntity> tile, AEBaseBlock blk );
 
 	public abstract List<EntityPlayer> getPlayers();
 

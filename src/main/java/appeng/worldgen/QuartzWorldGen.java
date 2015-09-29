@@ -62,7 +62,7 @@ public final class QuartzWorldGen implements IWorldGenerator
 		{
 			int x = ( chunkX << 4 ) + 8;
 			int z = ( chunkZ << 4 ) + 8;
-			seaLevel = w.getHorizon( new BlockPos( x, 0, z)  ).getY();
+			seaLevel = (int) w.getHorizon();
 		}
 
 		if( this.oreNormal == null || this.oreCharged == null )

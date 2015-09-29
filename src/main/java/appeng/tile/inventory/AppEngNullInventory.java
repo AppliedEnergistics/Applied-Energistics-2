@@ -68,7 +68,7 @@ public class AppEngNullInventory implements IInventory
 	}
 
 	@Override
-	public String getName()
+	public String getCommandSenderName()
 	{
 		return "appeng-internal";
 	}

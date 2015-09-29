@@ -1,6 +1,0 @@
-{
-  "parent": "block/outer_stairs",
-  "textures": {
-    "all": "appliedenergistics2:blocks/BlockSkystone.Brick"
-  }
-}

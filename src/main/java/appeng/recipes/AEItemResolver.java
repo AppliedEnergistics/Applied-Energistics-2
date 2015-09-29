@@ -30,7 +30,7 @@ import appeng.api.recipes.ResolverResultSet;
 import appeng.api.util.AEColor;
 import appeng.api.util.AEColoredItemDefinition;
 import appeng.core.AppEng;
-import appeng.items.materials.ItemMultiMaterial;
+import appeng.items.materials.MultiItem;
 import appeng.items.materials.MaterialType;
 import appeng.items.misc.ItemCrystalSeed;
 import appeng.items.parts.ItemMultiPart;
@@ -123,7 +123,7 @@ public class AEItemResolver implements ISubItemResolver
 				String materialName = itemName.substring( itemName.indexOf( '.' ) + 1 );
 				MaterialType mt = MaterialType.valueOf( materialName );
 				// itemName = itemName.substring( 0, itemName.indexOf( "." ) );
-				if( mt.itemInstance == ItemMultiMaterial.instance && mt.damageValue >= 0 && mt.isRegistered() )
+				if( mt.itemInstance == MultiItem.instance && mt.damageValue >= 0 && mt.isRegistered() )
 				{
 					return new ResolverResult( "ItemMultiMaterial", mt.damageValue );
 				}

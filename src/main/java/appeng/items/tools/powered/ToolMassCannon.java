@@ -222,7 +222,7 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 
 					float f1 = 0.3F;
 
-					AxisAlignedBB boundingBox = entity1.getBoundingBox().expand( f1, f1, f1 );
+					AxisAlignedBB boundingBox = entity1.getEntityBoundingBox().expand( f1, f1, f1 );
 					MovingObjectPosition movingObjectPosition = boundingBox.calculateIntercept( vec3, vec31 );
 
 					if( movingObjectPosition != null )
@@ -341,7 +341,7 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 
 						float f1 = 0.3F;
 
-						AxisAlignedBB boundingBox = entity1.getBoundingBox().expand( f1, f1, f1 );
+						AxisAlignedBB boundingBox = entity1.getEntityBoundingBox().expand( f1, f1, f1 );
 						MovingObjectPosition movingObjectPosition = boundingBox.calculateIntercept( vec3, vec31 );
 
 						if( movingObjectPosition != null )

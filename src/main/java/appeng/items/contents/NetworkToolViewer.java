@@ -78,9 +78,9 @@ public class NetworkToolViewer implements INetworkTool
 	}
 
 	@Override
-	public String getName()
+	public String getCommandSenderName()
 	{
-		return this.inv.getName();
+		return this.inv.getCommandSenderName();
 	}
 
 	@Override

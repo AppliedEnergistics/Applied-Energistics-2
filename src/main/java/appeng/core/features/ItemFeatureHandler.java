@@ -48,7 +48,7 @@ public final class ItemFeatureHandler implements IFeatureHandler
 		this.item = item;
 		this.extractor = new FeatureNameExtractor( featured.getClass(), subName );
 		this.enabled = state == ActivityState.Enabled;
-		this.definition = new ItemDefinition( item, state );
+		this.definition = new ItemDefinition( item.getClass().getSimpleName(), item, state );
 	}
 
 	@Override
@@ -72,7 +72,7 @@ public final class ItemFeatureHandler implements IFeatureHandler
 			String itemPhysicalName = name;
 
 			//this.item.setTextureName( "appliedenergistics2:" + name );
-			this.item.setUnlocalizedName( /* "item." */"appliedenergistics2." + name );
+			this.item.setUnlocalizedName( "appliedenergistics2." + name );
 
 			if( this.item instanceof ItemFacade )
 			{

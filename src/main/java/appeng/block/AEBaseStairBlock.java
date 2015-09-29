@@ -22,6 +22,7 @@ package appeng.block;
 import java.util.EnumSet;
 
 import com.google.common.base.Optional;
+import com.google.common.base.Preconditions;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockStairs;
@@ -36,13 +37,17 @@ public abstract class AEBaseStairBlock extends BlockStairs implements IAEFeature
 {
 	private final IFeatureHandler features;
 
-	protected AEBaseStairBlock( Block block, EnumSet<AEFeature> features, String type  )
+	protected AEBaseStairBlock( Block block, EnumSet<AEFeature> features, String type )
 	{
-		super( block.getDefaultState() );
+		super( block.getStateFromMeta( 0 ) );
 
-		this.features = new StairBlockFeatureHandler( features, this, Optional.<String>of(type) );
-		setUnlocalizedName( block.getUnlocalizedName() );
+		Preconditions.checkNotNull( block );
+		Preconditions.checkNotNull( block.getUnlocalizedName() );
+		Preconditions.checkArgument( block.getUnlocalizedName().length() > 0 );
 
+		this.features = new StairBlockFeatureHandler( features, this, Optional.of( type ) );
+
+		this.setUnlocalizedName( "stair." + type );
 		this.setLightOpacity( 0 );
 	}
 

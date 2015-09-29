@@ -19,10 +19,11 @@
 package appeng.core;
 
 
-import net.minecraft.util.BlockPos;
-import net.minecraftforge.fml.relauncher.FMLRelaunchLog;
-
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import net.minecraft.util.BlockPos;
 
 import appeng.core.features.AEFeature;
 import appeng.tile.AEBaseTile;
@@ -31,8 +32,8 @@ import appeng.util.Platform;
 
 public final class AELog
 {
-
-	public static final FMLRelaunchLog INSTANCE = FMLRelaunchLog.log;
+	private static final Logger SERVER = LogManager.getFormatterLogger( "AE2:S" );
+	private static final Logger CLIENT = LogManager.getFormatterLogger( "AE2:C" );
 
 	private AELog()
 	{
@@ -47,7 +48,14 @@ public final class AELog
 	{
 		if( AEConfig.instance == null || AEConfig.instance.isFeatureEnabled( AEFeature.Logging ) )
 		{
-			FMLRelaunchLog.log( "AE2:" + ( Platform.isServer() ? "S" : "C" ), level, format, data );
+			if( Platform.isServer() )
+			{
+				SERVER.log( level, format, data );
+			}
+			else
+			{
+				CLIENT.log( level, format, data );
+			}
 		}
 	}
 

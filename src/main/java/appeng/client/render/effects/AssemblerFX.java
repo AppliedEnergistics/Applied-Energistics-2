@@ -75,7 +75,7 @@ public class AssemblerFX extends EntityFX
 	}
 
 	@Override
-    public void func_180434_a(WorldRenderer par1Tessellator, Entity p_180434_2_, float l, float rX, float rY, float rZ, float rYZ, float rXY )
+    public void renderParticle(WorldRenderer par1Tessellator, Entity p_180434_2_, float l, float rX, float rY, float rZ, float rYZ, float rXY )
     {
 		this.time += l;
 		if( this.time > 4.0 )

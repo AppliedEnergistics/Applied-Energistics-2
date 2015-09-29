@@ -29,6 +29,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.ChunkProviderGenerate;
+
 import appeng.api.AEApi;
 import appeng.core.AEConfig;
 
@@ -94,9 +95,7 @@ public class StorageChunkProvider extends ChunkProviderGenerate
 	}
 
 	@Override
-	public List func_177458_a(
-			EnumCreatureType p_177458_1_,
-			BlockPos p_177458_2_ )
+	public List getPossibleCreatures( EnumCreatureType creatureType, BlockPos pos )
 	{
 		return new ArrayList();
 	}

@@ -21,23 +21,35 @@ package appeng.core.features;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
-import net.minecraft.world.IBlockAccess;
-import appeng.api.definitions.IItemDefinition;
-
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
+
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+
+import appeng.api.definitions.IItemDefinition;
 
 
 public final class DamagedItemDefinition implements IItemDefinition
 {
+	private final String identifier;
 	private final IStackSrc source;
 
-	public DamagedItemDefinition( @Nonnull IStackSrc source )
+	public DamagedItemDefinition( @Nonnull String identifier, @Nonnull IStackSrc source )
 	{
-		this.source = Preconditions.checkNotNull( source );
+		Preconditions.checkNotNull( identifier );
+		Preconditions.checkArgument( !identifier.isEmpty() );
+		Preconditions.checkNotNull( source );
+
+		this.identifier = identifier;
+		this.source = source;
+	}
+
+	@Nonnull
+	@Override
+	public String identifier()
+	{
+		return this.identifier;
 	}
 
 	@Override
@@ -59,11 +71,7 @@ public final class DamagedItemDefinition implements IItemDefinition
 	@Override
 	public boolean isSameAs( ItemStack comparableStack )
 	{
-		if( comparableStack == null )
-		{
-			return false;
-		}
-
-		return comparableStack.getItem() == this.source.getItem() && comparableStack.getItemDamage() == this.source.getDamage();
+		// is available && is same item && has same damage
+		return comparableStack != null && comparableStack.getItem() == this.source.getItem() && comparableStack.getItemDamage() == this.source.getDamage();
 	}
 }

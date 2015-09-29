@@ -19,13 +19,13 @@
 package appeng.server;
 
 
+import com.google.common.base.Joiner;
+
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.server.MinecraftServer;
-
-import com.google.common.base.Joiner;
 
 
 public final class AECommand extends CommandBase
@@ -53,7 +53,7 @@ public final class AECommand extends CommandBase
 	}
 	
 	@Override
-	public String getName()
+	public String getCommandName()
 	{
 		return "ae2";
 	}
@@ -65,7 +65,7 @@ public final class AECommand extends CommandBase
 	}
 
 	@Override
-	public void execute(
+	public void processCommand(
 			ICommandSender sender,
 			String[] args ) throws CommandException
 	{
@@ -101,7 +101,7 @@ public final class AECommand extends CommandBase
 			try
 			{
 				Commands c = Commands.valueOf( args[0] );
-				if( sender.canUseCommand( c.level, this.getName() ) )
+				if( sender.canCommandSenderUseCommand( c.level, this.getCommandName() ) )
 				{
 					c.command.call( this.srv, args, sender );
 				}

@@ -123,7 +123,7 @@ public interface IMaterials
 
 	IItemDefinition woodenGear();
 
-	IItemDefinition wireless();
+	IItemDefinition wirelessReceiver();
 
 	IItemDefinition wirelessBooster();
 

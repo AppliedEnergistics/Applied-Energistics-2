@@ -194,7 +194,7 @@ public class ContainerQuartzKnife extends AEBaseContainer implements IAEAppEngIn
 	}
 
 	@Override
-	public String getName()
+	public String getCommandSenderName()
 	{
 		return "Quartz Knife Output";
 	}

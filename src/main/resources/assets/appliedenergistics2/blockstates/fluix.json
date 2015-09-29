@@ -1,5 +1,5 @@
 {
   "variants": {
-    "normal": { "model": "appliedenergistics2:fluix" }
+    "normal": { "model": "appliedenergistics2:fluix/block" }
   }
 }

@@ -22,6 +22,8 @@ package appeng.block.crafting;
 import java.util.EnumSet;
 import java.util.List;
 
+import com.google.common.base.Optional;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
@@ -37,6 +39,7 @@ import net.minecraft.util.EnumWorldBlockLayer;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
 import appeng.api.util.AEPartLocation;
 import appeng.block.AEBaseTileBlock;
 import appeng.client.render.BaseBlockRender;
@@ -47,22 +50,49 @@ import appeng.core.sync.GuiBridge;
 import appeng.tile.crafting.TileCraftingTile;
 import appeng.util.Platform;
 
-import com.google.common.base.Optional;
 
-
+/**
+ *
+ */
 public class BlockCraftingUnit extends AEBaseTileBlock
 {
-    public static final PropertyBool POWERED = PropertyBool.create("powered");
-    public static final PropertyBool FORMED = PropertyBool.create("formed");
-
-	public static final int FLAG_FORMED = 8;
+	public static final PropertyBool POWERED = PropertyBool.create( "powered" );
+	public static final PropertyBool FORMED = PropertyBool.create( "formed" );
 
 	final public CraftingUnitType type;
-	
-	public static enum CraftingUnitType
+
+	public BlockCraftingUnit( CraftingUnitType type )
 	{
-		UNIT, ACCELERATOR, STORAGE_1K,STORAGE_4K, STORAGE_16K, STORAGE_64K, MONITOR
-	};
+		super( Material.iron, Optional.of( type.name() ) );
+
+		this.type = type;
+		this.setTileEntity( TileCraftingTile.class );
+		this.setFeature( EnumSet.of( AEFeature.CraftingCPU ) );
+	}
+
+	@Override
+	public IBlockState getStateFromMeta( int meta )
+	{
+		return getDefaultState().withProperty( POWERED, ( meta & 1 ) == 1 ).withProperty( FORMED, ( meta & 2 ) == 2 );
+	}
+
+	@Override
+	public int getMetaFromState( IBlockState state )
+	{
+		boolean p = (boolean) state.getValue( POWERED );
+		boolean f = (boolean) state.getValue( FORMED );
+		return ( p ? 1 : 0 ) | ( f ? 2 : 0 );
+	}
+
+	@Override
+	public void onNeighborBlockChange( World worldIn, BlockPos pos, IBlockState state, Block neighborBlock )
+	{
+		TileCraftingTile cp = this.getTileEntity( worldIn, pos );
+		if( cp != null )
+		{
+			cp.updateMultiBlock();
+		}
+	}
 
 	@Override
 	public EnumWorldBlockLayer getBlockLayer()
@@ -71,63 +101,20 @@ public class BlockCraftingUnit extends AEBaseTileBlock
 	}
 
 	@Override
-	public int getMetaFromState(
-			IBlockState state )
+	public void breakBlock( World w, BlockPos pos, IBlockState state )
 	{
-		boolean p = (boolean)state.getValue( POWERED );
-		boolean f = (boolean)state.getValue( FORMED );
-		return (p ? 1 : 0) | (f?2 : 0);
-	}
-	
-	@Override
-	public IBlockState getStateFromMeta( int meta )
-	{
-		return getDefaultState().withProperty( POWERED, ( meta & 1 ) == 1 ? true : false  ).withProperty( FORMED, ( meta & 2 ) == 2 ? true : false );
-	}
-	
-	public BlockCraftingUnit( CraftingUnitType type )
-	{
-		super( Material.iron, Optional.of(type.name()) );
-
-		this.type = type;
-		this.setTileEntity( TileCraftingTile.class );
-		this.setFeature( EnumSet.of( AEFeature.CraftingCPU ) );
-	}
-
-	@Override
-	protected Class<? extends BaseBlockRender> getRenderer()
-	{
-		return RenderBlockCraftingCPU.class;
-	}
-
-	@Override
-	public appeng.client.texture.IAESprite getIcon(EnumFacing side, IBlockState state)
-	{
-		if ( type == CraftingUnitType.ACCELERATOR )
+		TileCraftingTile cp = this.getTileEntity( w, pos );
+		if( cp != null )
 		{
-			if ( (boolean)state.getValue( FORMED  ) )
-				return ExtraBlockTextures.BlockCraftingAcceleratorFit.getIcon();
-			
-			return ExtraBlockTextures.BlockCraftingAccelerator.getIcon();
+			cp.breakCluster();
 		}
-		
-		if ( (boolean)state.getValue( FORMED  ) )
-			return ExtraBlockTextures.BlockCraftingUnitFit.getIcon();
 
-		return super.getIcon( side,state );
+		super.breakBlock( w, pos, state );
 	}
 
-@Override
-public boolean onBlockActivated(
-		World w,
-		BlockPos pos,
-		IBlockState state,
-		EntityPlayer p,
-		EnumFacing side,
-		float hitX,
-		float hitY,
-		float hitZ )
-{
+	@Override
+	public boolean onBlockActivated( World w, BlockPos pos, IBlockState state, EntityPlayer p, EnumFacing side, float hitX, float hitY, float hitZ )
+	{
 		TileCraftingTile tg = this.getTileEntity( w, pos );
 		if( tg != null && !p.isSneaking() && tg.isFormed() && tg.isActive() )
 		{
@@ -143,27 +130,53 @@ public boolean onBlockActivated(
 		return false;
 	}
 
+	protected String getItemUnlocalizedName( ItemStack is )
+	{
+		return super.getUnlocalizedName( is );
+	}
+
+	@Override
+	protected IProperty[] getAEStates()
+	{
+		return new IProperty[] {
+				POWERED,
+				FORMED
+		};
+	}
+
+	@Override
+	protected Class<? extends BaseBlockRender> getRenderer()
+	{
+		return RenderBlockCraftingCPU.class;
+	}
+
+	@Override
+	public appeng.client.texture.IAESprite getIcon( EnumFacing side, IBlockState state )
+	{
+		if( type == CraftingUnitType.ACCELERATOR )
+		{
+			if( (boolean) state.getValue( FORMED ) )
+			{
+				return ExtraBlockTextures.BlockCraftingAcceleratorFit.getIcon();
+			}
+
+			return ExtraBlockTextures.BlockCraftingAccelerator.getIcon();
+		}
+
+		if( (boolean) state.getValue( FORMED ) )
+		{
+			return ExtraBlockTextures.BlockCraftingUnitFit.getIcon();
+		}
+
+		return super.getIcon( side, state );
+	}
+
 	@Override
 	@SideOnly( Side.CLIENT )
 	public void getCheckedSubBlocks( Item item, CreativeTabs tabs, List<ItemStack> itemStacks )
 	{
 		itemStacks.add( new ItemStack( this, 1, 0 ) );
 		itemStacks.add( new ItemStack( this, 1, 1 ) );
-	}
-
-	@Override
-	public void breakBlock(
-			World w,
-			BlockPos pos,
-			IBlockState state )
-	{
-		TileCraftingTile cp = this.getTileEntity( w, pos );
-		if( cp != null )
-		{
-			cp.breakCluster();
-		}
-
-		super.breakBlock( w, pos, state );
 	}
 
 	@Override
@@ -177,29 +190,8 @@ public boolean onBlockActivated(
 		return this.getItemUnlocalizedName( is );
 	}
 
-	protected String getItemUnlocalizedName( ItemStack is )
+	public enum CraftingUnitType
 	{
-		return super.getUnlocalizedName( is );
+		UNIT, ACCELERATOR, STORAGE_1K, STORAGE_4K, STORAGE_16K, STORAGE_64K, MONITOR
 	}
-
-	@Override
-	protected IProperty[] getAEStates()
-	{
-		return new IProperty[]{POWERED, FORMED };
-	}
-
-	@Override
-	public void onNeighborBlockChange(
-			World worldIn,
-			BlockPos pos,
-			IBlockState state,
-			Block neighborBlock )
-	{
-		TileCraftingTile cp = this.getTileEntity( worldIn, pos );
-		if( cp != null )
-		{
-			cp.updateMultiBlock();
-		}
-	}
-
 }

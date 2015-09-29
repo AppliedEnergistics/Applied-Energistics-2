@@ -1,0 +1,8 @@
+{
+  "parent": "block/stairs",
+  "textures": {
+    "bottom": "appliedenergistics2:quartz/certus/all",
+    "top": "appliedenergistics2:quartz/certus/all",
+    "side": "appliedenergistics2:quartz/certus/all"
+  }
+}

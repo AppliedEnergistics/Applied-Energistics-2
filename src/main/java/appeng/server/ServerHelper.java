@@ -29,6 +29,7 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
@@ -68,7 +69,7 @@ public class ServerHelper extends CommonHelper
 	}
 
 	@Override
-	public void bindTileEntitySpecialRenderer( Class tile, AEBaseBlock blk )
+	public void bindTileEntitySpecialRenderer( Class <? extends TileEntity> tile, AEBaseBlock blk )
 	{
 		throw new UnsupportedOperationException( "This is a server..." );
 	}

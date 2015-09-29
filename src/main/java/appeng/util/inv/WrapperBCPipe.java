@@ -138,7 +138,7 @@ public class WrapperBCPipe implements IInventory
 	}
 
 	@Override
-	public String getName()
+	public String getCommandSenderName()
 	{
 		return null;
 	}

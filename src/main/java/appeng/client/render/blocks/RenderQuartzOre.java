@@ -23,14 +23,14 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.IItemRenderer.ItemRenderType;
-import appeng.block.solids.OreQuartz;
+import appeng.decorative.solid.QuartzOreBlock;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.ModelGenerator;
 import appeng.client.texture.ExtraBlockTextures;
 import appeng.tile.AEBaseTile;
 
 
-public class RenderQuartzOre extends BaseBlockRender<OreQuartz, AEBaseTile>
+public class RenderQuartzOre extends BaseBlockRender<QuartzOreBlock, AEBaseTile>
 {
 
 	public RenderQuartzOre()
@@ -39,7 +39,7 @@ public class RenderQuartzOre extends BaseBlockRender<OreQuartz, AEBaseTile>
 	}
 
 	@Override
-	public void renderInventory( OreQuartz blk, ItemStack is, ModelGenerator renderer, ItemRenderType type, Object[] obj )
+	public void renderInventory( QuartzOreBlock blk, ItemStack is, ModelGenerator renderer, ItemRenderType type, Object[] obj )
 	{
 		super.renderInventory( blk, is, renderer, type, obj );
 		blk.getRendererInstance().setTemporaryRenderIcon( ExtraBlockTextures.OreQuartzStone.getIcon() );
@@ -48,9 +48,9 @@ public class RenderQuartzOre extends BaseBlockRender<OreQuartz, AEBaseTile>
 	}
 
 	@Override
-	public boolean renderInWorld( OreQuartz block, IBlockAccess world, BlockPos pos, ModelGenerator renderer )
+	public boolean renderInWorld( QuartzOreBlock block, IBlockAccess world, BlockPos pos, ModelGenerator renderer )
 	{
-		OreQuartz blk = block;
+		QuartzOreBlock blk = block;
 		blk.setEnhanceBrightness( true );
 		super.renderInWorld( block, world, pos, renderer );
 		blk.setEnhanceBrightness( false );

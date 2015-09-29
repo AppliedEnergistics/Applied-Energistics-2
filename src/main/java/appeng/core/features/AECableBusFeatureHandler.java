@@ -21,18 +21,19 @@ package appeng.core.features;
 
 import java.util.EnumSet;
 
+import com.google.common.base.Optional;
+
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fml.common.registry.GameData;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
+
 import appeng.api.definitions.ITileDefinition;
 import appeng.block.AEBaseTileBlock;
 import appeng.block.networking.BlockCableBus;
 import appeng.core.CommonHelper;
 import appeng.core.CreativeTab;
 import appeng.util.Platform;
-
-import com.google.common.base.Optional;
 
 
 public final class AECableBusFeatureHandler implements IFeatureHandler
@@ -49,7 +50,7 @@ public final class AECableBusFeatureHandler implements IFeatureHandler
 		this.featured = featured;
 		this.extractor = new FeatureNameExtractor( featured.getClass(), subName );
 		this.enabled = state == ActivityState.Enabled;
-		this.definition = new TileDefinition( featured, state );
+		this.definition = new TileDefinition( featured.getClass().getSimpleName(), featured, state );
 	}
 
 	@Override

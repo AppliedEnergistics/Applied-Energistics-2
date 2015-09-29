@@ -218,7 +218,7 @@ public class AppEngInternalAEInventory implements IInventory, Iterable<ItemStack
 	}
 
 	@Override
-	public String getName()
+	public String getCommandSenderName()
 	{
 		return "appeng-internal";
 	}

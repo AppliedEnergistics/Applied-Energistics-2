@@ -27,7 +27,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.IItemRenderer.ItemRenderType;
 import appeng.api.AEApi;
 import appeng.api.util.AEPartLocation;
-import appeng.block.solids.BlockQuartzGlass;
+import appeng.decorative.solid.QuartzGlassBlock;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.ModelGenerator;
 import appeng.client.texture.ExtraBlockTextures;
@@ -35,7 +35,7 @@ import appeng.client.texture.OffsetIcon;
 import appeng.tile.AEBaseTile;
 
 
-public class RenderQuartzGlass extends BaseBlockRender<BlockQuartzGlass, AEBaseTile>
+public class RenderQuartzGlass extends BaseBlockRender<QuartzGlassBlock, AEBaseTile>
 {
 
 	static byte[][][] offsets;
@@ -58,7 +58,7 @@ public class RenderQuartzGlass extends BaseBlockRender<BlockQuartzGlass, AEBaseT
 	}
 
 	@Override
-	public void renderInventory( BlockQuartzGlass block, ItemStack is, ModelGenerator renderer, ItemRenderType type, Object[] obj )
+	public void renderInventory( QuartzGlassBlock block, ItemStack is, ModelGenerator renderer, ItemRenderType type, Object[] obj )
 	{
 		renderer.overrideBlockTexture = ExtraBlockTextures.GlassFrame.getIcon();
 		super.renderInventory( block, is, renderer, type, obj );
@@ -67,7 +67,7 @@ public class RenderQuartzGlass extends BaseBlockRender<BlockQuartzGlass, AEBaseT
 	}
 
 	@Override
-	public boolean renderInWorld( BlockQuartzGlass imb, IBlockAccess world, BlockPos pos, ModelGenerator renderer )
+	public boolean renderInWorld( QuartzGlassBlock imb, IBlockAccess world, BlockPos pos, ModelGenerator renderer )
 	{
 		renderer.setRenderBounds( 0, 0, 0, 1, 1, 1 );
 
@@ -130,7 +130,7 @@ public class RenderQuartzGlass extends BaseBlockRender<BlockQuartzGlass, AEBaseT
 		return result;
 	}
 
-	private void renderEdge( BlockQuartzGlass imb, IBlockAccess world, BlockPos pos, ModelGenerator renderer, AEPartLocation side, AEPartLocation direction )
+	private void renderEdge( QuartzGlassBlock imb, IBlockAccess world, BlockPos pos, ModelGenerator renderer, AEPartLocation side, AEPartLocation direction )
 	{
 		if( !this.isFlush( imb, world, pos.getX() + side.xOffset, pos.getY() + side.yOffset, pos.getZ() + side.zOffset ) )
 		{
@@ -214,12 +214,12 @@ public class RenderQuartzGlass extends BaseBlockRender<BlockQuartzGlass, AEBaseT
 		}
 	}
 
-	private boolean isFlush( BlockQuartzGlass imb, IBlockAccess world, int x, int y, int z )
+	private boolean isFlush( QuartzGlassBlock imb, IBlockAccess world, int x, int y, int z )
 	{
 		return this.isGlass( imb, world, new BlockPos(x, y, z) );
 	}
 
-	private boolean isGlass( BlockQuartzGlass imb, IBlockAccess world,BlockPos pos)
+	private boolean isGlass( QuartzGlassBlock imb, IBlockAccess world,BlockPos pos)
 	{
 		return this.isQuartzGlass( world, pos ) || this.isVibrantQuartzGlass( world, pos );
 	}

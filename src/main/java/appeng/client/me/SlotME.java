@@ -23,6 +23,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+
 import appeng.api.storage.data.IAEItemStack;
 
 
@@ -96,7 +97,7 @@ public class SlotME extends Slot
 	}
 
 	@Override
-	public boolean isSlotInInventory( IInventory par1iInventory, int par2 )
+	public boolean isHere( IInventory inv, int slotIn )
 	{
 		return false;
 	}

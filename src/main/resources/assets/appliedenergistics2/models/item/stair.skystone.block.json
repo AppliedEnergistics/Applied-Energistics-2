@@ -1,5 +1,5 @@
 {
-  "parent": "block/stair.skystone.block",
+  "parent": "appliedenergistics2:block/stair/skystone/block/block",
   "display": {
     "thirdperson": {
       "rotation": [ 10, -45, 170 ],

@@ -106,9 +106,9 @@ public class WrapperInvSlot
 		}
 
 		@Override
-		public String getName()
+		public String getCommandSenderName()
 		{
-			return this.inv.getName();
+			return this.inv.getCommandSenderName();
 		}
 
 		@Override

@@ -104,7 +104,7 @@ public class TileItemGen extends AEBaseTile implements IInventory
 	}
 
 	@Override
-	public String getName()
+	public String getCommandSenderName()
 	{
 		return null;
 	}

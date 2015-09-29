@@ -54,7 +54,7 @@ import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.core.features.AEFeature;
-import appeng.items.materials.ItemMultiMaterial;
+import appeng.items.materials.MultiItem;
 import appeng.items.misc.ItemCrystalSeed;
 import appeng.items.parts.ItemMultiPart;
 import appeng.recipes.handlers.IWebsiteSerializer;
@@ -200,10 +200,10 @@ public class RecipeHandler implements IRecipeHandler
 				default:
 			}
 		}
-		else if( is.getItem() instanceof ItemMultiMaterial )
+		else if( is.getItem() instanceof MultiItem )
 		{
 			realName = realName.replace( "ItemMultiMaterial", "ItemMaterial" );
-			realName += '.' + ( (ItemMultiMaterial) is.getItem() ).getTypeByStack( is ).name();
+			realName += '.' + ( (MultiItem) is.getItem() ).getTypeByStack( is ).name();
 		}
 		else if( is.getItem() instanceof ItemMultiPart )
 		{

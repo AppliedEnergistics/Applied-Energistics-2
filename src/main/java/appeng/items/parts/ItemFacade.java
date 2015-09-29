@@ -45,7 +45,7 @@ import appeng.api.AEApi;
 import appeng.api.exceptions.MissingDefinition;
 import appeng.api.parts.IAlphaPassItem;
 import appeng.api.util.AEPartLocation;
-import appeng.block.solids.OreQuartz;
+import appeng.decorative.solid.QuartzOreBlock;
 import appeng.client.texture.BaseIcon;
 import appeng.core.AppEng;
 import appeng.core.FacadeConfig;
@@ -159,7 +159,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 
 		boolean hasTile = b.hasTileEntity( b.getStateFromMeta( metadata ) );
 		boolean enableGlass = b instanceof BlockGlass || b instanceof BlockStainedGlass;
-		boolean disableOre = b instanceof OreQuartz;
+		boolean disableOre = b instanceof QuartzOreBlock;
 
 		boolean defaultValue = ( b.isOpaqueCube() && !b.getTickRandomly() && !hasTile && !disableOre ) || enableGlass;
 		if( FacadeConfig.instance.checkEnabled( b, metadata, defaultValue ) )

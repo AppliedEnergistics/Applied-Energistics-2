@@ -21,18 +21,19 @@ package appeng.core.features;
 
 import java.lang.reflect.Constructor;
 
+import com.google.common.base.Optional;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ObjectArrays;
+
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.IBlockAccess;
+
 import appeng.api.definitions.IBlockDefinition;
 import appeng.block.AEBaseBlock;
-
-import com.google.common.base.Optional;
-import com.google.common.base.Preconditions;
-import com.google.common.collect.ObjectArrays;
 
 
 public class BlockDefinition extends ItemDefinition implements IBlockDefinition
@@ -40,9 +41,9 @@ public class BlockDefinition extends ItemDefinition implements IBlockDefinition
 	private final Block block;
 	private final boolean enabled;
 
-	public BlockDefinition( Block block, ActivityState state )
+	public BlockDefinition( final String identifier, Block block, ActivityState state )
 	{
-		super( constructItemFromBlock( block ), state );
+		super( identifier, constructItemFromBlock( block ), state );
 
 		Preconditions.checkNotNull( block );
 		Preconditions.checkNotNull( state );

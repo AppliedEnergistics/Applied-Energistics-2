@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -15,8 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
-
-apply plugin: 'forge'
+apply plugin: 'net.minecraftforge.gradle.forge'
 
 apply from: 'gradle/scripts/dependencies.gradle'
 apply from: 'gradle/scripts/artifacts.gradle'
@@ -28,6 +27,7 @@ buildscript {
     repositories {
         mavenLocal()
         mavenCentral()
+        jcenter()
 
         maven {
             name = "forge"
@@ -41,7 +41,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.0-SNAPSHOT'
     }
 }
 
@@ -84,7 +84,7 @@ minecraft {
     // used when launching minecraft in dev env
     runDir = "run"
 
-    mappings = "snapshot_20141130"
+    mappings = "snapshot_20150928"
 }
 
 sourceSets {
@@ -92,25 +92,17 @@ sourceSets {
         java {
             srcDirs += 'src/api/java'
             srcDirs += 'src/main/java/'
-
-            // excludes integration due to not being available upon port
-            exclude 'appeng/integration/modules/**'
-            exclude 'appeng/fmp/**'
-            exclude 'appeng/parts/layers/**'
         }
 
         resources {
             srcDir "src/main/resources/"
-            include "assets/appliedenergistics2/recipes/*.recipe",
+            include "assets/appliedenergistics2/recipes/**/*.recipe",
                     "assets/appliedenergistics2/recipes/README.html",
                     "assets/appliedenergistics2/lang/*.lang",
-                    "assets/appliedenergistics2/blockstates/*.json",
-                    "assets/appliedenergistics2/models/block/*.json",
-                    "assets/appliedenergistics2/models/item/*.json",
-                    "assets/appliedenergistics2/textures/blocks/*",
-                    "assets/appliedenergistics2/textures/guis/*",
-                    "assets/appliedenergistics2/textures/models/*",
-                    "assets/appliedenergistics2/textures/items/*",
+                    "assets/appliedenergistics2/blockstates/**/*.json",
+                    "assets/appliedenergistics2/models/**/*.json",
+                    "assets/appliedenergistics2/textures/**/*.png",
+                    "assets/appliedenergistics2/textures/**/*.mcmeta",
                     "assets/appliedenergistics2/meta/*",
                     "mcmod.info",
                     "pack.mcmeta"

@@ -23,6 +23,7 @@ import java.util.EnumSet;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
@@ -80,5 +81,11 @@ public class BlockInscriber extends AEBaseTileBlock
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	public String getUnlocalizedName( ItemStack is )
+	{
+		return super.getUnlocalizedName( is );
 	}
 }

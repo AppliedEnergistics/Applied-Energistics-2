@@ -43,6 +43,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Vec3;
@@ -101,12 +102,11 @@ public class ClientHelper extends ServerHelper
 
 	private static final RenderItem ITEM_RENDERER = Minecraft.getMinecraft().getRenderItem();
 	private static final ModelGenerator BLOCK_RENDERER = new ModelGenerator();
-	final ModelResourceLocation partRenderer = new ModelResourceLocation( new ResourceLocation( AppEng.MOD_ID, "DynamicPartRenderer" ), "inventory" );
+	private final ModelResourceLocation partRenderer = new ModelResourceLocation( new ResourceLocation( AppEng.MOD_ID, "DynamicPartRenderer" ), "inventory" );
 
-	;
-	public Map<Object, List<IconReg>> iconRegistrations = new HashMap();
-	public List<IconReg> iconTmp = new ArrayList<>();
-	public List<ResourceLocation> extraIcons = new ArrayList<>();
+	private Map<Object, List<IconReg>> iconRegistrations = new HashMap<>();
+	private List<IconReg> iconTmp = new ArrayList<>();
+	private List<ResourceLocation> extraIcons = new ArrayList<>();
 
 	@Override
 	public void configureIcon( Object item, String name )
@@ -123,10 +123,23 @@ public class ClientHelper extends ServerHelper
 	@Override
 	public void init()
 	{
-		Item fluixItem = GameRegistry.findItem( "appliedenergistics2", "fluix" );
-		ModelResourceLocation itemModelResourceLocation = new ModelResourceLocation( "appliedenergistics2:fluix", "inventory" );
-		final int DEFAULT_ITEM_SUBTYPE = 0;
-		Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register( fluixItem, DEFAULT_ITEM_SUBTYPE, itemModelResourceLocation );
+		//		final Block fluixBlock = GameRegistry.findBlock( "appliedenergistics2", "fluix" );
+		//		Item fluixItem = Item.getItemFromBlock( fluixBlock );
+		//		ModelResourceLocation itemModelResourceLocation = new ModelResourceLocation( "appliedenergistics2:fluix", "inventory" );
+//		final int DEFAULT_ITEM_SUBTYPE = 0;
+//		final ItemModelMesher mesher = Minecraft.getMinecraft().getRenderItem().getItemModelMesher();
+//		//		mesher.register( fluixItem, DEFAULT_ITEM_SUBTYPE, itemModelResourceLocation );
+//
+//		final ResourceLocation resource = new ResourceLocation( "appliedenergistics2", "stair.fluix" );
+//		final ModelResourceLocation fluixStairModel = new ModelResourceLocation( resource, "inventory" );
+//		AELog.info( "FluixStairModel: " + fluixStairModel );
+//
+//		final Set<Item> items = AEApi.instance().definitions().blocks().fluixStair().maybeItem().asSet();
+//		for( Item item : items )
+//		{
+//			AELog.info( "Registering with %s with unlocalized %s", item, item.getUnlocalizedName() );
+//			mesher.register( item, DEFAULT_ITEM_SUBTYPE, fluixStairModel );
+//		}
 	}
 
 	@Override
@@ -143,7 +156,7 @@ public class ClientHelper extends ServerHelper
 	}
 
 	@Override
-	public void bindTileEntitySpecialRenderer( Class tile, AEBaseBlock blk )
+	public void bindTileEntitySpecialRenderer( Class<? extends TileEntity> tile, AEBaseBlock blk )
 	{
 		BaseBlockRender bbr = blk.getRendererInstance().rendererInstance;
 		if( bbr.hasTESR() && tile != null )
@@ -157,7 +170,7 @@ public class ClientHelper extends ServerHelper
 	{
 		if( Platform.isClient() )
 		{
-			List<EntityPlayer> o = new ArrayList<EntityPlayer>();
+			List<EntityPlayer> o = new ArrayList<>();
 			o.add( Minecraft.getMinecraft().thePlayer );
 			return o;
 		}
@@ -282,15 +295,7 @@ public class ClientHelper extends ServerHelper
 
 				addIcon( reg.name );
 
-				mesher.register( reg.item instanceof Item ? (Item) reg.item : Item.getItemFromBlock( (Block) reg.item ), new ItemMeshDefinition()
-				{
-
-					@Override
-					public ModelResourceLocation getModelLocation( ItemStack stack )
-					{
-						return renderer.rendererInstance.getResourcePath();
-					}
-				} );
+				mesher.register( reg.item instanceof Item ? (Item) reg.item : Item.getItemFromBlock( (Block) reg.item ), stack -> renderer.rendererInstance.getResourcePath() );
 				continue;
 			}
 
@@ -385,7 +390,7 @@ public class ClientHelper extends ServerHelper
 		List<IconReg> reg = iconRegistrations.get( item );
 		if( reg == null )
 		{
-			iconRegistrations.put( item, reg = new LinkedList<IconReg>() );
+			iconRegistrations.put( item, reg = new LinkedList<>() );
 		}
 
 		ModelResourceLocation res = new ModelResourceLocation( new ResourceLocation( AppEng.MOD_ID, name ), "inventory" );
@@ -398,7 +403,7 @@ public class ClientHelper extends ServerHelper
 		List<IconReg> reg = iconRegistrations.get( item );
 		if( reg == null )
 		{
-			iconRegistrations.put( item, reg = new LinkedList<IconReg>() );
+			iconRegistrations.put( item, reg = new LinkedList<>() );
 		}
 
 		ModelResourceLocation res = new ModelResourceLocation( new ResourceLocation( AppEng.MOD_ID, name ), "inventory" );
@@ -567,10 +572,7 @@ public class ClientHelper extends ServerHelper
 			}
 		}
 
-		for( ResourceLocation res : extraIcons )
-		{
-			ev.map.registerSprite( res );
-		}
+		extraIcons.forEach( ev.map::registerSprite );
 
 		//if( ev.map.getTextureType() == ITEM_RENDERER )
 		{

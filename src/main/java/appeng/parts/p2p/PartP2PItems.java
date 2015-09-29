@@ -307,7 +307,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements ISidedI
 	}
 
 	@Override
-	public String getName()
+	public String getCommandSenderName()
 	{
 		return null;
 	}

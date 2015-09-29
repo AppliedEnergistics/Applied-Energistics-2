@@ -295,7 +295,7 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 		}
 
 		@Override
-		public String getName()
+		public String getCommandSenderName()
 		{
 			return "Upgrades";
 		}

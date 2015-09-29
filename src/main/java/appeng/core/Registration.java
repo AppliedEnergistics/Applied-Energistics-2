@@ -68,7 +68,7 @@ import appeng.core.localization.GuiText;
 import appeng.core.localization.PlayerMessages;
 import appeng.core.stats.PlayerStatsRegistration;
 import appeng.hooks.TickHandler;
-import appeng.items.materials.ItemMultiMaterial;
+import appeng.items.materials.MultiItem;
 import appeng.me.cache.CraftingGridCache;
 import appeng.me.cache.EnergyGridCache;
 import appeng.me.cache.GridStorageCache;
@@ -222,7 +222,7 @@ public final class Registration
 		final IRegistryContainer registries = api.registries();
 
 		// Perform ore camouflage!
-		ItemMultiMaterial.instance.makeUnique();
+		MultiItem.instance.makeUnique();
 
 		final Runnable recipeLoader = new RecipeLoader( this.recipeHandler );
 		recipeLoader.run();

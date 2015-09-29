@@ -39,9 +39,9 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
+
 import appeng.block.AEBaseBlock;
 import appeng.client.render.BaseBlockRender;
-import appeng.client.render.blocks.RenderTinyTNT;
 import appeng.core.AppEng;
 import appeng.core.features.AEFeature;
 import appeng.entity.EntityIds;
@@ -80,14 +80,7 @@ public class BlockTinyTNT extends AEBaseBlock implements ICustomCollision
 	}
 
 	@Override
-	public boolean onActivated(
-			World w,
-			BlockPos pos,
-			EntityPlayer player,
-			EnumFacing side,
-			float hitX,
-			float hitY,
-			float hitZ )
+	public boolean onActivated( World w, BlockPos pos, EntityPlayer player, EnumFacing side, float hitX, float hitY, float hitZ )
 	{
 		if( player.getCurrentEquippedItem() != null && player.getCurrentEquippedItem().getItem() == Items.flint_and_steel )
 		{
@@ -111,12 +104,19 @@ public class BlockTinyTNT extends AEBaseBlock implements ICustomCollision
 			w.playSoundAtEntity( primedTinyTNTEntity, "game.tnt.primed", 1.0F, 1.0F );
 		}
 	}
-	
+
 	@Override
-	public void onBlockAdded(
-		World w,
-		BlockPos pos,
-		IBlockState state )
+	public void onNeighborBlockChange( World w, BlockPos pos, IBlockState state, Block neighborBlock )
+	{
+		if( w.isBlockIndirectlyGettingPowered( pos ) > 0 )
+		{
+			this.startFuse( w, pos, null );
+			w.setBlockToAir( pos );
+		}
+	}
+
+	@Override
+	public void onBlockAdded( World w, BlockPos pos, IBlockState state )
 	{
 		super.onBlockAdded( w, pos, state );
 
@@ -128,38 +128,7 @@ public class BlockTinyTNT extends AEBaseBlock implements ICustomCollision
 	}
 
 	@Override
-	public void onNeighborBlockChange(
-			World w,
-			BlockPos pos,
-			IBlockState state,
-			Block neighborBlock )
-	{
-		if( w.isBlockIndirectlyGettingPowered( pos ) > 0 )
-		{
-			this.startFuse( w, pos, null );
-			w.setBlockToAir( pos );
-		}
-	}
-
-	@Override
-	public void onBlockExploded(
-			World w,
-			BlockPos pos,
-			Explosion exp )
-	{
-		if( !w.isRemote )
-		{
-			EntityTinyTNTPrimed primedTinyTNTEntity = new EntityTinyTNTPrimed( w, pos.getX() + 0.5F, pos.getY() + 0.5F, pos.getZ() + 0.5F, exp.getExplosivePlacedBy() );
-			primedTinyTNTEntity.fuse = w.rand.nextInt( primedTinyTNTEntity.fuse / 4 ) + primedTinyTNTEntity.fuse / 8;
-			w.spawnEntityInWorld( primedTinyTNTEntity );
-		}
-	}
-
-	@Override
-	public void onEntityCollidedWithBlock(
-			World w,
-			BlockPos pos,
-			Entity entity )
+	public void onEntityCollidedWithBlock( World w, BlockPos pos, Entity entity )
 	{
 		if( entity instanceof EntityArrow && !w.isRemote )
 		{
@@ -180,22 +149,24 @@ public class BlockTinyTNT extends AEBaseBlock implements ICustomCollision
 	}
 
 	@Override
-	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool(
-			World w,
-			BlockPos pos,
-			Entity thePlayer,
-			boolean b )
+	public void onBlockExploded( World w, BlockPos pos, Explosion exp )
+	{
+		if( !w.isRemote )
+		{
+			EntityTinyTNTPrimed primedTinyTNTEntity = new EntityTinyTNTPrimed( w, pos.getX() + 0.5F, pos.getY() + 0.5F, pos.getZ() + 0.5F, exp.getExplosivePlacedBy() );
+			primedTinyTNTEntity.fuse = w.rand.nextInt( primedTinyTNTEntity.fuse / 4 ) + primedTinyTNTEntity.fuse / 8;
+			w.spawnEntityInWorld( primedTinyTNTEntity );
+		}
+	}
+
+	@Override
+	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool( World w, BlockPos pos, Entity thePlayer, boolean b )
 	{
 		return Collections.singletonList( AxisAlignedBB.fromBounds( 0.25, 0, 0.25, 0.75, 0.5, 0.75 ) );
 	}
 
 	@Override
-	public void addCollidingBlockToList(
-			World w,
-			BlockPos pos,
-			AxisAlignedBB bb,
-			List<AxisAlignedBB> out,
-			Entity e )
+	public void addCollidingBlockToList( World w, BlockPos pos, AxisAlignedBB bb, List<AxisAlignedBB> out, Entity e )
 	{
 		out.add( AxisAlignedBB.fromBounds( 0.25, 0, 0.25, 0.75, 0.5, 0.75 ) );
 	}

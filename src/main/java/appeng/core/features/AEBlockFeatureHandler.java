@@ -47,7 +47,8 @@ public final class AEBlockFeatureHandler implements IFeatureHandler
 		this.featured = featured;
 		this.extractor = new FeatureNameExtractor( featured.getClass(), subName );
 		this.enabled = state == ActivityState.Enabled;
-		this.definition = new BlockDefinition( featured, state );
+		// TODO use real identifier
+		this.definition = new BlockDefinition( featured.getClass().getSimpleName(), featured, state );
 	}
 
 	@Override
@@ -63,25 +64,29 @@ public final class AEBlockFeatureHandler implements IFeatureHandler
 	}
 
 	@Override
-	public void register(Side side)
+	public void register( Side side )
 	{
 		if( this.enabled )
 		{
 			String name = this.extractor.get();
 			this.featured.setCreativeTab( CreativeTab.instance );
-			this.featured.setUnlocalizedName( /* "tile." */"appliedenergistics2." + name );
+			this.featured.setUnlocalizedName( "appliedenergistics2." + name );
 			this.featured.setBlockTextureName( name );
 
 			// Bypass the forge magic with null to register our own itemblock later.
 			GameRegistry.registerBlock( this.featured, null, name );
 			GameRegistry.registerItem( this.definition.maybeItem().get(), name );
-			
+
 			// register the block/item conversion...
-            if ( this.definition.maybeItem().isPresent() )
-            	GameData.getBlockItemMap().put( this.featured, this.definition.maybeItem().get() );
-            
-            if ( side == Side.CLIENT)
-            	CommonHelper.proxy.configureIcon( this.featured, name );
+			if( this.definition.maybeItem().isPresent() )
+			{
+				GameData.getBlockItemMap().put( this.featured, this.definition.maybeItem().get() );
+			}
+
+			if( side == Side.CLIENT )
+			{
+				CommonHelper.proxy.configureIcon( this.featured, name );
+			}
 		}
 	}
 }

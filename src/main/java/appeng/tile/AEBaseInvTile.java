@@ -31,6 +31,7 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IChatComponent;
+
 import appeng.block.AEBaseBlock;
 import appeng.tile.events.TileEventType;
 import appeng.tile.inventory.IAEAppEngInventory;
@@ -39,6 +40,11 @@ import appeng.tile.inventory.InvOperation;
 
 public abstract class AEBaseInvTile extends AEBaseTile implements ISidedInventory, IAEAppEngInventory
 {
+	@Override
+	public String getCommandSenderName()
+	{
+		return this.getCustomName();
+	}
 
 	@TileEvent( TileEventType.WORLD_NBT_READ )
 	public void readFromNBT_AEBaseInvTile( net.minecraft.nbt.NBTTagCompound data )
@@ -103,15 +109,6 @@ public abstract class AEBaseInvTile extends AEBaseTile implements ISidedInventor
 	}
 
 	/**
-	 * Returns the name of the inventory
-	 */
-	@Override
-	public String getName()
-	{
-		return this.getCustomName();
-	}
-
-	/**
 	 * Returns if the inventory is named
 	 */
 	@Override
@@ -135,15 +132,17 @@ public abstract class AEBaseInvTile extends AEBaseTile implements ISidedInventor
 	}
 
 	@Override
-	public void openInventory(EntityPlayer player) {
-				
-	};
-	
-	@Override
-	public void closeInventory(
-			EntityPlayer player )
+	public void openInventory( EntityPlayer player )
 	{
-		
+
+	}
+
+	;
+
+	@Override
+	public void closeInventory( EntityPlayer player )
+	{
+
 	}
 
 	@Override
@@ -156,8 +155,7 @@ public abstract class AEBaseInvTile extends AEBaseTile implements ISidedInventor
 	public abstract void onChangeInventory( IInventory inv, int slot, InvOperation mc, ItemStack removed, ItemStack added );
 
 	@Override
-	public int[] getSlotsForFace(
-			EnumFacing side )
+	public int[] getSlotsForFace( EnumFacing side )
 	{
 		Block blk = this.worldObj.getBlockState( pos ).getBlock();
 		if( blk instanceof AEBaseBlock )
@@ -178,41 +176,40 @@ public abstract class AEBaseInvTile extends AEBaseTile implements ISidedInventor
 	{
 		return true;
 	}
-	
+
 	@Override
 	public void clear()
 	{
 		this.getInternalInventory().clear();
 	}
-	
+
 	@Override
-	public int getField(
-			int id )
+	public int getField( int id )
 	{
 		return 0;
 	}
+
 	@Override
-	public void setField(
-			int id,
-			int value )
+	public void setField( int id, int value )
 	{
-		
+
 	}
-	
+
 	@Override
 	public int getFieldCount()
 	{
 		return 0;
 	}
-	
+
 	@Override
 	public IChatComponent getDisplayName()
 	{
-		if ( hasCustomName() )
-			return new ChatComponentText(getName());
+		if( hasCustomName() )
+		{
+			return new ChatComponentText( this.getCustomName() );
+		}
 		return new ChatComponentTranslation( getBlockType().getUnlocalizedName() );
 	}
 
-	
 	public abstract int[] getAccessibleSlotsBySide( EnumFacing whichSide );
 }

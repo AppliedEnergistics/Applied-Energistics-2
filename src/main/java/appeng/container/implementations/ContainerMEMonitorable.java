@@ -298,9 +298,10 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 	}
 
 	@Override
-	public void addCraftingToCrafters( ICrafting c )
+	public void onCraftGuiOpened( ICrafting c )
 	{
-		super.addCraftingToCrafters( c );
+		super.onCraftGuiOpened( c );
+
 		this.queueInventory( c );
 	}
 

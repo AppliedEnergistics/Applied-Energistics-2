@@ -99,7 +99,7 @@ public class SlotDisconnected extends AppEngSlot
 	}
 
 	@Override
-	public boolean isSlotInInventory( IInventory par1iInventory, int par2 )
+	public boolean isHere( IInventory inv, int slotIn )
 	{
 		return false;
 	}

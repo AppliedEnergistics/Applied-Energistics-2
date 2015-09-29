@@ -27,9 +27,6 @@ import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 
 import net.minecraftforge.common.config.ConfigCategory;
-import net.minecraftforge.fml.relauncher.FMLRelaunchLog;
-
-import com.google.common.base.Optional;
 
 
 /**
@@ -46,9 +43,9 @@ final class PlayerMapping implements IWorldPlayerMapping
 	 */
 	private final Map<Integer, UUID> mappings;
 
-	public PlayerMapping( ConfigCategory category, FMLRelaunchLog log )
+	public PlayerMapping( ConfigCategory category )
 	{
-		final PlayerMappingsInitializer init = new PlayerMappingsInitializer( category, log );
+		final PlayerMappingsInitializer init = new PlayerMappingsInitializer( category );
 
 		this.mappings = init.getPlayerMappings();
 	}

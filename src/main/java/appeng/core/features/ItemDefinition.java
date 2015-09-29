@@ -19,6 +19,8 @@
 package appeng.core.features;
 
 
+import javax.annotation.Nonnull;
+
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 
@@ -31,16 +33,27 @@ import appeng.util.Platform;
 
 public class ItemDefinition implements IItemDefinition
 {
+	private final String identifier;
 	private final Item item;
 	private final boolean enabled;
 
-	public ItemDefinition( Item item, ActivityState state )
+	public ItemDefinition( String identifier, Item item, ActivityState state )
 	{
+		Preconditions.checkNotNull( identifier );
+		Preconditions.checkArgument( !identifier.isEmpty() );
 		Preconditions.checkNotNull( item );
 		Preconditions.checkNotNull( state );
 
+		this.identifier = identifier;
 		this.item = item;
 		this.enabled = state == ActivityState.Enabled;
+	}
+
+	@Nonnull
+	@Override
+	public String identifier()
+	{
+		return this.identifier;
 	}
 
 	@Override

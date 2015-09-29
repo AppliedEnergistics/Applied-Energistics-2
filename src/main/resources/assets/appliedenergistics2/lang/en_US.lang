@@ -18,7 +18,7 @@ tile.appliedenergistics2.BlockInscriber.name=Inscriber
 tile.appliedenergistics2.BlockInterface.name=ME Interface
 tile.appliedenergistics2.BlockQuantumLinkChamber.name=ME Quantum Link Chamber
 tile.appliedenergistics2.BlockQuantumRing.name=ME Quantum Ring
-tile.appliedenergistics2.BlockFluix.name=Fluix Block
+tile.appliedenergistics2.fluix.name=Fluix Block
 tile.appliedenergistics2.BlockQuartz.name=Certus Quartz Block
 tile.appliedenergistics2.BlockQuartzChiseled.name=Chiseled Certus Quartz Block
 tile.appliedenergistics2.BlockQuartzGlass.name=Quartz Glass
@@ -56,10 +56,10 @@ tile.appliedenergistics2.stair.fluix.name=Fluix Stairs
 tile.appliedenergistics2.stair.quartz.certus.name=Certus Quartz Stairs
 tile.appliedenergistics2.stair.quartz.certus.chiseled.name=Chiseled Certus Quartz Stairs
 tile.appliedenergistics2.stair.quartz.certus.pillar.name=Certus Quartz Pillar Stairs
-tile.appliedenergistics2.SkyStoneBlockStairBlock.name=Sky Stone Block Stairs
-tile.appliedenergistics2.SkyStoneBrickStairBlock.name=Sky Stone Brick Stairs
-tile.appliedenergistics2.SkyStoneSmallBrickStairBlock.name=Sky Stone Small Brick Stairs
-tile.appliedenergistics2.SkyStoneStairBlock.name=Sky Stone Stairs
+tile.appliedenergistics2.stair.skystone.block.name=Sky Stone Block Stairs
+tile.appliedenergistics2.stair.skystone.brick.name=Sky Stone Brick Stairs
+tile.appliedenergistics2.stair.skystone.brick.small.name=Sky Stone Small Brick Stairs
+tile.appliedenergistics2.stair.skystone.stone.name=Sky Stone Stairs
 
 // Slabs
 tile.appliedenergistics2.ChiseledQuartzSlabBlock.name=Chiseled Certus Quartz Slabs

@@ -82,7 +82,7 @@ public class NullSlot extends Slot
 	}
 
 	@Override
-	public boolean isSlotInInventory( IInventory par1IInventory, int par2 )
+	public boolean isHere( IInventory inv, int slotIn )
 	{
 		return false;
 	}

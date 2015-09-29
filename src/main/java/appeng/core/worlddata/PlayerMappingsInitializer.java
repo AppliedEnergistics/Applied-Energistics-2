@@ -25,7 +25,6 @@ import java.util.UUID;
 
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Property;
-import net.minecraftforge.fml.relauncher.FMLRelaunchLog;
 
 import appeng.core.AELog;
 import appeng.util.UUIDMatcher;
@@ -50,9 +49,8 @@ class PlayerMappingsInitializer
 	 * where the UUIDs were introduced.
 	 *
 	 * @param playerList the category for the player list, generally extracted using the "players" tag
-	 * @param log        the logger used to warn the server or user of faulty entries
 	 */
-	PlayerMappingsInitializer( ConfigCategory playerList, FMLRelaunchLog log )
+	PlayerMappingsInitializer( ConfigCategory playerList )
 	{
 		// Matcher for UUIDs
 		final UUIDMatcher matcher = new UUIDMatcher();
@@ -61,7 +59,7 @@ class PlayerMappingsInitializer
 		final int capacity = playerList.size();
 
 		// Mappings for the IDs is a regular HashMap
-		this.playerMappings = new HashMap<Integer, UUID>( capacity );
+		this.playerMappings = new HashMap<>( capacity );
 
 		// Iterates through every pair of UUID to ID
 		for( Map.Entry<String, Property> entry : playerList.getValues().entrySet() )

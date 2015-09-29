@@ -20,8 +20,9 @@ package appeng.transformer;
 
 
 import java.util.Map;
-
 import javax.annotation.Nullable;
+
+import com.google.common.eventbus.EventBus;
 
 import net.minecraftforge.fml.common.DummyModContainer;
 import net.minecraftforge.fml.common.LoadController;
@@ -31,9 +32,8 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.relauncher.FMLRelaunchLog;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin.MCVersion;
-import appeng.core.AEConfig;
 
-import com.google.common.eventbus.EventBus;
+import appeng.core.AEConfig;
 
 
 @MCVersion( "1.8" )
@@ -126,4 +126,6 @@ public final class AppEngCore extends DummyModContainer implements IFMLLoadingPl
 	{
 		return this.getVersion();
 	}
+
+
 }

@@ -24,10 +24,13 @@ import java.util.EnumSet;
 import com.google.common.base.Optional;
 
 import net.minecraft.block.BlockStairs;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 
 import appeng.api.definitions.IBlockDefinition;
+import appeng.core.CommonHelper;
 import appeng.core.CreativeTab;
 
 
@@ -45,7 +48,7 @@ public class StairBlockFeatureHandler implements IFeatureHandler
 		this.stairs = stairs;
 		this.extractor = new FeatureNameExtractor( stairs.getClass(), subName );
 		this.enabled = state == ActivityState.Enabled;
-		this.definition = new BlockDefinition( stairs, state );
+		this.definition = new BlockDefinition( stairs.getClass().getSimpleName(), stairs, state );
 	}
 
 	@Override
@@ -69,8 +72,13 @@ public class StairBlockFeatureHandler implements IFeatureHandler
 			this.stairs.setCreativeTab( CreativeTab.instance );
 			this.stairs.setUnlocalizedName( "appliedenergistics2." + name );
 
-			//			"tile." +
 			GameRegistry.registerBlock( this.stairs, name );
+
+			if( side == Side.CLIENT )
+			{
+				final Item item = ItemBlock.getItemFromBlock( this.stairs );
+				CommonHelper.proxy.configureIcon( item, name );
+			}
 		}
 	}
 }

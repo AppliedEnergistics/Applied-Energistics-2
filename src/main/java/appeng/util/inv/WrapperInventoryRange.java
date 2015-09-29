@@ -123,9 +123,9 @@ public class WrapperInventoryRange implements IInventory
 	}
 
 	@Override
-	public String getName()
+	public String getCommandSenderName()
 	{
-		return this.src.getName();
+		return this.src.getCommandSenderName();
 	}
 
 	@Override

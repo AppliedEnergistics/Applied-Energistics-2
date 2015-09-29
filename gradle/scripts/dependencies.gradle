@@ -89,7 +89,7 @@ configurations {
 
 dependencies {
     // installable
-//    mods "mcp.mobius.waila:Waila:${waila_version}_${minecraft_version}:dev"
+//    mods "mcp.mobius.waila:Waila:${waila_version}_1.8.1:dev"
 //    mods "mcp.mobius.jabba:Jabba:${jabba_version}_${minecraft_version}:dev"
 //    mods "codechicken:EnderStorage:${minecraft_version}-${enderstorage_version}:dev"
 //    mods "codechicken:Translocator:${minecraft_version}-${translocator_version}:dev"
@@ -105,9 +105,9 @@ dependencies {
 //    mods name: 'ThermalFoundation', version: "[${minecraft_version}]${tfoundation_version}-dev", ext: 'jar'
 
 //    compile "codechicken:ForgeMultipart:${minecraft_version}-${fmp_version}:dev"
-    compile "codechicken:CodeChickenLib:${minecraft_version}-${code_chicken_lib_version}:dev"
-    compile "codechicken:CodeChickenCore:${minecraft_version}-${code_chicken_core_version}:dev"
-    compile "codechicken:NotEnoughItems:${minecraft_version}-${nei_version}:dev"
+//    compile "codechicken:CodeChickenLib:${minecraft_version}-${code_chicken_lib_version}:dev"
+//    compile "codechicken:CodeChickenCore:${minecraft_version}-${code_chicken_core_version}:dev"
+//    compile "codechicken:NotEnoughItems:${minecraft_version}-${nei_version}:dev"
 //    compile "com.mod-buildcraft:buildcraft:${bc_version}:dev"
 
     // provided APIs
