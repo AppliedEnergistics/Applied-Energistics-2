@@ -117,7 +117,7 @@ public class ModelGenerator
 	final FaceBakery faceBakery = new FaceBakery();
 
 	float tx=0,ty=0,tz=0;
-	final float[] defUVs = new float[] { 0, 0, 1, 1 };
+	final float[] defUVs = { 0, 0, 1, 1 };
 
 	public void setRenderBoundsFromBlock(
 			final Block block )
@@ -313,7 +313,7 @@ public class ModelGenerator
 		if ( point == 4 )
 		{
 			brightness = -1;
-			final int[] vertData = new int[]{
+			final int[] vertData = {
 				Float.floatToRawIntBits( points[0][0] ),
 				Float.floatToRawIntBits( points[0][1] ),
 				Float.floatToRawIntBits( points[0][2] ),
@@ -387,7 +387,7 @@ public class ModelGenerator
 		return MinecraftForgeClient.getRenderLayer() == EnumWorldBlockLayer.TRANSLUCENT;
 	}
 
-	final float[] quadsUV = new float[] {
+	final float[] quadsUV = {
 			0,
 			0,
 			1,
@@ -457,7 +457,7 @@ public class ModelGenerator
 		to_a = 1.0f - to_a;
 		to_b = 1.0f - to_b;
 
-		final float[] afloat = new float[] {// :P
+		final float[] afloat = {// :P
 		16.0f * ( quadsUV[0] + quadsUV[2] * from_a + quadsUV[4] * from_b ), // 0
 		16.0f * ( quadsUV[1] + quadsUV[3] * from_a + quadsUV[5] * from_b ), // 1
 
