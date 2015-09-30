@@ -142,7 +142,7 @@ public class AppEngCraftingSlot extends AppEngSlot
 	@Override
 	public void onPickupFromSlot( final EntityPlayer playerIn, final ItemStack stack )
 	{
-        net.minecraftforge.fml.common.FMLCommonHandler.instance().firePlayerCraftingEvent(playerIn, stack, craftMatrix);
+        net.minecraftforge.fml.common.FMLCommonHandler.instance().firePlayerCraftingEvent(playerIn, stack, this.craftMatrix );
         this.onCrafting(stack);
         net.minecraftforge.common.ForgeHooks.setCraftingPlayer(playerIn);
         final InventoryCrafting ic = new InventoryCrafting( this.myContainer, 3, 3 );
@@ -153,7 +153,7 @@ public class AppEngCraftingSlot extends AppEngSlot
         final ItemStack[] aitemstack = CraftingManager.getInstance().func_180303_b(ic, playerIn.worldObj);
         
         for ( int x=0; x < this.craftMatrix.getSizeInventory(); x++ )
-        	craftMatrix.setInventorySlotContents( x, ic.getStackInSlot( x ) );
+			this.craftMatrix.setInventorySlotContents( x, ic.getStackInSlot( x ) );
                
         net.minecraftforge.common.ForgeHooks.setCraftingPlayer(null);
 

@@ -71,7 +71,7 @@ public class BlockLightDetector extends AEBaseTileBlock implements IOrientableBl
 	public IBlockState getStateFromMeta(
 			final int meta )
 	{
-		return getDefaultState();
+		return this.getDefaultState();
 	}
 	
 	@Override

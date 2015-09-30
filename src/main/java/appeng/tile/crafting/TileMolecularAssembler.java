@@ -511,9 +511,9 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 
 				try
 				{
-					final TargetPoint where = new TargetPoint( this.worldObj.provider.getDimensionId(), pos.getX(), pos.getY(), pos.getZ(), 32 );
+					final TargetPoint where = new TargetPoint( this.worldObj.provider.getDimensionId(), this.pos.getX(), this.pos.getY(), this.pos.getZ(), 32 );
 					final IAEItemStack item = AEItemStack.create( output );
-					NetworkHandler.instance.sendToAllAround( new PacketAssemblerAnimation( pos, (byte) speed, item ), where );
+					NetworkHandler.instance.sendToAllAround( new PacketAssemblerAnimation( this.pos, (byte) speed, item ), where );
 				}
 				catch( final IOException e )
 				{
@@ -592,7 +592,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 			return output;
 		}
 
-		final TileEntity te = this.getWorld().getTileEntity( pos.offset( d ) );
+		final TileEntity te = this.getWorld().getTileEntity( this.pos.offset( d ) );
 
 		if( te == null )
 		{

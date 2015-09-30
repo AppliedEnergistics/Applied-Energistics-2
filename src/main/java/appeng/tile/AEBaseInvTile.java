@@ -114,7 +114,7 @@ public abstract class AEBaseInvTile extends AEBaseTile implements ISidedInventor
 	@Override
 	public boolean hasCustomName()
 	{
-		return getInternalInventory().hasCustomName();
+		return this.getInternalInventory().hasCustomName();
 	}
 
 	@Override
@@ -128,7 +128,7 @@ public abstract class AEBaseInvTile extends AEBaseTile implements ISidedInventor
 	{
 		final double squaredMCReach = 64.0D;
 
-		return this.worldObj.getTileEntity( pos ) == this && p.getDistanceSq( pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D ) <= squaredMCReach;
+		return this.worldObj.getTileEntity( this.pos ) == this && p.getDistanceSq( this.pos.getX() + 0.5D, this.pos.getY() + 0.5D, this.pos.getZ() + 0.5D ) <= squaredMCReach;
 	}
 
 	@Override
@@ -157,7 +157,7 @@ public abstract class AEBaseInvTile extends AEBaseTile implements ISidedInventor
 	@Override
 	public int[] getSlotsForFace( final EnumFacing side )
 	{
-		final Block blk = this.worldObj.getBlockState( pos ).getBlock();
+		final Block blk = this.worldObj.getBlockState( this.pos ).getBlock();
 		if( blk instanceof AEBaseBlock )
 		{
 			return this.getAccessibleSlotsBySide( ( (AEBaseBlock) blk ).mapRotation( this, side ) );
@@ -204,11 +204,11 @@ public abstract class AEBaseInvTile extends AEBaseTile implements ISidedInventor
 	@Override
 	public IChatComponent getDisplayName()
 	{
-		if( hasCustomName() )
+		if( this.hasCustomName() )
 		{
 			return new ChatComponentText( this.getCustomName() );
 		}
-		return new ChatComponentTranslation( getBlockType().getUnlocalizedName() );
+		return new ChatComponentTranslation( this.getBlockType().getUnlocalizedName() );
 	}
 
 	public abstract int[] getAccessibleSlotsBySide( EnumFacing whichSide );

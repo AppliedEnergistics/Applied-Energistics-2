@@ -128,14 +128,14 @@ public class AdaptorPlayerInventory implements IInventory
 	@Override
 	public String getCommandSenderName()
 	{
-		return src.getCommandSenderName();
+		return this.src.getCommandSenderName();
 	}
 
 	@Override
 	public int getField(
 			final int id )
 	{
-		return src.getField( id );
+		return this.src.getField( id );
 	}
 
 	@Override
@@ -143,18 +143,18 @@ public class AdaptorPlayerInventory implements IInventory
 			final int id,
 			final int value )
 	{
-		src.setField( id, value );
+		this.src.setField( id, value );
 	}
 
 	@Override
 	public int getFieldCount()
 	{
-		return src.getFieldCount();
+		return this.src.getFieldCount();
 	}
 
 	@Override
 	public void clear()
 	{
-		src.clear();
+		this.src.clear();
 	}
 }

@@ -198,7 +198,7 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 	@SideOnly( Side.CLIENT )
 	public void renderInventory( final IPartRenderHelper rh, final ModelGenerator renderer )
 	{
-		rh.setTexture( CableBusTextures.PartExportSides.getIcon(), CableBusTextures.PartExportSides.getIcon(), CableBusTextures.PartMonitorBack.getIcon(), renderer.getIcon( is ), CableBusTextures.PartExportSides.getIcon(), CableBusTextures.PartExportSides.getIcon() );
+		rh.setTexture( CableBusTextures.PartExportSides.getIcon(), CableBusTextures.PartExportSides.getIcon(), CableBusTextures.PartMonitorBack.getIcon(), renderer.getIcon( this.is ), CableBusTextures.PartExportSides.getIcon(), CableBusTextures.PartExportSides.getIcon() );
 
 		rh.setBounds( 4, 4, 12, 12, 12, 14 );
 		rh.renderInventoryBox( renderer );
@@ -214,7 +214,7 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 	@SideOnly( Side.CLIENT )
 	public void renderStatic( final BlockPos pos, final IPartRenderHelper rh, final ModelGenerator renderer )
 	{
-		rh.setTexture( CableBusTextures.PartExportSides.getIcon(), CableBusTextures.PartExportSides.getIcon(), CableBusTextures.PartMonitorBack.getIcon(), renderer.getIcon( is ), CableBusTextures.PartExportSides.getIcon(), CableBusTextures.PartExportSides.getIcon() );
+		rh.setTexture( CableBusTextures.PartExportSides.getIcon(), CableBusTextures.PartExportSides.getIcon(), CableBusTextures.PartMonitorBack.getIcon(), renderer.getIcon( this.is ), CableBusTextures.PartExportSides.getIcon(), CableBusTextures.PartExportSides.getIcon() );
 
 		rh.setBounds( 4, 4, 12, 12, 12, 14 );
 		rh.renderBlock( pos, renderer );
@@ -225,7 +225,7 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 		rh.setBounds( 6, 6, 15, 10, 10, 16 );
 		rh.renderBlock( pos, renderer );
 
-		rh.setTexture( CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartMonitorBack.getIcon(), renderer.getIcon( is ), CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartMonitorSidesStatus.getIcon() );
+		rh.setTexture( CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartMonitorBack.getIcon(), renderer.getIcon( this.is ), CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartMonitorSidesStatus.getIcon() );
 
 		rh.setBounds( 6, 6, 11, 10, 10, 12 );
 		rh.renderBlock( pos, renderer );

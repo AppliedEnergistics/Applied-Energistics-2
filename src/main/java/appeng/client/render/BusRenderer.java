@@ -113,8 +113,8 @@ public class BusRenderer implements IItemRenderer
 		GL11.glScaled( 1.2, 1.2, 1. );
 
 		GL11.glColor4f( 1, 1, 1, 1 );
-		renderer.setColorOpaque_F( 1, 1, 1 );
-		renderer.setBrightness( 14 << 20 | 14 << 4 );
+		this.renderer.setColorOpaque_F( 1, 1, 1 );
+		this.renderer.setBrightness( 14 << 20 | 14 << 4 );
 
 		BusRenderHelper.INSTANCE.setBounds( 0, 0, 0, 1, 1, 1 );
 		BusRenderHelper.INSTANCE.setTexture( null );

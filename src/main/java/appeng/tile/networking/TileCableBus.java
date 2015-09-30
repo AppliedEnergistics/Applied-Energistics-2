@@ -89,7 +89,7 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 		if( newLV != this.oldLV )
 		{
 			this.oldLV = newLV;
-			this.worldObj.checkLight( pos );
+			this.worldObj.checkLight( this.pos );
 		}
 
 		this.updateTileSetting();
@@ -104,7 +104,7 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 			{
 				final TileCableBus tcb = (TileCableBus) BlockCableBus.tesrTile.newInstance();
 				tcb.copyFrom( this );
-				this.getWorld().setTileEntity( pos, tcb );
+				this.getWorld().setTileEntity( this.pos, tcb );
 			}
 			catch( final Throwable ignored )
 			{
@@ -178,7 +178,7 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 		if( newLV != this.oldLV )
 		{
 			this.oldLV = newLV;
-			this.worldObj.getLight( pos );
+			this.worldObj.getLight( this.pos );
 			// worldObj.updateAllLightTypes( xCoord, yCoord, zCoord );
 		}
 
@@ -209,9 +209,9 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 		super.onReady();
 		if( this.cb.isEmpty() )
 		{
-			if( this.worldObj.getTileEntity( pos ) == this )
+			if( this.worldObj.getTileEntity( this.pos ) == this )
 			{
-				this.worldObj.destroyBlock( pos, true );
+				this.worldObj.destroyBlock( this.pos, true );
 			}
 		}
 		else
@@ -340,7 +340,7 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 			}
 		}
 
-		this.getWorld().setBlockToAir( pos );
+		this.getWorld().setBlockToAir( this.pos );
 	}
 	
 	@Override
@@ -360,9 +360,9 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	@Override
 	public void notifyNeighbors()
 	{
-		if( this.worldObj != null && this.worldObj.isBlockLoaded( pos ) && !CableBusContainer.isLoading() )
+		if( this.worldObj != null && this.worldObj.isBlockLoaded( this.pos ) && !CableBusContainer.isLoading() )
 		{
-			Platform.notifyBlocksOfNeighbors( this.worldObj, pos );
+			Platform.notifyBlocksOfNeighbors( this.worldObj, this.pos );
 		}
 	}
 

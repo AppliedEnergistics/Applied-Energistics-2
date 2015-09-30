@@ -90,7 +90,7 @@ public class PartToggleBus extends PartBasicState
 	@Override
 	public TextureAtlasSprite getBreakingTexture( final ModelGenerator renderer )
 	{
-		return renderer.getIcon( is  ).getAtlas();
+		return renderer.getIcon( this.is ).getAtlas();
 	}
 
 	@Override
@@ -124,7 +124,7 @@ public class PartToggleBus extends PartBasicState
 	{
 		GL11.glTranslated( -0.2, -0.3, 0.0 );
 
-		rh.setTexture( renderer.getIcon( is ) );
+		rh.setTexture( renderer.getIcon( this.is ) );
 		rh.setBounds( 6, 6, 14 - 4, 10, 10, 16 - 4 );
 		rh.renderInventoryBox( renderer );
 
@@ -147,7 +147,7 @@ public class PartToggleBus extends PartBasicState
 	@SideOnly( Side.CLIENT )
 	public void renderStatic( final BlockPos pos, final IPartRenderHelper rh, final ModelGenerator renderer )
 	{
-		rh.setTexture( renderer.getIcon( is ) );
+		rh.setTexture( renderer.getIcon( this.is ) );
 
 		rh.setBounds( 6, 6, 14, 10, 10, 16 );
 		rh.renderBlock( pos, renderer );
@@ -155,7 +155,7 @@ public class PartToggleBus extends PartBasicState
 		rh.setBounds( 6, 6, 11, 10, 10, 13 );
 		rh.renderBlock( pos, renderer );
 
-		rh.setTexture( CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartMonitorBack.getIcon(), renderer.getIcon( is ), CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartMonitorSidesStatus.getIcon() );
+		rh.setTexture( CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartMonitorBack.getIcon(), renderer.getIcon( this.is ), CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartMonitorSidesStatus.getIcon() );
 
 		rh.setBounds( 6, 6, 13, 10, 10, 14 );
 		rh.renderBlock( pos, renderer );

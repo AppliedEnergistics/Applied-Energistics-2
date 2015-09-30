@@ -292,7 +292,7 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable, IUpda
 			final List<ItemStack> drops = new ArrayList<ItemStack>();
 			drops.add( myItem );
 			this.setInventorySlotContents( 0, null );
-			Platform.spawnDrops( this.worldObj, pos.offset( getForward() ), drops );
+			Platform.spawnDrops( this.worldObj, this.pos.offset( this.getForward() ), drops );
 		}
 	}
 }

@@ -142,7 +142,7 @@ public class NetworkToolViewer implements INetworkTool
 	public int getField(
 			final int id )
 	{
-		return inv.getField( id );
+		return this.inv.getField( id );
 	}
 
 	@Override
@@ -150,24 +150,24 @@ public class NetworkToolViewer implements INetworkTool
 			final int id,
 			final int value )
 	{
-		inv.setField( id, value );
+		this.inv.setField( id, value );
 	}
 
 	@Override
 	public int getFieldCount()
 	{
-		return inv.getFieldCount();
+		return this.inv.getFieldCount();
 	}
 
 	@Override
 	public void clear()
 	{
-		inv.clear();
+		this.inv.clear();
 	}
 
 	@Override
 	public IChatComponent getDisplayName()
 	{
-		return inv.getDisplayName();
+		return this.inv.getDisplayName();
 	}
 }

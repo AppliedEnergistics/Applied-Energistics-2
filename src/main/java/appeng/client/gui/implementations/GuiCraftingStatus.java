@@ -142,7 +142,7 @@ public class GuiCraftingStatus extends GuiCraftingCPU
 
 		if( this.myIcon != null )
 		{
-			this.buttonList.add( this.originalGuiBtn = new GuiTabButton( this.guiLeft + 213, this.guiTop - 4, this.myIcon, this.myIcon.getDisplayName(), itemRender ) );
+			this.buttonList.add( this.originalGuiBtn = new GuiTabButton( this.guiLeft + 213, this.guiTop - 4, this.myIcon, this.myIcon.getDisplayName(), this.itemRender ) );
 			this.originalGuiBtn.hideEdge = 13;
 		}
 	}

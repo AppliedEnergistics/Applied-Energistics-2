@@ -75,7 +75,7 @@ public class SkyStoneBlock extends AEBaseBlock
 				level = is.getItem().getHarvestLevel( is, "pickaxe" );
 			}
 
-			if( type != SkystoneType.STONE || level >= 3 || event.originalSpeed > BREAK_SPEAK_THRESHOLD )
+			if( this.type != SkystoneType.STONE || level >= 3 || event.originalSpeed > BREAK_SPEAK_THRESHOLD )
 			{
 				event.newSpeed /= BREAK_SPEAK_SCALAR;
 			}
@@ -106,7 +106,7 @@ public class SkyStoneBlock extends AEBaseBlock
 	@Override
 	public String getUnlocalizedName( final ItemStack is )
 	{
-		switch( type )
+		switch( this.type )
 		{
 			case BLOCK:
 				return this.getUnlocalizedName() + ".Block";

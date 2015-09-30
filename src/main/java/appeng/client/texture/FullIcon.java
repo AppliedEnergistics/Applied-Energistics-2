@@ -42,7 +42,7 @@ public class FullIcon implements IAESprite
 	@Override
 	public TextureAtlasSprite getAtlas()
 	{
-		return p;
+		return this.p;
 	}
 	
 	@Override

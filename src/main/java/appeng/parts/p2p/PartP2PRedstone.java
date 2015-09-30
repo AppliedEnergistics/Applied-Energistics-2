@@ -88,11 +88,11 @@ public class PartP2PRedstone extends PartP2PTunnel<PartP2PRedstone>
 	{
 		final World worldObj = this.tile.getWorld();
 
-		Platform.notifyBlocksOfNeighbors( worldObj,tile.getPos());
+		Platform.notifyBlocksOfNeighbors( worldObj, this.tile.getPos());
 
 		// and this cause sometimes it can go thought walls.
 		for ( final EnumFacing face : EnumFacing.VALUES )
-			Platform.notifyBlocksOfNeighbors( worldObj,tile.getPos().offset( face ) );
+			Platform.notifyBlocksOfNeighbors( worldObj, this.tile.getPos().offset( face ) );
 	}
 
 	@MENetworkEventSubscribe
@@ -137,7 +137,7 @@ public class PartP2PRedstone extends PartP2PTunnel<PartP2PRedstone>
 	{
 		if( !this.output )
 		{
-			final BlockPos target = tile.getPos().offset( side.getFacing() );
+			final BlockPos target = this.tile.getPos().offset( this.side.getFacing() );
 
 			final IBlockState state = this.tile.getWorld().getBlockState( target );
 			final Block b = state.getBlock();

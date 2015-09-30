@@ -60,8 +60,8 @@ public class TileEnergyCell extends AENetworkTile implements IAEPowerStorage
 	public void onReady()
 	{
 		super.onReady();
-		final int value =  ( Integer ) this.worldObj.getBlockState( pos ).getValue( BlockEnergyCell.ENERGY_STORAGE );
-		currentMeta = (byte)value;
+		final int value =  ( Integer ) this.worldObj.getBlockState( this.pos ).getValue( BlockEnergyCell.ENERGY_STORAGE );
+		this.currentMeta = (byte)value;
 		this.changePowerLevel();
 	}
 
@@ -86,7 +86,7 @@ public class TileEnergyCell extends AENetworkTile implements IAEPowerStorage
 		if( this.currentMeta != boundMetadata )
 		{
 			this.currentMeta = boundMetadata;
-			this.worldObj.setBlockState( pos, this.worldObj.getBlockState( pos ).withProperty( BlockEnergyCell.ENERGY_STORAGE, (int)boundMetadata ) );
+			this.worldObj.setBlockState( this.pos, this.worldObj.getBlockState( this.pos ).withProperty( BlockEnergyCell.ENERGY_STORAGE, (int)boundMetadata ) );
 		}
 	}
 

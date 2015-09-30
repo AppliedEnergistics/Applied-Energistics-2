@@ -299,6 +299,6 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 	public void registerCustomIcon(			
 			final TextureMap map )
 	{
-		myIcon = new BaseIcon( map.registerSprite( new ResourceLocation( AppEng.MOD_ID, "blocks/ItemFacade" ) ));		
+		this.myIcon = new BaseIcon( map.registerSprite( new ResourceLocation( AppEng.MOD_ID, "blocks/ItemFacade" ) ));
 	}
 }

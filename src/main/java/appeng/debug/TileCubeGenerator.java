@@ -65,7 +65,7 @@ public class TileCubeGenerator extends AEBaseTile implements IUpdatePlayerListBo
 
 	void spawn()
 	{
-		this.worldObj.setBlockToAir( pos );
+		this.worldObj.setBlockToAir( this.pos );
 
 		final Item i = this.is.getItem();
 		final EnumFacing side = EnumFacing.UP;
@@ -78,7 +78,7 @@ public class TileCubeGenerator extends AEBaseTile implements IUpdatePlayerListBo
 			{
 				for( int z = -half; z < half; z++ )
 				{
-					final BlockPos p = pos.add( x, y-1, z );
+					final BlockPos p = this.pos.add( x, y - 1, z );
 					i.onItemUse( this.is.copy(), this.who, this.worldObj, p, side, 0.5f, 0.0f, 0.5f );
 				}
 			}

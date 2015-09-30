@@ -53,9 +53,9 @@ public enum AEPartLocation
     
     private AEPartLocation( final int x, final int y, final int z)
     {
-        xOffset = x;
-        yOffset = y;
-        zOffset = z;
+        this.xOffset = x;
+        this.yOffset = y;
+        this.zOffset = z;
     }
 
     /**
@@ -86,7 +86,7 @@ public enum AEPartLocation
      */
     public AEPartLocation getOpposite()
     {
-        return fromOrdinal(OPPOSITES[ordinal()]);
+        return fromOrdinal(OPPOSITES[this.ordinal()]);
     }
 
     /**
@@ -94,7 +94,7 @@ public enum AEPartLocation
      */
 	public EnumFacing getFacing()
 	{
-		return facings[ordinal()];
+		return facings[this.ordinal()];
 	}
 	
 }

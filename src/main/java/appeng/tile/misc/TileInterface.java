@@ -116,7 +116,7 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, IT
 			this.setOrientation( this.pointAt.yOffset != 0 ? EnumFacing.SOUTH : EnumFacing.UP, this.pointAt.getOpposite().getFacing() );
 		}
 
-		configureNodeSides();		
+		this.configureNodeSides();
 		this.markForUpdate();
 		this.markDirty();
 	}
@@ -153,7 +153,7 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, IT
 	@Override
 	public void onReady()
 	{
-		configureNodeSides();		
+		this.configureNodeSides();
 		super.onReady();
 		this.duality.initialize();
 	}

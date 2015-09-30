@@ -62,7 +62,7 @@ public class ItemPaintBall extends AEBaseItem
 			public ModelResourceLocation getModelLocation(
 					final ItemStack stack )
 			{
-				if ( isLumen(stack) )
+				if ( ItemPaintBall.this.isLumen(stack) )
 					return sloc;
 				
 				return loc;
@@ -86,7 +86,7 @@ public class ItemPaintBall extends AEBaseItem
 			final ItemStack stack,
 			final int renderPass )
 	{
-		final AEColor col = getColor(stack);
+		final AEColor col = this.getColor(stack);
 		
 		final int colorValue = stack.getItemDamage() >= 20 ? col.mediumVariant : col.mediumVariant;
 		final int r = ( colorValue >> 16 ) & 0xff;

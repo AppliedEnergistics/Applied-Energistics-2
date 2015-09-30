@@ -544,7 +544,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 			// update the neighbors
 			if( this.worldObj != null )
 			{
-				Platform.notifyBlocksOfNeighbors( this.worldObj, pos );
+				Platform.notifyBlocksOfNeighbors( this.worldObj, this.pos );
 				this.markForUpdate();
 			}
 		}
@@ -860,7 +860,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 	@Override
 	public void saveChanges( final IMEInventory cellInventory )
 	{
-		this.worldObj.markChunkDirty( pos, this );
+		this.worldObj.markChunkDirty( this.pos, this );
 	}
 
 	private static class ChestNoHandler extends Exception

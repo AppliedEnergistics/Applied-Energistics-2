@@ -250,7 +250,7 @@ public abstract class AbstractPartReporting extends AEBasePart implements IPartM
 		if( this.opacity < 0 )
 		{
 			final TileEntity te = this.getTile();
-			this.opacity = 255 - te.getWorld().getBlockLightOpacity( te.getPos().offset( side.getFacing() ) );
+			this.opacity = 255 - te.getWorld().getBlockLightOpacity( te.getPos().offset( this.side.getFacing() ) );
 		}
 
 		return (int) ( emit * ( this.opacity / 255.0f ) );

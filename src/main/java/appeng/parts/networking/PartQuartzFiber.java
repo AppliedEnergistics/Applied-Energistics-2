@@ -81,7 +81,7 @@ public class PartQuartzFiber extends AEBasePart implements IEnergyGridProvider
 	{
 		GL11.glTranslated( -0.2, -0.3, 0.0 );
 
-		rh.setTexture( renderer.getIcon( is ) );
+		rh.setTexture( renderer.getIcon( this.is ) );
 		rh.setBounds( 6.0f, 6.0f, 5.0f, 10.0f, 10.0f, 11.0f );
 		rh.renderInventoryBox( renderer );
 		rh.setTexture( null );
@@ -91,7 +91,7 @@ public class PartQuartzFiber extends AEBasePart implements IEnergyGridProvider
 	@SideOnly( Side.CLIENT )
 	public void renderStatic( final BlockPos pos, final IPartRenderHelper rh, final ModelGenerator renderer )
 	{
-		final IAESprite myIcon = renderer.getIcon( is );
+		final IAESprite myIcon = renderer.getIcon( this.is );
 		rh.setTexture( myIcon );
 		rh.setBounds( 6, 6, 10, 10, 10, 16 );
 		rh.renderBlock( pos, renderer );

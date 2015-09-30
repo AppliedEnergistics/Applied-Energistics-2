@@ -8,69 +8,69 @@ public class BaseIcon implements IAESprite
 	
 	public BaseIcon( final TextureAtlasSprite src )
 	{
-		spite = src;
+		this.spite = src;
 	}
 
 	@Override
 	public int getIconWidth()
 	{
-		return spite.getIconWidth();
+		return this.spite.getIconWidth();
 	}
 
 	@Override
 	public int getIconHeight()
 	{
-		return spite.getIconHeight();
+		return this.spite.getIconHeight();
 	}
 
 	@Override
 	public float getMaxU()
 	{
-		return spite.getMaxU();
+		return this.spite.getMaxU();
 	}
 
 	@Override
 	public float getInterpolatedU(
 			final double px )
 	{
-		return spite.getInterpolatedU( px );
+		return this.spite.getInterpolatedU( px );
 	}
 
 	@Override
 	public float getMinV()
 	{
-		return spite.getMinV();
+		return this.spite.getMinV();
 	}
 
 	@Override
 	public float getMaxV()
 	{
-		return spite.getMaxV();
+		return this.spite.getMaxV();
 	}
 
 	@Override
 	public String getIconName()
 	{
-		return spite.getIconName();
+		return this.spite.getIconName();
 	}
 
 	@Override
 	public float getInterpolatedV(
 			final double px )
 	{
-		return spite.getInterpolatedV( px );
+		return this.spite.getInterpolatedV( px );
 	}
 
 	@Override
 	public float getMinU()
 	{
-		return spite.getMinU();
+		return this.spite.getMinU();
 	}
 
 	@Override
 	public TextureAtlasSprite getAtlas()
 	{
-		return spite;
+		return this.spite;
 	}
 
 }

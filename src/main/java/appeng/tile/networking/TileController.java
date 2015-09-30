@@ -73,9 +73,9 @@ public class TileController extends AENetworkPowerTile
 
 	public void onNeighborChange( final boolean force )
 	{
-		final boolean xx = checkController( pos.offset( EnumFacing.EAST ) ) && checkController( pos.offset( EnumFacing.WEST ) );
-		final boolean yy = checkController( pos.offset( EnumFacing.UP ) ) && checkController( pos.offset( EnumFacing.DOWN ) );
-		final boolean zz = checkController( pos.offset( EnumFacing.NORTH ) ) && checkController(  pos.offset( EnumFacing.SOUTH ) );
+		final boolean xx = this.checkController( this.pos.offset( EnumFacing.EAST ) ) && this.checkController( this.pos.offset( EnumFacing.WEST ) );
+		final boolean yy = this.checkController( this.pos.offset( EnumFacing.UP ) ) && this.checkController( this.pos.offset( EnumFacing.DOWN ) );
+		final boolean zz = this.checkController( this.pos.offset( EnumFacing.NORTH ) ) && this.checkController( this.pos.offset( EnumFacing.SOUTH ) );
 
 		// int meta = world.getBlockMetadata( xCoord, yCoord, zCoord );
 		// boolean hasPower = meta > 0;
@@ -127,9 +127,9 @@ public class TileController extends AENetworkPowerTile
 			metaState = ControllerBlockState.OFFLINE;
 		}
 		
-		if( checkController( pos ) && this.worldObj.getBlockState( pos ).getValue( BlockController.CONTROLLER_STATE ) != metaState )
+		if( this.checkController( this.pos ) && this.worldObj.getBlockState( this.pos ).getValue( BlockController.CONTROLLER_STATE ) != metaState )
 		{
-			this.worldObj.setBlockState( pos, worldObj.getBlockState( pos ).withProperty( BlockController.CONTROLLER_STATE, metaState ) );
+			this.worldObj.setBlockState( this.pos, this.worldObj.getBlockState( this.pos ).withProperty( BlockController.CONTROLLER_STATE, metaState ) );
 		}
 		
 	}

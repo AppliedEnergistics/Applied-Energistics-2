@@ -118,6 +118,6 @@ public enum ExtraBlockTextures
 
 	public void registerIcon( final TextureMap map )
 	{
-		IIcon = new BaseIcon( map.registerSprite( new ResourceLocation( AppEng.MOD_ID, "blocks/" + name ) ) );
+		this.IIcon = new BaseIcon( map.registerSprite( new ResourceLocation( AppEng.MOD_ID, "blocks/" + this.name ) ) );
 	}
 }

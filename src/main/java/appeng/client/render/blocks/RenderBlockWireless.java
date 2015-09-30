@@ -57,7 +57,7 @@ public class RenderBlockWireless extends BaseBlockRender<BlockWireless, TileWire
 	public void renderInventory( final BlockWireless blk, final ItemStack is, final ModelGenerator renderer, final ItemRenderType type, final Object[] obj )
 	{
 		this.blk = blk;
-		center = new BlockPos(0,0,0);
+		this.center = new BlockPos(0,0,0);
 		this.hasChan = false;
 		this.hasPower = false;
 		final BlockRenderInfo ri = blk.getRendererInstance();
@@ -128,7 +128,7 @@ public class RenderBlockWireless extends BaseBlockRender<BlockWireless, TileWire
 			this.renderBlockBounds( renderer, 5, 5, 1, 11, 11, 2, fdx, fdy, fdz );
 			super.renderInWorld( blk, world, pos, renderer );
 
-			center = pos;
+			this.center = pos;
 			ri.setTemporaryRenderIcon( null );
 
 			this.renderTorchAtAngle( renderer, fdx, fdy, fdz );
@@ -210,7 +210,7 @@ public class RenderBlockWireless extends BaseBlockRender<BlockWireless, TileWire
 
 	private void renderTorchAtAngle( final ModelGenerator renderer, final EnumFacing x, final EnumFacing y, final EnumFacing z )
 	{
-		final IAESprite r = ( this.hasChan ? CableBusTextures.BlockWirelessOn.getIcon() : renderer.getIcon( blk.getDefaultState() )[0] );
+		final IAESprite r = ( this.hasChan ? CableBusTextures.BlockWirelessOn.getIcon() : renderer.getIcon( this.blk.getDefaultState() )[0] );
 		final IAESprite sides = new OffsetIcon( r, 0.0f, -2.0f );
 
 		switch( z )
@@ -251,14 +251,14 @@ public class RenderBlockWireless extends BaseBlockRender<BlockWireless, TileWire
 
 		renderer.setColorOpaque_I( 0xffffff );
 		this.renderBlockBounds( renderer, 0, 7, 1, 16, 9, 16, x,y,z );
-		this.renderFace( center, this.blk, sides, renderer, y );
-		this.renderFace( center, this.blk, sides, renderer, y.getOpposite() );
+		this.renderFace( this.center, this.blk, sides, renderer, y );
+		this.renderFace( this.center, this.blk, sides, renderer, y.getOpposite() );
 
 		this.renderBlockBounds( renderer, 7, 0, 1, 9, 16, 16, x, y, z );
-		this.renderFace( center, this.blk, sides, renderer, x );
-		this.renderFace( center, this.blk, sides, renderer, x.getOpposite() );
+		this.renderFace( this.center, this.blk, sides, renderer, x );
+		this.renderFace( this.center, this.blk, sides, renderer, x.getOpposite() );
 
 		this.renderBlockBounds( renderer, 7, 7, 1, 9, 9, 10.6, x, y, z );
-		this.renderFace( center, this.blk, r, renderer, z );
+		this.renderFace( this.center, this.blk, r, renderer, z );
 	}
 }

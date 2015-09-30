@@ -141,7 +141,7 @@ public class WrapperInvSlot
 		public int getField(
 				final int id )
 		{
-			return inv.getField( id );
+			return this.inv.getField( id );
 		}
 		
 		@Override
@@ -159,7 +159,7 @@ public class WrapperInvSlot
 		@Override
 		public IChatComponent getDisplayName()
 		{
-			return inv.getDisplayName();
+			return this.inv.getDisplayName();
 		}
 
 		@Override
@@ -167,7 +167,7 @@ public class WrapperInvSlot
 				final int id,
 				final int value )
 		{
-			inv.setField( id, value );
+			this.inv.setField( id, value );
 		}
 	}
 }

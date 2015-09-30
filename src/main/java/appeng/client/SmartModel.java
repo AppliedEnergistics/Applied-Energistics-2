@@ -47,7 +47,7 @@ public class SmartModel implements IBakedModel, ISmartBlockModel,ISmartItemModel
     public SmartModel(
 			final BlockRenderInfo rendererInstance )
 	{
-    	AERenderer = rendererInstance;
+        this.AERenderer = rendererInstance;
 	}
 
 	@Override
@@ -84,7 +84,7 @@ public class SmartModel implements IBakedModel, ISmartBlockModel,ISmartItemModel
     @Override
     public TextureAtlasSprite getTexture()
     {
-        return AERenderer != null ? AERenderer.getTexture( AEPartLocation.UP ).getAtlas() : MissingIcon.getMissing();
+        return this.AERenderer != null ? this.AERenderer.getTexture( AEPartLocation.UP ).getAtlas() : MissingIcon.getMissing();
     }
 
     @Override
@@ -100,7 +100,7 @@ public class SmartModel implements IBakedModel, ISmartBlockModel,ISmartItemModel
 		final ModelGenerator helper = new ModelGenerator();
 		final Block blk = Block.getBlockFromItem( stack.getItem() );
 		helper.setRenderBoundsFromBlock( blk );
-		AERenderer.rendererInstance.renderInventory( blk instanceof AEBaseBlock ? (AEBaseBlock) blk : null, stack, helper, ItemRenderType.INVENTORY, null );
+        this.AERenderer.rendererInstance.renderInventory( blk instanceof AEBaseBlock ? (AEBaseBlock) blk : null, stack, helper, ItemRenderType.INVENTORY, null );
 		helper.finalizeModel( true );
 		return helper.getOutput();
 	}
@@ -116,7 +116,7 @@ public class SmartModel implements IBakedModel, ISmartBlockModel,ISmartItemModel
 		helper.setTranslation( -pos.getX(), -pos.getY(), -pos.getZ() );
 		helper.setRenderBoundsFromBlock( blk );
 		helper.blockAccess = world;
-		AERenderer.rendererInstance.renderInWorld( blk instanceof AEBaseBlock ? (AEBaseBlock) blk : null, world, pos, helper);
+        this.AERenderer.rendererInstance.renderInWorld( blk instanceof AEBaseBlock ? (AEBaseBlock) blk : null, world, pos, helper);
 		helper.finalizeModel( false );
 		return helper.getOutput();
 	}

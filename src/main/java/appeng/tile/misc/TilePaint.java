@@ -132,7 +132,7 @@ public class TilePaint extends AEBaseTile
 
 		if( this.worldObj != null )
 		{
-			this.worldObj.getLightFor( EnumSkyBlock.BLOCK, pos );
+			this.worldObj.getLightFor( EnumSkyBlock.BLOCK, this.pos );
 		}
 	}
 
@@ -169,7 +169,7 @@ public class TilePaint extends AEBaseTile
 
 	public boolean isSideValid( final EnumFacing side )
 	{
-		final BlockPos p = pos.offset( side );
+		final BlockPos p = this.pos.offset( side );
 		final IBlockState blk = this.worldObj.getBlockState( p );
 		return blk.getBlock().isSideSolid( this.worldObj, p, side.getOpposite() );
 	}
@@ -210,7 +210,7 @@ public class TilePaint extends AEBaseTile
 
 		if( this.dots == null )
 		{
-			this.worldObj.setBlockToAir( pos );
+			this.worldObj.setBlockToAir( this.pos );
 		}
 	}
 
@@ -233,7 +233,7 @@ public class TilePaint extends AEBaseTile
 
 	public void addBlot( final ItemStack type, final EnumFacing side, final Vec3 hitVec )
 	{
-		final BlockPos p = pos.offset(side);
+		final BlockPos p = this.pos.offset( side );
 		
 		final IBlockState blk = this.worldObj.getBlockState(  p );
 		if( blk.getBlock().isSideSolid( this.worldObj, p, side.getOpposite() ) )

@@ -239,7 +239,7 @@ public abstract class AEBaseGui extends GuiContainer
 			}
 
 			this.zLevel = 300.0F;
-			itemRender.zLevel = 300.0F;
+			this.itemRender.zLevel = 300.0F;
 			final int var10 = -267386864;
 			this.drawGradientRect( var6 - 3, var7 - 4, var6 + var5 + 3, var7 - 3, var10, var10 );
 			this.drawGradientRect( var6 - 3, var7 + var9 + 3, var6 + var5 + 3, var7 + var9 + 4, var10, var10 );
@@ -277,7 +277,7 @@ public abstract class AEBaseGui extends GuiContainer
 			}
 
 			this.zLevel = 0.0F;
-			itemRender.zLevel = 0.0F;
+			this.itemRender.zLevel = 0.0F;
 		}
 		RenderHelper.enableStandardItemLighting();
 		GL11.glPopAttrib();
@@ -722,17 +722,17 @@ public abstract class AEBaseGui extends GuiContainer
 	protected void drawItem( final int x, final int y, final ItemStack is )
 	{
 		this.zLevel = 100.0F;
-		itemRender.zLevel = 100.0F;
+		this.itemRender.zLevel = 100.0F;
 
 		GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS );
 		GL11.glEnable( GL11.GL_LIGHTING );
 		GL11.glEnable( GL12.GL_RESCALE_NORMAL );
 		GL11.glEnable( GL11.GL_DEPTH_TEST );
 		RenderHelper.enableGUIStandardItemLighting();
-		itemRender.renderItemAndEffectIntoGUI( is, x, y );
+		this.itemRender.renderItemAndEffectIntoGUI( is, x, y );
 		GL11.glPopAttrib();
 
-		itemRender.zLevel = 0.0F;
+		this.itemRender.zLevel = 0.0F;
 		this.zLevel = 0.0F;
 	}
 
@@ -768,7 +768,7 @@ public abstract class AEBaseGui extends GuiContainer
 			try
 			{
 				this.zLevel = 100.0F;
-				itemRender.zLevel = 100.0F;
+				this.itemRender.zLevel = 100.0F;
 
 				if( !this.isPowered() )
 				{
@@ -778,7 +778,7 @@ public abstract class AEBaseGui extends GuiContainer
 				}
 
 				this.zLevel = 0.0F;
-				itemRender.zLevel = 0.0F;
+				this.itemRender.zLevel = 0.0F;
 
 				this.aeRenderItem.aeStack = ( (SlotME) s ).getAEStack();
 
@@ -864,14 +864,14 @@ public abstract class AEBaseGui extends GuiContainer
 					if( ( (AppEngSlot) s ).isValid == hasCalculatedValidness.Invalid )
 					{
 						this.zLevel = 100.0F;
-						itemRender.zLevel = 100.0F;
+						this.itemRender.zLevel = 100.0F;
 
 						GL11.glDisable( GL11.GL_LIGHTING );
 						drawRect( s.xDisplayPosition, s.yDisplayPosition, 16 + s.xDisplayPosition, 16 + s.yDisplayPosition, 0x66ff6666 );
 						GL11.glEnable( GL11.GL_LIGHTING );
 
 						this.zLevel = 0.0F;
-						itemRender.zLevel = 0.0F;
+						this.itemRender.zLevel = 0.0F;
 					}
 				}
 
@@ -904,8 +904,8 @@ public abstract class AEBaseGui extends GuiContainer
 		}
 		else
 		{
-			final RenderItem ri = itemRender;
-			itemRender = item;
+			final RenderItem ri = this.itemRender;
+			this.itemRender = item;
 			return ri;
 		}
 	}

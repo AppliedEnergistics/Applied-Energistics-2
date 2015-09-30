@@ -73,7 +73,7 @@ public class BlockCraftingUnit extends AEBaseTileBlock
 	@Override
 	public IBlockState getStateFromMeta( final int meta )
 	{
-		return getDefaultState().withProperty( POWERED, ( meta & 1 ) == 1 ).withProperty( FORMED, ( meta & 2 ) == 2 );
+		return this.getDefaultState().withProperty( POWERED, ( meta & 1 ) == 1 ).withProperty( FORMED, ( meta & 2 ) == 2 );
 	}
 
 	@Override
@@ -153,7 +153,7 @@ public class BlockCraftingUnit extends AEBaseTileBlock
 	@Override
 	public appeng.client.texture.IAESprite getIcon( final EnumFacing side, final IBlockState state )
 	{
-		if( type == CraftingUnitType.ACCELERATOR )
+		if( this.type == CraftingUnitType.ACCELERATOR )
 		{
 			if( (boolean) state.getValue( FORMED ) )
 			{

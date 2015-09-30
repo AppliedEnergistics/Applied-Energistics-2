@@ -49,8 +49,8 @@ public class TileGrinder extends AEBaseInvTile implements ICrankable
 	public void setOrientation( final EnumFacing inForward, final EnumFacing inUp )
 	{
 		super.setOrientation( inForward, inUp );
-		final IBlockState state = worldObj.getBlockState( pos );
-		this.getBlockType().onNeighborBlockChange( this.worldObj, pos, state, state.getBlock() );
+		final IBlockState state = this.worldObj.getBlockState( this.pos );
+		this.getBlockType().onNeighborBlockChange( this.worldObj, this.pos, state, state.getBlock() );
 	}
 
 	@Override
@@ -185,7 +185,7 @@ public class TileGrinder extends AEBaseInvTile implements ICrankable
 			final List<ItemStack> out = new ArrayList<ItemStack>();
 			out.add( notAdded );
 
-			Platform.spawnDrops( this.worldObj, pos.offset( this.getForward() ), out );
+			Platform.spawnDrops( this.worldObj, this.pos.offset( this.getForward() ), out );
 		}
 	}
 

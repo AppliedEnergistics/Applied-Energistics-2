@@ -34,7 +34,7 @@ public class TaughtIcon implements IAESprite
 	@Override
 	public TextureAtlasSprite getAtlas()
 	{
-		return icon.getAtlas();
+		return this.icon.getAtlas();
 	}
 	
 	public TaughtIcon( final IAESprite iIcon, final float tightness )

@@ -158,7 +158,7 @@ public class WrapperInventoryRange implements IInventory
 	public int getField(
 			final int id )
 	{
-		return src.getField( id );
+		return this.src.getField( id );
 	}
 	
 	@Override
@@ -170,7 +170,7 @@ public class WrapperInventoryRange implements IInventory
 	@Override
 	public IChatComponent getDisplayName()
 	{
-		return src.getDisplayName();
+		return this.src.getDisplayName();
 	}
 
 	@Override
@@ -178,7 +178,7 @@ public class WrapperInventoryRange implements IInventory
 			final int id,
 			final int value )
 	{
-		src.setField( id, value );
+		this.src.setField( id, value );
 	}
 	@Override
 	public boolean isItemValidForSlot( final int i, final ItemStack itemstack )

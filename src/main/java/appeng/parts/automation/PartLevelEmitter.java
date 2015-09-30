@@ -145,7 +145,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 			final TileEntity te = this.host.getTile();
 			this.prevState = isOn;
 			Platform.notifyBlocksOfNeighbors( te.getWorld(), te.getPos() );
-			Platform.notifyBlocksOfNeighbors( te.getWorld(), te.getPos().offset( side.getFacing() ) );
+			Platform.notifyBlocksOfNeighbors( te.getWorld(), te.getPos().offset( this.side.getFacing() ) );
 		}
 	}
 
@@ -194,7 +194,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 	@Override
 	public TextureAtlasSprite getBreakingTexture( final ModelGenerator renderer )
 	{
-		return renderer.getIcon( is ).getAtlas();
+		return renderer.getIcon( this.is ).getAtlas();
 	}
 
 	@Override
@@ -414,14 +414,14 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 	@SideOnly( Side.CLIENT )
 	public void renderInventory( final IPartRenderHelper rh, final ModelGenerator renderer )
 	{
-		rh.setTexture( renderer.getIcon( is ) );		
+		rh.setTexture( renderer.getIcon( this.is ) );
 		this.renderTorchAtAngle( 0, -0.5, 0, renderer );
 	}
 
 	public void renderTorchAtAngle( double baseX, double baseY, double baseZ, final ModelGenerator renderer )
 	{
 		final boolean isOn = this.isLevelEmitterOn();
-		final IAESprite offTexture = renderer.getIcon( is );
+		final IAESprite offTexture = renderer.getIcon( this.is );
 		final IAESprite IIcon = ( isOn ? CableBusTextures.LevelEmitterTorchOn.getIcon() : offTexture );
 		//
 		this.centerX = baseX + 0.5;
@@ -580,7 +580,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 	@SideOnly( Side.CLIENT )
 	public void renderStatic( final BlockPos pos, final IPartRenderHelper rh, final ModelGenerator renderer )
 	{
-		rh.setTexture( renderer.getIcon( is ) );
+		rh.setTexture( renderer.getIcon( this.is ) );
 		// rh.setTexture( CableBusTextures.ItemPartLevelEmitterOn.getIcon() );
 
 		// rh.setBounds( 2, 2, 14, 14, 14, 16 );

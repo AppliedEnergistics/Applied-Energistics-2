@@ -121,7 +121,7 @@ public abstract class AEBaseItem extends Item implements IAEFeature
 	public IAESprite getIcon(
 			final ItemStack is )
 	{
-		return myIcon;
+		return this.myIcon;
 	}
 
 	@SideOnly(Side.CLIENT)

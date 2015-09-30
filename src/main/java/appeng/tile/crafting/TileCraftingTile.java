@@ -114,7 +114,7 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 			return false;
 		}
 		
-		final BlockCraftingUnit unit = (BlockCraftingUnit)this.worldObj.getBlockState( pos ).getBlock();
+		final BlockCraftingUnit unit = (BlockCraftingUnit)this.worldObj.getBlockState( this.pos ).getBlock();
 		return unit.type == CraftingUnitType.ACCELERATOR;
 	}
 
@@ -157,12 +157,12 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 			power = this.gridProxy.isActive();
 		}
 
-		final IBlockState current = this.worldObj.getBlockState( pos );
+		final IBlockState current = this.worldObj.getBlockState( this.pos );
 		final IBlockState newState = current.withProperty( BlockCraftingUnit.POWERED, power ).withProperty( BlockCraftingUnit.FORMED, formed );
 
 		if( current != newState )
 		{
-			this.worldObj.setBlockState( pos, newState );
+			this.worldObj.setBlockState( this.pos, newState );
 		}
 
 		if( updateFormed )
@@ -182,7 +182,7 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 	{
 		if( Platform.isClient() )
 		{
-			return (boolean)this.worldObj.getBlockState( pos ).getValue( BlockCraftingUnit.FORMED );
+			return (boolean)this.worldObj.getBlockState( this.pos ).getValue( BlockCraftingUnit.FORMED );
 		}
 		return this.cluster != null;
 	}
@@ -334,7 +334,7 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 	{
 		if( Platform.isClient() )
 		{
-			return (boolean)this.worldObj.getBlockState( pos ).getValue( BlockCraftingUnit.POWERED );
+			return (boolean)this.worldObj.getBlockState( this.pos ).getValue( BlockCraftingUnit.POWERED );
 		}
 		return this.gridProxy.isActive();
 	}

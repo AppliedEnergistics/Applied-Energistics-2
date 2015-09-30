@@ -101,21 +101,21 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 		public InWorldToolOperationIngredient( final IBlockState state )
 		{
 			this.state = state;
-			blockOnly = false;
+			this.blockOnly = false;
 		}
 
 		public InWorldToolOperationIngredient(
 				final Block blk,
 				final boolean b )
 		{
-			state = blk.getDefaultState();
-			blockOnly = b;
+			this.state = blk.getDefaultState();
+			this.blockOnly = b;
 		}
 
 		@Override
 		public int hashCode()
 		{
-			return state.getBlock().hashCode();
+			return this.state.getBlock().hashCode();
 		}
 
 		@Override
@@ -130,7 +130,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 				return false;
 			}
 			final InWorldToolOperationIngredient other = (InWorldToolOperationIngredient) obj;
-			return state == other.state && ( blockOnly && state.getBlock() == other.state.getBlock() );
+			return this.state == other.state && ( this.blockOnly && this.state.getBlock() == other.state.getBlock() );
 		}
 	}
 

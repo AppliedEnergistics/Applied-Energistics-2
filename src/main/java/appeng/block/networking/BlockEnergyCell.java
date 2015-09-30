@@ -58,7 +58,7 @@ public class BlockEnergyCell extends AEBaseTileBlock
 	@Override
 	public IBlockState getStateFromMeta( final int meta )
 	{
-		return getDefaultState().withProperty( ENERGY_STORAGE, Math.min( 7,  Math.max( 0, meta ) ) );
+		return this.getDefaultState().withProperty( ENERGY_STORAGE, Math.min( 7,  Math.max( 0, meta ) ) );
 	}
 	
 	public BlockEnergyCell()

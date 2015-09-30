@@ -47,7 +47,7 @@ public class BlockController extends AEBaseTileBlock
 		@Override
 		public String getName()
 		{
-			return name();
+			return this.name();
 		}
 		
 	};
@@ -70,7 +70,7 @@ public class BlockController extends AEBaseTileBlock
 	@Override
 	public IBlockState getStateFromMeta( final int meta )
 	{
-		return getDefaultState().withProperty( CONTROLLER_STATE, ControllerBlockState.OFFLINE );
+		return this.getDefaultState().withProperty( CONTROLLER_STATE, ControllerBlockState.OFFLINE );
 	}
 	
 	@Override

@@ -222,7 +222,7 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 			return this.cachedTank;
 		}
 
-		final TileEntity te = this.tile.getWorld().getTileEntity( this.tile.getPos().offset( side.getFacing() ) );
+		final TileEntity te = this.tile.getWorld().getTileEntity( this.tile.getPos().offset( this.side.getFacing() ) );
 		if( te instanceof IFluidHandler )
 		{
 			return this.cachedTank = (IFluidHandler) te;

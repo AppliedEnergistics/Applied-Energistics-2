@@ -124,7 +124,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements /*IPipe
 
 		if( this.proxy.isActive() )
 		{
-			final TileEntity te = this.tile.getWorld().getTileEntity( this.tile.getPos().offset( side.getFacing() ) );
+			final TileEntity te = this.tile.getWorld().getTileEntity( this.tile.getPos().offset( this.side.getFacing() ) );
 
 			if( this.which.contains( this ) )
 			{

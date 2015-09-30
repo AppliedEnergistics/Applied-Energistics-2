@@ -88,7 +88,7 @@ public class PartP2PLight extends PartP2PTunnel<PartP2PLight> implements IGridTi
 		final TileEntity te = this.getTile();
 		final World w = te.getWorld();
 
-		final int newLevel = w.getLight( te.getPos().offset( side.getFacing() ) );
+		final int newLevel = w.getLight( te.getPos().offset( this.side.getFacing() ) );
 
 		if( this.lastValue != newLevel && this.proxy.isActive() )
 		{
@@ -144,7 +144,7 @@ public class PartP2PLight extends PartP2PTunnel<PartP2PLight> implements IGridTi
 		if( this.opacity < 0 )
 		{
 			final TileEntity te = this.getTile();
-			this.opacity = 255 - te.getWorld().getBlockLightOpacity( te.getPos().offset( side.getFacing() ) );
+			this.opacity = 255 - te.getWorld().getBlockLightOpacity( te.getPos().offset( this.side.getFacing() ) );
 		}
 
 		return (int) ( emit * ( this.opacity / 255.0f ) );

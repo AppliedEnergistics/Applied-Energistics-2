@@ -55,7 +55,7 @@ public class MultiCraftingTracker
 
 	public int getFailedCraftingAttempts()
 	{
-		return failedCraftingAttempts;
+		return this.failedCraftingAttempts;
 	}
 
 	public void readFromNBT( final NBTTagCompound extra )

@@ -87,7 +87,7 @@ public class TileSkyChest extends AEBaseInvTile
 
 		if( this.playerOpen == 1 )
 		{
-			this.getWorld().playSoundEffect( pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, "random.chestopen", 0.5F, this.getWorld().rand.nextFloat() * 0.1F + 0.9F );
+			this.getWorld().playSoundEffect( this.pos.getX() + 0.5D, this.pos.getY() + 0.5D, this.pos.getZ() + 0.5D, "random.chestopen", 0.5F, this.getWorld().rand.nextFloat() * 0.1F + 0.9F );
 			this.markForUpdate();
 		}
 	}
@@ -109,7 +109,7 @@ public class TileSkyChest extends AEBaseInvTile
 
 		if( this.playerOpen == 0 )
 		{
-			this.getWorld().playSoundEffect( pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, "random.chestclosed", 0.5F, this.getWorld().rand.nextFloat() * 0.1F + 0.9F );
+			this.getWorld().playSoundEffect( this.pos.getX() + 0.5D, this.pos.getY() + 0.5D, this.pos.getZ() + 0.5D, "random.chestclosed", 0.5F, this.getWorld().rand.nextFloat() * 0.1F + 0.9F );
 			this.markForUpdate();
 		}
 	}

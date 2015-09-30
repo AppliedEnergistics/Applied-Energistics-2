@@ -763,6 +763,6 @@ public class BaseBlockRender<B extends AEBaseBlock, T extends AEBaseTile>
 
 	public ModelResourceLocation getResourcePath()
 	{
-		return modelPath;
+		return this.modelPath;
 	}
 }

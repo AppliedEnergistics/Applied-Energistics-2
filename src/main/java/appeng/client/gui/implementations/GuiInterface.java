@@ -56,7 +56,7 @@ public class GuiInterface extends GuiUpgradeable
 	@Override
 	protected void addButtons()
 	{
-		this.priority = new GuiTabButton( this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.getLocal(), itemRender );
+		this.priority = new GuiTabButton( this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.getLocal(), this.itemRender );
 		this.buttonList.add( this.priority );
 
 		this.BlockMode = new GuiImgButton( this.guiLeft - 18, this.guiTop + 8, Settings.BLOCK, YesNo.NO );

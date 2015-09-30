@@ -16,17 +16,17 @@ public class AEAxisAlignedBB
 
 	public AxisAlignedBB getBoundingBox()
 	{
-		return AxisAlignedBB.fromBounds( minX, minY, minZ, maxX, maxY, maxZ );
+		return AxisAlignedBB.fromBounds( this.minX, this.minY, this.minZ, this.maxX, this.maxY, this.maxZ );
 	}
 	
 	public AEAxisAlignedBB( final double a, final double b, final double c, final double d, final double e, final double f)
 	{
-		minX=a;
-		minY=b;
-		minZ=c;
-		maxX=d;
-		maxY=e;
-		maxZ=f;
+		this.minX =a;
+		this.minY =b;
+		this.minZ =c;
+		this.maxX =d;
+		this.maxY =e;
+		this.maxZ =f;
 	}
 
 	public static AEAxisAlignedBB fromBounds(

@@ -111,7 +111,7 @@ public class ClientHelper extends ServerHelper
 	@Override
 	public void configureIcon( final Object item, final String name )
 	{
-		iconTmp.add( new IconReg( item, 0, name ) );
+		this.iconTmp.add( new IconReg( item, 0, name ) );
 	}
 
 	@Override
@@ -271,11 +271,11 @@ public class ClientHelper extends ServerHelper
 			@Override
 			public ModelResourceLocation getModelLocation( final ItemStack stack )
 			{
-				return partRenderer;
+				return ClientHelper.this.partRenderer;
 			}
 		};
 
-		for( final IconReg reg : iconTmp )
+		for( final IconReg reg : this.iconTmp )
 		{
 			if( reg.item instanceof IPartItem || reg.item instanceof IFacadeItem )
 			{
@@ -291,7 +291,7 @@ public class ClientHelper extends ServerHelper
 					continue;
 				}
 
-				addIcon( reg.name );
+				this.addIcon( reg.name );
 
 				mesher.register( reg.item instanceof Item ? (Item) reg.item : Item.getItemFromBlock( (Block) reg.item ), stack -> renderer.rendererInstance.getResourcePath() );
 				continue;
@@ -313,7 +313,7 @@ public class ClientHelper extends ServerHelper
 		}
 
 		final String MODID = AppEng.MOD_ID + ":";
-		for( final List<IconReg> reg : iconRegistrations.values() )
+		for( final List<IconReg> reg : this.iconRegistrations.values() )
 		{
 			final String[] names = new String[reg.size()];
 
@@ -380,16 +380,16 @@ public class ClientHelper extends ServerHelper
 	public ResourceLocation addIcon( final String string )
 	{
 		final ModelResourceLocation n = new ModelResourceLocation( new ResourceLocation( AppEng.MOD_ID, string ), "inventory" );
-		extraIcons.add( n );
+		this.extraIcons.add( n );
 		return n;
 	}
 
 	public ModelResourceLocation setIcon( final Item item, final String name )
 	{
-		List<IconReg> reg = iconRegistrations.get( item );
+		List<IconReg> reg = this.iconRegistrations.get( item );
 		if( reg == null )
 		{
-			iconRegistrations.put( item, reg = new LinkedList<>() );
+			this.iconRegistrations.put( item, reg = new LinkedList<>() );
 		}
 
 		final ModelResourceLocation res = new ModelResourceLocation( new ResourceLocation( AppEng.MOD_ID, name ), "inventory" );
@@ -399,10 +399,10 @@ public class ClientHelper extends ServerHelper
 
 	public ModelResourceLocation setIcon( final Item item, final int meta, final String name )
 	{
-		List<IconReg> reg = iconRegistrations.get( item );
+		List<IconReg> reg = this.iconRegistrations.get( item );
 		if( reg == null )
 		{
-			iconRegistrations.put( item, reg = new LinkedList<>() );
+			this.iconRegistrations.put( item, reg = new LinkedList<>() );
 		}
 
 		final ModelResourceLocation res = new ModelResourceLocation( new ResourceLocation( AppEng.MOD_ID, name ), "inventory" );
@@ -493,9 +493,9 @@ public class ClientHelper extends ServerHelper
 	{
 		// inventory renderer
 		final SmartModel buses = new SmartModel( new BlockRenderInfo( ( new RendererCableBus() ) ) );
-		event.modelRegistry.putObject( partRenderer, buses );
+		event.modelRegistry.putObject( this.partRenderer, buses );
 
-		for( final IconReg reg : iconTmp )
+		for( final IconReg reg : this.iconTmp )
 		{
 			if( reg.item instanceof IPartItem || reg.item instanceof IFacadeItem )
 			{
@@ -553,7 +553,7 @@ public class ClientHelper extends ServerHelper
 	@SubscribeEvent
 	public void updateTextureSheet( final TextureStitchEvent.Pre ev )
 	{
-		for( final IconReg reg : iconTmp )
+		for( final IconReg reg : this.iconTmp )
 		{
 			if( reg.item instanceof AEBaseItem )
 			{
@@ -571,7 +571,7 @@ public class ClientHelper extends ServerHelper
 			}
 		}
 
-		extraIcons.forEach( ev.map::registerSprite );
+		this.extraIcons.forEach( ev.map::registerSprite );
 
 		//if( ev.map.getTextureType() == ITEM_RENDERER )
 		{
@@ -604,18 +604,18 @@ public class ClientHelper extends ServerHelper
 
 		public IconReg( final Object item2, final int meta2, final String name2 )
 		{
-			meta = meta2;
-			name = name2;
-			item = item2;
-			loc = null;
+			this.meta = meta2;
+			this.name = name2;
+			this.item = item2;
+			this.loc = null;
 		}
 
 		public IconReg( final Item item2, final int meta2, final String name2, final ModelResourceLocation res )
 		{
-			meta = meta2;
-			name = name2;
-			item = item2;
-			loc = res;
+			this.meta = meta2;
+			this.name = name2;
+			this.item = item2;
+			this.loc = res;
 		}
 	}
 }

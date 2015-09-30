@@ -20,42 +20,42 @@ public class IconUnwrapper extends TextureAtlasSprite
 			final IAESprite src )
 	{
 		super( src.getIconName() );
-		width = src.getIconWidth();
-		height = src.getIconHeight();
-		min_u = src.getMinU();
-		max_u = src.getMaxU();
-		min_v = src.getMinV();
-		max_v = src.getMaxV();
+		this.width = src.getIconWidth();
+		this.height = src.getIconHeight();
+		this.min_u = src.getMinU();
+		this.max_u = src.getMaxU();
+		this.min_v = src.getMinV();
+		this.max_v = src.getMaxV();
 	}
 
 	@Override
 	public int getIconWidth()
 	{
-		return width;
+		return this.width;
 	}
 
 	@Override
 	public int getIconHeight()
 	{
-		return height;
+		return this.height;
 	}
 
 	@Override
 	public float getMaxU()
 	{
-		return max_u;
+		return this.max_u;
 	}
 
 	@Override
 	public float getMinV()
 	{
-		return min_v;
+		return this.min_v;
 	}
 
 	@Override
 	public float getMaxV()
 	{
-		return max_v;
+		return this.max_v;
 	}
 
 	@Override
@@ -67,7 +67,7 @@ public class IconUnwrapper extends TextureAtlasSprite
 	@Override
 	public float getMinU()
 	{
-		return min_u;
+		return this.min_u;
 	}
 
 	@Override

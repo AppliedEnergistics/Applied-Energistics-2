@@ -97,7 +97,7 @@ public final class ItemFeatureHandler implements IFeatureHandler
 
 			if( side == Side.CLIENT )
 			{
-				CommonHelper.proxy.configureIcon( item, itemPhysicalName );
+				CommonHelper.proxy.configureIcon( this.item, itemPhysicalName );
 			}
 		}
 	}

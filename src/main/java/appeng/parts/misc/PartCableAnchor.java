@@ -84,7 +84,7 @@ public class PartCableAnchor implements IPart
 	@SideOnly( Side.CLIENT )
 	public void renderInventory( final IPartRenderHelper instance, final ModelGenerator renderer )
 	{
-		instance.setTexture( renderer.getIcon( is ) );
+		instance.setTexture( renderer.getIcon( this.is ) );
 		instance.setBounds( 7, 7, 4, 9, 9, 14 );
 		instance.renderInventoryBox( renderer );
 		instance.setTexture( null );
@@ -94,7 +94,7 @@ public class PartCableAnchor implements IPart
 	@SideOnly( Side.CLIENT )
 	public void renderStatic( final BlockPos pos, final IPartRenderHelper rh, final ModelGenerator renderer )
 	{
-		final IAESprite myIcon =  renderer.getIcon( is );
+		final IAESprite myIcon =  renderer.getIcon( this.is );
 		rh.setTexture( myIcon );
 		if( this.host != null && this.host.getFacadeContainer().getFacade( this.mySide ) != null )
 		{

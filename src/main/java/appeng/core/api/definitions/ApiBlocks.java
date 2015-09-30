@@ -215,14 +215,14 @@ public final class ApiBlocks implements IBlocks
 		this.lightDetector = constructor.registerTileDefinition( new BlockLightDetector() );
 		this.paint = constructor.registerTileDefinition( new BlockPaint() );
 
-		this.skyStoneStair = makeStairs( constructor, skyStone_stone, "skystone.stone" );
-		this.skyStoneBlockStair = makeStairs( constructor, skyStone_block, "skystone.block" );
-		this.skyStoneBrickStair = makeStairs( constructor, skyStone_brick, "skystone.brick" );
-		this.skyStoneSmallBrickStair = makeStairs( constructor, skyStone_smallbrick, "skystone.brick.small" );
-		this.fluixStair = makeStairs( constructor, fluix, "fluix" );
-		this.quartzStair = makeStairs( constructor, quartz, "quartz.certus" );
-		this.chiseledQuartzStair = makeStairs( constructor, quartzChiseled, "quartz.certus.chiseled" );
-		this.quartzPillarStair = makeStairs( constructor, quartzPillar, "quartz.certus.pillar" );
+		this.skyStoneStair = this.makeStairs( constructor, this.skyStone_stone, "skystone.stone" );
+		this.skyStoneBlockStair = this.makeStairs( constructor, this.skyStone_block, "skystone.block" );
+		this.skyStoneBrickStair = this.makeStairs( constructor, this.skyStone_brick, "skystone.brick" );
+		this.skyStoneSmallBrickStair = this.makeStairs( constructor, this.skyStone_smallbrick, "skystone.brick.small" );
+		this.fluixStair = this.makeStairs( constructor, this.fluix, "fluix" );
+		this.quartzStair = this.makeStairs( constructor, this.quartz, "quartz.certus" );
+		this.chiseledQuartzStair = this.makeStairs( constructor, this.quartzChiseled, "quartz.certus.chiseled" );
+		this.quartzPillarStair = this.makeStairs( constructor, this.quartzPillar, "quartz.certus.pillar" );
 
 		// TODO Re-Add Slabs...
 		/*

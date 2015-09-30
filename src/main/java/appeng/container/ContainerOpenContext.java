@@ -48,6 +48,6 @@ public class ContainerOpenContext
 		{
 			return null;
 		}
-		return this.w.getTileEntity( new BlockPos( x,y,z) );
+		return this.w.getTileEntity( new BlockPos( this.x, this.y, this.z ) );
 	}
 }

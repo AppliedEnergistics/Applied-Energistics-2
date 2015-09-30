@@ -195,7 +195,7 @@ public class TileSpatialPylon extends AENetworkTile implements IAEMultiBlock
 		if( hasLight != this.didHaveLight )
 		{
 			this.didHaveLight = hasLight;
-			this.worldObj.checkLight( pos );
+			this.worldObj.checkLight( this.pos );
 			// worldObj.updateAllLightTypes( xCoord, yCoord, zCoord );
 		}
 	}

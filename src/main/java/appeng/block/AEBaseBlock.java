@@ -90,7 +90,7 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 	@Override
 	public boolean isVisuallyOpaque()
 	{
-		return isOpaque && isFullSize;
+		return this.isOpaque && this.isFullSize;
 	}
 	
 	protected AEBaseBlock( final Material mat )
@@ -139,7 +139,7 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 	@Override
 	final protected BlockState createBlockState()
 	{
-		return new ExtendedBlockState( this, getAEStates(), new IUnlistedProperty[] { AE_BLOCK_POS, AE_BLOCK_ACCESS} );
+		return new ExtendedBlockState( this, this.getAEStates(), new IUnlistedProperty[] { AE_BLOCK_POS, AE_BLOCK_ACCESS} );
 	}
 
 	@Override
@@ -245,10 +245,10 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 	public IAESprite getIcon( final IBlockAccess w, final BlockPos pos, final EnumFacing side )
 	{
 		final IBlockState state =w.getBlockState( pos );
-		final IOrientable ori = getOrientable( w, pos );
+		final IOrientable ori = this.getOrientable( w, pos );
 		
 		if ( ori == null )
-			return getIcon( side,state );
+			return this.getIcon( side,state );
 		
 		return this.getIcon( this.mapRotation( ori, side ), state );
 	}
@@ -680,12 +680,12 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 	String textureName;
 	public void setBlockTextureName( final String texture )
 	{
-		textureName = texture;
+		this.textureName = texture;
 	}
 	
 	private String getTextureName()
 	{
-		return textureName;
+		return this.textureName;
 	}
 
 }

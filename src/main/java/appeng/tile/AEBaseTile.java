@@ -97,7 +97,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 
 	public boolean notLoaded()
 	{
-		return !this.worldObj.isBlockLoaded( pos );
+		return !this.worldObj.isBlockLoaded( this.pos );
 	}
 
 	@Nonnull
@@ -214,7 +214,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 
 		stream.capacity( stream.readableBytes() );
 		data.setByteArray( "X", stream.array() );
-		return new S35PacketUpdateTileEntity( pos, 64, data );
+		return new S35PacketUpdateTileEntity( this.pos, 64, data );
 	}
 
 	private boolean hasHandlerFor( final TileEventType type )
@@ -300,8 +300,8 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 			// TODO: Optimize Network Load
 			if( this.worldObj != null )
 			{
-				AELog.blockUpdate( pos, this );
-				this.worldObj.markBlockForUpdate( pos );
+				AELog.blockUpdate( this.pos, this );
+				this.worldObj.markBlockForUpdate( this.pos );
 			}
 		}
 	}
@@ -424,7 +424,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 		this.forward = inForward;
 		this.up = inUp;
 		this.markForUpdate();
-		Platform.notifyBlocksOfNeighbors( this.worldObj, pos );
+		Platform.notifyBlocksOfNeighbors( this.worldObj, this.pos );
 	}
 
 	public void onPlacement( final ItemStack stack, final EntityPlayer player, final EnumFacing side )
@@ -570,7 +570,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 
 	public void securityBreak()
 	{
-		this.worldObj.destroyBlock( pos, true );
+		this.worldObj.destroyBlock( this.pos, true );
 		this.disableDrops();
 	}
 

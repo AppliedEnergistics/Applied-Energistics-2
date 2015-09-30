@@ -50,12 +50,12 @@ public class TileLightDetector extends AEBaseTile implements IUpdatePlayerListBo
 
 	public void updateLight()
 	{
-		final int val = this.worldObj.getLight( pos );
+		final int val = this.worldObj.getLight( this.pos );
 
 		if( this.lastLight != val )
 		{
 			this.lastLight = val;
-			Platform.notifyBlocksOfNeighbors( this.worldObj, pos );
+			Platform.notifyBlocksOfNeighbors( this.worldObj, this.pos );
 		}
 	}
 

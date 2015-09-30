@@ -264,7 +264,7 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 
 		for( final AEPartLocation d : AEPartLocation.values() )
 		{
-			final TileEntity te = this.worldObj.getTileEntity( d == AEPartLocation.INTERNAL ? pos : pos.offset( d.getFacing() ) );
+			final TileEntity te = this.worldObj.getTileEntity( d == AEPartLocation.INTERNAL ? this.pos : this.pos.offset( d.getFacing() ) );
 			if( te instanceof TileQuantumBridge )
 			{
 				set.add( d );

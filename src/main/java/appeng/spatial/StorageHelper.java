@@ -295,7 +295,7 @@ public class StorageHelper
 		@Override
 		public void visit( final BlockPos pos )
 		{
-			this.dst.setBlockState( pos, state );
+			this.dst.setBlockState( pos, this.state );
 		}
 	}
 

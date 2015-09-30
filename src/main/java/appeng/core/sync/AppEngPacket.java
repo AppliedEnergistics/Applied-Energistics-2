@@ -93,12 +93,13 @@ public abstract class AppEngPacket implements Packet
 
 	PacketCallState caller;
 	
-	public void setCallParam( final PacketCallState call ){caller = call;}
+	public void setCallParam( final PacketCallState call ){
+		this.caller = call;}
 	
 	@Override
 	public void processPacket( final INetHandler handler)
     {
-		caller.call(this);
+		this.caller.call( this );
     }
 
 }

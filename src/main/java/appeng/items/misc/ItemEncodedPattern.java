@@ -71,7 +71,7 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 			final ClientHelper proxy,
 			final String name )
 	{
-		encodedPatternModel = res = proxy.setIcon( this, name );
+		this.encodedPatternModel = this.res = proxy.setIcon( this, name );
 
 		Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register( this, new ItemMeshDefinition(){
 			
@@ -81,7 +81,7 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 			public ModelResourceLocation getModelLocation(
 					final ItemStack stack )
 			{
-				if ( recursive == false )
+				if ( this.recursive == false )
 				{
 					this.recursive = true;
 	
@@ -90,13 +90,13 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 					final ItemStack is = iep.getOutput( stack );
 					if ( Minecraft.getMinecraft().thePlayer.isSneaking() )
 					{
-						return encodedPatternModel;
+						return ItemEncodedPattern.this.encodedPatternModel;
 					}
 					
 					this.recursive = false;
 				}
 				
-				return res;
+				return ItemEncodedPattern.this.res;
 			}
 		});
 

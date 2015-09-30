@@ -118,6 +118,6 @@ public class OffsetIcon implements IAESprite
 	@Override
 	public TextureAtlasSprite getAtlas()
 	{
-		return p.getAtlas();
+		return this.p.getAtlas();
 	}
 }

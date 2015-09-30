@@ -115,7 +115,7 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements IAEFeature,
 	@Nullable
 	public <T extends AEBaseTile> T getTileEntity( final IBlockAccess w, final int x, final int y, final int z )
 	{
-		return getTileEntity( w, new BlockPos(x,y,z) );
+		return this.getTileEntity( w, new BlockPos(x,y,z) );
 	}
 
 	@Nullable

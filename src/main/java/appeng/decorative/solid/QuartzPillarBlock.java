@@ -54,7 +54,7 @@ public class QuartzPillarBlock extends AEBaseBlock implements IOrientableBlock
 	public IBlockState getStateFromMeta(
 			final int meta )
 	{
-		return getDefaultState();
+		return this.getDefaultState();
 	}
 	
 	@Override

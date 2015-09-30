@@ -32,7 +32,7 @@ public class FlippableIcon implements IAESprite
 	@Override
 	public TextureAtlasSprite getAtlas()
 	{
-		return original.getAtlas();
+		return this.original.getAtlas();
 	}
 	
 	public FlippableIcon( final IAESprite o )

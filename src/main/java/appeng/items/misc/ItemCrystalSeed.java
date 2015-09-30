@@ -103,22 +103,22 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 			{
 				ModelResourceLocation[] list = null;
 
-				int damage = getProgress( stack );
+				int damage = ItemCrystalSeed.this.getProgress( stack );
 
 				if( damage < CERTUS + SINGLE_OFFSET )
 				{
-					list = certus;
+					list = ItemCrystalSeed.this.certus;
 				}
 				else if( damage < NETHER + SINGLE_OFFSET )
 				{
 					damage -= NETHER;
-					list = nether;
+					list = ItemCrystalSeed.this.nether;
 				}
 
 				else if( damage < FLUIX + SINGLE_OFFSET )
 				{
 					damage -= FLUIX;
-					list = fluix;
+					list = ItemCrystalSeed.this.fluix;
 				}
 
 				if( list == null )

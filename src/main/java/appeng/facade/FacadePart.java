@@ -352,7 +352,7 @@ public class FacadePart implements IFacadePart, IBoxProvider
 			{
 				final ItemStack randomItem = fi.getTextureItem( this.facade );
 
-				instance.setTexture( renderer.getIcon( facade ) );
+				instance.setTexture( renderer.getIcon( this.facade ) );
 				instance.setBounds( 7, 7, 4, 9, 9, 14 );
 				instance.renderInventoryBox( renderer );
 				instance.setTexture( null );
@@ -376,7 +376,7 @@ public class FacadePart implements IFacadePart, IBoxProvider
 
 						renderer.setBrightness( 15 << 20 | 15 << 4 );
 						renderer.setColorOpaque_F( 1, 1, 1 );
-						instance.setTexture( renderer.getIcon( blk.getDefaultState() )[side.ordinal()] );
+						instance.setTexture( renderer.getIcon( blk.getDefaultState() )[this.side.ordinal()] );
 
 						instance.setBounds( 0, 0, 14, 16, 16, 16 );
 						instance.renderInventoryBox( renderer );

@@ -54,9 +54,9 @@ public class WorldCoord
 	public WorldCoord(
 			final BlockPos pos )
 	{
-		x = pos.getX();
-		y = pos.getY();
-		z = pos.getZ();
+		this.x = pos.getX();
+		this.y = pos.getY();
+		this.z = pos.getZ();
 	}
 
 	public WorldCoord subtract( final AEPartLocation direction, final int length )
@@ -177,7 +177,7 @@ public class WorldCoord
 
 	public BlockPos getPos()
 	{
-		return new BlockPos(x,y,z);
+		return new BlockPos( this.x, this.y, this.z );
 	}
 	
 	@Override

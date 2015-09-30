@@ -313,7 +313,7 @@ public class AppEngInternalAEInventory implements IInventory, Iterable<ItemStack
 	{
 		for( int x = 0; x < this.size; x++ )
 		{
-			setInventorySlotContents( x, null );
+			this.setInventorySlotContents( x, null );
 		}
 	}
 }

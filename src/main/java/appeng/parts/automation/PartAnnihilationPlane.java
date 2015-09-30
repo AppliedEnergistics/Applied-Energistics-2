@@ -141,7 +141,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 	@SideOnly( Side.CLIENT )
 	public void renderInventory( final IPartRenderHelper rh, final ModelGenerator renderer )
 	{
-		rh.setTexture( SIDE_ICON, SIDE_ICON, BACK_ICON, renderer.getIcon( is ), SIDE_ICON, SIDE_ICON );
+		rh.setTexture( SIDE_ICON, SIDE_ICON, BACK_ICON, renderer.getIcon( this.is ), SIDE_ICON, SIDE_ICON );
 
 		rh.setBounds( 1, 1, 15, 15, 15, 16 );
 		rh.renderInventoryBox( renderer );
@@ -192,12 +192,12 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 
 		final boolean isActive = ( this.clientFlags & ( PartBasicState.POWERED_FLAG | PartBasicState.CHANNEL_FLAG ) ) == ( PartBasicState.POWERED_FLAG | PartBasicState.CHANNEL_FLAG );
 
-		rh.setTexture( SIDE_ICON, SIDE_ICON, BACK_ICON, isActive ? activeIcon : renderer.getIcon( is ), SIDE_ICON, SIDE_ICON );
+		rh.setTexture( SIDE_ICON, SIDE_ICON, BACK_ICON, isActive ? activeIcon : renderer.getIcon( this.is ), SIDE_ICON, SIDE_ICON );
 
 		rh.setBounds( minX, minY, 15, maxX, maxY, 16 );
 		rh.renderBlock( opos, renderer );
 
-		rh.setTexture( STATUS_ICON, STATUS_ICON, BACK_ICON, isActive ? activeIcon : renderer.getIcon( is ), STATUS_ICON, STATUS_ICON );
+		rh.setTexture( STATUS_ICON, STATUS_ICON, BACK_ICON, isActive ? activeIcon : renderer.getIcon( this.is ), STATUS_ICON, STATUS_ICON );
 
 		rh.setBounds( 5, 5, 14, 11, 11, 15 );
 		rh.renderBlock( opos, renderer );
@@ -225,7 +225,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 		if( this.isAccepting && entity instanceof EntityItem && !entity.isDead && Platform.isServer() && this.proxy.isActive() )
 		{
 			boolean capture = false;
-			final BlockPos pos = tile.getPos();
+			final BlockPos pos = this.tile.getPos();
 
 			switch( this.side )
 			{
@@ -424,7 +424,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 				final TileEntity te = this.getTile();
 				final WorldServer w = (WorldServer) te.getWorld();
 
-				final BlockPos pos = te.getPos().offset( side.getFacing() );
+				final BlockPos pos = te.getPos().offset( this.side.getFacing() );
 
 				final IEnergyGrid energy = this.proxy.getEnergy();
 

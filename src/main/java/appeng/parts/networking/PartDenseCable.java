@@ -504,7 +504,7 @@ public class PartDenseCable extends PartCable
 			default:
 		}
 
-		return renderer.getIcon( is );
+		return renderer.getIcon( this.is );
 	}
 
 	private boolean isDense( final AEPartLocation of )

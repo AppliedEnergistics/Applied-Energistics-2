@@ -59,6 +59,6 @@ public enum ExtraItemTextures
 
 	public void registerIcon( final TextureMap map )
 	{
-		IIcon = new BaseIcon( map.registerSprite( new ResourceLocation( AppEng.MOD_ID, "items/" + name ) ) );
+		this.IIcon = new BaseIcon( map.registerSprite( new ResourceLocation( AppEng.MOD_ID, "items/" + this.name ) ) );
 	}
 }
