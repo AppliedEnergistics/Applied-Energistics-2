@@ -465,10 +465,10 @@ public class PartCable extends AEBasePart implements IPartCable
 		if( Platform.isServer() )
 		{
 			IGridNode node = this.getGridNode();
-			int howMany = 0;
 
 			if( node != null )
 			{
+				int howMany = 0;
 				for( IGridConnection gc : node.getConnections() )
 				{
 					howMany = Math.max( gc.getUsedChannels(), howMany );
@@ -816,11 +816,11 @@ public class PartCable extends AEBasePart implements IPartCable
 		TileEntity te = this.tile.getWorld().getTileEntity( pos.offset( of.getFacing() ) );
 		IPartHost partHost = te instanceof IPartHost ? (IPartHost) te : null;
 		IGridHost ghh = te instanceof IGridHost ? (IGridHost) te : null;
-		boolean isGlass = false;
 		AEColor myColor = this.getCableColor();
 
 		rh.setFacesToRender( EnumSet.complementOf( EnumSet.of( of.getFacing() ) ) );
 
+		boolean isGlass = false;
 		if( ghh != null && partHost != null && ghh.getCableConnectionType( of.getOpposite() ) == AECableType.GLASS && partHost.getPart( of.getOpposite() ) == null && partHost.getColor() != AEColor.Transparent )
 		{
 			isGlass = true;

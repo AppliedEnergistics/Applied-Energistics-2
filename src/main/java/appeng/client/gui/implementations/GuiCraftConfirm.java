@@ -138,15 +138,14 @@ public class GuiCraftConfirm extends AEBaseGui
 		this.start.enabled = !( this.ccc.noCPU || this.isSimulation() );
 		this.selectCPU.enabled = !this.isSimulation();
 
-		int x = 0;
-		int y = 0;
-
 		int gx = ( this.width - this.xSize ) / 2;
 		int gy = ( this.height - this.ySize ) / 2;
-		int offY = 23;
 
 		this.tooltip = -1;
 
+		int offY = 23;
+		int y = 0;
+		int x = 0;
 		for( int z = 0; z <= 4 * 5; z++ )
 		{
 			int minX = gx + 9 + x * 67;
@@ -269,7 +268,6 @@ public class GuiCraftConfirm extends AEBaseGui
 
 				int negY = ( ( lines - 1 ) * 5 ) / 2;
 				int downY = 0;
-				boolean red = false;
 
 				if( stored != null && stored.getStackSize() > 0 )
 				{
@@ -295,6 +293,7 @@ public class GuiCraftConfirm extends AEBaseGui
 					downY += 5;
 				}
 
+				boolean red = false;
 				if( missingStack != null && missingStack.getStackSize() > 0 )
 				{
 					String str = Long.toString( missingStack.getStackSize() );

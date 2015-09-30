@@ -264,8 +264,6 @@ public class ClientHelper extends ServerHelper
 		inst.entityRenderMap.put( EntityTinyTNTPrimed.class, new RenderTinyTNTPrimed( inst ) );
 		inst.entityRenderMap.put( EntityFloatingItem.class, new RenderFloatingItem( inst ) );
 
-		String MODID = AppEng.MOD_ID + ":";
-
 		final ItemModelMesher mesher = Minecraft.getMinecraft().getRenderItem().getItemModelMesher();
 		ItemMeshDefinition imd = new ItemMeshDefinition()
 		{
@@ -314,6 +312,7 @@ public class ClientHelper extends ServerHelper
 			}
 		}
 
+		String MODID = AppEng.MOD_ID + ":";
 		for( List<IconReg> reg : iconRegistrations.values() )
 		{
 			String[] names = new String[reg.size()];

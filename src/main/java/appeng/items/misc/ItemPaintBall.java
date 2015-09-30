@@ -92,12 +92,11 @@ public class ItemPaintBall extends AEBaseItem
 		int r = ( colorValue >> 16 ) & 0xff;
 		int g = ( colorValue >> 8 ) & 0xff;
 		int b = ( colorValue ) & 0xff;
-	
-		int full = (int) ( 255 * 0.3 );
-		float fail = 0.7f;
-	
+
 		if( stack.getItemDamage() >= 20 )
 		{
+			float fail = 0.7f;
+			int full = (int) ( 255 * 0.3 );
 			return  (int)( full + r * fail ) << 16 |  (int)( full + g * fail ) << 8 |  (int)( full + b * fail ) | 0xff << 24;
 		}
 		else

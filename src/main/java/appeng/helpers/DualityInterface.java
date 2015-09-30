@@ -634,10 +634,10 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 
 	private boolean usePlan( int x, IAEItemStack itemStack )
 	{
-		boolean changed = false;
 		InventoryAdaptor adaptor = this.getAdaptor( x );
 		this.isWorking = true;
 
+		boolean changed = false;
 		try
 		{
 			this.destination = this.gridProxy.getStorage().getItemInventory();

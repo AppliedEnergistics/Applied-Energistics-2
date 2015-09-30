@@ -166,10 +166,9 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
 				IGrid gn = n.getGrid();
 				if( gn != this.security.myGrid )
 				{
-					int playerID = -1;
 
 					ISecurityGrid sg = gn.getCache( ISecurityGrid.class );
-					playerID = sg.getOwner();
+					int playerID = sg.getOwner();
 
 					if( !this.security.hasPermission( playerID, permission ) )
 					{

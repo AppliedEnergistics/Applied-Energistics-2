@@ -91,9 +91,6 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 	@Override
 	protected void setupConfig()
 	{
-		int x = 8;
-		int y = 29;
-		int offset = 0;
 
 		IInventory cell = this.upgradeable.getInventoryByName( "cell" );
 		this.addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.WORKBENCH_CELL, cell, 0, 152, 8, this.invPlayer ) );
@@ -102,6 +99,9 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 		IInventory upgradeInventory = new Upgrades();
 		// null, 3 * 8 );
 
+		int offset = 0;
+		int y = 29;
+		int x = 8;
 		for( int w = 0; w < 7; w++ )
 		{
 			for( int z = 0; z < 9; z++ )

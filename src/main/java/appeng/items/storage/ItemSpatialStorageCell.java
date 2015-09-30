@@ -159,7 +159,6 @@ public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorag
 		int targetZ = max.z - min.z - 1;
 		int maxSize = this.getMaxStoredDim( is );
 
-		int floorBuffer = 64;
 		World destination = this.getWorld( is );
 
 		if( ( scale.x == 0 && scale.y == 0 && scale.z == 0 ) || ( scale.x == targetX && scale.y == targetY && scale.z == targetZ ) )
@@ -171,6 +170,7 @@ public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorag
 					destination = this.createNewWorld( is );
 				}
 
+				int floorBuffer = 64;
 				StorageHelper.getInstance().swapRegions( w, destination, min.x + 1, min.y + 1, min.z + 1, 1, floorBuffer + 1, 1, targetX - 1, targetY - 1, targetZ - 1 );
 				this.setStoredSize( is, targetX, targetY, targetZ );
 

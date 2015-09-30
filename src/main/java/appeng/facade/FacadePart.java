@@ -177,11 +177,9 @@ public class FacadePart implements IFacadePart, IBoxProvider
 							}
 						}
 
-						int color = 0xffffff;
-
 						try
 						{
-							color = ib.getColorFromItemStack( randomItem, 0 );
+							int color = ib.getColorFromItemStack( randomItem, 0 );
 						}
 						catch( Throwable ignored )
 						{

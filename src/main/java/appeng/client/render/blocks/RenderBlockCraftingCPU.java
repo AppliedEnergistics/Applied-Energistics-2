@@ -59,7 +59,6 @@ public class RenderBlockCraftingCPU<B extends BlockCraftingUnit, T extends TileC
 	@Override
 	public boolean renderInWorld( B blk, IBlockAccess w, BlockPos pos, ModelGenerator renderer )
 	{
-		IAESprite theIcon = null;
 		boolean formed = false;
 		boolean emitsLight = false;
 
@@ -71,7 +70,7 @@ public class RenderBlockCraftingCPU<B extends BlockCraftingUnit, T extends TileC
 		}
 		
 		boolean isMonitor = blk.getClass() == BlockCraftingMonitor.class;
-		theIcon = renderer.getIcon( w.getBlockState( pos ) )[EnumFacing.SOUTH.ordinal()];// blk.getIcon( AEPartLocation.SOUTH.ordinal(), meta | ( formed ? 8 : 0 ) );
+		IAESprite theIcon = renderer.getIcon( w.getBlockState( pos ) )[EnumFacing.SOUTH.ordinal()];
 
 		int meta = 1;
 		for( Block craftingBlock : AEApi.instance().definitions().blocks().craftingUnit().maybeBlock().asSet() )
@@ -299,11 +298,10 @@ public class RenderBlockCraftingCPU<B extends BlockCraftingUnit, T extends TileC
 				i.setTexture( ExtraBlockTextures.BlockCraftingUnitRingLong.getIcon() );
 			}
 
-			double width = 3.0 / 16.0;
-
 			AEPartLocation dir = AEPartLocation.fromFacing( a );
 			if( !( i.getBound( dir ) < 0.001 || i.getBound( dir ) > 15.999 ) )
 			{
+				double width = 3.0 / 16.0;
 				switch( a )
 				{
 					case DOWN:

@@ -74,8 +74,6 @@ public class ContainerLevelEmitter extends ContainerUpgradeable
 	@Override
 	protected void setupConfig()
 	{
-		int x = 80 + 44;
-		int y = 40;
 
 		IInventory upgrades = this.upgradeable.getInventoryByName( "upgrades" );
 		if( this.availableUpgrades() > 0 )
@@ -96,6 +94,8 @@ public class ContainerLevelEmitter extends ContainerUpgradeable
 		}
 
 		IInventory inv = this.upgradeable.getInventoryByName( "config" );
+		int y = 40;
+		int x = 80 + 44;
 		this.addSlotToContainer( new SlotFakeTypeOnly( inv, 0, x, y ) );
 	}
 

@@ -133,7 +133,6 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 			float hitZ )
 	{
 		Block blk = w.getBlockState( pos ).getBlock();
-		double powerPerUse = 100;
 
 		ItemStack paintBall = this.getColor( is );
 
@@ -157,6 +156,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 				return false;
 			}
 
+			double powerPerUse = 100;
 			if( paintBall != null && paintBall.getItem() instanceof ItemSnowball )
 			{
 				TileEntity te = w.getTileEntity( pos );

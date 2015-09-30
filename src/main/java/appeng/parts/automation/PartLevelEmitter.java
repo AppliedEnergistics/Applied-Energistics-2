@@ -430,9 +430,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 
 		baseY += 7.0 / 16.0;
 
-		double par10 = 0;
 		// double par11 = 0;
-		double Zero = 0;
 
 		/*
 		 * double d5 = (double)TextureAtlasSprite.func_94209_e(); double d6 = (double)TextureAtlasSprite.func_94206_g(); double d7 =
@@ -472,9 +470,6 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 		double var38 = baseX + 0.5D;
 		double var40 = baseZ - 0.5D;
 		double var42 = baseZ + 0.5D;
-		double var44 = 0.0625D;
-		double var422 = 0.1915D + 1.0 / 16.0;
-		double TorchLen = 0.625D;
 
 		double toff = 0.0d;
 
@@ -490,12 +485,17 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 		}
 
 		EnumFacing t = EnumFacing.UP;
-		
+
+		double TorchLen = 0.625D;
+		double var44 = 0.0625D;
+		double Zero = 0;
+		double par10 = 0;
 		this.addVertexWithUV(t,renderer, baseX + Zero * ( 1.0D - TorchLen ) - var44, baseY + TorchLen - toff, baseZ + par10 * ( 1.0D - TorchLen ) - var44, var20, var22 );
 		this.addVertexWithUV(t,renderer, baseX + Zero * ( 1.0D - TorchLen ) - var44, baseY + TorchLen - toff, baseZ + par10 * ( 1.0D - TorchLen ) + var44, var20, var26 );
 		this.addVertexWithUV(t,renderer, baseX + Zero * ( 1.0D - TorchLen ) + var44, baseY + TorchLen - toff, baseZ + par10 * ( 1.0D - TorchLen ) + var44, var24, var26 );
 		this.addVertexWithUV(t,renderer, baseX + Zero * ( 1.0D - TorchLen ) + var44, baseY + TorchLen - toff, baseZ + par10 * ( 1.0D - TorchLen ) - var44, var24, var22 );
 
+		double var422 = 0.1915D + 1.0 / 16.0;
 		this.addVertexWithUV(t,renderer, baseX + Zero * ( 1.0D - TorchLen ) + var44, baseY + var422, baseZ + par10 * ( 1.0D - TorchLen ) - var44, var24b, var22b );
 		this.addVertexWithUV(t,renderer, baseX + Zero * ( 1.0D - TorchLen ) + var44, baseY + var422, baseZ + par10 * ( 1.0D - TorchLen ) + var44, var24b, var26b );
 		this.addVertexWithUV(t,renderer, baseX + Zero * ( 1.0D - TorchLen ) - var44, baseY + var422, baseZ + par10 * ( 1.0D - TorchLen ) + var44, var20b, var26b );

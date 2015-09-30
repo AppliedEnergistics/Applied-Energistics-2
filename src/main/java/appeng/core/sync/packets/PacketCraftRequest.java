@@ -91,10 +91,9 @@ public class PacketCraftRequest extends AppEngPacket
 					return;
 				}
 
-				Future<ICraftingJob> futureJob = null;
-
 				cca.whatToMake.setStackSize( this.amount );
 
+				Future<ICraftingJob> futureJob = null;
 				try
 				{
 					ICraftingGrid cg = g.getCache( ICraftingGrid.class );

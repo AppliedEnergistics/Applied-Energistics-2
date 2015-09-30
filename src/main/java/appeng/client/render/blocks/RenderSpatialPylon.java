@@ -59,10 +59,10 @@ public class RenderSpatialPylon extends BaseBlockRender<BlockSpatialPylon, TileS
 		TileSpatialPylon sp = imb.getTileEntity( world, pos  );
 
 		int displayBits = ( sp == null ) ? 0 : sp.getDisplayBits();
-		EnumFacing ori = null;//AEPartLocation.INTERNAL;
 
 		if( displayBits != 0 )
 		{
+			EnumFacing ori = null;//AEPartLocation.INTERNAL;
 			if( ( displayBits & TileSpatialPylon.DISPLAY_Z ) == TileSpatialPylon.DISPLAY_X )
 			{
 				ori = EnumFacing.EAST;

@@ -1290,12 +1290,12 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 		this.lastTime = System.nanoTime();
 		this.elapsedTime = 0;
 
-		int itemCount = 0;
 		final IItemList<IAEItemStack> list = AEApi.instance().storage().createItemList();
 
 		this.getListOfItem( list, CraftingItemList.ACTIVE );
 		this.getListOfItem( list, CraftingItemList.PENDING );
 
+		int itemCount = 0;
 		for( IAEItemStack ge : list )
 		{
 			itemCount += ge.getStackSize();

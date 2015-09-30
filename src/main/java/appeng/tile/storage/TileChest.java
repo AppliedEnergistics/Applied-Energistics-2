@@ -343,10 +343,9 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 	{
 		double stash = 0.0;
 
-		IEnergyGrid eg;
 		try
 		{
-			eg = this.gridProxy.getEnergy();
+			IEnergyGrid eg = this.gridProxy.getEnergy();
 			stash = eg.extractAEPower( amt, mode, PowerMultiplier.ONE );
 			if( stash >= amt )
 			{
@@ -955,7 +954,6 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 		{
 			if( TileChest.this.getTile() instanceof IActionHost && requiredPermission != null )
 			{
-				boolean requirePower = false;
 
 				IGridNode gn = ( (IActionHost) TileChest.this.getTile() ).getActionableNode();
 				if( gn != null )
@@ -963,6 +961,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 					IGrid g = gn.getGrid();
 					if( g != null )
 					{
+						boolean requirePower = false;
 						if( requirePower )
 						{
 							IEnergyGrid eg = g.getCache( IEnergyGrid.class );

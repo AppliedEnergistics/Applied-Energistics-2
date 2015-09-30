@@ -286,8 +286,6 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 	private int calculateMaximumAmountToImport( InventoryAdaptor myAdaptor, IAEItemStack whatToImport, IMEMonitor<IAEItemStack> inv, FuzzyMode fzMode )
 	{
 		final int toSend = Math.min( this.itemToSend, 64 );
-		final ItemStack simResult;
-		final IAEItemStack itemAmountNotStorable;
 		final ItemStack itemStackToImport;
 
 		if( whatToImport == null )
@@ -299,6 +297,8 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 			itemStackToImport = whatToImport.getItemStack();
 		}
 
+		final IAEItemStack itemAmountNotStorable;
+		final ItemStack simResult;
 		if( this.getInstalledUpgrades( Upgrades.FUZZY ) > 0 )
 		{
 			simResult = myAdaptor.simulateSimilarRemove( toSend, itemStackToImport, fzMode, this.configDestination( inv ) );

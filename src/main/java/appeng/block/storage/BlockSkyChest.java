@@ -23,6 +23,8 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 
+import com.google.common.base.Optional;
+
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -30,6 +32,7 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
+
 import appeng.api.util.AEPartLocation;
 import appeng.block.AEBaseTileBlock;
 import appeng.client.render.BaseBlockRender;
@@ -39,8 +42,6 @@ import appeng.core.sync.GuiBridge;
 import appeng.helpers.ICustomCollision;
 import appeng.tile.storage.TileSkyChest;
 import appeng.util.Platform;
-
-import com.google.common.base.Optional;
 
 
 public class BlockSkyChest extends AEBaseTileBlock implements ICustomCollision
@@ -98,7 +99,6 @@ public class BlockSkyChest extends AEBaseTileBlock implements ICustomCollision
 			boolean b )
 	{
 		TileSkyChest sk = this.getTileEntity( w, pos );
-		double sc = 0.06;
 		EnumFacing o = EnumFacing.UP;
 
 		if( sk != null )
@@ -110,6 +110,7 @@ public class BlockSkyChest extends AEBaseTileBlock implements ICustomCollision
 		double offsetY = o.getFrontOffsetY() == 0 ? 0.06 : 0.0;
 		double offsetZ = o.getFrontOffsetZ() == 0 ? 0.06 : 0.0;
 
+		double sc = 0.06;
 		return Collections.singletonList( AxisAlignedBB.fromBounds( Math.max( 0.0, offsetX - o.getFrontOffsetX() * sc ), Math.max( 0.0, offsetY - o.getFrontOffsetY() * sc ), Math.max( 0.0, offsetZ - o.getFrontOffsetZ() * sc ), Math.min( 1.0, ( 1.0 - offsetX ) - o.getFrontOffsetX() * sc ), Math.min( 1.0, ( 1.0 - offsetY ) - o.getFrontOffsetY() * sc ), Math.min( 1.0, ( 1.0 - offsetZ ) - o.getFrontOffsetZ() * sc ) ) );
 	}
 	

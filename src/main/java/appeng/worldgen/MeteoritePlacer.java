@@ -452,7 +452,6 @@ public final class MeteoritePlacer
 
 	public boolean spawnMeteorite( IMeteoriteWorld w, int x, int y, int z )
 	{
-		int validBlocks = 0;
 
 		if( !w.hasNoSky() )
 		{
@@ -508,6 +507,7 @@ public final class MeteoritePlacer
 			}
 		}
 
+		int validBlocks = 0;
 		for( int i = x - 15; i < x + 15; i++ )
 		{
 			for( int j = y - 15; j < y + 15; j++ )

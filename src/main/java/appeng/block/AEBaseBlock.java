@@ -575,7 +575,6 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 
 		final EnumFacing forward = ori.getForward();
 		final EnumFacing up = ori.getUp();
-		EnumFacing west = null;
 
 		if( forward == null || up == null )
 		{
@@ -586,6 +585,7 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 		int west_y = forward.getFrontOffsetZ() * up.getFrontOffsetX() - forward.getFrontOffsetX() * up.getFrontOffsetZ();
 		int west_z = forward.getFrontOffsetX() * up.getFrontOffsetY() - forward.getFrontOffsetY() * up.getFrontOffsetX();
 
+		EnumFacing west = null;
 		for( EnumFacing dx : EnumFacing.VALUES )
 		{
 			if( dx.getFrontOffsetX() == west_x && dx.getFrontOffsetY() == west_y && dx.getFrontOffsetZ() == west_z )
@@ -633,22 +633,15 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 			String name )
 	{
 		final BlockRenderInfo info = this.getRendererInstance();
-		final FlippableIcon blockIcon;
 		final FlippableIcon topIcon;
-		final FlippableIcon bottomIcon;
-		final FlippableIcon sideIcon;
-		final FlippableIcon eastIcon;
-		final FlippableIcon westIcon;
-		final FlippableIcon southIcon;
-		final FlippableIcon northIcon;
 
-		blockIcon = topIcon = this.optionalIcon( clientHelper, this.getTextureName(), null );
-		bottomIcon = this.optionalIcon( clientHelper, this.getTextureName() + "Bottom", topIcon );
-		sideIcon = this.optionalIcon( clientHelper, this.getTextureName() + "Side", topIcon );
-		eastIcon = this.optionalIcon( clientHelper, this.getTextureName() + "East", sideIcon );
-		westIcon = this.optionalIcon( clientHelper, this.getTextureName() + "West", sideIcon );
-		southIcon = this.optionalIcon( clientHelper, this.getTextureName() + "Front", sideIcon );
-		northIcon = this.optionalIcon( clientHelper, this.getTextureName() + "Back", sideIcon );
+		final FlippableIcon blockIcon = topIcon = this.optionalIcon( clientHelper, this.getTextureName(), null );
+		final FlippableIcon bottomIcon = this.optionalIcon( clientHelper, this.getTextureName() + "Bottom", topIcon );
+		final FlippableIcon sideIcon = this.optionalIcon( clientHelper, this.getTextureName() + "Side", topIcon );
+		final FlippableIcon eastIcon = this.optionalIcon( clientHelper, this.getTextureName() + "East", sideIcon );
+		final FlippableIcon westIcon = this.optionalIcon( clientHelper, this.getTextureName() + "West", sideIcon );
+		final FlippableIcon southIcon = this.optionalIcon( clientHelper, this.getTextureName() + "Front", sideIcon );
+		final FlippableIcon northIcon = this.optionalIcon( clientHelper, this.getTextureName() + "Back", sideIcon );
 
 		info.updateIcons( bottomIcon, topIcon, northIcon, southIcon, eastIcon, westIcon );
 	}

@@ -238,12 +238,11 @@ public class ApiPart implements IPartHelper
 
 	public ClassNode getReader( String name )
 	{
-		ClassReader cr;
 		String path = '/' + name.replace( ".", "/" ) + ".class";
 		InputStream is = this.getClass().getResourceAsStream( path );
 		try
 		{
-			cr = new ClassReader( is );
+			ClassReader cr = new ClassReader( is );
 
 			ClassNode cn = new ClassNode();
 			cr.accept( cn, ClassReader.EXPAND_FRAMES );

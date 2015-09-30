@@ -128,9 +128,9 @@ public class CableRenderHelper
 				IFacadePart fPart = iFacadeContainer.getFacade( s );
 				if( fPart != null )
 				{
-					AEAxisAlignedBB b = null;
 					fPart.setThinFacades( useThinFacades );
 					AxisAlignedBB pb = fPart.getPrimaryBox();
+					AEAxisAlignedBB b = null;
 					for( AxisAlignedBB bb : boxes )
 					{
 						if( bb.intersectsWith( pb ) )

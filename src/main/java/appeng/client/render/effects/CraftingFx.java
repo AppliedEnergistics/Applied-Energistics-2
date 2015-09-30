@@ -84,7 +84,6 @@ public class CraftingFx extends EntityBreakingFX
 		float offX = (float) ( this.prevPosX + ( this.posX - this.prevPosX ) * partialTick );
 		float offY = (float) ( this.prevPosY + ( this.posY - this.prevPosY ) * partialTick );
 		float offZ = (float) ( this.prevPosZ + ( this.posZ - this.prevPosZ ) * partialTick );
-		float f14 = 1.0F;
 
 		int blkX = MathHelper.floor_double( offX );
 		int blkY = MathHelper.floor_double( offY );
@@ -96,6 +95,7 @@ public class CraftingFx extends EntityBreakingFX
 			offZ -= interpPosZ;
 
 			// AELog.info( "" + partialTick );
+			float f14 = 1.0F;
 			par1Tessellator.setColorRGBA_F( this.particleRed * f14, this.particleGreen * f14, this.particleBlue * f14, this.particleAlpha );
 			par1Tessellator.addVertexWithUV( offX - x * scale - rx * scale, offY - y * scale, offZ - z * scale - rz * scale, f7, f9 );
 			par1Tessellator.addVertexWithUV( offX - x * scale + rx * scale, offY + y * scale, offZ - z * scale + rz * scale, f7, f8 );

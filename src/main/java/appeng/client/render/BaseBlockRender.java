@@ -332,10 +332,9 @@ public class BaseBlockRender<B extends AEBaseBlock, T extends AEBaseTile>
 
 	public void renderInvBlock( EnumSet<AEPartLocation> sides, B block, ItemStack item,  int color, ModelGenerator tess )
 	{
-		int meta = 0;
 		if( block != null && block.hasSubtypes() && item != null )
 		{
-			meta = item.getItemDamage();
+			int meta = item.getItemDamage();
 		}
 
 		IAESprite[] icons = tess.getIcon( item == null ? block.getDefaultState() : block.getStateFromMeta( item.getMetadata() ) );
@@ -408,15 +407,13 @@ public class BaseBlockRender<B extends AEBaseBlock, T extends AEBaseTile>
 
 	public void preRenderInWorld( B block, IBlockAccess world, BlockPos pos, ModelGenerator renderer )
 	{
-		EnumFacing forward = EnumFacing.SOUTH;
-		EnumFacing up = EnumFacing.UP;
 
 		BlockRenderInfo info = block.getRendererInstance();
 		IOrientable te = this.getOrientable( block, world, pos );
 		if( te != null )
 		{
-			forward = te.getForward() ;
-			up =  te.getUp() ;
+			EnumFacing forward = te.getForward();
+			EnumFacing up = te.getUp();
 
 			renderer.uvRotateBottom = info.getTexture( AEPartLocation.DOWN ).setFlip( getOrientation( EnumFacing.DOWN, forward, up ) );
 			renderer.uvRotateTop = info.getTexture( AEPartLocation.UP ).setFlip( getOrientation( EnumFacing.UP, forward, up ) );
@@ -501,9 +498,7 @@ public class BaseBlockRender<B extends AEBaseBlock, T extends AEBaseTile>
 		double offsetY = 0.0;
 		double offsetZ = 0.0;
 		double layerAX = 0.0;
-		double layerAY = 0.0;
 		double layerAZ = 0.0;
-		double layerBX = 0.0;
 		double layerBY = 0.0;
 		double layerBZ = 0.0;
 
@@ -560,6 +555,8 @@ public class BaseBlockRender<B extends AEBaseBlock, T extends AEBaseTile>
 		offsetY += pos.getY();
 		offsetZ += pos.getZ();
 
+		double layerBX = 0.0;
+		double layerAY = 0.0;
 		this.renderFace(orientation, tess, offsetX, offsetY, offsetZ, layerAX, layerAY, layerAZ, layerBX, layerBY, layerBZ,
 				// u -> u
 				0, 1.0,
@@ -672,11 +669,11 @@ public class BaseBlockRender<B extends AEBaseBlock, T extends AEBaseTile>
 
 	public void renderTile( B block, T tile, WorldRenderer tess, double x, double y, double z, float f, ModelGenerator renderer )
 	{
-		AEPartLocation forward = AEPartLocation.SOUTH;
-		AEPartLocation up = AEPartLocation.UP;
 
 		renderer.uvRotateBottom = renderer.uvRotateTop = renderer.uvRotateEast = renderer.uvRotateWest = renderer.uvRotateNorth = renderer.uvRotateSouth = 0;
 
+		AEPartLocation up = AEPartLocation.UP;
+		AEPartLocation forward = AEPartLocation.SOUTH;
 		this.applyTESRRotation( x, y, z, forward.getFacing(), up.getFacing() );
 
 		Minecraft.getMinecraft().getTextureManager().bindTexture( TextureMap.locationBlocksTexture );

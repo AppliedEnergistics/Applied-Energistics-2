@@ -98,10 +98,10 @@ public class MultiCraftingTracker
 			}
 			else if( craftingJob != null )
 			{
-				ICraftingJob job = null;
 
 				try
 				{
+					ICraftingJob job = null;
 					if( craftingJob.isDone() )
 					{
 						job = craftingJob.get();

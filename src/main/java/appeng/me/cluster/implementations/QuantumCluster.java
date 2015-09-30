@@ -77,9 +77,8 @@ public class QuantumCluster implements ILocatable, IAECluster
 	@Override
 	public void updateStatus( boolean updateGrid )
 	{
-		long qe;
 
-		qe = this.center.getQEFrequency();
+		long qe = this.center.getQEFrequency();
 
 		if( this.thisSide != qe && this.thisSide != -qe )
 		{

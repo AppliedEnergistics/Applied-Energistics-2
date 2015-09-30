@@ -54,10 +54,9 @@ public final class GridCacheRegistry implements IGridCacheRegistry
 
 		for( Class<? extends IGridCache> iface : this.caches.keySet() )
 		{
-			Constructor<? extends IGridCache> c;
 			try
 			{
-				c = this.caches.get( iface ).getConstructor( IGrid.class );
+				Constructor<? extends IGridCache> c = this.caches.get( iface ).getConstructor( IGrid.class );
 				map.put( iface, c.newInstance( g ) );
 			}
 			catch( NoSuchMethodException e )

@@ -64,13 +64,6 @@ public class SpatialPylonCache implements ISpatialCache
 
 	public void reset( IGrid grid )
 	{
-		int reqX = 0;
-		int reqY = 0;
-		int reqZ = 0;
-		int requirePylonBlocks = 1;
-
-		double minPower = 0;
-		double maxPower = 0;
 
 		this.clusters = new HashMap<SpatialPylonCluster, SpatialPylonCluster>();
 		this.ioPorts = new LinkedList<TileSpatialIOPort>();
@@ -120,6 +113,8 @@ public class SpatialPylonCache implements ISpatialCache
 			this.captureMax.z = Math.max( this.captureMax.z, cl.max.z );
 		}
 
+		double maxPower = 0;
+		double minPower = 0;
 		if( this.hasRegion() )
 		{
 			this.isValid = this.captureMax.x - this.captureMin.x > 1 && this.captureMax.y - this.captureMin.y > 1 && this.captureMax.z - this.captureMin.z > 1;
@@ -149,10 +144,10 @@ public class SpatialPylonCache implements ISpatialCache
 				}
 			}
 
-			reqX = this.captureMax.x - this.captureMin.x;
-			reqY = this.captureMax.y - this.captureMin.y;
-			reqZ = this.captureMax.z - this.captureMin.z;
-			requirePylonBlocks = Math.max( 6, ( ( reqX * reqZ + reqX * reqY + reqY * reqZ ) * 3 ) / 8 );
+			int reqX = this.captureMax.x - this.captureMin.x;
+			int reqY = this.captureMax.y - this.captureMin.y;
+			int reqZ = this.captureMax.z - this.captureMin.z;
+			int requirePylonBlocks = Math.max( 6, ( ( reqX * reqZ + reqX * reqY + reqY * reqZ ) * 3 ) / 8 );
 
 			this.efficiency = (double) pylonBlocks / (double) requirePylonBlocks;
 

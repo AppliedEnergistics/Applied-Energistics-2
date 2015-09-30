@@ -106,10 +106,9 @@ public class ContainerNetworkStatus extends AEBaseContainer
 				this.maxPower = (long) ( 100.0 * eg.getMaxStoredPower() );
 			}
 
-			PacketMEInventoryUpdate piu;
 			try
 			{
-				piu = new PacketMEInventoryUpdate();
+				PacketMEInventoryUpdate piu = new PacketMEInventoryUpdate();
 
 				for( Class<? extends IGridHost> machineClass : this.network.getMachinesClasses() )
 				{

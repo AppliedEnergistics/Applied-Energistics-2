@@ -187,8 +187,6 @@ public class Platform
 		PowerUnits displayUnits = AEConfig.instance.selectedPowerUnit();
 		p = PowerUnits.AE.convertTo( displayUnits, p );
 
-		int offset = 0;
-		String level = "";
 		String[] preFixes = { "k", "M", "G", "T", "P", "T", "P", "E", "Z", "Y" };
 		String unitName = displayUnits.name();
 
@@ -202,6 +200,8 @@ public class Platform
 			unitName = "J";
 		}
 
+		String level = "";
+		int offset = 0;
 		while( p > 1000 && offset < preFixes.length )
 		{
 			p /= 1000;
@@ -1524,9 +1524,8 @@ public class Platform
 		if( hitEntities )
 		{
 			List list = w.getEntitiesWithinAABBExcludingEntity( p, bb );
-			int l;
 
-			for( l = 0; l < list.size(); ++l )
+			for( int l = 0; l < list.size(); ++l )
 			{
 				Entity entity1 = (Entity) list.get( l );
 
@@ -1786,7 +1785,6 @@ public class Platform
 			{
 				for( EnumFacing dir : EnumFacing.VALUES )
 				{
-					int offset = 0;
 
 					int[] sides = ( (ISidedInventory) target ).getSlotsForFace( dir );
 
@@ -1795,6 +1793,7 @@ public class Platform
 						return 0;
 					}
 
+					int offset = 0;
 					for( int side : sides )
 					{
 						int c = ( side << ( offset % 8 ) ) ^ ( 1 << dir.ordinal() );

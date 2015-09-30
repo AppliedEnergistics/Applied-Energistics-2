@@ -45,11 +45,10 @@ public class AppEngClientPacketHandler extends AppEngPacketHandlerBase implement
 			final EntityPlayer player )
 	{
 		ByteBuf stream = packet.payload();
-		int packetType = -1;
 
 		try
 		{
-			packetType = stream.readInt();
+			int packetType = stream.readInt();
 			AppEngPacket pack = PacketTypes.getPacket( packetType ).parsePacket( stream );
 
 			PacketCallState callState = 

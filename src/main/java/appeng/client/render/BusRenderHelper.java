@@ -308,7 +308,6 @@ public final class BusRenderHelper implements IPartRenderHelper
 	{
 		EnumFacing forward = this.az;
 		EnumFacing up = this.ay;
-		EnumFacing west = null;
 
 		if( forward == null || up == null )
 		{
@@ -319,6 +318,7 @@ public final class BusRenderHelper implements IPartRenderHelper
 		int west_y = forward.getFrontOffsetZ() * up.getFrontOffsetX() - forward.getFrontOffsetX() * up.getFrontOffsetZ();
 		int west_z = forward.getFrontOffsetX() * up.getFrontOffsetY() - forward.getFrontOffsetY() * up.getFrontOffsetX();
 
+		EnumFacing west = null;
 		for( EnumFacing dx : EnumFacing.VALUES )
 		{
 			if( dx.getFrontOffsetX() == west_x && dx.getFrontOffsetY() == west_y && dx.getFrontOffsetZ() == west_z )

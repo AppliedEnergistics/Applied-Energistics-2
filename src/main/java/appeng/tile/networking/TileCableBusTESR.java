@@ -30,10 +30,9 @@ public class TileCableBusTESR extends TileCableBus
 	{
 		if( !this.cb.requiresDynamicRender )
 		{
-			TileCableBus tcb;
 			try
 			{
-				tcb = (TileCableBus) BlockCableBus.noTesrTile.newInstance();
+				TileCableBus tcb = (TileCableBus) BlockCableBus.noTesrTile.newInstance();
 				tcb.copyFrom( this );
 				this.getWorld().setTileEntity( pos, tcb );
 			}

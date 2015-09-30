@@ -927,11 +927,10 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 
 		for( int x = 0; x < 7; x++ )
 		{
-			ItemStack is = null;
 			IPart p = this.getPart( AEPartLocation.fromOrdinal( x ) );
 			if( p != null )
 			{
-				is = p.getItemStack( PartItemStack.Network );
+				ItemStack is = p.getItemStack( PartItemStack.Network );
 
 				data.writeShort( Item.getIdFromItem( is.getItem() ) );
 				data.writeShort( is.getItemDamage() );

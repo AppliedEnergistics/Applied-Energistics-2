@@ -140,12 +140,12 @@ public class MEMonitorIInventory implements IMEMonitor<IAEItemStack>
 
 	public TickRateModulation onTick()
 	{
-		boolean changed = false;
 
 		LinkedList<IAEItemStack> changes = new LinkedList<IAEItemStack>();
 
-		int high = 0;
 		this.list.resetStatus();
+		int high = 0;
+		boolean changed = false;
 		for( ItemSlot is : this.adaptor )
 		{
 			CachedItemStack old = this.memory.get( is.slot );

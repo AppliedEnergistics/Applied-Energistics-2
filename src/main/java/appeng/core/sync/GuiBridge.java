@@ -544,7 +544,6 @@ public enum GuiBridge implements IGuiHandler
 	{
 		if( te instanceof IActionHost && this.requiredPermission != null )
 		{
-			boolean requirePower = false;
 
 			IGridNode gn = ( (IActionHost) te ).getActionableNode();
 			if( gn != null )
@@ -552,6 +551,7 @@ public enum GuiBridge implements IGuiHandler
 				IGrid g = gn.getGrid();
 				if( g != null )
 				{
+					boolean requirePower = false;
 					if( requirePower )
 					{
 						IEnergyGrid eg = g.getCache( IEnergyGrid.class );

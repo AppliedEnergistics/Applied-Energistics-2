@@ -160,9 +160,6 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 	protected void renderStaticWithIcon( BlockPos opos, IPartRenderHelper rh, ModelGenerator renderer, IAESprite activeIcon )
 	{
 		int minX = 1;
-		int minY = 1;
-		int maxX = 15;
-		int maxY = 15;
 
 		final EnumFacing e = rh.getWorldX();
 		final EnumFacing u = rh.getWorldY();
@@ -174,17 +171,20 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 		{
 			minX = 0;
 		}
-	
+
+		int maxX = 15;
 		if( this.isAnnihilationPlane( te.getWorld().getTileEntity( pos.offset( e ) ), this.side ) )
 		{
 			maxX = 16;
 		}
 
+		int minY = 1;
 		if( this.isAnnihilationPlane( te.getWorld().getTileEntity( pos.offset( u.getOpposite() ) ), this.side ) )
 		{
 			minY = 0;
 		}
 
+		int maxY = 15;
 		if( this.isAnnihilationPlane( te.getWorld().getTileEntity( pos.offset( e) ), this.side ) )
 		{
 			maxY = 16;

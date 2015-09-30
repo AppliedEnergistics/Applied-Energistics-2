@@ -107,13 +107,13 @@ public class ToolDebugCard extends AEBaseItem
 					IPathingGrid pg = g.getCache( IPathingGrid.class );
 					if( pg.getControllerState() == ControllerState.CONTROLLER_ONLINE )
 					{
-						int length = 0;
 
 						Set<IGridNode> next = new HashSet<IGridNode>();
 						next.add( node );
 
 						int maxLength = 10000;
 
+						int length = 0;
 						outer:
 						while( !next.isEmpty() )
 						{

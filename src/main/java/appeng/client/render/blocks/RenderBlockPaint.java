@@ -63,10 +63,7 @@ public class RenderBlockPaint extends BaseBlockRender<BlockPaint, TilePaint>
 
 			IAESprite[] icoSet = { imb.getIcon( EnumFacing.UP, imb.getDefaultState() ), ExtraBlockTextures.BlockPaint2.getIcon(), ExtraBlockTextures.BlockPaint3.getIcon() };
 
-			int lumen = 14 << 20 | 14 << 4;
 			int brightness = imb.getMixedBrightnessForBlock( world, pos );
-
-			double offsetConstant = 0.001;
 
 			EnumSet<EnumFacing> validSides = EnumSet.noneOf( EnumFacing.class );
 
@@ -78,6 +75,8 @@ public class RenderBlockPaint extends BaseBlockRender<BlockPaint, TilePaint>
 				}
 			}
 
+			double offsetConstant = 0.001;
+			int lumen = 14 << 20 | 14 << 4;
 			for( Splotch s : tp.getDots() )
 			{
 				if( !validSides.contains( s.side ) )

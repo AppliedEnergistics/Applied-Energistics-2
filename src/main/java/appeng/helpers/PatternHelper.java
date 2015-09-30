@@ -165,8 +165,8 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 			throw new IllegalStateException( "No pattern here!" );
 		}
 
-		int offset = 0;
 		this.condensedInputs = new IAEItemStack[tmpInputs.size()];
+		int offset = 0;
 		for( IAEItemStack io : tmpInputs.values() )
 		{
 			this.condensedInputs[offset] = io;

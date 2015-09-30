@@ -104,8 +104,6 @@ public class AEBaseItemBlock extends ItemBlock
 		EnumFacing up = null;
 		EnumFacing forward = null;
 
-		IOrientable ori = null;
-
 		if( this.blockType instanceof AEBaseTileBlock )
 		{
 			if( this.blockType instanceof BlockLightDetector )
@@ -168,6 +166,7 @@ public class AEBaseItemBlock extends ItemBlock
 			}
 		}
 
+		IOrientable ori = null;
 		if( this.blockType instanceof IOrientableBlock )
 		{
 			ori = ( (IOrientableBlock) this.blockType ).getOrientable( w, pos );
