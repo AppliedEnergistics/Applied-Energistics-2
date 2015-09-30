@@ -386,8 +386,17 @@ public class ModelGenerator
 	{
 		return MinecraftForgeClient.getRenderLayer() == EnumWorldBlockLayer.TRANSLUCENT;
 	}
-	
-	final float quadsUV[] = new  float[] { 0,0,1,1,0,0,1,1};
+
+	final float[] quadsUV = new float[] {
+			0,
+			0,
+			1,
+			1,
+			0,
+			0,
+			1,
+			1
+	};
 	public EnumSet<EnumFacing> renderFaces = EnumSet.allOf(EnumFacing.class);
 	public boolean flipTexture=false;
 	private List<SMFace> faces = new ArrayList();

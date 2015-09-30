@@ -19,6 +19,9 @@
 package appeng.client.render.blocks;
 
 
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
+
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelChest;
@@ -28,9 +31,6 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.IItemRenderer.ItemRenderType;
-
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
 
 import appeng.block.storage.BlockSkyChest;
 import appeng.block.storage.BlockSkyChest.SkyChestType;
@@ -44,7 +44,10 @@ public class RenderBlockSkyChest extends BaseBlockRender<BlockSkyChest, TileSkyC
 
 	private final static ResourceLocation SKY_STONE_CHEST = new ResourceLocation( "appliedenergistics2", "textures/models/skychest.png" );
 	private final static ResourceLocation SKY_BLOCK_CHEST = new ResourceLocation( "appliedenergistics2", "textures/models/skyblockchest.png" );
-	private final static ResourceLocation METADATA_TO_TEXTURE[] = { SKY_STONE_CHEST, SKY_BLOCK_CHEST };
+	private final static ResourceLocation[] METADATA_TO_TEXTURE = {
+			SKY_STONE_CHEST,
+			SKY_BLOCK_CHEST
+	};
 
 	private final ModelChest model = new ModelChest();
 
