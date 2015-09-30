@@ -73,10 +73,10 @@ import appeng.util.item.AEItemStack;
 
 public class PartAnnihilationPlane extends PartBasicState implements IGridTickable, IWorldCallable<TickRateModulation>
 {
-	private final static IAESprite SIDE_ICON = CableBusTextures.PartPlaneSides.getIcon();
-	private final static IAESprite BACK_ICON = CableBusTextures.PartTransitionPlaneBack.getIcon();
-	private final static IAESprite STATUS_ICON = CableBusTextures.PartMonitorSidesStatus.getIcon();
-	private final static IAESprite ACTIVE_ICON = CableBusTextures.BlockAnnihilationPlaneOn.getIcon();
+	private static final IAESprite SIDE_ICON = CableBusTextures.PartPlaneSides.getIcon();
+	private static final IAESprite BACK_ICON = CableBusTextures.PartTransitionPlaneBack.getIcon();
+	private static final IAESprite STATUS_ICON = CableBusTextures.PartMonitorSidesStatus.getIcon();
+	private static final IAESprite ACTIVE_ICON = CableBusTextures.BlockAnnihilationPlaneOn.getIcon();
 
 	private final BaseActionSource mySrc = new MachineSource( this );
 	private boolean isAccepting = true;

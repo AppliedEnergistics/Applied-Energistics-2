@@ -59,7 +59,7 @@ public class BlockCraftingUnit extends AEBaseTileBlock
 	public static final PropertyBool POWERED = PropertyBool.create( "powered" );
 	public static final PropertyBool FORMED = PropertyBool.create( "formed" );
 
-	final public CraftingUnitType type;
+	public final CraftingUnitType type;
 
 	public BlockCraftingUnit( final CraftingUnitType type )
 	{

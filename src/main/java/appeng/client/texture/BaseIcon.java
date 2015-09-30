@@ -4,7 +4,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 
 public class BaseIcon implements IAESprite
 {
-	final private TextureAtlasSprite spite;
+	private final TextureAtlasSprite spite;
 	
 	public BaseIcon( final TextureAtlasSprite src )
 	{

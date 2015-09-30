@@ -43,7 +43,7 @@ import appeng.client.texture.IAESprite;
 
 public class PartIdentityAnnihilationPlane extends PartAnnihilationPlane
 {
-	private final static IAESprite ACTIVE_ICON = CableBusTextures.BlockIdentityAnnihilationPlaneOn.getIcon();
+	private static final IAESprite ACTIVE_ICON = CableBusTextures.BlockIdentityAnnihilationPlaneOn.getIcon();
 
 	private static final float SILK_TOUCH_FACTOR = 16;
 
