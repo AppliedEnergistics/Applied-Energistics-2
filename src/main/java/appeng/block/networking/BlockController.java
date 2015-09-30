@@ -62,13 +62,13 @@ public class BlockController extends AEBaseTileBlock
     
 	@Override
 	public int getMetaFromState(
-			IBlockState state )
+			final IBlockState state )
 	{
 		return ((ControllerBlockState)state.getValue( CONTROLLER_STATE )).ordinal();
 	}
 	
 	@Override
-	public IBlockState getStateFromMeta( int meta )
+	public IBlockState getStateFromMeta( final int meta )
 	{
 		return getDefaultState().withProperty( CONTROLLER_STATE, ControllerBlockState.OFFLINE );
 	}
@@ -89,12 +89,12 @@ public class BlockController extends AEBaseTileBlock
 
 	@Override
 	public void onNeighborBlockChange(
-			World w,
-			BlockPos pos,
-			IBlockState state,
-			Block neighborBlock )
+			final World w,
+			final BlockPos pos,
+			final IBlockState state,
+			final Block neighborBlock )
 	{
-		TileController tc = this.getTileEntity( w, pos );
+		final TileController tc = this.getTileEntity( w, pos );
 		if( tc != null )
 		{
 			tc.onNeighborChange( false );

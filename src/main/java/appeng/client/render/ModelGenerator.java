@@ -43,7 +43,7 @@ public class ModelGenerator
 		public CachedModel()
 		{
 			general = new ArrayList<BakedQuad>();
-			for ( EnumFacing f : EnumFacing.VALUES )
+			for ( final EnumFacing f : EnumFacing.VALUES )
 				faces[f.ordinal()] = new ArrayList<BakedQuad>();
 		}
 		
@@ -85,7 +85,7 @@ public class ModelGenerator
 
 		@Override
 		public List getFaceQuads(
-				EnumFacing p_177551_1_ )
+				final EnumFacing p_177551_1_ )
 		{
 			return faces[p_177551_1_.ordinal()];
 		}
@@ -120,7 +120,7 @@ public class ModelGenerator
 	final float[] defUVs = new float[] { 0, 0, 1, 1 };
 
 	public void setRenderBoundsFromBlock(
-			Block block )
+			final Block block )
 	{
 		if ( block == null ) return;
 		
@@ -133,12 +133,12 @@ public class ModelGenerator
 	}
 
 	public void setRenderBounds(
-			double d,
-			double e,
-			double f,
-			double g,
-			double h,
-			double i )
+			final double d,
+			final double e,
+			final double f,
+			final double g,
+			final double h,
+			final double i )
 	{
 		renderMinX = d;
 		renderMinY = e;
@@ -151,18 +151,18 @@ public class ModelGenerator
 	int color = -1;
 	
 	public void setBrightness(
-			int i )
+			final int i )
 	{
 		brightness=i;
 	}
 
 	public void setColorRGBA_F(
-			int r,
-			int g,
-			int b,
-			float a )
+			final int r,
+			final int g,
+			final int b,
+			final float a )
 	{
-		int alpha = ( int ) ( a * 0xff );
+		final int alpha = ( int ) ( a * 0xff );
 		color = alpha << 24 |
 				r << 16 |
 				b << 8 |
@@ -170,18 +170,18 @@ public class ModelGenerator
 	}
 
 	public void setColorOpaque_I(
-			int whiteVariant )
+			final int whiteVariant )
 	{
-		int alpha = 0xff;
+		final int alpha = 0xff;
 		color = //alpha << 24 |
 				whiteVariant;
 	}
 	public void setColorOpaque(
-			int r,
-			int g,
-			int b )
+			final int r,
+			final int g,
+			final int b )
 	{
-		int alpha = 0xff;
+		final int alpha = 0xff;
 		color =// alpha << 24 |
 				r << 16 |
 				g << 8 |
@@ -189,11 +189,11 @@ public class ModelGenerator
 	}
 	
 	public void setColorOpaque_F(
-			int r,
-			int g,
-			int b )
+			final int r,
+			final int g,
+			final int b )
 	{
-		int alpha = 0xff;
+		final int alpha = 0xff;
 		color = //alpha << 24 |
 				Math.min( 0xff, Math.max( 0, r ) ) << 16 |
 				Math.min( 0xff, Math.max( 0, g ) ) << 8 |
@@ -201,14 +201,14 @@ public class ModelGenerator
 	}
 
 	public void setColorOpaque_F(
-			float rf,
-			float bf,
-			float gf )
+			final float rf,
+			final float bf,
+			final float gf )
 	{
-		int r = (int)( rf * 0xff );
-		int g = (int)( gf * 0xff );
-		int b = (int)( bf * 0xff );
-		int alpha = 0xff;
+		final int r = (int)( rf * 0xff );
+		final int g = (int)( gf * 0xff );
+		final int b = (int)( bf * 0xff );
+		final int alpha = 0xff;
 		color = //alpha << 24 |
 				Math.min( 0xff, Math.max( 0, r ) ) << 16 |
 				Math.min( 0xff, Math.max( 0, g ) ) << 8 |
@@ -216,21 +216,21 @@ public class ModelGenerator
 	}
 
 	public IAESprite getIcon(
-			ItemStack is )
+			final ItemStack is )
 	{
-		Item it = is.getItem();
+		final Item it = is.getItem();
 		
 		if ( it instanceof ItemMultiPart )
 			return ( (ItemMultiPart) it).getIcon( is);
 		
-		Block blk = Block.getBlockFromItem( it );
+		final Block blk = Block.getBlockFromItem( it );
 		
 		if ( blk != null )
 			return getIcon(blk.getStateFromMeta( is.getMetadata() ))[0];
 
 		if ( it instanceof AEBaseItem )
 		{
-			IAESprite ico = ( (AEBaseItem)it ).getIcon(is);
+			final IAESprite ico = ( (AEBaseItem)it ).getIcon(is);
 			if ( ico != null ) return ico;
 		}
 		
@@ -239,20 +239,20 @@ public class ModelGenerator
 
 
 	public IAESprite[] getIcon(
-			IBlockState state )
+			final IBlockState state )
 	{
-		IAESprite[] out = new IAESprite[6];
+		final IAESprite[] out = new IAESprite[6];
 
-		Block blk = state.getBlock();
+		final Block blk = state.getBlock();
 		if ( blk instanceof AEBaseBlock )
 		{
-			AEBaseBlock base = (AEBaseBlock)blk;
-			for ( EnumFacing face : EnumFacing.VALUES )
+			final AEBaseBlock base = (AEBaseBlock)blk;
+			for ( final EnumFacing face : EnumFacing.VALUES )
 				out[face.ordinal()] = base.getIcon( face, state );
 		}
 		else
 		{
-			TextureAtlasSprite spite = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getTexture( state );
+			final TextureAtlasSprite spite = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getTexture( state );
 			if ( spite == null )
 			{
 				out[0] =  new MissingIcon( blk );
@@ -264,7 +264,7 @@ public class ModelGenerator
 			}
 			else
 			{
-				IAESprite mySpite = new BaseIcon( spite );
+				final IAESprite mySpite = new BaseIcon( spite );
 				out[0] =  mySpite;
 				out[1] =  mySpite;
 				out[2] =  mySpite;
@@ -277,17 +277,17 @@ public class ModelGenerator
 		return out;
 	}
 
-	public IAESprite[] getIcon( IBlockAccess world, BlockPos pos)
+	public IAESprite[] getIcon( final IBlockAccess world, final BlockPos pos)
 	{
-		IBlockState state = world.getBlockState( pos );
-		Block blk = state.getBlock();
+		final IBlockState state = world.getBlockState( pos );
+		final Block blk = state.getBlock();
 		
 		if ( blk instanceof AEBaseBlock )
 		{
-			IAESprite[] out = new IAESprite[6];
+			final IAESprite[] out = new IAESprite[6];
 
-			AEBaseBlock base = (AEBaseBlock)blk;
-			for ( EnumFacing face : EnumFacing.VALUES )
+			final AEBaseBlock base = (AEBaseBlock)blk;
+			for ( final EnumFacing face : EnumFacing.VALUES )
 				out[face.ordinal()] = base.getIcon( world, pos, face );
 			
 			return out;
@@ -301,19 +301,19 @@ public class ModelGenerator
 	float[][] points = new float[4][];
 	
 	public void addVertexWithUV(
-			EnumFacing face,
-			double x,
-			double y,
-			double z,
-			double u,
-			double v )
+			final EnumFacing face,
+			final double x,
+			final double y,
+			final double z,
+			final double u,
+			final double v )
 	{
 		points[point++] = new float[]{ (float)x+tx, (float)y+ty, (float)z+tz, (float)u, (float)v };
 		
 		if ( point == 4 )
 		{
 			brightness = -1;
-			int[] vertData = new int[]{
+			final int[] vertData = new int[]{
 				Float.floatToRawIntBits( points[0][0] ),
 				Float.floatToRawIntBits( points[0][1] ),
 				Float.floatToRawIntBits( points[0][2] ),
@@ -354,12 +354,12 @@ public class ModelGenerator
 	}
 
 	public boolean renderStandardBlock(
-			Block block,
-			BlockPos pos )
+			final Block block,
+			final BlockPos pos )
 	{
 		//setRenderBoundsFromBlock( block );
 
-		IAESprite[] textures = getIcon( blockAccess,pos );
+		final IAESprite[] textures = getIcon( blockAccess,pos );
 		setColorOpaque_I( 0xffffff );
 
 		renderFaceXNeg( block, pos, textures[EnumFacing.WEST.ordinal()] );
@@ -373,9 +373,9 @@ public class ModelGenerator
 	}
 
 	public void setTranslation(
-			int x,
-			int y,
-			int z )
+			final int x,
+			final int y,
+			final int z )
 	{
 		tx=x;
 		ty=y;
@@ -466,88 +466,88 @@ public class ModelGenerator
 	}
 	
 	public void renderFaceXNeg(
-			Block blk,
-			BlockPos pos,
-			IAESprite lights )
+			final Block blk,
+			final BlockPos pos,
+			final IAESprite lights )
 	{		
-		boolean isEdge = renderMinX < 0.0001;
-		Vector3f to = new Vector3f( (float)renderMinX* 16.0f, (float)renderMinY* 16.0f, (float)renderMinZ * 16.0f);
-		Vector3f from = new Vector3f( (float)renderMinX* 16.0f, (float)renderMaxY* 16.0f, (float)renderMaxZ * 16.0f);
+		final boolean isEdge = renderMinX < 0.0001;
+		final Vector3f to = new Vector3f( (float)renderMinX* 16.0f, (float)renderMinY* 16.0f, (float)renderMinZ * 16.0f);
+		final Vector3f from = new Vector3f( (float)renderMinX* 16.0f, (float)renderMaxY* 16.0f, (float)renderMaxZ * 16.0f);
 
 		final EnumFacing myFace = EnumFacing.WEST;
 		addFace(myFace, isEdge,to,from,defUVs,lights );
 	}
 	
 	public void renderFaceYNeg(
-			Block blk,
-			BlockPos pos,
-			IAESprite lights )
+			final Block blk,
+			final BlockPos pos,
+			final IAESprite lights )
 	{		
-		boolean isEdge = renderMinY < 0.0001;
-		Vector3f to = new Vector3f( (float)renderMinX* 16.0f, (float)renderMinY* 16.0f, (float)renderMinZ* 16.0f );
-		Vector3f from = new Vector3f( (float)renderMaxX* 16.0f, (float)renderMinY* 16.0f, (float)renderMaxZ* 16.0f );
+		final boolean isEdge = renderMinY < 0.0001;
+		final Vector3f to = new Vector3f( (float)renderMinX* 16.0f, (float)renderMinY* 16.0f, (float)renderMinZ* 16.0f );
+		final Vector3f from = new Vector3f( (float)renderMaxX* 16.0f, (float)renderMinY* 16.0f, (float)renderMaxZ* 16.0f );
 
 		final EnumFacing myFace = EnumFacing.DOWN;
 		addFace(myFace, isEdge,to,from,defUVs, lights );
 	}
 
 	public void renderFaceZNeg(
-			Block blk,
-			BlockPos pos,
-			IAESprite lights )
+			final Block blk,
+			final BlockPos pos,
+			final IAESprite lights )
 	{		
-		boolean isEdge = renderMinZ < 0.0001;
-		Vector3f to = new Vector3f( (float)renderMinX* 16.0f, (float)renderMinY* 16.0f, (float)renderMinZ* 16.0f );
-		Vector3f from = new Vector3f( (float)renderMaxX* 16.0f, (float)renderMaxY* 16.0f, (float)renderMinZ* 16.0f );
+		final boolean isEdge = renderMinZ < 0.0001;
+		final Vector3f to = new Vector3f( (float)renderMinX* 16.0f, (float)renderMinY* 16.0f, (float)renderMinZ* 16.0f );
+		final Vector3f from = new Vector3f( (float)renderMaxX* 16.0f, (float)renderMaxY* 16.0f, (float)renderMinZ* 16.0f );
 
 		final EnumFacing myFace = EnumFacing.NORTH;
 		addFace(myFace, isEdge,to,from,defUVs, lights );
 	}
 
 	public void renderFaceYPos(
-			Block blk,
-			BlockPos pos,
-			IAESprite lights )
+			final Block blk,
+			final BlockPos pos,
+			final IAESprite lights )
 	{		
-		boolean isEdge = renderMaxY > 0.9999;
-		Vector3f to = new Vector3f( (float)renderMinX* 16.0f, (float)renderMaxY* 16.0f, (float)renderMinZ* 16.0f );
-		Vector3f from = new Vector3f( (float)renderMaxX* 16.0f, (float)renderMaxY* 16.0f, (float)renderMaxZ * 16.0f);
+		final boolean isEdge = renderMaxY > 0.9999;
+		final Vector3f to = new Vector3f( (float)renderMinX* 16.0f, (float)renderMaxY* 16.0f, (float)renderMinZ* 16.0f );
+		final Vector3f from = new Vector3f( (float)renderMaxX* 16.0f, (float)renderMaxY* 16.0f, (float)renderMaxZ * 16.0f);
 
 		final EnumFacing myFace = EnumFacing.UP;
 		addFace(myFace, isEdge,to,from,defUVs,lights );
 	}
 
 	public void renderFaceZPos(
-			Block blk,
-			BlockPos pos,
-			IAESprite lights )
+			final Block blk,
+			final BlockPos pos,
+			final IAESprite lights )
 	{
-		boolean isEdge = renderMaxZ > 0.9999;
-		Vector3f to = new Vector3f( (float)renderMinX* 16.0f, (float)renderMinY* 16.0f, (float)renderMaxZ* 16.0f );
-		Vector3f from = new Vector3f( (float)renderMaxX* 16.0f, (float)renderMaxY* 16.0f, (float)renderMaxZ* 16.0f );
+		final boolean isEdge = renderMaxZ > 0.9999;
+		final Vector3f to = new Vector3f( (float)renderMinX* 16.0f, (float)renderMinY* 16.0f, (float)renderMaxZ* 16.0f );
+		final Vector3f from = new Vector3f( (float)renderMaxX* 16.0f, (float)renderMaxY* 16.0f, (float)renderMaxZ* 16.0f );
 
 		final EnumFacing myFace = EnumFacing.SOUTH;
 		addFace(myFace, isEdge,to,from,defUVs,lights );
 	}
 
 	public void renderFaceXPos(
-			Block blk,
-			BlockPos pos,
-			IAESprite lights )
+			final Block blk,
+			final BlockPos pos,
+			final IAESprite lights )
 	{
-		boolean isEdge = renderMaxX > 0.9999;
-		Vector3f to = new Vector3f( (float)renderMaxX * 16.0f, (float)renderMinY* 16.0f, (float)renderMinZ* 16.0f );
-		Vector3f from = new Vector3f( (float)renderMaxX* 16.0f, (float)renderMaxY* 16.0f, (float)renderMaxZ* 16.0f );
+		final boolean isEdge = renderMaxX > 0.9999;
+		final Vector3f to = new Vector3f( (float)renderMaxX * 16.0f, (float)renderMinY* 16.0f, (float)renderMinZ* 16.0f );
+		final Vector3f from = new Vector3f( (float)renderMaxX* 16.0f, (float)renderMaxY* 16.0f, (float)renderMaxZ* 16.0f );
 
 		final EnumFacing myFace = EnumFacing.EAST;
 		addFace(myFace, isEdge,to,from,defUVs, lights );
 	}
 
 	private void addFace(
-			EnumFacing face , boolean isEdge,
-			Vector3f to,
-			Vector3f from,
-			float[] defUVs2,
+			final EnumFacing face , final boolean isEdge,
+			final Vector3f to,
+			final Vector3f from,
+			final float[] defUVs2,
 			IAESprite texture )
 	{
 		if ( overrideBlockTexture != null )
@@ -559,9 +559,9 @@ public class ModelGenerator
 	EnumFacing currentFace = EnumFacing.UP;
 	
 	public void setNormal(
-			float x,
-			float y,
-			float z )
+			final float x,
+			final float y,
+			final float z )
 	{
 		if ( x > 0.5 ) currentFace = EnumFacing.EAST;
 		if ( x < -0.5 ) currentFace = EnumFacing.WEST;
@@ -572,19 +572,19 @@ public class ModelGenerator
 	}
 
 	public void setOverrideBlockTexture(
-			IAESprite object )
+			final IAESprite object )
 	{
 		overrideBlockTexture = object;		
 	}
 
-	public void finalizeModel( boolean Flip )
+	public void finalizeModel( final boolean Flip )
 	{
 		ModelRotation mr = ModelRotation.X0_Y0;
 		
 		if ( Flip )
 			  mr = ModelRotation.X0_Y180;
 		
-		for ( SMFace face : faces )
+		for ( final SMFace face : faces )
 		{
 			final EnumFacing myFace = face.face;
 			final float[] uvs = getFaceUvs( myFace, face.from, face.to );

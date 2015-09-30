@@ -30,7 +30,7 @@ public final class DoNotCheckVersion extends BaseVersion
 	}
 
 	@Override
-	public boolean isNewerAs( Version maybeOlder )
+	public boolean isNewerAs( final Version maybeOlder )
 	{
 		return true;
 	}

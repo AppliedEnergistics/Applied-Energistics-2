@@ -37,18 +37,18 @@ public class DefaultSpatialHandler implements IMovableHandler
 	 * @return true
 	 */
 	@Override
-	public boolean canHandle( Class<? extends TileEntity> myClass, TileEntity tile )
+	public boolean canHandle( final Class<? extends TileEntity> myClass, final TileEntity tile )
 	{
 		return true;
 	}
 
 	@Override
-	public void moveTile( TileEntity te, World w, BlockPos newPosition )
+	public void moveTile( final TileEntity te, final World w, final BlockPos newPosition )
 	{
 		te.setWorldObj( w );
 		te.setPos( newPosition );
 
-		Chunk c = w.getChunkFromBlockCoords( newPosition );
+		final Chunk c = w.getChunkFromBlockCoords( newPosition );
 		c.addTileEntity( newPosition, te );
 
 		if( c.isLoaded() )

@@ -11,18 +11,18 @@ public class StackUpgradeInventory extends UpgradeInventory
 {
 	private final ItemStack stack;
 
-	public StackUpgradeInventory( ItemStack stack, IAEAppEngInventory inventory, int s )
+	public StackUpgradeInventory( final ItemStack stack, final IAEAppEngInventory inventory, final int s )
 	{
 		super( inventory, s );
 		this.stack = stack;
 	}
 
 	@Override
-	public int getMaxInstalled( Upgrades upgrades )
+	public int getMaxInstalled( final Upgrades upgrades )
 	{
 		int max = 0;
 
-		for( ItemStack is : upgrades.getSupported().keySet() )
+		for( final ItemStack is : upgrades.getSupported().keySet() )
 		{
 			if( Platform.isSameItem( this.stack, is ) )
 			{

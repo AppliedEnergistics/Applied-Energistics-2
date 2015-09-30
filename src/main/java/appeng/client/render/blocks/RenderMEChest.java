@@ -50,7 +50,7 @@ public class RenderMEChest extends BaseBlockRender<BlockChest, TileChest>
 	}
 
 	@Override
-	public void renderInventory( BlockChest block, ItemStack is, ModelGenerator renderer, ItemRenderType type, Object[] obj )
+	public void renderInventory( final BlockChest block, final ItemStack is, final ModelGenerator renderer, final ItemRenderType type, final Object[] obj )
 	{
 		renderer.setBrightness( 0 );
 		renderer.overrideBlockTexture = ExtraBlockTextures.White.getIcon();
@@ -64,9 +64,9 @@ public class RenderMEChest extends BaseBlockRender<BlockChest, TileChest>
 	}
 
 	@Override
-	public boolean renderInWorld( BlockChest imb, IBlockAccess world, BlockPos pos, ModelGenerator renderer )
+	public boolean renderInWorld( final BlockChest imb, final IBlockAccess world, final BlockPos pos, final ModelGenerator renderer )
 	{
-		TileChest sp = imb.getTileEntity( world, pos );
+		final TileChest sp = imb.getTileEntity( world, pos );
 		renderer.setRenderBounds( 0, 0, 0, 1, 1, 1 );
 
 		if( sp == null )
@@ -74,14 +74,14 @@ public class RenderMEChest extends BaseBlockRender<BlockChest, TileChest>
 			return false;
 		}
 
-		EnumFacing up = sp.getUp();
-		EnumFacing forward = sp.getForward();
-		EnumFacing west = Platform.crossProduct( forward, up );
+		final EnumFacing up = sp.getUp();
+		final EnumFacing forward = sp.getForward();
+		final EnumFacing west = Platform.crossProduct( forward, up );
 
 		this.preRenderInWorld( imb, world, pos, renderer );
 
-		int stat = sp.getCellStatus( 0 );
-		boolean result = renderer.renderStandardBlock( imb, pos );
+		final int stat = sp.getCellStatus( 0 );
+		final boolean result = renderer.renderStandardBlock( imb, pos );
 
 		this.selectFace( renderer, west, up, forward, 5, 16 - 5, 9, 12 );
 
@@ -95,8 +95,8 @@ public class RenderMEChest extends BaseBlockRender<BlockChest, TileChest>
 		renderer.setBrightness( b );
 		renderer.setColorOpaque_I( 0xffffff );
 
-		int offsetU = -4;
-		FlippableIcon flippableIcon = new FlippableIcon( new OffsetIcon( ExtraBlockTextures.MEStorageCellTextures.getIcon(), offsetU, offsetV ) );
+		final int offsetU = -4;
+		final FlippableIcon flippableIcon = new FlippableIcon( new OffsetIcon( ExtraBlockTextures.MEStorageCellTextures.getIcon(), offsetU, offsetV ) );
 		if( forward == EnumFacing.EAST && ( up == EnumFacing.NORTH || up == EnumFacing.SOUTH ) )
 		{
 			flippableIcon.setFlip( true, false );
@@ -162,7 +162,7 @@ public class RenderMEChest extends BaseBlockRender<BlockChest, TileChest>
 		renderer.setColorOpaque_I( 0xffffff );
 		renderer.setRenderBounds( 0, 0, 0, 1, 1, 1 );
 
-		ICellHandler ch = AEApi.instance().registries().cell().getHandler( sp.getStorageType() );
+		final ICellHandler ch = AEApi.instance().registries().cell().getHandler( sp.getStorageType() );
 
 		renderer.setColorOpaque_I( sp.getColor().whiteVariant );
 		IAESprite ico = ch == null ? null : ch.getTopTexture_Light();

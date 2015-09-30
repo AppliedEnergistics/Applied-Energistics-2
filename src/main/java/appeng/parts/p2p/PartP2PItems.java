@@ -62,7 +62,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements /*IPipe
 	boolean requested;
 	IInventory cachedInv;
 
-	public PartP2PItems( ItemStack is )
+	public PartP2PItems( final ItemStack is )
 	{
 		super( is );
 	}
@@ -71,7 +71,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements /*IPipe
 	public void onNeighborChanged()
 	{
 		this.cachedInv = null;
-		PartP2PItems input = this.getInput();
+		final PartP2PItems input = this.getInput();
 		if( input != null && this.output )
 		{
 			input.onTunnelNetworkChange();
@@ -87,21 +87,21 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements /*IPipe
 			return this.cachedInv;
 		}
 
-		List<IInventory> outs = new LinkedList<IInventory>();
-		TunnelCollection<PartP2PItems> itemTunnels;
+		final List<IInventory> outs = new LinkedList<IInventory>();
+		final TunnelCollection<PartP2PItems> itemTunnels;
 
 		try
 		{
 			itemTunnels = this.getOutputs();
 		}
-		catch( GridAccessException e )
+		catch( final GridAccessException e )
 		{
 			return new AppEngNullInventory();
 		}
 
-		for( PartP2PItems t : itemTunnels )
+		for( final PartP2PItems t : itemTunnels )
 		{
-			IInventory inv = t.getOutputInv();
+			final IInventory inv = t.getOutputInv();
 			if( inv != null )
 			{
 				if( Platform.getRandomInt() % 2 == 0 )
@@ -124,7 +124,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements /*IPipe
 
 		if( this.proxy.isActive() )
 		{
-			TileEntity te = this.tile.getWorld().getTileEntity( this.tile.getPos().offset( side.getFacing() ) );
+			final TileEntity te = this.tile.getWorld().getTileEntity( this.tile.getPos().offset( side.getFacing() ) );
 
 			if( this.which.contains( this ) )
 			{
@@ -142,7 +142,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements /*IPipe
 					{
 						output = new WrapperBCPipe( te, this.side.getFacing().getOpposite() );
 					}
-					catch( Throwable ignore )
+					catch( final Throwable ignore )
 					{
 					}
 				}
@@ -177,15 +177,15 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements /*IPipe
 	}
 
 	@Override
-	public TickingRequest getTickingRequest( IGridNode node )
+	public TickingRequest getTickingRequest( final IGridNode node )
 	{
 		return new TickingRequest( TickRates.ItemTunnel.min, TickRates.ItemTunnel.max, false, false );
 	}
 
 	@Override
-	public TickRateModulation tickingRequest( IGridNode node, int ticksSinceLastCall )
+	public TickRateModulation tickingRequest( final IGridNode node, final int ticksSinceLastCall )
 	{
-		boolean wasReq = this.requested;
+		final boolean wasReq = this.requested;
 
 		if( this.requested && this.cachedInv != null )
 		{
@@ -197,12 +197,12 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements /*IPipe
 	}
 
 	@MENetworkEventSubscribe
-	public void changeStateA( MENetworkBootingStatusChange bs )
+	public void changeStateA( final MENetworkBootingStatusChange bs )
 	{
 		if( !this.output )
 		{
 			this.cachedInv = null;
-			int olderSize = this.oldSize;
+			final int olderSize = this.oldSize;
 			this.oldSize = this.getDestination().getSizeInventory();
 			if( olderSize != this.oldSize )
 			{
@@ -212,12 +212,12 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements /*IPipe
 	}
 
 	@MENetworkEventSubscribe
-	public void changeStateB( MENetworkChannelsChanged bs )
+	public void changeStateB( final MENetworkChannelsChanged bs )
 	{
 		if( !this.output )
 		{
 			this.cachedInv = null;
-			int olderSize = this.oldSize;
+			final int olderSize = this.oldSize;
 			this.oldSize = this.getDestination().getSizeInventory();
 			if( olderSize != this.oldSize )
 			{
@@ -227,12 +227,12 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements /*IPipe
 	}
 
 	@MENetworkEventSubscribe
-	public void changeStateC( MENetworkPowerStatusChange bs )
+	public void changeStateC( final MENetworkPowerStatusChange bs )
 	{
 		if( !this.output )
 		{
 			this.cachedInv = null;
-			int olderSize = this.oldSize;
+			final int olderSize = this.oldSize;
 			this.oldSize = this.getDestination().getSizeInventory();
 			if( olderSize != this.oldSize )
 			{
@@ -247,7 +247,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements /*IPipe
 		if( !this.output )
 		{
 			this.cachedInv = null;
-			int olderSize = this.oldSize;
+			final int olderSize = this.oldSize;
 			this.oldSize = this.getDestination().getSizeInventory();
 			if( olderSize != this.oldSize )
 			{
@@ -256,7 +256,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements /*IPipe
 		}
 		else
 		{
-			PartP2PItems input = this.getInput();
+			final PartP2PItems input = this.getInput();
 			if( input != null )
 			{
 				input.getHost().notifyNeighbors();
@@ -266,9 +266,9 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements /*IPipe
 
 	@Override
 	public int[] getSlotsForFace(
-			EnumFacing side )
+			final EnumFacing side )
 	{
-		int[] slots = new int[this.getSizeInventory()];
+		final int[] slots = new int[this.getSizeInventory()];
 		for( int x = 0; x < this.getSizeInventory(); x++ )
 		{
 			slots[x] = x;
@@ -283,25 +283,25 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements /*IPipe
 	}
 
 	@Override
-	public ItemStack getStackInSlot( int i )
+	public ItemStack getStackInSlot( final int i )
 	{
 		return this.getDestination().getStackInSlot( i );
 	}
 
 	@Override
-	public ItemStack decrStackSize( int i, int j )
+	public ItemStack decrStackSize( final int i, final int j )
 	{
 		return this.getDestination().decrStackSize( i, j );
 	}
 
 	@Override
-	public ItemStack getStackInSlotOnClosing( int i )
+	public ItemStack getStackInSlotOnClosing( final int i )
 	{
 		return null;
 	}
 
 	@Override
-	public void setInventorySlotContents( int i, ItemStack itemstack )
+	public void setInventorySlotContents( final int i, final ItemStack itemstack )
 	{
 		this.getDestination().setInventorySlotContents( i, itemstack );
 	}
@@ -331,35 +331,35 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements /*IPipe
 	}
 
 	@Override
-	public boolean isUseableByPlayer( EntityPlayer entityplayer )
+	public boolean isUseableByPlayer( final EntityPlayer entityplayer )
 	{
 		return false;
 	}
 
 	@Override
-	public void openInventory(EntityPlayer p)
+	public void openInventory( final EntityPlayer p)
 	{
 	}
 
 	@Override
-	public void closeInventory(EntityPlayer p)
+	public void closeInventory( final EntityPlayer p)
 	{
 	}
 
 	@Override
-	public boolean isItemValidForSlot( int i, net.minecraft.item.ItemStack itemstack )
-	{
-		return this.getDestination().isItemValidForSlot( i, itemstack );
-	}
-
-	@Override
-	public boolean canInsertItem( int i, ItemStack itemstack, EnumFacing j )
+	public boolean isItemValidForSlot( final int i, final net.minecraft.item.ItemStack itemstack )
 	{
 		return this.getDestination().isItemValidForSlot( i, itemstack );
 	}
 
 	@Override
-	public boolean canExtractItem( int i, ItemStack itemstack, EnumFacing j )
+	public boolean canInsertItem( final int i, final ItemStack itemstack, final EnumFacing j )
+	{
+		return this.getDestination().isItemValidForSlot( i, itemstack );
+	}
+
+	@Override
+	public boolean canExtractItem( final int i, final ItemStack itemstack, final EnumFacing j )
 	{
 		return false;
 	}
@@ -370,7 +370,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements /*IPipe
 	}
 
 	@Override
-	public int getField( int id )
+	public int getField( final int id )
 	{
 		return 0;
 	}
@@ -384,8 +384,8 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements /*IPipe
 
 	@Override
 	public void setField(
-			int id,
-			int value )
+			final int id,
+			final int value )
 	{
 
 	}

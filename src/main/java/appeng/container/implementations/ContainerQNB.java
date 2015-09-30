@@ -30,7 +30,7 @@ public class ContainerQNB extends AEBaseContainer
 
 	final TileQuantumBridge quantumBridge;
 
-	public ContainerQNB( InventoryPlayer ip, TileQuantumBridge quantumBridge )
+	public ContainerQNB( final InventoryPlayer ip, final TileQuantumBridge quantumBridge )
 	{
 		super( ip, quantumBridge, null );
 		this.quantumBridge = quantumBridge;

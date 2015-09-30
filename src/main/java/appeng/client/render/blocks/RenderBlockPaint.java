@@ -44,30 +44,30 @@ public class RenderBlockPaint extends BaseBlockRender<BlockPaint, TilePaint>
 	}
 
 	@Override
-	public void renderInventory( BlockPaint block, ItemStack is, ModelGenerator renderer, ItemRenderType type, Object[] obj )
+	public void renderInventory( final BlockPaint block, final ItemStack is, final ModelGenerator renderer, final ItemRenderType type, final Object[] obj )
 	{
 
 	}
 
 	@Override
-	public boolean renderInWorld( BlockPaint imb, IBlockAccess world, BlockPos pos, ModelGenerator tess )
+	public boolean renderInWorld( final BlockPaint imb, final IBlockAccess world, final BlockPos pos, final ModelGenerator tess )
 	{
-		TilePaint tp = imb.getTileEntity( world, pos );
+		final TilePaint tp = imb.getTileEntity( world, pos );
 		boolean out = false;
 		if( tp != null )
 		{
 			// super.renderInWorld( imb, world, x, y, z, renderer );
-			int x = pos.getX();
-			int y = pos.getY();
-			int z = pos.getZ();
+			final int x = pos.getX();
+			final int y = pos.getY();
+			final int z = pos.getZ();
 
-			IAESprite[] icoSet = { imb.getIcon( EnumFacing.UP, imb.getDefaultState() ), ExtraBlockTextures.BlockPaint2.getIcon(), ExtraBlockTextures.BlockPaint3.getIcon() };
+			final IAESprite[] icoSet = { imb.getIcon( EnumFacing.UP, imb.getDefaultState() ), ExtraBlockTextures.BlockPaint2.getIcon(), ExtraBlockTextures.BlockPaint3.getIcon() };
 
-			int brightness = imb.getMixedBrightnessForBlock( world, pos );
+			final int brightness = imb.getMixedBrightnessForBlock( world, pos );
 
-			EnumSet<EnumFacing> validSides = EnumSet.noneOf( EnumFacing.class );
+			final EnumSet<EnumFacing> validSides = EnumSet.noneOf( EnumFacing.class );
 
-			for( EnumFacing side : EnumFacing.VALUES )
+			for( final EnumFacing side : EnumFacing.VALUES )
 			{
 				if( tp.isSideValid( side ) )
 				{
@@ -76,8 +76,8 @@ public class RenderBlockPaint extends BaseBlockRender<BlockPaint, TilePaint>
 			}
 
 			double offsetConstant = 0.001;
-			int lumen = 14 << 20 | 14 << 4;
-			for( Splotch s : tp.getDots() )
+			final int lumen = 14 << 20 | 14 << 4;
+			for( final Splotch s : tp.getDots() )
 			{
 				if( !validSides.contains( s.side ) )
 				{
@@ -98,7 +98,7 @@ public class RenderBlockPaint extends BaseBlockRender<BlockPaint, TilePaint>
 				double offset = offsetConstant;
 				offsetConstant += 0.001;
 
-				double buffer = 0.1;
+				final double buffer = 0.1;
 
 				double pos_x = s.x();
 				double pos_y = s.y();
@@ -124,8 +124,8 @@ public class RenderBlockPaint extends BaseBlockRender<BlockPaint, TilePaint>
 					pos_y += z;
 				}
 				
-				IAESprite ico = icoSet[s.getSeed() % icoSet.length];
-				EnumFacing rs = s.side.getOpposite();
+				final IAESprite ico = icoSet[s.getSeed() % icoSet.length];
+				final EnumFacing rs = s.side.getOpposite();
 				
 				switch( s.side )
 				{

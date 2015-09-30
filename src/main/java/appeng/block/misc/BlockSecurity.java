@@ -62,20 +62,20 @@ public class BlockSecurity extends AEBaseTileBlock
 	
 	@Override
 	public boolean onActivated(
-			World w,
-			BlockPos pos,
-			EntityPlayer p,
-			EnumFacing side,
-			float hitX,
-			float hitY,
-			float hitZ )
+			final World w,
+			final BlockPos pos,
+			final EntityPlayer p,
+			final EnumFacing side,
+			final float hitX,
+			final float hitY,
+			final float hitZ )
 	{
 		if( p.isSneaking() )
 		{
 			return false;
 		}
 
-		TileSecurity tg = this.getTileEntity( w, pos );
+		final TileSecurity tg = this.getTileEntity( w, pos );
 		if( tg != null )
 		{
 			if( Platform.isClient() )

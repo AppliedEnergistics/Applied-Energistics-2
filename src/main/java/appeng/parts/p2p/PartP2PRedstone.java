@@ -41,13 +41,13 @@ public class PartP2PRedstone extends PartP2PTunnel<PartP2PRedstone>
 	int power;
 	boolean recursive = false;
 
-	public PartP2PRedstone( ItemStack is )
+	public PartP2PRedstone( final ItemStack is )
 	{
 		super( is );
 	}
 
 	@MENetworkEventSubscribe
-	public void changeStateA( MENetworkBootingStatusChange bs )
+	public void changeStateA( final MENetworkBootingStatusChange bs )
 	{
 		this.setNetworkReady();
 	}
@@ -56,7 +56,7 @@ public class PartP2PRedstone extends PartP2PTunnel<PartP2PRedstone>
 	{
 		if( this.output )
 		{
-			PartP2PRedstone in = this.getInput();
+			final PartP2PRedstone in = this.getInput();
 			if( in != null )
 			{
 				this.putInput( in.power );
@@ -64,7 +64,7 @@ public class PartP2PRedstone extends PartP2PTunnel<PartP2PRedstone>
 		}
 	}
 
-	protected void putInput( Object o )
+	protected void putInput( final Object o )
 	{
 		if( this.recursive )
 		{
@@ -74,7 +74,7 @@ public class PartP2PRedstone extends PartP2PTunnel<PartP2PRedstone>
 		this.recursive = true;
 		if( this.output && this.proxy.isActive() )
 		{
-			int newPower = (Integer) o;
+			final int newPower = (Integer) o;
 			if( this.power != newPower )
 			{
 				this.power = newPower;
@@ -86,36 +86,36 @@ public class PartP2PRedstone extends PartP2PTunnel<PartP2PRedstone>
 
 	public void notifyNeighbors()
 	{
-		World worldObj = this.tile.getWorld();
+		final World worldObj = this.tile.getWorld();
 
 		Platform.notifyBlocksOfNeighbors( worldObj,tile.getPos());
 
 		// and this cause sometimes it can go thought walls.
-		for ( EnumFacing face : EnumFacing.VALUES )
+		for ( final EnumFacing face : EnumFacing.VALUES )
 			Platform.notifyBlocksOfNeighbors( worldObj,tile.getPos().offset( face ) );
 	}
 
 	@MENetworkEventSubscribe
-	public void changeStateB( MENetworkChannelsChanged bs )
+	public void changeStateB( final MENetworkChannelsChanged bs )
 	{
 		this.setNetworkReady();
 	}
 
 	@MENetworkEventSubscribe
-	public void changeStateC( MENetworkPowerStatusChange bs )
+	public void changeStateC( final MENetworkPowerStatusChange bs )
 	{
 		this.setNetworkReady();
 	}
 
 	@Override
-	public void readFromNBT( NBTTagCompound tag )
+	public void readFromNBT( final NBTTagCompound tag )
 	{
 		super.readFromNBT( tag );
 		this.power = tag.getInteger( "power" );
 	}
 
 	@Override
-	public void writeToNBT( NBTTagCompound tag )
+	public void writeToNBT( final NBTTagCompound tag )
 	{
 		super.writeToNBT( tag );
 		tag.setInteger( "power", this.power );
@@ -137,10 +137,10 @@ public class PartP2PRedstone extends PartP2PTunnel<PartP2PRedstone>
 	{
 		if( !this.output )
 		{
-			BlockPos target = tile.getPos().offset( side.getFacing() );
+			final BlockPos target = tile.getPos().offset( side.getFacing() );
 
-			IBlockState state = this.tile.getWorld().getBlockState( target );
-			Block b = state.getBlock();
+			final IBlockState state = this.tile.getWorld().getBlockState( target );
+			final Block b = state.getBlock();
 			if( b != null && !this.output )
 			{
 				EnumFacing srcSide = this.side.getFacing();
@@ -178,16 +178,16 @@ public class PartP2PRedstone extends PartP2PTunnel<PartP2PRedstone>
 		return this.output ? this.power : 0;
 	}
 
-	private void sendToOutput( int power )
+	private void sendToOutput( final int power )
 	{
 		try
 		{
-			for( PartP2PRedstone rs : this.getOutputs() )
+			for( final PartP2PRedstone rs : this.getOutputs() )
 			{
 				rs.putInput( power );
 			}
 		}
-		catch( GridAccessException e )
+		catch( final GridAccessException e )
 		{
 			// :P
 		}

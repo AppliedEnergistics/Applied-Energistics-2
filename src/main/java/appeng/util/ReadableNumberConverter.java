@@ -45,7 +45,7 @@ public enum ReadableNumberConverter implements ISlimReadableNumberConverter, IWi
 	}
 
 	@Override
-	public String toSlimReadableForm( long number )
+	public String toSlimReadableForm( final long number )
 	{
 		return this.toReadableFormRestrictedByWidth( number, 3 );
 	}
@@ -58,7 +58,7 @@ public enum ReadableNumberConverter implements ISlimReadableNumberConverter, IWi
 	 *
 	 * @return formatted number restricted by the width limitation
 	 */
-	private String toReadableFormRestrictedByWidth( long number, int width )
+	private String toReadableFormRestrictedByWidth( final long number, final int width )
 	{
 		assert number >= 0;
 

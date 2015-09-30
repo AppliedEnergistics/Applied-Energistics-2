@@ -75,20 +75,20 @@ public final class DisassembleRecipe implements IRecipe
 	}
 
 	@Override
-	public boolean matches( InventoryCrafting inv, World w )
+	public boolean matches( final InventoryCrafting inv, final World w )
 	{
 		return this.getOutput( inv ) != null;
 	}
 
 	@Nullable
-	private ItemStack getOutput( IInventory inventory )
+	private ItemStack getOutput( final IInventory inventory )
 	{
 		int itemCount = 0;
 		ItemStack output = MISMATCHED_STACK;
 
 		for( int slotIndex = 0; slotIndex < inventory.getSizeInventory(); slotIndex++ )
 		{
-			ItemStack stackInSlot = inventory.getStackInSlot( slotIndex );
+			final ItemStack stackInSlot = inventory.getStackInSlot( slotIndex );
 			if( stackInSlot != null )
 			{
 				// needs a single input in the recipe
@@ -99,13 +99,13 @@ public final class DisassembleRecipe implements IRecipe
 				}
 
 				// handle storage cells
-				for( ItemStack storageCellStack : this.getCellOutput( stackInSlot ).asSet() )
+				for( final ItemStack storageCellStack : this.getCellOutput( stackInSlot ).asSet() )
 				{
 					// make sure the storage cell stackInSlot empty...
-					IMEInventory<IAEItemStack> cellInv = AEApi.instance().registries().cell().getCellInventory( stackInSlot, null, StorageChannel.ITEMS );
+					final IMEInventory<IAEItemStack> cellInv = AEApi.instance().registries().cell().getCellInventory( stackInSlot, null, StorageChannel.ITEMS );
 					if( cellInv != null )
 					{
-						IItemList<IAEItemStack> list = cellInv.getAvailableItems( StorageChannel.ITEMS.createList() );
+						final IItemList<IAEItemStack> list = cellInv.getAvailableItems( StorageChannel.ITEMS.createList() );
 						if( !list.isEmpty() )
 						{
 							return null;
@@ -116,7 +116,7 @@ public final class DisassembleRecipe implements IRecipe
 				}
 
 				// handle crafting storage blocks
-				for( ItemStack craftingStorageStack : this.getNonCellOutput( stackInSlot ).asSet() )
+				for( final ItemStack craftingStorageStack : this.getNonCellOutput( stackInSlot ).asSet() )
 				{
 					output = craftingStorageStack;
 				}
@@ -127,9 +127,9 @@ public final class DisassembleRecipe implements IRecipe
 	}
 
 	@Nonnull
-	private Optional<ItemStack> getCellOutput( ItemStack compared )
+	private Optional<ItemStack> getCellOutput( final ItemStack compared )
 	{
-		for( Map.Entry<IItemDefinition, IItemDefinition> entry : this.cellMappings.entrySet() )
+		for( final Map.Entry<IItemDefinition, IItemDefinition> entry : this.cellMappings.entrySet() )
 		{
 			if( entry.getKey().isSameAs( compared ) )
 			{
@@ -141,9 +141,9 @@ public final class DisassembleRecipe implements IRecipe
 	}
 
 	@Nonnull
-	private Optional<ItemStack> getNonCellOutput( ItemStack compared )
+	private Optional<ItemStack> getNonCellOutput( final ItemStack compared )
 	{
-		for( Map.Entry<IItemDefinition, IItemDefinition> entry : this.nonCellMappings.entrySet() )
+		for( final Map.Entry<IItemDefinition, IItemDefinition> entry : this.nonCellMappings.entrySet() )
 		{
 			if( entry.getKey().isSameAs( compared ) )
 			{
@@ -156,7 +156,7 @@ public final class DisassembleRecipe implements IRecipe
 
 	@Nullable
 	@Override
-	public ItemStack getCraftingResult( InventoryCrafting inv )
+	public ItemStack getCraftingResult( final InventoryCrafting inv )
 	{
 		return this.getOutput( inv );
 	}
@@ -176,7 +176,7 @@ public final class DisassembleRecipe implements IRecipe
 
 	@Override
 	public ItemStack[] getRemainingItems(
-			InventoryCrafting inv )
+			final InventoryCrafting inv )
 	{
         return ForgeHooks.defaultRecipeGetRemainingItems(inv);
 	}

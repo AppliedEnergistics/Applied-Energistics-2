@@ -32,26 +32,26 @@ public class SlotDisconnected extends AppEngSlot
 
 	public final ClientDCInternalInv mySlot;
 
-	public SlotDisconnected( ClientDCInternalInv me, int which, int x, int y )
+	public SlotDisconnected( final ClientDCInternalInv me, final int which, final int x, final int y )
 	{
 		super( me.inv, which, x, y );
 		this.mySlot = me;
 	}
 
 	@Override
-	public boolean isItemValid( ItemStack par1ItemStack )
+	public boolean isItemValid( final ItemStack par1ItemStack )
 	{
 		return false;
 	}
 
 	@Override
-	public void putStack( ItemStack par1ItemStack )
+	public void putStack( final ItemStack par1ItemStack )
 	{
 
 	}
 
 	@Override
-	public boolean canTakeStack( EntityPlayer par1EntityPlayer )
+	public boolean canTakeStack( final EntityPlayer par1EntityPlayer )
 	{
 		return false;
 	}
@@ -61,11 +61,11 @@ public class SlotDisconnected extends AppEngSlot
 	{
 		if( Platform.isClient() )
 		{
-			ItemStack is = super.getStack();
+			final ItemStack is = super.getStack();
 			if( is != null && is.getItem() instanceof ItemEncodedPattern )
 			{
-				ItemEncodedPattern iep = (ItemEncodedPattern) is.getItem();
-				ItemStack out = iep.getOutput( is );
+				final ItemEncodedPattern iep = (ItemEncodedPattern) is.getItem();
+				final ItemStack out = iep.getOutput( is );
 				if( out != null )
 				{
 					return out;
@@ -76,7 +76,7 @@ public class SlotDisconnected extends AppEngSlot
 	}
 
 	@Override
-	public void onPickupFromSlot( EntityPlayer par1EntityPlayer, ItemStack par2ItemStack )
+	public void onPickupFromSlot( final EntityPlayer par1EntityPlayer, final ItemStack par2ItemStack )
 	{
 	}
 
@@ -93,13 +93,13 @@ public class SlotDisconnected extends AppEngSlot
 	}
 
 	@Override
-	public ItemStack decrStackSize( int par1 )
+	public ItemStack decrStackSize( final int par1 )
 	{
 		return null;
 	}
 
 	@Override
-	public boolean isHere( IInventory inv, int slotIn )
+	public boolean isHere( final IInventory inv, final int slotIn )
 	{
 		return false;
 	}

@@ -59,7 +59,7 @@ public class PartToggleBus extends PartBasicState
 	boolean hasRedstone = false;
 
 	@Reflected
-	public PartToggleBus( ItemStack is )
+	public PartToggleBus( final ItemStack is )
 	{
 		super( is );
 
@@ -70,14 +70,14 @@ public class PartToggleBus extends PartBasicState
 	}
 
 	@Override
-	public void setColors( ModelGenerator renderer, boolean hasChan, boolean hasPower )
+	public void setColors( final ModelGenerator renderer, final boolean hasChan, final boolean hasPower )
 	{
 		this.hasRedstone = ( this.clientFlags & REDSTONE_FLAG ) == REDSTONE_FLAG;
 		super.setColors( renderer, hasChan && this.hasRedstone, hasPower && this.hasRedstone );
 	}
 
 	@Override
-	protected int populateFlags( int cf )
+	protected int populateFlags( final int cf )
 	{
 		return cf | ( this.getIntention() ? REDSTONE_FLAG : 0 );
 	}
@@ -88,13 +88,13 @@ public class PartToggleBus extends PartBasicState
 	}
 
 	@Override
-	public TextureAtlasSprite getBreakingTexture( ModelGenerator renderer )
+	public TextureAtlasSprite getBreakingTexture( final ModelGenerator renderer )
 	{
 		return renderer.getIcon( is  ).getAtlas();
 	}
 
 	@Override
-	public AECableType getCableConnectionType( AEPartLocation dir )
+	public AECableType getCableConnectionType( final AEPartLocation dir )
 	{
 		return AECableType.GLASS;
 	}
@@ -104,7 +104,7 @@ public class PartToggleBus extends PartBasicState
 	{
 		if( this.is.stackSize > 0 )
 		{
-			List<ItemStack> items = new ArrayList<ItemStack>();
+			final List<ItemStack> items = new ArrayList<ItemStack>();
 			items.add( this.is.copy() );
 			this.host.removePart( this.side, false );
 			Platform.spawnDrops( this.tile.getWorld(), this.tile.getPos(), items );
@@ -113,14 +113,14 @@ public class PartToggleBus extends PartBasicState
 	}
 
 	@Override
-	public void getBoxes( IPartCollisionHelper bch )
+	public void getBoxes( final IPartCollisionHelper bch )
 	{
 		bch.addBox( 6, 6, 11, 10, 10, 16 );
 	}
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderInventory( IPartRenderHelper rh, ModelGenerator renderer )
+	public void renderInventory( final IPartRenderHelper rh, final ModelGenerator renderer )
 	{
 		GL11.glTranslated( -0.2, -0.3, 0.0 );
 
@@ -145,7 +145,7 @@ public class PartToggleBus extends PartBasicState
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderStatic( BlockPos pos, IPartRenderHelper rh, ModelGenerator renderer )
+	public void renderStatic( final BlockPos pos, final IPartRenderHelper rh, final ModelGenerator renderer )
 	{
 		rh.setTexture( renderer.getIcon( is ) );
 
@@ -166,7 +166,7 @@ public class PartToggleBus extends PartBasicState
 	@Override
 	public void onNeighborChanged()
 	{
-		boolean oldHasRedstone = this.hasRedstone;
+		final boolean oldHasRedstone = this.hasRedstone;
 		this.hasRedstone = this.getHost().hasRedstone( this.side );
 
 		if( this.hasRedstone != oldHasRedstone )
@@ -177,14 +177,14 @@ public class PartToggleBus extends PartBasicState
 	}
 
 	@Override
-	public void readFromNBT( NBTTagCompound extra )
+	public void readFromNBT( final NBTTagCompound extra )
 	{
 		super.readFromNBT( extra );
 		this.outerProxy.readFromNBT( extra );
 	}
 
 	@Override
-	public void writeToNBT( NBTTagCompound extra )
+	public void writeToNBT( final NBTTagCompound extra )
 	{
 		super.writeToNBT( extra );
 		this.outerProxy.writeToNBT( extra );
@@ -207,7 +207,7 @@ public class PartToggleBus extends PartBasicState
 	}
 
 	@Override
-	public void setPartHostInfo( AEPartLocation side, IPartHost host, TileEntity tile )
+	public void setPartHostInfo( final AEPartLocation side, final IPartHost host, final TileEntity tile )
 	{
 		super.setPartHostInfo( side, host, tile );
 		this.outerProxy.setValidSides( EnumSet.of( side.getFacing() ) );
@@ -226,7 +226,7 @@ public class PartToggleBus extends PartBasicState
 	}
 
 	@Override
-	public void onPlacement( EntityPlayer player, ItemStack held, AEPartLocation side )
+	public void onPlacement( final EntityPlayer player, final ItemStack held, final AEPartLocation side )
 	{
 		super.onPlacement( player, held, side );
 		this.outerProxy.setOwner( player );
@@ -234,7 +234,7 @@ public class PartToggleBus extends PartBasicState
 
 	private void updateInternalState()
 	{
-		boolean intention = this.getIntention();
+		final boolean intention = this.getIntention();
 		if( intention == ( this.connection == null ) )
 		{
 			if( this.proxy.getNode() != null && this.outerProxy.getNode() != null )
@@ -245,7 +245,7 @@ public class PartToggleBus extends PartBasicState
 					{
 						this.connection = AEApi.instance().createGridConnection( this.proxy.getNode(), this.outerProxy.getNode() );
 					}
-					catch( FailedConnection e )
+					catch( final FailedConnection e )
 					{
 						// :(
 					}

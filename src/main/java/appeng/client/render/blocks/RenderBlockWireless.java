@@ -54,13 +54,13 @@ public class RenderBlockWireless extends BaseBlockRender<BlockWireless, TileWire
 	}
 
 	@Override
-	public void renderInventory( BlockWireless blk, ItemStack is, ModelGenerator renderer, ItemRenderType type, Object[] obj )
+	public void renderInventory( final BlockWireless blk, final ItemStack is, final ModelGenerator renderer, final ItemRenderType type, final Object[] obj )
 	{
 		this.blk = blk;
 		center = new BlockPos(0,0,0);
 		this.hasChan = false;
 		this.hasPower = false;
-		BlockRenderInfo ri = blk.getRendererInstance();
+		final BlockRenderInfo ri = blk.getRendererInstance();
 
 		renderer.renderAllFaces = true;
 
@@ -81,18 +81,18 @@ public class RenderBlockWireless extends BaseBlockRender<BlockWireless, TileWire
 
 		ri.setTemporaryRenderIcons( r, r, ExtraBlockTextures.BlockWirelessInside.getIcon(), ExtraBlockTextures.BlockWirelessInside.getIcon(), r, r );
 
-		AEPartLocation[] sides = { AEPartLocation.EAST, AEPartLocation.WEST, AEPartLocation.UP, AEPartLocation.DOWN };
+		final AEPartLocation[] sides = { AEPartLocation.EAST, AEPartLocation.WEST, AEPartLocation.UP, AEPartLocation.DOWN };
 
 		int s = 1;
 
-		for( AEPartLocation side : sides )
+		for( final AEPartLocation side : sides )
 		{
 			this.renderBlockBounds( renderer, 8 + ( side.xOffset != 0 ? side.xOffset * 2 : -2 ), 8 + ( side.yOffset != 0 ? side.yOffset * 2 : -2 ), 2 + ( side.zOffset != 0 ? side.zOffset * 2 : -1 ) + s, 8 + ( side.xOffset != 0 ? side.xOffset * 4 : 2 ), 8 + ( side.yOffset != 0 ? side.yOffset * 4 : 2 ), 2 + ( side.zOffset != 0 ? side.zOffset * 5 : 1 ) + s, EnumFacing.EAST, EnumFacing.UP, EnumFacing.SOUTH );
 			this.renderInvBlock( EnumSet.allOf( AEPartLocation.class ), blk, is,  0xffffff, renderer );
 		}
 
 		s = 3;
-		for( AEPartLocation side : sides )
+		for( final AEPartLocation side : sides )
 		{
 			this.renderBlockBounds( renderer, 8 + ( side.xOffset != 0 ? side.xOffset * 4 : -1 ), 8 + ( side.yOffset != 0 ? side.yOffset * 4 : -1 ), 1 + ( side.zOffset != 0 ? side.zOffset * 4 : -1 ) + s, 8 + ( side.xOffset != 0 ? side.xOffset * 5 : 1 ), 8 + ( side.yOffset != 0 ? side.yOffset * 5 : 1 ), 2 + ( side.zOffset != 0 ? side.zOffset * 5 : 1 ) + s, EnumFacing.EAST, EnumFacing.UP, EnumFacing.SOUTH );
 
@@ -101,20 +101,20 @@ public class RenderBlockWireless extends BaseBlockRender<BlockWireless, TileWire
 	}
 
 	@Override
-	public boolean renderInWorld( BlockWireless blk, IBlockAccess world, BlockPos pos, ModelGenerator renderer )
+	public boolean renderInWorld( final BlockWireless blk, final IBlockAccess world, final BlockPos pos, final ModelGenerator renderer )
 	{
-		TileWireless tw = blk.getTileEntity( world, pos );
+		final TileWireless tw = blk.getTileEntity( world, pos );
 		this.blk = blk;
 		if( tw != null )
 		{
 			this.hasChan = ( tw.clientFlags & ( TileWireless.POWERED_FLAG | TileWireless.CHANNEL_FLAG ) ) == ( TileWireless.POWERED_FLAG | TileWireless.CHANNEL_FLAG );
 			this.hasPower = ( tw.clientFlags & TileWireless.POWERED_FLAG ) == TileWireless.POWERED_FLAG;
 
-			BlockRenderInfo ri = blk.getRendererInstance();
+			final BlockRenderInfo ri = blk.getRendererInstance();
 
-			EnumFacing fdy = tw.getUp();
-			EnumFacing fdz = tw.getForward();
-			EnumFacing fdx = Platform.crossProduct( fdz, fdy ).getOpposite();
+			final EnumFacing fdy = tw.getUp();
+			final EnumFacing fdz = tw.getForward();
+			final EnumFacing fdx = Platform.crossProduct( fdz, fdy ).getOpposite();
 
 			renderer.renderAllFaces = true;
 
@@ -136,18 +136,18 @@ public class RenderBlockWireless extends BaseBlockRender<BlockWireless, TileWire
 
 			ri.setTemporaryRenderIcons( r, r, ExtraBlockTextures.BlockWirelessInside.getIcon(), ExtraBlockTextures.BlockWirelessInside.getIcon(), r, r );
 
-			AEPartLocation[] sides = { AEPartLocation.EAST, AEPartLocation.WEST, AEPartLocation.UP, AEPartLocation.DOWN };
+			final AEPartLocation[] sides = { AEPartLocation.EAST, AEPartLocation.WEST, AEPartLocation.UP, AEPartLocation.DOWN };
 
 			int s = 1;
 
-			for( AEPartLocation side : sides )
+			for( final AEPartLocation side : sides )
 			{
 				this.renderBlockBounds( renderer, 8 + ( side.xOffset != 0 ? side.xOffset * 2 : -2 ), 8 + ( side.yOffset != 0 ? side.yOffset * 2 : -2 ), 2 + ( side.zOffset != 0 ? side.zOffset * 2 : -1 ) + s, 8 + ( side.xOffset != 0 ? side.xOffset * 4 : 2 ), 8 + ( side.yOffset != 0 ? side.yOffset * 4 : 2 ), 2 + ( side.zOffset != 0 ? side.zOffset * 5 : 1 ) + s, fdx, fdy, fdz );
 				super.renderInWorld( blk, world, pos, renderer );
 			}
 
 			s = 3;
-			for( AEPartLocation side : sides )
+			for( final AEPartLocation side : sides )
 			{
 				this.renderBlockBounds( renderer, 8 + ( side.xOffset != 0 ? side.xOffset * 4 : -1 ), 8 + ( side.yOffset != 0 ? side.yOffset * 4 : -1 ), 1 + ( side.zOffset != 0 ? side.zOffset * 4 : -1 ) + s, 8 + ( side.xOffset != 0 ? side.xOffset * 5 : 1 ), 8 + ( side.yOffset != 0 ? side.yOffset * 5 : 1 ), 2 + ( side.zOffset != 0 ? side.zOffset * 5 : 1 ) + s, fdx, fdy, fdz );
 				super.renderInWorld( blk, world, pos, renderer );
@@ -160,13 +160,13 @@ public class RenderBlockWireless extends BaseBlockRender<BlockWireless, TileWire
 
 			if( this.hasChan )
 			{
-				int l = 14;
+				final int l = 14;
 				renderer.setBrightness( l << 20 | l << 4 );
 				renderer.setColorOpaque_I( AEColor.Transparent.blackVariant );
 			}
 			else if( this.hasPower )
 			{
-				int l = 9;
+				final int l = 9;
 				renderer.setBrightness( l << 20 | l << 4 );
 				renderer.setColorOpaque_I( AEColor.Transparent.whiteVariant );
 			}
@@ -208,10 +208,10 @@ public class RenderBlockWireless extends BaseBlockRender<BlockWireless, TileWire
 		return true;
 	}
 
-	private void renderTorchAtAngle( ModelGenerator renderer, EnumFacing x, EnumFacing y, EnumFacing z )
+	private void renderTorchAtAngle( final ModelGenerator renderer, final EnumFacing x, final EnumFacing y, final EnumFacing z )
 	{
-		IAESprite r = ( this.hasChan ? CableBusTextures.BlockWirelessOn.getIcon() : renderer.getIcon( blk.getDefaultState() )[0] );
-		IAESprite sides = new OffsetIcon( r, 0.0f, -2.0f );
+		final IAESprite r = ( this.hasChan ? CableBusTextures.BlockWirelessOn.getIcon() : renderer.getIcon( blk.getDefaultState() )[0] );
+		final IAESprite sides = new OffsetIcon( r, 0.0f, -2.0f );
 
 		switch( z )
 		{

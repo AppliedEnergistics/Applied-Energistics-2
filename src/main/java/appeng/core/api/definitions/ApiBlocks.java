@@ -159,7 +159,7 @@ public final class ApiBlocks implements IBlocks
 	private final IBlockDefinition phantomNode;
 	private final IBlockDefinition cubeGenerator;
 
-	public ApiBlocks( DefinitionConstructor constructor )
+	public ApiBlocks( final DefinitionConstructor constructor )
 	{
 //		this.quartzOre = new BlockDefinition( "ore.quartz", new OreQuartz() );
 		this.quartzOre = constructor.registerBlockDefinition( new QuartzOreBlock() );
@@ -242,9 +242,9 @@ public final class ApiBlocks implements IBlocks
 		this.cubeGenerator = constructor.registerBlockDefinition( new BlockCubeGenerator() );
 	}
 
-	private IBlockDefinition makeStairs( DefinitionConstructor constructor, IBlockDefinition definition, String name )
+	private IBlockDefinition makeStairs( final DefinitionConstructor constructor, final IBlockDefinition definition, final String name )
 	{
-		for( Block block : definition.maybeBlock().asSet() )
+		for( final Block block : definition.maybeBlock().asSet() )
 		{
 			return constructor.registerBlockDefinition( new BlockStairCommon( block, name ) );
 		}

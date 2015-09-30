@@ -64,7 +64,7 @@ public class FacadePart implements IFacadePart, IBoxProvider
 	public final AEPartLocation side;
 	public int thickness = 2;
 
-	public FacadePart( ItemStack facade, AEPartLocation side )
+	public FacadePart( final ItemStack facade, final AEPartLocation side )
 	{
 		if( facade == null )
 		{
@@ -75,7 +75,7 @@ public class FacadePart implements IFacadePart, IBoxProvider
 		this.side = side;
 	}
 
-	public static boolean isFacade( ItemStack is )
+	public static boolean isFacade( final ItemStack is )
 	{
 		return is.getItem() instanceof IFacadeItem;
 	}
@@ -87,7 +87,7 @@ public class FacadePart implements IFacadePart, IBoxProvider
 	}
 
 	@Override
-	public void getBoxes( IPartCollisionHelper ch, Entity e )
+	public void getBoxes( final IPartCollisionHelper ch, final Entity e )
 	{
 		if( e instanceof EntityLivingBase )
 		{
@@ -103,15 +103,15 @@ public class FacadePart implements IFacadePart, IBoxProvider
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderStatic( BlockPos pos, IPartRenderHelper instance2, ModelGenerator renderer, IFacadeContainer fc, AxisAlignedBB busBounds, boolean renderStilt )
+	public void renderStatic( final BlockPos pos, final IPartRenderHelper instance2, final ModelGenerator renderer, final IFacadeContainer fc, final AxisAlignedBB busBounds, final boolean renderStilt )
 	{
 		if( this.facade != null )
 		{
-			BusRenderHelper instance = (BusRenderHelper) instance2;
+			final BusRenderHelper instance = (BusRenderHelper) instance2;
 
 			try
 			{
-				ItemStack randomItem = this.getTexture();
+				final ItemStack randomItem = this.getTexture();
 
 				RenderBlocksWorkaround rbw = null;
 				if( renderer instanceof RenderBlocksWorkaround )
@@ -130,7 +130,7 @@ public class FacadePart implements IFacadePart, IBoxProvider
 					IAESprite myIcon = null;
 					if( this.notAEFacade() && IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.BuildCraftTransport ) )
 					{
-						IBuildCraftTransport bc = (IBuildCraftTransport) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.BuildCraftTransport );
+						final IBuildCraftTransport bc = (IBuildCraftTransport) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.BuildCraftTransport );
 						myIcon = bc.getCobbleStructurePipeTexture();
 					}
 
@@ -158,8 +158,8 @@ public class FacadePart implements IFacadePart, IBoxProvider
 				{
 					if( randomItem.getItem() instanceof ItemBlock )
 					{
-						ItemBlock ib = (ItemBlock) randomItem.getItem();
-						Block blk = Block.getBlockFromItem( ib );
+						final ItemBlock ib = (ItemBlock) randomItem.getItem();
+						final Block blk = Block.getBlockFromItem( ib );
 
 						if( AEApi.instance().partHelper().getCableRenderMode().transparentFacades )
 						{
@@ -179,9 +179,9 @@ public class FacadePart implements IFacadePart, IBoxProvider
 
 						try
 						{
-							int color = ib.getColorFromItemStack( randomItem, 0 );
+							final int color = ib.getColorFromItemStack( randomItem, 0 );
 						}
-						catch( Throwable ignored )
+						catch( final Throwable ignored )
 						{
 						}
 
@@ -216,7 +216,7 @@ public class FacadePart implements IFacadePart, IBoxProvider
 						}
 						else
 						{*/
-						IAESprite[] icon_down = renderer.getIcon( blk.getDefaultState() );
+						final IAESprite[] icon_down = renderer.getIcon( blk.getDefaultState() );
 
 						instance.setTexture( icon_down[EnumFacing.DOWN.ordinal()], icon_down[EnumFacing.UP.ordinal()], icon_down[EnumFacing.NORTH.ordinal()], icon_down[EnumFacing.SOUTH.ordinal()], icon_down[EnumFacing.WEST.ordinal()], icon_down[EnumFacing.EAST.ordinal()] );
 						//}
@@ -333,7 +333,7 @@ public class FacadePart implements IFacadePart, IBoxProvider
 					}
 				}
 			}
-			catch( Throwable t )
+			catch( final Throwable t )
 			{
 				AELog.error( t );
 			}
@@ -342,15 +342,15 @@ public class FacadePart implements IFacadePart, IBoxProvider
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderInventory( IPartRenderHelper instance, ModelGenerator renderer )
+	public void renderInventory( final IPartRenderHelper instance, final ModelGenerator renderer )
 	{
 		if( this.facade != null )
 		{
-			IFacadeItem fi = (IFacadeItem) this.facade.getItem();
+			final IFacadeItem fi = (IFacadeItem) this.facade.getItem();
 
 			try
 			{
-				ItemStack randomItem = fi.getTextureItem( this.facade );
+				final ItemStack randomItem = fi.getTextureItem( this.facade );
 
 				instance.setTexture( renderer.getIcon( facade ) );
 				instance.setBounds( 7, 7, 4, 9, 9, 14 );
@@ -361,15 +361,15 @@ public class FacadePart implements IFacadePart, IBoxProvider
 				{
 					if( randomItem.getItem() instanceof ItemBlock )
 					{
-						ItemBlock ib = (ItemBlock) randomItem.getItem();
-						Block blk = Block.getBlockFromItem( ib );
+						final ItemBlock ib = (ItemBlock) randomItem.getItem();
+						final Block blk = Block.getBlockFromItem( ib );
 
 						try
 						{
-							int color = ib.getColorFromItemStack( randomItem, 0 );
+							final int color = ib.getColorFromItemStack( randomItem, 0 );
 							instance.setInvColor( color );
 						}
-						catch( Throwable error )
+						catch( final Throwable error )
 						{
 							instance.setInvColor( 0xffffff );
 						}
@@ -385,7 +385,7 @@ public class FacadePart implements IFacadePart, IBoxProvider
 					}
 				}
 			}
-			catch( Throwable ignored )
+			catch( final Throwable ignored )
 			{
 
 			}
@@ -407,7 +407,7 @@ public class FacadePart implements IFacadePart, IBoxProvider
 	@Override
 	public Item getItem()
 	{
-		ItemStack is = this.getTexture();
+		final ItemStack is = this.getTexture();
 		if( is == null )
 		{
 			return null;
@@ -418,7 +418,7 @@ public class FacadePart implements IFacadePart, IBoxProvider
 	@Override
 	public int getItemDamage()
 	{
-		ItemStack is = this.getTexture();
+		final ItemStack is = this.getTexture();
 		if( is == null )
 		{
 			return 0;
@@ -433,7 +433,7 @@ public class FacadePart implements IFacadePart, IBoxProvider
 	}
 
 	@Override
-	public void setThinFacades( boolean useThinFacades )
+	public void setThinFacades( final boolean useThinFacades )
 	{
 		this.thickness = useThinFacades ? 1 : 2;
 	}
@@ -446,8 +446,8 @@ public class FacadePart implements IFacadePart, IBoxProvider
 			return true;
 		}
 
-		ItemStack is = this.getTexture();
-		Block blk = Block.getBlockFromItem( is.getItem() );
+		final ItemStack is = this.getTexture();
+		final Block blk = Block.getBlockFromItem( is.getItem() );
 
 		return !blk.isOpaqueCube();
 	}
@@ -460,7 +460,7 @@ public class FacadePart implements IFacadePart, IBoxProvider
 		// AE Facade
 		if( maybeFacade instanceof IFacadeItem )
 		{
-			IFacadeItem facade = (IFacadeItem) maybeFacade;
+			final IFacadeItem facade = (IFacadeItem) maybeFacade;
 
 			return facade.getTextureItem( this.facade );
 		}
@@ -474,12 +474,12 @@ public class FacadePart implements IFacadePart, IBoxProvider
 		return null;
 	}
 
-	private EnumSet<AEPartLocation> calculateFaceOpenFaces( IBlockAccess blockAccess, IFacadeContainer fc, BlockPos pos, AEPartLocation side )
+	private EnumSet<AEPartLocation> calculateFaceOpenFaces( final IBlockAccess blockAccess, final IFacadeContainer fc, final BlockPos pos, final AEPartLocation side )
 	{
-		EnumSet<AEPartLocation> out = EnumSet.of( side, side.getOpposite() );
-		IFacadePart facade = fc.getFacade( side );
+		final EnumSet<AEPartLocation> out = EnumSet.of( side, side.getOpposite() );
+		final IFacadePart facade = fc.getFacade( side );
 
-		for( AEPartLocation it : AEPartLocation.SIDE_LOCATIONS )
+		for( final AEPartLocation it : AEPartLocation.SIDE_LOCATIONS )
 		{
 			if( !out.contains( it ) && this.hasAlphaDiff( blockAccess.getTileEntity( pos.offset( it.getFacing() ) ), side, facade ) )
 			{
@@ -489,7 +489,7 @@ public class FacadePart implements IFacadePart, IBoxProvider
 
 		if( out.contains( AEPartLocation.UP ) && ( side.xOffset != 0 || side.zOffset != 0 ) )
 		{
-			IFacadePart fp = fc.getFacade( AEPartLocation.UP );
+			final IFacadePart fp = fc.getFacade( AEPartLocation.UP );
 			if( fp != null && ( fp.isTransparent() == facade.isTransparent() ) )
 			{
 				out.remove( AEPartLocation.UP );
@@ -498,7 +498,7 @@ public class FacadePart implements IFacadePart, IBoxProvider
 
 		if( out.contains( AEPartLocation.DOWN ) && ( side.xOffset != 0 || side.zOffset != 0 ) )
 		{
-			IFacadePart fp = fc.getFacade( AEPartLocation.DOWN );
+			final IFacadePart fp = fc.getFacade( AEPartLocation.DOWN );
 			if( fp != null && ( fp.isTransparent() == facade.isTransparent() ) )
 			{
 				out.remove( AEPartLocation.DOWN );
@@ -507,7 +507,7 @@ public class FacadePart implements IFacadePart, IBoxProvider
 
 		if( out.contains( AEPartLocation.SOUTH ) && ( side.xOffset != 0 ) )
 		{
-			IFacadePart fp = fc.getFacade( AEPartLocation.SOUTH );
+			final IFacadePart fp = fc.getFacade( AEPartLocation.SOUTH );
 			if( fp != null && ( fp.isTransparent() == facade.isTransparent() ) )
 			{
 				out.remove( AEPartLocation.SOUTH );
@@ -516,7 +516,7 @@ public class FacadePart implements IFacadePart, IBoxProvider
 
 		if( out.contains( AEPartLocation.NORTH ) && ( side.xOffset != 0 ) )
 		{
-			IFacadePart fp = fc.getFacade( AEPartLocation.NORTH );
+			final IFacadePart fp = fc.getFacade( AEPartLocation.NORTH );
 			if( fp != null && ( fp.isTransparent() == facade.isTransparent() ) )
 			{
 				out.remove( AEPartLocation.NORTH );
@@ -552,14 +552,14 @@ public class FacadePart implements IFacadePart, IBoxProvider
 	}
 
 	@SideOnly( Side.CLIENT )
-	private void renderSegmentBlockCurrentBounds( IPartRenderHelper instance, BlockPos pos, ModelGenerator renderer, double minX, double minY, double minZ, double maxX, double maxY, double maxZ )
+	private void renderSegmentBlockCurrentBounds( final IPartRenderHelper instance, final BlockPos pos, final ModelGenerator renderer, final double minX, final double minY, final double minZ, final double maxX, final double maxY, final double maxZ )
 	{
-		double oldMinX = renderer.renderMinX;
-		double oldMinY = renderer.renderMinY;
-		double oldMinZ = renderer.renderMinZ;
-		double oldMaxX = renderer.renderMaxX;
-		double oldMaxY = renderer.renderMaxY;
-		double oldMaxZ = renderer.renderMaxZ;
+		final double oldMinX = renderer.renderMinX;
+		final double oldMinY = renderer.renderMinY;
+		final double oldMinZ = renderer.renderMinZ;
+		final double oldMaxX = renderer.renderMaxX;
+		final double oldMaxY = renderer.renderMaxY;
+		final double oldMaxZ = renderer.renderMaxZ;
 
 		renderer.renderMinX = Math.max( renderer.renderMinX, minX );
 		renderer.renderMinY = Math.max( renderer.renderMinY, minY );
@@ -582,12 +582,12 @@ public class FacadePart implements IFacadePart, IBoxProvider
 		renderer.renderMaxZ = oldMaxZ;
 	}
 
-	private boolean hasAlphaDiff( TileEntity tileEntity, AEPartLocation side, IFacadePart facade )
+	private boolean hasAlphaDiff( final TileEntity tileEntity, final AEPartLocation side, final IFacadePart facade )
 	{
 		if( tileEntity instanceof IPartHost )
 		{
-			IPartHost ph = (IPartHost) tileEntity;
-			IFacadePart fp = ph.getFacadeContainer().getFacade( side );
+			final IPartHost ph = (IPartHost) tileEntity;
+			final IFacadePart fp = ph.getFacadeContainer().getFacade( side );
 
 			return fp == null || ( fp.isTransparent() != facade.isTransparent() );
 		}
@@ -596,7 +596,7 @@ public class FacadePart implements IFacadePart, IBoxProvider
 	}
 
 	@Override
-	public void getBoxes( IPartCollisionHelper bch )
+	public void getBoxes( final IPartCollisionHelper bch )
 	{
 		this.getBoxes( bch, null );
 	}

@@ -42,7 +42,7 @@ public final class IntegrationNode
 	Object instance;
 	IIntegrationModule mod = null;
 
-	public IntegrationNode( String displayName, String modID, IntegrationType shortName, String name )
+	public IntegrationNode( final String displayName, final String modID, final IntegrationType shortName, final String name )
 	{
 		this.displayName = displayName;
 		this.shortName = shortName;
@@ -66,7 +66,7 @@ public final class IntegrationNode
 		return this.state != IntegrationStage.FAILED;
 	}
 
-	void call( IntegrationStage stage )
+	void call( final IntegrationStage stage )
 	{
 		if( this.state != IntegrationStage.FAILED )
 		{
@@ -84,7 +84,7 @@ public final class IntegrationNode
 						boolean enabled = this.modID == null || Loader.isModLoaded( this.modID ) || apiManager.hasAPI( this.modID );
 
 						AEConfig.instance.addCustomCategoryComment( "ModIntegration", "Valid Values are 'AUTO', 'ON', or 'OFF' - defaults to 'AUTO' ; Suggested that you leave this alone unless your experiencing an issue, or wish to disable the integration for a reason." );
-						String mode = AEConfig.instance.get( "ModIntegration", this.displayName.replace( " ", "" ), "AUTO" ).getString();
+						final String mode = AEConfig.instance.get( "ModIntegration", this.displayName.replace( " ", "" ), "AUTO" ).getString();
 
 						if( mode.toUpperCase().equals( "ON" ) )
 						{
@@ -99,7 +99,7 @@ public final class IntegrationNode
 						{
 							this.classValue = this.getClass().getClassLoader().loadClass( this.name );
 							this.mod = (IIntegrationModule) this.classValue.getConstructor().newInstance();
-							Field f = this.classValue.getField( "instance" );
+							final Field f = this.classValue.getField( "instance" );
 							f.set( this.classValue, this.instance = this.mod );
 						}
 						else
@@ -125,7 +125,7 @@ public final class IntegrationNode
 						break;
 				}
 			}
-			catch( Throwable t )
+			catch( final Throwable t )
 			{
 				this.failedStage = stage;
 				this.exception = t;

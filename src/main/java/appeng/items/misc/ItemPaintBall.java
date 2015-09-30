@@ -50,7 +50,7 @@ public class ItemPaintBall extends AEBaseItem
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerIcons( ClientHelper ir, String name )
+	public void registerIcons( final ClientHelper ir, final String name )
 	{
 		final ModelResourceLocation sloc = ir.setIcon( this, name + "Shimmer" );
 		final ModelResourceLocation loc = ir.setIcon( this, name );
@@ -60,7 +60,7 @@ public class ItemPaintBall extends AEBaseItem
 			
 			@Override
 			public ModelResourceLocation getModelLocation(
-					ItemStack stack )
+					final ItemStack stack )
 			{
 				if ( isLumen(stack) )
 					return sloc;
@@ -71,32 +71,32 @@ public class ItemPaintBall extends AEBaseItem
 	}
 	
 	@Override
-	public String getItemStackDisplayName( ItemStack is )
+	public String getItemStackDisplayName( final ItemStack is )
 	{
 		return super.getItemStackDisplayName( is ) + " - " + this.getExtraName( is );
 	}
 
-	public String getExtraName( ItemStack is )
+	public String getExtraName( final ItemStack is )
 	{
 		return ( is.getItemDamage() >= DAMAGE_THRESHOLD ? GuiText.Lumen.getLocal() + ' ' : "" ) + this.getColor( is );
 	}
 	
 	@Override
 	public int getColorFromItemStack(
-			ItemStack stack,
-			int renderPass )
+			final ItemStack stack,
+			final int renderPass )
 	{
-		AEColor col = getColor(stack);
+		final AEColor col = getColor(stack);
 		
-		int colorValue = stack.getItemDamage() >= 20 ? col.mediumVariant : col.mediumVariant;
-		int r = ( colorValue >> 16 ) & 0xff;
-		int g = ( colorValue >> 8 ) & 0xff;
-		int b = ( colorValue ) & 0xff;
+		final int colorValue = stack.getItemDamage() >= 20 ? col.mediumVariant : col.mediumVariant;
+		final int r = ( colorValue >> 16 ) & 0xff;
+		final int g = ( colorValue >> 8 ) & 0xff;
+		final int b = ( colorValue ) & 0xff;
 
 		if( stack.getItemDamage() >= 20 )
 		{
-			float fail = 0.7f;
-			int full = (int) ( 255 * 0.3 );
+			final float fail = 0.7f;
+			final int full = (int) ( 255 * 0.3 );
 			return  (int)( full + r * fail ) << 16 |  (int)( full + g * fail ) << 8 |  (int)( full + b * fail ) | 0xff << 24;
 		}
 		else
@@ -105,7 +105,7 @@ public class ItemPaintBall extends AEBaseItem
 		}
 	}
 
-	public AEColor getColor( ItemStack is )
+	public AEColor getColor( final ItemStack is )
 	{
 		int dmg = is.getItemDamage();
 		if( dmg >= DAMAGE_THRESHOLD )
@@ -122,9 +122,9 @@ public class ItemPaintBall extends AEBaseItem
 	}
 
 	@Override
-	protected void getCheckedSubItems( Item sameItem, CreativeTabs creativeTab, List<ItemStack> itemStacks )
+	protected void getCheckedSubItems( final Item sameItem, final CreativeTabs creativeTab, final List<ItemStack> itemStacks )
 	{
-		for( AEColor c : AEColor.values() )
+		for( final AEColor c : AEColor.values() )
 		{
 			if( c != AEColor.Transparent )
 			{
@@ -132,7 +132,7 @@ public class ItemPaintBall extends AEBaseItem
 			}
 		}
 
-		for( AEColor c : AEColor.values() )
+		for( final AEColor c : AEColor.values() )
 		{
 			if( c != AEColor.Transparent )
 			{
@@ -141,9 +141,9 @@ public class ItemPaintBall extends AEBaseItem
 		}
 	}
 
-	public boolean isLumen( ItemStack is )
+	public boolean isLumen( final ItemStack is )
 	{
-		int dmg = is.getItemDamage();
+		final int dmg = is.getItemDamage();
 		return dmg >= DAMAGE_THRESHOLD;
 	}
 }

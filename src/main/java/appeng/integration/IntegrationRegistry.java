@@ -36,7 +36,7 @@ public enum IntegrationRegistry
 
 	private final Collection<IntegrationNode> modules = new LinkedList<IntegrationNode>();
 
-	public void add( IntegrationType type )
+	public void add( final IntegrationType type )
 	{
 		if( type.side == IntegrationSide.CLIENT && FMLLaunchHandler.side() == Side.SERVER )
 		{
@@ -53,12 +53,12 @@ public enum IntegrationRegistry
 
 	public void init()
 	{
-		for( IntegrationNode node : this.modules )
+		for( final IntegrationNode node : this.modules )
 		{
 			node.call( IntegrationStage.PRE_INIT );
 		}
 
-		for( IntegrationNode node : this.modules )
+		for( final IntegrationNode node : this.modules )
 		{
 			node.call( IntegrationStage.INIT );
 		}
@@ -66,7 +66,7 @@ public enum IntegrationRegistry
 
 	public void postInit()
 	{
-		for( IntegrationNode node : this.modules )
+		for( final IntegrationNode node : this.modules )
 		{
 			node.call( IntegrationStage.POST_INIT );
 		}
@@ -76,7 +76,7 @@ public enum IntegrationRegistry
 	{
 		final StringBuilder builder = new StringBuilder( this.modules.size() * 3 );
 
-		for( IntegrationNode node : this.modules )
+		for( final IntegrationNode node : this.modules )
 		{
 			if( builder.length() != 0 )
 			{
@@ -90,9 +90,9 @@ public enum IntegrationRegistry
 		return builder.toString();
 	}
 
-	public boolean isEnabled( IntegrationType name )
+	public boolean isEnabled( final IntegrationType name )
 	{
-		for( IntegrationNode node : this.modules )
+		for( final IntegrationNode node : this.modules )
 		{
 			if( node.shortName == name )
 			{
@@ -103,9 +103,9 @@ public enum IntegrationRegistry
 	}
 
 	@Nonnull
-	public Object getInstance( IntegrationType name )
+	public Object getInstance( final IntegrationType name )
 	{
-		for( IntegrationNode node : this.modules )
+		for( final IntegrationNode node : this.modules )
 		{
 			if( node.shortName == name && node.isActive() )
 			{

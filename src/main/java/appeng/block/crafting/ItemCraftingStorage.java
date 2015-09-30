@@ -30,15 +30,15 @@ import appeng.core.features.AEFeature;
 public class ItemCraftingStorage extends AEBaseItemBlock
 {
 
-	public ItemCraftingStorage( Block id )
+	public ItemCraftingStorage( final Block id )
 	{
 		super( id );
 	}
 
 	@Override
-	public ItemStack getContainerItem( ItemStack itemStack )
+	public ItemStack getContainerItem( final ItemStack itemStack )
 	{
-		for( ItemStack stack : AEApi.instance().definitions().blocks().craftingUnit().maybeStack( 1 ).asSet() )
+		for( final ItemStack stack : AEApi.instance().definitions().blocks().craftingUnit().maybeStack( 1 ).asSet() )
 		{
 			return stack;
 		}
@@ -47,7 +47,7 @@ public class ItemCraftingStorage extends AEBaseItemBlock
 	}
 
 	@Override
-	public boolean hasContainerItem( ItemStack stack )
+	public boolean hasContainerItem( final ItemStack stack )
 	{
 		return AEConfig.instance.isFeatureEnabled( AEFeature.enableDisassemblyCrafting );
 	}

@@ -34,7 +34,7 @@ public class GenericInterestManager<T>
 	private LinkedList<SavedTransactions> transactions = null;
 	private int transDepth = 0;
 
-	public GenericInterestManager( Multimap<IAEStack, T> interests )
+	public GenericInterestManager( final Multimap<IAEStack, T> interests )
 	{
 		this.container = interests;
 	}
@@ -55,10 +55,10 @@ public class GenericInterestManager<T>
 
 		if( this.transDepth == 0 )
 		{
-			LinkedList<SavedTransactions> myActions = this.transactions;
+			final LinkedList<SavedTransactions> myActions = this.transactions;
 			this.transactions = null;
 
-			for( SavedTransactions t : myActions )
+			for( final SavedTransactions t : myActions )
 			{
 				if( t.put )
 				{
@@ -72,7 +72,7 @@ public class GenericInterestManager<T>
 		}
 	}
 
-	public boolean put( IAEStack stack, T iw )
+	public boolean put( final IAEStack stack, final T iw )
 	{
 		if( this.transactions != null )
 		{
@@ -85,7 +85,7 @@ public class GenericInterestManager<T>
 		}
 	}
 
-	public boolean remove( IAEStack stack, T iw )
+	public boolean remove( final IAEStack stack, final T iw )
 	{
 		if( this.transactions != null )
 		{
@@ -98,12 +98,12 @@ public class GenericInterestManager<T>
 		}
 	}
 
-	public boolean containsKey( IAEStack stack )
+	public boolean containsKey( final IAEStack stack )
 	{
 		return this.container.containsKey( stack );
 	}
 
-	public Collection<T> get( IAEStack stack )
+	public Collection<T> get( final IAEStack stack )
 	{
 		return this.container.get( stack );
 	}
@@ -115,7 +115,7 @@ public class GenericInterestManager<T>
 		public final IAEStack stack;
 		public final T iw;
 
-		public SavedTransactions( boolean putOperation, IAEStack myStack, T watcher )
+		public SavedTransactions( final boolean putOperation, final IAEStack myStack, final T watcher )
 		{
 			this.put = putOperation;
 			this.stack = myStack;

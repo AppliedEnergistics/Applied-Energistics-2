@@ -41,7 +41,7 @@ public final class ItemFeatureHandler implements IFeatureHandler
 	private final boolean enabled;
 	private final ItemDefinition definition;
 
-	public ItemFeatureHandler( EnumSet<AEFeature> features, Item item, IAEFeature featured, Optional<String> subName )
+	public ItemFeatureHandler( final EnumSet<AEFeature> features, final Item item, final IAEFeature featured, final Optional<String> subName )
 	{
 		final ActivityState state = new FeaturedActiveChecker( features ).getActivityState();
 
@@ -64,12 +64,12 @@ public final class ItemFeatureHandler implements IFeatureHandler
 	}
 
 	@Override
-	public void register( Side side )
+	public void register( final Side side )
 	{
 		if( this.enabled )
 		{
 			String name = this.extractor.get();
-			String itemPhysicalName = name;
+			final String itemPhysicalName = name;
 
 			//this.item.setTextureName( "appliedenergistics2:" + name );
 			this.item.setUnlocalizedName( "appliedenergistics2." + name );
@@ -102,7 +102,7 @@ public final class ItemFeatureHandler implements IFeatureHandler
 		}
 	}
 
-	private void configureIcon( Item item, int meta, String name )
+	private void configureIcon( final Item item, final int meta, final String name )
 	{
 	}
 }

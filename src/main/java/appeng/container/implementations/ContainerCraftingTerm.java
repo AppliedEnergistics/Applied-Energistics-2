@@ -43,12 +43,12 @@ public class ContainerCraftingTerm extends ContainerMEMonitorable implements IAE
 	final SlotCraftingMatrix[] craftingSlots = new SlotCraftingMatrix[9];
 	final SlotCraftingTerm outputSlot;
 
-	public ContainerCraftingTerm( InventoryPlayer ip, ITerminalHost monitorable )
+	public ContainerCraftingTerm( final InventoryPlayer ip, final ITerminalHost monitorable )
 	{
 		super( ip, monitorable, false );
 		this.ct = (PartCraftingTerminal) monitorable;
 
-		IInventory crafting = this.ct.getInventoryByName( "crafting" );
+		final IInventory crafting = this.ct.getInventoryByName( "crafting" );
 
 		for( int y = 0; y < 3; y++ )
 		{
@@ -69,10 +69,10 @@ public class ContainerCraftingTerm extends ContainerMEMonitorable implements IAE
 	 * Callback for when the crafting matrix is changed.
 	 */
 	@Override
-	public void onCraftMatrixChanged( IInventory par1IInventory )
+	public void onCraftMatrixChanged( final IInventory par1IInventory )
 	{
-		ContainerNull cn = new ContainerNull();
-		InventoryCrafting ic = new InventoryCrafting( cn, 3, 3 );
+		final ContainerNull cn = new ContainerNull();
+		final InventoryCrafting ic = new InventoryCrafting( cn, 3, 3 );
 
 		for( int x = 0; x < 9; x++ )
 		{
@@ -89,13 +89,13 @@ public class ContainerCraftingTerm extends ContainerMEMonitorable implements IAE
 	}
 
 	@Override
-	public void onChangeInventory( IInventory inv, int slot, InvOperation mc, ItemStack removedStack, ItemStack newStack )
+	public void onChangeInventory( final IInventory inv, final int slot, final InvOperation mc, final ItemStack removedStack, final ItemStack newStack )
 	{
 
 	}
 
 	@Override
-	public IInventory getInventoryByName( String name )
+	public IInventory getInventoryByName( final String name )
 	{
 		if( name.equals( "player" ) )
 		{

@@ -68,30 +68,30 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 
 	@Override
 	public boolean onItemUseFirst(
-			ItemStack is,
-			EntityPlayer player,
-			World world,
-			BlockPos pos,
-			EnumFacing side,
-			float hitX,
-			float hitY,
-			float hitZ )
+			final ItemStack is,
+			final EntityPlayer player,
+			final World world,
+			final BlockPos pos,
+			final EnumFacing side,
+			final float hitX,
+			final float hitY,
+			final float hitZ )
 	{
 		return AEApi.instance().partHelper().placeBus( is, pos, side, player, world );
 	}
 
 	@Override
-	public String getItemStackDisplayName( ItemStack is )
+	public String getItemStackDisplayName( final ItemStack is )
 	{
 		try
 		{
-			ItemStack in = this.getTextureItem( is );
+			final ItemStack in = this.getTextureItem( is );
 			if( in != null )
 			{
 				return super.getItemStackDisplayName( is ) + " - " + in.getDisplayName();
 			}
 		}
-		catch( Throwable ignored )
+		catch( final Throwable ignored )
 		{
 
 		}
@@ -100,7 +100,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 	}
 
 	@Override
-	protected void getCheckedSubItems( Item sameItem, CreativeTabs creativeTab, List<ItemStack> itemStacks )
+	protected void getCheckedSubItems( final Item sameItem, final CreativeTabs creativeTab, final List<ItemStack> itemStacks )
 	{
 		this.calculateSubTypes();
 		itemStacks.addAll( this.subTypes );
@@ -111,25 +111,25 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 		if( this.subTypes == null )
 		{
 			this.subTypes = new ArrayList<ItemStack>( 1000 );
-			for( Object blk : Block.blockRegistry )
+			for( final Object blk : Block.blockRegistry )
 			{
-				Block b = (Block) blk;
+				final Block b = (Block) blk;
 				try
 				{
-					Item item = Item.getItemFromBlock( b );
+					final Item item = Item.getItemFromBlock( b );
 
-					List<ItemStack> tmpList = new ArrayList<ItemStack>( 100 );
+					final List<ItemStack> tmpList = new ArrayList<ItemStack>( 100 );
 					b.getSubBlocks( item, b.getCreativeTabToDisplayOn(), tmpList );
-					for( ItemStack l : tmpList )
+					for( final ItemStack l : tmpList )
 					{
-						ItemStack facade = this.createFacadeForItem( l, false );
+						final ItemStack facade = this.createFacadeForItem( l, false );
 						if( facade != null )
 						{
 							this.subTypes.add( facade );
 						}
 					}
 				}
-				catch( Throwable t )
+				catch( final Throwable t )
 				{
 					// just absorb..
 				}
@@ -142,26 +142,26 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 		}
 	}
 
-	public ItemStack createFacadeForItem( ItemStack l, boolean returnItem )
+	public ItemStack createFacadeForItem( final ItemStack l, final boolean returnItem )
 	{
 		if( l == null )
 		{
 			return null;
 		}
 
-		Block b = Block.getBlockFromItem( l.getItem() );
+		final Block b = Block.getBlockFromItem( l.getItem() );
 		if( b == null || l.hasTagCompound() )
 		{
 			return null;
 		}
 
-		int metadata = l.getItem().getMetadata( l.getItemDamage() );
+		final int metadata = l.getItem().getMetadata( l.getItemDamage() );
 
-		boolean hasTile = b.hasTileEntity( b.getStateFromMeta( metadata ) );
-		boolean enableGlass = b instanceof BlockGlass || b instanceof BlockStainedGlass;
-		boolean disableOre = b instanceof QuartzOreBlock;
+		final boolean hasTile = b.hasTileEntity( b.getStateFromMeta( metadata ) );
+		final boolean enableGlass = b instanceof BlockGlass || b instanceof BlockStainedGlass;
+		final boolean disableOre = b instanceof QuartzOreBlock;
 
-		boolean defaultValue = ( b.isOpaqueCube() && !b.getTickRandomly() && !hasTile && !disableOre ) || enableGlass;
+		final boolean defaultValue = ( b.isOpaqueCube() && !b.getTickRandomly() && !hasTile && !disableOre ) || enableGlass;
 		if( FacadeConfig.instance.checkEnabled( b, metadata, defaultValue ) )
 		{
 			if( returnItem )
@@ -169,13 +169,13 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 				return l;
 			}
 
-			ItemStack is = new ItemStack( this );
-			NBTTagCompound data = new NBTTagCompound();
-			int[] ds = new int[2];
+			final ItemStack is = new ItemStack( this );
+			final NBTTagCompound data = new NBTTagCompound();
+			final int[] ds = new int[2];
 			ds[0] = Item.getIdFromItem( l.getItem() );
 			ds[1] = metadata;
 			data.setIntArray( "x", ds );
-			UniqueIdentifier ui = GameRegistry.findUniqueIdentifierFor( l.getItem() );
+			final UniqueIdentifier ui = GameRegistry.findUniqueIdentifierFor( l.getItem() );
 			data.setString( "modid", ui.modId );
 			data.setString( "itemname", ui.name );
 			is.setTagCompound( data );
@@ -185,9 +185,9 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 	}
 
 	@Override
-	public FacadePart createPartFromItemStack( ItemStack is, AEPartLocation side )
+	public FacadePart createPartFromItemStack( final ItemStack is, final AEPartLocation side )
 	{
-		ItemStack in = this.getTextureItem( is );
+		final ItemStack in = this.getTextureItem( is );
 		if( in != null )
 		{
 			return new FacadePart( is, side );
@@ -196,9 +196,9 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 	}
 
 	@Override
-	public ItemStack getTextureItem( ItemStack is )
+	public ItemStack getTextureItem( final ItemStack is )
 	{
-		Block blk = this.getBlock( is );
+		final Block blk = this.getBlock( is );
 		if( blk != null )
 		{
 			return new ItemStack( blk, 1, this.getMeta( is ) );
@@ -207,12 +207,12 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 	}
 
 	@Override
-	public int getMeta( ItemStack is )
+	public int getMeta( final ItemStack is )
 	{
-		NBTTagCompound data = is.getTagCompound();
+		final NBTTagCompound data = is.getTagCompound();
 		if( data != null )
 		{
-			int[] blk = data.getIntArray( "x" );
+			final int[] blk = data.getIntArray( "x" );
 			if( blk != null && blk.length == 2 )
 			{
 				return blk[1];
@@ -222,9 +222,9 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 	}
 
 	@Override
-	public Block getBlock( ItemStack is )
+	public Block getBlock( final ItemStack is )
 	{
-		NBTTagCompound data = is.getTagCompound();
+		final NBTTagCompound data = is.getTagCompound();
 		if( data != null )
 		{
 			if( data.hasKey( "modid" ) && data.hasKey( "itemname" ) )
@@ -236,7 +236,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 			}
 			else
 			{
-				int[] blk = data.getIntArray( "x" );
+				final int[] blk = data.getIntArray( "x" );
 				if( blk != null && blk.length == 2 )
 				{
 					return Block.getBlockById( blk[0] );
@@ -262,11 +262,11 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 		return this.subTypes.get( 0 );
 	}
 
-	public ItemStack createFromIDs( int[] ids )
+	public ItemStack createFromIDs( final int[] ids )
 	{
-		for( ItemStack facadeStack : AEApi.instance().definitions().items().facade().maybeStack( 1 ).asSet() )
+		for( final ItemStack facadeStack : AEApi.instance().definitions().items().facade().maybeStack( 1 ).asSet() )
 		{
-			NBTTagCompound facadeTag = new NBTTagCompound();
+			final NBTTagCompound facadeTag = new NBTTagCompound();
 			facadeTag.setIntArray( "x", ids.clone() );
 			facadeStack.setTagCompound( facadeTag );
 
@@ -277,16 +277,16 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 	}
 
 	@Override
-	public boolean useAlphaPass( ItemStack is )
+	public boolean useAlphaPass( final ItemStack is )
 	{
-		ItemStack out = this.getTextureItem( is );
+		final ItemStack out = this.getTextureItem( is );
 
 		if( out == null || out.getItem() == null )
 		{
 			return false;
 		}
 
-		Block blk = Block.getBlockFromItem( out.getItem() );
+		final Block blk = Block.getBlockFromItem( out.getItem() );
 		if( blk != null && blk.canRenderInLayer( EnumWorldBlockLayer.TRANSLUCENT ) )
 		{
 			return true;
@@ -297,7 +297,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 	
 	@Override
 	public void registerCustomIcon(			
-			TextureMap map )
+			final TextureMap map )
 	{
 		myIcon = new BaseIcon( map.registerSprite( new ResourceLocation( AppEng.MOD_ID, "blocks/ItemFacade" ) ));		
 	}

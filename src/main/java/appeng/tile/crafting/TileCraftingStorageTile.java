@@ -30,7 +30,7 @@ public class TileCraftingStorageTile extends TileCraftingTile
 	public static final int KILO_SCALAR = 1024;
 
 	@Override
-	protected ItemStack getItemFromTile( Object obj )
+	protected ItemStack getItemFromTile( final Object obj )
 	{
 		final IBlocks blocks = AEApi.instance().definitions().blocks();
 		final int storage = ( (TileCraftingTile) obj ).getStorageBytes() / KILO_SCALAR;
@@ -38,19 +38,19 @@ public class TileCraftingStorageTile extends TileCraftingTile
 		switch( storage )
 		{
 			case 4:
-				for( ItemStack stack : blocks.craftingStorage4k().maybeStack( 1 ).asSet() )
+				for( final ItemStack stack : blocks.craftingStorage4k().maybeStack( 1 ).asSet() )
 				{
 					return stack;
 				}
 				break;
 			case 16:
-				for( ItemStack stack : blocks.craftingStorage16k().maybeStack( 1 ).asSet() )
+				for( final ItemStack stack : blocks.craftingStorage16k().maybeStack( 1 ).asSet() )
 				{
 					return stack;
 				}
 				break;
 			case 64:
-				for( ItemStack stack : blocks.craftingStorage64k().maybeStack( 1 ).asSet() )
+				for( final ItemStack stack : blocks.craftingStorage64k().maybeStack( 1 ).asSet() )
 				{
 					return stack;
 				}
@@ -80,7 +80,7 @@ public class TileCraftingStorageTile extends TileCraftingTile
 			return 0;
 		}
 
-		BlockCraftingUnit unit = (BlockCraftingUnit)this.worldObj.getBlockState( pos ).getBlock();
+		final BlockCraftingUnit unit = (BlockCraftingUnit)this.worldObj.getBlockState( pos ).getBlock();
 		switch( unit.type )
 		{
 			default:

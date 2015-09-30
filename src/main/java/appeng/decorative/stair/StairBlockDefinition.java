@@ -39,7 +39,7 @@ public class StairBlockDefinition implements IBlockDefinition
 	}
 
 	@Override
-	public boolean isSameAs( IBlockAccess world, BlockPos pos )
+	public boolean isSameAs( final IBlockAccess world, final BlockPos pos )
 	{
 		return false;
 	}
@@ -58,7 +58,7 @@ public class StairBlockDefinition implements IBlockDefinition
 	}
 
 	@Override
-	public Optional<ItemStack> maybeStack( int stackSize )
+	public Optional<ItemStack> maybeStack( final int stackSize )
 	{
 		return null;
 	}
@@ -70,7 +70,7 @@ public class StairBlockDefinition implements IBlockDefinition
 	}
 
 	@Override
-	public boolean isSameAs( ItemStack comparableStack )
+	public boolean isSameAs( final ItemStack comparableStack )
 	{
 		return false;
 	}

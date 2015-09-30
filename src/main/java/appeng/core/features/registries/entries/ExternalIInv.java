@@ -34,15 +34,15 @@ public class ExternalIInv implements IExternalStorageHandler
 {
 
 	@Override
-	public boolean canHandle( TileEntity te, EnumFacing d, StorageChannel channel, BaseActionSource mySrc )
+	public boolean canHandle( final TileEntity te, final EnumFacing d, final StorageChannel channel, final BaseActionSource mySrc )
 	{
 		return channel == StorageChannel.ITEMS && te instanceof IInventory;
 	}
 
 	@Override
-	public IMEInventory getInventory( TileEntity te, EnumFacing d, StorageChannel channel, BaseActionSource src )
+	public IMEInventory getInventory( final TileEntity te, final EnumFacing d, final StorageChannel channel, final BaseActionSource src )
 	{
-		InventoryAdaptor ad = InventoryAdaptor.getAdaptor( te, d );
+		final InventoryAdaptor ad = InventoryAdaptor.getAdaptor( te, d );
 
 		if( channel == StorageChannel.ITEMS && ad != null )
 		{

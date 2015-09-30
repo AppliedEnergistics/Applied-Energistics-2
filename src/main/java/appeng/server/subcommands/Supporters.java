@@ -31,15 +31,15 @@ public class Supporters implements ISubCommand
 {
 
 	@Override
-	public String getHelp( MinecraftServer srv )
+	public String getHelp( final MinecraftServer srv )
 	{
 		return "commands.ae2.Supporters";
 	}
 
 	@Override
-	public void call( MinecraftServer srv, String[] data, ICommandSender sender )
+	public void call( final MinecraftServer srv, final String[] data, final ICommandSender sender )
 	{
-		String[] who = { "Stig Halvorsen", "Josh Ricker", "Jenny \"Othlon\" Sutherland", "Hristo Bogdanov", "BevoLJ" };
+		final String[] who = { "Stig Halvorsen", "Josh Ricker", "Jenny \"Othlon\" Sutherland", "Hristo Bogdanov", "BevoLJ" };
 		sender.addChatMessage( new ChatComponentText( "Special thanks to " + Joiner.on( ", " ).join( who ) ) );
 	}
 }

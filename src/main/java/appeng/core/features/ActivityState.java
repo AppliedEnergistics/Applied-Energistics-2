@@ -24,7 +24,7 @@ public enum ActivityState
 	Enabled,
 	Disabled;
 
-	public static ActivityState from( boolean enabled )
+	public static ActivityState from( final boolean enabled )
 	{
 		if( enabled )
 		{

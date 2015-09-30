@@ -90,12 +90,12 @@ public enum ExtraBlockTextures
 	private final String name;
 	public IAESprite IIcon;
 
-	ExtraBlockTextures( String name )
+	ExtraBlockTextures( final String name )
 	{
 		this.name = name;
 	}
 
-	public static ResourceLocation GuiTexture( String string )
+	public static ResourceLocation GuiTexture( final String string )
 	{
 		return new ResourceLocation( "appliedenergistics2", "textures/" + string );
 	}
@@ -116,7 +116,7 @@ public enum ExtraBlockTextures
 		return this.IIcon;
 	}
 
-	public void registerIcon( TextureMap map )
+	public void registerIcon( final TextureMap map )
 	{
 		IIcon = new BaseIcon( map.registerSprite( new ResourceLocation( AppEng.MOD_ID, "blocks/" + name ) ) );
 	}

@@ -34,7 +34,7 @@ public class ClientDCInternalInv implements Comparable<ClientDCInternalInv>
 	public final long id;
 	public final long sortBy;
 
-	public ClientDCInternalInv( int size, long id, long sortBy, String unlocalizedName )
+	public ClientDCInternalInv( final int size, final long id, final long sortBy, final String unlocalizedName )
 	{
 		this.inv = new AppEngInternalInventory( null, size );
 		this.unlocalizedName = unlocalizedName;
@@ -44,7 +44,7 @@ public class ClientDCInternalInv implements Comparable<ClientDCInternalInv>
 
 	public String getName()
 	{
-		String s = StatCollector.translateToLocal( this.unlocalizedName + ".name" );
+		final String s = StatCollector.translateToLocal( this.unlocalizedName + ".name" );
 		if( s.equals( this.unlocalizedName + ".name" ) )
 		{
 			return StatCollector.translateToLocal( this.unlocalizedName );
@@ -53,7 +53,7 @@ public class ClientDCInternalInv implements Comparable<ClientDCInternalInv>
 	}
 
 	@Override
-	public int compareTo( @Nonnull ClientDCInternalInv o )
+	public int compareTo( @Nonnull final ClientDCInternalInv o )
 	{
 		return ItemSorters.compareLong( this.sortBy, o.sortBy );
 	}

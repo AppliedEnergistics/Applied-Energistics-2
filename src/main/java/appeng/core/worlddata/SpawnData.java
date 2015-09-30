@@ -57,10 +57,10 @@ final class SpawnData implements IWorldSpawnData
 	}
 
 	@Override
-	public void setGenerated( int dim, int chunkX, int chunkZ ) {
+	public void setGenerated( final int dim, final int chunkX, final int chunkZ ) {
 		synchronized( SpawnData.class )
 		{
-			NBTTagCompound data = this.loadSpawnData( dim, chunkX, chunkZ );
+			final NBTTagCompound data = this.loadSpawnData( dim, chunkX, chunkZ );
 
 			// edit.
 			data.setBoolean( chunkX + "," + chunkZ, true );
@@ -70,24 +70,24 @@ final class SpawnData implements IWorldSpawnData
 	}
 
 	@Override
-	public boolean hasGenerated( int dim, int chunkX, int chunkZ )
+	public boolean hasGenerated( final int dim, final int chunkX, final int chunkZ )
 	{
 		synchronized( SpawnData.class )
 		{
-			NBTTagCompound data = this.loadSpawnData( dim, chunkX, chunkZ );
+			final NBTTagCompound data = this.loadSpawnData( dim, chunkX, chunkZ );
 			return data.getBoolean( chunkX + "," + chunkZ );
 		}
 	}
 
 	@Override
-	public boolean addNearByMeteorites( int dim, int chunkX, int chunkZ, NBTTagCompound newData )
+	public boolean addNearByMeteorites( final int dim, final int chunkX, final int chunkZ, final NBTTagCompound newData )
 	{
 		synchronized( SpawnData.class )
 		{
-			NBTTagCompound data = this.loadSpawnData( dim, chunkX, chunkZ );
+			final NBTTagCompound data = this.loadSpawnData( dim, chunkX, chunkZ );
 
 			// edit.
-			int size = data.getInteger( "num" );
+			final int size = data.getInteger( "num" );
 			data.setTag( String.valueOf( size ), newData );
 			data.setInteger( "num", size + 1 );
 
@@ -98,9 +98,9 @@ final class SpawnData implements IWorldSpawnData
 	}
 
 	@Override
-	public Collection<NBTTagCompound> getNearByMeteorites( int dim, int chunkX, int chunkZ )
+	public Collection<NBTTagCompound> getNearByMeteorites( final int dim, final int chunkX, final int chunkZ )
 	{
-		Collection<NBTTagCompound> ll = new LinkedList<NBTTagCompound>();
+		final Collection<NBTTagCompound> ll = new LinkedList<NBTTagCompound>();
 
 		synchronized( SpawnData.class )
 		{
@@ -108,15 +108,15 @@ final class SpawnData implements IWorldSpawnData
 			{
 				for( int z = -1; z <= 1; z++ )
 				{
-					int cx = x + ( chunkX >> 4 );
-					int cz = z + ( chunkZ >> 4 );
+					final int cx = x + ( chunkX >> 4 );
+					final int cz = z + ( chunkZ >> 4 );
 
-					NBTTagCompound data = this.loadSpawnData( dim, cx << 4, cz << 4 );
+					final NBTTagCompound data = this.loadSpawnData( dim, cx << 4, cz << 4 );
 
 					if( data != null )
 					{
 						// edit.
-						int size = data.getInteger( "num" );
+						final int size = data.getInteger( "num" );
 						for( int s = 0; s < size; s++ )
 						{
 							ll.add( data.getCompoundTag( String.valueOf( s ) ) );
@@ -129,7 +129,7 @@ final class SpawnData implements IWorldSpawnData
 		return ll;
 	}
 
-	private NBTTagCompound loadSpawnData( int dim, int chunkX, int chunkZ )
+	private NBTTagCompound loadSpawnData( final int dim, final int chunkX, final int chunkZ )
 	{
 		if( !Thread.holdsLock( SpawnData.class ) )
 		{
@@ -149,7 +149,7 @@ final class SpawnData implements IWorldSpawnData
 				fileInputStream = new FileInputStream( file );
 				data = CompressedStreamTools.readCompressed( fileInputStream );
 			}
-			catch( Throwable e )
+			catch( final Throwable e )
 			{
 				data = new NBTTagCompound();
 				AELog.error( e );
@@ -162,7 +162,7 @@ final class SpawnData implements IWorldSpawnData
 					{
 						fileInputStream.close();
 					}
-					catch( IOException e )
+					catch( final IOException e )
 					{
 						AELog.error( e );
 					}
@@ -177,7 +177,7 @@ final class SpawnData implements IWorldSpawnData
 		return data;
 	}
 
-	private void writeSpawnData( int dim, int chunkX, int chunkZ, NBTTagCompound data )
+	private void writeSpawnData( final int dim, final int chunkX, final int chunkZ, final NBTTagCompound data )
 	{
 		if( !Thread.holdsLock( SpawnData.class ) )
 		{
@@ -193,7 +193,7 @@ final class SpawnData implements IWorldSpawnData
 			fileOutputStream = new FileOutputStream( file );
 			CompressedStreamTools.writeCompressed( data, fileOutputStream );
 		}
-		catch( Throwable e )
+		catch( final Throwable e )
 		{
 			AELog.error( e );
 		}
@@ -205,7 +205,7 @@ final class SpawnData implements IWorldSpawnData
 				{
 					fileOutputStream.close();
 				}
-				catch( IOException e )
+				catch( final IOException e )
 				{
 					AELog.error( e );
 				}

@@ -28,7 +28,7 @@ public class QuartzKnifeObj implements IGuiItemObject
 
 	final ItemStack is;
 
-	public QuartzKnifeObj( ItemStack o )
+	public QuartzKnifeObj( final ItemStack o )
 	{
 		this.is = o;
 	}

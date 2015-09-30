@@ -35,90 +35,90 @@ public final class AETileEventHandler
 
 	private final Method method;
 
-	public AETileEventHandler( Method method )
+	public AETileEventHandler( final Method method )
 	{
 		this.method = method;
 	}
 
 	// TICK
-	public void tick( AEBaseTile tile )
+	public void tick( final AEBaseTile tile )
 	{
 		try
 		{
 			this.method.invoke( tile );
 		}
-		catch( IllegalAccessException e )
+		catch( final IllegalAccessException e )
 		{
 			throw new IllegalStateException( e );
 		}
-		catch( IllegalArgumentException e )
+		catch( final IllegalArgumentException e )
 		{
 			throw new IllegalStateException( e );
 		}
-		catch( InvocationTargetException e )
+		catch( final InvocationTargetException e )
 		{
 			throw new IllegalStateException( e );
 		}
 	}
 
 	// WORLD_NBT
-	public void writeToNBT( AEBaseTile tile, NBTTagCompound data )
+	public void writeToNBT( final AEBaseTile tile, final NBTTagCompound data )
 	{
 		try
 		{
 			this.method.invoke( tile, data );
 		}
-		catch( IllegalAccessException e )
+		catch( final IllegalAccessException e )
 		{
 			throw new IllegalStateException( e );
 		}
-		catch( IllegalArgumentException e )
+		catch( final IllegalArgumentException e )
 		{
 			throw new IllegalStateException( e );
 		}
-		catch( InvocationTargetException e )
+		catch( final InvocationTargetException e )
 		{
 			throw new IllegalStateException( e );
 		}
 	}
 
 	// WORLD NBT
-	public void readFromNBT( AEBaseTile tile, NBTTagCompound data )
+	public void readFromNBT( final AEBaseTile tile, final NBTTagCompound data )
 	{
 		try
 		{
 			this.method.invoke( tile, data );
 		}
-		catch( IllegalAccessException e )
+		catch( final IllegalAccessException e )
 		{
 			throw new IllegalStateException( e );
 		}
-		catch( IllegalArgumentException e )
+		catch( final IllegalArgumentException e )
 		{
 			throw new IllegalStateException( e );
 		}
-		catch( InvocationTargetException e )
+		catch( final InvocationTargetException e )
 		{
 			throw new IllegalStateException( e );
 		}
 	}
 
 	// NETWORK
-	public void writeToStream( AEBaseTile tile, ByteBuf data )
+	public void writeToStream( final AEBaseTile tile, final ByteBuf data )
 	{
 		try
 		{
 			this.method.invoke( tile, data );
 		}
-		catch( IllegalAccessException e )
+		catch( final IllegalAccessException e )
 		{
 			throw new IllegalStateException( e );
 		}
-		catch( IllegalArgumentException e )
+		catch( final IllegalArgumentException e )
 		{
 			throw new IllegalStateException( e );
 		}
-		catch( InvocationTargetException e )
+		catch( final InvocationTargetException e )
 		{
 			throw new IllegalStateException( e );
 		}
@@ -134,21 +134,21 @@ public final class AETileEventHandler
 	 * @return true of method could be invoked
 	 */
 	@SideOnly( Side.CLIENT )
-	public boolean readFromStream( AEBaseTile tile, ByteBuf data )
+	public boolean readFromStream( final AEBaseTile tile, final ByteBuf data )
 	{
 		try
 		{
 			return (Boolean) this.method.invoke( tile, data );
 		}
-		catch( IllegalAccessException e )
+		catch( final IllegalAccessException e )
 		{
 			throw new IllegalStateException( e );
 		}
-		catch( IllegalArgumentException e )
+		catch( final IllegalArgumentException e )
 		{
 			throw new IllegalStateException( e );
 		}
-		catch( InvocationTargetException e )
+		catch( final InvocationTargetException e )
 		{
 			throw new IllegalStateException( e );
 		}

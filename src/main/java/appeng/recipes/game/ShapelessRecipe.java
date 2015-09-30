@@ -39,10 +39,10 @@ public class ShapelessRecipe implements IRecipe, IRecipeBakeable
 	private ItemStack output = null;
 	private boolean disable = false;
 
-	public ShapelessRecipe( ItemStack result, Object... recipe )
+	public ShapelessRecipe( final ItemStack result, final Object... recipe )
 	{
 		this.output = result.copy();
-		for( Object in : recipe )
+		for( final Object in : recipe )
 		{
 			if( in instanceof IIngredient )
 			{
@@ -50,8 +50,8 @@ public class ShapelessRecipe implements IRecipe, IRecipeBakeable
 			}
 			else
 			{
-				StringBuilder ret = new StringBuilder( "Invalid shapeless ore recipe: " );
-				for( Object tmp : recipe )
+				final StringBuilder ret = new StringBuilder( "Invalid shapeless ore recipe: " );
+				for( final Object tmp : recipe )
 				{
 					ret.append( tmp ).append( ", " );
 				}
@@ -68,24 +68,24 @@ public class ShapelessRecipe implements IRecipe, IRecipeBakeable
 
 	@SuppressWarnings( "unchecked" )
 	@Override
-	public boolean matches( InventoryCrafting var1, World world )
+	public boolean matches( final InventoryCrafting var1, final World world )
 	{
 		if( this.disable )
 		{
 			return false;
 		}
 
-		ArrayList<Object> required = new ArrayList<Object>( this.input );
+		final ArrayList<Object> required = new ArrayList<Object>( this.input );
 
 		for( int x = 0; x < var1.getSizeInventory(); x++ )
 		{
-			ItemStack slot = var1.getStackInSlot( x );
+			final ItemStack slot = var1.getStackInSlot( x );
 
 			if( slot != null )
 			{
 				boolean inRecipe = false;
 
-				for( Object next : required )
+				for( final Object next : required )
 				{
 					boolean match = false;
 
@@ -93,16 +93,16 @@ public class ShapelessRecipe implements IRecipe, IRecipeBakeable
 					{
 						try
 						{
-							for( ItemStack item : ( (IIngredient) next ).getItemStackSet() )
+							for( final ItemStack item : ( (IIngredient) next ).getItemStackSet() )
 							{
 								match = match || this.checkItemEquals( item, slot );
 							}
 						}
-						catch( RegistrationError e )
+						catch( final RegistrationError e )
 						{
 							// :P
 						}
-						catch( MissingIngredientError e )
+						catch( final MissingIngredientError e )
 						{
 							// :P
 						}
@@ -127,7 +127,7 @@ public class ShapelessRecipe implements IRecipe, IRecipeBakeable
 	}
 
 	@Override
-	public ItemStack getCraftingResult( InventoryCrafting var1 )
+	public ItemStack getCraftingResult( final InventoryCrafting var1 )
 	{
 		return this.output.copy();
 	}
@@ -144,7 +144,7 @@ public class ShapelessRecipe implements IRecipe, IRecipeBakeable
 		return this.output;
 	}
 
-	private boolean checkItemEquals( ItemStack target, ItemStack input )
+	private boolean checkItemEquals( final ItemStack target, final ItemStack input )
 	{
 		return ( target.getItem() == input.getItem() && ( target.getItemDamage() == OreDictionary.WILDCARD_VALUE || target.getItemDamage() == input.getItemDamage() ) );
 	}
@@ -166,7 +166,7 @@ public class ShapelessRecipe implements IRecipe, IRecipeBakeable
 		try
 		{
 			this.disable = false;
-			for( Object o : this.input )
+			for( final Object o : this.input )
 			{
 				if( o instanceof IIngredient )
 				{
@@ -174,7 +174,7 @@ public class ShapelessRecipe implements IRecipe, IRecipeBakeable
 				}
 			}
 		}
-		catch( MissingIngredientError e )
+		catch( final MissingIngredientError e )
 		{
 			this.disable = true;
 		}
@@ -182,7 +182,7 @@ public class ShapelessRecipe implements IRecipe, IRecipeBakeable
 	
 	@Override
 	public ItemStack[] getRemainingItems(
-			InventoryCrafting inv )
+			final InventoryCrafting inv )
 	{
         return ForgeHooks.defaultRecipeGetRemainingItems(inv);
 	}

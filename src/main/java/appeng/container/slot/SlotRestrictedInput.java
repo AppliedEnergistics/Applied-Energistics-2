@@ -58,7 +58,7 @@ public class SlotRestrictedInput extends AppEngSlot
 	public boolean allowEdit = true;
 	public int stackLimit = -1;
 
-	public SlotRestrictedInput( PlacableItemType valid, IInventory i, int slotIndex, int x, int y, InventoryPlayer p )
+	public SlotRestrictedInput( final PlacableItemType valid, final IInventory i, final int slotIndex, final int x, final int y, final InventoryPlayer p )
 	{
 		super( i, slotIndex, x, y );
 		this.which = valid;
@@ -76,24 +76,24 @@ public class SlotRestrictedInput extends AppEngSlot
 		return super.getSlotStackLimit();
 	}
 
-	public boolean isValid( ItemStack is, World theWorld )
+	public boolean isValid( final ItemStack is, final World theWorld )
 	{
 		if( this.which == PlacableItemType.VALID_ENCODED_PATTERN_W_OUTPUT )
 		{
-			ICraftingPatternDetails ap = is.getItem() instanceof ICraftingPatternItem ? ( (ICraftingPatternItem) is.getItem() ).getPatternForItem( is, theWorld ) : null;
+			final ICraftingPatternDetails ap = is.getItem() instanceof ICraftingPatternItem ? ( (ICraftingPatternItem) is.getItem() ).getPatternForItem( is, theWorld ) : null;
 			return ap != null;
 		}
 		return true;
 	}
 
-	public Slot setStackLimit( int i )
+	public Slot setStackLimit( final int i )
 	{
 		this.stackLimit = i;
 		return this;
 	}
 
 	@Override
-	public boolean isItemValid( ItemStack i )
+	public boolean isItemValid( final ItemStack i )
 	{
 		if( !this.myContainer.isValidForSlot( this, i ) )
 		{
@@ -128,8 +128,8 @@ public class SlotRestrictedInput extends AppEngSlot
 			case ENCODED_CRAFTING_PATTERN:
 				if( i.getItem() instanceof ICraftingPatternItem )
 				{
-					ICraftingPatternItem b = (ICraftingPatternItem) i.getItem();
-					ICraftingPatternDetails de = b.getPatternForItem( i, this.p.player.worldObj );
+					final ICraftingPatternItem b = (ICraftingPatternItem) i.getItem();
+					final ICraftingPatternDetails de = b.getPatternForItem( i, this.p.player.worldObj );
 					if( de != null )
 					{
 						return de.isCraftable();
@@ -166,7 +166,7 @@ public class SlotRestrictedInput extends AppEngSlot
 					return true;
 				}
 
-				for( ItemStack optional : AEApi.instance().registries().inscriber().getOptionals() )
+				for( final ItemStack optional : AEApi.instance().registries().inscriber().getOptionals() )
 				{
 					if( Platform.isSameItemPrecise( optional, i ) )
 					{
@@ -230,7 +230,7 @@ public class SlotRestrictedInput extends AppEngSlot
 	}
 
 	@Override
-	public boolean canTakeStack( EntityPlayer par1EntityPlayer )
+	public boolean canTakeStack( final EntityPlayer par1EntityPlayer )
 	{
 		return this.allowEdit;
 	}
@@ -240,11 +240,11 @@ public class SlotRestrictedInput extends AppEngSlot
 	{
 		if( Platform.isClient() && ( this.which == PlacableItemType.ENCODED_PATTERN ) )
 		{
-			ItemStack is = super.getStack();
+			final ItemStack is = super.getStack();
 			if( is != null && is.getItem() instanceof ItemEncodedPattern )
 			{
-				ItemEncodedPattern iep = (ItemEncodedPattern) is.getItem();
-				ItemStack out = iep.getOutput( is );
+				final ItemEncodedPattern iep = (ItemEncodedPattern) is.getItem();
+				final ItemStack out = iep.getOutput( is );
 				if( out != null )
 				{
 					return out;
@@ -254,16 +254,16 @@ public class SlotRestrictedInput extends AppEngSlot
 		return super.getStack();
 	}
 
-	public static boolean isMetalIngot( ItemStack i )
+	public static boolean isMetalIngot( final ItemStack i )
 	{
 		if( Platform.isSameItemPrecise( i, new ItemStack( Items.iron_ingot ) ) )
 		{
 			return true;
 		}
 
-		for( String name : new String[] { "Copper", "Tin", "Obsidian", "Iron", "Lead", "Bronze", "Brass", "Nickel", "Aluminium" } )
+		for( final String name : new String[] { "Copper", "Tin", "Obsidian", "Iron", "Lead", "Bronze", "Brass", "Nickel", "Aluminium" } )
 		{
-			for( ItemStack ingot : OreDictionary.getOres( "ingot" + name ) )
+			for( final ItemStack ingot : OreDictionary.getOres( "ingot" + name ) )
 			{
 				if( Platform.isSameItemPrecise( i, ingot ) )
 				{
@@ -291,7 +291,7 @@ public class SlotRestrictedInput extends AppEngSlot
 
 		public final int IIcon;
 
-		PlacableItemType( int o )
+		PlacableItemType( final int o )
 		{
 			this.IIcon = o;
 		}

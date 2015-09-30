@@ -47,13 +47,13 @@ import appeng.util.Platform;
 public final class EntityTinyTNTPrimed extends EntityTNTPrimed implements IEntityAdditionalSpawnData
 {
 	@Reflected
-	public EntityTinyTNTPrimed( World w )
+	public EntityTinyTNTPrimed( final World w )
 	{
 		super( w );
 		this.setSize( 0.35F, 0.35F );
 	}
 
-	public EntityTinyTNTPrimed( World w, double x, double y, double z, EntityLivingBase igniter )
+	public EntityTinyTNTPrimed( final World w, final double x, final double y, final double z, final EntityLivingBase igniter )
 	{
 		super( w, x, y, z, igniter );
 		this.setSize( 0.55F, 0.55F );
@@ -86,7 +86,7 @@ public final class EntityTinyTNTPrimed extends EntityTNTPrimed implements IEntit
 
 		if( this.isInWater() && Platform.isServer() ) // put out the fuse.
 		{
-			for( ItemStack tntStack : AEApi.instance().definitions().blocks().tinyTNT().maybeStack( 1 ).asSet() )
+			for( final ItemStack tntStack : AEApi.instance().definitions().blocks().tinyTNT().maybeStack( 1 ).asSet() )
 			{
 				final EntityItem item = new EntityItem( this.worldObj, this.posX, this.posY, this.posZ, tntStack );
 
@@ -128,7 +128,7 @@ public final class EntityTinyTNTPrimed extends EntityTNTPrimed implements IEntit
 			return;
 		}
 
-		for( Object e : this.worldObj.getEntitiesWithinAABBExcludingEntity( this, AxisAlignedBB.fromBounds( this.posX - 1.5, this.posY - 1.5f, this.posZ - 1.5, this.posX + 1.5, this.posY + 1.5, this.posZ + 1.5 ) ) )
+		for( final Object e : this.worldObj.getEntitiesWithinAABBExcludingEntity( this, AxisAlignedBB.fromBounds( this.posX - 1.5, this.posY - 1.5f, this.posZ - 1.5, this.posX + 1.5, this.posY + 1.5, this.posZ + 1.5 ) ) )
 		{
 			if( e instanceof Entity )
 			{
@@ -139,7 +139,7 @@ public final class EntityTinyTNTPrimed extends EntityTNTPrimed implements IEntit
 		if( AEConfig.instance.isFeatureEnabled( AEFeature.TinyTNTBlockDamage ) )
 		{
 			this.posY -= 0.25;
-			Explosion ex = new Explosion( this.worldObj, this, this.posX, this.posY, this.posZ, 0.2f, false, false );
+			final Explosion ex = new Explosion( this.worldObj, this, this.posX, this.posY, this.posZ, 0.2f, false, false );
 
 			for( int x = (int) ( this.posX - 2 ); x <= this.posX + 2; x++ )
 			{
@@ -147,14 +147,14 @@ public final class EntityTinyTNTPrimed extends EntityTNTPrimed implements IEntit
 				{
 					for( int z = (int) ( this.posZ - 2 ); z <= this.posZ + 2; z++ )
 					{
-						BlockPos point = new BlockPos( x,y,z);
-						IBlockState state = this.worldObj.getBlockState( point );
-						Block block = state.getBlock();
+						final BlockPos point = new BlockPos( x,y,z);
+						final IBlockState state = this.worldObj.getBlockState( point );
+						final Block block = state.getBlock();
 						if( block != null && !block.isAir( this.worldObj, point ) )
 						{
 							float strength = (float) ( 2.3f - ( ( ( x + 0.5f ) - this.posX ) * ( ( x + 0.5f ) - this.posX ) + ( ( y + 0.5f ) - this.posY ) * ( ( y + 0.5f ) - this.posY ) + ( ( z + 0.5f ) - this.posZ ) * ( ( z + 0.5f ) - this.posZ ) ) );
 
-							float resistance = block.getExplosionResistance( this.worldObj, point, this, ex );
+							final float resistance = block.getExplosionResistance( this.worldObj, point, this, ex );
 							strength -= ( resistance + 0.3F ) * 0.11f;
 
 							if( strength > 0.01 )
@@ -179,13 +179,13 @@ public final class EntityTinyTNTPrimed extends EntityTNTPrimed implements IEntit
 	}
 
 	@Override
-	public void writeSpawnData( ByteBuf data )
+	public void writeSpawnData( final ByteBuf data )
 	{
 		data.writeByte( this.fuse );
 	}
 
 	@Override
-	public void readSpawnData( ByteBuf data )
+	public void readSpawnData( final ByteBuf data )
 	{
 		this.fuse = data.readByte();
 	}

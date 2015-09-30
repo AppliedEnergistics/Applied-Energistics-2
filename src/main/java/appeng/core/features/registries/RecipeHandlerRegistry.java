@@ -46,22 +46,22 @@ public class RecipeHandlerRegistry implements IRecipeHandlerRegistry
 	private final Collection<ISubItemResolver> resolvers = new LinkedList<ISubItemResolver>();
 
 	@Override
-	public void addNewCraftHandler( String name, Class<? extends ICraftHandler> handler )
+	public void addNewCraftHandler( final String name, final Class<? extends ICraftHandler> handler )
 	{
 		this.handlers.put( name.toLowerCase( Locale.ENGLISH ), handler );
 	}
 
 	@Override
-	public void addNewSubItemResolver( ISubItemResolver sir )
+	public void addNewSubItemResolver( final ISubItemResolver sir )
 	{
 		this.resolvers.add( sir );
 	}
 
 	@Nullable
 	@Override
-	public ICraftHandler getCraftHandlerFor( String name )
+	public ICraftHandler getCraftHandlerFor( final String name )
 	{
-		Class<? extends ICraftHandler> clz = this.handlers.get( name );
+		final Class<? extends ICraftHandler> clz = this.handlers.get( name );
 		if( clz == null )
 		{
 			return null;
@@ -70,7 +70,7 @@ public class RecipeHandlerRegistry implements IRecipeHandlerRegistry
 		{
 			return clz.newInstance();
 		}
-		catch( Throwable e )
+		catch( final Throwable e )
 		{
 			AELog.severe( "Error Caused when trying to construct " + clz.getName() );
 			AELog.error( e );
@@ -89,9 +89,9 @@ public class RecipeHandlerRegistry implements IRecipeHandlerRegistry
 
 	@Nullable
 	@Override
-	public Object resolveItem( String nameSpace, String itemName )
+	public Object resolveItem( final String nameSpace, final String itemName )
 	{
-		for( ISubItemResolver sir : this.resolvers )
+		for( final ISubItemResolver sir : this.resolvers )
 		{
 			Object rr = null;
 
@@ -99,7 +99,7 @@ public class RecipeHandlerRegistry implements IRecipeHandlerRegistry
 			{
 				rr = sir.resolveItemByName( nameSpace, itemName );
 			}
-			catch( Throwable t )
+			catch( final Throwable t )
 			{
 				AELog.error( t );
 			}

@@ -45,11 +45,11 @@ public final class ChargedQuartzOreBlock extends QuartzOreBlock
 	
 	@Override
 	public Item getItemDropped(
-			IBlockState state,
-			Random rand,
-			int fortune )
+			final IBlockState state,
+			final Random rand,
+			final int fortune )
 	{
-		for( Item charged : AEApi.instance().definitions().materials().certusQuartzCrystalCharged().maybeItem().asSet() )
+		for( final Item charged : AEApi.instance().definitions().materials().certusQuartzCrystalCharged().maybeItem().asSet() )
 		{
 			return charged;
 		}
@@ -59,9 +59,9 @@ public final class ChargedQuartzOreBlock extends QuartzOreBlock
 
 	@Override
 	public int damageDropped(
-			IBlockState state )
+			final IBlockState state )
 	{
-		for ( ItemStack crystalStack : AEApi.instance().definitions().materials().certusQuartzCrystalCharged().maybeStack( 1 ).asSet() )
+		for ( final ItemStack crystalStack : AEApi.instance().definitions().materials().certusQuartzCrystalCharged().maybeStack( 1 ).asSet() )
 		{
 			return crystalStack.getItemDamage();
 		}
@@ -71,10 +71,10 @@ public final class ChargedQuartzOreBlock extends QuartzOreBlock
 
 	@Override
 	public void randomDisplayTick(
-			World w,
-			BlockPos pos,
-			IBlockState state,
-			Random r )
+			final World w,
+			final BlockPos pos,
+			final IBlockState state,
+			final Random r )
 	{
 		if ( !AEConfig.instance.enableEffects )
 		{
@@ -112,7 +112,7 @@ public final class ChargedQuartzOreBlock extends QuartzOreBlock
 
 		if( CommonHelper.proxy.shouldAddParticles( r ) )
 		{
-			ChargedOreFX fx = new ChargedOreFX( w, pos.getX() + xOff, pos.getY() + yOff, pos.getZ() + zOff, 0.0f, 0.0f, 0.0f );
+			final ChargedOreFX fx = new ChargedOreFX( w, pos.getX() + xOff, pos.getY() + yOff, pos.getZ() + zOff, 0.0f, 0.0f, 0.0f );
 			Minecraft.getMinecraft().effectRenderer.addEffect( fx );
 		}
 	}

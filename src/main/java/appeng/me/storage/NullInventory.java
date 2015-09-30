@@ -32,19 +32,19 @@ public class NullInventory<T extends IAEStack<T>> implements IMEInventoryHandler
 {
 
 	@Override
-	public T injectItems( T input, Actionable mode, BaseActionSource src )
+	public T injectItems( final T input, final Actionable mode, final BaseActionSource src )
 	{
 		return input;
 	}
 
 	@Override
-	public T extractItems( T request, Actionable mode, BaseActionSource src )
+	public T extractItems( final T request, final Actionable mode, final BaseActionSource src )
 	{
 		return null;
 	}
 
 	@Override
-	public IItemList<T> getAvailableItems( IItemList out )
+	public IItemList<T> getAvailableItems( final IItemList out )
 	{
 		return out;
 	}
@@ -62,13 +62,13 @@ public class NullInventory<T extends IAEStack<T>> implements IMEInventoryHandler
 	}
 
 	@Override
-	public boolean isPrioritized( T input )
+	public boolean isPrioritized( final T input )
 	{
 		return false;
 	}
 
 	@Override
-	public boolean canAccept( T input )
+	public boolean canAccept( final T input )
 	{
 		return false;
 	}
@@ -86,7 +86,7 @@ public class NullInventory<T extends IAEStack<T>> implements IMEInventoryHandler
 	}
 
 	@Override
-	public boolean validForPass( int i )
+	public boolean validForPass( final int i )
 	{
 		return i == 2;
 	}

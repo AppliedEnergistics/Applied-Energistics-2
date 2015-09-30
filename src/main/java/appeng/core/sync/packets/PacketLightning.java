@@ -41,7 +41,7 @@ public class PacketLightning extends AppEngPacket
 	final double z;
 
 	// automatic.
-	public PacketLightning( ByteBuf stream )
+	public PacketLightning( final ByteBuf stream )
 	{
 		this.x = stream.readFloat();
 		this.y = stream.readFloat();
@@ -49,13 +49,13 @@ public class PacketLightning extends AppEngPacket
 	}
 
 	// api
-	public PacketLightning( double x, double y, double z )
+	public PacketLightning( final double x, final double y, final double z )
 	{
 		this.x = x;
 		this.y = y;
 		this.z = z;
 
-		ByteBuf data = Unpooled.buffer();
+		final ByteBuf data = Unpooled.buffer();
 
 		data.writeInt( this.getPacketID() );
 		data.writeFloat( (float) x );
@@ -67,17 +67,17 @@ public class PacketLightning extends AppEngPacket
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void clientPacketData( INetworkInfo network, AppEngPacket packet, EntityPlayer player )
+	public void clientPacketData( final INetworkInfo network, final AppEngPacket packet, final EntityPlayer player )
 	{
 		try
 		{
 			if( Platform.isClient() && AEConfig.instance.enableEffects )
 			{
-				LightningFX fx = new LightningFX( ClientHelper.proxy.getWorld(), this.x, this.y, this.z, 0.0f, 0.0f, 0.0f );
+				final LightningFX fx = new LightningFX( ClientHelper.proxy.getWorld(), this.x, this.y, this.z, 0.0f, 0.0f, 0.0f );
 				Minecraft.getMinecraft().effectRenderer.addEffect( fx );
 			}
 		}
-		catch( Exception ignored )
+		catch( final Exception ignored )
 		{
 		}
 	}

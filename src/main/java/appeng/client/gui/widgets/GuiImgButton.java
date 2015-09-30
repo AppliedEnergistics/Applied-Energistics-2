@@ -62,7 +62,7 @@ public class GuiImgButton extends GuiButton implements ITooltip
 	public String fillVar;
 	private Enum currentValue;
 
-	public GuiImgButton( int x, int y, Enum idx, Enum val )
+	public GuiImgButton( final int x, final int y, final Enum idx, final Enum val )
 	{
 		super( 0, 0, 16, "" );
 
@@ -166,27 +166,27 @@ public class GuiImgButton extends GuiButton implements ITooltip
 		}
 	}
 
-	private void registerApp( int iconIndex, Settings setting, Enum val, ButtonToolTips title, Object hint )
+	private void registerApp( final int iconIndex, final Settings setting, final Enum val, final ButtonToolTips title, final Object hint )
 	{
-		ButtonAppearance a = new ButtonAppearance();
+		final ButtonAppearance a = new ButtonAppearance();
 		a.displayName = title.getUnlocalized();
 		a.displayValue = (String) ( hint instanceof String ? hint : ( (ButtonToolTips) hint ).getUnlocalized() );
 		a.index = iconIndex;
 		appearances.put( new EnumPair( setting, val ), a );
 	}
 
-	public void setVisibility( boolean vis )
+	public void setVisibility( final boolean vis )
 	{
 		this.visible = vis;
 		this.enabled = vis;
 	}
 
 	@Override
-	public void drawButton( Minecraft par1Minecraft, int par2, int par3 )
+	public void drawButton( final Minecraft par1Minecraft, final int par2, final int par3 )
 	{
 		if( this.visible )
 		{
-			int iconIndex = this.getIconIndex();
+			final int iconIndex = this.getIconIndex();
 
 			if( this.halfSize )
 			{
@@ -209,8 +209,8 @@ public class GuiImgButton extends GuiButton implements ITooltip
 				par1Minecraft.renderEngine.bindTexture( ExtraBlockTextures.GuiTexture( "guis/states.png" ) );
 				this.hovered = par2 >= this.xPosition && par3 >= this.yPosition && par2 < this.xPosition + this.width && par3 < this.yPosition + this.height;
 
-				int uv_y = (int) Math.floor( iconIndex / 16 );
-				int uv_x = iconIndex - uv_y * 16;
+				final int uv_y = (int) Math.floor( iconIndex / 16 );
+				final int uv_x = iconIndex - uv_y * 16;
 
 				this.drawTexturedModalRect( 0, 0, 256 - 16, 256 - 16, 16, 16 );
 				this.drawTexturedModalRect( 0, 0, uv_x * 16, uv_y * 16, 16, 16 );
@@ -232,8 +232,8 @@ public class GuiImgButton extends GuiButton implements ITooltip
 				par1Minecraft.renderEngine.bindTexture( ExtraBlockTextures.GuiTexture( "guis/states.png" ) );
 				this.hovered = par2 >= this.xPosition && par3 >= this.yPosition && par2 < this.xPosition + this.width && par3 < this.yPosition + this.height;
 
-				int uv_y = (int) Math.floor( iconIndex / 16 );
-				int uv_x = iconIndex - uv_y * 16;
+				final int uv_y = (int) Math.floor( iconIndex / 16 );
+				final int uv_x = iconIndex - uv_y * 16;
 
 				this.drawTexturedModalRect( this.xPosition, this.yPosition, 256 - 16, 256 - 16, 16, 16 );
 				this.drawTexturedModalRect( this.xPosition, this.yPosition, uv_x * 16, uv_y * 16, 16, 16 );
@@ -247,7 +247,7 @@ public class GuiImgButton extends GuiButton implements ITooltip
 	{
 		if( this.buttonSetting != null && this.currentValue != null )
 		{
-			ButtonAppearance app = appearances.get( new EnumPair( this.buttonSetting, this.currentValue ) );
+			final ButtonAppearance app = appearances.get( new EnumPair( this.buttonSetting, this.currentValue ) );
 			if( app == null )
 			{
 				return 256 - 1;
@@ -275,7 +275,7 @@ public class GuiImgButton extends GuiButton implements ITooltip
 
 		if( this.buttonSetting != null && this.currentValue != null )
 		{
-			ButtonAppearance buttonAppearance = appearances.get( new EnumPair( this.buttonSetting, this.currentValue ) );
+			final ButtonAppearance buttonAppearance = appearances.get( new EnumPair( this.buttonSetting, this.currentValue ) );
 			if( buttonAppearance == null )
 			{
 				return "No Such Message";
@@ -305,7 +305,7 @@ public class GuiImgButton extends GuiButton implements ITooltip
 			}
 
 			value = PATTERN_NEW_LINE.matcher( value ).replaceAll( "\n" );
-			StringBuilder sb = new StringBuilder( value );
+			final StringBuilder sb = new StringBuilder( value );
 
 			int i = sb.lastIndexOf( "\n" );
 			if( i <= 0 )
@@ -352,7 +352,7 @@ public class GuiImgButton extends GuiButton implements ITooltip
 		return this.visible;
 	}
 
-	public void set( Enum e )
+	public void set( final Enum e )
 	{
 		if( this.currentValue != e )
 		{
@@ -366,7 +366,7 @@ public class GuiImgButton extends GuiButton implements ITooltip
 		final Enum setting;
 		final Enum value;
 
-		EnumPair( Enum a, Enum b )
+		EnumPair( final Enum a, final Enum b )
 		{
 			this.setting = a;
 			this.value = b;
@@ -379,7 +379,7 @@ public class GuiImgButton extends GuiButton implements ITooltip
 		}
 
 		@Override
-		public boolean equals( Object obj )
+		public boolean equals( final Object obj )
 		{
 			if( obj == null )
 			{
@@ -389,7 +389,7 @@ public class GuiImgButton extends GuiButton implements ITooltip
 			{
 				return false;
 			}
-			EnumPair other = (EnumPair) obj;
+			final EnumPair other = (EnumPair) obj;
 			return other.setting == this.setting && other.value == this.value;
 		}
 	}

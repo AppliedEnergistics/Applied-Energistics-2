@@ -77,11 +77,11 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 	}
 
 	@Override
-	protected ItemStack getItemFromTile( Object obj )
+	protected ItemStack getItemFromTile( final Object obj )
 	{
 		if( ( (TileCraftingTile) obj ).isAccelerator() )
 		{
-			for( ItemStack accelerator : AEApi.instance().definitions().blocks().craftingAccelerator().maybeStack( 1 ).asSet() )
+			for( final ItemStack accelerator : AEApi.instance().definitions().blocks().craftingAccelerator().maybeStack( 1 ).asSet() )
 			{
 				return accelerator;
 			}
@@ -98,7 +98,7 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 	}
 
 	@Override
-	public void setName( String name )
+	public void setName( final String name )
 	{
 		super.setName( name );
 		if( this.cluster != null )
@@ -114,7 +114,7 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 			return false;
 		}
 		
-		BlockCraftingUnit unit = (BlockCraftingUnit)this.worldObj.getBlockState( pos ).getBlock();
+		final BlockCraftingUnit unit = (BlockCraftingUnit)this.worldObj.getBlockState( pos ).getBlock();
 		return unit.type == CraftingUnitType.ACCELERATOR;
 	}
 
@@ -131,7 +131,7 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 		this.calc.calculateMultiblock( this.worldObj, this.getLocation() );
 	}
 
-	public void updateStatus( CraftingCPUCluster c )
+	public void updateStatus( final CraftingCPUCluster c )
 	{
 		if( this.cluster != null && this.cluster != c )
 		{
@@ -142,14 +142,14 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 		this.updateMeta( true );
 	}
 
-	public void updateMeta( boolean updateFormed )
+	public void updateMeta( final boolean updateFormed )
 	{
 		if( this.worldObj == null || this.notLoaded() )
 		{
 			return;
 		}
 
-		boolean formed = this.isFormed();
+		final boolean formed = this.isFormed();
 		boolean power = false;
 
 		if( this.gridProxy.isReady() )
@@ -157,8 +157,8 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 			power = this.gridProxy.isActive();
 		}
 
-		IBlockState current = this.worldObj.getBlockState( pos );
-		IBlockState newState = current.withProperty( BlockCraftingUnit.POWERED, power ).withProperty( BlockCraftingUnit.FORMED, formed );
+		final IBlockState current = this.worldObj.getBlockState( pos );
+		final IBlockState newState = current.withProperty( BlockCraftingUnit.POWERED, power ).withProperty( BlockCraftingUnit.FORMED, formed );
 
 		if( current != newState )
 		{
@@ -188,7 +188,7 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 	}
 
 	@TileEvent( TileEventType.WORLD_NBT_WRITE )
-	public void writeToNBT_TileCraftingTile( NBTTagCompound data )
+	public void writeToNBT_TileCraftingTile( final NBTTagCompound data )
 	{
 		data.setBoolean( "core", this.isCoreBlock );
 		if( this.isCoreBlock && this.cluster != null )
@@ -198,7 +198,7 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 	}
 
 	@TileEvent( TileEventType.WORLD_NBT_READ )
-	public void readFromNBT_TileCraftingTile( NBTTagCompound data )
+	public void readFromNBT_TileCraftingTile( final NBTTagCompound data )
 	{
 		this.isCoreBlock = data.getBoolean( "core" );
 		if( this.isCoreBlock )
@@ -215,7 +215,7 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 	}
 
 	@Override
-	public void disconnect( boolean update )
+	public void disconnect( final boolean update )
 	{
 		if( this.cluster != null )
 		{
@@ -240,13 +240,13 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 	}
 
 	@MENetworkEventSubscribe
-	public void onPowerStateChange( MENetworkChannelsChanged ev )
+	public void onPowerStateChange( final MENetworkChannelsChanged ev )
 	{
 		this.updateMeta( false );
 	}
 
 	@MENetworkEventSubscribe
-	public void onPowerStateChange( MENetworkPowerStatusChange ev )
+	public void onPowerStateChange( final MENetworkPowerStatusChange ev )
 	{
 		this.updateMeta( false );
 	}
@@ -271,25 +271,25 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 		if( this.cluster != null )
 		{
 			this.cluster.cancel();
-			IMEInventory<IAEItemStack> inv = this.cluster.getInventory();
+			final IMEInventory<IAEItemStack> inv = this.cluster.getInventory();
 
-			LinkedList<WorldCoord> places = new LinkedList<WorldCoord>();
+			final LinkedList<WorldCoord> places = new LinkedList<WorldCoord>();
 
-			Iterator<IGridHost> i = this.cluster.getTiles();
+			final Iterator<IGridHost> i = this.cluster.getTiles();
 			while( i.hasNext() )
 			{
-				IGridHost h = i.next();
+				final IGridHost h = i.next();
 				if( h == this )
 				{
 					places.add( new WorldCoord( this ) );
 				}
 				else
 				{
-					TileEntity te = (TileEntity) h;
+					final TileEntity te = (TileEntity) h;
 
-					for( AEPartLocation d : AEPartLocation.SIDE_LOCATIONS )
+					for( final AEPartLocation d : AEPartLocation.SIDE_LOCATIONS )
 					{
-						WorldCoord wc = new WorldCoord( te );
+						final WorldCoord wc = new WorldCoord( te );
 						wc.add( d, 1 );
 						if( this.worldObj.isAirBlock( wc.getPos() ) )
 						{
@@ -312,13 +312,13 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 				ais.setStackSize( ais.getItemStack().getMaxStackSize() );
 				while( true )
 				{
-					IAEItemStack g = inv.extractItems( ais.copy(), Actionable.MODULATE, this.cluster.getActionSource() );
+					final IAEItemStack g = inv.extractItems( ais.copy(), Actionable.MODULATE, this.cluster.getActionSource() );
 					if( g == null )
 					{
 						break;
 					}
 
-					WorldCoord wc = places.poll();
+					final WorldCoord wc = places.poll();
 					places.add( wc );
 
 					Platform.spawnDrops( this.worldObj, wc.getPos(), Collections.singletonList( g.getItemStack() ) );

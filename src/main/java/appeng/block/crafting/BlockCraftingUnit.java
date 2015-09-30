@@ -61,7 +61,7 @@ public class BlockCraftingUnit extends AEBaseTileBlock
 
 	final public CraftingUnitType type;
 
-	public BlockCraftingUnit( CraftingUnitType type )
+	public BlockCraftingUnit( final CraftingUnitType type )
 	{
 		super( Material.iron, Optional.of( type.name() ) );
 
@@ -71,23 +71,23 @@ public class BlockCraftingUnit extends AEBaseTileBlock
 	}
 
 	@Override
-	public IBlockState getStateFromMeta( int meta )
+	public IBlockState getStateFromMeta( final int meta )
 	{
 		return getDefaultState().withProperty( POWERED, ( meta & 1 ) == 1 ).withProperty( FORMED, ( meta & 2 ) == 2 );
 	}
 
 	@Override
-	public int getMetaFromState( IBlockState state )
+	public int getMetaFromState( final IBlockState state )
 	{
-		boolean p = (boolean) state.getValue( POWERED );
-		boolean f = (boolean) state.getValue( FORMED );
+		final boolean p = (boolean) state.getValue( POWERED );
+		final boolean f = (boolean) state.getValue( FORMED );
 		return ( p ? 1 : 0 ) | ( f ? 2 : 0 );
 	}
 
 	@Override
-	public void onNeighborBlockChange( World worldIn, BlockPos pos, IBlockState state, Block neighborBlock )
+	public void onNeighborBlockChange( final World worldIn, final BlockPos pos, final IBlockState state, final Block neighborBlock )
 	{
-		TileCraftingTile cp = this.getTileEntity( worldIn, pos );
+		final TileCraftingTile cp = this.getTileEntity( worldIn, pos );
 		if( cp != null )
 		{
 			cp.updateMultiBlock();
@@ -101,9 +101,9 @@ public class BlockCraftingUnit extends AEBaseTileBlock
 	}
 
 	@Override
-	public void breakBlock( World w, BlockPos pos, IBlockState state )
+	public void breakBlock( final World w, final BlockPos pos, final IBlockState state )
 	{
-		TileCraftingTile cp = this.getTileEntity( w, pos );
+		final TileCraftingTile cp = this.getTileEntity( w, pos );
 		if( cp != null )
 		{
 			cp.breakCluster();
@@ -113,9 +113,9 @@ public class BlockCraftingUnit extends AEBaseTileBlock
 	}
 
 	@Override
-	public boolean onBlockActivated( World w, BlockPos pos, IBlockState state, EntityPlayer p, EnumFacing side, float hitX, float hitY, float hitZ )
+	public boolean onBlockActivated( final World w, final BlockPos pos, final IBlockState state, final EntityPlayer p, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
 	{
-		TileCraftingTile tg = this.getTileEntity( w, pos );
+		final TileCraftingTile tg = this.getTileEntity( w, pos );
 		if( tg != null && !p.isSneaking() && tg.isFormed() && tg.isActive() )
 		{
 			if( Platform.isClient() )
@@ -130,7 +130,7 @@ public class BlockCraftingUnit extends AEBaseTileBlock
 		return false;
 	}
 
-	protected String getItemUnlocalizedName( ItemStack is )
+	protected String getItemUnlocalizedName( final ItemStack is )
 	{
 		return super.getUnlocalizedName( is );
 	}
@@ -151,7 +151,7 @@ public class BlockCraftingUnit extends AEBaseTileBlock
 	}
 
 	@Override
-	public appeng.client.texture.IAESprite getIcon( EnumFacing side, IBlockState state )
+	public appeng.client.texture.IAESprite getIcon( final EnumFacing side, final IBlockState state )
 	{
 		if( type == CraftingUnitType.ACCELERATOR )
 		{
@@ -173,14 +173,14 @@ public class BlockCraftingUnit extends AEBaseTileBlock
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void getCheckedSubBlocks( Item item, CreativeTabs tabs, List<ItemStack> itemStacks )
+	public void getCheckedSubBlocks( final Item item, final CreativeTabs tabs, final List<ItemStack> itemStacks )
 	{
 		itemStacks.add( new ItemStack( this, 1, 0 ) );
 		itemStacks.add( new ItemStack( this, 1, 1 ) );
 	}
 
 	@Override
-	public String getUnlocalizedName( ItemStack is )
+	public String getUnlocalizedName( final ItemStack is )
 	{
 		if( is.getItemDamage() == 1 )
 		{

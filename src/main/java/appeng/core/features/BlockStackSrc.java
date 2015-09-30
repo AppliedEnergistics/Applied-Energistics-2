@@ -35,7 +35,7 @@ public class BlockStackSrc implements IStackSrc
 	public final int damage;
 	private final boolean enabled;
 
-	public BlockStackSrc( Block block, int damage, ActivityState state )
+	public BlockStackSrc( final Block block, final int damage, final ActivityState state )
 	{
 		Preconditions.checkNotNull( block );
 		Preconditions.checkArgument( damage >= 0 );
@@ -49,7 +49,7 @@ public class BlockStackSrc implements IStackSrc
 
 	@Nullable
 	@Override
-	public ItemStack stack( int i )
+	public ItemStack stack( final int i )
 	{
 		return new ItemStack( this.block, i, this.damage );
 	}

@@ -61,7 +61,7 @@ public class GuiLevelEmitter extends GuiUpgradeable
 	GuiImgButton levelMode;
 	GuiImgButton craftingMode;
 
-	public GuiLevelEmitter( InventoryPlayer inventoryPlayer, PartLevelEmitter te )
+	public GuiLevelEmitter( final InventoryPlayer inventoryPlayer, final PartLevelEmitter te )
 	{
 		super( new ContainerLevelEmitter( inventoryPlayer, te ) );
 	}
@@ -88,10 +88,10 @@ public class GuiLevelEmitter extends GuiUpgradeable
 		this.fuzzyMode = new GuiImgButton( this.guiLeft - 18, this.guiTop + 48, Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL );
 		this.craftingMode = new GuiImgButton( this.guiLeft - 18, this.guiTop + 48, Settings.CRAFT_VIA_REDSTONE, YesNo.NO );
 
-		int a = AEConfig.instance.levelByStackAmounts( 0 );
-		int b = AEConfig.instance.levelByStackAmounts( 1 );
-		int c = AEConfig.instance.levelByStackAmounts( 2 );
-		int d = AEConfig.instance.levelByStackAmounts( 3 );
+		final int a = AEConfig.instance.levelByStackAmounts( 0 );
+		final int b = AEConfig.instance.levelByStackAmounts( 1 );
+		final int c = AEConfig.instance.levelByStackAmounts( 2 );
+		final int d = AEConfig.instance.levelByStackAmounts( 3 );
 
 		this.buttonList.add( this.plus1 = new GuiButton( 0, this.guiLeft + 20, this.guiTop + 17, 22, 20, "+" + a ) );
 		this.buttonList.add( this.plus10 = new GuiButton( 0, this.guiLeft + 48, this.guiTop + 17, 28, 20, "+" + b ) );
@@ -110,9 +110,9 @@ public class GuiLevelEmitter extends GuiUpgradeable
 	}
 
 	@Override
-	public void drawFG( int offsetX, int offsetY, int mouseX, int mouseY )
+	public void drawFG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
-		boolean notCraftingMode = this.bc.getInstalledUpgrades( Upgrades.CRAFTING ) == 0;
+		final boolean notCraftingMode = this.bc.getInstalledUpgrades( Upgrades.CRAFTING ) == 0;
 
 		// configure enabled status...
 		this.level.setEnabled( notCraftingMode );
@@ -141,7 +141,7 @@ public class GuiLevelEmitter extends GuiUpgradeable
 	}
 
 	@Override
-	public void drawBG( int offsetX, int offsetY, int mouseX, int mouseY )
+	public void drawBG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
 		super.drawBG( offsetX, offsetY, mouseX, mouseY );
 		this.level.drawTextBox();
@@ -167,11 +167,11 @@ public class GuiLevelEmitter extends GuiUpgradeable
 	}
 
 	@Override
-	protected void actionPerformed( GuiButton btn ) throws IOException
+	protected void actionPerformed( final GuiButton btn ) throws IOException
 	{
 		super.actionPerformed( btn );
 
-		boolean backwards = Mouse.isButtonDown( 1 );
+		final boolean backwards = Mouse.isButtonDown( 1 );
 
 		if( btn == this.craftingMode )
 		{
@@ -183,8 +183,8 @@ public class GuiLevelEmitter extends GuiUpgradeable
 			NetworkHandler.instance.sendToServer( new PacketConfigButton( this.levelMode.getSetting(), backwards ) );
 		}
 
-		boolean isPlus = btn == this.plus1 || btn == this.plus10 || btn == this.plus100 || btn == this.plus1000;
-		boolean isMinus = btn == this.minus1 || btn == this.minus10 || btn == this.minus100 || btn == this.minus1000;
+		final boolean isPlus = btn == this.plus1 || btn == this.plus10 || btn == this.plus100 || btn == this.plus1000;
+		final boolean isMinus = btn == this.minus1 || btn == this.minus10 || btn == this.minus100 || btn == this.minus1000;
 
 		if( isPlus || isMinus )
 		{
@@ -192,7 +192,7 @@ public class GuiLevelEmitter extends GuiUpgradeable
 		}
 	}
 
-	private void addQty( long i )
+	private void addQty( final long i )
 	{
 		try
 		{
@@ -226,19 +226,19 @@ public class GuiLevelEmitter extends GuiUpgradeable
 
 			NetworkHandler.instance.sendToServer( new PacketValueConfig( "LevelEmitter.Value", Out ) );
 		}
-		catch( NumberFormatException e )
+		catch( final NumberFormatException e )
 		{
 			// nope..
 			this.level.setText( "0" );
 		}
-		catch( IOException e )
+		catch( final IOException e )
 		{
 			AELog.error( e );
 		}
 	}
 
 	@Override
-	protected void keyTyped( char character, int key ) throws IOException
+	protected void keyTyped( final char character, final int key ) throws IOException
 	{
 		if( !this.checkHotbarKeys( key ) )
 		{
@@ -267,7 +267,7 @@ public class GuiLevelEmitter extends GuiUpgradeable
 
 					NetworkHandler.instance.sendToServer( new PacketValueConfig( "LevelEmitter.Value", Out ) );
 				}
-				catch( IOException e )
+				catch( final IOException e )
 				{
 					AELog.error( e );
 				}

@@ -45,17 +45,17 @@ public class ContainerMAC extends ContainerUpgradeable implements IProgressProvi
 	@GuiSync( 4 )
 	public int craftProgress = 0;
 
-	public ContainerMAC( InventoryPlayer ip, TileMolecularAssembler te )
+	public ContainerMAC( final InventoryPlayer ip, final TileMolecularAssembler te )
 	{
 		super( ip, te );
 		this.tma = te;
 	}
 
-	public boolean isValidItemForSlot( int slotIndex, ItemStack i )
+	public boolean isValidItemForSlot( final int slotIndex, final ItemStack i )
 	{
-		IInventory mac = this.upgradeable.getInventoryByName( "mac" );
+		final IInventory mac = this.upgradeable.getInventoryByName( "mac" );
 
-		ItemStack is = mac.getStackInSlot( 10 );
+		final ItemStack is = mac.getStackInSlot( 10 );
 		if( is == null )
 		{
 			return false;
@@ -63,9 +63,9 @@ public class ContainerMAC extends ContainerUpgradeable implements IProgressProvi
 
 		if( is.getItem() instanceof ItemEncodedPattern )
 		{
-			World w = this.getTileEntity().getWorld();
-			ItemEncodedPattern iep = (ItemEncodedPattern) is.getItem();
-			ICraftingPatternDetails ph = iep.getPatternForItem( is, w );
+			final World w = this.getTileEntity().getWorld();
+			final ItemEncodedPattern iep = (ItemEncodedPattern) is.getItem();
+			final ICraftingPatternDetails ph = iep.getPatternForItem( is, w );
 			if( ph.isCraftable() )
 			{
 				return ph.isValidItemForSlot( slotIndex, i, w );
@@ -87,13 +87,13 @@ public class ContainerMAC extends ContainerUpgradeable implements IProgressProvi
 		int offX = 29;
 		int offY = 30;
 
-		IInventory mac = this.upgradeable.getInventoryByName( "mac" );
+		final IInventory mac = this.upgradeable.getInventoryByName( "mac" );
 
 		for( int y = 0; y < 3; y++ )
 		{
 			for( int x = 0; x < 3; x++ )
 			{
-				SlotMACPattern s = new SlotMACPattern( this, mac, x + y * 3, offX + x * 18, offY + y * 18 );
+				final SlotMACPattern s = new SlotMACPattern( this, mac, x + y * 3, offX + x * 18, offY + y * 18 );
 				this.addSlotToContainer( s );
 			}
 		}
@@ -107,7 +107,7 @@ public class ContainerMAC extends ContainerUpgradeable implements IProgressProvi
 		offX = 122;
 		offY = 17;
 
-		IInventory upgrades = this.upgradeable.getInventoryByName( "upgrades" );
+		final IInventory upgrades = this.upgradeable.getInventoryByName( "upgrades" );
 		this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 0, 187, 8, this.invPlayer ) ).setNotDraggable() );
 		this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 1, 187, 8 + 18, this.invPlayer ) ).setNotDraggable() );
 		this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 2, 187, 8 + 18 * 2, this.invPlayer ) ).setNotDraggable() );

@@ -95,14 +95,14 @@ public final class BusRenderHelper implements IPartRenderHelper
 		return this.itemsRendered;
 	}
 
-	public void setPass( int pass )
+	public void setPass( final int pass )
 	{
 		this.renderingForPass = 0;
 		this.currentPass = pass;
 		this.itemsRendered = 0;
 	}
 
-	public double getBound( AEPartLocation side )
+	public double getBound( final AEPartLocation side )
 	{
 		switch( side )
 		{
@@ -135,7 +135,7 @@ public final class BusRenderHelper implements IPartRenderHelper
 		}
 	*/
 		
-	public void setOrientation( EnumFacing dx, EnumFacing dy, EnumFacing dz )
+	public void setOrientation( final EnumFacing dx, final EnumFacing dy, final EnumFacing dz )
 	{
 		this.ax = dx == null ? EnumFacing.EAST : dx;
 		this.ay = dy == null ? EnumFacing.UP : dy;
@@ -147,7 +147,7 @@ public final class BusRenderHelper implements IPartRenderHelper
 		return new double[] { this.minX, this.minY, this.minZ, this.maxX, this.maxY, this.maxZ };
 	}
 
-	public void setBounds( double[] bounds )
+	public void setBounds( final double[] bounds )
 	{
 		if( bounds == null || bounds.length != 6 )
 		{
@@ -175,13 +175,13 @@ public final class BusRenderHelper implements IPartRenderHelper
 		private float maxY;
 		private float maxZ;
 
-		public BoundBoxCalculator( BusRenderHelper helper )
+		public BoundBoxCalculator( final BusRenderHelper helper )
 		{
 			this.helper = helper;
 		}
 
 		@Override
-		public void addBox( double minX, double minY, double minZ, double maxX, double maxY, double maxZ )
+		public void addBox( final double minX, final double minY, final double minZ, final double maxX, final double maxY, final double maxZ )
 		{
 			if( this.started )
 			{
@@ -233,7 +233,7 @@ public final class BusRenderHelper implements IPartRenderHelper
 	{
 		@Nullable
 		@Override
-		public AEBaseBlock apply( Block input )
+		public AEBaseBlock apply( final Block input )
 		{
 			if( input instanceof AEBaseBlock )
 			{
@@ -245,7 +245,7 @@ public final class BusRenderHelper implements IPartRenderHelper
 	}
 
 	@Override
-	public void renderForPass( int pass )
+	public void renderForPass( final int pass )
 	{
 		this.renderingForPass = pass;
 	}
@@ -261,7 +261,7 @@ public final class BusRenderHelper implements IPartRenderHelper
 	}
 
 	@Override
-	public void setBounds( float minX, float minY, float minZ, float maxX, float maxY, float maxZ )
+	public void setBounds( final float minX, final float minY, final float minZ, final float maxX, final float maxY, final float maxZ )
 	{
 		this.minX = minX;
 		this.minY = minY;
@@ -272,24 +272,24 @@ public final class BusRenderHelper implements IPartRenderHelper
 	}
 
 	@Override
-	public void setInvColor( int newColor )
+	public void setInvColor( final int newColor )
 	{
 		this.color = newColor;
 	}
 
 	@Override
-	public void setTexture( IAESprite ico )
+	public void setTexture( final IAESprite ico )
 	{
-		for( AEBaseBlock baseBlock : this.maybeBaseBlock.asSet() )
+		for( final AEBaseBlock baseBlock : this.maybeBaseBlock.asSet() )
 		{
 			baseBlock.getRendererInstance().setTemporaryRenderIcon( ico );
 		}
 	}
 
 	@Override
-	public void setTexture( IAESprite down, IAESprite up, IAESprite north, IAESprite south, IAESprite west, IAESprite east )
+	public void setTexture( final IAESprite down, final IAESprite up, final IAESprite north, final IAESprite south, final IAESprite west, final IAESprite east )
 	{
-		IAESprite[] list = new IAESprite[6];
+		final IAESprite[] list = new IAESprite[6];
 
 		list[0] = down;
 		list[1] = up;
@@ -298,28 +298,28 @@ public final class BusRenderHelper implements IPartRenderHelper
 		list[4] = west;
 		list[5] = east;
 
-		for( AEBaseBlock baseBlock : this.maybeBaseBlock.asSet() )
+		for( final AEBaseBlock baseBlock : this.maybeBaseBlock.asSet() )
 		{
 			baseBlock.getRendererInstance().setTemporaryRenderIcons( list[this.mapRotation( EnumFacing.UP ).ordinal()], list[this.mapRotation( EnumFacing.DOWN ).ordinal()], list[this.mapRotation( EnumFacing.SOUTH ).ordinal()], list[this.mapRotation( EnumFacing.NORTH ).ordinal()], list[this.mapRotation( EnumFacing.EAST ).ordinal()], list[this.mapRotation( EnumFacing.WEST ).ordinal()] );
 		}
 	}
 
-	public EnumFacing mapRotation( EnumFacing dir )
+	public EnumFacing mapRotation( final EnumFacing dir )
 	{
-		EnumFacing forward = this.az;
-		EnumFacing up = this.ay;
+		final EnumFacing forward = this.az;
+		final EnumFacing up = this.ay;
 
 		if( forward == null || up == null )
 		{
 			return dir;
 		}
 
-		int west_x = forward.getFrontOffsetY() * up.getFrontOffsetZ() - forward.getFrontOffsetZ() * up.getFrontOffsetY();
-		int west_y = forward.getFrontOffsetZ() * up.getFrontOffsetX() - forward.getFrontOffsetX() * up.getFrontOffsetZ();
-		int west_z = forward.getFrontOffsetX() * up.getFrontOffsetY() - forward.getFrontOffsetY() * up.getFrontOffsetX();
+		final int west_x = forward.getFrontOffsetY() * up.getFrontOffsetZ() - forward.getFrontOffsetZ() * up.getFrontOffsetY();
+		final int west_y = forward.getFrontOffsetZ() * up.getFrontOffsetX() - forward.getFrontOffsetX() * up.getFrontOffsetZ();
+		final int west_z = forward.getFrontOffsetX() * up.getFrontOffsetY() - forward.getFrontOffsetY() * up.getFrontOffsetX();
 
 		EnumFacing west = null;
-		for( EnumFacing dx : EnumFacing.VALUES )
+		for( final EnumFacing dx : EnumFacing.VALUES )
 		{
 			if( dx.getFrontOffsetX() == west_x && dx.getFrontOffsetY() == west_y && dx.getFrontOffsetZ() == west_z )
 			{
@@ -358,43 +358,43 @@ public final class BusRenderHelper implements IPartRenderHelper
 	}
 
 	@Override
-	public void renderInventoryBox( ModelGenerator renderer )
+	public void renderInventoryBox( final ModelGenerator renderer )
 	{
 		renderer.setRenderBounds( this.minX / 16.0, this.minY / 16.0, this.minZ / 16.0, this.maxX / 16.0, this.maxY / 16.0, this.maxZ / 16.0 );
 
-		for( AEBaseBlock baseBlock : this.maybeBaseBlock.asSet() )
+		for( final AEBaseBlock baseBlock : this.maybeBaseBlock.asSet() )
 		{
 			this.bbr.renderInvBlock( EnumSet.allOf( AEPartLocation.class ), baseBlock, null, this.color, renderer );
 		}
 	}
 
 	@Override
-	public void renderInventoryFace( IAESprite icon, EnumFacing face, ModelGenerator renderer )
+	public void renderInventoryFace( final IAESprite icon, final EnumFacing face, final ModelGenerator renderer )
 	{
 		renderer.setRenderBounds( this.minX / 16.0, this.minY / 16.0, this.minZ / 16.0, this.maxX / 16.0, this.maxY / 16.0, this.maxZ / 16.0 );
 		this.setTexture( icon );
 
-		for( AEBaseBlock baseBlock : this.maybeBaseBlock.asSet() )
+		for( final AEBaseBlock baseBlock : this.maybeBaseBlock.asSet() )
 		{
 			this.bbr.renderInvBlock( EnumSet.of( AEPartLocation.fromFacing( face ) ), baseBlock, null, this.color, renderer );
 		}
 	}
 
 	@Override
-	public void renderBlock( BlockPos pos, ModelGenerator renderer )
+	public void renderBlock( final BlockPos pos, final ModelGenerator renderer )
 	{
 		if( !this.renderThis() )
 		{
 			return;
 		}
 
-		for( Block multiPart : AEApi.instance().definitions().blocks().multiPart().maybeBlock().asSet() )
+		for( final Block multiPart : AEApi.instance().definitions().blocks().multiPart().maybeBlock().asSet() )
 		{
 			final AEBaseBlock block = (AEBaseBlock) multiPart;
 
-			BlockRenderInfo info = block.getRendererInstance();
-			EnumFacing forward = BusRenderHelper.INSTANCE.az;
-			EnumFacing up = BusRenderHelper.INSTANCE.ay;
+			final BlockRenderInfo info = block.getRendererInstance();
+			final EnumFacing forward = BusRenderHelper.INSTANCE.az;
+			final EnumFacing up = BusRenderHelper.INSTANCE.ay;
 
 			renderer.uvRotateBottom = info.getTexture( AEPartLocation.DOWN ).setFlip( BaseBlockRender.getOrientation( EnumFacing.DOWN, forward, up ) );
 			renderer.uvRotateTop = info.getTexture( AEPartLocation.UP ).setFlip( BaseBlockRender.getOrientation( EnumFacing.UP, forward, up ) );
@@ -414,7 +414,7 @@ public final class BusRenderHelper implements IPartRenderHelper
 	@Override
 	public Block getBlock()
 	{
-		for( Block block : AEApi.instance().definitions().blocks().multiPart().maybeBlock().asSet() )
+		for( final Block block : AEApi.instance().definitions().blocks().multiPart().maybeBlock().asSet() )
 		{
 			return block;
 		}
@@ -422,33 +422,33 @@ public final class BusRenderHelper implements IPartRenderHelper
 		throw new MissingDefinition( "Tried to access the multi part block without it being defined." );
 	}
 
-	public void prepareBounds( ModelGenerator renderer )
+	public void prepareBounds( final ModelGenerator renderer )
 	{
 		this.bbr.renderBlockBounds( renderer, this.minX, this.minY, this.minZ, this.maxX, this.maxY, this.maxZ, this.ax, this.ay, this.az );
 	}
 
 	@Override
-	public void setFacesToRender( EnumSet<EnumFacing> faces )
+	public void setFacesToRender( final EnumSet<EnumFacing> faces )
 	{
 		BusRenderer.INSTANCE.renderer.renderFaces = faces;
 	}
 
 	@Override
-	public void renderBlockCurrentBounds( BlockPos pos, ModelGenerator renderer )
+	public void renderBlockCurrentBounds( final BlockPos pos, final ModelGenerator renderer )
 	{
 		if( !this.renderThis() )
 		{
 			return;
 		}
 
-		for( Block block : this.maybeBlock.asSet() )
+		for( final Block block : this.maybeBlock.asSet() )
 		{
 			renderer.renderStandardBlock( block, pos );
 		}
 	}
 
 	@Override
-	public void renderFaceCutout( BlockPos pos, IAESprite ico, EnumFacing face, float edgeThickness, ModelGenerator renderer )
+	public void renderFaceCutout( final BlockPos pos, final IAESprite ico, EnumFacing face, final float edgeThickness, final ModelGenerator renderer )
 	{
 		if( !this.renderThis() )
 		{
@@ -479,14 +479,14 @@ public final class BusRenderHelper implements IPartRenderHelper
 				break;
 		}
 
-		for( AEBaseBlock block : this.maybeBaseBlock.asSet() )
+		for( final AEBaseBlock block : this.maybeBaseBlock.asSet() )
 		{
 			this.bbr.renderCutoutFace( block, ico, pos, renderer, face, edgeThickness );
 		}
 	}
 
 	@Override
-	public void renderFace( BlockPos pos, IAESprite ico, EnumFacing face, ModelGenerator renderer )
+	public void renderFace( final BlockPos pos, final IAESprite ico, EnumFacing face, final ModelGenerator renderer )
 	{
 		if( !this.renderThis() )
 		{
@@ -518,7 +518,7 @@ public final class BusRenderHelper implements IPartRenderHelper
 				break;
 		}
 
-		for( AEBaseBlock block : this.maybeBaseBlock.asSet() )
+		for( final AEBaseBlock block : this.maybeBaseBlock.asSet() )
 		{
 			this.bbr.renderFace( pos, block, ico, renderer, face );
 		}

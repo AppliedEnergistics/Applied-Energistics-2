@@ -42,13 +42,13 @@ public class SecurityInventory implements IMEInventoryHandler<IAEItemStack>
 	public final IItemList<IAEItemStack> storedItems = AEApi.instance().storage().createItemList();
 	final TileSecurity securityTile;
 
-	public SecurityInventory( TileSecurity ts )
+	public SecurityInventory( final TileSecurity ts )
 	{
 		this.securityTile = ts;
 	}
 
 	@Override
-	public IAEItemStack injectItems( IAEItemStack input, Actionable type, BaseActionSource src )
+	public IAEItemStack injectItems( final IAEItemStack input, final Actionable type, final BaseActionSource src )
 	{
 		if( this.hasPermission( src ) )
 		{
@@ -70,7 +70,7 @@ public class SecurityInventory implements IMEInventoryHandler<IAEItemStack>
 		return input;
 	}
 
-	private boolean hasPermission( BaseActionSource src )
+	private boolean hasPermission( final BaseActionSource src )
 	{
 		if( src.isPlayer() )
 		{
@@ -78,7 +78,7 @@ public class SecurityInventory implements IMEInventoryHandler<IAEItemStack>
 			{
 				return this.securityTile.getProxy().getSecurity().hasPermission( ( (PlayerSource) src ).player, SecurityPermissions.SECURITY );
 			}
-			catch( GridAccessException e )
+			catch( final GridAccessException e )
 			{
 				// :P
 			}
@@ -87,14 +87,14 @@ public class SecurityInventory implements IMEInventoryHandler<IAEItemStack>
 	}
 
 	@Override
-	public IAEItemStack extractItems( IAEItemStack request, Actionable mode, BaseActionSource src )
+	public IAEItemStack extractItems( final IAEItemStack request, final Actionable mode, final BaseActionSource src )
 	{
 		if( this.hasPermission( src ) )
 		{
-			IAEItemStack target = this.storedItems.findPrecise( request );
+			final IAEItemStack target = this.storedItems.findPrecise( request );
 			if( target != null )
 			{
-				IAEItemStack output = target.copy();
+				final IAEItemStack output = target.copy();
 
 				if( mode == Actionable.SIMULATE )
 				{
@@ -110,9 +110,9 @@ public class SecurityInventory implements IMEInventoryHandler<IAEItemStack>
 	}
 
 	@Override
-	public IItemList<IAEItemStack> getAvailableItems( IItemList out )
+	public IItemList<IAEItemStack> getAvailableItems( final IItemList out )
 	{
-		for( IAEItemStack ais : this.storedItems )
+		for( final IAEItemStack ais : this.storedItems )
 		{
 			out.add( ais );
 		}
@@ -133,30 +133,30 @@ public class SecurityInventory implements IMEInventoryHandler<IAEItemStack>
 	}
 
 	@Override
-	public boolean isPrioritized( IAEItemStack input )
+	public boolean isPrioritized( final IAEItemStack input )
 	{
 		return false;
 	}
 
 	@Override
-	public boolean canAccept( IAEItemStack input )
+	public boolean canAccept( final IAEItemStack input )
 	{
 		if( input.getItem() instanceof IBiometricCard )
 		{
-			IBiometricCard tbc = (IBiometricCard) input.getItem();
-			GameProfile newUser = tbc.getProfile( input.getItemStack() );
+			final IBiometricCard tbc = (IBiometricCard) input.getItem();
+			final GameProfile newUser = tbc.getProfile( input.getItemStack() );
 
-			int PlayerID = AEApi.instance().registries().players().getID( newUser );
+			final int PlayerID = AEApi.instance().registries().players().getID( newUser );
 			if( this.securityTile.getOwner() == PlayerID )
 			{
 				return false;
 			}
 
-			for( IAEItemStack ais : this.storedItems )
+			for( final IAEItemStack ais : this.storedItems )
 			{
 				if( ais.isMeaningful() )
 				{
-					GameProfile thisUser = tbc.getProfile( ais.getItemStack() );
+					final GameProfile thisUser = tbc.getProfile( ais.getItemStack() );
 					if( thisUser == newUser )
 					{
 						return false;
@@ -187,7 +187,7 @@ public class SecurityInventory implements IMEInventoryHandler<IAEItemStack>
 	}
 
 	@Override
-	public boolean validForPass( int i )
+	public boolean validForPass( final int i )
 	{
 		return true;
 	}

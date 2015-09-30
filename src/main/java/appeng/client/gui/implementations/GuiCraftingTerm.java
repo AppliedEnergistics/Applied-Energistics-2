@@ -40,22 +40,22 @@ public class GuiCraftingTerm extends GuiMEMonitorable
 
 	GuiImgButton clearBtn;
 
-	public GuiCraftingTerm( InventoryPlayer inventoryPlayer, ITerminalHost te )
+	public GuiCraftingTerm( final InventoryPlayer inventoryPlayer, final ITerminalHost te )
 	{
 		super( inventoryPlayer, te, new ContainerCraftingTerm( inventoryPlayer, te ) );
 		this.reservedSpace = 73;
 	}
 
 	@Override
-	protected void actionPerformed( GuiButton btn )
+	protected void actionPerformed( final GuiButton btn )
 	{
 		super.actionPerformed( btn );
 
 		if( this.clearBtn == btn )
 		{
 			Slot s = null;
-			Container c = this.inventorySlots;
-			for( Object j : c.inventorySlots )
+			final Container c = this.inventorySlots;
+			for( final Object j : c.inventorySlots )
 			{
 				if( j instanceof SlotCraftingMatrix )
 				{
@@ -65,7 +65,7 @@ public class GuiCraftingTerm extends GuiMEMonitorable
 
 			if( s != null )
 			{
-				PacketInventoryAction p = new PacketInventoryAction( InventoryAction.MOVE_REGION, s.slotNumber, 0 );
+				final PacketInventoryAction p = new PacketInventoryAction( InventoryAction.MOVE_REGION, s.slotNumber, 0 );
 				NetworkHandler.instance.sendToServer( p );
 			}
 		}
@@ -80,7 +80,7 @@ public class GuiCraftingTerm extends GuiMEMonitorable
 	}
 
 	@Override
-	public void drawFG( int offsetX, int offsetY, int mouseX, int mouseY )
+	public void drawFG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
 		super.drawFG( offsetX, offsetY, mouseX, mouseY );
 		this.fontRendererObj.drawString( GuiText.CraftingTerminal.getLocal(), 8, this.ySize - 96 + 1 - this.reservedSpace, 4210752 );

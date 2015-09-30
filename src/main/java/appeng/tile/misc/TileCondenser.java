@@ -60,14 +60,14 @@ public class TileCondenser extends AEBaseInvTile implements IFluidHandler, IConf
 	}
 
 	@TileEvent( TileEventType.WORLD_NBT_WRITE )
-	public void writeToNBT_TileCondenser( NBTTagCompound data )
+	public void writeToNBT_TileCondenser( final NBTTagCompound data )
 	{
 		this.cm.writeToNBT( data );
 		data.setDouble( "storedPower", this.storedPower );
 	}
 
 	@TileEvent( TileEventType.WORLD_NBT_READ )
-	public void readFromNBT_TileCondenser( NBTTagCompound data )
+	public void readFromNBT_TileCondenser( final NBTTagCompound data )
 	{
 		this.cm.readFromNBT( data );
 		this.storedPower = data.getDouble( "storedPower" );
@@ -75,12 +75,12 @@ public class TileCondenser extends AEBaseInvTile implements IFluidHandler, IConf
 
 	public double getStorage()
 	{
-		ItemStack is = this.inv.getStackInSlot( 2 );
+		final ItemStack is = this.inv.getStackInSlot( 2 );
 		if( is != null )
 		{
 			if( is.getItem() instanceof IStorageComponent )
 			{
-				IStorageComponent sc = (IStorageComponent) is.getItem();
+				final IStorageComponent sc = (IStorageComponent) is.getItem();
 				if( sc.isStorageComponent( is ) )
 				{
 					return sc.getBytes( is ) * 8;
@@ -90,13 +90,13 @@ public class TileCondenser extends AEBaseInvTile implements IFluidHandler, IConf
 		return 0;
 	}
 
-	public void addPower( double rawPower )
+	public void addPower( final double rawPower )
 	{
 		this.storedPower += rawPower;
 		this.storedPower = Math.max( 0.0, Math.min( this.getStorage(), this.storedPower ) );
 
-		double requiredPower = this.getRequiredPower();
-		ItemStack output = this.getOutput();
+		final double requiredPower = this.getRequiredPower();
+		final ItemStack output = this.getOutput();
 		while( requiredPower <= this.storedPower && output != null && requiredPower > 0 )
 		{
 			if( this.canAddOutput( output ) )
@@ -111,9 +111,9 @@ public class TileCondenser extends AEBaseInvTile implements IFluidHandler, IConf
 		}
 	}
 
-	private boolean canAddOutput( ItemStack output )
+	private boolean canAddOutput( final ItemStack output )
 	{
-		ItemStack outputStack = this.getStackInSlot( 1 );
+		final ItemStack outputStack = this.getStackInSlot( 1 );
 		return outputStack == null || ( Platform.isSameItem( outputStack, output ) && outputStack.stackSize < outputStack.getMaxStackSize() );
 	}
 
@@ -122,9 +122,9 @@ public class TileCondenser extends AEBaseInvTile implements IFluidHandler, IConf
 	 *
 	 * @param output to be added output
 	 */
-	private void addOutput( ItemStack output )
+	private void addOutput( final ItemStack output )
 	{
-		ItemStack outputStack = this.getStackInSlot( 1 );
+		final ItemStack outputStack = this.getStackInSlot( 1 );
 		if( outputStack == null )
 		{
 			this.setInventorySlotContents( 1, output.copy() );
@@ -143,13 +143,13 @@ public class TileCondenser extends AEBaseInvTile implements IFluidHandler, IConf
 		switch( (CondenserOutput) this.cm.getSetting( Settings.CONDENSER_OUTPUT ) )
 		{
 			case MATTER_BALLS:
-				for( ItemStack matterBallStack : materials.matterBall().maybeStack( 1 ).asSet() )
+				for( final ItemStack matterBallStack : materials.matterBall().maybeStack( 1 ).asSet() )
 				{
 					return matterBallStack;
 				}
 
 			case SINGULARITY:
-				for( ItemStack singularityStack : materials.singularity().maybeStack( 1 ).asSet() )
+				for( final ItemStack singularityStack : materials.singularity().maybeStack( 1 ).asSet() )
 				{
 					return singularityStack;
 				}
@@ -172,7 +172,7 @@ public class TileCondenser extends AEBaseInvTile implements IFluidHandler, IConf
 	}
 
 	@Override
-	public void setInventorySlotContents( int i, ItemStack itemstack )
+	public void setInventorySlotContents( final int i, final ItemStack itemstack )
 	{
 		if( i == 0 )
 		{
@@ -188,17 +188,17 @@ public class TileCondenser extends AEBaseInvTile implements IFluidHandler, IConf
 	}
 
 	@Override
-	public boolean isItemValidForSlot( int i, ItemStack itemstack )
+	public boolean isItemValidForSlot( final int i, final ItemStack itemstack )
 	{
 		return i == 0;
 	}
 
 	@Override
-	public void onChangeInventory( IInventory inv, int slot, InvOperation mc, ItemStack removed, ItemStack added )
+	public void onChangeInventory( final IInventory inv, final int slot, final InvOperation mc, final ItemStack removed, final ItemStack added )
 	{
 		if( slot == 0 )
 		{
-			ItemStack is = inv.getStackInSlot( 0 );
+			final ItemStack is = inv.getStackInSlot( 0 );
 			if( is != null )
 			{
 				this.addPower( is.stackSize );
@@ -208,25 +208,25 @@ public class TileCondenser extends AEBaseInvTile implements IFluidHandler, IConf
 	}
 
 	@Override
-	public boolean canInsertItem( int slotIndex, ItemStack insertingItem, EnumFacing side )
+	public boolean canInsertItem( final int slotIndex, final ItemStack insertingItem, final EnumFacing side )
 	{
 		return slotIndex == 0;
 	}
 
 	@Override
-	public boolean canExtractItem( int slotIndex, ItemStack extractedItem, EnumFacing side )
+	public boolean canExtractItem( final int slotIndex, final ItemStack extractedItem, final EnumFacing side )
 	{
 		return slotIndex != 0;
 	}
 
 	@Override
-	public int[] getAccessibleSlotsBySide( EnumFacing side )
+	public int[] getAccessibleSlotsBySide( final EnumFacing side )
 	{
 		return this.sides;
 	}
 
 	@Override
-	public int fill( EnumFacing from, FluidStack resource, boolean doFill )
+	public int fill( final EnumFacing from, final FluidStack resource, final boolean doFill )
 	{
 		if( doFill )
 		{
@@ -237,37 +237,37 @@ public class TileCondenser extends AEBaseInvTile implements IFluidHandler, IConf
 	}
 
 	@Override
-	public FluidStack drain( EnumFacing from, FluidStack resource, boolean doDrain )
+	public FluidStack drain( final EnumFacing from, final FluidStack resource, final boolean doDrain )
 	{
 		return null;
 	}
 
 	@Override
-	public FluidStack drain( EnumFacing from, int maxDrain, boolean doDrain )
+	public FluidStack drain( final EnumFacing from, final int maxDrain, final boolean doDrain )
 	{
 		return null;
 	}
 
 	@Override
-	public boolean canFill( EnumFacing from, Fluid fluid )
+	public boolean canFill( final EnumFacing from, final Fluid fluid )
 	{
 		return true;
 	}
 
 	@Override
-	public boolean canDrain( EnumFacing from, Fluid fluid )
+	public boolean canDrain( final EnumFacing from, final Fluid fluid )
 	{
 		return false;
 	}
 
 	@Override
-	public FluidTankInfo[] getTankInfo( EnumFacing from )
+	public FluidTankInfo[] getTankInfo( final EnumFacing from )
 	{
 		return EMPTY;
 	}
 
 	@Override
-	public void updateSetting( IConfigManager manager, Enum settingName, Enum newValue )
+	public void updateSetting( final IConfigManager manager, final Enum settingName, final Enum newValue )
 	{
 		this.addPower( 0 );
 	}

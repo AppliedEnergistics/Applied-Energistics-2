@@ -53,19 +53,19 @@ public class BusRenderer implements IItemRenderer
 	public ModelGenerator renderer;
 
 	@Override
-	public boolean handleRenderType( ItemStack item, ItemRenderType type )
+	public boolean handleRenderType( final ItemStack item, final ItemRenderType type )
 	{
 		return true;
 	}
 
 	@Override
-	public boolean shouldUseRenderHelper( ItemRenderType type, ItemStack item, ItemRendererHelper helper )
+	public boolean shouldUseRenderHelper( final ItemRenderType type, final ItemStack item, final ItemRendererHelper helper )
 	{
 		return true;
 	}
 
 	@Override
-	public void renderItem( ItemRenderType type, ItemStack item, Object... data )
+	public void renderItem( final ItemRenderType type, final ItemStack item, final Object... data )
 	{
 		if( item == null )
 		{
@@ -128,8 +128,8 @@ public class BusRenderer implements IItemRenderer
 
 		if( item.getItem() instanceof IFacadeItem )
 		{
-			IFacadeItem fi = (IFacadeItem) item.getItem();
-			IFacadePart fp = fi.createPartFromItemStack( item, AEPartLocation.SOUTH );
+			final IFacadeItem fi = (IFacadeItem) item.getItem();
+			final IFacadePart fp = fi.createPartFromItemStack( item, AEPartLocation.SOUTH );
 
 			if( type == ItemRenderType.EQUIPPED_FIRST_PERSON )
 			{
@@ -144,12 +144,12 @@ public class BusRenderer implements IItemRenderer
 		}
 		else
 		{
-			IPart ip = this.getRenderer( item, (IPartItem) item.getItem() );
+			final IPart ip = this.getRenderer( item, (IPartItem) item.getItem() );
 			if( ip != null )
 			{
 				if( type == ItemRenderType.ENTITY )
 				{
-					int depth = ip.cableConnectionRenderTo();
+					final int depth = ip.cableConnectionRenderTo();
 					GL11.glTranslatef( 0.0f, 0.0f, -0.04f * ( 8 - depth ) - 0.06f );
 				}
 
@@ -164,9 +164,9 @@ public class BusRenderer implements IItemRenderer
 	}
 
 	@Nullable
-	public IPart getRenderer( ItemStack is, IPartItem c )
+	public IPart getRenderer( final ItemStack is, final IPartItem c )
 	{
-		int id = ( Item.getIdFromItem( is.getItem() ) << Platform.DEF_OFFSET ) | is.getItemDamage();
+		final int id = ( Item.getIdFromItem( is.getItem() ) << Platform.DEF_OFFSET ) | is.getItemDamage();
 
 		IPart part = RENDER_PART.get( id );
 		if( part == null )

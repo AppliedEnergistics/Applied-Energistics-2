@@ -39,7 +39,7 @@ public class RenderQuartzOre extends BaseBlockRender<QuartzOreBlock, AEBaseTile>
 	}
 
 	@Override
-	public void renderInventory( QuartzOreBlock blk, ItemStack is, ModelGenerator renderer, ItemRenderType type, Object[] obj )
+	public void renderInventory( final QuartzOreBlock blk, final ItemStack is, final ModelGenerator renderer, final ItemRenderType type, final Object[] obj )
 	{
 		super.renderInventory( blk, is, renderer, type, obj );
 		blk.getRendererInstance().setTemporaryRenderIcon( ExtraBlockTextures.OreQuartzStone.getIcon() );
@@ -48,14 +48,14 @@ public class RenderQuartzOre extends BaseBlockRender<QuartzOreBlock, AEBaseTile>
 	}
 
 	@Override
-	public boolean renderInWorld( QuartzOreBlock quartz, IBlockAccess world, BlockPos pos, ModelGenerator renderer )
+	public boolean renderInWorld( final QuartzOreBlock quartz, final IBlockAccess world, final BlockPos pos, final ModelGenerator renderer )
 	{
 		quartz.setEnhanceBrightness( true );
 		super.renderInWorld( quartz, world, pos, renderer );
 		quartz.setEnhanceBrightness( false );
 
 		quartz.getRendererInstance().setTemporaryRenderIcon( ExtraBlockTextures.OreQuartzStone.getIcon() );
-		boolean out = super.renderInWorld( quartz, world, pos, renderer );
+		final boolean out = super.renderInWorld( quartz, world, pos, renderer );
 		quartz.getRendererInstance().setTemporaryRenderIcon( null );
 
 		return out;

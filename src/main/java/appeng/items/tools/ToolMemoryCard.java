@@ -47,11 +47,11 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 	}
 
 	@Override
-	public void addCheckedInformation( ItemStack stack, EntityPlayer player, List<String> lines, boolean displayMoreInfo )
+	public void addCheckedInformation( final ItemStack stack, final EntityPlayer player, final List<String> lines, final boolean displayMoreInfo )
 	{
 		lines.add( this.getLocalizedName( this.getSettingsName( stack ) + ".name", this.getSettingsName( stack ) ) );
 
-		NBTTagCompound data = this.getData( stack );
+		final NBTTagCompound data = this.getData( stack );
 		if( data.hasKey( "tooltip" ) )
 		{
 			lines.add( StatCollector.translateToLocal( this.getLocalizedName( data.getString( "tooltip" ) + ".name", data.getString( "tooltip" ) ) ) );
@@ -65,18 +65,18 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 	 *
 	 * @return localized name
 	 */
-	private String getLocalizedName( String... name )
+	private String getLocalizedName( final String... name )
 	{
-		for( String n : name )
+		for( final String n : name )
 		{
-			String l = StatCollector.translateToLocal( n );
+			final String l = StatCollector.translateToLocal( n );
 			if( !l.equals( n ) )
 			{
 				return l;
 			}
 		}
 
-		for( String n : name )
+		for( final String n : name )
 		{
 			return n;
 		}
@@ -85,25 +85,25 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 	}
 
 	@Override
-	public void setMemoryCardContents( ItemStack is, String settingsName, NBTTagCompound data )
+	public void setMemoryCardContents( final ItemStack is, final String settingsName, final NBTTagCompound data )
 	{
-		NBTTagCompound c = Platform.openNbtData( is );
+		final NBTTagCompound c = Platform.openNbtData( is );
 		c.setString( "Config", settingsName );
 		c.setTag( "Data", data );
 	}
 
 	@Override
-	public String getSettingsName( ItemStack is )
+	public String getSettingsName( final ItemStack is )
 	{
-		NBTTagCompound c = Platform.openNbtData( is );
-		String name = c.getString( "Config" );
+		final NBTTagCompound c = Platform.openNbtData( is );
+		final String name = c.getString( "Config" );
 		return name == null || name.isEmpty() ? GuiText.Blank.getUnlocalized() : name;
 	}
 
 	@Override
-	public NBTTagCompound getData( ItemStack is )
+	public NBTTagCompound getData( final ItemStack is )
 	{
-		NBTTagCompound c = Platform.openNbtData( is );
+		final NBTTagCompound c = Platform.openNbtData( is );
 		NBTTagCompound o = c.getCompoundTag( "Data" );
 		if( o == null )
 		{
@@ -113,7 +113,7 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 	}
 
 	@Override
-	public void notifyUser( EntityPlayer player, MemoryCardMessages msg )
+	public void notifyUser( final EntityPlayer player, final MemoryCardMessages msg )
 	{
 		if( Platform.isClient() )
 		{
@@ -140,18 +140,18 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 
 	@Override
 	public boolean onItemUse(
-			ItemStack is,
-			EntityPlayer player,
-			World w,
-			BlockPos pos,
-			EnumFacing side,
-			float hx,
-			float hy,
-			float hz )
+			final ItemStack is,
+			final EntityPlayer player,
+			final World w,
+			final BlockPos pos,
+			final EnumFacing side,
+			final float hx,
+			final float hy,
+			final float hz )
 	{
 		if( player.isSneaking() && !w.isRemote )
 		{
-			IMemoryCard mem = (IMemoryCard) is.getItem();
+			final IMemoryCard mem = (IMemoryCard) is.getItem();
 			mem.notifyUser( player, MemoryCardMessages.SETTINGS_CLEARED );
 			is.setTagCompound( null );
 			return true;
@@ -164,9 +164,9 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 	
 	@Override
 	public boolean doesSneakBypassUse(
-			World world,
-			BlockPos pos,
-			EntityPlayer player )
+			final World world,
+			final BlockPos pos,
+			final EntityPlayer player )
 	{
 		return true;
 	}

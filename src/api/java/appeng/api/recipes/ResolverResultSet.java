@@ -36,7 +36,7 @@ public class ResolverResultSet
 	public final String name;
 	public final List<ItemStack> results;
 
-	public ResolverResultSet( String myName, ItemStack... set )
+	public ResolverResultSet( final String myName, final ItemStack... set )
 	{
 		this.results = Arrays.asList( set );
 		this.name = myName;

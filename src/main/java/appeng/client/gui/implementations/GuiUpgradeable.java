@@ -54,12 +54,12 @@ public class GuiUpgradeable extends AEBaseGui
 	GuiImgButton craftMode;
 	GuiImgButton schedulingMode;
 
-	public GuiUpgradeable( InventoryPlayer inventoryPlayer, IUpgradeableHost te )
+	public GuiUpgradeable( final InventoryPlayer inventoryPlayer, final IUpgradeableHost te )
 	{
 		this( new ContainerUpgradeable( inventoryPlayer, te ) );
 	}
 
-	public GuiUpgradeable( ContainerUpgradeable te )
+	public GuiUpgradeable( final ContainerUpgradeable te )
 	{
 		super( te );
 		this.cvb = te;
@@ -95,7 +95,7 @@ public class GuiUpgradeable extends AEBaseGui
 	}
 
 	@Override
-	public void drawFG( int offsetX, int offsetY, int mouseX, int mouseY )
+	public void drawFG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
 		this.fontRendererObj.drawString( this.getGuiDisplayName( this.getName().getLocal() ), 8, 6, 4210752 );
 		this.fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
@@ -122,7 +122,7 @@ public class GuiUpgradeable extends AEBaseGui
 	}
 
 	@Override
-	public void drawBG( int offsetX, int offsetY, int mouseX, int mouseY )
+	public void drawBG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
 		this.handleButtonVisibility();
 
@@ -174,11 +174,11 @@ public class GuiUpgradeable extends AEBaseGui
 	}
 
 	@Override
-	protected void actionPerformed( GuiButton btn ) throws IOException
+	protected void actionPerformed( final GuiButton btn ) throws IOException
 	{
 		super.actionPerformed( btn );
 
-		boolean backwards = Mouse.isButtonDown( 1 );
+		final boolean backwards = Mouse.isButtonDown( 1 );
 
 		if( btn == this.redstoneMode )
 		{

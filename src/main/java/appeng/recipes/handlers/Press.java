@@ -62,7 +62,7 @@ public final class Press extends InscriberProcess
 		final ItemStack output = this.getOutput().getItemStack();
 		final InscriberProcessType type = InscriberProcessType.Press;
 
-		IInscriberRecipe recipe = new InscriberRecipe( inputs, output, top, bot, type );
+		final IInscriberRecipe recipe = new InscriberRecipe( inputs, output, top, bot, type );
 
 		AEApi.instance().registries().inscriber().addRecipe( recipe );
 	}

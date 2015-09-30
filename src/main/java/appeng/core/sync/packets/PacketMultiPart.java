@@ -35,14 +35,14 @@ public class PacketMultiPart extends AppEngPacket
 {
 
 	// automatic.
-	public PacketMultiPart( ByteBuf stream )
+	public PacketMultiPart( final ByteBuf stream )
 	{
 	}
 
 	// api
 	public PacketMultiPart()
 	{
-		ByteBuf data = Unpooled.buffer();
+		final ByteBuf data = Unpooled.buffer();
 
 		data.writeInt( this.getPacketID() );
 
@@ -50,12 +50,12 @@ public class PacketMultiPart extends AppEngPacket
 	}
 
 	@Override
-	public void serverPacketData( INetworkInfo manager, AppEngPacket packet, EntityPlayer player )
+	public void serverPacketData( final INetworkInfo manager, final AppEngPacket packet, final EntityPlayer player )
 	{
-		IFMP fmp = (IFMP) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.FMP );
+		final IFMP fmp = (IFMP) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.FMP );
 		if( fmp != null )
 		{
-			EntityPlayerMP sender = (EntityPlayerMP) player;
+			final EntityPlayerMP sender = (EntityPlayerMP) player;
 			MinecraftForge.EVENT_BUS.post( fmp.newFMPPacketEvent( sender ) ); // when received it just posts this event.
 		}
 	}

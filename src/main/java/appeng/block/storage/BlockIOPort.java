@@ -48,12 +48,12 @@ public class BlockIOPort extends AEBaseTileBlock
 	
 	@Override
 	public void onNeighborBlockChange(
-			World w,
-			BlockPos pos,
-			IBlockState state,
-			Block neighborBlock )
+			final World w,
+			final BlockPos pos,
+			final IBlockState state,
+			final Block neighborBlock )
 	{
-		TileIOPort te = this.getTileEntity( w, pos );
+		final TileIOPort te = this.getTileEntity( w, pos );
 		if( te != null )
 		{
 			te.updateRedstoneState();
@@ -62,20 +62,20 @@ public class BlockIOPort extends AEBaseTileBlock
 	
 	@Override
 	public boolean onActivated(
-			World w,
-			BlockPos pos,
-			EntityPlayer p,
-			EnumFacing side,
-			float hitX,
-			float hitY,
-			float hitZ )
+			final World w,
+			final BlockPos pos,
+			final EntityPlayer p,
+			final EnumFacing side,
+			final float hitX,
+			final float hitY,
+			final float hitZ )
 	{
 		if( p.isSneaking() )
 		{
 			return false;
 		}
 
-		TileIOPort tg = this.getTileEntity( w, pos );
+		final TileIOPort tg = this.getTileEntity( w, pos );
 		if( tg != null )
 		{
 			if( Platform.isServer() )

@@ -66,7 +66,7 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
 	double myRange = Double.MAX_VALUE;
 	private final int inventorySlot;
 
-	public WirelessTerminalGuiObject( IWirelessTermHandler wh, ItemStack is, EntityPlayer ep, World w, int x, int y, int z )
+	public WirelessTerminalGuiObject( final IWirelessTermHandler wh, final ItemStack is, final EntityPlayer ep, final World w, final int x, final int y, final int z )
 	{
 		this.encryptionKey = wh.getEncryptionKey( is );
 		this.effectiveItem = is;
@@ -78,17 +78,17 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
 
 		try
 		{
-			long encKey = Long.parseLong( this.encryptionKey );
+			final long encKey = Long.parseLong( this.encryptionKey );
 			obj = AEApi.instance().registries().locatable().getLocatableBy( encKey );
 		}
-		catch( NumberFormatException err )
+		catch( final NumberFormatException err )
 		{
 			// :P
 		}
 
 		if( obj instanceof IGridHost )
 		{
-			IGridNode n = ( (IGridHost) obj ).getGridNode( AEPartLocation.INTERNAL );
+			final IGridNode n = ( (IGridHost) obj ).getGridNode( AEPartLocation.INTERNAL );
 			if( n != null )
 			{
 				this.targetGrid = n.getGrid();
@@ -130,7 +130,7 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
 	}
 
 	@Override
-	public void addListener( IMEMonitorHandlerReceiver<IAEItemStack> l, Object verificationToken )
+	public void addListener( final IMEMonitorHandlerReceiver<IAEItemStack> l, final Object verificationToken )
 	{
 		if( this.itemStorage != null )
 		{
@@ -139,7 +139,7 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
 	}
 
 	@Override
-	public void removeListener( IMEMonitorHandlerReceiver<IAEItemStack> l )
+	public void removeListener( final IMEMonitorHandlerReceiver<IAEItemStack> l )
 	{
 		if( this.itemStorage != null )
 		{
@@ -148,7 +148,7 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
 	}
 
 	@Override
-	public IItemList<IAEItemStack> getAvailableItems( IItemList out )
+	public IItemList<IAEItemStack> getAvailableItems( final IItemList out )
 	{
 		if( this.itemStorage != null )
 		{
@@ -178,7 +178,7 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
 	}
 
 	@Override
-	public boolean isPrioritized( IAEItemStack input )
+	public boolean isPrioritized( final IAEItemStack input )
 	{
 		if( this.itemStorage != null )
 		{
@@ -188,7 +188,7 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
 	}
 
 	@Override
-	public boolean canAccept( IAEItemStack input )
+	public boolean canAccept( final IAEItemStack input )
 	{
 		if( this.itemStorage != null )
 		{
@@ -218,13 +218,13 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
 	}
 
 	@Override
-	public boolean validForPass( int i )
+	public boolean validForPass( final int i )
 	{
 		return this.itemStorage.validForPass( i );
 	}
 
 	@Override
-	public IAEItemStack injectItems( IAEItemStack input, Actionable type, BaseActionSource src )
+	public IAEItemStack injectItems( final IAEItemStack input, final Actionable type, final BaseActionSource src )
 	{
 		if( this.itemStorage != null )
 		{
@@ -234,7 +234,7 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
 	}
 
 	@Override
-	public IAEItemStack extractItems( IAEItemStack request, Actionable mode, BaseActionSource src )
+	public IAEItemStack extractItems( final IAEItemStack request, final Actionable mode, final BaseActionSource src )
 	{
 		if( this.itemStorage != null )
 		{
@@ -254,7 +254,7 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
 	}
 
 	@Override
-	public double extractAEPower( double amt, Actionable mode, PowerMultiplier usePowerMultiplier )
+	public double extractAEPower( final double amt, final Actionable mode, final PowerMultiplier usePowerMultiplier )
 	{
 		if( this.wth != null && this.effectiveItem != null )
 		{
@@ -280,13 +280,13 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
 	}
 
 	@Override
-	public IGridNode getGridNode( AEPartLocation dir )
+	public IGridNode getGridNode( final AEPartLocation dir )
 	{
 		return this.getActionableNode();
 	}
 
 	@Override
-	public AECableType getCableConnectionType( AEPartLocation dir )
+	public AECableType getCableConnectionType( final AEPartLocation dir )
 	{
 		return AECableType.NONE;
 	}
@@ -326,13 +326,13 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
 				return false;
 			}
 
-			IMachineSet tw = this.targetGrid.getMachines( TileWireless.class );
+			final IMachineSet tw = this.targetGrid.getMachines( TileWireless.class );
 
 			this.myWap = null;
 
-			for( IGridNode n : tw )
+			for( final IGridNode n : tw )
 			{
-				IWirelessAccessPoint wap = (IWirelessAccessPoint) n.getMachine();
+				final IWirelessAccessPoint wap = (IWirelessAccessPoint) n.getMachine();
 				if( this.testWap( wap ) )
 				{
 					this.myWap = wap;
@@ -344,20 +344,20 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
 		return false;
 	}
 
-	private boolean testWap( IWirelessAccessPoint wap )
+	private boolean testWap( final IWirelessAccessPoint wap )
 	{
 		double rangeLimit = wap.getRange();
 		rangeLimit *= rangeLimit;
 
-		DimensionalCoord dc = wap.getLocation();
+		final DimensionalCoord dc = wap.getLocation();
 
 		if( dc.getWorld() == this.myPlayer.worldObj )
 		{
-			double offX = dc.x - this.myPlayer.posX;
-			double offY = dc.y - this.myPlayer.posY;
-			double offZ = dc.z - this.myPlayer.posZ;
+			final double offX = dc.x - this.myPlayer.posX;
+			final double offY = dc.y - this.myPlayer.posY;
+			final double offZ = dc.z - this.myPlayer.posZ;
 
-			double r = offX * offX + offY * offY + offZ * offZ;
+			final double r = offX * offX + offY * offY + offZ * offZ;
 			if( r < rangeLimit && this.sqRange > r )
 			{
 				if( wap.isActive() )

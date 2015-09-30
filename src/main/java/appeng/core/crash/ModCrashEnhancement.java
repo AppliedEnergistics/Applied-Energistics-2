@@ -12,7 +12,7 @@ public class ModCrashEnhancement extends BaseCrashEnhancement
 			+ net.minecraftforge.common.ForgeVersion.revisionVersion + '.' // revisionVersion
 			+ net.minecraftforge.common.ForgeVersion.buildVersion;
 
-	public ModCrashEnhancement( CrashInfo output )
+	public ModCrashEnhancement( final CrashInfo output )
 	{
 		super( "AE2 Version", MOD_VERSION );
 	}

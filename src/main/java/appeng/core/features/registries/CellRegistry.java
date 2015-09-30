@@ -41,7 +41,7 @@ public class CellRegistry implements ICellRegistry
 	}
 
 	@Override
-	public void addCellHandler( ICellHandler h )
+	public void addCellHandler( final ICellHandler h )
 	{
 		if( h != null )
 		{
@@ -50,13 +50,13 @@ public class CellRegistry implements ICellRegistry
 	}
 
 	@Override
-	public boolean isCellHandled( ItemStack is )
+	public boolean isCellHandled( final ItemStack is )
 	{
 		if( is == null )
 		{
 			return false;
 		}
-		for( ICellHandler ch : this.handlers )
+		for( final ICellHandler ch : this.handlers )
 		{
 			if( ch.isCell( is ) )
 			{
@@ -67,13 +67,13 @@ public class CellRegistry implements ICellRegistry
 	}
 
 	@Override
-	public ICellHandler getHandler( ItemStack is )
+	public ICellHandler getHandler( final ItemStack is )
 	{
 		if( is == null )
 		{
 			return null;
 		}
-		for( ICellHandler ch : this.handlers )
+		for( final ICellHandler ch : this.handlers )
 		{
 			if( ch.isCell( is ) )
 			{
@@ -84,13 +84,13 @@ public class CellRegistry implements ICellRegistry
 	}
 
 	@Override
-	public IMEInventoryHandler getCellInventory( ItemStack is, ISaveProvider container, StorageChannel chan )
+	public IMEInventoryHandler getCellInventory( final ItemStack is, final ISaveProvider container, final StorageChannel chan )
 	{
 		if( is == null )
 		{
 			return null;
 		}
-		for( ICellHandler ch : this.handlers )
+		for( final ICellHandler ch : this.handlers )
 		{
 			if( ch.isCell( is ) )
 			{

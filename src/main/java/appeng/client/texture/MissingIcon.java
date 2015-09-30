@@ -31,7 +31,7 @@ public class MissingIcon implements IAESprite
 {
 	TextureAtlasSprite missing;
  
-	public MissingIcon( Object forWhat )
+	public MissingIcon( final Object forWhat )
 	{
 	}
 
@@ -72,7 +72,7 @@ public class MissingIcon implements IAESprite
 	}
 
 	@Override
-	public float getInterpolatedU( double var1 )
+	public float getInterpolatedU( final double var1 )
 	{
 		return this.getMissing().getInterpolatedU( var1 );
 	}
@@ -90,7 +90,7 @@ public class MissingIcon implements IAESprite
 	}
 
 	@Override
-	public float getInterpolatedV( double var1 )
+	public float getInterpolatedV( final double var1 )
 	{
 		return this.getMissing().getInterpolatedV( var1 );
 	}

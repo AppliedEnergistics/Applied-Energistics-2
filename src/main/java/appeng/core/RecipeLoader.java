@@ -51,7 +51,7 @@ public class RecipeLoader implements Runnable
 	 *
 	 * @throws NullPointerException if handler is <tt>null</tt>
 	 */
-	public RecipeLoader( @Nonnull IRecipeHandler handler )
+	public RecipeLoader( @Nonnull final IRecipeHandler handler )
 	{
 		Preconditions.checkNotNull( handler );
 
@@ -86,12 +86,12 @@ public class RecipeLoader implements Runnable
 			this.handler.parseRecipes( new ConfigLoader( generatedRecipesDir, userRecipesDir ), "index.recipe" );
 		}
 		// on failure use jar parsing
-		catch( IOException e )
+		catch( final IOException e )
 		{
 			AELog.error( e );
 			this.handler.parseRecipes( new JarLoader( "/assets/appliedenergistics2/recipes/" ), "index.recipe" );
 		}
-		catch( URISyntaxException e )
+		catch( final URISyntaxException e )
 		{
 			AELog.error( e );
 			this.handler.parseRecipes( new JarLoader( "/assets/appliedenergistics2/recipes/" ), "index.recipe" );

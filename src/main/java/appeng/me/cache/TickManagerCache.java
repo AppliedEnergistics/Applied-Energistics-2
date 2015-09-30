@@ -46,7 +46,7 @@ public class TickManagerCache implements ITickManager
 	final PriorityQueue<TickTracker> upcomingTicks = new PriorityQueue<TickTracker>();
 	private long currentTick = 0;
 
-	public TickManagerCache( IGrid g )
+	public TickManagerCache( final IGrid g )
 	{
 		this.myGrid = g;
 	}
@@ -56,7 +56,7 @@ public class TickManagerCache implements ITickManager
 		return this.currentTick;
 	}
 
-	public long getAvgNanoTime( IGridNode node )
+	public long getAvgNanoTime( final IGridNode node )
 	{
 		TickTracker tt = this.awake.get( node );
 
@@ -83,12 +83,12 @@ public class TickManagerCache implements ITickManager
 			while( !this.upcomingTicks.isEmpty() )
 			{
 				tt = this.upcomingTicks.peek();
-				int diff = (int) ( this.currentTick - tt.lastTick );
+				final int diff = (int) ( this.currentTick - tt.lastTick );
 				if( diff >= tt.current_rate )
 				{
 					// remove tt..
 					this.upcomingTicks.poll();
-					TickRateModulation mod = tt.gt.tickingRequest( tt.node, diff );
+					final TickRateModulation mod = tt.gt.tickingRequest( tt.node, diff );
 
 					switch( mod )
 					{
@@ -124,23 +124,23 @@ public class TickManagerCache implements ITickManager
 				}
 			}
 		}
-		catch( Throwable t )
+		catch( final Throwable t )
 		{
-			CrashReport crashreport = CrashReport.makeCrashReport( t, "Ticking GridNode" );
-			CrashReportCategory crashreportcategory = crashreport.makeCategory( tt.gt.getClass().getSimpleName() + " being ticked." );
+			final CrashReport crashreport = CrashReport.makeCrashReport( t, "Ticking GridNode" );
+			final CrashReportCategory crashreportcategory = crashreport.makeCategory( tt.gt.getClass().getSimpleName() + " being ticked." );
 			tt.addEntityCrashInfo( crashreportcategory );
 			throw new ReportedException( crashreport );
 		}
 	}
 
-	private void addToQueue( TickTracker tt )
+	private void addToQueue( final TickTracker tt )
 	{
 		tt.lastTick = this.currentTick;
 		this.upcomingTicks.add( tt );
 	}
 
 	@Override
-	public void removeNode( IGridNode gridNode, IGridHost machine )
+	public void removeNode( final IGridNode gridNode, final IGridHost machine )
 	{
 		if( machine instanceof IGridTickable )
 		{
@@ -151,14 +151,14 @@ public class TickManagerCache implements ITickManager
 	}
 
 	@Override
-	public void addNode( IGridNode gridNode, IGridHost machine )
+	public void addNode( final IGridNode gridNode, final IGridHost machine )
 	{
 		if( machine instanceof IGridTickable )
 		{
-			TickingRequest tr = ( (IGridTickable) machine ).getTickingRequest( gridNode );
+			final TickingRequest tr = ( (IGridTickable) machine ).getTickingRequest( gridNode );
 			if( tr != null )
 			{
-				TickTracker tt = new TickTracker( tr, gridNode, (IGridTickable) machine, this.currentTick, this );
+				final TickTracker tt = new TickTracker( tr, gridNode, (IGridTickable) machine, this.currentTick, this );
 
 				if( tr.canBeAlerted )
 				{
@@ -179,27 +179,27 @@ public class TickManagerCache implements ITickManager
 	}
 
 	@Override
-	public void onSplit( IGridStorage storageB )
+	public void onSplit( final IGridStorage storageB )
 	{
 
 	}
 
 	@Override
-	public void onJoin( IGridStorage storageB )
+	public void onJoin( final IGridStorage storageB )
 	{
 
 	}
 
 	@Override
-	public void populateGridStorage( IGridStorage storage )
+	public void populateGridStorage( final IGridStorage storage )
 	{
 
 	}
 
 	@Override
-	public boolean alertDevice( IGridNode node )
+	public boolean alertDevice( final IGridNode node )
 	{
-		TickTracker tt = this.alertable.get( node );
+		final TickTracker tt = this.alertable.get( node );
 		if( tt == null )
 		{
 			return false;
@@ -223,11 +223,11 @@ public class TickManagerCache implements ITickManager
 	}
 
 	@Override
-	public boolean sleepDevice( IGridNode node )
+	public boolean sleepDevice( final IGridNode node )
 	{
 		if( this.awake.containsKey( node ) )
 		{
-			TickTracker gt = this.awake.get( node );
+			final TickTracker gt = this.awake.get( node );
 			this.awake.remove( node );
 			this.sleeping.put( node, gt );
 
@@ -238,11 +238,11 @@ public class TickManagerCache implements ITickManager
 	}
 
 	@Override
-	public boolean wakeDevice( IGridNode node )
+	public boolean wakeDevice( final IGridNode node )
 	{
 		if( this.sleeping.containsKey( node ) )
 		{
-			TickTracker gt = this.sleeping.get( node );
+			final TickTracker gt = this.sleeping.get( node );
 			this.sleeping.remove( node );
 			this.awake.put( node, gt );
 			this.addToQueue( gt );

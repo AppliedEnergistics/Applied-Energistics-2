@@ -28,7 +28,7 @@ public class WirelessRangeResult
 	public final float dist;
 	public final TileEntity te;
 
-	public WirelessRangeResult( TileEntity t, float d )
+	public WirelessRangeResult( final TileEntity t, final float d )
 	{
 		this.dist = d;
 		this.te = t;

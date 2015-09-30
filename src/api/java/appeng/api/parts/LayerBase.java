@@ -47,7 +47,7 @@ public abstract class LayerBase extends TileEntity // implements IPartHost
 	 *
 	 * @return the part for the requested side.
 	 */
-	public IPart getPart( AEPartLocation side )
+	public IPart getPart( final AEPartLocation side )
 	{
 		return null; // place holder.
 	}
@@ -61,7 +61,7 @@ public abstract class LayerBase extends TileEntity // implements IPartHost
 	 *
 	 * @return the part for the requested side.
 	 */
-	public IPart getPart( EnumFacing side )
+	public IPart getPart( final EnumFacing side )
 	{
 		return null; // place holder.
 	}

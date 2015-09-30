@@ -51,34 +51,34 @@ public class SpatialPylonCache implements ISpatialCache
 	HashMap<SpatialPylonCluster, SpatialPylonCluster> clusters = new HashMap<SpatialPylonCluster, SpatialPylonCluster>();
 	boolean needsUpdate = false;
 
-	public SpatialPylonCache( IGrid g )
+	public SpatialPylonCache( final IGrid g )
 	{
 		this.myGrid = g;
 	}
 
 	@MENetworkEventSubscribe
-	public void bootingRender( MENetworkBootingStatusChange c )
+	public void bootingRender( final MENetworkBootingStatusChange c )
 	{
 		this.reset( this.myGrid );
 	}
 
-	public void reset( IGrid grid )
+	public void reset( final IGrid grid )
 	{
 
 		this.clusters = new HashMap<SpatialPylonCluster, SpatialPylonCluster>();
 		this.ioPorts = new LinkedList<TileSpatialIOPort>();
 
-		for( IGridNode gm : grid.getMachines( TileSpatialIOPort.class ) )
+		for( final IGridNode gm : grid.getMachines( TileSpatialIOPort.class ) )
 		{
 			this.ioPorts.add( (TileSpatialIOPort) gm.getMachine() );
 		}
 
-		IReadOnlyCollection<IGridNode> set = grid.getMachines( TileSpatialPylon.class );
-		for( IGridNode gm : set )
+		final IReadOnlyCollection<IGridNode> set = grid.getMachines( TileSpatialPylon.class );
+		for( final IGridNode gm : set )
 		{
 			if( gm.meetsChannelRequirements() )
 			{
-				SpatialPylonCluster c = ( (TileSpatialPylon) gm.getMachine() ).getCluster();
+				final SpatialPylonCluster c = ( (TileSpatialPylon) gm.getMachine() ).getCluster();
 				if( c != null )
 				{
 					this.clusters.put( c, c );
@@ -91,7 +91,7 @@ public class SpatialPylonCache implements ISpatialCache
 		this.isValid = true;
 
 		int pylonBlocks = 0;
-		for( SpatialPylonCluster cl : this.clusters.values() )
+		for( final SpatialPylonCluster cl : this.clusters.values() )
 		{
 			if( this.captureMax == null )
 			{
@@ -119,7 +119,7 @@ public class SpatialPylonCache implements ISpatialCache
 		{
 			this.isValid = this.captureMax.x - this.captureMin.x > 1 && this.captureMax.y - this.captureMin.y > 1 && this.captureMax.z - this.captureMin.z > 1;
 
-			for( SpatialPylonCluster cl : this.clusters.values() )
+			for( final SpatialPylonCluster cl : this.clusters.values() )
 			{
 				switch( cl.currentAxis )
 				{
@@ -144,10 +144,10 @@ public class SpatialPylonCache implements ISpatialCache
 				}
 			}
 
-			int reqX = this.captureMax.x - this.captureMin.x;
-			int reqY = this.captureMax.y - this.captureMin.y;
-			int reqZ = this.captureMax.z - this.captureMin.z;
-			int requirePylonBlocks = Math.max( 6, ( ( reqX * reqZ + reqX * reqY + reqY * reqZ ) * 3 ) / 8 );
+			final int reqX = this.captureMax.x - this.captureMin.x;
+			final int reqY = this.captureMax.y - this.captureMin.y;
+			final int reqZ = this.captureMax.z - this.captureMin.z;
+			final int requirePylonBlocks = Math.max( 6, ( ( reqX * reqZ + reqX * reqY + reqY * reqZ ) * 3 ) / 8 );
 
 			this.efficiency = (double) pylonBlocks / (double) requirePylonBlocks;
 
@@ -164,12 +164,12 @@ public class SpatialPylonCache implements ISpatialCache
 			maxPower = Math.pow( minPower, AEConfig.instance.spatialPowerExponent );
 		}
 
-		double affective_efficiency = Math.pow( this.efficiency, 0.25 );
+		final double affective_efficiency = Math.pow( this.efficiency, 0.25 );
 		this.powerRequired = (long) ( affective_efficiency * minPower + ( 1.0 - affective_efficiency ) * maxPower );
 
-		for( SpatialPylonCluster cl : this.clusters.values() )
+		for( final SpatialPylonCluster cl : this.clusters.values() )
 		{
-			boolean myWasValid = cl.isValid;
+			final boolean myWasValid = cl.isValid;
 			cl.isValid = this.isValid;
 			if( myWasValid != this.isValid )
 			{
@@ -220,31 +220,31 @@ public class SpatialPylonCache implements ISpatialCache
 	}
 
 	@Override
-	public void removeNode( IGridNode node, IGridHost machine )
+	public void removeNode( final IGridNode node, final IGridHost machine )
 	{
 
 	}
 
 	@Override
-	public void addNode( IGridNode node, IGridHost machine )
+	public void addNode( final IGridNode node, final IGridHost machine )
 	{
 
 	}
 
 	@Override
-	public void onSplit( IGridStorage storageB )
+	public void onSplit( final IGridStorage storageB )
 	{
 
 	}
 
 	@Override
-	public void onJoin( IGridStorage storageB )
+	public void onJoin( final IGridStorage storageB )
 	{
 
 	}
 
 	@Override
-	public void populateGridStorage( IGridStorage storage )
+	public void populateGridStorage( final IGridStorage storage )
 	{
 
 	}

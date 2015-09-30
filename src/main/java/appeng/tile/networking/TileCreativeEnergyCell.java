@@ -37,13 +37,13 @@ public class TileCreativeEnergyCell extends AENetworkTile implements IAEPowerSto
 	}
 
 	@Override
-	public AECableType getCableConnectionType( AEPartLocation dir )
+	public AECableType getCableConnectionType( final AEPartLocation dir )
 	{
 		return AECableType.COVERED;
 	}
 
 	@Override
-	public double injectAEPower( double amt, Actionable mode )
+	public double injectAEPower( final double amt, final Actionable mode )
 	{
 		return 0;
 	}
@@ -73,7 +73,7 @@ public class TileCreativeEnergyCell extends AENetworkTile implements IAEPowerSto
 	}
 
 	@Override
-	public double extractAEPower( double amt, Actionable mode, PowerMultiplier pm )
+	public double extractAEPower( final double amt, final Actionable mode, final PowerMultiplier pm )
 	{
 		return amt;
 	}

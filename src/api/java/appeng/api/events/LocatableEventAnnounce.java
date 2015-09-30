@@ -39,7 +39,7 @@ public class LocatableEventAnnounce extends Event
 	public final ILocatable target;
 	public final LocatableEvent change;
 
-	public LocatableEventAnnounce( ILocatable o, LocatableEvent ev )
+	public LocatableEventAnnounce( final ILocatable o, final LocatableEvent ev )
 	{
 		this.target = o;
 		this.change = ev;

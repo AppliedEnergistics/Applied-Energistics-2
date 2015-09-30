@@ -79,7 +79,7 @@ public final class Api implements IAppEngApi
 	}
 
 	@Override
-	public IGridNode createGridNode( IGridBlock blk )
+	public IGridNode createGridNode( final IGridBlock blk )
 	{
 		if ( Platform.isClient() )
 		{
@@ -90,7 +90,7 @@ public final class Api implements IAppEngApi
 	}
 
 	@Override
-	public IGridConnection createGridConnection( IGridNode a, IGridNode b ) throws FailedConnection
+	public IGridConnection createGridConnection( final IGridNode a, final IGridNode b ) throws FailedConnection
 	{
 		return new GridConnection( a, b, AEPartLocation.INTERNAL );
 	}

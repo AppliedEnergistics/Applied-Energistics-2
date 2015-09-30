@@ -51,7 +51,7 @@ public class TileEnergyCell extends AENetworkTile implements IAEPowerStorage
 	}
 
 	@Override
-	public AECableType getCableConnectionType( AEPartLocation dir )
+	public AECableType getCableConnectionType( final AEPartLocation dir )
 	{
 		return AECableType.COVERED;
 	}
@@ -60,7 +60,7 @@ public class TileEnergyCell extends AENetworkTile implements IAEPowerStorage
 	public void onReady()
 	{
 		super.onReady();
-		int value =  ( Integer ) this.worldObj.getBlockState( pos ).getValue( BlockEnergyCell.ENERGY_STORAGE );
+		final int value =  ( Integer ) this.worldObj.getBlockState( pos ).getValue( BlockEnergyCell.ENERGY_STORAGE );
 		currentMeta = (byte)value;
 		this.changePowerLevel();
 	}
@@ -91,7 +91,7 @@ public class TileEnergyCell extends AENetworkTile implements IAEPowerStorage
 	}
 
 	@TileEvent( TileEventType.WORLD_NBT_WRITE )
-	public void writeToNBT_TileEnergyCell( NBTTagCompound data )
+	public void writeToNBT_TileEnergyCell( final NBTTagCompound data )
 	{
 		if( !this.worldObj.isRemote )
 		{
@@ -100,7 +100,7 @@ public class TileEnergyCell extends AENetworkTile implements IAEPowerStorage
 	}
 
 	@TileEvent( TileEventType.WORLD_NBT_READ )
-	public void readFromNBT_TileEnergyCell( NBTTagCompound data )
+	public void readFromNBT_TileEnergyCell( final NBTTagCompound data )
 	{
 		this.internalCurrentPower = data.getDouble( "internalCurrentPower" );
 	}
@@ -112,7 +112,7 @@ public class TileEnergyCell extends AENetworkTile implements IAEPowerStorage
 	}
 
 	@Override
-	public void uploadSettings( SettingsFrom from, NBTTagCompound compound )
+	public void uploadSettings( final SettingsFrom from, final NBTTagCompound compound )
 	{
 		if( from == SettingsFrom.DISMANTLE_ITEM )
 		{
@@ -121,11 +121,11 @@ public class TileEnergyCell extends AENetworkTile implements IAEPowerStorage
 	}
 
 	@Override
-	public NBTTagCompound downloadSettings( SettingsFrom from )
+	public NBTTagCompound downloadSettings( final SettingsFrom from )
 	{
 		if( from == SettingsFrom.DISMANTLE_ITEM )
 		{
-			NBTTagCompound tag = new NBTTagCompound();
+			final NBTTagCompound tag = new NBTTagCompound();
 			tag.setDouble( "internalCurrentPower", this.internalCurrentPower );
 			tag.setDouble( "internalMaxPower", this.internalMaxPower ); // used for tool tip.
 			return tag;
@@ -134,11 +134,11 @@ public class TileEnergyCell extends AENetworkTile implements IAEPowerStorage
 	}
 
 	@Override
-	public final double injectAEPower( double amt, Actionable mode )
+	public final double injectAEPower( double amt, final Actionable mode )
 	{
 		if( mode == Actionable.SIMULATE )
 		{
-			double fakeBattery = this.internalCurrentPower + amt;
+			final double fakeBattery = this.internalCurrentPower + amt;
 			if( fakeBattery > this.internalMaxPower )
 			{
 				return fakeBattery - this.internalMaxPower;
@@ -191,12 +191,12 @@ public class TileEnergyCell extends AENetworkTile implements IAEPowerStorage
 	}
 
 	@Override
-	public final double extractAEPower( double amt, Actionable mode, PowerMultiplier pm )
+	public final double extractAEPower( final double amt, final Actionable mode, final PowerMultiplier pm )
 	{
 		return pm.divide( this.extractAEPower( pm.multiply( amt ), mode ) );
 	}
 
-	private double extractAEPower( double amt, Actionable mode )
+	private double extractAEPower( double amt, final Actionable mode )
 	{
 		if( mode == Actionable.SIMULATE )
 		{
@@ -207,7 +207,7 @@ public class TileEnergyCell extends AENetworkTile implements IAEPowerStorage
 			return this.internalCurrentPower;
 		}
 
-		boolean wasFull = this.internalCurrentPower >= this.internalMaxPower - 0.001;
+		final boolean wasFull = this.internalCurrentPower >= this.internalMaxPower - 0.001;
 
 		if( wasFull && amt > 0.001 )
 		{
@@ -215,7 +215,7 @@ public class TileEnergyCell extends AENetworkTile implements IAEPowerStorage
 			{
 				this.gridProxy.getGrid().postEvent( new MENetworkPowerStorage( this, PowerEventType.REQUEST_POWER ) );
 			}
-			catch( GridAccessException ignored )
+			catch( final GridAccessException ignored )
 			{
 
 			}

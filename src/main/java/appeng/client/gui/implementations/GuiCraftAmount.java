@@ -65,7 +65,7 @@ public class GuiCraftAmount extends AEBaseGui
 	private GuiBridge originalGui;
 
 	@Reflected
-	public GuiCraftAmount( InventoryPlayer inventoryPlayer, ITerminalHost te )
+	public GuiCraftAmount( final InventoryPlayer inventoryPlayer, final ITerminalHost te )
 	{
 		super( new ContainerCraftAmount( inventoryPlayer, te ) );
 	}
@@ -75,10 +75,10 @@ public class GuiCraftAmount extends AEBaseGui
 	{
 		super.initGui();
 
-		int a = AEConfig.instance.craftItemsByStackAmounts( 0 );
-		int b = AEConfig.instance.craftItemsByStackAmounts( 1 );
-		int c = AEConfig.instance.craftItemsByStackAmounts( 2 );
-		int d = AEConfig.instance.craftItemsByStackAmounts( 3 );
+		final int a = AEConfig.instance.craftItemsByStackAmounts( 0 );
+		final int b = AEConfig.instance.craftItemsByStackAmounts( 1 );
+		final int c = AEConfig.instance.craftItemsByStackAmounts( 2 );
+		final int d = AEConfig.instance.craftItemsByStackAmounts( 3 );
 
 		this.buttonList.add( this.plus1 = new GuiButton( 0, this.guiLeft + 20, this.guiTop + 26, 22, 20, "+" + a ) );
 		this.buttonList.add( this.plus10 = new GuiButton( 0, this.guiLeft + 48, this.guiTop + 26, 28, 20, "+" + b ) );
@@ -93,13 +93,13 @@ public class GuiCraftAmount extends AEBaseGui
 		this.buttonList.add( this.next = new GuiButton( 0, this.guiLeft + 128, this.guiTop + 51, 38, 20, GuiText.Next.getLocal() ) );
 
 		ItemStack myIcon = null;
-		Object target = ( (AEBaseContainer) this.inventorySlots ).getTarget();
+		final Object target = ( (AEBaseContainer) this.inventorySlots ).getTarget();
 		final IDefinitions definitions = AEApi.instance().definitions();
 		final IParts parts = definitions.parts();
 
 		if( target instanceof WirelessTerminalGuiObject )
 		{
-			for( ItemStack wirelessTerminalStack : definitions.items().wirelessTerminal().maybeStack( 1 ).asSet() )
+			for( final ItemStack wirelessTerminalStack : definitions.items().wirelessTerminal().maybeStack( 1 ).asSet() )
 			{
 				myIcon = wirelessTerminalStack;
 			}
@@ -109,7 +109,7 @@ public class GuiCraftAmount extends AEBaseGui
 
 		if( target instanceof PartTerminal )
 		{
-			for( ItemStack stack : parts.terminal().maybeStack( 1 ).asSet() )
+			for( final ItemStack stack : parts.terminal().maybeStack( 1 ).asSet() )
 			{
 				myIcon = stack;
 			}
@@ -118,7 +118,7 @@ public class GuiCraftAmount extends AEBaseGui
 
 		if( target instanceof PartCraftingTerminal )
 		{
-			for( ItemStack stack : parts.craftingTerminal().maybeStack( 1 ).asSet() )
+			for( final ItemStack stack : parts.craftingTerminal().maybeStack( 1 ).asSet() )
 			{
 				myIcon = stack;
 			}
@@ -127,7 +127,7 @@ public class GuiCraftAmount extends AEBaseGui
 
 		if( target instanceof PartPatternTerminal )
 		{
-			for( ItemStack stack : parts.patternTerminal().maybeStack( 1 ).asSet() )
+			for( final ItemStack stack : parts.patternTerminal().maybeStack( 1 ).asSet() )
 			{
 				myIcon = stack;
 			}
@@ -149,13 +149,13 @@ public class GuiCraftAmount extends AEBaseGui
 	}
 
 	@Override
-	public void drawFG( int offsetX, int offsetY, int mouseX, int mouseY )
+	public void drawFG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
 		this.fontRendererObj.drawString( GuiText.SelectAmount.getLocal(), 8, 6, 4210752 );
 	}
 
 	@Override
-	public void drawBG( int offsetX, int offsetY, int mouseX, int mouseY )
+	public void drawBG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
 		this.next.displayString = isShiftKeyDown() ? GuiText.Start.getLocal() : GuiText.Next.getLocal();
 
@@ -167,7 +167,7 @@ public class GuiCraftAmount extends AEBaseGui
 			Long.parseLong( this.amountToCraft.getText() );
 			this.next.enabled = this.amountToCraft.getText().length() > 0;
 		}
-		catch( NumberFormatException e )
+		catch( final NumberFormatException e )
 		{
 			this.next.enabled = false;
 		}
@@ -176,7 +176,7 @@ public class GuiCraftAmount extends AEBaseGui
 	}
 
 	@Override
-	protected void keyTyped( char character, int key ) throws IOException
+	protected void keyTyped( final char character, final int key ) throws IOException
 	{
 		if( !this.checkHotbarKeys( key ) )
 		{
@@ -207,13 +207,13 @@ public class GuiCraftAmount extends AEBaseGui
 						out = "0";
 					}
 
-					long result = Long.parseLong( out );
+					final long result = Long.parseLong( out );
 					if( result < 0 )
 					{
 						this.amountToCraft.setText( "1" );
 					}
 				}
-				catch( NumberFormatException e )
+				catch( final NumberFormatException e )
 				{
 					// :P
 				}
@@ -226,7 +226,7 @@ public class GuiCraftAmount extends AEBaseGui
 	}
 
 	@Override
-	protected void actionPerformed( GuiButton btn ) throws IOException
+	protected void actionPerformed( final GuiButton btn ) throws IOException
 	{
 		super.actionPerformed( btn );
 
@@ -243,14 +243,14 @@ public class GuiCraftAmount extends AEBaseGui
 				NetworkHandler.instance.sendToServer( new PacketCraftRequest( Integer.parseInt( this.amountToCraft.getText() ), isShiftKeyDown() ) );
 			}
 		}
-		catch( NumberFormatException e )
+		catch( final NumberFormatException e )
 		{
 			// nope..
 			this.amountToCraft.setText( "1" );
 		}
 
-		boolean isPlus = btn == this.plus1 || btn == this.plus10 || btn == this.plus100 || btn == this.plus1000;
-		boolean isMinus = btn == this.minus1 || btn == this.minus10 || btn == this.minus100 || btn == this.minus1000;
+		final boolean isPlus = btn == this.plus1 || btn == this.plus10 || btn == this.plus100 || btn == this.plus1000;
+		final boolean isMinus = btn == this.minus1 || btn == this.minus10 || btn == this.minus100 || btn == this.minus1000;
 
 		if( isPlus || isMinus )
 		{
@@ -258,7 +258,7 @@ public class GuiCraftAmount extends AEBaseGui
 		}
 	}
 
-	private void addQty( int i )
+	private void addQty( final int i )
 	{
 		try
 		{
@@ -298,7 +298,7 @@ public class GuiCraftAmount extends AEBaseGui
 			Integer.parseInt( out );
 			this.amountToCraft.setText( out );
 		}
-		catch( NumberFormatException e )
+		catch( final NumberFormatException e )
 		{
 			// :P
 		}

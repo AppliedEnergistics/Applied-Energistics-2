@@ -26,13 +26,13 @@ import net.minecraft.world.World;
 public class ChargedOreFX extends EntityReddustFX
 {
 
-	public ChargedOreFX( World w, double x, double y, double z, float r, float g, float b )
+	public ChargedOreFX( final World w, final double x, final double y, final double z, final float r, final float g, final float b )
 	{
 		super( w, x, y, z, 0.21f, 0.61f, 1.0f );
 	}
 
 	@Override
-	public int getBrightnessForRender( float par1 )
+	public int getBrightnessForRender( final float par1 )
 	{
 		int j1 = super.getBrightnessForRender( par1 );
 		j1 = Math.max( j1 >> 20, j1 >> 4 );

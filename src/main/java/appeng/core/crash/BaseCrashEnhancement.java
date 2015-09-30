@@ -27,7 +27,7 @@ abstract class BaseCrashEnhancement implements ICrashCallable
 	private final String name;
 	private final String value;
 
-	public BaseCrashEnhancement( String name, String value )
+	public BaseCrashEnhancement( final String name, final String value )
 	{
 		this.name = name;
 		this.value = value;

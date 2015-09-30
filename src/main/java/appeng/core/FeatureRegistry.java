@@ -29,7 +29,7 @@ public final class FeatureRegistry
 {
 	private final Set<IAEFeature> registry = new LinkedHashSet<IAEFeature>();
 
-	public void addFeature( IAEFeature feature )
+	public void addFeature( final IAEFeature feature )
 	{
 		this.registry.add( feature );
 	}

@@ -32,7 +32,7 @@ public class ClassInstantiation<T>
 	private final Class<? extends T> template;
 	private final Object[] args;
 
-	public ClassInstantiation( Class<? extends T> template, Object... args )
+	public ClassInstantiation( final Class<? extends T> template, final Object... args )
 	{
 		this.template = template;
 		this.args = args;
@@ -41,18 +41,18 @@ public class ClassInstantiation<T>
 	public Optional<T> get()
 	{
 		@SuppressWarnings( "unchecked" )
-		Constructor<T>[] constructors = (Constructor<T>[]) this.template.getConstructors();
+		final Constructor<T>[] constructors = (Constructor<T>[]) this.template.getConstructors();
 
-		for( Constructor<T> constructor : constructors )
+		for( final Constructor<T> constructor : constructors )
 		{
-			Class<?>[] paramTypes = constructor.getParameterTypes();
+			final Class<?>[] paramTypes = constructor.getParameterTypes();
 			if( paramTypes.length == this.args.length )
 			{
 				boolean valid = true;
 
 				for( int idx = 0; idx < paramTypes.length; idx++ )
 				{
-					Class<?> cz = this.args[idx].getClass();
+					final Class<?> cz = this.args[idx].getClass();
 					if( !this.isClassMatch( paramTypes[idx], cz, this.args[idx] ) )
 					{
 						valid = false;
@@ -65,15 +65,15 @@ public class ClassInstantiation<T>
 					{
 						return Optional.of( constructor.newInstance( this.args ) );
 					}
-					catch( InstantiationException e )
+					catch( final InstantiationException e )
 					{
 						e.printStackTrace();
 					}
-					catch( IllegalAccessException e )
+					catch( final IllegalAccessException e )
 					{
 						e.printStackTrace();
 					}
-					catch( InvocationTargetException e )
+					catch( final InvocationTargetException e )
 					{
 						e.printStackTrace();
 					}
@@ -85,7 +85,7 @@ public class ClassInstantiation<T>
 		return Optional.absent();
 	}
 
-	private boolean isClassMatch( Class<?> expected, Class<?> got, Object value )
+	private boolean isClassMatch( Class<?> expected, Class<?> got, final Object value )
 	{
 		if( value == null && !expected.isPrimitive() )
 		{
@@ -98,11 +98,11 @@ public class ClassInstantiation<T>
 		return expected == got || expected.isAssignableFrom( got );
 	}
 
-	private Class<?> condense( Class<?> expected, Class<?>... wrappers )
+	private Class<?> condense( final Class<?> expected, final Class<?>... wrappers )
 	{
 		if( expected.isPrimitive() )
 		{
-			for( Class clz : wrappers )
+			for( final Class clz : wrappers )
 			{
 				try
 				{
@@ -111,7 +111,7 @@ public class ClassInstantiation<T>
 						return clz;
 					}
 				}
-				catch( Throwable t )
+				catch( final Throwable t )
 				{
 					AELog.error( t );
 				}

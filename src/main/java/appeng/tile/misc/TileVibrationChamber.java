@@ -71,14 +71,14 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 	}
 
 	@Override
-	public AECableType getCableConnectionType( AEPartLocation dir )
+	public AECableType getCableConnectionType( final AEPartLocation dir )
 	{
 		return AECableType.COVERED;
 	}
 
 	@Reflected
 	@TileEvent( TileEventType.NETWORK_READ )
-	public boolean hasUpdate( ByteBuf data )
+	public boolean hasUpdate( final ByteBuf data )
 	{
 		final boolean wasOn = this.isOn;
 
@@ -89,13 +89,13 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 
 	@Reflected
 	@TileEvent( TileEventType.NETWORK_WRITE )
-	public void writeToNetwork( ByteBuf data )
+	public void writeToNetwork( final ByteBuf data )
 	{
 		data.writeBoolean( this.burnTime > 0 );
 	}
 
 	@TileEvent( TileEventType.WORLD_NBT_WRITE )
-	public void writeToNBT_TileVibrationChamber( NBTTagCompound data )
+	public void writeToNBT_TileVibrationChamber( final NBTTagCompound data )
 	{
 		data.setDouble( "burnTime", this.burnTime );
 		data.setDouble( "maxBurnTime", this.maxBurnTime );
@@ -103,7 +103,7 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 	}
 
 	@TileEvent( TileEventType.WORLD_NBT_READ )
-	public void readFromNBT_TileVibrationChamber( NBTTagCompound data )
+	public void readFromNBT_TileVibrationChamber( final NBTTagCompound data )
 	{
 		this.burnTime = data.getDouble( "burnTime" );
 		this.maxBurnTime = data.getDouble( "maxBurnTime" );
@@ -117,13 +117,13 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 	}
 
 	@Override
-	public boolean isItemValidForSlot( int i, ItemStack itemstack )
+	public boolean isItemValidForSlot( final int i, final ItemStack itemstack )
 	{
 		return TileEntityFurnace.getItemBurnTime( itemstack ) > 0;
 	}
 
 	@Override
-	public void onChangeInventory( IInventory inv, int slot, InvOperation mc, ItemStack removed, ItemStack added )
+	public void onChangeInventory( final IInventory inv, final int slot, final InvOperation mc, final ItemStack removed, final ItemStack added )
 	{
 		if( this.burnTime <= 0 )
 		{
@@ -133,7 +133,7 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 				{
 					this.gridProxy.getTick().wakeDevice( this.gridProxy.getNode() );
 				}
-				catch( GridAccessException e )
+				catch( final GridAccessException e )
 				{
 					// wake up!
 				}
@@ -142,23 +142,23 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 	}
 
 	@Override
-	public boolean canExtractItem( int slotIndex, ItemStack extractedItem, EnumFacing side )
+	public boolean canExtractItem( final int slotIndex, final ItemStack extractedItem, final EnumFacing side )
 	{
 		return extractedItem.getItem() == Items.bucket;
 	}
 
 	@Override
-	public int[] getAccessibleSlotsBySide( EnumFacing side )
+	public int[] getAccessibleSlotsBySide( final EnumFacing side )
 	{
 		return ACCESSIBLE_SLOTS;
 	}
 
 	private boolean canEatFuel()
 	{
-		ItemStack is = this.getStackInSlot( FUEL_SLOT_INDEX );
+		final ItemStack is = this.getStackInSlot( FUEL_SLOT_INDEX );
 		if( is != null )
 		{
-			int newBurnTime = TileEntityFurnace.getItemBurnTime( is );
+			final int newBurnTime = TileEntityFurnace.getItemBurnTime( is );
 			if( newBurnTime > 0 && is.stackSize > 0 )
 			{
 				return true;
@@ -174,7 +174,7 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 	}
 
 	@Override
-	public TickingRequest getTickingRequest( IGridNode node )
+	public TickingRequest getTickingRequest( final IGridNode node )
 	{
 		if( this.burnTime <= 0 )
 		{
@@ -185,7 +185,7 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 	}
 
 	@Override
-	public TickRateModulation tickingRequest( IGridNode node, int ticksSinceLastCall )
+	public TickRateModulation tickingRequest( final IGridNode node, final int ticksSinceLastCall )
 	{
 		if( this.burnTime <= 0 )
 		{
@@ -201,7 +201,7 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 		}
 
 		this.burnSpeed = Math.max( MIN_BURN_SPEED, Math.min( this.burnSpeed, MAX_BURN_SPEED ) );
-		double dilation = this.burnSpeed / DILATION_SCALING;
+		final double dilation = this.burnSpeed / DILATION_SCALING;
 
 		double timePassed = ticksSinceLastCall * dilation;
 		this.burnTime -= timePassed;
@@ -213,9 +213,9 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 
 		try
 		{
-			IEnergyGrid grid = this.gridProxy.getEnergy();
-			double newPower = timePassed * POWER_PER_TICK;
-			double overFlow = grid.injectPower( newPower, Actionable.SIMULATE );
+			final IEnergyGrid grid = this.gridProxy.getEnergy();
+			final double newPower = timePassed * POWER_PER_TICK;
+			final double overFlow = grid.injectPower( newPower, Actionable.SIMULATE );
 
 			// burn the over flow.
 			grid.injectPower( Math.max( 0.0, newPower - overFlow ), Actionable.MODULATE );
@@ -232,7 +232,7 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 			this.burnSpeed = Math.max( MIN_BURN_SPEED, Math.min( this.burnSpeed, MAX_BURN_SPEED ) );
 			return overFlow > 0 ? TickRateModulation.SLOWER : TickRateModulation.FASTER;
 		}
-		catch( GridAccessException e )
+		catch( final GridAccessException e )
 		{
 			this.burnSpeed -= ticksSinceLastCall;
 			this.burnSpeed = Math.max( MIN_BURN_SPEED, Math.min( this.burnSpeed, MAX_BURN_SPEED ) );
@@ -277,7 +277,7 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 			{
 				this.gridProxy.getTick().wakeDevice( this.gridProxy.getNode() );
 			}
-			catch( GridAccessException e )
+			catch( final GridAccessException e )
 			{
 				// gah!
 			}

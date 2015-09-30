@@ -25,7 +25,7 @@ import net.minecraft.world.biome.BiomeGenBase;
 public class BiomeGenStorage extends BiomeGenBase
 {
 
-	public BiomeGenStorage( int id )
+	public BiomeGenStorage( final int id )
 	{
 		super( id );
 		this.setBiomeName( "Storage Cell" );

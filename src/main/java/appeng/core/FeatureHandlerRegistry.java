@@ -29,7 +29,7 @@ public final class FeatureHandlerRegistry
 {
 	private final Set<IFeatureHandler> registry = new LinkedHashSet<IFeatureHandler>();
 
-	public void addFeatureHandler( IFeatureHandler feature )
+	public void addFeatureHandler( final IFeatureHandler feature )
 	{
 		this.registry.add( feature );
 	}

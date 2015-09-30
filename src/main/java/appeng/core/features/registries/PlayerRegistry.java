@@ -32,7 +32,7 @@ public class PlayerRegistry implements IPlayerRegistry
 {
 
 	@Override
-	public int getID( GameProfile username )
+	public int getID( final GameProfile username )
 	{
 		if( username == null || !username.isComplete() )
 		{
@@ -43,14 +43,14 @@ public class PlayerRegistry implements IPlayerRegistry
 	}
 
 	@Override
-	public int getID( EntityPlayer player )
+	public int getID( final EntityPlayer player )
 	{
 		return this.getID( player.getGameProfile() );
 	}
 
 	@Nullable
 	@Override
-	public EntityPlayer findPlayer( int playerID )
+	public EntityPlayer findPlayer( final int playerID )
 	{
 		return WorldData.instance().playerData().getPlayerFromID( playerID );
 	}

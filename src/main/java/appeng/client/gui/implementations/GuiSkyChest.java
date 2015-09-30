@@ -31,21 +31,21 @@ import appeng.tile.storage.TileSkyChest;
 public class GuiSkyChest extends AEBaseGui
 {
 
-	public GuiSkyChest( InventoryPlayer inventoryPlayer, TileSkyChest te )
+	public GuiSkyChest( final InventoryPlayer inventoryPlayer, final TileSkyChest te )
 	{
 		super( new ContainerSkyChest( inventoryPlayer, te ) );
 		this.ySize = 195;
 	}
 
 	@Override
-	public void drawFG( int offsetX, int offsetY, int mouseX, int mouseY )
+	public void drawFG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
 		this.fontRendererObj.drawString( this.getGuiDisplayName( GuiText.SkyChest.getLocal() ), 8, 8, 4210752 );
 		this.fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 2, 4210752 );
 	}
 
 	@Override
-	public void drawBG( int offsetX, int offsetY, int mouseX, int mouseY )
+	public void drawBG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
 		this.bindTexture( "guis/skychest.png" );
 		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize );

@@ -63,17 +63,17 @@ public class BlockMatrixFrame extends AEBaseBlock implements ICustomCollision
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void getCheckedSubBlocks( Item item, CreativeTabs tabs, List<ItemStack> itemStacks )
+	public void getCheckedSubBlocks( final Item item, final CreativeTabs tabs, final List<ItemStack> itemStacks )
 	{
 		// do nothing
 	}
 
 	@Override
 	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool(
-			World w,
-			BlockPos pos,
-			Entity thePlayer,
-			boolean b )
+			final World w,
+			final BlockPos pos,
+			final Entity thePlayer,
+			final boolean b )
 	{
 		return Arrays.asList( new AxisAlignedBB[] {} );// AxisAlignedBB.getBoundingBox( 0.25, 0, 0.25, 0.75, 0.5, 0.75 )
 		// } );
@@ -81,37 +81,37 @@ public class BlockMatrixFrame extends AEBaseBlock implements ICustomCollision
 	
 	@Override
 	public void addCollidingBlockToList(
-			World w,
-			BlockPos pos,
-			AxisAlignedBB bb,
-			List<AxisAlignedBB> out,
-			Entity e )
+			final World w,
+			final BlockPos pos,
+			final AxisAlignedBB bb,
+			final List<AxisAlignedBB> out,
+			final Entity e )
 	{
 		out.add( AxisAlignedBB.fromBounds( 0.0, 0.0, 0.0, 1.0, 1.0, 1.0 ) );
 	}
 
 	@Override
 	public boolean canPlaceBlockAt(
-			World worldIn,
-			BlockPos pos )
+			final World worldIn,
+			final BlockPos pos )
 	{
 		return false;
 	}
 
 	@Override
 	public void onBlockExploded(
-			World world,
-			BlockPos pos,
-			Explosion explosion )
+			final World world,
+			final BlockPos pos,
+			final Explosion explosion )
 	{
 		// Don't explode.
 	}
 
 	@Override
 	public boolean canEntityDestroy(
-			IBlockAccess world,
-			BlockPos pos,
-			Entity entity )
+			final IBlockAccess world,
+			final BlockPos pos,
+			final Entity entity )
 	{
 		return false;
 	}

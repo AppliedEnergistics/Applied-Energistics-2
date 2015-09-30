@@ -36,14 +36,14 @@ public final class ConfigLoader implements IRecipeLoader
 	private final File generatedRecipesDir;
 	private final File userRecipesDir;
 
-	public ConfigLoader( File generatedRecipesDir, File userRecipesDir )
+	public ConfigLoader( final File generatedRecipesDir, final File userRecipesDir )
 	{
 		this.generatedRecipesDir = generatedRecipesDir;
 		this.userRecipesDir = userRecipesDir;
 	}
 
 	@Override
-	public BufferedReader getFile( @Nonnull String relativeFilePath ) throws Exception
+	public BufferedReader getFile( @Nonnull final String relativeFilePath ) throws Exception
 	{
 		Preconditions.checkNotNull( relativeFilePath );
 		Preconditions.checkArgument( !relativeFilePath.isEmpty(), "Supplying an empty String will result creating a reader of a folder." );

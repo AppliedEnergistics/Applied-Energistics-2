@@ -50,12 +50,12 @@ public class BlockQuantumLinkChamber extends BlockQuantumBase
 	
 	@Override
 	public void randomDisplayTick(
-			World w,
-			BlockPos pos,
-			IBlockState state,
-			Random rand )
+			final World w,
+			final BlockPos pos,
+			final IBlockState state,
+			final Random rand )
 	{
-		TileQuantumBridge bridge = this.getTileEntity( w, pos );
+		final TileQuantumBridge bridge = this.getTileEntity( w, pos );
 		if( bridge != null )
 		{
 			if( bridge.hasQES() )
@@ -70,20 +70,20 @@ public class BlockQuantumLinkChamber extends BlockQuantumBase
 
 	@Override
 	public boolean onActivated(
-			World w,
-			BlockPos pos,
-			EntityPlayer p,
-			EnumFacing side,
-			float hitX,
-			float hitY,
-			float hitZ )
+			final World w,
+			final BlockPos pos,
+			final EntityPlayer p,
+			final EnumFacing side,
+			final float hitX,
+			final float hitY,
+			final float hitZ )
 	{
 		if( p.isSneaking() )
 		{
 			return false;
 		}
 
-		TileQuantumBridge tg = this.getTileEntity( w, pos );
+		final TileQuantumBridge tg = this.getTileEntity( w, pos );
 		if( tg != null )
 		{
 			if( Platform.isServer() )
@@ -97,24 +97,24 @@ public class BlockQuantumLinkChamber extends BlockQuantumBase
 
 	@Override
 	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool(
-			World w,
-			BlockPos pos,
-			Entity thePlayer,
-			boolean b )
+			final World w,
+			final BlockPos pos,
+			final Entity thePlayer,
+			final boolean b )
 	{
-		double onePixel = 2.0 / 16.0;
+		final double onePixel = 2.0 / 16.0;
 		return Collections.singletonList( AxisAlignedBB.fromBounds( onePixel, onePixel, onePixel, 1.0 - onePixel, 1.0 - onePixel, 1.0 - onePixel ) );
 	}
 	
 	@Override
 	public void addCollidingBlockToList(
-			World w,
-			BlockPos pos,
-			AxisAlignedBB bb,
-			List<AxisAlignedBB> out,
-			Entity e )
+			final World w,
+			final BlockPos pos,
+			final AxisAlignedBB bb,
+			final List<AxisAlignedBB> out,
+			final Entity e )
 	{
-		double onePixel = 2.0 / 16.0;
+		final double onePixel = 2.0 / 16.0;
 		out.add( AxisAlignedBB.fromBounds( onePixel, onePixel, onePixel, 1.0 - onePixel, 1.0 - onePixel, 1.0 - onePixel ) );
 	}
 }

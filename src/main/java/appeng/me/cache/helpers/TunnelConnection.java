@@ -29,7 +29,7 @@ public class TunnelConnection
 	public final PartP2PTunnelME tunnel;
 	public final IGridConnection c;
 
-	public TunnelConnection( PartP2PTunnelME t, IGridConnection con )
+	public TunnelConnection( final PartP2PTunnelME t, final IGridConnection con )
 	{
 		this.tunnel = t;
 		this.c = con;

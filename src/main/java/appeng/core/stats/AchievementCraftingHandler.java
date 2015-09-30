@@ -35,20 +35,20 @@ public class AchievementCraftingHandler
 {
 	private final PlayerDifferentiator differentiator;
 
-	public AchievementCraftingHandler( PlayerDifferentiator differentiator )
+	public AchievementCraftingHandler( final PlayerDifferentiator differentiator )
 	{
 		this.differentiator = differentiator;
 	}
 
 	@SubscribeEvent
-	public void onPlayerCraftingEvent( PlayerEvent.ItemCraftedEvent event )
+	public void onPlayerCraftingEvent( final PlayerEvent.ItemCraftedEvent event )
 	{
 		if( this.differentiator.isNoPlayer( event.player ) || event.crafting == null )
 		{
 			return;
 		}
 
-		for( Achievements achievement : Achievements.values() )
+		for( final Achievements achievement : Achievements.values() )
 		{
 			switch( achievement.type )
 			{

@@ -25,7 +25,7 @@ import net.minecraft.inventory.IInventory;
 public class QuartzKnifeOutput extends SlotOutput
 {
 
-	public QuartzKnifeOutput( IInventory a, int b, int c, int d, int i )
+	public QuartzKnifeOutput( final IInventory a, final int b, final int c, final int d, final int i )
 	{
 		super( a, b, c, d, i );
 	}

@@ -57,7 +57,7 @@ public class RenderBlockCraftingCPUMonitor extends RenderBlockCraftingCPU<BlockC
 	}
 
 	@Override
-	public void renderTile( BlockCraftingMonitor block, TileCraftingMonitorTile tile, WorldRenderer tess, double x, double y, double z, float f, ModelGenerator renderer )
+	public void renderTile( final BlockCraftingMonitor block, final TileCraftingMonitorTile tile, final WorldRenderer tess, final double x, final double y, final double z, final float f, final ModelGenerator renderer )
 	{
 		if( tile != null )
 		{
@@ -91,9 +91,9 @@ public class RenderBlockCraftingCPUMonitor extends RenderBlockCraftingCPU<BlockC
 		}
 	}
 
-	private void tesrRenderScreen( WorldRenderer tess, TileCraftingMonitorTile cmt, IAEItemStack ais )
+	private void tesrRenderScreen( final WorldRenderer tess, final TileCraftingMonitorTile cmt, final IAEItemStack ais )
 	{
-		EnumFacing side = cmt.getForward();
+		final EnumFacing side = cmt.getForward();
 
 		EnumFacing walrus = side.getFrontOffsetY() != 0 ? EnumFacing.SOUTH : EnumFacing.UP;
 		int spin = 0;
@@ -110,7 +110,7 @@ public class RenderBlockCraftingCPUMonitor extends RenderBlockCraftingCPU<BlockC
 		GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS );
 		GL11.glTranslated( side.getFrontOffsetX() * 0.69, side.getFrontOffsetY() * 0.69, side.getFrontOffsetZ() * 0.69 );
 
-		float scale = 0.7f;
+		final float scale = 0.7f;
 		GL11.glScalef( scale, scale, scale );
 
 		if( side == EnumFacing.UP )
@@ -153,12 +153,12 @@ public class RenderBlockCraftingCPUMonitor extends RenderBlockCraftingCPU<BlockC
 		GL11.glPushMatrix();
 		try
 		{
-			ItemStack sis = ais.getItemStack();
+			final ItemStack sis = ais.getItemStack();
 			sis.stackSize = 1;
 
-			int br = 16 << 20 | 16 << 4;
-			int var11 = br % 65536;
-			int var12 = br / 65536;
+			final int br = 16 << 20 | 16 << 4;
+			final int var11 = br % 65536;
+			final int var12 = br / 65536;
 			OpenGlHelper.setLightmapTextureCoords( OpenGlHelper.lightmapTexUnit, var11 * 0.8F, var12 * 0.8F );
 
 			GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
@@ -170,7 +170,7 @@ public class RenderBlockCraftingCPUMonitor extends RenderBlockCraftingCPU<BlockC
 
 			ClientHelper.proxy.doRenderItem( sis, cmt.getWorld() );
 		}
-		catch( Exception e )
+		catch( final Exception e )
 		{
 			AELog.error( e );
 		}
@@ -183,8 +183,8 @@ public class RenderBlockCraftingCPUMonitor extends RenderBlockCraftingCPU<BlockC
 		final long stackSize = ais.getStackSize();
 		final String renderedStackSize = NUMBER_CONVERTER.toWideReadableForm( stackSize );
 
-		FontRenderer fr = Minecraft.getMinecraft().fontRendererObj;
-		int width = fr.getStringWidth( renderedStackSize );
+		final FontRenderer fr = Minecraft.getMinecraft().fontRendererObj;
+		final int width = fr.getStringWidth( renderedStackSize );
 		GL11.glTranslatef( -0.5f * width, 0.0f, -1.0f );
 		fr.drawString( renderedStackSize, 0, 0, 0 );
 

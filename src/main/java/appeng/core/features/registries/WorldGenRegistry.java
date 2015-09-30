@@ -37,14 +37,14 @@ public final class WorldGenRegistry implements IWorldGen
 
 		this.types = new TypeSet[WorldGenType.values().length];
 
-		for( WorldGenType type : WorldGenType.values() )
+		for( final WorldGenType type : WorldGenType.values() )
 		{
 			this.types[type.ordinal()] = new TypeSet();
 		}
 	}
 
 	@Override
-	public void disableWorldGenForProviderID( WorldGenType type, Class<? extends WorldProvider> provider )
+	public void disableWorldGenForProviderID( final WorldGenType type, final Class<? extends WorldProvider> provider )
 	{
 		if( type == null )
 		{
@@ -60,7 +60,7 @@ public final class WorldGenRegistry implements IWorldGen
 	}
 
 	@Override
-	public void enableWorldGenForDimension( WorldGenType type, int dimensionID )
+	public void enableWorldGenForDimension( final WorldGenType type, final int dimensionID )
 	{
 		if( type == null )
 		{
@@ -71,7 +71,7 @@ public final class WorldGenRegistry implements IWorldGen
 	}
 
 	@Override
-	public void disableWorldGenForDimension( WorldGenType type, int dimensionID )
+	public void disableWorldGenForDimension( final WorldGenType type, final int dimensionID )
 	{
 		if( type == null )
 		{
@@ -82,7 +82,7 @@ public final class WorldGenRegistry implements IWorldGen
 	}
 
 	@Override
-	public boolean isWorldGenEnabled( WorldGenType type, World w )
+	public boolean isWorldGenEnabled( final WorldGenType type, final World w )
 	{
 		if( type == null )
 		{
@@ -94,9 +94,9 @@ public final class WorldGenRegistry implements IWorldGen
 			throw new IllegalArgumentException( "Bad Provider Passed" );
 		}
 
-		boolean isBadProvider = this.types[type.ordinal()].badProviders.contains( w.provider.getClass() );
-		boolean isBadDimension = this.types[type.ordinal()].badDimensions.contains( w.provider.getDimensionId() );
-		boolean isGoodDimension = this.types[type.ordinal()].enabledDimensions.contains( w.provider.getDimensionId() );
+		final boolean isBadProvider = this.types[type.ordinal()].badProviders.contains( w.provider.getClass() );
+		final boolean isBadDimension = this.types[type.ordinal()].badDimensions.contains( w.provider.getDimensionId() );
+		final boolean isGoodDimension = this.types[type.ordinal()].enabledDimensions.contains( w.provider.getDimensionId() );
 
 		if( isBadProvider || isBadDimension )
 		{

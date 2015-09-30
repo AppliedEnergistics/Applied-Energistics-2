@@ -55,14 +55,14 @@ public class SelectedPart
 		this.side = AEPartLocation.INTERNAL;
 	}
 
-	public SelectedPart( IPart part, AEPartLocation side )
+	public SelectedPart( final IPart part, final AEPartLocation side )
 	{
 		this.part = part;
 		this.facade = null;
 		this.side = side;
 	}
 
-	public SelectedPart( IFacadePart facade, AEPartLocation side )
+	public SelectedPart( final IFacadePart facade, final AEPartLocation side )
 	{
 		this.part = null;
 		this.facade = facade;

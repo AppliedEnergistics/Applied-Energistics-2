@@ -46,7 +46,7 @@ public class PacketAssemblerAnimation extends AppEngPacket
 	public final IAEItemStack is;
 
 	// automatic.
-	public PacketAssemblerAnimation( ByteBuf stream ) throws IOException
+	public PacketAssemblerAnimation( final ByteBuf stream ) throws IOException
 	{
 		this.x = stream.readInt();
 		this.y = stream.readInt();
@@ -56,10 +56,10 @@ public class PacketAssemblerAnimation extends AppEngPacket
 	}
 
 	// api
-	public PacketAssemblerAnimation( BlockPos pos, byte rate, IAEItemStack is ) throws IOException
+	public PacketAssemblerAnimation( final BlockPos pos, final byte rate, final IAEItemStack is ) throws IOException
 	{
 
-		ByteBuf data = Unpooled.buffer();
+		final ByteBuf data = Unpooled.buffer();
 
 		data.writeInt( this.getPacketID() );
 		data.writeInt( this.x = pos.getX() );
@@ -74,11 +74,11 @@ public class PacketAssemblerAnimation extends AppEngPacket
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void clientPacketData( INetworkInfo network, AppEngPacket packet, EntityPlayer player )
+	public void clientPacketData( final INetworkInfo network, final AppEngPacket packet, final EntityPlayer player )
 	{
-		double d0 = 0.5d;// + ((double) (Platform.getRandomFloat() - 0.5F) * 0.26D);
-		double d1 = 0.5d;// + ((double) (Platform.getRandomFloat() - 0.5F) * 0.26D);
-		double d2 = 0.5d;// + ((double) (Platform.getRandomFloat() - 0.5F) * 0.26D);
+		final double d0 = 0.5d;// + ((double) (Platform.getRandomFloat() - 0.5F) * 0.26D);
+		final double d1 = 0.5d;// + ((double) (Platform.getRandomFloat() - 0.5F) * 0.26D);
+		final double d2 = 0.5d;// + ((double) (Platform.getRandomFloat() - 0.5F) * 0.26D);
 
 		CommonHelper.proxy.spawnEffect( EffectType.Assembler, player.getEntityWorld(), this.x + d0, this.y + d1, this.z + d2, this );
 	}

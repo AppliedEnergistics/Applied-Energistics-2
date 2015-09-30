@@ -35,7 +35,7 @@ public class GuiInscriber extends AEBaseGui
 	final ContainerInscriber cvc;
 	GuiProgressBar pb;
 
-	public GuiInscriber( InventoryPlayer inventoryPlayer, TileInscriber te )
+	public GuiInscriber( final InventoryPlayer inventoryPlayer, final TileInscriber te )
 	{
 		super( new ContainerInscriber( inventoryPlayer, te ) );
 		this.cvc = (ContainerInscriber) this.inventorySlots;
@@ -58,7 +58,7 @@ public class GuiInscriber extends AEBaseGui
 	}
 
 	@Override
-	public void drawFG( int offsetX, int offsetY, int mouseX, int mouseY )
+	public void drawFG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
 		this.pb.setFullMsg( this.cvc.getCurrentProgress() * 100 / this.cvc.getMaxProgress() + "%" );
 
@@ -67,7 +67,7 @@ public class GuiInscriber extends AEBaseGui
 	}
 
 	@Override
-	public void drawBG( int offsetX, int offsetY, int mouseX, int mouseY )
+	public void drawBG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
 		this.bindTexture( "guis/inscriber.png" );
 		this.pb.xPosition = 135 + this.guiLeft;

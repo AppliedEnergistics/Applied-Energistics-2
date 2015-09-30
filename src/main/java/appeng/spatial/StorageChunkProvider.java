@@ -43,7 +43,7 @@ public class StorageChunkProvider extends ChunkProviderGenerate
 	{
 		BLOCKS = new Block[255 * SQUARE_CHUNK_SIZE];
 
-		for( Block matrixFrameBlock : AEApi.instance().definitions().blocks().matrixFrame().maybeBlock().asSet() )
+		for( final Block matrixFrameBlock : AEApi.instance().definitions().blocks().matrixFrame().maybeBlock().asSet() )
 		{
 			for( int x = 0; x < BLOCKS.length; x++ )
 			{
@@ -54,19 +54,19 @@ public class StorageChunkProvider extends ChunkProviderGenerate
 
 	final World world;
 
-	public StorageChunkProvider( World world, long i )
+	public StorageChunkProvider( final World world, final long i )
 	{
 		super( world, i, false, null );
 		this.world = world;
 	}
 
 	@Override
-	public Chunk provideChunk( int x, int z )
+	public Chunk provideChunk( final int x, final int z )
 	{
-		Chunk chunk = new Chunk( this.world, x, z );
+		final Chunk chunk = new Chunk( this.world, x, z );
 
-		byte[] biomes = chunk.getBiomeArray();
-		AEConfig config = AEConfig.instance;
+		final byte[] biomes = chunk.getBiomeArray();
+		final AEConfig config = AEConfig.instance;
 
 		for( int k = 0; k < biomes.length; ++k )
 		{
@@ -83,7 +83,7 @@ public class StorageChunkProvider extends ChunkProviderGenerate
 	}
 
 	@Override
-	public void populate( IChunkProvider par1iChunkProvider, int par2, int par3 )
+	public void populate( final IChunkProvider par1iChunkProvider, final int par2, final int par3 )
 	{
 
 	}
@@ -95,7 +95,7 @@ public class StorageChunkProvider extends ChunkProviderGenerate
 	}
 
 	@Override
-	public List getPossibleCreatures( EnumCreatureType creatureType, BlockPos pos )
+	public List getPossibleCreatures( final EnumCreatureType creatureType, final BlockPos pos )
 	{
 		return new ArrayList();
 	}

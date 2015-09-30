@@ -40,23 +40,23 @@ public class AppEngClientPacketHandler extends AppEngPacketHandlerBase implement
 	@Override
 	public void onPacketData(
 			final INetworkInfo manager,
-			INetHandler handler,
-			FMLProxyPacket packet,
+			final INetHandler handler,
+			final FMLProxyPacket packet,
 			final EntityPlayer player )
 	{
-		ByteBuf stream = packet.payload();
+		final ByteBuf stream = packet.payload();
 
 		try
 		{
-			int packetType = stream.readInt();
-			AppEngPacket pack = PacketTypes.getPacket( packetType ).parsePacket( stream );
+			final int packetType = stream.readInt();
+			final AppEngPacket pack = PacketTypes.getPacket( packetType ).parsePacket( stream );
 
-			PacketCallState callState = 
+			final PacketCallState callState =
 			 new PacketCallState(){
 				
 				@Override
 				public void call(
-						AppEngPacket appEngPacket )
+						final AppEngPacket appEngPacket )
 				{
 					appEngPacket.clientPacketData( manager, appEngPacket, Minecraft.getMinecraft().thePlayer );
 				}
@@ -66,19 +66,19 @@ public class AppEngClientPacketHandler extends AppEngPacketHandlerBase implement
 			PacketThreadUtil.checkThreadAndEnqueue( pack, handler, Minecraft.getMinecraft() );
 			callState.call( pack );
 		}
-		catch( InstantiationException e )
+		catch( final InstantiationException e )
 		{
 			AELog.error( e );
 		}
-		catch( IllegalAccessException e )
+		catch( final IllegalAccessException e )
 		{
 			AELog.error( e );
 		}
-		catch( IllegalArgumentException e )
+		catch( final IllegalArgumentException e )
 		{
 			AELog.error( e );
 		}
-		catch( InvocationTargetException e )
+		catch( final InvocationTargetException e )
 		{
 			AELog.error( e );
 		}

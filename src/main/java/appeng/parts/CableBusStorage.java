@@ -42,14 +42,14 @@ public class CableBusStorage
 		return this.center;
 	}
 
-	protected void setCenter( IPartCable center )
+	protected void setCenter( final IPartCable center )
 	{
 		this.center = center;
 	}
 
-	protected IPart getSide( AEPartLocation side )
+	protected IPart getSide( final AEPartLocation side )
 	{
-		int x = side.ordinal();
+		final int x = side.ordinal();
 		if( this.sides != null && this.sides.length > x )
 		{
 			return this.sides[x];
@@ -58,9 +58,9 @@ public class CableBusStorage
 		return null;
 	}
 
-	protected void setSide( AEPartLocation side, IPart part )
+	protected void setSide( final AEPartLocation side, final IPart part )
 	{
-		int x = side.ordinal();
+		final int x = side.ordinal();
 
 		if( this.sides != null && this.sides.length > x && part == null )
 		{
@@ -74,7 +74,7 @@ public class CableBusStorage
 		}
 	}
 
-	private <T> T[] shrink( T[] in, boolean parts )
+	private <T> T[] shrink( final T[] in, final boolean parts )
 	{
 		int newSize = -1;
 		for( int x = 0; x < in.length; x++ )
@@ -96,22 +96,22 @@ public class CableBusStorage
 			return in;
 		}
 
-		T[] newArray = (T[]) ( parts ? new IPart[newSize] : new IFacadePart[newSize] );
+		final T[] newArray = (T[]) ( parts ? new IPart[newSize] : new IFacadePart[newSize] );
 		System.arraycopy( in, 0, newArray, 0, newSize );
 
 		return newArray;
 	}
 
-	private <T> T[] grow( T[] in, int newValue, boolean parts )
+	private <T> T[] grow( final T[] in, final int newValue, final boolean parts )
 	{
 		if( in != null && in.length > newValue )
 		{
 			return in;
 		}
 
-		int newSize = newValue + 1;
+		final int newSize = newValue + 1;
 
-		T[] newArray = (T[]) ( parts ? new IPart[newSize] : new IFacadePart[newSize] );
+		final T[] newArray = (T[]) ( parts ? new IPart[newSize] : new IFacadePart[newSize] );
 		if( in != null )
 		{
 			System.arraycopy( in, 0, newArray, 0, in.length );
@@ -120,7 +120,7 @@ public class CableBusStorage
 		return newArray;
 	}
 
-	public IFacadePart getFacade( int x )
+	public IFacadePart getFacade( final int x )
 	{
 		if( this.facades != null && this.facades.length > x )
 		{
@@ -130,7 +130,7 @@ public class CableBusStorage
 		return null;
 	}
 
-	public void setFacade( int x, @Nullable IFacadePart facade )
+	public void setFacade( final int x, @Nullable final IFacadePart facade )
 	{
 		if( this.facades != null && this.facades.length > x && facade == null )
 		{

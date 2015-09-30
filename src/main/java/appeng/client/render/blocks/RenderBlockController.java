@@ -41,16 +41,16 @@ public class RenderBlockController extends BaseBlockRender<BlockController, Tile
 	}
 
 	@Override
-	public boolean renderInWorld( BlockController blk, IBlockAccess world, BlockPos pos, ModelGenerator renderer )
+	public boolean renderInWorld( final BlockController blk, final IBlockAccess world, final BlockPos pos, final ModelGenerator renderer )
 	{
 
-		boolean xx = this.getTileEntity( world,  pos.offset( EnumFacing.WEST ) ) instanceof TileController && this.getTileEntity( world, pos.offset( EnumFacing.EAST ) ) instanceof TileController;
-		boolean yy = this.getTileEntity( world, pos.offset( EnumFacing.DOWN ) ) instanceof TileController && this.getTileEntity( world, pos.offset( EnumFacing.UP ) ) instanceof TileController;
-		boolean zz = this.getTileEntity( world, pos.offset( EnumFacing.SOUTH )) instanceof TileController && this.getTileEntity( world, pos.offset( EnumFacing.NORTH ) ) instanceof TileController;
+		final boolean xx = this.getTileEntity( world,  pos.offset( EnumFacing.WEST ) ) instanceof TileController && this.getTileEntity( world, pos.offset( EnumFacing.EAST ) ) instanceof TileController;
+		final boolean yy = this.getTileEntity( world, pos.offset( EnumFacing.DOWN ) ) instanceof TileController && this.getTileEntity( world, pos.offset( EnumFacing.UP ) ) instanceof TileController;
+		final boolean zz = this.getTileEntity( world, pos.offset( EnumFacing.SOUTH )) instanceof TileController && this.getTileEntity( world, pos.offset( EnumFacing.NORTH ) ) instanceof TileController;
 
-		BlockController.ControllerBlockState meta = ( ControllerBlockState ) world.getBlockState( pos ).getValue( BlockController.CONTROLLER_STATE );
-		boolean hasPower = meta != BlockController.ControllerBlockState.OFFLINE;
-		boolean isConflict = meta == BlockController.ControllerBlockState.CONFLICTED;
+		final BlockController.ControllerBlockState meta = ( ControllerBlockState ) world.getBlockState( pos ).getValue( BlockController.CONTROLLER_STATE );
+		final boolean hasPower = meta != BlockController.ControllerBlockState.OFFLINE;
+		final boolean isConflict = meta == BlockController.ControllerBlockState.CONFLICTED;
 
 		ExtraBlockTextures lights = null;
 
@@ -125,7 +125,7 @@ public class RenderBlockController extends BaseBlockRender<BlockController, Tile
 		}
 		else if( ( xx ? 1 : 0 ) + ( yy ? 1 : 0 ) + ( zz ? 1 : 0 ) >= 2 )
 		{
-			int v = ( Math.abs( pos.getX() ) + Math.abs( pos.getY() ) + Math.abs( pos.getZ() ) ) % 2;
+			final int v = ( Math.abs( pos.getX() ) + Math.abs( pos.getY() ) + Math.abs( pos.getZ() ) ) % 2;
 			renderer.uvRotateEast = renderer.uvRotateBottom = renderer.uvRotateNorth = renderer.uvRotateSouth = renderer.uvRotateTop = renderer.uvRotateWest = 0;
 
 			if( v == 0 )
@@ -157,7 +157,7 @@ public class RenderBlockController extends BaseBlockRender<BlockController, Tile
 			}
 		}
 
-		boolean out = renderer.renderStandardBlock( blk, pos );
+		final boolean out = renderer.renderStandardBlock( blk, pos );
 		if( lights != null )
 		{
 			renderer.setColorOpaque_F( 1.0f, 1.0f, 1.0f );
@@ -175,7 +175,7 @@ public class RenderBlockController extends BaseBlockRender<BlockController, Tile
 		return out;
 	}
 
-	private TileEntity getTileEntity( IBlockAccess world, BlockPos pos )
+	private TileEntity getTileEntity( final IBlockAccess world, final BlockPos pos )
 	{
 		if( pos.getY() >= 0 )
 		{

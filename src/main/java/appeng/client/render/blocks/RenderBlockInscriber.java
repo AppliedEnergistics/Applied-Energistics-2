@@ -66,7 +66,7 @@ public class RenderBlockInscriber extends BaseBlockRender<BlockInscriber, TileIn
 	}
 
 	@Override
-	public void renderInventory( BlockInscriber blk, ItemStack is, ModelGenerator renderer, ItemRenderType type, Object[] obj )
+	public void renderInventory( final BlockInscriber blk, final ItemStack is, final ModelGenerator renderer, final ItemRenderType type, final Object[] obj )
 	{
 		renderer.renderAllFaces = true;
 		this.setInvRenderBounds( renderer, 6, 1, 0, 10, 15, 2 );
@@ -105,7 +105,7 @@ public class RenderBlockInscriber extends BaseBlockRender<BlockInscriber, TileIn
 	}
 
 	@Override
-	public boolean renderInWorld( BlockInscriber block, IBlockAccess world, BlockPos pos, ModelGenerator renderer )
+	public boolean renderInWorld( final BlockInscriber block, final IBlockAccess world, final BlockPos pos, final ModelGenerator renderer )
 	{
 		this.preRenderInWorld( block, world, pos, renderer );
 
@@ -148,7 +148,7 @@ public class RenderBlockInscriber extends BaseBlockRender<BlockInscriber, TileIn
 	}
 
 	@Override
-	public void renderTile( BlockInscriber block, TileInscriber tile, WorldRenderer tess, double x, double y, double z, float f, ModelGenerator renderer )
+	public void renderTile( final BlockInscriber block, final TileInscriber tile, final WorldRenderer tess, final double x, final double y, final double z, final float f, final ModelGenerator renderer )
 	{
 		GL11.glPushMatrix();
 		this.applyTESRRotation( x, y, z, tile.getForward(), tile.getUp() );
@@ -190,7 +190,7 @@ public class RenderBlockInscriber extends BaseBlockRender<BlockInscriber, TileIn
 		float press = 0.2f;
 		press -= progress / 5.0f;
 
-		IAESprite ic = ExtraBlockTextures.BlockInscriberInside.getIcon();
+		final IAESprite ic = ExtraBlockTextures.BlockInscriberInside.getIcon();
 		tess.startDrawingQuads();
 
 		float middle = 0.5f;
@@ -262,7 +262,7 @@ public class RenderBlockInscriber extends BaseBlockRender<BlockInscriber, TileIn
 		}
 	}
 
-	public void renderItem( ItemStack sis, float o, AEBaseBlock block, AEBaseTile tile, WorldRenderer tess, double x, double y, double z, float f, ModelGenerator renderer )
+	public void renderItem( ItemStack sis, final float o, final AEBaseBlock block, final AEBaseTile tile, final WorldRenderer tess, final double x, final double y, final double z, final float f, final ModelGenerator renderer )
 	{
 		if( sis != null )
 		{
@@ -303,7 +303,7 @@ public class RenderBlockInscriber extends BaseBlockRender<BlockInscriber, TileIn
 
 				this.doRenderItem( sis, tile );
 			}
-			catch( Exception err )
+			catch( final Exception err )
 			{
 				AELog.error( err );
 			}

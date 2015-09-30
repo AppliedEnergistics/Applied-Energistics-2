@@ -61,7 +61,7 @@ public enum Settings
 
 	private final EnumSet<? extends Enum<?>> values;
 
-	Settings( @Nonnull EnumSet<? extends Enum<?>> possibleOptions )
+	Settings( @Nonnull final EnumSet<? extends Enum<?>> possibleOptions )
 	{
 		if( possibleOptions.isEmpty() )
 		{

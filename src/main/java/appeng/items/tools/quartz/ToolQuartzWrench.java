@@ -41,7 +41,7 @@ import com.google.common.base.Optional;
 public class ToolQuartzWrench extends AEBaseItem implements IAEWrench /*, IToolWrench */
 {
 
-	public ToolQuartzWrench( AEFeature type )
+	public ToolQuartzWrench( final AEFeature type )
 	{
 		super( Optional.of( type.name() ) );
 
@@ -52,16 +52,16 @@ public class ToolQuartzWrench extends AEBaseItem implements IAEWrench /*, IToolW
 
 	@Override
 	public boolean onItemUseFirst(
-			ItemStack stack,
-			EntityPlayer player,
-			World world,
-			BlockPos pos,
-			EnumFacing side,
-			float hitX,
-			float hitY,
-			float hitZ )
+			final ItemStack stack,
+			final EntityPlayer player,
+			final World world,
+			final BlockPos pos,
+			final EnumFacing side,
+			final float hitX,
+			final float hitY,
+			final float hitZ )
 	{
-		Block b = world.getBlockState( pos ).getBlock();
+		final Block b = world.getBlockState( pos ).getBlock();
 		if( b != null && !player.isSneaking() && Platform.hasPermissions( new DimensionalCoord( world, pos ), player ) )
 		{
 			if( Platform.isClient() )
@@ -81,18 +81,18 @@ public class ToolQuartzWrench extends AEBaseItem implements IAEWrench /*, IToolW
 
 	@Override
 	public boolean doesSneakBypassUse(
-			World world,
-			BlockPos pos,
-			EntityPlayer player )
+			final World world,
+			final BlockPos pos,
+			final EntityPlayer player )
 	{
 		return true;
 	}
 
 	@Override
 	public boolean canWrench(
-			ItemStack wrench,
-			EntityPlayer player,
-			BlockPos pos )
+			final ItemStack wrench,
+			final EntityPlayer player,
+			final BlockPos pos )
 	{
 		return true;
 	}

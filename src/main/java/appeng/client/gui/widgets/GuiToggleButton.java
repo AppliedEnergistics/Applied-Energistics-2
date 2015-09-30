@@ -41,7 +41,7 @@ public class GuiToggleButton extends GuiButton implements ITooltip
 
 	private boolean isActive;
 
-	public GuiToggleButton( int x, int y, int on, int off, String displayName, String displayHint )
+	public GuiToggleButton( final int x, final int y, final int on, final int off, final String displayName, final String displayHint )
 	{
 		super( 0, 0, 16, "" );
 		this.iconIdxOn = on;
@@ -54,24 +54,24 @@ public class GuiToggleButton extends GuiButton implements ITooltip
 		this.height = 16;
 	}
 
-	public void setState( boolean isOn )
+	public void setState( final boolean isOn )
 	{
 		this.isActive = isOn;
 	}
 
 	@Override
-	public void drawButton( Minecraft par1Minecraft, int par2, int par3 )
+	public void drawButton( final Minecraft par1Minecraft, final int par2, final int par3 )
 	{
 		if( this.visible )
 		{
-			int iconIndex = this.getIconIndex();
+			final int iconIndex = this.getIconIndex();
 
 			GL11.glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 			par1Minecraft.renderEngine.bindTexture( ExtraBlockTextures.GuiTexture( "guis/states.png" ) );
 			this.hovered = par2 >= this.xPosition && par3 >= this.yPosition && par2 < this.xPosition + this.width && par3 < this.yPosition + this.height;
 
-			int uv_y = (int) Math.floor( iconIndex / 16 );
-			int uv_x = iconIndex - uv_y * 16;
+			final int uv_y = (int) Math.floor( iconIndex / 16 );
+			final int uv_x = iconIndex - uv_y * 16;
 
 			this.drawTexturedModalRect( this.xPosition, this.yPosition, 256 - 16, 256 - 16, 16, 16 );
 			this.drawTexturedModalRect( this.xPosition, this.yPosition, uv_x * 16, uv_y * 16, 16, 16 );
@@ -102,7 +102,7 @@ public class GuiToggleButton extends GuiButton implements ITooltip
 			}
 
 			value = PATTERN_NEW_LINE.matcher( value ).replaceAll( "\n" );
-			StringBuilder sb = new StringBuilder( value );
+			final StringBuilder sb = new StringBuilder( value );
 
 			int i = sb.lastIndexOf( "\n" );
 			if( i <= 0 )

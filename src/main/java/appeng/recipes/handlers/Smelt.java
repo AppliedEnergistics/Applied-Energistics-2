@@ -39,12 +39,12 @@ public class Smelt implements ICraftHandler, IWebsiteSerializer
 	IIngredient out;
 
 	@Override
-	public void setup( List<List<IIngredient>> input, List<List<IIngredient>> output ) throws RecipeError
+	public void setup( final List<List<IIngredient>> input, final List<List<IIngredient>> output ) throws RecipeError
 	{
 		if( input.size() == 1 && output.size() == 1 )
 		{
-			List<IIngredient> inputList = input.get( 0 );
-			List<IIngredient> outputList = output.get( 0 );
+			final List<IIngredient> inputList = input.get( 0 );
+			final List<IIngredient> outputList = output.get( 0 );
 			if( inputList.size() == 1 && outputList.size() == 1 )
 			{
 				this.in = inputList.get( 0 );
@@ -72,7 +72,7 @@ public class Smelt implements ICraftHandler, IWebsiteSerializer
 	}
 
 	@Override
-	public String getPattern( RecipeHandler h )
+	public String getPattern( final RecipeHandler h )
 	{
 		return "smelt " + this.out.getQty() + '\n' +
 				h.getName( this.out ) + '\n' +
@@ -80,7 +80,7 @@ public class Smelt implements ICraftHandler, IWebsiteSerializer
 	}
 
 	@Override
-	public boolean canCraft( ItemStack reqOutput ) throws RegistrationError, MissingIngredientError
+	public boolean canCraft( final ItemStack reqOutput ) throws RegistrationError, MissingIngredientError
 	{
 		return Platform.isSameItemPrecise( this.out.getItemStack(), reqOutput );
 	}

@@ -41,7 +41,7 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 	protected IAEAppEngInventory te;
 	protected int maxStack;
 
-	public AppEngInternalInventory( IAEAppEngInventory inventory, int size )
+	public AppEngInternalInventory( final IAEAppEngInventory inventory, final int size )
 	{
 		this.te = inventory;
 		this.size = size;
@@ -73,17 +73,17 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 	}
 
 	@Override
-	public ItemStack getStackInSlot( int var1 )
+	public ItemStack getStackInSlot( final int var1 )
 	{
 		return this.inv[var1];
 	}
 
 	@Override
-	public ItemStack decrStackSize( int slot, int qty )
+	public ItemStack decrStackSize( final int slot, final int qty )
 	{
 		if( this.inv[slot] != null )
 		{
-			ItemStack split = this.getStackInSlot( slot );
+			final ItemStack split = this.getStackInSlot( slot );
 			ItemStack ns = null;
 
 			if( qty >= split.stackSize )
@@ -114,15 +114,15 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 	}
 
 	@Override
-	public ItemStack getStackInSlotOnClosing( int var1 )
+	public ItemStack getStackInSlotOnClosing( final int var1 )
 	{
 		return null;
 	}
 
 	@Override
-	public void setInventorySlotContents( int slot, ItemStack newItemStack )
+	public void setInventorySlotContents( final int slot, final ItemStack newItemStack )
 	{
-		ItemStack oldStack = this.inv[slot];
+		final ItemStack oldStack = this.inv[slot];
 		this.inv[slot] = newItemStack;
 
 		if( this.te != null && this.eventsEnabled() )
@@ -184,24 +184,24 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 	}
 
 	@Override
-	public boolean isUseableByPlayer( EntityPlayer var1 )
+	public boolean isUseableByPlayer( final EntityPlayer var1 )
 	{
 		return true;
 	}
 
 	@Override
-	public boolean isItemValidForSlot( int i, ItemStack itemstack )
+	public boolean isItemValidForSlot( final int i, final ItemStack itemstack )
 	{
 		return true;
 	}
 
-	public void setMaxStackSize( int s )
+	public void setMaxStackSize( final int s )
 	{
 		this.maxStack = s;
 	}
 
 	// for guis...
-	public void markDirty( int slotIndex )
+	public void markDirty( final int slotIndex )
 	{
 		if( this.te != null && this.eventsEnabled() )
 		{
@@ -209,20 +209,20 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 		}
 	}
 
-	public void writeToNBT( NBTTagCompound data, String name )
+	public void writeToNBT( final NBTTagCompound data, final String name )
 	{
-		NBTTagCompound c = new NBTTagCompound();
+		final NBTTagCompound c = new NBTTagCompound();
 		this.writeToNBT( c );
 		data.setTag( name, c );
 	}
 
-	public void writeToNBT( NBTTagCompound target )
+	public void writeToNBT( final NBTTagCompound target )
 	{
 		for( int x = 0; x < this.size; x++ )
 		{
 			try
 			{
-				NBTTagCompound c = new NBTTagCompound();
+				final NBTTagCompound c = new NBTTagCompound();
 
 				if( this.inv[x] != null )
 				{
@@ -231,35 +231,35 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 
 				target.setTag( "#" + x, c );
 			}
-			catch( Exception ignored )
+			catch( final Exception ignored )
 			{
 			}
 		}
 	}
 
-	public void readFromNBT( NBTTagCompound data, String name )
+	public void readFromNBT( final NBTTagCompound data, final String name )
 	{
-		NBTTagCompound c = data.getCompoundTag( name );
+		final NBTTagCompound c = data.getCompoundTag( name );
 		if( c != null )
 		{
 			this.readFromNBT( c );
 		}
 	}
 
-	public void readFromNBT( NBTTagCompound target )
+	public void readFromNBT( final NBTTagCompound target )
 	{
 		for( int x = 0; x < this.size; x++ )
 		{
 			try
 			{
-				NBTTagCompound c = target.getCompoundTag( "#" + x );
+				final NBTTagCompound c = target.getCompoundTag( "#" + x );
 
 				if( c != null )
 				{
 					this.inv[x] = ItemStack.loadItemStackFromNBT( c );
 				}
 			}
-			catch( Exception e )
+			catch( final Exception e )
 			{
 				AELog.error( e );
 			}
@@ -280,29 +280,29 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 
 	@Override
 	public void openInventory(
-			EntityPlayer player )
+			final EntityPlayer player )
 	{
 		
 	}
 
 	@Override
 	public void closeInventory(
-			EntityPlayer player )
+			final EntityPlayer player )
 	{
 		
 	}
 
 	@Override
 	public int getField(
-			int id )
+			final int id )
 	{
 		return 0;
 	}
 
 	@Override
 	public void setField(
-			int id,
-			int value )
+			final int id,
+			final int value )
 	{		
 	}
 

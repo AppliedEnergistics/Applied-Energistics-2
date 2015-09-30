@@ -39,18 +39,18 @@ public class RenderBlockInterface extends BaseBlockRender<BlockInterface, TileIn
 	}
 
 	@Override
-	public boolean renderInWorld( BlockInterface block, IBlockAccess world, BlockPos pos, ModelGenerator renderer )
+	public boolean renderInWorld( final BlockInterface block, final IBlockAccess world, final BlockPos pos, final ModelGenerator renderer )
 	{
-		TileInterface ti = block.getTileEntity( world, pos );
-		BlockRenderInfo info = block.getRendererInstance();
+		final TileInterface ti = block.getTileEntity( world, pos );
+		final BlockRenderInfo info = block.getRendererInstance();
 
 		if( ti != null && ti.getForward() != null )
 		{
-			IAESprite side = ExtraBlockTextures.BlockInterfaceAlternateArrow.getIcon();
+			final IAESprite side = ExtraBlockTextures.BlockInterfaceAlternateArrow.getIcon();
 			info.setTemporaryRenderIcons( ExtraBlockTextures.BlockInterfaceAlternate.getIcon(), renderer.getIcon( world.getBlockState( pos ) )[0], side, side, side, side );
 		}
 
-		boolean fz = super.renderInWorld( block, world, pos, renderer );
+		final boolean fz = super.renderInWorld( block, world, pos, renderer );
 
 		info.setTemporaryRenderIcon( null );
 

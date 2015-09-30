@@ -44,22 +44,22 @@ public class RenderQuartzTorch extends BaseBlockRender<AEBaseBlock, AEBaseTile>
 	}
 
 	@Override
-	public void renderInventory( AEBaseBlock blk, ItemStack is, ModelGenerator renderer, ItemRenderType type, Object[] obj )
+	public void renderInventory( final AEBaseBlock blk, final ItemStack is, final ModelGenerator renderer, final ItemRenderType type, final Object[] obj )
 	{
-		float Point3 = 7.0f / 16.0f;
-		float Point12 = 9.0f / 16.0f;
+		final float Point3 = 7.0f / 16.0f;
+		final float Point12 = 9.0f / 16.0f;
 
-		float renderBottom = 5.0f / 16.0f;
-		float renderTop = 10.0f / 16.0f;
+		final float renderBottom = 5.0f / 16.0f;
+		final float renderTop = 10.0f / 16.0f;
 
-		float xOff = 0.0f;
-		float yOff = 0.0f;
-		float zOff = 0.0f;
+		final float xOff = 0.0f;
+		final float yOff = 0.0f;
+		final float zOff = 0.0f;
 
 		renderer.setRenderBounds( Point3 + xOff, renderBottom + yOff, Point3 + zOff, Point12 + xOff, renderTop + yOff, Point12 + zOff );
 		this.renderInvBlock( EnumSet.allOf( AEPartLocation.class ), blk, is, 0xffffff, renderer );
 
-		float singlePixel = 1.0f / 16.0f;
+		final float singlePixel = 1.0f / 16.0f;
 		renderer.setRenderBounds( Point3 + xOff, renderTop + yOff, Point3 + zOff, Point3 + singlePixel + xOff, renderTop + singlePixel + yOff, Point3 + singlePixel + zOff );
 		this.renderInvBlock( EnumSet.allOf( AEPartLocation.class ), blk, is, 0xffffff, renderer );
 
@@ -70,10 +70,10 @@ public class RenderQuartzTorch extends BaseBlockRender<AEBaseBlock, AEBaseTile>
 		blk.getRendererInstance().setTemporaryRenderIcon( renderer.getIcon( Blocks.hopper.getDefaultState() )[0] );
 		renderer.renderAllFaces = true;
 
-		float top = 8.0f / 16.0f;
-		float bottom = 7.0f / 16.0f;
-		float Point13 = 10.0f / 16.0f;
-		float Point2 = 6.0f / 16.0f;
+		final float top = 8.0f / 16.0f;
+		final float bottom = 7.0f / 16.0f;
+		final float Point13 = 10.0f / 16.0f;
+		final float Point2 = 6.0f / 16.0f;
 		renderer.setRenderBounds( Point2 + xOff, bottom + yOff, Point2 + zOff, Point13 + xOff, top + yOff, Point3 + zOff );
 
 		this.renderInvBlock( EnumSet.allOf( AEPartLocation.class ), blk, is,  0xffffff, renderer );
@@ -92,9 +92,9 @@ public class RenderQuartzTorch extends BaseBlockRender<AEBaseBlock, AEBaseTile>
 	}
 
 	@Override
-	public boolean renderInWorld( AEBaseBlock block, IBlockAccess world, BlockPos pos, ModelGenerator renderer )
+	public boolean renderInWorld( final AEBaseBlock block, final IBlockAccess world, final BlockPos pos, final ModelGenerator renderer )
 	{
-		IOrientable te = ( (IOrientableBlock) block ).getOrientable( world, pos );
+		final IOrientable te = ( (IOrientableBlock) block ).getOrientable( world, pos );
 
 		renderer.renderAllFaces = true;
 		float zOff = 0.0f;
@@ -102,21 +102,21 @@ public class RenderQuartzTorch extends BaseBlockRender<AEBaseBlock, AEBaseTile>
 		float xOff = 0.0f;
 		if( te != null )
 		{
-			AEPartLocation forward = AEPartLocation.fromFacing( te.getUp() );
+			final AEPartLocation forward = AEPartLocation.fromFacing( te.getUp() );
 			xOff = forward.xOffset * -( 4.0f / 16.0f );
 			yOff = forward.yOffset * -( 4.0f / 16.0f );
 			zOff = forward.zOffset * -( 4.0f / 16.0f );
 		}
 
-		float renderTop = 10.0f / 16.0f;
-		float renderBottom = 5.0f / 16.0f;
-		float Point12 = 9.0f / 16.0f;
-		float Point3 = 7.0f / 16.0f;
+		final float renderTop = 10.0f / 16.0f;
+		final float renderBottom = 5.0f / 16.0f;
+		final float Point12 = 9.0f / 16.0f;
+		final float Point3 = 7.0f / 16.0f;
 		renderer.setRenderBounds( Point3 + xOff, renderBottom + yOff, Point3 + zOff, Point12 + xOff, renderTop + yOff, Point12 + zOff );
 		super.renderInWorld( block, world, pos, renderer );
 
-		int r = ( pos.getX() + pos.getY() + pos.getZ() ) % 2;
-		float singlePixel = 1.0f / 16.0f;
+		final int r = ( pos.getX() + pos.getY() + pos.getZ() ) % 2;
+		final float singlePixel = 1.0f / 16.0f;
 		if( r == 0 )
 		{
 			renderer.setRenderBounds( Point3 + xOff, renderTop + yOff, Point3 + zOff, Point3 + singlePixel + xOff, renderTop + singlePixel + yOff, Point3 + singlePixel + zOff );
@@ -136,12 +136,12 @@ public class RenderQuartzTorch extends BaseBlockRender<AEBaseBlock, AEBaseTile>
 
 		block.getRendererInstance().setTemporaryRenderIcon( renderer.getIcon( Blocks.hopper.getDefaultState() )[0] );
 
-		float top = 8.0f / 16.0f;
-		float bottom = 7.0f / 16.0f;
-		float Point13 = 10.0f / 16.0f;
-		float Point2 = 6.0f / 16.0f;
+		final float top = 8.0f / 16.0f;
+		final float bottom = 7.0f / 16.0f;
+		final float Point13 = 10.0f / 16.0f;
+		final float Point2 = 6.0f / 16.0f;
 		renderer.setRenderBounds( Point2 + xOff, bottom + yOff, Point2 + zOff, Point13 + xOff, top + yOff, Point3 + zOff );
-		boolean out = renderer.renderStandardBlock( block, pos );
+		final boolean out = renderer.renderStandardBlock( block, pos );
 
 		renderer.setRenderBounds( Point2 + xOff, bottom + yOff, Point12 + zOff, Point13 + xOff, top + yOff, Point13 + zOff );
 		renderer.renderStandardBlock( block, pos );
@@ -154,7 +154,7 @@ public class RenderQuartzTorch extends BaseBlockRender<AEBaseBlock, AEBaseTile>
 
 		if( te != null )
 		{
-			AEPartLocation forward = AEPartLocation.fromFacing( te.getUp());
+			final AEPartLocation forward = AEPartLocation.fromFacing( te.getUp());
 			switch( forward )
 			{
 				case EAST:

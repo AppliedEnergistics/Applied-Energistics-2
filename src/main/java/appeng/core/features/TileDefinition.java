@@ -36,7 +36,7 @@ public final class TileDefinition extends BlockDefinition implements ITileDefini
 	private static final TileEntityTransformer TILEENTITY_TRANSFORMER = new TileEntityTransformer();
 	private final Optional<AEBaseTileBlock> block;
 
-	public TileDefinition( @Nonnull final String identifier, AEBaseTileBlock block, ActivityState state )
+	public TileDefinition( @Nonnull final String identifier, final AEBaseTileBlock block, final ActivityState state )
 	{
 		super( identifier, block, state );
 
@@ -61,7 +61,7 @@ public final class TileDefinition extends BlockDefinition implements ITileDefini
 	private static class TileEntityTransformer implements Function<AEBaseTileBlock, Class<? extends TileEntity>>
 	{
 		@Override
-		public Class<? extends TileEntity> apply( AEBaseTileBlock input )
+		public Class<? extends TileEntity> apply( final AEBaseTileBlock input )
 		{
 			final Class<? extends TileEntity> entity = input.getTileEntityClass();
 

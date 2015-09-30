@@ -36,9 +36,9 @@ public class ContainerOpenContext
 	public int z;
 	public AEPartLocation side;
 
-	public ContainerOpenContext( Object myItem )
+	public ContainerOpenContext( final Object myItem )
 	{
-		boolean isWorld = myItem instanceof IPart || myItem instanceof TileEntity;
+		final boolean isWorld = myItem instanceof IPart || myItem instanceof TileEntity;
 		this.isItem = !isWorld;
 	}
 

@@ -46,7 +46,7 @@ public class TileEnergyAcceptor extends AENetworkPowerTile
 	}
 
 	@Override
-	public void readFromNBT_AENetwork( NBTTagCompound data )
+	public void readFromNBT_AENetwork( final NBTTagCompound data )
 	{
 		/**
 		 * Does nothing here since the NBT tag in the parent is not needed anymore
@@ -54,7 +54,7 @@ public class TileEnergyAcceptor extends AENetworkPowerTile
 	}
 
 	@Override
-	public void writeToNBT_AENetwork( NBTTagCompound data )
+	public void writeToNBT_AENetwork( final NBTTagCompound data )
 	{
 		/**
 		 * Does nothing here since the NBT tag in the parent is not needed anymore
@@ -62,39 +62,39 @@ public class TileEnergyAcceptor extends AENetworkPowerTile
 	}
 
 	@Override
-	public AECableType getCableConnectionType( AEPartLocation dir )
+	public AECableType getCableConnectionType( final AEPartLocation dir )
 	{
 		return AECableType.COVERED;
 	}
 
 	@Override
-	protected double getFunnelPowerDemand( double maxRequired )
+	protected double getFunnelPowerDemand( final double maxRequired )
 	{
 		try
 		{
-			IEnergyGrid grid = this.gridProxy.getEnergy();
+			final IEnergyGrid grid = this.gridProxy.getEnergy();
 			return grid.getEnergyDemand( maxRequired );
 		}
-		catch( GridAccessException e )
+		catch( final GridAccessException e )
 		{
 			return this.internalMaxPower;
 		}
 	}
 
 	@Override
-	protected double funnelPowerIntoStorage( double power, Actionable mode )
+	protected double funnelPowerIntoStorage( final double power, final Actionable mode )
 	{
 		try
 		{
-			IEnergyGrid grid = this.gridProxy.getEnergy();
-			double leftOver = grid.injectPower( power, mode );
+			final IEnergyGrid grid = this.gridProxy.getEnergy();
+			final double leftOver = grid.injectPower( power, mode );
 			if( mode == Actionable.SIMULATE )
 			{
 				return leftOver;
 			}
 			return 0.0;
 		}
-		catch( GridAccessException e )
+		catch( final GridAccessException e )
 		{
 			return super.funnelPowerIntoStorage( power, mode );
 		}
@@ -107,13 +107,13 @@ public class TileEnergyAcceptor extends AENetworkPowerTile
 	}
 
 	@Override
-	public void onChangeInventory( IInventory inv, int slot, InvOperation mc, ItemStack removed, ItemStack added )
+	public void onChangeInventory( final IInventory inv, final int slot, final InvOperation mc, final ItemStack removed, final ItemStack added )
 	{
 
 	}
 
 	@Override
-	public int[] getAccessibleSlotsBySide( EnumFacing side )
+	public int[] getAccessibleSlotsBySide( final EnumFacing side )
 	{
 		return this.sides;
 	}

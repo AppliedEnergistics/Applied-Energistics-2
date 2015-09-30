@@ -30,7 +30,7 @@ public enum Commands
 	public final int level;
 	public final ISubCommand command;
 
-	Commands( int level, ISubCommand w )
+	Commands( final int level, final ISubCommand w )
 	{
 		this.level = level;
 		this.command = w;

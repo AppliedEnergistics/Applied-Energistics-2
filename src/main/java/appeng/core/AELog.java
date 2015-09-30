@@ -39,12 +39,12 @@ public final class AELog
 	{
 	}
 
-	public static void warning( String format, Object... data )
+	public static void warning( final String format, final Object... data )
 	{
 		log( Level.WARN, format, data );
 	}
 
-	private static void log( Level level, String format, Object... data )
+	private static void log( final Level level, final String format, final Object... data )
 	{
 		if( AEConfig.instance == null || AEConfig.instance.isFeatureEnabled( AEFeature.Logging ) )
 		{
@@ -59,7 +59,7 @@ public final class AELog
 		}
 	}
 
-	public static void grinder( String o )
+	public static void grinder( final String o )
 	{
 		if( AEConfig.instance.isFeatureEnabled( AEFeature.GrinderLogging ) )
 		{
@@ -67,7 +67,7 @@ public final class AELog
 		}
 	}
 
-	public static void integration( Throwable exception )
+	public static void integration( final Throwable exception )
 	{
 		if( AEConfig.instance.isFeatureEnabled( AEFeature.IntegrationLogging ) )
 		{
@@ -75,7 +75,7 @@ public final class AELog
 		}
 	}
 
-	public static void error( Throwable e )
+	public static void error( final Throwable e )
 	{
 		if( AEConfig.instance.isFeatureEnabled( AEFeature.Logging ) )
 		{
@@ -84,12 +84,12 @@ public final class AELog
 		}
 	}
 
-	public static void severe( String format, Object... data )
+	public static void severe( final String format, final Object... data )
 	{
 		log( Level.ERROR, format, data );
 	}
 
-	public static void blockUpdate( BlockPos pos, AEBaseTile aeBaseTile )
+	public static void blockUpdate( final BlockPos pos, final AEBaseTile aeBaseTile )
 	{
 		if( AEConfig.instance.isFeatureEnabled( AEFeature.UpdateLogging ) )
 		{
@@ -97,12 +97,12 @@ public final class AELog
 		}
 	}
 
-	public static void info( String format, Object... data )
+	public static void info( final String format, final Object... data )
 	{
 		log( Level.INFO, format, data );
 	}
 
-	public static void crafting( String format, Object... data )
+	public static void crafting( final String format, final Object... data )
 	{
 		if( AEConfig.instance.isFeatureEnabled( AEFeature.CraftingLog ) )
 		{

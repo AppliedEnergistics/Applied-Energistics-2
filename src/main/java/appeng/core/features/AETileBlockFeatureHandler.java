@@ -42,7 +42,7 @@ public final class AETileBlockFeatureHandler implements IFeatureHandler
 	private final boolean enabled;
 	private final TileDefinition definition;
 
-	public AETileBlockFeatureHandler( EnumSet<AEFeature> features, AEBaseTileBlock featured, Optional<String> subName )
+	public AETileBlockFeatureHandler( final EnumSet<AEFeature> features, final AEBaseTileBlock featured, final Optional<String> subName )
 	{
 		final ActivityState state = new FeaturedActiveChecker( features ).getActivityState();
 
@@ -65,11 +65,11 @@ public final class AETileBlockFeatureHandler implements IFeatureHandler
 	}
 
 	@Override
-	public void register( Side side )
+	public void register( final Side side )
 	{
 		if( this.enabled )
 		{
-			String name = this.extractor.get();
+			final String name = this.extractor.get();
 			this.featured.setCreativeTab( CreativeTab.instance );
 			this.featured.setUnlocalizedName( /* "tile." */"appliedenergistics2." + name );
 			this.featured.setBlockTextureName( name );

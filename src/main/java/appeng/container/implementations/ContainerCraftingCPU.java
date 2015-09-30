@@ -62,15 +62,15 @@ public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorH
 	@GuiSync( 0 )
 	public long eta = -1;
 
-	public ContainerCraftingCPU( InventoryPlayer ip, Object te )
+	public ContainerCraftingCPU( final InventoryPlayer ip, final Object te )
 	{
 		super( ip, te );
-		IGridHost host = (IGridHost) ( te instanceof IGridHost ? te : null );
+		final IGridHost host = (IGridHost) ( te instanceof IGridHost ? te : null );
 
 		if( host != null )
 		{
 			this.findNode( host, AEPartLocation.INTERNAL );
-			for( AEPartLocation d : AEPartLocation.SIDE_LOCATIONS )
+			for( final AEPartLocation d : AEPartLocation.SIDE_LOCATIONS )
 			{
 				this.findNode( host, d );
 			}
@@ -87,11 +87,11 @@ public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorH
 		}
 	}
 
-	private void findNode( IGridHost host, AEPartLocation d )
+	private void findNode( final IGridHost host, final AEPartLocation d )
 	{
 		if( this.network == null )
 		{
-			IGridNode node = host.getGridNode( d );
+			final IGridNode node = host.getGridNode( d );
 			if( node != null )
 			{
 				this.network = node.getGrid();
@@ -99,7 +99,7 @@ public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorH
 		}
 	}
 
-	protected void setCPU( ICraftingCPU c )
+	protected void setCPU( final ICraftingCPU c )
 	{
 		if( c == this.monitor )
 		{
@@ -111,7 +111,7 @@ public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorH
 			this.monitor.removeListener( this );
 		}
 
-		for( Object g : this.crafters )
+		for( final Object g : this.crafters )
 		{
 			if( g instanceof EntityPlayer )
 			{
@@ -119,7 +119,7 @@ public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorH
 				{
 					NetworkHandler.instance.sendTo( new PacketValueConfig( "CraftingStatus", "Clear" ), (EntityPlayerMP) g );
 				}
-				catch( IOException e )
+				catch( final IOException e )
 				{
 					AELog.error( e );
 				}
@@ -153,7 +153,7 @@ public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorH
 	}
 
 	@Override
-	public void removeCraftingFromCrafters( ICrafting c )
+	public void removeCraftingFromCrafters( final ICrafting c )
 	{
 		super.removeCraftingFromCrafters( c );
 
@@ -164,7 +164,7 @@ public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorH
 	}
 
 	@Override
-	public void onContainerClosed( EntityPlayer player )
+	public void onContainerClosed( final EntityPlayer player )
 	{
 		super.onContainerClosed( player );
 		if( this.monitor != null )
@@ -189,11 +189,11 @@ public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorH
 					this.eta = eta;
 				}
 
-				PacketMEInventoryUpdate a = new PacketMEInventoryUpdate( (byte) 0 );
-				PacketMEInventoryUpdate b = new PacketMEInventoryUpdate( (byte) 1 );
-				PacketMEInventoryUpdate c = new PacketMEInventoryUpdate( (byte) 2 );
+				final PacketMEInventoryUpdate a = new PacketMEInventoryUpdate( (byte) 0 );
+				final PacketMEInventoryUpdate b = new PacketMEInventoryUpdate( (byte) 1 );
+				final PacketMEInventoryUpdate c = new PacketMEInventoryUpdate( (byte) 2 );
 
-				for( IAEItemStack out : this.list )
+				for( final IAEItemStack out : this.list )
 				{
 					a.appendItem( this.monitor.getItemStack( out, CraftingItemList.STORAGE ) );
 					b.appendItem( this.monitor.getItemStack( out, CraftingItemList.ACTIVE ) );
@@ -202,7 +202,7 @@ public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorH
 
 				this.list.resetStatus();
 
-				for( Object g : this.crafters )
+				for( final Object g : this.crafters )
 				{
 					if( g instanceof EntityPlayer )
 					{
@@ -223,7 +223,7 @@ public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorH
 					}
 				}
 			}
-			catch( IOException e )
+			catch( final IOException e )
 			{
 				// :P
 			}
@@ -232,13 +232,13 @@ public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorH
 	}
 
 	@Override
-	public boolean isValid( Object verificationToken )
+	public boolean isValid( final Object verificationToken )
 	{
 		return true;
 	}
 
 	@Override
-	public void postChange( IBaseMonitor<IAEItemStack> monitor, Iterable<IAEItemStack> change, BaseActionSource actionSource )
+	public void postChange( final IBaseMonitor<IAEItemStack> monitor, final Iterable<IAEItemStack> change, final BaseActionSource actionSource )
 	{
 		for( IAEItemStack is : change )
 		{

@@ -31,7 +31,7 @@ public class MeaningfulFluidIterator<T extends IAEStack> implements Iterator<T>
 	private final Iterator<T> parent;
 	private T next;
 
-	public MeaningfulFluidIterator( Iterator<T> iterator )
+	public MeaningfulFluidIterator( final Iterator<T> iterator )
 	{
 		this.parent = iterator;
 	}

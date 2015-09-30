@@ -39,12 +39,12 @@ public class WorldCoord
 	public int y;
 	public int z;
 
-	public WorldCoord( TileEntity s )
+	public WorldCoord( final TileEntity s )
 	{
 		this( s.getPos() );
 	}
 
-	public WorldCoord( int _x, int _y, int _z )
+	public WorldCoord( final int _x, final int _y, final int _z )
 	{
 		this.x = _x;
 		this.y = _y;
@@ -52,14 +52,14 @@ public class WorldCoord
 	}
 
 	public WorldCoord(
-			BlockPos pos )
+			final BlockPos pos )
 	{
 		x = pos.getX();
 		y = pos.getY();
 		z = pos.getZ();
 	}
 
-	public WorldCoord subtract( AEPartLocation direction, int length )
+	public WorldCoord subtract( final AEPartLocation direction, final int length )
 	{
 		this.x -= direction.xOffset * length;
 		this.y -= direction.yOffset * length;
@@ -67,7 +67,7 @@ public class WorldCoord
 		return this;
 	}
 
-	public WorldCoord add( int _x, int _y, int _z )
+	public WorldCoord add( final int _x, final int _y, final int _z )
 	{
 		this.x += _x;
 		this.y += _y;
@@ -75,7 +75,7 @@ public class WorldCoord
 		return this;
 	}
 
-	public WorldCoord subtract( int _x, int _y, int _z )
+	public WorldCoord subtract( final int _x, final int _y, final int _z )
 	{
 		this.x -= _x;
 		this.y -= _y;
@@ -83,7 +83,7 @@ public class WorldCoord
 		return this;
 	}
 
-	public WorldCoord multiple( int _x, int _y, int _z )
+	public WorldCoord multiple( final int _x, final int _y, final int _z )
 	{
 		this.x *= _x;
 		this.y *= _y;
@@ -91,7 +91,7 @@ public class WorldCoord
 		return this;
 	}
 
-	public WorldCoord divide( int _x, int _y, int _z )
+	public WorldCoord divide( final int _x, final int _y, final int _z )
 	{
 		this.x /= _x;
 		this.y /= _y;
@@ -102,15 +102,15 @@ public class WorldCoord
 	/**
 	 * Will Return NULL if it's at some diagonal!
 	 */
-	public AEPartLocation directionTo( WorldCoord loc )
+	public AEPartLocation directionTo( final WorldCoord loc )
 	{
-		int ox = this.x - loc.x;
-		int oy = this.y - loc.y;
-		int oz = this.z - loc.z;
+		final int ox = this.x - loc.x;
+		final int oy = this.y - loc.y;
+		final int oz = this.z - loc.z;
 
-		int xlen = Math.abs( ox );
-		int ylen = Math.abs( oy );
-		int zlen = Math.abs( oz );
+		final int xlen = Math.abs( ox );
+		final int ylen = Math.abs( oy );
+		final int zlen = Math.abs( oz );
 
 		if( loc.isEqual( this.copy().add( AEPartLocation.EAST, xlen ) ) )
 		{
@@ -145,12 +145,12 @@ public class WorldCoord
 		return null;
 	}
 
-	public boolean isEqual( WorldCoord c )
+	public boolean isEqual( final WorldCoord c )
 	{
 		return this.x == c.x && this.y == c.y && this.z == c.z;
 	}
 
-	public WorldCoord add( AEPartLocation direction, int length )
+	public WorldCoord add( final AEPartLocation direction, final int length )
 	{
 		this.x += direction.xOffset * length;
 		this.y += direction.yOffset * length;
@@ -170,7 +170,7 @@ public class WorldCoord
 	}
 
 	@Override
-	public boolean equals( Object obj )
+	public boolean equals( final Object obj )
 	{
 		return obj instanceof WorldCoord && this.isEqual( (WorldCoord) obj );
 	}

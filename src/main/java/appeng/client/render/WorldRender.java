@@ -45,36 +45,36 @@ public final class WorldRender implements ISimpleBlockRenderingHandler
 	{
 	}
 
-	void setRender( AEBaseBlock in, BaseBlockRender r )
+	void setRender( final AEBaseBlock in, final BaseBlockRender r )
 	{
 		this.blockRenders.put( in, r );
 	}
 
 	@Override
-	public void renderInventoryBlock( Block block, int metadata, int modelID, ModelGenerator renderer )
+	public void renderInventoryBlock( final Block block, final int metadata, final int modelID, final ModelGenerator renderer )
 	{
 		// wtf is this for?
 	}
 
 	@Override
-	public boolean renderWorldBlock( IBlockAccess world, BlockPos pos, Block block, int modelId, ModelGenerator renderer )
+	public boolean renderWorldBlock( final IBlockAccess world, final BlockPos pos, final Block block, final int modelId, final ModelGenerator renderer )
 	{
-		AEBaseBlock blk = (AEBaseBlock) block;
+		final AEBaseBlock blk = (AEBaseBlock) block;
 		renderer.setRenderBoundsFromBlock( block );
 		return this.getRender( blk ).renderInWorld( blk, world, pos, renderer );
 	}
 
-	private BaseBlockRender getRender( AEBaseBlock block )
+	private BaseBlockRender getRender( final AEBaseBlock block )
 	{
 		return block.getRendererInstance().rendererInstance;
 	}
 
-	public void renderItemBlock( ItemStack item, ItemRenderType type, Object[] data )
+	public void renderItemBlock( final ItemStack item, final ItemRenderType type, final Object[] data )
 	{
-		Block blk = Block.getBlockFromItem( item.getItem() );
+		final Block blk = Block.getBlockFromItem( item.getItem() );
 		if( blk instanceof AEBaseBlock )
 		{
-			AEBaseBlock block = (AEBaseBlock) blk;
+			final AEBaseBlock block = (AEBaseBlock) blk;
 			this.renderer.setRenderBoundsFromBlock( block );
 
 			this.renderer.uvRotateBottom = this.renderer.uvRotateEast = this.renderer.uvRotateNorth = this.renderer.uvRotateSouth = this.renderer.uvRotateTop = this.renderer.uvRotateWest = 0;

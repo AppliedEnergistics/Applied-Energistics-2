@@ -47,13 +47,13 @@ public class PartConversionMonitor extends AbstractPartMonitor
 	private static final CableBusTextures FRONT_COLORED_ICON = CableBusTextures.PartConversionMonitor_Colored;
 
 	@Reflected
-	public PartConversionMonitor( ItemStack is )
+	public PartConversionMonitor( final ItemStack is )
 	{
 		super( is );
 	}
 
 	@Override
-	public boolean onPartShiftActivate( EntityPlayer player, Vec3 pos )
+	public boolean onPartShiftActivate( final EntityPlayer player, final Vec3 pos )
 	{
 		if( Platform.isClient() )
 		{
@@ -121,7 +121,7 @@ public class PartConversionMonitor extends AbstractPartMonitor
 	}
 
 	@Override
-	protected void extractItem( EntityPlayer player )
+	protected void extractItem( final EntityPlayer player )
 	{
 		final IAEItemStack input = (IAEItemStack) this.getDisplayed();
 		if( input != null )

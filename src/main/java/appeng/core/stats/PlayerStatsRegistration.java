@@ -51,7 +51,7 @@ public class PlayerStatsRegistration
 	 * @param bus    {@see #bus}
 	 * @param config {@link appeng.core.AEConfig} which is used to determine if the {@link appeng.core.features.AEFeature#Achievements} is enabled
 	 */
-	public PlayerStatsRegistration( EventBus bus, AEConfig config )
+	public PlayerStatsRegistration( final EventBus bus, final AEConfig config )
 	{
 		this.bus = bus;
 		this.isAchievementFeatureEnabled = config.isFeatureEnabled( AEFeature.Achievements );
@@ -83,7 +83,7 @@ public class PlayerStatsRegistration
 			final AchievementHierarchy hierarchy = new AchievementHierarchy();
 			hierarchy.registerAchievementHierarchy();
 
-			for( Stats s : Stats.values() )
+			for( final Stats s : Stats.values() )
 			{
 				s.getStat();
 			}
@@ -91,18 +91,18 @@ public class PlayerStatsRegistration
 			/**
 			 * register
 			 */
-			ArrayList<Achievement> list = new ArrayList<Achievement>();
+			final ArrayList<Achievement> list = new ArrayList<Achievement>();
 
-			for( Achievements a : Achievements.values() )
+			for( final Achievements a : Achievements.values() )
 			{
-				Achievement ach = a.getAchievement();
+				final Achievement ach = a.getAchievement();
 				if( ach != null )
 				{
 					list.add( ach );
 				}
 			}
 
-			AchievementPage ae2AchievementPage = new AchievementPage( "Applied Energistics 2", list.toArray( new Achievement[list.size()] ) );
+			final AchievementPage ae2AchievementPage = new AchievementPage( "Applied Energistics 2", list.toArray( new Achievement[list.size()] ) );
 			AchievementPage.registerAchievementPage( ae2AchievementPage );
 		}
 	}

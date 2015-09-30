@@ -42,7 +42,7 @@ public final class LocatableRegistry implements ILocatableRegistry
 	}
 
 	@SubscribeEvent
-	public void updateLocatable( LocatableEventAnnounce e )
+	public void updateLocatable( final LocatableEventAnnounce e )
 	{
 		if( Platform.isClient() )
 		{
@@ -64,13 +64,13 @@ public final class LocatableRegistry implements ILocatableRegistry
 	 */
 	@Override
 	@Deprecated
-	public Object findLocatableBySerial( long ser )
+	public Object findLocatableBySerial( final long ser )
 	{
 		return this.set.get( ser );
 	}
 
 	@Override
-	public ILocatable getLocatableBy( long serial )
+	public ILocatable getLocatableBy( final long serial )
 	{
 		return this.set.get( serial );
 	}

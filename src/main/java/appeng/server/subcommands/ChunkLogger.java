@@ -37,7 +37,7 @@ public class ChunkLogger implements ISubCommand
 	boolean enabled = false;
 
 	@SubscribeEvent
-	public void onChunkLoadEvent( ChunkEvent.Load event )
+	public void onChunkLoadEvent( final ChunkEvent.Load event )
 	{
 		if( !event.world.isRemote )
 		{
@@ -51,7 +51,7 @@ public class ChunkLogger implements ISubCommand
 		if( AEConfig.instance.isFeatureEnabled( AEFeature.ChunkLoggerTrace ) )
 		{
 			boolean output = false;
-			for( StackTraceElement e : Thread.currentThread().getStackTrace() )
+			for( final StackTraceElement e : Thread.currentThread().getStackTrace() )
 			{
 				if( output )
 				{
@@ -66,7 +66,7 @@ public class ChunkLogger implements ISubCommand
 	}
 
 	@SubscribeEvent
-	public void onChunkUnloadEvent( ChunkEvent.Unload unload )
+	public void onChunkUnloadEvent( final ChunkEvent.Unload unload )
 	{
 		if( !unload.world.isRemote )
 		{
@@ -76,13 +76,13 @@ public class ChunkLogger implements ISubCommand
 	}
 
 	@Override
-	public String getHelp( MinecraftServer srv )
+	public String getHelp( final MinecraftServer srv )
 	{
 		return "commands.ae2.ChunkLogger";
 	}
 
 	@Override
-	public void call( MinecraftServer srv, String[] data, ICommandSender sender )
+	public void call( final MinecraftServer srv, final String[] data, final ICommandSender sender )
 	{
 		this.enabled = !this.enabled;
 

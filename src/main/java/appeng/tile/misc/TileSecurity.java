@@ -109,23 +109,23 @@ public class TileSecurity extends AENetworkTile implements ITerminalHost, IAEApp
 	}
 
 	@Override
-	public void onChangeInventory( IInventory inv, int slot, InvOperation mc, ItemStack removedStack, ItemStack newStack )
+	public void onChangeInventory( final IInventory inv, final int slot, final InvOperation mc, final ItemStack removedStack, final ItemStack newStack )
 	{
 
 	}
 	
 	@Override
 	public void getDrops(
-			World w,
-			BlockPos pos,
-			List<ItemStack> drops )
+			final World w,
+			final BlockPos pos,
+			final List<ItemStack> drops )
 	{
 		if( !this.configSlot.isEmpty() )
 		{
 			drops.add( this.configSlot.getStackInSlot( 0 ) );
 		}
 
-		for( IAEItemStack ais : this.inventory.storedItems )
+		for( final IAEItemStack ais : this.inventory.storedItems )
 		{
 			drops.add( ais.getItemStack() );
 		}
@@ -137,26 +137,26 @@ public class TileSecurity extends AENetworkTile implements ITerminalHost, IAEApp
 	}
 
 	@TileEvent( TileEventType.NETWORK_READ )
-	public boolean readFromStream_TileSecurity( ByteBuf data )
+	public boolean readFromStream_TileSecurity( final ByteBuf data )
 	{
-		boolean wasActive = this.isActive;
+		final boolean wasActive = this.isActive;
 		this.isActive = data.readBoolean();
 
-		AEColor oldPaintedColor = this.paintedColor;
+		final AEColor oldPaintedColor = this.paintedColor;
 		this.paintedColor = AEColor.values()[data.readByte()];
 
 		return oldPaintedColor != this.paintedColor || wasActive != this.isActive;
 	}
 
 	@TileEvent( TileEventType.NETWORK_WRITE )
-	public void writeToStream_TileSecurity( ByteBuf data )
+	public void writeToStream_TileSecurity( final ByteBuf data )
 	{
 		data.writeBoolean( this.gridProxy.isActive() );
 		data.writeByte( this.paintedColor.ordinal() );
 	}
 
 	@TileEvent( TileEventType.WORLD_NBT_WRITE )
-	public void writeToNBT_TileSecurity( NBTTagCompound data )
+	public void writeToNBT_TileSecurity( final NBTTagCompound data )
 	{
 		this.cm.writeToNBT( data );
 		data.setByte( "paintedColor", (byte) this.paintedColor.ordinal() );
@@ -164,12 +164,12 @@ public class TileSecurity extends AENetworkTile implements ITerminalHost, IAEApp
 		data.setLong( "securityKey", this.securityKey );
 		this.configSlot.writeToNBT( data, "config" );
 
-		NBTTagCompound storedItems = new NBTTagCompound();
+		final NBTTagCompound storedItems = new NBTTagCompound();
 
 		int offset = 0;
-		for( IAEItemStack ais : this.inventory.storedItems )
+		for( final IAEItemStack ais : this.inventory.storedItems )
 		{
-			NBTTagCompound it = new NBTTagCompound();
+			final NBTTagCompound it = new NBTTagCompound();
 			ais.getItemStack().writeToNBT( it );
 			storedItems.setTag( String.valueOf( offset ), it );
 			offset++;
@@ -179,7 +179,7 @@ public class TileSecurity extends AENetworkTile implements ITerminalHost, IAEApp
 	}
 
 	@TileEvent( TileEventType.WORLD_NBT_READ )
-	public void readFromNBT_TileSecurity( NBTTagCompound data )
+	public void readFromNBT_TileSecurity( final NBTTagCompound data )
 	{
 		this.cm.readFromNBT( data );
 		if( data.hasKey( "paintedColor" ) )
@@ -190,10 +190,10 @@ public class TileSecurity extends AENetworkTile implements ITerminalHost, IAEApp
 		this.securityKey = data.getLong( "securityKey" );
 		this.configSlot.readFromNBT( data, "config" );
 
-		NBTTagCompound storedItems = data.getCompoundTag( "storedItems" );
-		for( Object key : storedItems.getKeySet() )
+		final NBTTagCompound storedItems = data.getCompoundTag( "storedItems" );
+		for( final Object key : storedItems.getKeySet() )
 		{
-			NBTBase obj = storedItems.getTag( (String) key );
+			final NBTBase obj = storedItems.getTag( (String) key );
 			if( obj instanceof NBTTagCompound )
 			{
 				this.inventory.storedItems.add( AEItemStack.create( ItemStack.loadItemStackFromNBT( (NBTTagCompound) obj ) ) );
@@ -208,26 +208,26 @@ public class TileSecurity extends AENetworkTile implements ITerminalHost, IAEApp
 			this.saveChanges();
 			this.gridProxy.getGrid().postEvent( new MENetworkSecurityChange() );
 		}
-		catch( GridAccessException e )
+		catch( final GridAccessException e )
 		{
 			// :P
 		}
 	}
 
 	@MENetworkEventSubscribe
-	public void bootUpdate( MENetworkChannelsChanged changed )
+	public void bootUpdate( final MENetworkChannelsChanged changed )
 	{
 		this.markForUpdate();
 	}
 
 	@MENetworkEventSubscribe
-	public void powerUpdate( MENetworkPowerStatusChange changed )
+	public void powerUpdate( final MENetworkPowerStatusChange changed )
 	{
 		this.markForUpdate();
 	}
 
 	@Override
-	public AECableType getCableConnectionType( AEPartLocation dir )
+	public AECableType getCableConnectionType( final AEPartLocation dir )
 	{
 		return AECableType.SMART;
 	}
@@ -300,7 +300,7 @@ public class TileSecurity extends AENetworkTile implements ITerminalHost, IAEApp
 	}
 
 	@Override
-	public void updateSetting( IConfigManager manager, Enum settingName, Enum newValue )
+	public void updateSetting( final IConfigManager manager, final Enum settingName, final Enum newValue )
 	{
 
 	}
@@ -312,18 +312,18 @@ public class TileSecurity extends AENetworkTile implements ITerminalHost, IAEApp
 	}
 
 	@Override
-	public void readPermissions( HashMap<Integer, EnumSet<SecurityPermissions>> playerPerms )
+	public void readPermissions( final HashMap<Integer, EnumSet<SecurityPermissions>> playerPerms )
 	{
-		IPlayerRegistry pr = AEApi.instance().registries().players();
+		final IPlayerRegistry pr = AEApi.instance().registries().players();
 
 		// read permissions
-		for( IAEItemStack ais : this.inventory.storedItems )
+		for( final IAEItemStack ais : this.inventory.storedItems )
 		{
-			ItemStack is = ais.getItemStack();
-			Item i = is.getItem();
+			final ItemStack is = ais.getItemStack();
+			final Item i = is.getItem();
 			if( i instanceof IBiometricCard )
 			{
-				IBiometricCard bc = (IBiometricCard) i;
+				final IBiometricCard bc = (IBiometricCard) i;
 				bc.registerPermissions( new PlayerSecurityWrapper( playerPerms ), pr, is );
 			}
 		}
@@ -351,7 +351,7 @@ public class TileSecurity extends AENetworkTile implements ITerminalHost, IAEApp
 	}
 
 	@Override
-	public boolean recolourBlock( EnumFacing side, AEColor newPaintedColor, EntityPlayer who )
+	public boolean recolourBlock( final EnumFacing side, final AEColor newPaintedColor, final EntityPlayer who )
 	{
 		if( this.paintedColor == newPaintedColor )
 		{

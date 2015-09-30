@@ -42,7 +42,7 @@ public class BlockDefinition extends ItemDefinition implements IBlockDefinition
 	private static final ItemBlockTransformer ITEMBLOCK_TRANSFORMER = new ItemBlockTransformer();
 	private final Optional<Block> block;
 
-	public BlockDefinition( final String identifier, Block block, ActivityState state )
+	public BlockDefinition( final String identifier, final Block block, final ActivityState state )
 	{
 		super( identifier, constructItemFromBlock( block ), state );
 
@@ -66,7 +66,7 @@ public class BlockDefinition extends ItemDefinition implements IBlockDefinition
 	 *
 	 * @return item from block
 	 */
-	private static Item constructItemFromBlock( Block block )
+	private static Item constructItemFromBlock( final Block block )
 	{
 		final Class<? extends ItemBlock> itemclass = getItemBlockConstructor( block );
 		return constructItemBlock( block, itemclass );
@@ -82,7 +82,7 @@ public class BlockDefinition extends ItemDefinition implements IBlockDefinition
 	 *
 	 * @return a {@link Class} extending ItemBlock
 	 */
-	private static Class<? extends ItemBlock> getItemBlockConstructor( Block block )
+	private static Class<? extends ItemBlock> getItemBlockConstructor( final Block block )
 	{
 		if( block instanceof AEBaseBlock )
 		{
@@ -105,22 +105,22 @@ public class BlockDefinition extends ItemDefinition implements IBlockDefinition
 	 *
 	 * @return an {@link Item} for the block. Actually always a sub type of {@link ItemBlock}
 	 */
-	private static Item constructItemBlock( Block block, Class<? extends ItemBlock> itemclass )
+	private static Item constructItemBlock( final Block block, final Class<? extends ItemBlock> itemclass )
 	{
 		try
 		{
-			Object[] itemCtorArgs = {};
-			Class<?>[] ctorArgClasses = new Class<?>[itemCtorArgs.length + 1];
+			final Object[] itemCtorArgs = {};
+			final Class<?>[] ctorArgClasses = new Class<?>[itemCtorArgs.length + 1];
 			ctorArgClasses[0] = Block.class;
 			for( int idx = 1; idx < ctorArgClasses.length; idx++ )
 			{
 				ctorArgClasses[idx] = itemCtorArgs[idx - 1].getClass();
 			}
 
-			Constructor<? extends ItemBlock> itemCtor = itemclass.getConstructor( ctorArgClasses );
+			final Constructor<? extends ItemBlock> itemCtor = itemclass.getConstructor( ctorArgClasses );
 			return itemCtor.newInstance( ObjectArrays.concat( block, itemCtorArgs ) );
 		}
-		catch( Throwable t )
+		catch( final Throwable t )
 		{
 			return null;
 		}
@@ -139,13 +139,13 @@ public class BlockDefinition extends ItemDefinition implements IBlockDefinition
 	}
 
 	@Override
-	public final Optional<ItemStack> maybeStack( int stackSize )
+	public final Optional<ItemStack> maybeStack( final int stackSize )
 	{
 		return this.block.transform( new ItemStackTransformer( stackSize ) );
 	}
 
 	@Override
-	public final boolean isSameAs( IBlockAccess world, BlockPos pos )
+	public final boolean isSameAs( final IBlockAccess world, final BlockPos pos )
 	{
 		return this.isEnabled() && world.getBlockState( pos ).getBlock() == this.block.get();
 	}
@@ -153,7 +153,7 @@ public class BlockDefinition extends ItemDefinition implements IBlockDefinition
 	private static class ItemBlockTransformer implements Function<Block, ItemBlock>
 	{
 		@Override
-		public ItemBlock apply( Block input )
+		public ItemBlock apply( final Block input )
 		{
 			return new ItemBlock( input );
 		}
@@ -163,7 +163,7 @@ public class BlockDefinition extends ItemDefinition implements IBlockDefinition
 	{
 		private final int stackSize;
 
-		public ItemStackTransformer( int stackSize )
+		public ItemStackTransformer( final int stackSize )
 		{
 			Preconditions.checkArgument( stackSize > 0 );
 
@@ -171,7 +171,7 @@ public class BlockDefinition extends ItemDefinition implements IBlockDefinition
 		}
 
 		@Override
-		public ItemStack apply( Block input )
+		public ItemStack apply( final Block input )
 		{
 			return new ItemStack( input, this.stackSize );
 		}

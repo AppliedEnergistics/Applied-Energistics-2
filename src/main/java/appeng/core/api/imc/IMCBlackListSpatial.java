@@ -31,13 +31,13 @@ public class IMCBlackListSpatial implements IIMCProcessor
 {
 
 	@Override
-	public void process( IMCMessage m )
+	public void process( final IMCMessage m )
 	{
 
-		ItemStack is = m.getItemStackValue();
+		final ItemStack is = m.getItemStackValue();
 		if( is != null )
 		{
-			Block blk = Block.getBlockFromItem( is.getItem() );
+			final Block blk = Block.getBlockFromItem( is.getItem() );
 			if( blk != null )
 			{
 				AEApi.instance().registries().movable().blacklistBlock( blk );

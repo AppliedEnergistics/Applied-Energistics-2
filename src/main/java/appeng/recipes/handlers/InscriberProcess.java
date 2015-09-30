@@ -38,7 +38,7 @@ public abstract class InscriberProcess implements ICraftHandler, IWebsiteSeriali
 	private IIngredient output;
 
 	@Override
-	public void setup( List<List<IIngredient>> input, List<List<IIngredient>> output ) throws RecipeError
+	public void setup( final List<List<IIngredient>> input, final List<List<IIngredient>> output ) throws RecipeError
 	{
 		if( output.size() == 1 && output.get( 0 ).size() == 1 )
 		{
@@ -67,13 +67,13 @@ public abstract class InscriberProcess implements ICraftHandler, IWebsiteSeriali
 	}
 
 	@Override
-	public boolean canCraft( ItemStack reqOutput ) throws RegistrationError, MissingIngredientError
+	public boolean canCraft( final ItemStack reqOutput ) throws RegistrationError, MissingIngredientError
 	{
 		return this.output != null && Platform.isSameItemPrecise( this.output.getItemStack(), reqOutput );
 	}
 
 	@Override
-	public String getPattern( RecipeHandler handler )
+	public String getPattern( final RecipeHandler handler )
 	{
 		String pattern = "inscriber ";
 

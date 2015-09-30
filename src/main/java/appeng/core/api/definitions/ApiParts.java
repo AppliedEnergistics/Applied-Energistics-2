@@ -73,7 +73,7 @@ public final class ApiParts implements IParts
 	private final IItemDefinition storageMonitor;
 	private final IItemDefinition conversionMonitor;
 
-	public ApiParts( DefinitionConstructor constructor, IPartHelper partHelper )
+	public ApiParts( final DefinitionConstructor constructor, final IPartHelper partHelper )
 	{
 		final ItemMultiPart itemMultiPart = new ItemMultiPart( partHelper );
 		constructor.registerItemDefinition( itemMultiPart );

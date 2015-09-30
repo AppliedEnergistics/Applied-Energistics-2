@@ -84,30 +84,30 @@ public class RecipeHandler implements IRecipeHandler
 		this.data = new RecipeData();
 	}
 
-	RecipeHandler( RecipeHandler parent )
+	RecipeHandler( final RecipeHandler parent )
 	{
 		Preconditions.checkNotNull( parent );
 		this.data = parent.data;
 	}
 
-	private void addCrafting( ICraftHandler ch )
+	private void addCrafting( final ICraftHandler ch )
 	{
 		this.data.handlers.add( ch );
 	}
 
-	public String getName( @Nonnull IIngredient i )
+	public String getName( @Nonnull final IIngredient i )
 	{
 		try
 		{
-			for( ItemStack is : i.getItemStackSet() )
+			for( final ItemStack is : i.getItemStackSet() )
 			{
 				return this.getName( is );
 			}
 		}
-		catch( RecipeError ignored )
+		catch( final RecipeError ignored )
 		{
 		}
-		catch( Throwable t )
+		catch( final Throwable t )
 		{
 			t.printStackTrace();
 			// :P
@@ -116,11 +116,11 @@ public class RecipeHandler implements IRecipeHandler
 		return i.getNameSpace() + ':' + i.getItemName();
 	}
 
-	public String getName( ItemStack is ) throws RecipeError
+	public String getName( final ItemStack is ) throws RecipeError
 	{
 		Preconditions.checkNotNull( is );
 
-		UniqueIdentifier id = GameRegistry.findUniqueIdentifierFor( is.getItem() );
+		final UniqueIdentifier id = GameRegistry.findUniqueIdentifierFor( is.getItem() );
 		String realName = id.modId + ':' + id.name;
 
 		if( !id.modId.equals( AppEng.MOD_ID ) && !id.modId.equals( "minecraft" ) )
@@ -140,7 +140,7 @@ public class RecipeHandler implements IRecipeHandler
 
 		if( maybeCrystalSeedItem.isPresent() && is.getItem() == maybeCrystalSeedItem.get() )
 		{
-			int dmg = is.getItemDamage();
+			final int dmg = is.getItemDamage();
 			if( dmg < ItemCrystalSeed.NETHER )
 			{
 				realName += ".Certus";
@@ -224,11 +224,11 @@ public class RecipeHandler implements IRecipeHandler
 		return realName;
 	}
 
-	public String alias( String in )
+	public String alias( final String in )
 	{
 		Preconditions.checkNotNull( in );
 
-		String out = this.data.aliases.get( in );
+		final String out = this.data.aliases.get( in );
 
 		if( out != null )
 		{
@@ -239,7 +239,7 @@ public class RecipeHandler implements IRecipeHandler
 	}
 
 	@Override
-	public void parseRecipes( IRecipeLoader loader, String path )
+	public void parseRecipes( final IRecipeLoader loader, final String path )
 	{
 		Preconditions.checkNotNull( loader );
 		Preconditions.checkNotNull( path );
@@ -251,7 +251,7 @@ public class RecipeHandler implements IRecipeHandler
 			{
 				reader = loader.getFile( path );
 			}
-			catch( Exception err )
+			catch( final Exception err )
 			{
 				AELog.warning( "Error Loading Recipe File:" + path );
 				if( this.data.exceptions )
@@ -270,7 +270,7 @@ public class RecipeHandler implements IRecipeHandler
 			int val = -1;
 			while( ( val = reader.read() ) != -1 )
 			{
-				char c = (char) val;
+				final char c = (char) val;
 
 				if( c == '\n' )
 				{
@@ -354,7 +354,7 @@ public class RecipeHandler implements IRecipeHandler
 			reader.close();
 			this.processTokens( loader, path, line );
 		}
-		catch( Throwable e )
+		catch( final Throwable e )
 		{
 			AELog.error( e );
 			if( this.data.crash )
@@ -372,17 +372,17 @@ public class RecipeHandler implements IRecipeHandler
 			throw new IllegalStateException( "Recipes must now be loaded in Init." );
 		}
 
-		Map<Class, Integer> processed = new HashMap<Class, Integer>();
+		final Map<Class, Integer> processed = new HashMap<Class, Integer>();
 		try
 		{
-			for( ICraftHandler ch : this.data.handlers )
+			for( final ICraftHandler ch : this.data.handlers )
 			{
 				try
 				{
 					ch.register();
 
-					Class clz = ch.getClass();
-					Integer i = processed.get( clz );
+					final Class clz = ch.getClass();
+					final Integer i = processed.get( clz );
 					if( i == null )
 					{
 						processed.put( clz, 1 );
@@ -392,7 +392,7 @@ public class RecipeHandler implements IRecipeHandler
 						processed.put( clz, i + 1 );
 					}
 				}
-				catch( RegistrationError e )
+				catch( final RegistrationError e )
 				{
 					AELog.warning( "Unable to register a recipe: " + e.getMessage() );
 					if( this.data.exceptions )
@@ -404,7 +404,7 @@ public class RecipeHandler implements IRecipeHandler
 						throw e;
 					}
 				}
-				catch( MissingIngredientError e )
+				catch( final MissingIngredientError e )
 				{
 					if( this.data.errorOnMissing )
 					{
@@ -421,7 +421,7 @@ public class RecipeHandler implements IRecipeHandler
 				}
 			}
 		}
-		catch( Throwable e )
+		catch( final Throwable e )
 		{
 			if( this.data.exceptions )
 			{
@@ -433,7 +433,7 @@ public class RecipeHandler implements IRecipeHandler
 			}
 		}
 
-		for( Entry<Class, Integer> e : processed.entrySet() )
+		for( final Entry<Class, Integer> e : processed.entrySet() )
 		{
 			AELog.info( "Recipes Loading: " + e.getKey().getSimpleName() + ": " + e.getValue() + " loaded." );
 		}
@@ -442,52 +442,52 @@ public class RecipeHandler implements IRecipeHandler
 		{
 			try
 			{
-				ZipOutputStream out = new ZipOutputStream( new FileOutputStream( "recipes.zip" ) );
+				final ZipOutputStream out = new ZipOutputStream( new FileOutputStream( "recipes.zip" ) );
 
-				HashMultimap<String, IWebsiteSerializer> combined = HashMultimap.create();
+				final HashMultimap<String, IWebsiteSerializer> combined = HashMultimap.create();
 
-				for( String s : this.data.knownItem )
+				for( final String s : this.data.knownItem )
 				{
 					try
 					{
 
-						IIngredient i = new Ingredient( this, s, 1 );
+						final IIngredient i = new Ingredient( this, s, 1 );
 
-						for( ItemStack is : i.getItemStackSet() )
+						for( final ItemStack is : i.getItemStackSet() )
 						{
-							String realName = this.getName( is );
-							List<IWebsiteSerializer> recipes = this.findRecipe( is );
+							final String realName = this.getName( is );
+							final List<IWebsiteSerializer> recipes = this.findRecipe( is );
 							if( !recipes.isEmpty() )
 							{
 								combined.putAll( realName, recipes );
 							}
 						}
 					}
-					catch( RecipeError ignored )
+					catch( final RecipeError ignored )
 					{
 
 					}
-					catch( MissedIngredientSet ignored )
+					catch( final MissedIngredientSet ignored )
 					{
 
 					}
-					catch( RegistrationError ignored )
+					catch( final RegistrationError ignored )
 					{
 
 					}
-					catch( MissingIngredientError ignored )
+					catch( final MissingIngredientError ignored )
 					{
 
 					}
 				}
 
-				for( String realName : combined.keySet() )
+				for( final String realName : combined.keySet() )
 				{
 					int offset = 0;
 
-					for( IWebsiteSerializer ws : combined.get( realName ) )
+					for( final IWebsiteSerializer ws : combined.get( realName ) )
 					{
-						String rew = ws.getPattern( this );
+						final String rew = ws.getPattern( this );
 						if( rew != null && rew.length() > 0 )
 						{
 							out.putNextEntry( new ZipEntry( realName + '_' + offset + ".txt" ) );
@@ -499,22 +499,22 @@ public class RecipeHandler implements IRecipeHandler
 
 				out.close();
 			}
-			catch( FileNotFoundException e1 )
+			catch( final FileNotFoundException e1 )
 			{
 				AELog.error( e1 );
 			}
-			catch( IOException e1 )
+			catch( final IOException e1 )
 			{
 				AELog.error( e1 );
 			}
 		}
 	}
 
-	public List<IWebsiteSerializer> findRecipe( ItemStack output )
+	public List<IWebsiteSerializer> findRecipe( final ItemStack output )
 	{
-		List<IWebsiteSerializer> out = new LinkedList<IWebsiteSerializer>();
+		final List<IWebsiteSerializer> out = new LinkedList<IWebsiteSerializer>();
 
-		for( ICraftHandler ch : this.data.handlers )
+		for( final ICraftHandler ch : this.data.handlers )
 		{
 			try
 			{
@@ -523,7 +523,7 @@ public class RecipeHandler implements IRecipeHandler
 					out.add( (IWebsiteSerializer) ch );
 				}
 			}
-			catch( Throwable t )
+			catch( final Throwable t )
 			{
 				AELog.error( t );
 			}
@@ -537,18 +537,18 @@ public class RecipeHandler implements IRecipeHandler
 		return this.data;
 	}
 
-	private void processTokens( IRecipeLoader loader, String file, int line ) throws RecipeError
+	private void processTokens( final IRecipeLoader loader, final String file, final int line ) throws RecipeError
 	{
 		try
 		{
-			IRecipeHandlerRegistry cr = AEApi.instance().registries().recipes();
+			final IRecipeHandlerRegistry cr = AEApi.instance().registries().recipes();
 
 			if( this.tokens.isEmpty() )
 			{
 				return;
 			}
 
-			int split = this.tokens.indexOf( "->" );
+			final int split = this.tokens.indexOf( "->" );
 			if( split != -1 )
 			{
 				final String operation = this.tokens.remove( 0 ).toLowerCase( Locale.ENGLISH );
@@ -566,10 +566,10 @@ public class RecipeHandler implements IRecipeHandler
 				}
 				else if( operation.equals( "group" ) )
 				{
-					List<String> pre = this.tokens.subList( 0, split - 1 );
-					List<String> post = this.tokens.subList( split, this.tokens.size() );
+					final List<String> pre = this.tokens.subList( 0, split - 1 );
+					final List<String> post = this.tokens.subList( split, this.tokens.size() );
 
-					List<List<IIngredient>> inputs = this.parseLines( pre );
+					final List<List<IIngredient>> inputs = this.parseLines( pre );
 
 					if( inputs.size() == 1 && inputs.get( 0 ).size() > 0 && post.size() == 1 )
 					{
@@ -582,14 +582,14 @@ public class RecipeHandler implements IRecipeHandler
 				}
 				else if( operation.equals( "ore" ) )
 				{
-					List<String> pre = this.tokens.subList( 0, split - 1 );
-					List<String> post = this.tokens.subList( split, this.tokens.size() );
+					final List<String> pre = this.tokens.subList( 0, split - 1 );
+					final List<String> post = this.tokens.subList( split, this.tokens.size() );
 
-					List<List<IIngredient>> inputs = this.parseLines( pre );
+					final List<List<IIngredient>> inputs = this.parseLines( pre );
 
 					if( inputs.size() == 1 && inputs.get( 0 ).size() > 0 && post.size() == 1 )
 					{
-						ICraftHandler ch = new OreRegistration( inputs.get( 0 ), post.get( 0 ) );
+						final ICraftHandler ch = new OreRegistration( inputs.get( 0 ), post.get( 0 ) );
 						this.addCrafting( ch );
 					}
 					else
@@ -599,13 +599,13 @@ public class RecipeHandler implements IRecipeHandler
 				}
 				else
 				{
-					List<String> pre = this.tokens.subList( 0, split - 1 );
-					List<String> post = this.tokens.subList( split, this.tokens.size() );
+					final List<String> pre = this.tokens.subList( 0, split - 1 );
+					final List<String> post = this.tokens.subList( split, this.tokens.size() );
 
-					List<List<IIngredient>> inputs = this.parseLines( pre );
-					List<List<IIngredient>> outputs = this.parseLines( post );
+					final List<List<IIngredient>> inputs = this.parseLines( pre );
+					final List<List<IIngredient>> outputs = this.parseLines( post );
 
-					ICraftHandler ch = cr.getCraftHandlerFor( operation );
+					final ICraftHandler ch = cr.getCraftHandlerFor( operation );
 
 					if( ch != null )
 					{
@@ -620,7 +620,7 @@ public class RecipeHandler implements IRecipeHandler
 			}
 			else
 			{
-				String operation = this.tokens.remove( 0 ).toLowerCase();
+				final String operation = this.tokens.remove( 0 ).toLowerCase();
 
 				if( operation.equals( "exceptions" ) && ( this.tokens.get( 0 ).equals( "true" ) || this.tokens.get( 0 ).equals( "false" ) ) )
 				{
@@ -672,7 +672,7 @@ public class RecipeHandler implements IRecipeHandler
 				}
 			}
 		}
-		catch( RecipeError e )
+		catch( final RecipeError e )
 		{
 			AELog.warning( "Recipe Error '" + e.getMessage() + "' near line:" + line + " in " + file + " with: " + this.tokens.toString() );
 			if( this.data.exceptions )
@@ -688,15 +688,15 @@ public class RecipeHandler implements IRecipeHandler
 		this.tokens.clear();
 	}
 
-	private List<List<IIngredient>> parseLines( Iterable<String> subList ) throws RecipeError
+	private List<List<IIngredient>> parseLines( final Iterable<String> subList ) throws RecipeError
 	{
-		List<List<IIngredient>> out = new LinkedList<List<IIngredient>>();
+		final List<List<IIngredient>> out = new LinkedList<List<IIngredient>>();
 		List<IIngredient> cList = new LinkedList<IIngredient>();
 
 		boolean hasQty = false;
 		int qty = 1;
 
-		for( String v : subList )
+		for( final String v : subList )
 		{
 			if( v.equals( "," ) )
 			{
@@ -744,9 +744,9 @@ public class RecipeHandler implements IRecipeHandler
 		return out;
 	}
 
-	private IIngredient findIngredient( String v, int qty ) throws RecipeError
+	private IIngredient findIngredient( final String v, final int qty ) throws RecipeError
 	{
-		GroupIngredient gi = this.data.groups.get( v );
+		final GroupIngredient gi = this.data.groups.get( v );
 
 		if( gi != null )
 		{
@@ -757,20 +757,20 @@ public class RecipeHandler implements IRecipeHandler
 		{
 			return new Ingredient( this, v, qty );
 		}
-		catch( MissedIngredientSet grp )
+		catch( final MissedIngredientSet grp )
 		{
 			return new IngredientSet( grp.getResolverResultSet(), qty );
 		}
 	}
 
-	private boolean isNumber( CharSequence v )
+	private boolean isNumber( final CharSequence v )
 	{
 		if( v.length() <= 0 )
 		{
 			return false;
 		}
 
-		int l = v.length();
+		final int l = v.length();
 		for( int x = 0; x < l; x++ )
 		{
 			if( !Character.isDigit( v.charAt( x ) ) )

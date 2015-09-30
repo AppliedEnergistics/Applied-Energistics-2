@@ -32,7 +32,7 @@ public final class AEInvIterator implements Iterator<IAEItemStack>
 
 	private int counter = 0;
 
-	public AEInvIterator( AppEngInternalAEInventory inventory )
+	public AEInvIterator( final AppEngInternalAEInventory inventory )
 	{
 		this.inventory = inventory;
 		this.size = this.inventory.getSizeInventory();

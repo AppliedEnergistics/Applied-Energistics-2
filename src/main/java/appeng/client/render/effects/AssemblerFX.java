@@ -37,7 +37,7 @@ public class AssemblerFX extends EntityFX
 	final float speed;
 	float time = 0;
 
-	public AssemblerFX( World w, double x, double y, double z, double r, double g, double b, float speed, IAEItemStack is )
+	public AssemblerFX( final World w, final double x, final double y, final double z, final double r, final double g, final double b, final float speed, final IAEItemStack is )
 	{
 		super( w, x, y, z, r, g, b );
 		this.motionX = 0;
@@ -52,9 +52,9 @@ public class AssemblerFX extends EntityFX
 	}
 
 	@Override
-	public int getBrightnessForRender( float par1 )
+	public int getBrightnessForRender( final float par1 )
 	{
-		int j1 = 13;
+		final int j1 = 13;
 		return j1 << 20 | j1 << 4;
 	}
 
@@ -69,13 +69,13 @@ public class AssemblerFX extends EntityFX
 		}
 		else
 		{
-			float lifeSpan = (float) this.particleAge / (float) this.particleMaxAge;
+			final float lifeSpan = (float) this.particleAge / (float) this.particleMaxAge;
 			this.fi.setProgress( lifeSpan );
 		}
 	}
 
 	@Override
-    public void renderParticle(WorldRenderer par1Tessellator, Entity p_180434_2_, float l, float rX, float rY, float rZ, float rYZ, float rXY )
+    public void renderParticle( final WorldRenderer par1Tessellator, final Entity p_180434_2_, final float l, final float rX, final float rY, final float rZ, final float rYZ, final float rXY )
     {
 		this.time += l;
 		if( this.time > 4.0 )

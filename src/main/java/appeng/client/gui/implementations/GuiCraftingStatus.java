@@ -59,18 +59,18 @@ public class GuiCraftingStatus extends GuiCraftingCPU
 	GuiBridge originalGui;
 	ItemStack myIcon = null;
 
-	public GuiCraftingStatus( InventoryPlayer inventoryPlayer, ITerminalHost te )
+	public GuiCraftingStatus( final InventoryPlayer inventoryPlayer, final ITerminalHost te )
 	{
 		super( new ContainerCraftingStatus( inventoryPlayer, te ) );
 
 		this.status = (ContainerCraftingStatus) this.inventorySlots;
-		Object target = this.status.getTarget();
+		final Object target = this.status.getTarget();
 		final IDefinitions definitions = AEApi.instance().definitions();
 		final IParts parts = definitions.parts();
 
 		if( target instanceof WirelessTerminalGuiObject )
 		{
-			for( ItemStack wirelessTerminalStack : definitions.items().wirelessTerminal().maybeStack( 1 ).asSet() )
+			for( final ItemStack wirelessTerminalStack : definitions.items().wirelessTerminal().maybeStack( 1 ).asSet() )
 			{
 				this.myIcon = wirelessTerminalStack;
 			}
@@ -80,7 +80,7 @@ public class GuiCraftingStatus extends GuiCraftingCPU
 
 		if( target instanceof PartTerminal )
 		{
-			for( ItemStack stack : parts.terminal().maybeStack( 1 ).asSet() )
+			for( final ItemStack stack : parts.terminal().maybeStack( 1 ).asSet() )
 			{
 				this.myIcon = stack;
 			}
@@ -89,7 +89,7 @@ public class GuiCraftingStatus extends GuiCraftingCPU
 
 		if( target instanceof PartCraftingTerminal )
 		{
-			for( ItemStack stack : parts.craftingTerminal().maybeStack( 1 ).asSet() )
+			for( final ItemStack stack : parts.craftingTerminal().maybeStack( 1 ).asSet() )
 			{
 				this.myIcon = stack;
 			}
@@ -98,7 +98,7 @@ public class GuiCraftingStatus extends GuiCraftingCPU
 
 		if( target instanceof PartPatternTerminal )
 		{
-			for( ItemStack stack : parts.patternTerminal().maybeStack( 1 ).asSet() )
+			for( final ItemStack stack : parts.patternTerminal().maybeStack( 1 ).asSet() )
 			{
 				this.myIcon = stack;
 			}
@@ -107,11 +107,11 @@ public class GuiCraftingStatus extends GuiCraftingCPU
 	}
 
 	@Override
-	protected void actionPerformed( GuiButton btn ) throws IOException
+	protected void actionPerformed( final GuiButton btn ) throws IOException
 	{
 		super.actionPerformed( btn );
 
-		boolean backwards = Mouse.isButtonDown( 1 );
+		final boolean backwards = Mouse.isButtonDown( 1 );
 
 		if( btn == this.selectCPU )
 		{
@@ -119,7 +119,7 @@ public class GuiCraftingStatus extends GuiCraftingCPU
 			{
 				NetworkHandler.instance.sendToServer( new PacketValueConfig( "Terminal.Cpu", backwards ? "Prev" : "Next" ) );
 			}
-			catch( IOException e )
+			catch( final IOException e )
 			{
 				AELog.error( e );
 			}
@@ -148,7 +148,7 @@ public class GuiCraftingStatus extends GuiCraftingCPU
 	}
 
 	@Override
-	public void drawScreen( int mouseX, int mouseY, float btn )
+	public void drawScreen( final int mouseX, final int mouseY, final float btn )
 	{
 		this.updateCPUButtonText();
 		super.drawScreen( mouseX, mouseY, btn );
@@ -162,7 +162,7 @@ public class GuiCraftingStatus extends GuiCraftingCPU
 		{
 			if( this.status.myName.length() > 0 )
 			{
-				String name = this.status.myName.substring( 0, Math.min( 20, this.status.myName.length() ) );
+				final String name = this.status.myName.substring( 0, Math.min( 20, this.status.myName.length() ) );
 				btnTextText = GuiText.CPUs.getLocal() + ": " + name;
 			}
 			else
@@ -180,7 +180,7 @@ public class GuiCraftingStatus extends GuiCraftingCPU
 	}
 
 	@Override
-	protected String getGuiDisplayName( String in )
+	protected String getGuiDisplayName( final String in )
 	{
 		return in; // the cup name is on the button
 	}

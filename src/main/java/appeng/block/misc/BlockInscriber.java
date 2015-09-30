@@ -58,20 +58,20 @@ public class BlockInscriber extends AEBaseTileBlock
 	
 	@Override
 	public boolean onActivated(
-			World w,
-			BlockPos pos,
-			EntityPlayer p,
-			EnumFacing side,
-			float hitX,
-			float hitY,
-			float hitZ )
+			final World w,
+			final BlockPos pos,
+			final EntityPlayer p,
+			final EnumFacing side,
+			final float hitX,
+			final float hitY,
+			final float hitZ )
 	{
 		if( p.isSneaking() )
 		{
 			return false;
 		}
 
-		TileInscriber tg = this.getTileEntity( w, pos );
+		final TileInscriber tg = this.getTileEntity( w, pos );
 		if( tg != null )
 		{
 			if( Platform.isServer() )
@@ -84,7 +84,7 @@ public class BlockInscriber extends AEBaseTileBlock
 	}
 
 	@Override
-	public String getUnlocalizedName( ItemStack is )
+	public String getUnlocalizedName( final ItemStack is )
 	{
 		return super.getUnlocalizedName( is );
 	}

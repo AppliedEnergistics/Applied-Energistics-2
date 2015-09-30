@@ -37,7 +37,7 @@ public class SmartModel implements IBakedModel, ISmartBlockModel,ISmartItemModel
 
         @Override
         public TRSRTransformation apply(
-                IModelPart part )
+                final IModelPart part )
         {
             return TRSRTransformation.identity();
         }
@@ -45,14 +45,14 @@ public class SmartModel implements IBakedModel, ISmartBlockModel,ISmartItemModel
     };
 
     public SmartModel(
-			BlockRenderInfo rendererInstance )
+			final BlockRenderInfo rendererInstance )
 	{
     	AERenderer = rendererInstance;
 	}
 
 	@Override
     public List getFaceQuads(
-            EnumFacing p_177551_1_ )
+            final EnumFacing p_177551_1_ )
     {
         return Collections.emptyList();
     }
@@ -95,10 +95,10 @@ public class SmartModel implements IBakedModel, ISmartBlockModel,ISmartItemModel
 
 	@Override
 	public IBakedModel handleItemState(
-			ItemStack stack )
+			final ItemStack stack )
 	{
-		ModelGenerator helper = new ModelGenerator();
-		Block blk = Block.getBlockFromItem( stack.getItem() );
+		final ModelGenerator helper = new ModelGenerator();
+		final Block blk = Block.getBlockFromItem( stack.getItem() );
 		helper.setRenderBoundsFromBlock( blk );
 		AERenderer.rendererInstance.renderInventory( blk instanceof AEBaseBlock ? (AEBaseBlock) blk : null, stack, helper, ItemRenderType.INVENTORY, null );
 		helper.finalizeModel( true );
@@ -107,12 +107,12 @@ public class SmartModel implements IBakedModel, ISmartBlockModel,ISmartItemModel
 
 	@Override
 	public IBakedModel handleBlockState(
-			IBlockState state )
+			final IBlockState state )
 	{
-		ModelGenerator helper = new ModelGenerator();
-		Block blk = state.getBlock();
-		BlockPos pos = ( (IExtendedBlockState)state ).getValue( AEBaseTileBlock.AE_BLOCK_POS );
-		IBlockAccess world = ( (IExtendedBlockState)state ).getValue( AEBaseTileBlock.AE_BLOCK_ACCESS);
+		final ModelGenerator helper = new ModelGenerator();
+		final Block blk = state.getBlock();
+		final BlockPos pos = ( (IExtendedBlockState)state ).getValue( AEBaseTileBlock.AE_BLOCK_POS );
+		final IBlockAccess world = ( (IExtendedBlockState)state ).getValue( AEBaseTileBlock.AE_BLOCK_ACCESS);
 		helper.setTranslation( -pos.getX(), -pos.getY(), -pos.getZ() );
 		helper.setRenderBoundsFromBlock( blk );
 		helper.blockAccess = world;

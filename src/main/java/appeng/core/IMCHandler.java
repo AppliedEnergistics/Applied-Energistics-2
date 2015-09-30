@@ -63,7 +63,7 @@ public class IMCHandler
 		this.processors.put( "add-grindable", new IMCGrinder() );
 		this.processors.put( "add-mattercannon-ammo", new IMCMatterCannon() );
 
-		for( TunnelType type : TunnelType.values() )
+		for( final TunnelType type : TunnelType.values() )
 		{
 			this.processors.put( "add-p2p-attunement-" + type.name().replace( '_', '-' ).toLowerCase( Locale.ENGLISH ), new IMCP2PAttunement() );
 		}
@@ -74,9 +74,9 @@ public class IMCHandler
 	 *
 	 * @param event Event carrying the identifier and message for the handlers
 	 */
-	public void handleIMCEvent( FMLInterModComms.IMCEvent event )
+	public void handleIMCEvent( final FMLInterModComms.IMCEvent event )
 	{
-		for( FMLInterModComms.IMCMessage message : event.getMessages() )
+		for( final FMLInterModComms.IMCMessage message : event.getMessages() )
 		{
 			final String key = message.key;
 
@@ -92,7 +92,7 @@ public class IMCHandler
 					throw new IllegalStateException( "Invalid IMC Called: " + key );
 				}
 			}
-			catch( Exception t )
+			catch( final Exception t )
 			{
 				AELog.warning( "Problem detected when processing IMC " + key + " from " + message.getSender() );
 				AELog.error( t );

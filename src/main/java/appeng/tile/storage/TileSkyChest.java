@@ -44,15 +44,15 @@ public class TileSkyChest extends AEBaseInvTile
 	public float lidAngle;
 
 	@TileEvent( TileEventType.NETWORK_WRITE )
-	public void writeToStream_TileSkyChest( ByteBuf data )
+	public void writeToStream_TileSkyChest( final ByteBuf data )
 	{
 		data.writeBoolean( this.playerOpen > 0 );
 	}
 
 	@TileEvent( TileEventType.NETWORK_READ )
-	public boolean readFromStream_TileSkyChest( ByteBuf data )
+	public boolean readFromStream_TileSkyChest( final ByteBuf data )
 	{
-		int wasOpen = this.playerOpen;
+		final int wasOpen = this.playerOpen;
 		this.playerOpen = data.readBoolean() ? 1 : 0;
 
 		if( wasOpen != this.playerOpen )
@@ -76,7 +76,7 @@ public class TileSkyChest extends AEBaseInvTile
 	}
 
 	@Override
-	public void openInventory( EntityPlayer player )
+	public void openInventory( final EntityPlayer player )
 	{
 		if( Platform.isClient() )
 		{
@@ -93,7 +93,7 @@ public class TileSkyChest extends AEBaseInvTile
 	}
 
 	@Override
-	public void closeInventory( EntityPlayer player )
+	public void closeInventory( final EntityPlayer player )
 	{
 		if( Platform.isClient() )
 		{
@@ -115,13 +115,13 @@ public class TileSkyChest extends AEBaseInvTile
 	}
 
 	@Override
-	public void onChangeInventory( IInventory inv, int slot, InvOperation mc, ItemStack removed, ItemStack added )
+	public void onChangeInventory( final IInventory inv, final int slot, final InvOperation mc, final ItemStack removed, final ItemStack added )
 	{
 
 	}
 
 	@Override
-	public int[] getAccessibleSlotsBySide( EnumFacing side )
+	public int[] getAccessibleSlotsBySide( final EnumFacing side )
 	{
 		return this.sides;
 	}

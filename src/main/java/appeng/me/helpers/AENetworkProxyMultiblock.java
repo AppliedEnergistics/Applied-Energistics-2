@@ -33,7 +33,7 @@ import appeng.util.iterators.ProxyNodeIterator;
 public class AENetworkProxyMultiblock extends AENetworkProxy implements IGridMultiblock
 {
 
-	public AENetworkProxyMultiblock( IGridProxyable te, String nbtName, ItemStack itemStack, boolean inWorld )
+	public AENetworkProxyMultiblock( final IGridProxyable te, final String nbtName, final ItemStack itemStack, final boolean inWorld )
 	{
 		super( te, nbtName, itemStack, inWorld );
 	}

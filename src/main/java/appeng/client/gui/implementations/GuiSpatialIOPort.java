@@ -42,7 +42,7 @@ public class GuiSpatialIOPort extends AEBaseGui
 	final ContainerSpatialIOPort container;
 	GuiImgButton units;
 
-	public GuiSpatialIOPort( InventoryPlayer inventoryPlayer, TileSpatialIOPort te )
+	public GuiSpatialIOPort( final InventoryPlayer inventoryPlayer, final TileSpatialIOPort te )
 	{
 		super( new ContainerSpatialIOPort( inventoryPlayer, te ) );
 		this.ySize = 199;
@@ -50,11 +50,11 @@ public class GuiSpatialIOPort extends AEBaseGui
 	}
 
 	@Override
-	protected void actionPerformed( GuiButton btn ) throws IOException
+	protected void actionPerformed( final GuiButton btn ) throws IOException
 	{
 		super.actionPerformed( btn );
 
-		boolean backwards = Mouse.isButtonDown( 1 );
+		final boolean backwards = Mouse.isButtonDown( 1 );
 
 		if( btn == this.units )
 		{
@@ -73,7 +73,7 @@ public class GuiSpatialIOPort extends AEBaseGui
 	}
 
 	@Override
-	public void drawFG( int offsetX, int offsetY, int mouseX, int mouseY )
+	public void drawFG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
 		this.fontRendererObj.drawString( GuiText.StoredPower.getLocal() + ": " + Platform.formatPowerLong( this.container.currentPower, false ), 13, 21, 4210752 );
 		this.fontRendererObj.drawString( GuiText.MaxPower.getLocal() + ": " + Platform.formatPowerLong( this.container.maxPower, false ), 13, 31, 4210752 );
@@ -85,7 +85,7 @@ public class GuiSpatialIOPort extends AEBaseGui
 	}
 
 	@Override
-	public void drawBG( int offsetX, int offsetY, int mouseX, int mouseY )
+	public void drawBG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
 		this.bindTexture( "guis/spatialio.png" );
 		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize );

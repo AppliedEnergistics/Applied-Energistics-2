@@ -36,22 +36,22 @@ public class AchievementPickupHandler
 {
 	private final PlayerDifferentiator differentiator;
 
-	public AchievementPickupHandler( PlayerDifferentiator differentiator )
+	public AchievementPickupHandler( final PlayerDifferentiator differentiator )
 	{
 		this.differentiator = differentiator;
 	}
 
 	@SubscribeEvent
-	public void onItemPickUp( PlayerEvent.ItemPickupEvent event )
+	public void onItemPickUp( final PlayerEvent.ItemPickupEvent event )
 	{
 		if( this.differentiator.isNoPlayer( event.player ) || event.pickedUp == null || event.pickedUp.getEntityItem() == null )
 		{
 			return;
 		}
 
-		ItemStack is = event.pickedUp.getEntityItem();
+		final ItemStack is = event.pickedUp.getEntityItem();
 
-		for( Achievements achievement : Achievements.values() )
+		for( final Achievements achievement : Achievements.values() )
 		{
 			if( achievement.type == AchievementType.Pickup && Platform.isSameItemPrecise( achievement.stack, is ) )
 			{

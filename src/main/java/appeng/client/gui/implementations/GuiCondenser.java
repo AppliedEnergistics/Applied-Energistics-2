@@ -45,7 +45,7 @@ public class GuiCondenser extends AEBaseGui
 	GuiProgressBar pb;
 	GuiImgButton mode;
 
-	public GuiCondenser( InventoryPlayer inventoryPlayer, TileCondenser te )
+	public GuiCondenser( final InventoryPlayer inventoryPlayer, final TileCondenser te )
 	{
 		super( new ContainerCondenser( inventoryPlayer, te ) );
 		this.cvc = (ContainerCondenser) this.inventorySlots;
@@ -53,11 +53,11 @@ public class GuiCondenser extends AEBaseGui
 	}
 
 	@Override
-	protected void actionPerformed( GuiButton btn ) throws IOException
+	protected void actionPerformed( final GuiButton btn ) throws IOException
 	{
 		super.actionPerformed( btn );
 
-		boolean backwards = Mouse.isButtonDown( 1 );
+		final boolean backwards = Mouse.isButtonDown( 1 );
 
 		if( this.mode == btn )
 		{
@@ -79,7 +79,7 @@ public class GuiCondenser extends AEBaseGui
 	}
 
 	@Override
-	public void drawFG( int offsetX, int offsetY, int mouseX, int mouseY )
+	public void drawFG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
 		this.fontRendererObj.drawString( this.getGuiDisplayName( GuiText.Condenser.getLocal() ), 8, 6, 4210752 );
 		this.fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
@@ -89,7 +89,7 @@ public class GuiCondenser extends AEBaseGui
 	}
 
 	@Override
-	public void drawBG( int offsetX, int offsetY, int mouseX, int mouseY )
+	public void drawBG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
 		this.bindTexture( "guis/condenser.png" );
 

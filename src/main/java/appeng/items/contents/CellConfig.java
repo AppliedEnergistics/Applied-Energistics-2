@@ -29,7 +29,7 @@ public class CellConfig extends AppEngInternalInventory
 
 	final ItemStack is;
 
-	public CellConfig( ItemStack is )
+	public CellConfig( final ItemStack is )
 	{
 		super( null, 63 );
 		this.is = is;

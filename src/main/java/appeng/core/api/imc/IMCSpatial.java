@@ -35,15 +35,15 @@ public class IMCSpatial implements IIMCProcessor
 {
 
 	@Override
-	public void process( IMCMessage m )
+	public void process( final IMCMessage m )
 	{
 
 		try
 		{
-			Class classInstance = Class.forName( m.getStringValue() );
+			final Class classInstance = Class.forName( m.getStringValue() );
 			AEApi.instance().registries().movable().whiteListTileEntity( classInstance );
 		}
-		catch( ClassNotFoundException e )
+		catch( final ClassNotFoundException e )
 		{
 			AELog.info( "Bad Class Registered: " + m.getStringValue() + " by " + m.getSender() );
 		}

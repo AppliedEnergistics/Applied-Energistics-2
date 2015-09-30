@@ -55,7 +55,7 @@ public class RenderBlockAssembler extends BaseBlockRender<BlockMolecularAssemble
 	}
 
 	@Override
-	public void renderInventory( BlockMolecularAssembler blk, ItemStack is, ModelGenerator renderer, ItemRenderType type, Object[] obj )
+	public void renderInventory( final BlockMolecularAssembler blk, final ItemStack is, final ModelGenerator renderer, final ItemRenderType type, final Object[] obj )
 	{
 		renderer.setOverrideBlockTexture( renderer.getIcon( blk.getStateFromMeta( is.getMetadata() ) )[0] );
 
@@ -102,16 +102,16 @@ public class RenderBlockAssembler extends BaseBlockRender<BlockMolecularAssemble
 	}
 
 	@Override
-	public boolean renderInWorld( BlockMolecularAssembler maBlock, IBlockAccess world, BlockPos pos, ModelGenerator renderer )
+	public boolean renderInWorld( final BlockMolecularAssembler maBlock, final IBlockAccess world, final BlockPos pos, final ModelGenerator renderer )
 	{
-		TileMolecularAssembler tma = maBlock.getTileEntity( world, pos );
+		final TileMolecularAssembler tma = maBlock.getTileEntity( world, pos );
 
 		if ( renderer.isAlphaPass() )
 		{
 			if( tma.isPowered() )
 			{
 				this.renderBlockBounds( renderer, 1, 1, 1, 15, 15, 15, EnumFacing.WEST, EnumFacing.UP, EnumFacing.SOUTH );
-				TaughtIcon lights = new TaughtIcon( ExtraBlockTextures.BlockMolecularAssemblerLights.getIcon(), -2.0f );
+				final TaughtIcon lights = new TaughtIcon( ExtraBlockTextures.BlockMolecularAssemblerLights.getIcon(), -2.0f );
 				renderer.setColorRGBA_F( 1, 1, 1, 0.3f );
 				renderer.setBrightness( 14 << 20 | 14 << 4 );
 				renderer.renderFaceXNeg( maBlock, pos, lights );
@@ -131,11 +131,11 @@ public class RenderBlockAssembler extends BaseBlockRender<BlockMolecularAssemble
 		
 		this.preRenderInWorld( maBlock, world, pos, renderer );
 
-		IOrientable te = this.getOrientable( maBlock, world, pos );
+		final IOrientable te = this.getOrientable( maBlock, world, pos );
 
-		EnumFacing fdy = te.getUp();
-		EnumFacing fdz = te.getForward();
-		EnumFacing fdx = Platform.crossProduct( fdz, fdy ).getOpposite();
+		final EnumFacing fdy = te.getUp();
+		final EnumFacing fdz = te.getForward();
+		final EnumFacing fdx = Platform.crossProduct( fdz, fdy ).getOpposite();
 
 		renderer.renderAllFaces = true;
 
@@ -193,7 +193,7 @@ public class RenderBlockAssembler extends BaseBlockRender<BlockMolecularAssemble
 		return true;
 	}
 
-	public void renderCableAt( double thickness, IBlockAccess world, BlockPos pos, BlockMolecularAssembler block, ModelGenerator renderer, double pull, boolean covered )
+	public void renderCableAt( final double thickness, final IBlockAccess world, final BlockPos pos, final BlockMolecularAssembler block, final ModelGenerator renderer, final double pull, final boolean covered )
 	{
 		IAESprite texture = null;
 
@@ -242,19 +242,19 @@ public class RenderBlockAssembler extends BaseBlockRender<BlockMolecularAssemble
 		block.getRendererInstance().setTemporaryRenderIcon( null );
 	}
 
-	IAESprite getConnectedCable( IBlockAccess world, BlockPos pos, EnumFacing side, boolean covered,ModelGenerator renderer )
+	IAESprite getConnectedCable( final IBlockAccess world, final BlockPos pos, final EnumFacing side, final boolean covered, final ModelGenerator renderer )
 	{
 		final int tileYPos = pos.getY() + side.getFrontOffsetY();
 		if( -1 < tileYPos && tileYPos < 256 )
 		{
-			TileEntity ne = world.getTileEntity( pos.offset( side ) );
+			final TileEntity ne = world.getTileEntity( pos.offset( side ) );
 			if( ne instanceof IGridHost && ne instanceof IPartHost )
 			{
-				IPartHost ph = (IPartHost) ne;
-				IPart pcx = ph.getPart( AEPartLocation.INTERNAL );
+				final IPartHost ph = (IPartHost) ne;
+				final IPart pcx = ph.getPart( AEPartLocation.INTERNAL );
 				if( pcx instanceof PartCable )
 				{
-					PartCable pc = (PartCable) pcx;
+					final PartCable pc = (PartCable) pcx;
 					if( pc.isConnected( side.getOpposite() ) )
 					{
 						if( covered )
@@ -271,7 +271,7 @@ public class RenderBlockAssembler extends BaseBlockRender<BlockMolecularAssemble
 	}
 
 	@Override
-	public void getBoxes( IPartCollisionHelper bch )
+	public void getBoxes( final IPartCollisionHelper bch )
 	{
 		bch.addBox( 0, 0, 0, 16, 16, 16 );
 	}

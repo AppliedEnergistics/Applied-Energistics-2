@@ -73,7 +73,7 @@ public class BaseBlockRender<B extends AEBaseBlock, T extends AEBaseTile>
 		this( false, 20 );
 	}
 
-	public BaseBlockRender( boolean enableTESR, double renderDistance )
+	public BaseBlockRender( final boolean enableTESR, final double renderDistance )
 	{
 		this.hasTESR = enableTESR;
 		this.renderDistance = renderDistance;
@@ -262,7 +262,7 @@ public class BaseBlockRender<B extends AEBaseBlock, T extends AEBaseTile>
 		return this.hasTESR;
 	}
 
-	protected int adjustBrightness( int v, double d )
+	protected int adjustBrightness( final int v, final double d )
 	{
 		int r = 0xff & ( v >> 16 );
 		int g = 0xff & ( v >> 8 );
@@ -284,9 +284,9 @@ public class BaseBlockRender<B extends AEBaseBlock, T extends AEBaseTile>
 		return this.renderDistance;
 	}
 
-	public void renderInventory( B block, ItemStack item, ModelGenerator renderer, ItemRenderType type, Object[] data )
+	public void renderInventory( final B block, final ItemStack item, final ModelGenerator renderer, final ItemRenderType type, final Object[] data )
 	{
-		BlockRenderInfo info = block.getRendererInstance();
+		final BlockRenderInfo info = block.getRendererInstance();
 		if( info.isValid() )
 		{
 			if( block.hasSubtypes() )
@@ -314,7 +314,7 @@ public class BaseBlockRender<B extends AEBaseBlock, T extends AEBaseTile>
 		renderer.uvRotateBottom = renderer.uvRotateEast = renderer.uvRotateNorth = renderer.uvRotateSouth = renderer.uvRotateTop = renderer.uvRotateWest = 0;
 	}
 
-	public static int getOrientation( EnumFacing in, EnumFacing forward, EnumFacing up )
+	public static int getOrientation( final EnumFacing in, final EnumFacing forward, final EnumFacing up )
 	{
 		if( in == null // 1
 				|| forward == null // 2
@@ -323,22 +323,22 @@ public class BaseBlockRender<B extends AEBaseBlock, T extends AEBaseTile>
 			return 0;
 		}
 
-		int a = in.ordinal();
-		int b = forward.ordinal();
-		int c = up.ordinal();
+		final int a = in.ordinal();
+		final int b = forward.ordinal();
+		final int c = up.ordinal();
 
 		return ORIENTATION_MAP[a][b][c];
 	}
 
-	public void renderInvBlock( EnumSet<AEPartLocation> sides, B block, ItemStack item,  int color, ModelGenerator tess )
+	public void renderInvBlock( final EnumSet<AEPartLocation> sides, final B block, final ItemStack item,  final int color, final ModelGenerator tess )
 	{
 		if( block != null && block.hasSubtypes() && item != null )
 		{
-			int meta = item.getItemDamage();
+			final int meta = item.getItemDamage();
 		}
 
-		IAESprite[] icons = tess.getIcon( item == null ? block.getDefaultState() : block.getStateFromMeta( item.getMetadata() ) );
-		BlockPos zero = new BlockPos(0,0,0);
+		final IAESprite[] icons = tess.getIcon( item == null ? block.getDefaultState() : block.getStateFromMeta( item.getMetadata() ) );
+		final BlockPos zero = new BlockPos(0,0,0);
 		
 		if( sides.contains( AEPartLocation.DOWN ) )
 		{
@@ -383,9 +383,9 @@ public class BaseBlockRender<B extends AEBaseBlock, T extends AEBaseTile>
 		}
 	}
 
-	public IAESprite firstNotNull( IAESprite... s )
+	public IAESprite firstNotNull( final IAESprite... s )
 	{
-		for( IAESprite o : s )
+		for( final IAESprite o : s )
 		{
 			if( o != null )
 			{
@@ -395,25 +395,25 @@ public class BaseBlockRender<B extends AEBaseBlock, T extends AEBaseTile>
 		return ExtraBlockTextures.getMissing();
 	}
 
-	public boolean renderInWorld( B block, IBlockAccess world, BlockPos pos, ModelGenerator renderer )
+	public boolean renderInWorld( final B block, final IBlockAccess world, final BlockPos pos, final ModelGenerator renderer )
 	{
 		this.preRenderInWorld( block, world, pos, renderer );
 
-		boolean o = renderer.renderStandardBlock( block, pos );
+		final boolean o = renderer.renderStandardBlock( block, pos );
 
 		this.postRenderInWorld( renderer );
 		return o;
 	}
 
-	public void preRenderInWorld( B block, IBlockAccess world, BlockPos pos, ModelGenerator renderer )
+	public void preRenderInWorld( final B block, final IBlockAccess world, final BlockPos pos, final ModelGenerator renderer )
 	{
 
-		BlockRenderInfo info = block.getRendererInstance();
-		IOrientable te = this.getOrientable( block, world, pos );
+		final BlockRenderInfo info = block.getRendererInstance();
+		final IOrientable te = this.getOrientable( block, world, pos );
 		if( te != null )
 		{
-			EnumFacing forward = te.getForward();
-			EnumFacing up = te.getUp();
+			final EnumFacing forward = te.getForward();
+			final EnumFacing up = te.getUp();
 
 			renderer.uvRotateBottom = info.getTexture( AEPartLocation.DOWN ).setFlip( getOrientation( EnumFacing.DOWN, forward, up ) );
 			renderer.uvRotateTop = info.getTexture( AEPartLocation.UP ).setFlip( getOrientation( EnumFacing.UP, forward, up ) );
@@ -426,29 +426,29 @@ public class BaseBlockRender<B extends AEBaseBlock, T extends AEBaseTile>
 		}
 	}
 
-	public void postRenderInWorld( ModelGenerator renderer )
+	public void postRenderInWorld( final ModelGenerator renderer )
 	{
 		renderer.uvRotateBottom = renderer.uvRotateEast = renderer.uvRotateNorth = renderer.uvRotateSouth = renderer.uvRotateTop = renderer.uvRotateWest = 0;
 	}
 
 	@Nullable
-	public IOrientable getOrientable( B block, IBlockAccess w, BlockPos pos )
+	public IOrientable getOrientable( final B block, final IBlockAccess w, final BlockPos pos )
 	{
 		return block.getOrientable( w, pos );
 	}
 
-	protected void setInvRenderBounds( ModelGenerator renderer, int i, int j, int k, int l, int m, int n )
+	protected void setInvRenderBounds( final ModelGenerator renderer, final int i, final int j, final int k, final int l, final int m, final int n )
 	{
 		renderer.setRenderBounds( i / 16.0, j / 16.0, k / 16.0, l / 16.0, m / 16.0, n / 16.0 );
 	}
 
-	protected void renderBlockBounds( ModelGenerator renderer,
+	protected void renderBlockBounds( final ModelGenerator renderer,
 
 			double minX, double minY, double minZ,
 
 			double maxX, double maxY, double maxZ,
 
-			EnumFacing x, EnumFacing y, EnumFacing z )
+			final EnumFacing x, final EnumFacing y, final EnumFacing z )
 	{
 		minX /= 16.0;
 		minY /= 16.0;
@@ -492,7 +492,7 @@ public class BaseBlockRender<B extends AEBaseBlock, T extends AEBaseTile>
 	}
 
 	@SideOnly( Side.CLIENT )
-	protected void renderCutoutFace( B block, IAESprite ico, BlockPos pos, ModelGenerator tess, EnumFacing orientation, float edgeThickness )
+	protected void renderCutoutFace( final B block, final IAESprite ico, final BlockPos pos, final ModelGenerator tess, final EnumFacing orientation, final float edgeThickness )
 	{
 		double offsetX = 0.0;
 		double offsetY = 0.0;
@@ -555,8 +555,8 @@ public class BaseBlockRender<B extends AEBaseBlock, T extends AEBaseTile>
 		offsetY += pos.getY();
 		offsetZ += pos.getZ();
 
-		double layerBX = 0.0;
-		double layerAY = 0.0;
+		final double layerBX = 0.0;
+		final double layerAY = 0.0;
 		this.renderFace(orientation, tess, offsetX, offsetY, offsetZ, layerAX, layerAY, layerAZ, layerBX, layerBY, layerBZ,
 				// u -> u
 				0, 1.0,
@@ -583,7 +583,7 @@ public class BaseBlockRender<B extends AEBaseBlock, T extends AEBaseTile>
 	}
 
 	@SideOnly( Side.CLIENT )
-	private void renderFace(  EnumFacing face, ModelGenerator tess, double offsetX, double offsetY, double offsetZ, double ax, double ay, double az, double bx, double by, double bz, double ua, double ub, double va, double vb, IAESprite ico, boolean flip )
+	private void renderFace(  final EnumFacing face, final ModelGenerator tess, final double offsetX, final double offsetY, final double offsetZ, final double ax, final double ay, final double az, final double bx, final double by, final double bz, final double ua, final double ub, final double va, final double vb, final IAESprite ico, final boolean flip )
 	{
 		if( flip )
 		{
@@ -602,7 +602,7 @@ public class BaseBlockRender<B extends AEBaseBlock, T extends AEBaseTile>
 	}
 
 	@SideOnly( Side.CLIENT )
-	protected void renderFace( BlockPos pos, B block, IAESprite ico, ModelGenerator renderer, EnumFacing orientation )
+	protected void renderFace( final BlockPos pos, final B block, final IAESprite ico, final ModelGenerator renderer, final EnumFacing orientation )
 	{
 		switch( orientation )
 		{
@@ -629,18 +629,18 @@ public class BaseBlockRender<B extends AEBaseBlock, T extends AEBaseTile>
 		}
 	}
 
-	public void selectFace( ModelGenerator renderer, EnumFacing west, EnumFacing up, EnumFacing forward, int u1, int u2, int v1, int v2 )
+	public void selectFace( final ModelGenerator renderer, final EnumFacing west, final EnumFacing up, final EnumFacing forward, final int u1, final int u2, int v1, int v2 )
 	{
 		v1 = 16 - v1;
 		v2 = 16 - v2;
 
-		double minX = ( forward.getFrontOffsetX() > 0 ? 1 : 0 ) + this.mapFaceUV( west.getFrontOffsetX(), u1 ) + this.mapFaceUV( up.getFrontOffsetX(), v1 );
-		double minY = ( forward.getFrontOffsetY() > 0 ? 1 : 0 ) + this.mapFaceUV( west.getFrontOffsetY(), u1 ) + this.mapFaceUV( up.getFrontOffsetY(), v1 );
-		double minZ = ( forward.getFrontOffsetZ() > 0 ? 1 : 0 ) + this.mapFaceUV( west.getFrontOffsetZ(), u1 ) + this.mapFaceUV( up.getFrontOffsetZ(), v1 );
+		final double minX = ( forward.getFrontOffsetX() > 0 ? 1 : 0 ) + this.mapFaceUV( west.getFrontOffsetX(), u1 ) + this.mapFaceUV( up.getFrontOffsetX(), v1 );
+		final double minY = ( forward.getFrontOffsetY() > 0 ? 1 : 0 ) + this.mapFaceUV( west.getFrontOffsetY(), u1 ) + this.mapFaceUV( up.getFrontOffsetY(), v1 );
+		final double minZ = ( forward.getFrontOffsetZ() > 0 ? 1 : 0 ) + this.mapFaceUV( west.getFrontOffsetZ(), u1 ) + this.mapFaceUV( up.getFrontOffsetZ(), v1 );
 
-		double maxX = ( forward.getFrontOffsetX() > 0 ? 1 : 0 ) + this.mapFaceUV( west.getFrontOffsetX(), u2 ) + this.mapFaceUV( up.getFrontOffsetX(), v2 );
-		double maxY = ( forward.getFrontOffsetY() > 0 ? 1 : 0 ) + this.mapFaceUV( west.getFrontOffsetY(), u2 ) + this.mapFaceUV( up.getFrontOffsetY(), v2 );
-		double maxZ = ( forward.getFrontOffsetZ() > 0 ? 1 : 0 ) + this.mapFaceUV( west.getFrontOffsetZ(), u2 ) + this.mapFaceUV( up.getFrontOffsetZ(), v2 );
+		final double maxX = ( forward.getFrontOffsetX() > 0 ? 1 : 0 ) + this.mapFaceUV( west.getFrontOffsetX(), u2 ) + this.mapFaceUV( up.getFrontOffsetX(), v2 );
+		final double maxY = ( forward.getFrontOffsetY() > 0 ? 1 : 0 ) + this.mapFaceUV( west.getFrontOffsetY(), u2 ) + this.mapFaceUV( up.getFrontOffsetY(), v2 );
+		final double maxZ = ( forward.getFrontOffsetZ() > 0 ? 1 : 0 ) + this.mapFaceUV( west.getFrontOffsetZ(), u2 ) + this.mapFaceUV( up.getFrontOffsetZ(), v2 );
 
 		renderer.renderMinX = Math.max( 0.0, Math.min( minX, maxX ) - ( forward.getFrontOffsetX() != 0 ? 0 : 0.001 ) );
 		renderer.renderMaxX = Math.min( 1.0, Math.max( minX, maxX ) + ( forward.getFrontOffsetX() != 0 ? 0 : 0.001 ) );
@@ -652,7 +652,7 @@ public class BaseBlockRender<B extends AEBaseBlock, T extends AEBaseTile>
 		renderer.renderMaxZ = Math.min( 1.0, Math.max( minZ, maxZ ) + ( forward.getFrontOffsetZ() != 0 ? 0 : 0.001 ) );
 	}
 
-	private double mapFaceUV( int offset, int uv )
+	private double mapFaceUV( final int offset, final int uv )
 	{
 		if( offset == 0 )
 		{
@@ -667,13 +667,13 @@ public class BaseBlockRender<B extends AEBaseBlock, T extends AEBaseTile>
 		return ( 16.0 - uv ) / 16.0;
 	}
 
-	public void renderTile( B block, T tile, WorldRenderer tess, double x, double y, double z, float f, ModelGenerator renderer )
+	public void renderTile( final B block, final T tile, final WorldRenderer tess, final double x, final double y, final double z, final float f, final ModelGenerator renderer )
 	{
 
 		renderer.uvRotateBottom = renderer.uvRotateTop = renderer.uvRotateEast = renderer.uvRotateWest = renderer.uvRotateNorth = renderer.uvRotateSouth = 0;
 
-		AEPartLocation up = AEPartLocation.UP;
-		AEPartLocation forward = AEPartLocation.SOUTH;
+		final AEPartLocation up = AEPartLocation.UP;
+		final AEPartLocation forward = AEPartLocation.SOUTH;
 		this.applyTESRRotation( x, y, z, forward.getFacing(), up.getFacing() );
 
 		Minecraft.getMinecraft().getTextureManager().bindTexture( TextureMap.locationBlocksTexture );
@@ -690,7 +690,7 @@ public class BaseBlockRender<B extends AEBaseBlock, T extends AEBaseTile>
 
 		GL11.glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 
-		BlockPos pos = tile.getPos();
+		final BlockPos pos = tile.getPos();
 		renderer.setTranslation( -pos.getX(), -pos.getY(), -pos.getZ()  );
 
 		// note that this is a terrible approach...
@@ -703,11 +703,11 @@ public class BaseBlockRender<B extends AEBaseBlock, T extends AEBaseTile>
 		renderer.uvRotateBottom = renderer.uvRotateTop = renderer.uvRotateEast = renderer.uvRotateWest = renderer.uvRotateNorth = renderer.uvRotateSouth = 0;
 	}
 
-	protected void applyTESRRotation( double x, double y, double z, EnumFacing forward, EnumFacing up )
+	protected void applyTESRRotation( final double x, final double y, final double z, final EnumFacing forward, final EnumFacing up )
 	{
 		if( forward != null && up != null )
 		{
-			EnumFacing west = Platform.crossProduct( forward, up );
+			final EnumFacing west = Platform.crossProduct( forward, up );
 
 			this.rotMat.put( 0, west.getFrontOffsetX() );
 			this.rotMat.put( 1, west.getFrontOffsetY() );
@@ -738,11 +738,11 @@ public class BaseBlockRender<B extends AEBaseBlock, T extends AEBaseTile>
 		}
 	}
 
-	public void doRenderItem( ItemStack itemstack, TileEntity par1EntityItemFrame )
+	public void doRenderItem( final ItemStack itemstack, final TileEntity par1EntityItemFrame )
 	{
 		if( itemstack != null )
 		{
-			EntityItem entityitem = new EntityItem( par1EntityItemFrame.getWorld(), 0.0D, 0.0D, 0.0D, itemstack );
+			final EntityItem entityitem = new EntityItem( par1EntityItemFrame.getWorld(), 0.0D, 0.0D, 0.0D, itemstack );
 			entityitem.getEntityItem().stackSize = 1;
 
 			// set all this stuff and then do shit? meh?

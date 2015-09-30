@@ -11,7 +11,7 @@ import net.minecraft.block.Block;
  */
 public class FluixStairBlock extends BlockStairCommon
 {
-	public FluixStairBlock( Block block, String type )
+	public FluixStairBlock( final Block block, final String type )
 	{
 		super( block, type );
 	}

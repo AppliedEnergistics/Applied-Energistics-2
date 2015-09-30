@@ -57,15 +57,15 @@ public class ContainerNetworkStatus extends AEBaseContainer
 	IGrid network;
 	int delay = 40;
 
-	public ContainerNetworkStatus( InventoryPlayer ip, INetworkTool te )
+	public ContainerNetworkStatus( final InventoryPlayer ip, final INetworkTool te )
 	{
 		super( ip, null, null );
-		IGridHost host = te.getGridHost();
+		final IGridHost host = te.getGridHost();
 
 		if( host != null )
 		{
 			this.findNode( host, AEPartLocation.INTERNAL );
-			for( AEPartLocation d : AEPartLocation.SIDE_LOCATIONS )
+			for( final AEPartLocation d : AEPartLocation.SIDE_LOCATIONS )
 			{
 				this.findNode( host, d );
 			}
@@ -77,11 +77,11 @@ public class ContainerNetworkStatus extends AEBaseContainer
 		}
 	}
 
-	private void findNode( IGridHost host, AEPartLocation d )
+	private void findNode( final IGridHost host, final AEPartLocation d )
 	{
 		if( this.network == null )
 		{
-			IGridNode node = host.getGridNode( d );
+			final IGridNode node = host.getGridNode( d );
 			if( node != null )
 			{
 				this.network = node.getGrid();
@@ -97,7 +97,7 @@ public class ContainerNetworkStatus extends AEBaseContainer
 		{
 			this.delay = 0;
 
-			IEnergyGrid eg = this.network.getCache( IEnergyGrid.class );
+			final IEnergyGrid eg = this.network.getCache( IEnergyGrid.class );
 			if( eg != null )
 			{
 				this.avgAddition = (long) ( 100.0 * eg.getAvgPowerInjection() );
@@ -108,31 +108,31 @@ public class ContainerNetworkStatus extends AEBaseContainer
 
 			try
 			{
-				PacketMEInventoryUpdate piu = new PacketMEInventoryUpdate();
+				final PacketMEInventoryUpdate piu = new PacketMEInventoryUpdate();
 
-				for( Class<? extends IGridHost> machineClass : this.network.getMachinesClasses() )
+				for( final Class<? extends IGridHost> machineClass : this.network.getMachinesClasses() )
 				{
-					IItemList<IAEItemStack> list = AEApi.instance().storage().createItemList();
-					for( IGridNode machine : this.network.getMachines( machineClass ) )
+					final IItemList<IAEItemStack> list = AEApi.instance().storage().createItemList();
+					for( final IGridNode machine : this.network.getMachines( machineClass ) )
 					{
-						IGridBlock blk = machine.getGridBlock();
-						ItemStack is = blk.getMachineRepresentation();
+						final IGridBlock blk = machine.getGridBlock();
+						final ItemStack is = blk.getMachineRepresentation();
 						if( is != null && is.getItem() != null )
 						{
-							IAEItemStack ais = AEItemStack.create( is );
+							final IAEItemStack ais = AEItemStack.create( is );
 							ais.setStackSize( 1 );
 							ais.setCountRequestable( (long) ( blk.getIdlePowerUsage() * 100.0 ) );
 							list.add( ais );
 						}
 					}
 
-					for( IAEItemStack ais : list )
+					for( final IAEItemStack ais : list )
 					{
 						piu.appendItem( ais );
 					}
 				}
 
-				for( Object c : this.crafters )
+				for( final Object c : this.crafters )
 				{
 					if( c instanceof EntityPlayer )
 					{
@@ -140,7 +140,7 @@ public class ContainerNetworkStatus extends AEBaseContainer
 					}
 				}
 			}
-			catch( IOException e )
+			catch( final IOException e )
 			{
 				// :P
 			}

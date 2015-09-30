@@ -30,7 +30,7 @@ public class MaterialStackSrc implements IStackSrc
 {
 	private final MaterialType src;
 
-	public MaterialStackSrc( MaterialType src )
+	public MaterialStackSrc( final MaterialType src )
 	{
 		Preconditions.checkNotNull( src );
 
@@ -38,7 +38,7 @@ public class MaterialStackSrc implements IStackSrc
 	}
 
 	@Override
-	public ItemStack stack( int stackSize )
+	public ItemStack stack( final int stackSize )
 	{
 		return this.src.stack( stackSize );
 	}

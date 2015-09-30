@@ -44,7 +44,7 @@ public final class VersionParser
 	 *
 	 * @throws AssertionError if raw String does not match pattern of a {@link Version}
 	 */
-	public Version parse( String raw )
+	public Version parse( final String raw )
 	{
 		final String transformed = this.transformDelimiter( raw );
 		final String[] split = transformed.split( "_" );
@@ -59,7 +59,7 @@ public final class VersionParser
 	 *
 	 * @return transformed raw, where "." and "-" are replaced by "_"
 	 */
-	private String transformDelimiter( String raw )
+	private String transformDelimiter( final String raw )
 	{
 		assert raw.contains( "." ) || raw.contains( "-" );
 
@@ -78,7 +78,7 @@ public final class VersionParser
 	 *
 	 * @return {@link Version} represented by the splitRaw
 	 */
-	private Version parseVersion( String[] splitRaw )
+	private Version parseVersion( final String[] splitRaw )
 	{
 		assert splitRaw.length == 3;
 
@@ -100,7 +100,7 @@ public final class VersionParser
 	 *
 	 * @return revision number
 	 */
-	private int parseRevision( String rawRevision )
+	private int parseRevision( final String rawRevision )
 	{
 		assert PATTERN_VALID_REVISION.matcher( rawRevision ).matches();
 
@@ -120,11 +120,11 @@ public final class VersionParser
 	 *
 	 * @return matching {@link Channel} to the String
 	 */
-	private Channel parseChannel( String rawChannel )
+	private Channel parseChannel( final String rawChannel )
 	{
 		assert rawChannel.equalsIgnoreCase( Channel.Alpha.name() ) || rawChannel.equalsIgnoreCase( Channel.Beta.name() ) || rawChannel.equalsIgnoreCase( Channel.Stable.name() );
 
-		for( Channel channel : Channel.values() )
+		for( final Channel channel : Channel.values() )
 		{
 			if( channel.name().equalsIgnoreCase( rawChannel ) )
 			{
@@ -142,7 +142,7 @@ public final class VersionParser
 	 *
 	 * @return build number
 	 */
-	private int parseBuild( String rawBuild )
+	private int parseBuild( final String rawBuild )
 	{
 		assert PATTERN_NATURAL.matcher( rawBuild ).matches();
 

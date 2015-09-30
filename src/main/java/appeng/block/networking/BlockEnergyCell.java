@@ -50,13 +50,13 @@ public class BlockEnergyCell extends AEBaseTileBlock
 
 	@Override
 	public int getMetaFromState(
-			IBlockState state )
+			final IBlockState state )
 	{
 		return (int)state.getValue( ENERGY_STORAGE );
 	}
 	
 	@Override
-	public IBlockState getStateFromMeta( int meta )
+	public IBlockState getStateFromMeta( final int meta )
 	{
 		return getDefaultState().withProperty( ENERGY_STORAGE, Math.min( 7,  Math.max( 0, meta ) ) );
 	}
@@ -76,7 +76,7 @@ public class BlockEnergyCell extends AEBaseTileBlock
 	}
 
 	@Override
-	public appeng.client.texture.IAESprite getIcon(net.minecraft.util.EnumFacing side, IBlockState state)
+	public appeng.client.texture.IAESprite getIcon( final net.minecraft.util.EnumFacing side, final IBlockState state)
 	{
 		switch( (int)state.getValue( ENERGY_STORAGE ) )
 		{
@@ -102,12 +102,12 @@ public class BlockEnergyCell extends AEBaseTileBlock
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void getCheckedSubBlocks( Item item, CreativeTabs tabs, List<ItemStack> itemStacks )
+	public void getCheckedSubBlocks( final Item item, final CreativeTabs tabs, final List<ItemStack> itemStacks )
 	{
 		super.getCheckedSubBlocks( item, tabs, itemStacks );
 
-		ItemStack charged = new ItemStack( this, 1 );
-		NBTTagCompound tag = Platform.openNbtData( charged );
+		final ItemStack charged = new ItemStack( this, 1 );
+		final NBTTagCompound tag = Platform.openNbtData( charged );
 		tag.setDouble( "internalCurrentPower", this.getMaxPower() );
 		tag.setDouble( "internalMaxPower", this.getMaxPower() );
 

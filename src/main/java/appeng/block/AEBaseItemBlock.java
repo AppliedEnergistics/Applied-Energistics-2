@@ -46,7 +46,7 @@ public class AEBaseItemBlock extends ItemBlock
 
 	private final AEBaseBlock blockType;
 
-	public AEBaseItemBlock( Block id )
+	public AEBaseItemBlock( final Block id )
 	{
 		super( id );
 		this.blockType = (AEBaseBlock) id;
@@ -54,7 +54,7 @@ public class AEBaseItemBlock extends ItemBlock
 	}
 
 	@Override
-	public int getMetadata( int dmg )
+	public int getMetadata( final int dmg )
 	{
 		if( this.hasSubtypes )
 		{
@@ -66,40 +66,40 @@ public class AEBaseItemBlock extends ItemBlock
 	@Override
 	@SideOnly( Side.CLIENT )
 	@SuppressWarnings( "unchecked" )
-	public final void addInformation( ItemStack itemStack, EntityPlayer player, List toolTip, boolean advancedTooltips )
+	public final void addInformation( final ItemStack itemStack, final EntityPlayer player, final List toolTip, final boolean advancedTooltips )
 	{
 		this.addCheckedInformation( itemStack, player, toolTip, advancedTooltips );
 	}
 
 	@SideOnly( Side.CLIENT )
-	public void addCheckedInformation( ItemStack itemStack, EntityPlayer player, List<String> toolTip, boolean advancedToolTips )
+	public void addCheckedInformation( final ItemStack itemStack, final EntityPlayer player, final List<String> toolTip, final boolean advancedToolTips )
 	{
 		this.blockType.addInformation( itemStack, player, toolTip, advancedToolTips );
 	}
 
 	@Override
-	public boolean isBookEnchantable( ItemStack itemstack1, ItemStack itemstack2 )
+	public boolean isBookEnchantable( final ItemStack itemstack1, final ItemStack itemstack2 )
 	{
 		return false;
 	}
 
 	@Override
-	public String getUnlocalizedName( ItemStack is )
+	public String getUnlocalizedName( final ItemStack is )
 	{
 		return this.blockType.getUnlocalizedName( is );
 	}
 	
 	@Override
 	public boolean placeBlockAt(
-			ItemStack stack,
-			EntityPlayer player,
-			World w,
-			BlockPos pos,
-			EnumFacing side,
-			float hitX,
-			float hitY,
-			float hitZ,
-			IBlockState newState )
+			final ItemStack stack,
+			final EntityPlayer player,
+			final World w,
+			final BlockPos pos,
+			final EnumFacing side,
+			final float hitX,
+			final float hitY,
+			final float hitZ,
+			final IBlockState newState )
 	{
 		EnumFacing up = null;
 		EnumFacing forward = null;
@@ -134,7 +134,7 @@ public class AEBaseItemBlock extends ItemBlock
 			{
 				up = EnumFacing.UP;
 
-				byte rotation = (byte) ( MathHelper.floor_double( ( player.rotationYaw * 4F ) / 360F + 2.5D ) & 3 );
+				final byte rotation = (byte) ( MathHelper.floor_double( ( player.rotationYaw * 4F ) / 360F + 2.5D ) & 3 );
 
 				switch( rotation )
 				{
@@ -187,7 +187,7 @@ public class AEBaseItemBlock extends ItemBlock
 		{
 			if( this.blockType instanceof AEBaseTileBlock && !( this.blockType instanceof BlockLightDetector ) )
 			{
-				AEBaseTile tile = ( (AEBaseTileBlock) this.blockType ).getTileEntity( w, pos );
+				final AEBaseTile tile = ( (AEBaseTileBlock) this.blockType ).getTileEntity( w, pos );
 				ori = tile;
 
 				if( tile == null )

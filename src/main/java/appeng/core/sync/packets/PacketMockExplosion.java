@@ -39,7 +39,7 @@ public class PacketMockExplosion extends AppEngPacket
 	public final double z;
 
 	// automatic.
-	public PacketMockExplosion( ByteBuf stream )
+	public PacketMockExplosion( final ByteBuf stream )
 	{
 		this.x = stream.readDouble();
 		this.y = stream.readDouble();
@@ -47,13 +47,13 @@ public class PacketMockExplosion extends AppEngPacket
 	}
 
 	// api
-	public PacketMockExplosion( double x, double y, double z )
+	public PacketMockExplosion( final double x, final double y, final double z )
 	{
 		this.x = x;
 		this.y = y;
 		this.z = z;
 
-		ByteBuf data = Unpooled.buffer();
+		final ByteBuf data = Unpooled.buffer();
 
 		data.writeInt( this.getPacketID() );
 		data.writeDouble( x );
@@ -65,9 +65,9 @@ public class PacketMockExplosion extends AppEngPacket
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void clientPacketData( INetworkInfo network, AppEngPacket packet, EntityPlayer player )
+	public void clientPacketData( final INetworkInfo network, final AppEngPacket packet, final EntityPlayer player )
 	{
-		World world = CommonHelper.proxy.getWorld();
+		final World world = CommonHelper.proxy.getWorld();
 		world.spawnParticle( EnumParticleTypes.EXPLOSION_LARGE, this.x, this.y, this.z, 1.0D, 0.0D, 0.0D, new int[0] );
 	}
 }

@@ -47,19 +47,19 @@ public class ApiStorage implements IStorageHelper
 {
 
 	@Override
-	public ICraftingLink loadCraftingLink( NBTTagCompound data, ICraftingRequester req )
+	public ICraftingLink loadCraftingLink( final NBTTagCompound data, final ICraftingRequester req )
 	{
 		return new CraftingLink( data, req );
 	}
 
 	@Override
-	public IAEItemStack createItemStack( ItemStack is )
+	public IAEItemStack createItemStack( final ItemStack is )
 	{
 		return AEItemStack.create( is );
 	}
 
 	@Override
-	public IAEFluidStack createFluidStack( FluidStack is )
+	public IAEFluidStack createFluidStack( final FluidStack is )
 	{
 		return AEFluidStack.create( is );
 	}
@@ -77,25 +77,25 @@ public class ApiStorage implements IStorageHelper
 	}
 
 	@Override
-	public IAEItemStack readItemFromPacket( ByteBuf input ) throws IOException
+	public IAEItemStack readItemFromPacket( final ByteBuf input ) throws IOException
 	{
 		return AEItemStack.loadItemStackFromPacket( input );
 	}
 
 	@Override
-	public IAEFluidStack readFluidFromPacket( ByteBuf input ) throws IOException
+	public IAEFluidStack readFluidFromPacket( final ByteBuf input ) throws IOException
 	{
 		return AEFluidStack.loadFluidStackFromPacket( input );
 	}
 
 	@Override
-	public IAEItemStack poweredExtraction( IEnergySource energy, IMEInventory<IAEItemStack> cell, IAEItemStack request, BaseActionSource src )
+	public IAEItemStack poweredExtraction( final IEnergySource energy, final IMEInventory<IAEItemStack> cell, final IAEItemStack request, final BaseActionSource src )
 	{
 		return Platform.poweredExtraction( energy, cell, request, src );
 	}
 
 	@Override
-	public IAEItemStack poweredInsert( IEnergySource energy, IMEInventory<IAEItemStack> cell, IAEItemStack input, BaseActionSource src )
+	public IAEItemStack poweredInsert( final IEnergySource energy, final IMEInventory<IAEItemStack> cell, final IAEItemStack input, final BaseActionSource src )
 	{
 		return Platform.poweredInsert( energy, cell, input, src );
 	}

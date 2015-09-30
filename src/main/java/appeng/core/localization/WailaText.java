@@ -39,7 +39,7 @@ public enum WailaText
 		this.root = "waila.appliedenergistics2";
 	}
 
-	WailaText( String r )
+	WailaText( final String r )
 	{
 		this.root = r;
 	}

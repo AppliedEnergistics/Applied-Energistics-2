@@ -74,7 +74,7 @@ public final class ItemMultiPart extends AEBaseItem implements IPartItem, IItemG
 	public static ItemMultiPart instance;
 	private final Map<Integer, PartTypeWithVariant> registered;
 
-	public ItemMultiPart( IPartHelper partHelper )
+	public ItemMultiPart( final IPartHelper partHelper )
 	{
 		Preconditions.checkNotNull( partHelper );
 
@@ -88,7 +88,7 @@ public final class ItemMultiPart extends AEBaseItem implements IPartItem, IItemG
 	}
 
 	@Nonnull
-	public final ItemStackSrc createPart( PartType mat )
+	public final ItemStackSrc createPart( final PartType mat )
 	{
 		Preconditions.checkNotNull( mat );
 
@@ -96,7 +96,7 @@ public final class ItemMultiPart extends AEBaseItem implements IPartItem, IItemG
 	}
 
 	@Nonnull
-	public ItemStackSrc createPart( PartType mat, AEColor color )
+	public ItemStackSrc createPart( final PartType mat, final AEColor color )
 	{
 		Preconditions.checkNotNull( mat );
 		Preconditions.checkNotNull( color );
@@ -107,13 +107,13 @@ public final class ItemMultiPart extends AEBaseItem implements IPartItem, IItemG
 	}
 
 	@Nonnull
-	private ItemStackSrc createPart( PartType mat, int varID )
+	private ItemStackSrc createPart( final PartType mat, final int varID )
 	{
 		assert mat != null;
 		assert varID >= 0;
 
 		// verify
-		for( PartTypeWithVariant p : this.registered.values() )
+		for( final PartTypeWithVariant p : this.registered.values() )
 		{
 			if( p.part == mat && p.variant == varID )
 			{
@@ -122,12 +122,12 @@ public final class ItemMultiPart extends AEBaseItem implements IPartItem, IItemG
 		}
 
 		boolean enabled = true;
-		for( AEFeature f : mat.getFeature() )
+		for( final AEFeature f : mat.getFeature() )
 		{
 			enabled = enabled && AEConfig.instance.isFeatureEnabled( f );
 		}
 
-		for( IntegrationType integrationType : mat.getIntegrations() )
+		for( final IntegrationType integrationType : mat.getIntegrations() )
 		{
 			enabled &= IntegrationRegistry.INSTANCE.isEnabled( integrationType );
 		}
@@ -143,7 +143,7 @@ public final class ItemMultiPart extends AEBaseItem implements IPartItem, IItemG
 		return output;
 	}
 
-	private void processMetaOverlap( boolean enabled, int partDamage, PartType mat, PartTypeWithVariant pti )
+	private void processMetaOverlap( final boolean enabled, final int partDamage, final PartType mat, final PartTypeWithVariant pti )
 	{
 		assert partDamage >= 0;
 		assert mat != null;
@@ -161,11 +161,11 @@ public final class ItemMultiPart extends AEBaseItem implements IPartItem, IItemG
 		}
 	}
 
-	public int getDamageByType( PartType t )
+	public int getDamageByType( final PartType t )
 	{
 		Preconditions.checkNotNull( t );
 
-		for( Entry<Integer, PartTypeWithVariant> pt : this.registered.entrySet() )
+		for( final Entry<Integer, PartTypeWithVariant> pt : this.registered.entrySet() )
 		{
 			if( pt.getValue().part == t )
 			{
@@ -176,7 +176,7 @@ public final class ItemMultiPart extends AEBaseItem implements IPartItem, IItemG
 	}
 
 	@Override
-	public boolean onItemUse( ItemStack is, EntityPlayer player, World w, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ ) 
+	public boolean onItemUse( final ItemStack is, final EntityPlayer player, final World w, final BlockPos pos, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
 	{
 		if( this.getTypeByStack( is ) == PartType.InvalidType )
 		{
@@ -187,7 +187,7 @@ public final class ItemMultiPart extends AEBaseItem implements IPartItem, IItemG
 	}
 
 	@Override
-	public String getUnlocalizedName( ItemStack is )
+	public String getUnlocalizedName( final ItemStack is )
 	{
 		return "item.appliedenergistics2." + this.getName( is );
 	}
@@ -196,16 +196,16 @@ public final class ItemMultiPart extends AEBaseItem implements IPartItem, IItemG
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void registerCustomIcon(
-			TextureMap map )
+			final TextureMap map )
 	{
-		for( Entry<Integer, PartTypeWithVariant> part : this.registered.entrySet() )
+		for( final Entry<Integer, PartTypeWithVariant> part : this.registered.entrySet() )
 		{
 			part.getValue().texture= new BaseIcon( map.registerSprite(  new ResourceLocation( AppEng.MOD_ID, "blocks/" + this.getName( new ItemStack( this, 1, part.getKey() ) ) )) );
 		}
 	}
 
 	@Override
-	public IAESprite getIcon( ItemStack is )
+	public IAESprite getIcon( final ItemStack is )
 	{
 		final int dmg = is.getMetadata();
 		final PartTypeWithVariant registeredType = this.registered.get( dmg );
@@ -218,7 +218,7 @@ public final class ItemMultiPart extends AEBaseItem implements IPartItem, IItemG
 	}
 	
 	@Override
-	public String getItemStackDisplayName( ItemStack is )
+	public String getItemStackDisplayName( final ItemStack is )
 	{
 		final PartType pt = this.getTypeByStack( is );
 
@@ -243,18 +243,18 @@ public final class ItemMultiPart extends AEBaseItem implements IPartItem, IItemG
 	}
 
 	@Override
-	protected void getCheckedSubItems( Item sameItem, CreativeTabs creativeTab, List<ItemStack> itemStacks )
+	protected void getCheckedSubItems( final Item sameItem, final CreativeTabs creativeTab, final List<ItemStack> itemStacks )
 	{
-		List<Entry<Integer, PartTypeWithVariant>> types = new ArrayList<Entry<Integer, PartTypeWithVariant>>( this.registered.entrySet() );
+		final List<Entry<Integer, PartTypeWithVariant>> types = new ArrayList<Entry<Integer, PartTypeWithVariant>>( this.registered.entrySet() );
 		Collections.sort( types, REGISTERED_COMPARATOR );
 
-		for( Entry<Integer, PartTypeWithVariant> part : types )
+		for( final Entry<Integer, PartTypeWithVariant> part : types )
 		{
 			itemStacks.add( new ItemStack( this, 1, part.getKey() ) );
 		}
 	}
 
-	public String getName( ItemStack is )
+	public String getName( final ItemStack is )
 	{
 		Preconditions.checkNotNull( is );
 
@@ -265,7 +265,7 @@ public final class ItemMultiPart extends AEBaseItem implements IPartItem, IItemG
 	}
 
 	@Nonnull
-	public PartType getTypeByStack( ItemStack is )
+	public PartType getTypeByStack( final ItemStack is )
 	{
 		Preconditions.checkNotNull( is );
 
@@ -280,7 +280,7 @@ public final class ItemMultiPart extends AEBaseItem implements IPartItem, IItemG
 
 	@Nullable
 	@Override
-	public IPart createPartFromItemStack( ItemStack is )
+	public IPart createPartFromItemStack( final ItemStack is )
 	{
 		final PartType type = this.getTypeByStack( is );
 		final Class<? extends IPart> part = type.getPart();
@@ -298,25 +298,25 @@ public final class ItemMultiPart extends AEBaseItem implements IPartItem, IItemG
 
 			return type.constructor.newInstance( is );
 		}
-		catch( InstantiationException e )
+		catch( final InstantiationException e )
 		{
 			throw new IllegalStateException( "Unable to construct IBusPart from IBusItem : " + part.getName() + " ; Possibly didn't have correct constructor( ItemStack )", e );
 		}
-		catch( IllegalAccessException e )
+		catch( final IllegalAccessException e )
 		{
 			throw new IllegalStateException( "Unable to construct IBusPart from IBusItem : " + part.getName() + " ; Possibly didn't have correct constructor( ItemStack )", e );
 		}
-		catch( InvocationTargetException e )
+		catch( final InvocationTargetException e )
 		{
 			throw new IllegalStateException( "Unable to construct IBusPart from IBusItem : " + part.getName() + " ; Possibly didn't have correct constructor( ItemStack )", e );
 		}
-		catch( NoSuchMethodException e )
+		catch( final NoSuchMethodException e )
 		{
 			throw new IllegalStateException( "Unable to construct IBusPart from IBusItem : " + part.getName() + " ; Possibly didn't have correct constructor( ItemStack )", e );
 		}
 	}
 
-	public int variantOf( int itemDamage )
+	public int variantOf( final int itemDamage )
 	{
 		final PartTypeWithVariant registeredPartType = this.registered.get( itemDamage );
 		if( registeredPartType != null )
@@ -329,19 +329,19 @@ public final class ItemMultiPart extends AEBaseItem implements IPartItem, IItemG
 
 	@Nullable
 	@Override
-	public String getUnlocalizedGroupName( Set<ItemStack> others, ItemStack is )
+	public String getUnlocalizedGroupName( final Set<ItemStack> others, final ItemStack is )
 	{
 		boolean importBus = false;
 		boolean exportBus = false;
 		boolean group = false;
 
-		PartType u = this.getTypeByStack( is );
+		final PartType u = this.getTypeByStack( is );
 
-		for( ItemStack stack : others )
+		for( final ItemStack stack : others )
 		{
 			if( stack.getItem() == this )
 			{
-				PartType pt = this.getTypeByStack( stack );
+				final PartType pt = this.getTypeByStack( stack );
 				switch( pt )
 				{
 					case ImportBus:
@@ -379,7 +379,7 @@ public final class ItemMultiPart extends AEBaseItem implements IPartItem, IItemG
 		@SideOnly(Side.CLIENT)
 		public IAESprite texture = null;
 		
-		private PartTypeWithVariant( PartType part, int variant )
+		private PartTypeWithVariant( final PartType part, final int variant )
 		{
 			assert part != null;
 			assert variant >= 0;
@@ -401,7 +401,7 @@ public final class ItemMultiPart extends AEBaseItem implements IPartItem, IItemG
 	private static final class RegisteredComparator implements Comparator<Entry<Integer, PartTypeWithVariant>>
 	{
 		@Override
-		public int compare( Entry<Integer, PartTypeWithVariant> o1, Entry<Integer, PartTypeWithVariant> o2 )
+		public int compare( final Entry<Integer, PartTypeWithVariant> o1, final Entry<Integer, PartTypeWithVariant> o2 )
 		{
 			return o1.getValue().part.name().compareTo( o2.getValue().part.name() );
 		}

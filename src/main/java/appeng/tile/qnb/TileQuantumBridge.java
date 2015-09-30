@@ -92,7 +92,7 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 	}
 
 	@TileEvent( TileEventType.NETWORK_WRITE )
-	public void onNetworkWriteEvent( ByteBuf data )
+	public void onNetworkWriteEvent( final ByteBuf data )
 	{
 		int out = this.constructed;
 
@@ -110,9 +110,9 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 	}
 
 	@TileEvent( TileEventType.NETWORK_READ )
-	public boolean onNetworkReadEvent( ByteBuf data )
+	public boolean onNetworkReadEvent( final ByteBuf data )
 	{
-		int oldValue = this.constructed;
+		final int oldValue = this.constructed;
 		this.constructed = data.readByte();
 		this.bridgePowered = ( this.constructed | this.powered ) == this.powered;
 		return this.constructed != oldValue;
@@ -125,7 +125,7 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 	}
 
 	@Override
-	public void onChangeInventory( IInventory inv, int slot, InvOperation mc, ItemStack removed, ItemStack added )
+	public void onChangeInventory( final IInventory inv, final int slot, final InvOperation mc, final ItemStack removed, final ItemStack added )
 	{
 		if( this.cluster != null )
 		{
@@ -134,7 +134,7 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 	}
 
 	@Override
-	public int[] getAccessibleSlotsBySide( EnumFacing side )
+	public int[] getAccessibleSlotsBySide( final EnumFacing side )
 	{
 		if( this.isCenter() )
 		{
@@ -145,7 +145,7 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 
 	public boolean isCenter()
 	{
-		for( Block link : AEApi.instance().definitions().blocks().quantumLink().maybeBlock().asSet() )
+		for( final Block link : AEApi.instance().definitions().blocks().quantumLink().maybeBlock().asSet() )
 		{
 			return this.getBlockType() == link;
 		}
@@ -154,7 +154,7 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 	}
 
 	@MENetworkEventSubscribe
-	public void onPowerStatusChange( MENetworkPowerStatusChange c )
+	public void onPowerStatusChange( final MENetworkPowerStatusChange c )
 	{
 		this.updateStatus = true;
 	}
@@ -193,7 +193,7 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 	}
 
 	@Override
-	public void disconnect( boolean affectWorld )
+	public void disconnect( final boolean affectWorld )
 	{
 		if( this.cluster != null )
 		{
@@ -225,7 +225,7 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 		return !this.isInvalid();
 	}
 
-	public void updateStatus( QuantumCluster c, byte flags, boolean affectWorld )
+	public void updateStatus( final QuantumCluster c, final byte flags, final boolean affectWorld )
 	{
 		this.cluster = c;
 
@@ -239,8 +239,8 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 
 			if( this.isCorner() || this.isCenter() )
 			{
-				EnumSet<EnumFacing> sides = EnumSet.noneOf( EnumFacing.class );
-				for ( AEPartLocation dir : this.getConnections() )
+				final EnumSet<EnumFacing> sides = EnumSet.noneOf( EnumFacing.class );
+				for ( final AEPartLocation dir : this.getConnections() )
 					if ( dir != AEPartLocation.INTERNAL )
 						sides.add( dir.getFacing());
 				
@@ -260,11 +260,11 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 
 	public EnumSet<AEPartLocation> getConnections()
 	{
-		EnumSet<AEPartLocation> set = EnumSet.noneOf( AEPartLocation.class );
+		final EnumSet<AEPartLocation> set = EnumSet.noneOf( AEPartLocation.class );
 
-		for( AEPartLocation d : AEPartLocation.values() )
+		for( final AEPartLocation d : AEPartLocation.values() )
 		{
-			TileEntity te = this.worldObj.getTileEntity( d == AEPartLocation.INTERNAL ? pos : pos.offset( d.getFacing() ) );
+			final TileEntity te = this.worldObj.getTileEntity( d == AEPartLocation.INTERNAL ? pos : pos.offset( d.getFacing() ) );
 			if( te instanceof TileQuantumBridge )
 			{
 				set.add( d );
@@ -276,10 +276,10 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 
 	public long getQEFrequency()
 	{
-		ItemStack is = this.internalInventory.getStackInSlot( 0 );
+		final ItemStack is = this.internalInventory.getStackInSlot( 0 );
 		if( is != null )
 		{
-			NBTTagCompound c = is.getTagCompound();
+			final NBTTagCompound c = is.getTagCompound();
 			if( c != null )
 			{
 				return c.getLong( "freq" );
@@ -299,7 +299,7 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 		{
 			return this.gridProxy.getEnergy().isNetworkPowered();
 		}
-		catch( GridAccessException e )
+		catch( final GridAccessException e )
 		{
 			// :P
 		}
@@ -313,7 +313,7 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 	}
 
 	@Override
-	public AECableType getCableConnectionType( AEPartLocation dir )
+	public AECableType getCableConnectionType( final AEPartLocation dir )
 	{
 		return AECableType.DENSE;
 	}

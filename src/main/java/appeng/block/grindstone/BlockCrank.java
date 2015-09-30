@@ -64,13 +64,13 @@ public class BlockCrank extends AEBaseTileBlock
 	
 	@Override
 	public boolean onActivated(
-			World w,
-			BlockPos pos,
-			EntityPlayer player,
-			EnumFacing side,
-			float hitX,
-			float hitY,
-			float hitZ )
+			final World w,
+			final BlockPos pos,
+			final EntityPlayer player,
+			final EnumFacing side,
+			final float hitX,
+			final float hitY,
+			final float hitZ )
 	{
 		if( player instanceof FakePlayer || player == null )
 		{
@@ -78,7 +78,7 @@ public class BlockCrank extends AEBaseTileBlock
 			return true;
 		}
 
-		AEBaseTile tile = this.getTileEntity( w, pos );
+		final AEBaseTile tile = this.getTileEntity( w, pos );
 		if( tile instanceof TileCrank )
 		{
 			if( ( (TileCrank) tile ).power() )
@@ -90,7 +90,7 @@ public class BlockCrank extends AEBaseTileBlock
 		return true;
 	}
 
-	private void dropCrank( World world, BlockPos pos )
+	private void dropCrank( final World world, final BlockPos pos )
 	{
 		world.destroyBlock( pos, true ); // w.destroyBlock( x, y, z, true );
 		world.markBlockForUpdate( pos );
@@ -98,16 +98,16 @@ public class BlockCrank extends AEBaseTileBlock
 		
 	@Override
 	public void onBlockPlacedBy(
-			World world,
-			BlockPos pos,
-			IBlockState state,
-			EntityLivingBase placer,
-			ItemStack stack )
+			final World world,
+			final BlockPos pos,
+			final IBlockState state,
+			final EntityLivingBase placer,
+			final ItemStack stack )
 	{
-		AEBaseTile tile = this.getTileEntity( world, pos );
+		final AEBaseTile tile = this.getTileEntity( world, pos );
 		if( tile != null )
 		{
-			EnumFacing mnt = this.findCrankable( world, pos );
+			final EnumFacing mnt = this.findCrankable( world, pos );
 			EnumFacing forward = EnumFacing.UP;
 			if( mnt == EnumFacing.UP || mnt == EnumFacing.DOWN )
 			{
@@ -123,18 +123,18 @@ public class BlockCrank extends AEBaseTileBlock
 	
 	@Override
 	public boolean isValidOrientation(
-			World w,
-			BlockPos pos,
-			EnumFacing forward,
-			EnumFacing up )
+			final World w,
+			final BlockPos pos,
+			final EnumFacing forward,
+			final EnumFacing up )
 	{
-		TileEntity te = w.getTileEntity( pos );
+		final TileEntity te = w.getTileEntity( pos );
 		return !( te instanceof TileCrank ) || this.isCrankable( w, pos, up.getOpposite() );
 	}
 
-	private EnumFacing findCrankable( World world, BlockPos pos )
+	private EnumFacing findCrankable( final World world, final BlockPos pos )
 	{
-		for( EnumFacing dir : EnumFacing.VALUES )
+		for( final EnumFacing dir : EnumFacing.VALUES )
 		{
 			if( this.isCrankable( world, pos, dir ) )
 			{
@@ -144,23 +144,23 @@ public class BlockCrank extends AEBaseTileBlock
 		return null;
 	}
 
-	private boolean isCrankable( World world, BlockPos pos, EnumFacing offset )
+	private boolean isCrankable( final World world, final BlockPos pos, final EnumFacing offset )
 	{
-		BlockPos o = pos.offset( offset);
-		TileEntity te = world.getTileEntity( o );
+		final BlockPos o = pos.offset( offset);
+		final TileEntity te = world.getTileEntity( o );
 
 		return te instanceof ICrankable && ( (ICrankable) te ).canCrankAttach( offset.getOpposite() );
 	}
 	
 	@Override
 	public void onNeighborBlockChange(
-			World world,
-			BlockPos pos,
-			IBlockState state,
-			Block neighborBlock )
+			final World world,
+			final BlockPos pos,
+			final IBlockState state,
+			final Block neighborBlock )
 	{
 
-		AEBaseTile tile = this.getTileEntity( world, pos );
+		final AEBaseTile tile = this.getTileEntity( world, pos );
 		if( tile != null )
 		{
 			if( !this.isCrankable( world, pos, tile.getUp().getOpposite() ) )
@@ -175,7 +175,7 @@ public class BlockCrank extends AEBaseTileBlock
 	}
 
 	@Override
-	public boolean canPlaceBlockAt( World world, BlockPos pos )
+	public boolean canPlaceBlockAt( final World world, final BlockPos pos )
 	{
 		return this.findCrankable( world, pos ) != null;
 	}

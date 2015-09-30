@@ -36,19 +36,19 @@ public class PaintBallRender implements IItemRenderer
 {
 
 	@Override
-	public boolean handleRenderType( ItemStack item, ItemRenderType type )
+	public boolean handleRenderType( final ItemStack item, final ItemRenderType type )
 	{
 		return true;
 	}
 
 	@Override
-	public boolean shouldUseRenderHelper( ItemRenderType type, ItemStack item, ItemRendererHelper helper )
+	public boolean shouldUseRenderHelper( final ItemRenderType type, final ItemStack item, final ItemRendererHelper helper )
 	{
 		return helper == ItemRendererHelper.ENTITY_BOBBING || helper == ItemRendererHelper.ENTITY_ROTATION;
 	}
 
 	@Override
-	public void renderItem( ItemRenderType type, ItemStack item, Object... data )
+	public void renderItem( final ItemRenderType type, final ItemStack item, final Object... data )
 	{
 		IIcon par2Icon = item.getIconIndex();
 		if( item.getItemDamage() >= 20 )
@@ -56,28 +56,28 @@ public class PaintBallRender implements IItemRenderer
 			par2Icon = ExtraItemTextures.ItemPaintBallShimmer.getIcon();
 		}
 
-		float f4 = par2Icon.getMinU();
-		float f5 = par2Icon.getMaxU();
-		float f6 = par2Icon.getMinV();
-		float f7 = par2Icon.getMaxV();
+		final float f4 = par2Icon.getMinU();
+		final float f5 = par2Icon.getMaxU();
+		final float f6 = par2Icon.getMinV();
+		final float f7 = par2Icon.getMaxV();
 
-		ItemPaintBall ipb = (ItemPaintBall) item.getItem();
+		final ItemPaintBall ipb = (ItemPaintBall) item.getItem();
 
-		Tessellator tessellator = Tessellator.instance;
+		final Tessellator tessellator = Tessellator.instance;
 		GL11.glPushMatrix();
 		GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS );
 
-		AEColor col = ipb.getColor( item );
+		final AEColor col = ipb.getColor( item );
 
-		int colorValue = item.getItemDamage() >= 20 ? col.mediumVariant : col.mediumVariant;
-		int r = ( colorValue >> 16 ) & 0xff;
-		int g = ( colorValue >> 8 ) & 0xff;
-		int b = ( colorValue ) & 0xff;
+		final int colorValue = item.getItemDamage() >= 20 ? col.mediumVariant : col.mediumVariant;
+		final int r = ( colorValue >> 16 ) & 0xff;
+		final int g = ( colorValue >> 8 ) & 0xff;
+		final int b = ( colorValue ) & 0xff;
 
 		if( item.getItemDamage() >= 20 )
 		{
-			float fail = 0.7f;
-			int full = (int) ( 255 * 0.3 );
+			final float fail = 0.7f;
+			final int full = (int) ( 255 * 0.3 );
 			GL11.glColor4ub( (byte) ( full + r * fail ), (byte) ( full + g * fail ), (byte) ( full + b * fail ), (byte) 255 );
 		}
 		else
@@ -110,7 +110,7 @@ public class PaintBallRender implements IItemRenderer
 			{
 				GL11.glTranslatef( -0.5F, -0.3F, 0.01F );
 			}
-			float f12 = 0.0625F;
+			final float f12 = 0.0625F;
 			ItemRenderer.renderItemIn2D( tessellator, f5, f6, f4, f7, par2Icon.getIconWidth(), par2Icon.getIconHeight(), f12 );
 
 			GL11.glDisable( GL11.GL_CULL_FACE );

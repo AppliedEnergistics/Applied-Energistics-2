@@ -31,7 +31,7 @@ public class InternalSlotME
 	public final int yPos;
 	private final ItemRepo repo;
 
-	public InternalSlotME( ItemRepo def, int offset, int displayX, int displayY )
+	public InternalSlotME( final ItemRepo def, final int offset, final int displayX, final int displayY )
 	{
 		this.repo = def;
 		this.offset = offset;

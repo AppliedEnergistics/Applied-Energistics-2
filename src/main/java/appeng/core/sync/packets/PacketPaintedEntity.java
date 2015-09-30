@@ -37,7 +37,7 @@ public class PacketPaintedEntity extends AppEngPacket
 	private int ticks;
 
 	// automatic.
-	public PacketPaintedEntity( ByteBuf stream )
+	public PacketPaintedEntity( final ByteBuf stream )
 	{
 		this.entityId = stream.readInt();
 		this.myColor = AEColor.values()[stream.readByte()];
@@ -45,10 +45,10 @@ public class PacketPaintedEntity extends AppEngPacket
 	}
 
 	// api
-	public PacketPaintedEntity( int myEntity, AEColor myColor, int ticksLeft )
+	public PacketPaintedEntity( final int myEntity, final AEColor myColor, final int ticksLeft )
 	{
 
-		ByteBuf data = Unpooled.buffer();
+		final ByteBuf data = Unpooled.buffer();
 
 		data.writeInt( this.getPacketID() );
 		data.writeInt( this.entityId = myEntity );
@@ -59,9 +59,9 @@ public class PacketPaintedEntity extends AppEngPacket
 	}
 
 	@Override
-	public void clientPacketData( INetworkInfo network, AppEngPacket packet, EntityPlayer player )
+	public void clientPacketData( final INetworkInfo network, final AppEngPacket packet, final EntityPlayer player )
 	{
-		PlayerColor pc = new PlayerColor( this.entityId, this.myColor, this.ticks );
+		final PlayerColor pc = new PlayerColor( this.entityId, this.myColor, this.ticks );
 		TickHandler.INSTANCE.getPlayerColors().put( this.entityId, pc );
 	}
 }

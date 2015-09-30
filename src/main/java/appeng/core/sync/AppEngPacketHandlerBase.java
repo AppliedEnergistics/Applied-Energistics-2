@@ -110,7 +110,7 @@ public class AppEngPacketHandlerBase
 		private final Class<? extends AppEngPacket> packetClass;
 		private final Constructor<? extends AppEngPacket> packetConstructor;
 
-		PacketTypes( Class<? extends AppEngPacket> c )
+		PacketTypes( final Class<? extends AppEngPacket> c )
 		{
 			this.packetClass = c;
 
@@ -119,10 +119,10 @@ public class AppEngPacketHandlerBase
 			{
 				x = this.packetClass.getConstructor( ByteBuf.class );
 			}
-			catch( NoSuchMethodException ignored )
+			catch( final NoSuchMethodException ignored )
 			{
 			}
-			catch( SecurityException ignored )
+			catch( final SecurityException ignored )
 			{
 			}
 
@@ -135,17 +135,17 @@ public class AppEngPacketHandlerBase
 			}
 		}
 
-		public static PacketTypes getPacket( int id )
+		public static PacketTypes getPacket( final int id )
 		{
 			return ( values() )[id];
 		}
 
-		public static PacketTypes getID( Class<? extends AppEngPacket> c )
+		public static PacketTypes getID( final Class<? extends AppEngPacket> c )
 		{
 			return REVERSE_LOOKUP.get( c );
 		}
 
-		public AppEngPacket parsePacket( ByteBuf in ) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException
+		public AppEngPacket parsePacket( final ByteBuf in ) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException
 		{
 			return this.packetConstructor.newInstance( in );
 		}

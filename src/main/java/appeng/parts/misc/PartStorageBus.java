@@ -100,7 +100,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	private byte resetCacheLogic = 0;
 
 	@Reflected
-	public PartStorageBus( ItemStack is )
+	public PartStorageBus( final ItemStack is )
 	{
 		super( is );
 		this.getConfigManager().registerSetting( Settings.ACCESS, AccessRestriction.READ_WRITE );
@@ -111,14 +111,14 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 
 	@Override
 	@MENetworkEventSubscribe
-	public void powerRender( MENetworkPowerStatusChange c )
+	public void powerRender( final MENetworkPowerStatusChange c )
 	{
 		this.updateStatus();
 	}
 
 	private void updateStatus()
 	{
-		boolean currentActive = this.proxy.isActive();
+		final boolean currentActive = this.proxy.isActive();
 		if( this.wasActive != currentActive )
 		{
 			this.wasActive = currentActive;
@@ -127,7 +127,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 				this.proxy.getGrid().postEvent( new MENetworkCellArrayUpdate() );
 				this.host.markForUpdate();
 			}
-			catch( GridAccessException e )
+			catch( final GridAccessException e )
 			{
 				// :P
 			}
@@ -135,7 +135,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	}
 
 	@MENetworkEventSubscribe
-	public void updateChannels( MENetworkChannelsChanged changedChannels )
+	public void updateChannels( final MENetworkChannelsChanged changedChannels )
 	{
 		this.updateStatus();
 	}
@@ -147,14 +147,14 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	}
 
 	@Override
-	public void updateSetting( IConfigManager manager, Enum settingName, Enum newValue )
+	public void updateSetting( final IConfigManager manager, final Enum settingName, final Enum newValue )
 	{
 		this.resetCache( true );
 		this.host.markForSave();
 	}
 
 	@Override
-	public void onChangeInventory( IInventory inv, int slot, InvOperation mc, ItemStack removedStack, ItemStack newStack )
+	public void onChangeInventory( final IInventory inv, final int slot, final InvOperation mc, final ItemStack removedStack, final ItemStack newStack )
 	{
 		super.onChangeInventory( inv, slot, mc, removedStack, newStack );
 
@@ -172,7 +172,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	}
 
 	@Override
-	public void readFromNBT( NBTTagCompound data )
+	public void readFromNBT( final NBTTagCompound data )
 	{
 		super.readFromNBT( data );
 		this.Config.readFromNBT( data, "config" );
@@ -180,7 +180,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	}
 
 	@Override
-	public void writeToNBT( NBTTagCompound data )
+	public void writeToNBT( final NBTTagCompound data )
 	{
 		super.writeToNBT( data );
 		this.Config.writeToNBT( data, "config" );
@@ -188,7 +188,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	}
 
 	@Override
-	public IInventory getInventoryByName( String name )
+	public IInventory getInventoryByName( final String name )
 	{
 		if( name.equals( "config" ) )
 		{
@@ -198,7 +198,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 		return super.getInventoryByName( name );
 	}
 
-	private void resetCache( boolean fullReset )
+	private void resetCache( final boolean fullReset )
 	{
 		if( this.host == null || this.host.getTile() == null || this.host.getTile().getWorld() == null || this.host.getTile().getWorld().isRemote )
 		{
@@ -218,20 +218,20 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 		{
 			this.proxy.getTick().alertDevice( this.proxy.getNode() );
 		}
-		catch( GridAccessException e )
+		catch( final GridAccessException e )
 		{
 			// :P
 		}
 	}
 
 	@Override
-	public boolean isValid( Object verificationToken )
+	public boolean isValid( final Object verificationToken )
 	{
 		return this.handler == verificationToken;
 	}
 
 	@Override
-	public void postChange( IBaseMonitor<IAEItemStack> monitor, Iterable<IAEItemStack> change, BaseActionSource source )
+	public void postChange( final IBaseMonitor<IAEItemStack> monitor, final Iterable<IAEItemStack> change, final BaseActionSource source )
 	{
 		try
 		{
@@ -240,7 +240,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 				this.proxy.getStorage().postAlterationOfStoredItems( StorageChannel.ITEMS, change, this.mySrc );
 			}
 		}
-		catch( GridAccessException e )
+		catch( final GridAccessException e )
 		{
 			// :(
 		}
@@ -253,7 +253,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	}
 
 	@Override
-	public void getBoxes( IPartCollisionHelper bch )
+	public void getBoxes( final IPartCollisionHelper bch )
 	{
 		bch.addBox( 3, 3, 15, 13, 13, 16 );
 		bch.addBox( 2, 2, 14, 14, 14, 15 );
@@ -262,7 +262,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderInventory( IPartRenderHelper rh, ModelGenerator renderer )
+	public void renderInventory( final IPartRenderHelper rh, final ModelGenerator renderer )
 	{
 		rh.setTexture( CableBusTextures.PartStorageSides.getIcon(), CableBusTextures.PartStorageSides.getIcon(), CableBusTextures.PartStorageBack.getIcon(), renderer.getIcon( is ), CableBusTextures.PartStorageSides.getIcon(), CableBusTextures.PartStorageSides.getIcon() );
 
@@ -278,7 +278,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderStatic( BlockPos pos, IPartRenderHelper rh, ModelGenerator renderer )
+	public void renderStatic( final BlockPos pos, final IPartRenderHelper rh, final ModelGenerator renderer )
 	{
 		rh.setTexture( CableBusTextures.PartStorageSides.getIcon(), CableBusTextures.PartStorageSides.getIcon(), CableBusTextures.PartStorageBack.getIcon(), renderer.getIcon( is ), CableBusTextures.PartStorageSides.getIcon(), CableBusTextures.PartStorageSides.getIcon() );
 
@@ -314,7 +314,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	}
 
 	@Override
-	public boolean onPartActivate( EntityPlayer player, Vec3 pos )
+	public boolean onPartActivate( final EntityPlayer player, final Vec3 pos )
 	{
 		if( !player.isSneaking() )
 		{
@@ -331,13 +331,13 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	}
 
 	@Override
-	public TickingRequest getTickingRequest( IGridNode node )
+	public TickingRequest getTickingRequest( final IGridNode node )
 	{
 		return new TickingRequest( TickRates.StorageBus.min, TickRates.StorageBus.max, this.monitor == null, true );
 	}
 
 	@Override
-	public TickRateModulation tickingRequest( IGridNode node, int ticksSinceLastCall )
+	public TickRateModulation tickingRequest( final IGridNode node, final int ticksSinceLastCall )
 	{
 		if( this.resetCacheLogic != 0 )
 		{
@@ -354,10 +354,10 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 
 	private void resetCache()
 	{
-		boolean fullReset = this.resetCacheLogic == 2;
+		final boolean fullReset = this.resetCacheLogic == 2;
 		this.resetCacheLogic = 0;
 
-		IMEInventory<IAEItemStack> in = this.getInternalHandler();
+		final IMEInventory<IAEItemStack> in = this.getInternalHandler();
 		IItemList<IAEItemStack> before = AEApi.instance().storage().createItemList();
 		if( in != null )
 		{
@@ -370,7 +370,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 			this.handlerHash = 0;
 		}
 
-		IMEInventory<IAEItemStack> out = this.getInternalHandler();
+		final IMEInventory<IAEItemStack> out = this.getInternalHandler();
 
 		if( this.monitor != null )
 		{
@@ -393,13 +393,13 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 			return this.handler;
 		}
 
-		boolean wasSleeping = this.monitor == null;
+		final boolean wasSleeping = this.monitor == null;
 
 		this.cached = true;
-		TileEntity self = this.getHost().getTile();
-		TileEntity target = self.getWorld().getTileEntity( self.getPos().offset( side.getFacing() ) );
+		final TileEntity self = this.getHost().getTile();
+		final TileEntity target = self.getWorld().getTileEntity( self.getPos().offset( side.getFacing() ) );
 
-		int newHandlerHash = Platform.generateTileHash( target );
+		final int newHandlerHash = Platform.generateTileHash( target );
 
 		if( this.handlerHash == newHandlerHash && this.handlerHash != 0 )
 		{
@@ -411,7 +411,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 			// force grid to update handlers...
 			this.proxy.getGrid().postEvent( new MENetworkCellArrayUpdate() );
 		}
-		catch( GridAccessException e )
+		catch( final GridAccessException e )
 		{
 			// :3
 		}
@@ -421,14 +421,14 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 		this.monitor = null;
 		if( target != null )
 		{
-			IExternalStorageHandler esh = AEApi.instance().registries().externalStorage().getHandler( target, this.side.getFacing().getOpposite(), StorageChannel.ITEMS, this.mySrc );
+			final IExternalStorageHandler esh = AEApi.instance().registries().externalStorage().getHandler( target, this.side.getFacing().getOpposite(), StorageChannel.ITEMS, this.mySrc );
 			if( esh != null )
 			{
-				IMEInventory inv = esh.getInventory( target, this.side.getFacing().getOpposite(), StorageChannel.ITEMS, this.mySrc );
+				final IMEInventory inv = esh.getInventory( target, this.side.getFacing().getOpposite(), StorageChannel.ITEMS, this.mySrc );
 
 				if( inv instanceof MEMonitorIInventory )
 				{
-					MEMonitorIInventory h = (MEMonitorIInventory) inv;
+					final MEMonitorIInventory h = (MEMonitorIInventory) inv;
 					h.mode = (StorageFilter) this.getConfigManager().getSetting( Settings.STORAGE_FILTER );
 					h.mySource = new MachineSource( this );
 				}
@@ -448,12 +448,12 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 					this.handler.setWhitelist( this.getInstalledUpgrades( Upgrades.INVERTER ) > 0 ? IncludeExclude.BLACKLIST : IncludeExclude.WHITELIST );
 					this.handler.setPriority( this.priority );
 
-					IItemList<IAEItemStack> priorityList = AEApi.instance().storage().createItemList();
+					final IItemList<IAEItemStack> priorityList = AEApi.instance().storage().createItemList();
 
-					int slotsToUse = 18 + this.getInstalledUpgrades( Upgrades.CAPACITY ) * 9;
+					final int slotsToUse = 18 + this.getInstalledUpgrades( Upgrades.CAPACITY ) * 9;
 					for( int x = 0; x < this.Config.getSizeInventory() && x < slotsToUse; x++ )
 					{
-						IAEItemStack is = this.Config.getAEStackInSlot( x );
+						final IAEItemStack is = this.Config.getAEStackInSlot( x );
 						if( is != null )
 						{
 							priorityList.add( is );
@@ -482,7 +482,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 		{
 			try
 			{
-				ITickManager tm = this.proxy.getTick();
+				final ITickManager tm = this.proxy.getTick();
 				if( this.monitor == null )
 				{
 					tm.sleepDevice( this.proxy.getNode() );
@@ -492,7 +492,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 					tm.wakeDevice( this.proxy.getNode() );
 				}
 			}
-			catch( GridAccessException e )
+			catch( final GridAccessException e )
 			{
 				// :(
 			}
@@ -501,7 +501,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 		return this.handler;
 	}
 
-	private void checkInterfaceVsStorageBus( TileEntity target, AEPartLocation side )
+	private void checkInterfaceVsStorageBus( final TileEntity target, final AEPartLocation side )
 	{
 		IInterfaceHost achievement = null;
 
@@ -512,7 +512,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 
 		if( target instanceof IPartHost )
 		{
-			Object part = ( (IPartHost) target ).getPart( side );
+			final Object part = ( (IPartHost) target ).getPart( side );
 			if( part instanceof IInterfaceHost )
 			{
 				achievement = (IInterfaceHost) part;
@@ -527,11 +527,11 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	}
 
 	@Override
-	public List<IMEInventoryHandler> getCellArray( StorageChannel channel )
+	public List<IMEInventoryHandler> getCellArray( final StorageChannel channel )
 	{
 		if( channel == StorageChannel.ITEMS )
 		{
-			IMEInventoryHandler out = this.proxy.isActive() ? this.getInternalHandler() : null;
+			final IMEInventoryHandler out = this.proxy.isActive() ? this.getInternalHandler() : null;
 			if( out != null )
 			{
 				return Collections.singletonList( out );
@@ -547,7 +547,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	}
 
 	@Override
-	public void setPriority( int newValue )
+	public void setPriority( final int newValue )
 	{
 		this.priority = newValue;
 		this.host.markForSave();
@@ -555,7 +555,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	}
 
 	@Override
-	public void blinkCell( int slot )
+	public void blinkCell( final int slot )
 	{
 	}
 
@@ -569,7 +569,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	}
 	*/
 	@Override
-	public void saveChanges( IMEInventory cellInventory )
+	public void saveChanges( final IMEInventory cellInventory )
 	{
 		// nope!
 	}

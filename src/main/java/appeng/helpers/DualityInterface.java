@@ -128,7 +128,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 	IMEInventory<IAEItemStack> destination;
 	private boolean isWorking = false;
 
-	public DualityInterface( AENetworkProxy networkProxy, IInterfaceHost ih )
+	public DualityInterface( final AENetworkProxy networkProxy, final IInterfaceHost ih )
 	{
 		this.gridProxy = networkProxy;
 		this.gridProxy.setFlags( GridFlags.REQUIRE_CHANNEL );
@@ -150,7 +150,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 	}
 
 	@Override
-	public void onChangeInventory( IInventory inv, int slot, InvOperation mc, ItemStack removed, ItemStack added )
+	public void onChangeInventory( final IInventory inv, final int slot, final InvOperation mc, final ItemStack removed, final ItemStack added )
 	{
 		if( this.isWorking )
 		{
@@ -167,11 +167,11 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		}
 		else if( inv == this.storage && slot >= 0 )
 		{
-			boolean had = this.hasWorkToDo();
+			final boolean had = this.hasWorkToDo();
 
 			this.updatePlan( slot );
 
-			boolean now = this.hasWorkToDo();
+			final boolean now = this.hasWorkToDo();
 
 			if( had != now )
 			{
@@ -186,7 +186,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 						this.gridProxy.getTick().sleepDevice( this.gridProxy.getNode() );
 					}
 				}
-				catch( GridAccessException e )
+				catch( final GridAccessException e )
 				{
 					// :P
 				}
@@ -194,7 +194,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		}
 	}
 
-	public void writeToNBT( NBTTagCompound data )
+	public void writeToNBT( final NBTTagCompound data )
 	{
 		this.config.writeToNBT( data, "config" );
 		this.patterns.writeToNBT( data, "patterns" );
@@ -204,12 +204,12 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		this.craftingTracker.writeToNBT( data );
 		data.setInteger( "priority", this.priority );
 
-		NBTTagList waitingToSend = new NBTTagList();
+		final NBTTagList waitingToSend = new NBTTagList();
 		if( this.waitingToSend != null )
 		{
-			for( ItemStack is : this.waitingToSend )
+			for( final ItemStack is : this.waitingToSend )
 			{
-				NBTTagCompound item = new NBTTagCompound();
+				final NBTTagCompound item = new NBTTagCompound();
 				is.writeToNBT( item );
 				waitingToSend.appendTag( item );
 			}
@@ -217,18 +217,18 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		data.setTag( "waitingToSend", waitingToSend );
 	}
 
-	public void readFromNBT( NBTTagCompound data )
+	public void readFromNBT( final NBTTagCompound data )
 	{
 		this.waitingToSend = null;
-		NBTTagList waitingList = data.getTagList( "waitingToSend", 10 );
+		final NBTTagList waitingList = data.getTagList( "waitingToSend", 10 );
 		if( waitingList != null )
 		{
 			for( int x = 0; x < waitingList.tagCount(); x++ )
 			{
-				NBTTagCompound c = waitingList.getCompoundTagAt( x );
+				final NBTTagCompound c = waitingList.getCompoundTagAt( x );
 				if( c != null )
 				{
-					ItemStack is = ItemStack.loadItemStackFromNBT( c );
+					final ItemStack is = ItemStack.loadItemStackFromNBT( c );
 					this.addToSendList( is );
 				}
 			}
@@ -245,7 +245,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		this.updateCraftingList();
 	}
 
-	public void addToSendList( ItemStack is )
+	public void addToSendList( final ItemStack is )
 	{
 		if( is == null )
 		{
@@ -263,7 +263,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		{
 			this.gridProxy.getTick().wakeDevice( this.gridProxy.getNode() );
 		}
-		catch( GridAccessException e )
+		catch( final GridAccessException e )
 		{
 			// :P
 		}
@@ -273,7 +273,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 	{
 		this.hasConfig = false;
 
-		for( ItemStack p : this.config )
+		for( final ItemStack p : this.config )
 		{
 			if( p != null )
 			{
@@ -282,14 +282,14 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 			}
 		}
 
-		boolean had = this.hasWorkToDo();
+		final boolean had = this.hasWorkToDo();
 
 		for( int x = 0; x < NUMBER_OF_CONFIG_SLOTS; x++ )
 		{
 			this.updatePlan( x );
 		}
 
-		boolean has = this.hasWorkToDo();
+		final boolean has = this.hasWorkToDo();
 
 		if( had != has )
 		{
@@ -304,7 +304,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 					this.gridProxy.getTick().sleepDevice( this.gridProxy.getNode() );
 				}
 			}
-			catch( GridAccessException e )
+			catch( final GridAccessException e )
 			{
 				// :P
 			}
@@ -315,7 +315,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 
 	public void updateCraftingList()
 	{
-		Boolean[] accountedFor = { false, false, false, false, false, false, false, false, false }; // 9...
+		final Boolean[] accountedFor = { false, false, false, false, false, false, false, false, false }; // 9...
 
 		assert ( accountedFor.length == this.patterns.getSizeInventory() );
 
@@ -326,15 +326,15 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 
 		if( this.craftingList != null )
 		{
-			Iterator<ICraftingPatternDetails> i = this.craftingList.iterator();
+			final Iterator<ICraftingPatternDetails> i = this.craftingList.iterator();
 			while( i.hasNext() )
 			{
-				ICraftingPatternDetails details = i.next();
+				final ICraftingPatternDetails details = i.next();
 				boolean found = false;
 
 				for( int x = 0; x < accountedFor.length; x++ )
 				{
-					ItemStack is = this.patterns.getStackInSlot( x );
+					final ItemStack is = this.patterns.getStackInSlot( x );
 					if( details.getPattern() == is )
 					{
 						accountedFor[x] = found = true;
@@ -360,7 +360,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		{
 			this.gridProxy.getGrid().postEvent( new MENetworkCraftingPatternChange( this, this.gridProxy.getNode() ) );
 		}
-		catch( GridAccessException e )
+		catch( final GridAccessException e )
 		{
 			// :P
 		}
@@ -371,7 +371,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		return this.hasItemsToSend() || this.requireWork[0] != null || this.requireWork[1] != null || this.requireWork[2] != null || this.requireWork[3] != null || this.requireWork[4] != null || this.requireWork[5] != null || this.requireWork[6] != null || this.requireWork[7] != null;
 	}
 
-	private void updatePlan( int slot )
+	private void updatePlan( final int slot )
 	{
 		IAEItemStack req = this.config.getAEStackInSlot( slot );
 		if( req != null && req.getStackSize() <= 0 )
@@ -380,11 +380,11 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 			req = null;
 		}
 
-		ItemStack Stored = this.storage.getStackInSlot( slot );
+		final ItemStack Stored = this.storage.getStackInSlot( slot );
 
 		if( req == null && Stored != null )
 		{
-			IAEItemStack work = AEApi.instance().storage().createItemStack( Stored );
+			final IAEItemStack work = AEApi.instance().storage().createItemStack( Stored );
 			this.requireWork[slot] = work.setStackSize( -work.getStackSize() );
 			return;
 		}
@@ -407,7 +407,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 			else
 			// Stored != null; dispose!
 			{
-				IAEItemStack work = AEApi.instance().storage().createItemStack( Stored );
+				final IAEItemStack work = AEApi.instance().storage().createItemStack( Stored );
 				this.requireWork[slot] = work.setStackSize( -work.getStackSize() );
 				return;
 			}
@@ -427,20 +427,20 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 				this.gridProxy.getGrid().postEvent( new MENetworkCraftingPatternChange( this, this.gridProxy.getNode() ) );
 				this.gridProxy.getTick().wakeDevice( this.gridProxy.getNode() );
 			}
-			catch( GridAccessException e )
+			catch( final GridAccessException e )
 			{
 				// :P
 			}
 		}
 
-		TileEntity te = this.iHost.getTileEntity();
+		final TileEntity te = this.iHost.getTileEntity();
 		if( te != null && te.getWorld() != null )
 		{
 			Platform.notifyBlocksOfNeighbors( te.getWorld(), te.getPos() );
 		}
 	}
 
-	public void addToCraftingList( ItemStack is )
+	public void addToCraftingList( final ItemStack is )
 	{
 		if( is == null )
 		{
@@ -449,8 +449,8 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 
 		if( is.getItem() instanceof ICraftingPatternItem )
 		{
-			ICraftingPatternItem cpi = (ICraftingPatternItem) is.getItem();
-			ICraftingPatternDetails details = cpi.getPatternForItem( is, this.iHost.getTileEntity().getWorld() );
+			final ICraftingPatternItem cpi = (ICraftingPatternItem) is.getItem();
+			final ICraftingPatternDetails details = cpi.getPatternForItem( is, this.iHost.getTileEntity().getWorld() );
 
 			if( details != null )
 			{
@@ -470,9 +470,9 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 	}
 
 	@Override
-	public boolean canInsert( ItemStack stack )
+	public boolean canInsert( final ItemStack stack )
 	{
-		IAEItemStack out = this.destination.injectItems( AEApi.instance().storage().createItemStack( stack ), Actionable.SIMULATE, null );
+		final IAEItemStack out = this.destination.injectItems( AEApi.instance().storage().createItemStack( stack ), Actionable.SIMULATE, null );
 		if( out == null )
 		{
 			return true;
@@ -501,7 +501,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 			this.items.setInternal( this.gridProxy.getStorage().getItemInventory() );
 			this.fluids.setInternal( this.gridProxy.getStorage().getFluidInventory() );
 		}
-		catch( GridAccessException gae )
+		catch( final GridAccessException gae )
 		{
 			this.items.setInternal( new NullInventory<IAEItemStack>() );
 			this.fluids.setInternal( new NullInventory<IAEFluidStack>() );
@@ -510,7 +510,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		this.notifyNeighbors();
 	}
 
-	public AECableType getCableConnectionType( AEPartLocation dir )
+	public AECableType getCableConnectionType( final AEPartLocation dir )
 	{
 		return AECableType.SMART;
 	}
@@ -533,19 +533,19 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		}
 	}
 
-	public int[] getSlotsForFace( EnumFacing side )
+	public int[] getSlotsForFace( final EnumFacing side )
 	{
 		return this.sides;
 	}
 
 	@Override
-	public TickingRequest getTickingRequest( IGridNode node )
+	public TickingRequest getTickingRequest( final IGridNode node )
 	{
 		return new TickingRequest( TickRates.Interface.min, TickRates.Interface.max, !this.hasWorkToDo(), true );
 	}
 
 	@Override
-	public TickRateModulation tickingRequest( IGridNode node, int ticksSinceLastCall )
+	public TickRateModulation tickingRequest( final IGridNode node, final int ticksSinceLastCall )
 	{
 		if( !this.gridProxy.isActive() )
 		{
@@ -557,37 +557,37 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 			this.pushItemsOut( this.iHost.getTargets() );
 		}
 
-		boolean couldDoWork = this.updateStorage();
+		final boolean couldDoWork = this.updateStorage();
 		return this.hasWorkToDo() ? ( couldDoWork ? TickRateModulation.URGENT : TickRateModulation.SLOWER ) : TickRateModulation.SLEEP;
 	}
 
-	private void pushItemsOut( EnumSet<EnumFacing> possibleDirections )
+	private void pushItemsOut( final EnumSet<EnumFacing> possibleDirections )
 	{
 		if( !this.hasItemsToSend() )
 		{
 			return;
 		}
 
-		TileEntity tile = this.iHost.getTileEntity();
-		World w = tile.getWorld();
+		final TileEntity tile = this.iHost.getTileEntity();
+		final World w = tile.getWorld();
 
-		Iterator<ItemStack> i = this.waitingToSend.iterator();
+		final Iterator<ItemStack> i = this.waitingToSend.iterator();
 		while( i.hasNext() )
 		{
 			ItemStack whatToSend = i.next();
 
-			for( EnumFacing s : possibleDirections )
+			for( final EnumFacing s : possibleDirections )
 			{
-				TileEntity te = w.getTileEntity( tile.getPos().offset( s ) );
+				final TileEntity te = w.getTileEntity( tile.getPos().offset( s ) );
 				if( te == null )
 				{
 					continue;
 				}
 
-				InventoryAdaptor ad = InventoryAdaptor.getAdaptor( te, s.getOpposite() );
+				final InventoryAdaptor ad = InventoryAdaptor.getAdaptor( te, s.getOpposite() );
 				if( ad != null )
 				{
-					ItemStack Result = ad.addItems( whatToSend );
+					final ItemStack Result = ad.addItems( whatToSend );
 
 					if( Result == null )
 					{
@@ -632,16 +632,16 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		return didSomething;
 	}
 
-	private boolean usePlan( int x, IAEItemStack itemStack )
+	private boolean usePlan( final int x, final IAEItemStack itemStack )
 	{
-		InventoryAdaptor adaptor = this.getAdaptor( x );
+		final InventoryAdaptor adaptor = this.getAdaptor( x );
 		this.isWorking = true;
 
 		boolean changed = false;
 		try
 		{
 			this.destination = this.gridProxy.getStorage().getItemInventory();
-			IEnergySource src = this.gridProxy.getEnergy();
+			final IEnergySource src = this.gridProxy.getEnergy();
 
 			if( this.craftingTracker.isBusy( x ) )
 			{
@@ -656,11 +656,11 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 					throw new GridAccessException();
 				}
 
-				IAEItemStack acquired = Platform.poweredExtraction( src, this.destination, itemStack, this.interfaceRequestSource );
+				final IAEItemStack acquired = Platform.poweredExtraction( src, this.destination, itemStack, this.interfaceRequestSource );
 				if( acquired != null )
 				{
 					changed = true;
-					ItemStack issue = adaptor.addItems( acquired.getItemStack() );
+					final ItemStack issue = adaptor.addItems( acquired.getItemStack() );
 					if( issue != null )
 					{
 						throw new IllegalStateException( "bad attempt at managing inventory. ( addItems )" );
@@ -679,7 +679,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 				long diff = toStore.getStackSize();
 
 				// make sure strange things didn't happen...
-				ItemStack canExtract = adaptor.simulateRemove( (int) diff, toStore.getItemStack(), null );
+				final ItemStack canExtract = adaptor.simulateRemove( (int) diff, toStore.getItemStack(), null );
 				if( canExtract == null || canExtract.stackSize != diff )
 				{
 					changed = true;
@@ -697,7 +697,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 				{
 					// extract items!
 					changed = true;
-					ItemStack removed = adaptor.removeItems( (int) diff, null, null );
+					final ItemStack removed = adaptor.removeItems( (int) diff, null, null );
 					if( removed == null )
 					{
 						throw new IllegalStateException( "bad attempt at managing inventory. ( removeItems )" );
@@ -710,7 +710,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 			}
 			// else wtf?
 		}
-		catch( GridAccessException e )
+		catch( final GridAccessException e )
 		{
 			// :P
 		}
@@ -724,12 +724,12 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		return changed;
 	}
 
-	private InventoryAdaptor getAdaptor( int slot )
+	private InventoryAdaptor getAdaptor( final int slot )
 	{
 		return new AdaptorIInventory( this.slotInv.getWrapper( slot ) );
 	}
 
-	private boolean handleCrafting( int x, InventoryAdaptor d, IAEItemStack itemStack )
+	private boolean handleCrafting( final int x, final InventoryAdaptor d, final IAEItemStack itemStack )
 	{
 		try
 		{
@@ -738,7 +738,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 				return this.craftingTracker.handleCrafting( x, itemStack.getStackSize(), itemStack, d, this.iHost.getTileEntity().getWorld(), this.gridProxy.getGrid(), this.gridProxy.getCrafting(), this.mySource );
 			}
 		}
-		catch( GridAccessException e )
+		catch( final GridAccessException e )
 		{
 			// :P
 		}
@@ -747,7 +747,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 	}
 
 	@Override
-	public int getInstalledUpgrades( Upgrades u )
+	public int getInstalledUpgrades( final Upgrades u )
 	{
 		if( this.upgrades == null )
 		{
@@ -779,7 +779,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 	}
 
 	@Override
-	public IInventory getInventoryByName( String name )
+	public IInventory getInventoryByName( final String name )
 	{
 		if( name.equals( "storage" ) )
 		{
@@ -816,7 +816,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 	}
 
 	@Override
-	public void updateSetting( IConfigManager manager, Enum settingName, Enum newValue )
+	public void updateSetting( final IConfigManager manager, final Enum settingName, final Enum newValue )
 	{
 		if( this.getInstalledUpgrades( Upgrades.CRAFTING ) == 0 )
 		{
@@ -842,7 +842,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		this.craftingTracker.cancel();
 	}
 
-	public IStorageMonitorable getMonitorable( EnumFacing side, BaseActionSource src, IStorageMonitorable myInterface )
+	public IStorageMonitorable getMonitorable( final EnumFacing side, final BaseActionSource src, final IStorageMonitorable myInterface )
 	{
 		if( Platform.canAccess( this.gridProxy, src ) )
 		{
@@ -869,20 +869,20 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 	}
 
 	@Override
-	public boolean pushPattern( ICraftingPatternDetails patternDetails, InventoryCrafting table )
+	public boolean pushPattern( final ICraftingPatternDetails patternDetails, final InventoryCrafting table )
 	{
 		if( this.hasItemsToSend() || !this.gridProxy.isActive() )
 		{
 			return false;
 		}
 
-		TileEntity tile = this.iHost.getTileEntity();
-		World w = tile.getWorld();
+		final TileEntity tile = this.iHost.getTileEntity();
+		final World w = tile.getWorld();
 
-		EnumSet<EnumFacing> possibleDirections = this.iHost.getTargets();
-		for( EnumFacing s : possibleDirections )
+		final EnumSet<EnumFacing> possibleDirections = this.iHost.getTargets();
+		for( final EnumFacing s : possibleDirections )
 		{
-			TileEntity te = w.getTileEntity( tile.getPos().offset( s ) );
+			final TileEntity te = w.getTileEntity( tile.getPos().offset( s ) );
 			if( te instanceof IInterfaceHost )
 			{
 				try
@@ -892,7 +892,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 						continue;
 					}
 				}
-				catch( GridAccessException e )
+				catch( final GridAccessException e )
 				{
 					continue;
 				}
@@ -900,7 +900,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 
 			if( te instanceof ICraftingMachine )
 			{
-				ICraftingMachine cm = (ICraftingMachine) te;
+				final ICraftingMachine cm = (ICraftingMachine) te;
 				if( cm.acceptsPlans() )
 				{
 					if( cm.pushPattern( patternDetails, table, s.getOpposite() ) )
@@ -911,7 +911,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 				}
 			}
 
-			InventoryAdaptor ad = InventoryAdaptor.getAdaptor( te, s.getOpposite() );
+			final InventoryAdaptor ad = InventoryAdaptor.getAdaptor( te, s.getOpposite() );
 			if( ad != null )
 			{
 				if( this.isBlocking() )
@@ -926,7 +926,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 				{
 					for( int x = 0; x < table.getSizeInventory(); x++ )
 					{
-						ItemStack is = table.getStackInSlot( x );
+						final ItemStack is = table.getStackInSlot( x );
 						if( is != null )
 						{
 							final ItemStack added = ad.addItems( is );
@@ -954,17 +954,17 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 
 		if( this.isBlocking() )
 		{
-			EnumSet<EnumFacing> possibleDirections = this.iHost.getTargets();
-			TileEntity tile = this.iHost.getTileEntity();
-			World w = tile.getWorld();
+			final EnumSet<EnumFacing> possibleDirections = this.iHost.getTargets();
+			final TileEntity tile = this.iHost.getTileEntity();
+			final World w = tile.getWorld();
 
 			boolean allAreBusy = true;
 
-			for( EnumFacing s : possibleDirections )
+			for( final EnumFacing s : possibleDirections )
 			{
-				TileEntity te = w.getTileEntity( tile.getPos().offset( s ) );
+				final TileEntity te = w.getTileEntity( tile.getPos().offset( s ) );
 
-				InventoryAdaptor ad = InventoryAdaptor.getAdaptor( te, s.getOpposite() );
+				final InventoryAdaptor ad = InventoryAdaptor.getAdaptor( te, s.getOpposite() );
 				if( ad != null )
 				{
 					if( ad.simulateRemove( 1, null, null ) == null )
@@ -981,7 +981,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		return busy;
 	}
 
-	private boolean sameGrid( IGrid grid ) throws GridAccessException
+	private boolean sameGrid( final IGrid grid ) throws GridAccessException
 	{
 		return grid == this.gridProxy.getGrid();
 	}
@@ -991,11 +991,11 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		return this.cm.getSetting( Settings.BLOCK ) == YesNo.YES;
 	}
 
-	private boolean acceptsItems( InventoryAdaptor ad, InventoryCrafting table )
+	private boolean acceptsItems( final InventoryAdaptor ad, final InventoryCrafting table )
 	{
 		for( int x = 0; x < table.getSizeInventory(); x++ )
 		{
-			ItemStack is = table.getStackInSlot( x );
+			final ItemStack is = table.getStackInSlot( x );
 			if( is == null )
 			{
 				continue;
@@ -1011,11 +1011,11 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 	}
 
 	@Override
-	public void provideCrafting( ICraftingProviderHelper craftingTracker )
+	public void provideCrafting( final ICraftingProviderHelper craftingTracker )
 	{
 		if( this.gridProxy.isActive() && this.craftingList != null )
 		{
-			for( ICraftingPatternDetails details : this.craftingList )
+			for( final ICraftingPatternDetails details : this.craftingList )
 			{
 				details.setPriority( this.priority );
 				craftingTracker.addCraftingOption( this, details );
@@ -1023,11 +1023,11 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		}
 	}
 
-	public void addDrops( List<ItemStack> drops )
+	public void addDrops( final List<ItemStack> drops )
 	{
 		if( this.waitingToSend != null )
 		{
-			for( ItemStack is : this.waitingToSend )
+			for( final ItemStack is : this.waitingToSend )
 			{
 				if( is != null )
 				{
@@ -1036,7 +1036,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 			}
 		}
 
-		for( ItemStack is : this.upgrades )
+		for( final ItemStack is : this.upgrades )
 		{
 			if( is != null )
 			{
@@ -1044,7 +1044,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 			}
 		}
 
-		for( ItemStack is : this.storage )
+		for( final ItemStack is : this.storage )
 		{
 			if( is != null )
 			{
@@ -1052,7 +1052,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 			}
 		}
 
-		for( ItemStack is : this.patterns )
+		for( final ItemStack is : this.patterns )
 		{
 			if( is != null )
 			{
@@ -1084,13 +1084,13 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		return this.craftingTracker.getRequestedJobs();
 	}
 
-	public IAEItemStack injectCraftedItems( ICraftingLink link, IAEItemStack acquired, Actionable mode )
+	public IAEItemStack injectCraftedItems( final ICraftingLink link, final IAEItemStack acquired, final Actionable mode )
 	{
-		int slot = this.craftingTracker.getSlot( link );
+		final int slot = this.craftingTracker.getSlot( link );
 
 		if( acquired != null && slot >= 0 && slot <= this.requireWork.length )
 		{
-			InventoryAdaptor adaptor = this.getAdaptor( slot );
+			final InventoryAdaptor adaptor = this.getAdaptor( slot );
 
 			if( mode == Actionable.SIMULATE )
 			{
@@ -1098,7 +1098,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 			}
 			else
 			{
-				IAEItemStack is = AEItemStack.create( adaptor.addItems( acquired.getItemStack() ) );
+				final IAEItemStack is = AEItemStack.create( adaptor.addItems( acquired.getItemStack() ) );
 				this.updatePlan( slot );
 				return is;
 			}
@@ -1107,7 +1107,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		return acquired;
 	}
 
-	public void jobStateChange( ICraftingLink link )
+	public void jobStateChange( final ICraftingLink link )
 	{
 		this.craftingTracker.jobStateChange( link );
 	}
@@ -1123,9 +1123,9 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		}
 
 		final EnumSet<EnumFacing> possibleDirections = this.iHost.getTargets();
-		for( EnumFacing direction : possibleDirections )
+		for( final EnumFacing direction : possibleDirections )
 		{
-			BlockPos targ = hostTile.getPos().offset( direction );
+			final BlockPos targ = hostTile.getPos().offset( direction );
 			final TileEntity directedTile = hostWorld.getTileEntity( targ );
 
 			if( directedTile == null )
@@ -1142,7 +1142,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 						continue;
 					}
 				}
-				catch( GridAccessException e )
+				catch( final GridAccessException e )
 				{
 					continue;
 				}
@@ -1158,7 +1158,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 
 				if( directedTile instanceof ISidedInventory )
 				{
-					int[] sides = ( (ISidedInventory) directedTile ).getSlotsForFace( direction.getOpposite() );
+					final int[] sides = ( (ISidedInventory) directedTile ).getSlotsForFace( direction.getOpposite() );
 
 					if( sides == null || sides.length == 0 )
 					{
@@ -1172,13 +1172,13 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 				{
 					Vec3 from = new Vec3( hostTile.getPos().getX() + 0.5, hostTile.getPos().getY() + 0.5, hostTile.getPos().getZ() + 0.5 );
 					from = from.addVector( direction.getFrontOffsetX() * 0.501, direction.getFrontOffsetY() * 0.501, direction.getFrontOffsetZ() * 0.501 );
-					Vec3 to = from.addVector( direction.getFrontOffsetX(), direction.getFrontOffsetY(), direction.getFrontOffsetZ() );
-					MovingObjectPosition mop = hostWorld.rayTraceBlocks( from, to, true );
+					final Vec3 to = from.addVector( direction.getFrontOffsetX(), direction.getFrontOffsetY(), direction.getFrontOffsetZ() );
+					final MovingObjectPosition mop = hostWorld.rayTraceBlocks( from, to, true );
 					if( mop != null && !BAD_BLOCKS.contains( directedBlock ) )
 					{
 						if( mop.getBlockPos().equals( directedTile.getPos() ) )
 						{
-							ItemStack g = directedBlock.getPickBlock( mop, hostWorld, directedTile.getPos() );
+							final ItemStack g = directedBlock.getPickBlock( mop, hostWorld, directedTile.getPos() );
 							if( g != null )
 							{
 								what = g;
@@ -1186,7 +1186,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 						}
 					}
 				}
-				catch( Throwable t )
+				catch( final Throwable t )
 				{
 					BAD_BLOCKS.add( directedBlock ); // nope!
 				}
@@ -1196,7 +1196,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 					return what.getUnlocalizedName();
 				}
 
-				Item item = Item.getItemFromBlock( directedBlock );
+				final Item item = Item.getItemFromBlock( directedBlock );
 				if( item == null )
 				{
 					return directedBlock.getUnlocalizedName();
@@ -1209,7 +1209,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 
 	public long getSortValue()
 	{
-		TileEntity te = this.iHost.getTileEntity();
+		final TileEntity te = this.iHost.getTileEntity();
 		return ( te.getPos().getZ() << 24 ) ^ ( te.getPos().getX() << 8 ) ^ te.getPos().getY();
 	}
 
@@ -1225,7 +1225,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 	}
 
 	@Override
-	public void setPriority( int newValue )
+	public void setPriority( final int newValue )
 	{
 		this.priority = newValue;
 		this.markDirty();
@@ -1234,7 +1234,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		{
 			this.gridProxy.getGrid().postEvent( new MENetworkCraftingPatternChange( this, this.gridProxy.getNode() ) );
 		}
-		catch( GridAccessException e )
+		catch( final GridAccessException e )
 		{
 			// :P
 		}
@@ -1243,7 +1243,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 	private class InterfaceRequestSource extends MachineSource
 	{
 
-		public InterfaceRequestSource( IActionHost v )
+		public InterfaceRequestSource( final IActionHost v )
 		{
 			super( v );
 		}
@@ -1253,14 +1253,14 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 	private class InterfaceInventory extends MEMonitorIInventory
 	{
 
-		public InterfaceInventory( DualityInterface tileInterface )
+		public InterfaceInventory( final DualityInterface tileInterface )
 		{
 			super( new AdaptorIInventory( tileInterface.storage ) );
 			this.mySource = new MachineSource( DualityInterface.this.iHost );
 		}
 
 		@Override
-		public IAEItemStack injectItems( IAEItemStack input, Actionable type, BaseActionSource src )
+		public IAEItemStack injectItems( final IAEItemStack input, final Actionable type, final BaseActionSource src )
 		{
 			if( src instanceof InterfaceRequestSource )
 			{
@@ -1271,7 +1271,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		}
 
 		@Override
-		public IAEItemStack extractItems( IAEItemStack request, Actionable type, BaseActionSource src )
+		public IAEItemStack extractItems( final IAEItemStack request, final Actionable type, final BaseActionSource src )
 		{
 			if( src instanceof InterfaceRequestSource )
 			{

@@ -45,7 +45,7 @@ public class SkyStoneBlock extends AEBaseBlock
 	private static final double BREAK_SPEAK_THRESHOLD = 7.0;
 	private final SkystoneType type;
 
-	public SkyStoneBlock( SkystoneType type )
+	public SkyStoneBlock( final SkystoneType type )
 	{
 		super( Material.rock, Optional.of( type.name() ) );
 		this.setHardness( 50 );
@@ -63,11 +63,11 @@ public class SkyStoneBlock extends AEBaseBlock
 	}
 
 	@SubscribeEvent
-	public void breakFaster( PlayerEvent.BreakSpeed event )
+	public void breakFaster( final PlayerEvent.BreakSpeed event )
 	{
 		if( event.state.getBlock() == this && event.entityPlayer != null )
 		{
-			ItemStack is = event.entityPlayer.inventory.getCurrentItem();
+			final ItemStack is = event.entityPlayer.inventory.getCurrentItem();
 			int level = -1;
 
 			if( is != null && is.getItem() != null )
@@ -83,7 +83,7 @@ public class SkyStoneBlock extends AEBaseBlock
 	}
 
 	@Override
-	public void onBlockAdded( World w, BlockPos pos, IBlockState state )
+	public void onBlockAdded( final World w, final BlockPos pos, final IBlockState state )
 	{
 		super.onBlockAdded( w, pos, state );
 		if( Platform.isServer() )
@@ -93,7 +93,7 @@ public class SkyStoneBlock extends AEBaseBlock
 	}
 
 	@Override
-	public void breakBlock( World w, BlockPos pos, IBlockState state )
+	public void breakBlock( final World w, final BlockPos pos, final IBlockState state )
 	{
 		super.breakBlock( w, pos, state );
 
@@ -104,7 +104,7 @@ public class SkyStoneBlock extends AEBaseBlock
 	}
 
 	@Override
-	public String getUnlocalizedName( ItemStack is )
+	public String getUnlocalizedName( final ItemStack is )
 	{
 		switch( type )
 		{

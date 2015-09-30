@@ -32,7 +32,7 @@ public class LightningArcFX extends LightningFX
 	final double ry;
 	final double rz;
 
-	public LightningArcFX( World w, double x, double y, double z, double ex, double ey, double ez, double r, double g, double b )
+	public LightningArcFX( final World w, final double x, final double y, final double z, final double ex, final double ey, final double ez, final double r, final double g, final double b )
 	{
 		super( w, x, y, z, r, g, b, 6 );
 		this.noClip = true;
@@ -47,12 +47,12 @@ public class LightningArcFX extends LightningFX
 	@Override
 	protected void regen()
 	{
-		double i = 1.0 / ( this.steps - 1 );
-		double lastDirectionX = this.rx * i;
-		double lastDirectionY = this.ry * i;
-		double lastDirectionZ = this.rz * i;
+		final double i = 1.0 / ( this.steps - 1 );
+		final double lastDirectionX = this.rx * i;
+		final double lastDirectionY = this.ry * i;
+		final double lastDirectionZ = this.rz * i;
 
-		double len = Math.sqrt( lastDirectionX * lastDirectionX + lastDirectionY * lastDirectionY + lastDirectionZ * lastDirectionZ );
+		final double len = Math.sqrt( lastDirectionX * lastDirectionX + lastDirectionY * lastDirectionY + lastDirectionZ * lastDirectionZ );
 		for( int s = 0; s < this.steps; s++ )
 		{
 			this.Steps[s][0] = ( lastDirectionX + ( RANDOM_GENERATOR.nextDouble() - 0.5 ) * len * 1.2 ) / 2.0;

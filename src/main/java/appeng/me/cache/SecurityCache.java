@@ -49,13 +49,13 @@ public class SecurityCache implements ISecurityGrid
 	private final HashMap<Integer, EnumSet<SecurityPermissions>> playerPerms = new HashMap<Integer, EnumSet<SecurityPermissions>>();
 	private long securityKey = -1;
 
-	public SecurityCache( IGrid g )
+	public SecurityCache( final IGrid g )
 	{
 		this.myGrid = g;
 	}
 
 	@MENetworkEventSubscribe
-	public void updatePermissions( MENetworkSecurityChange ev )
+	public void updatePermissions( final MENetworkSecurityChange ev )
 	{
 		this.playerPerms.clear();
 		if( this.securityProvider.isEmpty() )
@@ -78,7 +78,7 @@ public class SecurityCache implements ISecurityGrid
 	}
 
 	@Override
-	public void removeNode( IGridNode gridNode, IGridHost machine )
+	public void removeNode( final IGridNode gridNode, final IGridHost machine )
 	{
 		if( machine instanceof ISecurityProvider )
 		{
@@ -89,7 +89,7 @@ public class SecurityCache implements ISecurityGrid
 
 	private void updateSecurityKey()
 	{
-		long lastCode = this.securityKey;
+		final long lastCode = this.securityKey;
 
 		if( this.securityProvider.size() == 1 )
 		{
@@ -103,7 +103,7 @@ public class SecurityCache implements ISecurityGrid
 		if( lastCode != this.securityKey )
 		{
 			this.myGrid.postEvent( new MENetworkSecurityChange() );
-			for( IGridNode n : this.myGrid.getNodes() )
+			for( final IGridNode n : this.myGrid.getNodes() )
 			{
 				( (GridNode) n ).lastSecurityKey = this.securityKey;
 			}
@@ -111,7 +111,7 @@ public class SecurityCache implements ISecurityGrid
 	}
 
 	@Override
-	public void addNode( IGridNode gridNode, IGridHost machine )
+	public void addNode( final IGridNode gridNode, final IGridHost machine )
 	{
 		if( machine instanceof ISecurityProvider )
 		{
@@ -125,19 +125,19 @@ public class SecurityCache implements ISecurityGrid
 	}
 
 	@Override
-	public void onSplit( IGridStorage destinationStorage )
+	public void onSplit( final IGridStorage destinationStorage )
 	{
 
 	}
 
 	@Override
-	public void onJoin( IGridStorage sourceStorage )
+	public void onJoin( final IGridStorage sourceStorage )
 	{
 
 	}
 
 	@Override
-	public void populateGridStorage( IGridStorage destinationStorage )
+	public void populateGridStorage( final IGridStorage destinationStorage )
 	{
 
 	}	@Override
@@ -149,7 +149,7 @@ public class SecurityCache implements ISecurityGrid
 
 
 	@Override
-	public boolean hasPermission( EntityPlayer player, SecurityPermissions perm )
+	public boolean hasPermission( final EntityPlayer player, final SecurityPermissions perm )
 	{
 		Preconditions.checkNotNull( player );
 		Preconditions.checkNotNull( perm );
@@ -161,11 +161,11 @@ public class SecurityCache implements ISecurityGrid
 	}
 
 	@Override
-	public boolean hasPermission( int playerID, SecurityPermissions perm )
+	public boolean hasPermission( final int playerID, final SecurityPermissions perm )
 	{
 		if( this.isAvailable() )
 		{
-			EnumSet<SecurityPermissions> perms = this.playerPerms.get( playerID );
+			final EnumSet<SecurityPermissions> perms = this.playerPerms.get( playerID );
 
 			if( perms == null )
 			{

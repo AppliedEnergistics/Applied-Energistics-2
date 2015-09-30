@@ -26,7 +26,7 @@ import net.minecraft.item.ItemStack;
 public class SlotFakeTypeOnly extends SlotFake
 {
 
-	public SlotFakeTypeOnly( IInventory inv, int idx, int x, int y )
+	public SlotFakeTypeOnly( final IInventory inv, final int idx, final int x, final int y )
 	{
 		super( inv, idx, x, y );
 	}

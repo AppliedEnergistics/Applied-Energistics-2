@@ -45,14 +45,14 @@ import appeng.client.texture.IAESprite;
 public abstract class AbstractPartDisplay extends AbstractPartReporting
 {
 
-	public AbstractPartDisplay( ItemStack is )
+	public AbstractPartDisplay( final ItemStack is )
 	{
 		super( is, true );
 	}
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderInventory( IPartRenderHelper rh, ModelGenerator renderer )
+	public void renderInventory( final IPartRenderHelper rh, final ModelGenerator renderer )
 	{
 		rh.setBounds( 2, 2, 14, 14, 14, 16 );
 
@@ -77,7 +77,7 @@ public abstract class AbstractPartDisplay extends AbstractPartReporting
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderStatic( BlockPos pos, IPartRenderHelper rh, ModelGenerator renderer )
+	public void renderStatic( final BlockPos pos, final IPartRenderHelper rh, final ModelGenerator renderer )
 	{
 		final IAESprite sideTexture = CableBusTextures.PartMonitorSides.getIcon();
 		final IAESprite backTexture = CableBusTextures.PartMonitorBack.getIcon();

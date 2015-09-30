@@ -101,12 +101,12 @@ public abstract class AEBaseContainer extends Container
 	int ticksSinceCheck = 900;
 	IAEItemStack clientRequestedTargetItem = null;
 
-	public AEBaseContainer( InventoryPlayer ip, TileEntity myTile, IPart myPart )
+	public AEBaseContainer( final InventoryPlayer ip, final TileEntity myTile, final IPart myPart )
 	{
 		this( ip, myTile, myPart, null );
 	}
 
-	public AEBaseContainer( InventoryPlayer ip, TileEntity myTile, IPart myPart, IGuiItemObject gio )
+	public AEBaseContainer( final InventoryPlayer ip, final TileEntity myTile, final IPart myPart, final IGuiItemObject gio )
 	{
 		this.invPlayer = ip;
 		this.tileEntity = myTile;
@@ -138,11 +138,11 @@ public abstract class AEBaseContainer extends Container
 
 	private void prepareSync()
 	{
-		for( Field f : this.getClass().getFields() )
+		for( final Field f : this.getClass().getFields() )
 		{
 			if( f.isAnnotationPresent( GuiSync.class ) )
 			{
-				GuiSync annotation = f.getAnnotation( GuiSync.class );
+				final GuiSync annotation = f.getAnnotation( GuiSync.class );
 				if( this.syncData.containsKey( annotation.value() ) )
 				{
 					AELog.warning( "Channel already in use: " + annotation.value() + " for " + f.getName() );
@@ -155,7 +155,7 @@ public abstract class AEBaseContainer extends Container
 		}
 	}
 
-	public AEBaseContainer( InventoryPlayer ip, Object anchor )
+	public AEBaseContainer( final InventoryPlayer ip, final Object anchor )
 	{
 		this.invPlayer = ip;
 		this.tileEntity = anchor instanceof TileEntity ? (TileEntity) anchor : null;
@@ -172,7 +172,7 @@ public abstract class AEBaseContainer extends Container
 		this.prepareSync();
 	}
 
-	public void postPartial( PacketPartialItem packetPartialItem )
+	public void postPartial( final PacketPartialItem packetPartialItem )
 	{
 		this.dataChunks.add( packetPartialItem );
 		if( packetPartialItem.getPageCount() == this.dataChunks.size() )
@@ -184,28 +184,28 @@ public abstract class AEBaseContainer extends Container
 	private void parsePartials()
 	{
 		int total = 0;
-		for( PacketPartialItem ppi : this.dataChunks )
+		for( final PacketPartialItem ppi : this.dataChunks )
 		{
 			total += ppi.getSize();
 		}
 
-		byte[] buffer = new byte[total];
+		final byte[] buffer = new byte[total];
 		int cursor = 0;
 
-		for( PacketPartialItem ppi : this.dataChunks )
+		for( final PacketPartialItem ppi : this.dataChunks )
 		{
 			cursor = ppi.write( buffer, cursor );
 		}
 
 		try
 		{
-			NBTTagCompound data = CompressedStreamTools.readCompressed( new ByteArrayInputStream( buffer ) );
+			final NBTTagCompound data = CompressedStreamTools.readCompressed( new ByteArrayInputStream( buffer ) );
 			if( data != null )
 			{
 				this.setTargetStack( AEApi.instance().storage().createItemStack( ItemStack.loadItemStackFromNBT( data ) ) );
 			}
 		}
-		catch( IOException e )
+		catch( final IOException e )
 		{
 			AELog.error( e );
 		}
@@ -218,21 +218,21 @@ public abstract class AEBaseContainer extends Container
 		return this.clientRequestedTargetItem;
 	}
 
-	public void setTargetStack( IAEItemStack stack )
+	public void setTargetStack( final IAEItemStack stack )
 	{
 		// client doesn't need to re-send, makes for lower overhead rapid packets.
 		if( Platform.isClient() )
 		{
-			ItemStack a = stack == null ? null : stack.getItemStack();
-			ItemStack b = this.clientRequestedTargetItem == null ? null : this.clientRequestedTargetItem.getItemStack();
+			final ItemStack a = stack == null ? null : stack.getItemStack();
+			final ItemStack b = this.clientRequestedTargetItem == null ? null : this.clientRequestedTargetItem.getItemStack();
 
 			if( Platform.isSameItemPrecise( a, b ) )
 			{
 				return;
 			}
 
-			ByteArrayOutputStream stream = new ByteArrayOutputStream();
-			NBTTagCompound item = new NBTTagCompound();
+			final ByteArrayOutputStream stream = new ByteArrayOutputStream();
+			final NBTTagCompound item = new NBTTagCompound();
 
 			if( stack != null )
 			{
@@ -243,16 +243,16 @@ public abstract class AEBaseContainer extends Container
 			{
 				CompressedStreamTools.writeCompressed( item, stream );
 
-				int maxChunkSize = 30000;
-				List<byte[]> miniPackets = new LinkedList<byte[]>();
+				final int maxChunkSize = 30000;
+				final List<byte[]> miniPackets = new LinkedList<byte[]>();
 
-				byte[] data = stream.toByteArray();
+				final byte[] data = stream.toByteArray();
 
-				ByteArrayInputStream bis = new ByteArrayInputStream( data, 0, stream.size() );
+				final ByteArrayInputStream bis = new ByteArrayInputStream( data, 0, stream.size() );
 				while( bis.available() > 0 )
 				{
-					int nextBLock = bis.available() > maxChunkSize ? maxChunkSize : bis.available();
-					byte[] nextSegment = new byte[nextBLock];
+					final int nextBLock = bis.available() > maxChunkSize ? maxChunkSize : bis.available();
+					final byte[] nextSegment = new byte[nextBLock];
 					bis.read( nextSegment );
 					miniPackets.add( nextSegment );
 				}
@@ -260,14 +260,14 @@ public abstract class AEBaseContainer extends Container
 				stream.close();
 
 				int page = 0;
-				for( byte[] packet : miniPackets )
+				for( final byte[] packet : miniPackets )
 				{
-					PacketPartialItem ppi = new PacketPartialItem( page, miniPackets.size(), packet );
+					final PacketPartialItem ppi = new PacketPartialItem( page, miniPackets.size(), packet );
 					page++;
 					NetworkHandler.instance.sendToServer( ppi );
 				}
 			}
-			catch( IOException e )
+			catch( final IOException e )
 			{
 				AELog.error( e );
 				return;
@@ -282,7 +282,7 @@ public abstract class AEBaseContainer extends Container
 		return this.mySrc;
 	}
 
-	public void verifyPermissions( SecurityPermissions security, boolean requirePower )
+	public void verifyPermissions( final SecurityPermissions security, final boolean requirePower )
 	{
 		if( Platform.isClient() )
 		{
@@ -299,28 +299,28 @@ public abstract class AEBaseContainer extends Container
 		this.isContainerValid = this.isContainerValid && this.hasAccess( security, requirePower );
 	}
 
-	protected boolean hasAccess( SecurityPermissions perm, boolean requirePower )
+	protected boolean hasAccess( final SecurityPermissions perm, final boolean requirePower )
 	{
-		IActionHost host = this.getActionHost();
+		final IActionHost host = this.getActionHost();
 
 		if( host != null )
 		{
-			IGridNode gn = host.getActionableNode();
+			final IGridNode gn = host.getActionableNode();
 			if( gn != null )
 			{
-				IGrid g = gn.getGrid();
+				final IGrid g = gn.getGrid();
 				if( g != null )
 				{
 					if( requirePower )
 					{
-						IEnergyGrid eg = g.getCache( IEnergyGrid.class );
+						final IEnergyGrid eg = g.getCache( IEnergyGrid.class );
 						if( !eg.isNetworkPowered() )
 						{
 							return false;
 						}
 					}
 
-					ISecurityGrid sg = g.getCache( ISecurityGrid.class );
+					final ISecurityGrid sg = g.getCache( ISecurityGrid.class );
 					if( sg.hasPermission( this.invPlayer.player, perm ) )
 					{
 						return true;
@@ -332,7 +332,7 @@ public abstract class AEBaseContainer extends Container
 		return false;
 	}
 
-	public void lockPlayerInventorySlot( int idx )
+	public void lockPlayerInventorySlot( final int idx )
 	{
 		this.locked.add( idx );
 	}
@@ -364,7 +364,7 @@ public abstract class AEBaseContainer extends Container
 		return this.tileEntity;
 	}
 
-	public final void updateFullProgressBar( int idx, long value )
+	public final void updateFullProgressBar( final int idx, final long value )
 	{
 		if( this.syncData.containsKey( idx ) )
 		{
@@ -375,7 +375,7 @@ public abstract class AEBaseContainer extends Container
 		this.updateProgressBar( idx, (int) value );
 	}
 
-	public void stringSync( int idx, String value )
+	public void stringSync( final int idx, final String value )
 	{
 		if( this.syncData.containsKey( idx ) )
 		{
@@ -383,7 +383,7 @@ public abstract class AEBaseContainer extends Container
 		}
 	}
 
-	protected void bindPlayerInventory( InventoryPlayer inventoryPlayer, int offsetX, int offsetY )
+	protected void bindPlayerInventory( final InventoryPlayer inventoryPlayer, final int offsetX, final int offsetY )
 	{
 		// bind player inventory
 		for( int i = 0; i < 3; i++ )
@@ -416,11 +416,11 @@ public abstract class AEBaseContainer extends Container
 	}
 
 	@Override
-	protected Slot addSlotToContainer( Slot newSlot )
+	protected Slot addSlotToContainer( final Slot newSlot )
 	{
 		if( newSlot instanceof AppEngSlot )
 		{
-			AppEngSlot s = (AppEngSlot) newSlot;
+			final AppEngSlot s = (AppEngSlot) newSlot;
 			s.myContainer = this;
 			return super.addSlotToContainer( newSlot );
 		}
@@ -437,11 +437,11 @@ public abstract class AEBaseContainer extends Container
 
 		if( Platform.isServer() )
 		{
-			for( Object crafter : this.crafters )
+			for( final Object crafter : this.crafters )
 			{
-				ICrafting icrafting = (ICrafting) crafter;
+				final ICrafting icrafting = (ICrafting) crafter;
 
-				for( SyncData sd : this.syncData.values() )
+				for( final SyncData sd : this.syncData.values() )
 				{
 					sd.tick( icrafting );
 				}
@@ -452,7 +452,7 @@ public abstract class AEBaseContainer extends Container
 	}
 
 	@Override
-	public ItemStack transferStackInSlot( EntityPlayer p, int idx )
+	public ItemStack transferStackInSlot( final EntityPlayer p, final int idx )
 	{
 		if( Platform.isClient() )
 		{
@@ -460,7 +460,7 @@ public abstract class AEBaseContainer extends Container
 		}
 
 		boolean hasMETiles = false;
-		for( Object is : this.inventorySlots )
+		for( final Object is : this.inventorySlots )
 		{
 			if( is instanceof InternalSlotME )
 			{
@@ -474,7 +474,7 @@ public abstract class AEBaseContainer extends Container
 			return null;
 		}
 
-		AppEngSlot clickSlot = (AppEngSlot) this.inventorySlots.get( idx ); // require AE SLots!
+		final AppEngSlot clickSlot = (AppEngSlot) this.inventorySlots.get( idx ); // require AE SLots!
 
 		if( clickSlot instanceof SlotDisabled || clickSlot instanceof SlotInaccessible )
 		{
@@ -489,7 +489,7 @@ public abstract class AEBaseContainer extends Container
 				return null;
 			}
 
-			List<Slot> selectedSlots = new ArrayList<Slot>();
+			final List<Slot> selectedSlots = new ArrayList<Slot>();
 
 			/**
 			 * Gather a list of valid destinations.
@@ -499,9 +499,9 @@ public abstract class AEBaseContainer extends Container
 				tis = this.shiftStoreItem( tis );
 
 				// target slots in the container...
-				for( Object inventorySlot : this.inventorySlots )
+				for( final Object inventorySlot : this.inventorySlots )
 				{
-					AppEngSlot cs = (AppEngSlot) inventorySlot;
+					final AppEngSlot cs = (AppEngSlot) inventorySlot;
 
 					if( !( cs.isPlayerSide() ) && !( cs instanceof SlotFake ) && !( cs instanceof SlotCraftingMatrix ) )
 					{
@@ -515,9 +515,9 @@ public abstract class AEBaseContainer extends Container
 			else
 			{
 				// target slots in the container...
-				for( Object inventorySlot : this.inventorySlots )
+				for( final Object inventorySlot : this.inventorySlots )
 				{
-					AppEngSlot cs = (AppEngSlot) inventorySlot;
+					final AppEngSlot cs = (AppEngSlot) inventorySlot;
 
 					if( ( cs.isPlayerSide() ) && !( cs instanceof SlotFake ) && !( cs instanceof SlotCraftingMatrix ) )
 					{
@@ -537,10 +537,10 @@ public abstract class AEBaseContainer extends Container
 				if( tis != null )
 				{
 					// target slots in the container...
-					for( Object inventorySlot : this.inventorySlots )
+					for( final Object inventorySlot : this.inventorySlots )
 					{
-						AppEngSlot cs = (AppEngSlot) inventorySlot;
-						ItemStack destination = cs.getStack();
+						final AppEngSlot cs = (AppEngSlot) inventorySlot;
+						final ItemStack destination = cs.getStack();
 
 						if( !( cs.isPlayerSide() ) && cs instanceof SlotFake )
 						{
@@ -563,7 +563,7 @@ public abstract class AEBaseContainer extends Container
 			if( tis != null )
 			{
 				// find partials..
-				for( Slot d : selectedSlots )
+				for( final Slot d : selectedSlots )
 				{
 					if( d instanceof SlotDisabled || d instanceof SlotME )
 					{
@@ -574,7 +574,7 @@ public abstract class AEBaseContainer extends Container
 					{
 						if( d.getHasStack() )
 						{
-							ItemStack t = d.getStack();
+							final ItemStack t = d.getStack();
 
 							if( Platform.isSameItemPrecise( tis, t ) ) // t.isItemEqual(tis))
 							{
@@ -615,7 +615,7 @@ public abstract class AEBaseContainer extends Container
 				}
 
 				// any match..
-				for( Slot d : selectedSlots )
+				for( final Slot d : selectedSlots )
 				{
 					if( d instanceof SlotDisabled || d instanceof SlotME )
 					{
@@ -626,7 +626,7 @@ public abstract class AEBaseContainer extends Container
 					{
 						if( d.getHasStack() )
 						{
-							ItemStack t = d.getStack();
+							final ItemStack t = d.getStack();
 
 							if( Platform.isSameItemPrecise( t, tis ) )
 							{
@@ -673,7 +673,7 @@ public abstract class AEBaseContainer extends Container
 								maxSize = d.getSlotStackLimit();
 							}
 
-							ItemStack tmp = tis.copy();
+							final ItemStack tmp = tis.copy();
 							if( tmp.stackSize > maxSize )
 							{
 								tmp.stackSize = maxSize;
@@ -712,7 +712,7 @@ public abstract class AEBaseContainer extends Container
 	}
 
 	@Override
-	public final void updateProgressBar( int idx, int value )
+	public final void updateProgressBar( final int idx, final int value )
 	{
 		if( this.syncData.containsKey( idx ) )
 		{
@@ -721,7 +721,7 @@ public abstract class AEBaseContainer extends Container
 	}
 
 	@Override
-	public boolean canInteractWith( EntityPlayer entityplayer )
+	public boolean canInteractWith( final EntityPlayer entityplayer )
 	{
 		if( this.isContainerValid )
 		{
@@ -735,16 +735,16 @@ public abstract class AEBaseContainer extends Container
 	}
 
 	@Override
-	public boolean canDragIntoSlot( Slot s )
+	public boolean canDragIntoSlot( final Slot s )
 	{
 		return ( (AppEngSlot) s ).isDraggable;
 	}
 
-	public void doAction( EntityPlayerMP player, InventoryAction action, int slot, long id )
+	public void doAction( final EntityPlayerMP player, final InventoryAction action, final int slot, final long id )
 	{
 		if( slot >= 0 && slot < this.inventorySlots.size() )
 		{
-			Slot s = this.getSlot( slot );
+			final Slot s = this.getSlot( slot );
 
 			if( s instanceof SlotCraftingTerm )
 			{
@@ -761,7 +761,7 @@ public abstract class AEBaseContainer extends Container
 
 			if( s instanceof SlotFake )
 			{
-				ItemStack hand = player.inventory.getItemStack();
+				final ItemStack hand = player.inventory.getItemStack();
 
 				switch( action )
 				{
@@ -781,7 +781,7 @@ public abstract class AEBaseContainer extends Container
 
 						if( hand != null )
 						{
-							ItemStack is = hand.copy();
+							final ItemStack is = hand.copy();
 							is.stackSize = 1;
 							s.putStack( is );
 						}
@@ -826,9 +826,9 @@ public abstract class AEBaseContainer extends Container
 
 			if( action == InventoryAction.MOVE_REGION )
 			{
-				List<Slot> from = new LinkedList<Slot>();
+				final List<Slot> from = new LinkedList<Slot>();
 
-				for( Object j : this.inventorySlots )
+				for( final Object j : this.inventorySlots )
 				{
 					if( j instanceof Slot && j.getClass() == s.getClass() )
 					{
@@ -836,7 +836,7 @@ public abstract class AEBaseContainer extends Container
 					}
 				}
 
-				for( Slot fr : from )
+				for( final Slot fr : from )
 				{
 					this.transferStackInSlot( player, fr.slotNumber );
 				}
@@ -846,7 +846,7 @@ public abstract class AEBaseContainer extends Container
 		}
 
 		// get target item.
-		IAEItemStack slotItem = this.clientRequestedTargetItem;
+		final IAEItemStack slotItem = this.clientRequestedTargetItem;
 
 		switch( action )
 		{
@@ -863,7 +863,7 @@ public abstract class AEBaseContainer extends Container
 
 					ais.setStackSize( myItem.getMaxStackSize() );
 
-					InventoryAdaptor adp = InventoryAdaptor.getAdaptor( player, EnumFacing.UP );
+					final InventoryAdaptor adp = InventoryAdaptor.getAdaptor( player, EnumFacing.UP );
 					myItem.stackSize = (int) ais.getStackSize();
 					myItem = adp.simulateAdd( myItem );
 
@@ -885,21 +885,21 @@ public abstract class AEBaseContainer extends Container
 					return;
 				}
 
-				int releaseQty = 1;
-				ItemStack isg = player.inventory.getItemStack();
+				final int releaseQty = 1;
+				final ItemStack isg = player.inventory.getItemStack();
 
 				if( isg != null && releaseQty > 0 )
 				{
 					IAEItemStack ais = AEApi.instance().storage().createItemStack( isg );
 					ais.setStackSize( 1 );
-					IAEItemStack extracted = ais.copy();
+					final IAEItemStack extracted = ais.copy();
 
 					ais = Platform.poweredInsert( this.powerSrc, this.cellInv, ais, this.mySrc );
 					if( ais == null )
 					{
-						InventoryAdaptor ia = new AdaptorPlayerHand( player );
+						final InventoryAdaptor ia = new AdaptorPlayerHand( player );
 
-						ItemStack fail = ia.removeItems( 1, extracted.getItemStack(), null );
+						final ItemStack fail = ia.removeItems( 1, extracted.getItemStack(), null );
 						if( fail == null )
 						{
 							this.cellInv.extractItems( extracted, Actionable.MODULATE, this.mySrc );
@@ -920,7 +920,7 @@ public abstract class AEBaseContainer extends Container
 				if( slotItem != null )
 				{
 					int liftQty = 1;
-					ItemStack item = player.inventory.getItemStack();
+					final ItemStack item = player.inventory.getItemStack();
 
 					if( item != null )
 					{
@@ -941,9 +941,9 @@ public abstract class AEBaseContainer extends Container
 						ais = Platform.poweredExtraction( this.powerSrc, this.cellInv, ais, this.mySrc );
 						if( ais != null )
 						{
-							InventoryAdaptor ia = new AdaptorPlayerHand( player );
+							final InventoryAdaptor ia = new AdaptorPlayerHand( player );
 
-							ItemStack fail = ia.addItems( ais.getItemStack() );
+							final ItemStack fail = ia.addItems( ais.getItemStack() );
 							if( fail != null )
 							{
 								this.cellInv.injectItems( ais, Actionable.MODULATE, this.mySrc );
@@ -1005,13 +1005,13 @@ public abstract class AEBaseContainer extends Container
 					if( slotItem != null )
 					{
 						IAEItemStack ais = slotItem.copy();
-						long maxSize = ais.getItemStack().getMaxStackSize();
+						final long maxSize = ais.getItemStack().getMaxStackSize();
 						ais.setStackSize( maxSize );
 						ais = this.cellInv.extractItems( ais, Actionable.SIMULATE, this.mySrc );
 
 						if( ais != null )
 						{
-							long stackSize = Math.min( maxSize, ais.getStackSize() );
+							final long stackSize = Math.min( maxSize, ais.getStackSize() );
 							ais.setStackSize( ( stackSize + 1 ) >> 1 );
 							ais = Platform.poweredExtraction( this.powerSrc, this.cellInv, ais, this.mySrc );
 						}
@@ -1034,7 +1034,7 @@ public abstract class AEBaseContainer extends Container
 					ais = Platform.poweredInsert( this.powerSrc, this.cellInv, ais, this.mySrc );
 					if( ais == null )
 					{
-						ItemStack is = player.inventory.getItemStack();
+						final ItemStack is = player.inventory.getItemStack();
 						is.stackSize--;
 						if( is.stackSize <= 0 )
 						{
@@ -1048,7 +1048,7 @@ public abstract class AEBaseContainer extends Container
 			case CREATIVE_DUPLICATE:
 				if( player.capabilities.isCreativeMode && slotItem != null )
 				{
-					ItemStack is = slotItem.getItemStack();
+					final ItemStack is = slotItem.getItemStack();
 					is.stackSize = is.getMaxStackSize();
 					player.inventory.setItemStack( is );
 					this.updateHeld( player );
@@ -1063,7 +1063,7 @@ public abstract class AEBaseContainer extends Container
 
 				if( slotItem != null )
 				{
-					int playerInv = 9 * 4;
+					final int playerInv = 9 * 4;
 					for( int slotNum = 0; slotNum < playerInv; slotNum++ )
 					{
 						IAEItemStack ais = slotItem.copy();
@@ -1071,7 +1071,7 @@ public abstract class AEBaseContainer extends Container
 
 						ais.setStackSize( myItem.getMaxStackSize() );
 
-						InventoryAdaptor adp = InventoryAdaptor.getAdaptor( player, EnumFacing.UP );
+						final InventoryAdaptor adp = InventoryAdaptor.getAdaptor( player, EnumFacing.UP );
 						myItem.stackSize = (int) ais.getStackSize();
 						myItem = adp.simulateAdd( myItem );
 
@@ -1098,7 +1098,7 @@ public abstract class AEBaseContainer extends Container
 		}
 	}
 
-	protected void updateHeld( EntityPlayerMP p )
+	protected void updateHeld( final EntityPlayerMP p )
 	{
 		if( Platform.isServer() )
 		{
@@ -1106,20 +1106,20 @@ public abstract class AEBaseContainer extends Container
 			{
 				NetworkHandler.instance.sendTo( new PacketInventoryAction( InventoryAction.UPDATE_HAND, 0, AEItemStack.create( p.inventory.getItemStack() ) ), p );
 			}
-			catch( IOException e )
+			catch( final IOException e )
 			{
 				AELog.error( e );
 			}
 		}
 	}
 
-	public ItemStack shiftStoreItem( ItemStack input )
+	public ItemStack shiftStoreItem( final ItemStack input )
 	{
 		if( this.powerSrc == null || this.cellInv == null )
 		{
 			return input;
 		}
-		IAEItemStack ais = Platform.poweredInsert( this.powerSrc, this.cellInv, AEApi.instance().storage().createItemStack( input ), this.mySrc );
+		final IAEItemStack ais = Platform.poweredInsert( this.powerSrc, this.cellInv, AEApi.instance().storage().createItemStack( input ), this.mySrc );
 		if( ais == null )
 		{
 			return null;
@@ -1127,7 +1127,7 @@ public abstract class AEBaseContainer extends Container
 		return ais.getItemStack();
 	}
 
-	private void updateSlot( Slot clickSlot )
+	private void updateSlot( final Slot clickSlot )
 	{
 		// ???
 		this.detectAndSendChanges();
@@ -1175,7 +1175,7 @@ public abstract class AEBaseContainer extends Container
 						{
 							NetworkHandler.instance.sendTo( new PacketValueConfig( "CustomName", this.customName ), (EntityPlayerMP) this.invPlayer.player );
 						}
-						catch( IOException e )
+						catch( final IOException e )
 						{
 							AELog.error( e );
 						}
@@ -1185,10 +1185,10 @@ public abstract class AEBaseContainer extends Container
 		}
 	}
 
-	public void swapSlotContents( int slotA, int slotB )
+	public void swapSlotContents( final int slotA, final int slotB )
 	{
-		Slot a = this.getSlot( slotA );
-		Slot b = this.getSlot( slotB );
+		final Slot a = this.getSlot( slotA );
+		final Slot b = this.getSlot( slotB );
 
 		// NPE protection...
 		if( a == null || b == null )
@@ -1196,8 +1196,8 @@ public abstract class AEBaseContainer extends Container
 			return;
 		}
 
-		ItemStack isA = a.getStack();
-		ItemStack isB = b.getStack();
+		final ItemStack isA = a.getStack();
+		final ItemStack isB = b.getStack();
 
 		// something to do?
 		if( isA == null && isB == null )
@@ -1240,7 +1240,7 @@ public abstract class AEBaseContainer extends Container
 				return;
 			}
 
-			int totalA = testA.stackSize;
+			final int totalA = testA.stackSize;
 			testA.stackSize = a.getSlotStackLimit();
 			testB = testA.copy();
 
@@ -1254,7 +1254,7 @@ public abstract class AEBaseContainer extends Container
 				return;
 			}
 
-			int totalB = testB.stackSize;
+			final int totalB = testB.stackSize;
 			testB.stackSize = b.getSlotStackLimit();
 			testA = testB.copy();
 
@@ -1265,17 +1265,17 @@ public abstract class AEBaseContainer extends Container
 		b.putStack( testB );
 	}
 
-	public void onUpdate( String field, Object oldValue, Object newValue )
+	public void onUpdate( final String field, final Object oldValue, final Object newValue )
 	{
 
 	}
 
-	public void onSlotChange( Slot s )
+	public void onSlotChange( final Slot s )
 	{
 
 	}
 
-	public boolean isValidForSlot( Slot s, ItemStack i )
+	public boolean isValidForSlot( final Slot s, final ItemStack i )
 	{
 		return true;
 	}

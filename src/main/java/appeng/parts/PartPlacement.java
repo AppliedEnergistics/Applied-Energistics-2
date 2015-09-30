@@ -72,7 +72,7 @@ public class PartPlacement
 	private final ThreadLocal<Object> placing = new ThreadLocal<Object>();
 	private boolean wasCanceled = false;
 
-	public static boolean place( ItemStack held, BlockPos pos, EnumFacing side, EntityPlayer player, World world, PlaceType pass, int depth )
+	public static boolean place( final ItemStack held, final BlockPos pos, EnumFacing side, final EntityPlayer player, final World world, PlaceType pass, final int depth )
 	{
 		if( depth > 3 )
 		{
@@ -86,8 +86,8 @@ public class PartPlacement
 				return false;
 			}
 
-			Block block = world.getBlockState( pos ).getBlock();
-			TileEntity tile = world.getTileEntity( pos );
+			final Block block = world.getBlockState( pos ).getBlock();
+			final TileEntity tile = world.getTileEntity( pos );
 			IPartHost host = null;
 
 			if( tile instanceof IPartHost )
@@ -99,12 +99,12 @@ public class PartPlacement
 			{
 				if( !world.isRemote )
 				{
-					LookDirection dir = Platform.getPlayerRay( player, getEyeOffset( player ) );
-					MovingObjectPosition mop = block.collisionRayTrace( world, pos, dir.a, dir.b );
+					final LookDirection dir = Platform.getPlayerRay( player, getEyeOffset( player ) );
+					final MovingObjectPosition mop = block.collisionRayTrace( world, pos, dir.a, dir.b );
 					if( mop != null )
 					{
-						List<ItemStack> is = new LinkedList<ItemStack>();
-						SelectedPart sp = selectPart( player, host, mop.hitVec.addVector( -mop.getBlockPos().getX(), -mop.getBlockPos().getY(), -mop.getBlockPos().getZ() ) );
+						final List<ItemStack> is = new LinkedList<ItemStack>();
+						final SelectedPart sp = selectPart( player, host, mop.hitVec.addVector( -mop.getBlockPos().getX(), -mop.getBlockPos().getY(), -mop.getBlockPos().getZ() ) );
 
 						if( sp.part != null )
 						{
@@ -152,7 +152,7 @@ public class PartPlacement
 
 		if( held != null )
 		{
-			IFacadePart fp = isFacade( held, AEPartLocation.fromFacing( side ) );
+			final IFacadePart fp = isFacade( held, AEPartLocation.fromFacing( side ) );
 			if( fp != null )
 			{
 				if( host != null )
@@ -210,15 +210,15 @@ public class PartPlacement
 		
 		// if ( held == null )
 		{
-			Block block = world.getBlockState( pos ).getBlock();
+			final Block block = world.getBlockState( pos ).getBlock();
 			if( host != null && player.isSneaking() && block != null )
 			{
-				LookDirection dir = Platform.getPlayerRay( player, getEyeOffset( player ) );
-				MovingObjectPosition mop = block.collisionRayTrace( world, pos, dir.a, dir.b );
+				final LookDirection dir = Platform.getPlayerRay( player, getEyeOffset( player ) );
+				final MovingObjectPosition mop = block.collisionRayTrace( world, pos, dir.a, dir.b );
 				if( mop != null )
 				{
 					mop.hitVec = mop.hitVec.addVector( -mop.getBlockPos().getX(), -mop.getBlockPos().getY(), -mop.getBlockPos().getZ() );
-					SelectedPart sPart = selectPart( player, host, mop.hitVec );
+					final SelectedPart sPart = selectPart( player, host, mop.hitVec );
 					if( sPart != null && sPart.part != null )
 					{
 						if( sPart.part.onShiftActivate( player, mop.hitVec ) )
@@ -246,7 +246,7 @@ public class PartPlacement
 		{
 			EnumFacing offset = null;
 
-			Block blkID = world.getBlockState( pos ).getBlock();
+			final Block blkID = world.getBlockState( pos ).getBlock();
 			if( blkID != null && !blkID.isReplaceable( world, pos ) )
 			{
 				offset = side;
@@ -324,7 +324,7 @@ public class PartPlacement
 			{
 				te_pos = pos.offset( side );
 				
-				Block blkID = world.getBlockState( te_pos ).getBlock();
+				final Block blkID = world.getBlockState( te_pos ).getBlock();
 				tile = world.getTileEntity( te_pos );
 
 				if( tile != null && IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.FMP ) )
@@ -342,12 +342,12 @@ public class PartPlacement
 
 		if( !world.isRemote )
 		{
-			Block block = world.getBlockState( pos ).getBlock();
-			LookDirection dir = Platform.getPlayerRay( player, getEyeOffset( player ) );
-			MovingObjectPosition mop = block.collisionRayTrace( world, pos, dir.a, dir.b );
+			final Block block = world.getBlockState( pos ).getBlock();
+			final LookDirection dir = Platform.getPlayerRay( player, getEyeOffset( player ) );
+			final MovingObjectPosition mop = block.collisionRayTrace( world, pos, dir.a, dir.b );
 			if( mop != null )
 			{
-				SelectedPart sp = selectPart( player, host, mop.hitVec.addVector( -mop.getBlockPos().getX(), -mop.getBlockPos().getY(), -mop.getBlockPos().getZ()  ) );
+				final SelectedPart sp = selectPart( player, host, mop.hitVec.addVector( -mop.getBlockPos().getX(), -mop.getBlockPos().getY(), -mop.getBlockPos().getZ()  ) );
 
 				if( sp.part != null )
 				{
@@ -358,16 +358,16 @@ public class PartPlacement
 				}
 			}
 
-			DimensionalCoord dc = host.getLocation();
+			final DimensionalCoord dc = host.getLocation();
 			if( !Platform.hasPermissions( dc, player ) )
 			{
 				return false;
 			}
 
-			AEPartLocation mySide = host.addPart( held, AEPartLocation.fromFacing( side ), player );
+			final AEPartLocation mySide = host.addPart( held, AEPartLocation.fromFacing( side ), player );
 			if( mySide != null )
 			{
-				for( Block multiPartBlock : multiPart.maybeBlock().asSet() )
+				for( final Block multiPartBlock : multiPart.maybeBlock().asSet() )
 				{
 					final SoundType ss = multiPartBlock.stepSound;
 
@@ -393,7 +393,7 @@ public class PartPlacement
 		return true;
 	}
 
-	private static float getEyeOffset( EntityPlayer p )
+	private static float getEyeOffset( final EntityPlayer p )
 	{
 		if( p.worldObj.isRemote )
 		{
@@ -403,16 +403,16 @@ public class PartPlacement
 		return eyeHeight;
 	}
 
-	private static SelectedPart selectPart( EntityPlayer player, IPartHost host, Vec3 pos )
+	private static SelectedPart selectPart( final EntityPlayer player, final IPartHost host, final Vec3 pos )
 	{
 		CommonHelper.proxy.updateRenderMode( player );
-		SelectedPart sp = host.selectPart( pos );
+		final SelectedPart sp = host.selectPart( pos );
 		CommonHelper.proxy.updateRenderMode( null );
 
 		return sp;
 	}
 
-	public static IFacadePart isFacade( ItemStack held, AEPartLocation side )
+	public static IFacadePart isFacade( final ItemStack held, final AEPartLocation side )
 	{
 		if( held.getItem() instanceof IFacadeItem )
 		{
@@ -421,7 +421,7 @@ public class PartPlacement
 
 		if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.BuildCraftTransport ) )
 		{
-			IBuildCraftTransport bc = (IBuildCraftTransport) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.BuildCraftTransport );
+			final IBuildCraftTransport bc = (IBuildCraftTransport) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.BuildCraftTransport );
 			if( bc.isFacade( held ) )
 			{
 				return bc.createFacadePart( held, side );
@@ -432,28 +432,28 @@ public class PartPlacement
 	}
 
 	@SubscribeEvent
-	public void playerInteract( TickEvent.ClientTickEvent event )
+	public void playerInteract( final TickEvent.ClientTickEvent event )
 	{
 		this.wasCanceled = false;
 	}
 
 	@SubscribeEvent
-	public void playerInteract( PlayerInteractEvent event )
+	public void playerInteract( final PlayerInteractEvent event )
 	{
 		if( event.action == Action.RIGHT_CLICK_AIR && event.entityPlayer.worldObj.isRemote )
 		{
 			// re-check to see if this event was already channeled, cause these two events are really stupid...
-			MovingObjectPosition mop = Platform.rayTrace( event.entityPlayer, true, false );
-			Minecraft mc = Minecraft.getMinecraft();
+			final MovingObjectPosition mop = Platform.rayTrace( event.entityPlayer, true, false );
+			final Minecraft mc = Minecraft.getMinecraft();
 
-			float f = 1.0F;
-			double d0 = mc.playerController.getBlockReachDistance();
-			Vec3 vec3 = mc.getRenderViewEntity().getPositionEyes( f );
+			final float f = 1.0F;
+			final double d0 = mc.playerController.getBlockReachDistance();
+			final Vec3 vec3 = mc.getRenderViewEntity().getPositionEyes( f );
 
 			if( mop != null && mop.hitVec.distanceTo( vec3 ) < d0 )
 			{
-				World w = event.entity.worldObj;
-				TileEntity te = w.getTileEntity( mop.getBlockPos() );
+				final World w = event.entity.worldObj;
+				final TileEntity te = w.getTileEntity( mop.getBlockPos() );
 				if( te instanceof IPartHost && this.wasCanceled )
 				{
 					event.setCanceled( true );
@@ -461,7 +461,7 @@ public class PartPlacement
 			}
 			else
 			{
-				ItemStack held = event.entityPlayer.getHeldItem();
+				final ItemStack held = event.entityPlayer.getHeldItem();
 				final IItems items = AEApi.instance().definitions().items();
 
 				boolean supportedItem = items.memoryCard().isSameAs( held );
@@ -482,7 +482,7 @@ public class PartPlacement
 
 			this.placing.set( event );
 
-			ItemStack held = event.entityPlayer.getHeldItem();
+			final ItemStack held = event.entityPlayer.getHeldItem();
 			if( place( held, event.pos, event.face, event.entityPlayer, event.entityPlayer.worldObj, PlaceType.INTERACT_FIRST_PASS, 0 ) )
 			{
 				event.setCanceled( true );

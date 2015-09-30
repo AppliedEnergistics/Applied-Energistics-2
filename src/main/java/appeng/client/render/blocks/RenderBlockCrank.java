@@ -47,7 +47,7 @@ public class RenderBlockCrank extends BaseBlockRender<BlockCrank, TileCrank>
 	}
 
 	@Override
-	public void renderInventory( BlockCrank blk, ItemStack is, ModelGenerator renderer, ItemRenderType type, Object[] obj )
+	public void renderInventory( final BlockCrank blk, final ItemStack is, final ModelGenerator renderer, final ItemRenderType type, final Object[] obj )
 	{
 		renderer.renderAllFaces = true;
 
@@ -61,13 +61,13 @@ public class RenderBlockCrank extends BaseBlockRender<BlockCrank, TileCrank>
 	}
 
 	@Override
-	public boolean renderInWorld( BlockCrank imb, IBlockAccess world, BlockPos pos, ModelGenerator renderer )
+	public boolean renderInWorld( final BlockCrank imb, final IBlockAccess world, final BlockPos pos, final ModelGenerator renderer )
 	{
 		return true;
 	}
 
 	@Override
-	public void renderTile( BlockCrank blk, TileCrank tile, WorldRenderer tess, double x, double y, double z, float f, ModelGenerator renderBlocks )
+	public void renderTile( final BlockCrank blk, final TileCrank tile, final WorldRenderer tess, final double x, final double y, final double z, final float f, final ModelGenerator renderBlocks )
 	{
 		if( tile.getUp() == null )
 		{
@@ -97,11 +97,11 @@ public class RenderBlockCrank extends BaseBlockRender<BlockCrank, TileCrank>
 		//tess.setTranslation( -tc.getPos().getX(), -tc.getPos().getY(), -tc.getPos().getZ() );
 		//tess.startDrawingQuads();
 		
-		RenderItem ri = Minecraft.getMinecraft().getRenderItem();
+		final RenderItem ri = Minecraft.getMinecraft().getRenderItem();
 		
-		ItemStack stack = new ItemStack( blk );
-		IBakedModel model = ri.getItemModelMesher().getItemModel( stack );
-        Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelRenderer().renderModelBrightnessColor(model, 1.0F, 1.0F, 1.0F, 1.0F);
+		final ItemStack stack = new ItemStack( blk );
+		final IBakedModel model = ri.getItemModelMesher().getItemModel( stack );
+        Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelRenderer().renderModelBrightnessColor( model, 1.0F, 1.0F, 1.0F, 1.0F );
 		
 		/*
 		renderBlocks.renderAllFaces = true;

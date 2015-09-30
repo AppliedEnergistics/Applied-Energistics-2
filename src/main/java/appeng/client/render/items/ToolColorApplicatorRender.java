@@ -27,19 +27,19 @@ public class ToolColorApplicatorRender implements IItemRenderer
 {
 
 	@Override
-	public boolean handleRenderType( ItemStack item, ItemRenderType type )
+	public boolean handleRenderType( final ItemStack item, final ItemRenderType type )
 	{
 		return true;
 	}
 
 	@Override
-	public boolean shouldUseRenderHelper( ItemRenderType type, ItemStack item, ItemRendererHelper helper )
+	public boolean shouldUseRenderHelper( final ItemRenderType type, final ItemStack item, final ItemRendererHelper helper )
 	{
 		return helper == ItemRendererHelper.ENTITY_BOBBING || helper == ItemRendererHelper.ENTITY_ROTATION;
 	}
 
 	@Override
-	public void renderItem( ItemRenderType type, ItemStack item, Object... data )
+	public void renderItem( final ItemRenderType type, final ItemStack item, final Object... data )
 	{
 		/*
 		TextureAtlasSprite par2Icon = item.getIconIndex();

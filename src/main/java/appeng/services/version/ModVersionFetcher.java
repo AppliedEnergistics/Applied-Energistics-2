@@ -11,7 +11,7 @@ public final class ModVersionFetcher implements VersionFetcher
 	private final String rawModVersion;
 	private final VersionParser parser;
 
-	public ModVersionFetcher( String rawModVersion, VersionParser parser )
+	public ModVersionFetcher( final String rawModVersion, final VersionParser parser )
 	{
 		this.rawModVersion = rawModVersion;
 		this.parser = parser;

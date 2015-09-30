@@ -26,7 +26,7 @@ import appeng.helpers.Reflected;
 public class PartCableGlass extends PartCable
 {
 	@Reflected
-	public PartCableGlass( ItemStack is )
+	public PartCableGlass( final ItemStack is )
 	{
 		super( is );
 	}

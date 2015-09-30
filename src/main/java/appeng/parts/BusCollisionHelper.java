@@ -40,7 +40,7 @@ public class BusCollisionHelper implements IPartCollisionHelper
 	private final Entity entity;
 	private final boolean isVisual;
 
-	public BusCollisionHelper( List<AxisAlignedBB> boxes, EnumFacing x, EnumFacing y, EnumFacing z, Entity e, boolean visual )
+	public BusCollisionHelper( final List<AxisAlignedBB> boxes, final EnumFacing x, final EnumFacing y, final EnumFacing z, final Entity e, final boolean visual )
 	{
 		this.boxes = boxes;
 		this.x = x;
@@ -50,7 +50,7 @@ public class BusCollisionHelper implements IPartCollisionHelper
 		this.isVisual = visual;
 	}
 
-	public BusCollisionHelper( List<AxisAlignedBB> boxes, AEPartLocation s, Entity e, boolean visual )
+	public BusCollisionHelper( final List<AxisAlignedBB> boxes, final AEPartLocation s, final Entity e, final boolean visual )
 	{
 		this.boxes = boxes;
 		this.entity = e;

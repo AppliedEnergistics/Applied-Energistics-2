@@ -38,13 +38,13 @@ public abstract class AENetworkPowerTile extends AEBasePoweredTile implements IA
 	protected final AENetworkProxy gridProxy = new AENetworkProxy( this, "proxy", this.getItemFromTile( this ), true );
 
 	@TileEvent( TileEventType.WORLD_NBT_READ )
-	public void readFromNBT_AENetwork( NBTTagCompound data )
+	public void readFromNBT_AENetwork( final NBTTagCompound data )
 	{
 		this.gridProxy.readFromNBT( data );
 	}
 
 	@TileEvent( TileEventType.WORLD_NBT_WRITE )
-	public void writeToNBT_AENetwork( NBTTagCompound data )
+	public void writeToNBT_AENetwork( final NBTTagCompound data )
 	{
 		this.gridProxy.writeToNBT( data );
 	}
@@ -68,13 +68,13 @@ public abstract class AENetworkPowerTile extends AEBasePoweredTile implements IA
 	}
 
 	@Override
-	public IGridNode getGridNode( AEPartLocation dir )
+	public IGridNode getGridNode( final AEPartLocation dir )
 	{
 		return this.gridProxy.getNode();
 	}
 
 	@Override
-	public AECableType getCableConnectionType( AEPartLocation dir )
+	public AECableType getCableConnectionType( final AEPartLocation dir )
 	{
 		return AECableType.SMART;
 	}

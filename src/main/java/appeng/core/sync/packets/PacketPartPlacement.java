@@ -41,7 +41,7 @@ public class PacketPartPlacement extends AppEngPacket
 	float eyeHeight;
 
 	// automatic.
-	public PacketPartPlacement( ByteBuf stream )
+	public PacketPartPlacement( final ByteBuf stream )
 	{
 		this.x = stream.readInt();
 		this.y = stream.readInt();
@@ -51,9 +51,9 @@ public class PacketPartPlacement extends AppEngPacket
 	}
 
 	// api
-	public PacketPartPlacement( BlockPos pos, EnumFacing face, float eyeHeight )
+	public PacketPartPlacement( final BlockPos pos, final EnumFacing face, final float eyeHeight )
 	{
-		ByteBuf data = Unpooled.buffer();
+		final ByteBuf data = Unpooled.buffer();
 
 		data.writeInt( this.getPacketID() );
 		data.writeInt( pos.getX() );
@@ -66,9 +66,9 @@ public class PacketPartPlacement extends AppEngPacket
 	}
 
 	@Override
-	public void serverPacketData( INetworkInfo manager, AppEngPacket packet, EntityPlayer player )
+	public void serverPacketData( final INetworkInfo manager, final AppEngPacket packet, final EntityPlayer player )
 	{
-		EntityPlayerMP sender = (EntityPlayerMP) player;
+		final EntityPlayerMP sender = (EntityPlayerMP) player;
 		CommonHelper.proxy.updateRenderMode( sender );
 		PartPlacement.eyeHeight = this.eyeHeight;
 		PartPlacement.place( sender.getHeldItem(), new BlockPos( this.x, this.y, this.z ), EnumFacing.VALUES[ this.face ], sender, sender.worldObj, PartPlacement.PlaceType.INTERACT_FIRST_PASS, 0 );

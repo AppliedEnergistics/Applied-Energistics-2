@@ -70,21 +70,21 @@ public class BlockWireless extends AEBaseTileBlock implements ICustomCollision
 	
 	@Override
 	public boolean onBlockActivated(
-			World w,
-			BlockPos pos,
-			IBlockState state,
-			EntityPlayer player,
-			EnumFacing side,
-			float hitX,
-			float hitY,
-			float hitZ )
+			final World w,
+			final BlockPos pos,
+			final IBlockState state,
+			final EntityPlayer player,
+			final EnumFacing side,
+			final float hitX,
+			final float hitY,
+			final float hitZ )
 	{
 		if( player.isSneaking() )
 		{
 			return false;
 		}
 
-		TileWireless tg = this.getTileEntity( w, pos );
+		final TileWireless tg = this.getTileEntity( w, pos );
 		if( tg != null )
 		{
 			if( Platform.isServer() )
@@ -98,15 +98,15 @@ public class BlockWireless extends AEBaseTileBlock implements ICustomCollision
 
 	@Override
 	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool(
-			World w,
-			BlockPos pos,
-			Entity thePlayer,
-			boolean b )
+			final World w,
+			final BlockPos pos,
+			final Entity thePlayer,
+			final boolean b )
 	{
-		TileWireless tile = this.getTileEntity( w, pos );
+		final TileWireless tile = this.getTileEntity( w, pos );
 		if( tile != null )
 		{
-			EnumFacing forward = tile.getForward();
+			final EnumFacing forward = tile.getForward();
 
 			double minX = 0;
 			double minY = 0;
@@ -164,16 +164,16 @@ public class BlockWireless extends AEBaseTileBlock implements ICustomCollision
 
 	@Override
 	public void addCollidingBlockToList(
-			World w,
-			BlockPos pos,
-			AxisAlignedBB bb,
-			List<AxisAlignedBB> out,
-			Entity e )
+			final World w,
+			final BlockPos pos,
+			final AxisAlignedBB bb,
+			final List<AxisAlignedBB> out,
+			final Entity e )
 	{
-		TileWireless tile = this.getTileEntity( w, pos );
+		final TileWireless tile = this.getTileEntity( w, pos );
 		if( tile != null )
 		{
-			EnumFacing forward = tile.getForward();
+			final EnumFacing forward = tile.getForward();
 
 			double minX = 0;
 			double minY = 0;

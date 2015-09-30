@@ -35,7 +35,7 @@ public class TilePhantomNode extends AENetworkTile
 	boolean crashMode = false;
 
 	@Override
-	public IGridNode getGridNode( AEPartLocation dir )
+	public IGridNode getGridNode( final AEPartLocation dir )
 	{
 		if( !this.crashMode )
 		{

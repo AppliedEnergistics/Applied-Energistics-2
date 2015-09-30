@@ -33,7 +33,7 @@ public class AppEngNullInventory implements IInventory
 	{
 	}
 
-	public void writeToNBT( NBTTagCompound target )
+	public void writeToNBT( final NBTTagCompound target )
 	{
 	}
 
@@ -44,25 +44,25 @@ public class AppEngNullInventory implements IInventory
 	}
 
 	@Override
-	public ItemStack getStackInSlot( int var1 )
+	public ItemStack getStackInSlot( final int var1 )
 	{
 		return null;
 	}
 
 	@Override
-	public ItemStack decrStackSize( int slot, int qty )
+	public ItemStack decrStackSize( final int slot, final int qty )
 	{
 		return null;
 	}
 
 	@Override
-	public ItemStack getStackInSlotOnClosing( int var1 )
+	public ItemStack getStackInSlotOnClosing( final int var1 )
 	{
 		return null;
 	}
 
 	@Override
-	public void setInventorySlotContents( int slot, ItemStack newItemStack )
+	public void setInventorySlotContents( final int slot, final ItemStack newItemStack )
 	{
 
 	}
@@ -92,13 +92,13 @@ public class AppEngNullInventory implements IInventory
 	}
 
 	@Override
-	public boolean isUseableByPlayer( EntityPlayer var1 )
+	public boolean isUseableByPlayer( final EntityPlayer var1 )
 	{
 		return false;
 	}
 
 	@Override
-	public boolean isItemValidForSlot( int i, ItemStack itemstack )
+	public boolean isItemValidForSlot( final int i, final ItemStack itemstack )
 	{
 		return false;
 	}
@@ -111,29 +111,29 @@ public class AppEngNullInventory implements IInventory
 
 	@Override
 	public void openInventory(
-			EntityPlayer player )
+			final EntityPlayer player )
 	{
 				
 	}
 
 	@Override
 	public void closeInventory(
-			EntityPlayer player )
+			final EntityPlayer player )
 	{
 		
 	}
 
 	@Override
 	public int getField(
-			int id )
+			final int id )
 	{
 		return 0;
 	}
 
 	@Override
 	public void setField(
-			int id,
-			int value )
+			final int id,
+			final int value )
 	{
 		
 	}

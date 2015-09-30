@@ -43,7 +43,7 @@ public final class AECableBusFeatureHandler implements IFeatureHandler
 	private final boolean enabled;
 	private final TileDefinition definition;
 
-	public AECableBusFeatureHandler( EnumSet<AEFeature> features, BlockCableBus featured, Optional<String> subName )
+	public AECableBusFeatureHandler( final EnumSet<AEFeature> features, final BlockCableBus featured, final Optional<String> subName )
 	{
 		final ActivityState state = new FeaturedActiveChecker( features ).getActivityState();
 
@@ -69,11 +69,11 @@ public final class AECableBusFeatureHandler implements IFeatureHandler
 	 * Registration of the {@link TileEntity} will actually be handled by {@link BlockCableBus#setupTile()}.
 	 */
 	@Override
-	public void register(Side side)
+	public void register( final Side side)
 	{
 		if( this.enabled )
 		{
-			String name = this.extractor.get();
+			final String name = this.extractor.get();
 			this.featured.setCreativeTab( CreativeTab.instance );
 			this.featured.setUnlocalizedName( /* "tile." */"appliedenergistics2." + name );
 			this.featured.setBlockTextureName( name );

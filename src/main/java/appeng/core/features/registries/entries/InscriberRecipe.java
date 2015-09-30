@@ -39,7 +39,7 @@ public class InscriberRecipe implements IInscriberRecipe
 	@Nonnull
 	private final InscriberProcessType type;
 
-	public InscriberRecipe( @Nonnull Collection<ItemStack> inputs, @Nonnull ItemStack output, @Nullable ItemStack top, @Nullable ItemStack bot, @Nonnull InscriberProcessType type )
+	public InscriberRecipe( @Nonnull final Collection<ItemStack> inputs, @Nonnull final ItemStack output, @Nullable final ItemStack top, @Nullable final ItemStack bot, @Nonnull final InscriberProcessType type )
 	{
 		this.inputs = new ArrayList<ItemStack>( inputs.size() );
 		this.inputs.addAll( inputs );
@@ -87,7 +87,7 @@ public class InscriberRecipe implements IInscriberRecipe
 	}
 
 	@Override
-	public boolean equals( Object o )
+	public boolean equals( final Object o )
 	{
 		if( this == o )
 		{
@@ -98,7 +98,7 @@ public class InscriberRecipe implements IInscriberRecipe
 			return false;
 		}
 
-		IInscriberRecipe that = (IInscriberRecipe) o;
+		final IInscriberRecipe that = (IInscriberRecipe) o;
 
 		if( !this.inputs.equals( that.getInputs() ) )
 		{

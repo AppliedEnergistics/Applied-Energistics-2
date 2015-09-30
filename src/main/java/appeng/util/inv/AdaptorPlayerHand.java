@@ -37,15 +37,15 @@ public class AdaptorPlayerHand extends InventoryAdaptor
 
 	private final EntityPlayer player;
 
-	public AdaptorPlayerHand( EntityPlayer player )
+	public AdaptorPlayerHand( final EntityPlayer player )
 	{
 		this.player = player;
 	}
 
 	@Override
-	public ItemStack removeItems( int amount, ItemStack filter, IInventoryDestination destination )
+	public ItemStack removeItems( final int amount, final ItemStack filter, final IInventoryDestination destination )
 	{
-		ItemStack hand = this.player.inventory.getItemStack();
+		final ItemStack hand = this.player.inventory.getItemStack();
 		if( hand == null )
 		{
 			return null;
@@ -53,7 +53,7 @@ public class AdaptorPlayerHand extends InventoryAdaptor
 
 		if( filter == null || Platform.isSameItemPrecise( filter, hand ) )
 		{
-			ItemStack result = hand.copy();
+			final ItemStack result = hand.copy();
 			result.stackSize = hand.stackSize > amount ? amount : hand.stackSize;
 			hand.stackSize -= amount;
 			if( hand.stackSize <= 0 )
@@ -67,10 +67,10 @@ public class AdaptorPlayerHand extends InventoryAdaptor
 	}
 
 	@Override
-	public ItemStack simulateRemove( int amount, ItemStack filter, IInventoryDestination destination )
+	public ItemStack simulateRemove( final int amount, final ItemStack filter, final IInventoryDestination destination )
 	{
 
-		ItemStack hand = this.player.inventory.getItemStack();
+		final ItemStack hand = this.player.inventory.getItemStack();
 		if( hand == null )
 		{
 			return null;
@@ -78,7 +78,7 @@ public class AdaptorPlayerHand extends InventoryAdaptor
 
 		if( filter == null || Platform.isSameItemPrecise( filter, hand ) )
 		{
-			ItemStack result = hand.copy();
+			final ItemStack result = hand.copy();
 			result.stackSize = hand.stackSize > amount ? amount : hand.stackSize;
 			return result;
 		}
@@ -87,9 +87,9 @@ public class AdaptorPlayerHand extends InventoryAdaptor
 	}
 
 	@Override
-	public ItemStack removeSimilarItems( int amount, ItemStack filter, FuzzyMode fuzzyMode, IInventoryDestination destination )
+	public ItemStack removeSimilarItems( final int amount, final ItemStack filter, final FuzzyMode fuzzyMode, final IInventoryDestination destination )
 	{
-		ItemStack hand = this.player.inventory.getItemStack();
+		final ItemStack hand = this.player.inventory.getItemStack();
 		if( hand == null )
 		{
 			return null;
@@ -97,7 +97,7 @@ public class AdaptorPlayerHand extends InventoryAdaptor
 
 		if( filter == null || Platform.isSameItemFuzzy( filter, hand, fuzzyMode ) )
 		{
-			ItemStack result = hand.copy();
+			final ItemStack result = hand.copy();
 			result.stackSize = hand.stackSize > amount ? amount : hand.stackSize;
 			hand.stackSize -= amount;
 			if( hand.stackSize <= 0 )
@@ -111,10 +111,10 @@ public class AdaptorPlayerHand extends InventoryAdaptor
 	}
 
 	@Override
-	public ItemStack simulateSimilarRemove( int amount, ItemStack filter, FuzzyMode fuzzyMode, IInventoryDestination destination )
+	public ItemStack simulateSimilarRemove( final int amount, final ItemStack filter, final FuzzyMode fuzzyMode, final IInventoryDestination destination )
 	{
 
-		ItemStack hand = this.player.inventory.getItemStack();
+		final ItemStack hand = this.player.inventory.getItemStack();
 		if( hand == null )
 		{
 			return null;
@@ -122,7 +122,7 @@ public class AdaptorPlayerHand extends InventoryAdaptor
 
 		if( filter == null || Platform.isSameItemFuzzy( filter, hand, fuzzyMode ) )
 		{
-			ItemStack result = hand.copy();
+			final ItemStack result = hand.copy();
 			result.stackSize = hand.stackSize > amount ? amount : hand.stackSize;
 			return result;
 		}
@@ -131,7 +131,7 @@ public class AdaptorPlayerHand extends InventoryAdaptor
 	}
 
 	@Override
-	public ItemStack addItems( ItemStack toBeAdded )
+	public ItemStack addItems( final ItemStack toBeAdded )
 	{
 
 		if( toBeAdded == null )
@@ -151,7 +151,7 @@ public class AdaptorPlayerHand extends InventoryAdaptor
 			return toBeAdded;
 		}
 
-		ItemStack hand = this.player.inventory.getItemStack();
+		final ItemStack hand = this.player.inventory.getItemStack();
 
 		if( hand != null && !Platform.isSameItemPrecise( toBeAdded, hand ) )
 		{
@@ -174,7 +174,7 @@ public class AdaptorPlayerHand extends InventoryAdaptor
 		if( newHand.stackSize > newHand.getMaxStackSize() )
 		{
 			newHand.stackSize = newHand.getMaxStackSize();
-			ItemStack B = toBeAdded.copy();
+			final ItemStack B = toBeAdded.copy();
 			B.stackSize -= newHand.stackSize - original;
 			this.player.inventory.setItemStack( newHand );
 			return B;
@@ -185,9 +185,9 @@ public class AdaptorPlayerHand extends InventoryAdaptor
 	}
 
 	@Override
-	public ItemStack simulateAdd( ItemStack toBeSimulated )
+	public ItemStack simulateAdd( final ItemStack toBeSimulated )
 	{
-		ItemStack hand = this.player.inventory.getItemStack();
+		final ItemStack hand = this.player.inventory.getItemStack();
 		if( toBeSimulated == null )
 		{
 			return null;
@@ -214,7 +214,7 @@ public class AdaptorPlayerHand extends InventoryAdaptor
 		if( newHand.stackSize > newHand.getMaxStackSize() )
 		{
 			newHand.stackSize = newHand.getMaxStackSize();
-			ItemStack B = toBeSimulated.copy();
+			final ItemStack B = toBeSimulated.copy();
 			B.stackSize -= newHand.stackSize - original;
 			return B;
 		}

@@ -26,7 +26,7 @@ public class CompassException extends RuntimeException
 
 	public final Throwable inner;
 
-	public CompassException( Throwable t )
+	public CompassException( final Throwable t )
 	{
 		this.inner = t;
 	}

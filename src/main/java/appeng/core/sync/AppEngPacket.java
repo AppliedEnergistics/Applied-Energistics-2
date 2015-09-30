@@ -41,7 +41,7 @@ public abstract class AppEngPacket implements Packet
 	AppEngPacketHandlerBase.PacketTypes id;
 	private PacketBuffer p;
 
-	public void serverPacketData( INetworkInfo manager, AppEngPacket packet, EntityPlayer player )
+	public void serverPacketData( final INetworkInfo manager, final AppEngPacket packet, final EntityPlayer player )
 	{
 		throw new UnsupportedOperationException( "This packet ( " + this.getPacketID() + " does not implement a server side handler." );
 	}
@@ -51,12 +51,12 @@ public abstract class AppEngPacket implements Packet
 		return AppEngPacketHandlerBase.PacketTypes.getID( this.getClass() ).ordinal();
 	}
 
-	public void clientPacketData( INetworkInfo network, AppEngPacket packet, EntityPlayer player )
+	public void clientPacketData( final INetworkInfo network, final AppEngPacket packet, final EntityPlayer player )
 	{
 		throw new UnsupportedOperationException( "This packet ( " + this.getPacketID() + " does not implement a client side handler." );
 	}
 
-	protected void configureWrite( ByteBuf data )
+	protected void configureWrite( final ByteBuf data )
 	{
 		data.capacity( data.readableBytes() );
 		this.p = new PacketBuffer(data);
@@ -69,7 +69,7 @@ public abstract class AppEngPacket implements Packet
 			throw new IllegalArgumentException( "Sorry AE2 made a " + this.p.array().length + " byte packet by accident!" );
 		}
 
-		FMLProxyPacket pp = new FMLProxyPacket( this.p, NetworkHandler.instance.getChannel() );
+		final FMLProxyPacket pp = new FMLProxyPacket( this.p, NetworkHandler.instance.getChannel() );
 
 		if( AEConfig.instance.isFeatureEnabled( AEFeature.PacketLogging ) )
 		{
@@ -80,23 +80,23 @@ public abstract class AppEngPacket implements Packet
 	}
 	
 	@Override
-    public void readPacketData(PacketBuffer buf) throws IOException
+    public void readPacketData( final PacketBuffer buf) throws IOException
     {
     	throw new RuntimeException( "Not Implemented" );
     }
 
 	@Override
-	public void writePacketData(PacketBuffer buf) throws IOException
+	public void writePacketData( final PacketBuffer buf) throws IOException
     {
     	throw new RuntimeException( "Not Implemented" );
     }
 
 	PacketCallState caller;
 	
-	public void setCallParam( PacketCallState call ){caller = call;}
+	public void setCallParam( final PacketCallState call ){caller = call;}
 	
 	@Override
-	public void processPacket(INetHandler handler)
+	public void processPacket( final INetHandler handler)
     {
 		caller.call(this);
     }

@@ -34,15 +34,15 @@ public final class DispenserBlockTool extends BehaviorDefaultDispenseItem
 {
 
 	@Override
-	protected ItemStack dispenseStack( IBlockSource dispenser, ItemStack dispensedItem )
+	protected ItemStack dispenseStack( final IBlockSource dispenser, final ItemStack dispensedItem )
 	{
-		Item i = dispensedItem.getItem();
+		final Item i = dispensedItem.getItem();
 		if( i instanceof IBlockTool )
 		{
-			EnumFacing enumfacing = BlockDispenser.getFacing( dispenser.getBlockMetadata() );
-			IBlockTool tm = (IBlockTool) i;
+			final EnumFacing enumfacing = BlockDispenser.getFacing( dispenser.getBlockMetadata() );
+			final IBlockTool tm = (IBlockTool) i;
 
-			World w = dispenser.getWorld();
+			final World w = dispenser.getWorld();
 			if( w instanceof WorldServer )
 			{
 				tm.onItemUse( dispensedItem, Platform.getPlayer( (WorldServer) w ), w, dispenser.getBlockPos().offset( enumfacing ), enumfacing, 0.5f, 0.5f, 0.5f );

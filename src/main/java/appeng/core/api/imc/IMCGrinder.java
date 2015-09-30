@@ -63,16 +63,16 @@ import appeng.core.api.IIMCProcessor;
 public class IMCGrinder implements IIMCProcessor
 {
 	@Override
-	public void process( IMCMessage m )
+	public void process( final IMCMessage m )
 	{
-		NBTTagCompound msg = m.getNBTValue();
-		NBTTagCompound inTag = (NBTTagCompound) msg.getTag( "in" );
-		NBTTagCompound outTag = (NBTTagCompound) msg.getTag( "out" );
+		final NBTTagCompound msg = m.getNBTValue();
+		final NBTTagCompound inTag = (NBTTagCompound) msg.getTag( "in" );
+		final NBTTagCompound outTag = (NBTTagCompound) msg.getTag( "out" );
 
-		ItemStack in = ItemStack.loadItemStackFromNBT( inTag );
-		ItemStack out = ItemStack.loadItemStackFromNBT( outTag );
+		final ItemStack in = ItemStack.loadItemStackFromNBT( inTag );
+		final ItemStack out = ItemStack.loadItemStackFromNBT( outTag );
 
-		int turns = msg.getInteger( "turns" );
+		final int turns = msg.getInteger( "turns" );
 
 		if( in == null )
 		{
@@ -86,15 +86,15 @@ public class IMCGrinder implements IIMCProcessor
 
 		if( msg.hasKey( "optional" ) )
 		{
-			NBTTagCompound optionalTag = (NBTTagCompound) msg.getTag( "optional" );
-			ItemStack optional = ItemStack.loadItemStackFromNBT( optionalTag );
+			final NBTTagCompound optionalTag = (NBTTagCompound) msg.getTag( "optional" );
+			final ItemStack optional = ItemStack.loadItemStackFromNBT( optionalTag );
 
 			if( optional == null )
 			{
 				throw new IllegalStateException( "invalid optional" );
 			}
 
-			float chance = msg.getFloat( "chance" );
+			final float chance = msg.getFloat( "chance" );
 
 			AEApi.instance().registries().grinder().addRecipe( in, out, optional, chance, turns );
 		}

@@ -47,13 +47,13 @@ public class FacadeContainer implements IFacadeContainer
 	final int facades = 6;
 	final CableBusStorage storage;
 
-	public FacadeContainer( CableBusStorage cbs )
+	public FacadeContainer( final CableBusStorage cbs )
 	{
 		this.storage = cbs;
 	}
 
 	@Override
-	public boolean addFacade( IFacadePart a )
+	public boolean addFacade( final IFacadePart a )
 	{
 		if( this.getFacade( a.getSide() ) == null )
 		{
@@ -64,7 +64,7 @@ public class FacadeContainer implements IFacadeContainer
 	}
 
 	@Override
-	public void removeFacade( IPartHost host, AEPartLocation side )
+	public void removeFacade( final IPartHost host, final AEPartLocation side )
 	{
 		if( side != null && side != AEPartLocation.INTERNAL )
 		{
@@ -80,7 +80,7 @@ public class FacadeContainer implements IFacadeContainer
 	}
 
 	@Override
-	public IFacadePart getFacade( AEPartLocation s )
+	public IFacadePart getFacade( final AEPartLocation s )
 	{
 		return this.storage.getFacade( s.ordinal() );
 	}
@@ -88,7 +88,7 @@ public class FacadeContainer implements IFacadeContainer
 	@Override
 	public void rotateLeft()
 	{
-		IFacadePart[] newFacades = new FacadePart[6];
+		final IFacadePart[] newFacades = new FacadePart[6];
 
 		newFacades[AEPartLocation.UP.ordinal()] = this.storage.getFacade( AEPartLocation.UP.ordinal() );
 		newFacades[AEPartLocation.DOWN.ordinal()] = this.storage.getFacade( AEPartLocation.DOWN.ordinal() );
@@ -106,13 +106,13 @@ public class FacadeContainer implements IFacadeContainer
 	}
 
 	@Override
-	public void writeToNBT( NBTTagCompound c )
+	public void writeToNBT( final NBTTagCompound c )
 	{
 		for( int x = 0; x < this.facades; x++ )
 		{
 			if( this.storage.getFacade( x ) != null )
 			{
-				NBTTagCompound data = new NBTTagCompound();
+				final NBTTagCompound data = new NBTTagCompound();
 				this.storage.getFacade( x ).getItemStack().writeToNBT( data );
 				c.setTag( "facade:" + x, data );
 			}
@@ -120,22 +120,22 @@ public class FacadeContainer implements IFacadeContainer
 	}
 
 	@Override
-	public boolean readFromStream( ByteBuf out ) throws IOException
+	public boolean readFromStream( final ByteBuf out ) throws IOException
 	{
-		int facadeSides = out.readByte();
+		final int facadeSides = out.readByte();
 
 		boolean changed = false;
 
-		int[] ids = new int[2];
+		final int[] ids = new int[2];
 		for( int x = 0; x < this.facades; x++ )
 		{
-			AEPartLocation side = AEPartLocation.fromOrdinal( x );
-			int ix = ( 1 << x );
+			final AEPartLocation side = AEPartLocation.fromOrdinal( x );
+			final int ix = ( 1 << x );
 			if( ( facadeSides & ix ) == ix )
 			{
 				ids[0] = out.readInt();
 				ids[1] = out.readInt();
-				boolean isBC = ids[0] < 0;
+				final boolean isBC = ids[0] < 0;
 				ids[0] = Math.abs( ids[0] );
 
 				if( isBC && IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.BuildCraftTransport ) )
@@ -150,10 +150,10 @@ public class FacadeContainer implements IFacadeContainer
 				else 
 				if( !isBC )
 				{
-					for( Item facadeItem : AEApi.instance().definitions().items().facade().maybeItem().asSet() )
+					for( final Item facadeItem : AEApi.instance().definitions().items().facade().maybeItem().asSet() )
 					{
-						ItemFacade ifa = (ItemFacade) facadeItem;
-						ItemStack facade = ifa.createFromIDs( ids );
+						final ItemFacade ifa = (ItemFacade) facadeItem;
+						final ItemStack facade = ifa.createFromIDs( ids );
 						if( facade != null )
 						{
 							changed = changed || this.storage.getFacade( x ) == null;
@@ -173,19 +173,19 @@ public class FacadeContainer implements IFacadeContainer
 	}
 
 	@Override
-	public void readFromNBT( NBTTagCompound c )
+	public void readFromNBT( final NBTTagCompound c )
 	{
 		for( int x = 0; x < this.facades; x++ )
 		{
 			this.storage.setFacade( x, null );
 
-			NBTTagCompound t = c.getCompoundTag( "facade:" + x );
+			final NBTTagCompound t = c.getCompoundTag( "facade:" + x );
 			if( t != null )
 			{
-				ItemStack is = ItemStack.loadItemStackFromNBT( t );
+				final ItemStack is = ItemStack.loadItemStackFromNBT( t );
 				if( is != null )
 				{
-					Item i = is.getItem();
+					final Item i = is.getItem();
 					if( i instanceof IFacadeItem )
 					{
 						this.storage.setFacade( x, ( (IFacadeItem) i ).createPartFromItemStack( is, AEPartLocation.fromOrdinal( x ) ) );
@@ -207,7 +207,7 @@ public class FacadeContainer implements IFacadeContainer
 	}
 
 	@Override
-	public void writeToStream( ByteBuf out ) throws IOException
+	public void writeToStream( final ByteBuf out ) throws IOException
 	{
 		int facadeSides = 0;
 		for( int x = 0; x < this.facades; x++ )
@@ -221,11 +221,11 @@ public class FacadeContainer implements IFacadeContainer
 
 		for( int x = 0; x < this.facades; x++ )
 		{
-			IFacadePart part = this.getFacade( AEPartLocation.fromOrdinal( x ) );
+			final IFacadePart part = this.getFacade( AEPartLocation.fromOrdinal( x ) );
 			if( part != null )
 			{
-				int itemID = Item.getIdFromItem( part.getItem() );
-				int dmgValue = part.getItemDamage();
+				final int itemID = Item.getIdFromItem( part.getItem() );
+				final int dmgValue = part.getItemDamage();
 				out.writeInt( itemID * ( part.notAEFacade() ? -1 : 1 ) );
 				out.writeInt( dmgValue );
 			}

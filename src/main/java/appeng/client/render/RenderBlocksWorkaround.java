@@ -37,7 +37,7 @@ public class RenderBlocksWorkaround extends ModelGenerator
 	public float opacity;
 	
 	public void setTexture(
-			Object object )
+			final Object object )
 	{
 		// TODO Auto-generated method stub
 		

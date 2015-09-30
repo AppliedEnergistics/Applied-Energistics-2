@@ -19,7 +19,7 @@ import appeng.api.features.InscriberProcessType;
  */
 public class InscriberInscribeRecipe extends InscriberRecipe
 {
-	public InscriberInscribeRecipe( @Nonnull Collection<ItemStack> inputs, @Nonnull ItemStack output, @Nullable ItemStack top, @Nullable ItemStack bot )
+	public InscriberInscribeRecipe( @Nonnull final Collection<ItemStack> inputs, @Nonnull final ItemStack output, @Nullable final ItemStack top, @Nullable final ItemStack bot )
 	{
 		super( inputs, output, top, bot, InscriberProcessType.Inscribe );
 	}

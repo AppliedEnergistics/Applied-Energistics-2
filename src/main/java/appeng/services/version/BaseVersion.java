@@ -19,7 +19,7 @@ public abstract class BaseVersion implements Version
 	 *
 	 * @throws AssertionError if assertion are enabled and revision or build are not natural numbers
 	 */
-	public BaseVersion( int revision, Channel channel, int build )
+	public BaseVersion( final int revision, final Channel channel, final int build )
 	{
 		assert revision >= 0;
 		assert build >= 0;
@@ -63,7 +63,7 @@ public abstract class BaseVersion implements Version
 	}
 
 	@Override
-	public final boolean equals( Object o )
+	public final boolean equals( final Object o )
 	{
 		if( this == o )
 		{
@@ -74,7 +74,7 @@ public abstract class BaseVersion implements Version
 			return false;
 		}
 
-		Version that = (Version) o;
+		final Version that = (Version) o;
 
 		if( this.revision != that.revision() )
 		{

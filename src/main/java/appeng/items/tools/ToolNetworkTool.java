@@ -68,18 +68,18 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench /
 	}
 
 	@Override
-	public IGuiItemObject getGuiObject( ItemStack is, World world, BlockPos pos )
+	public IGuiItemObject getGuiObject( final ItemStack is, final World world, final BlockPos pos )
 	{
-		TileEntity te = world.getTileEntity( pos );
+		final TileEntity te = world.getTileEntity( pos );
 		return new NetworkToolViewer( is, (IGridHost) ( te instanceof IGridHost ? te : null ) );
 	}
 
 	@Override
-	public ItemStack onItemRightClick( ItemStack it, World w, EntityPlayer p )
+	public ItemStack onItemRightClick( final ItemStack it, final World w, final EntityPlayer p )
 	{
 		if( Platform.isClient() )
 		{
-			MovingObjectPosition mop = ClientHelper.proxy.getMOP();
+			final MovingObjectPosition mop = ClientHelper.proxy.getMOP();
 
 			if( mop == null )
 			{
@@ -99,20 +99,20 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench /
 	
 	@Override
 	public boolean onItemUseFirst(
-			ItemStack stack,
-			EntityPlayer player,
-			World world,
-			BlockPos pos,
-			EnumFacing side,
-			float hitX,
-			float hitY,
-			float hitZ )
+			final ItemStack stack,
+			final EntityPlayer player,
+			final World world,
+			final BlockPos pos,
+			final EnumFacing side,
+			final float hitX,
+			final float hitY,
+			final float hitZ )
 	{
-		MovingObjectPosition mop = new MovingObjectPosition( new Vec3( hitX, hitY, hitZ ), side, pos );
-		TileEntity te = world.getTileEntity( pos );
+		final MovingObjectPosition mop = new MovingObjectPosition( new Vec3( hitX, hitY, hitZ ), side, pos );
+		final TileEntity te = world.getTileEntity( pos );
 		if( te instanceof IPartHost )
 		{
-			SelectedPart part = ( (IPartHost) te ).selectPart( mop.hitVec );
+			final SelectedPart part = ( (IPartHost) te ).selectPart( mop.hitVec );
 			if( part.part != null )
 			{
 				if( part.part instanceof INetworkToolAgent && !( (INetworkToolAgent) part.part ).showNetworkInfo( mop ) )
@@ -135,14 +135,14 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench /
 
 	@Override
 	public boolean doesSneakBypassUse(
-			World world,
-			BlockPos pos,
-			EntityPlayer player )
+			final World world,
+			final BlockPos pos,
+			final EntityPlayer player )
 	{
 		return true;
 	}
 
-	public boolean serverSideToolLogic( ItemStack is, EntityPlayer p, World w, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ )
+	public boolean serverSideToolLogic( final ItemStack is, final EntityPlayer p, final World w, final BlockPos pos, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
 	{
 		if( side != null )
 		{
@@ -151,10 +151,10 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench /
 				return false;
 			}
 
-			Block b = w.getBlockState( pos ).getBlock();
+			final Block b = w.getBlockState( pos ).getBlock();
 			if( b != null && !p.isSneaking() )
 			{
-				TileEntity te = w.getTileEntity( pos );
+				final TileEntity te = w.getTileEntity( pos );
 				if( !( te instanceof IGridHost ) )
 				{
 					if( b.rotateBlock( w, pos, side ) )
@@ -173,7 +173,7 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench /
 					return true;
 				}
 
-				TileEntity te = w.getTileEntity( pos );
+				final TileEntity te = w.getTileEntity( pos );
 
 				if( te instanceof IGridHost )
 				{
@@ -201,9 +201,9 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench /
 
 	@Override
 	public boolean canWrench(
-			ItemStack wrench,
-			EntityPlayer player,
-			BlockPos pos )
+			final ItemStack wrench,
+			final EntityPlayer player,
+			final BlockPos pos )
 	{
 		return true;
 	}

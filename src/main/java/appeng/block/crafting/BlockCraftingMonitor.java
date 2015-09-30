@@ -53,12 +53,12 @@ public class BlockCraftingMonitor extends BlockCraftingUnit
 
 	@Override
 	public IAESprite getIcon(
-			EnumFacing side,
-			IBlockState state )
+			final EnumFacing side,
+			final IBlockState state )
 	{
 		if( side != EnumFacing.SOUTH )
 		{
-			for( Block craftingUnitBlock : AEApi.instance().definitions().blocks().craftingUnit().maybeBlock().asSet() )
+			for( final Block craftingUnitBlock : AEApi.instance().definitions().blocks().craftingUnit().maybeBlock().asSet() )
 			{
 				return ( (BlockCraftingUnit)craftingUnitBlock ).getIcon( side, state );
 			}
@@ -69,7 +69,7 @@ public class BlockCraftingMonitor extends BlockCraftingUnit
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void getCheckedSubBlocks( Item item, CreativeTabs tabs, List<ItemStack> itemStacks )
+	public void getCheckedSubBlocks( final Item item, final CreativeTabs tabs, final List<ItemStack> itemStacks )
 	{
 		itemStacks.add( new ItemStack( this, 1, 0 ) );
 	}

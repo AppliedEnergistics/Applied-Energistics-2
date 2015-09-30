@@ -32,7 +32,7 @@ public final class EntityFloatingItem extends EntityItem
 	int superDeath = 0;
 	float progress = 0;
 
-	public EntityFloatingItem( Entity parent, World world, double x, double y, double z, ItemStack stack )
+	public EntityFloatingItem( final Entity parent, final World world, final double x, final double y, final double z, final ItemStack stack )
 	{
 		super( world, x, y, z, stack );
 		this.motionX = this.motionY = this.motionZ = 0.0d;
@@ -60,7 +60,7 @@ public final class EntityFloatingItem extends EntityItem
 		this.setNoDespawn();
 	}
 
-	public void setProgress( float progress )
+	public void setProgress( final float progress )
 	{
 		this.progress = progress;
 		if( this.progress > 0.99 )

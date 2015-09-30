@@ -29,25 +29,25 @@ public class SlotFake extends AppEngSlot
 
 	final int invSlot;
 
-	public SlotFake( IInventory inv, int idx, int x, int y )
+	public SlotFake( final IInventory inv, final int idx, final int x, final int y )
 	{
 		super( inv, idx, x, y );
 		this.invSlot = idx;
 	}
 
 	@Override
-	public void onPickupFromSlot( EntityPlayer par1EntityPlayer, ItemStack par2ItemStack )
+	public void onPickupFromSlot( final EntityPlayer par1EntityPlayer, final ItemStack par2ItemStack )
 	{
 	}
 
 	@Override
-	public ItemStack decrStackSize( int par1 )
+	public ItemStack decrStackSize( final int par1 )
 	{
 		return null;
 	}
 
 	@Override
-	public boolean isItemValid( ItemStack par1ItemStack )
+	public boolean isItemValid( final ItemStack par1ItemStack )
 	{
 		return false;
 	}
@@ -64,7 +64,7 @@ public class SlotFake extends AppEngSlot
 	}
 
 	@Override
-	public boolean canTakeStack( EntityPlayer par1EntityPlayer )
+	public boolean canTakeStack( final EntityPlayer par1EntityPlayer )
 	{
 		return false;
 	}

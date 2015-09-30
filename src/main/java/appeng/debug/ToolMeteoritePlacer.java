@@ -43,22 +43,22 @@ public class ToolMeteoritePlacer extends AEBaseItem
 
 	@Override
 	public boolean onItemUseFirst(
-			ItemStack stack,
-			EntityPlayer player,
-			World world,
-			BlockPos pos,
-			EnumFacing side,
-			float hitX,
-			float hitY,
-			float hitZ )
+			final ItemStack stack,
+			final EntityPlayer player,
+			final World world,
+			final BlockPos pos,
+			final EnumFacing side,
+			final float hitX,
+			final float hitY,
+			final float hitZ )
 	{
 		if( Platform.isClient() )
 		{
 			return false;
 		}
 
-		MeteoritePlacer mp = new MeteoritePlacer();
-		boolean worked = mp.spawnMeteorite( new StandardWorld( world ), pos.getX(),pos.getY(),pos.getZ() );
+		final MeteoritePlacer mp = new MeteoritePlacer();
+		final boolean worked = mp.spawnMeteorite( new StandardWorld( world ), pos.getX(),pos.getY(),pos.getZ() );
 
 		if( !worked )
 		{

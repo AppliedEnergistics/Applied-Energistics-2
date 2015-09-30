@@ -51,7 +51,7 @@ public enum AEPartLocation
 
     public static final AEPartLocation[] SIDE_LOCATIONS = {DOWN, UP, NORTH, SOUTH, WEST, EAST};
     
-    private AEPartLocation(int x, int y, int z)
+    private AEPartLocation( final int x, final int y, final int z)
     {
         xOffset = x;
         yOffset = y;
@@ -61,7 +61,7 @@ public enum AEPartLocation
     /**
      * @return Part Location 
      */
-    public static AEPartLocation fromOrdinal(int id)
+    public static AEPartLocation fromOrdinal( final int id)
     {
         if (id >= 0 && id < SIDE_LOCATIONS.length)
             return SIDE_LOCATIONS[id];
@@ -75,7 +75,7 @@ public enum AEPartLocation
      * @param side
      * @return proper Part Location for a facing enum.
      */
-    public static AEPartLocation fromFacing(EnumFacing side)
+    public static AEPartLocation fromFacing( final EnumFacing side)
     {
     	if ( side == null ) return INTERNAL;
     	return values()[side.ordinal()];

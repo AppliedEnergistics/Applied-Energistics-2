@@ -50,7 +50,7 @@ public class NullRotation implements IOrientable
 	}
 
 	@Override
-	public void setOrientation( EnumFacing forward, EnumFacing up )
+	public void setOrientation( final EnumFacing forward, final EnumFacing up )
 	{
 
 	}

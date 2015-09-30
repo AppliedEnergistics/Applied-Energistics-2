@@ -29,10 +29,10 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class VibrantFX extends EntityFX
 {
 
-	public VibrantFX( World par1World, double x, double y, double z, double par8, double par10, double par12 )
+	public VibrantFX( final World par1World, final double x, final double y, final double z, final double par8, final double par10, final double par12 )
 	{
 		super( par1World, x, y, z, par8, par10, par12 );
-		float f = this.rand.nextFloat() * 0.1F + 0.8F;
+		final float f = this.rand.nextFloat() * 0.1F + 0.8F;
 		this.particleRed = f * 0.7f;
 		this.particleGreen = f * 0.89f;
 		this.particleBlue = f * 0.9f;
@@ -50,7 +50,7 @@ public class VibrantFX extends EntityFX
 	}
 
 	@Override
-	public float getBrightness( float par1 )
+	public float getBrightness( final float par1 )
 	{
 		return 1.0f;
 	}

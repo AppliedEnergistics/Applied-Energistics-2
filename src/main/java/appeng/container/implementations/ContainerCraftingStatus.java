@@ -42,7 +42,7 @@ public class ContainerCraftingStatus extends ContainerCraftingCPU
 	@GuiSync( 7 )
 	public String myName = "";
 
-	public ContainerCraftingStatus( InventoryPlayer ip, ITerminalHost te )
+	public ContainerCraftingStatus( final InventoryPlayer ip, final ITerminalHost te )
 	{
 		super( ip, te );
 	}
@@ -50,15 +50,15 @@ public class ContainerCraftingStatus extends ContainerCraftingCPU
 	@Override
 	public void detectAndSendChanges()
 	{
-		ICraftingGrid cc = this.network.getCache( ICraftingGrid.class );
-		ImmutableSet<ICraftingCPU> cpuSet = cc.getCpus();
+		final ICraftingGrid cc = this.network.getCache( ICraftingGrid.class );
+		final ImmutableSet<ICraftingCPU> cpuSet = cc.getCpus();
 
 		int matches = 0;
 		boolean changed = false;
-		for( ICraftingCPU c : cpuSet )
+		for( final ICraftingCPU c : cpuSet )
 		{
 			boolean found = false;
-			for( CraftingCPURecord ccr : this.cpus )
+			for( final CraftingCPURecord ccr : this.cpus )
 			{
 				if( ccr.cpu == c )
 				{
@@ -66,7 +66,7 @@ public class ContainerCraftingStatus extends ContainerCraftingCPU
 				}
 			}
 
-			boolean matched = this.cpuMatches( c );
+			final boolean matched = this.cpuMatches( c );
 
 			if( matched )
 			{
@@ -82,7 +82,7 @@ public class ContainerCraftingStatus extends ContainerCraftingCPU
 		if( changed || this.cpus.size() != matches )
 		{
 			this.cpus.clear();
-			for( ICraftingCPU c : cpuSet )
+			for( final ICraftingCPU c : cpuSet )
 			{
 				if( this.cpuMatches( c ) )
 				{
@@ -98,7 +98,7 @@ public class ContainerCraftingStatus extends ContainerCraftingCPU
 		super.detectAndSendChanges();
 	}
 
-	private boolean cpuMatches( ICraftingCPU c )
+	private boolean cpuMatches( final ICraftingCPU c )
 	{
 		return c.isBusy();
 	}
@@ -135,7 +135,7 @@ public class ContainerCraftingStatus extends ContainerCraftingCPU
 		}
 	}
 
-	public void cycleCpu( boolean next )
+	public void cycleCpu( final boolean next )
 	{
 		if( next )
 		{

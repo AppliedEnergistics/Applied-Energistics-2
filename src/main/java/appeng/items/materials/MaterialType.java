@@ -94,19 +94,19 @@ public enum MaterialType
 	private Class<? extends Entity> droppedEntity;
 	private boolean isRegistered = false;
 
-	MaterialType( int metaValue )
+	MaterialType( final int metaValue )
 	{
 		this.damageValue = metaValue;
 		this.features = EnumSet.of( AEFeature.Core );
 	}
 
-	MaterialType( int metaValue, AEFeature part )
+	MaterialType( final int metaValue, final AEFeature part )
 	{
 		this.damageValue = metaValue;
 		this.features = EnumSet.of( part );
 	}
 
-	MaterialType( int metaValue, AEFeature part, Class<? extends Entity> c )
+	MaterialType( final int metaValue, final AEFeature part, final Class<? extends Entity> c )
 	{
 		this.features = EnumSet.of( part );
 		this.damageValue = metaValue;
@@ -115,7 +115,7 @@ public enum MaterialType
 		EntityRegistry.registerModEntity( this.droppedEntity, this.droppedEntity.getSimpleName(), EntityIds.get( this.droppedEntity ), AppEng.instance(), 16, 4, true );
 	}
 
-	MaterialType( int metaValue, AEFeature part, String oreDictionary, Class<? extends Entity> c )
+	MaterialType( final int metaValue, final AEFeature part, final String oreDictionary, final Class<? extends Entity> c )
 	{
 		this.features = EnumSet.of( part );
 		this.damageValue = metaValue;
@@ -124,14 +124,14 @@ public enum MaterialType
 		EntityRegistry.registerModEntity( this.droppedEntity, this.droppedEntity.getSimpleName(), EntityIds.get( this.droppedEntity ), AppEng.instance(), 16, 4, true );
 	}
 
-	MaterialType( int metaValue, AEFeature part, String oreDictionary )
+	MaterialType( final int metaValue, final AEFeature part, final String oreDictionary )
 	{
 		this.features = EnumSet.of( part );
 		this.damageValue = metaValue;
 		this.oreName = oreDictionary;
 	}
 
-	public ItemStack stack( int size )
+	public ItemStack stack( final int size )
 	{
 		return new ItemStack( this.itemInstance, size, this.damageValue );
 	}

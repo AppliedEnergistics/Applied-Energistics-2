@@ -100,7 +100,7 @@ public enum AEColor
 	 */
 	public final EnumDyeColor dye;
 	
-	AEColor( String unlocalizedName, EnumDyeColor dye, int blackHex, int medHex, int whiteHex )
+	AEColor( final String unlocalizedName, final EnumDyeColor dye, final int blackHex, final int medHex, final int whiteHex )
 	{
 		this.unlocalizedName = unlocalizedName;
 		this.blackVariant = blackHex;
@@ -112,7 +112,7 @@ public enum AEColor
 	/**
 	 * Logic to see which colors match each other.. special handle for Transparent
 	 */
-	public boolean matches( AEColor color )
+	public boolean matches( final AEColor color )
 	{
 		return this == Transparent || color == Transparent || this == color;
 	}

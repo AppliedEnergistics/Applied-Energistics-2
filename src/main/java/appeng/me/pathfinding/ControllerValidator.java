@@ -38,7 +38,7 @@ public class ControllerValidator implements IGridVisitor
 	int maxY;
 	int maxZ;
 
-	public ControllerValidator( int x, int y, int z )
+	public ControllerValidator( final int x, final int y, final int z )
 	{
 		this.minX = x;
 		this.maxX = x;
@@ -49,14 +49,14 @@ public class ControllerValidator implements IGridVisitor
 	}
 
 	@Override
-	public boolean visitNode( IGridNode n )
+	public boolean visitNode( final IGridNode n )
 	{
-		IGridHost host = n.getMachine();
+		final IGridHost host = n.getMachine();
 		if( this.isValid && host instanceof TileController )
 		{
-			TileController c = (TileController) host;
+			final TileController c = (TileController) host;
 
-			BlockPos pos = c.getPos();
+			final BlockPos pos = c.getPos();
 			
 			this.minX = Math.min( pos.getX(), this.minX );
 			this.maxX = Math.max( pos.getX(), this.maxX );

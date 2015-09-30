@@ -64,7 +64,7 @@ public abstract class AbstractPartTerminal extends AbstractPartDisplay implement
 	private final IConfigManager cm = new ConfigManager( this );
 	private final AppEngInternalInventory viewCell = new AppEngInternalInventory( this, 5 );
 
-	public AbstractPartTerminal( ItemStack is )
+	public AbstractPartTerminal( final ItemStack is )
 	{
 		super( is );
 
@@ -74,7 +74,7 @@ public abstract class AbstractPartTerminal extends AbstractPartDisplay implement
 	}
 
 	@Override
-	public void getDrops( List<ItemStack> drops, boolean wrenched )
+	public void getDrops( final List<ItemStack> drops, final boolean wrenched )
 	{
 		super.getDrops( drops, wrenched );
 
@@ -94,7 +94,7 @@ public abstract class AbstractPartTerminal extends AbstractPartDisplay implement
 	}
 
 	@Override
-	public void readFromNBT( NBTTagCompound data )
+	public void readFromNBT( final NBTTagCompound data )
 	{
 		super.readFromNBT( data );
 		this.cm.readFromNBT( data );
@@ -102,7 +102,7 @@ public abstract class AbstractPartTerminal extends AbstractPartDisplay implement
 	}
 
 	@Override
-	public void writeToNBT( NBTTagCompound data )
+	public void writeToNBT( final NBTTagCompound data )
 	{
 		super.writeToNBT( data );
 		this.cm.writeToNBT( data );
@@ -110,7 +110,7 @@ public abstract class AbstractPartTerminal extends AbstractPartDisplay implement
 	}
 
 	@Override
-	public boolean onPartActivate( EntityPlayer player, Vec3 pos )
+	public boolean onPartActivate( final EntityPlayer player, final Vec3 pos )
 	{
 		if( !super.onPartActivate( player, pos ) )
 		{
@@ -129,7 +129,7 @@ public abstract class AbstractPartTerminal extends AbstractPartDisplay implement
 		return false;
 	}
 
-	public GuiBridge getGui( EntityPlayer player )
+	public GuiBridge getGui( final EntityPlayer player )
 	{
 		return GuiBridge.GUI_ME;
 	}
@@ -163,7 +163,7 @@ public abstract class AbstractPartTerminal extends AbstractPartDisplay implement
 	}
 
 	@Override
-	public void updateSetting( IConfigManager manager, Enum settingName, Enum newValue )
+	public void updateSetting( final IConfigManager manager, final Enum settingName, final Enum newValue )
 	{
 
 	}
@@ -175,7 +175,7 @@ public abstract class AbstractPartTerminal extends AbstractPartDisplay implement
 	}
 
 	@Override
-	public void onChangeInventory( IInventory inv, int slot, InvOperation mc, ItemStack removedStack, ItemStack newStack )
+	public void onChangeInventory( final IInventory inv, final int slot, final InvOperation mc, final ItemStack removedStack, final ItemStack newStack )
 	{
 		this.host.markForSave();
 	}

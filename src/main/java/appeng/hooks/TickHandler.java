@@ -77,7 +77,7 @@ public class TickHandler
 		return this.cliPlayerColors;
 	}
 
-	public void addCallable( World w, IWorldCallable<?> c )
+	public void addCallable( final World w, final IWorldCallable<?> c )
 	{
 		if( w == null )
 		{
@@ -97,7 +97,7 @@ public class TickHandler
 		}
 	}
 
-	public void addInit( AEBaseTile tile )
+	public void addInit( final AEBaseTile tile )
 	{
 		if( Platform.isServer() ) // for no there is no reason to care about this on the client...
 		{
@@ -114,7 +114,7 @@ public class TickHandler
 		return this.client;
 	}
 
-	public void addNetwork( Grid grid )
+	public void addNetwork( final Grid grid )
 	{
 		if( Platform.isServer() ) // for no there is no reason to care about this on the client...
 		{
@@ -122,7 +122,7 @@ public class TickHandler
 		}
 	}
 
-	public void removeNetwork( Grid grid )
+	public void removeNetwork( final Grid grid )
 	{
 		if( Platform.isServer() ) // for no there is no reason to care about this on the client...
 		{
@@ -141,15 +141,15 @@ public class TickHandler
 	}
 
 	@SubscribeEvent
-	public void unloadWorld( WorldEvent.Unload ev )
+	public void unloadWorld( final WorldEvent.Unload ev )
 	{
 		if( Platform.isServer() ) // for no there is no reason to care about this on the client...
 		{
-			LinkedList<IGridNode> toDestroy = new LinkedList<IGridNode>();
+			final LinkedList<IGridNode> toDestroy = new LinkedList<IGridNode>();
 
-			for( Grid g : this.getRepo().networks )
+			for( final Grid g : this.getRepo().networks )
 			{
-				for( IGridNode n : g.getNodes() )
+				for( final IGridNode n : g.getNodes() )
 				{
 					if( n.getWorld() == ev.world )
 					{
@@ -158,7 +158,7 @@ public class TickHandler
 				}
 			}
 
-			for( IGridNode n : toDestroy )
+			for( final IGridNode n : toDestroy )
 			{
 				n.destroy();
 			}
@@ -166,9 +166,9 @@ public class TickHandler
 	}
 
 	@SubscribeEvent
-	public void onChunkLoad( ChunkEvent.Load load )
+	public void onChunkLoad( final ChunkEvent.Load load )
 	{
-		for( Object te : load.getChunk().getTileEntityMap().values() )
+		for( final Object te : load.getChunk().getTileEntityMap().values() )
 		{
 			if( te instanceof AEBaseTile )
 			{
@@ -178,13 +178,13 @@ public class TickHandler
 	}
 
 	@SubscribeEvent
-	public void onTick( TickEvent ev )
+	public void onTick( final TickEvent ev )
 	{
 
 		if( ev.type == Type.CLIENT && ev.phase == Phase.START )
 		{
 			this.tickColors( this.cliPlayerColors );
-			CableRenderMode currentMode = AEApi.instance().partHelper().getCableRenderMode();
+			final CableRenderMode currentMode = AEApi.instance().partHelper().getCableRenderMode();
 			if( currentMode != this.crm )
 			{
 				this.crm = currentMode;
@@ -194,17 +194,17 @@ public class TickHandler
 
 		if( ev.type == Type.WORLD && ev.phase == Phase.END )
 		{
-			WorldTickEvent wte = (WorldTickEvent) ev;
+			final WorldTickEvent wte = (WorldTickEvent) ev;
 			synchronized( this.craftingJobs )
 			{
-				Collection<CraftingJob> jobSet = this.craftingJobs.get( wte.world );
+				final Collection<CraftingJob> jobSet = this.craftingJobs.get( wte.world );
 				if( !jobSet.isEmpty() )
 				{
-					int simTime = Math.max( 1, AEConfig.instance.craftingCalculationTimePerTick / jobSet.size() );
-					Iterator<CraftingJob> i = jobSet.iterator();
+					final int simTime = Math.max( 1, AEConfig.instance.craftingCalculationTimePerTick / jobSet.size() );
+					final Iterator<CraftingJob> i = jobSet.iterator();
 					while( i.hasNext() )
 					{
-						CraftingJob cj = i.next();
+						final CraftingJob cj = i.next();
 						if( !cj.simulateFor( simTime ) )
 						{
 							i.remove();
@@ -219,10 +219,10 @@ public class TickHandler
 		{
 			this.tickColors( this.srvPlayerColors );
 			// ready tiles.
-			HandlerRep repo = this.getRepo();
+			final HandlerRep repo = this.getRepo();
 			while( !repo.tiles.isEmpty() )
 			{
-				AEBaseTile bt = repo.tiles.poll();
+				final AEBaseTile bt = repo.tiles.poll();
 				if( !bt.isInvalid() )
 				{
 					bt.onReady();
@@ -230,7 +230,7 @@ public class TickHandler
 			}
 
 			// tick networks.
-			for( Grid g : this.getRepo().networks )
+			for( final Grid g : this.getRepo().networks )
 			{
 				g.update();
 			}
@@ -248,12 +248,12 @@ public class TickHandler
 		}
 	}
 
-	private void tickColors( HashMap<Integer, PlayerColor> playerSet )
+	private void tickColors( final HashMap<Integer, PlayerColor> playerSet )
 	{
-		Iterator<PlayerColor> i = playerSet.values().iterator();
+		final Iterator<PlayerColor> i = playerSet.values().iterator();
 		while( i.hasNext() )
 		{
-			PlayerColor pc = i.next();
+			final PlayerColor pc = i.next();
 			if( pc.ticksLeft <= 0 )
 			{
 				i.remove();
@@ -262,14 +262,14 @@ public class TickHandler
 		}
 	}
 
-	private void processQueue( Queue<IWorldCallable<?>> queue, World world )
+	private void processQueue( final Queue<IWorldCallable<?>> queue, final World world )
 	{
 		if( queue == null )
 		{
 			return;
 		}
 
-		Stopwatch sw = Stopwatch.createStarted();
+		final Stopwatch sw = Stopwatch.createStarted();
 
 		IWorldCallable<?> c = null;
 		while( ( c = queue.poll() ) != null )
@@ -283,7 +283,7 @@ public class TickHandler
 					break;
 				}
 			}
-			catch( Exception e )
+			catch( final Exception e )
 			{
 				AELog.error( e );
 			}
@@ -294,7 +294,7 @@ public class TickHandler
 		// AELog.info( "processQueue Time: " + time + "ms" );
 	}
 
-	public void registerCraftingSimulation( World world, CraftingJob craftingJob )
+	public void registerCraftingSimulation( final World world, final CraftingJob craftingJob )
 	{
 		synchronized( this.craftingJobs )
 		{
@@ -324,7 +324,7 @@ public class TickHandler
 		protected final int myEntity;
 		protected int ticksLeft;
 
-		public PlayerColor( int id, AEColor col, int ticks )
+		public PlayerColor( final int id, final AEColor col, final int ticks )
 		{
 			this.myEntity = id;
 			this.myColor = col;

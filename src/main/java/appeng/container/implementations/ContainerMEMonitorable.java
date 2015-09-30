@@ -84,12 +84,12 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 	IConfigManager serverCM;
 	private IGridNode networkNode;
 
-	public ContainerMEMonitorable( InventoryPlayer ip, ITerminalHost monitorable )
+	public ContainerMEMonitorable( final InventoryPlayer ip, final ITerminalHost monitorable )
 	{
 		this( ip, monitorable, true );
 	}
 
-	protected ContainerMEMonitorable( InventoryPlayer ip, ITerminalHost monitorable, boolean bindInventory )
+	protected ContainerMEMonitorable( final InventoryPlayer ip, final ITerminalHost monitorable, final boolean bindInventory )
 	{
 		super( ip, monitorable instanceof TileEntity ? (TileEntity) monitorable : null, monitorable instanceof IPart ? (IPart) monitorable : null );
 
@@ -121,11 +121,11 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 				}
 				else if( monitorable instanceof IGridHost )
 				{
-					IGridNode node = ( (IGridHost) monitorable ).getGridNode( AEPartLocation.INTERNAL );
+					final IGridNode node = ( (IGridHost) monitorable ).getGridNode( AEPartLocation.INTERNAL );
 					if( node != null )
 					{
 						this.networkNode = node;
-						IGrid g = node.getGrid();
+						final IGrid g = node.getGrid();
 						if( g != null )
 						{
 							this.powerSrc = new ChannelPowerSrc( this.networkNode, (IEnergySource) g.getCache( IEnergyGrid.class ) );
@@ -175,21 +175,21 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 				this.isContainerValid = false;
 			}
 
-			for( Settings set : this.serverCM.getSettings() )
+			for( final Settings set : this.serverCM.getSettings() )
 			{
-				Enum<?> sideLocal = this.serverCM.getSetting( set );
-				Enum<?> sideRemote = this.clientCM.getSetting( set );
+				final Enum<?> sideLocal = this.serverCM.getSetting( set );
+				final Enum<?> sideRemote = this.clientCM.getSetting( set );
 
 				if( sideLocal != sideRemote )
 				{
 					this.clientCM.putSetting( set, sideLocal );
-					for( Object crafter : this.crafters )
+					for( final Object crafter : this.crafters )
 					{
 						try
 						{
 							NetworkHandler.instance.sendTo( new PacketValueConfig( set.name(), sideLocal.name() ), (EntityPlayerMP) crafter );
 						}
-						catch( IOException e )
+						catch( final IOException e )
 						{
 							AELog.error( e );
 						}
@@ -201,13 +201,13 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 			{
 				try
 				{
-					IItemList<IAEItemStack> monitorCache = this.monitor.getStorageList();
+					final IItemList<IAEItemStack> monitorCache = this.monitor.getStorageList();
 
-					PacketMEInventoryUpdate piu = new PacketMEInventoryUpdate();
+					final PacketMEInventoryUpdate piu = new PacketMEInventoryUpdate();
 
-					for( IAEItemStack is : this.items )
+					for( final IAEItemStack is : this.items )
 					{
-						IAEItemStack send = monitorCache.findPrecise( is );
+						final IAEItemStack send = monitorCache.findPrecise( is );
 						if( send == null )
 						{
 							is.setStackSize( 0 );
@@ -223,7 +223,7 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 					{
 						this.items.resetStatus();
 
-						for( Object c : this.crafters )
+						for( final Object c : this.crafters )
 						{
 							if( c instanceof EntityPlayer )
 							{
@@ -232,7 +232,7 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 						}
 					}
 				}
-				catch( IOException e )
+				catch( final IOException e )
 				{
 					AELog.error( e );
 				}
@@ -240,7 +240,7 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 
 			this.updatePowerStatus();
 
-			boolean oldAccessible = this.canAccessViewCells;
+			final boolean oldAccessible = this.canAccessViewCells;
 			this.canAccessViewCells = this.hasAccess( SecurityPermissions.BUILD, false );
 			if( this.canAccessViewCells != oldAccessible )
 			{
@@ -274,14 +274,14 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 				this.hasPower = this.powerSrc.extractAEPower( 1, Actionable.SIMULATE, PowerMultiplier.CONFIG ) > 0.8;
 			}
 		}
-		catch( Throwable t )
+		catch( final Throwable t )
 		{
 			// :P
 		}
 	}
 
 	@Override
-	public void onUpdate( String field, Object oldValue, Object newValue )
+	public void onUpdate( final String field, final Object oldValue, final Object newValue )
 	{
 		if( field.equals( "canAccessViewCells" ) )
 		{
@@ -298,29 +298,29 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 	}
 
 	@Override
-	public void onCraftGuiOpened( ICrafting c )
+	public void onCraftGuiOpened( final ICrafting c )
 	{
 		super.onCraftGuiOpened( c );
 
 		this.queueInventory( c );
 	}
 
-	public void queueInventory( ICrafting c )
+	public void queueInventory( final ICrafting c )
 	{
 		if( Platform.isServer() && c instanceof EntityPlayer && this.monitor != null )
 		{
 			try
 			{
 				PacketMEInventoryUpdate piu = new PacketMEInventoryUpdate();
-				IItemList<IAEItemStack> monitorCache = this.monitor.getStorageList();
+				final IItemList<IAEItemStack> monitorCache = this.monitor.getStorageList();
 
-				for( IAEItemStack send : monitorCache )
+				for( final IAEItemStack send : monitorCache )
 				{
 					try
 					{
 						piu.appendItem( send );
 					}
-					catch( BufferOverflowException boe )
+					catch( final BufferOverflowException boe )
 					{
 						NetworkHandler.instance.sendTo( piu, (EntityPlayerMP) c );
 
@@ -331,7 +331,7 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 
 				NetworkHandler.instance.sendTo( piu, (EntityPlayerMP) c );
 			}
-			catch( IOException e )
+			catch( final IOException e )
 			{
 				AELog.error( e );
 			}
@@ -339,7 +339,7 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 	}
 
 	@Override
-	public void removeCraftingFromCrafters( ICrafting c )
+	public void removeCraftingFromCrafters( final ICrafting c )
 	{
 		super.removeCraftingFromCrafters( c );
 
@@ -350,7 +350,7 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 	}
 
 	@Override
-	public void onContainerClosed( EntityPlayer player )
+	public void onContainerClosed( final EntityPlayer player )
 	{
 		super.onContainerClosed( player );
 		if( this.monitor != null )
@@ -360,15 +360,15 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 	}
 
 	@Override
-	public boolean isValid( Object verificationToken )
+	public boolean isValid( final Object verificationToken )
 	{
 		return true;
 	}
 
 	@Override
-	public void postChange( IBaseMonitor<IAEItemStack> monitor, Iterable<IAEItemStack> change, BaseActionSource source )
+	public void postChange( final IBaseMonitor<IAEItemStack> monitor, final Iterable<IAEItemStack> change, final BaseActionSource source )
 	{
-		for( IAEItemStack is : change )
+		for( final IAEItemStack is : change )
 		{
 			this.items.add( is );
 		}
@@ -377,18 +377,18 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 	@Override
 	public void onListUpdate()
 	{
-		for( Object c : this.crafters )
+		for( final Object c : this.crafters )
 		{
 			if( c instanceof ICrafting )
 			{
-				ICrafting cr = (ICrafting) c;
+				final ICrafting cr = (ICrafting) c;
 				this.queueInventory( cr );
 			}
 		}
 	}
 
 	@Override
-	public void updateSetting( IConfigManager manager, Enum settingName, Enum newValue )
+	public void updateSetting( final IConfigManager manager, final Enum settingName, final Enum newValue )
 	{
 		if( this.gui != null )
 		{
@@ -408,7 +408,7 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 
 	public ItemStack[] getViewCells()
 	{
-		ItemStack[] list = new ItemStack[this.cellView.length];
+		final ItemStack[] list = new ItemStack[this.cellView.length];
 
 		for( int x = 0; x < this.cellView.length; x++ )
 		{

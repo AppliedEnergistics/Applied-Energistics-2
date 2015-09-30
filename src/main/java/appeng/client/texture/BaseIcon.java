@@ -6,7 +6,7 @@ public class BaseIcon implements IAESprite
 {
 	final private TextureAtlasSprite spite;
 	
-	public BaseIcon( TextureAtlasSprite src )
+	public BaseIcon( final TextureAtlasSprite src )
 	{
 		spite = src;
 	}
@@ -31,7 +31,7 @@ public class BaseIcon implements IAESprite
 
 	@Override
 	public float getInterpolatedU(
-			double px )
+			final double px )
 	{
 		return spite.getInterpolatedU( px );
 	}
@@ -56,7 +56,7 @@ public class BaseIcon implements IAESprite
 
 	@Override
 	public float getInterpolatedV(
-			double px )
+			final double px )
 	{
 		return spite.getInterpolatedV( px );
 	}

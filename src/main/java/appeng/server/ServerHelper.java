@@ -69,7 +69,7 @@ public class ServerHelper extends CommonHelper
 	}
 
 	@Override
-	public void bindTileEntitySpecialRenderer( Class <? extends TileEntity> tile, AEBaseBlock blk )
+	public void bindTileEntitySpecialRenderer( final Class <? extends TileEntity> tile, final AEBaseBlock blk )
 	{
 		throw new UnsupportedOperationException( "This is a server..." );
 	}
@@ -79,7 +79,7 @@ public class ServerHelper extends CommonHelper
 	{
 		if( !Platform.isClient() )
 		{
-			MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
+			final MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
 
 			if( server != null )
 			{
@@ -91,22 +91,22 @@ public class ServerHelper extends CommonHelper
 	}
 
 	@Override
-	public void sendToAllNearExcept( EntityPlayer p, double x, double y, double z, double dist, World w, AppEngPacket packet )
+	public void sendToAllNearExcept( final EntityPlayer p, final double x, final double y, final double z, final double dist, final World w, final AppEngPacket packet )
 	{
 		if( Platform.isClient() )
 		{
 			return;
 		}
 
-		for( EntityPlayer o : this.getPlayers() )
+		for( final EntityPlayer o : this.getPlayers() )
 		{
-			EntityPlayerMP entityplayermp = (EntityPlayerMP) o;
+			final EntityPlayerMP entityplayermp = (EntityPlayerMP) o;
 
 			if( entityplayermp != p && entityplayermp.worldObj == w )
 			{
-				double dX = x - entityplayermp.posX;
-				double dY = y - entityplayermp.posY;
-				double dZ = z - entityplayermp.posZ;
+				final double dX = x - entityplayermp.posX;
+				final double dY = y - entityplayermp.posY;
+				final double dZ = z - entityplayermp.posZ;
 
 				if( dX * dX + dY * dY + dZ * dZ < dist * dist )
 				{
@@ -117,13 +117,13 @@ public class ServerHelper extends CommonHelper
 	}
 
 	@Override
-	public void spawnEffect( EffectType type, World worldObj, double posX, double posY, double posZ, Object o )
+	public void spawnEffect( final EffectType type, final World worldObj, final double posX, final double posY, final double posZ, final Object o )
 	{
 		// :P
 	}
 
 	@Override
-	public boolean shouldAddParticles( Random r )
+	public boolean shouldAddParticles( final Random r )
 	{
 		return false;
 	}
@@ -135,7 +135,7 @@ public class ServerHelper extends CommonHelper
 	}
 
 	@Override
-	public void doRenderItem( ItemStack sis, World tile )
+	public void doRenderItem( final ItemStack sis, final World tile )
 	{
 
 	}
@@ -164,7 +164,7 @@ public class ServerHelper extends CommonHelper
 	}
 
 	@Override
-	public void updateRenderMode( EntityPlayer player )
+	public void updateRenderMode( final EntityPlayer player )
 	{
 		this.renderModeBased = player;
 	}
@@ -176,29 +176,29 @@ public class ServerHelper extends CommonHelper
 	}
 
 	@Override
-	public void configureIcon( Object item, String name )
+	public void configureIcon( final Object item, final String name )
 	{
 
 	}
 
 	@Override
-	public ResourceLocation addIcon( String string )
+	public ResourceLocation addIcon( final String string )
 	{
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	protected CableRenderMode renderModeForPlayer( EntityPlayer player )
+	protected CableRenderMode renderModeForPlayer( final EntityPlayer player )
 	{
 		if( player != null )
 		{
 			for( int x = 0; x < InventoryPlayer.getHotbarSize(); x++ )
 			{
-				ItemStack is = player.inventory.getStackInSlot( x );
+				final ItemStack is = player.inventory.getStackInSlot( x );
 
 				if( is != null && is.getItem() instanceof ToolNetworkTool )
 				{
-					NBTTagCompound c = is.getTagCompound();
+					final NBTTagCompound c = is.getTagCompound();
 					if( c != null && c.getBoolean( "hideFacades" ) )
 					{
 						return CableRenderMode.CableView;

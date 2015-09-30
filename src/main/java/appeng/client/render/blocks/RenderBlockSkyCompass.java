@@ -54,7 +54,7 @@ public class RenderBlockSkyCompass extends BaseBlockRender<BlockSkyCompass, Tile
 	}
 
 	@Override
-	public void renderInventory( BlockSkyCompass blk, ItemStack is, ModelGenerator renderer, ItemRenderType type, Object[] obj )
+	public void renderInventory( final BlockSkyCompass blk, final ItemStack is, final ModelGenerator renderer, final ItemRenderType type, final Object[] obj )
 	{
 		/*
 		if( type == ItemRenderType.INVENTORY )
@@ -176,13 +176,13 @@ public class RenderBlockSkyCompass extends BaseBlockRender<BlockSkyCompass, Tile
 	}
 
 	@Override
-	public boolean renderInWorld( BlockSkyCompass blk, IBlockAccess world, BlockPos pos, ModelGenerator renderer )
+	public boolean renderInWorld( final BlockSkyCompass blk, final IBlockAccess world, final BlockPos pos, final ModelGenerator renderer )
 	{
 		return true;
 	}
 
 	@Override
-	public void renderTile( BlockSkyCompass block, TileSkyCompass skyCompass, WorldRenderer tess, double x, double y, double z, float partialTick, ModelGenerator renderer )
+	public void renderTile( final BlockSkyCompass block, final TileSkyCompass skyCompass, final WorldRenderer tess, final double x, final double y, final double z, final float partialTick, final ModelGenerator renderer )
 	{
 		if( skyCompass == null )
 		{
@@ -243,10 +243,10 @@ public class RenderBlockSkyCompass extends BaseBlockRender<BlockSkyCompass, Tile
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
 	}
 
-	private double flipidiy( double rad )
+	private double flipidiy( final double rad )
 	{
-		double x = Math.cos( rad );
-		double y = Math.sin( rad );
+		final double x = Math.cos( rad );
+		final double y = Math.sin( rad );
 		return Math.atan2( -y, x );
 	}
 }

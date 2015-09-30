@@ -54,10 +54,10 @@ public final class BlockVibrationChamber extends AEBaseTileBlock
 	}
 	
 	@Override
-	public appeng.client.texture.IAESprite getIcon(IBlockAccess w, BlockPos pos, EnumFacing side)
+	public appeng.client.texture.IAESprite getIcon( final IBlockAccess w, final BlockPos pos, final EnumFacing side)
 	{
-		IAESprite ico = super.getIcon( w, pos, side );
-		TileVibrationChamber tvc = this.getTileEntity( w, pos );
+		final IAESprite ico = super.getIcon( w, pos, side );
+		final TileVibrationChamber tvc = this.getTileEntity( w, pos );
 
 		if( tvc != null && tvc.isOn && ico == this.getRendererInstance().getTexture( AEPartLocation.SOUTH ) )
 		{
@@ -69,13 +69,13 @@ public final class BlockVibrationChamber extends AEBaseTileBlock
 
 	@Override
 	public boolean onActivated(
-			World w,
-			BlockPos pos,
-			EntityPlayer player,
-			EnumFacing side,
-			float hitX,
-			float hitY,
-			float hitZ )
+			final World w,
+			final BlockPos pos,
+			final EntityPlayer player,
+			final EnumFacing side,
+			final float hitX,
+			final float hitY,
+			final float hitZ )
 	{
 		if( player.isSneaking() )
 		{
@@ -84,7 +84,7 @@ public final class BlockVibrationChamber extends AEBaseTileBlock
 
 		if( Platform.isServer() )
 		{
-			TileVibrationChamber tc = this.getTileEntity( w, pos );
+			final TileVibrationChamber tc = this.getTileEntity( w, pos );
 			if( tc != null && !player.isSneaking() )
 			{
 				Platform.openGUI( player, tc, AEPartLocation.fromFacing( side ), GuiBridge.GUI_VIBRATION_CHAMBER );
@@ -97,39 +97,39 @@ public final class BlockVibrationChamber extends AEBaseTileBlock
 
 	@Override
 	public void randomDisplayTick(
-			World w,
-			BlockPos pos,
-			IBlockState state,
-			Random r )
+			final World w,
+			final BlockPos pos,
+			final IBlockState state,
+			final Random r )
 	{
 		if( !AEConfig.instance.enableEffects )
 		{
 			return;
 		}
 
-		AEBaseTile tile = this.getTileEntity( w, pos );
+		final AEBaseTile tile = this.getTileEntity( w, pos );
 		if( tile instanceof TileVibrationChamber )
 		{
-			TileVibrationChamber tc = (TileVibrationChamber) tile;
+			final TileVibrationChamber tc = (TileVibrationChamber) tile;
 			if( tc.isOn )
 			{
 				float f1 = pos.getX() + 0.5F;
 				float f2 = pos.getY() + 0.5F;
 				float f3 = pos.getZ() + 0.5F;
 
-				EnumFacing forward = tc.getForward();
-				EnumFacing up = tc.getUp();
+				final EnumFacing forward = tc.getForward();
+				final EnumFacing up = tc.getUp();
 
-				int west_x = forward.getFrontOffsetY() * up.getFrontOffsetZ() - forward.getFrontOffsetZ() * up.getFrontOffsetY();
-				int west_y = forward.getFrontOffsetZ() * up.getFrontOffsetX() - forward.getFrontOffsetX() * up.getFrontOffsetZ();
-				int west_z = forward.getFrontOffsetX() * up.getFrontOffsetY() - forward.getFrontOffsetY() * up.getFrontOffsetX();
+				final int west_x = forward.getFrontOffsetY() * up.getFrontOffsetZ() - forward.getFrontOffsetZ() * up.getFrontOffsetY();
+				final int west_y = forward.getFrontOffsetZ() * up.getFrontOffsetX() - forward.getFrontOffsetX() * up.getFrontOffsetZ();
+				final int west_z = forward.getFrontOffsetX() * up.getFrontOffsetY() - forward.getFrontOffsetY() * up.getFrontOffsetX();
 
 				f1 += forward.getFrontOffsetX() * 0.6;
 				f2 += forward.getFrontOffsetY() * 0.6;
 				f3 += forward.getFrontOffsetZ() * 0.6;
 
-				float ox = r.nextFloat();
-				float oy = r.nextFloat() * 0.2f;
+				final float ox = r.nextFloat();
+				final float oy = r.nextFloat() * 0.2f;
 
 				f1 += up.getFrontOffsetX() * ( -0.3 + oy );
 				f2 += up.getFrontOffsetY() * ( -0.3 + oy );

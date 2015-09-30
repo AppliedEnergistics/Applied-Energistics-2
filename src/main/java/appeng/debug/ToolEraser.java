@@ -47,21 +47,21 @@ public class ToolEraser extends AEBaseItem
 	
 	@Override
 	public boolean onItemUseFirst(
-			ItemStack stack,
-			EntityPlayer player,
-			World world,
-			BlockPos pos,
-			EnumFacing side,
-			float hitX,
-			float hitY,
-			float hitZ )
+			final ItemStack stack,
+			final EntityPlayer player,
+			final World world,
+			final BlockPos pos,
+			final EnumFacing side,
+			final float hitX,
+			final float hitY,
+			final float hitZ )
 	{
 		if( Platform.isClient() )
 		{
 			return false;
 		}
 
-		IBlockState state = world.getBlockState( pos );
+		final IBlockState state = world.getBlockState( pos );
 
 		List<BlockPos> next = new LinkedList<BlockPos>();
 		next.add( pos );
@@ -69,12 +69,12 @@ public class ToolEraser extends AEBaseItem
 		int blocks = 0;
 		while( blocks < BLOCK_ERASE_LIMIT && !next.isEmpty() )
 		{
-			List<BlockPos> c = next;
+			final List<BlockPos> c = next;
 			next = new LinkedList<BlockPos>();
 
-			for( BlockPos wc : c )
+			for( final BlockPos wc : c )
 			{
-				IBlockState c_state = world.getBlockState( wc );
+				final IBlockState c_state = world.getBlockState( wc );
 
 				if( state == c_state )
 				{

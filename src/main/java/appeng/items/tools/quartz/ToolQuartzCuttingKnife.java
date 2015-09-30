@@ -42,7 +42,7 @@ public class ToolQuartzCuttingKnife extends AEBaseItem implements IGuiItem
 {
 	private final AEFeature type;
 
-	public ToolQuartzCuttingKnife( AEFeature type )
+	public ToolQuartzCuttingKnife( final AEFeature type )
 	{
 		super( Optional.of( type.name() ) );
 
@@ -54,14 +54,14 @@ public class ToolQuartzCuttingKnife extends AEBaseItem implements IGuiItem
 
 	@Override
 	public boolean onItemUse(
-			ItemStack stack,
-			EntityPlayer p,
-			World worldIn,
-			BlockPos pos,
-			EnumFacing side,
-			float hitX,
-			float hitY,
-			float hitZ )
+			final ItemStack stack,
+			final EntityPlayer p,
+			final World worldIn,
+			final BlockPos pos,
+			final EnumFacing side,
+			final float hitX,
+			final float hitY,
+			final float hitZ )
 	{
 		if( Platform.isServer() )
 		{
@@ -71,7 +71,7 @@ public class ToolQuartzCuttingKnife extends AEBaseItem implements IGuiItem
 	}
 
 	@Override
-	public ItemStack onItemRightClick( ItemStack it, World w, EntityPlayer p )
+	public ItemStack onItemRightClick( final ItemStack it, final World w, final EntityPlayer p )
 	{
 		if( Platform.isServer() )
 		{
@@ -82,7 +82,7 @@ public class ToolQuartzCuttingKnife extends AEBaseItem implements IGuiItem
 	}
 
 	@Override
-	public boolean getIsRepairable( ItemStack a, ItemStack b )
+	public boolean getIsRepairable( final ItemStack a, final ItemStack b )
 	{
 		return Platform.canRepair( this.type, a, b );
 	}
@@ -94,20 +94,20 @@ public class ToolQuartzCuttingKnife extends AEBaseItem implements IGuiItem
 	}
 
 	@Override
-	public ItemStack getContainerItem( ItemStack itemStack )
+	public ItemStack getContainerItem( final ItemStack itemStack )
 	{
 		itemStack.setItemDamage( itemStack.getItemDamage() + 1 );
 		return itemStack;
 	}
 
 	@Override
-	public boolean hasContainerItem( ItemStack stack )
+	public boolean hasContainerItem( final ItemStack stack )
 	{
 		return true;
 	}
 
 	@Override
-	public IGuiItemObject getGuiObject( ItemStack is, World world, BlockPos pos )
+	public IGuiItemObject getGuiObject( final ItemStack is, final World world, final BlockPos pos )
 	{
 		return new QuartzKnifeObj( is );
 	}

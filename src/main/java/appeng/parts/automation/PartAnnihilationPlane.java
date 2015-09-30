@@ -82,20 +82,20 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 	private boolean isAccepting = true;
 	private boolean breaking = false;
 
-	public PartAnnihilationPlane( ItemStack is )
+	public PartAnnihilationPlane( final ItemStack is )
 	{
 		super( is );
 	}
 
 	@Override
-	public TickRateModulation call( World world ) throws Exception
+	public TickRateModulation call( final World world ) throws Exception
 	{
 		this.breaking = false;
 		return this.breakBlock( true );
 	}
 
 	@Override
-	public void getBoxes( IPartCollisionHelper bch )
+	public void getBoxes( final IPartCollisionHelper bch )
 	{
 		int minX = 1;
 		int minY = 1;
@@ -107,7 +107,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 		{
 			final TileEntity te = host.getTile();
 
-			BlockPos pos = te.getPos();
+			final BlockPos pos = te.getPos();
 
 			final EnumFacing e = bch.getWorldX();
 			final EnumFacing u = bch.getWorldY();
@@ -139,7 +139,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderInventory( IPartRenderHelper rh, ModelGenerator renderer )
+	public void renderInventory( final IPartRenderHelper rh, final ModelGenerator renderer )
 	{
 		rh.setTexture( SIDE_ICON, SIDE_ICON, BACK_ICON, renderer.getIcon( is ), SIDE_ICON, SIDE_ICON );
 
@@ -152,12 +152,12 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderStatic( BlockPos pos, IPartRenderHelper rh, ModelGenerator renderer )
+	public void renderStatic( final BlockPos pos, final IPartRenderHelper rh, final ModelGenerator renderer )
 	{
 		this.renderStaticWithIcon( pos, rh, renderer, ACTIVE_ICON );
 	}
 
-	protected void renderStaticWithIcon( BlockPos opos, IPartRenderHelper rh, ModelGenerator renderer, IAESprite activeIcon )
+	protected void renderStaticWithIcon( final BlockPos opos, final IPartRenderHelper rh, final ModelGenerator renderer, final IAESprite activeIcon )
 	{
 		int minX = 1;
 
@@ -165,7 +165,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 		final EnumFacing u = rh.getWorldY();
 
 		final TileEntity te = this.getHost().getTile();
-		BlockPos pos = te.getPos();
+		final BlockPos pos = te.getPos();
 		
 		if( this.isAnnihilationPlane( te.getWorld().getTileEntity( pos.offset( e.getOpposite() ) ), this.side ) )
 		{
@@ -220,12 +220,12 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 	}
 
 	@Override
-	public void onEntityCollision( Entity entity )
+	public void onEntityCollision( final Entity entity )
 	{
 		if( this.isAccepting && entity instanceof EntityItem && !entity.isDead && Platform.isServer() && this.proxy.isActive() )
 		{
 			boolean capture = false;
-			BlockPos pos = tile.getPos();
+			final BlockPos pos = tile.getPos();
 
 			switch( this.side )
 			{
@@ -296,7 +296,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 	 *
 	 * @param entityItem {@link EntityItem} to store
 	 */
-	private boolean storeEntityItem( EntityItem entityItem )
+	private boolean storeEntityItem( final EntityItem entityItem )
 	{
 		if( !entityItem.isDead )
 		{
@@ -314,7 +314,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 	 * @param item {@link ItemStack} to store
 	 * @return the leftover items, which could not be stored inside the network
 	 */
-	private IAEItemStack storeItemStack( ItemStack item )
+	private IAEItemStack storeItemStack( final ItemStack item )
 	{
 		final IAEItemStack itemToStore = AEItemStack.create( item );
 		try
@@ -344,7 +344,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 	 * @param overflow the leftover {@link IAEItemStack}
 	 * @return true, if the entity was changed otherwise false.
 	 */
-	private boolean handleOverflow( EntityItem entityItem, IAEItemStack overflow )
+	private boolean handleOverflow( final EntityItem entityItem, final IAEItemStack overflow )
 	{
 		if( overflow == null || overflow.getStackSize() == 0 )
 		{
@@ -366,7 +366,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 	 *
 	 * @param overflow the item to spawn
 	 */
-	private void spawnOverflow( IAEItemStack overflow )
+	private void spawnOverflow( final IAEItemStack overflow )
 	{
 		if( overflow == null )
 		{
@@ -389,7 +389,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 		w.spawnEntityInWorld( overflowEntity );
 	}
 
-	protected boolean isAnnihilationPlane( TileEntity blockTileEntity, AEPartLocation side )
+	protected boolean isAnnihilationPlane( final TileEntity blockTileEntity, final AEPartLocation side )
 	{
 		if( blockTileEntity instanceof IPartHost )
 		{
@@ -401,7 +401,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 
 	@Override
 	@MENetworkEventSubscribe
-	public void chanRender( MENetworkChannelsChanged c )
+	public void chanRender( final MENetworkChannelsChanged c )
 	{
 		this.onNeighborChanged();
 		this.getHost().markForUpdate();
@@ -409,13 +409,13 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 
 	@Override
 	@MENetworkEventSubscribe
-	public void powerRender( MENetworkPowerStatusChange c )
+	public void powerRender( final MENetworkPowerStatusChange c )
 	{
 		this.onNeighborChanged();
 		this.getHost().markForUpdate();
 	}
 
-	public TickRateModulation breakBlock( boolean modulate )
+	public TickRateModulation breakBlock( final boolean modulate )
 	{
 		if( this.isAccepting && this.proxy.isActive() )
 		{
@@ -424,7 +424,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 				final TileEntity te = this.getTile();
 				final WorldServer w = (WorldServer) te.getWorld();
 
-				BlockPos pos = te.getPos().offset( side.getFacing() );
+				final BlockPos pos = te.getPos().offset( side.getFacing() );
 
 				final IEnergyGrid energy = this.proxy.getEnergy();
 
@@ -464,13 +464,13 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 	}
 
 	@Override
-	public TickingRequest getTickingRequest( IGridNode node )
+	public TickingRequest getTickingRequest( final IGridNode node )
 	{
 		return new TickingRequest( TickRates.AnnihilationPlane.min, TickRates.AnnihilationPlane.max, false, true );
 	}
 
 	@Override
-	public TickRateModulation tickingRequest( IGridNode node, int ticksSinceLastCall )
+	public TickRateModulation tickingRequest( final IGridNode node, final int ticksSinceLastCall )
 	{
 		if( this.breaking )
 		{
@@ -484,7 +484,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 	/**
 	 * Checks if this plane can handle the block at the specific coordinates.
 	 */
-	protected boolean canHandleBlock( WorldServer w, BlockPos pos )
+	protected boolean canHandleBlock( final WorldServer w, final BlockPos pos )
 	{
 		final Block block = w.getBlockState( pos ).getBlock();
 		final Material material = block.getMaterial();
@@ -495,7 +495,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 		return !ignoreMaterials && !ignoreBlocks && !w.isAirBlock( pos ) && w.isBlockLoaded( pos ) && w.canMineBlockBody( Platform.getPlayer( w ), pos ) && hardness >= 0f;
 	}
 
-	protected List<ItemStack> obtainBlockDrops( WorldServer w, BlockPos pos )
+	protected List<ItemStack> obtainBlockDrops( final WorldServer w, final BlockPos pos )
 	{
 		final ItemStack[] out = Platform.getBlockDrops( w, pos );
 		return Lists.newArrayList( out );
@@ -504,7 +504,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 	/**
 	 * Checks if this plane can handle the block at the specific coordinates.
 	 */
-	protected float calculateEnergyUsage( WorldServer w, BlockPos pos, List<ItemStack> items )
+	protected float calculateEnergyUsage( final WorldServer w, final BlockPos pos, final List<ItemStack> items )
 	{
 		final Block block = w.getBlockState( pos ).getBlock();
 		final float hardness = block.getBlockHardness( w, pos );
@@ -527,7 +527,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 	 *
 	 * @return true, if the network can store at least a single item of all drops or no drops are reported
 	 */
-	protected boolean canStoreItemStacks( List<ItemStack> itemStacks )
+	protected boolean canStoreItemStacks( final List<ItemStack> itemStacks )
 	{
 		boolean canStore = itemStacks.isEmpty();
 
@@ -554,7 +554,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 		return canStore;
 	}
 
-	protected void breakBlockAndStoreItems( WorldServer w, BlockPos pos, List<ItemStack> items )
+	protected void breakBlockAndStoreItems( final WorldServer w, final BlockPos pos, final List<ItemStack> items )
 	{
 		w.setBlockToAir( pos );
 		

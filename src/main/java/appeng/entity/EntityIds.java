@@ -33,7 +33,7 @@ public final class EntityIds
 	{
 	}
 
-	public static int get( Class<? extends Entity> droppedEntity )
+	public static int get( final Class<? extends Entity> droppedEntity )
 	{
 		if( droppedEntity == EntityTinyTNTPrimed.class )
 		{

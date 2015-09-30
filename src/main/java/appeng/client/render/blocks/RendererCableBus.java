@@ -54,7 +54,7 @@ public class RendererCableBus extends BaseBlockRender<BlockCableBus, TileCableBu
 	}
 
 	@Override
-	public void renderInventory( BlockCableBus blk, ItemStack item, ModelGenerator renderer, ItemRenderType type, Object[] obj )
+	public void renderInventory( final BlockCableBus blk, final ItemStack item, final ModelGenerator renderer, final ItemRenderType type, final Object[] obj )
 	{
 		renderer.setColorOpaque_F( 1, 1, 1 );
 		renderer.setBrightness( 14 << 20 | 14 << 4 );
@@ -72,8 +72,8 @@ public class RendererCableBus extends BaseBlockRender<BlockCableBus, TileCableBu
 
 		if( item.getItem() instanceof IFacadeItem )
 		{
-			IFacadeItem fi = (IFacadeItem) item.getItem();
-			IFacadePart fp = fi.createPartFromItemStack( item, AEPartLocation.SOUTH );
+			final IFacadeItem fi = (IFacadeItem) item.getItem();
+			final IFacadePart fp = fi.createPartFromItemStack( item, AEPartLocation.SOUTH );
 
 			if( fp != null )
 			{
@@ -82,12 +82,12 @@ public class RendererCableBus extends BaseBlockRender<BlockCableBus, TileCableBu
 		}
 		else
 		{
-			IPart ip = this.getRenderer( item, (IPartItem) item.getItem() );
+			final IPart ip = this.getRenderer( item, (IPartItem) item.getItem() );
 			if( ip != null )
 			{
 				if( type == ItemRenderType.ENTITY )
 				{
-					int depth = ip.cableConnectionRenderTo();
+					final int depth = ip.cableConnectionRenderTo();
 				}
 
 				ip.renderInventory( BusRenderHelper.INSTANCE, renderer );
@@ -97,9 +97,9 @@ public class RendererCableBus extends BaseBlockRender<BlockCableBus, TileCableBu
 		renderer.uvRotateBottom = renderer.uvRotateEast = renderer.uvRotateNorth = renderer.uvRotateSouth = renderer.uvRotateTop = renderer.uvRotateWest = 0;
 	}
 
-	public IPart getRenderer( ItemStack is, IPartItem c )
+	public IPart getRenderer( final ItemStack is, final IPartItem c )
 	{
-		int id = ( Item.getIdFromItem( is.getItem() ) << Platform.DEF_OFFSET ) | is.getItemDamage();
+		final int id = ( Item.getIdFromItem( is.getItem() ) << Platform.DEF_OFFSET ) | is.getItemDamage();
 
 		IPart part = RENDER_PART.get( id );
 		if( part == null )
@@ -118,9 +118,9 @@ public class RendererCableBus extends BaseBlockRender<BlockCableBus, TileCableBu
 	private static final Map<Integer, IPart> RENDER_PART = new HashMap<Integer, IPart>();
 	
 	@Override
-	public boolean renderInWorld( BlockCableBus block, IBlockAccess world, BlockPos pos, ModelGenerator renderer )
+	public boolean renderInWorld( final BlockCableBus block, final IBlockAccess world, final BlockPos pos, final ModelGenerator renderer )
 	{
-		AEBaseTile t = block.getTileEntity( world, pos );
+		final AEBaseTile t = block.getTileEntity( world, pos );
 
 		if( t instanceof TileCableBus )
 		{
@@ -136,7 +136,7 @@ public class RendererCableBus extends BaseBlockRender<BlockCableBus, TileCableBu
 	}
 
 	@Override
-	public void renderTile( BlockCableBus block, TileCableBus cableBus, WorldRenderer tess, double x, double y, double z, float f, ModelGenerator renderer )
+	public void renderTile( final BlockCableBus block, final TileCableBus cableBus, final WorldRenderer tess, final double x, final double y, final double z, final float f, final ModelGenerator renderer )
 	{
 		if( cableBus != null )
 		{

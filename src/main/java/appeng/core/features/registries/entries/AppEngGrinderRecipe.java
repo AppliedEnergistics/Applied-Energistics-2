@@ -37,14 +37,14 @@ public class AppEngGrinderRecipe implements IGrinderEntry
 
 	private int energy;
 
-	public AppEngGrinderRecipe( ItemStack a, ItemStack b, int cost )
+	public AppEngGrinderRecipe( final ItemStack a, final ItemStack b, final int cost )
 	{
 		this.in = a;
 		this.out = b;
 		this.energy = cost;
 	}
 
-	public AppEngGrinderRecipe( ItemStack a, ItemStack b, ItemStack c, float chance, int cost )
+	public AppEngGrinderRecipe( final ItemStack a, final ItemStack b, final ItemStack c, final float chance, final int cost )
 	{
 		this.in = a;
 		this.out = b;
@@ -55,7 +55,7 @@ public class AppEngGrinderRecipe implements IGrinderEntry
 		this.energy = cost;
 	}
 
-	public AppEngGrinderRecipe( ItemStack a, ItemStack b, ItemStack c, ItemStack d, float chance, float chance2, int cost )
+	public AppEngGrinderRecipe( final ItemStack a, final ItemStack b, final ItemStack c, final ItemStack d, final float chance, final float chance2, final int cost )
 	{
 		this.in = a;
 		this.out = b;
@@ -76,7 +76,7 @@ public class AppEngGrinderRecipe implements IGrinderEntry
 	}
 
 	@Override
-	public void setInput( ItemStack i )
+	public void setInput( final ItemStack i )
 	{
 		this.in = i.copy();
 	}
@@ -88,7 +88,7 @@ public class AppEngGrinderRecipe implements IGrinderEntry
 	}
 
 	@Override
-	public void setOutput( ItemStack o )
+	public void setOutput( final ItemStack o )
 	{
 		this.out = o.copy();
 	}
@@ -106,7 +106,7 @@ public class AppEngGrinderRecipe implements IGrinderEntry
 	}
 
 	@Override
-	public void setOptionalOutput( ItemStack output, float chance )
+	public void setOptionalOutput( final ItemStack output, final float chance )
 	{
 		this.optionalOutput = output.copy();
 		this.optionalChance = chance;
@@ -119,7 +119,7 @@ public class AppEngGrinderRecipe implements IGrinderEntry
 	}
 
 	@Override
-	public void setSecondOptionalOutput( ItemStack output, float chance )
+	public void setSecondOptionalOutput( final ItemStack output, final float chance )
 	{
 		this.optionalChance2 = chance;
 		this.optionalOutput2 = output.copy();
@@ -138,7 +138,7 @@ public class AppEngGrinderRecipe implements IGrinderEntry
 	}
 
 	@Override
-	public void setEnergyCost( int c )
+	public void setEnergyCost( final int c )
 	{
 		this.energy = c;
 	}

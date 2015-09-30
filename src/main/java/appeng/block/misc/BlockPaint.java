@@ -73,36 +73,36 @@ public class BlockPaint extends AEBaseTileBlock
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void getCheckedSubBlocks( Item item, CreativeTabs tabs, List<ItemStack> itemStacks )
+	public void getCheckedSubBlocks( final Item item, final CreativeTabs tabs, final List<ItemStack> itemStacks )
 	{
 		// do nothing
 	}
 	
 	@Override
 	public AxisAlignedBB getCollisionBoundingBox(
-			World worldIn,
-			BlockPos pos,
-			IBlockState state )
+			final World worldIn,
+			final BlockPos pos,
+			final IBlockState state )
 	{
 		return null;
 	}
 
 	@Override
 	public boolean canCollideCheck(
-			IBlockState state,
-			boolean hitIfLiquid )
+			final IBlockState state,
+			final boolean hitIfLiquid )
 	{
 		return false;
 	}
 
 	@Override
 	public void onNeighborBlockChange(
-			World w,
-			BlockPos pos,
-			IBlockState state,
-			Block neighborBlock )
+			final World w,
+			final BlockPos pos,
+			final IBlockState state,
+			final Block neighborBlock )
 	{
-		TilePaint tp = this.getTileEntity( w, pos );
+		final TilePaint tp = this.getTileEntity( w, pos );
 
 		if( tp != null )
 		{
@@ -112,28 +112,28 @@ public class BlockPaint extends AEBaseTileBlock
 
 	@Override
 	public Item getItemDropped(
-			IBlockState state,
-			Random rand,
-			int fortune )
+			final IBlockState state,
+			final Random rand,
+			final int fortune )
 	{
 		return null;
 	}
 
 	@Override
 	public void dropBlockAsItemWithChance(
-			World worldIn,
-			BlockPos pos,
-			IBlockState state,
-			float chance,
-			int fortune )
+			final World worldIn,
+			final BlockPos pos,
+			final IBlockState state,
+			final float chance,
+			final int fortune )
 	{
 		
 	}
 	
 	@Override
 	public void fillWithRain(
-			World w,
-			BlockPos pos )
+			final World w,
+			final BlockPos pos )
 	{
 		if( Platform.isServer() )
 		{
@@ -143,10 +143,10 @@ public class BlockPaint extends AEBaseTileBlock
 	
 	@Override
 	public int getLightValue(
-			IBlockAccess w,
-			BlockPos pos )
+			final IBlockAccess w,
+			final BlockPos pos )
 	{
-		TilePaint tp = this.getTileEntity( w, pos );
+		final TilePaint tp = this.getTileEntity( w, pos );
 
 		if( tp != null )
 		{
@@ -158,16 +158,16 @@ public class BlockPaint extends AEBaseTileBlock
 
 	@Override
 	public boolean isAir(
-			IBlockAccess world,
-			BlockPos pos )
+			final IBlockAccess world,
+			final BlockPos pos )
 	{
 		return true;
 	}
 	
 	@Override
 	public boolean isReplaceable(
-			World worldIn,
-			BlockPos pos )
+			final World worldIn,
+			final BlockPos pos )
 	{
 		return true;
 	}

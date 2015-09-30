@@ -27,13 +27,13 @@ public class BlockUpdate implements IWorldCallable<Boolean>
 {
 	final BlockPos pos;
 
-	public BlockUpdate( BlockPos pos )
+	public BlockUpdate( final BlockPos pos )
 	{
 		this.pos=pos;
 	}
 
 	@Override
-	public Boolean call( World world ) throws Exception
+	public Boolean call( final World world ) throws Exception
 	{
 		if ( world.isBlockLoaded( this.pos ) )
 		{

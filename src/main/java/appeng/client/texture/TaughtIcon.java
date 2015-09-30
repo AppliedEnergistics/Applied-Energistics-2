@@ -37,7 +37,7 @@ public class TaughtIcon implements IAESprite
 		return icon.getAtlas();
 	}
 	
-	public TaughtIcon( IAESprite iIcon, float tightness )
+	public TaughtIcon( final IAESprite iIcon, final float tightness )
 	{
 		if( iIcon == null )
 		{
@@ -76,7 +76,7 @@ public class TaughtIcon implements IAESprite
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public float getInterpolatedU( double d0 )
+	public float getInterpolatedU( final double d0 )
 	{
 		return this.u( d0 );
 	}
@@ -97,7 +97,7 @@ public class TaughtIcon implements IAESprite
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public float getInterpolatedV( double d0 )
+	public float getInterpolatedV( final double d0 )
 	{
 		return this.v( d0 );
 	}

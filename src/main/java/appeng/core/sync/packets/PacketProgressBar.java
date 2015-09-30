@@ -35,19 +35,19 @@ public class PacketProgressBar extends AppEngPacket
 	final long value;
 
 	// automatic.
-	public PacketProgressBar( ByteBuf stream )
+	public PacketProgressBar( final ByteBuf stream )
 	{
 		this.id = stream.readShort();
 		this.value = stream.readLong();
 	}
 
 	// api
-	public PacketProgressBar( int shortID, long value )
+	public PacketProgressBar( final int shortID, final long value )
 	{
 		this.id = (short) shortID;
 		this.value = value;
 
-		ByteBuf data = Unpooled.buffer();
+		final ByteBuf data = Unpooled.buffer();
 
 		data.writeInt( this.getPacketID() );
 		data.writeShort( shortID );
@@ -57,9 +57,9 @@ public class PacketProgressBar extends AppEngPacket
 	}
 
 	@Override
-	public void serverPacketData( INetworkInfo manager, AppEngPacket packet, EntityPlayer player )
+	public void serverPacketData( final INetworkInfo manager, final AppEngPacket packet, final EntityPlayer player )
 	{
-		Container c = player.openContainer;
+		final Container c = player.openContainer;
 		if( c instanceof AEBaseContainer )
 		{
 			( (AEBaseContainer) c ).updateFullProgressBar( this.id, this.value );
@@ -67,9 +67,9 @@ public class PacketProgressBar extends AppEngPacket
 	}
 
 	@Override
-	public void clientPacketData( INetworkInfo network, AppEngPacket packet, EntityPlayer player )
+	public void clientPacketData( final INetworkInfo network, final AppEngPacket packet, final EntityPlayer player )
 	{
-		Container c = player.openContainer;
+		final Container c = player.openContainer;
 		if( c instanceof AEBaseContainer )
 		{
 			( (AEBaseContainer) c ).updateFullProgressBar( this.id, this.value );

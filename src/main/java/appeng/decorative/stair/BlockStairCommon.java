@@ -29,7 +29,7 @@ import appeng.core.features.AEFeature;
 
 public class BlockStairCommon extends AEBaseStairBlock
 {
-	public BlockStairCommon( Block block, String type )
+	public BlockStairCommon( final Block block, final String type )
 	{
 		super( block, EnumSet.of( AEFeature.DecorativeQuartzBlocks ), type );
 	}

@@ -33,13 +33,13 @@ public class ItemModList implements IItemContainer<IAEItemStack>
 	final IItemContainer<IAEItemStack> backingStore;
 	final IItemContainer<IAEItemStack> overrides = AEApi.instance().storage().createItemList();
 
-	public ItemModList( IItemContainer<IAEItemStack> backend )
+	public ItemModList( final IItemContainer<IAEItemStack> backend )
 	{
 		this.backingStore = backend;
 	}
 
 	@Override
-	public void add( IAEItemStack option )
+	public void add( final IAEItemStack option )
 	{
 		IAEItemStack over = this.overrides.findPrecise( option );
 		if( over == null )
@@ -62,9 +62,9 @@ public class ItemModList implements IItemContainer<IAEItemStack>
 	}
 
 	@Override
-	public IAEItemStack findPrecise( IAEItemStack i )
+	public IAEItemStack findPrecise( final IAEItemStack i )
 	{
-		IAEItemStack over = this.overrides.findPrecise( i );
+		final IAEItemStack over = this.overrides.findPrecise( i );
 		if( over == null )
 		{
 			return this.backingStore.findPrecise( i );
@@ -73,7 +73,7 @@ public class ItemModList implements IItemContainer<IAEItemStack>
 	}
 
 	@Override
-	public Collection<IAEItemStack> findFuzzy( IAEItemStack input, FuzzyMode fuzzy )
+	public Collection<IAEItemStack> findFuzzy( final IAEItemStack input, final FuzzyMode fuzzy )
 	{
 		return this.overrides.findFuzzy( input, fuzzy );
 	}

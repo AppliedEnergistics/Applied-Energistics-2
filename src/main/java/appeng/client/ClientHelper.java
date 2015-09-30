@@ -109,7 +109,7 @@ public class ClientHelper extends ServerHelper
 	private List<ResourceLocation> extraIcons = new ArrayList<>();
 
 	@Override
-	public void configureIcon( Object item, String name )
+	public void configureIcon( final Object item, final String name )
 	{
 		iconTmp.add( new IconReg( item, 0, name ) );
 	}
@@ -156,9 +156,9 @@ public class ClientHelper extends ServerHelper
 	}
 
 	@Override
-	public void bindTileEntitySpecialRenderer( Class<? extends TileEntity> tile, AEBaseBlock blk )
+	public void bindTileEntitySpecialRenderer( final Class<? extends TileEntity> tile, final AEBaseBlock blk )
 	{
-		BaseBlockRender bbr = blk.getRendererInstance().rendererInstance;
+		final BaseBlockRender bbr = blk.getRendererInstance().rendererInstance;
 		if( bbr.hasTESR() && tile != null )
 		{
 			ClientRegistry.bindTileEntitySpecialRenderer( tile, new TESRWrapper( bbr ) );
@@ -170,7 +170,7 @@ public class ClientHelper extends ServerHelper
 	{
 		if( Platform.isClient() )
 		{
-			List<EntityPlayer> o = new ArrayList<>();
+			final List<EntityPlayer> o = new ArrayList<>();
 			o.add( Minecraft.getMinecraft().thePlayer );
 			return o;
 		}
@@ -181,7 +181,7 @@ public class ClientHelper extends ServerHelper
 	}
 
 	@Override
-	public void spawnEffect( EffectType effect, World worldObj, double posX, double posY, double posZ, Object o )
+	public void spawnEffect( final EffectType effect, final World worldObj, final double posX, final double posY, final double posZ, final Object o )
 	{
 		if( AEConfig.instance.enableEffects )
 		{
@@ -211,9 +211,9 @@ public class ClientHelper extends ServerHelper
 	}
 
 	@Override
-	public boolean shouldAddParticles( Random r )
+	public boolean shouldAddParticles( final Random r )
 	{
-		int setting = Minecraft.getMinecraft().gameSettings.particleSetting;
+		final int setting = Minecraft.getMinecraft().gameSettings.particleSetting;
 		if( setting == 2 )
 		{
 			return false;
@@ -232,11 +232,11 @@ public class ClientHelper extends ServerHelper
 	}
 
 	@Override
-	public void doRenderItem( ItemStack itemstack, World w )
+	public void doRenderItem( final ItemStack itemstack, final World w )
 	{
 		if( itemstack != null )
 		{
-			EntityItem entityitem = new EntityItem( w, 0.0D, 0.0D, 0.0D, itemstack );
+			final EntityItem entityitem = new EntityItem( w, 0.0D, 0.0D, 0.0D, itemstack );
 			entityitem.getEntityItem().stackSize = 1;
 
 			// set all this stuff and then do shit? meh?
@@ -259,23 +259,23 @@ public class ClientHelper extends ServerHelper
 	public void postInit()
 	{
 		//RenderingRegistry.registerBlockHandler( WorldRender.INSTANCE );
-		RenderManager inst = Minecraft.getMinecraft().getRenderManager();
+		final RenderManager inst = Minecraft.getMinecraft().getRenderManager();
 
 		inst.entityRenderMap.put( EntityTinyTNTPrimed.class, new RenderTinyTNTPrimed( inst ) );
 		inst.entityRenderMap.put( EntityFloatingItem.class, new RenderFloatingItem( inst ) );
 
 		final ItemModelMesher mesher = Minecraft.getMinecraft().getRenderItem().getItemModelMesher();
-		ItemMeshDefinition imd = new ItemMeshDefinition()
+		final ItemMeshDefinition imd = new ItemMeshDefinition()
 		{
 
 			@Override
-			public ModelResourceLocation getModelLocation( ItemStack stack )
+			public ModelResourceLocation getModelLocation( final ItemStack stack )
 			{
 				return partRenderer;
 			}
 		};
 
-		for( IconReg reg : iconTmp )
+		for( final IconReg reg : iconTmp )
 		{
 			if( reg.item instanceof IPartItem || reg.item instanceof IFacadeItem )
 			{
@@ -312,15 +312,15 @@ public class ClientHelper extends ServerHelper
 			}
 		}
 
-		String MODID = AppEng.MOD_ID + ":";
-		for( List<IconReg> reg : iconRegistrations.values() )
+		final String MODID = AppEng.MOD_ID + ":";
+		for( final List<IconReg> reg : iconRegistrations.values() )
 		{
-			String[] names = new String[reg.size()];
+			final String[] names = new String[reg.size()];
 
 			Item it = null;
 
 			int offset = 0;
-			for( IconReg r : reg )
+			for( final IconReg r : reg )
 			{
 				it = (Item) r.item;
 
@@ -344,8 +344,8 @@ public class ClientHelper extends ServerHelper
 			return super.getRenderMode();
 		}
 
-		Minecraft mc = Minecraft.getMinecraft();
-		EntityPlayer player = mc.thePlayer;
+		final Minecraft mc = Minecraft.getMinecraft();
+		final EntityPlayer player = mc.thePlayer;
 
 		return this.renderModeForPlayer( player );
 	}
@@ -353,19 +353,19 @@ public class ClientHelper extends ServerHelper
 	@Override
 	public void triggerUpdates()
 	{
-		Minecraft mc = Minecraft.getMinecraft();
+		final Minecraft mc = Minecraft.getMinecraft();
 		if( mc == null || mc.thePlayer == null || mc.theWorld == null )
 		{
 			return;
 		}
 
-		EntityPlayer player = mc.thePlayer;
+		final EntityPlayer player = mc.thePlayer;
 
-		int x = (int) player.posX;
-		int y = (int) player.posY;
-		int z = (int) player.posZ;
+		final int x = (int) player.posX;
+		final int y = (int) player.posY;
+		final int z = (int) player.posZ;
 
-		int range = 16 * 16;
+		final int range = 16 * 16;
 
 		mc.theWorld.markBlockRangeForRenderUpdate( x - range, y - range, z - range, x + range, y + range, z + range );
 	}
@@ -377,14 +377,14 @@ public class ClientHelper extends ServerHelper
 	}
 
 	@Override
-	public ResourceLocation addIcon( String string )
+	public ResourceLocation addIcon( final String string )
 	{
-		ModelResourceLocation n = new ModelResourceLocation( new ResourceLocation( AppEng.MOD_ID, string ), "inventory" );
+		final ModelResourceLocation n = new ModelResourceLocation( new ResourceLocation( AppEng.MOD_ID, string ), "inventory" );
 		extraIcons.add( n );
 		return n;
 	}
 
-	public ModelResourceLocation setIcon( Item item, String name )
+	public ModelResourceLocation setIcon( final Item item, final String name )
 	{
 		List<IconReg> reg = iconRegistrations.get( item );
 		if( reg == null )
@@ -392,12 +392,12 @@ public class ClientHelper extends ServerHelper
 			iconRegistrations.put( item, reg = new LinkedList<>() );
 		}
 
-		ModelResourceLocation res = new ModelResourceLocation( new ResourceLocation( AppEng.MOD_ID, name ), "inventory" );
+		final ModelResourceLocation res = new ModelResourceLocation( new ResourceLocation( AppEng.MOD_ID, name ), "inventory" );
 		reg.add( new IconReg( item, -1, name, res ) );
 		return res;
 	}
 
-	public ModelResourceLocation setIcon( Item item, int meta, String name )
+	public ModelResourceLocation setIcon( final Item item, final int meta, final String name )
 	{
 		List<IconReg> reg = iconRegistrations.get( item );
 		if( reg == null )
@@ -405,54 +405,54 @@ public class ClientHelper extends ServerHelper
 			iconRegistrations.put( item, reg = new LinkedList<>() );
 		}
 
-		ModelResourceLocation res = new ModelResourceLocation( new ResourceLocation( AppEng.MOD_ID, name ), "inventory" );
+		final ModelResourceLocation res = new ModelResourceLocation( new ResourceLocation( AppEng.MOD_ID, name ), "inventory" );
 		reg.add( new IconReg( item, meta, name, res ) );
 		return res;
 	}
 
 	@SubscribeEvent
-	public void postPlayerRender( RenderLivingEvent.Pre p )
+	public void postPlayerRender( final RenderLivingEvent.Pre p )
 	{
-		PlayerColor player = TickHandler.INSTANCE.getPlayerColors().get( p.entity.getEntityId() );
+		final PlayerColor player = TickHandler.INSTANCE.getPlayerColors().get( p.entity.getEntityId() );
 		if( player != null )
 		{
-			AEColor col = player.myColor;
+			final AEColor col = player.myColor;
 
-			float r = 0xff & ( col.mediumVariant >> 16 );
-			float g = 0xff & ( col.mediumVariant >> 8 );
-			float b = 0xff & ( col.mediumVariant );
+			final float r = 0xff & ( col.mediumVariant >> 16 );
+			final float g = 0xff & ( col.mediumVariant >> 8 );
+			final float b = 0xff & ( col.mediumVariant );
 			GL11.glColor3f( r / 255.0f, g / 255.0f, b / 255.0f );
 		}
 	}
 
-	private void spawnAssembler( World worldObj, double posX, double posY, double posZ, Object o )
+	private void spawnAssembler( final World worldObj, final double posX, final double posY, final double posZ, final Object o )
 	{
-		PacketAssemblerAnimation paa = (PacketAssemblerAnimation) o;
+		final PacketAssemblerAnimation paa = (PacketAssemblerAnimation) o;
 
-		AssemblerFX fx = new AssemblerFX( Minecraft.getMinecraft().theWorld, posX, posY, posZ, 0.0D, 0.0D, 0.0D, paa.rate, paa.is );
+		final AssemblerFX fx = new AssemblerFX( Minecraft.getMinecraft().theWorld, posX, posY, posZ, 0.0D, 0.0D, 0.0D, paa.rate, paa.is );
 		Minecraft.getMinecraft().effectRenderer.addEffect( fx );
 	}
 
-	private void spawnVibrant( World w, double x, double y, double z )
+	private void spawnVibrant( final World w, final double x, final double y, final double z )
 	{
 		if( CommonHelper.proxy.shouldAddParticles( Platform.getRandom() ) )
 		{
-			double d0 = ( Platform.getRandomFloat() - 0.5F ) * 0.26D;
-			double d1 = ( Platform.getRandomFloat() - 0.5F ) * 0.26D;
-			double d2 = ( Platform.getRandomFloat() - 0.5F ) * 0.26D;
+			final double d0 = ( Platform.getRandomFloat() - 0.5F ) * 0.26D;
+			final double d1 = ( Platform.getRandomFloat() - 0.5F ) * 0.26D;
+			final double d2 = ( Platform.getRandomFloat() - 0.5F ) * 0.26D;
 
-			VibrantFX fx = new VibrantFX( w, x + d0, y + d1, z + d2, 0.0D, 0.0D, 0.0D );
+			final VibrantFX fx = new VibrantFX( w, x + d0, y + d1, z + d2, 0.0D, 0.0D, 0.0D );
 			Minecraft.getMinecraft().effectRenderer.addEffect( fx );
 		}
 	}
 
-	private void spawnCrafting( World w, double posX, double posY, double posZ )
+	private void spawnCrafting( final World w, final double posX, final double posY, final double posZ )
 	{
-		float x = (float) ( ( ( Platform.getRandomInt() % 100 ) * 0.01 ) - 0.5 ) * 0.7f;
-		float y = (float) ( ( ( Platform.getRandomInt() % 100 ) * 0.01 ) - 0.5 ) * 0.7f;
-		float z = (float) ( ( ( Platform.getRandomInt() % 100 ) * 0.01 ) - 0.5 ) * 0.7f;
+		final float x = (float) ( ( ( Platform.getRandomInt() % 100 ) * 0.01 ) - 0.5 ) * 0.7f;
+		final float y = (float) ( ( ( Platform.getRandomInt() % 100 ) * 0.01 ) - 0.5 ) * 0.7f;
+		final float z = (float) ( ( ( Platform.getRandomInt() % 100 ) * 0.01 ) - 0.5 ) * 0.7f;
 
-		CraftingFx fx = new CraftingFx( w, posX + x, posY + y, posZ + z, Items.diamond );
+		final CraftingFx fx = new CraftingFx( w, posX + x, posY + y, posZ + z, Items.diamond );
 
 		fx.motionX = -x * 0.2;
 		fx.motionY = -y * 0.2;
@@ -461,13 +461,13 @@ public class ClientHelper extends ServerHelper
 		Minecraft.getMinecraft().effectRenderer.addEffect( fx );
 	}
 
-	private void spawnEnergy( World w, double posX, double posY, double posZ )
+	private void spawnEnergy( final World w, final double posX, final double posY, final double posZ )
 	{
-		float x = (float) ( ( ( Platform.getRandomInt() % 100 ) * 0.01 ) - 0.5 ) * 0.7f;
-		float y = (float) ( ( ( Platform.getRandomInt() % 100 ) * 0.01 ) - 0.5 ) * 0.7f;
-		float z = (float) ( ( ( Platform.getRandomInt() % 100 ) * 0.01 ) - 0.5 ) * 0.7f;
+		final float x = (float) ( ( ( Platform.getRandomInt() % 100 ) * 0.01 ) - 0.5 ) * 0.7f;
+		final float y = (float) ( ( ( Platform.getRandomInt() % 100 ) * 0.01 ) - 0.5 ) * 0.7f;
+		final float z = (float) ( ( ( Platform.getRandomInt() % 100 ) * 0.01 ) - 0.5 ) * 0.7f;
 
-		EnergyFx fx = new EnergyFx( w, posX + x, posY + y, posZ + z, Items.diamond );
+		final EnergyFx fx = new EnergyFx( w, posX + x, posY + y, posZ + z, Items.diamond );
 
 		fx.motionX = -x * 0.1;
 		fx.motionY = -y * 0.1;
@@ -476,48 +476,48 @@ public class ClientHelper extends ServerHelper
 		Minecraft.getMinecraft().effectRenderer.addEffect( fx );
 	}
 
-	private void spawnLightning( World worldObj, double posX, double posY, double posZ )
+	private void spawnLightning( final World worldObj, final double posX, final double posY, final double posZ )
 	{
-		LightningFX fx = new LightningFX( worldObj, posX, posY + 0.3f, posZ, 0.0f, 0.0f, 0.0f );
+		final LightningFX fx = new LightningFX( worldObj, posX, posY + 0.3f, posZ, 0.0f, 0.0f, 0.0f );
 		Minecraft.getMinecraft().effectRenderer.addEffect( fx );
 	}
 
-	private void spawnLightningArc( World worldObj, double posX, double posY, double posZ, Vec3 second )
+	private void spawnLightningArc( final World worldObj, final double posX, final double posY, final double posZ, final Vec3 second )
 	{
-		LightningFX fx = new LightningArcFX( worldObj, posX, posY, posZ, second.xCoord, second.yCoord, second.zCoord, 0.0f, 0.0f, 0.0f );
+		final LightningFX fx = new LightningArcFX( worldObj, posX, posY, posZ, second.xCoord, second.yCoord, second.zCoord, 0.0f, 0.0f, 0.0f );
 		Minecraft.getMinecraft().effectRenderer.addEffect( fx );
 	}
 
 	@SubscribeEvent
-	public void onModelBakeEvent( ModelBakeEvent event )
+	public void onModelBakeEvent( final ModelBakeEvent event )
 	{
 		// inventory renderer
-		SmartModel buses = new SmartModel( new BlockRenderInfo( ( new RendererCableBus() ) ) );
+		final SmartModel buses = new SmartModel( new BlockRenderInfo( ( new RendererCableBus() ) ) );
 		event.modelRegistry.putObject( partRenderer, buses );
 
-		for( IconReg reg : iconTmp )
+		for( final IconReg reg : iconTmp )
 		{
 			if( reg.item instanceof IPartItem || reg.item instanceof IFacadeItem )
 			{
-				UniqueIdentifier i = GameRegistry.findUniqueIdentifierFor( (Item) reg.item );
+				final UniqueIdentifier i = GameRegistry.findUniqueIdentifierFor( (Item) reg.item );
 				event.modelRegistry.putObject( new ModelResourceLocation( new ResourceLocation( i.modId, i.name ), "inventory" ), buses );
 			}
 
 			if( reg.item instanceof AEBaseBlock )
 			{
-				BlockRenderInfo renderer = ( (AEBaseBlock) reg.item ).getRendererInstance();
+				final BlockRenderInfo renderer = ( (AEBaseBlock) reg.item ).getRendererInstance();
 				if( renderer == null )
 				{
 					continue;
 				}
 
-				SmartModel sm = new SmartModel( renderer );
+				final SmartModel sm = new SmartModel( renderer );
 				event.modelRegistry.putObject( renderer.rendererInstance.getResourcePath(), sm );
 
-				Map data = new DefaultStateMapper().putStateModelLocations( (Block) reg.item );
-				for( Object Loc : data.values() )
+				final Map data = new DefaultStateMapper().putStateModelLocations( (Block) reg.item );
+				for( final Object Loc : data.values() )
 				{
-					ModelResourceLocation res = (ModelResourceLocation) Loc;
+					final ModelResourceLocation res = (ModelResourceLocation) Loc;
 					event.modelRegistry.putObject( res, sm );
 				}
 			}
@@ -525,16 +525,16 @@ public class ClientHelper extends ServerHelper
 	}
 
 	@SubscribeEvent
-	public void wheelEvent( MouseEvent me )
+	public void wheelEvent( final MouseEvent me )
 	{
 		if( me.isCanceled() || me.dwheel == 0 )
 		{
 			return;
 		}
 
-		Minecraft mc = Minecraft.getMinecraft();
-		EntityPlayer player = mc.thePlayer;
-		ItemStack is = player.getHeldItem();
+		final Minecraft mc = Minecraft.getMinecraft();
+		final EntityPlayer player = mc.thePlayer;
+		final ItemStack is = player.getHeldItem();
 
 		if( is != null && is.getItem() instanceof IMouseWheelItem && player.isSneaking() )
 		{
@@ -543,7 +543,7 @@ public class ClientHelper extends ServerHelper
 				NetworkHandler.instance.sendToServer( new PacketValueConfig( "Item", me.dwheel > 0 ? "WheelUp" : "WheelDown" ) );
 				me.setCanceled( true );
 			}
-			catch( IOException e )
+			catch( final IOException e )
 			{
 				AELog.error( e );
 			}
@@ -551,9 +551,9 @@ public class ClientHelper extends ServerHelper
 	}
 
 	@SubscribeEvent
-	public void updateTextureSheet( TextureStitchEvent.Pre ev )
+	public void updateTextureSheet( final TextureStitchEvent.Pre ev )
 	{
-		for( IconReg reg : iconTmp )
+		for( final IconReg reg : iconTmp )
 		{
 			if( reg.item instanceof AEBaseItem )
 			{
@@ -561,7 +561,7 @@ public class ClientHelper extends ServerHelper
 			}
 			else if( reg.item instanceof AEBaseBlock )
 			{
-				BlockRenderInfo renderer = ( (AEBaseBlock) reg.item ).getRendererInstance();
+				final BlockRenderInfo renderer = ( (AEBaseBlock) reg.item ).getRendererInstance();
 				if( renderer == null )
 				{
 					continue;
@@ -575,7 +575,7 @@ public class ClientHelper extends ServerHelper
 
 		//if( ev.map.getTextureType() == ITEM_RENDERER )
 		{
-			for( ExtraItemTextures et : ExtraItemTextures.values() )
+			for( final ExtraItemTextures et : ExtraItemTextures.values() )
 			{
 				et.registerIcon( ev.map );
 			}
@@ -583,12 +583,12 @@ public class ClientHelper extends ServerHelper
 
 		//if( ev.map. == BLOCK_RENDERER )
 		{
-			for( ExtraBlockTextures et : ExtraBlockTextures.values() )
+			for( final ExtraBlockTextures et : ExtraBlockTextures.values() )
 			{
 				et.registerIcon( ev.map );
 			}
 
-			for( CableBusTextures cb : CableBusTextures.values() )
+			for( final CableBusTextures cb : CableBusTextures.values() )
 			{
 				cb.registerIcon( ev.map );
 			}
@@ -602,7 +602,7 @@ public class ClientHelper extends ServerHelper
 		public final int meta;
 		public final ModelResourceLocation loc;
 
-		public IconReg( Object item2, int meta2, String name2 )
+		public IconReg( final Object item2, final int meta2, final String name2 )
 		{
 			meta = meta2;
 			name = name2;
@@ -610,7 +610,7 @@ public class ClientHelper extends ServerHelper
 			loc = null;
 		}
 
-		public IconReg( Item item2, int meta2, String name2, ModelResourceLocation res )
+		public IconReg( final Item item2, final int meta2, final String name2, final ModelResourceLocation res )
 		{
 			meta = meta2;
 			name = name2;

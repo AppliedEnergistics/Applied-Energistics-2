@@ -96,12 +96,12 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 	GuiImgButton searchBoxSettings;
 	GuiImgButton terminalStyleBox;
 
-	public GuiMEMonitorable( InventoryPlayer inventoryPlayer, ITerminalHost te )
+	public GuiMEMonitorable( final InventoryPlayer inventoryPlayer, final ITerminalHost te )
 	{
 		this( inventoryPlayer, te, new ContainerMEMonitorable( inventoryPlayer, te ) );
 	}
 
-	public GuiMEMonitorable( InventoryPlayer inventoryPlayer, ITerminalHost te, ContainerMEMonitorable c )
+	public GuiMEMonitorable( final InventoryPlayer inventoryPlayer, final ITerminalHost te, final ContainerMEMonitorable c )
 	{
 
 		super( c );
@@ -145,9 +145,9 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 		}
 	}
 
-	public void postUpdate( List<IAEItemStack> list )
+	public void postUpdate( final List<IAEItemStack> list )
 	{
-		for( IAEItemStack is : list )
+		for( final IAEItemStack is : list )
 		{
 			this.repo.postUpdate( is );
 		}
@@ -163,7 +163,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 	}
 
 	@Override
-	protected void actionPerformed( GuiButton btn )
+	protected void actionPerformed( final GuiButton btn )
 	{
 		if( btn == this.craftingStatusBtn )
 		{
@@ -172,13 +172,13 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 
 		if( btn instanceof GuiImgButton )
 		{
-			boolean backwards = Mouse.isButtonDown( 1 );
+			final boolean backwards = Mouse.isButtonDown( 1 );
 
-			GuiImgButton iBtn = (GuiImgButton) btn;
+			final GuiImgButton iBtn = (GuiImgButton) btn;
 			if( iBtn.getSetting() != Settings.ACTIONS )
 			{
-				Enum cv = iBtn.getCurrentValue();
-				Enum next = Platform.rotateEnum( cv, backwards, iBtn.getSetting().getPossibleValues() );
+				final Enum cv = iBtn.getCurrentValue();
+				final Enum next = Platform.rotateEnum( cv, backwards, iBtn.getSetting().getPossibleValues() );
 
 				if( btn == this.terminalStyleBox )
 				{
@@ -194,7 +194,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 					{
 						NetworkHandler.instance.sendToServer( new PacketValueConfig( iBtn.getSetting().name(), next.name() ) );
 					}
-					catch( IOException e )
+					catch( final IOException e )
 					{
 						AELog.error( e );
 					}
@@ -224,13 +224,13 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 		this.maxRows = this.getMaxRows();
 		this.perRow = AEConfig.instance.getConfigManager().getSetting( Settings.TERMINAL_STYLE ) != TerminalStyle.FULL ? 9 : 9 + ( ( this.width - this.standardSize ) / 18 );
 
-		boolean hasNEI = IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.NEI );
+		final boolean hasNEI = IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.NEI );
 
-		int NEI = hasNEI ? 0 : 0;
+		final int NEI = hasNEI ? 0 : 0;
 		int top = hasNEI ? 22 : 0;
 
-		int magicNumber = 114 + 1;
-		int extraSpace = this.height - magicNumber - NEI - top - this.reservedSpace;
+		final int magicNumber = 114 + 1;
+		final int extraSpace = this.height - magicNumber - NEI - top - this.reservedSpace;
 
 		this.rows = (int) Math.floor( extraSpace / 18 );
 		if( this.rows > this.maxRows )
@@ -274,7 +274,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 
 		this.ySize = magicNumber + this.rows * 18 + this.reservedSpace;
 		// this.guiTop = top;
-		int unusedSpace = this.height - this.ySize;
+		final int unusedSpace = this.height - this.ySize;
 		this.guiTop = (int) Math.floor( unusedSpace / ( unusedSpace < 0 ? 3.8f : 2.0f ) );
 
 		int offset = this.guiTop + 8;
@@ -315,7 +315,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 		}
 
 		// Enum setting = AEConfig.INSTANCE.getSetting( "Terminal", SearchBoxMode.class, SearchBoxMode.AUTOSEARCH );
-		Enum setting = AEConfig.instance.settings.getSetting( Settings.SEARCH_MODE );
+		final Enum setting = AEConfig.instance.settings.getSetting( Settings.SEARCH_MODE );
 		this.searchField.setFocused( SearchBoxMode.AUTOSEARCH == setting || SearchBoxMode.NEI_AUTOSEARCH == setting );
 
 		if( this.isSubGui() )
@@ -329,7 +329,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 		CraftingGridOffsetX = Integer.MAX_VALUE;
 		CraftingGridOffsetY = Integer.MAX_VALUE;
 
-		for( Object s : this.inventorySlots.inventorySlots )
+		for( final Object s : this.inventorySlots.inventorySlots )
 		{
 			if( s instanceof AppEngSlot )
 			{
@@ -341,7 +341,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 
 			if( s instanceof SlotCraftingMatrix || s instanceof SlotFakeCraftingMatrix )
 			{
-				Slot g = (Slot) s;
+				final Slot g = (Slot) s;
 				if( g.xDisplayPosition > 0 && g.yDisplayPosition > 0 )
 				{
 					CraftingGridOffsetX = Math.min( CraftingGridOffsetX, g.xDisplayPosition );
@@ -355,16 +355,16 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 	}
 
 	@Override
-	public void drawFG( int offsetX, int offsetY, int mouseX, int mouseY )
+	public void drawFG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
 		this.fontRendererObj.drawString( this.getGuiDisplayName( this.myName.getLocal() ), 8, 6, 4210752 );
 		this.fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
 	}
 
 	@Override
-	protected void mouseClicked( int xCoord, int yCoord, int btn ) throws IOException
+	protected void mouseClicked( final int xCoord, final int yCoord, final int btn ) throws IOException
 	{
-		Enum searchMode = AEConfig.instance.settings.getSetting( Settings.SEARCH_MODE );
+		final Enum searchMode = AEConfig.instance.settings.getSetting( Settings.SEARCH_MODE );
 
 		if( searchMode != SearchBoxMode.AUTOSEARCH && searchMode != SearchBoxMode.NEI_AUTOSEARCH )
 		{
@@ -391,11 +391,11 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 	}
 
 	@Override
-	public void drawBG( int offsetX, int offsetY, int mouseX, int mouseY )
+	public void drawBG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
 
 		this.bindTexture( this.getBackground() );
-		int x_width = 197;
+		final int x_width = 197;
 		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, x_width, 18 );
 
 		if( this.viewCell || ( this instanceof GuiSecurity ) )
@@ -451,13 +451,13 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 		return AEConfig.instance.getConfigManager().getSetting( Settings.TERMINAL_STYLE ) == TerminalStyle.SMALL ? 6 : Integer.MAX_VALUE;
 	}
 
-	protected void repositionSlot( AppEngSlot s )
+	protected void repositionSlot( final AppEngSlot s )
 	{
 		s.yDisplayPosition = s.defY + this.ySize - 78 - 5;
 	}
 
 	@Override
-	protected void keyTyped( char character, int key ) throws IOException
+	protected void keyTyped( final char character, final int key ) throws IOException
 	{
 		if( !this.checkHotbarKeys( key ) )
 		{
@@ -505,7 +505,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 	}
 
 	@Override
-	public void updateSetting( IConfigManager manager, Enum settingName, Enum newValue )
+	public void updateSetting( final IConfigManager manager, final Enum settingName, final Enum newValue )
 	{
 		if( this.SortByBox != null )
 		{

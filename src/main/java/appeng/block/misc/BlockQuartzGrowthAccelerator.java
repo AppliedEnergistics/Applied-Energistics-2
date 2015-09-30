@@ -58,48 +58,47 @@ public class BlockQuartzGrowthAccelerator extends AEBaseTileBlock
 
 	@Override
 	public void randomDisplayTick(
-			World w,
-			BlockPos pos,
-			IBlockState state,
-			Random r )
+			final World w,
+			final BlockPos pos,
+			final IBlockState state,
+			final Random r )
 	{
 		if( !AEConfig.instance.enableEffects )
 		{
 			return;
 		}
 
-		TileQuartzGrowthAccelerator cga = this.getTileEntity( w, pos );
+		final TileQuartzGrowthAccelerator cga = this.getTileEntity( w, pos );
 
 		if( cga != null && cga.hasPower && CommonHelper.proxy.shouldAddParticles( r ) )
 		{
-			double d0 = r.nextFloat() - 0.5F;
-			double d1 = r.nextFloat() - 0.5F;
+			final double d0 = r.nextFloat() - 0.5F;
+			final double d1 = r.nextFloat() - 0.5F;
 
-			EnumFacing up = cga.getUp();
-			EnumFacing forward = cga.getForward();
-			EnumFacing west = Platform.crossProduct( forward, up );
+			final EnumFacing up = cga.getUp();
+			final EnumFacing forward = cga.getForward();
+			final EnumFacing west = Platform.crossProduct( forward, up );
 
 			double rx = 0.5 + pos.getX();
 			double ry = 0.5 + pos.getY();
 			double rz = 0.5 + pos.getZ();
 
-			double dx = 0;
-			double dz = 0;
-
 			rx += up.getFrontOffsetX() * d0;
 			ry += up.getFrontOffsetY() * d0;
 			rz += up.getFrontOffsetZ() * d0;
 
-			int x = pos.getX();
-			int y = pos.getY();
-			int z = pos.getZ();
-			
+			final int x = pos.getX();
+			final int y = pos.getY();
+			final int z = pos.getZ();
+
+			double dz = 0;
+			double dx = 0;
 			switch( r.nextInt( 4 ) )
 			{
 				case 0:
 					dx = 0.6;
 					dz = d1;
-					BlockPos pt = new BlockPos( x + west.getFrontOffsetX(), y + west.getFrontOffsetY(), z + west.getFrontOffsetZ() );					 
+					final BlockPos pt = new BlockPos( x + west.getFrontOffsetX(), y + west.getFrontOffsetY(), z + west.getFrontOffsetZ() );
 					if( !w.getBlockState(pt).getBlock().isAir( w, pt) )
 					{
 						return;
@@ -142,7 +141,7 @@ public class BlockQuartzGrowthAccelerator extends AEBaseTileBlock
 			ry += dz * forward.getFrontOffsetY();
 			rz += dz * forward.getFrontOffsetZ();
 
-			LightningFX fx = new LightningFX( w, rx, ry, rz, 0.0D, 0.0D, 0.0D );
+			final LightningFX fx = new LightningFX( w, rx, ry, rz, 0.0D, 0.0D, 0.0D );
 			Minecraft.getMinecraft().effectRenderer.addEffect( fx );
 		}
 	}

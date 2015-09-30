@@ -49,7 +49,7 @@ public enum Upgrades
 	private final int tier;
 	private final Map<ItemStack, Integer> supportedMax = new HashMap<>();
 
-	Upgrades( int tier )
+	Upgrades( final int tier )
 	{
 		this.tier = tier;
 	}
@@ -68,10 +68,10 @@ public enum Upgrades
 	 * @param item machine in which this upgrade can be installed
 	 * @param maxSupported amount how many upgrades can be installed
 	 */
-	public void registerItem( IItemDefinition item, int maxSupported )
+	public void registerItem( final IItemDefinition item, final int maxSupported )
 	{
 		final Optional<ItemStack> maybeStack = item.maybeStack( 1 );
-		for( ItemStack stack : maybeStack.asSet() )
+		for( final ItemStack stack : maybeStack.asSet() )
 		{
 			this.registerItem( stack, maxSupported );
 		}
@@ -83,7 +83,7 @@ public enum Upgrades
 	 * @param stack machine in which this upgrade can be installed
 	 * @param maxSupported amount how many upgrades can be installed
 	 */
-	public void registerItem( ItemStack stack, int maxSupported )
+	public void registerItem( final ItemStack stack, final int maxSupported )
 	{
 		if( stack != null )
 		{

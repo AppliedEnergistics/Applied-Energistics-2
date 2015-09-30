@@ -37,29 +37,29 @@ public class CreativeCellInventory implements IMEInventoryHandler<IAEItemStack>
 
 	final IItemList<IAEItemStack> itemListCache = AEApi.instance().storage().createItemList();
 
-	protected CreativeCellInventory( ItemStack o )
+	protected CreativeCellInventory( final ItemStack o )
 	{
-		CellConfig cc = new CellConfig( o );
-		for( ItemStack is : cc )
+		final CellConfig cc = new CellConfig( o );
+		for( final ItemStack is : cc )
 		{
 			if( is != null )
 			{
-				IAEItemStack i = AEItemStack.create( is );
+				final IAEItemStack i = AEItemStack.create( is );
 				i.setStackSize( Integer.MAX_VALUE );
 				this.itemListCache.add( i );
 			}
 		}
 	}
 
-	public static IMEInventoryHandler getCell( ItemStack o )
+	public static IMEInventoryHandler getCell( final ItemStack o )
 	{
 		return new CellInventoryHandler( new CreativeCellInventory( o ) );
 	}
 
 	@Override
-	public IAEItemStack injectItems( IAEItemStack input, Actionable mode, BaseActionSource src )
+	public IAEItemStack injectItems( final IAEItemStack input, final Actionable mode, final BaseActionSource src )
 	{
-		IAEItemStack local = this.itemListCache.findPrecise( input );
+		final IAEItemStack local = this.itemListCache.findPrecise( input );
 		if( local == null )
 		{
 			return input;
@@ -69,9 +69,9 @@ public class CreativeCellInventory implements IMEInventoryHandler<IAEItemStack>
 	}
 
 	@Override
-	public IAEItemStack extractItems( IAEItemStack request, Actionable mode, BaseActionSource src )
+	public IAEItemStack extractItems( final IAEItemStack request, final Actionable mode, final BaseActionSource src )
 	{
-		IAEItemStack local = this.itemListCache.findPrecise( request );
+		final IAEItemStack local = this.itemListCache.findPrecise( request );
 		if( local == null )
 		{
 			return null;
@@ -81,9 +81,9 @@ public class CreativeCellInventory implements IMEInventoryHandler<IAEItemStack>
 	}
 
 	@Override
-	public IItemList<IAEItemStack> getAvailableItems( IItemList out )
+	public IItemList<IAEItemStack> getAvailableItems( final IItemList out )
 	{
-		for( IAEItemStack ais : this.itemListCache )
+		for( final IAEItemStack ais : this.itemListCache )
 		{
 			out.add( ais );
 		}
@@ -103,13 +103,13 @@ public class CreativeCellInventory implements IMEInventoryHandler<IAEItemStack>
 	}
 
 	@Override
-	public boolean isPrioritized( IAEItemStack input )
+	public boolean isPrioritized( final IAEItemStack input )
 	{
 		return this.itemListCache.findPrecise( input ) != null;
 	}
 
 	@Override
-	public boolean canAccept( IAEItemStack input )
+	public boolean canAccept( final IAEItemStack input )
 	{
 		return this.itemListCache.findPrecise( input ) != null;
 	}
@@ -127,7 +127,7 @@ public class CreativeCellInventory implements IMEInventoryHandler<IAEItemStack>
 	}
 
 	@Override
-	public boolean validForPass( int i )
+	public boolean validForPass( final int i )
 	{
 		return true;
 	}

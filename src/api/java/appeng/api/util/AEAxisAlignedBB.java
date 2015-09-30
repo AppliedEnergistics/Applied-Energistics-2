@@ -19,7 +19,7 @@ public class AEAxisAlignedBB
 		return AxisAlignedBB.fromBounds( minX, minY, minZ, maxX, maxY, maxZ );
 	}
 	
-	public AEAxisAlignedBB(double a,double b, double c, double d, double e, double f)
+	public AEAxisAlignedBB( final double a, final double b, final double c, final double d, final double e, final double f)
 	{
 		minX=a;
 		minY=b;
@@ -30,18 +30,18 @@ public class AEAxisAlignedBB
 	}
 
 	public static AEAxisAlignedBB fromBounds(
-			double a,
-			double b,
-			double c,
-			double d,
-			double e,
-			double f )
+			final double a,
+			final double b,
+			final double c,
+			final double d,
+			final double e,
+			final double f )
 	{
 		return new AEAxisAlignedBB(a,b,c,d,e,f);
 	}
 
 	public static AEAxisAlignedBB fromBounds(
-			AxisAlignedBB bb )
+			final AxisAlignedBB bb )
 	{
 		return new AEAxisAlignedBB( bb.minX,
 		bb.minY,

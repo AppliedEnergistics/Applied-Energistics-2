@@ -54,7 +54,7 @@ public class StorageWorldProvider extends WorldProvider
 	}
 
 	@Override
-	public float calculateCelestialAngle( long par1, float par3 )
+	public float calculateCelestialAngle( final long par1, final float par3 )
 	{
 		return 0;
 	}
@@ -67,13 +67,13 @@ public class StorageWorldProvider extends WorldProvider
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public float[] calcSunriseSunsetColors( float celestialAngle, float partialTicks )
+	public float[] calcSunriseSunsetColors( final float celestialAngle, final float partialTicks )
 	{
 		return null;
 	}
 
 	@Override
-	public Vec3 getFogColor( float par1, float par2 )
+	public Vec3 getFogColor( final float par1, final float par2 )
 	{
 		return new Vec3( 0.07, 0.07, 0.07 );
 	}
@@ -92,7 +92,7 @@ public class StorageWorldProvider extends WorldProvider
 	}
 
 	@Override
-	public boolean doesXZShowFog( int par1, int par2 )
+	public boolean doesXZShowFog( final int par1, final int par2 )
 	{
 		return false;
 	}
@@ -116,19 +116,19 @@ public class StorageWorldProvider extends WorldProvider
 	}
 
 	@Override
-	public Vec3 getSkyColor( Entity cameraEntity, float partialTicks )
+	public Vec3 getSkyColor( final Entity cameraEntity, final float partialTicks )
 	{
 		return new Vec3( 0.07, 0.07, 0.07 );
 	}
 
 	@Override
-	public float getStarBrightness( float par1 )
+	public float getStarBrightness( final float par1 )
 	{
 		return 0;
 	}
 
 	@Override
-	public boolean canSnowAt( BlockPos pos, boolean checkLight )
+	public boolean canSnowAt( final BlockPos pos, final boolean checkLight )
 	{
 		return false;
 	}
@@ -140,13 +140,13 @@ public class StorageWorldProvider extends WorldProvider
 	}
 
 	@Override
-	public boolean isBlockHighHumidity( BlockPos pos )
+	public boolean isBlockHighHumidity( final BlockPos pos )
 	{
 		return false;
 	}
 
 	@Override
-	public boolean canDoLightning( Chunk chunk )
+	public boolean canDoLightning( final Chunk chunk )
 	{
 		return false;
 	}

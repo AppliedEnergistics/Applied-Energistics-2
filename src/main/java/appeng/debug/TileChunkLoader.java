@@ -65,11 +65,11 @@ public class TileChunkLoader extends AEBaseTile implements IUpdatePlayerListBox
 
 		if( this.ct == null )
 		{
-			MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
+			final MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
 			if( server != null )
 			{
-				List<EntityPlayerMP> pl = server.getConfigurationManager().playerEntityList;
-				for( EntityPlayerMP p : pl )
+				final List<EntityPlayerMP> pl = server.getConfigurationManager().playerEntityList;
+				for( final EntityPlayerMP p : pl )
 				{
 					p.addChatMessage( new ChatComponentText( "Can't chunk load.." ) );
 				}

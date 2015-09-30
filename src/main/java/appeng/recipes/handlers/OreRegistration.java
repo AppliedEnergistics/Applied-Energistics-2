@@ -36,14 +36,14 @@ public class OreRegistration implements ICraftHandler
 	final List<IIngredient> inputs;
 	final String name;
 
-	public OreRegistration( List<IIngredient> in, String out )
+	public OreRegistration( final List<IIngredient> in, final String out )
 	{
 		this.inputs = in;
 		this.name = out;
 	}
 
 	@Override
-	public void setup( List<List<IIngredient>> input, List<List<IIngredient>> output ) throws RecipeError
+	public void setup( final List<List<IIngredient>> input, final List<List<IIngredient>> output ) throws RecipeError
 	{
 
 	}
@@ -51,9 +51,9 @@ public class OreRegistration implements ICraftHandler
 	@Override
 	public void register() throws RegistrationError, MissingIngredientError
 	{
-		for( IIngredient i : this.inputs )
+		for( final IIngredient i : this.inputs )
 		{
-			for( ItemStack is : i.getItemStackSet() )
+			for( final ItemStack is : i.getItemStackSet() )
 			{
 				OreDictionary.registerOre( this.name, is );
 			}

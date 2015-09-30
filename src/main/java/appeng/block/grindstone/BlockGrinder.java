@@ -49,14 +49,14 @@ public class BlockGrinder extends AEBaseTileBlock
 
 	@Override
 	public boolean onBlockActivated(
-			World worldIn,
-			BlockPos pos,
-			IBlockState state,
-			EntityPlayer playerIn,
-			EnumFacing side,
-			float hitX,
-			float hitY,
-			float hitZ )
+			final World worldIn,
+			final BlockPos pos,
+			final IBlockState state,
+			final EntityPlayer playerIn,
+			final EnumFacing side,
+			final float hitX,
+			final float hitY,
+			final float hitZ )
 	{
 		// TODO Auto-generated method stub
 		return super.onBlockActivated( worldIn, pos, state, playerIn, side, hitX, hitY, hitZ );
@@ -64,15 +64,15 @@ public class BlockGrinder extends AEBaseTileBlock
 	
 	@Override
 	public boolean onActivated(
-			World w,
-			BlockPos pos,
-			EntityPlayer p,
-			EnumFacing side,
-			float hitX,
-			float hitY,
-			float hitZ )
+			final World w,
+			final BlockPos pos,
+			final EntityPlayer p,
+			final EnumFacing side,
+			final float hitX,
+			final float hitY,
+			final float hitZ )
 	{
-		TileGrinder tg = this.getTileEntity( w, pos );
+		final TileGrinder tg = this.getTileEntity( w, pos );
 		if( tg != null && !p.isSneaking() )
 		{
 			Platform.openGUI( p, tg, AEPartLocation.fromFacing( side ), GuiBridge.GUI_GRINDER );

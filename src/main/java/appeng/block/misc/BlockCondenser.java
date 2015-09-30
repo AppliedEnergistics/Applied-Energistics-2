@@ -47,13 +47,13 @@ public class BlockCondenser extends AEBaseTileBlock
 
 	@Override
 	public boolean onActivated(
-			World w,
-			BlockPos pos,
-			EntityPlayer player,
-			EnumFacing side,
-			float hitX,
-			float hitY,
-			float hitZ )
+			final World w,
+			final BlockPos pos,
+			final EntityPlayer player,
+			final EnumFacing side,
+			final float hitX,
+			final float hitY,
+			final float hitZ )
 	{
 		if( player.isSneaking() )
 		{
@@ -62,7 +62,7 @@ public class BlockCondenser extends AEBaseTileBlock
 
 		if( Platform.isServer() )
 		{
-			TileCondenser tc = this.getTileEntity( w, pos );
+			final TileCondenser tc = this.getTileEntity( w, pos );
 			if( tc != null && !player.isSneaking() )
 			{
 				Platform.openGUI( player, tc, AEPartLocation.fromFacing( side ), GuiBridge.GUI_CONDENSER );

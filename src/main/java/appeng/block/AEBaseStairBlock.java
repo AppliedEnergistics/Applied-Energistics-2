@@ -37,7 +37,7 @@ public abstract class AEBaseStairBlock extends BlockStairs implements IAEFeature
 {
 	private final IFeatureHandler features;
 
-	protected AEBaseStairBlock( Block block, EnumSet<AEFeature> features, String type )
+	protected AEBaseStairBlock( final Block block, final EnumSet<AEFeature> features, final String type )
 	{
 		super( block.getStateFromMeta( 0 ) );
 

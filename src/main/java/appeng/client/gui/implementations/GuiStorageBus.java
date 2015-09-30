@@ -53,7 +53,7 @@ public class GuiStorageBus extends GuiUpgradeable
 	GuiImgButton partition;
 	GuiImgButton clear;
 
-	public GuiStorageBus( InventoryPlayer inventoryPlayer, PartStorageBus te )
+	public GuiStorageBus( final InventoryPlayer inventoryPlayer, final PartStorageBus te )
 	{
 		super( new ContainerStorageBus( inventoryPlayer, te ) );
 		this.ySize = 251;
@@ -78,7 +78,7 @@ public class GuiStorageBus extends GuiUpgradeable
 	}
 
 	@Override
-	public void drawFG( int offsetX, int offsetY, int mouseX, int mouseY )
+	public void drawFG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
 		this.fontRendererObj.drawString( this.getGuiDisplayName( GuiText.StorageBus.getLocal() ), 8, 6, 4210752 );
 		this.fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
@@ -106,11 +106,11 @@ public class GuiStorageBus extends GuiUpgradeable
 	}
 
 	@Override
-	protected void actionPerformed( GuiButton btn ) throws IOException
+	protected void actionPerformed( final GuiButton btn ) throws IOException
 	{
 		super.actionPerformed( btn );
 
-		boolean backwards = Mouse.isButtonDown( 1 );
+		final boolean backwards = Mouse.isButtonDown( 1 );
 
 		try
 		{
@@ -135,7 +135,7 @@ public class GuiStorageBus extends GuiUpgradeable
 				NetworkHandler.instance.sendToServer( new PacketConfigButton( this.storageFilter.getSetting(), backwards ) );
 			}
 		}
-		catch( IOException e )
+		catch( final IOException e )
 		{
 			AELog.error( e );
 		}

@@ -62,11 +62,11 @@ public final class CreativeTab extends CreativeTabs
 		return this.findFirst( blocks.controller(), blocks.chest(), blocks.cellWorkbench(), blocks.fluix(), items.cell1k(), items.networkTool(), materials.fluixCrystal(), materials.certusQuartzCrystal() );
 	}
 
-	private ItemStack findFirst( IItemDefinition... choices )
+	private ItemStack findFirst( final IItemDefinition... choices )
 	{
-		for( IItemDefinition definition : choices )
+		for( final IItemDefinition definition : choices )
 		{
-			for( ItemStack definitionStack : definition.maybeStack( 1 ).asSet() )
+			for( final ItemStack definitionStack : definition.maybeStack( 1 ).asSet() )
 			{
 				return definitionStack;
 			}

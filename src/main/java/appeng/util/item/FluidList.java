@@ -36,7 +36,7 @@ public final class FluidList implements IItemList<IAEFluidStack>
 	private final Map<IAEFluidStack, IAEFluidStack> records = new HashMap<IAEFluidStack, IAEFluidStack>();
 
 	@Override
-	public void add( IAEFluidStack option )
+	public void add( final IAEFluidStack option )
 	{
 		if( option == null )
 		{
@@ -57,7 +57,7 @@ public final class FluidList implements IItemList<IAEFluidStack>
 	}
 
 	@Override
-	public IAEFluidStack findPrecise( IAEFluidStack fluidStack )
+	public IAEFluidStack findPrecise( final IAEFluidStack fluidStack )
 	{
 		if( fluidStack == null )
 		{
@@ -68,7 +68,7 @@ public final class FluidList implements IItemList<IAEFluidStack>
 	}
 
 	@Override
-	public Collection<IAEFluidStack> findFuzzy( IAEFluidStack filter, FuzzyMode fuzzy )
+	public Collection<IAEFluidStack> findFuzzy( final IAEFluidStack filter, final FuzzyMode fuzzy )
 	{
 		if( filter == null )
 		{
@@ -85,7 +85,7 @@ public final class FluidList implements IItemList<IAEFluidStack>
 	}
 
 	@Override
-	public void addStorage( IAEFluidStack option )
+	public void addStorage( final IAEFluidStack option )
 	{
 		if( option == null )
 		{
@@ -111,7 +111,7 @@ public final class FluidList implements IItemList<IAEFluidStack>
 	 */
 
 	@Override
-	public void addCrafting( IAEFluidStack option )
+	public void addCrafting( final IAEFluidStack option )
 	{
 		if( option == null )
 		{
@@ -134,7 +134,7 @@ public final class FluidList implements IItemList<IAEFluidStack>
 	}
 
 	@Override
-	public void addRequestable( IAEFluidStack option )
+	public void addRequestable( final IAEFluidStack option )
 	{
 		if( option == null )
 		{
@@ -160,7 +160,7 @@ public final class FluidList implements IItemList<IAEFluidStack>
 	@Override
 	public IAEFluidStack getFirstItem()
 	{
-		for( IAEFluidStack stackType : this )
+		for( final IAEFluidStack stackType : this )
 		{
 			return stackType;
 		}
@@ -183,18 +183,18 @@ public final class FluidList implements IItemList<IAEFluidStack>
 	@Override
 	public void resetStatus()
 	{
-		for( IAEFluidStack i : this )
+		for( final IAEFluidStack i : this )
 		{
 			i.reset();
 		}
 	}
 
-	private IAEFluidStack getFluidRecord( IAEFluidStack fluid )
+	private IAEFluidStack getFluidRecord( final IAEFluidStack fluid )
 	{
 		return this.records.get( fluid );
 	}
 
-	private IAEFluidStack putFluidRecord( IAEFluidStack fluid )
+	private IAEFluidStack putFluidRecord( final IAEFluidStack fluid )
 	{
 		return this.records.put( fluid, fluid );
 	}

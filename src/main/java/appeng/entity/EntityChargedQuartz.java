@@ -47,12 +47,12 @@ public final class EntityChargedQuartz extends AEBaseEntityItem
 	int transformTime = 0;
 
 	@Reflected
-	public EntityChargedQuartz( World w )
+	public EntityChargedQuartz( final World w )
 	{
 		super( w );
 	}
 
-	public EntityChargedQuartz( World w, double x, double y, double z, ItemStack is )
+	public EntityChargedQuartz( final World w, final double x, final double y, final double z, final ItemStack is )
 	{
 		super( w, x, y, z, is );
 	}
@@ -74,11 +74,11 @@ public final class EntityChargedQuartz extends AEBaseEntityItem
 		}
 		this.delay++;
 
-		int j = MathHelper.floor_double( this.posX );
-		int i = MathHelper.floor_double( this.posY );
-		int k = MathHelper.floor_double( this.posZ );
+		final int j = MathHelper.floor_double( this.posX );
+		final int i = MathHelper.floor_double( this.posY );
+		final int k = MathHelper.floor_double( this.posZ );
 
-		Material mat = this.worldObj.getBlockState( new BlockPos( j, i, k ) ).getBlock().getMaterial();
+		final Material mat = this.worldObj.getBlockState( new BlockPos( j, i, k ) ).getBlock().getMaterial();
 		if( Platform.isServer() && mat.isLiquid() )
 		{
 			this.transformTime++;
@@ -98,22 +98,22 @@ public final class EntityChargedQuartz extends AEBaseEntityItem
 
 	public boolean transform()
 	{
-		ItemStack item = this.getEntityItem();
+		final ItemStack item = this.getEntityItem();
 		final IMaterials materials = AEApi.instance().definitions().materials();
 
 		if( materials.certusQuartzCrystalCharged().isSameAs( item ) )
 		{
-			AxisAlignedBB region = AxisAlignedBB.fromBounds( this.posX - 1, this.posY - 1, this.posZ - 1, this.posX + 1, this.posY + 1, this.posZ + 1 );
-			List<Entity> l = this.getCheckedEntitiesWithinAABBExcludingEntity( region );
+			final AxisAlignedBB region = AxisAlignedBB.fromBounds( this.posX - 1, this.posY - 1, this.posZ - 1, this.posX + 1, this.posY + 1, this.posZ + 1 );
+			final List<Entity> l = this.getCheckedEntitiesWithinAABBExcludingEntity( region );
 
 			EntityItem redstone = null;
 			EntityItem netherQuartz = null;
 
-			for( Entity e : l )
+			for( final Entity e : l )
 			{
 				if( e instanceof EntityItem && !e.isDead )
 				{
-					ItemStack other = ( (EntityItem) e ).getEntityItem();
+					final ItemStack other = ( (EntityItem) e ).getEntityItem();
 					if( other != null && other.stackSize > 0 )
 					{
 						if( Platform.isSameItem( other, new ItemStack( Items.redstone ) ) )
@@ -150,7 +150,7 @@ public final class EntityChargedQuartz extends AEBaseEntityItem
 					netherQuartz.setDead();
 				}
 
-				for( ItemStack fluixCrystalStack : materials.fluixCrystal().maybeStack( 2 ).asSet() )
+				for( final ItemStack fluixCrystalStack : materials.fluixCrystal().maybeStack( 2 ).asSet() )
 				{
 					final EntityItem entity = new EntityItem( this.worldObj, this.posX, this.posY, this.posZ, fluixCrystalStack );
 

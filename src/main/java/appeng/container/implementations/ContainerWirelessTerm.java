@@ -31,7 +31,7 @@ public class ContainerWirelessTerm extends ContainerMEPortableCell
 
 	final WirelessTerminalGuiObject wirelessTerminalGUIObject;
 
-	public ContainerWirelessTerm( InventoryPlayer ip, WirelessTerminalGuiObject gui )
+	public ContainerWirelessTerm( final InventoryPlayer ip, final WirelessTerminalGuiObject gui )
 	{
 		super( ip, gui );
 		this.wirelessTerminalGUIObject = gui;

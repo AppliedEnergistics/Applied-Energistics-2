@@ -37,7 +37,7 @@ public class MetaRotation implements IOrientable
 	final IBlockAccess w;
 	final BlockPos pos;
 
-	public MetaRotation( IBlockAccess world, BlockPos pos, boolean FullFacing )
+	public MetaRotation( final IBlockAccess world, final BlockPos pos, final boolean FullFacing )
 	{
 		this.w = world;
 		this.pos = pos;
@@ -63,11 +63,11 @@ public class MetaRotation implements IOrientable
 	@Override
 	public EnumFacing getUp()
 	{
-		IBlockState state = w.getBlockState( pos );
+		final IBlockState state = w.getBlockState( pos );
 		
 		if (useFacing )
 		{
-			EnumFacing f = state == null ? EnumFacing.UP : (EnumFacing) state.getValue( BlockTorch.FACING );
+			final EnumFacing f = state == null ? EnumFacing.UP : (EnumFacing) state.getValue( BlockTorch.FACING );
 			return f;
 		}
 		
@@ -89,7 +89,7 @@ public class MetaRotation implements IOrientable
 	}
 
 	@Override
-	public void setOrientation( EnumFacing forward, EnumFacing up )
+	public void setOrientation( final EnumFacing forward, final EnumFacing up )
 	{
 		if( this.w instanceof World )
 		{

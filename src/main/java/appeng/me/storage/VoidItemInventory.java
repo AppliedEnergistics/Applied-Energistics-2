@@ -34,13 +34,13 @@ public class VoidItemInventory implements IMEInventoryHandler<IAEItemStack>
 
 	final TileCondenser target;
 
-	public VoidItemInventory( TileCondenser te )
+	public VoidItemInventory( final TileCondenser te )
 	{
 		this.target = te;
 	}
 
 	@Override
-	public IAEItemStack injectItems( IAEItemStack input, Actionable mode, BaseActionSource src )
+	public IAEItemStack injectItems( final IAEItemStack input, final Actionable mode, final BaseActionSource src )
 	{
 		if( mode == Actionable.SIMULATE )
 		{
@@ -55,13 +55,13 @@ public class VoidItemInventory implements IMEInventoryHandler<IAEItemStack>
 	}
 
 	@Override
-	public IAEItemStack extractItems( IAEItemStack request, Actionable mode, BaseActionSource src )
+	public IAEItemStack extractItems( final IAEItemStack request, final Actionable mode, final BaseActionSource src )
 	{
 		return null;
 	}
 
 	@Override
-	public IItemList<IAEItemStack> getAvailableItems( IItemList out )
+	public IItemList<IAEItemStack> getAvailableItems( final IItemList out )
 	{
 		return out;
 	}
@@ -79,13 +79,13 @@ public class VoidItemInventory implements IMEInventoryHandler<IAEItemStack>
 	}
 
 	@Override
-	public boolean isPrioritized( IAEItemStack input )
+	public boolean isPrioritized( final IAEItemStack input )
 	{
 		return false;
 	}
 
 	@Override
-	public boolean canAccept( IAEItemStack input )
+	public boolean canAccept( final IAEItemStack input )
 	{
 		return true;
 	}
@@ -103,7 +103,7 @@ public class VoidItemInventory implements IMEInventoryHandler<IAEItemStack>
 	}
 
 	@Override
-	public boolean validForPass( int i )
+	public boolean validForPass( final int i )
 	{
 		return i == 2;
 	}

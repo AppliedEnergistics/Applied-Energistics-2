@@ -50,7 +50,7 @@ public class TileCubeGenerator extends AEBaseTile implements IUpdatePlayerListBo
 
 			if( this.countdown % 20 == 0 )
 			{
-				for( EntityPlayer e : CommonHelper.proxy.getPlayers() )
+				for( final EntityPlayer e : CommonHelper.proxy.getPlayers() )
 				{
 					e.addChatMessage( new ChatComponentText( "Spawning in... " + ( this.countdown / 20 ) ) );
 				}
@@ -67,10 +67,10 @@ public class TileCubeGenerator extends AEBaseTile implements IUpdatePlayerListBo
 	{
 		this.worldObj.setBlockToAir( pos );
 
-		Item i = this.is.getItem();
-		EnumFacing side = EnumFacing.UP;
+		final Item i = this.is.getItem();
+		final EnumFacing side = EnumFacing.UP;
 
-		int half = (int) Math.floor( this.size / 2 );
+		final int half = (int) Math.floor( this.size / 2 );
 
 		for( int y = 0; y < this.size; y++ )
 		{
@@ -78,18 +78,18 @@ public class TileCubeGenerator extends AEBaseTile implements IUpdatePlayerListBo
 			{
 				for( int z = -half; z < half; z++ )
 				{
-					BlockPos p = pos.add( x, y-1, z );
+					final BlockPos p = pos.add( x, y-1, z );
 					i.onItemUse( this.is.copy(), this.who, this.worldObj, p, side, 0.5f, 0.0f, 0.5f );
 				}
 			}
 		}
 	}
 
-	public void click( EntityPlayer player )
+	public void click( final EntityPlayer player )
 	{
 		if( Platform.isServer() )
 		{
-			ItemStack hand = player.inventory.getCurrentItem();
+			final ItemStack hand = player.inventory.getCurrentItem();
 			this.who = player;
 
 			if( hand == null )

@@ -52,46 +52,46 @@ public abstract class AERootPoweredTile extends AEBaseInvTile implements IAEPowe
 		return this.internalPowerSides.clone();
 	}
 
-	protected void setPowerSides( EnumSet<EnumFacing> sides )
+	protected void setPowerSides( final EnumSet<EnumFacing> sides )
 	{
 		this.internalPowerSides = sides;
 		// trigger re-calc!
 	}
 
 	@TileEvent( TileEventType.WORLD_NBT_WRITE )
-	public void writeToNBT_AERootPoweredTile( NBTTagCompound data )
+	public void writeToNBT_AERootPoweredTile( final NBTTagCompound data )
 	{
 		data.setDouble( "internalCurrentPower", this.internalCurrentPower );
 	}
 
 	@TileEvent( TileEventType.WORLD_NBT_READ )
-	public void readFromNBT_AERootPoweredTile( NBTTagCompound data )
+	public void readFromNBT_AERootPoweredTile( final NBTTagCompound data )
 	{
 		this.internalCurrentPower = data.getDouble( "internalCurrentPower" );
 	}
 
-	protected final double getExternalPowerDemand( PowerUnits externalUnit, double maxPowerRequired )
+	protected final double getExternalPowerDemand( final PowerUnits externalUnit, final double maxPowerRequired )
 	{
 		return PowerUnits.AE.convertTo( externalUnit, Math.max( 0.0, this.getFunnelPowerDemand( externalUnit.convertTo( PowerUnits.AE, maxPowerRequired ) ) ) );
 	}
 
-	protected double getFunnelPowerDemand( double maxRequired )
+	protected double getFunnelPowerDemand( final double maxRequired )
 	{
 		return this.internalMaxPower - this.internalCurrentPower;
 	}
 
-	public final double injectExternalPower( PowerUnits input, double amt )
+	public final double injectExternalPower( final PowerUnits input, final double amt )
 	{
 		return PowerUnits.AE.convertTo( input, this.funnelPowerIntoStorage( input.convertTo( PowerUnits.AE, amt ), Actionable.MODULATE ) );
 	}
 
-	protected double funnelPowerIntoStorage( double power, Actionable mode )
+	protected double funnelPowerIntoStorage( final double power, final Actionable mode )
 	{
 		return this.injectAEPower( power, mode );
 	}
 
 	@Override
-	public final double injectAEPower( double amt, Actionable mode )
+	public final double injectAEPower( double amt, final Actionable mode )
 	{
 		if( amt < 0.000001 )
 		{
@@ -100,7 +100,7 @@ public abstract class AERootPoweredTile extends AEBaseInvTile implements IAEPowe
 
 		if( mode == Actionable.SIMULATE )
 		{
-			double fakeBattery = this.internalCurrentPower + amt;
+			final double fakeBattery = this.internalCurrentPower + amt;
 
 			if( fakeBattery > this.internalMaxPower )
 			{
@@ -128,7 +128,7 @@ public abstract class AERootPoweredTile extends AEBaseInvTile implements IAEPowe
 		}
 	}
 
-	protected void PowerEvent( PowerEventType x )
+	protected void PowerEvent( final PowerEventType x )
 	{
 		// nothing.
 	}
@@ -158,12 +158,12 @@ public abstract class AERootPoweredTile extends AEBaseInvTile implements IAEPowe
 	}
 
 	@Override
-	public final double extractAEPower( double amt, Actionable mode, PowerMultiplier multiplier )
+	public final double extractAEPower( final double amt, final Actionable mode, final PowerMultiplier multiplier )
 	{
 		return multiplier.divide( this.extractAEPower( multiplier.multiply( amt ), mode ) );
 	}
 
-	protected double extractAEPower( double amt, Actionable mode )
+	protected double extractAEPower( double amt, final Actionable mode )
 	{
 		if( mode == Actionable.SIMULATE )
 		{
@@ -174,7 +174,7 @@ public abstract class AERootPoweredTile extends AEBaseInvTile implements IAEPowe
 			return this.internalCurrentPower;
 		}
 
-		boolean wasFull = this.internalCurrentPower >= this.internalMaxPower - 0.001;
+		final boolean wasFull = this.internalCurrentPower >= this.internalMaxPower - 0.001;
 		if( wasFull && amt > 0.001 )
 		{
 			this.PowerEvent( PowerEventType.REQUEST_POWER );

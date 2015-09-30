@@ -70,16 +70,16 @@ final class StorageData implements IWorldGridStorageData, IOnWorldStartable, IOn
 	 */
 	@Nullable
 	@Override
-	public GridStorage getGridStorage( long storageID )
+	public GridStorage getGridStorage( final long storageID )
 	{
-		GridStorageSearch gss = new GridStorageSearch( storageID );
-		WeakReference<GridStorageSearch> result = this.loadedStorage.get( gss );
+		final GridStorageSearch gss = new GridStorageSearch( storageID );
+		final WeakReference<GridStorageSearch> result = this.loadedStorage.get( gss );
 
 		if( result == null || result.get() == null )
 		{
-			String id = String.valueOf( storageID );
-			String data = this.config.get( "gridstorage", id, "" ).getString();
-			GridStorage thisStorage = new GridStorage( data, storageID, gss );
+			final String id = String.valueOf( storageID );
+			final String data = this.config.get( "gridstorage", id, "" ).getString();
+			final GridStorage thisStorage = new GridStorage( data, storageID, gss );
 			gss.gridStorage = new WeakReference<GridStorage>( thisStorage );
 			this.loadedStorage.put( gss, new WeakReference<GridStorageSearch>( gss ) );
 			return thisStorage;
@@ -95,9 +95,9 @@ final class StorageData implements IWorldGridStorageData, IOnWorldStartable, IOn
 	@Override
 	public GridStorage getNewGridStorage()
 	{
-		long storageID = this.nextGridStorage();
-		GridStorageSearch gss = new GridStorageSearch( storageID );
-		GridStorage newStorage = new GridStorage( storageID, gss );
+		final long storageID = this.nextGridStorage();
+		final GridStorageSearch gss = new GridStorageSearch( storageID );
+		final GridStorage newStorage = new GridStorage( storageID, gss );
 		gss.gridStorage = new WeakReference<GridStorage>( newStorage );
 		this.loadedStorage.put( gss, new WeakReference<GridStorageSearch>( gss ) );
 
@@ -107,24 +107,24 @@ final class StorageData implements IWorldGridStorageData, IOnWorldStartable, IOn
 	@Override
 	public long nextGridStorage()
 	{
-		long r = this.lastGridStorage;
+		final long r = this.lastGridStorage;
 		this.lastGridStorage++;
 		this.config.get( "Counters", "lastGridStorage", this.lastGridStorage ).set( Long.toString( this.lastGridStorage ) );
 		return r;
 	}
 
 	@Override
-	public void destroyGridStorage( long id )
+	public void destroyGridStorage( final long id )
 	{
-		String stringID = String.valueOf( id );
+		final String stringID = String.valueOf( id );
 		this.config.getCategory( "gridstorage" ).remove( stringID );
 	}
 
 	@Override
-	public int getNextOrderedValue( String name )
+	public int getNextOrderedValue( final String name )
 	{
-		Property p = this.config.get( "orderedValues", name, 0 );
-		int myValue = p.getInt();
+		final Property p = this.config.get( "orderedValues", name, 0 );
+		final int myValue = p.getInt();
 		p.set( myValue + 1 );
 		return myValue;
 	}
@@ -138,7 +138,7 @@ final class StorageData implements IWorldGridStorageData, IOnWorldStartable, IOn
 		{
 			this.lastGridStorage = Long.parseLong( lastString );
 		}
-		catch( NumberFormatException err )
+		catch( final NumberFormatException err )
 		{
 			AELog.warning( "The config contained a value which was not represented as a Long: %s", lastString );
 
@@ -150,12 +150,12 @@ final class StorageData implements IWorldGridStorageData, IOnWorldStartable, IOn
 	public void onWorldStop()
 	{
 		// populate new data
-		for( GridStorageSearch gs : this.loadedStorage.keySet() )
+		for( final GridStorageSearch gs : this.loadedStorage.keySet() )
 		{
-			GridStorage thisStorage = gs.gridStorage.get();
+			final GridStorage thisStorage = gs.gridStorage.get();
 			if( thisStorage != null && thisStorage.getGrid() != null && !thisStorage.getGrid().isEmpty() )
 			{
-				String value = thisStorage.getValue();
+				final String value = thisStorage.getValue();
 				this.config.get( GRID_STORAGE_CATEGORY, String.valueOf( thisStorage.getID() ), value ).set( value );
 			}
 		}

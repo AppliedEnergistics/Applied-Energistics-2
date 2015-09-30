@@ -24,7 +24,7 @@ import com.google.common.base.Optional;
 
 public abstract class AEBasePoweredItem extends AERootPoweredItem
 {
-	public AEBasePoweredItem( double powerCapacity, Optional<String> subName )
+	public AEBasePoweredItem( final double powerCapacity, final Optional<String> subName )
 	{
 		super( powerCapacity, subName );
 

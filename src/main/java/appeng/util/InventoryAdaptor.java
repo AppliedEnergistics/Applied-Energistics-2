@@ -43,14 +43,14 @@ public abstract class InventoryAdaptor implements Iterable<ItemSlot>
 {
 
 	// returns an appropriate adaptor, or null
-	public static InventoryAdaptor getAdaptor( Object te, EnumFacing d )
+	public static InventoryAdaptor getAdaptor( final Object te, final EnumFacing d )
 	{
 		if( te == null )
 		{
 			return null;
 		}
 
-		IBetterStorage bs = (IBetterStorage) ( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.BetterStorage ) ? IntegrationRegistry.INSTANCE.getInstance( IntegrationType.BetterStorage ) : null );
+		final IBetterStorage bs = (IBetterStorage) ( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.BetterStorage ) ? IntegrationRegistry.INSTANCE.getInstance( IntegrationType.BetterStorage ) : null );
 
 		if( te instanceof EntityPlayer )
 		{
@@ -73,8 +73,8 @@ public abstract class InventoryAdaptor implements Iterable<ItemSlot>
 		}
 		else if( te instanceof ISidedInventory )
 		{
-			ISidedInventory si = (ISidedInventory) te;
-			int[] slots = si.getSlotsForFace( d );
+			final ISidedInventory si = (ISidedInventory) te;
+			final int[] slots = si.getSlotsForFace( d );
 			if( si.getSizeInventory() > 0 && slots != null && slots.length > 0 )
 			{
 				return new AdaptorIInventory( new WrapperMCISidedInventory( si, d ) );
@@ -82,7 +82,7 @@ public abstract class InventoryAdaptor implements Iterable<ItemSlot>
 		}
 		else if( te instanceof IInventory )
 		{
-			IInventory i = (IInventory) te;
+			final IInventory i = (IInventory) te;
 			if( i.getSizeInventory() > 0 )
 			{
 				return new AdaptorIInventory( i );

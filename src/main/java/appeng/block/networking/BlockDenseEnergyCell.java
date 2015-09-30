@@ -36,7 +36,7 @@ public class BlockDenseEnergyCell extends BlockEnergyCell
 	}
 
 	@Override
-	public appeng.client.texture.IAESprite getIcon(net.minecraft.util.EnumFacing side, net.minecraft.block.state.IBlockState state)
+	public appeng.client.texture.IAESprite getIcon( final net.minecraft.util.EnumFacing side, final net.minecraft.block.state.IBlockState state)
 	{
 		switch( (int)state.getValue( ENERGY_STORAGE ) )
 		{

@@ -32,7 +32,7 @@ public class OffsetIcon implements IAESprite
 
 	private final IAESprite p;
 
-	public OffsetIcon( IAESprite iIcon, float x, float y )
+	public OffsetIcon( final IAESprite iIcon, final float x, final float y )
 	{
 		if( iIcon == null )
 		{
@@ -72,7 +72,7 @@ public class OffsetIcon implements IAESprite
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public float getInterpolatedU( double d0 )
+	public float getInterpolatedU( final double d0 )
 	{
 		return this.u( d0 - this.offsetX );
 	}
@@ -93,7 +93,7 @@ public class OffsetIcon implements IAESprite
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public float getInterpolatedV( double d0 )
+	public float getInterpolatedV( final double d0 )
 	{
 		return this.v( d0 - this.offsetY );
 	}
@@ -105,12 +105,12 @@ public class OffsetIcon implements IAESprite
 		return this.p.getIconName();
 	}
 
-	private float v( double d )
+	private float v( final double d )
 	{
 		return this.p.getInterpolatedV( Math.min( 16.0, Math.max( 0.0, d ) ) );
 	}
 
-	private float u( double d )
+	private float u( final double d )
 	{
 		return this.p.getInterpolatedU( Math.min( 16.0, Math.max( 0.0, d ) ) );
 	}

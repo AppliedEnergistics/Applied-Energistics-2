@@ -39,11 +39,11 @@ public class RenderBlockEnergyCube extends BaseBlockRender<BlockEnergyCell, Tile
 	}
 
 	@Override
-	public void renderInventory( BlockEnergyCell blk, ItemStack is, ModelGenerator renderer, ItemRenderType type, Object[] obj )
+	public void renderInventory( final BlockEnergyCell blk, final ItemStack is, final ModelGenerator renderer, final ItemRenderType type, final Object[] obj )
 	{
-		IAEItemPowerStorage myItem = (IAEItemPowerStorage) is.getItem();
-		double internalCurrentPower = myItem.getAECurrentPower( is );
-		double internalMaxPower = myItem.getAEMaxPower( is );
+		final IAEItemPowerStorage myItem = (IAEItemPowerStorage) is.getItem();
+		final double internalCurrentPower = myItem.getAECurrentPower( is );
+		final double internalMaxPower = myItem.getAEMaxPower( is );
 
 		int meta = (int) ( 8.0 * ( internalCurrentPower / internalMaxPower ) );
 
@@ -62,10 +62,10 @@ public class RenderBlockEnergyCube extends BaseBlockRender<BlockEnergyCell, Tile
 	}
 
 	@Override
-	public boolean renderInWorld( BlockEnergyCell blk, IBlockAccess world, BlockPos pos, ModelGenerator renderer )
+	public boolean renderInWorld( final BlockEnergyCell blk, final IBlockAccess world, final BlockPos pos, final ModelGenerator renderer )
 	{
 		renderer.overrideBlockTexture = renderer.getIcon( world.getBlockState( pos ) )[0];// blk.getIcon( 0, meta );
-		boolean out = renderer.renderStandardBlock( blk, pos );
+		final boolean out = renderer.renderStandardBlock( blk, pos );
 		renderer.overrideBlockTexture = null;
 
 		return out;

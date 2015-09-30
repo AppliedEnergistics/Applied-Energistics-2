@@ -39,7 +39,7 @@ public class RenderFloatingItem extends RenderEntityItem
 
 	public static DoubleBuffer buffer = ByteBuffer.allocateDirect( 8 * 4 ).asDoubleBuffer();
 
-	public RenderFloatingItem(RenderManager manager)
+	public RenderFloatingItem( final RenderManager manager)
 	{
 		super(manager,Minecraft.getMinecraft().getRenderItem());
 		this.shadowOpaque = 0.0F;
@@ -47,16 +47,16 @@ public class RenderFloatingItem extends RenderEntityItem
 	
 	@Override
 	public void doRender(
-			Entity entityItem,
-			double x,
-			double y,
-			double z,
-			float yaw,
-			float partialTick )
+			final Entity entityItem,
+			final double x,
+			final double y,
+			final double z,
+			final float yaw,
+			final float partialTick )
 	{
 		if( entityItem instanceof EntityFloatingItem )
 		{
-			EntityFloatingItem efi = (EntityFloatingItem) entityItem;
+			final EntityFloatingItem efi = (EntityFloatingItem) entityItem;
 			if( efi.progress > 0.0 )
 			{
 				GL11.glPushMatrix();

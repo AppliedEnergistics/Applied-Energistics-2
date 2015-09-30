@@ -39,7 +39,7 @@ public class GuiTabButton extends GuiButton implements ITooltip
 	private int myIcon = -1;
 	private ItemStack myItem;
 
-	public GuiTabButton( int x, int y, int ico, String message, RenderItem ir )
+	public GuiTabButton( final int x, final int y, final int ico, final String message, final RenderItem ir )
 	{
 		super( 0, 0, 16, "" );
 
@@ -61,7 +61,7 @@ public class GuiTabButton extends GuiButton implements ITooltip
 	 * @param message mouse over message
 	 * @param ir      renderer
 	 */
-	public GuiTabButton( int x, int y, ItemStack ico, String message, RenderItem ir )
+	public GuiTabButton( final int x, final int y, final ItemStack ico, final String message, final RenderItem ir )
 	{
 		super( 0, 0, 16, "" );
 		this.xPosition = x;
@@ -74,7 +74,7 @@ public class GuiTabButton extends GuiButton implements ITooltip
 	}
 
 	@Override
-	public void drawButton( Minecraft minecraft, int x, int y )
+	public void drawButton( final Minecraft minecraft, final int x, final int y )
 	{
 		if( this.visible )
 		{
@@ -84,13 +84,13 @@ public class GuiTabButton extends GuiButton implements ITooltip
 
 			int uv_x = ( this.hideEdge > 0 ? 11 : 13 );
 
-			int offsetX = this.hideEdge > 0 ? 1 : 0;
+			final int offsetX = this.hideEdge > 0 ? 1 : 0;
 
 			this.drawTexturedModalRect( this.xPosition, this.yPosition, uv_x * 16, 0, 25, 22 );
 
 			if( this.myIcon >= 0 )
 			{
-				int uv_y = (int) Math.floor( this.myIcon / 16 );
+				final int uv_y = (int) Math.floor( this.myIcon / 16 );
 				uv_x = this.myIcon - uv_y * 16;
 
 				this.drawTexturedModalRect( offsetX + this.xPosition + 3, this.yPosition + 3, uv_x * 16, uv_y * 16, 16, 16 );

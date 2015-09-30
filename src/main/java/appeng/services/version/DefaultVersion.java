@@ -12,13 +12,13 @@ public final class DefaultVersion extends BaseVersion
 	 * @param channel  either alpha, beta or release
 	 * @param build    natural number
 	 */
-	public DefaultVersion( int revision, Channel channel, int build )
+	public DefaultVersion( final int revision, final Channel channel, final int build )
 	{
 		super( revision, channel, build );
 	}
 
 	@Override
-	public boolean isNewerAs( Version maybeOlder )
+	public boolean isNewerAs( final Version maybeOlder )
 	{
 		if( this.revision() > maybeOlder.revision() )
 		{

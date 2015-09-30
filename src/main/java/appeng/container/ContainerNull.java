@@ -30,7 +30,7 @@ public class ContainerNull extends Container
 {
 
 	@Override
-	public boolean canInteractWith( EntityPlayer entityplayer )
+	public boolean canInteractWith( final EntityPlayer entityplayer )
 	{
 		return false;
 	}

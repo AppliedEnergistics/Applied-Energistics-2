@@ -34,7 +34,7 @@ public class MENetworkCraftingPatternChange extends MENetworkEvent
 	public final ICraftingProvider provider;
 	public final IGridNode node;
 
-	public MENetworkCraftingPatternChange( ICraftingProvider p, IGridNode n )
+	public MENetworkCraftingPatternChange( final ICraftingProvider p, final IGridNode n )
 	{
 		this.provider = p;
 		this.node = n;

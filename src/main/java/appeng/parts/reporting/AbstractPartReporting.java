@@ -69,12 +69,12 @@ public abstract class AbstractPartReporting extends AEBasePart implements IPartM
 	private int clientFlags = 0; // sent as byte.
 	private float opacity = -1;
 
-	public AbstractPartReporting( ItemStack is )
+	public AbstractPartReporting( final ItemStack is )
 	{
 		this( is, false );
 	}
 
-	protected AbstractPartReporting( ItemStack is, boolean requireChannel )
+	protected AbstractPartReporting( final ItemStack is, final boolean requireChannel )
 	{
 		super( is );
 
@@ -90,7 +90,7 @@ public abstract class AbstractPartReporting extends AEBasePart implements IPartM
 	}
 
 	@MENetworkEventSubscribe
-	public final void bootingRender( MENetworkBootingStatusChange c )
+	public final void bootingRender( final MENetworkBootingStatusChange c )
 	{
 		if( !this.isLightSource() )
 		{
@@ -99,13 +99,13 @@ public abstract class AbstractPartReporting extends AEBasePart implements IPartM
 	}
 
 	@MENetworkEventSubscribe
-	public final void powerRender( MENetworkPowerStatusChange c )
+	public final void powerRender( final MENetworkPowerStatusChange c )
 	{
 		this.getHost().markForUpdate();
 	}
 
 	@Override
-	public final void getBoxes( IPartCollisionHelper bch )
+	public final void getBoxes( final IPartCollisionHelper bch )
 	{
 		bch.addBox( 2, 2, 14, 14, 14, 16 );
 		bch.addBox( 4, 4, 13, 12, 12, 14 );
@@ -119,7 +119,7 @@ public abstract class AbstractPartReporting extends AEBasePart implements IPartM
 	}
 
 	@Override
-	public void readFromNBT( NBTTagCompound data )
+	public void readFromNBT( final NBTTagCompound data )
 	{
 		super.readFromNBT( data );
 		if( data.hasKey( "opacity" ) )
@@ -130,7 +130,7 @@ public abstract class AbstractPartReporting extends AEBasePart implements IPartM
 	}
 
 	@Override
-	public void writeToNBT( NBTTagCompound data )
+	public void writeToNBT( final NBTTagCompound data )
 	{
 		super.writeToNBT( data );
 		data.setFloat( "opacity", this.opacity );
@@ -138,7 +138,7 @@ public abstract class AbstractPartReporting extends AEBasePart implements IPartM
 	}
 
 	@Override
-	public void writeToStream( ByteBuf data ) throws IOException
+	public void writeToStream( final ByteBuf data ) throws IOException
 	{
 		super.writeToStream( data );
 		this.clientFlags = this.getSpin() & 3;
@@ -169,7 +169,7 @@ public abstract class AbstractPartReporting extends AEBasePart implements IPartM
 	}
 
 	@Override
-	public boolean readFromStream( ByteBuf data ) throws IOException
+	public boolean readFromStream( final ByteBuf data ) throws IOException
 	{
 		super.readFromStream( data );
 		final int oldFlags = this.getClientFlags();
@@ -189,7 +189,7 @@ public abstract class AbstractPartReporting extends AEBasePart implements IPartM
 	}
 
 	@Override
-	public boolean onPartActivate( EntityPlayer player, Vec3 pos )
+	public boolean onPartActivate( final EntityPlayer player, final Vec3 pos )
 	{
 		final TileEntity te = this.getTile();
 
@@ -230,7 +230,7 @@ public abstract class AbstractPartReporting extends AEBasePart implements IPartM
 	}
 
 	@Override
-	public final void onPlacement( EntityPlayer player, ItemStack held, AEPartLocation side )
+	public final void onPlacement( final EntityPlayer player, final ItemStack held, final AEPartLocation side )
 	{
 		super.onPlacement( player, held, side );
 
@@ -245,7 +245,7 @@ public abstract class AbstractPartReporting extends AEBasePart implements IPartM
 		}
 	}
 
-	private final int blockLight( int emit )
+	private final int blockLight( final int emit )
 	{
 		if( this.opacity < 0 )
 		{

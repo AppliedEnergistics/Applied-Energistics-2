@@ -45,7 +45,7 @@ public class PacketPatternSlot extends AppEngPacket
 	public final boolean shift;
 
 	// automatic.
-	public PacketPatternSlot( ByteBuf stream ) throws IOException
+	public PacketPatternSlot( final ByteBuf stream ) throws IOException
 	{
 
 		this.shift = stream.readBoolean();
@@ -58,9 +58,9 @@ public class PacketPatternSlot extends AppEngPacket
 		}
 	}
 
-	public IAEItemStack readItem( ByteBuf stream ) throws IOException
+	public IAEItemStack readItem( final ByteBuf stream ) throws IOException
 	{
-		boolean hasItem = stream.readBoolean();
+		final boolean hasItem = stream.readBoolean();
 
 		if( hasItem )
 		{
@@ -71,13 +71,13 @@ public class PacketPatternSlot extends AppEngPacket
 	}
 
 	// api
-	public PacketPatternSlot( IInventory pat, IAEItemStack slotItem, boolean shift ) throws IOException
+	public PacketPatternSlot( final IInventory pat, final IAEItemStack slotItem, final boolean shift ) throws IOException
 	{
 
 		this.slotItem = slotItem;
 		this.shift = shift;
 
-		ByteBuf data = Unpooled.buffer();
+		final ByteBuf data = Unpooled.buffer();
 
 		data.writeInt( this.getPacketID() );
 
@@ -93,7 +93,7 @@ public class PacketPatternSlot extends AppEngPacket
 		this.configureWrite( data );
 	}
 
-	private void writeItem( IAEItemStack slotItem, ByteBuf data ) throws IOException
+	private void writeItem( final IAEItemStack slotItem, final ByteBuf data ) throws IOException
 	{
 		if( slotItem == null )
 		{
@@ -107,12 +107,12 @@ public class PacketPatternSlot extends AppEngPacket
 	}
 
 	@Override
-	public void serverPacketData( INetworkInfo manager, AppEngPacket packet, EntityPlayer player )
+	public void serverPacketData( final INetworkInfo manager, final AppEngPacket packet, final EntityPlayer player )
 	{
-		EntityPlayerMP sender = (EntityPlayerMP) player;
+		final EntityPlayerMP sender = (EntityPlayerMP) player;
 		if( sender.openContainer instanceof ContainerPatternTerm )
 		{
-			ContainerPatternTerm patternTerminal = (ContainerPatternTerm) sender.openContainer;
+			final ContainerPatternTerm patternTerminal = (ContainerPatternTerm) sender.openContainer;
 			patternTerminal.craftOrGetItem( this );
 		}
 	}

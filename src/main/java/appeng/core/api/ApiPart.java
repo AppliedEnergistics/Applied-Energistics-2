@@ -71,7 +71,7 @@ public class ApiPart implements IPartHelper
 
 	public void initFMPSupport()
 	{
-		for( Class layerInterface : this.interfaces2Layer.keySet() )
+		for( final Class layerInterface : this.interfaces2Layer.keySet() )
 		{
 			if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.FMP ) )
 			{
@@ -80,7 +80,7 @@ public class ApiPart implements IPartHelper
 		}
 	}
 
-	public Class getCombinedInstance( String base )
+	public Class getCombinedInstance( final String base )
 	{
 		if( this.desc.isEmpty() )
 		{
@@ -88,13 +88,13 @@ public class ApiPart implements IPartHelper
 			{
 				return Class.forName( base );
 			}
-			catch( ClassNotFoundException e )
+			catch( final ClassNotFoundException e )
 			{
 				throw new IllegalStateException( e );
 			}
 		}
 
-		String description = base + ':' + Joiner.on( ";" ).skipNulls().join( this.desc.iterator() );
+		final String description = base + ':' + Joiner.on( ";" ).skipNulls().join( this.desc.iterator() );
 
 		if( this.tileImplementations.get( description ) != null )
 		{
@@ -107,7 +107,7 @@ public class ApiPart implements IPartHelper
 		{
 			Addendum = Class.forName( base ).getSimpleName();
 		}
-		catch( ClassNotFoundException e )
+		catch( final ClassNotFoundException e )
 		{
 			AELog.error( e );
 		}
@@ -117,22 +117,22 @@ public class ApiPart implements IPartHelper
 		{
 			myCLass = Class.forName( f );
 		}
-		catch( ClassNotFoundException e )
+		catch( final ClassNotFoundException e )
 		{
 			throw new IllegalStateException( e );
 		}
 
 		String path = f;
 
-		for( String name : this.desc )
+		for( final String name : this.desc )
 		{
 			try
 			{
-				String newPath = path + ';' + name;
+				final String newPath = path + ';' + name;
 				myCLass = this.getClassByDesc( Addendum, newPath, f, this.interfaces2Layer.get( Class.forName( name ) ) );
 				path = newPath;
 			}
-			catch( Throwable t )
+			catch( final Throwable t )
 			{
 				AELog.warning( "Error loading " + name );
 				AELog.error( t );
@@ -146,51 +146,51 @@ public class ApiPart implements IPartHelper
 		return myCLass;
 	}
 
-	public Class getClassByDesc( String addendum, String fullPath, String root, String next )
+	public Class getClassByDesc( final String addendum, final String fullPath, final String root, final String next )
 	{
 		if( this.roots.get( fullPath ) != null )
 		{
 			return this.roots.get( fullPath );
 		}
 
-		ClassWriter cw = new ClassWriter( ClassWriter.COMPUTE_MAXS );
-		ClassNode n = this.getReader( next );
-		String originalName = n.name;
+		final ClassWriter cw = new ClassWriter( ClassWriter.COMPUTE_MAXS );
+		final ClassNode n = this.getReader( next );
+		final String originalName = n.name;
 
 		try
 		{
 			n.name = n.name + '_' + addendum;
 			n.superName = Class.forName( root ).getName().replace( ".", "/" );
 		}
-		catch( Throwable t )
+		catch( final Throwable t )
 		{
 			AELog.error( t );
 		}
 
-		for( MethodNode mn : n.methods )
+		for( final MethodNode mn : n.methods )
 		{
-			Iterator<AbstractInsnNode> i = mn.instructions.iterator();
+			final Iterator<AbstractInsnNode> i = mn.instructions.iterator();
 			while( i.hasNext() )
 			{
 				this.processNode( i.next(), n.superName );
 			}
 		}
 
-		DefaultPackageClassNameRemapper remapper = new DefaultPackageClassNameRemapper();
+		final DefaultPackageClassNameRemapper remapper = new DefaultPackageClassNameRemapper();
 		remapper.inputOutput.put( "appeng/api/parts/LayerBase", n.superName );
 		remapper.inputOutput.put( originalName, n.name );
 		n.accept( new RemappingClassAdapter( cw, remapper ) );
 		// n.accept( cw );
 
 		// n.accept( new TraceClassVisitor( new PrintWriter( System.out ) ) );
-		byte[] byteArray = cw.toByteArray();
-		int size = byteArray.length;
-		Class clazz = this.loadClass( n.name.replace( "/", "." ), byteArray );
+		final byte[] byteArray = cw.toByteArray();
+		final int size = byteArray.length;
+		final Class clazz = this.loadClass( n.name.replace( "/", "." ), byteArray );
 
 		try
 		{
-			Object fish = clazz.newInstance();
-			Class rootC = Class.forName( root );
+			final Object fish = clazz.newInstance();
+			final Class rootC = Class.forName( root );
 
 			boolean hasError = false;
 
@@ -226,7 +226,7 @@ public class ApiPart implements IPartHelper
 				AELog.info( "Layer: " + n.name + " loaded successfully - " + size + " bytes" );
 			}
 		}
-		catch( Throwable t )
+		catch( final Throwable t )
 		{
 			AELog.severe( "Layer: " + n.name + " Failed." );
 			AELog.error( t );
@@ -236,30 +236,30 @@ public class ApiPart implements IPartHelper
 		return clazz;
 	}
 
-	public ClassNode getReader( String name )
+	public ClassNode getReader( final String name )
 	{
-		String path = '/' + name.replace( ".", "/" ) + ".class";
-		InputStream is = this.getClass().getResourceAsStream( path );
+		final String path = '/' + name.replace( ".", "/" ) + ".class";
+		final InputStream is = this.getClass().getResourceAsStream( path );
 		try
 		{
-			ClassReader cr = new ClassReader( is );
+			final ClassReader cr = new ClassReader( is );
 
-			ClassNode cn = new ClassNode();
+			final ClassNode cn = new ClassNode();
 			cr.accept( cn, ClassReader.EXPAND_FRAMES );
 
 			return cn;
 		}
-		catch( IOException e )
+		catch( final IOException e )
 		{
 			throw new IllegalStateException( "Error loading " + name, e );
 		}
 	}
 
-	private void processNode( AbstractInsnNode next, String nePar )
+	private void processNode( final AbstractInsnNode next, final String nePar )
 	{
 		if( next instanceof MethodInsnNode )
 		{
-			MethodInsnNode min = (MethodInsnNode) next;
+			final MethodInsnNode min = (MethodInsnNode) next;
 			if( min.owner.equals( "appeng/api/parts/LayerBase" ) )
 			{
 				min.owner = nePar;
@@ -267,26 +267,26 @@ public class ApiPart implements IPartHelper
 		}
 	}
 
-	private Class loadClass( String name, byte[] b )
+	private Class loadClass( final String name, byte[] b )
 	{
 		// override classDefine (as it is protected) and define the class.
 		Class clazz = null;
 		try
 		{
-			ClassLoader loader = this.getClass().getClassLoader();// ClassLoader.getSystemClassLoader();
-			Class<ClassLoader> root = ClassLoader.class;
-			Class<? extends ClassLoader> cls = loader.getClass();
-			Method defineClassMethod = root.getDeclaredMethod( "defineClass", String.class, byte[].class, int.class, int.class );
-			Method runTransformersMethod = cls.getDeclaredMethod( "runTransformers", String.class, String.class, byte[].class );
+			final ClassLoader loader = this.getClass().getClassLoader();// ClassLoader.getSystemClassLoader();
+			final Class<ClassLoader> root = ClassLoader.class;
+			final Class<? extends ClassLoader> cls = loader.getClass();
+			final Method defineClassMethod = root.getDeclaredMethod( "defineClass", String.class, byte[].class, int.class, int.class );
+			final Method runTransformersMethod = cls.getDeclaredMethod( "runTransformers", String.class, String.class, byte[].class );
 
 			runTransformersMethod.setAccessible( true );
 			defineClassMethod.setAccessible( true );
 			try
 			{
-				Object[] argsA = { name, name, b };
+				final Object[] argsA = { name, name, b };
 				b = (byte[]) runTransformersMethod.invoke( loader, argsA );
 
-				Object[] args = { name, b, 0, b.length };
+				final Object[] args = { name, b, 0, b.length };
 				clazz = (Class) defineClassMethod.invoke( loader, args );
 			}
 			finally
@@ -295,7 +295,7 @@ public class ApiPart implements IPartHelper
 				defineClassMethod.setAccessible( false );
 			}
 		}
-		catch( Exception e )
+		catch( final Exception e )
 		{
 			AELog.error( e );
 			throw new IllegalStateException( "Unable to manage part API.", e );
@@ -304,7 +304,7 @@ public class ApiPart implements IPartHelper
 	}
 
 	@Override
-	public boolean registerNewLayer( String layer, String layerInterface )
+	public boolean registerNewLayer( final String layer, final String layerInterface )
 	{
 		try
 		{
@@ -320,7 +320,7 @@ public class ApiPart implements IPartHelper
 				AELog.info( "Layer " + layer + " not registered, " + layerInterface + " already has a layer." );
 			}
 		}
-		catch( Throwable ignored )
+		catch( final Throwable ignored )
 		{
 		}
 
@@ -328,7 +328,7 @@ public class ApiPart implements IPartHelper
 	}
 
 	@Override
-	public void setItemBusRenderer( IPartItem i )
+	public void setItemBusRenderer( final IPartItem i )
 	{
 		if( Platform.isClient() && i instanceof Item )
 		{
@@ -338,7 +338,7 @@ public class ApiPart implements IPartHelper
 	}
 
 	@Override
-	public boolean placeBus( ItemStack is, BlockPos pos, EnumFacing side, EntityPlayer player, World w )
+	public boolean placeBus( final ItemStack is, final BlockPos pos, final EnumFacing side, final EntityPlayer player, final World w )
 	{
 		return PartPlacement.place( is, pos, side, player, w, PartPlacement.PlaceType.PLACE_ITEM, 0 );
 	}
@@ -355,9 +355,9 @@ public class ApiPart implements IPartHelper
 		public final HashMap<String, String> inputOutput = new HashMap<String, String>();
 
 		@Override
-		public String map( String typeName )
+		public String map( final String typeName )
 		{
-			String o = this.inputOutput.get( typeName );
+			final String o = this.inputOutput.get( typeName );
 			if( o == null )
 			{
 				return typeName;

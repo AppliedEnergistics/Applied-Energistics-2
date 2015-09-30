@@ -54,14 +54,14 @@ public final class QuartzWorldGen implements IWorldGenerator
 	}
 
 	@Override
-	public void generate( Random r, int chunkX, int chunkZ, World w, IChunkProvider chunkGenerator, IChunkProvider chunkProvider )
+	public void generate( final Random r, final int chunkX, final int chunkZ, final World w, final IChunkProvider chunkGenerator, final IChunkProvider chunkProvider )
 	{
 		int seaLevel = w.provider.getAverageGroundLevel() + 1;
 
 		if( seaLevel < 20 )
 		{
-			int x = ( chunkX << 4 ) + 8;
-			int z = ( chunkZ << 4 ) + 8;
+			final int x = ( chunkX << 4 ) + 8;
+			final int z = ( chunkZ << 4 ) + 8;
 			seaLevel = (int) w.getHorizon();
 		}
 
@@ -70,19 +70,19 @@ public final class QuartzWorldGen implements IWorldGenerator
 			return;
 		}
 
-		double oreDepthMultiplier = AEConfig.instance.quartzOresClusterAmount * seaLevel / 64;
-		int scale = (int) Math.round( r.nextGaussian() * Math.sqrt( oreDepthMultiplier ) + oreDepthMultiplier );
+		final double oreDepthMultiplier = AEConfig.instance.quartzOresClusterAmount * seaLevel / 64;
+		final int scale = (int) Math.round( r.nextGaussian() * Math.sqrt( oreDepthMultiplier ) + oreDepthMultiplier );
 
 		for( int x = 0; x < ( r.nextBoolean() ? scale * 2 : scale ) / 2; ++x )
 		{
-			boolean isCharged = r.nextFloat() > AEConfig.instance.spawnChargedChance;
-			WorldGenMinable whichOre = isCharged ? this.oreCharged : this.oreNormal;
+			final boolean isCharged = r.nextFloat() > AEConfig.instance.spawnChargedChance;
+			final WorldGenMinable whichOre = isCharged ? this.oreCharged : this.oreNormal;
 
 			if( WorldGenRegistry.INSTANCE.isWorldGenEnabled( isCharged ? WorldGenType.ChargedCertusQuartz : WorldGenType.CertusQuartz, w ) )
 			{
-				int cx = chunkX * 16 + r.nextInt( 22 );
-				int cy = r.nextInt( 40 * seaLevel / 64 ) + r.nextInt( 22 * seaLevel / 64 ) + 12 * seaLevel / 64;
-				int cz = chunkZ * 16 + r.nextInt( 22 );
+				final int cx = chunkX * 16 + r.nextInt( 22 );
+				final int cy = r.nextInt( 40 * seaLevel / 64 ) + r.nextInt( 22 * seaLevel / 64 ) + 12 * seaLevel / 64;
+				final int cz = chunkZ * 16 + r.nextInt( 22 );
 				whichOre.generate( w, r, new BlockPos( cx, cy, cz ) );
 			}
 		}

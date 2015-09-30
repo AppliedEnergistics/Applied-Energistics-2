@@ -51,7 +51,7 @@ public class MeteorDataNameEncoder
 		this( DATA_SEPARATOR, BASE_EXTENSION_SEPARATOR, FILE_EXTENSION, bitScale );
 	}
 
-	private MeteorDataNameEncoder( char dataSeparator, char baseExtSeparator, @Nonnull final String fileExtension, final int bitScale )
+	private MeteorDataNameEncoder( final char dataSeparator, final char baseExtSeparator, @Nonnull final String fileExtension, final int bitScale )
 	{
 		Preconditions.checkNotNull( fileExtension );
 		Preconditions.checkArgument( !fileExtension.isEmpty() );
@@ -72,7 +72,7 @@ public class MeteorDataNameEncoder
 	 *
 	 * @since rv3 05.06.2015
 	 */
-	public String encode( int dimension, int chunkX, int chunkZ )
+	public String encode( final int dimension, final int chunkX, final int chunkZ )
 	{
 		final int shiftedX = chunkX >> this.bitScale;
 		final int shiftedZ = chunkZ >> this.bitScale;

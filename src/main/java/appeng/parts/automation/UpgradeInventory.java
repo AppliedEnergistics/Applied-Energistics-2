@@ -43,7 +43,7 @@ public abstract class UpgradeInventory extends AppEngInternalInventory implement
 	private int inverterUpgrades = 0;
 	private int craftingUpgrades = 0;
 
-	public UpgradeInventory( IAEAppEngInventory parent, int s )
+	public UpgradeInventory( final IAEAppEngInventory parent, final int s )
 	{
 		super( null, s );
 		this.te = this;
@@ -63,16 +63,16 @@ public abstract class UpgradeInventory extends AppEngInternalInventory implement
 	}
 
 	@Override
-	public boolean isItemValidForSlot( int i, ItemStack itemstack )
+	public boolean isItemValidForSlot( final int i, final ItemStack itemstack )
 	{
 		if( itemstack == null )
 		{
 			return false;
 		}
-		Item it = itemstack.getItem();
+		final Item it = itemstack.getItem();
 		if( it instanceof IUpgradeModule )
 		{
-			Upgrades u = ( (IUpgradeModule) it ).getType( itemstack );
+			final Upgrades u = ( (IUpgradeModule) it ).getType( itemstack );
 			if( u != null )
 			{
 				return this.getInstalledUpgrades( u ) < this.getMaxInstalled( u );
@@ -81,7 +81,7 @@ public abstract class UpgradeInventory extends AppEngInternalInventory implement
 		return false;
 	}
 
-	public int getInstalledUpgrades( Upgrades u )
+	public int getInstalledUpgrades( final Upgrades u )
 	{
 		if( !this.cached )
 		{
@@ -114,14 +114,14 @@ public abstract class UpgradeInventory extends AppEngInternalInventory implement
 		this.cached = true;
 		this.inverterUpgrades = this.capacityUpgrades = this.redstoneUpgrades = this.speedUpgrades = this.fuzzyUpgrades = this.craftingUpgrades = 0;
 
-		for( ItemStack is : this )
+		for( final ItemStack is : this )
 		{
 			if( is == null || is.getItem() == null || !( is.getItem() instanceof IUpgradeModule ) )
 			{
 				continue;
 			}
 
-			Upgrades myUpgrade = ( (IUpgradeModule) is.getItem() ).getType( is );
+			final Upgrades myUpgrade = ( (IUpgradeModule) is.getItem() ).getType( is );
 			switch( myUpgrade )
 			{
 				case CAPACITY:
@@ -156,7 +156,7 @@ public abstract class UpgradeInventory extends AppEngInternalInventory implement
 	}
 
 	@Override
-	public void readFromNBT( NBTTagCompound target )
+	public void readFromNBT( final NBTTagCompound target )
 	{
 		super.readFromNBT( target );
 		this.updateUpgradeInfo();
@@ -169,7 +169,7 @@ public abstract class UpgradeInventory extends AppEngInternalInventory implement
 	}
 
 	@Override
-	public void onChangeInventory( IInventory inv, int slot, InvOperation mc, ItemStack removedStack, ItemStack newStack )
+	public void onChangeInventory( final IInventory inv, final int slot, final InvOperation mc, final ItemStack removedStack, final ItemStack newStack )
 	{
 		this.cached = false;
 		if( this.parent != null && Platform.isServer() )

@@ -37,7 +37,7 @@ public class ItemDefinition implements IItemDefinition
 	private final String identifier;
 	private final Optional<Item> item;
 
-	public ItemDefinition( String identifier, Item item, ActivityState state )
+	public ItemDefinition( final String identifier, final Item item, final ActivityState state )
 	{
 		this.identifier = Preconditions.checkNotNull( identifier );
 		Preconditions.checkArgument( !identifier.isEmpty() );
@@ -68,7 +68,7 @@ public class ItemDefinition implements IItemDefinition
 	}
 
 	@Override
-	public Optional<ItemStack> maybeStack( int stackSize )
+	public Optional<ItemStack> maybeStack( final int stackSize )
 	{
 		return this.item.transform( new ItemStackTransformer( stackSize ) );
 	}
@@ -80,7 +80,7 @@ public class ItemDefinition implements IItemDefinition
 	}
 
 	@Override
-	public final boolean isSameAs( ItemStack comparableStack )
+	public final boolean isSameAs( final ItemStack comparableStack )
 	{
 		return this.isEnabled() && Platform.isSameItemType( comparableStack, this.maybeStack( 1 ).get() );
 	}
@@ -89,7 +89,7 @@ public class ItemDefinition implements IItemDefinition
 	{
 		private final int stackSize;
 
-		public ItemStackTransformer( int stackSize )
+		public ItemStackTransformer( final int stackSize )
 		{
 			Preconditions.checkArgument( stackSize > 0 );
 
@@ -97,7 +97,7 @@ public class ItemDefinition implements IItemDefinition
 		}
 
 		@Override
-		public ItemStack apply( Item input )
+		public ItemStack apply( final Item input )
 		{
 			return new ItemStack( input, this.stackSize );
 		}

@@ -35,7 +35,7 @@ public class TmpFlippableIcon extends FlippableIcon
 
 		while( i instanceof FlippableIcon )
 		{
-			FlippableIcon fi = (FlippableIcon) i;
+			final FlippableIcon fi = (FlippableIcon) i;
 			if( fi.flip_u )
 			{
 				this.flip_u = !this.flip_u;

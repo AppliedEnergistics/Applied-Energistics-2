@@ -17,7 +17,7 @@ public class IconUnwrapper extends TextureAtlasSprite
 	float max_v;
 	
 	protected IconUnwrapper(
-			IAESprite src )
+			final IAESprite src )
 	{
 		super( src.getIconName() );
 		width = src.getIconWidth();
@@ -71,16 +71,16 @@ public class IconUnwrapper extends TextureAtlasSprite
 	}
 
 	@Override
-    public float getInterpolatedU(double d)
+    public float getInterpolatedU( final double d)
     {
-        float f = this.max_u - this.min_u;
+        final float f = this.max_u - this.min_u;
         return this.min_u + f * (float)d / 16.0F;
     }
 
 	@Override
-    public float getInterpolatedV(double d)
+    public float getInterpolatedV( final double d)
     {
-        float f = this.max_v - this.min_v;
+        final float f = this.max_v - this.min_v;
         return this.min_v + f * ((float)d / 16.0F);
     }
 

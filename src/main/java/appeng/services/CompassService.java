@@ -67,7 +67,7 @@ public final class CompassService
 		this.jobSize = 0;
 	}
 
-	public Future<?> getCompassDirection( DimensionalCoord coord, int maxRange, ICompassCallback cc )
+	public Future<?> getCompassDirection( final DimensionalCoord coord, final int maxRange, final ICompassCallback cc )
 	{
 		this.jobSize++;
 		return this.executor.submit( new CMDirectionRequest( coord, maxRange, cc ) );
@@ -79,7 +79,7 @@ public final class CompassService
 	 * @param event the event containing the unloaded world.
 	 */
 	@SubscribeEvent
-	public void unloadWorld( WorldEvent.Unload event )
+	public void unloadWorld( final WorldEvent.Unload event )
 	{
 		if( Platform.isServer() && this.worldSet.containsKey( event.world ) )
 		{
@@ -102,7 +102,7 @@ public final class CompassService
 		}
 	}
 
-	public void updateArea( World w, int chunkX, int chunkZ )
+	public void updateArea( final World w, final int chunkX, final int chunkZ )
 	{
 		final int x = chunkX << 4;
 		final int z = chunkZ << 4;
@@ -118,7 +118,7 @@ public final class CompassService
 		this.updateArea( w, x, CHUNK_SIZE + 224, z );
 	}
 
-	public Future<?> updateArea( World w, int x, int y, int z )
+	public Future<?> updateArea( final World w, final int x, final int y, final int z )
 	{
 		this.jobSize++;
 
@@ -140,7 +140,7 @@ public final class CompassService
 				{
 					for( int k = low_y; k < hi_y; k++ )
 					{
-						Block blk = c.getBlock( i, k, j );
+						final Block blk = c.getBlock( i, k, j );
 						if( blk == skyStoneBlock )
 						{
 							return this.executor.submit( new CMUpdatePost( w, cx, cz, cdy, true ) );
@@ -175,7 +175,7 @@ public final class CompassService
 		}
 	}
 
-	private CompassReader getReader( World w )
+	private CompassReader getReader( final World w )
 	{
 		CompassReader cr = this.worldSet.get( w );
 
@@ -188,7 +188,7 @@ public final class CompassService
 		return cr;
 	}
 
-	private int dist( int ax, int az, int bx, int bz )
+	private int dist( final int ax, final int az, final int bx, final int bz )
 	{
 		final int up = ( bz - az ) * CHUNK_SIZE;
 		final int side = ( bx - ax ) * CHUNK_SIZE;
@@ -196,7 +196,7 @@ public final class CompassService
 		return up * up + side * side;
 	}
 
-	private double rad( int ax, int az, int bx, int bz )
+	private double rad( final int ax, final int az, final int bx, final int bz )
 	{
 		final int up = bz - az;
 		final int side = bx - ax;
@@ -214,7 +214,7 @@ public final class CompassService
 		public final int doubleChunkY; // 32 blocks instead of 16.
 		public final boolean value;
 
-		public CMUpdatePost( World w, int cx, int cz, int dcy, boolean val )
+		public CMUpdatePost( final World w, final int cx, final int cz, final int dcy, final boolean val )
 		{
 			this.world = w;
 			this.chunkX = cx;
@@ -246,7 +246,7 @@ public final class CompassService
 		public final DimensionalCoord coord;
 		public final ICompassCallback callback;
 
-		public CMDirectionRequest( DimensionalCoord coord, int getMaxRange, ICompassCallback cc )
+		public CMDirectionRequest( final DimensionalCoord coord, final int getMaxRange, final ICompassCallback cc )
 		{
 			this.coord = coord;
 			this.maxRange = getMaxRange;

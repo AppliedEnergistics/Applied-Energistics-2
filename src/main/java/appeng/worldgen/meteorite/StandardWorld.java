@@ -15,31 +15,31 @@ public class StandardWorld implements IMeteoriteWorld
 
 	protected final World w;
 
-	public StandardWorld( World w )
+	public StandardWorld( final World w )
 	{
 		this.w = w;
 	}
 
 	@Override
-	public int minX( int in )
+	public int minX( final int in )
 	{
 		return in;
 	}
 
 	@Override
-	public int minZ( int in )
+	public int minZ( final int in )
 	{
 		return in;
 	}
 
 	@Override
-	public int maxX( int in )
+	public int maxX( final int in )
 	{
 		return in;
 	}
 
 	@Override
-	public int maxZ( int in )
+	public int maxZ( final int in )
 	{
 		return in;
 	}
@@ -51,7 +51,7 @@ public class StandardWorld implements IMeteoriteWorld
 	}
 
 	@Override
-	public Block getBlock( int x, int y, int z )
+	public Block getBlock( final int x, final int y, final int z )
 	{
 		if( this.range( x, y, z ) )
 		{
@@ -61,7 +61,7 @@ public class StandardWorld implements IMeteoriteWorld
 	}
 
 	@Override
-	public boolean canBlockSeeTheSky( int x, int y, int z )
+	public boolean canBlockSeeTheSky( final int x, final int y, final int z )
 	{
 		if( this.range( x, y, z ) )
 		{
@@ -71,7 +71,7 @@ public class StandardWorld implements IMeteoriteWorld
 	}
 
 	@Override
-	public TileEntity getTileEntity( int x, int y, int z )
+	public TileEntity getTileEntity( final int x, final int y, final int z )
 	{
 		if( this.range( x, y, z ) )
 		{
@@ -87,7 +87,7 @@ public class StandardWorld implements IMeteoriteWorld
 	}
 
 	@Override
-	public void setBlock( int x, int y, int z, Block blk )
+	public void setBlock( final int x, final int y, final int z, final Block blk )
 	{
 		if( this.range( x, y, z ) )
 		{
@@ -101,18 +101,18 @@ public class StandardWorld implements IMeteoriteWorld
 
 	}
 
-	public boolean range( int x, int y, int z )
+	public boolean range( final int x, final int y, final int z )
 	{
 		return true;
 	}
 
 	@Override
 	public void setBlock(
-			int x,
-			int y,
-			int z,
-			IBlockState state,
-			int l )
+			final int x,
+			final int y,
+			final int z,
+			final IBlockState state,
+			final int l )
 	{
 		if( this.range( x, y, z ) )
 		{
@@ -122,9 +122,9 @@ public class StandardWorld implements IMeteoriteWorld
 
 	@Override
 	public IBlockState getBlockState(
-			int x,
-			int y,
-			int z )
+			final int x,
+			final int y,
+			final int z )
 	{
 		if( this.range( x, y, z ) )
 		{

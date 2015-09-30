@@ -43,12 +43,12 @@ public class BlockRenderInfo
 	private FlippableIcon eastIcon = null;
 	private FlippableIcon westIcon = null;
 
-	public BlockRenderInfo( BaseBlockRender inst )
+	public BlockRenderInfo( final BaseBlockRender inst )
 	{
 		this.rendererInstance = inst;
 	}
 
-	public void updateIcons( FlippableIcon bottom, FlippableIcon top, FlippableIcon north, FlippableIcon south, FlippableIcon east, FlippableIcon west )
+	public void updateIcons( final FlippableIcon bottom, final FlippableIcon top, final FlippableIcon north, final FlippableIcon south, final FlippableIcon east, final FlippableIcon west )
 	{
 		this.topIcon = top;
 		this.bottomIcon = bottom;
@@ -58,7 +58,7 @@ public class BlockRenderInfo
 		this.westIcon = west;
 	}
 
-	public void setTemporaryRenderIcon( IAESprite icon )
+	public void setTemporaryRenderIcon( final IAESprite icon )
 	{
 		if( icon == null )
 		{
@@ -76,7 +76,7 @@ public class BlockRenderInfo
 		}
 	}
 
-	public void setTemporaryRenderIcons( IAESprite nTopIcon, IAESprite nBottomIcon, IAESprite nSouthIcon, IAESprite nNorthIcon, IAESprite nEastIcon, IAESprite nWestIcon )
+	public void setTemporaryRenderIcons( final IAESprite nTopIcon, final IAESprite nBottomIcon, final IAESprite nSouthIcon, final IAESprite nNorthIcon, final IAESprite nEastIcon, final IAESprite nWestIcon )
 	{
 		this.tmpTopIcon.setOriginal( nTopIcon == null ? this.getTexture( AEPartLocation.UP ) : nTopIcon );
 		this.tmpBottomIcon.setOriginal( nBottomIcon == null ? this.getTexture( AEPartLocation.DOWN ) : nBottomIcon );
@@ -87,7 +87,7 @@ public class BlockRenderInfo
 		this.useTmp = true;
 	}
 
-	public FlippableIcon getTexture( AEPartLocation dir )
+	public FlippableIcon getTexture( final AEPartLocation dir )
 	{
 		if( this.useTmp )
 		{

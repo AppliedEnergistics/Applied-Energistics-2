@@ -42,7 +42,7 @@ public class Shapeless implements ICraftHandler, IWebsiteSerializer
 	IIngredient output;
 
 	@Override
-	public void setup( List<List<IIngredient>> input, List<List<IIngredient>> output ) throws RecipeError
+	public void setup( final List<List<IIngredient>> input, final List<List<IIngredient>> output ) throws RecipeError
 	{
 		if( output.size() == 1 && output.get( 0 ).size() == 1 )
 		{
@@ -65,19 +65,19 @@ public class Shapeless implements ICraftHandler, IWebsiteSerializer
 	@Override
 	public void register() throws RegistrationError, MissingIngredientError
 	{
-		List<Object> args = new ArrayList<Object>();
-		for( IIngredient i : this.inputs )
+		final List<Object> args = new ArrayList<Object>();
+		for( final IIngredient i : this.inputs )
 		{
 			args.add( i );
 		}
 
-		ItemStack outIS = this.output.getItemStack();
+		final ItemStack outIS = this.output.getItemStack();
 
 		try
 		{
 			GameRegistry.addRecipe( new ShapelessRecipe( outIS, args.toArray( new Object[args.size()] ) ) );
 		}
-		catch( Throwable e )
+		catch( final Throwable e )
 		{
 			AELog.error( e );
 			throw new RegistrationError( "Error while adding shapeless recipe." );
@@ -85,15 +85,15 @@ public class Shapeless implements ICraftHandler, IWebsiteSerializer
 	}
 
 	@Override
-	public String getPattern( RecipeHandler h )
+	public String getPattern( final RecipeHandler h )
 	{
-		StringBuilder o = new StringBuilder( "shapeless " + this.output.getQty() + '\n' );
+		final StringBuilder o = new StringBuilder( "shapeless " + this.output.getQty() + '\n' );
 
 		o.append( h.getName( this.output ) ).append( '\n' );
 
 		for( int y = 0; y < this.inputs.size(); y++ )
 		{
-			IIngredient i = this.inputs.get( y );
+			final IIngredient i = this.inputs.get( y );
 
 			if( i.isAir() )
 			{
@@ -118,14 +118,14 @@ public class Shapeless implements ICraftHandler, IWebsiteSerializer
 	}
 
 	@Override
-	public boolean canCraft( ItemStack reqOutput ) throws RegistrationError, MissingIngredientError
+	public boolean canCraft( final ItemStack reqOutput ) throws RegistrationError, MissingIngredientError
 	{
 
-		for( IIngredient i : this.inputs )
+		for( final IIngredient i : this.inputs )
 		{
 			if( !i.isAir() )
 			{
-				for( ItemStack r : i.getItemStackSet() )
+				for( final ItemStack r : i.getItemStackSet() )
 				{
 					if( Platform.isSameItemPrecise( r, reqOutput ) )
 					{

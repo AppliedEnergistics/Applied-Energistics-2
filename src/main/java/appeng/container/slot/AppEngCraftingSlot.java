@@ -52,7 +52,7 @@ public class AppEngCraftingSlot extends AppEngSlot
 	 */
 	private int amountCrafted;
 
-	public AppEngCraftingSlot( EntityPlayer par1EntityPlayer, IInventory par2IInventory, IInventory par3IInventory, int par4, int par5, int par6 )
+	public AppEngCraftingSlot( final EntityPlayer par1EntityPlayer, final IInventory par2IInventory, final IInventory par3IInventory, final int par4, final int par5, final int par6 )
 	{
 		super( par3IInventory, par4, par5, par6 );
 		this.thePlayer = par1EntityPlayer;
@@ -63,7 +63,7 @@ public class AppEngCraftingSlot extends AppEngSlot
 	 * Check if the stack is a valid item for this slot. Always true beside for the armor slots.
 	 */
 	@Override
-	public boolean isItemValid( ItemStack par1ItemStack )
+	public boolean isItemValid( final ItemStack par1ItemStack )
 	{
 		return false;
 	}
@@ -73,7 +73,7 @@ public class AppEngCraftingSlot extends AppEngSlot
 	 * internal count then calls onCrafting(item).
 	 */
 	@Override
-	protected void onCrafting( ItemStack par1ItemStack, int par2 )
+	protected void onCrafting( final ItemStack par1ItemStack, final int par2 )
 	{
 		this.amountCrafted += par2;
 		this.onCrafting( par1ItemStack );
@@ -83,7 +83,7 @@ public class AppEngCraftingSlot extends AppEngSlot
 	 * the itemStack passed in is the output - ie, iron ingots, and pickaxes, not ore and wood.
 	 */
 	@Override
-	protected void onCrafting( ItemStack par1ItemStack )
+	protected void onCrafting( final ItemStack par1ItemStack )
 	{
 		par1ItemStack.onCrafting( this.thePlayer.worldObj, this.thePlayer, this.amountCrafted );
 		this.amountCrafted = 0;
@@ -140,17 +140,17 @@ public class AppEngCraftingSlot extends AppEngSlot
 	}
 
 	@Override
-	public void onPickupFromSlot( EntityPlayer playerIn, ItemStack stack )
+	public void onPickupFromSlot( final EntityPlayer playerIn, final ItemStack stack )
 	{
         net.minecraftforge.fml.common.FMLCommonHandler.instance().firePlayerCraftingEvent(playerIn, stack, craftMatrix);
         this.onCrafting(stack);
         net.minecraftforge.common.ForgeHooks.setCraftingPlayer(playerIn);
-        InventoryCrafting ic = new InventoryCrafting( this.myContainer, 3, 3 );
+        final InventoryCrafting ic = new InventoryCrafting( this.myContainer, 3, 3 );
         
         for ( int x=0; x < this.craftMatrix.getSizeInventory(); x++ )
         	ic.setInventorySlotContents( x, this.craftMatrix.getStackInSlot( x ) );
         
-        ItemStack[] aitemstack = CraftingManager.getInstance().func_180303_b(ic, playerIn.worldObj);
+        final ItemStack[] aitemstack = CraftingManager.getInstance().func_180303_b(ic, playerIn.worldObj);
         
         for ( int x=0; x < this.craftMatrix.getSizeInventory(); x++ )
         	craftMatrix.setInventorySlotContents( x, ic.getStackInSlot( x ) );
@@ -159,8 +159,8 @@ public class AppEngCraftingSlot extends AppEngSlot
 
         for (int i = 0; i < aitemstack.length; ++i)
         {
-            ItemStack itemstack1 = this.craftMatrix.getStackInSlot(i);
-            ItemStack itemstack2 = aitemstack[i];
+            final ItemStack itemstack1 = this.craftMatrix.getStackInSlot(i);
+            final ItemStack itemstack2 = aitemstack[i];
 
             if (itemstack1 != null)
             {
@@ -186,7 +186,7 @@ public class AppEngCraftingSlot extends AppEngSlot
 	 * stack.
 	 */
 	@Override
-	public ItemStack decrStackSize( int par1 )
+	public ItemStack decrStackSize( final int par1 )
 	{
 		if( this.getHasStack() )
 		{

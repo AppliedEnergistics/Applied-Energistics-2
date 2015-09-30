@@ -32,7 +32,7 @@ public class LocationRotation implements IOrientable
 	final int y;
 	final int z;
 
-	public LocationRotation( IBlockAccess world, int x, int y, int z )
+	public LocationRotation( final IBlockAccess world, final int x, final int y, final int z )
 	{
 		this.w = world;
 		this.x = x;
@@ -59,12 +59,12 @@ public class LocationRotation implements IOrientable
 	@Override
 	public EnumFacing getUp()
 	{
-		int num = Math.abs( this.x + this.y + this.z ) % 6;
+		final int num = Math.abs( this.x + this.y + this.z ) % 6;
 		return EnumFacing.VALUES[ num ];
 	}
 
 	@Override
-	public void setOrientation( EnumFacing forward, EnumFacing up )
+	public void setOrientation( final EnumFacing forward, final EnumFacing up )
 	{
 
 	}

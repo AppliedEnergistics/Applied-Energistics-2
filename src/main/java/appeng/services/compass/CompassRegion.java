@@ -43,7 +43,7 @@ public final class CompassRegion
 	private RandomAccessFile raf = null;
 	private ByteBuffer buffer;
 
-	public CompassRegion( int cx, int cz, int worldID, @Nonnull final File worldCompassFolder )
+	public CompassRegion( final int cx, final int cz, final int worldID, @Nonnull final File worldCompassFolder )
 	{
 		Preconditions.checkNotNull( worldCompassFolder );
 		Preconditions.checkArgument( worldCompassFolder.isDirectory() );
@@ -73,7 +73,7 @@ public final class CompassRegion
 				this.hasFile = false;
 			}
 		}
-		catch( Throwable t )
+		catch( final Throwable t )
 		{
 			throw new CompassException( t );
 		}
@@ -96,7 +96,7 @@ public final class CompassRegion
 		return false;
 	}
 
-	public void setHasBeacon( int cx, int cz, int cdy, boolean hasBeacon )
+	public void setHasBeacon( int cx, int cz, final int cdy, final boolean hasBeacon )
 	{
 		cx &= 0x3FF;
 		cz &= 0x3FF;
@@ -141,7 +141,7 @@ public final class CompassRegion
 
 	}
 
-	private void openFile( boolean create )
+	private void openFile( final boolean create )
 	{
 		if( this.hasFile )
 		{
@@ -172,12 +172,12 @@ public final class CompassRegion
 		return new File( this.worldCompassFolder, fileName );
 	}
 
-	private boolean isFileExistent( File file )
+	private boolean isFileExistent( final File file )
 	{
 		return file.exists() && file.isFile();
 	}
 
-	private int read( int cx, int cz )
+	private int read( final int cx, final int cz )
 	{
 		try
 		{
@@ -185,17 +185,17 @@ public final class CompassRegion
 			// raf.seek( cx + cz * 0x400 );
 			// return raf.readByte();
 		}
-		catch( IndexOutOfBoundsException outOfBounds )
+		catch( final IndexOutOfBoundsException outOfBounds )
 		{
 			return 0;
 		}
-		catch( Throwable t )
+		catch( final Throwable t )
 		{
 			throw new CompassException( t );
 		}
 	}
 
-	private void write( int cx, int cz, int val )
+	private void write( final int cx, final int cz, final int val )
 	{
 		try
 		{
@@ -203,7 +203,7 @@ public final class CompassRegion
 			// raf.seek( cx + cz * 0x400 );
 			// raf.writeByte( val );
 		}
-		catch( Throwable t )
+		catch( final Throwable t )
 		{
 			throw new CompassException( t );
 		}

@@ -42,21 +42,21 @@ public class RenderTinyTNTPrimed extends Render
 
 	private final ModelGenerator blockRenderer = new ModelGenerator();
 
-    public RenderTinyTNTPrimed(RenderManager p_i46134_1_)
+    public RenderTinyTNTPrimed( final RenderManager p_i46134_1_)
     {
         super(p_i46134_1_);
 		this.shadowSize = 0.5F;
 	}
 
 	@Override
-	public void doRender( Entity tnt, double x, double y, double z, float unused, float life )
+	public void doRender( final Entity tnt, final double x, final double y, final double z, final float unused, final float life )
 	{
 		this.renderPrimedTNT( (EntityTinyTNTPrimed) tnt, x, y, z, unused, life );
 	}
 
-	public void renderPrimedTNT( EntityTinyTNTPrimed tnt, double x, double y, double z, float unused, float life  )
+	public void renderPrimedTNT( final EntityTinyTNTPrimed tnt, final double x, final double y, final double z, final float unused, final float life  )
 	{
-        BlockRendererDispatcher blockrendererdispatcher = Minecraft.getMinecraft().getBlockRendererDispatcher();
+        final BlockRendererDispatcher blockrendererdispatcher = Minecraft.getMinecraft().getBlockRendererDispatcher();
         GlStateManager.pushMatrix();
         GlStateManager.translate((float)x, (float)y + 0.5F, (float)z);
 		float f2;
@@ -77,7 +77,7 @@ public class RenderTinyTNTPrimed extends Render
 
 			f2 *= f2;
 			f2 *= f2;
-			float f3 = 1.0F + f2 * 0.3F;
+			final float f3 = 1.0F + f2 * 0.3F;
 			GL11.glScalef( f3, f3, f3 );
 		}
 
@@ -111,7 +111,7 @@ public class RenderTinyTNTPrimed extends Render
 	}
 
 	@Override
-	protected ResourceLocation getEntityTexture( Entity entity )
+	protected ResourceLocation getEntityTexture( final Entity entity )
 	{
 		return TextureMap.locationBlocksTexture;
 	}

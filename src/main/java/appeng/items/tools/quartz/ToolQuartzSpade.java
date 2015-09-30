@@ -37,7 +37,7 @@ public class ToolQuartzSpade extends ItemSpade implements IAEFeature
 	private final AEFeature type;
 	private final IFeatureHandler handler;
 
-	public ToolQuartzSpade( AEFeature type )
+	public ToolQuartzSpade( final AEFeature type )
 	{
 		super( ToolMaterial.IRON );
 
@@ -57,7 +57,7 @@ public class ToolQuartzSpade extends ItemSpade implements IAEFeature
 	}
 
 	@Override
-	public boolean getIsRepairable( ItemStack a, ItemStack b )
+	public boolean getIsRepairable( final ItemStack a, final ItemStack b )
 	{
 		return Platform.canRepair( this.type, a, b );
 	}

@@ -28,14 +28,14 @@ public final class FeaturedActiveChecker
 {
 	private final Set<AEFeature> features;
 
-	public FeaturedActiveChecker( Set<AEFeature> features )
+	public FeaturedActiveChecker( final Set<AEFeature> features )
 	{
 		this.features = features;
 	}
 
 	public ActivityState getActivityState()
 	{
-		for( AEFeature f : this.features )
+		for( final AEFeature f : this.features )
 		{
 			if( !AEConfig.instance.isFeatureEnabled( f ) )
 			{

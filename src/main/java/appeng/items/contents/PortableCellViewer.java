@@ -48,7 +48,7 @@ public class PortableCellViewer extends MEMonitorHandler<IAEItemStack> implement
 	private final IAEItemPowerStorage ips;
 	private final int inventorySlot;
 
-	public PortableCellViewer( ItemStack is, int slot )
+	public PortableCellViewer( final ItemStack is, final int slot )
 	{
 		super( CellInventory.getCell( is, null ) );
 		this.ips = (IAEItemPowerStorage) is.getItem();
@@ -69,7 +69,7 @@ public class PortableCellViewer extends MEMonitorHandler<IAEItemStack> implement
 	}
 
 	@Override
-	public double extractAEPower( double amt, Actionable mode, PowerMultiplier usePowerMultiplier )
+	public double extractAEPower( double amt, final Actionable mode, final PowerMultiplier usePowerMultiplier )
 	{
 		amt = usePowerMultiplier.multiply( amt );
 
@@ -100,9 +100,9 @@ public class PortableCellViewer extends MEMonitorHandler<IAEItemStack> implement
 		{
 
 			@Override
-			public void updateSetting( IConfigManager manager, Enum settingName, Enum newValue )
+			public void updateSetting( final IConfigManager manager, final Enum settingName, final Enum newValue )
 			{
-				NBTTagCompound data = Platform.openNbtData( PortableCellViewer.this.target );
+				final NBTTagCompound data = Platform.openNbtData( PortableCellViewer.this.target );
 				manager.writeToNBT( data );
 			}
 		} );

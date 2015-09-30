@@ -30,7 +30,7 @@ public class ContainerChest extends AEBaseContainer
 
 	final TileChest chest;
 
-	public ContainerChest( InventoryPlayer ip, TileChest chest )
+	public ContainerChest( final InventoryPlayer ip, final TileChest chest )
 	{
 		super( ip, chest, null );
 		this.chest = chest;

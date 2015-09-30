@@ -22,7 +22,7 @@ package appeng.integration;
 public class IntegrationHelper
 {
 
-	public static void testClassExistence( Object o, Class<?> clz )
+	public static void testClassExistence( final Object o, final Class<?> clz )
 	{
 		clz.isInstance( o );
 	}

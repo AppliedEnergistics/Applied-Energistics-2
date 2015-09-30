@@ -65,7 +65,7 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 	private boolean worked; // used in tickingRequest
 
 	@Reflected
-	public PartImportBus( ItemStack is )
+	public PartImportBus( final ItemStack is )
 	{
 		super( is );
 
@@ -75,7 +75,7 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 	}
 
 	@Override
-	public boolean canInsert( ItemStack stack )
+	public boolean canInsert( final ItemStack stack )
 	{
 		if( stack == null || stack.getItem() == null )
 		{
@@ -91,7 +91,7 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 	}
 
 	@Override
-	public void getBoxes( IPartCollisionHelper bch )
+	public void getBoxes( final IPartCollisionHelper bch )
 	{
 		bch.addBox( 6, 6, 11, 10, 10, 13 );
 		bch.addBox( 5, 5, 13, 11, 11, 14 );
@@ -100,7 +100,7 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderInventory( IPartRenderHelper rh, ModelGenerator renderer )
+	public void renderInventory( final IPartRenderHelper rh, final ModelGenerator renderer )
 	{
 		rh.setTexture( CableBusTextures.PartImportSides.getIcon(), CableBusTextures.PartImportSides.getIcon(), CableBusTextures.PartMonitorBack.getIcon(), renderer.getIcon( is ), CableBusTextures.PartImportSides.getIcon(), CableBusTextures.PartImportSides.getIcon() );
 
@@ -116,7 +116,7 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderStatic( BlockPos pos, IPartRenderHelper rh, ModelGenerator renderer )
+	public void renderStatic( final BlockPos pos, final IPartRenderHelper rh, final ModelGenerator renderer )
 	{
 		rh.setTexture( CableBusTextures.PartImportSides.getIcon(), CableBusTextures.PartImportSides.getIcon(), CableBusTextures.PartMonitorBack.getIcon(), renderer.getIcon( is ), CableBusTextures.PartImportSides.getIcon(), CableBusTextures.PartImportSides.getIcon() );
 
@@ -143,7 +143,7 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 	}
 
 	@Override
-	public boolean onPartActivate( EntityPlayer player, Vec3 pos )
+	public boolean onPartActivate( final EntityPlayer player, final Vec3 pos )
 	{
 		if( !player.isSneaking() )
 		{
@@ -160,13 +160,13 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 	}
 
 	@Override
-	public TickingRequest getTickingRequest( IGridNode node )
+	public TickingRequest getTickingRequest( final IGridNode node )
 	{
 		return new TickingRequest( TickRates.ImportBus.min, TickRates.ImportBus.max, this.getHandler() == null, false );
 	}
 
 	@Override
-	public TickRateModulation tickingRequest( IGridNode node, int ticksSinceLastCall )
+	public TickRateModulation tickingRequest( final IGridNode node, final int ticksSinceLastCall )
 	{
 		return this.doBusWork();
 	}
@@ -222,7 +222,7 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 					}
 				}
 			}
-			catch( GridAccessException e )
+			catch( final GridAccessException e )
 			{
 				// :3
 			}
@@ -235,7 +235,7 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 		return this.worked ? TickRateModulation.FASTER : TickRateModulation.SLOWER;
 	}
 
-	private boolean importStuff( InventoryAdaptor myAdaptor, IAEItemStack whatToImport, IMEMonitor<IAEItemStack> inv, IEnergySource energy, FuzzyMode fzMode )
+	private boolean importStuff( final InventoryAdaptor myAdaptor, final IAEItemStack whatToImport, final IMEMonitor<IAEItemStack> inv, final IEnergySource energy, final FuzzyMode fzMode )
 	{
 		final int toSend = this.calculateMaximumAmountToImport( myAdaptor, whatToImport, inv, fzMode );
 		final ItemStack newItems;
@@ -283,7 +283,7 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 		return false;
 	}
 
-	private int calculateMaximumAmountToImport( InventoryAdaptor myAdaptor, IAEItemStack whatToImport, IMEMonitor<IAEItemStack> inv, FuzzyMode fzMode )
+	private int calculateMaximumAmountToImport( final InventoryAdaptor myAdaptor, final IAEItemStack whatToImport, final IMEMonitor<IAEItemStack> inv, final FuzzyMode fzMode )
 	{
 		final int toSend = Math.min( this.itemToSend, 64 );
 		final ItemStack itemStackToImport;
@@ -318,7 +318,7 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 		return toSend;
 	}
 
-	private IInventoryDestination configDestination( IMEMonitor<IAEItemStack> itemInventory )
+	private IInventoryDestination configDestination( final IMEMonitor<IAEItemStack> itemInventory )
 	{
 		this.destination = itemInventory;
 		return this;

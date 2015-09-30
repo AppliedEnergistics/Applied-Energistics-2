@@ -37,7 +37,7 @@ public class WrapperBCPipe implements IInventory
 	private final TileEntity ad;
 	private final EnumFacing dir;
 
-	public WrapperBCPipe( TileEntity te, EnumFacing d )
+	public WrapperBCPipe( final TileEntity te, final EnumFacing d )
 	{
 		this.bc = (IBuildCraftTransport) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.BuildCraftTransport );
 		this.ad = te;
@@ -51,25 +51,25 @@ public class WrapperBCPipe implements IInventory
 	}
 
 	@Override
-	public ItemStack getStackInSlot( int i )
+	public ItemStack getStackInSlot( final int i )
 	{
 		return null;
 	}
 
 	@Override
-	public ItemStack decrStackSize( int i, int j )
+	public ItemStack decrStackSize( final int i, final int j )
 	{
 		return null;
 	}
 
 	@Override
-	public ItemStack getStackInSlotOnClosing( int i )
+	public ItemStack getStackInSlotOnClosing( final int i )
 	{
 		return null;
 	}
 
 	@Override
-	public void setInventorySlotContents( int i, ItemStack itemstack )
+	public void setInventorySlotContents( final int i, final ItemStack itemstack )
 	{
 		if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.BuildCraftTransport ) )
 		{
@@ -90,37 +90,37 @@ public class WrapperBCPipe implements IInventory
 	}
 
 	@Override
-	public void openInventory( EntityPlayer player )
+	public void openInventory( final EntityPlayer player )
 	{
 
 	}
 
 	@Override
-	public void closeInventory( EntityPlayer player )
+	public void closeInventory( final EntityPlayer player )
 	{
 
 	}
 
 	@Override
-	public boolean isUseableByPlayer( EntityPlayer entityplayer )
+	public boolean isUseableByPlayer( final EntityPlayer entityplayer )
 	{
 		return false;
 	}
 
 	@Override
-	public boolean isItemValidForSlot( int i, ItemStack itemstack )
+	public boolean isItemValidForSlot( final int i, final ItemStack itemstack )
 	{
 		return this.bc.canAddItemsToPipe( this.ad, itemstack, this.dir );
 	}
 
 	@Override
-	public int getField( int id )
+	public int getField( final int id )
 	{
 		return 0;
 	}
 
 	@Override
-	public void setField( int id, int value )
+	public void setField( final int id, final int value )
 	{
 
 	}

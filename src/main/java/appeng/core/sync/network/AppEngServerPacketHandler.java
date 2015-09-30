@@ -38,22 +38,21 @@ public final class AppEngServerPacketHandler extends AppEngPacketHandlerBase imp
 {
 
 	@Override
-	public void onPacketData( final INetworkInfo manager, INetHandler handler, FMLProxyPacket packet, final EntityPlayer player )
+	public void onPacketData( final INetworkInfo manager, final INetHandler handler, final FMLProxyPacket packet, final EntityPlayer player )
 	{
-		ByteBuf stream = packet.payload();
-		int packetType = -1;
+		final ByteBuf stream = packet.payload();
 
 		try
 		{
-			packetType = stream.readInt();
-			AppEngPacket pack = PacketTypes.getPacket( packetType ).parsePacket( stream );
+			final int packetType = stream.readInt();
+			final AppEngPacket pack = PacketTypes.getPacket( packetType ).parsePacket( stream );
 			
-			PacketCallState callState = 
+			final PacketCallState callState =
 			 new PacketCallState(){
 				
 				@Override
 				public void call(
-						AppEngPacket appEngPacket )
+						final AppEngPacket appEngPacket )
 				{
 					appEngPacket.serverPacketData( manager, appEngPacket, player);
 				}
@@ -63,19 +62,19 @@ public final class AppEngServerPacketHandler extends AppEngPacketHandlerBase imp
 			PacketThreadUtil.checkThreadAndEnqueue( pack, handler, ((EntityPlayerMP)player).getServerForPlayer() );
 			callState.call( pack );
 		}
-		catch( InstantiationException e )
+		catch( final InstantiationException e )
 		{
 			AELog.error( e );
 		}
-		catch( IllegalAccessException e )
+		catch( final IllegalAccessException e )
 		{
 			AELog.error( e );
 		}
-		catch( IllegalArgumentException e )
+		catch( final IllegalArgumentException e )
 		{
 			AELog.error( e );
 		}
-		catch( InvocationTargetException e )
+		catch( final InvocationTargetException e )
 		{
 			AELog.error( e );
 		}

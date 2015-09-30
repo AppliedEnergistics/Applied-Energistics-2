@@ -37,11 +37,11 @@ import appeng.tile.qnb.TileQuantumBridge;
 public abstract class BlockQuantumBase extends AEBaseTileBlock implements ICustomCollision
 {
 
-	public BlockQuantumBase( Material mat )
+	public BlockQuantumBase( final Material mat )
 	{
 		super( mat );
 		this.setTileEntity( TileQuantumBridge.class );
-		float shave = 2.0f / 16.0f;
+		final float shave = 2.0f / 16.0f;
 		this.setBlockBounds( shave, shave, shave, 1.0f - shave, 1.0f - shave, 1.0f - shave );
 		this.setLightOpacity( 0 );
 		this.isFullSize = this.isOpaque = false;
@@ -56,12 +56,12 @@ public abstract class BlockQuantumBase extends AEBaseTileBlock implements ICusto
 	
 	@Override
 	public void onNeighborBlockChange(
-			World w,
-			BlockPos pos,
-			IBlockState state,
-			Block neighborBlock )
+			final World w,
+			final BlockPos pos,
+			final IBlockState state,
+			final Block neighborBlock )
 	{
-		TileQuantumBridge bridge = this.getTileEntity( w, pos );
+		final TileQuantumBridge bridge = this.getTileEntity( w, pos );
 		if( bridge != null )
 		{
 			bridge.neighborUpdate();
@@ -70,11 +70,11 @@ public abstract class BlockQuantumBase extends AEBaseTileBlock implements ICusto
 
 	@Override
 	public void breakBlock(
-			World w,
-			BlockPos pos,
-			IBlockState state )
+			final World w,
+			final BlockPos pos,
+			final IBlockState state )
 	{
-		TileQuantumBridge bridge = this.getTileEntity( w, pos );
+		final TileQuantumBridge bridge = this.getTileEntity( w, pos );
 		if( bridge != null )
 		{
 			bridge.breakCluster();

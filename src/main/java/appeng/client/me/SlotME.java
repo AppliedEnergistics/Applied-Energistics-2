@@ -32,7 +32,7 @@ public class SlotME extends Slot
 
 	public final InternalSlotME mySlot;
 
-	public SlotME( InternalSlotME me )
+	public SlotME( final InternalSlotME me )
 	{
 		super( null, 0, me.xPos, me.yPos );
 		this.mySlot = me;
@@ -48,12 +48,12 @@ public class SlotME extends Slot
 	}
 
 	@Override
-	public void onPickupFromSlot( EntityPlayer par1EntityPlayer, ItemStack par2ItemStack )
+	public void onPickupFromSlot( final EntityPlayer par1EntityPlayer, final ItemStack par2ItemStack )
 	{
 	}
 
 	@Override
-	public boolean isItemValid( ItemStack par1ItemStack )
+	public boolean isItemValid( final ItemStack par1ItemStack )
 	{
 		return false;
 	}
@@ -79,7 +79,7 @@ public class SlotME extends Slot
 	}
 
 	@Override
-	public void putStack( ItemStack par1ItemStack )
+	public void putStack( final ItemStack par1ItemStack )
 	{
 
 	}
@@ -91,19 +91,19 @@ public class SlotME extends Slot
 	}
 
 	@Override
-	public ItemStack decrStackSize( int par1 )
+	public ItemStack decrStackSize( final int par1 )
 	{
 		return null;
 	}
 
 	@Override
-	public boolean isHere( IInventory inv, int slotIn )
+	public boolean isHere( final IInventory inv, final int slotIn )
 	{
 		return false;
 	}
 
 	@Override
-	public boolean canTakeStack( EntityPlayer par1EntityPlayer )
+	public boolean canTakeStack( final EntityPlayer par1EntityPlayer )
 	{
 		return false;
 	}

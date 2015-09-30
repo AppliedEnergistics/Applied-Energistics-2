@@ -37,31 +37,31 @@ public class NullCableBusContainer implements ICableBusContainer
 {
 
 	@Override
-	public int isProvidingStrongPower( EnumFacing opposite )
+	public int isProvidingStrongPower( final EnumFacing opposite )
 	{
 		return 0;
 	}
 
 	@Override
-	public int isProvidingWeakPower( EnumFacing opposite )
+	public int isProvidingWeakPower( final EnumFacing opposite )
 	{
 		return 0;
 	}
 
 	@Override
-	public boolean canConnectRedstone( EnumSet<EnumFacing> of )
+	public boolean canConnectRedstone( final EnumSet<EnumFacing> of )
 	{
 		return false;
 	}
 
 	@Override
-	public void onEntityCollision( Entity e )
+	public void onEntityCollision( final Entity e )
 	{
 
 	}
 
 	@Override
-	public boolean activate( EntityPlayer player, Vec3 vecFromPool )
+	public boolean activate( final EntityPlayer player, final Vec3 vecFromPool )
 	{
 		return false;
 	}
@@ -73,7 +73,7 @@ public class NullCableBusContainer implements ICableBusContainer
 	}
 
 	@Override
-	public boolean isSolidOnSide( EnumFacing side )
+	public boolean isSolidOnSide( final EnumFacing side )
 	{
 		return false;
 	}
@@ -85,25 +85,25 @@ public class NullCableBusContainer implements ICableBusContainer
 	}
 
 	@Override
-	public SelectedPart selectPart( Vec3 v3 )
+	public SelectedPart selectPart( final Vec3 v3 )
 	{
 		return new SelectedPart();
 	}
 
 	@Override
-	public boolean recolourBlock( EnumFacing side, AEColor colour, EntityPlayer who )
+	public boolean recolourBlock( final EnumFacing side, final AEColor colour, final EntityPlayer who )
 	{
 		return false;
 	}
 
 	@Override
-	public boolean isLadder( EntityLivingBase entity )
+	public boolean isLadder( final EntityLivingBase entity )
 	{
 		return false;
 	}
 
 	@Override
-	public void randomDisplayTick( World world, BlockPos pos, Random r )
+	public void randomDisplayTick( final World world, final BlockPos pos, final Random r )
 	{
 
 	}

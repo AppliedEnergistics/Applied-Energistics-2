@@ -18,7 +18,7 @@ public class FluixStairSupplier implements Supplier<BlockStairs>
 {
 	private final Supplier<Block> fluixBlockSupplier;
 
-	public FluixStairSupplier( Supplier<Block> fluixBlockSupplier )
+	public FluixStairSupplier( final Supplier<Block> fluixBlockSupplier )
 	{
 		Preconditions.checkNotNull( fluixBlockSupplier );
 

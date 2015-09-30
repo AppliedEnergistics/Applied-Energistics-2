@@ -49,7 +49,7 @@ public final class VersionCheckerConfig
 	/**
 	 * @param file requires fully qualified file in which the config is saved
 	 */
-	public VersionCheckerConfig( File file )
+	public VersionCheckerConfig( final File file )
 	{
 		this.config = new Configuration( file );
 

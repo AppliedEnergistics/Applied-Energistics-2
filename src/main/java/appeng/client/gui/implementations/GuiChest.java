@@ -38,14 +38,14 @@ public class GuiChest extends AEBaseGui
 
 	GuiTabButton priority;
 
-	public GuiChest( InventoryPlayer inventoryPlayer, TileChest te )
+	public GuiChest( final InventoryPlayer inventoryPlayer, final TileChest te )
 	{
 		super( new ContainerChest( inventoryPlayer, te ) );
 		this.ySize = 166;
 	}
 
 	@Override
-	protected void actionPerformed( GuiButton par1GuiButton ) throws IOException
+	protected void actionPerformed( final GuiButton par1GuiButton ) throws IOException
 	{
 		super.actionPerformed( par1GuiButton );
 
@@ -64,14 +64,14 @@ public class GuiChest extends AEBaseGui
 	}
 
 	@Override
-	public void drawFG( int offsetX, int offsetY, int mouseX, int mouseY )
+	public void drawFG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
 		this.fontRendererObj.drawString( this.getGuiDisplayName( GuiText.Chest.getLocal() ), 8, 6, 4210752 );
 		this.fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
 	}
 
 	@Override
-	public void drawBG( int offsetX, int offsetY, int mouseX, int mouseY )
+	public void drawBG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
 		this.bindTexture( "guis/chest.png" );
 		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize );

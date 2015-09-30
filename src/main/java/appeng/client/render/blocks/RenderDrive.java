@@ -45,7 +45,7 @@ public class RenderDrive extends BaseBlockRender<BlockDrive, TileDrive>
 	}
 
 	@Override
-	public void renderInventory( BlockDrive block, ItemStack is, ModelGenerator renderer, ItemRenderType type, Object[] obj )
+	public void renderInventory( final BlockDrive block, final ItemStack is, final ModelGenerator renderer, final ItemRenderType type, final Object[] obj )
 	{
 		renderer.overrideBlockTexture = ExtraBlockTextures.White.getIcon();
 		this.renderInvBlock( EnumSet.of( AEPartLocation.SOUTH ), block, is, 0x000000, renderer );
@@ -55,26 +55,26 @@ public class RenderDrive extends BaseBlockRender<BlockDrive, TileDrive>
 	}
 
 	@Override
-	public boolean renderInWorld( BlockDrive imb, IBlockAccess world, BlockPos pos, ModelGenerator renderer )
+	public boolean renderInWorld( final BlockDrive imb, final IBlockAccess world, final BlockPos pos, final ModelGenerator renderer )
 	{
-		TileDrive sp = imb.getTileEntity( world, pos );
+		final TileDrive sp = imb.getTileEntity( world, pos );
 		renderer.setRenderBounds( 0, 0, 0, 1, 1, 1 );
 
-		EnumFacing up = sp.getUp();
-		EnumFacing forward = sp.getForward();
-		EnumFacing west = Platform.crossProduct( forward, up );
+		final EnumFacing up = sp.getUp();
+		final EnumFacing forward = sp.getForward();
+		final EnumFacing west = Platform.crossProduct( forward, up );
 
-		boolean result = super.renderInWorld( imb, world, pos, renderer );
+		final boolean result = super.renderInWorld( imb, world, pos, renderer );
 
-		IAESprite ico = ExtraBlockTextures.MEStorageCellTextures.getIcon();
+		final IAESprite ico = ExtraBlockTextures.MEStorageCellTextures.getIcon();
 
-		int b = world.getCombinedLight( pos.offset( forward ), 0 );
+		final int b = world.getCombinedLight( pos.offset( forward ), 0 );
 
 		for( int yy = 0; yy < 5; yy++ )
 		{
 			for( int xx = 0; xx < 2; xx++ )
 			{
-				int stat = sp.getCellStatus( yy * 2 + ( 1 - xx ) );
+				final int stat = sp.getCellStatus( yy * 2 + ( 1 - xx ) );
 				this.selectFace( renderer, west, up, forward, 2 + xx * 7, 7 + xx * 7, 1 + yy * 3, 3 + yy * 3 );
 
 				int spin = 0;
@@ -210,9 +210,9 @@ public class RenderDrive extends BaseBlockRender<BlockDrive, TileDrive>
 				double v3 = ico.getInterpolatedV( ( ( spin + 3 ) % 4 < 2 ) ? m : mx );
 				double v4 = ico.getInterpolatedV( ( ( spin ) % 4 < 2 ) ? m : mx );
 
-				int x= pos.getX();
-				int y= pos.getY();
-				int z= pos.getZ();
+				final int x= pos.getX();
+				final int y= pos.getY();
+				final int z= pos.getZ();
 				
 				renderer.setBrightness( b );
 				renderer.setColorOpaque_I( 0xffffff );
@@ -267,7 +267,7 @@ public class RenderDrive extends BaseBlockRender<BlockDrive, TileDrive>
 
 				if( stat != 0 )
 				{
-					IAESprite whiteIcon = ExtraBlockTextures.White.getIcon();
+					final IAESprite whiteIcon = ExtraBlockTextures.White.getIcon();
 					u1 = whiteIcon.getInterpolatedU( ( spin % 4 < 2 ) ? 1 : 6 );
 					u2 = whiteIcon.getInterpolatedU( ( ( spin + 1 ) % 4 < 2 ) ? 1 : 6 );
 					u3 = whiteIcon.getInterpolatedU( ( ( spin + 2 ) % 4 < 2 ) ? 1 : 6 );

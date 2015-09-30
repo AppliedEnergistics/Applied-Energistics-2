@@ -39,20 +39,20 @@ public class RenderBlockQuartzAccelerator extends BaseBlockRender<BlockQuartzGro
 	}
 
 	@Override
-	public boolean renderInWorld( BlockQuartzGrowthAccelerator blk, IBlockAccess world, BlockPos pos, ModelGenerator renderer )
+	public boolean renderInWorld( final BlockQuartzGrowthAccelerator blk, final IBlockAccess world, final BlockPos pos, final ModelGenerator renderer )
 	{
-		TileEntity te = world.getTileEntity( pos );
+		final TileEntity te = world.getTileEntity( pos );
 		if( te instanceof TileQuartzGrowthAccelerator )
 		{
 			if( ( (TileQuartzGrowthAccelerator) te ).hasPower )
 			{
-				IAESprite top_Bottom = ExtraBlockTextures.BlockQuartzGrowthAcceleratorOn.getIcon();
-				IAESprite side = ExtraBlockTextures.BlockQuartzGrowthAcceleratorSideOn.getIcon();
+				final IAESprite top_Bottom = ExtraBlockTextures.BlockQuartzGrowthAcceleratorOn.getIcon();
+				final IAESprite side = ExtraBlockTextures.BlockQuartzGrowthAcceleratorSideOn.getIcon();
 				blk.getRendererInstance().setTemporaryRenderIcons( top_Bottom, top_Bottom, side, side, side, side );
 			}
 		}
 
-		boolean out = super.renderInWorld( blk, world, pos, renderer );
+		final boolean out = super.renderInWorld( blk, world, pos, renderer );
 		blk.getRendererInstance().setTemporaryRenderIcon( null );
 
 		return out;

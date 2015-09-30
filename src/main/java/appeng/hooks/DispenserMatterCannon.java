@@ -37,14 +37,14 @@ public final class DispenserMatterCannon extends BehaviorDefaultDispenseItem
 {
 
 	@Override
-	protected ItemStack dispenseStack( IBlockSource dispenser, ItemStack dispensedItem )
+	protected ItemStack dispenseStack( final IBlockSource dispenser, ItemStack dispensedItem )
 	{
-		Item i = dispensedItem.getItem();
+		final Item i = dispensedItem.getItem();
 		if( i instanceof ToolMassCannon )
 		{
-			EnumFacing enumfacing = BlockDispenser.getFacing( dispenser.getBlockMetadata() );
+			final EnumFacing enumfacing = BlockDispenser.getFacing( dispenser.getBlockMetadata() );
 			AEPartLocation dir = AEPartLocation.INTERNAL;
-			for( AEPartLocation d : AEPartLocation.SIDE_LOCATIONS )
+			for( final AEPartLocation d : AEPartLocation.SIDE_LOCATIONS )
 			{
 				if( enumfacing.getFrontOffsetX() == d.xOffset && enumfacing.getFrontOffsetY() == d.yOffset && enumfacing.getFrontOffsetZ() == d.zOffset )
 				{
@@ -52,12 +52,12 @@ public final class DispenserMatterCannon extends BehaviorDefaultDispenseItem
 				}
 			}
 
-			ToolMassCannon tm = (ToolMassCannon) i;
+			final ToolMassCannon tm = (ToolMassCannon) i;
 
-			World w = dispenser.getWorld();
+			final World w = dispenser.getWorld();
 			if( w instanceof WorldServer )
 			{
-				EntityPlayer p = Platform.getPlayer( (WorldServer) w );
+				final EntityPlayer p = Platform.getPlayer( (WorldServer) w );
 				Platform.configurePlayer( p, dir, dispenser.getBlockTileEntity() );
 
 				p.posX += dir.xOffset;

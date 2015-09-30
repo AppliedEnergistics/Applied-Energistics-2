@@ -36,17 +36,17 @@ public class PacketNewStorageDimension extends AppEngPacket
 	final int newDim;
 
 	// automatic.
-	public PacketNewStorageDimension( ByteBuf stream )
+	public PacketNewStorageDimension( final ByteBuf stream )
 	{
 		this.newDim = stream.readInt();
 	}
 
 	// api
-	public PacketNewStorageDimension( int newDim )
+	public PacketNewStorageDimension( final int newDim )
 	{
 		this.newDim = newDim;
 
-		ByteBuf data = Unpooled.buffer();
+		final ByteBuf data = Unpooled.buffer();
 
 		data.writeInt( this.getPacketID() );
 		data.writeInt( newDim );
@@ -56,13 +56,13 @@ public class PacketNewStorageDimension extends AppEngPacket
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void clientPacketData( INetworkInfo network, AppEngPacket packet, EntityPlayer player )
+	public void clientPacketData( final INetworkInfo network, final AppEngPacket packet, final EntityPlayer player )
 	{
 		try
 		{
 			DimensionManager.registerDimension( this.newDim, AEConfig.instance.storageProviderID );
 		}
-		catch( IllegalArgumentException iae )
+		catch( final IllegalArgumentException iae )
 		{
 			// ok!
 		}

@@ -84,7 +84,7 @@ public final class InscriberRegistry implements IInscriberRegistry
 	}
 
 	@Override
-	public void addRecipe( IInscriberRecipe recipe )
+	public void addRecipe( final IInscriberRecipe recipe )
 	{
 		if( recipe == null )
 		{
@@ -100,7 +100,7 @@ public final class InscriberRegistry implements IInscriberRegistry
 	}
 
 	@Override
-	public void removeRecipe( IInscriberRecipe toBeRemovedRecipe )
+	public void removeRecipe( final IInscriberRecipe toBeRemovedRecipe )
 	{
 		for( final Iterator<IInscriberRecipe> iterator = this.recipes.iterator(); iterator.hasNext(); )
 		{
@@ -126,7 +126,7 @@ public final class InscriberRegistry implements IInscriberRegistry
 
 		@Nonnull
 		@Override
-		public Builder withInputs( @Nonnull Collection<ItemStack> inputs )
+		public Builder withInputs( @Nonnull final Collection<ItemStack> inputs )
 		{
 			this.inputs = new ArrayList<ItemStack>( inputs.size() );
 			this.inputs.addAll( inputs );
@@ -136,7 +136,7 @@ public final class InscriberRegistry implements IInscriberRegistry
 
 		@Nonnull
 		@Override
-		public Builder withOutput( @Nonnull ItemStack output )
+		public Builder withOutput( @Nonnull final ItemStack output )
 		{
 			this.output = output;
 
@@ -145,7 +145,7 @@ public final class InscriberRegistry implements IInscriberRegistry
 
 		@Nonnull
 		@Override
-		public Builder withTopOptional( @Nonnull ItemStack topOptional )
+		public Builder withTopOptional( @Nonnull final ItemStack topOptional )
 		{
 			this.topOptional = topOptional;
 
@@ -154,7 +154,7 @@ public final class InscriberRegistry implements IInscriberRegistry
 
 		@Nonnull
 		@Override
-		public Builder withBottomOptional( @Nonnull ItemStack bottomOptional )
+		public Builder withBottomOptional( @Nonnull final ItemStack bottomOptional )
 		{
 			this.bottomOptional = bottomOptional;
 
@@ -163,7 +163,7 @@ public final class InscriberRegistry implements IInscriberRegistry
 
 		@Nonnull
 		@Override
-		public Builder withProcessType( @Nonnull InscriberProcessType type )
+		public Builder withProcessType( @Nonnull final InscriberProcessType type )
 		{
 			this.type = type;
 

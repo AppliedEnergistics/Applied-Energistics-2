@@ -25,7 +25,7 @@ import net.minecraft.inventory.IInventory;
 public class SlotInaccessibleHD extends SlotInaccessible
 {
 
-	public SlotInaccessibleHD( IInventory i, int slotIdx, int x, int y )
+	public SlotInaccessibleHD( final IInventory i, final int slotIdx, final int x, final int y )
 	{
 		super( i, slotIdx, x, y );
 	}

@@ -51,7 +51,7 @@ public class AEItemDef
 	public UniqueIdentifier uniqueID;
 	public OreReference isOre;
 
-	public AEItemDef( Item it )
+	public AEItemDef( final Item it )
 	{
 		this.item = it;
 		this.itemID = Item.getIdFromItem( it );
@@ -59,7 +59,7 @@ public class AEItemDef
 
 	public AEItemDef copy()
 	{
-		AEItemDef t = new AEItemDef( this.item );
+		final AEItemDef t = new AEItemDef( this.item );
 		t.def = this.def;
 		t.damageValue = this.damageValue;
 		t.displayDamage = this.displayDamage;
@@ -70,7 +70,7 @@ public class AEItemDef
 	}
 
 	@Override
-	public boolean equals( Object obj )
+	public boolean equals( final Object obj )
 	{
 		if( obj == null )
 		{
@@ -80,14 +80,14 @@ public class AEItemDef
 		{
 			return false;
 		}
-		AEItemDef other = (AEItemDef) obj;
+		final AEItemDef other = (AEItemDef) obj;
 		return other.damageValue == this.damageValue && other.item == this.item && this.tagCompound == other.tagCompound;
 	}
 
-	public boolean isItem( ItemStack otherStack )
+	public boolean isItem( final ItemStack otherStack )
 	{
 		// hackery!
-		int dmg = this.getDamageValueHack( otherStack );
+		final int dmg = this.getDamageValueHack( otherStack );
 
 		if( this.item == otherStack.getItem() && dmg == this.damageValue )
 		{
@@ -106,7 +106,7 @@ public class AEItemDef
 		return false;
 	}
 
-	public int getDamageValueHack( ItemStack is )
+	public int getDamageValueHack( final ItemStack is )
 	{
 		return Items.blaze_rod.getDamage( is );
 	}

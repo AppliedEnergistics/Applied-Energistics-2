@@ -34,13 +34,13 @@ public class JarLoader implements IRecipeLoader
 
 	private final String rootPath;
 
-	public JarLoader( String s )
+	public JarLoader( final String s )
 	{
 		this.rootPath = s;
 	}
 
 	@Override
-	public BufferedReader getFile( @Nonnull String s ) throws Exception
+	public BufferedReader getFile( @Nonnull final String s ) throws Exception
 	{
 		Preconditions.checkNotNull( s );
 		Preconditions.checkArgument( !s.isEmpty() );

@@ -33,7 +33,7 @@ public abstract class AEStack<StackType extends IAEStack> implements IAEStack<St
 	protected long stackSize;
 	protected long countRequestable;
 
-	static long getPacketValue( byte type, ByteBuf tag )
+	static long getPacketValue( final byte type, final ByteBuf tag )
 	{
 		if( type == 0 )
 		{
@@ -64,7 +64,7 @@ public abstract class AEStack<StackType extends IAEStack> implements IAEStack<St
 	}
 
 	@Override
-	public StackType setStackSize( long ss )
+	public StackType setStackSize( final long ss )
 	{
 		this.stackSize = ss;
 		return (StackType) this;
@@ -77,7 +77,7 @@ public abstract class AEStack<StackType extends IAEStack> implements IAEStack<St
 	}
 
 	@Override
-	public StackType setCountRequestable( long countRequestable )
+	public StackType setCountRequestable( final long countRequestable )
 	{
 		this.countRequestable = countRequestable;
 		return (StackType) this;
@@ -90,7 +90,7 @@ public abstract class AEStack<StackType extends IAEStack> implements IAEStack<St
 	}
 
 	@Override
-	public StackType setCraftable( boolean isCraftable )
+	public StackType setCraftable( final boolean isCraftable )
 	{
 		this.isCraftable = isCraftable;
 		return (StackType) this;
@@ -113,33 +113,33 @@ public abstract class AEStack<StackType extends IAEStack> implements IAEStack<St
 	}
 
 	@Override
-	public void incStackSize( long i )
+	public void incStackSize( final long i )
 	{
 		this.stackSize += i;
 	}
 
 	@Override
-	public void decStackSize( long i )
+	public void decStackSize( final long i )
 	{
 		this.stackSize -= i;
 	}
 
 	@Override
-	public void incCountRequestable( long i )
+	public void incCountRequestable( final long i )
 	{
 		this.countRequestable += i;
 	}
 
 	@Override
-	public void decCountRequestable( long i )
+	public void decCountRequestable( final long i )
 	{
 		this.countRequestable -= i;
 	}
 
 	@Override
-	public void writeToPacket( ByteBuf i ) throws IOException
+	public void writeToPacket( final ByteBuf i ) throws IOException
 	{
-		byte mask = (byte) ( this.getType( 0 ) | ( this.getType( this.stackSize ) << 2 ) | ( this.getType( this.countRequestable ) << 4 ) | ( (byte) ( this.isCraftable ? 1 : 0 ) << 6 ) | ( this.hasTagCompound() ? 1 : 0 ) << 7 );
+		final byte mask = (byte) ( this.getType( 0 ) | ( this.getType( this.stackSize ) << 2 ) | ( this.getType( this.countRequestable ) << 4 ) | ( (byte) ( this.isCraftable ? 1 : 0 ) << 6 ) | ( this.hasTagCompound() ? 1 : 0 ) << 7 );
 
 		i.writeByte( mask );
 		this.writeIdentity( i );
@@ -151,7 +151,7 @@ public abstract class AEStack<StackType extends IAEStack> implements IAEStack<St
 		this.putPacketValue( i, this.countRequestable );
 	}
 
-	byte getType( long num )
+	byte getType( final long num )
 	{
 		if( num <= 255 )
 		{
@@ -177,7 +177,7 @@ public abstract class AEStack<StackType extends IAEStack> implements IAEStack<St
 
 	abstract void readNBT( ByteBuf i ) throws IOException;
 
-	void putPacketValue( ByteBuf tag, long num )
+	void putPacketValue( final ByteBuf tag, final long num )
 	{
 		if( num <= 255 )
 		{

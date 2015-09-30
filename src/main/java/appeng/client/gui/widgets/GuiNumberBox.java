@@ -28,16 +28,16 @@ public class GuiNumberBox extends GuiTextField
 
 	final Class type;
 
-	public GuiNumberBox( FontRenderer fontRenderer, int x, int y, int width, int height, Class type )
+	public GuiNumberBox( final FontRenderer fontRenderer, final int x, final int y, final int width, final int height, final Class type )
 	{
 		super( 0, fontRenderer, x, y, width, height );
 		this.type = type;
 	}
 
 	@Override
-	public void writeText( String selectedText )
+	public void writeText( final String selectedText )
 	{
-		String original = this.getText();
+		final String original = this.getText();
 		super.writeText( selectedText );
 
 		try
@@ -55,7 +55,7 @@ public class GuiNumberBox extends GuiTextField
 				Double.parseDouble( this.getText() );
 			}
 		}
-		catch( NumberFormatException e )
+		catch( final NumberFormatException e )
 		{
 			this.setText( original );
 		}

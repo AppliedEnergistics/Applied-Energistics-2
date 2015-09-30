@@ -49,26 +49,26 @@ public abstract class PartBasicState extends AEBasePart implements IPowerChannel
 
 	protected int clientFlags = 0; // sent as byte.
 
-	public PartBasicState( ItemStack is )
+	public PartBasicState( final ItemStack is )
 	{
 		super( is );
 		this.proxy.setFlags( GridFlags.REQUIRE_CHANNEL );
 	}
 
 	@MENetworkEventSubscribe
-	public void chanRender( MENetworkChannelsChanged c )
+	public void chanRender( final MENetworkChannelsChanged c )
 	{
 		this.getHost().markForUpdate();
 	}
 
 	@MENetworkEventSubscribe
-	public void powerRender( MENetworkPowerStatusChange c )
+	public void powerRender( final MENetworkPowerStatusChange c )
 	{
 		this.getHost().markForUpdate();
 	}
 
 	@SideOnly( Side.CLIENT )
-	public void renderLights( BlockPos pos, IPartRenderHelper rh, ModelGenerator renderer )
+	public void renderLights( final BlockPos pos, final IPartRenderHelper rh, final ModelGenerator renderer )
 	{
 		this.setColors( renderer, ( this.clientFlags & ( POWERED_FLAG | CHANNEL_FLAG ) ) == ( POWERED_FLAG | CHANNEL_FLAG ), ( this.clientFlags & POWERED_FLAG ) == POWERED_FLAG );
 		rh.renderFace( pos, CableBusTextures.PartMonitorSidesStatusLights.getIcon(), EnumFacing.EAST, renderer );
@@ -77,17 +77,17 @@ public abstract class PartBasicState extends AEBasePart implements IPowerChannel
 		rh.renderFace( pos, CableBusTextures.PartMonitorSidesStatusLights.getIcon(), EnumFacing.DOWN, renderer );
 	}
 
-	public void setColors( ModelGenerator renderer, boolean hasChan, boolean hasPower )
+	public void setColors( final ModelGenerator renderer, final boolean hasChan, final boolean hasPower )
 	{
 		if( hasChan )
 		{
-			int l = 14;
+			final int l = 14;
 			renderer.setBrightness( l << 20 | l << 4 );
 			renderer.setColorOpaque_I( this.getColor().blackVariant );
 		}
 		else if( hasPower )
 		{
-			int l = 9;
+			final int l = 9;
 			renderer.setBrightness( l << 20 | l << 4 );
 			renderer.setColorOpaque_I( this.getColor().whiteVariant );
 		}
@@ -99,7 +99,7 @@ public abstract class PartBasicState extends AEBasePart implements IPowerChannel
 	}
 
 	@Override
-	public void writeToStream( ByteBuf data ) throws IOException
+	public void writeToStream( final ByteBuf data ) throws IOException
 	{
 		super.writeToStream( data );
 
@@ -119,7 +119,7 @@ public abstract class PartBasicState extends AEBasePart implements IPowerChannel
 
 			this.clientFlags = this.populateFlags( this.clientFlags );
 		}
-		catch( GridAccessException e )
+		catch( final GridAccessException e )
 		{
 			// meh
 		}
@@ -127,17 +127,17 @@ public abstract class PartBasicState extends AEBasePart implements IPowerChannel
 		data.writeByte( (byte) this.clientFlags );
 	}
 
-	protected int populateFlags( int cf )
+	protected int populateFlags( final int cf )
 	{
 		return cf;
 	}
 
 	@Override
-	public boolean readFromStream( ByteBuf data ) throws IOException
+	public boolean readFromStream( final ByteBuf data ) throws IOException
 	{
-		boolean eh = super.readFromStream( data );
+		final boolean eh = super.readFromStream( data );
 
-		int old = this.clientFlags;
+		final int old = this.clientFlags;
 		this.clientFlags = data.readByte();
 
 		return eh || old != this.clientFlags;
@@ -145,7 +145,7 @@ public abstract class PartBasicState extends AEBasePart implements IPowerChannel
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public TextureAtlasSprite getBreakingTexture( ModelGenerator renderer )
+	public TextureAtlasSprite getBreakingTexture( final ModelGenerator renderer )
 	{
 		return CableBusTextures.PartTransitionPlaneBack.getIcon().getAtlas();
 	}

@@ -80,39 +80,39 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISto
 	final DualityInterface duality = new DualityInterface( this.proxy, this );
 
 	@Reflected
-	public PartInterface( ItemStack is )
+	public PartInterface( final ItemStack is )
 	{
 		super( is );
 	}
 
 	@MENetworkEventSubscribe
-	public void stateChange( MENetworkChannelsChanged c )
+	public void stateChange( final MENetworkChannelsChanged c )
 	{
 		this.duality.notifyNeighbors();
 	}
 
 	@MENetworkEventSubscribe
-	public void stateChange( MENetworkPowerStatusChange c )
+	public void stateChange( final MENetworkPowerStatusChange c )
 	{
 		this.duality.notifyNeighbors();
 	}
 
 	@Override
-	public void getBoxes( IPartCollisionHelper bch )
+	public void getBoxes( final IPartCollisionHelper bch )
 	{
 		bch.addBox( 2, 2, 14, 14, 14, 16 );
 		bch.addBox( 5, 5, 12, 11, 11, 14 );
 	}
 
 	@Override
-	public int getInstalledUpgrades( Upgrades u )
+	public int getInstalledUpgrades( final Upgrades u )
 	{
 		return this.duality.getInstalledUpgrades( u );
 	}
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderInventory( IPartRenderHelper rh, ModelGenerator renderer )
+	public void renderInventory( final IPartRenderHelper rh, final ModelGenerator renderer )
 	{
 		rh.setTexture( CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorBack.getIcon(), renderer.getIcon( is ), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon() );
 
@@ -134,7 +134,7 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISto
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderStatic( BlockPos pos, IPartRenderHelper rh, ModelGenerator renderer )
+	public void renderStatic( final BlockPos pos, final IPartRenderHelper rh, final ModelGenerator renderer )
 	{
 		rh.setTexture( CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorBack.getIcon(), renderer.getIcon( is ), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon() );
 
@@ -155,14 +155,14 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISto
 	}
 
 	@Override
-	public void readFromNBT( NBTTagCompound data )
+	public void readFromNBT( final NBTTagCompound data )
 	{
 		super.readFromNBT( data );
 		this.duality.readFromNBT( data );
 	}
 
 	@Override
-	public void writeToNBT( NBTTagCompound data )
+	public void writeToNBT( final NBTTagCompound data )
 	{
 		super.writeToNBT( data );
 		this.duality.writeToNBT( data );
@@ -176,7 +176,7 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISto
 	}
 
 	@Override
-	public void getDrops( List<ItemStack> drops, boolean wrenched )
+	public void getDrops( final List<ItemStack> drops, final boolean wrenched )
 	{
 		this.duality.addDrops( drops );
 	}
@@ -194,13 +194,13 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISto
 	}
 
 	@Override
-	public IInventory getInventoryByName( String name )
+	public IInventory getInventoryByName( final String name )
 	{
 		return this.duality.getInventoryByName( name );
 	}
 
 	@Override
-	public boolean onPartActivate( EntityPlayer p, Vec3 pos )
+	public boolean onPartActivate( final EntityPlayer p, final Vec3 pos )
 	{
 		if( p.isSneaking() )
 		{
@@ -216,13 +216,13 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISto
 	}
 
 	@Override
-	public TextureAtlasSprite getBreakingTexture(ModelGenerator renderer)
+	public TextureAtlasSprite getBreakingTexture( final ModelGenerator renderer)
 	{
 		return renderer.getIcon( is ).getAtlas();
 	}
 
 	@Override
-	public boolean canInsert( ItemStack stack )
+	public boolean canInsert( final ItemStack stack )
 	{
 		return this.duality.canInsert( stack );
 	}
@@ -240,13 +240,13 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISto
 	}
 
 	@Override
-	public TickingRequest getTickingRequest( IGridNode node )
+	public TickingRequest getTickingRequest( final IGridNode node )
 	{
 		return this.duality.getTickingRequest( node );
 	}
 
 	@Override
-	public TickRateModulation tickingRequest( IGridNode node, int ticksSinceLastCall )
+	public TickRateModulation tickingRequest( final IGridNode node, final int ticksSinceLastCall )
 	{
 		return this.duality.tickingRequest( node, ticksSinceLastCall );
 	}
@@ -258,25 +258,25 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISto
 	}
 
 	@Override
-	public ItemStack getStackInSlot( int i )
+	public ItemStack getStackInSlot( final int i )
 	{
 		return this.duality.getStorage().getStackInSlot( i );
 	}
 
 	@Override
-	public ItemStack decrStackSize( int i, int j )
+	public ItemStack decrStackSize( final int i, final int j )
 	{
 		return this.duality.getStorage().decrStackSize( i, j );
 	}
 
 	@Override
-	public ItemStack getStackInSlotOnClosing( int i )
+	public ItemStack getStackInSlotOnClosing( final int i )
 	{
 		return this.duality.getStorage().getStackInSlotOnClosing( i );
 	}
 
 	@Override
-	public void setInventorySlotContents( int i, ItemStack itemstack )
+	public void setInventorySlotContents( final int i, final ItemStack itemstack )
 	{
 		this.duality.getStorage().setInventorySlotContents( i, itemstack );
 	}
@@ -306,49 +306,49 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISto
 	}
 
 	@Override
-	public boolean isUseableByPlayer( EntityPlayer entityplayer )
+	public boolean isUseableByPlayer( final EntityPlayer entityplayer )
 	{
 		return this.duality.getStorage().isUseableByPlayer( entityplayer );
 	}
 
 	@Override
-	public void openInventory( EntityPlayer player )
+	public void openInventory( final EntityPlayer player )
 	{
 		this.duality.getStorage().openInventory(player);
 	}
 
 	@Override
-	public void closeInventory( EntityPlayer player )
+	public void closeInventory( final EntityPlayer player )
 	{
 		this.duality.getStorage().closeInventory(player);
 	}
 
 	@Override
-	public boolean isItemValidForSlot( int i, ItemStack itemstack )
+	public boolean isItemValidForSlot( final int i, final ItemStack itemstack )
 	{
 		return this.duality.getStorage().isItemValidForSlot( i, itemstack );
 	}
 
 	@Override
-	public int[] getSlotsForFace( EnumFacing side )
+	public int[] getSlotsForFace( final EnumFacing side )
 	{
 		return this.duality.getSlotsForFace( side );
 	}
 
 	@Override
-	public boolean canInsertItem( int i, ItemStack itemstack, EnumFacing j )
+	public boolean canInsertItem( final int i, final ItemStack itemstack, final EnumFacing j )
 	{
 		return true;
 	}
 
 	@Override
-	public boolean canExtractItem( int i, ItemStack itemstack, EnumFacing j )
+	public boolean canExtractItem( final int i, final ItemStack itemstack, final EnumFacing j )
 	{
 		return true;
 	}
 
 	@Override
-	public void onChangeInventory( IInventory inv, int slot, InvOperation mc, ItemStack removedStack, ItemStack newStack )
+	public void onChangeInventory( final IInventory inv, final int slot, final InvOperation mc, final ItemStack removedStack, final ItemStack newStack )
 	{
 		this.duality.onChangeInventory( inv, slot, mc, removedStack, newStack );
 	}
@@ -372,13 +372,13 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISto
 	}
 
 	@Override
-	public IStorageMonitorable getMonitorable( EnumFacing side, BaseActionSource src )
+	public IStorageMonitorable getMonitorable( final EnumFacing side, final BaseActionSource src )
 	{
 		return this.duality.getMonitorable( side, src, this );
 	}
 
 	@Override
-	public boolean pushPattern( ICraftingPatternDetails patternDetails, InventoryCrafting table )
+	public boolean pushPattern( final ICraftingPatternDetails patternDetails, final InventoryCrafting table )
 	{
 		return this.duality.pushPattern( patternDetails, table );
 	}
@@ -390,7 +390,7 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISto
 	}
 
 	@Override
-	public void provideCrafting( ICraftingProviderHelper craftingTracker )
+	public void provideCrafting( final ICraftingProviderHelper craftingTracker )
 	{
 		this.duality.provideCrafting( craftingTracker );
 	}
@@ -402,13 +402,13 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISto
 	}
 
 	@Override
-	public IAEItemStack injectCraftedItems( ICraftingLink link, IAEItemStack items, Actionable mode )
+	public IAEItemStack injectCraftedItems( final ICraftingLink link, final IAEItemStack items, final Actionable mode )
 	{
 		return this.duality.injectCraftedItems( link, items, mode );
 	}
 
 	@Override
-	public void jobStateChange( ICraftingLink link )
+	public void jobStateChange( final ICraftingLink link )
 	{
 		this.duality.jobStateChange( link );
 	}
@@ -420,22 +420,22 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISto
 	}
 
 	@Override
-	public void setPriority( int newValue )
+	public void setPriority( final int newValue )
 	{
 		this.duality.setPriority( newValue );
 	}
 
 	@Override
 	public int getField(
-			int id )
+			final int id )
 	{
 		return 0;
 	}
 
 	@Override
 	public void setField(
-			int id,
-			int value )
+			final int id,
+			final int value )
 	{
 		
 	}

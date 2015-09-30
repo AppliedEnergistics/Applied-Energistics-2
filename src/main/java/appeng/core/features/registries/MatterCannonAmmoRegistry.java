@@ -41,15 +41,15 @@ public class MatterCannonAmmoRegistry implements IOreListener, IMatterCannonAmmo
 	}
 
 	@Override
-	public void registerAmmo( ItemStack ammo, double weight )
+	public void registerAmmo( final ItemStack ammo, final double weight )
 	{
 		this.DamageModifiers.put( ammo, weight );
 	}
 
 	@Override
-	public float getPenetration( ItemStack is )
+	public float getPenetration( final ItemStack is )
 	{
-		for( ItemStack o : this.DamageModifiers.keySet() )
+		for( final ItemStack o : this.DamageModifiers.keySet() )
 		{
 			if( Platform.isSameItem( o, is ) )
 			{
@@ -60,7 +60,7 @@ public class MatterCannonAmmoRegistry implements IOreListener, IMatterCannonAmmo
 	}
 
 	@Override
-	public void oreRegistered( String name, ItemStack item )
+	public void oreRegistered( final String name, final ItemStack item )
 	{
 		if( !( name.startsWith( "berry" ) || name.startsWith( "nugget" ) ) )
 		{
@@ -140,7 +140,7 @@ public class MatterCannonAmmoRegistry implements IOreListener, IMatterCannonAmmo
 		this.considerItem( name, item, "Electrum", ( 107.8682 + 196.96655 ) / 2.0 );
 	}
 
-	private void considerItem( String ore, ItemStack item, String name, double weight )
+	private void considerItem( final String ore, final ItemStack item, final String name, final double weight )
 	{
 		if( ore.equals( "berry" + name ) || ore.equals( "nugget" + name ) )
 		{

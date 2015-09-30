@@ -12,7 +12,7 @@ public class Fallout
 	private final MeteoriteBlockPutter putter;
 	private final IBlockDefinition skyStoneDefinition;
 
-	public Fallout( MeteoriteBlockPutter putter, IBlockDefinition skyStoneDefinition )
+	public Fallout( final MeteoriteBlockPutter putter, final IBlockDefinition skyStoneDefinition )
 	{
 		this.putter = putter;
 		this.skyStoneDefinition = skyStoneDefinition;
@@ -23,9 +23,9 @@ public class Fallout
 		return 0;
 	}
 
-	public void getRandomFall( IMeteoriteWorld w, int x, int y, int z )
+	public void getRandomFall( final IMeteoriteWorld w, final int x, final int y, final int z )
 	{
-		double a = Math.random();
+		final double a = Math.random();
 		if( a > 0.9 )
 		{
 			this.putter.put( w, x, y, z, Blocks.stone );
@@ -44,9 +44,9 @@ public class Fallout
 		}
 	}
 
-	public void getRandomInset( IMeteoriteWorld w, int x, int y, int z )
+	public void getRandomInset( final IMeteoriteWorld w, final int x, final int y, final int z )
 	{
-		double a = Math.random();
+		final double a = Math.random();
 		if( a > 0.9 )
 		{
 			this.putter.put( w, x, y, z, Blocks.cobblestone );
@@ -61,7 +61,7 @@ public class Fallout
 		}
 		else if( a > 0.6 )
 		{
-			for( Block skyStoneBlock : this.skyStoneDefinition.maybeBlock().asSet() )
+			for( final Block skyStoneBlock : this.skyStoneDefinition.maybeBlock().asSet() )
 			{
 				this.putter.put( w, x, y, z, skyStoneBlock );
 			}

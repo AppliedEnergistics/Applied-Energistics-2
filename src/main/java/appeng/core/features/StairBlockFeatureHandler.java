@@ -41,7 +41,7 @@ public class StairBlockFeatureHandler implements IFeatureHandler
 	private final boolean enabled;
 	private final BlockDefinition definition;
 
-	public StairBlockFeatureHandler( EnumSet<AEFeature> features, BlockStairs stairs, Optional<String> subName )
+	public StairBlockFeatureHandler( final EnumSet<AEFeature> features, final BlockStairs stairs, final Optional<String> subName )
 	{
 		final ActivityState state = new FeaturedActiveChecker( features ).getActivityState();
 
@@ -64,11 +64,11 @@ public class StairBlockFeatureHandler implements IFeatureHandler
 	}
 
 	@Override
-	public final void register( Side side )
+	public final void register( final Side side )
 	{
 		if( this.enabled )
 		{
-			String name = this.extractor.get();
+			final String name = this.extractor.get();
 			this.stairs.setCreativeTab( CreativeTab.instance );
 			this.stairs.setUnlocalizedName( "appliedenergistics2." + name );
 

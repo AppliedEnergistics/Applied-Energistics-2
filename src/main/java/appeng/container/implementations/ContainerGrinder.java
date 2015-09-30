@@ -32,7 +32,7 @@ public class ContainerGrinder extends AEBaseContainer
 
 	final TileGrinder grinder;
 
-	public ContainerGrinder( InventoryPlayer ip, TileGrinder grinder )
+	public ContainerGrinder( final InventoryPlayer ip, final TileGrinder grinder )
 	{
 		super( ip, grinder, null );
 		this.grinder = grinder;

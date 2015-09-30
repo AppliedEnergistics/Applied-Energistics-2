@@ -33,7 +33,7 @@ import appeng.tile.crafting.TileCraftingStorageTile;
 public class BlockCraftingStorage extends BlockCraftingUnit
 {
 	
-	public BlockCraftingStorage( CraftingUnitType type )
+	public BlockCraftingStorage( final CraftingUnitType type )
 	{
 		super(type );
 		this.setTileEntity( TileCraftingStorageTile.class );
@@ -46,9 +46,9 @@ public class BlockCraftingStorage extends BlockCraftingUnit
 	}
 
 	@Override
-	public appeng.client.texture.IAESprite getIcon(net.minecraft.util.EnumFacing side, net.minecraft.block.state.IBlockState state)
+	public appeng.client.texture.IAESprite getIcon( final net.minecraft.util.EnumFacing side, final net.minecraft.block.state.IBlockState state)
 	{
-		boolean formed = (boolean)state.getValue( FORMED );
+		final boolean formed = (boolean)state.getValue( FORMED );
 		switch(  this.type )
 		{
 			default:
@@ -74,7 +74,7 @@ public class BlockCraftingStorage extends BlockCraftingUnit
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void getCheckedSubBlocks( Item item, CreativeTabs tabs, List<ItemStack> itemStacks )
+	public void getCheckedSubBlocks( final Item item, final CreativeTabs tabs, final List<ItemStack> itemStacks )
 	{
 		itemStacks.add( new ItemStack( this, 1, 0 ) );
 		itemStacks.add( new ItemStack( this, 1, 1 ) );
@@ -83,7 +83,7 @@ public class BlockCraftingStorage extends BlockCraftingUnit
 	}
 
 	@Override
-	public String getUnlocalizedName( ItemStack is )
+	public String getUnlocalizedName( final ItemStack is )
 	{
 		if( is.getItemDamage() == 1 )
 		{

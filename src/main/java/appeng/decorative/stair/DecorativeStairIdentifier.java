@@ -41,7 +41,7 @@ public enum DecorativeStairIdentifier implements Identifier
 	 *
 	 * @see net.minecraftforge.fml.common.registry.GameRegistry#registerBlock(Block, String)
 	 */
-	DecorativeStairIdentifier( @Nonnull String name )
+	DecorativeStairIdentifier( @Nonnull final String name )
 	{
 		Preconditions.checkNotNull( name );
 		Preconditions.checkArgument( !name.isEmpty() );

@@ -32,13 +32,13 @@ public class PlayerSecurityWrapper implements ISecurityRegistry
 
 	final Map<Integer, EnumSet<SecurityPermissions>> target;
 
-	public PlayerSecurityWrapper( HashMap<Integer, EnumSet<SecurityPermissions>> playerPerms )
+	public PlayerSecurityWrapper( final HashMap<Integer, EnumSet<SecurityPermissions>> playerPerms )
 	{
 		this.target = playerPerms;
 	}
 
 	@Override
-	public void addPlayer( int playerID, EnumSet<SecurityPermissions> permissions )
+	public void addPlayer( final int playerID, final EnumSet<SecurityPermissions> permissions )
 	{
 		this.target.put( playerID, permissions );
 	}

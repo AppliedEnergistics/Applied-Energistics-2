@@ -24,7 +24,7 @@ import net.minecraft.block.material.Material;
 
 public abstract class AEDecorativeBlock extends AEBaseBlock
 {
-	public AEDecorativeBlock( Material mat )
+	public AEDecorativeBlock( final Material mat )
 	{
 		super( mat );
 	}

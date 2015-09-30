@@ -62,7 +62,7 @@ public class TileCrank extends AEBaseTile implements ICustomCollision, IUpdatePl
 			if( this.charge >= this.ticksPerRotation )
 			{
 				this.charge -= this.ticksPerRotation;
-				ICrankable g = this.getGrinder();
+				final ICrankable g = this.getGrinder();
 				if( g != null )
 				{
 					g.applyTurn();
@@ -80,8 +80,8 @@ public class TileCrank extends AEBaseTile implements ICustomCollision, IUpdatePl
 			return null;
 		}
 
-		EnumFacing grinder = this.getUp().getOpposite();
-		TileEntity te = this.worldObj.getTileEntity( pos.offset( grinder ) );
+		final EnumFacing grinder = this.getUp().getOpposite();
+		final TileEntity te = this.worldObj.getTileEntity( pos.offset( grinder ) );
 		if( te instanceof ICrankable )
 		{
 			return (ICrankable) te;
@@ -90,23 +90,23 @@ public class TileCrank extends AEBaseTile implements ICustomCollision, IUpdatePl
 	}
 
 	@TileEvent( TileEventType.NETWORK_READ )
-	public boolean readFromStream_TileCrank( ByteBuf data )
+	public boolean readFromStream_TileCrank( final ByteBuf data )
 	{
 		this.rotation = data.readInt();
 		return false;
 	}
 
 	@TileEvent( TileEventType.NETWORK_WRITE )
-	public void writeToStream_TileCrank( ByteBuf data )
+	public void writeToStream_TileCrank( final ByteBuf data )
 	{
 		data.writeInt( this.rotation );
 	}
 
 	@Override
-	public void setOrientation( EnumFacing inForward, EnumFacing inUp )
+	public void setOrientation( final EnumFacing inForward, final EnumFacing inUp )
 	{
 		super.setOrientation( inForward, inUp );
-		IBlockState state = this.worldObj.getBlockState( pos );
+		final IBlockState state = this.worldObj.getBlockState( pos );
 		this.getBlockType().onNeighborBlockChange( this.worldObj, pos, state, state.getBlock() );
 	}
 
@@ -128,7 +128,7 @@ public class TileCrank extends AEBaseTile implements ICustomCollision, IUpdatePl
 
 		if( this.rotation < 3 )
 		{
-			ICrankable g = this.getGrinder();
+			final ICrankable g = this.getGrinder();
 			if( g != null )
 			{
 				if( g.canTurn() )
@@ -154,28 +154,28 @@ public class TileCrank extends AEBaseTile implements ICustomCollision, IUpdatePl
 
 	@Override
 	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool(
-			World w,
-			BlockPos pos,
-			Entity thePlayer,
-			boolean b )
+			final World w,
+			final BlockPos pos,
+			final Entity thePlayer,
+			final boolean b )
 	{
-		double xOff = -0.15 * this.getUp().getFrontOffsetX();
-		double yOff = -0.15 * this.getUp().getFrontOffsetY();
-		double zOff = -0.15 * this.getUp().getFrontOffsetZ();
+		final double xOff = -0.15 * this.getUp().getFrontOffsetX();
+		final double yOff = -0.15 * this.getUp().getFrontOffsetY();
+		final double zOff = -0.15 * this.getUp().getFrontOffsetZ();
 		return Collections.singletonList( AxisAlignedBB.fromBounds( xOff + 0.15, yOff + 0.15, zOff + 0.15, xOff + 0.85, yOff + 0.85, zOff + 0.85 ) );
 	}
 	
 	@Override
 	public void addCollidingBlockToList(
-			World w,
-			BlockPos pos,
-			AxisAlignedBB bb,
-			List<AxisAlignedBB> out,
-			Entity e )
+			final World w,
+			final BlockPos pos,
+			final AxisAlignedBB bb,
+			final List<AxisAlignedBB> out,
+			final Entity e )
 	{
-		double xOff = -0.15 * this.getUp().getFrontOffsetX();
-		double yOff = -0.15 * this.getUp().getFrontOffsetY();
-		double zOff = -0.15 * this.getUp().getFrontOffsetZ();
+		final double xOff = -0.15 * this.getUp().getFrontOffsetX();
+		final double yOff = -0.15 * this.getUp().getFrontOffsetY();
+		final double zOff = -0.15 * this.getUp().getFrontOffsetZ();
 		out.add( AxisAlignedBB.fromBounds( xOff + 0.15, yOff + 0.15, zOff + 0.15,// ahh
 				xOff + 0.85, yOff + 0.85, zOff + 0.85 ) );
 	}

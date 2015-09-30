@@ -26,7 +26,7 @@ import appeng.helpers.Reflected;
 public class PartInvertedToggleBus extends PartToggleBus
 {
 	@Reflected
-	public PartInvertedToggleBus( ItemStack is )
+	public PartInvertedToggleBus( final ItemStack is )
 	{
 		super( is );
 		this.proxy.setIdlePowerUsage( 0.0 );

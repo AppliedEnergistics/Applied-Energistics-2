@@ -43,7 +43,7 @@ public class RenderSpatialPylon extends BaseBlockRender<BlockSpatialPylon, TileS
 	}
 
 	@Override
-	public void renderInventory( BlockSpatialPylon block, ItemStack is, ModelGenerator renderer, ItemRenderType type, Object[] obj )
+	public void renderInventory( final BlockSpatialPylon block, final ItemStack is, final ModelGenerator renderer, final ItemRenderType type, final Object[] obj )
 	{
 		renderer.overrideBlockTexture = ExtraBlockTextures.BlockSpatialPylon_dim.getIcon();
 		super.renderInventory( block, is, renderer, type, obj );
@@ -52,13 +52,13 @@ public class RenderSpatialPylon extends BaseBlockRender<BlockSpatialPylon, TileS
 	}
 
 	@Override
-	public boolean renderInWorld( BlockSpatialPylon imb, IBlockAccess world, BlockPos pos, ModelGenerator renderer )
+	public boolean renderInWorld( final BlockSpatialPylon imb, final IBlockAccess world, final BlockPos pos, final ModelGenerator renderer )
 	{
 		renderer.setRenderBounds( 0, 0, 0, 1, 1, 1 );
 
-		TileSpatialPylon sp = imb.getTileEntity( world, pos  );
+		final TileSpatialPylon sp = imb.getTileEntity( world, pos  );
 
-		int displayBits = ( sp == null ) ? 0 : sp.getDisplayBits();
+		final int displayBits = ( sp == null ) ? 0 : sp.getDisplayBits();
 
 		if( displayBits != 0 )
 		{
@@ -123,19 +123,19 @@ public class RenderSpatialPylon extends BaseBlockRender<BlockSpatialPylon, TileS
 				}
 			}
 
-			BlockRenderInfo bri = imb.getRendererInstance();
+			final BlockRenderInfo bri = imb.getRendererInstance();
 			bri.setTemporaryRenderIcon( null );
 			bri.setTemporaryRenderIcons( this.getBlockTextureFromSideOutside( imb, sp, displayBits, ori, EnumFacing.UP, renderer ), this.getBlockTextureFromSideOutside( imb, sp, displayBits, ori, EnumFacing.DOWN, renderer ), this.getBlockTextureFromSideOutside( imb, sp, displayBits, ori, EnumFacing.SOUTH, renderer ), this.getBlockTextureFromSideOutside( imb, sp, displayBits, ori, EnumFacing.NORTH, renderer ), this.getBlockTextureFromSideOutside( imb, sp, displayBits, ori, EnumFacing.EAST, renderer ), this.getBlockTextureFromSideOutside( imb, sp, displayBits, ori, EnumFacing.WEST , renderer) );
 
-			boolean r = renderer.renderStandardBlock( imb, pos );
+			final boolean r = renderer.renderStandardBlock( imb, pos );
 
 			if( ( displayBits & TileSpatialPylon.DISPLAY_POWERED_ENABLED ) == TileSpatialPylon.DISPLAY_POWERED_ENABLED )
 			{
-				int bn = 15;
+				final int bn = 15;
 				renderer.setBrightness( bn << 20 | bn << 4 );
 				renderer.setColorOpaque_I( 0xffffff );
 
-				for( EnumFacing d : EnumFacing.VALUES )
+				for( final EnumFacing d : EnumFacing.VALUES )
 				{
 					this.renderFace( pos, imb, this.getBlockTextureFromSideInside( imb, sp, displayBits, ori, d,renderer ), renderer, d );
 				}
@@ -164,7 +164,7 @@ public class RenderSpatialPylon extends BaseBlockRender<BlockSpatialPylon, TileS
 		return result;
 	}
 
-	private IAESprite getBlockTextureFromSideOutside( BlockSpatialPylon blk, TileSpatialPylon sp, int displayBits, EnumFacing ori, EnumFacing dir, ModelGenerator renderer )
+	private IAESprite getBlockTextureFromSideOutside( final BlockSpatialPylon blk, final TileSpatialPylon sp, final int displayBits, final EnumFacing ori, final EnumFacing dir, final ModelGenerator renderer )
 	{
 
 		if( ori == dir || ori.getOpposite() == dir )
@@ -188,9 +188,9 @@ public class RenderSpatialPylon extends BaseBlockRender<BlockSpatialPylon, TileS
 		return renderer.getIcon( blk.getDefaultState() )[0];// blk.getIcon( 0, 0 );
 	}
 
-	private IAESprite getBlockTextureFromSideInside( BlockSpatialPylon blk, TileSpatialPylon sp, int displayBits, EnumFacing ori, EnumFacing dir, ModelGenerator renderer )
+	private IAESprite getBlockTextureFromSideInside( final BlockSpatialPylon blk, final TileSpatialPylon sp, final int displayBits, final EnumFacing ori, final EnumFacing dir, final ModelGenerator renderer )
 	{
-		boolean good = ( displayBits & TileSpatialPylon.DISPLAY_ENABLED ) == TileSpatialPylon.DISPLAY_ENABLED;
+		final boolean good = ( displayBits & TileSpatialPylon.DISPLAY_ENABLED ) == TileSpatialPylon.DISPLAY_ENABLED;
 
 		if( ori == dir || ori.getOpposite() == dir )
 		{

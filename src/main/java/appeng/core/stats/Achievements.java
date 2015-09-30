@@ -113,7 +113,7 @@ public enum Achievements
 	private Achievement parent;
 	private Achievement stat;
 
-	Achievements( int x, int y, AEColoredItemDefinition which, AchievementType type )
+	Achievements( final int x, final int y, final AEColoredItemDefinition which, final AchievementType type )
 	{
 		this.stack = ( which != null ) ? which.stack( AEColor.Transparent, 1 ) : null;
 		this.type = type;
@@ -121,7 +121,7 @@ public enum Achievements
 		this.y = y;
 	}
 
-	Achievements( int x, int y, IItemDefinition which, AchievementType type )
+	Achievements( final int x, final int y, final IItemDefinition which, final AchievementType type )
 	{
 		this.stack = which.maybeStack( 1 ).orNull();
 		this.type = type;
@@ -129,7 +129,7 @@ public enum Achievements
 		this.y = y;
 	}
 
-	Achievements( int x, int y, ItemStack which, AchievementType type )
+	Achievements( final int x, final int y, final ItemStack which, final AchievementType type )
 	{
 		this.stack = which;
 		this.type = type;
@@ -137,7 +137,7 @@ public enum Achievements
 		this.y = y;
 	}
 
-	public void setParent( Achievements parent )
+	public void setParent( final Achievements parent )
 	{
 		this.parent = parent.getAchievement();
 	}
@@ -153,7 +153,7 @@ public enum Achievements
 		return this.stat;
 	}
 
-	public void addToPlayer( EntityPlayer player )
+	public void addToPlayer( final EntityPlayer player )
 	{
 		player.addStat( this.getAchievement(), 1 );
 	}

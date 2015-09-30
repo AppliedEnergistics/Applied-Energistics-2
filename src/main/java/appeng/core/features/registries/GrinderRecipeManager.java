@@ -82,7 +82,7 @@ public final class GrinderRecipeManager implements IGrinderRegistry, IOreListene
 	}
 
 	@Override
-	public void addRecipe( ItemStack in, ItemStack out, int cost )
+	public void addRecipe( final ItemStack in, final ItemStack out, final int cost )
 	{
 		if( in == null || out == null )
 		{
@@ -95,7 +95,7 @@ public final class GrinderRecipeManager implements IGrinderRegistry, IOreListene
 	}
 
 	@Override
-	public void addRecipe( ItemStack in, ItemStack out, ItemStack optional, float chance, int cost )
+	public void addRecipe( final ItemStack in, final ItemStack out, final ItemStack optional, final float chance, final int cost )
 	{
 		if( in == null || ( optional == null && out == null ) )
 		{
@@ -108,7 +108,7 @@ public final class GrinderRecipeManager implements IGrinderRegistry, IOreListene
 	}
 
 	@Override
-	public void addRecipe( ItemStack in, ItemStack out, ItemStack optional, float chance, ItemStack optional2, float chance2, int cost )
+	public void addRecipe( final ItemStack in, final ItemStack out, final ItemStack optional, final float chance, final ItemStack optional2, final float chance2, final int cost )
 	{
 		if( in == null || ( optional == null && out == null && optional2 == null ) )
 		{
@@ -120,9 +120,9 @@ public final class GrinderRecipeManager implements IGrinderRegistry, IOreListene
 		this.injectRecipe( new AppEngGrinderRecipe( this.copy( in ), this.copy( out ), this.copy( optional ), this.copy( optional2 ), chance, chance2, cost ) );
 	}
 
-	private void injectRecipe( AppEngGrinderRecipe appEngGrinderRecipe )
+	private void injectRecipe( final AppEngGrinderRecipe appEngGrinderRecipe )
 	{
-		for( IGrinderEntry gr : this.recipes )
+		for( final IGrinderEntry gr : this.recipes )
 		{
 			if( Platform.isSameItemPrecise( gr.getInput(), appEngGrinderRecipe.getInput() ) )
 			{
@@ -133,7 +133,7 @@ public final class GrinderRecipeManager implements IGrinderRegistry, IOreListene
 		this.recipes.add( appEngGrinderRecipe );
 	}
 
-	private ItemStack copy( ItemStack is )
+	private ItemStack copy( final ItemStack is )
 	{
 		if( is != null )
 		{
@@ -143,12 +143,12 @@ public final class GrinderRecipeManager implements IGrinderRegistry, IOreListene
 	}
 
 	@Override
-	public IGrinderEntry getRecipeForInput( ItemStack input )
+	public IGrinderEntry getRecipeForInput( final ItemStack input )
 	{
 		this.log( "Looking up recipe for " + Platform.getItemDisplayName( input ) );
 		if( input != null )
 		{
-			for( IGrinderEntry r : this.recipes )
+			for( final IGrinderEntry r : this.recipes )
 			{
 				if( Platform.isSameItem( input, r.getInput() ) )
 				{
@@ -163,12 +163,12 @@ public final class GrinderRecipeManager implements IGrinderRegistry, IOreListene
 		return null;
 	}
 
-	public void log( String o )
+	public void log( final String o )
 	{
 		AELog.grinder( o );
 	}
 
-	private int getDustToOreRatio( String name )
+	private int getDustToOreRatio( final String name )
 	{
 		if( name.equals( "Obsidian" ) )
 		{
@@ -185,7 +185,7 @@ public final class GrinderRecipeManager implements IGrinderRegistry, IOreListene
 		return 2;
 	}
 
-	private void addOre( String name, ItemStack item )
+	private void addOre( final String name, final ItemStack item )
 	{
 		if( item == null )
 		{
@@ -197,11 +197,11 @@ public final class GrinderRecipeManager implements IGrinderRegistry, IOreListene
 
 		if( this.dusts.containsKey( name ) )
 		{
-			ItemStack is = this.dusts.get( name ).copy();
-			int ratio = this.getDustToOreRatio( name );
+			final ItemStack is = this.dusts.get( name ).copy();
+			final int ratio = this.getDustToOreRatio( name );
 			if( ratio > 1 )
 			{
-				ItemStack extra = is.copy();
+				final ItemStack extra = is.copy();
 				extra.stackSize = ratio - 1;
 				this.addRecipe( item, is, extra, (float) ( AEConfig.instance.oreDoublePercentage / 100.0 ), 8 );
 			}
@@ -212,7 +212,7 @@ public final class GrinderRecipeManager implements IGrinderRegistry, IOreListene
 		}
 	}
 
-	private void addIngot( String name, ItemStack item )
+	private void addIngot( final String name, final ItemStack item )
 	{
 		if( item == null )
 		{
@@ -228,7 +228,7 @@ public final class GrinderRecipeManager implements IGrinderRegistry, IOreListene
 		}
 	}
 
-	private void addDust( String name, ItemStack item )
+	private void addDust( final String name, final ItemStack item )
 	{
 		if( item == null )
 		{
@@ -244,16 +244,16 @@ public final class GrinderRecipeManager implements IGrinderRegistry, IOreListene
 
 		this.dusts.put( name, item );
 
-		for( Entry<ItemStack, String> d : this.ores.entrySet() )
+		for( final Entry<ItemStack, String> d : this.ores.entrySet() )
 		{
 			if( name.equals( d.getValue() ) )
 			{
-				ItemStack is = item.copy();
+				final ItemStack is = item.copy();
 				is.stackSize = 1;
-				int ratio = this.getDustToOreRatio( name );
+				final int ratio = this.getDustToOreRatio( name );
 				if( ratio > 1 )
 				{
-					ItemStack extra = is.copy();
+					final ItemStack extra = is.copy();
 					extra.stackSize = ratio - 1;
 					this.addRecipe( d.getKey(), is, extra, (float) ( AEConfig.instance.oreDoublePercentage / 100.0 ), 8 );
 				}
@@ -264,7 +264,7 @@ public final class GrinderRecipeManager implements IGrinderRegistry, IOreListene
 			}
 		}
 
-		for( Entry<ItemStack, String> d : this.ingots.entrySet() )
+		for( final Entry<ItemStack, String> d : this.ingots.entrySet() )
 		{
 			if( name.equals( d.getValue() ) )
 			{
@@ -274,11 +274,11 @@ public final class GrinderRecipeManager implements IGrinderRegistry, IOreListene
 	}
 
 	@Override
-	public void oreRegistered( String name, ItemStack item )
+	public void oreRegistered( final String name, final ItemStack item )
 	{
 		if( name.startsWith( "ore" ) || name.startsWith( "crystal" ) || name.startsWith( "gem" ) || name.startsWith( "ingot" ) || name.startsWith( "dust" ) )
 		{
-			for( String ore : AEConfig.instance.grinderOres )
+			for( final String ore : AEConfig.instance.grinderOres )
 			{
 				if( name.equals( "ore" + ore ) )
 				{

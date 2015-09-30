@@ -41,14 +41,14 @@ public class CraftingCPUCalculator extends MBCalculator
 
 	final TileCraftingTile tqb;
 
-	public CraftingCPUCalculator( IAEMultiBlock t )
+	public CraftingCPUCalculator( final IAEMultiBlock t )
 	{
 		super( t );
 		this.tqb = (TileCraftingTile) t;
 	}
 
 	@Override
-	public boolean checkMultiblockScale( WorldCoord min, WorldCoord max )
+	public boolean checkMultiblockScale( final WorldCoord min, final WorldCoord max )
 	{
 		if( max.x - min.x > 16 )
 		{
@@ -69,13 +69,13 @@ public class CraftingCPUCalculator extends MBCalculator
 	}
 
 	@Override
-	public IAECluster createCluster( World w, WorldCoord min, WorldCoord max )
+	public IAECluster createCluster( final World w, final WorldCoord min, final WorldCoord max )
 	{
 		return new CraftingCPUCluster( min, max );
 	}
 
 	@Override
-	public boolean verifyInternalStructure( World w, WorldCoord min, WorldCoord max )
+	public boolean verifyInternalStructure( final World w, final WorldCoord min, final WorldCoord max )
 	{
 		boolean storage = false;
 
@@ -85,7 +85,7 @@ public class CraftingCPUCalculator extends MBCalculator
 			{
 				for( int z = min.z; z <= max.z; z++ )
 				{
-					IAEMultiBlock te = (IAEMultiBlock) w.getTileEntity( new BlockPos( x, y, z ) );
+					final IAEMultiBlock te = (IAEMultiBlock) w.getTileEntity( new BlockPos( x, y, z ) );
 
 					if( !te.isValid() )
 					{
@@ -110,9 +110,9 @@ public class CraftingCPUCalculator extends MBCalculator
 	}
 
 	@Override
-	public void updateTiles( IAECluster cl, World w, WorldCoord min, WorldCoord max )
+	public void updateTiles( final IAECluster cl, final World w, final WorldCoord min, final WorldCoord max )
 	{
-		CraftingCPUCluster c = (CraftingCPUCluster) cl;
+		final CraftingCPUCluster c = (CraftingCPUCluster) cl;
 
 		for( int x = min.x; x <= max.x; x++ )
 		{
@@ -120,7 +120,7 @@ public class CraftingCPUCalculator extends MBCalculator
 			{
 				for( int z = min.z; z <= max.z; z++ )
 				{
-					TileCraftingTile te = (TileCraftingTile) w.getTileEntity( new BlockPos( x, y, z ) );
+					final TileCraftingTile te = (TileCraftingTile) w.getTileEntity( new BlockPos( x, y, z ) );
 					te.updateStatus( c );
 					c.addTile( te );
 				}
@@ -129,14 +129,14 @@ public class CraftingCPUCalculator extends MBCalculator
 
 		c.done();
 
-		Iterator<IGridHost> i = c.getTiles();
+		final Iterator<IGridHost> i = c.getTiles();
 		while( i.hasNext() )
 		{
-			IGridHost gh = i.next();
-			IGridNode n = gh.getGridNode( AEPartLocation.INTERNAL );
+			final IGridHost gh = i.next();
+			final IGridNode n = gh.getGridNode( AEPartLocation.INTERNAL );
 			if( n != null )
 			{
-				IGrid g = n.getGrid();
+				final IGrid g = n.getGrid();
 				if( g != null )
 				{
 					g.postEvent( new MENetworkCraftingCpuChange( n ) );
@@ -147,7 +147,7 @@ public class CraftingCPUCalculator extends MBCalculator
 	}
 
 	@Override
-	public boolean isValidTile( TileEntity te )
+	public boolean isValidTile( final TileEntity te )
 	{
 		return te instanceof TileCraftingTile;
 	}

@@ -40,7 +40,7 @@ public class OreDictionaryHandler
 	private boolean enableRebaking = false;
 
 	@SubscribeEvent
-	public void onOreDictionaryRegister( OreDictionary.OreRegisterEvent event )
+	public void onOreDictionaryRegister( final OreDictionary.OreRegisterEvent event )
 	{
 		if( event.Name == null || event.Ore == null )
 		{
@@ -49,7 +49,7 @@ public class OreDictionaryHandler
 
 		if( this.shouldCare( event.Name ) )
 		{
-			for( IOreListener v : this.oreListeners )
+			for( final IOreListener v : this.oreListeners )
 			{
 				v.oreRegistered( event.Name, event.Ore );
 			}
@@ -68,7 +68,7 @@ public class OreDictionaryHandler
 	 *
 	 * @return true if it should care
 	 */
-	private boolean shouldCare( String name )
+	private boolean shouldCare( final String name )
 	{
 		return true;
 	}
@@ -77,7 +77,7 @@ public class OreDictionaryHandler
 	{
 		this.enableRebaking = true;
 
-		for( Object o : CraftingManager.getInstance().getRecipeList() )
+		for( final Object o : CraftingManager.getInstance().getRecipeList() )
 		{
 			if( o instanceof IRecipeBakeable )
 			{
@@ -85,7 +85,7 @@ public class OreDictionaryHandler
 				{
 					( (IRecipeBakeable) o ).bake();
 				}
-				catch( Throwable e )
+				catch( final Throwable e )
 				{
 					AELog.error( e );
 				}
@@ -99,16 +99,16 @@ public class OreDictionaryHandler
 	 *
 	 * @param n to be added ore listener
 	 */
-	public void observe( IOreListener n )
+	public void observe( final IOreListener n )
 	{
 		this.oreListeners.add( n );
 
 		// notify the listener of any ore already in existence.
-		for( String name : OreDictionary.getOreNames() )
+		for( final String name : OreDictionary.getOreNames() )
 		{
 			if( name != null && this.shouldCare( name ) )
 			{
-				for( ItemStack item : OreDictionary.getOres( name ) )
+				for( final ItemStack item : OreDictionary.getOres( name ) )
 				{
 					if( item != null )
 					{

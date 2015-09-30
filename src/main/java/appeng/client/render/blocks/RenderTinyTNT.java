@@ -41,7 +41,7 @@ public class RenderTinyTNT extends BaseBlockRender<BlockTinyTNT, AEBaseTile>
 	}
 
 	@Override
-	public void renderInventory( BlockTinyTNT block, ItemStack is, ModelGenerator renderer, ItemRenderType type, Object[] obj )
+	public void renderInventory( final BlockTinyTNT block, final ItemStack is, final ModelGenerator renderer, final ItemRenderType type, final Object[] obj )
 	{
 		renderer.setOverrideBlockTexture( new FullIcon( Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getTexture( Blocks.tnt.getDefaultState() )) );
 		renderer.setRenderBounds( 0.25f, 0.0f, 0.25f, 0.75f, 0.5f, 0.75f );
@@ -49,12 +49,12 @@ public class RenderTinyTNT extends BaseBlockRender<BlockTinyTNT, AEBaseTile>
 	}
 
 	@Override
-	public boolean renderInWorld( BlockTinyTNT imb, IBlockAccess world, BlockPos pos, ModelGenerator renderer )
+	public boolean renderInWorld( final BlockTinyTNT imb, final IBlockAccess world, final BlockPos pos, final ModelGenerator renderer )
 	{
 		renderer.setOverrideBlockTexture( new FullIcon( Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getTexture( Blocks.tnt.getDefaultState() )) );
 		renderer.renderAllFaces = true;
 		renderer.setRenderBounds( 0.25f, 0.0f, 0.25f, 0.75f, 0.5f, 0.75f );
-		boolean out = super.renderInWorld( imb, world, pos, renderer );
+		final boolean out = super.renderInWorld( imb, world, pos, renderer );
 		renderer.renderAllFaces = false;
 		return out;
 	}

@@ -54,7 +54,7 @@ public class BlockMolecularAssembler extends AEBaseTileBlock
 	}
 
 	@Override
-	public boolean canRenderInLayer(net.minecraft.util.EnumWorldBlockLayer layer) {
+	public boolean canRenderInLayer( final net.minecraft.util.EnumWorldBlockLayer layer) {
 		return  layer == EnumWorldBlockLayer.CUTOUT_MIPPED;		
 	}
 	
@@ -67,16 +67,16 @@ public class BlockMolecularAssembler extends AEBaseTileBlock
 
 	@Override
 	public boolean onBlockActivated(
-			World w,
-			BlockPos pos,
-			IBlockState state,
-			EntityPlayer p,
-			EnumFacing side,
-			float hitX,
-			float hitY,
-			float hitZ )
+			final World w,
+			final BlockPos pos,
+			final IBlockState state,
+			final EntityPlayer p,
+			final EnumFacing side,
+			final float hitX,
+			final float hitY,
+			final float hitZ )
 	{
-		TileMolecularAssembler tg = this.getTileEntity( w, pos );
+		final TileMolecularAssembler tg = this.getTileEntity( w, pos );
 		if( tg != null && !p.isSneaking() )
 		{
 			Platform.openGUI( p, tg, AEPartLocation.fromFacing( side ), GuiBridge.GUI_MAC );

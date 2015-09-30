@@ -43,7 +43,7 @@ public class ContainerIOPort extends ContainerUpgradeable
 	@GuiSync( 3 )
 	public OperationMode opMode = OperationMode.EMPTY;
 
-	public ContainerIOPort( InventoryPlayer ip, TileIOPort te )
+	public ContainerIOPort( final InventoryPlayer ip, final TileIOPort te )
 	{
 		super( ip, te );
 		this.ioPort = te;
@@ -61,7 +61,7 @@ public class ContainerIOPort extends ContainerUpgradeable
 		int offX = 19;
 		int offY = 17;
 
-		IInventory cells = this.upgradeable.getInventoryByName( "cells" );
+		final IInventory cells = this.upgradeable.getInventoryByName( "cells" );
 
 		for( int y = 0; y < 3; y++ )
 		{
@@ -81,7 +81,7 @@ public class ContainerIOPort extends ContainerUpgradeable
 			}
 		}
 
-		IInventory upgrades = this.upgradeable.getInventoryByName( "upgrades" );
+		final IInventory upgrades = this.upgradeable.getInventoryByName( "upgrades" );
 		this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 0, 187, 8, this.invPlayer ) ).setNotDraggable() );
 		this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 1, 187, 8 + 18, this.invPlayer ) ).setNotDraggable() );
 		this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 2, 187, 8 + 18 * 2, this.invPlayer ) ).setNotDraggable() );

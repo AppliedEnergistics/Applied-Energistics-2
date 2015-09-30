@@ -71,24 +71,24 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements IAEFeature,
 	@Nonnull
 	private Class<? extends TileEntity> tileEntityType;
 
-	public AEBaseTileBlock( Material mat )
+	public AEBaseTileBlock( final Material mat )
 	{
 		super( mat );
 	}
 
-	protected AEBaseTileBlock( Material mat, Optional<String> subName )
+	protected AEBaseTileBlock( final Material mat, final Optional<String> subName )
 	{
 		super( mat, subName );
 	}
 
 	@Override
-	protected void setFeature( EnumSet<AEFeature> f )
+	protected void setFeature( final EnumSet<AEFeature> f )
 	{
 		final AETileBlockFeatureHandler featureHandler = new AETileBlockFeatureHandler( f, this, this.featureSubName );
 		this.setHandler( featureHandler );
 	}
 
-	protected void setTileEntity( Class<? extends TileEntity> c )
+	protected void setTileEntity( final Class<? extends TileEntity> c )
 	{
 		this.tileEntityType = c;
 		this.isInventory = IInventory.class.isAssignableFrom( c );
@@ -97,7 +97,7 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements IAEFeature,
 
 
 	// update Block value.
-	private void setTileProvider( boolean b )
+	private void setTileProvider( final boolean b )
 	{
 		ReflectionHelper.setPrivateValue( Block.class, this, b, "isTileProvider" );
 	}
@@ -113,13 +113,13 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements IAEFeature,
 	}
 
 	@Nullable
-	public <T extends AEBaseTile> T getTileEntity( IBlockAccess w, int x, int y, int z )
+	public <T extends AEBaseTile> T getTileEntity( final IBlockAccess w, final int x, final int y, final int z )
 	{
 		return getTileEntity( w, new BlockPos(x,y,z) );
 	}
 
 	@Nullable
-	public <T extends AEBaseTile> T getTileEntity( IBlockAccess w, BlockPos pos )
+	public <T extends AEBaseTile> T getTileEntity( final IBlockAccess w, final BlockPos pos )
 	{
 		if( !this.hasBlockTileEntity() )
 		{
@@ -136,7 +136,7 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements IAEFeature,
 	}
 
 	@Override
-	public final TileEntity createNewTileEntity( World var1, int var2 )
+	public final TileEntity createNewTileEntity( final World var1, final int var2 )
 	{
 		if( this.hasBlockTileEntity() )
 		{
@@ -144,11 +144,11 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements IAEFeature,
 			{
 				return this.tileEntityType.newInstance();
 			}
-			catch( InstantiationException e )
+			catch( final InstantiationException e )
 			{
 				throw new IllegalStateException( "Failed to create a new instance of an illegal class " + this.tileEntityType, e );
 			}
-			catch( IllegalAccessException e )
+			catch( final IllegalAccessException e )
 			{
 				throw new IllegalStateException( "Failed to create a new instance of " + this.tileEntityType + ", because lack of permissions", e );
 			}
@@ -159,9 +159,9 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements IAEFeature,
 
 	@Override
 	public void breakBlock(
-			World w,
-			BlockPos pos,
-			IBlockState state )
+			final World w,
+			final BlockPos pos,
+			final IBlockState state )
 	{
 		final AEBaseTile te = this.getTileEntity( w,pos );
 		if( te != null )
@@ -185,7 +185,7 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements IAEFeature,
 	}
 	
 	@Override
-	public final EnumFacing[] getValidRotations( World w, BlockPos pos )
+	public final EnumFacing[] getValidRotations( final World w, final BlockPos pos )
 	{
 		final AEBaseTile obj = this.getTileEntity( w, pos );
 		if( obj != null && obj.canBeRotated() )
@@ -198,10 +198,10 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements IAEFeature,
 
 	@Override
 	public boolean recolorBlock(
-			World world,
-			BlockPos pos,
-			EnumFacing side,
-			EnumDyeColor color )
+			final World world,
+			final BlockPos pos,
+			final EnumFacing side,
+			final EnumDyeColor color )
 	{
 		final TileEntity te = this.getTileEntity( world, pos );
 
@@ -224,8 +224,8 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements IAEFeature,
 
 	@Override
 	public int getComparatorInputOverride(
-			World w,
-			BlockPos pos )
+			final World w,
+			final BlockPos pos )
 	{
 		final TileEntity te = this.getTileEntity( w, pos );
 		if( te instanceof IInventory )
@@ -237,11 +237,11 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements IAEFeature,
 
 	@Override
 	public boolean onBlockEventReceived(
-			World worldIn,
-			BlockPos pos,
-			IBlockState state,
-			int eventID,
-			int eventParam )
+			final World worldIn,
+			final BlockPos pos,
+			final IBlockState state,
+			final int eventID,
+			final int eventParam )
 	{
 		super.onBlockEventReceived( worldIn, pos, state ,eventID, eventParam);
 		final TileEntity tileentity = worldIn.getTileEntity( pos );
@@ -250,11 +250,11 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements IAEFeature,
 
 	@Override
 	public void onBlockPlacedBy(
-			World w,
-			BlockPos pos,
-			IBlockState state,
-			EntityLivingBase placer,
-			ItemStack is )
+			final World w,
+			final BlockPos pos,
+			final IBlockState state,
+			final EntityLivingBase placer,
+			final ItemStack is )
 	{
 		if( is.hasDisplayName() )
 		{
@@ -268,14 +268,14 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements IAEFeature,
 
 	@Override
 	public boolean onBlockActivated(
-			World w,
-			BlockPos pos,
-			IBlockState state,
-			EntityPlayer player,
-			EnumFacing side,
-			float hitX,
-			float hitY,
-			float hitZ )
+			final World w,
+			final BlockPos pos,
+			final IBlockState state,
+			final EntityPlayer player,
+			final EnumFacing side,
+			final float hitX,
+			final float hitY,
+			final float hitZ )
 	{
 		if( player != null )
 		{
@@ -301,7 +301,7 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements IAEFeature,
 						}
 
 						final ItemStack op = new ItemStack( this );
-						for( ItemStack ol : drops )
+						for( final ItemStack ol : drops )
 						{
 							if( Platform.isSameItemType( ol, op ) )
 							{
@@ -365,13 +365,13 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements IAEFeature,
 	}
 
 	@Override
-	public IOrientable getOrientable( IBlockAccess w, BlockPos pos )
+	public IOrientable getOrientable( final IBlockAccess w, final BlockPos pos )
 	{
 		return this.getTileEntity( w, pos );
 	}
 
 	@Override
-	public ICustomCollision getCustomCollision( World w, BlockPos pos )
+	public ICustomCollision getCustomCollision( final World w, final BlockPos pos )
 	{
 		final AEBaseTile te = this.getTileEntity( w, pos );
 		if( te instanceof ICustomCollision )

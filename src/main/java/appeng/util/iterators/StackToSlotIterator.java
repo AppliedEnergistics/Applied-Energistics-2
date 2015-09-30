@@ -32,7 +32,7 @@ public class StackToSlotIterator implements Iterator<ItemSlot>
 	final Iterator<ItemStack> is;
 	int x = 0;
 
-	public StackToSlotIterator( Iterator<ItemStack> is )
+	public StackToSlotIterator( final Iterator<ItemStack> is )
 	{
 		this.is = is;
 	}

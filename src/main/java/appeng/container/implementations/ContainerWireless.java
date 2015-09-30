@@ -37,7 +37,7 @@ public class ContainerWireless extends AEBaseContainer
 	@GuiSync( 2 )
 	public long drain = 0;
 
-	public ContainerWireless( InventoryPlayer ip, TileWireless te )
+	public ContainerWireless( final InventoryPlayer ip, final TileWireless te )
 	{
 		super( ip, te, null );
 		this.wirelessTerminal = te;
@@ -50,7 +50,7 @@ public class ContainerWireless extends AEBaseContainer
 	@Override
 	public void detectAndSendChanges()
 	{
-		int boosters = this.boosterSlot.getStack() == null ? 0 : this.boosterSlot.getStack().stackSize;
+		final int boosters = this.boosterSlot.getStack() == null ? 0 : this.boosterSlot.getStack().stackSize;
 
 		this.range = (long) ( 10 * AEConfig.instance.wireless_getMaxRange( boosters ) );
 		this.drain = (long) ( 100 * AEConfig.instance.wireless_getPowerDrain( boosters ) );

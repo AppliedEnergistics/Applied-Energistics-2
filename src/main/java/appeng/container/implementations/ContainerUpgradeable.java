@@ -64,7 +64,7 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 	int tbSlot;
 	NetworkToolViewer tbInventory;
 
-	public ContainerUpgradeable( InventoryPlayer ip, IUpgradeableHost te )
+	public ContainerUpgradeable( final InventoryPlayer ip, final IUpgradeableHost te )
 	{
 		super( ip, (TileEntity) ( te instanceof TileEntity ? te : null ), (IPart) ( te instanceof IPart ? te : null ) );
 		this.upgradeable = te;
@@ -76,7 +76,7 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 
 		if( te instanceof TileEntity )
 		{
-			TileEntity myTile = (TileEntity) te;
+			final TileEntity myTile = (TileEntity) te;
 			w = myTile.getWorld();
 			xCoord = myTile.getPos().getX();
 			yCoord = myTile.getPos().getY();
@@ -85,17 +85,17 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 
 		if( te instanceof IPart )
 		{
-			TileEntity mk = te.getTile();
+			final TileEntity mk = te.getTile();
 			w = mk.getWorld();
 			xCoord = mk.getPos().getX();
 			yCoord = mk.getPos().getY();
 			zCoord = mk.getPos().getZ();
 		}
 
-		IInventory pi = this.getPlayerInv();
+		final IInventory pi = this.getPlayerInv();
 		for( int x = 0; x < pi.getSizeInventory(); x++ )
 		{
-			ItemStack pii = pi.getStackInSlot( x );
+			final ItemStack pii = pi.getStackInSlot( x );
 			if( pii != null && pii.getItem() instanceof ToolNetworkTool )
 			{
 				this.lockPlayerInventorySlot( x );
@@ -135,9 +135,9 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 	{
 		this.setupUpgrades();
 
-		IInventory inv = this.upgradeable.getInventoryByName( "config" );
-		int y = 40;
-		int x = 80;
+		final IInventory inv = this.upgradeable.getInventoryByName( "config" );
+		final int y = 40;
+		final int x = 80;
 		this.addSlotToContainer( new SlotFakeTypeOnly( inv, 0, x, y ) );
 
 		if( this.supportCapacity() )
@@ -156,7 +156,7 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 
 	protected void setupUpgrades()
 	{
-		IInventory upgrades = this.upgradeable.getInventoryByName( "upgrades" );
+		final IInventory upgrades = this.upgradeable.getInventoryByName( "upgrades" );
 		if( this.availableUpgrades() > 0 )
 		{
 			this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 0, 187, 8, this.invPlayer ) ).setNotDraggable() );
@@ -192,17 +192,17 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 
 		if( Platform.isServer() )
 		{
-			IConfigManager cm = this.upgradeable.getConfigManager();
+			final IConfigManager cm = this.upgradeable.getConfigManager();
 			this.loadSettingsFromHost( cm );
 		}
 
 		this.checkToolbox();
 
-		for( Object o : this.inventorySlots )
+		for( final Object o : this.inventorySlots )
 		{
 			if( o instanceof OptionalSlotFake )
 			{
-				OptionalSlotFake fs = (OptionalSlotFake) o;
+				final OptionalSlotFake fs = (OptionalSlotFake) o;
 				if( !fs.isEnabled() && fs.getDisplayStack() != null )
 				{
 					fs.clearStack();
@@ -213,7 +213,7 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 		this.standardDetectAndSendChanges();
 	}
 
-	protected void loadSettingsFromHost( IConfigManager cm )
+	protected void loadSettingsFromHost( final IConfigManager cm )
 	{
 		this.fzMode = (FuzzyMode) cm.getSetting( Settings.FUZZY_MODE );
 		this.rsMode = (RedstoneMode) cm.getSetting( Settings.REDSTONE_CONTROLLED );
@@ -228,7 +228,7 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 	{
 		if( this.hasToolbox() )
 		{
-			ItemStack currentItem = this.getPlayerInv().getStackInSlot( this.tbSlot );
+			final ItemStack currentItem = this.getPlayerInv().getStackInSlot( this.tbSlot );
 
 			if( currentItem != this.tbInventory.getItemStack() )
 			{
@@ -257,9 +257,9 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 	}
 
 	@Override
-	public boolean isSlotEnabled( int idx )
+	public boolean isSlotEnabled( final int idx )
 	{
-		int upgrades = this.upgradeable.getInstalledUpgrades( Upgrades.CAPACITY );
+		final int upgrades = this.upgradeable.getInstalledUpgrades( Upgrades.CAPACITY );
 
 		if( idx == 1 && upgrades > 0 )
 		{

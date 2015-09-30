@@ -35,7 +35,7 @@ public class FlippableIcon implements IAESprite
 		return original.getAtlas();
 	}
 	
-	public FlippableIcon( IAESprite o )
+	public FlippableIcon( final IAESprite o )
 	{
 		this.original = o;
 		this.flip_u = false;
@@ -75,7 +75,7 @@ public class FlippableIcon implements IAESprite
 	}
 
 	@Override
-	public float getInterpolatedU( double px )
+	public float getInterpolatedU( final double px )
 	{
 		if( this.flip_u )
 		{
@@ -105,7 +105,7 @@ public class FlippableIcon implements IAESprite
 	}
 
 	@Override
-	public float getInterpolatedV( double px )
+	public float getInterpolatedV( final double px )
 	{
 		if( this.flip_v )
 		{
@@ -125,13 +125,13 @@ public class FlippableIcon implements IAESprite
 		return this.original;
 	}
 
-	public void setFlip( boolean u, boolean v )
+	public void setFlip( final boolean u, final boolean v )
 	{
 		this.flip_u = u;
 		this.flip_v = v;
 	}
 
-	public int setFlip( int orientation )
+	public int setFlip( final int orientation )
 	{
 		this.flip_u = ( orientation & 8 ) == 8;
 		this.flip_v = ( orientation & 16 ) == 16;

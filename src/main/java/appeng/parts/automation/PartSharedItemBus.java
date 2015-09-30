@@ -42,7 +42,7 @@ public abstract class PartSharedItemBus extends PartUpgradeable implements IGrid
 	private InventoryAdaptor adaptor;
 	private boolean lastRedstone = false;
 
-	public PartSharedItemBus( ItemStack is )
+	public PartSharedItemBus( final ItemStack is )
 	{
 		super( is );
 	}
@@ -54,21 +54,21 @@ public abstract class PartSharedItemBus extends PartUpgradeable implements IGrid
 	}
 
 	@Override
-	public void readFromNBT( net.minecraft.nbt.NBTTagCompound extra )
+	public void readFromNBT( final net.minecraft.nbt.NBTTagCompound extra )
 	{
 		super.readFromNBT( extra );
 		this.config.readFromNBT( extra, "config" );
 	}
 
 	@Override
-	public void writeToNBT( net.minecraft.nbt.NBTTagCompound extra )
+	public void writeToNBT( final net.minecraft.nbt.NBTTagCompound extra )
 	{
 		super.writeToNBT( extra );
 		this.config.writeToNBT( extra, "config" );
 	}
 
 	@Override
-	public IInventory getInventoryByName( String name )
+	public IInventory getInventoryByName( final String name )
 	{
 		if( name.equals( "config" ) )
 		{
@@ -110,9 +110,9 @@ public abstract class PartSharedItemBus extends PartUpgradeable implements IGrid
 		return this.adaptor;
 	}
 
-	private TileEntity getTileEntity( TileEntity self, BlockPos pos )
+	private TileEntity getTileEntity( final TileEntity self, final BlockPos pos )
 	{
-		World w = self.getWorld();
+		final World w = self.getWorld();
 
 		if( w.getChunkProvider().chunkExists( pos.getX() >> 4, pos.getZ() >> 4 ) )
 		{
@@ -177,7 +177,7 @@ public abstract class PartSharedItemBus extends PartUpgradeable implements IGrid
 				this.proxy.getTick().sleepDevice( this.proxy.getNode() );
 			}
 		}
-		catch( GridAccessException e )
+		catch( final GridAccessException e )
 		{
 			// :P
 		}

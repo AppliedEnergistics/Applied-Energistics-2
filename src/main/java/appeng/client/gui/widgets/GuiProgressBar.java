@@ -37,12 +37,12 @@ public class GuiProgressBar extends GuiButton implements ITooltip
 	private final String titleName;
 	private String fullMsg;
 
-	public GuiProgressBar( IProgressProvider source, String texture, int posX, int posY, int u, int y, int width, int height, Direction dir )
+	public GuiProgressBar( final IProgressProvider source, final String texture, final int posX, final int posY, final int u, final int y, final int width, final int height, final Direction dir )
 	{
 		this( source, texture, posX, posY, u, y, width, height, dir, null );
 	}
 
-	public GuiProgressBar( IProgressProvider source, String texture, int posX, int posY, int u, int y, int width, int height, Direction dir, String title )
+	public GuiProgressBar( final IProgressProvider source, final String texture, final int posX, final int posY, final int u, final int y, final int width, final int height, final Direction dir, final String title )
 	{
 		super( posX, posY, width, "" );
 		this.source = source;
@@ -58,22 +58,22 @@ public class GuiProgressBar extends GuiButton implements ITooltip
 	}
 
 	@Override
-	public void drawButton( Minecraft par1Minecraft, int par2, int par3 )
+	public void drawButton( final Minecraft par1Minecraft, final int par2, final int par3 )
 	{
 		if( this.visible )
 		{
 			par1Minecraft.getTextureManager().bindTexture( this.texture );
-			int max = this.source.getMaxProgress();
-			int current = this.source.getCurrentProgress();
+			final int max = this.source.getMaxProgress();
+			final int current = this.source.getCurrentProgress();
 
 			if( this.layout == Direction.VERTICAL )
 			{
-				int diff = this.height - ( max > 0 ? ( this.height * current ) / max : 0 );
+				final int diff = this.height - ( max > 0 ? ( this.height * current ) / max : 0 );
 				this.drawTexturedModalRect( this.xPosition, this.yPosition + diff, this.fill_u, this.fill_v + diff, this.width, this.height - diff );
 			}
 			else
 			{
-				int diff = this.width - ( max > 0 ? ( this.width * current ) / max : 0 );
+				final int diff = this.width - ( max > 0 ? ( this.width * current ) / max : 0 );
 				this.drawTexturedModalRect( this.xPosition, this.yPosition, this.fill_u + diff, this.fill_v, this.width - diff, this.height );
 			}
 
@@ -81,7 +81,7 @@ public class GuiProgressBar extends GuiButton implements ITooltip
 		}
 	}
 
-	public void setFullMsg( String msg )
+	public void setFullMsg( final String msg )
 	{
 		this.fullMsg = msg;
 	}

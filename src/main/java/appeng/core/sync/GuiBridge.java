@@ -203,7 +203,7 @@ public enum GuiBridge implements IGuiHandler
 		this.containerClass = null;
 	}
 
-	GuiBridge( Class containerClass, SecurityPermissions requiredPermission )
+	GuiBridge( final Class containerClass, final SecurityPermissions requiredPermission )
 	{
 		this.requiredPermission = requiredPermission;
 		this.containerClass = containerClass;
@@ -220,7 +220,7 @@ public enum GuiBridge implements IGuiHandler
 		if( Platform.isClient() )
 		{
 			final String start = this.containerClass.getName();
-			String guiClass = start.replaceFirst( "container.", "client.gui." ).replace( ".Container", ".Gui" );
+			final String guiClass = start.replaceFirst( "container.", "client.gui." ).replace( ".Container", ".Gui" );
 
 			if( start.equals( guiClass ) )
 			{
@@ -234,7 +234,7 @@ public enum GuiBridge implements IGuiHandler
 		}
 	}
 
-	GuiBridge( Class containerClass, Class tileClass, GuiHostType type, SecurityPermissions requiredPermission )
+	GuiBridge( final Class containerClass, final Class tileClass, final GuiHostType type, final SecurityPermissions requiredPermission )
 	{
 		this.requiredPermission = requiredPermission;
 		this.containerClass = containerClass;
@@ -244,11 +244,11 @@ public enum GuiBridge implements IGuiHandler
 	}
 
 	@Override
-	public Object getServerGuiElement( int ordinal, EntityPlayer player, World w, int x, int y, int z )
+	public Object getServerGuiElement( final int ordinal, final EntityPlayer player, final World w, final int x, final int y, final int z )
 	{
-		AEPartLocation side = AEPartLocation.fromOrdinal( ordinal & 0x07 );
-		GuiBridge ID = values()[ordinal >> 4];
-		boolean stem = ( ( ordinal >> 3 ) & 1 ) == 1;
+		final AEPartLocation side = AEPartLocation.fromOrdinal( ordinal & 0x07 );
+		final GuiBridge ID = values()[ordinal >> 4];
+		final boolean stem = ( ( ordinal >> 3 ) & 1 ) == 1;
 		if( ID.type.isItem() )
 		{
 			ItemStack it = null;
@@ -260,7 +260,7 @@ public enum GuiBridge implements IGuiHandler
 			{
 				it = player.inventory.getStackInSlot( x );
 			}
-			Object myItem = this.getGuiObject( it, player, w, x, y, z );
+			final Object myItem = this.getGuiObject( it, player, w, x, y, z );
 			if( myItem != null && ID.CorrectTileOrPart( myItem ) )
 			{
 				return this.updateGui( ID.ConstructContainer( player.inventory, side, myItem ), w, x, y, z, side, myItem );
@@ -268,11 +268,11 @@ public enum GuiBridge implements IGuiHandler
 		}
 		if( ID.type.isTile() )
 		{
-			TileEntity TE = w.getTileEntity( new BlockPos(x,y,z) );
+			final TileEntity TE = w.getTileEntity( new BlockPos(x,y,z) );
 			if( TE instanceof IPartHost )
 			{
 				( (IPartHost) TE ).getPart( side );
-				IPart part = ( (IPartHost) TE ).getPart( side );
+				final IPart part = ( (IPartHost) TE ).getPart( side );
 				if( ID.CorrectTileOrPart( part ) )
 				{
 					return this.updateGui( ID.ConstructContainer( player.inventory, side, part ), w, x, y, z, side, part );
@@ -289,7 +289,7 @@ public enum GuiBridge implements IGuiHandler
 		return new ContainerNull();
 	}
 
-	private Object getGuiObject( ItemStack it, EntityPlayer player, World w, int x, int y, int z )
+	private Object getGuiObject( final ItemStack it, final EntityPlayer player, final World w, final int x, final int y, final int z )
 	{
 		if( it != null )
 		{
@@ -298,7 +298,7 @@ public enum GuiBridge implements IGuiHandler
 				return ( (IGuiItem) it.getItem() ).getGuiObject( it, w, new BlockPos(x,y,z) );
 			}
 
-			IWirelessTermHandler wh = AEApi.instance().registries().wireless().getWirelessTerminalHandler( it );
+			final IWirelessTermHandler wh = AEApi.instance().registries().wireless().getWirelessTerminalHandler( it );
 			if( wh != null )
 			{
 				return new WirelessTerminalGuiObject( wh, it, player, w, x, y, z );
@@ -308,7 +308,7 @@ public enum GuiBridge implements IGuiHandler
 		return null;
 	}
 
-	public boolean CorrectTileOrPart( Object tE )
+	public boolean CorrectTileOrPart( final Object tE )
 	{
 		if( this.tileClass == null )
 		{
@@ -318,11 +318,11 @@ public enum GuiBridge implements IGuiHandler
 		return this.tileClass.isInstance( tE );
 	}
 
-	private Object updateGui( Object newContainer, World w, int x, int y, int z, AEPartLocation side, Object myItem )
+	private Object updateGui( final Object newContainer, final World w, final int x, final int y, final int z, final AEPartLocation side, final Object myItem )
 	{
 		if( newContainer instanceof AEBaseContainer )
 		{
-			AEBaseContainer bc = (AEBaseContainer) newContainer;
+			final AEBaseContainer bc = (AEBaseContainer) newContainer;
 			bc.openContext = new ContainerOpenContext( myItem );
 			bc.openContext.w = w;
 			bc.openContext.x = x;
@@ -334,36 +334,36 @@ public enum GuiBridge implements IGuiHandler
 		return newContainer;
 	}
 
-	public Object ConstructContainer( InventoryPlayer inventory, AEPartLocation side, Object tE )
+	public Object ConstructContainer( final InventoryPlayer inventory, final AEPartLocation side, final Object tE )
 	{
 		try
 		{
-			Constructor[] c = this.containerClass.getConstructors();
+			final Constructor[] c = this.containerClass.getConstructors();
 			if( c.length == 0 )
 			{
 				throw new AppEngException( "Invalid Gui Class" );
 			}
 
-			Constructor target = this.findConstructor( c, inventory, tE );
+			final Constructor target = this.findConstructor( c, inventory, tE );
 
 			if( target == null )
 			{
 				throw new IllegalStateException( "Cannot find " + this.containerClass.getName() + "( " + this.typeName( inventory ) + ", " + this.typeName( tE ) + " )" );
 			}
 
-			Object o = target.newInstance( inventory, tE );
+			final Object o = target.newInstance( inventory, tE );
 
 			/**
 			 * triggers achievement when the player sees presses.
 			 */
 			if( o instanceof AEBaseContainer )
 			{
-				AEBaseContainer bc = (AEBaseContainer) o;
-				for( Object so : bc.inventorySlots )
+				final AEBaseContainer bc = (AEBaseContainer) o;
+				for( final Object so : bc.inventorySlots )
 				{
 					if( so instanceof Slot )
 					{
-						ItemStack is = ( (Slot) so ).getStack();
+						final ItemStack is = ( (Slot) so ).getStack();
 
 						final IMaterials materials = AEApi.instance().definitions().materials();
 						this.addPressAchievementToPlayer( is, materials, inventory.player );
@@ -373,17 +373,17 @@ public enum GuiBridge implements IGuiHandler
 
 			return o;
 		}
-		catch( Throwable t )
+		catch( final Throwable t )
 		{
 			throw new IllegalStateException( t );
 		}
 	}
 
-	private Constructor findConstructor( Constructor[] c, InventoryPlayer inventory, Object tE )
+	private Constructor findConstructor( final Constructor[] c, final InventoryPlayer inventory, final Object tE )
 	{
-		for( Constructor con : c )
+		for( final Constructor con : c )
 		{
-			Class[] types = con.getParameterTypes();
+			final Class[] types = con.getParameterTypes();
 			if( types.length == 2 )
 			{
 				if( types[0].isAssignableFrom( inventory.getClass() ) && types[1].isAssignableFrom( tE.getClass() ) )
@@ -395,7 +395,7 @@ public enum GuiBridge implements IGuiHandler
 		return null;
 	}
 
-	private String typeName( Object inventory )
+	private String typeName( final Object inventory )
 	{
 		if( inventory == null )
 		{
@@ -405,7 +405,7 @@ public enum GuiBridge implements IGuiHandler
 		return inventory.getClass().getName();
 	}
 
-	private void addPressAchievementToPlayer( ItemStack newItem, IMaterials possibleMaterials, EntityPlayer player )
+	private void addPressAchievementToPlayer( final ItemStack newItem, final IMaterials possibleMaterials, final EntityPlayer player )
 	{
 		final IComparableDefinition logic = possibleMaterials.logicProcessorPress();
 		final IComparableDefinition eng = possibleMaterials.engProcessorPress();
@@ -414,7 +414,7 @@ public enum GuiBridge implements IGuiHandler
 
 		final List<IComparableDefinition> presses = Lists.newArrayList( logic, eng, calc, silicon );
 
-		for( IComparableDefinition press : presses )
+		for( final IComparableDefinition press : presses )
 		{
 			if( press.isSameAs( newItem ) )
 			{
@@ -426,11 +426,11 @@ public enum GuiBridge implements IGuiHandler
 	}
 
 	@Override
-	public Object getClientGuiElement( int ordinal, EntityPlayer player, World w, int x, int y, int z )
+	public Object getClientGuiElement( final int ordinal, final EntityPlayer player, final World w, final int x, final int y, final int z )
 	{
-		AEPartLocation side = AEPartLocation.fromOrdinal( ordinal & 0x07 );
-		GuiBridge ID = values()[ordinal >> 4];
-		boolean stem = ( ( ordinal >> 3 ) & 1 ) == 1;
+		final AEPartLocation side = AEPartLocation.fromOrdinal( ordinal & 0x07 );
+		final GuiBridge ID = values()[ordinal >> 4];
+		final boolean stem = ( ( ordinal >> 3 ) & 1 ) == 1;
 		if( ID.type.isItem() )
 		{
 			ItemStack it = null;
@@ -442,7 +442,7 @@ public enum GuiBridge implements IGuiHandler
 			{
 				it = player.inventory.getStackInSlot( x );
 			}
-			Object myItem = this.getGuiObject( it, player, w, x, y, z );
+			final Object myItem = this.getGuiObject( it, player, w, x, y, z );
 			if( myItem != null && ID.CorrectTileOrPart( myItem ) )
 			{
 				return ID.ConstructGui( player.inventory, side, myItem );
@@ -450,11 +450,11 @@ public enum GuiBridge implements IGuiHandler
 		}
 		if( ID.type.isTile() )
 		{
-			TileEntity TE = w.getTileEntity( new BlockPos(x,y,z) );
+			final TileEntity TE = w.getTileEntity( new BlockPos(x,y,z) );
 			if( TE instanceof IPartHost )
 			{
 				( (IPartHost) TE ).getPart( side );
-				IPart part = ( (IPartHost) TE ).getPart( side );
+				final IPart part = ( (IPartHost) TE ).getPart( side );
 				if( ID.CorrectTileOrPart( part ) )
 				{
 					return ID.ConstructGui( player.inventory, side, part );
@@ -471,17 +471,17 @@ public enum GuiBridge implements IGuiHandler
 		return new GuiNull( new ContainerNull() );
 	}
 
-	public Object ConstructGui( InventoryPlayer inventory, AEPartLocation side, Object tE )
+	public Object ConstructGui( final InventoryPlayer inventory, final AEPartLocation side, final Object tE )
 	{
 		try
 		{
-			Constructor[] c = this.guiClass.getConstructors();
+			final Constructor[] c = this.guiClass.getConstructors();
 			if( c.length == 0 )
 			{
 				throw new AppEngException( "Invalid Gui Class" );
 			}
 
-			Constructor target = this.findConstructor( c, inventory, tE );
+			final Constructor target = this.findConstructor( c, inventory, tE );
 
 			if( target == null )
 			{
@@ -490,25 +490,25 @@ public enum GuiBridge implements IGuiHandler
 
 			return target.newInstance( inventory, tE );
 		}
-		catch( Throwable t )
+		catch( final Throwable t )
 		{
 			throw new IllegalStateException( t );
 		}
 	}
 
-	public boolean hasPermissions( TileEntity te, int x, int y, int z, AEPartLocation side, EntityPlayer player )
+	public boolean hasPermissions( final TileEntity te, final int x, final int y, final int z, final AEPartLocation side, final EntityPlayer player )
 	{
-		World w = player.getEntityWorld();
-		BlockPos pos = new  BlockPos(x,y,z);
+		final World w = player.getEntityWorld();
+		final BlockPos pos = new  BlockPos(x,y,z);
 
 		if( Platform.hasPermissions( te != null ? new DimensionalCoord( te ) : new DimensionalCoord( player.worldObj, pos ), player ) )
 		{
 			if( this.type.isItem() )
 			{
-				ItemStack it = player.inventory.getCurrentItem();
+				final ItemStack it = player.inventory.getCurrentItem();
 				if( it != null && it.getItem() instanceof IGuiItem )
 				{
-					Object myItem = ( (IGuiItem) it.getItem() ).getGuiObject( it, w, pos );
+					final Object myItem = ( (IGuiItem) it.getItem() ).getGuiObject( it, w, pos );
 					if( this.CorrectTileOrPart( myItem ) )
 					{
 						return true;
@@ -518,11 +518,11 @@ public enum GuiBridge implements IGuiHandler
 
 			if( this.type.isTile() )
 			{
-				TileEntity TE = w.getTileEntity( pos );
+				final TileEntity TE = w.getTileEntity( pos );
 				if( TE instanceof IPartHost )
 				{
 					( (IPartHost) TE ).getPart( side );
-					IPart part = ( (IPartHost) TE ).getPart( side );
+					final IPart part = ( (IPartHost) TE ).getPart( side );
 					if( this.CorrectTileOrPart( part ) )
 					{
 						return this.securityCheck( part, player );
@@ -540,28 +540,28 @@ public enum GuiBridge implements IGuiHandler
 		return false;
 	}
 
-	private boolean securityCheck( Object te, EntityPlayer player )
+	private boolean securityCheck( final Object te, final EntityPlayer player )
 	{
 		if( te instanceof IActionHost && this.requiredPermission != null )
 		{
 
-			IGridNode gn = ( (IActionHost) te ).getActionableNode();
+			final IGridNode gn = ( (IActionHost) te ).getActionableNode();
 			if( gn != null )
 			{
-				IGrid g = gn.getGrid();
+				final IGrid g = gn.getGrid();
 				if( g != null )
 				{
-					boolean requirePower = false;
+					final boolean requirePower = false;
 					if( requirePower )
 					{
-						IEnergyGrid eg = g.getCache( IEnergyGrid.class );
+						final IEnergyGrid eg = g.getCache( IEnergyGrid.class );
 						if( !eg.isNetworkPowered() )
 						{
 							return false;
 						}
 					}
 
-					ISecurityGrid sg = g.getCache( ISecurityGrid.class );
+					final ISecurityGrid sg = g.getCache( ISecurityGrid.class );
 					if( sg.hasPermission( player, this.requiredPermission ) )
 					{
 						return true;

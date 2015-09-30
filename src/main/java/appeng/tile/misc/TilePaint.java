@@ -59,9 +59,9 @@ public class TilePaint extends AEBaseTile
 	}
 	
 	@TileEvent( TileEventType.WORLD_NBT_WRITE )
-	public void writeToNBT_TilePaint( NBTTagCompound data )
+	public void writeToNBT_TilePaint( final NBTTagCompound data )
 	{
-		ByteBuf myDat = Unpooled.buffer();
+		final ByteBuf myDat = Unpooled.buffer();
 		this.writeBuffer( myDat );
 		if( myDat.hasArray() )
 		{
@@ -69,7 +69,7 @@ public class TilePaint extends AEBaseTile
 		}
 	}
 
-	void writeBuffer( ByteBuf out )
+	void writeBuffer( final ByteBuf out )
 	{
 		if( this.dots == null )
 		{
@@ -79,14 +79,14 @@ public class TilePaint extends AEBaseTile
 
 		out.writeByte( this.dots.size() );
 
-		for( Splotch s : this.dots )
+		for( final Splotch s : this.dots )
 		{
 			s.writeToStream( out );
 		}
 	}
 
 	@TileEvent( TileEventType.WORLD_NBT_READ )
-	public void readFromNBT_TilePaint( NBTTagCompound data )
+	public void readFromNBT_TilePaint( final NBTTagCompound data )
 	{
 		if( data.hasKey( "dots" ) )
 		{
@@ -94,9 +94,9 @@ public class TilePaint extends AEBaseTile
 		}
 	}
 
-	void readBuffer( ByteBuf in )
+	void readBuffer( final ByteBuf in )
 	{
-		byte howMany = in.readByte();
+		final byte howMany = in.readByte();
 
 		if( howMany == 0 )
 		{
@@ -112,7 +112,7 @@ public class TilePaint extends AEBaseTile
 		}
 
 		this.isLit = 0;
-		for( Splotch s : this.dots )
+		for( final Splotch s : this.dots )
 		{
 			if( s.lumen )
 			{
@@ -137,13 +137,13 @@ public class TilePaint extends AEBaseTile
 	}
 
 	@TileEvent( TileEventType.NETWORK_WRITE )
-	public void writeToStream_TilePaint( ByteBuf data )
+	public void writeToStream_TilePaint( final ByteBuf data )
 	{
 		this.writeBuffer( data );
 	}
 
 	@TileEvent( TileEventType.NETWORK_READ )
-	public boolean readFromStream_TilePaint( ByteBuf data )
+	public boolean readFromStream_TilePaint( final ByteBuf data )
 	{
 		this.readBuffer( data );
 		return true;
@@ -156,7 +156,7 @@ public class TilePaint extends AEBaseTile
 			return;
 		}
 
-		for( EnumFacing side : EnumFacing.VALUES )
+		for( final EnumFacing side : EnumFacing.VALUES )
 		{
 			if( !this.isSideValid( side ) )
 			{
@@ -167,19 +167,19 @@ public class TilePaint extends AEBaseTile
 		this.updateData();
 	}
 
-	public boolean isSideValid( EnumFacing side )
+	public boolean isSideValid( final EnumFacing side )
 	{
-		BlockPos p = pos.offset( side );
-		IBlockState blk = this.worldObj.getBlockState( p );
+		final BlockPos p = pos.offset( side );
+		final IBlockState blk = this.worldObj.getBlockState( p );
 		return blk.getBlock().isSideSolid( this.worldObj, p, side.getOpposite() );
 	}
 
-	private void removeSide( EnumFacing side )
+	private void removeSide( final EnumFacing side )
 	{
-		Iterator<Splotch> i = this.dots.iterator();
+		final Iterator<Splotch> i = this.dots.iterator();
 		while( i.hasNext() )
 		{
-			Splotch s = i.next();
+			final Splotch s = i.next();
 			if( s.side == side )
 			{
 				i.remove();
@@ -193,7 +193,7 @@ public class TilePaint extends AEBaseTile
 	private void updateData()
 	{
 		this.isLit = 0;
-		for( Splotch s : this.dots )
+		for( final Splotch s : this.dots )
 		{
 			if( s.lumen )
 			{
@@ -214,7 +214,7 @@ public class TilePaint extends AEBaseTile
 		}
 	}
 
-	public void cleanSide( EnumFacing side )
+	public void cleanSide( final EnumFacing side )
 	{
 		if( this.dots == null )
 		{
@@ -231,17 +231,17 @@ public class TilePaint extends AEBaseTile
 		return this.isLit;
 	}
 
-	public void addBlot( ItemStack type, EnumFacing side, Vec3 hitVec )
+	public void addBlot( final ItemStack type, final EnumFacing side, final Vec3 hitVec )
 	{
-		BlockPos p = pos.offset(side);
+		final BlockPos p = pos.offset(side);
 		
-		IBlockState blk = this.worldObj.getBlockState(  p );
+		final IBlockState blk = this.worldObj.getBlockState(  p );
 		if( blk.getBlock().isSideSolid( this.worldObj, p, side.getOpposite() ) )
 		{
-			ItemPaintBall ipb = (ItemPaintBall) type.getItem();
+			final ItemPaintBall ipb = (ItemPaintBall) type.getItem();
 
-			AEColor col = ipb.getColor( type );
-			boolean lit = ipb.isLumen( type );
+			final AEColor col = ipb.getColor( type );
+			final boolean lit = ipb.isLumen( type );
 
 			if( this.dots == null )
 			{

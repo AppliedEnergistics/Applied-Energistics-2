@@ -40,7 +40,7 @@ public class PathSegment
 	public boolean isDead;
 	List<IPathItem> open;
 
-	public PathSegment( PathGridCache myPGC, List<IPathItem> open, Set<IPathItem> semiOpen, Set<IPathItem> closed )
+	public PathSegment( final PathGridCache myPGC, final List<IPathItem> open, final Set<IPathItem> semiOpen, final Set<IPathItem> closed )
 	{
 		this.open = open;
 		this.semiOpen = semiOpen;
@@ -51,14 +51,14 @@ public class PathSegment
 
 	public boolean step()
 	{
-		List<IPathItem> oldOpen = this.open;
+		final List<IPathItem> oldOpen = this.open;
 		this.open = new LinkedList<IPathItem>();
 
-		for( IPathItem i : oldOpen )
+		for( final IPathItem i : oldOpen )
 		{
-			for( IPathItem pi : i.getPossibleOptions() )
+			for( final IPathItem pi : i.getPossibleOptions() )
 			{
-				EnumSet<GridFlags> flags = pi.getFlags();
+				final EnumSet<GridFlags> flags = pi.getFlags();
 
 				if( !this.closed.contains( pi ) )
 				{
@@ -69,7 +69,7 @@ public class PathSegment
 						// close the semi open.
 						if( !this.semiOpen.contains( pi ) )
 						{
-							boolean worked;
+							final boolean worked;
 
 							if( flags.contains( GridFlags.COMPRESSED_CHANNEL ) )
 							{
@@ -82,10 +82,10 @@ public class PathSegment
 
 							if( worked && flags.contains( GridFlags.MULTIBLOCK ) )
 							{
-								Iterator<IGridNode> oni = ( (IGridMultiblock) ( (IGridNode) pi ).getGridBlock() ).getMultiblockNodes();
+								final Iterator<IGridNode> oni = ( (IGridMultiblock) ( (IGridNode) pi ).getGridBlock() ).getMultiblockNodes();
 								while( oni.hasNext() )
 								{
-									IGridNode otherNodes = oni.next();
+									final IGridNode otherNodes = oni.next();
 									if( otherNodes != pi )
 									{
 										this.semiOpen.add( (IPathItem) otherNodes );
@@ -109,7 +109,7 @@ public class PathSegment
 		return this.open.isEmpty();
 	}
 
-	private boolean useDenseChannel( IPathItem start )
+	private boolean useDenseChannel( final IPathItem start )
 	{
 		IPathItem pi = start;
 		while( pi != null )
@@ -134,7 +134,7 @@ public class PathSegment
 		return true;
 	}
 
-	private boolean useChannel( IPathItem start )
+	private boolean useChannel( final IPathItem start )
 	{
 		IPathItem pi = start;
 		while( pi != null )

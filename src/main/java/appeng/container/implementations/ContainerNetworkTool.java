@@ -37,7 +37,7 @@ public class ContainerNetworkTool extends AEBaseContainer
 	@GuiSync( 1 )
 	public boolean facadeMode;
 
-	public ContainerNetworkTool( InventoryPlayer ip, INetworkTool te )
+	public ContainerNetworkTool( final InventoryPlayer ip, final INetworkTool te )
 	{
 		super( ip, null, null );
 		this.toolInv = te;
@@ -57,7 +57,7 @@ public class ContainerNetworkTool extends AEBaseContainer
 
 	public void toggleFacadeMode()
 	{
-		NBTTagCompound data = Platform.openNbtData( this.toolInv.getItemStack() );
+		final NBTTagCompound data = Platform.openNbtData( this.toolInv.getItemStack() );
 		data.setBoolean( "hideFacades", !data.getBoolean( "hideFacades" ) );
 		this.detectAndSendChanges();
 	}
@@ -65,7 +65,7 @@ public class ContainerNetworkTool extends AEBaseContainer
 	@Override
 	public void detectAndSendChanges()
 	{
-		ItemStack currentItem = this.getPlayerInv().getCurrentItem();
+		final ItemStack currentItem = this.getPlayerInv().getCurrentItem();
 
 		if( currentItem != this.toolInv.getItemStack() )
 		{
@@ -88,7 +88,7 @@ public class ContainerNetworkTool extends AEBaseContainer
 
 		if( this.isContainerValid )
 		{
-			NBTTagCompound data = Platform.openNbtData( currentItem );
+			final NBTTagCompound data = Platform.openNbtData( currentItem );
 			this.facadeMode = data.getBoolean( "hideFacades" );
 		}
 
