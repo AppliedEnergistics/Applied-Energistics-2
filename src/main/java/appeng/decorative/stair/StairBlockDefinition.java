@@ -64,6 +64,12 @@ public class StairBlockDefinition implements IBlockDefinition
 	}
 
 	@Override
+	public boolean isEnabled()
+	{
+		return false;
+	}
+
+	@Override
 	public boolean isSameAs( ItemStack comparableStack )
 	{
 		return false;

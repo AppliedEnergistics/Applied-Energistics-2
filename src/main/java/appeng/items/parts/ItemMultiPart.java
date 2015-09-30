@@ -21,7 +21,6 @@ package appeng.items.parts;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.EnumSet;
@@ -48,7 +47,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import appeng.api.AEApi;
-import appeng.api.exceptions.MissingDefinition;
 import appeng.api.implementations.items.IItemGroup;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHelper;
@@ -245,16 +243,6 @@ public final class ItemMultiPart extends AEBaseItem implements IPartItem, IItemG
 	}
 
 	@Override
-	public void registerIcons( IIconRegister iconRegister )
-	{
-		for( Entry<Integer, PartTypeWithVariant> part : this.registered.entrySet() )
-		{
-			String tex = "appliedenergistics2:" + this.getName( new ItemStack( this, 1, part.getKey() ) );
-			part.getValue().ico = iconRegister.registerIcon( tex );
-		}
-	}
-
-	@Override
 	protected void getCheckedSubItems( Item sameItem, CreativeTabs creativeTab, List<ItemStack> itemStacks )
 	{
 		List<Entry<Integer, PartTypeWithVariant>> types = new ArrayList<Entry<Integer, PartTypeWithVariant>>( this.registered.entrySet() );
@@ -406,7 +394,6 @@ public final class ItemMultiPart extends AEBaseItem implements IPartItem, IItemG
 			return "PartTypeWithVariant{" +
 					"part=" + this.part +
 					", variant=" + this.variant +
-					", ico=" + this.ico +
 					'}';
 		}
 	}

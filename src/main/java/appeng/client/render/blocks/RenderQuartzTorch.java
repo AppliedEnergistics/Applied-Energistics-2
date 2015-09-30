@@ -123,24 +123,24 @@ public class RenderQuartzTorch extends BaseBlockRender<AEBaseBlock, AEBaseTile>
 		}
 
 		renderer.setRenderBounds( Point3 + xOff, renderBottom + yOff, Point3 + zOff, Point12 + xOff, renderTop + yOff, Point12 + zOff );
-		super.renderInWorld( blk, world, pos, renderer );
+		super.renderInWorld( block, world, pos, renderer );
 
 		int r = ( pos.getX() + pos.getY() + pos.getZ() ) % 2;
 		if( r == 0 )
 		{
 			renderer.setRenderBounds( Point3 + xOff, renderTop + yOff, Point3 + zOff, Point3 + singlePixel + xOff, renderTop + singlePixel + yOff, Point3 + singlePixel + zOff );
-			super.renderInWorld( blk, world, pos, renderer );
+			super.renderInWorld( block, world, pos, renderer );
 
 			renderer.setRenderBounds( Point12 - singlePixel + xOff, renderBottom - singlePixel + yOff, Point12 - singlePixel + zOff, Point12 + xOff, renderBottom + yOff, Point12 + zOff );
-			super.renderInWorld( blk, world, pos, renderer );
+			super.renderInWorld( block, world, pos, renderer );
 		}
 		else
 		{
 			renderer.setRenderBounds( Point3 + xOff, renderBottom - singlePixel + yOff, Point3 + zOff, Point3 + singlePixel + xOff, renderBottom + yOff, Point3 + singlePixel + zOff );
-			super.renderInWorld( blk, world, pos, renderer );
+			super.renderInWorld( block, world, pos, renderer );
 
 			renderer.setRenderBounds( Point12 - singlePixel + xOff, renderTop + yOff, Point12 - singlePixel + zOff, Point12 + xOff, renderTop + singlePixel + yOff, Point12 + zOff );
-			super.renderInWorld( blk, world, pos, renderer );
+			super.renderInWorld( block, world, pos, renderer );
 		}
 
 		block.getRendererInstance().setTemporaryRenderIcon( renderer.getIcon( Blocks.hopper.getDefaultState() )[0] );

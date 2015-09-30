@@ -27,7 +27,6 @@ import com.google.common.base.Preconditions;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.world.IBlockAccess;
 
 import appeng.api.definitions.IItemDefinition;
 
@@ -87,12 +86,6 @@ public final class DamagedItemDefinition implements IItemDefinition
 		}
 
 		return this.isEnabled() && comparableStack.getItem() == this.source.get().getItem() && comparableStack.getItemDamage() == this.source.get().getDamage();
-	}
-
-	@Override
-	public boolean isSameAs( IBlockAccess world, int x, int y, int z )
-	{
-		return false;
 	}
 
 	private static class ItemTransformer implements Function<IStackSrc, Item>
