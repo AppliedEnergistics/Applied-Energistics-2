@@ -183,17 +183,5 @@ public abstract class PartSharedItemBus extends PartUpgradeable implements IGrid
 		}
 	}
 
-	private TileEntity getTileEntity( TileEntity self, int x, int y, int z )
-	{
-		final World w = self.getWorldObj();
-
-		if( w.getChunkProvider().chunkExists( x >> 4, z >> 4 ) )
-		{
-			return w.getTileEntity( x, y, z );
-		}
-
-		return null;
-	}
-
 	protected abstract TickRateModulation doBusWork();
 }
