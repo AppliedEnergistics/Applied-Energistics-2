@@ -19,40 +19,15 @@
 package appeng.items.tools.powered;
 
 
-import java.awt.*;
-import java.util.EnumSet;
-import java.util.List;
-
-import appeng.api.util.AEColor;
-import appeng.client.render.BaseBlockRender;
-import appeng.client.render.blocks.RenderBlockSkyCompass;
-import appeng.client.render.items.ToolBiometricCardRender;
-import appeng.client.render.items.ToolWirelessTerminalRender;
-import appeng.core.localization.PlayerMessages;
-import appeng.recipes.game.ShapelessRecipe;
-import com.google.common.base.Optional;
-
-import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.FurnaceRecipes;
-import net.minecraft.item.crafting.ShapedRecipes;
-import net.minecraft.item.crafting.ShapelessRecipes;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.IIcon;
-import net.minecraft.util.StatCollector;
-import net.minecraft.world.World;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
 import appeng.api.AEApi;
 import appeng.api.config.Settings;
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
 import appeng.api.config.ViewItems;
 import appeng.api.features.IWirelessTermHandler;
+import appeng.api.util.AEColor;
 import appeng.api.util.IConfigManager;
+import appeng.client.render.items.ToolWirelessTerminalRender;
 import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
 import appeng.core.localization.GuiText;
@@ -60,7 +35,17 @@ import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
+import com.google.common.base.Optional;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
+
+import java.util.EnumSet;
+import java.util.List;
 
 
 public class ToolWirelessTerminal extends AEBasePoweredItem implements IWirelessTermHandler
@@ -90,7 +75,7 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 				}
 				catch( final Throwable e )
 				{
-					return null;
+					//Ignore invalid colors
 				}
 			}
 		}

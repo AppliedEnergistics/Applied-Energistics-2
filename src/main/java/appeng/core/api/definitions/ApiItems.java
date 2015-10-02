@@ -418,5 +418,9 @@ public final class ApiItems implements IItems
 		return this.toolReplicatorCard;
 	}
 
-	public IItemDefinition wirelessTerminal() {return  this.wirelessTerminal;}
+	@Override
+	public IItemDefinition wirelessTerminal()
+	{
+		return  this.wirelessTerminal;
+	}
 }

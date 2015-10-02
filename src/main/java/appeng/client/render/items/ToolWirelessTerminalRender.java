@@ -3,21 +3,12 @@ package appeng.client.render.items;
 import appeng.api.util.AEColor;
 import appeng.client.texture.ExtraItemTextures;
 import appeng.items.tools.powered.ToolWirelessTerminal;
-import buildcraft.core.lib.engines.RenderEngine;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.entity.RenderItem;
-import net.minecraft.client.renderer.texture.ITextureObject;
-import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.IItemRenderer;
 import org.lwjgl.opengl.GL11;
-
-import javax.swing.*;
 
 /**
  * Created by Tom on 9/30/2015.
@@ -49,7 +40,7 @@ public class ToolWirelessTerminalRender implements IItemRenderer {
             int medColor = color.mediumVariant;
             r = ( medColor >> 16 ) & 0xFF;
             g = ( medColor >> 8 ) & 0xFF;
-            b = ( medColor >> 0 ) & 0xFF;
+            b = medColor & 0xFF;
         }
 
         float f4 = icon.getMinU();

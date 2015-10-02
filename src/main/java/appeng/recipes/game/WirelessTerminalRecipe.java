@@ -3,11 +3,9 @@ package appeng.recipes.game;
 import appeng.api.AEApi;
 import appeng.api.definitions.IComparableDefinition;
 import appeng.api.definitions.IDefinitions;
-import appeng.items.parts.ItemFacade;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
@@ -60,45 +58,27 @@ public class WirelessTerminalRecipe implements IRecipe {
     @Nullable
     private ItemStack getOutput( final IInventory inv, final boolean createTerminal )
     {
-        ItemStack terminal = null;
+        ItemStack inputTerminal = null;
         String color = null;
         for( int i = 0; i < 9; i++ )
         {
             //If the slot is empty, ignore it
             if( inv.getStackInSlot( i ) != null ) {
                 //if it contains a terminal, return that terminal
-                if( terminal==null && this.terminal.isSameAs( inv.getStackInSlot( i ) ) )
+                if( inputTerminal==null && this.terminal.isSameAs( inv.getStackInSlot( i ) ) )
                 {
-                    terminal = inv.getStackInSlot( i );
+                    inputTerminal = inv.getStackInSlot( i );
                 }
                 //If no dye is found yet, then check if the item is a dye
                 else if( color == null )
                 {
                     //check if the other item is a dye
-                    for( String dye : dyes )
-                    {
-                        ArrayList<ItemStack> dyes = OreDictionary.getOres( dye );
-                        for( ItemStack itm : dyes )
-                        {
-                            if( OreDictionary.itemMatches( inv.getStackInSlot( i ), itm, true ) )
-                            {
-                                color = dye.replace( "dye","" ); //remove starting "dye" to get color
-                            }
-                        }
-                    }
+                    color = getColorFromItem( inv.getStackInSlot( i ) );
 
                     //Check if a color was found or not
                     if( color == null )
                     {
-                        //Check if it's a water bucket, if so, remove the color
-                        if( ItemStack.areItemStacksEqual( waterBucket, inv.getStackInSlot( i ) ) )
-                        {
-                            color = "fluix";
-                        }
-                        else
-                        {
-                            return null;
-                        }
+                        return null;
                     }
                 }
                 //if the item matches nothing fail
@@ -111,18 +91,41 @@ public class WirelessTerminalRecipe implements IRecipe {
         }
 
         //Check if both a terminal and a dye were found
-        if( terminal==null || color == null )
+        if( inputTerminal==null || color == null )
         {
             return null;
         }
 
-        ItemStack output = ItemStack.copyItemStack( terminal );
+        ItemStack output = ItemStack.copyItemStack( inputTerminal );
         if( createTerminal ) {
             NBTTagCompound tag = output.getTagCompound();
             tag.setString( "color", color );
         }
 
         return output;
+    }
+
+    private String getColorFromItem(ItemStack potentialColor)
+    {
+        //check if the "color" is water, in which case return fluix
+        if( ItemStack.areItemStacksEqual( waterBucket, potentialColor ) )
+        {
+            return "fluix";
+        }
+
+        //check through the ore dictionary to see if the item is a dye
+        for( String dye : dyes )
+        {
+            ArrayList<ItemStack> dyeItems = OreDictionary.getOres( dye );
+            for( ItemStack itm : dyeItems )
+            {
+                if( OreDictionary.itemMatches( potentialColor, itm, true ) )
+                {
+                    return dye.replace( "dye","" ); //remove starting "dye" to get color
+                }
+            }
+        }
+        return null;
     }
 
     @Override
