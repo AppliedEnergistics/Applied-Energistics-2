@@ -64,7 +64,7 @@ public class Items
 
 	public AEItemDefinition itemEntropyManipulator;
 
-	public AEItemDefinition itemWirelessTerminal;
+	public AEColoredItemDefinition itemWirelessTerminal;
 
 	public AEItemDefinition itemBiometricCard;
 

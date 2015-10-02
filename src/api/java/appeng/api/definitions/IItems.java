@@ -64,6 +64,8 @@ public interface IItems
 
 	IItemDefinition wirelessTerminal();
 
+	AEColoredItemDefinition coloredWirelessTerminal();
+
 	IItemDefinition biometricCard();
 
 	IItemDefinition chargedStaff();

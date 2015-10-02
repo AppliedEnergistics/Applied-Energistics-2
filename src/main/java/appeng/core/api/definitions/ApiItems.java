@@ -77,6 +77,7 @@ public final class ApiItems implements IItems
 
 	private final IItemDefinition entropyManipulator;
 	private final IItemDefinition wirelessTerminal;
+	private final AEColoredItemDefinition coloredWirelessTerminal;
 	private final IItemDefinition biometricCard;
 	private final IItemDefinition chargedStaff;
 	private final IItemDefinition massCannon;
@@ -133,6 +134,7 @@ public final class ApiItems implements IItems
 
 		this.entropyManipulator = constructor.registerItemDefinition( new ToolEntropyManipulator() );
 		this.wirelessTerminal = constructor.registerItemDefinition( new ToolWirelessTerminal() );
+		this.coloredWirelessTerminal = constructor.constructColoredDefinition(this.wirelessTerminal, 0);
 		this.biometricCard = constructor.registerItemDefinition( new ToolBiometricCard() );
 		this.chargedStaff = constructor.registerItemDefinition( new ToolChargedStaff() );
 		this.massCannon = constructor.registerItemDefinition( new ToolMassCannon() );
@@ -260,9 +262,9 @@ public final class ApiItems implements IItems
 	}
 
 	@Override
-	public IItemDefinition wirelessTerminal()
+	public AEColoredItemDefinition coloredWirelessTerminal()
 	{
-		return this.wirelessTerminal;
+		return this.coloredWirelessTerminal;
 	}
 
 	@Override
@@ -415,4 +417,6 @@ public final class ApiItems implements IItems
 	{
 		return this.toolReplicatorCard;
 	}
+
+	public IItemDefinition wirelessTerminal() {return  this.wirelessTerminal;}
 }

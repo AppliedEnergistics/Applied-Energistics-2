@@ -19,6 +19,7 @@
 package appeng.core;
 
 
+import appeng.recipes.game.*;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -89,10 +90,6 @@ import appeng.me.storage.AEExternalHandler;
 import appeng.parts.PartPlacement;
 import appeng.recipes.AEItemResolver;
 import appeng.recipes.RecipeHandler;
-import appeng.recipes.game.DisassembleRecipe;
-import appeng.recipes.game.FacadeRecipe;
-import appeng.recipes.game.ShapedRecipe;
-import appeng.recipes.game.ShapelessRecipe;
 import appeng.recipes.handlers.Crusher;
 import appeng.recipes.handlers.Grind;
 import appeng.recipes.handlers.GrindFZ;
@@ -491,7 +488,7 @@ public final class Registration
 		target.itemEntropyManipulator = this.converter.of( source.entropyManipulator() );
 		target.itemColorApplicator = this.converter.of( source.colorApplicator() );
 
-		target.itemWirelessTerminal = this.converter.of( source.wirelessTerminal() );
+		target.itemWirelessTerminal = source.coloredWirelessTerminal();
 		target.itemNetworkTool = this.converter.of( source.networkTool() );
 		target.itemPortableCell = this.converter.of( source.portableCell() );
 		target.itemBiometricCard = this.converter.of( source.biometricCard() );
@@ -564,6 +561,12 @@ public final class Registration
 		{
 			GameRegistry.addRecipe( new FacadeRecipe() );
 			RecipeSorter.register( "appliedenergistics2:facade", FacadeRecipe.class, Category.SHAPED, "after:minecraft:shaped" );
+		}
+
+		if( AEConfig.instance.isFeatureEnabled( AEFeature.enableWirelessTerminalColoring ) )
+		{
+			GameRegistry.addRecipe( new WirelessTerminalRecipe() );
+			RecipeSorter.register( "appliedenergistics2:ToolWirelessTerminal", WirelessTerminalRecipe.class, Category.SHAPELESS, "after:minecraft:shapeless" );
 		}
 	}
 

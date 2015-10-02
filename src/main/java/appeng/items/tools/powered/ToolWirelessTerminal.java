@@ -19,14 +19,27 @@
 package appeng.items.tools.powered;
 
 
+import java.awt.*;
 import java.util.EnumSet;
 import java.util.List;
 
+import appeng.api.util.AEColor;
+import appeng.client.render.BaseBlockRender;
+import appeng.client.render.blocks.RenderBlockSkyCompass;
+import appeng.client.render.items.ToolBiometricCardRender;
+import appeng.client.render.items.ToolWirelessTerminalRender;
+import appeng.core.localization.PlayerMessages;
+import appeng.recipes.game.ShapelessRecipe;
 import com.google.common.base.Optional;
 
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.FurnaceRecipes;
+import net.minecraft.item.crafting.ShapedRecipes;
+import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
@@ -47,15 +60,64 @@ import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
+import net.minecraftforge.client.MinecraftForgeClient;
 
 
 public class ToolWirelessTerminal extends AEBasePoweredItem implements IWirelessTermHandler
 {
+	public static final Color[] colorList = new Color[7];
+	static {
+
+	}
 
 	public ToolWirelessTerminal()
 	{
 		super( AEConfig.instance.wirelessTerminalBattery, Optional.<String>absent() );
 		this.setFeature( EnumSet.of( AEFeature.WirelessAccessTerminal, AEFeature.PoweredTools ) );
+
+		if( Platform.isClient() )
+		{
+			MinecraftForgeClient.registerItemRenderer( this, new ToolWirelessTerminalRender() );
+		}
+	}
+
+	public static AEColor getColor( ItemStack item )
+	{
+		final NBTTagCompound c = item.getTagCompound();
+		if( c != null && c.hasKey( "color" ) )
+		{
+			String color = c.getString( "color" );
+			if( color != null )
+			{
+				try {
+					return AEColor.valueOf( color );
+				}
+				catch( final Throwable e )
+				{
+					return null;
+				}
+			}
+		}
+
+		return null;
+	}
+
+	@Override
+	public String getItemStackDisplayName( final ItemStack par1ItemStack )
+	{
+		String extra = null;
+
+		final AEColor color = ToolWirelessTerminal.getColor( par1ItemStack );
+
+		if( color != null && Platform.isClient() )
+		{
+			extra = Platform.gui_localize( color.unlocalizedName );
+			return super.getItemStackDisplayName( par1ItemStack ) + " - " + extra;
+		}
+		else
+		{
+			return super.getItemStackDisplayName( par1ItemStack );
+		}
 	}
 
 	@Override
@@ -77,6 +139,18 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 	{
 		super.addCheckedInformation( stack, player, lines, displayMoreInfo );
 
+		if( isLinked( stack ) )
+		{
+			lines.add( GuiText.Linked.getLocal() );
+		}
+		else
+		{
+			lines.add( GuiText.Unlinked.getLocal() );
+		}
+	}
+
+	public static boolean isLinked( final ItemStack stack )
+	{
 		if( stack.hasTagCompound() )
 		{
 			final NBTTagCompound tag = Platform.openNbtData( stack );
@@ -86,18 +160,15 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 
 				if( encKey == null || encKey.isEmpty() )
 				{
-					lines.add( GuiText.Unlinked.getLocal() );
+					return false;
 				}
 				else
 				{
-					lines.add( GuiText.Linked.getLocal() );
+					return true;
 				}
 			}
 		}
-		else
-		{
-			lines.add( StatCollector.translateToLocal( "AppEng.GuiITooltip.Unlinked" ) );
-		}
+		return false;
 	}
 
 	@Override
