@@ -65,10 +65,6 @@ import net.minecraftforge.client.MinecraftForgeClient;
 
 public class ToolWirelessTerminal extends AEBasePoweredItem implements IWirelessTermHandler
 {
-	public static final Color[] colorList = new Color[7];
-	static {
-
-	}
 
 	public ToolWirelessTerminal()
 	{

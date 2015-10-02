@@ -25,7 +25,7 @@ public class WirelessTerminalRecipe implements IRecipe {
     private final IComparableDefinition terminal;
     private final ItemStack waterBucket;
 
-    private static final ArrayList<String> dyes = new ArrayList<>();
+    private static final ArrayList<String> dyes = new ArrayList<String>();
     static {
         dyes.add( "dyeBlack" );
         dyes.add( "dyeBlue" );
