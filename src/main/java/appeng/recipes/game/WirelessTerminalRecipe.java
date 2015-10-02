@@ -18,13 +18,15 @@ import java.util.ArrayList;
 /**
  * Created by Tom on 10/2/2015.
  */
-public class WirelessTerminalRecipe implements IRecipe {
+public class WirelessTerminalRecipe implements IRecipe
+{
 
     private final IComparableDefinition terminal;
     private final ItemStack waterBucket;
 
     private static final ArrayList<String> dyes = new ArrayList<String>();
-    static {
+    static
+    {
         dyes.add( "dyeBlack" );
         dyes.add( "dyeBlue" );
         dyes.add( "dyeBrown" );
@@ -51,7 +53,8 @@ public class WirelessTerminalRecipe implements IRecipe {
     }
 
     @Override
-    public boolean matches( InventoryCrafting inv, World w ) {
+    public boolean matches( InventoryCrafting inv, World w )
+    {
         return this.getOutput( inv, false ) != null;
     }
 
@@ -63,7 +66,8 @@ public class WirelessTerminalRecipe implements IRecipe {
         for( int i = 0; i < 9; i++ )
         {
             //If the slot is empty, ignore it
-            if( inv.getStackInSlot( i ) != null ) {
+            if( inv.getStackInSlot( i ) != null )
+            {
                 //if it contains a terminal, return that terminal
                 if( inputTerminal==null && this.terminal.isSameAs( inv.getStackInSlot( i ) ) )
                 {
@@ -97,7 +101,8 @@ public class WirelessTerminalRecipe implements IRecipe {
         }
 
         ItemStack output = ItemStack.copyItemStack( inputTerminal );
-        if( createTerminal ) {
+        if( createTerminal )
+        {
             NBTTagCompound tag = output.getTagCompound();
             tag.setString( "color", color );
         }
@@ -129,17 +134,20 @@ public class WirelessTerminalRecipe implements IRecipe {
     }
 
     @Override
-    public ItemStack getCraftingResult( InventoryCrafting inv ) {
+    public ItemStack getCraftingResult( InventoryCrafting inv )
+    {
         return this.getOutput( inv, true );
     }
 
     @Override
-    public int getRecipeSize() {
+    public int getRecipeSize()
+    {
         return 2;
     }
 
     @Override
-    public ItemStack getRecipeOutput() {
+    public ItemStack getRecipeOutput()
+    {
         return null;
     }
 }

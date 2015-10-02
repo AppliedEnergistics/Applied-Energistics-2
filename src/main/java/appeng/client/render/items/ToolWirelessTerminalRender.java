@@ -1,5 +1,7 @@
 package appeng.client.render.items;
 
+import org.lwjgl.opengl.GL11;
+
 import appeng.api.util.AEColor;
 import appeng.client.texture.ExtraItemTextures;
 import appeng.items.tools.powered.ToolWirelessTerminal;
@@ -8,29 +10,34 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.client.IItemRenderer;
-import org.lwjgl.opengl.GL11;
 
 /**
  * Created by Tom on 9/30/2015.
  */
-public class ToolWirelessTerminalRender implements IItemRenderer {
+public class ToolWirelessTerminalRender implements IItemRenderer
+{
 
     @Override
-    public boolean handleRenderType( ItemStack item, ItemRenderType type ) {
+    public boolean handleRenderType( ItemStack item, ItemRenderType type )
+    {
         return true;
     }
 
     @Override
-    public boolean shouldUseRenderHelper( ItemRenderType type, ItemStack item, ItemRendererHelper helper ) {
+    public boolean shouldUseRenderHelper( ItemRenderType type, ItemStack item, ItemRendererHelper helper )
+    {
         return false;
     }
 
     @Override
-    public void renderItem( ItemRenderType type, ItemStack item, Object... data ) {
+    public void renderItem( ItemRenderType type, ItemStack item, Object... data )
+    {
         // Get icon index for the texture
         IIcon icon = ExtraItemTextures.WirelessTerminal_Inactive.getIcon();
         if( ToolWirelessTerminal.isLinked( item ) )
+        {
             icon = item.getIconIndex();
+        }
 
         AEColor color = ToolWirelessTerminal.getColor( item );
         float r = 0;

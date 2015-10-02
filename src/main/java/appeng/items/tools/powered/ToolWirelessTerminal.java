@@ -18,6 +18,7 @@
 
 package appeng.items.tools.powered;
 
+import com.google.common.base.Optional;
 
 import appeng.api.AEApi;
 import appeng.api.config.Settings;
@@ -35,7 +36,7 @@ import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
-import com.google.common.base.Optional;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
@@ -70,10 +71,11 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 			String color = c.getString( "color" );
 			if( color != null )
 			{
-				try {
+				try
+				{
 					return AEColor.valueOf( color );
 				}
-				catch( final Throwable e )
+				catch( final Exception e )
 				{
 					//Ignore invalid colors
 				}
@@ -86,13 +88,12 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 	@Override
 	public String getItemStackDisplayName( final ItemStack par1ItemStack )
 	{
-		String extra = null;
 
 		final AEColor color = ToolWirelessTerminal.getColor( par1ItemStack );
 
 		if( color != null && Platform.isClient() )
 		{
-			extra = Platform.gui_localize( color.unlocalizedName );
+			String extra = Platform.gui_localize( color.unlocalizedName );
 			return super.getItemStackDisplayName( par1ItemStack ) + " - " + extra;
 		}
 		else
@@ -122,7 +123,7 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 
 		if( isLinked( stack ) )
 		{
-			lines.add( GuiText.Linked.getLocal() );
+			lines.add(GuiText.Linked.getLocal());
 		}
 		else
 		{
@@ -139,14 +140,7 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 			{
 				final String encKey = tag.getString( "encryptionKey" );
 
-				if( encKey == null || encKey.isEmpty() )
-				{
-					return false;
-				}
-				else
-				{
-					return true;
-				}
+				return !( encKey == null || encKey.isEmpty() );
 			}
 		}
 		return false;
