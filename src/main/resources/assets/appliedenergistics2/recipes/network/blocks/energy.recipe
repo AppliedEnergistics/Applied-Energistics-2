@@ -1,13 +1,13 @@
 shaped=
-    mc:iron_ingot mc:iron_ingot mc:iron_ingot,
-    mc:iron_ingot mc:furnace mc:iron_ingot,
-    mc:iron_ingot ae2:BlockEnergyAcceptor mc:iron_ingot
+    oredictionary:ingotIron oredictionary:ingotIron oredictionary:ingotIron,
+    oredictionary:ingotIron mc:furnace oredictionary:ingotIron,
+    oredictionary:ingotIron ae2:BlockEnergyAcceptor oredictionary:ingotIron
     -> ae2:BlockVibrationChamber
 
 shaped=
-    mc:iron_ingot ae2:BlockQuartzGlass mc:iron_ingot,
+    oredictionary:ingotIron ae2:BlockQuartzGlass oredictionary:ingotIron,
     ae2:BlockQuartzGlass fluixCrystal ae2:BlockQuartzGlass,
-    mc:iron_ingot ae2:BlockQuartzGlass mc:iron_ingot
+    oredictionary:ingotIron ae2:BlockQuartzGlass oredictionary:ingotIron
     -> ae2:BlockEnergyAcceptor
     
 shaped=

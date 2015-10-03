@@ -1,7 +1,7 @@
 shaped=
-    _ mc:redstone _,
+    _ oredictionary:dustRedstone _,
     cable mc:lever cable,
-    _ mc:redstone _
+    _ oredictionary:dustRedstone _
     -> ae2:ItemPart.ToggleBus
 
 shapeless=
