@@ -386,7 +386,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 
 			for( int x = 0; x < 9; x++ )
 			{
-				ic.setInventorySlotContents( x, packetPatternSlot.getPattern()[x] == null ? null : packetPatternSlot.getPattern()[x].getItemStack() );
+				ic.setInventorySlotContents( x, packetPatternSlot.getPatternSlot( x ) == null ? null : packetPatternSlot.getPatternSlot( x ).getItemStack() );
 			}
 
 			final IRecipe r = Platform.findMatchingRecipe( ic, p.worldObj );

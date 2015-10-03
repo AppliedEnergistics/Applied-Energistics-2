@@ -37,6 +37,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
 import appeng.client.gui.implementations.GuiInterfaceTerminal;
+import appeng.core.AELog;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.AppEngPacketHandler;
 import appeng.helpers.Reflected;
@@ -69,10 +70,9 @@ public class PacketCompressedNBT implements AppEngPacket, AppEngPacketHandler<Pa
 		this.data = null;
 		this.compressFrame = null;
 
-		final GZIPInputStream gzReader;
 		try
 		{
-			gzReader = new GZIPInputStream( new InputStream()
+			final GZIPInputStream gzReader = new GZIPInputStream( new InputStream()
 			{
 
 				@Override
@@ -93,8 +93,7 @@ public class PacketCompressedNBT implements AppEngPacket, AppEngPacketHandler<Pa
 		}
 		catch( final IOException e )
 		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			AELog.error( e );
 		}
 
 	}
@@ -118,6 +117,7 @@ public class PacketCompressedNBT implements AppEngPacket, AppEngPacketHandler<Pa
 		}
 		catch( final IOException e )
 		{
+			AELog.error( e );
 		}
 	}
 

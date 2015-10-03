@@ -34,6 +34,7 @@ import appeng.client.ClientHelper;
 import appeng.container.AEBaseContainer;
 import appeng.container.ContainerOpenContext;
 import appeng.container.implementations.ContainerCraftAmount;
+import appeng.core.AELog;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.AppEngPacketHandler;
 import appeng.core.sync.GuiBridge;
@@ -85,55 +86,12 @@ public class PacketInventoryAction implements AppEngPacket, AppEngPacketHandler<
 	{
 		if( ctx.side == Side.CLIENT )
 		{
-			if( message.action == InventoryAction.UPDATE_HAND )
-			{
-				if( message.slotItem == null )
-				{
-					ClientHelper.proxy.getPlayers().get( 0 ).inventory.setItemStack( null );
-				}
-				else
-				{
-					ClientHelper.proxy.getPlayers().get( 0 ).inventory.setItemStack( message.slotItem.getItemStack() );
-				}
-			}
+			return this.onMessageClientSide( message );
 		}
 		else
 		{
-			final EntityPlayerMP sender = (EntityPlayerMP) ctx.getServerHandler().playerEntity;
-			if( sender.openContainer instanceof AEBaseContainer )
-			{
-				final AEBaseContainer baseContainer = (AEBaseContainer) sender.openContainer;
-				if( message.action == InventoryAction.AUTO_CRAFT )
-				{
-
-					final ContainerOpenContext context = baseContainer.getOpenContext();
-					if( context != null )
-					{
-						final TileEntity te = context.getTile();
-						Platform.openGUI( sender, te, baseContainer.getOpenContext().getSide(), GuiBridge.GUI_CRAFTING_AMOUNT );
-
-						if( sender.openContainer instanceof ContainerCraftAmount )
-						{
-							final ContainerCraftAmount cca = (ContainerCraftAmount) sender.openContainer;
-
-							if( baseContainer.getTargetStack() != null )
-							{
-								cca.getCraftingItem().putStack( baseContainer.getTargetStack().getItemStack() );
-								cca.setItemToCraft( baseContainer.getTargetStack() );
-							}
-
-							cca.detectAndSendChanges();
-						}
-					}
-				}
-				else
-				{
-					baseContainer.doAction( sender, message.action, message.slot, message.id );
-				}
-			}
+			return this.onMessageServerSide( message, ctx );
 		}
-
-		return null;
 	}
 
 	@Override
@@ -179,7 +137,63 @@ public class PacketInventoryAction implements AppEngPacket, AppEngPacketHandler<
 			}
 			catch( final IOException e )
 			{
+				AELog.error( e );
 			}
 		}
+	}
+
+	private AppEngPacket onMessageClientSide( final PacketInventoryAction message )
+	{
+		if( message.action == InventoryAction.UPDATE_HAND )
+		{
+			if( message.slotItem == null )
+			{
+				ClientHelper.proxy.getPlayers().get( 0 ).inventory.setItemStack( null );
+			}
+			else
+			{
+				ClientHelper.proxy.getPlayers().get( 0 ).inventory.setItemStack( message.slotItem.getItemStack() );
+			}
+		}
+
+		return null;
+	}
+
+	private AppEngPacket onMessageServerSide( final PacketInventoryAction message, final MessageContext ctx )
+	{
+		final EntityPlayerMP sender = (EntityPlayerMP) ctx.getServerHandler().playerEntity;
+
+		if( sender.openContainer instanceof AEBaseContainer )
+		{
+			final AEBaseContainer baseContainer = (AEBaseContainer) sender.openContainer;
+			if( message.action == InventoryAction.AUTO_CRAFT )
+			{
+				final ContainerOpenContext context = baseContainer.getOpenContext();
+				if( context != null )
+				{
+					final TileEntity te = context.getTile();
+					Platform.openGUI( sender, te, baseContainer.getOpenContext().getSide(), GuiBridge.GUI_CRAFTING_AMOUNT );
+
+					if( sender.openContainer instanceof ContainerCraftAmount )
+					{
+						final ContainerCraftAmount cca = (ContainerCraftAmount) sender.openContainer;
+
+						if( baseContainer.getTargetStack() != null )
+						{
+							cca.getCraftingItem().putStack( baseContainer.getTargetStack().getItemStack() );
+							cca.setItemToCraft( baseContainer.getTargetStack() );
+						}
+
+						cca.detectAndSendChanges();
+					}
+				}
+			}
+			else
+			{
+				baseContainer.doAction( sender, message.action, message.slot, message.id );
+			}
+		}
+
+		return null;
 	}
 }

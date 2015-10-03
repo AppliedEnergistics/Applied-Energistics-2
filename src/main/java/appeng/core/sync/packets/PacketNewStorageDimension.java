@@ -59,6 +59,7 @@ public class PacketNewStorageDimension implements AppEngPacket, AppEngPacketHand
 		{
 			// ok!
 		}
+
 		return null;
 	}
 

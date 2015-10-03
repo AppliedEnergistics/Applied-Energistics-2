@@ -47,21 +47,25 @@ public class PacketMultiPart implements AppEngPacket, AppEngPacketHandler<Packet
 	public AppEngPacket onMessage( final PacketMultiPart message, final MessageContext ctx )
 	{
 		final IFMP fmp = (IFMP) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.FMP );
+
 		if( fmp != null )
 		{
 			final EntityPlayerMP sender = (EntityPlayerMP) ctx.getServerHandler().playerEntity;
 			MinecraftForge.EVENT_BUS.post( fmp.newFMPPacketEvent( sender ) ); // when received it just posts this event.
 		}
+
 		return null;
 	}
 
 	@Override
 	public void fromBytes( final ByteBuf buf )
 	{
+		// empty
 	}
 
 	@Override
 	public void toBytes( final ByteBuf buf )
 	{
+		// empty
 	}
 }

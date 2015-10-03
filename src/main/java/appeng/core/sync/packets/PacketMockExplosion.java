@@ -57,6 +57,7 @@ public class PacketMockExplosion implements AppEngPacket, AppEngPacketHandler<Pa
 	{
 		final World world = CommonHelper.proxy.getWorld();
 		world.spawnParticle( "largeexplode", message.x, message.y, message.z, 1.0D, 0.0D, 0.0D );
+
 		return null;
 	}
 

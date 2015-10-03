@@ -72,16 +72,19 @@ public class PacketCraftRequest implements AppEngPacket, AppEngPacketHandler<Pac
 		{
 			final ContainerCraftAmount cca = (ContainerCraftAmount) player.openContainer;
 			final Object target = cca.getTarget();
+
 			if( target instanceof IGridHost )
 			{
 				final IGridHost gh = (IGridHost) target;
 				final IGridNode gn = gh.getGridNode( ForgeDirection.UNKNOWN );
+
 				if( gn == null )
 				{
 					return null;
 				}
 
 				final IGrid g = gn.getGrid();
+
 				if( g == null || cca.getItemToCraft() == null )
 				{
 					return null;
@@ -97,6 +100,7 @@ public class PacketCraftRequest implements AppEngPacket, AppEngPacketHandler<Pac
 					futureJob = cg.beginCraftingJob( cca.getWorld(), cca.getGrid(), cca.getActionSrc(), cca.getItemToCraft(), null );
 
 					final ContainerOpenContext context = cca.getOpenContext();
+
 					if( context != null )
 					{
 						final TileEntity te = context.getTile();

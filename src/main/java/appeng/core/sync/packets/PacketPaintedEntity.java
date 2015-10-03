@@ -57,6 +57,7 @@ public class PacketPaintedEntity implements AppEngPacket, AppEngPacketHandler<Pa
 	{
 		final PlayerColor pc = new PlayerColor( message.entityId, message.myColor, message.ticks );
 		TickHandler.INSTANCE.getPlayerColors().put( message.entityId, pc );
+
 		return null;
 	}
 

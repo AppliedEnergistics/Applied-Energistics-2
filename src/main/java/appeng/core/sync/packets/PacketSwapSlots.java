@@ -55,6 +55,7 @@ public class PacketSwapSlots implements AppEngPacket, AppEngPacketHandler<Packet
 		{
 			( (AEBaseContainer) ctx.getServerHandler().playerEntity.openContainer ).swapSlotContents( message.slotA, message.slotB );
 		}
+
 		return null;
 	}
 

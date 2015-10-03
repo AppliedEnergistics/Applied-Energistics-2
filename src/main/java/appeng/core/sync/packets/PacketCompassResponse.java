@@ -58,20 +58,19 @@ public class PacketCompassResponse implements AppEngPacket, AppEngPacketHandler<
 		this.hasResult = hasResult;
 		this.spin = spin;
 		this.radians = radians;
-
 	}
 
 	@Override
 	public AppEngPacket onMessage( final PacketCompassResponse message, final MessageContext ctx )
 	{
 		CompassManager.INSTANCE.postResult( message.attunement, message.cx << 4, message.cdy << 5, message.cz << 4, message.cr );
+
 		return null;
 	}
 
 	@Override
 	public void fromBytes( final ByteBuf buf )
 	{
-
 		this.attunement = buf.readLong();
 		this.cx = buf.readInt();
 		this.cz = buf.readInt();
@@ -91,6 +90,5 @@ public class PacketCompassResponse implements AppEngPacket, AppEngPacketHandler<
 		buf.writeBoolean( this.hasResult );
 		buf.writeBoolean( this.spin );
 		buf.writeDouble( this.radians );
-
 	}
 }

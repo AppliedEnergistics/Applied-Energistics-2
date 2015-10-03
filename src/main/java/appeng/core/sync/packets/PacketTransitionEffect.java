@@ -76,8 +76,8 @@ public class PacketTransitionEffect implements AppEngPacket, AppEngPacketHandler
 			{
 				final EnergyFx fx = new EnergyFx( world, message.x + ( message.mode ? ( Platform.getRandomInt() % 100 ) * 0.01 : (
 						Platform.getRandomInt() % 100 ) * 0.005 - 0.25 ), message.y + ( message.mode ? ( Platform.getRandomInt() % 100 ) * 0.01
-								: ( Platform.getRandomInt() % 100 ) * 0.005 - 0.25 ), message.z + ( message.mode ? ( Platform.getRandomInt() % 100 ) *
-										0.01 : ( Platform.getRandomInt() % 100 ) * 0.005 - 0.25 ), Items.diamond );
+						: ( Platform.getRandomInt() % 100 ) * 0.005 - 0.25 ), message.z + ( message.mode ? ( Platform.getRandomInt() % 100 ) *
+						0.01 : ( Platform.getRandomInt() % 100 ) * 0.005 - 0.25 ), Items.diamond );
 
 				if( !message.mode )
 				{
@@ -100,6 +100,7 @@ public class PacketTransitionEffect implements AppEngPacket, AppEngPacketHandler
 					block.stepSound.getBreakSound() ), ( block.stepSound.getVolume() + 1.0F ) / 2.0F, block.stepSound.getPitch() *
 					0.8F, (float) message.x + 0.5F, (float) message.y + 0.5F, (float) message.z + 0.5F ) );
 		}
+
 		return null;
 	}
 

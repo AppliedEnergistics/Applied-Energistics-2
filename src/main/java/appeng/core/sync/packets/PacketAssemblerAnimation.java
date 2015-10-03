@@ -30,6 +30,7 @@ import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.client.ClientHelper;
 import appeng.client.EffectType;
+import appeng.core.AELog;
 import appeng.core.CommonHelper;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.AppEngPacketHandler;
@@ -65,9 +66,9 @@ public class PacketAssemblerAnimation implements AppEngPacket, AppEngPacketHandl
 	@Override
 	public AppEngPacket onMessage( final PacketAssemblerAnimation message, final MessageContext ctx )
 	{
-		final double d0 = 0.5d;// + ((double) (Platform.getRandomFloat() - 0.5F) * 0.26D);
-		final double d1 = 0.5d;// + ((double) (Platform.getRandomFloat() - 0.5F) * 0.26D);
-		final double d2 = 0.5d;// + ((double) (Platform.getRandomFloat() - 0.5F) * 0.26D);
+		final double d0 = 0.5d;
+		final double d1 = 0.5d;
+		final double d2 = 0.5d;
 		final World world = ClientHelper.proxy.getWorld();
 
 		CommonHelper.proxy.spawnEffect( EffectType.Assembler, world, message.x + d0, message.y + d1, message.z + d2, message );
@@ -82,12 +83,14 @@ public class PacketAssemblerAnimation implements AppEngPacket, AppEngPacketHandl
 		this.y = buf.readInt();
 		this.z = buf.readInt();
 		this.rate = buf.readByte();
+
 		try
 		{
 			this.is = AEItemStack.loadItemStackFromPacket( buf );
 		}
 		catch( final IOException e )
 		{
+			AELog.error( e );
 		}
 	}
 
@@ -98,12 +101,14 @@ public class PacketAssemblerAnimation implements AppEngPacket, AppEngPacketHandl
 		buf.writeInt( this.y );
 		buf.writeInt( this.z );
 		buf.writeByte( this.getRate() );
+
 		try
 		{
 			this.is.writeToPacket( buf );
 		}
 		catch( final IOException e )
 		{
+			AELog.error( e );
 		}
 	}
 

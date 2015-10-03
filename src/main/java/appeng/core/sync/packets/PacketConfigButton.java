@@ -61,6 +61,7 @@ public final class PacketConfigButton implements AppEngPacket, AppEngPacketHandl
 		if( sender.openContainer instanceof AEBaseContainer )
 		{
 			final AEBaseContainer baseContainer = (AEBaseContainer) sender.openContainer;
+
 			if( baseContainer.getTarget() instanceof IConfigurableObject )
 			{
 				final IConfigManager cm = ( (IConfigurableObject) baseContainer.getTarget() ).getConfigManager();
@@ -69,6 +70,7 @@ public final class PacketConfigButton implements AppEngPacket, AppEngPacketHandl
 				cm.putSetting( message.option, newState );
 			}
 		}
+
 		return null;
 	}
 

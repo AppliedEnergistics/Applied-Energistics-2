@@ -82,11 +82,13 @@ public class PacketPatternSlot implements AppEngPacket, AppEngPacketHandler<Pack
 	public AppEngPacket onMessage( final PacketPatternSlot message, final MessageContext ctx )
 	{
 		final EntityPlayerMP sender = (EntityPlayerMP) ctx.getServerHandler().playerEntity;
+
 		if( sender.openContainer instanceof ContainerPatternTerm )
 		{
 			final ContainerPatternTerm patternTerminal = (ContainerPatternTerm) sender.openContainer;
 			patternTerminal.craftOrGetItem( message );
 		}
+
 		return null;
 	}
 
@@ -125,9 +127,9 @@ public class PacketPatternSlot implements AppEngPacket, AppEngPacketHandler<Pack
 		return this.slotItem;
 	}
 
-	public IAEItemStack[] getPattern()
+	public IAEItemStack getPatternSlot( int i )
 	{
-		return this.pattern;
+		return this.pattern[i];
 	}
 
 	public boolean isShift()

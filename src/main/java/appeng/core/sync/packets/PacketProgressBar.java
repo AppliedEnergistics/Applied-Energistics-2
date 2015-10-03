@@ -58,6 +58,7 @@ public class PacketProgressBar implements AppEngPacket, AppEngPacketHandler<Pack
 		if( ctx.side == Side.CLIENT )
 		{
 			final Container c = Minecraft.getMinecraft().thePlayer.openContainer;
+
 			if( c instanceof AEBaseContainer )
 			{
 				( (AEBaseContainer) c ).updateFullProgressBar( message.id, message.value );
@@ -66,11 +67,13 @@ public class PacketProgressBar implements AppEngPacket, AppEngPacketHandler<Pack
 		else
 		{
 			final Container c = ctx.getServerHandler().playerEntity.openContainer;
+
 			if( c instanceof AEBaseContainer )
 			{
 				( (AEBaseContainer) c ).updateFullProgressBar( message.id, message.value );
 			}
 		}
+
 		return null;
 	}
 

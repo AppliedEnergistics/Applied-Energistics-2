@@ -82,7 +82,9 @@ public class PacketMatterCannon implements AppEngPacket, AppEngPacketHandler<Pac
 		}
 		catch( final Exception ignored )
 		{
+			// ignore
 		}
+
 		return null;
 	}
 

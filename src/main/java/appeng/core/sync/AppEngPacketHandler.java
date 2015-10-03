@@ -24,5 +24,4 @@ import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 
 public interface AppEngPacketHandler<R extends AppEngPacket, S extends AppEngPacket> extends IMessageHandler<R, S>
 {
-
 }

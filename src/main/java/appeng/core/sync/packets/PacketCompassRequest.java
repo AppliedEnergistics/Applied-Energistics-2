@@ -39,6 +39,8 @@ import appeng.services.compass.ICompassCallback;
 public class PacketCompassRequest implements AppEngPacket, AppEngPacketHandler<PacketCompassRequest, AppEngPacket>, ICompassCallback
 {
 
+	private static final int MAX_COMPASS_RANGE = 174;
+
 	private long attunement;
 	private int cx;
 	private int cz;
@@ -73,7 +75,7 @@ public class PacketCompassRequest implements AppEngPacket, AppEngPacketHandler<P
 		message.talkBackTo = ctx.getServerHandler().playerEntity;
 
 		final DimensionalCoord loc = new DimensionalCoord( ctx.getServerHandler().playerEntity.worldObj, message.cx << 4, message.cdy << 5, message.cz << 4 );
-		WorldData.instance().compassData().service().getCompassDirection( loc, 174, message );
+		WorldData.instance().compassData().service().getCompassDirection( loc, MAX_COMPASS_RANGE, message );
 
 		return null;
 	}
@@ -94,7 +96,6 @@ public class PacketCompassRequest implements AppEngPacket, AppEngPacketHandler<P
 		buf.writeInt( this.cx );
 		buf.writeInt( this.cz );
 		buf.writeInt( this.cdy );
-
 	}
 
 	public long getAttunement()

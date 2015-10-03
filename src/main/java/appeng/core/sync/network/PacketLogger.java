@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -16,12 +16,37 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.core.sync;
+package appeng.core.sync.network;
 
 
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import io.netty.handler.logging.LogLevel;
+import io.netty.handler.logging.LoggingHandler;
+
+import appeng.core.sync.AppEngPacket;
 
 
-public interface AppEngPacket extends IMessage
+public class PacketLogger extends LoggingHandler
 {
+	private String side;
+
+	public PacketLogger( String side )
+	{
+		super( LogLevel.INFO );
+
+		this.side = side;
+	}
+
+	@Override
+	protected String formatMessage( String eventName, Object msg )
+	{
+		if( msg instanceof AppEngPacket )
+		{
+			AppEngPacket packet = (AppEngPacket) msg;
+			return msg.getClass().getName() + " { side=" + this.side + ", toString=" + packet.toString() + " }";
+		}
+		else
+		{
+			return super.formatMessage( eventName, msg );
+		}
+	}
 }

@@ -61,12 +61,14 @@ public class PacketPartPlacement implements AppEngPacket, AppEngPacketHandler<Pa
 	public AppEngPacket onMessage( final PacketPartPlacement message, final MessageContext ctx )
 	{
 		final EntityPlayerMP sender = (EntityPlayerMP) ctx.getServerHandler().playerEntity;
+
 		CommonHelper.proxy.updateRenderMode( sender );
 
 		PartPlacement.setEyeHeight( message.eyeHeight );
 		PartPlacement.place( sender.getHeldItem(), message.x, message.y, message.z, message.face, sender, sender.worldObj,
 				PartPlacement.PlaceType.INTERACT_FIRST_PASS, 0 );
 		CommonHelper.proxy.updateRenderMode( null );
+
 		return null;
 	}
 

@@ -69,6 +69,7 @@ public class PacketSwitchGuis implements AppEngPacket, AppEngPacketHandler<Packe
 		else
 		{
 			final Container c = ctx.getServerHandler().playerEntity.openContainer;
+
 			if( c instanceof AEBaseContainer )
 			{
 				final AEBaseContainer bc = (AEBaseContainer) c;

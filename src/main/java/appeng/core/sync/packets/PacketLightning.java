@@ -68,7 +68,9 @@ public class PacketLightning implements AppEngPacket, AppEngPacketHandler<Packet
 		}
 		catch( final Exception ignored )
 		{
+			// ignore
 		}
+
 		return null;
 	}
 

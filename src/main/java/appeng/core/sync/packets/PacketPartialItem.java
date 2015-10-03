@@ -55,6 +55,7 @@ public class PacketPartialItem implements AppEngPacket, AppEngPacketHandler<Pack
 		{
 			( (AEBaseContainer) ctx.getServerHandler().playerEntity.openContainer ).postPartial( message );
 		}
+
 		return null;
 	}
 
