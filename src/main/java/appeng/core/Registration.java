@@ -19,7 +19,6 @@
 package appeng.core;
 
 
-import appeng.recipes.game.*;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -89,6 +88,11 @@ import appeng.me.cache.TickManagerCache;
 import appeng.me.storage.AEExternalHandler;
 import appeng.parts.PartPlacement;
 import appeng.recipes.AEItemResolver;
+import appeng.recipes.game.DisassembleRecipe;
+import appeng.recipes.game.FacadeRecipe;
+import appeng.recipes.game.ShapedRecipe;
+import appeng.recipes.game.ShapelessRecipe;
+import appeng.recipes.game.WirelessTerminalRecipe;
 import appeng.recipes.RecipeHandler;
 import appeng.recipes.handlers.Crusher;
 import appeng.recipes.handlers.Grind;

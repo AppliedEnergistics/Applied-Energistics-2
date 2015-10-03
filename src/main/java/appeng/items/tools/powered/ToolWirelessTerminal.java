@@ -18,7 +18,19 @@
 
 package appeng.items.tools.powered;
 
+import java.util.EnumSet;
+import java.util.List;
+
 import com.google.common.base.Optional;
+
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.World;
+import net.minecraftforge.client.MinecraftForgeClient;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 import appeng.api.AEApi;
 import appeng.api.config.Settings;
@@ -36,17 +48,6 @@ import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.world.World;
-import net.minecraftforge.client.MinecraftForgeClient;
-
-import java.util.EnumSet;
-import java.util.List;
 
 
 public class ToolWirelessTerminal extends AEBasePoweredItem implements IWirelessTermHandler

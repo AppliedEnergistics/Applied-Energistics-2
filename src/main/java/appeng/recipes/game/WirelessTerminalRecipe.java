@@ -1,8 +1,26 @@
+/*
+ * This file is part of Applied Energistics 2.
+ * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ *
+ * Applied Energistics 2 is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Applied Energistics 2 is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
+ */
+
 package appeng.recipes.game;
 
-import appeng.api.AEApi;
-import appeng.api.definitions.IComparableDefinition;
-import appeng.api.definitions.IDefinitions;
+import java.util.ArrayList;
+import javax.annotation.Nullable;
+
 import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
@@ -12,12 +30,10 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
 
-import javax.annotation.Nullable;
-import java.util.ArrayList;
+import appeng.api.AEApi;
+import appeng.api.definitions.IComparableDefinition;
+import appeng.api.definitions.IDefinitions;
 
-/**
- * Created by Tom on 10/2/2015.
- */
 public class WirelessTerminalRecipe implements IRecipe
 {
 
@@ -63,39 +79,29 @@ public class WirelessTerminalRecipe implements IRecipe
     {
         ItemStack inputTerminal = null;
         String color = null;
+        int numIngredients = 0;
         for( int i = 0; i < 9; i++ )
         {
             //If the slot is empty, ignore it
             if( inv.getStackInSlot( i ) != null )
             {
+                numIngredients++;
                 //if it contains a terminal, return that terminal
-                if( inputTerminal==null && this.terminal.isSameAs( inv.getStackInSlot( i ) ) )
+                if( this.terminal.isSameAs( inv.getStackInSlot( i ) ) )
                 {
                     inputTerminal = inv.getStackInSlot( i );
                 }
-                //If no dye is found yet, then check if the item is a dye
-                else if( color == null )
+                else
                 {
                     //check if the other item is a dye
                     color = getColorFromItem( inv.getStackInSlot( i ) );
-
-                    //Check if a color was found or not
-                    if( color == null )
-                    {
-                        return null;
-                    }
-                }
-                //if the item matches nothing fail
-                else
-                {
-                    return null;
                 }
             }
 
         }
 
         //Check if both a terminal and a dye were found
-        if( inputTerminal==null || color == null )
+        if( inputTerminal==null || color == null || numIngredients!=2)
         {
             return null;
         }

@@ -1,19 +1,35 @@
+/*
+ * This file is part of Applied Energistics 2.
+ * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ *
+ * Applied Energistics 2 is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Applied Energistics 2 is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
+ */
+
 package appeng.client.render.items;
 
 import org.lwjgl.opengl.GL11;
 
-import appeng.api.util.AEColor;
-import appeng.client.texture.ExtraItemTextures;
-import appeng.items.tools.powered.ToolWirelessTerminal;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.client.IItemRenderer;
 
-/**
- * Created by Tom on 9/30/2015.
- */
+import appeng.api.util.AEColor;
+import appeng.client.texture.ExtraItemTextures;
+import appeng.items.tools.powered.ToolWirelessTerminal;
+
 public class ToolWirelessTerminalRender implements IItemRenderer
 {
 
@@ -43,7 +59,8 @@ public class ToolWirelessTerminalRender implements IItemRenderer
         float r = 0;
         float g = 0;
         float b = 0;
-        if( color!=null ) {
+        if( color!=null )
+        {
             int medColor = color.mediumVariant;
             r = ( medColor >> 16 ) & 0xFF;
             g = ( medColor >> 8 ) & 0xFF;
