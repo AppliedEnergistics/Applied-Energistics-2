@@ -134,7 +134,7 @@ public final class ApiItems implements IItems
 
 		this.entropyManipulator = constructor.registerItemDefinition( new ToolEntropyManipulator() );
 		this.wirelessTerminal = constructor.registerItemDefinition( new ToolWirelessTerminal() );
-		this.coloredWirelessTerminal = constructor.constructColoredDefinition(this.wirelessTerminal, 0);
+		this.coloredWirelessTerminal = constructor.constructColoredDefinition( this.wirelessTerminal, 0 );
 		this.biometricCard = constructor.registerItemDefinition( new ToolBiometricCard() );
 		this.chargedStaff = constructor.registerItemDefinition( new ToolChargedStaff() );
 		this.massCannon = constructor.registerItemDefinition( new ToolMassCannon() );

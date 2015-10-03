@@ -55,13 +55,13 @@ public class ToolWirelessTerminalRender implements IItemRenderer
             icon = item.getIconIndex();
         }
 
-        AEColor color = ToolWirelessTerminal.getColor( item );
+        final AEColor color = ToolWirelessTerminal.getColor( item );
         float r = 0;
         float g = 0;
         float b = 0;
         if( color!=null )
         {
-            int medColor = color.mediumVariant;
+            final int medColor = color.mediumVariant;
             r = ( medColor >> 16 ) & 0xFF;
             g = ( medColor >> 8 ) & 0xFF;
             b = medColor & 0xFF;

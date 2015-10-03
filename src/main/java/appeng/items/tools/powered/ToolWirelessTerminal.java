@@ -69,7 +69,7 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 		final NBTTagCompound c = item.getTagCompound();
 		if( c != null && c.hasKey( "color" ) )
 		{
-			String color = c.getString( "color" );
+			final String color = c.getString( "color" );
 			if( color != null )
 			{
 				try
@@ -94,7 +94,7 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 
 		if( color != null && Platform.isClient() )
 		{
-			String extra = Platform.gui_localize( color.unlocalizedName );
+			final String extra = Platform.gui_localize( color.unlocalizedName );
 			return super.getItemStackDisplayName( par1ItemStack ) + " - " + extra;
 		}
 		else
@@ -124,7 +124,7 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 
 		if( isLinked( stack ) )
 		{
-			lines.add(GuiText.Linked.getLocal());
+			lines.add( GuiText.Linked.getLocal() );
 		}
 		else
 		{

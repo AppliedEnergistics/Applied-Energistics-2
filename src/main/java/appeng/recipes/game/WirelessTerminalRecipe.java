@@ -19,6 +19,7 @@
 package appeng.recipes.game;
 
 import java.util.ArrayList;
+
 import javax.annotation.Nullable;
 
 import net.minecraft.init.Items;
@@ -101,22 +102,22 @@ public class WirelessTerminalRecipe implements IRecipe
         }
 
         //Check if both a terminal and a dye were found
-        if( inputTerminal==null || color == null || numIngredients!=2)
+        if( inputTerminal==null || color == null || numIngredients!=2 )
         {
             return null;
         }
 
-        ItemStack output = ItemStack.copyItemStack( inputTerminal );
+        final ItemStack output = ItemStack.copyItemStack( inputTerminal );
         if( createTerminal )
         {
-            NBTTagCompound tag = output.getTagCompound();
+            final NBTTagCompound tag = output.getTagCompound();
             tag.setString( "color", color );
         }
 
         return output;
     }
 
-    private String getColorFromItem(ItemStack potentialColor)
+    private String getColorFromItem( final ItemStack potentialColor )
     {
         //check if the "color" is water, in which case return fluix
         if( ItemStack.areItemStacksEqual( waterBucket, potentialColor ) )
@@ -125,10 +126,10 @@ public class WirelessTerminalRecipe implements IRecipe
         }
 
         //check through the ore dictionary to see if the item is a dye
-        for( String dye : dyes )
+        for( final String dye : dyes )
         {
-            ArrayList<ItemStack> dyeItems = OreDictionary.getOres( dye );
-            for( ItemStack itm : dyeItems )
+            final ArrayList<ItemStack> dyeItems = OreDictionary.getOres( dye );
+            for( final ItemStack itm : dyeItems )
             {
                 if( OreDictionary.itemMatches( potentialColor, itm, true ) )
                 {
