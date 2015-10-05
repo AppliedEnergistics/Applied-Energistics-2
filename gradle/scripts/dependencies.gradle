@@ -1,7 +1,7 @@
 
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -16,77 +16,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
-
-
-
-repositories {
-    mavenLocal()
-    maven {
-        name "ChickenBones"
-        url "http://chickenbones.net/maven/"
-    }
-
-    maven {
-        name "Mobius"
-        url "http://mobiusstrip.eu/maven"
-    }
-
-    maven {
-        name "FireBall API Depot"
-        url "http://dl.tsr.me/artifactory/libs-release-local"
-    }
-
-    maven {
-        name = "Player"
-        url = "http://maven.ic2.player.to/"
-    }
-
-    maven {
-        name = "Tterrag"
-        url = "http://maven.tterrag.com/"
-    }
-
-    maven  {
-        name = "RX14 Proxy"
-        url = "http://mvn.rx14.co.uk/repo/"
-    }
-
-    maven {
-        name "OpenComputers Repo"
-        url = "http://maven.cil.li/"
-    }
-
-    maven {
-        name = "MM repo"
-        url = "http://maven.k-4u.nl/"
-    }
-
-    ivy {
-        name "BuildCraft"
-        artifactPattern "http://www.mod-buildcraft.com/releases/BuildCraft/[revision]/[module]-[revision]-[classifier].[ext]"
-    }
-
-//  CurseForge DNS for TE is not available or I am just being unlucky, code part can stay since this is applicable to any other curseforge mod though
-//    ivy {
-//        name = "CoFHLib"
-//        artifactPattern "http://addons.cursecdn.com/files/2212/893/[module]-[revision].[ext]"
-//    }
-//
-//    ivy {
-//        name = "CoFHCore"
-//        artifactPattern "http://addons.cursecdn.com/files/2212/895/[module]-[revision].[ext]"
-//    }
-
-//    ivy {
-//        name = "ThermalExpansion"
-//        artifactPattern "http://addons.curse.cursecdn.com/files/2212/446/[module]-[revision].[ext]"
-//    }
-
-//    ivy {
-//        name = "ThermalFoundation"
-//        artifactPattern "http://addons.curse.cursecdn.com/files/2212/444/[module]-[revision].[ext]"
-//    }
-}
 
 configurations {
     mods
@@ -120,20 +49,20 @@ dependencies {
     compile "li.cil.oc:OpenComputers:MC${minecraft_version}-${opencomputers_version}:api"
     compile "net.industrial-craft:industrialcraft-2:${ic2_version}-experimental:api"
     compile "net.mcft.copy.betterstorage:BetterStorage:${minecraft_version}-${betterstorage_version}:api"
+    compile "coloredlightscore:ColoredLightsCore:1.3.7.39:api"
 
     // self compiled APIs
     compile "appeng:Waila:${waila_version}_${minecraft_version}:api"
     compile "appeng:RotaryCraft:${rotarycraft_version}:api"
     compile "appeng:mekanism:${minecraft_version}-${mekansim_version}:api"
     compile "appeng:InventoryTweaks:${invtweaks_version}:api"
+    compile "appeng:immibis-core:${immibis_version}:api"
+    compile "appeng:mfr:${mfr_version}:api"
+    compile "appeng:railcraft:${railcraft_version}:api"
+    compile "appeng:cofhcore:${cofhcore_version}:api"
 
-    // self compiled stubs
-    compile(group: 'api', name: 'coloredlightscore', version: "${api_coloredlightscore_version}")
-    compile(group: 'api', name: 'craftguide', version: "${api_craftguide_version}")
-    compile(group: 'api', name: 'immibis', version: "${api_immibis_version}")
-    compile(group: 'api', name: 'mfr', version: "${api_mfr_version}")
-    compile(group: 'api', name: 'railcraft', version: "${api_railcraft_version}")
-    compile(group: 'api', name: 'rf', version: "${api_rf_version}")
+    // self hosted artifacts
+    compile "uristqwerty:CraftGuide:${craftguide_version}"
 
     testCompile "junit:junit:4.11"
 }

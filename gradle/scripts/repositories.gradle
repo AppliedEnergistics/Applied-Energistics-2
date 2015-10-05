@@ -1,0 +1,104 @@
+
+/*
+ * This file is part of Applied Energistics 2.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
+ *
+ * Applied Energistics 2 is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Applied Energistics 2 is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
+ */
+
+repositories {
+
+    //// local maven to potentially speedup the dependency lookup
+    mavenLocal()
+
+    //// This repo hosts our self compiled apis or artifacts and acts as proxy to other repos.
+    maven {
+        name "orod maven"
+        url "http://maven.orod.org/repository/internal"
+    }
+
+    //// ivy repos are not an option to proxy throug a maven repo, thus they need be defined here.
+    ivy {
+        name "BuildCraft"
+        artifactPattern "http://www.mod-buildcraft.com/releases/BuildCraft/[revision]/[module]-[revision]-[classifier].[ext]"
+    }
+    
+    //// These repositories are provided via proxy by "orod maven"
+    //// Kept as documentation or in case it is unreachable 
+    //    maven {
+    //        name "ChickenBones"
+    //        url "http://chickenbones.net/maven/"
+    //    }
+    //
+    //    maven {
+    //        name "Mobius"
+    //        url "http://mobiusstrip.eu/maven"
+    //    }
+    //
+    //    maven {
+    //        name "FireBall API Depot"
+    //        url "http://dl.tsr.me/artifactory/libs-release-local"
+    //    }
+    //
+    //    maven {
+    //        name = "Player"
+    //        url = "http://maven.ic2.player.to/"
+    //    }
+    //
+    //    maven {
+    //        name = "Tterrag"
+    //        url = "http://maven.tterrag.com/"
+    //    }
+    //
+    //    maven  {
+    //        name = "RX14 Proxy"
+    //        url = "http://mvn.rx14.co.uk/repo/"
+    //    }
+    //
+    //    maven {
+    //        name "OpenComputers Repo"
+    //        url = "http://maven.cil.li/"
+    //    }
+    //
+    //    maven {
+    //        name = "MM repo"
+    //        url = "http://maven.k-4u.nl/"
+    //    }
+    //
+    //      maven {
+    //        name = "ColoredLights"
+    //        url = "http://coloredlightscore.us.to/maven/clc/"
+    //    }
+
+////  CurseForge DNS for TE is not available or I am just being unlucky, code part can stay since this is applicable to any other curseforge mod though
+//    ivy {
+//        name = "CoFHLib"
+//        artifactPattern "http://addons.cursecdn.com/files/2212/893/[module]-[revision].[ext]"
+//    }
+//
+//    ivy {
+//        name = "CoFHCore"
+//        artifactPattern "http://addons.cursecdn.com/files/2212/895/[module]-[revision].[ext]"
+//    }
+
+//    ivy {
+//        name = "ThermalExpansion"
+//        artifactPattern "http://addons.curse.cursecdn.com/files/2212/446/[module]-[revision].[ext]"
+//    }
+
+//    ivy {
+//        name = "ThermalFoundation"
+//        artifactPattern "http://addons.curse.cursecdn.com/files/2212/444/[module]-[revision].[ext]"
+//    }
+}

@@ -1,12 +1,13 @@
 // searches for NEI and Chicken stuff from compile set
 // and adds them to the mods in run dir
-task copyChicken(type: Copy, dependsOn: "extractUserDev") {
-    from { configurations.compile }
-    include "**/*Chicken*.jar", "**/*NotEnoughItems*.jar"
-    exclude "**/CodeChickenLib*" // because CCC downloads it anyways.. -_-
-    into file(minecraft.runDir + "/mods")
-    mustRunAfter "deobfBinJar"
-    mustRunAfter "repackMinecraft"
-}
-tasks.setupDevWorkspace.dependsOn copyChicken
-tasks.setupDecompWorkspace.dependsOn copyChicken
+// now done by forge, kept for historical reasons
+//task copyChicken(type: Copy, dependsOn: "extractUserDev") {
+//    from { configurations.compile }
+//    include "**/*Chicken*.jar", "**/*NotEnoughItems*.jar"
+//    exclude "**/CodeChickenLib*" // because CCC downloads it anyways.. -_-
+//    into file(minecraft.runDir + "/mods")
+//    mustRunAfter "deobfBinJar"
+//    mustRunAfter "repackMinecraft"
+//}
+//tasks.setupDevWorkspace.dependsOn copyChicken
+//tasks.setupDecompWorkspace.dependsOn copyChicken

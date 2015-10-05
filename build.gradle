@@ -18,6 +18,7 @@
 
 apply plugin: 'forge'
 
+apply from: 'gradle/scripts/repositories.gradle'
 apply from: 'gradle/scripts/dependencies.gradle'
 apply from: 'gradle/scripts/artifacts.gradle'
 apply from: 'gradle/scripts/autoinstallruntime.gradle'

@@ -30,7 +30,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
 import mods.immibis.core.api.multipart.ICoverSystem;
-import mods.immibis.core.api.multipart.IMultipartTile;
+import mods.immibis.core.api.multipart.ICoverableTile;
 
 import appeng.api.AEApi;
 import appeng.api.definitions.IBlockDefinition;
@@ -56,8 +56,8 @@ public class ImmibisMicroblocks implements IImmibisMicroblocks, IIntegrationModu
 	@Reflected
 	public ImmibisMicroblocks()
 	{
-		IntegrationHelper.testClassExistence( this, mods.immibis.core.api.multipart.IMultipartTile.class );
 		IntegrationHelper.testClassExistence( this, mods.immibis.core.api.multipart.ICoverSystem.class );
+		IntegrationHelper.testClassExistence( this, mods.immibis.core.api.multipart.ICoverableTile.class );
 		IntegrationHelper.testClassExistence( this, mods.immibis.core.api.multipart.IPartContainer.class );
 	}
 
@@ -91,7 +91,7 @@ public class ImmibisMicroblocks implements IImmibisMicroblocks, IIntegrationModu
 		final int z = te.zCoord;
 		final boolean isPartItem = player != null && player.getHeldItem() != null && player.getHeldItem().getItem() instanceof IPartItem;
 
-		if( te instanceof IMultipartTile && this.canConvertTiles && isPartItem )
+		if( te instanceof ICoverableTile && this.canConvertTiles && isPartItem )
 		{
 			final IBlockDefinition multiPart = AEApi.instance().definitions().blocks().multiPart();
 			final Optional<Block> maybeMultiPartBlock = multiPart.maybeBlock();
@@ -130,9 +130,9 @@ public class ImmibisMicroblocks implements IImmibisMicroblocks, IIntegrationModu
 	@Override
 	public boolean leaveParts( final TileEntity te )
 	{
-		if( te instanceof IMultipartTile )
+		if( te instanceof ICoverableTile )
 		{
-			final ICoverSystem ci = ( (IMultipartTile) te ).getCoverSystem();
+			final ICoverSystem ci = ( (ICoverableTile) te ).getCoverSystem();
 			if( ci != null )
 			{
 				ci.convertToContainerBlock();
