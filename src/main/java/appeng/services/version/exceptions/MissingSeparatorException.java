@@ -16,42 +16,20 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.services.version;
-
-
-import javax.annotation.Nonnegative;
-import javax.annotation.Nonnull;
+package appeng.services.version.exceptions;
 
 
 /**
- * AE prints version like rv2-beta-8
- * GitHub prints version like rv2.beta.8
+ * Indicates a version without a valid separator.
+ *
+ * Valid separators are a dash ("-") or dot (".")
  */
-public final class DefaultVersion extends BaseVersion
+public class MissingSeparatorException extends VersionCheckerException
 {
-	/**
-	 * @param revision natural number
-	 * @param channel either alpha, beta or release
-	 * @param build natural number
-	 */
-	public DefaultVersion( @Nonnegative final int revision, @Nonnull final Channel channel, @Nonnegative final int build )
+	private static final long serialVersionUID = 8366370192017020750L;
+
+	public MissingSeparatorException()
 	{
-		super( revision, channel, build );
-	}
-
-	@Override
-	public boolean isNewerAs( final Version maybeOlder )
-	{
-		if( this.revision() > maybeOlder.revision() )
-		{
-			return true;
-		}
-
-		if( this.channel().compareTo( maybeOlder.channel() ) > 0 )
-		{
-			return true;
-		}
-
-		return this.build() > maybeOlder.build();
+		super( "Invalid Revision: Needs to match 'rv' followed by a natural number." );
 	}
 }

@@ -16,42 +16,18 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.services.version;
-
-
-import javax.annotation.Nonnegative;
-import javax.annotation.Nonnull;
+package appeng.services.version.exceptions;
 
 
 /**
- * AE prints version like rv2-beta-8
- * GitHub prints version like rv2.beta.8
+ * Indicates a invalid build number, which is any string except a natural number.
  */
-public final class DefaultVersion extends BaseVersion
+public class InvalidBuildException extends VersionCheckerException
 {
-	/**
-	 * @param revision natural number
-	 * @param channel either alpha, beta or release
-	 * @param build natural number
-	 */
-	public DefaultVersion( @Nonnegative final int revision, @Nonnull final Channel channel, @Nonnegative final int build )
+	private static final long serialVersionUID = 3015432444672364991L;
+
+	public InvalidBuildException()
 	{
-		super( revision, channel, build );
-	}
-
-	@Override
-	public boolean isNewerAs( final Version maybeOlder )
-	{
-		if( this.revision() > maybeOlder.revision() )
-		{
-			return true;
-		}
-
-		if( this.channel().compareTo( maybeOlder.channel() ) > 0 )
-		{
-			return true;
-		}
-
-		return this.build() > maybeOlder.build();
+		super( "Invalid Build: Needs to be a natural number." );
 	}
 }

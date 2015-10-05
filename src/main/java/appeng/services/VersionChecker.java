@@ -21,6 +21,10 @@ package appeng.services;
 
 import java.util.Date;
 
+import javax.annotation.Nonnull;
+
+import com.google.common.base.Preconditions;
+
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.event.FMLInterModComms;
@@ -64,30 +68,40 @@ public final class VersionChecker implements Runnable
 	private static final int MS_TO_SEC = 1000;
 	private final VersionCheckerConfig config;
 
-	public VersionChecker( final VersionCheckerConfig config )
+	public VersionChecker( @Nonnull final VersionCheckerConfig config )
 	{
+		Preconditions.checkNotNull( config );
+
 		this.config = config;
 	}
 
 	@Override
 	public void run()
 	{
-		Thread.yield();
+		try
+		{
+			Thread.yield();
 
-		// persist the config
-		this.config.save();
+			// persist the config
+			this.config.save();
 
-		// retrieve data
-		final String rawLastCheck = this.config.lastCheck();
+			// retrieve data
+			final String rawLastCheck = this.config.lastCheck();
 
-		// process data
-		final long lastCheck = Long.parseLong( rawLastCheck );
-		final Date now = new Date();
-		final long nowInMs = now.getTime();
-		final long intervalInMs = this.config.interval() * SEC_TO_HOUR * MS_TO_SEC;
-		final long lastAfterInterval = lastCheck + intervalInMs;
+			// process data
+			final long lastCheck = Long.parseLong( rawLastCheck );
+			final Date now = new Date();
+			final long nowInMs = now.getTime();
+			final long intervalInMs = this.config.interval() * SEC_TO_HOUR * MS_TO_SEC;
+			final long lastAfterInterval = lastCheck + intervalInMs;
 
-		this.processInterval( nowInMs, lastAfterInterval );
+			this.processInterval( nowInMs, lastAfterInterval );
+		}
+		catch( Exception exception )
+		{
+			// Log any unhandled exception to prevent the JVM from reporting them as unhandled.
+			AELog.error( exception );
+		}
 
 		AELog.info( "Stopping AE2 VersionChecker" );
 	}
@@ -125,7 +139,7 @@ public final class VersionChecker implements Runnable
 	 * @param modVersion    version of mod
 	 * @param githubRelease release retrieved through github
 	 */
-	private void processVersions( final Version modVersion, final FormattedRelease githubRelease )
+	private void processVersions( @Nonnull final Version modVersion, @Nonnull final FormattedRelease githubRelease )
 	{
 		final Version githubVersion = githubRelease.version();
 		final String modFormatted = modVersion.formatted();
@@ -160,7 +174,7 @@ public final class VersionChecker implements Runnable
 	 * @param ghFormatted  retrieved github version formatted as rv2-beta-8
 	 * @param changelog    retrieved github changelog
 	 */
-	private void interactWithVersionCheckerMod( final String modFormatted, final String ghFormatted, final String changelog )
+	private void interactWithVersionCheckerMod( @Nonnull final String modFormatted, @Nonnull final String ghFormatted, @Nonnull final String changelog )
 	{
 		if( Loader.isModLoaded( "VersionChecker" ) )
 		{
