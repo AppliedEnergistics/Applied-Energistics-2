@@ -1,7 +1,7 @@
 shaped=
-    _ mc:glowstone_dust ae2:BlockQuartzGlass,
-    mc:iron_ingot mc:redstone ae2:BlockQuartzGlass,
-    _ mc:glowstone_dust ae2:BlockQuartzGlass
+    _ oredictionary:dustGlowstone ae2:BlockQuartzGlass,
+    oredictionary:ingotIron oredictionary:dustRedstone ae2:BlockQuartzGlass,
+    _ oredictionary:dustGlowstone ae2:BlockQuartzGlass
     -> 3 ae2:ItemPart.SemiDarkMonitor
 
 shapeless=

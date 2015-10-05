@@ -1,5 +1,5 @@
 inscribe=
-    mc:gold_ingot ae2:ItemMaterial.LogicProcessorPress
+    oredictionary:ingotGold ae2:ItemMaterial.LogicProcessorPress
     -> ae2:ItemMaterial.LogicProcessorPrint
 
 inscribe=

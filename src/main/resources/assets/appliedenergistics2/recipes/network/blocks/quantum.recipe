@@ -7,7 +7,7 @@ shaped=
 
 # Quantum Ring
 shaped=
-    mc:iron_ingot ae2:ItemMaterial.LogicProcessor mc:iron_ingot,
+    oredictionary:ingotIron ae2:ItemMaterial.LogicProcessor oredictionary:ingotIron,
     ae2:ItemMaterial.EngProcessor ae2:BlockEnergyCell densecable,
-    mc:iron_ingot ae2:ItemMaterial.LogicProcessor mc:iron_ingot,
+    oredictionary:ingotIron ae2:ItemMaterial.LogicProcessor oredictionary:ingotIron,
     -> ae2:BlockQuantumRing
