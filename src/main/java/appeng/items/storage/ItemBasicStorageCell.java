@@ -308,6 +308,6 @@ public final class ItemBasicStorageCell extends AEBaseItem implements IStorageCe
 	@Override
 	public boolean hasContainerItem( final ItemStack stack )
 	{
-		return AEConfig.instance.isFeatureEnabled( AEFeature.enableDisassemblyCrafting );
+		return AEConfig.instance.isFeatureEnabled( AEFeature.EnableDisassemblyCrafting );
 	}
 }

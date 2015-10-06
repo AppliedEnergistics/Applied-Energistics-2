@@ -19,6 +19,11 @@
 package appeng.core;
 
 
+import java.io.File;
+import javax.annotation.Nonnull;
+
+import com.google.common.base.Preconditions;
+
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -88,6 +93,7 @@ import appeng.me.cache.TickManagerCache;
 import appeng.me.storage.AEExternalHandler;
 import appeng.parts.PartPlacement;
 import appeng.recipes.AEItemResolver;
+import appeng.recipes.CustomRecipeConfig;
 import appeng.recipes.RecipeHandler;
 import appeng.recipes.game.DisassembleRecipe;
 import appeng.recipes.game.FacadeRecipe;
@@ -117,16 +123,19 @@ import appeng.worldgen.QuartzWorldGen;
 
 public final class Registration
 {
-	public static final Registration INSTANCE = new Registration();
-
 	private final RecipeHandler recipeHandler;
 	private final DefinitionConverter converter;
-	public BiomeGenBase storageBiome;
+	private BiomeGenBase storageBiome;
 
-	private Registration()
+	Registration()
 	{
 		this.converter = new DefinitionConverter();
 		this.recipeHandler = new RecipeHandler();
+	}
+
+	public BiomeGenBase getStorageBiome()
+	{
+		return this.storageBiome;
 	}
 
 	public void preInitialize( final FMLPreInitializationEvent event )
@@ -503,8 +512,13 @@ public final class Registration
 		target.itemLumenPaintBall = source.coloredLumenPaintBall();
 	}
 
-	public void initialize( final FMLInitializationEvent event )
+	public void initialize( @Nonnull final FMLInitializationEvent event, @Nonnull final File recipeDirectory, @Nonnull final CustomRecipeConfig customRecipeConfig )
 	{
+		Preconditions.checkNotNull( event );
+		Preconditions.checkNotNull( recipeDirectory );
+		Preconditions.checkArgument( !recipeDirectory.isFile() );
+		Preconditions.checkNotNull( customRecipeConfig );
+
 		final IAppEngApi api = AEApi.instance();
 		final IPartHelper partHelper = api.partHelper();
 		final IRegistryContainer registries = api.registries();
@@ -512,7 +526,7 @@ public final class Registration
 		// Perform ore camouflage!
 		ItemMultiMaterial.instance.makeUnique();
 
-		final Runnable recipeLoader = new RecipeLoader( this.recipeHandler );
+		final Runnable recipeLoader = new RecipeLoader( recipeDirectory, customRecipeConfig, this.recipeHandler );
 		recipeLoader.run();
 
 		partHelper.registerNewLayer( "appeng.parts.layers.LayerISidedInventory", "net.minecraft.inventory.ISidedInventory" );
@@ -554,13 +568,13 @@ public final class Registration
 		registration.registerAchievementHandlers();
 		registration.registerAchievements();
 
-		if( AEConfig.instance.isFeatureEnabled( AEFeature.enableDisassemblyCrafting ) )
+		if( AEConfig.instance.isFeatureEnabled( AEFeature.EnableDisassemblyCrafting ) )
 		{
 			GameRegistry.addRecipe( new DisassembleRecipe() );
 			RecipeSorter.register( "appliedenergistics2:disassemble", DisassembleRecipe.class, Category.SHAPELESS, "after:minecraft:shapeless" );
 		}
 
-		if( AEConfig.instance.isFeatureEnabled( AEFeature.enableFacadeCrafting ) )
+		if( AEConfig.instance.isFeatureEnabled( AEFeature.EnableFacadeCrafting ) )
 		{
 			GameRegistry.addRecipe( new FacadeRecipe() );
 			RecipeSorter.register( "appliedenergistics2:facade", FacadeRecipe.class, Category.SHAPED, "after:minecraft:shaped" );

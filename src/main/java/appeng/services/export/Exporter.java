@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -16,31 +16,20 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.server;
+package appeng.services.export;
 
 
-import appeng.server.subcommands.ChunkLogger;
-import appeng.server.subcommands.Supporters;
-
-
-public enum Commands
+/**
+ * General purpose interface to define an export operation with side effects
+ *
+ * @author thatsIch
+ * @version rv3 - 19.08.2015
+ * @since rv3 19.08.2015
+ */
+interface Exporter
 {
-	Chunklogger( 4, new ChunkLogger() ),
-	Supporters( 0, new Supporters() );
-
-	public final int level;
-	public final ISubCommand command;
-
-	Commands( final int level, final ISubCommand w )
-	{
-		this.level = level;
-		this.command = w;
-	}
-
-	@Override
-	public String toString()
-	{
-		return this.name();
-	}
-
+	/**
+	 * Will export something defined by the Exporter with side effects
+	 */
+	void export();
 }
