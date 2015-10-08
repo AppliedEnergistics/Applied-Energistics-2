@@ -83,18 +83,18 @@ public class TileSecurity extends AENetworkTile implements ITerminalHost, IAEApp
 {
 
 	private static int difference = 0;
-	public final AppEngInternalInventory configSlot = new AppEngInternalInventory( this, 1 );
+	private final AppEngInternalInventory configSlot = new AppEngInternalInventory( this, 1 );
 	private final IConfigManager cm = new ConfigManager( this );
 	private final SecurityInventory inventory = new SecurityInventory( this );
 	private final MEMonitorHandler<IAEItemStack> securityMonitor = new MEMonitorHandler<IAEItemStack>( this.inventory );
-	public long securityKey;
-	AEColor paintedColor = AEColor.Transparent;
+	private long securityKey;
+	private AEColor paintedColor = AEColor.Transparent;
 	private boolean isActive = false;
 
 	public TileSecurity()
 	{
-		this.gridProxy.setFlags( GridFlags.REQUIRE_CHANNEL );
-		this.gridProxy.setIdlePowerUsage( 2.0 );
+		this.getProxy().setFlags( GridFlags.REQUIRE_CHANNEL );
+		this.getProxy().setIdlePowerUsage( 2.0 );
 		difference++;
 
 		this.securityKey = System.currentTimeMillis() * 10 + difference;
@@ -120,12 +120,12 @@ public class TileSecurity extends AENetworkTile implements ITerminalHost, IAEApp
 			final BlockPos pos,
 			final List<ItemStack> drops )
 	{
-		if( !this.configSlot.isEmpty() )
+		if( !this.getConfigSlot().isEmpty() )
 		{
-			drops.add( this.configSlot.getStackInSlot( 0 ) );
+			drops.add( this.getConfigSlot().getStackInSlot( 0 ) );
 		}
 
-		for( final IAEItemStack ais : this.inventory.storedItems )
+		for( final IAEItemStack ais : this.inventory.getStoredItems() )
 		{
 			drops.add( ais.getItemStack() );
 		}
@@ -151,7 +151,7 @@ public class TileSecurity extends AENetworkTile implements ITerminalHost, IAEApp
 	@TileEvent( TileEventType.NETWORK_WRITE )
 	public void writeToStream_TileSecurity( final ByteBuf data )
 	{
-		data.writeBoolean( this.gridProxy.isActive() );
+		data.writeBoolean( this.getProxy().isActive() );
 		data.writeByte( this.paintedColor.ordinal() );
 	}
 
@@ -162,12 +162,12 @@ public class TileSecurity extends AENetworkTile implements ITerminalHost, IAEApp
 		data.setByte( "paintedColor", (byte) this.paintedColor.ordinal() );
 
 		data.setLong( "securityKey", this.securityKey );
-		this.configSlot.writeToNBT( data, "config" );
+		this.getConfigSlot().writeToNBT( data, "config" );
 
 		final NBTTagCompound storedItems = new NBTTagCompound();
 
 		int offset = 0;
-		for( final IAEItemStack ais : this.inventory.storedItems )
+		for( final IAEItemStack ais : this.inventory.getStoredItems() )
 		{
 			final NBTTagCompound it = new NBTTagCompound();
 			ais.getItemStack().writeToNBT( it );
@@ -188,7 +188,7 @@ public class TileSecurity extends AENetworkTile implements ITerminalHost, IAEApp
 		}
 
 		this.securityKey = data.getLong( "securityKey" );
-		this.configSlot.readFromNBT( data, "config" );
+		this.getConfigSlot().readFromNBT( data, "config" );
 
 		final NBTTagCompound storedItems = data.getCompoundTag( "storedItems" );
 		for( final Object key : storedItems.getKeySet() )
@@ -196,7 +196,7 @@ public class TileSecurity extends AENetworkTile implements ITerminalHost, IAEApp
 			final NBTBase obj = storedItems.getTag( (String) key );
 			if( obj instanceof NBTTagCompound )
 			{
-				this.inventory.storedItems.add( AEItemStack.create( ItemStack.loadItemStackFromNBT( (NBTTagCompound) obj ) ) );
+				this.inventory.getStoredItems().add( AEItemStack.create( ItemStack.loadItemStackFromNBT( (NBTTagCompound) obj ) ) );
 			}
 		}
 	}
@@ -206,7 +206,7 @@ public class TileSecurity extends AENetworkTile implements ITerminalHost, IAEApp
 		try
 		{
 			this.saveChanges();
-			this.gridProxy.getGrid().postEvent( new MENetworkSecurityChange() );
+			this.getProxy().getGrid().postEvent( new MENetworkSecurityChange() );
 		}
 		catch( final GridAccessException e )
 		{
@@ -290,7 +290,7 @@ public class TileSecurity extends AENetworkTile implements ITerminalHost, IAEApp
 
 	public boolean isPowered()
 	{
-		return this.gridProxy.isActive();
+		return this.getProxy().isActive();
 	}
 
 	@Override
@@ -317,7 +317,7 @@ public class TileSecurity extends AENetworkTile implements ITerminalHost, IAEApp
 		final IPlayerRegistry pr = AEApi.instance().registries().players();
 
 		// read permissions
-		for( final IAEItemStack ais : this.inventory.storedItems )
+		for( final IAEItemStack ais : this.inventory.getStoredItems() )
 		{
 			final ItemStack is = ais.getItemStack();
 			final Item i = is.getItem();
@@ -329,19 +329,19 @@ public class TileSecurity extends AENetworkTile implements ITerminalHost, IAEApp
 		}
 
 		// make sure thea admin is Boss.
-		playerPerms.put( this.gridProxy.getNode().getPlayerID(), EnumSet.allOf( SecurityPermissions.class ) );
+		playerPerms.put( this.getProxy().getNode().getPlayerID(), EnumSet.allOf( SecurityPermissions.class ) );
 	}
 
 	@Override
 	public boolean isSecurityEnabled()
 	{
-		return this.isActive && this.gridProxy.isActive();
+		return this.isActive && this.getProxy().isActive();
 	}
 
 	@Override
 	public int getOwner()
 	{
-		return this.gridProxy.getNode().getPlayerID();
+		return this.getProxy().getNode().getPlayerID();
 	}
 
 	@Override
@@ -362,5 +362,10 @@ public class TileSecurity extends AENetworkTile implements ITerminalHost, IAEApp
 		this.markDirty();
 		this.markForUpdate();
 		return true;
+	}
+
+	public AppEngInternalInventory getConfigSlot()
+	{
+		return this.configSlot;
 	}
 }

@@ -60,7 +60,7 @@ public class PartConversionMonitor extends AbstractPartMonitor
 			return true;
 		}
 
-		if( !this.proxy.isActive() )
+		if( !this.getProxy().isActive() )
 		{
 			return false;
 		}
@@ -83,13 +83,13 @@ public class PartConversionMonitor extends AbstractPartMonitor
 		{
 			try
 			{
-				if( !this.proxy.isActive() )
+				if( !this.getProxy().isActive() )
 				{
 					return false;
 				}
 
-				final IEnergySource energy = this.proxy.getEnergy();
-				final IMEMonitor<IAEItemStack> cell = this.proxy.getStorage().getItemInventory();
+				final IEnergySource energy = this.getProxy().getEnergy();
+				final IMEMonitor<IAEItemStack> cell = this.getProxy().getStorage().getItemInventory();
 				final IAEItemStack input = AEItemStack.create( item );
 
 				if( ModeB )
@@ -128,13 +128,13 @@ public class PartConversionMonitor extends AbstractPartMonitor
 		{
 			try
 			{
-				if( !this.proxy.isActive() )
+				if( !this.getProxy().isActive() )
 				{
 					return;
 				}
 
-				final IEnergySource energy = this.proxy.getEnergy();
-				final IMEMonitor<IAEItemStack> cell = this.proxy.getStorage().getItemInventory();
+				final IEnergySource energy = this.getProxy().getEnergy();
+				final IMEMonitor<IAEItemStack> cell = this.getProxy().getStorage().getItemInventory();
 
 				final ItemStack is = input.getItemStack();
 				input.setStackSize( is.getMaxStackSize() );
@@ -147,9 +147,9 @@ public class PartConversionMonitor extends AbstractPartMonitor
 					newItems = adaptor.addItems( newItems );
 					if( newItems != null )
 					{
-						final TileEntity te = this.tile;
+						final TileEntity te = this.getTile();
 						final List<ItemStack> list = Collections.singletonList( newItems );
-						Platform.spawnDrops( player.worldObj, te.getPos().offset( this.side.getFacing() ), list );
+						Platform.spawnDrops( player.worldObj, te.getPos().offset( this.getSide().getFacing() ), list );
 					}
 
 					if( player.openContainer != null )

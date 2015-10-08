@@ -28,9 +28,9 @@ import appeng.api.util.AEColor;
 public class Splotch
 {
 
-	public final EnumFacing side;
-	public final boolean lumen;
-	public final AEColor color;
+	private final EnumFacing side;
+	private final boolean lumen;
+	private final AEColor color;
 	private final int pos;
 
 	public Splotch( final AEColor col, final boolean lit, final EnumFacing side, final Vec3 position )
@@ -72,7 +72,7 @@ public class Splotch
 		this.pos = data.readByte();
 		final int val = data.readByte();
 
-		this.side = EnumFacing.VALUES[ val & 0x07 ];
+		this.side = EnumFacing.VALUES[val & 0x07];
 		this.color = AEColor.values()[( val >> 3 ) & 0x0F];
 		this.lumen = ( ( val >> 7 ) & 0x01 ) > 0;
 	}
@@ -80,7 +80,7 @@ public class Splotch
 	public void writeToStream( final ByteBuf stream )
 	{
 		stream.writeByte( this.pos );
-		final int val = this.side.ordinal() | ( this.color.ordinal() << 3 ) | ( this.lumen ? 0x80 : 0x00 );
+		final int val = this.getSide().ordinal() | ( this.getColor().ordinal() << 3 ) | ( this.isLumen() ? 0x80 : 0x00 );
 		stream.writeByte( val );
 	}
 
@@ -96,7 +96,22 @@ public class Splotch
 
 	public int getSeed()
 	{
-		final int val = this.side.ordinal() | ( this.color.ordinal() << 3 ) | ( this.lumen ? 0x80 : 0x00 );
+		final int val = this.getSide().ordinal() | ( this.getColor().ordinal() << 3 ) | ( this.isLumen() ? 0x80 : 0x00 );
 		return Math.abs( this.pos + val );
+	}
+
+	public EnumFacing getSide()
+	{
+		return this.side;
+	}
+
+	public AEColor getColor()
+	{
+		return this.color;
+	}
+
+	public boolean isLumen()
+	{
+		return this.lumen;
 	}
 }

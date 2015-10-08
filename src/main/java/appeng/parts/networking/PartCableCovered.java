@@ -84,15 +84,15 @@ public class PartCableCovered extends PartCable
 			final IGridNode n = this.getGridNode();
 			if( n != null )
 			{
-				this.connections = n.getConnectedSides();
+				this.setConnections( n.getConnectedSides() );
 			}
 			else
 			{
-				this.connections.clear();
+				this.getConnections().clear();
 			}
 		}
 
-		for( final AEPartLocation of : this.connections )
+		for( final AEPartLocation of : this.getConnections() )
 		{
 			switch( of )
 			{
@@ -167,11 +167,11 @@ public class PartCableCovered extends PartCable
 	{
 		rh.setTexture( this.getTexture( this.getCableColor(), renderer ) );
 
-		final EnumSet<AEPartLocation> sides = this.connections.clone();
+		final EnumSet<AEPartLocation> sides = this.getConnections().clone();
 
 		boolean hasBuses = false;
 		final IPartHost ph = this.getHost();
-		for( final AEPartLocation of : EnumSet.complementOf( this.connections ) )
+		for( final AEPartLocation of : EnumSet.complementOf( this.getConnections() ) )
 		{
 			final IPart bp = ph.getPart( of );
 			if( bp instanceof IGridHost )
@@ -215,9 +215,9 @@ public class PartCableCovered extends PartCable
 
 		if( sides.size() != 2 || !this.nonLinear( sides ) || hasBuses )
 		{
-			for( final AEPartLocation of : this.connections )
+			for( final AEPartLocation of : this.getConnections() )
 			{
-				this.renderCoveredConnection( pos, rh, renderer, this.channelsOnSide[of.ordinal()], of );
+				this.renderCoveredConnection( pos, rh, renderer, this.getChannelsOnSide( of.ordinal() ), of );
 			}
 
 			rh.setTexture( this.getTexture( this.getCableColor(), renderer ) );
@@ -228,7 +228,7 @@ public class PartCableCovered extends PartCable
 		{
 			final IAESprite def = this.getTexture( this.getCableColor(), renderer );
 			final IAESprite off = new OffsetIcon( def, 0, -12 );
-			for( final AEPartLocation of : this.connections )
+			for( final AEPartLocation of : this.getConnections() )
 			{
 				switch( of )
 				{
@@ -240,14 +240,14 @@ public class PartCableCovered extends PartCable
 					case EAST:
 					case WEST:
 						rh.setTexture( off, off, off, off, def, def );
-						renderer.uvRotateEast = renderer.uvRotateWest = 1;
-						renderer.uvRotateBottom = renderer.uvRotateTop = 1;
+						renderer.setUvRotateEast( renderer.setUvRotateWest( 1 ) );
+						renderer.setUvRotateBottom( renderer.setUvRotateTop( 1 ) );
 						renderer.setRenderBounds( 0, 5 / 16.0, 5 / 16.0, 16 / 16.0, 11 / 16.0, 11 / 16.0 );
 						break;
 					case NORTH:
 					case SOUTH:
 						rh.setTexture( off, off, def, def, off, off );
-						renderer.uvRotateNorth = renderer.uvRotateSouth = 1;
+						renderer.setUvRotateNorth( renderer.setUvRotateSouth( 1 ) );
 						renderer.setRenderBounds( 5 / 16.0, 5 / 16.0, 0, 11 / 16.0, 11 / 16.0, 16 / 16.0 );
 						break;
 					default:
@@ -257,7 +257,7 @@ public class PartCableCovered extends PartCable
 			rh.renderBlockCurrentBounds( pos, renderer );
 		}
 
-		renderer.uvRotateBottom = renderer.uvRotateEast = renderer.uvRotateNorth = renderer.uvRotateSouth = renderer.uvRotateTop = renderer.uvRotateWest = 0;
+		renderer.setUvRotateBottom( renderer.setUvRotateEast( renderer.setUvRotateNorth( renderer.setUvRotateSouth( renderer.setUvRotateTop( renderer.setUvRotateWest( 0 ) ) ) ) ) );
 		rh.setTexture( null );
 	}
 }

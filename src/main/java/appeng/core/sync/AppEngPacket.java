@@ -38,8 +38,9 @@ import appeng.core.sync.network.NetworkHandler;
 public abstract class AppEngPacket implements Packet
 {
 
-	AppEngPacketHandlerBase.PacketTypes id;
+	private AppEngPacketHandlerBase.PacketTypes id;
 	private PacketBuffer p;
+	private PacketCallState caller;
 
 	public void serverPacketData( final INetworkInfo manager, final AppEngPacket packet, final EntityPlayer player )
 	{
@@ -59,7 +60,7 @@ public abstract class AppEngPacket implements Packet
 	protected void configureWrite( final ByteBuf data )
 	{
 		data.capacity( data.readableBytes() );
-		this.p = new PacketBuffer(data);
+		this.p = new PacketBuffer( data );
 	}
 
 	public FMLProxyPacket getProxy()
@@ -78,28 +79,28 @@ public abstract class AppEngPacket implements Packet
 
 		return pp;
 	}
-	
-	@Override
-    public void readPacketData( final PacketBuffer buf) throws IOException
-    {
-    	throw new RuntimeException( "Not Implemented" );
-    }
 
 	@Override
-	public void writePacketData( final PacketBuffer buf) throws IOException
-    {
-    	throw new RuntimeException( "Not Implemented" );
-    }
+	public void readPacketData( final PacketBuffer buf ) throws IOException
+	{
+		throw new RuntimeException( "Not Implemented" );
+	}
 
-	PacketCallState caller;
-	
-	public void setCallParam( final PacketCallState call ){
-		this.caller = call;}
-	
 	@Override
-	public void processPacket( final INetHandler handler)
-    {
+	public void writePacketData( final PacketBuffer buf ) throws IOException
+	{
+		throw new RuntimeException( "Not Implemented" );
+	}
+
+	public void setCallParam( final PacketCallState call )
+	{
+		this.caller = call;
+	}
+
+	@Override
+	public void processPacket( final INetHandler handler )
+	{
 		this.caller.call( this );
-    }
+	}
 
 }

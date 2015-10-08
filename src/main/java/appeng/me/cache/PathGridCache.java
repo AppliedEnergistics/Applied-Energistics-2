@@ -59,21 +59,20 @@ import appeng.util.Platform;
 public class PathGridCache implements IPathingGrid
 {
 
-	final LinkedList<PathSegment> active = new LinkedList<PathSegment>();
-	final Set<TileController> controllers = new HashSet<TileController>();
-	final Set<IGridNode> requireChannels = new HashSet<IGridNode>();
-	final Set<IGridNode> blockDense = new HashSet<IGridNode>();
-	final IGrid myGrid;
-	public int channelsInUse = 0;
-	public int channelsByBlocks = 0;
-	public double channelPowerUsage = 0.0;
-	boolean recalculateControllerNextTick = true;
-	boolean updateNetwork = true;
-	boolean booting = false;
-	ControllerState controllerState = ControllerState.NO_CONTROLLER;
-	int instance = Integer.MIN_VALUE;
-	int ticksUntilReady = 20;
-	int lastChannels = 0;
+	private final LinkedList<PathSegment> active = new LinkedList<PathSegment>();
+	private final Set<TileController> controllers = new HashSet<TileController>();
+	private final Set<IGridNode> requireChannels = new HashSet<IGridNode>();
+	private final Set<IGridNode> blockDense = new HashSet<IGridNode>();
+	private final IGrid myGrid;
+	private int channelsInUse = 0;
+	private int channelsByBlocks = 0;
+	private double channelPowerUsage = 0.0;
+	private boolean recalculateControllerNextTick = true;
+	private boolean updateNetwork = true;
+	private boolean booting = false;
+	private ControllerState controllerState = ControllerState.NO_CONTROLLER;
+	private int ticksUntilReady = 20;
+	private int lastChannels = 0;
 	private HashSet<IPathItem> semiOpen = new HashSet<IPathItem>();
 
 	public PathGridCache( final IGrid g )
@@ -98,8 +97,7 @@ public class PathGridCache implements IPathingGrid
 
 			this.booting = true;
 			this.updateNetwork = false;
-			this.instance++;
-			this.channelsInUse = 0;
+			this.setChannelsInUse( 0 );
 
 			if( !AEConfig.instance.isFeatureEnabled( AEFeature.Channels ) )
 			{
@@ -107,8 +105,8 @@ public class PathGridCache implements IPathingGrid
 
 				final int nodes = this.myGrid.getNodes().size();
 				this.ticksUntilReady = 20 + Math.max( 0, nodes / 100 - 20 );
-				this.channelsByBlocks = nodes * used;
-				this.channelPowerUsage = this.channelsByBlocks / 128.0;
+				this.setChannelsByBlocks( nodes * used );
+				this.setChannelPowerUsage( this.getChannelsByBlocks() / 128.0 );
 
 				this.myGrid.getPivot().beginVisit( new AdHocChannelUpdater( used ) );
 			}
@@ -122,11 +120,11 @@ public class PathGridCache implements IPathingGrid
 				}
 
 				final int nodes = this.myGrid.getNodes().size();
-				this.channelsInUse = used;
+				this.setChannelsInUse( used );
 
 				this.ticksUntilReady = 20 + Math.max( 0, nodes / 100 - 20 );
-				this.channelsByBlocks = nodes * used;
-				this.channelPowerUsage = this.channelsByBlocks / 128.0;
+				this.setChannelsByBlocks( nodes * used );
+				this.setChannelPowerUsage( this.getChannelsByBlocks() / 128.0 );
 
 				this.myGrid.getPivot().beginVisit( new AdHocChannelUpdater( used ) );
 			}
@@ -171,7 +169,7 @@ public class PathGridCache implements IPathingGrid
 				final PathSegment pat = i.next();
 				if( pat.step() )
 				{
-					pat.isDead = true;
+					pat.setDead( true );
 					i.remove();
 				}
 			}
@@ -194,7 +192,7 @@ public class PathGridCache implements IPathingGrid
 				this.achievementPost();
 
 				this.booting = false;
-				this.channelPowerUsage = this.channelsByBlocks / 128.0;
+				this.setChannelPowerUsage( this.getChannelsByBlocks() / 128.0 );
 				this.myGrid.postEvent( new MENetworkBootingStatusChange() );
 			}
 		}
@@ -289,7 +287,7 @@ public class PathGridCache implements IPathingGrid
 
 			startingNode.beginVisit( cv );
 
-			if( cv.isValid && cv.found == this.controllers.size() )
+			if( cv.isValid() && cv.getFound() == this.controllers.size() )
 			{
 				this.controllerState = ControllerState.CONTROLLER_ONLINE;
 			}
@@ -341,9 +339,9 @@ public class PathGridCache implements IPathingGrid
 
 	private void achievementPost()
 	{
-		if( this.lastChannels != this.channelsInUse && AEConfig.instance.isFeatureEnabled( AEFeature.Channels ) )
+		if( this.lastChannels != this.getChannelsInUse() && AEConfig.instance.isFeatureEnabled( AEFeature.Channels ) )
 		{
-			final Achievements currentBracket = this.getAchievementBracket( this.channelsInUse );
+			final Achievements currentBracket = this.getAchievementBracket( this.getChannelsInUse() );
 			final Achievements lastBracket = this.getAchievementBracket( this.lastChannels );
 			if( currentBracket != lastBracket && currentBracket != null )
 			{
@@ -359,7 +357,7 @@ public class PathGridCache implements IPathingGrid
 				}
 			}
 		}
-		this.lastChannels = this.channelsInUse;
+		this.lastChannels = this.getChannelsInUse();
 	}
 
 	private Achievements getAchievementBracket( final int ch )
@@ -417,7 +415,37 @@ public class PathGridCache implements IPathingGrid
 		// clean up...
 		this.active.clear();
 
-		this.channelsByBlocks = 0;
+		this.setChannelsByBlocks( 0 );
 		this.updateNetwork = true;
+	}
+
+	double getChannelPowerUsage()
+	{
+		return this.channelPowerUsage;
+	}
+
+	private void setChannelPowerUsage( final double channelPowerUsage )
+	{
+		this.channelPowerUsage = channelPowerUsage;
+	}
+
+	public int getChannelsByBlocks()
+	{
+		return this.channelsByBlocks;
+	}
+
+	public void setChannelsByBlocks( final int channelsByBlocks )
+	{
+		this.channelsByBlocks = channelsByBlocks;
+	}
+
+	public int getChannelsInUse()
+	{
+		return this.channelsInUse;
+	}
+
+	public void setChannelsInUse( final int channelsInUse )
+	{
+		this.channelsInUse = channelsInUse;
 	}
 }

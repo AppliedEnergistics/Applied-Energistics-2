@@ -41,7 +41,7 @@ public class QuartzGlassBlock extends AEBaseBlock
 	{
 		super( Material.glass );
 		this.setLightOpacity( 0 );
-		this.isOpaque = false;
+		this.setOpaque( false );
 		this.setFeature( EnumSet.of( AEFeature.DecorativeQuartzBlocks ) );
 	}
 	

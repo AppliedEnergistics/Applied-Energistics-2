@@ -43,10 +43,10 @@ import appeng.util.item.AEItemStack;
 public class PacketInventoryAction extends AppEngPacket
 {
 
-	public final InventoryAction action;
-	public final int slot;
-	public final long id;
-	public final IAEItemStack slotItem;
+	private final InventoryAction action;
+	private final int slot;
+	private final long id;
+	private final IAEItemStack slotItem;
 
 	// automatic.
 	public PacketInventoryAction( final ByteBuf stream ) throws IOException
@@ -127,11 +127,11 @@ public class PacketInventoryAction extends AppEngPacket
 			final AEBaseContainer baseContainer = (AEBaseContainer) sender.openContainer;
 			if( this.action == InventoryAction.AUTO_CRAFT )
 			{
-				final ContainerOpenContext context = baseContainer.openContext;
+				final ContainerOpenContext context = baseContainer.getOpenContext();
 				if( context != null )
 				{
 					final TileEntity te = context.getTile();
-					Platform.openGUI( sender, te, baseContainer.openContext.side, GuiBridge.GUI_CRAFTING_AMOUNT );
+					Platform.openGUI( sender, te, baseContainer.getOpenContext().getSide(), GuiBridge.GUI_CRAFTING_AMOUNT );
 
 					if( sender.openContainer instanceof ContainerCraftAmount )
 					{
@@ -139,8 +139,8 @@ public class PacketInventoryAction extends AppEngPacket
 
 						if( baseContainer.getTargetStack() != null )
 						{
-							cca.craftingItem.putStack( baseContainer.getTargetStack().getItemStack() );
-							cca.whatToMake = baseContainer.getTargetStack();
+							cca.getCraftingItem().putStack( baseContainer.getTargetStack().getItemStack() );
+							cca.setItemToCraft( baseContainer.getTargetStack() );
 						}
 
 						cca.detectAndSendChanges();

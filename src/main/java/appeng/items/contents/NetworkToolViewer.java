@@ -32,9 +32,9 @@ import appeng.util.Platform;
 public class NetworkToolViewer implements INetworkTool
 {
 
-	final AppEngInternalInventory inv;
-	final ItemStack is;
-	final IGridHost gh;
+	private final AppEngInternalInventory inv;
+	private final ItemStack is;
+	private final IGridHost gh;
 
 	public NetworkToolViewer( final ItemStack is, final IGridHost gHost )
 	{

@@ -194,14 +194,14 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 		return (Iterator) this.tiles.iterator();
 	}
 
-	public void addTile( final TileCraftingTile te )
+	void addTile( final TileCraftingTile te )
 	{
-		if( this.machineSrc == null || te.isCoreBlock )
+		if( this.machineSrc == null || te.isCoreBlock() )
 		{
 			this.machineSrc = new MachineSource( te );
 		}
 
-		te.isCoreBlock = false;
+		te.setCoreBlock( false );
 		te.markDirty();
 		this.tiles.push( te );
 
@@ -362,7 +362,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 		return input;
 	}
 
-	protected void postChange( final IAEItemStack diff, final BaseActionSource src )
+	private void postChange( final IAEItemStack diff, final BaseActionSource src )
 	{
 		final Iterator<Entry<IMEMonitorHandlerReceiver<IAEItemStack>, Object>> i = this.getListeners();
 
@@ -394,7 +394,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 		this.getCore().markDirty();
 	}
 
-	public void postCraftingStatusChange( final IAEItemStack diff )
+	private void postCraftingStatusChange( final IAEItemStack diff )
 	{
 		if( this.getGrid() == null )
 		{
@@ -403,9 +403,9 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 
 		final CraftingGridCache sg = this.getGrid().getCache( ICraftingGrid.class );
 
-		if( sg.interestManager.containsKey( diff ) )
+		if( sg.getInterestManager().containsKey( diff ) )
 		{
-			final Collection<CraftingWatcher> list = sg.interestManager.get( diff );
+			final Collection<CraftingWatcher> list = sg.getInterestManager().get( diff );
 
 			if( !list.isEmpty() )
 			{
@@ -448,7 +448,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 		}
 	}
 
-	protected Iterator<Entry<IMEMonitorHandlerReceiver<IAEItemStack>, Object>> getListeners()
+	private Iterator<Entry<IMEMonitorHandlerReceiver<IAEItemStack>, Object>> getListeners()
 	{
 		return this.listeners.entrySet().iterator();
 	}
@@ -458,7 +458,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 		return (TileCraftingTile) this.machineSrc.via;
 	}
 
-	public IGrid getGrid()
+	private IGrid getGrid()
 	{
 		for( final TileCraftingTile r : this.tiles )
 		{
@@ -853,7 +853,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 		try
 		{
 			this.waitingFor.resetStatus();
-			( (CraftingJob) job ).tree.setJob( ci, this, src );
+			( (CraftingJob) job ).getTree().setJob( ci, this, src );
 			if( ci.commit( src ) )
 			{
 				this.finalOutput = job.getOutput();
@@ -1159,16 +1159,16 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 		return out;
 	}
 
-	public void done()
+	void done()
 	{
 		final TileCraftingTile core = this.getCore();
 
-		core.isCoreBlock = true;
+		core.setCoreBlock( true );
 
-		if( core.previousState != null )
+		if( core.getPreviousState() != null )
 		{
-			this.readFromNBT( core.previousState );
-			core.previousState = null;
+			this.readFromNBT( core.getPreviousState() );
+			core.setPreviousState( null );
 		}
 
 		this.updateCPU();
@@ -1328,8 +1328,8 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 		return this.startItemCount;
 	}
 
-	static class TaskProgress
+	private static class TaskProgress
 	{
-		long value;
+		private long value;
 	}
 }

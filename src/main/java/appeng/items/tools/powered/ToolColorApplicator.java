@@ -88,7 +88,7 @@ import appeng.util.item.AEItemStack;
 public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCell, IItemGroup, IBlockTool, IMouseWheelItem
 {
 
-	static final Map<Integer, AEColor> ORE_TO_COLOR = new HashMap<Integer, AEColor>();
+	private static final Map<Integer, AEColor> ORE_TO_COLOR = new HashMap<Integer, AEColor>();
 
 	static
 	{
@@ -229,7 +229,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 		return this.getColorFromItem( this.getColor( tol ) );
 	}
 
-	public AEColor getColorFromItem( final ItemStack paintBall )
+	private AEColor getColorFromItem( final ItemStack paintBall )
 	{
 		if( paintBall == null )
 		{
@@ -350,7 +350,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 		return newColor;
 	}
 
-	public void setColor( final ItemStack is, final ItemStack newColor )
+	private void setColor( final ItemStack is, final ItemStack newColor )
 	{
 		final NBTTagCompound data = Platform.openNbtData( is );
 		if( newColor == null )

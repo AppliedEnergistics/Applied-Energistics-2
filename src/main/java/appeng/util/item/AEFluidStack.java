@@ -47,15 +47,15 @@ import appeng.util.Platform;
 public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFluidStack, Comparable<AEFluidStack>
 {
 
-	public int myHash;
-	Fluid fluid;
+	private int myHash;
+	private Fluid fluid;
 	private IAETagCompound tagCompound;
 
 	private AEFluidStack( final AEFluidStack is )
 	{
 
 		this.fluid = is.fluid;
-		this.stackSize = is.stackSize;
+		this.setStackSize( is.getStackSize() );
 
 		// priority = is.priority;
 		this.setCraftable( is.isCraftable() );
@@ -73,7 +73,7 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 			throw new IllegalArgumentException( "Fluid is null." );
 		}
 
-		this.stackSize = is.amount;
+		this.setStackSize( is.amount );
 		this.setCraftable( false );
 		this.setCountRequestable( 0 );
 
@@ -89,7 +89,7 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 		}
 		final AEFluidStack fluid = AEFluidStack.create( itemstack );
 		// fluid.priority = i.getInteger( "Priority" );
-		fluid.stackSize = i.getLong( "Cnt" );
+		fluid.setStackSize( i.getLong( "Cnt" ) );
 		fluid.setCountRequestable( i.getLong( "Req" ) );
 		fluid.setCraftable( i.getBoolean( "Craft" ) );
 		return fluid;
@@ -154,7 +154,7 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 
 		final AEFluidStack fluid = AEFluidStack.create( fluidStack );
 		// fluid.priority = (int) priority;
-		fluid.stackSize = stackSize;
+		fluid.setStackSize( stackSize );
 		fluid.setCountRequestable( countRequestable );
 		fluid.setCraftable( isCraftable );
 		return fluid;
@@ -202,7 +202,7 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 		/*
 		 * if ( Cnt != null && Cnt instanceof NBTTagLong ) ((NBTTagLong) Cnt).data = this.stackSize; else
 		 */
-		i.setLong( "Cnt", this.stackSize );
+		i.setLong( "Cnt", this.getStackSize() );
 
 		/*
 		 * if ( Req != null && Req instanceof NBTTagLong ) ((NBTTagLong) Req).data = this.stackSize; else
@@ -337,7 +337,9 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 	public String toString()
 	{
 		return this.getFluidStack().toString();
-	}	@Override
+	}
+
+	@Override
 	public boolean hasTagCompound()
 	{
 		return this.tagCompound != null;
@@ -346,7 +348,7 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 	@Override
 	public FluidStack getFluidStack()
 	{
-		final FluidStack is = new FluidStack( this.fluid, (int) Math.min( Integer.MAX_VALUE, this.stackSize ) );
+		final FluidStack is = new FluidStack( this.fluid, (int) Math.min( Integer.MAX_VALUE, this.getStackSize() ) );
 		if( this.tagCompound != null )
 		{
 			is.tag = this.tagCompound.getNBTTagCompoundCopy();
@@ -360,8 +362,6 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 	{
 		return this.fluid;
 	}
-
-
 
 	@Override
 	void writeIdentity( final ByteBuf i ) throws IOException

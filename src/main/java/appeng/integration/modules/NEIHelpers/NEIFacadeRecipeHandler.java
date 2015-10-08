@@ -46,8 +46,8 @@ import appeng.items.parts.ItemFacade;
 
 public class NEIFacadeRecipeHandler extends TemplateRecipeHandler
 {
-	final ItemFacade facade;
-	final IItemDefinition anchorDefinition;
+	private final ItemFacade facade;
+	private final IItemDefinition anchorDefinition;
 
 	public NEIFacadeRecipeHandler()
 	{
@@ -176,7 +176,7 @@ public class NEIFacadeRecipeHandler extends TemplateRecipeHandler
 		return RecipeInfo.getOverlayHandler( gui, "crafting2x2" );
 	}
 
-	public boolean isRecipe2x2( int recipe )
+	private boolean isRecipe2x2( final int recipe )
 	{
 		for( PositionedStack stack : this.getIngredientStacks( recipe ) )
 		{

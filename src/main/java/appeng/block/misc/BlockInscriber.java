@@ -46,7 +46,7 @@ public class BlockInscriber extends AEBaseTileBlock
 
 		this.setTileEntity( TileInscriber.class );
 		this.setLightOpacity( 2 );
-		this.isFullSize = this.isOpaque = false;
+		this.setFullSize( this.setOpaque( false ) );
 		this.setFeature( EnumSet.of( AEFeature.Inscriber ) );
 	}
 

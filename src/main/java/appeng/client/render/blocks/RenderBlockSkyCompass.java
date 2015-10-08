@@ -45,8 +45,7 @@ import appeng.tile.misc.TileSkyCompass;
 public class RenderBlockSkyCompass extends BaseBlockRender<BlockSkyCompass, TileSkyCompass>
 {
 
-	final ModelCompass model = new ModelCompass();
-	float r = 0;
+	private final ModelCompass model = new ModelCompass();
 
 	public RenderBlockSkyCompass()
 	{
@@ -57,122 +56,121 @@ public class RenderBlockSkyCompass extends BaseBlockRender<BlockSkyCompass, Tile
 	public void renderInventory( final BlockSkyCompass blk, final ItemStack is, final ModelGenerator renderer, final ItemRenderType type, final Object[] obj )
 	{
 		/*
-		if( type == ItemRenderType.INVENTORY )
-		{
-			boolean isGood = false;
-
-			IInventory inv = Minecraft.getMinecraft().thePlayer.inventory;
-			for( int x = 0; x < inv.getSizeInventory(); x++ )
-			{
-				if( inv.getStackInSlot( x ) == is )
-				{
-					isGood = true;
-				}
-			}
-
-			if( !isGood )
-			{
-				type = ItemRenderType.FIRST_PERSON_MAP;
-			}
-		}
-
-		GL11.glEnable( GL12.GL_RESCALE_NORMAL );
-		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
-
-		ResourceLocation loc = new ResourceLocation( "appliedenergistics2", "textures/models/compass.png" );
-
-		Minecraft.getMinecraft().getTextureManager().bindTexture( loc );
-
-		if( type == ItemRenderType.ENTITY )
-		{
-			GL11.glRotatef( -90.0f, 0.0f, 0.0f, 1.0f );
-			GL11.glScalef( 1.0F, -1F, -1F );
-			GL11.glScalef( 2.5f, 2.5f, 2.5f );
-			GL11.glTranslatef( -0.25F, -1.65F, -0.19F );
-		}
-		else
-		{
-			if( type == ItemRenderType.EQUIPPED_FIRST_PERSON )
-			{
-				GL11.glRotatef( 15.3f, 0.0f, 0.0f, 1.0f );
-			}
-
-			GL11.glScalef( 1.0F, -1F, -1F );
-			GL11.glScalef( 2.5f, 2.5f, 2.5f );
-
-			if( type == ItemRenderType.EQUIPPED_FIRST_PERSON )
-			{
-				GL11.glTranslatef( 0.3F, -1.65F, -0.19F );
-			}
-			else
-			{
-				GL11.glTranslatef( 0.2F, -1.65F, -0.19F );
-			}
-		}
-
-		long now = System.currentTimeMillis();
-		if( type == ItemRenderType.EQUIPPED_FIRST_PERSON || type == ItemRenderType.INVENTORY || type == ItemRenderType.EQUIPPED )
-		{
-			EntityPlayer p = Minecraft.getMinecraft().thePlayer;
-			float rYaw = p.rotationYaw;
-
-			if( type == ItemRenderType.EQUIPPED )
-			{
-				p = (EntityPlayer) obj[1];
-				rYaw = p.renderYawOffset;
-			}
-
-			int x = (int) p.posX;
-			int y = (int) p.posY;
-			int z = (int) p.posZ;
-			CompassResult cr = CompassManager.INSTANCE.getCompassDirection( 0, x, y, z );
-
-			for( int i = 0; i < 3; i++ )
-			{
-				for( int j = 0; j < 3; j++ )
-				{
-					CompassManager.INSTANCE.getCompassDirection( 0, x + i - 1, y, z + j - 1 );
-				}
-			}
-
-			if( cr.hasResult )
-			{
-				if( cr.spin )
-				{
-					now %= 100000;
-					this.model.renderAll( ( now / 50000.0f ) * (float) Math.PI * 500.0f );
-				}
-				else
-				{
-					if( type == ItemRenderType.EQUIPPED_FIRST_PERSON )
-					{
-						float offRads = rYaw / 180.0f * (float) Math.PI;
-						float adjustment = (float) Math.PI * 0.74f;
-						this.model.renderAll( (float) this.flipidiy( cr.rad + offRads + adjustment ) );
-					}
-					else
-					{
-						float offRads = rYaw / 180.0f * (float) Math.PI;
-						float adjustment = (float) Math.PI * -0.74f;
-						this.model.renderAll( (float) this.flipidiy( cr.rad + offRads + adjustment ) );
-					}
-				}
-			}
-			else
-			{
-				now %= 1000000;
-				this.model.renderAll( ( now / 500000.0f ) * (float) Math.PI * 500.0f );
-			}
-		}
-		else
-		{
-			now %= 100000;
-			this.model.renderAll( ( now / 50000.0f ) * (float) Math.PI * 500.0f );
-		}
-
-		GL11.glDisable( GL12.GL_RESCALE_NORMAL );
-		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
-		*/
+		 * if( type == ItemRenderType.INVENTORY )
+		 * {
+		 * boolean isGood = false;
+		 * IInventory inv = Minecraft.getMinecraft().thePlayer.inventory;
+		 * for( int x = 0; x < inv.getSizeInventory(); x++ )
+		 * {
+		 * if( inv.getStackInSlot( x ) == is )
+		 * {
+		 * isGood = true;
+		 * }
+		 * }
+		 * if( !isGood )
+		 * {
+		 * type = ItemRenderType.FIRST_PERSON_MAP;
+		 * }
+		 * }
+		 * GL11.glEnable( GL12.GL_RESCALE_NORMAL );
+		 * GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
+		 * ResourceLocation loc = new ResourceLocation( "appliedenergistics2", "textures/models/compass.png" );
+		 * Minecraft.getMinecraft().getTextureManager().bindTexture( loc );
+		 * if( type == ItemRenderType.ENTITY )
+		 * {
+		 * GL11.glRotatef( -90.0f, 0.0f, 0.0f, 1.0f );
+		 * GL11.glScalef( 1.0F, -1F, -1F );
+		 * GL11.glScalef( 2.5f, 2.5f, 2.5f );
+		 * GL11.glTranslatef( -0.25F, -1.65F, -0.19F );
+		 * }
+		 * else
+		 * {
+		 * if( type == ItemRenderType.EQUIPPED_FIRST_PERSON )
+		 * {
+		 * GL11.glRotatef( 15.3f, 0.0f, 0.0f, 1.0f );
+		 * }
+		 * GL11.glScalef( 1.0F, -1F, -1F );
+		 * GL11.glScalef( 2.5f, 2.5f, 2.5f );
+		 * if( type == ItemRenderType.EQUIPPED_FIRST_PERSON )
+		 * {
+		 * GL11.glTranslatef( 0.3F, -1.65F, -0.19F );
+		 * }
+		 * else
+		 * {
+		 * GL11.glTranslatef( 0.2F, -1.65F, -0.19F );
+		 * }
+		 * }
+		 * long now = System.currentTimeMillis();
+		 * if( type == ItemRenderType.EQUIPPED_FIRST_PERSON || type == ItemRenderType.INVENTORY || type ==
+		 * ItemRenderType.EQUIPPED )
+		 * {
+		 * EntityPlayer p = Minecraft.getMinecraft().thePlayer;
+		 * float rYaw = p.rotationYaw;
+		 * if( type == ItemRenderType.EQUIPPED )
+		 * {
+		 * p = (EntityPlayer) obj[1];
+		 * rYaw = p.renderYawOffset;
+		 * }
+		 * int x = (int) p.posX;
+		 * int y = (int) p.posY;
+		 * int z = (int) p.posZ;
+		 * CompassResult cr = CompassManager.INSTANCE.getCompassDirection( 0, x, y, z );
+		 * for( int i = 0; i < 3; i++ )
+		 * {
+		 * for( int j = 0; j < 3; j++ )
+		 * {
+		 * CompassManager.INSTANCE.getCompassDirection( 0, x + i - 1, y, z + j - 1 );
+		 * }
+		 * }
+		 * if( cr.isValidResult() )
+		 * {
+		 * if( cr.isSpin() )
+		 * {
+		 * now %= 100000;
+		 * this.model.renderAll( ( now / 50000.0f ) * (float) Math.PI * 500.0f );
+		 * }
+		 * else
+		 * {
+		 * if( type == ItemRenderType.EQUIPPED_FIRST_PERSON )
+		 * {
+		 * <<<<<<< HEAD
+		 * float offRads = rYaw / 180.0f * (float) Math.PI;
+		 * float adjustment = (float) Math.PI * 0.74f;
+		 * this.model.renderAll( (float) this.flipidiy( cr.rad + offRads + adjustment ) );
+		 * }
+		 * else
+		 * {
+		 * float offRads = rYaw / 180.0f * (float) Math.PI;
+		 * float adjustment = (float) Math.PI * -0.74f;
+		 * this.model.renderAll( (float) this.flipidiy( cr.rad + offRads + adjustment ) );
+		 * =======
+		 * final float offRads = rYaw / 180.0f * (float) Math.PI;
+		 * final float adjustment = (float) Math.PI * 0.74f;
+		 * this.model.renderAll( (float) this.flipidiy( cr.getRad() + offRads + adjustment ) );
+		 * }
+		 * else
+		 * {
+		 * final float offRads = rYaw / 180.0f * (float) Math.PI;
+		 * final float adjustment = (float) Math.PI * -0.74f;
+		 * this.model.renderAll( (float) this.flipidiy( cr.getRad() + offRads + adjustment ) );
+		 * >>>>>>> 500fc47... Reduces visibility of internal fields/methods
+		 * }
+		 * }
+		 * }
+		 * else
+		 * {
+		 * now %= 1000000;
+		 * this.model.renderAll( ( now / 500000.0f ) * (float) Math.PI * 500.0f );
+		 * }
+		 * }
+		 * else
+		 * {
+		 * now %= 100000;
+		 * this.model.renderAll( ( now / 50000.0f ) * (float) Math.PI * 500.0f );
+		 * }
+		 * GL11.glDisable( GL12.GL_RESCALE_NORMAL );
+		 * GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
+		 */
 	}
 
 	@Override
@@ -213,23 +211,23 @@ public class RenderBlockSkyCompass extends BaseBlockRender<BlockSkyCompass, Tile
 		if( skyCompass.getForward() == EnumFacing.UP || skyCompass.getForward() == EnumFacing.DOWN )
 		{
 			final BlockPos compassPos = skyCompass.getPos();
-			cr = CompassManager.INSTANCE.getCompassDirection( 0, compassPos.getX(), compassPos.getY(), compassPos.getZ());
+			cr = CompassManager.INSTANCE.getCompassDirection( 0, compassPos.getX(), compassPos.getY(), compassPos.getZ() );
 		}
 		else
 		{
 			cr = new CompassResult( false, true, 0 );
 		}
 
-		if( cr.hasResult )
+		if( cr.isValidResult() )
 		{
-			if( cr.spin )
+			if( cr.isSpin() )
 			{
 				now %= 100000;
 				this.model.renderAll( ( now / 50000.0f ) * (float) Math.PI * 500.0f );
 			}
 			else
 			{
-				this.model.renderAll( (float) ( skyCompass.getForward() == EnumFacing.DOWN ? this.flipidiy( cr.rad ) : cr.rad ) );
+				this.model.renderAll( (float) ( skyCompass.getForward() == EnumFacing.DOWN ? this.flipidiy( cr.getRad() ) : cr.getRad() ) );
 			}
 		}
 		else

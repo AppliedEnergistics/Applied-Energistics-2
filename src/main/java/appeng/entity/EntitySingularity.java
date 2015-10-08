@@ -66,7 +66,7 @@ public final class EntitySingularity extends AEBaseEntityItem
 		return super.attackEntityFrom( src, dmg );
 	}
 
-	public void doExplosion()
+	private void doExplosion()
 	{
 		if( Platform.isClient() )
 		{

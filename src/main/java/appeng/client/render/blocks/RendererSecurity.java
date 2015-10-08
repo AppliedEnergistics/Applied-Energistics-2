@@ -47,13 +47,13 @@ public class RendererSecurity extends BaseBlockRender<BlockSecurity, TileSecurit
 	@Override
 	public void renderInventory( final BlockSecurity block, final ItemStack is, final ModelGenerator renderer, final ItemRenderType type, final Object[] obj )
 	{
-		renderer.overrideBlockTexture = ExtraBlockTextures.getMissing();
+		renderer.setOverrideBlockTexture( ExtraBlockTextures.getMissing() );
 		this.renderInvBlock( EnumSet.of( AEPartLocation.SOUTH ), block, is, 0x000000, renderer );
 
-		renderer.overrideBlockTexture = ExtraBlockTextures.MEChest.getIcon();
+		renderer.setOverrideBlockTexture( ExtraBlockTextures.MEChest.getIcon() );
 		this.renderInvBlock( EnumSet.of( AEPartLocation.UP ), block, is, this.adjustBrightness( AEColor.Transparent.whiteVariant, 0.7 ), renderer );
 
-		renderer.overrideBlockTexture = null;
+		renderer.setOverrideBlockTexture( null );
 		super.renderInventory( block, is, renderer, type, obj );
 	}
 
@@ -93,7 +93,7 @@ public class RendererSecurity extends BaseBlockRender<BlockSecurity, TileSecurit
 			this.renderFace( pos, imb, ico, renderer, up );
 		}
 
-		renderer.overrideBlockTexture = null;
+		renderer.setOverrideBlockTexture( null );
 		this.postRenderInWorld( renderer );
 
 		return result;

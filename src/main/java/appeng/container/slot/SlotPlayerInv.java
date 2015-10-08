@@ -31,6 +31,6 @@ public class SlotPlayerInv extends AppEngSlot
 	{
 		super( par1iInventory, par2, par3, par4 );
 
-		this.isPlayerSide = true;
+		this.setPlayerSide( true );
 	}
 }

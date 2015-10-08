@@ -48,16 +48,17 @@ public class BlockMolecularAssembler extends AEBaseTileBlock
 		super( Material.iron );
 
 		this.setTileEntity( TileMolecularAssembler.class );
-		this.isOpaque = false;
+		this.setOpaque( false );
 		this.lightOpacity = 1;
 		this.setFeature( EnumSet.of( AEFeature.MolecularAssembler ) );
 	}
 
 	@Override
-	public boolean canRenderInLayer( final net.minecraft.util.EnumWorldBlockLayer layer) {
-		return  layer == EnumWorldBlockLayer.CUTOUT_MIPPED;		
+	public boolean canRenderInLayer( final net.minecraft.util.EnumWorldBlockLayer layer )
+	{
+		return layer == EnumWorldBlockLayer.CUTOUT_MIPPED;
 	}
-	
+
 	@Override
 	@SideOnly( Side.CLIENT )
 	public Class<? extends BaseBlockRender> getRenderer()

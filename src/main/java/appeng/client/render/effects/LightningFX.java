@@ -34,12 +34,12 @@ public class LightningFX extends EntityFX
 {
 
 	private static final Random RANDOM_GENERATOR = new Random();
-	final int steps = this.getSteps();
-	final double[][] Steps;
+	private static final int STEPS = 5;
+
+	private final double[][] precomputedSteps;
 	private final double[] vertices = new double[3];
 	private final double[] verticesWithUV = new double[3];
-	float currentPoint = 0;
-	boolean hasData = false;
+	private boolean hasData = false;
 
 	public LightningFX( final World w, final double x, final double y, final double z, final double r, final double g, final double b )
 	{
@@ -50,7 +50,7 @@ public class LightningFX extends EntityFX
 	protected LightningFX( final World w, final double x, final double y, final double z, final double r, final double g, final double b, final int maxAge )
 	{
 		super( w, x, y, z, r, g, b );
-		this.Steps = new double[this.steps][3];
+		this.precomputedSteps = new double[LightningFX.STEPS][3];
 		this.motionX = 0;
 		this.motionY = 0;
 		this.motionZ = 0;
@@ -63,17 +63,17 @@ public class LightningFX extends EntityFX
 		double lastDirectionX = ( RANDOM_GENERATOR.nextDouble() - 0.5 ) * 0.9;
 		double lastDirectionY = ( RANDOM_GENERATOR.nextDouble() - 0.5 ) * 0.9;
 		double lastDirectionZ = ( RANDOM_GENERATOR.nextDouble() - 0.5 ) * 0.9;
-		for( int s = 0; s < this.steps; s++ )
+		for( int s = 0; s < LightningFX.STEPS; s++ )
 		{
-			this.Steps[s][0] = lastDirectionX = ( lastDirectionX + ( RANDOM_GENERATOR.nextDouble() - 0.5 ) * 0.9 ) / 2.0;
-			this.Steps[s][1] = lastDirectionY = ( lastDirectionY + ( RANDOM_GENERATOR.nextDouble() - 0.5 ) * 0.9 ) / 2.0;
-			this.Steps[s][2] = lastDirectionZ = ( lastDirectionZ + ( RANDOM_GENERATOR.nextDouble() - 0.5 ) * 0.9 ) / 2.0;
+			this.precomputedSteps[s][0] = lastDirectionX = ( lastDirectionX + ( RANDOM_GENERATOR.nextDouble() - 0.5 ) * 0.9 ) / 2.0;
+			this.precomputedSteps[s][1] = lastDirectionY = ( lastDirectionY + ( RANDOM_GENERATOR.nextDouble() - 0.5 ) * 0.9 ) / 2.0;
+			this.precomputedSteps[s][2] = lastDirectionZ = ( lastDirectionZ + ( RANDOM_GENERATOR.nextDouble() - 0.5 ) * 0.9 ) / 2.0;
 		}
 	}
 
-	private int getSteps()
+	protected int getSteps()
 	{
-		return 5;
+		return LightningFX.STEPS;
 	}
 
 	@Override
@@ -141,11 +141,11 @@ public class LightningFX extends EntityFX
 				double y = ( this.prevPosY + ( this.posY - this.prevPosY ) * l - interpPosY ) - offY;
 				double z = ( this.prevPosZ + ( this.posZ - this.prevPosZ ) * l - interpPosZ ) - offZ;
 
-				for( int s = 0; s < this.steps; s++ )
+				for( int s = 0; s < LightningFX.STEPS; s++ )
 				{
-					final double xN = x + this.Steps[s][0];
-					final double yN = y + this.Steps[s][1];
-					final double zN = z + this.Steps[s][2];
+					final double xN = x + this.precomputedSteps[s][0];
+					final double yN = y + this.precomputedSteps[s][1];
+					final double zN = z + this.precomputedSteps[s][2];
 
 					final double xD = xN - x;
 					final double yD = yN - y;
@@ -170,7 +170,7 @@ public class LightningFX extends EntityFX
 						oz = ( xD * 0 ) - ( 1 * yD );
 					}
 
-					final double ss = Math.sqrt( ox * ox + oy * oy + oz * oz ) / ( ( ( (double) this.steps - (double) s ) / this.steps ) * scale );
+					final double ss = Math.sqrt( ox * ox + oy * oy + oz * oz ) / ( ( ( (double) LightningFX.STEPS - (double) s ) / LightningFX.STEPS ) * scale );
 					ox /= ss;
 					oy /= ss;
 					oz /= ss;
@@ -217,5 +217,10 @@ public class LightningFX extends EntityFX
 			this.vertices[x] = a[x];
 			this.verticesWithUV[x] = b[x];
 		}
+	}
+
+	protected double[][] getPrecomputedSteps()
+	{
+		return this.precomputedSteps;
 	}
 }

@@ -30,8 +30,8 @@ import appeng.core.sync.network.INetworkInfo;
 public class PacketPartialItem extends AppEngPacket
 {
 
-	final short pageNum;
-	final byte[] data;
+	private final short pageNum;
+	private final byte[] data;
 
 	// automatic.
 	public PacketPartialItem( final ByteBuf stream )

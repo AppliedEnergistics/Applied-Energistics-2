@@ -19,6 +19,8 @@
 package appeng.container.implementations;
 
 
+import javax.annotation.Nonnull;
+
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.world.World;
@@ -37,17 +39,15 @@ import appeng.tile.inventory.AppEngInternalInventory;
 public class ContainerCraftAmount extends AEBaseContainer
 {
 
-	public final Slot craftingItem;
-	final ITerminalHost priHost;
-	public IAEItemStack whatToMake;
+	private final Slot craftingItem;
+	private IAEItemStack itemToCreate;
 
 	public ContainerCraftAmount( final InventoryPlayer ip, final ITerminalHost te )
 	{
 		super( ip, te );
-		this.priHost = te;
 
 		this.craftingItem = new SlotInaccessible( new AppEngInternalInventory( null, 1 ), 0, 34, 53 );
-		this.addSlotToContainer( this.craftingItem );
+		this.addSlotToContainer( this.getCraftingItem() );
 	}
 
 	@Override
@@ -71,5 +71,20 @@ public class ContainerCraftAmount extends AEBaseContainer
 	public BaseActionSource getActionSrc()
 	{
 		return new PlayerSource( this.getPlayerInv().player, (IActionHost) this.getTarget() );
+	}
+
+	public Slot getCraftingItem()
+	{
+		return this.craftingItem;
+	}
+
+	public IAEItemStack getItemToCraft()
+	{
+		return this.itemToCreate;
+	}
+
+	public void setItemToCraft( @Nonnull final IAEItemStack itemToCreate )
+	{
+		this.itemToCreate = itemToCreate;
 	}
 }

@@ -30,11 +30,11 @@ import appeng.api.storage.data.IAEItemStack;
 public class SlotME extends Slot
 {
 
-	public final InternalSlotME mySlot;
+	private final InternalSlotME mySlot;
 
 	public SlotME( final InternalSlotME me )
 	{
-		super( null, 0, me.xPos, me.yPos );
+		super( null, 0, me.getxPosition(), me.getyPosition() );
 		this.mySlot = me;
 	}
 

@@ -44,7 +44,7 @@ public abstract class BlockQuantumBase extends AEBaseTileBlock implements ICusto
 		final float shave = 2.0f / 16.0f;
 		this.setBlockBounds( shave, shave, shave, 1.0f - shave, 1.0f - shave, 1.0f - shave );
 		this.setLightOpacity( 0 );
-		this.isFullSize = this.isOpaque = false;
+		this.setFullSize( this.setOpaque( false ) );
 		this.setFeature( EnumSet.of( AEFeature.QuantumNetworkBridge ) );
 	}
 

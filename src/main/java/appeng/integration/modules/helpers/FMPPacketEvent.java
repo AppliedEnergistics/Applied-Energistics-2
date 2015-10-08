@@ -26,10 +26,15 @@ import net.minecraftforge.fml.common.eventhandler.Event;
 public class FMPPacketEvent extends Event
 {
 
-	public final EntityPlayerMP sender;
+	private final EntityPlayerMP sender;
 
 	public FMPPacketEvent( EntityPlayerMP sender )
 	{
 		this.sender = sender;
+	}
+
+	public EntityPlayerMP getSender()
+	{
+		return this.sender;
 	}
 }

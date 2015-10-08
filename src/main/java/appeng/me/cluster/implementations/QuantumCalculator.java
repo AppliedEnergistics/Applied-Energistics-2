@@ -140,13 +140,13 @@ public class QuantumCalculator extends MBCalculator
 					{
 						if( num == 1 || num == 3 || num == 7 || num == 9 )
 						{
-							flags = (byte) ( this.tqb.corner | num );
+							flags = (byte) ( this.tqb.getCorner() | num );
 						}
 						else
 						{
 							flags = num;
 						}
-						c.Ring[ringNum] = te;
+						c.getRing()[ringNum] = te;
 						ringNum++;
 					}
 

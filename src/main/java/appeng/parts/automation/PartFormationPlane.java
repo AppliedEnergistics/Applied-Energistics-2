@@ -86,11 +86,11 @@ import appeng.util.prioitylist.PrecisePriorityList;
 
 public class PartFormationPlane extends PartUpgradeable implements ICellContainer, IPriorityHost, IMEInventory<IAEItemStack>
 {
-	final MEInventoryHandler myHandler = new MEInventoryHandler( this, StorageChannel.ITEMS );
-	final AppEngInternalAEInventory Config = new AppEngInternalAEInventory( this, 63 );
-	int priority = 0;
-	boolean wasActive = false;
-	boolean blocked = false;
+	private final MEInventoryHandler myHandler = new MEInventoryHandler( this, StorageChannel.ITEMS );
+	private final AppEngInternalAEInventory Config = new AppEngInternalAEInventory( this, 63 );
+	private int priority = 0;
+	private boolean wasActive = false;
+	private boolean blocked = false;
 
 	public PartFormationPlane( final ItemStack is )
 	{
@@ -130,7 +130,7 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 
 		try
 		{
-			this.proxy.getGrid().postEvent( new MENetworkCellArrayUpdate() );
+			this.getProxy().getGrid().postEvent( new MENetworkCellArrayUpdate() );
 		}
 		catch( final GridAccessException e )
 		{
@@ -148,7 +148,7 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 	public void updateSetting( final IConfigManager manager, final Enum settingName, final Enum newValue )
 	{
 		this.updateHandler();
-		this.host.markForSave();
+		this.getHost().markForSave();
 	}
 
 	@Override
@@ -200,7 +200,7 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 	@MENetworkEventSubscribe
 	public void powerRender( final MENetworkPowerStatusChange c )
 	{
-		final boolean currentActive = this.proxy.isActive();
+		final boolean currentActive = this.getProxy().isActive();
 		if( this.wasActive != currentActive )
 		{
 			this.wasActive = currentActive;
@@ -212,7 +212,7 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 	@MENetworkEventSubscribe
 	public void updateChannels( final MENetworkChannelsChanged changedChannels )
 	{
-		final boolean currentActive = this.proxy.isActive();
+		final boolean currentActive = this.getProxy().isActive();
 		if( this.wasActive != currentActive )
 		{
 			this.wasActive = currentActive;
@@ -239,22 +239,22 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 			final EnumFacing e = bch.getWorldX();
 			final EnumFacing u = bch.getWorldY();
 
-			if( this.isTransitionPlane( te.getWorld().getTileEntity( pos.offset( e.getOpposite() ) ), this.side ) )
+			if( this.isTransitionPlane( te.getWorld().getTileEntity( pos.offset( e.getOpposite() ) ), this.getSide() ) )
 			{
 				minX = 0;
 			}
 
-			if( this.isTransitionPlane( te.getWorld().getTileEntity( pos.offset( e)  ), this.side ) )
+			if( this.isTransitionPlane( te.getWorld().getTileEntity( pos.offset( e ) ), this.getSide() ) )
 			{
 				maxX = 16;
 			}
 
-			if( this.isTransitionPlane( te.getWorld().getTileEntity( pos.offset( u.getOpposite() ) ), this.side ) )
+			if( this.isTransitionPlane( te.getWorld().getTileEntity( pos.offset( u.getOpposite() ) ), this.getSide() ) )
 			{
 				minY = 0;
 			}
 
-			if( this.isTransitionPlane( te.getWorld().getTileEntity( pos.offset( u) ), this.side ) )
+			if( this.isTransitionPlane( te.getWorld().getTileEntity( pos.offset( u ) ), this.getSide() ) )
 			{
 				maxY = 16;
 			}
@@ -268,7 +268,7 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 	@SideOnly( Side.CLIENT )
 	public void renderInventory( final IPartRenderHelper rh, final ModelGenerator renderer )
 	{
-		rh.setTexture( CableBusTextures.PartPlaneSides.getIcon(), CableBusTextures.PartPlaneSides.getIcon(), CableBusTextures.PartTransitionPlaneBack.getIcon(), renderer.getIcon( this.is ), CableBusTextures.PartPlaneSides.getIcon(), CableBusTextures.PartPlaneSides.getIcon() );
+		rh.setTexture( CableBusTextures.PartPlaneSides.getIcon(), CableBusTextures.PartPlaneSides.getIcon(), CableBusTextures.PartTransitionPlaneBack.getIcon(), renderer.getIcon( this.getItemStack() ), CableBusTextures.PartPlaneSides.getIcon(), CableBusTextures.PartPlaneSides.getIcon() );
 
 		rh.setBounds( 1, 1, 15, 15, 15, 16 );
 		rh.renderInventoryBox( renderer );
@@ -289,37 +289,37 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 		final TileEntity te = this.getHost().getTile();
 		final BlockPos pos = te.getPos();
 
-		if( this.isTransitionPlane( te.getWorld().getTileEntity( pos.offset( e.getOpposite() ) ), this.side ) )
+		if( this.isTransitionPlane( te.getWorld().getTileEntity( pos.offset( e.getOpposite() ) ), this.getSide() ) )
 		{
 			minX = 0;
 		}
 
 		int maxX = 15;
-		if( this.isTransitionPlane( te.getWorld().getTileEntity( pos.offset( e ) ), this.side ) )
+		if( this.isTransitionPlane( te.getWorld().getTileEntity( pos.offset( e ) ), this.getSide() ) )
 		{
 			maxX = 16;
 		}
 
 		int minY = 1;
-		if( this.isTransitionPlane( te.getWorld().getTileEntity( pos.offset( u.getOpposite() ) ), this.side ) )
+		if( this.isTransitionPlane( te.getWorld().getTileEntity( pos.offset( u.getOpposite() ) ), this.getSide() ) )
 		{
 			minY = 0;
 		}
 
 		int maxY = 15;
-		if( this.isTransitionPlane( te.getWorld().getTileEntity( pos.offset( u ) ), this.side ) )
+		if( this.isTransitionPlane( te.getWorld().getTileEntity( pos.offset( u ) ), this.getSide() ) )
 		{
 			maxY = 16;
 		}
 
-		final boolean isActive = ( this.clientFlags & ( PartBasicState.POWERED_FLAG | PartBasicState.CHANNEL_FLAG ) ) == ( PartBasicState.POWERED_FLAG | PartBasicState.CHANNEL_FLAG );
+		final boolean isActive = ( this.getClientFlags() & ( PartBasicState.POWERED_FLAG | PartBasicState.CHANNEL_FLAG ) ) == ( PartBasicState.POWERED_FLAG | PartBasicState.CHANNEL_FLAG );
 
-		rh.setTexture( CableBusTextures.PartPlaneSides.getIcon(), CableBusTextures.PartPlaneSides.getIcon(), CableBusTextures.PartTransitionPlaneBack.getIcon(), isActive ? CableBusTextures.BlockFormPlaneOn.getIcon() : renderer.getIcon( this.is ), CableBusTextures.PartPlaneSides.getIcon(), CableBusTextures.PartPlaneSides.getIcon() );
+		rh.setTexture( CableBusTextures.PartPlaneSides.getIcon(), CableBusTextures.PartPlaneSides.getIcon(), CableBusTextures.PartTransitionPlaneBack.getIcon(), isActive ? CableBusTextures.BlockFormPlaneOn.getIcon() : renderer.getIcon( this.getItemStack() ), CableBusTextures.PartPlaneSides.getIcon(), CableBusTextures.PartPlaneSides.getIcon() );
 
 		rh.setBounds( minX, minY, 15, maxX, maxY, 16 );
 		rh.renderBlock( opos, renderer );
 
-		rh.setTexture( CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartTransitionPlaneBack.getIcon(), isActive ? CableBusTextures.BlockFormPlaneOn.getIcon() : renderer.getIcon( this.is ), CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartMonitorSidesStatus.getIcon() );
+		rh.setTexture( CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartTransitionPlaneBack.getIcon(), isActive ? CableBusTextures.BlockFormPlaneOn.getIcon() : renderer.getIcon( this.getItemStack() ), CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartMonitorSidesStatus.getIcon() );
 
 		rh.setBounds( 5, 5, 14, 11, 11, 15 );
 		rh.renderBlock( opos, renderer );
@@ -330,12 +330,12 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 	@Override
 	public void onNeighborChanged()
 	{
-		final TileEntity te = this.host.getTile();
+		final TileEntity te = this.getHost().getTile();
 		final World w = te.getWorld();
-		final AEPartLocation side = this.side;
+		final AEPartLocation side = this.getSide();
 
-		final BlockPos tePos = te.getPos().offset( side.getFacing()  );
-		
+		final BlockPos tePos = te.getPos().offset( side.getFacing() );
+
 		this.blocked = !w.getBlockState( tePos ).getBlock().isReplaceable( w, tePos );
 	}
 
@@ -355,7 +355,7 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 				return true;
 			}
 
-			Platform.openGUI( player, this.getHost().getTile(), this.side, GuiBridge.GUI_FORMATION_PLANE );
+			Platform.openGUI( player, this.getHost().getTile(), this.getSide(), GuiBridge.GUI_FORMATION_PLANE );
 			return true;
 		}
 
@@ -375,7 +375,7 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 	@Override
 	public List<IMEInventoryHandler> getCellArray( final StorageChannel channel )
 	{
-		if( this.proxy.isActive() && channel == StorageChannel.ITEMS )
+		if( this.getProxy().isActive() && channel == StorageChannel.ITEMS )
 		{
 			final List<IMEInventoryHandler> Handler = new ArrayList<IMEInventoryHandler>( 1 );
 			Handler.add( this.myHandler );
@@ -394,7 +394,7 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 	public void setPriority( final int newValue )
 	{
 		this.priority = newValue;
-		this.host.markForSave();
+		this.getHost().markForSave();
 		this.updateHandler();
 	}
 
@@ -420,9 +420,9 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 		long maxStorage = Math.min( input.getStackSize(), is.getMaxStackSize() );
 		boolean worked = false;
 
-		final TileEntity te = this.host.getTile();
+		final TileEntity te = this.getHost().getTile();
 		final World w = te.getWorld();
-		final AEPartLocation side = this.side;
+		final AEPartLocation side = this.getSide();
 
 		final BlockPos tePos = te.getPos().offset( side.getFacing() );
 
@@ -431,25 +431,25 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 			if( placeBlock == YesNo.YES && ( i instanceof ItemBlock || i instanceof IPlantable || i instanceof ItemSkull || i instanceof ItemFirework || i instanceof IPartItem || i instanceof ItemReed ) )
 			{
 				final EntityPlayer player = Platform.getPlayer( (WorldServer) w );
-				Platform.configurePlayer( player, side, this.tile );
+				Platform.configurePlayer( player, side, this.getTile() );
 
 				// TODO: LIMIT FIREWORKS
 				/*
-				if( i instanceof ItemFirework )
-				{
-					Chunk c = w.getChunkFromBlockCoords( tePos );
-					int sum = 0;
-					for( List Z : c.geten )
-					{
-						sum += Z.size();
-					}
-					if( sum > 32 )
-					{
-						return input;
-					}
-				}
-				*/
-				
+				 * if( i instanceof ItemFirework )
+				 * {
+				 * Chunk c = w.getChunkFromBlockCoords( tePos );
+				 * int sum = 0;
+				 * for( List Z : c.geten )
+				 * {
+				 * sum += Z.size();
+				 * }
+				 * if( sum > 32 )
+				 * {
+				 * return input;
+				 * }
+				 * }
+				 */
+
 				maxStorage = is.stackSize;
 				worked = true;
 				if( type == Actionable.MODULATE )
@@ -497,15 +497,15 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 				final Chunk c = w.getChunkFromBlockCoords( tePos );
 
 				final int sum = 0;
-				
+
 				// TODO: LIMIT OTHER THIGNS!
 				/*
-				for( List Z : c.entityLists )
-				{
-					sum += Z.size();
-				}
-				*/
-				
+				 * for( List Z : c.entityLists )
+				 * {
+				 * sum += Z.size();
+				 * }
+				 */
+
 				if( sum < AEConfig.instance.formationPlaneEntityLimit )
 				{
 					if( type == Actionable.MODULATE )
@@ -513,10 +513,10 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 
 						is.stackSize = (int) maxStorage;
 						final EntityItem ei = new EntityItem( w, // w
-								( ( side.xOffset != 0 ? 0.0 : 0.7 ) * ( Platform.getRandomFloat() - 0.5f ) ) + 0.5 + side.xOffset * -0.3 + tePos.getX(), // spawn
-								( ( side.yOffset != 0 ? 0.0 : 0.7 ) * ( Platform.getRandomFloat() - 0.5f ) ) + 0.5 + side.yOffset * -0.3 + tePos.getY(), // spawn
-								( ( side.zOffset != 0 ? 0.0 : 0.7 ) * ( Platform.getRandomFloat() - 0.5f ) ) + 0.5 + side.zOffset * -0.3 + tePos.getZ(), // spawn
-								is.copy() );
+						( ( side.xOffset != 0 ? 0.0 : 0.7 ) * ( Platform.getRandomFloat() - 0.5f ) ) + 0.5 + side.xOffset * -0.3 + tePos.getX(), // spawn
+						( ( side.yOffset != 0 ? 0.0 : 0.7 ) * ( Platform.getRandomFloat() - 0.5f ) ) + 0.5 + side.yOffset * -0.3 + tePos.getY(), // spawn
+						( ( side.zOffset != 0 ? 0.0 : 0.7 ) * ( Platform.getRandomFloat() - 0.5f ) ) + 0.5 + side.zOffset * -0.3 + tePos.getZ(), // spawn
+						is.copy() );
 
 						Entity result = ei;
 

@@ -166,7 +166,7 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 			return true;
 		}
 
-		if( !this.proxy.isActive() )
+		if( !this.getProxy().isActive() )
 		{
 			return false;
 		}
@@ -176,7 +176,7 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 			return false;
 		}
 
-		final TileEntity te = this.tile;
+		final TileEntity te = this.getTile();
 		final ItemStack eq = player.getCurrentEquippedItem();
 
 		if( Platform.isWrench( player, eq, te.getPos() ) )
@@ -200,7 +200,7 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 	}
 
 	// update the system...
-	public void configureWatchers()
+	private void configureWatchers()
 	{
 		if( this.myWatcher != null )
 		{
@@ -216,7 +216,7 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 					this.myWatcher.add( this.configuredItem );
 				}
 
-				this.updateReportingValue( this.proxy.getStorage().getItemInventory() );
+				this.updateReportingValue( this.getProxy().getStorage().getItemInventory() );
 			}
 		}
 		catch( final GridAccessException e )
@@ -314,7 +314,7 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 	{
 		// GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS );
 
-		final AEPartLocation d = this.side;
+		final AEPartLocation d = this.getSide();
 		GL11.glTranslated( d.xOffset * 0.77, d.yOffset * 0.77, d.zOffset * 0.77 );
 
 		switch( d ) {
@@ -323,27 +323,27 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 				GL11.glRotatef( 90.0f, 1.0f, 0.0f, 0.0f );
 				GL11.glRotatef( this.getSpin() * 90.0F, 0, 0, 1 );
 				break;
-			
+
 			case DOWN:
 				GL11.glScalef( 1.0f, -1.0f, 1.0f );
 				GL11.glRotatef( -90.0f, 1.0f, 0.0f, 0.0f );
 				GL11.glRotatef( this.getSpin() * -90.0F, 0, 0, 1 );
 				break;
-			
+
 			case EAST:
 				GL11.glScalef( -1.0f, -1.0f, -1.0f );
 				GL11.glRotatef( -90.0f, 0.0f, 1.0f, 0.0f );
 				break;
-			
+
 			case WEST:
 				GL11.glScalef( -1.0f, -1.0f, -1.0f );
 				GL11.glRotatef( 90.0f, 0.0f, 1.0f, 0.0f );
 				break;
-			
+
 			case NORTH:
 				GL11.glScalef( -1.0f, -1.0f, -1.0f );
 				break;
-			
+
 			case SOUTH:
 				GL11.glScalef( -1.0f, -1.0f, -1.0f );
 				GL11.glRotatef( 180.0f, 0.0f, 1.0f, 0.0f );
@@ -352,7 +352,7 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 			default:
 				break;
 		}
-		
+
 		try
 		{
 			final ItemStack sis = ais.getItemStack();
@@ -370,7 +370,7 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 			// RenderHelper.enableGUIStandardItemLighting();
 			wr.setColorOpaque_F( 1.0f, 1.0f, 1.0f );
 
-			ClientHelper.proxy.doRenderItem( sis, this.tile.getWorld() );
+			ClientHelper.proxy.doRenderItem( sis, this.getTile().getWorld() );
 		}
 		catch( final Exception e )
 		{

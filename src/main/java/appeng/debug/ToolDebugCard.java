@@ -146,7 +146,7 @@ public class ToolDebugCard extends AEBaseItem
 
 					if( center.getMachine() instanceof PartP2PTunnel )
 					{
-						this.outputMsg( player, "Freq: " + ( (PartP2PTunnel) center.getMachine() ).freq );
+						this.outputMsg( player, "Freq: " + ( (PartP2PTunnel) center.getMachine() ).getFrequency() );
 					}
 
 					final TickManagerCache tmc = g.getCache( ITickManager.class );
@@ -223,7 +223,7 @@ public class ToolDebugCard extends AEBaseItem
 		player.addChatMessage( new ChatComponentText( string ) );
 	}
 
-	public String timeMeasurement( final long nanos )
+	private String timeMeasurement( final long nanos )
 	{
 		final long ms = nanos / 100000;
 		if( nanos <= 100000 )

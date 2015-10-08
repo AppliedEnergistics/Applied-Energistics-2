@@ -53,12 +53,12 @@ public final class ApiDefinitions implements IDefinitions
 		this.parts = new ApiParts( constructor, partHelper );
 	}
 
-	public FeatureHandlerRegistry getFeatureHandlerRegistry()
+	FeatureHandlerRegistry getFeatureHandlerRegistry()
 	{
 		return this.handlers;
 	}
 
-	public FeatureRegistry getFeatureRegistry()
+	FeatureRegistry getFeatureRegistry()
 	{
 		return this.features;
 	}

@@ -53,7 +53,7 @@ public class GuiScrollbar implements IScrollSource
 		}
 	}
 
-	public int getRange()
+	private int getRange()
 	{
 		return this.maxScroll - this.minScroll;
 	}

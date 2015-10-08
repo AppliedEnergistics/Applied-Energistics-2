@@ -28,7 +28,7 @@ import appeng.client.texture.TmpFlippableIcon;
 public class BlockRenderInfo
 {
 
-	public final BaseBlockRender rendererInstance;
+	private final BaseBlockRender rendererInstance;
 	private final TmpFlippableIcon tmpTopIcon = new TmpFlippableIcon();
 	private final TmpFlippableIcon tmpBottomIcon = new TmpFlippableIcon();
 	private final TmpFlippableIcon tmpSouthIcon = new TmpFlippableIcon();
@@ -131,8 +131,13 @@ public class BlockRenderInfo
 		return this.topIcon;
 	}
 
-	public boolean isValid()
+	boolean isValid()
 	{
 		return this.topIcon != null && this.bottomIcon != null && this.southIcon != null && this.northIcon != null && this.eastIcon != null && this.westIcon != null;
+	}
+
+	public BaseBlockRender getRendererInstance()
+	{
+		return this.rendererInstance;
 	}
 }

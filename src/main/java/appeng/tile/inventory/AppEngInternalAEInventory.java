@@ -38,10 +38,10 @@ import appeng.util.iterators.InvIterator;
 public class AppEngInternalAEInventory implements IInventory, Iterable<ItemStack>
 {
 
-	protected final IAEAppEngInventory te;
-	protected final IAEItemStack[] inv;
-	final int size;
-	int maxStack;
+	private final IAEAppEngInventory te;
+	private final IAEItemStack[] inv;
+	private final int size;
+	private int maxStack;
 
 	public AppEngInternalAEInventory( final IAEAppEngInventory te, final int s )
 	{
@@ -80,7 +80,7 @@ public class AppEngInternalAEInventory implements IInventory, Iterable<ItemStack
 		data.setTag( name, c );
 	}
 
-	public void writeToNBT( final NBTTagCompound target )
+	private void writeToNBT( final NBTTagCompound target )
 	{
 		for( int x = 0; x < this.size; x++ )
 		{
@@ -110,7 +110,7 @@ public class AppEngInternalAEInventory implements IInventory, Iterable<ItemStack
 		}
 	}
 
-	public void readFromNBT( final NBTTagCompound target )
+	private void readFromNBT( final NBTTagCompound target )
 	{
 		for( int x = 0; x < this.size; x++ )
 		{

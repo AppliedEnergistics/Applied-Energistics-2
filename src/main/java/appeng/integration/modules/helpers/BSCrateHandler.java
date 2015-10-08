@@ -42,7 +42,7 @@ public class BSCrateHandler implements IExternalStorageHandler
 	{
 		if( channel == StorageChannel.ITEMS )
 		{
-			return new BSCrate( te, ForgeDirection.UNKNOWN );
+			return new BSCrate( te );
 		}
 		return null;
 	}

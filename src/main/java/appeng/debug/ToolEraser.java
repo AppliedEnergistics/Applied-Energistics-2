@@ -38,7 +38,7 @@ import appeng.util.Platform;
 public class ToolEraser extends AEBaseItem
 {
 
-	public static final int BLOCK_ERASE_LIMIT = 90000;
+	private static final int BLOCK_ERASE_LIMIT = 90000;
 
 	public ToolEraser()
 	{

@@ -52,10 +52,10 @@ public class TileController extends AENetworkPowerTile
 
 	public TileController()
 	{
-		this.internalMaxPower = 8000;
-		this.internalPublicPowerStorage = true;
-		this.gridProxy.setIdlePowerUsage( 3 );
-		this.gridProxy.setFlags( GridFlags.CANNOT_CARRY, GridFlags.DENSE_CAPACITY );
+		this.setInternalMaxPower( 8000 );
+		this.setInternalPublicPowerStorage( true );
+		this.getProxy().setIdlePowerUsage( 3 );
+		this.getProxy().setFlags( GridFlags.CANNOT_CARRY, GridFlags.DENSE_CAPACITY );
 	}
 
 	@Override
@@ -89,11 +89,11 @@ public class TileController extends AENetworkPowerTile
 		{
 			if( this.isValid )
 			{
-				this.gridProxy.setValidSides( EnumSet.allOf( EnumFacing.class ) );
+				this.getProxy().setValidSides( EnumSet.allOf( EnumFacing.class ) );
 			}
 			else
 			{
-				this.gridProxy.setValidSides( EnumSet.noneOf( EnumFacing.class ) );
+				this.getProxy().setValidSides( EnumSet.noneOf( EnumFacing.class ) );
 			}
 
 			this.updateMeta();
@@ -103,20 +103,20 @@ public class TileController extends AENetworkPowerTile
 
 	private void updateMeta()
 	{
-		if( !this.gridProxy.isReady() )
+		if( !this.getProxy().isReady() )
 		{
 			return;
 		}
 
 		ControllerBlockState metaState = ControllerBlockState.OFFLINE;
-		
+
 		try
 		{
-			if( this.gridProxy.getEnergy().isNetworkPowered() )
+			if( this.getProxy().getEnergy().isNetworkPowered() )
 			{
 				metaState = ControllerBlockState.ONLINE;
 
-				if( this.gridProxy.getPath().getControllerState() == ControllerState.CONTROLLER_CONFLICT )
+				if( this.getProxy().getPath().getControllerState() == ControllerState.CONTROLLER_CONFLICT )
 				{
 					metaState = ControllerBlockState.CONFLICTED;
 				}
@@ -126,12 +126,12 @@ public class TileController extends AENetworkPowerTile
 		{
 			metaState = ControllerBlockState.OFFLINE;
 		}
-		
+
 		if( this.checkController( this.pos ) && this.worldObj.getBlockState( this.pos ).getValue( BlockController.CONTROLLER_STATE ) != metaState )
 		{
 			this.worldObj.setBlockState( this.pos, this.worldObj.getBlockState( this.pos ).withProperty( BlockController.CONTROLLER_STATE, metaState ) );
 		}
-		
+
 	}
 
 	@Override
@@ -139,7 +139,7 @@ public class TileController extends AENetworkPowerTile
 	{
 		try
 		{
-			return this.gridProxy.getEnergy().getEnergyDemand( 8000 );
+			return this.getProxy().getEnergy().getEnergyDemand( 8000 );
 		}
 		catch( final GridAccessException e )
 		{
@@ -153,7 +153,7 @@ public class TileController extends AENetworkPowerTile
 	{
 		try
 		{
-			final double ret = this.gridProxy.getEnergy().injectPower( power, mode );
+			final double ret = this.getProxy().getEnergy().injectPower( power, mode );
 			if( mode == Actionable.SIMULATE )
 			{
 				return ret;
@@ -172,7 +172,7 @@ public class TileController extends AENetworkPowerTile
 	{
 		try
 		{
-			this.gridProxy.getGrid().postEvent( new MENetworkPowerStorage( this, x ) );
+			this.getProxy().getGrid().postEvent( new MENetworkPowerStorage( this, x ) );
 		}
 		catch( final GridAccessException e )
 		{
@@ -222,7 +222,7 @@ public class TileController extends AENetworkPowerTile
 		{
 			return this.worldObj.getTileEntity( pos ) instanceof TileController;
 		}
-		
+
 		return false;
 	}
 }

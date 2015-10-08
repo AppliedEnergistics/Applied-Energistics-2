@@ -44,8 +44,8 @@ import appeng.tile.storage.TileIOPort;
 public class GuiIOPort extends GuiUpgradeable
 {
 
-	GuiImgButton fullMode;
-	GuiImgButton operationMode;
+	private GuiImgButton fullMode;
+	private GuiImgButton operationMode;
 
 	public GuiIOPort( final InventoryPlayer inventoryPlayer, final TileIOPort te )
 	{
@@ -73,17 +73,17 @@ public class GuiIOPort extends GuiUpgradeable
 
 		if( this.redstoneMode != null )
 		{
-			this.redstoneMode.set( this.cvb.rsMode );
+			this.redstoneMode.set( this.cvb.getRedStoneMode() );
 		}
 
 		if( this.operationMode != null )
 		{
-			this.operationMode.set( ( (ContainerIOPort) this.cvb ).opMode );
+			this.operationMode.set( ( (ContainerIOPort) this.cvb ).getOperationMode() );
 		}
 
 		if( this.fullMode != null )
 		{
-			this.fullMode.set( ( (ContainerIOPort) this.cvb ).fMode );
+			this.fullMode.set( ( (ContainerIOPort) this.cvb ).getFullMode() );
 		}
 	}
 

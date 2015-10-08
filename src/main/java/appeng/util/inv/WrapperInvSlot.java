@@ -45,7 +45,7 @@ public class WrapperInvSlot
 		return true;
 	}
 
-	class InternalInterfaceWrapper implements IInventory
+	private class InternalInterfaceWrapper implements IInventory
 	{
 
 		private final IInventory inv;

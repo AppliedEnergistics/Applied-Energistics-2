@@ -33,9 +33,9 @@ import appeng.block.AEBaseBlock;
 public class MetaRotation implements IOrientable
 {
 
-	final boolean useFacing;
-	final IBlockAccess w;
-	final BlockPos pos;
+	private final boolean useFacing;
+	private final IBlockAccess w;
+	private final BlockPos pos;
 
 	public MetaRotation( final IBlockAccess world, final BlockPos pos, final boolean FullFacing )
 	{
@@ -64,18 +64,18 @@ public class MetaRotation implements IOrientable
 	public EnumFacing getUp()
 	{
 		final IBlockState state = this.w.getBlockState( this.pos );
-		
-		if ( this.useFacing )
+
+		if( this.useFacing )
 		{
 			final EnumFacing f = state == null ? EnumFacing.UP : (EnumFacing) state.getValue( BlockTorch.FACING );
 			return f;
 		}
-		
+
 		Axis a = state == null ? null : (Axis) state.getValue( AEBaseBlock.AXIS_ORIENTATION );
-		
-		if ( a == null )
+
+		if( a == null )
 			a = Axis.Y;
-		
+
 		switch( a )
 		{
 			case X:
@@ -93,7 +93,7 @@ public class MetaRotation implements IOrientable
 	{
 		if( this.w instanceof World )
 		{
-			if ( this.useFacing )
+			if( this.useFacing )
 				( (World) this.w ).setBlockState( this.pos, this.w.getBlockState( this.pos ).withProperty( BlockTorch.FACING, up ) );
 			else
 				( (World) this.w ).setBlockState( this.pos, this.w.getBlockState( this.pos ).withProperty( AEBaseBlock.AXIS_ORIENTATION, up.getAxis() ) );

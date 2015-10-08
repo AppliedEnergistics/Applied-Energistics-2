@@ -108,7 +108,7 @@ public class CellInventoryHandler extends MEInventoryHandler<IAEItemStack> imple
 	@Override
 	public ICellInventory getCellInv()
 	{
-		Object o = this.internal;
+		Object o = this.getInternal();
 
 		if( o instanceof MEPassThrough )
 		{

@@ -47,7 +47,7 @@ public enum Stats
 		player.addStat( this.getStat(), howMany );
 	}
 
-	public StatBasic getStat()
+	StatBasic getStat()
 	{
 		if( this.stat == null )
 		{

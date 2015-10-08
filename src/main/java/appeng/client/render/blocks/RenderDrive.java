@@ -47,10 +47,10 @@ public class RenderDrive extends BaseBlockRender<BlockDrive, TileDrive>
 	@Override
 	public void renderInventory( final BlockDrive block, final ItemStack is, final ModelGenerator renderer, final ItemRenderType type, final Object[] obj )
 	{
-		renderer.overrideBlockTexture = ExtraBlockTextures.White.getIcon();
+		renderer.setOverrideBlockTexture( ExtraBlockTextures.White.getIcon() );
 		this.renderInvBlock( EnumSet.of( AEPartLocation.SOUTH ), block, is, 0x000000, renderer );
 
-		renderer.overrideBlockTexture = null;
+		renderer.setOverrideBlockTexture( null );
 		super.renderInventory( block, is, renderer, type, obj );
 	}
 
@@ -219,40 +219,40 @@ public class RenderDrive extends BaseBlockRender<BlockDrive, TileDrive>
 				switch( forward.getFrontOffsetX() + forward.getFrontOffsetY() * 2 + forward.getFrontOffsetZ() * 3 )
 				{
 					case 1:
-						renderer.addVertexWithUV( forward,x + renderer.renderMaxX, y + renderer.renderMaxY, z + renderer.renderMinZ, u1, v1 );
-						renderer.addVertexWithUV( forward,x + renderer.renderMaxX, y + renderer.renderMaxY, z + renderer.renderMaxZ, u2, v2 );
-						renderer.addVertexWithUV( forward,x + renderer.renderMaxX, y + renderer.renderMinY, z + renderer.renderMaxZ, u3, v3 );
-						renderer.addVertexWithUV( forward,x + renderer.renderMaxX, y + renderer.renderMinY, z + renderer.renderMinZ, u4, v4 );
+						renderer.addVertexWithUV( forward,x + renderer.getRenderMaxX(), y + renderer.getRenderMaxY(), z + renderer.getRenderMinZ(), u1, v1 );
+						renderer.addVertexWithUV( forward,x + renderer.getRenderMaxX(), y + renderer.getRenderMaxY(), z + renderer.getRenderMaxZ(), u2, v2 );
+						renderer.addVertexWithUV( forward,x + renderer.getRenderMaxX(), y + renderer.getRenderMinY(), z + renderer.getRenderMaxZ(), u3, v3 );
+						renderer.addVertexWithUV( forward,x + renderer.getRenderMaxX(), y + renderer.getRenderMinY(), z + renderer.getRenderMinZ(), u4, v4 );
 						break;
 					case -1:
-						renderer.addVertexWithUV( forward,x + renderer.renderMaxX, y + renderer.renderMinY, z + renderer.renderMinZ, u1, v1 );
-						renderer.addVertexWithUV( forward,x + renderer.renderMaxX, y + renderer.renderMinY, z + renderer.renderMaxZ, u2, v2 );
-						renderer.addVertexWithUV( forward,x + renderer.renderMaxX, y + renderer.renderMaxY, z + renderer.renderMaxZ, u3, v3 );
-						renderer.addVertexWithUV( forward,x + renderer.renderMaxX, y + renderer.renderMaxY, z + renderer.renderMinZ, u4, v4 );
+						renderer.addVertexWithUV( forward,x + renderer.getRenderMaxX(), y + renderer.getRenderMinY(), z + renderer.getRenderMinZ(), u1, v1 );
+						renderer.addVertexWithUV( forward,x + renderer.getRenderMaxX(), y + renderer.getRenderMinY(), z + renderer.getRenderMaxZ(), u2, v2 );
+						renderer.addVertexWithUV( forward,x + renderer.getRenderMaxX(), y + renderer.getRenderMaxY(), z + renderer.getRenderMaxZ(), u3, v3 );
+						renderer.addVertexWithUV( forward,x + renderer.getRenderMaxX(), y + renderer.getRenderMaxY(), z + renderer.getRenderMinZ(), u4, v4 );
 						break;
 					case -2:
-						renderer.addVertexWithUV( forward,x + renderer.renderMaxX, y + renderer.renderMaxY, z + renderer.renderMinZ, u1, v1 );
-						renderer.addVertexWithUV( forward,x + renderer.renderMaxX, y + renderer.renderMaxY, z + renderer.renderMaxZ, u2, v2 );
-						renderer.addVertexWithUV( forward,x + renderer.renderMinX, y + renderer.renderMaxY, z + renderer.renderMaxZ, u3, v3 );
-						renderer.addVertexWithUV( forward,x + renderer.renderMinX, y + renderer.renderMaxY, z + renderer.renderMinZ, u4, v4 );
+						renderer.addVertexWithUV( forward,x + renderer.getRenderMaxX(), y + renderer.getRenderMaxY(), z + renderer.getRenderMinZ(), u1, v1 );
+						renderer.addVertexWithUV( forward,x + renderer.getRenderMaxX(), y + renderer.getRenderMaxY(), z + renderer.getRenderMaxZ(), u2, v2 );
+						renderer.addVertexWithUV( forward,x + renderer.getRenderMinX(), y + renderer.getRenderMaxY(), z + renderer.getRenderMaxZ(), u3, v3 );
+						renderer.addVertexWithUV( forward,x + renderer.getRenderMinX(), y + renderer.getRenderMaxY(), z + renderer.getRenderMinZ(), u4, v4 );
 						break;
 					case 2:
-						renderer.addVertexWithUV( forward,x + renderer.renderMinX, y + renderer.renderMaxY, z + renderer.renderMinZ, u1, v1 );
-						renderer.addVertexWithUV( forward,x + renderer.renderMinX, y + renderer.renderMaxY, z + renderer.renderMaxZ, u2, v2 );
-						renderer.addVertexWithUV( forward,x + renderer.renderMaxX, y + renderer.renderMaxY, z + renderer.renderMaxZ, u3, v3 );
-						renderer.addVertexWithUV( forward,x + renderer.renderMaxX, y + renderer.renderMaxY, z + renderer.renderMinZ, u4, v4 );
+						renderer.addVertexWithUV( forward,x + renderer.getRenderMinX(), y + renderer.getRenderMaxY(), z + renderer.getRenderMinZ(), u1, v1 );
+						renderer.addVertexWithUV( forward,x + renderer.getRenderMinX(), y + renderer.getRenderMaxY(), z + renderer.getRenderMaxZ(), u2, v2 );
+						renderer.addVertexWithUV( forward,x + renderer.getRenderMaxX(), y + renderer.getRenderMaxY(), z + renderer.getRenderMaxZ(), u3, v3 );
+						renderer.addVertexWithUV( forward,x + renderer.getRenderMaxX(), y + renderer.getRenderMaxY(), z + renderer.getRenderMinZ(), u4, v4 );
 						break;
 					case 3:
-						renderer.addVertexWithUV( forward,x + renderer.renderMaxX, y + renderer.renderMinY, z + renderer.renderMaxZ, u1, v1 );
-						renderer.addVertexWithUV( forward,x + renderer.renderMaxX, y + renderer.renderMaxY, z + renderer.renderMaxZ, u2, v2 );
-						renderer.addVertexWithUV( forward,x + renderer.renderMinX, y + renderer.renderMaxY, z + renderer.renderMaxZ, u3, v3 );
-						renderer.addVertexWithUV( forward,x + renderer.renderMinX, y + renderer.renderMinY, z + renderer.renderMaxZ, u4, v4 );
+						renderer.addVertexWithUV( forward,x + renderer.getRenderMaxX(), y + renderer.getRenderMinY(), z + renderer.getRenderMaxZ(), u1, v1 );
+						renderer.addVertexWithUV( forward,x + renderer.getRenderMaxX(), y + renderer.getRenderMaxY(), z + renderer.getRenderMaxZ(), u2, v2 );
+						renderer.addVertexWithUV( forward,x + renderer.getRenderMinX(), y + renderer.getRenderMaxY(), z + renderer.getRenderMaxZ(), u3, v3 );
+						renderer.addVertexWithUV( forward,x + renderer.getRenderMinX(), y + renderer.getRenderMinY(), z + renderer.getRenderMaxZ(), u4, v4 );
 						break;
 					case -3:
-						renderer.addVertexWithUV( forward,x + renderer.renderMinX, y + renderer.renderMinY, z + renderer.renderMaxZ, u1, v1 );
-						renderer.addVertexWithUV( forward,x + renderer.renderMinX, y + renderer.renderMaxY, z + renderer.renderMaxZ, u2, v2 );
-						renderer.addVertexWithUV( forward,x + renderer.renderMaxX, y + renderer.renderMaxY, z + renderer.renderMaxZ, u3, v3 );
-						renderer.addVertexWithUV( forward,x + renderer.renderMaxX, y + renderer.renderMinY, z + renderer.renderMaxZ, u4, v4 );
+						renderer.addVertexWithUV( forward,x + renderer.getRenderMinX(), y + renderer.getRenderMinY(), z + renderer.getRenderMaxZ(), u1, v1 );
+						renderer.addVertexWithUV( forward,x + renderer.getRenderMinX(), y + renderer.getRenderMaxY(), z + renderer.getRenderMaxZ(), u2, v2 );
+						renderer.addVertexWithUV( forward,x + renderer.getRenderMaxX(), y + renderer.getRenderMaxY(), z + renderer.getRenderMaxZ(), u3, v3 );
+						renderer.addVertexWithUV( forward,x + renderer.getRenderMaxX(), y + renderer.getRenderMinY(), z + renderer.getRenderMaxZ(), u4, v4 );
 						break;
 				}
 
@@ -303,47 +303,47 @@ public class RenderDrive extends BaseBlockRender<BlockDrive, TileDrive>
 					switch( forward.getFrontOffsetX() + forward.getFrontOffsetY() * 2 + forward.getFrontOffsetZ() * 3 )
 					{
 						case 1:
-							renderer.addVertexWithUV( forward, x + renderer.renderMaxX, y + renderer.renderMaxY, z + renderer.renderMinZ, u1, v1 );
-							renderer.addVertexWithUV( forward,x + renderer.renderMaxX, y + renderer.renderMaxY, z + renderer.renderMaxZ, u2, v2 );
-							renderer.addVertexWithUV( forward,x + renderer.renderMaxX, y + renderer.renderMinY, z + renderer.renderMaxZ, u3, v3 );
-							renderer.addVertexWithUV( forward,x + renderer.renderMaxX, y + renderer.renderMinY, z + renderer.renderMinZ, u4, v4 );
+							renderer.addVertexWithUV( forward, x + renderer.getRenderMaxX(), y + renderer.getRenderMaxY(), z + renderer.getRenderMinZ(), u1, v1 );
+							renderer.addVertexWithUV( forward,x + renderer.getRenderMaxX(), y + renderer.getRenderMaxY(), z + renderer.getRenderMaxZ(), u2, v2 );
+							renderer.addVertexWithUV( forward,x + renderer.getRenderMaxX(), y + renderer.getRenderMinY(), z + renderer.getRenderMaxZ(), u3, v3 );
+							renderer.addVertexWithUV( forward,x + renderer.getRenderMaxX(), y + renderer.getRenderMinY(), z + renderer.getRenderMinZ(), u4, v4 );
 							break;
 						case -1:
-							renderer.addVertexWithUV( forward,x + renderer.renderMaxX, y + renderer.renderMinY, z + renderer.renderMinZ, u1, v1 );
-							renderer.addVertexWithUV( forward,x + renderer.renderMaxX, y + renderer.renderMinY, z + renderer.renderMaxZ, u2, v2 );
-							renderer.addVertexWithUV( forward,x + renderer.renderMaxX, y + renderer.renderMaxY, z + renderer.renderMaxZ, u3, v3 );
-							renderer.addVertexWithUV( forward,x + renderer.renderMaxX, y + renderer.renderMaxY, z + renderer.renderMinZ, u4, v4 );
+							renderer.addVertexWithUV( forward,x + renderer.getRenderMaxX(), y + renderer.getRenderMinY(), z + renderer.getRenderMinZ(), u1, v1 );
+							renderer.addVertexWithUV( forward,x + renderer.getRenderMaxX(), y + renderer.getRenderMinY(), z + renderer.getRenderMaxZ(), u2, v2 );
+							renderer.addVertexWithUV( forward,x + renderer.getRenderMaxX(), y + renderer.getRenderMaxY(), z + renderer.getRenderMaxZ(), u3, v3 );
+							renderer.addVertexWithUV( forward,x + renderer.getRenderMaxX(), y + renderer.getRenderMaxY(), z + renderer.getRenderMinZ(), u4, v4 );
 							break;
 						case -2:
-							renderer.addVertexWithUV( forward,x + renderer.renderMaxX, y + renderer.renderMaxY, z + renderer.renderMinZ, u1, v1 );
-							renderer.addVertexWithUV( forward,x + renderer.renderMaxX, y + renderer.renderMaxY, z + renderer.renderMaxZ, u2, v2 );
-							renderer.addVertexWithUV( forward,x + renderer.renderMinX, y + renderer.renderMaxY, z + renderer.renderMaxZ, u3, v3 );
-							renderer.addVertexWithUV( forward,x + renderer.renderMinX, y + renderer.renderMaxY, z + renderer.renderMinZ, u4, v4 );
+							renderer.addVertexWithUV( forward,x + renderer.getRenderMaxX(), y + renderer.getRenderMaxY(), z + renderer.getRenderMinZ(), u1, v1 );
+							renderer.addVertexWithUV( forward,x + renderer.getRenderMaxX(), y + renderer.getRenderMaxY(), z + renderer.getRenderMaxZ(), u2, v2 );
+							renderer.addVertexWithUV( forward,x + renderer.getRenderMinX(), y + renderer.getRenderMaxY(), z + renderer.getRenderMaxZ(), u3, v3 );
+							renderer.addVertexWithUV( forward,x + renderer.getRenderMinX(), y + renderer.getRenderMaxY(), z + renderer.getRenderMinZ(), u4, v4 );
 							break;
 						case 2:
-							renderer.addVertexWithUV( forward,x + renderer.renderMinX, y + renderer.renderMaxY, z + renderer.renderMinZ, u1, v1 );
-							renderer.addVertexWithUV( forward,x + renderer.renderMinX, y + renderer.renderMaxY, z + renderer.renderMaxZ, u2, v2 );
-							renderer.addVertexWithUV( forward,x + renderer.renderMaxX, y + renderer.renderMaxY, z + renderer.renderMaxZ, u3, v3 );
-							renderer.addVertexWithUV( forward,x + renderer.renderMaxX, y + renderer.renderMaxY, z + renderer.renderMinZ, u4, v4 );
+							renderer.addVertexWithUV( forward,x + renderer.getRenderMinX(), y + renderer.getRenderMaxY(), z + renderer.getRenderMinZ(), u1, v1 );
+							renderer.addVertexWithUV( forward,x + renderer.getRenderMinX(), y + renderer.getRenderMaxY(), z + renderer.getRenderMaxZ(), u2, v2 );
+							renderer.addVertexWithUV( forward,x + renderer.getRenderMaxX(), y + renderer.getRenderMaxY(), z + renderer.getRenderMaxZ(), u3, v3 );
+							renderer.addVertexWithUV( forward,x + renderer.getRenderMaxX(), y + renderer.getRenderMaxY(), z + renderer.getRenderMinZ(), u4, v4 );
 							break;
 						case 3:
-							renderer.addVertexWithUV( forward,x + renderer.renderMaxX, y + renderer.renderMinY, z + renderer.renderMaxZ, u1, v1 );
-							renderer.addVertexWithUV( forward,x + renderer.renderMaxX, y + renderer.renderMaxY, z + renderer.renderMaxZ, u2, v2 );
-							renderer.addVertexWithUV( forward,x + renderer.renderMinX, y + renderer.renderMaxY, z + renderer.renderMaxZ, u3, v3 );
-							renderer.addVertexWithUV( forward,x + renderer.renderMinX, y + renderer.renderMinY, z + renderer.renderMaxZ, u4, v4 );
+							renderer.addVertexWithUV( forward,x + renderer.getRenderMaxX(), y + renderer.getRenderMinY(), z + renderer.getRenderMaxZ(), u1, v1 );
+							renderer.addVertexWithUV( forward,x + renderer.getRenderMaxX(), y + renderer.getRenderMaxY(), z + renderer.getRenderMaxZ(), u2, v2 );
+							renderer.addVertexWithUV( forward,x + renderer.getRenderMinX(), y + renderer.getRenderMaxY(), z + renderer.getRenderMaxZ(), u3, v3 );
+							renderer.addVertexWithUV( forward,x + renderer.getRenderMinX(), y + renderer.getRenderMinY(), z + renderer.getRenderMaxZ(), u4, v4 );
 							break;
 						case -3:
-							renderer.addVertexWithUV( forward,x + renderer.renderMinX, y + renderer.renderMinY, z + renderer.renderMaxZ, u1, v1 );
-							renderer.addVertexWithUV( forward,x + renderer.renderMinX, y + renderer.renderMaxY, z + renderer.renderMaxZ, u2, v2 );
-							renderer.addVertexWithUV( forward,x + renderer.renderMaxX, y + renderer.renderMaxY, z + renderer.renderMaxZ, u3, v3 );
-							renderer.addVertexWithUV( forward,x + renderer.renderMaxX, y + renderer.renderMinY, z + renderer.renderMaxZ, u4, v4 );
+							renderer.addVertexWithUV( forward,x + renderer.getRenderMinX(), y + renderer.getRenderMinY(), z + renderer.getRenderMaxZ(), u1, v1 );
+							renderer.addVertexWithUV( forward,x + renderer.getRenderMinX(), y + renderer.getRenderMaxY(), z + renderer.getRenderMaxZ(), u2, v2 );
+							renderer.addVertexWithUV( forward,x + renderer.getRenderMaxX(), y + renderer.getRenderMaxY(), z + renderer.getRenderMaxZ(), u3, v3 );
+							renderer.addVertexWithUV( forward,x + renderer.getRenderMaxX(), y + renderer.getRenderMinY(), z + renderer.getRenderMaxZ(), u4, v4 );
 							break;
 					}
 				}
 			}
 		}
 
-		renderer.overrideBlockTexture = null;
+		renderer.setOverrideBlockTexture( null );
 		return result;
 	}
 }

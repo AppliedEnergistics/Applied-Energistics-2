@@ -27,8 +27,8 @@ import net.minecraft.util.EnumFacing;
 public class InvSot
 {
 
-	public final ISidedInventory partInv;
-	public final int index;
+	private final ISidedInventory partInv;
+	private final int index;
 
 	public InvSot( ISidedInventory part, int slot )
 	{
@@ -41,7 +41,7 @@ public class InvSot
 		return this.partInv.decrStackSize( this.index, j );
 	}
 
-	public ItemStack getStackInSlot()
+	ItemStack getStackInSlot()
 	{
 		return this.partInv.getStackInSlot( this.index );
 	}

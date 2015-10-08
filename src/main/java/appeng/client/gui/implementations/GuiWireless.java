@@ -39,7 +39,7 @@ import appeng.util.Platform;
 public class GuiWireless extends AEBaseGui
 {
 
-	GuiImgButton units;
+	private GuiImgButton units;
 
 	public GuiWireless( final InventoryPlayer inventoryPlayer, final TileWireless te )
 	{
@@ -78,10 +78,10 @@ public class GuiWireless extends AEBaseGui
 
 		final ContainerWireless cw = (ContainerWireless) this.inventorySlots;
 
-		if( cw.range > 0 )
+		if( cw.getRange() > 0 )
 		{
-			final String firstMessage = GuiText.Range.getLocal() + ": " + ( cw.range / 10.0 ) + " m";
-			final String secondMessage = GuiText.PowerUsageRate.getLocal() + ": " + Platform.formatPowerLong( cw.drain, true );
+			final String firstMessage = GuiText.Range.getLocal() + ": " + ( cw.getRange() / 10.0 ) + " m";
+			final String secondMessage = GuiText.PowerUsageRate.getLocal() + ": " + Platform.formatPowerLong( cw.getDrain(), true );
 
 			final int strWidth = Math.max( this.fontRendererObj.getStringWidth( firstMessage ), this.fontRendererObj.getStringWidth( secondMessage ) );
 			final int cOffset = ( this.xSize / 2 ) - ( strWidth / 2 );

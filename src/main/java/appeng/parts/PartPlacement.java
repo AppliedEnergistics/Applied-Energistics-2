@@ -68,7 +68,7 @@ import com.google.common.base.Optional;
 public class PartPlacement
 {
 
-	public static float eyeHeight = 0.0f;
+	private static float eyeHeight = 0.0f;
 	private final ThreadLocal<Object> placing = new ThreadLocal<Object>();
 	private boolean wasCanceled = false;
 
@@ -100,7 +100,8 @@ public class PartPlacement
 				if( !world.isRemote )
 				{
 					final LookDirection dir = Platform.getPlayerRay( player, getEyeOffset( player ) );
-					final MovingObjectPosition mop = block.collisionRayTrace( world, pos, dir.a, dir.b );
+					final MovingObjectPosition mop = block.collisionRayTrace( world, pos, dir.getA(), dir.getB() );
+
 					if( mop != null )
 					{
 						final List<ItemStack> is = new LinkedList<ItemStack>();
@@ -194,27 +195,29 @@ public class PartPlacement
 		}
 
 		// TODO: IFMP INTEGRATION
-		// TODO  IIMMIBISMICROBLOCKS INTEGRATION
-		
-		/*
-		if( host == null && tile != null && IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.FMP ) )
-		{
-			host = ( (IFMP) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.FMP ) ).getOrCreateHost( tile );
-		}
+		// TODO IIMMIBISMICROBLOCKS INTEGRATION
 
-		if( host == null && tile != null && IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.ImmibisMicroblocks ) )
-		{
-			host = ( (IImmibisMicroblocks) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.ImmibisMicroblocks ) ).getOrCreateHost( player, face, tile );
-		}
-		*/
-		
+		/*
+		 * if( host == null && tile != null && IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.FMP ) )
+		 * {
+		 * host = ( (IFMP) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.FMP ) ).getOrCreateHost( tile );
+		 * }
+		 * if( host == null && tile != null && IntegrationRegistry.INSTANCE.isEnabled(
+		 * IntegrationType.ImmibisMicroblocks ) )
+		 * {
+		 * host = ( (IImmibisMicroblocks) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.ImmibisMicroblocks )
+		 * ).getOrCreateHost( player, face, tile );
+		 * }
+		 */
+
 		// if ( held == null )
 		{
 			final Block block = world.getBlockState( pos ).getBlock();
 			if( host != null && player.isSneaking() && block != null )
 			{
 				final LookDirection dir = Platform.getPlayerRay( player, getEyeOffset( player ) );
-				final MovingObjectPosition mop = block.collisionRayTrace( world, pos, dir.a, dir.b );
+				final MovingObjectPosition mop = block.collisionRayTrace( world, pos, dir.getA(), dir.getB() );
+
 				if( mop != null )
 				{
 					mop.hitVec = mop.hitVec.addVector( -mop.getBlockPos().getX(), -mop.getBlockPos().getY(), -mop.getBlockPos().getZ() );
@@ -265,20 +268,22 @@ public class PartPlacement
 			}
 
 			// TODO: IFMP INTEGRATION
-			// TODO  IIMMIBISMICROBLOCKS INTEGRATION
-			
-			/*
-			if( host == null && tile != null && IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.FMP ) )
-			{
-				host = ( (IFMP) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.FMP ) ).getOrCreateHost( tile );
-			}
+			// TODO IIMMIBISMICROBLOCKS INTEGRATION
 
-			if( host == null && tile != null && IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.ImmibisMicroblocks ) )
-			{
-				host = ( (IImmibisMicroblocks) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.ImmibisMicroblocks ) ).getOrCreateHost( player, side, tile );
-			}
-			*/
-			
+			/*
+			 * if( host == null && tile != null && IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.FMP ) )
+			 * {
+			 * host = ( (IFMP) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.FMP ) ).getOrCreateHost( tile
+			 * );
+			 * }
+			 * if( host == null && tile != null && IntegrationRegistry.INSTANCE.isEnabled(
+			 * IntegrationType.ImmibisMicroblocks ) )
+			 * {
+			 * host = ( (IImmibisMicroblocks) IntegrationRegistry.INSTANCE.getInstance(
+			 * IntegrationType.ImmibisMicroblocks ) ).getOrCreateHost( player, side, tile );
+			 * }
+			 */
+
 			final Optional<ItemStack> maybeMultiPartStack = multiPart.maybeStack( 1 );
 			final Optional<Block> maybeMultiPartBlock = multiPart.maybeBlock();
 			final Optional<ItemBlock> maybeMultiPartItemBlock = multiPart.maybeItemBlock();
@@ -287,7 +292,7 @@ public class PartPlacement
 			final boolean multiPartPresent = maybeMultiPartBlock.isPresent() && maybeMultiPartStack.isPresent() && maybeMultiPartItemBlock.isPresent();
 			final boolean canMultiPartBePlaced = maybeMultiPartBlock.get().canPlaceBlockAt( world, te_pos );
 
-			if( hostIsNotPresent && multiPartPresent && canMultiPartBePlaced && maybeMultiPartItemBlock.get().placeBlockAt( maybeMultiPartStack.get(), player, world, te_pos, side, 0.5f, 0.5f, 0.5f, maybeMultiPartBlock.get().getDefaultState()  ) )
+			if( hostIsNotPresent && multiPartPresent && canMultiPartBePlaced && maybeMultiPartItemBlock.get().placeBlockAt( maybeMultiPartStack.get(), player, world, te_pos, side, 0.5f, 0.5f, 0.5f, maybeMultiPartBlock.get().getDefaultState() ) )
 			{
 				if( !world.isRemote )
 				{
@@ -323,7 +328,7 @@ public class PartPlacement
 			if( pass == PlaceType.INTERACT_FIRST_PASS || pass == PlaceType.PLACE_ITEM )
 			{
 				te_pos = pos.offset( side );
-				
+
 				final Block blkID = world.getBlockState( te_pos ).getBlock();
 				tile = world.getTileEntity( te_pos );
 
@@ -332,7 +337,9 @@ public class PartPlacement
 					host = ( (IFMP) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.FMP ) ).getOrCreateHost( tile );
 				}
 
-				if( ( blkID == null || blkID.isReplaceable( world, te_pos ) || host != null ) ) ///&& side != AEPartLocation.INTERNAL )
+				if( ( blkID == null || blkID.isReplaceable( world, te_pos ) || host != null ) ) // /&& side !=
+																								// AEPartLocation.INTERNAL
+																								// )
 				{
 					return place( held, te_pos, side.getOpposite(), player, world, pass == PlaceType.INTERACT_FIRST_PASS ? PlaceType.INTERACT_SECOND_PASS : PlaceType.PLACE_ITEM, depth + 1 );
 				}
@@ -344,10 +351,11 @@ public class PartPlacement
 		{
 			final Block block = world.getBlockState( pos ).getBlock();
 			final LookDirection dir = Platform.getPlayerRay( player, getEyeOffset( player ) );
-			final MovingObjectPosition mop = block.collisionRayTrace( world, pos, dir.a, dir.b );
+			final MovingObjectPosition mop = block.collisionRayTrace( world, pos, dir.getA(), dir.getB() );
+
 			if( mop != null )
 			{
-				final SelectedPart sp = selectPart( player, host, mop.hitVec.addVector( -mop.getBlockPos().getX(), -mop.getBlockPos().getY(), -mop.getBlockPos().getZ()  ) );
+				final SelectedPart sp = selectPart( player, host, mop.hitVec.addVector( -mop.getBlockPos().getX(), -mop.getBlockPos().getY(), -mop.getBlockPos().getZ() ) );
 
 				if( sp.part != null )
 				{
@@ -400,7 +408,7 @@ public class PartPlacement
 			return Platform.getEyeOffset( p );
 		}
 
-		return eyeHeight;
+		return getEyeHeight();
 	}
 
 	private static SelectedPart selectPart( final EntityPlayer player, final IPartHost host, final Vec3 pos )
@@ -491,6 +499,16 @@ public class PartPlacement
 
 			this.placing.set( null );
 		}
+	}
+
+	private static float getEyeHeight()
+	{
+		return eyeHeight;
+	}
+
+	public static void setEyeHeight( final float eyeHeight )
+	{
+		PartPlacement.eyeHeight = eyeHeight;
 	}
 
 	public enum PlaceType

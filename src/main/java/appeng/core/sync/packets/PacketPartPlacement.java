@@ -34,11 +34,11 @@ import appeng.parts.PartPlacement;
 public class PacketPartPlacement extends AppEngPacket
 {
 
-	int x;
-	int y;
-	int z;
-	int face;
-	float eyeHeight;
+	private int x;
+	private int y;
+	private int z;
+	private int face;
+	private float eyeHeight;
 
 	// automatic.
 	public PacketPartPlacement( final ByteBuf stream )
@@ -70,8 +70,8 @@ public class PacketPartPlacement extends AppEngPacket
 	{
 		final EntityPlayerMP sender = (EntityPlayerMP) player;
 		CommonHelper.proxy.updateRenderMode( sender );
-		PartPlacement.eyeHeight = this.eyeHeight;
-		PartPlacement.place( sender.getHeldItem(), new BlockPos( this.x, this.y, this.z ), EnumFacing.VALUES[ this.face ], sender, sender.worldObj, PartPlacement.PlaceType.INTERACT_FIRST_PASS, 0 );
+		PartPlacement.setEyeHeight( this.eyeHeight );
+		PartPlacement.place( sender.getHeldItem(), new BlockPos( this.x, this.y, this.z ), EnumFacing.VALUES[this.face], sender, sender.worldObj, PartPlacement.PlaceType.INTERACT_FIRST_PASS, 0 );
 		CommonHelper.proxy.updateRenderMode( null );
 	}
 }

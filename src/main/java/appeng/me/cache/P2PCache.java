@@ -42,7 +42,7 @@ import com.google.common.collect.Multimap;
 public class P2PCache implements IGridCache
 {
 
-	final IGrid myGrid;
+	private final IGrid myGrid;
 	private final HashMap<Long, PartP2PTunnel> inputs = new HashMap<Long, PartP2PTunnel>();
 	private final Multimap<Long, PartP2PTunnel> outputs = LinkedHashMultimap.create();
 	private final TunnelCollection NullColl = new TunnelCollection<PartP2PTunnel>( null, null );
@@ -101,16 +101,16 @@ public class P2PCache implements IGridCache
 			// AELog.info( "rmv-" + (t.output ? "output: " : "input: ") + t.freq
 			// );
 
-			if( t.output )
+			if( t.isOutput() )
 			{
-				this.outputs.remove( t.freq, t );
+				this.outputs.remove( t.getFrequency(), t );
 			}
 			else
 			{
-				this.inputs.remove( t.freq );
+				this.inputs.remove( t.getFrequency() );
 			}
 
-			this.updateTunnel( t.freq, !t.output, false );
+			this.updateTunnel( t.getFrequency(), !t.isOutput(), false );
 		}
 	}
 
@@ -131,16 +131,16 @@ public class P2PCache implements IGridCache
 			// AELog.info( "add-" + (t.output ? "output: " : "input: ") + t.freq
 			// );
 
-			if( t.output )
+			if( t.isOutput() )
 			{
-				this.outputs.put( t.freq, t );
+				this.outputs.put( t.getFrequency(), t );
 			}
 			else
 			{
-				this.inputs.put( t.freq, t );
+				this.inputs.put( t.getFrequency(), t );
 			}
 
-			this.updateTunnel( t.freq, !t.output, false );
+			this.updateTunnel( t.getFrequency(), !t.isOutput(), false );
 		}
 	}
 
@@ -188,29 +188,29 @@ public class P2PCache implements IGridCache
 	{
 		if( this.outputs.containsValue( t ) )
 		{
-			this.outputs.remove( t.freq, t );
+			this.outputs.remove( t.getFrequency(), t );
 		}
 
 		if( this.inputs.containsValue( t ) )
 		{
-			this.inputs.remove( t.freq );
+			this.inputs.remove( t.getFrequency() );
 		}
 
-		t.freq = newFrequency;
+		t.setFrequency( newFrequency );
 
-		if( t.output )
+		if( t.isOutput() )
 		{
-			this.outputs.put( t.freq, t );
+			this.outputs.put( t.getFrequency(), t );
 		}
 		else
 		{
-			this.inputs.put( t.freq, t );
+			this.inputs.put( t.getFrequency(), t );
 		}
 
 		// AELog.info( "update-" + (t.output ? "output: " : "input: ") + t.freq
 		// );
-		this.updateTunnel( t.freq, t.output, true );
-		this.updateTunnel( t.freq, !t.output, true );
+		this.updateTunnel( t.getFrequency(), t.isOutput(), true );
+		this.updateTunnel( t.getFrequency(), !t.isOutput(), true );
 	}
 
 	public TunnelCollection<PartP2PTunnel> getOutputs( final long freq, final Class<? extends PartP2PTunnel> c )

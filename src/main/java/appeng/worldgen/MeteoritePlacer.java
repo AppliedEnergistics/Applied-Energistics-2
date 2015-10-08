@@ -56,8 +56,8 @@ import appeng.worldgen.meteorite.MeteoriteBlockPutter;
 
 public final class MeteoritePlacer
 {
-	public static final double PRESSES_SPAWN_CHANCE = 0.7;
-	public static final int SKYSTONE_SPAWN_LIMIT = 12;
+	private static final double PRESSES_SPAWN_CHANCE = 0.7;
+	private static final int SKYSTONE_SPAWN_LIMIT = 12;
 	private final Collection<Block> validSpawn = new HashSet<Block>();
 	private final Collection<Block> invalidSpawn = new HashSet<Block>();
 	private final IBlockDefinition skyChestDefinition;
@@ -116,7 +116,7 @@ public final class MeteoritePlacer
 		this.type = new Fallout( this.putter, this.skyStoneDefinition );
 	}
 
-	public boolean spawnMeteorite( final IMeteoriteWorld w, final NBTTagCompound meteoriteBlob )
+	boolean spawnMeteorite( final IMeteoriteWorld w, final NBTTagCompound meteoriteBlob )
 	{
 		this.settings = meteoriteBlob;
 
@@ -442,7 +442,7 @@ public final class MeteoritePlacer
 		}
 	}
 
-	public double getSqDistance( final int x, final int z )
+	double getSqDistance( final int x, final int z )
 	{
 		final int chunkX = this.settings.getInteger( "x" ) - x;
 		final int chunkZ = this.settings.getInteger( "z" ) - z;
@@ -585,7 +585,7 @@ public final class MeteoritePlacer
 		return false;
 	}
 
-	public NBTTagCompound getSettings()
+	NBTTagCompound getSettings()
 	{
 		return this.settings;
 	}

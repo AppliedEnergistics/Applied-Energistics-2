@@ -92,7 +92,7 @@ public class RecipeLoader implements Runnable
 				FileUtils.cleanDirectory( generatedRecipesDir );
 
 				copier.copyTo( ".recipe", generatedRecipesDir );
-				copier.copyTo( ".html", recipeDirectory );
+				copier.copyTo( ".html", this.recipeDirectory );
 
 				// parse recipes prioritising the user scripts by using the generated as template
 				this.handler.parseRecipes( new ConfigLoader( generatedRecipesDir, userRecipesDir ), "index.recipe" );

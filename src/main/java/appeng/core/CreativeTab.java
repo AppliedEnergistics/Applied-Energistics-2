@@ -40,7 +40,7 @@ public final class CreativeTab extends CreativeTabs
 		super( "appliedenergistics2" );
 	}
 
-	public static void init()
+	static void init()
 	{
 		instance = new CreativeTab();
 	}

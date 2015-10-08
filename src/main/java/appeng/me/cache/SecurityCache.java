@@ -44,7 +44,7 @@ import appeng.me.GridNode;
 public class SecurityCache implements ISecurityGrid
 {
 
-	public final IGrid myGrid;
+	private final IGrid myGrid;
 	private final List<ISecurityProvider> securityProvider = new ArrayList<ISecurityProvider>();
 	private final HashMap<Integer, EnumSet<SecurityPermissions>> playerPerms = new HashMap<Integer, EnumSet<SecurityPermissions>>();
 	private long securityKey = -1;
@@ -102,10 +102,10 @@ public class SecurityCache implements ISecurityGrid
 
 		if( lastCode != this.securityKey )
 		{
-			this.myGrid.postEvent( new MENetworkSecurityChange() );
-			for( final IGridNode n : this.myGrid.getNodes() )
+			this.getGrid().postEvent( new MENetworkSecurityChange() );
+			for( final IGridNode n : this.getGrid().getNodes() )
 			{
-				( (GridNode) n ).lastSecurityKey = this.securityKey;
+				( (GridNode) n ).setLastSecurityKey( this.securityKey );
 			}
 		}
 	}
@@ -120,7 +120,7 @@ public class SecurityCache implements ISecurityGrid
 		}
 		else
 		{
-			( (GridNode) gridNode ).lastSecurityKey = this.securityKey;
+			( (GridNode) gridNode ).setLastSecurityKey( this.securityKey );
 		}
 	}
 
@@ -192,5 +192,10 @@ public class SecurityCache implements ISecurityGrid
 			return this.securityProvider.get( 0 ).getOwner();
 		}
 		return -1;
+	}
+
+	public IGrid getGrid()
+	{
+		return this.myGrid;
 	}
 }

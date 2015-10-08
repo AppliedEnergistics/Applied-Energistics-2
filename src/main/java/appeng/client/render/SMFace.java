@@ -8,18 +8,18 @@ import net.minecraft.util.EnumFacing;
 public class SMFace
 {
 
-	public final EnumFacing face;
-	public final boolean isEdge;
+	private final EnumFacing face;
+	private final boolean isEdge;
 
-	public final Vector3f to;
-	public final Vector3f from;
-	
-	public final float[] uv;
-	
-	public final TextureAtlasSprite spite;
-	
-	public final int color;
-	
+	private final Vector3f to;
+	private final Vector3f from;
+
+	private final float[] uv;
+
+	private final TextureAtlasSprite spite;
+
+	private final int color;
+
 	public SMFace(
 			final EnumFacing face , final boolean isEdge,
 			final int color,
@@ -35,6 +35,31 @@ public class SMFace
 		this.from=from;
 		this.uv = defUVs2;
 		this.spite = iconUnwrapper;
+	}
+
+	public int getColor()
+	{
+		return color;
+	}
+
+	public EnumFacing getFace()
+	{
+		return face;
+	}
+
+	public Vector3f getFrom()
+	{
+		return from;
+	}
+
+	public Vector3f getTo()
+	{
+		return to;
+	}
+
+	public TextureAtlasSprite getSpite()
+	{
+		return spite;
 	}
 
 }

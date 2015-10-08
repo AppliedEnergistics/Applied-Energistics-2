@@ -29,6 +29,7 @@ import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IChatComponent;
+
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.LayerBase;
@@ -51,7 +52,7 @@ public class LayerISidedInventory extends LayerBase implements ISidedInventory
 	// a simple empty array for empty stuff..
 	private static final int[] NULL_SIDES = {};
 
-	InvLayerData invLayer = null;
+	private InvLayerData invLayer = null;
 
 	/**
 	 * Recalculate inventory wrapper cache.
@@ -179,7 +180,7 @@ public class LayerISidedInventory extends LayerBase implements ISidedInventory
 	}
 
 	@Override
-	public String getName()
+	public String getCommandSenderName()
 	{
 		return "AEMultiPart";
 	}
@@ -203,12 +204,12 @@ public class LayerISidedInventory extends LayerBase implements ISidedInventory
 	}
 
 	@Override
-	public void openInventory(EntityPlayer player)
+	public void openInventory( EntityPlayer player )
 	{
 	}
 
 	@Override
-	public void closeInventory(EntityPlayer player)
+	public void closeInventory( EntityPlayer player )
 	{
 	}
 
@@ -279,7 +280,7 @@ public class LayerISidedInventory extends LayerBase implements ISidedInventory
 			int id,
 			int value )
 	{
-		
+
 	}
 
 	@Override
@@ -291,7 +292,7 @@ public class LayerISidedInventory extends LayerBase implements ISidedInventory
 	@Override
 	public void clear()
 	{
-		
+
 	}
 
 	@Override

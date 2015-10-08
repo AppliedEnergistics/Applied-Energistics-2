@@ -27,7 +27,7 @@ import appeng.util.Platform;
 public class CellConfig extends AppEngInternalInventory
 {
 
-	final ItemStack is;
+	private final ItemStack is;
 
 	public CellConfig( final ItemStack is )
 	{

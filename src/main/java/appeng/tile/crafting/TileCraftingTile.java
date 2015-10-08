@@ -57,17 +57,16 @@ import appeng.util.Platform;
 
 public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IPowerChannelState
 {
-    
-	private final CraftingCPUCalculator calc = new CraftingCPUCalculator( this );
 
-	public NBTTagCompound previousState = null;
-	public boolean isCoreBlock = false;
-	CraftingCPUCluster cluster;
+	private final CraftingCPUCalculator calc = new CraftingCPUCalculator( this );
+	private NBTTagCompound previousState = null;
+	private boolean isCoreBlock = false;
+	private CraftingCPUCluster cluster;
 
 	public TileCraftingTile()
 	{
-		this.gridProxy.setFlags( GridFlags.MULTIBLOCK, GridFlags.REQUIRE_CHANNEL );
-		this.gridProxy.setValidSides( EnumSet.noneOf( EnumFacing.class ) );
+		this.getProxy().setFlags( GridFlags.MULTIBLOCK, GridFlags.REQUIRE_CHANNEL );
+		this.getProxy().setValidSides( EnumSet.noneOf( EnumFacing.class ) );
 	}
 
 	@Override
@@ -113,8 +112,8 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 		{
 			return false;
 		}
-		
-		final BlockCraftingUnit unit = (BlockCraftingUnit)this.worldObj.getBlockState( this.pos ).getBlock();
+
+		final BlockCraftingUnit unit = (BlockCraftingUnit) this.worldObj.getBlockState( this.pos ).getBlock();
 		return unit.type == CraftingUnitType.ACCELERATOR;
 	}
 
@@ -122,7 +121,7 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 	public void onReady()
 	{
 		super.onReady();
-		this.gridProxy.setVisualRepresentation( this.getItemFromTile( this ) );
+		this.getProxy().setVisualRepresentation( this.getItemFromTile( this ) );
 		this.updateMultiBlock();
 	}
 
@@ -152,9 +151,9 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 		final boolean formed = this.isFormed();
 		boolean power = false;
 
-		if( this.gridProxy.isReady() )
+		if( this.getProxy().isReady() )
 		{
-			power = this.gridProxy.isActive();
+			power = this.getProxy().isActive();
 		}
 
 		final IBlockState current = this.worldObj.getBlockState( this.pos );
@@ -169,11 +168,11 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 		{
 			if( formed )
 			{
-				this.gridProxy.setValidSides( EnumSet.allOf( EnumFacing.class ) );
+				this.getProxy().setValidSides( EnumSet.allOf( EnumFacing.class ) );
 			}
 			else
 			{
-				this.gridProxy.setValidSides( EnumSet.noneOf( EnumFacing.class ) );
+				this.getProxy().setValidSides( EnumSet.noneOf( EnumFacing.class ) );
 			}
 		}
 	}
@@ -182,7 +181,7 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 	{
 		if( Platform.isClient() )
 		{
-			return (boolean)this.worldObj.getBlockState( this.pos ).getValue( BlockCraftingUnit.FORMED );
+			return (boolean) this.worldObj.getBlockState( this.pos ).getValue( BlockCraftingUnit.FORMED );
 		}
 		return this.cluster != null;
 	}
@@ -190,8 +189,8 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 	@TileEvent( TileEventType.WORLD_NBT_WRITE )
 	public void writeToNBT_TileCraftingTile( final NBTTagCompound data )
 	{
-		data.setBoolean( "core", this.isCoreBlock );
-		if( this.isCoreBlock && this.cluster != null )
+		data.setBoolean( "core", this.isCoreBlock() );
+		if( this.isCoreBlock() && this.cluster != null )
 		{
 			this.cluster.writeToNBT( data );
 		}
@@ -200,8 +199,8 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 	@TileEvent( TileEventType.WORLD_NBT_READ )
 	public void readFromNBT_TileCraftingTile( final NBTTagCompound data )
 	{
-		this.isCoreBlock = data.getBoolean( "core" );
-		if( this.isCoreBlock )
+		this.setCoreBlock( data.getBoolean( "core" ) );
+		if( this.isCoreBlock() )
 		{
 			if( this.cluster != null )
 			{
@@ -209,7 +208,7 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 			}
 			else
 			{
-				this.previousState = (NBTTagCompound) data.copy();
+				this.setPreviousState( (NBTTagCompound) data.copy() );
 			}
 		}
 	}
@@ -334,9 +333,9 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 	{
 		if( Platform.isClient() )
 		{
-			return (boolean)this.worldObj.getBlockState( this.pos ).getValue( BlockCraftingUnit.POWERED );
+			return (boolean) this.worldObj.getBlockState( this.pos ).getValue( BlockCraftingUnit.POWERED );
 		}
-		return this.gridProxy.isActive();
+		return this.getProxy().isActive();
 	}
 
 	@Override
@@ -344,8 +343,28 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 	{
 		if( Platform.isServer() )
 		{
-			return this.gridProxy.isActive();
+			return this.getProxy().isActive();
 		}
 		return this.isPowered() && this.isFormed();
+	}
+
+	public boolean isCoreBlock()
+	{
+		return this.isCoreBlock;
+	}
+
+	public void setCoreBlock( final boolean isCoreBlock )
+	{
+		this.isCoreBlock = isCoreBlock;
+	}
+
+	public NBTTagCompound getPreviousState()
+	{
+		return this.previousState;
+	}
+
+	public void setPreviousState( final NBTTagCompound previousState )
+	{
+		this.previousState = previousState;
 	}
 }

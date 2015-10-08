@@ -28,7 +28,7 @@ public enum GuiHostType
 		return this != WORLD;
 	}
 
-	public boolean isTile()
+	boolean isTile()
 	{
 		return this != ITEM;
 	}

@@ -147,7 +147,7 @@ public class PacketValueConfig extends AppEngPacket
 			final ContainerPatternTerm cpt = (ContainerPatternTerm) c;
 			if( this.Name.equals( "PatternTerminal.CraftMode" ) )
 			{
-				cpt.ct.setCraftingRecipe( this.Value.equals( "1" ) );
+				cpt.getPatternTerminal().setCraftingRecipe( this.Value.equals( "1" ) );
 			}
 			else if( this.Name.equals( "PatternTerminal.Encode" ) )
 			{
@@ -159,7 +159,7 @@ public class PacketValueConfig extends AppEngPacket
 			}
 			else if( this.Name.equals( "PatternTerminal.Substitute" ) )
 			{
-				cpt.ct.setSubstitution( this.Value.equals( "1" ) );
+				cpt.getPatternTerminal().setSubstitution( this.Value.equals( "1" ) );
 			}
 		}
 		else if( this.Name.startsWith( "StorageBus." ) && c instanceof ContainerStorageBus )
@@ -184,7 +184,7 @@ public class PacketValueConfig extends AppEngPacket
 			{
 				if( this.Value.equals( "CopyMode" ) )
 				{
-					ccw.nextCopyMode();
+					ccw.nextWorkBenchCopyMode();
 				}
 				else if( this.Value.equals( "Partition" ) )
 				{
@@ -239,7 +239,7 @@ public class PacketValueConfig extends AppEngPacket
 
 		if( this.Name.equals( "CustomName" ) && c instanceof AEBaseContainer )
 		{
-			( (AEBaseContainer) c ).customName = this.Value;
+			( (AEBaseContainer) c ).setCustomName( this.Value );
 		}
 		else if( this.Name.startsWith( "SyncDat." ) )
 		{

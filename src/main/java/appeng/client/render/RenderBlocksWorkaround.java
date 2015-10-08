@@ -30,17 +30,31 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class RenderBlocksWorkaround extends ModelGenerator
 {
 
-	public boolean flipTexture;
-	public EnumSet<EnumFacing> faces;
-	public boolean useTextures;
-	public EnumSet<EnumFacing> renderFaces;
-	public float opacity;
-	
+	private boolean flipTexture;
+	private EnumSet<EnumFacing> faces;
+	private boolean useTextures;
+	private EnumSet<EnumFacing> renderFaces;
+	private float opacity;
+
 	public void setTexture(
 			final Object object )
 	{
 		// TODO Auto-generated method stub
-		
 	}
-	
+
+	public void setOpacity( float f )
+	{
+		this.opacity = f;
+	}
+
+	public EnumSet<EnumFacing> getFaces()
+	{
+		return faces;
+	}
+
+	public void setFaces( EnumSet<EnumFacing> faces )
+	{
+		this.faces = faces;
+	}
+
 }

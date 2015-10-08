@@ -68,32 +68,39 @@ public class RenderBlockCraftingCPU<B extends BlockCraftingUnit, T extends TileC
 			formed = true;
 			emitsLight = ct.isPowered();
 		}
-		
+
 		final boolean isMonitor = blk.getClass() == BlockCraftingMonitor.class;
 		final IAESprite theIcon = renderer.getIcon( w.getBlockState( pos ) )[EnumFacing.SOUTH.ordinal()];
 
 		int meta = 1;
 		for( final Block craftingBlock : AEApi.instance().definitions().blocks().craftingUnit().maybeBlock().asSet() )
 		{
-			if ( craftingBlock == blk )
+			if( craftingBlock == blk )
 				meta = 0;
 		}
-		
+
 		IAESprite nonForward = theIcon;
 		if( isMonitor )
 		{
 			for( final Block craftingBlock : AEApi.instance().definitions().blocks().craftingUnit().maybeBlock().asSet() )
 			{
-				nonForward = renderer.getIcon( craftingBlock.getDefaultState() )[EnumFacing.SOUTH.ordinal()]; // craftingBlock.getIcon( 0, meta | ( formed ? 8 : 0 ) );
+				nonForward = renderer.getIcon( craftingBlock.getDefaultState() )[EnumFacing.SOUTH.ordinal()]; // craftingBlock.getIcon(
+																												// 0,
+																												// meta
+																												// | (
+																												// formed
+																												// ? 8 :
+																												// 0 )
+																												// );
 			}
 		}
 
-		if( formed && renderer.overrideBlockTexture == null )
+		if( formed && renderer.getOverrideBlockTexture() == null )
 		{
-			renderer = BusRenderer.INSTANCE.renderer;
+			renderer = BusRenderer.INSTANCE.getRenderer();
 			final BusRenderHelper i = BusRenderHelper.INSTANCE;
 
-			renderer.blockAccess = w;
+			renderer.setBlockAccess( w );
 			i.setPass( MinecraftForgeClient.getRenderLayer() == EnumWorldBlockLayer.TRANSLUCENT ? 1 : 0 );
 			i.setOrientation( EnumFacing.EAST, EnumFacing.UP, EnumFacing.SOUTH );
 
@@ -129,7 +136,7 @@ public class RenderBlockCraftingCPU<B extends BlockCraftingUnit, T extends TileC
 				this.handleSide( blk, meta, pos, i, renderer, ct.getForward() == side ? theIcon : nonForward, LocalEmit, isMonitor, side, w );
 			}
 
-			//BusRenderer.INSTANCE.renderer.isFacade = false;
+			// BusRenderer.INSTANCE.renderer.isFacade = false;
 			i.setFacesToRender( EnumSet.allOf( EnumFacing.class ) );
 
 			return true;
@@ -254,7 +261,7 @@ public class RenderBlockCraftingCPU<B extends BlockCraftingUnit, T extends TileC
 					{
 						final TileCraftingMonitorTile sr = blk.getTileEntity( w, pos );
 						final AEColor col = sr.getColor();
-						
+
 						renderer.setColorOpaque_I( col.whiteVariant );
 						renderer.setBrightness( 13 << 20 | 13 << 4 );
 						i.renderFace( pos, color, side, renderer );
@@ -305,41 +312,41 @@ public class RenderBlockCraftingCPU<B extends BlockCraftingUnit, T extends TileC
 				switch( a )
 				{
 					case DOWN:
-						renderer.renderMinY = 0;
-						renderer.renderMaxY = width;
+						renderer.setRenderMinY( 0 );
+						renderer.setRenderMaxY( width );
 						break;
 					case EAST:
-						renderer.renderMaxX = 1;
-						renderer.renderMinX = 1.0 - width;
-						renderer.uvRotateTop = 1;
-						renderer.uvRotateBottom = 1;
-						renderer.uvRotateWest = 1;
-						renderer.uvRotateEast = 1;
+						renderer.setRenderMaxX( 1 );
+						renderer.setRenderMinX( 1.0 - width );
+						renderer.setUvRotateTop( 1 );
+						renderer.setUvRotateBottom( 1 );
+						renderer.setUvRotateWest( 1 );
+						renderer.setUvRotateEast( 1 );
 						break;
 					case NORTH:
-						renderer.renderMinZ = 0;
-						renderer.renderMaxZ = width;
-						renderer.uvRotateWest = 1;
-						renderer.uvRotateNorth = 1;
-						renderer.uvRotateSouth = 1;
+						renderer.setRenderMinZ( 0 );
+						renderer.setRenderMaxZ( width );
+						renderer.setUvRotateWest( 1 );
+						renderer.setUvRotateNorth( 1 );
+						renderer.setUvRotateSouth( 1 );
 						break;
 					case SOUTH:
-						renderer.renderMaxZ = 1;
-						renderer.renderMinZ = 1.0 - width;
-						renderer.uvRotateNorth = 1;
-						renderer.uvRotateSouth = 1;
+						renderer.setRenderMaxZ( 1 );
+						renderer.setRenderMinZ( 1.0 - width );
+						renderer.setUvRotateNorth( 1 );
+						renderer.setUvRotateSouth( 1 );
 						break;
 					case UP:
-						renderer.renderMaxY = 1;
-						renderer.renderMinY = 1.0 - width;
+						renderer.setRenderMaxY( 1 );
+						renderer.setRenderMinY( 1.0 - width );
 						break;
 					case WEST:
-						renderer.renderMinX = 0;
-						renderer.renderMaxX = width;
-						renderer.uvRotateTop = 1;
-						renderer.uvRotateBottom = 1;
-						renderer.uvRotateWest = 1;
-						renderer.uvRotateEast = 1;
+						renderer.setRenderMinX( 0 );
+						renderer.setRenderMaxX( width );
+						renderer.setUvRotateTop( 1 );
+						renderer.setUvRotateBottom( 1 );
+						renderer.setUvRotateWest( 1 );
+						renderer.setUvRotateEast( 1 );
 						break;
 					default:
 				}

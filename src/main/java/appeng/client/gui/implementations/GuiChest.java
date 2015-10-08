@@ -36,7 +36,7 @@ import appeng.tile.storage.TileChest;
 public class GuiChest extends AEBaseGui
 {
 
-	GuiTabButton priority;
+	private GuiTabButton priority;
 
 	public GuiChest( final InventoryPlayer inventoryPlayer, final TileChest te )
 	{

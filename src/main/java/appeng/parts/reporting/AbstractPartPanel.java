@@ -86,7 +86,7 @@ public abstract class AbstractPartPanel extends AbstractPartReporting
 		final IAESprite sideTexture = CableBusTextures.PartMonitorSides.getIcon();
 		final IAESprite backTexture = CableBusTextures.PartMonitorBack.getIcon();
 
-		rh.setTexture( sideTexture, sideTexture, backTexture, renderer.getIcon( this.is ), sideTexture, sideTexture );
+		rh.setTexture( sideTexture, sideTexture, backTexture, renderer.getIcon( this.getItemStack() ), sideTexture, sideTexture );
 		rh.renderInventoryBox( renderer );
 
 		rh.setInvColor( this.getBrightnessColor() );
@@ -103,7 +103,7 @@ public abstract class AbstractPartPanel extends AbstractPartReporting
 		final IAESprite sideTexture = CableBusTextures.PartMonitorSides.getIcon();
 		final IAESprite backTexture = CableBusTextures.PartMonitorBack.getIcon();
 
-		rh.setTexture( sideTexture, sideTexture, backTexture, renderer.getIcon( this.is ), sideTexture, sideTexture );
+		rh.setTexture( sideTexture, sideTexture, backTexture, renderer.getIcon( this.getItemStack() ), sideTexture, sideTexture );
 
 		rh.setBounds( 2, 2, 14, 14, 14, 16 );
 		rh.renderBlock( pos, renderer );

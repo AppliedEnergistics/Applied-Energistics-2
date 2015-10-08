@@ -163,7 +163,7 @@ public final class GrinderRecipeManager implements IGrinderRegistry, IOreListene
 		return null;
 	}
 
-	public void log( final String o )
+	private void log( final String o )
 	{
 		AELog.grinder( o );
 	}

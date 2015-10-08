@@ -7,7 +7,7 @@ import appeng.api.definitions.IBlockDefinition;
 
 public class FalloutSand extends FalloutCopy
 {
-	public static final double GLASS_THRESHOLD = 0.66;
+	private static final double GLASS_THRESHOLD = 0.66;
 	private final MeteoriteBlockPutter putter;
 
 	public FalloutSand( final IMeteoriteWorld w, final int x, final int y, final int z, final MeteoriteBlockPutter putter, final IBlockDefinition skyStoneDefinition )

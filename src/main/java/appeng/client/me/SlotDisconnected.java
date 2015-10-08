@@ -30,11 +30,11 @@ import appeng.util.Platform;
 public class SlotDisconnected extends AppEngSlot
 {
 
-	public final ClientDCInternalInv mySlot;
+	private final ClientDCInternalInv mySlot;
 
 	public SlotDisconnected( final ClientDCInternalInv me, final int which, final int x, final int y )
 	{
-		super( me.inv, which, x, y );
+		super( me.getInventory(), which, x, y );
 		this.mySlot = me;
 	}
 
@@ -102,5 +102,10 @@ public class SlotDisconnected extends AppEngSlot
 	public boolean isHere( final IInventory inv, final int slotIn )
 	{
 		return false;
+	}
+
+	public ClientDCInternalInv getSlot()
+	{
+		return this.mySlot;
 	}
 }

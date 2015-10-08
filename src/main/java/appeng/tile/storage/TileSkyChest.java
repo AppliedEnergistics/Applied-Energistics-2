@@ -35,29 +35,29 @@ import appeng.util.Platform;
 public class TileSkyChest extends AEBaseInvTile
 {
 
-	final int[] sides = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35 };
-	final AppEngInternalInventory inv = new AppEngInternalInventory( this, 9 * 4 );
+	private final int[] sides = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35 };
+	private final AppEngInternalInventory inv = new AppEngInternalInventory( this, 9 * 4 );
 	// server
-	public int playerOpen;
+	private int playerOpen;
 	// client..
-	public long lastEvent;
-	public float lidAngle;
+	private long lastEvent;
+	private float lidAngle;
 
 	@TileEvent( TileEventType.NETWORK_WRITE )
 	public void writeToStream_TileSkyChest( final ByteBuf data )
 	{
-		data.writeBoolean( this.playerOpen > 0 );
+		data.writeBoolean( this.getPlayerOpen() > 0 );
 	}
 
 	@TileEvent( TileEventType.NETWORK_READ )
 	public boolean readFromStream_TileSkyChest( final ByteBuf data )
 	{
-		final int wasOpen = this.playerOpen;
-		this.playerOpen = data.readBoolean() ? 1 : 0;
+		final int wasOpen = this.getPlayerOpen();
+		this.setPlayerOpen( data.readBoolean() ? 1 : 0 );
 
-		if( wasOpen != this.playerOpen )
+		if( wasOpen != this.getPlayerOpen() )
 		{
-			this.lastEvent = System.currentTimeMillis();
+			this.setLastEvent( System.currentTimeMillis() );
 		}
 
 		return false; // TESR yo!
@@ -83,9 +83,9 @@ public class TileSkyChest extends AEBaseInvTile
 			return;
 		}
 
-		this.playerOpen++;
+		this.setPlayerOpen( this.getPlayerOpen() + 1 );
 
-		if( this.playerOpen == 1 )
+		if( this.getPlayerOpen() == 1 )
 		{
 			this.getWorld().playSoundEffect( this.pos.getX() + 0.5D, this.pos.getY() + 0.5D, this.pos.getZ() + 0.5D, "random.chestopen", 0.5F, this.getWorld().rand.nextFloat() * 0.1F + 0.9F );
 			this.markForUpdate();
@@ -100,14 +100,14 @@ public class TileSkyChest extends AEBaseInvTile
 			return;
 		}
 
-		this.playerOpen--;
+		this.setPlayerOpen( this.getPlayerOpen() - 1 );
 
-		if( this.playerOpen < 0 )
+		if( this.getPlayerOpen() < 0 )
 		{
-			this.playerOpen = 0;
+			this.setPlayerOpen( 0 );
 		}
 
-		if( this.playerOpen == 0 )
+		if( this.getPlayerOpen() == 0 )
 		{
 			this.getWorld().playSoundEffect( this.pos.getX() + 0.5D, this.pos.getY() + 0.5D, this.pos.getZ() + 0.5D, "random.chestclosed", 0.5F, this.getWorld().rand.nextFloat() * 0.1F + 0.9F );
 			this.markForUpdate();
@@ -124,5 +124,35 @@ public class TileSkyChest extends AEBaseInvTile
 	public int[] getAccessibleSlotsBySide( final EnumFacing side )
 	{
 		return this.sides;
+	}
+
+	public float getLidAngle()
+	{
+		return this.lidAngle;
+	}
+
+	public void setLidAngle( final float lidAngle )
+	{
+		this.lidAngle = lidAngle;
+	}
+
+	public int getPlayerOpen()
+	{
+		return this.playerOpen;
+	}
+
+	private void setPlayerOpen( final int playerOpen )
+	{
+		this.playerOpen = playerOpen;
+	}
+
+	public long getLastEvent()
+	{
+		return this.lastEvent;
+	}
+
+	private void setLastEvent( final long lastEvent )
+	{
+		this.lastEvent = lastEvent;
 	}
 }

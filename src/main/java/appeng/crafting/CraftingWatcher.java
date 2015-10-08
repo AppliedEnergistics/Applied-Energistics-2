@@ -37,9 +37,9 @@ import appeng.me.cache.CraftingGridCache;
 public class CraftingWatcher implements ICraftingWatcher
 {
 
-	final CraftingGridCache gsc;
-	final ICraftingWatcherHost host;
-	final HashSet<IAEStack> myInterests = new HashSet<IAEStack>();
+	private final CraftingGridCache gsc;
+	private final ICraftingWatcherHost host;
+	private final HashSet<IAEStack> myInterests = new HashSet<IAEStack>();
 
 	public CraftingWatcher( final CraftingGridCache cache, final ICraftingWatcherHost host )
 	{
@@ -99,13 +99,13 @@ public class CraftingWatcher implements ICraftingWatcher
 			return false;
 		}
 
-		return this.myInterests.add( e.copy() ) && this.gsc.interestManager.put( e, this );
+		return this.myInterests.add( e.copy() ) && this.gsc.getInterestManager().put( e, this );
 	}
 
 	@Override
 	public boolean remove( final Object o )
 	{
-		return this.myInterests.remove( o ) && this.gsc.interestManager.remove( (IAEStack) o, this );
+		return this.myInterests.remove( o ) && this.gsc.getInterestManager().remove( (IAEStack) o, this );
 	}
 
 	@Override
@@ -162,17 +162,17 @@ public class CraftingWatcher implements ICraftingWatcher
 		final Iterator<IAEStack> i = this.myInterests.iterator();
 		while( i.hasNext() )
 		{
-			this.gsc.interestManager.remove( i.next(), this );
+			this.gsc.getInterestManager().remove( i.next(), this );
 			i.remove();
 		}
 	}
 
-	class ItemWatcherIterator implements Iterator<IAEStack>
+	private class ItemWatcherIterator implements Iterator<IAEStack>
 	{
 
-		final CraftingWatcher watcher;
-		final Iterator<IAEStack> interestIterator;
-		IAEStack myLast;
+		private final CraftingWatcher watcher;
+		private final Iterator<IAEStack> interestIterator;
+		private IAEStack myLast;
 
 		public ItemWatcherIterator( final CraftingWatcher parent, final Iterator<IAEStack> i )
 		{
@@ -195,7 +195,7 @@ public class CraftingWatcher implements ICraftingWatcher
 		@Override
 		public void remove()
 		{
-			CraftingWatcher.this.gsc.interestManager.remove( this.myLast, this.watcher );
+			CraftingWatcher.this.gsc.getInterestManager().remove( this.myLast, this.watcher );
 			this.interestIterator.remove();
 		}
 	}

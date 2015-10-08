@@ -25,8 +25,8 @@ import java.lang.ref.WeakReference;
 public class GridStorageSearch
 {
 
-	final long id;
-	public WeakReference<GridStorage> gridStorage;
+	private final long id;
+	private WeakReference<GridStorage> gridStorage;
 
 	/**
 	 * for use with the world settings
@@ -63,5 +63,15 @@ public class GridStorageSearch
 		}
 
 		return false;
+	}
+
+	public WeakReference<GridStorage> getGridStorage()
+	{
+		return this.gridStorage;
+	}
+
+	public void setGridStorage( final WeakReference<GridStorage> gridStorage )
+	{
+		this.gridStorage = gridStorage;
 	}
 }

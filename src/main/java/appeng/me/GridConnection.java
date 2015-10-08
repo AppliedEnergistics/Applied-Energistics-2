@@ -48,8 +48,8 @@ public class GridConnection implements IGridConnection, IPathItem
 	private static final String EXISTING_CONNECTION_MESSAGE = "Connection between node [machine=%s, %s] and [machine=%s, %s] on [%s] already exists.";
 
 	private static final MENetworkChannelsChanged EVENT = new MENetworkChannelsChanged();
-	public int channelData = 0;
-	Object visitorIterationNumber = null;
+	private int channelData = 0;
+	private Object visitorIterationNumber = null;
 	private GridNode sideA;
 	private AEPartLocation fromAtoB;
 	private GridNode sideB;
@@ -67,8 +67,8 @@ public class GridConnection implements IGridConnection, IPathItem
 				final DimensionalCoord aCoordinates = a.getGridBlock().getLocation();
 				final DimensionalCoord bCoordinates = b.getGridBlock().getLocation();
 
-				AELog.info( "Security audit 1 failed at [%s] belonging to player [id=%d]", aCoordinates.toString(), a.playerID );
-				AELog.info( "Security audit 2 failed at [%s] belonging to player [id=%d]", bCoordinates.toString(), b.playerID );
+				AELog.info( "Security audit 1 failed at [%s] belonging to player [id=%d]", aCoordinates.toString(), a.getPlayerID() );
+				AELog.info( "Security audit 2 failed at [%s] belonging to player [id=%d]", bCoordinates.toString(), b.getPlayerID() );
 			}
 
 			throw new SecurityConnectionException();
@@ -276,8 +276,18 @@ public class GridConnection implements IGridConnection, IPathItem
 		}
 	}
 
-	public int getLastUsedChannels()
+	private int getLastUsedChannels()
 	{
 		return this.channelData & 0xff;
+	}
+
+	Object getVisitorIterationNumber()
+	{
+		return this.visitorIterationNumber;
+	}
+
+	void setVisitorIterationNumber( final Object visitorIterationNumber )
+	{
+		this.visitorIterationNumber = visitorIterationNumber;
 	}
 }

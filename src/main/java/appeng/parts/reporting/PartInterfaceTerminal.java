@@ -50,7 +50,7 @@ public class PartInterfaceTerminal extends AbstractPartDisplay
 					return true;
 				}
 
-				Platform.openGUI( player, this.getHost().getTile(), this.side, GuiBridge.GUI_INTERFACE_TERMINAL );
+				Platform.openGUI( player, this.getHost().getTile(), this.getSide(), GuiBridge.GUI_INTERFACE_TERMINAL );
 
 				return true;
 			}

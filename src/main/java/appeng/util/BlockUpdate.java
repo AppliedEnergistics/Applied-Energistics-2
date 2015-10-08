@@ -25,17 +25,17 @@ import net.minecraft.world.World;
 
 public class BlockUpdate implements IWorldCallable<Boolean>
 {
-	final BlockPos pos;
+	private final BlockPos pos;
 
-	public BlockUpdate( final BlockPos pos )
+	BlockUpdate( final BlockPos pos )
 	{
-		this.pos=pos;
+		this.pos = pos;
 	}
 
 	@Override
 	public Boolean call( final World world ) throws Exception
 	{
-		if ( world.isBlockLoaded( this.pos ) )
+		if( world.isBlockLoaded( this.pos ) )
 		{
 			world.notifyNeighborsOfStateChange( this.pos, Platform.AIR_BLOCK );
 		}

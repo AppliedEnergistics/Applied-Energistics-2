@@ -28,9 +28,9 @@ import appeng.parts.p2p.PartP2PTunnel;
 public class TunnelIterator<T extends PartP2PTunnel> implements Iterator<T>
 {
 
-	final Iterator<T> wrapped;
-	final Class targetType;
-	T Next;
+	private final Iterator<T> wrapped;
+	private final Class targetType;
+	private T Next;
 
 	public TunnelIterator( final Collection<T> tunnelSources, final Class clz )
 	{

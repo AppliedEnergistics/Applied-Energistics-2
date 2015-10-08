@@ -31,16 +31,16 @@ import appeng.core.AELog;
 public final class IntegrationNode
 {
 
-	final String displayName;
-	final String modID;
-	final IntegrationType shortName;
-	IntegrationStage state = IntegrationStage.PRE_INIT;
-	IntegrationStage failedStage = IntegrationStage.PRE_INIT;
-	Throwable exception = null;
-	String name = null;
-	Class<?> classValue = null;
-	Object instance;
-	IIntegrationModule mod = null;
+	private final String displayName;
+	private final String modID;
+	private final IntegrationType shortName;
+	private IntegrationStage state = IntegrationStage.PRE_INIT;
+	private IntegrationStage failedStage = IntegrationStage.PRE_INIT;
+	private Throwable exception = null;
+	private String name = null;
+	private Class<?> classValue = null;
+	private Object instance;
+	private IIntegrationModule mod = null;
 
 	public IntegrationNode( final String displayName, final String modID, final IntegrationType shortName, final String name )
 	{
@@ -53,24 +53,24 @@ public final class IntegrationNode
 	@Override
 	public String toString()
 	{
-		return this.shortName.name() + ':' + this.state.name();
+		return this.getShortName().name() + ':' + this.getState().name();
 	}
 
-	public boolean isActive()
+	boolean isActive()
 	{
-		if( this.state == IntegrationStage.PRE_INIT )
+		if( this.getState() == IntegrationStage.PRE_INIT )
 		{
 			this.call( IntegrationStage.PRE_INIT );
 		}
 
-		return this.state != IntegrationStage.FAILED;
+		return this.getState() != IntegrationStage.FAILED;
 	}
 
 	void call( final IntegrationStage stage )
 	{
-		if( this.state != IntegrationStage.FAILED )
+		if( this.getState() != IntegrationStage.FAILED )
 		{
-			if( this.state.ordinal() > stage.ordinal() )
+			if( this.getState().ordinal() > stage.ordinal() )
 			{
 				return;
 			}
@@ -100,24 +100,24 @@ public final class IntegrationNode
 							this.classValue = this.getClass().getClassLoader().loadClass( this.name );
 							this.mod = (IIntegrationModule) this.classValue.getConstructor().newInstance();
 							final Field f = this.classValue.getField( "instance" );
-							f.set( this.classValue, this.instance = this.mod );
+							f.set( this.classValue, this.setInstance( this.mod ) );
 						}
 						else
 						{
 							throw new ModNotInstalled( this.modID );
 						}
 
-						this.state = IntegrationStage.INIT;
+						this.setState( IntegrationStage.INIT );
 
 						break;
 					case INIT:
 						this.mod.init();
-						this.state = IntegrationStage.POST_INIT;
+						this.setState( IntegrationStage.POST_INIT );
 
 						break;
 					case POST_INIT:
 						this.mod.postInit();
-						this.state = IntegrationStage.READY;
+						this.setState( IntegrationStage.READY );
 
 						break;
 					case FAILED:
@@ -129,13 +129,13 @@ public final class IntegrationNode
 			{
 				this.failedStage = stage;
 				this.exception = t;
-				this.state = IntegrationStage.FAILED;
+				this.setState( IntegrationStage.FAILED );
 			}
 		}
 
 		if( stage == IntegrationStage.POST_INIT )
 		{
-			if( this.state == IntegrationStage.FAILED )
+			if( this.getState() == IntegrationStage.FAILED )
 			{
 				AELog.info( this.displayName + " - Integration Disabled" );
 				if( !( this.exception instanceof ModNotInstalled ) )
@@ -148,5 +148,31 @@ public final class IntegrationNode
 				AELog.info( this.displayName + " - Integration Enable" );
 			}
 		}
+	}
+
+	Object getInstance()
+	{
+		return this.instance;
+	}
+
+	private Object setInstance( final Object instance )
+	{
+		this.instance = instance;
+		return instance;
+	}
+
+	IntegrationType getShortName()
+	{
+		return this.shortName;
+	}
+
+	IntegrationStage getState()
+	{
+		return this.state;
+	}
+
+	private void setState( final IntegrationStage state )
+	{
+		this.state = state;
 	}
 }

@@ -46,7 +46,7 @@ public abstract class UpgradeInventory extends AppEngInternalInventory implement
 	public UpgradeInventory( final IAEAppEngInventory parent, final int s )
 	{
 		super( null, s );
-		this.te = this;
+		this.setTileEntity( this );
 		this.parent = parent;
 	}
 

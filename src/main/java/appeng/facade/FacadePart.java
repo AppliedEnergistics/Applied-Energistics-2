@@ -60,9 +60,9 @@ import appeng.util.Platform;
 public class FacadePart implements IFacadePart, IBoxProvider
 {
 
-	public final ItemStack facade;
-	public final AEPartLocation side;
-	public int thickness = 2;
+	private final ItemStack facade;
+	private final AEPartLocation side;
+	private int thickness = 2;
 
 	public FacadePart( final ItemStack facade, final AEPartLocation side )
 	{
@@ -123,8 +123,8 @@ public class FacadePart implements IFacadePart, IBoxProvider
 				{
 					if( rbw != null )
 					{
-						//rbw.isFacade = false;
-						//rbw.calculations = true;
+						// rbw.isFacade = false;
+						// rbw.calculations = true;
 					}
 
 					IAESprite myIcon = null;
@@ -165,7 +165,7 @@ public class FacadePart implements IFacadePart, IBoxProvider
 						{
 							if( rbw != null )
 							{
-								rbw.opacity = 0.3f;
+								rbw.setOpacity( 0.3f );
 							}
 							instance.renderForPass( 1 );
 						}
@@ -185,41 +185,50 @@ public class FacadePart implements IFacadePart, IBoxProvider
 						{
 						}
 
-						renderer.uvRotateBottom = renderer.uvRotateEast = renderer.uvRotateNorth = renderer.uvRotateSouth = renderer.uvRotateTop = renderer.uvRotateWest = 0;
+						renderer.setUvRotateBottom( renderer.setUvRotateEast( renderer.setUvRotateNorth( renderer.setUvRotateSouth( renderer.setUvRotateTop( renderer.setUvRotateWest( 0 ) ) ) ) ) );
 						instance.setBounds( 0, 0, 16 - this.thickness, 16, 16, 16 );
 						instance.prepareBounds( renderer );
 
 						/*
-						if( rbw != null )
-						{
-							rbw.isFacade = true;
-
-							rbw.calculations = true;
-							rbw.faces = EnumSet.noneOf( AEPartLocation.class );
-
-							if( this.prevLight != null && rbw.similarLighting( blk, rbw.blockAccess, x, y, z, this.prevLight ) )
-							{
-								rbw.populate( this.prevLight );
-							}
-							else
-							{
-								instance.setRenderColor( color );
-								rbw.renderStandardBlock( instance.getBlock(), x, y, z );
-								instance.setRenderColor( 0xffffff );
-								this.prevLight = rbw.getLightingCache();
-							}
-
-							rbw.calculations = false;
-							rbw.faces = this.calculateFaceOpenFaces( rbw.blockAccess, fc, x, y, z, this.side );
-
-							( (RenderBlocksWorkaround) renderer ).setTexture( blk.getIcon( AEPartLocation.DOWN.ordinal(), ib.getMetadata( randomItem.getItemDamage() ) ), blk.getIcon( AEPartLocation.UP.ordinal(), ib.getMetadata( randomItem.getItemDamage() ) ), blk.getIcon( AEPartLocation.NORTH.ordinal(), ib.getMetadata( randomItem.getItemDamage() ) ), blk.getIcon( AEPartLocation.SOUTH.ordinal(), ib.getMetadata( randomItem.getItemDamage() ) ), blk.getIcon( AEPartLocation.WEST.ordinal(), ib.getMetadata( randomItem.getItemDamage() ) ), blk.getIcon( AEPartLocation.EAST.ordinal(), ib.getMetadata( randomItem.getItemDamage() ) ) );
-						}
-						else
-						{*/
+						 * if( rbw != null )
+						 * {
+						 * rbw.setFacade( true );
+						 * <<<<<<< HEAD
+						 * rbw.calculations = true;
+						 * rbw.faces = EnumSet.noneOf( AEPartLocation.class );
+						 * =======
+						 * rbw.setCalculations( true );
+						 * rbw.setFaces( EnumSet.noneOf( ForgeDirection.class ) );
+						 * >>>>>>> 500fc47... Reduces visibility of internal fields/methods
+						 * if( this.prevLight != null && rbw.similarLighting( blk, rbw.blockAccess, x, y, z,
+						 * this.prevLight ) )
+						 * {
+						 * rbw.populate( this.prevLight );
+						 * }
+						 * else
+						 * {
+						 * instance.setRenderColor( color );
+						 * rbw.renderStandardBlock( instance.getBlock(), x, y, z );
+						 * instance.setRenderColor( 0xffffff );
+						 * this.prevLight = rbw.getLightingCache();
+						 * }
+						 * rbw.setCalculations( false );
+						 * rbw.setFaces( this.calculateFaceOpenFaces( rbw.blockAccess, fc, x, y, z, this.side ) );
+						 * ( (RenderBlocksWorkaround) renderer ).setTexture( blk.getIcon( AEPartLocation.DOWN.ordinal(),
+						 * ib.getMetadata( randomItem.getItemDamage() ) ), blk.getIcon( AEPartLocation.UP.ordinal(),
+						 * ib.getMetadata( randomItem.getItemDamage() ) ), blk.getIcon( AEPartLocation.NORTH.ordinal(),
+						 * ib.getMetadata( randomItem.getItemDamage() ) ), blk.getIcon( AEPartLocation.SOUTH.ordinal(),
+						 * ib.getMetadata( randomItem.getItemDamage() ) ), blk.getIcon( AEPartLocation.WEST.ordinal(),
+						 * ib.getMetadata( randomItem.getItemDamage() ) ), blk.getIcon( AEPartLocation.EAST.ordinal(),
+						 * ib.getMetadata( randomItem.getItemDamage() ) ) );
+						 * }
+						 * else
+						 * {
+						 */
 						final IAESprite[] icon_down = renderer.getIcon( blk.getDefaultState() );
 
 						instance.setTexture( icon_down[EnumFacing.DOWN.ordinal()], icon_down[EnumFacing.UP.ordinal()], icon_down[EnumFacing.NORTH.ordinal()], icon_down[EnumFacing.SOUTH.ordinal()], icon_down[EnumFacing.WEST.ordinal()], icon_down[EnumFacing.EAST.ordinal()] );
-						//}
+						// }
 
 						if( busBounds == null )
 						{
@@ -231,12 +240,12 @@ public class FacadePart implements IFacadePart, IBoxProvider
 							{
 								if( fc.getFacade( AEPartLocation.UP ) != null )
 								{
-									renderer.renderMaxY -= this.thickness / 16.0;
+									renderer.setRenderMaxY( renderer.getRenderMaxY() - this.thickness / 16.0 );
 								}
 
 								if( fc.getFacade( AEPartLocation.DOWN ) != null )
 								{
-									renderer.renderMinY += this.thickness / 16.0;
+									renderer.setRenderMinY( renderer.getRenderMinY() + this.thickness / 16.0 );
 								}
 
 								instance.renderBlockCurrentBounds( pos, renderer );
@@ -245,22 +254,22 @@ public class FacadePart implements IFacadePart, IBoxProvider
 							{
 								if( fc.getFacade( AEPartLocation.UP ) != null )
 								{
-									renderer.renderMaxY -= this.thickness / 16.0;
+									renderer.setRenderMaxY( renderer.getRenderMaxY() - this.thickness / 16.0 );
 								}
 
 								if( fc.getFacade( AEPartLocation.DOWN ) != null )
 								{
-									renderer.renderMinY += this.thickness / 16.0;
+									renderer.setRenderMinY( renderer.getRenderMinY() + this.thickness / 16.0 );
 								}
 
 								if( fc.getFacade( AEPartLocation.SOUTH ) != null )
 								{
-									renderer.renderMaxZ -= this.thickness / 16.0;
+									renderer.setRenderMaxZ( renderer.getRenderMaxZ() - this.thickness / 16.0 );
 								}
 
 								if( fc.getFacade( AEPartLocation.NORTH ) != null )
 								{
-									renderer.renderMinZ += this.thickness / 16.0;
+									renderer.setRenderMinZ( renderer.getRenderMinZ() + this.thickness / 16.0 );
 								}
 
 								instance.renderBlockCurrentBounds( pos, renderer );
@@ -279,12 +288,12 @@ public class FacadePart implements IFacadePart, IBoxProvider
 							{
 								if( fc.getFacade( AEPartLocation.UP ) != null )
 								{
-									renderer.renderMaxY -= this.thickness / 16.0;
+									renderer.setRenderMaxY( renderer.getRenderMaxY() - this.thickness / 16.0 );
 								}
 
 								if( fc.getFacade( AEPartLocation.DOWN ) != null )
 								{
-									renderer.renderMinY += this.thickness / 16.0;
+									renderer.setRenderMinY( renderer.getRenderMinY() + this.thickness / 16.0 );
 								}
 
 								this.renderSegmentBlockCurrentBounds( instance, pos, renderer, busBounds.maxX, 0.0, 0.0, 1.0, 1.0, 1.0 );
@@ -296,22 +305,22 @@ public class FacadePart implements IFacadePart, IBoxProvider
 							{
 								if( fc.getFacade( AEPartLocation.UP ) != null )
 								{
-									renderer.renderMaxY -= this.thickness / 16.0;
+									renderer.setRenderMaxY( renderer.getRenderMaxY() - this.thickness / 16.0 );
 								}
 
 								if( fc.getFacade( AEPartLocation.DOWN ) != null )
 								{
-									renderer.renderMinY += this.thickness / 16.0;
+									renderer.setRenderMinY( renderer.getRenderMinY() + this.thickness / 16.0 );
 								}
 
 								if( fc.getFacade( AEPartLocation.SOUTH ) != null )
 								{
-									renderer.renderMaxZ -= this.thickness / 16.0;
+									renderer.setRenderMaxZ( renderer.getRenderMaxZ() - this.thickness / 16.0 );
 								}
 
 								if( fc.getFacade( AEPartLocation.NORTH ) != null )
 								{
-									renderer.renderMinZ += this.thickness / 16.0;
+									renderer.setRenderMinZ( renderer.getRenderMinZ() + this.thickness / 16.0 );
 								}
 
 								this.renderSegmentBlockCurrentBounds( instance, pos, renderer, 0.0, 0.0, busBounds.maxZ, 1.0, 1.0, 1.0 );
@@ -323,8 +332,8 @@ public class FacadePart implements IFacadePart, IBoxProvider
 
 						if( rbw != null )
 						{
-							rbw.opacity = 1.0f;
-							rbw.faces = EnumSet.allOf( EnumFacing.class );
+							rbw.setOpacity( 1.0f );
+							rbw.setFaces( EnumSet.allOf( EnumFacing.class ) );
 						}
 
 						instance.renderForPass( 0 );
@@ -453,7 +462,7 @@ public class FacadePart implements IFacadePart, IBoxProvider
 	}
 
 	@Nullable
-	ItemStack getTexture()
+	private ItemStack getTexture()
 	{
 		final Item maybeFacade = this.facade.getItem();
 
@@ -527,23 +536,18 @@ public class FacadePart implements IFacadePart, IBoxProvider
 		 * if ( out.contains( AEPartLocation.EAST ) && (side.offsetZ != 0) ) { IFacadePart fp = fc.getFacade(
 		 * AEPartLocation.EAST ); if ( fp != null && (fp.isTransparent() == facade.isTransparent()) ) out.remove(
 		 * AEPartLocation.EAST ); }
-		 *
 		 * if ( out.contains( AEPartLocation.WEST ) && (side.offsetZ != 0) ) { IFacadePart fp = fc.getFacade(
 		 * AEPartLocation.WEST ); if ( fp != null && (fp.isTransparent() == facade.isTransparent()) ) out.remove(
 		 * AEPartLocation.WEST ); }
-		 *
 		 * if ( out.contains( AEPartLocation.NORTH ) && (side.offsetY != 0) ) { IFacadePart fp = fc.getFacade(
 		 * AEPartLocation.NORTH ); if ( fp != null && (fp.isTransparent() == facade.isTransparent()) ) out.remove(
 		 * AEPartLocation.NORTH ); }
-		 *
 		 * if ( out.contains( AEPartLocation.SOUTH ) && (side.offsetY != 0) ) { IFacadePart fp = fc.getFacade(
 		 * AEPartLocation.SOUTH ); if ( fp != null && (fp.isTransparent() == facade.isTransparent()) ) out.remove(
 		 * AEPartLocation.SOUTH ); }
-		 *
 		 * if ( out.contains( AEPartLocation.EAST ) && (side.offsetY != 0) ) { IFacadePart fp = fc.getFacade(
 		 * AEPartLocation.EAST ); if ( fp != null && (fp.isTransparent() == facade.isTransparent()) ) out.remove(
 		 * AEPartLocation.EAST ); }
-		 *
 		 * if ( out.contains( AEPartLocation.WEST ) && (side.offsetY != 0) ) { IFacadePart fp = fc.getFacade(
 		 * AEPartLocation.WEST ); if ( fp != null && (fp.isTransparent() == facade.isTransparent()) ) out.remove(
 		 * AEPartLocation.WEST ); }
@@ -554,32 +558,32 @@ public class FacadePart implements IFacadePart, IBoxProvider
 	@SideOnly( Side.CLIENT )
 	private void renderSegmentBlockCurrentBounds( final IPartRenderHelper instance, final BlockPos pos, final ModelGenerator renderer, final double minX, final double minY, final double minZ, final double maxX, final double maxY, final double maxZ )
 	{
-		final double oldMinX = renderer.renderMinX;
-		final double oldMinY = renderer.renderMinY;
-		final double oldMinZ = renderer.renderMinZ;
-		final double oldMaxX = renderer.renderMaxX;
-		final double oldMaxY = renderer.renderMaxY;
-		final double oldMaxZ = renderer.renderMaxZ;
+		final double oldMinX = renderer.getRenderMinX();
+		final double oldMinY = renderer.getRenderMinY();
+		final double oldMinZ = renderer.getRenderMinZ();
+		final double oldMaxX = renderer.getRenderMaxX();
+		final double oldMaxY = renderer.getRenderMaxY();
+		final double oldMaxZ = renderer.getRenderMaxZ();
 
-		renderer.renderMinX = Math.max( renderer.renderMinX, minX );
-		renderer.renderMinY = Math.max( renderer.renderMinY, minY );
-		renderer.renderMinZ = Math.max( renderer.renderMinZ, minZ );
-		renderer.renderMaxX = Math.min( renderer.renderMaxX, maxX );
-		renderer.renderMaxY = Math.min( renderer.renderMaxY, maxY );
-		renderer.renderMaxZ = Math.min( renderer.renderMaxZ, maxZ );
+		renderer.setRenderMinX( Math.max( renderer.getRenderMinX(), minX ) );
+		renderer.setRenderMinY( Math.max( renderer.getRenderMinY(), minY ) );
+		renderer.setRenderMinZ( Math.max( renderer.getRenderMinZ(), minZ ) );
+		renderer.setRenderMaxX( Math.min( renderer.getRenderMaxX(), maxX ) );
+		renderer.setRenderMaxY( Math.min( renderer.getRenderMaxY(), maxY ) );
+		renderer.setRenderMaxZ( Math.min( renderer.getRenderMaxZ(), maxZ ) );
 
 		// don't draw it if its not at least a pixel wide...
-		if( renderer.renderMaxX - renderer.renderMinX >= 1.0 / 16.0 && renderer.renderMaxY - renderer.renderMinY >= 1.0 / 16.0 && renderer.renderMaxZ - renderer.renderMinZ >= 1.0 / 16.0 )
+		if( renderer.getRenderMaxX() - renderer.getRenderMinX() >= 1.0 / 16.0 && renderer.getRenderMaxY() - renderer.getRenderMinY() >= 1.0 / 16.0 && renderer.getRenderMaxZ() - renderer.getRenderMinZ() >= 1.0 / 16.0 )
 		{
 			instance.renderBlockCurrentBounds( pos, renderer );
 		}
 
-		renderer.renderMinX = oldMinX;
-		renderer.renderMinY = oldMinY;
-		renderer.renderMinZ = oldMinZ;
-		renderer.renderMaxX = oldMaxX;
-		renderer.renderMaxY = oldMaxY;
-		renderer.renderMaxZ = oldMaxZ;
+		renderer.setRenderMinX( oldMinX );
+		renderer.setRenderMinY( oldMinY );
+		renderer.setRenderMinZ( oldMinZ );
+		renderer.setRenderMaxX( oldMaxX );
+		renderer.setRenderMaxY( oldMaxY );
+		renderer.setRenderMaxZ( oldMaxZ );
 	}
 
 	private boolean hasAlphaDiff( final TileEntity tileEntity, final AEPartLocation side, final IFacadePart facade )

@@ -29,9 +29,9 @@ import appeng.api.storage.data.IAEStack;
 public abstract class AEStack<StackType extends IAEStack> implements IAEStack<StackType>
 {
 
-	protected boolean isCraftable;
-	protected long stackSize;
-	protected long countRequestable;
+	private boolean isCraftable;
+	private long stackSize;
+	private long countRequestable;
 
 	static long getPacketValue( final byte type, final ByteBuf tag )
 	{
@@ -151,7 +151,7 @@ public abstract class AEStack<StackType extends IAEStack> implements IAEStack<St
 		this.putPacketValue( i, this.countRequestable );
 	}
 
-	byte getType( final long num )
+	private byte getType( final long num )
 	{
 		if( num <= 255 )
 		{
@@ -177,7 +177,7 @@ public abstract class AEStack<StackType extends IAEStack> implements IAEStack<St
 
 	abstract void readNBT( ByteBuf i ) throws IOException;
 
-	void putPacketValue( final ByteBuf tag, final long num )
+	private void putPacketValue( final ByteBuf tag, final long num )
 	{
 		if( num <= 255 )
 		{

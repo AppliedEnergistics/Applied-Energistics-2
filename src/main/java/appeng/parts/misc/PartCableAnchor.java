@@ -52,9 +52,9 @@ import appeng.client.texture.IAESprite;
 public class PartCableAnchor implements IPart
 {
 
-	ItemStack is = null;
-	IPartHost host = null;
-	AEPartLocation mySide = AEPartLocation.UP;
+	private ItemStack is = null;
+	private IPartHost host = null;
+	private AEPartLocation mySide = AEPartLocation.UP;
 
 	public PartCableAnchor( final ItemStack is )
 	{
@@ -94,7 +94,7 @@ public class PartCableAnchor implements IPart
 	@SideOnly( Side.CLIENT )
 	public void renderStatic( final BlockPos pos, final IPartRenderHelper rh, final ModelGenerator renderer )
 	{
-		final IAESprite myIcon =  renderer.getIcon( this.is );
+		final IAESprite myIcon = renderer.getIcon( this.is );
 		rh.setTexture( myIcon );
 		if( this.host != null && this.host.getFacadeContainer().getFacade( this.mySide ) != null )
 		{
@@ -116,7 +116,7 @@ public class PartCableAnchor implements IPart
 	}
 
 	@Override
-	public TextureAtlasSprite getBreakingTexture( final ModelGenerator renderer)
+	public TextureAtlasSprite getBreakingTexture( final ModelGenerator renderer )
 	{
 		return null;
 	}

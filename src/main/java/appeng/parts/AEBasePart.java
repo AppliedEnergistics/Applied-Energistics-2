@@ -44,6 +44,7 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
 import appeng.api.AEApi;
 import appeng.api.config.Upgrades;
 import appeng.api.definitions.IDefinitions;
@@ -77,11 +78,11 @@ import appeng.util.SettingsFrom;
 public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradeableHost, ICustomNameObject
 {
 
-	protected final AENetworkProxy proxy;
-	protected final ItemStack is;
-	protected TileEntity tile = null;
-	protected IPartHost host = null;
-	protected AEPartLocation side = null;
+	private final AENetworkProxy proxy;
+	private final ItemStack is;
+	private TileEntity tile = null;
+	private IPartHost host = null;
+	private AEPartLocation side = null;
 
 	public AEBasePart( final ItemStack is )
 	{
@@ -112,7 +113,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 	@Override
 	public void securityBreak()
 	{
-		if( this.is.stackSize > 0 )
+		if( this.getItemStack().stackSize > 0 )
 		{
 			final List<ItemStack> items = new ArrayList<ItemStack>();
 			items.add( this.is.copy() );
@@ -192,7 +193,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 	@Override
 	public String getCustomName()
 	{
-		return this.is.getDisplayName();
+		return this.getItemStack().getDisplayName();
 	}
 
 	@Override
@@ -206,12 +207,12 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 	@Override
 	public boolean hasCustomName()
 	{
-		return this.is.hasDisplayName();
+		return this.getItemStack().hasDisplayName();
 	}
 
 	public void addEntityCrashInfo( final CrashReportCategory crashreportcategory )
 	{
-		crashreportcategory.addCrashSection( "Part Side", this.side );
+		crashreportcategory.addCrashSection( "Part Side", this.getSide() );
 	}
 
 	@Override
@@ -314,7 +315,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 	@Override
 	public void setPartHostInfo( final AEPartLocation side, final IPartHost host, final TileEntity tile )
 	{
-		this.side = side;
+		this.setSide( side );
 		this.tile = tile;
 		this.host = host;
 	}
@@ -374,7 +375,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 	 * @param from source of settings
 	 * @param compound compound of source
 	 */
-	public void uploadSettings( final SettingsFrom from, final NBTTagCompound compound )
+	private void uploadSettings( final SettingsFrom from, final NBTTagCompound compound )
 	{
 		if( compound != null )
 		{
@@ -411,7 +412,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 	 *
 	 * @return compound of source
 	 */
-	public NBTTagCompound downloadSettings( final SettingsFrom from )
+	private NBTTagCompound downloadSettings( final SettingsFrom from )
 	{
 		final NBTTagCompound output = new NBTTagCompound();
 
@@ -543,8 +544,23 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public TextureAtlasSprite getBreakingTexture( final ModelGenerator renderer)
+	public TextureAtlasSprite getBreakingTexture( final ModelGenerator renderer )
 	{
 		return null;
+	}
+
+	public AEPartLocation getSide()
+	{
+		return this.side;
+	}
+
+	private void setSide( final AEPartLocation side )
+	{
+		this.side = side;
+	}
+
+	public ItemStack getItemStack()
+	{
+		return this.is;
 	}
 }

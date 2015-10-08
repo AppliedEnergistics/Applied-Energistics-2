@@ -43,21 +43,21 @@ import appeng.util.Platform;
 public class TileCrank extends AEBaseTile implements ICustomCollision, IUpdatePlayerListBox
 {
 
-	final int ticksPerRotation = 18;
+	private final int ticksPerRotation = 18;
 
 	// sided values..
-	public float visibleRotation = 0;
-	public int charge = 0;
+	private float visibleRotation = 0;
+	private int charge = 0;
 
-	public int hits = 0;
-	public int rotation = 0;
+	private int hits = 0;
+	private int rotation = 0;
 
 	@TileEvent( TileEventType.TICK )
 	public void Tick_TileCrank()
 	{
 		if( this.rotation > 0 )
 		{
-			this.visibleRotation -= 360 / ( this.ticksPerRotation );
+			this.setVisibleRotation( this.getVisibleRotation() - 360 / ( this.ticksPerRotation ) );
 			this.charge++;
 			if( this.charge >= this.ticksPerRotation )
 			{
@@ -73,7 +73,7 @@ public class TileCrank extends AEBaseTile implements ICustomCollision, IUpdatePl
 		}
 	}
 
-	public ICrankable getGrinder()
+	private ICrankable getGrinder()
 	{
 		if( Platform.isClient() )
 		{
@@ -178,5 +178,15 @@ public class TileCrank extends AEBaseTile implements ICustomCollision, IUpdatePl
 		final double zOff = -0.15 * this.getUp().getFrontOffsetZ();
 		out.add( AxisAlignedBB.fromBounds( xOff + 0.15, yOff + 0.15, zOff + 0.15,// ahh
 				xOff + 0.85, yOff + 0.85, zOff + 0.85 ) );
+	}
+
+	public float getVisibleRotation()
+	{
+		return this.visibleRotation;
+	}
+
+	private void setVisibleRotation( final float visibleRotation )
+	{
+		this.visibleRotation = visibleRotation;
 	}
 }

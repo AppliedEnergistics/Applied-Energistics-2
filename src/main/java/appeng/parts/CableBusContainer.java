@@ -77,10 +77,10 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 
 	private static final ThreadLocal<Boolean> IS_LOADING = new ThreadLocal<Boolean>();
 	private final EnumSet<LayerFlags> myLayerFlags = EnumSet.noneOf( LayerFlags.class );
-	public YesNo hasRedstone = YesNo.UNDECIDED;
-	public IPartHost tcb;
-	public boolean requiresDynamicRender = false;
-	boolean inWorld = false;
+	private YesNo hasRedstone = YesNo.UNDECIDED;
+	private IPartHost tcb;
+	private boolean requiresDynamicRender = false;
+	private boolean inWorld = false;
 
 	public CableBusContainer( final IPartHost host )
 	{
@@ -327,7 +327,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 	{
 		return this.getSide( AEPartLocation.fromFacing( side ) );
 	}
-	
+
 	@Override
 	public void removePart( final AEPartLocation side, final boolean suppressUpdate )
 	{
@@ -548,7 +548,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 		this.hasRedstone = te.getWorld().isBlockIndirectlyGettingPowered( te.getPos() ) != 0 ? YesNo.YES : YesNo.NO;
 	}
 
-	public void updateDynamicRender()
+	private void updateDynamicRender()
 	{
 		this.requiresDynamicRender = false;
 		for( final AEPartLocation s : AEPartLocation.SIDE_LOCATIONS )
@@ -556,7 +556,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 			final IPart p = this.getPart( s );
 			if( p != null )
 			{
-				this.requiresDynamicRender = this.requiresDynamicRender || p.requireDynamicRender();
+				this.setRequiresDynamicRender( this.isRequiresDynamicRender() || p.requireDynamicRender() );
 			}
 		}
 	}
@@ -1021,7 +1021,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 		}
 	}
 
-	AEPartLocation getSide( final IPart part )
+	private AEPartLocation getSide( final IPart part )
 	{
 		if( this.getCenter() == part )
 		{
@@ -1141,5 +1141,15 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 			return pc.changeColor( colour, who );
 		}
 		return false;
+	}
+
+	public boolean isRequiresDynamicRender()
+	{
+		return this.requiresDynamicRender;
+	}
+
+	private void setRequiresDynamicRender( final boolean requiresDynamicRender )
+	{
+		this.requiresDynamicRender = requiresDynamicRender;
 	}
 }

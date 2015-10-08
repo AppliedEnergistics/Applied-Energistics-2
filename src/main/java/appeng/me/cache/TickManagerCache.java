@@ -39,11 +39,11 @@ import appeng.me.cache.helpers.TickTracker;
 public class TickManagerCache implements ITickManager
 {
 
-	final IGrid myGrid;
-	final HashMap<IGridNode, TickTracker> alertable = new HashMap<IGridNode, TickTracker>();
-	final HashMap<IGridNode, TickTracker> sleeping = new HashMap<IGridNode, TickTracker>();
-	final HashMap<IGridNode, TickTracker> awake = new HashMap<IGridNode, TickTracker>();
-	final PriorityQueue<TickTracker> upcomingTicks = new PriorityQueue<TickTracker>();
+	private final IGrid myGrid;
+	private final HashMap<IGridNode, TickTracker> alertable = new HashMap<IGridNode, TickTracker>();
+	private final HashMap<IGridNode, TickTracker> sleeping = new HashMap<IGridNode, TickTracker>();
+	private final HashMap<IGridNode, TickTracker> awake = new HashMap<IGridNode, TickTracker>();
+	private final PriorityQueue<TickTracker> upcomingTicks = new PriorityQueue<TickTracker>();
 	private long currentTick = 0;
 
 	public TickManagerCache( final IGrid g )
@@ -83,28 +83,28 @@ public class TickManagerCache implements ITickManager
 			while( !this.upcomingTicks.isEmpty() )
 			{
 				tt = this.upcomingTicks.peek();
-				final int diff = (int) ( this.currentTick - tt.lastTick );
-				if( diff >= tt.current_rate )
+				final int diff = (int) ( this.currentTick - tt.getLastTick() );
+				if( diff >= tt.getCurrentRate() )
 				{
 					// remove tt..
 					this.upcomingTicks.poll();
-					final TickRateModulation mod = tt.gt.tickingRequest( tt.node, diff );
+					final TickRateModulation mod = tt.getGridTickable().tickingRequest( tt.getNode(), diff );
 
 					switch( mod )
 					{
 						case FASTER:
-							tt.setRate( tt.current_rate - 2 );
+							tt.setRate( tt.getCurrentRate() - 2 );
 							break;
 						case IDLE:
-							tt.setRate( tt.request.maxTickRate );
+							tt.setRate( tt.getRequest().maxTickRate );
 							break;
 						case SAME:
 							break;
 						case SLEEP:
-							this.sleepDevice( tt.node );
+							this.sleepDevice( tt.getNode() );
 							break;
 						case SLOWER:
-							tt.setRate( tt.current_rate + 1 );
+							tt.setRate( tt.getCurrentRate() + 1 );
 							break;
 						case URGENT:
 							tt.setRate( 0 );
@@ -113,7 +113,7 @@ public class TickManagerCache implements ITickManager
 							break;
 					}
 
-					if( this.awake.containsKey( tt.node ) )
+					if( this.awake.containsKey( tt.getNode() ) )
 					{
 						this.addToQueue( tt );
 					}
@@ -127,7 +127,7 @@ public class TickManagerCache implements ITickManager
 		catch( final Throwable t )
 		{
 			final CrashReport crashreport = CrashReport.makeCrashReport( t, "Ticking GridNode" );
-			final CrashReportCategory crashreportcategory = crashreport.makeCategory( tt.gt.getClass().getSimpleName() + " being ticked." );
+			final CrashReportCategory crashreportcategory = crashreport.makeCategory( tt.getGridTickable().getClass().getSimpleName() + " being ticked." );
 			tt.addEntityCrashInfo( crashreportcategory );
 			throw new ReportedException( crashreport );
 		}
@@ -135,7 +135,7 @@ public class TickManagerCache implements ITickManager
 
 	private void addToQueue( final TickTracker tt )
 	{
-		tt.lastTick = this.currentTick;
+		tt.setLastTick( this.currentTick );
 		this.upcomingTicks.add( tt );
 	}
 
@@ -212,8 +212,8 @@ public class TickManagerCache implements ITickManager
 		this.awake.put( node, tt );
 
 		// configure sort.
-		tt.lastTick -= tt.request.maxTickRate;
-		tt.current_rate = tt.request.minTickRate;
+		tt.setLastTick( tt.getLastTick() - tt.getRequest().maxTickRate );
+		tt.setCurrentRate( tt.getRequest().minTickRate );
 
 		// prevent dupes and tick build up.
 		this.upcomingTicks.remove( tt );

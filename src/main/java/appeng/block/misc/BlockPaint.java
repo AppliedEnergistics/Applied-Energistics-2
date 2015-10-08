@@ -54,8 +54,8 @@ public class BlockPaint extends AEBaseTileBlock
 
 		this.setTileEntity( TilePaint.class );
 		this.setLightOpacity( 0 );
-		this.isFullSize = false;
-		this.isOpaque = false;
+		this.setFullSize( false );
+		this.setOpaque( false );
 		this.setFeature( EnumSet.of( AEFeature.PaintBalls ) );
 	}
 

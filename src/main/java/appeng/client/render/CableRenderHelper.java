@@ -50,9 +50,9 @@ public class CableRenderHelper
 	public void renderStatic( final CableBusContainer cableBusContainer, final IFacadeContainer iFacadeContainer )
 	{
 		final TileEntity te = cableBusContainer.getTile();
-		final ModelGenerator renderer = BusRenderer.INSTANCE.renderer;
+		final ModelGenerator renderer = BusRenderer.INSTANCE.getRenderer();
 
-		if( renderer.overrideBlockTexture != null )
+		if( renderer.getOverrideBlockTexture() != null )
 		{
 			BusRenderHelper.INSTANCE.setPass( 0 );
 		}
@@ -61,9 +61,9 @@ public class CableRenderHelper
 			BusRenderHelper.INSTANCE.setPass( MinecraftForgeClient.getRenderLayer() == EnumWorldBlockLayer.TRANSLUCENT ? 1 : 0 );
 		}
 
-		if( renderer.blockAccess == null )
+		if( renderer.getBlockAccess() == null )
 		{
-			renderer.blockAccess = Minecraft.getMinecraft().theWorld;
+			renderer.setBlockAccess( Minecraft.getMinecraft().theWorld );
 		}
 
 		for( final AEPartLocation s : AEPartLocation.values() )
@@ -72,16 +72,21 @@ public class CableRenderHelper
 			if( part != null )
 			{
 				this.setSide( s );
-				renderer.renderAllFaces = true;
+				renderer.setRenderAllFaces( true );
 
-				//renderer.flipTexture = false;
-				renderer.uvRotateBottom = renderer.uvRotateEast = renderer.uvRotateNorth = renderer.uvRotateSouth = renderer.uvRotateTop = renderer.uvRotateWest = 0;
+				// renderer.flipTexture = false;
+				renderer.setUvRotateBottom( 0 );
+				renderer.setUvRotateEast( 0 );
+				renderer.setUvRotateNorth( 0 );
+				renderer.setUvRotateSouth( 0 );
+				renderer.setUvRotateTop( 0 );
+				renderer.setUvRotateWest( 0 );
 				renderer.setOverrideBlockTexture( null );
 
 				part.renderStatic( te.getPos(), BusRenderHelper.INSTANCE, renderer );
 
-				//renderer.faces = EnumSet.allOf( EnumFacing.class );
-				//renderer.useTextures = true;
+				// renderer.faces = EnumSet.allOf( EnumFacing.class );
+				// renderer.useTextures = true;
 			}
 		}
 
@@ -151,18 +156,23 @@ public class CableRenderHelper
 						}
 					}
 
-					renderer.flipTexture = false;
-					renderer.uvRotateBottom = renderer.uvRotateEast = renderer.uvRotateNorth = renderer.uvRotateSouth = renderer.uvRotateTop = renderer.uvRotateWest = 0;
+					renderer.setFlipTexture( false );
+					renderer.setUvRotateBottom( 0 );
+					renderer.setUvRotateEast( 0 );
+					renderer.setUvRotateNorth( 0 );
+					renderer.setUvRotateSouth( 0 );
+					renderer.setUvRotateTop( 0 );
+					renderer.setUvRotateWest( 0 );
 					renderer.setOverrideBlockTexture( null );
 
 					this.setSide( s );
-					
+
 					fPart.renderStatic( te.getPos(), BusRenderHelper.INSTANCE, renderer, iFacadeContainer, b == null ? null : b.getBoundingBox(), cableBusContainer.getPart( s ) == null );
 				}
 			}
 
-			//renderer.isFacade = false;
-			//renderer.enableAO = false;
+			// renderer.isFacade = false;
+			// renderer.enableAO = false;
 			// renderer.sett
 		}
 	}
@@ -266,7 +276,7 @@ public class CableRenderHelper
 				}
 
 				BusRenderHelper.INSTANCE.setOrientation( ax, ay, az );
-				part.renderDynamic( x, y, z, BusRenderHelper.INSTANCE, BusRenderer.INSTANCE.renderer );
+				part.renderDynamic( x, y, z, BusRenderHelper.INSTANCE, BusRenderer.INSTANCE.getRenderer() );
 			}
 		}
 	}

@@ -45,9 +45,9 @@ public class RenderSpatialPylon extends BaseBlockRender<BlockSpatialPylon, TileS
 	@Override
 	public void renderInventory( final BlockSpatialPylon block, final ItemStack is, final ModelGenerator renderer, final ItemRenderType type, final Object[] obj )
 	{
-		renderer.overrideBlockTexture = ExtraBlockTextures.BlockSpatialPylon_dim.getIcon();
+		renderer.setOverrideBlockTexture( ExtraBlockTextures.BlockSpatialPylon_dim.getIcon() );
 		super.renderInventory( block, is, renderer, type, obj );
-		renderer.overrideBlockTexture = null;
+		renderer.setOverrideBlockTexture( null );
 		super.renderInventory( block, is, renderer, type, obj );
 	}
 
@@ -68,24 +68,24 @@ public class RenderSpatialPylon extends BaseBlockRender<BlockSpatialPylon, TileS
 				ori = EnumFacing.EAST;
 				if( ( displayBits & TileSpatialPylon.DISPLAY_MIDDLE ) == TileSpatialPylon.DISPLAY_END_MAX )
 				{
-					renderer.uvRotateEast = 1;
-					renderer.uvRotateWest = 2;
-					renderer.uvRotateTop = 2;
-					renderer.uvRotateBottom = 1;
+					renderer.setUvRotateEast( 1 );
+					renderer.setUvRotateWest( 2 );
+					renderer.setUvRotateTop( 2 );
+					renderer.setUvRotateBottom( 1 );
 				}
 				else if( ( displayBits & TileSpatialPylon.DISPLAY_MIDDLE ) == TileSpatialPylon.DISPLAY_END_MIN )
 				{
-					renderer.uvRotateEast = 2;
-					renderer.uvRotateWest = 1;
-					renderer.uvRotateTop = 1;
-					renderer.uvRotateBottom = 2;
+					renderer.setUvRotateEast( 2 );
+					renderer.setUvRotateWest( 1 );
+					renderer.setUvRotateTop( 1 );
+					renderer.setUvRotateBottom( 2 );
 				}
 				else
 				{
-					renderer.uvRotateEast = 1;
-					renderer.uvRotateWest = 1;
-					renderer.uvRotateTop = 1;
-					renderer.uvRotateBottom = 1;
+					renderer.setUvRotateEast( 1 );
+					renderer.setUvRotateWest( 1 );
+					renderer.setUvRotateTop( 1 );
+					renderer.setUvRotateBottom( 1 );
 				}
 			}
 
@@ -94,10 +94,10 @@ public class RenderSpatialPylon extends BaseBlockRender<BlockSpatialPylon, TileS
 				ori = EnumFacing.UP;
 				if( ( displayBits & TileSpatialPylon.DISPLAY_MIDDLE ) == TileSpatialPylon.DISPLAY_END_MAX )
 				{
-					renderer.uvRotateNorth = 3;
-					renderer.uvRotateSouth = 3;
-					renderer.uvRotateEast = 3;
-					renderer.uvRotateWest = 3;
+					renderer.setUvRotateNorth( 3 );
+					renderer.setUvRotateSouth( 3 );
+					renderer.setUvRotateEast( 3 );
+					renderer.setUvRotateWest( 3 );
 				}
 			}
 
@@ -106,20 +106,20 @@ public class RenderSpatialPylon extends BaseBlockRender<BlockSpatialPylon, TileS
 				ori = EnumFacing.NORTH;
 				if( ( displayBits & TileSpatialPylon.DISPLAY_MIDDLE ) == TileSpatialPylon.DISPLAY_END_MAX )
 				{
-					renderer.uvRotateSouth = 1;
-					renderer.uvRotateNorth = 2;
+					renderer.setUvRotateSouth( 1 );
+					renderer.setUvRotateNorth( 2 );
 				}
 				else if( ( displayBits & TileSpatialPylon.DISPLAY_MIDDLE ) == TileSpatialPylon.DISPLAY_END_MIN )
 				{
-					renderer.uvRotateNorth = 1;
-					renderer.uvRotateSouth = 2;
-					renderer.uvRotateTop = 3;
-					renderer.uvRotateBottom = 3;
+					renderer.setUvRotateNorth( 1 );
+					renderer.setUvRotateSouth( 2 );
+					renderer.setUvRotateTop( 3 );
+					renderer.setUvRotateBottom( 3 );
 				}
 				else
 				{
-					renderer.uvRotateNorth = 1;
-					renderer.uvRotateSouth = 2;
+					renderer.setUvRotateNorth( 1 );
+					renderer.setUvRotateSouth( 2 );
 				}
 			}
 
@@ -149,18 +149,18 @@ public class RenderSpatialPylon extends BaseBlockRender<BlockSpatialPylon, TileS
 			}
 
 			bri.setTemporaryRenderIcon( null );
-			renderer.uvRotateEast = renderer.uvRotateWest = renderer.uvRotateNorth = renderer.uvRotateSouth = renderer.uvRotateTop = renderer.uvRotateBottom = 0;
+			renderer.setUvRotateEast( renderer.setUvRotateWest( renderer.setUvRotateNorth( renderer.setUvRotateSouth( renderer.setUvRotateTop( renderer.setUvRotateBottom( 0 ) ) ) ) ) );
 
 			return r;
 		}
 
-		renderer.overrideBlockTexture = renderer.getIcon( world.getBlockState( pos ) )[0];//imb.getIcon( 0, 0 );
+		renderer.setOverrideBlockTexture( renderer.getIcon( world.getBlockState( pos ) )[0] );//imb.getIcon( 0, 0 );
 		boolean result = renderer.renderStandardBlock( imb, pos );
 
-		renderer.overrideBlockTexture = ExtraBlockTextures.BlockSpatialPylon_dim.getIcon();
+		renderer.setOverrideBlockTexture( ExtraBlockTextures.BlockSpatialPylon_dim.getIcon() );
 		result = renderer.renderStandardBlock( imb, pos );
 
-		renderer.overrideBlockTexture = null;
+		renderer.setOverrideBlockTexture( null );
 		return result;
 	}
 

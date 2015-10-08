@@ -59,14 +59,14 @@ public class TickHandler
 {
 
 	public static final TickHandler INSTANCE = new TickHandler();
-	final Queue<IWorldCallable<?>> serverQueue = new LinkedList<IWorldCallable<?>>();
-	final Multimap<World, CraftingJob> craftingJobs = LinkedListMultimap.create();
+	private final Queue<IWorldCallable<?>> serverQueue = new LinkedList<IWorldCallable<?>>();
+	private final Multimap<World, CraftingJob> craftingJobs = LinkedListMultimap.create();
 	private final WeakHashMap<World, Queue<IWorldCallable<?>>> callQueue = new WeakHashMap<World, Queue<IWorldCallable<?>>>();
 	private final HandlerRep server = new HandlerRep();
 	private final HandlerRep client = new HandlerRep();
 	private final HashMap<Integer, PlayerColor> cliPlayerColors = new HashMap<Integer, PlayerColor>();
 	private final HashMap<Integer, PlayerColor> srvPlayerColors = new HashMap<Integer, PlayerColor>();
-	CableRenderMode crm = CableRenderMode.Standard;
+	private CableRenderMode crm = CableRenderMode.Standard;
 
 	public HashMap<Integer, PlayerColor> getPlayerColors()
 	{
@@ -105,7 +105,7 @@ public class TickHandler
 		}
 	}
 
-	HandlerRep getRepo()
+	private HandlerRep getRepo()
 	{
 		if( Platform.isServer() )
 		{
@@ -302,14 +302,14 @@ public class TickHandler
 		}
 	}
 
-	static class HandlerRep
+	private static class HandlerRep
 	{
 
-		public Queue<AEBaseTile> tiles = new LinkedList<AEBaseTile>();
+		private Queue<AEBaseTile> tiles = new LinkedList<AEBaseTile>();
 
-		public Collection<Grid> networks = new NetworkList();
+		private Collection<Grid> networks = new NetworkList();
 
-		public void clear()
+		private void clear()
 		{
 			this.tiles = new LinkedList<AEBaseTile>();
 			this.networks = new NetworkList();
@@ -321,8 +321,8 @@ public class TickHandler
 	{
 
 		public final AEColor myColor;
-		protected final int myEntity;
-		protected int ticksLeft;
+		private final int myEntity;
+		private int ticksLeft;
 
 		public PlayerColor( final int id, final AEColor col, final int ticks )
 		{

@@ -36,10 +36,10 @@ import appeng.util.Platform;
 public class TileCubeGenerator extends AEBaseTile implements IUpdatePlayerListBox
 {
 
-	int size = 3;
-	ItemStack is = null;
-	int countdown = 20 * 10;
-	EntityPlayer who;
+	private int size = 3;
+	private ItemStack is = null;
+	private int countdown = 20 * 10;
+	private EntityPlayer who = null;
 
 	@TileEvent( TileEventType.TICK )
 	public void onTickEvent()
@@ -63,7 +63,7 @@ public class TileCubeGenerator extends AEBaseTile implements IUpdatePlayerListBo
 		}
 	}
 
-	void spawn()
+	private void spawn()
 	{
 		this.worldObj.setBlockToAir( this.pos );
 
@@ -85,7 +85,7 @@ public class TileCubeGenerator extends AEBaseTile implements IUpdatePlayerListBo
 		}
 	}
 
-	public void click( final EntityPlayer player )
+	void click( final EntityPlayer player )
 	{
 		if( Platform.isServer() )
 		{

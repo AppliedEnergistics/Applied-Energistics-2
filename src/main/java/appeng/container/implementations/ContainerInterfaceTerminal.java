@@ -61,10 +61,10 @@ public final class ContainerInterfaceTerminal extends AEBaseContainer
 	 */
 
 	private static long autoBase = Long.MIN_VALUE;
-	final Map<IInterfaceHost, InvTracker> diList = new HashMap<IInterfaceHost, InvTracker>();
-	final Map<Long, InvTracker> byId = new HashMap<Long, InvTracker>();
-	IGrid grid;
-	NBTTagCompound data = new NBTTagCompound();
+	private final Map<IInterfaceHost, InvTracker> diList = new HashMap<IInterfaceHost, InvTracker>();
+	private final Map<Long, InvTracker> byId = new HashMap<Long, InvTracker>();
+	private IGrid grid;
+	private NBTTagCompound data = new NBTTagCompound();
 
 	public ContainerInterfaceTerminal( final InventoryPlayer ip, final PartInterfaceTerminal anchor )
 	{
@@ -400,14 +400,14 @@ public final class ContainerInterfaceTerminal extends AEBaseContainer
 		data.setTag( name, tag );
 	}
 
-	static class InvTracker
+	private static class InvTracker
 	{
 
-		public final long sortBy;
-		final long which = autoBase++;
-		final String unlocalizedName;
-		final IInventory client;
-		final IInventory server;
+		private final long sortBy;
+		private final long which = autoBase++;
+		private final String unlocalizedName;
+		private final IInventory client;
+		private final IInventory server;
 
 		public InvTracker( final DualityInterface dual, final IInventory patterns, final String unlocalizedName )
 		{
@@ -418,7 +418,7 @@ public final class ContainerInterfaceTerminal extends AEBaseContainer
 		}
 	}
 
-	static class PatternInvSlot extends WrapperInvSlot
+	private static class PatternInvSlot extends WrapperInvSlot
 	{
 
 		public PatternInvSlot( final IInventory inv )

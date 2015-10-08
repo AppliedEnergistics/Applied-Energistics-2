@@ -84,7 +84,7 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements IAEFeature,
 	@Override
 	protected void setFeature( final EnumSet<AEFeature> f )
 	{
-		final AETileBlockFeatureHandler featureHandler = new AETileBlockFeatureHandler( f, this, this.featureSubName );
+		final AETileBlockFeatureHandler featureHandler = new AETileBlockFeatureHandler( f, this, this.getFeatureSubName() );
 		this.setHandler( featureHandler );
 	}
 
@@ -102,7 +102,7 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements IAEFeature,
 		ReflectionHelper.setPrivateValue( Block.class, this, b, "isTileProvider" );
 	}
 
-	public boolean hasBlockTileEntity()
+	private boolean hasBlockTileEntity()
 	{
 		return this.tileEntityType != null;
 	}

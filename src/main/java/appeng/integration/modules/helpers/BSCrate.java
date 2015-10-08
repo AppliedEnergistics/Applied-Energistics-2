@@ -21,6 +21,10 @@ package appeng.integration.modules.helpers;
 
 import net.mcft.copy.betterstorage.api.crate.ICrateStorage;
 import net.minecraft.item.ItemStack;
+<<<<<<< HEAD
+=======
+
+>>>>>>> 500fc47... Reduces visibility of internal fields/methods
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.storage.IMEInventory;
@@ -34,12 +38,10 @@ import appeng.util.item.AEItemStack;
 public class BSCrate implements IMEInventory<IAEItemStack>
 {
 	private final ICrateStorage crateStorage;
-	private final ForgeDirection side;
 
-	public BSCrate( Object object, ForgeDirection d )
+	public BSCrate( final Object object )
 	{
 		this.crateStorage = (ICrateStorage) object;
-		this.side = d;
 	}
 
 	@Override

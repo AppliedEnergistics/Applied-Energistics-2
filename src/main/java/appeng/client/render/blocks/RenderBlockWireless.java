@@ -43,7 +43,7 @@ import appeng.util.Platform;
 public class RenderBlockWireless extends BaseBlockRender<BlockWireless, TileWireless>
 {
 
-	BlockPos center;
+	private BlockPos center;
 	private BlockWireless blk;
 	private boolean hasChan = false;
 	private boolean hasPower = false;
@@ -62,7 +62,7 @@ public class RenderBlockWireless extends BaseBlockRender<BlockWireless, TileWire
 		this.hasPower = false;
 		final BlockRenderInfo ri = blk.getRendererInstance();
 
-		renderer.renderAllFaces = true;
+		renderer.setRenderAllFaces( true );
 
 		IAESprite r = CableBusTextures.PartMonitorSidesStatus.getIcon();
 		ri.setTemporaryRenderIcons( r, r, CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon(), r, r );
@@ -107,8 +107,8 @@ public class RenderBlockWireless extends BaseBlockRender<BlockWireless, TileWire
 		this.blk = blk;
 		if( tw != null )
 		{
-			this.hasChan = ( tw.clientFlags & ( TileWireless.POWERED_FLAG | TileWireless.CHANNEL_FLAG ) ) == ( TileWireless.POWERED_FLAG | TileWireless.CHANNEL_FLAG );
-			this.hasPower = ( tw.clientFlags & TileWireless.POWERED_FLAG ) == TileWireless.POWERED_FLAG;
+			this.hasChan = ( tw.getClientFlags() & ( TileWireless.POWERED_FLAG | TileWireless.CHANNEL_FLAG ) ) == ( TileWireless.POWERED_FLAG | TileWireless.CHANNEL_FLAG );
+			this.hasPower = ( tw.getClientFlags() & TileWireless.POWERED_FLAG ) == TileWireless.POWERED_FLAG;
 
 			final BlockRenderInfo ri = blk.getRendererInstance();
 
@@ -116,7 +116,7 @@ public class RenderBlockWireless extends BaseBlockRender<BlockWireless, TileWire
 			final EnumFacing fdz = tw.getForward();
 			final EnumFacing fdx = Platform.crossProduct( fdz, fdy ).getOpposite();
 
-			renderer.renderAllFaces = true;
+			renderer.setRenderAllFaces( true );
 
 			IAESprite r = CableBusTextures.PartMonitorSidesStatus.getIcon();
 			ri.setTemporaryRenderIcons( r, r, CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon(), r, r );
@@ -202,7 +202,7 @@ public class RenderBlockWireless extends BaseBlockRender<BlockWireless, TileWire
 			}
 
 			ri.setTemporaryRenderIcon( null );
-			renderer.renderAllFaces = false;
+			renderer.setRenderAllFaces( false );
 		}
 
 		return true;
@@ -216,34 +216,34 @@ public class RenderBlockWireless extends BaseBlockRender<BlockWireless, TileWire
 		switch( z )
 		{
 			case DOWN:
-				renderer.uvRotateNorth = 3;
-				renderer.uvRotateSouth = 3;
-				renderer.uvRotateEast = 3;
-				renderer.uvRotateWest = 3;
+				renderer.setUvRotateNorth( 3 );
+				renderer.setUvRotateSouth( 3 );
+				renderer.setUvRotateEast( 3 );
+				renderer.setUvRotateWest( 3 );
 				break;
 			case EAST:
-				renderer.uvRotateTop = 1;
-				renderer.uvRotateBottom = 2;
-				renderer.uvRotateEast = 2;
-				renderer.uvRotateWest = 1;
+				renderer.setUvRotateTop( 1 );
+				renderer.setUvRotateBottom( 2 );
+				renderer.setUvRotateEast( 2 );
+				renderer.setUvRotateWest( 1 );
 				break;
 			case NORTH:
-				renderer.uvRotateTop = 0;
-				renderer.uvRotateBottom = 0;
-				renderer.uvRotateNorth = 2;
-				renderer.uvRotateSouth = 1;
+				renderer.setUvRotateTop( 0 );
+				renderer.setUvRotateBottom( 0 );
+				renderer.setUvRotateNorth( 2 );
+				renderer.setUvRotateSouth( 1 );
 				break;
 			case SOUTH:
-				renderer.uvRotateTop = 3;
-				renderer.uvRotateBottom = 3;
-				renderer.uvRotateNorth = 1;
-				renderer.uvRotateSouth = 2;
+				renderer.setUvRotateTop( 3 );
+				renderer.setUvRotateBottom( 3 );
+				renderer.setUvRotateNorth( 1 );
+				renderer.setUvRotateSouth( 2 );
 				break;
 			case WEST:
-				renderer.uvRotateTop = 2;
-				renderer.uvRotateBottom = 1;
-				renderer.uvRotateEast = 1;
-				renderer.uvRotateWest = 2;
+				renderer.setUvRotateTop( 2 );
+				renderer.setUvRotateBottom( 1 );
+				renderer.setUvRotateEast( 1 );
+				renderer.setUvRotateWest( 2 );
 				break;
 			default:
 				break;

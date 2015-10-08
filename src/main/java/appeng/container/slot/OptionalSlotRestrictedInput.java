@@ -26,8 +26,8 @@ import net.minecraft.inventory.IInventory;
 public class OptionalSlotRestrictedInput extends SlotRestrictedInput
 {
 
-	final int groupNum;
-	final IOptionalSlotHost host;
+	private final int groupNum;
+	private final IOptionalSlotHost host;
 
 	public OptionalSlotRestrictedInput( final PlacableItemType valid, final IInventory i, final IOptionalSlotHost host, final int slotIndex, final int x, final int y, final int grpNum, final InventoryPlayer invPlayer )
 	{

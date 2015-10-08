@@ -18,23 +18,19 @@
 
 package appeng.client.texture;
 
+
+import javax.annotation.Nonnull;
+
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 
 
 public class FlippableIcon implements IAESprite
 {
 
-	protected IAESprite original;
-	boolean flip_u;
-	boolean flip_v;
+	private IAESprite original;
+	private boolean flip_u;
+	private boolean flip_v;
 
-
-	@Override
-	public TextureAtlasSprite getAtlas()
-	{
-		return this.original.getAtlas();
-	}
-	
 	public FlippableIcon( final IAESprite o )
 	{
 		this.original = o;
@@ -43,81 +39,87 @@ public class FlippableIcon implements IAESprite
 	}
 
 	@Override
+	public TextureAtlasSprite getAtlas()
+	{
+		return this.original.getAtlas();
+	}
+
+	@Override
 	public int getIconWidth()
 	{
-		return this.original.getIconWidth();
+		return this.getOriginal().getIconWidth();
 	}
 
 	@Override
 	public int getIconHeight()
 	{
-		return this.original.getIconHeight();
+		return this.getOriginal().getIconHeight();
 	}
 
 	@Override
 	public float getMinU()
 	{
-		if( this.flip_u )
+		if( this.isFlipU() )
 		{
-			return this.original.getMaxU();
+			return this.getOriginal().getMaxU();
 		}
-		return this.original.getMinU();
+		return this.getOriginal().getMinU();
 	}
 
 	@Override
 	public float getMaxU()
 	{
-		if( this.flip_u )
+		if( this.isFlipU() )
 		{
-			return this.original.getMinU();
+			return this.getOriginal().getMinU();
 		}
-		return this.original.getMaxU();
+		return this.getOriginal().getMaxU();
 	}
 
 	@Override
 	public float getInterpolatedU( final double px )
 	{
-		if( this.flip_u )
+		if( this.isFlipU() )
 		{
-			return this.original.getInterpolatedU( 16 - px );
+			return this.getOriginal().getInterpolatedU( 16 - px );
 		}
-		return this.original.getInterpolatedU( px );
+		return this.getOriginal().getInterpolatedU( px );
 	}
 
 	@Override
 	public float getMinV()
 	{
-		if( this.flip_v )
+		if( this.isFlipV() )
 		{
-			return this.original.getMaxV();
+			return this.getOriginal().getMaxV();
 		}
-		return this.original.getMinV();
+		return this.getOriginal().getMinV();
 	}
 
 	@Override
 	public float getMaxV()
 	{
-		if( this.flip_v )
+		if( this.isFlipV() )
 		{
-			return this.original.getMinV();
+			return this.getOriginal().getMinV();
 		}
-		return this.original.getMaxV();
+		return this.getOriginal().getMaxV();
 	}
 
 	@Override
 	public float getInterpolatedV( final double px )
 	{
-		if( this.flip_v )
+		if( this.isFlipV() )
 		{
-			return this.original.getInterpolatedV( 16 - px );
+			return this.getOriginal().getInterpolatedV( 16 - px );
 		}
-		return this.original.getInterpolatedV( px );
+		return this.getOriginal().getInterpolatedV( px );
 	}
 
 	@Override
 	public String getIconName()
 	{
-		return this.original.getIconName();
+		return this.getOriginal().getIconName();
 	}
 
 	public IAESprite getOriginal()
@@ -127,14 +129,39 @@ public class FlippableIcon implements IAESprite
 
 	public void setFlip( final boolean u, final boolean v )
 	{
-		this.flip_u = u;
-		this.flip_v = v;
+		this.setFlipU( u );
+		this.setFlipV( v );
 	}
 
 	public int setFlip( final int orientation )
 	{
-		this.flip_u = ( orientation & 8 ) == 8;
-		this.flip_v = ( orientation & 16 ) == 16;
+		this.setFlipU( ( orientation & 8 ) == 8 );
+		this.setFlipV( ( orientation & 16 ) == 16 );
 		return orientation & 7;
+	}
+
+	boolean isFlipU()
+	{
+		return this.flip_u;
+	}
+
+	void setFlipU( final boolean flipU )
+	{
+		this.flip_u = flipU;
+	}
+
+	boolean isFlipV()
+	{
+		return this.flip_v;
+	}
+
+	void setFlipV( final boolean flipV )
+	{
+		this.flip_v = flipV;
+	}
+
+	public void setOriginal( @Nonnull final IAESprite original )
+	{
+		this.original = original;
 	}
 }

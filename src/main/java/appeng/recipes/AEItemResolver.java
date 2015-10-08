@@ -123,9 +123,9 @@ public class AEItemResolver implements ISubItemResolver
 				final String materialName = itemName.substring( itemName.indexOf( '.' ) + 1 );
 				final MaterialType mt = MaterialType.valueOf( materialName );
 				// itemName = itemName.substring( 0, itemName.indexOf( "." ) );
-				if( mt.itemInstance == MultiItem.instance && mt.damageValue >= 0 && mt.isRegistered() )
+				if( mt.getItemInstance() == MultiItem.instance && mt.getDamageValue() >= 0 && mt.isRegistered() )
 				{
-					return new ResolverResult( "ItemMultiMaterial", mt.damageValue );
+					return new ResolverResult( "ItemMultiMaterial", mt.getDamageValue() );
 				}
 			}
 

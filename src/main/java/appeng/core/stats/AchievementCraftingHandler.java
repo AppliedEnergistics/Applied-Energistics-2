@@ -50,17 +50,17 @@ public class AchievementCraftingHandler
 
 		for( final Achievements achievement : Achievements.values() )
 		{
-			switch( achievement.type )
+			switch( achievement.getType() )
 			{
 				case Craft:
-					if( Platform.isSameItemPrecise( achievement.stack, event.crafting ) )
+					if( Platform.isSameItemPrecise( achievement.getStack(), event.crafting ) )
 					{
 						achievement.addToPlayer( event.player );
 						return;
 					}
 					break;
 				case CraftItem:
-					if( achievement.stack != null && achievement.stack.getItem().getClass() == event.crafting.getItem().getClass() )
+					if( achievement.getStack() != null && achievement.getStack().getItem().getClass() == event.crafting.getItem().getClass() )
 					{
 						achievement.addToPlayer( event.player );
 						return;

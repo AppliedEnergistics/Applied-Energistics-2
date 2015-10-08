@@ -36,7 +36,7 @@ import appeng.util.Platform;
 public class PacketSwitchGuis extends AppEngPacket
 {
 
-	final GuiBridge newGui;
+	private final GuiBridge newGui;
 
 	// automatic.
 	public PacketSwitchGuis( final ByteBuf stream )
@@ -51,7 +51,7 @@ public class PacketSwitchGuis extends AppEngPacket
 
 		if( Platform.isClient() )
 		{
-			AEBaseGui.switchingGuis = true;
+			AEBaseGui.setSwitchingGuis( true );
 		}
 
 		final ByteBuf data = Unpooled.buffer();
@@ -69,11 +69,11 @@ public class PacketSwitchGuis extends AppEngPacket
 		if( c instanceof AEBaseContainer )
 		{
 			final AEBaseContainer bc = (AEBaseContainer) c;
-			final ContainerOpenContext context = bc.openContext;
+			final ContainerOpenContext context = bc.getOpenContext();
 			if( context != null )
 			{
 				final TileEntity te = context.getTile();
-				Platform.openGUI( player, te, context.side, this.newGui );
+				Platform.openGUI( player, te, context.getSide(), this.newGui );
 			}
 		}
 	}
@@ -81,6 +81,6 @@ public class PacketSwitchGuis extends AppEngPacket
 	@Override
 	public void clientPacketData( final INetworkInfo network, final AppEngPacket packet, final EntityPlayer player )
 	{
-		AEBaseGui.switchingGuis = true;
+		AEBaseGui.setSwitchingGuis( true );
 	}
 }

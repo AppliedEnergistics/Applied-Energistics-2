@@ -118,31 +118,31 @@ public enum MaterialType
 	private final EnumSet<AEFeature> features;
 	// TextureAtlasSprite for the material.
 	@SideOnly( Side.CLIENT )
-	public TextureAtlasSprite IIcon;
-	public Item itemInstance;
-	public int damageValue;
+	private TextureAtlasSprite IIcon;
+	private Item itemInstance;
+	private int damageValue;
 	// stack!
-	public MaterialStackSrc stackSrc;
+	private MaterialStackSrc stackSrc;
 	private String oreName;
 	private Class<? extends Entity> droppedEntity;
 	private boolean isRegistered = false;
 
 	MaterialType( final int metaValue )
 	{
-		this.damageValue = metaValue;
+		this.setDamageValue( metaValue );
 		this.features = EnumSet.of( AEFeature.Core );
 	}
 
 	MaterialType( final int metaValue, final AEFeature part )
 	{
-		this.damageValue = metaValue;
+		this.setDamageValue( metaValue );
 		this.features = EnumSet.of( part );
 	}
 
 	MaterialType( final int metaValue, final AEFeature part, final Class<? extends Entity> c )
 	{
 		this.features = EnumSet.of( part );
-		this.damageValue = metaValue;
+		this.setDamageValue( metaValue );
 		this.droppedEntity = c;
 
 		EntityRegistry.registerModEntity( this.droppedEntity, this.droppedEntity.getSimpleName(), EntityIds.get( this.droppedEntity ), AppEng.instance(), 16, 4, true );
@@ -151,7 +151,7 @@ public enum MaterialType
 	MaterialType( final int metaValue, final AEFeature part, final String oreDictionary, final Class<? extends Entity> c )
 	{
 		this.features = EnumSet.of( part );
-		this.damageValue = metaValue;
+		this.setDamageValue( metaValue );
 		this.oreName = oreDictionary;
 		this.droppedEntity = c;
 		EntityRegistry.registerModEntity( this.droppedEntity, this.droppedEntity.getSimpleName(), EntityIds.get( this.droppedEntity ), AppEng.instance(), 16, 4, true );
@@ -160,16 +160,16 @@ public enum MaterialType
 	MaterialType( final int metaValue, final AEFeature part, final String oreDictionary )
 	{
 		this.features = EnumSet.of( part );
-		this.damageValue = metaValue;
+		this.setDamageValue( metaValue );
 		this.oreName = oreDictionary;
 	}
 
 	public ItemStack stack( final int size )
 	{
-		return new ItemStack( this.itemInstance, size, this.damageValue );
+		return new ItemStack( this.getItemInstance(), size, this.getDamageValue() );
 	}
 
-	public EnumSet<AEFeature> getFeature()
+	EnumSet<AEFeature> getFeature()
 	{
 		return this.features;
 	}
@@ -179,12 +179,12 @@ public enum MaterialType
 		return this.oreName;
 	}
 
-	public boolean hasCustomEntity()
+	boolean hasCustomEntity()
 	{
 		return this.droppedEntity != null;
 	}
 
-	public Class<? extends Entity> getCustomEntityClass()
+	Class<? extends Entity> getCustomEntityClass()
 	{
 		return this.droppedEntity;
 	}
@@ -194,9 +194,49 @@ public enum MaterialType
 		return this.isRegistered;
 	}
 
-	public void markReady()
+	void markReady()
 	{
 		this.isRegistered = true;
+	}
+
+	public int getDamageValue()
+	{
+		return this.damageValue;
+	}
+
+	void setDamageValue( final int damageValue )
+	{
+		this.damageValue = damageValue;
+	}
+
+	public Item getItemInstance()
+	{
+		return this.itemInstance;
+	}
+
+	void setItemInstance( final Item itemInstance )
+	{
+		this.itemInstance = itemInstance;
+	}
+
+	TextureAtlasSprite getIIcon()
+	{
+		return this.IIcon;
+	}
+
+	void setIIcon( final TextureAtlasSprite iIcon )
+	{
+		this.IIcon = iIcon;
+	}
+
+	MaterialStackSrc getStackSrc()
+	{
+		return this.stackSrc;
+	}
+
+	void setStackSrc( final MaterialStackSrc stackSrc )
+	{
+		this.stackSrc = stackSrc;
 	}
 
 }

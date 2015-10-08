@@ -32,10 +32,9 @@ import appeng.entity.EntityFloatingItem;
 public class AssemblerFX extends EntityFX
 {
 
-	final IAEItemStack item;
-	final EntityFloatingItem fi;
-	final float speed;
-	float time = 0;
+	private final EntityFloatingItem fi;
+	private final float speed;
+	private float time = 0;
 
 	public AssemblerFX( final World w, final double x, final double y, final double z, final double r, final double g, final double b, final float speed, final IAEItemStack is )
 	{
@@ -43,7 +42,6 @@ public class AssemblerFX extends EntityFX
 		this.motionX = 0;
 		this.motionY = 0;
 		this.motionZ = 0;
-		this.item = is;
 		this.speed = speed;
 		this.fi = new EntityFloatingItem( this, w, x, y, z, is.getItemStack() );
 		w.spawnEntityInWorld( this.fi );

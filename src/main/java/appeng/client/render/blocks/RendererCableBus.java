@@ -59,16 +59,16 @@ public class RendererCableBus extends BaseBlockRender<BlockCableBus, TileCableBu
 		renderer.setColorOpaque_F( 1, 1, 1 );
 		renderer.setBrightness( 14 << 20 | 14 << 4 );
 
-		BusRenderer.INSTANCE.renderer = renderer; // post data to this...
+		BusRenderer.INSTANCE.setRenderer( renderer ); // post data to this...
 		BusRenderHelper.INSTANCE.setBounds( 0, 0, 0, 1, 1, 1 );
 		BusRenderHelper.INSTANCE.setTexture( null );
 		BusRenderHelper.INSTANCE.setInvColor( 0xffffff );
-		renderer.blockAccess = ClientHelper.proxy.getWorld();
+		renderer.setBlockAccess( ClientHelper.proxy.getWorld() );
 
 		BusRenderHelper.INSTANCE.setOrientation( EnumFacing.EAST, EnumFacing.UP, EnumFacing.SOUTH );
 
-		renderer.uvRotateBottom = renderer.uvRotateEast = renderer.uvRotateNorth = renderer.uvRotateSouth = renderer.uvRotateTop = renderer.uvRotateWest = 0;
-		renderer.overrideBlockTexture = null;
+		renderer.setUvRotateBottom( renderer.setUvRotateEast( renderer.setUvRotateNorth( renderer.setUvRotateSouth( renderer.setUvRotateTop( renderer.setUvRotateWest( 0 ) ) ) ) ) );
+		renderer.setOverrideBlockTexture( null );
 
 		if( item.getItem() instanceof IFacadeItem )
 		{
@@ -94,7 +94,7 @@ public class RendererCableBus extends BaseBlockRender<BlockCableBus, TileCableBu
 			}
 		}
 
-		renderer.uvRotateBottom = renderer.uvRotateEast = renderer.uvRotateNorth = renderer.uvRotateSouth = renderer.uvRotateTop = renderer.uvRotateWest = 0;
+		renderer.setUvRotateBottom( renderer.setUvRotateEast( renderer.setUvRotateNorth( renderer.setUvRotateSouth( renderer.setUvRotateTop( renderer.setUvRotateWest( 0 ) ) ) ) ) );
 	}
 
 	public IPart getRenderer( final ItemStack is, final IPartItem c )
@@ -116,7 +116,7 @@ public class RendererCableBus extends BaseBlockRender<BlockCableBus, TileCableBu
 
 	public static final BusRenderer INSTANCE = new BusRenderer();
 	private static final Map<Integer, IPart> RENDER_PART = new HashMap<Integer, IPart>();
-	
+
 	@Override
 	public boolean renderInWorld( final BlockCableBus block, final IBlockAccess world, final BlockPos pos, final ModelGenerator renderer )
 	{
@@ -124,12 +124,12 @@ public class RendererCableBus extends BaseBlockRender<BlockCableBus, TileCableBu
 
 		if( t instanceof TileCableBus )
 		{
-			BusRenderer.INSTANCE.renderer = renderer; // post data to this...
-			BusRenderer.INSTANCE.renderer.renderAllFaces = true;
-			BusRenderer.INSTANCE.renderer.blockAccess = renderer.blockAccess;
-			BusRenderer.INSTANCE.renderer.overrideBlockTexture = renderer.overrideBlockTexture;
-			( (TileCableBus) t ).cb.renderStatic();
-			BusRenderer.INSTANCE.renderer.renderAllFaces = false;
+			BusRenderer.INSTANCE.setRenderer( renderer ); // post data to this...
+			BusRenderer.INSTANCE.getRenderer().setRenderAllFaces( true );
+			BusRenderer.INSTANCE.getRenderer().setBlockAccess( renderer.getBlockAccess() );
+			BusRenderer.INSTANCE.getRenderer().setOverrideBlockTexture( renderer.getOverrideBlockTexture() );
+			( (TileCableBus) t ).getCableBus().renderStatic();
+			BusRenderer.INSTANCE.getRenderer().setRenderAllFaces( false );
 		}
 
 		return BusRenderHelper.INSTANCE.getItemsRendered() > 0;
@@ -140,8 +140,8 @@ public class RendererCableBus extends BaseBlockRender<BlockCableBus, TileCableBu
 	{
 		if( cableBus != null )
 		{
-			BusRenderer.INSTANCE.renderer.overrideBlockTexture = null;
-			cableBus.cb.renderDynamic( x, y, z );
+			BusRenderer.INSTANCE.getRenderer().setOverrideBlockTexture( null );
+			cableBus.getCableBus().renderDynamic( x, y, z );
 		}
 	}
 }

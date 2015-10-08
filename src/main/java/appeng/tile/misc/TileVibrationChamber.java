@@ -57,17 +57,17 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 	private static final int MIN_BURN_SPEED = 20;
 	private final IInventory inv = new AppEngInternalInventory( this, 1 );
 
-	public int burnSpeed = 100;
-	public double burnTime = 0;
-	public double maxBurnTime = 0;
+	private int burnSpeed = 100;
+	private double burnTime = 0;
+	private double maxBurnTime = 0;
 
 	// client side..
 	public boolean isOn;
 
 	public TileVibrationChamber()
 	{
-		this.gridProxy.setIdlePowerUsage( 0 );
-		this.gridProxy.setFlags();
+		this.getProxy().setIdlePowerUsage( 0 );
+		this.getProxy().setFlags();
 	}
 
 	@Override
@@ -91,23 +91,23 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 	@TileEvent( TileEventType.NETWORK_WRITE )
 	public void writeToNetwork( final ByteBuf data )
 	{
-		data.writeBoolean( this.burnTime > 0 );
+		data.writeBoolean( this.getBurnTime() > 0 );
 	}
 
 	@TileEvent( TileEventType.WORLD_NBT_WRITE )
 	public void writeToNBT_TileVibrationChamber( final NBTTagCompound data )
 	{
-		data.setDouble( "burnTime", this.burnTime );
-		data.setDouble( "maxBurnTime", this.maxBurnTime );
-		data.setInteger( "burnSpeed", this.burnSpeed );
+		data.setDouble( "burnTime", this.getBurnTime() );
+		data.setDouble( "maxBurnTime", this.getMaxBurnTime() );
+		data.setInteger( "burnSpeed", this.getBurnSpeed() );
 	}
 
 	@TileEvent( TileEventType.WORLD_NBT_READ )
 	public void readFromNBT_TileVibrationChamber( final NBTTagCompound data )
 	{
-		this.burnTime = data.getDouble( "burnTime" );
-		this.maxBurnTime = data.getDouble( "maxBurnTime" );
-		this.burnSpeed = data.getInteger( "burnSpeed" );
+		this.setBurnTime( data.getDouble( "burnTime" ) );
+		this.setMaxBurnTime( data.getDouble( "maxBurnTime" ) );
+		this.setBurnSpeed( data.getInteger( "burnSpeed" ) );
 	}
 
 	@Override
@@ -125,13 +125,13 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 	@Override
 	public void onChangeInventory( final IInventory inv, final int slot, final InvOperation mc, final ItemStack removed, final ItemStack added )
 	{
-		if( this.burnTime <= 0 )
+		if( this.getBurnTime() <= 0 )
 		{
 			if( this.canEatFuel() )
 			{
 				try
 				{
-					this.gridProxy.getTick().wakeDevice( this.gridProxy.getNode() );
+					this.getProxy().getTick().wakeDevice( this.getProxy().getNode() );
 				}
 				catch( final GridAccessException e )
 				{
@@ -176,44 +176,44 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 	@Override
 	public TickingRequest getTickingRequest( final IGridNode node )
 	{
-		if( this.burnTime <= 0 )
+		if( this.getBurnTime() <= 0 )
 		{
 			this.eatFuel();
 		}
 
-		return new TickingRequest( TickRates.VibrationChamber.min, TickRates.VibrationChamber.max, this.burnTime <= 0, false );
+		return new TickingRequest( TickRates.VibrationChamber.getMin(), TickRates.VibrationChamber.getMax(), this.getBurnTime() <= 0, false );
 	}
 
 	@Override
 	public TickRateModulation tickingRequest( final IGridNode node, final int ticksSinceLastCall )
 	{
-		if( this.burnTime <= 0 )
+		if( this.getBurnTime() <= 0 )
 		{
 			this.eatFuel();
 
-			if( this.burnTime > 0 )
+			if( this.getBurnTime() > 0 )
 			{
 				return TickRateModulation.URGENT;
 			}
 
-			this.burnSpeed = 100;
+			this.setBurnSpeed( 100 );
 			return TickRateModulation.SLEEP;
 		}
 
-		this.burnSpeed = Math.max( MIN_BURN_SPEED, Math.min( this.burnSpeed, MAX_BURN_SPEED ) );
-		final double dilation = this.burnSpeed / DILATION_SCALING;
+		this.setBurnSpeed( Math.max( MIN_BURN_SPEED, Math.min( this.getBurnSpeed(), MAX_BURN_SPEED ) ) );
+		final double dilation = this.getBurnSpeed() / DILATION_SCALING;
 
 		double timePassed = ticksSinceLastCall * dilation;
-		this.burnTime -= timePassed;
-		if( this.burnTime < 0 )
+		this.setBurnTime( this.getBurnTime() - timePassed );
+		if( this.getBurnTime() < 0 )
 		{
-			timePassed += this.burnTime;
-			this.burnTime = 0;
+			timePassed += this.getBurnTime();
+			this.setBurnTime( 0 );
 		}
 
 		try
 		{
-			final IEnergyGrid grid = this.gridProxy.getEnergy();
+			final IEnergyGrid grid = this.getProxy().getEnergy();
 			final double newPower = timePassed * POWER_PER_TICK;
 			final double overFlow = grid.injectPower( newPower, Actionable.SIMULATE );
 
@@ -222,20 +222,20 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 
 			if( overFlow > 0 )
 			{
-				this.burnSpeed -= ticksSinceLastCall;
+				this.setBurnSpeed( this.getBurnSpeed() - ticksSinceLastCall );
 			}
 			else
 			{
-				this.burnSpeed += ticksSinceLastCall;
+				this.setBurnSpeed( this.getBurnSpeed() + ticksSinceLastCall );
 			}
 
-			this.burnSpeed = Math.max( MIN_BURN_SPEED, Math.min( this.burnSpeed, MAX_BURN_SPEED ) );
+			this.setBurnSpeed( Math.max( MIN_BURN_SPEED, Math.min( this.getBurnSpeed(), MAX_BURN_SPEED ) ) );
 			return overFlow > 0 ? TickRateModulation.SLOWER : TickRateModulation.FASTER;
 		}
 		catch( final GridAccessException e )
 		{
-			this.burnSpeed -= ticksSinceLastCall;
-			this.burnSpeed = Math.max( MIN_BURN_SPEED, Math.min( this.burnSpeed, MAX_BURN_SPEED ) );
+			this.setBurnSpeed( this.getBurnSpeed() - ticksSinceLastCall );
+			this.setBurnSpeed( Math.max( MIN_BURN_SPEED, Math.min( this.getBurnSpeed(), MAX_BURN_SPEED ) ) );
 			return TickRateModulation.SLOWER;
 		}
 	}
@@ -248,8 +248,8 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 			final int newBurnTime = TileEntityFurnace.getItemBurnTime( is );
 			if( newBurnTime > 0 && is.stackSize > 0 )
 			{
-				this.burnTime += newBurnTime;
-				this.maxBurnTime = this.burnTime;
+				this.setBurnTime( this.getBurnTime() + newBurnTime );
+				this.setMaxBurnTime( this.getBurnTime() );
 				is.stackSize--;
 				if( is.stackSize <= 0 )
 				{
@@ -271,11 +271,11 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 			}
 		}
 
-		if( this.burnTime > 0 )
+		if( this.getBurnTime() > 0 )
 		{
 			try
 			{
-				this.gridProxy.getTick().wakeDevice( this.gridProxy.getNode() );
+				this.getProxy().getTick().wakeDevice( this.getProxy().getNode() );
 			}
 			catch( final GridAccessException e )
 			{
@@ -284,9 +284,9 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 		}
 
 		// state change
-		if( ( !this.isOn && this.burnTime > 0 ) || ( this.isOn && this.burnTime <= 0 ) )
+		if( ( !this.isOn && this.getBurnTime() > 0 ) || ( this.isOn && this.getBurnTime() <= 0 ) )
 		{
-			this.isOn = this.burnTime > 0;
+			this.isOn = this.getBurnTime() > 0;
 			this.markForUpdate();
 
 			if ( this.hasWorldObj() )
@@ -294,5 +294,35 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 				Platform.notifyBlocksOfNeighbors( this.worldObj, this.pos );
 			}
 		}
+	}
+
+	public int getBurnSpeed()
+	{
+		return this.burnSpeed;
+	}
+
+	private void setBurnSpeed( final int burnSpeed )
+	{
+		this.burnSpeed = burnSpeed;
+	}
+
+	public double getMaxBurnTime()
+	{
+		return this.maxBurnTime;
+	}
+
+	private void setMaxBurnTime( final double maxBurnTime )
+	{
+		this.maxBurnTime = maxBurnTime;
+	}
+
+	public double getBurnTime()
+	{
+		return this.burnTime;
+	}
+
+	private void setBurnTime( final double burnTime )
+	{
+		this.burnTime = burnTime;
 	}
 }

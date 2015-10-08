@@ -8,9 +8,9 @@ import appeng.util.Platform;
 
 public class FalloutCopy extends Fallout
 {
-	public static final double SPECIFIED_BLOCK_THRESHOLD = 0.9;
-	public static final double AIR_BLOCK_THRESHOLD = 0.8;
-	public static final double BLOCK_THRESHOLD_STEP = 0.1;
+	private static final double SPECIFIED_BLOCK_THRESHOLD = 0.9;
+	private static final double AIR_BLOCK_THRESHOLD = 0.8;
+	private static final double BLOCK_THRESHOLD_STEP = 0.1;
 
 	private final IBlockState block;
 	private final MeteoriteBlockPutter putter;

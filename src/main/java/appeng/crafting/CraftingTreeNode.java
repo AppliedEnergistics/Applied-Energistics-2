@@ -42,7 +42,7 @@ public class CraftingTreeNode
 {
 
 	// what slot!
-	final int slot;
+	private final int slot;
 	private final CraftingJob job;
 	private final IItemList<IAEItemStack> used = AEApi.instance().storage().createItemList();
 	// parent node.
@@ -54,10 +54,10 @@ public class CraftingTreeNode
 	private final ArrayList<CraftingTreeProcess> nodes = new ArrayList<CraftingTreeProcess>();
 	private int bytes = 0;
 	private boolean canEmit = false;
-	private boolean cannotUse = false;
 	private long missing = 0;
 	private long howManyEmitted = 0;
 	private boolean exhausted = false;
+
 	private boolean sim;
 
 	public CraftingTreeNode( final ICraftingGrid cc, final CraftingJob job, final IAEItemStack wat, final CraftingTreeProcess par, final int slot, final int depth )
@@ -116,14 +116,14 @@ public class CraftingTreeNode
 		return this.parent.notRecursive( details );
 	}
 
-	public IAEItemStack request( final MECraftingInventory inv, long l, final BaseActionSource src ) throws CraftBranchFailure, InterruptedException
+	IAEItemStack request( final MECraftingInventory inv, long l, final BaseActionSource src ) throws CraftBranchFailure, InterruptedException
 	{
 		this.job.handlePausing();
 
 		final List<IAEItemStack> thingsUsed = new LinkedList<IAEItemStack>();
 
 		this.what.setStackSize( l );
-		if( this.slot >= 0 && this.parent != null && this.parent.details.isCraftable() )
+		if( this.getSlot() >= 0 && this.parent != null && this.parent.details.isCraftable() )
 		{
 			final Collection<IAEItemStack> itemList;
 			final IItemList<IAEItemStack> inventoryList = inv.getItemList();
@@ -146,7 +146,7 @@ public class CraftingTreeNode
 
 			for( IAEItemStack fuzz : itemList )
 			{
-				if( this.parent.details.isValidItemForSlot( this.slot, fuzz.getItemStack(), this.world ) )
+				if( this.parent.details.isValidItemForSlot( this.getSlot(), fuzz.getItemStack(), this.world ) )
 				{
 					fuzz = fuzz.copy();
 					fuzz.setStackSize( l );
@@ -308,7 +308,7 @@ public class CraftingTreeNode
 		throw new CraftBranchFailure( this.what, l );
 	}
 
-	public void dive( final CraftingJob job )
+	void dive( final CraftingJob job )
 	{
 		if( this.missing > 0 )
 		{
@@ -324,14 +324,14 @@ public class CraftingTreeNode
 		}
 	}
 
-	public IAEItemStack getStack( final long size )
+	IAEItemStack getStack( final long size )
 	{
 		final IAEItemStack is = this.what.copy();
 		is.setStackSize( size );
 		return is;
 	}
 
-	public void setSimulate()
+	void setSimulate()
 	{
 		this.sim = true;
 		this.missing = 0;
@@ -372,7 +372,7 @@ public class CraftingTreeNode
 		}
 	}
 
-	public void getPlan( final IItemList<IAEItemStack> plan )
+	void getPlan( final IItemList<IAEItemStack> plan )
 	{
 		if( this.missing > 0 )
 		{
@@ -397,5 +397,10 @@ public class CraftingTreeNode
 		{
 			pro.getPlan( plan );
 		}
+	}
+
+	int getSlot()
+	{
+		return this.slot;
 	}
 }

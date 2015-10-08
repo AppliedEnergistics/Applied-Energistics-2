@@ -37,15 +37,12 @@ import appeng.util.Platform;
 public class ContainerFormationPlane extends ContainerUpgradeable
 {
 
-	final PartFormationPlane storageBus;
-
 	@GuiSync( 6 )
 	public YesNo placeMode;
 
 	public ContainerFormationPlane( final InventoryPlayer ip, final PartFormationPlane te )
 	{
 		super( ip, te );
-		this.storageBus = te;
 	}
 
 	@Override
@@ -60,7 +57,7 @@ public class ContainerFormationPlane extends ContainerUpgradeable
 		final int xo = 8;
 		final int yo = 23 + 6;
 
-		final IInventory config = this.upgradeable.getInventoryByName( "config" );
+		final IInventory config = this.getUpgradeable().getInventoryByName( "config" );
 		for( int y = 0; y < 7; y++ )
 		{
 			for( int x = 0; x < 9; x++ )
@@ -76,12 +73,12 @@ public class ContainerFormationPlane extends ContainerUpgradeable
 			}
 		}
 
-		final IInventory upgrades = this.upgradeable.getInventoryByName( "upgrades" );
-		this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 0, 187, 8, this.invPlayer ) ).setNotDraggable() );
-		this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 1, 187, 8 + 18, this.invPlayer ) ).setNotDraggable() );
-		this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 2, 187, 8 + 18 * 2, this.invPlayer ) ).setNotDraggable() );
-		this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 3, 187, 8 + 18 * 3, this.invPlayer ) ).setNotDraggable() );
-		this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 4, 187, 8 + 18 * 4, this.invPlayer ) ).setNotDraggable() );
+		final IInventory upgrades = this.getUpgradeable().getInventoryByName( "upgrades" );
+		this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 0, 187, 8, this.getInventoryPlayer() ) ).setNotDraggable() );
+		this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 1, 187, 8 + 18, this.getInventoryPlayer() ) ).setNotDraggable() );
+		this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 2, 187, 8 + 18 * 2, this.getInventoryPlayer() ) ).setNotDraggable() );
+		this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 3, 187, 8 + 18 * 3, this.getInventoryPlayer() ) ).setNotDraggable() );
+		this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 4, 187, 8 + 18 * 4, this.getInventoryPlayer() ) ).setNotDraggable() );
 	}
 
 	@Override
@@ -103,8 +100,8 @@ public class ContainerFormationPlane extends ContainerUpgradeable
 
 		if( Platform.isServer() )
 		{
-			this.fzMode = (FuzzyMode) this.upgradeable.getConfigManager().getSetting( Settings.FUZZY_MODE );
-			this.placeMode = (YesNo) this.upgradeable.getConfigManager().getSetting( Settings.PLACE_BLOCK );
+			this.setFuzzyMode( (FuzzyMode) this.getUpgradeable().getConfigManager().getSetting( Settings.FUZZY_MODE ) );
+			this.setPlaceMode( (YesNo) this.getUpgradeable().getConfigManager().getSetting( Settings.PLACE_BLOCK ) );
 		}
 
 		this.standardDetectAndSendChanges();
@@ -113,8 +110,18 @@ public class ContainerFormationPlane extends ContainerUpgradeable
 	@Override
 	public boolean isSlotEnabled( final int idx )
 	{
-		final int upgrades = this.upgradeable.getInstalledUpgrades( Upgrades.CAPACITY );
+		final int upgrades = this.getUpgradeable().getInstalledUpgrades( Upgrades.CAPACITY );
 
 		return upgrades > idx;
+	}
+
+	public YesNo getPlaceMode()
+	{
+		return this.placeMode;
+	}
+
+	private void setPlaceMode( final YesNo placeMode )
+	{
+		this.placeMode = placeMode;
 	}
 }

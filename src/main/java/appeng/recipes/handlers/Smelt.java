@@ -35,8 +35,8 @@ import appeng.util.Platform;
 public class Smelt implements ICraftHandler, IWebsiteSerializer
 {
 
-	IIngredient in;
-	IIngredient out;
+	private IIngredient in;
+	private IIngredient out;
 
 	@Override
 	public void setup( final List<List<IIngredient>> input, final List<List<IIngredient>> output ) throws RecipeError

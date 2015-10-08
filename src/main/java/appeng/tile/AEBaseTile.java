@@ -65,12 +65,12 @@ import appeng.util.SettingsFrom;
 public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, ICustomNameObject
 {
 
-	public static final ThreadLocal<WeakReference<AEBaseTile>> DROP_NO_ITEMS = new ThreadLocal<WeakReference<AEBaseTile>>();
+	private static final ThreadLocal<WeakReference<AEBaseTile>> DROP_NO_ITEMS = new ThreadLocal<WeakReference<AEBaseTile>>();
 	private static final Map<Class<? extends AEBaseTile>, Map<TileEventType, List<AETileEventHandler>>> HANDLERS = new HashMap<Class<? extends AEBaseTile>, Map<TileEventType, List<AETileEventHandler>>>();
 	private static final Map<Class<? extends TileEntity>, IStackSrc> ITEM_STACKS = new HashMap<Class<? extends TileEntity>, IStackSrc>();
 	private int renderFragment = 0;
 	@Nullable
-	public String customName;
+	private String customName;
 	private EnumFacing forward = null;
 	private EnumFacing up = null;
 
@@ -83,7 +83,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	{
 		return newSate.getBlock() != oldState.getBlock(); // state dosn't change tile entities in AE2.
 	}
-	
+
 	public static void registerTileItem( final Class<? extends TileEntity> c, final IStackSrc wat )
 	{
 		ITEM_STACKS.put( c, wat );
@@ -247,7 +247,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 		}
 	}
 
-	public final boolean readFromStream( final ByteBuf data )
+	private final boolean readFromStream( final ByteBuf data )
 	{
 		boolean output = false;
 
@@ -260,8 +260,8 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 				final EnumFacing old_Up = this.up;
 
 				final byte orientation = data.readByte();
-				this.forward = EnumFacing.VALUES[ orientation & 0x7 ];
-				this.up = EnumFacing.VALUES[ orientation >> 3 ];
+				this.forward = EnumFacing.VALUES[orientation & 0x7];
+				this.up = EnumFacing.VALUES[orientation >> 3];
 
 				output = this.forward != old_Forward || this.up != old_Up;
 			}
@@ -306,7 +306,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 		}
 	}
 
-	public final void writeToStream( final ByteBuf data )
+	private final void writeToStream( final ByteBuf data )
 	{
 		try
 		{
@@ -353,7 +353,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 		final Class<? extends AEBaseTile> clazz = this.getClass();
 		final Map<TileEventType, List<AETileEventHandler>> storedHandlers = HANDLERS.get( clazz );
 
-		if ( storedHandlers == null )
+		if( storedHandlers == null )
 		{
 			final Map<TileEventType, List<AETileEventHandler>> newStoredHandlers = new EnumMap<TileEventType, List<AETileEventHandler>>( TileEventType.class );
 
@@ -377,7 +377,8 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	}
 
 	@Nonnull
-	private List<AETileEventHandler> getHandlers( final Map<TileEventType, List<AETileEventHandler>> eventToHandlers, final TileEventType event ) {
+	private List<AETileEventHandler> getHandlers( final Map<TileEventType, List<AETileEventHandler>> eventToHandlers, final TileEventType event )
+	{
 		final List<AETileEventHandler> oldHandlers = eventToHandlers.get( event );
 
 		if( oldHandlers == null )
@@ -438,7 +439,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	/**
 	 * depending on the from, different settings will be accepted, don't call this with null
 	 *
-	 * @param from     source of settings
+	 * @param from source of settings
 	 * @param compound compound of source
 	 */
 	public void uploadSettings( final SettingsFrom from, final NBTTagCompound compound )
@@ -477,10 +478,10 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	/**
 	 * returns the contents of the tile entity, into the world, defaults to dropping everything in the inventory.
 	 *
-	 * @param w     world
-	 * @param x     x pos of tile entity
-	 * @param y     y pos of tile entity
-	 * @param z     z pos of tile entity
+	 * @param w world
+	 * @param x x pos of tile entity
+	 * @param y y pos of tile entity
+	 * @param z z pos of tile entity
 	 * @param drops drops of tile entity
 	 */
 	@Override

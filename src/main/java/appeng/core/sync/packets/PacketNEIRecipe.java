@@ -64,7 +64,7 @@ import appeng.util.prioitylist.IPartitionList;
 public class PacketNEIRecipe extends AppEngPacket
 {
 
-	ItemStack[][] recipe;
+	private ItemStack[][] recipe;
 
 	// automatic.
 	public PacketNEIRecipe( final ByteBuf stream ) throws IOException
@@ -171,7 +171,7 @@ public class PacketNEIRecipe extends AppEngPacket
 										final IAEItemStack in = AEItemStack.create( currentItem );
 										if( in != null )
 										{
-											final IAEItemStack out = realForFake == Actionable.SIMULATE ? null : Platform.poweredInsert( energy, storage, in, cct.getSource() );
+											final IAEItemStack out = realForFake == Actionable.SIMULATE ? null : Platform.poweredInsert( energy, storage, in, cct.getActionSource() );
 											if( out != null )
 											{
 												craftMatrix.setInventorySlotContents( x, out.getItemStack() );
@@ -190,7 +190,7 @@ public class PacketNEIRecipe extends AppEngPacket
 								if( patternItem != null && currentItem == null )
 								{
 									// Grab from network by recipe
-									ItemStack whichItem = Platform.extractItemsByRecipe( energy, cct.getSource(), storage, player.worldObj, r, is, testInv, patternItem, x, all, realForFake, filter );
+									ItemStack whichItem = Platform.extractItemsByRecipe( energy, cct.getActionSource(), storage, player.worldObj, r, is, testInv, patternItem, x, all, realForFake, filter );
 
 									// If that doesn't get it, grab exact items from network (?)
 									// TODO see if this code is necessary
@@ -204,7 +204,7 @@ public class PacketNEIRecipe extends AppEngPacket
 												if( filter == null || filter.isListed( request ) )
 												{
 													request.setStackSize( 1 );
-													final IAEItemStack out = Platform.poweredExtraction( energy, storage, request, cct.getSource() );
+													final IAEItemStack out = Platform.poweredExtraction( energy, storage, request, cct.getActionSource() );
 													if( out != null )
 													{
 														whichItem = out.getItemStack();

@@ -36,10 +36,10 @@ import appeng.core.AELog;
 public final class WorldRender implements ISimpleBlockRenderingHandler
 {
 
-	public static final WorldRender INSTANCE = new WorldRender();
-	public final HashMap<AEBaseBlock, BaseBlockRender> blockRenders = new HashMap<AEBaseBlock, BaseBlockRender>();
+	private static final WorldRender INSTANCE = new WorldRender();
+	private final HashMap<AEBaseBlock, BaseBlockRender> blockRenders = new HashMap<AEBaseBlock, BaseBlockRender>();
 	private final ModelGenerator renderer = new ModelGenerator();
-	boolean hasError = false;
+	private boolean hasError = false;
 
 	private WorldRender()
 	{
@@ -66,10 +66,10 @@ public final class WorldRender implements ISimpleBlockRenderingHandler
 
 	private BaseBlockRender getRender( final AEBaseBlock block )
 	{
-		return block.getRendererInstance().rendererInstance;
+		return block.getRendererInstance().getRendererInstance();
 	}
 
-	public void renderItemBlock( final ItemStack item, final ItemRenderType type, final Object[] data )
+	void renderItemBlock( final ItemStack item, final ItemRenderType type, final Object[] data )
 	{
 		final Block blk = Block.getBlockFromItem( item.getItem() );
 		if( blk instanceof AEBaseBlock )
@@ -77,9 +77,9 @@ public final class WorldRender implements ISimpleBlockRenderingHandler
 			final AEBaseBlock block = (AEBaseBlock) blk;
 			this.renderer.setRenderBoundsFromBlock( block );
 
-			this.renderer.uvRotateBottom = this.renderer.uvRotateEast = this.renderer.uvRotateNorth = this.renderer.uvRotateSouth = this.renderer.uvRotateTop = this.renderer.uvRotateWest = 0;
+			this.renderer.setUvRotateBottom( this.renderer.setUvRotateEast( this.renderer.setUvRotateNorth( this.renderer.setUvRotateSouth( this.renderer.setUvRotateTop( this.renderer.setUvRotateWest( 0 ) ) ) ) ) );
 			this.getRender( block ).renderInventory( block, item, this.renderer, type, data );
-			this.renderer.uvRotateBottom = this.renderer.uvRotateEast = this.renderer.uvRotateNorth = this.renderer.uvRotateSouth = this.renderer.uvRotateTop = this.renderer.uvRotateWest = 0;
+			this.renderer.setUvRotateBottom( this.renderer.setUvRotateEast( this.renderer.setUvRotateNorth( this.renderer.setUvRotateSouth( this.renderer.setUvRotateTop( this.renderer.setUvRotateWest( 0 ) ) ) ) ) );
 		}
 		else
 		{

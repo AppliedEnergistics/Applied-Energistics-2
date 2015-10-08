@@ -1,3 +1,4 @@
+
 package appeng.worldgen.meteorite;
 
 
@@ -12,10 +13,10 @@ import appeng.util.Platform;
 public class ChunkOnly extends StandardWorld
 {
 
-	final Chunk target;
-	final int cx;
-	final int cz;
-	int verticalBits = 0;
+	private final Chunk target;
+	private final int cx;
+	private final int cz;
+	private int verticalBits = 0;
 
 	public ChunkOnly( final World w, final int cx, final int cz )
 	{
@@ -65,7 +66,7 @@ public class ChunkOnly extends StandardWorld
 		if( this.range( x, y, z ) )
 		{
 			this.verticalBits |= 1 << ( y >> 4 );
-			this.w.setBlockState( new BlockPos( x, y, z), blk.getDefaultState() );
+			this.getWorld().setBlockState( new BlockPos( x, y, z ), blk.getDefaultState() );
 		}
 	}
 
@@ -75,7 +76,7 @@ public class ChunkOnly extends StandardWorld
 		if( this.range( x, y, z ) )
 		{
 			this.verticalBits |= 1 << ( y >> 4 );
-			this.w.setBlockState( new BlockPos( x, y, z ), state, flags & ( ~2 ) );
+			this.getWorld().setBlockState( new BlockPos( x, y, z ), state, flags & ( ~2 ) );
 		}
 	}
 

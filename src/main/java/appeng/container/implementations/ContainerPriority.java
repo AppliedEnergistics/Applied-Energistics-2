@@ -36,10 +36,10 @@ import appeng.util.Platform;
 public class ContainerPriority extends AEBaseContainer
 {
 
-	final IPriorityHost priHost;
+	private final IPriorityHost priHost;
 
 	@SideOnly( Side.CLIENT )
-	public GuiTextField textField;
+	private GuiTextField textField;
 	@GuiSync( 2 )
 	public long PriorityValue = -1;
 

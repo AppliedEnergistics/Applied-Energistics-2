@@ -47,11 +47,11 @@ import appeng.parts.misc.PartStorageBus;
 public class GuiStorageBus extends GuiUpgradeable
 {
 
-	GuiImgButton rwMode;
-	GuiImgButton storageFilter;
-	GuiTabButton priority;
-	GuiImgButton partition;
-	GuiImgButton clear;
+	private GuiImgButton rwMode;
+	private GuiImgButton storageFilter;
+	private GuiTabButton priority;
+	private GuiImgButton partition;
+	private GuiImgButton clear;
 
 	public GuiStorageBus( final InventoryPlayer inventoryPlayer, final PartStorageBus te )
 	{
@@ -85,17 +85,17 @@ public class GuiStorageBus extends GuiUpgradeable
 
 		if( this.fuzzyMode != null )
 		{
-			this.fuzzyMode.set( this.cvb.fzMode );
+			this.fuzzyMode.set( this.cvb.getFuzzyMode() );
 		}
 
 		if( this.storageFilter != null )
 		{
-			this.storageFilter.set( ( (ContainerStorageBus) this.cvb ).storageFilter );
+			this.storageFilter.set( ( (ContainerStorageBus) this.cvb ).getStorageFilter() );
 		}
 
 		if( this.rwMode != null )
 		{
-			this.rwMode.set( ( (ContainerStorageBus) this.cvb ).rwMode );
+			this.rwMode.set( ( (ContainerStorageBus) this.cvb ).getReadWriteMode() );
 		}
 	}
 

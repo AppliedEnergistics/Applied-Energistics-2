@@ -63,10 +63,10 @@ public class RenderBlockCraftingCPUMonitor extends RenderBlockCraftingCPU<BlockC
 		{
 			final IAEItemStack ais = tile.getJobProgress();
 
-			if( tile.dspList == null )
+			if( tile.getDisplayList() == null )
 			{
-				tile.updateList = true;
-				tile.dspList = GLAllocation.generateDisplayLists( 1 );
+				tile.setUpdateList( true );
+				tile.setDisplayList( GLAllocation.generateDisplayLists( 1 ) );
 			}
 
 			if( ais != null )
@@ -74,16 +74,16 @@ public class RenderBlockCraftingCPUMonitor extends RenderBlockCraftingCPU<BlockC
 				GL11.glPushMatrix();
 				GL11.glTranslated( x + 0.5, y + 0.5, z + 0.5 );
 
-				if( tile.updateList )
+				if( tile.isUpdateList() )
 				{
-					tile.updateList = false;
-					GL11.glNewList( tile.dspList, GL11.GL_COMPILE_AND_EXECUTE );
+					tile.setUpdateList( false );
+					GL11.glNewList( tile.getDisplayList(), GL11.GL_COMPILE_AND_EXECUTE );
 					this.tesrRenderScreen( tess, tile, ais );
 					GL11.glEndList();
 				}
 				else
 				{
-					GL11.glCallList( tile.dspList );
+					GL11.glCallList( tile.getDisplayList() );
 				}
 
 				GL11.glPopMatrix();

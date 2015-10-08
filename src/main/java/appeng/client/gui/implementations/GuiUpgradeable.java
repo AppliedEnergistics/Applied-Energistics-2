@@ -46,13 +46,13 @@ import appeng.parts.automation.PartImportBus;
 public class GuiUpgradeable extends AEBaseGui
 {
 
-	final ContainerUpgradeable cvb;
-	final IUpgradeableHost bc;
+	protected final ContainerUpgradeable cvb;
+	protected final IUpgradeableHost bc;
 
-	GuiImgButton redstoneMode;
-	GuiImgButton fuzzyMode;
-	GuiImgButton craftMode;
-	GuiImgButton schedulingMode;
+	protected GuiImgButton redstoneMode;
+	protected GuiImgButton fuzzyMode;
+	protected GuiImgButton craftMode;
+	protected GuiImgButton schedulingMode;
 
 	public GuiUpgradeable( final InventoryPlayer inventoryPlayer, final IUpgradeableHost te )
 	{
@@ -102,22 +102,22 @@ public class GuiUpgradeable extends AEBaseGui
 
 		if( this.redstoneMode != null )
 		{
-			this.redstoneMode.set( this.cvb.rsMode );
+			this.redstoneMode.set( this.cvb.getRedStoneMode() );
 		}
 
 		if( this.fuzzyMode != null )
 		{
-			this.fuzzyMode.set( this.cvb.fzMode );
+			this.fuzzyMode.set( this.cvb.getFuzzyMode() );
 		}
 
 		if( this.craftMode != null )
 		{
-			this.craftMode.set( this.cvb.cMode );
+			this.craftMode.set( this.cvb.getCraftingMode() );
 		}
 
 		if( this.schedulingMode != null )
 		{
-			this.schedulingMode.set( this.cvb.schedulingMode );
+			this.schedulingMode.set( this.cvb.getSchedulingMode() );
 		}
 	}
 

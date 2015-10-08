@@ -40,13 +40,13 @@ public class TileCraftingMonitorTile extends TileCraftingTile implements IColora
 {
 
 	@SideOnly( Side.CLIENT )
-	public Integer dspList;
+	private Integer dspList;
 
 	@SideOnly( Side.CLIENT )
-	public boolean updateList;
+	private boolean updateList;
 
-	IAEItemStack dspPlay;
-	AEColor paintedColor = AEColor.Transparent;
+	private IAEItemStack dspPlay;
+	private AEColor paintedColor = AEColor.Transparent;
 
 	@TileEvent( TileEventType.NETWORK_READ )
 	public boolean readFromStream_TileCraftingMonitorTile( final ByteBuf data ) throws IOException
@@ -65,7 +65,7 @@ public class TileCraftingMonitorTile extends TileCraftingTile implements IColora
 			this.dspPlay = null;
 		}
 
-		this.updateList = true;
+		this.setUpdateList( true );
 		return oldPaintedColor != this.paintedColor; // tesr!
 	}
 
@@ -158,5 +158,25 @@ public class TileCraftingMonitorTile extends TileCraftingTile implements IColora
 		this.markDirty();
 		this.markForUpdate();
 		return true;
+	}
+
+	public Integer getDisplayList()
+	{
+		return this.dspList;
+	}
+
+	public void setDisplayList( final Integer dspList )
+	{
+		this.dspList = dspList;
+	}
+
+	public boolean isUpdateList()
+	{
+		return this.updateList;
+	}
+
+	public void setUpdateList( final boolean updateList )
+	{
+		this.updateList = updateList;
 	}
 }

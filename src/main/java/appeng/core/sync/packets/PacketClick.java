@@ -39,13 +39,13 @@ import appeng.items.tools.powered.ToolColorApplicator;
 public class PacketClick extends AppEngPacket
 {
 
-	final int x;
-	final int y;
-	final int z;
-	final int side;
-	final float hitX;
-	final float hitY;
-	final float hitZ;
+	private final int x;
+	private final int y;
+	private final int z;
+	private final int side;
+	private final float hitX;
+	private final float hitY;
+	private final float hitZ;
 
 	// automatic.
 	public PacketClick( final ByteBuf stream )

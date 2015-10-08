@@ -110,7 +110,7 @@ public final class AELog
 		}
 	}
 
-	public static void debug( String format, Object... data )
+	public static void debug( final String format, final Object... data )
 	{
 		if( AEConfig.instance.isFeatureEnabled( AEFeature.DebugLogging ) )
 		{

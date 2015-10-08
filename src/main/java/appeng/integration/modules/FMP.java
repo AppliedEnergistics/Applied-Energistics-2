@@ -192,7 +192,7 @@ public class FMP implements IIntegrationModule, IPartFactory, IPartConverter, IF
 				TMultiPart p = i.next();
 				if( p instanceof CableBusPart )
 				{
-					return ( (CableBusPart) p ).cb;
+					return ( (CableBusPart) p ).getCableBus();
 				}
 			}
 		}

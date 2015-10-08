@@ -36,13 +36,13 @@ import appeng.tile.inventory.InvOperation;
 public class TileEnergyAcceptor extends AENetworkPowerTile
 {
 
-	static final AppEngInternalInventory INTERNAL_INVENTORY = new AppEngInternalInventory( null, 0 );
-	final int[] sides = {};
+	private static final AppEngInternalInventory INTERNAL_INVENTORY = new AppEngInternalInventory( null, 0 );
+	private final int[] sides = {};
 
 	public TileEnergyAcceptor()
 	{
-		this.gridProxy.setIdlePowerUsage( 0.0 );
-		this.internalMaxPower = 0;
+		this.getProxy().setIdlePowerUsage( 0.0 );
+		this.setInternalMaxPower( 0 );
 	}
 
 	@Override
@@ -72,12 +72,12 @@ public class TileEnergyAcceptor extends AENetworkPowerTile
 	{
 		try
 		{
-			final IEnergyGrid grid = this.gridProxy.getEnergy();
+			final IEnergyGrid grid = this.getProxy().getEnergy();
 			return grid.getEnergyDemand( maxRequired );
 		}
 		catch( final GridAccessException e )
 		{
-			return this.internalMaxPower;
+			return this.getInternalMaxPower();
 		}
 	}
 
@@ -86,7 +86,7 @@ public class TileEnergyAcceptor extends AENetworkPowerTile
 	{
 		try
 		{
-			final IEnergyGrid grid = this.gridProxy.getEnergy();
+			final IEnergyGrid grid = this.getProxy().getEnergy();
 			final double leftOver = grid.injectPower( power, mode );
 			if( mode == Actionable.SIMULATE )
 			{

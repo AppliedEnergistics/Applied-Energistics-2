@@ -175,12 +175,12 @@ public class QuartzOreBlock extends AEBaseBlock
 		}
 	}
 
-	public void setBoostBrightnessLow( final int boostBrightnessLow )
+	void setBoostBrightnessLow( final int boostBrightnessLow )
 	{
 		this.boostBrightnessLow = boostBrightnessLow;
 	}
 
-	public void setBoostBrightnessHigh( final int boostBrightnessHigh )
+	void setBoostBrightnessHigh( final int boostBrightnessHigh )
 	{
 		this.boostBrightnessHigh = boostBrightnessHigh;
 	}

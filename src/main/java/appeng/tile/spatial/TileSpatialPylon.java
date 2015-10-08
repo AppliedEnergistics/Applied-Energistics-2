@@ -53,16 +53,17 @@ public class TileSpatialPylon extends AENetworkTile implements IAEMultiBlock
 	public static final int DISPLAY_ENABLED = 0x10;
 	public static final int DISPLAY_POWERED_ENABLED = 0x20;
 	public static final int NET_STATUS = 0x10 + 0x20;
-	final SpatialPylonCalculator calc = new SpatialPylonCalculator( this );
-	int displayBits = 0;
-	SpatialPylonCluster cluster;
-	boolean didHaveLight = false;
+
+	private final SpatialPylonCalculator calc = new SpatialPylonCalculator( this );
+	private int displayBits = 0;
+	private SpatialPylonCluster cluster;
+	private boolean didHaveLight = false;
 
 	public TileSpatialPylon()
 	{
-		this.gridProxy.setFlags( GridFlags.REQUIRE_CHANNEL, GridFlags.MULTIBLOCK );
-		this.gridProxy.setIdlePowerUsage( 0.5 );
-		this.gridProxy.setValidSides( EnumSet.noneOf( EnumFacing.class ) );
+		this.getProxy().setFlags( GridFlags.REQUIRE_CHANNEL, GridFlags.MULTIBLOCK );
+		this.getProxy().setIdlePowerUsage( 0.5 );
+		this.getProxy().setValidSides( EnumSet.noneOf( EnumFacing.class ) );
 	}
 
 	@Override
@@ -122,7 +123,7 @@ public class TileSpatialPylon extends AENetworkTile implements IAEMultiBlock
 	public void updateStatus( final SpatialPylonCluster c )
 	{
 		this.cluster = c;
-		this.gridProxy.setValidSides( c == null ? EnumSet.noneOf( EnumFacing.class ) : EnumSet.allOf( EnumFacing.class ) );
+		this.getProxy().setValidSides( c == null ? EnumSet.noneOf( EnumFacing.class ) : EnumSet.allOf( EnumFacing.class ) );
 		this.recalculateDisplay();
 	}
 
@@ -134,11 +135,11 @@ public class TileSpatialPylon extends AENetworkTile implements IAEMultiBlock
 
 		if( this.cluster != null )
 		{
-			if( this.cluster.min.equals( this.getLocation() ) )
+			if( this.cluster.getMin().equals( this.getLocation() ) )
 			{
 				this.displayBits = DISPLAY_END_MIN;
 			}
-			else if( this.cluster.max.equals( this.getLocation() ) )
+			else if( this.cluster.getMax().equals( this.getLocation() ) )
 			{
 				this.displayBits = DISPLAY_END_MAX;
 			}
@@ -147,7 +148,7 @@ public class TileSpatialPylon extends AENetworkTile implements IAEMultiBlock
 				this.displayBits = DISPLAY_MIDDLE;
 			}
 
-			switch( this.cluster.currentAxis )
+			switch( this.cluster.getCurrentAxis() )
 			{
 				case X:
 					this.displayBits |= DISPLAY_X;
@@ -165,12 +166,12 @@ public class TileSpatialPylon extends AENetworkTile implements IAEMultiBlock
 
 			try
 			{
-				if( this.gridProxy.getEnergy().isNetworkPowered() )
+				if( this.getProxy().getEnergy().isNetworkPowered() )
 				{
 					this.displayBits |= DISPLAY_POWERED_ENABLED;
 				}
 
-				if( this.cluster.isValid && this.gridProxy.isActive() )
+				if( this.cluster.isValid() && this.getProxy().isActive() )
 				{
 					this.displayBits |= DISPLAY_ENABLED;
 				}

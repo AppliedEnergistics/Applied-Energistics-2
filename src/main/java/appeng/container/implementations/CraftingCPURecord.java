@@ -28,10 +28,10 @@ import appeng.util.ItemSorters;
 public class CraftingCPURecord implements Comparable<CraftingCPURecord>
 {
 
-	public final String myName;
-	final ICraftingCPU cpu;
-	final long size;
-	final int processors;
+	private final String myName;
+	private final ICraftingCPU cpu;
+	private final long size;
+	private final int processors;
 
 	public CraftingCPURecord( final long size, final int coProcessors, final ICraftingCPU server )
 	{
@@ -44,11 +44,31 @@ public class CraftingCPURecord implements Comparable<CraftingCPURecord>
 	@Override
 	public int compareTo( @Nonnull final CraftingCPURecord o )
 	{
-		final int a = ItemSorters.compareLong( o.processors, this.processors );
+		final int a = ItemSorters.compareLong( o.getProcessors(), this.getProcessors() );
 		if( a != 0 )
 		{
 			return a;
 		}
-		return ItemSorters.compareLong( o.size, this.size );
+		return ItemSorters.compareLong( o.getSize(), this.getSize() );
+	}
+
+	ICraftingCPU getCpu()
+	{
+		return this.cpu;
+	}
+
+	String getName()
+	{
+		return this.myName;
+	}
+
+	int getProcessors()
+	{
+		return this.processors;
+	}
+
+	long getSize()
+	{
+		return this.size;
 	}
 }

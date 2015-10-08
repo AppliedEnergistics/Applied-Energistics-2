@@ -73,10 +73,10 @@ public class RenderBlockController extends BaseBlockRender<BlockController, Tile
 				blk.getRendererInstance().setTemporaryRenderIcon( ExtraBlockTextures.BlockControllerColumn.getIcon() );
 			}
 
-			renderer.uvRotateEast = 1;
-			renderer.uvRotateWest = 1;
-			renderer.uvRotateTop = 1;
-			renderer.uvRotateBottom = 1;
+			renderer.setUvRotateEast( 1 );
+			renderer.setUvRotateWest( 1 );
+			renderer.setUvRotateTop( 1 );
+			renderer.setUvRotateBottom( 1 );
 		}
 		else if( !xx && yy && !zz )
 		{
@@ -97,8 +97,8 @@ public class RenderBlockController extends BaseBlockRender<BlockController, Tile
 				blk.getRendererInstance().setTemporaryRenderIcon( ExtraBlockTextures.BlockControllerColumn.getIcon() );
 			}
 
-			renderer.uvRotateEast = 0;
-			renderer.uvRotateNorth = 0;
+			renderer.setUvRotateEast( 0 );
+			renderer.setUvRotateNorth( 0 );
 		}
 		else if( !xx && !yy && zz )
 		{
@@ -119,14 +119,14 @@ public class RenderBlockController extends BaseBlockRender<BlockController, Tile
 				blk.getRendererInstance().setTemporaryRenderIcon( ExtraBlockTextures.BlockControllerColumn.getIcon() );
 			}
 
-			renderer.uvRotateNorth = 1;
-			renderer.uvRotateSouth = 1;
-			renderer.uvRotateTop = 0;
+			renderer.setUvRotateNorth( 1 );
+			renderer.setUvRotateSouth( 1 );
+			renderer.setUvRotateTop( 0 );
 		}
 		else if( ( xx ? 1 : 0 ) + ( yy ? 1 : 0 ) + ( zz ? 1 : 0 ) >= 2 )
 		{
 			final int v = ( Math.abs( pos.getX() ) + Math.abs( pos.getY() ) + Math.abs( pos.getZ() ) ) % 2;
-			renderer.uvRotateEast = renderer.uvRotateBottom = renderer.uvRotateNorth = renderer.uvRotateSouth = renderer.uvRotateTop = renderer.uvRotateWest = 0;
+			renderer.setUvRotateEast( renderer.setUvRotateBottom( renderer.setUvRotateNorth( renderer.setUvRotateSouth( renderer.setUvRotateTop( renderer.setUvRotateWest( 0 ) ) ) ) ) );
 
 			if( v == 0 )
 			{
@@ -171,7 +171,7 @@ public class RenderBlockController extends BaseBlockRender<BlockController, Tile
 		}
 
 		blk.getRendererInstance().setTemporaryRenderIcon( null );
-		renderer.uvRotateEast = renderer.uvRotateBottom = renderer.uvRotateNorth = renderer.uvRotateSouth = renderer.uvRotateTop = renderer.uvRotateWest = 0;
+		renderer.setUvRotateEast( renderer.setUvRotateBottom( renderer.setUvRotateNorth( renderer.setUvRotateSouth( renderer.setUvRotateTop( renderer.setUvRotateWest( 0 ) ) ) ) ) );
 		return out;
 	}
 

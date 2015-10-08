@@ -53,8 +53,8 @@ public class BlockLightDetector extends AEBaseTileBlock implements IOrientableBl
 		super( Material.circuits );
 
 		this.setLightOpacity( 0 );
-		this.isFullSize = false;
-		this.isOpaque = false;
+		this.setFullSize( false );
+		this.setOpaque( false );
 
 		this.setTileEntity( TileLightDetector.class );
 		this.setFeature( EnumSet.of( AEFeature.LightDetector ) );

@@ -29,8 +29,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class MissingIcon implements IAESprite
 {
-	TextureAtlasSprite missing;
- 
+	private TextureAtlasSprite missing;
+
 	public MissingIcon( final Object forWhat )
 	{
 	}
@@ -42,7 +42,8 @@ public class MissingIcon implements IAESprite
 	}
 
 	@SideOnly( Side.CLIENT )
-	public static TextureAtlasSprite getMissing()
+	public
+	static TextureAtlasSprite getMissing()
 	{
 		return ( (TextureMap) Minecraft.getMinecraft().getTextureManager().getTexture( TextureMap.locationBlocksTexture ) ).getAtlasSprite( "missingno" );
 	}
@@ -52,7 +53,7 @@ public class MissingIcon implements IAESprite
 	{
 		return getMissing();
 	}
-	
+
 	@Override
 	public int getIconHeight()
 	{

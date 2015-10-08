@@ -44,13 +44,11 @@ import appeng.util.Platform;
 public class NEICraftingHandler implements IOverlayHandler
 {
 
-	final int offsetX;
-	final int offsetY;
+	private final int offsetX;
+	private final int offsetY;
 
-	public NEICraftingHandler( int x, int y )
+	public NEICraftingHandler( final int x, final int y )
 	{
-		this.offsetX = x;
-		this.offsetY = y;
 	}
 
 	@Override
@@ -69,7 +67,7 @@ public class NEICraftingHandler implements IOverlayHandler
 		}
 	}
 
-	public void overlayRecipe( GuiContainer gui, List<PositionedStack> ingredients, boolean shift )
+	private void overlayRecipe( GuiContainer gui, List<PositionedStack> ingredients, boolean shift )
 	{
 		try
 		{

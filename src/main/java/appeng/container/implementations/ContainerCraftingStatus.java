@@ -21,6 +21,7 @@ package appeng.container.implementations;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import net.minecraft.entity.player.InventoryPlayer;
 import appeng.api.networking.crafting.ICraftingCPU;
@@ -34,7 +35,7 @@ import com.google.common.collect.ImmutableSet;
 public class ContainerCraftingStatus extends ContainerCraftingCPU
 {
 
-	public final ArrayList<CraftingCPURecord> cpus = new ArrayList<CraftingCPURecord>();
+	private final List<CraftingCPURecord> cpus = new ArrayList<CraftingCPURecord>();
 	@GuiSync( 5 )
 	public int selectedCpu = -1;
 	@GuiSync( 6 )
@@ -50,7 +51,7 @@ public class ContainerCraftingStatus extends ContainerCraftingCPU
 	@Override
 	public void detectAndSendChanges()
 	{
-		final ICraftingGrid cc = this.network.getCache( ICraftingGrid.class );
+		final ICraftingGrid cc = this.getNetwork().getCache( ICraftingGrid.class );
 		final ImmutableSet<ICraftingCPU> cpuSet = cc.getCpus();
 
 		int matches = 0;
@@ -60,7 +61,7 @@ public class ContainerCraftingStatus extends ContainerCraftingCPU
 			boolean found = false;
 			for( final CraftingCPURecord ccr : this.cpus )
 			{
-				if( ccr.cpu == c )
+				if( ccr.getCpu() == c )
 				{
 					found = true;
 				}
@@ -114,7 +115,7 @@ public class ContainerCraftingStatus extends ContainerCraftingCPU
 		}
 		else if( this.selectedCpu != -1 )
 		{
-			this.myName = this.cpus.get( this.selectedCpu ).myName;
+			this.myName = this.cpus.get( this.selectedCpu ).getName();
 		}
 
 		if( this.selectedCpu == -1 && this.cpus.size() > 0 )
@@ -124,9 +125,9 @@ public class ContainerCraftingStatus extends ContainerCraftingCPU
 
 		if( this.selectedCpu != -1 )
 		{
-			if( this.cpus.get( this.selectedCpu ).cpu != this.monitor )
+			if( this.cpus.get( this.selectedCpu ).getCpu() != this.getMonitor() )
 			{
-				this.setCPU( this.cpus.get( this.selectedCpu ).cpu );
+				this.setCPU( this.cpus.get( this.selectedCpu ).getCpu() );
 			}
 		}
 		else
@@ -167,8 +168,8 @@ public class ContainerCraftingStatus extends ContainerCraftingCPU
 		}
 		else
 		{
-			this.myName = this.cpus.get( this.selectedCpu ).myName;
-			this.setCPU( this.cpus.get( this.selectedCpu ).cpu );
+			this.myName = this.cpus.get( this.selectedCpu ).getName();
+			this.setCPU( this.cpus.get( this.selectedCpu ).getCpu() );
 		}
 	}
 }

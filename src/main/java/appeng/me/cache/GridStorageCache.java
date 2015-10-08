@@ -58,11 +58,11 @@ import com.google.common.collect.SetMultimap;
 public class GridStorageCache implements IStorageGrid
 {
 
-	public final IGrid myGrid;
-	final HashSet<ICellProvider> activeCellProviders = new HashSet<ICellProvider>();
-	final HashSet<ICellProvider> inactiveCellProviders = new HashSet<ICellProvider>();
+	private final IGrid myGrid;
+	private final HashSet<ICellProvider> activeCellProviders = new HashSet<ICellProvider>();
+	private final HashSet<ICellProvider> inactiveCellProviders = new HashSet<ICellProvider>();
 	private final SetMultimap<IAEStack, ItemWatcher> interests = HashMultimap.create();
-	public final GenericInterestManager<ItemWatcher> interestManager = new GenericInterestManager<ItemWatcher>( this.interests );
+	private final GenericInterestManager<ItemWatcher> interestManager = new GenericInterestManager<ItemWatcher>( this.interests );
 	private final NetworkMonitor<IAEItemStack> itemMonitor = new NetworkMonitor<IAEItemStack>( this, StorageChannel.ITEMS );
 	private final NetworkMonitor<IAEFluidStack> fluidMonitor = new NetworkMonitor<IAEFluidStack>( this, StorageChannel.FLUIDS );
 	private final HashMap<IGridNode, IStackWatcher> watchers = new HashMap<IGridNode, IStackWatcher>();
@@ -88,7 +88,7 @@ public class GridStorageCache implements IStorageGrid
 		{
 			final ICellContainer cc = (ICellContainer) machine;
 
-			this.myGrid.postEvent( new MENetworkCellArrayUpdate() );
+			this.getGrid().postEvent( new MENetworkCellArrayUpdate() );
 			this.removeCellProvider( cc, new CellChangeTracker() ).applyChanges();
 			this.inactiveCellProviders.remove( cc );
 		}
@@ -112,7 +112,7 @@ public class GridStorageCache implements IStorageGrid
 			final ICellContainer cc = (ICellContainer) machine;
 			this.inactiveCellProviders.add( cc );
 
-			this.myGrid.postEvent( new MENetworkCellArrayUpdate() );
+			this.getGrid().postEvent( new MENetworkCellArrayUpdate() );
 			if( node.isActive() )
 			{
 				this.addCellProvider( cc, new CellChangeTracker() ).applyChanges();
@@ -146,7 +146,7 @@ public class GridStorageCache implements IStorageGrid
 
 	}
 
-	public CellChangeTracker addCellProvider( final ICellProvider cc, final CellChangeTracker tracker )
+	private CellChangeTracker addCellProvider( final ICellProvider cc, final CellChangeTracker tracker )
 	{
 		if( this.inactiveCellProviders.contains( cc ) )
 		{
@@ -173,7 +173,7 @@ public class GridStorageCache implements IStorageGrid
 		return tracker;
 	}
 
-	public CellChangeTracker removeCellProvider( final ICellProvider cc, final CellChangeTracker tracker )
+	private CellChangeTracker removeCellProvider( final ICellProvider cc, final CellChangeTracker tracker )
 	{
 		if( this.activeCellProviders.contains( cc ) )
 		{
@@ -259,7 +259,7 @@ public class GridStorageCache implements IStorageGrid
 		}
 	}
 
-	public IMEInventoryHandler<IAEItemStack> getItemInventoryHandler()
+	IMEInventoryHandler<IAEItemStack> getItemInventoryHandler()
 	{
 		if( this.myItemNetwork == null )
 		{
@@ -270,7 +270,7 @@ public class GridStorageCache implements IStorageGrid
 
 	private void buildNetworkStorage( final StorageChannel chan )
 	{
-		final SecurityCache security = this.myGrid.getCache( ISecurityGrid.class );
+		final SecurityCache security = this.getGrid().getCache( ISecurityGrid.class );
 
 		switch( chan )
 		{
@@ -298,7 +298,7 @@ public class GridStorageCache implements IStorageGrid
 		}
 	}
 
-	public IMEInventoryHandler<IAEFluidStack> getFluidInventoryHandler()
+	IMEInventoryHandler<IAEFluidStack> getFluidInventoryHandler()
 	{
 		if( this.myFluidNetwork == null )
 		{
@@ -344,6 +344,16 @@ public class GridStorageCache implements IStorageGrid
 	public IMEMonitor<IAEFluidStack> getFluidInventory()
 	{
 		return this.fluidMonitor;
+	}
+
+	public GenericInterestManager<ItemWatcher> getInterestManager()
+	{
+		return this.interestManager;
+	}
+
+	IGrid getGrid()
+	{
+		return this.myGrid;
 	}
 
 	private class CellChangeTrackerRecord

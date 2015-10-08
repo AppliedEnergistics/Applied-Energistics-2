@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.regex.Pattern;
 
+import javax.annotation.Nonnull;
+
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import appeng.api.AEApi;
@@ -53,10 +55,10 @@ public class ItemRepo
 	private final IScrollSource src;
 	private final ISortSource sortSrc;
 
-	public int rowSize = 9;
+	private int rowSize = 9;
 
-	public String searchString = "";
-	IPartitionList<IAEItemStack> myPartitionList;
+	private String searchString = "";
+	private IPartitionList<IAEItemStack> myPartitionList;
 	private String innerSearch = "";
 	private String NEIWord = null;
 	private boolean hasPower;
@@ -216,7 +218,7 @@ public class ItemRepo
 		final Enum SortBy = this.sortSrc.getSortBy();
 		final Enum SortDir = this.sortSrc.getSortDir();
 
-		ItemSorters.Direction = (appeng.api.config.SortDir) SortDir;
+		ItemSorters.setDirection( (appeng.api.config.SortDir) SortDir );
 		ItemSorters.init();
 
 		if( SortBy == SortOrder.MOD )
@@ -284,5 +286,25 @@ public class ItemRepo
 	public void setPower( final boolean hasPower )
 	{
 		this.hasPower = hasPower;
+	}
+
+	public int getRowSize()
+	{
+		return this.rowSize;
+	}
+
+	public void setRowSize( final int rowSize )
+	{
+		this.rowSize = rowSize;
+	}
+
+	public String getSearchString()
+	{
+		return this.searchString;
+	}
+
+	public void setSearchString( @Nonnull final String searchString )
+	{
+		this.searchString = searchString;
 	}
 }

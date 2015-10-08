@@ -81,12 +81,12 @@ public class PartCraftingTerminal extends AbstractPartTerminal
 		int z = (int) p.posZ;
 		if( this.getHost().getTile() != null )
 		{
-			x = this.tile.getPos().getX();
-			y = this.tile.getPos().getY();
-			z = this.tile.getPos().getZ();
+			x = this.getTile().getPos().getX();
+			y = this.getTile().getPos().getY();
+			z = this.getTile().getPos().getZ();
 		}
 
-		if( GuiBridge.GUI_CRAFTING_TERMINAL.hasPermissions( this.getHost().getTile(), x, y, z, this.side, p ) )
+		if( GuiBridge.GUI_CRAFTING_TERMINAL.hasPermissions( this.getHost().getTile(), x, y, z, this.getSide(), p ) )
 		{
 			return GuiBridge.GUI_CRAFTING_TERMINAL;
 		}

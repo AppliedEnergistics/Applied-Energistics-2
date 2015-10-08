@@ -28,53 +28,58 @@ import appeng.api.networking.IGridStorage;
 public class GridCacheWrapper implements IGridCache
 {
 
-	final IGridCache myCache;
-	final String name;
+	private final IGridCache myCache;
+	private final String name;
 
 	public GridCacheWrapper( final IGridCache gc )
 	{
 		this.myCache = gc;
-		this.name = this.myCache.getClass().getName();
+		this.name = this.getCache().getClass().getName();
 	}
 
 	@Override
 	public void onUpdateTick()
 	{
-		this.myCache.onUpdateTick();
+		this.getCache().onUpdateTick();
 	}
 
 	@Override
 	public void removeNode( final IGridNode gridNode, final IGridHost machine )
 	{
-		this.myCache.removeNode( gridNode, machine );
+		this.getCache().removeNode( gridNode, machine );
 	}
 
 	@Override
 	public void addNode( final IGridNode gridNode, final IGridHost machine )
 	{
-		this.myCache.addNode( gridNode, machine );
+		this.getCache().addNode( gridNode, machine );
 	}
 
 	@Override
 	public void onSplit( final IGridStorage storageB )
 	{
-		this.myCache.onSplit( storageB );
+		this.getCache().onSplit( storageB );
 	}
 
 	@Override
 	public void onJoin( final IGridStorage storageB )
 	{
-		this.myCache.onJoin( storageB );
+		this.getCache().onJoin( storageB );
 	}
 
 	@Override
 	public void populateGridStorage( final IGridStorage storage )
 	{
-		this.myCache.populateGridStorage( storage );
+		this.getCache().populateGridStorage( storage );
 	}
 
 	public String getName()
 	{
 		return this.name;
+	}
+
+	IGridCache getCache()
+	{
+		return this.myCache;
 	}
 }

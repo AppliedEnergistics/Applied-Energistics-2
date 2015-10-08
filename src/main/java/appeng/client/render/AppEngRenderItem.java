@@ -19,6 +19,10 @@
 package appeng.client.render;
 
 
+import javax.annotation.Nonnull;
+
+import org.lwjgl.opengl.GL11;
+
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
@@ -26,8 +30,6 @@ import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.resources.model.ModelManager;
 import net.minecraft.item.ItemStack;
-
-import org.lwjgl.opengl.GL11;
 
 import appeng.api.storage.data.IAEItemStack;
 import appeng.core.AEConfig;
@@ -55,7 +57,7 @@ public class AppEngRenderItem extends RenderItem
 	private static final ISlimReadableNumberConverter SLIM_CONVERTER = ReadableNumberConverter.INSTANCE;
 	private static final IWideReadableNumberConverter WIDE_CONVERTER = ReadableNumberConverter.INSTANCE;
 
-	public IAEItemStack aeStack;
+	private IAEItemStack aeStack = null;
 
 	@Override
 	public void renderItemOverlayIntoGUI(
@@ -137,7 +139,7 @@ public class AppEngRenderItem extends RenderItem
 	private void renderQuad( final Tessellator par1Tessellator, final int par2, final int par3, final int par4, final int par5, final int par6 )
 	{
 		final WorldRenderer wr = par1Tessellator.getWorldRenderer();
-		
+
 		wr.startDrawingQuads();
 		wr.setColorOpaque_I( par6 );
 		wr.addVertex( par2, par3, 0.0D );
@@ -157,5 +159,15 @@ public class AppEngRenderItem extends RenderItem
 		{
 			return WIDE_CONVERTER.toWideReadableForm( originalSize );
 		}
+	}
+
+	public IAEItemStack getAeStack()
+	{
+		return this.aeStack;
+	}
+
+	public void setAeStack( @Nonnull final IAEItemStack aeStack )
+	{
+		this.aeStack = aeStack;
 	}
 }

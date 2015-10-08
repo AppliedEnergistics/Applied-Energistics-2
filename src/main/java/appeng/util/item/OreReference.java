@@ -37,12 +37,12 @@ public class OreReference
 	private final Set<Integer> ores = new HashSet<Integer>();
 	private List<IAEItemStack> aeOtherOptions = null;
 
-	public Collection<String> getEquivalents()
+	Collection<String> getEquivalents()
 	{
 		return this.otherOptions;
 	}
 
-	public List<IAEItemStack> getAEEquivalents()
+	List<IAEItemStack> getAEEquivalents()
 	{
 		if( this.aeOtherOptions == null )
 		{
@@ -64,7 +64,7 @@ public class OreReference
 		return this.aeOtherOptions;
 	}
 
-	public Collection<Integer> getOres()
+	Collection<Integer> getOres()
 	{
 		return this.ores;
 	}

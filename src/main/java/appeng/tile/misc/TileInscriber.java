@@ -81,32 +81,32 @@ import com.google.common.collect.Lists;
 public class TileInscriber extends AENetworkPowerTile implements IGridTickable, IUpgradeableHost, IConfigManagerHost
 {
 
-	public final int maxProcessingTime = 100;
-	final int[] top = { 0 };
-	final int[] bottom = { 1 };
-	final int[] sides = { 2, 3 };
-	final AppEngInternalInventory inv = new AppEngInternalInventory( this, 4 );
+	private final int maxProcessingTime = 100;
+	private final int[] top = { 0 };
+	private final int[] bottom = { 1 };
+	private final int[] sides = { 2, 3 };
+	private final AppEngInternalInventory inv = new AppEngInternalInventory( this, 4 );
 	private final IConfigManager settings;
 	private final UpgradeInventory upgrades;
-	public int processingTime = 0;
+	private int processingTime = 0;
 	// cycles from 0 - 16, at 8 it preforms the action, at 16 it re-enables the normal routine.
-	public boolean smash;
-	public int finalStep;
-	public long clientStart;
+	private boolean smash;
+	private int finalStep;
+	private long clientStart;
 
 	@Reflected
 	public TileInscriber()
 	{
-		this.gridProxy.setValidSides( EnumSet.noneOf( EnumFacing.class ) );
-		this.internalMaxPower = 1500;
-		this.gridProxy.setIdlePowerUsage( 0 );
+		this.getProxy().setValidSides( EnumSet.noneOf( EnumFacing.class ) );
+		this.setInternalMaxPower( 1500 );
+		this.getProxy().setIdlePowerUsage( 0 );
 		this.settings = new ConfigManager( this );
 
 		final ITileDefinition inscriberDefinition = AEApi.instance().definitions().blocks().inscriber();
 		this.upgrades = new DefinitionUpgradeInventory( inscriberDefinition, this, this.getUpgradeSlots() );
 	}
 
-	protected int getUpgradeSlots()
+	private int getUpgradeSlots()
 	{
 		return 3;
 	}
@@ -138,13 +138,13 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 	{
 		final int slot = data.readByte();
 
-		final boolean oldSmash = this.smash;
+		final boolean oldSmash = this.isSmash();
 		final boolean newSmash = ( slot & 64 ) == 64;
 
 		if( oldSmash != newSmash && newSmash )
 		{
-			this.smash = true;
-			this.clientStart = System.currentTimeMillis();
+			this.setSmash( true );
+			this.setClientStart( System.currentTimeMillis() );
 		}
 
 		for( int num = 0; num < this.inv.getSizeInventory(); num++ )
@@ -165,7 +165,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 	@TileEvent( TileEventType.NETWORK_WRITE )
 	public void writeToStream_TileInscriber( final ByteBuf data ) throws IOException
 	{
-		int slot = this.smash ? 64 : 0;
+		int slot = this.isSmash() ? 64 : 0;
 
 		for( int num = 0; num < this.inv.getSizeInventory(); num++ )
 		{
@@ -190,7 +190,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 	public void setOrientation( final EnumFacing inForward, final EnumFacing inUp )
 	{
 		super.setOrientation( inForward, inUp );
-		this.gridProxy.setValidSides( EnumSet.complementOf( EnumSet.of( this.getForward() ) ) );
+		this.getProxy().setValidSides( EnumSet.complementOf( EnumSet.of( this.getForward() ) ) );
 		this.setPowerSides( EnumSet.complementOf( EnumSet.of( this.getForward() ) ) );
 	}
 
@@ -233,7 +233,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 	@Override
 	public boolean isItemValidForSlot( final int i, final ItemStack itemstack )
 	{
-		if( this.smash )
+		if( this.isSmash() )
 		{
 			return false;
 		}
@@ -266,15 +266,15 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 			{
 				if( slot != 3 )
 				{
-					this.processingTime = 0;
+					this.setProcessingTime( 0 );
 				}
 
-				if( !this.smash )
+				if( !this.isSmash() )
 				{
 					this.markForUpdate();
 				}
 
-				this.gridProxy.getTick().wakeDevice( this.gridProxy.getNode() );
+				this.getProxy().getTick().wakeDevice( this.getProxy().getNode() );
 			}
 		}
 		catch( final GridAccessException e )
@@ -286,7 +286,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 	@Override
 	public boolean canExtractItem( final int slotIndex, final ItemStack extractedItem, final EnumFacing side )
 	{
-		if( this.smash )
+		if( this.isSmash() )
 		{
 			return false;
 		}
@@ -313,7 +313,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 	@Override
 	public TickingRequest getTickingRequest( final IGridNode node )
 	{
-		return new TickingRequest( TickRates.Inscriber.min, TickRates.Inscriber.max, !this.hasWork(), false );
+		return new TickingRequest( TickRates.Inscriber.getMin(), TickRates.Inscriber.getMax(), !this.hasWork(), false );
 	}
 
 	private boolean hasWork()
@@ -323,8 +323,8 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 			return true;
 		}
 
-		this.processingTime = 0;
-		return this.smash;
+		this.setProcessingTime( 0 );
+		return this.isSmash();
 	}
 
 	@Nullable
@@ -402,10 +402,10 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 		{
 
 			final boolean matchA = ( plateA == null && !recipe.getTopOptional().isPresent() ) || ( Platform.isSameItemPrecise( plateA, recipe.getTopOptional().orNull() ) ) && // and...
-					( plateB == null && !recipe.getBottomOptional().isPresent() ) | ( Platform.isSameItemPrecise( plateB, recipe.getBottomOptional().orNull() ) );
+			( plateB == null && !recipe.getBottomOptional().isPresent() ) | ( Platform.isSameItemPrecise( plateB, recipe.getBottomOptional().orNull() ) );
 
 			final boolean matchB = ( plateB == null && !recipe.getTopOptional().isPresent() ) || ( Platform.isSameItemPrecise( plateB, recipe.getTopOptional().orNull() ) ) && // and...
-					( plateA == null && !recipe.getBottomOptional().isPresent() ) | ( Platform.isSameItemPrecise( plateA, recipe.getBottomOptional().orNull() ) );
+			( plateA == null && !recipe.getBottomOptional().isPresent() ) | ( Platform.isSameItemPrecise( plateA, recipe.getBottomOptional().orNull() ) );
 
 			if( matchA || matchB )
 			{
@@ -424,7 +424,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 	@Override
 	public TickRateModulation tickingRequest( final IGridNode node, final int ticksSinceLastCall )
 	{
-		if( this.smash )
+		if( this.isSmash() )
 		{
 			this.finalStep++;
 			if( this.finalStep == 8 )
@@ -437,7 +437,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 
 					if( ad.addItems( outputCopy ) == null )
 					{
-						this.processingTime = 0;
+						this.setProcessingTime( 0 );
 						if( out.getProcessType() == InscriberProcessType.Press )
 						{
 							this.setInventorySlotContents( 0, null );
@@ -452,7 +452,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 			else if( this.finalStep == 16 )
 			{
 				this.finalStep = 0;
-				this.smash = false;
+				this.setSmash( false );
 				this.markForUpdate();
 			}
 		}
@@ -460,7 +460,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 		{
 			try
 			{
-				final IEnergyGrid eg = this.gridProxy.getEnergy();
+				final IEnergyGrid eg = this.getProxy().getEnergy();
 				IEnergySource src = this;
 
 				// Base 1, increase by 1 for each card
@@ -479,13 +479,13 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 				{
 					src.extractAEPower( powerConsumption, Actionable.MODULATE, PowerMultiplier.CONFIG );
 
-					if( this.processingTime == 0 )
+					if( this.getProcessingTime() == 0 )
 					{
-						this.processingTime += speedFactor;
+						this.setProcessingTime( this.getProcessingTime() + speedFactor );
 					}
 					else
 					{
-						this.processingTime += ticksSinceLastCall * speedFactor;
+						this.setProcessingTime( this.getProcessingTime() + ticksSinceLastCall * speedFactor );
 					}
 				}
 			}
@@ -494,9 +494,9 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 				// :P
 			}
 
-			if( this.processingTime > this.maxProcessingTime )
+			if( this.getProcessingTime() > this.getMaxProcessingTime() )
 			{
-				this.processingTime = this.maxProcessingTime;
+				this.setProcessingTime( this.getMaxProcessingTime() );
 				final IInscriberRecipe out = this.getTask();
 				if( out != null )
 				{
@@ -504,7 +504,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 					final InventoryAdaptor ad = InventoryAdaptor.getAdaptor( new WrapperInventoryRange( this.inv, 3, 1, true ), EnumFacing.UP );
 					if( ad.simulateAdd( outputCopy ) == null )
 					{
-						this.smash = true;
+						this.setSmash( true );
 						this.finalStep = 0;
 						this.markForUpdate();
 					}
@@ -546,5 +546,40 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 	@Override
 	public void updateSetting( final IConfigManager manager, final Enum settingName, final Enum newValue )
 	{
+	}
+
+	public long getClientStart()
+	{
+		return this.clientStart;
+	}
+
+	private void setClientStart( final long clientStart )
+	{
+		this.clientStart = clientStart;
+	}
+
+	public boolean isSmash()
+	{
+		return this.smash;
+	}
+
+	public void setSmash( final boolean smash )
+	{
+		this.smash = smash;
+	}
+
+	public int getMaxProcessingTime()
+	{
+		return this.maxProcessingTime;
+	}
+
+	public int getProcessingTime()
+	{
+		return this.processingTime;
+	}
+
+	private void setProcessingTime( final int processingTime )
+	{
+		this.processingTime = processingTime;
 	}
 }

@@ -26,18 +26,18 @@ import appeng.util.ItemSorters;
 public class EnergyThreshold implements Comparable<EnergyThreshold>
 {
 
-	public final double Limit;
-	public final IEnergyWatcher watcher;
-	final int hash;
+	private final double Limit;
+	private final IEnergyWatcher watcher;
+	private final int hash;
 
 	public EnergyThreshold( final double lim, final IEnergyWatcher wat )
 	{
 		this.Limit = lim;
 		this.watcher = wat;
 
-		if( this.watcher != null )
+		if( this.getWatcher() != null )
 		{
-			this.hash = this.watcher.hashCode() ^ ( (Double) lim ).hashCode();
+			this.hash = this.getWatcher().hashCode() ^ ( (Double) lim ).hashCode();
 		}
 		else
 		{
@@ -54,6 +54,16 @@ public class EnergyThreshold implements Comparable<EnergyThreshold>
 	@Override
 	public int compareTo( final EnergyThreshold o )
 	{
-		return ItemSorters.compareDouble( this.Limit, o.Limit );
+		return ItemSorters.compareDouble( this.getLimit(), o.getLimit() );
+	}
+
+	double getLimit()
+	{
+		return this.Limit;
+	}
+
+	public IEnergyWatcher getWatcher()
+	{
+		return this.watcher;
 	}
 }

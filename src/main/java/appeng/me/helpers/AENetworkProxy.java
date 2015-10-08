@@ -60,8 +60,8 @@ public class AENetworkProxy implements IGridBlock
 	private final IGridProxyable gp;
 	private final boolean worldNode;
 	private final String nbtName; // name
-	public AEColor myColor = AEColor.Transparent;
-	NBTTagCompound data = null; // input
+	private AEColor myColor = AEColor.Transparent;
+	private NBTTagCompound data = null; // input
 	private ItemStack myRepInstance;
 	private boolean isReady = false;
 	private IGridNode node = null;
@@ -322,7 +322,7 @@ public class AENetworkProxy implements IGridBlock
 	@Override
 	public AEColor getGridColor()
 	{
-		return this.myColor;
+		return this.getColor();
 	}
 
 	@Override
@@ -436,5 +436,15 @@ public class AENetworkProxy implements IGridBlock
 	public void setOwner( final EntityPlayer player )
 	{
 		this.owner = player;
+	}
+
+	public AEColor getColor()
+	{
+		return this.myColor;
+	}
+
+	public void setColor( final AEColor myColor )
+	{
+		this.myColor = myColor;
 	}
 }

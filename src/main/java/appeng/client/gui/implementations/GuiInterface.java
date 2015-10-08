@@ -43,9 +43,9 @@ import appeng.helpers.IInterfaceHost;
 public class GuiInterface extends GuiUpgradeable
 {
 
-	GuiTabButton priority;
-	GuiImgButton BlockMode;
-	GuiToggleButton interfaceMode;
+	private GuiTabButton priority;
+	private GuiImgButton BlockMode;
+	private GuiToggleButton interfaceMode;
 
 	public GuiInterface( final InventoryPlayer inventoryPlayer, final IInterfaceHost te )
 	{
@@ -71,12 +71,12 @@ public class GuiInterface extends GuiUpgradeable
 	{
 		if( this.BlockMode != null )
 		{
-			this.BlockMode.set( ( (ContainerInterface) this.cvb ).bMode );
+			this.BlockMode.set( ( (ContainerInterface) this.cvb ).getBlockingMode() );
 		}
 
 		if( this.interfaceMode != null )
 		{
-			this.interfaceMode.setState( ( (ContainerInterface) this.cvb ).iTermMode == YesNo.YES );
+			this.interfaceMode.setState( ( (ContainerInterface) this.cvb ).getInterfaceTerminalMode() == YesNo.YES );
 		}
 
 		this.fontRendererObj.drawString( this.getGuiDisplayName( GuiText.Interface.getLocal() ), 8, 6, 4210752 );

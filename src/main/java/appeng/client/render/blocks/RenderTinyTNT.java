@@ -52,10 +52,10 @@ public class RenderTinyTNT extends BaseBlockRender<BlockTinyTNT, AEBaseTile>
 	public boolean renderInWorld( final BlockTinyTNT imb, final IBlockAccess world, final BlockPos pos, final ModelGenerator renderer )
 	{
 		renderer.setOverrideBlockTexture( new FullIcon( Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getTexture( Blocks.tnt.getDefaultState() )) );
-		renderer.renderAllFaces = true;
+		renderer.setRenderAllFaces( true );
 		renderer.setRenderBounds( 0.25f, 0.0f, 0.25f, 0.75f, 0.5f, 0.75f );
 		final boolean out = super.renderInWorld( imb, world, pos, renderer );
-		renderer.renderAllFaces = false;
+		renderer.setRenderAllFaces( false );
 		return out;
 	}
 }

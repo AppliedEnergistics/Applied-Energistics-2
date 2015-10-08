@@ -33,7 +33,7 @@ public final class FeaturedActiveChecker
 		this.features = features;
 	}
 
-	public ActivityState getActivityState()
+	ActivityState getActivityState()
 	{
 		for( final AEFeature f : this.features )
 		{

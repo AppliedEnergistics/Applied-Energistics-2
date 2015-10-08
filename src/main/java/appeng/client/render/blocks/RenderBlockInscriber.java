@@ -68,7 +68,7 @@ public class RenderBlockInscriber extends BaseBlockRender<BlockInscriber, TileIn
 	@Override
 	public void renderInventory( final BlockInscriber blk, final ItemStack is, final ModelGenerator renderer, final ItemRenderType type, final Object[] obj )
 	{
-		renderer.renderAllFaces = true;
+		renderer.setRenderAllFaces( true );
 		this.setInvRenderBounds( renderer, 6, 1, 0, 10, 15, 2 );
 		this.renderInvBlock( EnumSet.allOf( AEPartLocation.class ), blk, is, 0xffffff, renderer );
 
@@ -99,7 +99,7 @@ public class RenderBlockInscriber extends BaseBlockRender<BlockInscriber, TileIn
 
 		blk.getRendererInstance().setTemporaryRenderIcon( null );
 
-		renderer.renderAllFaces = false;
+		renderer.setRenderAllFaces( false );
 		// blk.getRendererInstance().setTemporaryRenderIcon( null );
 
 	}
@@ -119,7 +119,7 @@ public class RenderBlockInscriber extends BaseBlockRender<BlockInscriber, TileIn
 		final EnumFacing fdz = te.getForward();
 		final EnumFacing fdx = Platform.crossProduct( fdz, fdy ).getOpposite();
 
-		renderer.renderAllFaces = true;
+		renderer.setRenderAllFaces( true );
 
 		// sides...
 		this.renderBlockBounds( renderer, 3, 1, 0, 13, 15, 3, fdx, fdy, fdz );
@@ -140,7 +140,7 @@ public class RenderBlockInscriber extends BaseBlockRender<BlockInscriber, TileIn
 
 		block.getRendererInstance().setTemporaryRenderIcon( null );
 
-		renderer.renderAllFaces = false;
+		renderer.setRenderAllFaces( false );
 		block.getRendererInstance().setTemporaryRenderIcon( null );
 
 		this.postRenderInWorld( renderer );
@@ -170,13 +170,13 @@ public class RenderBlockInscriber extends BaseBlockRender<BlockInscriber, TileIn
 
 		long absoluteProgress = 0;
 
-		if( tile.smash )
+		if( tile.isSmash() )
 		{
 			final long currentTime = System.currentTimeMillis();
-			absoluteProgress = currentTime - tile.clientStart;
+			absoluteProgress = currentTime - tile.getClientStart();
 			if( absoluteProgress > 800 )
 			{
-				tile.smash = false;
+				tile.setSmash( false );
 			}
 		}
 
@@ -262,7 +262,7 @@ public class RenderBlockInscriber extends BaseBlockRender<BlockInscriber, TileIn
 		}
 	}
 
-	public void renderItem( ItemStack sis, final float o, final AEBaseBlock block, final AEBaseTile tile, final WorldRenderer tess, final double x, final double y, final double z, final float f, final ModelGenerator renderer )
+	private void renderItem( ItemStack sis, final float o, final AEBaseBlock block, final AEBaseTile tile, final WorldRenderer tess, final double x, final double y, final double z, final float f, final ModelGenerator renderer )
 	{
 		if( sis != null )
 		{

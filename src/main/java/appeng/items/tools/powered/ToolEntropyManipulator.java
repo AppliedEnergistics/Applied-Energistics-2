@@ -143,19 +143,19 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 			r = this.heatUp.get( new InWorldToolOperationIngredient( state.getBlock(), true ) );
 		}
 
-		if( r.BlockItem != null )
+		if( r.getBlockItem() != null )
 		{
-			final Block blk = Block.getBlockFromItem( r.BlockItem.getItem() );
-			w.setBlockState( pos, blk.getStateFromMeta( r.BlockItem.getItemDamage() ), 3 );
+			final Block blk = Block.getBlockFromItem( r.getBlockItem().getItem() );
+			w.setBlockState( pos, blk.getStateFromMeta( r.getBlockItem().getItemDamage() ), 3 );
 		}
 		else
 		{
 			w.setBlockToAir( pos );
 		}
 
-		if( r.Drops != null )
+		if( r.getDrops() != null )
 		{
-			Platform.spawnDrops( w, pos, r.Drops );
+			Platform.spawnDrops( w, pos, r.getDrops() );
 		}
 	}
 
@@ -180,19 +180,19 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 			r = this.coolDown.get( new InWorldToolOperationIngredient( state.getBlock(), true ) );
 		}
 
-		if( r.BlockItem != null )
+		if( r.getBlockItem() != null )
 		{
-			final Block blk = Block.getBlockFromItem( r.BlockItem.getItem() );
-			w.setBlockState( pos, blk.getStateFromMeta( r.BlockItem.getItemDamage() ), 3 );
+			final Block blk = Block.getBlockFromItem( r.getBlockItem().getItem() );
+			w.setBlockState( pos, blk.getStateFromMeta( r.getBlockItem().getItemDamage() ), 3 );
 		}
 		else
 		{
 			w.setBlockToAir( pos );
 		}
 
-		if( r.Drops != null )
+		if( r.getDrops() != null )
 		{
-			Platform.spawnDrops( w, pos, r.Drops );
+			Platform.spawnDrops( w, pos, r.getDrops() );
 		}
 	}
 
@@ -245,7 +245,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 
 		return item;
 	}
-	
+
 	@Override
 	public boolean onItemUse(
 			final ItemStack item,
@@ -333,19 +333,19 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 					final InWorldToolOperationResult or = InWorldToolOperationResult.getBlockOperationResult( out.toArray( new ItemStack[out.size()] ) );
 					w.playSoundEffect( pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, "fire.ignite", 1.0F, itemRand.nextFloat() * 0.4F + 0.8F );
 
-					if( or.BlockItem == null )
+					if( or.getBlockItem() == null )
 					{
 						w.setBlockState( pos, Platform.AIR_BLOCK.getDefaultState(), 3 );
 					}
 					else
 					{
-						final Block blk = Block.getBlockFromItem( or.BlockItem.getItem() );
-						w.setBlockState( pos, blk.getStateFromMeta( or.BlockItem.getItemDamage() ), 3 );
+						final Block blk = Block.getBlockFromItem( or.getBlockItem().getItem() );
+						w.setBlockState( pos, blk.getStateFromMeta( or.getBlockItem().getItemDamage() ), 3 );
 					}
 
-					if( or.Drops != null )
+					if( or.getDrops() != null )
 					{
-						Platform.spawnDrops( w, pos, or.Drops );
+						Platform.spawnDrops( w, pos, or.getDrops() );
 					}
 
 					return true;

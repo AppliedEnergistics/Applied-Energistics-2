@@ -27,16 +27,16 @@ import appeng.util.Platform;
 public class SharedSearchObject
 {
 
-	final int def;
-	final int hash;
-	public AESharedNBT shared;
-	NBTTagCompound compound;
+	private final int def;
+	private final int hash;
+	private AESharedNBT shared;
+	private NBTTagCompound compound;
 
 	public SharedSearchObject( final Item itemID, final int damageValue, final NBTTagCompound tagCompound )
 	{
 		this.def = ( damageValue << Platform.DEF_OFFSET ) | Item.itemRegistry.getIDForObject( itemID );
 		this.hash = Platform.NBTOrderlessHash( tagCompound );
-		this.compound = tagCompound;
+		this.setCompound( tagCompound );
 	}
 
 	@Override
@@ -59,8 +59,28 @@ public class SharedSearchObject
 		final SharedSearchObject other = (SharedSearchObject) obj;
 		if( this.def == other.def && this.hash == other.hash )
 		{
-			return Platform.NBTEqualityTest( this.compound, other.compound );
+			return Platform.NBTEqualityTest( this.getCompound(), other.getCompound() );
 		}
 		return false;
+	}
+
+	AESharedNBT getShared()
+	{
+		return this.shared;
+	}
+
+	void setShared( final AESharedNBT shared )
+	{
+		this.shared = shared;
+	}
+
+	NBTTagCompound getCompound()
+	{
+		return this.compound;
+	}
+
+	void setCompound( final NBTTagCompound compound )
+	{
+		this.compound = compound;
 	}
 }

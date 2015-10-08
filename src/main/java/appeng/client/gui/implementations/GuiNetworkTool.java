@@ -36,7 +36,7 @@ import appeng.core.sync.packets.PacketValueConfig;
 public class GuiNetworkTool extends AEBaseGui
 {
 
-	GuiToggleButton tFacades;
+	private GuiToggleButton tFacades;
 
 	public GuiNetworkTool( final InventoryPlayer inventoryPlayer, final INetworkTool te )
 	{
@@ -77,7 +77,7 @@ public class GuiNetworkTool extends AEBaseGui
 	{
 		if( this.tFacades != null )
 		{
-			this.tFacades.setState( ( (ContainerNetworkTool) this.inventorySlots ).facadeMode );
+			this.tFacades.setState( ( (ContainerNetworkTool) this.inventorySlots ).isFacadeMode() );
 		}
 
 		this.fontRendererObj.drawString( this.getGuiDisplayName( GuiText.NetworkTool.getLocal() ), 8, 6, 4210752 );

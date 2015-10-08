@@ -59,7 +59,7 @@ public abstract class AbstractPartDisplay extends AbstractPartReporting
 		final IAESprite sideTexture = CableBusTextures.PartMonitorSides.getIcon();
 		final IAESprite backTexture = CableBusTextures.PartMonitorBack.getIcon();
 
-		rh.setTexture( sideTexture, sideTexture, backTexture, renderer.getIcon( this.is ), sideTexture, sideTexture );
+		rh.setTexture( sideTexture, sideTexture, backTexture, renderer.getIcon( this.getItemStack() ), sideTexture, sideTexture );
 		rh.renderInventoryBox( renderer );
 
 		rh.setInvColor( this.getColor().whiteVariant );
@@ -82,7 +82,7 @@ public abstract class AbstractPartDisplay extends AbstractPartReporting
 		final IAESprite sideTexture = CableBusTextures.PartMonitorSides.getIcon();
 		final IAESprite backTexture = CableBusTextures.PartMonitorBack.getIcon();
 
-		rh.setTexture( sideTexture, sideTexture, backTexture, renderer.getIcon( this.is ), sideTexture, sideTexture );
+		rh.setTexture( sideTexture, sideTexture, backTexture, renderer.getIcon( this.getItemStack() ), sideTexture, sideTexture );
 
 		rh.setBounds( 2, 2, 14, 14, 14, 16 );
 		rh.renderBlock( pos, renderer );
@@ -93,7 +93,7 @@ public abstract class AbstractPartDisplay extends AbstractPartReporting
 			renderer.setBrightness( l << 20 | l << 4 );
 		}
 
-		renderer.uvRotateBottom = renderer.uvRotateEast = renderer.uvRotateNorth = renderer.uvRotateSouth = renderer.uvRotateTop = renderer.uvRotateWest = this.getSpin();
+		renderer.setUvRotateBottom( renderer.setUvRotateEast( renderer.setUvRotateNorth( renderer.setUvRotateSouth( renderer.setUvRotateTop( renderer.setUvRotateWest( this.getSpin() ) ) ) ) ) );
 
 		renderer.setColorOpaque_I( this.getColor().whiteVariant );
 		rh.renderFace( pos, this.getFrontBright().getIcon(), EnumFacing.SOUTH, renderer );
@@ -104,11 +104,11 @@ public abstract class AbstractPartDisplay extends AbstractPartReporting
 		renderer.setColorOpaque_I( this.getColor().blackVariant );
 		rh.renderFace( pos, this.getFrontColored().getIcon(), EnumFacing.SOUTH, renderer );
 
-		renderer.uvRotateBottom = renderer.uvRotateEast = renderer.uvRotateNorth = renderer.uvRotateSouth = renderer.uvRotateTop = renderer.uvRotateWest = 0;
+		renderer.setUvRotateBottom( renderer.setUvRotateEast( renderer.setUvRotateNorth( renderer.setUvRotateSouth( renderer.setUvRotateTop( renderer.setUvRotateWest( 0 ) ) ) ) ) );
 
 		final IAESprite sideStatusTexture = CableBusTextures.PartMonitorSidesStatus.getIcon();
 
-		rh.setTexture( sideStatusTexture, sideStatusTexture, backTexture, renderer.getIcon( this.is ), sideStatusTexture, sideStatusTexture );
+		rh.setTexture( sideStatusTexture, sideStatusTexture, backTexture, renderer.getIcon( this.getItemStack() ), sideStatusTexture, sideStatusTexture );
 
 		rh.setBounds( 4, 4, 13, 12, 12, 14 );
 		rh.renderBlock( pos, renderer );

@@ -64,9 +64,9 @@ public class RenderBlockEnergyCube extends BaseBlockRender<BlockEnergyCell, Tile
 	@Override
 	public boolean renderInWorld( final BlockEnergyCell blk, final IBlockAccess world, final BlockPos pos, final ModelGenerator renderer )
 	{
-		renderer.overrideBlockTexture = renderer.getIcon( world.getBlockState( pos ) )[0];// blk.getIcon( 0, meta );
+		renderer.setOverrideBlockTexture( renderer.getIcon( world.getBlockState( pos ) )[0] );// blk.getIcon( 0, meta );
 		final boolean out = renderer.renderStandardBlock( blk, pos );
-		renderer.overrideBlockTexture = null;
+		renderer.setOverrideBlockTexture( null );
 
 		return out;
 	}

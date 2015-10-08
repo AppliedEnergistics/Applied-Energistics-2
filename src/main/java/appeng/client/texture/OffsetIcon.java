@@ -27,8 +27,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class OffsetIcon implements IAESprite
 {
 
-	final float offsetX;
-	final float offsetY;
+	private final float offsetX;
+	private final float offsetY;
 
 	private final IAESprite p;
 

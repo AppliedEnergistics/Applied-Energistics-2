@@ -125,16 +125,16 @@ public final class BusRenderHelper implements IPartRenderHelper
 	}
 
 	/*
-		public void setRenderColor( int color )
-		{
-			for( Block block : AEApi.instance().definitions().blocks().multiPart().maybeBlock().asSet() )
-			{
-				final BlockCableBus cableBus = (BlockCableBus) block;
-				cableBus.setRenderColor( color );
-			}
-		}
-	*/
-		
+	 * public void setRenderColor( int color )
+	 * {
+	 * for( Block block : AEApi.instance().definitions().blocks().multiPart().maybeBlock().asSet() )
+	 * {
+	 * final BlockCableBus cableBus = (BlockCableBus) block;
+	 * cableBus.setRenderColor( color );
+	 * }
+	 * }
+	 */
+
 	public void setOrientation( final EnumFacing dx, final EnumFacing dy, final EnumFacing dz )
 	{
 		this.ax = dx == null ? EnumFacing.EAST : dx;
@@ -250,7 +250,7 @@ public final class BusRenderHelper implements IPartRenderHelper
 		this.renderingForPass = pass;
 	}
 
-	public boolean renderThis()
+	private boolean renderThis()
 	{
 		if( this.renderingForPass == this.currentPass || this.noAlphaPass )
 		{
@@ -304,7 +304,7 @@ public final class BusRenderHelper implements IPartRenderHelper
 		}
 	}
 
-	public EnumFacing mapRotation( final EnumFacing dir )
+	private EnumFacing mapRotation( final EnumFacing dir )
 	{
 		final EnumFacing forward = this.az;
 		final EnumFacing up = this.ay;
@@ -353,7 +353,7 @@ public final class BusRenderHelper implements IPartRenderHelper
 		{
 			return EnumFacing.EAST;
 		}
-		
+
 		return null;
 	}
 
@@ -396,14 +396,14 @@ public final class BusRenderHelper implements IPartRenderHelper
 			final EnumFacing forward = BusRenderHelper.INSTANCE.az;
 			final EnumFacing up = BusRenderHelper.INSTANCE.ay;
 
-			renderer.uvRotateBottom = info.getTexture( AEPartLocation.DOWN ).setFlip( BaseBlockRender.getOrientation( EnumFacing.DOWN, forward, up ) );
-			renderer.uvRotateTop = info.getTexture( AEPartLocation.UP ).setFlip( BaseBlockRender.getOrientation( EnumFacing.UP, forward, up ) );
+			renderer.setUvRotateBottom( info.getTexture( AEPartLocation.DOWN ).setFlip( BaseBlockRender.getOrientation( EnumFacing.DOWN, forward, up ) ) );
+			renderer.setUvRotateTop( info.getTexture( AEPartLocation.UP ).setFlip( BaseBlockRender.getOrientation( EnumFacing.UP, forward, up ) ) );
 
-			renderer.uvRotateEast = info.getTexture( AEPartLocation.EAST ).setFlip( BaseBlockRender.getOrientation( EnumFacing.EAST, forward, up ) );
-			renderer.uvRotateWest = info.getTexture( AEPartLocation.WEST ).setFlip( BaseBlockRender.getOrientation( EnumFacing.WEST, forward, up ) );
+			renderer.setUvRotateEast( info.getTexture( AEPartLocation.EAST ).setFlip( BaseBlockRender.getOrientation( EnumFacing.EAST, forward, up ) ) );
+			renderer.setUvRotateWest( info.getTexture( AEPartLocation.WEST ).setFlip( BaseBlockRender.getOrientation( EnumFacing.WEST, forward, up ) ) );
 
-			renderer.uvRotateNorth = info.getTexture( AEPartLocation.NORTH ).setFlip( BaseBlockRender.getOrientation( EnumFacing.NORTH, forward, up ) );
-			renderer.uvRotateSouth = info.getTexture( AEPartLocation.SOUTH ).setFlip( BaseBlockRender.getOrientation( EnumFacing.SOUTH, forward, up ) );
+			renderer.setUvRotateNorth( info.getTexture( AEPartLocation.NORTH ).setFlip( BaseBlockRender.getOrientation( EnumFacing.NORTH, forward, up ) ) );
+			renderer.setUvRotateSouth( info.getTexture( AEPartLocation.SOUTH ).setFlip( BaseBlockRender.getOrientation( EnumFacing.SOUTH, forward, up ) ) );
 
 			this.bbr.renderBlockBounds( renderer, this.minX, this.minY, this.minZ, this.maxX, this.maxY, this.maxZ, this.ax, this.ay, this.az );
 
@@ -430,7 +430,7 @@ public final class BusRenderHelper implements IPartRenderHelper
 	@Override
 	public void setFacesToRender( final EnumSet<EnumFacing> faces )
 	{
-		BusRenderer.INSTANCE.renderer.renderFaces = faces;
+		BusRenderer.INSTANCE.getRenderer().setRenderFaces( faces );
 	}
 
 	@Override

@@ -31,7 +31,7 @@ import appeng.api.util.AEPartLocation;
 public class BusCollisionHelper implements IPartCollisionHelper
 {
 
-	final List<AxisAlignedBB> boxes;
+	private final List<AxisAlignedBB> boxes;
 
 	private final EnumFacing x;
 	private final EnumFacing y;

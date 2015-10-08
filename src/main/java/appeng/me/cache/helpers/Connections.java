@@ -31,10 +31,10 @@ import appeng.util.IWorldCallable;
 public class Connections implements IWorldCallable<Void>
 {
 
-	public final HashMap<IGridNode, TunnelConnection> connections = new HashMap<IGridNode, TunnelConnection>();
+	private final HashMap<IGridNode, TunnelConnection> connections = new HashMap<IGridNode, TunnelConnection>();
 	private final PartP2PTunnelME me;
-	public boolean create = false;
-	public boolean destroy = false;
+	private boolean create = false;
+	private boolean destroy = false;
 
 	public Connections( final PartP2PTunnelME o )
 	{
@@ -51,13 +51,38 @@ public class Connections implements IWorldCallable<Void>
 
 	public void markDestroy()
 	{
-		this.create = false;
-		this.destroy = true;
+		this.setCreate( false );
+		this.setDestroy( true );
 	}
 
 	public void markCreate()
 	{
-		this.create = true;
-		this.destroy = false;
+		this.setCreate( true );
+		this.setDestroy( false );
+	}
+
+	public HashMap<IGridNode, TunnelConnection> getConnections()
+	{
+		return this.connections;
+	}
+
+	public boolean isCreate()
+	{
+		return this.create;
+	}
+
+	private void setCreate( final boolean create )
+	{
+		this.create = create;
+	}
+
+	public boolean isDestroy()
+	{
+		return this.destroy;
+	}
+
+	private void setDestroy( final boolean destroy )
+	{
+		this.destroy = destroy;
 	}
 }

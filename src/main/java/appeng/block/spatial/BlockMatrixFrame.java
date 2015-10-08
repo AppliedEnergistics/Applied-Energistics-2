@@ -51,7 +51,7 @@ public class BlockMatrixFrame extends AEBaseBlock implements ICustomCollision
 		this.setResistance( 6000000.0F );
 		this.setBlockUnbreakable();
 		this.setLightOpacity( 0 );
-		this.isOpaque = false;
+		this.setOpaque( false );
 		this.setFeature( EnumSet.of( AEFeature.SpatialIO ) );
 	}
 

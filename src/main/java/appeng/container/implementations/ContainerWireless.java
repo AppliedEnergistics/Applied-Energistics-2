@@ -30,8 +30,8 @@ import appeng.tile.networking.TileWireless;
 public class ContainerWireless extends AEBaseContainer
 {
 
-	final TileWireless wirelessTerminal;
-	final SlotRestrictedInput boosterSlot;
+	private final TileWireless wirelessTerminal;
+	private final SlotRestrictedInput boosterSlot;
 	@GuiSync( 1 )
 	public long range = 0;
 	@GuiSync( 2 )
@@ -42,7 +42,7 @@ public class ContainerWireless extends AEBaseContainer
 		super( ip, te, null );
 		this.wirelessTerminal = te;
 
-		this.addSlotToContainer( this.boosterSlot = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.RANGE_BOOSTER, this.wirelessTerminal, 0, 80, 47, this.invPlayer ) );
+		this.addSlotToContainer( this.boosterSlot = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.RANGE_BOOSTER, this.wirelessTerminal, 0, 80, 47, this.getInventoryPlayer() ) );
 
 		this.bindPlayerInventory( ip, 0, 166 - /* height of player inventory */82 );
 	}
@@ -52,9 +52,29 @@ public class ContainerWireless extends AEBaseContainer
 	{
 		final int boosters = this.boosterSlot.getStack() == null ? 0 : this.boosterSlot.getStack().stackSize;
 
-		this.range = (long) ( 10 * AEConfig.instance.wireless_getMaxRange( boosters ) );
-		this.drain = (long) ( 100 * AEConfig.instance.wireless_getPowerDrain( boosters ) );
+		this.setRange( (long) ( 10 * AEConfig.instance.wireless_getMaxRange( boosters ) ) );
+		this.setDrain( (long) ( 100 * AEConfig.instance.wireless_getPowerDrain( boosters ) ) );
 
 		super.detectAndSendChanges();
+	}
+
+	public long getRange()
+	{
+		return this.range;
+	}
+
+	private void setRange( final long range )
+	{
+		this.range = range;
+	}
+
+	public long getDrain()
+	{
+		return this.drain;
+	}
+
+	private void setDrain( final long drain )
+	{
+		this.drain = drain;
 	}
 }

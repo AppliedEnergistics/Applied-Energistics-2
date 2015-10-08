@@ -71,8 +71,9 @@ import appeng.util.Platform;
 
 public final class MultiItem extends AEBaseItem implements IStorageComponent, IUpgradeModule
 {
-	public static final int KILO_SCALAR = 1024;
 	public static MultiItem instance;
+
+	private static final int KILO_SCALAR = 1024;
 
 	private final Map<Integer, MaterialType> dmgToMaterial = new HashMap<Integer, MaterialType>();
 
@@ -146,7 +147,7 @@ public final class MultiItem extends AEBaseItem implements IStorageComponent, IU
 		{
 			if( type != MaterialType.InvalidType )
 			{
-				proxy.setIcon( this, type.damageValue, name + "." + type.name() );
+				proxy.setIcon( this, type.getDamageValue(), name + "." + type.name() );
 			}
 		}
 	}
@@ -193,13 +194,13 @@ public final class MultiItem extends AEBaseItem implements IStorageComponent, IU
 			enabled = enabled && AEConfig.instance.isFeatureEnabled( f );
 		}
 
-		mat.stackSrc = new MaterialStackSrc( mat );
+		mat.setStackSrc( new MaterialStackSrc( mat ) );
 
 		if( enabled )
 		{
-			mat.itemInstance = this;
+			mat.setItemInstance( this );
 			mat.markReady();
-			final int newMaterialNum = mat.damageValue;
+			final int newMaterialNum = mat.getDamageValue();
 
 			if( this.dmgToMaterial.get( newMaterialNum ) == null )
 			{
@@ -212,7 +213,7 @@ public final class MultiItem extends AEBaseItem implements IStorageComponent, IU
 			}
 		}
 
-		return mat.stackSrc;
+		return mat.getStackSrc();
 	}
 
 	public void makeUnique()
@@ -256,13 +257,13 @@ public final class MultiItem extends AEBaseItem implements IStorageComponent, IU
 				}
 				else
 				{
-					if( mt.itemInstance == this )
+					if( mt.getItemInstance() == this )
 					{
-						this.dmgToMaterial.remove( mt.damageValue );
+						this.dmgToMaterial.remove( mt.getDamageValue() );
 					}
 
-					mt.itemInstance = replacement.getItem();
-					mt.damageValue = replacement.getItemDamage();
+					mt.setItemInstance( replacement.getItem() );
+					mt.setDamageValue( replacement.getItemDamage() );
 				}
 			}
 		}
@@ -290,9 +291,9 @@ public final class MultiItem extends AEBaseItem implements IStorageComponent, IU
 
 		for( final MaterialType mat : types )
 		{
-			if( mat.damageValue >= 0 && mat.isRegistered() && mat.itemInstance == this )
+			if( mat.getDamageValue() >= 0 && mat.isRegistered() && mat.getItemInstance() == this )
 			{
-				itemStacks.add( new ItemStack( this, 1, mat.damageValue ) );
+				itemStacks.add( new ItemStack( this, 1, mat.getDamageValue() ) );
 			}
 		}
 	}

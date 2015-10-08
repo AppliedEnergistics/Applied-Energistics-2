@@ -41,20 +41,23 @@ import appeng.util.Platform;
 public class ContainerQuartzKnife extends AEBaseContainer implements IAEAppEngInventory, IInventory
 {
 
-	final QuartzKnifeObj toolInv;
+	private final QuartzKnifeObj toolInv;
 
-	final AppEngInternalInventory inSlot = new AppEngInternalInventory( this, 1 );
-	final SlotRestrictedInput metals;
-	final QuartzKnifeOutput output;
-	String myName = "";
+	private final AppEngInternalInventory inSlot = new AppEngInternalInventory( this, 1 );
+	private final SlotRestrictedInput metals;
+	private final QuartzKnifeOutput output;
+	private String myName = "";
 
 	public ContainerQuartzKnife( final InventoryPlayer ip, final QuartzKnifeObj te )
 	{
 		super( ip, null, null );
 		this.toolInv = te;
 
-		this.addSlotToContainer( this.metals = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.METAL_INGOTS, this.inSlot, 0, 94, 44, ip ) );
-		this.addSlotToContainer( this.output = new QuartzKnifeOutput( this, 0, 134, 44, -1 ) );
+		this.metals = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.METAL_INGOTS, this.inSlot, 0, 94, 44, ip );
+		this.addSlotToContainer( this.metals );
+
+		this.output = new QuartzKnifeOutput( this, 0, 134, 44, -1 );
+		this.addSlotToContainer( this.output );
 
 		this.lockPlayerInventorySlot( ip.currentItem );
 
@@ -81,12 +84,12 @@ public class ContainerQuartzKnife extends AEBaseContainer implements IAEAppEngIn
 				}
 				else
 				{
-					this.isContainerValid = false;
+					this.setValidContainer( false );
 				}
 			}
 			else
 			{
-				this.isContainerValid = false;
+				this.setValidContainer( false );
 			}
 		}
 

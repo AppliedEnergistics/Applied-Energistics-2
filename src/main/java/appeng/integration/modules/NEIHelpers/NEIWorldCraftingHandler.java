@@ -181,7 +181,7 @@ public class NEIWorldCraftingHandler implements ICraftingHandler, IUsageHandler
 		return this;
 	}
 
-	public NEIWorldCraftingHandler newInstance()
+	private NEIWorldCraftingHandler newInstance()
 	{
 		try
 		{

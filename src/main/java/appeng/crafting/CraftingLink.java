@@ -30,19 +30,19 @@ import appeng.api.storage.data.IAEItemStack;
 public class CraftingLink implements ICraftingLink
 {
 
-	final ICraftingRequester req;
-	final ICraftingCPU cpu;
-	final String CraftID;
-	final boolean standalone;
-	boolean canceled = false;
-	boolean done = false;
-	CraftingLinkNexus tie;
+	private final ICraftingRequester req;
+	private final ICraftingCPU cpu;
+	private final String CraftID;
+	private final boolean standalone;
+	private boolean canceled = false;
+	private boolean done = false;
+	private CraftingLinkNexus tie;
 
 	public CraftingLink( final NBTTagCompound data, final ICraftingRequester req )
 	{
 		this.CraftID = data.getString( "CraftID" );
-		this.canceled = data.getBoolean( "canceled" );
-		this.done = data.getBoolean( "done" );
+		this.setCanceled( data.getBoolean( "canceled" ) );
+		this.setDone( data.getBoolean( "done" ) );
 		this.standalone = data.getBoolean( "standalone" );
 
 		if( !data.hasKey( "req" ) || !data.getBoolean( "req" ) )
@@ -57,8 +57,8 @@ public class CraftingLink implements ICraftingLink
 	public CraftingLink( final NBTTagCompound data, final ICraftingCPU cpu )
 	{
 		this.CraftID = data.getString( "CraftID" );
-		this.canceled = data.getBoolean( "canceled" );
-		this.done = data.getBoolean( "done" );
+		this.setCanceled( data.getBoolean( "canceled" ) );
+		this.setDone( data.getBoolean( "done" ) );
 		this.standalone = data.getBoolean( "standalone" );
 
 		if( !data.hasKey( "req" ) || data.getBoolean( "req" ) )
@@ -120,7 +120,7 @@ public class CraftingLink implements ICraftingLink
 			return;
 		}
 
-		this.canceled = true;
+		this.setCanceled( true );
 
 		if( this.tie != null )
 		{
@@ -140,10 +140,10 @@ public class CraftingLink implements ICraftingLink
 	public void writeToNBT( final NBTTagCompound tag )
 	{
 		tag.setString( "CraftID", this.CraftID );
-		tag.setBoolean( "canceled", this.canceled );
-		tag.setBoolean( "done", this.done );
+		tag.setBoolean( "canceled", this.isCanceled() );
+		tag.setBoolean( "done", this.isDone() );
 		tag.setBoolean( "standalone", this.standalone );
-		tag.setBoolean( "req", this.req != null );
+		tag.setBoolean( "req", this.getRequester() != null );
 	}
 
 	@Override
@@ -159,7 +159,7 @@ public class CraftingLink implements ICraftingLink
 			this.tie.remove( this );
 		}
 
-		if( this.canceled && n != null )
+		if( this.isCanceled() && n != null )
 		{
 			n.cancel();
 			this.tie = null;
@@ -176,12 +176,12 @@ public class CraftingLink implements ICraftingLink
 
 	public IAEItemStack injectItems( final IAEItemStack input, final Actionable mode )
 	{
-		if( this.tie == null || this.tie.req == null || this.tie.req.req == null )
+		if( this.tie == null || this.tie.getRequest() == null || this.tie.getRequest().getRequester() == null )
 		{
 			return input;
 		}
 
-		return this.tie.req.req.injectCraftedItems( this.tie.req, input, mode );
+		return this.tie.getRequest().getRequester().injectCraftedItems( this.tie.getRequest(), input, mode );
 	}
 
 	public void markDone()
@@ -190,5 +190,25 @@ public class CraftingLink implements ICraftingLink
 		{
 			this.tie.markDone();
 		}
+	}
+
+	void setCanceled( final boolean canceled )
+	{
+		this.canceled = canceled;
+	}
+
+	ICraftingRequester getRequester()
+	{
+		return this.req;
+	}
+
+	ICraftingCPU getCpu()
+	{
+		return this.cpu;
+	}
+
+	void setDone( final boolean done )
+	{
+		this.done = done;
 	}
 }

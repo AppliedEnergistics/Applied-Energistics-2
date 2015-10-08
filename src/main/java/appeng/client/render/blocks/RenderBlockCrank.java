@@ -49,7 +49,7 @@ public class RenderBlockCrank extends BaseBlockRender<BlockCrank, TileCrank>
 	@Override
 	public void renderInventory( final BlockCrank blk, final ItemStack is, final ModelGenerator renderer, final ItemRenderType type, final Object[] obj )
 	{
-		renderer.renderAllFaces = true;
+		renderer.setRenderAllFaces( true );
 
 		renderer.setRenderBounds( 0.5D - 0.05, 0.5D - 0.5, 0.5D - 0.05, 0.5D + 0.05, 0.5D + 0.3, 0.5D + 0.05 );
 		super.renderInventory( blk, is, renderer, type, obj );
@@ -57,7 +57,7 @@ public class RenderBlockCrank extends BaseBlockRender<BlockCrank, TileCrank>
 		renderer.setRenderBounds( 0.70D - 0.15, 0.75D - 0.05, 0.5D - 0.05, 0.70D + 0.28, 0.75D + 0.05, 0.5D + 0.05 );
 		super.renderInventory( blk, is, renderer, type, obj );
 
-		renderer.renderAllFaces = false;
+		renderer.setRenderAllFaces( false );
 	}
 
 	@Override
@@ -90,19 +90,19 @@ public class RenderBlockCrank extends BaseBlockRender<BlockCrank, TileCrank>
 		this.applyTESRRotation( x, y, z, tile.getForward(), tile.getUp() );
 
 		GL11.glTranslated( 0.5, 0, 0.5 );
-		GL11.glRotatef( tile.visibleRotation, 0, 1, 0 );
+		GL11.glRotatef( tile.getVisibleRotation(), 0, 1, 0 );
 		GL11.glScalef( -1, 1, 1 );
 		GL11.glTranslated( -0.5, 0, -0.5 );
 
 		//tess.setTranslation( -tc.getPos().getX(), -tc.getPos().getY(), -tc.getPos().getZ() );
 		//tess.startDrawingQuads();
-		
+
 		final RenderItem ri = Minecraft.getMinecraft().getRenderItem();
-		
+
 		final ItemStack stack = new ItemStack( blk );
 		final IBakedModel model = ri.getItemModelMesher().getItemModel( stack );
         Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelRenderer().renderModelBrightnessColor( model, 1.0F, 1.0F, 1.0F, 1.0F );
-		
+
 		/*
 		renderBlocks.renderAllFaces = true;
 		renderBlocks.blockAccess = tc.getWorld();

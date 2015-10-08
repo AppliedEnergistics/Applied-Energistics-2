@@ -27,6 +27,7 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.charset.Charset;
 import java.util.List;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -43,8 +44,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
-
-import cpw.mods.fml.common.registry.FMLControlledNamespacedRegistry;
+import net.minecraftforge.fml.common.registry.FMLControlledNamespacedRegistry;
 
 import appeng.core.AELog;
 
@@ -73,7 +73,8 @@ final class MinecraftItemCSVExporter implements Exporter
 
 	/**
 	 * @param exportDirectory directory of the resulting export file. Non-null required.
-	 * @param itemRegistry the registry with minecraft items. Needs to be populated at that time, thus the exporting can only happen in init (pre-init is the
+	 * @param itemRegistry the registry with minecraft items. Needs to be populated at that time, thus the exporting can
+	 * only happen in init (pre-init is the
 	 * phase when all items are determined)
 	 * @param mode mode in which the export should be operated. Resulting CSV will change depending on this.
 	 */
@@ -103,7 +104,7 @@ final class MinecraftItemCSVExporter implements Exporter
 		{
 			FileUtils.forceMkdir( this.exportDirectory );
 
-			final Writer writer = new BufferedWriter( new OutputStreamWriter( new FileOutputStream( file ), Charset.forName("UTF-8") ) );
+			final Writer writer = new BufferedWriter( new OutputStreamWriter( new FileOutputStream( file ), Charset.forName( "UTF-8" ) ) );
 
 			final String header = this.mode == ExportMode.MINIMAL ? MINIMAL_HEADER : VERBOSE_HEADER;
 			writer.write( header );
@@ -186,7 +187,6 @@ final class MinecraftItemCSVExporter implements Exporter
 		}
 	}
 
-
 	/**
 	 * transforms an item into a row representation of the CSV file
 	 */
@@ -229,7 +229,7 @@ final class MinecraftItemCSVExporter implements Exporter
 				AELog.debug( EXPORTING_SUBTYPES_MESSAGE, input.getUnlocalizedName(), input.getHasSubtypes() );
 			}
 
-			final String itemName = this.itemRegistry.getNameForObject( input );
+			final String itemName = this.itemRegistry.getNameForObject( input ).toString();
 			final boolean hasSubtypes = input.getHasSubtypes();
 			if( hasSubtypes )
 			{

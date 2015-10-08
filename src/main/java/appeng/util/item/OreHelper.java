@@ -111,10 +111,10 @@ public class OreHelper
 		return this.references.get( ir );
 	}
 
-	public boolean sameOre( final AEItemStack aeItemStack, final IAEItemStack is )
+	boolean sameOre( final AEItemStack aeItemStack, final IAEItemStack is )
 	{
-		final OreReference a = aeItemStack.def.isOre;
-		final OreReference b = aeItemStack.def.isOre;
+		final OreReference a = aeItemStack.getDefinition().getIsOre();
+		final OreReference b = aeItemStack.getDefinition().getIsOre();
 
 		return this.sameOre( a, b );
 	}
@@ -143,9 +143,9 @@ public class OreHelper
 		return false;
 	}
 
-	public boolean sameOre( final AEItemStack aeItemStack, final ItemStack o )
+	boolean sameOre( final AEItemStack aeItemStack, final ItemStack o )
 	{
-		final OreReference a = aeItemStack.def.isOre;
+		final OreReference a = aeItemStack.getDefinition().getIsOre();
 		if( a == null )
 		{
 			return false;
@@ -165,7 +165,7 @@ public class OreHelper
 		return false;
 	}
 
-	public List<ItemStack> getCachedOres( final String oreName )
+	List<ItemStack> getCachedOres( final String oreName )
 	{
 		return this.oreDictCache.getUnchecked( oreName );
 	}

@@ -46,13 +46,13 @@ import appeng.util.iterators.ChainedIterator;
 public class QuantumCluster implements ILocatable, IAECluster
 {
 
-	public final WorldCoord min;
-	public final WorldCoord max;
-	public boolean isDestroyed = false;
-	public boolean updateStatus = true;
-	public TileQuantumBridge[] Ring;
-	boolean registered = false;
-	ConnectionWrapper connection;
+	private final WorldCoord min;
+	private final WorldCoord max;
+	private boolean isDestroyed = false;
+	private boolean updateStatus = true;
+	private TileQuantumBridge[] Ring;
+	private boolean registered = false;
+	private ConnectionWrapper connection;
 	private long thisSide;
 	private long otherSide;
 	private TileQuantumBridge center;
@@ -61,7 +61,7 @@ public class QuantumCluster implements ILocatable, IAECluster
 	{
 		this.min = min;
 		this.max = max;
-		this.Ring = new TileQuantumBridge[8];
+		this.setRing( new TileQuantumBridge[8] );
 	}
 
 	@SubscribeEvent
@@ -69,7 +69,7 @@ public class QuantumCluster implements ILocatable, IAECluster
 	{
 		if( this.center.getWorld() == e.world )
 		{
-			this.updateStatus = false;
+			this.setUpdateStatus( false );
 			this.destroy();
 		}
 	}
@@ -122,10 +122,10 @@ public class QuantumCluster implements ILocatable, IAECluster
 
 			if( sideA.isActive() && sideB.isActive() )
 			{
-				if( this.connection != null && this.connection.connection != null )
+				if( this.connection != null && this.connection.getConnection() != null )
 				{
-					final IGridNode a = this.connection.connection.a();
-					final IGridNode b = this.connection.connection.b();
+					final IGridNode a = this.connection.getConnection().a();
+					final IGridNode b = this.connection.getConnection().b();
 					final IGridNode sa = sideA.getNode();
 					final IGridNode sb = sideB.getNode();
 					if( ( a == sa || b == sa ) && ( a == sb || b == sb ) )
@@ -138,18 +138,18 @@ public class QuantumCluster implements ILocatable, IAECluster
 				{
 					if( sideA.connection != null )
 					{
-						if( sideA.connection.connection != null )
+						if( sideA.connection.getConnection() != null )
 						{
-							sideA.connection.connection.destroy();
+							sideA.connection.getConnection().destroy();
 							sideA.connection = new ConnectionWrapper( null );
 						}
 					}
 
 					if( sideB.connection != null )
 					{
-						if( sideB.connection.connection != null )
+						if( sideB.connection.getConnection() != null )
 						{
-							sideB.connection.connection.destroy();
+							sideB.connection.getConnection().destroy();
 							sideB.connection = new ConnectionWrapper( null );
 						}
 					}
@@ -173,16 +173,16 @@ public class QuantumCluster implements ILocatable, IAECluster
 
 		if( shutdown && this.connection != null )
 		{
-			if( this.connection.connection != null )
+			if( this.connection.getConnection() != null )
 			{
-				this.connection.connection.destroy();
-				this.connection.connection = null;
+				this.connection.getConnection().destroy();
+				this.connection.setConnection( null );
 				this.connection = new ConnectionWrapper( null );
 			}
 		}
 	}
 
-	public boolean canUseNode( final long qe )
+	private boolean canUseNode( final long qe )
 	{
 		final QuantumCluster qc = (QuantumCluster) AEApi.instance().registries().locatable().getLocatableBy( qe );
 		if( qc != null )
@@ -219,7 +219,7 @@ public class QuantumCluster implements ILocatable, IAECluster
 		return this.center.getGridNode( AEPartLocation.INTERNAL );
 	}
 
-	public boolean hasQES()
+	private boolean hasQES()
 	{
 		return this.thisSide != 0;
 	}
@@ -245,26 +245,26 @@ public class QuantumCluster implements ILocatable, IAECluster
 			MinecraftForge.EVENT_BUS.post( new LocatableEventAnnounce( this, LocatableEvent.Unregister ) );
 		}
 
-		this.center.updateStatus( null, (byte) -1, this.updateStatus );
+		this.center.updateStatus( null, (byte) -1, this.isUpdateStatus() );
 
-		for( final TileQuantumBridge r : this.Ring )
+		for( final TileQuantumBridge r : this.getRing() )
 		{
-			r.updateStatus( null, (byte) -1, this.updateStatus );
+			r.updateStatus( null, (byte) -1, this.isUpdateStatus() );
 		}
 
 		this.center = null;
-		this.Ring = new TileQuantumBridge[8];
+		this.setRing( new TileQuantumBridge[8] );
 	}
 
 	@Override
 	public Iterator<IGridHost> getTiles()
 	{
-		return new ChainedIterator<IGridHost>( this.Ring[0], this.Ring[1], this.Ring[2], this.Ring[3], this.Ring[4], this.Ring[5], this.Ring[6], this.Ring[7], this.center );
+		return new ChainedIterator<IGridHost>( this.getRing()[0], this.getRing()[1], this.getRing()[2], this.getRing()[3], this.getRing()[4], this.getRing()[5], this.getRing()[6], this.getRing()[7], this.center );
 	}
 
 	public boolean isCorner( final TileQuantumBridge tileQuantumBridge )
 	{
-		return this.Ring[0] == tileQuantumBridge || this.Ring[2] == tileQuantumBridge || this.Ring[4] == tileQuantumBridge || this.Ring[6] == tileQuantumBridge;
+		return this.getRing()[0] == tileQuantumBridge || this.getRing()[2] == tileQuantumBridge || this.getRing()[4] == tileQuantumBridge || this.getRing()[6] == tileQuantumBridge;
 	}
 
 	@Override
@@ -278,10 +278,30 @@ public class QuantumCluster implements ILocatable, IAECluster
 		return this.center;
 	}
 
-	public void setCenter( final TileQuantumBridge c )
+	void setCenter( final TileQuantumBridge c )
 	{
 		this.registered = true;
 		MinecraftForge.EVENT_BUS.register( this );
 		this.center = c;
+	}
+
+	private boolean isUpdateStatus()
+	{
+		return this.updateStatus;
+	}
+
+	public void setUpdateStatus( final boolean updateStatus )
+	{
+		this.updateStatus = updateStatus;
+	}
+
+	TileQuantumBridge[] getRing()
+	{
+		return this.Ring;
+	}
+
+	private void setRing( final TileQuantumBridge[] ring )
+	{
+		this.Ring = ring;
 	}
 }

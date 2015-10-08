@@ -27,7 +27,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class TaughtIcon implements IAESprite
 {
 
-	final float tightness;
+	private final float tightness;
 
 	private final IAESprite icon;
 

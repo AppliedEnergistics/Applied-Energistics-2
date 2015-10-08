@@ -53,13 +53,13 @@ public class RenderMEChest extends BaseBlockRender<BlockChest, TileChest>
 	public void renderInventory( final BlockChest block, final ItemStack is, final ModelGenerator renderer, final ItemRenderType type, final Object[] obj )
 	{
 		renderer.setBrightness( 0 );
-		renderer.overrideBlockTexture = ExtraBlockTextures.White.getIcon();
+		renderer.setOverrideBlockTexture( ExtraBlockTextures.White.getIcon() );
 		this.renderInvBlock( EnumSet.of( AEPartLocation.SOUTH ), block, is, 0x000000, renderer );
 
-		renderer.overrideBlockTexture = ExtraBlockTextures.MEChest.getIcon();
+		renderer.setOverrideBlockTexture( ExtraBlockTextures.MEChest.getIcon() );
 		this.renderInvBlock( EnumSet.of( AEPartLocation.UP ), block, is, this.adjustBrightness( AEColor.Transparent.whiteVariant, 0.7 ), renderer );
 
-		renderer.overrideBlockTexture = null;
+		renderer.setOverrideBlockTexture( null );
 		super.renderInventory( block, is, renderer, type, obj );
 	}
 
@@ -179,7 +179,7 @@ public class RenderMEChest extends BaseBlockRender<BlockChest, TileChest>
 			this.renderFace( pos, imb, ico == null ? ExtraBlockTextures.MEChest.getIcon() : ico, renderer, up );
 		}
 
-		renderer.overrideBlockTexture = null;
+		renderer.setOverrideBlockTexture( null );
 		this.postRenderInWorld( renderer );
 
 		return result;

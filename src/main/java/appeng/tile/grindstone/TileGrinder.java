@@ -40,10 +40,10 @@ import appeng.util.inv.WrapperInventoryRange;
 public class TileGrinder extends AEBaseInvTile implements ICrankable
 {
 
-	final int[] inputs = { 0, 1, 2 };
-	final int[] sides = { 0, 1, 2, 3, 4, 5 };
-	final AppEngInternalInventory inv = new AppEngInternalInventory( this, 7 );
-	int points;
+	private final int[] inputs = { 0, 1, 2 };
+	private final int[] sides = { 0, 1, 2, 3, 4, 5 };
+	private final AppEngInternalInventory inv = new AppEngInternalInventory( this, 7 );
+	private int points;
 
 	@Override
 	public void setOrientation( final EnumFacing inForward, final EnumFacing inUp )

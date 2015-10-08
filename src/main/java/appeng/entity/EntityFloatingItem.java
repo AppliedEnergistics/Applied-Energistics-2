@@ -29,8 +29,8 @@ public final class EntityFloatingItem extends EntityItem
 {
 
 	private final Entity parent;
-	int superDeath = 0;
-	float progress = 0;
+	private int superDeath = 0;
+	private float progress = 0;
 
 	public EntityFloatingItem( final Entity parent, final World world, final double x, final double y, final double z, final ItemStack stack )
 	{
@@ -67,5 +67,10 @@ public final class EntityFloatingItem extends EntityItem
 		{
 			this.setDead();
 		}
+	}
+
+	float getProgress()
+	{
+		return this.progress;
 	}
 }

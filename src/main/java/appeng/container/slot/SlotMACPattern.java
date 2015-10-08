@@ -27,7 +27,7 @@ import appeng.container.implementations.ContainerMAC;
 public class SlotMACPattern extends AppEngSlot
 {
 
-	final ContainerMAC mac;
+	private final ContainerMAC mac;
 
 	public SlotMACPattern( final ContainerMAC mac, final IInventory i, final int slotIdx, final int x, final int y )
 	{

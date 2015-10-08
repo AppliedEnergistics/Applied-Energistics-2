@@ -7,8 +7,8 @@ import appeng.api.definitions.IBlockDefinition;
 
 public class FalloutSnow extends FalloutCopy
 {
-	public static final double SNOW_THRESHOLD = 0.7;
-	public static final double ICE_THRESHOLD = 0.5;
+	private static final double SNOW_THRESHOLD = 0.7;
+	private static final double ICE_THRESHOLD = 0.5;
 	private final MeteoriteBlockPutter putter;
 
 	public FalloutSnow( final IMeteoriteWorld w, final int x, final int y, final int z, final MeteoriteBlockPutter putter, final IBlockDefinition skyStoneDefinition )

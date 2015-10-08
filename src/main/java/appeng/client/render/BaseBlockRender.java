@@ -24,6 +24,9 @@ import java.util.EnumSet;
 
 import javax.annotation.Nullable;
 
+import org.lwjgl.BufferUtils;
+import org.lwjgl.opengl.GL11;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.WorldRenderer;
@@ -39,9 +42,6 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.IItemRenderer.ItemRenderType;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-
-import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.GL11;
 
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.IOrientable;
@@ -80,7 +80,7 @@ public class BaseBlockRender<B extends AEBaseBlock, T extends AEBaseTile>
 		setOriMap();
 	}
 
-	public static void setOriMap()
+	private static void setOriMap()
 	{
 		// pointed up...
 		ORIENTATION_MAP[0][3][1] = 0;
@@ -279,7 +279,7 @@ public class BaseBlockRender<B extends AEBaseBlock, T extends AEBaseTile>
 		return ( r << 16 ) | ( g << 8 ) | b;
 	}
 
-	public double getTesrRenderDistance()
+	double getTesrRenderDistance()
 	{
 		return this.renderDistance;
 	}
@@ -294,14 +294,14 @@ public class BaseBlockRender<B extends AEBaseBlock, T extends AEBaseTile>
 				block.setRenderStateByMeta( item.getItemDamage() );
 			}
 
-			renderer.uvRotateBottom = info.getTexture( AEPartLocation.DOWN ).setFlip( getOrientation( EnumFacing.DOWN, EnumFacing.SOUTH, EnumFacing.UP ) );
-			renderer.uvRotateTop = info.getTexture( AEPartLocation.UP ).setFlip( getOrientation( EnumFacing.UP, EnumFacing.SOUTH, EnumFacing.UP ) );
+			renderer.setUvRotateBottom( info.getTexture( AEPartLocation.DOWN ).setFlip( getOrientation( EnumFacing.DOWN, EnumFacing.SOUTH, EnumFacing.UP ) ) );
+			renderer.setUvRotateTop( info.getTexture( AEPartLocation.UP ).setFlip( getOrientation( EnumFacing.UP, EnumFacing.SOUTH, EnumFacing.UP ) ) );
 
-			renderer.uvRotateEast = info.getTexture( AEPartLocation.EAST ).setFlip( getOrientation( EnumFacing.EAST, EnumFacing.SOUTH, EnumFacing.UP ) );
-			renderer.uvRotateWest = info.getTexture( AEPartLocation.WEST ).setFlip( getOrientation( EnumFacing.WEST, EnumFacing.SOUTH, EnumFacing.UP ) );
+			renderer.setUvRotateEast( info.getTexture( AEPartLocation.EAST ).setFlip( getOrientation( EnumFacing.EAST, EnumFacing.SOUTH, EnumFacing.UP ) ) );
+			renderer.setUvRotateWest( info.getTexture( AEPartLocation.WEST ).setFlip( getOrientation( EnumFacing.WEST, EnumFacing.SOUTH, EnumFacing.UP ) ) );
 
-			renderer.uvRotateNorth = info.getTexture( AEPartLocation.NORTH ).setFlip( getOrientation( EnumFacing.NORTH, EnumFacing.SOUTH, EnumFacing.UP ) );
-			renderer.uvRotateSouth = info.getTexture( AEPartLocation.SOUTH ).setFlip( getOrientation( EnumFacing.SOUTH, EnumFacing.SOUTH, EnumFacing.UP ) );
+			renderer.setUvRotateNorth( info.getTexture( AEPartLocation.NORTH ).setFlip( getOrientation( EnumFacing.NORTH, EnumFacing.SOUTH, EnumFacing.UP ) ) );
+			renderer.setUvRotateSouth( info.getTexture( AEPartLocation.SOUTH ).setFlip( getOrientation( EnumFacing.SOUTH, EnumFacing.SOUTH, EnumFacing.UP ) ) );
 		}
 
 		this.renderInvBlock( EnumSet.allOf( AEPartLocation.class ), block, item, 0xffffff, renderer );
@@ -311,10 +311,10 @@ public class BaseBlockRender<B extends AEBaseBlock, T extends AEBaseTile>
 			info.setTemporaryRenderIcon( null );
 		}
 
-		renderer.uvRotateBottom = renderer.uvRotateEast = renderer.uvRotateNorth = renderer.uvRotateSouth = renderer.uvRotateTop = renderer.uvRotateWest = 0;
+		renderer.setUvRotateBottom( renderer.setUvRotateEast( renderer.setUvRotateNorth( renderer.setUvRotateSouth( renderer.setUvRotateTop( renderer.setUvRotateWest( 0 ) ) ) ) ) );
 	}
 
-	public static int getOrientation( final EnumFacing in, final EnumFacing forward, final EnumFacing up )
+	static int getOrientation( final EnumFacing in, final EnumFacing forward, final EnumFacing up )
 	{
 		if( in == null // 1
 				|| forward == null // 2
@@ -339,51 +339,51 @@ public class BaseBlockRender<B extends AEBaseBlock, T extends AEBaseTile>
 
 		final IAESprite[] icons = tess.getIcon( item == null ? block.getDefaultState() : block.getStateFromMeta( item.getMetadata() ) );
 		final BlockPos zero = new BlockPos(0,0,0);
-		
+
 		if( sides.contains( AEPartLocation.DOWN ) )
 		{
 			tess.setNormal( 0.0F, -1.0F, 0.0F );
 			tess.setColorOpaque_I( color );
-			tess.renderFaceYNeg( block, zero, this.firstNotNull( tess.overrideBlockTexture, block.getRendererInstance().getTexture( AEPartLocation.DOWN ), icons[ AEPartLocation.DOWN.ordinal() ] ) );
+			tess.renderFaceYNeg( block, zero, this.firstNotNull( tess.getOverrideBlockTexture(), block.getRendererInstance().getTexture( AEPartLocation.DOWN ), icons[ AEPartLocation.DOWN.ordinal() ] ) );
 		}
 
 		if( sides.contains( AEPartLocation.UP ) )
 		{
 			tess.setNormal( 0.0F, 1.0F, 0.0F );
 			tess.setColorOpaque_I( color );
-			tess.renderFaceYPos( block, zero, this.firstNotNull( tess.overrideBlockTexture, block.getRendererInstance().getTexture( AEPartLocation.UP ), icons[ AEPartLocation.UP.ordinal() ] ) );
+			tess.renderFaceYPos( block, zero, this.firstNotNull( tess.getOverrideBlockTexture(), block.getRendererInstance().getTexture( AEPartLocation.UP ), icons[ AEPartLocation.UP.ordinal() ] ) );
 		}
 
 		if( sides.contains( AEPartLocation.NORTH ) )
 		{
 			tess.setNormal( 0.0F, 0.0F, -1.0F );
 			tess.setColorOpaque_I( color );
-			tess.renderFaceZNeg( block, zero, this.firstNotNull( tess.overrideBlockTexture, block.getRendererInstance().getTexture( AEPartLocation.NORTH ), icons[ AEPartLocation.NORTH.ordinal() ] ) );
+			tess.renderFaceZNeg( block, zero, this.firstNotNull( tess.getOverrideBlockTexture(), block.getRendererInstance().getTexture( AEPartLocation.NORTH ), icons[ AEPartLocation.NORTH.ordinal() ] ) );
 		}
 
 		if( sides.contains( AEPartLocation.SOUTH ) )
 		{
 			tess.setNormal( 0.0F, 0.0F, 1.0F );
 			tess.setColorOpaque_I( color );
-			tess.renderFaceZPos( block, zero, this.firstNotNull( tess.overrideBlockTexture, block.getRendererInstance().getTexture( AEPartLocation.SOUTH ), icons[ AEPartLocation.SOUTH.ordinal() ] ) );
+			tess.renderFaceZPos( block, zero, this.firstNotNull( tess.getOverrideBlockTexture(), block.getRendererInstance().getTexture( AEPartLocation.SOUTH ), icons[ AEPartLocation.SOUTH.ordinal() ] ) );
 		}
 
 		if( sides.contains( AEPartLocation.WEST ) )
 		{
 			tess.setNormal( -1.0F, 0.0F, 0.0F );
 			tess.setColorOpaque_I( color );
-			tess.renderFaceXNeg( block, zero, this.firstNotNull( tess.overrideBlockTexture, block.getRendererInstance().getTexture( AEPartLocation.WEST ), icons[ AEPartLocation.WEST.ordinal() ] ) );
+			tess.renderFaceXNeg( block, zero, this.firstNotNull( tess.getOverrideBlockTexture(), block.getRendererInstance().getTexture( AEPartLocation.WEST ), icons[ AEPartLocation.WEST.ordinal() ] ) );
 		}
 
 		if( sides.contains( AEPartLocation.EAST ) )
 		{
 			tess.setNormal( 1.0F, 0.0F, 0.0F );
 			tess.setColorOpaque_I( color );
-			tess.renderFaceXPos( block, zero, this.firstNotNull( tess.overrideBlockTexture, block.getRendererInstance().getTexture( AEPartLocation.EAST ), icons[ AEPartLocation.EAST.ordinal() ]) );
+			tess.renderFaceXPos( block, zero, this.firstNotNull( tess.getOverrideBlockTexture(), block.getRendererInstance().getTexture( AEPartLocation.EAST ), icons[ AEPartLocation.EAST.ordinal() ]) );
 		}
 	}
 
-	public IAESprite firstNotNull( final IAESprite... s )
+	private IAESprite firstNotNull( final IAESprite... s )
 	{
 		for( final IAESprite o : s )
 		{
@@ -415,20 +415,20 @@ public class BaseBlockRender<B extends AEBaseBlock, T extends AEBaseTile>
 			final EnumFacing forward = te.getForward();
 			final EnumFacing up = te.getUp();
 
-			renderer.uvRotateBottom = info.getTexture( AEPartLocation.DOWN ).setFlip( getOrientation( EnumFacing.DOWN, forward, up ) );
-			renderer.uvRotateTop = info.getTexture( AEPartLocation.UP ).setFlip( getOrientation( EnumFacing.UP, forward, up ) );
+			renderer.setUvRotateBottom( info.getTexture( AEPartLocation.DOWN ).setFlip( getOrientation( EnumFacing.DOWN, forward, up ) ) );
+			renderer.setUvRotateTop( info.getTexture( AEPartLocation.UP ).setFlip( getOrientation( EnumFacing.UP, forward, up ) ) );
 
-			renderer.uvRotateEast = info.getTexture( AEPartLocation.EAST ).setFlip( getOrientation( EnumFacing.EAST, forward, up ) );
-			renderer.uvRotateWest = info.getTexture( AEPartLocation.WEST ).setFlip( getOrientation( EnumFacing.WEST, forward, up ) );
+			renderer.setUvRotateEast( info.getTexture( AEPartLocation.EAST ).setFlip( getOrientation( EnumFacing.EAST, forward, up ) ) );
+			renderer.setUvRotateWest( info.getTexture( AEPartLocation.WEST ).setFlip( getOrientation( EnumFacing.WEST, forward, up ) ) );
 
-			renderer.uvRotateNorth = info.getTexture( AEPartLocation.NORTH ).setFlip( getOrientation( EnumFacing.NORTH, forward, up ) );
-			renderer.uvRotateSouth = info.getTexture( AEPartLocation.SOUTH ).setFlip( getOrientation( EnumFacing.SOUTH, forward, up ) );
+			renderer.setUvRotateNorth( info.getTexture( AEPartLocation.NORTH ).setFlip( getOrientation( EnumFacing.NORTH, forward, up ) ) );
+			renderer.setUvRotateSouth( info.getTexture( AEPartLocation.SOUTH ).setFlip( getOrientation( EnumFacing.SOUTH, forward, up ) ) );
 		}
 	}
 
 	public void postRenderInWorld( final ModelGenerator renderer )
 	{
-		renderer.uvRotateBottom = renderer.uvRotateEast = renderer.uvRotateNorth = renderer.uvRotateSouth = renderer.uvRotateTop = renderer.uvRotateWest = 0;
+		renderer.setUvRotateBottom( renderer.setUvRotateEast( renderer.setUvRotateNorth( renderer.setUvRotateSouth( renderer.setUvRotateTop( renderer.setUvRotateWest( 0 ) ) ) ) ) );
 	}
 
 	@Nullable
@@ -483,12 +483,12 @@ public class BaseBlockRender<B extends AEBaseBlock, T extends AEBaseTile>
 			bZ += 1;
 		}
 
-		renderer.renderMinX = Math.min( aX, bX );
-		renderer.renderMinY = Math.min( aY, bY );
-		renderer.renderMinZ = Math.min( aZ, bZ );
-		renderer.renderMaxX = Math.max( aX, bX );
-		renderer.renderMaxY = Math.max( aY, bY );
-		renderer.renderMaxZ = Math.max( aZ, bZ );
+		renderer.setRenderMinX( Math.min( aX, bX ) );
+		renderer.setRenderMinY( Math.min( aY, bY ) );
+		renderer.setRenderMinZ( Math.min( aZ, bZ ) );
+		renderer.setRenderMaxX( Math.max( aX, bX ) );
+		renderer.setRenderMaxY( Math.max( aY, bY ) );
+		renderer.setRenderMaxZ( Math.max( aZ, bZ ) );
 	}
 
 	@SideOnly( Side.CLIENT )
@@ -642,14 +642,14 @@ public class BaseBlockRender<B extends AEBaseBlock, T extends AEBaseTile>
 		final double maxY = ( forward.getFrontOffsetY() > 0 ? 1 : 0 ) + this.mapFaceUV( west.getFrontOffsetY(), u2 ) + this.mapFaceUV( up.getFrontOffsetY(), v2 );
 		final double maxZ = ( forward.getFrontOffsetZ() > 0 ? 1 : 0 ) + this.mapFaceUV( west.getFrontOffsetZ(), u2 ) + this.mapFaceUV( up.getFrontOffsetZ(), v2 );
 
-		renderer.renderMinX = Math.max( 0.0, Math.min( minX, maxX ) - ( forward.getFrontOffsetX() != 0 ? 0 : 0.001 ) );
-		renderer.renderMaxX = Math.min( 1.0, Math.max( minX, maxX ) + ( forward.getFrontOffsetX() != 0 ? 0 : 0.001 ) );
+		renderer.setRenderMinX( Math.max( 0.0, Math.min( minX, maxX ) - ( forward.getFrontOffsetX() != 0 ? 0 : 0.001 ) ) );
+		renderer.setRenderMaxX( Math.min( 1.0, Math.max( minX, maxX ) + ( forward.getFrontOffsetX() != 0 ? 0 : 0.001 ) ) );
 
-		renderer.renderMinY = Math.max( 0.0, Math.min( minY, maxY ) - ( forward.getFrontOffsetY() != 0 ? 0 : 0.001 ) );
-		renderer.renderMaxY = Math.min( 1.0, Math.max( minY, maxY ) + ( forward.getFrontOffsetY() != 0 ? 0 : 0.001 ) );
+		renderer.setRenderMinY( Math.max( 0.0, Math.min( minY, maxY ) - ( forward.getFrontOffsetY() != 0 ? 0 : 0.001 ) ) );
+		renderer.setRenderMaxY( Math.min( 1.0, Math.max( minY, maxY ) + ( forward.getFrontOffsetY() != 0 ? 0 : 0.001 ) ) );
 
-		renderer.renderMinZ = Math.max( 0.0, Math.min( minZ, maxZ ) - ( forward.getFrontOffsetZ() != 0 ? 0 : 0.001 ) );
-		renderer.renderMaxZ = Math.min( 1.0, Math.max( minZ, maxZ ) + ( forward.getFrontOffsetZ() != 0 ? 0 : 0.001 ) );
+		renderer.setRenderMinZ( Math.max( 0.0, Math.min( minZ, maxZ ) - ( forward.getFrontOffsetZ() != 0 ? 0 : 0.001 ) ) );
+		renderer.setRenderMaxZ( Math.min( 1.0, Math.max( minZ, maxZ ) + ( forward.getFrontOffsetZ() != 0 ? 0 : 0.001 ) ) );
 	}
 
 	private double mapFaceUV( final int offset, final int uv )
@@ -670,7 +670,7 @@ public class BaseBlockRender<B extends AEBaseBlock, T extends AEBaseTile>
 	public void renderTile( final B block, final T tile, final WorldRenderer tess, final double x, final double y, final double z, final float f, final ModelGenerator renderer )
 	{
 
-		renderer.uvRotateBottom = renderer.uvRotateTop = renderer.uvRotateEast = renderer.uvRotateWest = renderer.uvRotateNorth = renderer.uvRotateSouth = 0;
+		renderer.setUvRotateBottom( renderer.setUvRotateTop( renderer.setUvRotateEast( renderer.setUvRotateWest( renderer.setUvRotateNorth( renderer.setUvRotateSouth( 0 ) ) ) ) ) );
 
 		final AEPartLocation up = AEPartLocation.UP;
 		final AEPartLocation forward = AEPartLocation.SOUTH;
@@ -700,7 +700,7 @@ public class BaseBlockRender<B extends AEBaseBlock, T extends AEBaseTile>
 		renderer.setTranslation( 0, 0, 0 );
 		RenderHelper.enableStandardItemLighting();
 
-		renderer.uvRotateBottom = renderer.uvRotateTop = renderer.uvRotateEast = renderer.uvRotateWest = renderer.uvRotateNorth = renderer.uvRotateSouth = 0;
+		renderer.setUvRotateBottom( renderer.setUvRotateTop( renderer.setUvRotateEast( renderer.setUvRotateWest( renderer.setUvRotateNorth( renderer.setUvRotateSouth( 0 ) ) ) ) ) );
 	}
 
 	protected void applyTESRRotation( final double x, final double y, final double z, final EnumFacing forward, final EnumFacing up )

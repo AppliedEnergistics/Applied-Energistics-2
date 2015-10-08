@@ -80,12 +80,12 @@ final class StorageData implements IWorldGridStorageData, IOnWorldStartable, IOn
 			final String id = String.valueOf( storageID );
 			final String data = this.config.get( "gridstorage", id, "" ).getString();
 			final GridStorage thisStorage = new GridStorage( data, storageID, gss );
-			gss.gridStorage = new WeakReference<GridStorage>( thisStorage );
+			gss.setGridStorage( new WeakReference<GridStorage>( thisStorage ) );
 			this.loadedStorage.put( gss, new WeakReference<GridStorageSearch>( gss ) );
 			return thisStorage;
 		}
 
-		return result.get().gridStorage.get();
+		return result.get().getGridStorage().get();
 	}
 
 	/**
@@ -98,7 +98,7 @@ final class StorageData implements IWorldGridStorageData, IOnWorldStartable, IOn
 		final long storageID = this.nextGridStorage();
 		final GridStorageSearch gss = new GridStorageSearch( storageID );
 		final GridStorage newStorage = new GridStorage( storageID, gss );
-		gss.gridStorage = new WeakReference<GridStorage>( newStorage );
+		gss.setGridStorage( new WeakReference<GridStorage>( newStorage ) );
 		this.loadedStorage.put( gss, new WeakReference<GridStorageSearch>( gss ) );
 
 		return newStorage;
@@ -152,7 +152,7 @@ final class StorageData implements IWorldGridStorageData, IOnWorldStartable, IOn
 		// populate new data
 		for( final GridStorageSearch gs : this.loadedStorage.keySet() )
 		{
-			final GridStorage thisStorage = gs.gridStorage.get();
+			final GridStorage thisStorage = gs.getGridStorage().get();
 			if( thisStorage != null && thisStorage.getGrid() != null && !thisStorage.getGrid().isEmpty() )
 			{
 				final String value = thisStorage.getValue();

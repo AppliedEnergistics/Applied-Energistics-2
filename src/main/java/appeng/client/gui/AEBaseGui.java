@@ -83,17 +83,17 @@ import com.google.common.base.Stopwatch;
 
 public abstract class AEBaseGui extends GuiContainer
 {
-	public static boolean switchingGuis;
-	protected final List<InternalSlotME> meSlots = new LinkedList<InternalSlotME>();
+	private static boolean switchingGuis;
+	private final List<InternalSlotME> meSlots = new LinkedList<InternalSlotME>();
 	// drag y
-	final Set<Slot> drag_click = new HashSet<Slot>();
-	final AppEngRenderItem aeRenderItem = new AppEngRenderItem(Minecraft.getMinecraft().renderEngine,Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getModelManager());
-	protected GuiScrollbar myScrollBar = null;
-	boolean disableShiftClick = false;
-	Stopwatch dbl_clickTimer = Stopwatch.createStarted();
-	ItemStack dbl_whichItem;
-	Slot bl_clicked;
-	boolean useNEI = false;
+	private final Set<Slot> drag_click = new HashSet<Slot>();
+	private final AppEngRenderItem aeRenderItem = new AppEngRenderItem( Minecraft.getMinecraft().renderEngine, Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getModelManager() );
+	private GuiScrollbar myScrollBar = null;
+	private boolean disableShiftClick = false;
+	private Stopwatch dbl_clickTimer = Stopwatch.createStarted();
+	private ItemStack dbl_whichItem;
+	private Slot bl_clicked;
+	private boolean useNEI = false;
 	private boolean subGui;
 
 	public AEBaseGui( final Container container )
@@ -161,9 +161,9 @@ public abstract class AEBaseGui extends GuiContainer
 		super.drawScreen( mouseX, mouseY, btn );
 
 		final boolean hasClicked = Mouse.isButtonDown( 0 );
-		if( hasClicked && this.myScrollBar != null )
+		if( hasClicked && this.getScrollBar() != null )
 		{
-			this.myScrollBar.click( this, mouseX - this.guiLeft, mouseY - this.guiTop );
+			this.getScrollBar().click( this, mouseX - this.guiLeft, mouseY - this.guiTop );
 		}
 
 		for( final Object c : this.buttonList )
@@ -290,9 +290,9 @@ public abstract class AEBaseGui extends GuiContainer
 		final int oy = this.guiTop; // (height - ySize) / 2;
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
 
-		if( this.myScrollBar != null )
+		if( this.getScrollBar() != null )
 		{
-			this.myScrollBar.draw( this );
+			this.getScrollBar().draw( this );
 		}
 
 		this.drawFG( ox, oy, x, y );
@@ -318,14 +318,14 @@ public abstract class AEBaseGui extends GuiContainer
 				{
 					if( fs.isEnabled() )
 					{
-						this.drawTexturedModalRect( ox + fs.xDisplayPosition - 1, oy + fs.yDisplayPosition - 1, fs.srcX - 1, fs.srcY - 1, 18, 18 );
+						this.drawTexturedModalRect( ox + fs.xDisplayPosition - 1, oy + fs.yDisplayPosition - 1, fs.getSourceX() - 1, fs.getSourceY() - 1, 18, 18 );
 					}
 					else
 					{
 						GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS );
 						GL11.glColor4f( 1.0F, 1.0F, 1.0F, 0.4F );
 						GL11.glEnable( GL11.GL_BLEND );
-						this.drawTexturedModalRect( ox + fs.xDisplayPosition - 1, oy + fs.yDisplayPosition - 1, fs.srcX - 1, fs.srcY - 1, 18, 18 );
+						this.drawTexturedModalRect( ox + fs.xDisplayPosition - 1, oy + fs.yDisplayPosition - 1, fs.getSourceX() - 1, fs.getSourceY() - 1, 18, 18 );
 						GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
 						GL11.glPopAttrib();
 					}
@@ -491,7 +491,7 @@ public abstract class AEBaseGui extends GuiContainer
 
 			if( action != null )
 			{
-				final PacketInventoryAction p = new PacketInventoryAction( action, slot.getSlotIndex(), ( (SlotDisconnected) slot ).mySlot.id );
+				final PacketInventoryAction p = new PacketInventoryAction( action, slot.getSlotIndex(), ( (SlotDisconnected) slot ).getSlot().getId() );
 				NetworkHandler.instance.sendToServer( p );
 			}
 
@@ -681,13 +681,13 @@ public abstract class AEBaseGui extends GuiContainer
 			final int y = this.height - Mouse.getEventY() * this.height / this.mc.displayHeight - 1;
 			this.mouseWheelEvent( x, y, i / Math.abs( i ) );
 		}
-		else if( i != 0 && this.myScrollBar != null )
+		else if( i != 0 && this.getScrollBar() != null )
 		{
-			this.myScrollBar.wheel( i );
+			this.getScrollBar().wheel( i );
 		}
 	}
 
-	protected void mouseWheelEvent( final int x, final int y, final int wheel )
+	private void mouseWheelEvent( final int x, final int y, final int wheel )
 	{
 		final Slot slot = this.getSlot( x, y );
 		if( slot instanceof SlotME )
@@ -745,22 +745,17 @@ public abstract class AEBaseGui extends GuiContainer
 	{
 		if( this.inventorySlots instanceof AEBaseContainer )
 		{
-			return ( (AEBaseContainer) this.inventorySlots ).customName != null;
+			return ( (AEBaseContainer) this.inventorySlots ).getCustomName() != null;
 		}
 		return false;
 	}
 
 	private String getInventoryName()
 	{
-		return ( (AEBaseContainer) this.inventorySlots ).customName;
+		return ( (AEBaseContainer) this.inventorySlots ).getCustomName();
 	}
 
-	public void a( final Slot s )
-	{
-		this.drawSlot( s );
-	}
-
-	public void drawSlot( final Slot s )
+	private void drawSlot( final Slot s )
 	{
 		if( s instanceof SlotME )
 		{
@@ -780,7 +775,7 @@ public abstract class AEBaseGui extends GuiContainer
 				this.zLevel = 0.0F;
 				this.itemRender.zLevel = 0.0F;
 
-				this.aeRenderItem.aeStack = ( (SlotME) s ).getAEStack();
+				this.aeRenderItem.setAeStack( ( (SlotME) s ).getAEStack() );
 
 				this.safeDrawSlot( s );
 			}
@@ -820,7 +815,7 @@ public abstract class AEBaseGui extends GuiContainer
 							final float par4 = uv_y * 16;
 
 							final Tessellator tessellator = Tessellator.getInstance();
-					        final WorldRenderer worldrenderer = tessellator.getWorldRenderer();
+							final WorldRenderer worldrenderer = tessellator.getWorldRenderer();
 
 							worldrenderer.startDrawingQuads();
 							worldrenderer.setColorRGBA_F( 1.0f, 1.0f, 1.0f, aes.getOpacityOfIcon() );
@@ -844,7 +839,7 @@ public abstract class AEBaseGui extends GuiContainer
 
 				if( is != null && s instanceof AppEngSlot )
 				{
-					if( ( (AppEngSlot) s ).isValid == hasCalculatedValidness.NotAvailable )
+					if( ( (AppEngSlot) s ).getIsValid() == hasCalculatedValidness.NotAvailable )
 					{
 						boolean isValid = s.isItemValid( is ) || s instanceof SlotOutput || s instanceof AppEngCraftingSlot || s instanceof SlotDisabled || s instanceof SlotInaccessible || s instanceof SlotFake || s instanceof SlotRestrictedInput || s instanceof SlotDisconnected;
 						if( isValid && s instanceof SlotRestrictedInput )
@@ -858,10 +853,10 @@ public abstract class AEBaseGui extends GuiContainer
 								AELog.error( err );
 							}
 						}
-						( (AppEngSlot) s ).isValid = isValid ? hasCalculatedValidness.Valid : hasCalculatedValidness.Invalid;
+						( (AppEngSlot) s ).setIsValid( isValid ? hasCalculatedValidness.Valid : hasCalculatedValidness.Invalid );
 					}
 
-					if( ( (AppEngSlot) s ).isValid == hasCalculatedValidness.Invalid )
+					if( ( (AppEngSlot) s ).getIsValid() == hasCalculatedValidness.Invalid )
 					{
 						this.zLevel = 100.0F;
 						this.itemRender.zLevel = 100.0F;
@@ -877,7 +872,7 @@ public abstract class AEBaseGui extends GuiContainer
 
 				if( s instanceof AppEngSlot )
 				{
-					( (AppEngSlot) s ).isDisplay = true;
+					( (AppEngSlot) s ).setDisplay( true );
 					this.safeDrawSlot( s );
 				}
 				else
@@ -935,5 +930,30 @@ public abstract class AEBaseGui extends GuiContainer
 	public void func_146977_a( final Slot s )
 	{
 		this.drawSlot( s );
+	}
+
+	protected GuiScrollbar getScrollBar()
+	{
+		return this.myScrollBar;
+	}
+
+	protected void setScrollBar( final GuiScrollbar myScrollBar )
+	{
+		this.myScrollBar = myScrollBar;
+	}
+
+	protected List<InternalSlotME> getMeSlots()
+	{
+		return this.meSlots;
+	}
+
+	public static final synchronized boolean isSwitchingGuis()
+	{
+		return switchingGuis;
+	}
+
+	public static final synchronized void setSwitchingGuis( final boolean switchingGuis )
+	{
+		AEBaseGui.switchingGuis = switchingGuis;
 	}
 }

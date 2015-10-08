@@ -37,8 +37,7 @@ import appeng.tile.AEBaseTile;
 public class TESRWrapper extends TileEntitySpecialRenderer
 {
 
-	public final ModelGenerator renderBlocksInstance = new ModelGenerator();
-
+	private final ModelGenerator renderBlocksInstance = new ModelGenerator();
 	private final BaseBlockRender blkRender;
 	private final double maxDistance;
 
@@ -68,7 +67,7 @@ public class TESRWrapper extends TileEntitySpecialRenderer
 				{
 					GL11.glPushMatrix();
 
-					this.renderBlocksInstance.blockAccess = te.getWorld();
+					this.renderBlocksInstance.setBlockAccess( te.getWorld() );
 					this.blkRender.renderTile( (AEBaseBlock) b, (AEBaseTile) te, tess.getWorldRenderer(), x, y, z, f, this.renderBlocksInstance );
 
 					GL11.glPopMatrix();

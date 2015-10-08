@@ -36,7 +36,7 @@ import appeng.tile.storage.TileDrive;
 public class GuiDrive extends AEBaseGui
 {
 
-	GuiTabButton priority;
+	private GuiTabButton priority;
 
 	public GuiDrive( final InventoryPlayer inventoryPlayer, final TileDrive te )
 	{

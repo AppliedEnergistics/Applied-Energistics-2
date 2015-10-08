@@ -87,16 +87,16 @@ public class RenderBlockAssembler extends BaseBlockRender<BlockMolecularAssemble
 		this.renderInvBlock( EnumSet.allOf( AEPartLocation.class ), blk, is, 0xffffff, renderer );
 
 		this.setInvRenderBounds( renderer, 14, 14, 0, 16, 16, 14 );
-		this.renderInvBlock( EnumSet.allOf( AEPartLocation.class ), blk, is,  0xffffff, renderer );
+		this.renderInvBlock( EnumSet.allOf( AEPartLocation.class ), blk, is, 0xffffff, renderer );
 
 		this.setInvRenderBounds( renderer, 14, 2, 0, 16, 14, 2 );
-		this.renderInvBlock( EnumSet.allOf( AEPartLocation.class ), blk, is,  0xffffff, renderer );
+		this.renderInvBlock( EnumSet.allOf( AEPartLocation.class ), blk, is, 0xffffff, renderer );
 
 		this.setInvRenderBounds( renderer, 0, 2, 14, 2, 14, 16 );
 		this.renderInvBlock( EnumSet.allOf( AEPartLocation.class ), blk, is, 0xffffff, renderer );
 
 		this.setInvRenderBounds( renderer, 1, 1, 1, 15, 15, 15 );
-		this.renderInvBlock( EnumSet.allOf( AEPartLocation.class ), blk, is,  0xffffff, renderer );
+		this.renderInvBlock( EnumSet.allOf( AEPartLocation.class ), blk, is, 0xffffff, renderer );
 
 		renderer.setOverrideBlockTexture( null );
 	}
@@ -106,7 +106,7 @@ public class RenderBlockAssembler extends BaseBlockRender<BlockMolecularAssemble
 	{
 		final TileMolecularAssembler tma = maBlock.getTileEntity( world, pos );
 
-		if ( renderer.isAlphaPass() )
+		if( renderer.isAlphaPass() )
 		{
 			if( tma.isPowered() )
 			{
@@ -125,10 +125,10 @@ public class RenderBlockAssembler extends BaseBlockRender<BlockMolecularAssemble
 			return false;
 		}
 
-		//BusRenderer.INSTANCE.renderer.blockAccess = renderer.blockAccess;
-		//renderer = BusRenderer.INSTANCE.renderer;
-		BusRenderer.INSTANCE.renderer=renderer;
-		
+		// BusRenderer.INSTANCE.renderer.blockAccess = renderer.blockAccess;
+		// renderer = BusRenderer.INSTANCE.renderer;
+		BusRenderer.INSTANCE.setRenderer( renderer );
+
 		this.preRenderInWorld( maBlock, world, pos, renderer );
 
 		final IOrientable te = this.getOrientable( maBlock, world, pos );
@@ -137,12 +137,12 @@ public class RenderBlockAssembler extends BaseBlockRender<BlockMolecularAssemble
 		final EnumFacing fdz = te.getForward();
 		final EnumFacing fdx = Platform.crossProduct( fdz, fdy ).getOpposite();
 
-		renderer.renderAllFaces = true;
+		renderer.setRenderAllFaces( true );
 
 		this.renderCableAt( 0.11D, world, pos, maBlock, renderer, 0.141D, false );
 		this.renderCableAt( 0.188D, world, pos, maBlock, renderer, 0.1875D, true );
 
-		maBlock.getRendererInstance().setTemporaryRenderIcon(  renderer.getIcon( world.getBlockState( pos ) )[0] );
+		maBlock.getRendererInstance().setTemporaryRenderIcon( renderer.getIcon( world.getBlockState( pos ) )[0] );
 
 		this.renderBlockBounds( renderer, 2, 14, 0, 14, 16, 2, fdx, fdy, fdz );
 		renderer.renderStandardBlock( maBlock, pos );
@@ -186,14 +186,14 @@ public class RenderBlockAssembler extends BaseBlockRender<BlockMolecularAssemble
 
 		maBlock.getRendererInstance().setTemporaryRenderIcon( null );
 
-		renderer.renderAllFaces = false;
+		renderer.setRenderAllFaces( false );
 
 		this.postRenderInWorld( renderer );
 
 		return true;
 	}
 
-	public void renderCableAt( final double thickness, final IBlockAccess world, final BlockPos pos, final BlockMolecularAssembler block, final ModelGenerator renderer, final double pull, final boolean covered )
+	private void renderCableAt( final double thickness, final IBlockAccess world, final BlockPos pos, final BlockMolecularAssembler block, final ModelGenerator renderer, final double pull, final boolean covered )
 	{
 		IAESprite texture = null;
 
@@ -242,7 +242,7 @@ public class RenderBlockAssembler extends BaseBlockRender<BlockMolecularAssemble
 		block.getRendererInstance().setTemporaryRenderIcon( null );
 	}
 
-	IAESprite getConnectedCable( final IBlockAccess world, final BlockPos pos, final EnumFacing side, final boolean covered, final ModelGenerator renderer )
+	private IAESprite getConnectedCable( final IBlockAccess world, final BlockPos pos, final EnumFacing side, final boolean covered, final ModelGenerator renderer )
 	{
 		final int tileYPos = pos.getY() + side.getFrontOffsetY();
 		if( -1 < tileYPos && tileYPos < 256 )
@@ -259,9 +259,9 @@ public class RenderBlockAssembler extends BaseBlockRender<BlockMolecularAssemble
 					{
 						if( covered )
 						{
-							return pc.getCoveredTexture( pc.getCableColor(),renderer );
+							return pc.getCoveredTexture( pc.getCableColor(), renderer );
 						}
-						return pc.getGlassTexture( pc.getCableColor(),renderer );
+						return pc.getGlassTexture( pc.getCableColor(), renderer );
 					}
 				}
 			}

@@ -323,12 +323,12 @@ public enum GuiBridge implements IGuiHandler
 		if( newContainer instanceof AEBaseContainer )
 		{
 			final AEBaseContainer bc = (AEBaseContainer) newContainer;
-			bc.openContext = new ContainerOpenContext( myItem );
-			bc.openContext.w = w;
-			bc.openContext.x = x;
-			bc.openContext.y = y;
-			bc.openContext.z = z;
-			bc.openContext.side = side;
+			bc.setOpenContext( new ContainerOpenContext( myItem ) );
+			bc.getOpenContext().setWorld( w );
+			bc.getOpenContext().setX( x );
+			bc.getOpenContext().setY( y );
+			bc.getOpenContext().setZ( z );
+			bc.getOpenContext().setSide( side );
 		}
 
 		return newContainer;

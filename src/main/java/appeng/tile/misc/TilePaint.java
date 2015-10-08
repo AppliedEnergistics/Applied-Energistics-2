@@ -47,10 +47,10 @@ import com.google.common.collect.ImmutableList;
 public class TilePaint extends AEBaseTile
 {
 
-	static final int LIGHT_PER_DOT = 12;
+	private static final int LIGHT_PER_DOT = 12;
 
-	int isLit = 0;
-	List<Splotch> dots = null;
+	private int isLit = 0;
+	private List<Splotch> dots = null;
 
 	@Override
 	public boolean canBeRotated()
@@ -69,7 +69,7 @@ public class TilePaint extends AEBaseTile
 		}
 	}
 
-	void writeBuffer( final ByteBuf out )
+	private void writeBuffer( final ByteBuf out )
 	{
 		if( this.dots == null )
 		{
@@ -94,7 +94,7 @@ public class TilePaint extends AEBaseTile
 		}
 	}
 
-	void readBuffer( final ByteBuf in )
+	private void readBuffer( final ByteBuf in )
 	{
 		final byte howMany = in.readByte();
 
@@ -114,7 +114,7 @@ public class TilePaint extends AEBaseTile
 		this.isLit = 0;
 		for( final Splotch s : this.dots )
 		{
-			if( s.lumen )
+			if( s.isLumen() )
 			{
 				this.isLit += LIGHT_PER_DOT;
 			}
@@ -180,7 +180,7 @@ public class TilePaint extends AEBaseTile
 		while( i.hasNext() )
 		{
 			final Splotch s = i.next();
-			if( s.side == side )
+			if( s.getSide() == side )
 			{
 				i.remove();
 			}
@@ -195,7 +195,7 @@ public class TilePaint extends AEBaseTile
 		this.isLit = 0;
 		for( final Splotch s : this.dots )
 		{
-			if( s.lumen )
+			if( s.isLumen() )
 			{
 				this.isLit += LIGHT_PER_DOT;
 			}

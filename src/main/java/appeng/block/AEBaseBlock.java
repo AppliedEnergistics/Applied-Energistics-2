@@ -75,24 +75,25 @@ import com.google.common.base.Optional;
 
 public abstract class AEBaseBlock extends Block implements IAEFeature
 {
-    public static final PropertyEnum AXIS_ORIENTATION = PropertyEnum.create("axis", EnumFacing.Axis.class);
-	
+	public static final PropertyEnum AXIS_ORIENTATION = PropertyEnum.create( "axis", EnumFacing.Axis.class );
+
 	private final String featureFullName;
-	protected final Optional<String> featureSubName;
-	protected boolean isOpaque = true;
-	protected boolean isFullSize = true;
-	protected boolean hasSubtypes = false;
-	protected boolean isInventory = false;
+	private final Optional<String> featureSubName;
+	private boolean isOpaque = true;
+	private boolean isFullSize = true;
+	private boolean hasSubtypes = false;
+	private boolean isInventory = false;
 	private IFeatureHandler handler;
 	@SideOnly( Side.CLIENT )
-	BlockRenderInfo renderInfo;
-	
+	private BlockRenderInfo renderInfo;
+	private String textureName;
+
 	@Override
 	public boolean isVisuallyOpaque()
 	{
-		return this.isOpaque && this.isFullSize;
+		return this.isOpaque() && this.isFullSize();
 	}
-	
+
 	protected AEBaseBlock( final Material mat )
 	{
 		this( mat, Optional.<String>absent() );
@@ -135,11 +136,11 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 
 	public static final UnlistedBlockPos AE_BLOCK_POS = new UnlistedBlockPos();
 	public static final UnlistedBlockAccess AE_BLOCK_ACCESS = new UnlistedBlockAccess();
-	
+
 	@Override
 	protected final BlockState createBlockState()
 	{
-		return new ExtendedBlockState( this, this.getAEStates(), new IUnlistedProperty[] { AE_BLOCK_POS, AE_BLOCK_ACCESS} );
+		return new ExtendedBlockState( this, this.getAEStates(), new IUnlistedProperty[] { AE_BLOCK_POS, AE_BLOCK_ACCESS } );
 	}
 
 	@Override
@@ -148,14 +149,14 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 			final IBlockAccess world,
 			final BlockPos pos )
 	{
-		return ((IExtendedBlockState)super.getExtendedState( state, world, pos ) ).withProperty( AE_BLOCK_POS, pos  ).withProperty( AE_BLOCK_ACCESS, world );
+		return ( (IExtendedBlockState) super.getExtendedState( state, world, pos ) ).withProperty( AE_BLOCK_POS, pos ).withProperty( AE_BLOCK_ACCESS, world );
 	}
-	
+
 	protected IProperty[] getAEStates()
 	{
 		return new IProperty[0];
 	}
-	
+
 	@SideOnly( Side.CLIENT )
 	public BlockRenderInfo getRendererInstance()
 	{
@@ -167,7 +168,8 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 		try
 		{
 			final Class<? extends BaseBlockRender> re = this.getRenderer();
-			if ( re == null ) return null; // use 1.8 models.
+			if( re == null )
+				return null; // use 1.8 models.
 			final BaseBlockRender renderer = re.newInstance();
 			this.renderInfo = new BlockRenderInfo( renderer );
 
@@ -182,7 +184,7 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 			throw new IllegalStateException( "Failed to create a new instance of " + this.getRenderer() + " because of permissions.", e );
 		}
 	}
-	
+
 	@Override
 	public int colorMultiplier(
 			final IBlockAccess worldIn,
@@ -200,7 +202,7 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 
 	protected void setFeature( final EnumSet<AEFeature> f )
 	{
-		final AEBlockFeatureHandler featureHandler = new AEBlockFeatureHandler( f, this, this.featureSubName );
+		final AEBlockFeatureHandler featureHandler = new AEBlockFeatureHandler( f, this, this.getFeatureSubName() );
 		this.setHandler( featureHandler );
 	}
 
@@ -225,14 +227,14 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 	{
 		return this.isOpaque;
 	}
-	
+
 	@Override
 	public boolean isNormalCube()
 	{
-		return this.isFullSize && this.isOpaque;
+		return this.isFullSize() && this.isOpaque();
 	}
-	
-	protected ICustomCollision getCustomCollision( final World w, final BlockPos pos  )
+
+	protected ICustomCollision getCustomCollision( final World w, final BlockPos pos )
 	{
 		if( this instanceof ICustomCollision )
 		{
@@ -244,12 +246,12 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 	@SideOnly( Side.CLIENT )
 	public IAESprite getIcon( final IBlockAccess w, final BlockPos pos, final EnumFacing side )
 	{
-		final IBlockState state =w.getBlockState( pos );
+		final IBlockState state = w.getBlockState( pos );
 		final IOrientable ori = this.getOrientable( w, pos );
-		
-		if ( ori == null )
-			return this.getIcon( side,state );
-		
+
+		if( ori == null )
+			return this.getIcon( side, state );
+
 		return this.getIcon( this.mapRotation( ori, side ), state );
 	}
 
@@ -288,7 +290,7 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 			super.addCollisionBoxesToList( w, pos, state, bb, out, e );
 		}
 	}
-	
+
 	@Override
 	@SideOnly( Side.CLIENT )
 	public AxisAlignedBB getSelectedBoundingBox(
@@ -313,15 +315,15 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 				{
 					this.setBlockBounds( (float) bb.minX, (float) bb.minY, (float) bb.minZ, (float) bb.maxX, (float) bb.maxY, (float) bb.maxZ );
 
-					final MovingObjectPosition r = super.collisionRayTrace( w, pos, ld.a, ld.b );
+					final MovingObjectPosition r = super.collisionRayTrace( w, pos, ld.getA(), ld.getB() );
 
 					this.setBlockBounds( 0, 0, 0, 1, 1, 1 );
 
 					if( r != null )
 					{
-						final double xLen = ( ld.a.xCoord - r.hitVec.xCoord );
-						final double yLen = ( ld.a.yCoord - r.hitVec.yCoord );
-						final double zLen = ( ld.a.zCoord - r.hitVec.zCoord );
+						final double xLen = ( ld.getA().xCoord - r.hitVec.xCoord );
+						final double yLen = ( ld.getA().yCoord - r.hitVec.yCoord );
+						final double zLen = ( ld.getA().zCoord - r.hitVec.zCoord );
 
 						final double thisDist = xLen * xLen + yLen * yLen + zLen * zLen;
 
@@ -344,12 +346,12 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 
 			for( final AxisAlignedBB bx : collisionHandler.getSelectedBoundingBoxesFromPool( w, pos, null, false ) )
 			{
-				if ( b == null )
+				if( b == null )
 				{
 					b = bx;
 					continue;
 				}
-				
+
 				final double minX = Math.min( b.minX, bx.minX );
 				final double minY = Math.min( b.minY, bx.minY );
 				final double minZ = Math.min( b.minZ, bx.minZ );
@@ -360,10 +362,10 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 				b = AxisAlignedBB.fromBounds( minX, minY, minZ, maxX, maxY, maxZ );
 			}
 
-			if ( b == null )
+			if( b == null )
 				b = new AxisAlignedBB( 16d, 16d, 16d, 0d, 0d, 0d );
 			else
-				b = AxisAlignedBB.fromBounds( b.minX + pos.getX(), b.minY + pos.getY(), b.minZ + pos.getZ(), b.maxX+ pos.getX(), b.maxY + pos.getY(), b.maxZ + pos.getZ() );
+				b = AxisAlignedBB.fromBounds( b.minX + pos.getX(), b.minY + pos.getY(), b.minZ + pos.getZ(), b.maxX + pos.getX(), b.maxY + pos.getY(), b.maxZ + pos.getZ() );
 
 			return b;
 		}
@@ -374,7 +376,7 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 	@Override
 	public final boolean isOpaqueCube()
 	{
-		return this.isOpaque;
+		return this.isOpaque();
 	}
 
 	@Override
@@ -432,7 +434,7 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 	{
 		return false;
 	}
-	
+
 	@Override
 	@SideOnly( Side.CLIENT )
 	@SuppressWarnings( "unchecked" )
@@ -446,7 +448,7 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 	{
 		return this.isInventory;
 	}
-	
+
 	@Override
 	public int getComparatorInputOverride(
 			final World worldIn,
@@ -454,13 +456,13 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 	{
 		return 0;
 	}
-	
+
 	@Override
 	public boolean isNormalCube(
 			final IBlockAccess world,
 			final BlockPos pos )
 	{
-		return this.isFullSize;
+		return this.isFullSize();
 	}
 
 	public IOrientable getOrientable( final IBlockAccess w, final BlockPos pos )
@@ -563,7 +565,7 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 	}
 
 	public EnumFacing mapRotation(
-			final IOrientable  ori,
+			final IOrientable ori,
 			final EnumFacing dir )
 	{
 		// case DOWN: return bottomIcon;
@@ -593,8 +595,8 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 				west = dx;
 			}
 		}
-		
-		if ( west == null )
+
+		if( west == null )
 			return dir;
 
 		if( dir == forward )
@@ -664,7 +666,7 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 				final IResource res = Minecraft.getMinecraft().getResourceManager().getResource( resLoc );
 				if( res != null )
 				{
-					return new FlippableIcon( new BaseIcon( ir.registerSprite( new ResourceLocation(AppEng.MOD_ID, "blocks/" + name ) ) ) );
+					return new FlippableIcon( new BaseIcon( ir.registerSprite( new ResourceLocation( AppEng.MOD_ID, "blocks/" + name ) ) ) );
 				}
 			}
 			catch( final Throwable e )
@@ -673,19 +675,40 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 			}
 		}
 
-		final ResourceLocation resLoc = new ResourceLocation(AppEng.MOD_ID, "blocks/" + name );
-		return new FlippableIcon(new BaseIcon( ir.registerSprite( resLoc ) ) );
+		final ResourceLocation resLoc = new ResourceLocation( AppEng.MOD_ID, "blocks/" + name );
+		return new FlippableIcon( new BaseIcon( ir.registerSprite( resLoc ) ) );
 	}
-	
-	String textureName;
+
 	public void setBlockTextureName( final String texture )
 	{
 		this.textureName = texture;
 	}
-	
+
 	private String getTextureName()
 	{
 		return this.textureName;
+	}
+
+	public boolean isFullSize()
+	{
+		return isFullSize;
+	}
+
+	public boolean setFullSize( boolean isFullSize )
+	{
+		this.isFullSize = isFullSize;
+		return isFullSize;
+	}
+
+	public boolean setOpaque( boolean isOpaque )
+	{
+		this.isOpaque = isOpaque;
+		return isOpaque;
+	}
+
+	public Optional<String> getFeatureSubName()
+	{
+		return featureSubName;
 	}
 
 }

@@ -54,13 +54,13 @@ import appeng.util.inv.WrapperMCISidedInventory;
 
 // TODO: BC Integration
 //@Interface( iface = "buildcraft.api.transport.IPipeConnection", iname = IntegrationType.BuildCraftTransport )
-public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements /*IPipeConnection,*/ ISidedInventory, IGridTickable
+public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements /* IPipeConnection, */ISidedInventory, IGridTickable
 {
 
-	final LinkedList<IInventory> which = new LinkedList<IInventory>();
-	int oldSize = 0;
-	boolean requested;
-	IInventory cachedInv;
+	private final LinkedList<IInventory> which = new LinkedList<IInventory>();
+	private int oldSize = 0;
+	private boolean requested;
+	private IInventory cachedInv;
 
 	public PartP2PItems( final ItemStack is )
 	{
@@ -72,13 +72,13 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements /*IPipe
 	{
 		this.cachedInv = null;
 		final PartP2PItems input = this.getInput();
-		if( input != null && this.output )
+		if( input != null && this.isOutput() )
 		{
 			input.onTunnelNetworkChange();
 		}
 	}
 
-	IInventory getDestination()
+	private IInventory getDestination()
 	{
 		this.requested = true;
 
@@ -118,13 +118,13 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements /*IPipe
 		return this.cachedInv = new WrapperChainedInventory( outs );
 	}
 
-	IInventory getOutputInv()
+	private IInventory getOutputInv()
 	{
 		IInventory output = null;
 
-		if( this.proxy.isActive() )
+		if( this.getProxy().isActive() )
 		{
-			final TileEntity te = this.tile.getWorld().getTileEntity( this.tile.getPos().offset( this.side.getFacing() ) );
+			final TileEntity te = this.getTile().getWorld().getTileEntity( this.getTile().getPos().offset( this.getSide().getFacing() ) );
 
 			if( this.which.contains( this ) )
 			{
@@ -136,18 +136,18 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements /*IPipe
 			if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.BuildCraftTransport ) )
 			{
 				final IBuildCraftTransport buildcraft = (IBuildCraftTransport) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.BuildCraftTransport );
-				if( buildcraft.isPipe( te, this.side.getOpposite().getFacing() ) )
+				if( buildcraft.isPipe( te, this.getSide().getOpposite().getFacing() ) )
 				{
 					try
 					{
-						output = new WrapperBCPipe( te, this.side.getFacing().getOpposite() );
+						output = new WrapperBCPipe( te, this.getSide().getFacing().getOpposite() );
 					}
 					catch( final Throwable ignore )
 					{
 					}
 				}
 			}
-			
+
 			/*
 			 * if ( AppEng.INSTANCE.isIntegrationEnabled( "TE" ) ) { ITE thermal = (ITE) AppEng.INSTANCE.getIntegration(
 			 * "TE" ); if ( thermal != null ) { if ( thermal.isPipe( te, side.getOpposite() ) ) { try { output = new
@@ -162,7 +162,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements /*IPipe
 				}
 				else if( te instanceof ISidedInventory )
 				{
-					output = new WrapperMCISidedInventory( (ISidedInventory) te, this.side.getFacing().getOpposite() );
+					output = new WrapperMCISidedInventory( (ISidedInventory) te, this.getSide().getFacing().getOpposite() );
 				}
 				else if( te instanceof IInventory )
 				{
@@ -179,7 +179,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements /*IPipe
 	@Override
 	public TickingRequest getTickingRequest( final IGridNode node )
 	{
-		return new TickingRequest( TickRates.ItemTunnel.min, TickRates.ItemTunnel.max, false, false );
+		return new TickingRequest( TickRates.ItemTunnel.getMin(), TickRates.ItemTunnel.getMax(), false, false );
 	}
 
 	@Override
@@ -199,7 +199,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements /*IPipe
 	@MENetworkEventSubscribe
 	public void changeStateA( final MENetworkBootingStatusChange bs )
 	{
-		if( !this.output )
+		if( !this.isOutput() )
 		{
 			this.cachedInv = null;
 			final int olderSize = this.oldSize;
@@ -214,7 +214,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements /*IPipe
 	@MENetworkEventSubscribe
 	public void changeStateB( final MENetworkChannelsChanged bs )
 	{
-		if( !this.output )
+		if( !this.isOutput() )
 		{
 			this.cachedInv = null;
 			final int olderSize = this.oldSize;
@@ -229,7 +229,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements /*IPipe
 	@MENetworkEventSubscribe
 	public void changeStateC( final MENetworkPowerStatusChange bs )
 	{
-		if( !this.output )
+		if( !this.isOutput() )
 		{
 			this.cachedInv = null;
 			final int olderSize = this.oldSize;
@@ -244,7 +244,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements /*IPipe
 	@Override
 	public void onTunnelNetworkChange()
 	{
-		if( !this.output )
+		if( !this.isOutput() )
 		{
 			this.cachedInv = null;
 			final int olderSize = this.oldSize;
@@ -337,12 +337,12 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements /*IPipe
 	}
 
 	@Override
-	public void openInventory( final EntityPlayer p)
+	public void openInventory( final EntityPlayer p )
 	{
 	}
 
 	@Override
-	public void closeInventory( final EntityPlayer p)
+	public void closeInventory( final EntityPlayer p )
 	{
 	}
 
@@ -375,12 +375,12 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements /*IPipe
 		return 0;
 	}
 
-//	@Override
-//	@Method( iname = IntegrationType.BuildCraftTransport )
-//	public ConnectOverride overridePipeConnection( PipeType type, ForgeDirection with )
-//	{
-//		return 0;
-//	}
+	// @Override
+	// @Method( iname = IntegrationType.BuildCraftTransport )
+	// public ConnectOverride overridePipeConnection( PipeType type, ForgeDirection with )
+	// {
+	// return 0;
+	// }
 
 	@Override
 	public void setField(
@@ -409,10 +409,10 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements /*IPipe
 	}
 
 	// TODO: BC Integration
-//	@Override
-//	@Method( iname = "BuildCraftTransport" )
-//	public ConnectOverride overridePipeConnection( PipeType type, ForgeDirection with )
-//	{
-//		return this.side == with && type == PipeType.ITEM ? ConnectOverride.CONNECT : ConnectOverride.DEFAULT;
-//	}
+	// @Override
+	// @Method( iname = "BuildCraftTransport" )
+	// public ConnectOverride overridePipeConnection( PipeType type, ForgeDirection with )
+	// {
+	// return this.side == with && type == PipeType.ITEM ? ConnectOverride.CONNECT : ConnectOverride.DEFAULT;
+	// }
 }

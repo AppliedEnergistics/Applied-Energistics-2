@@ -29,10 +29,10 @@ public class PartInvertedToggleBus extends PartToggleBus
 	public PartInvertedToggleBus( final ItemStack is )
 	{
 		super( is );
-		this.proxy.setIdlePowerUsage( 0.0 );
-		this.outerProxy.setIdlePowerUsage( 0.0 );
-		this.proxy.setFlags();
-		this.outerProxy.setFlags();
+		this.getProxy().setIdlePowerUsage( 0.0 );
+		this.getOuterProxy().setIdlePowerUsage( 0.0 );
+		this.getProxy().setFlags();
+		this.getOuterProxy().setFlags();
 	}
 
 	@Override

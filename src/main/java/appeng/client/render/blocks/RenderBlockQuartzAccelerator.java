@@ -44,7 +44,7 @@ public class RenderBlockQuartzAccelerator extends BaseBlockRender<BlockQuartzGro
 		final TileEntity te = world.getTileEntity( pos );
 		if( te instanceof TileQuartzGrowthAccelerator )
 		{
-			if( ( (TileQuartzGrowthAccelerator) te ).hasPower )
+			if( ( (TileQuartzGrowthAccelerator) te ).isPowered() )
 			{
 				final IAESprite top_Bottom = ExtraBlockTextures.BlockQuartzGrowthAcceleratorOn.getIcon();
 				final IAESprite side = ExtraBlockTextures.BlockQuartzGrowthAcceleratorSideOn.getIcon();

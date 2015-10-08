@@ -19,7 +19,6 @@
 package appeng.spatial;
 
 
-import java.lang.reflect.Method;
 import java.util.List;
 
 import net.minecraft.block.Block;
@@ -34,6 +33,7 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.Teleporter;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
+
 import appeng.api.AEApi;
 import appeng.api.util.WorldCoord;
 import appeng.core.stats.Achievements;
@@ -44,7 +44,6 @@ public class StorageHelper
 {
 
 	private static StorageHelper instance;
-	Method onEntityRemoved;
 
 	public static StorageHelper getInstance()
 	{
@@ -59,11 +58,11 @@ public class StorageHelper
 	 * Mostly from dimensional doors.. which mostly got it form X-Comp.
 	 *
 	 * @param entity to be teleported entity
-	 * @param link   destination
+	 * @param link destination
 	 *
 	 * @return teleported entity
 	 */
-	public Entity teleportEntity( Entity entity, final TelDestination link )
+	private Entity teleportEntity( Entity entity, final TelDestination link )
 	{
 		final WorldServer oldWorld;
 		final WorldServer newWorld;
@@ -176,7 +175,7 @@ public class StorageHelper
 		return entity;
 	}
 
-	public void transverseEdges( final int minX, final int minY, final int minZ, final int maxX, final int maxY, final int maxZ, final ISpatialVisitor visitor )
+	private void transverseEdges( final int minX, final int minY, final int minZ, final int maxX, final int maxY, final int maxZ, final ISpatialVisitor visitor )
 	{
 		for( int y = minY; y < maxY; y++ )
 		{
@@ -206,7 +205,9 @@ public class StorageHelper
 		}
 	}
 
-	public void swapRegions( final World src /** over world **/, final World dst /** storage cell **/, final int x, final int y, final int z, final int i, final int j, final int k, final int scaleX, final int scaleY, final int scaleZ )
+	public void swapRegions( final World src /** over world **/
+	, final World dst /** storage cell **/
+	, final int x, final int y, final int z, final int i, final int j, final int k, final int scaleX, final int scaleY, final int scaleZ )
 	{
 		for( final Block matrixFrameBlock : AEApi.instance().definitions().blocks().matrixFrame().maybeBlock().asSet() )
 		{
@@ -236,14 +237,14 @@ public class StorageHelper
 			this.teleportEntity( e, new TelDestination( dst, dstBox, e.posX, e.posY, e.posZ, -x + i, -y + j, -z + k ) );
 		}
 
-		for( final WorldCoord wc : cDst.updates )
+		for( final WorldCoord wc : cDst.getUpdates() )
 		{
-			cSrc.world.notifyBlockOfStateChange( wc.getPos(), Platform.AIR_BLOCK );
+			cSrc.getWorld().notifyBlockOfStateChange( wc.getPos(), Platform.AIR_BLOCK );
 		}
 
-		for( final WorldCoord wc : cSrc.updates )
+		for( final WorldCoord wc : cSrc.getUpdates() )
 		{
-			cSrc.world.notifyBlockOfStateChange( wc.getPos(), Platform.AIR_BLOCK );
+			cSrc.getWorld().notifyBlockOfStateChange( wc.getPos(), Platform.AIR_BLOCK );
 		}
 
 		this.transverseEdges( x - 1, y - 1, z - 1, x + scaleX + 1, y + scaleY + 1, z + scaleZ + 1, new TriggerUpdates( src ) );
@@ -253,18 +254,18 @@ public class StorageHelper
 		this.transverseEdges( i, j, k, i + scaleX, j + scaleY, k + scaleZ, new TriggerUpdates( dst ) );
 
 		/*
-		 * IChunkProvider cp = destination.getChunkProvider(); if ( cp instanceof ChunkProviderServer ) { ChunkProviderServer
+		 * IChunkProvider cp = destination.getChunkProvider(); if ( cp instanceof ChunkProviderServer ) {
+		 * ChunkProviderServer
 		 * srv = (ChunkProviderServer) cp; srv.unloadAllChunks(); }
-		 *
 		 * cp.unloadQueuedChunks();
 		 */
 
 	}
 
-	static class TriggerUpdates implements ISpatialVisitor
+	private static class TriggerUpdates implements ISpatialVisitor
 	{
 
-		final World dst;
+		private final World dst;
 
 		public TriggerUpdates( final World dst2 )
 		{
@@ -275,16 +276,15 @@ public class StorageHelper
 		public void visit( final BlockPos pos )
 		{
 			final Block blk = this.dst.getBlockState( pos ).getBlock();
-			blk.onNeighborBlockChange( this.dst, pos, Platform.AIR_BLOCK.getDefaultState(), Platform.AIR_BLOCK);
+			blk.onNeighborBlockChange( this.dst, pos, Platform.AIR_BLOCK.getDefaultState(), Platform.AIR_BLOCK );
 		}
 	}
 
-
-	static class WrapInMatrixFrame implements ISpatialVisitor
+	private static class WrapInMatrixFrame implements ISpatialVisitor
 	{
 
-		final World dst;
-		final IBlockState state;
+		private final World dst;
+		private final IBlockState state;
 
 		public WrapInMatrixFrame( final IBlockState state, final World dst2 )
 		{
@@ -299,17 +299,16 @@ public class StorageHelper
 		}
 	}
 
-
-	static class TelDestination
+	private static class TelDestination
 	{
 
-		final World dim;
-		final double x;
-		final double y;
-		final double z;
-		final int xOff;
-		final int yOff;
-		final int zOff;
+		private final World dim;
+		private final double x;
+		private final double y;
+		private final double z;
+		private final int xOff;
+		private final int yOff;
+		private final int zOff;
 
 		TelDestination( final World dimension, final AxisAlignedBB srcBox, final double x, final double y, final double z, final int tileX, final int tileY, final int tileZ )
 		{
@@ -323,11 +322,10 @@ public class StorageHelper
 		}
 	}
 
-
-	static class METeleporter extends Teleporter
+	private static class METeleporter extends Teleporter
 	{
 
-		final TelDestination destination;
+		private final TelDestination destination;
 
 		public METeleporter( final WorldServer par1WorldServer, final TelDestination d )
 		{

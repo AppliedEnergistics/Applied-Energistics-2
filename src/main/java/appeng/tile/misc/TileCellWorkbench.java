@@ -46,18 +46,18 @@ import appeng.util.IConfigManagerHost;
 public class TileCellWorkbench extends AEBaseTile implements IUpgradeableHost, IAEAppEngInventory, IConfigManagerHost
 {
 
-	final AppEngInternalInventory cell = new AppEngInternalInventory( this, 1 );
-	final AppEngInternalAEInventory config = new AppEngInternalAEInventory( this, 63 );
-	final ConfigManager manager = new ConfigManager( this );
+	private final AppEngInternalInventory cell = new AppEngInternalInventory( this, 1 );
+	private final AppEngInternalAEInventory config = new AppEngInternalAEInventory( this, 63 );
+	private final ConfigManager manager = new ConfigManager( this );
 
-	IInventory cacheUpgrades = null;
-	IInventory cacheConfig = null;
+	private IInventory cacheUpgrades = null;
+	private IInventory cacheConfig = null;
 	private boolean locked = false;
 
 	public TileCellWorkbench()
 	{
 		this.manager.registerSetting( Settings.COPY_MODE, CopyMode.CLEAR_ON_REMOVE );
-		this.cell.enableClientEvents = true;
+		this.cell.setEnableClientEvents( true );
 	}
 
 	public IInventory getCellUpgradeInventory()

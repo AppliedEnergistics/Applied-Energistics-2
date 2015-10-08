@@ -60,32 +60,32 @@ import appeng.util.Platform;
 public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomCollision
 {
 
-	public CableBusContainer cb = new CableBusContainer( this );
+	private CableBusContainer cb = new CableBusContainer( this );
+
 	/**
 	 * Immibis MB Support
 	 */
-
-	boolean ImmibisMicroblocks_TransformableTileEntityMarker = true;
+	private boolean ImmibisMicroblocks_TransformableTileEntityMarker = true;
 	private int oldLV = -1; // on re-calculate light when it changes
 
 	@TileEvent( TileEventType.WORLD_NBT_READ )
 	public void readFromNBT_TileCableBus( final NBTTagCompound data )
 	{
-		this.cb.readFromNBT( data );
+		this.getCableBus().readFromNBT( data );
 	}
 
 	@TileEvent( TileEventType.WORLD_NBT_WRITE )
 	public void writeToNBT_TileCableBus( final NBTTagCompound data )
 	{
-		this.cb.writeToNBT( data );
+		this.getCableBus().writeToNBT( data );
 	}
 
 	@TileEvent( TileEventType.NETWORK_READ )
 	public boolean readFromStream_TileCableBus( final ByteBuf data ) throws IOException
 	{
-		final boolean ret = this.cb.readFromStream( data );
+		final boolean ret = this.getCableBus().readFromStream( data );
 
-		final int newLV = this.cb.getLightValue();
+		final int newLV = this.getCableBus().getLightValue();
 		if( newLV != this.oldLV )
 		{
 			this.oldLV = newLV;
@@ -98,11 +98,11 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 
 	protected void updateTileSetting()
 	{
-		if( this.cb.requiresDynamicRender )
+		if( this.getCableBus().isRequiresDynamicRender() )
 		{
 			try
 			{
-				final TileCableBus tcb = (TileCableBus) BlockCableBus.tesrTile.newInstance();
+				final TileCableBus tcb = (TileCableBus) BlockCableBus.getTesrTile().newInstance();
 				tcb.copyFrom( this );
 				this.getWorld().setTileEntity( this.pos, tcb );
 			}
@@ -115,16 +115,16 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 
 	protected void copyFrom( final TileCableBus oldTile )
 	{
-		final CableBusContainer tmpCB = this.cb;
-		this.cb = oldTile.cb;
+		final CableBusContainer tmpCB = this.getCableBus();
+		this.setCableBus( oldTile.getCableBus() );
 		this.oldLV = oldTile.oldLV;
-		oldTile.cb = tmpCB;
+		oldTile.setCableBus( tmpCB );
 	}
 
 	@TileEvent( TileEventType.NETWORK_WRITE )
 	public void writeToStream_TileCableBus( final ByteBuf data ) throws IOException
 	{
-		this.cb.writeToStream( data );
+		this.getCableBus().writeToStream( data );
 	}
 
 	@Override
@@ -137,7 +137,7 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	public void invalidate()
 	{
 		super.invalidate();
-		this.cb.removeFromWorld();
+		this.getCableBus().removeFromWorld();
 	}
 
 	@Override
@@ -150,20 +150,20 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	@Override
 	public IGridNode getGridNode( final AEPartLocation dir )
 	{
-		return this.cb.getGridNode( dir );
+		return this.getCableBus().getGridNode( dir );
 	}
 
 	@Override
 	public AECableType getCableConnectionType( final AEPartLocation side )
 	{
-		return this.cb.getCableConnectionType( side );
+		return this.getCableBus().getCableConnectionType( side );
 	}
 
 	@Override
 	public void onChunkUnload()
 	{
 		super.onChunkUnload();
-		this.cb.removeFromWorld();
+		this.getCableBus().removeFromWorld();
 	}
 
 	@Override
@@ -174,7 +174,7 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 			return;
 		}
 
-		final int newLV = this.cb.getLightValue();
+		final int newLV = this.getCableBus().getLightValue();
 		if( newLV != this.oldLV )
 		{
 			this.oldLV = newLV;
@@ -194,20 +194,20 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	@Override
 	public void getDrops( final World w, final BlockPos pos, final List drops )
 	{
-		this.cb.getDrops( drops );
+		this.getCableBus().getDrops( drops );
 	}
 
 	@Override
 	public void getNoDrops( final World w, final BlockPos pos, final List<ItemStack> drops )
 	{
-		this.cb.getNoDrops( drops );
+		this.getCableBus().getNoDrops( drops );
 	}
 
 	@Override
 	public void onReady()
 	{
 		super.onReady();
-		if( this.cb.isEmpty() )
+		if( this.getCableBus().isEmpty() )
 		{
 			if( this.worldObj.getTileEntity( this.pos ) == this )
 			{
@@ -216,32 +216,32 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 		}
 		else
 		{
-			this.cb.addToWorld();
+			this.getCableBus().addToWorld();
 		}
 	}
 
 	@Override
 	public boolean requiresTESR()
 	{
-		return this.cb.requiresDynamicRender;
+		return this.getCableBus().isRequiresDynamicRender();
 	}
 
 	@Override
 	public IFacadeContainer getFacadeContainer()
 	{
-		return this.cb.getFacadeContainer();
+		return this.getCableBus().getFacadeContainer();
 	}
 
 	@Override
 	public boolean canAddPart( final ItemStack is, final AEPartLocation side )
 	{
-		return this.cb.canAddPart( is, side );
+		return this.getCableBus().canAddPart( is, side );
 	}
 
 	@Override
 	public AEPartLocation addPart( final ItemStack is, final AEPartLocation side, final EntityPlayer player )
 	{
-		return this.cb.addPart( is, side, player );
+		return this.getCableBus().addPart( is, side, player );
 	}
 
 	@Override
@@ -253,13 +253,13 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	@Override
 	public IPart getPart( final EnumFacing side )
 	{
-		return this.cb.getPart( side );
+		return this.getCableBus().getPart( side );
 	}
 
 	@Override
 	public void removePart( final AEPartLocation side, final boolean suppressUpdate )
 	{
-		this.cb.removePart( side, suppressUpdate );
+		this.getCableBus().removePart( side, suppressUpdate );
 	}
 
 	@Override
@@ -271,13 +271,13 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	@Override
 	public AEColor getColor()
 	{
-		return this.cb.getColor();
+		return this.getCableBus().getColor();
 	}
 
 	@Override
 	public void clearContainer()
 	{
-		this.cb = new CableBusContainer( this );
+		this.setCableBus( new CableBusContainer( this ) );
 	}
 
 	@Override
@@ -285,17 +285,17 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	{
 		return !this.ImmibisMicroblocks_isSideOpen( side );
 	}
-	
+
 	@Override
 	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool( final World w, final BlockPos pos, final Entity e, final boolean visual )
 	{
-		return this.cb.getSelectedBoundingBoxesFromPool( false, true, e, visual );
+		return this.getCableBus().getSelectedBoundingBoxesFromPool( false, true, e, visual );
 	}
 
 	@Override
 	public SelectedPart selectPart( final Vec3 pos )
 	{
-		return this.cb.selectPart( pos );
+		return this.getCableBus().selectPart( pos );
 	}
 
 	@Override
@@ -313,19 +313,19 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	@Override
 	public boolean hasRedstone( final AEPartLocation side )
 	{
-		return this.cb.hasRedstone( side );
+		return this.getCableBus().hasRedstone( side );
 	}
 
 	@Override
 	public boolean isEmpty()
 	{
-		return this.cb.isEmpty();
+		return this.getCableBus().isEmpty();
 	}
 
 	@Override
 	public Set<LayerFlags> getLayerFlags()
 	{
-		return this.cb.getLayerFlags();
+		return this.getCableBus().getLayerFlags();
 	}
 
 	@Override
@@ -342,7 +342,7 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 
 		this.getWorld().setBlockToAir( this.pos );
 	}
-	
+
 	@Override
 	public void addCollidingBlockToList(
 			final World w,
@@ -369,17 +369,17 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	@Override
 	public boolean isInWorld()
 	{
-		return this.cb.isInWorld();
+		return this.getCableBus().isInWorld();
 	}
 
-	public boolean ImmibisMicroblocks_isSideOpen( final EnumFacing side )
+	private boolean ImmibisMicroblocks_isSideOpen( final EnumFacing side )
 	{
 		return true;
 	}
 
 	public void ImmibisMicroblocks_onMicroblocksChanged()
 	{
-		this.cb.updateConnections();
+		this.getCableBus().updateConnections();
 	}
 
 	@Override
@@ -388,10 +388,17 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 			final AEColor colour,
 			final EntityPlayer who )
 	{
-		return this.cb.recolourBlock( side, colour, who );
+		return this.getCableBus().recolourBlock( side, colour, who );
 	}
 
+	public CableBusContainer getCableBus()
+	{
+		return this.cb;
+	}
 
-
+	private void setCableBus( final CableBusContainer cb )
+	{
+		this.cb = cb;
+	}
 
 }

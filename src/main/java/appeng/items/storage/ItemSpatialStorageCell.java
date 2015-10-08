@@ -181,7 +181,7 @@ public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorag
 		return new TransitionResult( false, 0 );
 	}
 
-	public World createNewWorld( final ItemStack is )
+	private World createNewWorld( final ItemStack is )
 	{
 		final NBTTagCompound c = Platform.openNbtData( is );
 		final int newDim = DimensionManager.getNextFreeDimId();

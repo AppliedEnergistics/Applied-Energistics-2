@@ -74,7 +74,7 @@ public class IMCHandler
 	 *
 	 * @param event Event carrying the identifier and message for the handlers
 	 */
-	public void handleIMCEvent( final FMLInterModComms.IMCEvent event )
+	void handleIMCEvent( final FMLInterModComms.IMCEvent event )
 	{
 		for( final FMLInterModComms.IMCMessage message : event.getMessages() )
 		{

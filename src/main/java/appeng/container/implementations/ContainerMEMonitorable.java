@@ -22,6 +22,8 @@ package appeng.container.implementations;
 import java.io.IOException;
 import java.nio.BufferOverflowException;
 
+import javax.annotation.Nonnull;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -71,17 +73,17 @@ import appeng.util.Platform;
 public class ContainerMEMonitorable extends AEBaseContainer implements IConfigManagerHost, IConfigurableObject, IMEMonitorHandlerReceiver<IAEItemStack>
 {
 
-	public final SlotRestrictedInput[] cellView = new SlotRestrictedInput[5];
-	final IMEMonitor<IAEItemStack> monitor;
-	final IItemList<IAEItemStack> items = AEApi.instance().storage().createItemList();
-	final IConfigManager clientCM;
+	private final SlotRestrictedInput[] cellView = new SlotRestrictedInput[5];
+	private final IMEMonitor<IAEItemStack> monitor;
+	private final IItemList<IAEItemStack> items = AEApi.instance().storage().createItemList();
+	private final IConfigManager clientCM;
 	private final ITerminalHost host;
 	@GuiSync( 99 )
 	public boolean canAccessViewCells = false;
 	@GuiSync( 98 )
 	public boolean hasPower = false;
-	public IConfigManagerHost gui;
-	IConfigManager serverCM;
+	private IConfigManagerHost gui;
+	private IConfigManager serverCM;
 	private IGridNode networkNode;
 
 	public ContainerMEMonitorable( final InventoryPlayer ip, final ITerminalHost monitorable )
@@ -109,15 +111,15 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 			{
 				this.monitor.addListener( this, null );
 
-				this.cellInv = this.monitor;
+				this.setCellInventory( this.monitor );
 
 				if( monitorable instanceof IPortableCell )
 				{
-					this.powerSrc = (IEnergySource) monitorable;
+					this.setPowerSource( (IEnergySource) monitorable );
 				}
 				else if( monitorable instanceof IMEChest )
 				{
-					this.powerSrc = (IEnergySource) monitorable;
+					this.setPowerSource( (IEnergySource) monitorable );
 				}
 				else if( monitorable instanceof IGridHost )
 				{
@@ -128,14 +130,14 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 						final IGrid g = node.getGrid();
 						if( g != null )
 						{
-							this.powerSrc = new ChannelPowerSrc( this.networkNode, (IEnergySource) g.getCache( IEnergyGrid.class ) );
+							this.setPowerSource( new ChannelPowerSrc( this.networkNode, (IEnergySource) g.getCache( IEnergyGrid.class ) ) );
 						}
 					}
 				}
 			}
 			else
 			{
-				this.isContainerValid = false;
+				this.setValidContainer( false );
 			}
 		}
 		else
@@ -148,8 +150,8 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 		{
 			for( int y = 0; y < 5; y++ )
 			{
-				this.cellView[y] = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.VIEW_CELL, ( (IViewCellStorage) monitorable ).getViewCellStorage(), y, 206, y * 18 + 8, this.invPlayer );
-				this.cellView[y].allowEdit = this.canAccessViewCells;
+				this.cellView[y] = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.VIEW_CELL, ( (IViewCellStorage) monitorable ).getViewCellStorage(), y, 206, y * 18 + 8, this.getInventoryPlayer() );
+				this.cellView[y].setAllowEdit( this.canAccessViewCells );
 				this.addSlotToContainer( this.cellView[y] );
 			}
 		}
@@ -172,7 +174,7 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 		{
 			if( this.monitor != this.host.getItemInventory() )
 			{
-				this.isContainerValid = false;
+				this.setValidContainer( false );
 			}
 
 			for( final Settings set : this.serverCM.getSettings() )
@@ -248,7 +250,7 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 				{
 					if( this.cellView[y] != null )
 					{
-						this.cellView[y].allowEdit = this.canAccessViewCells;
+						this.cellView[y].setAllowEdit( this.canAccessViewCells );
 					}
 				}
 			}
@@ -263,15 +265,15 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 		{
 			if( this.networkNode != null )
 			{
-				this.hasPower = this.networkNode.isActive();
+				this.setPowered( this.networkNode.isActive() );
 			}
-			else if( this.powerSrc instanceof IEnergyGrid )
+			else if( this.getPowerSource() instanceof IEnergyGrid )
 			{
-				this.hasPower = ( (IEnergyGrid) this.powerSrc ).isNetworkPowered();
+				this.setPowered( ( (IEnergyGrid) this.getPowerSource() ).isNetworkPowered() );
 			}
 			else
 			{
-				this.hasPower = this.powerSrc.extractAEPower( 1, Actionable.SIMULATE, PowerMultiplier.CONFIG ) > 0.8;
+				this.setPowered( this.getPowerSource().extractAEPower( 1, Actionable.SIMULATE, PowerMultiplier.CONFIG ) > 0.8 );
 			}
 		}
 		catch( final Throwable t )
@@ -289,7 +291,7 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 			{
 				if( this.cellView[y] != null )
 				{
-					this.cellView[y].allowEdit = this.canAccessViewCells;
+					this.cellView[y].setAllowEdit( this.canAccessViewCells );
 				}
 			}
 		}
@@ -305,7 +307,7 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 		this.queueInventory( c );
 	}
 
-	public void queueInventory( final ICrafting c )
+	private void queueInventory( final ICrafting c )
 	{
 		if( Platform.isServer() && c instanceof EntityPlayer && this.monitor != null )
 		{
@@ -390,9 +392,9 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 	@Override
 	public void updateSetting( final IConfigManager manager, final Enum settingName, final Enum newValue )
 	{
-		if( this.gui != null )
+		if( this.getGui() != null )
 		{
-			this.gui.updateSetting( manager, settingName, newValue );
+			this.getGui().updateSetting( manager, settingName, newValue );
 		}
 	}
 
@@ -416,5 +418,30 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 		}
 
 		return list;
+	}
+
+	public SlotRestrictedInput getCellViewSlot( final int index )
+	{
+		return this.cellView[index];
+	}
+
+	public boolean isPowered()
+	{
+		return this.hasPower;
+	}
+
+	private void setPowered( final boolean isPowered )
+	{
+		this.hasPower = isPowered;
+	}
+
+	private IConfigManagerHost getGui()
+	{
+		return this.gui;
+	}
+
+	public void setGui( @Nonnull final IConfigManagerHost gui )
+	{
+		this.gui = gui;
 	}
 }

@@ -183,12 +183,12 @@ public class NEIGrinderRecipeHandler extends TemplateRecipeHandler
 		return GuiText.GrindStone.getLocal();
 	}
 
-	public class CachedGrindStoneRecipe extends TemplateRecipeHandler.CachedRecipe
+	private class CachedGrindStoneRecipe extends TemplateRecipeHandler.CachedRecipe
 	{
-		public final List<PositionedStack> ingredients;
-		public final PositionedStack result;
-		public String displayChance;
-		boolean hasOptional = false;
+		private final List<PositionedStack> ingredients;
+		private final PositionedStack result;
+		private String displayChance;
+		private boolean hasOptional = false;
 
 		public CachedGrindStoneRecipe( IGrinderEntry recipe )
 		{
@@ -231,7 +231,7 @@ public class NEIGrinderRecipeHandler extends TemplateRecipeHandler
 			return this.getCycledIngredients( NEIGrinderRecipeHandler.this.cycleticks / 20, this.ingredients );
 		}
 
-		public void computeVisuals()
+		private void computeVisuals()
 		{
 			for( PositionedStack p : this.ingredients )
 			{

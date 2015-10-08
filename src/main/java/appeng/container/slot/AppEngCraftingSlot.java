@@ -145,16 +145,16 @@ public class AppEngCraftingSlot extends AppEngSlot
         net.minecraftforge.fml.common.FMLCommonHandler.instance().firePlayerCraftingEvent(playerIn, stack, this.craftMatrix );
         this.onCrafting(stack);
         net.minecraftforge.common.ForgeHooks.setCraftingPlayer(playerIn);
-        final InventoryCrafting ic = new InventoryCrafting( this.myContainer, 3, 3 );
-        
+        final InventoryCrafting ic = new InventoryCrafting( this.getContainer(), 3, 3 );
+
         for ( int x=0; x < this.craftMatrix.getSizeInventory(); x++ )
         	ic.setInventorySlotContents( x, this.craftMatrix.getStackInSlot( x ) );
-        
+
         final ItemStack[] aitemstack = CraftingManager.getInstance().func_180303_b(ic, playerIn.worldObj);
-        
+
         for ( int x=0; x < this.craftMatrix.getSizeInventory(); x++ )
 			this.craftMatrix.setInventorySlotContents( x, ic.getStackInSlot( x ) );
-               
+
         net.minecraftforge.common.ForgeHooks.setCraftingPlayer(null);
 
         for (int i = 0; i < aitemstack.length; ++i)

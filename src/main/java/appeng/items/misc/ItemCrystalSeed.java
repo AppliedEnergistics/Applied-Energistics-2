@@ -57,17 +57,17 @@ import appeng.util.Platform;
 public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 {
 
-	public static final int LEVEL_OFFSET = 200;
-	public static final int SINGLE_OFFSET = LEVEL_OFFSET * 3;
+	private static final int LEVEL_OFFSET = 200;
+	private static final int SINGLE_OFFSET = LEVEL_OFFSET * 3;
 
 	public static final int CERTUS = 0;
 	public static final int NETHER = SINGLE_OFFSET;
 	public static final int FLUIX = SINGLE_OFFSET * 2;
 	public static final int FINAL_STAGE = SINGLE_OFFSET * 3;
 
-	final ModelResourceLocation[] certus = new ModelResourceLocation[3];
-	final ModelResourceLocation[] fluix = new ModelResourceLocation[3];
-	final ModelResourceLocation[] nether = new ModelResourceLocation[3];
+	private final ModelResourceLocation[] certus = new ModelResourceLocation[3];
+	private final ModelResourceLocation[] fluix = new ModelResourceLocation[3];
+	private final ModelResourceLocation[] nether = new ModelResourceLocation[3];
 
 	public ItemCrystalSeed()
 	{
@@ -78,10 +78,10 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
+	@SideOnly( Side.CLIENT )
 	public void registerIcons( final ClientHelper ir, final String name )
 	{
-		final String preFix = name+".";
+		final String preFix = name + ".";
 
 		this.certus[0] = ir.setIcon( this, preFix + "Certus" );
 		this.certus[1] = ir.setIcon( this, preFix + "Certus2" );
@@ -94,9 +94,9 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 		this.fluix[0] = ir.setIcon( this, preFix + "Fluix" );
 		this.fluix[1] = ir.setIcon( this, preFix + "Fluix2" );
 		this.fluix[2] = ir.setIcon( this, preFix + "Fluix3" );
-		
+
 		Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register( this, new ItemMeshDefinition(){
-			
+
 			@Override
 			public ModelResourceLocation getModelLocation(
 					final ItemStack stack )
@@ -139,9 +139,9 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 					return list[2];
 				}
 			}
-		});
+		} );
 	}
-	
+
 	@Nullable
 	public static ResolverResult getResolver( final int certus2 )
 	{

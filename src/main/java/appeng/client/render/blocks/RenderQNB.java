@@ -65,7 +65,7 @@ public class RenderQNB extends BaseBlockRender<BlockQuantumBase, TileQuantumBrid
 			return false;
 		}
 
-		renderer.renderAllFaces = true;
+		renderer.setRenderAllFaces( true );
 
 		final IDefinitions definitions = AEApi.instance().definitions();
 		final IBlocks blocks = definitions.blocks();
@@ -157,7 +157,7 @@ public class RenderQNB extends BaseBlockRender<BlockQuantumBase, TileQuantumBrid
 			}
 		}
 
-		renderer.renderAllFaces = false;
+		renderer.setRenderAllFaces( false );
 		return true;
 	}
 

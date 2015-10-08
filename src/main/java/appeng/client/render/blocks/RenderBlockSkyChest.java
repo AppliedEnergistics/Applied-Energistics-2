@@ -89,7 +89,7 @@ public class RenderBlockSkyChest extends BaseBlockRender<BlockSkyChest, TileSkyC
 	@Override
 	public void renderTile( final BlockSkyChest block, final TileSkyChest skyChest, final WorldRenderer tess, final double x, final double y, final double z, final float partialTick, final ModelGenerator renderer )
 	{
-		if(  skyChest == null )
+		if( skyChest == null )
 		{
 			return;
 		}
@@ -113,28 +113,28 @@ public class RenderBlockSkyChest extends BaseBlockRender<BlockSkyChest, TileSkyC
 		GL11.glTranslatef( -0.0F, -1.0F, -1.0F );
 
 		final long now = System.currentTimeMillis();
-		final long distance = now - skyChest.lastEvent;
+		final long distance = now - skyChest.getLastEvent();
 
-		if( skyChest.playerOpen > 0 )
+		if( skyChest.getPlayerOpen() > 0 )
 		{
-			skyChest.lidAngle += distance * 0.0001;
+			skyChest.setLidAngle( skyChest.getLidAngle() + distance * 0.0001f );
 		}
 		else
 		{
-			skyChest.lidAngle -= distance * 0.0001;
+			skyChest.setLidAngle( skyChest.getLidAngle() - distance * 0.0001f );
 		}
 
-		if( skyChest.lidAngle > 0.5f )
+		if( skyChest.getLidAngle() > 0.5f )
 		{
-			skyChest.lidAngle = 0.5f;
+			skyChest.setLidAngle( 0.5f );
 		}
 
-		if( skyChest.lidAngle < 0.0f )
+		if( skyChest.getLidAngle() < 0.0f )
 		{
-			skyChest.lidAngle = 0.0f;
+			skyChest.setLidAngle( 0.0f );
 		}
 
-		float lidAngle = skyChest.lidAngle;
+		float lidAngle = skyChest.getLidAngle();
 		lidAngle = 1.0F - lidAngle;
 		lidAngle = 1.0F - lidAngle * lidAngle * lidAngle;
 

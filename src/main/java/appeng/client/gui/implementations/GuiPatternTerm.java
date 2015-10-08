@@ -60,7 +60,7 @@ public class GuiPatternTerm extends GuiMEMonitorable
 	{
 		super( inventoryPlayer, te, new ContainerPatternTerm( inventoryPlayer, te ) );
 		this.container = (ContainerPatternTerm) this.inventorySlots;
-		this.reservedSpace = 81;
+		this.setReservedSpace( 81 );
 	}
 
 	@Override
@@ -110,15 +110,15 @@ public class GuiPatternTerm extends GuiMEMonitorable
 		this.buttonList.add( this.tabProcessButton );
 
 		this.substitutionsEnabledBtn = new GuiImgButton( this.guiLeft + 84, this.guiTop + this.ySize - 163, Settings.ACTIONS, ItemSubstitution.ENABLED );
-		this.substitutionsEnabledBtn.halfSize = true;
+		this.substitutionsEnabledBtn.setHalfSize( true );
 		this.buttonList.add( this.substitutionsEnabledBtn );
 
 		this.substitutionsDisabledBtn = new GuiImgButton( this.guiLeft + 84, this.guiTop + this.ySize - 163, Settings.ACTIONS, ItemSubstitution.DISABLED );
-		this.substitutionsDisabledBtn.halfSize = true;
+		this.substitutionsDisabledBtn.setHalfSize( true );
 		this.buttonList.add( this.substitutionsDisabledBtn );
 
 		this.clearBtn = new GuiImgButton( this.guiLeft + 74, this.guiTop + this.ySize - 163, Settings.ACTIONS, ActionItems.CLOSE );
-		this.clearBtn.halfSize = true;
+		this.clearBtn.setHalfSize( true );
 		this.buttonList.add( this.clearBtn );
 
 		this.encodeBtn = new GuiImgButton( this.guiLeft + 147, this.guiTop + this.ySize - 142, Settings.ACTIONS, ActionItems.ENCODE );
@@ -128,7 +128,7 @@ public class GuiPatternTerm extends GuiMEMonitorable
 	@Override
 	public void drawFG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
-		if( !this.container.craftingMode )
+		if( !this.container.isCraftingMode() )
 		{
 			this.tabCraftButton.visible = false;
 			this.tabProcessButton.visible = true;
@@ -151,13 +151,13 @@ public class GuiPatternTerm extends GuiMEMonitorable
 		}
 
 		super.drawFG( offsetX, offsetY, mouseX, mouseY );
-		this.fontRendererObj.drawString( GuiText.PatternTerminal.getLocal(), 8, this.ySize - 96 + 2 - this.reservedSpace, 4210752 );
+		this.fontRendererObj.drawString( GuiText.PatternTerminal.getLocal(), 8, this.ySize - 96 + 2 - this.getReservedSpace(), 4210752 );
 	}
 
 	@Override
 	protected String getBackground()
 	{
-		if( this.container.craftingMode )
+		if( this.container.isCraftingMode() )
 		{
 			return "guis/pattern.png";
 		}
@@ -169,11 +169,11 @@ public class GuiPatternTerm extends GuiMEMonitorable
 	{
 		if( s.isPlayerSide() )
 		{
-			s.yDisplayPosition = s.defY + this.ySize - 78 - 5;
+			s.yDisplayPosition = s.getY() + this.ySize - 78 - 5;
 		}
 		else
 		{
-			s.yDisplayPosition = s.defY + this.ySize - 78 - 3;
+			s.yDisplayPosition = s.getY() + this.ySize - 78 - 3;
 		}
 	}
 }

@@ -28,9 +28,9 @@ import appeng.util.inv.ItemSlot;
 public class StackToSlotIterator implements Iterator<ItemSlot>
 {
 
-	final ItemSlot iss = new ItemSlot();
-	final Iterator<ItemStack> is;
-	int x = 0;
+	private final ItemSlot iss = new ItemSlot();
+	private final Iterator<ItemStack> is;
+	private int x = 0;
 
 	public StackToSlotIterator( final Iterator<ItemStack> is )
 	{
@@ -46,7 +46,7 @@ public class StackToSlotIterator implements Iterator<ItemSlot>
 	@Override
 	public ItemSlot next()
 	{
-		this.iss.slot = this.x;
+		this.iss.setSlot( this.x );
 		this.x++;
 		this.iss.setItemStack( this.is.next() );
 		return this.iss;

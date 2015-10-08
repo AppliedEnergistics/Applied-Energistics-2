@@ -86,20 +86,19 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 
 	private static final int FLAG_ON = 4;
 
-	final AppEngInternalAEInventory config = new AppEngInternalAEInventory( this, 1 );
+	private final AppEngInternalAEInventory config = new AppEngInternalAEInventory( this, 1 );
 
-	boolean prevState = false;
+	private boolean prevState = false;
 
-	long lastReportedValue = 0;
-	long reportingValue = 0;
+	private long lastReportedValue = 0;
+	private long reportingValue = 0;
 
-	IStackWatcher myWatcher;
-	IEnergyWatcher myEnergyWatcher;
-	ICraftingWatcher myCraftingWatcher;
-	double centerX;
-	double centerY;
-	double centerZ;
-	boolean status = false;
+	private IStackWatcher myWatcher;
+	private IEnergyWatcher myEnergyWatcher;
+	private ICraftingWatcher myCraftingWatcher;
+	private double centerX;
+	private double centerY;
+	private double centerZ;
 
 	@Reflected
 	public PartLevelEmitter( final ItemStack is )
@@ -141,11 +140,11 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 		final boolean isOn = this.isLevelEmitterOn();
 		if( this.prevState != isOn )
 		{
-			this.host.markForUpdate();
-			final TileEntity te = this.host.getTile();
+			this.getHost().markForUpdate();
+			final TileEntity te = this.getHost().getTile();
 			this.prevState = isOn;
 			Platform.notifyBlocksOfNeighbors( te.getWorld(), te.getPos() );
-			Platform.notifyBlocksOfNeighbors( te.getWorld(), te.getPos().offset( this.side.getFacing() ) );
+			Platform.notifyBlocksOfNeighbors( te.getWorld(), te.getPos().offset( this.getSide().getFacing() ) );
 		}
 	}
 
@@ -153,10 +152,10 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 	{
 		if( Platform.isClient() )
 		{
-			return ( this.clientFlags & FLAG_ON ) == FLAG_ON;
+			return ( this.getClientFlags() & FLAG_ON ) == FLAG_ON;
 		}
 
-		if( !this.proxy.isActive() )
+		if( !this.getProxy().isActive() )
 		{
 			return false;
 		}
@@ -165,7 +164,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 		{
 			try
 			{
-				return this.proxy.getCrafting().isRequesting( this.config.getAEStackInSlot( 0 ) );
+				return this.getProxy().getCrafting().isRequesting( this.config.getAEStackInSlot( 0 ) );
 			}
 			catch( final GridAccessException e )
 			{
@@ -194,7 +193,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 	@Override
 	public TextureAtlasSprite getBreakingTexture( final ModelGenerator renderer )
 	{
-		return renderer.getIcon( this.is ).getAtlas();
+		return renderer.getIcon( this.getItemStack() ).getAtlas();
 	}
 
 	@Override
@@ -211,7 +210,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 	}
 
 	// update the system...
-	public void configureWatchers()
+	private void configureWatchers()
 	{
 		final IAEItemStack myStack = this.config.getAEStackInSlot( 0 );
 
@@ -232,7 +231,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 
 		try
 		{
-			this.proxy.getGrid().postEvent( new MENetworkCraftingPatternChange( this, this.proxy.getNode() ) );
+			this.getProxy().getGrid().postEvent( new MENetworkCraftingPatternChange( this, this.getProxy().getNode() ) );
 		}
 		catch( final GridAccessException e1 )
 		{
@@ -259,11 +258,11 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 			try
 			{
 				// update to power...
-				this.lastReportedValue = (long) this.proxy.getEnergy().getStoredPower();
+				this.lastReportedValue = (long) this.getProxy().getEnergy().getStoredPower();
 				this.updateState();
 
 				// no more item stuff..
-				this.proxy.getStorage().getItemInventory().removeListener( this );
+				this.getProxy().getStorage().getItemInventory().removeListener( this );
 			}
 			catch( final GridAccessException e )
 			{
@@ -277,11 +276,11 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 		{
 			if( this.getInstalledUpgrades( Upgrades.FUZZY ) > 0 || myStack == null )
 			{
-				this.proxy.getStorage().getItemInventory().addListener( this, this.proxy.getGrid() );
+				this.getProxy().getStorage().getItemInventory().addListener( this, this.getProxy().getGrid() );
 			}
 			else
 			{
-				this.proxy.getStorage().getItemInventory().removeListener( this );
+				this.getProxy().getStorage().getItemInventory().removeListener( this );
 
 				if( this.myWatcher != null )
 				{
@@ -289,7 +288,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 				}
 			}
 
-			this.updateReportingValue( this.proxy.getStorage().getItemInventory() );
+			this.updateReportingValue( this.getProxy().getStorage().getItemInventory() );
 		}
 		catch( final GridAccessException e )
 		{
@@ -371,7 +370,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 	{
 		try
 		{
-			return this.proxy.getGrid() == effectiveGrid;
+			return this.getProxy().getGrid() == effectiveGrid;
 		}
 		catch( final GridAccessException e )
 		{
@@ -390,7 +389,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 	{
 		try
 		{
-			this.updateReportingValue( this.proxy.getStorage().getItemInventory() );
+			this.updateReportingValue( this.getProxy().getStorage().getItemInventory() );
 		}
 		catch( final GridAccessException e )
 		{
@@ -414,14 +413,14 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 	@SideOnly( Side.CLIENT )
 	public void renderInventory( final IPartRenderHelper rh, final ModelGenerator renderer )
 	{
-		rh.setTexture( renderer.getIcon( this.is ) );
+		rh.setTexture( renderer.getIcon( this.getItemStack() ) );
 		this.renderTorchAtAngle( 0, -0.5, 0, renderer );
 	}
 
 	public void renderTorchAtAngle( double baseX, double baseY, double baseZ, final ModelGenerator renderer )
 	{
 		final boolean isOn = this.isLevelEmitterOn();
-		final IAESprite offTexture = renderer.getIcon( this.is );
+		final IAESprite offTexture = renderer.getIcon( this.getItemStack() );
 		final IAESprite IIcon = ( isOn ? CableBusTextures.LevelEmitterTorchOn.getIcon() : offTexture );
 		//
 		this.centerX = baseX + 0.5;
@@ -433,11 +432,15 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 		// double par11 = 0;
 
 		/*
-		 * double d5 = (double)TextureAtlasSprite.func_94209_e(); double d6 = (double)TextureAtlasSprite.func_94206_g(); double d7 =
+		 * double d5 = (double)TextureAtlasSprite.func_94209_e(); double d6 = (double)TextureAtlasSprite.func_94206_g();
+		 * double d7 =
 		 * (double)TextureAtlasSprite.func_94212_f(); double d8 = (double)TextureAtlasSprite.func_94210_h(); double d9 =
-		 * (double)TextureAtlasSprite.func_94214_a(7.0D); double d10 = (double)TextureAtlasSprite.func_94207_b(6.0D); double d11 =
-		 * (double)TextureAtlasSprite.func_94214_a(9.0D); double d12 = (double)TextureAtlasSprite.func_94207_b(8.0D); double d13 =
-		 * (double)TextureAtlasSprite.func_94214_a(7.0D); double d14 = (double)TextureAtlasSprite.func_94207_b(13.0D); double d15 =
+		 * (double)TextureAtlasSprite.func_94214_a(7.0D); double d10 = (double)TextureAtlasSprite.func_94207_b(6.0D);
+		 * double d11 =
+		 * (double)TextureAtlasSprite.func_94214_a(9.0D); double d12 = (double)TextureAtlasSprite.func_94207_b(8.0D);
+		 * double d13 =
+		 * (double)TextureAtlasSprite.func_94214_a(7.0D); double d14 = (double)TextureAtlasSprite.func_94207_b(13.0D);
+		 * double d15 =
 		 * (double)TextureAtlasSprite.func_94214_a(9.0D); double d16 = (double)TextureAtlasSprite.func_94207_b(15.0D);
 		 */
 
@@ -490,56 +493,56 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 		final double var44 = 0.0625D;
 		final double Zero = 0;
 		final double par10 = 0;
-		this.addVertexWithUV(t,renderer, baseX + Zero * ( 1.0D - TorchLen ) - var44, baseY + TorchLen - toff, baseZ + par10 * ( 1.0D - TorchLen ) - var44, var20, var22 );
-		this.addVertexWithUV(t,renderer, baseX + Zero * ( 1.0D - TorchLen ) - var44, baseY + TorchLen - toff, baseZ + par10 * ( 1.0D - TorchLen ) + var44, var20, var26 );
-		this.addVertexWithUV(t,renderer, baseX + Zero * ( 1.0D - TorchLen ) + var44, baseY + TorchLen - toff, baseZ + par10 * ( 1.0D - TorchLen ) + var44, var24, var26 );
-		this.addVertexWithUV(t,renderer, baseX + Zero * ( 1.0D - TorchLen ) + var44, baseY + TorchLen - toff, baseZ + par10 * ( 1.0D - TorchLen ) - var44, var24, var22 );
+		this.addVertexWithUV( t, renderer, baseX + Zero * ( 1.0D - TorchLen ) - var44, baseY + TorchLen - toff, baseZ + par10 * ( 1.0D - TorchLen ) - var44, var20, var22 );
+		this.addVertexWithUV( t, renderer, baseX + Zero * ( 1.0D - TorchLen ) - var44, baseY + TorchLen - toff, baseZ + par10 * ( 1.0D - TorchLen ) + var44, var20, var26 );
+		this.addVertexWithUV( t, renderer, baseX + Zero * ( 1.0D - TorchLen ) + var44, baseY + TorchLen - toff, baseZ + par10 * ( 1.0D - TorchLen ) + var44, var24, var26 );
+		this.addVertexWithUV( t, renderer, baseX + Zero * ( 1.0D - TorchLen ) + var44, baseY + TorchLen - toff, baseZ + par10 * ( 1.0D - TorchLen ) - var44, var24, var22 );
 
 		final double var422 = 0.1915D + 1.0 / 16.0;
-		this.addVertexWithUV(t,renderer, baseX + Zero * ( 1.0D - TorchLen ) + var44, baseY + var422, baseZ + par10 * ( 1.0D - TorchLen ) - var44, var24b, var22b );
-		this.addVertexWithUV(t,renderer, baseX + Zero * ( 1.0D - TorchLen ) + var44, baseY + var422, baseZ + par10 * ( 1.0D - TorchLen ) + var44, var24b, var26b );
-		this.addVertexWithUV(t,renderer, baseX + Zero * ( 1.0D - TorchLen ) - var44, baseY + var422, baseZ + par10 * ( 1.0D - TorchLen ) + var44, var20b, var26b );
-		this.addVertexWithUV(t,renderer, baseX + Zero * ( 1.0D - TorchLen ) - var44, baseY + var422, baseZ + par10 * ( 1.0D - TorchLen ) - var44, var20b, var22b );
+		this.addVertexWithUV( t, renderer, baseX + Zero * ( 1.0D - TorchLen ) + var44, baseY + var422, baseZ + par10 * ( 1.0D - TorchLen ) - var44, var24b, var22b );
+		this.addVertexWithUV( t, renderer, baseX + Zero * ( 1.0D - TorchLen ) + var44, baseY + var422, baseZ + par10 * ( 1.0D - TorchLen ) + var44, var24b, var26b );
+		this.addVertexWithUV( t, renderer, baseX + Zero * ( 1.0D - TorchLen ) - var44, baseY + var422, baseZ + par10 * ( 1.0D - TorchLen ) + var44, var20b, var26b );
+		this.addVertexWithUV( t, renderer, baseX + Zero * ( 1.0D - TorchLen ) - var44, baseY + var422, baseZ + par10 * ( 1.0D - TorchLen ) - var44, var20b, var22b );
 
-		this.addVertexWithUV(t,renderer, baseX + var44 + Zero, baseY, baseZ - var44 + par10, var32, var30 );
-		this.addVertexWithUV(t,renderer, baseX + var44 + Zero, baseY, baseZ + var44 + par10, var32, var34 );
-		this.addVertexWithUV(t,renderer, baseX - var44 + Zero, baseY, baseZ + var44 + par10, var28, var34 );
-		this.addVertexWithUV(t,renderer, baseX - var44 + Zero, baseY, baseZ - var44 + par10, var28, var30 );
+		this.addVertexWithUV( t, renderer, baseX + var44 + Zero, baseY, baseZ - var44 + par10, var32, var30 );
+		this.addVertexWithUV( t, renderer, baseX + var44 + Zero, baseY, baseZ + var44 + par10, var32, var34 );
+		this.addVertexWithUV( t, renderer, baseX - var44 + Zero, baseY, baseZ + var44 + par10, var28, var34 );
+		this.addVertexWithUV( t, renderer, baseX - var44 + Zero, baseY, baseZ - var44 + par10, var28, var30 );
 
-		this.addVertexWithUV(t,renderer, baseX - var44, baseY + 1.0D, var40, var16, var18 );
-		this.addVertexWithUV(t,renderer, baseX - var44 + Zero, baseY + 0.0D, var40 + par10, var16, var19 );
-		this.addVertexWithUV(t,renderer, baseX - var44 + Zero, baseY + 0.0D, var42 + par10, var17, var19 );
-		this.addVertexWithUV(t,renderer, baseX - var44, baseY + 1.0D, var42, var17, var18 );
+		this.addVertexWithUV( t, renderer, baseX - var44, baseY + 1.0D, var40, var16, var18 );
+		this.addVertexWithUV( t, renderer, baseX - var44 + Zero, baseY + 0.0D, var40 + par10, var16, var19 );
+		this.addVertexWithUV( t, renderer, baseX - var44 + Zero, baseY + 0.0D, var42 + par10, var17, var19 );
+		this.addVertexWithUV( t, renderer, baseX - var44, baseY + 1.0D, var42, var17, var18 );
 
-		this.addVertexWithUV(t,renderer, baseX + var44, baseY + 1.0D, var42, var16, var18 );
-		this.addVertexWithUV(t,renderer, baseX + Zero + var44, baseY + 0.0D, var42 + par10, var16, var19 );
-		this.addVertexWithUV(t,renderer, baseX + Zero + var44, baseY + 0.0D, var40 + par10, var17, var19 );
-		this.addVertexWithUV(t,renderer, baseX + var44, baseY + 1.0D, var40, var17, var18 );
+		this.addVertexWithUV( t, renderer, baseX + var44, baseY + 1.0D, var42, var16, var18 );
+		this.addVertexWithUV( t, renderer, baseX + Zero + var44, baseY + 0.0D, var42 + par10, var16, var19 );
+		this.addVertexWithUV( t, renderer, baseX + Zero + var44, baseY + 0.0D, var40 + par10, var17, var19 );
+		this.addVertexWithUV( t, renderer, baseX + var44, baseY + 1.0D, var40, var17, var18 );
 
-		this.addVertexWithUV(t,renderer, var36, baseY + 1.0D, baseZ + var44, var16, var18 );
-		this.addVertexWithUV(t,renderer, var36 + Zero, baseY + 0.0D, baseZ + var44 + par10, var16, var19 );
-		this.addVertexWithUV(t,renderer, var38 + Zero, baseY + 0.0D, baseZ + var44 + par10, var17, var19 );
-		this.addVertexWithUV(t,renderer, var38, baseY + 1.0D, baseZ + var44, var17, var18 );
+		this.addVertexWithUV( t, renderer, var36, baseY + 1.0D, baseZ + var44, var16, var18 );
+		this.addVertexWithUV( t, renderer, var36 + Zero, baseY + 0.0D, baseZ + var44 + par10, var16, var19 );
+		this.addVertexWithUV( t, renderer, var38 + Zero, baseY + 0.0D, baseZ + var44 + par10, var17, var19 );
+		this.addVertexWithUV( t, renderer, var38, baseY + 1.0D, baseZ + var44, var17, var18 );
 
-		this.addVertexWithUV(t,renderer, var38, baseY + 1.0D, baseZ - var44, var16, var18 );
-		this.addVertexWithUV(t,renderer, var38 + Zero, baseY + 0.0D, baseZ - var44 + par10, var16, var19 );
-		this.addVertexWithUV(t,renderer, var36 + Zero, baseY + 0.0D, baseZ - var44 + par10, var17, var19 );
-		this.addVertexWithUV(t,renderer, var36, baseY + 1.0D, baseZ - var44, var17, var18 );
+		this.addVertexWithUV( t, renderer, var38, baseY + 1.0D, baseZ - var44, var16, var18 );
+		this.addVertexWithUV( t, renderer, var38 + Zero, baseY + 0.0D, baseZ - var44 + par10, var16, var19 );
+		this.addVertexWithUV( t, renderer, var36 + Zero, baseY + 0.0D, baseZ - var44 + par10, var17, var19 );
+		this.addVertexWithUV( t, renderer, var36, baseY + 1.0D, baseZ - var44, var17, var18 );
 	}
 
-	public void addVertexWithUV( final EnumFacing face, final ModelGenerator renderer, double x, double y, double z, final double u, final double v )
+	private void addVertexWithUV( final EnumFacing face, final ModelGenerator renderer, double x, double y, double z, final double u, final double v )
 	{
 		x -= this.centerX;
 		y -= this.centerY;
 		z -= this.centerZ;
 
-		if( this.side == AEPartLocation.DOWN )
+		if( this.getSide() == AEPartLocation.DOWN )
 		{
 			y = -y;
 			z = -z;
 		}
 
-		if( this.side == AEPartLocation.EAST )
+		if( this.getSide() == AEPartLocation.EAST )
 		{
 			final double m = x;
 			x = y;
@@ -547,14 +550,14 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 			y = -y;
 		}
 
-		if( this.side == AEPartLocation.WEST )
+		if( this.getSide() == AEPartLocation.WEST )
 		{
 			final double m = x;
 			x = -y;
 			y = m;
 		}
 
-		if( this.side == AEPartLocation.SOUTH )
+		if( this.getSide() == AEPartLocation.SOUTH )
 		{
 			final double m = z;
 			z = y;
@@ -562,7 +565,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 			y = -y;
 		}
 
-		if( this.side == AEPartLocation.NORTH )
+		if( this.getSide() == AEPartLocation.NORTH )
 		{
 			final double m = z;
 			z = -y;
@@ -580,7 +583,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 	@SideOnly( Side.CLIENT )
 	public void renderStatic( final BlockPos pos, final IPartRenderHelper rh, final ModelGenerator renderer )
 	{
-		rh.setTexture( renderer.getIcon( this.is ) );
+		rh.setTexture( renderer.getIcon( this.getItemStack() ) );
 		// rh.setTexture( CableBusTextures.ItemPartLevelEmitterOn.getIcon() );
 
 		// rh.setBounds( 2, 2, 14, 14, 14, 16 );
@@ -589,14 +592,14 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 		// rh.setBounds( 7, 7, 10, 9, 9, 15 );
 		// rh.renderBlock( x, y, z, renderer );
 
-		renderer.renderAllFaces = true;
+		renderer.setRenderAllFaces( true );
 
 		renderer.setBrightness( rh.getBlock().getMixedBrightnessForBlock( this.getHost().getTile().getWorld(), pos ) );
 		renderer.setColorOpaque_F( 1.0F, 1.0F, 1.0F );
 
-		this.renderTorchAtAngle( pos.getX(),pos.getY(),pos.getZ(),renderer );
+		this.renderTorchAtAngle( pos.getX(), pos.getY(), pos.getZ(), renderer );
 
-		renderer.renderAllFaces = false;
+		renderer.setRenderAllFaces( false );
 
 		rh.setBounds( 7, 7, 11, 9, 9, 12 );
 		this.renderLights( pos, rh, renderer );
@@ -624,7 +627,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 	{
 		if( this.isLevelEmitterOn() )
 		{
-			final AEPartLocation d = this.side;
+			final AEPartLocation d = this.getSide();
 
 			final double d0 = d.xOffset * 0.45F + ( r.nextFloat() - 0.5F ) * 0.2D;
 			final double d1 = d.yOffset * 0.45F + ( r.nextFloat() - 0.5F ) * 0.2D;
@@ -650,7 +653,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 				return true;
 			}
 
-			Platform.openGUI( player, this.getHost().getTile(), this.side, GuiBridge.GUI_LEVEL_EMITTER );
+			Platform.openGUI( player, this.getHost().getTile(), this.getSide(), GuiBridge.GUI_LEVEL_EMITTER );
 			return true;
 		}
 

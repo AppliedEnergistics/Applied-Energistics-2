@@ -55,7 +55,6 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 	public CopyMode copyMode = CopyMode.CLEAR_ON_REMOVE;
 	private ItemStack prevStack = null;
 	private int lastUpgrades = 0;
-	private ItemStack LastCell;
 
 	public ContainerCellWorkbench( final InventoryPlayer ip, final TileCellWorkbench te )
 	{
@@ -72,12 +71,12 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 		}
 	}
 
-	public void nextCopyMode()
+	public void nextWorkBenchCopyMode()
 	{
-		this.workBench.getConfigManager().putSetting( Settings.COPY_MODE, Platform.nextEnum( this.getCopyMode() ) );
+		this.workBench.getConfigManager().putSetting( Settings.COPY_MODE, Platform.nextEnum( this.getWorkBenchCopyMode() ) );
 	}
 
-	public CopyMode getCopyMode()
+	private CopyMode getWorkBenchCopyMode()
 	{
 		return (CopyMode) this.workBench.getConfigManager().getSetting( Settings.COPY_MODE );
 	}
@@ -91,11 +90,10 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 	@Override
 	protected void setupConfig()
 	{
+		final IInventory cell = this.getUpgradeable().getInventoryByName( "cell" );
+		this.addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.WORKBENCH_CELL, cell, 0, 152, 8, this.getPlayerInv() ) );
 
-		final IInventory cell = this.upgradeable.getInventoryByName( "cell" );
-		this.addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.WORKBENCH_CELL, cell, 0, 152, 8, this.invPlayer ) );
-
-		final IInventory inv = this.upgradeable.getInventoryByName( "config" );
+		final IInventory inv = this.getUpgradeable().getInventoryByName( "config" );
 		final IInventory upgradeInventory = new Upgrades();
 		// null, 3 * 8 );
 
@@ -116,7 +114,7 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 			for( int z = 0; z < 8; z++ )
 			{
 				final int iSLot = zz * 8 + z;
-				this.addSlotToContainer( new OptionalSlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgradeInventory, this, iSLot, 187 + zz * 18, 8 + 18 * z, iSLot, this.invPlayer ) );
+				this.addSlotToContainer( new OptionalSlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgradeInventory, this, iSLot, 187 + zz * 18, 8 + 18 * z, iSLot, this.getInventoryPlayer() ) );
 			}
 		}
 		/*
@@ -149,7 +147,7 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 		{
 			if( this.workBench.getWorld().getTileEntity( this.workBench.getPos() ) != this.workBench )
 			{
-				this.isContainerValid = false;
+				this.setValidContainer( false );
 			}
 
 			for( final Object crafter : this.crafters )
@@ -171,8 +169,8 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 				}
 			}
 
-			this.copyMode = this.getCopyMode();
-			this.fzMode = this.getFuzzyMode();
+			this.setCopyMode( this.getWorkBenchCopyMode() );
+			this.setFuzzyMode( this.getWorkBenchFuzzyMode() );
 		}
 
 		this.prevStack = is;
@@ -197,7 +195,7 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 	{
 		if( field.equals( "copyMode" ) )
 		{
-			this.workBench.getConfigManager().putSetting( Settings.COPY_MODE, this.copyMode );
+			this.workBench.getConfigManager().putSetting( Settings.COPY_MODE, this.getCopyMode() );
 		}
 
 		super.onUpdate( field, oldValue, newValue );
@@ -205,7 +203,7 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 
 	public void clear()
 	{
-		final IInventory inv = this.upgradeable.getInventoryByName( "config" );
+		final IInventory inv = this.getUpgradeable().getInventoryByName( "config" );
 		for( int x = 0; x < inv.getSizeInventory(); x++ )
 		{
 			inv.setInventorySlotContents( x, null );
@@ -213,7 +211,7 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 		this.detectAndSendChanges();
 	}
 
-	private FuzzyMode getFuzzyMode()
+	private FuzzyMode getWorkBenchFuzzyMode()
 	{
 		final ICellWorkbenchItem cwi = this.workBench.getCell();
 		if( cwi != null )
@@ -225,9 +223,9 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 
 	public void partition()
 	{
-		final IInventory inv = this.upgradeable.getInventoryByName( "config" );
+		final IInventory inv = this.getUpgradeable().getInventoryByName( "config" );
 
-		final IMEInventory<IAEItemStack> cellInv = AEApi.instance().registries().cell().getCellInventory( this.upgradeable.getInventoryByName( "cell" ).getStackInSlot( 0 ), null, StorageChannel.ITEMS );
+		final IMEInventory<IAEItemStack> cellInv = AEApi.instance().registries().cell().getCellInventory( this.getUpgradeable().getInventoryByName( "cell" ).getStackInSlot( 0 ), null, StorageChannel.ITEMS );
 
 		Iterator<IAEItemStack> i = new NullIterator<IAEItemStack>();
 		if( cellInv != null )
@@ -251,6 +249,16 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 		}
 
 		this.detectAndSendChanges();
+	}
+
+	public CopyMode getCopyMode()
+	{
+		return this.copyMode;
+	}
+
+	private void setCopyMode( final CopyMode copyMode )
+	{
+		this.copyMode = copyMode;
 	}
 
 	private class Upgrades implements IInventory
@@ -328,14 +336,14 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 		public void openInventory(
 				final EntityPlayer player )
 		{
-			
+
 		}
-		
+
 		@Override
 		public void closeInventory(
 				final EntityPlayer player )
 		{
-			
+
 		}
 
 		@Override
@@ -362,7 +370,7 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 				final int id,
 				final int value )
 		{
-			
+
 		}
 
 		@Override
@@ -374,7 +382,7 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 		@Override
 		public void clear()
 		{
-			ContainerCellWorkbench.this.getCellUpgradeInventory().clear();			
+			ContainerCellWorkbench.this.getCellUpgradeInventory().clear();
 		}
 	}
 }

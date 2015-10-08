@@ -58,12 +58,12 @@ public class BlockTinyTNT extends AEBaseBlock implements ICustomCollision
 		super( Material.tnt );
 		this.setLightOpacity( 1 );
 		this.setBlockBounds( 0.25f, 0.0f, 0.25f, 0.75f, 0.5f, 0.75f );
-		this.isFullSize = this.isOpaque = false;
+		this.setFullSize( this.setOpaque( false ) );
 		this.setStepSound( soundTypeGrass );
 		this.setHardness( 0F );
 		this.setFeature( EnumSet.of( AEFeature.TinyTNT ) );
 
-		EntityRegistry.registerModEntity( EntityTinyTNTPrimed.class, "EntityTinyTNTPrimed", EntityIds.TINY_TNT, AppEng.instance(), 16, 4, true );
+		EntityRegistry.registerModEntity( EntityTinyTNTPrimed.class, "EntityTinyTNTPrimed", EntityIds.get( EntityTinyTNTPrimed.class ), AppEng.instance(), 16, 4, true );
 	}
 
 	@Override

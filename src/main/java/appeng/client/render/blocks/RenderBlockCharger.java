@@ -56,7 +56,7 @@ public class RenderBlockCharger extends BaseBlockRender<BlockCharger, TileCharge
 	@Override
 	public void renderInventory( final BlockCharger blk, final ItemStack is, final ModelGenerator renderer, final ItemRenderType type, final Object[] obj )
 	{
-		renderer.renderAllFaces = true;
+		renderer.setRenderAllFaces( true );
 		this.setInvRenderBounds( renderer, 6, 1, 0, 10, 15, 2 );
 		this.renderInvBlock( EnumSet.allOf( AEPartLocation.class ), blk, is, 0xffffff, renderer );
 
@@ -78,7 +78,7 @@ public class RenderBlockCharger extends BaseBlockRender<BlockCharger, TileCharge
 		this.setInvRenderBounds( renderer, 3, 12, 3, 13, 13, 13 );
 		this.renderInvBlock( EnumSet.allOf( AEPartLocation.class ), blk, is,  0xffffff, renderer );
 
-		renderer.renderAllFaces = false;
+		renderer.setRenderAllFaces( false );
 		blk.getRendererInstance().setTemporaryRenderIcon( null );
 	}
 
@@ -93,7 +93,7 @@ public class RenderBlockCharger extends BaseBlockRender<BlockCharger, TileCharge
 		final EnumFacing fdz = te.getForward();
 		final EnumFacing fdx = Platform.crossProduct( fdz, fdy ).getOpposite();
 
-		renderer.renderAllFaces = true;
+		renderer.setRenderAllFaces( true );
 		this.renderBlockBounds( renderer, 6, 1, 0, 10, 15, 2, fdx, fdy, fdz );
 		boolean out = renderer.renderStandardBlock( block, pos );
 
@@ -115,7 +115,7 @@ public class RenderBlockCharger extends BaseBlockRender<BlockCharger, TileCharge
 		this.renderBlockBounds( renderer, 3, 12, 3, 13, 13, 13, fdx, fdy, fdz );
 		out = renderer.renderStandardBlock( block, pos );
 
-		renderer.renderAllFaces = false;
+		renderer.setRenderAllFaces( false );
 		block.getRendererInstance().setTemporaryRenderIcon( null );
 
 		this.postRenderInWorld( renderer );

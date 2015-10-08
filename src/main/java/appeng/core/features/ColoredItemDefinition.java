@@ -30,7 +30,7 @@ import appeng.api.util.AEColoredItemDefinition;
 public final class ColoredItemDefinition implements AEColoredItemDefinition
 {
 
-	final ItemStackSrc[] colors = new ItemStackSrc[17];
+	private final ItemStackSrc[] colors = new ItemStackSrc[17];
 
 	public void add( final AEColor v, final ItemStackSrc is )
 	{
@@ -96,6 +96,6 @@ public final class ColoredItemDefinition implements AEColoredItemDefinition
 			return false;
 		}
 
-		return comparableItem.getItem() == is.getItem() && comparableItem.getItemDamage() == is.damage;
+		return comparableItem.getItem() == is.getItem() && comparableItem.getItemDamage() == is.getDamage();
 	}
 }

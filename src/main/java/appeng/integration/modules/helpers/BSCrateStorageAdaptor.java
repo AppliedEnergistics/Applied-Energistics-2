@@ -23,6 +23,10 @@ import java.util.Iterator;
 
 import net.mcft.copy.betterstorage.api.crate.ICrateStorage;
 import net.minecraft.item.ItemStack;
+<<<<<<< HEAD
+=======
+
+>>>>>>> 500fc47... Reduces visibility of internal fields/methods
 import appeng.api.config.FuzzyMode;
 import appeng.api.util.ForgeDirection;
 import appeng.util.InventoryAdaptor;
@@ -35,13 +39,11 @@ import appeng.util.iterators.StackToSlotIterator;
 public class BSCrateStorageAdaptor extends InventoryAdaptor
 {
 
-	final ICrateStorage cs;
-	final ForgeDirection side;
+	private final ICrateStorage cs;
 
-	public BSCrateStorageAdaptor( Object te, ForgeDirection d )
+	public BSCrateStorageAdaptor( final Object te )
 	{
 		this.cs = (ICrateStorage) te;
-		this.side = d;
 	}
 
 	@Override

@@ -29,31 +29,31 @@ public class WrapperInventoryRange implements IInventory
 {
 
 	private final IInventory src;
-	protected boolean ignoreValidItems = false;
-	int[] slots;
+	private boolean ignoreValidItems = false;
+	private int[] slots;
 
 	public WrapperInventoryRange( final IInventory a, final int[] s, final boolean ignoreValid )
 	{
 		this.src = a;
-		this.slots = s;
+		this.setSlots( s );
 
-		if( this.slots == null )
+		if( this.getSlots() == null )
 		{
-			this.slots = new int[0];
+			this.setSlots( new int[0] );
 		}
 
-		this.ignoreValidItems = ignoreValid;
+		this.setIgnoreValidItems( ignoreValid );
 	}
 
 	public WrapperInventoryRange( final IInventory a, final int min, final int size, final boolean ignoreValid )
 	{
 		this.src = a;
-		this.slots = new int[size];
+		this.setSlots( new int[size] );
 		for( int x = 0; x < size; x++ )
 		{
-			this.slots[x] = min + x;
+			this.getSlots()[x] = min + x;
 		}
-		this.ignoreValidItems = ignoreValid;
+		this.setIgnoreValidItems( ignoreValid );
 	}
 
 	public static String concatLines( final int[] s, final String separator )
@@ -77,31 +77,31 @@ public class WrapperInventoryRange implements IInventory
 	@Override
 	public int getSizeInventory()
 	{
-		return this.slots.length;
+		return this.getSlots().length;
 	}
 
 	@Override
 	public ItemStack getStackInSlot( final int var1 )
 	{
-		return this.src.getStackInSlot( this.slots[var1] );
+		return this.src.getStackInSlot( this.getSlots()[var1] );
 	}
 
 	@Override
 	public ItemStack decrStackSize( final int var1, final int var2 )
 	{
-		return this.src.decrStackSize( this.slots[var1], var2 );
+		return this.src.decrStackSize( this.getSlots()[var1], var2 );
 	}
 
 	@Override
 	public ItemStack getStackInSlotOnClosing( final int var1 )
 	{
-		return this.src.getStackInSlotOnClosing( this.slots[var1] );
+		return this.src.getStackInSlotOnClosing( this.getSlots()[var1] );
 	}
 
 	@Override
 	public void setInventorySlotContents( final int var1, final ItemStack var2 )
 	{
-		this.src.setInventorySlotContents( this.slots[var1], var2 );
+		this.src.setInventorySlotContents( this.getSlots()[var1], var2 );
 	}
 
 	@Override
@@ -183,11 +183,31 @@ public class WrapperInventoryRange implements IInventory
 	@Override
 	public boolean isItemValidForSlot( final int i, final ItemStack itemstack )
 	{
-		if( this.ignoreValidItems )
+		if( this.isIgnoreValidItems() )
 		{
 			return true;
 		}
 
-		return this.src.isItemValidForSlot( this.slots[i], itemstack );
+		return this.src.isItemValidForSlot( this.getSlots()[i], itemstack );
+	}
+
+	boolean isIgnoreValidItems()
+	{
+		return this.ignoreValidItems;
+	}
+
+	private void setIgnoreValidItems( final boolean ignoreValidItems )
+	{
+		this.ignoreValidItems = ignoreValidItems;
+	}
+
+	int[] getSlots()
+	{
+		return this.slots;
+	}
+
+	private void setSlots( final int[] slots )
+	{
+		this.slots = slots;
 	}
 }

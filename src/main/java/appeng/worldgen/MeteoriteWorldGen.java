@@ -111,12 +111,12 @@ public final class MeteoriteWorldGen implements IWorldGenerator
 		return WorldData.instance().spawnData().getNearByMeteorites( w.provider.getDimensionId(), chunkX, chunkZ );
 	}
 
-	class MeteoriteSpawn implements IWorldCallable<Object>
+	private class MeteoriteSpawn implements IWorldCallable<Object>
 	{
 
-		final int x;
-		final int z;
-		final int depth;
+		private final int x;
+		private final int z;
+		private final int depth;
 
 		public MeteoriteSpawn( final int x, final int depth, final int z )
 		{

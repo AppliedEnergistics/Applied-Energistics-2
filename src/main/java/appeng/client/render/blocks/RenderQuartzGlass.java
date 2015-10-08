@@ -38,7 +38,7 @@ import appeng.tile.AEBaseTile;
 public class RenderQuartzGlass extends BaseBlockRender<QuartzGlassBlock, AEBaseTile>
 {
 
-	static byte[][][] offsets;
+	private static byte[][][] offsets;
 
 	public RenderQuartzGlass()
 	{
@@ -60,9 +60,9 @@ public class RenderQuartzGlass extends BaseBlockRender<QuartzGlassBlock, AEBaseT
 	@Override
 	public void renderInventory( final QuartzGlassBlock block, final ItemStack is, final ModelGenerator renderer, final ItemRenderType type, final Object[] obj )
 	{
-		renderer.overrideBlockTexture = ExtraBlockTextures.GlassFrame.getIcon();
+		renderer.setOverrideBlockTexture( ExtraBlockTextures.GlassFrame.getIcon() );
 		super.renderInventory( block, is, renderer, type, obj );
-		renderer.overrideBlockTexture = null;
+		renderer.setOverrideBlockTexture( null );
 		super.renderInventory( block, is, renderer, type, obj );
 	}
 
@@ -81,22 +81,22 @@ public class RenderQuartzGlass extends BaseBlockRender<QuartzGlassBlock, AEBaseT
 		switch( Math.abs( ( offsets[cx][cy][cz] + ( pos.getX()+pos.getY()+pos.getZ() ) ) % 4 ) )
 		{
 			case 0:
-				renderer.overrideBlockTexture = new OffsetIcon( renderer.getIcon( world.getBlockState( pos ) )[0], u / 2, v / 2 );
+				renderer.setOverrideBlockTexture( new OffsetIcon( renderer.getIcon( world.getBlockState( pos ) )[0], u / 2, v / 2 ) );
 				break;
 			case 1:
-				renderer.overrideBlockTexture = new OffsetIcon( ExtraBlockTextures.BlockQuartzGlassB.getIcon(), u / 2, v / 2 );
+				renderer.setOverrideBlockTexture( new OffsetIcon( ExtraBlockTextures.BlockQuartzGlassB.getIcon(), u / 2, v / 2 ) );
 				break;
 			case 2:
-				renderer.overrideBlockTexture = new OffsetIcon( ExtraBlockTextures.BlockQuartzGlassC.getIcon(), u, v );
+				renderer.setOverrideBlockTexture( new OffsetIcon( ExtraBlockTextures.BlockQuartzGlassC.getIcon(), u, v ) );
 				break;
 			case 3:
-				renderer.overrideBlockTexture = new OffsetIcon( ExtraBlockTextures.BlockQuartzGlassD.getIcon(), u, v );
+				renderer.setOverrideBlockTexture( new OffsetIcon( ExtraBlockTextures.BlockQuartzGlassD.getIcon(), u, v ) );
 				break;
 		}
 
 		final boolean result = renderer.renderStandardBlock( imb, pos );
 
-		renderer.overrideBlockTexture = null;
+		renderer.setOverrideBlockTexture( null );
 		this.renderEdge( imb, world, pos, renderer, AEPartLocation.UP, AEPartLocation.EAST );
 		this.renderEdge( imb, world, pos, renderer, AEPartLocation.UP, AEPartLocation.WEST );
 		this.renderEdge( imb, world, pos, renderer, AEPartLocation.UP, AEPartLocation.NORTH );

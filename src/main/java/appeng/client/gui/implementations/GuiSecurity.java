@@ -36,21 +36,21 @@ import appeng.core.sync.packets.PacketValueConfig;
 public class GuiSecurity extends GuiMEMonitorable
 {
 
-	GuiToggleButton inject;
-	GuiToggleButton extract;
-	GuiToggleButton craft;
-	GuiToggleButton build;
-	GuiToggleButton security;
+	private GuiToggleButton inject;
+	private GuiToggleButton extract;
+	private GuiToggleButton craft;
+	private GuiToggleButton build;
+	private GuiToggleButton security;
 
 	public GuiSecurity( final InventoryPlayer inventoryPlayer, final ITerminalHost te )
 	{
 		super( inventoryPlayer, te, new ContainerSecurity( inventoryPlayer, te ) );
-		this.customSortOrder = false;
-		this.reservedSpace = 33;
+		this.setCustomSortOrder( false );
+		this.setReservedSpace( 33 );
 
 		// increase size so that the slot is over the gui.
 		this.xSize += 56;
-		this.standardSize = this.xSize;
+		this.setStandardSize( this.xSize );
 	}
 
 	@Override
@@ -115,7 +115,7 @@ public class GuiSecurity extends GuiMEMonitorable
 	public void drawFG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
 		super.drawFG( offsetX, offsetY, mouseX, mouseY );
-		this.fontRendererObj.drawString( GuiText.SecurityCardEditor.getLocal(), 8, this.ySize - 96 + 1 - this.reservedSpace, 4210752 );
+		this.fontRendererObj.drawString( GuiText.SecurityCardEditor.getLocal(), 8, this.ySize - 96 + 1 - this.getReservedSpace(), 4210752 );
 	}
 
 	@Override
@@ -123,11 +123,11 @@ public class GuiSecurity extends GuiMEMonitorable
 	{
 		final ContainerSecurity cs = (ContainerSecurity) this.inventorySlots;
 
-		this.inject.setState( ( cs.security & ( 1 << SecurityPermissions.INJECT.ordinal() ) ) > 0 );
-		this.extract.setState( ( cs.security & ( 1 << SecurityPermissions.EXTRACT.ordinal() ) ) > 0 );
-		this.craft.setState( ( cs.security & ( 1 << SecurityPermissions.CRAFT.ordinal() ) ) > 0 );
-		this.build.setState( ( cs.security & ( 1 << SecurityPermissions.BUILD.ordinal() ) ) > 0 );
-		this.security.setState( ( cs.security & ( 1 << SecurityPermissions.SECURITY.ordinal() ) ) > 0 );
+		this.inject.setState( ( cs.getPermissionMode() & ( 1 << SecurityPermissions.INJECT.ordinal() ) ) > 0 );
+		this.extract.setState( ( cs.getPermissionMode() & ( 1 << SecurityPermissions.EXTRACT.ordinal() ) ) > 0 );
+		this.craft.setState( ( cs.getPermissionMode() & ( 1 << SecurityPermissions.CRAFT.ordinal() ) ) > 0 );
+		this.build.setState( ( cs.getPermissionMode() & ( 1 << SecurityPermissions.BUILD.ordinal() ) ) > 0 );
+		this.security.setState( ( cs.getPermissionMode() & ( 1 << SecurityPermissions.SECURITY.ordinal() ) ) > 0 );
 
 		return "guis/security.png";
 	}

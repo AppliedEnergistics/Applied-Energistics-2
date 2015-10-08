@@ -27,12 +27,9 @@ import net.minecraft.item.ItemStack;
 public class SlotFake extends AppEngSlot
 {
 
-	final int invSlot;
-
 	public SlotFake( final IInventory inv, final int idx, final int x, final int y )
 	{
 		super( inv, idx, x, y );
-		this.invSlot = idx;
 	}
 
 	@Override

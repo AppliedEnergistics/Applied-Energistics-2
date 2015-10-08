@@ -70,7 +70,7 @@ public class BlockQuartzGrowthAccelerator extends AEBaseTileBlock
 
 		final TileQuartzGrowthAccelerator cga = this.getTileEntity( w, pos );
 
-		if( cga != null && cga.hasPower && CommonHelper.proxy.shouldAddParticles( r ) )
+		if( cga != null && cga.isPowered() && CommonHelper.proxy.shouldAddParticles( r ) )
 		{
 			final double d0 = r.nextFloat() - 0.5F;
 			final double d1 = r.nextFloat() - 0.5F;
@@ -93,44 +93,39 @@ public class BlockQuartzGrowthAccelerator extends AEBaseTileBlock
 
 			double dz = 0;
 			double dx = 0;
+			BlockPos pt = null;
+
 			switch( r.nextInt( 4 ) )
 			{
 				case 0:
 					dx = 0.6;
 					dz = d1;
-					final BlockPos pt = new BlockPos( x + west.getFrontOffsetX(), y + west.getFrontOffsetY(), z + west.getFrontOffsetZ() );
-					if( !w.getBlockState(pt).getBlock().isAir( w, pt) )
-					{
-						return;
-					}
+					pt = new BlockPos( x + west.getFrontOffsetX(), y + west.getFrontOffsetY(), z + west.getFrontOffsetZ() );
+
 					break;
 				case 1:
 					dx = d1;
 					dz += 0.6;
-					pt = new BlockPos( x + forward.getFrontOffsetX(), y + forward.getFrontOffsetY(), z + forward.getFrontOffsetZ() );					 
-					if( !w.getBlockState(pt).getBlock().isAir( w, pt) )
-					{
-						return;
-					}
+					pt = new BlockPos( x + forward.getFrontOffsetX(), y + forward.getFrontOffsetY(), z + forward.getFrontOffsetZ() );
+
 					break;
 				case 2:
 					dx = d1;
 					dz = -0.6;
-					pt = new BlockPos( x - forward.getFrontOffsetX(), y - forward.getFrontOffsetY(), z - forward.getFrontOffsetZ() );					 
-					if( !w.getBlockState(pt).getBlock().isAir( w, pt) )
-					{
-						return;
-					}
+					pt = new BlockPos( x - forward.getFrontOffsetX(), y - forward.getFrontOffsetY(), z - forward.getFrontOffsetZ() );
+
 					break;
 				case 3:
 					dx = -0.6;
 					dz = d1;
-					pt = new BlockPos( x - west.getFrontOffsetX(), y - west.getFrontOffsetY(), z - west.getFrontOffsetZ() );					 
-					if( !w.getBlockState(pt).getBlock().isAir( w, pt) )
-					{
-						return;
-					}
+					pt = new BlockPos( x - west.getFrontOffsetX(), y - west.getFrontOffsetY(), z - west.getFrontOffsetZ() );
+
 					break;
+			}
+
+			if( !w.getBlockState( pt ).getBlock().isAir( w, pt ) )
+			{
+				return;
 			}
 
 			rx += dx * west.getFrontOffsetX();

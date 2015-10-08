@@ -68,7 +68,7 @@ public class RenderQuartzTorch extends BaseBlockRender<AEBaseBlock, AEBaseTile>
 		this.renderInvBlock( EnumSet.allOf( AEPartLocation.class ), blk, is, 0xffffff, renderer );
 
 		blk.getRendererInstance().setTemporaryRenderIcon( renderer.getIcon( Blocks.hopper.getDefaultState() )[0] );
-		renderer.renderAllFaces = true;
+		renderer.setRenderAllFaces( true );
 
 		final float top = 8.0f / 16.0f;
 		final float bottom = 7.0f / 16.0f;
@@ -87,7 +87,7 @@ public class RenderQuartzTorch extends BaseBlockRender<AEBaseBlock, AEBaseTile>
 
 		this.renderInvBlock( EnumSet.allOf( AEPartLocation.class ), blk, is, 0xffffff, renderer );
 
-		renderer.renderAllFaces = false;
+		renderer.setRenderAllFaces( false );
 		blk.getRendererInstance().setTemporaryRenderIcon( null );
 	}
 
@@ -96,7 +96,7 @@ public class RenderQuartzTorch extends BaseBlockRender<AEBaseBlock, AEBaseTile>
 	{
 		final IOrientable te = ( (IOrientableBlock) block ).getOrientable( world, pos );
 
-		renderer.renderAllFaces = true;
+		renderer.setRenderAllFaces( true );
 		float zOff = 0.0f;
 		float yOff = 0.0f;
 		float xOff = 0.0f;
@@ -197,7 +197,7 @@ public class RenderQuartzTorch extends BaseBlockRender<AEBaseBlock, AEBaseTile>
 			}
 		}
 
-		renderer.renderAllFaces = false;
+		renderer.setRenderAllFaces( false );
 		block.getRendererInstance().setTemporaryRenderIcon( null );
 
 		return out;

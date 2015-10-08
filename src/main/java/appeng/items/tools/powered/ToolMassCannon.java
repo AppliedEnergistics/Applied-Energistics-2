@@ -156,18 +156,18 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 						{
 							return item;
 						}
-						
+
 						final LookDirection dir = Platform.getPlayerRay( p, p.getEyeHeight() );
 
-						final Vec3 vec3 = dir.a;
-						final Vec3 vec31 = dir.b;
+						final Vec3 vec3 = dir.getA();
+						final Vec3 vec31 = dir.getB();
 						final Vec3 direction = vec31.subtract( vec3 );
 						direction.normalize();
 
 						final double d0 = vec3.xCoord;
 						final double d1 = vec3.yCoord;
 						final double d2 = vec3.zCoord;
-						
+
 						final float penetration = AEApi.instance().registries().matterCannon().getPenetration( ammo ); // 196.96655f;
 						if( penetration <= 0 )
 						{

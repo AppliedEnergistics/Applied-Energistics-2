@@ -19,8 +19,7 @@
 package appeng.entity;
 
 
-import java.nio.ByteBuffer;
-import java.nio.DoubleBuffer;
+import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.RenderEntityItem;
@@ -30,21 +29,17 @@ import net.minecraft.item.ItemBlock;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import org.lwjgl.opengl.GL11;
-
 
 @SideOnly( Side.CLIENT )
 public class RenderFloatingItem extends RenderEntityItem
 {
 
-	public static DoubleBuffer buffer = ByteBuffer.allocateDirect( 8 * 4 ).asDoubleBuffer();
-
-	public RenderFloatingItem( final RenderManager manager)
+	public RenderFloatingItem( final RenderManager manager )
 	{
-		super(manager,Minecraft.getMinecraft().getRenderItem());
+		super( manager, Minecraft.getMinecraft().getRenderItem() );
 		this.shadowOpaque = 0.0F;
 	}
-	
+
 	@Override
 	public void doRender(
 			final Entity entityItem,
@@ -57,7 +52,7 @@ public class RenderFloatingItem extends RenderEntityItem
 		if( entityItem instanceof EntityFloatingItem )
 		{
 			final EntityFloatingItem efi = (EntityFloatingItem) entityItem;
-			if( efi.progress > 0.0 )
+			if( efi.getProgress() > 0.0 )
 			{
 				GL11.glPushMatrix();
 

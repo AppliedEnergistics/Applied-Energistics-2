@@ -55,25 +55,23 @@ import com.google.common.base.Optional;
 
 public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock, IUpdatePlayerListBox
 {
-	private static final IBlockDefinition RING_DEFINITION = AEApi.instance().definitions().blocks().quantumRing();
-	public final byte corner = 16;
-	final int[] sidesRing = {};
-	final int[] sidesLink = { 0 };
-	final AppEngInternalInventory internalInventory = new AppEngInternalInventory( this, 1 );
-	final byte hasSingularity = 32;
-	final byte powered = 64;
+	private final byte corner = 16;
+	private final int[] sidesRing = {};
+	private final int[] sidesLink = { 0 };
+	private final AppEngInternalInventory internalInventory = new AppEngInternalInventory( this, 1 );
+	private final byte hasSingularity = 32;
+	private final byte powered = 64;
 
 	private final QuantumCalculator calc = new QuantumCalculator( this );
-	public boolean bridgePowered;
-	byte constructed = -1;
-	QuantumCluster cluster;
+	private byte constructed = -1;
+	private QuantumCluster cluster;
 	private boolean updateStatus = false;
 
 	public TileQuantumBridge()
 	{
-		this.gridProxy.setValidSides( EnumSet.noneOf( EnumFacing.class ) );
-		this.gridProxy.setFlags( GridFlags.DENSE_CAPACITY );
-		this.gridProxy.setIdlePowerUsage( 22 );
+		this.getProxy().setValidSides( EnumSet.noneOf( EnumFacing.class ) );
+		this.getProxy().setFlags( GridFlags.DENSE_CAPACITY );
+		this.getProxy().setIdlePowerUsage( 22 );
 		this.internalInventory.setMaxStackSize( 1 );
 	}
 
@@ -101,7 +99,7 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 			out |= this.hasSingularity;
 		}
 
-		if( this.gridProxy.isActive() && this.constructed != -1 )
+		if( this.getProxy().isActive() && this.constructed != -1 )
 		{
 			out |= this.powered;
 		}
@@ -114,7 +112,6 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 	{
 		final int oldValue = this.constructed;
 		this.constructed = data.readByte();
-		this.bridgePowered = ( this.constructed | this.powered ) == this.powered;
 		return this.constructed != oldValue;
 	}
 
@@ -143,7 +140,7 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 		return this.sidesRing;
 	}
 
-	public boolean isCenter()
+	private boolean isCenter()
 	{
 		for( final Block link : AEApi.instance().definitions().blocks().quantumLink().maybeBlock().asSet() )
 		{
@@ -181,7 +178,7 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 		{
 			final ItemStack linkStack = maybeLinkStack.get();
 
-			this.gridProxy.setVisualRepresentation( linkStack );
+			this.getProxy().setVisualRepresentation( linkStack );
 		}
 	}
 
@@ -199,7 +196,7 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 		{
 			if( !affectWorld )
 			{
-				this.cluster.updateStatus = false;
+				this.cluster.setUpdateStatus( false );
 			}
 
 			this.cluster.destroy();
@@ -209,7 +206,7 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 
 		if( affectWorld )
 		{
-			this.gridProxy.setValidSides( EnumSet.noneOf( EnumFacing.class ) );
+			this.getProxy().setValidSides( EnumSet.noneOf( EnumFacing.class ) );
 		}
 	}
 
@@ -240,22 +237,22 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 			if( this.isCorner() || this.isCenter() )
 			{
 				final EnumSet<EnumFacing> sides = EnumSet.noneOf( EnumFacing.class );
-				for ( final AEPartLocation dir : this.getConnections() )
-					if ( dir != AEPartLocation.INTERNAL )
-						sides.add( dir.getFacing());
-				
-				this.gridProxy.setValidSides( sides );
+				for( final AEPartLocation dir : this.getConnections() )
+					if( dir != AEPartLocation.INTERNAL )
+						sides.add( dir.getFacing() );
+
+				this.getProxy().setValidSides( sides );
 			}
 			else
 			{
-				this.gridProxy.setValidSides( EnumSet.allOf( EnumFacing.class ) );
+				this.getProxy().setValidSides( EnumSet.allOf( EnumFacing.class ) );
 			}
 		}
 	}
 
 	public boolean isCorner()
 	{
-		return ( this.constructed & this.corner ) == this.corner && this.constructed != -1;
+		return ( this.constructed & this.getCorner() ) == this.getCorner() && this.constructed != -1;
 	}
 
 	public EnumSet<AEPartLocation> getConnections()
@@ -297,7 +294,7 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 
 		try
 		{
-			return this.gridProxy.getEnergy().isNetworkPowered();
+			return this.getProxy().getEnergy().isNetworkPowered();
 		}
 		catch( final GridAccessException e )
 		{
@@ -344,5 +341,10 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 		{
 			this.cluster.destroy();
 		}
+	}
+
+	public byte getCorner()
+	{
+		return this.corner;
 	}
 }

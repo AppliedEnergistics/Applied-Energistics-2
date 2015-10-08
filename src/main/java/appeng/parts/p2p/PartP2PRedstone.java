@@ -38,8 +38,8 @@ import appeng.util.Platform;
 public class PartP2PRedstone extends PartP2PTunnel<PartP2PRedstone>
 {
 
-	int power;
-	boolean recursive = false;
+	private int power;
+	private boolean recursive = false;
 
 	public PartP2PRedstone( final ItemStack is )
 	{
@@ -52,9 +52,9 @@ public class PartP2PRedstone extends PartP2PTunnel<PartP2PRedstone>
 		this.setNetworkReady();
 	}
 
-	public void setNetworkReady()
+	private void setNetworkReady()
 	{
-		if( this.output )
+		if( this.isOutput() )
 		{
 			final PartP2PRedstone in = this.getInput();
 			if( in != null )
@@ -64,7 +64,7 @@ public class PartP2PRedstone extends PartP2PTunnel<PartP2PRedstone>
 		}
 	}
 
-	protected void putInput( final Object o )
+	private void putInput( final Object o )
 	{
 		if( this.recursive )
 		{
@@ -72,7 +72,7 @@ public class PartP2PRedstone extends PartP2PTunnel<PartP2PRedstone>
 		}
 
 		this.recursive = true;
-		if( this.output && this.proxy.isActive() )
+		if( this.isOutput() && this.getProxy().isActive() )
 		{
 			final int newPower = (Integer) o;
 			if( this.power != newPower )
@@ -84,15 +84,15 @@ public class PartP2PRedstone extends PartP2PTunnel<PartP2PRedstone>
 		this.recursive = false;
 	}
 
-	public void notifyNeighbors()
+	private void notifyNeighbors()
 	{
-		final World worldObj = this.tile.getWorld();
+		final World worldObj = this.getTile().getWorld();
 
-		Platform.notifyBlocksOfNeighbors( worldObj, this.tile.getPos());
+		Platform.notifyBlocksOfNeighbors( worldObj, this.getTile().getPos() );
 
 		// and this cause sometimes it can go thought walls.
-		for ( final EnumFacing face : EnumFacing.VALUES )
-			Platform.notifyBlocksOfNeighbors( worldObj, this.tile.getPos().offset( face ) );
+		for( final EnumFacing face : EnumFacing.VALUES )
+			Platform.notifyBlocksOfNeighbors( worldObj, this.getTile().getPos().offset( face ) );
 	}
 
 	@MENetworkEventSubscribe
@@ -135,22 +135,22 @@ public class PartP2PRedstone extends PartP2PTunnel<PartP2PRedstone>
 	@Override
 	public void onNeighborChanged()
 	{
-		if( !this.output )
+		if( !this.isOutput() )
 		{
-			final BlockPos target = this.tile.getPos().offset( this.side.getFacing() );
+			final BlockPos target = this.getTile().getPos().offset( this.getSide().getFacing() );
 
-			final IBlockState state = this.tile.getWorld().getBlockState( target );
+			final IBlockState state = this.getTile().getWorld().getBlockState( target );
 			final Block b = state.getBlock();
-			if( b != null && !this.output )
+			if( b != null && !this.isOutput() )
 			{
-				EnumFacing srcSide = this.side.getFacing();
+				EnumFacing srcSide = this.getSide().getFacing();
 				if( b instanceof BlockRedstoneWire )
 				{
 					srcSide = EnumFacing.UP;
 				}
-				
-				this.power = b.isProvidingStrongPower( this.tile.getWorld(), target,state, srcSide );
-				this.power = Math.max( this.power, b.isProvidingWeakPower( this.tile.getWorld(), target, state, srcSide ) );
+
+				this.power = b.isProvidingStrongPower( this.getTile().getWorld(), target, state, srcSide );
+				this.power = Math.max( this.power, b.isProvidingWeakPower( this.getTile().getWorld(), target, state, srcSide ) );
 				this.sendToOutput( this.power );
 			}
 			else
@@ -169,13 +169,13 @@ public class PartP2PRedstone extends PartP2PTunnel<PartP2PRedstone>
 	@Override
 	public int isProvidingStrongPower()
 	{
-		return this.output ? this.power : 0;
+		return this.isOutput() ? this.power : 0;
 	}
 
 	@Override
 	public int isProvidingWeakPower()
 	{
-		return this.output ? this.power : 0;
+		return this.isOutput() ? this.power : 0;
 	}
 
 	private void sendToOutput( final int power )

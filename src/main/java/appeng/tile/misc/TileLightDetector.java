@@ -29,8 +29,8 @@ import appeng.util.Platform;
 public class TileLightDetector extends AEBaseTile implements IUpdatePlayerListBox
 {
 
-	int lastCheck = 30;
-	int lastLight = 0;
+	private int lastCheck = 30;
+	private int lastLight = 0;
 
 	public boolean isReady()
 	{

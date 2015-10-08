@@ -67,7 +67,7 @@ public class InvLayerData
 		return this.slots != null && slot >= 0 && slot < this.slots.size();
 	}
 
-	public int getSizeInventory()
+	int getSizeInventory()
 	{
 		if( this.slots == null )
 		{
@@ -125,7 +125,7 @@ public class InvLayerData
 		return false;
 	}
 
-	public void markDirty()
+	void markDirty()
 	{
 		if( this.inventories != null )
 		{

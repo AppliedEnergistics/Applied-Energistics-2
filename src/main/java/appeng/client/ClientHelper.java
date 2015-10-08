@@ -158,7 +158,7 @@ public class ClientHelper extends ServerHelper
 	@Override
 	public void bindTileEntitySpecialRenderer( final Class<? extends TileEntity> tile, final AEBaseBlock blk )
 	{
-		final BaseBlockRender bbr = blk.getRendererInstance().rendererInstance;
+		final BaseBlockRender bbr = blk.getRendererInstance().getRendererInstance();
 		if( bbr.hasTESR() && tile != null )
 		{
 			ClientRegistry.bindTileEntitySpecialRenderer( tile, new TESRWrapper( bbr ) );
@@ -293,7 +293,7 @@ public class ClientHelper extends ServerHelper
 
 				this.addIcon( reg.name );
 
-				mesher.register( reg.item instanceof Item ? (Item) reg.item : Item.getItemFromBlock( (Block) reg.item ), stack -> renderer.rendererInstance.getResourcePath() );
+				mesher.register( reg.item instanceof Item ? (Item) reg.item : Item.getItemFromBlock( (Block) reg.item ), stack -> renderer.getRendererInstance().getResourcePath() );
 				continue;
 			}
 
@@ -512,7 +512,7 @@ public class ClientHelper extends ServerHelper
 				}
 
 				final SmartModel sm = new SmartModel( renderer );
-				event.modelRegistry.putObject( renderer.rendererInstance.getResourcePath(), sm );
+				event.modelRegistry.putObject( renderer.getRendererInstance().getResourcePath(), sm );
 
 				final Map data = new DefaultStateMapper().putStateModelLocations( (Block) reg.item );
 				for( final Object Loc : data.values() )

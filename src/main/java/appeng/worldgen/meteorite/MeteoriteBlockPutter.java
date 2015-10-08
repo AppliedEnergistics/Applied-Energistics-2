@@ -1,3 +1,4 @@
+
 package appeng.worldgen.meteorite;
 
 
@@ -21,7 +22,7 @@ public class MeteoriteBlockPutter
 		return true;
 	}
 
-	public void put( final IMeteoriteWorld w, final int i, final int j, final int k, final IBlockState state, final int meta )
+	void put( final IMeteoriteWorld w, final int i, final int j, final int k, final IBlockState state, final int meta )
 	{
 		if( w.getBlock( i, j, k ) == Blocks.bedrock )
 		{

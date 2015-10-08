@@ -43,7 +43,7 @@ public class AESharedNBT extends NBTTagCompound implements IAETagCompound
 	private static final WeakHashMap<SharedSearchObject, WeakReference<SharedSearchObject>> SHARED_TAG_COMPOUND = new WeakHashMap<SharedSearchObject, WeakReference<SharedSearchObject>>();
 	private final Item item;
 	private final int meta;
-	public SharedSearchObject sso;
+	private SharedSearchObject sso;
 	private int hash;
 	private IItemComparison comp;
 
@@ -71,7 +71,7 @@ public class AESharedNBT extends NBTTagCompound implements IAETagCompound
 	/*
 	 * Returns an NBT Compound that is used for accelerating comparisons.
 	 */
-	public static synchronized NBTTagCompound getSharedTagCompound( final NBTTagCompound tagCompound, final ItemStack s )
+	static synchronized NBTTagCompound getSharedTagCompound( final NBTTagCompound tagCompound, final ItemStack s )
 	{
 		if( tagCompound.hasNoTags() )
 		{
@@ -98,18 +98,18 @@ public class AESharedNBT extends NBTTagCompound implements IAETagCompound
 			final SharedSearchObject cg = c.get();
 			if( cg != null )
 			{
-				return cg.shared; // I don't think I really need to check this
+				return cg.getShared(); // I don't think I really need to check this
 			}
 			// as its already certain to exist..
 		}
 
 		final AESharedNBT clone = AESharedNBT.createFromCompound( item, meta, tagCompound );
-		sso.compound = (NBTTagCompound) sso.compound.copy(); // prevent
+		sso.setCompound( (NBTTagCompound) sso.getCompound().copy() ); // prevent
 		// modification
 		// of data based
 		// on original
 		// item.
-		sso.shared = clone;
+		sso.setShared( clone );
 		clone.sso = sso;
 
 		SHARED_TAG_COMPOUND.put( sso, new WeakReference<SharedSearchObject>( sso ) );
@@ -124,7 +124,7 @@ public class AESharedNBT extends NBTTagCompound implements IAETagCompound
 		return ta instanceof AESharedNBT;
 	}
 
-	public static AESharedNBT createFromCompound( final Item itemID, final int damageValue, final NBTTagCompound c )
+	private static AESharedNBT createFromCompound( final Item itemID, final int damageValue, final NBTTagCompound c )
 	{
 		final AESharedNBT x = new AESharedNBT( itemID, damageValue );
 
@@ -144,7 +144,7 @@ public class AESharedNBT extends NBTTagCompound implements IAETagCompound
 		return x;
 	}
 
-	public int getHash()
+	int getHash()
 	{
 		return this.hash;
 	}

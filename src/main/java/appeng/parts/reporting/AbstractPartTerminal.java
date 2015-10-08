@@ -121,7 +121,7 @@ public abstract class AbstractPartTerminal extends AbstractPartDisplay implement
 					return true;
 				}
 
-				Platform.openGUI( player, this.getHost().getTile(), this.side, this.getGui( player ) );
+				Platform.openGUI( player, this.getHost().getTile(), this.getSide(), this.getGui( player ) );
 
 				return true;
 			}
@@ -139,7 +139,7 @@ public abstract class AbstractPartTerminal extends AbstractPartDisplay implement
 	{
 		try
 		{
-			return this.proxy.getStorage().getItemInventory();
+			return this.getProxy().getStorage().getItemInventory();
 		}
 		catch( final GridAccessException e )
 		{
@@ -153,7 +153,7 @@ public abstract class AbstractPartTerminal extends AbstractPartDisplay implement
 	{
 		try
 		{
-			return this.proxy.getStorage().getFluidInventory();
+			return this.getProxy().getStorage().getFluidInventory();
 		}
 		catch( final GridAccessException e )
 		{
@@ -177,6 +177,6 @@ public abstract class AbstractPartTerminal extends AbstractPartDisplay implement
 	@Override
 	public void onChangeInventory( final IInventory inv, final int slot, final InvOperation mc, final ItemStack removedStack, final ItemStack newStack )
 	{
-		this.host.markForSave();
+		this.getHost().markForSave();
 	}
 }

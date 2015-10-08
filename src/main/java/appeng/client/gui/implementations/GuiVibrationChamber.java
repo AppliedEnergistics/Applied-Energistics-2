@@ -34,8 +34,8 @@ import appeng.tile.misc.TileVibrationChamber;
 public class GuiVibrationChamber extends AEBaseGui
 {
 
-	final ContainerVibrationChamber cvc;
-	GuiProgressBar pb;
+	private final ContainerVibrationChamber cvc;
+	private GuiProgressBar pb;
 
 	public GuiVibrationChamber( final InventoryPlayer inventoryPlayer, final TileVibrationChamber te )
 	{
@@ -59,7 +59,7 @@ public class GuiVibrationChamber extends AEBaseGui
 		this.fontRendererObj.drawString( this.getGuiDisplayName( GuiText.VibrationChamber.getLocal() ), 8, 6, 4210752 );
 		this.fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
 
-		this.pb.setFullMsg( this.cvc.aePerTick * this.cvc.getCurrentProgress() / 100 + " AE/t" );
+		this.pb.setFullMsg( this.cvc.getAePerTick() * this.cvc.getCurrentProgress() / 100 + " AE/t" );
 
 		if( this.cvc.getCurrentProgress() > 0 )
 		{

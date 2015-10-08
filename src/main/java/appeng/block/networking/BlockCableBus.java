@@ -57,6 +57,7 @@ import appeng.core.CommonHelper;
 import appeng.core.features.AECableBusFeatureHandler;
 import appeng.core.features.AEFeature;
 import appeng.helpers.AEGlassMaterial;
+import appeng.helpers.Reflected;
 import appeng.integration.IntegrationRegistry;
 import appeng.integration.IntegrationType;
 import appeng.integration.abstraction.IFMP;
@@ -70,22 +71,27 @@ import appeng.util.Platform;
 
 // TODO: MFR INTEGRATION
 //@Interface( iface = "powercrystals.minefactoryreloaded.api.rednet.connectivity.IRedNetConnection", iname = IntegrationType.MFR )
-public class BlockCableBus extends AEBaseTileBlock //implements IRedNetConnection
+public class BlockCableBus extends AEBaseTileBlock // implements IRedNetConnection
 {
 
 	private static final ICableBusContainer NULL_CABLE_BUS = new NullCableBusContainer();
-	public static Class<? extends TileEntity> noTesrTile;
-	public static Class<? extends TileEntity> tesrTile;
+	private static Class<? extends TileEntity> noTesrTile;
+	private static Class<? extends TileEntity> tesrTile;
+
 	/**
 	 * Immibis MB Support.
+	 *
+	 * It will look for a field named ImmibisMicroblocks_TransformableBlockMarker or
+	 * ImmibisMicroblocks_TransformableTileEntityMarker, modifiers, type, etc can be ignored.
 	 */
-	boolean ImmibisMicroblocks_TransformableBlockMarker = true;
+	@Reflected
+	private static final boolean ImmibisMicroblocks_TransformableBlockMarker = true;
 
 	public BlockCableBus()
 	{
 		super( AEGlassMaterial.INSTANCE );
 		this.setLightOpacity( 0 );
-		this.isFullSize = this.isOpaque = false;
+		this.setFullSize( this.setOpaque( false ) );
 
 		// this will actually be overwritten later through setupTile and the combined layers
 		this.setTileEntity( TileCableBus.class );
@@ -153,7 +159,7 @@ public class BlockCableBus extends AEBaseTileBlock //implements IRedNetConnectio
 			final IBlockState state,
 			final EnumFacing side )
 	{
-		return this.cb( w, pos ).isProvidingStrongPower( side.getOpposite() );  // TODO: IS OPPOSITE!?
+		return this.cb( w, pos ).isProvidingStrongPower( side.getOpposite() ); // TODO: IS OPPOSITE!?
 	}
 
 	@Override
@@ -218,9 +224,9 @@ public class BlockCableBus extends AEBaseTileBlock //implements IRedNetConnectio
 			final BlockPos pos,
 			EnumFacing side )
 	{
-		if ( side == null )
+		if( side == null )
 			side = EnumFacing.UP;
-		
+
 		return this.cb( w, pos ).canConnectRedstone( EnumSet.of( side ) );
 	}
 
@@ -268,41 +274,37 @@ public class BlockCableBus extends AEBaseTileBlock //implements IRedNetConnectio
 
 			// TODO HIT EFFECTS
 			/*
-			for( AEPartLocation side : AEPartLocation.values() )
-			{
-				IPart p = host.getPart( side );
-				TextureAtlasSprite ico = this.getIcon( p );
-
-				if( ico == null )
-				{
-					continue;
-				}
-
-				byte b0 = (byte) ( Platform.getRandomInt() % 2 == 0 ? 1 : 0 );
-
-				for( int i1 = 0; i1 < b0; ++i1 )
-				{
-					for( int j1 = 0; j1 < b0; ++j1 )
-					{
-						for( int k1 = 0; k1 < b0; ++k1 )
-						{
-							double d0 = target.blockX + ( i1 + 0.5D ) / b0;
-							double d1 = target.blockY + ( j1 + 0.5D ) / b0;
-							double d2 = target.blockZ + ( k1 + 0.5D ) / b0;
-
-							double dd0 = target.hitVec.xCoord;
-							double dd1 = target.hitVec.yCoord;
-							double dd2 = target.hitVec.zCoord;
-							EntityDiggingFX fx = ( new EntityDiggingFX( world, dd0, dd1, dd2, d0 - target.blockX - 0.5D, d1 - target.blockY - 0.5D, d2 - target.blockZ - 0.5D, this, 0 ) ).applyColourMultiplier( target.blockX, target.blockY, target.blockZ );
-
-							fx.setParticleIcon( ico );
-
-							effectRenderer.addEffect( fx );
-						}
-					}
-				}
-			}
-			*/
+			 * for( AEPartLocation side : AEPartLocation.values() )
+			 * {
+			 * IPart p = host.getPart( side );
+			 * TextureAtlasSprite ico = this.getIcon( p );
+			 * if( ico == null )
+			 * {
+			 * continue;
+			 * }
+			 * byte b0 = (byte) ( Platform.getRandomInt() % 2 == 0 ? 1 : 0 );
+			 * for( int i1 = 0; i1 < b0; ++i1 )
+			 * {
+			 * for( int j1 = 0; j1 < b0; ++j1 )
+			 * {
+			 * for( int k1 = 0; k1 < b0; ++k1 )
+			 * {
+			 * double d0 = target.blockX + ( i1 + 0.5D ) / b0;
+			 * double d1 = target.blockY + ( j1 + 0.5D ) / b0;
+			 * double d2 = target.blockZ + ( k1 + 0.5D ) / b0;
+			 * double dd0 = target.hitVec.xCoord;
+			 * double dd1 = target.hitVec.yCoord;
+			 * double dd2 = target.hitVec.zCoord;
+			 * EntityDiggingFX fx = ( new EntityDiggingFX( world, dd0, dd1, dd2, d0 - target.blockX - 0.5D, d1 -
+			 * target.blockY - 0.5D, d2 - target.blockZ - 0.5D, this, 0 ) ).applyColourMultiplier( target.blockX,
+			 * target.blockY, target.blockZ );
+			 * fx.setParticleIcon( ico );
+			 * effectRenderer.addEffect( fx );
+			 * }
+			 * }
+			 * }
+			 * }
+			 */
 		}
 
 		return true;
@@ -321,37 +323,33 @@ public class BlockCableBus extends AEBaseTileBlock //implements IRedNetConnectio
 
 			// TODO DESTROY EFFECTS
 			/*
-			for( AEPartLocation side : AEPartLocation.values() )
-			{
-				IPart p = host.getPart( side );
-				TextureAtlasSprite ico = this.getIcon( p );
-
-				if( ico == null )
-				{
-					continue;
-				}
-
-				byte b0 = 3;
-
-				for( int i1 = 0; i1 < b0; ++i1 )
-				{
-					for( int j1 = 0; j1 < b0; ++j1 )
-					{
-						for( int k1 = 0; k1 < b0; ++k1 )
-						{
-							double d0 = x + ( i1 + 0.5D ) / b0;
-							double d1 = y + ( j1 + 0.5D ) / b0;
-							double d2 = z + ( k1 + 0.5D ) / b0;
-							EntityDiggingFX fx = ( new EntityDiggingFX( world, d0, d1, d2, d0 - x - 0.5D, d1 - y - 0.5D, d2 - z - 0.5D, this, meta ) ).applyColourMultiplier( x, y, z );
-
-							fx.setParticleIcon( ico );
-
-							effectRenderer.addEffect( fx );
-						}
-					}
-				}
-			}
-			*/
+			 * for( AEPartLocation side : AEPartLocation.values() )
+			 * {
+			 * IPart p = host.getPart( side );
+			 * TextureAtlasSprite ico = this.getIcon( p );
+			 * if( ico == null )
+			 * {
+			 * continue;
+			 * }
+			 * byte b0 = 3;
+			 * for( int i1 = 0; i1 < b0; ++i1 )
+			 * {
+			 * for( int j1 = 0; j1 < b0; ++j1 )
+			 * {
+			 * for( int k1 = 0; k1 < b0; ++k1 )
+			 * {
+			 * double d0 = x + ( i1 + 0.5D ) / b0;
+			 * double d1 = y + ( j1 + 0.5D ) / b0;
+			 * double d2 = z + ( k1 + 0.5D ) / b0;
+			 * EntityDiggingFX fx = ( new EntityDiggingFX( world, d0, d1, d2, d0 - x - 0.5D, d1 - y - 0.5D, d2 - z -
+			 * 0.5D, this, meta ) ).applyColourMultiplier( x, y, z );
+			 * fx.setParticleIcon( ico );
+			 * effectRenderer.addEffect( fx );
+			 * }
+			 * }
+			 * }
+			 * }
+			 */
 		}
 
 		return true;
@@ -377,7 +375,7 @@ public class BlockCableBus extends AEBaseTileBlock //implements IRedNetConnectio
 
 		if( te instanceof TileCableBus )
 		{
-			out = ( (TileCableBus) te ).cb;
+			out = ( (TileCableBus) te ).getCableBus();
 		}
 		else if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.FMP ) )
 		{
@@ -425,10 +423,11 @@ public class BlockCableBus extends AEBaseTileBlock //implements IRedNetConnectio
 	{
 		try
 		{
-			return this.cb( world, pos ).recolourBlock( side, AEColor.values()[ color.ordinal() ], who );
+			return this.cb( world, pos ).recolourBlock( side, AEColor.values()[color.ordinal()], who );
 		}
 		catch( final Throwable ignored )
-		{}
+		{
+		}
 		return false;
 	}
 
@@ -460,7 +459,7 @@ public class BlockCableBus extends AEBaseTileBlock //implements IRedNetConnectio
 	@Override
 	protected void setFeature( final EnumSet<AEFeature> f )
 	{
-		final AECableBusFeatureHandler featureHandler = new AECableBusFeatureHandler( f, this, this.featureSubName );
+		final AECableBusFeatureHandler featureHandler = new AECableBusFeatureHandler( f, this, this.getFeatureSubName() );
 		this.setHandler( featureHandler );
 	}
 
@@ -476,17 +475,28 @@ public class BlockCableBus extends AEBaseTileBlock //implements IRedNetConnectio
 			CommonHelper.proxy.bindTileEntitySpecialRenderer( tesrTile, this );
 		}
 	}
-	
-//	TODO MFR Integration
-//	@Override
-//	@Method( iname = IntegrationType.MFR )
-//	public RedNetConnectionType getConnectionType( World world, int x, int y, int z, ForgeDirection side )
-//	{
-//		return this.cb( world, x, y, z ).canConnectRedstone( EnumSet.allOf( ForgeDirection.class ) ) ? RedNetConnectionType.CableSingle : RedNetConnectionType.None;
-//	}
-//
-//	public void setRenderColor( int color )
-//	{
-//		this.myColorMultiplier = color;
-//	}
+
+	public static Class<? extends TileEntity> getTesrTile()
+	{
+		return tesrTile;
+	}
+
+	public static Class<? extends TileEntity> getNoTesrTile()
+	{
+		return noTesrTile;
+	}
+
+	// TODO MFR Integration
+	// @Override
+	// @Method( iname = IntegrationType.MFR )
+	// public RedNetConnectionType getConnectionType( World world, int x, int y, int z, ForgeDirection side )
+	// {
+	// return this.cb( world, x, y, z ).canConnectRedstone( EnumSet.allOf( ForgeDirection.class ) ) ?
+	// RedNetConnectionType.CableSingle : RedNetConnectionType.None;
+	// }
+	//
+	// public void setRenderColor( int color )
+	// {
+	// this.myColorMultiplier = color;
+	// }
 }

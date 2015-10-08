@@ -29,7 +29,7 @@ import appeng.util.item.AEItemStack;
 public class IMEInventoryDestination implements IInventoryDestination
 {
 
-	final IMEInventory<IAEItemStack> me;
+	private final IMEInventory<IAEItemStack> me;
 
 	public IMEInventoryDestination( final IMEInventory<IAEItemStack> o )
 	{

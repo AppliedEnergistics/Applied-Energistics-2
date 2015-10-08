@@ -68,8 +68,8 @@ import com.google.common.collect.ImmutableSet;
 public class TileInterface extends AENetworkInvTile implements IGridTickable, ITileStorageMonitorable, IStorageMonitorable, IInventoryDestination, IInterfaceHost, IPriorityHost
 {
 
-	final DualityInterface duality = new DualityInterface( this.gridProxy, this );
-	AEPartLocation pointAt = AEPartLocation.INTERNAL;
+	private final DualityInterface duality = new DualityInterface( this.getProxy(), this );
+	private AEPartLocation pointAt = AEPartLocation.INTERNAL;
 
 	@MENetworkEventSubscribe
 	public void stateChange( final MENetworkChannelsChanged c )
@@ -123,10 +123,10 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, IT
 
 	private void configureNodeSides()
 	{
-		if ( this.pointAt == AEPartLocation.INTERNAL )
-			this.gridProxy.setValidSides( EnumSet.allOf(EnumFacing.class) );
+		if( this.pointAt == AEPartLocation.INTERNAL )
+			this.getProxy().setValidSides( EnumSet.allOf( EnumFacing.class ) );
 		else
-			this.gridProxy.setValidSides( EnumSet.complementOf( EnumSet.of( this.pointAt.getFacing() ) ) );
+			this.getProxy().setValidSides( EnumSet.complementOf( EnumSet.of( this.pointAt.getFacing() ) ) );
 	}
 
 	@Override
@@ -154,6 +154,7 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, IT
 	public void onReady()
 	{
 		this.configureNodeSides();
+
 		super.onReady();
 		this.duality.initialize();
 	}

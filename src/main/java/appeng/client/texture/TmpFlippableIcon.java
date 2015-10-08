@@ -19,11 +19,9 @@
 package appeng.client.texture;
 
 
-
-
 public class TmpFlippableIcon extends FlippableIcon
 {
-	
+
 	public TmpFlippableIcon()
 	{
 		super( null );
@@ -36,26 +34,19 @@ public class TmpFlippableIcon extends FlippableIcon
 		while( i instanceof FlippableIcon )
 		{
 			final FlippableIcon fi = (FlippableIcon) i;
-			if( fi.flip_u )
+			if( fi.isFlipU() )
 			{
-				this.flip_u = !this.flip_u;
+				this.setFlipU( !this.isFlipU() );
 			}
 
-			if( fi.flip_v )
+			if( fi.isFlipV() )
 			{
-				this.flip_v = !this.flip_v;
+				this.setFlipV( !this.isFlipV() );
 			}
 
 			i = fi.getOriginal();
 		}
 
-		if( i == null )
-		{
-			this.original = null;
-		}
-		else
-		{
-			this.original = i;
-		}
+		super.setOriginal( i );
 	}
 }

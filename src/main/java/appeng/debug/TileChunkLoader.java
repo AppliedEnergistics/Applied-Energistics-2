@@ -41,8 +41,8 @@ import appeng.util.Platform;
 public class TileChunkLoader extends AEBaseTile implements IUpdatePlayerListBox
 {
 
-	boolean requestTicket = true;
-	Ticket ct;
+	private boolean requestTicket = true;
+	private Ticket ct = null;
 
 	@TileEvent( TileEventType.TICK )
 	public void onTickEvent()
@@ -54,7 +54,7 @@ public class TileChunkLoader extends AEBaseTile implements IUpdatePlayerListBox
 		}
 	}
 
-	void initTicket()
+	private void initTicket()
 	{
 		if( Platform.isClient() )
 		{

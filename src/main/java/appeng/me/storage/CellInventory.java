@@ -48,25 +48,25 @@ import appeng.util.item.AEItemStack;
 public class CellInventory implements ICellInventory
 {
 
-	static final String ITEM_TYPE_TAG = "it";
-	static final String ITEM_COUNT_TAG = "ic";
-	static final String ITEM_SLOT = "#";
-	static final String ITEM_SLOT_COUNT = "@";
-	static final String ITEM_PRE_FORMATTED_COUNT = "PF";
-	static final String ITEM_PRE_FORMATTED_SLOT = "PF#";
-	static final String ITEM_PRE_FORMATTED_NAME = "PN";
-	static final String ITEM_PRE_FORMATTED_FUZZY = "FP";
+	private static final String ITEM_TYPE_TAG = "it";
+	private static final String ITEM_COUNT_TAG = "ic";
+	private static final String ITEM_SLOT = "#";
+	private static final String ITEM_SLOT_COUNT = "@";
+	private static final String ITEM_PRE_FORMATTED_COUNT = "PF";
+	private static final String ITEM_PRE_FORMATTED_SLOT = "PF#";
+	private static final String ITEM_PRE_FORMATTED_NAME = "PN";
+	private static final String ITEM_PRE_FORMATTED_FUZZY = "FP";
 	private static final HashSet<Integer> BLACK_LIST = new HashSet<Integer>();
-	protected static String[] itemSlots;
-	protected static String[] itemSlotCount;
-	protected final NBTTagCompound tagCompound;
-	protected final ISaveProvider container;
-	protected int maxItemTypes = 63;
-	protected short storedItems = 0;
-	protected int storedItemCount = 0;
-	protected IItemList<IAEItemStack> cellItems;
-	protected ItemStack i;
-	protected IStorageCell cellType;
+	private static String[] itemSlots;
+	private static String[] itemSlotCount;
+	private final NBTTagCompound tagCompound;
+	private final ISaveProvider container;
+	private int maxItemTypes = 63;
+	private short storedItems = 0;
+	private int storedItemCount = 0;
+	private IItemList<IAEItemStack> cellItems;
+	private ItemStack i;
+	private IStorageCell cellType;
 
 	protected CellInventory( final NBTTagCompound data, final ISaveProvider container )
 	{
@@ -74,7 +74,7 @@ public class CellInventory implements ICellInventory
 		this.container = container;
 	}
 
-	protected CellInventory( final ItemStack o, final ISaveProvider container ) throws AppEngException
+	private CellInventory( final ItemStack o, final ISaveProvider container ) throws AppEngException
 	{
 		if( itemSlots == null )
 		{
@@ -185,7 +185,7 @@ public class CellInventory implements ICellInventory
 		BLACK_LIST.add( ( meta << Platform.DEF_OFFSET ) | itemID );
 	}
 
-	public static boolean isBlackListed( final IAEItemStack input )
+	private static boolean isBlackListed( final IAEItemStack input )
 	{
 		if( BLACK_LIST.contains( ( OreDictionary.WILDCARD_VALUE << Platform.DEF_OFFSET ) | Item.getIdFromItem( input.getItem() ) ) )
 		{

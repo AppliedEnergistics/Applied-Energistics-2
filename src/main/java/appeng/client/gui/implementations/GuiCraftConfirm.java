@@ -58,28 +58,30 @@ import com.google.common.base.Joiner;
 public class GuiCraftConfirm extends AEBaseGui
 {
 
-	final ContainerCraftConfirm ccc;
+	private final ContainerCraftConfirm ccc;
 
-	final int rows = 5;
+	private final int rows = 5;
 
-	final IItemList<IAEItemStack> storage = AEApi.instance().storage().createItemList();
-	final IItemList<IAEItemStack> pending = AEApi.instance().storage().createItemList();
-	final IItemList<IAEItemStack> missing = AEApi.instance().storage().createItemList();
+	private final IItemList<IAEItemStack> storage = AEApi.instance().storage().createItemList();
+	private final IItemList<IAEItemStack> pending = AEApi.instance().storage().createItemList();
+	private final IItemList<IAEItemStack> missing = AEApi.instance().storage().createItemList();
 
-	final List<IAEItemStack> visual = new ArrayList<IAEItemStack>();
+	private final List<IAEItemStack> visual = new ArrayList<IAEItemStack>();
 
-	GuiBridge OriginalGui;
-	GuiButton cancel;
-	GuiButton start;
-	GuiButton selectCPU;
-	int tooltip = -1;
+	private GuiBridge OriginalGui;
+	private GuiButton cancel;
+	private GuiButton start;
+	private GuiButton selectCPU;
+	private int tooltip = -1;
 
 	public GuiCraftConfirm( final InventoryPlayer inventoryPlayer, final ITerminalHost te )
 	{
 		super( new ContainerCraftConfirm( inventoryPlayer, te ) );
 		this.xSize = 238;
 		this.ySize = 206;
-		this.myScrollBar = new GuiScrollbar();
+
+		final GuiScrollbar scrollbar = new GuiScrollbar();
+		this.setScrollBar( scrollbar );
 
 		this.ccc = (ContainerCraftConfirm) this.inventorySlots;
 
@@ -106,7 +108,7 @@ public class GuiCraftConfirm extends AEBaseGui
 
 	boolean isAutoStart()
 	{
-		return ( (ContainerCraftConfirm) this.inventorySlots ).autoStart;
+		return ( (ContainerCraftConfirm) this.inventorySlots ).isAutoStart();
 	}
 
 	@Override
@@ -135,7 +137,7 @@ public class GuiCraftConfirm extends AEBaseGui
 	{
 		this.updateCPUButtonText();
 
-		this.start.enabled = !( this.ccc.noCPU || this.isSimulation() );
+		this.start.enabled = !( this.ccc.hasNoCPU() || this.isSimulation() );
 		this.selectCPU.enabled = !this.isSimulation();
 
 		final int gx = ( this.width - this.xSize ) / 2;
@@ -175,20 +177,20 @@ public class GuiCraftConfirm extends AEBaseGui
 	private void updateCPUButtonText()
 	{
 		String btnTextText = GuiText.CraftingCPU.getLocal() + ": " + GuiText.Automatic.getLocal();
-		if( this.ccc.selectedCpu >= 0 )// && status.selectedCpu < status.cpus.size() )
+		if( this.ccc.getSelectedCpu() >= 0 )// && status.selectedCpu < status.cpus.size() )
 		{
-			if( this.ccc.myName.length() > 0 )
+			if( this.ccc.getName().length() > 0 )
 			{
-				final String name = this.ccc.myName.substring( 0, Math.min( 20, this.ccc.myName.length() ) );
+				final String name = this.ccc.getName().substring( 0, Math.min( 20, this.ccc.getName().length() ) );
 				btnTextText = GuiText.CraftingCPU.getLocal() + ": " + name;
 			}
 			else
 			{
-				btnTextText = GuiText.CraftingCPU.getLocal() + ": #" + this.ccc.selectedCpu;
+				btnTextText = GuiText.CraftingCPU.getLocal() + ": #" + this.ccc.getSelectedCpu();
 			}
 		}
 
-		if( this.ccc.noCPU )
+		if( this.ccc.hasNoCPU() )
 		{
 			btnTextText = GuiText.NoCraftingCPUs.getLocal();
 		}
@@ -196,15 +198,15 @@ public class GuiCraftConfirm extends AEBaseGui
 		this.selectCPU.displayString = btnTextText;
 	}
 
-	boolean isSimulation()
+	private boolean isSimulation()
 	{
-		return ( (ContainerCraftConfirm) this.inventorySlots ).simulation;
+		return ( (ContainerCraftConfirm) this.inventorySlots ).isSimulation();
 	}
 
 	@Override
 	public void drawFG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
-		final long BytesUsed = this.ccc.bytesUsed;
+		final long BytesUsed = this.ccc.getUsedBytes();
 		final String byteUsed = NumberFormat.getInstance().format( BytesUsed );
 		final String Add = BytesUsed > 0 ? ( byteUsed + ' ' + GuiText.BytesUsed.getLocal() ) : GuiText.CalculatingWait.getLocal();
 		this.fontRendererObj.drawString( GuiText.CraftingPlan.getLocal() + " - " + Add, 8, 7, 4210752 );
@@ -217,7 +219,7 @@ public class GuiCraftConfirm extends AEBaseGui
 		}
 		else
 		{
-			dsp = this.ccc.cpuBytesAvail > 0 ? ( GuiText.Bytes.getLocal() + ": " + this.ccc.cpuBytesAvail + " : " + GuiText.CoProcessors.getLocal() + ": " + this.ccc.cpuCoProcessors ) : GuiText.Bytes.getLocal() + ": N/A : " + GuiText.CoProcessors.getLocal() + ": N/A";
+			dsp = this.ccc.getCpuAvailableBytes() > 0 ? ( GuiText.Bytes.getLocal() + ": " + this.ccc.getCpuAvailableBytes() + " : " + GuiText.CoProcessors.getLocal() + ": " + this.ccc.getCpuCoProcessors() ) : GuiText.Bytes.getLocal() + ": N/A : " + GuiText.CoProcessors.getLocal() + ": N/A";
 		}
 
 		final int offset = ( 219 - this.fontRendererObj.getStringWidth( dsp ) ) / 2;
@@ -229,7 +231,7 @@ public class GuiCraftConfirm extends AEBaseGui
 		int y = 0;
 		final int xo = 9;
 		final int yo = 22;
-		final int viewStart = this.myScrollBar.getCurrentScroll() * 3;
+		final int viewStart = this.getScrollBar().getCurrentScroll() * 3;
 		final int viewEnd = viewStart + 3 * this.rows;
 
 		String dspToolTip = "";
@@ -399,8 +401,8 @@ public class GuiCraftConfirm extends AEBaseGui
 	{
 		final int size = this.visual.size();
 
-		this.myScrollBar.setTop( 19 ).setLeft( 218 ).setHeight( 114 );
-		this.myScrollBar.setRange( 0, ( size + 2 ) / 3 - this.rows, 1 );
+		this.getScrollBar().setTop( 19 ).setLeft( 218 ).setHeight( 114 );
+		this.getScrollBar().setRange( 0, ( size + 2 ) / 3 - this.rows, 1 );
 	}
 
 	public void postUpdate( final List<IAEItemStack> list, final byte ref )

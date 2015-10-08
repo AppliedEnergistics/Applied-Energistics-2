@@ -19,6 +19,8 @@
 package appeng.entity;
 
 
+import org.lwjgl.opengl.GL11;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.GlStateManager;
@@ -31,8 +33,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import org.lwjgl.opengl.GL11;
-
 import appeng.client.render.ModelGenerator;
 
 
@@ -42,9 +42,9 @@ public class RenderTinyTNTPrimed extends Render
 
 	private final ModelGenerator blockRenderer = new ModelGenerator();
 
-    public RenderTinyTNTPrimed( final RenderManager p_i46134_1_)
-    {
-        super(p_i46134_1_);
+	public RenderTinyTNTPrimed( final RenderManager p_i46134_1_ )
+	{
+		super( p_i46134_1_ );
 		this.shadowSize = 0.5F;
 	}
 
@@ -54,11 +54,11 @@ public class RenderTinyTNTPrimed extends Render
 		this.renderPrimedTNT( (EntityTinyTNTPrimed) tnt, x, y, z, unused, life );
 	}
 
-	public void renderPrimedTNT( final EntityTinyTNTPrimed tnt, final double x, final double y, final double z, final float unused, final float life  )
+	private void renderPrimedTNT( final EntityTinyTNTPrimed tnt, final double x, final double y, final double z, final float unused, final float life )
 	{
-        final BlockRendererDispatcher blockrendererdispatcher = Minecraft.getMinecraft().getBlockRendererDispatcher();
-        GlStateManager.pushMatrix();
-        GlStateManager.translate((float)x, (float)y + 0.5F, (float)z);
+		final BlockRendererDispatcher blockrendererdispatcher = Minecraft.getMinecraft().getBlockRendererDispatcher();
+		GlStateManager.pushMatrix();
+		GlStateManager.translate( (float) x, (float) y + 0.5F, (float) z );
 		float f2;
 
 		if( tnt.fuse - life + 1.0F < 10.0F )
@@ -82,32 +82,32 @@ public class RenderTinyTNTPrimed extends Render
 		}
 
 		GL11.glScalef( 0.5f, 0.5f, 0.5f );
-        f2 = (1.0F - (tnt.fuse - life + 1.0F) / 100.0F) * 0.8F;
-        this.bindEntityTexture(tnt);
-        GlStateManager.translate(-0.5F, -0.5F, 0.5F);
-        blockrendererdispatcher.renderBlockBrightness(Blocks.tnt.getDefaultState(), tnt.getBrightness(life));
-        GlStateManager.translate(0.0F, 0.0F, 1.0F);
+		f2 = ( 1.0F - ( tnt.fuse - life + 1.0F ) / 100.0F ) * 0.8F;
+		this.bindEntityTexture( tnt );
+		GlStateManager.translate( -0.5F, -0.5F, 0.5F );
+		blockrendererdispatcher.renderBlockBrightness( Blocks.tnt.getDefaultState(), tnt.getBrightness( life ) );
+		GlStateManager.translate( 0.0F, 0.0F, 1.0F );
 
 		if( tnt.fuse / 5 % 2 == 0 )
 		{
-            GlStateManager.disableTexture2D();
-            GlStateManager.disableLighting();
-            GlStateManager.enableBlend();
-            GlStateManager.blendFunc(770, 772);
-            GlStateManager.color(1.0F, 1.0F, 1.0F, f2);
-            GlStateManager.doPolygonOffset(-3.0F, -3.0F);
-            GlStateManager.enablePolygonOffset();
-            blockrendererdispatcher.renderBlockBrightness(Blocks.tnt.getDefaultState(), 1.0F);
-            GlStateManager.doPolygonOffset(0.0F, 0.0F);
-            GlStateManager.disablePolygonOffset();
-            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-            GlStateManager.disableBlend();
-            GlStateManager.enableLighting();
-            GlStateManager.enableTexture2D();
+			GlStateManager.disableTexture2D();
+			GlStateManager.disableLighting();
+			GlStateManager.enableBlend();
+			GlStateManager.blendFunc( 770, 772 );
+			GlStateManager.color( 1.0F, 1.0F, 1.0F, f2 );
+			GlStateManager.doPolygonOffset( -3.0F, -3.0F );
+			GlStateManager.enablePolygonOffset();
+			blockrendererdispatcher.renderBlockBrightness( Blocks.tnt.getDefaultState(), 1.0F );
+			GlStateManager.doPolygonOffset( 0.0F, 0.0F );
+			GlStateManager.disablePolygonOffset();
+			GlStateManager.color( 1.0F, 1.0F, 1.0F, 1.0F );
+			GlStateManager.disableBlend();
+			GlStateManager.enableLighting();
+			GlStateManager.enableTexture2D();
 		}
 
-        GlStateManager.popMatrix();
-        super.doRender(tnt, x, y, z, unused, life );
+		GlStateManager.popMatrix();
+		super.doRender( tnt, x, y, z, unused, life );
 	}
 
 	@Override

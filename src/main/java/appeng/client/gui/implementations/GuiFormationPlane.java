@@ -43,8 +43,8 @@ import appeng.parts.automation.PartFormationPlane;
 public class GuiFormationPlane extends GuiUpgradeable
 {
 
-	GuiTabButton priority;
-	GuiImgButton placeMode;
+	private GuiTabButton priority;
+	private GuiImgButton placeMode;
 
 	public GuiFormationPlane( final InventoryPlayer inventoryPlayer, final PartFormationPlane te )
 	{
@@ -72,12 +72,12 @@ public class GuiFormationPlane extends GuiUpgradeable
 
 		if( this.fuzzyMode != null )
 		{
-			this.fuzzyMode.set( this.cvb.fzMode );
+			this.fuzzyMode.set( this.cvb.getFuzzyMode() );
 		}
 
 		if( this.placeMode != null )
 		{
-			this.placeMode.set( ( (ContainerFormationPlane) this.cvb ).placeMode );
+			this.placeMode.set( ( (ContainerFormationPlane) this.cvb ).getPlaceMode() );
 		}
 	}
 

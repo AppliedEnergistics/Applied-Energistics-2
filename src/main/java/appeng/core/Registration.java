@@ -129,7 +129,7 @@ public final class Registration
 		return this.storageBiome;
 	}
 
-	public void preInitialize( final FMLPreInitializationEvent event )
+	void preInitialize( final FMLPreInitializationEvent event )
 	{
 		this.registerSpatial( false );
 
@@ -315,7 +315,7 @@ public final class Registration
 		}
 	}
 
-	public void postInit( final FMLPostInitializationEvent event )
+	void postInit( final FMLPostInitializationEvent event )
 	{
 		this.registerSpatial( true );
 

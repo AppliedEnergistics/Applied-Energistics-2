@@ -122,7 +122,7 @@ public abstract class MBCalculator
 		this.disconnect();
 	}
 
-	public boolean isValidTileAt( final World w, final int x, final int y, final int z )
+	private boolean isValidTileAt( final World w, final int x, final int y, final int z )
 	{
 		return this.isValidTile( w.getTileEntity( new BlockPos( x, y, z ) ) );
 	}
@@ -137,7 +137,7 @@ public abstract class MBCalculator
 	 */
 	public abstract boolean checkMultiblockScale( WorldCoord min, WorldCoord max );
 
-	public boolean verifyUnownedRegion( final World w, final WorldCoord min, final WorldCoord max )
+	private boolean verifyUnownedRegion( final World w, final WorldCoord min, final WorldCoord max )
 	{
 		for( final AEPartLocation side : AEPartLocation.SIDE_LOCATIONS )
 		{
@@ -153,7 +153,7 @@ public abstract class MBCalculator
 	/**
 	 * construct the correct cluster, usually very simple.
 	 *
-	 * @param w   world
+	 * @param w world
 	 * @param min min world coord
 	 * @param max max world coord
 	 *
@@ -171,8 +171,8 @@ public abstract class MBCalculator
 	/**
 	 * configure the multi-block tiles, most of the important stuff is in here.
 	 *
-	 * @param c   updated cluster
-	 * @param w   in world
+	 * @param c updated cluster
+	 * @param w in world
 	 * @param min min world coord
 	 * @param max max world coord
 	 */
@@ -187,7 +187,7 @@ public abstract class MBCalculator
 	 */
 	public abstract boolean isValidTile( TileEntity te );
 
-	public boolean verifyUnownedRegionInner( final World w, int minX, int minY, int minZ, int maxX, int maxY, int maxZ, final AEPartLocation side )
+	private boolean verifyUnownedRegionInner( final World w, int minX, int minY, int minZ, int maxX, int maxY, int maxZ, final AEPartLocation side )
 	{
 		switch( side )
 		{
