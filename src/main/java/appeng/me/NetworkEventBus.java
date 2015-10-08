@@ -39,7 +39,7 @@ public class NetworkEventBus
 	private static final Collection<Class> READ_CLASSES = new HashSet<Class>();
 	private static final Map<Class<? extends MENetworkEvent>, Map<Class, MENetworkEventInfo>> EVENTS = new HashMap<Class<? extends MENetworkEvent>, Map<Class, MENetworkEventInfo>>();
 
-	public void readClass( final Class listAs, final Class c )
+	void readClass( final Class listAs, final Class c )
 	{
 		if( READ_CLASSES.contains( c ) )
 		{
@@ -94,7 +94,7 @@ public class NetworkEventBus
 		}
 	}
 
-	public MENetworkEvent postEvent( final Grid g, final MENetworkEvent e )
+	MENetworkEvent postEvent( final Grid g, final MENetworkEvent e )
 	{
 		final Map<Class, MENetworkEventInfo> subscribers = EVENTS.get( e.getClass() );
 		int x = 0;
@@ -110,7 +110,7 @@ public class NetworkEventBus
 					if( cache != null )
 					{
 						x++;
-						target.invoke( cache.myCache, e );
+						target.invoke( cache.getCache(), e );
 					}
 
 					for( final IGridNode obj : g.getMachines( subscriber.getKey() ) )
@@ -130,7 +130,7 @@ public class NetworkEventBus
 		return e;
 	}
 
-	public MENetworkEvent postEventTo( final Grid grid, final GridNode node, final MENetworkEvent e )
+	MENetworkEvent postEventTo( final Grid grid, final GridNode node, final MENetworkEvent e )
 	{
 		final Map<Class, MENetworkEventInfo> subscribers = EVENTS.get( e.getClass() );
 		int x = 0;
@@ -156,18 +156,18 @@ public class NetworkEventBus
 		return e;
 	}
 
-	static class NetworkEventDone extends Throwable
+	private static class NetworkEventDone extends Throwable
 	{
 
 		private static final long serialVersionUID = -3079021487019171205L;
 	}
 
-	class EventMethod
+	private class EventMethod
 	{
 
-		public final Class objClass;
-		public final Method objMethod;
-		public final Class objEvent;
+		private final Class objClass;
+		private final Method objMethod;
+		private final Class objEvent;
 
 		public EventMethod( final Class Event, final Class ObjClass, final Method ObjMethod )
 		{
@@ -176,7 +176,7 @@ public class NetworkEventBus
 			this.objEvent = Event;
 		}
 
-		public void invoke( final Object obj, final MENetworkEvent e ) throws NetworkEventDone
+		private void invoke( final Object obj, final MENetworkEvent e ) throws NetworkEventDone
 		{
 			try
 			{
@@ -198,17 +198,17 @@ public class NetworkEventBus
 		}
 	}
 
-	class MENetworkEventInfo
+	private class MENetworkEventInfo
 	{
 
 		private final List<EventMethod> methods = new ArrayList<EventMethod>();
 
-		public void Add( final Class Event, final Class ObjClass, final Method ObjMethod )
+		private void Add( final Class Event, final Class ObjClass, final Method ObjMethod )
 		{
 			this.methods.add( new EventMethod( Event, ObjClass, ObjMethod ) );
 		}
 
-		public void invoke( final Object obj, final MENetworkEvent e ) throws NetworkEventDone
+		private void invoke( final Object obj, final MENetworkEvent e ) throws NetworkEventDone
 		{
 			for( final EventMethod em : this.methods )
 			{

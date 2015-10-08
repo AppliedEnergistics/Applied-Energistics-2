@@ -174,7 +174,7 @@ public class MultiCraftingTracker
 		}
 	}
 
-	public int getSlot( final ICraftingLink link )
+	int getSlot( final ICraftingLink link )
 	{
 		if( this.links != null )
 		{
@@ -190,7 +190,7 @@ public class MultiCraftingTracker
 		return -1;
 	}
 
-	public void cancel()
+	void cancel()
 	{
 		if( this.links != null )
 		{
@@ -219,7 +219,7 @@ public class MultiCraftingTracker
 		}
 	}
 
-	public boolean isBusy( final int slot )
+	boolean isBusy( final int slot )
 	{
 		return this.getLink( slot ) != null || this.getJob( slot ) != null;
 	}

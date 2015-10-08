@@ -33,7 +33,7 @@ public class MissedIngredientSet extends Throwable
 		this.resolverResultSet = ro;
 	}
 
-	public ResolverResultSet getResolverResultSet()
+	ResolverResultSet getResolverResultSet()
 	{
 		return this.resolverResultSet;
 	}

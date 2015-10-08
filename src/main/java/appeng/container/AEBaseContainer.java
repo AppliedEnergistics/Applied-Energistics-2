@@ -85,22 +85,22 @@ import appeng.util.item.AEItemStack;
 public abstract class AEBaseContainer extends Container
 {
 
-	protected final InventoryPlayer invPlayer;
-	protected final BaseActionSource mySrc;
-	protected final HashSet<Integer> locked = new HashSet<Integer>();
-	final TileEntity tileEntity;
-	final IPart part;
-	final IGuiItemObject obj;
-	final List<PacketPartialItem> dataChunks = new LinkedList<PacketPartialItem>();
-	final HashMap<Integer, SyncData> syncData = new HashMap<Integer, SyncData>();
-	public boolean isContainerValid = true;
-	public String customName;
-	public ContainerOpenContext openContext;
-	protected IMEInventoryHandler<IAEItemStack> cellInv;
-	protected IEnergySource powerSrc;
-	boolean sentCustomName;
-	int ticksSinceCheck = 900;
-	IAEItemStack clientRequestedTargetItem = null;
+	private final InventoryPlayer invPlayer;
+	private final BaseActionSource mySrc;
+	private final HashSet<Integer> locked = new HashSet<Integer>();
+	private final TileEntity tileEntity;
+	private final IPart part;
+	private final IGuiItemObject obj;
+	private final List<PacketPartialItem> dataChunks = new LinkedList<PacketPartialItem>();
+	private final HashMap<Integer, SyncData> syncData = new HashMap<Integer, SyncData>();
+	private boolean isContainerValid = true;
+	private String customName;
+	private ContainerOpenContext openContext;
+	private IMEInventoryHandler<IAEItemStack> cellInv;
+	private IEnergySource powerSrc;
+	private boolean sentCustomName;
+	private int ticksSinceCheck = 900;
+	private IAEItemStack clientRequestedTargetItem = null;
 
 	public AEBaseContainer( final InventoryPlayer ip, final TileEntity myTile, final IPart myPart )
 	{
@@ -278,7 +278,7 @@ public abstract class AEBaseContainer extends Container
 		this.clientRequestedTargetItem = stack == null ? null : stack.copy();
 	}
 
-	public BaseActionSource getSource()
+	public BaseActionSource getActionSource()
 	{
 		return this.mySrc;
 	}
@@ -297,7 +297,7 @@ public abstract class AEBaseContainer extends Container
 		}
 
 		this.ticksSinceCheck = 0;
-		this.isContainerValid = this.isContainerValid && this.hasAccess( security, requirePower );
+		this.setValidContainer( this.isValidContainer() && this.hasAccess( security, requirePower ) );
 	}
 
 	protected boolean hasAccess( final SecurityPermissions perm, final boolean requirePower )
@@ -322,7 +322,7 @@ public abstract class AEBaseContainer extends Container
 					}
 
 					final ISecurityGrid sg = g.getCache( ISecurityGrid.class );
-					if( sg.hasPermission( this.invPlayer.player, perm ) )
+					if( sg.hasPermission( this.getInventoryPlayer().player, perm ) )
 					{
 						return true;
 					}
@@ -357,7 +357,7 @@ public abstract class AEBaseContainer extends Container
 
 	public InventoryPlayer getPlayerInv()
 	{
-		return this.invPlayer;
+		return this.getInventoryPlayer();
 	}
 
 	public TileEntity getTileEntity()
@@ -422,7 +422,7 @@ public abstract class AEBaseContainer extends Container
 		if( newSlot instanceof AppEngSlot )
 		{
 			final AppEngSlot s = (AppEngSlot) newSlot;
-			s.myContainer = this;
+			s.setContainer( this );
 			return super.addSlotToContainer( newSlot );
 		}
 		else
@@ -724,7 +724,7 @@ public abstract class AEBaseContainer extends Container
 	@Override
 	public boolean canInteractWith( final EntityPlayer entityplayer )
 	{
-		if( this.isContainerValid )
+		if( this.isValidContainer() )
 		{
 			if( this.tileEntity instanceof IInventory )
 			{
@@ -738,7 +738,7 @@ public abstract class AEBaseContainer extends Container
 	@Override
 	public boolean canDragIntoSlot( final Slot s )
 	{
-		return ( (AppEngSlot) s ).isDraggable;
+		return ( (AppEngSlot) s ).isDraggable();
 	}
 
 	public void doAction( final EntityPlayerMP player, final InventoryAction action, final int slot, final long id )
@@ -852,7 +852,7 @@ public abstract class AEBaseContainer extends Container
 		switch( action )
 		{
 			case SHIFT_CLICK:
-				if( this.powerSrc == null || this.cellInv == null )
+				if( this.getPowerSource() == null || this.getCellInventory() == null )
 				{
 					return;
 				}
@@ -873,7 +873,7 @@ public abstract class AEBaseContainer extends Container
 						ais.setStackSize( ais.getStackSize() - myItem.stackSize );
 					}
 
-					ais = Platform.poweredExtraction( this.powerSrc, this.cellInv, ais, this.mySrc );
+					ais = Platform.poweredExtraction( this.getPowerSource(), this.getCellInventory(), ais, this.getActionSource() );
 					if( ais != null )
 					{
 						adp.addItems( ais.getItemStack() );
@@ -881,7 +881,7 @@ public abstract class AEBaseContainer extends Container
 				}
 				break;
 			case ROLL_DOWN:
-				if( this.powerSrc == null || this.cellInv == null )
+				if( this.getPowerSource() == null || this.getCellInventory() == null )
 				{
 					return;
 				}
@@ -895,7 +895,7 @@ public abstract class AEBaseContainer extends Container
 					ais.setStackSize( 1 );
 					final IAEItemStack extracted = ais.copy();
 
-					ais = Platform.poweredInsert( this.powerSrc, this.cellInv, ais, this.mySrc );
+					ais = Platform.poweredInsert( this.getPowerSource(), this.getCellInventory(), ais, this.getActionSource() );
 					if( ais == null )
 					{
 						final InventoryAdaptor ia = new AdaptorPlayerHand( player );
@@ -903,7 +903,7 @@ public abstract class AEBaseContainer extends Container
 						final ItemStack fail = ia.removeItems( 1, extracted.getItemStack(), null );
 						if( fail == null )
 						{
-							this.cellInv.extractItems( extracted, Actionable.MODULATE, this.mySrc );
+							this.getCellInventory().extractItems( extracted, Actionable.MODULATE, this.getActionSource() );
 						}
 
 						this.updateHeld( player );
@@ -913,7 +913,7 @@ public abstract class AEBaseContainer extends Container
 				break;
 			case ROLL_UP:
 			case PICKUP_SINGLE:
-				if( this.powerSrc == null || this.cellInv == null )
+				if( this.getPowerSource() == null || this.getCellInventory() == null )
 				{
 					return;
 				}
@@ -939,7 +939,7 @@ public abstract class AEBaseContainer extends Container
 					{
 						IAEItemStack ais = slotItem.copy();
 						ais.setStackSize( 1 );
-						ais = Platform.poweredExtraction( this.powerSrc, this.cellInv, ais, this.mySrc );
+						ais = Platform.poweredExtraction( this.getPowerSource(), this.getCellInventory(), ais, this.getActionSource() );
 						if( ais != null )
 						{
 							final InventoryAdaptor ia = new AdaptorPlayerHand( player );
@@ -947,7 +947,7 @@ public abstract class AEBaseContainer extends Container
 							final ItemStack fail = ia.addItems( ais.getItemStack() );
 							if( fail != null )
 							{
-								this.cellInv.injectItems( ais, Actionable.MODULATE, this.mySrc );
+								this.getCellInventory().injectItems( ais, Actionable.MODULATE, this.getActionSource() );
 							}
 
 							this.updateHeld( player );
@@ -956,7 +956,7 @@ public abstract class AEBaseContainer extends Container
 				}
 				break;
 			case PICKUP_OR_SET_DOWN:
-				if( this.powerSrc == null || this.cellInv == null )
+				if( this.getPowerSource() == null || this.getCellInventory() == null )
 				{
 					return;
 				}
@@ -967,7 +967,7 @@ public abstract class AEBaseContainer extends Container
 					{
 						IAEItemStack ais = slotItem.copy();
 						ais.setStackSize( ais.getItemStack().getMaxStackSize() );
-						ais = Platform.poweredExtraction( this.powerSrc, this.cellInv, ais, this.mySrc );
+						ais = Platform.poweredExtraction( this.getPowerSource(), this.getCellInventory(), ais, this.getActionSource() );
 						if( ais != null )
 						{
 							player.inventory.setItemStack( ais.getItemStack() );
@@ -982,7 +982,7 @@ public abstract class AEBaseContainer extends Container
 				else
 				{
 					IAEItemStack ais = AEApi.instance().storage().createItemStack( player.inventory.getItemStack() );
-					ais = Platform.poweredInsert( this.powerSrc, this.cellInv, ais, this.mySrc );
+					ais = Platform.poweredInsert( this.getPowerSource(), this.getCellInventory(), ais, this.getActionSource() );
 					if( ais != null )
 					{
 						player.inventory.setItemStack( ais.getItemStack() );
@@ -996,7 +996,7 @@ public abstract class AEBaseContainer extends Container
 
 				break;
 			case SPLIT_OR_PLACE_SINGLE:
-				if( this.powerSrc == null || this.cellInv == null )
+				if( this.getPowerSource() == null || this.getCellInventory() == null )
 				{
 					return;
 				}
@@ -1008,13 +1008,13 @@ public abstract class AEBaseContainer extends Container
 						IAEItemStack ais = slotItem.copy();
 						final long maxSize = ais.getItemStack().getMaxStackSize();
 						ais.setStackSize( maxSize );
-						ais = this.cellInv.extractItems( ais, Actionable.SIMULATE, this.mySrc );
+						ais = this.getCellInventory().extractItems( ais, Actionable.SIMULATE, this.getActionSource() );
 
 						if( ais != null )
 						{
 							final long stackSize = Math.min( maxSize, ais.getStackSize() );
 							ais.setStackSize( ( stackSize + 1 ) >> 1 );
-							ais = Platform.poweredExtraction( this.powerSrc, this.cellInv, ais, this.mySrc );
+							ais = Platform.poweredExtraction( this.getPowerSource(), this.getCellInventory(), ais, this.getActionSource() );
 						}
 
 						if( ais != null )
@@ -1032,7 +1032,7 @@ public abstract class AEBaseContainer extends Container
 				{
 					IAEItemStack ais = AEApi.instance().storage().createItemStack( player.inventory.getItemStack() );
 					ais.setStackSize( 1 );
-					ais = Platform.poweredInsert( this.powerSrc, this.cellInv, ais, this.mySrc );
+					ais = Platform.poweredInsert( this.getPowerSource(), this.getCellInventory(), ais, this.getActionSource() );
 					if( ais == null )
 					{
 						final ItemStack is = player.inventory.getItemStack();
@@ -1057,7 +1057,7 @@ public abstract class AEBaseContainer extends Container
 				break;
 			case MOVE_REGION:
 
-				if( this.powerSrc == null || this.cellInv == null )
+				if( this.getPowerSource() == null || this.getCellInventory() == null )
 				{
 					return;
 				}
@@ -1081,7 +1081,7 @@ public abstract class AEBaseContainer extends Container
 							ais.setStackSize( ais.getStackSize() - myItem.stackSize );
 						}
 
-						ais = Platform.poweredExtraction( this.powerSrc, this.cellInv, ais, this.mySrc );
+						ais = Platform.poweredExtraction( this.getPowerSource(), this.getCellInventory(), ais, this.getActionSource() );
 						if( ais != null )
 						{
 							adp.addItems( ais.getItemStack() );
@@ -1114,13 +1114,13 @@ public abstract class AEBaseContainer extends Container
 		}
 	}
 
-	public ItemStack shiftStoreItem( final ItemStack input )
+	private ItemStack shiftStoreItem( final ItemStack input )
 	{
-		if( this.powerSrc == null || this.cellInv == null )
+		if( this.getPowerSource() == null || this.getCellInventory() == null )
 		{
 			return input;
 		}
-		final IAEItemStack ais = Platform.poweredInsert( this.powerSrc, this.cellInv, AEApi.instance().storage().createItemStack( input ), this.mySrc );
+		final IAEItemStack ais = Platform.poweredInsert( this.getPowerSource(), this.getCellInventory(), AEApi.instance().storage().createItemStack( input ), this.getActionSource() );
 		if( ais == null )
 		{
 			return null;
@@ -1134,7 +1134,7 @@ public abstract class AEBaseContainer extends Container
 		this.detectAndSendChanges();
 	}
 
-	protected void sendCustomName()
+	private void sendCustomName()
 	{
 		if( !this.sentCustomName )
 		{
@@ -1167,14 +1167,14 @@ public abstract class AEBaseContainer extends Container
 				{
 					if( name.hasCustomName() )
 					{
-						this.customName = name.getCustomName();
+						this.setCustomName( name.getCustomName() );
 					}
 
-					if( this.customName != null )
+					if( this.getCustomName() != null )
 					{
 						try
 						{
-							NetworkHandler.instance.sendTo( new PacketValueConfig( "CustomName", this.customName ), (EntityPlayerMP) this.invPlayer.player );
+							NetworkHandler.instance.sendTo( new PacketValueConfig( "CustomName", this.getCustomName() ), (EntityPlayerMP) this.getInventoryPlayer().player );
 						}
 						catch( final IOException e )
 						{
@@ -1208,12 +1208,12 @@ public abstract class AEBaseContainer extends Container
 
 		// can take?
 
-		if( isA != null && !a.canTakeStack( this.invPlayer.player ) )
+		if( isA != null && !a.canTakeStack( this.getInventoryPlayer().player ) )
 		{
 			return;
 		}
 
-		if( isB != null && !b.canTakeStack( this.invPlayer.player ) )
+		if( isB != null && !b.canTakeStack( this.getInventoryPlayer().player ) )
 		{
 			return;
 		}
@@ -1279,5 +1279,60 @@ public abstract class AEBaseContainer extends Container
 	public boolean isValidForSlot( final Slot s, final ItemStack i )
 	{
 		return true;
+	}
+
+	public IMEInventoryHandler<IAEItemStack> getCellInventory()
+	{
+		return this.cellInv;
+	}
+
+	public void setCellInventory( final IMEInventoryHandler<IAEItemStack> cellInv )
+	{
+		this.cellInv = cellInv;
+	}
+
+	public String getCustomName()
+	{
+		return this.customName;
+	}
+
+	public void setCustomName( final String customName )
+	{
+		this.customName = customName;
+	}
+
+	public InventoryPlayer getInventoryPlayer()
+	{
+		return this.invPlayer;
+	}
+
+	public boolean isValidContainer()
+	{
+		return this.isContainerValid;
+	}
+
+	public void setValidContainer( final boolean isContainerValid )
+	{
+		this.isContainerValid = isContainerValid;
+	}
+
+	public ContainerOpenContext getOpenContext()
+	{
+		return this.openContext;
+	}
+
+	public void setOpenContext( final ContainerOpenContext openContext )
+	{
+		this.openContext = openContext;
+	}
+
+	public IEnergySource getPowerSource()
+	{
+		return this.powerSrc;
+	}
+
+	public void setPowerSource( final IEnergySource powerSrc )
+	{
+		this.powerSrc = powerSrc;
 	}
 }

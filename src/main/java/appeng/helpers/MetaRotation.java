@@ -29,10 +29,10 @@ import appeng.api.util.IOrientable;
 public class MetaRotation implements IOrientable
 {
 
-	final IBlockAccess w;
-	final int x;
-	final int y;
-	final int z;
+	private final IBlockAccess w;
+	private final int x;
+	private final int y;
+	private final int z;
 
 	public MetaRotation( final IBlockAccess world, final int x, final int y, final int z )
 	{

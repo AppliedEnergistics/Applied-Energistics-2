@@ -43,8 +43,8 @@ import appeng.util.Platform;
 public final class EntityChargedQuartz extends AEBaseEntityItem
 {
 
-	int delay = 0;
-	int transformTime = 0;
+	private int delay = 0;
+	private int transformTime = 0;
 
 	@Reflected
 	public EntityChargedQuartz( final World w )
@@ -96,7 +96,7 @@ public final class EntityChargedQuartz extends AEBaseEntityItem
 		}
 	}
 
-	public boolean transform()
+	private boolean transform()
 	{
 		final ItemStack item = this.getEntityItem();
 		final IMaterials materials = AEApi.instance().definitions().materials();

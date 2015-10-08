@@ -45,11 +45,11 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements i
 {
 
 	// two packet buffering...
-	double OutputEnergyA;
-	double OutputEnergyB;
+	private double OutputEnergyA;
+	private double OutputEnergyB;
 	// two packet buffering...
-	double OutputVoltageA;
-	double OutputVoltageB;
+	private double OutputVoltageA;
+	private double OutputVoltageB;
 
 	public PartP2PIC2Power( final ItemStack is )
 	{
@@ -98,9 +98,9 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements i
 	@Override
 	public boolean acceptsEnergyFrom( final TileEntity emitter, final ForgeDirection direction )
 	{
-		if( !this.output )
+		if( !this.isOutput() )
 		{
-			return direction == this.side;
+			return direction == this.getSide();
 		}
 		return false;
 	}
@@ -108,9 +108,9 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements i
 	@Override
 	public boolean emitsEnergyTo( final TileEntity receiver, final ForgeDirection direction )
 	{
-		if( this.output )
+		if( this.isOutput() )
 		{
-			return direction == this.side;
+			return direction == this.getSide();
 		}
 		return false;
 	}
@@ -118,7 +118,7 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements i
 	@Override
 	public double getDemandedEnergy()
 	{
-		if( this.output )
+		if( this.isOutput() )
 		{
 			return 0;
 		}
@@ -227,7 +227,7 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements i
 	@Override
 	public double getOfferedEnergy()
 	{
-		if( this.output )
+		if( this.isOutput() )
 		{
 			return this.OutputEnergyA;
 		}
@@ -251,7 +251,7 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements i
 	@Override
 	public int getSourceTier()
 	{
-		if( this.output )
+		if( this.isOutput() )
 		{
 			return this.calculateTierFromVoltage( this.OutputVoltageA );
 		}

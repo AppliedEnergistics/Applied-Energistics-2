@@ -52,7 +52,7 @@ import appeng.util.Platform;
 public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSlotHost
 {
 
-	final IUpgradeableHost upgradeable;
+	private final IUpgradeableHost upgradeable;
 	@GuiSync( 0 )
 	public RedstoneMode rsMode = RedstoneMode.IGNORE;
 	@GuiSync( 1 )
@@ -61,8 +61,8 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 	public YesNo cMode = YesNo.NO;
 	@GuiSync( 6 )
 	public SchedulingMode schedulingMode = SchedulingMode.DEFAULT;
-	int tbSlot;
-	NetworkToolViewer tbInventory;
+	private int tbSlot;
+	private NetworkToolViewer tbInventory;
 
 	public ContainerUpgradeable( final InventoryPlayer ip, final IUpgradeableHost te )
 	{
@@ -111,7 +111,7 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 			{
 				for( int u = 0; u < 3; u++ )
 				{
-					this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, this.tbInventory, u + v * 3, 186 + u * 18, this.getHeight() - 82 + v * 18, this.invPlayer ) ).setPlayerSide() );
+					this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, this.tbInventory, u + v * 3, 186 + u * 18, this.getHeight() - 82 + v * 18, this.getInventoryPlayer() ) ).setPlayerSide() );
 				}
 			}
 		}
@@ -135,7 +135,7 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 	{
 		this.setupUpgrades();
 
-		final IInventory inv = this.upgradeable.getInventoryByName( "config" );
+		final IInventory inv = this.getUpgradeable().getInventoryByName( "config" );
 		final int y = 40;
 		final int x = 80;
 		this.addSlotToContainer( new SlotFakeTypeOnly( inv, 0, x, y ) );
@@ -156,22 +156,22 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 
 	protected void setupUpgrades()
 	{
-		final IInventory upgrades = this.upgradeable.getInventoryByName( "upgrades" );
+		final IInventory upgrades = this.getUpgradeable().getInventoryByName( "upgrades" );
 		if( this.availableUpgrades() > 0 )
 		{
-			this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 0, 187, 8, this.invPlayer ) ).setNotDraggable() );
+			this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 0, 187, 8, this.getInventoryPlayer() ) ).setNotDraggable() );
 		}
 		if( this.availableUpgrades() > 1 )
 		{
-			this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 1, 187, 8 + 18, this.invPlayer ) ).setNotDraggable() );
+			this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 1, 187, 8 + 18, this.getInventoryPlayer() ) ).setNotDraggable() );
 		}
 		if( this.availableUpgrades() > 2 )
 		{
-			this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 2, 187, 8 + 18 * 2, this.invPlayer ) ).setNotDraggable() );
+			this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 2, 187, 8 + 18 * 2, this.getInventoryPlayer() ) ).setNotDraggable() );
 		}
 		if( this.availableUpgrades() > 3 )
 		{
-			this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 3, 187, 8 + 18 * 3, this.invPlayer ) ).setNotDraggable() );
+			this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 3, 187, 8 + 18 * 3, this.getInventoryPlayer() ) ).setNotDraggable() );
 		}
 	}
 
@@ -192,7 +192,7 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 
 		if( Platform.isServer() )
 		{
-			final IConfigManager cm = this.upgradeable.getConfigManager();
+			final IConfigManager cm = this.getUpgradeable().getConfigManager();
 			this.loadSettingsFromHost( cm );
 		}
 
@@ -215,16 +215,16 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 
 	protected void loadSettingsFromHost( final IConfigManager cm )
 	{
-		this.fzMode = (FuzzyMode) cm.getSetting( Settings.FUZZY_MODE );
-		this.rsMode = (RedstoneMode) cm.getSetting( Settings.REDSTONE_CONTROLLED );
-		if( this.upgradeable instanceof PartExportBus )
+		this.setFuzzyMode( (FuzzyMode) cm.getSetting( Settings.FUZZY_MODE ) );
+		this.setRedStoneMode( (RedstoneMode) cm.getSetting( Settings.REDSTONE_CONTROLLED ) );
+		if( this.getUpgradeable() instanceof PartExportBus )
 		{
-			this.cMode = (YesNo) cm.getSetting( Settings.CRAFT_ONLY );
-			this.schedulingMode = (SchedulingMode) cm.getSetting( Settings.SCHEDULING_MODE );
+			this.setCraftingMode( (YesNo) cm.getSetting( Settings.CRAFT_ONLY ) );
+			this.setSchedulingMode( (SchedulingMode) cm.getSetting( Settings.SCHEDULING_MODE ) );
 		}
 	}
 
-	public void checkToolbox()
+	private void checkToolbox()
 	{
 		if( this.hasToolbox() )
 		{
@@ -240,12 +240,12 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 					}
 					else
 					{
-						this.isContainerValid = false;
+						this.setValidContainer( false );
 					}
 				}
 				else
 				{
-					this.isContainerValid = false;
+					this.setValidContainer( false );
 				}
 			}
 		}
@@ -259,7 +259,7 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 	@Override
 	public boolean isSlotEnabled( final int idx )
 	{
-		final int upgrades = this.upgradeable.getInstalledUpgrades( Upgrades.CAPACITY );
+		final int upgrades = this.getUpgradeable().getInstalledUpgrades( Upgrades.CAPACITY );
 
 		if( idx == 1 && upgrades > 0 )
 		{
@@ -271,5 +271,50 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 		}
 
 		return false;
+	}
+
+	public FuzzyMode getFuzzyMode()
+	{
+		return this.fzMode;
+	}
+
+	void setFuzzyMode( final FuzzyMode fzMode )
+	{
+		this.fzMode = fzMode;
+	}
+
+	public YesNo getCraftingMode()
+	{
+		return this.cMode;
+	}
+
+	public void setCraftingMode( final YesNo cMode )
+	{
+		this.cMode = cMode;
+	}
+
+	public RedstoneMode getRedStoneMode()
+	{
+		return this.rsMode;
+	}
+
+	void setRedStoneMode( final RedstoneMode rsMode )
+	{
+		this.rsMode = rsMode;
+	}
+
+	public SchedulingMode getSchedulingMode()
+	{
+		return this.schedulingMode;
+	}
+
+	private void setSchedulingMode( final SchedulingMode schedulingMode )
+	{
+		this.schedulingMode = schedulingMode;
+	}
+
+	IUpgradeableHost getUpgradeable()
+	{
+		return this.upgradeable;
 	}
 }

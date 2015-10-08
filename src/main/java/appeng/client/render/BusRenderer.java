@@ -51,7 +51,7 @@ public class BusRenderer implements IItemRenderer
 
 	public static final BusRenderer INSTANCE = new BusRenderer();
 	private static final Map<Integer, IPart> RENDER_PART = new HashMap<Integer, IPart>();
-	public final RenderBlocksWorkaround renderer = new RenderBlocksWorkaround();
+	private final RenderBlocksWorkaround renderer = new RenderBlocksWorkaround();
 
 	@Override
 	public boolean handleRenderType( final ItemStack item, final ItemRenderType type )
@@ -120,13 +120,13 @@ public class BusRenderer implements IItemRenderer
 		BusRenderHelper.INSTANCE.setBounds( 0, 0, 0, 1, 1, 1 );
 		BusRenderHelper.INSTANCE.setTexture( null );
 		BusRenderHelper.INSTANCE.setInvColor( 0xffffff );
-		this.renderer.blockAccess = ClientHelper.proxy.getWorld();
+		this.getRenderer().blockAccess = ClientHelper.proxy.getWorld();
 
 		BusRenderHelper.INSTANCE.setOrientation( ForgeDirection.EAST, ForgeDirection.UP, ForgeDirection.SOUTH );
 
-		this.renderer.uvRotateBottom = this.renderer.uvRotateEast = this.renderer.uvRotateNorth = this.renderer.uvRotateSouth = this.renderer.uvRotateTop = this.renderer.uvRotateWest = 0;
-		this.renderer.useInventoryTint = false;
-		this.renderer.overrideBlockTexture = null;
+		this.getRenderer().uvRotateBottom = this.getRenderer().uvRotateEast = this.getRenderer().uvRotateNorth = this.getRenderer().uvRotateSouth = this.getRenderer().uvRotateTop = this.getRenderer().uvRotateWest = 0;
+		this.getRenderer().useInventoryTint = false;
+		this.getRenderer().overrideBlockTexture = null;
 
 		if( item.getItem() instanceof IFacadeItem )
 		{
@@ -141,7 +141,7 @@ public class BusRenderer implements IItemRenderer
 
 			if( fp != null )
 			{
-				fp.renderInventory( BusRenderHelper.INSTANCE, this.renderer );
+				fp.renderInventory( BusRenderHelper.INSTANCE, this.getRenderer() );
 			}
 		}
 		else
@@ -155,18 +155,18 @@ public class BusRenderer implements IItemRenderer
 					GL11.glTranslatef( 0.0f, 0.0f, -0.04f * ( 8 - depth ) - 0.06f );
 				}
 
-				ip.renderInventory( BusRenderHelper.INSTANCE, this.renderer );
+				ip.renderInventory( BusRenderHelper.INSTANCE, this.getRenderer() );
 			}
 		}
 
-		this.renderer.uvRotateBottom = this.renderer.uvRotateEast = this.renderer.uvRotateNorth = this.renderer.uvRotateSouth = this.renderer.uvRotateTop = this.renderer.uvRotateWest = 0;
+		this.getRenderer().uvRotateBottom = this.getRenderer().uvRotateEast = this.getRenderer().uvRotateNorth = this.getRenderer().uvRotateSouth = this.getRenderer().uvRotateTop = this.getRenderer().uvRotateWest = 0;
 
 		GL11.glPopAttrib();
 		GL11.glPopMatrix();
 	}
 
 	@Nullable
-	public IPart getRenderer( final ItemStack is, final IPartItem c )
+	private IPart getRenderer( final ItemStack is, final IPartItem c )
 	{
 		final int id = ( Item.getIdFromItem( is.getItem() ) << Platform.DEF_OFFSET ) | is.getItemDamage();
 
@@ -181,5 +181,10 @@ public class BusRenderer implements IItemRenderer
 		}
 
 		return part;
+	}
+
+	public RenderBlocksWorkaround getRenderer()
+	{
+		return this.renderer;
 	}
 }

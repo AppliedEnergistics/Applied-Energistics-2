@@ -182,9 +182,9 @@ public final class AppEng
 		final Stopwatch start = Stopwatch.createStarted();
 		AELog.info( "Initialization ( started )" );
 
-		if( exportConfig.isExportingItemNamesEnabled() )
+		if( this.exportConfig.isExportingItemNamesEnabled() )
 		{
-			final ExportProcess process = new ExportProcess( this.recipeDirectory, exportConfig );
+			final ExportProcess process = new ExportProcess( this.recipeDirectory, this.exportConfig );
 			final Thread exportProcessThread = new Thread( process );
 
 			this.startService( "AE2 CSV Export", exportProcessThread );

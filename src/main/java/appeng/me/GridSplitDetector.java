@@ -26,8 +26,8 @@ import appeng.api.networking.IGridVisitor;
 class GridSplitDetector implements IGridVisitor
 {
 
-	final IGridNode pivot;
-	boolean pivotFound;
+	private final IGridNode pivot;
+	private boolean pivotFound;
 
 	public GridSplitDetector( final IGridNode pivot )
 	{
@@ -39,9 +39,19 @@ class GridSplitDetector implements IGridVisitor
 	{
 		if( n == this.pivot )
 		{
-			this.pivotFound = true;
+			this.setPivotFound( true );
 		}
 
-		return !this.pivotFound;
+		return !this.isPivotFound();
+	}
+
+	public boolean isPivotFound()
+	{
+		return this.pivotFound;
+	}
+
+	private void setPivotFound( final boolean pivotFound )
+	{
+		this.pivotFound = pivotFound;
 	}
 }

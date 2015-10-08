@@ -20,8 +20,6 @@ package appeng.crafting;
 
 
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import com.google.common.base.Stopwatch;
@@ -47,35 +45,24 @@ import appeng.hooks.TickHandler;
 public class CraftingJob implements Runnable, ICraftingJob
 {
 
-	final IItemList<IAEItemStack> storage;
-	final Set<IAEItemStack> prophecies;
-	final MECraftingInventory original;
-	final World world;
-	final IItemList<IAEItemStack> crafting = AEApi.instance().storage().createItemList();
-	final IItemList<IAEItemStack> missing = AEApi.instance().storage().createItemList();
-	final HashMap<String, TwoIntegers> opsAndMultiplier = new HashMap<String, TwoIntegers>();
+	private final MECraftingInventory original;
+	private final World world;
+	private final IItemList<IAEItemStack> crafting = AEApi.instance().storage().createItemList();
+	private final IItemList<IAEItemStack> missing = AEApi.instance().storage().createItemList();
+	private final HashMap<String, TwoIntegers> opsAndMultiplier = new HashMap<String, TwoIntegers>();
 	private final Object monitor = new Object();
 	private final Stopwatch watch = Stopwatch.createUnstarted();
-	public CraftingTreeNode tree;
-	IAEItemStack output;
-	boolean simulate = false;
-	MECraftingInventory availableCheck;
-	long bytes = 0;
-	private BaseActionSource actionSrc;
-	private ICraftingCallback callback;
+	private CraftingTreeNode tree;
+	private final IAEItemStack output;
+	private boolean simulate = false;
+	private MECraftingInventory availableCheck;
+	private long bytes = 0;
+	private final BaseActionSource actionSrc;
+	private final ICraftingCallback callback;
 	private boolean running = false;
 	private boolean done = false;
 	private int time = 5;
 	private int incTime = Integer.MAX_VALUE;
-
-	public CraftingJob( final World w, final NBTTagCompound data )
-	{
-		this.world = this.wrapWorld( w );
-		this.storage = AEApi.instance().storage().createItemList();
-		this.prophecies = new HashSet<IAEItemStack>();
-		this.original = null;
-		this.availableCheck = null;
-	}
 
 	private World wrapWorld( final World w )
 	{
@@ -86,8 +73,6 @@ public class CraftingJob implements Runnable, ICraftingJob
 	{
 		this.world = this.wrapWorld( w );
 		this.output = what.copy();
-		this.storage = AEApi.instance().storage().createItemList();
-		this.prophecies = new HashSet<IAEItemStack>();
 		this.actionSrc = actionSrc;
 
 		this.callback = callback;
@@ -95,7 +80,7 @@ public class CraftingJob implements Runnable, ICraftingJob
 		final IStorageGrid sg = grid.getCache( IStorageGrid.class );
 		this.original = new MECraftingInventory( sg.getItemInventory(), actionSrc, false, false, false );
 
-		this.tree = this.getCraftingTree( cc, what );
+		this.setTree( this.getCraftingTree( cc, what ) );
 		this.availableCheck = null;
 	}
 
@@ -104,12 +89,12 @@ public class CraftingJob implements Runnable, ICraftingJob
 		return new CraftingTreeNode( cc, this, what, null, -1, 0 );
 	}
 
-	public void refund( final IAEItemStack o )
+	void refund( final IAEItemStack o )
 	{
 		this.availableCheck.injectItems( o, Actionable.MODULATE, this.actionSrc );
 	}
 
-	public IAEItemStack checkUse( final IAEItemStack available )
+	IAEItemStack checkUse( final IAEItemStack available )
 	{
 		return this.availableCheck.extractItems( available, Actionable.MODULATE, this.actionSrc );
 	}
@@ -119,7 +104,7 @@ public class CraftingJob implements Runnable, ICraftingJob
 
 	}
 
-	public void addTask( IAEItemStack what, final long crafts, final ICraftingPatternDetails details, final int depth )
+	void addTask( IAEItemStack what, final long crafts, final ICraftingPatternDetails details, final int depth )
 	{
 		if( crafts > 0 )
 		{
@@ -129,7 +114,7 @@ public class CraftingJob implements Runnable, ICraftingJob
 		}
 	}
 
-	public void addMissing( IAEItemStack what )
+	void addMissing( IAEItemStack what )
 	{
 		what = what.copy();
 		this.missing.add( what );
@@ -151,8 +136,8 @@ public class CraftingJob implements Runnable, ICraftingJob
 				craftingInventory.ignore( this.output );
 
 				this.availableCheck = new MECraftingInventory( this.original, false, false, false );
-				this.tree.request( craftingInventory, this.output.getStackSize(), this.actionSrc );
-				this.tree.dive( this );
+				this.getTree().request( craftingInventory, this.output.getStackSize(), this.actionSrc );
+				this.getTree().dive( this );
 
 				for( final String s : this.opsAndMultiplier.keySet() )
 				{
@@ -176,9 +161,9 @@ public class CraftingJob implements Runnable, ICraftingJob
 
 					this.availableCheck = new MECraftingInventory( this.original, false, false, false );
 
-					this.tree.setSimulate();
-					this.tree.request( craftingInventory, this.output.getStackSize(), this.actionSrc );
-					this.tree.dive( this );
+					this.getTree().setSimulate();
+					this.getTree().request( craftingInventory, this.output.getStackSize(), this.actionSrc );
+					this.getTree().dive( this );
 
 					for( final String s : this.opsAndMultiplier.keySet() )
 					{
@@ -225,7 +210,7 @@ public class CraftingJob implements Runnable, ICraftingJob
 		this.finish();
 	}
 
-	public void handlePausing() throws InterruptedException
+	void handlePausing() throws InterruptedException
 	{
 		if( this.incTime > 100 )
 		{
@@ -261,7 +246,7 @@ public class CraftingJob implements Runnable, ICraftingJob
 		this.incTime++;
 	}
 
-	public void finish()
+	private void finish()
 	{
 		if( this.callback != null )
 		{
@@ -298,9 +283,9 @@ public class CraftingJob implements Runnable, ICraftingJob
 	@Override
 	public void populatePlan( final IItemList<IAEItemStack> plan )
 	{
-		if( this.tree != null )
+		if( this.getTree() != null )
 		{
-			this.tree.getPlan( plan );
+			this.getTree().getPlan( plan );
 		}
 	}
 
@@ -315,7 +300,7 @@ public class CraftingJob implements Runnable, ICraftingJob
 		return this.done;
 	}
 
-	public World getWorld()
+	World getWorld()
 	{
 		return this.world;
 	}
@@ -363,15 +348,25 @@ public class CraftingJob implements Runnable, ICraftingJob
 		return true;
 	}
 
-	public void addBytes( final long crafts )
+	void addBytes( final long crafts )
 	{
 		this.bytes += crafts;
 	}
 
-	static class TwoIntegers
+	public CraftingTreeNode getTree()
+	{
+		return this.tree;
+	}
+
+	private void setTree( final CraftingTreeNode tree )
+	{
+		this.tree = tree;
+	}
+
+	private static class TwoIntegers
 	{
 
-		public final long perOp = 0;
-		public final long times = 0;
+		private final long perOp = 0;
+		private final long times = 0;
 	}
 }

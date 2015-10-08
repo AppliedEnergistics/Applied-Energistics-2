@@ -29,7 +29,7 @@ public class SlotOutput extends AppEngSlot
 	public SlotOutput( final IInventory a, final int b, final int c, final int d, final int i )
 	{
 		super( a, b, c, d );
-		this.IIcon = i;
+		this.setIIcon( i );
 	}
 
 	@Override

@@ -66,7 +66,7 @@ public class BlockTinyTNT extends AEBaseBlock implements ICustomCollision
 		this.setHardness( 0F );
 		this.setFeature( EnumSet.of( AEFeature.TinyTNT ) );
 
-		EntityRegistry.registerModEntity( EntityTinyTNTPrimed.class, "EntityTinyTNTPrimed", EntityIds.TINY_TNT, AppEng.instance(), 16, 4, true );
+		EntityRegistry.registerModEntity( EntityTinyTNTPrimed.class, "EntityTinyTNTPrimed", EntityIds.get( EntityTinyTNTPrimed.class ), AppEng.instance(), 16, 4, true );
 	}
 
 	@Override

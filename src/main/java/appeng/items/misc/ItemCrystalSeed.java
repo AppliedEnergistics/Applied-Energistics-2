@@ -56,17 +56,17 @@ import appeng.util.Platform;
 public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 {
 
-	public static final int LEVEL_OFFSET = 200;
-	public static final int SINGLE_OFFSET = LEVEL_OFFSET * 3;
+	private static final int LEVEL_OFFSET = 200;
+	private static final int SINGLE_OFFSET = LEVEL_OFFSET * 3;
 
 	public static final int CERTUS = 0;
 	public static final int NETHER = SINGLE_OFFSET;
 	public static final int FLUIX = SINGLE_OFFSET * 2;
 	public static final int FINAL_STAGE = SINGLE_OFFSET * 3;
 
-	final IIcon[] certus = new IIcon[3];
-	final IIcon[] fluix = new IIcon[3];
-	final IIcon[] nether = new IIcon[3];
+	private final IIcon[] certus = new IIcon[3];
+	private final IIcon[] fluix = new IIcon[3];
+	private final IIcon[] nether = new IIcon[3];
 
 	public ItemCrystalSeed()
 	{

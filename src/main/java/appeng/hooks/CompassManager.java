@@ -30,7 +30,7 @@ public class CompassManager
 {
 
 	public static final CompassManager INSTANCE = new CompassManager();
-	final HashMap<CompassRequest, CompassResult> requests = new HashMap<CompassRequest, CompassResult>();
+	private final HashMap<CompassRequest, CompassResult> requests = new HashMap<CompassRequest, CompassResult>();
 
 	public void postResult( final long attunement, final int x, final int y, final int z, final CompassResult result )
 	{
@@ -46,7 +46,7 @@ public class CompassManager
 		while( i.hasNext() )
 		{
 			final CompassResult res = i.next();
-			final long diff = now - res.time;
+			final long diff = now - res.getTime();
 			if( diff > 20000 )
 			{
 				i.remove();
@@ -62,11 +62,11 @@ public class CompassManager
 			this.requests.put( r, res );
 			this.requestUpdate( r );
 		}
-		else if( now - res.time > 1000 * 3 )
+		else if( now - res.getTime() > 1000 * 3 )
 		{
-			if( !res.requested )
+			if( !res.isRequested() )
 			{
-				res.requested = true;
+				res.setRequested( true );
 				this.requestUpdate( r );
 			}
 		}
@@ -79,15 +79,14 @@ public class CompassManager
 		NetworkHandler.instance.sendToServer( new PacketCompassRequest( r.attunement, r.cx, r.cz, r.cdy ) );
 	}
 
-	static class CompassRequest
+	private static class CompassRequest
 	{
 
-		final int hash;
-
-		final long attunement;
-		final int cx;
-		final int cdy;
-		final int cz;
+		private final int hash;
+		private final long attunement;
+		private final int cx;
+		private final int cdy;
+		private final int cz;
 
 		public CompassRequest( final long attunement, final int x, final int y, final int z )
 		{

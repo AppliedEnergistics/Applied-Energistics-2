@@ -71,8 +71,9 @@ import appeng.util.Platform;
 
 public final class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, IUpgradeModule
 {
-	public static final int KILO_SCALAR = 1024;
 	public static ItemMultiMaterial instance;
+
+	private static final int KILO_SCALAR = 1024;
 
 	private final Map<Integer, MaterialType> dmgToMaterial = new HashMap<Integer, MaterialType>();
 	private final NameResolver nameResolver;
@@ -182,13 +183,13 @@ public final class ItemMultiMaterial extends AEBaseItem implements IStorageCompo
 			enabled = enabled && AEConfig.instance.isFeatureEnabled( f );
 		}
 
-		mat.stackSrc = new MaterialStackSrc( mat );
+		mat.setStackSrc( new MaterialStackSrc( mat ) );
 
 		if( enabled )
 		{
-			mat.itemInstance = this;
+			mat.setItemInstance( this );
 			mat.markReady();
-			final int newMaterialNum = mat.damageValue;
+			final int newMaterialNum = mat.getDamageValue();
 
 			if( this.dmgToMaterial.get( newMaterialNum ) == null )
 			{
@@ -201,7 +202,7 @@ public final class ItemMultiMaterial extends AEBaseItem implements IStorageCompo
 			}
 		}
 
-		return mat.stackSrc;
+		return mat.getStackSrc();
 	}
 
 	public void makeUnique()
@@ -245,13 +246,13 @@ public final class ItemMultiMaterial extends AEBaseItem implements IStorageCompo
 				}
 				else
 				{
-					if( mt.itemInstance == this )
+					if( mt.getItemInstance() == this )
 					{
-						this.dmgToMaterial.remove( mt.damageValue );
+						this.dmgToMaterial.remove( mt.getDamageValue() );
 					}
 
-					mt.itemInstance = replacement.getItem();
-					mt.damageValue = replacement.getItemDamage();
+					mt.setItemInstance( replacement.getItem() );
+					mt.setDamageValue( replacement.getItemDamage() );
 				}
 			}
 		}
@@ -262,7 +263,7 @@ public final class ItemMultiMaterial extends AEBaseItem implements IStorageCompo
 	{
 		if( this.dmgToMaterial.containsKey( dmg ) )
 		{
-			return this.dmgToMaterial.get( dmg ).IIcon;
+			return this.dmgToMaterial.get( dmg ).getIIcon();
 		}
 		return new MissingIcon( this );
 	}
@@ -305,9 +306,9 @@ public final class ItemMultiMaterial extends AEBaseItem implements IStorageCompo
 
 		for( final MaterialType mat : types )
 		{
-			if( mat.damageValue >= 0 && mat.isRegistered() && mat.itemInstance == this )
+			if( mat.getDamageValue() >= 0 && mat.isRegistered() && mat.getItemInstance() == this )
 			{
-				itemStacks.add( new ItemStack( this, 1, mat.damageValue ) );
+				itemStacks.add( new ItemStack( this, 1, mat.getDamageValue() ) );
 			}
 		}
 	}
@@ -317,13 +318,13 @@ public final class ItemMultiMaterial extends AEBaseItem implements IStorageCompo
 	{
 		for( final MaterialType mat : MaterialType.values() )
 		{
-			if( mat.damageValue != -1 )
+			if( mat.getDamageValue() != -1 )
 			{
-				final ItemStack what = new ItemStack( this, 1, mat.damageValue );
+				final ItemStack what = new ItemStack( this, 1, mat.getDamageValue() );
 				if( this.getTypeByStack( what ) != MaterialType.InvalidType )
 				{
 					final String tex = "appliedenergistics2:" + this.nameOf( what );
-					mat.IIcon = icoRegister.registerIcon( tex );
+					mat.setIIcon( icoRegister.registerIcon( tex ) );
 				}
 			}
 		}

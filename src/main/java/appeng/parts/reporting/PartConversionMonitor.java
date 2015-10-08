@@ -61,7 +61,7 @@ public class PartConversionMonitor extends AbstractPartMonitor
 			return true;
 		}
 
-		if( !this.proxy.isActive() )
+		if( !this.getProxy().isActive() )
 		{
 			return false;
 		}
@@ -84,13 +84,13 @@ public class PartConversionMonitor extends AbstractPartMonitor
 		{
 			try
 			{
-				if( !this.proxy.isActive() )
+				if( !this.getProxy().isActive() )
 				{
 					return false;
 				}
 
-				final IEnergySource energy = this.proxy.getEnergy();
-				final IMEMonitor<IAEItemStack> cell = this.proxy.getStorage().getItemInventory();
+				final IEnergySource energy = this.getProxy().getEnergy();
+				final IMEMonitor<IAEItemStack> cell = this.getProxy().getStorage().getItemInventory();
 				final IAEItemStack input = AEItemStack.create( item );
 
 				if( ModeB )
@@ -129,13 +129,13 @@ public class PartConversionMonitor extends AbstractPartMonitor
 		{
 			try
 			{
-				if( !this.proxy.isActive() )
+				if( !this.getProxy().isActive() )
 				{
 					return;
 				}
 
-				final IEnergySource energy = this.proxy.getEnergy();
-				final IMEMonitor<IAEItemStack> cell = this.proxy.getStorage().getItemInventory();
+				final IEnergySource energy = this.getProxy().getEnergy();
+				final IMEMonitor<IAEItemStack> cell = this.getProxy().getStorage().getItemInventory();
 
 				final ItemStack is = input.getItemStack();
 				input.setStackSize( is.getMaxStackSize() );
@@ -148,9 +148,9 @@ public class PartConversionMonitor extends AbstractPartMonitor
 					newItems = adaptor.addItems( newItems );
 					if( newItems != null )
 					{
-						final TileEntity te = this.tile;
+						final TileEntity te = this.getTile();
 						final List<ItemStack> list = Collections.singletonList( newItems );
-						Platform.spawnDrops( player.worldObj, te.xCoord + this.side.offsetX, te.yCoord + this.side.offsetY, te.zCoord + this.side.offsetZ, list );
+						Platform.spawnDrops( player.worldObj, te.xCoord + this.getSide().offsetX, te.yCoord + this.getSide().offsetY, te.zCoord + this.getSide().offsetZ, list );
 					}
 
 					if( player.openContainer != null )

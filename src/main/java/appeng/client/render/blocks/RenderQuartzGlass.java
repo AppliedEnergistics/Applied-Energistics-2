@@ -38,7 +38,7 @@ import appeng.tile.AEBaseTile;
 public class RenderQuartzGlass extends BaseBlockRender<BlockQuartzGlass, AEBaseTile>
 {
 
-	static byte[][][] offsets;
+	private static byte[][][] offsets;
 
 	public RenderQuartzGlass()
 	{

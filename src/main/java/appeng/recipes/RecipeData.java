@@ -32,12 +32,12 @@ import appeng.api.recipes.ICraftHandler;
 public class RecipeData
 {
 
-	public final Map<String, String> aliases = new HashMap<String, String>();
-	public final Map<String, GroupIngredient> groups = new HashMap<String, GroupIngredient>();
+	final Map<String, String> aliases = new HashMap<String, String>();
+	final Map<String, GroupIngredient> groups = new HashMap<String, GroupIngredient>();
 
-	public final List<ICraftHandler> handlers = new LinkedList<ICraftHandler>();
-	public final Set<String> knownItem = new HashSet<String>();
-	public boolean crash = true;
-	public boolean exceptions = true;
-	public boolean errorOnMissing = true;
+	final List<ICraftHandler> handlers = new LinkedList<ICraftHandler>();
+	final Set<String> knownItem = new HashSet<String>();
+	boolean crash = true;
+	boolean exceptions = true;
+	boolean errorOnMissing = true;
 }

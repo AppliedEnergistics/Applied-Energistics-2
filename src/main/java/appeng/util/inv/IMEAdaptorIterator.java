@@ -38,7 +38,7 @@ public final class IMEAdaptorIterator implements Iterator<ItemSlot>
 	public IMEAdaptorIterator( final IMEAdaptor parent, final IItemList<IAEItemStack> availableItems )
 	{
 		this.stack = availableItems.iterator();
-		this.containerSize = parent.maxSlots;
+		this.containerSize = parent.getMaxSlots();
 		this.parent = parent;
 	}
 
@@ -52,13 +52,13 @@ public final class IMEAdaptorIterator implements Iterator<ItemSlot>
 	@Override
 	public ItemSlot next()
 	{
-		this.slot.slot = this.offset;
+		this.slot.setSlot( this.offset );
 		this.offset++;
-		this.slot.isExtractable = true;
+		this.slot.setExtractable( true );
 
-		if( this.parent.maxSlots < this.offset )
+		if( this.parent.getMaxSlots() < this.offset )
 		{
-			this.parent.maxSlots = this.offset;
+			this.parent.setMaxSlots( this.offset );
 		}
 
 		if( this.hasNext )

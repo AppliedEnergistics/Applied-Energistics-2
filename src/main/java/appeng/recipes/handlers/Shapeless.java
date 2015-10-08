@@ -40,8 +40,8 @@ import appeng.util.Platform;
 public class Shapeless implements ICraftHandler, IWebsiteSerializer
 {
 
-	List<IIngredient> inputs;
-	IIngredient output;
+	private List<IIngredient> inputs;
+	private IIngredient output;
 
 	@Override
 	public void setup( final List<List<IIngredient>> input, final List<List<IIngredient>> output ) throws RecipeError

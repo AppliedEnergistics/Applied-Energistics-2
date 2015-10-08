@@ -34,23 +34,23 @@ import appeng.parts.AEBasePart;
 public class TickTracker implements Comparable<TickTracker>
 {
 
-	public final TickingRequest request;
-	public final IGridTickable gt;
-	public final IGridNode node;
-	public final TickManagerCache host;
+	private final TickingRequest request;
+	private final IGridTickable gt;
+	private final IGridNode node;
+	private final TickManagerCache host;
 
-	public final long LastFiveTicksTime = 0;
+	private final long LastFiveTicksTime = 0;
 
-	public long lastTick;
-	public int current_rate;
+	private long lastTick;
+	private int currentRate;
 
 	public TickTracker( final TickingRequest req, final IGridNode node, final IGridTickable gt, final long currentTick, final TickManagerCache tickManagerCache )
 	{
 		this.request = req;
 		this.gt = gt;
 		this.node = node;
-		this.current_rate = ( req.minTickRate + req.maxTickRate ) / 2;
-		this.lastTick = currentTick;
+		this.setCurrentRate( ( req.minTickRate + req.maxTickRate ) / 2 );
+		this.setLastTick( currentTick );
 		this.host = tickManagerCache;
 	}
 
@@ -61,46 +61,81 @@ public class TickTracker implements Comparable<TickTracker>
 
 	public void setRate( final int rate )
 	{
-		this.current_rate = rate;
+		this.setCurrentRate( rate );
 
-		if( this.current_rate < this.request.minTickRate )
+		if( this.getCurrentRate() < this.getRequest().minTickRate )
 		{
-			this.current_rate = this.request.minTickRate;
+			this.setCurrentRate( this.getRequest().minTickRate );
 		}
 
-		if( this.current_rate > this.request.maxTickRate )
+		if( this.getCurrentRate() > this.getRequest().maxTickRate )
 		{
-			this.current_rate = this.request.maxTickRate;
+			this.setCurrentRate( this.getRequest().maxTickRate );
 		}
 	}
 
 	@Override
 	public int compareTo( @Nonnull final TickTracker t )
 	{
-		final int nextTick = (int) ( ( this.lastTick - this.host.getCurrentTick() ) + this.current_rate );
-		final int ts_nextTick = (int) ( ( t.lastTick - this.host.getCurrentTick() ) + t.current_rate );
+		final int nextTick = (int) ( ( this.getLastTick() - this.host.getCurrentTick() ) + this.getCurrentRate() );
+		final int ts_nextTick = (int) ( ( t.getLastTick() - this.host.getCurrentTick() ) + t.getCurrentRate() );
 		return nextTick - ts_nextTick;
 	}
 
 	public void addEntityCrashInfo( final CrashReportCategory crashreportcategory )
 	{
-		if( this.gt instanceof AEBasePart )
+		if( this.getGridTickable() instanceof AEBasePart )
 		{
-			final AEBasePart part = (AEBasePart) this.gt;
+			final AEBasePart part = (AEBasePart) this.getGridTickable();
 			part.addEntityCrashInfo( crashreportcategory );
 		}
 
-		crashreportcategory.addCrashSection( "CurrentTickRate", this.current_rate );
-		crashreportcategory.addCrashSection( "MinTickRate", this.request.minTickRate );
-		crashreportcategory.addCrashSection( "MaxTickRate", this.request.maxTickRate );
-		crashreportcategory.addCrashSection( "MachineType", this.gt.getClass().getName() );
-		crashreportcategory.addCrashSection( "GridBlockType", this.node.getGridBlock().getClass().getName() );
-		crashreportcategory.addCrashSection( "ConnectedSides", this.node.getConnectedSides() );
+		crashreportcategory.addCrashSection( "CurrentTickRate", this.getCurrentRate() );
+		crashreportcategory.addCrashSection( "MinTickRate", this.getRequest().minTickRate );
+		crashreportcategory.addCrashSection( "MaxTickRate", this.getRequest().maxTickRate );
+		crashreportcategory.addCrashSection( "MachineType", this.getGridTickable().getClass().getName() );
+		crashreportcategory.addCrashSection( "GridBlockType", this.getNode().getGridBlock().getClass().getName() );
+		crashreportcategory.addCrashSection( "ConnectedSides", this.getNode().getConnectedSides() );
 
-		final DimensionalCoord dc = this.node.getGridBlock().getLocation();
+		final DimensionalCoord dc = this.getNode().getGridBlock().getLocation();
 		if( dc != null )
 		{
 			crashreportcategory.addCrashSection( "Location", dc );
 		}
+	}
+
+	public int getCurrentRate()
+	{
+		return this.currentRate;
+	}
+
+	public void setCurrentRate( final int currentRate )
+	{
+		this.currentRate = currentRate;
+	}
+
+	public long getLastTick()
+	{
+		return this.lastTick;
+	}
+
+	public void setLastTick( final long lastTick )
+	{
+		this.lastTick = lastTick;
+	}
+
+	public IGridNode getNode()
+	{
+		return this.node;
+	}
+
+	public IGridTickable getGridTickable()
+	{
+		return this.gt;
+	}
+
+	public TickingRequest getRequest()
+	{
+		return this.request;
 	}
 }

@@ -28,7 +28,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class TaughtIcon implements IIcon
 {
 
-	final float tightness;
+	private final float tightness;
 
 	private final IIcon icon;
 

@@ -94,7 +94,7 @@ public enum GuiText
 	// Used in a ME Interface when no appropriate TileEntity was detected near it
 	Nothing;
 
-	final String root;
+	private final String root;
 
 	GuiText()
 	{

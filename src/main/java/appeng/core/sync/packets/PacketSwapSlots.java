@@ -32,8 +32,8 @@ import appeng.core.sync.network.INetworkInfo;
 public class PacketSwapSlots extends AppEngPacket
 {
 
-	final int slotA;
-	final int slotB;
+	private final int slotA;
+	private final int slotB;
 
 	// automatic.
 	public PacketSwapSlots( final ByteBuf stream )

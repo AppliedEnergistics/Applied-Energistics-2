@@ -55,7 +55,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 	private static final int LINES_ON_PAGE = 6;
 
 	// TODO: copied from GuiMEMonitorable. It looks not changed, maybe unneeded?
-	final int offsetX = 9;
+	private final int offsetX = 9;
 
 	private final HashMap<Long, ClientDCInternalInv> byId = new HashMap<Long, ClientDCInternalInv>();
 	private final HashMultimap<String, ClientDCInternalInv> byName = HashMultimap.create();
@@ -70,7 +70,9 @@ public class GuiInterfaceTerminal extends AEBaseGui
 	public GuiInterfaceTerminal( final InventoryPlayer inventoryPlayer, final PartInterfaceTerminal te )
 	{
 		super( new ContainerInterfaceTerminal( inventoryPlayer, te ) );
-		this.myScrollBar = new GuiScrollbar();
+
+		final GuiScrollbar scrollbar = new GuiScrollbar();
+		this.setScrollBar( scrollbar );
 		this.xSize = 195;
 		this.ySize = 222;
 	}
@@ -80,9 +82,9 @@ public class GuiInterfaceTerminal extends AEBaseGui
 	{
 		super.initGui();
 
-		this.myScrollBar.setLeft( 175 );
-		this.myScrollBar.setHeight( 106 );
-		this.myScrollBar.setTop( 18 );
+		this.getScrollBar().setLeft( 175 );
+		this.getScrollBar().setHeight( 106 );
+		this.getScrollBar().setTop( 18 );
 
 		this.searchField = new MEGuiTextField( this.fontRendererObj, this.guiLeft + Math.max( 104, this.offsetX ), this.guiTop + 4, 65, 12 );
 		this.searchField.setEnableBackgroundDrawing( false );
@@ -98,7 +100,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 		this.fontRendererObj.drawString( this.getGuiDisplayName( GuiText.InterfaceTerminal.getLocal() ), 8, 6, 4210752 );
 		this.fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
 
-		final int ex = this.myScrollBar.getCurrentScroll();
+		final int ex = this.getScrollBar().getCurrentScroll();
 
 		final Iterator<Object> o = this.inventorySlots.inventorySlots.iterator();
 		while( o.hasNext() )
@@ -116,7 +118,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 			if( lineObj instanceof ClientDCInternalInv )
 			{
 				final ClientDCInternalInv inv = (ClientDCInternalInv) lineObj;
-				for( int z = 0; z < inv.inv.getSizeInventory(); z++ )
+				for( int z = 0; z < inv.getInventory().getSizeInventory(); z++ )
 				{
 					this.inventorySlots.inventorySlots.add( new SlotDisconnected( inv, z, z * 18 + 8, 1 + offset ) );
 				}
@@ -162,7 +164,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize );
 
 		int offset = 17;
-		final int ex = this.myScrollBar.getCurrentScroll();
+		final int ex = this.getScrollBar().getCurrentScroll();
 
 		for( int x = 0; x < LINES_ON_PAGE && ex + x < this.lines.size(); x++ )
 		{
@@ -172,7 +174,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 				final ClientDCInternalInv inv = (ClientDCInternalInv) lineObj;
 
 				GL11.glColor4f( 1, 1, 1, 1 );
-				final int width = inv.inv.getSizeInventory() * 18;
+				final int width = inv.getInventory().getSizeInventory() * 18;
 				this.drawTexturedModalRect( offsetX + 7, offsetY + offset, 7, 139, width, 18 );
 			}
 			offset += 18;
@@ -224,12 +226,12 @@ public class GuiInterfaceTerminal extends AEBaseGui
 					final NBTTagCompound invData = in.getCompoundTag( key );
 					final ClientDCInternalInv current = this.getById( id, invData.getLong( "sortBy" ), invData.getString( "un" ) );
 
-					for( int x = 0; x < current.inv.getSizeInventory(); x++ )
+					for( int x = 0; x < current.getInventory().getSizeInventory(); x++ )
 					{
 						final String which = Integer.toString( x );
 						if( invData.hasKey( which ) )
 						{
-							current.inv.setInventorySlotContents( x, ItemStack.loadItemStackFromNBT( invData.getCompoundTag( which ) ) );
+							current.getInventory().setInventorySlotContents( x, ItemStack.loadItemStackFromNBT( invData.getCompoundTag( which ) ) );
 						}
 					}
 				}
@@ -276,7 +278,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 			// Search if the current inventory holds a pattern containing the search term.
 			if( !found && !searchFilterLowerCase.isEmpty() )
 			{
-				for( final ItemStack itemStack : entry.inv )
+				for( final ItemStack itemStack : entry.getInventory() )
 				{
 					found = this.itemStackMatchesSearchTerm( itemStack, searchFilterLowerCase );
 					if( found )
@@ -317,7 +319,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 			this.lines.addAll( clientInventories );
 		}
 
-		this.myScrollBar.setRange( 0, this.lines.size() - LINES_ON_PAGE, 2 );
+		this.getScrollBar().setRange( 0, this.lines.size() - LINES_ON_PAGE, 2 );
 	}
 
 	private boolean itemStackMatchesSearchTerm( final ItemStack itemStack, final String searchTerm )

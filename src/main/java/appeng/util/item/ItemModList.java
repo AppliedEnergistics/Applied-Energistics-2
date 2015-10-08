@@ -30,8 +30,8 @@ import appeng.api.storage.data.IItemContainer;
 public class ItemModList implements IItemContainer<IAEItemStack>
 {
 
-	final IItemContainer<IAEItemStack> backingStore;
-	final IItemContainer<IAEItemStack> overrides = AEApi.instance().storage().createItemList();
+	private final IItemContainer<IAEItemStack> backingStore;
+	private final IItemContainer<IAEItemStack> overrides = AEApi.instance().storage().createItemList();
 
 	public ItemModList( final IItemContainer<IAEItemStack> backend )
 	{

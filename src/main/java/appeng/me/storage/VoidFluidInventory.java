@@ -32,7 +32,7 @@ import appeng.tile.misc.TileCondenser;
 public class VoidFluidInventory implements IMEInventoryHandler<IAEFluidStack>
 {
 
-	final TileCondenser target;
+	private final TileCondenser target;
 
 	public VoidFluidInventory( final TileCondenser te )
 	{

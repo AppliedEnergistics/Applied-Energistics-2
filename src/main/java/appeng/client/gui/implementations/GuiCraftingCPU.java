@@ -103,7 +103,9 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 		this.craftingCpu = container;
 		this.ySize = GUI_HEIGHT;
 		this.xSize = GUI_WIDTH;
-		this.myScrollBar = new GuiScrollbar();
+
+		final GuiScrollbar scrollbar = new GuiScrollbar();
+		this.setScrollBar( scrollbar );
 	}
 
 	public void clearItems()
@@ -145,8 +147,8 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 	{
 		final int size = this.visual.size();
 
-		this.myScrollBar.setTop( SCROLLBAR_TOP ).setLeft( SCROLLBAR_LEFT ).setHeight( SCROLLBAR_HEIGHT );
-		this.myScrollBar.setRange( 0, ( size + 2 ) / 3 - DISPLAYED_ROWS, 1 );
+		this.getScrollBar().setTop( SCROLLBAR_TOP ).setLeft( SCROLLBAR_LEFT ).setHeight( SCROLLBAR_HEIGHT );
+		this.getScrollBar().setRange( 0, ( size + 2 ) / 3 - DISPLAYED_ROWS, 1 );
 	}
 
 	@Override
@@ -193,9 +195,9 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 	{
 		String title = this.getGuiDisplayName( GuiText.CraftingStatus.getLocal() );
 
-		if( this.craftingCpu.eta > 0 && !this.visual.isEmpty() )
+		if( this.craftingCpu.getEstimatedTime() > 0 && !this.visual.isEmpty() )
 		{
-			final long etaInMilliseconds = TimeUnit.MILLISECONDS.convert( this.craftingCpu.eta, TimeUnit.NANOSECONDS );
+			final long etaInMilliseconds = TimeUnit.MILLISECONDS.convert( this.craftingCpu.getEstimatedTime(), TimeUnit.NANOSECONDS );
 			final String etaTimeText = DurationFormatUtils.formatDuration( etaInMilliseconds, GuiText.ETAFormat.getLocal() );
 			title += " - " + etaTimeText;
 		}
@@ -204,7 +206,7 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 
 		int x = 0;
 		int y = 0;
-		final int viewStart = this.myScrollBar.getCurrentScroll() * 3;
+		final int viewStart = this.getScrollBar().getCurrentScroll() * 3;
 		final int viewEnd = viewStart + 3 * 6;
 
 		String dspToolTip = "";

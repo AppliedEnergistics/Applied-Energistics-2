@@ -39,7 +39,7 @@ import appeng.tile.crafting.TileCraftingTile;
 public class CraftingCPUCalculator extends MBCalculator
 {
 
-	final TileCraftingTile tqb;
+	private final TileCraftingTile tqb;
 
 	public CraftingCPUCalculator( final IAEMultiBlock t )
 	{

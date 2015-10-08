@@ -26,14 +26,14 @@ import net.minecraft.client.model.ModelRenderer;
 public class ModelCompass extends ModelBase
 {
 
-	final ModelRenderer Ring1;
-	final ModelRenderer Ring2;
-	final ModelRenderer Ring3;
-	final ModelRenderer Ring4;
-	final ModelRenderer Middle;
-	final ModelRenderer Base;
+	private final ModelRenderer Ring1;
+	private final ModelRenderer Ring2;
+	private final ModelRenderer Ring3;
+	private final ModelRenderer Ring4;
+	private final ModelRenderer Middle;
+	private final ModelRenderer Base;
 
-	final ModelRenderer Pointer;
+	private final ModelRenderer Pointer;
 
 	public ModelCompass()
 	{

@@ -42,7 +42,7 @@ public class PlayerDifferentiator
 	 *
 	 * @return true if {@param player} is not a real player
 	 */
-	public boolean isNoPlayer( final EntityPlayer player )
+	boolean isNoPlayer( final EntityPlayer player )
 	{
 		return player == null || player.isDead || player instanceof FakePlayer;
 	}

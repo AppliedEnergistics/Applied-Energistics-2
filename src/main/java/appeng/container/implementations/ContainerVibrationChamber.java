@@ -33,8 +33,8 @@ public class ContainerVibrationChamber extends AEBaseContainer implements IProgr
 {
 
 	private static final int MAX_BURN_TIME = 200;
-	public final int aePerTick = 5;
-	final TileVibrationChamber vibrationChamber;
+	private final int aePerTick = 5;
+	private final TileVibrationChamber vibrationChamber;
 	@GuiSync( 0 )
 	public int burnProgress = 0;
 	@GuiSync( 1 )
@@ -45,7 +45,7 @@ public class ContainerVibrationChamber extends AEBaseContainer implements IProgr
 		super( ip, vibrationChamber, null );
 		this.vibrationChamber = vibrationChamber;
 
-		this.addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.FUEL, vibrationChamber, 0, 80, 37, this.invPlayer ) );
+		this.addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.FUEL, vibrationChamber, 0, 80, 37, this.getInventoryPlayer() ) );
 
 		this.bindPlayerInventory( ip, 0, 166 - /* height of player inventory */82 );
 	}
@@ -55,8 +55,8 @@ public class ContainerVibrationChamber extends AEBaseContainer implements IProgr
 	{
 		if( Platform.isServer() )
 		{
-			this.burnProgress = (int) ( this.vibrationChamber.maxBurnTime <= 0 ? 0 : 12 * this.vibrationChamber.burnTime / this.vibrationChamber.maxBurnTime );
-			this.burnSpeed = this.vibrationChamber.burnSpeed;
+			this.burnProgress = (int) ( this.vibrationChamber.getMaxBurnTime() <= 0 ? 0 : 12 * this.vibrationChamber.getBurnTime() / this.vibrationChamber.getMaxBurnTime() );
+			this.burnSpeed = this.vibrationChamber.getBurnSpeed();
 		}
 
 		super.detectAndSendChanges();
@@ -72,5 +72,10 @@ public class ContainerVibrationChamber extends AEBaseContainer implements IProgr
 	public int getMaxProgress()
 	{
 		return MAX_BURN_TIME;
+	}
+
+	public int getAePerTick()
+	{
+		return this.aePerTick;
 	}
 }

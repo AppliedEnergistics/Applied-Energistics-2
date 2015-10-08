@@ -31,8 +31,8 @@ import net.minecraft.item.ItemStack;
 public class BlockStackSrc implements IStackSrc
 {
 
-	public final Block block;
-	public final int damage;
+	private final Block block;
+	private final int damage;
 	private final boolean enabled;
 
 	public BlockStackSrc( final Block block, final int damage, final ActivityState state )

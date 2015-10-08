@@ -106,8 +106,8 @@ public enum Achievements
 	// done
 	QNB( 10, 2, AEApi.instance().definitions().blocks().quantumLink(), AchievementType.Craft );
 
-	public final ItemStack stack;
-	public final AchievementType type;
+	private final ItemStack stack;
+	private final AchievementType type;
 	private final int x;
 	private final int y;
 
@@ -138,16 +138,16 @@ public enum Achievements
 		this.y = y;
 	}
 
-	public void setParent( final Achievements parent )
+	void setParent( final Achievements parent )
 	{
 		this.parent = parent.getAchievement();
 	}
 
 	public Achievement getAchievement()
 	{
-		if( this.stat == null && this.stack != null )
+		if( this.stat == null && this.getStack() != null )
 		{
-			this.stat = new Achievement( "achievement.ae2." + this.name(), "ae2." + this.name(), this.x, this.y, this.stack, this.parent );
+			this.stat = new Achievement( "achievement.ae2." + this.name(), "ae2." + this.name(), this.x, this.y, this.getStack(), this.parent );
 			this.stat.registerStat();
 		}
 
@@ -157,6 +157,16 @@ public enum Achievements
 	public void addToPlayer( final EntityPlayer player )
 	{
 		player.addStat( this.getAchievement(), 1 );
+	}
+
+	AchievementType getType()
+	{
+		return this.type;
+	}
+
+	ItemStack getStack()
+	{
+		return this.stack;
 	}
 
 }

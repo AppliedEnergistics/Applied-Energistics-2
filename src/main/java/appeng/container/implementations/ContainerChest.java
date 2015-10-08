@@ -29,14 +29,14 @@ import appeng.tile.storage.TileChest;
 public class ContainerChest extends AEBaseContainer
 {
 
-	final TileChest chest;
+	private final TileChest chest;
 
 	public ContainerChest( final InventoryPlayer ip, final TileChest chest )
 	{
 		super( ip, chest, null );
 		this.chest = chest;
 
-		this.addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.STORAGE_CELLS, this.chest, 1, 80, 37, this.invPlayer ) );
+		this.addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.STORAGE_CELLS, this.chest, 1, 80, 37, this.getInventoryPlayer() ) );
 
 		this.bindPlayerInventory( ip, 0, 166 - /* height of player inventory */82 );
 	}

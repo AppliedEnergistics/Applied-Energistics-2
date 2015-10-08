@@ -77,7 +77,7 @@ public class QuartzTorchPart extends McSidedMetaPart implements IRandomDisplayTi
 		return this.getBounds( this.meta );
 	}
 
-	public Cuboid6 getBounds( final int meta )
+	private Cuboid6 getBounds( final int meta )
 	{
 		final ForgeDirection up = ForgeDirection.getOrientation( meta );
 		final double xOff = -0.3 * up.offsetX;

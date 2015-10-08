@@ -22,6 +22,7 @@ package appeng.client.render;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.EnumSet;
+import java.util.Set;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
@@ -41,18 +42,18 @@ import appeng.core.AELog;
 public class RenderBlocksWorkaround extends RenderBlocks
 {
 
-	final int[] lightHashTmp = new int[27];
-	public boolean calculations = true;
-	public EnumSet<ForgeDirection> renderFaces = EnumSet.allOf( ForgeDirection.class );
-	public EnumSet<ForgeDirection> faces = EnumSet.allOf( ForgeDirection.class );
-	public boolean isFacade = false;
-	public boolean useTextures = true;
-	public float opacity = 1.0f;
-	Field fBrightness;
-	Field fColor;
+	private final int[] lightHashTmp = new int[27];
+	private boolean calculations = true;
+	private EnumSet<ForgeDirection> renderFaces = EnumSet.allOf( ForgeDirection.class );
+	private EnumSet<ForgeDirection> faces = EnumSet.allOf( ForgeDirection.class );
+	private boolean isFacade = false;
+	private boolean useTextures = true;
+	private float opacity = 1.0f;
+	private Field fBrightness = null;
+	private Field fColor = null;
 	private LightingCache lightState = new LightingCache();
 
-	public int getCurrentColor()
+	private int getCurrentColor()
 	{
 		try
 		{
@@ -76,7 +77,7 @@ public class RenderBlocksWorkaround extends RenderBlocks
 		}
 	}
 
-	public int getCurrentBrightness()
+	private int getCurrentBrightness()
 	{
 		try
 		{
@@ -100,7 +101,7 @@ public class RenderBlocksWorkaround extends RenderBlocks
 		}
 	}
 
-	public void setTexture( final IIcon ico )
+	void setTexture( final IIcon ico )
 	{
 		this.lightState.rXPos = this.lightState.rXNeg = this.lightState.rYPos = this.lightState.rYNeg = this.lightState.rZPos = this.lightState.rZNeg = ico;
 	}
@@ -115,31 +116,31 @@ public class RenderBlocksWorkaround extends RenderBlocks
 		this.lightState.rZNeg = rZNeg;
 	}
 
-	public boolean renderStandardBlockNoCalculations( final Block b, final int x, final int y, final int z )
+	private boolean renderStandardBlockNoCalculations( final Block b, final int x, final int y, final int z )
 	{
 		Tessellator.instance.setBrightness( this.lightState.bXPos );
 		this.restoreAO( this.lightState.aoXPos, this.lightState.foXPos );
-		this.renderFaceXPos( b, x, y, z, this.useTextures ? this.lightState.rXPos : this.getBlockIcon( b, this.blockAccess, x, y, z, ForgeDirection.EAST.ordinal() ) );
+		this.renderFaceXPos( b, x, y, z, this.isUseTextures() ? this.lightState.rXPos : this.getBlockIcon( b, this.blockAccess, x, y, z, ForgeDirection.EAST.ordinal() ) );
 
 		Tessellator.instance.setBrightness( this.lightState.bXNeg );
 		this.restoreAO( this.lightState.aoXNeg, this.lightState.foXNeg );
-		this.renderFaceXNeg( b, x, y, z, this.useTextures ? this.lightState.rXNeg : this.getBlockIcon( b, this.blockAccess, x, y, z, ForgeDirection.WEST.ordinal() ) );
+		this.renderFaceXNeg( b, x, y, z, this.isUseTextures() ? this.lightState.rXNeg : this.getBlockIcon( b, this.blockAccess, x, y, z, ForgeDirection.WEST.ordinal() ) );
 
 		Tessellator.instance.setBrightness( this.lightState.bYPos );
 		this.restoreAO( this.lightState.aoYPos, this.lightState.foYPos );
-		this.renderFaceYPos( b, x, y, z, this.useTextures ? this.lightState.rYPos : this.getBlockIcon( b, this.blockAccess, x, y, z, ForgeDirection.UP.ordinal() ) );
+		this.renderFaceYPos( b, x, y, z, this.isUseTextures() ? this.lightState.rYPos : this.getBlockIcon( b, this.blockAccess, x, y, z, ForgeDirection.UP.ordinal() ) );
 
 		Tessellator.instance.setBrightness( this.lightState.bYNeg );
 		this.restoreAO( this.lightState.aoYNeg, this.lightState.foYNeg );
-		this.renderFaceYNeg( b, x, y, z, this.useTextures ? this.lightState.rYNeg : this.getBlockIcon( b, this.blockAccess, x, y, z, ForgeDirection.DOWN.ordinal() ) );
+		this.renderFaceYNeg( b, x, y, z, this.isUseTextures() ? this.lightState.rYNeg : this.getBlockIcon( b, this.blockAccess, x, y, z, ForgeDirection.DOWN.ordinal() ) );
 
 		Tessellator.instance.setBrightness( this.lightState.bZPos );
 		this.restoreAO( this.lightState.aoZPos, this.lightState.foZPos );
-		this.renderFaceZPos( b, x, y, z, this.useTextures ? this.lightState.rZPos : this.getBlockIcon( b, this.blockAccess, x, y, z, ForgeDirection.SOUTH.ordinal() ) );
+		this.renderFaceZPos( b, x, y, z, this.isUseTextures() ? this.lightState.rZPos : this.getBlockIcon( b, this.blockAccess, x, y, z, ForgeDirection.SOUTH.ordinal() ) );
 
 		Tessellator.instance.setBrightness( this.lightState.bZNeg );
 		this.restoreAO( this.lightState.aoZNeg, this.lightState.foZNeg );
-		this.renderFaceZNeg( b, x, y, z, this.useTextures ? this.lightState.rZNeg : this.getBlockIcon( b, this.blockAccess, x, y, z, ForgeDirection.NORTH.ordinal() ) );
+		this.renderFaceZNeg( b, x, y, z, this.isUseTextures() ? this.lightState.rZNeg : this.getBlockIcon( b, this.blockAccess, x, y, z, ForgeDirection.NORTH.ordinal() ) );
 
 		return true;
 	}
@@ -150,7 +151,7 @@ public class RenderBlocksWorkaround extends RenderBlocks
 		this.brightnessBottomRight = z[1];
 		this.brightnessTopLeft = z[2];
 		this.brightnessTopRight = z[3];
-		Tessellator.instance.setColorRGBA_I( z[4], (int) ( this.opacity * 255 ) );
+		Tessellator.instance.setColorRGBA_I( z[4], (int) ( this.getOpacity() * 255 ) );
 
 		this.colorRedTopLeft = c[0];
 		this.colorGreenTopLeft = c[1];
@@ -193,7 +194,7 @@ public class RenderBlocksWorkaround extends RenderBlocks
 	{
 		try
 		{
-			if( this.calculations )
+			if( this.isCalculations() )
 			{
 				this.lightState.lightHash = this.getLightingHash( blk, this.blockAccess, x, y, z );
 				return super.renderStandardBlock( blk, x, y, z );
@@ -217,14 +218,14 @@ public class RenderBlocksWorkaround extends RenderBlocks
 	@Override
 	public void renderFaceYNeg( final Block par1Block, final double par2, final double par4, final double par6, final IIcon par8Icon )
 	{
-		if( this.faces.contains( ForgeDirection.DOWN ) )
+		if( this.getFaces().contains( ForgeDirection.DOWN ) )
 		{
-			if( !this.renderFaces.contains( ForgeDirection.DOWN ) )
+			if( !this.getRenderFaces().contains( ForgeDirection.DOWN ) )
 			{
 				return;
 			}
 
-			if( this.isFacade )
+			if( this.isFacade() )
 			{
 				final Tessellator tessellator = Tessellator.instance;
 
@@ -275,14 +276,14 @@ public class RenderBlocksWorkaround extends RenderBlocks
 	@Override
 	public void renderFaceYPos( final Block par1Block, final double par2, final double par4, final double par6, final IIcon par8Icon )
 	{
-		if( this.faces.contains( ForgeDirection.UP ) )
+		if( this.getFaces().contains( ForgeDirection.UP ) )
 		{
-			if( !this.renderFaces.contains( ForgeDirection.UP ) )
+			if( !this.getRenderFaces().contains( ForgeDirection.UP ) )
 			{
 				return;
 			}
 
-			if( this.isFacade )
+			if( this.isFacade() )
 			{
 				final Tessellator tessellator = Tessellator.instance;
 
@@ -333,14 +334,14 @@ public class RenderBlocksWorkaround extends RenderBlocks
 	@Override
 	public void renderFaceZNeg( final Block par1Block, final double par2, final double par4, final double par6, final IIcon par8Icon )
 	{
-		if( this.faces.contains( ForgeDirection.NORTH ) )
+		if( this.getFaces().contains( ForgeDirection.NORTH ) )
 		{
-			if( !this.renderFaces.contains( ForgeDirection.NORTH ) )
+			if( !this.getRenderFaces().contains( ForgeDirection.NORTH ) )
 			{
 				return;
 			}
 
-			if( this.isFacade )
+			if( this.isFacade() )
 			{
 				final Tessellator tessellator = Tessellator.instance;
 
@@ -391,14 +392,14 @@ public class RenderBlocksWorkaround extends RenderBlocks
 	@Override
 	public void renderFaceZPos( final Block par1Block, final double par2, final double par4, final double par6, final IIcon par8Icon )
 	{
-		if( this.faces.contains( ForgeDirection.SOUTH ) )
+		if( this.getFaces().contains( ForgeDirection.SOUTH ) )
 		{
-			if( !this.renderFaces.contains( ForgeDirection.SOUTH ) )
+			if( !this.getRenderFaces().contains( ForgeDirection.SOUTH ) )
 			{
 				return;
 			}
 
-			if( this.isFacade )
+			if( this.isFacade() )
 			{
 				final Tessellator tessellator = Tessellator.instance;
 
@@ -449,14 +450,14 @@ public class RenderBlocksWorkaround extends RenderBlocks
 	@Override
 	public void renderFaceXNeg( final Block par1Block, final double par2, final double par4, final double par6, final IIcon par8Icon )
 	{
-		if( this.faces.contains( ForgeDirection.WEST ) )
+		if( this.getFaces().contains( ForgeDirection.WEST ) )
 		{
-			if( !this.renderFaces.contains( ForgeDirection.WEST ) )
+			if( !this.getRenderFaces().contains( ForgeDirection.WEST ) )
 			{
 				return;
 			}
 
-			if( this.isFacade )
+			if( this.isFacade() )
 			{
 				final Tessellator tessellator = Tessellator.instance;
 
@@ -507,14 +508,14 @@ public class RenderBlocksWorkaround extends RenderBlocks
 	@Override
 	public void renderFaceXPos( final Block par1Block, final double par2, final double par4, final double par6, final IIcon par8Icon )
 	{
-		if( this.faces.contains( ForgeDirection.EAST ) )
+		if( this.getFaces().contains( ForgeDirection.EAST ) )
 		{
-			if( !this.renderFaces.contains( ForgeDirection.EAST ) )
+			if( !this.getRenderFaces().contains( ForgeDirection.EAST ) )
 			{
 				return;
 			}
 
-			if( this.isFacade )
+			if( this.isFacade() )
 			{
 				final Tessellator tessellator = Tessellator.instance;
 
@@ -586,7 +587,7 @@ public class RenderBlocksWorkaround extends RenderBlocks
 
 		final int out = ( high << 16 ) | low;
 
-		Tessellator.instance.setColorRGBA_F( r, g, b, this.opacity );
+		Tessellator.instance.setColorRGBA_F( r, g, b, this.getOpacity() );
 		Tessellator.instance.setBrightness( out );
 	}
 
@@ -624,6 +625,66 @@ public class RenderBlocksWorkaround extends RenderBlocks
 	public ISimplifiedBundle getLightingCache()
 	{
 		return new LightingCache( this.lightState );
+	}
+
+	Set<ForgeDirection> getFaces()
+	{
+		return this.faces;
+	}
+
+	public void setFaces( final EnumSet<ForgeDirection> faces )
+	{
+		this.faces = faces;
+	}
+
+	private boolean isCalculations()
+	{
+		return this.calculations;
+	}
+
+	public void setCalculations( final boolean calculations )
+	{
+		this.calculations = calculations;
+	}
+
+	private boolean isUseTextures()
+	{
+		return this.useTextures;
+	}
+
+	void setUseTextures( final boolean useTextures )
+	{
+		this.useTextures = useTextures;
+	}
+
+	private boolean isFacade()
+	{
+		return this.isFacade;
+	}
+
+	public void setFacade( final boolean isFacade )
+	{
+		this.isFacade = isFacade;
+	}
+
+	private float getOpacity()
+	{
+		return this.opacity;
+	}
+
+	public void setOpacity( final float opacity )
+	{
+		this.opacity = opacity;
+	}
+
+	private EnumSet<ForgeDirection> getRenderFaces()
+	{
+		return this.renderFaces;
+	}
+
+	void setRenderFaces( final EnumSet<ForgeDirection> renderFaces )
+	{
+		this.renderFaces = renderFaces;
 	}
 
 	private static class LightingCache implements ISimplifiedBundle

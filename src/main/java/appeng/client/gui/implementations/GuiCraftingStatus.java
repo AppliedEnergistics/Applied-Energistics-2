@@ -52,12 +52,12 @@ import appeng.parts.reporting.PartTerminal;
 public class GuiCraftingStatus extends GuiCraftingCPU
 {
 
-	final ContainerCraftingStatus status;
-	GuiButton selectCPU;
+	private final ContainerCraftingStatus status;
+	private GuiButton selectCPU;
 
-	GuiTabButton originalGuiBtn;
-	GuiBridge originalGui;
-	ItemStack myIcon = null;
+	private GuiTabButton originalGuiBtn;
+	private GuiBridge originalGui;
+	private ItemStack myIcon = null;
 
 	public GuiCraftingStatus( final InventoryPlayer inventoryPlayer, final ITerminalHost te )
 	{
@@ -143,7 +143,7 @@ public class GuiCraftingStatus extends GuiCraftingCPU
 		if( this.myIcon != null )
 		{
 			this.buttonList.add( this.originalGuiBtn = new GuiTabButton( this.guiLeft + 213, this.guiTop - 4, this.myIcon, this.myIcon.getDisplayName(), itemRender ) );
-			this.originalGuiBtn.hideEdge = 13;
+			this.originalGuiBtn.setHideEdge( 13 );
 		}
 	}
 

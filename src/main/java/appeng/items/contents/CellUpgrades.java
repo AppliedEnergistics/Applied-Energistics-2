@@ -27,7 +27,7 @@ import appeng.util.Platform;
 
 public final class CellUpgrades extends StackUpgradeInventory
 {
-	final ItemStack is;
+	private final ItemStack is;
 
 	public CellUpgrades( final ItemStack is, final int upgrades )
 	{

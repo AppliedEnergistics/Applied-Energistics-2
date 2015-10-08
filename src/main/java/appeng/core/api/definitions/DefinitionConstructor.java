@@ -48,7 +48,7 @@ public class DefinitionConstructor
 		this.handlers = handlers;
 	}
 
-	public final ITileDefinition registerTileDefinition( final IAEFeature feature )
+	final ITileDefinition registerTileDefinition( final IAEFeature feature )
 	{
 		final IBlockDefinition definition = this.registerBlockDefinition( feature );
 
@@ -60,7 +60,7 @@ public class DefinitionConstructor
 		throw new IllegalStateException( "No tile definition for " + feature );
 	}
 
-	public final IBlockDefinition registerBlockDefinition( final IAEFeature feature )
+	final IBlockDefinition registerBlockDefinition( final IAEFeature feature )
 	{
 		final IItemDefinition definition = this.registerItemDefinition( feature );
 
@@ -72,7 +72,7 @@ public class DefinitionConstructor
 		throw new IllegalStateException( "No block definition for " + feature );
 	}
 
-	public final IItemDefinition registerItemDefinition( final IAEFeature feature )
+	final IItemDefinition registerItemDefinition( final IAEFeature feature )
 	{
 		final IFeatureHandler handler = feature.handler();
 
@@ -87,7 +87,7 @@ public class DefinitionConstructor
 		return definition;
 	}
 
-	public final AEColoredItemDefinition constructColoredDefinition( final IItemDefinition target, final int offset )
+	final AEColoredItemDefinition constructColoredDefinition( final IItemDefinition target, final int offset )
 	{
 		final ColoredItemDefinition definition = new ColoredItemDefinition();
 
@@ -104,7 +104,7 @@ public class DefinitionConstructor
 		return definition;
 	}
 
-	public final AEColoredItemDefinition constructColoredDefinition( final ItemMultiPart target, final PartType type )
+	final AEColoredItemDefinition constructColoredDefinition( final ItemMultiPart target, final PartType type )
 	{
 		final ColoredItemDefinition definition = new ColoredItemDefinition();
 

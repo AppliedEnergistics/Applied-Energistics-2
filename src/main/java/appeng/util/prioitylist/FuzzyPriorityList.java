@@ -29,8 +29,8 @@ import appeng.api.storage.data.IItemList;
 public class FuzzyPriorityList<T extends IAEStack<T>> implements IPartitionList<T>
 {
 
-	final IItemList<T> list;
-	final FuzzyMode mode;
+	private final IItemList<T> list;
+	private final FuzzyMode mode;
 
 	public FuzzyPriorityList( final IItemList<T> in, final FuzzyMode mode )
 	{

@@ -177,7 +177,7 @@ public class NEIAEShapelessRecipeHandler extends TemplateRecipeHandler
 		return RecipeInfo.getOverlayHandler( gui, "crafting2x2" );
 	}
 
-	public boolean isRecipe2x2( final int recipe )
+	private boolean isRecipe2x2( final int recipe )
 	{
 		for( final PositionedStack stack : this.getIngredientStacks( recipe ) )
 		{
@@ -195,11 +195,11 @@ public class NEIAEShapelessRecipeHandler extends TemplateRecipeHandler
 		return NEIClientUtils.translate( "recipe.shapeless" );
 	}
 
-	public class CachedShapelessRecipe extends TemplateRecipeHandler.CachedRecipe
+	private class CachedShapelessRecipe extends TemplateRecipeHandler.CachedRecipe
 	{
 
-		public final List<PositionedStack> ingredients;
-		public final PositionedStack result;
+		private final List<PositionedStack> ingredients;
+		private final PositionedStack result;
 
 		public CachedShapelessRecipe( final ShapelessRecipe recipe )
 		{
@@ -220,7 +220,7 @@ public class NEIAEShapelessRecipeHandler extends TemplateRecipeHandler
 			return this.getCycledIngredients( NEIAEShapelessRecipeHandler.this.cycleticks / 20, this.ingredients );
 		}
 
-		public void setIngredients( final Object[] items )
+		private void setIngredients( final Object[] items )
 		{
 			final boolean useSingleItems = AEConfig.instance.disableColoredCableRecipesInNEI();
 			for( int x = 0; x < 3; x++ )
@@ -251,7 +251,7 @@ public class NEIAEShapelessRecipeHandler extends TemplateRecipeHandler
 			}
 		}
 
-		public void computeVisuals()
+		private void computeVisuals()
 		{
 			for( final PositionedStack p : this.ingredients )
 			{

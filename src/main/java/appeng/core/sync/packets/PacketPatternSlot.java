@@ -59,7 +59,7 @@ public class PacketPatternSlot extends AppEngPacket
 		}
 	}
 
-	public IAEItemStack readItem( final ByteBuf stream ) throws IOException
+	private IAEItemStack readItem( final ByteBuf stream ) throws IOException
 	{
 		final boolean hasItem = stream.readBoolean();
 

@@ -33,6 +33,7 @@ public class TmpFlippableIcon extends FlippableIcon
 		super( NULL_ICON );
 	}
 
+	@Override
 	public void setOriginal( IIcon i )
 	{
 		this.setFlip( false, false );
@@ -40,14 +41,14 @@ public class TmpFlippableIcon extends FlippableIcon
 		while( i instanceof FlippableIcon )
 		{
 			final FlippableIcon fi = (FlippableIcon) i;
-			if( fi.flip_u )
+			if( fi.isFlipU() )
 			{
-				this.flip_u = !this.flip_u;
+				this.setFlipU( !this.isFlipU() );
 			}
 
-			if( fi.flip_v )
+			if( fi.isFlipV() )
 			{
-				this.flip_v = !this.flip_v;
+				this.setFlipV( !this.isFlipV() );
 			}
 
 			i = fi.getOriginal();
@@ -55,11 +56,11 @@ public class TmpFlippableIcon extends FlippableIcon
 
 		if( i == null )
 		{
-			this.original = NULL_ICON;
+			super.setOriginal( NULL_ICON );
 		}
 		else
 		{
-			this.original = i;
+			super.setOriginal( i );
 		}
 	}
 }

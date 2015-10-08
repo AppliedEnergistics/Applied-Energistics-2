@@ -79,19 +79,19 @@ public class RenderBlockPaint extends BaseBlockRender<BlockPaint, TilePaint>
 			final int lumen = 14 << 20 | 14 << 4;
 			for( final Splotch s : tp.getDots() )
 			{
-				if( !validSides.contains( s.side ) )
+				if( !validSides.contains( s.getSide() ) )
 				{
 					continue;
 				}
 
-				if( s.lumen )
+				if( s.isLumen() )
 				{
-					tess.setColorOpaque_I( s.color.whiteVariant );
+					tess.setColorOpaque_I( s.getColor().whiteVariant );
 					tess.setBrightness( lumen );
 				}
 				else
 				{
-					tess.setColorOpaque_I( s.color.mediumVariant );
+					tess.setColorOpaque_I( s.getColor().mediumVariant );
 					tess.setBrightness( brightness );
 				}
 
@@ -106,13 +106,13 @@ public class RenderBlockPaint extends BaseBlockRender<BlockPaint, TilePaint>
 				pos_x = Math.max( buffer, Math.min( 1.0 - buffer, pos_x ) );
 				pos_y = Math.max( buffer, Math.min( 1.0 - buffer, pos_y ) );
 
-				if( s.side == ForgeDirection.SOUTH || s.side == ForgeDirection.NORTH )
+				if( s.getSide() == ForgeDirection.SOUTH || s.getSide() == ForgeDirection.NORTH )
 				{
 					pos_x += x;
 					pos_y += y;
 				}
 
-				else if( s.side == ForgeDirection.UP || s.side == ForgeDirection.DOWN )
+				else if( s.getSide() == ForgeDirection.UP || s.getSide() == ForgeDirection.DOWN )
 				{
 					pos_x += x;
 					pos_y += z;
@@ -126,7 +126,7 @@ public class RenderBlockPaint extends BaseBlockRender<BlockPaint, TilePaint>
 
 				final IIcon ico = icoSet[s.getSeed() % icoSet.length];
 
-				switch( s.side )
+				switch( s.getSide() )
 				{
 					case UP:
 						offset = 1.0 - offset;

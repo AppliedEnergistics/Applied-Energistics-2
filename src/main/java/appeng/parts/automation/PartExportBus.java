@@ -104,7 +104,7 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 	@Override
 	protected TickRateModulation doBusWork()
 	{
-		if( !this.proxy.isActive() || !this.canDoBusWork() )
+		if( !this.getProxy().isActive() || !this.canDoBusWork() )
 		{
 			return TickRateModulation.IDLE;
 		}
@@ -115,9 +115,9 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 		try
 		{
 			final InventoryAdaptor destination = this.getHandler();
-			final IMEMonitor<IAEItemStack> inv = this.proxy.getStorage().getItemInventory();
-			final IEnergyGrid energy = this.proxy.getEnergy();
-			final ICraftingGrid cg = this.proxy.getCrafting();
+			final IMEMonitor<IAEItemStack> inv = this.getProxy().getStorage().getItemInventory();
+			final IEnergyGrid energy = this.getProxy().getEnergy();
+			final ICraftingGrid cg = this.getProxy().getCrafting();
 			final FuzzyMode fzMode = (FuzzyMode) this.getConfigManager().getSetting( Settings.FUZZY_MODE );
 			final SchedulingMode schedulingMode = (SchedulingMode) this.getConfigManager().getSetting( Settings.SCHEDULING_MODE );
 
@@ -129,13 +129,13 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 				{
 					final int slotToExport = this.getStartingSlot( schedulingMode, x );
 
-					final IAEItemStack ais = this.config.getAEStackInSlot( slotToExport );
+					final IAEItemStack ais = this.getConfig().getAEStackInSlot( slotToExport );
 
 					if( ais == null || this.itemToSend <= 0 || this.craftOnly() )
 					{
 						if( this.isCraftingEnabled() )
 						{
-							this.didSomething = this.craftingTracker.handleCrafting( slotToExport, this.itemToSend, ais, destination, this.getTile().getWorldObj(), this.proxy.getGrid(), cg, this.mySrc ) || this.didSomething;
+							this.didSomething = this.craftingTracker.handleCrafting( slotToExport, this.itemToSend, ais, destination, this.getTile().getWorldObj(), this.getProxy().getGrid(), cg, this.mySrc ) || this.didSomething;
 						}
 						continue;
 					}
@@ -160,7 +160,7 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 
 					if( this.itemToSend == before && this.isCraftingEnabled() )
 					{
-						this.didSomething = this.craftingTracker.handleCrafting( slotToExport, this.itemToSend, ais, destination, this.getTile().getWorldObj(), this.proxy.getGrid(), cg, this.mySrc ) || this.didSomething;
+						this.didSomething = this.craftingTracker.handleCrafting( slotToExport, this.itemToSend, ais, destination, this.getTile().getWorldObj(), this.getProxy().getGrid(), cg, this.mySrc ) || this.didSomething;
 					}
 				}
 
@@ -199,7 +199,7 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 	@SideOnly( Side.CLIENT )
 	public void renderInventory( final IPartRenderHelper rh, final RenderBlocks renderer )
 	{
-		rh.setTexture( CableBusTextures.PartExportSides.getIcon(), CableBusTextures.PartExportSides.getIcon(), CableBusTextures.PartMonitorBack.getIcon(), this.is.getIconIndex(), CableBusTextures.PartExportSides.getIcon(), CableBusTextures.PartExportSides.getIcon() );
+		rh.setTexture( CableBusTextures.PartExportSides.getIcon(), CableBusTextures.PartExportSides.getIcon(), CableBusTextures.PartMonitorBack.getIcon(), this.getItemStack().getIconIndex(), CableBusTextures.PartExportSides.getIcon(), CableBusTextures.PartExportSides.getIcon() );
 
 		rh.setBounds( 4, 4, 12, 12, 12, 14 );
 		rh.renderInventoryBox( renderer );
@@ -215,8 +215,8 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 	@SideOnly( Side.CLIENT )
 	public void renderStatic( final int x, final int y, final int z, final IPartRenderHelper rh, final RenderBlocks renderer )
 	{
-		this.renderCache = rh.useSimplifiedRendering( x, y, z, this, this.renderCache );
-		rh.setTexture( CableBusTextures.PartExportSides.getIcon(), CableBusTextures.PartExportSides.getIcon(), CableBusTextures.PartMonitorBack.getIcon(), this.is.getIconIndex(), CableBusTextures.PartExportSides.getIcon(), CableBusTextures.PartExportSides.getIcon() );
+		this.setRenderCache( rh.useSimplifiedRendering( x, y, z, this, this.getRenderCache() ) );
+		rh.setTexture( CableBusTextures.PartExportSides.getIcon(), CableBusTextures.PartExportSides.getIcon(), CableBusTextures.PartMonitorBack.getIcon(), this.getItemStack().getIconIndex(), CableBusTextures.PartExportSides.getIcon(), CableBusTextures.PartExportSides.getIcon() );
 
 		rh.setBounds( 4, 4, 12, 12, 12, 14 );
 		rh.renderBlock( x, y, z, renderer );
@@ -227,7 +227,7 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 		rh.setBounds( 6, 6, 15, 10, 10, 16 );
 		rh.renderBlock( x, y, z, renderer );
 
-		rh.setTexture( CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartMonitorBack.getIcon(), this.is.getIconIndex(), CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartMonitorSidesStatus.getIcon() );
+		rh.setTexture( CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartMonitorBack.getIcon(), this.getItemStack().getIconIndex(), CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartMonitorSidesStatus.getIcon() );
 
 		rh.setBounds( 6, 6, 11, 10, 10, 12 );
 		rh.renderBlock( x, y, z, renderer );
@@ -251,7 +251,7 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 				return true;
 			}
 
-			Platform.openGUI( player, this.getHost().getTile(), this.side, GuiBridge.GUI_BUS );
+			Platform.openGUI( player, this.getHost().getTile(), this.getSide(), GuiBridge.GUI_BUS );
 			return true;
 		}
 
@@ -261,7 +261,7 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 	@Override
 	public TickingRequest getTickingRequest( final IGridNode node )
 	{
-		return new TickingRequest( TickRates.ExportBus.min, TickRates.ExportBus.max, this.isSleeping(), false );
+		return new TickingRequest( TickRates.ExportBus.getMin(), TickRates.ExportBus.getMax(), this.isSleeping(), false );
 	}
 
 	@Override
@@ -289,9 +289,9 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 
 		try
 		{
-			if( d != null && this.proxy.isActive() )
+			if( d != null && this.getProxy().isActive() )
 			{
-				final IEnergyGrid energy = this.proxy.getEnergy();
+				final IEnergyGrid energy = this.getProxy().getEnergy();
 				final double power = items.getStackSize();
 
 				if( energy.extractAEPower( power, mode, PowerMultiplier.CONFIG ) > power - 0.01 )

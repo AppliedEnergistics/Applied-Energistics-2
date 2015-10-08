@@ -71,7 +71,7 @@ public class BlockQuartzGrowthAccelerator extends AEBaseTileBlock implements IOr
 
 		final TileQuartzGrowthAccelerator cga = this.getTileEntity( w, x, y, z );
 
-		if( cga != null && cga.hasPower && CommonHelper.proxy.shouldAddParticles( r ) )
+		if( cga != null && cga.isPowered() && CommonHelper.proxy.shouldAddParticles( r ) )
 		{
 			final double d0 = r.nextFloat() - 0.5F;
 			final double d1 = r.nextFloat() - 0.5F;

@@ -81,7 +81,7 @@ public final class PartP2PRFPower extends PartP2PTunnel<PartP2PRFPower> implemen
 	@Override
 	public int receiveEnergy( final ForgeDirection from, int maxReceive, final boolean simulate )
 	{
-		if( this.output )
+		if( this.isOutput() )
 		{
 			return 0;
 		}
@@ -108,7 +108,7 @@ public final class PartP2PRFPower extends PartP2PTunnel<PartP2PRFPower> implemen
 				{
 					if( Platform.getRandomInt() % 2 > 0 )
 					{
-						final int receiver = t.getOutput().receiveEnergy( t.side.getOpposite(), maxReceive, simulate );
+						final int receiver = t.getOutput().receiveEnergy( t.getSide().getOpposite(), maxReceive, simulate );
 						maxReceive -= receiver;
 						total += receiver;
 
@@ -123,7 +123,7 @@ public final class PartP2PRFPower extends PartP2PTunnel<PartP2PRFPower> implemen
 				{
 					for( final PartP2PRFPower t : this.getOutputs() )
 					{
-						final int receiver = t.getOutput().receiveEnergy( t.side.getOpposite(), maxReceive, simulate );
+						final int receiver = t.getOutput().receiveEnergy( t.getSide().getOpposite(), maxReceive, simulate );
 						maxReceive -= receiver;
 						total += receiver;
 
@@ -165,17 +165,17 @@ public final class PartP2PRFPower extends PartP2PTunnel<PartP2PRFPower> implemen
 
 	private IEnergyReceiver getOutput()
 	{
-		if( this.output )
+		if( this.isOutput() )
 		{
 			if( !this.cachedTarget )
 			{
 				final TileEntity self = this.getTile();
-				final TileEntity te = self.getWorldObj().getTileEntity( self.xCoord + this.side.offsetX, self.yCoord + this.side.offsetY, self.zCoord + this.side.offsetZ );
+				final TileEntity te = self.getWorldObj().getTileEntity( self.xCoord + this.getSide().offsetX, self.yCoord + this.getSide().offsetY, self.zCoord + this.getSide().offsetZ );
 				this.outputTarget = te instanceof IEnergyReceiver ? (IEnergyReceiver) te : null;
 				this.cachedTarget = true;
 			}
 
-			if( this.outputTarget == null || !this.outputTarget.canConnectEnergy( this.side.getOpposite() ) )
+			if( this.outputTarget == null || !this.outputTarget.canConnectEnergy( this.getSide().getOpposite() ) )
 			{
 				return NULL_HANDLER;
 			}
@@ -188,7 +188,7 @@ public final class PartP2PRFPower extends PartP2PTunnel<PartP2PRFPower> implemen
 	@Override
 	public int getEnergyStored( final ForgeDirection from )
 	{
-		if( this.output || !this.isActive() )
+		if( this.isOutput() || !this.isActive() )
 		{
 			return 0;
 		}
@@ -210,7 +210,7 @@ public final class PartP2PRFPower extends PartP2PTunnel<PartP2PRFPower> implemen
 		{
 			for( final PartP2PRFPower t : this.getOutputs() )
 			{
-				total += t.getOutput().getEnergyStored( t.side.getOpposite() );
+				total += t.getOutput().getEnergyStored( t.getSide().getOpposite() );
 			}
 		}
 		catch( final GridAccessException e )
@@ -229,7 +229,7 @@ public final class PartP2PRFPower extends PartP2PTunnel<PartP2PRFPower> implemen
 	@Override
 	public int getMaxEnergyStored( final ForgeDirection from )
 	{
-		if( this.output || !this.isActive() )
+		if( this.isOutput() || !this.isActive() )
 		{
 			return 0;
 		}
@@ -251,7 +251,7 @@ public final class PartP2PRFPower extends PartP2PTunnel<PartP2PRFPower> implemen
 		{
 			for( final PartP2PRFPower t : this.getOutputs() )
 			{
-				total += t.getOutput().getMaxEnergyStored( t.side.getOpposite() );
+				total += t.getOutput().getMaxEnergyStored( t.getSide().getOpposite() );
 			}
 		}
 		catch( final GridAccessException e )

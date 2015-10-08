@@ -47,19 +47,17 @@ import appeng.util.Platform;
 public class GuiCellWorkbench extends GuiUpgradeable
 {
 
-	final ContainerCellWorkbench workbench;
-	final TileCellWorkbench tcw;
+	private final ContainerCellWorkbench workbench;
 
-	GuiImgButton clear;
-	GuiImgButton partition;
-	GuiToggleButton copyMode;
+	private GuiImgButton clear;
+	private GuiImgButton partition;
+	private GuiToggleButton copyMode;
 
 	public GuiCellWorkbench( final InventoryPlayer inventoryPlayer, final TileCellWorkbench te )
 	{
 		super( new ContainerCellWorkbench( inventoryPlayer, te ) );
 		this.workbench = (ContainerCellWorkbench) this.inventorySlots;
 		this.ySize = 251;
-		this.tcw = te;
 	}
 
 	@Override
@@ -135,7 +133,7 @@ public class GuiCellWorkbench extends GuiUpgradeable
 	@Override
 	protected void handleButtonVisibility()
 	{
-		this.copyMode.setState( this.workbench.copyMode == CopyMode.CLEAR_ON_REMOVE );
+		this.copyMode.setState( this.workbench.getCopyMode() == CopyMode.CLEAR_ON_REMOVE );
 
 		boolean hasFuzzy = false;
 		final IInventory inv = this.workbench.getCellUpgradeInventory();

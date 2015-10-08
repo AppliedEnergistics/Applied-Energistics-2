@@ -29,8 +29,8 @@ import appeng.util.iterators.NullIterator;
 public class TunnelCollection<T extends PartP2PTunnel> implements Iterable<T>
 {
 
-	final Class clz;
-	Collection<T> tunnelSources;
+	private final Class clz;
+	private Collection<T> tunnelSources;
 
 	public TunnelCollection( final Collection<T> src, final Class c )
 	{

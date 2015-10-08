@@ -32,19 +32,19 @@ import appeng.api.storage.data.IItemList;
 public class MECraftingInventory implements IMEInventory<IAEItemStack>
 {
 
-	final MECraftingInventory par;
+	private final MECraftingInventory par;
 
-	final IMEInventory<IAEItemStack> target;
-	final IItemList<IAEItemStack> localCache;
+	private final IMEInventory<IAEItemStack> target;
+	private final IItemList<IAEItemStack> localCache;
 
-	final boolean logExtracted;
-	final IItemList<IAEItemStack> extractedCache;
+	private final boolean logExtracted;
+	private final IItemList<IAEItemStack> extractedCache;
 
-	final boolean logInjections;
-	final IItemList<IAEItemStack> injectedCache;
+	private final boolean logInjections;
+	private final IItemList<IAEItemStack> injectedCache;
 
-	final boolean logMissing;
-	final IItemList<IAEItemStack> missingCache;
+	private final boolean logMissing;
+	private final IItemList<IAEItemStack> missingCache;
 
 	public MECraftingInventory()
 	{
@@ -336,12 +336,12 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack>
 		return true;
 	}
 
-	public void addMissing( final IAEItemStack extra )
+	private void addMissing( final IAEItemStack extra )
 	{
 		this.missingCache.add( extra );
 	}
 
-	public void ignore( final IAEItemStack what )
+	void ignore( final IAEItemStack what )
 	{
 		final IAEItemStack list = this.localCache.findPrecise( what );
 		if( list != null )

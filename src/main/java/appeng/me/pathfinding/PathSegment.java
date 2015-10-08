@@ -34,11 +34,11 @@ import appeng.me.cache.PathGridCache;
 public class PathSegment
 {
 
-	final PathGridCache pgc;
-	final Set<IPathItem> semiOpen;
-	final Set<IPathItem> closed;
-	public boolean isDead;
-	List<IPathItem> open;
+	private final PathGridCache pgc;
+	private final Set<IPathItem> semiOpen;
+	private final Set<IPathItem> closed;
+	private boolean isDead;
+	private List<IPathItem> open;
 
 	public PathSegment( final PathGridCache myPGC, final List<IPathItem> open, final Set<IPathItem> semiOpen, final Set<IPathItem> closed )
 	{
@@ -46,7 +46,7 @@ public class PathSegment
 		this.semiOpen = semiOpen;
 		this.closed = closed;
 		this.pgc = myPGC;
-		this.isDead = false;
+		this.setDead( false );
 	}
 
 	public boolean step()
@@ -125,12 +125,12 @@ public class PathSegment
 		pi = start;
 		while( pi != null )
 		{
-			this.pgc.channelsByBlocks++;
+			this.pgc.setChannelsByBlocks( this.pgc.getChannelsByBlocks() + 1 );
 			pi.incrementChannelCount( 1 );
 			pi = pi.getControllerRoute();
 		}
 
-		this.pgc.channelsInUse++;
+		this.pgc.setChannelsInUse( this.pgc.getChannelsInUse() + 1 );
 		return true;
 	}
 
@@ -150,12 +150,22 @@ public class PathSegment
 		pi = start;
 		while( pi != null )
 		{
-			this.pgc.channelsByBlocks++;
+			this.pgc.setChannelsByBlocks( this.pgc.getChannelsByBlocks() + 1 );
 			pi.incrementChannelCount( 1 );
 			pi = pi.getControllerRoute();
 		}
 
-		this.pgc.channelsInUse++;
+		this.pgc.setChannelsInUse( this.pgc.getChannelsInUse() + 1 );
 		return true;
+	}
+
+	public boolean isDead()
+	{
+		return this.isDead;
+	}
+
+	public void setDead( final boolean isDead )
+	{
+		this.isDead = isDead;
 	}
 }

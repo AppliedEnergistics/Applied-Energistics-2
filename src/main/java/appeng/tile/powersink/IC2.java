@@ -38,7 +38,7 @@ import appeng.util.Platform;
 public abstract class IC2 extends AERootPoweredTile implements IEnergySink
 {
 
-	boolean isInIC2 = false;
+	private boolean isInIC2 = false;
 
 	@Override
 	public final boolean acceptsEnergyFrom( final TileEntity emitter, final ForgeDirection direction )
@@ -64,7 +64,7 @@ public abstract class IC2 extends AERootPoweredTile implements IEnergySink
 		// just store the excess in the current block, if I return the waste,
 		// IC2 will just disintegrate it - Oct 20th 2013
 		final double overflow = PowerUnits.EU.convertTo( PowerUnits.AE, this.injectExternalPower( PowerUnits.EU, amount ) );
-		this.internalCurrentPower += overflow;
+		this.setInternalCurrentPower( this.getInternalCurrentPower() + overflow );
 		return 0; // see above comment.
 	}
 

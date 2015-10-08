@@ -55,19 +55,19 @@ import appeng.util.item.AEItemStack;
 public class TileCharger extends AENetworkPowerTile implements ICrankable
 {
 
-	final int[] sides = { 0 };
-	final AppEngInternalInventory inv = new AppEngInternalInventory( this, 1 );
-	int tickTickTimer = 0;
+	private final int[] sides = { 0 };
+	private final AppEngInternalInventory inv = new AppEngInternalInventory( this, 1 );
+	private int tickTickTimer = 0;
 
-	int lastUpdate = 0;
-	boolean requiresUpdate = false;
+	private int lastUpdate = 0;
+	private boolean requiresUpdate = false;
 
 	public TileCharger()
 	{
-		this.gridProxy.setValidSides( EnumSet.noneOf( ForgeDirection.class ) );
-		this.gridProxy.setFlags();
-		this.internalMaxPower = 1500;
-		this.gridProxy.setIdlePowerUsage( 0 );
+		this.getProxy().setValidSides( EnumSet.noneOf( ForgeDirection.class ) );
+		this.getProxy().setFlags();
+		this.setInternalMaxPower( 1500 );
+		this.getProxy().setIdlePowerUsage( 0 );
 	}
 
 	@Override
@@ -123,11 +123,11 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable
 		final ItemStack myItem = this.getStackInSlot( 0 );
 
 		// charge from the network!
-		if( this.internalCurrentPower < 1499 )
+		if( this.getInternalCurrentPower() < 1499 )
 		{
 			try
 			{
-				this.injectExternalPower( PowerUnits.AE, this.gridProxy.getEnergy().extractAEPower( Math.min( 150.0, 1500.0 - this.internalCurrentPower ), Actionable.MODULATE, PowerMultiplier.ONE ) );
+				this.injectExternalPower( PowerUnits.AE, this.getProxy().getEnergy().extractAEPower( Math.min( 150.0, 1500.0 - this.getInternalCurrentPower() ), Actionable.MODULATE, PowerMultiplier.ONE ) );
 				this.tickTickTimer = 20; // keep ticking...
 			}
 			catch( final GridAccessException e )
@@ -143,27 +143,27 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable
 
 		final IMaterials materials = AEApi.instance().definitions().materials();
 
-		if( this.internalCurrentPower > 149 && Platform.isChargeable( myItem ) )
+		if( this.getInternalCurrentPower() > 149 && Platform.isChargeable( myItem ) )
 		{
 			final IAEItemPowerStorage ps = (IAEItemPowerStorage) myItem.getItem();
 			if( ps.getAEMaxPower( myItem ) > ps.getAECurrentPower( myItem ) )
 			{
-				final double oldPower = this.internalCurrentPower;
+				final double oldPower = this.getInternalCurrentPower();
 
 				final double adjustment = ps.injectAEPower( myItem, this.extractAEPower( 150.0, Actionable.MODULATE, PowerMultiplier.CONFIG ) );
-				this.internalCurrentPower += adjustment;
-				if( oldPower > this.internalCurrentPower )
+				this.setInternalCurrentPower( this.getInternalCurrentPower() + adjustment );
+				if( oldPower > this.getInternalCurrentPower() )
 				{
 					this.requiresUpdate = true;
 				}
 				this.tickTickTimer = 20; // keep ticking...
 			}
 		}
-		else if( this.internalCurrentPower > 1499 && materials.certusQuartzCrystal().isSameAs( myItem ) )
+		else if( this.getInternalCurrentPower() > 1499 && materials.certusQuartzCrystal().isSameAs( myItem ) )
 		{
 			if( Platform.getRandomFloat() > 0.8f ) // simulate wait
 			{
-				this.extractAEPower( this.internalMaxPower, Actionable.MODULATE, PowerMultiplier.CONFIG );// 1500
+				this.extractAEPower( this.getInternalMaxPower(), Actionable.MODULATE, PowerMultiplier.CONFIG );// 1500
 
 				for( final ItemStack charged : materials.certusQuartzCrystalCharged().maybeStack( myItem.stackSize ).asSet() )
 				{
@@ -177,7 +177,7 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable
 	public void setOrientation( final ForgeDirection inForward, final ForgeDirection inUp )
 	{
 		super.setOrientation( inForward, inUp );
-		this.gridProxy.setValidSides( EnumSet.of( this.getUp(), this.getUp().getOpposite() ) );
+		this.getProxy().setValidSides( EnumSet.of( this.getUp(), this.getUp().getOpposite() ) );
 		this.setPowerSides( EnumSet.of( this.getUp(), this.getUp().getOpposite() ) );
 	}
 
@@ -190,7 +190,7 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable
 	@Override
 	public boolean canTurn()
 	{
-		return this.internalCurrentPower < this.internalMaxPower;
+		return this.getInternalCurrentPower() < this.getInternalMaxPower();
 	}
 
 	@Override
@@ -199,13 +199,13 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable
 		this.injectExternalPower( PowerUnits.AE, 150 );
 
 		final ItemStack myItem = this.getStackInSlot( 0 );
-		if( this.internalCurrentPower > 1499 )
+		if( this.getInternalCurrentPower() > 1499 )
 		{
 			final IMaterials materials = AEApi.instance().definitions().materials();
 
 			if( materials.certusQuartzCrystal().isSameAs( myItem ) )
 			{
-				this.extractAEPower( this.internalMaxPower, Actionable.MODULATE, PowerMultiplier.CONFIG );// 1500
+				this.extractAEPower( this.getInternalMaxPower(), Actionable.MODULATE, PowerMultiplier.CONFIG );// 1500
 
 				for( final ItemStack charged : materials.certusQuartzCrystalCharged().maybeStack( myItem.stackSize ).asSet() )
 				{

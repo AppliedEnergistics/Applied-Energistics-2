@@ -108,7 +108,7 @@ public class FMPPlacementHelper implements IPartHost
 		return this.myPart;
 	}
 
-	public void removePart()
+	private void removePart()
 	{
 		if( this.myPart.isEmpty() )
 		{
@@ -307,7 +307,7 @@ public class FMPPlacementHelper implements IPartHost
 		return this.myPart.isInWorld();
 	}
 
-	static class NullStorage extends CableBusStorage
+	private static class NullStorage extends CableBusStorage
 	{
 
 		@Override

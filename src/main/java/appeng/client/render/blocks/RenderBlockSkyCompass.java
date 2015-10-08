@@ -44,8 +44,7 @@ import appeng.tile.misc.TileSkyCompass;
 public class RenderBlockSkyCompass extends BaseBlockRender<BlockSkyCompass, TileSkyCompass>
 {
 
-	final ModelCompass model = new ModelCompass();
-	float r = 0;
+	private final ModelCompass model = new ModelCompass();
 
 	public RenderBlockSkyCompass()
 	{
@@ -133,9 +132,9 @@ public class RenderBlockSkyCompass extends BaseBlockRender<BlockSkyCompass, Tile
 				}
 			}
 
-			if( cr.hasResult )
+			if( cr.isValidResult() )
 			{
-				if( cr.spin )
+				if( cr.isSpin() )
 				{
 					now %= 100000;
 					this.model.renderAll( ( now / 50000.0f ) * (float) Math.PI * 500.0f );
@@ -146,13 +145,13 @@ public class RenderBlockSkyCompass extends BaseBlockRender<BlockSkyCompass, Tile
 					{
 						final float offRads = rYaw / 180.0f * (float) Math.PI;
 						final float adjustment = (float) Math.PI * 0.74f;
-						this.model.renderAll( (float) this.flipidiy( cr.rad + offRads + adjustment ) );
+						this.model.renderAll( (float) this.flipidiy( cr.getRad() + offRads + adjustment ) );
 					}
 					else
 					{
 						final float offRads = rYaw / 180.0f * (float) Math.PI;
 						final float adjustment = (float) Math.PI * -0.74f;
-						this.model.renderAll( (float) this.flipidiy( cr.rad + offRads + adjustment ) );
+						this.model.renderAll( (float) this.flipidiy( cr.getRad() + offRads + adjustment ) );
 					}
 				}
 			}
@@ -216,16 +215,16 @@ public class RenderBlockSkyCompass extends BaseBlockRender<BlockSkyCompass, Tile
 			cr = new CompassResult( false, true, 0 );
 		}
 
-		if( cr.hasResult )
+		if( cr.isValidResult() )
 		{
-			if( cr.spin )
+			if( cr.isSpin() )
 			{
 				now %= 100000;
 				this.model.renderAll( ( now / 50000.0f ) * (float) Math.PI * 500.0f );
 			}
 			else
 			{
-				this.model.renderAll( (float) ( skyCompass.getForward() == ForgeDirection.DOWN ? this.flipidiy( cr.rad ) : cr.rad ) );
+				this.model.renderAll( (float) ( skyCompass.getForward() == ForgeDirection.DOWN ? this.flipidiy( cr.getRad() ) : cr.getRad() ) );
 			}
 		}
 		else

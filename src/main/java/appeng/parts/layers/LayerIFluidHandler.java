@@ -31,7 +31,7 @@ import appeng.api.parts.LayerBase;
 public class LayerIFluidHandler extends LayerBase implements IFluidHandler
 {
 
-	static final FluidTankInfo[] EMPTY_LIST = new FluidTankInfo[0];
+	private static final FluidTankInfo[] EMPTY_LIST = new FluidTankInfo[0];
 
 	@Override
 	public int fill( final ForgeDirection from, final FluidStack resource, final boolean doFill )

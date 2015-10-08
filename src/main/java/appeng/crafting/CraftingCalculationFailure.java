@@ -27,7 +27,7 @@ public class CraftingCalculationFailure extends RuntimeException
 
 	private static final long serialVersionUID = 654603652836724823L;
 
-	final IAEItemStack missing;
+	private final IAEItemStack missing;
 
 	public CraftingCalculationFailure( final IAEItemStack what, final long howMany )
 	{

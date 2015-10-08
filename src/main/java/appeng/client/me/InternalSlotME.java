@@ -27,9 +27,9 @@ import appeng.api.storage.data.IAEItemStack;
 public class InternalSlotME
 {
 
-	public final int offset;
-	public final int xPos;
-	public final int yPos;
+	private final int offset;
+	private final int xPos;
+	private final int yPos;
 	private final ItemRepo repo;
 
 	public InternalSlotME( final ItemRepo def, final int offset, final int displayX, final int displayY )
@@ -40,18 +40,28 @@ public class InternalSlotME
 		this.yPos = displayY;
 	}
 
-	public ItemStack getStack()
+	ItemStack getStack()
 	{
 		return this.repo.getItem( this.offset );
 	}
 
-	public IAEItemStack getAEStack()
+	IAEItemStack getAEStack()
 	{
 		return this.repo.getReferenceItem( this.offset );
 	}
 
-	public boolean hasPower()
+	boolean hasPower()
 	{
 		return this.repo.hasPower();
+	}
+
+	int getxPosition()
+	{
+		return this.xPos;
+	}
+
+	int getyPosition()
+	{
+		return this.yPos;
 	}
 }

@@ -49,11 +49,11 @@ public class TileCondenser extends AEBaseInvTile implements IFluidHandler, IConf
 {
 
 	private static final FluidTankInfo[] EMPTY = { new FluidTankInfo( null, 10 ) };
-	final int[] sides = { 0, 1 };
-	final AppEngInternalInventory inv = new AppEngInternalInventory( this, 3 );
-	final ConfigManager cm = new ConfigManager( this );
+	private final int[] sides = { 0, 1 };
+	private final AppEngInternalInventory inv = new AppEngInternalInventory( this, 3 );
+	private final ConfigManager cm = new ConfigManager( this );
 
-	public double storedPower = 0;
+	private double storedPower = 0;
 
 	public TileCondenser()
 	{
@@ -64,14 +64,14 @@ public class TileCondenser extends AEBaseInvTile implements IFluidHandler, IConf
 	public void writeToNBT_TileCondenser( final NBTTagCompound data )
 	{
 		this.cm.writeToNBT( data );
-		data.setDouble( "storedPower", this.storedPower );
+		data.setDouble( "storedPower", this.getStoredPower() );
 	}
 
 	@TileEvent( TileEventType.WORLD_NBT_READ )
 	public void readFromNBT_TileCondenser( final NBTTagCompound data )
 	{
 		this.cm.readFromNBT( data );
-		this.storedPower = data.getDouble( "storedPower" );
+		this.setStoredPower( data.getDouble( "storedPower" ) );
 	}
 
 	public double getStorage()
@@ -93,16 +93,16 @@ public class TileCondenser extends AEBaseInvTile implements IFluidHandler, IConf
 
 	public void addPower( final double rawPower )
 	{
-		this.storedPower += rawPower;
-		this.storedPower = Math.max( 0.0, Math.min( this.getStorage(), this.storedPower ) );
+		this.setStoredPower( this.getStoredPower() + rawPower );
+		this.setStoredPower( Math.max( 0.0, Math.min( this.getStorage(), this.getStoredPower() ) ) );
 
 		final double requiredPower = this.getRequiredPower();
 		final ItemStack output = this.getOutput();
-		while( requiredPower <= this.storedPower && output != null && requiredPower > 0 )
+		while( requiredPower <= this.getStoredPower() && output != null && requiredPower > 0 )
 		{
 			if( this.canAddOutput( output ) )
 			{
-				this.storedPower -= requiredPower;
+				this.setStoredPower( this.getStoredPower() - requiredPower );
 				this.addOutput( output );
 			}
 			else
@@ -277,5 +277,15 @@ public class TileCondenser extends AEBaseInvTile implements IFluidHandler, IConf
 	public IConfigManager getConfigManager()
 	{
 		return this.cm;
+	}
+
+	public double getStoredPower()
+	{
+		return this.storedPower;
+	}
+
+	private void setStoredPower( final double storedPower )
+	{
+		this.storedPower = storedPower;
 	}
 }

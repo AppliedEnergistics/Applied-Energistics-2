@@ -38,7 +38,7 @@ import appeng.util.Platform;
 public class ItemPaintBall extends AEBaseItem
 {
 
-	public static final int DAMAGE_THRESHOLD = 20;
+	private static final int DAMAGE_THRESHOLD = 20;
 
 	public ItemPaintBall()
 	{
@@ -57,7 +57,7 @@ public class ItemPaintBall extends AEBaseItem
 		return super.getItemStackDisplayName( is ) + " - " + this.getExtraName( is );
 	}
 
-	public String getExtraName( final ItemStack is )
+	private String getExtraName( final ItemStack is )
 	{
 		return ( is.getItemDamage() >= DAMAGE_THRESHOLD ? GuiText.Lumen.getLocal() + ' ' : "" ) + this.getColor( is );
 	}

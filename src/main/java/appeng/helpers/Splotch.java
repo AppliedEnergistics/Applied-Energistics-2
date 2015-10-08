@@ -30,9 +30,9 @@ import appeng.api.util.AEColor;
 public class Splotch
 {
 
-	public final ForgeDirection side;
-	public final boolean lumen;
-	public final AEColor color;
+	private final ForgeDirection side;
+	private final boolean lumen;
+	private final AEColor color;
 	private final int pos;
 
 	public Splotch( final AEColor col, final boolean lit, final ForgeDirection side, final Vec3 position )
@@ -82,7 +82,7 @@ public class Splotch
 	public void writeToStream( final ByteBuf stream )
 	{
 		stream.writeByte( this.pos );
-		final int val = this.side.ordinal() | ( this.color.ordinal() << 3 ) | ( this.lumen ? 0x80 : 0x00 );
+		final int val = this.getSide().ordinal() | ( this.getColor().ordinal() << 3 ) | ( this.isLumen() ? 0x80 : 0x00 );
 		stream.writeByte( val );
 	}
 
@@ -98,7 +98,22 @@ public class Splotch
 
 	public int getSeed()
 	{
-		final int val = this.side.ordinal() | ( this.color.ordinal() << 3 ) | ( this.lumen ? 0x80 : 0x00 );
+		final int val = this.getSide().ordinal() | ( this.getColor().ordinal() << 3 ) | ( this.isLumen() ? 0x80 : 0x00 );
 		return Math.abs( this.pos + val );
+	}
+
+	public ForgeDirection getSide()
+	{
+		return this.side;
+	}
+
+	public AEColor getColor()
+	{
+		return this.color;
+	}
+
+	public boolean isLumen()
+	{
+		return this.lumen;
 	}
 }

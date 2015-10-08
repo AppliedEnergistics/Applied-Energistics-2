@@ -12,7 +12,7 @@ import appeng.util.Platform;
 public class StandardWorld implements IMeteoriteWorld
 {
 
-	protected final World w;
+	private final World w;
 
 	public StandardWorld( final World w )
 	{
@@ -46,7 +46,7 @@ public class StandardWorld implements IMeteoriteWorld
 	@Override
 	public boolean hasNoSky()
 	{
-		return !this.w.provider.hasNoSky;
+		return !this.getWorld().provider.hasNoSky;
 	}
 
 	@Override
@@ -54,7 +54,7 @@ public class StandardWorld implements IMeteoriteWorld
 	{
 		if( this.range( x, y, z ) )
 		{
-			return this.w.getBlockMetadata( x, y, z );
+			return this.getWorld().getBlockMetadata( x, y, z );
 		}
 		return 0;
 	}
@@ -64,7 +64,7 @@ public class StandardWorld implements IMeteoriteWorld
 	{
 		if( this.range( x, y, z ) )
 		{
-			return this.w.getBlock( x, y, z );
+			return this.getWorld().getBlock( x, y, z );
 		}
 		return Platform.AIR_BLOCK;
 	}
@@ -74,7 +74,7 @@ public class StandardWorld implements IMeteoriteWorld
 	{
 		if( this.range( x, y, z ) )
 		{
-			return this.w.canBlockSeeTheSky( x, y, z );
+			return this.getWorld().canBlockSeeTheSky( x, y, z );
 		}
 		return false;
 	}
@@ -84,7 +84,7 @@ public class StandardWorld implements IMeteoriteWorld
 	{
 		if( this.range( x, y, z ) )
 		{
-			return this.w.getTileEntity( x, y, z );
+			return this.getWorld().getTileEntity( x, y, z );
 		}
 		return null;
 	}
@@ -100,7 +100,7 @@ public class StandardWorld implements IMeteoriteWorld
 	{
 		if( this.range( x, y, z ) )
 		{
-			this.w.setBlock( x, y, z, blk );
+			this.getWorld().setBlock( x, y, z, blk );
 		}
 	}
 
@@ -109,7 +109,7 @@ public class StandardWorld implements IMeteoriteWorld
 	{
 		if( this.range( x, y, z ) )
 		{
-			this.w.setBlock( x, y, z, block, meta, flags );
+			this.getWorld().setBlock( x, y, z, block, meta, flags );
 		}
 	}
 

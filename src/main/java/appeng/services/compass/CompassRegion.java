@@ -61,7 +61,7 @@ public final class CompassRegion
 		this.openFile( false );
 	}
 
-	public void close()
+	void close()
 	{
 		try
 		{
@@ -79,7 +79,7 @@ public final class CompassRegion
 		}
 	}
 
-	public boolean hasBeacon( int cx, int cz )
+	boolean hasBeacon( int cx, int cz )
 	{
 		if( this.hasFile )
 		{
@@ -96,7 +96,7 @@ public final class CompassRegion
 		return false;
 	}
 
-	public void setHasBeacon( int cx, int cz, final int cdy, final boolean hasBeacon )
+	void setHasBeacon( int cx, int cz, final int cdy, final boolean hasBeacon )
 	{
 		cx &= 0x3FF;
 		cz &= 0x3FF;

@@ -37,11 +37,10 @@ import appeng.core.worlddata.WorldData;
 public class GridStorage implements IGridStorage
 {
 
-	final long myID;
-	final NBTTagCompound data;
-	final GridStorageSearch mySearchEntry; // keep myself in the list until I'm
+	private final long myID;
+	private final NBTTagCompound data;
+	private final GridStorageSearch mySearchEntry; // keep myself in the list until I'm
 	private final WeakHashMap<GridStorage, Boolean> divided = new WeakHashMap<GridStorage, Boolean>();
-	public boolean isDirty = false;
 	private WeakReference<IGrid> internalGrid = null;
 
 	// lost...
@@ -97,8 +96,6 @@ public class GridStorage implements IGridStorage
 
 	public String getValue()
 	{
-		this.isDirty = false;
-
 		final Grid currentGrid = (Grid) this.getGrid();
 		if( currentGrid != null )
 		{
@@ -124,7 +121,7 @@ public class GridStorage implements IGridStorage
 		return this.internalGrid == null ? null : this.internalGrid.get();
 	}
 
-	public void setGrid( final Grid grid )
+	void setGrid( final Grid grid )
 	{
 		this.internalGrid = new WeakReference<IGrid>( grid );
 	}
@@ -141,22 +138,17 @@ public class GridStorage implements IGridStorage
 		return this.myID;
 	}
 
-	public void markDirty()
-	{
-		this.isDirty = true;
-	}
-
-	public void addDivided( final GridStorage gs )
+	void addDivided( final GridStorage gs )
 	{
 		this.divided.put( gs, true );
 	}
 
-	public boolean hasDivided( final GridStorage myStorage )
+	boolean hasDivided( final GridStorage myStorage )
 	{
 		return this.divided.containsKey( myStorage );
 	}
 
-	public void remove()
+	void remove()
 	{
 		WorldData.instance().storageData().destroyGridStorage( this.myID );
 	}

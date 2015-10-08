@@ -54,7 +54,7 @@ public class BetterStorage implements IIntegrationModule, IBetterStorage
 	{
 		if( te instanceof ICrateStorage )
 		{
-			return new BSCrateStorageAdaptor( te, d );
+			return new BSCrateStorageAdaptor( te );
 		}
 		return null;
 	}

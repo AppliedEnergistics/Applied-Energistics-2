@@ -24,10 +24,10 @@ import net.minecraft.entity.Entity;
 
 public final class EntityIds
 {
-	public static final int TINY_TNT = 10;
-	public static final int SINGULARITY = 11;
-	public static final int CHARGED_QUARTZ = 12;
-	public static final int GROWING_CRYSTAL = 13;
+	private static final int TINY_TNT = 10;
+	private static final int SINGULARITY = 11;
+	private static final int CHARGED_QUARTZ = 12;
+	private static final int GROWING_CRYSTAL = 13;
 
 	private EntityIds()
 	{

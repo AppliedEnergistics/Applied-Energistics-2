@@ -25,9 +25,9 @@ import net.minecraft.world.World;
 public class BlockUpdate implements IWorldCallable<Boolean>
 {
 
-	final int x;
-	final int y;
-	final int z;
+	private final int x;
+	private final int y;
+	private final int z;
 
 	public BlockUpdate( final int x, final int y, final int z )
 	{

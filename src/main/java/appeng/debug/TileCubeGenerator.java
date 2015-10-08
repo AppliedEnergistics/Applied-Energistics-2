@@ -35,10 +35,10 @@ import appeng.util.Platform;
 public class TileCubeGenerator extends AEBaseTile
 {
 
-	int size = 3;
-	ItemStack is = null;
-	int countdown = 20 * 10;
-	EntityPlayer who;
+	private int size = 3;
+	private ItemStack is = null;
+	private int countdown = 20 * 10;
+	private EntityPlayer who = null;
 
 	@TileEvent( TileEventType.TICK )
 	public void onTickEvent()
@@ -62,7 +62,7 @@ public class TileCubeGenerator extends AEBaseTile
 		}
 	}
 
-	void spawn()
+	private void spawn()
 	{
 		this.worldObj.setBlock( this.xCoord, this.yCoord, this.zCoord, Platform.AIR_BLOCK, 0, 3 );
 
@@ -83,7 +83,7 @@ public class TileCubeGenerator extends AEBaseTile
 		}
 	}
 
-	public void click( final EntityPlayer player )
+	void click( final EntityPlayer player )
 	{
 		if( Platform.isServer() )
 		{

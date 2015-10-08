@@ -25,8 +25,8 @@ import net.minecraft.inventory.IInventory;
 public class OptionalSlotNormal extends AppEngSlot
 {
 
-	final int groupNum;
-	final IOptionalSlotHost host;
+	private final int groupNum;
+	private final IOptionalSlotHost host;
 
 	public OptionalSlotNormal( final IInventory inv, final IOptionalSlotHost containerBus, final int slot, final int xPos, final int yPos, final int groupNum )
 	{

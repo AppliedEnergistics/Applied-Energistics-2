@@ -27,10 +27,15 @@ import cpw.mods.fml.common.eventhandler.Event;
 public class FMPPacketEvent extends Event
 {
 
-	public final EntityPlayerMP sender;
+	private final EntityPlayerMP sender;
 
 	public FMPPacketEvent( final EntityPlayerMP sender )
 	{
 		this.sender = sender;
+	}
+
+	public EntityPlayerMP getSender()
+	{
+		return this.sender;
 	}
 }

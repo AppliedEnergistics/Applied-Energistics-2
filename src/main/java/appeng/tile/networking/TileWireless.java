@@ -53,22 +53,22 @@ public class TileWireless extends AENetworkInvTile implements IWirelessAccessPoi
 	public static final int POWERED_FLAG = 1;
 	public static final int CHANNEL_FLAG = 2;
 
-	final int[] sides = { 0 };
-	final AppEngInternalInventory inv = new AppEngInternalInventory( this, 1 );
+	private final int[] sides = { 0 };
+	private final AppEngInternalInventory inv = new AppEngInternalInventory( this, 1 );
 
-	public int clientFlags = 0;
+	private int clientFlags = 0;
 
 	public TileWireless()
 	{
-		this.gridProxy.setFlags( GridFlags.REQUIRE_CHANNEL );
-		this.gridProxy.setValidSides( EnumSet.noneOf( ForgeDirection.class ) );
+		this.getGridProxy().setFlags( GridFlags.REQUIRE_CHANNEL );
+		this.getGridProxy().setValidSides( EnumSet.noneOf( ForgeDirection.class ) );
 	}
 
 	@Override
 	public void setOrientation( final ForgeDirection inForward, final ForgeDirection inUp )
 	{
 		super.setOrientation( inForward, inUp );
-		this.gridProxy.setValidSides( EnumSet.of( this.getForward().getOpposite() ) );
+		this.getGridProxy().setValidSides( EnumSet.of( this.getForward().getOpposite() ) );
 	}
 
 	@MENetworkEventSubscribe
@@ -86,27 +86,27 @@ public class TileWireless extends AENetworkInvTile implements IWirelessAccessPoi
 	@TileEvent( TileEventType.NETWORK_READ )
 	public boolean readFromStream_TileWireless( final ByteBuf data )
 	{
-		final int old = this.clientFlags;
-		this.clientFlags = data.readByte();
+		final int old = this.getClientFlags();
+		this.setClientFlags( data.readByte() );
 
-		return old != this.clientFlags;
+		return old != this.getClientFlags();
 	}
 
 	@TileEvent( TileEventType.NETWORK_WRITE )
 	public void writeToStream_TileWireless( final ByteBuf data )
 	{
-		this.clientFlags = 0;
+		this.setClientFlags( 0 );
 
 		try
 		{
-			if( this.gridProxy.getEnergy().isNetworkPowered() )
+			if( this.getGridProxy().getEnergy().isNetworkPowered() )
 			{
-				this.clientFlags |= POWERED_FLAG;
+				this.setClientFlags( this.getClientFlags() | POWERED_FLAG );
 			}
 
-			if( this.gridProxy.getNode().meetsChannelRequirements() )
+			if( this.getGridProxy().getNode().meetsChannelRequirements() )
 			{
-				this.clientFlags |= CHANNEL_FLAG;
+				this.setClientFlags( this.getClientFlags() | CHANNEL_FLAG );
 			}
 		}
 		catch( final GridAccessException e )
@@ -114,7 +114,7 @@ public class TileWireless extends AENetworkInvTile implements IWirelessAccessPoi
 			// meh
 		}
 
-		data.writeByte( (byte) this.clientFlags );
+		data.writeByte( (byte) this.getClientFlags() );
 	}
 
 	@Override
@@ -162,7 +162,7 @@ public class TileWireless extends AENetworkInvTile implements IWirelessAccessPoi
 
 	private void updatePower()
 	{
-		this.gridProxy.setIdlePowerUsage( AEConfig.instance.wireless_getPowerDrain( this.getBoosters() ) );
+		this.getGridProxy().setIdlePowerUsage( AEConfig.instance.wireless_getPowerDrain( this.getBoosters() ) );
 	}
 
 	private int getBoosters()
@@ -188,10 +188,10 @@ public class TileWireless extends AENetworkInvTile implements IWirelessAccessPoi
 	{
 		if( Platform.isClient() )
 		{
-			return this.isPowered() && ( CHANNEL_FLAG == ( this.clientFlags & CHANNEL_FLAG ) );
+			return this.isPowered() && ( CHANNEL_FLAG == ( this.getClientFlags() & CHANNEL_FLAG ) );
 		}
 
-		return this.gridProxy.isActive();
+		return this.getGridProxy().isActive();
 	}
 
 	@Override
@@ -199,7 +199,7 @@ public class TileWireless extends AENetworkInvTile implements IWirelessAccessPoi
 	{
 		try
 		{
-			return this.gridProxy.getGrid();
+			return this.getGridProxy().getGrid();
 		}
 		catch( final GridAccessException e )
 		{
@@ -210,6 +210,16 @@ public class TileWireless extends AENetworkInvTile implements IWirelessAccessPoi
 	@Override
 	public boolean isPowered()
 	{
-		return POWERED_FLAG == ( this.clientFlags & POWERED_FLAG );
+		return POWERED_FLAG == ( this.getClientFlags() & POWERED_FLAG );
+	}
+
+	public int getClientFlags()
+	{
+		return this.clientFlags;
+	}
+
+	private void setClientFlags( final int clientFlags )
+	{
+		this.clientFlags = clientFlags;
 	}
 }

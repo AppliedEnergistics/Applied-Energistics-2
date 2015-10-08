@@ -98,7 +98,7 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements IAEFeature,
 		ReflectionHelper.setPrivateValue( Block.class, this, b, "isTileProvider" );
 	}
 
-	public boolean hasBlockTileEntity()
+	private boolean hasBlockTileEntity()
 	{
 		return this.tileEntityType != null;
 	}

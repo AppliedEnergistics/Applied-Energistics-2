@@ -67,8 +67,8 @@ import appeng.util.inv.IInventoryDestination;
 public class TileInterface extends AENetworkInvTile implements IGridTickable, ITileStorageMonitorable, IStorageMonitorable, IInventoryDestination, IInterfaceHost, IPriorityHost
 {
 
-	final DualityInterface duality = new DualityInterface( this.gridProxy, this );
-	ForgeDirection pointAt = ForgeDirection.UNKNOWN;
+	private final DualityInterface duality = new DualityInterface( this.getGridProxy(), this );
+	private ForgeDirection pointAt = ForgeDirection.UNKNOWN;
 
 	@MENetworkEventSubscribe
 	public void stateChange( final MENetworkChannelsChanged c )
@@ -115,7 +115,7 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, IT
 			this.setOrientation( this.pointAt.offsetY != 0 ? ForgeDirection.SOUTH : ForgeDirection.UP, this.pointAt.getOpposite() );
 		}
 
-		this.gridProxy.setValidSides( EnumSet.complementOf( EnumSet.of( this.pointAt ) ) );
+		this.getGridProxy().setValidSides( EnumSet.complementOf( EnumSet.of( this.pointAt ) ) );
 		this.markForUpdate();
 		this.markDirty();
 	}
@@ -141,7 +141,7 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, IT
 	@Override
 	public void onReady()
 	{
-		this.gridProxy.setValidSides( EnumSet.complementOf( EnumSet.of( this.pointAt ) ) );
+		this.getGridProxy().setValidSides( EnumSet.complementOf( EnumSet.of( this.pointAt ) ) );
 		super.onReady();
 		this.duality.initialize();
 	}

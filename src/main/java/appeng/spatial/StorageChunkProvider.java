@@ -35,7 +35,7 @@ import appeng.core.AEConfig;
 
 public class StorageChunkProvider extends ChunkProviderGenerate
 {
-	public static final int SQUARE_CHUNK_SIZE = 256;
+	private static final int SQUARE_CHUNK_SIZE = 256;
 	private static final Block[] BLOCKS;
 
 	static
@@ -51,7 +51,7 @@ public class StorageChunkProvider extends ChunkProviderGenerate
 		}
 	}
 
-	final World world;
+	private final World world;
 
 	public StorageChunkProvider( final World world, final long i )
 	{

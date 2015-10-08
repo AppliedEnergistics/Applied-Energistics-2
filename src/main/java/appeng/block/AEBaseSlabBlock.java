@@ -63,7 +63,7 @@ public class AEBaseSlabBlock extends BlockSlab implements IAEFeature
 		this.features = !this.field_150004_a ? new SlabBlockFeatureHandler( features, this ) : null;
 	}
 
-	public AEBaseSlabBlock setSlabs( final AEBaseSlabBlock slabs )
+	private AEBaseSlabBlock setSlabs( final AEBaseSlabBlock slabs )
 	{
 		this.slabs = slabs;
 		return this;

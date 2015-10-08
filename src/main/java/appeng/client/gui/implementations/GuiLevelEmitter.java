@@ -47,19 +47,19 @@ import appeng.parts.automation.PartLevelEmitter;
 public class GuiLevelEmitter extends GuiUpgradeable
 {
 
-	GuiNumberBox level;
+	private GuiNumberBox level;
 
-	GuiButton plus1;
-	GuiButton plus10;
-	GuiButton plus100;
-	GuiButton plus1000;
-	GuiButton minus1;
-	GuiButton minus10;
-	GuiButton minus100;
-	GuiButton minus1000;
+	private GuiButton plus1;
+	private GuiButton plus10;
+	private GuiButton plus100;
+	private GuiButton plus1000;
+	private GuiButton minus1;
+	private GuiButton minus10;
+	private GuiButton minus100;
+	private GuiButton minus1000;
 
-	GuiImgButton levelMode;
-	GuiImgButton craftingMode;
+	private GuiImgButton levelMode;
+	private GuiImgButton craftingMode;
 
 	public GuiLevelEmitter( final InventoryPlayer inventoryPlayer, final PartLevelEmitter te )
 	{
@@ -131,12 +131,12 @@ public class GuiLevelEmitter extends GuiUpgradeable
 
 		if( this.craftingMode != null )
 		{
-			this.craftingMode.set( ( (ContainerLevelEmitter) this.cvb ).cmType );
+			this.craftingMode.set( ( (ContainerLevelEmitter) this.cvb ).getCraftingMode() );
 		}
 
 		if( this.levelMode != null )
 		{
-			this.levelMode.set( ( (ContainerLevelEmitter) this.cvb ).lvType );
+			this.levelMode.set( ( (ContainerLevelEmitter) this.cvb ).getLevelMode() );
 		}
 	}
 

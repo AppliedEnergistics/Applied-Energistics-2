@@ -36,15 +36,15 @@ import appeng.util.iterators.InvIterator;
 public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 {
 
-	protected final int size;
-	protected final ItemStack[] inv;
-	public boolean enableClientEvents = false;
-	protected IAEAppEngInventory te;
-	protected int maxStack;
+	private final int size;
+	private final ItemStack[] inv;
+	private boolean enableClientEvents = false;
+	private IAEAppEngInventory te;
+	private int maxStack;
 
 	public AppEngInternalInventory( final IAEAppEngInventory inventory, final int size )
 	{
-		this.te = inventory;
+		this.setTileEntity( inventory );
 		this.size = size;
 		this.maxStack = 64;
 		this.inv = new ItemStack[size];
@@ -97,9 +97,9 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 				ns = split.splitStack( qty );
 			}
 
-			if( this.te != null && this.eventsEnabled() )
+			if( this.getTileEntity() != null && this.eventsEnabled() )
 			{
-				this.te.onChangeInventory( this, slot, InvOperation.decreaseStackSize, ns, null );
+				this.getTileEntity().onChangeInventory( this, slot, InvOperation.decreaseStackSize, ns, null );
 			}
 
 			this.markDirty();
@@ -111,7 +111,7 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 
 	protected boolean eventsEnabled()
 	{
-		return Platform.isServer() || this.enableClientEvents;
+		return Platform.isServer() || this.isEnableClientEvents();
 	}
 
 	@Override
@@ -126,7 +126,7 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 		final ItemStack oldStack = this.inv[slot];
 		this.inv[slot] = newItemStack;
 
-		if( this.te != null && this.eventsEnabled() )
+		if( this.getTileEntity() != null && this.eventsEnabled() )
 		{
 			ItemStack removed = oldStack;
 			ItemStack added = newItemStack;
@@ -151,7 +151,7 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 				}
 			}
 
-			this.te.onChangeInventory( this, slot, InvOperation.setInventorySlotContents, removed, added );
+			this.getTileEntity().onChangeInventory( this, slot, InvOperation.setInventorySlotContents, removed, added );
 
 			this.markDirty();
 		}
@@ -178,9 +178,9 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 	@Override
 	public void markDirty()
 	{
-		if( this.te != null && this.eventsEnabled() )
+		if( this.getTileEntity() != null && this.eventsEnabled() )
 		{
-			this.te.onChangeInventory( this, -1, InvOperation.markDirty, null, null );
+			this.getTileEntity().onChangeInventory( this, -1, InvOperation.markDirty, null, null );
 		}
 	}
 
@@ -214,9 +214,9 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 	// for guis...
 	public void markDirty( final int slotIndex )
 	{
-		if( this.te != null && this.eventsEnabled() )
+		if( this.getTileEntity() != null && this.eventsEnabled() )
 		{
-			this.te.onChangeInventory( this, slotIndex, InvOperation.markDirty, null, null );
+			this.getTileEntity().onChangeInventory( this, slotIndex, InvOperation.markDirty, null, null );
 		}
 	}
 
@@ -227,7 +227,7 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 		data.setTag( name, c );
 	}
 
-	public void writeToNBT( final NBTTagCompound target )
+	private void writeToNBT( final NBTTagCompound target )
 	{
 		for( int x = 0; x < this.size; x++ )
 		{
@@ -281,5 +281,25 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 	public Iterator<ItemStack> iterator()
 	{
 		return new InvIterator( this );
+	}
+
+	private boolean isEnableClientEvents()
+	{
+		return this.enableClientEvents;
+	}
+
+	public void setEnableClientEvents( final boolean enableClientEvents )
+	{
+		this.enableClientEvents = enableClientEvents;
+	}
+
+	private IAEAppEngInventory getTileEntity()
+	{
+		return this.te;
+	}
+
+	public void setTileEntity( final IAEAppEngInventory te )
+	{
+		this.te = te;
 	}
 }

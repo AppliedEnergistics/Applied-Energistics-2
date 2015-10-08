@@ -31,16 +31,13 @@ import appeng.tile.grindstone.TileGrinder;
 public class ContainerGrinder extends AEBaseContainer
 {
 
-	final TileGrinder grinder;
-
 	public ContainerGrinder( final InventoryPlayer ip, final TileGrinder grinder )
 	{
 		super( ip, grinder, null );
-		this.grinder = grinder;
 
-		this.addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.ORE, grinder, 0, 12, 17, this.invPlayer ) );
-		this.addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.ORE, grinder, 1, 12 + 18, 17, this.invPlayer ) );
-		this.addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.ORE, grinder, 2, 12 + 36, 17, this.invPlayer ) );
+		this.addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.ORE, grinder, 0, 12, 17, this.getInventoryPlayer() ) );
+		this.addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.ORE, grinder, 1, 12 + 18, 17, this.getInventoryPlayer() ) );
+		this.addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.ORE, grinder, 2, 12 + 36, 17, this.getInventoryPlayer() ) );
 
 		this.addSlotToContainer( new SlotInaccessible( grinder, 6, 80, 40 ) );
 

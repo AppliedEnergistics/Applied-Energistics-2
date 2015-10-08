@@ -103,7 +103,7 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 	@SideOnly( Side.CLIENT )
 	public void renderInventory( final IPartRenderHelper rh, final RenderBlocks renderer )
 	{
-		rh.setTexture( CableBusTextures.PartImportSides.getIcon(), CableBusTextures.PartImportSides.getIcon(), CableBusTextures.PartMonitorBack.getIcon(), this.is.getIconIndex(), CableBusTextures.PartImportSides.getIcon(), CableBusTextures.PartImportSides.getIcon() );
+		rh.setTexture( CableBusTextures.PartImportSides.getIcon(), CableBusTextures.PartImportSides.getIcon(), CableBusTextures.PartMonitorBack.getIcon(), this.getItemStack().getIconIndex(), CableBusTextures.PartImportSides.getIcon(), CableBusTextures.PartImportSides.getIcon() );
 
 		rh.setBounds( 3, 3, 15, 13, 13, 16 );
 		rh.renderInventoryBox( renderer );
@@ -119,8 +119,8 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 	@SideOnly( Side.CLIENT )
 	public void renderStatic( final int x, final int y, final int z, final IPartRenderHelper rh, final RenderBlocks renderer )
 	{
-		this.renderCache = rh.useSimplifiedRendering( x, y, z, this, this.renderCache );
-		rh.setTexture( CableBusTextures.PartImportSides.getIcon(), CableBusTextures.PartImportSides.getIcon(), CableBusTextures.PartMonitorBack.getIcon(), this.is.getIconIndex(), CableBusTextures.PartImportSides.getIcon(), CableBusTextures.PartImportSides.getIcon() );
+		this.setRenderCache( rh.useSimplifiedRendering( x, y, z, this, this.getRenderCache() ) );
+		rh.setTexture( CableBusTextures.PartImportSides.getIcon(), CableBusTextures.PartImportSides.getIcon(), CableBusTextures.PartMonitorBack.getIcon(), this.getItemStack().getIconIndex(), CableBusTextures.PartImportSides.getIcon(), CableBusTextures.PartImportSides.getIcon() );
 
 		rh.setBounds( 4, 4, 14, 12, 12, 16 );
 		rh.renderBlock( x, y, z, renderer );
@@ -130,7 +130,7 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 
 		rh.setBounds( 6, 6, 12, 10, 10, 13 );
 		rh.renderBlock( x, y, z, renderer );
-		rh.setTexture( CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartMonitorBack.getIcon(), this.is.getIconIndex(), CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartMonitorSidesStatus.getIcon() );
+		rh.setTexture( CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartMonitorBack.getIcon(), this.getItemStack().getIconIndex(), CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartMonitorSidesStatus.getIcon() );
 
 		rh.setBounds( 6, 6, 11, 10, 10, 12 );
 		rh.renderBlock( x, y, z, renderer );
@@ -154,7 +154,7 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 				return true;
 			}
 
-			Platform.openGUI( player, this.getHost().getTile(), this.side, GuiBridge.GUI_BUS );
+			Platform.openGUI( player, this.getHost().getTile(), this.getSide(), GuiBridge.GUI_BUS );
 			return true;
 		}
 
@@ -164,7 +164,7 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 	@Override
 	public TickingRequest getTickingRequest( final IGridNode node )
 	{
-		return new TickingRequest( TickRates.ImportBus.min, TickRates.ImportBus.max, this.getHandler() == null, false );
+		return new TickingRequest( TickRates.ImportBus.getMin(), TickRates.ImportBus.getMax(), this.getHandler() == null, false );
 	}
 
 	@Override
@@ -176,7 +176,7 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 	@Override
 	protected TickRateModulation doBusWork()
 	{
-		if( !this.proxy.isActive() || !this.canDoBusWork() )
+		if( !this.getProxy().isActive() || !this.canDoBusWork() )
 		{
 			return TickRateModulation.IDLE;
 		}
@@ -191,15 +191,15 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 			try
 			{
 				this.itemToSend = this.calculateItemsToSend();
-				this.itemToSend = Math.min( this.itemToSend, (int) ( 0.01 + this.proxy.getEnergy().extractAEPower( this.itemToSend, Actionable.SIMULATE, PowerMultiplier.CONFIG ) ) );
+				this.itemToSend = Math.min( this.itemToSend, (int) ( 0.01 + this.getProxy().getEnergy().extractAEPower( this.itemToSend, Actionable.SIMULATE, PowerMultiplier.CONFIG ) ) );
 
-				final IMEMonitor<IAEItemStack> inv = this.proxy.getStorage().getItemInventory();
-				final IEnergyGrid energy = this.proxy.getEnergy();
+				final IMEMonitor<IAEItemStack> inv = this.getProxy().getStorage().getItemInventory();
+				final IEnergyGrid energy = this.getProxy().getEnergy();
 
 				boolean Configured = false;
 				for( int x = 0; x < this.availableSlots(); x++ )
 				{
-					final IAEItemStack ais = this.config.getAEStackInSlot( x );
+					final IAEItemStack ais = this.getConfig().getAEStackInSlot( x );
 					if( ais != null && this.itemToSend > 0 )
 					{
 						Configured = true;

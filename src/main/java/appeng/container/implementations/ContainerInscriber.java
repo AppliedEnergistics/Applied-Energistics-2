@@ -43,11 +43,11 @@ import appeng.util.Platform;
 public class ContainerInscriber extends ContainerUpgradeable implements IProgressProvider
 {
 
-	final TileInscriber ti;
+	private final TileInscriber ti;
 
-	final Slot top;
-	final Slot middle;
-	final Slot bottom;
+	private final Slot top;
+	private final Slot middle;
+	private final Slot bottom;
 
 	@GuiSync( 2 )
 	public int maxProcessingTime = -1;
@@ -60,9 +60,9 @@ public class ContainerInscriber extends ContainerUpgradeable implements IProgres
 		super( ip, te );
 		this.ti = te;
 
-		this.addSlotToContainer( this.top = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.INSCRIBER_PLATE, this.ti, 0, 45, 16, this.invPlayer ) );
-		this.addSlotToContainer( this.bottom = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.INSCRIBER_PLATE, this.ti, 1, 45, 62, this.invPlayer ) );
-		this.addSlotToContainer( this.middle = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.INSCRIBER_INPUT, this.ti, 2, 63, 39, this.invPlayer ) );
+		this.addSlotToContainer( this.top = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.INSCRIBER_PLATE, this.ti, 0, 45, 16, this.getInventoryPlayer() ) );
+		this.addSlotToContainer( this.bottom = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.INSCRIBER_PLATE, this.ti, 1, 45, 62, this.getInventoryPlayer() ) );
+		this.addSlotToContainer( this.middle = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.INSCRIBER_INPUT, this.ti, 2, 63, 39, this.getInventoryPlayer() ) );
 
 		this.addSlotToContainer( new SlotOutput( this.ti, 3, 113, 40, -1 ) );
 	}
@@ -100,8 +100,8 @@ public class ContainerInscriber extends ContainerUpgradeable implements IProgres
 
 		if( Platform.isServer() )
 		{
-			this.maxProcessingTime = this.ti.maxProcessingTime;
-			this.processingTime = this.ti.processingTime;
+			this.maxProcessingTime = this.ti.getMaxProcessingTime();
+			this.processingTime = this.ti.getProcessingTime();
 		}
 	}
 

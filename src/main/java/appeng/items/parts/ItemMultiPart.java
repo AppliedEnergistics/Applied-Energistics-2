@@ -132,7 +132,7 @@ public final class ItemMultiPart extends AEBaseItem implements IPartItem, IItemG
 			enabled &= IntegrationRegistry.INSTANCE.isEnabled( integrationType );
 		}
 
-		final int partDamage = mat.baseDamage + varID;
+		final int partDamage = mat.getBaseDamage() + varID;
 		final ActivityState state = ActivityState.from( enabled );
 		final ItemStackSrc output = new ItemStackSrc( this, partDamage, state );
 
@@ -259,7 +259,7 @@ public final class ItemMultiPart extends AEBaseItem implements IPartItem, IItemG
 		}
 	}
 
-	public String getName( final ItemStack is )
+	private String getName( final ItemStack is )
 	{
 		Preconditions.checkNotNull( is );
 
@@ -296,12 +296,12 @@ public final class ItemMultiPart extends AEBaseItem implements IPartItem, IItemG
 
 		try
 		{
-			if( type.constructor == null )
+			if( type.getConstructor() == null )
 			{
-				type.constructor = part.getConstructor( ItemStack.class );
+				type.setConstructor( part.getConstructor( ItemStack.class ) );
 			}
 
-			return type.constructor.newInstance( is );
+			return type.getConstructor().newInstance( is );
 		}
 		catch( final InstantiationException e )
 		{

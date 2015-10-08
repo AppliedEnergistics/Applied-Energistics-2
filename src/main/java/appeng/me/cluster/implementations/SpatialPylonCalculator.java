@@ -95,7 +95,7 @@ public class SpatialPylonCalculator extends MBCalculator
 				{
 					final TileSpatialPylon te = (TileSpatialPylon) w.getTileEntity( x, y, z );
 					te.updateStatus( c );
-					c.line.add( ( te ) );
+					c.getLine().add( ( te ) );
 				}
 			}
 		}

@@ -28,8 +28,8 @@ import appeng.util.item.AEItemStack;
 public class ItemSlot
 {
 
-	public int slot;
-	public boolean isExtractable;
+	private int slot;
+	private boolean isExtractable;
 	// one or the other..
 	private IAEItemStack aeItemStack;
 	private ItemStack itemStack;
@@ -50,9 +50,29 @@ public class ItemSlot
 		return this.aeItemStack == null ? ( this.itemStack == null ? null : ( this.aeItemStack = AEItemStack.create( this.itemStack ) ) ) : this.aeItemStack;
 	}
 
-	public void setAEItemStack( final IAEItemStack is )
+	void setAEItemStack( final IAEItemStack is )
 	{
 		this.aeItemStack = is;
 		this.itemStack = null;
+	}
+
+	public boolean isExtractable()
+	{
+		return this.isExtractable;
+	}
+
+	void setExtractable( final boolean isExtractable )
+	{
+		this.isExtractable = isExtractable;
+	}
+
+	public int getSlot()
+	{
+		return this.slot;
+	}
+
+	public void setSlot( final int slot )
+	{
+		this.slot = slot;
 	}
 }

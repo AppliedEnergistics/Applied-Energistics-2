@@ -29,12 +29,12 @@ import appeng.api.parts.IPart;
 public class ContainerOpenContext
 {
 
-	public final boolean isItem;
-	public World w;
-	public int x;
-	public int y;
-	public int z;
-	public ForgeDirection side;
+	private final boolean isItem;
+	private World w;
+	private int x;
+	private int y;
+	private int z;
+	private ForgeDirection side;
 
 	public ContainerOpenContext( final Object myItem )
 	{
@@ -48,6 +48,56 @@ public class ContainerOpenContext
 		{
 			return null;
 		}
-		return this.w.getTileEntity( this.x, this.y, this.z );
+		return this.getWorld().getTileEntity( this.getX(), this.getY(), this.getZ() );
+	}
+
+	public ForgeDirection getSide()
+	{
+		return this.side;
+	}
+
+	public void setSide( final ForgeDirection side )
+	{
+		this.side = side;
+	}
+
+	private int getZ()
+	{
+		return this.z;
+	}
+
+	public void setZ( final int z )
+	{
+		this.z = z;
+	}
+
+	private int getY()
+	{
+		return this.y;
+	}
+
+	public void setY( final int y )
+	{
+		this.y = y;
+	}
+
+	private int getX()
+	{
+		return this.x;
+	}
+
+	public void setX( final int x )
+	{
+		this.x = x;
+	}
+
+	private World getWorld()
+	{
+		return this.w;
+	}
+
+	public void setWorld( final World w )
+	{
+		this.w = w;
 	}
 }

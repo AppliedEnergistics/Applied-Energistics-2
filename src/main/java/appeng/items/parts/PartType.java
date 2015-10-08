@@ -164,12 +164,12 @@ public enum PartType
 
 	InterfaceTerminal( 480, EnumSet.of( AEFeature.InterfaceTerminal ), EnumSet.noneOf( IntegrationType.class ), PartInterfaceTerminal.class );
 
-	public final int baseDamage;
+	private final int baseDamage;
 	private final Set<AEFeature> features;
 	private final Set<IntegrationType> integrations;
 	private final Class<? extends IPart> myPart;
 	private final GuiText extraName;
-	public Constructor<? extends IPart> constructor;
+	private Constructor<? extends IPart> constructor;
 
 	PartType( final int baseMetaValue, final Set<AEFeature> features, final Set<IntegrationType> integrations, final Class<? extends IPart> c )
 	{
@@ -190,24 +190,39 @@ public enum PartType
 		return false;
 	}
 
-	public Set<AEFeature> getFeature()
+	Set<AEFeature> getFeature()
 	{
 		return this.features;
 	}
 
-	public Set<IntegrationType> getIntegrations()
+	Set<IntegrationType> getIntegrations()
 	{
 		return this.integrations;
 	}
 
-	public Class<? extends IPart> getPart()
+	Class<? extends IPart> getPart()
 	{
 		return this.myPart;
 	}
 
-	public GuiText getExtraName()
+	GuiText getExtraName()
 	{
 		return this.extraName;
+	}
+
+	Constructor<? extends IPart> getConstructor()
+	{
+		return this.constructor;
+	}
+
+	void setConstructor( final Constructor<? extends IPart> constructor )
+	{
+		this.constructor = constructor;
+	}
+
+	int getBaseDamage()
+	{
+		return this.baseDamage;
 	}
 
 }

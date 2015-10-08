@@ -45,11 +45,11 @@ import appeng.util.Platform;
 public class PacketTransitionEffect extends AppEngPacket
 {
 
-	public final boolean mode;
-	final double x;
-	final double y;
-	final double z;
-	final ForgeDirection d;
+	private final boolean mode;
+	private final double x;
+	private final double y;
+	private final double z;
+	private final ForgeDirection d;
 
 	// automatic.
 	public PacketTransitionEffect( final ByteBuf stream )

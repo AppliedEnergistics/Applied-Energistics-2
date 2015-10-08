@@ -31,8 +31,8 @@ import appeng.tile.grid.AENetworkTile;
 public class TilePhantomNode extends AENetworkTile
 {
 
-	protected AENetworkProxy proxy = null;
-	boolean crashMode = false;
+	private AENetworkProxy proxy = null;
+	private boolean crashMode = false;
 
 	@Override
 	public IGridNode getGridNode( final ForgeDirection dir )
@@ -54,7 +54,7 @@ public class TilePhantomNode extends AENetworkTile
 		this.crashMode = true;
 	}
 
-	public void triggerCrashMode()
+	void triggerCrashMode()
 	{
 		if( this.proxy != null )
 		{

@@ -41,7 +41,7 @@ import appeng.util.Platform;
 public class BlockMolecularAssembler extends AEBaseTileBlock
 {
 
-	public static boolean booleanAlphaPass = false;
+	private static boolean booleanAlphaPass = false;
 
 	public BlockMolecularAssembler()
 	{
@@ -62,7 +62,7 @@ public class BlockMolecularAssembler extends AEBaseTileBlock
 	@Override
 	public boolean canRenderInPass( final int pass )
 	{
-		booleanAlphaPass = pass == 1;
+		setBooleanAlphaPass( pass == 1 );
 		return pass == 0 || pass == 1;
 	}
 
@@ -83,5 +83,15 @@ public class BlockMolecularAssembler extends AEBaseTileBlock
 			return true;
 		}
 		return false;
+	}
+
+	public static boolean isBooleanAlphaPass()
+	{
+		return booleanAlphaPass;
+	}
+
+	private static void setBooleanAlphaPass( final boolean booleanAlphaPass )
+	{
+		BlockMolecularAssembler.booleanAlphaPass = booleanAlphaPass;
 	}
 }

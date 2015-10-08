@@ -27,7 +27,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 public class WrapperMCISidedInventory extends WrapperInventoryRange implements IInventoryWrapper
 {
 
-	final ISidedInventory side;
+	private final ISidedInventory side;
 	private final ForgeDirection dir;
 
 	public WrapperMCISidedInventory( final ISidedInventory a, final ForgeDirection d )
@@ -51,14 +51,14 @@ public class WrapperMCISidedInventory extends WrapperInventoryRange implements I
 	public boolean isItemValidForSlot( final int i, final ItemStack itemstack )
 	{
 
-		if( this.ignoreValidItems )
+		if( this.isIgnoreValidItems() )
 		{
 			return true;
 		}
 
-		if( this.side.isItemValidForSlot( this.slots[i], itemstack ) )
+		if( this.side.isItemValidForSlot( this.getSlots()[i], itemstack ) )
 		{
-			return this.side.canInsertItem( this.slots[i], itemstack, this.dir.ordinal() );
+			return this.side.canInsertItem( this.getSlots()[i], itemstack, this.dir.ordinal() );
 		}
 
 		return false;
@@ -72,6 +72,6 @@ public class WrapperMCISidedInventory extends WrapperInventoryRange implements I
 			return false;
 		}
 
-		return this.side.canExtractItem( this.slots[i], is, this.dir.ordinal() );
+		return this.side.canExtractItem( this.getSlots()[i], is, this.dir.ordinal() );
 	}
 }

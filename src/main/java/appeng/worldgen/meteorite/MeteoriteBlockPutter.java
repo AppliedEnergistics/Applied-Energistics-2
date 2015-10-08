@@ -21,7 +21,7 @@ public class MeteoriteBlockPutter
 		return true;
 	}
 
-	public void put( final IMeteoriteWorld w, final int i, final int j, final int k, final Block blk, final int meta )
+	void put( final IMeteoriteWorld w, final int i, final int j, final int k, final Block blk, final int meta )
 	{
 		if( w.getBlock( i, j, k ) == Blocks.bedrock )
 		{

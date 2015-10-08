@@ -30,14 +30,15 @@ import appeng.util.ItemSorters;
 public class ClientDCInternalInv implements Comparable<ClientDCInternalInv>
 {
 
-	public final String unlocalizedName;
-	public final AppEngInternalInventory inv;
-	public final long id;
-	public final long sortBy;
+	private final String unlocalizedName;
+	private final AppEngInternalInventory inventory;
+
+	private final long id;
+	private final long sortBy;
 
 	public ClientDCInternalInv( final int size, final long id, final long sortBy, final String unlocalizedName )
 	{
-		this.inv = new AppEngInternalInventory( null, size );
+		this.inventory = new AppEngInternalInventory( null, size );
 		this.unlocalizedName = unlocalizedName;
 		this.id = id;
 		this.sortBy = sortBy;
@@ -57,5 +58,15 @@ public class ClientDCInternalInv implements Comparable<ClientDCInternalInv>
 	public int compareTo( @Nonnull final ClientDCInternalInv o )
 	{
 		return ItemSorters.compareLong( this.sortBy, o.sortBy );
+	}
+
+	public AppEngInternalInventory getInventory()
+	{
+		return this.inventory;
+	}
+
+	public long getId()
+	{
+		return this.id;
 	}
 }

@@ -97,12 +97,12 @@ public class PartPatternTerminal extends AbstractPartTerminal
 		int z = (int) p.posZ;
 		if( this.getHost().getTile() != null )
 		{
-			x = this.tile.xCoord;
-			y = this.tile.yCoord;
-			z = this.tile.zCoord;
+			x = this.getTile().xCoord;
+			y = this.getTile().yCoord;
+			z = this.getTile().zCoord;
 		}
 
-		if( GuiBridge.GUI_PATTERN_TERMINAL.hasPermissions( this.getHost().getTile(), x, y, z, this.side, p ) )
+		if( GuiBridge.GUI_PATTERN_TERMINAL.hasPermissions( this.getHost().getTile(), x, y, z, this.getSide(), p ) )
 		{
 			return GuiBridge.GUI_PATTERN_TERMINAL;
 		}
@@ -143,7 +143,7 @@ public class PartPatternTerminal extends AbstractPartTerminal
 			this.fixCraftingRecipes();
 		}
 
-		this.host.markForSave();
+		this.getHost().markForSave();
 	}
 
 	private void fixCraftingRecipes()

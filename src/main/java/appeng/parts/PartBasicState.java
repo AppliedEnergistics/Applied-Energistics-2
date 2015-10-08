@@ -48,12 +48,12 @@ public abstract class PartBasicState extends AEBasePart implements IPowerChannel
 	protected static final int POWERED_FLAG = 1;
 	protected static final int CHANNEL_FLAG = 2;
 
-	protected int clientFlags = 0; // sent as byte.
+	private int clientFlags = 0; // sent as byte.
 
 	public PartBasicState( final ItemStack is )
 	{
 		super( is );
-		this.proxy.setFlags( GridFlags.REQUIRE_CHANNEL );
+		this.getProxy().setFlags( GridFlags.REQUIRE_CHANNEL );
 	}
 
 	@MENetworkEventSubscribe
@@ -72,7 +72,7 @@ public abstract class PartBasicState extends AEBasePart implements IPowerChannel
 	public void renderLights( final int x, final int y, final int z, final IPartRenderHelper rh, final RenderBlocks renderer )
 	{
 		rh.normalRendering();
-		this.setColors( ( this.clientFlags & ( POWERED_FLAG | CHANNEL_FLAG ) ) == ( POWERED_FLAG | CHANNEL_FLAG ), ( this.clientFlags & POWERED_FLAG ) == POWERED_FLAG );
+		this.setColors( ( this.getClientFlags() & ( POWERED_FLAG | CHANNEL_FLAG ) ) == ( POWERED_FLAG | CHANNEL_FLAG ), ( this.getClientFlags() & POWERED_FLAG ) == POWERED_FLAG );
 		rh.renderFace( x, y, z, CableBusTextures.PartMonitorSidesStatusLights.getIcon(), ForgeDirection.EAST, renderer );
 		rh.renderFace( x, y, z, CableBusTextures.PartMonitorSidesStatusLights.getIcon(), ForgeDirection.WEST, renderer );
 		rh.renderFace( x, y, z, CableBusTextures.PartMonitorSidesStatusLights.getIcon(), ForgeDirection.UP, renderer );
@@ -105,28 +105,28 @@ public abstract class PartBasicState extends AEBasePart implements IPowerChannel
 	{
 		super.writeToStream( data );
 
-		this.clientFlags = 0;
+		this.setClientFlags( 0 );
 
 		try
 		{
-			if( this.proxy.getEnergy().isNetworkPowered() )
+			if( this.getProxy().getEnergy().isNetworkPowered() )
 			{
-				this.clientFlags |= POWERED_FLAG;
+				this.setClientFlags( this.getClientFlags() | POWERED_FLAG );
 			}
 
-			if( this.proxy.getNode().meetsChannelRequirements() )
+			if( this.getProxy().getNode().meetsChannelRequirements() )
 			{
-				this.clientFlags |= CHANNEL_FLAG;
+				this.setClientFlags( this.getClientFlags() | CHANNEL_FLAG );
 			}
 
-			this.clientFlags = this.populateFlags( this.clientFlags );
+			this.setClientFlags( this.populateFlags( this.getClientFlags() ) );
 		}
 		catch( final GridAccessException e )
 		{
 			// meh
 		}
 
-		data.writeByte( (byte) this.clientFlags );
+		data.writeByte( (byte) this.getClientFlags() );
 	}
 
 	protected int populateFlags( final int cf )
@@ -139,10 +139,10 @@ public abstract class PartBasicState extends AEBasePart implements IPowerChannel
 	{
 		final boolean eh = super.readFromStream( data );
 
-		final int old = this.clientFlags;
-		this.clientFlags = data.readByte();
+		final int old = this.getClientFlags();
+		this.setClientFlags( data.readByte() );
 
-		return eh || old != this.clientFlags;
+		return eh || old != this.getClientFlags();
 	}
 
 	@Override
@@ -155,12 +155,22 @@ public abstract class PartBasicState extends AEBasePart implements IPowerChannel
 	@Override
 	public boolean isPowered()
 	{
-		return ( this.clientFlags & POWERED_FLAG ) == POWERED_FLAG;
+		return ( this.getClientFlags() & POWERED_FLAG ) == POWERED_FLAG;
 	}
 
 	@Override
 	public boolean isActive()
 	{
-		return ( this.clientFlags & CHANNEL_FLAG ) == CHANNEL_FLAG;
+		return ( this.getClientFlags() & CHANNEL_FLAG ) == CHANNEL_FLAG;
+	}
+
+	public int getClientFlags()
+	{
+		return this.clientFlags;
+	}
+
+	private void setClientFlags( final int clientFlags )
+	{
+		this.clientFlags = clientFlags;
 	}
 }

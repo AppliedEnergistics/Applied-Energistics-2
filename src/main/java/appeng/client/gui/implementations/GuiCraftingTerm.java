@@ -39,12 +39,12 @@ import appeng.helpers.InventoryAction;
 public class GuiCraftingTerm extends GuiMEMonitorable
 {
 
-	GuiImgButton clearBtn;
+	private GuiImgButton clearBtn;
 
 	public GuiCraftingTerm( final InventoryPlayer inventoryPlayer, final ITerminalHost te )
 	{
 		super( inventoryPlayer, te, new ContainerCraftingTerm( inventoryPlayer, te ) );
-		this.reservedSpace = 73;
+		this.setReservedSpace( 73 );
 	}
 
 	@Override
@@ -77,14 +77,14 @@ public class GuiCraftingTerm extends GuiMEMonitorable
 	{
 		super.initGui();
 		this.buttonList.add( this.clearBtn = new GuiImgButton( this.guiLeft + 92, this.guiTop + this.ySize - 156, Settings.ACTIONS, ActionItems.STASH ) );
-		this.clearBtn.halfSize = true;
+		this.clearBtn.setHalfSize( true );
 	}
 
 	@Override
 	public void drawFG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
 		super.drawFG( offsetX, offsetY, mouseX, mouseY );
-		this.fontRendererObj.drawString( GuiText.CraftingTerminal.getLocal(), 8, this.ySize - 96 + 1 - this.reservedSpace, 4210752 );
+		this.fontRendererObj.drawString( GuiText.CraftingTerminal.getLocal(), 8, this.ySize - 96 + 1 - this.getReservedSpace(), 4210752 );
 	}
 
 	@Override

@@ -30,7 +30,7 @@ import appeng.util.Platform;
 public class ContainerWirelessTerm extends ContainerMEPortableCell
 {
 
-	final WirelessTerminalGuiObject wirelessTerminalGUIObject;
+	private final WirelessTerminalGuiObject wirelessTerminalGUIObject;
 
 	public ContainerWirelessTerm( final InventoryPlayer ip, final WirelessTerminalGuiObject gui )
 	{
@@ -45,16 +45,16 @@ public class ContainerWirelessTerm extends ContainerMEPortableCell
 
 		if( !this.wirelessTerminalGUIObject.rangeCheck() )
 		{
-			if( Platform.isServer() && this.isContainerValid )
+			if( Platform.isServer() && this.isValidContainer() )
 			{
 				this.getPlayerInv().player.addChatMessage( PlayerMessages.OutOfRange.get() );
 			}
 
-			this.isContainerValid = false;
+			this.setValidContainer( false );
 		}
 		else
 		{
-			this.powerMultiplier = AEConfig.instance.wireless_getDrainRate( this.wirelessTerminalGUIObject.getRange() );
+			this.setPowerMultiplier( AEConfig.instance.wireless_getDrainRate( this.wirelessTerminalGUIObject.getRange() ) );
 		}
 	}
 }

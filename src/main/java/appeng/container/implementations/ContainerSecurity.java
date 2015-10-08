@@ -43,16 +43,16 @@ import appeng.tile.misc.TileSecurity;
 public class ContainerSecurity extends ContainerMEMonitorable implements IAEAppEngInventory
 {
 
-	final SlotRestrictedInput configSlot;
+	private final SlotRestrictedInput configSlot;
 
-	final AppEngInternalInventory wirelessEncoder = new AppEngInternalInventory( this, 2 );
+	private final AppEngInternalInventory wirelessEncoder = new AppEngInternalInventory( this, 2 );
 
-	final SlotRestrictedInput wirelessIn;
-	final SlotOutput wirelessOut;
+	private final SlotRestrictedInput wirelessIn;
+	private final SlotOutput wirelessOut;
 
-	final TileSecurity securityBox;
+	private final TileSecurity securityBox;
 	@GuiSync( 0 )
-	public int security = 0;
+	public int permissionMode = 0;
 
 	public ContainerSecurity( final InventoryPlayer ip, final ITerminalHost monitorable )
 	{
@@ -60,7 +60,7 @@ public class ContainerSecurity extends ContainerMEMonitorable implements IAEAppE
 
 		this.securityBox = (TileSecurity) monitorable;
 
-		this.addSlotToContainer( this.configSlot = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.BIOMETRIC_CARD, this.securityBox.configSlot, 0, 37, -33, ip ) );
+		this.addSlotToContainer( this.configSlot = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.BIOMETRIC_CARD, this.securityBox.getConfigSlot(), 0, 37, -33, ip ) );
 
 		this.addSlotToContainer( this.wirelessIn = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.ENCODABLE_ITEM, this.wirelessEncoder, 0, 212, 10, ip ) );
 		this.addSlotToContainer( this.wirelessOut = new SlotOutput( this.wirelessEncoder, 1, 212, 68, -1 ) );
@@ -99,7 +99,7 @@ public class ContainerSecurity extends ContainerMEMonitorable implements IAEAppE
 	{
 		this.verifyPermissions( SecurityPermissions.SECURITY, false );
 
-		this.security = 0;
+		this.setPermissionMode( 0 );
 
 		final ItemStack a = this.configSlot.getStack();
 		if( a != null && a.getItem() instanceof IBiometricCard )
@@ -108,7 +108,7 @@ public class ContainerSecurity extends ContainerMEMonitorable implements IAEAppE
 
 			for( final SecurityPermissions sp : bc.getPermissions( a ) )
 			{
-				this.security |= ( 1 << sp.ordinal() );
+				this.setPermissionMode( this.getPermissionMode() | ( 1 << sp.ordinal() ) );
 			}
 		}
 
@@ -162,7 +162,7 @@ public class ContainerSecurity extends ContainerMEMonitorable implements IAEAppE
 
 				if( networkEncodable != null )
 				{
-					networkEncodable.setEncryptionKey( term, String.valueOf( this.securityBox.securityKey ), "" );
+					networkEncodable.setEncryptionKey( term, String.valueOf( this.securityBox.getSecurityKey() ), "" );
 
 					this.wirelessIn.putStack( null );
 					this.wirelessOut.putStack( term );
@@ -177,5 +177,15 @@ public class ContainerSecurity extends ContainerMEMonitorable implements IAEAppE
 				}
 			}
 		}
+	}
+
+	public int getPermissionMode()
+	{
+		return this.permissionMode;
+	}
+
+	private void setPermissionMode( final int permissionMode )
+	{
+		this.permissionMode = permissionMode;
 	}
 }

@@ -54,11 +54,11 @@ public class RendererCableBus extends BaseBlockRender<BlockCableBus, TileCableBu
 
 		if( t instanceof TileCableBus )
 		{
-			BusRenderer.INSTANCE.renderer.renderAllFaces = true;
-			BusRenderer.INSTANCE.renderer.blockAccess = renderer.blockAccess;
-			BusRenderer.INSTANCE.renderer.overrideBlockTexture = renderer.overrideBlockTexture;
-			( (TileCableBus) t ).cb.renderStatic( x, y, z );
-			BusRenderer.INSTANCE.renderer.renderAllFaces = false;
+			BusRenderer.INSTANCE.getRenderer().renderAllFaces = true;
+			BusRenderer.INSTANCE.getRenderer().blockAccess = renderer.blockAccess;
+			BusRenderer.INSTANCE.getRenderer().overrideBlockTexture = renderer.overrideBlockTexture;
+			( (TileCableBus) t ).getCableBus().renderStatic( x, y, z );
+			BusRenderer.INSTANCE.getRenderer().renderAllFaces = false;
 		}
 
 		return BusRenderHelper.INSTANCE.getItemsRendered() > 0;
@@ -69,8 +69,8 @@ public class RendererCableBus extends BaseBlockRender<BlockCableBus, TileCableBu
 	{
 		if( cableBus != null )
 		{
-			BusRenderer.INSTANCE.renderer.overrideBlockTexture = null;
-			cableBus.cb.renderDynamic( x, y, z );
+			BusRenderer.INSTANCE.getRenderer().overrideBlockTexture = null;
+			cableBus.getCableBus().renderDynamic( x, y, z );
 		}
 	}
 }

@@ -40,11 +40,11 @@ public class NetworkHandler
 
 	public static NetworkHandler instance;
 
-	final FMLEventChannel ec;
-	final String myChannelName;
+	private final FMLEventChannel ec;
+	private final String myChannelName;
 
-	final IPacketHandler clientHandler;
-	final IPacketHandler serveHandler;
+	private final IPacketHandler clientHandler;
+	private final IPacketHandler serveHandler;
 
 	public NetworkHandler( final String channelName )
 	{

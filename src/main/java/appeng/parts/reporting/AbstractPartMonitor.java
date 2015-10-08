@@ -166,7 +166,7 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 			return true;
 		}
 
-		if( !this.proxy.isActive() )
+		if( !this.getProxy().isActive() )
 		{
 			return false;
 		}
@@ -176,7 +176,7 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 			return false;
 		}
 
-		final TileEntity te = this.tile;
+		final TileEntity te = this.getTile();
 		final ItemStack eq = player.getCurrentEquippedItem();
 
 		if( Platform.isWrench( player, eq, te.xCoord, te.yCoord, te.zCoord ) )
@@ -200,7 +200,7 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 	}
 
 	// update the system...
-	public void configureWatchers()
+	private void configureWatchers()
 	{
 		if( this.myWatcher != null )
 		{
@@ -216,7 +216,7 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 					this.myWatcher.add( this.configuredItem );
 				}
 
-				this.updateReportingValue( this.proxy.getStorage().getItemInventory() );
+				this.updateReportingValue( this.getProxy().getStorage().getItemInventory() );
 			}
 		}
 		catch( final GridAccessException e )
@@ -313,7 +313,7 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 	{
 		// GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS );
 
-		final ForgeDirection d = this.side;
+		final ForgeDirection d = this.getSide();
 
 		GL11.glTranslated( d.offsetX * 0.77, d.offsetY * 0.77, d.offsetZ * 0.77 );
 
@@ -366,7 +366,7 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 			// RenderHelper.enableGUIStandardItemLighting();
 			tess.setColorOpaque_F( 1.0f, 1.0f, 1.0f );
 
-			ClientHelper.proxy.doRenderItem( sis, this.tile.getWorldObj() );
+			ClientHelper.proxy.doRenderItem( sis, this.getTile().getWorldObj() );
 		}
 		catch( final Exception e )
 		{

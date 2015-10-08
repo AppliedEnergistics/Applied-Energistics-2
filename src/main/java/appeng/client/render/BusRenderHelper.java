@@ -253,7 +253,7 @@ public final class BusRenderHelper implements IPartRenderHelper
 		this.renderingForPass = pass;
 	}
 
-	public boolean renderThis()
+	private boolean renderThis()
 	{
 		if( this.renderingForPass == this.currentPass || this.noAlphaPass )
 		{
@@ -266,23 +266,23 @@ public final class BusRenderHelper implements IPartRenderHelper
 	@Override
 	public void normalRendering()
 	{
-		final RenderBlocksWorkaround rbw = BusRenderer.INSTANCE.renderer;
-		rbw.calculations = true;
-		rbw.useTextures = true;
+		final RenderBlocksWorkaround rbw = BusRenderer.INSTANCE.getRenderer();
+		rbw.setCalculations( true );
+		rbw.setUseTextures( true );
 		rbw.enableAO = false;
 	}
 
 	@Override
 	public ISimplifiedBundle useSimplifiedRendering( final int x, final int y, final int z, final IBoxProvider p, final ISimplifiedBundle sim )
 	{
-		final RenderBlocksWorkaround rbw = BusRenderer.INSTANCE.renderer;
+		final RenderBlocksWorkaround rbw = BusRenderer.INSTANCE.getRenderer();
 
 		if( sim != null && this.maybeBlock.isPresent() && rbw.similarLighting( this.maybeBlock.get(), rbw.blockAccess, x, y, z, sim ) )
 		{
 			rbw.populate( sim );
-			rbw.faces = EnumSet.allOf( ForgeDirection.class );
-			rbw.calculations = false;
-			rbw.useTextures = false;
+			rbw.setFaces( EnumSet.allOf( ForgeDirection.class ) );
+			rbw.setCalculations( false );
+			rbw.setUseTextures( false );
 
 			return sim;
 		}
@@ -290,8 +290,8 @@ public final class BusRenderHelper implements IPartRenderHelper
 		{
 			final boolean allFaces = rbw.renderAllFaces;
 			rbw.renderAllFaces = true;
-			rbw.calculations = true;
-			rbw.faces.clear();
+			rbw.setCalculations( true );
+			rbw.getFaces().clear();
 
 			this.bbc.started = false;
 			if( p == null )
@@ -339,10 +339,10 @@ public final class BusRenderHelper implements IPartRenderHelper
 				rbw.renderStandardBlock( block, x, y, z );
 			}
 
-			rbw.faces = EnumSet.allOf( ForgeDirection.class );
+			rbw.setFaces( EnumSet.allOf( ForgeDirection.class ) );
 			rbw.renderAllFaces = allFaces;
-			rbw.calculations = false;
-			rbw.useTextures = false;
+			rbw.setCalculations( false );
+			rbw.setUseTextures( false );
 
 			return rbw.getLightingCache();
 		}
@@ -392,7 +392,7 @@ public final class BusRenderHelper implements IPartRenderHelper
 		}
 	}
 
-	public ForgeDirection mapRotation( final ForgeDirection dir )
+	private ForgeDirection mapRotation( final ForgeDirection dir )
 	{
 		final ForgeDirection forward = this.az;
 		final ForgeDirection up = this.ay;
@@ -518,7 +518,7 @@ public final class BusRenderHelper implements IPartRenderHelper
 	@Override
 	public void setFacesToRender( final EnumSet<ForgeDirection> faces )
 	{
-		BusRenderer.INSTANCE.renderer.renderFaces = faces;
+		BusRenderer.INSTANCE.getRenderer().setRenderFaces( faces );
 	}
 
 	@Override

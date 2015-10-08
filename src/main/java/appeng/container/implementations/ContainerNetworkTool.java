@@ -33,7 +33,7 @@ import appeng.util.Platform;
 public class ContainerNetworkTool extends AEBaseContainer
 {
 
-	final INetworkTool toolInv;
+	private final INetworkTool toolInv;
 
 	@GuiSync( 1 )
 	public boolean facadeMode;
@@ -49,7 +49,7 @@ public class ContainerNetworkTool extends AEBaseContainer
 		{
 			for( int x = 0; x < 3; x++ )
 			{
-				this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, te, y * 3 + x, 80 - 18 + x * 18, 37 - 18 + y * 18, this.invPlayer ) ) );
+				this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, te, y * 3 + x, 80 - 18 + x * 18, 37 - 18 + y * 18, this.getInventoryPlayer() ) ) );
 			}
 		}
 
@@ -78,21 +78,31 @@ public class ContainerNetworkTool extends AEBaseContainer
 				}
 				else
 				{
-					this.isContainerValid = false;
+					this.setValidContainer( false );
 				}
 			}
 			else
 			{
-				this.isContainerValid = false;
+				this.setValidContainer( false );
 			}
 		}
 
-		if( this.isContainerValid )
+		if( this.isValidContainer() )
 		{
 			final NBTTagCompound data = Platform.openNbtData( currentItem );
-			this.facadeMode = data.getBoolean( "hideFacades" );
+			this.setFacadeMode( data.getBoolean( "hideFacades" ) );
 		}
 
 		super.detectAndSendChanges();
+	}
+
+	public boolean isFacadeMode()
+	{
+		return this.facadeMode;
+	}
+
+	private void setFacadeMode( final boolean facadeMode )
+	{
+		this.facadeMode = facadeMode;
 	}
 }

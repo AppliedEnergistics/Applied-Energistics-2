@@ -37,8 +37,8 @@ import appeng.helpers.IContainerCraftingPacket;
 public class SlotPatternTerm extends SlotCraftingTerm
 {
 
-	final int groupNum;
-	final IOptionalSlotHost host;
+	private final int groupNum;
+	private final IOptionalSlotHost host;
 
 	public SlotPatternTerm( final EntityPlayer player, final BaseActionSource mySrc, final IEnergySource energySrc, final IStorageMonitorable storage, final IInventory cMatrix, final IInventory secondMatrix, final IInventory output, final int x, final int y, final IOptionalSlotHost h, final int groupNumber, final IContainerCraftingPacket c )
 	{
@@ -50,7 +50,7 @@ public class SlotPatternTerm extends SlotCraftingTerm
 
 	public AppEngPacket getRequest( final boolean shift ) throws IOException
 	{
-		return new PacketPatternSlot( this.pattern, AEApi.instance().storage().createItemStack( this.getStack() ), shift );
+		return new PacketPatternSlot( this.getPattern(), AEApi.instance().storage().createItemStack( this.getStack() ), shift );
 	}
 
 	@Override

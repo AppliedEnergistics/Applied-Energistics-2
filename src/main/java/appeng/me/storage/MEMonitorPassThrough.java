@@ -38,9 +38,9 @@ import appeng.util.inv.ItemListIgnoreCrafting;
 public class MEMonitorPassThrough<T extends IAEStack<T>> extends MEPassThrough<T> implements IMEMonitor<T>, IMEMonitorHandlerReceiver<T>
 {
 
-	final HashMap<IMEMonitorHandlerReceiver<T>, Object> listeners = new HashMap<IMEMonitorHandlerReceiver<T>, Object>();
-	public BaseActionSource changeSource;
-	IMEMonitor<T> monitor;
+	private final HashMap<IMEMonitorHandlerReceiver<T>, Object> listeners = new HashMap<IMEMonitorHandlerReceiver<T>, Object>();
+	private BaseActionSource changeSource;
+	private IMEMonitor<T> monitor;
 
 	public MEMonitorPassThrough( final IMEInventory<T> i, final StorageChannel channel )
 	{
@@ -60,7 +60,7 @@ public class MEMonitorPassThrough<T extends IAEStack<T>> extends MEPassThrough<T
 		}
 
 		this.monitor = null;
-		final IItemList<T> before = this.getInternal() == null ? this.channel.createList() : this.getInternal().getAvailableItems( new ItemListIgnoreCrafting( this.channel.createList() ) );
+		final IItemList<T> before = this.getInternal() == null ? this.getWrappedChannel().createList() : this.getInternal().getAvailableItems( new ItemListIgnoreCrafting( this.getWrappedChannel().createList() ) );
 
 		super.setInternal( i );
 		if( i instanceof IMEMonitor )
@@ -68,14 +68,14 @@ public class MEMonitorPassThrough<T extends IAEStack<T>> extends MEPassThrough<T
 			this.monitor = (IMEMonitor<T>) i;
 		}
 
-		final IItemList<T> after = this.getInternal() == null ? this.channel.createList() : this.getInternal().getAvailableItems( new ItemListIgnoreCrafting( this.channel.createList() ) );
+		final IItemList<T> after = this.getInternal() == null ? this.getWrappedChannel().createList() : this.getInternal().getAvailableItems( new ItemListIgnoreCrafting( this.getWrappedChannel().createList() ) );
 
 		if( this.monitor != null )
 		{
 			this.monitor.addListener( this, this.monitor );
 		}
 
-		Platform.postListChanges( before, after, this, this.changeSource );
+		Platform.postListChanges( before, after, this, this.getChangeSource() );
 	}
 
 	@Override
@@ -102,7 +102,7 @@ public class MEMonitorPassThrough<T extends IAEStack<T>> extends MEPassThrough<T
 	{
 		if( this.monitor == null )
 		{
-			final IItemList<T> out = this.channel.createList();
+			final IItemList<T> out = this.getWrappedChannel().createList();
 			this.getInternal().getAvailableItems( new ItemListIgnoreCrafting( out ) );
 			return out;
 		}
@@ -151,5 +151,15 @@ public class MEMonitorPassThrough<T extends IAEStack<T>> extends MEPassThrough<T
 				i.remove();
 			}
 		}
+	}
+
+	private BaseActionSource getChangeSource()
+	{
+		return this.changeSource;
+	}
+
+	public void setChangeSource( final BaseActionSource changeSource )
+	{
+		this.changeSource = changeSource;
 	}
 }

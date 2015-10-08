@@ -62,7 +62,7 @@ public class CellInventory implements ICellInventory
 	private short storedItems = 0;
 	private int storedItemCount = 0;
 	private IItemList<IAEItemStack> cellItems;
-	private ItemStack cellItem;
+	private final ItemStack cellItem;
 	private IStorageCell cellType;
 
 	private CellInventory( final ItemStack o, final ISaveProvider container ) throws AppEngException
@@ -179,7 +179,7 @@ public class CellInventory implements ICellInventory
 		BLACK_LIST.add( ( meta << Platform.DEF_OFFSET ) | itemID );
 	}
 
-	public static boolean isBlackListed( final IAEItemStack input )
+	private static boolean isBlackListed( final IAEItemStack input )
 	{
 		if( BLACK_LIST.contains( ( OreDictionary.WILDCARD_VALUE << Platform.DEF_OFFSET ) | Item.getIdFromItem( input.getItem() ) ) )
 		{

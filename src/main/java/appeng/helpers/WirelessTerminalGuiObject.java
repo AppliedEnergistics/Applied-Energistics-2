@@ -55,16 +55,16 @@ import appeng.tile.networking.TileWireless;
 public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, IInventorySlotAware
 {
 
-	public final ItemStack effectiveItem;
-	final IWirelessTermHandler wth;
-	final String encryptionKey;
-	final EntityPlayer myPlayer;
-	IGrid targetGrid;
-	IStorageGrid sg;
-	IMEMonitor<IAEItemStack> itemStorage;
-	IWirelessAccessPoint myWap;
-	double sqRange = Double.MAX_VALUE;
-	double myRange = Double.MAX_VALUE;
+	private final ItemStack effectiveItem;
+	private final IWirelessTermHandler wth;
+	private final String encryptionKey;
+	private final EntityPlayer myPlayer;
+	private IGrid targetGrid;
+	private IStorageGrid sg;
+	private IMEMonitor<IAEItemStack> itemStorage;
+	private IWirelessAccessPoint myWap;
+	private double sqRange = Double.MAX_VALUE;
+	private double myRange = Double.MAX_VALUE;
 	private final int inventorySlot;
 
 	public WirelessTerminalGuiObject( final IWirelessTermHandler wh, final ItemStack is, final EntityPlayer ep, final World w, final int x, final int y, final int z )

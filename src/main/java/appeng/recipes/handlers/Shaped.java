@@ -40,8 +40,8 @@ import appeng.util.Platform;
 public class Shaped implements ICraftHandler, IWebsiteSerializer
 {
 
-	List<List<IIngredient>> inputs;
-	IIngredient output;
+	private List<List<IIngredient>> inputs;
+	private IIngredient output;
 	private int rows;
 	private int cols;
 

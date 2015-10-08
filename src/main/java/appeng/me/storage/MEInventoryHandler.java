@@ -25,7 +25,6 @@ import appeng.api.config.IncludeExclude;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEInventoryHandler;
-import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
@@ -36,9 +35,7 @@ import appeng.util.prioitylist.IPartitionList;
 public class MEInventoryHandler<T extends IAEStack<T>> implements IMEInventoryHandler<T>
 {
 
-	protected final IMEMonitor<T> monitor;
-	protected final IMEInventoryHandler<T> internal;
-	final StorageChannel channel;
+	private final IMEInventoryHandler<T> internal;
 	private int myPriority;
 	private IncludeExclude myWhitelist;
 	private AccessRestriction myAccess;
@@ -50,8 +47,6 @@ public class MEInventoryHandler<T extends IAEStack<T>> implements IMEInventoryHa
 
 	public MEInventoryHandler( final IMEInventory<T> i, final StorageChannel channel )
 	{
-		this.channel = channel;
-
 		if( i instanceof IMEInventoryHandler )
 		{
 			this.internal = (IMEInventoryHandler<T>) i;
@@ -61,15 +56,13 @@ public class MEInventoryHandler<T extends IAEStack<T>> implements IMEInventoryHa
 			this.internal = new MEPassThrough<T>( i, channel );
 		}
 
-		this.monitor = this.internal instanceof IMEMonitor ? (IMEMonitor<T>) this.internal : null;
-
 		this.myPriority = 0;
 		this.myWhitelist = IncludeExclude.WHITELIST;
 		this.setBaseAccess( AccessRestriction.READ_WRITE );
 		this.myPartitionList = new DefaultPriorityList<T>();
 	}
 
-	public IncludeExclude getWhitelist()
+	IncludeExclude getWhitelist()
 	{
 		return this.myWhitelist;
 	}
@@ -92,7 +85,7 @@ public class MEInventoryHandler<T extends IAEStack<T>> implements IMEInventoryHa
 		this.hasWriteAccess = this.cachedAccessRestriction.hasPermission( AccessRestriction.WRITE );
 	}
 
-	public IPartitionList<T> getPartitionList()
+	IPartitionList<T> getPartitionList()
 	{
 		return this.myPartitionList;
 	}

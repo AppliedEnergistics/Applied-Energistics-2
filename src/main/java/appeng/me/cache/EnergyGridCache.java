@@ -58,42 +58,42 @@ import appeng.me.energy.EnergyWatcher;
 public class EnergyGridCache implements IEnergyGrid
 {
 
-	public final TreeSet<EnergyThreshold> interests = new TreeSet<EnergyThreshold>();
-	final double AvgLength = 40.0;
-	final Set<IAEPowerStorage> providers = new LinkedHashSet<IAEPowerStorage>();
-	final Set<IAEPowerStorage> requesters = new LinkedHashSet<IAEPowerStorage>();
-	final Multiset<IEnergyGridProvider> energyGridProviders = HashMultiset.create();
-	final IGrid myGrid;
+	private final TreeSet<EnergyThreshold> interests = new TreeSet<EnergyThreshold>();
+	private final double AvgLength = 40.0;
+	private final Set<IAEPowerStorage> providers = new LinkedHashSet<IAEPowerStorage>();
+	private final Set<IAEPowerStorage> requesters = new LinkedHashSet<IAEPowerStorage>();
+	private final Multiset<IEnergyGridProvider> energyGridProviders = HashMultiset.create();
+	private final IGrid myGrid;
 	private final HashMap<IGridNode, IEnergyWatcher> watchers = new HashMap<IGridNode, IEnergyWatcher>();
 	private final Set<IEnergyGrid> localSeen = new HashSet<IEnergyGrid>();
 	/**
 	 * estimated power available.
 	 */
-	int availableTicksSinceUpdate = 0;
-	double globalAvailablePower = 0;
-	double globalMaxPower = 0;
+	private int availableTicksSinceUpdate = 0;
+	private double globalAvailablePower = 0;
+	private double globalMaxPower = 0;
 	/**
 	 * idle draw.
 	 */
-	double drainPerTick = 0;
-	double avgDrainPerTick = 0;
-	double avgInjectionPerTick = 0;
-	double tickDrainPerTick = 0;
-	double tickInjectionPerTick = 0;
+	private double drainPerTick = 0;
+	private double avgDrainPerTick = 0;
+	private double avgInjectionPerTick = 0;
+	private double tickDrainPerTick = 0;
+	private double tickInjectionPerTick = 0;
 	/**
 	 * power status
 	 */
-	boolean publicHasPower = false;
-	boolean hasPower = true;
-	long ticksSinceHasPowerChange = 900;
+	private boolean publicHasPower = false;
+	private boolean hasPower = true;
+	private long ticksSinceHasPowerChange = 900;
 	/**
 	 * excess power in the system.
 	 */
-	double extra = 0;
-	IAEPowerStorage lastProvider;
-	IAEPowerStorage lastRequester;
-	PathGridCache pgc;
-	double lastStoredPower = -1;
+	private double extra = 0;
+	private IAEPowerStorage lastProvider;
+	private IAEPowerStorage lastRequester;
+	private PathGridCache pgc;
+	private double lastStoredPower = -1;
 
 	public EnergyGridCache( final IGrid g )
 	{
@@ -114,8 +114,8 @@ public class EnergyGridCache implements IEnergyGrid
 		final IGridBlock gb = node.getGridBlock();
 
 		final double newDraw = gb.getIdlePowerUsage();
-		final double diffDraw = newDraw - node.previousDraw;
-		node.previousDraw = newDraw;
+		final double diffDraw = newDraw - node.getPreviousDraw();
+		node.setPreviousDraw( newDraw );
 
 		this.drainPerTick += diffDraw;
 	}
@@ -150,16 +150,16 @@ public class EnergyGridCache implements IEnergyGrid
 	@Override
 	public void onUpdateTick()
 	{
-		if( !this.interests.isEmpty() )
+		if( !this.getInterests().isEmpty() )
 		{
 			final double oldPower = this.lastStoredPower;
 			this.lastStoredPower = this.getStoredPower();
 
 			final EnergyThreshold low = new EnergyThreshold( Math.min( oldPower, this.lastStoredPower ), null );
 			final EnergyThreshold high = new EnergyThreshold( Math.max( oldPower, this.lastStoredPower ), null );
-			for( final EnergyThreshold th : this.interests.subSet( low, true, high, true ) )
+			for( final EnergyThreshold th : this.getInterests().subSet( low, true, high, true ) )
 			{
-				( (EnergyWatcher) th.watcher ).post( this );
+				( (EnergyWatcher) th.getWatcher() ).post( this );
 			}
 		}
 
@@ -221,7 +221,7 @@ public class EnergyGridCache implements IEnergyGrid
 	@Override
 	public double getIdlePowerUsage()
 	{
-		return this.drainPerTick + this.pgc.channelPowerUsage;
+		return this.drainPerTick + this.pgc.getChannelPowerUsage();
 	}
 
 	private void publicPowerState( final boolean newState, final IGrid grid )
@@ -239,7 +239,7 @@ public class EnergyGridCache implements IEnergyGrid
 	/**
 	 * refresh current stored power.
 	 */
-	public void refreshPower()
+	private void refreshPower()
 	{
 		this.availableTicksSinceUpdate = 0;
 		this.globalAvailablePower = 0;
@@ -520,7 +520,7 @@ public class EnergyGridCache implements IEnergyGrid
 
 		// idle draw.
 		final GridNode gridNode = (GridNode) node;
-		this.drainPerTick -= gridNode.previousDraw;
+		this.drainPerTick -= gridNode.getPreviousDraw();
 
 		// power storage.
 		if( machine instanceof IAEPowerStorage )
@@ -571,8 +571,8 @@ public class EnergyGridCache implements IEnergyGrid
 		// idle draw...
 		final GridNode gridNode = (GridNode) node;
 		final IGridBlock gb = gridNode.getGridBlock();
-		gridNode.previousDraw = gb.getIdlePowerUsage();
-		this.drainPerTick += gridNode.previousDraw;
+		gridNode.setPreviousDraw( gb.getIdlePowerUsage() );
+		this.drainPerTick += gridNode.getPreviousDraw();
 
 		// power storage
 		if( machine instanceof IAEPowerStorage )
@@ -629,5 +629,10 @@ public class EnergyGridCache implements IEnergyGrid
 	public void populateGridStorage( final IGridStorage storage )
 	{
 		storage.dataObject().setDouble( "extraEnergy", this.extra );
+	}
+
+	public TreeSet<EnergyThreshold> getInterests()
+	{
+		return this.interests;
 	}
 }

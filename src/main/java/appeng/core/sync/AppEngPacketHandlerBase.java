@@ -139,7 +139,7 @@ public class AppEngPacketHandlerBase
 			return ( values() )[id];
 		}
 
-		public static PacketTypes getID( final Class<? extends AppEngPacket> c )
+		static PacketTypes getID( final Class<? extends AppEngPacket> c )
 		{
 			return REVERSE_LOOKUP.get( c );
 		}

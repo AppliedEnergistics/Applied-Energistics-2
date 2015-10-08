@@ -42,7 +42,7 @@ public abstract class PartUpgradeable extends PartBasicState implements IAEAppEn
 	public PartUpgradeable( final ItemStack is )
 	{
 		super( is );
-		this.upgrades = new StackUpgradeInventory( this.is, this, this.getUpgradeSlots() );
+		this.upgrades = new StackUpgradeInventory( this.getItemStack(), this, this.getUpgradeSlots() );
 		this.upgrades.setMaxStackSize( 1 );
 		this.manager = new ConfigManager( this );
 	}
@@ -82,7 +82,7 @@ public abstract class PartUpgradeable extends PartBasicState implements IAEAppEn
 					return false;
 
 				case HIGH_SIGNAL:
-					if( this.host.hasRedstone( this.side ) )
+					if( this.getHost().hasRedstone( this.getSide() ) )
 					{
 						return false;
 					}
@@ -90,7 +90,7 @@ public abstract class PartUpgradeable extends PartBasicState implements IAEAppEn
 					break;
 
 				case LOW_SIGNAL:
-					if( !this.host.hasRedstone( this.side ) )
+					if( !this.getHost().hasRedstone( this.getSide() ) )
 					{
 						return false;
 					}

@@ -71,30 +71,31 @@ import appeng.util.Platform;
 public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfigManagerHost
 {
 
-	public static int CraftingGridOffsetX;
-	public static int CraftingGridOffsetY;
+	public static int craftingGridOffsetX;
+	public static int craftingGridOffsetY;
+
 	private static String memoryText = "";
-	final ItemRepo repo;
-	final int offsetX = 9;
-	final int lowerTextureOffset = 0;
-	final IConfigManager configSrc;
-	final boolean viewCell;
-	final ItemStack[] myCurrentViewCells = new ItemStack[5];
-	final ContainerMEMonitorable monitorableContainer;
-	GuiTabButton craftingStatusBtn;
-	MEGuiTextField searchField;
-	GuiText myName;
-	int perRow = 9;
-	int reservedSpace = 0;
-	boolean customSortOrder = true;
-	int rows = 0;
-	int maxRows = Integer.MAX_VALUE;
-	int standardSize;
-	GuiImgButton ViewBox;
-	GuiImgButton SortByBox;
-	GuiImgButton SortDirBox;
-	GuiImgButton searchBoxSettings;
-	GuiImgButton terminalStyleBox;
+	private final ItemRepo repo;
+	private final int offsetX = 9;
+	private final int lowerTextureOffset = 0;
+	private final IConfigManager configSrc;
+	private final boolean viewCell;
+	private final ItemStack[] myCurrentViewCells = new ItemStack[5];
+	private final ContainerMEMonitorable monitorableContainer;
+	private GuiTabButton craftingStatusBtn;
+	private MEGuiTextField searchField;
+	private GuiText myName;
+	private int perRow = 9;
+	private int reservedSpace = 0;
+	private boolean customSortOrder = true;
+	private int rows = 0;
+	private int maxRows = Integer.MAX_VALUE;
+	private int standardSize;
+	private GuiImgButton ViewBox;
+	private GuiImgButton SortByBox;
+	private GuiImgButton SortDirBox;
+	private GuiImgButton searchBoxSettings;
+	private GuiImgButton terminalStyleBox;
 
 	public GuiMEMonitorable( final InventoryPlayer inventoryPlayer, final ITerminalHost te )
 	{
@@ -105,8 +106,10 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 	{
 
 		super( c );
-		this.myScrollBar = new GuiScrollbar();
-		this.repo = new ItemRepo( this.myScrollBar, this );
+
+		final GuiScrollbar scrollbar = new GuiScrollbar();
+		this.setScrollBar( scrollbar );
+		this.repo = new ItemRepo( scrollbar, this );
 
 		this.xSize = 185;
 		this.ySize = 204;
@@ -119,7 +122,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 		this.standardSize = this.xSize;
 
 		this.configSrc = ( (IConfigurableObject) this.inventorySlots ).getConfigManager();
-		( this.monitorableContainer = (ContainerMEMonitorable) this.inventorySlots ).gui = this;
+		( this.monitorableContainer = (ContainerMEMonitorable) this.inventorySlots ).setGui( this );
 
 		this.viewCell = te instanceof IViewCellStorage;
 
@@ -158,8 +161,8 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 
 	private void setScrollBar()
 	{
-		this.myScrollBar.setTop( 18 ).setLeft( 175 ).setHeight( this.rows * 18 - 2 );
-		this.myScrollBar.setRange( 0, ( this.repo.size() + this.perRow - 1 ) / this.perRow - this.rows, Math.max( 1, this.rows / 6 ) );
+		this.getScrollBar().setTop( 18 ).setLeft( 175 ).setHeight( this.rows * 18 - 2 );
+		this.getScrollBar().setRange( 0, ( this.repo.size() + this.perRow - 1 ) / this.perRow - this.rows, Math.max( 1, this.rows / 6 ) );
 	}
 
 	@Override
@@ -204,13 +207,13 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 
 				if( next.getClass() == SearchBoxMode.class || next.getClass() == TerminalStyle.class )
 				{
-					this.re_init();
+					this.reinitalize();
 				}
 			}
 		}
 	}
 
-	public void re_init()
+	private void reinitalize()
 	{
 		this.buttonList.clear();
 		this.initGui();
@@ -249,12 +252,12 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 			this.rows = 3;
 		}
 
-		this.meSlots.clear();
+		this.getMeSlots().clear();
 		for( int y = 0; y < this.rows; y++ )
 		{
 			for( int x = 0; x < this.perRow; x++ )
 			{
-				this.meSlots.add( new InternalSlotME( this.repo, x + y * this.perRow, this.offsetX + x * 18, 18 + y * 18 ) );
+				this.getMeSlots().add( new InternalSlotME( this.repo, x + y * this.perRow, this.offsetX + x * 18, 18 + y * 18 ) );
 			}
 		}
 
@@ -311,7 +314,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 		if( this.viewCell || this instanceof GuiWirelessTerm )
 		{
 			this.buttonList.add( this.craftingStatusBtn = new GuiTabButton( this.guiLeft + 170, this.guiTop - 4, 2 + 11 * 16, GuiText.CraftingStatus.getLocal(), itemRender ) );
-			this.craftingStatusBtn.hideEdge = 13;
+			this.craftingStatusBtn.setHideEdge( 13 );
 		}
 
 		// Enum setting = AEConfig.INSTANCE.getSetting( "Terminal", SearchBoxMode.class, SearchBoxMode.AUTOSEARCH );
@@ -321,13 +324,13 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 		if( this.isSubGui() )
 		{
 			this.searchField.setText( memoryText );
-			this.repo.searchString = memoryText;
+			this.repo.setSearchString( memoryText );
 			this.repo.updateView();
 			this.setScrollBar();
 		}
 
-		CraftingGridOffsetX = Integer.MAX_VALUE;
-		CraftingGridOffsetY = Integer.MAX_VALUE;
+		craftingGridOffsetX = Integer.MAX_VALUE;
+		craftingGridOffsetY = Integer.MAX_VALUE;
 
 		for( final Object s : this.inventorySlots.inventorySlots )
 		{
@@ -344,14 +347,14 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 				final Slot g = (Slot) s;
 				if( g.xDisplayPosition > 0 && g.yDisplayPosition > 0 )
 				{
-					CraftingGridOffsetX = Math.min( CraftingGridOffsetX, g.xDisplayPosition );
-					CraftingGridOffsetY = Math.min( CraftingGridOffsetY, g.yDisplayPosition );
+					craftingGridOffsetX = Math.min( craftingGridOffsetX, g.xDisplayPosition );
+					craftingGridOffsetY = Math.min( craftingGridOffsetY, g.yDisplayPosition );
 				}
 			}
 		}
 
-		CraftingGridOffsetX -= 25;
-		CraftingGridOffsetY -= 6;
+		craftingGridOffsetX -= 25;
+		craftingGridOffsetY -= 6;
 	}
 
 	@Override
@@ -374,7 +377,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 		if( btn == 1 && this.searchField.isMouseIn( xCoord, yCoord ) )
 		{
 			this.searchField.setText( "" );
-			this.repo.searchString = "";
+			this.repo.setSearchString( "" );
 			this.repo.updateView();
 			this.setScrollBar();
 		}
@@ -416,10 +419,10 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 
 			for( int i = 0; i < 5; i++ )
 			{
-				if( this.myCurrentViewCells[i] != this.monitorableContainer.cellView[i].getStack() )
+				if( this.myCurrentViewCells[i] != this.monitorableContainer.getCellViewSlot( i ).getStack() )
 				{
 					update = true;
-					this.myCurrentViewCells[i] = this.monitorableContainer.cellView[i].getStack();
+					this.myCurrentViewCells[i] = this.monitorableContainer.getCellViewSlot( i ).getStack();
 				}
 			}
 
@@ -453,7 +456,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 
 	protected void repositionSlot( final AppEngSlot s )
 	{
-		s.yDisplayPosition = s.defY + this.ySize - 78 - 5;
+		s.yDisplayPosition = s.getY() + this.ySize - 78 - 5;
 	}
 
 	@Override
@@ -468,7 +471,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 
 			if( this.searchField.textboxKeyTyped( character, key ) )
 			{
-				this.repo.searchString = this.searchField.getText();
+				this.repo.setSearchString( this.searchField.getText() );
 				this.repo.updateView();
 				this.setScrollBar();
 			}
@@ -482,7 +485,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 	@Override
 	public void updateScreen()
 	{
-		this.repo.setPower( this.monitorableContainer.hasPower );
+		this.repo.setPower( this.monitorableContainer.isPowered() );
 		super.updateScreen();
 	}
 
@@ -523,5 +526,35 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 		}
 
 		this.repo.updateView();
+	}
+
+	int getReservedSpace()
+	{
+		return this.reservedSpace;
+	}
+
+	void setReservedSpace( final int reservedSpace )
+	{
+		this.reservedSpace = reservedSpace;
+	}
+
+	public boolean isCustomSortOrder()
+	{
+		return this.customSortOrder;
+	}
+
+	void setCustomSortOrder( final boolean customSortOrder )
+	{
+		this.customSortOrder = customSortOrder;
+	}
+
+	public int getStandardSize()
+	{
+		return this.standardSize;
+	}
+
+	void setStandardSize( final int standardSize )
+	{
+		this.standardSize = standardSize;
 	}
 }

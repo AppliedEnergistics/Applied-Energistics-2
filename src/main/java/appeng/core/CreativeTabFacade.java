@@ -40,7 +40,7 @@ public final class CreativeTabFacade extends CreativeTabs
 		super( "appliedenergistics2.facades" );
 	}
 
-	public static void init()
+	static void init()
 	{
 		instance = new CreativeTabFacade();
 	}

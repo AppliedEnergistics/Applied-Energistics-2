@@ -42,7 +42,7 @@ public class NetworkMonitor<T extends IAEStack<T>> extends MEMonitorHandler<T>
 	private static final Deque<NetworkMonitor<?>> DEPTH = new LinkedList<NetworkMonitor<?>>();
 	private final GridStorageCache myGridCache;
 	private final StorageChannel myChannel;
-	boolean sendEvent = false;
+	private boolean sendEvent = false;
 
 	public NetworkMonitor( final GridStorageCache cache, final StorageChannel chan )
 	{
@@ -51,7 +51,7 @@ public class NetworkMonitor<T extends IAEStack<T>> extends MEMonitorHandler<T>
 		this.myChannel = chan;
 	}
 
-	public void forceUpdate()
+	void forceUpdate()
 	{
 		this.hasChanged = true;
 
@@ -72,12 +72,12 @@ public class NetworkMonitor<T extends IAEStack<T>> extends MEMonitorHandler<T>
 		}
 	}
 
-	public void onTick()
+	void onTick()
 	{
 		if( this.sendEvent )
 		{
 			this.sendEvent = false;
-			this.myGridCache.myGrid.postEvent( new MENetworkStorageEvent( this, this.myChannel ) );
+			this.myGridCache.getGrid().postEvent( new MENetworkStorageEvent( this, this.myChannel ) );
 		}
 	}
 
@@ -124,9 +124,9 @@ public class NetworkMonitor<T extends IAEStack<T>> extends MEMonitorHandler<T>
 				( difference = changedItem.copy() ).setStackSize( -changedItem.getStackSize() );
 			}
 
-			if( this.myGridCache.interestManager.containsKey( changedItem ) )
+			if( this.myGridCache.getInterestManager().containsKey( changedItem ) )
 			{
-				final Collection<ItemWatcher> list = this.myGridCache.interestManager.get( changedItem );
+				final Collection<ItemWatcher> list = this.myGridCache.getInterestManager().get( changedItem );
 				if( !list.isEmpty() )
 				{
 					IAEStack fullStack = myStorageList.findPrecise( changedItem );
@@ -136,14 +136,14 @@ public class NetworkMonitor<T extends IAEStack<T>> extends MEMonitorHandler<T>
 						fullStack.setStackSize( 0 );
 					}
 
-					this.myGridCache.interestManager.enableTransactions();
+					this.myGridCache.getInterestManager().enableTransactions();
 
 					for( final ItemWatcher iw : list )
 					{
 						iw.getHost().onStackChange( myStorageList, fullStack, difference, src, this.getChannel() );
 					}
 
-					this.myGridCache.interestManager.disableTransactions();
+					this.myGridCache.getInterestManager().disableTransactions();
 				}
 			}
 		}

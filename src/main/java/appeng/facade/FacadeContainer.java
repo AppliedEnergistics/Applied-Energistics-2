@@ -43,8 +43,8 @@ import appeng.parts.CableBusStorage;
 public class FacadeContainer implements IFacadeContainer
 {
 
-	final int facades = 6;
-	final CableBusStorage storage;
+	private final int facades = 6;
+	private final CableBusStorage storage;
 
 	public FacadeContainer( final CableBusStorage cbs )
 	{

@@ -44,7 +44,7 @@ public interface IContainerCraftingPacket
 	/**
 	 * @return who are we?
 	 */
-	BaseActionSource getSource();
+	BaseActionSource getActionSource();
 
 	/**
 	 * @return consume items?

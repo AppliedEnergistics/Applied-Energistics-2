@@ -105,26 +105,26 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 	public static final int NUMBER_OF_PATTERN_SLOTS = 9;
 
 	private static final Collection<Block> BAD_BLOCKS = new HashSet<Block>( 100 );
-	final int[] sides = { 0, 1, 2, 3, 4, 5, 6, 7, 8 };
-	final IAEItemStack[] requireWork = { null, null, null, null, null, null, null, null, null };
-	final MultiCraftingTracker craftingTracker;
-	final AENetworkProxy gridProxy;
-	final IInterfaceHost iHost;
-	final BaseActionSource mySource;
-	final BaseActionSource interfaceRequestSource;
-	final ConfigManager cm = new ConfigManager( this );
-	final AppEngInternalAEInventory config = new AppEngInternalAEInventory( this, NUMBER_OF_CONFIG_SLOTS );
-	final AppEngInternalInventory storage = new AppEngInternalInventory( this, NUMBER_OF_STORAGE_SLOTS );
-	final AppEngInternalInventory patterns = new AppEngInternalInventory( this, NUMBER_OF_PATTERN_SLOTS );
-	final WrapperInvSlot slotInv = new WrapperInvSlot( this.storage );
-	final MEMonitorPassThrough<IAEItemStack> items = new MEMonitorPassThrough<IAEItemStack>( new NullInventory<IAEItemStack>(), StorageChannel.ITEMS );
-	final MEMonitorPassThrough<IAEFluidStack> fluids = new MEMonitorPassThrough<IAEFluidStack>( new NullInventory<IAEFluidStack>(), StorageChannel.FLUIDS );
+	private final int[] sides = { 0, 1, 2, 3, 4, 5, 6, 7, 8 };
+	private final IAEItemStack[] requireWork = { null, null, null, null, null, null, null, null, null };
+	private final MultiCraftingTracker craftingTracker;
+	private final AENetworkProxy gridProxy;
+	private final IInterfaceHost iHost;
+	private final BaseActionSource mySource;
+	private final BaseActionSource interfaceRequestSource;
+	private final ConfigManager cm = new ConfigManager( this );
+	private final AppEngInternalAEInventory config = new AppEngInternalAEInventory( this, NUMBER_OF_CONFIG_SLOTS );
+	private final AppEngInternalInventory storage = new AppEngInternalInventory( this, NUMBER_OF_STORAGE_SLOTS );
+	private final AppEngInternalInventory patterns = new AppEngInternalInventory( this, NUMBER_OF_PATTERN_SLOTS );
+	private final WrapperInvSlot slotInv = new WrapperInvSlot( this.storage );
+	private final MEMonitorPassThrough<IAEItemStack> items = new MEMonitorPassThrough<IAEItemStack>( new NullInventory<IAEItemStack>(), StorageChannel.ITEMS );
+	private final MEMonitorPassThrough<IAEFluidStack> fluids = new MEMonitorPassThrough<IAEFluidStack>( new NullInventory<IAEFluidStack>(), StorageChannel.FLUIDS );
 	private final UpgradeInventory upgrades;
-	boolean hasConfig = false;
-	int priority;
-	List<ICraftingPatternDetails> craftingList = null;
-	List<ItemStack> waitingToSend = null;
-	IMEInventory<IAEItemStack> destination;
+	private boolean hasConfig = false;
+	private int priority;
+	private List<ICraftingPatternDetails> craftingList = null;
+	private List<ItemStack> waitingToSend = null;
+	private IMEInventory<IAEItemStack> destination;
 	private boolean isWorking = false;
 
 	public DualityInterface( final AENetworkProxy networkProxy, final IInterfaceHost ih )
@@ -138,7 +138,12 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 
 		this.iHost = ih;
 		this.craftingTracker = new MultiCraftingTracker( this.iHost, 9 );
-		this.mySource = this.fluids.changeSource = this.items.changeSource = new MachineSource( this.iHost );
+
+		final MachineSource actionSource = new MachineSource( this.iHost );
+		this.mySource = actionSource;
+		this.fluids.setChangeSource( actionSource );
+		this.items.setChangeSource( actionSource );
+
 		this.interfaceRequestSource = new InterfaceRequestSource( this.iHost );
 	}
 
@@ -244,7 +249,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		this.updateCraftingList();
 	}
 
-	public void addToSendList( final ItemStack is )
+	private void addToSendList( final ItemStack is )
 	{
 		if( is == null )
 		{
@@ -312,7 +317,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		this.notifyNeighbors();
 	}
 
-	public void updateCraftingList()
+	private void updateCraftingList()
 	{
 		final Boolean[] accountedFor = { false, false, false, false, false, false, false, false, false }; // 9...
 
@@ -365,7 +370,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		}
 	}
 
-	public boolean hasWorkToDo()
+	private boolean hasWorkToDo()
 	{
 		return this.hasItemsToSend() || this.requireWork[0] != null || this.requireWork[1] != null || this.requireWork[2] != null || this.requireWork[3] != null || this.requireWork[4] != null || this.requireWork[5] != null || this.requireWork[6] != null || this.requireWork[7] != null;
 	}
@@ -439,7 +444,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		}
 	}
 
-	public void addToCraftingList( final ItemStack is )
+	private void addToCraftingList( final ItemStack is )
 	{
 		if( is == null )
 		{
@@ -463,7 +468,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		}
 	}
 
-	public boolean hasItemsToSend()
+	private boolean hasItemsToSend()
 	{
 		return this.waitingToSend != null && !this.waitingToSend.isEmpty();
 	}
@@ -540,7 +545,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 	@Override
 	public TickingRequest getTickingRequest( final IGridNode node )
 	{
-		return new TickingRequest( TickRates.Interface.min, TickRates.Interface.max, !this.hasWorkToDo(), true );
+		return new TickingRequest( TickRates.Interface.getMin(), TickRates.Interface.getMax(), !this.hasWorkToDo(), true );
 	}
 
 	@Override
@@ -772,7 +777,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		return this.items;
 	}
 
-	public boolean hasConfig()
+	private boolean hasConfig()
 	{
 		return this.hasConfig;
 	}
@@ -870,7 +875,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 	@Override
 	public boolean pushPattern( final ICraftingPatternDetails patternDetails, final InventoryCrafting table )
 	{
-		if( this.hasItemsToSend() || !this.gridProxy.isActive() )
+		if( this.hasItemsToSend() || !this.gridProxy.isActive() || !this.craftingList.contains( patternDetails ) )
 		{
 			return false;
 		}
@@ -1073,7 +1078,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		return null;
 	}
 
-	public IPart getPart()
+	private IPart getPart()
 	{
 		return (IPart) ( this.iHost instanceof IPart ? this.iHost : null );
 	}
@@ -1257,7 +1262,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		public InterfaceInventory( final DualityInterface tileInterface )
 		{
 			super( new AdaptorIInventory( tileInterface.storage ) );
-			this.mySource = new MachineSource( DualityInterface.this.iHost );
+			this.setActionSource( new MachineSource( DualityInterface.this.iHost ) );
 		}
 
 		@Override

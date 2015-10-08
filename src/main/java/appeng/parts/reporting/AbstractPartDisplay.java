@@ -60,7 +60,7 @@ public abstract class AbstractPartDisplay extends AbstractPartReporting
 		final IIcon sideTexture = CableBusTextures.PartMonitorSides.getIcon();
 		final IIcon backTexture = CableBusTextures.PartMonitorBack.getIcon();
 
-		rh.setTexture( sideTexture, sideTexture, backTexture, this.is.getIconIndex(), sideTexture, sideTexture );
+		rh.setTexture( sideTexture, sideTexture, backTexture, this.getItemStack().getIconIndex(), sideTexture, sideTexture );
 		rh.renderInventoryBox( renderer );
 
 		rh.setInvColor( this.getColor().whiteVariant );
@@ -80,12 +80,12 @@ public abstract class AbstractPartDisplay extends AbstractPartReporting
 	@SideOnly( Side.CLIENT )
 	public void renderStatic( final int x, final int y, final int z, final IPartRenderHelper rh, final RenderBlocks renderer )
 	{
-		this.renderCache = rh.useSimplifiedRendering( x, y, z, this, this.renderCache );
+		this.setRenderCache( rh.useSimplifiedRendering( x, y, z, this, this.getRenderCache() ) );
 
 		final IIcon sideTexture = CableBusTextures.PartMonitorSides.getIcon();
 		final IIcon backTexture = CableBusTextures.PartMonitorBack.getIcon();
 
-		rh.setTexture( sideTexture, sideTexture, backTexture, this.is.getIconIndex(), sideTexture, sideTexture );
+		rh.setTexture( sideTexture, sideTexture, backTexture, this.getItemStack().getIconIndex(), sideTexture, sideTexture );
 
 		rh.setBounds( 2, 2, 14, 14, 14, 16 );
 		rh.renderBlock( x, y, z, renderer );
@@ -111,7 +111,7 @@ public abstract class AbstractPartDisplay extends AbstractPartReporting
 
 		final IIcon sideStatusTexture = CableBusTextures.PartMonitorSidesStatus.getIcon();
 
-		rh.setTexture( sideStatusTexture, sideStatusTexture, backTexture, this.is.getIconIndex(), sideStatusTexture, sideStatusTexture );
+		rh.setTexture( sideStatusTexture, sideStatusTexture, backTexture, this.getItemStack().getIconIndex(), sideStatusTexture, sideStatusTexture );
 
 		rh.setBounds( 4, 4, 13, 12, 12, 14 );
 		rh.renderBlock( x, y, z, renderer );

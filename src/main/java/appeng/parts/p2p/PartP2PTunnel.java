@@ -62,8 +62,8 @@ import appeng.util.Platform;
 public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicState
 {
 	private final TunnelCollection type = new TunnelCollection<T>( null, this.getClass() );
-	public boolean output;
-	public long freq;
+	private boolean output;
+	private long freq;
 
 	public PartP2PTunnel( final ItemStack is )
 	{
@@ -81,16 +81,16 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 		return null;
 	}
 
-	public T getInput()
+	T getInput()
 	{
-		if( this.freq == 0 )
+		if( this.getFrequency() == 0 )
 		{
 			return null;
 		}
 
 		try
 		{
-			final PartP2PTunnel tunnel = this.proxy.getP2P().getInput( this.freq );
+			final PartP2PTunnel tunnel = this.getProxy().getP2P().getInput( this.getFrequency() );
 			if( this.getClass().isInstance( tunnel ) )
 			{
 				return (T) tunnel;
@@ -103,11 +103,11 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 		return null;
 	}
 
-	public TunnelCollection<T> getOutputs() throws GridAccessException
+	TunnelCollection<T> getOutputs() throws GridAccessException
 	{
-		if( this.proxy.isActive() )
+		if( this.getProxy().isActive() )
 		{
-			return (TunnelCollection<T>) this.proxy.getP2P().getOutputs( this.freq, this.getClass() );
+			return (TunnelCollection<T>) this.getProxy().getP2P().getOutputs( this.getFrequency(), this.getClass() );
 		}
 		return new TunnelCollection( new ArrayList(), this.getClass() );
 	}
@@ -129,7 +129,7 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 		rh.setBounds( 2, 2, 14, 14, 14, 16 );
 		rh.renderInventoryBox( renderer );
 
-		rh.setTexture( CableBusTextures.PartTunnelSides.getIcon(), CableBusTextures.PartTunnelSides.getIcon(), CableBusTextures.BlockP2PTunnel2.getIcon(), this.is.getIconIndex(), CableBusTextures.PartTunnelSides.getIcon(), CableBusTextures.PartTunnelSides.getIcon() );
+		rh.setTexture( CableBusTextures.PartTunnelSides.getIcon(), CableBusTextures.PartTunnelSides.getIcon(), CableBusTextures.BlockP2PTunnel2.getIcon(), this.getItemStack().getIconIndex(), CableBusTextures.PartTunnelSides.getIcon(), CableBusTextures.PartTunnelSides.getIcon() );
 
 		rh.setBounds( 2, 2, 14, 14, 14, 16 );
 		rh.renderInventoryBox( renderer );
@@ -155,13 +155,13 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 	@SideOnly( Side.CLIENT )
 	public void renderStatic( final int x, final int y, final int z, final IPartRenderHelper rh, final RenderBlocks renderer )
 	{
-		this.renderCache = rh.useSimplifiedRendering( x, y, z, this, this.renderCache );
+		this.setRenderCache( rh.useSimplifiedRendering( x, y, z, this, this.getRenderCache() ) );
 		rh.setTexture( this.getTypeTexture() );
 
 		rh.setBounds( 2, 2, 14, 14, 14, 16 );
 		rh.renderBlock( x, y, z, renderer );
 
-		rh.setTexture( CableBusTextures.PartTunnelSides.getIcon(), CableBusTextures.PartTunnelSides.getIcon(), CableBusTextures.BlockP2PTunnel2.getIcon(), this.is.getIconIndex(), CableBusTextures.PartTunnelSides.getIcon(), CableBusTextures.PartTunnelSides.getIcon() );
+		rh.setTexture( CableBusTextures.PartTunnelSides.getIcon(), CableBusTextures.PartTunnelSides.getIcon(), CableBusTextures.BlockP2PTunnel2.getIcon(), this.getItemStack().getIconIndex(), CableBusTextures.PartTunnelSides.getIcon(), CableBusTextures.PartTunnelSides.getIcon() );
 
 		rh.setBounds( 2, 2, 14, 14, 14, 16 );
 		rh.renderBlock( x, y, z, renderer );
@@ -201,16 +201,16 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 	public void readFromNBT( final NBTTagCompound data )
 	{
 		super.readFromNBT( data );
-		this.output = data.getBoolean( "output" );
-		this.freq = data.getLong( "freq" );
+		this.setOutput( data.getBoolean( "output" ) );
+		this.setFrequency( data.getLong( "freq" ) );
 	}
 
 	@Override
 	public void writeToNBT( final NBTTagCompound data )
 	{
 		super.writeToNBT( data );
-		data.setBoolean( "output", this.output );
-		data.setLong( "freq", this.freq );
+		data.setBoolean( "output", this.isOutput() );
+		data.setLong( "freq", this.getFrequency() );
 	}
 
 	@Override
@@ -249,18 +249,18 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 					final IPart testPart = ( (IPartItem) newType.getItem() ).createPartFromItemStack( newType );
 					if( testPart instanceof PartP2PTunnel )
 					{
-						this.getHost().removePart( this.side, true );
-						final ForgeDirection dir = this.getHost().addPart( newType, this.side, player );
+						this.getHost().removePart( this.getSide(), true );
+						final ForgeDirection dir = this.getHost().addPart( newType, this.getSide(), player );
 						final IPart newBus = this.getHost().getPart( dir );
 
 						if( newBus instanceof PartP2PTunnel )
 						{
 							final PartP2PTunnel newTunnel = (PartP2PTunnel) newBus;
-							newTunnel.output = true;
+							newTunnel.setOutput( true );
 
 							try
 							{
-								final P2PCache p2p = newTunnel.proxy.getP2P();
+								final P2PCache p2p = newTunnel.getProxy().getP2P();
 								p2p.updateFreq( newTunnel, freq );
 							}
 							catch( final GridAccessException e )
@@ -353,24 +353,24 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 					break;
 			}
 
-			if( newType != null && !Platform.isSameItem( newType, this.is ) )
+			if( newType != null && !Platform.isSameItem( newType, this.getItemStack() ) )
 			{
-				final boolean oldOutput = this.output;
-				final long myFreq = this.freq;
+				final boolean oldOutput = this.isOutput();
+				final long myFreq = this.getFrequency();
 
-				this.getHost().removePart( this.side, false );
-				final ForgeDirection dir = this.getHost().addPart( newType, this.side, player );
+				this.getHost().removePart( this.getSide(), false );
+				final ForgeDirection dir = this.getHost().addPart( newType, this.getSide(), player );
 				final IPart newBus = this.getHost().getPart( dir );
 
 				if( newBus instanceof PartP2PTunnel )
 				{
 					final PartP2PTunnel newTunnel = (PartP2PTunnel) newBus;
-					newTunnel.output = oldOutput;
+					newTunnel.setOutput( oldOutput );
 					newTunnel.onTunnelNetworkChange();
 
 					try
 					{
-						final P2PCache p2p = newTunnel.proxy.getP2P();
+						final P2PCache p2p = newTunnel.getProxy().getP2P();
 						p2p.updateFreq( newTunnel, myFreq );
 					}
 					catch( final GridAccessException e )
@@ -379,7 +379,7 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 					}
 				}
 
-				Platform.notifyBlocksOfNeighbors( this.tile.getWorldObj(), this.tile.xCoord, this.tile.yCoord, this.tile.zCoord );
+				Platform.notifyBlocksOfNeighbors( this.getTile().getWorldObj(), this.getTile().xCoord, this.getTile().yCoord, this.getTile().zCoord );
 				return true;
 			}
 		}
@@ -396,18 +396,18 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 			final IMemoryCard mc = (IMemoryCard) is.getItem();
 			final NBTTagCompound data = new NBTTagCompound();
 
-			long newFreq = this.freq;
-			final boolean wasOutput = this.output;
-			this.output = false;
+			long newFreq = this.getFrequency();
+			final boolean wasOutput = this.isOutput();
+			this.setOutput( false );
 
-			if( wasOutput || this.freq == 0 )
+			if( wasOutput || this.getFrequency() == 0 )
 			{
 				newFreq = System.currentTimeMillis();
 			}
 
 			try
 			{
-				this.proxy.getP2P().updateFreq( this, newFreq );
+				this.getProxy().getP2P().updateFreq( this, newFreq );
 			}
 			catch( final GridAccessException e )
 			{
@@ -420,7 +420,7 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 			final String type = p2pItem.getUnlocalizedName();
 
 			p2pItem.writeToNBT( data );
-			data.setLong( "freq", this.freq );
+			data.setLong( "freq", this.getFrequency() );
 
 			mc.setMemoryCardContents( is, type + ".name", data );
 			mc.notifyUser( player, MemoryCardMessages.SETTINGS_SAVED );
@@ -451,11 +451,31 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 
 		try
 		{
-			this.proxy.getEnergy().extractAEPower( ae_to_tax, Actionable.MODULATE, PowerMultiplier.ONE );
+			this.getProxy().getEnergy().extractAEPower( ae_to_tax, Actionable.MODULATE, PowerMultiplier.ONE );
 		}
 		catch( final GridAccessException e )
 		{
 			// :P
 		}
+	}
+
+	public long getFrequency()
+	{
+		return this.freq;
+	}
+
+	public void setFrequency( final long freq )
+	{
+		this.freq = freq;
+	}
+
+	public boolean isOutput()
+	{
+		return this.output;
+	}
+
+	void setOutput( final boolean output )
+	{
+		this.output = output;
 	}
 }

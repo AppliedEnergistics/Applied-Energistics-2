@@ -34,24 +34,24 @@ import appeng.tile.events.TileEventType;
 public abstract class AENetworkInvTile extends AEBaseInvTile implements IActionHost, IGridProxyable
 {
 
-	protected final AENetworkProxy gridProxy = new AENetworkProxy( this, "proxy", this.getItemFromTile( this ), true );
+	private final AENetworkProxy gridProxy = new AENetworkProxy( this, "proxy", this.getItemFromTile( this ), true );
 
 	@TileEvent( TileEventType.WORLD_NBT_READ )
 	public void readFromNBT_AENetwork( final NBTTagCompound data )
 	{
-		this.gridProxy.readFromNBT( data );
+		this.getGridProxy().readFromNBT( data );
 	}
 
 	@TileEvent( TileEventType.WORLD_NBT_WRITE )
 	public void writeToNBT_AENetwork( final NBTTagCompound data )
 	{
-		this.gridProxy.writeToNBT( data );
+		this.getGridProxy().writeToNBT( data );
 	}
 
 	@Override
 	public AENetworkProxy getProxy()
 	{
-		return this.gridProxy;
+		return this.getGridProxy();
 	}
 
 	@Override
@@ -63,40 +63,45 @@ public abstract class AENetworkInvTile extends AEBaseInvTile implements IActionH
 	@Override
 	public IGridNode getGridNode( final ForgeDirection dir )
 	{
-		return this.gridProxy.getNode();
+		return this.getGridProxy().getNode();
 	}
 
 	@Override
 	public void onChunkUnload()
 	{
 		super.onChunkUnload();
-		this.gridProxy.onChunkUnload();
+		this.getGridProxy().onChunkUnload();
 	}
 
 	@Override
 	public void onReady()
 	{
 		super.onReady();
-		this.gridProxy.onReady();
+		this.getGridProxy().onReady();
 	}
 
 	@Override
 	public void invalidate()
 	{
 		super.invalidate();
-		this.gridProxy.invalidate();
+		this.getGridProxy().invalidate();
 	}
 
 	@Override
 	public void validate()
 	{
 		super.validate();
-		this.gridProxy.validate();
+		this.getGridProxy().validate();
 	}
 
 	@Override
 	public IGridNode getActionableNode()
 	{
-		return this.gridProxy.getNode();
+		return this.getGridProxy().getNode();
+	}
+
+	public AENetworkProxy getGridProxy()
+	{
+		return this.gridProxy;
 	}
 }

@@ -75,7 +75,7 @@ public final class PartP2PPressure extends PartP2PTunnel<PartP2PPressure> implem
 	@Override
 	public IAirHandler getAirHandler( final ForgeDirection side )
 	{
-		if( side == this.side )
+		if( side == this.getSide() )
 		{
 			return this.getInternalHandler();
 		}
@@ -102,7 +102,7 @@ public final class PartP2PPressure extends PartP2PTunnel<PartP2PPressure> implem
 	{
 		super.removeFromWorld();
 
-		if( this.output && this.getInput() != null )
+		if( this.isOutput() && this.getInput() != null )
 		{
 			this.getInternalHandler().removeConnection( this.getInput().getInternalHandler() );
 			this.isConnected = false;
@@ -112,13 +112,13 @@ public final class PartP2PPressure extends PartP2PTunnel<PartP2PPressure> implem
 	@Override
 	public TickingRequest getTickingRequest( final IGridNode node )
 	{
-		return new TickingRequest( TickRates.PressureTunnel.min, TickRates.PressureTunnel.max, false, false );
+		return new TickingRequest( TickRates.PressureTunnel.getMin(), TickRates.PressureTunnel.getMax(), false, false );
 	}
 
 	@Override
 	public TickRateModulation tickingRequest( final IGridNode node, final int TicksSinceLastCall )
 	{
-		if( this.proxy.isPowered() && this.proxy.isActive() )
+		if( this.getProxy().isPowered() && this.getProxy().isActive() )
 		{
 			if( !this.isConnected )
 			{
@@ -157,10 +157,10 @@ public final class PartP2PPressure extends PartP2PTunnel<PartP2PPressure> implem
 
 	private void updateHandler()
 	{
-		if( this.proxy.isPowered() && this.proxy.isActive() )
+		if( this.getProxy().isPowered() && this.getProxy().isActive() )
 		{
 
-			if( this.output && this.getInput() != null )
+			if( this.isOutput() && this.getInput() != null )
 			{
 				this.getInternalHandler().createConnection( this.getInput().getInternalHandler() );
 				this.isConnected = true;

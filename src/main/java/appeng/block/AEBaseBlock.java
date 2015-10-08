@@ -75,7 +75,7 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 	protected boolean isInventory = false;
 	private IFeatureHandler handler;
 	@SideOnly( Side.CLIENT )
-	BlockRenderInfo renderInfo;
+	private BlockRenderInfo renderInfo;
 
 	protected AEBaseBlock( final Material mat )
 	{
@@ -155,7 +155,7 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 		return BaseBlockRender.class;
 	}
 
-	public IIcon unmappedGetIcon( final IBlockAccess w, final int x, final int y, final int z, final int s )
+	IIcon unmappedGetIcon( final IBlockAccess w, final int x, final int y, final int z, final int s )
 	{
 		return super.getIcon( w, x, y, z, s );
 	}
@@ -276,15 +276,15 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 				{
 					this.setBlockBounds( (float) bb.minX, (float) bb.minY, (float) bb.minZ, (float) bb.maxX, (float) bb.maxY, (float) bb.maxZ );
 
-					final MovingObjectPosition r = super.collisionRayTrace( w, x, y, z, ld.a, ld.b );
+					final MovingObjectPosition r = super.collisionRayTrace( w, x, y, z, ld.getA(), ld.getB() );
 
 					this.setBlockBounds( 0, 0, 0, 1, 1, 1 );
 
 					if( r != null )
 					{
-						final double xLen = ( ld.a.xCoord - r.hitVec.xCoord );
-						final double yLen = ( ld.a.yCoord - r.hitVec.yCoord );
-						final double zLen = ( ld.a.zCoord - r.hitVec.zCoord );
+						final double xLen = ( ld.getA().xCoord - r.hitVec.xCoord );
+						final double yLen = ( ld.getA().yCoord - r.hitVec.yCoord );
+						final double zLen = ( ld.getA().zCoord - r.hitVec.zCoord );
 
 						final double thisDist = xLen * xLen + yLen * yLen + zLen * zLen;
 
@@ -528,7 +528,7 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 		super.getSubBlocks( item, tabs, itemStacks );
 	}
 
-	int mapRotation( final IBlockAccess w, final int x, final int y, final int z, final int s )
+	private int mapRotation( final IBlockAccess w, final int x, final int y, final int z, final int s )
 	{
 		final IOrientable ori = this.getOrientable( w, x, y, z );
 
@@ -611,7 +611,7 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 		return this.getUnlocalizedName();
 	}
 
-	public void addInformation( final ItemStack is, final EntityPlayer player, final List<String> lines, final boolean advancedItemTooltips )
+	void addInformation( final ItemStack is, final EntityPlayer player, final List<String> lines, final boolean advancedItemTooltips )
 	{
 
 	}

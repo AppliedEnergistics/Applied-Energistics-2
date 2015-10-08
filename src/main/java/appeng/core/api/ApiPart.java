@@ -146,7 +146,7 @@ public class ApiPart implements IPartHelper
 		return myCLass;
 	}
 
-	public Class getClassByDesc( final String addendum, final String fullPath, final String root, final String next )
+	private Class getClassByDesc( final String addendum, final String fullPath, final String root, final String next )
 	{
 		if( this.roots.get( fullPath ) != null )
 		{
@@ -236,7 +236,7 @@ public class ApiPart implements IPartHelper
 		return clazz;
 	}
 
-	public ClassNode getReader( final String name )
+	private ClassNode getReader( final String name )
 	{
 		final String path = '/' + name.replace( ".", "/" ) + ".class";
 		final InputStream is = this.getClass().getResourceAsStream( path );
@@ -348,10 +348,10 @@ public class ApiPart implements IPartHelper
 		return CommonHelper.proxy.getRenderMode();
 	}
 
-	static class DefaultPackageClassNameRemapper extends Remapper
+	private static class DefaultPackageClassNameRemapper extends Remapper
 	{
 
-		public final HashMap<String, String> inputOutput = new HashMap<String, String>();
+		private final HashMap<String, String> inputOutput = new HashMap<String, String>();
 
 		@Override
 		public String map( final String typeName )

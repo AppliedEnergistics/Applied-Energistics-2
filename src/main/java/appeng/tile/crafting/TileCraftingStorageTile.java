@@ -27,7 +27,7 @@ import appeng.api.definitions.IBlocks;
 
 public class TileCraftingStorageTile extends TileCraftingTile
 {
-	public static final int KILO_SCALAR = 1024;
+	private static final int KILO_SCALAR = 1024;
 
 	@Override
 	protected ItemStack getItemFromTile( final Object obj )

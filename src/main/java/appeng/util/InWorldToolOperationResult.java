@@ -30,8 +30,8 @@ import net.minecraft.item.ItemStack;
 public class InWorldToolOperationResult
 {
 
-	public final ItemStack BlockItem;
-	public final List<ItemStack> Drops;
+	private final ItemStack BlockItem;
+	private final List<ItemStack> Drops;
 
 	public InWorldToolOperationResult()
 	{
@@ -73,5 +73,15 @@ public class InWorldToolOperationResult
 		}
 
 		return new InWorldToolOperationResult( b, temp );
+	}
+
+	public ItemStack getBlockItem()
+	{
+		return this.BlockItem;
+	}
+
+	public List<ItemStack> getDrops()
+	{
+		return this.Drops;
 	}
 }

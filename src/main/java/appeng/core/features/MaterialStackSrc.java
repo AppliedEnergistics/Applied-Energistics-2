@@ -47,13 +47,13 @@ public class MaterialStackSrc implements IStackSrc
 	@Override
 	public Item getItem()
 	{
-		return this.src.itemInstance;
+		return this.src.getItemInstance();
 	}
 
 	@Override
 	public int getDamage()
 	{
-		return this.src.damageValue;
+		return this.src.getDamageValue();
 	}
 
 	@Override

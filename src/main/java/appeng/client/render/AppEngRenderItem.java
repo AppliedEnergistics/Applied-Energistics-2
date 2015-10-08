@@ -19,6 +19,8 @@
 package appeng.client.render;
 
 
+import javax.annotation.Nonnull;
+
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.gui.FontRenderer;
@@ -46,7 +48,7 @@ public class AppEngRenderItem extends RenderItem
 	private static final ISlimReadableNumberConverter SLIM_CONVERTER = ReadableNumberConverter.INSTANCE;
 	private static final IWideReadableNumberConverter WIDE_CONVERTER = ReadableNumberConverter.INSTANCE;
 
-	public IAEItemStack aeStack;
+	private IAEItemStack aeStack = null;
 
 	@Override
 	public void renderItemOverlayIntoGUI( final FontRenderer fontRenderer, final TextureManager textureManager, final ItemStack is, final int par4, final int par5, final String par6Str )
@@ -140,5 +142,15 @@ public class AppEngRenderItem extends RenderItem
 		{
 			return WIDE_CONVERTER.toWideReadableForm( originalSize );
 		}
+	}
+
+	public IAEItemStack getAeStack()
+	{
+		return this.aeStack;
+	}
+
+	public void setAeStack( @Nonnull final IAEItemStack aeStack )
+	{
+		this.aeStack = aeStack;
 	}
 }

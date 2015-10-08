@@ -31,7 +31,7 @@ public final class WorldGenRegistry implements IWorldGen
 {
 
 	public static final WorldGenRegistry INSTANCE = new WorldGenRegistry();
-	final TypeSet[] types;
+	private final TypeSet[] types;
 
 	private WorldGenRegistry()
 	{

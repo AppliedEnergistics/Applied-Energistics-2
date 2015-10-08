@@ -32,14 +32,15 @@ import appeng.util.item.AEItemStack;
 public class ItemSorters
 {
 
-	public static SortDir Direction = SortDir.ASCENDING;
+	private static SortDir Direction = SortDir.ASCENDING;
+
 	public static final Comparator<IAEItemStack> CONFIG_BASED_SORT_BY_NAME = new Comparator<IAEItemStack>()
 	{
 
 		@Override
 		public int compare( final IAEItemStack o1, final IAEItemStack o2 )
 		{
-			if( Direction == SortDir.ASCENDING )
+			if( getDirection() == SortDir.ASCENDING )
 			{
 				return Platform.getItemDisplayName( o1 ).compareToIgnoreCase( Platform.getItemDisplayName( o2 ) );
 			}
@@ -55,7 +56,7 @@ public class ItemSorters
 			final AEItemStack op1 = (AEItemStack) o1;
 			final AEItemStack op2 = (AEItemStack) o2;
 
-			if( Direction == SortDir.ASCENDING )
+			if( getDirection() == SortDir.ASCENDING )
 			{
 				return this.secondarySort( op2.getModID().compareToIgnoreCase( op1.getModID() ), o1, o2 );
 			}
@@ -78,7 +79,7 @@ public class ItemSorters
 		@Override
 		public int compare( final IAEItemStack o1, final IAEItemStack o2 )
 		{
-			if( Direction == SortDir.ASCENDING )
+			if( getDirection() == SortDir.ASCENDING )
 			{
 				return compareLong( o2.getStackSize(), o1.getStackSize() );
 			}
@@ -99,7 +100,7 @@ public class ItemSorters
 
 			final int cmp = api.compareItems( o1.getItemStack(), o2.getItemStack() );
 
-			if( Direction == SortDir.ASCENDING )
+			if( getDirection() == SortDir.ASCENDING )
 			{
 				return cmp;
 			}
@@ -161,5 +162,15 @@ public class ItemSorters
 			return -1;
 		}
 		return 1;
+	}
+
+	private static SortDir getDirection()
+	{
+		return Direction;
+	}
+
+	public static void setDirection( final SortDir direction )
+	{
+		Direction = direction;
 	}
 }

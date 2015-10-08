@@ -39,10 +39,10 @@ import appeng.tile.inventory.InvOperation;
 public class ContainerCraftingTerm extends ContainerMEMonitorable implements IAEAppEngInventory, IContainerCraftingPacket
 {
 
-	public final PartCraftingTerminal ct;
-	final AppEngInternalInventory output = new AppEngInternalInventory( this, 1 );
-	final SlotCraftingMatrix[] craftingSlots = new SlotCraftingMatrix[9];
-	final SlotCraftingTerm outputSlot;
+	private final PartCraftingTerminal ct;
+	private final AppEngInternalInventory output = new AppEngInternalInventory( this, 1 );
+	private final SlotCraftingMatrix[] craftingSlots = new SlotCraftingMatrix[9];
+	private final SlotCraftingTerm outputSlot;
 
 	public ContainerCraftingTerm( final InventoryPlayer ip, final ITerminalHost monitorable )
 	{
@@ -59,7 +59,7 @@ public class ContainerCraftingTerm extends ContainerMEMonitorable implements IAE
 			}
 		}
 
-		this.addSlotToContainer( this.outputSlot = new SlotCraftingTerm( this.getPlayerInv().player, this.mySrc, this.powerSrc, monitorable, crafting, crafting, this.output, 131, -72 + 18, this ) );
+		this.addSlotToContainer( this.outputSlot = new SlotCraftingTerm( this.getPlayerInv().player, this.getActionSource(), this.getPowerSource(), monitorable, crafting, crafting, this.output, 131, -72 + 18, this ) );
 
 		this.bindPlayerInventory( ip, 0, 0 );
 
@@ -100,7 +100,7 @@ public class ContainerCraftingTerm extends ContainerMEMonitorable implements IAE
 	{
 		if( name.equals( "player" ) )
 		{
-			return this.invPlayer;
+			return this.getInventoryPlayer();
 		}
 		return this.ct.getInventoryByName( name );
 	}

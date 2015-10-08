@@ -35,7 +35,7 @@ import appeng.core.sync.network.NetworkHandler;
 public abstract class AppEngPacket
 {
 
-	AppEngPacketHandlerBase.PacketTypes id;
+	private AppEngPacketHandlerBase.PacketTypes id;
 	private ByteBuf p;
 
 	public void serverPacketData( final INetworkInfo manager, final AppEngPacket packet, final EntityPlayer player )

@@ -43,10 +43,10 @@ import appeng.me.GridAccessException;
 public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFluidHandler
 {
 
-	static final ThreadLocal<Stack<PartP2PLiquids>> DEPTH = new ThreadLocal<Stack<PartP2PLiquids>>();
+	private static final ThreadLocal<Stack<PartP2PLiquids>> DEPTH = new ThreadLocal<Stack<PartP2PLiquids>>();
 	private static final FluidTankInfo[] ACTIVE_TANK = { new FluidTankInfo( null, 10000 ) };
 	private static final FluidTankInfo[] INACTIVE_TANK = { new FluidTankInfo( null, 0 ) };
-	IFluidHandler cachedTank;
+	private IFluidHandler cachedTank;
 	private int tmpUsed;
 
 	public PartP2PLiquids( final ItemStack is )
@@ -76,7 +76,7 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 	public void onNeighborChanged()
 	{
 		this.cachedTank = null;
-		if( this.output )
+		if( this.isOutput() )
 		{
 			final PartP2PLiquids in = this.getInput();
 			if( in != null )
@@ -111,7 +111,7 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 			final IFluidHandler tank = l.getTarget();
 			if( tank != null )
 			{
-				l.tmpUsed = tank.fill( l.side.getOpposite(), resource.copy(), false );
+				l.tmpUsed = tank.fill( l.getSide().getOpposite(), resource.copy(), false );
 			}
 			else
 			{
@@ -166,7 +166,7 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 			final IFluidHandler tank = l.getTarget();
 			if( tank != null )
 			{
-				l.tmpUsed = tank.fill( l.side.getOpposite(), insert.copy(), true );
+				l.tmpUsed = tank.fill( l.getSide().getOpposite(), insert.copy(), true );
 			}
 			else
 			{
@@ -197,7 +197,7 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 		return s;
 	}
 
-	List<PartP2PLiquids> getOutputs( final Fluid input )
+	private List<PartP2PLiquids> getOutputs( final Fluid input )
 	{
 		final List<PartP2PLiquids> outs = new LinkedList<PartP2PLiquids>();
 
@@ -208,7 +208,7 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 				final IFluidHandler handler = l.getTarget();
 				if( handler != null )
 				{
-					if( handler.canFill( l.side.getOpposite(), input ) )
+					if( handler.canFill( l.getSide().getOpposite(), input ) )
 					{
 						outs.add( l );
 					}
@@ -223,9 +223,9 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 		return outs;
 	}
 
-	IFluidHandler getTarget()
+	private IFluidHandler getTarget()
 	{
-		if( !this.proxy.isActive() )
+		if( !this.getProxy().isActive() )
 		{
 			return null;
 		}
@@ -235,7 +235,7 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 			return this.cachedTank;
 		}
 
-		final TileEntity te = this.tile.getWorldObj().getTileEntity( this.tile.xCoord + this.side.offsetX, this.tile.yCoord + this.side.offsetY, this.tile.zCoord + this.side.offsetZ );
+		final TileEntity te = this.getTile().getWorldObj().getTileEntity( this.getTile().xCoord + this.getSide().offsetX, this.getTile().yCoord + this.getSide().offsetY, this.getTile().zCoord + this.getSide().offsetZ );
 		if( te instanceof IFluidHandler )
 		{
 			return this.cachedTank = (IFluidHandler) te;
@@ -259,7 +259,7 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 	@Override
 	public boolean canFill( final ForgeDirection from, final Fluid fluid )
 	{
-		return !this.output && from == this.side && !this.getOutputs( fluid ).isEmpty();
+		return !this.isOutput() && from == this.getSide() && !this.getOutputs( fluid ).isEmpty();
 	}
 
 	@Override
@@ -271,7 +271,7 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 	@Override
 	public FluidTankInfo[] getTankInfo( final ForgeDirection from )
 	{
-		if( from == this.side )
+		if( from == this.getSide() )
 		{
 			return this.getTank();
 		}
@@ -280,7 +280,7 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 
 	private FluidTankInfo[] getTank()
 	{
-		if( this.output )
+		if( this.isOutput() )
 		{
 			final PartP2PLiquids tun = this.getInput();
 			if( tun != null )

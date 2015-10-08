@@ -57,10 +57,10 @@ public class FMPEvent
 	@SubscribeEvent
 	public void ServerFMPEvent( final FMPPacketEvent event )
 	{
-		FMPEvent.place( event.sender, event.sender.worldObj );
+		FMPEvent.place( event.getSender(), event.getSender().worldObj );
 	}
 
-	public static boolean place( final EntityPlayer player, final World world )
+	private static boolean place( final EntityPlayer player, final World world )
 	{
 		final MovingObjectPosition hit = RayTracer.reTrace( world, player );
 		if( hit == null )

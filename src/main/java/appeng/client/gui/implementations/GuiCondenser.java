@@ -39,9 +39,9 @@ import appeng.tile.misc.TileCondenser;
 public class GuiCondenser extends AEBaseGui
 {
 
-	final ContainerCondenser cvc;
-	GuiProgressBar pb;
-	GuiImgButton mode;
+	private final ContainerCondenser cvc;
+	private GuiProgressBar pb;
+	private GuiImgButton mode;
 
 	public GuiCondenser( final InventoryPlayer inventoryPlayer, final TileCondenser te )
 	{
@@ -70,7 +70,7 @@ public class GuiCondenser extends AEBaseGui
 
 		this.pb = new GuiProgressBar( this.cvc, "guis/condenser.png", 120 + this.guiLeft, 25 + this.guiTop, 178, 25, 6, 18, Direction.VERTICAL, GuiText.StoredEnergy.getLocal() );
 
-		this.mode = new GuiImgButton( 128 + this.guiLeft, 52 + this.guiTop, Settings.CONDENSER_OUTPUT, this.cvc.output );
+		this.mode = new GuiImgButton( 128 + this.guiLeft, 52 + this.guiTop, Settings.CONDENSER_OUTPUT, this.cvc.getOutput() );
 
 		this.buttonList.add( this.pb );
 		this.buttonList.add( this.mode );
@@ -82,8 +82,8 @@ public class GuiCondenser extends AEBaseGui
 		this.fontRendererObj.drawString( this.getGuiDisplayName( GuiText.Condenser.getLocal() ), 8, 6, 4210752 );
 		this.fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
 
-		this.mode.set( this.cvc.output );
-		this.mode.fillVar = String.valueOf( this.cvc.output.requiredPower );
+		this.mode.set( this.cvc.getOutput() );
+		this.mode.setFillVar( String.valueOf( this.cvc.getOutput().requiredPower ) );
 	}
 
 	@Override

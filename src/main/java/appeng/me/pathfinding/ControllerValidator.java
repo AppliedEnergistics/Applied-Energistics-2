@@ -28,14 +28,14 @@ import appeng.tile.networking.TileController;
 public class ControllerValidator implements IGridVisitor
 {
 
-	public boolean isValid = true;
-	public int found = 0;
-	int minX;
-	int minY;
-	int minZ;
-	int maxX;
-	int maxY;
-	int maxZ;
+	private boolean isValid = true;
+	private int found = 0;
+	private int minX;
+	private int minY;
+	private int minZ;
+	private int maxX;
+	private int maxY;
+	private int maxZ;
 
 	public ControllerValidator( final int x, final int y, final int z )
 	{
@@ -51,7 +51,7 @@ public class ControllerValidator implements IGridVisitor
 	public boolean visitNode( final IGridNode n )
 	{
 		final IGridHost host = n.getMachine();
-		if( this.isValid && host instanceof TileController )
+		if( this.isValid() && host instanceof TileController )
 		{
 			final TileController c = (TileController) host;
 
@@ -64,17 +64,37 @@ public class ControllerValidator implements IGridVisitor
 
 			if( this.maxX - this.minX < 7 && this.maxY - this.minY < 7 && this.maxZ - this.minZ < 7 )
 			{
-				this.found++;
+				this.setFound( this.getFound() + 1 );
 				return true;
 			}
 
-			this.isValid = false;
+			this.setValid( false );
 		}
 		else
 		{
 			return false;
 		}
 
+		return this.isValid();
+	}
+
+	public boolean isValid()
+	{
 		return this.isValid;
+	}
+
+	private void setValid( final boolean isValid )
+	{
+		this.isValid = isValid;
+	}
+
+	public int getFound()
+	{
+		return this.found;
+	}
+
+	private void setFound( final int found )
+	{
+		this.found = found;
 	}
 }

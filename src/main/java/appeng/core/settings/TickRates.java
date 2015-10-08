@@ -51,20 +51,40 @@ public enum TickRates
 
 	PressureTunnel( 1, 120 );
 
-	public int min;
-	public int max;
+	private int min;
+	private int max;
 
 	TickRates( final int min, final int max )
 	{
-		this.min = min;
-		this.max = max;
+		this.setMin( min );
+		this.setMax( max );
 	}
 
 	public void Load( final AEConfig config )
 	{
 		config.addCustomCategoryComment( "TickRates", " Min / Max Tickrates for dynamic ticking, most of these components also use sleeping, to prevent constant ticking, adjust with care, non standard rates are not supported or tested." );
-		this.min = config.get( "TickRates", this.name() + ".min", this.min ).getInt( this.min );
-		this.max = config.get( "TickRates", this.name() + ".max", this.max ).getInt( this.max );
+		this.setMin( config.get( "TickRates", this.name() + ".min", this.getMin() ).getInt( this.getMin() ) );
+		this.setMax( config.get( "TickRates", this.name() + ".max", this.getMax() ).getInt( this.getMax() ) );
+	}
+
+	public int getMax()
+	{
+		return this.max;
+	}
+
+	public void setMax( final int max )
+	{
+		this.max = max;
+	}
+
+	public int getMin()
+	{
+		return this.min;
+	}
+
+	public void setMin( final int min )
+	{
+		this.min = min;
 	}
 
 }

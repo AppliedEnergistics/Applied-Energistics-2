@@ -27,7 +27,7 @@ import net.minecraft.item.ItemStack;
 public class SlotInaccessible extends AppEngSlot
 {
 
-	ItemStack dspStack = null;
+	private ItemStack dspStack = null;
 
 	public SlotInaccessible( final IInventory i, final int slotIdx, final int x, final int y )
 	{

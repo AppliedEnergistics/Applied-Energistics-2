@@ -62,12 +62,12 @@ import appeng.util.Platform;
 public class FacadePart implements IFacadePart, IBoxProvider
 {
 
-	public final ItemStack facade;
-	public final ForgeDirection side;
-	public int thickness = 2;
+	private final ItemStack facade;
+	private final ForgeDirection side;
+	private int thickness = 2;
 
 	@SideOnly( Side.CLIENT )
-	ISimplifiedBundle prevLight;
+	private ISimplifiedBundle prevLight;
 
 	public FacadePart( final ItemStack facade, final ForgeDirection side )
 	{
@@ -128,8 +128,8 @@ public class FacadePart implements IFacadePart, IBoxProvider
 				{
 					if( rbw != null )
 					{
-						rbw.isFacade = false;
-						rbw.calculations = true;
+						rbw.setFacade( false );
+						rbw.setCalculations( true );
 					}
 
 					IIcon myIcon = null;
@@ -170,7 +170,7 @@ public class FacadePart implements IFacadePart, IBoxProvider
 						{
 							if( rbw != null )
 							{
-								rbw.opacity = 0.3f;
+								rbw.setOpacity( 0.3f );
 							}
 							instance.renderForPass( 1 );
 						}
@@ -198,10 +198,10 @@ public class FacadePart implements IFacadePart, IBoxProvider
 
 						if( rbw != null )
 						{
-							rbw.isFacade = true;
+							rbw.setFacade( true );
 
-							rbw.calculations = true;
-							rbw.faces = EnumSet.noneOf( ForgeDirection.class );
+							rbw.setCalculations( true );
+							rbw.setFaces( EnumSet.noneOf( ForgeDirection.class ) );
 
 							if( this.prevLight != null && rbw.similarLighting( blk, rbw.blockAccess, x, y, z, this.prevLight ) )
 							{
@@ -215,8 +215,8 @@ public class FacadePart implements IFacadePart, IBoxProvider
 								this.prevLight = rbw.getLightingCache();
 							}
 
-							rbw.calculations = false;
-							rbw.faces = this.calculateFaceOpenFaces( rbw.blockAccess, fc, x, y, z, this.side );
+							rbw.setCalculations( false );
+							rbw.setFaces( this.calculateFaceOpenFaces( rbw.blockAccess, fc, x, y, z, this.side ) );
 
 							( (RenderBlocksWorkaround) renderer ).setTexture( blk.getIcon( ForgeDirection.DOWN.ordinal(), ib.getMetadata( randomItem.getItemDamage() ) ), blk.getIcon( ForgeDirection.UP.ordinal(), ib.getMetadata( randomItem.getItemDamage() ) ), blk.getIcon( ForgeDirection.NORTH.ordinal(), ib.getMetadata( randomItem.getItemDamage() ) ), blk.getIcon( ForgeDirection.SOUTH.ordinal(), ib.getMetadata( randomItem.getItemDamage() ) ), blk.getIcon( ForgeDirection.WEST.ordinal(), ib.getMetadata( randomItem.getItemDamage() ) ), blk.getIcon( ForgeDirection.EAST.ordinal(), ib.getMetadata( randomItem.getItemDamage() ) ) );
 						}
@@ -327,8 +327,8 @@ public class FacadePart implements IFacadePart, IBoxProvider
 
 						if( rbw != null )
 						{
-							rbw.opacity = 1.0f;
-							rbw.faces = EnumSet.allOf( ForgeDirection.class );
+							rbw.setOpacity( 1.0f );
+							rbw.setFaces( EnumSet.allOf( ForgeDirection.class ) );
 						}
 
 						instance.renderForPass( 0 );
@@ -462,7 +462,7 @@ public class FacadePart implements IFacadePart, IBoxProvider
 	}
 
 	@Nullable
-	ItemStack getTexture()
+	private ItemStack getTexture()
 	{
 		final Item maybeFacade = this.facade.getItem();
 

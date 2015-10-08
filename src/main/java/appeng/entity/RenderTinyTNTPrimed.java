@@ -51,7 +51,7 @@ public class RenderTinyTNTPrimed extends Render
 		this.renderPrimedTNT( (EntityTinyTNTPrimed) tnt, x, y, z, life );
 	}
 
-	public void renderPrimedTNT( final EntityTinyTNTPrimed tnt, final double x, final double y, final double z, final float life )
+	private void renderPrimedTNT( final EntityTinyTNTPrimed tnt, final double x, final double y, final double z, final float life )
 	{
 		GL11.glPushMatrix();
 		GL11.glTranslatef( (float) x, (float) y - 0.25f, (float) z );
