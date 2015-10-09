@@ -18,16 +18,19 @@
 
 package appeng.items.tools.powered;
 
+
 import java.util.EnumSet;
 import java.util.List;
 
 import com.google.common.base.Optional;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
+import net.minecraftforge.common.util.ForgeDirection;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -37,14 +40,25 @@ import appeng.api.config.Settings;
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
 import appeng.api.config.ViewItems;
+import appeng.api.features.ILocatable;
 import appeng.api.features.IWirelessTermHandler;
+import appeng.api.implementations.tiles.IWirelessAccessPoint;
+import appeng.api.networking.IGrid;
+import appeng.api.networking.IGridHost;
+import appeng.api.networking.IGridNode;
+import appeng.api.networking.IMachineSet;
+import appeng.api.networking.storage.IStorageGrid;
+import appeng.api.storage.IMEMonitor;
+import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AEColor;
+import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
 import appeng.client.render.items.ToolWirelessTerminalRender;
 import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
 import appeng.core.localization.GuiText;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
+import appeng.tile.networking.TileWireless;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
@@ -147,10 +161,156 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 		return false;
 	}
 
+	public boolean getIsUsable( final ItemStack stack, Entity holder )
+	{
+		if( stack.hasTagCompound() )
+		{
+			final NBTTagCompound tag = Platform.openNbtData( stack );
+			if( tag != null )
+			{
+				boolean usable = ( this.hasPower( null, 0.5, stack ) && ToolWirelessTerminal.isLinked( stack ) );
+				if( usable )
+				{
+					final long parsedKey = Long.parseLong( this.getEncryptionKey( stack ) );
+					final ILocatable securityStation = AEApi.instance().registries().locatable().getLocatableBy( parsedKey );
+					if( securityStation == null )
+					{
+						usable = false;
+					}
+				}
+				if( usable )
+				{
+					usable = ((ToolWirelessTerminal)stack.getItem()).rangeCheck( stack, holder );
+				}
+				return usable;
+			}
+		}
+
+		return false;
+	}
+
+	private void updateIsUsable( final ItemStack stack, final Entity entity )
+	{
+		if( stack.hasTagCompound() )
+		{
+			final NBTTagCompound tag = Platform.openNbtData( stack );
+			if( tag != null )
+			{
+				boolean usable = ( this.hasPower( null, 0.5, stack ) && ToolWirelessTerminal.isLinked( stack ) );
+				if( usable )
+				{
+					final long parsedKey = Long.parseLong( this.getEncryptionKey( stack ) );
+					final ILocatable securityStation = AEApi.instance().registries().locatable().getLocatableBy( parsedKey );
+					if( securityStation == null )
+					{
+						usable = false;
+					}
+				}
+				if( usable )
+				{
+					usable = rangeCheck( stack, entity );
+				}
+				tag.setBoolean( "WirelessUsable", usable );
+				tag.setInteger( "untilUpdate", 20 );
+			}
+		}
+	}
+
+	/**
+	 * Checks if the user can connect to the ME system associated with the Wireless Terminal
+	 *
+	 * @param itm The wireless terminal
+	 * @param player the player trying to connect
+	 *
+	 * @return
+	 */
+	public boolean rangeCheck( ItemStack itm, final Entity player )
+	{
+		//Get the encryption key
+		ILocatable obj = null;
+		try
+		{
+			final long encKey = Long.parseLong( this.getEncryptionKey( itm ) );
+			obj = AEApi.instance().registries().locatable().getLocatableBy( encKey );
+		}
+		catch( final NumberFormatException err )
+		{
+			// :P
+		}
+
+		IGrid grid = null;
+		IMEMonitor<IAEItemStack> inv = null;
+		if( obj instanceof IGridHost )
+		{
+			final IGridNode n = ( (IGridHost) obj ).getGridNode( ForgeDirection.UNKNOWN );
+			if( n != null )
+			{
+				grid = n.getGrid();
+				if( grid != null )
+				{
+					IStorageGrid sg = grid.getCache( IStorageGrid.class );
+					if( sg != null )
+					{
+						inv = sg.getItemInventory();
+					}
+				}
+			}
+		}
+
+		if( grid != null && inv != null )
+		{
+
+			final IMachineSet tw = grid.getMachines( TileWireless.class );
+
+			for( final IGridNode n : tw )
+			{
+				final IWirelessAccessPoint wap = (IWirelessAccessPoint) n.getMachine();
+				if( this.testWap( wap, player ) )
+				{
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Returns if you can connect to a WAP
+	 *
+	 * @param wap The WAP to test if you can connect to
+	 * @param player The player entity
+	 *
+	 * @return True if the WAP is within range and active
+	 */
+	private boolean testWap( final IWirelessAccessPoint wap, final Entity player )
+	{
+		double rangeLimit = wap.getRange();
+		rangeLimit *= rangeLimit;
+
+		final DimensionalCoord dc = wap.getLocation();
+
+		if( dc.getWorld().provider.dimensionId == player.worldObj.provider.dimensionId )
+		{
+			final double offX = dc.x - player.posX;
+			final double offY = dc.y - player.posY;
+			final double offZ = dc.z - player.posZ;
+
+			final double r = offX * offX + offY * offY + offZ * offZ;
+			if( r < rangeLimit )
+			{
+				if( wap.isActive() )
+				{
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
 	@Override
 	public boolean canHandle( final ItemStack is )
 	{
-		return AEApi.instance().definitions().items().wirelessTerminal().isSameAs( is );
+		return AEApi.instance().definitions().items().wirelessTerminal().item( AEColor.Black ).equals( is.getItem() );
 	}
 
 	@Override

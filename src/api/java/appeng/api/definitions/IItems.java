@@ -62,9 +62,7 @@ public interface IItems
 
 	IItemDefinition entropyManipulator();
 
-	IItemDefinition wirelessTerminal();
-
-	AEColoredItemDefinition coloredWirelessTerminal();
+	AEColoredItemDefinition wirelessTerminal();
 
 	IItemDefinition biometricCard();
 

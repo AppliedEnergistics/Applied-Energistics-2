@@ -65,7 +65,7 @@ public enum AEFeature
 
 	GrinderLogging( "Misc", false ), Logging( "Misc" ), IntegrationLogging( "Misc", false ), WebsiteRecipes( "Misc", false ),
 
-	enableFacadeCrafting( "Crafting" ), enableWirelessTerminalColoring( "Crafting" ), inWorldSingularity( "Crafting" ), inWorldFluix( "Crafting" ), inWorldPurification( "Crafting" ), UpdateLogging( "Misc", false ),
+	enableFacadeCrafting( "Crafting" ), inWorldSingularity( "Crafting" ), inWorldFluix( "Crafting" ), inWorldPurification( "Crafting" ), UpdateLogging( "Misc", false ),
 
 	AlphaPass( "Rendering" ), PaintBalls( "Tools" ), PacketLogging( "Misc", false ), CraftingLog( "Misc", false ), InterfaceTerminal( "Crafting" ), LightDetector( "Misc" ),
 

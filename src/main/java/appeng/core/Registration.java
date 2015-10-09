@@ -20,7 +20,6 @@ package appeng.core;
 
 
 import net.minecraft.block.Block;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.WeightedRandomChestContent;
 import net.minecraft.world.biome.BiomeGenBase;
@@ -63,6 +62,7 @@ import appeng.api.networking.spatial.ISpatialCache;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.networking.ticking.ITickManager;
 import appeng.api.parts.IPartHelper;
+import appeng.api.util.AEColor;
 import appeng.block.networking.BlockCableBus;
 import appeng.core.features.AEFeature;
 import appeng.core.features.DefinitionConverter;
@@ -492,7 +492,7 @@ public final class Registration
 		target.itemEntropyManipulator = this.converter.of( source.entropyManipulator() );
 		target.itemColorApplicator = this.converter.of( source.colorApplicator() );
 
-		target.itemWirelessTerminal = source.coloredWirelessTerminal();
+		target.itemWirelessTerminal = source.wirelessTerminal();
 		target.itemNetworkTool = this.converter.of( source.networkTool() );
 		target.itemPortableCell = this.converter.of( source.portableCell() );
 		target.itemBiometricCard = this.converter.of( source.biometricCard() );
@@ -567,11 +567,9 @@ public final class Registration
 			RecipeSorter.register( "appliedenergistics2:facade", FacadeRecipe.class, Category.SHAPED, "after:minecraft:shaped" );
 		}
 
-		if( AEConfig.instance.isFeatureEnabled( AEFeature.enableWirelessTerminalColoring ) )
-		{
-			GameRegistry.addRecipe( new WirelessTerminalRecipe() );
-			RecipeSorter.register( "appliedenergistics2:ToolWirelessTerminal", WirelessTerminalRecipe.class, Category.SHAPELESS, "after:minecraft:shapeless" );
-		}
+		//Wireless terminal needs a special recipe handler to carry over NBT data
+		GameRegistry.addRecipe( new WirelessTerminalRecipe() );
+		RecipeSorter.register( "appliedenergistics2:ToolWirelessTerminal", WirelessTerminalRecipe.class, Category.SHAPELESS, "after:minecraft:shapeless" );
 	}
 
 	public void postInit( final FMLPostInitializationEvent event )
@@ -663,10 +661,7 @@ public final class Registration
 		// Inscriber
 		Upgrades.SPEED.registerItem( blocks.inscriber(), 3 );
 
-		for( final Item wirelessTerminalItem : items.wirelessTerminal().maybeItem().asSet() )
-		{
-			registries.wireless().registerWirelessHandler( (IWirelessTermHandler) wirelessTerminalItem );
-		}
+		registries.wireless().registerWirelessHandler( (IWirelessTermHandler) items.wirelessTerminal().item( AEColor.Black ) );
 
 		if( AEConfig.instance.isFeatureEnabled( AEFeature.ChestLoot ) )
 		{

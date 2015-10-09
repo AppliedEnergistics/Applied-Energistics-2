@@ -18,13 +18,14 @@
 
 package appeng.recipes.game;
 
-import java.util.ArrayList;
 
+import java.util.ArrayList;
 import javax.annotation.Nullable;
 
 import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
@@ -32,13 +33,14 @@ import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
 
 import appeng.api.AEApi;
-import appeng.api.definitions.IComparableDefinition;
 import appeng.api.definitions.IDefinitions;
+import appeng.api.util.AEColor;
+
 
 public class WirelessTerminalRecipe implements IRecipe
 {
 
-    private final IComparableDefinition terminal;
+    private final Item terminal;
     private final ItemStack waterBucket;
 
     private static final ArrayList<String> dyes = new ArrayList<String>();
@@ -65,7 +67,7 @@ public class WirelessTerminalRecipe implements IRecipe
     public WirelessTerminalRecipe()
     {
         final IDefinitions definitions = AEApi.instance().definitions();
-        terminal = definitions.items().wirelessTerminal();
+        terminal = definitions.items().wirelessTerminal().item( AEColor.Black ); //pick a random color, items don't even have NBT data so it's ignored
         waterBucket = new ItemStack( Items.water_bucket, 1 );
     }
 
@@ -88,7 +90,7 @@ public class WirelessTerminalRecipe implements IRecipe
             {
                 numIngredients++;
                 //if it contains a terminal, return that terminal
-                if( this.terminal.isSameAs( inv.getStackInSlot( i ) ) )
+                if(inv.getStackInSlot( i ).getItem().equals( this.terminal ) )
                 {
                     inputTerminal = inv.getStackInSlot( i );
                 }

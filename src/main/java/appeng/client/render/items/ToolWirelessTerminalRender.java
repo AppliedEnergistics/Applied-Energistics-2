@@ -18,10 +18,14 @@
 
 package appeng.client.render.items;
 
+
 import org.lwjgl.opengl.GL11;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemRenderer;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.client.IItemRenderer;
@@ -48,71 +52,40 @@ public class ToolWirelessTerminalRender implements IItemRenderer
     @Override
     public void renderItem( ItemRenderType type, ItemStack item, Object... data )
     {
-        // Get icon index for the texture
-        IIcon icon = ExtraItemTextures.WirelessTerminal_Inactive.getIcon();
-        if( ToolWirelessTerminal.isLinked( item ) )
+        Entity itemLocation = item.getItemFrame();
+        if( itemLocation==null )
         {
-            icon = item.getIconIndex();
+            itemLocation = Minecraft.getMinecraft().thePlayer;
         }
+        
+        boolean displayAntenna = ((ToolWirelessTerminal)item.getItem()).getIsUsable( item, itemLocation);
+        boolean hasPower = (( ToolWirelessTerminal) item.getItem()).hasPower( null,0.5,item );
 
-        final AEColor color = ToolWirelessTerminal.getColor( item );
-        float r = 0;
-        float g = 0;
-        float b = 0;
-        if( color!=null )
+        IIcon border;
+        if( displayAntenna )
         {
-            final int medColor = color.mediumVariant;
-            r = ( medColor >> 16 ) & 0xFF;
-            g = ( medColor >> 8 ) & 0xFF;
-            b = medColor & 0xFF;
+            border = ExtraItemTextures.WirelessTerminal_Border.getIcon();
         }
+        else
+        {
+            border = ExtraItemTextures.WirelessTerminal_Border_Inactive.getIcon();
+        }
+        IIcon scrollBar = ExtraItemTextures.WirelessTerminal_ScrollBar.getIcon();
+        IIcon screen = ExtraItemTextures.WirelessTerminal_Screen.getIcon();
+        IIcon icons = ExtraItemTextures.WirelessTerminal_Icons.getIcon();
 
-        float f4 = icon.getMinU();
-        float f5 = icon.getMaxU();
-        float f6 = icon.getMinV();
-        float f7 = icon.getMaxV();
+        AEColor color = ToolWirelessTerminal.getColor( item );
+        if( color==null )
+        {
+            screen = item.getIconIndex();
+        }
 
         final Tessellator tessellator = Tessellator.instance;
         GL11.glPushMatrix();
         GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS );
 
-        if( type == ItemRenderType.INVENTORY )
-        {
-            GL11.glColor4f( 1, 1, 1, 1.0F );
-            GL11.glScalef( 16F, 16F, 10F );
-            GL11.glTranslatef( 0.0F, 1.0F, 0.0F );
-            GL11.glRotatef( 180F, 1.0F, 0.0F, 0.0F );
-            GL11.glEnable( GL11.GL_ALPHA_TEST );
-
-            tessellator.startDrawingQuads();
-            tessellator.setNormal( 0.0F, 1.0F, 0.0F );
-            tessellator.addVertexWithUV( 0, 0, 0, f4, f7 );
-            tessellator.addVertexWithUV( 1, 0, 0, f5, f7 );
-            tessellator.addVertexWithUV( 1, 1, 0, f5, f6 );
-            tessellator.addVertexWithUV( 0, 1, 0, f4, f6 );
-            tessellator.draw();
-
-            icon = ExtraItemTextures.WirelessTerminal_Border.getIcon();
-
-            f4 = icon.getMinU();
-            f5 = icon.getMaxU();
-            f6 = icon.getMinV();
-            f7 = icon.getMaxV();
-
-            if( color!=null )
-            {
-                GL11.glColor3f( r/256.0f, g/256.0f, b/256.0f );
-            }
-
-            tessellator.startDrawingQuads();
-            tessellator.setNormal( 0.0F, 1.0F, 0.0F );
-            tessellator.addVertexWithUV( 0, 0, 0, f4, f7 );
-            tessellator.addVertexWithUV( 1, 0, 0, f5, f7 );
-            tessellator.addVertexWithUV( 1, 1, 0, f5, f6 );
-            tessellator.addVertexWithUV( 0, 1, 0, f4, f6 );
-            tessellator.draw();
-        }
-        else
+        //translate stuff for different item render types
+        if( type != ItemRenderType.INVENTORY )
         {
             if( type == ItemRenderType.EQUIPPED_FIRST_PERSON )
             {
@@ -126,25 +99,92 @@ public class ToolWirelessTerminalRender implements IItemRenderer
             {
                 GL11.glTranslatef( -0.5F, -0.3F, 0.01F );
             }
-            final float f12 = 0.0625F;
-            ItemRenderer.renderItemIn2D( tessellator, f5, f6, f4, f7, icon.getIconWidth(), icon.getIconHeight(), f12 );
+        }
+        else
+        {
+            GL11.glColor4f( 1, 1, 1, 1.0F );
+            GL11.glScalef( 16F, 16F, 10F );
+            GL11.glTranslatef( 0.0F, 1.0F, 0.0F );
+            GL11.glRotatef( 180F, 1.0F, 0.0F, 0.0F );
+            GL11.glEnable( GL11.GL_ALPHA_TEST );
+        }
 
-            icon = ExtraItemTextures.WirelessTerminal_Border.getIcon();
+        final float f12 = 0.0625F;
 
-            f4 = icon.getMinU();
-            f5 = icon.getMaxU();
-            f6 = icon.getMinV();
-            f7 = icon.getMaxV();
+        //Border, which is uncolored
+        subRenderItem( type, tessellator, border, f12);
 
-            if( color!=null )
+        if( hasPower )
+        {
+            RenderHelper.disableStandardItemLighting();
+        }
+
+        //If a terminal isn't colored, use the default icon which doesn't require icons or scrollbar
+        if( color!=null )
+        {
+            //Icons, which are dark colored
             {
-                GL11.glColor3f( r/256.0f, g/256.0f, b/256.0f );
+                final int blackColor = color.blackVariant;
+                float r = ( blackColor >> 16 ) & 0xFF;
+                float g = ( blackColor >> 8 ) & 0xFF;
+                float b = blackColor & 0xFF;
+                GL11.glColor3f( r / 256.0f, g / 256.0f, b / 256.0f );
+
+                subRenderItem( type, tessellator, icons, f12);
             }
 
-            ItemRenderer.renderItemIn2D( tessellator, f5, f6, f4, f7, icon.getIconWidth(), icon.getIconHeight(), f12 );
+            //Scrollbar, which is medium colored
+            {
+                final int medColor = color.mediumVariant;
+                float r = ( medColor >> 16 ) & 0xFF;
+                float g = ( medColor >> 8 ) & 0xFF;
+                float b = medColor & 0xFF;
+                GL11.glColor3f( r / 256.0f, g / 256.0f, b / 256.0f );
+
+                subRenderItem( type, tessellator, scrollBar, f12 );
+            }
+        }
+
+        //Screen, which is light colored
+        {
+            if( color!=null )
+            {
+                final int whiteColor = color.whiteVariant;
+                float r = ( whiteColor >> 16 ) & 0xFF;
+                float g = ( whiteColor >> 8 ) & 0xFF;
+                float b = whiteColor & 0xFF;
+                GL11.glColor3f( r / 256.0f, g / 256.0f, b / 256.0f );
+            }
+
+            subRenderItem( type, tessellator, screen, f12);
         }
 
         GL11.glPopAttrib();
         GL11.glPopMatrix();
+    }
+
+    private void subRenderItem(ItemRenderType type, Tessellator tessellator, IIcon icon, float f12)
+    {
+        float f4 = icon.getMinU();
+        float f5 = icon.getMaxU();
+        float f6 = icon.getMinV();
+        float f7 = icon.getMaxV();
+        int width = icon.getIconWidth();
+        int height = icon.getIconHeight();
+
+        if( type != ItemRenderType.INVENTORY )
+        {
+            ItemRenderer.renderItemIn2D( tessellator, f5, f6, f4, f7, width, height, f12 );
+        }
+        else
+        {
+            tessellator.startDrawingQuads();
+            tessellator.setNormal( 0.0F, 1.0F, 0.0F );
+            tessellator.addVertexWithUV( 0, 0, 0, f4, f7 );
+            tessellator.addVertexWithUV( 1, 0, 0, f5, f7 );
+            tessellator.addVertexWithUV( 1, 1, 0, f5, f6 );
+            tessellator.addVertexWithUV( 0, 1, 0, f4, f6 );
+            tessellator.draw();
+        }
     }
 }
