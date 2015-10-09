@@ -22,7 +22,6 @@ package appeng.core;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-
 import javax.annotation.Nonnull;
 
 import com.google.common.base.Preconditions;
@@ -30,6 +29,7 @@ import com.google.common.base.Preconditions;
 import org.apache.commons.io.FileUtils;
 
 import appeng.api.recipes.IRecipeHandler;
+import appeng.recipes.CustomRecipeConfig;
 import appeng.recipes.loader.ConfigLoader;
 import appeng.recipes.loader.JarLoader;
 import appeng.recipes.loader.RecipeResourceCopier;
@@ -44,57 +44,74 @@ import appeng.recipes.loader.RecipeResourceCopier;
  */
 public class RecipeLoader implements Runnable
 {
+	/**
+	 * recipe path in the jar
+	 */
+	private static final String ASSETS_RECIPE_PATH = "/assets/appliedenergistics2/recipes/";
+
+	@Nonnull
 	private final IRecipeHandler handler;
+	@Nonnull
+	private final CustomRecipeConfig config;
+	@Nonnull
+	private final File recipeDirectory;
 
 	/**
+	 * @param config configuration for the knowledge how to handle the loading process
 	 * @param handler handler to load the recipes
 	 *
 	 * @throws NullPointerException if handler is <tt>null</tt>
 	 */
-	public RecipeLoader( @Nonnull final IRecipeHandler handler )
+	public RecipeLoader( @Nonnull final File recipeDirectory, @Nonnull final CustomRecipeConfig config, @Nonnull final IRecipeHandler handler )
 	{
-		Preconditions.checkNotNull( handler );
-
-		this.handler = handler;
+		this.recipeDirectory = Preconditions.checkNotNull( recipeDirectory );
+		Preconditions.checkArgument( !recipeDirectory.isFile() );
+		this.config = Preconditions.checkNotNull( config );
+		this.handler = Preconditions.checkNotNull( handler );
 	}
 
 	@Override
-	public void run()
+	public final void run()
 	{
-		// setup copying
-		final RecipeResourceCopier copier = new RecipeResourceCopier( "assets/appliedenergistics2/recipes/" );
-		final File configDirectory = AppEng.instance().getConfigDirectory();
-		final File generatedRecipesDir = new File( configDirectory, "generated-recipes" );
-		final File userRecipesDir = new File( configDirectory, "user-recipes" );
-		final File readmeGenDest = new File( generatedRecipesDir, "README.html" );
-		final File readmeUserDest = new File( userRecipesDir, "README.html" );
-
-        // generates generated and user recipes dir
-		// will clean the generated every time to keep it up to date
-		// copies over the recipes in the jar over to the generated folder
-		// copies over the readmes
-		try
+		if( this.config.isEnabled() )
 		{
-			FileUtils.forceMkdir( generatedRecipesDir );
-			FileUtils.forceMkdir( userRecipesDir );
-			FileUtils.cleanDirectory( generatedRecipesDir );
+			// setup copying
+			final RecipeResourceCopier copier = new RecipeResourceCopier( "assets/appliedenergistics2/recipes/" );
 
-			copier.copyTo( generatedRecipesDir );
-			FileUtils.copyFile( readmeGenDest, readmeUserDest );
+			final File generatedRecipesDir = new File( this.recipeDirectory, "generated" );
+			final File userRecipesDir = new File( this.recipeDirectory, "user" );
 
-			// parse recipes prioritising the user scripts by using the generated as template
-			this.handler.parseRecipes( new ConfigLoader( generatedRecipesDir, userRecipesDir ), "index.recipe" );
+			// generates generated and user recipes dir
+			// will clean the generated every time to keep it up to date
+			// copies over the recipes in the jar over to the generated folder
+			// copies over the readmes
+			try
+			{
+				FileUtils.forceMkdir( generatedRecipesDir );
+				FileUtils.forceMkdir( userRecipesDir );
+				FileUtils.cleanDirectory( generatedRecipesDir );
+
+				copier.copyTo( ".recipe", generatedRecipesDir );
+				copier.copyTo( ".html", recipeDirectory );
+
+				// parse recipes prioritising the user scripts by using the generated as template
+				this.handler.parseRecipes( new ConfigLoader( generatedRecipesDir, userRecipesDir ), "index.recipe" );
+			}
+			// on failure use jar parsing
+			catch( final IOException e )
+			{
+				AELog.error( e );
+				this.handler.parseRecipes( new JarLoader( ASSETS_RECIPE_PATH ), "index.recipe" );
+			}
+			catch( final URISyntaxException e )
+			{
+				AELog.error( e );
+				this.handler.parseRecipes( new JarLoader( ASSETS_RECIPE_PATH ), "index.recipe" );
+			}
 		}
-		// on failure use jar parsing
-		catch( final IOException e )
+		else
 		{
-			AELog.error( e );
-			this.handler.parseRecipes( new JarLoader( "/assets/appliedenergistics2/recipes/" ), "index.recipe" );
-		}
-		catch( final URISyntaxException e )
-		{
-			AELog.error( e );
-			this.handler.parseRecipes( new JarLoader( "/assets/appliedenergistics2/recipes/" ), "index.recipe" );
+			this.handler.parseRecipes( new JarLoader( ASSETS_RECIPE_PATH ), "index.recipe" );
 		}
 	}
 }

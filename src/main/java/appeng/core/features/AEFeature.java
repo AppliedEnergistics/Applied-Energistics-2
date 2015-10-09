@@ -21,60 +21,124 @@ package appeng.core.features;
 
 public enum AEFeature
 {
-	Core( null ), // stuff that has no reason for ever being turned off, or that
+	// stuff that has no reason for ever being turned off, or that
 	// is just flat out required by tons of
 	// important stuff.
+	Core( null )
+			{
+				@Override
+				public boolean isVisible()
+				{
+					return false;
+				}
+			},
 
-	CertusQuartzWorldGen( "World" ), MeteoriteWorldGen( "World" ),
+	CertusQuartzWorldGen( Constants.CATEGORY_WORLD ),
+	MeteoriteWorldGen( Constants.CATEGORY_WORLD ),
+	DecorativeLights( Constants.CATEGORY_WORLD ),
+	DecorativeQuartzBlocks( Constants.CATEGORY_WORLD ),
+	SkyStoneChests( Constants.CATEGORY_WORLD ),
+	SpawnPressesInMeteorites( Constants.CATEGORY_WORLD ),
+	GrindStone( Constants.CATEGORY_WORLD ),
+	Flour( Constants.CATEGORY_WORLD ),
+	Inscriber( Constants.CATEGORY_WORLD ),
+	ChestLoot( Constants.CATEGORY_WORLD ),
+	VillagerTrading( Constants.CATEGORY_WORLD ),
+	TinyTNT( Constants.CATEGORY_WORLD ),
 
-	DecorativeLights( "World" ), DecorativeQuartzBlocks( "World" ), SkyStoneChests( "World" ), SpawnPressesInMeteorites( "World" ),
+	PoweredTools( Constants.CATEGORY_TOOLS_CLASSIFICATIONS ),
+	CertusQuartzTools( Constants.CATEGORY_TOOLS_CLASSIFICATIONS ),
+	NetherQuartzTools( Constants.CATEGORY_TOOLS_CLASSIFICATIONS ),
 
-	GrindStone( "World" ), Flour( "World" ), Inscriber( "World" ),
+	QuartzHoe( Constants.CATEGORY_TOOLS ),
+	QuartzSpade( Constants.CATEGORY_TOOLS ),
+	QuartzSword( Constants.CATEGORY_TOOLS ),
+	QuartzPickaxe( Constants.CATEGORY_TOOLS ),
+	QuartzAxe( Constants.CATEGORY_TOOLS ),
+	QuartzKnife( Constants.CATEGORY_TOOLS ),
+	QuartzWrench( Constants.CATEGORY_TOOLS ),
+	ChargedStaff( Constants.CATEGORY_TOOLS ),
+	EntropyManipulator( Constants.CATEGORY_TOOLS ),
+	MatterCannon( Constants.CATEGORY_TOOLS ),
+	WirelessAccessTerminal( Constants.CATEGORY_TOOLS ),
+	ColorApplicator( Constants.CATEGORY_TOOLS ),
+	MeteoriteCompass( Constants.CATEGORY_TOOLS ),
 
-	ChestLoot( "World" ), VillagerTrading( "World" ),
+	PowerGen( Constants.CATEGORY_NETWORK_FEATURES ),
+	Security( Constants.CATEGORY_NETWORK_FEATURES ),
+	SpatialIO( Constants.CATEGORY_NETWORK_FEATURES ),
+	QuantumNetworkBridge( Constants.CATEGORY_NETWORK_FEATURES ),
+	Channels( Constants.CATEGORY_NETWORK_FEATURES ),
 
-	TinyTNT( "World" ),
+	LevelEmitter( Constants.CATEGORY_NETWORK_BUSES ),
+	CraftingTerminal( Constants.CATEGORY_NETWORK_BUSES ),
+	StorageMonitor( Constants.CATEGORY_NETWORK_BUSES ),
+	P2PTunnel( Constants.CATEGORY_NETWORK_BUSES ),
+	FormationPlane( Constants.CATEGORY_NETWORK_BUSES ),
+	AnnihilationPlane( Constants.CATEGORY_NETWORK_BUSES ),
+	IdentityAnnihilationPlane( Constants.CATEGORY_NETWORK_BUSES ),
+	ImportBus( Constants.CATEGORY_NETWORK_BUSES ),
+	ExportBus( Constants.CATEGORY_NETWORK_BUSES ),
+	StorageBus( Constants.CATEGORY_NETWORK_BUSES ),
+	PartConversionMonitor( Constants.CATEGORY_NETWORK_BUSES ),
 
-	PoweredTools( "ToolsClassifications" ),
+	PortableCell( Constants.CATEGORY_PORTABLE_CELL ),
 
-	CertusQuartzTools( "ToolsClassifications" ),
+	StorageCells( Constants.CATEGORY_STORAGE ),
+	MEChest( Constants.CATEGORY_STORAGE ),
+	MEDrive( Constants.CATEGORY_STORAGE ),
+	IOPort( Constants.CATEGORY_STORAGE ),
 
-	NetherQuartzTools( "ToolsClassifications" ),
+	NetworkTool( Constants.CATEGORY_NETWORK_TOOL ),
 
-	QuartzHoe( "Tools" ), QuartzSpade( "Tools" ), QuartzSword( "Tools" ), QuartzPickaxe( "Tools" ), QuartzAxe( "Tools" ), QuartzKnife( "Tools" ), QuartzWrench( "Tools" ),
+	DenseEnergyCells( Constants.CATEGORY_HIGHER_CAPACITY ),
+	DenseCables( Constants.CATEGORY_HIGHER_CAPACITY ),
 
-	ChargedStaff( "Tools" ), EntropyManipulator( "Tools" ), MatterCannon( "Tools" ), WirelessAccessTerminal( "Tools" ), ColorApplicator( "Tools" ),
+	P2PTunnelRF( Constants.CATEGORY_P2P_TUNNELS ),
+	P2PTunnelME( Constants.CATEGORY_P2P_TUNNELS ),
+	P2PTunnelItems( Constants.CATEGORY_P2P_TUNNELS ),
+	P2PTunnelRedstone( Constants.CATEGORY_P2P_TUNNELS ),
+	P2PTunnelEU( Constants.CATEGORY_P2P_TUNNELS ),
+	P2PTunnelLiquids( Constants.CATEGORY_P2P_TUNNELS ),
+	P2PTunnelLight( Constants.CATEGORY_P2P_TUNNELS ),
+	P2PTunnelOpenComputers( Constants.CATEGORY_P2P_TUNNELS ),
+	P2PTunnelPressure( Constants.CATEGORY_P2P_TUNNELS ),
 
-	CraftingCPU( "CraftingFeatures" ), PowerGen( "NetworkFeatures" ), Security( "NetworkFeatures" ),
+	MassCannonBlockDamage( Constants.CATEGORY_BLOCK_FEATURES ),
+	TinyTNTBlockDamage( Constants.CATEGORY_BLOCK_FEATURES ),
 
-	SpatialIO( "NetworkFeatures" ), QuantumNetworkBridge( "NetworkFeatures" ), Channels( "NetworkFeatures" ),
+	Facades( Constants.CATEGORY_FACADES ),
 
-	LevelEmitter( "NetworkBuses" ), CraftingTerminal( "NetworkBuses" ), StorageMonitor( "NetworkBuses" ), P2PTunnel( "NetworkBuses" ), FormationPlane( "NetworkBuses" ), AnnihilationPlane( "NetworkBuses" ), IdentityAnnihilationPlane( "NetworkBuses" ), ImportBus( "NetworkBuses" ), ExportBus( "NetworkBuses" ), StorageBus( "NetworkBuses" ), PartConversionMonitor( "NetworkBuses" ),
+	UnsupportedDeveloperTools( Constants.CATEGORY_MISC, false ),
+	Creative( Constants.CATEGORY_MISC ),
+	GrinderLogging( Constants.CATEGORY_MISC, false ),
+	Logging( Constants.CATEGORY_MISC ),
+	IntegrationLogging( Constants.CATEGORY_MISC, false ),
+	WebsiteRecipes( Constants.CATEGORY_MISC, false ),
+	LogSecurityAudits( Constants.CATEGORY_MISC, false ),
+	Achievements( Constants.CATEGORY_MISC ),
+	UpdateLogging( Constants.CATEGORY_MISC, false ),
+	PacketLogging( Constants.CATEGORY_MISC, false ),
+	CraftingLog( Constants.CATEGORY_MISC, false ),
+	LightDetector( Constants.CATEGORY_MISC ),
+	DebugLogging( Constants.CATEGORY_MISC, false ),
 
-	StorageCells( "Storage" ), PortableCell( "PortableCell" ), MEChest( "Storage" ), MEDrive( "Storage" ), IOPort( "Storage" ),
+	EnableFacadeCrafting( Constants.CATEGORY_CRAFTING ),
+	InWorldSingularity( Constants.CATEGORY_CRAFTING ),
+	InWorldFluix( Constants.CATEGORY_CRAFTING ),
+	InWorldPurification( Constants.CATEGORY_CRAFTING ),
+	InterfaceTerminal( Constants.CATEGORY_CRAFTING ),
+	EnableDisassemblyCrafting( Constants.CATEGORY_CRAFTING ),
 
-	NetworkTool( "NetworkTool" ),
+	AlphaPass( Constants.CATEGORY_RENDERING ), PaintBalls( Constants.CATEGORY_TOOLS ),
 
-	DenseEnergyCells( "HigherCapacity" ), DenseCables( "HigherCapacity" ),
+	MolecularAssembler( Constants.CATEGORY_CRAFTING_FEATURES ),
+	Patterns( Constants.CATEGORY_CRAFTING_FEATURES ),
+	CraftingCPU( Constants.CATEGORY_CRAFTING_FEATURES ),
 
-	P2PTunnelRF( "P2PTunnels" ), P2PTunnelME( "P2PTunnels" ), P2PTunnelItems( "P2PTunnels" ), P2PTunnelRedstone( "P2PTunnels" ), P2PTunnelEU( "P2PTunnels" ), P2PTunnelLiquids( "P2PTunnels" ), P2PTunnelLight( "P2PTunnels" ), P2PTunnelOpenComputers( "P2PTunnels" ), P2PTunnelPressure( "P2PTunnels" ),
-
-	MassCannonBlockDamage( "BlockFeatures" ), TinyTNTBlockDamage( "BlockFeatures" ), Facades( "Facades" ),
-
-	UnsupportedDeveloperTools( "Misc", false ), Creative( "Misc" ),
-
-	GrinderLogging( "Misc", false ), Logging( "Misc" ), IntegrationLogging( "Misc", false ), WebsiteRecipes( "Misc", false ),
-
-	enableFacadeCrafting( "Crafting" ), inWorldSingularity( "Crafting" ), inWorldFluix( "Crafting" ), inWorldPurification( "Crafting" ), UpdateLogging( "Misc", false ),
-
-	AlphaPass( "Rendering" ), PaintBalls( "Tools" ), PacketLogging( "Misc", false ), CraftingLog( "Misc", false ), InterfaceTerminal( "Crafting" ), LightDetector( "Misc" ),
-
-	enableDisassemblyCrafting( "Crafting" ), MolecularAssembler( "CraftingFeatures" ), MeteoriteCompass( "Tools" ), Patterns( "CraftingFeatures" ),
-
-	ChunkLoggerTrace( "Commands", false ), LogSecurityAudits( "Misc", false ), Achievements( "Misc" );
+	ChunkLoggerTrace( Constants.CATEGORY_COMMANDS, false );
 
 	public final String category;
-	public final boolean isVisible;
 	public final boolean defaultValue;
 
 	AEFeature( final String cat )
@@ -85,7 +149,39 @@ public enum AEFeature
 	AEFeature( final String cat, final boolean defaultValue )
 	{
 		this.category = cat;
-		this.isVisible = !this.name().equals( "Core" );
 		this.defaultValue = defaultValue;
+	}
+
+	/**
+	 * override to set visibility
+	 *
+	 * @return default true
+	 */
+	public boolean isVisible()
+	{
+		return true;
+	}
+
+	private enum Constants
+	{
+		;
+
+		private static final String CATEGORY_MISC = "Misc";
+		private static final String CATEGORY_CRAFTING = "Crafting";
+		private static final String CATEGORY_WORLD = "World";
+		private static final String CATEGORY_TOOLS = "Tools";
+		private static final String CATEGORY_TOOLS_CLASSIFICATIONS = "ToolsClassifications";
+		private static final String CATEGORY_NETWORK_BUSES = "NetworkBuses";
+		private static final String CATEGORY_P2P_TUNNELS = "P2PTunnels";
+		private static final String CATEGORY_BLOCK_FEATURES = "BlockFeatures";
+		private static final String CATEGORY_CRAFTING_FEATURES = "CraftingFeatures";
+		private static final String CATEGORY_STORAGE = "Storage";
+		private static final String CATEGORY_HIGHER_CAPACITY = "HigherCapacity";
+		private static final String CATEGORY_NETWORK_FEATURES = "NetworkFeatures";
+		private static final String CATEGORY_COMMANDS = "Commands";
+		private static final String CATEGORY_RENDERING = "Rendering";
+		private static final String CATEGORY_FACADES = "Facades";
+		private static final String CATEGORY_NETWORK_TOOL = "NetworkTool";
+		private static final String CATEGORY_PORTABLE_CELL = "PortableCell";
 	}
 }

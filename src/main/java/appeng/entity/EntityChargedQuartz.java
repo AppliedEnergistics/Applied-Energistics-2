@@ -62,7 +62,7 @@ public final class EntityChargedQuartz extends AEBaseEntityItem
 	{
 		super.onUpdate();
 
-		if( !AEConfig.instance.isFeatureEnabled( AEFeature.inWorldFluix ) )
+		if( !AEConfig.instance.isFeatureEnabled( AEFeature.InWorldFluix ) )
 		{
 			return;
 		}

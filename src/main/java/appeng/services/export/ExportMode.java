@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -16,31 +16,27 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.server;
+package appeng.services.export;
 
 
-import appeng.server.subcommands.ChunkLogger;
-import appeng.server.subcommands.Supporters;
-
-
-public enum Commands
+/**
+ * Defines the different modes which need to be distinguished upon exporting.
+ *
+ * using a different mode will result in a different export outcome.
+ *
+ * @author thatsIch
+ * @version rv3 - 23.09.2015
+ * @since rv3 - 23.09.2015
+ */
+enum ExportMode
 {
-	Chunklogger( 4, new ChunkLogger() ),
-	Supporters( 0, new Supporters() );
+	/**
+	 * Will provide general users with information required for recipe making
+	 */
+	MINIMAL,
 
-	public final int level;
-	public final ISubCommand command;
-
-	Commands( final int level, final ISubCommand w )
-	{
-		this.level = level;
-		this.command = w;
-	}
-
-	@Override
-	public String toString()
-	{
-		return this.name();
-	}
-
+	/**
+	 * Will provide advanced users with information with debugging functionality
+	 */
+	VERBOSE
 }

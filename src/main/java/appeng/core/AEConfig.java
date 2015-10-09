@@ -171,7 +171,7 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 
 		for( final AEFeature feature : AEFeature.values() )
 		{
-			if( feature.isVisible )
+			if( feature.isVisible() )
 			{
 				if( this.get( "Features." + feature.category, feature.name(), feature.defaultValue ).getBoolean( feature.defaultValue ) )
 				{
