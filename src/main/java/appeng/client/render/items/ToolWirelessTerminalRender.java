@@ -38,19 +38,19 @@ public class ToolWirelessTerminalRender implements IItemRenderer
 {
 
     @Override
-    public boolean handleRenderType( ItemStack item, ItemRenderType type )
+    public boolean handleRenderType( final ItemStack item, final ItemRenderType type )
     {
         return true;
     }
 
     @Override
-    public boolean shouldUseRenderHelper( ItemRenderType type, ItemStack item, ItemRendererHelper helper )
+    public boolean shouldUseRenderHelper( final ItemRenderType type, final ItemStack item, final ItemRendererHelper helper )
     {
         return false;
     }
 
     @Override
-    public void renderItem( ItemRenderType type, ItemStack item, Object... data )
+    public void renderItem( final ItemRenderType type, final ItemStack item, final Object... data )
     {
         Entity itemLocation = item.getItemFrame();
         if( itemLocation==null )
@@ -58,8 +58,8 @@ public class ToolWirelessTerminalRender implements IItemRenderer
             itemLocation = Minecraft.getMinecraft().thePlayer;
         }
         
-        boolean displayAntenna = ((ToolWirelessTerminal)item.getItem()).getIsUsable( item, itemLocation);
-        boolean hasPower = (( ToolWirelessTerminal) item.getItem()).hasPower( null,0.5,item );
+        final boolean displayAntenna = ( (ToolWirelessTerminal)item.getItem() ).getIsUsable( item, itemLocation );
+        final boolean hasPower = ( (ToolWirelessTerminal) item.getItem() ).hasPower( null, 0.5, item );
 
         IIcon border;
         if( displayAntenna )
@@ -70,11 +70,11 @@ public class ToolWirelessTerminalRender implements IItemRenderer
         {
             border = ExtraItemTextures.WirelessTerminal_Border_Inactive.getIcon();
         }
-        IIcon scrollBar = ExtraItemTextures.WirelessTerminal_ScrollBar.getIcon();
+        final IIcon scrollBar = ExtraItemTextures.WirelessTerminal_ScrollBar.getIcon();
+        final IIcon icons = ExtraItemTextures.WirelessTerminal_Icons.getIcon();
         IIcon screen = ExtraItemTextures.WirelessTerminal_Screen.getIcon();
-        IIcon icons = ExtraItemTextures.WirelessTerminal_Icons.getIcon();
 
-        AEColor color = ToolWirelessTerminal.getColor( item );
+        final AEColor color = ToolWirelessTerminal.getColor( item );
         if( color==null )
         {
             screen = item.getIconIndex();
@@ -112,7 +112,7 @@ public class ToolWirelessTerminalRender implements IItemRenderer
         final float f12 = 0.0625F;
 
         //Border, which is uncolored
-        subRenderItem( type, tessellator, border, f12);
+        subRenderItem( type, tessellator, border, f12 );
 
         if( hasPower )
         {
@@ -125,20 +125,20 @@ public class ToolWirelessTerminalRender implements IItemRenderer
             //Icons, which are dark colored
             {
                 final int blackColor = color.blackVariant;
-                float r = ( blackColor >> 16 ) & 0xFF;
-                float g = ( blackColor >> 8 ) & 0xFF;
-                float b = blackColor & 0xFF;
+                final float r = ( blackColor >> 16 ) & 0xFF;
+                final float g = ( blackColor >> 8 ) & 0xFF;
+                final float b = blackColor & 0xFF;
                 GL11.glColor3f( r / 256.0f, g / 256.0f, b / 256.0f );
 
-                subRenderItem( type, tessellator, icons, f12);
+                subRenderItem( type, tessellator, icons, f12 );
             }
 
             //Scrollbar, which is medium colored
             {
                 final int medColor = color.mediumVariant;
-                float r = ( medColor >> 16 ) & 0xFF;
-                float g = ( medColor >> 8 ) & 0xFF;
-                float b = medColor & 0xFF;
+                final float r = ( medColor >> 16 ) & 0xFF;
+                final float g = ( medColor >> 8 ) & 0xFF;
+                final float b = medColor & 0xFF;
                 GL11.glColor3f( r / 256.0f, g / 256.0f, b / 256.0f );
 
                 subRenderItem( type, tessellator, scrollBar, f12 );
@@ -150,27 +150,27 @@ public class ToolWirelessTerminalRender implements IItemRenderer
             if( color!=null )
             {
                 final int whiteColor = color.whiteVariant;
-                float r = ( whiteColor >> 16 ) & 0xFF;
-                float g = ( whiteColor >> 8 ) & 0xFF;
-                float b = whiteColor & 0xFF;
+                final float r = ( whiteColor >> 16 ) & 0xFF;
+                final float g = ( whiteColor >> 8 ) & 0xFF;
+                final float b = whiteColor & 0xFF;
                 GL11.glColor3f( r / 256.0f, g / 256.0f, b / 256.0f );
             }
 
-            subRenderItem( type, tessellator, screen, f12);
+            subRenderItem( type, tessellator, screen, f12 );
         }
 
         GL11.glPopAttrib();
         GL11.glPopMatrix();
     }
 
-    private void subRenderItem(ItemRenderType type, Tessellator tessellator, IIcon icon, float f12)
+    private void subRenderItem( final ItemRenderType type, final Tessellator tessellator, final IIcon icon, final float f12 )
     {
-        float f4 = icon.getMinU();
-        float f5 = icon.getMaxU();
-        float f6 = icon.getMinV();
-        float f7 = icon.getMaxV();
-        int width = icon.getIconWidth();
-        int height = icon.getIconHeight();
+        final float f4 = icon.getMinU();
+        final float f5 = icon.getMaxU();
+        final float f6 = icon.getMinV();
+        final float f7 = icon.getMaxV();
+        final int width = icon.getIconWidth();
+        final int height = icon.getIconHeight();
 
         if( type != ItemRenderType.INVENTORY )
         {

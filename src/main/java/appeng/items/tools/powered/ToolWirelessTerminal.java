@@ -168,7 +168,7 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 			final NBTTagCompound tag = Platform.openNbtData( stack );
 			if( tag != null )
 			{
-				boolean usable = ( this.hasPower( null, 0.5, stack ) && ToolWirelessTerminal.isLinked( stack ) );
+				boolean usable = this.hasPower( null, 0.5, stack ) && ToolWirelessTerminal.isLinked( stack );
 				if( usable )
 				{
 					final long parsedKey = Long.parseLong( this.getEncryptionKey( stack ) );
@@ -180,40 +180,13 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 				}
 				if( usable )
 				{
-					usable = ((ToolWirelessTerminal)stack.getItem()).rangeCheck( stack, holder );
+					usable = rangeCheck( stack, holder );
 				}
 				return usable;
 			}
 		}
 
 		return false;
-	}
-
-	private void updateIsUsable( final ItemStack stack, final Entity entity )
-	{
-		if( stack.hasTagCompound() )
-		{
-			final NBTTagCompound tag = Platform.openNbtData( stack );
-			if( tag != null )
-			{
-				boolean usable = ( this.hasPower( null, 0.5, stack ) && ToolWirelessTerminal.isLinked( stack ) );
-				if( usable )
-				{
-					final long parsedKey = Long.parseLong( this.getEncryptionKey( stack ) );
-					final ILocatable securityStation = AEApi.instance().registries().locatable().getLocatableBy( parsedKey );
-					if( securityStation == null )
-					{
-						usable = false;
-					}
-				}
-				if( usable )
-				{
-					usable = rangeCheck( stack, entity );
-				}
-				tag.setBoolean( "WirelessUsable", usable );
-				tag.setInteger( "untilUpdate", 20 );
-			}
-		}
 	}
 
 	/**
@@ -248,7 +221,7 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 				grid = n.getGrid();
 				if( grid != null )
 				{
-					IStorageGrid sg = grid.getCache( IStorageGrid.class );
+					final IStorageGrid sg = grid.getCache( IStorageGrid.class );
 					if( sg != null )
 					{
 						inv = sg.getItemInventory();
@@ -296,12 +269,9 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 			final double offZ = dc.z - player.posZ;
 
 			final double r = offX * offX + offY * offY + offZ * offZ;
-			if( r < rangeLimit )
+			if( r < rangeLimit && wap.isActive() )
 			{
-				if( wap.isActive() )
-				{
-					return true;
-				}
+				return true;
 			}
 		}
 		return false;

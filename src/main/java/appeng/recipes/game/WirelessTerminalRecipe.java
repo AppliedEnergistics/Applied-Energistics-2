@@ -72,7 +72,7 @@ public class WirelessTerminalRecipe implements IRecipe
     }
 
     @Override
-    public boolean matches( InventoryCrafting inv, World w )
+    public boolean matches( final InventoryCrafting inv, final World w )
     {
         return this.getOutput( inv, false ) != null;
     }
@@ -90,7 +90,7 @@ public class WirelessTerminalRecipe implements IRecipe
             {
                 numIngredients++;
                 //if it contains a terminal, return that terminal
-                if(inv.getStackInSlot( i ).getItem().equals( this.terminal ) )
+                if( inv.getStackInSlot( i ).getItem().equals( this.terminal ) )
                 {
                     inputTerminal = inv.getStackInSlot( i );
                 }
@@ -143,7 +143,7 @@ public class WirelessTerminalRecipe implements IRecipe
     }
 
     @Override
-    public ItemStack getCraftingResult( InventoryCrafting inv )
+    public ItemStack getCraftingResult( final InventoryCrafting inv )
     {
         return this.getOutput( inv, true );
     }

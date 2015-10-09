@@ -132,7 +132,7 @@ public final class ApiItems implements IItems
 		this.netherQuartzKnife = constructor.registerItemDefinition( new ToolQuartzCuttingKnife( AEFeature.NetherQuartzTools ) );
 
 		this.entropyManipulator = constructor.registerItemDefinition( new ToolEntropyManipulator() );
-		IItemDefinition wirelessTerminalbase = constructor.registerItemDefinition( new ToolWirelessTerminal() );
+		final IItemDefinition wirelessTerminalbase = constructor.registerItemDefinition( new ToolWirelessTerminal() );
 		this.wirelessTerminal = constructor.constructColoredDefinition( wirelessTerminalbase, 0 );
 		this.biometricCard = constructor.registerItemDefinition( new ToolBiometricCard() );
 		this.chargedStaff = constructor.registerItemDefinition( new ToolChargedStaff() );
