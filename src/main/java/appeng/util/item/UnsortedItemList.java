@@ -94,7 +94,7 @@ public final class UnsortedItemList implements IItemList<IAEItemStack>
 	@Override
 	public boolean isEmpty()
 	{
-		return this.records.isEmpty();
+		return !this.iterator().hasNext();
 	}
 
 	@Override
