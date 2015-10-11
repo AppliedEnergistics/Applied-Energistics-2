@@ -99,6 +99,7 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 	public double meteoriteClusterChance = 0.1;
 	public double meteoriteSpawnChance = 0.3;
 	public int[] meteoriteDimensionWhitelist = { 0 };
+	public String[] meteoriteValidSpawnBlocks = new String[] {};
 	public int craftingCalculationTimePerTick = 5;
 	PowerUnits selectedPowerUnit = PowerUnits.AE;
 	private double WirelessBaseCost = 8;
@@ -143,6 +144,7 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 		this.meteoriteClusterChance = this.get( "worldGen", "meteoriteClusterChance", this.meteoriteClusterChance ).getDouble( this.meteoriteClusterChance );
 		this.meteoriteSpawnChance = this.get( "worldGen", "meteoriteSpawnChance", this.meteoriteSpawnChance ).getDouble( this.meteoriteSpawnChance );
 		this.meteoriteDimensionWhitelist = this.get( "worldGen", "meteoriteDimensionWhitelist", this.meteoriteDimensionWhitelist ).getIntList();
+		this.meteoriteValidSpawnBlocks = this.get( "worldGen", "meteoriteValidSpawnBlocks", this.meteoriteValidSpawnBlocks ).getStringList();
 
 		this.quartzOresPerCluster = this.get( "worldGen", "quartzOresPerCluster", this.quartzOresPerCluster ).getInt( this.quartzOresPerCluster );
 		this.quartzOresClusterAmount = this.get( "worldGen", "quartzOresClusterAmount", this.quartzOresClusterAmount ).getInt( this.quartzOresClusterAmount );
