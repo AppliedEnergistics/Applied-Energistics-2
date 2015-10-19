@@ -50,6 +50,14 @@ public final class AELog
 		}
 	}
 
+	private static void log( final Level level, final Throwable throwable )
+	{
+		if( AEConfig.instance == null || AEConfig.instance.isFeatureEnabled( AEFeature.Logging ) )
+		{
+			FMLRelaunchLog.log( level, throwable, "AE2:" + ( Platform.isServer() ? "S" : "C" ) );
+		}
+	}
+
 	public static void grinder( final String o )
 	{
 		if( AEConfig.instance.isFeatureEnabled( AEFeature.GrinderLogging ) )
@@ -70,8 +78,7 @@ public final class AELog
 	{
 		if( AEConfig.instance.isFeatureEnabled( AEFeature.Logging ) )
 		{
-			severe( "Error: " + e.getClass().getName() + " : " + e.getMessage() );
-			e.printStackTrace();
+			log( Level.ERROR, e );
 		}
 	}
 
@@ -108,4 +115,13 @@ public final class AELog
 			log( Level.DEBUG, format, data );
 		}
 	}
+
+	public static void debugError( final Throwable e )
+	{
+		if( AEConfig.instance.isFeatureEnabled( AEFeature.DebugLogging ) )
+		{
+			log( Level.ERROR, e );
+		}
+	}
+
 }

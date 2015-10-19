@@ -43,6 +43,7 @@ import appeng.client.gui.implementations.GuiCraftConfirm;
 import appeng.client.gui.implementations.GuiCraftingCPU;
 import appeng.client.gui.implementations.GuiMEMonitorable;
 import appeng.client.gui.implementations.GuiNetworkStatus;
+import appeng.core.AELog;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.AppEngPacketHandler;
 import appeng.helpers.Reflected;
@@ -136,6 +137,7 @@ public class PacketMEInventoryUpdate implements AppEngPacket, AppEngPacketHandle
 		}
 		catch( final IOException e )
 		{
+			AELog.debugError( e );
 		}
 
 		this.empty = this.list.isEmpty();
@@ -179,8 +181,9 @@ public class PacketMEInventoryUpdate implements AppEngPacket, AppEngPacketHandle
 			}
 			compressFrame.flush();
 		}
-		catch( final IOException e1 )
+		catch( final IOException e )
 		{
+			AELog.debugError( e );
 		}
 		finally
 		{
@@ -192,6 +195,7 @@ public class PacketMEInventoryUpdate implements AppEngPacket, AppEngPacketHandle
 				}
 				catch( final IOException e )
 				{
+					AELog.debugError( e );
 				}
 			}
 		}

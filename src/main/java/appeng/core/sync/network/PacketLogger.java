@@ -41,7 +41,8 @@ public class PacketLogger extends LoggingHandler
 	{
 		if( msg instanceof AppEngPacket )
 		{
-			AppEngPacket packet = (AppEngPacket) msg;
+			final AppEngPacket packet = (AppEngPacket) msg;
+
 			return msg.getClass().getName() + " { side=" + this.side + ", toString=" + packet.toString() + " }";
 		}
 		else

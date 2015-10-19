@@ -205,7 +205,6 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 	@Override
 	public void onRequestChange( final ICraftingGrid craftingGrid, final IAEItemStack what )
 	{
-		System.out.println(what);
 		this.updateState();
 	}
 

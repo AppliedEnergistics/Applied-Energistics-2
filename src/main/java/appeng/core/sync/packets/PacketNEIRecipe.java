@@ -121,14 +121,14 @@ public class PacketNEIRecipe implements AppEngPacket, AppEngPacketHandler<Packet
 	@Override
 	public void fromBytes( final ByteBuf buf )
 	{
-		final NBTTagCompound recipe = ByteBufUtils.readTag( buf );
+		final NBTTagCompound recipeNbtTag = ByteBufUtils.readTag( buf );
 
-		if( recipe != null )
+		if( recipeNbtTag != null )
 		{
 			this.recipeStack = new ItemStack[9][];
 			for( int x = 0; x < this.recipeStack.length; x++ )
 			{
-				final NBTTagList list = recipe.getTagList( "#" + x, 10 );
+				final NBTTagList list = recipeNbtTag.getTagList( "#" + x, 10 );
 				if( list.tagCount() > 0 )
 				{
 					this.recipeStack[x] = new ItemStack[list.tagCount()];

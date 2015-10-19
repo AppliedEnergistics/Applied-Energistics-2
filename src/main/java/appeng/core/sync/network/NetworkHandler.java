@@ -25,9 +25,11 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import cpw.mods.fml.common.network.FMLNetworkEvent.ServerConnectionFromClientEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.relauncher.Side;
 
+import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.packets.PacketAssemblerAnimation;
 import appeng.core.sync.packets.PacketClick;
 import appeng.core.sync.packets.PacketCompassRequest;
@@ -59,37 +61,38 @@ public class NetworkHandler
 {
 	public static final SimpleNetworkWrapper INSTANCE = NetworkRegistry.INSTANCE.newSimpleChannel( "AE2" );
 
+	private static int disc = 0;
+
 	public static void init()
 	{
-		int disc = 0;
-		NetworkHandler.INSTANCE.registerMessage( PacketAssemblerAnimation.class, PacketAssemblerAnimation.class, disc++, Side.CLIENT );
-		NetworkHandler.INSTANCE.registerMessage( PacketClick.class, PacketClick.class, disc++, Side.SERVER );
-		NetworkHandler.INSTANCE.registerMessage( PacketCompassRequest.class, PacketCompassRequest.class, disc++, Side.SERVER );
-		NetworkHandler.INSTANCE.registerMessage( PacketCompassResponse.class, PacketCompassResponse.class, disc++, Side.CLIENT );
-		NetworkHandler.INSTANCE.registerMessage( PacketCompressedNBT.class, PacketCompressedNBT.class, disc++, Side.CLIENT );
-		NetworkHandler.INSTANCE.registerMessage( PacketConfigButton.class, PacketConfigButton.class, disc++, Side.SERVER );
-		NetworkHandler.INSTANCE.registerMessage( PacketCraftRequest.class, PacketCraftRequest.class, disc++, Side.SERVER );
-		NetworkHandler.INSTANCE.registerMessage( PacketInventoryAction.class, PacketInventoryAction.class, disc++, Side.SERVER );
-		NetworkHandler.INSTANCE.registerMessage( PacketInventoryAction.class, PacketInventoryAction.class, disc++, Side.CLIENT );
-		NetworkHandler.INSTANCE.registerMessage( PacketLightning.class, PacketLightning.class, disc++, Side.CLIENT );
-		NetworkHandler.INSTANCE.registerMessage( PacketMatterCannon.class, PacketMatterCannon.class, disc++, Side.CLIENT );
-		NetworkHandler.INSTANCE.registerMessage( PacketMEInventoryUpdate.class, PacketMEInventoryUpdate.class, disc++, Side.CLIENT );
-		NetworkHandler.INSTANCE.registerMessage( PacketMockExplosion.class, PacketMockExplosion.class, disc++, Side.CLIENT );
-		NetworkHandler.INSTANCE.registerMessage( PacketMultiPart.class, PacketMultiPart.class, disc++, Side.SERVER );
-		NetworkHandler.INSTANCE.registerMessage( PacketNEIRecipe.class, PacketNEIRecipe.class, disc++, Side.SERVER );
-		NetworkHandler.INSTANCE.registerMessage( PacketNewStorageDimension.class, PacketNewStorageDimension.class, disc++, Side.CLIENT );
-		NetworkHandler.INSTANCE.registerMessage( PacketPaintedEntity.class, PacketPaintedEntity.class, disc++, Side.CLIENT );
-		NetworkHandler.INSTANCE.registerMessage( PacketPartialItem.class, PacketPartialItem.class, disc++, Side.SERVER );
-		NetworkHandler.INSTANCE.registerMessage( PacketPartPlacement.class, PacketPartPlacement.class, disc++, Side.SERVER );
-		NetworkHandler.INSTANCE.registerMessage( PacketPatternSlot.class, PacketPatternSlot.class, disc++, Side.SERVER );
-		NetworkHandler.INSTANCE.registerMessage( PacketProgressBar.class, PacketProgressBar.class, disc++, Side.SERVER );
-		NetworkHandler.INSTANCE.registerMessage( PacketProgressBar.class, PacketProgressBar.class, disc++, Side.CLIENT );
-		NetworkHandler.INSTANCE.registerMessage( PacketSwapSlots.class, PacketSwapSlots.class, disc++, Side.SERVER );
-		NetworkHandler.INSTANCE.registerMessage( PacketSwitchGuis.class, PacketSwitchGuis.class, disc++, Side.SERVER );
-		NetworkHandler.INSTANCE.registerMessage( PacketSwitchGuis.class, PacketSwitchGuis.class, disc++, Side.CLIENT );
-		NetworkHandler.INSTANCE.registerMessage( PacketTransitionEffect.class, PacketTransitionEffect.class, disc++, Side.CLIENT );
-		NetworkHandler.INSTANCE.registerMessage( PacketValueConfig.class, PacketValueConfig.class, disc++, Side.SERVER );
-		NetworkHandler.INSTANCE.registerMessage( PacketValueConfig.class, PacketValueConfig.class, disc++, Side.CLIENT );
+		registerMessage( PacketAssemblerAnimation.class, PacketAssemblerAnimation.class, Side.CLIENT );
+		registerMessage( PacketClick.class, PacketClick.class, Side.SERVER );
+		registerMessage( PacketCompassRequest.class, PacketCompassRequest.class, Side.SERVER );
+		registerMessage( PacketCompassResponse.class, PacketCompassResponse.class, Side.CLIENT );
+		registerMessage( PacketCompressedNBT.class, PacketCompressedNBT.class, Side.CLIENT );
+		registerMessage( PacketConfigButton.class, PacketConfigButton.class, Side.SERVER );
+		registerMessage( PacketCraftRequest.class, PacketCraftRequest.class, Side.SERVER );
+		registerMessage( PacketInventoryAction.class, PacketInventoryAction.class, Side.SERVER );
+		registerMessage( PacketInventoryAction.class, PacketInventoryAction.class, Side.CLIENT );
+		registerMessage( PacketLightning.class, PacketLightning.class, Side.CLIENT );
+		registerMessage( PacketMatterCannon.class, PacketMatterCannon.class, Side.CLIENT );
+		registerMessage( PacketMEInventoryUpdate.class, PacketMEInventoryUpdate.class, Side.CLIENT );
+		registerMessage( PacketMockExplosion.class, PacketMockExplosion.class, Side.CLIENT );
+		registerMessage( PacketMultiPart.class, PacketMultiPart.class, Side.SERVER );
+		registerMessage( PacketNEIRecipe.class, PacketNEIRecipe.class, Side.SERVER );
+		registerMessage( PacketNewStorageDimension.class, PacketNewStorageDimension.class, Side.CLIENT );
+		registerMessage( PacketPaintedEntity.class, PacketPaintedEntity.class, Side.CLIENT );
+		registerMessage( PacketPartialItem.class, PacketPartialItem.class, Side.SERVER );
+		registerMessage( PacketPartPlacement.class, PacketPartPlacement.class, Side.SERVER );
+		registerMessage( PacketPatternSlot.class, PacketPatternSlot.class, Side.SERVER );
+		registerMessage( PacketProgressBar.class, PacketProgressBar.class, Side.SERVER );
+		registerMessage( PacketProgressBar.class, PacketProgressBar.class, Side.CLIENT );
+		registerMessage( PacketSwapSlots.class, PacketSwapSlots.class, Side.SERVER );
+		registerMessage( PacketSwitchGuis.class, PacketSwitchGuis.class, Side.SERVER );
+		registerMessage( PacketSwitchGuis.class, PacketSwitchGuis.class, Side.CLIENT );
+		registerMessage( PacketTransitionEffect.class, PacketTransitionEffect.class, Side.CLIENT );
+		registerMessage( PacketValueConfig.class, PacketValueConfig.class, Side.SERVER );
+		registerMessage( PacketValueConfig.class, PacketValueConfig.class, Side.CLIENT );
 	}
 
 	@SubscribeEvent
@@ -105,5 +108,11 @@ public class NetworkHandler
 		{
 			WorldData.instance().dimensionData().sendToPlayer( null );
 		}
+	}
+
+	private static final <REQ extends AppEngPacket, REPLY extends AppEngPacket> void registerMessage( Class<? extends IMessageHandler<REQ, REPLY>> messageHandler, Class<REQ> requestMessageType, Side side )
+	{
+		NetworkHandler.INSTANCE.registerMessage( messageHandler, requestMessageType, disc, side );
+		disc++;
 	}
 }

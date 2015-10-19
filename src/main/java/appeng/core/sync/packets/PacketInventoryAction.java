@@ -109,6 +109,7 @@ public class PacketInventoryAction implements AppEngPacket, AppEngPacketHandler<
 			}
 			catch( final IOException e )
 			{
+				AELog.debugError( e );
 			}
 		}
 		else

@@ -31,6 +31,7 @@ import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import appeng.api.AEApi;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.container.implementations.ContainerPatternTerm;
+import appeng.core.AELog;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.AppEngPacketHandler;
 import appeng.helpers.Reflected;
@@ -63,6 +64,7 @@ public class PacketPatternSlot implements AppEngPacket, AppEngPacketHandler<Pack
 			}
 			catch( final IOException e )
 			{
+				AELog.debugError( e );
 				return null;
 			}
 		}
@@ -152,6 +154,7 @@ public class PacketPatternSlot implements AppEngPacket, AppEngPacketHandler<Pack
 			}
 			catch( final IOException e )
 			{
+				AELog.debugError( e );
 			}
 		}
 	}
