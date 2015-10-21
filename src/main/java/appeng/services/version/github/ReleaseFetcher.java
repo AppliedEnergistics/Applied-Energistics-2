@@ -1,11 +1,31 @@
+/*
+ * This file is part of Applied Energistics 2.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
+ *
+ * Applied Energistics 2 is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Applied Energistics 2 is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
+ */
 
 package appeng.services.version.github;
 
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
+
+import javax.annotation.Nonnull;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -17,6 +37,7 @@ import appeng.services.version.Channel;
 import appeng.services.version.Version;
 import appeng.services.version.VersionCheckerConfig;
 import appeng.services.version.VersionParser;
+import appeng.services.version.exceptions.VersionCheckerException;
 
 
 public final class ReleaseFetcher
@@ -24,10 +45,12 @@ public final class ReleaseFetcher
 	private static final String GITHUB_RELEASES_URL = "https://api.github.com/repos/AppliedEnergistics/Applied-Energistics-2/releases";
 	private static final FormattedRelease EXCEPTIONAL_RELEASE = new MissingFormattedRelease();
 
+	@Nonnull
 	private final VersionCheckerConfig config;
+	@Nonnull
 	private final VersionParser parser;
 
-	public ReleaseFetcher( final VersionCheckerConfig config, final VersionParser parser )
+	public ReleaseFetcher( @Nonnull final VersionCheckerConfig config, @Nonnull final VersionParser parser )
 	{
 		this.config = config;
 		this.parser = parser;
@@ -50,12 +73,20 @@ public final class ReleaseFetcher
 
 			return latestFitRelease;
 		}
-		catch( final Exception e )
+		catch( final VersionCheckerException e )
 		{
 			AELog.error( e );
-
-			return EXCEPTIONAL_RELEASE;
 		}
+		catch( MalformedURLException e )
+		{
+			AELog.error( e );
+		}
+		catch( IOException e )
+		{
+			AELog.error( e );
+		}
+
+		return EXCEPTIONAL_RELEASE;
 	}
 
 	private String getRawReleases( final URL url ) throws IOException
@@ -63,7 +94,7 @@ public final class ReleaseFetcher
 		return IOUtils.toString( url );
 	}
 
-	private FormattedRelease getLatestFitRelease( final Iterable<Release> releases )
+	private FormattedRelease getLatestFitRelease( final Iterable<Release> releases ) throws VersionCheckerException
 	{
 		final String levelInConfig = this.config.level();
 		final Channel level = Channel.valueOf( levelInConfig );

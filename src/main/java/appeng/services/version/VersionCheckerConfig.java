@@ -22,6 +22,10 @@ package appeng.services.version;
 import java.io.File;
 import java.util.Date;
 
+import javax.annotation.Nonnull;
+
+import com.google.common.base.Preconditions;
+
 import net.minecraftforge.common.config.Configuration;
 
 
@@ -34,13 +38,16 @@ public final class VersionCheckerConfig
 	private static final int MIN_INTERVAL_HOURS = 0;
 	private static final int MAX_INTERVAL_HOURS = 7 * 24;
 
+	@Nonnull
 	private final Configuration config;
 
 	private final boolean isEnabled;
 
+	@Nonnull
 	private final String lastCheck;
 	private final int interval;
 
+	@Nonnull
 	private final String level;
 
 	private final boolean shouldNotifyPlayer;
@@ -49,8 +56,11 @@ public final class VersionCheckerConfig
 	/**
 	 * @param file requires fully qualified file in which the config is saved
 	 */
-	public VersionCheckerConfig( final File file )
+	public VersionCheckerConfig( @Nonnull final File file )
 	{
+		Preconditions.checkNotNull( file );
+		Preconditions.checkState( file.isFile() );
+
 		this.config = new Configuration( file );
 
 		// initializes default values by caching

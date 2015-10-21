@@ -16,42 +16,19 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.services.version;
-
-
-import javax.annotation.Nonnegative;
-import javax.annotation.Nonnull;
+package appeng.services.version.exceptions;
 
 
 /**
- * AE prints version like rv2-beta-8
- * GitHub prints version like rv2.beta.8
+ * Indicates a invalid revision, which does not match the pattern "rv" followed by a natural number.
  */
-public final class DefaultVersion extends BaseVersion
+public class InvalidRevisionException extends VersionCheckerException
 {
-	/**
-	 * @param revision natural number
-	 * @param channel either alpha, beta or release
-	 * @param build natural number
-	 */
-	public DefaultVersion( @Nonnegative final int revision, @Nonnull final Channel channel, @Nonnegative final int build )
+
+	private static final long serialVersionUID = 4828906902143875942L;
+
+	public InvalidRevisionException()
 	{
-		super( revision, channel, build );
-	}
-
-	@Override
-	public boolean isNewerAs( final Version maybeOlder )
-	{
-		if( this.revision() > maybeOlder.revision() )
-		{
-			return true;
-		}
-
-		if( this.channel().compareTo( maybeOlder.channel() ) > 0 )
-		{
-			return true;
-		}
-
-		return this.build() > maybeOlder.build();
+		super( "Invalid Revision: Needs to be 'rv' followd by a natural number." );
 	}
 }

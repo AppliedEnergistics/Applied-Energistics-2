@@ -1,7 +1,15 @@
+
 package appeng.services.version;
 
 
 import org.junit.Test;
+
+import appeng.services.version.exceptions.InvalidBuildException;
+import appeng.services.version.exceptions.InvalidChannelException;
+import appeng.services.version.exceptions.InvalidRevisionException;
+import appeng.services.version.exceptions.InvalidVersionException;
+import appeng.services.version.exceptions.MissingSeparatorException;
+import appeng.services.version.exceptions.VersionCheckerException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -21,6 +29,8 @@ public final class VersionParserTest
 	private static final String MOD_INVALID_REVISION = "2-beta-8";
 	private static final String MOD_INVALID_CHANNEL = "rv2-gamma-8";
 	private static final String MOD_INVALID_BUILD = "rv2-beta-b8";
+	private static final String GENERIC_MISSING_SEPARATOR = "foobar";
+	private static final String GENERIC_INVALID_VERSION = "foo-bar";
 
 	private static final DefaultVersion VERSION = new DefaultVersion( 2, Channel.Beta, 8 );
 
@@ -32,7 +42,7 @@ public final class VersionParserTest
 	}
 
 	@Test
-	public void testSameParsedGitHub()
+	public void testSameParsedGitHub() throws VersionCheckerException
 	{
 		final Version version = this.parser.parse( GITHUB_VERSION );
 
@@ -40,50 +50,62 @@ public final class VersionParserTest
 	}
 
 	@Test
-	public void testParseGitHub()
+	public void testParseGitHub() throws VersionCheckerException
 	{
 		assertTrue( this.parser.parse( GITHUB_VERSION ).equals( VERSION ) );
 	}
 
-	@Test( expected = AssertionError.class )
-	public void parseGH_InvalidRevision()
+	@Test( expected = InvalidRevisionException.class )
+	public void parseGH_InvalidRevision() throws VersionCheckerException
 	{
 		assertFalse( this.parser.parse( GITHUB_INVALID_REVISION ).equals( VERSION ) );
 	}
 
-	@Test( expected = AssertionError.class )
-	public void parseGH_InvalidChannel()
+	@Test( expected = InvalidChannelException.class )
+	public void parseGH_InvalidChannel() throws VersionCheckerException
 	{
 		assertFalse( this.parser.parse( GITHUB_INVALID_CHANNEL ).equals( VERSION ) );
 	}
 
-	@Test( expected = AssertionError.class )
-	public void parseGH_InvalidBuild()
+	@Test( expected = InvalidBuildException.class )
+	public void parseGH_InvalidBuild() throws VersionCheckerException
 	{
 		assertFalse( this.parser.parse( GITHUB_INVALID_BUILD ).equals( VERSION ) );
 	}
 
 	@Test
-	public void testParseMod()
+	public void testParseMod() throws VersionCheckerException
 	{
 		assertTrue( this.parser.parse( MOD_VERSION ).equals( VERSION ) );
 	}
 
-	@Test( expected = AssertionError.class )
-	public void parseMod_InvalidRevision()
+	@Test( expected = InvalidRevisionException.class )
+	public void parseMod_InvalidRevision() throws VersionCheckerException
 	{
 		assertFalse( this.parser.parse( MOD_INVALID_REVISION ).equals( VERSION ) );
 	}
 
-	@Test( expected = AssertionError.class )
-	public void parseMod_InvalidChannel()
+	@Test( expected = InvalidChannelException.class )
+	public void parseMod_InvalidChannel() throws VersionCheckerException
 	{
 		assertFalse( this.parser.parse( MOD_INVALID_CHANNEL ).equals( VERSION ) );
 	}
 
-	@Test( expected = AssertionError.class )
-	public void parseMod_InvalidBuild()
+	@Test( expected = InvalidBuildException.class )
+	public void parseMod_InvalidBuild() throws VersionCheckerException
 	{
 		assertFalse( this.parser.parse( MOD_INVALID_BUILD ).equals( VERSION ) );
+	}
+
+	@Test( expected = MissingSeparatorException.class )
+	public void parseGeneric_MissingSeparator() throws VersionCheckerException
+	{
+		assertFalse( this.parser.parse( GENERIC_MISSING_SEPARATOR ).equals( VERSION ) );
+	}
+
+	@Test( expected = InvalidVersionException.class )
+	public void parseGeneric_InvalidVersion() throws VersionCheckerException
+	{
+		assertFalse( this.parser.parse( GENERIC_INVALID_VERSION ).equals( VERSION ) );
 	}
 }
