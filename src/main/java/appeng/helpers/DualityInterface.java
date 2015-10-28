@@ -365,9 +365,24 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		}
 	}
 
-	public boolean hasWorkToDo()
+	private boolean hasWorkToDo()
 	{
-		return this.hasItemsToSend() || this.requireWork[0] != null || this.requireWork[1] != null || this.requireWork[2] != null || this.requireWork[3] != null || this.requireWork[4] != null || this.requireWork[5] != null || this.requireWork[6] != null || this.requireWork[7] != null;
+		if( this.hasItemsToSend() )
+		{
+			return true;
+		}
+		else
+		{
+			for( final IAEItemStack requiredWork : this.requireWork )
+			{
+				if( requiredWork != null )
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
 	}
 
 	private void updatePlan( final int slot )
@@ -1248,8 +1263,8 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		{
 			super( v );
 		}
-
 	}
+
 
 	private class InterfaceInventory extends MEMonitorIInventory
 	{
@@ -1282,5 +1297,4 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 			return super.extractItems( request, type, src );
 		}
 	}
-
 }
