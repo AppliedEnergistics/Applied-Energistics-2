@@ -38,8 +38,8 @@ import appeng.util.Platform;
 public class Pulverizer implements ICraftHandler, IWebsiteSerializer
 {
 
-	IIngredient pro_input;
-	IIngredient[] pro_output;
+	private IIngredient pro_input;
+	private IIngredient[] pro_output;
 
 	@Override
 	public void setup( final List<List<IIngredient>> input, final List<List<IIngredient>> output ) throws RecipeError

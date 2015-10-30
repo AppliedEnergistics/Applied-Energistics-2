@@ -36,12 +36,12 @@ import appeng.services.compass.ICompassCallback;
 public class PacketCompassRequest extends AppEngPacket implements ICompassCallback
 {
 
-	public final long attunement;
-	public final int cx;
-	public final int cz;
-	public final int cdy;
+	final long attunement;
+	final int cx;
+	final int cz;
+	final int cdy;
 
-	EntityPlayer talkBackTo;
+	private EntityPlayer talkBackTo;
 
 	// automatic.
 	public PacketCompassRequest( final ByteBuf stream )

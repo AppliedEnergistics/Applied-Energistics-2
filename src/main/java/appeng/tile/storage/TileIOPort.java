@@ -106,7 +106,7 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 	@Reflected
 	public TileIOPort()
 	{
-		this.gridProxy.setFlags( GridFlags.REQUIRE_CHANNEL );
+		this.getGridProxy().setFlags( GridFlags.REQUIRE_CHANNEL );
 		this.manager = new ConfigManager( this );
 		this.manager.registerSetting( Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE );
 		this.manager.registerSetting( Settings.FULLNESS_MODE, FullnessMode.EMPTY );
@@ -158,11 +158,11 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 		{
 			if( this.hasWork() )
 			{
-				this.gridProxy.getTick().wakeDevice( this.gridProxy.getNode() );
+				this.getGridProxy().getTick().wakeDevice( this.getGridProxy().getNode() );
 			}
 			else
 			{
-				this.gridProxy.getTick().sleepDevice( this.gridProxy.getNode() );
+				this.getGridProxy().getTick().sleepDevice( this.getGridProxy().getNode() );
 			}
 		}
 		catch( final GridAccessException e )
@@ -181,7 +181,7 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 		}
 	}
 
-	public boolean getRedstoneState()
+	private boolean getRedstoneState()
 	{
 		if( this.lastRedstoneState == YesNo.UNDECIDED )
 		{
@@ -234,7 +234,7 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 		this.updateTask();
 	}
 
-	boolean hasWork()
+	private boolean hasWork()
 	{
 		if( this.isEnabled() )
 		{
@@ -307,13 +307,13 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 	@Override
 	public TickingRequest getTickingRequest( final IGridNode node )
 	{
-		return new TickingRequest( TickRates.IOPort.min, TickRates.IOPort.max, this.hasWork(), false );
+		return new TickingRequest( TickRates.IOPort.getMin(), TickRates.IOPort.getMax(), this.hasWork(), false );
 	}
 
 	@Override
 	public TickRateModulation tickingRequest( final IGridNode node, final int ticksSinceLastCall )
 	{
-		if( !this.gridProxy.isActive() )
+		if( !this.getGridProxy().isActive() )
 		{
 			return TickRateModulation.IDLE;
 		}
@@ -335,9 +335,9 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 
 		try
 		{
-			final IMEInventory<IAEItemStack> itemNet = this.gridProxy.getStorage().getItemInventory();
-			final IMEInventory<IAEFluidStack> fluidNet = this.gridProxy.getStorage().getFluidInventory();
-			final IEnergySource energy = this.gridProxy.getEnergy();
+			final IMEInventory<IAEItemStack> itemNet = this.getGridProxy().getStorage().getItemInventory();
+			final IMEInventory<IAEFluidStack> fluidNet = this.getGridProxy().getStorage().getFluidInventory();
+			final IEnergySource energy = this.getGridProxy().getEnergy();
 			for( int x = 0; x < 6; x++ )
 			{
 				final ItemStack is = this.cells.getStackInSlot( x );

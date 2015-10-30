@@ -30,7 +30,7 @@ import appeng.api.storage.data.IItemList;
 public class ItemListIgnoreCrafting<T extends IAEStack> implements IItemList<T>
 {
 
-	final IItemList<T> target;
+	private final IItemList<T> target;
 
 	public ItemListIgnoreCrafting( final IItemList<T> cla )
 	{

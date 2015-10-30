@@ -26,7 +26,7 @@ import net.minecraft.client.gui.GuiTextField;
 public class GuiNumberBox extends GuiTextField
 {
 
-	final Class type;
+	private final Class type;
 
 	public GuiNumberBox( final FontRenderer fontRenderer, final int x, final int y, final int width, final int height, final Class type )
 	{

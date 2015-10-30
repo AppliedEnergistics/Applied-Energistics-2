@@ -41,8 +41,7 @@ public class GroupIngredient implements IIngredient
 	private final List<IIngredient> ingredients;
 	private final int qty;
 	private ItemStack[] baked;
-
-	boolean isInside = false;
+	private boolean isInside = false;
 
 	public GroupIngredient( final String myName, final List<IIngredient> ingredients, final int qty ) throws RecipeError
 	{
@@ -65,7 +64,7 @@ public class GroupIngredient implements IIngredient
 		this.ingredients = ingredients;
 	}
 
-	public IIngredient copy( final int qty ) throws RecipeError
+	IIngredient copy( final int qty ) throws RecipeError
 	{
 		Preconditions.checkState( qty > 0 );
 		return new GroupIngredient( this.name, this.ingredients, qty );

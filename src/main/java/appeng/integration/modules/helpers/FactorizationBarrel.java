@@ -35,7 +35,7 @@ import appeng.util.item.AEItemStack;
 public class FactorizationBarrel implements IMEInventory<IAEItemStack>
 {
 
-	final IFZ fProxy;
+	private final IFZ fProxy;
 	private final TileEntity te;
 
 	public FactorizationBarrel( final IFZ proxy, final TileEntity tile )
@@ -102,12 +102,12 @@ public class FactorizationBarrel implements IMEInventory<IAEItemStack>
 		return input;
 	}
 
-	public long remainingItemTypes()
+	private long remainingItemTypes()
 	{
 		return this.fProxy.barrelGetItem( this.te ) == null ? 1 : 0;
 	}
 
-	public boolean containsItemType( final IAEItemStack i, final boolean acceptEmpty )
+	private boolean containsItemType( final IAEItemStack i, final boolean acceptEmpty )
 	{
 		final ItemStack currentItem = this.fProxy.barrelGetItem( this.te );
 
@@ -120,7 +120,7 @@ public class FactorizationBarrel implements IMEInventory<IAEItemStack>
 		return i.equals( currentItem );
 	}
 
-	public long storedItemCount()
+	private long storedItemCount()
 	{
 		return this.fProxy.barrelGetItemCount( this.te );
 	}

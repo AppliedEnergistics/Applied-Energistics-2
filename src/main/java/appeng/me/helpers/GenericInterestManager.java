@@ -108,12 +108,12 @@ public class GenericInterestManager<T>
 		return this.container.get( stack );
 	}
 
-	class SavedTransactions
+	private class SavedTransactions
 	{
 
-		public final boolean put;
-		public final IAEStack stack;
-		public final T iw;
+		private final boolean put;
+		private final IAEStack stack;
+		private final T iw;
 
 		public SavedTransactions( final boolean putOperation, final IAEStack myStack, final T watcher )
 		{

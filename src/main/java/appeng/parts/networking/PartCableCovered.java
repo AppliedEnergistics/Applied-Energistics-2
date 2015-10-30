@@ -83,15 +83,15 @@ public class PartCableCovered extends PartCable
 			final IGridNode n = this.getGridNode();
 			if( n != null )
 			{
-				this.connections = n.getConnectedSides();
+				this.setConnections( n.getConnectedSides() );
 			}
 			else
 			{
-				this.connections.clear();
+				this.getConnections().clear();
 			}
 		}
 
-		for( final ForgeDirection of : this.connections )
+		for( final ForgeDirection of : this.getConnections() )
 		{
 			switch( of )
 			{
@@ -164,14 +164,14 @@ public class PartCableCovered extends PartCable
 	@SideOnly( Side.CLIENT )
 	public void renderStatic( final int x, final int y, final int z, final IPartRenderHelper rh, final RenderBlocks renderer )
 	{
-		this.renderCache = rh.useSimplifiedRendering( x, y, z, this, this.renderCache );
+		this.setRenderCache( rh.useSimplifiedRendering( x, y, z, this, this.getRenderCache() ) );
 		rh.setTexture( this.getTexture( this.getCableColor() ) );
 
-		final EnumSet<ForgeDirection> sides = this.connections.clone();
+		final EnumSet<ForgeDirection> sides = this.getConnections().clone();
 
 		boolean hasBuses = false;
 		final IPartHost ph = this.getHost();
-		for( final ForgeDirection of : EnumSet.complementOf( this.connections ) )
+		for( final ForgeDirection of : EnumSet.complementOf( this.getConnections() ) )
 		{
 			final IPart bp = ph.getPart( of );
 			if( bp instanceof IGridHost )
@@ -215,9 +215,9 @@ public class PartCableCovered extends PartCable
 
 		if( sides.size() != 2 || !this.nonLinear( sides ) || hasBuses )
 		{
-			for( final ForgeDirection of : this.connections )
+			for( final ForgeDirection of : this.getConnections() )
 			{
-				this.renderCoveredConnection( x, y, z, rh, renderer, this.channelsOnSide[of.ordinal()], of );
+				this.renderCoveredConnection( x, y, z, rh, renderer, this.getChannelsOnSide()[of.ordinal()], of );
 			}
 
 			rh.setTexture( this.getTexture( this.getCableColor() ) );
@@ -228,7 +228,7 @@ public class PartCableCovered extends PartCable
 		{
 			final IIcon def = this.getTexture( this.getCableColor() );
 			final IIcon off = new OffsetIcon( def, 0, -12 );
-			for( final ForgeDirection of : this.connections )
+			for( final ForgeDirection of : this.getConnections() )
 			{
 				switch( of )
 				{

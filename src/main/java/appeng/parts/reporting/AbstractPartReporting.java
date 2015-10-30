@@ -80,12 +80,12 @@ public abstract class AbstractPartReporting extends AEBasePart implements IPartM
 
 		if( requireChannel )
 		{
-			this.proxy.setFlags( GridFlags.REQUIRE_CHANNEL );
-			this.proxy.setIdlePowerUsage( 1.0 / 2.0 );
+			this.getProxy().setFlags( GridFlags.REQUIRE_CHANNEL );
+			this.getProxy().setIdlePowerUsage( 1.0 / 2.0 );
 		}
 		else
 		{
-			this.proxy.setIdlePowerUsage( 1.0 / 16.0 ); // lights drain a little bit.
+			this.getProxy().setIdlePowerUsage( 1.0 / 16.0 ); // lights drain a little bit.
 		}
 	}
 
@@ -145,17 +145,17 @@ public abstract class AbstractPartReporting extends AEBasePart implements IPartM
 
 		try
 		{
-			if( this.proxy.getEnergy().isNetworkPowered() )
+			if( this.getProxy().getEnergy().isNetworkPowered() )
 			{
 				this.clientFlags = this.getClientFlags() | AbstractPartReporting.POWERED_FLAG;
 			}
 
-			if( this.proxy.getPath().isNetworkBooting() )
+			if( this.getProxy().getPath().isNetworkBooting() )
 			{
 				this.clientFlags = this.getClientFlags() | AbstractPartReporting.BOOTING_FLAG;
 			}
 
-			if( this.proxy.getNode().meetsChannelRequirements() )
+			if( this.getProxy().getNode().meetsChannelRequirements() )
 			{
 				this.clientFlags = this.getClientFlags() | AbstractPartReporting.CHANNEL_FLAG;
 			}
@@ -218,7 +218,7 @@ public abstract class AbstractPartReporting extends AEBasePart implements IPartM
 						break;
 				}
 
-				this.host.markForUpdate();
+				this.getHost().markForUpdate();
 				this.saveChanges();
 			}
 			return true;
@@ -250,7 +250,7 @@ public abstract class AbstractPartReporting extends AEBasePart implements IPartM
 		if( this.opacity < 0 )
 		{
 			final TileEntity te = this.getTile();
-			this.opacity = 255 - te.getWorldObj().getBlockLightOpacity( te.xCoord + this.side.offsetX, te.yCoord + this.side.offsetY, te.zCoord + this.side.offsetZ );
+			this.opacity = 255 - te.getWorldObj().getBlockLightOpacity( te.xCoord + this.getSide().offsetX, te.yCoord + this.getSide().offsetY, te.zCoord + this.getSide().offsetZ );
 		}
 
 		return (int) ( emit * ( this.opacity / 255.0f ) );
@@ -263,7 +263,7 @@ public abstract class AbstractPartReporting extends AEBasePart implements IPartM
 		{
 			if( Platform.isServer() )
 			{
-				return this.proxy.getEnergy().isNetworkPowered();
+				return this.getProxy().getEnergy().isNetworkPowered();
 			}
 			else
 			{

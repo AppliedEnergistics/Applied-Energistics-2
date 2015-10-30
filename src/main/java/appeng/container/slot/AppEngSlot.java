@@ -31,26 +31,26 @@ import appeng.tile.inventory.AppEngInternalInventory;
 public class AppEngSlot extends Slot
 {
 
-	public final int defX;
-	public final int defY;
-	public boolean isDraggable = true;
-	public boolean isPlayerSide = false;
-	public AEBaseContainer myContainer = null;
-	public int IIcon = -1;
-	public hasCalculatedValidness isValid;
-	public boolean isDisplay = false;
+	private final int defX;
+	private final int defY;
+	private boolean isDraggable = true;
+	private boolean isPlayerSide = false;
+	private AEBaseContainer myContainer = null;
+	private int IIcon = -1;
+	private hasCalculatedValidness isValid;
+	private boolean isDisplay = false;
 
 	public AppEngSlot( final IInventory inv, final int idx, final int x, final int y )
 	{
 		super( inv, idx, x, y );
 		this.defX = x;
 		this.defY = y;
-		this.isValid = hasCalculatedValidness.NotAvailable;
+		this.setIsValid( hasCalculatedValidness.NotAvailable );
 	}
 
 	public Slot setNotDraggable()
 	{
-		this.isDraggable = false;
+		this.setDraggable( false );
 		return this;
 	}
 
@@ -93,9 +93,9 @@ public class AppEngSlot extends Slot
 			return null;
 		}
 
-		if( this.isDisplay )
+		if( this.isDisplay() )
 		{
-			this.isDisplay = false;
+			this.setDisplay( false );
 			return this.getDisplayStack();
 		}
 		return super.getStack();
@@ -108,9 +108,9 @@ public class AppEngSlot extends Slot
 		{
 			super.putStack( par1ItemStack );
 
-			if( this.myContainer != null )
+			if( this.getContainer() != null )
 			{
-				this.myContainer.onSlotChange( this );
+				this.getContainer().onSlotChange( this );
 			}
 		}
 	}
@@ -127,7 +127,7 @@ public class AppEngSlot extends Slot
 			super.onSlotChanged();
 		}
 
-		this.isValid = hasCalculatedValidness.NotAvailable;
+		this.setIsValid( hasCalculatedValidness.NotAvailable );
 	}
 
 	@Override
@@ -168,7 +168,7 @@ public class AppEngSlot extends Slot
 
 	public int getIcon()
 	{
-		return this.IIcon;
+		return this.getIIcon();
 	}
 
 	public boolean isPlayerSide()
@@ -179,6 +179,71 @@ public class AppEngSlot extends Slot
 	public boolean shouldDisplay()
 	{
 		return this.isEnabled();
+	}
+
+	public int getX()
+	{
+		return this.defX;
+	}
+
+	public int getY()
+	{
+		return this.defY;
+	}
+
+	private int getIIcon()
+	{
+		return this.IIcon;
+	}
+
+	public void setIIcon( final int iIcon )
+	{
+		this.IIcon = iIcon;
+	}
+
+	private boolean isDisplay()
+	{
+		return this.isDisplay;
+	}
+
+	public void setDisplay( final boolean isDisplay )
+	{
+		this.isDisplay = isDisplay;
+	}
+
+	public boolean isDraggable()
+	{
+		return this.isDraggable;
+	}
+
+	private void setDraggable( final boolean isDraggable )
+	{
+		this.isDraggable = isDraggable;
+	}
+
+	void setPlayerSide( final boolean isPlayerSide )
+	{
+		this.isPlayerSide = isPlayerSide;
+	}
+
+	public hasCalculatedValidness getIsValid()
+	{
+		return this.isValid;
+	}
+
+	public void setIsValid( final hasCalculatedValidness isValid )
+	{
+		this.isValid = isValid;
+	}
+
+	AEBaseContainer getContainer()
+	{
+		return this.myContainer;
+	}
+
+	public void setContainer( final AEBaseContainer myContainer )
+	{
+		this.myContainer = myContainer;
 	}
 
 	public enum hasCalculatedValidness

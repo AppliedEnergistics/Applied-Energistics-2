@@ -36,7 +36,7 @@ public class GuiTabButton extends GuiButton implements ITooltip
 {
 	private final RenderItem itemRenderer;
 	private final String message;
-	public int hideEdge = 0;
+	private int hideEdge = 0;
 	private int myIcon = -1;
 	private ItemStack myItem;
 
@@ -151,5 +151,15 @@ public class GuiTabButton extends GuiButton implements ITooltip
 	public boolean isVisible()
 	{
 		return this.visible;
+	}
+
+	public int getHideEdge()
+	{
+		return this.hideEdge;
+	}
+
+	public void setHideEdge( final int hideEdge )
+	{
+		this.hideEdge = hideEdge;
 	}
 }

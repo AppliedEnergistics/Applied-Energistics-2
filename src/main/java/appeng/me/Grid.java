@@ -71,17 +71,17 @@ public class Grid implements IGrid
 		center.setGrid( this );
 	}
 
-	public int getPriority()
+	int getPriority()
 	{
 		return this.priority;
 	}
 
-	public IGridStorage getMyStorage()
+	IGridStorage getMyStorage()
 	{
 		return this.myStorage;
 	}
 
-	public Map<Class<? extends IGridCache>, GridCacheWrapper> getCaches()
+	Map<Class<? extends IGridCache>, GridCacheWrapper> getCaches()
 	{
 		return this.caches;
 	}
@@ -91,7 +91,7 @@ public class Grid implements IGrid
 		return this.machines.keySet();
 	}
 
-	public int size()
+	int size()
 	{
 		int out = 0;
 		for( final Collection<?> x : this.machines.values() )
@@ -101,7 +101,7 @@ public class Grid implements IGrid
 		return out;
 	}
 
-	public void remove( final GridNode gridNode )
+	void remove( final GridNode gridNode )
 	{
 		for( final IGridCache c : this.caches.values() )
 		{
@@ -134,7 +134,7 @@ public class Grid implements IGrid
 		}
 	}
 
-	public void add( final GridNode gridNode )
+	void add( final GridNode gridNode )
 	{
 		final Class<? extends IGridHost> mClass = gridNode.getMachineClass();
 
@@ -213,7 +213,7 @@ public class Grid implements IGrid
 	@SuppressWarnings( "unchecked" )
 	public <C extends IGridCache> C getCache( final Class<? extends IGridCache> iface )
 	{
-		return (C) this.caches.get( iface ).myCache;
+		return (C) this.caches.get( iface ).getCache();
 	}
 
 	@Override
@@ -265,7 +265,7 @@ public class Grid implements IGrid
 		return this.pivot;
 	}
 
-	public void setPivot( final GridNode pivot )
+	void setPivot( final GridNode pivot )
 	{
 		this.pivot = pivot;
 	}
@@ -282,7 +282,7 @@ public class Grid implements IGrid
 		}
 	}
 
-	public void saveState()
+	void saveState()
 	{
 		for( final IGridCache c : this.caches.values() )
 		{

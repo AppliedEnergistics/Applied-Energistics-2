@@ -28,11 +28,11 @@ public class TileCableBusTESR extends TileCableBus
 	@Override
 	protected void updateTileSetting()
 	{
-		if( !this.cb.requiresDynamicRender )
+		if( !this.getCableBus().isRequiresDynamicRender() )
 		{
 			try
 			{
-				final TileCableBus tcb = (TileCableBus) BlockCableBus.noTesrTile.newInstance();
+				final TileCableBus tcb = (TileCableBus) BlockCableBus.getNoTesrTile().newInstance();
 				tcb.copyFrom( this );
 				this.getWorldObj().setTileEntity( this.xCoord, this.yCoord, this.zCoord, tcb );
 			}

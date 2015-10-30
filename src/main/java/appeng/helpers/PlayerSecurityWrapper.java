@@ -30,7 +30,7 @@ import appeng.api.networking.security.ISecurityRegistry;
 public class PlayerSecurityWrapper implements ISecurityRegistry
 {
 
-	final Map<Integer, EnumSet<SecurityPermissions>> target;
+	private final Map<Integer, EnumSet<SecurityPermissions>> target;
 
 	public PlayerSecurityWrapper( final HashMap<Integer, EnumSet<SecurityPermissions>> playerPerms )
 	{

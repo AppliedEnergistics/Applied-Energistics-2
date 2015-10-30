@@ -34,7 +34,7 @@ import net.minecraft.item.ItemStack;
 public class WrapperChainedInventory implements IInventory
 {
 
-	int fullSize = 0;
+	private int fullSize = 0;
 	private List<IInventory> l;
 	private Map<Integer, InvOffset> offsets;
 
@@ -43,13 +43,13 @@ public class WrapperChainedInventory implements IInventory
 		this.setInventory( inventories );
 	}
 
-	public void setInventory( final IInventory... a )
+	private void setInventory( final IInventory... a )
 	{
 		this.l = ImmutableList.copyOf( a );
 		this.calculateSizes();
 	}
 
-	public void calculateSizes()
+	private void calculateSizes()
 	{
 		this.offsets = new HashMap<Integer, WrapperChainedInventory.InvOffset>();
 
@@ -77,7 +77,7 @@ public class WrapperChainedInventory implements IInventory
 		this.setInventory( inventories );
 	}
 
-	public void setInventory( final List<IInventory> a )
+	private void setInventory( final List<IInventory> a )
 	{
 		this.l = a;
 		this.calculateSizes();
@@ -227,11 +227,11 @@ public class WrapperChainedInventory implements IInventory
 		return false;
 	}
 
-	static class InvOffset
+	private static class InvOffset
 	{
 
-		int offset;
-		int size;
-		IInventory i;
+		private int offset;
+		private int size;
+		private IInventory i;
 	}
 }

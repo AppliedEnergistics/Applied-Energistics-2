@@ -41,8 +41,8 @@ import appeng.util.Platform;
 public class PartP2PRedstone extends PartP2PTunnel<PartP2PRedstone>
 {
 
-	int power;
-	boolean recursive = false;
+	private int power;
+	private boolean recursive = false;
 
 	public PartP2PRedstone( final ItemStack is )
 	{
@@ -55,9 +55,9 @@ public class PartP2PRedstone extends PartP2PTunnel<PartP2PRedstone>
 		this.setNetworkReady();
 	}
 
-	public void setNetworkReady()
+	private void setNetworkReady()
 	{
-		if( this.output )
+		if( this.isOutput() )
 		{
 			final PartP2PRedstone in = this.getInput();
 			if( in != null )
@@ -67,7 +67,7 @@ public class PartP2PRedstone extends PartP2PTunnel<PartP2PRedstone>
 		}
 	}
 
-	protected void putInput( final Object o )
+	private void putInput( final Object o )
 	{
 		if( this.recursive )
 		{
@@ -75,7 +75,7 @@ public class PartP2PRedstone extends PartP2PTunnel<PartP2PRedstone>
 		}
 
 		this.recursive = true;
-		if( this.output && this.proxy.isActive() )
+		if( this.isOutput() && this.getProxy().isActive() )
 		{
 			final int newPower = (Integer) o;
 			if( this.power != newPower )
@@ -87,13 +87,13 @@ public class PartP2PRedstone extends PartP2PTunnel<PartP2PRedstone>
 		this.recursive = false;
 	}
 
-	public void notifyNeighbors()
+	private void notifyNeighbors()
 	{
-		final World worldObj = this.tile.getWorldObj();
+		final World worldObj = this.getTile().getWorldObj();
 
-		final int xCoord = this.tile.xCoord;
-		final int yCoord = this.tile.yCoord;
-		final int zCoord = this.tile.zCoord;
+		final int xCoord = this.getTile().xCoord;
+		final int yCoord = this.getTile().yCoord;
+		final int zCoord = this.getTile().zCoord;
 
 		Platform.notifyBlocksOfNeighbors( worldObj, xCoord, yCoord, zCoord );
 
@@ -153,22 +153,22 @@ public class PartP2PRedstone extends PartP2PTunnel<PartP2PRedstone>
 	@Override
 	public void onNeighborChanged()
 	{
-		if( !this.output )
+		if( !this.isOutput() )
 		{
-			final int x = this.tile.xCoord + this.side.offsetX;
-			final int y = this.tile.yCoord + this.side.offsetY;
-			final int z = this.tile.zCoord + this.side.offsetZ;
+			final int x = this.getTile().xCoord + this.getSide().offsetX;
+			final int y = this.getTile().yCoord + this.getSide().offsetY;
+			final int z = this.getTile().zCoord + this.getSide().offsetZ;
 
-			final Block b = this.tile.getWorldObj().getBlock( x, y, z );
-			if( b != null && !this.output )
+			final Block b = this.getTile().getWorldObj().getBlock( x, y, z );
+			if( b != null && !this.isOutput() )
 			{
-				int srcSide = this.side.ordinal();
+				int srcSide = this.getSide().ordinal();
 				if( b instanceof BlockRedstoneWire )
 				{
 					srcSide = 1;
 				}
-				this.power = b.isProvidingStrongPower( this.tile.getWorldObj(), x, y, z, srcSide );
-				this.power = Math.max( this.power, b.isProvidingWeakPower( this.tile.getWorldObj(), x, y, z, srcSide ) );
+				this.power = b.isProvidingStrongPower( this.getTile().getWorldObj(), x, y, z, srcSide );
+				this.power = Math.max( this.power, b.isProvidingWeakPower( this.getTile().getWorldObj(), x, y, z, srcSide ) );
 				this.sendToOutput( this.power );
 			}
 			else
@@ -187,13 +187,13 @@ public class PartP2PRedstone extends PartP2PTunnel<PartP2PRedstone>
 	@Override
 	public int isProvidingStrongPower()
 	{
-		return this.output ? this.power : 0;
+		return this.isOutput() ? this.power : 0;
 	}
 
 	@Override
 	public int isProvidingWeakPower()
 	{
-		return this.output ? this.power : 0;
+		return this.isOutput() ? this.power : 0;
 	}
 
 	private void sendToOutput( final int power )

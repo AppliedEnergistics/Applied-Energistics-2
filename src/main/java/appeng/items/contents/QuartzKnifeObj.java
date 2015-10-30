@@ -27,7 +27,7 @@ import appeng.api.implementations.guiobjects.IGuiItemObject;
 public class QuartzKnifeObj implements IGuiItemObject
 {
 
-	final ItemStack is;
+	private final ItemStack is;
 
 	public QuartzKnifeObj( final ItemStack o )
 	{

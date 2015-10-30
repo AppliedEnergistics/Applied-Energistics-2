@@ -39,13 +39,13 @@ import appeng.core.sync.network.INetworkInfo;
 public class PacketMatterCannon extends AppEngPacket
 {
 
-	final double x;
-	final double y;
-	final double z;
-	final double dx;
-	final double dy;
-	final double dz;
-	final byte len;
+	private final double x;
+	private final double y;
+	private final double z;
+	private final double dx;
+	private final double dy;
+	private final double dz;
+	private final byte len;
 
 	// automatic.
 	public PacketMatterCannon( final ByteBuf stream )

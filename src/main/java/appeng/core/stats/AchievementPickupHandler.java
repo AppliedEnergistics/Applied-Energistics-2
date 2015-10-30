@@ -55,7 +55,7 @@ public class AchievementPickupHandler
 
 		for( final Achievements achievement : Achievements.values() )
 		{
-			if( achievement.type == AchievementType.Pickup && Platform.isSameItemPrecise( achievement.stack, is ) )
+			if( achievement.getType() == AchievementType.Pickup && Platform.isSameItemPrecise( achievement.getStack(), is ) )
 			{
 				achievement.addToPlayer( event.player );
 				return;

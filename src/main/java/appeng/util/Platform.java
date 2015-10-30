@@ -272,7 +272,7 @@ public class Platform
 	/*
 	 * Simple way to cycle an enum...
 	 */
-	public static <T extends Enum> T prevEnum( final T ce )
+	private static <T extends Enum> T prevEnum( final T ce )
 	{
 		final EnumSet valList = EnumSet.allOf( ce.getClass() );
 
@@ -417,7 +417,7 @@ public class Platform
 	 * Lots of silliness to try and account for weird tag related junk, basically requires that two tags have at least
 	 * something in their tags before it wasts its time comparing them.
 	 */
-	public static boolean sameStackStags( final ItemStack a, final ItemStack b )
+	private static boolean sameStackStags( final ItemStack a, final ItemStack b )
 	{
 		if( a == null && b == null )
 		{
@@ -1668,21 +1668,21 @@ public class Platform
 
 	public static boolean securityCheck( final GridNode a, final GridNode b )
 	{
-		if( a.lastSecurityKey == -1 && b.lastSecurityKey == -1 )
+		if( a.getLastSecurityKey() == -1 && b.getLastSecurityKey() == -1 )
 		{
 			return false;
 		}
-		else if( a.lastSecurityKey == b.lastSecurityKey )
+		else if( a.getLastSecurityKey() == b.getLastSecurityKey() )
 		{
 			return false;
 		}
 
-		final boolean a_isSecure = isPowered( a.getGrid() ) && a.lastSecurityKey != -1;
-		final boolean b_isSecure = isPowered( b.getGrid() ) && b.lastSecurityKey != -1;
+		final boolean a_isSecure = isPowered( a.getGrid() ) && a.getLastSecurityKey() != -1;
+		final boolean b_isSecure = isPowered( b.getGrid() ) && b.getLastSecurityKey() != -1;
 
 		if( AEConfig.instance.isFeatureEnabled( AEFeature.LogSecurityAudits ) )
 		{
-			AELog.info( "Audit: " + a_isSecure + " : " + b_isSecure + " @ " + a.lastSecurityKey + " vs " + b.lastSecurityKey + " & " + a.playerID + " vs " + b.playerID );
+			AELog.info( "Audit: " + a_isSecure + " : " + b_isSecure + " @ " + a.getLastSecurityKey() + " vs " + b.getLastSecurityKey() + " & " + a.getPlayerID() + " vs " + b.getPlayerID() );
 		}
 
 		// can't do that son...
@@ -1693,12 +1693,12 @@ public class Platform
 
 		if( !a_isSecure && b_isSecure )
 		{
-			return checkPlayerPermissions( b.getGrid(), a.playerID );
+			return checkPlayerPermissions( b.getGrid(), a.getPlayerID() );
 		}
 
 		if( a_isSecure && !b_isSecure )
 		{
-			return checkPlayerPermissions( a.getGrid(), b.playerID );
+			return checkPlayerPermissions( a.getGrid(), b.getPlayerID() );
 		}
 
 		return false;

@@ -30,7 +30,7 @@ public class AchievementHierarchy
 	/**
 	 * Setup hierarchy through assigning parents.
 	 */
-	public void registerAchievementHierarchy()
+	void registerAchievementHierarchy()
 	{
 		Achievements.Presses.setParent( Achievements.Compass );
 

@@ -37,8 +37,8 @@ public class TerminalCraftingSlotFinder implements IStackPositioner
 		{
 			if( ps != null )
 			{
-				ps.relx += GuiMEMonitorable.CraftingGridOffsetX;
-				ps.rely += GuiMEMonitorable.CraftingGridOffsetY;
+				ps.relx += GuiMEMonitorable.craftingGridOffsetX;
+				ps.rely += GuiMEMonitorable.craftingGridOffsetY;
 			}
 		}
 		return a;

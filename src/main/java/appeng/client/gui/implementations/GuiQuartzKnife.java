@@ -36,7 +36,7 @@ import appeng.items.contents.QuartzKnifeObj;
 public class GuiQuartzKnife extends AEBaseGui
 {
 
-	GuiTextField name;
+	private GuiTextField name;
 
 	public GuiQuartzKnife( final InventoryPlayer inventoryPlayer, final QuartzKnifeObj te )
 	{

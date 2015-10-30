@@ -47,8 +47,8 @@ import appeng.util.ItemSorters;
 public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInventoryHandler<T>
 {
 
-	static final ThreadLocal<LinkedList> DEPTH_MOD = new ThreadLocal<LinkedList>();
-	static final ThreadLocal<LinkedList> DEPTH_SIM = new ThreadLocal<LinkedList>();
+	private static final ThreadLocal<LinkedList> DEPTH_MOD = new ThreadLocal<LinkedList>();
+	private static final ThreadLocal<LinkedList> DEPTH_SIM = new ThreadLocal<LinkedList>();
 	private static final Comparator<Integer> PRIORITY_SORTER = new Comparator<Integer>()
 	{
 
@@ -58,12 +58,12 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
 			return ItemSorters.compareInt( o2, o1 );
 		}
 	};
-	static int currentPass = 0;
-	final StorageChannel myChannel;
-	final SecurityCache security;
+	private static int currentPass = 0;
+	private final StorageChannel myChannel;
+	private final SecurityCache security;
 	// final TreeMultimap<Integer, IMEInventoryHandler<T>> priorityInventory;
 	private final NavigableMap<Integer, List<IMEInventoryHandler<T>>> priorityInventory;
-	int myPass = 0;
+	private int myPass = 0;
 
 	public NetworkInventoryHandler( final StorageChannel chan, final SecurityCache security )
 	{
@@ -166,7 +166,7 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
 				}
 
 				final IGrid gn = n.getGrid();
-				if( gn != this.security.myGrid )
+				if( gn != this.security.getGrid() )
 				{
 
 					final ISecurityGrid sg = gn.getCache( ISecurityGrid.class );

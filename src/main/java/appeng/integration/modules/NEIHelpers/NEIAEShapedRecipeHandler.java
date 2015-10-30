@@ -177,7 +177,7 @@ public class NEIAEShapedRecipeHandler extends TemplateRecipeHandler
 		return RecipeInfo.getOverlayHandler( gui, "crafting2x2" );
 	}
 
-	public boolean isRecipe2x2( final int recipe )
+	private boolean isRecipe2x2( final int recipe )
 	{
 		for( final PositionedStack stack : this.getIngredientStacks( recipe ) )
 		{
@@ -195,11 +195,11 @@ public class NEIAEShapedRecipeHandler extends TemplateRecipeHandler
 		return NEIClientUtils.translate( "recipe.shaped" );
 	}
 
-	public class CachedShapedRecipe extends TemplateRecipeHandler.CachedRecipe
+	private class CachedShapedRecipe extends TemplateRecipeHandler.CachedRecipe
 	{
 
-		public final List<PositionedStack> ingredients;
-		public final PositionedStack result;
+		private final List<PositionedStack> ingredients;
+		private final PositionedStack result;
 
 		public CachedShapedRecipe( final ShapedRecipe recipe )
 		{
@@ -208,7 +208,7 @@ public class NEIAEShapedRecipeHandler extends TemplateRecipeHandler
 			this.setIngredients( recipe.getWidth(), recipe.getHeight(), recipe.getIngredients() );
 		}
 
-		public void setIngredients( final int width, final int height, final Object[] items )
+		private void setIngredients( final int width, final int height, final Object[] items )
 		{
 			final boolean useSingleItems = AEConfig.instance.disableColoredCableRecipesInNEI();
 			for( int x = 0; x < width; x++ )
@@ -251,7 +251,7 @@ public class NEIAEShapedRecipeHandler extends TemplateRecipeHandler
 			return this.getCycledIngredients( NEIAEShapedRecipeHandler.this.cycleticks / 20, this.ingredients );
 		}
 
-		public void computeVisuals()
+		private void computeVisuals()
 		{
 			for( final PositionedStack p : this.ingredients )
 			{

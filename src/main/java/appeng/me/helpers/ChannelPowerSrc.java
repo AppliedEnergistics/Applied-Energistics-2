@@ -28,8 +28,8 @@ import appeng.api.networking.energy.IEnergySource;
 public class ChannelPowerSrc implements IEnergySource
 {
 
-	final IGridNode node;
-	final IEnergySource realSrc;
+	private final IGridNode node;
+	private final IEnergySource realSrc;
 
 	public ChannelPowerSrc( final IGridNode networkNode, final IEnergySource src )
 	{

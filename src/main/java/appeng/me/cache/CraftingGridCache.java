@@ -89,8 +89,8 @@ import appeng.util.ItemSorters;
 public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper, ICellProvider, IMEInventoryHandler<IAEStack>
 {
 
-	public static final ExecutorService CRAFTING_POOL;
-	static final Comparator<ICraftingPatternDetails> COMPARATOR = new Comparator<ICraftingPatternDetails>()
+	private static final ExecutorService CRAFTING_POOL;
+	private static final Comparator<ICraftingPatternDetails> COMPARATOR = new Comparator<ICraftingPatternDetails>()
 	{
 		@Override
 		public int compare( final ICraftingPatternDetails firstDetail, final ICraftingPatternDetails nextDetail )
@@ -123,7 +123,7 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 	private final Set<IAEItemStack> emitableItems = new HashSet<IAEItemStack>();
 	private final Map<String, CraftingLinkNexus> craftingLinks = new HashMap<String, CraftingLinkNexus>();
 	private final Multimap<IAEStack, CraftingWatcher> interests = HashMultimap.create();
-	public final GenericInterestManager<CraftingWatcher> interestManager = new GenericInterestManager<CraftingWatcher>( this.interests );
+	private final GenericInterestManager<CraftingWatcher> interestManager = new GenericInterestManager<CraftingWatcher>( this.interests );
 	private IStorageGrid storageGrid;
 	private IEnergyGrid energyGrid;
 	private boolean updateList = false;
@@ -616,7 +616,12 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 		return this.craftingCPUClusters.contains( cpu );
 	}
 
-	static class ActiveCpuIterator implements Iterator<ICraftingCPU>
+	public GenericInterestManager<CraftingWatcher> getInterestManager()
+	{
+		return this.interestManager;
+	}
+
+	private static class ActiveCpuIterator implements Iterator<ICraftingCPU>
 	{
 
 		private final Iterator<CraftingCPUCluster> iterator;

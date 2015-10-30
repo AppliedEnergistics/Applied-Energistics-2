@@ -70,7 +70,7 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 	public float spawnChargedChance = 0.92f;
 	public int quartzOresPerCluster = 4;
 	public int quartzOresClusterAmount = 15;
-	public int chargedChange = 4;
+	public final int chargedChange = 4;
 	public int minMeteoriteDistance = 707;
 	public int minMeteoriteDistanceSq = this.minMeteoriteDistance * this.minMeteoriteDistance;
 	public double spatialPowerExponent = 1.35;

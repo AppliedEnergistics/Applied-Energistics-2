@@ -46,8 +46,8 @@ import appeng.util.Platform;
 public class PacketCraftRequest extends AppEngPacket
 {
 
-	public final long amount;
-	public final boolean heldShift;
+	private final long amount;
+	private final boolean heldShift;
 
 	// automatic.
 	public PacketCraftRequest( final ByteBuf stream )
@@ -87,30 +87,30 @@ public class PacketCraftRequest extends AppEngPacket
 				}
 
 				final IGrid g = gn.getGrid();
-				if( g == null || cca.whatToMake == null )
+				if( g == null || cca.getItemToCraft() == null )
 				{
 					return;
 				}
 
-				cca.whatToMake.setStackSize( this.amount );
+				cca.getItemToCraft().setStackSize( this.amount );
 
 				Future<ICraftingJob> futureJob = null;
 				try
 				{
 					final ICraftingGrid cg = g.getCache( ICraftingGrid.class );
-					futureJob = cg.beginCraftingJob( cca.getWorld(), cca.getGrid(), cca.getActionSrc(), cca.whatToMake, null );
+					futureJob = cg.beginCraftingJob( cca.getWorld(), cca.getGrid(), cca.getActionSrc(), cca.getItemToCraft(), null );
 
-					final ContainerOpenContext context = cca.openContext;
+					final ContainerOpenContext context = cca.getOpenContext();
 					if( context != null )
 					{
 						final TileEntity te = context.getTile();
-						Platform.openGUI( player, te, cca.openContext.side, GuiBridge.GUI_CRAFTING_CONFIRM );
+						Platform.openGUI( player, te, cca.getOpenContext().getSide(), GuiBridge.GUI_CRAFTING_CONFIRM );
 
 						if( player.openContainer instanceof ContainerCraftConfirm )
 						{
 							final ContainerCraftConfirm ccc = (ContainerCraftConfirm) player.openContainer;
-							ccc.autoStart = this.heldShift;
-							ccc.job = futureJob;
+							ccc.setAutoStart( this.heldShift );
+							ccc.setJob( futureJob );
 							cca.detectAndSendChanges();
 						}
 					}

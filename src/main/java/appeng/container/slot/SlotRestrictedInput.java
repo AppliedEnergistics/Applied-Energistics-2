@@ -54,16 +54,16 @@ import appeng.util.Platform;
 public class SlotRestrictedInput extends AppEngSlot
 {
 
-	public final PlacableItemType which;
+	private final PlacableItemType which;
 	private final InventoryPlayer p;
-	public boolean allowEdit = true;
-	public int stackLimit = -1;
+	private boolean allowEdit = true;
+	private int stackLimit = -1;
 
 	public SlotRestrictedInput( final PlacableItemType valid, final IInventory i, final int slotIndex, final int x, final int y, final InventoryPlayer p )
 	{
 		super( i, slotIndex, x, y );
 		this.which = valid;
-		this.IIcon = valid.IIcon;
+		this.setIIcon( valid.IIcon );
 		this.p = p;
 	}
 
@@ -96,7 +96,7 @@ public class SlotRestrictedInput extends AppEngSlot
 	@Override
 	public boolean isItemValid( final ItemStack i )
 	{
-		if( !this.myContainer.isValidForSlot( this, i ) )
+		if( !this.getContainer().isValidForSlot( this, i ) )
 		{
 			return false;
 		}
@@ -115,7 +115,7 @@ public class SlotRestrictedInput extends AppEngSlot
 			return false;
 		}
 
-		if( !this.allowEdit )
+		if( !this.isAllowEdit() )
 		{
 			return false;
 		}
@@ -234,7 +234,7 @@ public class SlotRestrictedInput extends AppEngSlot
 	@Override
 	public boolean canTakeStack( final EntityPlayer par1EntityPlayer )
 	{
-		return this.allowEdit;
+		return this.isAllowEdit();
 	}
 
 	@Override
@@ -275,6 +275,16 @@ public class SlotRestrictedInput extends AppEngSlot
 		}
 
 		return false;
+	}
+
+	private boolean isAllowEdit()
+	{
+		return this.allowEdit;
+	}
+
+	public void setAllowEdit( final boolean allowEdit )
+	{
+		this.allowEdit = allowEdit;
 	}
 
 	public enum PlacableItemType

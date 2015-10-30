@@ -32,7 +32,7 @@ import appeng.util.Platform;
 public class ContainerMEPortableCell extends ContainerMEMonitorable
 {
 
-	public double powerMultiplier = 0.5;
+	private double powerMultiplier = 0.5;
 
 	private final IPortableCell civ;
 	private int ticks = 0;
@@ -73,27 +73,37 @@ public class ContainerMEPortableCell extends ContainerMEMonitorable
 					}
 					else
 					{
-						this.isContainerValid = false;
+						this.setValidContainer( false );
 					}
 				}
 				else
 				{
-					this.isContainerValid = false;
+					this.setValidContainer( false );
 				}
 			}
 		}
 		else
 		{
-			this.isContainerValid = false;
+			this.setValidContainer( false );
 		}
 
 		// drain 1 ae t
 		this.ticks++;
 		if( this.ticks > 10 )
 		{
-			this.civ.extractAEPower( this.powerMultiplier * this.ticks, Actionable.MODULATE, PowerMultiplier.CONFIG );
+			this.civ.extractAEPower( this.getPowerMultiplier() * this.ticks, Actionable.MODULATE, PowerMultiplier.CONFIG );
 			this.ticks = 0;
 		}
 		super.detectAndSendChanges();
+	}
+
+	private double getPowerMultiplier()
+	{
+		return this.powerMultiplier;
+	}
+
+	void setPowerMultiplier( final double powerMultiplier )
+	{
+		this.powerMultiplier = powerMultiplier;
 	}
 }

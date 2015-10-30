@@ -35,7 +35,7 @@ public class FacadeConfig extends Configuration
 {
 
 	public static FacadeConfig instance;
-	final Pattern replacementPattern;
+	private final Pattern replacementPattern;
 
 	public FacadeConfig( final File facadeFile )
 	{

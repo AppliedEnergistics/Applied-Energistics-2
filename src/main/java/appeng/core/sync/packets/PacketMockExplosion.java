@@ -36,9 +36,9 @@ import appeng.core.sync.network.INetworkInfo;
 public class PacketMockExplosion extends AppEngPacket
 {
 
-	public final double x;
-	public final double y;
-	public final double z;
+	private final double x;
+	private final double y;
+	private final double z;
 
 	// automatic.
 	public PacketMockExplosion( final ByteBuf stream )

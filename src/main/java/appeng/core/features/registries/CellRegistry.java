@@ -34,7 +34,7 @@ import appeng.api.storage.StorageChannel;
 public class CellRegistry implements ICellRegistry
 {
 
-	final List<ICellHandler> handlers;
+	private final List<ICellHandler> handlers;
 
 	public CellRegistry()
 	{

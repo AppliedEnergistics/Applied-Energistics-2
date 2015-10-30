@@ -54,11 +54,10 @@ import appeng.util.Platform;
 public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorHandlerReceiver<IAEItemStack>, ICustomNameObject
 {
 
-	final IItemList<IAEItemStack> list = AEApi.instance().storage().createItemList();
-	protected IGrid network;
-	CraftingCPUCluster monitor = null;
-	String cpuName = null;
-	int delay = 40;
+	private final IItemList<IAEItemStack> list = AEApi.instance().storage().createItemList();
+	private IGrid network;
+	private CraftingCPUCluster monitor = null;
+	private String cpuName = null;
 
 	@GuiSync( 0 )
 	public long eta = -1;
@@ -82,34 +81,34 @@ public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorH
 			this.setCPU( (ICraftingCPU) ( (IAEMultiBlock) te ).getCluster() );
 		}
 
-		if( this.network == null && Platform.isServer() )
+		if( this.getNetwork() == null && Platform.isServer() )
 		{
-			this.isContainerValid = false;
+			this.setValidContainer( false );
 		}
 	}
 
 	private void findNode( final IGridHost host, final ForgeDirection d )
 	{
-		if( this.network == null )
+		if( this.getNetwork() == null )
 		{
 			final IGridNode node = host.getGridNode( d );
 			if( node != null )
 			{
-				this.network = node.getGrid();
+				this.setNetwork( node.getGrid() );
 			}
 		}
 	}
 
 	protected void setCPU( final ICraftingCPU c )
 	{
-		if( c == this.monitor )
+		if( c == this.getMonitor() )
 		{
 			return;
 		}
 
-		if( this.monitor != null )
+		if( this.getMonitor() != null )
 		{
-			this.monitor.removeListener( this );
+			this.getMonitor().removeListener( this );
 		}
 
 		for( final Object g : this.crafters )
@@ -130,27 +129,27 @@ public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorH
 		if( c instanceof CraftingCPUCluster )
 		{
 			this.cpuName = c.getName();
-			this.monitor = (CraftingCPUCluster) c;
+			this.setMonitor( (CraftingCPUCluster) c );
 			this.list.resetStatus();
-			this.monitor.getListOfItem( this.list, CraftingItemList.ALL );
-			this.monitor.addListener( this, null );
-			this.eta = 0;
+			this.getMonitor().getListOfItem( this.list, CraftingItemList.ALL );
+			this.getMonitor().addListener( this, null );
+			this.setEstimatedTime( 0 );
 		}
 		else
 		{
-			this.monitor = null;
+			this.setMonitor( null );
 			this.cpuName = "";
-			this.eta = -1;
+			this.setEstimatedTime( -1 );
 		}
 	}
 
 	public void cancelCrafting()
 	{
-		if( this.monitor != null )
+		if( this.getMonitor() != null )
 		{
-			this.monitor.cancel();
+			this.getMonitor().cancel();
 		}
-		this.eta = -1;
+		this.setEstimatedTime( -1 );
 	}
 
 	@Override
@@ -158,9 +157,9 @@ public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorH
 	{
 		super.removeCraftingFromCrafters( c );
 
-		if( this.crafters.isEmpty() && this.monitor != null )
+		if( this.crafters.isEmpty() && this.getMonitor() != null )
 		{
-			this.monitor.removeListener( this );
+			this.getMonitor().removeListener( this );
 		}
 	}
 
@@ -168,26 +167,26 @@ public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorH
 	public void onContainerClosed( final EntityPlayer player )
 	{
 		super.onContainerClosed( player );
-		if( this.monitor != null )
+		if( this.getMonitor() != null )
 		{
-			this.monitor.removeListener( this );
+			this.getMonitor().removeListener( this );
 		}
 	}
 
 	@Override
 	public void detectAndSendChanges()
 	{
-		if( Platform.isServer() && this.monitor != null && !this.list.isEmpty() )
+		if( Platform.isServer() && this.getMonitor() != null && !this.list.isEmpty() )
 		{
 			try
 			{
-				if( this.eta >= 0 )
+				if( this.getEstimatedTime() >= 0 )
 				{
-					final long elapsedTime = this.monitor.getElapsedTime();
-					final double remainingItems = this.monitor.getRemainingItemCount();
-					final double startItems = this.monitor.getStartItemCount();
+					final long elapsedTime = this.getMonitor().getElapsedTime();
+					final double remainingItems = this.getMonitor().getRemainingItemCount();
+					final double startItems = this.getMonitor().getStartItemCount();
 					final long eta = (long) ( elapsedTime / Math.max( 1d, ( startItems - remainingItems ) ) * remainingItems );
-					this.eta = eta;
+					this.setEstimatedTime( eta );
 				}
 
 				final PacketMEInventoryUpdate a = new PacketMEInventoryUpdate( (byte) 0 );
@@ -196,9 +195,9 @@ public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorH
 
 				for( final IAEItemStack out : this.list )
 				{
-					a.appendItem( this.monitor.getItemStack( out, CraftingItemList.STORAGE ) );
-					b.appendItem( this.monitor.getItemStack( out, CraftingItemList.ACTIVE ) );
-					c.appendItem( this.monitor.getItemStack( out, CraftingItemList.PENDING ) );
+					a.appendItem( this.getMonitor().getItemStack( out, CraftingItemList.STORAGE ) );
+					b.appendItem( this.getMonitor().getItemStack( out, CraftingItemList.ACTIVE ) );
+					c.appendItem( this.getMonitor().getItemStack( out, CraftingItemList.PENDING ) );
 				}
 
 				this.list.resetStatus();
@@ -265,5 +264,35 @@ public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorH
 	public boolean hasCustomName()
 	{
 		return this.cpuName != null && this.cpuName.length() > 0;
+	}
+
+	public long getEstimatedTime()
+	{
+		return this.eta;
+	}
+
+	private void setEstimatedTime( final long eta )
+	{
+		this.eta = eta;
+	}
+
+	CraftingCPUCluster getMonitor()
+	{
+		return this.monitor;
+	}
+
+	private void setMonitor( final CraftingCPUCluster monitor )
+	{
+		this.monitor = monitor;
+	}
+
+	IGrid getNetwork()
+	{
+		return this.network;
+	}
+
+	private void setNetwork( final IGrid network )
+	{
+		this.network = network;
 	}
 }

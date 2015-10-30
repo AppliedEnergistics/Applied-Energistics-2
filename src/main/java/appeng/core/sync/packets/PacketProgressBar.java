@@ -33,8 +33,8 @@ import appeng.core.sync.network.INetworkInfo;
 public class PacketProgressBar extends AppEngPacket
 {
 
-	final short id;
-	final long value;
+	private final short id;
+	private final long value;
 
 	// automatic.
 	public PacketProgressBar( final ByteBuf stream )

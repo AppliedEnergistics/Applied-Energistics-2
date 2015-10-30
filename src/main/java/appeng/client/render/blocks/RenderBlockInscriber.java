@@ -169,13 +169,13 @@ public class RenderBlockInscriber extends BaseBlockRender<BlockInscriber, TileIn
 
 		long absoluteProgress = 0;
 
-		if( tile.smash )
+		if( tile.isSmash() )
 		{
 			final long currentTime = System.currentTimeMillis();
-			absoluteProgress = currentTime - tile.clientStart;
+			absoluteProgress = currentTime - tile.getClientStart();
 			if( absoluteProgress > 800 )
 			{
-				tile.smash = false;
+				tile.setSmash( false );
 			}
 		}
 
@@ -261,7 +261,7 @@ public class RenderBlockInscriber extends BaseBlockRender<BlockInscriber, TileIn
 		}
 	}
 
-	public void renderItem( ItemStack sis, final float o, final AEBaseBlock block, final AEBaseTile tile, final Tessellator tess, final double x, final double y, final double z, final float f, final RenderBlocks renderer )
+	private void renderItem( ItemStack sis, final float o, final AEBaseBlock block, final AEBaseTile tile, final Tessellator tess, final double x, final double y, final double z, final float f, final RenderBlocks renderer )
 	{
 		if( sis != null )
 		{

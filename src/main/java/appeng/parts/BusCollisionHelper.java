@@ -31,7 +31,7 @@ import appeng.api.parts.IPartCollisionHelper;
 public class BusCollisionHelper implements IPartCollisionHelper
 {
 
-	final List<AxisAlignedBB> boxes;
+	private final List<AxisAlignedBB> boxes;
 
 	private final ForgeDirection x;
 	private final ForgeDirection y;

@@ -55,8 +55,8 @@ public class ContainerNetworkStatus extends AEBaseContainer
 	public long currentPower;
 	@GuiSync( 3 )
 	public long maxPower;
-	IGrid network;
-	int delay = 40;
+	private IGrid network;
+	private int delay = 40;
 
 	public ContainerNetworkStatus( final InventoryPlayer ip, final INetworkTool te )
 	{
@@ -74,7 +74,7 @@ public class ContainerNetworkStatus extends AEBaseContainer
 
 		if( this.network == null && Platform.isServer() )
 		{
-			this.isContainerValid = false;
+			this.setValidContainer( false );
 		}
 	}
 
@@ -101,10 +101,10 @@ public class ContainerNetworkStatus extends AEBaseContainer
 			final IEnergyGrid eg = this.network.getCache( IEnergyGrid.class );
 			if( eg != null )
 			{
-				this.avgAddition = (long) ( 100.0 * eg.getAvgPowerInjection() );
-				this.powerUsage = (long) ( 100.0 * eg.getAvgPowerUsage() );
-				this.currentPower = (long) ( 100.0 * eg.getStoredPower() );
-				this.maxPower = (long) ( 100.0 * eg.getMaxStoredPower() );
+				this.setAverageAddition( (long) ( 100.0 * eg.getAvgPowerInjection() ) );
+				this.setPowerUsage( (long) ( 100.0 * eg.getAvgPowerUsage() ) );
+				this.setCurrentPower( (long) ( 100.0 * eg.getStoredPower() ) );
+				this.setMaxPower( (long) ( 100.0 * eg.getMaxStoredPower() ) );
 			}
 
 			try
@@ -147,5 +147,45 @@ public class ContainerNetworkStatus extends AEBaseContainer
 			}
 		}
 		super.detectAndSendChanges();
+	}
+
+	public long getCurrentPower()
+	{
+		return this.currentPower;
+	}
+
+	private void setCurrentPower( final long currentPower )
+	{
+		this.currentPower = currentPower;
+	}
+
+	public long getMaxPower()
+	{
+		return this.maxPower;
+	}
+
+	private void setMaxPower( final long maxPower )
+	{
+		this.maxPower = maxPower;
+	}
+
+	public long getAverageAddition()
+	{
+		return this.avgAddition;
+	}
+
+	private void setAverageAddition( final long avgAddition )
+	{
+		this.avgAddition = avgAddition;
+	}
+
+	public long getPowerUsage()
+	{
+		return this.powerUsage;
+	}
+
+	private void setPowerUsage( final long powerUsage )
+	{
+		this.powerUsage = powerUsage;
 	}
 }

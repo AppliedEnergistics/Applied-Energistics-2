@@ -37,7 +37,7 @@ import appeng.util.Platform;
 public abstract class PartSharedItemBus extends PartUpgradeable implements IGridTickable
 {
 
-	protected final AppEngInternalAEInventory config = new AppEngInternalAEInventory( this, 9 );
+	private final AppEngInternalAEInventory config = new AppEngInternalAEInventory( this, 9 );
 	private int adaptorHash = 0;
 	private InventoryAdaptor adaptor;
 	private boolean lastRedstone = false;
@@ -57,14 +57,14 @@ public abstract class PartSharedItemBus extends PartUpgradeable implements IGrid
 	public void readFromNBT( final net.minecraft.nbt.NBTTagCompound extra )
 	{
 		super.readFromNBT( extra );
-		this.config.readFromNBT( extra, "config" );
+		this.getConfig().readFromNBT( extra, "config" );
 	}
 
 	@Override
 	public void writeToNBT( final net.minecraft.nbt.NBTTagCompound extra )
 	{
 		super.writeToNBT( extra );
-		this.config.writeToNBT( extra, "config" );
+		this.getConfig().writeToNBT( extra, "config" );
 	}
 
 	@Override
@@ -72,7 +72,7 @@ public abstract class PartSharedItemBus extends PartUpgradeable implements IGrid
 	{
 		if( name.equals( "config" ) )
 		{
-			return this.config;
+			return this.getConfig();
 		}
 
 		return super.getInventoryByName( name );
@@ -82,7 +82,7 @@ public abstract class PartSharedItemBus extends PartUpgradeable implements IGrid
 	public void onNeighborChanged()
 	{
 		this.updateState();
-		if( this.lastRedstone != this.host.hasRedstone( this.side ) )
+		if( this.lastRedstone != this.getHost().hasRedstone( this.getSide() ) )
 		{
 			this.lastRedstone = !this.lastRedstone;
 			if( this.lastRedstone && this.getRSMode() == RedstoneMode.SIGNAL_PULSE )
@@ -95,7 +95,7 @@ public abstract class PartSharedItemBus extends PartUpgradeable implements IGrid
 	protected InventoryAdaptor getHandler()
 	{
 		final TileEntity self = this.getHost().getTile();
-		final TileEntity target = this.getTileEntity( self, self.xCoord + this.side.offsetX, self.yCoord + this.side.offsetY, self.zCoord + this.side.offsetZ );
+		final TileEntity target = this.getTileEntity( self, self.xCoord + this.getSide().offsetX, self.yCoord + this.getSide().offsetY, self.zCoord + this.getSide().offsetZ );
 
 		final int newAdaptorHash = Platform.generateTileHash( target );
 
@@ -105,14 +105,14 @@ public abstract class PartSharedItemBus extends PartUpgradeable implements IGrid
 		}
 
 		this.adaptorHash = newAdaptorHash;
-		this.adaptor = InventoryAdaptor.getAdaptor( target, this.side.getOpposite() );
+		this.adaptor = InventoryAdaptor.getAdaptor( target, this.getSide().getOpposite() );
 
 		return this.adaptor;
 	}
 
 	protected int availableSlots()
 	{
-		return Math.min( 1 + this.getInstalledUpgrades( Upgrades.CAPACITY ) * 4, this.config.getSizeInventory() );
+		return Math.min( 1 + this.getInstalledUpgrades( Upgrades.CAPACITY ) * 4, this.getConfig().getSizeInventory() );
 	}
 
 	protected int calculateItemsToSend()
@@ -144,8 +144,8 @@ public abstract class PartSharedItemBus extends PartUpgradeable implements IGrid
 	{
 		final TileEntity self = this.getHost().getTile();
 		final World world = self.getWorldObj();
-		final int xCoordinate = self.xCoord + this.side.offsetX;
-		final int zCoordinate = self.zCoord + this.side.offsetZ;
+		final int xCoordinate = self.xCoord + this.getSide().offsetX;
+		final int zCoordinate = self.zCoord + this.getSide().offsetZ;
 
 		return world != null && world.getChunkProvider().chunkExists( xCoordinate >> 4, zCoordinate >> 4 );
 	}
@@ -156,11 +156,11 @@ public abstract class PartSharedItemBus extends PartUpgradeable implements IGrid
 		{
 			if( !this.isSleeping() )
 			{
-				this.proxy.getTick().wakeDevice( this.proxy.getNode() );
+				this.getProxy().getTick().wakeDevice( this.getProxy().getNode() );
 			}
 			else
 			{
-				this.proxy.getTick().sleepDevice( this.proxy.getNode() );
+				this.getProxy().getTick().sleepDevice( this.getProxy().getNode() );
 			}
 		}
 		catch( final GridAccessException e )
@@ -182,4 +182,9 @@ public abstract class PartSharedItemBus extends PartUpgradeable implements IGrid
 	}
 
 	protected abstract TickRateModulation doBusWork();
+
+	AppEngInternalAEInventory getConfig()
+	{
+		return this.config;
+	}
 }

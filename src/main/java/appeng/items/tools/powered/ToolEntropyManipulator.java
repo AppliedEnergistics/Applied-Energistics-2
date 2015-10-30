@@ -135,18 +135,18 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 			r = this.heatUp.get( new InWorldToolOperationIngredient( blockID, OreDictionary.WILDCARD_VALUE ) );
 		}
 
-		if( r.BlockItem != null )
+		if( r.getBlockItem() != null )
 		{
-			w.setBlock( x, y, z, Block.getBlockFromItem( r.BlockItem.getItem() ), r.BlockItem.getItemDamage(), 3 );
+			w.setBlock( x, y, z, Block.getBlockFromItem( r.getBlockItem().getItem() ), r.getBlockItem().getItemDamage(), 3 );
 		}
 		else
 		{
 			w.setBlock( x, y, z, Platform.AIR_BLOCK, 0, 3 );
 		}
 
-		if( r.Drops != null )
+		if( r.getDrops() != null )
 		{
-			Platform.spawnDrops( w, x, y, z, r.Drops );
+			Platform.spawnDrops( w, x, y, z, r.getDrops() );
 		}
 	}
 
@@ -171,18 +171,18 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 			r = this.coolDown.get( new InWorldToolOperationIngredient( blockID, OreDictionary.WILDCARD_VALUE ) );
 		}
 
-		if( r.BlockItem != null )
+		if( r.getBlockItem() != null )
 		{
-			w.setBlock( x, y, z, Block.getBlockFromItem( r.BlockItem.getItem() ), r.BlockItem.getItemDamage(), 3 );
+			w.setBlock( x, y, z, Block.getBlockFromItem( r.getBlockItem().getItem() ), r.getBlockItem().getItemDamage(), 3 );
 		}
 		else
 		{
 			w.setBlock( x, y, z, Platform.AIR_BLOCK, 0, 3 );
 		}
 
-		if( r.Drops != null )
+		if( r.getDrops() != null )
 		{
-			Platform.spawnDrops( w, x, y, z, r.Drops );
+			Platform.spawnDrops( w, x, y, z, r.getDrops() );
 		}
 	}
 
@@ -319,18 +319,18 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 					final InWorldToolOperationResult or = InWorldToolOperationResult.getBlockOperationResult( out.toArray( new ItemStack[out.size()] ) );
 					w.playSoundEffect( x + 0.5D, y + 0.5D, z + 0.5D, "fire.ignite", 1.0F, itemRand.nextFloat() * 0.4F + 0.8F );
 
-					if( or.BlockItem == null )
+					if( or.getBlockItem() == null )
 					{
 						w.setBlock( x, y, z, Platform.AIR_BLOCK, 0, 3 );
 					}
 					else
 					{
-						w.setBlock( x, y, z, Block.getBlockFromItem( or.BlockItem.getItem() ), or.BlockItem.getItemDamage(), 3 );
+						w.setBlock( x, y, z, Block.getBlockFromItem( or.getBlockItem().getItem() ), or.getBlockItem().getItemDamage(), 3 );
 					}
 
-					if( or.Drops != null )
+					if( or.getDrops() != null )
 					{
-						Platform.spawnDrops( w, x, y, z, or.Drops );
+						Platform.spawnDrops( w, x, y, z, or.getDrops() );
 					}
 
 					return true;

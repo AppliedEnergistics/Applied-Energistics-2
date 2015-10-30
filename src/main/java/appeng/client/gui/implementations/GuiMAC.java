@@ -34,8 +34,8 @@ import appeng.tile.crafting.TileMolecularAssembler;
 public class GuiMAC extends GuiUpgradeable
 {
 
-	final ContainerMAC container;
-	GuiProgressBar pb;
+	private final ContainerMAC container;
+	private GuiProgressBar pb;
 
 	public GuiMAC( final InventoryPlayer inventoryPlayer, final TileMolecularAssembler te )
 	{

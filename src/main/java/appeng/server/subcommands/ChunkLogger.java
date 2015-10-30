@@ -36,7 +36,7 @@ import appeng.server.ISubCommand;
 public class ChunkLogger implements ISubCommand
 {
 
-	boolean enabled = false;
+	private boolean enabled = false;
 
 	@SubscribeEvent
 	public void onChunkLoadEvent( final ChunkEvent.Load event )

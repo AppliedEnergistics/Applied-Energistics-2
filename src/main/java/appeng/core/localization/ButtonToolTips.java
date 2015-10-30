@@ -65,7 +65,7 @@ public enum ButtonToolTips
 
 	SchedulingMode, SchedulingModeDefault, SchedulingModeRoundRobin, SchedulingModeRandom;
 
-	final String root;
+	private final String root;
 
 	ButtonToolTips()
 	{

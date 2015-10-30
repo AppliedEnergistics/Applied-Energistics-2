@@ -52,13 +52,13 @@ import appeng.parts.AEBasePart;
 public class PartQuartzFiber extends AEBasePart implements IEnergyGridProvider
 {
 
-	final AENetworkProxy outerProxy = new AENetworkProxy( this, "outer", this.proxy.getMachineRepresentation(), true );
+	private final AENetworkProxy outerProxy = new AENetworkProxy( this, "outer", this.getProxy().getMachineRepresentation(), true );
 
 	public PartQuartzFiber( final ItemStack is )
 	{
 		super( is );
-		this.proxy.setIdlePowerUsage( 0 );
-		this.proxy.setFlags( GridFlags.CANNOT_CARRY );
+		this.getProxy().setIdlePowerUsage( 0 );
+		this.getProxy().setFlags( GridFlags.CANNOT_CARRY );
 		this.outerProxy.setIdlePowerUsage( 0 );
 		this.outerProxy.setFlags( GridFlags.CANNOT_CARRY );
 	}
@@ -81,7 +81,7 @@ public class PartQuartzFiber extends AEBasePart implements IEnergyGridProvider
 	{
 		GL11.glTranslated( -0.2, -0.3, 0.0 );
 
-		rh.setTexture( this.is.getIconIndex() );
+		rh.setTexture( this.getItemStack().getIconIndex() );
 		rh.setBounds( 6.0f, 6.0f, 5.0f, 10.0f, 10.0f, 11.0f );
 		rh.renderInventoryBox( renderer );
 		rh.setTexture( null );
@@ -91,7 +91,7 @@ public class PartQuartzFiber extends AEBasePart implements IEnergyGridProvider
 	@SideOnly( Side.CLIENT )
 	public void renderStatic( final int x, final int y, final int z, final IPartRenderHelper rh, final RenderBlocks renderer )
 	{
-		final IIcon myIcon = this.is.getIconIndex();
+		final IIcon myIcon = this.getItemStack().getIconIndex();
 		rh.setTexture( myIcon );
 		rh.setBounds( 6, 6, 10, 10, 10, 16 );
 		rh.renderBlock( x, y, z, renderer );
@@ -159,7 +159,7 @@ public class PartQuartzFiber extends AEBasePart implements IEnergyGridProvider
 
 		try
 		{
-			final IEnergyGrid eg = this.proxy.getEnergy();
+			final IEnergyGrid eg = this.getProxy().getEnergy();
 			acquiredPower += eg.extractAEPower( amt - acquiredPower, mode, seen );
 		}
 		catch( final GridAccessException e )
@@ -186,7 +186,7 @@ public class PartQuartzFiber extends AEBasePart implements IEnergyGridProvider
 
 		try
 		{
-			final IEnergyGrid eg = this.proxy.getEnergy();
+			final IEnergyGrid eg = this.getProxy().getEnergy();
 			if( !seen.contains( eg ) )
 			{
 				return eg.injectAEPower( amt, mode, seen );
@@ -220,7 +220,7 @@ public class PartQuartzFiber extends AEBasePart implements IEnergyGridProvider
 
 		try
 		{
-			final IEnergyGrid eg = this.proxy.getEnergy();
+			final IEnergyGrid eg = this.getProxy().getEnergy();
 			demand += eg.getEnergyDemand( amt - demand, seen );
 		}
 		catch( final GridAccessException e )

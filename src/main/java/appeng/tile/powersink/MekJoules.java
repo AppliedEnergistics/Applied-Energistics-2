@@ -42,7 +42,7 @@ public abstract class MekJoules extends RedstoneFlux implements IStrictEnergyAcc
 	public void setEnergy( final double energy )
 	{
 		final double extra = this.injectExternalPower( PowerUnits.MK, energy );
-		this.internalCurrentPower += PowerUnits.MK.convertTo( PowerUnits.AE, extra );
+		this.setInternalCurrentPower( this.getInternalCurrentPower() + PowerUnits.MK.convertTo( PowerUnits.AE, extra ) );
 	}
 
 	@Override

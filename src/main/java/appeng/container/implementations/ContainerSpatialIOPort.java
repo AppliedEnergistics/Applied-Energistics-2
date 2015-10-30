@@ -37,7 +37,6 @@ import appeng.util.Platform;
 public class ContainerSpatialIOPort extends AEBaseContainer
 {
 
-	final TileSpatialIOPort spatialIOPort;
 	@GuiSync( 0 )
 	public long currentPower;
 	@GuiSync( 1 )
@@ -46,20 +45,19 @@ public class ContainerSpatialIOPort extends AEBaseContainer
 	public long reqPower;
 	@GuiSync( 3 )
 	public long eff;
-	IGrid network;
-	int delay = 40;
+	private IGrid network;
+	private int delay = 40;
 
 	public ContainerSpatialIOPort( final InventoryPlayer ip, final TileSpatialIOPort spatialIOPort )
 	{
 		super( ip, spatialIOPort, null );
-		this.spatialIOPort = spatialIOPort;
 
 		if( Platform.isServer() )
 		{
 			this.network = spatialIOPort.getGridNode( ForgeDirection.UNKNOWN ).getGrid();
 		}
 
-		this.addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.SPATIAL_STORAGE_CELLS, spatialIOPort, 0, 52, 48, this.invPlayer ) );
+		this.addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.SPATIAL_STORAGE_CELLS, spatialIOPort, 0, 52, 48, this.getInventoryPlayer() ) );
 		this.addSlotToContainer( new SlotOutput( spatialIOPort, 1, 113, 48, SlotRestrictedInput.PlacableItemType.SPATIAL_STORAGE_CELLS.IIcon ) );
 
 		this.bindPlayerInventory( ip, 0, 197 - /* height of player inventory */82 );
@@ -81,14 +79,54 @@ public class ContainerSpatialIOPort extends AEBaseContainer
 				final ISpatialCache sc = this.network.getCache( ISpatialCache.class );
 				if( eg != null )
 				{
-					this.currentPower = (long) ( 100.0 * eg.getStoredPower() );
-					this.maxPower = (long) ( 100.0 * eg.getMaxStoredPower() );
-					this.reqPower = (long) ( 100.0 * sc.requiredPower() );
-					this.eff = (long) ( 100.0f * sc.currentEfficiency() );
+					this.setCurrentPower( (long) ( 100.0 * eg.getStoredPower() ) );
+					this.setMaxPower( (long) ( 100.0 * eg.getMaxStoredPower() ) );
+					this.setRequiredPower( (long) ( 100.0 * sc.requiredPower() ) );
+					this.setEfficency( (long) ( 100.0f * sc.currentEfficiency() ) );
 				}
 			}
 		}
 
 		super.detectAndSendChanges();
+	}
+
+	public long getCurrentPower()
+	{
+		return this.currentPower;
+	}
+
+	private void setCurrentPower( final long currentPower )
+	{
+		this.currentPower = currentPower;
+	}
+
+	public long getMaxPower()
+	{
+		return this.maxPower;
+	}
+
+	private void setMaxPower( final long maxPower )
+	{
+		this.maxPower = maxPower;
+	}
+
+	public long getRequiredPower()
+	{
+		return this.reqPower;
+	}
+
+	private void setRequiredPower( final long reqPower )
+	{
+		this.reqPower = reqPower;
+	}
+
+	public long getEfficency()
+	{
+		return this.eff;
+	}
+
+	private void setEfficency( final long eff )
+	{
+		this.eff = eff;
 	}
 }

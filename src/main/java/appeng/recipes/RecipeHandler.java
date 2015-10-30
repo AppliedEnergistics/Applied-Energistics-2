@@ -120,7 +120,7 @@ public class RecipeHandler implements IRecipeHandler
 		return i.getNameSpace() + ':' + i.getItemName();
 	}
 
-	public String getName( final ItemStack is ) throws RecipeError
+	private String getName( final ItemStack is ) throws RecipeError
 	{
 		Preconditions.checkNotNull( is );
 
@@ -228,7 +228,7 @@ public class RecipeHandler implements IRecipeHandler
 		return realName;
 	}
 
-	public String alias( final String in )
+	String alias( final String in )
 	{
 		Preconditions.checkNotNull( in );
 
@@ -514,7 +514,7 @@ public class RecipeHandler implements IRecipeHandler
 		}
 	}
 
-	public List<IWebsiteSerializer> findRecipe( final ItemStack output )
+	private List<IWebsiteSerializer> findRecipe( final ItemStack output )
 	{
 		final List<IWebsiteSerializer> out = new LinkedList<IWebsiteSerializer>();
 

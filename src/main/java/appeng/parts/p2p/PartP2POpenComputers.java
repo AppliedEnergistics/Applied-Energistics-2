@@ -107,7 +107,7 @@ public final class PartP2POpenComputers extends PartP2PTunnel<PartP2POpenCompute
 		super.onTunnelNetworkChange();
 		try
 		{
-			this.proxy.getTick().wakeDevice( this.proxy.getNode() );
+			this.getProxy().getTick().wakeDevice( this.getProxy().getNode() );
 		}
 		catch( final GridAccessException e )
 		{
@@ -138,7 +138,7 @@ public final class PartP2POpenComputers extends PartP2PTunnel<PartP2POpenCompute
 	@Override
 	public TickingRequest getTickingRequest( final IGridNode node )
 	{
-		return new TickingRequest( TickRates.OpenComputersTunnel.min, TickRates.OpenComputersTunnel.max, true, false );
+		return new TickingRequest( TickRates.OpenComputersTunnel.getMin(), TickRates.OpenComputersTunnel.getMax(), true, false );
 	}
 
 	@Override
@@ -146,11 +146,11 @@ public final class PartP2POpenComputers extends PartP2PTunnel<PartP2POpenCompute
 	{
 		try
 		{
-			if( !this.proxy.getPath().isNetworkBooting() )
+			if( !this.getProxy().getPath().isNetworkBooting() )
 			{
 				if( this.node() != null ) // Client side doesn't have nodes.
 				{
-					TickHandler.INSTANCE.addCallable( this.tile.getWorldObj(), this.updateCallback );
+					TickHandler.INSTANCE.addCallable( this.getTile().getWorldObj(), this.updateCallback );
 				}
 
 				return TickRateModulation.SLEEP;
@@ -166,12 +166,12 @@ public final class PartP2POpenComputers extends PartP2PTunnel<PartP2POpenCompute
 
 	private void updateConnections()
 	{
-		if( this.proxy.isPowered() && this.proxy.isActive() )
+		if( this.getProxy().isPowered() && this.getProxy().isActive() )
 		{
 			// Make sure we're connected to existing OC nodes in the world.
 			Network.joinOrCreateNetwork( this.getTile() );
 
-			if( this.output )
+			if( this.isOutput() )
 			{
 				if( this.getInput() != null && this.node != null )
 				{
@@ -230,13 +230,13 @@ public final class PartP2POpenComputers extends PartP2PTunnel<PartP2POpenCompute
 	@Override
 	public Node sidedNode( final ForgeDirection side )
 	{
-		return side == this.side ? this.node : null;
+		return side == this.getSide() ? this.node : null;
 	}
 
 	@Override
 	public boolean canConnect( final ForgeDirection side )
 	{
-		return side == this.side;
+		return side == this.getSide();
 	}
 
 	private final class UpdateCallback implements IWorldCallable<Void>

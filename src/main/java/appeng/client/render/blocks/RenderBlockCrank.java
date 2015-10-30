@@ -89,7 +89,7 @@ public class RenderBlockCrank extends BaseBlockRender<BlockCrank, TileCrank>
 		this.applyTESRRotation( x, y, z, tile.getForward(), tile.getUp() );
 
 		GL11.glTranslated( 0.5, 0, 0.5 );
-		GL11.glRotatef( tile.visibleRotation, 0, 1, 0 );
+		GL11.glRotatef( tile.getVisibleRotation(), 0, 1, 0 );
 		GL11.glTranslated( -0.5, 0, -0.5 );
 
 		tess.setTranslation( -tile.xCoord, -tile.yCoord, -tile.zCoord );

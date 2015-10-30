@@ -47,12 +47,12 @@ import appeng.util.inv.ItemSlot;
 public class MEMonitorIInventory implements IMEMonitor<IAEItemStack>
 {
 
-	final InventoryAdaptor adaptor;
-	final IItemList<IAEItemStack> list = AEApi.instance().storage().createItemList();
-	final HashMap<IMEMonitorHandlerReceiver<IAEItemStack>, Object> listeners = new HashMap<IMEMonitorHandlerReceiver<IAEItemStack>, Object>();
+	private final InventoryAdaptor adaptor;
+	private final IItemList<IAEItemStack> list = AEApi.instance().storage().createItemList();
+	private final HashMap<IMEMonitorHandlerReceiver<IAEItemStack>, Object> listeners = new HashMap<IMEMonitorHandlerReceiver<IAEItemStack>, Object>();
 	private final NavigableMap<Integer, CachedItemStack> memory;
-	public BaseActionSource mySource;
-	public StorageFilter mode = StorageFilter.EXTRACTABLE_ONLY;
+	private BaseActionSource mySource;
+	private StorageFilter mode = StorageFilter.EXTRACTABLE_ONLY;
 
 	public MEMonitorIInventory( final InventoryAdaptor adaptor )
 	{
@@ -149,16 +149,16 @@ public class MEMonitorIInventory implements IMEMonitor<IAEItemStack>
 		boolean changed = false;
 		for( final ItemSlot is : this.adaptor )
 		{
-			final CachedItemStack old = this.memory.get( is.slot );
-			high = Math.max( high, is.slot );
+			final CachedItemStack old = this.memory.get( is.getSlot() );
+			high = Math.max( high, is.getSlot() );
 
-			final ItemStack newIS = !is.isExtractable && this.mode == StorageFilter.EXTRACTABLE_ONLY ? null : is.getItemStack();
+			final ItemStack newIS = !is.isExtractable() && this.getMode() == StorageFilter.EXTRACTABLE_ONLY ? null : is.getItemStack();
 			final ItemStack oldIS = old == null ? null : old.itemStack;
 
 			if( this.isDifferent( newIS, oldIS ) )
 			{
 				final CachedItemStack cis = new CachedItemStack( is.getItemStack() );
-				this.memory.put( is.slot, cis );
+				this.memory.put( is.getSlot(), cis );
 
 				if( old != null && old.aeStack != null )
 				{
@@ -189,7 +189,7 @@ public class MEMonitorIInventory implements IMEMonitor<IAEItemStack>
 				if( diff != 0 && stack != null )
 				{
 					final CachedItemStack cis = new CachedItemStack( is.getItemStack() );
-					this.memory.put( is.slot, cis );
+					this.memory.put( is.getSlot(), cis );
 
 					final IAEItemStack a = stack.copy();
 					a.setStackSize( diff );
@@ -251,7 +251,7 @@ public class MEMonitorIInventory implements IMEMonitor<IAEItemStack>
 				final IMEMonitorHandlerReceiver<IAEItemStack> key = l.getKey();
 				if( key.isValid( l.getValue() ) )
 				{
-					key.postChange( this, a, this.mySource );
+					key.postChange( this, a, this.getActionSource() );
 				}
 				else
 				{
@@ -314,11 +314,31 @@ public class MEMonitorIInventory implements IMEMonitor<IAEItemStack>
 		return this.list;
 	}
 
-	static class CachedItemStack
+	private StorageFilter getMode()
+	{
+		return this.mode;
+	}
+
+	public void setMode( final StorageFilter mode )
+	{
+		this.mode = mode;
+	}
+
+	private BaseActionSource getActionSource()
+	{
+		return this.mySource;
+	}
+
+	public void setActionSource( final BaseActionSource mySource )
+	{
+		this.mySource = mySource;
+	}
+
+	private static class CachedItemStack
 	{
 
-		final ItemStack itemStack;
-		final IAEItemStack aeStack;
+		private final ItemStack itemStack;
+		private final IAEItemStack aeStack;
 
 		public CachedItemStack( final ItemStack is )
 		{

@@ -317,7 +317,7 @@ public class AdaptorIInventory extends InventoryAdaptor
 		return left;
 	}
 
-	boolean canRemoveStackFromSlot( final int x, final ItemStack is )
+	private boolean canRemoveStackFromSlot( final int x, final ItemStack is )
 	{
 		if( this.wrapperEnabled )
 		{
@@ -332,11 +332,11 @@ public class AdaptorIInventory extends InventoryAdaptor
 		return new InvIterator();
 	}
 
-	class InvIterator implements Iterator<ItemSlot>
+	private class InvIterator implements Iterator<ItemSlot>
 	{
 
-		final ItemSlot is = new ItemSlot();
-		int x = 0;
+		private final ItemSlot is = new ItemSlot();
+		private int x = 0;
 
 		@Override
 		public boolean hasNext()
@@ -349,10 +349,10 @@ public class AdaptorIInventory extends InventoryAdaptor
 		{
 			final ItemStack iss = AdaptorIInventory.this.i.getStackInSlot( this.x );
 
-			this.is.isExtractable = AdaptorIInventory.this.canRemoveStackFromSlot( this.x, iss );
+			this.is.setExtractable( AdaptorIInventory.this.canRemoveStackFromSlot( this.x, iss ) );
 			this.is.setItemStack( iss );
 
-			this.is.slot = this.x;
+			this.is.setSlot( this.x );
 			this.x++;
 			return this.is;
 		}

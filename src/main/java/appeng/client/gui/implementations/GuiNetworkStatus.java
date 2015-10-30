@@ -50,19 +50,21 @@ import appeng.util.Platform;
 public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 {
 
-	final ItemRepo repo;
-	final int rows = 4;
-	GuiImgButton units;
-	int tooltip = -1;
+	private final ItemRepo repo;
+	private final int rows = 4;
+	private GuiImgButton units;
+	private int tooltip = -1;
 
 	public GuiNetworkStatus( final InventoryPlayer inventoryPlayer, final INetworkTool te )
 	{
 		super( new ContainerNetworkStatus( inventoryPlayer, te ) );
+		final GuiScrollbar scrollbar = new GuiScrollbar();
+
+		this.setScrollBar( scrollbar );
+		this.repo = new ItemRepo( scrollbar, this );
 		this.ySize = 153;
 		this.xSize = 195;
-		this.myScrollBar = new GuiScrollbar();
-		this.repo = new ItemRepo( this.myScrollBar, this );
-		this.repo.rowSize = 5;
+		this.repo.setRowSize( 5 );
 	}
 
 	@Override
@@ -132,11 +134,11 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 
 		this.fontRendererObj.drawString( GuiText.NetworkDetails.getLocal(), 8, 6, 4210752 );
 
-		this.fontRendererObj.drawString( GuiText.StoredPower.getLocal() + ": " + Platform.formatPowerLong( ns.currentPower, false ), 13, 16, 4210752 );
-		this.fontRendererObj.drawString( GuiText.MaxPower.getLocal() + ": " + Platform.formatPowerLong( ns.maxPower, false ), 13, 26, 4210752 );
+		this.fontRendererObj.drawString( GuiText.StoredPower.getLocal() + ": " + Platform.formatPowerLong( ns.getCurrentPower(), false ), 13, 16, 4210752 );
+		this.fontRendererObj.drawString( GuiText.MaxPower.getLocal() + ": " + Platform.formatPowerLong( ns.getMaxPower(), false ), 13, 26, 4210752 );
 
-		this.fontRendererObj.drawString( GuiText.PowerInputRate.getLocal() + ": " + Platform.formatPowerLong( ns.avgAddition, true ), 13, 143 - 10, 4210752 );
-		this.fontRendererObj.drawString( GuiText.PowerUsageRate.getLocal() + ": " + Platform.formatPowerLong( ns.powerUsage, true ), 13, 143 - 20, 4210752 );
+		this.fontRendererObj.drawString( GuiText.PowerInputRate.getLocal() + ": " + Platform.formatPowerLong( ns.getAverageAddition(), true ), 13, 143 - 10, 4210752 );
+		this.fontRendererObj.drawString( GuiText.PowerUsageRate.getLocal() + ": " + Platform.formatPowerLong( ns.getPowerUsage(), true ), 13, 143 - 20, 4210752 );
 
 		final int sectionLength = 30;
 
@@ -229,8 +231,8 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 	private void setScrollBar()
 	{
 		final int size = this.repo.size();
-		this.myScrollBar.setTop( 39 ).setLeft( 175 ).setHeight( 78 );
-		this.myScrollBar.setRange( 0, ( size + 4 ) / 5 - this.rows, 1 );
+		this.getScrollBar().setTop( 39 ).setLeft( 175 ).setHeight( 78 );
+		this.getScrollBar().setRange( 0, ( size + 4 ) / 5 - this.rows, 1 );
 	}
 
 	// @Override - NEI

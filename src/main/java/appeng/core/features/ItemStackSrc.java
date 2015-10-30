@@ -31,7 +31,7 @@ public class ItemStackSrc implements IStackSrc
 {
 
 	private final Item item;
-	public final int damage;
+	private final int damage;
 	private final boolean enabled;
 
 	public ItemStackSrc( final Item item, final int damage, final ActivityState state )

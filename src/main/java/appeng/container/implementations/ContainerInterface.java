@@ -36,7 +36,7 @@ import appeng.helpers.IInterfaceHost;
 public class ContainerInterface extends ContainerUpgradeable
 {
 
-	final DualityInterface myDuality;
+	private final DualityInterface myDuality;
 
 	@GuiSync( 3 )
 	public YesNo bMode = YesNo.NO;
@@ -52,7 +52,7 @@ public class ContainerInterface extends ContainerUpgradeable
 
 		for( int x = 0; x < DualityInterface.NUMBER_OF_PATTERN_SLOTS; x++ )
 		{
-			this.addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.ENCODED_PATTERN, this.myDuality.getPatterns(), x, 8 + 18 * x, 90 + 7, this.invPlayer ) );
+			this.addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.ENCODED_PATTERN, this.myDuality.getPatterns(), x, 8 + 18 * x, 90 + 7, this.getInventoryPlayer() ) );
 		}
 
 		for( int x = 0; x < DualityInterface.NUMBER_OF_CONFIG_SLOTS; x++ )
@@ -94,7 +94,27 @@ public class ContainerInterface extends ContainerUpgradeable
 	@Override
 	protected void loadSettingsFromHost( final IConfigManager cm )
 	{
-		this.bMode = (YesNo) cm.getSetting( Settings.BLOCK );
-		this.iTermMode = (YesNo) cm.getSetting( Settings.INTERFACE_TERMINAL );
+		this.setBlockingMode( (YesNo) cm.getSetting( Settings.BLOCK ) );
+		this.setInterfaceTerminalMode( (YesNo) cm.getSetting( Settings.INTERFACE_TERMINAL ) );
+	}
+
+	public YesNo getBlockingMode()
+	{
+		return this.bMode;
+	}
+
+	private void setBlockingMode( final YesNo bMode )
+	{
+		this.bMode = bMode;
+	}
+
+	public YesNo getInterfaceTerminalMode()
+	{
+		return this.iTermMode;
+	}
+
+	private void setInterfaceTerminalMode( final YesNo iTermMode )
+	{
+		this.iTermMode = iTermMode;
 	}
 }

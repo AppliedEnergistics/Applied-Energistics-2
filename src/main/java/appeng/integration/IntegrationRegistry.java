@@ -83,7 +83,7 @@ public enum IntegrationRegistry
 				builder.append( ", " );
 			}
 
-			final String integrationState = node.shortName + ":" + ( node.state == IntegrationStage.FAILED ? "OFF" : "ON" );
+			final String integrationState = node.getShortName() + ":" + ( node.getState() == IntegrationStage.FAILED ? "OFF" : "ON" );
 			builder.append( integrationState );
 		}
 
@@ -94,7 +94,7 @@ public enum IntegrationRegistry
 	{
 		for( final IntegrationNode node : this.modules )
 		{
-			if( node.shortName == name )
+			if( node.getShortName() == name )
 			{
 				return node.isActive();
 			}
@@ -107,9 +107,9 @@ public enum IntegrationRegistry
 	{
 		for( final IntegrationNode node : this.modules )
 		{
-			if( node.shortName == name && node.isActive() )
+			if( node.getShortName() == name && node.isActive() )
 			{
-				return node.instance;
+				return node.getInstance();
 			}
 		}
 

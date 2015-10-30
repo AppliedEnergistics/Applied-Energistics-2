@@ -39,8 +39,8 @@ import appeng.tile.misc.TileSecurity;
 public class SecurityInventory implements IMEInventoryHandler<IAEItemStack>
 {
 
-	public final IItemList<IAEItemStack> storedItems = AEApi.instance().storage().createItemList();
-	final TileSecurity securityTile;
+	private final IItemList<IAEItemStack> storedItems = AEApi.instance().storage().createItemList();
+	private final TileSecurity securityTile;
 
 	public SecurityInventory( final TileSecurity ts )
 	{
@@ -61,7 +61,7 @@ public class SecurityInventory implements IMEInventoryHandler<IAEItemStack>
 						return null;
 					}
 
-					this.storedItems.add( input );
+					this.getStoredItems().add( input );
 					this.securityTile.inventoryChanged();
 					return null;
 				}
@@ -91,7 +91,7 @@ public class SecurityInventory implements IMEInventoryHandler<IAEItemStack>
 	{
 		if( this.hasPermission( src ) )
 		{
-			final IAEItemStack target = this.storedItems.findPrecise( request );
+			final IAEItemStack target = this.getStoredItems().findPrecise( request );
 			if( target != null )
 			{
 				final IAEItemStack output = target.copy();
@@ -112,7 +112,7 @@ public class SecurityInventory implements IMEInventoryHandler<IAEItemStack>
 	@Override
 	public IItemList<IAEItemStack> getAvailableItems( final IItemList out )
 	{
-		for( final IAEItemStack ais : this.storedItems )
+		for( final IAEItemStack ais : this.getStoredItems() )
 		{
 			out.add( ais );
 		}
@@ -152,7 +152,7 @@ public class SecurityInventory implements IMEInventoryHandler<IAEItemStack>
 				return false;
 			}
 
-			for( final IAEItemStack ais : this.storedItems )
+			for( final IAEItemStack ais : this.getStoredItems() )
 			{
 				if( ais.isMeaningful() )
 				{
@@ -190,5 +190,10 @@ public class SecurityInventory implements IMEInventoryHandler<IAEItemStack>
 	public boolean validForPass( final int i )
 	{
 		return true;
+	}
+
+	public IItemList<IAEItemStack> getStoredItems()
+	{
+		return this.storedItems;
 	}
 }

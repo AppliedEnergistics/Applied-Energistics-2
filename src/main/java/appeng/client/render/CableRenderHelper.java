@@ -48,7 +48,7 @@ public class CableRenderHelper
 	public void renderStatic( final CableBusContainer cableBusContainer, final IFacadeContainer iFacadeContainer )
 	{
 		final TileEntity te = cableBusContainer.getTile();
-		final RenderBlocksWorkaround renderer = BusRenderer.INSTANCE.renderer;
+		final RenderBlocksWorkaround renderer = BusRenderer.INSTANCE.getRenderer();
 
 		if( renderer.overrideBlockTexture != null )
 		{
@@ -73,9 +73,9 @@ public class CableRenderHelper
 
 				part.renderStatic( te.xCoord, te.yCoord, te.zCoord, BusRenderHelper.INSTANCE, renderer );
 
-				renderer.faces = EnumSet.allOf( ForgeDirection.class );
-				renderer.calculations = true;
-				renderer.useTextures = true;
+				renderer.setFaces( EnumSet.allOf( ForgeDirection.class ) );
+				renderer.setCalculations( true );
+				renderer.setUseTextures( true );
 			}
 		}
 
@@ -153,10 +153,10 @@ public class CableRenderHelper
 				}
 			}
 
-			renderer.isFacade = false;
+			renderer.setFacade( false );
 			renderer.enableAO = false;
 			renderer.setTexture( null );
-			renderer.calculations = true;
+			renderer.setCalculations( true );
 		}
 	}
 
@@ -261,7 +261,7 @@ public class CableRenderHelper
 				}
 
 				BusRenderHelper.INSTANCE.setOrientation( ax, ay, az );
-				part.renderDynamic( x, y, z, BusRenderHelper.INSTANCE, BusRenderer.INSTANCE.renderer );
+				part.renderDynamic( x, y, z, BusRenderHelper.INSTANCE, BusRenderer.INSTANCE.getRenderer() );
 			}
 		}
 	}

@@ -57,16 +57,16 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 {
 	private final CraftingCPUCalculator calc = new CraftingCPUCalculator( this );
 
-	public ISimplifiedBundle lightCache;
+	private ISimplifiedBundle lightCache;
 
-	public NBTTagCompound previousState = null;
-	public boolean isCoreBlock = false;
-	CraftingCPUCluster cluster;
+	private NBTTagCompound previousState = null;
+	private boolean isCoreBlock = false;
+	private CraftingCPUCluster cluster;
 
 	public TileCraftingTile()
 	{
-		this.gridProxy.setFlags( GridFlags.MULTIBLOCK, GridFlags.REQUIRE_CHANNEL );
-		this.gridProxy.setValidSides( EnumSet.noneOf( ForgeDirection.class ) );
+		this.getProxy().setFlags( GridFlags.MULTIBLOCK, GridFlags.REQUIRE_CHANNEL );
+		this.getProxy().setValidSides( EnumSet.noneOf( ForgeDirection.class ) );
 	}
 
 	@Override
@@ -119,7 +119,7 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 	public void onReady()
 	{
 		super.onReady();
-		this.gridProxy.setVisualRepresentation( this.getItemFromTile( this ) );
+		this.getProxy().setVisualRepresentation( this.getItemFromTile( this ) );
 		this.updateMultiBlock();
 	}
 
@@ -149,9 +149,9 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 		final boolean formed = this.isFormed();
 		boolean power = false;
 
-		if( this.gridProxy.isReady() )
+		if( this.getProxy().isReady() )
 		{
-			power = this.gridProxy.isActive();
+			power = this.getProxy().isActive();
 		}
 
 		final int current = this.worldObj.getBlockMetadata( this.xCoord, this.yCoord, this.zCoord );
@@ -166,11 +166,11 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 		{
 			if( formed )
 			{
-				this.gridProxy.setValidSides( EnumSet.allOf( ForgeDirection.class ) );
+				this.getProxy().setValidSides( EnumSet.allOf( ForgeDirection.class ) );
 			}
 			else
 			{
-				this.gridProxy.setValidSides( EnumSet.noneOf( ForgeDirection.class ) );
+				this.getProxy().setValidSides( EnumSet.noneOf( ForgeDirection.class ) );
 			}
 		}
 	}
@@ -187,8 +187,8 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 	@TileEvent( TileEventType.WORLD_NBT_WRITE )
 	public void writeToNBT_TileCraftingTile( final NBTTagCompound data )
 	{
-		data.setBoolean( "core", this.isCoreBlock );
-		if( this.isCoreBlock && this.cluster != null )
+		data.setBoolean( "core", this.isCoreBlock() );
+		if( this.isCoreBlock() && this.cluster != null )
 		{
 			this.cluster.writeToNBT( data );
 		}
@@ -197,8 +197,8 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 	@TileEvent( TileEventType.WORLD_NBT_READ )
 	public void readFromNBT_TileCraftingTile( final NBTTagCompound data )
 	{
-		this.isCoreBlock = data.getBoolean( "core" );
-		if( this.isCoreBlock )
+		this.setCoreBlock( data.getBoolean( "core" ) );
+		if( this.isCoreBlock() )
 		{
 			if( this.cluster != null )
 			{
@@ -206,7 +206,7 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 			}
 			else
 			{
-				this.previousState = (NBTTagCompound) data.copy();
+				this.setPreviousState( (NBTTagCompound) data.copy() );
 			}
 		}
 	}
@@ -333,7 +333,7 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 		{
 			return ( this.worldObj.getBlockMetadata( this.xCoord, this.yCoord, this.zCoord ) & 4 ) == 4;
 		}
-		return this.gridProxy.isActive();
+		return this.getProxy().isActive();
 	}
 
 	@Override
@@ -341,8 +341,38 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 	{
 		if( Platform.isServer() )
 		{
-			return this.gridProxy.isActive();
+			return this.getProxy().isActive();
 		}
 		return this.isPowered() && this.isFormed();
+	}
+
+	public boolean isCoreBlock()
+	{
+		return this.isCoreBlock;
+	}
+
+	public void setCoreBlock( final boolean isCoreBlock )
+	{
+		this.isCoreBlock = isCoreBlock;
+	}
+
+	public ISimplifiedBundle getLightCache()
+	{
+		return this.lightCache;
+	}
+
+	public void setLightCache( final ISimplifiedBundle lightCache )
+	{
+		this.lightCache = lightCache;
+	}
+
+	public NBTTagCompound getPreviousState()
+	{
+		return this.previousState;
+	}
+
+	public void setPreviousState( final NBTTagCompound previousState )
+	{
+		this.previousState = previousState;
 	}
 }

@@ -52,13 +52,13 @@ import appeng.util.Platform;
 public class TileSpatialIOPort extends AENetworkInvTile implements IWorldCallable<Void>
 {
 
-	final int[] sides = { 0, 1 };
-	final AppEngInternalInventory inv = new AppEngInternalInventory( this, 2 );
-	YesNo lastRedstoneState = YesNo.UNDECIDED;
+	private final int[] sides = { 0, 1 };
+	private final AppEngInternalInventory inv = new AppEngInternalInventory( this, 2 );
+	private YesNo lastRedstoneState = YesNo.UNDECIDED;
 
 	public TileSpatialIOPort()
 	{
-		this.gridProxy.setFlags( GridFlags.REQUIRE_CHANNEL );
+		this.getGridProxy().setFlags( GridFlags.REQUIRE_CHANNEL );
 	}
 
 	@TileEvent( TileEventType.WORLD_NBT_WRITE )
@@ -127,8 +127,8 @@ public class TileSpatialIOPort extends AENetworkInvTile implements IWorldCallabl
 		final ItemStack cell = this.getStackInSlot( 0 );
 		if( this.isSpatialCell( cell ) && this.getStackInSlot( 1 ) == null )
 		{
-			final IGrid gi = this.gridProxy.getGrid();
-			final IEnergyGrid energy = this.gridProxy.getEnergy();
+			final IGrid gi = this.getGridProxy().getGrid();
+			final IEnergyGrid energy = this.getGridProxy().getEnergy();
 
 			final ISpatialStorageCell sc = (ISpatialStorageCell) cell.getItem();
 

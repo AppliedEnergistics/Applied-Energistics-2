@@ -25,10 +25,20 @@ import appeng.api.networking.IGridConnection;
 public class ConnectionWrapper
 {
 
-	public IGridConnection connection;
+	private IGridConnection connection;
 
 	public ConnectionWrapper( final IGridConnection gc )
 	{
-		this.connection = gc;
+		this.setConnection( gc );
+	}
+
+	public IGridConnection getConnection()
+	{
+		return this.connection;
+	}
+
+	public void setConnection( final IGridConnection connection )
+	{
+		this.connection = connection;
 	}
 }

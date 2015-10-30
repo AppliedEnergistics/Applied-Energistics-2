@@ -45,17 +45,17 @@ import appeng.util.Platform;
 public class CraftingTreeProcess
 {
 
-	final CraftingTreeNode parent;
+	private final CraftingTreeNode parent;
 	final ICraftingPatternDetails details;
-	final CraftingJob job;
-	final Map<CraftingTreeNode, Long> nodes = new HashMap<CraftingTreeNode, Long>();
+	private final CraftingJob job;
+	private final Map<CraftingTreeNode, Long> nodes = new HashMap<CraftingTreeNode, Long>();
 	private final int depth;
-	public boolean possible = true;
-	World world;
-	long crafts = 0;
-	boolean containerItems;
-	boolean limitQty;
-	boolean fullSimulation;
+	boolean possible = true;
+	private World world;
+	private long crafts = 0;
+	private boolean containerItems;
+	private boolean limitQty;
+	private boolean fullSimulation;
 	private long bytes = 0;
 
 	public CraftingTreeProcess( final ICraftingGrid cc, final CraftingJob job, final ICraftingPatternDetails details, final CraftingTreeNode craftingTreeNode, final int depth )
@@ -171,7 +171,7 @@ public class CraftingTreeProcess
 		}
 	}
 
-	public boolean notRecursive( final ICraftingPatternDetails details )
+	boolean notRecursive( final ICraftingPatternDetails details )
 	{
 		return this.parent == null || this.parent.notRecursive( details );
 	}
@@ -185,7 +185,7 @@ public class CraftingTreeProcess
 		return ( remaining / stackSize ) + ( remaining % stackSize != 0 ? 1 : 0 );
 	}
 
-	public void request( final MECraftingInventory inv, final long i, final BaseActionSource src ) throws CraftBranchFailure, InterruptedException
+	void request( final MECraftingInventory inv, final long i, final BaseActionSource src ) throws CraftBranchFailure, InterruptedException
 	{
 		this.job.handlePausing();
 
@@ -198,7 +198,7 @@ public class CraftingTreeProcess
 				final IAEItemStack item = entry.getKey().getStack( entry.getValue() );
 				final IAEItemStack stack = entry.getKey().request( inv, item.getStackSize(), src );
 
-				ic.setInventorySlotContents( entry.getKey().slot, stack.getItemStack() );
+				ic.setInventorySlotContents( entry.getKey().getSlot(), stack.getItemStack() );
 			}
 
 			FMLCommonHandler.instance().firePlayerCraftingEvent( Platform.getPlayer( (WorldServer) this.world ), this.details.getOutput( ic, this.world ), ic );
@@ -250,7 +250,7 @@ public class CraftingTreeProcess
 		this.crafts += i;
 	}
 
-	public void dive( final CraftingJob job )
+	void dive( final CraftingJob job )
 	{
 		job.addTask( this.getAmountCrafted( this.parent.getStack( 1 ) ), this.crafts, this.details, this.depth );
 		for( final CraftingTreeNode pro : this.nodes.keySet() )
@@ -287,7 +287,7 @@ public class CraftingTreeProcess
 		throw new IllegalStateException( "Crafting Tree construction failed." );
 	}
 
-	public void setSimulate()
+	void setSimulate()
 	{
 		this.crafts = 0;
 		this.bytes = 0;
@@ -298,7 +298,7 @@ public class CraftingTreeProcess
 		}
 	}
 
-	public void setJob( final MECraftingInventory storage, final CraftingCPUCluster craftingCPUCluster, final BaseActionSource src ) throws CraftBranchFailure
+	void setJob( final MECraftingInventory storage, final CraftingCPUCluster craftingCPUCluster, final BaseActionSource src ) throws CraftBranchFailure
 	{
 		craftingCPUCluster.addCrafting( this.details, this.crafts );
 
@@ -308,7 +308,7 @@ public class CraftingTreeProcess
 		}
 	}
 
-	public void getPlan( final IItemList<IAEItemStack> plan )
+	void getPlan( final IItemList<IAEItemStack> plan )
 	{
 		for( IAEItemStack i : this.details.getOutputs() )
 		{

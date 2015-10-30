@@ -51,7 +51,7 @@ public final class UnsortedItemList implements IItemList<IAEItemStack>
 	{
 
 		@Override
-		public boolean apply( @Nonnull IAEItemStack input )
+		public boolean apply( @Nonnull final IAEItemStack input )
 		{
 			return input.isMeaningful();
 		}
@@ -60,7 +60,7 @@ public final class UnsortedItemList implements IItemList<IAEItemStack>
 	private final Map<IAEItemStack, IAEItemStack> records = new HashMap<IAEItemStack, IAEItemStack>();
 
 	@Override
-	public void add( IAEItemStack option )
+	public void add( final IAEItemStack option )
 	{
 		if( option == null )
 		{
@@ -81,7 +81,7 @@ public final class UnsortedItemList implements IItemList<IAEItemStack>
 	}
 
 	@Override
-	public IAEItemStack findPrecise( IAEItemStack itemStack )
+	public IAEItemStack findPrecise( final IAEItemStack itemStack )
 	{
 		if( itemStack == null )
 		{
@@ -136,7 +136,7 @@ public final class UnsortedItemList implements IItemList<IAEItemStack>
 	 */
 	@Override
 	@Deprecated
-	public Collection<IAEItemStack> findFuzzy( IAEItemStack filter, FuzzyMode fuzzy )
+	public Collection<IAEItemStack> findFuzzy( final IAEItemStack filter, final FuzzyMode fuzzy )
 	{
 		throw new UnsupportedOperationException( "Unsupported on an unsorted collection" );
 	}
@@ -148,7 +148,7 @@ public final class UnsortedItemList implements IItemList<IAEItemStack>
 	 */
 	@Override
 	@Deprecated
-	public void addStorage( IAEItemStack option )
+	public void addStorage( final IAEItemStack option )
 	{
 		throw new UnsupportedOperationException( "Purely designed for item storage" );
 	}
@@ -160,7 +160,7 @@ public final class UnsortedItemList implements IItemList<IAEItemStack>
 	 */
 	@Override
 	@Deprecated
-	public void addCrafting( IAEItemStack option )
+	public void addCrafting( final IAEItemStack option )
 	{
 		throw new UnsupportedOperationException( "Purely designed for item storage" );
 	}
@@ -172,7 +172,7 @@ public final class UnsortedItemList implements IItemList<IAEItemStack>
 	 */
 	@Override
 	@Deprecated
-	public void addRequestable( IAEItemStack option )
+	public void addRequestable( final IAEItemStack option )
 	{
 		throw new UnsupportedOperationException( "Purely designed for item storage" );
 	}

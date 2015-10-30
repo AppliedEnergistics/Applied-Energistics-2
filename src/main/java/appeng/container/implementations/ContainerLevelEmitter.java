@@ -43,10 +43,10 @@ import appeng.util.Platform;
 public class ContainerLevelEmitter extends ContainerUpgradeable
 {
 
-	final PartLevelEmitter lvlEmitter;
+	private final PartLevelEmitter lvlEmitter;
 
 	@SideOnly( Side.CLIENT )
-	public GuiTextField textField;
+	private GuiTextField textField;
 	@GuiSync( 2 )
 	public LevelType lvType;
 	@GuiSync( 3 )
@@ -76,28 +76,28 @@ public class ContainerLevelEmitter extends ContainerUpgradeable
 	@Override
 	protected void setupConfig()
 	{
-		final IInventory upgrades = this.upgradeable.getInventoryByName( "upgrades" );
+		final IInventory upgrades = this.getUpgradeable().getInventoryByName( "upgrades" );
 		if( this.availableUpgrades() > 0 )
 		{
-			this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 0, 187, 8, this.invPlayer ) ).setNotDraggable() );
+			this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 0, 187, 8, this.getInventoryPlayer() ) ).setNotDraggable() );
 		}
 		if( this.availableUpgrades() > 1 )
 		{
-			this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 1, 187, 8 + 18, this.invPlayer ) ).setNotDraggable() );
+			this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 1, 187, 8 + 18, this.getInventoryPlayer() ) ).setNotDraggable() );
 		}
 		if( this.availableUpgrades() > 2 )
 		{
-			this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 2, 187, 8 + 18 * 2, this.invPlayer ) ).setNotDraggable() );
+			this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 2, 187, 8 + 18 * 2, this.getInventoryPlayer() ) ).setNotDraggable() );
 		}
 		if( this.availableUpgrades() > 3 )
 		{
-			this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 3, 187, 8 + 18 * 3, this.invPlayer ) ).setNotDraggable() );
+			this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 3, 187, 8 + 18 * 3, this.getInventoryPlayer() ) ).setNotDraggable() );
 		}
 
-		final IInventory inv = this.upgradeable.getInventoryByName( "config" );
+		final IInventory inv = this.getUpgradeable().getInventoryByName( "config" );
 		final int y = 40;
 		final int x = 80 + 44;
-		
+
 		this.addSlotToContainer( new SlotFakeTypeOnly( inv, 0, x, y ) );
 	}
 
@@ -122,10 +122,10 @@ public class ContainerLevelEmitter extends ContainerUpgradeable
 		if( Platform.isServer() )
 		{
 			this.EmitterValue = this.lvlEmitter.getReportingValue();
-			this.cmType = (YesNo) this.upgradeable.getConfigManager().getSetting( Settings.CRAFT_VIA_REDSTONE );
-			this.lvType = (LevelType) this.upgradeable.getConfigManager().getSetting( Settings.LEVEL_TYPE );
-			this.fzMode = (FuzzyMode) this.upgradeable.getConfigManager().getSetting( Settings.FUZZY_MODE );
-			this.rsMode = (RedstoneMode) this.upgradeable.getConfigManager().getSetting( Settings.REDSTONE_EMITTER );
+			this.setCraftingMode( (YesNo) this.getUpgradeable().getConfigManager().getSetting( Settings.CRAFT_VIA_REDSTONE ) );
+			this.setLevelMode( (LevelType) this.getUpgradeable().getConfigManager().getSetting( Settings.LEVEL_TYPE ) );
+			this.setFuzzyMode( (FuzzyMode) this.getUpgradeable().getConfigManager().getSetting( Settings.FUZZY_MODE ) );
+			this.setRedStoneMode( (RedstoneMode) this.getUpgradeable().getConfigManager().getSetting( Settings.REDSTONE_EMITTER ) );
 		}
 
 		this.standardDetectAndSendChanges();
@@ -141,5 +141,27 @@ public class ContainerLevelEmitter extends ContainerUpgradeable
 				this.textField.setText( String.valueOf( this.EmitterValue ) );
 			}
 		}
+	}
+
+	@Override
+	public YesNo getCraftingMode()
+	{
+		return this.cmType;
+	}
+
+	@Override
+	public void setCraftingMode( final YesNo cmType )
+	{
+		this.cmType = cmType;
+	}
+
+	public LevelType getLevelMode()
+	{
+		return this.lvType;
+	}
+
+	private void setLevelMode( final LevelType lvType )
+	{
+		this.lvType = lvType;
 	}
 }

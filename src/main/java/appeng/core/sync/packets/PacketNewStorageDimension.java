@@ -36,7 +36,7 @@ import appeng.core.sync.network.INetworkInfo;
 public class PacketNewStorageDimension extends AppEngPacket
 {
 
-	final int newDim;
+	private final int newDim;
 
 	// automatic.
 	public PacketNewStorageDimension( final ByteBuf stream )

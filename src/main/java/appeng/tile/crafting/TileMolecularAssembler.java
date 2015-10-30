@@ -85,7 +85,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 	private final AppEngInternalInventory inv = new AppEngInternalInventory( this, 9 + 2 );
 	private final IConfigManager settings;
 	private final UpgradeInventory upgrades;
-	public ISimplifiedBundle lightCache;
+	private ISimplifiedBundle lightCache;
 	private boolean isPowered = false;
 	private ForgeDirection pushDirection = ForgeDirection.UNKNOWN;
 	private ItemStack myPattern = null;
@@ -102,12 +102,12 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 		this.settings = new ConfigManager( this );
 		this.settings.registerSetting( Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE );
 		this.inv.setMaxStackSize( 1 );
-		this.gridProxy.setIdlePowerUsage( 0.0 );
+		this.getGridProxy().setIdlePowerUsage( 0.0 );
 		this.upgrades = new DefinitionUpgradeInventory( assembler, this, this.getUpgradeSlots() );
 		this.craftingInv = new InventoryCrafting( new ContainerNull(), 3, 3 );
 	}
 
-	protected int getUpgradeSlots()
+	private int getUpgradeSlots()
 	{
 		return 5;
 	}
@@ -152,11 +152,11 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 			{
 				if( this.isAwake )
 				{
-					this.gridProxy.getTick().wakeDevice( this.gridProxy.getNode() );
+					this.getGridProxy().getTick().wakeDevice( this.getGridProxy().getNode() );
 				}
 				else
 				{
-					this.gridProxy.getTick().sleepDevice( this.gridProxy.getNode() );
+					this.getGridProxy().getTick().sleepDevice( this.getGridProxy().getNode() );
 				}
 			}
 			catch( final GridAccessException e )
@@ -553,7 +553,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 	{
 		try
 		{
-			return (int) ( this.gridProxy.getEnergy().extractAEPower( ticksPassed * bonusValue * acceleratorTax, Actionable.MODULATE, PowerMultiplier.CONFIG ) / acceleratorTax );
+			return (int) ( this.getGridProxy().getEnergy().extractAEPower( ticksPassed * bonusValue * acceleratorTax, Actionable.MODULATE, PowerMultiplier.CONFIG ) / acceleratorTax );
 		}
 		catch( final GridAccessException e )
 		{
@@ -629,7 +629,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 
 		try
 		{
-			newState = this.gridProxy.isActive() && this.gridProxy.getEnergy().extractAEPower( 1, Actionable.SIMULATE, PowerMultiplier.CONFIG ) > 0.0001;
+			newState = this.getGridProxy().isActive() && this.getGridProxy().getEnergy().extractAEPower( 1, Actionable.SIMULATE, PowerMultiplier.CONFIG ) > 0.0001;
 		}
 		catch( final GridAccessException ignored )
 		{
@@ -653,5 +653,15 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 	public boolean isActive()
 	{
 		return this.isPowered;
+	}
+
+	public ISimplifiedBundle getLightCache()
+	{
+		return this.lightCache;
+	}
+
+	public void setLightCache( final ISimplifiedBundle lightCache )
+	{
+		this.lightCache = lightCache;
 	}
 }

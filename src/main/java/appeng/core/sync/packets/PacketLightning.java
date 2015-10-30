@@ -39,9 +39,9 @@ import appeng.util.Platform;
 public class PacketLightning extends AppEngPacket
 {
 
-	final double x;
-	final double y;
-	final double z;
+	private final double x;
+	private final double y;
+	private final double z;
 
 	// automatic.
 	public PacketLightning( final ByteBuf stream )

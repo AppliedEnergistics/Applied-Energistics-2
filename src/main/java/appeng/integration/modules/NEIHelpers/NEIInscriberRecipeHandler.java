@@ -160,11 +160,11 @@ public class NEIInscriberRecipeHandler extends TemplateRecipeHandler
 		return GuiText.Inscriber.getLocal();
 	}
 
-	public class CachedInscriberRecipe extends TemplateRecipeHandler.CachedRecipe
+	private class CachedInscriberRecipe extends TemplateRecipeHandler.CachedRecipe
 	{
 
-		public final List<PositionedStack> ingredients;
-		public final PositionedStack result;
+		private final List<PositionedStack> ingredients;
+		private final PositionedStack result;
 
 		public CachedInscriberRecipe( final IInscriberRecipe recipe )
 		{
@@ -196,7 +196,7 @@ public class NEIInscriberRecipeHandler extends TemplateRecipeHandler
 			return this.getCycledIngredients( NEIInscriberRecipeHandler.this.cycleticks / 20, this.ingredients );
 		}
 
-		public void computeVisuals()
+		private void computeVisuals()
 		{
 			for( final PositionedStack p : this.ingredients )
 			{

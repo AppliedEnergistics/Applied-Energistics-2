@@ -39,7 +39,7 @@ public enum ExtraItemTextures
 	ToolColorApplicatorTip_Light( "ToolColorApplicatorTip_Light" );
 
 	private final String name;
-	public IIcon IIcon;
+	private IIcon IIcon;
 
 	ExtraItemTextures( final String name )
 	{

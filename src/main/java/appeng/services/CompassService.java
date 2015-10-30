@@ -91,12 +91,12 @@ public final class CompassService
 		}
 	}
 
-	public int jobSize()
+	private int jobSize()
 	{
 		return this.jobSize;
 	}
 
-	public void cleanUp()
+	private void cleanUp()
 	{
 		for( final CompassReader cr : this.worldSet.values() )
 		{

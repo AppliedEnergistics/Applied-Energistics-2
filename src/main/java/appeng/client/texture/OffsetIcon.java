@@ -28,8 +28,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class OffsetIcon implements IIcon
 {
 
-	final float offsetX;
-	final float offsetY;
+	private final float offsetX;
+	private final float offsetY;
 
 	private final IIcon p;
 

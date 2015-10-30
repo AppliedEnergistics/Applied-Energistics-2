@@ -62,7 +62,7 @@ public class PartDenseCable extends PartCable
 	{
 		super( is );
 
-		this.proxy.setFlags( GridFlags.DENSE_CAPACITY, GridFlags.PREFERRED );
+		this.getProxy().setFlags( GridFlags.DENSE_CAPACITY, GridFlags.PREFERRED );
 	}
 
 	@Override
@@ -91,15 +91,15 @@ public class PartDenseCable extends PartCable
 			final IGridNode n = this.getGridNode();
 			if( n != null )
 			{
-				this.connections = n.getConnectedSides();
+				this.setConnections( n.getConnectedSides() );
 			}
 			else
 			{
-				this.connections.clear();
+				this.getConnections().clear();
 			}
 		}
 
-		for( final ForgeDirection of : this.connections )
+		for( final ForgeDirection of : this.getConnections() )
 		{
 			if( this.isDense( of ) )
 			{
@@ -217,13 +217,13 @@ public class PartDenseCable extends PartCable
 	@SideOnly( Side.CLIENT )
 	public void renderStatic( final int x, final int y, final int z, final IPartRenderHelper rh, final RenderBlocks renderer )
 	{
-		this.renderCache = rh.useSimplifiedRendering( x, y, z, this, this.renderCache );
+		this.setRenderCache( rh.useSimplifiedRendering( x, y, z, this, this.getRenderCache() ) );
 		rh.setTexture( this.getTexture( this.getCableColor() ) );
 
-		final EnumSet<ForgeDirection> sides = this.connections.clone();
+		final EnumSet<ForgeDirection> sides = this.getConnections().clone();
 
 		boolean hasBuses = false;
-		for( final ForgeDirection of : this.connections )
+		for( final ForgeDirection of : this.getConnections() )
 		{
 			if( !this.isDense( of ) )
 			{
@@ -233,19 +233,19 @@ public class PartDenseCable extends PartCable
 
 		if( sides.size() != 2 || !this.nonLinear( sides ) || hasBuses )
 		{
-			for( final ForgeDirection of : this.connections )
+			for( final ForgeDirection of : this.getConnections() )
 			{
 				if( this.isDense( of ) )
 				{
-					this.renderDenseConnection( x, y, z, rh, renderer, this.channelsOnSide[of.ordinal()], of );
+					this.renderDenseConnection( x, y, z, rh, renderer, this.getChannelsOnSide()[of.ordinal()], of );
 				}
 				else if( this.isSmart( of ) )
 				{
-					this.renderSmartConnection( x, y, z, rh, renderer, this.channelsOnSide[of.ordinal()], of );
+					this.renderSmartConnection( x, y, z, rh, renderer, this.getChannelsOnSide()[of.ordinal()], of );
 				}
 				else
 				{
-					this.renderCoveredConnection( x, y, z, rh, renderer, this.channelsOnSide[of.ordinal()], of );
+					this.renderCoveredConnection( x, y, z, rh, renderer, this.getChannelsOnSide()[of.ordinal()], of );
 				}
 			}
 
@@ -257,13 +257,13 @@ public class PartDenseCable extends PartCable
 		{
 			ForgeDirection selectedSide = ForgeDirection.UNKNOWN;
 
-			for( final ForgeDirection of : this.connections )
+			for( final ForgeDirection of : this.getConnections() )
 			{
 				selectedSide = of;
 				break;
 			}
 
-			final int channels = this.channelsOnSide[selectedSide.ordinal()];
+			final int channels = this.getChannelsOnSide()[selectedSide.ordinal()];
 			final IIcon def = this.getTexture( this.getCableColor() );
 			final IIcon off = new OffsetIcon( def, 0, -12 );
 
@@ -360,9 +360,9 @@ public class PartDenseCable extends PartCable
 	}
 
 	@SideOnly( Side.CLIENT )
-	public void renderDenseConnection( final int x, final int y, final int z, final IPartRenderHelper rh, final RenderBlocks renderer, final int channels, final ForgeDirection of )
+	private void renderDenseConnection( final int x, final int y, final int z, final IPartRenderHelper rh, final RenderBlocks renderer, final int channels, final ForgeDirection of )
 	{
-		final TileEntity te = this.tile.getWorldObj().getTileEntity( x + of.offsetX, y + of.offsetY, z + of.offsetZ );
+		final TileEntity te = this.getTile().getWorldObj().getTileEntity( x + of.offsetX, y + of.offsetY, z + of.offsetZ );
 		final IPartHost partHost = te instanceof IPartHost ? (IPartHost) te : null;
 		final IGridHost ghh = te instanceof IGridHost ? (IGridHost) te : null;
 		AEColor myColor = this.getCableColor();
@@ -456,7 +456,7 @@ public class PartDenseCable extends PartCable
 
 	private boolean isSmart( final ForgeDirection of )
 	{
-		final TileEntity te = this.tile.getWorldObj().getTileEntity( this.tile.xCoord + of.offsetX, this.tile.yCoord + of.offsetY, this.tile.zCoord + of.offsetZ );
+		final TileEntity te = this.getTile().getWorldObj().getTileEntity( this.getTile().xCoord + of.offsetX, this.getTile().yCoord + of.offsetY, this.getTile().zCoord + of.offsetZ );
 		if( te instanceof IGridHost )
 		{
 			final AECableType t = ( (IGridHost) te ).getCableConnectionType( of.getOpposite() );
@@ -504,12 +504,12 @@ public class PartDenseCable extends PartCable
 			default:
 		}
 
-		return this.is.getIconIndex();
+		return this.getItemStack().getIconIndex();
 	}
 
 	private boolean isDense( final ForgeDirection of )
 	{
-		final TileEntity te = this.tile.getWorldObj().getTileEntity( this.tile.xCoord + of.offsetX, this.tile.yCoord + of.offsetY, this.tile.zCoord + of.offsetZ );
+		final TileEntity te = this.getTile().getWorldObj().getTileEntity( this.getTile().xCoord + of.offsetX, this.getTile().yCoord + of.offsetY, this.getTile().zCoord + of.offsetZ );
 		if( te instanceof IGridHost )
 		{
 			final AECableType t = ( (IGridHost) te ).getCableConnectionType( of.getOpposite() );

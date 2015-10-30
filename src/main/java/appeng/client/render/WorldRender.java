@@ -41,10 +41,10 @@ public final class WorldRender implements ISimpleBlockRenderingHandler
 {
 
 	public static final WorldRender INSTANCE = new WorldRender();
-	public final HashMap<AEBaseBlock, BaseBlockRender> blockRenders = new HashMap<AEBaseBlock, BaseBlockRender>();
-	final int renderID = RenderingRegistry.getNextAvailableRenderId();
+	private final HashMap<AEBaseBlock, BaseBlockRender> blockRenders = new HashMap<AEBaseBlock, BaseBlockRender>();
+	private final int renderID = RenderingRegistry.getNextAvailableRenderId();
 	private final RenderBlocks renderer = new RenderBlocks();
-	boolean hasError = false;
+	private boolean hasError = false;
 
 	private WorldRender()
 	{
@@ -83,10 +83,10 @@ public final class WorldRender implements ISimpleBlockRenderingHandler
 
 	private BaseBlockRender getRender( final AEBaseBlock block )
 	{
-		return block.getRendererInstance().rendererInstance;
+		return block.getRendererInstance().getRendererInstance();
 	}
 
-	public void renderItemBlock( final ItemStack item, final ItemRenderType type, final Object[] data )
+	void renderItemBlock( final ItemStack item, final ItemRenderType type, final Object[] data )
 	{
 		final Block blk = Block.getBlockFromItem( item.getItem() );
 		if( blk instanceof AEBaseBlock )

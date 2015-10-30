@@ -69,7 +69,7 @@ import appeng.util.Platform;
 public class PartPlacement
 {
 
-	public static float eyeHeight = 0.0f;
+	private static float eyeHeight = 0.0f;
 	private final ThreadLocal<Object> placing = new ThreadLocal<Object>();
 	private boolean wasCanceled = false;
 
@@ -103,7 +103,7 @@ public class PartPlacement
 				if( !world.isRemote )
 				{
 					final LookDirection dir = Platform.getPlayerRay( player, getEyeOffset( player ) );
-					final MovingObjectPosition mop = block.collisionRayTrace( world, x, y, z, dir.a, dir.b );
+					final MovingObjectPosition mop = block.collisionRayTrace( world, x, y, z, dir.getA(), dir.getB() );
 					if( mop != null )
 					{
 						final List<ItemStack> is = new LinkedList<ItemStack>();
@@ -212,7 +212,7 @@ public class PartPlacement
 			if( host != null && player.isSneaking() && block != null )
 			{
 				final LookDirection dir = Platform.getPlayerRay( player, getEyeOffset( player ) );
-				final MovingObjectPosition mop = block.collisionRayTrace( world, x, y, z, dir.a, dir.b );
+				final MovingObjectPosition mop = block.collisionRayTrace( world, x, y, z, dir.getA(), dir.getB() );
 				if( mop != null )
 				{
 					mop.hitVec = mop.hitVec.addVector( -mop.blockX, -mop.blockY, -mop.blockZ );
@@ -343,7 +343,7 @@ public class PartPlacement
 		{
 			final Block block = world.getBlock( x, y, z );
 			final LookDirection dir = Platform.getPlayerRay( player, getEyeOffset( player ) );
-			final MovingObjectPosition mop = block.collisionRayTrace( world, x, y, z, dir.a, dir.b );
+			final MovingObjectPosition mop = block.collisionRayTrace( world, x, y, z, dir.getA(), dir.getB() );
 			if( mop != null )
 			{
 				final SelectedPart sp = selectPart( player, host, mop.hitVec.addVector( -mop.blockX, -mop.blockY, -mop.blockZ ) );
@@ -399,7 +399,7 @@ public class PartPlacement
 			return Platform.getEyeOffset( p );
 		}
 
-		return eyeHeight;
+		return getEyeHeight();
 	}
 
 	private static SelectedPart selectPart( final EntityPlayer player, final IPartHost host, final Vec3 pos )
@@ -490,6 +490,16 @@ public class PartPlacement
 
 			this.placing.set( null );
 		}
+	}
+
+	private static float getEyeHeight()
+	{
+		return eyeHeight;
+	}
+
+	public static void setEyeHeight( final float eyeHeight )
+	{
+		PartPlacement.eyeHeight = eyeHeight;
 	}
 
 	public enum PlaceType

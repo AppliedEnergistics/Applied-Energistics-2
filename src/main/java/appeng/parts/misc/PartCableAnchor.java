@@ -53,10 +53,10 @@ import appeng.api.parts.PartItemStack;
 public class PartCableAnchor implements IPart
 {
 
-	protected ISimplifiedBundle renderCache = null;
-	ItemStack is = null;
-	IPartHost host = null;
-	ForgeDirection mySide = ForgeDirection.UP;
+	private ISimplifiedBundle renderCache = null;
+	private ItemStack is = null;
+	private IPartHost host = null;
+	private ForgeDirection mySide = ForgeDirection.UP;
 
 	public PartCableAnchor( final ItemStack is )
 	{

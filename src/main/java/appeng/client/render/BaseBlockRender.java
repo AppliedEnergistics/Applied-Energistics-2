@@ -76,7 +76,7 @@ public class BaseBlockRender<B extends AEBaseBlock, T extends AEBaseTile>
 		setOriMap();
 	}
 
-	public static void setOriMap()
+	private static void setOriMap()
 	{
 		// pointed up...
 		ORIENTATION_MAP[0][3][1] = 0;
@@ -275,7 +275,7 @@ public class BaseBlockRender<B extends AEBaseBlock, T extends AEBaseTile>
 		return ( r << 16 ) | ( g << 8 ) | b;
 	}
 
-	public double getTesrRenderDistance()
+	double getTesrRenderDistance()
 	{
 		return this.renderDistance;
 	}
@@ -312,7 +312,7 @@ public class BaseBlockRender<B extends AEBaseBlock, T extends AEBaseTile>
 		renderer.uvRotateBottom = renderer.uvRotateEast = renderer.uvRotateNorth = renderer.uvRotateSouth = renderer.uvRotateTop = renderer.uvRotateWest = 0;
 	}
 
-	public static int getOrientation( final ForgeDirection in, final ForgeDirection forward, final ForgeDirection up )
+	static int getOrientation( final ForgeDirection in, final ForgeDirection forward, final ForgeDirection up )
 	{
 		if( in == null || in == ForgeDirection.UNKNOWN // 1
 				|| forward == null || forward == ForgeDirection.UNKNOWN // 2
@@ -391,7 +391,7 @@ public class BaseBlockRender<B extends AEBaseBlock, T extends AEBaseTile>
 		}
 	}
 
-	public IIcon firstNotNull( final IIcon... s )
+	private IIcon firstNotNull( final IIcon... s )
 	{
 		for( final IIcon o : s )
 		{

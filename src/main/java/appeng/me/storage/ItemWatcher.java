@@ -35,9 +35,9 @@ import appeng.me.cache.GridStorageCache;
 public class ItemWatcher implements IStackWatcher
 {
 
-	final GridStorageCache gsc;
-	final IStackWatcherHost myObject;
-	final HashSet<IAEStack> myInterests = new HashSet<IAEStack>();
+	private final GridStorageCache gsc;
+	private final IStackWatcherHost myObject;
+	private final HashSet<IAEStack> myInterests = new HashSet<IAEStack>();
 
 	public ItemWatcher( final GridStorageCache cache, final IStackWatcherHost host )
 	{
@@ -94,13 +94,13 @@ public class ItemWatcher implements IStackWatcher
 			return false;
 		}
 
-		return this.myInterests.add( e.copy() ) && this.gsc.interestManager.put( e, this );
+		return this.myInterests.add( e.copy() ) && this.gsc.getInterestManager().put( e, this );
 	}
 
 	@Override
 	public boolean remove( final Object o )
 	{
-		return this.myInterests.remove( o ) && this.gsc.interestManager.remove( (IAEStack) o, this );
+		return this.myInterests.remove( o ) && this.gsc.getInterestManager().remove( (IAEStack) o, this );
 	}
 
 	@Override
@@ -157,17 +157,17 @@ public class ItemWatcher implements IStackWatcher
 		final Iterator<IAEStack> i = this.myInterests.iterator();
 		while( i.hasNext() )
 		{
-			this.gsc.interestManager.remove( i.next(), this );
+			this.gsc.getInterestManager().remove( i.next(), this );
 			i.remove();
 		}
 	}
 
-	class ItemWatcherIterator implements Iterator<IAEStack>
+	private class ItemWatcherIterator implements Iterator<IAEStack>
 	{
 
-		final ItemWatcher watcher;
-		final Iterator<IAEStack> interestIterator;
-		IAEStack myLast;
+		private final ItemWatcher watcher;
+		private final Iterator<IAEStack> interestIterator;
+		private IAEStack myLast;
 
 		public ItemWatcherIterator( final ItemWatcher parent, final Iterator<IAEStack> i )
 		{
@@ -190,7 +190,7 @@ public class ItemWatcher implements IStackWatcher
 		@Override
 		public void remove()
 		{
-			ItemWatcher.this.gsc.interestManager.remove( this.myLast, this.watcher );
+			ItemWatcher.this.gsc.getInterestManager().remove( this.myLast, this.watcher );
 			this.interestIterator.remove();
 		}
 	}

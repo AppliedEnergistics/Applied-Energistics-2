@@ -107,7 +107,7 @@ public class RenderBlockAssembler extends BaseBlockRender<BlockMolecularAssemble
 	{
 		final TileMolecularAssembler tma = maBlock.getTileEntity( world, x, y, z );
 
-		if( BlockMolecularAssembler.booleanAlphaPass )
+		if( BlockMolecularAssembler.isBooleanAlphaPass() )
 		{
 			if( tma.isPowered() )
 			{
@@ -126,14 +126,14 @@ public class RenderBlockAssembler extends BaseBlockRender<BlockMolecularAssemble
 			return false;
 		}
 
-		BusRenderer.INSTANCE.renderer.blockAccess = renderer.blockAccess;
-		renderer = BusRenderer.INSTANCE.renderer;
+		BusRenderer.INSTANCE.getRenderer().blockAccess = renderer.blockAccess;
+		renderer = BusRenderer.INSTANCE.getRenderer();
 
 		this.preRenderInWorld( maBlock, world, x, y, z, renderer );
 
-		tma.lightCache = BusRenderHelper.INSTANCE.useSimplifiedRendering( x, y, z, this, tma.lightCache );
+		tma.setLightCache( BusRenderHelper.INSTANCE.useSimplifiedRendering( x, y, z, this, tma.getLightCache() ) );
 
-		BusRenderer.INSTANCE.renderer.isFacade = true;
+		BusRenderer.INSTANCE.getRenderer().setFacade( true );
 		final IOrientable te = this.getOrientable( maBlock, world, x, y, z );
 
 		final ForgeDirection fdy = te.getUp();
@@ -192,14 +192,14 @@ public class RenderBlockAssembler extends BaseBlockRender<BlockMolecularAssemble
 		maBlock.getRendererInstance().setTemporaryRenderIcon( null );
 
 		renderer.renderAllFaces = false;
-		BusRenderer.INSTANCE.renderer.isFacade = false;
+		BusRenderer.INSTANCE.getRenderer().setFacade( false );
 
 		this.postRenderInWorld( renderer );
 
 		return true;
 	}
 
-	public void renderCableAt( final double thickness, final IBlockAccess world, final int x, final int y, final int z, final BlockMolecularAssembler block, final RenderBlocks renderer, final double pull, final boolean covered )
+	private void renderCableAt( final double thickness, final IBlockAccess world, final int x, final int y, final int z, final BlockMolecularAssembler block, final RenderBlocks renderer, final double pull, final boolean covered )
 	{
 		IIcon texture = null;
 
@@ -248,7 +248,7 @@ public class RenderBlockAssembler extends BaseBlockRender<BlockMolecularAssemble
 		block.getRendererInstance().setTemporaryRenderIcon( null );
 	}
 
-	IIcon getConnectedCable( final IBlockAccess world, final int x, final int y, final int z, final ForgeDirection side, final boolean covered )
+	private IIcon getConnectedCable( final IBlockAccess world, final int x, final int y, final int z, final ForgeDirection side, final boolean covered )
 	{
 		final int tileYPos = y + side.offsetY;
 		if( -1 < tileYPos && tileYPos < 256 )

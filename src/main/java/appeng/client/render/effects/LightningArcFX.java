@@ -28,9 +28,9 @@ public class LightningArcFX extends LightningFX
 {
 	private static final Random RANDOM_GENERATOR = new Random();
 
-	final double rx;
-	final double ry;
-	final double rz;
+	private final double rx;
+	private final double ry;
+	private final double rz;
 
 	public LightningArcFX( final World w, final double x, final double y, final double z, final double ex, final double ey, final double ez, final double r, final double g, final double b )
 	{
@@ -47,17 +47,19 @@ public class LightningArcFX extends LightningFX
 	@Override
 	protected void regen()
 	{
-		final double i = 1.0 / ( this.steps - 1 );
+		final double i = 1.0 / ( this.getSteps() - 1 );
 		final double lastDirectionX = this.rx * i;
 		final double lastDirectionY = this.ry * i;
 		final double lastDirectionZ = this.rz * i;
 
 		final double len = Math.sqrt( lastDirectionX * lastDirectionX + lastDirectionY * lastDirectionY + lastDirectionZ * lastDirectionZ );
-		for( int s = 0; s < this.steps; s++ )
+		for( int s = 0; s < this.getSteps(); s++ )
 		{
-			this.Steps[s][0] = ( lastDirectionX + ( RANDOM_GENERATOR.nextDouble() - 0.5 ) * len * 1.2 ) / 2.0;
-			this.Steps[s][1] = ( lastDirectionY + ( RANDOM_GENERATOR.nextDouble() - 0.5 ) * len * 1.2 ) / 2.0;
-			this.Steps[s][2] = ( lastDirectionZ + ( RANDOM_GENERATOR.nextDouble() - 0.5 ) * len * 1.2 ) / 2.0;
+			final double[][] localSteps = this.getPrecomputedSteps();
+
+			localSteps[s][0] = ( lastDirectionX + ( RANDOM_GENERATOR.nextDouble() - 0.5 ) * len * 1.2 ) / 2.0;
+			localSteps[s][1] = ( lastDirectionY + ( RANDOM_GENERATOR.nextDouble() - 0.5 ) * len * 1.2 ) / 2.0;
+			localSteps[s][2] = ( lastDirectionZ + ( RANDOM_GENERATOR.nextDouble() - 0.5 ) * len * 1.2 ) / 2.0;
 		}
 	}
 }

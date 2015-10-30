@@ -89,7 +89,7 @@ public enum ExtraBlockTextures
 	BlockPaint2( "BlockPaint2" ), BlockPaint3( "BlockPaint3" );
 
 	private final String name;
-	public IIcon IIcon;
+	private IIcon IIcon;
 
 	ExtraBlockTextures( final String name )
 	{

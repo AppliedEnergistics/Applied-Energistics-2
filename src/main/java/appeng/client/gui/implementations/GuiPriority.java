@@ -53,19 +53,19 @@ import appeng.tile.storage.TileDrive;
 public class GuiPriority extends AEBaseGui
 {
 
-	GuiNumberBox priority;
-	GuiTabButton originalGuiBtn;
+	private GuiNumberBox priority;
+	private GuiTabButton originalGuiBtn;
 
-	GuiButton plus1;
-	GuiButton plus10;
-	GuiButton plus100;
-	GuiButton plus1000;
-	GuiButton minus1;
-	GuiButton minus10;
-	GuiButton minus100;
-	GuiButton minus1000;
+	private GuiButton plus1;
+	private GuiButton plus10;
+	private GuiButton plus100;
+	private GuiButton plus1000;
+	private GuiButton minus1;
+	private GuiButton minus10;
+	private GuiButton minus100;
+	private GuiButton minus1000;
 
-	GuiBridge OriginalGui;
+	private GuiBridge OriginalGui;
 
 	public GuiPriority( final InventoryPlayer inventoryPlayer, final IPriorityHost te )
 	{

@@ -31,7 +31,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class MissingIcon implements IIcon
 {
 
-	final boolean isBlock;
+	private final boolean isBlock;
 
 	public MissingIcon( final Object forWhat )
 	{
@@ -45,7 +45,7 @@ public class MissingIcon implements IIcon
 	}
 
 	@SideOnly( Side.CLIENT )
-	public IIcon getMissing()
+	private IIcon getMissing()
 	{
 		return ( (TextureMap) Minecraft.getMinecraft().getTextureManager().getTexture( this.isBlock ? TextureMap.locationBlocksTexture : TextureMap.locationItemsTexture ) ).getAtlasSprite( "missingno" );
 	}

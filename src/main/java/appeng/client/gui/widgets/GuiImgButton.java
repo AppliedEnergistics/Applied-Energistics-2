@@ -59,8 +59,8 @@ public class GuiImgButton extends GuiButton implements ITooltip
 	private static final Pattern PATTERN_NEW_LINE = Pattern.compile( "\\n", Pattern.LITERAL );
 	private static Map<EnumPair, ButtonAppearance> appearances;
 	private final Enum buttonSetting;
-	public boolean halfSize = false;
-	public String fillVar;
+	private boolean halfSize = false;
+	private String fillVar;
 	private Enum currentValue;
 
 	public GuiImgButton( final int x, final int y, final Enum idx, final Enum val )
@@ -362,7 +362,27 @@ public class GuiImgButton extends GuiButton implements ITooltip
 		}
 	}
 
-	static class EnumPair
+	public boolean isHalfSize()
+	{
+		return this.halfSize;
+	}
+
+	public void setHalfSize( final boolean halfSize )
+	{
+		this.halfSize = halfSize;
+	}
+
+	public String getFillVar()
+	{
+		return this.fillVar;
+	}
+
+	public void setFillVar( final String fillVar )
+	{
+		this.fillVar = fillVar;
+	}
+
+	private static final class EnumPair
 	{
 
 		final Enum setting;

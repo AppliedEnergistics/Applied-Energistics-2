@@ -32,7 +32,7 @@ public enum WailaText
 
 	Contains, Channels;
 
-	final String root;
+	private final String root;
 
 	WailaText()
 	{

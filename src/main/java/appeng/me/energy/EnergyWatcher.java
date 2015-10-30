@@ -34,9 +34,9 @@ import appeng.me.cache.EnergyGridCache;
 public class EnergyWatcher implements IEnergyWatcher
 {
 
-	final EnergyGridCache gsc;
-	final IEnergyWatcherHost myObject;
-	final HashSet<EnergyThreshold> myInterests = new HashSet<EnergyThreshold>();
+	private final EnergyGridCache gsc;
+	private final IEnergyWatcherHost myObject;
+	private final HashSet<EnergyThreshold> myInterests = new HashSet<EnergyThreshold>();
 
 	public EnergyWatcher( final EnergyGridCache cache, final IEnergyWatcherHost host )
 	{
@@ -99,14 +99,14 @@ public class EnergyWatcher implements IEnergyWatcher
 		}
 
 		final EnergyThreshold eh = new EnergyThreshold( e, this );
-		return this.gsc.interests.add( eh ) && this.myInterests.add( eh );
+		return this.gsc.getInterests().add( eh ) && this.myInterests.add( eh );
 	}
 
 	@Override
 	public boolean remove( final Object o )
 	{
 		final EnergyThreshold eh = new EnergyThreshold( (Double) o, this );
-		return this.myInterests.remove( eh ) && this.gsc.interests.remove( eh );
+		return this.myInterests.remove( eh ) && this.gsc.getInterests().remove( eh );
 	}
 
 	@Override
@@ -163,17 +163,17 @@ public class EnergyWatcher implements IEnergyWatcher
 		final Iterator<EnergyThreshold> i = this.myInterests.iterator();
 		while( i.hasNext() )
 		{
-			this.gsc.interests.remove( i.next() );
+			this.gsc.getInterests().remove( i.next() );
 			i.remove();
 		}
 	}
 
-	class EnergyWatcherIterator implements Iterator<Double>
+	private class EnergyWatcherIterator implements Iterator<Double>
 	{
 
-		final EnergyWatcher watcher;
-		final Iterator<EnergyThreshold> interestIterator;
-		EnergyThreshold myLast;
+		private final EnergyWatcher watcher;
+		private final Iterator<EnergyThreshold> interestIterator;
+		private EnergyThreshold myLast;
 
 		public EnergyWatcherIterator( final EnergyWatcher parent, final Iterator<EnergyThreshold> i )
 		{
@@ -191,13 +191,13 @@ public class EnergyWatcher implements IEnergyWatcher
 		public Double next()
 		{
 			this.myLast = this.interestIterator.next();
-			return this.myLast.Limit;
+			return this.myLast.getLimit();
 		}
 
 		@Override
 		public void remove()
 		{
-			EnergyWatcher.this.gsc.interests.remove( this.myLast );
+			EnergyWatcher.this.gsc.getInterests().remove( this.myLast );
 			this.interestIterator.remove();
 		}
 	}

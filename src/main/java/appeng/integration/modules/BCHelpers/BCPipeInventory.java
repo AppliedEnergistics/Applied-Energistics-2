@@ -36,8 +36,8 @@ import appeng.integration.abstraction.IBuildCraftTransport;
 public class BCPipeInventory implements IMEInventory<IAEItemStack>
 {
 
-	final TileEntity te;
-	final ForgeDirection direction;
+	private final TileEntity te;
+	private final ForgeDirection direction;
 
 	public BCPipeInventory( final TileEntity te, final ForgeDirection direction )
 	{

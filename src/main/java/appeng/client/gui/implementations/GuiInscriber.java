@@ -33,8 +33,8 @@ import appeng.tile.misc.TileInscriber;
 public class GuiInscriber extends AEBaseGui
 {
 
-	final ContainerInscriber cvc;
-	GuiProgressBar pb;
+	private final ContainerInscriber cvc;
+	private GuiProgressBar pb;
 
 	public GuiInscriber( final InventoryPlayer inventoryPlayer, final TileInscriber te )
 	{
@@ -44,7 +44,7 @@ public class GuiInscriber extends AEBaseGui
 		this.xSize = this.hasToolbox() ? 246 : 211;
 	}
 
-	protected boolean hasToolbox()
+	private boolean hasToolbox()
 	{
 		return ( (ContainerUpgradeable) this.inventorySlots ).hasToolbox();
 	}
@@ -86,7 +86,7 @@ public class GuiInscriber extends AEBaseGui
 		}
 	}
 
-	protected boolean drawUpgrades()
+	private boolean drawUpgrades()
 	{
 		return true;
 	}

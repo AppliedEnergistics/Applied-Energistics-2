@@ -39,9 +39,9 @@ import appeng.util.item.AEItemStack;
 public class IMEAdaptor extends InventoryAdaptor
 {
 
-	final IMEInventory<IAEItemStack> target;
-	final BaseActionSource src;
-	int maxSlots = 0;
+	private final IMEInventory<IAEItemStack> target;
+	private final BaseActionSource src;
+	private int maxSlots = 0;
 
 	public IMEAdaptor( final IMEInventory<IAEItemStack> input, final BaseActionSource src )
 	{
@@ -55,7 +55,7 @@ public class IMEAdaptor extends InventoryAdaptor
 		return new IMEAdaptorIterator( this, this.getList() );
 	}
 
-	IItemList<IAEItemStack> getList()
+	private IItemList<IAEItemStack> getList()
 	{
 		return this.target.getAvailableItems( AEApi.instance().storage().createItemList() );
 	}
@@ -66,7 +66,7 @@ public class IMEAdaptor extends InventoryAdaptor
 		return this.doRemoveItems( amount, filter, destination, Actionable.MODULATE );
 	}
 
-	public ItemStack doRemoveItems( final int amount, final ItemStack filter, final IInventoryDestination destination, final Actionable type )
+	private ItemStack doRemoveItems( final int amount, final ItemStack filter, final IInventoryDestination destination, final Actionable type )
 	{
 		IAEItemStack req = null;
 
@@ -115,7 +115,7 @@ public class IMEAdaptor extends InventoryAdaptor
 		return this.doRemoveItemsFuzzy( amount, filter, destination, Actionable.MODULATE, fuzzyMode );
 	}
 
-	public ItemStack doRemoveItemsFuzzy( final int amount, final ItemStack filter, final IInventoryDestination destination, final Actionable type, final FuzzyMode fuzzyMode )
+	private ItemStack doRemoveItemsFuzzy( final int amount, final ItemStack filter, final IInventoryDestination destination, final Actionable type, final FuzzyMode fuzzyMode )
 	{
 		final IAEItemStack reqFilter = AEItemStack.create( filter );
 		if( reqFilter == null )
@@ -185,5 +185,15 @@ public class IMEAdaptor extends InventoryAdaptor
 	public boolean containsItems()
 	{
 		return !this.getList().isEmpty();
+	}
+
+	int getMaxSlots()
+	{
+		return this.maxSlots;
+	}
+
+	void setMaxSlots( final int maxSlots )
+	{
+		this.maxSlots = maxSlots;
 	}
 }

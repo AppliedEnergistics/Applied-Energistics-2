@@ -19,7 +19,6 @@
 package appeng.spatial;
 
 
-import java.lang.reflect.Method;
 import java.util.List;
 
 import net.minecraft.block.Block;
@@ -43,7 +42,6 @@ public class StorageHelper
 {
 
 	private static StorageHelper instance;
-	Method onEntityRemoved;
 
 	public static StorageHelper getInstance()
 	{
@@ -62,7 +60,7 @@ public class StorageHelper
 	 *
 	 * @return teleported entity
 	 */
-	public Entity teleportEntity( Entity entity, final TelDestination link )
+	private Entity teleportEntity( Entity entity, final TelDestination link )
 	{
 		final WorldServer oldWorld;
 		final WorldServer newWorld;
@@ -177,7 +175,7 @@ public class StorageHelper
 		return entity;
 	}
 
-	public void transverseEdges( final int minX, final int minY, final int minZ, final int maxX, final int maxY, final int maxZ, final ISpatialVisitor visitor )
+	private void transverseEdges( final int minX, final int minY, final int minZ, final int maxX, final int maxY, final int maxZ, final ISpatialVisitor visitor )
 	{
 		for( int y = minY; y < maxY; y++ )
 		{
@@ -239,14 +237,14 @@ public class StorageHelper
 			this.teleportEntity( e, new TelDestination( dst, dstBox, e.posX, e.posY, e.posZ, -x + i, -y + j, -z + k ) );
 		}
 
-		for( final WorldCoord wc : cDst.updates )
+		for( final WorldCoord wc : cDst.getUpdates() )
 		{
-			cDst.world.notifyBlockOfNeighborChange( wc.x, wc.y, wc.z, Platform.AIR_BLOCK );
+			cDst.getWorld().notifyBlockOfNeighborChange( wc.x, wc.y, wc.z, Platform.AIR_BLOCK );
 		}
 
-		for( final WorldCoord wc : cSrc.updates )
+		for( final WorldCoord wc : cSrc.getUpdates() )
 		{
-			cSrc.world.notifyBlockOfNeighborChange( wc.x, wc.y, wc.z, Platform.AIR_BLOCK );
+			cSrc.getWorld().notifyBlockOfNeighborChange( wc.x, wc.y, wc.z, Platform.AIR_BLOCK );
 		}
 
 		this.transverseEdges( x - 1, y - 1, z - 1, x + scaleX + 1, y + scaleY + 1, z + scaleZ + 1, new TriggerUpdates( src ) );
@@ -264,10 +262,10 @@ public class StorageHelper
 
 	}
 
-	static class TriggerUpdates implements ISpatialVisitor
+	private static class TriggerUpdates implements ISpatialVisitor
 	{
 
-		final World dst;
+		private final World dst;
 
 		public TriggerUpdates( final World dst2 )
 		{
@@ -282,12 +280,12 @@ public class StorageHelper
 		}
 	}
 
-	static class WrapInMatrixFrame implements ISpatialVisitor
+	private static class WrapInMatrixFrame implements ISpatialVisitor
 	{
 
-		final World dst;
-		final Block blkID;
-		final int Meta;
+		private final World dst;
+		private final Block blkID;
+		private final int Meta;
 
 		public WrapInMatrixFrame( final Block blockID, final int metaData, final World dst2 )
 		{
@@ -303,16 +301,16 @@ public class StorageHelper
 		}
 	}
 
-	static class TelDestination
+	private static class TelDestination
 	{
 
-		final World dim;
-		final double x;
-		final double y;
-		final double z;
-		final int xOff;
-		final int yOff;
-		final int zOff;
+		private final World dim;
+		private final double x;
+		private final double y;
+		private final double z;
+		private final int xOff;
+		private final int yOff;
+		private final int zOff;
 
 		TelDestination( final World dimension, final AxisAlignedBB srcBox, final double x, final double y, final double z, final int tileX, final int tileY, final int tileZ )
 		{
@@ -326,10 +324,10 @@ public class StorageHelper
 		}
 	}
 
-	static class METeleporter extends Teleporter
+	private static class METeleporter extends Teleporter
 	{
 
-		final TelDestination destination;
+		private final TelDestination destination;
 
 		public METeleporter( final WorldServer par1WorldServer, final TelDestination d )
 		{

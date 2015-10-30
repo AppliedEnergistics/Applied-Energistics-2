@@ -19,9 +19,6 @@
 package appeng.entity;
 
 
-import java.nio.ByteBuffer;
-import java.nio.DoubleBuffer;
-
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.renderer.entity.RenderItem;
@@ -37,8 +34,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class RenderFloatingItem extends RenderItem
 {
 
-	public static DoubleBuffer buffer = ByteBuffer.allocateDirect( 8 * 4 ).asDoubleBuffer();
-
 	public RenderFloatingItem()
 	{
 		this.shadowOpaque = 0.0F;
@@ -51,7 +46,7 @@ public class RenderFloatingItem extends RenderItem
 		if( entityItem instanceof EntityFloatingItem )
 		{
 			final EntityFloatingItem efi = (EntityFloatingItem) entityItem;
-			if( efi.progress > 0.0 )
+			if( efi.getProgress() > 0.0 )
 			{
 				GL11.glPushMatrix();
 

@@ -87,15 +87,15 @@ public class PartCableSmart extends PartCable
 			final IGridNode n = this.getGridNode();
 			if( n != null )
 			{
-				this.connections = n.getConnectedSides();
+				this.setConnections( n.getConnectedSides() );
 			}
 			else
 			{
-				this.connections.clear();
+				this.getConnections().clear();
 			}
 		}
 
-		for( final ForgeDirection of : this.connections )
+		for( final ForgeDirection of : this.getConnections() )
 		{
 			switch( of )
 			{
@@ -182,14 +182,14 @@ public class PartCableSmart extends PartCable
 	@SideOnly( Side.CLIENT )
 	public void renderStatic( final int x, final int y, final int z, final IPartRenderHelper rh, final RenderBlocks renderer )
 	{
-		this.renderCache = rh.useSimplifiedRendering( x, y, z, this, this.renderCache );
+		this.setRenderCache( rh.useSimplifiedRendering( x, y, z, this, this.getRenderCache() ) );
 		rh.setTexture( this.getTexture( this.getCableColor() ) );
 
-		final EnumSet<ForgeDirection> sides = this.connections.clone();
+		final EnumSet<ForgeDirection> sides = this.getConnections().clone();
 
 		boolean hasBuses = false;
 		final IPartHost ph = this.getHost();
-		for( final ForgeDirection of : EnumSet.complementOf( this.connections ) )
+		for( final ForgeDirection of : EnumSet.complementOf( this.getConnections() ) )
 		{
 			final IPart bp = ph.getPart( of );
 			if( bp instanceof IGridHost )
@@ -229,8 +229,8 @@ public class PartCableSmart extends PartCable
 					rh.renderBlock( x, y, z, renderer );
 
 					this.setSmartConnectionRotations( of, renderer );
-					final IIcon firstIcon = new TaughtIcon( this.getChannelTex( this.channelsOnSide[of.ordinal()], false ).getIcon(), -0.2f );
-					final IIcon secondIcon = new TaughtIcon( this.getChannelTex( this.channelsOnSide[of.ordinal()], true ).getIcon(), -0.2f );
+					final IIcon firstIcon = new TaughtIcon( this.getChannelTex( this.getChannelsOnSide()[of.ordinal()], false ).getIcon(), -0.2f );
+					final IIcon secondIcon = new TaughtIcon( this.getChannelTex( this.getChannelsOnSide()[of.ordinal()], true ).getIcon(), -0.2f );
 
 					if( of == ForgeDirection.EAST || of == ForgeDirection.WEST )
 					{
@@ -257,9 +257,9 @@ public class PartCableSmart extends PartCable
 
 		if( sides.size() != 2 || !this.nonLinear( sides ) || hasBuses )
 		{
-			for( final ForgeDirection of : this.connections )
+			for( final ForgeDirection of : this.getConnections() )
 			{
-				this.renderSmartConnection( x, y, z, rh, renderer, this.channelsOnSide[of.ordinal()], of );
+				this.renderSmartConnection( x, y, z, rh, renderer, this.getChannelsOnSide()[of.ordinal()], of );
 			}
 
 			rh.setTexture( this.getCoveredTexture( this.getCableColor() ) );
@@ -270,13 +270,13 @@ public class PartCableSmart extends PartCable
 		{
 			ForgeDirection selectedSide = ForgeDirection.UNKNOWN;
 
-			for( final ForgeDirection of : this.connections )
+			for( final ForgeDirection of : this.getConnections() )
 			{
 				selectedSide = of;
 				break;
 			}
 
-			final int channels = this.channelsOnSide[selectedSide.ordinal()];
+			final int channels = this.getChannelsOnSide()[selectedSide.ordinal()];
 			final IIcon def = this.getTexture( this.getCableColor() );
 			final IIcon off = new OffsetIcon( def, 0, -12 );
 

@@ -47,7 +47,7 @@ import appeng.util.Platform;
 
 public class BlockCraftingUnit extends AEBaseTileBlock
 {
-	public static final int FLAG_FORMED = 8;
+	static final int FLAG_FORMED = 8;
 
 	public BlockCraftingUnit()
 	{

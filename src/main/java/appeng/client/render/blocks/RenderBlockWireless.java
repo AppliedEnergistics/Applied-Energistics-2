@@ -113,8 +113,8 @@ public class RenderBlockWireless extends BaseBlockRender<BlockWireless, TileWire
 		this.blk = blk;
 		if( tw != null )
 		{
-			this.hasChan = ( tw.clientFlags & ( TileWireless.POWERED_FLAG | TileWireless.CHANNEL_FLAG ) ) == ( TileWireless.POWERED_FLAG | TileWireless.CHANNEL_FLAG );
-			this.hasPower = ( tw.clientFlags & TileWireless.POWERED_FLAG ) == TileWireless.POWERED_FLAG;
+			this.hasChan = ( tw.getClientFlags() & ( TileWireless.POWERED_FLAG | TileWireless.CHANNEL_FLAG ) ) == ( TileWireless.POWERED_FLAG | TileWireless.CHANNEL_FLAG );
+			this.hasPower = ( tw.getClientFlags() & TileWireless.POWERED_FLAG ) == TileWireless.POWERED_FLAG;
 
 			final BlockRenderInfo ri = blk.getRendererInstance();
 

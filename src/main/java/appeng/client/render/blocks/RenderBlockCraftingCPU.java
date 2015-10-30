@@ -82,9 +82,9 @@ public class RenderBlockCraftingCPU<B extends BlockCraftingUnit, T extends TileC
 
 		if( formed && renderer.overrideBlockTexture == null )
 		{
-			renderer = BusRenderer.INSTANCE.renderer;
+			renderer = BusRenderer.INSTANCE.getRenderer();
 			final BusRenderHelper i = BusRenderHelper.INSTANCE;
-			BusRenderer.INSTANCE.renderer.isFacade = true;
+			BusRenderer.INSTANCE.getRenderer().setFacade( true );
 
 			renderer.blockAccess = w;
 			i.setPass( 0 );
@@ -92,7 +92,7 @@ public class RenderBlockCraftingCPU<B extends BlockCraftingUnit, T extends TileC
 
 			try
 			{
-				ct.lightCache = i.useSimplifiedRendering( x, y, z, null, ct.lightCache );
+				ct.setLightCache( i.useSimplifiedRendering( x, y, z, null, ct.getLightCache() ) );
 			}
 			catch( final Throwable ignored )
 			{
@@ -131,7 +131,7 @@ public class RenderBlockCraftingCPU<B extends BlockCraftingUnit, T extends TileC
 				this.handleSide( blk, meta, x, y, z, i, renderer, ct.getForward() == side ? theIcon : nonForward, LocalEmit, isMonitor, side, w );
 			}
 
-			BusRenderer.INSTANCE.renderer.isFacade = false;
+			BusRenderer.INSTANCE.getRenderer().setFacade( false );
 			i.setFacesToRender( EnumSet.allOf( ForgeDirection.class ) );
 			i.normalRendering();
 

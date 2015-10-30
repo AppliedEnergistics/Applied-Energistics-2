@@ -49,10 +49,10 @@ public class TileController extends AENetworkPowerTile
 
 	public TileController()
 	{
-		this.internalMaxPower = 8000;
-		this.internalPublicPowerStorage = true;
-		this.gridProxy.setIdlePowerUsage( 3 );
-		this.gridProxy.setFlags( GridFlags.CANNOT_CARRY, GridFlags.DENSE_CAPACITY );
+		this.setInternalMaxPower( 8000 );
+		this.setInternalPublicPowerStorage( true );
+		this.getProxy().setIdlePowerUsage( 3 );
+		this.getProxy().setFlags( GridFlags.CANNOT_CARRY, GridFlags.DENSE_CAPACITY );
 	}
 
 	@Override
@@ -86,11 +86,11 @@ public class TileController extends AENetworkPowerTile
 		{
 			if( this.isValid )
 			{
-				this.gridProxy.setValidSides( EnumSet.allOf( ForgeDirection.class ) );
+				this.getProxy().setValidSides( EnumSet.allOf( ForgeDirection.class ) );
 			}
 			else
 			{
-				this.gridProxy.setValidSides( EnumSet.noneOf( ForgeDirection.class ) );
+				this.getProxy().setValidSides( EnumSet.noneOf( ForgeDirection.class ) );
 			}
 
 			this.updateMeta();
@@ -100,7 +100,7 @@ public class TileController extends AENetworkPowerTile
 
 	private void updateMeta()
 	{
-		if( !this.gridProxy.isReady() )
+		if( !this.getProxy().isReady() )
 		{
 			return;
 		}
@@ -109,11 +109,11 @@ public class TileController extends AENetworkPowerTile
 
 		try
 		{
-			if( this.gridProxy.getEnergy().isNetworkPowered() )
+			if( this.getProxy().getEnergy().isNetworkPowered() )
 			{
 				meta = 1;
 
-				if( this.gridProxy.getPath().getControllerState() == ControllerState.CONTROLLER_CONFLICT )
+				if( this.getProxy().getPath().getControllerState() == ControllerState.CONTROLLER_CONFLICT )
 				{
 					meta = 2;
 				}
@@ -135,7 +135,7 @@ public class TileController extends AENetworkPowerTile
 	{
 		try
 		{
-			return this.gridProxy.getEnergy().getEnergyDemand( 8000 );
+			return this.getProxy().getEnergy().getEnergyDemand( 8000 );
 		}
 		catch( final GridAccessException e )
 		{
@@ -149,7 +149,7 @@ public class TileController extends AENetworkPowerTile
 	{
 		try
 		{
-			final double ret = this.gridProxy.getEnergy().injectPower( power, mode );
+			final double ret = this.getProxy().getEnergy().injectPower( power, mode );
 			if( mode == Actionable.SIMULATE )
 			{
 				return ret;
@@ -168,7 +168,7 @@ public class TileController extends AENetworkPowerTile
 	{
 		try
 		{
-			this.gridProxy.getGrid().postEvent( new MENetworkPowerStorage( this, x ) );
+			this.getProxy().getGrid().postEvent( new MENetworkPowerStorage( this, x ) );
 		}
 		catch( final GridAccessException e )
 		{

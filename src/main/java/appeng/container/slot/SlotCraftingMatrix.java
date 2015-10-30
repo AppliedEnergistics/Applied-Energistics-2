@@ -27,7 +27,7 @@ import net.minecraft.item.ItemStack;
 public class SlotCraftingMatrix extends AppEngSlot
 {
 
-	final Container c;
+	private final Container c;
 
 	public SlotCraftingMatrix( final Container c, final IInventory par1iInventory, final int par2, final int par3, final int par4 )
 	{

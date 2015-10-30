@@ -38,14 +38,13 @@ import appeng.tile.events.TileEventType;
 public abstract class AERootPoweredTile extends AEBaseInvTile implements IAEPowerStorage
 {
 
-	protected final boolean internalCanAcceptPower = true;
 	// values that determine general function, are set by inheriting classes if
 	// needed. These should generally remain static.
-	protected double internalMaxPower = 10000;
-	protected boolean internalPublicPowerStorage = false;
-	protected AccessRestriction internalPowerFlow = AccessRestriction.READ_WRITE;
+	private double internalMaxPower = 10000;
+	private boolean internalPublicPowerStorage = false;
+	private AccessRestriction internalPowerFlow = AccessRestriction.READ_WRITE;
 	// the current power buffer.
-	protected double internalCurrentPower = 0;
+	private double internalCurrentPower = 0;
 	private EnumSet<ForgeDirection> internalPowerSides = EnumSet.allOf( ForgeDirection.class );
 
 	protected EnumSet<ForgeDirection> getPowerSides()
@@ -62,13 +61,13 @@ public abstract class AERootPoweredTile extends AEBaseInvTile implements IAEPowe
 	@TileEvent( TileEventType.WORLD_NBT_WRITE )
 	public void writeToNBT_AERootPoweredTile( final NBTTagCompound data )
 	{
-		data.setDouble( "internalCurrentPower", this.internalCurrentPower );
+		data.setDouble( "internalCurrentPower", this.getInternalCurrentPower() );
 	}
 
 	@TileEvent( TileEventType.WORLD_NBT_READ )
 	public void readFromNBT_AERootPoweredTile( final NBTTagCompound data )
 	{
-		this.internalCurrentPower = data.getDouble( "internalCurrentPower" );
+		this.setInternalCurrentPower( data.getDouble( "internalCurrentPower" ) );
 	}
 
 	protected final double getExternalPowerDemand( final PowerUnits externalUnit, final double maxPowerRequired )
@@ -78,7 +77,7 @@ public abstract class AERootPoweredTile extends AEBaseInvTile implements IAEPowe
 
 	protected double getFunnelPowerDemand( final double maxRequired )
 	{
-		return this.internalMaxPower - this.internalCurrentPower;
+		return this.getInternalMaxPower() - this.getInternalCurrentPower();
 	}
 
 	public final double injectExternalPower( final PowerUnits input, final double amt )
@@ -101,27 +100,27 @@ public abstract class AERootPoweredTile extends AEBaseInvTile implements IAEPowe
 
 		if( mode == Actionable.SIMULATE )
 		{
-			final double fakeBattery = this.internalCurrentPower + amt;
+			final double fakeBattery = this.getInternalCurrentPower() + amt;
 
-			if( fakeBattery > this.internalMaxPower )
+			if( fakeBattery > this.getInternalMaxPower() )
 			{
-				return fakeBattery - this.internalMaxPower;
+				return fakeBattery - this.getInternalMaxPower();
 			}
 
 			return 0;
 		}
 		else
 		{
-			if( this.internalCurrentPower < 0.01 && amt > 0.01 )
+			if( this.getInternalCurrentPower() < 0.01 && amt > 0.01 )
 			{
 				this.PowerEvent( PowerEventType.PROVIDE_POWER );
 			}
 
-			this.internalCurrentPower += amt;
-			if( this.internalCurrentPower > this.internalMaxPower )
+			this.setInternalCurrentPower( this.getInternalCurrentPower() + amt );
+			if( this.getInternalCurrentPower() > this.getInternalMaxPower() )
 			{
-				amt = this.internalCurrentPower - this.internalMaxPower;
-				this.internalCurrentPower = this.internalMaxPower;
+				amt = this.getInternalCurrentPower() - this.getInternalMaxPower();
+				this.setInternalCurrentPower( this.getInternalMaxPower() );
 				return amt;
 			}
 
@@ -137,25 +136,25 @@ public abstract class AERootPoweredTile extends AEBaseInvTile implements IAEPowe
 	@Override
 	public final double getAEMaxPower()
 	{
-		return this.internalMaxPower;
+		return this.getInternalMaxPower();
 	}
 
 	@Override
 	public final double getAECurrentPower()
 	{
-		return this.internalCurrentPower;
+		return this.getInternalCurrentPower();
 	}
 
 	@Override
 	public final boolean isAEPublicPowerStorage()
 	{
-		return this.internalPublicPowerStorage;
+		return this.isInternalPublicPowerStorage();
 	}
 
 	@Override
 	public final AccessRestriction getPowerFlow()
 	{
-		return this.internalPowerFlow;
+		return this.getInternalPowerFlow();
 	}
 
 	@Override
@@ -168,27 +167,67 @@ public abstract class AERootPoweredTile extends AEBaseInvTile implements IAEPowe
 	{
 		if( mode == Actionable.SIMULATE )
 		{
-			if( this.internalCurrentPower > amt )
+			if( this.getInternalCurrentPower() > amt )
 			{
 				return amt;
 			}
-			return this.internalCurrentPower;
+			return this.getInternalCurrentPower();
 		}
 
-		final boolean wasFull = this.internalCurrentPower >= this.internalMaxPower - 0.001;
+		final boolean wasFull = this.getInternalCurrentPower() >= this.getInternalMaxPower() - 0.001;
 		if( wasFull && amt > 0.001 )
 		{
 			this.PowerEvent( PowerEventType.REQUEST_POWER );
 		}
 
-		if( this.internalCurrentPower > amt )
+		if( this.getInternalCurrentPower() > amt )
 		{
-			this.internalCurrentPower -= amt;
+			this.setInternalCurrentPower( this.getInternalCurrentPower() - amt );
 			return amt;
 		}
 
-		amt = this.internalCurrentPower;
-		this.internalCurrentPower = 0;
+		amt = this.getInternalCurrentPower();
+		this.setInternalCurrentPower( 0 );
 		return amt;
+	}
+
+	public double getInternalCurrentPower()
+	{
+		return this.internalCurrentPower;
+	}
+
+	public void setInternalCurrentPower( final double internalCurrentPower )
+	{
+		this.internalCurrentPower = internalCurrentPower;
+	}
+
+	public double getInternalMaxPower()
+	{
+		return this.internalMaxPower;
+	}
+
+	public void setInternalMaxPower( final double internalMaxPower )
+	{
+		this.internalMaxPower = internalMaxPower;
+	}
+
+	private boolean isInternalPublicPowerStorage()
+	{
+		return this.internalPublicPowerStorage;
+	}
+
+	public void setInternalPublicPowerStorage( final boolean internalPublicPowerStorage )
+	{
+		this.internalPublicPowerStorage = internalPublicPowerStorage;
+	}
+
+	private AccessRestriction getInternalPowerFlow()
+	{
+		return this.internalPowerFlow;
+	}
+
+	public void setInternalPowerFlow( final AccessRestriction internalPowerFlow )
+	{
+		this.internalPowerFlow = internalPowerFlow;
 	}
 }

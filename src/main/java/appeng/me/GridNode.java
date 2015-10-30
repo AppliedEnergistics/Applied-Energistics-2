@@ -63,9 +63,9 @@ public class GridNode implements IGridNode, IPathItem
 	private final List<IGridConnection> connections = new LinkedList<IGridConnection>();
 	private final IGridBlock gridProxy;
 	// old power draw, used to diff
-	public double previousDraw = 0.0;
-	public long lastSecurityKey = -1;
-	public int playerID = -1;
+	private double previousDraw = 0.0;
+	private long lastSecurityKey = -1;
+	private int playerID = -1;
 	private GridStorage myStorage = null;
 	private Grid myGrid;
 	private Object visitorIterationNumber = null;
@@ -79,12 +79,12 @@ public class GridNode implements IGridNode, IPathItem
 		this.gridProxy = what;
 	}
 
-	public IGridBlock getGridProxy()
+	IGridBlock getGridProxy()
 	{
 		return this.gridProxy;
 	}
 
-	public Grid getMyGrid()
+	Grid getMyGrid()
 	{
 		return this.myGrid;
 	}
@@ -94,12 +94,12 @@ public class GridNode implements IGridNode, IPathItem
 		return this.lastUsedChannels;
 	}
 
-	public Class<? extends IGridHost> getMachineClass()
+	Class<? extends IGridHost> getMachineClass()
 	{
 		return this.getMachine().getClass();
 	}
 
-	public void addConnection( final IGridConnection gridConnection )
+	void addConnection( final IGridConnection gridConnection )
 	{
 		this.connections.add( gridConnection );
 		if( gridConnection.hasDirection() )
@@ -112,7 +112,7 @@ public class GridNode implements IGridNode, IPathItem
 		Collections.sort( this.connections, new ConnectionComparator( gn ) );
 	}
 
-	public void removeConnection( final IGridConnection gridConnection )
+	void removeConnection( final IGridConnection gridConnection )
 	{
 		this.connections.remove( gridConnection );
 		if( gridConnection.hasDirection() )
@@ -121,7 +121,7 @@ public class GridNode implements IGridNode, IPathItem
 		}
 	}
 
-	public boolean hasConnection( final IGridNode otherSide )
+	boolean hasConnection( final IGridNode otherSide )
 	{
 		for( final IGridConnection gc : this.connections )
 		{
@@ -133,11 +133,11 @@ public class GridNode implements IGridNode, IPathItem
 		return false;
 	}
 
-	public void validateGrid()
+	void validateGrid()
 	{
 		final GridSplitDetector gsd = new GridSplitDetector( this.getInternalGrid().getPivot() );
 		this.beginVisit( gsd );
-		if( !gsd.pivotFound )
+		if( !gsd.isPivotFound() )
 		{
 			final IGridVisitor gp = new GridPropagator( new Grid( this ) );
 			this.beginVisit( gp );
@@ -230,7 +230,7 @@ public class GridNode implements IGridNode, IPathItem
 		return this.myGrid;
 	}
 
-	public void setGrid( final Grid grid )
+	void setGrid( final Grid grid )
 	{
 		if( this.myGrid == grid )
 		{
@@ -328,7 +328,7 @@ public class GridNode implements IGridNode, IPathItem
 		{
 			final NBTTagCompound node = nodeData.getCompoundTag( name );
 			this.playerID = node.getInteger( "p" );
-			this.lastSecurityKey = node.getLong( "k" );
+			this.setLastSecurityKey( node.getLong( "k" ) );
 
 			final long storageID = node.getLong( "g" );
 			final GridStorage gridStorage = WorldData.instance().storageData().getGridStorage( storageID );
@@ -348,7 +348,7 @@ public class GridNode implements IGridNode, IPathItem
 			final NBTTagCompound node = new NBTTagCompound();
 
 			node.setInteger( "p", this.playerID );
-			node.setLong( "k", this.lastSecurityKey );
+			node.setLong( "k", this.getLastSecurityKey() );
 			node.setLong( "g", this.myStorage.getID() );
 
 			nodeData.setTag( name, node );
@@ -386,12 +386,12 @@ public class GridNode implements IGridNode, IPathItem
 		}
 	}
 
-	public int getUsedChannels()
+	private int getUsedChannels()
 	{
 		return this.usedChannels;
 	}
 
-	public void FindConnections()
+	private void FindConnections()
 	{
 		if( !this.gridProxy.isWorldAccessible() )
 		{
@@ -444,7 +444,7 @@ public class GridNode implements IGridNode, IPathItem
 				}
 				else if( isValidConnection )
 				{
-					if( node.lastSecurityKey != -1 )
+					if( node.getLastSecurityKey() != -1 )
 					{
 						newSecurityConnections.add( f );
 					}
@@ -505,7 +505,7 @@ public class GridNode implements IGridNode, IPathItem
 		return null;
 	}
 
-	public boolean canConnect( final GridNode from, final ForgeDirection dir )
+	private boolean canConnect( final GridNode from, final ForgeDirection dir )
 	{
 		if( !this.isValidDirection( dir ) )
 		{
@@ -525,7 +525,7 @@ public class GridNode implements IGridNode, IPathItem
 		return ( this.compressedData & ( 1 << ( 8 + dir.ordinal() ) ) ) > 0;
 	}
 
-	public AEColor getColor()
+	private AEColor getColor()
 	{
 		return AEColor.values()[( this.compressedData >> 3 ) & 0x1F];
 	}
@@ -539,9 +539,9 @@ public class GridNode implements IGridNode, IPathItem
 				final GridNode gn = (GridNode) gc.getOtherSide( this );
 				final GridConnection gcc = (GridConnection) gc;
 
-				if( gcc.visitorIterationNumber != tracker )
+				if( gcc.getVisitorIterationNumber() != tracker )
 				{
-					gcc.visitorIterationNumber = tracker;
+					gcc.setVisitorIterationNumber( tracker );
 					nextConnections.add( gc );
 				}
 
@@ -577,12 +577,12 @@ public class GridNode implements IGridNode, IPathItem
 		}
 	}
 
-	public GridStorage getGridStorage()
+	GridStorage getGridStorage()
 	{
 		return this.myStorage;
 	}
 
-	public void setGridStorage( final GridStorage s )
+	void setGridStorage( final GridStorage s )
 	{
 		this.myStorage = s;
 		this.usedChannels = 0;
@@ -622,7 +622,7 @@ public class GridNode implements IGridNode, IPathItem
 		return this.getUsedChannels() < this.getMaxChannels();
 	}
 
-	public int getMaxChannels()
+	private int getMaxChannels()
 	{
 		return CHANNEL_COUNT[this.compressedData & 0x03];
 	}
@@ -664,9 +664,29 @@ public class GridNode implements IGridNode, IPathItem
 		}
 	}
 
-	public int getLastUsedChannels()
+	private int getLastUsedChannels()
 	{
 		return this.lastUsedChannels;
+	}
+
+	public long getLastSecurityKey()
+	{
+		return this.lastSecurityKey;
+	}
+
+	public void setLastSecurityKey( final long lastSecurityKey )
+	{
+		this.lastSecurityKey = lastSecurityKey;
+	}
+
+	public double getPreviousDraw()
+	{
+		return this.previousDraw;
+	}
+
+	public void setPreviousDraw( final double previousDraw )
+	{
+		this.previousDraw = previousDraw;
 	}
 
 	private static class MachineSecurityBreak implements IWorldCallable<Void>
@@ -679,7 +699,7 @@ public class GridNode implements IGridNode, IPathItem
 		}
 
 		@Override
-		public Void call( final World world) throws Exception
+		public Void call( final World world ) throws Exception
 		{
 			this.node.getMachine().securityBreak();
 

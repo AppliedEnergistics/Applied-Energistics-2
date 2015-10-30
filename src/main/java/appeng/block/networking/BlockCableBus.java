@@ -64,6 +64,7 @@ import appeng.core.CommonHelper;
 import appeng.core.features.AECableBusFeatureHandler;
 import appeng.core.features.AEFeature;
 import appeng.helpers.AEGlassMaterial;
+import appeng.helpers.Reflected;
 import appeng.integration.IntegrationRegistry;
 import appeng.integration.IntegrationType;
 import appeng.integration.abstraction.IFMP;
@@ -82,13 +83,19 @@ public class BlockCableBus extends AEBaseTileBlock implements IRedNetConnection
 {
 
 	private static final ICableBusContainer NULL_CABLE_BUS = new NullCableBusContainer();
-	public static Class<? extends TileEntity> noTesrTile;
-	public static Class<? extends TileEntity> tesrTile;
+	private static Class<? extends TileEntity> noTesrTile;
+	private static Class<? extends TileEntity> tesrTile;
+
 	/**
 	 * Immibis MB Support.
+	 *
+	 * It will look for a field named ImmibisMicroblocks_TransformableBlockMarker or
+	 * ImmibisMicroblocks_TransformableTileEntityMarker, modifiers, type, etc can be ignored.
 	 */
-	boolean ImmibisMicroblocks_TransformableBlockMarker = true;
-	int myColorMultiplier = 0xffffff;
+	@Reflected
+	private static final boolean ImmibisMicroblocks_TransformableBlockMarker = true;
+
+	private int myColorMultiplier = 0xffffff;
 
 	public BlockCableBus()
 	{
@@ -396,7 +403,7 @@ public class BlockCableBus extends AEBaseTileBlock implements IRedNetConnection
 
 		if( te instanceof TileCableBus )
 		{
-			out = ( (TileCableBus) te ).cb;
+			out = ( (TileCableBus) te ).getCableBus();
 		}
 		else if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.FMP ) )
 		{
@@ -515,5 +522,15 @@ public class BlockCableBus extends AEBaseTileBlock implements IRedNetConnection
 	public void setRenderColor( final int color )
 	{
 		this.myColorMultiplier = color;
+	}
+
+	public static Class<? extends TileEntity> getTesrTile()
+	{
+		return BlockCableBus.tesrTile;
+	}
+
+	public static Class<? extends TileEntity> getNoTesrTile()
+	{
+		return BlockCableBus.noTesrTile;
 	}
 }
