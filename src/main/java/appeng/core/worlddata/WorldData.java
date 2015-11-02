@@ -45,7 +45,7 @@ import appeng.services.compass.CompassThreadFactory;
  * different worlds.
  *
  * @author thatsIch
- * @version rv3 - 30.05.2015
+ * @version rv3 - 02.11.2015
  * @since rv3 30.05.2015
  */
 public final class WorldData implements IWorldData
@@ -162,15 +162,18 @@ public final class WorldData implements IWorldData
 	@Override
 	public void onServerStopping()
 	{
-		Preconditions.checkNotNull( instance );
-
 		for( final IOnWorldStoppable stoppable : this.stoppables )
 		{
 			stoppable.onWorldStop();
 		}
+	}
+
+	@Override
+	public void onServerStoppped()
+	{
+		Preconditions.checkNotNull( instance );
 
 		this.stoppables.clear();
-
 		instance = null;
 	}
 
