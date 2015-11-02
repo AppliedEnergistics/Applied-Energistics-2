@@ -37,6 +37,7 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
+import net.minecraftforge.fml.common.event.FMLServerStoppedEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 
@@ -237,6 +238,12 @@ public final class AppEng
 	private void serverStopping( final FMLServerStoppingEvent event )
 	{
 		WorldData.instance().onServerStopping();
+	}
+
+	@EventHandler
+	private void serverStopped( final FMLServerStoppedEvent event )
+	{
+		WorldData.instance().onServerStoppped();
 		TickHandler.INSTANCE.shutdown();
 	}
 
