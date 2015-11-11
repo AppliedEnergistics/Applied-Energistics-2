@@ -56,6 +56,8 @@ import appeng.util.Platform;
  */
 public class RenderBlockInscriber extends BaseBlockRender<BlockInscriber, TileInscriber>
 {
+	private static final float ITEM_RENDER_SCALE = 1.0f / 1.1f;
+
 
 	public RenderBlockInscriber()
 	{
@@ -155,6 +157,8 @@ public class RenderBlockInscriber extends BaseBlockRender<BlockInscriber, TileIn
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
 		GL11.glDisable( GL11.GL_LIGHTING );
 		GL11.glDisable( GL12.GL_RESCALE_NORMAL );
+
+		// render sides of stamps
 		GL11.glCullFace( GL11.GL_FRONT );
 
 		final Minecraft mc = Minecraft.getMinecraft();
@@ -255,9 +259,17 @@ public class RenderBlockInscriber extends BaseBlockRender<BlockInscriber, TileIn
 		}
 		else
 		{
+			GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
+
+			GL11.glDisable( GL11.GL_LIGHTING );
+			GL11.glDisable( GL12.GL_RESCALE_NORMAL );
+
 			this.renderItem( tile.getStackInSlot( 0 ), press, block, tile, tess, x, y, z, f, renderer );
 			this.renderItem( tile.getStackInSlot( 1 ), -press, block, tile, tess, x, y, z, f, renderer );
 			this.renderItem( tile.getStackInSlot( 2 ), 0.0f, block, tile, tess, x, y, z, f, renderer );
+
+			GL11.glEnable( GL11.GL_LIGHTING );
+			GL11.glEnable( GL12.GL_RESCALE_NORMAL );
 		}
 	}
 
@@ -267,18 +279,24 @@ public class RenderBlockInscriber extends BaseBlockRender<BlockInscriber, TileIn
 		{
 			sis = sis.copy();
 			GL11.glPushMatrix();
+			// fix to inscriber
 			this.applyTESRRotation( x, y, z, tile.getForward(), tile.getUp() );
 
 			try
 			{
+				// move to center
 				GL11.glTranslatef( 0.5f, 0.5f + o, 0.5f );
-				GL11.glScalef( 1.0f / 1.1f, 1.0f / 1.1f, 1.0f / 1.1f );
+
+				// set scale
+				GL11.glScalef( ITEM_RENDER_SCALE, ITEM_RENDER_SCALE, ITEM_RENDER_SCALE );
 				GL11.glScalef( 1.0f, 1.0f, 1.0f );
 
 				final Block blk = Block.getBlockFromItem( sis.getItem() );
 
+				// is a block
 				if( sis.getItemSpriteNumber() == 0 && block != null && RenderBlocks.renderItemIn3d( blk.getRenderType() ) )
 				{
+					// rotate block in angle to make it more plastic
 					GL11.glRotatef( 25.0f, 1.0f, 0.0f, 0.0f );
 					GL11.glRotatef( 15.0f, 0.0f, 1.0f, 0.0f );
 					GL11.glRotatef( 30.0f, 0.0f, 1.0f, 0.0f );
@@ -293,10 +311,6 @@ public class RenderBlockInscriber extends BaseBlockRender<BlockInscriber, TileIn
 
 				OpenGlHelper.setLightmapTextureCoords( OpenGlHelper.lightmapTexUnit, var11, var12 );
 
-				GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
-
-				GL11.glDisable( GL11.GL_LIGHTING );
-				GL11.glDisable( GL12.GL_RESCALE_NORMAL );
 				tess.setColorOpaque_F( 1.0f, 1.0f, 1.0f );
 
 				this.doRenderItem( sis, tile );
