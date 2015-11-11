@@ -59,7 +59,7 @@ public final class VersionCheckerConfig
 	public VersionCheckerConfig( @Nonnull final File file )
 	{
 		Preconditions.checkNotNull( file );
-		Preconditions.checkState( file.isFile() );
+		Preconditions.checkState( !file.isDirectory() );
 
 		this.config = new Configuration( file );
 
