@@ -58,7 +58,6 @@ public class RenderBlockInscriber extends BaseBlockRender<BlockInscriber, TileIn
 {
 	private static final float ITEM_RENDER_SCALE = 1.0f / 1.1f;
 
-
 	public RenderBlockInscriber()
 	{
 		super( true, 30 );
@@ -152,6 +151,8 @@ public class RenderBlockInscriber extends BaseBlockRender<BlockInscriber, TileIn
 	@Override
 	public void renderTile( final BlockInscriber block, final TileInscriber tile, final Tessellator tess, final double x, final double y, final double z, final float f, final RenderBlocks renderer )
 	{
+		// render inscriber
+
 		GL11.glPushMatrix();
 		this.applyTESRRotation( x, y, z, tile.getForward(), tile.getUp() );
 
@@ -224,10 +225,10 @@ public class RenderBlockInscriber extends BaseBlockRender<BlockInscriber, TileIn
 
 		tess.draw();
 
-		GL11.glCullFace( GL11.GL_BACK );
-		GL11.glEnable( GL11.GL_LIGHTING );
-		GL11.glEnable( GL12.GL_RESCALE_NORMAL );
 		GL11.glPopMatrix();
+
+		// render items.
+		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
 
 		int items = 0;
 		if( tile.getStackInSlot( 0 ) != null )
@@ -260,18 +261,14 @@ public class RenderBlockInscriber extends BaseBlockRender<BlockInscriber, TileIn
 		}
 		else
 		{
-			GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
-
-			GL11.glDisable( GL11.GL_LIGHTING );
-			GL11.glDisable( GL12.GL_RESCALE_NORMAL );
-
 			this.renderItem( tile.getStackInSlot( 0 ), press, block, tile, tess, x, y, z, f, renderer );
 			this.renderItem( tile.getStackInSlot( 1 ), -press, block, tile, tess, x, y, z, f, renderer );
 			this.renderItem( tile.getStackInSlot( 2 ), 0.0f, block, tile, tess, x, y, z, f, renderer );
-
-			GL11.glEnable( GL11.GL_LIGHTING );
-			GL11.glEnable( GL12.GL_RESCALE_NORMAL );
 		}
+
+		GL11.glEnable( GL11.GL_LIGHTING );
+		GL11.glEnable( GL12.GL_RESCALE_NORMAL );
+		GL11.glCullFace( GL11.GL_BACK );
 	}
 
 	private void renderItem( ItemStack sis, final float o, final AEBaseBlock block, final AEBaseTile tile, final Tessellator tess, final double x, final double y, final double z, final float f, final RenderBlocks renderer )
@@ -291,7 +288,6 @@ public class RenderBlockInscriber extends BaseBlockRender<BlockInscriber, TileIn
 
 				// set scale
 				GL11.glScalef( ITEM_RENDER_SCALE, ITEM_RENDER_SCALE, ITEM_RENDER_SCALE );
-				GL11.glScalef( 1.0f, 1.0f, 1.0f );
 
 				final Block blk = Block.getBlockFromItem( sis.getItem() );
 
@@ -299,12 +295,15 @@ public class RenderBlockInscriber extends BaseBlockRender<BlockInscriber, TileIn
 				if( sis.getItemSpriteNumber() == 0 && block != null && RenderBlocks.renderItemIn3d( blk.getRenderType() ) )
 				{
 					// rotate block in angle to make it more plastic
-					GL11.glRotatef( 25.0f, 1.0f, 0.0f, 0.0f );
-					GL11.glRotatef( 15.0f, 0.0f, 1.0f, 0.0f );
-					GL11.glRotatef( 30.0f, 0.0f, 1.0f, 0.0f );
+					GL11.glRotatef( 22.5f, 1f, 0f, 0f );
+					GL11.glRotatef( -33.75f, 0f, 1f, 0f );
 				}
-
-				GL11.glRotatef( 90.0f, 1, 0, 0 );
+				else
+				{
+					// rotate item to match the inventory icon orientation.
+					GL11.glRotatef( -90.0f, 1f, 0f, 0f );
+					GL11.glRotatef( 180.0f, 0f, 1f, 0f );
+				}
 
 				// << 20 | light << 4;
 				final int br = tile.getWorldObj().getLightBrightnessForSkyBlocks( tile.xCoord, tile.yCoord, tile.zCoord, 0 );
@@ -320,11 +319,6 @@ public class RenderBlockInscriber extends BaseBlockRender<BlockInscriber, TileIn
 			catch( final Exception err )
 			{
 				AELog.error( err );
-			}
-			finally
-			{
-				GL11.glEnable( GL11.GL_LIGHTING );
-				GL11.glEnable( GL12.GL_RESCALE_NORMAL );
 			}
 
 			GL11.glPopMatrix();
