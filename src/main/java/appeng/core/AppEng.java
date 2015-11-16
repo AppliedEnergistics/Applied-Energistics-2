@@ -21,6 +21,7 @@ package appeng.core;
 
 import java.io.File;
 import java.util.concurrent.TimeUnit;
+
 import javax.annotation.Nonnull;
 
 import com.google.common.base.Stopwatch;
@@ -37,6 +38,7 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerAboutToStartEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import cpw.mods.fml.common.event.FMLServerStoppedEvent;
 import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 
@@ -233,6 +235,12 @@ public final class AppEng
 	private void serverStopping( final FMLServerStoppingEvent event )
 	{
 		WorldData.instance().onServerStopping();
+	}
+
+	@EventHandler
+	private void serverStopped( final FMLServerStoppedEvent event )
+	{
+		WorldData.instance().onServerStoppped();
 		TickHandler.INSTANCE.shutdown();
 	}
 
