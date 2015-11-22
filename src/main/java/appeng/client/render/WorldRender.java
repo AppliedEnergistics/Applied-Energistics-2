@@ -104,9 +104,9 @@ public final class WorldRender implements ISimpleBlockRenderingHandler
 			if( !this.hasError )
 			{
 				this.hasError = true;
-				AELog.severe( "Invalid render - item/block mismatch" );
-				AELog.severe( "		item: " + item.getUnlocalizedName() );
-				AELog.severe( "		block: " + blk.getUnlocalizedName() );
+				AELog.error( "Invalid render - item/block mismatch" );
+				AELog.error( "		item: " + item.getUnlocalizedName() );
+				AELog.error( "		block: " + blk.getUnlocalizedName() );
 			}
 		}
 	}

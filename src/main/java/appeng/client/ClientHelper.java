@@ -413,7 +413,7 @@ public class ClientHelper extends ServerHelper
 			}
 			catch( final IOException e )
 			{
-				AELog.error( e );
+				AELog.debug( e );
 			}
 		}
 	}

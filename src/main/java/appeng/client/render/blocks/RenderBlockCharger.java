@@ -169,7 +169,7 @@ public class RenderBlockCharger extends BaseBlockRender<BlockCharger, TileCharge
 		}
 		catch( final Exception err )
 		{
-			AELog.error( err );
+			AELog.debug( err );
 		}
 		finally
 		{

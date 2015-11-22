@@ -280,7 +280,7 @@ public class ContainerCraftConfirm extends AEBaseContainer
 			catch( final Throwable e )
 			{
 				this.getPlayerInv().player.addChatMessage( new ChatComponentText( "Error: " + e.toString() ) );
-				AELog.error( e );
+				AELog.debug( e );
 				this.setValidContainer( false );
 				this.result = null;
 			}

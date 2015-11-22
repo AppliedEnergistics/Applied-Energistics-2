@@ -121,7 +121,7 @@ public class GuiCraftingStatus extends GuiCraftingCPU
 			}
 			catch( final IOException e )
 			{
-				AELog.error( e );
+				AELog.debug( e );
 			}
 		}
 

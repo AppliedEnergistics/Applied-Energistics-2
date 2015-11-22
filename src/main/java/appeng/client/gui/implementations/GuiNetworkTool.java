@@ -59,7 +59,7 @@ public class GuiNetworkTool extends AEBaseGui
 		}
 		catch( final IOException e )
 		{
-			AELog.error( e );
+			AELog.debug( e );
 		}
 	}
 

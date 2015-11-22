@@ -72,8 +72,8 @@ public class RecipeHandlerRegistry implements IRecipeHandlerRegistry
 		}
 		catch( final Throwable e )
 		{
-			AELog.severe( "Error Caused when trying to construct " + clz.getName() );
-			AELog.error( e );
+			AELog.error( "Error Caused when trying to construct " + clz.getName() );
+			AELog.debug( e );
 
 			this.handlers.put( name, null ); // clear it..
 
@@ -101,7 +101,7 @@ public class RecipeHandlerRegistry implements IRecipeHandlerRegistry
 			}
 			catch( final Throwable t )
 			{
-				AELog.error( t );
+				AELog.debug( t );
 			}
 
 			if( rr != null )

@@ -165,7 +165,7 @@ public class RenderBlockCraftingCPUMonitor extends RenderBlockCraftingCPU<BlockC
 		}
 		catch( final Exception e )
 		{
-			AELog.error( e );
+			AELog.debug( e );
 		}
 		finally
 		{

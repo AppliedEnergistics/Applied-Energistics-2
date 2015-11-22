@@ -116,7 +116,7 @@ public abstract class MBCalculator
 		}
 		catch( final Throwable err )
 		{
-			AELog.error( err );
+			AELog.debug( err );
 		}
 
 		this.disconnect();

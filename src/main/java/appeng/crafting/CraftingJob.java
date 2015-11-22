@@ -24,26 +24,35 @@ import java.util.concurrent.TimeUnit;
 
 import com.google.common.base.Stopwatch;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.networking.IGrid;
+import appeng.api.networking.IGridHost;
+import appeng.api.networking.IGridNode;
 import appeng.api.networking.crafting.ICraftingCallback;
 import appeng.api.networking.crafting.ICraftingGrid;
 import appeng.api.networking.crafting.ICraftingJob;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.networking.security.BaseActionSource;
+import appeng.api.networking.security.IActionHost;
+import appeng.api.networking.security.MachineSource;
+import appeng.api.networking.security.PlayerSource;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
+import appeng.api.util.DimensionalCoord;
 import appeng.core.AELog;
 import appeng.hooks.TickHandler;
 
 
 public class CraftingJob implements Runnable, ICraftingJob
 {
+	private static final String LOG_CRAFTING_JOB = "CraftingJob (%s) issued by %s requesting [%s] using %s bytes took %s ms";
+	private static final String LOG_MACHINE_SOURCE_DETAILS = "Machine[object=%s, %s]";
 
 	private final MECraftingInventory original;
 	private final World world;
@@ -145,7 +154,7 @@ public class CraftingJob implements Runnable, ICraftingJob
 					AELog.crafting( s + " * " + ti.times + " = " + ( ti.perOp * ti.times ) );
 				}
 
-				AELog.crafting( "------------- " + this.bytes + "b real" + timer.elapsed( TimeUnit.MILLISECONDS ) + "ms" );
+				this.logCraftingJob( "real", timer );
 				// if ( mode == Actionable.MODULATE )
 				// craftingInventory.moveItemsToStorage( storage );
 			}
@@ -171,15 +180,15 @@ public class CraftingJob implements Runnable, ICraftingJob
 						AELog.crafting( s + " * " + ti.times + " = " + ( ti.perOp * ti.times ) );
 					}
 
-					AELog.crafting( "------------- " + this.bytes + "b simulate" + timer.elapsed( TimeUnit.MILLISECONDS ) + "ms" );
+					this.logCraftingJob( "simulate", timer );
 				}
 				catch( final CraftBranchFailure e1 )
 				{
-					AELog.error( e1 );
+					AELog.debug( e1 );
 				}
 				catch( final CraftingCalculationFailure f )
 				{
-					AELog.error( f );
+					AELog.debug( f );
 				}
 				catch( final InterruptedException e1 )
 				{
@@ -190,7 +199,7 @@ public class CraftingJob implements Runnable, ICraftingJob
 			}
 			catch( final CraftingCalculationFailure f )
 			{
-				AELog.error( f );
+				AELog.debug( f );
 			}
 			catch( final InterruptedException e1 )
 			{
@@ -199,7 +208,7 @@ public class CraftingJob implements Runnable, ICraftingJob
 				return;
 			}
 
-			this.log( "crafting job now done" );
+			AELog.craftingDebug( "crafting job now done" );
 		}
 		catch( final Throwable t )
 		{
@@ -227,14 +236,14 @@ public class CraftingJob implements Runnable, ICraftingJob
 
 				if( !this.running )
 				{
-					this.log( "crafting job will now sleep" );
+					AELog.craftingDebug( "crafting job will now sleep" );
 
 					while( !this.running )
 					{
 						this.monitor.wait();
 					}
 
-					this.log( "crafting job now active" );
+					AELog.craftingDebug( "crafting job now active" );
 				}
 			}
 
@@ -261,11 +270,6 @@ public class CraftingJob implements Runnable, ICraftingJob
 			this.done = true;
 			this.monitor.notify();
 		}
-	}
-
-	private void log( final String string )
-	{
-		// AELog.crafting( string );
 	}
 
 	@Override
@@ -327,7 +331,7 @@ public class CraftingJob implements Runnable, ICraftingJob
 			this.watch.start();
 			this.running = true;
 
-			this.log( "main thread is now going to sleep" );
+			AELog.craftingDebug( "main thread is now going to sleep" );
 
 			this.monitor.notify();
 
@@ -342,7 +346,7 @@ public class CraftingJob implements Runnable, ICraftingJob
 				}
 			}
 
-			this.log( "main thread is now active" );
+			AELog.craftingDebug( "main thread is now active" );
 		}
 
 		return true;
@@ -363,9 +367,41 @@ public class CraftingJob implements Runnable, ICraftingJob
 		this.tree = tree;
 	}
 
+	private void logCraftingJob( String type, Stopwatch timer )
+	{
+		if( AELog.isCraftingLogEnabled() )
+		{
+			final String itemToOutput = this.output.toString();
+			final long elapsedTime = timer.elapsed( TimeUnit.MILLISECONDS );
+			final String actionSource;
+
+			if( this.actionSrc instanceof MachineSource )
+			{
+				final IActionHost machineSource = ( (MachineSource) this.actionSrc ).via;
+				final IGridNode actionableNode = machineSource.getActionableNode();
+				final IGridHost machine = actionableNode.getMachine();
+				final DimensionalCoord location = actionableNode.getGridBlock().getLocation();
+
+				actionSource = String.format( LOG_MACHINE_SOURCE_DETAILS, machine, location );
+			}
+			else if( this.actionSrc instanceof PlayerSource )
+			{
+				final PlayerSource source = (PlayerSource) this.actionSrc;
+				final EntityPlayer player = source.player;
+
+				actionSource = player.toString();
+			}
+			else
+			{
+				actionSource = "[unknown source]";
+			}
+
+			AELog.crafting( LOG_CRAFTING_JOB, type, actionSource, itemToOutput, this.bytes, elapsedTime );
+		}
+	}
+
 	private static class TwoIntegers
 	{
-
 		private final long perOp = 0;
 		private final long times = 0;
 	}

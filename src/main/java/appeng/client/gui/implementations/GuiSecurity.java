@@ -90,7 +90,7 @@ public class GuiSecurity extends GuiMEMonitorable
 			}
 			catch( final IOException e )
 			{
-				AELog.error( e );
+				AELog.debug( e );
 			}
 		}
 	}

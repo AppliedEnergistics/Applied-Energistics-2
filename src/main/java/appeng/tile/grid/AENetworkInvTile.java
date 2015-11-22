@@ -104,4 +104,5 @@ public abstract class AENetworkInvTile extends AEBaseInvTile implements IActionH
 	{
 		return this.gridProxy;
 	}
+
 }

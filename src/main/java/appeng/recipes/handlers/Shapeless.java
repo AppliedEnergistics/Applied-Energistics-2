@@ -81,7 +81,7 @@ public class Shapeless implements ICraftHandler, IWebsiteSerializer
 		}
 		catch( final Throwable e )
 		{
-			AELog.error( e );
+			AELog.debug( e );
 			throw new RegistrationError( "Error while adding shapeless recipe." );
 		}
 	}

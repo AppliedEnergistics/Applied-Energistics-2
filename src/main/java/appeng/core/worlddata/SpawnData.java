@@ -153,7 +153,7 @@ final class SpawnData implements IWorldSpawnData
 			catch( final Throwable e )
 			{
 				data = new NBTTagCompound();
-				AELog.error( e );
+				AELog.debug( e );
 			}
 			finally
 			{
@@ -165,7 +165,7 @@ final class SpawnData implements IWorldSpawnData
 					}
 					catch( final IOException e )
 					{
-						AELog.error( e );
+						AELog.debug( e );
 					}
 				}
 			}
@@ -196,7 +196,7 @@ final class SpawnData implements IWorldSpawnData
 		}
 		catch( final Throwable e )
 		{
-			AELog.error( e );
+			AELog.debug( e );
 		}
 		finally
 		{
@@ -208,7 +208,7 @@ final class SpawnData implements IWorldSpawnData
 				}
 				catch( final IOException e )
 				{
-					AELog.error( e );
+					AELog.debug( e );
 				}
 			}
 		}

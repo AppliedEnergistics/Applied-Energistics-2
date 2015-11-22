@@ -318,7 +318,7 @@ public class RenderBlockInscriber extends BaseBlockRender<BlockInscriber, TileIn
 			}
 			catch( final Exception err )
 			{
-				AELog.error( err );
+				AELog.debug( err );
 			}
 
 			GL11.glPopMatrix();

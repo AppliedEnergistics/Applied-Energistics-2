@@ -194,7 +194,7 @@ public final class PartP2POpenComputers extends PartP2PTunnel<PartP2POpenCompute
 				}
 				catch( final GridAccessException e )
 				{
-					AELog.error( e );
+					AELog.debug( e );
 				}
 			}
 		}

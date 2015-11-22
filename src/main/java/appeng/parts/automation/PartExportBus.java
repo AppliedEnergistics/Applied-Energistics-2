@@ -306,7 +306,7 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 		}
 		catch( final GridAccessException e )
 		{
-			AELog.error( e );
+			AELog.debug( e );
 		}
 
 		return items;

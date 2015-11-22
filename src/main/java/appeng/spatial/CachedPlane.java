@@ -178,7 +178,7 @@ public class CachedPlane
 			}
 			catch( final Exception e )
 			{
-				AELog.error( e );
+				AELog.debug( e );
 			}
 		}
 	}
@@ -292,7 +292,7 @@ public class CachedPlane
 				}
 				catch( final Throwable e )
 				{
-					AELog.error( e );
+					AELog.debug( e );
 
 					// attempt recovery...
 					te.setWorldObj( this.getWorld() );
@@ -319,7 +319,7 @@ public class CachedPlane
 		}
 		catch( final Throwable e )
 		{
-			AELog.error( e );
+			AELog.debug( e );
 		}
 	}
 

@@ -51,19 +51,19 @@ public class AppEngClientPacketHandler extends AppEngPacketHandlerBase implement
 		}
 		catch( final InstantiationException e )
 		{
-			AELog.error( e );
+			AELog.debug( e );
 		}
 		catch( final IllegalAccessException e )
 		{
-			AELog.error( e );
+			AELog.debug( e );
 		}
 		catch( final IllegalArgumentException e )
 		{
-			AELog.error( e );
+			AELog.debug( e );
 		}
 		catch( final InvocationTargetException e )
 		{
-			AELog.error( e );
+			AELog.debug( e );
 		}
 	}
 }

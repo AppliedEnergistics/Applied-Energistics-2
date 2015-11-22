@@ -73,7 +73,8 @@ final class MinecraftItemCSVExporter implements Exporter
 
 	/**
 	 * @param exportDirectory directory of the resulting export file. Non-null required.
-	 * @param itemRegistry the registry with minecraft items. Needs to be populated at that time, thus the exporting can only happen in init (pre-init is the
+	 * @param itemRegistry the registry with minecraft items. Needs to be populated at that time, thus the exporting can
+	 * only happen in init (pre-init is the
 	 * phase when all items are determined)
 	 * @param mode mode in which the export should be operated. Resulting CSV will change depending on this.
 	 */
@@ -103,7 +104,7 @@ final class MinecraftItemCSVExporter implements Exporter
 		{
 			FileUtils.forceMkdir( this.exportDirectory );
 
-			final Writer writer = new BufferedWriter( new OutputStreamWriter( new FileOutputStream( file ), Charset.forName("UTF-8") ) );
+			final Writer writer = new BufferedWriter( new OutputStreamWriter( new FileOutputStream( file ), Charset.forName( "UTF-8" ) ) );
 
 			final String header = this.mode == ExportMode.MINIMAL ? MINIMAL_HEADER : VERBOSE_HEADER;
 			writer.write( header );
@@ -116,8 +117,8 @@ final class MinecraftItemCSVExporter implements Exporter
 		}
 		catch( final IOException e )
 		{
-			AELog.warning( EXPORT_UNSUCCESSFUL_MESSAGE );
-			AELog.error( e );
+			AELog.warn( EXPORT_UNSUCCESSFUL_MESSAGE );
+			AELog.debug( e );
 		}
 	}
 
@@ -186,7 +187,6 @@ final class MinecraftItemCSVExporter implements Exporter
 		}
 	}
 
-
 	/**
 	 * transforms an item into a row representation of the CSV file
 	 */
@@ -198,6 +198,7 @@ final class MinecraftItemCSVExporter implements Exporter
 		private static final String LOCALIZATION_NAME_EXTENSION = ".name";
 		private static final String EXPORTING_NOTHING_MESSAGE = "Exporting nothing";
 		private static final String EXPORTING_SUBTYPES_MESSAGE = "Exporting input %s with subtypes: %b";
+		private static final String EXPORTING_SUBTYPES_FAILED_MESSAGE = "Could not export subtypes of: %s";
 
 		@Nonnull
 		private final FMLControlledNamespacedRegistry<Item> itemRegistry;
@@ -243,7 +244,8 @@ final class MinecraftItemCSVExporter implements Exporter
 				}
 				catch( final Exception ignored )
 				{
-					AELog.error( ignored );
+					AELog.warn( EXPORTING_SUBTYPES_FAILED_MESSAGE, input.getUnlocalizedName() );
+					AELog.debug( ignored );
 
 					// ignore if mods do bullshit in their code
 					return null;
