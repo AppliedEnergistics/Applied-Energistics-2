@@ -121,7 +121,7 @@ public class PacketCraftRequest extends AppEngPacket
 					{
 						futureJob.cancel( true );
 					}
-					AELog.error( e );
+					AELog.debug( e );
 				}
 			}
 		}

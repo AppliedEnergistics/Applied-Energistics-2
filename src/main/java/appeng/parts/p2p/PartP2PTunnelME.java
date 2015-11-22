@@ -233,14 +233,15 @@ public class PartP2PTunnelME extends PartP2PTunnel<PartP2PTunnelME> implements I
 					{
 						final TileEntity start = this.getTile();
 						final TileEntity end = me.getTile();
-						AELog.warning( "Failed to establish a ME P2P Tunnel between the tunnels at [x=%d, y=%d, z=%d] and [x=%d, y=%d, z=%d]", start.getPos().getX(), start.getPos().getY(), start.getPos().getZ(), end.getPos().getX(), end.getPos().getY(), end.getPos().getZ() );
+
+						AELog.warn( "Failed to establish a ME P2P Tunnel between the tunnels at [x=%d, y=%d, z=%d] and [x=%d, y=%d, z=%d]", start.getPos().getX(), start.getPos().getY(), start.getPos().getZ(), end.getPos().getX(), end.getPos().getY(), end.getPos().getZ() );
 						// :(
 					}
 				}
 			}
 			catch( final GridAccessException e )
 			{
-				AELog.error( e );
+				AELog.debug( e );
 			}
 		}
 	}

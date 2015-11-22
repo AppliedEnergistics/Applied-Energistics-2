@@ -558,7 +558,7 @@ public class GuiCraftConfirm extends AEBaseGui
 			}
 			catch( final IOException e )
 			{
-				AELog.error( e );
+				AELog.debug( e );
 			}
 		}
 
@@ -575,7 +575,7 @@ public class GuiCraftConfirm extends AEBaseGui
 			}
 			catch( final Throwable e )
 			{
-				AELog.error( e );
+				AELog.debug( e );
 			}
 		}
 	}

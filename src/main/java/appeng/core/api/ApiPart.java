@@ -109,7 +109,7 @@ public class ApiPart implements IPartHelper
 		}
 		catch( final ClassNotFoundException e )
 		{
-			AELog.error( e );
+			AELog.debug( e );
 		}
 		Class myCLass;
 
@@ -134,8 +134,8 @@ public class ApiPart implements IPartHelper
 			}
 			catch( final Throwable t )
 			{
-				AELog.warning( "Error loading " + name );
-				AELog.error( t );
+				AELog.warn( "Error loading " + name );
+				AELog.debug( t );
 				// throw new RuntimeException( t );
 			}
 			f = myCLass.getName();
@@ -164,7 +164,7 @@ public class ApiPart implements IPartHelper
 		}
 		catch( final Throwable t )
 		{
-			AELog.error( t );
+			AELog.debug( t );
 		}
 
 		for( final MethodNode mn : n.methods )
@@ -197,13 +197,13 @@ public class ApiPart implements IPartHelper
 			if( !rootC.isInstance( fish ) )
 			{
 				hasError = true;
-				AELog.severe( "Error, Expected layer to implement " + root + " did not." );
+				AELog.error( "Error, Expected layer to implement " + root + " did not." );
 			}
 
 			if( fish instanceof LayerBase )
 			{
 				hasError = true;
-				AELog.severe( "Error, Expected layer to NOT implement LayerBase but it DID." );
+				AELog.error( "Error, Expected layer to NOT implement LayerBase but it DID." );
 			}
 
 			if( !fullPath.contains( ".fmp." ) )
@@ -211,13 +211,13 @@ public class ApiPart implements IPartHelper
 				if( !( fish instanceof TileCableBus ) )
 				{
 					hasError = true;
-					AELog.severe( "Error, Expected layer to implement TileCableBus did not." );
+					AELog.error( "Error, Expected layer to implement TileCableBus did not." );
 				}
 
 				if( !( fish instanceof TileEntity ) )
 				{
 					hasError = true;
-					AELog.severe( "Error, Expected layer to implement TileEntity did not." );
+					AELog.error( "Error, Expected layer to implement TileEntity did not." );
 				}
 			}
 
@@ -228,8 +228,8 @@ public class ApiPart implements IPartHelper
 		}
 		catch( final Throwable t )
 		{
-			AELog.severe( "Layer: " + n.name + " Failed." );
-			AELog.error( t );
+			AELog.error( "Layer: " + n.name + " Failed." );
+			AELog.debug( t );
 		}
 
 		this.roots.put( fullPath, clazz );
@@ -297,7 +297,7 @@ public class ApiPart implements IPartHelper
 		}
 		catch( final Exception e )
 		{
-			AELog.error( e );
+			AELog.debug( e );
 			throw new IllegalStateException( "Unable to manage part API.", e );
 		}
 		return clazz;

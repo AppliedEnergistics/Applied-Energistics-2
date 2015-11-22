@@ -75,15 +75,15 @@ public final class ReleaseFetcher
 		}
 		catch( final VersionCheckerException e )
 		{
-			AELog.error( e );
+			AELog.debug( e );
 		}
 		catch( final MalformedURLException e )
 		{
-			AELog.error( e );
+			AELog.debug( e );
 		}
 		catch( final IOException e )
 		{
-			AELog.error( e );
+			AELog.debug( e );
 		}
 
 		return EXCEPTIONAL_RELEASE;

@@ -67,7 +67,7 @@ public final class ModVersionFetcher implements VersionFetcher
 		}
 		catch( final VersionCheckerException e )
 		{
-			AELog.error( e );
+			AELog.debug( e );
 
 			return EXCEPTIONAL_VERSION;
 		}

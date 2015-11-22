@@ -344,7 +344,7 @@ public class FacadePart implements IFacadePart, IBoxProvider
 			}
 			catch( final Throwable t )
 			{
-				AELog.error( t );
+				AELog.debug( t );
 			}
 		}
 	}

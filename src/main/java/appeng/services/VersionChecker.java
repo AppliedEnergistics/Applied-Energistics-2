@@ -101,7 +101,7 @@ public final class VersionChecker implements Runnable
 		catch( final Exception exception )
 		{
 			// Log any unhandled exception to prevent the JVM from reporting them as unhandled.
-			AELog.error( exception );
+			AELog.debug( exception );
 		}
 
 		AELog.info( "Stopping AE2 VersionChecker" );

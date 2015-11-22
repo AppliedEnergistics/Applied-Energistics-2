@@ -184,10 +184,10 @@ public class NetworkEventBus
 			}
 			catch( final Throwable e1 )
 			{
-				AELog.severe( "[AppEng] Network Event caused exception:" );
-				AELog.severe( "Offending Class: " + obj.getClass().getName() );
-				AELog.severe( "Offending Object: " + obj.toString() );
-				AELog.error( e1 );
+				AELog.error( "[AppEng] Network Event caused exception:" );
+				AELog.error( "Offending Class: " + obj.getClass().getName() );
+				AELog.error( "Offending Object: " + obj.toString() );
+				AELog.debug( e1 );
 				throw new IllegalStateException( e1 );
 			}
 

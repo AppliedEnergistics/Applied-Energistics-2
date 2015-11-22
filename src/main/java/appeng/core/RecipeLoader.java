@@ -101,12 +101,12 @@ public class RecipeLoader implements Runnable
 			// on failure use jar parsing
 			catch( final IOException e )
 			{
-				AELog.error( e );
+				AELog.debug( e );
 				this.handler.parseRecipes( new JarLoader( ASSETS_RECIPE_PATH ), "index.recipe" );
 			}
 			catch( final URISyntaxException e )
 			{
-				AELog.error( e );
+				AELog.debug( e );
 				this.handler.parseRecipes( new JarLoader( ASSETS_RECIPE_PATH ), "index.recipe" );
 			}
 		}

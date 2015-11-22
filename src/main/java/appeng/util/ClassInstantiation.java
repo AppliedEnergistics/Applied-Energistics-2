@@ -113,7 +113,7 @@ public class ClassInstantiation<T>
 				}
 				catch( final Throwable t )
 				{
-					AELog.error( t );
+					AELog.debug( t );
 				}
 			}
 		}

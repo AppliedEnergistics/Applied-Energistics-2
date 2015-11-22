@@ -286,7 +286,7 @@ public class TickHandler
 			}
 			catch( final Exception e )
 			{
-				AELog.error( e );
+				AELog.debug( e );
 			}
 		}
 

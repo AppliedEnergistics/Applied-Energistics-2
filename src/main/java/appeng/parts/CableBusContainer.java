@@ -1081,7 +1081,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 					}
 					else
 					{
-						AELog.warning( "Invalid NBT For CableBus Container: " + iss.getItem().getClass().getName() + " is not a valid part; it was ignored." );
+						AELog.warn( "Invalid NBT For CableBus Container: " + iss.getItem().getClass().getName() + " is not a valid part; it was ignored." );
 					}
 				}
 			}

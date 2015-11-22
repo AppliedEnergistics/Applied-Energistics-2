@@ -74,9 +74,9 @@ public class TESRWrapper extends TileEntitySpecialRenderer
 				}
 				catch( final Throwable t )
 				{
-					AELog.severe( "Hi, Looks like there was a crash while rendering something..." );
+					AELog.error( "Hi, Looks like there was a crash while rendering something..." );
 					t.printStackTrace();
-					AELog.severe( "MC will now crash ( probably )!" );
+					AELog.error( "MC will now crash ( probably )!" );
 					throw new IllegalStateException( t );
 				}
 			}

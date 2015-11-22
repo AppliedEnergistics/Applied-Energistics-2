@@ -117,7 +117,7 @@ public class Shaped implements ICraftHandler, IWebsiteSerializer
 		}
 		catch( final Throwable e )
 		{
-			AELog.error( e );
+			AELog.debug( e );
 			throw new RegistrationError( "Error while adding shaped recipe." );
 		}
 	}

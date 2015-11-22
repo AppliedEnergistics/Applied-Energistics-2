@@ -126,7 +126,7 @@ public class AppEngInternalAEInventory implements IInventory, Iterable<ItemStack
 			}
 			catch( final Exception e )
 			{
-				AELog.error( e );
+				AELog.debug( e );
 			}
 		}
 	}

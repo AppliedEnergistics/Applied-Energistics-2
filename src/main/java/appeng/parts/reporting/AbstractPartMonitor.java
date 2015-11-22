@@ -374,7 +374,7 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 		}
 		catch( final Exception e )
 		{
-			AELog.error( e );
+			AELog.debug( e );
 		}
 		finally
 		{

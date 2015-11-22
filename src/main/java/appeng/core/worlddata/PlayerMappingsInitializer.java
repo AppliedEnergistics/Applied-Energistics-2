@@ -75,7 +75,7 @@ class PlayerMappingsInitializer
 			}
 			else
 			{
-				AELog.warning( "The configuration for players contained an outdated entry instead an expected UUID " + maybeUUID + " for the player " + id + ". Please clean this up." );
+				AELog.warn( "The configuration for players contained an outdated entry instead an expected UUID " + maybeUUID + " for the player " + id + ". Please clean this up." );
 			}
 		}
 	}

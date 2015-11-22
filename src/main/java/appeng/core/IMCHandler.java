@@ -96,8 +96,8 @@ public class IMCHandler
 			}
 			catch( final Exception t )
 			{
-				AELog.warning( "Problem detected when processing IMC " + key + " from " + message.getSender() );
-				AELog.error( t );
+				AELog.warn( "Problem detected when processing IMC " + key + " from " + message.getSender() );
+				AELog.debug( t );
 			}
 		}
 	}

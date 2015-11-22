@@ -233,7 +233,7 @@ public class GuiLevelEmitter extends GuiUpgradeable
 		}
 		catch( final IOException e )
 		{
-			AELog.error( e );
+			AELog.debug( e );
 		}
 	}
 
@@ -269,7 +269,7 @@ public class GuiLevelEmitter extends GuiUpgradeable
 				}
 				catch( final IOException e )
 				{
-					AELog.error( e );
+					AELog.debug( e );
 				}
 			}
 			else

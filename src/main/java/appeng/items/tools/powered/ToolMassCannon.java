@@ -256,7 +256,7 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 		}
 		catch( final Exception err )
 		{
-			AELog.error( err );
+			AELog.debug( err );
 		}
 
 		if( pos != null && type != null && type.getItem() instanceof ItemPaintBall )
@@ -373,7 +373,7 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 			}
 			catch( final Exception err )
 			{
-				AELog.error( err );
+				AELog.debug( err );
 			}
 
 			if( pos != null )

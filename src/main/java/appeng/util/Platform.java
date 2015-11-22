@@ -594,8 +594,8 @@ public class Platform
 				}
 				catch( final Throwable z )
 				{
-					AELog.error( t );
-					AELog.error( z );
+					AELog.debug( t );
+					AELog.debug( z );
 				}
 			}
 		}
@@ -607,7 +607,7 @@ public class Platform
 		}
 		catch( final Throwable t )
 		{
-			AELog.error( t );
+			AELog.debug( t );
 		}
 
 		return new ArrayList<NBTBase>();
@@ -2149,7 +2149,7 @@ public class Platform
 		}
 		catch( final Throwable t )
 		{
-			AELog.error( t );
+			AELog.debug( t );
 		}
 	}
 

@@ -240,7 +240,7 @@ public class GuiPriority extends AEBaseGui
 		}
 		catch( final IOException e )
 		{
-			AELog.error( e );
+			AELog.debug( e );
 		}
 	}
 
@@ -276,7 +276,7 @@ public class GuiPriority extends AEBaseGui
 				}
 				catch( final IOException e )
 				{
-					AELog.error( e );
+					AELog.debug( e );
 				}
 			}
 			else

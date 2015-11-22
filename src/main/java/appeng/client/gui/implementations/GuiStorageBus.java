@@ -137,7 +137,7 @@ public class GuiStorageBus extends GuiUpgradeable
 		}
 		catch( final IOException e )
 		{
-			AELog.error( e );
+			AELog.debug( e );
 		}
 	}
 }

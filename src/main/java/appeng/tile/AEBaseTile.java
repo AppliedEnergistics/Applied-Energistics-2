@@ -206,7 +206,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 		}
 		catch( final Throwable t )
 		{
-			AELog.error( t );
+			AELog.debug( t );
 		}
 
 		stream.capacity( stream.readableBytes() );
@@ -280,7 +280,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 		}
 		catch( final Throwable t )
 		{
-			AELog.error( t );
+			AELog.debug( t );
 		}
 
 		return output;
@@ -320,7 +320,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 		}
 		catch( final Throwable t )
 		{
-			AELog.error( t );
+			AELog.debug( t );
 		}
 	}
 

@@ -70,15 +70,15 @@ public class SyncData
 		}
 		catch( final IllegalArgumentException e )
 		{
-			AELog.error( e );
+			AELog.debug( e );
 		}
 		catch( final IllegalAccessException e )
 		{
-			AELog.error( e );
+			AELog.debug( e );
 		}
 		catch( final IOException e )
 		{
-			AELog.error( e );
+			AELog.debug( e );
 		}
 	}
 
@@ -127,11 +127,11 @@ public class SyncData
 		}
 		catch( final IllegalArgumentException e )
 		{
-			AELog.error( e );
+			AELog.debug( e );
 		}
 		catch( final IllegalAccessException e )
 		{
-			AELog.error( e );
+			AELog.debug( e );
 		}
 	}
 
@@ -143,11 +143,11 @@ public class SyncData
 		}
 		catch( final IllegalArgumentException e )
 		{
-			AELog.error( e );
+			AELog.debug( e );
 		}
 		catch( final IllegalAccessException e )
 		{
-			AELog.error( e );
+			AELog.debug( e );
 		}
 	}
 
@@ -199,11 +199,11 @@ public class SyncData
 		}
 		catch( final IllegalArgumentException e )
 		{
-			AELog.error( e );
+			AELog.debug( e );
 		}
 		catch( final IllegalAccessException e )
 		{
-			AELog.error( e );
+			AELog.debug( e );
 		}
 	}
 }

@@ -194,7 +194,7 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 						}
 						catch( final IOException e )
 						{
-							AELog.error( e );
+							AELog.debug( e );
 						}
 					}
 				}
@@ -237,7 +237,7 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 				}
 				catch( final IOException e )
 				{
-					AELog.error( e );
+					AELog.debug( e );
 				}
 			}
 
@@ -336,7 +336,7 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 			}
 			catch( final IOException e )
 			{
-				AELog.error( e );
+				AELog.debug( e );
 			}
 		}
 	}
