@@ -19,34 +19,25 @@
 package appeng.services.export;
 
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.nio.charset.Charset;
-import java.util.List;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
+import appeng.core.AELog;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
-
-import org.apache.commons.io.FileUtils;
-
+import cpw.mods.fml.common.registry.FMLControlledNamespacedRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
+import org.apache.commons.io.FileUtils;
 
-import cpw.mods.fml.common.registry.FMLControlledNamespacedRegistry;
-
-import appeng.core.AELog;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.io.*;
+import java.nio.charset.Charset;
+import java.util.List;
 
 
 /**
@@ -243,7 +234,7 @@ final class MinecraftItemCSVExporter implements Exporter
 				}
 				catch( final Exception ignored )
 				{
-					AELog.error( ignored );
+					AELog.warning("Problems were detected extracting the sub items of '%s' for input '%s'", itemName, input);
 
 					// ignore if mods do bullshit in their code
 					return null;
