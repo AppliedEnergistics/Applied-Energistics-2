@@ -20,7 +20,6 @@ package appeng.util.item;
 
 
 import java.util.Iterator;
-import java.util.NavigableMap;
 import java.util.NoSuchElementException;
 
 import appeng.api.storage.data.IAEItemStack;
@@ -29,47 +28,28 @@ import appeng.api.storage.data.IAEItemStack;
 public class MeaningfulItemIterator<T extends IAEItemStack> implements Iterator<T>
 {
 
-	private final Iterator<NavigableMap<T, T>> parent;
-	private Iterator<T> innerIterater = null;
+	private final Iterator<T> parent;
 	private T next;
 
-	public MeaningfulItemIterator( final Iterator<NavigableMap<T, T>> iterator )
+	public MeaningfulItemIterator( final Iterator<T> iterator )
 	{
 		this.parent = iterator;
-
-		if( this.parent.hasNext() )
-		{
-			this.innerIterater = this.parent.next().values().iterator();
-		}
 	}
 
 	@Override
 	public boolean hasNext()
 	{
-		if( this.innerIterater == null )
+		while( this.parent.hasNext() )
 		{
-			return false;
-		}
+			this.next = this.parent.next();
 
-		while( this.innerIterater.hasNext() || this.parent.hasNext() )
-		{
-			if( this.innerIterater.hasNext() )
+			if( this.next.isMeaningful() )
 			{
-				this.next = this.innerIterater.next();
-
-				if( this.next.isMeaningful() )
-				{
-					return true;
-				}
-				else
-				{
-					this.innerIterater.remove(); // self cleaning :3
-				}
+				return true;
 			}
-
-			if( this.parent.hasNext() )
+			else
 			{
-				this.innerIterater = this.parent.next().values().iterator();
+				this.parent.remove(); // self cleaning :3
 			}
 		}
 
