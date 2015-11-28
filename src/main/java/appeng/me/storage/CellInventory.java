@@ -27,6 +27,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.oredict.OreDictionary;
+
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
@@ -418,7 +419,7 @@ public class CellInventory implements ICellInventory
 		}
 
 		// clean any old crusty stuff...
-		for(; x < oldStoredItems && x < this.maxItemTypes; x++ )
+		for( ; x < oldStoredItems && x < this.maxItemTypes; x++ )
 		{
 			this.tagCompound.removeTag( itemSlots[x] );
 			this.tagCompound.removeTag( itemSlotCount[x] );
