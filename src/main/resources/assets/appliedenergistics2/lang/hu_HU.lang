@@ -289,7 +289,7 @@ waila.appliedenergistics2.Locked=Zárolva
 waila.appliedenergistics2.Unlocked=Feloldva
 waila.appliedenergistics2.Showing=Mutatni
 waila.appliedenergistics2.Contains=Tartalmaz
-waila.appliedenergistics2.Channels=Csatornák
+waila.appliedenergistics2.Channels=%2$d Csatornából %1$d használatban
 
 item.appliedenergistics2.ItemBasicStorageCell.1k.name=1k ME Tároló Cella
 item.appliedenergistics2.ItemBasicStorageCell.4k.name=4k ME Tároló Cella
