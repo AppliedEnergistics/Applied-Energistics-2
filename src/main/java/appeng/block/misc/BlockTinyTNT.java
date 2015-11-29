@@ -89,35 +89,24 @@ public class BlockTinyTNT extends AEBaseBlock implements ICustomCollision
 	}
 
 	@Override
-	public boolean onActivated( final World w, final int x, final int y, final int z, final EntityPlayer player, final int side, final float hitX, final float hitY, final float hitZ )
+	public boolean onBlockActivated( World w, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ )
 	{
 		if( player.getCurrentEquippedItem() != null && player.getCurrentEquippedItem().getItem() == Items.flint_and_steel )
 		{
 			this.startFuse( w, x, y, z, player );
 			w.setBlockToAir( x, y, z );
 			player.getCurrentEquippedItem().damageItem( 1, player );
+
 			return true;
 		}
-		else
-		{
-			return super.onActivated( w, x, y, z, player, side, hitX, hitY, hitZ );
-		}
+
+		return super.onBlockActivated( w, x, y, z, player, side, hitX, hitY, hitZ );
 	}
 
 	@Override
 	public void registerBlockIcons( final IIconRegister iconRegistry )
 	{
 		// no images required.
-	}
-
-	public void startFuse( final World w, final int x, final int y, final int z, final EntityLivingBase igniter )
-	{
-		if( !w.isRemote )
-		{
-			final EntityTinyTNTPrimed primedTinyTNTEntity = new EntityTinyTNTPrimed( w, x + 0.5F, y + 0.5F, z + 0.5F, igniter );
-			w.spawnEntityInWorld( primedTinyTNTEntity );
-			w.playSoundAtEntity( primedTinyTNTEntity, "game.tnt.primed", 1.0F, 1.0F );
-		}
 	}
 
 	@Override
@@ -184,5 +173,15 @@ public class BlockTinyTNT extends AEBaseBlock implements ICustomCollision
 	public void addCollidingBlockToList( final World w, final int x, final int y, final int z, final AxisAlignedBB bb, final List<AxisAlignedBB> out, final Entity e )
 	{
 		out.add( AxisAlignedBB.getBoundingBox( 0.25, 0, 0.25, 0.75, 0.5, 0.75 ) );
+	}
+
+	public void startFuse( final World w, final int x, final int y, final int z, final EntityLivingBase igniter )
+	{
+		if( !w.isRemote )
+		{
+			final EntityTinyTNTPrimed primedTinyTNTEntity = new EntityTinyTNTPrimed( w, x + 0.5F, y + 0.5F, z + 0.5F, igniter );
+			w.spawnEntityInWorld( primedTinyTNTEntity );
+			w.playSoundAtEntity( primedTinyTNTEntity, "game.tnt.primed", 1.0F, 1.0F );
+		}
 	}
 }
