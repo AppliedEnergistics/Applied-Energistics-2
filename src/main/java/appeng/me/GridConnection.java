@@ -76,11 +76,14 @@ public class GridConnection implements IGridConnection, IPathItem
 
 		if( a.hasConnection( b ) || b.hasConnection( a ) )
 		{
-			final String aCoords = a.getGridBlock().getLocation().toString();
-			final String bCoords = b.getGridBlock().getLocation().toString();
+			final String aMachineClass = a.getGridBlock().getMachine().getClass().getSimpleName();
+			final String bMachineClass = b.getGridBlock().getMachine().getClass().getSimpleName();
+			final String aCoordinates = a.getGridBlock().getLocation().toString();
+			final String bCoordinates = b.getGridBlock().getLocation().toString();
 
-			throw new GridException( String.format( "Connection already exists between node at [%s] and node at [%s].", aCoords, bCoords ) );
+			throw new GridException( String.format( "Connection between node [machine=%s, %s] and [machine=%s, %s] on [%s] already exists.", aMachineClass, aCoordinates, bMachineClass, bCoordinates, fromAtoB ) );
 		}
+
 		this.sideA = a;
 		this.fromAtoB = fromAtoB;
 		this.sideB = b;
