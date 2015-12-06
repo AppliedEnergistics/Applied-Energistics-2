@@ -29,6 +29,7 @@ import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.oredict.OreDictionary;
 
+import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
 import appeng.api.exceptions.AppEngException;
@@ -43,7 +44,6 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
-import appeng.util.item.UnsortedItemList;
 
 
 public class CellInventory implements ICellInventory
@@ -191,7 +191,7 @@ public class CellInventory implements ICellInventory
 
 	private boolean isEmpty( final IMEInventory<IAEItemStack> meInventory )
 	{
-		return meInventory.getAvailableItems( new UnsortedItemList() ).isEmpty();
+		return meInventory.getAvailableItems( AEApi.instance().storage().createItemList() ).isEmpty();
 	}
 
 	@Override
@@ -446,7 +446,7 @@ public class CellInventory implements ICellInventory
 	{
 		if( this.cellItems == null )
 		{
-			this.cellItems = new UnsortedItemList();
+			this.cellItems = AEApi.instance().storage().createItemList();
 		}
 
 		this.cellItems.resetStatus(); // clears totals and stuff.

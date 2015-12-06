@@ -21,14 +21,11 @@ package appeng.util.item;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.Map;
 import java.util.NavigableMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 
-import net.minecraft.item.Item;
 import net.minecraftforge.oredict.OreDictionary;
 
 import appeng.api.config.FuzzyMode;
@@ -39,7 +36,7 @@ import appeng.api.storage.data.IItemList;
 public final class ItemList implements IItemList<IAEItemStack>
 {
 
-	private final Map<Item, NavigableMap<IAEItemStack, IAEItemStack>> records = new IdentityHashMap<Item, NavigableMap<IAEItemStack, IAEItemStack>>();
+	private final NavigableMap<IAEItemStack, IAEItemStack> records = new ConcurrentSkipListMap<IAEItemStack, IAEItemStack>();
 
 	@Override
 	public void add( final IAEItemStack option )
@@ -49,7 +46,7 @@ public final class ItemList implements IItemList<IAEItemStack>
 			return;
 		}
 
-		final IAEItemStack st = this.getItemRecord( option.getItem() ).get( option );
+		final IAEItemStack st = this.records.get( option );
 
 		if( st != null )
 		{
@@ -70,7 +67,7 @@ public final class ItemList implements IItemList<IAEItemStack>
 			return null;
 		}
 
-		return this.getItemRecord( itemStack.getItem() ).get( itemStack );
+		return this.records.get( itemStack );
 	}
 
 	@Override
@@ -123,7 +120,7 @@ public final class ItemList implements IItemList<IAEItemStack>
 			return;
 		}
 
-		final IAEItemStack st = this.getItemRecord( option.getItem() ).get( option );
+		final IAEItemStack st = this.records.get( option );
 
 		if( st != null )
 		{
@@ -149,7 +146,7 @@ public final class ItemList implements IItemList<IAEItemStack>
 			return;
 		}
 
-		final IAEItemStack st = this.getItemRecord( option.getItem() ).get( option );
+		final IAEItemStack st = this.records.get( option );
 
 		if( st != null )
 		{
@@ -172,7 +169,7 @@ public final class ItemList implements IItemList<IAEItemStack>
 			return;
 		}
 
-		final IAEItemStack st = this.getItemRecord( option.getItem() ).get( option );
+		final IAEItemStack st = this.records.get( option );
 
 		if( st != null )
 		{
@@ -202,14 +199,7 @@ public final class ItemList implements IItemList<IAEItemStack>
 	@Override
 	public int size()
 	{
-		int size = 0;
-
-		for( final Map<IAEItemStack, IAEItemStack> element : this.records.values() )
-		{
-			size += element.size();
-		}
-
-		return size;
+		return this.records.size();
 	}
 
 	@Override
@@ -227,22 +217,9 @@ public final class ItemList implements IItemList<IAEItemStack>
 		}
 	}
 
-	private NavigableMap<IAEItemStack, IAEItemStack> getItemRecord( final Item item )
-	{
-		NavigableMap<IAEItemStack, IAEItemStack> itemRecords = this.records.get( item );
-
-		if( itemRecords == null )
-		{
-			itemRecords = new ConcurrentSkipListMap<IAEItemStack, IAEItemStack>();
-			this.records.put( item, itemRecords );
-		}
-
-		return itemRecords;
-	}
-
 	private IAEItemStack putItemRecord( final IAEItemStack itemStack )
 	{
-		return this.getItemRecord( itemStack.getItem() ).put( itemStack, itemStack );
+		return this.records.put( itemStack, itemStack );
 	}
 
 	private Collection<IAEItemStack> findFuzzyDamage( final AEItemStack filter, final FuzzyMode fuzzy, final boolean ignoreMeta )
@@ -250,6 +227,6 @@ public final class ItemList implements IItemList<IAEItemStack>
 		final IAEItemStack low = filter.getLow( fuzzy, ignoreMeta );
 		final IAEItemStack high = filter.getHigh( fuzzy, ignoreMeta );
 
-		return this.getItemRecord( filter.getItem() ).subMap( low, true, high, true ).descendingMap().values();
+		return this.records.subMap( low, true, high, true ).descendingMap().values();
 	}
 }
