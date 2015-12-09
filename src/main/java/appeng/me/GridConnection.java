@@ -24,7 +24,10 @@ import java.util.EnumSet;
 
 import net.minecraftforge.common.util.ForgeDirection;
 
+import appeng.api.exceptions.ExistingConnectionException;
 import appeng.api.exceptions.FailedConnection;
+import appeng.api.exceptions.NullNodeConnectionException;
+import appeng.api.exceptions.SecurityConnectionException;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridConnection;
 import appeng.api.networking.IGridNode;
@@ -42,6 +45,8 @@ import appeng.util.ReadOnlyCollection;
 
 public class GridConnection implements IGridConnection, IPathItem
 {
+
+	private static final String EXISTING_CONNECTION_MESSAGE = "Connection between node [machine=%s, %s] and [machine=%s, %s] on [%s] already exists.";
 
 	private static final MENetworkChannelsChanged EVENT = new MENetworkChannelsChanged();
 	private int channelData = 0;
@@ -67,12 +72,12 @@ public class GridConnection implements IGridConnection, IPathItem
 				AELog.info( "Security audit 2 failed at [%s] belonging to player [id=%d]", bCoordinates.toString(), b.getPlayerID() );
 			}
 
-			throw new FailedConnection();
+			throw new SecurityConnectionException();
 		}
 
 		if( a == null || b == null )
 		{
-			throw new GridException( "Connection Forged Between null entities." );
+			throw new NullNodeConnectionException();
 		}
 
 		if( a.hasConnection( b ) || b.hasConnection( a ) )
@@ -82,7 +87,7 @@ public class GridConnection implements IGridConnection, IPathItem
 			final String aCoordinates = a.getGridBlock().getLocation().toString();
 			final String bCoordinates = b.getGridBlock().getLocation().toString();
 
-			throw new GridException( String.format( "Connection between node [machine=%s, %s] and [machine=%s, %s] on [%s] already exists.", aMachineClass, aCoordinates, bMachineClass, bCoordinates, fromAtoB ) );
+			throw new ExistingConnectionException( String.format( EXISTING_CONNECTION_MESSAGE, aMachineClass, aCoordinates, bMachineClass, bCoordinates, fromAtoB ) );
 		}
 
 		this.sideA = a;
