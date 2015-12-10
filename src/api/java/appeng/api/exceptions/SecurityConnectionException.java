@@ -24,33 +24,29 @@
 package appeng.api.exceptions;
 
 
-import appeng.api.networking.IGridNode;
-
-
 /**
- * Exception indicating a failed connection between two {@link IGridNode}s.
+ * Exception due to trying to connect different security realms.
  *
  * Intended to signal an internal exception and not intended to be thrown by
  * any 3rd party module.
  *
- * See any subclass for a more specific reason.
- *
- * @author AlgorithmX2
  * @author yueh
  * @version rv3
- * @since rv0
+ * @since rv3
  */
-public class FailedConnection extends Exception
+public class SecurityConnectionException extends FailedConnection
 {
+	private static final long serialVersionUID = 5048714900434215426L;
+	private static final String DEFAULT_MESSAGE = "Connection failed due to different security realms.";
 
-	private static final long serialVersionUID = -2544208090248293753L;
-
-	public FailedConnection()
+	public SecurityConnectionException()
 	{
+		super( DEFAULT_MESSAGE );
 	}
 
-	public FailedConnection( String message )
+	public SecurityConnectionException( String message )
 	{
 		super( message );
 	}
+
 }
