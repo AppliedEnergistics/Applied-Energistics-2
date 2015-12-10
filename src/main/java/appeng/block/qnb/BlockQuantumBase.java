@@ -25,6 +25,9 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.world.World;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 import appeng.block.AEBaseTileBlock;
 import appeng.client.render.blocks.RenderQNB;
 import appeng.core.features.AEFeature;
@@ -69,9 +72,10 @@ public abstract class BlockQuantumBase extends AEBaseTileBlock implements ICusto
 	}
 
 	@Override
-	protected Class<? extends RenderQNB> getRenderer()
+	@SideOnly( Side.CLIENT )
+	protected RenderQNB getRenderer()
 	{
-		return RenderQNB.class;
+		return new RenderQNB();
 	}
 
 }

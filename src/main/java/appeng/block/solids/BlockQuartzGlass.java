@@ -28,7 +28,6 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 import appeng.block.AEBaseBlock;
-import appeng.client.render.BaseBlockRender;
 import appeng.client.render.blocks.RenderQuartzGlass;
 import appeng.core.features.AEFeature;
 import appeng.helpers.AEGlassMaterial;
@@ -46,9 +45,9 @@ public class BlockQuartzGlass extends AEBaseBlock
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public Class<? extends BaseBlockRender> getRenderer()
+	public RenderQuartzGlass getRenderer()
 	{
-		return RenderQuartzGlass.class;
+		return new RenderQuartzGlass();
 	}
 
 	@Override

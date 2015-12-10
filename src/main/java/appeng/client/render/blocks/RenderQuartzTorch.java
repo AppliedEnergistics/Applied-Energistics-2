@@ -99,10 +99,12 @@ public class RenderQuartzTorch extends BaseBlockRender<AEBaseBlock, AEBaseTile>
 	{
 		final IOrientable te = ( (IOrientableBlock) block ).getOrientable( world, x, y, z );
 
-		renderer.renderAllFaces = true;
-		float zOff = 0.0f;
-		float yOff = 0.0f;
 		float xOff = 0.0f;
+		float yOff = 0.0f;
+		float zOff = 0.0f;
+
+		renderer.renderAllFaces = true;
+
 		if( te != null )
 		{
 			final ForgeDirection forward = te.getUp();

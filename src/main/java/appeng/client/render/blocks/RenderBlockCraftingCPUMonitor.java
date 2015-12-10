@@ -68,8 +68,7 @@ public class RenderBlockCraftingCPUMonitor extends RenderBlockCraftingCPU<BlockC
 				tile.setUpdateList( true );
 				tile.setDisplayList( GLAllocation.generateDisplayLists( 1 ) );
 			}
-
-			if( ais != null )
+			else
 			{
 				GL11.glPushMatrix();
 				GL11.glTranslated( x + 0.5, y + 0.5, z + 0.5 );
@@ -97,8 +96,8 @@ public class RenderBlockCraftingCPUMonitor extends RenderBlockCraftingCPU<BlockC
 
 		ForgeDirection walrus = side.offsetY != 0 ? ForgeDirection.SOUTH : ForgeDirection.UP;
 		int spin = 0;
-
 		int max = 5;
+
 		while( walrus != cmt.getUp() && max > 0 )
 		{
 			max--;
@@ -107,50 +106,43 @@ public class RenderBlockCraftingCPUMonitor extends RenderBlockCraftingCPU<BlockC
 		}
 		max--;
 
-		GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS );
 		GL11.glTranslated( side.offsetX * 0.69, side.offsetY * 0.69, side.offsetZ * 0.69 );
 
 		final float scale = 0.7f;
 		GL11.glScalef( scale, scale, scale );
 
-		if( side == ForgeDirection.UP )
+		switch( side )
 		{
-			GL11.glScalef( 1.0f, -1.0f, 1.0f );
-			GL11.glRotatef( 90.0f, 1.0f, 0.0f, 0.0f );
-			GL11.glRotatef( spin * 90.0F, 0, 0, 1 );
+			case UP:
+				GL11.glScalef( 1.0f, -1.0f, 1.0f );
+				GL11.glRotatef( 90.0f, 1.0f, 0.0f, 0.0f );
+				GL11.glRotatef( spin * 90.0F, 0, 0, 1 );
+				break;
+			case DOWN:
+				GL11.glScalef( 1.0f, -1.0f, 1.0f );
+				GL11.glRotatef( -90.0f, 1.0f, 0.0f, 0.0f );
+				GL11.glRotatef( spin * -90.0F, 0, 0, 1 );
+				break;
+			case EAST:
+				GL11.glScalef( -1.0f, -1.0f, -1.0f );
+				GL11.glRotatef( -90.0f, 0.0f, 1.0f, 0.0f );
+				break;
+			case WEST:
+				GL11.glScalef( -1.0f, -1.0f, -1.0f );
+				GL11.glRotatef( 90.0f, 0.0f, 1.0f, 0.0f );
+				break;
+			case NORTH:
+				GL11.glScalef( -1.0f, -1.0f, -1.0f );
+				break;
+			case SOUTH:
+				GL11.glScalef( -1.0f, -1.0f, -1.0f );
+				GL11.glRotatef( 180.0f, 0.0f, 1.0f, 0.0f );
+				break;
+
+			default:
+				break;
 		}
 
-		if( side == ForgeDirection.DOWN )
-		{
-			GL11.glScalef( 1.0f, -1.0f, 1.0f );
-			GL11.glRotatef( -90.0f, 1.0f, 0.0f, 0.0f );
-			GL11.glRotatef( spin * -90.0F, 0, 0, 1 );
-		}
-
-		if( side == ForgeDirection.EAST )
-		{
-			GL11.glScalef( -1.0f, -1.0f, -1.0f );
-			GL11.glRotatef( -90.0f, 0.0f, 1.0f, 0.0f );
-		}
-
-		if( side == ForgeDirection.WEST )
-		{
-			GL11.glScalef( -1.0f, -1.0f, -1.0f );
-			GL11.glRotatef( 90.0f, 0.0f, 1.0f, 0.0f );
-		}
-
-		if( side == ForgeDirection.NORTH )
-		{
-			GL11.glScalef( -1.0f, -1.0f, -1.0f );
-		}
-
-		if( side == ForgeDirection.SOUTH )
-		{
-			GL11.glScalef( -1.0f, -1.0f, -1.0f );
-			GL11.glRotatef( 180.0f, 0.0f, 1.0f, 0.0f );
-		}
-
-		GL11.glPushMatrix();
 		try
 		{
 			final ItemStack sis = ais.getItemStack();
@@ -159,6 +151,7 @@ public class RenderBlockCraftingCPUMonitor extends RenderBlockCraftingCPU<BlockC
 			final int br = 16 << 20 | 16 << 4;
 			final int var11 = br % 65536;
 			final int var12 = br / 65536;
+
 			OpenGlHelper.setLightmapTextureCoords( OpenGlHelper.lightmapTexUnit, var11 * 0.8F, var12 * 0.8F );
 
 			GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
@@ -174,8 +167,11 @@ public class RenderBlockCraftingCPUMonitor extends RenderBlockCraftingCPU<BlockC
 		{
 			AELog.error( e );
 		}
-
-		GL11.glPopMatrix();
+		finally
+		{
+			GL11.glEnable( GL12.GL_RESCALE_NORMAL );
+			GL11.glEnable( GL11.GL_LIGHTING );
+		}
 
 		GL11.glTranslatef( 0.0f, 0.14f, -0.24f );
 		GL11.glScalef( 1.0f / 62.0f, 1.0f / 62.0f, 1.0f / 62.0f );
@@ -185,9 +181,8 @@ public class RenderBlockCraftingCPUMonitor extends RenderBlockCraftingCPU<BlockC
 
 		final FontRenderer fr = Minecraft.getMinecraft().fontRenderer;
 		final int width = fr.getStringWidth( renderedStackSize );
+
 		GL11.glTranslatef( -0.5f * width, 0.0f, -1.0f );
 		fr.drawString( renderedStackSize, 0, 0, 0 );
-
-		GL11.glPopAttrib();
 	}
 }

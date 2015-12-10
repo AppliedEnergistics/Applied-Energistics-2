@@ -30,7 +30,6 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 import appeng.block.AEBaseTileBlock;
-import appeng.client.render.BaseBlockRender;
 import appeng.client.render.blocks.RenderBlockAssembler;
 import appeng.core.features.AEFeature;
 import appeng.core.sync.GuiBridge;
@@ -68,9 +67,9 @@ public class BlockMolecularAssembler extends AEBaseTileBlock
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public Class<? extends BaseBlockRender> getRenderer()
+	public RenderBlockAssembler getRenderer()
 	{
-		return RenderBlockAssembler.class;
+		return new RenderBlockAssembler();
 	}
 
 	@Override

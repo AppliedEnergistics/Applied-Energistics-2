@@ -67,6 +67,7 @@ public class RenderBlockEnergyCube extends BaseBlockRender<BlockEnergyCell, Tile
 		final int meta = world.getBlockMetadata( x, y, z );
 
 		renderer.overrideBlockTexture = blk.getIcon( 0, meta );
+
 		final boolean out = renderer.renderStandardBlock( blk, x, y, z );
 		renderer.overrideBlockTexture = null;
 

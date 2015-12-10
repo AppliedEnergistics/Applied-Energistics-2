@@ -32,7 +32,6 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 import appeng.api.AEApi;
-import appeng.client.render.BaseBlockRender;
 import appeng.client.render.blocks.RenderBlockCraftingCPUMonitor;
 import appeng.client.texture.ExtraBlockTextures;
 import appeng.tile.crafting.TileCraftingMonitorTile;
@@ -46,9 +45,10 @@ public class BlockCraftingMonitor extends BlockCraftingUnit
 	}
 
 	@Override
-	protected Class<? extends BaseBlockRender> getRenderer()
+	@SideOnly( Side.CLIENT )
+	protected RenderBlockCraftingCPUMonitor getRenderer()
 	{
-		return RenderBlockCraftingCPUMonitor.class;
+		return new RenderBlockCraftingCPUMonitor();
 	}
 
 	@Override

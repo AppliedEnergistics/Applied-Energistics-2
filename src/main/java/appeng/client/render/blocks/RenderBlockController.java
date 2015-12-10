@@ -124,6 +124,7 @@ public class RenderBlockController extends BaseBlockRender<BlockController, Tile
 		else if( ( xx ? 1 : 0 ) + ( yy ? 1 : 0 ) + ( zz ? 1 : 0 ) >= 2 )
 		{
 			final int v = ( Math.abs( x ) + Math.abs( y ) + Math.abs( z ) ) % 2;
+
 			renderer.uvRotateEast = renderer.uvRotateBottom = renderer.uvRotateNorth = renderer.uvRotateSouth = renderer.uvRotateTop = renderer.uvRotateWest = 0;
 
 			if( v == 0 )
@@ -140,6 +141,7 @@ public class RenderBlockController extends BaseBlockRender<BlockController, Tile
 			if( hasPower )
 			{
 				blk.getRendererInstance().setTemporaryRenderIcon( ExtraBlockTextures.BlockControllerPowered.getIcon() );
+
 				if( isConflict )
 				{
 					lights = ExtraBlockTextures.BlockControllerConflict;
@@ -156,6 +158,7 @@ public class RenderBlockController extends BaseBlockRender<BlockController, Tile
 		}
 
 		final boolean out = renderer.renderStandardBlock( blk, x, y, z );
+
 		if( lights != null )
 		{
 			Tessellator.instance.setColorOpaque_F( 1.0f, 1.0f, 1.0f );

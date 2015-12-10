@@ -36,7 +36,6 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 import appeng.block.AEBaseTileBlock;
-import appeng.client.render.BaseBlockRender;
 import appeng.client.render.blocks.RenderBlockCraftingCPU;
 import appeng.client.texture.ExtraBlockTextures;
 import appeng.core.features.AEFeature;
@@ -59,9 +58,10 @@ public class BlockCraftingUnit extends AEBaseTileBlock
 	}
 
 	@Override
-	protected Class<? extends BaseBlockRender> getRenderer()
+	@SideOnly( Side.CLIENT )
+	protected RenderBlockCraftingCPU<? extends BlockCraftingUnit, ? extends TileCraftingTile> getRenderer()
 	{
-		return RenderBlockCraftingCPU.class;
+		return new RenderBlockCraftingCPU<BlockCraftingUnit, TileCraftingTile>();
 	}
 
 	@Override

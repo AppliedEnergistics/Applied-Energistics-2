@@ -37,10 +37,12 @@ public class ChargedOreFX extends EntityReddustFX
 		int j1 = super.getBrightnessForRender( par1 );
 		j1 = Math.max( j1 >> 20, j1 >> 4 );
 		j1 += 3;
+
 		if( j1 > 15 )
 		{
 			j1 = 15;
 		}
+
 		return j1 << 20 | j1 << 4;
 	}
 }

@@ -55,6 +55,7 @@ public class RenderBlockPaint extends BaseBlockRender<BlockPaint, TilePaint>
 	{
 		final TilePaint tp = imb.getTileEntity( world, x, y, z );
 		boolean out = false;
+
 		if( tp != null )
 		{
 			// super.renderInWorld( imb, world, x, y, z, renderer );

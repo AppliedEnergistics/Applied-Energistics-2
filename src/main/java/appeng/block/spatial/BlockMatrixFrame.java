@@ -38,7 +38,6 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 import appeng.block.AEBaseBlock;
-import appeng.client.render.BaseBlockRender;
 import appeng.client.render.blocks.RenderNull;
 import appeng.core.features.AEFeature;
 import appeng.helpers.ICustomCollision;
@@ -58,9 +57,10 @@ public class BlockMatrixFrame extends AEBaseBlock implements ICustomCollision
 	}
 
 	@Override
-	protected Class<? extends BaseBlockRender> getRenderer()
+	@SideOnly( Side.CLIENT )
+	protected RenderNull getRenderer()
 	{
-		return RenderNull.class;
+		return new RenderNull();
 	}
 
 	@Override

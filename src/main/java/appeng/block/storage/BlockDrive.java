@@ -26,8 +26,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 import appeng.block.AEBaseTileBlock;
-import appeng.client.render.BaseBlockRender;
 import appeng.client.render.blocks.RenderDrive;
 import appeng.core.features.AEFeature;
 import appeng.core.sync.GuiBridge;
@@ -46,9 +48,10 @@ public class BlockDrive extends AEBaseTileBlock
 	}
 
 	@Override
-	protected Class<? extends BaseBlockRender> getRenderer()
+	@SideOnly( Side.CLIENT )
+	protected RenderDrive getRenderer()
 	{
-		return RenderDrive.class;
+		return new RenderDrive();
 	}
 
 	@Override

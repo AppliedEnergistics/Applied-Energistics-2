@@ -38,23 +38,28 @@ import appeng.tile.AEBaseTile;
 public class RenderQuartzGlass extends BaseBlockRender<BlockQuartzGlass, AEBaseTile>
 {
 
-	private static byte[][][] offsets;
+	private static final byte[][][] OFFSETS = generateOffsets();
 
 	public RenderQuartzGlass()
 	{
 		super( false, 0 );
-		if( offsets == null )
+
+	}
+
+	private static byte[][][] generateOffsets()
+	{
+		final Random r = new Random( 924 );
+		final byte[][][] offset = new byte[10][10][10];
+
+		for( int x = 0; x < 10; x++ )
 		{
-			final Random r = new Random( 924 );
-			offsets = new byte[10][10][10];
-			for( int x = 0; x < 10; x++ )
+			for( int y = 0; y < 10; y++ )
 			{
-				for( int y = 0; y < 10; y++ )
-				{
-					r.nextBytes( offsets[x][y] );
-				}
+				r.nextBytes( offset[x][y] );
 			}
 		}
+
+		return offset;
 	}
 
 	@Override
@@ -75,10 +80,10 @@ public class RenderQuartzGlass extends BaseBlockRender<BlockQuartzGlass, AEBaseT
 		final int cy = Math.abs( y % 10 );
 		final int cz = Math.abs( z % 10 );
 
-		final int u = offsets[cx][cy][cz] % 4;
-		final int v = offsets[9 - cx][9 - cy][9 - cz] % 4;
+		final int u = OFFSETS[cx][cy][cz] % 4;
+		final int v = OFFSETS[9 - cx][9 - cy][9 - cz] % 4;
 
-		switch( Math.abs( ( offsets[cx][cy][cz] + ( x + y + z ) ) % 4 ) )
+		switch( Math.abs( ( OFFSETS[cx][cy][cz] + ( x + y + z ) ) % 4 ) )
 		{
 			case 0:
 				renderer.overrideBlockTexture = new OffsetIcon( imb.getIcon( 0, 0 ), u / 2, v / 2 );

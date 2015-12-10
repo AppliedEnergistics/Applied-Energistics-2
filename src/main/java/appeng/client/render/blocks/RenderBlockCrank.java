@@ -71,7 +71,6 @@ public class RenderBlockCrank extends BaseBlockRender<BlockCrank, TileCrank>
 		{
 			return;
 		}
-
 		Minecraft.getMinecraft().getTextureManager().bindTexture( TextureMap.locationBlocksTexture );
 		RenderHelper.disableStandardItemLighting();
 
@@ -84,6 +83,7 @@ public class RenderBlockCrank extends BaseBlockRender<BlockCrank, TileCrank>
 			GL11.glShadeModel( GL11.GL_FLAT );
 		}
 
+		GL11.glCullFace( GL11.GL_FRONT );
 		GL11.glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 
 		this.applyTESRRotation( x, y, z, tile.getForward(), tile.getUp() );
@@ -107,6 +107,9 @@ public class RenderBlockCrank extends BaseBlockRender<BlockCrank, TileCrank>
 
 		tess.draw();
 		tess.setTranslation( 0, 0, 0 );
+
+		GL11.glCullFace( GL11.GL_BACK );
+
 		RenderHelper.enableStandardItemLighting();
 	}
 }

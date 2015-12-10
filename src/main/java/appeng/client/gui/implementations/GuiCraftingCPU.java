@@ -334,9 +334,7 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 
 		if( this.tooltip >= 0 && dspToolTip.length() > 0 )
 		{
-			GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS );
 			this.drawTooltip( toolPosX, toolPosY + 10, 0, dspToolTip );
-			GL11.glPopAttrib();
 		}
 	}
 

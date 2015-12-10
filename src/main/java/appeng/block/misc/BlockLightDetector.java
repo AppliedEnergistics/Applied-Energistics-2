@@ -91,9 +91,10 @@ public class BlockLightDetector extends AEBaseTileBlock implements IOrientableBl
 	}
 
 	@Override
-	protected Class<? extends RenderQuartzTorch> getRenderer()
+	@SideOnly( Side.CLIENT )
+	protected RenderQuartzTorch getRenderer()
 	{
-		return RenderQuartzTorch.class;
+		return new RenderQuartzTorch();
 	}
 
 	@Override

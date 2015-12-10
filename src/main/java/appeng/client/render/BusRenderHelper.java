@@ -56,7 +56,7 @@ public final class BusRenderHelper implements IPartRenderHelper
 
 	private final BoundBoxCalculator bbc;
 	private final boolean noAlphaPass;
-	private final BaseBlockRender bbr;
+	private final BaseBlockRender<AEBaseBlock, AEBaseTile> bbr;
 	private final Optional<Block> maybeBlock;
 	private final Optional<AEBaseBlock> maybeBaseBlock;
 	private int renderingForPass;

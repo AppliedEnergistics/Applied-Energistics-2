@@ -74,7 +74,7 @@ public class BusRenderer implements IItemRenderer
 		}
 
 		GL11.glPushMatrix();
-		GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS );
+		GL11.glPushAttrib( GL11.GL_ENABLE_BIT | GL11.GL_COLOR_BUFFER_BIT );
 		GL11.glEnable( GL11.GL_DEPTH_TEST );
 		GL11.glEnable( GL11.GL_TEXTURE_2D );
 		GL11.glEnable( GL11.GL_LIGHTING );
@@ -147,6 +147,7 @@ public class BusRenderer implements IItemRenderer
 		else
 		{
 			final IPart ip = this.getRenderer( item, (IPartItem) item.getItem() );
+
 			if( ip != null )
 			{
 				if( type == ItemRenderType.ENTITY )
@@ -171,6 +172,7 @@ public class BusRenderer implements IItemRenderer
 		final int id = ( Item.getIdFromItem( is.getItem() ) << Platform.DEF_OFFSET ) | is.getItemDamage();
 
 		IPart part = RENDER_PART.get( id );
+
 		if( part == null )
 		{
 			part = c.createPartFromItemStack( is );

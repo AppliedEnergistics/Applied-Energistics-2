@@ -43,7 +43,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 import appeng.api.AEApi;
 import appeng.block.AEBaseTileBlock;
-import appeng.client.render.BaseBlockRender;
 import appeng.client.render.blocks.RenderBlockSkyChest;
 import appeng.core.features.AEFeature;
 import appeng.core.sync.GuiBridge;
@@ -83,9 +82,10 @@ public class BlockSkyChest extends AEBaseTileBlock implements ICustomCollision
 	}
 
 	@Override
-	protected Class<? extends BaseBlockRender> getRenderer()
+	@SideOnly( Side.CLIENT )
+	protected RenderBlockSkyChest getRenderer()
 	{
-		return RenderBlockSkyChest.class;
+		return new RenderBlockSkyChest();
 	}
 
 	@Override

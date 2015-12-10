@@ -29,8 +29,10 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 import appeng.block.AEBaseTileBlock;
-import appeng.client.render.BaseBlockRender;
 import appeng.client.render.blocks.RenderBlockWireless;
 import appeng.core.features.AEFeature;
 import appeng.core.sync.GuiBridge;
@@ -54,9 +56,10 @@ public class BlockWireless extends AEBaseTileBlock implements ICustomCollision
 	}
 
 	@Override
-	protected Class<? extends BaseBlockRender> getRenderer()
+	@SideOnly( Side.CLIENT )
+	protected RenderBlockWireless getRenderer()
 	{
-		return RenderBlockWireless.class;
+		return new RenderBlockWireless();
 	}
 
 	@Override
