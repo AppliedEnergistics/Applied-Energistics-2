@@ -239,8 +239,8 @@ public class GridStorageCache implements IStorageGrid
 			}
 		}
 
-		this.itemMonitor.forceUpdate( false );
-		this.fluidMonitor.forceUpdate( false );
+		this.itemMonitor.forceUpdate();
+		this.fluidMonitor.forceUpdate();
 
 		tracker.applyChanges();
 	}

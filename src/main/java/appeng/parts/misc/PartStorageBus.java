@@ -378,11 +378,10 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 
 		final IMEInventory<IAEItemStack> out = this.getInternalHandler();
 
-		// TODO: evaluate, if this is really (not) necessary.
-		// if( this.monitor != null )
-		// {
-		// this.monitor.onTick();
-		// }
+		if( this.monitor != null )
+		{
+			this.monitor.onTick();
+		}
 
 		IItemList<IAEItemStack> after = AEApi.instance().storage().createItemList();
 		if( out != null )
