@@ -1,3 +1,4 @@
+//Blocks
 tile.appliedenergistics2.BlockCableBus.name=AE2-Kabel und/oder Bus
 tile.appliedenergistics2.BlockCellWorkbench.name=Speicherzellenwerkbank
 tile.appliedenergistics2.BlockCharger.name=Ladegerät
@@ -50,12 +51,36 @@ tile.appliedenergistics2.BlockCraftingAccelerator.name=Fertigungs-Prozessoreinhe
 tile.appliedenergistics2.BlockCraftingUnit.name=Fertigungseinheit
 tile.appliedenergistics2.BlockMolecularAssembler.name=Molekularassembler
 
+// Stairs
+tile.appliedenergistics2.ChiseledQuartzStairBlock.name=Gemeißelte Certusquartztreppe
+tile.appliedenergistics2.FluixStairBlock.name=Fluixtreppe
+tile.appliedenergistics2.QuartzPillarStairBlock.name=Certusquartzsäulentreppe
+tile.appliedenergistics2.QuartzStairBlock.name=Certusquartztreppe
+tile.appliedenergistics2.SkyStoneBlockStairBlock.name=Himmelssteinblocktreppe
+tile.appliedenergistics2.SkyStoneBrickStairBlock.name=Himmelssteinziegeltreppe
+tile.appliedenergistics2.SkyStoneSmallBrickStairBlock.name=Himmelssteinkleinziegeltreppe
+tile.appliedenergistics2.SkyStoneStairBlock.name=Himmelssteintreppe
+
+// Slabs
+tile.appliedenergistics2.ChiseledQuartzSlabBlock.name=Gemeißelte Certusquartzstufe
+tile.appliedenergistics2.FluixSlabBlock.name=Fluixstufe
+tile.appliedenergistics2.QuartzPillarSlabBlock.name=Certusquartzsäulenstufe
+tile.appliedenergistics2.QuartzSlabBlock.name=Certusquartzstufe
+tile.appliedenergistics2.SkyStoneBlockSlabBlock.name=Himmelssteinblockstufe
+tile.appliedenergistics2.SkyStoneBrickSlabBlock.name=Himmelssteinziegelstufe
+tile.appliedenergistics2.SkyStoneSmallBrickSlabBlock.name=Himmelssteinkleinziegelstufe
+tile.appliedenergistics2.SkyStoneSlabBlock.name=Himmelssteinstufe
+
+// Chat Messages
 chat.appliedenergistics2.ChestCannotReadStorageCell=ME-Truhe kann die Speicherzelle nicht einlesen.
 chat.appliedenergistics2.SettingCleared=Einstellung gelöscht.
 chat.appliedenergistics2.OutOfRange=Drahtloser Zugangspunkt außer Reichweite.
 chat.appliedenergistics2.InvalidMachine=Ungültige Maschine.
 chat.appliedenergistics2.LoadedSettings=Einstellungen erfolgreich geladen.
 chat.appliedenergistics2.DeviceNotPowered=Gerät hat zu wenig Energie
+chat.appliedenergistics2.DeviceNotWirelessTerminal=Gerät ist keine Drahtloskonsole.
+chat.appliedenergistics2.DeviceNotLinked=Gerät ist nicht verbunden.
+chat.appliedenergistics2.StationCanNotBeLocated=Station kann nicht lokalisiert werden.
 chat.appliedenergistics2.MachineNotPowered=Maschine bekommt keine Energie.
 chat.appliedenergistics2.CommunicationError=Fehler beim Kommunizieren mit dem Netzwerk.
 chat.appliedenergistics2.SavedSettings=Einstellungen erfolgreich gespeichert.
@@ -63,9 +88,11 @@ chat.appliedenergistics2.AmmoDepleted=Munition verbraucht.
 chat.appliedenergistics2.isNowLocked=Monitor ist nun gesperrt.
 chat.appliedenergistics2.isNowUnlocked=Monitor ist nun entsperrt.
 
+// Creative Tabs
 itemGroup.appliedenergistics2=Applied Energistics 2
 itemGroup.appliedenergistics2.facades=Applied Energistics 2 - Fassaden
 
+// GUI
 gui.appliedenergistics2.CraftingTerminal=Fertigungskonsole
 gui.appliedenergistics2.METunnel=ME
 gui.appliedenergistics2.ItemTunnel=Item
@@ -74,6 +101,8 @@ gui.appliedenergistics2.RedstoneTunnel=Redstone
 gui.appliedenergistics2.EUTunnel=EU
 gui.appliedenergistics2.RFTunnel=RF
 gui.appliedenergistics2.LightTunnel=Licht
+gui.appliedenergistics2.OCTunnel=OpenComputers
+gui.appliedenergistics2.PressureTunnel=Druck
 
 gui.appliedenergistics2.security.extract.name=Extrahieren
 gui.appliedenergistics2.security.inject.name=Deponieren
@@ -148,6 +177,9 @@ gui.appliedenergistics2.Crafts=Fertigt
 gui.appliedenergistics2.And=und
 gui.appliedenergistics2.Creates=Kreiert
 gui.appliedenergistics2.With=mit
+gui.appliedenergistics2.Substitute=Nutze Substitution:
+gui.appliedenergistics2.Yes=Ja
+gui.appliedenergistics2.No=Nein
 gui.appliedenergistics2.InWorldCrafting=AE2 In-Welt-Fertigung
 gui.appliedenergistics2.inWorldFluix=Wirf 1 Geladenes Certusquarzstück + 1 Netherquarz + Redstone-Staub nebeneinander in eine Pfütze und warte einen Moment.
 gui.appliedenergistics2.inWorldPurificationCertus=Wirf einen Certusquarzkeim, gemacht aus Certusquarzstaub und Sand, in eine Pfütze Wasser; um den Prozess zu beschleunigen, füge Kristallwachstumsbeschleuniger hinzu.
@@ -195,11 +227,16 @@ gui.appliedenergistics2.Excluded=Ausschließlich
 gui.appliedenergistics2.Partitioned=Partitioniert
 gui.appliedenergistics2.Precise=Präzise
 gui.appliedenergistics2.Fuzzy=Ungenau
+gui.appliedenergistics2.SmallFontCraft=Craft
+gui.appliedenergistics2.LargeFontCraft=+
+gui.appliedenergistics2.Nothing=Nichts
 
+// GUI Tooltips
 gui.tooltips.appliedenergistics2.Stash=Items lagern
 gui.tooltips.appliedenergistics2.StashDesc=Items aus dem Fertigungsgitter in Netzwerkspeicher zurücksenden.
-gui.tooltips.appliedenergistics2.Substitutions=Ore-Dict-Ersetzung
-gui.tooltips.appliedenergistics2.SubstitutionsDesc=Ersetzungsoptionen für Eingangskomponenten ändern
+gui.tooltips.appliedenergistics2.Substitutions=Ore-Dict-Substitution
+gui.tooltips.appliedenergistics2.SubstitutionsDescEnabled=Erlaube Substitution der Eingangskomponenten.
+gui.tooltips.appliedenergistics2.SubstitutionsDescDisabled=Verbiete Substitution der Eingangskomponenten.
 gui.tooltips.appliedenergistics2.SubstitutionsOn=Ersetzung aktiviert
 gui.tooltips.appliedenergistics2.SubstitutionsOff=Ersetzung deaktiviert
 gui.tooltips.appliedenergistics2.Encode=Schablone kodieren
@@ -277,13 +314,24 @@ gui.tooltips.appliedenergistics2.EmitWhenCrafting=Stoße Redstone-Signal aus, w�
 gui.tooltips.appliedenergistics2.ReportInaccessibleItems=Melde unerreichbare Items
 gui.tooltips.appliedenergistics2.ReportInaccessibleItemsYes=Ja: Items, die nicht extrahiert werden können, werden sichtbar.
 gui.tooltips.appliedenergistics2.ReportInaccessibleItemsNo=Nein: Nur extrahierbare Items werden sichtbar.
+gui.tooltips.appliedenergistics2.BlockPlacement=Blockplatzierung
+gui.tooltips.appliedenergistics2.BlockPlacementYes=Block wird als Block plaziert.
+gui.tooltips.appliedenergistics2.BlockPlacementNo=Block wird als Item plaziert.
+gui.tooltips.appliedenergistics2.SchedulingMode=Planungsmodus
+gui.tooltips.appliedenergistics2.SchedulingModeDefault=Exportiere das erste Item bis das Netzwerk leer ist, probiere dann das nächste Item.
+gui.tooltips.appliedenergistics2.SchedulingModeRoundRobin=Exportiere im Round-Robin-Modus.
+gui.tooltips.appliedenergistics2.SchedulingModeRandom=Exportiere im Zufallsmodus.
+gui.tooltips.appliedenergistics2.ItemsStored=Items gespeichert: %s
+gui.tooltips.appliedenergistics2.ItemsRequestable=Anfragbare Items: %s
 
+// Units
 gui.appliedenergistics2.units.appliedenergstics=AE
 gui.appliedenergistics2.units.ic2=Energy Units
 gui.appliedenergistics2.units.mekanism=Joules
 gui.appliedenergistics2.units.rotarycraft=Watt
 gui.appliedenergistics2.units.thermalexpansion=Redstone Flux
 
+// Colors
 gui.appliedenergistics2.White=Weiß
 gui.appliedenergistics2.Orange=Orange
 gui.appliedenergistics2.Magenta=Magenta
@@ -302,6 +350,8 @@ gui.appliedenergistics2.Red=Rot
 gui.appliedenergistics2.Black=Schwarz
 gui.appliedenergistics2.Fluix=Fluix
 
+// Waila
+waila.appliedenergistics2.Crafting=Fertigung
 waila.appliedenergistics2.DeviceOnline=Gerät Online
 waila.appliedenergistics2.DeviceOffline=Gerät Offline
 waila.appliedenergistics2.DeviceMissingChannel=Gerät ohne Kanal
@@ -311,6 +361,7 @@ waila.appliedenergistics2.Showing=Zeigt
 waila.appliedenergistics2.Contains=Enthält
 waila.appliedenergistics2.Channels=%1$d von %2$d Kanälen
 
+// Items
 item.appliedenergistics2.ItemBasicStorageCell.1k.name=1k-ME-Speicherzelle
 item.appliedenergistics2.ItemBasicStorageCell.4k.name=4k-ME-Speicherzelle
 item.appliedenergistics2.ItemBasicStorageCell.16k.name=16k-ME-Speicherzelle
@@ -334,9 +385,9 @@ item.appliedenergistics2.ItemMaterial.CardFuzzy.name=Ungenauigkeitskarte
 item.appliedenergistics2.ItemMaterial.CardInverter.name=Umkehrungskarte
 item.appliedenergistics2.ItemMaterial.CardRedstone.name=Redstone-Karte
 item.appliedenergistics2.ItemMaterial.CardSpeed.name=Beschleunigungskarte
-item.appliedenergistics2.ItemMaterial.Cell2SpatialPart.name=2³ Spatial Component
-item.appliedenergistics2.ItemMaterial.Cell16SpatialPart.name=16³ Spatial Component
-item.appliedenergistics2.ItemMaterial.Cell128SpatialPart.name=128³ Spatial Component
+item.appliedenergistics2.ItemMaterial.Cell2SpatialPart.name=2³ Raumkomponente
+item.appliedenergistics2.ItemMaterial.Cell16SpatialPart.name=16³ Raumkomponente
+item.appliedenergistics2.ItemMaterial.Cell128SpatialPart.name=128³ Raumkomponente
 item.appliedenergistics2.ItemMaterial.Cell1kPart.name=1k-ME-Speicherkomponente
 item.appliedenergistics2.ItemMaterial.Cell4kPart.name=4k-ME-Speicherkomponente
 item.appliedenergistics2.ItemMaterial.Cell16kPart.name=16k-ME-Speicherkomponente
@@ -381,6 +432,7 @@ item.appliedenergistics2.ItemMaterial.SkyDust.name=Himmelssteinstaub
 item.appliedenergistics2.ItemMaterial.CardCrafting.name=Fertigungskarte
 
 item.appliedenergistics2.ItemPart.AnnihilationPlane.name=ME-Annihilationsfeld
+item.appliedenergistics2.ItemPart.IdentityAnnihilationPlane.name=ME-Identitätsannihilationsfelds
 item.appliedenergistics2.ItemPart.CableAnchor.name=Kabelanker
 item.appliedenergistics2.ItemPart.CableCovered.name=Verdecktes ME-Kabel
 item.appliedenergistics2.ItemPart.CableGlass.name=ME-Glaskabel
@@ -406,6 +458,7 @@ item.appliedenergistics2.ItemPart.InvertedToggleBus.name=Invertierter schaltbare
 item.appliedenergistics2.ItemPart.ToggleBus.name=Schaltbarer ME-Bus
 item.appliedenergistics2.ItemPart.CraftingMonitor.name=ME-Fertigungsmonitor
 item.appliedenergistics2.ItemPart.InterfaceTerminal.name=ME-Schnittstellenkonsole
+item.appliedenergistics2.ItemPart.InvalidType.name=Deaktiviertes Item
 
 item.appliedenergistics2.ItemSpatialStorageCell.128Cubed.name=128³-Raumspeicherzelle
 item.appliedenergistics2.ItemSpatialStorageCell.16Cubed.name=16³-Raumspeicherzelle
@@ -441,9 +494,67 @@ item.appliedenergistics2.ToolBiometricCard.name=Biometriekarte
 item.appliedenergistics2.ToolDebugCard.name=Dev.Debug-Karte
 item.appliedenergistics2.ToolReplicatorCard.name=Dev.Replikator-Karte
 
+// Commands
 commands.ae2.usage=Befehle verfügbar in Applied Energistics 2 - Verwende '/ae2 list' für eine Liste und '/ae2 help _____' für Hilfe zu einem Befehl.
 commands.ae2.permissions=Du hast nicht die erforderlichen Berechtigungen, um diesen Befehl auszuführen.
 commands.ae2.ChunkLogger=Schalted das Berichten von Chunk-Loading und Chunk-Unloading im Server-log um. ( OP )
-commands.ae2.ChunkLoggerOn=Chunk Logging ist nun aktiviert
-commands.ae2.ChunkLoggerOff=Chunk Logging is nun deaktiviert
+commands.ae2.ChunkLoggerOn=Chunk Logging ist aktiviert
+commands.ae2.ChunkLoggerOff=Chunk Logging ist deaktiviert
 commands.ae2.Supporters=Zeigt eine Liste aller AE2-Unterstützer
+
+// Achievements
+achievement.ae2.Compass=Meteoritenjäger
+achievement.ae2.Compass.desc=Fertige einen Meteoritenkompass
+achievement.ae2.Presses=Unbekannte Technologie
+achievement.ae2.Presses.desc=Finde eine Prozessorenpresse
+achievement.ae2.SpatialIO=Raumkoordinaten
+achievement.ae2.SpatialIO.desc=Fertige einen IO-Raumport
+achievement.ae2.SpatialIOExplorer=To boldly go
+achievement.ae2.SpatialIOExplorer.desc=Werde in einer Raumspeicherzelle gespeichert
+achievement.ae2.StorageCell=Besser als Truhen
+achievement.ae2.StorageCell.desc=Fertige eine Speicherzelle
+achievement.ae2.IOPort=Fertigungszellenshuffle
+achievement.ae2.IOPort.desc=Fertige einen ME-IO-Port
+achievement.ae2.CraftingTerminal=Eine (viel) größere Bank
+achievement.ae2.CraftingTerminal.desc=Fertige eine Fertigungskonsole
+achievement.ae2.PatternTerminal=Crafting Maestro
+achievement.ae2.PatternTerminal.desc=Fertige eine Schablonenkonsole
+achievement.ae2.ChargedQuartz=Schockierend
+achievement.ae2.ChargedQuartz.desc=Finde geladenen Certusquartz
+achievement.ae2.Fluix=Unnatürlich
+achievement.ae2.Fluix.desc=Stelle Fluixkristalle her
+achievement.ae2.Charger=Fluixproduktion
+achievement.ae2.Charger.desc=Fertige ein Ladegerät
+achievement.ae2.CrystalGrowthAccelerator=Beschleuniger ist eine Untertreibung
+achievement.ae2.CrystalGrowthAccelerator.desc=Fertige einen Kristallwachstumsbeschleuniger
+achievement.ae2.GlassCable=Fluix-Energie-Verbingung
+achievement.ae2.GlassCable.desc=Fertige ME-Glaskabel
+achievement.ae2.Networking1=Netzwerklehrling
+achievement.ae2.Networking1.desc=Erreiche 8 Kanäle mit Geräten in einem Netzwerk
+achievement.ae2.Controller=Netzwerkzentrale
+achievement.ae2.Controller.desc=Fertige einen ME-Controller
+achievement.ae2.Networking2=Netzwerkingeneur
+achievement.ae2.Networking2.desc=Erreiche 128 Kanäle mit Geräten in einem Netzwerk
+achievement.ae2.Networking3=Netzwerkadministrator
+achievement.ae2.Networking3.desc=Erreiche 2048 Kanäle mit Geräten in einem Netzwerk
+achievement.ae2.P2P=Punkt-zu-Punkt-Verbindung
+achievement.ae2.P2P.desc=Fertige einen P2P-Tunnel
+achievement.ae2.Recursive=Rekursives Netzwerken
+achievement.ae2.Recursive.desc=Platziere eine ME-Schnittstelle auf einen Speicherbus
+achievement.ae2.CraftingCPU=NextGen-Fertigung
+achievement.ae2.CraftingCPU.desc=Fertige eine Fertigungs-CPU
+achievement.ae2.Facade=Netzwerkästhetik
+achievement.ae2.Facade.desc=Fertige eine Kabelfassade
+achievement.ae2.NetworkTool=Netzwerkdiagnose
+achievement.ae2.NetworkTool.desc=Fertige eine Netzwerksonde
+achievement.ae2.PortableCell=Speichernomade
+achievement.ae2.PortableCell.desc=Fertige eine Tragbare Zelle
+achievement.ae2.StorageBus=Uneingeschränktes Potential
+achievement.ae2.StorageBus.desc=Fertige einen Speicherbus
+achievement.ae2.QNB=Quantum Tunneling
+achievement.ae2.QNB.desc=Fertige einen Quantenlink
+
+// Stats
+stat.ae2.ItemsInserted=Items zu ME Speicher hinzugefügt
+stat.ae2.ItemsExtracted=Items aus ME Speicher entfernt
+stat.ae2.TurnedCranks=Runden gekurbelt
