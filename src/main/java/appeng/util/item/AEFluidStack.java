@@ -47,8 +47,8 @@ import appeng.util.Platform;
 public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFluidStack, Comparable<AEFluidStack>
 {
 
-	private int myHash;
-	private Fluid fluid;
+	private final int myHash;
+	private final Fluid fluid;
 	private IAETagCompound tagCompound;
 
 	private AEFluidStack( final AEFluidStack is )

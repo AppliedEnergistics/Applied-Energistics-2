@@ -77,11 +77,11 @@ public final class ReleaseFetcher
 		{
 			AELog.error( e );
 		}
-		catch( MalformedURLException e )
+		catch( final MalformedURLException e )
 		{
 			AELog.error( e );
 		}
-		catch( IOException e )
+		catch( final IOException e )
 		{
 			AELog.error( e );
 		}

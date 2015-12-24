@@ -1060,12 +1060,12 @@ public class PartCable extends AEBasePart implements IPartCable
 		rh.renderFace( pos, blk.getRendererInstance().getTexture( AEPartLocation.UP ), EnumFacing.UP, renderer );
 	}
 
-	int getChannelsOnSide( int i )
+	int getChannelsOnSide( final int i )
 	{
 		return this.channelsOnSide[i];
 	}
 
-	void setChannelsOnSide( int i, int channels )
+	void setChannelsOnSide( final int i, final int channels )
 	{
 		this.channelsOnSide[i] = channels;
 	}

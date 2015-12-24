@@ -97,7 +97,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 	private static class InWorldToolOperationIngredient
 	{
 		private final IBlockState state;
-		private boolean blockOnly;
+		private final boolean blockOnly;
 
 		public InWorldToolOperationIngredient( final IBlockState state )
 		{

@@ -41,8 +41,8 @@ public class ModelGenerator
 
 	private static final class CachedModel implements IBakedModel
 	{
-		private List<BakedQuad>[] faces = new List[6];
-		private List<BakedQuad> general;
+		private final List<BakedQuad>[] faces = new List[6];
+		private final List<BakedQuad> general;
 
 		public CachedModel()
 		{
@@ -115,7 +115,7 @@ public class ModelGenerator
 
 	private IBlockAccess blockAccess;
 
-	private CachedModel generatedModel = new CachedModel();
+	private final CachedModel generatedModel = new CachedModel();
 
 	// used to create faces...
 	private final FaceBakery faceBakery = new FaceBakery();
@@ -135,11 +135,11 @@ public class ModelGenerator
 	};
 	private EnumSet<EnumFacing> renderFaces = EnumSet.allOf( EnumFacing.class );
 	private boolean flipTexture = false;
-	private List<SMFace> faces = new ArrayList();
+	private final List<SMFace> faces = new ArrayList();
 
 	private int point = 0;
 	private int brightness = -1;
-	private float[][] points = new float[4][];
+	private final float[][] points = new float[4][];
 	private EnumFacing currentFace = EnumFacing.UP;
 	private int color = -1;
 
@@ -636,7 +636,7 @@ public class ModelGenerator
 		return blockAccess;
 	}
 
-	public void setBlockAccess( IBlockAccess blockAccess )
+	public void setBlockAccess( final IBlockAccess blockAccess )
 	{
 		this.blockAccess = blockAccess;
 	}
@@ -646,7 +646,7 @@ public class ModelGenerator
 		return renderAllFaces;
 	}
 
-	public void setRenderAllFaces( boolean renderAllFaces )
+	public void setRenderAllFaces( final boolean renderAllFaces )
 	{
 		this.renderAllFaces = renderAllFaces;
 	}
@@ -656,7 +656,7 @@ public class ModelGenerator
 		return uvRotateBottom;
 	}
 
-	public int setUvRotateBottom( int uvRotateBottom )
+	public int setUvRotateBottom( final int uvRotateBottom )
 	{
 		this.uvRotateBottom = uvRotateBottom;
 		return uvRotateBottom;
@@ -667,7 +667,7 @@ public class ModelGenerator
 		return uvRotateEast;
 	}
 
-	public int setUvRotateEast( int uvRotateEast )
+	public int setUvRotateEast( final int uvRotateEast )
 	{
 		this.uvRotateEast = uvRotateEast;
 		return uvRotateEast;
@@ -678,7 +678,7 @@ public class ModelGenerator
 		return uvRotateNorth;
 	}
 
-	public int setUvRotateNorth( int uvRotateNorth )
+	public int setUvRotateNorth( final int uvRotateNorth )
 	{
 		this.uvRotateNorth = uvRotateNorth;
 		return uvRotateNorth;
@@ -689,7 +689,7 @@ public class ModelGenerator
 		return uvRotateSouth;
 	}
 
-	public int setUvRotateSouth( int uvRotateSouth )
+	public int setUvRotateSouth( final int uvRotateSouth )
 	{
 		this.uvRotateSouth = uvRotateSouth;
 		return uvRotateSouth;
@@ -700,7 +700,7 @@ public class ModelGenerator
 		return uvRotateTop;
 	}
 
-	public int setUvRotateTop( int uvRotateTop )
+	public int setUvRotateTop( final int uvRotateTop )
 	{
 		this.uvRotateTop = uvRotateTop;
 		return uvRotateTop;
@@ -711,7 +711,7 @@ public class ModelGenerator
 		return uvRotateWest;
 	}
 
-	public int setUvRotateWest( int uvRotateWest )
+	public int setUvRotateWest( final int uvRotateWest )
 	{
 		this.uvRotateWest = uvRotateWest;
 		return uvRotateWest;
@@ -722,7 +722,7 @@ public class ModelGenerator
 		return renderMinX;
 	}
 
-	public void setRenderMinX( double renderMinX )
+	public void setRenderMinX( final double renderMinX )
 	{
 		this.renderMinX = renderMinX;
 	}
@@ -732,7 +732,7 @@ public class ModelGenerator
 		return renderMinY;
 	}
 
-	public void setRenderMinY( double renderMinY )
+	public void setRenderMinY( final double renderMinY )
 	{
 		this.renderMinY = renderMinY;
 	}
@@ -742,7 +742,7 @@ public class ModelGenerator
 		return renderMinZ;
 	}
 
-	public void setRenderMinZ( double renderMinZ )
+	public void setRenderMinZ( final double renderMinZ )
 	{
 		this.renderMinZ = renderMinZ;
 	}
@@ -752,7 +752,7 @@ public class ModelGenerator
 		return renderMaxX;
 	}
 
-	public void setRenderMaxX( double renderMaxX )
+	public void setRenderMaxX( final double renderMaxX )
 	{
 		this.renderMaxX = renderMaxX;
 	}
@@ -762,7 +762,7 @@ public class ModelGenerator
 		return renderMaxY;
 	}
 
-	public void setRenderMaxY( double renderMaxY )
+	public void setRenderMaxY( final double renderMaxY )
 	{
 		this.renderMaxY = renderMaxY;
 	}
@@ -772,7 +772,7 @@ public class ModelGenerator
 		return renderMaxZ;
 	}
 
-	public void setRenderMaxZ( double renderMaxZ )
+	public void setRenderMaxZ( final double renderMaxZ )
 	{
 		this.renderMaxZ = renderMaxZ;
 	}
@@ -782,7 +782,7 @@ public class ModelGenerator
 		return flipTexture;
 	}
 
-	public void setFlipTexture( boolean flipTexture )
+	public void setFlipTexture( final boolean flipTexture )
 	{
 		this.flipTexture = flipTexture;
 	}
@@ -792,7 +792,7 @@ public class ModelGenerator
 		return renderFaces;
 	}
 
-	public void setRenderFaces( EnumSet<EnumFacing> renderFaces )
+	public void setRenderFaces( final EnumSet<EnumFacing> renderFaces )
 	{
 		this.renderFaces = renderFaces;
 	}

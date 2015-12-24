@@ -167,7 +167,7 @@ public class CraftingLinkNexus
 		return req;
 	}
 
-	public void setRequest( CraftingLink req )
+	public void setRequest( final CraftingLink req )
 	{
 		this.req = req;
 	}

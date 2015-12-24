@@ -30,13 +30,13 @@ public class InvSot
 	private final ISidedInventory partInv;
 	private final int index;
 
-	public InvSot( ISidedInventory part, int slot )
+	public InvSot( final ISidedInventory part, final int slot )
 	{
 		this.partInv = part;
 		this.index = slot;
 	}
 
-	public ItemStack decreaseStackSize( int j )
+	public ItemStack decreaseStackSize( final int j )
 	{
 		return this.partInv.decrStackSize( this.index, j );
 	}
@@ -46,22 +46,22 @@ public class InvSot
 		return this.partInv.getStackInSlot( this.index );
 	}
 
-	public boolean isItemValidForSlot( ItemStack itemstack )
+	public boolean isItemValidForSlot( final ItemStack itemstack )
 	{
 		return this.partInv.isItemValidForSlot( this.index, itemstack );
 	}
 
-	public void setInventorySlotContents( ItemStack itemstack )
+	public void setInventorySlotContents( final ItemStack itemstack )
 	{
 		this.partInv.setInventorySlotContents( this.index, itemstack );
 	}
 
-	public boolean canExtractItem( ItemStack itemstack, EnumFacing side )
+	public boolean canExtractItem( final ItemStack itemstack, final EnumFacing side )
 	{
 		return this.partInv.canExtractItem( this.index, itemstack, side );
 	}
 
-	public boolean canInsertItem( ItemStack itemstack, EnumFacing side )
+	public boolean canInsertItem( final ItemStack itemstack, final EnumFacing side )
 	{
 		return this.partInv.canInsertItem( this.index, itemstack, side );
 	}

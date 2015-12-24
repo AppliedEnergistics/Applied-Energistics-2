@@ -34,7 +34,7 @@ import appeng.client.texture.MissingIcon;
 public class SmartModel implements IBakedModel, ISmartBlockModel, ISmartItemModel
 {
 
-	private BlockRenderInfo aeRenderer;
+	private final BlockRenderInfo aeRenderer;
 
 	private class DefState implements IModelState
 	{

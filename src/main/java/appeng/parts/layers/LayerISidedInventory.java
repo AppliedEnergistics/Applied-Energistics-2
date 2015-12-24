@@ -68,12 +68,12 @@ public class LayerISidedInventory extends LayerBase implements ISidedInventory
 		inventories = new ArrayList<ISidedInventory>();
 		int slotCount = 0;
 
-		for( AEPartLocation side : AEPartLocation.SIDE_LOCATIONS )
+		for( final AEPartLocation side : AEPartLocation.SIDE_LOCATIONS )
 		{
-			IPart bp = this.getPart( side );
+			final IPart bp = this.getPart( side );
 			if( bp instanceof ISidedInventory )
 			{
-				ISidedInventory part = (ISidedInventory) bp;
+				final ISidedInventory part = (ISidedInventory) bp;
 				slotCount += part.getSizeInventory();
 				inventories.add( part );
 			}
@@ -90,13 +90,13 @@ public class LayerISidedInventory extends LayerBase implements ISidedInventory
 
 			int offsetForLayer = 0;
 			int offsetForPart = 0;
-			for( ISidedInventory sides : inventories )
+			for( final ISidedInventory sides : inventories )
 			{
 				offsetForPart = 0;
 				slotCount = sides.getSizeInventory();
 
 				AEPartLocation currentSide = AEPartLocation.INTERNAL;
-				for( AEPartLocation side : AEPartLocation.SIDE_LOCATIONS )
+				for( final AEPartLocation side : AEPartLocation.SIDE_LOCATIONS )
 				{
 					if( this.getPart( side ) == sides )
 					{
@@ -105,7 +105,7 @@ public class LayerISidedInventory extends LayerBase implements ISidedInventory
 					}
 				}
 
-				int[] cSidesList = sideData[currentSide.ordinal()] = new int[slotCount];
+				final int[] cSidesList = sideData[currentSide.ordinal()] = new int[slotCount];
 				for( int cSlot = 0; cSlot < slotCount; cSlot++ )
 				{
 					cSidesList[cSlot] = offsetForLayer;
@@ -141,7 +141,7 @@ public class LayerISidedInventory extends LayerBase implements ISidedInventory
 	}
 
 	@Override
-	public ItemStack getStackInSlot( int slot )
+	public ItemStack getStackInSlot( final int slot )
 	{
 		if( this.invLayer == null )
 		{
@@ -152,7 +152,7 @@ public class LayerISidedInventory extends LayerBase implements ISidedInventory
 	}
 
 	@Override
-	public ItemStack decrStackSize( int slot, int amount )
+	public ItemStack decrStackSize( final int slot, final int amount )
 	{
 		if( this.invLayer == null )
 		{
@@ -163,13 +163,13 @@ public class LayerISidedInventory extends LayerBase implements ISidedInventory
 	}
 
 	@Override
-	public ItemStack getStackInSlotOnClosing( int slot )
+	public ItemStack getStackInSlotOnClosing( final int slot )
 	{
 		return null;
 	}
 
 	@Override
-	public void setInventorySlotContents( int slot, ItemStack itemstack )
+	public void setInventorySlotContents( final int slot, final ItemStack itemstack )
 	{
 		if( this.invLayer == null )
 		{
@@ -198,23 +198,23 @@ public class LayerISidedInventory extends LayerBase implements ISidedInventory
 	}
 
 	@Override
-	public boolean isUseableByPlayer( EntityPlayer entityplayer )
+	public boolean isUseableByPlayer( final EntityPlayer entityplayer )
 	{
 		return false;
 	}
 
 	@Override
-	public void openInventory( EntityPlayer player )
+	public void openInventory( final EntityPlayer player )
 	{
 	}
 
 	@Override
-	public void closeInventory( EntityPlayer player )
+	public void closeInventory( final EntityPlayer player )
 	{
 	}
 
 	@Override
-	public boolean isItemValidForSlot( int slot, ItemStack itemstack )
+	public boolean isItemValidForSlot( final int slot, final ItemStack itemstack )
 	{
 		if( this.invLayer == null )
 		{
@@ -236,7 +236,7 @@ public class LayerISidedInventory extends LayerBase implements ISidedInventory
 	}
 
 	@Override
-	public int[] getSlotsForFace( EnumFacing side )
+	public int[] getSlotsForFace( final EnumFacing side )
 	{
 		if( this.invLayer != null )
 		{
@@ -247,7 +247,7 @@ public class LayerISidedInventory extends LayerBase implements ISidedInventory
 	}
 
 	@Override
-	public boolean canInsertItem( int slot, ItemStack itemstack, EnumFacing side )
+	public boolean canInsertItem( final int slot, final ItemStack itemstack, final EnumFacing side )
 	{
 		if( this.invLayer == null )
 		{
@@ -258,7 +258,7 @@ public class LayerISidedInventory extends LayerBase implements ISidedInventory
 	}
 
 	@Override
-	public boolean canExtractItem( int slot, ItemStack itemstack, EnumFacing side )
+	public boolean canExtractItem( final int slot, final ItemStack itemstack, final EnumFacing side )
 	{
 		if( this.invLayer == null )
 		{
@@ -270,15 +270,15 @@ public class LayerISidedInventory extends LayerBase implements ISidedInventory
 
 	@Override
 	public int getField(
-			int id )
+			final int id )
 	{
 		return 0;
 	}
 
 	@Override
 	public void setField(
-			int id,
-			int value )
+			final int id,
+			final int value )
 	{
 
 	}

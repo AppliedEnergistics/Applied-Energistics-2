@@ -42,7 +42,7 @@ public class RenderBlocksWorkaround extends ModelGenerator
 		// TODO Auto-generated method stub
 	}
 
-	public void setOpacity( float f )
+	public void setOpacity( final float f )
 	{
 		this.opacity = f;
 	}
@@ -52,7 +52,7 @@ public class RenderBlocksWorkaround extends ModelGenerator
 		return faces;
 	}
 
-	public void setFaces( EnumSet<EnumFacing> faces )
+	public void setFaces( final EnumSet<EnumFacing> faces )
 	{
 		this.faces = faces;
 	}

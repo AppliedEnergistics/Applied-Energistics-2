@@ -32,9 +32,9 @@ public class LayerITileStorageMonitorable extends LayerBase implements ITileStor
 {
 
 	@Override
-	public IStorageMonitorable getMonitorable( EnumFacing side, BaseActionSource src )
+	public IStorageMonitorable getMonitorable( final EnumFacing side, final BaseActionSource src )
 	{
-		IPart part = this.getPart( side );
+		final IPart part = this.getPart( side );
 		if( part instanceof ITileStorageMonitorable )
 		{
 			return ( (ITileStorageMonitorable) part ).getMonitorable( side, src );

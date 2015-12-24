@@ -10,13 +10,13 @@ import appeng.client.texture.IAESprite;
 public class IconUnwrapper extends TextureAtlasSprite
 {
 
-	private int width;
-	private int height;
+	private final int width;
+	private final int height;
 
-	private float max_u;
-	private float min_u;
-	private float min_v;
-	private float max_v;
+	private final float max_u;
+	private final float min_u;
+	private final float min_v;
+	private final float max_v;
 
 	protected IconUnwrapper(
 			final IAESprite src )

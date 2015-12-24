@@ -694,13 +694,13 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 		return isFullSize;
 	}
 
-	public boolean setFullSize( boolean isFullSize )
+	public boolean setFullSize( final boolean isFullSize )
 	{
 		this.isFullSize = isFullSize;
 		return isFullSize;
 	}
 
-	public boolean setOpaque( boolean isOpaque )
+	public boolean setOpaque( final boolean isOpaque )
 	{
 		this.isOpaque = isOpaque;
 		return isOpaque;
@@ -716,12 +716,12 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 		return isInventory;
 	}
 
-	public void setInventory( boolean isInventory )
+	public void setInventory( final boolean isInventory )
 	{
 		this.isInventory = isInventory;
 	}
 
-	public void setHasSubtypes( boolean hasSubtypes )
+	public void setHasSubtypes( final boolean hasSubtypes )
 	{
 		this.hasSubtypes = hasSubtypes;
 	}

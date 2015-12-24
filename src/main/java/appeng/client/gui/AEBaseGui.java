@@ -93,7 +93,7 @@ public abstract class AEBaseGui extends GuiContainer
 	private Stopwatch dbl_clickTimer = Stopwatch.createStarted();
 	private ItemStack dbl_whichItem;
 	private Slot bl_clicked;
-	private boolean useNEI = false;
+	private final boolean useNEI = false;
 	private boolean subGui;
 
 	public AEBaseGui( final Container container )

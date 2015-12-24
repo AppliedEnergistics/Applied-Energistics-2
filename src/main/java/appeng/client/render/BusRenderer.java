@@ -187,7 +187,7 @@ public class BusRenderer implements IItemRenderer
 		return this.renderer;
 	}
 
-	public void setRenderer( ModelGenerator renderer )
+	public void setRenderer( final ModelGenerator renderer )
 	{
 		this.renderer = renderer;
 	}

@@ -66,7 +66,7 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	/**
 	 * Immibis MB Support
 	 */
-	private boolean ImmibisMicroblocks_TransformableTileEntityMarker = true;
+	private final boolean ImmibisMicroblocks_TransformableTileEntityMarker = true;
 	private int oldLV = -1; // on re-calculate light when it changes
 
 	@TileEvent( TileEventType.WORLD_NBT_READ )

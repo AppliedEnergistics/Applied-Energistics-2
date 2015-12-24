@@ -98,7 +98,7 @@ public final class VersionChecker implements Runnable
 
 			this.processInterval( nowInMs, lastAfterInterval );
 		}
-		catch( Exception exception )
+		catch( final Exception exception )
 		{
 			// Log any unhandled exception to prevent the JVM from reporting them as unhandled.
 			AELog.error( exception );

@@ -177,7 +177,7 @@ public class PartPatternTerminal extends AbstractPartTerminal
 		return this.substitute;
 	}
 
-	public void setSubstitution( boolean canSubstitute )
+	public void setSubstitution( final boolean canSubstitute )
 	{
 		this.substitute = canSubstitute;
 	}

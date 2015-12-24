@@ -104,9 +104,9 @@ public class ClientHelper extends ServerHelper
 	private static final ModelGenerator BLOCK_RENDERER = new ModelGenerator();
 	private final ModelResourceLocation partRenderer = new ModelResourceLocation( new ResourceLocation( AppEng.MOD_ID, "DynamicPartRenderer" ), "inventory" );
 
-	private Map<Object, List<IconReg>> iconRegistrations = new HashMap<>();
-	private List<IconReg> iconTmp = new ArrayList<>();
-	private List<ResourceLocation> extraIcons = new ArrayList<>();
+	private final Map<Object, List<IconReg>> iconRegistrations = new HashMap<>();
+	private final List<IconReg> iconTmp = new ArrayList<>();
+	private final List<ResourceLocation> extraIcons = new ArrayList<>();
 
 	@Override
 	public void configureIcon( final Object item, final String name )

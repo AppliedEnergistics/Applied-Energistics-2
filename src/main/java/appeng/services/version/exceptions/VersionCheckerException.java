@@ -29,7 +29,7 @@ public class VersionCheckerException extends Exception
 {
 	private static final long serialVersionUID = 4582501864800542884L;
 
-	public VersionCheckerException( @Nonnull String string )
+	public VersionCheckerException( @Nonnull final String string )
 	{
 		super( string );
 	}
