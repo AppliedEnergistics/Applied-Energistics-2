@@ -113,14 +113,14 @@ public class AppEngNullInventory implements IInventory
 	public void openInventory(
 			final EntityPlayer player )
 	{
-				
+
 	}
 
 	@Override
 	public void closeInventory(
 			final EntityPlayer player )
 	{
-		
+
 	}
 
 	@Override
@@ -135,7 +135,7 @@ public class AppEngNullInventory implements IInventory
 			final int id,
 			final int value )
 	{
-		
+
 	}
 
 	@Override
@@ -147,6 +147,6 @@ public class AppEngNullInventory implements IInventory
 	@Override
 	public void clear()
 	{
-		
+
 	}
 }

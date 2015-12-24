@@ -42,8 +42,7 @@ public class MissingIcon implements IAESprite
 	}
 
 	@SideOnly( Side.CLIENT )
-	public
-	static TextureAtlasSprite getMissing()
+	public static TextureAtlasSprite getMissing()
 	{
 		return ( (TextureMap) Minecraft.getMinecraft().getTextureManager().getTexture( TextureMap.locationBlocksTexture ) ).getAtlasSprite( "missingno" );
 	}

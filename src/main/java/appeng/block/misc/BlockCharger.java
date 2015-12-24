@@ -95,8 +95,8 @@ public class BlockCharger extends AEBaseTileBlock implements ICustomCollision
 
 		return true;
 	}
-	
-	@Override	
+
+	@Override
 	@SideOnly( Side.CLIENT )
 	public void randomDisplayTick(
 			final World w,

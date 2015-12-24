@@ -303,8 +303,8 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 				final TileEntity te = w.getTileEntity( hitPos );
 				if( te instanceof TilePaint )
 				{
-					final Vec3 hp = pos.hitVec.subtract(  hitPos.getX(), hitPos.getY(), hitPos.getZ() );
-					( (TilePaint) te ).addBlot( type, side.getOpposite(), hp  );
+					final Vec3 hp = pos.hitVec.subtract( hitPos.getX(), hitPos.getY(), hitPos.getZ() );
+					( (TilePaint) te ).addBlot( type, side.getOpposite(), hp );
 				}
 			}
 		}

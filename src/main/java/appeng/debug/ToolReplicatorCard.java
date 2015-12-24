@@ -50,7 +50,7 @@ public class ToolReplicatorCard extends AEBaseItem
 	{
 		this.setFeature( EnumSet.of( AEFeature.UnsupportedDeveloperTools, AEFeature.Creative ) );
 	}
-	
+
 	@Override
 	public boolean onItemUseFirst(
 			final ItemStack stack,
@@ -70,7 +70,7 @@ public class ToolReplicatorCard extends AEBaseItem
 		int x = pos.getX();
 		int y = pos.getY();
 		int z = pos.getZ();
-		
+
 		if( player.isSneaking() )
 		{
 			if( world.getTileEntity( pos ) instanceof IGridHost )
@@ -140,11 +140,11 @@ public class ToolReplicatorCard extends AEBaseItem
 									{
 										for( int k = 1; k < scale_z; k++ )
 										{
-											final BlockPos p = new BlockPos( min_x + i, min_y + j, min_z + k  );
+											final BlockPos p = new BlockPos( min_x + i, min_y + j, min_z + k );
 											final BlockPos d = new BlockPos( i + rel_x, j + rel_y, k + rel_z );
 											final IBlockState state = src_w.getBlockState( p );
 											final Block blk = state.getBlock();
-											
+
 											world.setBlockState( d, state );
 											if( blk != null && blk.hasTileEntity( state ) )
 											{

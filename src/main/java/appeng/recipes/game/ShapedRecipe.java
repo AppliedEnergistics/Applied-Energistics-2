@@ -105,7 +105,7 @@ public class ShapedRecipe implements IRecipe, IRecipeBakeable
 
 		final Map<Character, IIngredient> itemMap = new HashMap<Character, IIngredient>();
 
-		for(; idx < recipe.length; idx += 2 )
+		for( ; idx < recipe.length; idx += 2 )
 		{
 			final Character chr = (Character) recipe[idx];
 			final Object in = recipe[idx + 1];
@@ -270,7 +270,7 @@ public class ShapedRecipe implements IRecipe, IRecipeBakeable
 		{
 			return false;
 		}
-		return ( target.getItem() == input.getItem() && ( target.getItemDamage() == OreDictionary.WILDCARD_VALUE || target.getItemDamage() == input.getItemDamage() ) );
+		return( target.getItem() == input.getItem() && ( target.getItemDamage() == OreDictionary.WILDCARD_VALUE || target.getItemDamage() == input.getItemDamage() ) );
 	}
 
 	public ShapedRecipe setMirrored( final boolean mirror )
@@ -324,12 +324,12 @@ public class ShapedRecipe implements IRecipe, IRecipeBakeable
 			this.disable = true;
 		}
 	}
-	
+
 	@Override
 	public ItemStack[] getRemainingItems(
 			final InventoryCrafting inv )
 	{
-        return ForgeHooks.defaultRecipeGetRemainingItems(inv);
+		return ForgeHooks.defaultRecipeGetRemainingItems( inv );
 	}
-	
+
 }

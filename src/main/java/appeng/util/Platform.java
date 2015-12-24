@@ -175,7 +175,7 @@ public class Platform
 	/**
 	 * This displays the value for encoded longs ( double *100 )
 	 *
-	 * @param n      to be formatted long value
+	 * @param n to be formatted long value
 	 * @param isRate if true it adds a /t to the formatted string
 	 *
 	 * @return formatted long value
@@ -264,7 +264,7 @@ public class Platform
 				return EnumFacing.NORTH;
 		}
 
-		//something is better then nothing?
+		// something is better then nothing?
 		return EnumFacing.NORTH;
 	}
 
@@ -385,7 +385,7 @@ public class Platform
 			z = tile.getPos().getZ();
 		}
 
-		if( ( type.getType().isItem() && tile == null ) || type.hasPermissions( tile, x,y,z, side, p ) )
+		if( ( type.getType().isItem() && tile == null ) || type.hasPermissions( tile, x, y, z, side, p ) )
 		{
 			if( tile == null && type.getType() == GuiHostType.ITEM )
 			{
@@ -820,7 +820,7 @@ public class Platform
 
 		final BlockPos posX = teA.getPos().offset( EnumFacing.EAST );
 		final BlockPos negX = teA.getPos().offset( EnumFacing.WEST );
-		
+
 		if( teA.getWorld().getBlockState( posX ) == myBlockID )
 		{
 			teB = teA.getWorld().getTileEntity( posX );
@@ -850,12 +850,12 @@ public class Platform
 
 		final BlockPos posY = teA.getPos().offset( EnumFacing.SOUTH );
 		final BlockPos negY = teA.getPos().offset( EnumFacing.NORTH );
-		
+
 		if( teB == null )
 		{
 			if( teA.getWorld().getBlockState( posY ) == myBlockID )
 			{
-				teB = teA.getWorld().getTileEntity(posY);
+				teB = teA.getWorld().getTileEntity( posY );
 				if( !( teB instanceof TileEntityChest ) )
 				{
 					teB = null;
@@ -1038,12 +1038,12 @@ public class Platform
 			{
 				// TODO: Build Craft Wrench?
 				/*
-				if( eq.getItem() instanceof IToolWrench )
-				{
-					IToolWrench wrench = (IToolWrench) eq.getItem();
-					return wrench.canWrench( player, x, y, z );
-				}
-				*/
+				 * if( eq.getItem() instanceof IToolWrench )
+				 * {
+				 * IToolWrench wrench = (IToolWrench) eq.getItem();
+				 * return wrench.canWrench( player, x, y, z );
+				 * }
+				 */
 			}
 			catch( final Throwable ignore )
 			{ // explodes without BC
@@ -1407,16 +1407,16 @@ public class Platform
 				{
 					final Item ai = a.getItem();
 					final Item bi = b.getItem();
-					
-					return ( ai.getDurabilityForDisplay(a) > 1 ) == ( bi.getDurabilityForDisplay(b) > 1 );
+
+					return ( ai.getDurabilityForDisplay( a ) > 1 ) == ( bi.getDurabilityForDisplay( b ) > 1 );
 				}
 				else
 				{
 					final Item ai = a.getItem();
 					final Item bi = b.getItem();
-					
-					final float percentDamagedOfA = 1.0f - (float) ai.getDurabilityForDisplay(a);
-					final float percentDamagedOfB = 1.0f - (float) bi.getDurabilityForDisplay(b);
+
+					final float percentDamagedOfA = 1.0f - (float) ai.getDurabilityForDisplay( a );
+					final float percentDamagedOfB = 1.0f - (float) bi.getDurabilityForDisplay( b );
 
 					return ( percentDamagedOfA > mode.breakPoint ) == ( percentDamagedOfB > mode.breakPoint );
 				}
@@ -1451,13 +1451,10 @@ public class Platform
 
 		/*
 		 * // test ore dictionary.. int OreID = getOreID( a ); if ( OreID != -1 ) return OreID == getOreID( b );
-		 *
 		 * if ( Mode != FuzzyMode.IGNORE_ALL ) { if ( a.hasTagCompound() && !isShared( a.getTagCompound() ) ) { a =
 		 * Platform.getSharedItemStack( AEItemStack.create( a ) ); }
-		 *
 		 * if ( b.hasTagCompound() && !isShared( b.getTagCompound() ) ) { b = Platform.getSharedItemStack(
 		 * AEItemStack.create( b ) ); }
-		 *
 		 * // test regular items with damage values and what not... if ( isShared( a.getTagCompound() ) && isShared(
 		 * b.getTagCompound() ) && a.itemID == b.itemID ) { return ((AppEngSharedNBTTagCompound)
 		 * a.getTagCompound()).compareFuzzyWithRegistry( (AppEngSharedNBTTagCompound) b.getTagCompound() ); } }
@@ -1477,17 +1474,17 @@ public class Platform
 		final float playerPitch = playerIn.prevRotationPitch + ( playerIn.rotationPitch - playerIn.prevRotationPitch );
 		final float playerYaw = playerIn.prevRotationYaw + ( playerIn.rotationYaw - playerIn.prevRotationYaw );
 
-		final float yawRayX = MathHelper.sin( -playerYaw * 0.017453292f - ( float ) Math.PI );
-		final float yawRayZ = MathHelper.cos( -playerYaw * 0.017453292f - ( float ) Math.PI );
+		final float yawRayX = MathHelper.sin( -playerYaw * 0.017453292f - (float) Math.PI );
+		final float yawRayZ = MathHelper.cos( -playerYaw * 0.017453292f - (float) Math.PI );
 
 		final float pitchMultiplier = -MathHelper.cos( -playerPitch * 0.017453292F );
 		final float eyeRayY = MathHelper.sin( -playerPitch * 0.017453292F );
 		final float eyeRayX = yawRayX * pitchMultiplier;
 		final float eyeRayZ = yawRayZ * pitchMultiplier;
 
-		if ( playerIn instanceof EntityPlayerMP )
+		if( playerIn instanceof EntityPlayerMP )
 		{
-			reachDistance = ( ( EntityPlayerMP ) playerIn ).theItemInWorldManager.getBlockReachDistance();
+			reachDistance = ( (EntityPlayerMP) playerIn ).theItemInWorldManager.getBlockReachDistance();
 		}
 
 		final Vec3 from = new Vec3( x, y, z );

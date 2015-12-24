@@ -67,7 +67,7 @@ public class BlockWireless extends AEBaseTileBlock implements ICustomCollision
 	{
 		return EnumWorldBlockLayer.CUTOUT;
 	}
-	
+
 	@Override
 	public boolean onBlockActivated(
 			final World w,

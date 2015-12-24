@@ -51,7 +51,7 @@ public final class AECommand extends CommandBase
 	{
 		return 1;
 	}
-	
+
 	@Override
 	public String getCommandName()
 	{

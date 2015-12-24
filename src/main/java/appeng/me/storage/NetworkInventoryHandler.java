@@ -69,7 +69,9 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
 	{
 		this.myChannel = chan;
 		this.security = security;
-		this.priorityInventory = new TreeMap<Integer, List<IMEInventoryHandler<T>>>( PRIORITY_SORTER ); // TreeMultimap.create( prioritySorter, hashSorter );
+		this.priorityInventory = new TreeMap<Integer, List<IMEInventoryHandler<T>>>( PRIORITY_SORTER ); // TreeMultimap.create(
+																										// prioritySorter,
+																										// hashSorter );
 	}
 
 	public void addNewStorage( final IMEInventoryHandler<T> h )

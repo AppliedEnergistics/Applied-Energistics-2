@@ -76,7 +76,7 @@ public class SpatialSkyRender extends IRenderHandler
 		GL11.glDepthMask( false );
 		GL11.glColor4f( 0.0f, 0.0f, 0.0f, 1.0f );
 		final Tessellator tessellator = Tessellator.getInstance();
-        final WorldRenderer worldrenderer = tessellator.getWorldRenderer();
+		final WorldRenderer worldrenderer = tessellator.getWorldRenderer();
 
 		for( int i = 0; i < 6; ++i )
 		{
@@ -145,8 +145,8 @@ public class SpatialSkyRender extends IRenderHandler
 	private void renderTwinkles()
 	{
 		final Tessellator tessellator = Tessellator.getInstance();
-        final WorldRenderer worldrenderer = tessellator.getWorldRenderer();
-        worldrenderer.startDrawingQuads();
+		final WorldRenderer worldrenderer = tessellator.getWorldRenderer();
+		worldrenderer.startDrawingQuads();
 
 		for( int i = 0; i < 50; ++i )
 		{

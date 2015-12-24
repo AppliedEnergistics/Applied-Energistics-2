@@ -86,12 +86,13 @@ public interface IBuildCraftTransport
 
 	/**
 	 * @return texture of buildcraft cobblestone structure pipe or null if something bad happens
-//	 */
+	 * //
+	 */
 	@Nullable
 	IAESprite getCobbleStructurePipeTexture();
 
 	/**
-	 * @param te  the to be checked {@link TileEntity}
+	 * @param te the to be checked {@link TileEntity}
 	 * @param dir direction of the {@link TileEntity}
 	 *
 	 * @return {@code true} if {@code te} is a buildcraft pipe, but not plugged

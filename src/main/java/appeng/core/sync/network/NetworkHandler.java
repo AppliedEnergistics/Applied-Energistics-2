@@ -34,6 +34,7 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.worlddata.WorldData;
 
+
 public class NetworkHandler
 {
 	public static NetworkHandler instance;
@@ -103,9 +104,9 @@ public class NetworkHandler
 			{
 				this.serveHandler.onPacketData( null, ev.handler, ev.packet, srv.playerEntity );
 			}
-			catch ( final ThreadQuickExitException ignored )
+			catch( final ThreadQuickExitException ignored )
 			{
-				
+
 			}
 		}
 	}
@@ -119,9 +120,9 @@ public class NetworkHandler
 			{
 				this.clientHandler.onPacketData( null, ev.handler, ev.packet, null );
 			}
-			catch ( final ThreadQuickExitException ignored )
+			catch( final ThreadQuickExitException ignored )
 			{
-				
+
 			}
 		}
 	}

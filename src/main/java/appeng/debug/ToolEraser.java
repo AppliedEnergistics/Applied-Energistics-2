@@ -44,7 +44,7 @@ public class ToolEraser extends AEBaseItem
 	{
 		this.setFeature( EnumSet.of( AEFeature.UnsupportedDeveloperTools, AEFeature.Creative ) );
 	}
-	
+
 	@Override
 	public boolean onItemUseFirst(
 			final ItemStack stack,

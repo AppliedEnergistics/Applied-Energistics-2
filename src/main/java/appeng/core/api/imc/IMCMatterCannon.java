@@ -18,14 +18,14 @@
 
 /* Example:
 
-NBTTagCompound msg = new NBTTagCompound();
-NBTTagCompound item = new NBTTagCompound();
+ NBTTagCompound msg = new NBTTagCompound();
+ NBTTagCompound item = new NBTTagCompound();
 
-new ItemStack( Blocks.anvil ).writeToNBT( item );
-msg.setTag( "item", item );
-msg.setDouble( "weight", 32.0 );
+ new ItemStack( Blocks.anvil ).writeToNBT( item );
+ msg.setTag( "item", item );
+ msg.setDouble( "weight", 32.0 );
 
-FMLInterModComms.sendMessage( "appliedenergistics2", "add-mattercannon-ammo", msg );
+ FMLInterModComms.sendMessage( "appliedenergistics2", "add-mattercannon-ammo", msg );
 
  */
 

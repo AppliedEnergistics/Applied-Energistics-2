@@ -95,7 +95,6 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements IAEFeature,
 		this.setTileProvider( this.hasBlockTileEntity() );
 	}
 
-
 	// update Block value.
 	private void setTileProvider( final boolean b )
 	{
@@ -115,7 +114,7 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements IAEFeature,
 	@Nullable
 	public <T extends AEBaseTile> T getTileEntity( final IBlockAccess w, final int x, final int y, final int z )
 	{
-		return this.getTileEntity( w, new BlockPos(x,y,z) );
+		return this.getTileEntity( w, new BlockPos( x, y, z ) );
 	}
 
 	@Nullable
@@ -163,7 +162,7 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements IAEFeature,
 			final BlockPos pos,
 			final IBlockState state )
 	{
-		final AEBaseTile te = this.getTileEntity( w,pos );
+		final AEBaseTile te = this.getTileEntity( w, pos );
 		if( te != null )
 		{
 			final ArrayList<ItemStack> drops = new ArrayList<ItemStack>();
@@ -183,7 +182,7 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements IAEFeature,
 		// super will remove the TE, as it is not an instance of BlockContainer
 		super.breakBlock( w, pos, state );
 	}
-	
+
 	@Override
 	public final EnumFacing[] getValidRotations( final World w, final BlockPos pos )
 	{
@@ -219,7 +218,7 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements IAEFeature,
 			return false;
 		}
 
-		return super.recolorBlock( world, pos, side, color);
+		return super.recolorBlock( world, pos, side, color );
 	}
 
 	@Override
@@ -243,7 +242,7 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements IAEFeature,
 			final int eventID,
 			final int eventParam )
 	{
-		super.onBlockEventReceived( worldIn, pos, state ,eventID, eventParam);
+		super.onBlockEventReceived( worldIn, pos, state, eventID, eventParam );
 		final TileEntity tileentity = worldIn.getTileEntity( pos );
 		return tileentity != null ? tileentity.receiveClientEvent( eventID, eventParam ) : false;
 	}

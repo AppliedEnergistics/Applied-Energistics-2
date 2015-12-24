@@ -57,7 +57,8 @@ final class SpawnData implements IWorldSpawnData
 	}
 
 	@Override
-	public void setGenerated( final int dim, final int chunkX, final int chunkZ ) {
+	public void setGenerated( final int dim, final int chunkX, final int chunkZ )
+	{
 		synchronized( SpawnData.class )
 		{
 			final NBTTagCompound data = this.loadSpawnData( dim, chunkX, chunkZ );

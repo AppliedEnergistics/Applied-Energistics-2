@@ -45,7 +45,7 @@ import appeng.helpers.MetaRotation;
 import appeng.tile.misc.TileLightDetector;
 
 
-public class BlockLightDetector extends AEBaseTileBlock implements IOrientableBlock,ICustomCollision
+public class BlockLightDetector extends AEBaseTileBlock implements IOrientableBlock, ICustomCollision
 {
 
 	public BlockLightDetector()
@@ -66,18 +66,18 @@ public class BlockLightDetector extends AEBaseTileBlock implements IOrientableBl
 	{
 		return 0;
 	}
-	
+
 	@Override
 	public IBlockState getStateFromMeta(
 			final int meta )
 	{
 		return this.getDefaultState();
 	}
-	
+
 	@Override
 	protected IProperty[] getAEStates()
 	{
-		return new IProperty[]{ BlockTorch.FACING };
+		return new IProperty[] { BlockTorch.FACING };
 	}
 
 	@Override
@@ -140,7 +140,7 @@ public class BlockLightDetector extends AEBaseTileBlock implements IOrientableBl
 	{
 		return w.isSideSolid( pos.offset( dir ), dir.getOpposite(), false );
 	}
-	
+
 	@Override
 	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool(
 			final World w,
@@ -168,7 +168,7 @@ public class BlockLightDetector extends AEBaseTileBlock implements IOrientableBl
 	 * + (double) z + 0.15,// ahh xOff + (double) x + 0.85, yOff + (double) y + 0.85, zOff + (double) z + 0.85 ) );
 	 */
 	}
-	
+
 	@Override
 	public void onNeighborBlockChange(
 			final World w,
@@ -188,7 +188,7 @@ public class BlockLightDetector extends AEBaseTileBlock implements IOrientableBl
 		w.destroyBlock( pos, true );
 		w.markBlockForUpdate( pos );
 	}
-	
+
 	@Override
 	public boolean canPlaceBlockAt(
 			final World w,
@@ -213,6 +213,6 @@ public class BlockLightDetector extends AEBaseTileBlock implements IOrientableBl
 	@Override
 	public IOrientable getOrientable( final IBlockAccess w, final BlockPos pos )
 	{
-		return new MetaRotation( w, pos,true );
+		return new MetaRotation( w, pos, true );
 	}
 }

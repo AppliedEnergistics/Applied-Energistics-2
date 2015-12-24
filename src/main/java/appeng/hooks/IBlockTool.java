@@ -38,5 +38,5 @@ public interface IBlockTool
 			float hitX,
 			float hitY,
 			float hitZ );
-	
+
 }

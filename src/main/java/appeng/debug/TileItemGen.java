@@ -131,16 +131,16 @@ public class TileItemGen extends AEBaseTile implements IInventory
 	public void openInventory(
 			final EntityPlayer player )
 	{
-		
+
 	}
-	
+
 	@Override
 	public void closeInventory(
 			final EntityPlayer player )
 	{
-		
+
 	}
-	
+
 	@Override
 	public boolean isItemValidForSlot( final int i, final ItemStack itemstack )
 	{
@@ -165,7 +165,7 @@ public class TileItemGen extends AEBaseTile implements IInventory
 			final int id,
 			final int value )
 	{
-		
+
 	}
 
 	@Override
@@ -177,6 +177,6 @@ public class TileItemGen extends AEBaseTile implements IInventory
 	@Override
 	public void clear()
 	{
-		
+
 	}
 }

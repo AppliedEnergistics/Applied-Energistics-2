@@ -18,66 +18,57 @@
 
 package appeng.tile.powersink;
 
+
 /*
-import net.minecraftforge.common.util.ForgeDirection;
-import universalelectricity.core.block.IElectrical;
-import universalelectricity.core.electricity.ElectricityPack;
-import appeng.api.config.PowerUnits;
-
-public abstract class UniversalElectricity extends ThermalExpansion implements IElectrical
-{
-
-	@Override
-	public final boolean canConnect(AEPartLocation direction)
-	{
-		return internalCanAcceptPower && getPowerSides().contains( direction );
-	}
-
-	@Override
-	public final float receiveElectricity(AEPartLocation from, ElectricityPack receive, boolean doReceive)
-	{
-		float accepted = 0;
-		double receivedPower = receive.getWatts();
-
-		if ( doReceive )
-		{
-			accepted = (float) (receivedPower - injectExternalPower( PowerUnits.KJ, receivedPower ));
-		}
-		else
-		{
-			double whatIWant = getExternalPowerDemand( PowerUnits.KJ );
-			if ( whatIWant > receivedPower )
-				accepted = (float) receivedPower;
-			else
-				accepted = (float) whatIWant;
-		}
-
-		return accepted;
-	}
-
-	@Override
-	public final float getRequest(AEPartLocation direction)
-	{
-		return (float) getExternalPowerDemand( PowerUnits.KJ );
-	}
-
-	@Override
-	public final float getVoltage()
-	{
-		return 120;
-	}
-
-	@Override
-	public final ElectricityPack provideElectricity(AEPartLocation from, ElectricityPack request, boolean doProvide)
-	{
-		return null; // cannot be dis-charged
-	}
-
-	@Override
-	public final float getProvide(AEPartLocation direction)
-	{
-		return 0;
-	}
-
-}
-*/
+ * import net.minecraftforge.common.util.ForgeDirection;
+ * import universalelectricity.core.block.IElectrical;
+ * import universalelectricity.core.electricity.ElectricityPack;
+ * import appeng.api.config.PowerUnits;
+ * public abstract class UniversalElectricity extends ThermalExpansion implements IElectrical
+ * {
+ * @Override
+ * public final boolean canConnect(AEPartLocation direction)
+ * {
+ * return internalCanAcceptPower && getPowerSides().contains( direction );
+ * }
+ * @Override
+ * public final float receiveElectricity(AEPartLocation from, ElectricityPack receive, boolean doReceive)
+ * {
+ * float accepted = 0;
+ * double receivedPower = receive.getWatts();
+ * if ( doReceive )
+ * {
+ * accepted = (float) (receivedPower - injectExternalPower( PowerUnits.KJ, receivedPower ));
+ * }
+ * else
+ * {
+ * double whatIWant = getExternalPowerDemand( PowerUnits.KJ );
+ * if ( whatIWant > receivedPower )
+ * accepted = (float) receivedPower;
+ * else
+ * accepted = (float) whatIWant;
+ * }
+ * return accepted;
+ * }
+ * @Override
+ * public final float getRequest(AEPartLocation direction)
+ * {
+ * return (float) getExternalPowerDemand( PowerUnits.KJ );
+ * }
+ * @Override
+ * public final float getVoltage()
+ * {
+ * return 120;
+ * }
+ * @Override
+ * public final ElectricityPack provideElectricity(AEPartLocation from, ElectricityPack request, boolean doProvide)
+ * {
+ * return null; // cannot be dis-charged
+ * }
+ * @Override
+ * public final float getProvide(AEPartLocation direction)
+ * {
+ * return 0;
+ * }
+ * }
+ */

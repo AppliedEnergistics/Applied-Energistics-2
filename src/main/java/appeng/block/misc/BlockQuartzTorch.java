@@ -63,25 +63,25 @@ public class BlockQuartzTorch extends AEBaseBlock implements IOrientableBlock, I
 		this.setFullSize( false );
 		this.setOpaque( false );
 	}
-	
+
 	@Override
 	public int getMetaFromState(
 			final IBlockState state )
 	{
 		return 0;
 	}
-	
+
 	@Override
 	public IBlockState getStateFromMeta(
 			final int meta )
 	{
 		return this.getDefaultState();
 	}
-	
+
 	@Override
 	protected IProperty[] getAEStates()
 	{
-		return new IProperty[]{ BlockTorch.FACING };
+		return new IProperty[] { BlockTorch.FACING };
 	}
 
 	@Override
@@ -120,7 +120,7 @@ public class BlockQuartzTorch extends AEBaseBlock implements IOrientableBlock, I
 	 * + (double) z + 0.15,// ahh xOff + (double) x + 0.85, yOff + (double) y + 0.85, zOff + (double) z + 0.85 ) );
 	 */
 	}
-	
+
 	@Override
 	@SideOnly( Side.CLIENT )
 	public void randomDisplayTick(
@@ -196,6 +196,6 @@ public class BlockQuartzTorch extends AEBaseBlock implements IOrientableBlock, I
 	@Override
 	public IOrientable getOrientable( final IBlockAccess w, final BlockPos pos )
 	{
-		return new MetaRotation( w, pos,true );
+		return new MetaRotation( w, pos, true );
 	}
 }

@@ -61,4 +61,4 @@ package appeng.items.tools.powered.powersink;
 //	{
 //		return (int) PowerUnits.AE.convertTo( PowerUnits.RF, this.getAEMaxPower( is ) );
 //	}
-//}
+// }

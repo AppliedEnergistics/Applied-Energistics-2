@@ -67,7 +67,8 @@ public final class ForgeExportConfig implements ExportConfig
 	private final Configuration config;
 
 	/**
-	 * Constructor using the configuration. Apparently there are some race conditions if constructing configurations on multiple file accesses
+	 * Constructor using the configuration. Apparently there are some race conditions if constructing configurations on
+	 * multiple file accesses
 	 *
 	 * @param config to be wrapped configuration.
 	 */

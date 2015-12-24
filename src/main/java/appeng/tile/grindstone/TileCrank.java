@@ -164,7 +164,7 @@ public class TileCrank extends AEBaseTile implements ICustomCollision, IUpdatePl
 		final double zOff = -0.15 * this.getUp().getFrontOffsetZ();
 		return Collections.singletonList( AxisAlignedBB.fromBounds( xOff + 0.15, yOff + 0.15, zOff + 0.15, xOff + 0.85, yOff + 0.85, zOff + 0.85 ) );
 	}
-	
+
 	@Override
 	public void addCollidingBlockToList(
 			final World w,

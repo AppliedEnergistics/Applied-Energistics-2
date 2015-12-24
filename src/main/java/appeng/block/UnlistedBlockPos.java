@@ -1,7 +1,10 @@
+
 package appeng.block;
+
 
 import net.minecraft.util.BlockPos;
 import net.minecraftforge.common.property.IUnlistedProperty;
+
 
 public final class UnlistedBlockPos implements IUnlistedProperty<BlockPos>
 {

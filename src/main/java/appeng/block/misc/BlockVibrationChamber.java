@@ -52,9 +52,9 @@ public final class BlockVibrationChamber extends AEBaseTileBlock
 		this.setHardness( 4.2F );
 		this.setFeature( EnumSet.of( AEFeature.PowerGen ) );
 	}
-	
+
 	@Override
-	public appeng.client.texture.IAESprite getIcon( final IBlockAccess w, final BlockPos pos, final EnumFacing side)
+	public appeng.client.texture.IAESprite getIcon( final IBlockAccess w, final BlockPos pos, final EnumFacing side )
 	{
 		final IAESprite ico = super.getIcon( w, pos, side );
 		final TileVibrationChamber tvc = this.getTileEntity( w, pos );

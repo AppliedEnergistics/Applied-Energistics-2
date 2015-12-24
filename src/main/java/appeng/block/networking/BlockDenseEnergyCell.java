@@ -36,9 +36,9 @@ public class BlockDenseEnergyCell extends BlockEnergyCell
 	}
 
 	@Override
-	public appeng.client.texture.IAESprite getIcon( final net.minecraft.util.EnumFacing side, final net.minecraft.block.state.IBlockState state)
+	public appeng.client.texture.IAESprite getIcon( final net.minecraft.util.EnumFacing side, final net.minecraft.block.state.IBlockState state )
 	{
-		switch( (int)state.getValue( ENERGY_STORAGE ) )
+		switch( (int) state.getValue( ENERGY_STORAGE ) )
 		{
 			default:
 			case 0:
@@ -59,7 +59,7 @@ public class BlockDenseEnergyCell extends BlockEnergyCell
 				return ExtraBlockTextures.MEDenseEnergyCell7.getIcon();
 		}
 	}
-	
+
 	@Override
 	public double getMaxPower()
 	{

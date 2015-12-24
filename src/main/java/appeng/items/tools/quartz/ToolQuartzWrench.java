@@ -36,9 +36,10 @@ import appeng.util.Platform;
 
 import com.google.common.base.Optional;
 
+
 // TODO BC Integration
 //@Interface( iface = "buildcraft.api.tools.IToolWrench", iname = IntegrationType.BuildCraftCore )
-public class ToolQuartzWrench extends AEBaseItem implements IAEWrench /*, IToolWrench */
+public class ToolQuartzWrench extends AEBaseItem implements IAEWrench /* , IToolWrench */
 {
 
 	public ToolQuartzWrench( final AEFeature type )
@@ -99,16 +100,15 @@ public class ToolQuartzWrench extends AEBaseItem implements IAEWrench /*, IToolW
 
 	// TODO: BC Wrench Integration
 	/*
-	@Override
-	public boolean canWrench( EntityPlayer player, int x, int y, int z )
-	{
-		return true;
-	}
-
-	@Override
-	public void wrenchUsed( EntityPlayer player, int x, int y, int z )
-	{
-		player.swingItem();
-	}
-	*/
+	 * @Override
+	 * public boolean canWrench( EntityPlayer player, int x, int y, int z )
+	 * {
+	 * return true;
+	 * }
+	 * @Override
+	 * public void wrenchUsed( EntityPlayer player, int x, int y, int z )
+	 * {
+	 * player.swingItem();
+	 * }
+	 */
 }

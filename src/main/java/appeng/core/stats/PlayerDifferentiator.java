@@ -33,14 +33,17 @@ public class PlayerDifferentiator
 {
 	/**
 	 * Can determine if an {@link net.minecraft.entity.player.EntityPlayer} is not a real player.
-	 * This is based on if the {@param player} is:
+	 * This is based on if the
+	 * 
+	 * @param player is:
 	 * - null
 	 * - dead
 	 * - fake
 	 *
 	 * @param player to be checked player
 	 *
-	 * @return true if {@param player} is not a real player
+	 * @return true if
+	 * @param player is not a real player
 	 */
 	boolean isNoPlayer( final EntityPlayer player )
 	{

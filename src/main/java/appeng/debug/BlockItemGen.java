@@ -35,5 +35,5 @@ public class BlockItemGen extends AEBaseTileBlock
 		this.setTileEntity( TileItemGen.class );
 		this.setFeature( EnumSet.of( AEFeature.UnsupportedDeveloperTools, AEFeature.Creative ) );
 	}
-	
+
 }

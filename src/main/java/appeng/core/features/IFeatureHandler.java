@@ -29,5 +29,5 @@ public interface IFeatureHandler
 
 	IItemDefinition getDefinition();
 
-	void register(Side side );
+	void register( Side side );
 }

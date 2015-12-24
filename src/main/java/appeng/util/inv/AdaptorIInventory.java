@@ -253,7 +253,7 @@ public class AdaptorIInventory extends InventoryAdaptor
 	 * than the limit.
 	 *
 	 * @param itemsToAdd itemStack to add to the inventory
-	 * @param modulate   true to modulate, false for simulate
+	 * @param modulate true to modulate, false for simulate
 	 *
 	 * @return the left itemstack, which could not be added
 	 */

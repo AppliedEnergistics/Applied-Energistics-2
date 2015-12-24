@@ -80,7 +80,7 @@ public class TileCraftingStorageTile extends TileCraftingTile
 			return 0;
 		}
 
-		final BlockCraftingUnit unit = (BlockCraftingUnit)this.worldObj.getBlockState( this.pos ).getBlock();
+		final BlockCraftingUnit unit = (BlockCraftingUnit) this.worldObj.getBlockState( this.pos ).getBlock();
 		switch( unit.type )
 		{
 			default:

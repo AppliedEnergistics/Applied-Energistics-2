@@ -90,7 +90,7 @@ public class PacketClick extends AppEngPacket
 			if( is.getItem() instanceof ToolNetworkTool )
 			{
 				final ToolNetworkTool tnt = (ToolNetworkTool) is.getItem();
-				tnt.serverSideToolLogic( is, player, player.worldObj, new BlockPos( this.x, this.y, this.z), EnumFacing.VALUES[ this.side ], this.hitX, this.hitY, this.hitZ );
+				tnt.serverSideToolLogic( is, player, player.worldObj, new BlockPos( this.x, this.y, this.z ), EnumFacing.VALUES[this.side], this.hitX, this.hitY, this.hitZ );
 			}
 
 			else if( maybeMemoryCard.isSameAs( is ) )

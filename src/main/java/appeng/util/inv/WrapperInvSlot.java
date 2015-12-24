@@ -121,14 +121,14 @@ public class WrapperInvSlot
 		public void openInventory(
 				final EntityPlayer player )
 		{
-			this.inv.openInventory(player);			
+			this.inv.openInventory( player );
 		}
-		
+
 		@Override
 		public void closeInventory(
 				final EntityPlayer player )
 		{
-			this.inv.closeInventory(player);			
+			this.inv.closeInventory( player );
 		}
 
 		@Override
@@ -136,20 +136,20 @@ public class WrapperInvSlot
 		{
 			this.inv.clear();
 		}
-		
+
 		@Override
 		public int getField(
 				final int id )
 		{
 			return this.inv.getField( id );
 		}
-		
+
 		@Override
 		public int getFieldCount()
 		{
 			return this.inv.getFieldCount();
 		}
-		
+
 		@Override
 		public boolean isItemValidForSlot( final int i, final ItemStack itemstack )
 		{

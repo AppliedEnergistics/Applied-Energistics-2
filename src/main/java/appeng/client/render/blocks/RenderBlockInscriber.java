@@ -74,19 +74,19 @@ public class RenderBlockInscriber extends BaseBlockRender<BlockInscriber, TileIn
 
 		// sides...
 		this.setInvRenderBounds( renderer, 3, 1, 0, 13, 15, 3 );
-		this.renderInvBlock( EnumSet.allOf( AEPartLocation.class ), blk, is,  0xffffff, renderer );
+		this.renderInvBlock( EnumSet.allOf( AEPartLocation.class ), blk, is, 0xffffff, renderer );
 
 		this.setInvRenderBounds( renderer, 0, 1, 0, 3, 15, 16 );
-		this.renderInvBlock( EnumSet.allOf( AEPartLocation.class ), blk, is,  0xffffff, renderer );
+		this.renderInvBlock( EnumSet.allOf( AEPartLocation.class ), blk, is, 0xffffff, renderer );
 
 		this.setInvRenderBounds( renderer, 13, 1, 0, 16, 15, 16 );
-		this.renderInvBlock( EnumSet.allOf( AEPartLocation.class ), blk, is,  0xffffff, renderer );
+		this.renderInvBlock( EnumSet.allOf( AEPartLocation.class ), blk, is, 0xffffff, renderer );
 
 		this.setInvRenderBounds( renderer, 1, 0, 1, 15, 2, 15 );
-		this.renderInvBlock( EnumSet.allOf( AEPartLocation.class ), blk, is,  0xffffff, renderer );
+		this.renderInvBlock( EnumSet.allOf( AEPartLocation.class ), blk, is, 0xffffff, renderer );
 
 		this.setInvRenderBounds( renderer, 1, 14, 1, 15, 16, 15 );
-		this.renderInvBlock( EnumSet.allOf( AEPartLocation.class ), blk, is,  0xffffff, renderer );
+		this.renderInvBlock( EnumSet.allOf( AEPartLocation.class ), blk, is, 0xffffff, renderer );
 
 		blk.getRendererInstance().setTemporaryRenderIcon( ExtraBlockTextures.BlockInscriberInside.getIcon() );
 
@@ -252,7 +252,7 @@ public class RenderBlockInscriber extends BaseBlockRender<BlockInscriber, TileIn
 				}
 			}
 
-			this.renderItem( is, 0.0f, block, tile, tess, x,y,z, f, renderer );
+			this.renderItem( is, 0.0f, block, tile, tess, x, y, z, f, renderer );
 		}
 		else
 		{
@@ -279,12 +279,14 @@ public class RenderBlockInscriber extends BaseBlockRender<BlockInscriber, TileIn
 				final Block blk = Block.getBlockFromItem( sis.getItem() );
 
 				/*
-				if( sis.getItemSpriteNumber() == 0 && block != null && IRenderHelper.renderItemIn3d( blk.getRenderType() ) )
-				{
-					GL11.glRotatef( 25.0f, 1.0f, 0.0f, 0.0f );
-					GL11.glRotatef( 15.0f, 0.0f, 1.0f, 0.0f );
-					GL11.glRotatef( 30.0f, 0.0f, 1.0f, 0.0f );
-				}*/
+				 * if( sis.getItemSpriteNumber() == 0 && block != null && IRenderHelper.renderItemIn3d(
+				 * blk.getRenderType() ) )
+				 * {
+				 * GL11.glRotatef( 25.0f, 1.0f, 0.0f, 0.0f );
+				 * GL11.glRotatef( 15.0f, 0.0f, 1.0f, 0.0f );
+				 * GL11.glRotatef( 30.0f, 0.0f, 1.0f, 0.0f );
+				 * }
+				 */
 
 				GL11.glRotatef( 90.0f, 1, 0, 0 );
 

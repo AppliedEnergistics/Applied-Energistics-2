@@ -59,7 +59,7 @@ public class BlockSecurity extends AEBaseTileBlock
 	{
 		return RendererSecurity.class;
 	}
-	
+
 	@Override
 	public boolean onActivated(
 			final World w,

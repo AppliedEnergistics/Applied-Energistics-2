@@ -60,7 +60,7 @@ public class LocationRotation implements IOrientable
 	public EnumFacing getUp()
 	{
 		final int num = Math.abs( this.x + this.y + this.z ) % 6;
-		return EnumFacing.VALUES[ num ];
+		return EnumFacing.VALUES[num];
 	}
 
 	@Override

@@ -238,7 +238,6 @@ public final class CompassService
 		}
 	}
 
-
 	private class CMDirectionRequest implements Runnable
 	{
 

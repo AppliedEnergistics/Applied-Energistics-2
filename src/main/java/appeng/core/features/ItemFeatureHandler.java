@@ -71,7 +71,7 @@ public final class ItemFeatureHandler implements IFeatureHandler
 			String name = this.extractor.get();
 			final String itemPhysicalName = name;
 
-			//this.item.setTextureName( "appliedenergistics2:" + name );
+			// this.item.setTextureName( "appliedenergistics2:" + name );
 			this.item.setUnlocalizedName( "appliedenergistics2." + name );
 
 			if( this.item instanceof ItemFacade )
@@ -92,7 +92,7 @@ public final class ItemFeatureHandler implements IFeatureHandler
 				name = "ItemMultiPart";
 			}
 
-			//			"item." +
+			// "item." +
 			GameRegistry.registerItem( this.item, name );
 
 			if( side == Side.CLIENT )

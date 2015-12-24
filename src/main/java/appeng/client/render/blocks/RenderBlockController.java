@@ -44,11 +44,11 @@ public class RenderBlockController extends BaseBlockRender<BlockController, Tile
 	public boolean renderInWorld( final BlockController blk, final IBlockAccess world, final BlockPos pos, final ModelGenerator renderer )
 	{
 
-		final boolean xx = this.getTileEntity( world,  pos.offset( EnumFacing.WEST ) ) instanceof TileController && this.getTileEntity( world, pos.offset( EnumFacing.EAST ) ) instanceof TileController;
+		final boolean xx = this.getTileEntity( world, pos.offset( EnumFacing.WEST ) ) instanceof TileController && this.getTileEntity( world, pos.offset( EnumFacing.EAST ) ) instanceof TileController;
 		final boolean yy = this.getTileEntity( world, pos.offset( EnumFacing.DOWN ) ) instanceof TileController && this.getTileEntity( world, pos.offset( EnumFacing.UP ) ) instanceof TileController;
-		final boolean zz = this.getTileEntity( world, pos.offset( EnumFacing.SOUTH )) instanceof TileController && this.getTileEntity( world, pos.offset( EnumFacing.NORTH ) ) instanceof TileController;
+		final boolean zz = this.getTileEntity( world, pos.offset( EnumFacing.SOUTH ) ) instanceof TileController && this.getTileEntity( world, pos.offset( EnumFacing.NORTH ) ) instanceof TileController;
 
-		final BlockController.ControllerBlockState meta = ( ControllerBlockState ) world.getBlockState( pos ).getValue( BlockController.CONTROLLER_STATE );
+		final BlockController.ControllerBlockState meta = (ControllerBlockState) world.getBlockState( pos ).getValue( BlockController.CONTROLLER_STATE );
 		final boolean hasPower = meta != BlockController.ControllerBlockState.OFFLINE;
 		final boolean isConflict = meta == BlockController.ControllerBlockState.CONFLICTED;
 

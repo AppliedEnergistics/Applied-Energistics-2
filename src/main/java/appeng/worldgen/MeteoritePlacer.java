@@ -405,7 +405,7 @@ public final class MeteoritePlacer
 							final double dist = dx * dx + dy * dy + dz * dz;
 
 							final Block xf = w.getBlock( i, j - 1, k );
-							if( !xf.isReplaceable( w.getWorld(), new BlockPos(i, j - 1, k) ) )
+							if( !xf.isReplaceable( w.getWorld(), new BlockPos( i, j - 1, k ) ) )
 							{
 								final double extraRange = Math.random() * 0.6;
 								final double height = this.crater * ( extraRange + 0.2 ) - Math.abs( dist - this.crater * 1.7 );

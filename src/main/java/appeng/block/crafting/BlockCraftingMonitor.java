@@ -60,10 +60,10 @@ public class BlockCraftingMonitor extends BlockCraftingUnit
 		{
 			for( final Block craftingUnitBlock : AEApi.instance().definitions().blocks().craftingUnit().maybeBlock().asSet() )
 			{
-				return ( (BlockCraftingUnit)craftingUnitBlock ).getIcon( side, state );
+				return ( (BlockCraftingUnit) craftingUnitBlock ).getIcon( side, state );
 			}
 		}
-		
+
 		return ExtraBlockTextures.BlockCraftingMonitorFit_Light.getIcon();
 	}
 

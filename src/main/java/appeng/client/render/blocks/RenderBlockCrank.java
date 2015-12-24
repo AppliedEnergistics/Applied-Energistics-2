@@ -94,29 +94,27 @@ public class RenderBlockCrank extends BaseBlockRender<BlockCrank, TileCrank>
 		GL11.glScalef( -1, 1, 1 );
 		GL11.glTranslated( -0.5, 0, -0.5 );
 
-		//tess.setTranslation( -tc.getPos().getX(), -tc.getPos().getY(), -tc.getPos().getZ() );
-		//tess.startDrawingQuads();
+		// tess.setTranslation( -tc.getPos().getX(), -tc.getPos().getY(), -tc.getPos().getZ() );
+		// tess.startDrawingQuads();
 
 		final RenderItem ri = Minecraft.getMinecraft().getRenderItem();
 
 		final ItemStack stack = new ItemStack( blk );
 		final IBakedModel model = ri.getItemModelMesher().getItemModel( stack );
-        Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelRenderer().renderModelBrightnessColor( model, 1.0F, 1.0F, 1.0F, 1.0F );
+		Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelRenderer().renderModelBrightnessColor( model, 1.0F, 1.0F, 1.0F, 1.0F );
 
 		/*
-		renderBlocks.renderAllFaces = true;
-		renderBlocks.blockAccess = tc.getWorld();
+		 * renderBlocks.renderAllFaces = true;
+		 * renderBlocks.blockAccess = tc.getWorld();
+		 * renderBlocks.setRenderBounds( 0.5D - 0.05, 0.5D - 0.5, 0.5D - 0.05, 0.5D + 0.05, 0.5D + 0.1, 0.5D + 0.05 );
+		 * renderBlocks.renderStandardBlock( blk, tc.getPos());
+		 * renderBlocks.setRenderBounds( 0.70D - 0.15, 0.55D - 0.05, 0.5D - 0.05, 0.70D + 0.15, 0.55D + 0.05, 0.5D +
+		 * 0.05 );
+		 * renderBlocks.renderStandardBlock( blk, tc.getPos() );
+		 */
 
-		renderBlocks.setRenderBounds( 0.5D - 0.05, 0.5D - 0.5, 0.5D - 0.05, 0.5D + 0.05, 0.5D + 0.1, 0.5D + 0.05 );
-
-		renderBlocks.renderStandardBlock( blk,  tc.getPos());
-		renderBlocks.setRenderBounds( 0.70D - 0.15, 0.55D - 0.05, 0.5D - 0.05, 0.70D + 0.15, 0.55D + 0.05, 0.5D + 0.05 );
-
-		renderBlocks.renderStandardBlock( blk, tc.getPos()  );
-		*/
-
-		//Tessellator.getInstance().draw();
-		//tess.setTranslation( 0, 0, 0 );
+		// Tessellator.getInstance().draw();
+		// tess.setTranslation( 0, 0, 0 );
 		RenderHelper.enableStandardItemLighting();
 	}
 }

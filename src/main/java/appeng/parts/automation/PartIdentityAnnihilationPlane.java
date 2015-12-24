@@ -83,7 +83,7 @@ public class PartIdentityAnnihilationPlane extends PartAnnihilationPlane
 	{
 		final FakePlayer fakePlayer = FakePlayerFactory.getMinecraft( w );
 		final IBlockState state = w.getBlockState( pos );
-		
+
 		if( state.getBlock().canSilkHarvest( w, pos, state, fakePlayer ) )
 		{
 			final List<ItemStack> out = new ArrayList<ItemStack>( 1 );

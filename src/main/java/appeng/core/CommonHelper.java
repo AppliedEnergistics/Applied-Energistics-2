@@ -48,7 +48,7 @@ public abstract class CommonHelper
 
 	public abstract World getWorld();
 
-	public abstract void bindTileEntitySpecialRenderer( Class <? extends TileEntity> tile, AEBaseBlock blk );
+	public abstract void bindTileEntitySpecialRenderer( Class<? extends TileEntity> tile, AEBaseBlock blk );
 
 	public abstract List<EntityPlayer> getPlayers();
 
@@ -71,8 +71,8 @@ public abstract class CommonHelper
 	public abstract void updateRenderMode( EntityPlayer player );
 
 	public abstract void missingCoreMod();
-	
-	public abstract void configureIcon(Object item, String name );
+
+	public abstract void configureIcon( Object item, String name );
 
 	public abstract ResourceLocation addIcon(
 			String string );

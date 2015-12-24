@@ -109,15 +109,15 @@ public class NetworkToolViewer implements INetworkTool
 	}
 
 	@Override
-	public void openInventory( final EntityPlayer player)
+	public void openInventory( final EntityPlayer player )
 	{
-		this.inv.openInventory(player);
+		this.inv.openInventory( player );
 	}
 
 	@Override
-	public void closeInventory( final EntityPlayer player)
+	public void closeInventory( final EntityPlayer player )
 	{
-		this.inv.closeInventory(player);
+		this.inv.closeInventory( player );
 	}
 
 	@Override

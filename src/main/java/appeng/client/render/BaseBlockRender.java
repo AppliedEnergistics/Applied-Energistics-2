@@ -66,7 +66,7 @@ public class BaseBlockRender<B extends AEBaseBlock, T extends AEBaseTile>
 	private final FloatBuffer rotMat = BufferUtils.createFloatBuffer( 16 );
 
 	private static int dynRender = 0;
-	private final ModelResourceLocation modelPath = new ModelResourceLocation( new ResourceLocation( AppEng.MOD_ID, "DynamicRender"+dynRender++ ), "inventory" );
+	private final ModelResourceLocation modelPath = new ModelResourceLocation( new ResourceLocation( AppEng.MOD_ID, "DynamicRender" + dynRender++ ), "inventory" );
 
 	public BaseBlockRender()
 	{
@@ -330,7 +330,7 @@ public class BaseBlockRender<B extends AEBaseBlock, T extends AEBaseTile>
 		return ORIENTATION_MAP[a][b][c];
 	}
 
-	public void renderInvBlock( final EnumSet<AEPartLocation> sides, final B block, final ItemStack item,  final int color, final ModelGenerator tess )
+	public void renderInvBlock( final EnumSet<AEPartLocation> sides, final B block, final ItemStack item, final int color, final ModelGenerator tess )
 	{
 		if( block != null && block.hasSubtypes() && item != null )
 		{
@@ -338,48 +338,48 @@ public class BaseBlockRender<B extends AEBaseBlock, T extends AEBaseTile>
 		}
 
 		final IAESprite[] icons = tess.getIcon( item == null ? block.getDefaultState() : block.getStateFromMeta( item.getMetadata() ) );
-		final BlockPos zero = new BlockPos(0,0,0);
+		final BlockPos zero = new BlockPos( 0, 0, 0 );
 
 		if( sides.contains( AEPartLocation.DOWN ) )
 		{
 			tess.setNormal( 0.0F, -1.0F, 0.0F );
 			tess.setColorOpaque_I( color );
-			tess.renderFaceYNeg( block, zero, this.firstNotNull( tess.getOverrideBlockTexture(), block.getRendererInstance().getTexture( AEPartLocation.DOWN ), icons[ AEPartLocation.DOWN.ordinal() ] ) );
+			tess.renderFaceYNeg( block, zero, this.firstNotNull( tess.getOverrideBlockTexture(), block.getRendererInstance().getTexture( AEPartLocation.DOWN ), icons[AEPartLocation.DOWN.ordinal()] ) );
 		}
 
 		if( sides.contains( AEPartLocation.UP ) )
 		{
 			tess.setNormal( 0.0F, 1.0F, 0.0F );
 			tess.setColorOpaque_I( color );
-			tess.renderFaceYPos( block, zero, this.firstNotNull( tess.getOverrideBlockTexture(), block.getRendererInstance().getTexture( AEPartLocation.UP ), icons[ AEPartLocation.UP.ordinal() ] ) );
+			tess.renderFaceYPos( block, zero, this.firstNotNull( tess.getOverrideBlockTexture(), block.getRendererInstance().getTexture( AEPartLocation.UP ), icons[AEPartLocation.UP.ordinal()] ) );
 		}
 
 		if( sides.contains( AEPartLocation.NORTH ) )
 		{
 			tess.setNormal( 0.0F, 0.0F, -1.0F );
 			tess.setColorOpaque_I( color );
-			tess.renderFaceZNeg( block, zero, this.firstNotNull( tess.getOverrideBlockTexture(), block.getRendererInstance().getTexture( AEPartLocation.NORTH ), icons[ AEPartLocation.NORTH.ordinal() ] ) );
+			tess.renderFaceZNeg( block, zero, this.firstNotNull( tess.getOverrideBlockTexture(), block.getRendererInstance().getTexture( AEPartLocation.NORTH ), icons[AEPartLocation.NORTH.ordinal()] ) );
 		}
 
 		if( sides.contains( AEPartLocation.SOUTH ) )
 		{
 			tess.setNormal( 0.0F, 0.0F, 1.0F );
 			tess.setColorOpaque_I( color );
-			tess.renderFaceZPos( block, zero, this.firstNotNull( tess.getOverrideBlockTexture(), block.getRendererInstance().getTexture( AEPartLocation.SOUTH ), icons[ AEPartLocation.SOUTH.ordinal() ] ) );
+			tess.renderFaceZPos( block, zero, this.firstNotNull( tess.getOverrideBlockTexture(), block.getRendererInstance().getTexture( AEPartLocation.SOUTH ), icons[AEPartLocation.SOUTH.ordinal()] ) );
 		}
 
 		if( sides.contains( AEPartLocation.WEST ) )
 		{
 			tess.setNormal( -1.0F, 0.0F, 0.0F );
 			tess.setColorOpaque_I( color );
-			tess.renderFaceXNeg( block, zero, this.firstNotNull( tess.getOverrideBlockTexture(), block.getRendererInstance().getTexture( AEPartLocation.WEST ), icons[ AEPartLocation.WEST.ordinal() ] ) );
+			tess.renderFaceXNeg( block, zero, this.firstNotNull( tess.getOverrideBlockTexture(), block.getRendererInstance().getTexture( AEPartLocation.WEST ), icons[AEPartLocation.WEST.ordinal()] ) );
 		}
 
 		if( sides.contains( AEPartLocation.EAST ) )
 		{
 			tess.setNormal( 1.0F, 0.0F, 0.0F );
 			tess.setColorOpaque_I( color );
-			tess.renderFaceXPos( block, zero, this.firstNotNull( tess.getOverrideBlockTexture(), block.getRendererInstance().getTexture( AEPartLocation.EAST ), icons[ AEPartLocation.EAST.ordinal() ]) );
+			tess.renderFaceXPos( block, zero, this.firstNotNull( tess.getOverrideBlockTexture(), block.getRendererInstance().getTexture( AEPartLocation.EAST ), icons[AEPartLocation.EAST.ordinal()] ) );
 		}
 	}
 
@@ -557,25 +557,25 @@ public class BaseBlockRender<B extends AEBaseBlock, T extends AEBaseTile>
 
 		final double layerBX = 0.0;
 		final double layerAY = 0.0;
-		this.renderFace(orientation, tess, offsetX, offsetY, offsetZ, layerAX, layerAY, layerAZ, layerBX, layerBY, layerBZ,
+		this.renderFace( orientation, tess, offsetX, offsetY, offsetZ, layerAX, layerAY, layerAZ, layerBX, layerBY, layerBZ,
 				// u -> u
 				0, 1.0,
 				// v -> v
 				0, edgeThickness, ico, flip );
 
-		this.renderFace( orientation,tess, offsetX, offsetY, offsetZ, layerAX, layerAY, layerAZ, layerBX, layerBY, layerBZ,
+		this.renderFace( orientation, tess, offsetX, offsetY, offsetZ, layerAX, layerAY, layerAZ, layerBX, layerBY, layerBZ,
 				// u -> u
 				0.0, edgeThickness,
 				// v -> v
 				edgeThickness, 1.0 - edgeThickness, ico, flip );
 
-		this.renderFace( orientation,tess, offsetX, offsetY, offsetZ, layerAX, layerAY, layerAZ, layerBX, layerBY, layerBZ,
+		this.renderFace( orientation, tess, offsetX, offsetY, offsetZ, layerAX, layerAY, layerAZ, layerBX, layerBY, layerBZ,
 				// u -> u
 				1.0 - edgeThickness, 1.0,
 				// v -> v
 				edgeThickness, 1.0 - edgeThickness, ico, flip );
 
-		this.renderFace( orientation,tess, offsetX, offsetY, offsetZ, layerAX, layerAY, layerAZ, layerBX, layerBY, layerBZ,
+		this.renderFace( orientation, tess, offsetX, offsetY, offsetZ, layerAX, layerAY, layerAZ, layerBX, layerBY, layerBZ,
 				// u -> u
 				0, 1.0,
 				// v -> v
@@ -583,14 +583,14 @@ public class BaseBlockRender<B extends AEBaseBlock, T extends AEBaseTile>
 	}
 
 	@SideOnly( Side.CLIENT )
-	private void renderFace(  final EnumFacing face, final ModelGenerator tess, final double offsetX, final double offsetY, final double offsetZ, final double ax, final double ay, final double az, final double bx, final double by, final double bz, final double ua, final double ub, final double va, final double vb, final IAESprite ico, final boolean flip )
+	private void renderFace( final EnumFacing face, final ModelGenerator tess, final double offsetX, final double offsetY, final double offsetZ, final double ax, final double ay, final double az, final double bx, final double by, final double bz, final double ua, final double ub, final double va, final double vb, final IAESprite ico, final boolean flip )
 	{
 		if( flip )
 		{
-			tess.addVertexWithUV( face,offsetX + ax * ua + bx * va, offsetY + ay * ua + by * va, offsetZ + az * ua + bz * va, ico.getInterpolatedU( ua * 16.0 ), ico.getInterpolatedV( va * 16.0 ) );
-			tess.addVertexWithUV( face,offsetX + ax * ua + bx * vb, offsetY + ay * ua + by * vb, offsetZ + az * ua + bz * vb, ico.getInterpolatedU( ua * 16.0 ), ico.getInterpolatedV( vb * 16.0 ) );
-			tess.addVertexWithUV( face,offsetX + ax * ub + bx * vb, offsetY + ay * ub + by * vb, offsetZ + az * ub + bz * vb, ico.getInterpolatedU( ub * 16.0 ), ico.getInterpolatedV( vb * 16.0 ) );
-			tess.addVertexWithUV( face,offsetX + ax * ub + bx * va, offsetY + ay * ub + by * va, offsetZ + az * ub + bz * va, ico.getInterpolatedU( ub * 16.0 ), ico.getInterpolatedV( va * 16.0 ) );
+			tess.addVertexWithUV( face, offsetX + ax * ua + bx * va, offsetY + ay * ua + by * va, offsetZ + az * ua + bz * va, ico.getInterpolatedU( ua * 16.0 ), ico.getInterpolatedV( va * 16.0 ) );
+			tess.addVertexWithUV( face, offsetX + ax * ua + bx * vb, offsetY + ay * ua + by * vb, offsetZ + az * ua + bz * vb, ico.getInterpolatedU( ua * 16.0 ), ico.getInterpolatedV( vb * 16.0 ) );
+			tess.addVertexWithUV( face, offsetX + ax * ub + bx * vb, offsetY + ay * ub + by * vb, offsetZ + az * ub + bz * vb, ico.getInterpolatedU( ub * 16.0 ), ico.getInterpolatedV( vb * 16.0 ) );
+			tess.addVertexWithUV( face, offsetX + ax * ub + bx * va, offsetY + ay * ub + by * va, offsetZ + az * ub + bz * va, ico.getInterpolatedU( ub * 16.0 ), ico.getInterpolatedV( va * 16.0 ) );
 		}
 		else
 		{
@@ -691,7 +691,7 @@ public class BaseBlockRender<B extends AEBaseBlock, T extends AEBaseTile>
 		GL11.glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 
 		final BlockPos pos = tile.getPos();
-		renderer.setTranslation( -pos.getX(), -pos.getY(), -pos.getZ()  );
+		renderer.setTranslation( -pos.getX(), -pos.getY(), -pos.getZ() );
 
 		// note that this is a terrible approach...
 		renderer.setRenderBoundsFromBlock( block );
@@ -753,9 +753,9 @@ public class BaseBlockRender<B extends AEBaseBlock, T extends AEBaseTile>
 			GL11.glPushMatrix();
 			GL11.glTranslatef( 0, -0.14F, 0 );
 
-			//RenderItem.renderInFrame = true;
+			// RenderItem.renderInFrame = true;
 			Minecraft.getMinecraft().getRenderManager().renderEntityWithPosYaw( entityitem, 0.0D, 0.0D, 0.0D, 0.0F, 0.0F );
-			//RenderItem.renderInFrame = false;
+			// RenderItem.renderInFrame = false;
 
 			GL11.glPopMatrix();
 		}

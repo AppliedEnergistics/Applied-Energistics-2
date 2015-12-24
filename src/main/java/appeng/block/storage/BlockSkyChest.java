@@ -46,14 +46,14 @@ import appeng.util.Platform;
 
 public class BlockSkyChest extends AEBaseTileBlock implements ICustomCollision
 {
-	
+
 	public static enum SkyChestType
 	{
 		STONE, BLOCK
 	};
 
 	public final SkyChestType type;
-	
+
 	public BlockSkyChest( final SkyChestType type )
 	{
 		super( Material.rock, Optional.of( type.name() ) );
@@ -90,7 +90,7 @@ public class BlockSkyChest extends AEBaseTileBlock implements ICustomCollision
 
 		return true;
 	}
-	
+
 	@Override
 	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool(
 			final World w,
@@ -113,7 +113,7 @@ public class BlockSkyChest extends AEBaseTileBlock implements ICustomCollision
 		final double sc = 0.06;
 		return Collections.singletonList( AxisAlignedBB.fromBounds( Math.max( 0.0, offsetX - o.getFrontOffsetX() * sc ), Math.max( 0.0, offsetY - o.getFrontOffsetY() * sc ), Math.max( 0.0, offsetZ - o.getFrontOffsetZ() * sc ), Math.min( 1.0, ( 1.0 - offsetX ) - o.getFrontOffsetX() * sc ), Math.min( 1.0, ( 1.0 - offsetY ) - o.getFrontOffsetY() * sc ), Math.min( 1.0, ( 1.0 - offsetZ ) - o.getFrontOffsetZ() * sc ) ) );
 	}
-	
+
 	@Override
 	public void addCollidingBlockToList(
 			final World w,

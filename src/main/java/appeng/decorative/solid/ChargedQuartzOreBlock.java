@@ -42,7 +42,7 @@ public final class ChargedQuartzOreBlock extends QuartzOreBlock
 		this.setBoostBrightnessLow( 2 );
 		this.setBoostBrightnessHigh( 5 );
 	}
-	
+
 	@Override
 	public Item getItemDropped(
 			final IBlockState state,
@@ -61,7 +61,7 @@ public final class ChargedQuartzOreBlock extends QuartzOreBlock
 	public int damageDropped(
 			final IBlockState state )
 	{
-		for ( final ItemStack crystalStack : AEApi.instance().definitions().materials().certusQuartzCrystalCharged().maybeStack( 1 ).asSet() )
+		for( final ItemStack crystalStack : AEApi.instance().definitions().materials().certusQuartzCrystalCharged().maybeStack( 1 ).asSet() )
 		{
 			return crystalStack.getItemDamage();
 		}
@@ -76,7 +76,7 @@ public final class ChargedQuartzOreBlock extends QuartzOreBlock
 			final IBlockState state,
 			final Random r )
 	{
-		if ( !AEConfig.instance.enableEffects )
+		if( !AEConfig.instance.enableEffects )
 		{
 			return;
 		}

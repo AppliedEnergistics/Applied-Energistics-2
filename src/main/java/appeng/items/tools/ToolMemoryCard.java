@@ -161,7 +161,7 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 			return super.onItemUse( is, player, w, pos, side, hx, hy, hz );
 		}
 	}
-	
+
 	@Override
 	public boolean doesSneakBypassUse(
 			final World world,

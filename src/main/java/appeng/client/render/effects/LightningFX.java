@@ -84,8 +84,8 @@ public class LightningFX extends EntityFX
 	}
 
 	@Override
-    public void renderParticle( final WorldRenderer tess, final Entity p_180434_2_, final float l, final float rX, final float rY, final float rZ, final float rYZ, final float rXY )
-    {
+	public void renderParticle( final WorldRenderer tess, final Entity p_180434_2_, final float l, final float rX, final float rY, final float rZ, final float rYZ, final float rXY )
+	{
 		final float j = 1.0f;
 		tess.setColorRGBA_F( this.particleRed * j * 0.9f, this.particleGreen * j * 0.95f, this.particleBlue * j, this.particleAlpha );
 		if( this.particleAge == 3 )

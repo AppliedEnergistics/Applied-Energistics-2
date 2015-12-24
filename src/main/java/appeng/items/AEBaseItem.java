@@ -108,10 +108,10 @@ public abstract class AEBaseItem extends Item implements IAEFeature
 		super.addInformation( stack, player, lines, displayMoreInfo );
 	}
 
-	@SideOnly(Side.CLIENT)
+	@SideOnly( Side.CLIENT )
 	protected IAESprite myIcon = null;
-	
-	@SideOnly(Side.CLIENT)
+
+	@SideOnly( Side.CLIENT )
 	public void registerIcons(
 			final ClientHelper proxy, final String name )
 	{
@@ -124,11 +124,11 @@ public abstract class AEBaseItem extends Item implements IAEFeature
 		return this.myIcon;
 	}
 
-	@SideOnly(Side.CLIENT)
-	public void registerCustomIcon(			
+	@SideOnly( Side.CLIENT )
+	public void registerCustomIcon(
 			final TextureMap map )
 	{
-		
+
 	}
 
 	protected void getCheckedSubItems( final Item sameItem, final CreativeTabs creativeTab, final List<ItemStack> itemStacks )

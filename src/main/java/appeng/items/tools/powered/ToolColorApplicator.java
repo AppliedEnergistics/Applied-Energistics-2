@@ -175,7 +175,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 				}
 
 				// clean paint balls..
-				final Block testBlk = w.getBlockState(  pos.offset( side ) ).getBlock();
+				final Block testBlk = w.getBlockState( pos.offset( side ) ).getBlock();
 				final TileEntity painted = w.getTileEntity( pos.offset( side ) );
 				if( this.getAECurrentPower( is ) > powerPerUse && testBlk instanceof BlockPaint && painted instanceof TilePaint )
 				{
@@ -368,50 +368,50 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 	private boolean recolourBlock( final Block blk, final EnumFacing side, final World w, final BlockPos pos, final EnumFacing orientation, final AEColor newColor, final EntityPlayer p )
 	{
 		final IBlockState state = w.getBlockState( pos );
-		
+
 		if( blk instanceof BlockColored )
 		{
-			final EnumDyeColor color = ( EnumDyeColor ) state.getValue( BlockColored.COLOR );
-			
+			final EnumDyeColor color = (EnumDyeColor) state.getValue( BlockColored.COLOR );
+
 			if( newColor.dye == color )
 			{
 				return false;
 			}
-			
+
 			return w.setBlockState( pos, state.withProperty( BlockColored.COLOR, newColor.dye ) );
 		}
 
 		if( blk == Blocks.glass )
 		{
-			return w.setBlockState( pos, Blocks.stained_glass.getDefaultState().withProperty(  BlockStainedGlass.COLOR, newColor.dye)  );
+			return w.setBlockState( pos, Blocks.stained_glass.getDefaultState().withProperty( BlockStainedGlass.COLOR, newColor.dye ) );
 		}
 
 		if( blk == Blocks.stained_glass )
 		{
-			final EnumDyeColor color = ( EnumDyeColor ) state.getValue( BlockStainedGlass.COLOR );
-			
+			final EnumDyeColor color = (EnumDyeColor) state.getValue( BlockStainedGlass.COLOR );
+
 			if( newColor.dye == color )
 			{
 				return false;
 			}
-			
+
 			return w.setBlockState( pos, state.withProperty( BlockStainedGlass.COLOR, newColor.dye ) );
 		}
 
 		if( blk == Blocks.glass_pane )
 		{
-			return w.setBlockState( pos, Blocks.stained_glass_pane.getDefaultState().withProperty(  BlockStainedGlassPane.COLOR, newColor.dye)  );
+			return w.setBlockState( pos, Blocks.stained_glass_pane.getDefaultState().withProperty( BlockStainedGlassPane.COLOR, newColor.dye ) );
 		}
 
 		if( blk == Blocks.stained_glass_pane )
 		{
-			final EnumDyeColor color = ( EnumDyeColor ) state.getValue( BlockStainedGlassPane.COLOR );
-			
+			final EnumDyeColor color = (EnumDyeColor) state.getValue( BlockStainedGlassPane.COLOR );
+
 			if( newColor.dye == color )
 			{
 				return false;
 			}
-			
+
 			return w.setBlockState( pos, state.withProperty( BlockStainedGlassPane.COLOR, newColor.dye ) );
 		}
 

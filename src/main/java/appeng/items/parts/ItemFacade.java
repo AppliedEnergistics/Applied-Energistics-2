@@ -229,9 +229,9 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 		{
 			if( data.hasKey( "modid" ) && data.hasKey( "itemname" ) )
 			{
-				if ( data.getString( "modid" ).equals( "minecraft" ) )
+				if( data.getString( "modid" ).equals( "minecraft" ) )
 					return Block.getBlockFromName( data.getString( "itemname" ) );
-				
+
 				return GameRegistry.findBlock( data.getString( "modid" ), data.getString( "itemname" ) );
 			}
 			else
@@ -294,11 +294,11 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 
 		return false;
 	}
-	
+
 	@Override
-	public void registerCustomIcon(			
+	public void registerCustomIcon(
 			final TextureMap map )
 	{
-		this.myIcon = new BaseIcon( map.registerSprite( new ResourceLocation( AppEng.MOD_ID, "blocks/ItemFacade" ) ));
+		this.myIcon = new BaseIcon( map.registerSprite( new ResourceLocation( AppEng.MOD_ID, "blocks/ItemFacade" ) ) );
 	}
 }

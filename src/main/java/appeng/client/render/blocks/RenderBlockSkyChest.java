@@ -59,25 +59,25 @@ public class RenderBlockSkyChest extends BaseBlockRender<BlockSkyChest, TileSkyC
 	@Override
 	public void renderInventory( final BlockSkyChest blk, final ItemStack is, final ModelGenerator renderer, final ItemRenderType type, final Object[] obj )
 	{
-		//GL11.glEnable( GL12.GL_RESCALE_NORMAL );
-		//GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
+		// GL11.glEnable( GL12.GL_RESCALE_NORMAL );
+		// GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
 
-		//final int metaData = is.getItemDamage();
-		//final ResourceLocation loc = METADATA_TO_TEXTURE[metaData];
+		// final int metaData = is.getItemDamage();
+		// final ResourceLocation loc = METADATA_TO_TEXTURE[metaData];
 
-		//Minecraft.getMinecraft().getTextureManager().bindTexture( loc );
+		// Minecraft.getMinecraft().getTextureManager().bindTexture( loc );
 
-		//final float lidAngle = 0.0f;
+		// final float lidAngle = 0.0f;
 
-		//GL11.glScalef( 1.0F, -1F, -1F );
-		//GL11.glTranslatef( -0.0F, -1.0F, -1.0F );
+		// GL11.glScalef( 1.0F, -1F, -1F );
+		// GL11.glTranslatef( -0.0F, -1.0F, -1.0F );
 
-		//this.model.chestLid.offsetY = -( 0.9f / 16.0f );
-		//this.model.chestLid.rotateAngleX = -( ( lidAngle * 3.141593F ) / 2.0F );
-		//this.model.renderAll();
+		// this.model.chestLid.offsetY = -( 0.9f / 16.0f );
+		// this.model.chestLid.rotateAngleX = -( ( lidAngle * 3.141593F ) / 2.0F );
+		// this.model.renderAll();
 
-		//GL11.glDisable( GL12.GL_RESCALE_NORMAL );
-		//GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
+		// GL11.glDisable( GL12.GL_RESCALE_NORMAL );
+		// GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
 	}
 
 	@Override
@@ -103,7 +103,7 @@ public class RenderBlockSkyChest extends BaseBlockRender<BlockSkyChest, TileSkyC
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
 
 		final IBlockState metaData = skyChest.getWorld().getBlockState( skyChest.getPos() );
-		final ResourceLocation loc = METADATA_TO_TEXTURE[ ((BlockSkyChest)metaData.getBlock()).type == SkyChestType.BLOCK ? 1 : 0 ];
+		final ResourceLocation loc = METADATA_TO_TEXTURE[( (BlockSkyChest) metaData.getBlock() ).type == SkyChestType.BLOCK ? 1 : 0];
 
 		Minecraft.getMinecraft().getTextureManager().bindTexture( loc );
 

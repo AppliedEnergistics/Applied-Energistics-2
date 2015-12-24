@@ -52,17 +52,17 @@ public class AppEngClientPacketHandler extends AppEngPacketHandlerBase implement
 			final AppEngPacket pack = PacketTypes.getPacket( packetType ).parsePacket( stream );
 
 			final PacketCallState callState =
-			 new PacketCallState(){
-				
-				@Override
-				public void call(
-						final AppEngPacket appEngPacket )
-				{
-					appEngPacket.clientPacketData( manager, appEngPacket, Minecraft.getMinecraft().thePlayer );
-				}
-			};
-			
-			pack.setCallParam(callState);			
+					new PacketCallState(){
+
+						@Override
+						public void call(
+								final AppEngPacket appEngPacket )
+						{
+							appEngPacket.clientPacketData( manager, appEngPacket, Minecraft.getMinecraft().thePlayer );
+						}
+					};
+
+			pack.setCallParam( callState );
 			PacketThreadUtil.checkThreadAndEnqueue( pack, handler, Minecraft.getMinecraft() );
 			callState.call( pack );
 		}

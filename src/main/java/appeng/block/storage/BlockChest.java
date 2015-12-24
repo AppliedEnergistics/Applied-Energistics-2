@@ -43,7 +43,7 @@ import appeng.util.Platform;
 
 public class BlockChest extends AEBaseTileBlock
 {
-	
+
 	public BlockChest()
 	{
 		super( Material.iron );

@@ -178,6 +178,6 @@ public final class DisassembleRecipe implements IRecipe
 	public ItemStack[] getRemainingItems(
 			final InventoryCrafting inv )
 	{
-        return ForgeHooks.defaultRecipeGetRemainingItems(inv);
+		return ForgeHooks.defaultRecipeGetRemainingItems( inv );
 	}
 }

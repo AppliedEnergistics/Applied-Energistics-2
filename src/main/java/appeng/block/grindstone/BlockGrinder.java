@@ -61,7 +61,7 @@ public class BlockGrinder extends AEBaseTileBlock
 		// TODO Auto-generated method stub
 		return super.onBlockActivated( worldIn, pos, state, playerIn, side, hitX, hitY, hitZ );
 	}
-	
+
 	@Override
 	public boolean onActivated(
 			final World w,

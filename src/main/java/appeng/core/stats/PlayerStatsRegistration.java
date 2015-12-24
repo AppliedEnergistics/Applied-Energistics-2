@@ -36,20 +36,25 @@ import appeng.core.features.AEFeature;
 public class PlayerStatsRegistration
 {
 	/**
-	 * {@link net.minecraftforge.fml.common.eventhandler.EventBus} to which the handlers might get posted to depending if the feature is enabled
+	 * {@link net.minecraftforge.fml.common.eventhandler.EventBus} to which the handlers might get posted to depending
+	 * if the feature is enabled
 	 */
 	private final EventBus bus;
 
 	/**
-	 * is true if the {@link appeng.core.features.AEFeature#Achievements} is enabled in the {@param config}
+	 * is true if the {@link appeng.core.features.AEFeature#Achievements} is enabled in the
+	 * 
+	 * @param config}
 	 */
 	private final boolean isAchievementFeatureEnabled;
 
 	/**
-	 * Constructs this with an {@link net.minecraftforge.fml.common.eventhandler.EventBus} and {@link appeng.core.AEConfig}.
+	 * Constructs this with an {@link net.minecraftforge.fml.common.eventhandler.EventBus} and
+	 * {@link appeng.core.AEConfig}.
 	 *
-	 * @param bus    {@see #bus}
-	 * @param config {@link appeng.core.AEConfig} which is used to determine if the {@link appeng.core.features.AEFeature#Achievements} is enabled
+	 * @param bus {@see #bus}
+	 * @param config {@link appeng.core.AEConfig} which is used to determine if the
+	 * {@link appeng.core.features.AEFeature#Achievements} is enabled
 	 */
 	public PlayerStatsRegistration( final EventBus bus, final AEConfig config )
 	{
@@ -58,7 +63,9 @@ public class PlayerStatsRegistration
 	}
 
 	/**
-	 * Registers the {@link appeng.core.stats.AchievementCraftingHandler} and {@link appeng.core.stats.AchievementPickupHandler} to the {@link #bus} if {@link #isAchievementFeatureEnabled} is true.
+	 * Registers the {@link appeng.core.stats.AchievementCraftingHandler} and
+	 * {@link appeng.core.stats.AchievementPickupHandler} to the {@link #bus} if {@link #isAchievementFeatureEnabled} is
+	 * true.
 	 */
 	public void registerAchievementHandlers()
 	{
@@ -74,7 +81,8 @@ public class PlayerStatsRegistration
 	}
 
 	/**
-	 * Registers the {@link appeng.core.stats.AchievementHierarchy} and adds all {@link appeng.core.stats.Achievements} to a new {@link net.minecraftforge.common.AchievementPage}.
+	 * Registers the {@link appeng.core.stats.AchievementHierarchy} and adds all {@link appeng.core.stats.Achievements}
+	 * to a new {@link net.minecraftforge.common.AchievementPage}.
 	 */
 	public void registerAchievements()
 	{

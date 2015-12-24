@@ -36,7 +36,7 @@ public class TaughtIcon implements IAESprite
 	{
 		return this.icon.getAtlas();
 	}
-	
+
 	public TaughtIcon( final IAESprite iIcon, final float tightness )
 	{
 		if( iIcon == null )

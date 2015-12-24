@@ -57,7 +57,7 @@ public class TilePaint extends AEBaseTile
 	{
 		return false;
 	}
-	
+
 	@TileEvent( TileEventType.WORLD_NBT_WRITE )
 	public void writeToNBT_TilePaint( final NBTTagCompound data )
 	{
@@ -234,8 +234,8 @@ public class TilePaint extends AEBaseTile
 	public void addBlot( final ItemStack type, final EnumFacing side, final Vec3 hitVec )
 	{
 		final BlockPos p = this.pos.offset( side );
-		
-		final IBlockState blk = this.worldObj.getBlockState(  p );
+
+		final IBlockState blk = this.worldObj.getBlockState( p );
 		if( blk.getBlock().isSideSolid( this.worldObj, p, side.getOpposite() ) )
 		{
 			final ItemPaintBall ipb = (ItemPaintBall) type.getItem();

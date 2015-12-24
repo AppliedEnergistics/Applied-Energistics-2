@@ -57,7 +57,7 @@ public class RenderBlockWireless extends BaseBlockRender<BlockWireless, TileWire
 	public void renderInventory( final BlockWireless blk, final ItemStack is, final ModelGenerator renderer, final ItemRenderType type, final Object[] obj )
 	{
 		this.blk = blk;
-		this.center = new BlockPos(0,0,0);
+		this.center = new BlockPos( 0, 0, 0 );
 		this.hasChan = false;
 		this.hasPower = false;
 		final BlockRenderInfo ri = blk.getRendererInstance();
@@ -74,7 +74,7 @@ public class RenderBlockWireless extends BaseBlockRender<BlockWireless, TileWire
 		this.renderBlockBounds( renderer, 5, 5, 1, 11, 11, 2, EnumFacing.EAST, EnumFacing.UP, EnumFacing.SOUTH );
 		this.renderInvBlock( EnumSet.allOf( AEPartLocation.class ), blk, is, 0xffffff, renderer );
 
-		//renderer.startDrawingQuads();
+		// renderer.startDrawingQuads();
 		ri.setTemporaryRenderIcon( null );
 		this.renderTorchAtAngle( renderer, EnumFacing.EAST, EnumFacing.UP, EnumFacing.SOUTH );
 		super.postRenderInWorld( renderer );
@@ -88,7 +88,7 @@ public class RenderBlockWireless extends BaseBlockRender<BlockWireless, TileWire
 		for( final AEPartLocation side : sides )
 		{
 			this.renderBlockBounds( renderer, 8 + ( side.xOffset != 0 ? side.xOffset * 2 : -2 ), 8 + ( side.yOffset != 0 ? side.yOffset * 2 : -2 ), 2 + ( side.zOffset != 0 ? side.zOffset * 2 : -1 ) + s, 8 + ( side.xOffset != 0 ? side.xOffset * 4 : 2 ), 8 + ( side.yOffset != 0 ? side.yOffset * 4 : 2 ), 2 + ( side.zOffset != 0 ? side.zOffset * 5 : 1 ) + s, EnumFacing.EAST, EnumFacing.UP, EnumFacing.SOUTH );
-			this.renderInvBlock( EnumSet.allOf( AEPartLocation.class ), blk, is,  0xffffff, renderer );
+			this.renderInvBlock( EnumSet.allOf( AEPartLocation.class ), blk, is, 0xffffff, renderer );
 		}
 
 		s = 3;
@@ -250,7 +250,7 @@ public class RenderBlockWireless extends BaseBlockRender<BlockWireless, TileWire
 		}
 
 		renderer.setColorOpaque_I( 0xffffff );
-		this.renderBlockBounds( renderer, 0, 7, 1, 16, 9, 16, x,y,z );
+		this.renderBlockBounds( renderer, 0, 7, 1, 16, 9, 16, x, y, z );
 		this.renderFace( this.center, this.blk, sides, renderer, y );
 		this.renderFace( this.center, this.blk, sides, renderer, y.getOpposite() );
 

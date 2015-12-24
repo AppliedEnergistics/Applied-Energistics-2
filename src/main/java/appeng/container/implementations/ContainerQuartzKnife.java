@@ -230,16 +230,16 @@ public class ContainerQuartzKnife extends AEBaseContainer implements IAEAppEngIn
 	public void openInventory(
 			final EntityPlayer player )
 	{
-		
+
 	}
-	
+
 	@Override
 	public void closeInventory(
 			final EntityPlayer player )
 	{
-		
+
 	}
-	
+
 	@Override
 	public boolean isItemValidForSlot( final int var1, final ItemStack var2 )
 	{
@@ -264,7 +264,7 @@ public class ContainerQuartzKnife extends AEBaseContainer implements IAEAppEngIn
 			final int id,
 			final int value )
 	{
-		
+
 	}
 
 	@Override

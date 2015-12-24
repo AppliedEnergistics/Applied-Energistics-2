@@ -88,7 +88,7 @@ public class AEBaseItemBlock extends ItemBlock
 	{
 		return this.blockType.getUnlocalizedName( is );
 	}
-	
+
 	@Override
 	public boolean placeBlockAt(
 			final ItemStack stack,

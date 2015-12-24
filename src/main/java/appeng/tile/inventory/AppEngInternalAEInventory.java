@@ -277,14 +277,14 @@ public class AppEngInternalAEInventory implements IInventory, Iterable<ItemStack
 	public void openInventory(
 			final EntityPlayer player )
 	{
-		
+
 	}
 
 	@Override
 	public void closeInventory(
 			final EntityPlayer player )
 	{
-		
+
 	}
 
 	@Override
@@ -299,7 +299,7 @@ public class AppEngInternalAEInventory implements IInventory, Iterable<ItemStack
 			final int id,
 			final int value )
 	{
-		
+
 	}
 
 	@Override

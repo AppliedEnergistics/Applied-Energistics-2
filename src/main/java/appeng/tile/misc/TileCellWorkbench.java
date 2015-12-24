@@ -96,7 +96,7 @@ public class TileCellWorkbench extends AEBaseTile implements IUpgradeableHost, I
 
 		if( this.cell.getStackInSlot( 0 ).getItem() instanceof ICellWorkbenchItem )
 		{
-			return ( (ICellWorkbenchItem) this.cell.getStackInSlot( 0 ).getItem() );
+			return( (ICellWorkbenchItem) this.cell.getStackInSlot( 0 ).getItem() );
 		}
 
 		return null;

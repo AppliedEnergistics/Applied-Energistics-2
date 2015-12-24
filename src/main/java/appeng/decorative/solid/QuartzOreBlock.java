@@ -58,7 +58,7 @@ public class QuartzOreBlock extends AEBaseBlock
 		this.enhanceBrightness = false;
 		this.setFeature( EnumSet.of( AEFeature.Core ) );
 	}
-	
+
 	@Override
 	public EnumWorldBlockLayer getBlockLayer()
 	{
@@ -110,7 +110,7 @@ public class QuartzOreBlock extends AEBaseBlock
 	{
 		return 1 + rand.nextInt( 2 );
 	}
-	
+
 	@Override
 	public Item getItemDropped(
 			final IBlockState state, /* is null */

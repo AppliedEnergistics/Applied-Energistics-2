@@ -123,23 +123,24 @@ public class ClientHelper extends ServerHelper
 	@Override
 	public void init()
 	{
-		//		final Block fluixBlock = GameRegistry.findBlock( "appliedenergistics2", "fluix" );
-		//		Item fluixItem = Item.getItemFromBlock( fluixBlock );
-		//		ModelResourceLocation itemModelResourceLocation = new ModelResourceLocation( "appliedenergistics2:fluix", "inventory" );
-//		final int DEFAULT_ITEM_SUBTYPE = 0;
-//		final ItemModelMesher mesher = Minecraft.getMinecraft().getRenderItem().getItemModelMesher();
-//		//		mesher.register( fluixItem, DEFAULT_ITEM_SUBTYPE, itemModelResourceLocation );
-//
-//		final ResourceLocation resource = new ResourceLocation( "appliedenergistics2", "stair.fluix" );
-//		final ModelResourceLocation fluixStairModel = new ModelResourceLocation( resource, "inventory" );
-//		AELog.info( "FluixStairModel: " + fluixStairModel );
-//
-//		final Set<Item> items = AEApi.instance().definitions().blocks().fluixStair().maybeItem().asSet();
-//		for( Item item : items )
-//		{
-//			AELog.info( "Registering with %s with unlocalized %s", item, item.getUnlocalizedName() );
-//			mesher.register( item, DEFAULT_ITEM_SUBTYPE, fluixStairModel );
-//		}
+		// final Block fluixBlock = GameRegistry.findBlock( "appliedenergistics2", "fluix" );
+		// Item fluixItem = Item.getItemFromBlock( fluixBlock );
+		// ModelResourceLocation itemModelResourceLocation = new ModelResourceLocation( "appliedenergistics2:fluix",
+		// "inventory" );
+		// final int DEFAULT_ITEM_SUBTYPE = 0;
+		// final ItemModelMesher mesher = Minecraft.getMinecraft().getRenderItem().getItemModelMesher();
+		// // mesher.register( fluixItem, DEFAULT_ITEM_SUBTYPE, itemModelResourceLocation );
+		//
+		// final ResourceLocation resource = new ResourceLocation( "appliedenergistics2", "stair.fluix" );
+		// final ModelResourceLocation fluixStairModel = new ModelResourceLocation( resource, "inventory" );
+		// AELog.info( "FluixStairModel: " + fluixStairModel );
+		//
+		// final Set<Item> items = AEApi.instance().definitions().blocks().fluixStair().maybeItem().asSet();
+		// for( Item item : items )
+		// {
+		// AELog.info( "Registering with %s with unlocalized %s", item, item.getUnlocalizedName() );
+		// mesher.register( item, DEFAULT_ITEM_SUBTYPE, fluixStairModel );
+		// }
 	}
 
 	@Override
@@ -258,7 +259,7 @@ public class ClientHelper extends ServerHelper
 	@Override
 	public void postInit()
 	{
-		//RenderingRegistry.registerBlockHandler( WorldRender.INSTANCE );
+		// RenderingRegistry.registerBlockHandler( WorldRender.INSTANCE );
 		final RenderManager inst = Minecraft.getMinecraft().getRenderManager();
 
 		inst.entityRenderMap.put( EntityTinyTNTPrimed.class, new RenderTinyTNTPrimed( inst ) );
@@ -573,7 +574,7 @@ public class ClientHelper extends ServerHelper
 
 		this.extraIcons.forEach( ev.map::registerSprite );
 
-		//if( ev.map.getTextureType() == ITEM_RENDERER )
+		// if( ev.map.getTextureType() == ITEM_RENDERER )
 		{
 			for( final ExtraItemTextures et : ExtraItemTextures.values() )
 			{
@@ -581,7 +582,7 @@ public class ClientHelper extends ServerHelper
 			}
 		}
 
-		//if( ev.map. == BLOCK_RENDERER )
+		// if( ev.map. == BLOCK_RENDERER )
 		{
 			for( final ExtraBlockTextures et : ExtraBlockTextures.values() )
 			{

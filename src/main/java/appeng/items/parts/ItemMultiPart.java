@@ -182,7 +182,7 @@ public final class ItemMultiPart extends AEBaseItem implements IPartItem, IItemG
 		{
 			return false;
 		}
-		
+
 		return AEApi.instance().partHelper().placeBus( is, pos, side, player, w );
 	}
 
@@ -192,15 +192,14 @@ public final class ItemMultiPart extends AEBaseItem implements IPartItem, IItemG
 		return "item.appliedenergistics2." + this.getName( is );
 	}
 
-	
 	@Override
-	@SideOnly(Side.CLIENT)
+	@SideOnly( Side.CLIENT )
 	public void registerCustomIcon(
 			final TextureMap map )
 	{
 		for( final Entry<Integer, PartTypeWithVariant> part : this.registered.entrySet() )
 		{
-			part.getValue().texture= new BaseIcon( map.registerSprite(  new ResourceLocation( AppEng.MOD_ID, "blocks/" + this.getName( new ItemStack( this, 1, part.getKey() ) ) )) );
+			part.getValue().texture = new BaseIcon( map.registerSprite( new ResourceLocation( AppEng.MOD_ID, "blocks/" + this.getName( new ItemStack( this, 1, part.getKey() ) ) ) ) );
 		}
 	}
 
@@ -213,10 +212,10 @@ public final class ItemMultiPart extends AEBaseItem implements IPartItem, IItemG
 		{
 			return registeredType.texture;
 		}
-		
+
 		return new MissingIcon( this );
 	}
-	
+
 	@Override
 	public String getItemStackDisplayName( final ItemStack is )
 	{
@@ -376,9 +375,9 @@ public final class ItemMultiPart extends AEBaseItem implements IPartItem, IItemG
 		private final PartType part;
 		private final int variant;
 
-		@SideOnly(Side.CLIENT)
+		@SideOnly( Side.CLIENT )
 		public IAESprite texture = null;
-		
+
 		private PartTypeWithVariant( final PartType part, final int variant )
 		{
 			assert part != null;

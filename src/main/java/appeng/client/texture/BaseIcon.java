@@ -1,11 +1,14 @@
+
 package appeng.client.texture;
 
+
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+
 
 public class BaseIcon implements IAESprite
 {
 	private final TextureAtlasSprite spite;
-	
+
 	public BaseIcon( final TextureAtlasSprite src )
 	{
 		this.spite = src;

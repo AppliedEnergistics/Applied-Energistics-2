@@ -77,7 +77,7 @@ public class BlockPaint extends AEBaseTileBlock
 	{
 		// do nothing
 	}
-	
+
 	@Override
 	public AxisAlignedBB getCollisionBoundingBox(
 			final World worldIn,
@@ -127,9 +127,9 @@ public class BlockPaint extends AEBaseTileBlock
 			final float chance,
 			final int fortune )
 	{
-		
+
 	}
-	
+
 	@Override
 	public void fillWithRain(
 			final World w,
@@ -140,7 +140,7 @@ public class BlockPaint extends AEBaseTileBlock
 			w.setBlockToAir( pos );
 		}
 	}
-	
+
 	@Override
 	public int getLightValue(
 			final IBlockAccess w,
@@ -163,7 +163,7 @@ public class BlockPaint extends AEBaseTileBlock
 	{
 		return true;
 	}
-	
+
 	@Override
 	public boolean isReplaceable(
 			final World worldIn,
@@ -171,5 +171,5 @@ public class BlockPaint extends AEBaseTileBlock
 	{
 		return true;
 	}
-	
+
 }

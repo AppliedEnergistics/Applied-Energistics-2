@@ -57,7 +57,7 @@ public class BlockSpatialPylon extends AEBaseTileBlock
 			tsp.onNeighborBlockChange();
 		}
 	}
-	
+
 	@Override
 	public int getLightValue(
 			final IBlockAccess w,

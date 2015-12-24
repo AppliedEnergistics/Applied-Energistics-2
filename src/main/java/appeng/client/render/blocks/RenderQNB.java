@@ -79,7 +79,7 @@ public class RenderQNB extends BaseBlockRender<BlockQuantumBase, TileQuantumBrid
 				{
 					final EnumSet<AEPartLocation> sides = tqb.getConnections();
 
-					this.renderCableAt( 0.11D, world, pos, block, renderer, renderer.getIcon( parts.cableGlass().stack( AEColor.Transparent, 1  ) ), 0.141D, sides );
+					this.renderCableAt( 0.11D, world, pos, block, renderer, renderer.getIcon( parts.cableGlass().stack( AEColor.Transparent, 1 ) ), 0.141D, sides );
 
 					final Item transCoveredCable = parts.cableCovered().item( AEColor.Transparent );
 					this.renderCableAt( 0.188D, world, pos, block, renderer, renderer.getIcon( parts.cableCovered().stack( AEColor.Transparent, 1 ) ), 0.1875D, sides );

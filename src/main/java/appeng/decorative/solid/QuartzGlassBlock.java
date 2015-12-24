@@ -44,7 +44,7 @@ public class QuartzGlassBlock extends AEBaseBlock
 		this.setOpaque( false );
 		this.setFeature( EnumSet.of( AEFeature.DecorativeQuartzBlocks ) );
 	}
-	
+
 	@Override
 	public EnumWorldBlockLayer getBlockLayer()
 	{

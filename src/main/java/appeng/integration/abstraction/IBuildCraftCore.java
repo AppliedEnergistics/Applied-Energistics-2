@@ -30,7 +30,8 @@ import net.minecraft.util.BlockPos;
 /**
  * Contains wrench behaviour
  *
- * and registers the engines as P2P attunements for RF tunnels (since BC 7, they are part of BC Core) The attunement is currently not public anymore, because it
+ * and registers the engines as P2P attunements for RF tunnels (since BC 7, they are part of BC Core) The attunement is
+ * currently not public anymore, because it
  * was only used internally
  *
  * @author AlgorithmX2
@@ -54,7 +55,7 @@ public interface IBuildCraftCore
 	 * @return {@code true} if player can wrench with that {@code wrench}
 	 *
 	 * @throws NullPointerException if {@code wrench} is {@code null}
-	 * @throws ClassCastException   if {@code wrench} is not an {@link buildcraft.api.tools.IToolWrench}
+	 * @throws ClassCastException if {@code wrench} is not an {@link buildcraft.api.tools.IToolWrench}
 	 */
 	boolean canWrench( @Nonnull Item wrench, EntityPlayer wrencher, BlockPos pos );
 
@@ -64,7 +65,7 @@ public interface IBuildCraftCore
 	 * @param pos pos
 	 *
 	 * @throws NullPointerException if {@code wrench} is {@code null}
-	 * @throws ClassCastException   if {@code wrench} is not an {@link buildcraft.api.tools.IToolWrench}
+	 * @throws ClassCastException if {@code wrench} is not an {@link buildcraft.api.tools.IToolWrench}
 	 */
 	void wrenchUsed( @Nonnull Item wrench, EntityPlayer wrencher, BlockPos pos );
 }

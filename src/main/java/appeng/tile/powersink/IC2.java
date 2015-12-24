@@ -122,4 +122,4 @@ package appeng.tile.powersink;
 //		this.removeFromENet();
 //		this.addToENet();
 //	}
-//}
+// }

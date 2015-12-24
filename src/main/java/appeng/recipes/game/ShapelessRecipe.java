@@ -146,7 +146,7 @@ public class ShapelessRecipe implements IRecipe, IRecipeBakeable
 
 	private boolean checkItemEquals( final ItemStack target, final ItemStack input )
 	{
-		return ( target.getItem() == input.getItem() && ( target.getItemDamage() == OreDictionary.WILDCARD_VALUE || target.getItemDamage() == input.getItemDamage() ) );
+		return( target.getItem() == input.getItem() && ( target.getItemDamage() == OreDictionary.WILDCARD_VALUE || target.getItemDamage() == input.getItemDamage() ) );
 	}
 
 	/**
@@ -179,12 +179,12 @@ public class ShapelessRecipe implements IRecipe, IRecipeBakeable
 			this.disable = true;
 		}
 	}
-	
+
 	@Override
 	public ItemStack[] getRemainingItems(
 			final InventoryCrafting inv )
 	{
-        return ForgeHooks.defaultRecipeGetRemainingItems(inv);
+		return ForgeHooks.defaultRecipeGetRemainingItems( inv );
 	}
-	
+
 }

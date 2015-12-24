@@ -85,7 +85,7 @@ public final class AETileBlockFeatureHandler implements IFeatureHandler
 			GameRegistry.registerBlock( this.featured, null, registryName );
 			GameRegistry.registerItem( this.definition.maybeItem().get(), registryName );
 			AEBaseTile.registerTileItem( this.featured.getTileEntityClass(), new BlockStackSrc( this.featured, 0, ActivityState.from( this.isFeatureAvailable() ) ) );
-			
+
 			// register the block/item conversion...
 			if( this.definition.maybeItem().isPresent() )
 			{

@@ -49,18 +49,18 @@ public class QuartzPillarBlock extends AEBaseBlock implements IOrientableBlock
 	{
 		return 0;
 	}
-	
+
 	@Override
 	public IBlockState getStateFromMeta(
 			final int meta )
 	{
 		return this.getDefaultState();
 	}
-	
+
 	@Override
 	protected IProperty[] getAEStates()
 	{
-		return new IProperty[]{ AXIS_ORIENTATION };
+		return new IProperty[] { AXIS_ORIENTATION };
 	}
 
 	@Override
@@ -72,7 +72,7 @@ public class QuartzPillarBlock extends AEBaseBlock implements IOrientableBlock
 	@Override
 	public IOrientable getOrientable( final IBlockAccess w, final BlockPos pos )
 	{
-		return new MetaRotation( w, pos,false );
+		return new MetaRotation( w, pos, false );
 	}
-	
+
 }

@@ -164,8 +164,8 @@ public final class P2PTunnelRegistry implements IP2PTunnelRegistry
 		{
 			return null;
 		}
-		
-		final ItemStack myItemStack  = new ItemStack( item, 1, meta );
+
+		final ItemStack myItemStack = new ItemStack( item, 1, meta );
 		return myItemStack;
 	}
 

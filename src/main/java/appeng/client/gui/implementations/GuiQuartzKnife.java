@@ -48,7 +48,7 @@ public class GuiQuartzKnife extends AEBaseGui
 	{
 		super.initGui();
 
-		this.name = new GuiTextField( 0,this.fontRendererObj, this.guiLeft + 24, this.guiTop + 32, 79, this.fontRendererObj.FONT_HEIGHT );
+		this.name = new GuiTextField( 0, this.fontRendererObj, this.guiLeft + 24, this.guiTop + 32, 79, this.fontRendererObj.FONT_HEIGHT );
 		this.name.setEnableBackgroundDrawing( false );
 		this.name.setMaxStringLength( 32 );
 		this.name.setTextColor( 0xFFFFFF );

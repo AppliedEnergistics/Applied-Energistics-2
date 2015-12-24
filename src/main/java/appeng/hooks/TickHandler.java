@@ -316,7 +316,6 @@ public class TickHandler
 		}
 	}
 
-
 	public static class PlayerColor
 	{
 

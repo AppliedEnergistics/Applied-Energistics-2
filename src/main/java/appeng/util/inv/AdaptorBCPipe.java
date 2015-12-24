@@ -109,4 +109,4 @@ package appeng.util.inv;
 //	{
 //		return new NullIterator<ItemSlot>();
 //	}
-//}
+// }

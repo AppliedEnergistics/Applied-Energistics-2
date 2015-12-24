@@ -62,4 +62,4 @@ package appeng.tile.powersink;
 //	{
 //		return this.getPowerSides().contains( from );
 //	}
-//}
+// }

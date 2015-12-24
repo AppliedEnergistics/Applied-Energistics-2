@@ -53,9 +53,10 @@ import appeng.util.Platform;
 
 import com.google.common.base.Optional;
 
+
 // TODO BC Integration
 //@Interface( iface = "buildcraft.api.tools.IToolWrench", iname = IntegrationType.BuildCraftCore )
-public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench /*, IToolWrench */
+public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench /* , IToolWrench */
 {
 
 	public ToolNetworkTool()
@@ -83,20 +84,20 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench /
 
 			if( mop == null )
 			{
-				this.onItemUseFirst( it, p, w, new BlockPos(0,0,0), null, 0,0,0 ); // eh?
+				this.onItemUseFirst( it, p, w, new BlockPos( 0, 0, 0 ), null, 0, 0, 0 ); // eh?
 			}
 			else
 			{
 				if( w.getBlockState( mop.getBlockPos() ).getBlock().isAir( w, mop.getBlockPos() ) )
 				{
-					this.onItemUseFirst( it, p, w, new BlockPos(0,0,0), null, 0,0,0 ); // eh?
+					this.onItemUseFirst( it, p, w, new BlockPos( 0, 0, 0 ), null, 0, 0, 0 ); // eh?
 				}
 			}
 		}
 
 		return it;
 	}
-	
+
 	@Override
 	public boolean onItemUseFirst(
 			final ItemStack stack,
@@ -209,5 +210,5 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench /
 	}
 
 	// TODO: BC WRENCH INTEGRATION
-	
+
 }

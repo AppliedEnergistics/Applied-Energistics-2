@@ -1269,7 +1269,6 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		}
 	}
 
-
 	private class InterfaceInventory extends MEMonitorIInventory
 	{
 

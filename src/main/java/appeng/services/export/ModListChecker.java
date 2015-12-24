@@ -55,10 +55,12 @@ final class ModListChecker implements Checker<List<ModContainer>>
 	}
 
 	/**
-	 * Compiles a list of all mods and their versions to a digest which is updated, if it differs from the config. This is used to elevate the need to export
+	 * Compiles a list of all mods and their versions to a digest which is updated, if it differs from the config. This
+	 * is used to elevate the need to export
 	 * the csv once again, if no change was detected.
 	 *
-	 * @param modContainers all mods and their versions to check if a difference exists between the current instance and the previous instance
+	 * @param modContainers all mods and their versions to check if a difference exists between the current instance and
+	 * the previous instance
 	 *
 	 * @return CheckType.EQUAL if no change was detected
 	 */

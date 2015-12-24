@@ -144,7 +144,8 @@ public class SlotRestrictedInput extends AppEngSlot
 				{
 					return true;
 				}
-				// ICraftingPatternDetails pattern = i.getItem() instanceof ICraftingPatternItem ? ((ICraftingPatternItem)
+				// ICraftingPatternDetails pattern = i.getItem() instanceof ICraftingPatternItem ?
+				// ((ICraftingPatternItem)
 				// i.getItem()).getPatternForItem( i ) : null;
 				return false;// pattern != null;
 			}
@@ -178,8 +179,8 @@ public class SlotRestrictedInput extends AppEngSlot
 
 			case INSCRIBER_INPUT:
 				return true;/*
-							 * for (ItemStack is : Inscribe.inputs) if ( Platform.isSameItemPrecise( is, i ) ) return true;
-							 *
+							 * for (ItemStack is : Inscribe.inputs) if ( Platform.isSameItemPrecise( is, i ) ) return
+							 * true;
 							 * return false;
 							 */
 

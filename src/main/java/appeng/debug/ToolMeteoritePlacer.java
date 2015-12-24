@@ -58,7 +58,7 @@ public class ToolMeteoritePlacer extends AEBaseItem
 		}
 
 		final MeteoritePlacer mp = new MeteoritePlacer();
-		final boolean worked = mp.spawnMeteorite( new StandardWorld( world ), pos.getX(),pos.getY(),pos.getZ() );
+		final boolean worked = mp.spawnMeteorite( new StandardWorld( world ), pos.getX(), pos.getY(), pos.getZ() );
 
 		if( !worked )
 		{

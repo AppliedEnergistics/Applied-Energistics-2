@@ -49,36 +49,36 @@ public class BlockController extends AEBaseTileBlock
 		{
 			return this.name();
 		}
-		
+
 	};
 
-    public static final PropertyEnum CONTROLLER_STATE = PropertyEnum.create("state",ControllerBlockState.class);
-	
-    @Override
-    protected IProperty[] getAEStates()
-    {
-    	return new IProperty[]{ CONTROLLER_STATE };
-    }
-    
+	public static final PropertyEnum CONTROLLER_STATE = PropertyEnum.create( "state", ControllerBlockState.class );
+
+	@Override
+	protected IProperty[] getAEStates()
+	{
+		return new IProperty[] { CONTROLLER_STATE };
+	}
+
 	@Override
 	public int getMetaFromState(
 			final IBlockState state )
 	{
-		return ((ControllerBlockState)state.getValue( CONTROLLER_STATE )).ordinal();
+		return ( (ControllerBlockState) state.getValue( CONTROLLER_STATE ) ).ordinal();
 	}
-	
+
 	@Override
 	public IBlockState getStateFromMeta( final int meta )
 	{
 		return this.getDefaultState().withProperty( CONTROLLER_STATE, ControllerBlockState.OFFLINE );
 	}
-	
+
 	@Override
 	public EnumWorldBlockLayer getBlockLayer()
 	{
 		return EnumWorldBlockLayer.CUTOUT;
 	}
-	
+
 	public BlockController()
 	{
 		super( Material.iron );

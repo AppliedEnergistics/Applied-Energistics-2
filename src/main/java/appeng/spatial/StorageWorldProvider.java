@@ -138,11 +138,11 @@ public class StorageWorldProvider extends WorldProvider
 	{
 		return false;
 	}
-	
+
 	@Override
 	public BlockPos getSpawnCoordinate()
 	{
-		return new BlockPos(0,0,0);
+		return new BlockPos( 0, 0, 0 );
 	}
 
 	@Override

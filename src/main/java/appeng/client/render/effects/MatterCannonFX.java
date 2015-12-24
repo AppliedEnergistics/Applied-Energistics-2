@@ -70,8 +70,8 @@ public class MatterCannonFX extends EntityBreakingFX
 	}
 
 	@Override
-    public void renderParticle( final WorldRenderer par1Tessellator, final Entity p_180434_2_, final float par2, final float par3, final float par4, final float par5, final float par6, final float par7 )
-    {
+	public void renderParticle( final WorldRenderer par1Tessellator, final Entity p_180434_2_, final float par2, final float par3, final float par4, final float par5, final float par6, final float par7 )
+	{
 		final float f6 = this.particleTextureIndex.getMinU();
 		final float f7 = this.particleTextureIndex.getMaxU();
 		final float f8 = this.particleTextureIndex.getMinV();

@@ -154,7 +154,7 @@ public class GuiUpgradeable extends AEBaseGui
 		}
 		if( this.schedulingMode != null )
 		{
-			this.schedulingMode.setVisibility(this.bc.getInstalledUpgrades( Upgrades.CAPACITY ) > 0 && this.bc instanceof PartExportBus );
+			this.schedulingMode.setVisibility( this.bc.getInstalledUpgrades( Upgrades.CAPACITY ) > 0 && this.bc instanceof PartExportBus );
 		}
 	}
 

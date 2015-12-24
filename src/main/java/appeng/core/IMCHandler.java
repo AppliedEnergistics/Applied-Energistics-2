@@ -70,7 +70,8 @@ public class IMCHandler
 	}
 
 	/**
-	 * Tries to find every message matching the internal IMC keys. When found the corresponding handler will process the attached message.
+	 * Tries to find every message matching the internal IMC keys. When found the corresponding handler will process the
+	 * attached message.
 	 *
 	 * @param event Event carrying the identifier and message for the handlers
 	 */

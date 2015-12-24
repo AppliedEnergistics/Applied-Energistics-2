@@ -68,8 +68,8 @@ public class CraftingFx extends EntityBreakingFX
 	}
 
 	@Override
-    public void renderParticle( final WorldRenderer par1Tessellator, final Entity p_180434_2_, final float partialTick, final float x, final float y, final float z, final float rx, final float rz)
-    {
+	public void renderParticle( final WorldRenderer par1Tessellator, final Entity p_180434_2_, final float partialTick, final float x, final float y, final float z, final float rx, final float rz )
+	{
 		if( partialTick < 0 || partialTick > 1 )
 		{
 			return;

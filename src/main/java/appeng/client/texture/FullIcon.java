@@ -44,7 +44,7 @@ public class FullIcon implements IAESprite
 	{
 		return this.p;
 	}
-	
+
 	@Override
 	public int getIconWidth()
 	{

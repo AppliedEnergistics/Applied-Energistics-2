@@ -142,43 +142,43 @@ public class AppEngCraftingSlot extends AppEngSlot
 	@Override
 	public void onPickupFromSlot( final EntityPlayer playerIn, final ItemStack stack )
 	{
-        net.minecraftforge.fml.common.FMLCommonHandler.instance().firePlayerCraftingEvent(playerIn, stack, this.craftMatrix );
-        this.onCrafting(stack);
-        net.minecraftforge.common.ForgeHooks.setCraftingPlayer(playerIn);
-        final InventoryCrafting ic = new InventoryCrafting( this.getContainer(), 3, 3 );
+		net.minecraftforge.fml.common.FMLCommonHandler.instance().firePlayerCraftingEvent( playerIn, stack, this.craftMatrix );
+		this.onCrafting( stack );
+		net.minecraftforge.common.ForgeHooks.setCraftingPlayer( playerIn );
+		final InventoryCrafting ic = new InventoryCrafting( this.getContainer(), 3, 3 );
 
-        for ( int x=0; x < this.craftMatrix.getSizeInventory(); x++ )
-        	ic.setInventorySlotContents( x, this.craftMatrix.getStackInSlot( x ) );
+		for( int x = 0; x < this.craftMatrix.getSizeInventory(); x++ )
+			ic.setInventorySlotContents( x, this.craftMatrix.getStackInSlot( x ) );
 
-        final ItemStack[] aitemstack = CraftingManager.getInstance().func_180303_b(ic, playerIn.worldObj);
+		final ItemStack[] aitemstack = CraftingManager.getInstance().func_180303_b( ic, playerIn.worldObj );
 
-        for ( int x=0; x < this.craftMatrix.getSizeInventory(); x++ )
+		for( int x = 0; x < this.craftMatrix.getSizeInventory(); x++ )
 			this.craftMatrix.setInventorySlotContents( x, ic.getStackInSlot( x ) );
 
-        net.minecraftforge.common.ForgeHooks.setCraftingPlayer(null);
+		net.minecraftforge.common.ForgeHooks.setCraftingPlayer( null );
 
-        for (int i = 0; i < aitemstack.length; ++i)
-        {
-            final ItemStack itemstack1 = this.craftMatrix.getStackInSlot(i);
-            final ItemStack itemstack2 = aitemstack[i];
+		for( int i = 0; i < aitemstack.length; ++i )
+		{
+			final ItemStack itemstack1 = this.craftMatrix.getStackInSlot( i );
+			final ItemStack itemstack2 = aitemstack[i];
 
-            if (itemstack1 != null)
-            {
-                this.craftMatrix.decrStackSize(i, 1);
-            }
+			if( itemstack1 != null )
+			{
+				this.craftMatrix.decrStackSize( i, 1 );
+			}
 
-            if (itemstack2 != null)
-            {
-                if (this.craftMatrix.getStackInSlot(i) == null)
-                {
-                    this.craftMatrix.setInventorySlotContents(i, itemstack2);
-                }
-                else if (!this.thePlayer.inventory.addItemStackToInventory(itemstack2))
-                {
-                    this.thePlayer.dropPlayerItemWithRandomChoice(itemstack2, false);
-                }
-            }
-        }
+			if( itemstack2 != null )
+			{
+				if( this.craftMatrix.getStackInSlot( i ) == null )
+				{
+					this.craftMatrix.setInventorySlotContents( i, itemstack2 );
+				}
+				else if( !this.thePlayer.inventory.addItemStackToInventory( itemstack2 ) )
+				{
+					this.thePlayer.dropPlayerItemWithRandomChoice( itemstack2, false );
+				}
+			}
+		}
 	}
 
 	/**

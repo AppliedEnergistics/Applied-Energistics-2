@@ -109,7 +109,7 @@ public final class VersionChecker implements Runnable
 	/**
 	 * checks if enough time since last check has expired
 	 *
-	 * @param nowInMs           now in milli seconds
+	 * @param nowInMs now in milli seconds
 	 * @param lastAfterInterval last version check including the interval defined in the config
 	 */
 	private void processInterval( final long nowInMs, final long lastAfterInterval )
@@ -136,7 +136,7 @@ public final class VersionChecker implements Runnable
 	 * Checks if the retrieved version is newer as the current mod version.
 	 * Will notify player if config is enabled.
 	 *
-	 * @param modVersion    version of mod
+	 * @param modVersion version of mod
 	 * @param githubRelease release retrieved through github
 	 */
 	private void processVersions( @Nonnull final Version modVersion, @Nonnull final FormattedRelease githubRelease )
@@ -171,8 +171,8 @@ public final class VersionChecker implements Runnable
 	 * Checks if the version checker mod is installed and handles it depending on that information
 	 *
 	 * @param modFormatted mod version formatted as rv2-beta-8
-	 * @param ghFormatted  retrieved github version formatted as rv2-beta-8
-	 * @param changelog    retrieved github changelog
+	 * @param ghFormatted retrieved github version formatted as rv2-beta-8
+	 * @param changelog retrieved github changelog
 	 */
 	private void interactWithVersionCheckerMod( @Nonnull final String modFormatted, @Nonnull final String ghFormatted, @Nonnull final String changelog )
 	{

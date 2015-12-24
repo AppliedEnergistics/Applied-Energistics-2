@@ -1,8 +1,11 @@
+
 package appeng.client.render;
+
 
 import net.minecraft.block.Block;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.IBlockAccess;
+
 
 public interface ISimpleBlockRenderingHandler
 {

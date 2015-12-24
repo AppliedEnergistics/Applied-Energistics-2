@@ -49,27 +49,26 @@ public class ItemPaintBall extends AEBaseItem
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
+	@SideOnly( Side.CLIENT )
 	public void registerIcons( final ClientHelper ir, final String name )
 	{
 		final ModelResourceLocation sloc = ir.setIcon( this, name + "Shimmer" );
 		final ModelResourceLocation loc = ir.setIcon( this, name );
-		
-		
+
 		Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register( this, new ItemMeshDefinition(){
-			
+
 			@Override
 			public ModelResourceLocation getModelLocation(
 					final ItemStack stack )
 			{
-				if ( ItemPaintBall.this.isLumen(stack) )
+				if( ItemPaintBall.this.isLumen( stack ) )
 					return sloc;
-				
+
 				return loc;
 			}
-		});
+		} );
 	}
-	
+
 	@Override
 	public String getItemStackDisplayName( final ItemStack is )
 	{
@@ -80,14 +79,14 @@ public class ItemPaintBall extends AEBaseItem
 	{
 		return ( is.getItemDamage() >= DAMAGE_THRESHOLD ? GuiText.Lumen.getLocal() + ' ' : "" ) + this.getColor( is );
 	}
-	
+
 	@Override
 	public int getColorFromItemStack(
 			final ItemStack stack,
 			final int renderPass )
 	{
-		final AEColor col = this.getColor(stack);
-		
+		final AEColor col = this.getColor( stack );
+
 		final int colorValue = stack.getItemDamage() >= 20 ? col.mediumVariant : col.mediumVariant;
 		final int r = ( colorValue >> 16 ) & 0xff;
 		final int g = ( colorValue >> 8 ) & 0xff;
@@ -97,11 +96,11 @@ public class ItemPaintBall extends AEBaseItem
 		{
 			final float fail = 0.7f;
 			final int full = (int) ( 255 * 0.3 );
-			return  (int)( full + r * fail ) << 16 |  (int)( full + g * fail ) << 8 |  (int)( full + b * fail ) | 0xff << 24;
+			return (int) ( full + r * fail ) << 16 | (int) ( full + g * fail ) << 8 | (int) ( full + b * fail ) | 0xff << 24;
 		}
 		else
 		{
-			return r << 16 | g << 8 | b | 0xff << 24 ;
+			return r << 16 | g << 8 | b | 0xff << 24;
 		}
 	}
 

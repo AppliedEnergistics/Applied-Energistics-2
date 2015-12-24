@@ -183,6 +183,6 @@ public class BlockSkyCompass extends AEBaseTileBlock implements ICustomCollision
 			final List<AxisAlignedBB> out,
 			final Entity e )
 	{
-		
+
 	}
 }

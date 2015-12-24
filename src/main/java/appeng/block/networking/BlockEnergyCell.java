@@ -52,15 +52,15 @@ public class BlockEnergyCell extends AEBaseTileBlock
 	public int getMetaFromState(
 			final IBlockState state )
 	{
-		return (int)state.getValue( ENERGY_STORAGE );
+		return (int) state.getValue( ENERGY_STORAGE );
 	}
-	
+
 	@Override
 	public IBlockState getStateFromMeta( final int meta )
 	{
-		return this.getDefaultState().withProperty( ENERGY_STORAGE, Math.min( 7,  Math.max( 0, meta ) ) );
+		return this.getDefaultState().withProperty( ENERGY_STORAGE, Math.min( 7, Math.max( 0, meta ) ) );
 	}
-	
+
 	public BlockEnergyCell()
 	{
 		super( AEGlassMaterial.INSTANCE );
@@ -76,9 +76,9 @@ public class BlockEnergyCell extends AEBaseTileBlock
 	}
 
 	@Override
-	public appeng.client.texture.IAESprite getIcon( final net.minecraft.util.EnumFacing side, final IBlockState state)
+	public appeng.client.texture.IAESprite getIcon( final net.minecraft.util.EnumFacing side, final IBlockState state )
 	{
-		switch( (int)state.getValue( ENERGY_STORAGE ) )
+		switch( (int) state.getValue( ENERGY_STORAGE ) )
 		{
 			default:
 			case 0:
@@ -122,7 +122,7 @@ public class BlockEnergyCell extends AEBaseTileBlock
 	@Override
 	protected IProperty[] getAEStates()
 	{
-		return new IProperty[]{ENERGY_STORAGE};
+		return new IProperty[] { ENERGY_STORAGE };
 	}
 
 	@Override

@@ -55,7 +55,7 @@ public class TickTracker implements Comparable<TickTracker>
 
 	public long getAvgNanos()
 	{
-		return ( this.LastFiveTicksTime / 5 );
+		return( this.LastFiveTicksTime / 5 );
 	}
 
 	public void setRate( final int rate )

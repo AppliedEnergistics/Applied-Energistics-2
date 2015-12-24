@@ -1,3 +1,4 @@
+
 package appeng.decorative.stair;
 
 
@@ -23,14 +24,14 @@ import appeng.decorative.solid.Identifier;
  */
 public enum DecorativeStairIdentifier implements Identifier
 {
-	FLUIX("stair.fluix"),
-	CHISELED_CERTUS_QUARTZ("stair.quartz.certus.chiseled"),
-	CERTUS_QUARTZ("stair.quartz.certus"),
-	CERTUS_QUARTZ_PILLAR("stair.quartz.certus.pillar"),
-	SKYSTONE("stair.skystone"),
-	SKYSTONE_BLOCK("stair.skystone.block"),
-	SKYSTONE_BRICK("stair.skystone.brick"),
-	SKYSTONE_SMALL_BRICK("stair.skystone.brick.small");
+	FLUIX( "stair.fluix" ),
+	CHISELED_CERTUS_QUARTZ( "stair.quartz.certus.chiseled" ),
+	CERTUS_QUARTZ( "stair.quartz.certus" ),
+	CERTUS_QUARTZ_PILLAR( "stair.quartz.certus.pillar" ),
+	SKYSTONE( "stair.skystone" ),
+	SKYSTONE_BLOCK( "stair.skystone.block" ),
+	SKYSTONE_BRICK( "stair.skystone.brick" ),
+	SKYSTONE_SMALL_BRICK( "stair.skystone.brick.small" );
 
 	private final String name;
 

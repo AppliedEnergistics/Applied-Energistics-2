@@ -63,20 +63,20 @@ public class RenderBlockCharger extends BaseBlockRender<BlockCharger, TileCharge
 		blk.getRendererInstance().setTemporaryRenderIcons( ExtraBlockTextures.BlockChargerInside.getIcon(), null, null, null, null, null );
 
 		this.setInvRenderBounds( renderer, 2, 0, 2, 14, 3, 14 );
-		this.renderInvBlock( EnumSet.allOf( AEPartLocation.class ), blk, is,  0xffffff, renderer );
+		this.renderInvBlock( EnumSet.allOf( AEPartLocation.class ), blk, is, 0xffffff, renderer );
 
 		this.setInvRenderBounds( renderer, 3, 3, 3, 13, 4, 13 );
-		this.renderInvBlock( EnumSet.allOf( AEPartLocation.class ), blk, is,  0xffffff, renderer );
+		this.renderInvBlock( EnumSet.allOf( AEPartLocation.class ), blk, is, 0xffffff, renderer );
 
 		blk.getRendererInstance().setTemporaryRenderIcon( null );
 
 		blk.getRendererInstance().setTemporaryRenderIcons( null, ExtraBlockTextures.BlockChargerInside.getIcon(), null, null, null, null );
 
 		this.setInvRenderBounds( renderer, 2, 13, 2, 14, 16, 14 );
-		this.renderInvBlock( EnumSet.allOf( AEPartLocation.class ), blk, is,  0xffffff, renderer );
+		this.renderInvBlock( EnumSet.allOf( AEPartLocation.class ), blk, is, 0xffffff, renderer );
 
 		this.setInvRenderBounds( renderer, 3, 12, 3, 13, 13, 13 );
-		this.renderInvBlock( EnumSet.allOf( AEPartLocation.class ), blk, is,  0xffffff, renderer );
+		this.renderInvBlock( EnumSet.allOf( AEPartLocation.class ), blk, is, 0xffffff, renderer );
 
 		renderer.setRenderAllFaces( false );
 		blk.getRendererInstance().setTemporaryRenderIcon( null );
@@ -140,14 +140,15 @@ public class RenderBlockCharger extends BaseBlockRender<BlockCharger, TileCharge
 
 				final Block blk = Block.getBlockFromItem( sis.getItem() );
 				/*
-				if( sis.getItemSpriteNumber() == 0 && block != null && IRenderHelper.renderItemIn3d( blk.getRenderType() ) )
-				{
-					GL11.glRotatef( 25.0f, 1.0f, 0.0f, 0.0f );
-					GL11.glRotatef( 15.0f, 0.0f, 1.0f, 0.0f );
-					GL11.glRotatef( 30.0f, 0.0f, 1.0f, 0.0f );
-				}
-				*/
-				
+				 * if( sis.getItemSpriteNumber() == 0 && block != null && IRenderHelper.renderItemIn3d(
+				 * blk.getRenderType() ) )
+				 * {
+				 * GL11.glRotatef( 25.0f, 1.0f, 0.0f, 0.0f );
+				 * GL11.glRotatef( 15.0f, 0.0f, 1.0f, 0.0f );
+				 * GL11.glRotatef( 30.0f, 0.0f, 1.0f, 0.0f );
+				 * }
+				 */
+
 				// << 20 | light << 4;
 				final int br = tile.getWorld().getCombinedLight( tile.getPos(), 0 );
 				final int var11 = br % 65536;

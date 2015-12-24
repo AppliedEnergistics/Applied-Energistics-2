@@ -144,15 +144,15 @@ public final class ApiBlocks implements IBlocks
 	private final IBlockDefinition chiseledQuartzStair;
 	private final IBlockDefinition quartzPillarStair;
 	/*
-	private final IBlockDefinition skyStoneSlab;
-	private final IBlockDefinition skyStoneBlockSlab;
-	private final IBlockDefinition skyStoneBrickSlab;
-	private final IBlockDefinition skyStoneSmallBrickSlab;
-	private final IBlockDefinition fluixSlab;
-	private final IBlockDefinition quartzSlab;
-	private final IBlockDefinition chiseledQuartzSlab;
-	private final IBlockDefinition quartzPillarSlab;
-	*/
+	 * private final IBlockDefinition skyStoneSlab;
+	 * private final IBlockDefinition skyStoneBlockSlab;
+	 * private final IBlockDefinition skyStoneBrickSlab;
+	 * private final IBlockDefinition skyStoneSmallBrickSlab;
+	 * private final IBlockDefinition fluixSlab;
+	 * private final IBlockDefinition quartzSlab;
+	 * private final IBlockDefinition chiseledQuartzSlab;
+	 * private final IBlockDefinition quartzPillarSlab;
+	 */
 
 	private final IBlockDefinition itemGen;
 	private final IBlockDefinition chunkLoader;
@@ -161,7 +161,7 @@ public final class ApiBlocks implements IBlocks
 
 	public ApiBlocks( final DefinitionConstructor constructor )
 	{
-//		this.quartzOre = new BlockDefinition( "ore.quartz", new OreQuartz() );
+		// this.quartzOre = new BlockDefinition( "ore.quartz", new OreQuartz() );
 		this.quartzOre = constructor.registerBlockDefinition( new QuartzOreBlock() );
 		this.quartzOreCharged = constructor.registerBlockDefinition( new ChargedQuartzOreBlock() );
 		this.matrixFrame = constructor.registerBlockDefinition( new BlockMatrixFrame() );
@@ -226,15 +226,23 @@ public final class ApiBlocks implements IBlocks
 
 		// TODO Re-Add Slabs...
 		/*
-		this.skyStoneSlab = constructor.registerBlockDefinition( new AEBaseSlabBlock( skyStone_stone, EnumSet.of(AEFeature.DecorativeQuartzBlocks), false, "SkyStoneSlabBlock" ) );
-		this.skyStoneBlockSlab = constructor.registerBlockDefinition( new AEBaseSlabBlock( skyStone_block, EnumSet.of(AEFeature.DecorativeQuartzBlocks), false, "SkyStoneBlockSlabBlock" ) );
-		this.skyStoneBrickSlab = constructor.registerBlockDefinition( new AEBaseSlabBlock( skyStone_brick, EnumSet.of(AEFeature.DecorativeQuartzBlocks), false, "SkyStoneBrickSlabBlock" ) );
-		this.skyStoneSmallBrickSlab = constructor.registerBlockDefinition( new AEBaseSlabBlock( skyStone_smallbrick, EnumSet.of(AEFeature.DecorativeQuartzBlocks), false, "SkyStoneSmallBrickSlabBlock" ) );
-		this.fluixSlab = constructor.registerBlockDefinition( new AEBaseSlabBlock( fluixBlock, EnumSet.of(AEFeature.DecorativeQuartzBlocks), false, "FluixSlabBlock" ) );
-		this.quartzSlab = constructor.registerBlockDefinition( new AEBaseSlabBlock( quartzBlock, EnumSet.of(AEFeature.DecorativeQuartzBlocks), false, "QuartzSlabBlock" ) );
-		this.chiseledQuartzSlab = constructor.registerBlockDefinition( new AEBaseSlabBlock( chiseledQuartz, EnumSet.of(AEFeature.DecorativeQuartzBlocks), false, "ChiseledQuartzSlabBlock" ) );;
-		this.quartzPillarSlab = constructor.registerBlockDefinition( new AEBaseSlabBlock( quartzPillar, EnumSet.of(AEFeature.DecorativeQuartzBlocks), false, "QuartzPillarSlabBlock" ) )
-		*/
+		 * this.skyStoneSlab = constructor.registerBlockDefinition( new AEBaseSlabBlock( skyStone_stone,
+		 * EnumSet.of(AEFeature.DecorativeQuartzBlocks), false, "SkyStoneSlabBlock" ) );
+		 * this.skyStoneBlockSlab = constructor.registerBlockDefinition( new AEBaseSlabBlock( skyStone_block,
+		 * EnumSet.of(AEFeature.DecorativeQuartzBlocks), false, "SkyStoneBlockSlabBlock" ) );
+		 * this.skyStoneBrickSlab = constructor.registerBlockDefinition( new AEBaseSlabBlock( skyStone_brick,
+		 * EnumSet.of(AEFeature.DecorativeQuartzBlocks), false, "SkyStoneBrickSlabBlock" ) );
+		 * this.skyStoneSmallBrickSlab = constructor.registerBlockDefinition( new AEBaseSlabBlock( skyStone_smallbrick,
+		 * EnumSet.of(AEFeature.DecorativeQuartzBlocks), false, "SkyStoneSmallBrickSlabBlock" ) );
+		 * this.fluixSlab = constructor.registerBlockDefinition( new AEBaseSlabBlock( fluixBlock,
+		 * EnumSet.of(AEFeature.DecorativeQuartzBlocks), false, "FluixSlabBlock" ) );
+		 * this.quartzSlab = constructor.registerBlockDefinition( new AEBaseSlabBlock( quartzBlock,
+		 * EnumSet.of(AEFeature.DecorativeQuartzBlocks), false, "QuartzSlabBlock" ) );
+		 * this.chiseledQuartzSlab = constructor.registerBlockDefinition( new AEBaseSlabBlock( chiseledQuartz,
+		 * EnumSet.of(AEFeature.DecorativeQuartzBlocks), false, "ChiseledQuartzSlabBlock" ) );;
+		 * this.quartzPillarSlab = constructor.registerBlockDefinition( new AEBaseSlabBlock( quartzPillar,
+		 * EnumSet.of(AEFeature.DecorativeQuartzBlocks), false, "QuartzPillarSlabBlock" ) )
+		 */
 
 		this.itemGen = constructor.registerBlockDefinition( new BlockItemGen() );
 		this.chunkLoader = constructor.registerBlockDefinition( new BlockChunkloader() );
@@ -403,54 +411,47 @@ public final class ApiBlocks implements IBlocks
 	}
 
 	/*
-	@Override
-	public IBlockDefinition skyStoneSlab()
-	{
-		return this.skyStoneSlab;
-	}
-
-	@Override
-	public IBlockDefinition skyStoneBlockSlab()
-	{
-		return this.skyStoneBlockSlab;
-	}
-
-	@Override
-	public IBlockDefinition skyStoneBrickSlab()
-	{
-		return this.skyStoneBrickSlab;
-	}
-
-	@Override
-	public IBlockDefinition skyStoneSmallBrickSlab()
-	{
-		return this.skyStoneSmallBrickSlab;
-	}
-
-	@Override
-	public IBlockDefinition fluixSlab()
-	{
-		return this.fluixSlab;
-	}
-
-	@Override
-	public IBlockDefinition quartzSlab()
-	{
-		return this.quartzSlab;
-	}
-
-	@Override
-	public IBlockDefinition chiseledQuartzSlab()
-	{
-		return this.chiseledQuartzSlab;
-	}
-
-	@Override
-	public IBlockDefinition quartzPillarSlab()
-	{
-		return this.quartzPillarSlab;
-	}
-*/
+	 * @Override
+	 * public IBlockDefinition skyStoneSlab()
+	 * {
+	 * return this.skyStoneSlab;
+	 * }
+	 * @Override
+	 * public IBlockDefinition skyStoneBlockSlab()
+	 * {
+	 * return this.skyStoneBlockSlab;
+	 * }
+	 * @Override
+	 * public IBlockDefinition skyStoneBrickSlab()
+	 * {
+	 * return this.skyStoneBrickSlab;
+	 * }
+	 * @Override
+	 * public IBlockDefinition skyStoneSmallBrickSlab()
+	 * {
+	 * return this.skyStoneSmallBrickSlab;
+	 * }
+	 * @Override
+	 * public IBlockDefinition fluixSlab()
+	 * {
+	 * return this.fluixSlab;
+	 * }
+	 * @Override
+	 * public IBlockDefinition quartzSlab()
+	 * {
+	 * return this.quartzSlab;
+	 * }
+	 * @Override
+	 * public IBlockDefinition chiseledQuartzSlab()
+	 * {
+	 * return this.chiseledQuartzSlab;
+	 * }
+	 * @Override
+	 * public IBlockDefinition quartzPillarSlab()
+	 * {
+	 * return this.quartzPillarSlab;
+	 * }
+	 */
 
 	@Override
 	public ITileDefinition grindStone()

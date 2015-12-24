@@ -57,7 +57,7 @@ public class ControllerValidator implements IGridVisitor
 			final TileController c = (TileController) host;
 
 			final BlockPos pos = c.getPos();
-			
+
 			this.minX = Math.min( pos.getX(), this.minX );
 			this.maxX = Math.max( pos.getX(), this.maxX );
 			this.minY = Math.min( pos.getY(), this.minY );

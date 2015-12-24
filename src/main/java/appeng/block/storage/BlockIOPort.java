@@ -45,7 +45,7 @@ public class BlockIOPort extends AEBaseTileBlock
 		this.setTileEntity( TileIOPort.class );
 		this.setFeature( EnumSet.of( AEFeature.StorageCells, AEFeature.IOPort ) );
 	}
-	
+
 	@Override
 	public void onNeighborBlockChange(
 			final World w,
@@ -59,7 +59,7 @@ public class BlockIOPort extends AEBaseTileBlock
 			te.updateRedstoneState();
 		}
 	}
-	
+
 	@Override
 	public boolean onActivated(
 			final World w,

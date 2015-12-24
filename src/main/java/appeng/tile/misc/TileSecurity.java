@@ -113,7 +113,7 @@ public class TileSecurity extends AENetworkTile implements ITerminalHost, IAEApp
 	{
 
 	}
-	
+
 	@Override
 	public void getDrops(
 			final World w,

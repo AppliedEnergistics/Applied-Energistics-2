@@ -45,10 +45,10 @@ public class MEGuiTextField extends GuiTextField
 	 * Pays attention to the '_' caret.
 	 *
 	 * @param fontRenderer renderer for the strings
-	 * @param xPos         absolute left position
-	 * @param yPos         absolute top position
-	 * @param width        absolute width
-	 * @param height       absolute height
+	 * @param xPos absolute left position
+	 * @param yPos absolute top position
+	 * @param width absolute width
+	 * @param height absolute height
 	 */
 	public MEGuiTextField( final FontRenderer fontRenderer, final int xPos, final int yPos, final int width, final int height )
 	{

@@ -57,7 +57,7 @@ public final class EntityTinyTNTPrimed extends EntityTNTPrimed implements IEntit
 	{
 		super( w, x, y, z, igniter );
 		this.setSize( 0.55F, 0.55F );
-		//this.yOffset = this.height / 2.0F;
+		// this.yOffset = this.height / 2.0F;
 	}
 
 	/**
@@ -147,7 +147,7 @@ public final class EntityTinyTNTPrimed extends EntityTNTPrimed implements IEntit
 				{
 					for( int z = (int) ( this.posZ - 2 ); z <= this.posZ + 2; z++ )
 					{
-						final BlockPos point = new BlockPos( x,y,z);
+						final BlockPos point = new BlockPos( x, y, z );
 						final IBlockState state = this.worldObj.getBlockState( point );
 						final Block block = state.getBlock();
 						if( block != null && !block.isAir( this.worldObj, point ) )

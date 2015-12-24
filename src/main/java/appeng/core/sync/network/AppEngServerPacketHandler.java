@@ -46,20 +46,20 @@ public final class AppEngServerPacketHandler extends AppEngPacketHandlerBase imp
 		{
 			final int packetType = stream.readInt();
 			final AppEngPacket pack = PacketTypes.getPacket( packetType ).parsePacket( stream );
-			
+
 			final PacketCallState callState =
-			 new PacketCallState(){
-				
-				@Override
-				public void call(
-						final AppEngPacket appEngPacket )
-				{
-					appEngPacket.serverPacketData( manager, appEngPacket, player);
-				}
-			};
-			
-			pack.setCallParam(callState);			
-			PacketThreadUtil.checkThreadAndEnqueue( pack, handler, ((EntityPlayerMP)player).getServerForPlayer() );
+					new PacketCallState(){
+
+						@Override
+						public void call(
+								final AppEngPacket appEngPacket )
+						{
+							appEngPacket.serverPacketData( manager, appEngPacket, player );
+						}
+					};
+
+			pack.setCallParam( callState );
+			PacketThreadUtil.checkThreadAndEnqueue( pack, handler, ( (EntityPlayerMP) player ).getServerForPlayer() );
 			callState.call( pack );
 		}
 		catch( final InstantiationException e )

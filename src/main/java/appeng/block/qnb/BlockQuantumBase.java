@@ -53,7 +53,7 @@ public abstract class BlockQuantumBase extends AEBaseTileBlock implements ICusto
 	{
 		return EnumWorldBlockLayer.CUTOUT;
 	}
-	
+
 	@Override
 	public void onNeighborBlockChange(
 			final World w,

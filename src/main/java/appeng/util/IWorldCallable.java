@@ -39,8 +39,8 @@ public interface IWorldCallable<T>
 	/**
 	 * Similar to {@link Callable#call()}
 	 *
-	 * @param world this param is given to not hold a reference to the world but let the caller handle it. Do not expect a world here thus can be
-	 * <tt>null</tt>.
+	 * @param world this param is given to not hold a reference to the world but let the caller handle it. Do not expect
+	 * a world here thus can be <tt>null</tt>.
 	 *
 	 * @return result of call on the world. Can be <tt>null</tt>.
 	 *

@@ -74,13 +74,13 @@ public class AdaptorPlayerInventory implements IInventory
 	{
 		this.src.setInventorySlotContents( var1 + this.min, var2 );
 	}
-	
+
 	@Override
 	public IChatComponent getDisplayName()
 	{
 		return this.src.getDisplayName();
 	}
-	
+
 	@Override
 	public boolean hasCustomName()
 	{
@@ -104,19 +104,20 @@ public class AdaptorPlayerInventory implements IInventory
 	{
 		return this.src.isUseableByPlayer( var1 );
 	}
-	
+
 	@Override
 	public void openInventory(
 			final EntityPlayer player )
 	{
-		this.src.openInventory(player);
-		
+		this.src.openInventory( player );
+
 	}
+
 	@Override
 	public void closeInventory(
 			final EntityPlayer player )
 	{
-		this.src.closeInventory(player);
+		this.src.closeInventory( player );
 	}
 
 	@Override

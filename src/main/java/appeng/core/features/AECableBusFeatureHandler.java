@@ -69,7 +69,7 @@ public final class AECableBusFeatureHandler implements IFeatureHandler
 	 * Registration of the {@link TileEntity} will actually be handled by {@link BlockCableBus#setupTile()}.
 	 */
 	@Override
-	public void register( final Side side)
+	public void register( final Side side )
 	{
 		if( this.enabled )
 		{
@@ -88,13 +88,13 @@ public final class AECableBusFeatureHandler implements IFeatureHandler
 			// Bypass the forge magic with null to register our own itemblock later.
 			GameRegistry.registerBlock( this.featured, null, registryName );
 			GameRegistry.registerItem( this.definition.maybeItem().get(), registryName );
-			
-			// register the block/item conversion...
-            if ( this.featured != null && this.definition.maybeItem().isPresent() )
-            	GameData.getBlockItemMap().put( this.featured, this.definition.maybeItem().get() );
 
-            if ( side == Side.CLIENT)
-            	CommonHelper.proxy.configureIcon( this.featured, name );
+			// register the block/item conversion...
+			if( this.featured != null && this.definition.maybeItem().isPresent() )
+				GameData.getBlockItemMap().put( this.featured, this.definition.maybeItem().get() );
+
+			if( side == Side.CLIENT )
+				CommonHelper.proxy.configureIcon( this.featured, name );
 		}
 	}
 }

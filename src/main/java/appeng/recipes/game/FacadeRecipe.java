@@ -96,12 +96,12 @@ public final class FacadeRecipe implements IRecipe
 	{
 		return null;
 	}
-	
+
 	@Override
 	public ItemStack[] getRemainingItems(
 			final InventoryCrafting inv )
 	{
-        return ForgeHooks.defaultRecipeGetRemainingItems(inv);
+		return ForgeHooks.defaultRecipeGetRemainingItems( inv );
 	}
-	
+
 }

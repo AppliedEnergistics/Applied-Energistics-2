@@ -416,7 +416,6 @@ public class GuiImgButton extends GuiButton implements ITooltip
 		}
 	}
 
-
 	private static class ButtonAppearance
 	{
 		public int index;

@@ -18,35 +18,35 @@
 
 /* Example:
 
-NBTTagCompound msg = new NBTTagCompound();
-NBTTagCompound in = new NBTTagCompound();
-NBTTagCompound out = new NBTTagCompound();
+ NBTTagCompound msg = new NBTTagCompound();
+ NBTTagCompound in = new NBTTagCompound();
+ NBTTagCompound out = new NBTTagCompound();
 
-new ItemStack( Blocks.iron_ore ).writeToNBT( in );
-new ItemStack( Items.iron_ingot ).writeToNBT( out );
-msg.setTag( "in", in );
-msg.setTag( "out", out );
-msg.setInteger( "turns", 8 );
+ new ItemStack( Blocks.iron_ore ).writeToNBT( in );
+ new ItemStack( Items.iron_ingot ).writeToNBT( out );
+ msg.setTag( "in", in );
+ msg.setTag( "out", out );
+ msg.setInteger( "turns", 8 );
 
-FMLInterModComms.sendMessage( "appliedenergistics2", "add-grindable", msg );
+ FMLInterModComms.sendMessage( "appliedenergistics2", "add-grindable", msg );
 
  -- or --
 
-NBTTagCompound msg = new NBTTagCompound();
-NBTTagCompound in = new NBTTagCompound();
-NBTTagCompound out = new NBTTagCompound();
-NBTTagCompound optional = new NBTTagCompound();
+ NBTTagCompound msg = new NBTTagCompound();
+ NBTTagCompound in = new NBTTagCompound();
+ NBTTagCompound out = new NBTTagCompound();
+ NBTTagCompound optional = new NBTTagCompound();
 
-new ItemStack( Blocks.iron_ore ).writeToNBT( in );
-new ItemStack( Items.iron_ingot ).writeToNBT( out );
-new ItemStack( Blocks.gravel ).writeToNBT( optional );
-msg.setTag( "in", in );
-msg.setTag( "out", out );
-msg.setTag( "optional", optional );
-msg.setFloat( "chance", 0.5 );
-msg.setInteger( "turns", 8 );
+ new ItemStack( Blocks.iron_ore ).writeToNBT( in );
+ new ItemStack( Items.iron_ingot ).writeToNBT( out );
+ new ItemStack( Blocks.gravel ).writeToNBT( optional );
+ msg.setTag( "in", in );
+ msg.setTag( "out", out );
+ msg.setTag( "optional", optional );
+ msg.setFloat( "chance", 0.5 );
+ msg.setInteger( "turns", 8 );
 
-FMLInterModComms.sendMessage( "appliedenergistics2", "add-grindable", msg );
+ FMLInterModComms.sendMessage( "appliedenergistics2", "add-grindable", msg );
 
  */
 

@@ -46,7 +46,7 @@ public class ContainerSkyChest extends AEBaseContainer
 			}
 		}
 
-		this.chest.openInventory(ip.player);
+		this.chest.openInventory( ip.player );
 
 		this.bindPlayerInventory( ip, 0, 195 - /* height of player inventory */82 );
 	}
@@ -55,6 +55,6 @@ public class ContainerSkyChest extends AEBaseContainer
 	public void onContainerClosed( final EntityPlayer par1EntityPlayer )
 	{
 		super.onContainerClosed( par1EntityPlayer );
-		this.chest.closeInventory(par1EntityPlayer);
+		this.chest.closeInventory( par1EntityPlayer );
 	}
 }

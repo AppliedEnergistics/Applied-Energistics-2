@@ -147,8 +147,7 @@ public class FacadeContainer implements IFacadeContainer
 
 					this.storage.setFacade( x, created );
 				}
-				else 
-				if( !isBC )
+				else if( !isBC )
 				{
 					for( final Item facadeItem : AEApi.instance().definitions().items().facade().maybeItem().asSet() )
 					{

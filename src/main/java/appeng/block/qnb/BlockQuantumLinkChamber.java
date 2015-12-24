@@ -47,7 +47,7 @@ public class BlockQuantumLinkChamber extends BlockQuantumBase
 	{
 		super( AEGlassMaterial.INSTANCE );
 	}
-	
+
 	@Override
 	public void randomDisplayTick(
 			final World w,
@@ -105,7 +105,7 @@ public class BlockQuantumLinkChamber extends BlockQuantumBase
 		final double onePixel = 2.0 / 16.0;
 		return Collections.singletonList( AxisAlignedBB.fromBounds( onePixel, onePixel, onePixel, 1.0 - onePixel, 1.0 - onePixel, 1.0 - onePixel ) );
 	}
-	
+
 	@Override
 	public void addCollidingBlockToList(
 			final World w,

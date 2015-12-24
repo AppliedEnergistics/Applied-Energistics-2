@@ -39,7 +39,7 @@ public class BlockCubeGenerator extends AEBaseTileBlock
 		this.setTileEntity( TileCubeGenerator.class );
 		this.setFeature( EnumSet.of( AEFeature.UnsupportedDeveloperTools, AEFeature.Creative ) );
 	}
-		
+
 	@Override
 	public boolean onActivated(
 			final World w,
@@ -58,5 +58,5 @@ public class BlockCubeGenerator extends AEBaseTileBlock
 
 		return true;
 	}
-	
+
 }

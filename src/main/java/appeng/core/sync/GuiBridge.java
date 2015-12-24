@@ -268,7 +268,7 @@ public enum GuiBridge implements IGuiHandler
 		}
 		if( ID.type.isTile() )
 		{
-			final TileEntity TE = w.getTileEntity( new BlockPos(x,y,z) );
+			final TileEntity TE = w.getTileEntity( new BlockPos( x, y, z ) );
 			if( TE instanceof IPartHost )
 			{
 				( (IPartHost) TE ).getPart( side );
@@ -295,7 +295,7 @@ public enum GuiBridge implements IGuiHandler
 		{
 			if( it.getItem() instanceof IGuiItem )
 			{
-				return ( (IGuiItem) it.getItem() ).getGuiObject( it, w, new BlockPos(x,y,z) );
+				return ( (IGuiItem) it.getItem() ).getGuiObject( it, w, new BlockPos( x, y, z ) );
 			}
 
 			final IWirelessTermHandler wh = AEApi.instance().registries().wireless().getWirelessTerminalHandler( it );
@@ -450,7 +450,7 @@ public enum GuiBridge implements IGuiHandler
 		}
 		if( ID.type.isTile() )
 		{
-			final TileEntity TE = w.getTileEntity( new BlockPos(x,y,z) );
+			final TileEntity TE = w.getTileEntity( new BlockPos( x, y, z ) );
 			if( TE instanceof IPartHost )
 			{
 				( (IPartHost) TE ).getPart( side );
@@ -499,7 +499,7 @@ public enum GuiBridge implements IGuiHandler
 	public boolean hasPermissions( final TileEntity te, final int x, final int y, final int z, final AEPartLocation side, final EntityPlayer player )
 	{
 		final World w = player.getEntityWorld();
-		final BlockPos pos = new  BlockPos(x,y,z);
+		final BlockPos pos = new BlockPos( x, y, z );
 
 		if( Platform.hasPermissions( te != null ? new DimensionalCoord( te ) : new DimensionalCoord( player.worldObj, pos ), player ) )
 		{

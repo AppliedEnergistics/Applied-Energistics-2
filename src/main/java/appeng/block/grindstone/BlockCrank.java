@@ -61,7 +61,7 @@ public class BlockCrank extends AEBaseTileBlock
 	{
 		return RenderBlockCrank.class;
 	}
-	
+
 	@Override
 	public boolean onActivated(
 			final World w,
@@ -95,7 +95,7 @@ public class BlockCrank extends AEBaseTileBlock
 		world.destroyBlock( pos, true ); // w.destroyBlock( x, y, z, true );
 		world.markBlockForUpdate( pos );
 	}
-		
+
 	@Override
 	public void onBlockPlacedBy(
 			final World world,
@@ -120,7 +120,7 @@ public class BlockCrank extends AEBaseTileBlock
 			this.dropCrank( world, pos );
 		}
 	}
-	
+
 	@Override
 	public boolean isValidOrientation(
 			final World w,
@@ -146,12 +146,12 @@ public class BlockCrank extends AEBaseTileBlock
 
 	private boolean isCrankable( final World world, final BlockPos pos, final EnumFacing offset )
 	{
-		final BlockPos o = pos.offset( offset);
+		final BlockPos o = pos.offset( offset );
 		final TileEntity te = world.getTileEntity( o );
 
 		return te instanceof ICrankable && ( (ICrankable) te ).canCrankAttach( offset.getOpposite() );
 	}
-	
+
 	@Override
 	public void onNeighborBlockChange(
 			final World world,

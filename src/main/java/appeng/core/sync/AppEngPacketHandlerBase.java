@@ -56,7 +56,6 @@ public class AppEngPacketHandlerBase
 {
 	private static final Map<Class<? extends AppEngPacket>, PacketTypes> REVERSE_LOOKUP = new HashMap<Class<? extends AppEngPacket>, AppEngPacketHandlerBase.PacketTypes>();
 
-
 	public enum PacketTypes
 	{
 		PACKET_COMPASS_REQUEST( PacketCompassRequest.class ),

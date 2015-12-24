@@ -55,7 +55,7 @@ public class BlockInscriber extends AEBaseTileBlock
 	{
 		return RenderBlockInscriber.class;
 	}
-	
+
 	@Override
 	public boolean onActivated(
 			final World w,

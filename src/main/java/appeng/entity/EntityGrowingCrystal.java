@@ -62,7 +62,7 @@ public final class EntityGrowingCrystal extends EntityItem
 		{
 			return;
 		}
-		
+
 		final ItemStack is = this.getEntityItem();
 		final Item gc = is.getItem();
 

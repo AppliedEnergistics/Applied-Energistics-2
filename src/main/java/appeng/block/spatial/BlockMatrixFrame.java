@@ -78,7 +78,7 @@ public class BlockMatrixFrame extends AEBaseBlock implements ICustomCollision
 		return Arrays.asList( new AxisAlignedBB[] {} );// AxisAlignedBB.getBoundingBox( 0.25, 0, 0.25, 0.75, 0.5, 0.75 )
 		// } );
 	}
-	
+
 	@Override
 	public void addCollidingBlockToList(
 			final World w,

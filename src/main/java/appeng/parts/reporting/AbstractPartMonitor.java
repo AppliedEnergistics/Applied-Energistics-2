@@ -317,7 +317,8 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 		final AEPartLocation d = this.getSide();
 		GL11.glTranslated( d.xOffset * 0.77, d.yOffset * 0.77, d.zOffset * 0.77 );
 
-		switch( d ) {
+		switch( d )
+		{
 			case UP:
 				GL11.glScalef( 1.0f, -1.0f, 1.0f );
 				GL11.glRotatef( 90.0f, 1.0f, 0.0f, 0.0f );

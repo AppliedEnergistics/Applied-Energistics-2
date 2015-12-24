@@ -1,6 +1,7 @@
 
 package appeng.client.render;
 
+
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import appeng.client.texture.IAESprite;
 
@@ -71,17 +72,17 @@ public class IconUnwrapper extends TextureAtlasSprite
 	}
 
 	@Override
-    public float getInterpolatedU( final double d)
-    {
-        final float f = this.max_u - this.min_u;
-        return this.min_u + f * (float)d / 16.0F;
-    }
+	public float getInterpolatedU( final double d )
+	{
+		final float f = this.max_u - this.min_u;
+		return this.min_u + f * (float) d / 16.0F;
+	}
 
 	@Override
-    public float getInterpolatedV( final double d)
-    {
-        final float f = this.max_v - this.min_v;
-        return this.min_v + f * ((float)d / 16.0F);
-    }
+	public float getInterpolatedV( final double d )
+	{
+		final float f = this.max_v - this.min_v;
+		return this.min_v + f * ( (float) d / 16.0F );
+	}
 
 }

@@ -1,6 +1,9 @@
+
 package appeng.client.texture;
 
+
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+
 
 public interface IAESprite
 {

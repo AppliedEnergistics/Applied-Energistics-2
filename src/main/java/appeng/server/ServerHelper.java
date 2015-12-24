@@ -69,7 +69,7 @@ public class ServerHelper extends CommonHelper
 	}
 
 	@Override
-	public void bindTileEntitySpecialRenderer( final Class <? extends TileEntity> tile, final AEBaseBlock blk )
+	public void bindTileEntitySpecialRenderer( final Class<? extends TileEntity> tile, final AEBaseBlock blk )
 	{
 		throw new UnsupportedOperationException( "This is a server..." );
 	}

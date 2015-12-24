@@ -206,13 +206,13 @@ public class WrapperChainedInventory implements IInventory
 	{
 		return false;
 	}
-	
+
 	@Override
 	public void openInventory(
 			final EntityPlayer player )
 	{
 	}
-	
+
 	@Override
 	public void closeInventory(
 			final EntityPlayer player )
@@ -256,7 +256,7 @@ public class WrapperChainedInventory implements IInventory
 			final int id,
 			final int value )
 	{
-		
+
 	}
 
 	@Override
@@ -268,6 +268,6 @@ public class WrapperChainedInventory implements IInventory
 	@Override
 	public void clear()
 	{
-		
+
 	}
 }

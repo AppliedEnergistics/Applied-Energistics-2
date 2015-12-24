@@ -51,11 +51,11 @@ public class FeatureNameExtractor
 		{
 			name = PATTERN_ITEM_MULTI_MATERIAL.matcher( name ).replaceAll( "ItemMaterial" );
 		}
-		else if ( name.startsWith( "BlockStairCommon" ) )
+		else if( name.startsWith( "BlockStairCommon" ) )
 		{
 			name = "stair";
 		}
-		else if ( name.startsWith( "BlockFluix" ) )
+		else if( name.startsWith( "BlockFluix" ) )
 		{
 			name = "fluix";
 		}

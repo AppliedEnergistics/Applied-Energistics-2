@@ -56,13 +56,13 @@ public class RenderSpatialPylon extends BaseBlockRender<BlockSpatialPylon, TileS
 	{
 		renderer.setRenderBounds( 0, 0, 0, 1, 1, 1 );
 
-		final TileSpatialPylon sp = imb.getTileEntity( world, pos  );
+		final TileSpatialPylon sp = imb.getTileEntity( world, pos );
 
 		final int displayBits = ( sp == null ) ? 0 : sp.getDisplayBits();
 
 		if( displayBits != 0 )
 		{
-			EnumFacing ori = null;//AEPartLocation.INTERNAL;
+			EnumFacing ori = null;// AEPartLocation.INTERNAL;
 			if( ( displayBits & TileSpatialPylon.DISPLAY_Z ) == TileSpatialPylon.DISPLAY_X )
 			{
 				ori = EnumFacing.EAST;
@@ -125,7 +125,7 @@ public class RenderSpatialPylon extends BaseBlockRender<BlockSpatialPylon, TileS
 
 			final BlockRenderInfo bri = imb.getRendererInstance();
 			bri.setTemporaryRenderIcon( null );
-			bri.setTemporaryRenderIcons( this.getBlockTextureFromSideOutside( imb, sp, displayBits, ori, EnumFacing.UP, renderer ), this.getBlockTextureFromSideOutside( imb, sp, displayBits, ori, EnumFacing.DOWN, renderer ), this.getBlockTextureFromSideOutside( imb, sp, displayBits, ori, EnumFacing.SOUTH, renderer ), this.getBlockTextureFromSideOutside( imb, sp, displayBits, ori, EnumFacing.NORTH, renderer ), this.getBlockTextureFromSideOutside( imb, sp, displayBits, ori, EnumFacing.EAST, renderer ), this.getBlockTextureFromSideOutside( imb, sp, displayBits, ori, EnumFacing.WEST , renderer) );
+			bri.setTemporaryRenderIcons( this.getBlockTextureFromSideOutside( imb, sp, displayBits, ori, EnumFacing.UP, renderer ), this.getBlockTextureFromSideOutside( imb, sp, displayBits, ori, EnumFacing.DOWN, renderer ), this.getBlockTextureFromSideOutside( imb, sp, displayBits, ori, EnumFacing.SOUTH, renderer ), this.getBlockTextureFromSideOutside( imb, sp, displayBits, ori, EnumFacing.NORTH, renderer ), this.getBlockTextureFromSideOutside( imb, sp, displayBits, ori, EnumFacing.EAST, renderer ), this.getBlockTextureFromSideOutside( imb, sp, displayBits, ori, EnumFacing.WEST, renderer ) );
 
 			final boolean r = renderer.renderStandardBlock( imb, pos );
 
@@ -137,13 +137,13 @@ public class RenderSpatialPylon extends BaseBlockRender<BlockSpatialPylon, TileS
 
 				for( final EnumFacing d : EnumFacing.VALUES )
 				{
-					this.renderFace( pos, imb, this.getBlockTextureFromSideInside( imb, sp, displayBits, ori, d,renderer ), renderer, d );
+					this.renderFace( pos, imb, this.getBlockTextureFromSideInside( imb, sp, displayBits, ori, d, renderer ), renderer, d );
 				}
 			}
 			else
 			{
 				bri.setTemporaryRenderIcon( null );
-				bri.setTemporaryRenderIcons( this.getBlockTextureFromSideInside( imb, sp, displayBits, ori, EnumFacing.UP,renderer ), this.getBlockTextureFromSideInside( imb, sp, displayBits, ori, EnumFacing.DOWN,renderer ), this.getBlockTextureFromSideInside( imb, sp, displayBits, ori, EnumFacing.SOUTH,renderer ), this.getBlockTextureFromSideInside( imb, sp, displayBits, ori, EnumFacing.NORTH,renderer ), this.getBlockTextureFromSideInside( imb, sp, displayBits, ori, EnumFacing.EAST,renderer ), this.getBlockTextureFromSideInside( imb, sp, displayBits, ori, EnumFacing.WEST,renderer ) );
+				bri.setTemporaryRenderIcons( this.getBlockTextureFromSideInside( imb, sp, displayBits, ori, EnumFacing.UP, renderer ), this.getBlockTextureFromSideInside( imb, sp, displayBits, ori, EnumFacing.DOWN, renderer ), this.getBlockTextureFromSideInside( imb, sp, displayBits, ori, EnumFacing.SOUTH, renderer ), this.getBlockTextureFromSideInside( imb, sp, displayBits, ori, EnumFacing.NORTH, renderer ), this.getBlockTextureFromSideInside( imb, sp, displayBits, ori, EnumFacing.EAST, renderer ), this.getBlockTextureFromSideInside( imb, sp, displayBits, ori, EnumFacing.WEST, renderer ) );
 
 				renderer.renderStandardBlock( imb, pos );
 			}
@@ -154,7 +154,7 @@ public class RenderSpatialPylon extends BaseBlockRender<BlockSpatialPylon, TileS
 			return r;
 		}
 
-		renderer.setOverrideBlockTexture( renderer.getIcon( world.getBlockState( pos ) )[0] );//imb.getIcon( 0, 0 );
+		renderer.setOverrideBlockTexture( renderer.getIcon( world.getBlockState( pos ) )[0] );// imb.getIcon( 0, 0 );
 		boolean result = renderer.renderStandardBlock( imb, pos );
 
 		renderer.setOverrideBlockTexture( ExtraBlockTextures.BlockSpatialPylon_dim.getIcon() );
@@ -210,6 +210,6 @@ public class RenderSpatialPylon extends BaseBlockRender<BlockSpatialPylon, TileS
 			return good ? ExtraBlockTextures.BlockSpatialPylonE_dim.getIcon() : ExtraBlockTextures.BlockSpatialPylonE_red.getIcon();
 		}
 
-		return renderer.getIcon( blk.getDefaultState() )[0];//blk.getIcon( 0, 0 );
+		return renderer.getIcon( blk.getDefaultState() )[0];// blk.getIcon( 0, 0 );
 	}
 }

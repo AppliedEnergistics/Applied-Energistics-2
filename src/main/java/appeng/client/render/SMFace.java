@@ -1,9 +1,12 @@
+
 package appeng.client.render;
+
 
 import javax.vecmath.Vector3f;
 
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.EnumFacing;
+
 
 public class SMFace
 {
@@ -21,7 +24,7 @@ public class SMFace
 	private final int color;
 
 	public SMFace(
-			final EnumFacing face , final boolean isEdge,
+			final EnumFacing face, final boolean isEdge,
 			final int color,
 			final Vector3f to,
 			final Vector3f from,
@@ -29,10 +32,10 @@ public class SMFace
 			final TextureAtlasSprite iconUnwrapper )
 	{
 		this.color = color;
-		this.face=face;
+		this.face = face;
 		this.isEdge = isEdge;
-		this.to=to;
-		this.from=from;
+		this.to = to;
+		this.from = from;
 		this.uv = defUVs2;
 		this.spite = iconUnwrapper;
 	}
