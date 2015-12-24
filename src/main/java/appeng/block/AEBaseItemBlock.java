@@ -50,7 +50,7 @@ public class AEBaseItemBlock extends ItemBlock
 	{
 		super( id );
 		this.blockType = (AEBaseBlock) id;
-		this.hasSubtypes = this.blockType.hasSubtypes;
+		this.hasSubtypes = this.blockType.hasSubtypes();
 	}
 
 	@Override

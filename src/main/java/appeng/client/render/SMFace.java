@@ -65,4 +65,9 @@ public class SMFace
 		return spite;
 	}
 
+	public boolean isEdge()
+	{
+		return isEdge;
+	}
+
 }

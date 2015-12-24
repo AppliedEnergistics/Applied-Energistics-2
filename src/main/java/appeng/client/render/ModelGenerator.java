@@ -613,7 +613,7 @@ public class ModelGenerator
 			BakedQuad bf = this.faceBakery.makeBakedQuad( face.getTo(), face.getFrom(), bpf, face.getSpite(), myFace, mr, null, true, true );
 			bf = new IColoredBakedQuad.ColoredBakedQuad( bf.getVertexData(), face.getColor(), bf.getFace() );
 
-			if( face.isEdge )
+			if( face.isEdge() )
 				this.generatedModel.getFaceQuads( myFace ).add( bf );
 			else
 				this.generatedModel.getGeneralQuads().add( bf );

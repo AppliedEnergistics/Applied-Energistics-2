@@ -446,7 +446,7 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 	@Override
 	public boolean hasComparatorInputOverride()
 	{
-		return this.isInventory;
+		return this.isInventory();
 	}
 
 	@Override
@@ -709,6 +709,21 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 	public Optional<String> getFeatureSubName()
 	{
 		return featureSubName;
+	}
+
+	public boolean isInventory()
+	{
+		return isInventory;
+	}
+
+	public void setInventory( boolean isInventory )
+	{
+		this.isInventory = isInventory;
+	}
+
+	public void setHasSubtypes( boolean hasSubtypes )
+	{
+		this.hasSubtypes = hasSubtypes;
 	}
 
 }

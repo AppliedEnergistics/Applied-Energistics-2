@@ -49,7 +49,7 @@ public class SkyStoneBlock extends AEBaseBlock
 	{
 		super( Material.rock, Optional.of( type.name() ) );
 		this.setHardness( 50 );
-		this.hasSubtypes = true;
+		this.setHasSubtypes( true );
 		this.blockResistance = BLOCK_RESISTANCE;
 		if( type == SkystoneType.STONE )
 		{

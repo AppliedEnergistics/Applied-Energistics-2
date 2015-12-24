@@ -91,7 +91,7 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements IAEFeature,
 	protected void setTileEntity( final Class<? extends TileEntity> c )
 	{
 		this.tileEntityType = c;
-		this.isInventory = IInventory.class.isAssignableFrom( c );
+		this.setInventory( IInventory.class.isAssignableFrom( c ) );
 		this.setTileProvider( this.hasBlockTileEntity() );
 	}
 
