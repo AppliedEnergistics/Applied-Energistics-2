@@ -42,32 +42,32 @@ public class SMFace
 
 	public int getColor()
 	{
-		return color;
+		return this.color;
 	}
 
 	public EnumFacing getFace()
 	{
-		return face;
+		return this.face;
 	}
 
 	public Vector3f getFrom()
 	{
-		return from;
+		return this.from;
 	}
 
 	public Vector3f getTo()
 	{
-		return to;
+		return this.to;
 	}
 
 	public TextureAtlasSprite getSpite()
 	{
-		return spite;
+		return this.spite;
 	}
 
 	public boolean isEdge()
 	{
-		return isEdge;
+		return this.isEdge;
 	}
 
 }

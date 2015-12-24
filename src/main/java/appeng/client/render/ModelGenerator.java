@@ -628,12 +628,12 @@ public class ModelGenerator
 
 	public IAESprite getOverrideBlockTexture()
 	{
-		return overrideBlockTexture;
+		return this.overrideBlockTexture;
 	}
 
 	public IBlockAccess getBlockAccess()
 	{
-		return blockAccess;
+		return this.blockAccess;
 	}
 
 	public void setBlockAccess( final IBlockAccess blockAccess )
@@ -643,7 +643,7 @@ public class ModelGenerator
 
 	public boolean isRenderAllFaces()
 	{
-		return renderAllFaces;
+		return this.renderAllFaces;
 	}
 
 	public void setRenderAllFaces( final boolean renderAllFaces )
@@ -653,7 +653,7 @@ public class ModelGenerator
 
 	public int getUvRotateBottom()
 	{
-		return uvRotateBottom;
+		return this.uvRotateBottom;
 	}
 
 	public int setUvRotateBottom( final int uvRotateBottom )
@@ -664,7 +664,7 @@ public class ModelGenerator
 
 	public int getUvRotateEast()
 	{
-		return uvRotateEast;
+		return this.uvRotateEast;
 	}
 
 	public int setUvRotateEast( final int uvRotateEast )
@@ -675,7 +675,7 @@ public class ModelGenerator
 
 	public int getUvRotateNorth()
 	{
-		return uvRotateNorth;
+		return this.uvRotateNorth;
 	}
 
 	public int setUvRotateNorth( final int uvRotateNorth )
@@ -686,7 +686,7 @@ public class ModelGenerator
 
 	public int getUvRotateSouth()
 	{
-		return uvRotateSouth;
+		return this.uvRotateSouth;
 	}
 
 	public int setUvRotateSouth( final int uvRotateSouth )
@@ -697,7 +697,7 @@ public class ModelGenerator
 
 	public int getUvRotateTop()
 	{
-		return uvRotateTop;
+		return this.uvRotateTop;
 	}
 
 	public int setUvRotateTop( final int uvRotateTop )
@@ -708,7 +708,7 @@ public class ModelGenerator
 
 	public int getUvRotateWest()
 	{
-		return uvRotateWest;
+		return this.uvRotateWest;
 	}
 
 	public int setUvRotateWest( final int uvRotateWest )
@@ -719,7 +719,7 @@ public class ModelGenerator
 
 	public double getRenderMinX()
 	{
-		return renderMinX;
+		return this.renderMinX;
 	}
 
 	public void setRenderMinX( final double renderMinX )
@@ -729,7 +729,7 @@ public class ModelGenerator
 
 	public double getRenderMinY()
 	{
-		return renderMinY;
+		return this.renderMinY;
 	}
 
 	public void setRenderMinY( final double renderMinY )
@@ -739,7 +739,7 @@ public class ModelGenerator
 
 	public double getRenderMinZ()
 	{
-		return renderMinZ;
+		return this.renderMinZ;
 	}
 
 	public void setRenderMinZ( final double renderMinZ )
@@ -749,7 +749,7 @@ public class ModelGenerator
 
 	public double getRenderMaxX()
 	{
-		return renderMaxX;
+		return this.renderMaxX;
 	}
 
 	public void setRenderMaxX( final double renderMaxX )
@@ -759,7 +759,7 @@ public class ModelGenerator
 
 	public double getRenderMaxY()
 	{
-		return renderMaxY;
+		return this.renderMaxY;
 	}
 
 	public void setRenderMaxY( final double renderMaxY )
@@ -769,7 +769,7 @@ public class ModelGenerator
 
 	public double getRenderMaxZ()
 	{
-		return renderMaxZ;
+		return this.renderMaxZ;
 	}
 
 	public void setRenderMaxZ( final double renderMaxZ )
@@ -779,7 +779,7 @@ public class ModelGenerator
 
 	public boolean isFlipTexture()
 	{
-		return flipTexture;
+		return this.flipTexture;
 	}
 
 	public void setFlipTexture( final boolean flipTexture )
@@ -789,7 +789,7 @@ public class ModelGenerator
 
 	public EnumSet<EnumFacing> getRenderFaces()
 	{
-		return renderFaces;
+		return this.renderFaces;
 	}
 
 	public void setRenderFaces( final EnumSet<EnumFacing> renderFaces )

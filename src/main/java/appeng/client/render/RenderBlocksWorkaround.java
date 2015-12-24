@@ -49,7 +49,7 @@ public class RenderBlocksWorkaround extends ModelGenerator
 
 	public EnumSet<EnumFacing> getFaces()
 	{
-		return faces;
+		return this.faces;
 	}
 
 	public void setFaces( final EnumSet<EnumFacing> faces )

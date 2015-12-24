@@ -691,7 +691,7 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 
 	public boolean isFullSize()
 	{
-		return isFullSize;
+		return this.isFullSize;
 	}
 
 	public boolean setFullSize( final boolean isFullSize )
@@ -708,12 +708,12 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 
 	public Optional<String> getFeatureSubName()
 	{
-		return featureSubName;
+		return this.featureSubName;
 	}
 
 	public boolean isInventory()
 	{
-		return isInventory;
+		return this.isInventory;
 	}
 
 	public void setInventory( final boolean isInventory )

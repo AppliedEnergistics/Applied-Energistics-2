@@ -164,7 +164,7 @@ public class CraftingLinkNexus
 
 	public CraftingLink getRequest()
 	{
-		return req;
+		return this.req;
 	}
 
 	public void setRequest( final CraftingLink req )
