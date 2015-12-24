@@ -26,6 +26,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
+
 import appeng.client.render.effects.VibrantFX;
 import appeng.core.AEConfig;
 import appeng.core.CommonHelper;

@@ -21,6 +21,7 @@ package appeng.client.render.blocks;
 
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.IBlockAccess;
+
 import appeng.block.misc.BlockInterface;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.BlockRenderInfo;

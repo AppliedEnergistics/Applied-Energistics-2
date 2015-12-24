@@ -19,10 +19,10 @@
 package appeng.tile.crafting;
 
 
-import io.netty.buffer.ByteBuf;
-
 import java.io.IOException;
 import java.util.List;
+
+import io.netty.buffer.ByteBuf;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
@@ -35,6 +35,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
+
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;

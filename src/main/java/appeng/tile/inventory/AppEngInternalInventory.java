@@ -26,6 +26,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.IChatComponent;
+
 import appeng.api.storage.IMEInventory;
 import appeng.core.AELog;
 import appeng.me.storage.MEIInventoryWrapper;

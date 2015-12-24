@@ -22,6 +22,7 @@ package appeng.core.stats;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.stats.Achievement;
+
 import appeng.api.AEApi;
 import appeng.api.definitions.IItemDefinition;
 import appeng.api.util.AEColor;

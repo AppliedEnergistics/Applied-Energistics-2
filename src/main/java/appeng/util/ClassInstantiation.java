@@ -22,9 +22,9 @@ package appeng.util;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
-import appeng.core.AELog;
-
 import com.google.common.base.Optional;
+
+import appeng.core.AELog;
 
 
 public class ClassInstantiation<T>

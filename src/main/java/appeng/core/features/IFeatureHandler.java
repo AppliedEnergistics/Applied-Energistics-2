@@ -20,6 +20,7 @@ package appeng.core.features;
 
 
 import net.minecraftforge.fml.relauncher.Side;
+
 import appeng.api.definitions.IItemDefinition;
 
 

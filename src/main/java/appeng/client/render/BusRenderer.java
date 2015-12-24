@@ -21,7 +21,10 @@ package appeng.client.render;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.annotation.Nullable;
+
+import org.lwjgl.opengl.GL11;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -29,8 +32,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.client.IItemRenderer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-
-import org.lwjgl.opengl.GL11;
 
 import appeng.api.parts.IAlphaPassItem;
 import appeng.api.parts.IFacadePart;

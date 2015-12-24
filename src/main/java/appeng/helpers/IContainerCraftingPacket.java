@@ -21,6 +21,7 @@ package appeng.helpers;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.BaseActionSource;
 

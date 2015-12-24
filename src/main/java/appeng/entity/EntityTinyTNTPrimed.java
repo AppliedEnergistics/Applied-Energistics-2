@@ -20,6 +20,7 @@ package appeng.entity;
 
 
 import io.netty.buffer.ByteBuf;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -35,6 +36,7 @@ import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
+
 import appeng.api.AEApi;
 import appeng.core.AEConfig;
 import appeng.core.CommonHelper;

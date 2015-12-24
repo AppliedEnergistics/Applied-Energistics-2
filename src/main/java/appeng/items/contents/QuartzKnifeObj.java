@@ -20,6 +20,7 @@ package appeng.items.contents;
 
 
 import net.minecraft.item.ItemStack;
+
 import appeng.api.implementations.guiobjects.IGuiItemObject;
 
 

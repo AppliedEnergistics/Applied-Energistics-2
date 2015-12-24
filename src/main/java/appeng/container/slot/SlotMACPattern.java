@@ -21,6 +21,7 @@ package appeng.container.slot;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+
 import appeng.container.implementations.ContainerMAC;
 
 

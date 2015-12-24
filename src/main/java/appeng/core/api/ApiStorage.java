@@ -19,13 +19,14 @@
 package appeng.core.api;
 
 
-import io.netty.buffer.ByteBuf;
-
 import java.io.IOException;
+
+import io.netty.buffer.ByteBuf;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.FluidStack;
+
 import appeng.api.networking.crafting.ICraftingLink;
 import appeng.api.networking.crafting.ICraftingRequester;
 import appeng.api.networking.energy.IEnergySource;
@@ -39,8 +40,8 @@ import appeng.crafting.CraftingLink;
 import appeng.util.Platform;
 import appeng.util.item.AEFluidStack;
 import appeng.util.item.AEItemStack;
-import appeng.util.item.ItemList;
 import appeng.util.item.FluidList;
+import appeng.util.item.ItemList;
 
 
 public class ApiStorage implements IStorageHelper

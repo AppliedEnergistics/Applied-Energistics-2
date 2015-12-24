@@ -26,6 +26,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+
 import appeng.api.AEApi;
 import appeng.api.features.IGrinderEntry;
 import appeng.api.implementations.tiles.ICrankable;

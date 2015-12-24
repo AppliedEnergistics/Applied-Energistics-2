@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Locale;
 import java.util.Map;
+
 import javax.annotation.Nullable;
 
 import appeng.api.features.IRecipeHandlerRegistry;

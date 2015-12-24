@@ -9,11 +9,12 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import com.google.common.base.Optional;
+
 import net.minecraft.item.ItemStack;
+
 import appeng.api.features.IInscriberRecipe;
 import appeng.api.features.InscriberProcessType;
-
-import com.google.common.base.Optional;
 
 
 /**

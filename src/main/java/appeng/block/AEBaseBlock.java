@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
+import com.google.common.base.Optional;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
@@ -50,6 +52,7 @@ import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.IOrientable;
 import appeng.api.util.IOrientableBlock;
@@ -61,7 +64,6 @@ import appeng.client.texture.IAESprite;
 import appeng.core.AppEng;
 import appeng.core.features.AEBlockFeatureHandler;
 import appeng.core.features.AEFeature;
-import appeng.core.features.ActivityState;
 import appeng.core.features.FeatureNameExtractor;
 import appeng.core.features.IAEFeature;
 import appeng.core.features.IFeatureHandler;
@@ -69,8 +71,6 @@ import appeng.helpers.AEGlassMaterial;
 import appeng.helpers.ICustomCollision;
 import appeng.util.LookDirection;
 import appeng.util.Platform;
-
-import com.google.common.base.Optional;
 
 
 public abstract class AEBaseBlock extends Block implements IAEFeature

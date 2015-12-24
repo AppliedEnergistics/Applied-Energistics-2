@@ -29,8 +29,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumWorldBlockLayer;
 import net.minecraft.world.World;
+
 import appeng.api.util.AEPartLocation;
 import appeng.client.EffectType;
 import appeng.core.CommonHelper;

@@ -21,10 +21,12 @@ package appeng.core.sync.packets;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
 import appeng.client.ClientHelper;
 import appeng.client.render.effects.LightningFX;
 import appeng.core.AEConfig;

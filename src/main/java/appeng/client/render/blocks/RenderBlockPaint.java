@@ -26,6 +26,7 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.IItemRenderer.ItemRenderType;
+
 import appeng.block.misc.BlockPaint;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.ModelGenerator;

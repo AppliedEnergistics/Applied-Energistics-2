@@ -19,15 +19,16 @@
 package appeng.core.sync.packets;
 
 
+import java.io.IOException;
+
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-
-import java.io.IOException;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.BlockPos;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
 import appeng.api.storage.data.IAEItemStack;
 import appeng.client.EffectType;
 import appeng.core.CommonHelper;

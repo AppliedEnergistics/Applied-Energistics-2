@@ -20,6 +20,7 @@ package appeng.helpers;
 
 
 import net.minecraft.util.EnumFacing;
+
 import appeng.api.util.IOrientable;
 
 

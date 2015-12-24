@@ -24,6 +24,7 @@ import java.util.List;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.EnumFacing;
+
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.util.AEPartLocation;
 

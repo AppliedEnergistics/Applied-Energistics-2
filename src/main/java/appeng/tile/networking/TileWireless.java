@@ -19,13 +19,14 @@
 package appeng.tile.networking;
 
 
-import io.netty.buffer.ByteBuf;
-
 import java.util.EnumSet;
+
+import io.netty.buffer.ByteBuf;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+
 import appeng.api.AEApi;
 import appeng.api.implementations.IPowerChannelState;
 import appeng.api.implementations.tiles.IWirelessAccessPoint;

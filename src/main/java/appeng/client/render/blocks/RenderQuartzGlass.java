@@ -25,13 +25,14 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.IItemRenderer.ItemRenderType;
+
 import appeng.api.AEApi;
 import appeng.api.util.AEPartLocation;
-import appeng.decorative.solid.QuartzGlassBlock;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.ModelGenerator;
 import appeng.client.texture.ExtraBlockTextures;
 import appeng.client.texture.OffsetIcon;
+import appeng.decorative.solid.QuartzGlassBlock;
 import appeng.tile.AEBaseTile;
 
 

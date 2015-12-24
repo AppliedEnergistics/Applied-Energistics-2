@@ -19,11 +19,11 @@
 package appeng.tile.misc;
 
 
-import io.netty.buffer.ByteBuf;
-
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
+
+import io.netty.buffer.ByteBuf;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -35,6 +35,7 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
+
 import appeng.api.AEApi;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;

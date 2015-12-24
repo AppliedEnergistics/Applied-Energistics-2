@@ -41,15 +41,16 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry.UniqueIdentifier;
+
 import appeng.api.AEApi;
 import appeng.api.exceptions.MissingDefinition;
 import appeng.api.parts.IAlphaPassItem;
 import appeng.api.util.AEPartLocation;
-import appeng.decorative.solid.QuartzOreBlock;
 import appeng.client.texture.BaseIcon;
 import appeng.core.AppEng;
 import appeng.core.FacadeConfig;
 import appeng.core.features.AEFeature;
+import appeng.decorative.solid.QuartzOreBlock;
 import appeng.facade.FacadePart;
 import appeng.facade.IFacadeItem;
 import appeng.items.AEBaseItem;

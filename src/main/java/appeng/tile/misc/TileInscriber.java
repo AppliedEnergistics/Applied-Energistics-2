@@ -19,13 +19,15 @@
 package appeng.tile.misc;
 
 
-import io.netty.buffer.ByteBuf;
-
 import java.io.IOException;
 import java.util.EnumSet;
 import java.util.List;
 
 import javax.annotation.Nullable;
+
+import com.google.common.collect.Lists;
+
+import io.netty.buffer.ByteBuf;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -33,6 +35,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
+
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
@@ -68,8 +71,6 @@ import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 import appeng.util.inv.WrapperInventoryRange;
 import appeng.util.item.AEItemStack;
-
-import com.google.common.collect.Lists;
 
 
 /**

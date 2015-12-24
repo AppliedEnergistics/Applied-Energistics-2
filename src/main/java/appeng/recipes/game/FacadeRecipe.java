@@ -21,6 +21,8 @@ package appeng.recipes.game;
 
 import javax.annotation.Nullable;
 
+import com.google.common.base.Optional;
+
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
@@ -28,12 +30,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
+
 import appeng.api.AEApi;
 import appeng.api.definitions.IComparableDefinition;
 import appeng.api.definitions.IDefinitions;
 import appeng.items.parts.ItemFacade;
-
-import com.google.common.base.Optional;
 
 
 public final class FacadeRecipe implements IRecipe

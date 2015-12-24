@@ -21,13 +21,13 @@ package appeng.parts.networking;
 
 import java.util.EnumSet;
 
+import org.lwjgl.opengl.GL11;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-
-import org.lwjgl.opengl.GL11;
 
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;

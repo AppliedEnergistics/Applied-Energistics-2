@@ -20,8 +20,10 @@ package appeng.helpers;
 
 
 import io.netty.buffer.ByteBuf;
+
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.Vec3;
+
 import appeng.api.util.AEColor;
 
 

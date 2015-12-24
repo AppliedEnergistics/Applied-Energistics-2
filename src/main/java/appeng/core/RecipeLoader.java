@@ -22,7 +22,10 @@ package appeng.core;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+
 import javax.annotation.Nonnull;
+
+import com.google.common.base.Preconditions;
 
 import org.apache.commons.io.FileUtils;
 
@@ -31,8 +34,6 @@ import appeng.recipes.CustomRecipeConfig;
 import appeng.recipes.loader.ConfigLoader;
 import appeng.recipes.loader.JarLoader;
 import appeng.recipes.loader.RecipeResourceCopier;
-
-import com.google.common.base.Preconditions;
 
 
 /**

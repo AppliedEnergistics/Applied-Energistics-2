@@ -22,8 +22,8 @@ package appeng.core.api.definitions;
 import appeng.api.definitions.IItemDefinition;
 import appeng.api.definitions.IMaterials;
 import appeng.core.features.DamagedItemDefinition;
-import appeng.items.materials.MultiItem;
 import appeng.items.materials.MaterialType;
+import appeng.items.materials.MultiItem;
 
 
 /**

@@ -3,6 +3,7 @@ package appeng.parts.automation;
 
 
 import net.minecraft.item.ItemStack;
+
 import appeng.api.config.Upgrades;
 import appeng.tile.inventory.IAEAppEngInventory;
 import appeng.util.Platform;

@@ -31,8 +31,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.IItemRenderer.ItemRenderType;
 
-import org.lwjgl.opengl.GL11;
-
 import appeng.block.misc.BlockSkyCompass;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.ModelGenerator;

@@ -19,10 +19,10 @@
 package appeng.tile.grindstone;
 
 
-import io.netty.buffer.ByteBuf;
-
 import java.util.Collections;
 import java.util.List;
+
+import io.netty.buffer.ByteBuf;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -32,6 +32,7 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
+
 import appeng.api.implementations.tiles.ICrankable;
 import appeng.helpers.ICustomCollision;
 import appeng.tile.AEBaseTile;

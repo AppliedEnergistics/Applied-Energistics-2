@@ -22,6 +22,7 @@ package appeng.util.iterators;
 import java.util.Iterator;
 
 import net.minecraft.item.ItemStack;
+
 import appeng.util.inv.ItemSlot;
 
 

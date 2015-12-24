@@ -20,6 +20,7 @@ package appeng.integration.abstraction;
 
 
 import net.minecraft.util.EnumFacing;
+
 import appeng.util.InventoryAdaptor;
 
 

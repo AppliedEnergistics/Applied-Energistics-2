@@ -23,10 +23,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.IItemRenderer.ItemRenderType;
-import appeng.decorative.solid.QuartzOreBlock;
+
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.ModelGenerator;
 import appeng.client.texture.ExtraBlockTextures;
+import appeng.decorative.solid.QuartzOreBlock;
 import appeng.tile.AEBaseTile;
 
 

@@ -22,6 +22,7 @@ package appeng.core.api.imc;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.event.FMLInterModComms.IMCMessage;
+
 import appeng.api.AEApi;
 import appeng.core.AELog;
 import appeng.core.api.IIMCProcessor;

@@ -26,6 +26,9 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import com.google.common.base.Optional;
+import com.google.common.collect.Lists;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
@@ -43,6 +46,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
+
 import appeng.api.implementations.items.IMemoryCard;
 import appeng.api.implementations.items.MemoryCardMessages;
 import appeng.api.implementations.tiles.IColorableTile;
@@ -51,18 +55,13 @@ import appeng.api.util.IOrientable;
 import appeng.block.networking.BlockCableBus;
 import appeng.core.features.AEFeature;
 import appeng.core.features.AETileBlockFeatureHandler;
-import appeng.core.features.ActivityState;
 import appeng.core.features.IAEFeature;
-import appeng.core.features.ItemStackSrc;
 import appeng.helpers.ICustomCollision;
 import appeng.tile.AEBaseTile;
 import appeng.tile.networking.TileCableBus;
 import appeng.tile.storage.TileSkyChest;
 import appeng.util.Platform;
 import appeng.util.SettingsFrom;
-
-import com.google.common.base.Optional;
-import com.google.common.collect.Lists;
 
 
 public abstract class AEBaseTileBlock extends AEBaseBlock implements IAEFeature, ITileEntityProvider

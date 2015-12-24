@@ -30,6 +30,7 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
+
 import appeng.api.AEApi;
 import appeng.api.definitions.IMaterials;
 import appeng.client.EffectType;

@@ -20,6 +20,7 @@ package appeng.util.inv;
 
 
 import net.minecraft.item.ItemStack;
+
 import appeng.api.storage.data.IAEItemStack;
 import appeng.util.item.AEItemStack;
 

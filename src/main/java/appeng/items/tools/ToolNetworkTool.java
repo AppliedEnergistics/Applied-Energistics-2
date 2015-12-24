@@ -21,6 +21,8 @@ package appeng.items.tools;
 
 import java.util.EnumSet;
 
+import com.google.common.base.Optional;
+
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -30,6 +32,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
+
 import appeng.api.implementations.guiobjects.IGuiItem;
 import appeng.api.implementations.guiobjects.IGuiItemObject;
 import appeng.api.implementations.items.IAEWrench;
@@ -45,13 +48,9 @@ import appeng.core.features.AEFeature;
 import appeng.core.sync.GuiBridge;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketClick;
-import appeng.integration.IntegrationType;
 import appeng.items.AEBaseItem;
 import appeng.items.contents.NetworkToolViewer;
-import appeng.transformer.annotations.Integration.Interface;
 import appeng.util.Platform;
-
-import com.google.common.base.Optional;
 
 
 // TODO BC Integration

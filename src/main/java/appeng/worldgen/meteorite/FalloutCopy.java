@@ -3,6 +3,7 @@ package appeng.worldgen.meteorite;
 
 
 import net.minecraft.block.state.IBlockState;
+
 import appeng.api.definitions.IBlockDefinition;
 import appeng.util.Platform;
 

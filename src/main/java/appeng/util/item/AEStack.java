@@ -19,9 +19,9 @@
 package appeng.util.item;
 
 
-import io.netty.buffer.ByteBuf;
-
 import java.io.IOException;
+
+import io.netty.buffer.ByteBuf;
 
 import appeng.api.storage.data.IAEStack;
 

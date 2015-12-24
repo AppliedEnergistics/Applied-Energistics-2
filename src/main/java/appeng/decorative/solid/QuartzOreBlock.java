@@ -22,8 +22,6 @@ package appeng.decorative.solid;
 import java.util.EnumSet;
 import java.util.Random;
 
-import javax.annotation.Nullable;
-
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.Item;
@@ -34,6 +32,7 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
+
 import appeng.api.AEApi;
 import appeng.api.exceptions.MissingDefinition;
 import appeng.block.AEBaseBlock;

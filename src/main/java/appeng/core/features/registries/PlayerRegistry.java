@@ -24,6 +24,7 @@ import javax.annotation.Nullable;
 import com.mojang.authlib.GameProfile;
 
 import net.minecraft.entity.player.EntityPlayer;
+
 import appeng.api.features.IPlayerRegistry;
 import appeng.core.worlddata.WorldData;
 

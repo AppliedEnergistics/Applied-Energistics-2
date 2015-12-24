@@ -20,6 +20,7 @@ package appeng.crafting;
 
 
 import net.minecraft.nbt.NBTTagCompound;
+
 import appeng.api.config.Actionable;
 import appeng.api.networking.crafting.ICraftingCPU;
 import appeng.api.networking.crafting.ICraftingLink;

@@ -24,13 +24,14 @@ import java.util.List;
 
 import com.google.common.base.Optional;
 
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
 import appeng.client.ClientHelper;
 import appeng.client.texture.IAESprite;
 import appeng.core.features.AEFeature;
@@ -38,8 +39,6 @@ import appeng.core.features.FeatureNameExtractor;
 import appeng.core.features.IAEFeature;
 import appeng.core.features.IFeatureHandler;
 import appeng.core.features.ItemFeatureHandler;
-
-import com.google.common.base.Optional;
 
 
 public abstract class AEBaseItem extends Item implements IAEFeature

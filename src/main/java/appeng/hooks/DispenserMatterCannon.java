@@ -28,6 +28,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
+
 import appeng.api.util.AEPartLocation;
 import appeng.items.tools.powered.ToolMassCannon;
 import appeng.util.Platform;

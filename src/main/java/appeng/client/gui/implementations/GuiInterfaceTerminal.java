@@ -29,12 +29,14 @@ import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 
+import com.google.common.collect.HashMultimap;
+
+import org.lwjgl.opengl.GL11;
+
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-
-import org.lwjgl.opengl.GL11;
 
 import appeng.api.AEApi;
 import appeng.client.gui.AEBaseGui;
@@ -46,8 +48,6 @@ import appeng.container.implementations.ContainerInterfaceTerminal;
 import appeng.core.localization.GuiText;
 import appeng.parts.reporting.PartInterfaceTerminal;
 import appeng.util.Platform;
-
-import com.google.common.collect.HashMultimap;
 
 
 public class GuiInterfaceTerminal extends AEBaseGui

@@ -19,16 +19,17 @@
 package appeng.tile.storage;
 
 
-import io.netty.buffer.ByteBuf;
-
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+
+import io.netty.buffer.ByteBuf;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+
 import appeng.api.AEApi;
 import appeng.api.implementations.tiles.IChestOrDrive;
 import appeng.api.networking.GridFlags;

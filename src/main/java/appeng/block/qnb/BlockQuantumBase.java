@@ -27,6 +27,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumWorldBlockLayer;
 import net.minecraft.world.World;
+
 import appeng.block.AEBaseTileBlock;
 import appeng.client.render.blocks.RenderQNB;
 import appeng.core.features.AEFeature;

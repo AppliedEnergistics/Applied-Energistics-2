@@ -29,6 +29,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
+
 import appeng.core.AELog;
 import appeng.core.features.AEFeature;
 import appeng.items.AEBaseItem;

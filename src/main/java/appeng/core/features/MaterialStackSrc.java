@@ -23,6 +23,7 @@ import com.google.common.base.Preconditions;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+
 import appeng.items.materials.MaterialType;
 
 

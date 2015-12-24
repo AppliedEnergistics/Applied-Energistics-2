@@ -27,6 +27,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.IChatComponent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
+
 import appeng.api.AEApi;
 import appeng.container.AEBaseContainer;
 import appeng.container.slot.QuartzKnifeOutput;

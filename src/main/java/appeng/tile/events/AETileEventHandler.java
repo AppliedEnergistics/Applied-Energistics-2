@@ -19,14 +19,15 @@
 package appeng.tile.events;
 
 
-import io.netty.buffer.ByteBuf;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+
+import io.netty.buffer.ByteBuf;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
 import appeng.tile.AEBaseTile;
 
 

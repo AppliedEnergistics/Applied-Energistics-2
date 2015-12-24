@@ -23,11 +23,15 @@ import java.util.EnumSet;
 
 import javax.annotation.Nullable;
 
+import com.google.common.base.Function;
+import com.google.common.base.Optional;
+
 import net.minecraft.block.Block;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
 import appeng.api.AEApi;
 import appeng.api.exceptions.MissingDefinition;
 import appeng.api.parts.IPartCollisionHelper;
@@ -38,9 +42,6 @@ import appeng.client.texture.IAESprite;
 import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
 import appeng.tile.AEBaseTile;
-
-import com.google.common.base.Function;
-import com.google.common.base.Optional;
 
 
 @SideOnly( Side.CLIENT )

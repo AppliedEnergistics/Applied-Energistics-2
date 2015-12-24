@@ -21,8 +21,10 @@ package appeng.core.sync.packets;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+
 import appeng.api.util.DimensionalCoord;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;

@@ -21,6 +21,7 @@ package appeng.client.texture;
 
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.util.ResourceLocation;
+
 import appeng.core.AppEng;
 
 

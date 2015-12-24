@@ -23,6 +23,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.IItemRenderer.ItemRenderType;
+
 import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.block.networking.BlockEnergyCell;
 import appeng.client.render.BaseBlockRender;

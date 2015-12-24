@@ -53,20 +53,9 @@ import appeng.block.networking.BlockEnergyCell;
 import appeng.block.networking.BlockWireless;
 import appeng.block.qnb.BlockQuantumLinkChamber;
 import appeng.block.qnb.BlockQuantumRing;
-import appeng.decorative.solid.FluixBlock;
-import appeng.decorative.solid.QuartzBlock;
-import appeng.decorative.solid.ChiseledQuartzBlock;
-import appeng.decorative.solid.QuartzGlassBlock;
-import appeng.decorative.solid.QuartzLampBlock;
-import appeng.decorative.solid.QuartzPillarBlock;
-import appeng.decorative.solid.SkyStoneBlock;
-import appeng.decorative.solid.SkyStoneBlock.SkystoneType;
-import appeng.decorative.solid.QuartzOreBlock;
-import appeng.decorative.solid.ChargedQuartzOreBlock;
 import appeng.block.spatial.BlockMatrixFrame;
 import appeng.block.spatial.BlockSpatialIOPort;
 import appeng.block.spatial.BlockSpatialPylon;
-import appeng.decorative.stair.BlockStairCommon;
 import appeng.block.storage.BlockChest;
 import appeng.block.storage.BlockDrive;
 import appeng.block.storage.BlockIOPort;
@@ -76,6 +65,17 @@ import appeng.debug.BlockChunkloader;
 import appeng.debug.BlockCubeGenerator;
 import appeng.debug.BlockItemGen;
 import appeng.debug.BlockPhantomNode;
+import appeng.decorative.solid.ChargedQuartzOreBlock;
+import appeng.decorative.solid.ChiseledQuartzBlock;
+import appeng.decorative.solid.FluixBlock;
+import appeng.decorative.solid.QuartzBlock;
+import appeng.decorative.solid.QuartzGlassBlock;
+import appeng.decorative.solid.QuartzLampBlock;
+import appeng.decorative.solid.QuartzOreBlock;
+import appeng.decorative.solid.QuartzPillarBlock;
+import appeng.decorative.solid.SkyStoneBlock;
+import appeng.decorative.solid.SkyStoneBlock.SkystoneType;
+import appeng.decorative.stair.BlockStairCommon;
 
 
 /**

@@ -22,6 +22,7 @@ package appeng.client.gui.implementations;
 import java.io.IOException;
 
 import net.minecraft.entity.player.InventoryPlayer;
+
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.SortOrder;
 import appeng.api.storage.ITerminalHost;

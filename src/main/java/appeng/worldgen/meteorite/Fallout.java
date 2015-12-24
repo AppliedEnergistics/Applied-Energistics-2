@@ -4,6 +4,7 @@ package appeng.worldgen.meteorite;
 
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
+
 import appeng.api.definitions.IBlockDefinition;
 import appeng.util.Platform;
 

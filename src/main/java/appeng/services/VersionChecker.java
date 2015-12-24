@@ -28,6 +28,7 @@ import com.google.common.base.Preconditions;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.event.FMLInterModComms;
+
 import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.AppEng;

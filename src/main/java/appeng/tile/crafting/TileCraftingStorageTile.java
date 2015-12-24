@@ -20,6 +20,7 @@ package appeng.tile.crafting;
 
 
 import net.minecraft.item.ItemStack;
+
 import appeng.api.AEApi;
 import appeng.api.definitions.IBlocks;
 import appeng.block.crafting.BlockCraftingUnit;

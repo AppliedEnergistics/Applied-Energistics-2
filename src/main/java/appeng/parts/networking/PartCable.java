@@ -19,10 +19,12 @@
 package appeng.parts.networking;
 
 
-import io.netty.buffer.ByteBuf;
-
 import java.io.IOException;
 import java.util.EnumSet;
+
+import org.lwjgl.opengl.GL11;
+
+import io.netty.buffer.ByteBuf;
 
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.player.EntityPlayer;
@@ -33,8 +35,6 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-
-import org.lwjgl.opengl.GL11;
 
 import appeng.api.AEApi;
 import appeng.api.config.SecurityPermissions;

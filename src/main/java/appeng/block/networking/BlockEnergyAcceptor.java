@@ -22,6 +22,7 @@ package appeng.block.networking;
 import java.util.EnumSet;
 
 import net.minecraft.block.material.Material;
+
 import appeng.block.AEBaseTileBlock;
 import appeng.core.features.AEFeature;
 import appeng.tile.networking.TileEnergyAcceptor;
