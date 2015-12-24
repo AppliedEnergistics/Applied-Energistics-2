@@ -231,7 +231,9 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 			if( data.hasKey( "modid" ) && data.hasKey( "itemname" ) )
 			{
 				if( data.getString( "modid" ).equals( "minecraft" ) )
+				{
 					return Block.getBlockFromName( data.getString( "itemname" ) );
+				}
 
 				return GameRegistry.findBlock( data.getString( "modid" ), data.getString( "itemname" ) );
 			}

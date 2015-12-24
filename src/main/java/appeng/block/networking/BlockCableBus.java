@@ -226,7 +226,9 @@ public class BlockCableBus extends AEBaseTileBlock // implements IRedNetConnecti
 			EnumFacing side )
 	{
 		if( side == null )
+		{
 			side = EnumFacing.UP;
+		}
 
 		return this.cb( w, pos ).canConnectRedstone( EnumSet.of( side ) );
 	}

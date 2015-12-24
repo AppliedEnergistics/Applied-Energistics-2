@@ -239,8 +239,12 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 			{
 				final EnumSet<EnumFacing> sides = EnumSet.noneOf( EnumFacing.class );
 				for( final AEPartLocation dir : this.getConnections() )
+				{
 					if( dir != AEPartLocation.INTERNAL )
+					{
 						sides.add( dir.getFacing() );
+					}
+				}
 
 				this.getProxy().setValidSides( sides );
 			}

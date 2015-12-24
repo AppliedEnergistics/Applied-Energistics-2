@@ -93,7 +93,9 @@ public class PartP2PRedstone extends PartP2PTunnel<PartP2PRedstone>
 
 		// and this cause sometimes it can go thought walls.
 		for( final EnumFacing face : EnumFacing.VALUES )
+		{
 			Platform.notifyBlocksOfNeighbors( worldObj, this.getTile().getPos().offset( face ) );
+		}
 	}
 
 	@MENetworkEventSubscribe

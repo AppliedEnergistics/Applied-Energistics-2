@@ -77,7 +77,9 @@ public class RenderBlockCraftingCPU<B extends BlockCraftingUnit, T extends TileC
 		for( final Block craftingBlock : AEApi.instance().definitions().blocks().craftingUnit().maybeBlock().asSet() )
 		{
 			if( craftingBlock == blk )
+			{
 				meta = 0;
+			}
 		}
 
 		IAESprite nonForward = theIcon;

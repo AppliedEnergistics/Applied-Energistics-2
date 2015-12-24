@@ -91,10 +91,14 @@ public final class AECableBusFeatureHandler implements IFeatureHandler
 
 			// register the block/item conversion...
 			if( this.featured != null && this.definition.maybeItem().isPresent() )
+			{
 				GameData.getBlockItemMap().put( this.featured, this.definition.maybeItem().get() );
+			}
 
 			if( side == Side.CLIENT )
+			{
 				CommonHelper.proxy.configureIcon( this.featured, name );
+			}
 		}
 	}
 }

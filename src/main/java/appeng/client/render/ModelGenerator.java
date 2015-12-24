@@ -48,7 +48,9 @@ public class ModelGenerator
 		{
 			this.general = new ArrayList<BakedQuad>();
 			for( final EnumFacing f : EnumFacing.VALUES )
+			{
 				this.faces[f.ordinal()] = new ArrayList<BakedQuad>();
+			}
 		}
 
 		@Override
@@ -147,7 +149,9 @@ public class ModelGenerator
 			final Block block )
 	{
 		if( block == null )
+		{
 			return;
+		}
 
 		this.setRenderMinX( block.getBlockBoundsMinX() );
 		this.setRenderMinY( block.getBlockBoundsMinY() );
@@ -245,18 +249,24 @@ public class ModelGenerator
 		final Item it = is.getItem();
 
 		if( it instanceof ItemMultiPart )
+		{
 			return ( (ItemMultiPart) it ).getIcon( is );
+		}
 
 		final Block blk = Block.getBlockFromItem( it );
 
 		if( blk != null )
+		{
 			return this.getIcon( blk.getStateFromMeta( is.getMetadata() ) )[0];
+		}
 
 		if( it instanceof AEBaseItem )
 		{
 			final IAESprite ico = ( (AEBaseItem) it ).getIcon( is );
 			if( ico != null )
+			{
 				return ico;
+			}
 		}
 
 		return new MissingIcon( is );
@@ -272,7 +282,9 @@ public class ModelGenerator
 		{
 			final AEBaseBlock base = (AEBaseBlock) blk;
 			for( final EnumFacing face : EnumFacing.VALUES )
+			{
 				out[face.ordinal()] = base.getIcon( face, state );
+			}
 		}
 		else
 		{
@@ -312,7 +324,9 @@ public class ModelGenerator
 
 			final AEBaseBlock base = (AEBaseBlock) blk;
 			for( final EnumFacing face : EnumFacing.VALUES )
+			{
 				out[face.ordinal()] = base.getIcon( world, pos, face );
+			}
 
 			return out;
 		}
@@ -566,7 +580,9 @@ public class ModelGenerator
 			IAESprite texture )
 	{
 		if( this.getOverrideBlockTexture() != null )
+		{
 			texture = this.getOverrideBlockTexture();
+		}
 
 		this.faces.add( new SMFace( face, isEdge, this.color, to, from, defUVs2, new IconUnwrapper( texture ) ) );
 	}
@@ -577,17 +593,29 @@ public class ModelGenerator
 			final float z )
 	{
 		if( x > 0.5 )
+		{
 			this.currentFace = EnumFacing.EAST;
+		}
 		if( x < -0.5 )
+		{
 			this.currentFace = EnumFacing.WEST;
+		}
 		if( y > 0.5 )
+		{
 			this.currentFace = EnumFacing.UP;
+		}
 		if( y < -0.5 )
+		{
 			this.currentFace = EnumFacing.DOWN;
+		}
 		if( z > 0.5 )
+		{
 			this.currentFace = EnumFacing.SOUTH;
+		}
 		if( z < -0.5 )
+		{
 			this.currentFace = EnumFacing.NORTH;
+		}
 	}
 
 	public void setOverrideBlockTexture(
@@ -601,7 +629,9 @@ public class ModelGenerator
 		ModelRotation mr = ModelRotation.X0_Y0;
 
 		if( Flip )
+		{
 			mr = ModelRotation.X0_Y180;
+		}
 
 		for( final SMFace face : this.faces )
 		{
@@ -615,9 +645,13 @@ public class ModelGenerator
 			bf = new IColoredBakedQuad.ColoredBakedQuad( bf.getVertexData(), face.getColor(), bf.getFace() );
 
 			if( face.isEdge() )
+			{
 				this.generatedModel.getFaceQuads( myFace ).add( bf );
+			}
 			else
+			{
 				this.generatedModel.getGeneralQuads().add( bf );
+			}
 		}
 	}
 

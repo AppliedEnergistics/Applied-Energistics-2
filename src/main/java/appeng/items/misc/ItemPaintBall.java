@@ -63,7 +63,9 @@ public class ItemPaintBall extends AEBaseItem
 					final ItemStack stack )
 			{
 				if( ItemPaintBall.this.isLumen( stack ) )
+				{
 					return sloc;
+				}
 
 				return loc;
 			}

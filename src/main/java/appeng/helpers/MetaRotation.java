@@ -75,7 +75,9 @@ public class MetaRotation implements IOrientable
 		Axis a = state == null ? null : (Axis) state.getValue( AEBaseBlock.AXIS_ORIENTATION );
 
 		if( a == null )
+		{
 			a = Axis.Y;
+		}
 
 		switch( a )
 		{
@@ -95,9 +97,13 @@ public class MetaRotation implements IOrientable
 		if( this.w instanceof World )
 		{
 			if( this.useFacing )
+			{
 				( (World) this.w ).setBlockState( this.pos, this.w.getBlockState( this.pos ).withProperty( BlockTorch.FACING, up ) );
+			}
 			else
+			{
 				( (World) this.w ).setBlockState( this.pos, this.w.getBlockState( this.pos ).withProperty( AEBaseBlock.AXIS_ORIENTATION, up.getAxis() ) );
+			}
 		}
 		else
 		{

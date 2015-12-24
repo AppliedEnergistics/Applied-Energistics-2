@@ -169,7 +169,9 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 		{
 			final Class<? extends BaseBlockRender> re = this.getRenderer();
 			if( re == null )
+			 {
 				return null; // use 1.8 models.
+			}
 			final BaseBlockRender renderer = re.newInstance();
 			this.renderInfo = new BlockRenderInfo( renderer );
 
@@ -250,7 +252,9 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 		final IOrientable ori = this.getOrientable( w, pos );
 
 		if( ori == null )
+		{
 			return this.getIcon( side, state );
+		}
 
 		return this.getIcon( this.mapRotation( ori, side ), state );
 	}
@@ -363,9 +367,13 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 			}
 
 			if( b == null )
+			{
 				b = new AxisAlignedBB( 16d, 16d, 16d, 0d, 0d, 0d );
+			}
 			else
+			{
 				b = AxisAlignedBB.fromBounds( b.minX + pos.getX(), b.minY + pos.getY(), b.minZ + pos.getZ(), b.maxX + pos.getX(), b.maxY + pos.getY(), b.maxZ + pos.getZ() );
+			}
 
 			return b;
 		}
@@ -597,7 +605,9 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 		}
 
 		if( west == null )
+		{
 			return dir;
+		}
 
 		if( dir == forward )
 		{

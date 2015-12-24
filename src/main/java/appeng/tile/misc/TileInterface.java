@@ -125,9 +125,13 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, IT
 	private void configureNodeSides()
 	{
 		if( this.pointAt == AEPartLocation.INTERNAL )
+		{
 			this.getProxy().setValidSides( EnumSet.allOf( EnumFacing.class ) );
+		}
 		else
+		{
 			this.getProxy().setValidSides( EnumSet.complementOf( EnumSet.of( this.pointAt.getFacing() ) ) );
+		}
 	}
 
 	@Override
