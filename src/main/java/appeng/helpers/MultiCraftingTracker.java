@@ -46,17 +46,11 @@ public class MultiCraftingTracker
 
 	private Future<ICraftingJob>[] jobs = null;
 	private ICraftingLink[] links = null;
-	private int failedCraftingAttempts = 0;
 
 	public MultiCraftingTracker( final ICraftingRequester o, final int size )
 	{
 		this.owner = o;
 		this.size = size;
-	}
-
-	public int getFailedCraftingAttempts()
-	{
-		return this.failedCraftingAttempts;
 	}
 
 	public void readFromNBT( final NBTTagCompound extra )
@@ -115,15 +109,10 @@ public class MultiCraftingTracker
 
 						if( link != null )
 						{
-							this.failedCraftingAttempts = Math.max( 0, this.failedCraftingAttempts - 1 );
-
 							this.setLink( x, link );
+
+							return true;
 						}
-						else
-						{
-							this.failedCraftingAttempts = Math.min( 10, this.failedCraftingAttempts + 1 );
-						}
-						return true;
 					}
 				}
 				catch( final InterruptedException e )
