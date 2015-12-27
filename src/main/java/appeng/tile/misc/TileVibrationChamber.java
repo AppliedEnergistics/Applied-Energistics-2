@@ -66,8 +66,8 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 
 	public TileVibrationChamber()
 	{
-		this.getGridProxy().setIdlePowerUsage( 0 );
-		this.getGridProxy().setFlags();
+		this.getProxy().setIdlePowerUsage( 0 );
+		this.getProxy().setFlags();
 	}
 
 	@Override
@@ -131,7 +131,7 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 			{
 				try
 				{
-					this.getGridProxy().getTick().wakeDevice( this.getGridProxy().getNode() );
+					this.getProxy().getTick().wakeDevice( this.getProxy().getNode() );
 				}
 				catch( final GridAccessException e )
 				{
@@ -213,7 +213,7 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 
 		try
 		{
-			final IEnergyGrid grid = this.getGridProxy().getEnergy();
+			final IEnergyGrid grid = this.getProxy().getEnergy();
 			final double newPower = timePassed * POWER_PER_TICK;
 			final double overFlow = grid.injectPower( newPower, Actionable.SIMULATE );
 
@@ -275,7 +275,7 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 		{
 			try
 			{
-				this.getGridProxy().getTick().wakeDevice( this.getGridProxy().getNode() );
+				this.getProxy().getTick().wakeDevice( this.getProxy().getNode() );
 			}
 			catch( final GridAccessException e )
 			{

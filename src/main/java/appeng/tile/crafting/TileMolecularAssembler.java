@@ -102,7 +102,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 		this.settings = new ConfigManager( this );
 		this.settings.registerSetting( Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE );
 		this.inv.setMaxStackSize( 1 );
-		this.getGridProxy().setIdlePowerUsage( 0.0 );
+		this.getProxy().setIdlePowerUsage( 0.0 );
 		this.upgrades = new DefinitionUpgradeInventory( assembler, this, this.getUpgradeSlots() );
 		this.craftingInv = new InventoryCrafting( new ContainerNull(), 3, 3 );
 	}
@@ -152,11 +152,11 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 			{
 				if( this.isAwake )
 				{
-					this.getGridProxy().getTick().wakeDevice( this.getGridProxy().getNode() );
+					this.getProxy().getTick().wakeDevice( this.getProxy().getNode() );
 				}
 				else
 				{
-					this.getGridProxy().getTick().sleepDevice( this.getGridProxy().getNode() );
+					this.getProxy().getTick().sleepDevice( this.getProxy().getNode() );
 				}
 			}
 			catch( final GridAccessException e )
@@ -553,7 +553,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 	{
 		try
 		{
-			return (int) ( this.getGridProxy().getEnergy().extractAEPower( ticksPassed * bonusValue * acceleratorTax, Actionable.MODULATE, PowerMultiplier.CONFIG ) / acceleratorTax );
+			return (int) ( this.getProxy().getEnergy().extractAEPower( ticksPassed * bonusValue * acceleratorTax, Actionable.MODULATE, PowerMultiplier.CONFIG ) / acceleratorTax );
 		}
 		catch( final GridAccessException e )
 		{
@@ -629,7 +629,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 
 		try
 		{
-			newState = this.getGridProxy().isActive() && this.getGridProxy().getEnergy().extractAEPower( 1, Actionable.SIMULATE, PowerMultiplier.CONFIG ) > 0.0001;
+			newState = this.getProxy().isActive() && this.getProxy().getEnergy().extractAEPower( 1, Actionable.SIMULATE, PowerMultiplier.CONFIG ) > 0.0001;
 		}
 		catch( final GridAccessException ignored )
 		{
