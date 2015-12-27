@@ -68,9 +68,9 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 
 	public TileQuantumBridge()
 	{
-		this.getGridProxy().setValidSides( EnumSet.noneOf( ForgeDirection.class ) );
-		this.getGridProxy().setFlags( GridFlags.DENSE_CAPACITY );
-		this.getGridProxy().setIdlePowerUsage( 22 );
+		this.getProxy().setValidSides( EnumSet.noneOf( ForgeDirection.class ) );
+		this.getProxy().setFlags( GridFlags.DENSE_CAPACITY );
+		this.getProxy().setIdlePowerUsage( 22 );
 		this.internalInventory.setMaxStackSize( 1 );
 	}
 
@@ -98,7 +98,7 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 			out |= this.hasSingularity;
 		}
 
-		if( this.getGridProxy().isActive() && this.constructed != -1 )
+		if( this.getProxy().isActive() && this.constructed != -1 )
 		{
 			out |= this.powered;
 		}
@@ -177,7 +177,7 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 		{
 			final ItemStack linkStack = maybeLinkStack.get();
 
-			this.getGridProxy().setVisualRepresentation( linkStack );
+			this.getProxy().setVisualRepresentation( linkStack );
 		}
 	}
 
@@ -205,7 +205,7 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 
 		if( affectWorld )
 		{
-			this.getGridProxy().setValidSides( EnumSet.noneOf( ForgeDirection.class ) );
+			this.getProxy().setValidSides( EnumSet.noneOf( ForgeDirection.class ) );
 		}
 	}
 
@@ -235,11 +235,11 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 
 			if( this.isCorner() || this.isCenter() )
 			{
-				this.getGridProxy().setValidSides( this.getConnections() );
+				this.getProxy().setValidSides( this.getConnections() );
 			}
 			else
 			{
-				this.getGridProxy().setValidSides( EnumSet.allOf( ForgeDirection.class ) );
+				this.getProxy().setValidSides( EnumSet.allOf( ForgeDirection.class ) );
 			}
 		}
 	}
@@ -288,7 +288,7 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 
 		try
 		{
-			return this.getGridProxy().getEnergy().isNetworkPowered();
+			return this.getProxy().getEnergy().isNetworkPowered();
 		}
 		catch( final GridAccessException e )
 		{

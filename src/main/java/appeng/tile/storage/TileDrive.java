@@ -78,7 +78,7 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 	public TileDrive()
 	{
 		this.mySrc = new MachineSource( this );
-		this.getGridProxy().setFlags( GridFlags.REQUIRE_CHANNEL );
+		this.getProxy().setFlags( GridFlags.REQUIRE_CHANNEL );
 	}
 
 	@TileEvent( TileEventType.NETWORK_WRITE )
@@ -93,7 +93,7 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 			this.state &= 0x24924924; // just keep the blinks...
 		}
 
-		if( this.getGridProxy().isActive() )
+		if( this.getProxy().isActive() )
 		{
 			this.state |= 0x80000000;
 		}
@@ -160,7 +160,7 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 			return ( this.state & 0x80000000 ) == 0x80000000;
 		}
 
-		return this.getGridProxy().isActive();
+		return this.getProxy().isActive();
 	}
 
 	@Override
@@ -205,7 +205,7 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 
 	private void recalculateDisplay()
 	{
-		final boolean currentActive = this.getGridProxy().isActive();
+		final boolean currentActive = this.getProxy().isActive();
 		if( currentActive )
 		{
 			this.state |= 0x80000000;
@@ -220,7 +220,7 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 			this.wasActive = currentActive;
 			try
 			{
-				this.getGridProxy().getGrid().postEvent( new MENetworkCellArrayUpdate() );
+				this.getProxy().getGrid().postEvent( new MENetworkCellArrayUpdate() );
 			}
 			catch( final GridAccessException e )
 			{
@@ -281,9 +281,9 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 
 		try
 		{
-			this.getGridProxy().getGrid().postEvent( new MENetworkCellArrayUpdate() );
+			this.getProxy().getGrid().postEvent( new MENetworkCellArrayUpdate() );
 
-			final IStorageGrid gs = this.getGridProxy().getStorage();
+			final IStorageGrid gs = this.getProxy().getStorage();
 			Platform.postChanges( gs, removed, added, this.mySrc );
 		}
 		catch( final GridAccessException ignored )
@@ -349,7 +349,7 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 				}
 			}
 
-			this.getGridProxy().setIdlePowerUsage( power );
+			this.getProxy().setIdlePowerUsage( power );
 
 			this.isCached = true;
 		}
@@ -365,7 +365,7 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 	@Override
 	public List<IMEInventoryHandler> getCellArray( final StorageChannel channel )
 	{
-		if( this.getGridProxy().isActive() )
+		if( this.getProxy().isActive() )
 		{
 			this.updateState();
 			return (List) ( channel == StorageChannel.ITEMS ? this.items : this.fluids );
@@ -390,7 +390,7 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 
 		try
 		{
-			this.getGridProxy().getGrid().postEvent( new MENetworkCellArrayUpdate() );
+			this.getProxy().getGrid().postEvent( new MENetworkCellArrayUpdate() );
 		}
 		catch( final GridAccessException e )
 		{

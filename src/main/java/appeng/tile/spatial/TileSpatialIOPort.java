@@ -58,7 +58,7 @@ public class TileSpatialIOPort extends AENetworkInvTile implements IWorldCallabl
 
 	public TileSpatialIOPort()
 	{
-		this.getGridProxy().setFlags( GridFlags.REQUIRE_CHANNEL );
+		this.getProxy().setFlags( GridFlags.REQUIRE_CHANNEL );
 	}
 
 	@TileEvent( TileEventType.WORLD_NBT_WRITE )
@@ -127,8 +127,8 @@ public class TileSpatialIOPort extends AENetworkInvTile implements IWorldCallabl
 		final ItemStack cell = this.getStackInSlot( 0 );
 		if( this.isSpatialCell( cell ) && this.getStackInSlot( 1 ) == null )
 		{
-			final IGrid gi = this.getGridProxy().getGrid();
-			final IEnergyGrid energy = this.getGridProxy().getEnergy();
+			final IGrid gi = this.getProxy().getGrid();
+			final IEnergyGrid energy = this.getProxy().getEnergy();
 
 			final ISpatialStorageCell sc = (ISpatialStorageCell) cell.getItem();
 

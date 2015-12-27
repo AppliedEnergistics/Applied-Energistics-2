@@ -106,7 +106,7 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 	@Reflected
 	public TileIOPort()
 	{
-		this.getGridProxy().setFlags( GridFlags.REQUIRE_CHANNEL );
+		this.getProxy().setFlags( GridFlags.REQUIRE_CHANNEL );
 		this.manager = new ConfigManager( this );
 		this.manager.registerSetting( Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE );
 		this.manager.registerSetting( Settings.FULLNESS_MODE, FullnessMode.EMPTY );
@@ -158,11 +158,11 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 		{
 			if( this.hasWork() )
 			{
-				this.getGridProxy().getTick().wakeDevice( this.getGridProxy().getNode() );
+				this.getProxy().getTick().wakeDevice( this.getProxy().getNode() );
 			}
 			else
 			{
-				this.getGridProxy().getTick().sleepDevice( this.getGridProxy().getNode() );
+				this.getProxy().getTick().sleepDevice( this.getProxy().getNode() );
 			}
 		}
 		catch( final GridAccessException e )
@@ -313,7 +313,7 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 	@Override
 	public TickRateModulation tickingRequest( final IGridNode node, final int ticksSinceLastCall )
 	{
-		if( !this.getGridProxy().isActive() )
+		if( !this.getProxy().isActive() )
 		{
 			return TickRateModulation.IDLE;
 		}
@@ -335,9 +335,9 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 
 		try
 		{
-			final IMEInventory<IAEItemStack> itemNet = this.getGridProxy().getStorage().getItemInventory();
-			final IMEInventory<IAEFluidStack> fluidNet = this.getGridProxy().getStorage().getFluidInventory();
-			final IEnergySource energy = this.getGridProxy().getEnergy();
+			final IMEInventory<IAEItemStack> itemNet = this.getProxy().getStorage().getItemInventory();
+			final IMEInventory<IAEFluidStack> fluidNet = this.getProxy().getStorage().getFluidInventory();
+			final IEnergySource energy = this.getProxy().getEnergy();
 			for( int x = 0; x < 6; x++ )
 			{
 				final ItemStack is = this.cells.getStackInSlot( x );

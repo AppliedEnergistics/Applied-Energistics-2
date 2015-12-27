@@ -60,15 +60,15 @@ public class TileWireless extends AENetworkInvTile implements IWirelessAccessPoi
 
 	public TileWireless()
 	{
-		this.getGridProxy().setFlags( GridFlags.REQUIRE_CHANNEL );
-		this.getGridProxy().setValidSides( EnumSet.noneOf( ForgeDirection.class ) );
+		this.getProxy().setFlags( GridFlags.REQUIRE_CHANNEL );
+		this.getProxy().setValidSides( EnumSet.noneOf( ForgeDirection.class ) );
 	}
 
 	@Override
 	public void setOrientation( final ForgeDirection inForward, final ForgeDirection inUp )
 	{
 		super.setOrientation( inForward, inUp );
-		this.getGridProxy().setValidSides( EnumSet.of( this.getForward().getOpposite() ) );
+		this.getProxy().setValidSides( EnumSet.of( this.getForward().getOpposite() ) );
 	}
 
 	@MENetworkEventSubscribe
@@ -99,12 +99,12 @@ public class TileWireless extends AENetworkInvTile implements IWirelessAccessPoi
 
 		try
 		{
-			if( this.getGridProxy().getEnergy().isNetworkPowered() )
+			if( this.getProxy().getEnergy().isNetworkPowered() )
 			{
 				this.setClientFlags( this.getClientFlags() | POWERED_FLAG );
 			}
 
-			if( this.getGridProxy().getNode().meetsChannelRequirements() )
+			if( this.getProxy().getNode().meetsChannelRequirements() )
 			{
 				this.setClientFlags( this.getClientFlags() | CHANNEL_FLAG );
 			}
@@ -162,7 +162,7 @@ public class TileWireless extends AENetworkInvTile implements IWirelessAccessPoi
 
 	private void updatePower()
 	{
-		this.getGridProxy().setIdlePowerUsage( AEConfig.instance.wireless_getPowerDrain( this.getBoosters() ) );
+		this.getProxy().setIdlePowerUsage( AEConfig.instance.wireless_getPowerDrain( this.getBoosters() ) );
 	}
 
 	private int getBoosters()
@@ -191,7 +191,7 @@ public class TileWireless extends AENetworkInvTile implements IWirelessAccessPoi
 			return this.isPowered() && ( CHANNEL_FLAG == ( this.getClientFlags() & CHANNEL_FLAG ) );
 		}
 
-		return this.getGridProxy().isActive();
+		return this.getProxy().isActive();
 	}
 
 	@Override
@@ -199,7 +199,7 @@ public class TileWireless extends AENetworkInvTile implements IWirelessAccessPoi
 	{
 		try
 		{
-			return this.getGridProxy().getGrid();
+			return this.getProxy().getGrid();
 		}
 		catch( final GridAccessException e )
 		{

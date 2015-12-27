@@ -39,19 +39,19 @@ public abstract class AENetworkInvTile extends AEBaseInvTile implements IActionH
 	@TileEvent( TileEventType.WORLD_NBT_READ )
 	public void readFromNBT_AENetwork( final NBTTagCompound data )
 	{
-		this.getGridProxy().readFromNBT( data );
+		this.getProxy().readFromNBT( data );
 	}
 
 	@TileEvent( TileEventType.WORLD_NBT_WRITE )
 	public void writeToNBT_AENetwork( final NBTTagCompound data )
 	{
-		this.getGridProxy().writeToNBT( data );
+		this.getProxy().writeToNBT( data );
 	}
 
 	@Override
 	public AENetworkProxy getProxy()
 	{
-		return this.getGridProxy();
+		return this.gridProxy;
 	}
 
 	@Override
@@ -63,45 +63,40 @@ public abstract class AENetworkInvTile extends AEBaseInvTile implements IActionH
 	@Override
 	public IGridNode getGridNode( final ForgeDirection dir )
 	{
-		return this.getGridProxy().getNode();
+		return this.getProxy().getNode();
 	}
 
 	@Override
 	public void onChunkUnload()
 	{
 		super.onChunkUnload();
-		this.getGridProxy().onChunkUnload();
+		this.getProxy().onChunkUnload();
 	}
 
 	@Override
 	public void onReady()
 	{
 		super.onReady();
-		this.getGridProxy().onReady();
+		this.getProxy().onReady();
 	}
 
 	@Override
 	public void invalidate()
 	{
 		super.invalidate();
-		this.getGridProxy().invalidate();
+		this.getProxy().invalidate();
 	}
 
 	@Override
 	public void validate()
 	{
 		super.validate();
-		this.getGridProxy().validate();
+		this.getProxy().validate();
 	}
 
 	@Override
 	public IGridNode getActionableNode()
 	{
-		return this.getGridProxy().getNode();
-	}
-
-	public AENetworkProxy getGridProxy()
-	{
-		return this.gridProxy;
+		return this.getProxy().getNode();
 	}
 }
