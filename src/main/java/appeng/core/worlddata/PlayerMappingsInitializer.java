@@ -26,8 +26,6 @@ import java.util.UUID;
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Property;
 
-import cpw.mods.fml.relauncher.FMLRelaunchLog;
-
 import appeng.core.AELog;
 import appeng.util.UUIDMatcher;
 
@@ -53,7 +51,7 @@ class PlayerMappingsInitializer
 	 * @param playerList the category for the player list, generally extracted using the "players" tag
 	 * @param log the logger used to warn the server or user of faulty entries
 	 */
-	PlayerMappingsInitializer( final ConfigCategory playerList, final FMLRelaunchLog log )
+	PlayerMappingsInitializer( final ConfigCategory playerList )
 	{
 		// Matcher for UUIDs
 		final UUIDMatcher matcher = new UUIDMatcher();
@@ -78,7 +76,7 @@ class PlayerMappingsInitializer
 			}
 			else
 			{
-				AELog.warning( "The configuration for players contained an outdated entry instead an expected UUID " + maybeUUID + " for the player " + id + ". Please clean this up." );
+				AELog.warn( "The configuration for players contained an outdated entry instead an expected UUID " + maybeUUID + " for the player " + id + ". Please clean this up." );
 			}
 		}
 	}

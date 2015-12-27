@@ -199,7 +199,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 					}
 					catch( final IOException e )
 					{
-						AELog.error( e );
+						AELog.debug( e );
 					}
 				}
 

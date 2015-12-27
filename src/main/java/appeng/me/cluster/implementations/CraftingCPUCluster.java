@@ -83,6 +83,8 @@ import appeng.util.item.AEItemStack;
 public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 {
 
+	private static final String LOG_MARK_AS_COMPLETE = "Completed job for %s.";
+
 	private final WorldCoord min;
 	private final WorldCoord max;
 	private final int[] usedOps = new int[3];
@@ -427,12 +429,19 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 			( (CraftingLink) this.myLastLink ).markDone();
 		}
 
-		AELog.crafting( "marking job as complete" );
+		if( AELog.isCraftingLogEnabled() )
+		{
+			final IAEItemStack logStack = this.finalOutput.copy();
+			logStack.setStackSize( this.startItemCount );
+			AELog.crafting( LOG_MARK_AS_COMPLETE, logStack );
+		}
+
 		this.remainingItemCount = 0;
 		this.startItemCount = 0;
 		this.lastTime = 0;
 		this.elapsedTime = 0;
 		this.isComplete = true;
+
 	}
 
 	private void updateCPU()

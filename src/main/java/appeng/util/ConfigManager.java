@@ -125,7 +125,7 @@ public final class ConfigManager implements IConfigManager
 			}
 			catch( final IllegalArgumentException e )
 			{
-				AELog.error( e );
+				AELog.debug( e );
 			}
 		}
 	}

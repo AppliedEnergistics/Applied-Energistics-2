@@ -33,7 +33,6 @@ import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 
-import appeng.core.AELog;
 import appeng.core.CommonHelper;
 
 
@@ -64,7 +63,7 @@ final class PlayerData implements IWorldPlayerData, IOnWorldStartable, IOnWorldS
 		this.config = configFile;
 
 		final ConfigCategory playerList = this.config.getCategory( "players" );
-		this.playerMapping = new PlayerMapping( playerList, AELog.INSTANCE );
+		this.playerMapping = new PlayerMapping( playerList );
 	}
 
 	@Nullable

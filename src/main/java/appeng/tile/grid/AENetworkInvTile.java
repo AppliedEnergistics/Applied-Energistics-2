@@ -99,4 +99,5 @@ public abstract class AENetworkInvTile extends AEBaseInvTile implements IActionH
 	{
 		return this.getProxy().getNode();
 	}
+
 }

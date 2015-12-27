@@ -186,7 +186,7 @@ public class PacketMEInventoryUpdate extends AppEngPacket
 		}
 		catch( final IOException e )
 		{
-			AELog.error( e );
+			AELog.debug( e );
 		}
 
 		return null;

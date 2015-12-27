@@ -119,11 +119,11 @@ public class BuildCraftBuilder implements IIntegrationModule
 			}
 			catch( final InvocationTargetException ignore )
 			{
-				AELog.warning( "Encountered problems while initializing the BuildCraft Builder support. Can not invoke the method %s", blockDefinition );
+				AELog.warn( "Encountered problems while initializing the BuildCraft Builder support. Can not invoke the method %s", blockDefinition );
 			}
 			catch( final IllegalAccessException ignore )
 			{
-				AELog.warning( "Encountered problems while initializing the BuildCraft Builder support. Can not access the method %s", blockDefinition );
+				AELog.warn( "Encountered problems while initializing the BuildCraft Builder support. Can not access the method %s", blockDefinition );
 			}
 		}
 	}

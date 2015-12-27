@@ -259,7 +259,7 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IMask
 		}
 		catch( final IOException e )
 		{
-			AELog.error( e );
+			AELog.debug( e );
 		}
 	}
 
@@ -322,7 +322,7 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IMask
 		}
 		catch( final IOException e )
 		{
-			AELog.error( e );
+			AELog.debug( e );
 		}
 	}
 

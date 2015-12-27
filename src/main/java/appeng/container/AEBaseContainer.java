@@ -146,7 +146,7 @@ public abstract class AEBaseContainer extends Container
 				final GuiSync annotation = f.getAnnotation( GuiSync.class );
 				if( this.syncData.containsKey( annotation.value() ) )
 				{
-					AELog.warning( "Channel already in use: " + annotation.value() + " for " + f.getName() );
+					AELog.warn( "Channel already in use: " + annotation.value() + " for " + f.getName() );
 				}
 				else
 				{
@@ -208,7 +208,7 @@ public abstract class AEBaseContainer extends Container
 		}
 		catch( final IOException e )
 		{
-			AELog.error( e );
+			AELog.debug( e );
 		}
 
 		this.dataChunks.clear();
@@ -270,7 +270,7 @@ public abstract class AEBaseContainer extends Container
 			}
 			catch( final IOException e )
 			{
-				AELog.error( e );
+				AELog.debug( e );
 				return;
 			}
 		}
@@ -1109,7 +1109,7 @@ public abstract class AEBaseContainer extends Container
 			}
 			catch( final IOException e )
 			{
-				AELog.error( e );
+				AELog.debug( e );
 			}
 		}
 	}
@@ -1178,7 +1178,7 @@ public abstract class AEBaseContainer extends Container
 						}
 						catch( final IOException e )
 						{
-							AELog.error( e );
+							AELog.debug( e );
 						}
 					}
 				}

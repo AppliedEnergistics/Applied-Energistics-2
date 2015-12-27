@@ -140,7 +140,7 @@ final class StorageData implements IWorldGridStorageData, IOnWorldStartable, IOn
 		}
 		catch( final NumberFormatException err )
 		{
-			AELog.warning( "The config contained a value which was not represented as a Long: %s", lastString );
+			AELog.warn( "The config contained a value which was not represented as a Long: %s", lastString );
 
 			this.lastGridStorage = 0;
 		}

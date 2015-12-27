@@ -209,7 +209,7 @@ public class RenderBlocksWorkaround extends RenderBlocks
 		}
 		catch( final Throwable t )
 		{
-			AELog.error( t );
+			AELog.debug( t );
 			// meh
 		}
 		return false;

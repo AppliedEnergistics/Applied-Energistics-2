@@ -410,7 +410,7 @@ public abstract class AEBaseGui extends GuiContainer
 			}
 			catch( final IOException e )
 			{
-				AELog.error( e );
+				AELog.debug( e );
 			}
 		}
 		else if( slot instanceof SlotCraftingTerm )
@@ -779,7 +779,7 @@ public abstract class AEBaseGui extends GuiContainer
 			}
 			catch( final Exception err )
 			{
-				AELog.warning( "[AppEng] AE prevented crash while drawing slot: " + err.toString() );
+				AELog.warn( "[AppEng] AE prevented crash while drawing slot: " + err.toString() );
 			}
 			this.setItemRender( pIR );
 			return;
@@ -846,7 +846,7 @@ public abstract class AEBaseGui extends GuiContainer
 							}
 							catch( final Exception err )
 							{
-								AELog.error( err );
+								AELog.debug( err );
 							}
 						}
 						( (AppEngSlot) s ).setIsValid( isValid ? hasCalculatedValidness.Valid : hasCalculatedValidness.Invalid );
@@ -880,7 +880,7 @@ public abstract class AEBaseGui extends GuiContainer
 			}
 			catch( final Exception err )
 			{
-				AELog.warning( "[AppEng] AE prevented crash while drawing slot: " + err.toString() );
+				AELog.warn( "[AppEng] AE prevented crash while drawing slot: " + err.toString() );
 			}
 		}
 		// do the usual for non-ME Slots.

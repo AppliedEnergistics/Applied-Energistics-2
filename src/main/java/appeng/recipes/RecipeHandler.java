@@ -257,10 +257,10 @@ public class RecipeHandler implements IRecipeHandler
 			}
 			catch( final Exception err )
 			{
-				AELog.warning( "Error Loading Recipe File:" + path );
+				AELog.warn( "Error Loading Recipe File:" + path );
 				if( this.data.exceptions )
 				{
-					AELog.error( err );
+					AELog.debug( err );
 				}
 				return;
 			}
@@ -360,7 +360,7 @@ public class RecipeHandler implements IRecipeHandler
 		}
 		catch( final Throwable e )
 		{
-			AELog.error( e );
+			AELog.debug( e );
 			if( this.data.crash )
 			{
 				throw new IllegalStateException( e );
@@ -398,10 +398,10 @@ public class RecipeHandler implements IRecipeHandler
 				}
 				catch( final RegistrationError e )
 				{
-					AELog.warning( "Unable to register a recipe: " + e.getMessage() );
+					AELog.warn( "Unable to register a recipe: " + e.getMessage() );
 					if( this.data.exceptions )
 					{
-						AELog.error( e );
+						AELog.debug( e );
 					}
 					if( this.data.crash )
 					{
@@ -412,10 +412,10 @@ public class RecipeHandler implements IRecipeHandler
 				{
 					if( this.data.errorOnMissing )
 					{
-						AELog.warning( "Unable to register a recipe:" + e.getMessage() );
+						AELog.warn( "Unable to register a recipe:" + e.getMessage() );
 						if( this.data.exceptions )
 						{
-							AELog.error( e );
+							AELog.debug( e );
 						}
 						if( this.data.crash )
 						{
@@ -429,7 +429,7 @@ public class RecipeHandler implements IRecipeHandler
 		{
 			if( this.data.exceptions )
 			{
-				AELog.error( e );
+				AELog.debug( e );
 			}
 			if( this.data.crash )
 			{
@@ -505,11 +505,11 @@ public class RecipeHandler implements IRecipeHandler
 			}
 			catch( final FileNotFoundException e1 )
 			{
-				AELog.error( e1 );
+				AELog.debug( e1 );
 			}
 			catch( final IOException e1 )
 			{
-				AELog.error( e1 );
+				AELog.debug( e1 );
 			}
 		}
 	}
@@ -529,7 +529,7 @@ public class RecipeHandler implements IRecipeHandler
 			}
 			catch( final Throwable t )
 			{
-				AELog.error( t );
+				AELog.debug( t );
 			}
 		}
 
@@ -678,10 +678,10 @@ public class RecipeHandler implements IRecipeHandler
 		}
 		catch( final RecipeError e )
 		{
-			AELog.warning( "Recipe Error '" + e.getMessage() + "' near line:" + line + " in " + file + " with: " + this.tokens.toString() );
+			AELog.warn( "Recipe Error '" + e.getMessage() + "' near line:" + line + " in " + file + " with: " + this.tokens.toString() );
 			if( this.data.exceptions )
 			{
-				AELog.error( e );
+				AELog.debug( e );
 			}
 			if( this.data.crash )
 			{

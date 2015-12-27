@@ -129,7 +129,7 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 			}
 			catch( final IOException e )
 			{
-				AELog.error( e );
+				AELog.debug( e );
 			}
 		}
 	}

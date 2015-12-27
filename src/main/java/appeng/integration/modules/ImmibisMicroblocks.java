@@ -72,7 +72,7 @@ public class ImmibisMicroblocks implements IImmibisMicroblocks, IIntegrationModu
 		}
 		catch( final Throwable t )
 		{
-			AELog.error( t );
+			AELog.debug( t );
 		}
 	}
 

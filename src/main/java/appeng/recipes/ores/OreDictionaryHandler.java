@@ -89,7 +89,7 @@ public class OreDictionaryHandler
 				}
 				catch( final Throwable e )
 				{
-					AELog.error( e );
+					AELog.debug( e );
 				}
 			}
 		}

@@ -121,7 +121,7 @@ public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorH
 				}
 				catch( final IOException e )
 				{
-					AELog.error( e );
+					AELog.debug( e );
 				}
 			}
 		}
