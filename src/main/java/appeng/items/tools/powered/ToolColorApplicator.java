@@ -110,7 +110,8 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 		this.setFeature( EnumSet.of( AEFeature.ColorApplicator, AEFeature.PoweredTools ) );
 		if( Platform.isClient() )
 		{
-			MinecraftForgeClient.registerItemRenderer( this, new ToolColorApplicatorRender() );
+			//TODO - color applicator
+			//MinecraftForgeClient.registerItemRenderer( this, new ToolColorApplicatorRender() );
 		}
 	}
 

@@ -1,10 +1,14 @@
 
 package appeng.client;
 
-
 import java.util.Collections;
 import java.util.List;
 
+import appeng.api.util.AEPartLocation;
+import appeng.block.AEBaseBlock;
+import appeng.client.render.BlockRenderInfo;
+import appeng.client.render.ModelGenerator;
+import appeng.client.texture.MissingIcon;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
@@ -14,21 +18,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.IBlockAccess;
-import net.minecraftforge.client.IItemRenderer.ItemRenderType;
-import net.minecraftforge.client.model.IModelPart;
-import net.minecraftforge.client.model.IModelState;
 import net.minecraftforge.client.model.ISmartBlockModel;
 import net.minecraftforge.client.model.ISmartItemModel;
-import net.minecraftforge.client.model.TRSRTransformation;
 import net.minecraftforge.common.property.IExtendedBlockState;
-
-import appeng.api.util.AEPartLocation;
-import appeng.block.AEBaseBlock;
-import appeng.block.AEBaseTileBlock;
-import appeng.client.render.BlockRenderInfo;
-import appeng.client.render.ModelGenerator;
-import appeng.client.texture.MissingIcon;
-
 
 // net.minecraft.client.renderer.tileentity.TileEntityItemStackRenderer
 public class SmartModel implements IBakedModel, ISmartBlockModel, ISmartItemModel
@@ -36,22 +28,10 @@ public class SmartModel implements IBakedModel, ISmartBlockModel, ISmartItemMode
 
 	private final BlockRenderInfo aeRenderer;
 
-	private class DefState implements IModelState
-	{
-
-		@Override
-		public TRSRTransformation apply(
-				final IModelPart part )
-		{
-			return TRSRTransformation.identity();
-		}
-
-	};
-
 	public SmartModel(
 			final BlockRenderInfo rendererInstance )
 	{
-		this.aeRenderer = rendererInstance;
+		aeRenderer = rendererInstance;
 	}
 
 	@Override
@@ -84,11 +64,11 @@ public class SmartModel implements IBakedModel, ISmartBlockModel, ISmartItemMode
 	{
 		return false;
 	}
-
+	
 	@Override
-	public TextureAtlasSprite getTexture()
+	public TextureAtlasSprite getParticleTexture()
 	{
-		return this.aeRenderer != null ? this.aeRenderer.getTexture( AEPartLocation.UP ).getAtlas() : MissingIcon.getMissing();
+		return aeRenderer != null ? aeRenderer.getTexture( AEPartLocation.UP ).getAtlas() : MissingIcon.getMissing();
 	}
 
 	@Override
@@ -104,7 +84,7 @@ public class SmartModel implements IBakedModel, ISmartBlockModel, ISmartItemMode
 		final ModelGenerator helper = new ModelGenerator();
 		final Block blk = Block.getBlockFromItem( stack.getItem() );
 		helper.setRenderBoundsFromBlock( blk );
-		this.aeRenderer.getRendererInstance().renderInventory( blk instanceof AEBaseBlock ? (AEBaseBlock) blk : null, stack, helper, ItemRenderType.INVENTORY, null );
+		aeRenderer.getRendererInstance().renderInventory( blk instanceof AEBaseBlock ? (AEBaseBlock) blk : null, stack, helper, ItemRenderType.INVENTORY, null );
 		helper.finalizeModel( true );
 		return helper.getOutput();
 	}
@@ -115,12 +95,12 @@ public class SmartModel implements IBakedModel, ISmartBlockModel, ISmartItemMode
 	{
 		final ModelGenerator helper = new ModelGenerator();
 		final Block blk = state.getBlock();
-		final BlockPos pos = ( (IExtendedBlockState) state ).getValue( AEBaseTileBlock.AE_BLOCK_POS );
-		final IBlockAccess world = ( (IExtendedBlockState) state ).getValue( AEBaseTileBlock.AE_BLOCK_ACCESS );
+		final BlockPos pos = ( (IExtendedBlockState) state ).getValue( AEBaseBlock.AE_BLOCK_POS );
+		final IBlockAccess world = ( (IExtendedBlockState) state ).getValue( AEBaseBlock.AE_BLOCK_ACCESS );
 		helper.setTranslation( -pos.getX(), -pos.getY(), -pos.getZ() );
 		helper.setRenderBoundsFromBlock( blk );
 		helper.setBlockAccess( world );
-		this.aeRenderer.getRendererInstance().renderInWorld( blk instanceof AEBaseBlock ? (AEBaseBlock) blk : null, world, pos, helper );
+		aeRenderer.getRendererInstance().renderInWorld( blk instanceof AEBaseBlock ? (AEBaseBlock) blk : null, world, pos, helper );
 		helper.finalizeModel( false );
 		return helper.getOutput();
 	}

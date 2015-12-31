@@ -45,6 +45,7 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.entity.RenderItem;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
@@ -817,17 +818,16 @@ public abstract class AEBaseGui extends GuiContainer
 							final Tessellator tessellator = Tessellator.getInstance();
 							final WorldRenderer worldrenderer = tessellator.getWorldRenderer();
 
-							worldrenderer.startDrawingQuads();
-							worldrenderer.setColorRGBA_F( 1.0f, 1.0f, 1.0f, aes.getOpacityOfIcon() );
+							worldrenderer.begin( GL11.GL_QUADS, DefaultVertexFormats.ITEM );
+							;
 							final float f1 = 0.00390625F;
 							final float f = 0.00390625F;
 							final float par6 = 16;
-							worldrenderer.addVertexWithUV( par1 + 0, par2 + par6, this.zLevel, ( par3 + 0 ) * f, ( par4 + par6 ) * f1 );
+							worldrenderer.color( 1.0f, 1.0f, 1.0f, aes.getOpacityOfIcon() ).pos( par1 + 0, par2 + par6, this.zLevel).tex( ( par3 + 0 ) * f, ( par4 + par6 ) * f1 ).endVertex();
 							final float par5 = 16;
-							worldrenderer.addVertexWithUV( par1 + par5, par2 + par6, this.zLevel, ( par3 + par5 ) * f, ( par4 + par6 ) * f1 );
-							worldrenderer.addVertexWithUV( par1 + par5, par2 + 0, this.zLevel, ( par3 + par5 ) * f, ( par4 + 0 ) * f1 );
-							worldrenderer.addVertexWithUV( par1 + 0, par2 + 0, this.zLevel, ( par3 + 0 ) * f, ( par4 + 0 ) * f1 );
-							worldrenderer.setColorRGBA_F( 1.0f, 1.0f, 1.0f, 1.0f );
+							worldrenderer.color( 1.0f, 1.0f, 1.0f, aes.getOpacityOfIcon() ).pos( par1 + par5, par2 + par6, this.zLevel).tex(  ( par3 + par5 ) * f, ( par4 + par6 ) * f1 ).endVertex();
+							worldrenderer.color( 1.0f, 1.0f, 1.0f, aes.getOpacityOfIcon() ).pos( par1 + par5, par2 + 0, this.zLevel).tex(  ( par3 + par5 ) * f, ( par4 + 0 ) * f1 ).endVertex();
+							worldrenderer.color( 1.0f, 1.0f, 1.0f, aes.getOpacityOfIcon() ).pos( par1 + 0, par2 + 0, this.zLevel).tex(  ( par3 + 0 ) * f, ( par4 + 0 ) * f1 ).endVertex();
 							tessellator.draw();
 						}
 						catch( final Exception err )

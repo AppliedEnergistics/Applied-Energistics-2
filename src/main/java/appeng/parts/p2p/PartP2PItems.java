@@ -295,7 +295,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements /* IPip
 	}
 
 	@Override
-	public ItemStack getStackInSlotOnClosing( final int i )
+	public ItemStack removeStackFromSlot( final int i )
 	{
 		return null;
 	}
@@ -307,7 +307,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements /* IPip
 	}
 
 	@Override
-	public String getCommandSenderName()
+	public String getName()
 	{
 		return null;
 	}

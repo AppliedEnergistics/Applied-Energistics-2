@@ -29,10 +29,9 @@ import net.minecraft.block.Block;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.server.gui.IUpdatePlayerListBox;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-
+import net.minecraft.util.ITickable;
 import appeng.api.AEApi;
 import appeng.api.definitions.IBlockDefinition;
 import appeng.api.networking.GridFlags;
@@ -54,7 +53,7 @@ import appeng.tile.inventory.InvOperation;
 import appeng.util.Platform;
 
 
-public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock, IUpdatePlayerListBox
+public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock, ITickable
 {
 	private final byte corner = 16;
 	private final int[] sidesRing = {};

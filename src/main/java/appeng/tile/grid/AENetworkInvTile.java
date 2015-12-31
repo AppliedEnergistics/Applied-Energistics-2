@@ -51,7 +51,7 @@ public abstract class AENetworkInvTile extends AEBaseInvTile implements IActionH
 	@Override
 	public AENetworkProxy getProxy()
 	{
-		return this.getProxy();
+		return gridProxy;
 	}
 
 	@Override

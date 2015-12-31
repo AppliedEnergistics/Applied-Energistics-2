@@ -23,6 +23,8 @@ import java.util.Random;
 
 import org.lwjgl.opengl.GL11;
 
+import com.sun.xml.internal.ws.api.streaming.XMLStreamReaderFactory.Default;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.GLAllocation;
@@ -30,6 +32,7 @@ import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraftforge.client.IRenderHandler;
 
 
@@ -107,12 +110,11 @@ public class SpatialSkyRender extends IRenderHandler
 				GL11.glRotatef( -90.0F, 0.0F, 0.0F, 1.0F );
 			}
 
-			worldrenderer.startDrawingQuads();
-			worldrenderer.setColorOpaque_I( 0 );
-			worldrenderer.addVertexWithUV( -100.0D, -100.0D, -100.0D, 0.0D, 0.0D );
-			worldrenderer.addVertexWithUV( -100.0D, -100.0D, 100.0D, 0.0D, 16.0D );
-			worldrenderer.addVertexWithUV( 100.0D, -100.0D, 100.0D, 16.0D, 16.0D );
-			worldrenderer.addVertexWithUV( 100.0D, -100.0D, -100.0D, 16.0D, 0.0D );
+			worldrenderer.begin( GL11.GL_QUADS, DefaultVertexFormats.ITEM );
+			worldrenderer.color(0f,0f,0f,1f).pos( -100.0D, -100.0D, -100.0D).tex( 0.0D, 0.0D ).endVertex();
+			worldrenderer.color(0f,0f,0f,1f).pos(  -100.0D, -100.0D, 100.0D).tex(  0.0D, 16.0D ).endVertex();
+			worldrenderer.color(0f,0f,0f,1f).pos(  100.0D, -100.0D, 100.0D).tex(  16.0D, 16.0D ).endVertex();
+			worldrenderer.color(0f,0f,0f,1f).pos(  100.0D, -100.0D, -100.0D).tex(  16.0D, 0.0D ).endVertex();
 			tessellator.draw();
 			GL11.glPopMatrix();
 		}
@@ -146,7 +148,7 @@ public class SpatialSkyRender extends IRenderHandler
 	{
 		final Tessellator tessellator = Tessellator.getInstance();
 		final WorldRenderer worldrenderer = tessellator.getWorldRenderer();
-		worldrenderer.startDrawingQuads();
+		worldrenderer.begin( GL11.GL_QUADS, DefaultVertexFormats.ITEM );
 
 		for( int i = 0; i < 50; ++i )
 		{
@@ -186,7 +188,7 @@ public class SpatialSkyRender extends IRenderHandler
 					final double d23 = d17 * d12 - d20 * d13;
 					final double d24 = d23 * d9 - d21 * d10;
 					final double d25 = d21 * d9 + d23 * d10;
-					worldrenderer.addVertex( x + d24, y + d22, z + d25 );
+					worldrenderer.pos( x + d24, y + d22, z + d25 ).endVertex();
 				}
 			}
 		}

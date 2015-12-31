@@ -22,11 +22,10 @@ package appeng.debug;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.server.gui.IUpdatePlayerListBox;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumFacing;
-
+import net.minecraft.util.ITickable;
 import appeng.core.CommonHelper;
 import appeng.tile.AEBaseTile;
 import appeng.tile.TileEvent;
@@ -34,7 +33,7 @@ import appeng.tile.events.TileEventType;
 import appeng.util.Platform;
 
 
-public class TileCubeGenerator extends AEBaseTile implements IUpdatePlayerListBox
+public class TileCubeGenerator extends AEBaseTile implements ITickable
 {
 
 	private int size = 3;

@@ -56,7 +56,7 @@ public class AppEngNullInventory implements IInventory
 	}
 
 	@Override
-	public ItemStack getStackInSlotOnClosing( final int var1 )
+	public ItemStack removeStackFromSlot( final int var1 )
 	{
 		return null;
 	}
@@ -68,7 +68,7 @@ public class AppEngNullInventory implements IInventory
 	}
 
 	@Override
-	public String getCommandSenderName()
+	public String getName()
 	{
 		return "appeng-internal";
 	}

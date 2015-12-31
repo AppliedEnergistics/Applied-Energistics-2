@@ -52,7 +52,8 @@ public class ToolBiometricCard extends AEBaseItem implements IBiometricCard
 
 		if( Platform.isClient() )
 		{
-			MinecraftForgeClient.registerItemRenderer( this, new ToolBiometricCardRender() );
+			// TODO - PORT ToolBiometricCardRender
+			//MinecraftForgeClient.registerItemRenderer( this, new ToolBiometricCardRender() );
 		}
 	}
 

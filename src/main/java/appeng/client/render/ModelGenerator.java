@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
-import javax.vecmath.Vector3f;
+import org.lwjgl.util.vector.Vector3f;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -72,9 +72,9 @@ public class ModelGenerator
 		}
 
 		@Override
-		public TextureAtlasSprite getTexture()
+		public TextureAtlasSprite getParticleTexture()
 		{
-			return null;
+			return Minecraft.getMinecraft().getTextureMapBlocks().getMissingSprite();
 		}
 
 		@Override

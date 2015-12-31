@@ -100,8 +100,6 @@ import appeng.util.Platform;
 public class ClientHelper extends ServerHelper
 {
 
-	private static final RenderItem ITEM_RENDERER = Minecraft.getMinecraft().getRenderItem();
-	private static final ModelGenerator BLOCK_RENDERER = new ModelGenerator();
 	private final ModelResourceLocation partRenderer = new ModelResourceLocation( new ResourceLocation( AppEng.MOD_ID, "DynamicPartRenderer" ), "inventory" );
 
 	private final Map<Object, List<IconReg>> iconRegistrations = new HashMap<>();

@@ -369,7 +369,6 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 			GL11.glDisable( GL11.GL_LIGHTING );
 			GL11.glDisable( GL12.GL_RESCALE_NORMAL );
 			// RenderHelper.enableGUIStandardItemLighting();
-			wr.setColorOpaque_F( 1.0f, 1.0f, 1.0f );
 
 			ClientHelper.proxy.doRenderItem( sis, this.getTile().getWorld() );
 		}

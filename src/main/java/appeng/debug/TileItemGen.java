@@ -92,7 +92,7 @@ public class TileItemGen extends AEBaseTile implements IInventory
 	}
 
 	@Override
-	public ItemStack getStackInSlotOnClosing( final int i )
+	public ItemStack removeStackFromSlot( final int i )
 	{
 		return null;
 	}
@@ -105,7 +105,7 @@ public class TileItemGen extends AEBaseTile implements IInventory
 	}
 
 	@Override
-	public String getCommandSenderName()
+	public String getName()
 	{
 		return null;
 	}

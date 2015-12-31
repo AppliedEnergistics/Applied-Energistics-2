@@ -93,9 +93,9 @@ public class WrapperInventoryRange implements IInventory
 	}
 
 	@Override
-	public ItemStack getStackInSlotOnClosing( final int var1 )
+	public ItemStack removeStackFromSlot( final int var1 )
 	{
-		return this.src.getStackInSlotOnClosing( this.getSlots()[var1] );
+		return this.src.removeStackFromSlot( this.getSlots()[var1] );
 	}
 
 	@Override
@@ -123,9 +123,9 @@ public class WrapperInventoryRange implements IInventory
 	}
 
 	@Override
-	public String getCommandSenderName()
+	public String getName()
 	{
-		return this.src.getCommandSenderName();
+		return this.src.getName();
 	}
 
 	@Override

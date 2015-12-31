@@ -39,7 +39,6 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.IBlockAccess;
-import net.minecraftforge.client.IItemRenderer.ItemRenderType;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -284,7 +283,7 @@ public class BaseBlockRender<B extends AEBaseBlock, T extends AEBaseTile>
 		return this.renderDistance;
 	}
 
-	public void renderInventory( final B block, final ItemStack item, final ModelGenerator renderer, final ItemRenderType type, final Object[] data )
+	public void renderInventory( final B block, final ItemStack item, final ModelGenerator renderer, final appeng.client.ItemRenderType type, final Object[] data )
 	{
 		final BlockRenderInfo info = block.getRendererInstance();
 		if( info.isValid() )

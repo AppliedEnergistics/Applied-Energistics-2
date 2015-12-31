@@ -76,9 +76,9 @@ public class WrapperInvSlot
 		}
 
 		@Override
-		public ItemStack getStackInSlotOnClosing( final int i )
+		public ItemStack removeStackFromSlot( final int i )
 		{
-			return this.inv.getStackInSlotOnClosing( this.slot );
+			return this.inv.removeStackFromSlot( this.slot );
 		}
 
 		@Override
@@ -106,9 +106,9 @@ public class WrapperInvSlot
 		}
 
 		@Override
-		public String getCommandSenderName()
+		public String getName()
 		{
-			return this.inv.getCommandSenderName();
+			return this.inv.getName();
 		}
 
 		@Override

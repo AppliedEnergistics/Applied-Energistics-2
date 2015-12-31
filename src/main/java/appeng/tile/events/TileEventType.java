@@ -22,7 +22,7 @@ package appeng.tile.events;
 public enum TileEventType
 {
 	/**
-	 * Requires IUpdatePlayerListBox, this makes the tile entity tick in 1.8
+	 * Requires ITickable, this makes the tile entity tick in 1.8
 	 */
 	TICK,
 

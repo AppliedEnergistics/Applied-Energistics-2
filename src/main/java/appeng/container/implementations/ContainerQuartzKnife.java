@@ -183,7 +183,7 @@ public class ContainerQuartzKnife extends AEBaseContainer implements IAEAppEngIn
 	}
 
 	@Override
-	public ItemStack getStackInSlotOnClosing( final int var1 )
+	public ItemStack removeStackFromSlot( final int var1 )
 	{
 		return null;
 	}
@@ -198,7 +198,7 @@ public class ContainerQuartzKnife extends AEBaseContainer implements IAEAppEngIn
 	}
 
 	@Override
-	public String getCommandSenderName()
+	public String getName()
 	{
 		return "Quartz Knife Output";
 	}

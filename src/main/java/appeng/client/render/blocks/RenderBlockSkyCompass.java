@@ -29,7 +29,7 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.IBlockAccess;
-import net.minecraftforge.client.IItemRenderer.ItemRenderType;
+import appeng.client.ItemRenderType;
 
 import appeng.block.misc.BlockSkyCompass;
 import appeng.client.render.BaseBlockRender;

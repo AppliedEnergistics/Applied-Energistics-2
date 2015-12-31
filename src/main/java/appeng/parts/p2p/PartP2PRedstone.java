@@ -152,8 +152,8 @@ public class PartP2PRedstone extends PartP2PTunnel<PartP2PRedstone>
 					srcSide = EnumFacing.UP;
 				}
 
-				this.power = b.isProvidingStrongPower( this.getTile().getWorld(), target, state, srcSide );
-				this.power = Math.max( this.power, b.isProvidingWeakPower( this.getTile().getWorld(), target, state, srcSide ) );
+				this.power = b.getWeakPower( this.getTile().getWorld(), target, state, srcSide );
+				this.power = Math.max( this.power, b.getWeakPower( this.getTile().getWorld(), target, state, srcSide ) );
 				this.sendToOutput( this.power );
 			}
 			else

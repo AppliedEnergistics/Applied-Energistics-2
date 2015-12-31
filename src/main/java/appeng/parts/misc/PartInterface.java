@@ -270,9 +270,9 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISto
 	}
 
 	@Override
-	public ItemStack getStackInSlotOnClosing( final int i )
+	public ItemStack removeStackFromSlot( final int i )
 	{
-		return this.duality.getStorage().getStackInSlotOnClosing( i );
+		return this.duality.getStorage().removeStackFromSlot( i );
 	}
 
 	@Override
@@ -282,9 +282,9 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISto
 	}
 
 	@Override
-	public String getCommandSenderName()
+	public String getName()
 	{
-		return this.duality.getStorage().getCommandSenderName();
+		return this.duality.getStorage().getName();
 	}
 
 	@Override

@@ -41,7 +41,7 @@ import appeng.tile.inventory.InvOperation;
 public abstract class AEBaseInvTile extends AEBaseTile implements ISidedInventory, IAEAppEngInventory
 {
 	@Override
-	public String getCommandSenderName()
+	public String getName()
 	{
 		return this.getCustomName();
 	}
@@ -97,7 +97,7 @@ public abstract class AEBaseInvTile extends AEBaseTile implements ISidedInventor
 	}
 
 	@Override
-	public ItemStack getStackInSlotOnClosing( final int i )
+	public ItemStack removeStackFromSlot( final int i )
 	{
 		return null;
 	}

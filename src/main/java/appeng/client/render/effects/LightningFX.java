@@ -87,7 +87,11 @@ public class LightningFX extends EntityFX
 	public void renderParticle( final WorldRenderer tess, final Entity p_180434_2_, final float l, final float rX, final float rY, final float rZ, final float rYZ, final float rXY )
 	{
 		final float j = 1.0f;
-		tess.setColorRGBA_F( this.particleRed * j * 0.9f, this.particleGreen * j * 0.95f, this.particleBlue * j, this.particleAlpha );
+		float red = this.particleRed * j * 0.9f;
+		float green = this.particleGreen * j * 0.95f;
+		float blue = this.particleBlue * j;
+		float alpha = this.particleAlpha;
+		
 		if( this.particleAge == 3 )
 		{
 			this.regen();
@@ -122,7 +126,9 @@ public class LightningFX extends EntityFX
 				offX *= 0.001;
 				offY *= 0.001;
 				offZ *= 0.001;
-				tess.setColorRGBA_F( this.particleRed * j * 0.4f, this.particleGreen * j * 0.25f, this.particleBlue * j * 0.45f, this.particleAlpha );
+				red=this.particleRed * j * 0.4f;
+				green=this.particleGreen * j * 0.25f;
+				blue= this.particleBlue * j * 0.45f;
 			}
 			else
 			{
@@ -130,7 +136,9 @@ public class LightningFX extends EntityFX
 				offY = 0;
 				offZ = 0;
 				scale = 0.02;
-				tess.setColorRGBA_F( this.particleRed * j * 0.9f, this.particleGreen * j * 0.65f, this.particleBlue * j * 0.85f, this.particleAlpha );
+				red= this.particleRed * j * 0.9f;
+				green = this.particleGreen * j * 0.65f;
+				blue = this.particleBlue * j * 0.85f;
 			}
 
 			for( int cycle = 0; cycle < 3; cycle++ )
@@ -183,7 +191,7 @@ public class LightningFX extends EntityFX
 					b[1] = y;
 					b[2] = z;
 
-					this.draw( tess, a, b, f6, f8 );
+					this.draw( red,green,blue,tess, a, b, f6, f8 );
 
 					x = xN;
 					y = yN;
@@ -202,14 +210,14 @@ public class LightningFX extends EntityFX
 		this.hasData = false;
 	}
 
-	private void draw( final WorldRenderer tess, final double[] a, final double[] b, final double f6, final double f8 )
+	private void draw( float red,float green, float blue, final WorldRenderer tess, final double[] a, final double[] b, final double f6, final double f8 )
 	{
 		if( this.hasData )
 		{
-			tess.addVertexWithUV( a[0], a[1], a[2], f6, f8 );
-			tess.addVertexWithUV( this.vertices[0], this.vertices[1], this.vertices[2], f6, f8 );
-			tess.addVertexWithUV( this.verticesWithUV[0], this.verticesWithUV[1], this.verticesWithUV[2], f6, f8 );
-			tess.addVertexWithUV( b[0], b[1], b[2], f6, f8 );
+			tess.color(red,green,blue,particleAlpha).pos( a[0], a[1], a[2]).tex( f6, f8 ).endVertex();
+			tess.color(red,green,blue,particleAlpha).pos( this.vertices[0], this.vertices[1], this.vertices[2]).tex( f6, f8 ).endVertex();
+			tess.color(red,green,blue,particleAlpha).pos( this.verticesWithUV[0], this.verticesWithUV[1], this.verticesWithUV[2]).tex( f6, f8 ).endVertex();
+			tess.color(red,green,blue,particleAlpha).pos( b[0], b[1], b[2]).tex( f6, f8 ).endVertex();
 		}
 		this.hasData = true;
 		for( int x = 0; x < 3; x++ )

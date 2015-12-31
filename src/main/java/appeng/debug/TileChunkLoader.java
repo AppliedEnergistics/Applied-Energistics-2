@@ -23,8 +23,8 @@ import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.gui.IUpdatePlayerListBox;
 import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.ITickable;
 import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.ForgeChunkManager.Ticket;
@@ -39,7 +39,7 @@ import appeng.tile.events.TileEventType;
 import appeng.util.Platform;
 
 
-public class TileChunkLoader extends AEBaseTile implements IUpdatePlayerListBox
+public class TileChunkLoader extends AEBaseTile implements ITickable
 {
 
 	private boolean requestTicket = true;

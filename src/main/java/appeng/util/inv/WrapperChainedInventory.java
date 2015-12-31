@@ -147,12 +147,12 @@ public class WrapperChainedInventory implements IInventory
 	}
 
 	@Override
-	public ItemStack getStackInSlotOnClosing( final int idx )
+	public ItemStack removeStackFromSlot( final int idx )
 	{
 		final InvOffset io = this.offsets.get( idx );
 		if( io != null )
 		{
-			return io.i.getStackInSlotOnClosing( idx - io.offset );
+			return io.i.removeStackFromSlot( idx - io.offset );
 		}
 		return null;
 	}
@@ -168,7 +168,7 @@ public class WrapperChainedInventory implements IInventory
 	}
 
 	@Override
-	public String getCommandSenderName()
+	public String getName()
 	{
 		return "ChainedInv";
 	}

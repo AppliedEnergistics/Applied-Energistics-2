@@ -29,9 +29,8 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.server.gui.IUpdatePlayerListBox;
 import net.minecraft.util.EnumFacing;
-
+import net.minecraft.util.ITickable;
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
@@ -54,7 +53,7 @@ import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 
 
-public class TileCharger extends AENetworkPowerTile implements ICrankable, IUpdatePlayerListBox
+public class TileCharger extends AENetworkPowerTile implements ICrankable, ITickable
 {
 
 	private final int[] sides = { 0 };

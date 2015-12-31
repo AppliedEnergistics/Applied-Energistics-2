@@ -22,7 +22,7 @@ package appeng.client.render.blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.IBlockAccess;
-import net.minecraftforge.client.IItemRenderer.ItemRenderType;
+import appeng.client.ItemRenderType;
 
 import appeng.block.AEBaseBlock;
 import appeng.client.render.BaseBlockRender;

@@ -178,7 +178,7 @@ public class AppEngInternalAEInventory implements IInventory, Iterable<ItemStack
 	}
 
 	@Override
-	public ItemStack getStackInSlotOnClosing( final int var1 )
+	public ItemStack removeStackFromSlot( final int var1 )
 	{
 		return null;
 	}
@@ -219,7 +219,7 @@ public class AppEngInternalAEInventory implements IInventory, Iterable<ItemStack
 	}
 
 	@Override
-	public String getCommandSenderName()
+	public String getName()
 	{
 		return "appeng-internal";
 	}

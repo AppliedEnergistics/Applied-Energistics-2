@@ -61,7 +61,7 @@ import appeng.services.version.VersionCheckerConfig;
 import appeng.util.Platform;
 
 
-@Mod( modid = AppEng.MOD_ID, acceptedMinecraftVersions = "[1.8]", name = AppEng.MOD_NAME, version = AEConfig.VERSION, dependencies = AppEng.MOD_DEPENDENCIES, guiFactory = "appeng.client.gui.config.AEConfigGuiFactory" )
+@Mod( modid = AppEng.MOD_ID, acceptedMinecraftVersions = "[1.8.8,1.8.9]", name = AppEng.MOD_NAME, version = AEConfig.VERSION, dependencies = AppEng.MOD_DEPENDENCIES, guiFactory = "appeng.client.gui.config.AEConfigGuiFactory" )
 public final class AppEng
 {
 	public static final String MOD_ID = "appliedenergistics2";

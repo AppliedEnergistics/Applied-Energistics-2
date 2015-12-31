@@ -24,7 +24,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.IBlockAccess;
-import net.minecraftforge.client.IItemRenderer.ItemRenderType;
+import appeng.client.ItemRenderType;
 
 import appeng.block.misc.BlockTinyTNT;
 import appeng.client.render.BaseBlockRender;

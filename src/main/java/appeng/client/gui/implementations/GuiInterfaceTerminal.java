@@ -34,6 +34,7 @@ import com.google.common.collect.HashMultimap;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -103,7 +104,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 
 		final int ex = this.getScrollBar().getCurrentScroll();
 
-		final Iterator<Object> o = this.inventorySlots.inventorySlots.iterator();
+		final Iterator<Slot> o = this.inventorySlots.inventorySlots.iterator();
 		while( o.hasNext() )
 		{
 			if( o.next() instanceof SlotDisconnected )
