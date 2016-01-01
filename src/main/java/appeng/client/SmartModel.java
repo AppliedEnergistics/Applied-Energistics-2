@@ -4,11 +4,6 @@ package appeng.client;
 import java.util.Collections;
 import java.util.List;
 
-import appeng.api.util.AEPartLocation;
-import appeng.block.AEBaseBlock;
-import appeng.client.render.BlockRenderInfo;
-import appeng.client.render.ModelGenerator;
-import appeng.client.texture.MissingIcon;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
@@ -21,6 +16,12 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.model.ISmartBlockModel;
 import net.minecraftforge.client.model.ISmartItemModel;
 import net.minecraftforge.common.property.IExtendedBlockState;
+
+import appeng.api.util.AEPartLocation;
+import appeng.block.AEBaseBlock;
+import appeng.client.render.BlockRenderInfo;
+import appeng.client.render.ModelGenerator;
+import appeng.client.texture.MissingIcon;
 
 // net.minecraft.client.renderer.tileentity.TileEntityItemStackRenderer
 public class SmartModel implements IBakedModel, ISmartBlockModel, ISmartItemModel

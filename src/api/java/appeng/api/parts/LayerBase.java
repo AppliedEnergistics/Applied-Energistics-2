@@ -28,6 +28,7 @@ import java.util.Set;
 
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+
 import appeng.api.util.AEPartLocation;
 
 

@@ -26,12 +26,13 @@ package appeng.api.implementations.items;
 
 import java.util.EnumSet;
 
+import com.mojang.authlib.GameProfile;
+
 import net.minecraft.item.ItemStack;
+
 import appeng.api.config.SecurityPermissions;
 import appeng.api.features.IPlayerRegistry;
 import appeng.api.networking.security.ISecurityRegistry;
-
-import com.mojang.authlib.GameProfile;
 
 
 public interface IBiometricCard

@@ -28,6 +28,7 @@ import java.util.EnumSet;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+
 import appeng.api.parts.IPart;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalCoord;

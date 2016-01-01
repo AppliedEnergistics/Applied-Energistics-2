@@ -19,8 +19,9 @@
 package appeng.client.render.items;
 
 
-import appeng.client.ItemRenderType;
 import net.minecraft.item.ItemStack;
+
+import appeng.client.ItemRenderType;
 
 
 public class ToolColorApplicatorRender 

@@ -26,14 +26,15 @@ package appeng.api.networking.crafting;
 
 import java.util.concurrent.Future;
 
+import com.google.common.collect.ImmutableCollection;
+import com.google.common.collect.ImmutableSet;
+
 import net.minecraft.world.World;
+
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridCache;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.storage.data.IAEItemStack;
-
-import com.google.common.collect.ImmutableCollection;
-import com.google.common.collect.ImmutableSet;
 
 
 public interface ICraftingGrid extends IGridCache

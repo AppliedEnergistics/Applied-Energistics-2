@@ -25,11 +25,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.IBlockAccess;
-import appeng.client.ItemRenderType;
 
 import appeng.api.util.AEColor;
 import appeng.api.util.AEPartLocation;
 import appeng.block.networking.BlockWireless;
+import appeng.client.ItemRenderType;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.BlockRenderInfo;
 import appeng.client.render.ModelGenerator;

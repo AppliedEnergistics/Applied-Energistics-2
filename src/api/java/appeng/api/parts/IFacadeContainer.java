@@ -24,11 +24,12 @@
 package appeng.api.parts;
 
 
-import io.netty.buffer.ByteBuf;
-
 import java.io.IOException;
 
+import io.netty.buffer.ByteBuf;
+
 import net.minecraft.nbt.NBTTagCompound;
+
 import appeng.api.util.AEPartLocation;
 
 

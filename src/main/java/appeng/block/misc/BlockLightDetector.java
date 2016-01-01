@@ -23,14 +23,6 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Random;
 
-import appeng.api.util.IOrientable;
-import appeng.api.util.IOrientableBlock;
-import appeng.block.AEBaseTileBlock;
-import appeng.client.render.blocks.RenderQuartzTorch;
-import appeng.core.features.AEFeature;
-import appeng.helpers.ICustomCollision;
-import appeng.helpers.MetaRotation;
-import appeng.tile.misc.TileLightDetector;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockTorch;
 import net.minecraft.block.material.Material;
@@ -42,6 +34,15 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+
+import appeng.api.util.IOrientable;
+import appeng.api.util.IOrientableBlock;
+import appeng.block.AEBaseTileBlock;
+import appeng.client.render.blocks.RenderQuartzTorch;
+import appeng.core.features.AEFeature;
+import appeng.helpers.ICustomCollision;
+import appeng.helpers.MetaRotation;
+import appeng.tile.misc.TileLightDetector;
 
 public class BlockLightDetector extends AEBaseTileBlock implements IOrientableBlock, ICustomCollision
 {

@@ -31,6 +31,7 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
 import appeng.client.render.ModelGenerator;
 import appeng.client.texture.IAESprite;
 

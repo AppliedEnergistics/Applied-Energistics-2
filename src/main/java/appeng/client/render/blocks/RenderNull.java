@@ -22,9 +22,9 @@ package appeng.client.render.blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.IBlockAccess;
-import appeng.client.ItemRenderType;
 
 import appeng.block.AEBaseBlock;
+import appeng.client.ItemRenderType;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.ModelGenerator;
 import appeng.tile.AEBaseTile;

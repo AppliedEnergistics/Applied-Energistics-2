@@ -25,6 +25,7 @@ package appeng.api.definitions;
 
 
 import javax.annotation.Nonnull;
+
 import com.google.common.base.Optional;
 
 import net.minecraft.item.Item;

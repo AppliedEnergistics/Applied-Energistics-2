@@ -25,6 +25,7 @@ package appeng.api.networking;
 
 
 import net.minecraft.tileentity.TileEntity;
+
 import appeng.api.parts.IPart;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;

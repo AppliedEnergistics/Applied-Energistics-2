@@ -28,6 +28,7 @@ import java.util.EnumSet;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumFacing;
+
 import appeng.api.networking.IGridHost;
 import appeng.api.parts.BusSupport;
 import appeng.api.parts.IPart;

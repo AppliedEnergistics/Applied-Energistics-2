@@ -25,6 +25,7 @@ package appeng.api.implementations;
 
 
 import net.minecraft.tileentity.TileEntity;
+
 import appeng.api.config.Upgrades;
 import appeng.api.implementations.tiles.ISegmentedInventory;
 import appeng.api.util.IConfigurableObject;

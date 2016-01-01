@@ -24,11 +24,11 @@
 package appeng.api.parts;
 
 
-import io.netty.buffer.ByteBuf;
-
 import java.io.IOException;
 import java.util.List;
 import java.util.Random;
+
+import io.netty.buffer.ByteBuf;
 
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.Entity;
@@ -42,6 +42,7 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
 import appeng.api.networking.IGridNode;
 import appeng.api.util.AEPartLocation;
 import appeng.client.render.ModelGenerator;

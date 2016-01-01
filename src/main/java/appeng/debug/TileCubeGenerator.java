@@ -26,6 +26,7 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+
 import appeng.core.CommonHelper;
 import appeng.tile.AEBaseTile;
 import appeng.tile.TileEvent;

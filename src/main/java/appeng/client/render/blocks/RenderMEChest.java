@@ -25,13 +25,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.IBlockAccess;
-import appeng.client.ItemRenderType;
 
 import appeng.api.AEApi;
 import appeng.api.storage.ICellHandler;
 import appeng.api.util.AEColor;
 import appeng.api.util.AEPartLocation;
 import appeng.block.storage.BlockChest;
+import appeng.client.ItemRenderType;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.ModelGenerator;
 import appeng.client.texture.ExtraBlockTextures;

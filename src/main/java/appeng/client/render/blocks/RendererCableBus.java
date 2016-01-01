@@ -28,7 +28,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.IBlockAccess;
-import appeng.client.ItemRenderType;
 
 import appeng.api.parts.IFacadePart;
 import appeng.api.parts.IPart;
@@ -36,6 +35,7 @@ import appeng.api.parts.IPartItem;
 import appeng.api.util.AEPartLocation;
 import appeng.block.networking.BlockCableBus;
 import appeng.client.ClientHelper;
+import appeng.client.ItemRenderType;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.BusRenderHelper;
 import appeng.client.render.BusRenderer;

@@ -20,11 +20,12 @@ package appeng.tile.misc;
 
 
 
+import net.minecraft.util.ITickable;
+
 import appeng.tile.AEBaseTile;
 import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
 import appeng.util.Platform;
-import net.minecraft.util.ITickable;
 
 
 public class TileLightDetector extends AEBaseTile implements ITickable

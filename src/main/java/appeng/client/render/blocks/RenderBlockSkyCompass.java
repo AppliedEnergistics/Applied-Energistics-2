@@ -29,9 +29,9 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.IBlockAccess;
-import appeng.client.ItemRenderType;
 
 import appeng.block.misc.BlockSkyCompass;
+import appeng.client.ItemRenderType;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.ModelGenerator;
 import appeng.client.render.model.ModelCompass;
