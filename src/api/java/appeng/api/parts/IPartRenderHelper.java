@@ -58,9 +58,9 @@ public interface IPartRenderHelper
 	 *
 	 * render a single face.
 	 *
-	 * @param pos	   POSITION of part
-	 * @param ico      icon of part
-	 * @param face     direction its facing
+	 * @param pos POSITION of part
+	 * @param ico icon of part
+	 * @param face direction its facing
 	 * @param renderer renderer of part
 	 */
 	@SideOnly( Side.CLIENT )
@@ -71,11 +71,11 @@ public interface IPartRenderHelper
 	 *
 	 * render a box with a cut out box in the center.
 	 *
-	 * @param pos			pos of part
-	 * @param ico           icon of part
-	 * @param face          face of part
+	 * @param pos pos of part
+	 * @param ico icon of part
+	 * @param face face of part
 	 * @param edgeThickness thickness of the edge
-	 * @param renderer      renderer
+	 * @param renderer renderer
 	 */
 	@SideOnly( Side.CLIENT )
 	void renderFaceCutout( BlockPos pos, IAESprite ico, EnumFacing face, float edgeThickness, ModelGenerator renderer );
@@ -85,9 +85,9 @@ public interface IPartRenderHelper
 	 *
 	 * render a block of specified bounds.
 	 *
-	 * @param x        x pos of block
-	 * @param y        y pos of block
-	 * @param z        z pos of block
+	 * @param x x pos of block
+	 * @param y y pos of block
+	 * @param z z pos of block
 	 * @param renderer renderer
 	 */
 	@SideOnly( Side.CLIENT )
@@ -96,9 +96,9 @@ public interface IPartRenderHelper
 	/**
 	 * render a single face in inventory renderer.
 	 *
-	 * @param TextureAtlasSprite     icon of part
+	 * @param TextureAtlasSprite icon of part
 	 * @param direction face of part
-	 * @param renderer  renderer
+	 * @param renderer renderer
 	 */
 	@SideOnly( Side.CLIENT )
 	void renderInventoryFace( IAESprite IIcon, EnumFacing direction, ModelGenerator renderer );
@@ -116,12 +116,12 @@ public interface IPartRenderHelper
 	 *
 	 * set unique icons for each side of the block.
 	 *
-	 * @param down  down face
-	 * @param up    up face
+	 * @param down down face
+	 * @param up up face
 	 * @param north north face
 	 * @param south south face
-	 * @param west  west face
-	 * @param east  east face
+	 * @param west west face
+	 * @param east east face
 	 */
 	void setTexture( IAESprite down, IAESprite up, IAESprite north, IAESprite south, IAESprite west, IAESprite east );
 
@@ -164,9 +164,9 @@ public interface IPartRenderHelper
 	/**
 	 * render a block using the current renderer state.
 	 *
-	 * @param x        x pos of part
-	 * @param y        y pos of part
-	 * @param z        z pos of part
+	 * @param x x pos of part
+	 * @param y y pos of part
+	 * @param z z pos of part
 	 * @param renderer renderer of part
 	 */
 	void renderBlockCurrentBounds( BlockPos pos, ModelGenerator renderer );

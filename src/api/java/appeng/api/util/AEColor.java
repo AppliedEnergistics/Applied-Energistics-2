@@ -99,7 +99,7 @@ public enum AEColor
 	 * Vanilla Dye Equivilient
 	 */
 	public final EnumDyeColor dye;
-	
+
 	AEColor( final String unlocalizedName, final EnumDyeColor dye, final int blackHex, final int medHex, final int whiteHex )
 	{
 		this.unlocalizedName = unlocalizedName;

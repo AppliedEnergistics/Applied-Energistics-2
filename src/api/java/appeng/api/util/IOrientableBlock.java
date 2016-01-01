@@ -41,9 +41,9 @@ public interface IOrientableBlock
 
 	/**
 	 * @param world world of block
-	 * @param x     x pos of block
-	 * @param y     y pos of block
-	 * @param z     z pos of block
+	 * @param x x pos of block
+	 * @param y y pos of block
+	 * @param z z pos of block
 	 *
 	 * @return a IOrientable if applicable
 	 */

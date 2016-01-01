@@ -25,21 +25,20 @@ import appeng.client.ItemRenderType;
 
 
 // TODO - PORT
-public class ToolBiometricCardRender   // TileEntityItemStackRenderer
+public class ToolBiometricCardRender // TileEntityItemStackRenderer
 {
-
 
 	public boolean handleRenderType( final ItemStack item, final ItemRenderType type )
 	{
 		return true;
 	}
 
-
-	public boolean shouldUseRenderHelper( final ItemRenderType type, final ItemStack item )//, final ItemRendererHelper helper )
+	public boolean shouldUseRenderHelper( final ItemRenderType type, final ItemStack item )// , final ItemRendererHelper
+																							// helper )
 	{
-		return false;//return helper == ItemRendererHelper.ENTITY_BOBBING || helper == ItemRendererHelper.ENTITY_ROTATION;
+		return false;// return helper == ItemRendererHelper.ENTITY_BOBBING || helper ==
+						// ItemRendererHelper.ENTITY_ROTATION;
 	}
-
 
 	public void renderItem( final ItemRenderType type, final ItemStack item, final Object... data )
 	{

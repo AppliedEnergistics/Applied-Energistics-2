@@ -70,7 +70,7 @@ public interface IPart extends IBoxProvider
 	 *
 	 * GL Available
 	 *
-	 * @param rh       helper
+	 * @param rh helper
 	 * @param renderer renderer
 	 */
 	@SideOnly( Side.CLIENT )
@@ -81,10 +81,10 @@ public interface IPart extends IBoxProvider
 	 *
 	 * GL is NOT Available
 	 *
-	 * @param x        x coord
-	 * @param y        y coord
-	 * @param z        z coord
-	 * @param rh       helper
+	 * @param x x coord
+	 * @param y y coord
+	 * @param z z coord
+	 * @param rh helper
 	 * @param renderer renderer
 	 */
 	@SideOnly( Side.CLIENT )
@@ -95,10 +95,10 @@ public interface IPart extends IBoxProvider
 	 *
 	 * GL Available
 	 *
-	 * @param x        x coord
-	 * @param y        y coord
-	 * @param z        z coord
-	 * @param rh       helper
+	 * @param x x coord
+	 * @param y y coord
+	 * @param z z coord
+	 * @param rh helper
 	 * @param renderer renderer
 	 */
 	@SideOnly( Side.CLIENT )
@@ -109,7 +109,7 @@ public interface IPart extends IBoxProvider
 	 * texture.
 	 */
 	@SideOnly( Side.CLIENT )
-	TextureAtlasSprite getBreakingTexture(ModelGenerator renderer);
+	TextureAtlasSprite getBreakingTexture( ModelGenerator renderer );
 
 	/**
 	 * return true only if your part require dynamic rendering, must be consistent.
@@ -239,7 +239,7 @@ public interface IPart extends IBoxProvider
 	 * Called when you right click the part, very similar to Block.onActivateBlock
 	 *
 	 * @param player right clicking player
-	 * @param pos    position of block
+	 * @param pos position of block
 	 *
 	 * @return if your activate method performed something.
 	 */
@@ -249,7 +249,7 @@ public interface IPart extends IBoxProvider
 	 * Called when you right click the part, very similar to Block.onActivateBlock
 	 *
 	 * @param player shift right clicking player
-	 * @param pos    position of block
+	 * @param pos position of block
 	 *
 	 * @return if your activate method performed something, you should use false unless you really need it.
 	 */
@@ -259,7 +259,7 @@ public interface IPart extends IBoxProvider
 	 * Add drops to the items being dropped into the world, if your item stores its contents when wrenched use the
 	 * wrenched boolean to control what data is saved vs dropped when it is broken.
 	 *
-	 * @param drops    item drops if wrenched
+	 * @param drops item drops if wrenched
 	 * @param wrenched control flag for wrenched vs broken
 	 */
 	void getDrops( List<ItemStack> drops, boolean wrenched );
@@ -273,8 +273,8 @@ public interface IPart extends IBoxProvider
 	 * same as Block.randomDisplayTick, for but parts.
 	 *
 	 * @param world world of block
-	 * @param pos	location of block
-	 * @param r     random
+	 * @param pos location of block
+	 * @param r random
 	 */
 	void randomDisplayTick( World world, BlockPos pos, Random r );
 
@@ -282,8 +282,8 @@ public interface IPart extends IBoxProvider
 	 * Called when placed in the world by a player, this happens before addWorld.
 	 *
 	 * @param player placing player
-	 * @param held   held item
-	 * @param side   placing side
+	 * @param held held item
+	 * @param side placing side
 	 */
 	void onPlacement( EntityPlayer player, ItemStack held, AEPartLocation side );
 

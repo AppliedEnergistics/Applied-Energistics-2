@@ -179,7 +179,7 @@ public class WorldCoord
 	{
 		return new BlockPos( this.x, this.y, this.z );
 	}
-	
+
 	@Override
 	public String toString()
 	{

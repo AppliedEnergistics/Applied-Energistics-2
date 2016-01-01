@@ -24,7 +24,7 @@ import net.minecraft.item.ItemStack;
 import appeng.client.ItemRenderType;
 
 
-public class ToolColorApplicatorRender 
+public class ToolColorApplicatorRender
 {
 
 	public boolean handleRenderType( final ItemStack item, final ItemRenderType type )
@@ -34,7 +34,8 @@ public class ToolColorApplicatorRender
 
 	public boolean shouldUseRenderHelper( final ItemRenderType type, final ItemStack item )
 	{
-		return false;//return helper == ItemRendererHelper.ENTITY_BOBBING || helper == ItemRendererHelper.ENTITY_ROTATION;
+		return false;// return helper == ItemRendererHelper.ENTITY_BOBBING || helper ==
+						// ItemRendererHelper.ENTITY_ROTATION;
 	}
 
 	public void renderItem( final ItemRenderType type, final ItemStack item, final Object... data )

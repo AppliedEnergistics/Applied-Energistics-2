@@ -30,7 +30,7 @@ import org.junit.Test;
  */
 public class ModVersionFetcherTest
 {
-	//	private static final ModVersionFetcher FETCHER = new ModVersionFetcher(  )
+	// private static final ModVersionFetcher FETCHER = new ModVersionFetcher( )
 
 	private final ModVersionFetcher indev;
 	private final ModVersionFetcher pullRequest;

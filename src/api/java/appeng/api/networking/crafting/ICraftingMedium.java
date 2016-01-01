@@ -38,7 +38,7 @@ public interface ICraftingMedium
 	 * possible the output should be directed.
 	 *
 	 * @param patternDetails details
-	 * @param table          crafting table
+	 * @param table crafting table
 	 *
 	 * @return if the pattern was successfully pushed.
 	 */

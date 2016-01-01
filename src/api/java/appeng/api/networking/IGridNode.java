@@ -119,7 +119,7 @@ public interface IGridNode
 	 *
 	 * Important: You must call this before updateState.
 	 *
-	 * @param name     nbt name
+	 * @param name nbt name
 	 * @param nodeData to be loaded data
 	 */
 	void loadFromNBT( String name, NBTTagCompound nodeData );
@@ -128,7 +128,7 @@ public interface IGridNode
 	 * this should be called for each node you maintain, you can save all your nodes to the same tag with different
 	 * names, if you fail to complete the load / save procedure, network state may be lost between game load/saves.
 	 *
-	 * @param name     nbt name
+	 * @param name nbt name
 	 * @param nodeData to be saved data
 	 */
 	void saveToNBT( String name, NBTTagCompound nodeData );
@@ -155,7 +155,8 @@ public interface IGridNode
 
 	/**
 	 * tell the node who was responsible for placing it, failure to do this may result in in-compatibility with the
-	 * security system. Called instead of loadFromNBT when initially placed, once set never required again, the value is saved with the Node NBT.
+	 * security system. Called instead of loadFromNBT when initially placed, once set never required again, the value is
+	 * saved with the Node NBT.
 	 *
 	 * @param playerID new player id
 	 */

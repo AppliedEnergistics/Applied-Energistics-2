@@ -37,7 +37,7 @@ public interface ICraftHandler
 	/**
 	 * Called when your recipe handler receives a newly parsed list of inputs/outputs.
 	 *
-	 * @param input  parsed inputs
+	 * @param input parsed inputs
 	 * @param output parsed outputs
 	 *
 	 * @throws RecipeError

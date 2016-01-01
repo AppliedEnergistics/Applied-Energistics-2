@@ -47,8 +47,8 @@ public interface IMEInventory<StackType extends IAEStack>
 	 * Store new items, or simulate the addition of new items into the ME Inventory.
 	 *
 	 * @param input item to add.
-	 * @param type  action type
-	 * @param src   action source
+	 * @param type action type
+	 * @param src action source
 	 *
 	 * @return returns the number of items not added.
 	 */
@@ -58,7 +58,7 @@ public interface IMEInventory<StackType extends IAEStack>
 	 * Extract the specified item from the ME Inventory
 	 *
 	 * @param request item to request ( with stack size. )
-	 * @param mode    simulate, or perform action?
+	 * @param mode simulate, or perform action?
 	 *
 	 * @return returns the number of items extracted, null
 	 */

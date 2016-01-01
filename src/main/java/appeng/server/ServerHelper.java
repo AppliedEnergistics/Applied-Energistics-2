@@ -83,7 +83,7 @@ public class ServerHelper extends CommonHelper
 
 			if( server != null )
 			{
-				return (List)server.getConfigurationManager().playerEntityList;
+				return (List) server.getConfigurationManager().playerEntityList;
 			}
 		}
 

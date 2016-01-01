@@ -23,9 +23,8 @@
 
 package appeng.api.util;
 
+
 import net.minecraft.util.EnumFacing;
-
-
 
 
 /**
@@ -57,7 +56,7 @@ public interface IOrientable
 	 * Update the orientation
 	 *
 	 * @param Forward new forward direction
-	 * @param Up      new upwards direction
+	 * @param Up new upwards direction
 	 */
 	void setOrientation( EnumFacing Forward, EnumFacing Up );
 }

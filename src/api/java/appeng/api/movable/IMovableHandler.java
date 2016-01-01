@@ -37,7 +37,7 @@ public interface IMovableHandler
 	 * that single entity, you cannot opt out of single entities.
 	 *
 	 * @param myClass tile entity class
-	 * @param tile    tile entity
+	 * @param tile tile entity
 	 *
 	 * @return true if it can handle moving
 	 */
@@ -51,16 +51,22 @@ public interface IMovableHandler
 	 * Potential Example:
 	 *
 	 * <pre>
-	 * {@code
-	 * Chunk c = world.getChunkFromBlockCoords( x, z ); c.setChunkBlockTileEntity( x
-	 * & 0xF, y + y, z & 0xF, tile );
-	 *
-	 * if ( c.isChunkLoaded ) { world.addTileEntity( tile ); world.markBlockForUpdate( x,
-	 * y, z ); }
+	 * {
+	 * 	&#064;code
+	 * 	Chunk c = world.getChunkFromBlockCoords( x, z );
+	 * 	c.setChunkBlockTileEntity( x
+	 * 			&amp; 0xF, y + y, z &amp; 0xF, tile );
+	 * 
+	 * 	if( c.isChunkLoaded )
+	 * 	{
+	 * 		world.addTileEntity( tile );
+	 * 		world.markBlockForUpdate( x,
+	 * 				y, z );
+	 * 	}
 	 * }
 	 * </pre>
 	 *
-	 * @param tile  to be moved tile
+	 * @param tile to be moved tile
 	 * @param world world of tile
 	 * @param newPosition the new location
 	 */

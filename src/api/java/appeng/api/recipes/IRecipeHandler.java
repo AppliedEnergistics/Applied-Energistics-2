@@ -34,7 +34,7 @@ public interface IRecipeHandler
 	 * Call when you want to read recipes in from a file based on a loader
 	 *
 	 * @param loader recipe loader
-	 * @param path   path of file
+	 * @param path path of file
 	 */
 	void parseRecipes( IRecipeLoader loader, String path );
 

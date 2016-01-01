@@ -47,7 +47,7 @@ public interface ICraftingRequester extends IActionHost
 	 * be returned.
 	 *
 	 * @param items item
-	 * @param mode  action mode
+	 * @param mode action mode
 	 *
 	 * @return unwanted item
 	 */

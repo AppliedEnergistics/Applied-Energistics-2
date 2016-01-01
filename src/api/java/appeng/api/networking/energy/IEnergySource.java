@@ -34,7 +34,7 @@ public interface IEnergySource
 	/**
 	 * Extract power from the network.
 	 *
-	 * @param amt  extracted power
+	 * @param amt extracted power
 	 * @param mode should the action be simulated or performed?
 	 *
 	 * @return returns extracted power.

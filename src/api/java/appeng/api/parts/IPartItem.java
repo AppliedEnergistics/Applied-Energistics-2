@@ -28,8 +28,8 @@ import javax.annotation.Nullable;
 
 import net.minecraft.item.ItemStack;
 
-//@formatter:off
 
+//@formatter:off
 
 /**
  * This is a pretty basic requirement, once you implement the interface, and createPartFromItemStack
@@ -46,7 +46,7 @@ import net.minecraft.item.ItemStack;
  * {
  *     return 0;
  * }
- *
+ * 
  * {@literal @}Override
  * public boolean onItemUse(ItemStack is, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
  * {

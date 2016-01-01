@@ -42,9 +42,9 @@ public interface ICraftingGrid extends IGridCache
 
 	/**
 	 * @param whatToCraft requested craft
-	 * @param world       crafting world
-	 * @param slot        slot index
-	 * @param details     pattern details
+	 * @param world crafting world
+	 * @param slot slot index
+	 * @param details pattern details
 	 *
 	 * @return a collection of crafting patterns for the item in question.
 	 */
@@ -53,12 +53,12 @@ public interface ICraftingGrid extends IGridCache
 	/**
 	 * Begin calculating a crafting job.
 	 *
-	 * @param world     crafting world
-	 * @param grid      network
+	 * @param world crafting world
+	 * @param grid network
 	 * @param actionSrc source
 	 * @param craftWhat result
-	 * @param callback  callback
-	 *                  -- optional
+	 * @param callback callback
+	 * -- optional
 	 *
 	 * @return a future which will at an undetermined point in the future get you the {@link ICraftingJob} do not wait
 	 * on this, your be waiting forever.
@@ -68,13 +68,14 @@ public interface ICraftingGrid extends IGridCache
 	/**
 	 * Submit the job to the Crafting system for processing.
 	 *
-	 * @param job               - the crafting job from beginCraftingJob
+	 * @param job - the crafting job from beginCraftingJob
 	 * @param requestingMachine - a machine if its being requested via automation, may be null.
-	 * @param target            - can be null
-	 * @param prioritizePower   - if cpu is null, this determine if the system should prioritize power, or if it should find the lower
-	 *                          end cpus, automatic processes generally should pick lower end cpus.
-	 * @param src               - the action source to use when starting the job, this will be used for extracting items, should
-	 *                          usually be the same as the one provided to beginCraftingJob.
+	 * @param target - can be null
+	 * @param prioritizePower - if cpu is null, this determine if the system should prioritize power, or if it should
+	 * find the lower
+	 * end cpus, automatic processes generally should pick lower end cpus.
+	 * @param src - the action source to use when starting the job, this will be used for extracting items, should
+	 * usually be the same as the one provided to beginCraftingJob.
 	 *
 	 * @return null ( if failed ) or an {@link ICraftingLink} other wise, if you send requestingMachine you need to
 	 * properly keep track of this and handle the nbt saving and loading of the object as well as the

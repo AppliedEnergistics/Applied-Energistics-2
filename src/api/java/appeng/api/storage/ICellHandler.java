@@ -52,9 +52,9 @@ public interface ICellHandler
 	/**
 	 * If you cannot handle the provided item, return null
 	 *
-	 * @param is      a storage cell item.
-	 * @param host    anytime the contents of your storage cell changes it should use this to request a save, please
-	 *                note, this value can be null.
+	 * @param is a storage cell item.
+	 * @param host anytime the contents of your storage cell changes it should use this to request a save, please
+	 * note, this value can be null.
 	 * @param channel the storage channel requested.
 	 *
 	 * @return a new IMEHandler for the provided item
@@ -90,12 +90,12 @@ public interface ICellHandler
 	 * is not available via ME Chests simply tell the user they can't use it, or something, other wise you should open
 	 * your gui and display the cell to the user.
 	 *
-	 * @param player      player opening chest gui
-	 * @param chest       to be opened chest
+	 * @param player player opening chest gui
+	 * @param chest to be opened chest
 	 * @param cellHandler cell handler
-	 * @param inv         inventory handler
-	 * @param is          item
-	 * @param chan        storage channel
+	 * @param inv inventory handler
+	 * @param is item
+	 * @param chan storage channel
 	 */
 	void openChestGui( EntityPlayer player, IChestOrDrive chest, ICellHandler cellHandler, IMEInventoryHandler inv, ItemStack is, StorageChannel chan );
 
@@ -108,7 +108,7 @@ public interface ICellHandler
 	 *
 	 * 3 - red, ( usually means the cell is 100% full )
 	 *
-	 * @param is      the cell item. ( use the handler for any details you can )
+	 * @param is the cell item. ( use the handler for any details you can )
 	 * @param handler the handler for the cell is provides for reference, you can cast this to your handler.
 	 *
 	 * @return get the status of the cell based on its contents.

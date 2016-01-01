@@ -68,8 +68,8 @@ public interface IGridTickable
 	 * Note: this is never called if you return null from getTickingRequest.
 	 *
 	 * @param TicksSinceLastCall the number of world ticks that were skipped since your last
-	 *                           tick, you can use this to adjust speed of processing or adjust
-	 *                           your tick rate.
+	 * tick, you can use this to adjust speed of processing or adjust
+	 * your tick rate.
 	 *
 	 * @return tick rate adjustment.
 	 */

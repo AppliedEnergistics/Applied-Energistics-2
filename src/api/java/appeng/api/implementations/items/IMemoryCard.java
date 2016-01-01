@@ -41,11 +41,11 @@ public interface IMemoryCard
 	 * Configures the data stored on the memory card, the SettingsName, will be
 	 * localized when displayed.
 	 *
-	 * @param is           item
+	 * @param is item
 	 * @param SettingsName unlocalized string that represents the tile entity.
-	 * @param data         may contain a String called "tooltip" which is is a
-	 *                     unlocalized string displayed after the settings name, optional
-	 *                     but can be used to add details to the card for later.
+	 * @param data may contain a String called "tooltip" which is is a
+	 * unlocalized string displayed after the settings name, optional
+	 * but can be used to add details to the card for later.
 	 */
 	void setMemoryCardContents( ItemStack is, String SettingsName, NBTTagCompound data );
 
@@ -72,7 +72,7 @@ public interface IMemoryCard
 	 * notify the user of a outcome related to the memory card.
 	 *
 	 * @param player that used the card.
-	 * @param msg    which message to send.
+	 * @param msg which message to send.
 	 */
 	void notifyUser( EntityPlayer player, MemoryCardMessages msg );
 }

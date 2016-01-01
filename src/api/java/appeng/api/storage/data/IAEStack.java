@@ -152,7 +152,7 @@ public interface IAEStack<StackType extends IAEStack>
 	 *
 	 * a IAEItemStack to another AEItemStack or a ItemStack.
 	 *
-	 * @param st   stacks
+	 * @param st stacks
 	 * @param mode used fuzzy mode
 	 *
 	 * @return true if two stacks are equal based on AE Fuzzy Comparison.

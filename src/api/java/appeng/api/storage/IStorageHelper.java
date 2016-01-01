@@ -102,10 +102,10 @@ public interface IStorageHelper
 	/**
 	 * use energy from energy, to remove request items from cell, at the request of src.
 	 *
-	 * @param energy  to be drained energy source
-	 * @param cell    cell of requested items
+	 * @param energy to be drained energy source
+	 * @param cell cell of requested items
 	 * @param request requested items
-	 * @param src     action source
+	 * @param src action source
 	 *
 	 * @return items that successfully extracted.
 	 */
@@ -115,9 +115,9 @@ public interface IStorageHelper
 	 * use energy from energy, to inject input items into cell, at the request of src
 	 *
 	 * @param energy to be added energy source
-	 * @param cell   injected cell
-	 * @param input  to be injected items
-	 * @param src    action source
+	 * @param cell injected cell
+	 * @param input to be injected items
+	 * @param src action source
 	 *
 	 * @return items that failed to insert.
 	 */

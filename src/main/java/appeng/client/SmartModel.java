@@ -1,6 +1,7 @@
 
 package appeng.client;
 
+
 import java.util.Collections;
 import java.util.List;
 
@@ -22,6 +23,7 @@ import appeng.block.AEBaseBlock;
 import appeng.client.render.BlockRenderInfo;
 import appeng.client.render.ModelGenerator;
 import appeng.client.texture.MissingIcon;
+
 
 // net.minecraft.client.renderer.tileentity.TileEntityItemStackRenderer
 public class SmartModel implements IBakedModel, ISmartBlockModel, ISmartItemModel
@@ -65,7 +67,7 @@ public class SmartModel implements IBakedModel, ISmartBlockModel, ISmartItemMode
 	{
 		return false;
 	}
-	
+
 	@Override
 	public TextureAtlasSprite getParticleTexture()
 	{

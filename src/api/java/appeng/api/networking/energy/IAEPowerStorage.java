@@ -37,7 +37,7 @@ public interface IAEPowerStorage extends IEnergySource
 	/**
 	 * Inject amt, power into the device, it will store what it can, and return the amount unable to be stored.
 	 *
-	 * @param amt  to be injected amount
+	 * @param amt to be injected amount
 	 * @param mode action mode
 	 *
 	 * @return amount of power which was unable to be stored

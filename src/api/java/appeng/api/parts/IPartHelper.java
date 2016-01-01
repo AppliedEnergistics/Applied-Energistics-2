@@ -34,7 +34,8 @@ import net.minecraft.world.World;
 public interface IPartHelper
 {
 	/**
-	 * Register a new layer with the part layer system, this allows you to write an in between between tile entities and parts.
+	 * Register a new layer with the part layer system, this allows you to write an in between between tile entities and
+	 * parts.
 	 *
 	 * AE By Default includes,
 	 *
@@ -52,7 +53,8 @@ public interface IPartHelper
 	 *
 	 * 7. IPipeConnection BC Pipe Connections
 	 *
-	 * As long as a valid layer is registered for a interface you can simply implement that interface on a part get implement it.
+	 * As long as a valid layer is registered for a interface you can simply implement that interface on a part get
+	 * implement it.
 	 *
 	 * @return true on success, false on failure, usually a error will be logged as well.
 	 */

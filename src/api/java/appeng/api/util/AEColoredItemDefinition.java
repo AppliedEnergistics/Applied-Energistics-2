@@ -63,7 +63,7 @@ public interface AEColoredItemDefinition
 	/**
 	 * Compare {@link ItemStack} with this
 	 *
-	 * @param color          compared color of item
+	 * @param color compared color of item
 	 * @param comparableItem compared item
 	 *
 	 * @return true if the item stack is a matching item.

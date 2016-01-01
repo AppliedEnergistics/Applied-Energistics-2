@@ -54,7 +54,7 @@ public enum PowerUnits
 	 * will normally returns 64, as it will convert the EU, to AE with AE's power settings.
 	 *
 	 * @param target target power unit
-	 * @param value  value
+	 * @param value value
 	 *
 	 * @return value converted to target units, from this units.
 	 */

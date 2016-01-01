@@ -161,7 +161,9 @@ public class MEMonitorHandler<StackType extends IAEStack> implements IMEMonitor<
 	public AccessRestriction getAccess()
 	{
 		return this.getHandler().getAccess();
-	}	@Override
+	}
+
+	@Override
 	public IItemList<StackType> getStorageList()
 	{
 		if( this.hasChanged )
@@ -184,7 +186,9 @@ public class MEMonitorHandler<StackType extends IAEStack> implements IMEMonitor<
 	public boolean canAccept( final StackType input )
 	{
 		return this.getHandler().canAccept( input );
-	}	@Override
+	}
+
+	@Override
 	public IItemList<StackType> getAvailableItems( final IItemList out )
 	{
 		return this.getHandler().getAvailableItems( out );
@@ -207,8 +211,5 @@ public class MEMonitorHandler<StackType extends IAEStack> implements IMEMonitor<
 	{
 		return this.getHandler().validForPass( i );
 	}
-
-
-
 
 }

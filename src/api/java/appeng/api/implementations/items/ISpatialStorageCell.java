@@ -89,10 +89,10 @@ public interface ISpatialStorageCell
 	/**
 	 * Perform a spatial swap with the contents of the cell, and the world.
 	 *
-	 * @param is           spatial storage cell
-	 * @param w            world of spatial
-	 * @param min          min coord
-	 * @param max          max coord
+	 * @param is spatial storage cell
+	 * @param w world of spatial
+	 * @param min min coord
+	 * @param max max coord
 	 * @param doTransition transition
 	 *
 	 * @return result of transition

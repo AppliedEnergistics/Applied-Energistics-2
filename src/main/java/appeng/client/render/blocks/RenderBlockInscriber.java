@@ -193,31 +193,31 @@ public class RenderBlockInscriber extends BaseBlockRender<BlockInscriber, TileIn
 
 		final IAESprite ic = ExtraBlockTextures.BlockInscriberInside.getIcon();
 		tess.begin( GL11.GL_QUADS, DefaultVertexFormats.ITEM );
-		
+
 		float middle = 0.5f;
 		middle += 0.02f;
 		final float TwoPx = 2.0f / 16.0f;
-		tess.pos( TwoPx, middle + press, TwoPx).tex(  ic.getInterpolatedU( 2 ), ic.getInterpolatedV( 2 ) ).endVertex();
+		tess.pos( TwoPx, middle + press, TwoPx ).tex( ic.getInterpolatedU( 2 ), ic.getInterpolatedV( 2 ) ).endVertex();
 		tess.pos( 1.0 - TwoPx, middle + press, TwoPx ).tex( ic.getInterpolatedU( 14 ), ic.getInterpolatedV( 2 ) ).endVertex();
-		tess.pos( 1.0 - TwoPx, middle + press, 1.0 - TwoPx).tex(  ic.getInterpolatedU( 14 ), ic.getInterpolatedV( 13 ) ).endVertex();
-		tess.pos( TwoPx, middle + press, 1.0 - TwoPx).tex(  ic.getInterpolatedU( 2 ), ic.getInterpolatedV( 13 ) ).endVertex();
+		tess.pos( 1.0 - TwoPx, middle + press, 1.0 - TwoPx ).tex( ic.getInterpolatedU( 14 ), ic.getInterpolatedV( 13 ) ).endVertex();
+		tess.pos( TwoPx, middle + press, 1.0 - TwoPx ).tex( ic.getInterpolatedU( 2 ), ic.getInterpolatedV( 13 ) ).endVertex();
 
-		tess.pos( TwoPx, middle + press, 1.0 - TwoPx).tex(  ic.getInterpolatedU( 2 ), ic.getInterpolatedV( 3 ) ).endVertex();
-		tess.pos( 1.0 - TwoPx, middle + press, 1.0 - TwoPx).tex(  ic.getInterpolatedU( 14 ), ic.getInterpolatedV( 3 ) ).endVertex();
+		tess.pos( TwoPx, middle + press, 1.0 - TwoPx ).tex( ic.getInterpolatedU( 2 ), ic.getInterpolatedV( 3 ) ).endVertex();
+		tess.pos( 1.0 - TwoPx, middle + press, 1.0 - TwoPx ).tex( ic.getInterpolatedU( 14 ), ic.getInterpolatedV( 3 ) ).endVertex();
 		final float base = 0.4f;
-		tess.pos( 1.0 - TwoPx, middle + base, 1.0 - TwoPx).tex(  ic.getInterpolatedU( 14 ), ic.getInterpolatedV( 3 - 16 * ( press - base ) ) ).endVertex();
-		tess.pos( TwoPx, middle + base, 1.0 - TwoPx).tex(  ic.getInterpolatedU( 2 ), ic.getInterpolatedV( 3 - 16 * ( press - base ) ) ).endVertex();
+		tess.pos( 1.0 - TwoPx, middle + base, 1.0 - TwoPx ).tex( ic.getInterpolatedU( 14 ), ic.getInterpolatedV( 3 - 16 * ( press - base ) ) ).endVertex();
+		tess.pos( TwoPx, middle + base, 1.0 - TwoPx ).tex( ic.getInterpolatedU( 2 ), ic.getInterpolatedV( 3 - 16 * ( press - base ) ) ).endVertex();
 
 		middle -= 2.0f * 0.02f;
-		tess.pos( 1.0 - TwoPx, middle - press, TwoPx).tex(  ic.getInterpolatedU( 2 ), ic.getInterpolatedV( 2 ) ).endVertex();
-		tess.pos( TwoPx, middle - press, TwoPx).tex(  ic.getInterpolatedU( 14 ), ic.getInterpolatedV( 2 ) ).endVertex();
-		tess.pos( TwoPx, middle - press, 1.0 - TwoPx).tex(  ic.getInterpolatedU( 14 ), ic.getInterpolatedV( 13 ) ).endVertex();
-		tess.pos( 1.0 - TwoPx, middle - press, 1.0 - TwoPx).tex(  ic.getInterpolatedU( 2 ), ic.getInterpolatedV( 13 ) ).endVertex();
+		tess.pos( 1.0 - TwoPx, middle - press, TwoPx ).tex( ic.getInterpolatedU( 2 ), ic.getInterpolatedV( 2 ) ).endVertex();
+		tess.pos( TwoPx, middle - press, TwoPx ).tex( ic.getInterpolatedU( 14 ), ic.getInterpolatedV( 2 ) ).endVertex();
+		tess.pos( TwoPx, middle - press, 1.0 - TwoPx ).tex( ic.getInterpolatedU( 14 ), ic.getInterpolatedV( 13 ) ).endVertex();
+		tess.pos( 1.0 - TwoPx, middle - press, 1.0 - TwoPx ).tex( ic.getInterpolatedU( 2 ), ic.getInterpolatedV( 13 ) ).endVertex();
 
-		tess.pos( 1.0 - TwoPx, middle - press, 1.0 - TwoPx).tex(  ic.getInterpolatedU( 2 ), ic.getInterpolatedV( 3 ) ).endVertex();
-		tess.pos( TwoPx, middle - press, 1.0 - TwoPx).tex(  ic.getInterpolatedU( 14 ), ic.getInterpolatedV( 3 ) ).endVertex();
-		tess.pos( TwoPx, middle - base, 1.0 - TwoPx).tex(  ic.getInterpolatedU( 14 ), ic.getInterpolatedV( 3 - 16 * ( press - base ) ) ).endVertex();
-		tess.pos( 1.0 - TwoPx, middle + -base, 1.0 - TwoPx).tex(  ic.getInterpolatedU( 2 ), ic.getInterpolatedV( 3 - 16 * ( press - base ) ) ).endVertex();
+		tess.pos( 1.0 - TwoPx, middle - press, 1.0 - TwoPx ).tex( ic.getInterpolatedU( 2 ), ic.getInterpolatedV( 3 ) ).endVertex();
+		tess.pos( TwoPx, middle - press, 1.0 - TwoPx ).tex( ic.getInterpolatedU( 14 ), ic.getInterpolatedV( 3 ) ).endVertex();
+		tess.pos( TwoPx, middle - base, 1.0 - TwoPx ).tex( ic.getInterpolatedU( 14 ), ic.getInterpolatedV( 3 - 16 * ( press - base ) ) ).endVertex();
+		tess.pos( 1.0 - TwoPx, middle + -base, 1.0 - TwoPx ).tex( ic.getInterpolatedU( 2 ), ic.getInterpolatedV( 3 - 16 * ( press - base ) ) ).endVertex();
 
 		Tessellator.getInstance().draw();
 

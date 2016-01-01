@@ -44,11 +44,11 @@ public interface IStackWatcherHost
 	/**
 	 * Called when a watched item changes amounts.
 	 *
-	 * @param o         changed item list
+	 * @param o changed item list
 	 * @param fullStack old stack
 	 * @param diffStack new stack
-	 * @param src       action source
-	 * @param chan      storage channel
+	 * @param src action source
+	 * @param chan storage channel
 	 */
 	void onStackChange( IItemList o, IAEStack fullStack, IAEStack diffStack, BaseActionSource src, StorageChannel chan );
 }

@@ -113,5 +113,4 @@ public final class VersionTest
 		Assert.assertEquals( DEFAULT_VERSION_RV2_BETA_8.formatted(), "rv2-beta-8" );
 	}
 
-
 }

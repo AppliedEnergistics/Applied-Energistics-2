@@ -49,7 +49,7 @@ public interface IConfigManager
 	/**
 	 * used to initialize the configuration manager, should be called for all settings.
 	 *
-	 * @param settingName  name of setting
+	 * @param settingName name of setting
 	 * @param defaultValue default value of setting
 	 */
 	void registerSetting( Settings settingName, Enum<?> defaultValue );
@@ -67,7 +67,7 @@ public interface IConfigManager
 	 * Change setting
 	 *
 	 * @param settingName to be changed setting
-	 * @param newValue    new value for setting
+	 * @param newValue new value for setting
 	 *
 	 * @return changed setting
 	 */

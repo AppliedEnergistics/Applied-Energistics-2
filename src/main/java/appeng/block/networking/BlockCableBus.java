@@ -18,6 +18,7 @@
 
 package appeng.block.networking;
 
+
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Random;
@@ -68,10 +69,11 @@ import appeng.tile.networking.TileCableBus;
 import appeng.tile.networking.TileCableBusTESR;
 import appeng.util.Platform;
 
+
 // TODO: MFR INTEGRATION
 //@Interface( iface = "powercrystals.minefactoryreloaded.api.rednet.connectivity.IRedNetConnection", iname = IntegrationType.MFR )
 public class BlockCableBus extends AEBaseTileBlock // implements
-													// IRedNetConnection
+// IRedNetConnection
 {
 
 	private static final ICableBusContainer NULL_CABLE_BUS = new NullCableBusContainer();
@@ -175,11 +177,11 @@ public class BlockCableBus extends AEBaseTileBlock // implements
 			final BlockPos pos )
 	{
 		final IBlockState block = world.getBlockState( pos );
-		if ( block != null && block.getBlock() != this )
+		if( block != null && block.getBlock() != this )
 		{
 			return block.getBlock().getLightValue( world, pos );
 		}
-		if ( block == null )
+		if( block == null )
 		{
 			return 0;
 		}
@@ -219,10 +221,10 @@ public class BlockCableBus extends AEBaseTileBlock // implements
 			final EntityPlayer player,
 			final boolean willHarvest )
 	{
-		if ( player.capabilities.isCreativeMode )
+		if( player.capabilities.isCreativeMode )
 		{
 			final AEBaseTile tile = this.getTileEntity( world, pos );
-			if ( tile != null )
+			if( tile != null )
 			{
 				tile.disableDrops();
 			}
@@ -237,7 +239,7 @@ public class BlockCableBus extends AEBaseTileBlock // implements
 			final BlockPos pos,
 			EnumFacing side )
 	{
-		if ( side == null )
+		if( side == null )
 		{
 			side = EnumFacing.UP;
 		}
@@ -249,7 +251,7 @@ public class BlockCableBus extends AEBaseTileBlock // implements
 	public boolean canRenderInLayer(
 			final EnumWorldBlockLayer layer )
 	{
-		if ( AEConfig.instance.isFeatureEnabled( AEFeature.AlphaPass ) )
+		if( AEConfig.instance.isFeatureEnabled( AEFeature.AlphaPass ) )
 		{
 			return layer == EnumWorldBlockLayer.CUTOUT || layer == EnumWorldBlockLayer.TRANSLUCENT;
 		}
@@ -266,11 +268,11 @@ public class BlockCableBus extends AEBaseTileBlock // implements
 		final Vec3 v3 = target.hitVec.subtract( pos.getX(), pos.getY(), pos.getZ() );
 		final SelectedPart sp = cb( world, pos ).selectPart( v3 );
 
-		if ( sp.part != null )
+		if( sp.part != null )
 		{
 			return sp.part.getItemStack( PartItemStack.Pick );
 		}
-		else if ( sp.facade != null )
+		else if( sp.facade != null )
 		{
 			return sp.facade.getItemStack();
 		}
@@ -286,7 +288,7 @@ public class BlockCableBus extends AEBaseTileBlock // implements
 			final EffectRenderer effectRenderer )
 	{
 		final Object object = cb( world, target.getBlockPos() );
-		if ( object instanceof IPartHost )
+		if( object instanceof IPartHost )
 		{
 			final IPartHost host = (IPartHost) object;
 
@@ -320,7 +322,7 @@ public class BlockCableBus extends AEBaseTileBlock // implements
 			final EffectRenderer effectRenderer )
 	{
 		final Object object = cb( world, pos );
-		if ( object instanceof IPartHost )
+		if( object instanceof IPartHost )
 		{
 			final IPartHost host = (IPartHost) object;
 
@@ -349,7 +351,7 @@ public class BlockCableBus extends AEBaseTileBlock // implements
 			final IBlockState state,
 			final Block neighborBlock )
 	{
-		if ( Platform.isServer() )
+		if( Platform.isServer() )
 		{
 			cb( w, pos ).onNeighborChanged();
 		}
@@ -362,11 +364,11 @@ public class BlockCableBus extends AEBaseTileBlock // implements
 		final TileEntity te = w.getTileEntity( pos );
 		ICableBusContainer out = null;
 
-		if ( te instanceof TileCableBus )
+		if( te instanceof TileCableBus )
 		{
 			out = ( (TileCableBus) te ).getCableBus();
 		}
-		else if ( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.FMP ) )
+		else if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.FMP ) )
 		{
 			out = ( (IFMP) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.FMP ) ).getCableContainer( te );
 		}
@@ -414,7 +416,7 @@ public class BlockCableBus extends AEBaseTileBlock // implements
 		{
 			return cb( world, pos ).recolourBlock( side, AEColor.values()[color.ordinal()], who );
 		}
-		catch ( final Throwable ignored )
+		catch( final Throwable ignored )
 		{
 		}
 		return false;
@@ -437,12 +439,12 @@ public class BlockCableBus extends AEBaseTileBlock // implements
 	{
 		final TileEntity te = w.getTileEntity( pos );
 
-		if ( noTesrTile.isInstance( te ) )
+		if( noTesrTile.isInstance( te ) )
 		{
 			return (T) te;
 		}
 
-		if ( tesrTile != null && tesrTile.isInstance( te ) )
+		if( tesrTile != null && tesrTile.isInstance( te ) )
 		{
 			return (T) te;
 		}
@@ -463,7 +465,7 @@ public class BlockCableBus extends AEBaseTileBlock // implements
 		noTesrTile = Api.INSTANCE.partHelper().getCombinedInstance( TileCableBus.class.getName() );
 		setTileEntity( noTesrTile );
 		GameRegistry.registerTileEntity( noTesrTile, "BlockCableBus" );
-		if ( Platform.isClient() )
+		if( Platform.isClient() )
 		{
 			tesrTile = Api.INSTANCE.partHelper().getCombinedInstance( TileCableBusTESR.class.getName() );
 			GameRegistry.registerTileEntity( tesrTile, "ClientOnly_TESR_CableBus" );

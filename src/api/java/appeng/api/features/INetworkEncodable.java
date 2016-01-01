@@ -42,9 +42,9 @@ public interface INetworkEncodable
 	/**
 	 * Encode the wireless frequency via the Controller.
 	 *
-	 * @param item   the wireless terminal.
+	 * @param item the wireless terminal.
 	 * @param encKey the wireless encryption key.
-	 * @param name   null for now.
+	 * @param name null for now.
 	 */
 	void setEncryptionKey( ItemStack item, String encKey, String name );
 }

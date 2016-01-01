@@ -32,11 +32,11 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 
-
 public interface IItemDefinition extends IComparableDefinition
 {
 	/**
-	 * @return the unique name of the definition which will be used to register the underlying structure. Will never be null
+	 * @return the unique name of the definition which will be used to register the underlying structure. Will never be
+	 * null
 	 */
 	@Nonnull
 	String identifier();

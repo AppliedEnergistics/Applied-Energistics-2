@@ -411,14 +411,16 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	@Override
 	public EnumFacing getForward()
 	{
-		if ( forward == null ) return EnumFacing.NORTH;
+		if( forward == null )
+			return EnumFacing.NORTH;
 		return this.forward;
 	}
 
 	@Override
 	public EnumFacing getUp()
 	{
-		if ( up == null ) return EnumFacing.UP;
+		if( up == null )
+			return EnumFacing.UP;
 		return this.up;
 	}
 

@@ -45,7 +45,7 @@ public class PlayerStatsRegistration
 	/**
 	 * is true if the {@link appeng.core.features.AEFeature#Achievements} is enabled in the
 	 * 
-	 * @param config}
+	 * @param config
 	 */
 	private final boolean isAchievementFeatureEnabled;
 

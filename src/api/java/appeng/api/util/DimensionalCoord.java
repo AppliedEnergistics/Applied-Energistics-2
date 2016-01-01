@@ -54,7 +54,7 @@ public class DimensionalCoord extends WorldCoord
 
 	public DimensionalCoord( final World _w, final int x, final int y, final int z )
 	{
-		super( x,y,z );
+		super( x, y, z );
 		this.w = _w;
 		this.dimId = _w.provider.getDimensionId();
 	}

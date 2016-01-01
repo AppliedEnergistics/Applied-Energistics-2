@@ -141,12 +141,12 @@ public class AppEngRenderItem extends RenderItem
 	{
 		final WorldRenderer wr = par1Tessellator.getWorldRenderer();
 
-		wr.begin( GL11.GL_QUADS, DefaultVertexFormats.ITEM);
-		
-		wr.color( (par6>>16)&0xff,(par6>>8)&0xff,(par6)&0xff,(par6>>24)&0xff ).pos(  par2, par3, 0.0D  ).endVertex();
-		wr.color( (par6>>16)&0xff,(par6>>8)&0xff,(par6)&0xff,(par6>>24)&0xff ).pos(par2, par3 + par5, 0.0D ).endVertex();
-		wr.color( (par6>>16)&0xff,(par6>>8)&0xff,(par6)&0xff,(par6>>24)&0xff ).pos(  par2 + par4, par3 + par5, 0.0D  ).endVertex();
-		wr.color( (par6>>16)&0xff,(par6>>8)&0xff,(par6)&0xff,(par6>>24)&0xff ).pos(  par2 + par4, par3, 0.0D   ).endVertex();
+		wr.begin( GL11.GL_QUADS, DefaultVertexFormats.ITEM );
+
+		wr.color( ( par6 >> 16 ) & 0xff, ( par6 >> 8 ) & 0xff, ( par6 ) & 0xff, ( par6 >> 24 ) & 0xff ).pos( par2, par3, 0.0D ).endVertex();
+		wr.color( ( par6 >> 16 ) & 0xff, ( par6 >> 8 ) & 0xff, ( par6 ) & 0xff, ( par6 >> 24 ) & 0xff ).pos( par2, par3 + par5, 0.0D ).endVertex();
+		wr.color( ( par6 >> 16 ) & 0xff, ( par6 >> 8 ) & 0xff, ( par6 ) & 0xff, ( par6 >> 24 ) & 0xff ).pos( par2 + par4, par3 + par5, 0.0D ).endVertex();
+		wr.color( ( par6 >> 16 ) & 0xff, ( par6 >> 8 ) & 0xff, ( par6 ) & 0xff, ( par6 >> 24 ) & 0xff ).pos( par2 + par4, par3, 0.0D ).endVertex();
 
 		par1Tessellator.draw();
 	}

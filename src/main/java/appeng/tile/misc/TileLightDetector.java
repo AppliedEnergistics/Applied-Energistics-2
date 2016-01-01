@@ -19,7 +19,6 @@
 package appeng.tile.misc;
 
 
-
 import net.minecraft.util.ITickable;
 
 import appeng.tile.AEBaseTile;

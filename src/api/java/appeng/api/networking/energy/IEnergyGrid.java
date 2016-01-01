@@ -74,7 +74,7 @@ public interface IEnergyGrid extends IGridCache, IEnergySource, IEnergyGridProvi
 	 * Another important note, is that if a network that had overflow is deleted, its power is gone, this is one of the
 	 * reasons why keeping overflow to a minimum is important.
 	 *
-	 * @param amt  power to inject into the network
+	 * @param amt power to inject into the network
 	 * @param mode should the action be simulated or performed?
 	 *
 	 * @return the amount of power that the network has OVER the limit.

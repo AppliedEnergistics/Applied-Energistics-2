@@ -85,7 +85,7 @@ public interface IGridBlock
 	/**
 	 * Update Blocks network/connection/booting status. grid,
 	 *
-	 * @param grid          grid
+	 * @param grid grid
 	 * @param channelsInUse used channels
 	 */
 	void setNetworkStatus( IGrid grid, int channelsInUse );

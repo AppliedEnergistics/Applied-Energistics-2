@@ -169,7 +169,7 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 		{
 			final Class<? extends BaseBlockRender> re = this.getRenderer();
 			if( re == null )
-			 {
+			{
 				return null; // use 1.8 models.
 			}
 			final BaseBlockRender renderer = re.newInstance();

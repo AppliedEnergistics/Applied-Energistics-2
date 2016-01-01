@@ -41,7 +41,7 @@ public interface ICraftingPatternItem
 	 * Access Details about a pattern
 	 *
 	 * @param is pattern
-	 * @param w  crafting world
+	 * @param w crafting world
 	 *
 	 * @return details of pattern
 	 */

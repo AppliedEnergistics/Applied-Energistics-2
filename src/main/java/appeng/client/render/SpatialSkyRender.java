@@ -109,10 +109,10 @@ public class SpatialSkyRender extends IRenderHandler
 			}
 
 			worldrenderer.begin( GL11.GL_QUADS, DefaultVertexFormats.ITEM );
-			worldrenderer.color(0f,0f,0f,1f).pos( -100.0D, -100.0D, -100.0D).tex( 0.0D, 0.0D ).endVertex();
-			worldrenderer.color(0f,0f,0f,1f).pos(  -100.0D, -100.0D, 100.0D).tex(  0.0D, 16.0D ).endVertex();
-			worldrenderer.color(0f,0f,0f,1f).pos(  100.0D, -100.0D, 100.0D).tex(  16.0D, 16.0D ).endVertex();
-			worldrenderer.color(0f,0f,0f,1f).pos(  100.0D, -100.0D, -100.0D).tex(  16.0D, 0.0D ).endVertex();
+			worldrenderer.color( 0f, 0f, 0f, 1f ).pos( -100.0D, -100.0D, -100.0D ).tex( 0.0D, 0.0D ).endVertex();
+			worldrenderer.color( 0f, 0f, 0f, 1f ).pos( -100.0D, -100.0D, 100.0D ).tex( 0.0D, 16.0D ).endVertex();
+			worldrenderer.color( 0f, 0f, 0f, 1f ).pos( 100.0D, -100.0D, 100.0D ).tex( 16.0D, 16.0D ).endVertex();
+			worldrenderer.color( 0f, 0f, 0f, 1f ).pos( 100.0D, -100.0D, -100.0D ).tex( 16.0D, 0.0D ).endVertex();
 			tessellator.draw();
 			GL11.glPopMatrix();
 		}

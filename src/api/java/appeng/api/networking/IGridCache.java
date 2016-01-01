@@ -48,7 +48,7 @@ public interface IGridCache
 	 * information, do it on the next updateTick.
 	 *
 	 * @param gridNode removed from that grid
-	 * @param machine  to be removed machine
+	 * @param machine to be removed machine
 	 */
 	void removeNode( IGridNode gridNode, IGridHost machine );
 
@@ -60,7 +60,7 @@ public interface IGridCache
 	 * information, do it on the next updateTick.
 	 *
 	 * @param gridNode added to grid node
-	 * @param machine  to be added machine
+	 * @param machine to be added machine
 	 */
 	void addNode( IGridNode gridNode, IGridHost machine );
 

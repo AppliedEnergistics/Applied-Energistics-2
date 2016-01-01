@@ -2,7 +2,6 @@
 package appeng.client.render;
 
 
-
 import org.lwjgl.util.vector.Vector3f;
 
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;

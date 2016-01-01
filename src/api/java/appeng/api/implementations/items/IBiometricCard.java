@@ -39,7 +39,7 @@ public interface IBiometricCard
 {
 
 	/**
-	 * Set the  {@link GameProfile} to null, to clear it.
+	 * Set the {@link GameProfile} to null, to clear it.
 	 */
 	void setProfile( ItemStack itemStack, GameProfile username );
 
@@ -67,7 +67,7 @@ public interface IBiometricCard
 	/**
 	 * remove a permission from the item stack.
 	 *
-	 * @param itemStack  card
+	 * @param itemStack card
 	 * @param permission to be removed permission
 	 */
 	void removePermission( ItemStack itemStack, SecurityPermissions permission );
@@ -75,7 +75,7 @@ public interface IBiometricCard
 	/**
 	 * add a permission to the item stack.
 	 *
-	 * @param itemStack  card
+	 * @param itemStack card
 	 * @param permission to be added permission
 	 */
 	void addPermission( ItemStack itemStack, SecurityPermissions permission );
@@ -84,8 +84,8 @@ public interface IBiometricCard
 	 * lets you handle submission of security values on the card for custom behavior.
 	 *
 	 * @param registry security registry
-	 * @param pr       player registry
-	 * @param is       card
+	 * @param pr player registry
+	 * @param is card
 	 */
 	void registerPermissions( ISecurityRegistry registry, IPlayerRegistry pr, ItemStack is );
 }

@@ -18,6 +18,7 @@
 
 package appeng.block.misc;
 
+
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
@@ -43,6 +44,7 @@ import appeng.core.features.AEFeature;
 import appeng.helpers.ICustomCollision;
 import appeng.helpers.MetaRotation;
 import appeng.tile.misc.TileLightDetector;
+
 
 public class BlockLightDetector extends AEBaseTileBlock implements IOrientableBlock, ICustomCollision
 {
@@ -86,7 +88,7 @@ public class BlockLightDetector extends AEBaseTileBlock implements IOrientableBl
 			final IBlockState state,
 			final EnumFacing side )
 	{
-		if ( w instanceof World && ( (TileLightDetector) this.getTileEntity( w, pos ) ).isReady() )
+		if( w instanceof World && ( (TileLightDetector) this.getTileEntity( w, pos ) ).isReady() )
 		{
 			return ( (World) w ).getLightFromNeighbors( pos ) - 6;
 		}
@@ -103,7 +105,7 @@ public class BlockLightDetector extends AEBaseTileBlock implements IOrientableBl
 		super.onNeighborChange( world, pos, neighbor );
 
 		final TileLightDetector tld = this.getTileEntity( world, pos );
-		if ( tld != null )
+		if( tld != null )
 		{
 			tld.updateLight();
 		}
@@ -165,12 +167,12 @@ public class BlockLightDetector extends AEBaseTileBlock implements IOrientableBl
 			final List<AxisAlignedBB> out,
 			final Entity e )
 	{/*
-		 * double xOff = -0.15 * getUp().offsetX; double yOff = -0.15 *
-		 * getUp().offsetY; double zOff = -0.15 * getUp().offsetZ; out.add(
-		 * AxisAlignedBB.getBoundingBox( xOff + (double) x + 0.15, yOff +
-		 * (double) y + 0.15, zOff + (double) z + 0.15,// ahh xOff + (double) x
-		 * + 0.85, yOff + (double) y + 0.85, zOff + (double) z + 0.85 ) );
-		 */
+	 * double xOff = -0.15 * getUp().offsetX; double yOff = -0.15 *
+	 * getUp().offsetY; double zOff = -0.15 * getUp().offsetZ; out.add(
+	 * AxisAlignedBB.getBoundingBox( xOff + (double) x + 0.15, yOff +
+	 * (double) y + 0.15, zOff + (double) z + 0.15,// ahh xOff + (double) x
+	 * + 0.85, yOff + (double) y + 0.85, zOff + (double) z + 0.85 ) );
+	 */
 	}
 
 	@Override
@@ -181,7 +183,7 @@ public class BlockLightDetector extends AEBaseTileBlock implements IOrientableBl
 			final Block neighborBlock )
 	{
 		final EnumFacing up = getOrientable( w, pos ).getUp();
-		if ( !canPlaceAt( w, pos, up.getOpposite() ) )
+		if( !canPlaceAt( w, pos, up.getOpposite() ) )
 		{
 			dropTorch( w, pos );
 		}
@@ -200,9 +202,9 @@ public class BlockLightDetector extends AEBaseTileBlock implements IOrientableBl
 			final World w,
 			final BlockPos pos )
 	{
-		for ( final EnumFacing dir : EnumFacing.VALUES )
+		for( final EnumFacing dir : EnumFacing.VALUES )
 		{
-			if ( canPlaceAt( w, pos, dir ) )
+			if( canPlaceAt( w, pos, dir ) )
 			{
 				return true;
 			}

@@ -42,7 +42,7 @@ public interface ICraftingWatcherHost
 	 * Called when a crafting status changes.
 	 *
 	 * @param craftingGrid current crafting grid
-	 * @param what         change
+	 * @param what change
 	 */
 	void onRequestChange( ICraftingGrid craftingGrid, IAEItemStack what );
 }
