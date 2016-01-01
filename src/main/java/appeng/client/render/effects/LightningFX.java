@@ -214,10 +214,10 @@ public class LightningFX extends EntityFX
 	{
 		if( this.hasData )
 		{
-			tess.color( red, green, blue, particleAlpha ).pos( a[0], a[1], a[2] ).tex( f6, f8 ).endVertex();
-			tess.color( red, green, blue, particleAlpha ).pos( this.vertices[0], this.vertices[1], this.vertices[2] ).tex( f6, f8 ).endVertex();
-			tess.color( red, green, blue, particleAlpha ).pos( this.verticesWithUV[0], this.verticesWithUV[1], this.verticesWithUV[2] ).tex( f6, f8 ).endVertex();
-			tess.color( red, green, blue, particleAlpha ).pos( b[0], b[1], b[2] ).tex( f6, f8 ).endVertex();
+			tess.color( red, green, blue, this.particleAlpha ).pos( a[0], a[1], a[2] ).tex( f6, f8 ).endVertex();
+			tess.color( red, green, blue, this.particleAlpha ).pos( this.vertices[0], this.vertices[1], this.vertices[2] ).tex( f6, f8 ).endVertex();
+			tess.color( red, green, blue, this.particleAlpha ).pos( this.verticesWithUV[0], this.verticesWithUV[1], this.verticesWithUV[2] ).tex( f6, f8 ).endVertex();
+			tess.color( red, green, blue, this.particleAlpha ).pos( b[0], b[1], b[2] ).tex( f6, f8 ).endVertex();
 		}
 		this.hasData = true;
 		for( int x = 0; x < 3; x++ )

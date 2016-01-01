@@ -94,13 +94,13 @@ public class BlockCableBus extends AEBaseTileBlock // implements
 	public BlockCableBus()
 	{
 		super( AEGlassMaterial.INSTANCE );
-		setLightOpacity( 0 );
-		setFullSize( setOpaque( false ) );
+		this.setLightOpacity( 0 );
+		this.setFullSize( this.setOpaque( false ) );
 
 		// this will actually be overwritten later through setupTile and the
 		// combined layers
-		setTileEntity( TileCableBus.class );
-		setFeature( EnumSet.of( AEFeature.Core ) );
+		this.setTileEntity( TileCableBus.class );
+		this.setFeature( EnumSet.of( AEFeature.Core ) );
 	}
 
 	@Override
@@ -110,7 +110,7 @@ public class BlockCableBus extends AEBaseTileBlock // implements
 			final IBlockState state,
 			final Random rand )
 	{
-		cb( worldIn, pos ).randomDisplayTick( worldIn, pos, rand );
+		this.cb( worldIn, pos ).randomDisplayTick( worldIn, pos, rand );
 	}
 
 	@Override
@@ -119,7 +119,7 @@ public class BlockCableBus extends AEBaseTileBlock // implements
 			final BlockPos pos,
 			final BlockPos neighbor )
 	{
-		cb( w, pos ).onNeighborChanged();
+		this.cb( w, pos ).onNeighborChanged();
 	}
 
 	@Override
@@ -138,7 +138,7 @@ public class BlockCableBus extends AEBaseTileBlock // implements
 			final IBlockState state,
 			final EnumFacing side )
 	{
-		return cb( w, pos ).isProvidingWeakPower( side.getOpposite() ); // TODO:
+		return this.cb( w, pos ).isProvidingWeakPower( side.getOpposite() ); // TODO:
 																		// IS
 																		// OPPOSITE!?
 	}
@@ -156,7 +156,7 @@ public class BlockCableBus extends AEBaseTileBlock // implements
 			final IBlockState state,
 			final Entity entityIn )
 	{
-		cb( w, pos ).onEntityCollision( entityIn );
+		this.cb( w, pos ).onEntityCollision( entityIn );
 	}
 
 	@Override
@@ -166,7 +166,7 @@ public class BlockCableBus extends AEBaseTileBlock // implements
 			final IBlockState state,
 			final EnumFacing side )
 	{
-		return cb( w, pos ).isProvidingStrongPower( side.getOpposite() ); // TODO:
+		return this.cb( w, pos ).isProvidingStrongPower( side.getOpposite() ); // TODO:
 																			// IS
 																			// OPPOSITE!?
 	}
@@ -185,7 +185,7 @@ public class BlockCableBus extends AEBaseTileBlock // implements
 		{
 			return 0;
 		}
-		return cb( world, pos ).getLightValue();
+		return this.cb( world, pos ).getLightValue();
 	}
 
 	@Override
@@ -194,7 +194,7 @@ public class BlockCableBus extends AEBaseTileBlock // implements
 			final BlockPos pos,
 			final EntityLivingBase entity )
 	{
-		return cb( world, pos ).isLadder( entity );
+		return this.cb( world, pos ).isLadder( entity );
 	}
 
 	@Override
@@ -203,7 +203,7 @@ public class BlockCableBus extends AEBaseTileBlock // implements
 			final BlockPos pos,
 			final EnumFacing side )
 	{
-		return cb( w, pos ).isSolidOnSide( side );
+		return this.cb( w, pos ).isSolidOnSide( side );
 	}
 
 	@Override
@@ -211,7 +211,7 @@ public class BlockCableBus extends AEBaseTileBlock // implements
 			final World w,
 			final BlockPos pos )
 	{
-		return cb( w, pos ).isEmpty();
+		return this.cb( w, pos ).isEmpty();
 	}
 
 	@Override
@@ -244,7 +244,7 @@ public class BlockCableBus extends AEBaseTileBlock // implements
 			side = EnumFacing.UP;
 		}
 
-		return cb( w, pos ).canConnectRedstone( EnumSet.of( side ) );
+		return this.cb( w, pos ).canConnectRedstone( EnumSet.of( side ) );
 	}
 
 	@Override
@@ -266,7 +266,7 @@ public class BlockCableBus extends AEBaseTileBlock // implements
 			final BlockPos pos )
 	{
 		final Vec3 v3 = target.hitVec.subtract( pos.getX(), pos.getY(), pos.getZ() );
-		final SelectedPart sp = cb( world, pos ).selectPart( v3 );
+		final SelectedPart sp = this.cb( world, pos ).selectPart( v3 );
 
 		if( sp.part != null )
 		{
@@ -287,7 +287,7 @@ public class BlockCableBus extends AEBaseTileBlock // implements
 			final MovingObjectPosition target,
 			final EffectRenderer effectRenderer )
 	{
-		final Object object = cb( world, target.getBlockPos() );
+		final Object object = this.cb( world, target.getBlockPos() );
 		if( object instanceof IPartHost )
 		{
 			final IPartHost host = (IPartHost) object;
@@ -321,7 +321,7 @@ public class BlockCableBus extends AEBaseTileBlock // implements
 			final BlockPos pos,
 			final EffectRenderer effectRenderer )
 	{
-		final Object object = cb( world, pos );
+		final Object object = this.cb( world, pos );
 		if( object instanceof IPartHost )
 		{
 			final IPartHost host = (IPartHost) object;
@@ -353,7 +353,7 @@ public class BlockCableBus extends AEBaseTileBlock // implements
 	{
 		if( Platform.isServer() )
 		{
-			cb( w, pos ).onNeighborChanged();
+			this.cb( w, pos ).onNeighborChanged();
 		}
 	}
 
@@ -392,7 +392,7 @@ public class BlockCableBus extends AEBaseTileBlock // implements
 			final float hitY,
 			final float hitZ )
 	{
-		return cb( w, pos ).activate( player, new Vec3( hitX, hitY, hitZ ) );
+		return this.cb( w, pos ).activate( player, new Vec3( hitX, hitY, hitZ ) );
 	}
 
 	@Override
@@ -414,7 +414,7 @@ public class BlockCableBus extends AEBaseTileBlock // implements
 	{
 		try
 		{
-			return cb( world, pos ).recolourBlock( side, AEColor.values()[color.ordinal()], who );
+			return this.cb( world, pos ).recolourBlock( side, AEColor.values()[color.ordinal()], who );
 		}
 		catch( final Throwable ignored )
 		{
@@ -456,14 +456,14 @@ public class BlockCableBus extends AEBaseTileBlock // implements
 	protected void setFeature(
 			final EnumSet<AEFeature> f )
 	{
-		final AECableBusFeatureHandler featureHandler = new AECableBusFeatureHandler( f, this, getFeatureSubName() );
-		setHandler( featureHandler );
+		final AECableBusFeatureHandler featureHandler = new AECableBusFeatureHandler( f, this, this.getFeatureSubName() );
+		this.setHandler( featureHandler );
 	}
 
 	public void setupTile()
 	{
 		noTesrTile = Api.INSTANCE.partHelper().getCombinedInstance( TileCableBus.class.getName() );
-		setTileEntity( noTesrTile );
+		this.setTileEntity( noTesrTile );
 		GameRegistry.registerTileEntity( noTesrTile, "BlockCableBus" );
 		if( Platform.isClient() )
 		{

@@ -28,13 +28,13 @@ public class BusRenderer
 
 	public ModelGenerator getRenderer()
 	{
-		return mg;
+		return this.mg;
 	}
 
 	public void setRenderer(
 			ModelGenerator renderer )
 	{
-		mg = renderer;
+		this.mg = renderer;
 	}
 
 }

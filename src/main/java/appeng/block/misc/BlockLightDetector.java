@@ -53,12 +53,12 @@ public class BlockLightDetector extends AEBaseTileBlock implements IOrientableBl
 	{
 		super( Material.circuits );
 
-		setLightOpacity( 0 );
-		setFullSize( false );
-		setOpaque( false );
+		this.setLightOpacity( 0 );
+		this.setFullSize( false );
+		this.setOpaque( false );
 
-		setTileEntity( TileLightDetector.class );
-		setFeature( EnumSet.of( AEFeature.LightDetector ) );
+		this.setTileEntity( TileLightDetector.class );
+		this.setFeature( EnumSet.of( AEFeature.LightDetector ) );
 	}
 
 	@Override
@@ -72,7 +72,7 @@ public class BlockLightDetector extends AEBaseTileBlock implements IOrientableBl
 	public IBlockState getStateFromMeta(
 			final int meta )
 	{
-		return getDefaultState();
+		return this.getDefaultState();
 	}
 
 	@Override
@@ -134,7 +134,7 @@ public class BlockLightDetector extends AEBaseTileBlock implements IOrientableBl
 			final EnumFacing forward,
 			final EnumFacing up )
 	{
-		return canPlaceAt( w, pos, up.getOpposite() );
+		return this.canPlaceAt( w, pos, up.getOpposite() );
 	}
 
 	private boolean canPlaceAt(
@@ -152,7 +152,7 @@ public class BlockLightDetector extends AEBaseTileBlock implements IOrientableBl
 			final Entity thePlayer,
 			final boolean b )
 	{
-		final EnumFacing up = getOrientable( w, pos ).getUp();
+		final EnumFacing up = this.getOrientable( w, pos ).getUp();
 		final double xOff = -0.3 * up.getFrontOffsetX();
 		final double yOff = -0.3 * up.getFrontOffsetY();
 		final double zOff = -0.3 * up.getFrontOffsetZ();
@@ -182,10 +182,10 @@ public class BlockLightDetector extends AEBaseTileBlock implements IOrientableBl
 			final IBlockState state,
 			final Block neighborBlock )
 	{
-		final EnumFacing up = getOrientable( w, pos ).getUp();
-		if( !canPlaceAt( w, pos, up.getOpposite() ) )
+		final EnumFacing up = this.getOrientable( w, pos ).getUp();
+		if( !this.canPlaceAt( w, pos, up.getOpposite() ) )
 		{
-			dropTorch( w, pos );
+			this.dropTorch( w, pos );
 		}
 	}
 
@@ -204,7 +204,7 @@ public class BlockLightDetector extends AEBaseTileBlock implements IOrientableBl
 	{
 		for( final EnumFacing dir : EnumFacing.VALUES )
 		{
-			if( canPlaceAt( w, pos, dir ) )
+			if( this.canPlaceAt( w, pos, dir ) )
 			{
 				return true;
 			}
