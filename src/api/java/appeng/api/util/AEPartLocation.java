@@ -68,7 +68,9 @@ public enum AEPartLocation
 	public static AEPartLocation fromOrdinal( final int id )
 	{
 		if( id >= 0 && id < SIDE_LOCATIONS.length )
+		{
 			return SIDE_LOCATIONS[id];
+		}
 
 		return INTERNAL;
 	}
@@ -82,7 +84,9 @@ public enum AEPartLocation
 	public static AEPartLocation fromFacing( final EnumFacing side )
 	{
 		if( side == null )
+		{
 			return INTERNAL;
+		}
 		return values()[side.ordinal()];
 	}
 
