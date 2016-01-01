@@ -90,7 +90,7 @@ public class LightningFX extends EntityFX
 		float red = this.particleRed * j * 0.9f;
 		float green = this.particleGreen * j * 0.95f;
 		float blue = this.particleBlue * j;
-		float alpha = this.particleAlpha;
+		final float alpha = this.particleAlpha;
 
 		if( this.particleAge == 3 )
 		{
