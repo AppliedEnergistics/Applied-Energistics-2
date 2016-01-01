@@ -27,6 +27,7 @@ public class TmpFlippableIcon extends FlippableIcon
 		super( null );
 	}
 
+	@Override
 	public void setOriginal( IAESprite i )
 	{
 		this.setFlip( false, false );
