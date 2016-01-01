@@ -872,8 +872,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 
 		final DualityInterface di = this;
 
-		return new IStorageMonitorable()
-		{
+		return new IStorageMonitorable(){
 
 			@Override
 			public IMEMonitor<IAEItemStack> getItemInventory()

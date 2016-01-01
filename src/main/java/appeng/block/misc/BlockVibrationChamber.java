@@ -69,14 +69,7 @@ public final class BlockVibrationChamber extends AEBaseTileBlock
 	}
 
 	@Override
-	public boolean onActivated(
-			final World w,
-			final BlockPos pos,
-			final EntityPlayer player,
-			final EnumFacing side,
-			final float hitX,
-			final float hitY,
-			final float hitZ )
+	public boolean onActivated( final World w, final BlockPos pos, final EntityPlayer player, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
 	{
 		if( player.isSneaking() )
 		{
@@ -97,11 +90,7 @@ public final class BlockVibrationChamber extends AEBaseTileBlock
 	}
 
 	@Override
-	public void randomDisplayTick(
-			final World w,
-			final BlockPos pos,
-			final IBlockState state,
-			final Random r )
+	public void randomDisplayTick( final World w, final BlockPos pos, final IBlockState state, final Random r )
 	{
 		if( !AEConfig.instance.enableEffects )
 		{

@@ -121,15 +121,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 	}
 
 	@Override
-	public boolean onItemUse(
-			final ItemStack is,
-			final EntityPlayer p,
-			final World w,
-			final BlockPos pos,
-			final EnumFacing side,
-			final float hitX,
-			final float hitY,
-			final float hitZ )
+	public boolean onItemUse( final ItemStack is, final EntityPlayer p, final World w, final BlockPos pos, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
 	{
 		final Block blk = w.getBlockState( pos ).getBlock();
 
@@ -302,8 +294,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 					list.add( i );
 				}
 
-				Collections.sort( list, new Comparator<IAEItemStack>()
-				{
+				Collections.sort( list, new Comparator<IAEItemStack>(){
 
 					@Override
 					public int compare( final IAEItemStack a, final IAEItemStack b )

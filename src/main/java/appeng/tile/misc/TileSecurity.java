@@ -116,10 +116,7 @@ public class TileSecurity extends AENetworkTile implements ITerminalHost, IAEApp
 	}
 
 	@Override
-	public void getDrops(
-			final World w,
-			final BlockPos pos,
-			final List<ItemStack> drops )
+	public void getDrops( final World w, final BlockPos pos, final List<ItemStack> drops )
 	{
 		if( !this.getConfigSlot().isEmpty() )
 		{

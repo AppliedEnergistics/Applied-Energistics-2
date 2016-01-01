@@ -77,9 +77,7 @@ public class QuartzOreBlock extends AEBaseBlock
 	}
 
 	@Override
-	public int getMixedBrightnessForBlock(
-			final IBlockAccess worldIn,
-			final BlockPos pos )
+	public int getMixedBrightnessForBlock( final IBlockAccess worldIn, final BlockPos pos )
 	{
 		int j1 = super.getMixedBrightnessForBlock( worldIn, pos );
 		if( this.enhanceBrightness )
@@ -111,10 +109,8 @@ public class QuartzOreBlock extends AEBaseBlock
 	}
 
 	@Override
-	public Item getItemDropped(
-			final IBlockState state, /* is null */
-			final Random rand,
-			final int fortune )
+	public Item getItemDropped( final IBlockState state, /* is null */
+			final Random rand, final int fortune )
 	{
 		for( final Item crystalItem : AEApi.instance().definitions().materials().certusQuartzCrystal().maybeItem().asSet() )
 		{
@@ -125,12 +121,7 @@ public class QuartzOreBlock extends AEBaseBlock
 	}
 
 	@Override
-	public void dropBlockAsItemWithChance(
-			final World w,
-			final BlockPos pos,
-			final IBlockState state,
-			final float chance,
-			final int fortune )
+	public void dropBlockAsItemWithChance( final World w, final BlockPos pos, final IBlockState state, final float chance, final int fortune )
 	{
 		super.dropBlockAsItemWithChance( w, pos, state, chance, fortune );
 
@@ -143,8 +134,7 @@ public class QuartzOreBlock extends AEBaseBlock
 	}
 
 	@Override
-	public int damageDropped(
-			final IBlockState state )
+	public int damageDropped( final IBlockState state )
 	{
 		for( final ItemStack crystalStack : AEApi.instance().definitions().materials().certusQuartzCrystal().maybeStack( 1 ).asSet() )
 		{

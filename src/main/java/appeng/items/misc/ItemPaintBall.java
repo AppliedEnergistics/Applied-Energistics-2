@@ -59,8 +59,7 @@ public class ItemPaintBall extends AEBaseItem
 		Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register( this, new ItemMeshDefinition(){
 
 			@Override
-			public ModelResourceLocation getModelLocation(
-					final ItemStack stack )
+			public ModelResourceLocation getModelLocation( final ItemStack stack )
 			{
 				if( ItemPaintBall.this.isLumen( stack ) )
 				{
@@ -84,9 +83,7 @@ public class ItemPaintBall extends AEBaseItem
 	}
 
 	@Override
-	public int getColorFromItemStack(
-			final ItemStack stack,
-			final int renderPass )
+	public int getColorFromItemStack( final ItemStack stack, final int renderPass )
 	{
 		final AEColor col = this.getColor( stack );
 

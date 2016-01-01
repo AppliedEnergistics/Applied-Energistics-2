@@ -104,43 +104,29 @@ public class BlockCableBus extends AEBaseTileBlock // implements
 	}
 
 	@Override
-	public void randomDisplayTick(
-			final World worldIn,
-			final BlockPos pos,
-			final IBlockState state,
-			final Random rand )
+	public void randomDisplayTick( final World worldIn, final BlockPos pos, final IBlockState state, final Random rand )
 	{
 		this.cb( worldIn, pos ).randomDisplayTick( worldIn, pos, rand );
 	}
 
 	@Override
-	public void onNeighborChange(
-			final IBlockAccess w,
-			final BlockPos pos,
-			final BlockPos neighbor )
+	public void onNeighborChange( final IBlockAccess w, final BlockPos pos, final BlockPos neighbor )
 	{
 		this.cb( w, pos ).onNeighborChanged();
 	}
 
 	@Override
-	public Item getItemDropped(
-			final IBlockState state,
-			final Random rand,
-			final int fortune )
+	public Item getItemDropped( final IBlockState state, final Random rand, final int fortune )
 	{
 		return null;
 	}
 
 	@Override
-	public int getWeakPower(
-			final IBlockAccess w,
-			final BlockPos pos,
-			final IBlockState state,
-			final EnumFacing side )
+	public int getWeakPower( final IBlockAccess w, final BlockPos pos, final IBlockState state, final EnumFacing side )
 	{
 		return this.cb( w, pos ).isProvidingWeakPower( side.getOpposite() ); // TODO:
-																		// IS
-																		// OPPOSITE!?
+		// IS
+		// OPPOSITE!?
 	}
 
 	@Override
@@ -150,31 +136,21 @@ public class BlockCableBus extends AEBaseTileBlock // implements
 	}
 
 	@Override
-	public void onEntityCollidedWithBlock(
-			final World w,
-			final BlockPos pos,
-			final IBlockState state,
-			final Entity entityIn )
+	public void onEntityCollidedWithBlock( final World w, final BlockPos pos, final IBlockState state, final Entity entityIn )
 	{
 		this.cb( w, pos ).onEntityCollision( entityIn );
 	}
 
 	@Override
-	public int getStrongPower(
-			final IBlockAccess w,
-			final BlockPos pos,
-			final IBlockState state,
-			final EnumFacing side )
+	public int getStrongPower( final IBlockAccess w, final BlockPos pos, final IBlockState state, final EnumFacing side )
 	{
 		return this.cb( w, pos ).isProvidingStrongPower( side.getOpposite() ); // TODO:
-																			// IS
-																			// OPPOSITE!?
+																				// IS
+																				// OPPOSITE!?
 	}
 
 	@Override
-	public int getLightValue(
-			final IBlockAccess world,
-			final BlockPos pos )
+	public int getLightValue( final IBlockAccess world, final BlockPos pos )
 	{
 		final IBlockState block = world.getBlockState( pos );
 		if( block != null && block.getBlock() != this )
@@ -189,37 +165,25 @@ public class BlockCableBus extends AEBaseTileBlock // implements
 	}
 
 	@Override
-	public boolean isLadder(
-			final IBlockAccess world,
-			final BlockPos pos,
-			final EntityLivingBase entity )
+	public boolean isLadder( final IBlockAccess world, final BlockPos pos, final EntityLivingBase entity )
 	{
 		return this.cb( world, pos ).isLadder( entity );
 	}
 
 	@Override
-	public boolean isSideSolid(
-			final IBlockAccess w,
-			final BlockPos pos,
-			final EnumFacing side )
+	public boolean isSideSolid( final IBlockAccess w, final BlockPos pos, final EnumFacing side )
 	{
 		return this.cb( w, pos ).isSolidOnSide( side );
 	}
 
 	@Override
-	public boolean isReplaceable(
-			final World w,
-			final BlockPos pos )
+	public boolean isReplaceable( final World w, final BlockPos pos )
 	{
 		return this.cb( w, pos ).isEmpty();
 	}
 
 	@Override
-	public boolean removedByPlayer(
-			final World world,
-			final BlockPos pos,
-			final EntityPlayer player,
-			final boolean willHarvest )
+	public boolean removedByPlayer( final World world, final BlockPos pos, final EntityPlayer player, final boolean willHarvest )
 	{
 		if( player.capabilities.isCreativeMode )
 		{
@@ -234,10 +198,7 @@ public class BlockCableBus extends AEBaseTileBlock // implements
 	}
 
 	@Override
-	public boolean canConnectRedstone(
-			final IBlockAccess w,
-			final BlockPos pos,
-			EnumFacing side )
+	public boolean canConnectRedstone( final IBlockAccess w, final BlockPos pos, EnumFacing side )
 	{
 		if( side == null )
 		{
@@ -248,8 +209,7 @@ public class BlockCableBus extends AEBaseTileBlock // implements
 	}
 
 	@Override
-	public boolean canRenderInLayer(
-			final EnumWorldBlockLayer layer )
+	public boolean canRenderInLayer( final EnumWorldBlockLayer layer )
 	{
 		if( AEConfig.instance.isFeatureEnabled( AEFeature.AlphaPass ) )
 		{
@@ -260,10 +220,7 @@ public class BlockCableBus extends AEBaseTileBlock // implements
 	}
 
 	@Override
-	public ItemStack getPickBlock(
-			final MovingObjectPosition target,
-			final World world,
-			final BlockPos pos )
+	public ItemStack getPickBlock( final MovingObjectPosition target, final World world, final BlockPos pos )
 	{
 		final Vec3 v3 = target.hitVec.subtract( pos.getX(), pos.getY(), pos.getZ() );
 		final SelectedPart sp = this.cb( world, pos ).selectPart( v3 );
@@ -282,10 +239,7 @@ public class BlockCableBus extends AEBaseTileBlock // implements
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public boolean addHitEffects(
-			final World world,
-			final MovingObjectPosition target,
-			final EffectRenderer effectRenderer )
+	public boolean addHitEffects( final World world, final MovingObjectPosition target, final EffectRenderer effectRenderer )
 	{
 		final Object object = this.cb( world, target.getBlockPos() );
 		if( object instanceof IPartHost )
@@ -316,10 +270,7 @@ public class BlockCableBus extends AEBaseTileBlock // implements
 	}
 
 	@Override
-	public boolean addDestroyEffects(
-			final World world,
-			final BlockPos pos,
-			final EffectRenderer effectRenderer )
+	public boolean addDestroyEffects( final World world, final BlockPos pos, final EffectRenderer effectRenderer )
 	{
 		final Object object = this.cb( world, pos );
 		if( object instanceof IPartHost )
@@ -345,11 +296,7 @@ public class BlockCableBus extends AEBaseTileBlock // implements
 	}
 
 	@Override
-	public void onNeighborBlockChange(
-			final World w,
-			final BlockPos pos,
-			final IBlockState state,
-			final Block neighborBlock )
+	public void onNeighborBlockChange( final World w, final BlockPos pos, final IBlockState state, final Block neighborBlock )
 	{
 		if( Platform.isServer() )
 		{
@@ -357,9 +304,7 @@ public class BlockCableBus extends AEBaseTileBlock // implements
 		}
 	}
 
-	private ICableBusContainer cb(
-			final IBlockAccess w,
-			final BlockPos pos )
+	private ICableBusContainer cb( final IBlockAccess w, final BlockPos pos )
 	{
 		final TileEntity te = w.getTileEntity( pos );
 		ICableBusContainer out = null;
@@ -383,34 +328,18 @@ public class BlockCableBus extends AEBaseTileBlock // implements
 	}
 
 	@Override
-	public boolean onActivated(
-			final World w,
-			final BlockPos pos,
-			final EntityPlayer player,
-			final EnumFacing side,
-			final float hitX,
-			final float hitY,
-			final float hitZ )
+	public boolean onActivated( final World w, final BlockPos pos, final EntityPlayer player, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
 	{
 		return this.cb( w, pos ).activate( player, new Vec3( hitX, hitY, hitZ ) );
 	}
 
 	@Override
-	public boolean recolorBlock(
-			final World world,
-			final BlockPos pos,
-			final EnumFacing side,
-			final EnumDyeColor color )
+	public boolean recolorBlock( final World world, final BlockPos pos, final EnumFacing side, final EnumDyeColor color )
 	{
 		return this.recolorBlock( world, pos, side, color, null );
 	}
 
-	public boolean recolorBlock(
-			final World world,
-			final BlockPos pos,
-			final EnumFacing side,
-			final EnumDyeColor color,
-			final EntityPlayer who )
+	public boolean recolorBlock( final World world, final BlockPos pos, final EnumFacing side, final EnumDyeColor color, final EntityPlayer who )
 	{
 		try
 		{
@@ -424,18 +353,13 @@ public class BlockCableBus extends AEBaseTileBlock // implements
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void getCheckedSubBlocks(
-			final Item item,
-			final CreativeTabs tabs,
-			final List<ItemStack> itemStacks )
+	public void getCheckedSubBlocks( final Item item, final CreativeTabs tabs, final List<ItemStack> itemStacks )
 	{
 		// do nothing
 	}
 
 	@Override
-	public <T extends AEBaseTile> T getTileEntity(
-			final IBlockAccess w,
-			final BlockPos pos )
+	public <T extends AEBaseTile> T getTileEntity( final IBlockAccess w, final BlockPos pos )
 	{
 		final TileEntity te = w.getTileEntity( pos );
 
@@ -453,8 +377,7 @@ public class BlockCableBus extends AEBaseTileBlock // implements
 	}
 
 	@Override
-	protected void setFeature(
-			final EnumSet<AEFeature> f )
+	protected void setFeature( final EnumSet<AEFeature> f )
 	{
 		final AECableBusFeatureHandler featureHandler = new AECableBusFeatureHandler( f, this, this.getFeatureSubName() );
 		this.setHandler( featureHandler );

@@ -140,15 +140,7 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 	}
 
 	@Override
-	public boolean onItemUse(
-			final ItemStack is,
-			final EntityPlayer player,
-			final World w,
-			final BlockPos pos,
-			final EnumFacing side,
-			final float hx,
-			final float hy,
-			final float hz )
+	public boolean onItemUse( final ItemStack is, final EntityPlayer player, final World w, final BlockPos pos, final EnumFacing side, final float hx, final float hy, final float hz )
 	{
 		if( player.isSneaking() && !w.isRemote )
 		{
@@ -164,10 +156,7 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 	}
 
 	@Override
-	public boolean doesSneakBypassUse(
-			final World world,
-			final BlockPos pos,
-			final EntityPlayer player )
+	public boolean doesSneakBypassUse( final World world, final BlockPos pos, final EntityPlayer player )
 	{
 		return true;
 	}

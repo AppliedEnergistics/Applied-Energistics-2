@@ -66,15 +66,13 @@ public class BlockQuartzTorch extends AEBaseBlock implements IOrientableBlock, I
 	}
 
 	@Override
-	public int getMetaFromState(
-			final IBlockState state )
+	public int getMetaFromState( final IBlockState state )
 	{
 		return 0;
 	}
 
 	@Override
-	public IBlockState getStateFromMeta(
-			final int meta )
+	public IBlockState getStateFromMeta( final int meta )
 	{
 		return this.getDefaultState();
 	}
@@ -124,11 +122,7 @@ public class BlockQuartzTorch extends AEBaseBlock implements IOrientableBlock, I
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void randomDisplayTick(
-			final World w,
-			final BlockPos pos,
-			final IBlockState state,
-			final Random r )
+	public void randomDisplayTick( final World w, final BlockPos pos, final IBlockState state, final Random r )
 	{
 		if( !AEConfig.instance.enableEffects )
 		{
@@ -156,11 +150,7 @@ public class BlockQuartzTorch extends AEBaseBlock implements IOrientableBlock, I
 	}
 
 	@Override
-	public void onNeighborBlockChange(
-			final World w,
-			final BlockPos pos,
-			final IBlockState state,
-			final Block neighborBlock )
+	public void onNeighborBlockChange( final World w, final BlockPos pos, final IBlockState state, final Block neighborBlock )
 	{
 		final EnumFacing up = this.getOrientable( w, pos ).getUp();
 		if( !this.canPlaceAt( w, pos, up.getOpposite() ) )

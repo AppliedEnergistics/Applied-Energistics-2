@@ -120,8 +120,7 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 	@Override
 	public IConfigManager getConfigManager( final ItemStack target )
 	{
-		final ConfigManager out = new ConfigManager( new IConfigManagerHost()
-		{
+		final ConfigManager out = new ConfigManager( new IConfigManagerHost(){
 
 			@Override
 			public void updateSetting( final IConfigManager manager, final Enum settingName, final Enum newValue )

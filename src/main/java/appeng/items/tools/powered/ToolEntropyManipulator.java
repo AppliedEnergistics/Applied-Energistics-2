@@ -105,9 +105,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 			this.blockOnly = false;
 		}
 
-		public InWorldToolOperationIngredient(
-				final Block blk,
-				final boolean b )
+		public InWorldToolOperationIngredient( final Block blk, final boolean b )
 		{
 			this.state = blk.getDefaultState();
 			this.blockOnly = b;
@@ -248,15 +246,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 	}
 
 	@Override
-	public boolean onItemUse(
-			final ItemStack item,
-			final EntityPlayer p,
-			final World w,
-			final BlockPos pos,
-			final EnumFacing side,
-			final float hitX,
-			final float hitY,
-			final float hitZ )
+	public boolean onItemUse( final ItemStack item, final EntityPlayer p, final World w, final BlockPos pos, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
 	{
 		if( this.getAECurrentPower( item ) > 1600 )
 		{

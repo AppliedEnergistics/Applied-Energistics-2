@@ -45,8 +45,7 @@ public class OreHelper
 	/**
 	 * A local cache to speed up OreDictionary lookups.
 	 */
-	private final LoadingCache<String, List<ItemStack>> oreDictCache = CacheBuilder.newBuilder().build( new CacheLoader<String, List<ItemStack>>()
-	{
+	private final LoadingCache<String, List<ItemStack>> oreDictCache = CacheBuilder.newBuilder().build( new CacheLoader<String, List<ItemStack>>(){
 		@Override
 		public List<ItemStack> load( final String oreName )
 		{

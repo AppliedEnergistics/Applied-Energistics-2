@@ -21,8 +21,7 @@ package appeng.core.features;
 
 public enum ActivityState
 {
-	Enabled,
-	Disabled;
+	Enabled, Disabled;
 
 	public static ActivityState from( final boolean enabled )
 	{

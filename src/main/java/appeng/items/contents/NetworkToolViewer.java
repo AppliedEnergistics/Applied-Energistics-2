@@ -67,8 +67,7 @@ public class NetworkToolViewer implements INetworkTool
 	}
 
 	@Override
-	public ItemStack removeStackFromSlot(
-			int i )
+	public ItemStack removeStackFromSlot( int i )
 	{
 		return this.inv.removeStackFromSlot( i );
 	}
@@ -141,16 +140,13 @@ public class NetworkToolViewer implements INetworkTool
 	}
 
 	@Override
-	public int getField(
-			final int id )
+	public int getField( final int id )
 	{
 		return this.inv.getField( id );
 	}
 
 	@Override
-	public void setField(
-			final int id,
-			final int value )
+	public void setField( final int id, final int value )
 	{
 		this.inv.setField( id, value );
 	}

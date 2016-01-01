@@ -15,8 +15,7 @@ public final class UnlistedBlockPos implements IUnlistedProperty<BlockPos>
 	}
 
 	@Override
-	public boolean isValid(
-			final BlockPos value )
+	public boolean isValid( final BlockPos value )
 	{
 		return true;
 	}
@@ -28,8 +27,7 @@ public final class UnlistedBlockPos implements IUnlistedProperty<BlockPos>
 	}
 
 	@Override
-	public String valueToString(
-			final BlockPos value )
+	public String valueToString( final BlockPos value )
 	{
 		return null;
 	}

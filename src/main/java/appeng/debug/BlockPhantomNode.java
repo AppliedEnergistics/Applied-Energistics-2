@@ -42,14 +42,7 @@ public class BlockPhantomNode extends AEBaseTileBlock
 	}
 
 	@Override
-	public boolean onActivated(
-			final World w,
-			final BlockPos pos,
-			final EntityPlayer player,
-			final EnumFacing side,
-			final float hitX,
-			final float hitY,
-			final float hitZ )
+	public boolean onActivated( final World w, final BlockPos pos, final EntityPlayer player, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
 	{
 		final TilePhantomNode tpn = this.getTileEntity( w, pos );
 		tpn.triggerCrashMode();

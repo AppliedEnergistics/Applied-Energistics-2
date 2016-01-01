@@ -34,8 +34,5 @@ public interface IMeteoriteWorld
 
 	void done();
 
-	IBlockState getBlockState(
-			int x,
-			int y,
-			int z );
+	IBlockState getBlockState( int x, int y, int z );
 }

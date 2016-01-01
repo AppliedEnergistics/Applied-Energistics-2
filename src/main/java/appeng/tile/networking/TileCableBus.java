@@ -345,12 +345,7 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	}
 
 	@Override
-	public void addCollidingBlockToList(
-			final World w,
-			final BlockPos pos,
-			final AxisAlignedBB bb,
-			final List<AxisAlignedBB> out,
-			final Entity e )
+	public void addCollidingBlockToList( final World w, final BlockPos pos, final AxisAlignedBB bb, final List<AxisAlignedBB> out, final Entity e )
 	{
 		for( final AxisAlignedBB bx : this.getSelectedBoundingBoxesFromPool( w, pos, e, false ) )
 		{
@@ -384,10 +379,7 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	}
 
 	@Override
-	public boolean recolourBlock(
-			final EnumFacing side,
-			final AEColor colour,
-			final EntityPlayer who )
+	public boolean recolourBlock( final EnumFacing side, final AEColor colour, final EntityPlayer who )
 	{
 		return this.getCableBus().recolourBlock( side, colour, who );
 	}

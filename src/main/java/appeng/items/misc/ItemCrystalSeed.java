@@ -99,8 +99,7 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 		Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register( this, new ItemMeshDefinition(){
 
 			@Override
-			public ModelResourceLocation getModelLocation(
-					final ItemStack stack )
+			public ModelResourceLocation getModelLocation( final ItemStack stack )
 			{
 				ModelResourceLocation[] list = null;
 

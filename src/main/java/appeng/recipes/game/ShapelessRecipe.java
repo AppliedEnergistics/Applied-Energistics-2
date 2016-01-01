@@ -182,8 +182,7 @@ public class ShapelessRecipe implements IRecipe, IRecipeBakeable
 	}
 
 	@Override
-	public ItemStack[] getRemainingItems(
-			final InventoryCrafting inv )
+	public ItemStack[] getRemainingItems( final InventoryCrafting inv )
 	{
 		return ForgeHooks.defaultRecipeGetRemainingItems( inv );
 	}

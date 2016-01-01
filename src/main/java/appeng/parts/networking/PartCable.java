@@ -153,8 +153,7 @@ public class PartCable extends AEBasePart implements IPartCable
 	}
 
 	@Override
-	public void setValidSides(
-			final EnumSet<EnumFacing> sides )
+	public void setValidSides( final EnumSet<EnumFacing> sides )
 	{
 		this.getProxy().setValidSides( sides );
 	}

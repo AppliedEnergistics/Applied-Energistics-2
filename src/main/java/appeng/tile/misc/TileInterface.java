@@ -141,10 +141,7 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, IT
 	}
 
 	@Override
-	public void getDrops(
-			final World w,
-			final BlockPos pos,
-			final List<ItemStack> drops )
+	public void getDrops( final World w, final BlockPos pos, final List<ItemStack> drops )
 	{
 		this.duality.addDrops( drops );
 	}

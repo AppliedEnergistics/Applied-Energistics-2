@@ -144,10 +144,7 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 	}
 
 	@Override
-	public final IBlockState getExtendedState(
-			final IBlockState state,
-			final IBlockAccess world,
-			final BlockPos pos )
+	public final IBlockState getExtendedState( final IBlockState state, final IBlockAccess world, final BlockPos pos )
 	{
 		return ( (IExtendedBlockState) super.getExtendedState( state, world, pos ) ).withProperty( AE_BLOCK_POS, pos ).withProperty( AE_BLOCK_ACCESS, world );
 	}
@@ -188,10 +185,7 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 	}
 
 	@Override
-	public int colorMultiplier(
-			final IBlockAccess worldIn,
-			final BlockPos pos,
-			final int colorTint )
+	public int colorMultiplier( final IBlockAccess worldIn, final BlockPos pos, final int colorTint )
 	{
 		return colorTint;
 	}
@@ -266,13 +260,7 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 	}
 
 	@Override
-	public void addCollisionBoxesToList(
-			final World w,
-			final BlockPos pos,
-			final IBlockState state,
-			final AxisAlignedBB bb,
-			final List out,
-			final Entity e )
+	public void addCollisionBoxesToList( final World w, final BlockPos pos, final IBlockState state, final AxisAlignedBB bb, final List out, final Entity e )
 	{
 		final ICustomCollision collisionHandler = this.getCustomCollision( w, pos );
 
@@ -297,9 +285,7 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public AxisAlignedBB getSelectedBoundingBox(
-			final World w,
-			final BlockPos pos )
+	public AxisAlignedBB getSelectedBoundingBox( final World w, final BlockPos pos )
 	{
 		final ICustomCollision collisionHandler = this.getCustomCollision( w, pos );
 
@@ -388,11 +374,7 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 	}
 
 	@Override
-	public MovingObjectPosition collisionRayTrace(
-			final World w,
-			final BlockPos pos,
-			final Vec3 a,
-			final Vec3 b )
+	public MovingObjectPosition collisionRayTrace( final World w, final BlockPos pos, final Vec3 a, final Vec3 b )
 	{
 		final ICustomCollision collisionHandler = this.getCustomCollision( w, pos );
 
@@ -458,17 +440,13 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 	}
 
 	@Override
-	public int getComparatorInputOverride(
-			final World worldIn,
-			final BlockPos pos )
+	public int getComparatorInputOverride( final World worldIn, final BlockPos pos )
 	{
 		return 0;
 	}
 
 	@Override
-	public boolean isNormalCube(
-			final IBlockAccess world,
-			final BlockPos pos )
+	public boolean isNormalCube( final IBlockAccess world, final BlockPos pos )
 	{
 		return this.isFullSize();
 	}
@@ -483,10 +461,7 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 	}
 
 	@Override
-	public boolean rotateBlock(
-			final World w,
-			final BlockPos pos,
-			final EnumFacing axis )
+	public boolean rotateBlock( final World w, final BlockPos pos, final EnumFacing axis )
 	{
 		final IOrientable rotatable = this.getOrientable( w, pos );
 
@@ -572,9 +547,7 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 		return this.hasSubtypes;
 	}
 
-	public EnumFacing mapRotation(
-			final IOrientable ori,
-			final EnumFacing dir )
+	public EnumFacing mapRotation( final IOrientable ori, final EnumFacing dir )
 	{
 		// case DOWN: return bottomIcon;
 		// case UP: return blockIcon;
@@ -640,9 +613,7 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 	}
 
 	@SideOnly( Side.CLIENT )
-	public void registerBlockIcons(
-			final TextureMap clientHelper,
-			final String name )
+	public void registerBlockIcons( final TextureMap clientHelper, final String name )
 	{
 		final BlockRenderInfo info = this.getRendererInstance();
 		final FlippableIcon topIcon;

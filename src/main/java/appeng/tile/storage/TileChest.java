@@ -842,10 +842,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 	}
 
 	@Override
-	public boolean recolourBlock(
-			final EnumFacing side,
-			final AEColor newPaintedColor,
-			final EntityPlayer who )
+	public boolean recolourBlock( final EnumFacing side, final AEColor newPaintedColor, final EntityPlayer who )
 	{
 		if( this.paintedColor == newPaintedColor )
 		{

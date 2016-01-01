@@ -53,9 +53,7 @@ public class BlockCraftingMonitor extends BlockCraftingUnit
 	}
 
 	@Override
-	public IAESprite getIcon(
-			final EnumFacing side,
-			final IBlockState state )
+	public IAESprite getIcon( final EnumFacing side, final IBlockState state )
 	{
 		if( side != EnumFacing.SOUTH )
 		{

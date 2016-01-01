@@ -98,15 +98,7 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench /
 	}
 
 	@Override
-	public boolean onItemUseFirst(
-			final ItemStack stack,
-			final EntityPlayer player,
-			final World world,
-			final BlockPos pos,
-			final EnumFacing side,
-			final float hitX,
-			final float hitY,
-			final float hitZ )
+	public boolean onItemUseFirst( final ItemStack stack, final EntityPlayer player, final World world, final BlockPos pos, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
 	{
 		final MovingObjectPosition mop = new MovingObjectPosition( new Vec3( hitX, hitY, hitZ ), side, pos );
 		final TileEntity te = world.getTileEntity( pos );
@@ -134,10 +126,7 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench /
 	}
 
 	@Override
-	public boolean doesSneakBypassUse(
-			final World world,
-			final BlockPos pos,
-			final EntityPlayer player )
+	public boolean doesSneakBypassUse( final World world, final BlockPos pos, final EntityPlayer player )
 	{
 		return true;
 	}
@@ -200,10 +189,7 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench /
 	}
 
 	@Override
-	public boolean canWrench(
-			final ItemStack wrench,
-			final EntityPlayer player,
-			final BlockPos pos )
+	public boolean canWrench( final ItemStack wrench, final EntityPlayer player, final BlockPos pos )
 	{
 		return true;
 	}

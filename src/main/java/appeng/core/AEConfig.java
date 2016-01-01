@@ -76,13 +76,13 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 	public double spatialPowerMultiplier = 1250.0;
 	public String[] grinderOres = {
 			// Vanilla Items
-			"Obsidian", "Ender", "EnderPearl", "Coal", "Iron", "Gold", "Charcoal", "NetherQuartz",
+	"Obsidian", "Ender", "EnderPearl", "Coal", "Iron", "Gold", "Charcoal", "NetherQuartz",
 			// Common Mod Ores
-			"Copper", "Tin", "Silver", "Lead", "Bronze",
+	"Copper", "Tin", "Silver", "Lead", "Bronze",
 			// AE
-			"CertusQuartz", "Wheat", "Fluix",
+	"CertusQuartz", "Wheat", "Fluix",
 			// Other Mod Ores
-			"Brass", "Platinum", "Nickel", "Invar", "Aluminium", "Electrum", "Osmium", "Zinc" };
+	"Brass", "Platinum", "Nickel", "Invar", "Aluminium", "Electrum", "Osmium", "Zinc" };
 	public double oreDoublePercentage = 90.0;
 	public boolean enableEffects = true;
 	public boolean useLargeFonts = false;

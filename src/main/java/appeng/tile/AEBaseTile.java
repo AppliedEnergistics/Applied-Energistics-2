@@ -76,11 +76,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	private EnumFacing up = null;
 
 	@Override
-	public boolean shouldRefresh(
-			final World world,
-			final BlockPos pos,
-			final IBlockState oldState,
-			final IBlockState newSate )
+	public boolean shouldRefresh( final World world, final BlockPos pos, final IBlockState oldState, final IBlockState newSate )
 	{
 		return newSate.getBlock() != oldState.getBlock(); // state dosn't change tile entities in AE2.
 	}

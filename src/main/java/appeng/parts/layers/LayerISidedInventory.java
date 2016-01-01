@@ -269,16 +269,13 @@ public class LayerISidedInventory extends LayerBase implements ISidedInventory
 	}
 
 	@Override
-	public int getField(
-			final int id )
+	public int getField( final int id )
 	{
 		return 0;
 	}
 
 	@Override
-	public void setField(
-			final int id,
-			final int value )
+	public void setField( final int id, final int value )
 	{
 
 	}

@@ -25,11 +25,21 @@ import net.minecraft.util.IChatComponent;
 
 public enum PlayerMessages
 {
-	ChestCannotReadStorageCell, InvalidMachine, LoadedSettings, SavedSettings, MachineNotPowered,
+	ChestCannotReadStorageCell,
+	InvalidMachine,
+	LoadedSettings,
+	SavedSettings,
+	MachineNotPowered,
 
-	isNowLocked, isNowUnlocked,
+	isNowLocked,
+	isNowUnlocked,
 	AmmoDepleted,
-	CommunicationError, OutOfRange, DeviceNotPowered, DeviceNotWirelessTerminal, DeviceNotLinked, StationCanNotBeLocated,
+	CommunicationError,
+	OutOfRange,
+	DeviceNotPowered,
+	DeviceNotWirelessTerminal,
+	DeviceNotLinked,
+	StationCanNotBeLocated,
 	SettingCleared, ;
 
 	public IChatComponent get()

@@ -29,14 +29,6 @@ import net.minecraft.world.World;
 public interface IBlockTool
 {
 
-	public boolean onItemUse(
-			ItemStack item,
-			EntityPlayer p,
-			World w,
-			BlockPos pos,
-			EnumFacing side,
-			float hitX,
-			float hitY,
-			float hitZ );
+	public boolean onItemUse( ItemStack item, EntityPlayer p, World w, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ );
 
 }

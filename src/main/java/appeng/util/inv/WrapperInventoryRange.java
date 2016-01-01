@@ -135,15 +135,13 @@ public class WrapperInventoryRange implements IInventory
 	}
 
 	@Override
-	public void openInventory(
-			final EntityPlayer player )
+	public void openInventory( final EntityPlayer player )
 	{
 		this.src.openInventory( player );
 	}
 
 	@Override
-	public void closeInventory(
-			final EntityPlayer player )
+	public void closeInventory( final EntityPlayer player )
 	{
 		this.src.closeInventory( player );
 	}
@@ -155,8 +153,7 @@ public class WrapperInventoryRange implements IInventory
 	}
 
 	@Override
-	public int getField(
-			final int id )
+	public int getField( final int id )
 	{
 		return this.src.getField( id );
 	}
@@ -174,9 +171,7 @@ public class WrapperInventoryRange implements IInventory
 	}
 
 	@Override
-	public void setField(
-			final int id,
-			final int value )
+	public void setField( final int id, final int value )
 	{
 		this.src.setField( id, value );
 	}

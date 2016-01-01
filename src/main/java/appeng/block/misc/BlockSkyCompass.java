@@ -75,11 +75,7 @@ public class BlockSkyCompass extends AEBaseTileBlock implements ICustomCollision
 	}
 
 	@Override
-	public void onNeighborBlockChange(
-			final World w,
-			final BlockPos pos,
-			final IBlockState state,
-			final Block neighborBlock )
+	public void onNeighborBlockChange( final World w, final BlockPos pos, final IBlockState state, final Block neighborBlock )
 	{
 		final TileSkyCompass sc = this.getTileEntity( w, pos );
 		final EnumFacing up = sc.getForward();
@@ -96,9 +92,7 @@ public class BlockSkyCompass extends AEBaseTileBlock implements ICustomCollision
 	}
 
 	@Override
-	public boolean canPlaceBlockAt(
-			final World w,
-			final BlockPos pos )
+	public boolean canPlaceBlockAt( final World w, final BlockPos pos )
 	{
 		for( final EnumFacing dir : EnumFacing.VALUES )
 		{
@@ -111,11 +105,7 @@ public class BlockSkyCompass extends AEBaseTileBlock implements ICustomCollision
 	}
 
 	@Override
-	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool(
-			final World w,
-			final BlockPos pos,
-			final Entity thePlayer,
-			final boolean b )
+	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool( final World w, final BlockPos pos, final Entity thePlayer, final boolean b )
 	{
 		final TileSkyCompass tile = this.getTileEntity( w, pos );
 		if( tile != null )
@@ -177,12 +167,7 @@ public class BlockSkyCompass extends AEBaseTileBlock implements ICustomCollision
 	}
 
 	@Override
-	public void addCollidingBlockToList(
-			final World w,
-			final BlockPos pos,
-			final AxisAlignedBB bb,
-			final List<AxisAlignedBB> out,
-			final Entity e )
+	public void addCollidingBlockToList( final World w, final BlockPos pos, final AxisAlignedBB bb, final List<AxisAlignedBB> out, final Entity e )
 	{
 
 	}

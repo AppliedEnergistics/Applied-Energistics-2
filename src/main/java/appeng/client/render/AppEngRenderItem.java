@@ -48,9 +48,7 @@ import appeng.util.ReadableNumberConverter;
  */
 public class AppEngRenderItem extends RenderItem
 {
-	public AppEngRenderItem(
-			final TextureManager textureManager,
-			final ModelManager modelManager )
+	public AppEngRenderItem( final TextureManager textureManager, final ModelManager modelManager )
 	{
 		super( textureManager, modelManager );
 	}
@@ -61,12 +59,7 @@ public class AppEngRenderItem extends RenderItem
 	private IAEItemStack aeStack = null;
 
 	@Override
-	public void renderItemOverlayIntoGUI(
-			final FontRenderer fontRenderer,
-			final ItemStack is,
-			final int xPos,
-			final int yPos,
-			final String text )
+	public void renderItemOverlayIntoGUI( final FontRenderer fontRenderer, final ItemStack is, final int xPos, final int yPos, final String text )
 	{
 		if( is != null )
 		{

@@ -195,8 +195,7 @@ public final class ItemMultiPart extends AEBaseItem implements IPartItem, IItemG
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void registerCustomIcon(
-			final TextureMap map )
+	public void registerCustomIcon( final TextureMap map )
 	{
 		for( final Entry<Integer, PartTypeWithVariant> part : this.registered.entrySet() )
 		{
@@ -391,10 +390,7 @@ public final class ItemMultiPart extends AEBaseItem implements IPartItem, IItemG
 		@Override
 		public String toString()
 		{
-			return "PartTypeWithVariant{" +
-					"part=" + this.part +
-					", variant=" + this.variant +
-					'}';
+			return "PartTypeWithVariant{" + "part=" + this.part + ", variant=" + this.variant + '}';
 		}
 	}
 

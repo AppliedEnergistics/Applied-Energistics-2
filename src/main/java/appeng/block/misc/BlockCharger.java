@@ -71,14 +71,7 @@ public class BlockCharger extends AEBaseTileBlock implements ICustomCollision
 	}
 
 	@Override
-	public boolean onActivated(
-			final World w,
-			final BlockPos pos,
-			final EntityPlayer player,
-			final EnumFacing side,
-			final float hitX,
-			final float hitY,
-			final float hitZ )
+	public boolean onActivated( final World w, final BlockPos pos, final EntityPlayer player, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
 	{
 		if( player.isSneaking() )
 		{
@@ -99,11 +92,7 @@ public class BlockCharger extends AEBaseTileBlock implements ICustomCollision
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void randomDisplayTick(
-			final World w,
-			final BlockPos pos,
-			final IBlockState state,
-			final Random r )
+	public void randomDisplayTick( final World w, final BlockPos pos, final IBlockState state, final Random r )
 	{
 		if( !AEConfig.instance.enableEffects )
 		{
@@ -139,11 +128,7 @@ public class BlockCharger extends AEBaseTileBlock implements ICustomCollision
 	}
 
 	@Override
-	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool(
-			final World w,
-			final BlockPos pos,
-			final Entity thePlayer,
-			final boolean b )
+	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool( final World w, final BlockPos pos, final Entity thePlayer, final boolean b )
 	{
 		final TileCharger tile = this.getTileEntity( w, pos );
 		if( tile != null )
@@ -199,12 +184,7 @@ public class BlockCharger extends AEBaseTileBlock implements ICustomCollision
 	}
 
 	@Override
-	public void addCollidingBlockToList(
-			final World w,
-			final BlockPos pos,
-			final AxisAlignedBB bb,
-			final List<AxisAlignedBB> out,
-			final Entity e )
+	public void addCollidingBlockToList( final World w, final BlockPos pos, final AxisAlignedBB bb, final List<AxisAlignedBB> out, final Entity e )
 	{
 		out.add( AxisAlignedBB.fromBounds( 0.0, 0.0, 0.0, 1.0, 1.0, 1.0 ) );
 	}

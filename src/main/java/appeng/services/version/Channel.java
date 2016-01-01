@@ -25,7 +25,5 @@ package appeng.services.version;
  */
 public enum Channel
 {
-	Alpha,
-	Beta,
-	Stable
+	Alpha, Beta, Stable
 }

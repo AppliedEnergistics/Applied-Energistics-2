@@ -32,25 +32,13 @@ public class AEAxisAlignedBB
 		this.maxZ = f;
 	}
 
-	public static AEAxisAlignedBB fromBounds(
-			final double a,
-			final double b,
-			final double c,
-			final double d,
-			final double e,
-			final double f )
+	public static AEAxisAlignedBB fromBounds( final double a, final double b, final double c, final double d, final double e, final double f )
 	{
 		return new AEAxisAlignedBB( a, b, c, d, e, f );
 	}
 
-	public static AEAxisAlignedBB fromBounds(
-			final AxisAlignedBB bb )
+	public static AEAxisAlignedBB fromBounds( final AxisAlignedBB bb )
 	{
-		return new AEAxisAlignedBB( bb.minX,
-				bb.minY,
-				bb.minZ,
-				bb.maxX,
-				bb.maxY,
-				bb.maxZ );
+		return new AEAxisAlignedBB( bb.minX, bb.minY, bb.minZ, bb.maxX, bb.maxY, bb.maxZ );
 	}
 }

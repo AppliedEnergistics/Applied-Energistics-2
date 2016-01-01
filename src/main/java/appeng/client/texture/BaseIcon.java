@@ -33,8 +33,7 @@ public class BaseIcon implements IAESprite
 	}
 
 	@Override
-	public float getInterpolatedU(
-			final double px )
+	public float getInterpolatedU( final double px )
 	{
 		return this.spite.getInterpolatedU( px );
 	}
@@ -58,8 +57,7 @@ public class BaseIcon implements IAESprite
 	}
 
 	@Override
-	public float getInterpolatedV(
-			final double px )
+	public float getInterpolatedV( final double px )
 	{
 		return this.spite.getInterpolatedV( px );
 	}

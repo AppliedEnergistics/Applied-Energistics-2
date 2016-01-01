@@ -82,8 +82,7 @@ public class PacketMEInventoryUpdate extends AppEngPacket
 
 		// int originalBytes = stream.readableBytes();
 
-		final GZIPInputStream gzReader = new GZIPInputStream( new InputStream()
-		{
+		final GZIPInputStream gzReader = new GZIPInputStream( new InputStream(){
 			@Override
 			public int read() throws IOException
 			{
@@ -133,8 +132,7 @@ public class PacketMEInventoryUpdate extends AppEngPacket
 		this.data.writeInt( this.getPacketID() );
 		this.data.writeByte( this.ref );
 
-		this.compressFrame = new GZIPOutputStream( new OutputStream()
-		{
+		this.compressFrame = new GZIPOutputStream( new OutputStream(){
 			@Override
 			public void write( final int value ) throws IOException
 			{

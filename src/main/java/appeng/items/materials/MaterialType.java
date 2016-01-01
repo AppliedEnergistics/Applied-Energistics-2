@@ -86,7 +86,8 @@ public enum MaterialType
 
 	// Adv Cards
 	AdvCard( 28 ),
-	CardFuzzy( 29 ), CardSpeed( 30 ),
+	CardFuzzy( 29 ),
+	CardSpeed( 30 ),
 	CardInverter( 31 ),
 
 	Cell2SpatialPart( 32, AEFeature.SpatialIO ),

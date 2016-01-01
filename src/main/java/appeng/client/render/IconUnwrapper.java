@@ -18,8 +18,7 @@ public class IconUnwrapper extends TextureAtlasSprite
 	private final float min_v;
 	private final float max_v;
 
-	protected IconUnwrapper(
-			final IAESprite src )
+	protected IconUnwrapper( final IAESprite src )
 	{
 		super( src.getIconName() );
 		this.width = src.getIconWidth();

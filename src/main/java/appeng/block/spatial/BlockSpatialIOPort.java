@@ -48,11 +48,7 @@ public class BlockSpatialIOPort extends AEBaseTileBlock
 	}
 
 	@Override
-	public void onNeighborBlockChange(
-			final World w,
-			final BlockPos pos,
-			final IBlockState state,
-			final Block neighborBlock )
+	public void onNeighborBlockChange( final World w, final BlockPos pos, final IBlockState state, final Block neighborBlock )
 	{
 		final TileSpatialIOPort te = this.getTileEntity( w, pos );
 		if( te != null )
@@ -62,14 +58,7 @@ public class BlockSpatialIOPort extends AEBaseTileBlock
 	}
 
 	@Override
-	public boolean onActivated(
-			final World w,
-			final BlockPos pos,
-			final EntityPlayer p,
-			final EnumFacing side,
-			final float hitX,
-			final float hitY,
-			final float hitZ )
+	public boolean onActivated( final World w, final BlockPos pos, final EntityPlayer p, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
 	{
 		if( p.isSneaking() )
 		{

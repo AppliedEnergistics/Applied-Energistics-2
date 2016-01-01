@@ -54,15 +54,7 @@ public class ToolQuartzCuttingKnife extends AEBaseItem implements IGuiItem
 	}
 
 	@Override
-	public boolean onItemUse(
-			final ItemStack stack,
-			final EntityPlayer p,
-			final World worldIn,
-			final BlockPos pos,
-			final EnumFacing side,
-			final float hitX,
-			final float hitY,
-			final float hitZ )
+	public boolean onItemUse( final ItemStack stack, final EntityPlayer p, final World worldIn, final BlockPos pos, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
 	{
 		if( Platform.isServer() )
 		{

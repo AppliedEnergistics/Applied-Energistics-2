@@ -196,10 +196,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 	}
 
 	@Override
-	public void getDrops(
-			final World w,
-			final BlockPos pos,
-			final List<ItemStack> drops )
+	public void getDrops( final World w, final BlockPos pos, final List<ItemStack> drops )
 	{
 		super.getDrops( w, pos, drops );
 

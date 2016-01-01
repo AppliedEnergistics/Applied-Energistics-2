@@ -15,8 +15,7 @@ public final class UnlistedBlockAccess implements IUnlistedProperty<IBlockAccess
 	}
 
 	@Override
-	public boolean isValid(
-			final IBlockAccess value )
+	public boolean isValid( final IBlockAccess value )
 	{
 		return true;
 	}
@@ -28,8 +27,7 @@ public final class UnlistedBlockAccess implements IUnlistedProperty<IBlockAccess
 	}
 
 	@Override
-	public String valueToString(
-			final IBlockAccess value )
+	public String valueToString( final IBlockAccess value )
 	{
 		return null;
 	}

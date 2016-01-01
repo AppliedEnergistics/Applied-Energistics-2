@@ -443,11 +443,11 @@ public class BaseBlockRender<B extends AEBaseBlock, T extends AEBaseTile>
 
 	protected void renderBlockBounds( final ModelGenerator renderer,
 
-			double minX, double minY, double minZ,
+	double minX, double minY, double minZ,
 
-			double maxX, double maxY, double maxZ,
+	double maxX, double maxY, double maxZ,
 
-			final EnumFacing x, final EnumFacing y, final EnumFacing z )
+	final EnumFacing x, final EnumFacing y, final EnumFacing z )
 	{
 		minX /= 16.0;
 		minY /= 16.0;
@@ -557,28 +557,28 @@ public class BaseBlockRender<B extends AEBaseBlock, T extends AEBaseTile>
 		final double layerBX = 0.0;
 		final double layerAY = 0.0;
 		this.renderFace( orientation, tess, offsetX, offsetY, offsetZ, layerAX, layerAY, layerAZ, layerBX, layerBY, layerBZ,
-				// u -> u
-				0, 1.0,
-				// v -> v
-				0, edgeThickness, ico, flip );
+		// u -> u
+		0, 1.0,
+		// v -> v
+		0, edgeThickness, ico, flip );
 
 		this.renderFace( orientation, tess, offsetX, offsetY, offsetZ, layerAX, layerAY, layerAZ, layerBX, layerBY, layerBZ,
-				// u -> u
-				0.0, edgeThickness,
-				// v -> v
-				edgeThickness, 1.0 - edgeThickness, ico, flip );
+		// u -> u
+		0.0, edgeThickness,
+		// v -> v
+		edgeThickness, 1.0 - edgeThickness, ico, flip );
 
 		this.renderFace( orientation, tess, offsetX, offsetY, offsetZ, layerAX, layerAY, layerAZ, layerBX, layerBY, layerBZ,
-				// u -> u
-				1.0 - edgeThickness, 1.0,
-				// v -> v
-				edgeThickness, 1.0 - edgeThickness, ico, flip );
+		// u -> u
+		1.0 - edgeThickness, 1.0,
+		// v -> v
+		edgeThickness, 1.0 - edgeThickness, ico, flip );
 
 		this.renderFace( orientation, tess, offsetX, offsetY, offsetZ, layerAX, layerAY, layerAZ, layerBX, layerBY, layerBZ,
-				// u -> u
-				0, 1.0,
-				// v -> v
-				1.0 - edgeThickness, 1.0, ico, flip );
+		// u -> u
+		0, 1.0,
+		// v -> v
+		1.0 - edgeThickness, 1.0, ico, flip );
 	}
 
 	@SideOnly( Side.CLIENT )

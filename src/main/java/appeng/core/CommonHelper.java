@@ -74,6 +74,5 @@ public abstract class CommonHelper
 
 	public abstract void configureIcon( Object item, String name );
 
-	public abstract ResourceLocation addIcon(
-			String string );
+	public abstract ResourceLocation addIcon( String string );
 }

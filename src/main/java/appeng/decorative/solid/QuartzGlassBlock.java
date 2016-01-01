@@ -60,10 +60,7 @@ public class QuartzGlassBlock extends AEBaseBlock
 	}
 
 	@Override
-	public boolean shouldSideBeRendered(
-			final IBlockAccess w,
-			final BlockPos pos,
-			final EnumFacing side )
+	public boolean shouldSideBeRendered( final IBlockAccess w, final BlockPos pos, final EnumFacing side )
 	{
 		final Material mat = w.getBlockState( pos ).getBlock().getMaterial();
 		if( mat == Material.glass || mat == AEGlassMaterial.INSTANCE )

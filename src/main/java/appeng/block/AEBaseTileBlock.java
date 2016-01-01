@@ -156,10 +156,7 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements IAEFeature,
 	}
 
 	@Override
-	public void breakBlock(
-			final World w,
-			final BlockPos pos,
-			final IBlockState state )
+	public void breakBlock( final World w, final BlockPos pos, final IBlockState state )
 	{
 		final AEBaseTile te = this.getTileEntity( w, pos );
 		if( te != null )
@@ -195,11 +192,7 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements IAEFeature,
 	}
 
 	@Override
-	public boolean recolorBlock(
-			final World world,
-			final BlockPos pos,
-			final EnumFacing side,
-			final EnumDyeColor color )
+	public boolean recolorBlock( final World world, final BlockPos pos, final EnumFacing side, final EnumDyeColor color )
 	{
 		final TileEntity te = this.getTileEntity( world, pos );
 
@@ -221,9 +214,7 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements IAEFeature,
 	}
 
 	@Override
-	public int getComparatorInputOverride(
-			final World w,
-			final BlockPos pos )
+	public int getComparatorInputOverride( final World w, final BlockPos pos )
 	{
 		final TileEntity te = this.getTileEntity( w, pos );
 		if( te instanceof IInventory )
@@ -234,12 +225,7 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements IAEFeature,
 	}
 
 	@Override
-	public boolean onBlockEventReceived(
-			final World worldIn,
-			final BlockPos pos,
-			final IBlockState state,
-			final int eventID,
-			final int eventParam )
+	public boolean onBlockEventReceived( final World worldIn, final BlockPos pos, final IBlockState state, final int eventID, final int eventParam )
 	{
 		super.onBlockEventReceived( worldIn, pos, state, eventID, eventParam );
 		final TileEntity tileentity = worldIn.getTileEntity( pos );
@@ -247,12 +233,7 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements IAEFeature,
 	}
 
 	@Override
-	public void onBlockPlacedBy(
-			final World w,
-			final BlockPos pos,
-			final IBlockState state,
-			final EntityLivingBase placer,
-			final ItemStack is )
+	public void onBlockPlacedBy( final World w, final BlockPos pos, final IBlockState state, final EntityLivingBase placer, final ItemStack is )
 	{
 		if( is.hasDisplayName() )
 		{
@@ -265,15 +246,7 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements IAEFeature,
 	}
 
 	@Override
-	public boolean onBlockActivated(
-			final World w,
-			final BlockPos pos,
-			final IBlockState state,
-			final EntityPlayer player,
-			final EnumFacing side,
-			final float hitX,
-			final float hitY,
-			final float hitZ )
+	public boolean onBlockActivated( final World w, final BlockPos pos, final IBlockState state, final EntityPlayer player, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
 	{
 		if( player != null )
 		{

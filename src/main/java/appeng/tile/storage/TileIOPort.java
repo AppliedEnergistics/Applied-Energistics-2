@@ -564,10 +564,7 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 	 * @param drops drops of tile entity
 	 */
 	@Override
-	public void getDrops(
-			final World w,
-			final BlockPos pos,
-			final List<ItemStack> drops )
+	public void getDrops( final World w, final BlockPos pos, final List<ItemStack> drops )
 	{
 		super.getDrops( w, pos, drops );
 

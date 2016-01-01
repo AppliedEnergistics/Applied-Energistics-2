@@ -279,8 +279,7 @@ public final class MultiItem extends AEBaseItem implements IStorageComponent, IU
 	protected void getCheckedSubItems( final Item sameItem, final CreativeTabs creativeTab, final List<ItemStack> itemStacks )
 	{
 		final List<MaterialType> types = Arrays.asList( MaterialType.values() );
-		Collections.sort( types, new Comparator<MaterialType>()
-		{
+		Collections.sort( types, new Comparator<MaterialType>(){
 
 			@Override
 			public int compare( final MaterialType o1, final MaterialType o2 )

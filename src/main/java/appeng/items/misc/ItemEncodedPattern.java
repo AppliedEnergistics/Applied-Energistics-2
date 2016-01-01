@@ -68,9 +68,7 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 	}
 
 	@Override
-	public void registerIcons(
-			final ClientHelper proxy,
-			final String name )
+	public void registerIcons( final ClientHelper proxy, final String name )
 	{
 		this.encodedPatternModel = this.res = proxy.setIcon( this, name );
 
@@ -79,8 +77,7 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 			boolean recursive = false;
 
 			@Override
-			public ModelResourceLocation getModelLocation(
-					final ItemStack stack )
+			public ModelResourceLocation getModelLocation( final ItemStack stack )
 			{
 				if( this.recursive == false )
 				{
@@ -112,15 +109,7 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 	}
 
 	@Override
-	public boolean onItemUseFirst(
-			final ItemStack stack,
-			final EntityPlayer player,
-			final World world,
-			final BlockPos pos,
-			final EnumFacing side,
-			final float hitX,
-			final float hitY,
-			final float hitZ )
+	public boolean onItemUseFirst( final ItemStack stack, final EntityPlayer player, final World world, final BlockPos pos, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
 	{
 		return this.clearPattern( stack, player );
 	}

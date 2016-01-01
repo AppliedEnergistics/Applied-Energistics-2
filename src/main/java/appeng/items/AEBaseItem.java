@@ -111,21 +111,18 @@ public abstract class AEBaseItem extends Item implements IAEFeature
 	protected IAESprite myIcon = null;
 
 	@SideOnly( Side.CLIENT )
-	public void registerIcons(
-			final ClientHelper proxy, final String name )
+	public void registerIcons( final ClientHelper proxy, final String name )
 	{
 		proxy.setIcon( this, 0, name );
 	}
 
-	public IAESprite getIcon(
-			final ItemStack is )
+	public IAESprite getIcon( final ItemStack is )
 	{
 		return this.myIcon;
 	}
 
 	@SideOnly( Side.CLIENT )
-	public void registerCustomIcon(
-			final TextureMap map )
+	public void registerCustomIcon( final TextureMap map )
 	{
 
 	}

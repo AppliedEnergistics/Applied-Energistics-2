@@ -130,7 +130,8 @@ public enum AEFeature
 	InterfaceTerminal( Constants.CATEGORY_CRAFTING ),
 	EnableDisassemblyCrafting( Constants.CATEGORY_CRAFTING ),
 
-	AlphaPass( Constants.CATEGORY_RENDERING ), PaintBalls( Constants.CATEGORY_TOOLS ),
+	AlphaPass( Constants.CATEGORY_RENDERING ),
+	PaintBalls( Constants.CATEGORY_TOOLS ),
 
 	MolecularAssembler( Constants.CATEGORY_CRAFTING_FEATURES ),
 	Patterns( Constants.CATEGORY_CRAFTING_FEATURES ),

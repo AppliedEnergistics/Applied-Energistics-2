@@ -50,8 +50,7 @@ public class BlockEnergyCell extends AEBaseTileBlock
 	public static final PropertyInteger ENERGY_STORAGE = PropertyInteger.create( "fullness", 0, 8 );
 
 	@Override
-	public int getMetaFromState(
-			final IBlockState state )
+	public int getMetaFromState( final IBlockState state )
 	{
 		return (int) state.getValue( ENERGY_STORAGE );
 	}

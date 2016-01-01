@@ -265,8 +265,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements /* IPip
 	}
 
 	@Override
-	public int[] getSlotsForFace(
-			final EnumFacing side )
+	public int[] getSlotsForFace( final EnumFacing side )
 	{
 		final int[] slots = new int[this.getSizeInventory()];
 		for( int x = 0; x < this.getSizeInventory(); x++ )
@@ -383,9 +382,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements /* IPip
 	// }
 
 	@Override
-	public void setField(
-			final int id,
-			final int value )
+	public void setField( final int id, final int value )
 	{
 
 	}

@@ -67,9 +67,7 @@ public class Grind implements ICraftHandler, IWebsiteSerializer
 	@Override
 	public String getPattern( final RecipeHandler h )
 	{
-		return "grind\n" +
-				h.getName( this.pro_input ) + '\n' +
-				h.getName( this.pro_output[0] );
+		return "grind\n" + h.getName( this.pro_input ) + '\n' + h.getName( this.pro_output[0] );
 	}
 
 	@Override

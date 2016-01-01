@@ -31,8 +31,7 @@ public class BusRenderer
 		return this.mg;
 	}
 
-	public void setRenderer(
-			ModelGenerator renderer )
+	public void setRenderer( ModelGenerator renderer )
 	{
 		this.mg = renderer;
 	}

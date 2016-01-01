@@ -44,10 +44,7 @@ public class RenderBlockSkyChest extends BaseBlockRender<BlockSkyChest, TileSkyC
 
 	private static final ResourceLocation SKY_STONE_CHEST = new ResourceLocation( "appliedenergistics2", "textures/models/skychest.png" );
 	private static final ResourceLocation SKY_BLOCK_CHEST = new ResourceLocation( "appliedenergistics2", "textures/models/skyblockchest.png" );
-	private static final ResourceLocation[] METADATA_TO_TEXTURE = {
-			SKY_STONE_CHEST,
-			SKY_BLOCK_CHEST
-	};
+	private static final ResourceLocation[] METADATA_TO_TEXTURE = { SKY_STONE_CHEST, SKY_BLOCK_CHEST };
 
 	private final ModelChest model = new ModelChest();
 

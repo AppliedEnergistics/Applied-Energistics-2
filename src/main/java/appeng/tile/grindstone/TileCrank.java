@@ -154,11 +154,7 @@ public class TileCrank extends AEBaseTile implements ICustomCollision, ITickable
 	}
 
 	@Override
-	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool(
-			final World w,
-			final BlockPos pos,
-			final Entity thePlayer,
-			final boolean b )
+	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool( final World w, final BlockPos pos, final Entity thePlayer, final boolean b )
 	{
 		final double xOff = -0.15 * this.getUp().getFrontOffsetX();
 		final double yOff = -0.15 * this.getUp().getFrontOffsetY();
@@ -167,12 +163,7 @@ public class TileCrank extends AEBaseTile implements ICustomCollision, ITickable
 	}
 
 	@Override
-	public void addCollidingBlockToList(
-			final World w,
-			final BlockPos pos,
-			final AxisAlignedBB bb,
-			final List<AxisAlignedBB> out,
-			final Entity e )
+	public void addCollidingBlockToList( final World w, final BlockPos pos, final AxisAlignedBB bb, final List<AxisAlignedBB> out, final Entity e )
 	{
 		final double xOff = -0.15 * this.getUp().getFrontOffsetX();
 		final double yOff = -0.15 * this.getUp().getFrontOffsetY();

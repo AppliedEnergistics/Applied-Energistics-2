@@ -31,15 +31,13 @@ public class SmartModel implements IBakedModel, ISmartBlockModel, ISmartItemMode
 
 	private final BlockRenderInfo aeRenderer;
 
-	public SmartModel(
-			final BlockRenderInfo rendererInstance )
+	public SmartModel( final BlockRenderInfo rendererInstance )
 	{
 		this.aeRenderer = rendererInstance;
 	}
 
 	@Override
-	public List getFaceQuads(
-			final EnumFacing p_177551_1_ )
+	public List getFaceQuads( final EnumFacing p_177551_1_ )
 	{
 		return Collections.emptyList();
 	}
@@ -81,8 +79,7 @@ public class SmartModel implements IBakedModel, ISmartBlockModel, ISmartItemMode
 	}
 
 	@Override
-	public IBakedModel handleItemState(
-			final ItemStack stack )
+	public IBakedModel handleItemState( final ItemStack stack )
 	{
 		final ModelGenerator helper = new ModelGenerator();
 		final Block blk = Block.getBlockFromItem( stack.getItem() );
@@ -93,8 +90,7 @@ public class SmartModel implements IBakedModel, ISmartBlockModel, ISmartItemMode
 	}
 
 	@Override
-	public IBakedModel handleBlockState(
-			final IBlockState state )
+	public IBakedModel handleBlockState( final IBlockState state )
 	{
 		final ModelGenerator helper = new ModelGenerator();
 		final Block blk = state.getBlock();

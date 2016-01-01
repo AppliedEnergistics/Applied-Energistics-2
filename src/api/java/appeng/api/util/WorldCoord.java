@@ -51,8 +51,7 @@ public class WorldCoord
 		this.z = _z;
 	}
 
-	public WorldCoord(
-			final BlockPos pos )
+	public WorldCoord( final BlockPos pos )
 	{
 		this.x = pos.getX();
 		this.y = pos.getY();

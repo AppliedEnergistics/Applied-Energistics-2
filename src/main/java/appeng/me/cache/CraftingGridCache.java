@@ -90,8 +90,7 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 {
 
 	private static final ExecutorService CRAFTING_POOL;
-	private static final Comparator<ICraftingPatternDetails> COMPARATOR = new Comparator<ICraftingPatternDetails>()
-	{
+	private static final Comparator<ICraftingPatternDetails> COMPARATOR = new Comparator<ICraftingPatternDetails>(){
 		@Override
 		public int compare( final ICraftingPatternDetails firstDetail, final ICraftingPatternDetails nextDetail )
 		{
@@ -101,8 +100,7 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 
 	static
 	{
-		final ThreadFactory factory = new ThreadFactory()
-		{
+		final ThreadFactory factory = new ThreadFactory(){
 
 			@Override
 			public Thread newThread( final Runnable ar )
@@ -535,8 +533,7 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 				}
 			}
 
-			Collections.sort( validCpusClusters, new Comparator<CraftingCPUCluster>()
-			{
+			Collections.sort( validCpusClusters, new Comparator<CraftingCPUCluster>(){
 				@Override
 				public int compare( final CraftingCPUCluster firstCluster, final CraftingCPUCluster nextCluster )
 				{

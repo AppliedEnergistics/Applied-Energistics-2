@@ -54,14 +54,12 @@ public interface IMovableHandler
 	 * {
 	 * 	&#064;code
 	 * 	Chunk c = world.getChunkFromBlockCoords( x, z );
-	 * 	c.setChunkBlockTileEntity( x
-	 * 			&amp; 0xF, y + y, z &amp; 0xF, tile );
+	 * 	c.setChunkBlockTileEntity( x &amp; 0xF, y + y, z &amp; 0xF, tile );
 	 * 
 	 * 	if( c.isChunkLoaded )
 	 * 	{
 	 * 		world.addTileEntity( tile );
-	 * 		world.markBlockForUpdate( x,
-	 * 				y, z );
+	 * 		world.markBlockForUpdate( x, y, z );
 	 * 	}
 	 * }
 	 * </pre>

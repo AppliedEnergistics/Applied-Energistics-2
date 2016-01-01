@@ -68,15 +68,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 	}
 
 	@Override
-	public boolean onItemUseFirst(
-			final ItemStack is,
-			final EntityPlayer player,
-			final World world,
-			final BlockPos pos,
-			final EnumFacing side,
-			final float hitX,
-			final float hitY,
-			final float hitZ )
+	public boolean onItemUseFirst( final ItemStack is, final EntityPlayer player, final World world, final BlockPos pos, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
 	{
 		return AEApi.instance().partHelper().placeBus( is, pos, side, player, world );
 	}
@@ -299,8 +291,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 	}
 
 	@Override
-	public void registerCustomIcon(
-			final TextureMap map )
+	public void registerCustomIcon( final TextureMap map )
 	{
 		this.myIcon = new BaseIcon( map.registerSprite( new ResourceLocation( AppEng.MOD_ID, "blocks/ItemFacade" ) ) );
 	}

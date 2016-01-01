@@ -118,15 +118,13 @@ public class WrapperInvSlot
 		}
 
 		@Override
-		public void openInventory(
-				final EntityPlayer player )
+		public void openInventory( final EntityPlayer player )
 		{
 			this.inv.openInventory( player );
 		}
 
 		@Override
-		public void closeInventory(
-				final EntityPlayer player )
+		public void closeInventory( final EntityPlayer player )
 		{
 			this.inv.closeInventory( player );
 		}
@@ -138,8 +136,7 @@ public class WrapperInvSlot
 		}
 
 		@Override
-		public int getField(
-				final int id )
+		public int getField( final int id )
 		{
 			return this.inv.getField( id );
 		}
@@ -163,9 +160,7 @@ public class WrapperInvSlot
 		}
 
 		@Override
-		public void setField(
-				final int id,
-				final int value )
+		public void setField( final int id, final int value )
 		{
 			this.inv.setField( id, value );
 		}

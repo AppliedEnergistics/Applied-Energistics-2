@@ -54,21 +54,13 @@ public class BlockCraftingStorage extends BlockCraftingUnit
 		{
 			default:
 			case STORAGE_1K:
-				return formed ?
-						super.getIcon( side, state ) :
-						ExtraBlockTextures.BlockCraftingStorage1kFit.getIcon();
+				return formed ? super.getIcon( side, state ) : ExtraBlockTextures.BlockCraftingStorage1kFit.getIcon();
 			case STORAGE_4K:
-				return formed ?
-						ExtraBlockTextures.BlockCraftingStorage4k.getIcon() :
-						ExtraBlockTextures.BlockCraftingStorage1kFit.getIcon();
+				return formed ? ExtraBlockTextures.BlockCraftingStorage4k.getIcon() : ExtraBlockTextures.BlockCraftingStorage1kFit.getIcon();
 			case STORAGE_16K:
-				return formed ?
-						ExtraBlockTextures.BlockCraftingStorage16k.getIcon() :
-						ExtraBlockTextures.BlockCraftingStorage16kFit.getIcon();
+				return formed ? ExtraBlockTextures.BlockCraftingStorage16k.getIcon() : ExtraBlockTextures.BlockCraftingStorage16kFit.getIcon();
 			case STORAGE_64K:
-				return formed ?
-						ExtraBlockTextures.BlockCraftingStorage64k.getIcon() :
-						ExtraBlockTextures.BlockCraftingStorage64kFit.getIcon();
+				return formed ? ExtraBlockTextures.BlockCraftingStorage64k.getIcon() : ExtraBlockTextures.BlockCraftingStorage64kFit.getIcon();
 
 		}
 	}

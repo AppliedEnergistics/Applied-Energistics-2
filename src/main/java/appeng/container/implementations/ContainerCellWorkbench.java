@@ -334,15 +334,13 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 		}
 
 		@Override
-		public void openInventory(
-				final EntityPlayer player )
+		public void openInventory( final EntityPlayer player )
 		{
 
 		}
 
 		@Override
-		public void closeInventory(
-				final EntityPlayer player )
+		public void closeInventory( final EntityPlayer player )
 		{
 
 		}
@@ -360,16 +358,13 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 		}
 
 		@Override
-		public int getField(
-				final int id )
+		public int getField( final int id )
 		{
 			return 0;
 		}
 
 		@Override
-		public void setField(
-				final int id,
-				final int value )
+		public void setField( final int id, final int value )
 		{
 
 		}

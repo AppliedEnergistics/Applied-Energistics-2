@@ -36,57 +36,110 @@ public enum ExtraBlockTextures
 
 	MEChest( "BlockMEChest" ),
 
-	BlockMEChestItems_Light( "BlockMEChestItems_Light" ), BlockMEChestItems_Dark( "BlockMEChestItems_Dark" ), BlockMEChestItems_Medium( "BlockMEChestItems_Medium" ),
+	BlockMEChestItems_Light( "BlockMEChestItems_Light" ),
+	BlockMEChestItems_Dark( "BlockMEChestItems_Dark" ),
+	BlockMEChestItems_Medium( "BlockMEChestItems_Medium" ),
 
-	BlockControllerPowered( "BlockControllerPowered" ), BlockControllerColumnPowered( "BlockControllerColumnPowered" ), BlockControllerColumn( "BlockControllerColumn" ), BlockControllerLights( "BlockControllerLights" ), BlockControllerColumnLights( "BlockControllerColumnLights" ), BlockControllerColumnConflict( "BlockControllerColumnConflict" ), BlockControllerConflict( "BlockControllerConflict" ), BlockControllerInsideA( "BlockControllerInsideA" ), BlockControllerInsideB( "BlockControllerInsideB" ),
+	BlockControllerPowered( "BlockControllerPowered" ),
+	BlockControllerColumnPowered( "BlockControllerColumnPowered" ),
+	BlockControllerColumn( "BlockControllerColumn" ),
+	BlockControllerLights( "BlockControllerLights" ),
+	BlockControllerColumnLights( "BlockControllerColumnLights" ),
+	BlockControllerColumnConflict( "BlockControllerColumnConflict" ),
+	BlockControllerConflict( "BlockControllerConflict" ),
+	BlockControllerInsideA( "BlockControllerInsideA" ),
+	BlockControllerInsideB( "BlockControllerInsideB" ),
 
 	BlockMolecularAssemblerLights( "BlockMolecularAssemblerLights" ),
 
 	BlockChargerInside( "BlockChargerInside" ),
 
-	BlockInterfaceAlternate( "BlockInterfaceAlternate" ), BlockInterfaceAlternateArrow( "BlockInterfaceAlternateArrow" ),
+	BlockInterfaceAlternate( "BlockInterfaceAlternate" ),
+	BlockInterfaceAlternateArrow( "BlockInterfaceAlternateArrow" ),
 
-	MEStorageCellTextures( "MEStorageCellTextures" ), White( "White" ),
+	MEStorageCellTextures( "MEStorageCellTextures" ),
+	White( "White" ),
 
-	BlockMatterCannonParticle( "BlockMatterCannonParticle" ), BlockEnergyParticle( "BlockEnergyParticle" ),
+	BlockMatterCannonParticle( "BlockMatterCannonParticle" ),
+	BlockEnergyParticle( "BlockEnergyParticle" ),
 
 	GlassFrame( "BlockQuartzGlassFrame" ),
 
-	BlockQRingCornerLight( "BlockQRingCornerLight" ), BlockQRingEdgeLight( "BlockQRingEdgeLight" ),
+	BlockQRingCornerLight( "BlockQRingCornerLight" ),
+	BlockQRingEdgeLight( "BlockQRingEdgeLight" ),
 
-	MEDenseEnergyCell0( "BlockDenseEnergyCell0" ), MEDenseEnergyCell1( "BlockDenseEnergyCell1" ), MEDenseEnergyCell2( "BlockDenseEnergyCell2" ), MEDenseEnergyCell3( "BlockDenseEnergyCell3" ), MEDenseEnergyCell4( "BlockDenseEnergyCell4" ), MEDenseEnergyCell5( "BlockDenseEnergyCell5" ), MEDenseEnergyCell6( "BlockDenseEnergyCell6" ), MEDenseEnergyCell7( "BlockDenseEnergyCell7" ),
+	MEDenseEnergyCell0( "BlockDenseEnergyCell0" ),
+	MEDenseEnergyCell1( "BlockDenseEnergyCell1" ),
+	MEDenseEnergyCell2( "BlockDenseEnergyCell2" ),
+	MEDenseEnergyCell3( "BlockDenseEnergyCell3" ),
+	MEDenseEnergyCell4( "BlockDenseEnergyCell4" ),
+	MEDenseEnergyCell5( "BlockDenseEnergyCell5" ),
+	MEDenseEnergyCell6( "BlockDenseEnergyCell6" ),
+	MEDenseEnergyCell7( "BlockDenseEnergyCell7" ),
 
-	MEEnergyCell0( "BlockEnergyCell0" ), MEEnergyCell1( "BlockEnergyCell1" ), MEEnergyCell2( "BlockEnergyCell2" ), MEEnergyCell3( "BlockEnergyCell3" ), MEEnergyCell4( "BlockEnergyCell4" ), MEEnergyCell5( "BlockEnergyCell5" ), MEEnergyCell6( "BlockEnergyCell6" ), MEEnergyCell7( "BlockEnergyCell7" ),
+	MEEnergyCell0( "BlockEnergyCell0" ),
+	MEEnergyCell1( "BlockEnergyCell1" ),
+	MEEnergyCell2( "BlockEnergyCell2" ),
+	MEEnergyCell3( "BlockEnergyCell3" ),
+	MEEnergyCell4( "BlockEnergyCell4" ),
+	MEEnergyCell5( "BlockEnergyCell5" ),
+	MEEnergyCell6( "BlockEnergyCell6" ),
+	MEEnergyCell7( "BlockEnergyCell7" ),
 
-	BlockSpatialPylon_dim( "BlockSpatialPylon_dim" ), BlockSpatialPylon_red( "BlockSpatialPylon_red" ),
+	BlockSpatialPylon_dim( "BlockSpatialPylon_dim" ),
+	BlockSpatialPylon_red( "BlockSpatialPylon_red" ),
 
-	BlockSpatialPylonC( "BlockSpatialPylon_spanned" ), BlockSpatialPylonC_dim( "BlockSpatialPylon_spanned_dim" ), BlockSpatialPylonC_red( "BlockSpatialPylon_spanned_red" ),
+	BlockSpatialPylonC( "BlockSpatialPylon_spanned" ),
+	BlockSpatialPylonC_dim( "BlockSpatialPylon_spanned_dim" ),
+	BlockSpatialPylonC_red( "BlockSpatialPylon_spanned_red" ),
 
-	BlockQuartzGlassB( "BlockQuartzGlassB" ), BlockQuartzGlassC( "BlockQuartzGlassC" ), BlockQuartzGlassD( "BlockQuartzGlassD" ),
+	BlockQuartzGlassB( "BlockQuartzGlassB" ),
+	BlockQuartzGlassC( "BlockQuartzGlassC" ),
+	BlockQuartzGlassD( "BlockQuartzGlassD" ),
 
-	BlockSpatialPylonE( "BlockSpatialPylon_end" ), BlockSpatialPylonE_dim( "BlockSpatialPylon_end_dim" ), BlockSpatialPylonE_red( "BlockSpatialPylon_end_red" ),
+	BlockSpatialPylonE( "BlockSpatialPylon_end" ),
+	BlockSpatialPylonE_dim( "BlockSpatialPylon_end_dim" ),
+	BlockSpatialPylonE_red( "BlockSpatialPylon_end_red" ),
 
-	BlockMESecurityOn_Light( "BlockMESecurityOn_Light" ), BlockMESecurityOn_Medium( "BlockMESecurityOn_Medium" ), BlockMESecurityOn_Dark( "BlockMESecurityOn_Dark" ), BlockInscriberInside( "BlockInscriberInside" ),
+	BlockMESecurityOn_Light( "BlockMESecurityOn_Light" ),
+	BlockMESecurityOn_Medium( "BlockMESecurityOn_Medium" ),
+	BlockMESecurityOn_Dark( "BlockMESecurityOn_Dark" ),
+	BlockInscriberInside( "BlockInscriberInside" ),
 
-	BlockQuartzGrowthAcceleratorOn( "BlockQuartzGrowthAcceleratorOn" ), BlockQuartzGrowthAcceleratorSideOn( "BlockQuartzGrowthAcceleratorSideOn" ),
+	BlockQuartzGrowthAcceleratorOn( "BlockQuartzGrowthAcceleratorOn" ),
+	BlockQuartzGrowthAcceleratorSideOn( "BlockQuartzGrowthAcceleratorSideOn" ),
 
 	BlockWirelessInside( "BlockWirelessInside" ),
 
-	BlockCraftingAccelerator( "BlockCraftingAccelerator" ), BlockCraftingMonitor( "BlockCraftingMonitor" ),
+	BlockCraftingAccelerator( "BlockCraftingAccelerator" ),
+	BlockCraftingMonitor( "BlockCraftingMonitor" ),
 
-	BlockCraftingStorage1k( "BlockCraftingStorage" ), BlockCraftingStorage4k( "BlockCraftingStorage4k" ), BlockCraftingStorage16k( "BlockCraftingStorage16k" ), BlockCraftingStorage64k( "BlockCraftingStorage64k" ),
+	BlockCraftingStorage1k( "BlockCraftingStorage" ),
+	BlockCraftingStorage4k( "BlockCraftingStorage4k" ),
+	BlockCraftingStorage16k( "BlockCraftingStorage16k" ),
+	BlockCraftingStorage64k( "BlockCraftingStorage64k" ),
 
 	BlockCraftingAcceleratorFit( "BlockCraftingAcceleratorFit" ),
 
-	BlockCraftingMonitorFit_Light( "BlockCraftingMonitorFit_Light" ), BlockCraftingMonitorFit_Dark( "BlockCraftingMonitorFit_Dark" ), BlockCraftingMonitorFit_Medium( "BlockCraftingMonitorFit_Medium" ),
+	BlockCraftingMonitorFit_Light( "BlockCraftingMonitorFit_Light" ),
+	BlockCraftingMonitorFit_Dark( "BlockCraftingMonitorFit_Dark" ),
+	BlockCraftingMonitorFit_Medium( "BlockCraftingMonitorFit_Medium" ),
 
-	BlockCraftingStorage1kFit( "BlockCraftingStorageFit" ), BlockCraftingStorage4kFit( "BlockCraftingStorage4kFit" ), BlockCraftingStorage16kFit( "BlockCraftingStorage16kFit" ), BlockCraftingStorage64kFit( "BlockCraftingStorage64kFit" ),
+	BlockCraftingStorage1kFit( "BlockCraftingStorageFit" ),
+	BlockCraftingStorage4kFit( "BlockCraftingStorage4kFit" ),
+	BlockCraftingStorage16kFit( "BlockCraftingStorage16kFit" ),
+	BlockCraftingStorage64kFit( "BlockCraftingStorage64kFit" ),
 
-	BlockCraftingUnitRing( "BlockCraftingUnitRing" ), BlockCraftingUnitRingLongRotated( "BlockCraftingUnitRingLongRotated" ), BlockCraftingUnitRingLong( "BlockCraftingUnitRingLong" ), BlockCraftingUnitFit( "BlockCraftingUnitFit" ),
+	BlockCraftingUnitRing( "BlockCraftingUnitRing" ),
+	BlockCraftingUnitRingLongRotated( "BlockCraftingUnitRingLongRotated" ),
+	BlockCraftingUnitRingLong( "BlockCraftingUnitRingLong" ),
+	BlockCraftingUnitFit( "BlockCraftingUnitFit" ),
 
-	BlockCraftingMonitorOuter( "BlockCraftingMonitorOuter" ), BlockCraftingFitSolid( "BlockCraftingFitSolid" ),
+	BlockCraftingMonitorOuter( "BlockCraftingMonitorOuter" ),
+	BlockCraftingFitSolid( "BlockCraftingFitSolid" ),
 
-	BlockPaint2( "BlockPaint2" ), BlockPaint3( "BlockPaint3" );
+	BlockPaint2( "BlockPaint2" ),
+	BlockPaint3( "BlockPaint3" );
 
 	private final String name;
 	private IAESprite IIcon;

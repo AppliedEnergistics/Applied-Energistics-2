@@ -91,16 +91,7 @@ public class AEBaseItemBlock extends ItemBlock
 	}
 
 	@Override
-	public boolean placeBlockAt(
-			final ItemStack stack,
-			final EntityPlayer player,
-			final World w,
-			final BlockPos pos,
-			final EnumFacing side,
-			final float hitX,
-			final float hitY,
-			final float hitZ,
-			final IBlockState newState )
+	public boolean placeBlockAt( final ItemStack stack, final EntityPlayer player, final World w, final BlockPos pos, final EnumFacing side, final float hitX, final float hitY, final float hitZ, final IBlockState newState )
 	{
 		EnumFacing up = null;
 		EnumFacing forward = null;

@@ -58,14 +58,7 @@ public class BlockInscriber extends AEBaseTileBlock
 	}
 
 	@Override
-	public boolean onActivated(
-			final World w,
-			final BlockPos pos,
-			final EntityPlayer p,
-			final EnumFacing side,
-			final float hitX,
-			final float hitY,
-			final float hitZ )
+	public boolean onActivated( final World w, final BlockPos pos, final EntityPlayer p, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
 	{
 		if( p.isSneaking() )
 		{

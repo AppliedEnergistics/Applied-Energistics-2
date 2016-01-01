@@ -58,8 +58,7 @@ public class PacketCompressedNBT extends AppEngPacket
 		this.data = null;
 		this.compressFrame = null;
 
-		final GZIPInputStream gzReader = new GZIPInputStream( new InputStream()
-		{
+		final GZIPInputStream gzReader = new GZIPInputStream( new InputStream(){
 
 			@Override
 			public int read() throws IOException
@@ -87,8 +86,7 @@ public class PacketCompressedNBT extends AppEngPacket
 
 		this.in = din;
 
-		this.compressFrame = new GZIPOutputStream( new OutputStream()
-		{
+		this.compressFrame = new GZIPOutputStream( new OutputStream(){
 
 			@Override
 			public void write( final int value ) throws IOException

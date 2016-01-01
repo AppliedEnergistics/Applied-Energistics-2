@@ -70,49 +70,32 @@ public class BlockMatrixFrame extends AEBaseBlock implements ICustomCollision
 	}
 
 	@Override
-	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool(
-			final World w,
-			final BlockPos pos,
-			final Entity thePlayer,
-			final boolean b )
+	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool( final World w, final BlockPos pos, final Entity thePlayer, final boolean b )
 	{
 		return Arrays.asList( new AxisAlignedBB[] {} );// AxisAlignedBB.getBoundingBox( 0.25, 0, 0.25, 0.75, 0.5, 0.75 )
 		// } );
 	}
 
 	@Override
-	public void addCollidingBlockToList(
-			final World w,
-			final BlockPos pos,
-			final AxisAlignedBB bb,
-			final List<AxisAlignedBB> out,
-			final Entity e )
+	public void addCollidingBlockToList( final World w, final BlockPos pos, final AxisAlignedBB bb, final List<AxisAlignedBB> out, final Entity e )
 	{
 		out.add( AxisAlignedBB.fromBounds( 0.0, 0.0, 0.0, 1.0, 1.0, 1.0 ) );
 	}
 
 	@Override
-	public boolean canPlaceBlockAt(
-			final World worldIn,
-			final BlockPos pos )
+	public boolean canPlaceBlockAt( final World worldIn, final BlockPos pos )
 	{
 		return false;
 	}
 
 	@Override
-	public void onBlockExploded(
-			final World world,
-			final BlockPos pos,
-			final Explosion explosion )
+	public void onBlockExploded( final World world, final BlockPos pos, final Explosion explosion )
 	{
 		// Don't explode.
 	}
 
 	@Override
-	public boolean canEntityDestroy(
-			final IBlockAccess world,
-			final BlockPos pos,
-			final Entity entity )
+	public boolean canEntityDestroy( final IBlockAccess world, final BlockPos pos, final Entity entity )
 	{
 		return false;
 	}

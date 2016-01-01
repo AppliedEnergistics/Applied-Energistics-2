@@ -118,10 +118,6 @@ public abstract class BaseVersion implements Version
 	@Override
 	public final String toString()
 	{
-		return "Version{" +
-				"revision=" + this.revision +
-				", channel=" + this.channel +
-				", build=" + this.build +
-				'}';
+		return "Version{" + "revision=" + this.revision + ", channel=" + this.channel + ", build=" + this.build + '}';
 	}
 }

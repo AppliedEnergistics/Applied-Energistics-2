@@ -24,46 +24,120 @@ import net.minecraft.util.StatCollector;
 
 public enum ButtonToolTips
 {
-	PowerUnits, IOMode, CondenserOutput, RedstoneMode, MatchingFuzzy,
+	PowerUnits,
+	IOMode,
+	CondenserOutput,
+	RedstoneMode,
+	MatchingFuzzy,
 
-	MatchingMode, TransferDirection, SortOrder, SortBy, View,
+	MatchingMode,
+	TransferDirection,
+	SortOrder,
+	SortBy,
+	View,
 
-	PartitionStorage, Clear, FuzzyMode, OperationMode, TrashController,
+	PartitionStorage,
+	Clear,
+	FuzzyMode,
+	OperationMode,
+	TrashController,
 
-	InterfaceBlockingMode, InterfaceCraftingMode, Trash, MatterBalls,
+	InterfaceBlockingMode,
+	InterfaceCraftingMode,
+	Trash,
+	MatterBalls,
 
-	Singularity, Read, Write, ReadWrite, AlwaysActive,
+	Singularity,
+	Read,
+	Write,
+	ReadWrite,
+	AlwaysActive,
 
-	ActiveWithoutSignal, ActiveWithSignal, ActiveOnPulse,
+	ActiveWithoutSignal,
+	ActiveWithSignal,
+	ActiveOnPulse,
 
-	EmitLevelsBelow, EmitLevelAbove, MatchingExact, TransferToNetwork,
+	EmitLevelsBelow,
+	EmitLevelAbove,
+	MatchingExact,
+	TransferToNetwork,
 
-	TransferToStorageCell, ToggleSortDirection, SearchMode_Auto,
+	TransferToStorageCell,
+	ToggleSortDirection,
+	SearchMode_Auto,
 
-	SearchMode_Standard, SearchMode_NEIAuto, SearchMode_NEIStandard,
+	SearchMode_Standard,
+	SearchMode_NEIAuto,
+	SearchMode_NEIStandard,
 
-	SearchMode, ItemName, NumberOfItems, PartitionStorageHint,
+	SearchMode,
+	ItemName,
+	NumberOfItems,
+	PartitionStorageHint,
 
-	ClearSettings, StoredItems, StoredCraftable, Craftable,
+	ClearSettings,
+	StoredItems,
+	StoredCraftable,
+	Craftable,
 
-	FZPercent_25, FZPercent_50, FZPercent_75, FZPercent_99, FZIgnoreAll,
+	FZPercent_25,
+	FZPercent_50,
+	FZPercent_75,
+	FZPercent_99,
+	FZIgnoreAll,
 
-	MoveWhenEmpty, MoveWhenWorkIsDone, MoveWhenFull, Disabled, Enable,
+	MoveWhenEmpty,
+	MoveWhenWorkIsDone,
+	MoveWhenFull,
+	Disabled,
+	Enable,
 
-	Blocking, NonBlocking,
+	Blocking,
+	NonBlocking,
 
-	LevelType, LevelType_Energy, LevelType_Item, InventoryTweaks, TerminalStyle, TerminalStyle_Full, TerminalStyle_Tall, TerminalStyle_Small,
+	LevelType,
+	LevelType_Energy,
+	LevelType_Item,
+	InventoryTweaks,
+	TerminalStyle,
+	TerminalStyle_Full,
+	TerminalStyle_Tall,
+	TerminalStyle_Small,
 
-	Stash, StashDesc, Encode, EncodeDescription, Substitutions, SubstitutionsOn, SubstitutionsOff, SubstitutionsDescEnabled, SubstitutionsDescDisabled, CraftOnly, CraftEither,
+	Stash,
+	StashDesc,
+	Encode,
+	EncodeDescription,
+	Substitutions,
+	SubstitutionsOn,
+	SubstitutionsOff,
+	SubstitutionsDescEnabled,
+	SubstitutionsDescDisabled,
+	CraftOnly,
+	CraftEither,
 
-	Craft, Mod, DoesntDespawn, EmitterMode, CraftViaRedstone, EmitWhenCrafting, ReportInaccessibleItems, ReportInaccessibleItemsYes, ReportInaccessibleItemsNo,
+	Craft,
+	Mod,
+	DoesntDespawn,
+	EmitterMode,
+	CraftViaRedstone,
+	EmitWhenCrafting,
+	ReportInaccessibleItems,
+	ReportInaccessibleItemsYes,
+	ReportInaccessibleItemsNo,
 
-	BlockPlacement, BlockPlacementYes, BlockPlacementNo,
+	BlockPlacement,
+	BlockPlacementYes,
+	BlockPlacementNo,
 
 	// Used in the tooltips of the items in the terminal, when moused over
-	ItemsStored, ItemsRequestable,
+	ItemsStored,
+	ItemsRequestable,
 
-	SchedulingMode, SchedulingModeDefault, SchedulingModeRoundRobin, SchedulingModeRandom;
+	SchedulingMode,
+	SchedulingModeDefault,
+	SchedulingModeRoundRobin,
+	SchedulingModeRandom;
 
 	private final String root;
 

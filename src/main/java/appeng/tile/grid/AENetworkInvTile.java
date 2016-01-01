@@ -101,8 +101,7 @@ public abstract class AENetworkInvTile extends AEBaseInvTile implements IActionH
 	}
 
 	@Override
-	public int getField(
-			final int id )
+	public int getField( final int id )
 	{
 		return 0;
 	}

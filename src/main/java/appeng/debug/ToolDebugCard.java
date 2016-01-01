@@ -62,15 +62,7 @@ public class ToolDebugCard extends AEBaseItem
 	}
 
 	@Override
-	public boolean onItemUseFirst(
-			final ItemStack stack,
-			final EntityPlayer player,
-			final World world,
-			final BlockPos pos,
-			final EnumFacing side,
-			final float hitX,
-			final float hitY,
-			final float hitZ )
+	public boolean onItemUseFirst( final ItemStack stack, final EntityPlayer player, final World world, final BlockPos pos, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
 	{
 		if( Platform.isClient() )
 		{

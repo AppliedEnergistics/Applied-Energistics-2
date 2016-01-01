@@ -45,10 +45,7 @@ public final class ChargedQuartzOreBlock extends QuartzOreBlock
 	}
 
 	@Override
-	public Item getItemDropped(
-			final IBlockState state,
-			final Random rand,
-			final int fortune )
+	public Item getItemDropped( final IBlockState state, final Random rand, final int fortune )
 	{
 		for( final Item charged : AEApi.instance().definitions().materials().certusQuartzCrystalCharged().maybeItem().asSet() )
 		{
@@ -59,8 +56,7 @@ public final class ChargedQuartzOreBlock extends QuartzOreBlock
 	}
 
 	@Override
-	public int damageDropped(
-			final IBlockState state )
+	public int damageDropped( final IBlockState state )
 	{
 		for( final ItemStack crystalStack : AEApi.instance().definitions().materials().certusQuartzCrystalCharged().maybeStack( 1 ).asSet() )
 		{
@@ -71,11 +67,7 @@ public final class ChargedQuartzOreBlock extends QuartzOreBlock
 	}
 
 	@Override
-	public void randomDisplayTick(
-			final World w,
-			final BlockPos pos,
-			final IBlockState state,
-			final Random r )
+	public void randomDisplayTick( final World w, final BlockPos pos, final IBlockState state, final Random r )
 	{
 		if( !AEConfig.instance.enableEffects )
 		{

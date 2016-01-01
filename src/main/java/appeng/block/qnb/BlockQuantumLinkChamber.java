@@ -49,11 +49,7 @@ public class BlockQuantumLinkChamber extends BlockQuantumBase
 	}
 
 	@Override
-	public void randomDisplayTick(
-			final World w,
-			final BlockPos pos,
-			final IBlockState state,
-			final Random rand )
+	public void randomDisplayTick( final World w, final BlockPos pos, final IBlockState state, final Random rand )
 	{
 		final TileQuantumBridge bridge = this.getTileEntity( w, pos );
 		if( bridge != null )
@@ -69,14 +65,7 @@ public class BlockQuantumLinkChamber extends BlockQuantumBase
 	}
 
 	@Override
-	public boolean onActivated(
-			final World w,
-			final BlockPos pos,
-			final EntityPlayer p,
-			final EnumFacing side,
-			final float hitX,
-			final float hitY,
-			final float hitZ )
+	public boolean onActivated( final World w, final BlockPos pos, final EntityPlayer p, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
 	{
 		if( p.isSneaking() )
 		{
@@ -96,23 +85,14 @@ public class BlockQuantumLinkChamber extends BlockQuantumBase
 	}
 
 	@Override
-	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool(
-			final World w,
-			final BlockPos pos,
-			final Entity thePlayer,
-			final boolean b )
+	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool( final World w, final BlockPos pos, final Entity thePlayer, final boolean b )
 	{
 		final double onePixel = 2.0 / 16.0;
 		return Collections.singletonList( AxisAlignedBB.fromBounds( onePixel, onePixel, onePixel, 1.0 - onePixel, 1.0 - onePixel, 1.0 - onePixel ) );
 	}
 
 	@Override
-	public void addCollidingBlockToList(
-			final World w,
-			final BlockPos pos,
-			final AxisAlignedBB bb,
-			final List<AxisAlignedBB> out,
-			final Entity e )
+	public void addCollidingBlockToList( final World w, final BlockPos pos, final AxisAlignedBB bb, final List<AxisAlignedBB> out, final Entity e )
 	{
 		final double onePixel = 2.0 / 16.0;
 		out.add( AxisAlignedBB.fromBounds( onePixel, onePixel, onePixel, 1.0 - onePixel, 1.0 - onePixel, 1.0 - onePixel ) );

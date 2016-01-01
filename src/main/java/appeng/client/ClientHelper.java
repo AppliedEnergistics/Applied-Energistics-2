@@ -262,8 +262,7 @@ public class ClientHelper extends ServerHelper
 		inst.entityRenderMap.put( EntityFloatingItem.class, new RenderFloatingItem( inst ) );
 
 		final ItemModelMesher mesher = Minecraft.getMinecraft().getRenderItem().getItemModelMesher();
-		final ItemMeshDefinition imd = new ItemMeshDefinition()
-		{
+		final ItemMeshDefinition imd = new ItemMeshDefinition(){
 
 			@Override
 			public ModelResourceLocation getModelLocation( final ItemStack stack )

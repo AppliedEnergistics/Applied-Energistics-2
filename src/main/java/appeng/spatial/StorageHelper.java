@@ -334,18 +334,14 @@ public class StorageHelper
 		}
 
 		@Override
-		public void placeInPortal(
-				final Entity par1Entity,
-				final float rotationYaw )
+		public void placeInPortal( final Entity par1Entity, final float rotationYaw )
 		{
 			par1Entity.setLocationAndAngles( this.destination.x, this.destination.y, this.destination.z, par1Entity.rotationYaw, 0.0F );
 			par1Entity.motionX = par1Entity.motionY = par1Entity.motionZ = 0.0D;
 		}
 
 		@Override
-		public boolean placeInExistingPortal(
-				final Entity entityIn,
-				final float p_180620_2_ )
+		public boolean placeInExistingPortal( final Entity entityIn, final float p_180620_2_ )
 		{
 			return false;
 		}

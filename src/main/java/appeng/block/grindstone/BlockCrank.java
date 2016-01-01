@@ -64,14 +64,7 @@ public class BlockCrank extends AEBaseTileBlock
 	}
 
 	@Override
-	public boolean onActivated(
-			final World w,
-			final BlockPos pos,
-			final EntityPlayer player,
-			final EnumFacing side,
-			final float hitX,
-			final float hitY,
-			final float hitZ )
+	public boolean onActivated( final World w, final BlockPos pos, final EntityPlayer player, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
 	{
 		if( player instanceof FakePlayer || player == null )
 		{
@@ -98,12 +91,7 @@ public class BlockCrank extends AEBaseTileBlock
 	}
 
 	@Override
-	public void onBlockPlacedBy(
-			final World world,
-			final BlockPos pos,
-			final IBlockState state,
-			final EntityLivingBase placer,
-			final ItemStack stack )
+	public void onBlockPlacedBy( final World world, final BlockPos pos, final IBlockState state, final EntityLivingBase placer, final ItemStack stack )
 	{
 		final AEBaseTile tile = this.getTileEntity( world, pos );
 		if( tile != null )
@@ -123,11 +111,7 @@ public class BlockCrank extends AEBaseTileBlock
 	}
 
 	@Override
-	public boolean isValidOrientation(
-			final World w,
-			final BlockPos pos,
-			final EnumFacing forward,
-			final EnumFacing up )
+	public boolean isValidOrientation( final World w, final BlockPos pos, final EnumFacing forward, final EnumFacing up )
 	{
 		final TileEntity te = w.getTileEntity( pos );
 		return !( te instanceof TileCrank ) || this.isCrankable( w, pos, up.getOpposite() );
@@ -154,11 +138,7 @@ public class BlockCrank extends AEBaseTileBlock
 	}
 
 	@Override
-	public void onNeighborBlockChange(
-			final World world,
-			final BlockPos pos,
-			final IBlockState state,
-			final Block neighborBlock )
+	public void onNeighborBlockChange( final World world, final BlockPos pos, final IBlockState state, final Block neighborBlock )
 	{
 
 		final AEBaseTile tile = this.getTileEntity( world, pos );

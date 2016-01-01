@@ -80,28 +80,19 @@ public class BlockPaint extends AEBaseTileBlock
 	}
 
 	@Override
-	public AxisAlignedBB getCollisionBoundingBox(
-			final World worldIn,
-			final BlockPos pos,
-			final IBlockState state )
+	public AxisAlignedBB getCollisionBoundingBox( final World worldIn, final BlockPos pos, final IBlockState state )
 	{
 		return null;
 	}
 
 	@Override
-	public boolean canCollideCheck(
-			final IBlockState state,
-			final boolean hitIfLiquid )
+	public boolean canCollideCheck( final IBlockState state, final boolean hitIfLiquid )
 	{
 		return false;
 	}
 
 	@Override
-	public void onNeighborBlockChange(
-			final World w,
-			final BlockPos pos,
-			final IBlockState state,
-			final Block neighborBlock )
+	public void onNeighborBlockChange( final World w, final BlockPos pos, final IBlockState state, final Block neighborBlock )
 	{
 		final TilePaint tp = this.getTileEntity( w, pos );
 
@@ -112,29 +103,19 @@ public class BlockPaint extends AEBaseTileBlock
 	}
 
 	@Override
-	public Item getItemDropped(
-			final IBlockState state,
-			final Random rand,
-			final int fortune )
+	public Item getItemDropped( final IBlockState state, final Random rand, final int fortune )
 	{
 		return null;
 	}
 
 	@Override
-	public void dropBlockAsItemWithChance(
-			final World worldIn,
-			final BlockPos pos,
-			final IBlockState state,
-			final float chance,
-			final int fortune )
+	public void dropBlockAsItemWithChance( final World worldIn, final BlockPos pos, final IBlockState state, final float chance, final int fortune )
 	{
 
 	}
 
 	@Override
-	public void fillWithRain(
-			final World w,
-			final BlockPos pos )
+	public void fillWithRain( final World w, final BlockPos pos )
 	{
 		if( Platform.isServer() )
 		{
@@ -143,9 +124,7 @@ public class BlockPaint extends AEBaseTileBlock
 	}
 
 	@Override
-	public int getLightValue(
-			final IBlockAccess w,
-			final BlockPos pos )
+	public int getLightValue( final IBlockAccess w, final BlockPos pos )
 	{
 		final TilePaint tp = this.getTileEntity( w, pos );
 
@@ -158,17 +137,13 @@ public class BlockPaint extends AEBaseTileBlock
 	}
 
 	@Override
-	public boolean isAir(
-			final IBlockAccess world,
-			final BlockPos pos )
+	public boolean isAir( final IBlockAccess world, final BlockPos pos )
 	{
 		return true;
 	}
 
 	@Override
-	public boolean isReplaceable(
-			final World worldIn,
-			final BlockPos pos )
+	public boolean isReplaceable( final World worldIn, final BlockPos pos )
 	{
 		return true;
 	}
