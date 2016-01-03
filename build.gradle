@@ -71,8 +71,12 @@ minecraft {
     version = minecraft_version + "-" + forge_version
 
     replaceIn "AEConfig.java"
+    replaceIn "package-info.java"
+
     replace "@version@", project.version
+    replace "@aeversion@", aeversion
     replace "@aechannel@", aechannel
+    replace "@aebuild@", aebuild
 
     // used when launching minecraft in dev env
     runDir = "run"
