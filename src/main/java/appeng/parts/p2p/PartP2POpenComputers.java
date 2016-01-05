@@ -24,7 +24,6 @@ import javax.annotation.Nullable;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.IIcon;
-import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import cpw.mods.fml.relauncher.Side;
@@ -39,28 +38,21 @@ import li.cil.oc.api.network.Node;
 import li.cil.oc.api.network.SidedEnvironment;
 import li.cil.oc.api.network.Visibility;
 
-import appeng.api.networking.IGridNode;
-import appeng.api.networking.ticking.IGridTickable;
-import appeng.api.networking.ticking.TickRateModulation;
-import appeng.api.networking.ticking.TickingRequest;
-import appeng.core.AELog;
-import appeng.core.settings.TickRates;
-import appeng.hooks.TickHandler;
+import appeng.api.networking.events.MENetworkBootingStatusChange;
+import appeng.api.networking.events.MENetworkChannelsChanged;
+import appeng.api.networking.events.MENetworkEventSubscribe;
+import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.integration.IntegrationRegistry;
 import appeng.integration.IntegrationType;
-import appeng.me.GridAccessException;
 import appeng.transformer.annotations.Integration.Interface;
 import appeng.transformer.annotations.Integration.InterfaceList;
-import appeng.util.IWorldCallable;
 
 
 @InterfaceList( value = { @Interface( iface = "li.cil.oc.api.network.Environment", iname = IntegrationType.OpenComputers ), @Interface( iface = "li.cil.oc.api.network.SidedEnvironment", iname = IntegrationType.OpenComputers ) } )
-public final class PartP2POpenComputers extends PartP2PTunnel<PartP2POpenComputers> implements IGridTickable, Environment, SidedEnvironment
+public final class PartP2POpenComputers extends PartP2PTunnel<PartP2POpenComputers> implements Environment, SidedEnvironment
 {
 	@Nullable
 	private final Node node;
-
-	private final IWorldCallable<Void> updateCallback;
 
 	public PartP2POpenComputers( final ItemStack is )
 	{
@@ -80,8 +72,24 @@ public final class PartP2POpenComputers extends PartP2PTunnel<PartP2POpenCompute
 		{
 			this.node = null; // to satisfy final
 		}
+	}
 
-		this.updateCallback = new UpdateCallback();
+	@MENetworkEventSubscribe
+	public void changeStateA( final MENetworkBootingStatusChange bs )
+	{
+		this.updateConnections();
+	}
+
+	@MENetworkEventSubscribe
+	public void changeStateB( final MENetworkChannelsChanged bs )
+	{
+		this.updateConnections();
+	}
+
+	@MENetworkEventSubscribe
+	public void changeStateC( final MENetworkPowerStatusChange bs )
+	{
+		this.updateConnections();
 	}
 
 	@Override
@@ -104,15 +112,7 @@ public final class PartP2POpenComputers extends PartP2PTunnel<PartP2POpenCompute
 	@Override
 	public void onTunnelNetworkChange()
 	{
-		super.onTunnelNetworkChange();
-		try
-		{
-			this.getProxy().getTick().wakeDevice( this.getProxy().getNode() );
-		}
-		catch( final GridAccessException e )
-		{
-			// ignore
-		}
+		this.updateConnections();
 	}
 
 	@Override
@@ -135,35 +135,6 @@ public final class PartP2POpenComputers extends PartP2PTunnel<PartP2POpenCompute
 		}
 	}
 
-	@Override
-	public TickingRequest getTickingRequest( final IGridNode node )
-	{
-		return new TickingRequest( TickRates.OpenComputersTunnel.getMin(), TickRates.OpenComputersTunnel.getMax(), true, false );
-	}
-
-	@Override
-	public TickRateModulation tickingRequest( final IGridNode node, final int ticksSinceLastCall )
-	{
-		try
-		{
-			if( !this.getProxy().getPath().isNetworkBooting() )
-			{
-				if( this.node() != null ) // Client side doesn't have nodes.
-				{
-					TickHandler.INSTANCE.addCallable( this.getTile().getWorldObj(), this.updateCallback );
-				}
-
-				return TickRateModulation.SLEEP;
-			}
-		}
-		catch( final GridAccessException e )
-		{
-			// ignore
-		}
-
-		return TickRateModulation.IDLE;
-	}
-
 	private void updateConnections()
 	{
 		if( this.getProxy().isPowered() && this.getProxy().isActive() )
@@ -171,31 +142,10 @@ public final class PartP2POpenComputers extends PartP2PTunnel<PartP2POpenCompute
 			// Make sure we're connected to existing OC nodes in the world.
 			Network.joinOrCreateNetwork( this.getTile() );
 
-			if( this.isOutput() )
+			if( this.isOutput() && this.getInput() != null && this.node != null )
 			{
-				if( this.getInput() != null && this.node != null )
-				{
-					Network.joinOrCreateNetwork( this.getInput().getTile() );
-					this.node.connect( this.getInput().node() );
-				}
-			}
-			else
-			{
-				try
-				{
-					for( final PartP2POpenComputers output : this.getOutputs() )
-					{
-						if( this.node != null )
-						{
-							Network.joinOrCreateNetwork( output.getTile() );
-							this.node.connect( output.node() );
-						}
-					}
-				}
-				catch( final GridAccessException e )
-				{
-					AELog.debug( e );
-				}
+				Network.joinOrCreateNetwork( this.getInput().getTile() );
+				this.node.connect( this.getInput().node() );
 			}
 		}
 		else if( this.node != null )
@@ -237,17 +187,5 @@ public final class PartP2POpenComputers extends PartP2PTunnel<PartP2POpenCompute
 	public boolean canConnect( final ForgeDirection side )
 	{
 		return side == this.getSide();
-	}
-
-	private final class UpdateCallback implements IWorldCallable<Void>
-	{
-		@Nullable
-		@Override
-		public Void call( final World world ) throws Exception
-		{
-			PartP2POpenComputers.this.updateConnections();
-
-			return null;
-		}
 	}
 }
