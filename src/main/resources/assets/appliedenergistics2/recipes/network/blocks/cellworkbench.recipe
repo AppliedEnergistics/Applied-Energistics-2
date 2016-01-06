@@ -1,5 +1,5 @@
 shaped=
     wool ae2:ItemMaterial.CalcProcessor wool,
-    mc:iron_ingot mc:chest mc:iron_ingot,
-    mc:iron_ingot mc:iron_ingot mc:iron_ingot
+    oredictionary:ingotIron oredictionary:chestWood oredictionary:ingotIron,
+    oredictionary:ingotIron oredictionary:ingotIron oredictionary:ingotIron
     -> ae2:BlockCellWorkbench

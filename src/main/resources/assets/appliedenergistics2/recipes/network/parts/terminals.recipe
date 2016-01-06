@@ -3,7 +3,7 @@ shapeless=
     -> ae2:ItemPart.Terminal
 
 shapeless=
-    ae2:ItemPart.Terminal mc:crafting_table ae2:ItemMaterial.CalcProcessor
+    ae2:ItemPart.Terminal oredictionary:craftingTableWood ae2:ItemMaterial.CalcProcessor
     -> ae2:ItemPart.CraftingTerminal
 
 shapeless=

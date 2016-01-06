@@ -1,13 +1,13 @@
 shaped=
-    mc:gold_ingot mc:iron_ingot _,
-    mc:redstone ae2:ItemMaterial.CalcProcessor mc:iron_ingot,
-    mc:gold_ingot mc:iron_ingot _
+    oredictionary:ingotGold oredictionary:ingotIron _,
+    oredictionary:dustRedstone ae2:ItemMaterial.CalcProcessor oredictionary:ingotIron,
+    oredictionary:ingotGold oredictionary:ingotIron _
     -> 2 ae2:ItemMaterial.BasicCard
     
 shaped=
-    oredictionary:gemDiamond mc:iron_ingot _,
-    mc:redstone ae2:ItemMaterial.CalcProcessor mc:iron_ingot,
-    oredictionary:gemDiamond mc:iron_ingot _
+    oredictionary:gemDiamond oredictionary:ingotIron _,
+    oredictionary:dustRedstone ae2:ItemMaterial.CalcProcessor oredictionary:ingotIron,
+    oredictionary:gemDiamond oredictionary:ingotIron _
     -> 2 ae2:ItemMaterial.AdvCard
 
 shapeless=
@@ -31,5 +31,5 @@ shapeless=
     -> ae2:ItemMaterial.CardSpeed
     
 shapeless=
-    ae2:ItemMaterial.BasicCard mc:crafting_table
+    ae2:ItemMaterial.BasicCard oredictionary:craftingTableWood
     -> ae2:ItemMaterial.CardCrafting

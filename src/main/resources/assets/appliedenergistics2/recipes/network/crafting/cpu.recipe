@@ -1,7 +1,7 @@
 shaped=
-    mc:iron_ingot ae2:ItemMaterial.CalcProcessor mc:iron_ingot,
+    oredictionary:ingotIron ae2:ItemMaterial.CalcProcessor oredictionary:ingotIron,
     cable ae2:ItemMaterial.LogicProcessor cable,
-    mc:iron_ingot ae2:ItemMaterial.CalcProcessor mc:iron_ingot
+    oredictionary:ingotIron ae2:ItemMaterial.CalcProcessor oredictionary:ingotIron
     -> ae2:BlockCraftingUnit:0
 
 # co processor

@@ -1,7 +1,7 @@
 shaped=
     glass glass glass,
     netherCrystal netherCrystal netherCrystal,
-    mc:wooden_slab:* mc:wooden_slab:* mc:wooden_slab:*
+    oredictionary:slabWood oredictionary:slabWood oredictionary:slabWood
     -> mc:daylight_detector
 
 shaped=
@@ -17,5 +17,5 @@ shaped=
     -> mc:iron_ingot
 
 shapeless=
-    mc:iron_ingot
+    oredictionary:ingotIron
     -> 9 ae2:ItemMaterial.IronNugget
