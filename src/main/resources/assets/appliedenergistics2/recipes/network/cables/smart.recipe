@@ -1,6 +1,6 @@
 shapeless=
     ae2:CableCovered
-    mc:redstone mc:glowstone_dust
+    oredictionary:dustRedstone oredictionary:dustGlowstone
     -> ae2:CableSmart.Fluix
 
 shapeless=

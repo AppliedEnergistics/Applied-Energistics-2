@@ -7,7 +7,7 @@ shapeless=
     -> ae2:ItemPart.Interface
 
 shaped=
-    mc:iron_ingot glass mc:iron_ingot,
+    oredictionary:ingotIron glass oredictionary:ingotIron,
     ae2:ItemMaterial.AnnihilationCore _ ae2:ItemMaterial.FormationCore,
-    mc:iron_ingot glass mc:iron_ingot
+    oredictionary:ingotIron glass oredictionary:ingotIron
     -> ae2:BlockInterface

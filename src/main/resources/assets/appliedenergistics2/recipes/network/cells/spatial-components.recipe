@@ -1,17 +1,17 @@
 shaped=
-    mc:glowstone_dust ae2:ItemMaterial.FluixPearl mc:glowstone_dust,
+    oredictionary:dustGlowstone ae2:ItemMaterial.FluixPearl oredictionary:dustGlowstone,
     ae2:ItemMaterial.FluixPearl ae2:ItemMaterial.EngProcessor ae2:ItemMaterial.FluixPearl,
-    mc:glowstone_dust ae2:ItemMaterial.FluixPearl mc:glowstone_dust
+    oredictionary:dustGlowstone ae2:ItemMaterial.FluixPearl oredictionary:dustGlowstone
     -> ae2:ItemMaterial.Cell2SpatialPart
 
 shaped=
-    mc:glowstone_dust ae2:ItemMaterial.Cell2SpatialPart mc:glowstone_dust,
+    oredictionary:dustGlowstone ae2:ItemMaterial.Cell2SpatialPart oredictionary:dustGlowstone,
     ae2:ItemMaterial.Cell2SpatialPart ae2:ItemMaterial.EngProcessor ae2:ItemMaterial.Cell2SpatialPart,
-    mc:glowstone_dust ae2:ItemMaterial.Cell2SpatialPart mc:glowstone_dust
+    oredictionary:dustGlowstone ae2:ItemMaterial.Cell2SpatialPart oredictionary:dustGlowstone
     -> ae2:ItemMaterial.Cell16SpatialPart
 
 shaped=
-    mc:glowstone_dust ae2:ItemMaterial.Cell16SpatialPart mc:glowstone_dust,
+    oredictionary:dustGlowstone ae2:ItemMaterial.Cell16SpatialPart oredictionary:dustGlowstone,
     ae2:ItemMaterial.Cell16SpatialPart ae2:ItemMaterial.EngProcessor ae2:ItemMaterial.Cell16SpatialPart,
-    mc:glowstone_dust ae2:ItemMaterial.Cell16SpatialPart mc:glowstone_dust
+    oredictionary:dustGlowstone ae2:ItemMaterial.Cell16SpatialPart oredictionary:dustGlowstone
     -> ae2:ItemMaterial.Cell128SpatialPart

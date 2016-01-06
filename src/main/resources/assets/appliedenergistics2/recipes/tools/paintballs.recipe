@@ -96,96 +96,96 @@ shaped=
 
 shaped=
     ae2:PaintBall.White ae2:PaintBall.White ae2:PaintBall.White,
-    ae2:PaintBall.White mc:glowstone_dust ae2:PaintBall.White,
+    ae2:PaintBall.White oredictionary:dustGlowstone ae2:PaintBall.White,
     ae2:PaintBall.White ae2:PaintBall.White ae2:PaintBall.White
     -> 8 ae2:LumenPaintBall.White
 
 shaped=
     ae2:PaintBall.Black ae2:PaintBall.Black ae2:PaintBall.Black,
-    ae2:PaintBall.Black mc:glowstone_dust ae2:PaintBall.Black,
+    ae2:PaintBall.Black oredictionary:dustGlowstone ae2:PaintBall.Black,
     ae2:PaintBall.Black ae2:PaintBall.Black ae2:PaintBall.Black
     -> 8 ae2:LumenPaintBall.Black
 
 shaped=
     ae2:PaintBall.Red ae2:PaintBall.Red ae2:PaintBall.Red,
-    ae2:PaintBall.Red mc:glowstone_dust ae2:PaintBall.Red,
+    ae2:PaintBall.Red oredictionary:dustGlowstone ae2:PaintBall.Red,
     ae2:PaintBall.Red ae2:PaintBall.Red ae2:PaintBall.Red
     -> 8 ae2:LumenPaintBall.Red
 
 shaped=
     ae2:PaintBall.Green ae2:PaintBall.Green ae2:PaintBall.Green,
-    ae2:PaintBall.Green mc:glowstone_dust ae2:PaintBall.Green,
+    ae2:PaintBall.Green oredictionary:dustGlowstone ae2:PaintBall.Green,
     ae2:PaintBall.Green ae2:PaintBall.Green ae2:PaintBall.Green
     -> 8 ae2:LumenPaintBall.Green
 
 shaped=
     ae2:PaintBall.Brown ae2:PaintBall.Brown ae2:PaintBall.Brown,
-    ae2:PaintBall.Brown mc:glowstone_dust ae2:PaintBall.Brown,
+    ae2:PaintBall.Brown oredictionary:dustGlowstone ae2:PaintBall.Brown,
     ae2:PaintBall.Brown ae2:PaintBall.Brown ae2:PaintBall.Brown
     -> 8 ae2:LumenPaintBall.Brown
 
 shaped=
     ae2:PaintBall.Blue ae2:PaintBall.Blue ae2:PaintBall.Blue,
-    ae2:PaintBall.Blue mc:glowstone_dust ae2:PaintBall.Blue,
+    ae2:PaintBall.Blue oredictionary:dustGlowstone ae2:PaintBall.Blue,
     ae2:PaintBall.Blue ae2:PaintBall.Blue ae2:PaintBall.Blue
     -> 8 ae2:LumenPaintBall.Blue
 
 shaped=
     ae2:PaintBall.Purple ae2:PaintBall.Purple ae2:PaintBall.Purple,
-    ae2:PaintBall.Purple mc:glowstone_dust ae2:PaintBall.Purple,
+    ae2:PaintBall.Purple oredictionary:dustGlowstone ae2:PaintBall.Purple,
     ae2:PaintBall.Purple ae2:PaintBall.Purple ae2:PaintBall.Purple
     -> 8 ae2:LumenPaintBall.Purple
 
 shaped=
     ae2:PaintBall.Cyan ae2:PaintBall.Cyan ae2:PaintBall.Cyan,
-    ae2:PaintBall.Cyan mc:glowstone_dust ae2:PaintBall.Cyan,
+    ae2:PaintBall.Cyan oredictionary:dustGlowstone ae2:PaintBall.Cyan,
     ae2:PaintBall.Cyan ae2:PaintBall.Cyan ae2:PaintBall.Cyan
     -> 8 ae2:LumenPaintBall.Cyan
 
 shaped=
     ae2:PaintBall.LightGray ae2:PaintBall.LightGray ae2:PaintBall.LightGray,
-    ae2:PaintBall.LightGray mc:glowstone_dust ae2:PaintBall.LightGray,
+    ae2:PaintBall.LightGray oredictionary:dustGlowstone ae2:PaintBall.LightGray,
     ae2:PaintBall.LightGray ae2:PaintBall.LightGray ae2:PaintBall.LightGray
     -> 8 ae2:LumenPaintBall.LightGray
 
 shaped=
     ae2:PaintBall.Gray ae2:PaintBall.Gray ae2:PaintBall.Gray,
-    ae2:PaintBall.Gray mc:glowstone_dust ae2:PaintBall.Gray,
+    ae2:PaintBall.Gray oredictionary:dustGlowstone ae2:PaintBall.Gray,
     ae2:PaintBall.Gray ae2:PaintBall.Gray ae2:PaintBall.Gray
     -> 8 ae2:LumenPaintBall.Gray
 
 shaped=
     ae2:PaintBall.Pink ae2:PaintBall.Pink ae2:PaintBall.Pink,
-    ae2:PaintBall.Pink mc:glowstone_dust ae2:PaintBall.Pink,
+    ae2:PaintBall.Pink oredictionary:dustGlowstone ae2:PaintBall.Pink,
     ae2:PaintBall.Pink ae2:PaintBall.Pink ae2:PaintBall.Pink
     -> 8 ae2:LumenPaintBall.Pink
 
 shaped=
     ae2:PaintBall.Lime ae2:PaintBall.Lime ae2:PaintBall.Lime,
-    ae2:PaintBall.Lime mc:glowstone_dust ae2:PaintBall.Lime,
+    ae2:PaintBall.Lime oredictionary:dustGlowstone ae2:PaintBall.Lime,
     ae2:PaintBall.Lime ae2:PaintBall.Lime ae2:PaintBall.Lime
     -> 8 ae2:LumenPaintBall.Lime
 
 shaped=
     ae2:PaintBall.Yellow ae2:PaintBall.Yellow ae2:PaintBall.Yellow,
-    ae2:PaintBall.Yellow mc:glowstone_dust ae2:PaintBall.Yellow,
+    ae2:PaintBall.Yellow oredictionary:dustGlowstone ae2:PaintBall.Yellow,
     ae2:PaintBall.Yellow ae2:PaintBall.Yellow ae2:PaintBall.Yellow
     -> 8 ae2:LumenPaintBall.Yellow
 
 shaped=
     ae2:PaintBall.LightBlue ae2:PaintBall.LightBlue ae2:PaintBall.LightBlue,
-    ae2:PaintBall.LightBlue mc:glowstone_dust ae2:PaintBall.LightBlue,
+    ae2:PaintBall.LightBlue oredictionary:dustGlowstone ae2:PaintBall.LightBlue,
     ae2:PaintBall.LightBlue ae2:PaintBall.LightBlue ae2:PaintBall.LightBlue
     -> 8 ae2:LumenPaintBall.LightBlue
 
 shaped=
     ae2:PaintBall.Magenta ae2:PaintBall.Magenta ae2:PaintBall.Magenta,
-    ae2:PaintBall.Magenta mc:glowstone_dust ae2:PaintBall.Magenta,
+    ae2:PaintBall.Magenta oredictionary:dustGlowstone ae2:PaintBall.Magenta,
     ae2:PaintBall.Magenta ae2:PaintBall.Magenta ae2:PaintBall.Magenta
     -> 8 ae2:LumenPaintBall.Magenta
 
 shaped=
     ae2:PaintBall.Orange ae2:PaintBall.Orange ae2:PaintBall.Orange,
-    ae2:PaintBall.Orange mc:glowstone_dust ae2:PaintBall.Orange,
+    ae2:PaintBall.Orange oredictionary:dustGlowstone ae2:PaintBall.Orange,
     ae2:PaintBall.Orange ae2:PaintBall.Orange ae2:PaintBall.Orange
     -> 8 ae2:LumenPaintBall.Orange

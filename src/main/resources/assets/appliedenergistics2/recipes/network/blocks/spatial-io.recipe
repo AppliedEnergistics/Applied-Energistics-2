@@ -1,7 +1,7 @@
 shaped=
     glass glass glass,
     cable ae2:BlockIOPort cable,
-    mc:iron_ingot ae2:ItemMaterial.EngProcessor mc:iron_ingot
+    oredictionary:ingotIron ae2:ItemMaterial.EngProcessor oredictionary:ingotIron
     -> ae2:BlockSpatialIOPort
 
 shaped=

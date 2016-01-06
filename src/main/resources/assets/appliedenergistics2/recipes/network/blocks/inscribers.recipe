@@ -1,5 +1,5 @@
 shaped=
-    mc:iron_ingot mc:sticky_piston mc:iron_ingot,
-    fluixCrystal _ mc:iron_ingot,
-    mc:iron_ingot mc:sticky_piston mc:iron_ingot
+    oredictionary:ingotIron mc:sticky_piston oredictionary:ingotIron,
+    fluixCrystal _ oredictionary:ingotIron,
+    oredictionary:ingotIron mc:sticky_piston oredictionary:ingotIron
     -> ae2:BlockInscriber

@@ -36,6 +36,6 @@ shaped=
 
 shaped=
     _ _ oredictionary:stickWood,
-    mc:iron_ingot oredictionary:stickWood _,
+    oredictionary:ingotIron oredictionary:stickWood _,
     oredictionary:crystalNetherQuartz oredictionary:crystalNetherQuartz _
     -> ae2:ToolNetherQuartzCuttingKnife
