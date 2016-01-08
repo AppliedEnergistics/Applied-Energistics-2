@@ -9,6 +9,8 @@
 ore=mc:quartz -> crystalNetherQuartz
 ore=mc:wool:* -> blockWool
 ore=mc:stained_hardened_clay:* -> blockStainedHardenedClay
+ore=mc:crafting_table -> craftingTableWood
+ore=mc:chest -> chestWood
 
 # AE2 Ore Dictionary
 # Materials for processing in other machines

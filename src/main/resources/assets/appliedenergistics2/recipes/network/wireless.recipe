@@ -1,7 +1,7 @@
 shaped=
     _ ae2:ItemMaterial.FluixPearl _,
-    mc:iron_ingot ae2:ItemPart.QuartzFiber mc:iron_ingot,
-    _ mc:iron_ingot _
+    oredictionary:ingotIron ae2:ItemPart.QuartzFiber oredictionary:ingotIron,
+    _ oredictionary:ingotIron _
     -> ae2:ItemMaterial.Wireless
 
 shaped=
@@ -18,5 +18,5 @@ shaped=
 
 shaped=
     oredictionary:dustFluix certusCrystal dustEnder,
-    mc:iron_ingot mc:iron_ingot mc:iron_ingot,
+    oredictionary:ingotIron oredictionary:ingotIron oredictionary:ingotIron,
     -> 2 ae2:ItemMaterial.WirelessBooster
