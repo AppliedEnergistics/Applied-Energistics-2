@@ -80,7 +80,7 @@ minecraft {
 
     // used when launching minecraft in dev env
     runDir = "run"
-    mappings = "stable_20"
+    mappings = mcp_mappings
 }
 
 sourceSets {
