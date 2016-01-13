@@ -58,6 +58,7 @@ public final class PartP2PPressure extends PartP2PTunnel<PartP2PPressure> implem
 	@Nonnull
 	private final IAirHandler handler;
 	private boolean isConnected = false;
+	private boolean isValid = false;
 
 	public PartP2PPressure( final ItemStack is )
 	{
@@ -87,14 +88,20 @@ public final class PartP2PPressure extends PartP2PTunnel<PartP2PPressure> implem
 	public void onNeighborChanged()
 	{
 		super.onNeighborChanged();
-		this.getInternalHandler().onNeighborChange();
+
+		if( this.isValid )
+		{
+			this.getInternalHandler().onNeighborChange();
+		}
 	}
 
 	@Override
 	public void addToWorld()
 	{
 		super.addToWorld();
+
 		this.getInternalHandler().validateI( this.getTile() );
+		this.isValid = true;
 	}
 
 	@Override
@@ -102,6 +109,7 @@ public final class PartP2PPressure extends PartP2PTunnel<PartP2PPressure> implem
 	{
 		super.removeFromWorld();
 
+		this.isValid = false;
 		if( this.isOutput() && this.getInput() != null )
 		{
 			this.getInternalHandler().removeConnection( this.getInput().getInternalHandler() );
