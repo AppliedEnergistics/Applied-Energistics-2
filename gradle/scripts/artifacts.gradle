@@ -1,14 +1,27 @@
-//task myJavadocs(type: Javadoc) {
-//    source = sourceSets.api.java
-//    include "appeng/api/**"
-//
-//    classpath = configurations.compile
-//}
-//
-//task javadocJar(type: Jar, dependsOn: myJavadocs) {
-//    classifier = 'javadoc'
-//    from 'build/docs/javadoc/'
-//}
+if (JavaVersion.current().isJava8Compatible()) {
+    allprojects {
+        tasks.withType(Javadoc) {
+            options.addStringOption('Xdoclint:none', '-quiet')
+        }
+    }
+}
+
+javadoc {
+    options.encoding = 'UTF-8'
+    options.charSet = 'UTF-8'
+}
+
+task myJavadocs(type: Javadoc) {
+    source = sourceSets.api.java
+    include "appeng/api/**"
+
+    classpath = configurations.compile
+}
+
+task javadocJar(type: Jar, dependsOn: myJavadocs) {
+    classifier = 'javadoc'
+    from 'build/docs/javadoc/'
+}
 
 /*
 task sourceJar(type: Jar, dependsOn: classes) {
@@ -46,6 +59,6 @@ task apiJar(type: Jar) {
 artifacts {
     archives devJar
     archives apiJar
-//    archives javadocJar
+    archives javadocJar
     archives sourceJar
 }
