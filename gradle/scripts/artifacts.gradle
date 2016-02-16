@@ -23,13 +23,6 @@ task javadocJar(type: Jar, dependsOn: myJavadocs) {
     from 'build/docs/javadoc/'
 }
 
-/*
-task sourceJar(type: Jar, dependsOn: classes) {
-    classifier = 'sources'
-    from sourceSets.main.allSource
-}
-*/
-
 task devJar(type: Jar) {
 
     manifest {
