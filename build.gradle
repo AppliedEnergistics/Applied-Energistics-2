@@ -67,7 +67,6 @@ if (hasProperty("teamcity")) {
 // Add Coremod Manifest
 jar {
     manifest {
-        attributes 'FMLCorePlugin': 'appeng.transformer.AppEngCore'
         attributes 'FMLCorePluginContainsFMLMod': 'true'
     }
 
@@ -79,6 +78,8 @@ jar {
 }
 
 minecraft {
+    coreMod = "appeng.transformer.AppEngCore"
+
     version = minecraft_version + "-" + forge_version
 
     replaceIn "AEConfig.java"
