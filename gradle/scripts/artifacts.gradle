@@ -1,14 +1,14 @@
-task myJavadocs(type: Javadoc) {
-    source = sourceSets.api.java
-    include "appeng/api/**"
-
-    classpath = configurations.compile
-}
-
-task javadocJar(type: Jar, dependsOn: myJavadocs) {
-    classifier = 'javadoc'
-    from 'build/docs/javadoc/'
-}
+//task myJavadocs(type: Javadoc) {
+//    source = sourceSets.api.java
+//    include "appeng/api/**"
+//
+//    classpath = configurations.compile
+//}
+//
+//task javadocJar(type: Jar, dependsOn: myJavadocs) {
+//    classifier = 'javadoc'
+//    from 'build/docs/javadoc/'
+//}
 
 /*
 task sourceJar(type: Jar, dependsOn: classes) {
@@ -46,6 +46,6 @@ task apiJar(type: Jar) {
 artifacts {
     archives devJar
     archives apiJar
-    archives javadocJar
+//    archives javadocJar
     archives sourceJar
 }
