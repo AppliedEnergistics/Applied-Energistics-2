@@ -4,7 +4,7 @@ package appeng.client.render;
 
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 
-import appeng.client.texture.IAESprite;
+import appeng.api.util.IAESprite;
 
 
 public class IconUnwrapper extends TextureAtlasSprite

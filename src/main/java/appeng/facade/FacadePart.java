@@ -20,7 +20,6 @@ package appeng.facade;
 
 
 import java.util.EnumSet;
-
 import javax.annotation.Nullable;
 
 import net.minecraft.block.Block;
@@ -46,10 +45,10 @@ import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartRenderHelper;
 import appeng.api.util.AEPartLocation;
+import appeng.api.util.IAESprite;
+import appeng.api.util.ModelGenerator;
 import appeng.client.render.BusRenderHelper;
-import appeng.client.render.ModelGenerator;
 import appeng.client.render.RenderBlocksWorkaround;
-import appeng.client.texture.IAESprite;
 import appeng.core.AELog;
 import appeng.integration.IntegrationRegistry;
 import appeng.integration.IntegrationType;

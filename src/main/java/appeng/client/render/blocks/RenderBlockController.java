@@ -24,10 +24,10 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.IBlockAccess;
 
+import appeng.api.util.ModelGenerator;
 import appeng.block.networking.BlockController;
 import appeng.block.networking.BlockController.ControllerBlockState;
 import appeng.client.render.BaseBlockRender;
-import appeng.client.render.ModelGenerator;
 import appeng.client.texture.ExtraBlockTextures;
 import appeng.tile.networking.TileController;
 

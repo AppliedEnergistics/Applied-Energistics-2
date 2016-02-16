@@ -26,6 +26,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import appeng.api.util.IAESprite;
 import appeng.core.AppEng;
 
 

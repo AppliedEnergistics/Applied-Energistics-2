@@ -21,6 +21,7 @@ package appeng.block.networking;
 
 import java.util.EnumSet;
 
+import appeng.api.util.IAESprite;
 import appeng.client.texture.ExtraBlockTextures;
 import appeng.core.features.AEFeature;
 import appeng.tile.networking.TileDenseEnergyCell;
@@ -36,7 +37,7 @@ public class BlockDenseEnergyCell extends BlockEnergyCell
 	}
 
 	@Override
-	public appeng.client.texture.IAESprite getIcon( final net.minecraft.util.EnumFacing side, final net.minecraft.block.state.IBlockState state )
+	public IAESprite getIcon( final net.minecraft.util.EnumFacing side, final net.minecraft.block.state.IBlockState state )
 	{
 		switch( (int) state.getValue( ENERGY_STORAGE ) )
 		{

@@ -31,10 +31,10 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import appeng.api.AEApi;
+import appeng.api.util.IAESprite;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.blocks.RenderBlockCraftingCPUMonitor;
 import appeng.client.texture.ExtraBlockTextures;
-import appeng.client.texture.IAESprite;
 import appeng.tile.crafting.TileCraftingMonitorTile;
 
 

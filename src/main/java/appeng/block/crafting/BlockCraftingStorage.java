@@ -27,6 +27,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import appeng.api.util.IAESprite;
 import appeng.client.texture.ExtraBlockTextures;
 import appeng.tile.crafting.TileCraftingStorageTile;
 
@@ -47,7 +48,7 @@ public class BlockCraftingStorage extends BlockCraftingUnit
 	}
 
 	@Override
-	public appeng.client.texture.IAESprite getIcon( final net.minecraft.util.EnumFacing side, final net.minecraft.block.state.IBlockState state )
+	public IAESprite getIcon( final net.minecraft.util.EnumFacing side, final net.minecraft.block.state.IBlockState state )
 	{
 		final boolean formed = (boolean) state.getValue( FORMED );
 		switch( this.type )

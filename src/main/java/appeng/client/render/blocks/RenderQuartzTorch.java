@@ -29,10 +29,10 @@ import net.minecraft.world.IBlockAccess;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.IOrientable;
 import appeng.api.util.IOrientableBlock;
+import appeng.api.util.ModelGenerator;
 import appeng.block.AEBaseBlock;
 import appeng.client.ItemRenderType;
 import appeng.client.render.BaseBlockRender;
-import appeng.client.render.ModelGenerator;
 import appeng.tile.AEBaseTile;
 
 

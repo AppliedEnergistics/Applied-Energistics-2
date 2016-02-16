@@ -45,7 +45,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import appeng.api.networking.IGridNode;
 import appeng.api.util.AEPartLocation;
-import appeng.client.render.ModelGenerator;
+import appeng.api.util.ModelGenerator;
 
 
 public interface IPart extends IBoxProvider
@@ -81,9 +81,7 @@ public interface IPart extends IBoxProvider
 	 *
 	 * GL is NOT Available
 	 *
-	 * @param x x coord
-	 * @param y y coord
-	 * @param z z coord
+	 * @param pos pos of block
 	 * @param rh helper
 	 * @param renderer renderer
 	 */

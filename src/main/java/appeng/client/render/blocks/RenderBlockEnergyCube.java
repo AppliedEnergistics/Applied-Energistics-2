@@ -24,10 +24,10 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.world.IBlockAccess;
 
 import appeng.api.implementations.items.IAEItemPowerStorage;
+import appeng.api.util.ModelGenerator;
 import appeng.block.networking.BlockEnergyCell;
 import appeng.client.ItemRenderType;
 import appeng.client.render.BaseBlockRender;
-import appeng.client.render.ModelGenerator;
 import appeng.tile.networking.TileEnergyCell;
 
 

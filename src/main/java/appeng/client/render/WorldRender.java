@@ -28,6 +28,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import appeng.api.util.ModelGenerator;
 import appeng.block.AEBaseBlock;
 import appeng.client.ItemRenderType;
 import appeng.core.AELog;
@@ -39,7 +40,7 @@ public final class WorldRender implements ISimpleBlockRenderingHandler
 
 	private static final WorldRender INSTANCE = new WorldRender();
 	private final HashMap<AEBaseBlock, BaseBlockRender> blockRenders = new HashMap<AEBaseBlock, BaseBlockRender>();
-	private final ModelGenerator renderer = new ModelGenerator();
+	private final ModelGenerator renderer = new BakingModelGenerator();
 	private boolean hasError = false;
 
 	private WorldRender()

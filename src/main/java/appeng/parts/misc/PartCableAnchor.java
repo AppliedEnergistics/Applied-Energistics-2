@@ -46,8 +46,8 @@ import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartRenderHelper;
 import appeng.api.parts.PartItemStack;
 import appeng.api.util.AEPartLocation;
-import appeng.client.render.ModelGenerator;
-import appeng.client.texture.IAESprite;
+import appeng.api.util.IAESprite;
+import appeng.api.util.ModelGenerator;
 
 
 public class PartCableAnchor implements IPart

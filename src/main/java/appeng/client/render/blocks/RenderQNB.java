@@ -35,12 +35,12 @@ import appeng.api.definitions.IDefinitions;
 import appeng.api.definitions.IParts;
 import appeng.api.util.AEColor;
 import appeng.api.util.AEPartLocation;
+import appeng.api.util.IAESprite;
+import appeng.api.util.ModelGenerator;
 import appeng.block.qnb.BlockQuantumBase;
 import appeng.client.ItemRenderType;
 import appeng.client.render.BaseBlockRender;
-import appeng.client.render.ModelGenerator;
 import appeng.client.texture.ExtraBlockTextures;
-import appeng.client.texture.IAESprite;
 import appeng.tile.qnb.TileQuantumBridge;
 
 

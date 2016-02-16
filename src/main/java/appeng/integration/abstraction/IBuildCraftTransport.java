@@ -29,7 +29,7 @@ import net.minecraft.util.EnumFacing;
 
 import appeng.api.parts.IFacadePart;
 import appeng.api.util.AEPartLocation;
-import appeng.client.texture.IAESprite;
+import appeng.api.util.IAESprite;
 
 
 /**

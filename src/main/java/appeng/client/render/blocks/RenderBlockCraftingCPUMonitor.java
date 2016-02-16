@@ -31,9 +31,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 
 import appeng.api.storage.data.IAEItemStack;
+import appeng.api.util.ModelGenerator;
 import appeng.block.crafting.BlockCraftingMonitor;
 import appeng.client.ClientHelper;
-import appeng.client.render.ModelGenerator;
 import appeng.core.AELog;
 import appeng.tile.crafting.TileCraftingMonitorTile;
 import appeng.util.IWideReadableNumberConverter;

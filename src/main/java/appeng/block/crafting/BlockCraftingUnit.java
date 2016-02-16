@@ -41,6 +41,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import appeng.api.util.AEPartLocation;
+import appeng.api.util.IAESprite;
 import appeng.block.AEBaseTileBlock;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.blocks.RenderBlockCraftingCPU;
@@ -148,7 +149,7 @@ public class BlockCraftingUnit extends AEBaseTileBlock
 	}
 
 	@Override
-	public appeng.client.texture.IAESprite getIcon( final EnumFacing side, final IBlockState state )
+	public IAESprite getIcon( final EnumFacing side, final IBlockState state )
 	{
 		if( this.type == CraftingUnitType.ACCELERATOR )
 		{

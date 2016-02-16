@@ -31,11 +31,11 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.IBlockAccess;
 
+import appeng.api.util.ModelGenerator;
 import appeng.block.storage.BlockSkyChest;
 import appeng.block.storage.BlockSkyChest.SkyChestType;
 import appeng.client.ItemRenderType;
 import appeng.client.render.BaseBlockRender;
-import appeng.client.render.ModelGenerator;
 import appeng.tile.storage.TileSkyChest;
 
 

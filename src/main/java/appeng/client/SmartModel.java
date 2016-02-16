@@ -19,9 +19,10 @@ import net.minecraftforge.client.model.ISmartItemModel;
 import net.minecraftforge.common.property.IExtendedBlockState;
 
 import appeng.api.util.AEPartLocation;
+import appeng.api.util.ModelGenerator;
 import appeng.block.AEBaseBlock;
+import appeng.client.render.BakingModelGenerator;
 import appeng.client.render.BlockRenderInfo;
-import appeng.client.render.ModelGenerator;
 import appeng.client.texture.MissingIcon;
 
 
@@ -81,7 +82,7 @@ public class SmartModel implements IBakedModel, ISmartBlockModel, ISmartItemMode
 	@Override
 	public IBakedModel handleItemState( final ItemStack stack )
 	{
-		final ModelGenerator helper = new ModelGenerator();
+		final ModelGenerator helper = new BakingModelGenerator();
 		final Block blk = Block.getBlockFromItem( stack.getItem() );
 		helper.setRenderBoundsFromBlock( blk );
 		this.aeRenderer.getRendererInstance().renderInventory( blk instanceof AEBaseBlock ? (AEBaseBlock) blk : null, stack, helper, ItemRenderType.INVENTORY, null );
@@ -92,7 +93,7 @@ public class SmartModel implements IBakedModel, ISmartBlockModel, ISmartItemMode
 	@Override
 	public IBakedModel handleBlockState( final IBlockState state )
 	{
-		final ModelGenerator helper = new ModelGenerator();
+		final ModelGenerator helper = new BakingModelGenerator();
 		final Block blk = state.getBlock();
 		final BlockPos pos = ( (IExtendedBlockState) state ).getValue( AEBaseBlock.AE_BLOCK_POS );
 		final IBlockAccess world = ( (IExtendedBlockState) state ).getValue( AEBaseBlock.AE_BLOCK_ACCESS );

@@ -19,6 +19,9 @@
 package appeng.client.texture;
 
 
+import appeng.api.util.IAESprite;
+
+
 public class TmpFlippableIcon extends FlippableIcon
 {
 

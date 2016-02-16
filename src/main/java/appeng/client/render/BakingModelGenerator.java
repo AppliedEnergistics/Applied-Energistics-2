@@ -1,4 +1,3 @@
-
 package appeng.client.render;
 
 
@@ -28,17 +27,17 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.model.IColoredBakedQuad;
 
+import appeng.api.util.IAESprite;
+import appeng.api.util.ModelGenerator;
 import appeng.block.AEBaseBlock;
 import appeng.client.texture.BaseIcon;
-import appeng.client.texture.IAESprite;
 import appeng.client.texture.MissingIcon;
 import appeng.items.AEBaseItem;
 import appeng.items.parts.ItemMultiPart;
 
 
-public class ModelGenerator
+public class BakingModelGenerator implements ModelGenerator
 {
-
 	private static final class CachedModel implements IBakedModel
 	{
 		private final List<BakedQuad>[] faces = new List[6];
@@ -95,6 +94,7 @@ public class ModelGenerator
 			return this.faces[p_177551_1_.ordinal()];
 		}
 	}
+
 
 	private int uvRotateBottom;
 	private int uvRotateEast;
@@ -175,21 +175,21 @@ public class ModelGenerator
 	{
 		final int alpha = 0xff;
 		this.color = // alpha << 24 |
-		whiteVariant;
+			whiteVariant;
 	}
 
 	public void setColorOpaque( final int r, final int g, final int b )
 	{
 		final int alpha = 0xff;
 		this.color = // alpha << 24 |
-		r << 16 | g << 8 | b;
+			r << 16 | g << 8 | b;
 	}
 
 	public void setColorOpaque_F( final int r, final int g, final int b )
 	{
 		final int alpha = 0xff;
 		this.color = // alpha << 24 |
-		Math.min( 0xff, Math.max( 0, r ) ) << 16 | Math.min( 0xff, Math.max( 0, g ) ) << 8 | Math.min( 0xff, Math.max( 0, b ) );
+			Math.min( 0xff, Math.max( 0, r ) ) << 16 | Math.min( 0xff, Math.max( 0, g ) ) << 8 | Math.min( 0xff, Math.max( 0, b ) );
 	}
 
 	public void setColorOpaque_F( final float rf, final float bf, final float gf )
@@ -199,7 +199,7 @@ public class ModelGenerator
 		final int b = (int) ( bf * 0xff );
 		final int alpha = 0xff;
 		this.color = // alpha << 24 |
-		Math.min( 0xff, Math.max( 0, r ) ) << 16 | Math.min( 0xff, Math.max( 0, g ) ) << 8 | Math.min( 0xff, Math.max( 0, b ) );
+			Math.min( 0xff, Math.max( 0, r ) ) << 16 | Math.min( 0xff, Math.max( 0, g ) ) << 8 | Math.min( 0xff, Math.max( 0, b ) );
 	}
 
 	public IAESprite getIcon( final ItemStack is )
@@ -298,13 +298,39 @@ public class ModelGenerator
 		if( this.point == 4 )
 		{
 			this.brightness = -1;
-			final int[] vertData = { Float.floatToRawIntBits( this.points[0][0] ), Float.floatToRawIntBits( this.points[0][1] ), Float.floatToRawIntBits( this.points[0][2] ), this.brightness, Float.floatToRawIntBits( this.points[0][3] ), Float.floatToRawIntBits( this.points[0][4] ), 0,
+			final int[] vertData = {
+				Float.floatToRawIntBits( this.points[0][0] ),
+				Float.floatToRawIntBits( this.points[0][1] ),
+				Float.floatToRawIntBits( this.points[0][2] ),
+				this.brightness,
+				Float.floatToRawIntBits( this.points[0][3] ),
+				Float.floatToRawIntBits( this.points[0][4] ),
+				0,
 
-			Float.floatToRawIntBits( this.points[1][0] ), Float.floatToRawIntBits( this.points[1][1] ), Float.floatToRawIntBits( this.points[1][2] ), this.brightness, Float.floatToRawIntBits( this.points[1][3] ), Float.floatToRawIntBits( this.points[1][4] ), 0,
+				Float.floatToRawIntBits( this.points[1][0] ),
+				Float.floatToRawIntBits( this.points[1][1] ),
+				Float.floatToRawIntBits( this.points[1][2] ),
+				this.brightness,
+				Float.floatToRawIntBits( this.points[1][3] ),
+				Float.floatToRawIntBits( this.points[1][4] ),
+				0,
 
-			Float.floatToRawIntBits( this.points[2][0] ), Float.floatToRawIntBits( this.points[2][1] ), Float.floatToRawIntBits( this.points[2][2] ), this.brightness, Float.floatToRawIntBits( this.points[2][3] ), Float.floatToRawIntBits( this.points[2][4] ), 0,
+				Float.floatToRawIntBits( this.points[2][0] ),
+				Float.floatToRawIntBits( this.points[2][1] ),
+				Float.floatToRawIntBits( this.points[2][2] ),
+				this.brightness,
+				Float.floatToRawIntBits( this.points[2][3] ),
+				Float.floatToRawIntBits( this.points[2][4] ),
+				0,
 
-			Float.floatToRawIntBits( this.points[3][0] ), Float.floatToRawIntBits( this.points[3][1] ), Float.floatToRawIntBits( this.points[3][2] ), this.brightness, Float.floatToRawIntBits( this.points[3][3] ), Float.floatToRawIntBits( this.points[3][4] ), 0, };
+				Float.floatToRawIntBits( this.points[3][0] ),
+				Float.floatToRawIntBits( this.points[3][1] ),
+				Float.floatToRawIntBits( this.points[3][2] ),
+				this.brightness,
+				Float.floatToRawIntBits( this.points[3][3] ),
+				Float.floatToRawIntBits( this.points[3][4] ),
+				0,
+				};
 
 			this.generatedModel.general.add( new IColoredBakedQuad.ColoredBakedQuad( vertData, this.color, face ) );
 
@@ -395,17 +421,17 @@ public class ModelGenerator
 		to_b = 1.0f - to_b;
 
 		final float[] afloat = {// :P
-		16.0f * ( this.quadsUV[0] + this.quadsUV[2] * from_a + this.quadsUV[4] * from_b ), // 0
-		16.0f * ( this.quadsUV[1] + this.quadsUV[3] * from_a + this.quadsUV[5] * from_b ), // 1
+		                        16.0f * ( this.quadsUV[0] + this.quadsUV[2] * from_a + this.quadsUV[4] * from_b ), // 0
+		                        16.0f * ( this.quadsUV[1] + this.quadsUV[3] * from_a + this.quadsUV[5] * from_b ), // 1
 
-		16.0f * ( this.quadsUV[0] + this.quadsUV[2] * to_a + this.quadsUV[4] * from_b ), // 2
-		16.0f * ( this.quadsUV[1] + this.quadsUV[3] * to_a + this.quadsUV[5] * from_b ), // 3
+		                        16.0f * ( this.quadsUV[0] + this.quadsUV[2] * to_a + this.quadsUV[4] * from_b ), // 2
+		                        16.0f * ( this.quadsUV[1] + this.quadsUV[3] * to_a + this.quadsUV[5] * from_b ), // 3
 
-		16.0f * ( this.quadsUV[0] + this.quadsUV[2] * to_a + this.quadsUV[4] * to_b ), // 2
-		16.0f * ( this.quadsUV[1] + this.quadsUV[3] * to_a + this.quadsUV[5] * to_b ), // 3
+		                        16.0f * ( this.quadsUV[0] + this.quadsUV[2] * to_a + this.quadsUV[4] * to_b ), // 2
+		                        16.0f * ( this.quadsUV[1] + this.quadsUV[3] * to_a + this.quadsUV[5] * to_b ), // 3
 
-		16.0f * ( this.quadsUV[0] + this.quadsUV[2] * from_a + this.quadsUV[4] * to_b ), // 0
-		16.0f * ( this.quadsUV[1] + this.quadsUV[3] * from_a + this.quadsUV[5] * to_b ), // 1
+		                        16.0f * ( this.quadsUV[0] + this.quadsUV[2] * from_a + this.quadsUV[4] * to_b ), // 0
+		                        16.0f * ( this.quadsUV[1] + this.quadsUV[3] * from_a + this.quadsUV[5] * to_b ), // 1
 		};
 
 		return afloat;
@@ -720,5 +746,4 @@ public class ModelGenerator
 	{
 		this.renderFaces = renderFaces;
 	}
-
 }

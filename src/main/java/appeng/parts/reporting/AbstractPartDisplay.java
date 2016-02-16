@@ -26,9 +26,9 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import appeng.api.parts.IPartRenderHelper;
-import appeng.client.render.ModelGenerator;
+import appeng.api.util.IAESprite;
+import appeng.api.util.ModelGenerator;
 import appeng.client.texture.CableBusTextures;
-import appeng.client.texture.IAESprite;
 
 
 /**

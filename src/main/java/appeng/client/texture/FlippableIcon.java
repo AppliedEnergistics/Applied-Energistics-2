@@ -23,6 +23,8 @@ import javax.annotation.Nonnull;
 
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 
+import appeng.api.util.IAESprite;
+
 
 public class FlippableIcon implements IAESprite
 {

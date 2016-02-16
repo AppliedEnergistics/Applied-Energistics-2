@@ -33,7 +33,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import appeng.api.util.AEPartLocation;
-import appeng.client.render.ModelGenerator;
+import appeng.api.util.ModelGenerator;
 
 
 /**

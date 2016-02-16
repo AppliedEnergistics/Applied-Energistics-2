@@ -64,7 +64,7 @@ import appeng.api.util.AEColor;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
-import appeng.client.render.ModelGenerator;
+import appeng.api.util.ModelGenerator;
 import appeng.helpers.ICustomNameObject;
 import appeng.helpers.IPriorityHost;
 import appeng.me.helpers.AENetworkProxy;

@@ -27,12 +27,12 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.world.IBlockAccess;
 
 import appeng.api.util.AEPartLocation;
+import appeng.api.util.IAESprite;
+import appeng.api.util.ModelGenerator;
 import appeng.block.storage.BlockDrive;
 import appeng.client.ItemRenderType;
 import appeng.client.render.BaseBlockRender;
-import appeng.client.render.ModelGenerator;
 import appeng.client.texture.ExtraBlockTextures;
-import appeng.client.texture.IAESprite;
 import appeng.tile.storage.TileDrive;
 import appeng.util.Platform;
 

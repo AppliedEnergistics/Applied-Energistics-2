@@ -23,11 +23,11 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.IBlockAccess;
 
+import appeng.api.util.IAESprite;
+import appeng.api.util.ModelGenerator;
 import appeng.block.misc.BlockQuartzGrowthAccelerator;
 import appeng.client.render.BaseBlockRender;
-import appeng.client.render.ModelGenerator;
 import appeng.client.texture.ExtraBlockTextures;
-import appeng.client.texture.IAESprite;
 import appeng.tile.misc.TileQuartzGrowthAccelerator;
 
 

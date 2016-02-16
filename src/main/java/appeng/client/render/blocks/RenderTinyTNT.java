@@ -25,10 +25,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.IBlockAccess;
 
+import appeng.api.util.ModelGenerator;
 import appeng.block.misc.BlockTinyTNT;
 import appeng.client.ItemRenderType;
 import appeng.client.render.BaseBlockRender;
-import appeng.client.render.ModelGenerator;
 import appeng.client.texture.FullIcon;
 import appeng.tile.AEBaseTile;
 

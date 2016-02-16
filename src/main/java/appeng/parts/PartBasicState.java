@@ -36,7 +36,7 @@ import appeng.api.networking.events.MENetworkChannelsChanged;
 import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.parts.IPartRenderHelper;
-import appeng.client.render.ModelGenerator;
+import appeng.api.util.ModelGenerator;
 import appeng.client.texture.CableBusTextures;
 import appeng.me.GridAccessException;
 

@@ -37,9 +37,9 @@ import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartRenderHelper;
 import appeng.api.util.AEPartLocation;
-import appeng.client.render.ModelGenerator;
+import appeng.api.util.IAESprite;
+import appeng.api.util.ModelGenerator;
 import appeng.client.texture.CableBusTextures;
-import appeng.client.texture.IAESprite;
 
 
 public class PartIdentityAnnihilationPlane extends PartAnnihilationPlane

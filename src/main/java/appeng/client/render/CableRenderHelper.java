@@ -34,6 +34,7 @@ import appeng.api.parts.IFacadePart;
 import appeng.api.parts.IPart;
 import appeng.api.util.AEAxisAlignedBB;
 import appeng.api.util.AEPartLocation;
+import appeng.api.util.ModelGenerator;
 import appeng.parts.BusCollisionHelper;
 import appeng.parts.CableBusContainer;
 

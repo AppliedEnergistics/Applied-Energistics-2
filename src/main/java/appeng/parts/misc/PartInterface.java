@@ -60,7 +60,7 @@ import appeng.api.storage.IStorageMonitorable;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.IConfigManager;
-import appeng.client.render.ModelGenerator;
+import appeng.api.util.ModelGenerator;
 import appeng.client.texture.CableBusTextures;
 import appeng.core.sync.GuiBridge;
 import appeng.helpers.DualityInterface;

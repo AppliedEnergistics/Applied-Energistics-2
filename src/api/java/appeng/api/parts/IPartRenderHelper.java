@@ -32,13 +32,12 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import appeng.client.render.ModelGenerator;
-import appeng.client.texture.IAESprite;
+import appeng.api.util.IAESprite;
+import appeng.api.util.ModelGenerator;
 
 
 public interface IPartRenderHelper
 {
-
 	/**
 	 * sets the Render Helpers Block Bounds. 0.0 - 16.0 block coords.
 	 *
@@ -85,9 +84,7 @@ public interface IPartRenderHelper
 	 *
 	 * render a block of specified bounds.
 	 *
-	 * @param x x pos of block
-	 * @param y y pos of block
-	 * @param z z pos of block
+	 * @param pos pos of block
 	 * @param renderer renderer
 	 */
 	@SideOnly( Side.CLIENT )
@@ -96,7 +93,7 @@ public interface IPartRenderHelper
 	/**
 	 * render a single face in inventory renderer.
 	 *
-	 * @param TextureAtlasSprite icon of part
+	 * @param IIcon icon of part
 	 * @param direction face of part
 	 * @param renderer renderer
 	 */
@@ -164,9 +161,7 @@ public interface IPartRenderHelper
 	/**
 	 * render a block using the current renderer state.
 	 *
-	 * @param x x pos of part
-	 * @param y y pos of part
-	 * @param z z pos of part
+	 * @param pos pos of part
 	 * @param renderer renderer of part
 	 */
 	void renderBlockCurrentBounds( BlockPos pos, ModelGenerator renderer );

@@ -4,6 +4,8 @@ package appeng.client.texture;
 
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 
+import appeng.api.util.IAESprite;
+
 
 public class BaseIcon implements IAESprite
 {

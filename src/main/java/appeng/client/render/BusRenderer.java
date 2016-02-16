@@ -19,6 +19,9 @@
 package appeng.client.render;
 
 
+import appeng.api.util.ModelGenerator;
+
+
 public class BusRenderer
 {
 

@@ -23,6 +23,8 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import appeng.api.util.IAESprite;
+
 
 public class TaughtIcon implements IAESprite
 {

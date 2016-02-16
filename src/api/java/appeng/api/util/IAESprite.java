@@ -1,5 +1,5 @@
 
-package appeng.client.texture;
+package appeng.api.util;
 
 
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;

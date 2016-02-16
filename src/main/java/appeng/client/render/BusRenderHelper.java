@@ -20,7 +20,6 @@ package appeng.client.render;
 
 
 import java.util.EnumSet;
-
 import javax.annotation.Nullable;
 
 import com.google.common.base.Function;
@@ -37,8 +36,9 @@ import appeng.api.exceptions.MissingDefinition;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartRenderHelper;
 import appeng.api.util.AEPartLocation;
+import appeng.api.util.IAESprite;
+import appeng.api.util.ModelGenerator;
 import appeng.block.AEBaseBlock;
-import appeng.client.texture.IAESprite;
 import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
 import appeng.tile.AEBaseTile;

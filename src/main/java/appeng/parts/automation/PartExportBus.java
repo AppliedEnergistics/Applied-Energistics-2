@@ -52,7 +52,7 @@ import appeng.api.parts.IPartRenderHelper;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.client.render.ModelGenerator;
+import appeng.api.util.ModelGenerator;
 import appeng.client.texture.CableBusTextures;
 import appeng.core.AELog;
 import appeng.core.settings.TickRates;

@@ -32,14 +32,14 @@ import net.minecraftforge.client.MinecraftForgeClient;
 import appeng.api.AEApi;
 import appeng.api.util.AEColor;
 import appeng.api.util.AEPartLocation;
+import appeng.api.util.IAESprite;
+import appeng.api.util.ModelGenerator;
 import appeng.block.crafting.BlockCraftingMonitor;
 import appeng.block.crafting.BlockCraftingUnit;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.BusRenderHelper;
 import appeng.client.render.BusRenderer;
-import appeng.client.render.ModelGenerator;
 import appeng.client.texture.ExtraBlockTextures;
-import appeng.client.texture.IAESprite;
 import appeng.tile.crafting.TileCraftingMonitorTile;
 import appeng.tile.crafting.TileCraftingTile;
 

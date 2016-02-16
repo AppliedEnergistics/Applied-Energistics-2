@@ -32,6 +32,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import appeng.api.util.IAESprite;
 import appeng.block.AEBaseItemBlock;
 import appeng.block.AEBaseItemBlockChargeable;
 import appeng.block.AEBaseTileBlock;
@@ -76,7 +77,7 @@ public class BlockEnergyCell extends AEBaseTileBlock
 	}
 
 	@Override
-	public appeng.client.texture.IAESprite getIcon( final net.minecraft.util.EnumFacing side, final IBlockState state )
+	public IAESprite getIcon( final net.minecraft.util.EnumFacing side, final IBlockState state )
 	{
 		switch( (int) state.getValue( ENERGY_STORAGE ) )
 		{

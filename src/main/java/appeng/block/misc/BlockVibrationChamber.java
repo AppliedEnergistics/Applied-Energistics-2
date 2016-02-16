@@ -32,9 +32,9 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import appeng.api.util.AEPartLocation;
+import appeng.api.util.IAESprite;
 import appeng.block.AEBaseTileBlock;
 import appeng.client.texture.ExtraBlockTextures;
-import appeng.client.texture.IAESprite;
 import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
 import appeng.core.sync.GuiBridge;
@@ -55,7 +55,7 @@ public final class BlockVibrationChamber extends AEBaseTileBlock
 	}
 
 	@Override
-	public appeng.client.texture.IAESprite getIcon( final IBlockAccess w, final BlockPos pos, final EnumFacing side )
+	public IAESprite getIcon( final IBlockAccess w, final BlockPos pos, final EnumFacing side )
 	{
 		final IAESprite ico = super.getIcon( w, pos, side );
 		final TileVibrationChamber tvc = this.getTileEntity( w, pos );

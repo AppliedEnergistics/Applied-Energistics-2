@@ -28,6 +28,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import appeng.api.util.ModelGenerator;
 import appeng.block.AEBaseBlock;
 import appeng.core.AELog;
 import appeng.tile.AEBaseTile;
@@ -37,7 +38,7 @@ import appeng.tile.AEBaseTile;
 public class TESRWrapper extends TileEntitySpecialRenderer
 {
 
-	private final ModelGenerator renderBlocksInstance = new ModelGenerator();
+	private final ModelGenerator renderBlocksInstance = new BakingModelGenerator();
 	private final BaseBlockRender blkRender;
 	private final double maxDistance;
 

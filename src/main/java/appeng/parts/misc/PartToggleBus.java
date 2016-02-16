@@ -43,7 +43,7 @@ import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartRenderHelper;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
-import appeng.client.render.ModelGenerator;
+import appeng.api.util.ModelGenerator;
 import appeng.client.texture.CableBusTextures;
 import appeng.helpers.Reflected;
 import appeng.me.helpers.AENetworkProxy;

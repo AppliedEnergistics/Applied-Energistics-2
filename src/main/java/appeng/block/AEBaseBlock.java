@@ -54,13 +54,13 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import appeng.api.util.AEPartLocation;
+import appeng.api.util.IAESprite;
 import appeng.api.util.IOrientable;
 import appeng.api.util.IOrientableBlock;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.BlockRenderInfo;
 import appeng.client.texture.BaseIcon;
 import appeng.client.texture.FlippableIcon;
-import appeng.client.texture.IAESprite;
 import appeng.core.AppEng;
 import appeng.core.features.AEBlockFeatureHandler;
 import appeng.core.features.AEFeature;

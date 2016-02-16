@@ -20,8 +20,8 @@ package appeng.client.render;
 
 
 import appeng.api.util.AEPartLocation;
+import appeng.api.util.IAESprite;
 import appeng.client.texture.FlippableIcon;
-import appeng.client.texture.IAESprite;
 import appeng.client.texture.TmpFlippableIcon;
 
 

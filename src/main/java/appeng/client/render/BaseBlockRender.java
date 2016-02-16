@@ -21,7 +21,6 @@ package appeng.client.render;
 
 import java.nio.FloatBuffer;
 import java.util.EnumSet;
-
 import javax.annotation.Nullable;
 
 import org.lwjgl.BufferUtils;
@@ -43,10 +42,11 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import appeng.api.util.AEPartLocation;
+import appeng.api.util.IAESprite;
 import appeng.api.util.IOrientable;
+import appeng.api.util.ModelGenerator;
 import appeng.block.AEBaseBlock;
 import appeng.client.texture.ExtraBlockTextures;
-import appeng.client.texture.IAESprite;
 import appeng.core.AppEng;
 import appeng.tile.AEBaseTile;
 import appeng.util.Platform;

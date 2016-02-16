@@ -29,7 +29,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -53,8 +52,8 @@ import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHelper;
 import appeng.api.parts.IPartItem;
 import appeng.api.util.AEColor;
+import appeng.api.util.IAESprite;
 import appeng.client.texture.BaseIcon;
-import appeng.client.texture.IAESprite;
 import appeng.client.texture.MissingIcon;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;

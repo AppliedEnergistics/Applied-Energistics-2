@@ -32,8 +32,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import appeng.api.util.IAESprite;
 import appeng.client.ClientHelper;
-import appeng.client.texture.IAESprite;
 import appeng.core.features.AEFeature;
 import appeng.core.features.FeatureNameExtractor;
 import appeng.core.features.IAEFeature;
