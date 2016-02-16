@@ -13,13 +13,12 @@ import net.minecraft.world.IBlockAccess;
 
 
 /**
- * TODO replace with description
+ * This is a helper to render stuff in 1.8.+
  *
- * TODO replace with intention
+ * This is required by all blocks which require a better renderer than the in house default renderer
  *
  * @author thatsIch
  * @version rv3 - 16.02.2016
- * @see //TODO anything to see?
  * @since rv3 - 16.02.2016
  */
 public interface ModelGenerator
