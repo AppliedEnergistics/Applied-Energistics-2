@@ -61,12 +61,26 @@ tile.appliedenergistics2.SkyStoneBrickStairBlock.name=Escadas de Tijolos de Pedr
 tile.appliedenergistics2.SkyStoneSmallBrickStairBlock.name=Escadas de Tijolos Pequenos de Pedra do Céu 
 tile.appliedenergistics2.SkyStoneStairBlock.name=Escadas de Pedra do Céu 
 
+// Slabs
+tile.appliedenergistics2.ChiseledQuartzSlabBlock.name=Laje de Quartzo Certus Talhadas
+tile.appliedenergistics2.FluixSlabBlock.name=Laje de Fluix 
+tile.appliedenergistics2.QuartzPillarSlabBlock.name=Laje de Pilar de Quartzo Certus 
+tile.appliedenergistics2.QuartzSlabBlock.name=Laje de Quartzo Certus 
+tile.appliedenergistics2.SkyStoneBlockSlabBlock.name=Laje de Bloco de Pedra do Céu 
+tile.appliedenergistics2.SkyStoneBrickSlabBlock.name=Laje de Tijolos de Pedra do Céu 
+tile.appliedenergistics2.SkyStoneSmallBrickSlabBlock.name=Laje de Tijolos Pequenos de Pedra do Céu 
+tile.appliedenergistics2.SkyStoneSlabBlock.name=Laje de Pedra do Céu 
+
+// Chat Messages
 chat.appliedenergistics2.ChestCannotReadStorageCell=Baú ME não consegue ler a célula de armazenamento.
 chat.appliedenergistics2.SettingCleared=Configuração limpa.
 chat.appliedenergistics2.OutOfRange=Fora de área do sinal
 chat.appliedenergistics2.InvalidMachine=Máquina inválida.
 chat.appliedenergistics2.LoadedSettings=Configurações carregadas com sucesso.
 chat.appliedenergistics2.DeviceNotPowered=Dispositivo está com baixa energia.
+chat.appliedenergistics2.DeviceNotWirelessTerminal=Dispositivo não é um terminal sem fios.
+chat.appliedenergistics2.DeviceNotLinked=Dispositivo não conectado
+chat.appliedenergistics2.StationCanNotBeLocated=Estação não pode ser encontrada.
 chat.appliedenergistics2.MachineNotPowered=Máquina não está sendo alimentada.
 chat.appliedenergistics2.CommunicationError=Erro comunicando com a rede.
 chat.appliedenergistics2.SavedSettings=Configurações salvas com sucesso.
@@ -74,9 +88,11 @@ chat.appliedenergistics2.AmmoDepleted=Munição depletada.
 chat.appliedenergistics2.isNowLocked=O monitor agora está Bloqueado.
 chat.appliedenergistics2.isNowUnlocked=O monitor agora está Desbloqueado.
 
+// Abas do modo Criativo
 itemGroup.appliedenergistics2=Applied Energistics 2
 itemGroup.appliedenergistics2.facades=Applied Energistics 2 - Fachadas
 
+// GUI
 gui.appliedenergistics2.CraftingTerminal=Terminal de Fabricação
 gui.appliedenergistics2.METunnel=ME
 gui.appliedenergistics2.ItemTunnel=Item
@@ -85,6 +101,8 @@ gui.appliedenergistics2.RedstoneTunnel=Redstone
 gui.appliedenergistics2.EUTunnel=EU
 gui.appliedenergistics2.RFTunnel=RF
 gui.appliedenergistics2.LightTunnel=Luz
+gui.appliedenergistics2.OCTunnel=OpenComputers
+gui.appliedenergistics2.PressureTunnel=Pressão
 
 gui.appliedenergistics2.security.extract.name=Retirar
 gui.appliedenergistics2.security.inject.name=Depositar
@@ -159,6 +177,9 @@ gui.appliedenergistics2.Crafts=Receitas
 gui.appliedenergistics2.And=e
 gui.appliedenergistics2.Creates=Cria
 gui.appliedenergistics2.With=com
+gui.appliedenergistics2.Substitute=Usando Substituições:
+gui.appliedenergistics2.Yes=Sim
+gui.appliedenergistics2.No=Não
 gui.appliedenergistics2.InWorldCrafting=Receita no Mundo AE2
 gui.appliedenergistics2.inWorldFluix=Jogue um Quartzo Certus Carregado + 1 Quartzo do Nether + Pó de Redstone em uma poça um perto do outro e espere um momento para receber 2 Cristais Fluix.
 gui.appliedenergistics2.inWorldPurificationCertus=Jogue uma Semente de Quartzo Certus feita de Pó de Quartzo Certus e Areia em uma poça de água; para fazer o processo ir mais rápido adicione Aceleradores de Crescimento de Cristais.
@@ -167,9 +188,10 @@ gui.appliedenergistics2.inWorldPurificationFluix=Jogue uma Semente Fluix feita d
 gui.appliedenergistics2.inWorldSingularity=Para criar jogue 1 Singularidade e 1 Pó do Fim e cause uma explosão no alcance dos itens.
 gui.appliedenergistics2.ChargedQuartz=Quartzo Certus Carregado é fabricado inserindo um Cristal de Quartzo Certus descarregado no Carregador e o alimentando.
 gui.appliedenergistics2.ChargedQuartzFind=Quartzo Certus Carregado pode ser achado no mundo semi-raramente, parece similiar ao Quartzo Certus normal, exceto que faisca.
-gui.appliedenergistics2.OfSecondOutput=%1$d%% de Chance de Saída Secundária
 gui.appliedenergistics2.NoSecondOutput=Sem Saída Secundária
-gui.appliedenergistics2.SelectAmount=Quantia Seleta
+gui.appliedenergistics2.OfSecondOutput=%1$d%% de Chance de Saída Secundária
+gui.appliedenergistics2.MultipleOutputs=%1$d%% de Chance de Secundária e %2$d%% de Terciária.
+gui.appliedenergistics2.SelectAmount=Selecione Quantia
 gui.appliedenergistics2.CopyMode=Modo de Cópia
 gui.appliedenergistics2.CopyModeDesc=Controla se o conteúdo do painel de configuração são limpos quando você remove a célula.
 gui.appliedenergistics2.Next=Próximo 
@@ -177,6 +199,7 @@ gui.appliedenergistics2.Lumen=Lumen
 gui.appliedenergistics2.Empty=Vazio
 gui.appliedenergistics2.Stored=Armazenado
 gui.appliedenergistics2.Cancel=Cancelar
+gui.appliedenergistics2.ETAFormat=HH:mm:ss
 gui.appliedenergistics2.Crafting=Fabricando
 gui.appliedenergistics2.Scheduled=Na Fila
 gui.appliedenergistics2.CraftingStatus=Estado da Fabricação
@@ -197,7 +220,7 @@ gui.appliedenergistics2.InvalidPattern=Padrão Inválido
 gui.appliedenergistics2.Range=Área
 gui.appliedenergistics2.TransparentFacades=Fachadas Transparentes
 gui.appliedenergistics2.TransparentFacadesHint=Controla a visibilidade de fachadas quando a ferramenta de rede estivar na sua toolbar.
-gui.appliedenergistics2.CPUs=CPU 
+gui.appliedenergistics2.CPUs=CPU
 gui.appliedenergistics2.NoCraftingJobs=Nenhum Processo de Fabricação Ativo
 gui.appliedenergistics2.FacadeCrafting=Receita de Fachada
 gui.appliedenergistics2.inWorldCraftingPresses=Prensas de Fabricação são achadas no centro de meteoritos que podem ser encontrador ao redor do mundo. Eles podem ser localizados utilizando uma bússola de meteoritos.
@@ -206,11 +229,16 @@ gui.appliedenergistics2.Excluded=Excluído
 gui.appliedenergistics2.Partitioned=Particionado
 gui.appliedenergistics2.Precise=Preciso
 gui.appliedenergistics2.Fuzzy=Impreciso
+gui.appliedenergistics2.SmallFontCraft=Fabricação
+gui.appliedenergistics2.LargeFontCraft=+
+gui.appliedenergistics2.Nothing=Nada
 
+// Dicas na GUI
 gui.tooltips.appliedenergistics2.Stash=Armazenar Itens
 gui.tooltips.appliedenergistics2.StashDesc=Retorna itens na grade de fabricação à rede de armazenamento.
 gui.tooltips.appliedenergistics2.Substitutions=Substituições do Ore-Dict
-gui.tooltips.appliedenergistics2.SubstitutionsDesc=Edita opções de substituição para componentes de entrada.
+gui.tooltips.appliedenergistics2.SubstitutionsDescEnabled=Possibilitar substituição para componentes de entrada.
+gui.tooltips.appliedenergistics2.SubstitutionsDescDisabled=Impedir substituição para componentes de entrada.
 gui.tooltips.appliedenergistics2.SubstitutionsOn=Substituições Ativadas
 gui.tooltips.appliedenergistics2.SubstitutionsOff=Substituições Desativadas
 gui.tooltips.appliedenergistics2.Encode=Codificar Padrão
@@ -288,13 +316,24 @@ gui.tooltips.appliedenergistics2.EmitWhenCrafting=Emite sinal enquanto o item es
 gui.tooltips.appliedenergistics2.ReportInaccessibleItems=Reportar Itens Inacessíveis
 gui.tooltips.appliedenergistics2.ReportInaccessibleItemsYes=Sim: Itens que não podem ser extraídos vão estar visíveis.
 gui.tooltips.appliedenergistics2.ReportInaccessibleItemsNo=Não: Apenas itens extraíveis vão estar visíveis.
+gui.tooltips.appliedenergistics2.BlockPlacement=Colocação de Blocos
+gui.tooltips.appliedenergistics2.BlockPlacementYes=Blocks serão colocados como blocos.
+gui.tooltips.appliedenergistics2.BlockPlacementNo=Blocos serão jogados como itens.
+gui.tooltips.appliedenergistics2.SchedulingMode=Modo Planejado
+gui.tooltips.appliedenergistics2.SchedulingModeDefault=Exportar o primeiro item até que a rede esteja vazia, e depois tentar o próximo.
+gui.tooltips.appliedenergistics2.SchedulingModeRoundRobin=Exportar usando mode modo de turnos.
+gui.tooltips.appliedenergistics2.SchedulingModeRandom=Exportar items usando modo aleatório.
+gui.tooltips.appliedenergistics2.ItemsStored=Items Guardados: %s
+gui.tooltips.appliedenergistics2.ItemsRequestable=Items Solicitáveis: %s
 
+// Units
 gui.appliedenergistics2.units.appliedenergstics=AE
 gui.appliedenergistics2.units.ic2=Energy Units
 gui.appliedenergistics2.units.mekanism=Joules
 gui.appliedenergistics2.units.rotarycraft=Watts
 gui.appliedenergistics2.units.thermalexpansion=Redstone Flux
 
+// Cores
 gui.appliedenergistics2.White=Branco
 gui.appliedenergistics2.Orange=Laranja
 gui.appliedenergistics2.Magenta=Magenta
@@ -313,6 +352,8 @@ gui.appliedenergistics2.Red=Vermelho
 gui.appliedenergistics2.Black=Preto
 gui.appliedenergistics2.Fluix=Fluix
 
+// Waila
+waila.appliedenergistics2.Crafting=Fabricando
 waila.appliedenergistics2.DeviceOnline=Dispositivo On-line
 waila.appliedenergistics2.DeviceOffline=Dispositivo Off-line
 waila.appliedenergistics2.DeviceMissingChannel=Dispositivo Sem Canal
@@ -320,8 +361,9 @@ waila.appliedenergistics2.Locked=Trancado
 waila.appliedenergistics2.Unlocked=Destrancado
 waila.appliedenergistics2.Showing=Mostrando
 waila.appliedenergistics2.Contains=Contém
-waila.appliedenergistics2.Channels=%1$d of %2$d Canais
+waila.appliedenergistics2.Channels=%1$d de %2$d Canais
 
+// Items
 item.appliedenergistics2.ItemBasicStorageCell.1k.name=Célula de Armazenamento ME de 1k
 item.appliedenergistics2.ItemBasicStorageCell.4k.name=Célula de Armazenamento ME de 4k
 item.appliedenergistics2.ItemBasicStorageCell.16k.name=Célula de Armazenamento ME de 16k
@@ -392,6 +434,7 @@ item.appliedenergistics2.ItemMaterial.SkyDust.name=Pó de Pedra do Céu
 item.appliedenergistics2.ItemMaterial.CardCrafting.name=Cartão de Fabricação
 
 item.appliedenergistics2.ItemPart.AnnihilationPlane.name=Plano de Aniquilação ME
+item.appliedenergistics2.ItemPart.IdentityAnnihilationPlane.name=Plano de Aniquilação de identidade ME
 item.appliedenergistics2.ItemPart.CableAnchor.name=Cabo Âncora
 item.appliedenergistics2.ItemPart.CableCovered.name=Cabo Coberto ME
 item.appliedenergistics2.ItemPart.CableGlass.name=Cabo de Vidro ME
@@ -417,6 +460,7 @@ item.appliedenergistics2.ItemPart.InvertedToggleBus.name=Barramento de Alternân
 item.appliedenergistics2.ItemPart.ToggleBus.name=Barramento de Alternância ME
 item.appliedenergistics2.ItemPart.CraftingMonitor.name=Monitor de Fabricação ME
 item.appliedenergistics2.ItemPart.InterfaceTerminal.name=Terminal de Interface ME
+item.appliedenergistics2.ItemPart.InvalidType.name=Item Desabilitado
 
 item.appliedenergistics2.ItemSpatialStorageCell.128Cubed.name=Célula de Armazenamento Espacial 128³
 item.appliedenergistics2.ItemSpatialStorageCell.16Cubed.name=Célula de Armazenamento Espacial 16³
@@ -452,6 +496,7 @@ item.appliedenergistics2.ToolBiometricCard.name=Cartão Biométrico
 item.appliedenergistics2.ToolDebugCard.name=Dev.PlacaDepuradora
 item.appliedenergistics2.ToolReplicatorCard.name=Dev.PlacaReplicadora
 
+// Comandos
 commands.ae2.usage=Comandos providenciados pelo Applied Energistics 2 - use /ae2 list para uma lista, e /ae2 help _____ para ajuda com certo comando.
 commands.ae2.permissions=Você não tem a permissão adequada para executar esse comando.
 commands.ae2.ChunkLogger=Alterna o carregamento ou descarregamento de chunks no log do servidor.Toggles Chunk Loading and unloading to the server log. ( OP )
@@ -459,6 +504,7 @@ commands.ae2.ChunkLoggerOn=O registro de chunks agora está ligado.
 commands.ae2.ChunkLoggerOff=O registro de agora está desligado.
 commands.ae2.Supporters=Mostra uma lista de Apoiadores do AE2
 
+// Conquistas
 achievement.ae2.Compass=Caça-Meteoritos
 achievement.ae2.Compass.desc=Faça uma Bússola de Meteoritos
 achievement.ae2.Presses=Tecnologia Desconhecida
@@ -510,6 +556,7 @@ achievement.ae2.StorageBus.desc=Faça um Barramento de Armazenamento
 achievement.ae2.QNB=Tunelamento Quântico
 achievement.ae2.QNB.desc=Faça uma Ligação Quântica
 
+// Stats
 stat.ae2.ItemsInserted=Itens adicionados ao Armazenamento ME
 stat.ae2.ItemsExtracted=Itens extraídos do Armazenamento ME
 stat.ae2.TurnedCranks=Manivelas Giradas
