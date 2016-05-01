@@ -61,6 +61,16 @@ tile.appliedenergistics2.SkyStoneBrickStairBlock.name=Ступеньки из к
 tile.appliedenergistics2.SkyStoneSmallBrickStairBlock.name=Ступеньки из малого кирпича небесного камня
 tile.appliedenergistics2.SkyStoneStairBlock.name=Ступеньки из небесного камня
 
+// Slabs
+tile.appliedenergistics2.ChiseledQuartzSlabBlock.name=Плита из резного истинного кварца
+tile.appliedenergistics2.FluixSlabBlock.name=Изменчивая плита
+tile.appliedenergistics2.QuartzPillarSlabBlock.name=Плита из колонны истинного кварца
+tile.appliedenergistics2.QuartzSlabBlock.name=Плита из истинного кварца
+tile.appliedenergistics2.SkyStoneBlockSlabBlock.name=Плита из блока небесного камня
+tile.appliedenergistics2.SkyStoneBrickSlabBlock.name=Плита из кирпича небесного камня
+tile.appliedenergistics2.SkyStoneSmallBrickSlabBlock.name=Плита из малого кирпича небесного камня
+tile.appliedenergistics2.SkyStoneSlabBlock.name=Плита из небесного камня
+
 // Chat Messages
 chat.appliedenergistics2.ChestCannotReadStorageCell=МЭ сундук не может прочитать ячейку хранения.
 chat.appliedenergistics2.SettingCleared=Настройки сброшены.
@@ -91,6 +101,8 @@ gui.appliedenergistics2.RedstoneTunnel=Красный камень
 gui.appliedenergistics2.EUTunnel=EU
 gui.appliedenergistics2.RFTunnel=RF
 gui.appliedenergistics2.LightTunnel=Свет
+gui.appliedenergistics2.OCTunnel=OpenComputers
+gui.appliedenergistics2.PressureTunnel=Давление
 
 gui.appliedenergistics2.security.extract.name=Забирать
 gui.appliedenergistics2.security.inject.name=Класть
@@ -165,6 +177,9 @@ gui.appliedenergistics2.Crafts=Создаёт
 gui.appliedenergistics2.And=и
 gui.appliedenergistics2.Creates=Делает
 gui.appliedenergistics2.With=из
+gui.appliedenergistics2.Substitute=Использовать замещения:
+gui.appliedenergistics2.Yes=Да
+gui.appliedenergistics2.No=Нет
 gui.appliedenergistics2.InWorldCrafting=AE2 в мировом создании
 gui.appliedenergistics2.inWorldFluix=Бросьте 1 заряженный истинный кварц + 1 кварц Нижнего мира + пыль красного камня в воду рядом друг с другом и немного подождите, чтобы получить 2 изменчивых кристалла.
 gui.appliedenergistics2.inWorldPurification=Бросьте любое семя кристалла, сделанное из пыли кристалла и песок в лужу воды,; чтобы ускорить процесс добавьте ускорители роста кристаллов.
@@ -173,8 +188,9 @@ gui.appliedenergistics2.inWorldPurificationFluix=Бросьте изменчив
 gui.appliedenergistics2.inWorldSingularity=Чтобы сделать, бросьте 1 сингулярность и 1 пыль Края и сделайте взрыв рядом с предметами.
 gui.appliedenergistics2.ChargedQuartz=Заряженный истинный кварц создаётся с помощью установки не заряженного истинного кварца в зарядник, который подключен к питанию.
 gui.appliedenergistics2.ChargedQuartzFind=Заряженный истинный кварц может быть найден в мире реже, чем истинный кварц, он выглядит как обычный истинный кварц, за исключением того, что он сверкает.
-gui.appliedenergistics2.OfSecondOutput=Шанс вторичного выхода: %1$d%%
 gui.appliedenergistics2.NoSecondOutput=Нет вторичного выхода
+gui.appliedenergistics2.OfSecondOutput=Шанс вторичного выхода: %1$d%%
+gui.appliedenergistics2.MultipleOutputs=Шанс вторичного выхода: %1$d%%, третичного %2$d%%
 gui.appliedenergistics2.SelectAmount=Выбрать количество
 gui.appliedenergistics2.CopyMode=Режим копирования
 gui.appliedenergistics2.CopyModeDesc=Контролирует очищено ли содержимое панели конфигурации, когда ячейка была убрана.
@@ -183,6 +199,7 @@ gui.appliedenergistics2.Lumen=Люмен
 gui.appliedenergistics2.Empty=Пустой
 gui.appliedenergistics2.Stored=Хранится
 gui.appliedenergistics2.Cancel=Отмена
+gui.appliedenergistics2.ETAFormat=HH:mm:ss
 gui.appliedenergistics2.Crafting=Создание
 gui.appliedenergistics2.Scheduled=Запланировано
 gui.appliedenergistics2.CraftingStatus=Статус создания
@@ -220,11 +237,12 @@ gui.appliedenergistics2.Nothing=Ничего
 gui.tooltips.appliedenergistics2.Stash=Хранить предметы
 gui.tooltips.appliedenergistics2.StashDesc=Возвращает предметы на сетку создания, в сетевое хранилище.
 gui.tooltips.appliedenergistics2.Substitutions=Ore-Dict замещения
-gui.tooltips.appliedenergistics2.SubstitutionsDesc=Измените замещения для вводимых компонентов.
+gui.tooltips.appliedenergistics2.SubstitutionsDescEnabled=Разрешены замещения для вводимых компонентов.
+gui.tooltips.appliedenergistics2.SubstitutionsDescDisabled=Запрещены замещения для вводимых компонентов.
 gui.tooltips.appliedenergistics2.SubstitutionsOn=Замещения включены
 gui.tooltips.appliedenergistics2.SubstitutionsOff=Замещения выключены
 gui.tooltips.appliedenergistics2.Encode=Закодировать шаблон
-gui.tooltips.appliedenergistics2.EncodeDescription=Напишите введённый шаблон к текущему закодированному шаблону, или к доступному чистому шаблону.
+gui.tooltips.appliedenergistics2.EncodeDescription=Запишите введённый шаблон к текущему закодированному шаблону, или к доступному чистому шаблону.
 gui.tooltips.appliedenergistics2.FuzzyMode=Нечёткое сравнение
 gui.tooltips.appliedenergistics2.FZPercent_25=Разделять урон с 25%
 gui.tooltips.appliedenergistics2.FZPercent_50=Разделять урон с 50%
@@ -301,6 +319,10 @@ gui.tooltips.appliedenergistics2.ReportInaccessibleItemsNo=Нет: Только 
 gui.tooltips.appliedenergistics2.BlockPlacement=Размещение блоков
 gui.tooltips.appliedenergistics2.BlockPlacementYes=Блоки будут размещаться в виде блоков.
 gui.tooltips.appliedenergistics2.BlockPlacementNo=Блоки будут выпадать в виде предметов.
+gui.tooltips.appliedenergistics2.SchedulingMode=Режим планирования
+gui.tooltips.appliedenergistics2.SchedulingModeDefault=Export the first item until the network is empty, then try the next ones.
+gui.tooltips.appliedenergistics2.SchedulingModeRoundRobin=Экспорт в циклическом порядке.
+gui.tooltips.appliedenergistics2.SchedulingModeRandom==Экспорт в слейчайном порядке.
 gui.tooltips.appliedenergistics2.ItemsStored=Хранящиеся предметы: %s
 gui.tooltips.appliedenergistics2.ItemsRequestable=Запрашиваемые предметы: %s
 
@@ -412,6 +434,7 @@ item.appliedenergistics2.ItemMaterial.SkyDust.name=Пыль небесного �
 item.appliedenergistics2.ItemMaterial.CardCrafting.name=Карта создания
 
 item.appliedenergistics2.ItemPart.AnnihilationPlane.name=Плоскость истребления
+item.appliedenergistics2.ItemPart.IdentityAnnihilationPlane.name=Продвинутая Плоскость истребления
 item.appliedenergistics2.ItemPart.CableAnchor.name=Кабельный якорь
 item.appliedenergistics2.ItemPart.CableCovered.name=МЭ закрытый кабель
 item.appliedenergistics2.ItemPart.CableGlass.name=МЭ стеклянный кабель
@@ -437,6 +460,7 @@ item.appliedenergistics2.ItemPart.InvertedToggleBus.name=МЭ инвертиро
 item.appliedenergistics2.ItemPart.ToggleBus.name=МЭ шина переключения
 item.appliedenergistics2.ItemPart.CraftingMonitor.name=МЭ монитор создания
 item.appliedenergistics2.ItemPart.InterfaceTerminal.name=МЭ терминал интерфейсов
+item.appliedenergistics2.ItemPart.InvalidType.name=Disabled Item
 
 item.appliedenergistics2.ItemSpatialStorageCell.128Cubed.name=128³ пространственная ячейка хранения
 item.appliedenergistics2.ItemSpatialStorageCell.16Cubed.name=16³ пространственная ячейка хранения
@@ -475,10 +499,10 @@ item.appliedenergistics2.ToolReplicatorCard.name=Разраб.карта-реп�
 // Commands
 commands.ae2.usage=Команды предоставляемые Applied Energistics 2 - используйте /ae2 list для списка и /ae2 help _____ для помощи с командой.
 commands.ae2.permissions=Вы не имеете соответствующих прав для запуска этой команды.
-commands.ae2.ChunkLogger=Переключает загрузку и разгрузку чанков в журнал сервера. ( Оператор )
+commands.ae2.ChunkLogger=Переключает загрузку и выгрузку чанков в журнал сервера. ( Оператор )
 commands.ae2.ChunkLoggerOn=Chunk Logging теперь включён
 commands.ae2.ChunkLoggerOff=Chunk Logging теперь выключен
-commands.ae2.Supporters=Отображает список жертвователей AE2
+commands.ae2.Supporters=Отображает список меценатов AE2
 
 // Achievements
 achievement.ae2.Compass=Охотник на метеориты
@@ -491,7 +515,7 @@ achievement.ae2.SpatialIOExplorer=Чтобы смело идти
 achievement.ae2.SpatialIOExplorer.desc=Храните вещи в пространственной ячейки хранения
 achievement.ae2.StorageCell=Лучше, чем сундуки
 achievement.ae2.StorageCell.desc=Сделайте ячейку хранения
-achievement.ae2.IOPort=Перемешка ячеек хранения
+achievement.ae2.IOPort=Перемешайте ячейки хранения
 achievement.ae2.IOPort.desc=Сделайте порт ввода\вывода
 achievement.ae2.CraftingTerminal=Большой верстак
 achievement.ae2.CraftingTerminal.desc=Сделайте терминал создания
