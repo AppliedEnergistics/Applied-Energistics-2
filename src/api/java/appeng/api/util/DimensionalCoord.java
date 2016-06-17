@@ -25,7 +25,7 @@ package appeng.api.util;
 
 
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 
@@ -49,21 +49,21 @@ public class DimensionalCoord extends WorldCoord
 	{
 		super( s );
 		this.w = s.getWorld();
-		this.dimId = this.w.provider.getDimensionId();
+		this.dimId = this.w.provider.getDimension();
 	}
 
 	public DimensionalCoord( final World _w, final int x, final int y, final int z )
 	{
 		super( x, y, z );
 		this.w = _w;
-		this.dimId = _w.provider.getDimensionId();
+		this.dimId = _w.provider.getDimension();
 	}
 
 	public DimensionalCoord( final World _w, final BlockPos pos )
 	{
 		super( pos );
 		this.w = _w;
-		this.dimId = _w.provider.getDimensionId();
+		this.dimId = _w.provider.getDimension();
 	}
 
 	@Override

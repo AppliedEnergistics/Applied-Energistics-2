@@ -27,8 +27,8 @@ package appeng.api.parts;
 import java.util.EnumSet;
 
 import net.minecraft.block.Block;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 

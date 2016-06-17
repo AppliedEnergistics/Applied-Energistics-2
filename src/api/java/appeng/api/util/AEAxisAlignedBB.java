@@ -2,7 +2,7 @@
 package appeng.api.util;
 
 
-import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.math.AxisAlignedBB;
 
 
 /**
@@ -19,7 +19,7 @@ public class AEAxisAlignedBB
 
 	public AxisAlignedBB getBoundingBox()
 	{
-		return AxisAlignedBB.fromBounds( this.minX, this.minY, this.minZ, this.maxX, this.maxY, this.maxZ );
+		return new AxisAlignedBB( this.minX, this.minY, this.minZ, this.maxX, this.maxY, this.maxZ );
 	}
 
 	public AEAxisAlignedBB( final double a, final double b, final double c, final double d, final double e, final double f )

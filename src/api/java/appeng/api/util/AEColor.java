@@ -28,7 +28,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.minecraft.item.EnumDyeColor;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.translation.I18n;
 
 
 /**
@@ -120,7 +120,7 @@ public enum AEColor
 	@Override
 	public String toString()
 	{
-		return StatCollector.translateToLocal( this.unlocalizedName );
+		return I18n.translateToLocal( this.unlocalizedName );
 	}
 
 }

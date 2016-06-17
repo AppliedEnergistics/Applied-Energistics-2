@@ -37,8 +37,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -241,7 +241,7 @@ public interface IPart extends IBoxProvider
 	 *
 	 * @return if your activate method performed something.
 	 */
-	boolean onActivate( EntityPlayer player, Vec3 pos );
+	boolean onActivate( EntityPlayer player, Vec3d pos );
 
 	/**
 	 * Called when you right click the part, very similar to Block.onActivateBlock
@@ -251,7 +251,7 @@ public interface IPart extends IBoxProvider
 	 *
 	 * @return if your activate method performed something, you should use false unless you really need it.
 	 */
-	boolean onShiftActivate( EntityPlayer player, Vec3 pos );
+	boolean onShiftActivate( EntityPlayer player, Vec3d pos );
 
 	/**
 	 * Add drops to the items being dropped into the world, if your item stores its contents when wrenched use the

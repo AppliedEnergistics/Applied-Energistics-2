@@ -30,7 +30,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.Vec3d;
 
 import appeng.api.util.AEColor;
 import appeng.api.util.AEPartLocation;
@@ -142,7 +142,7 @@ public interface IPartHost
 	 *
 	 * @return a new SelectedPart, this is never null.
 	 */
-	SelectedPart selectPart( Vec3 pos );
+	SelectedPart selectPart( Vec3d pos );
 
 	/**
 	 * can be used by parts to trigger the tile or part to save.
