@@ -23,9 +23,11 @@ import java.util.EnumSet;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 
 import appeng.core.features.AEFeature;
@@ -43,11 +45,11 @@ public class ToolMeteoritePlacer extends AEBaseItem
 	}
 
 	@Override
-	public boolean onItemUseFirst( final ItemStack stack, final EntityPlayer player, final World world, final BlockPos pos, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
+	public EnumActionResult onItemUseFirst( final ItemStack heldItem, final EntityPlayer player, final World world, final BlockPos pos, final EnumFacing side, final float hitX, final float hitY, final float hitZ, final EnumHand hand )
 	{
 		if( Platform.isClient() )
 		{
-			return false;
+			return EnumActionResult.PASS;
 		}
 
 		final MeteoritePlacer mp = new MeteoritePlacer();
@@ -55,9 +57,9 @@ public class ToolMeteoritePlacer extends AEBaseItem
 
 		if( !worked )
 		{
-			player.addChatMessage( new ChatComponentText( "Un-suitable Location." ) );
+			player.addChatMessage( new TextComponentString( "Un-suitable Location." ) );
 		}
 
-		return true;
+		return EnumActionResult.SUCCESS;
 	}
 }

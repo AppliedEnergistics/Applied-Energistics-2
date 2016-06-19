@@ -27,7 +27,7 @@ import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import appeng.core.AEConfig;
+import appeng.core.AppEng;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
 
@@ -62,7 +62,7 @@ public class PacketNewStorageDimension extends AppEngPacket
 	{
 		try
 		{
-			DimensionManager.registerDimension( this.newDim, AEConfig.instance.storageProviderID );
+			DimensionManager.registerDimension( this.newDim, AppEng.instance().getRegistration().getStorageDimensionType() );
 		}
 		catch( final IllegalArgumentException iae )
 		{

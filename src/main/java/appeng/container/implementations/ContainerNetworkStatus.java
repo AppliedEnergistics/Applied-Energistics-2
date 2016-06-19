@@ -133,7 +133,7 @@ public class ContainerNetworkStatus extends AEBaseContainer
 					}
 				}
 
-				for( final Object c : this.crafters )
+				for( final Object c : this.listeners )
 				{
 					if( c instanceof EntityPlayer )
 					{

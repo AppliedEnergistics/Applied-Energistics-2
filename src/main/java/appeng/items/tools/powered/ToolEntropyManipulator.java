@@ -36,13 +36,17 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.MovingObjectPosition.MovingObjectType;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 
 import appeng.api.util.DimensionalCoord;
@@ -70,28 +74,28 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 		this.heatUp = new HashMap<InWorldToolOperationIngredient, InWorldToolOperationResult>();
 		this.coolDown = new HashMap<InWorldToolOperationIngredient, InWorldToolOperationResult>();
 
-		this.coolDown.put( new InWorldToolOperationIngredient( Blocks.stone.getDefaultState() ), new InWorldToolOperationResult( new ItemStack( Blocks.cobblestone ) ) );
-		this.coolDown.put( new InWorldToolOperationIngredient( Blocks.stonebrick.getDefaultState() ), new InWorldToolOperationResult( new ItemStack( Blocks.stonebrick, 1, 2 ) ) );
-		this.coolDown.put( new InWorldToolOperationIngredient( Blocks.lava, true ), new InWorldToolOperationResult( new ItemStack( Blocks.obsidian ) ) );
-		this.coolDown.put( new InWorldToolOperationIngredient( Blocks.flowing_lava, true ), new InWorldToolOperationResult( new ItemStack( Blocks.obsidian ) ) );
-		this.coolDown.put( new InWorldToolOperationIngredient( Blocks.grass, true ), new InWorldToolOperationResult( new ItemStack( Blocks.dirt ) ) );
+		this.coolDown.put( new InWorldToolOperationIngredient( Blocks.STONE.getDefaultState() ), new InWorldToolOperationResult( new ItemStack( Blocks.COBBLESTONE ) ) );
+		this.coolDown.put( new InWorldToolOperationIngredient( Blocks.STONEBRICK.getDefaultState() ), new InWorldToolOperationResult( new ItemStack( Blocks.STONEBRICK, 1, 2 ) ) );
+		this.coolDown.put( new InWorldToolOperationIngredient( Blocks.LAVA, true ), new InWorldToolOperationResult( new ItemStack( Blocks.OBSIDIAN ) ) );
+		this.coolDown.put( new InWorldToolOperationIngredient( Blocks.FLOWING_LAVA, true ), new InWorldToolOperationResult( new ItemStack( Blocks.OBSIDIAN ) ) );
+		this.coolDown.put( new InWorldToolOperationIngredient( Blocks.GRASS, true ), new InWorldToolOperationResult( new ItemStack( Blocks.DIRT ) ) );
 
 		final List<ItemStack> snowBalls = new ArrayList<ItemStack>();
-		snowBalls.add( new ItemStack( Items.snowball ) );
-		this.coolDown.put( new InWorldToolOperationIngredient( Blocks.flowing_water, true ), new InWorldToolOperationResult( null, snowBalls ) );
-		this.coolDown.put( new InWorldToolOperationIngredient( Blocks.water, true ), new InWorldToolOperationResult( new ItemStack( Blocks.ice ) ) );
+		snowBalls.add( new ItemStack( Items.SNOWBALL ) );
+		this.coolDown.put( new InWorldToolOperationIngredient( Blocks.FLOWING_WATER, true ), new InWorldToolOperationResult( null, snowBalls ) );
+		this.coolDown.put( new InWorldToolOperationIngredient( Blocks.WATER, true ), new InWorldToolOperationResult( new ItemStack( Blocks.ICE ) ) );
 
-		this.heatUp.put( new InWorldToolOperationIngredient( Blocks.ice.getDefaultState() ), new InWorldToolOperationResult( new ItemStack( Blocks.water ) ) );
-		this.heatUp.put( new InWorldToolOperationIngredient( Blocks.flowing_water, true ), new InWorldToolOperationResult() );
-		this.heatUp.put( new InWorldToolOperationIngredient( Blocks.water, true ), new InWorldToolOperationResult() );
-		this.heatUp.put( new InWorldToolOperationIngredient( Blocks.snow, true ), new InWorldToolOperationResult( new ItemStack( Blocks.flowing_water ) ) );
+		this.heatUp.put( new InWorldToolOperationIngredient( Blocks.ICE.getDefaultState() ), new InWorldToolOperationResult( new ItemStack( Blocks.WATER ) ) );
+		this.heatUp.put( new InWorldToolOperationIngredient( Blocks.FLOWING_WATER, true ), new InWorldToolOperationResult() );
+		this.heatUp.put( new InWorldToolOperationIngredient( Blocks.WATER, true ), new InWorldToolOperationResult() );
+		this.heatUp.put( new InWorldToolOperationIngredient( Blocks.SNOW, true ), new InWorldToolOperationResult( new ItemStack( Blocks.FLOWING_WATER ) ) );
 	}
 
 	@Override
 	public void postInit()
 	{
 		super.postInit();
-		BlockDispenser.dispenseBehaviorRegistry.putObject( this, new DispenserBlockTool() );
+		BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject( this, new DispenserBlockTool() );
 	}
 
 	private static class InWorldToolOperationIngredient
@@ -220,19 +224,21 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 	}
 
 	@Override
-	public ItemStack onItemRightClick( final ItemStack item, final World w, final EntityPlayer p )
+	public ActionResult<ItemStack> onItemRightClick( final ItemStack item, final World w, final EntityPlayer p, final EnumHand hand )
 	{
-		final MovingObjectPosition target = this.getMovingObjectPositionFromPlayer( w, p, true );
+		//TODO 1.9.4 - getRayTraceResultFromPlayer => ?
+		final RayTraceResult target = this.getRayTraceResultFromPlayer( w, p, true );
 
 		if( target == null )
 		{
-			return item;
+			return new ActionResult<ItemStack>( EnumActionResult.FAIL, item );
 		}
 		else
 		{
-			if( target.typeOfHit == MovingObjectType.BLOCK )
+			if( target.typeOfHit == RayTraceResult.Type.BLOCK )
 			{
-				if( w.getBlockState( target.getBlockPos() ).getBlock().getMaterial() == Material.lava || w.getBlockState( target.getBlockPos() ).getBlock().getMaterial() == Material.water )
+				final IBlockState state = w.getBlockState( target.getBlockPos() );
+				if( state.getMaterial() == Material.LAVA || state.getMaterial() == Material.WATER )
 				{
 					if( Platform.hasPermissions( new DimensionalCoord( w, target.getBlockPos() ), p ) )
 					{
@@ -242,7 +248,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 			}
 		}
 
-		return item;
+		return new ActionResult<ItemStack>( EnumActionResult.SUCCESS, item );
 	}
 
 	@Override
@@ -322,7 +328,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 				{
 					this.extractAEPower( item, 1600 );
 					final InWorldToolOperationResult or = InWorldToolOperationResult.getBlockOperationResult( out.toArray( new ItemStack[out.size()] ) );
-					w.playSoundEffect( pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, "fire.ignite", 1.0F, itemRand.nextFloat() * 0.4F + 0.8F );
+					w.playSound( p, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, SoundEvents.ITEM_FLINTANDSTEEL_USE, SoundCategory.PLAYERS, 1.0F, itemRand.nextFloat() * 0.4F + 0.8F );
 
 					if( or.getBlockItem() == null )
 					{
@@ -353,8 +359,8 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 					if( w.isAirBlock( offsetPos ) )
 					{
 						this.extractAEPower( item, 1600 );
-						w.playSoundEffect( offsetPos.getX() + 0.5D, offsetPos.getY() + 0.5D, offsetPos.getZ() + 0.5D, "fire.ignite", 1.0F, itemRand.nextFloat() * 0.4F + 0.8F );
-						w.setBlockState( offsetPos, Blocks.fire.getDefaultState() );
+						w.playSound( p, offsetPos.getX() + 0.5D, offsetPos.getY() + 0.5D, offsetPos.getZ() + 0.5D, SoundEvents.ITEM_FLINTANDSTEEL_USE, SoundCategory.PLAYERS, 1.0F, itemRand.nextFloat() * 0.4F + 0.8F );
+						w.setBlockState( offsetPos, Blocks.FIRE.getDefaultState() );
 					}
 
 					return true;

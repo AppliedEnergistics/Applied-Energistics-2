@@ -25,21 +25,23 @@ import java.util.List;
 import com.google.common.base.Optional;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.Block.SoundType;
+import net.minecraft.block.SoundType;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
@@ -75,6 +77,8 @@ public class PartPlacement
 
 	public static boolean place( final ItemStack held, final BlockPos pos, EnumFacing side, final EntityPlayer player, final World world, PlaceType pass, final int depth )
 	{
+		//TODO 1.9.4 - 2 hands! Just do something!
+		final EnumHand hand = EnumHand.MAIN_HAND;
 		if( depth > 3 )
 		{
 			return false;
@@ -101,7 +105,7 @@ public class PartPlacement
 				if( !world.isRemote )
 				{
 					final LookDirection dir = Platform.getPlayerRay( player, getEyeOffset( player ) );
-					final MovingObjectPosition mop = block.collisionRayTrace( world, pos, dir.getA(), dir.getB() );
+					final RayTraceResult mop = block.collisionRayTrace( world.getBlockState( pos ), world, pos, dir.getA(), dir.getB() );
 
 					if( mop != null )
 					{
@@ -135,7 +139,7 @@ public class PartPlacement
 				}
 				else
 				{
-					player.swingItem();
+					player.swingArm( hand );
 					NetworkHandler.instance.sendToServer( new PacketPartPlacement( pos, side, getEyeOffset( player ) ) );
 				}
 				return true;
@@ -177,7 +181,7 @@ public class PartPlacement
 									if( held.stackSize == 0 )
 									{
 										player.inventory.mainInventory[player.inventory.currentItem] = null;
-										MinecraftForge.EVENT_BUS.post( new PlayerDestroyItemEvent( player, held ) );
+										MinecraftForge.EVENT_BUS.post( new PlayerDestroyItemEvent( player, held, hand ) );
 									}
 								}
 								return true;
@@ -186,7 +190,7 @@ public class PartPlacement
 					}
 					else
 					{
-						player.swingItem();
+						player.swingArm( hand );
 						NetworkHandler.instance.sendToServer( new PacketPartPlacement( pos, side, getEyeOffset( player ) ) );
 						return true;
 					}
@@ -217,7 +221,7 @@ public class PartPlacement
 			if( host != null && player.isSneaking() && block != null )
 			{
 				final LookDirection dir = Platform.getPlayerRay( player, getEyeOffset( player ) );
-				final MovingObjectPosition mop = block.collisionRayTrace( world, pos, dir.getA(), dir.getB() );
+				final RayTraceResult mop = block.collisionRayTrace( world.getBlockState( pos ), world, pos, dir.getA(), dir.getB() );
 
 				if( mop != null )
 				{
@@ -308,7 +312,7 @@ public class PartPlacement
 				}
 				else
 				{
-					player.swingItem();
+					player.swingArm( hand );
 					NetworkHandler.instance.sendToServer( new PacketPartPlacement( pos, side, getEyeOffset( player ) ) );
 					return true;
 				}
@@ -350,9 +354,9 @@ public class PartPlacement
 
 		if( !world.isRemote )
 		{
-			final Block block = world.getBlockState( pos ).getBlock();
+			final IBlockState state = world.getBlockState( pos );
 			final LookDirection dir = Platform.getPlayerRay( player, getEyeOffset( player ) );
-			final MovingObjectPosition mop = block.collisionRayTrace( world, pos, dir.getA(), dir.getB() );
+			final RayTraceResult mop = state.getBlock().collisionRayTrace( state, world, pos, dir.getA(), dir.getB() );
 
 			if( mop != null )
 			{
@@ -378,9 +382,9 @@ public class PartPlacement
 			{
 				for( final Block multiPartBlock : multiPart.maybeBlock().asSet() )
 				{
-					final SoundType ss = multiPartBlock.stepSound;
+					final SoundType ss = multiPartBlock.getSoundType();
 
-					world.playSoundEffect( 0.5 + pos.getX(), 0.5 + pos.getY(), 0.5 + pos.getZ(), ss.getPlaceSound(), ( ss.getVolume() + 1.0F ) / 2.0F, ss.getFrequency() * 0.8F );
+					world.playSound( player, 0.5 + pos.getX(), 0.5 + pos.getY(), 0.5 + pos.getZ(), ss.getPlaceSound(), SoundCategory.BLOCKS, ( ss.getVolume() + 1.0F ) / 2.0F, ss.getPitch() * 0.8F );
 				}
 
 				if( !player.capabilities.isCreativeMode )
@@ -389,14 +393,14 @@ public class PartPlacement
 					if( held.stackSize == 0 )
 					{
 						player.inventory.mainInventory[player.inventory.currentItem] = null;
-						MinecraftForge.EVENT_BUS.post( new PlayerDestroyItemEvent( player, held ) );
+						MinecraftForge.EVENT_BUS.post( new PlayerDestroyItemEvent( player, held, hand ) );
 					}
 				}
 			}
 		}
 		else
 		{
-			player.swingItem();
+			player.swingArm( hand );
 			NetworkHandler.instance.sendToServer( new PacketPartPlacement( pos, side, getEyeOffset( player ) ) );
 		}
 		return true;
@@ -412,7 +416,7 @@ public class PartPlacement
 		return getEyeHeight();
 	}
 
-	private static SelectedPart selectPart( final EntityPlayer player, final IPartHost host, final Vec3 pos )
+	private static SelectedPart selectPart( final EntityPlayer player, final IPartHost host, final Vec3d pos )
 	{
 		CommonHelper.proxy.updateRenderMode( player );
 		final SelectedPart sp = host.selectPart( pos );
@@ -449,19 +453,19 @@ public class PartPlacement
 	@SubscribeEvent
 	public void playerInteract( final PlayerInteractEvent event )
 	{
-		if( event.action == Action.RIGHT_CLICK_AIR && event.entityPlayer.worldObj.isRemote )
+		if( event instanceof PlayerInteractEvent.RightClickEmpty && event.getEntityPlayer().worldObj.isRemote )
 		{
 			// re-check to see if this event was already channeled, cause these two events are really stupid...
-			final MovingObjectPosition mop = Platform.rayTrace( event.entityPlayer, true, false );
+			final RayTraceResult mop = Platform.rayTrace( event.getEntityPlayer(), true, false );
 			final Minecraft mc = Minecraft.getMinecraft();
 
 			final float f = 1.0F;
 			final double d0 = mc.playerController.getBlockReachDistance();
-			final Vec3 vec3 = mc.getRenderViewEntity().getPositionEyes( f );
+			final Vec3d vec3 = mc.getRenderViewEntity().getPositionEyes( f );
 
 			if( mop != null && mop.hitVec.distanceTo( vec3 ) < d0 )
 			{
-				final World w = event.entity.worldObj;
+				final World w = event.getEntity().worldObj;
 				final TileEntity te = w.getTileEntity( mop.getBlockPos() );
 				if( te instanceof IPartHost && this.wasCanceled )
 				{
@@ -470,19 +474,19 @@ public class PartPlacement
 			}
 			else
 			{
-				final ItemStack held = event.entityPlayer.getHeldItem();
+				final ItemStack held = event.getEntityPlayer().getHeldItem( event.getHand() );
 				final IItems items = AEApi.instance().definitions().items();
 
 				boolean supportedItem = items.memoryCard().isSameAs( held );
 				supportedItem |= items.colorApplicator().isSameAs( held );
 
-				if( event.entityPlayer.isSneaking() && held != null && supportedItem )
+				if( event.getEntityPlayer().isSneaking() && held != null && supportedItem )
 				{
-					NetworkHandler.instance.sendToServer( new PacketClick( event.pos, event.face, 0, 0, 0 ) );
+					NetworkHandler.instance.sendToServer( new PacketClick( event.getPos(), event.getFace(), 0, 0, 0 ) );
 				}
 			}
 		}
-		else if( event.action == Action.RIGHT_CLICK_BLOCK && event.entityPlayer.worldObj.isRemote )
+		else if( event instanceof PlayerInteractEvent.RightClickBlock && event.getEntityPlayer().worldObj.isRemote )
 		{
 			if( this.placing.get() != null )
 			{
@@ -491,8 +495,8 @@ public class PartPlacement
 
 			this.placing.set( event );
 
-			final ItemStack held = event.entityPlayer.getHeldItem();
-			if( place( held, event.pos, event.face, event.entityPlayer, event.entityPlayer.worldObj, PlaceType.INTERACT_FIRST_PASS, 0 ) )
+			final ItemStack held = event.getEntityPlayer().getHeldItem( event.getHand() );
+			if( place( held, event.getPos(), event.getFace(), event.getEntityPlayer(), event.getEntityPlayer().worldObj, PlaceType.INTERACT_FIRST_PASS, 0 ) )
 			{
 				event.setCanceled( true );
 				this.wasCanceled = true;

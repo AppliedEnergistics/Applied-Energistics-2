@@ -29,10 +29,10 @@ import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -595,6 +595,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 
 		renderer.setRenderAllFaces( true );
 
+		//TODO 1.9.4 - getMixedBrightnessForBlock => ?
 		renderer.setBrightness( rh.getBlock().getMixedBrightnessForBlock( this.getHost().getTile().getWorld(), pos ) );
 		renderer.setColorOpaque_F( 1.0F, 1.0F, 1.0F );
 
@@ -642,7 +643,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 	}
 
 	@Override
-	public boolean onPartActivate( final EntityPlayer player, final Vec3 pos )
+	public boolean onPartActivate( final EntityPlayer player, final Vec3d pos )
 	{
 		if( !player.isSneaking() )
 		{

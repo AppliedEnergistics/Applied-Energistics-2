@@ -42,7 +42,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.LoaderState;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.fml.common.registry.GameRegistry.UniqueIdentifier;
 
 import appeng.api.AEApi;
 import appeng.api.definitions.IBlocks;
@@ -119,6 +118,7 @@ public class RecipeHandler implements IRecipeHandler
 	{
 		Preconditions.checkNotNull( is );
 
+		//TODO 1.9.4 - UniqueIdentifier => ResourceLocation
 		final UniqueIdentifier id = GameRegistry.findUniqueIdentifierFor( is.getItem() );
 		String realName = id.modId + ':' + id.name;
 

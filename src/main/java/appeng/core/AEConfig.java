@@ -243,9 +243,9 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 			this.priorityByStacks[btnNum] = Math.abs( pmb.getInt( this.priorityByStacks[btnNum] ) );
 			this.levelByStacks[btnNum] = Math.abs( pmb.getInt( this.levelByStacks[btnNum] ) );
 
-			cmb.comment = "Controls buttons on Crafting Screen : Capped at " + buttonCap;
-			pmb.comment = "Controls buttons on Priority Screen : Capped at " + buttonCap;
-			lmb.comment = "Controls buttons on Level Emitter Screen : Capped at " + buttonCap;
+			cmb.setComment( "Controls buttons on Crafting Screen : Capped at " + buttonCap );
+			pmb.setComment( "Controls buttons on Priority Screen : Capped at " + buttonCap );
+			lmb.setComment( "Controls buttons on Level Emitter Screen : Capped at " + buttonCap );
 
 			this.craftByStacks[btnNum] = Math.min( this.craftByStacks[btnNum], buttonCap );
 			this.priorityByStacks[btnNum] = Math.min( this.priorityByStacks[btnNum], buttonCap );
@@ -353,7 +353,7 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 	@SubscribeEvent
 	public void onConfigChanged( final ConfigChangedEvent.OnConfigChangedEvent eventArgs )
 	{
-		if( eventArgs.modID.equals( AppEng.MOD_ID ) )
+		if( eventArgs.getModID().equals( AppEng.MOD_ID ) )
 		{
 			this.clientSync();
 		}
@@ -378,7 +378,7 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 
 		this.setCategoryComment( "OreCamouflage", "AE2 Automatically uses alternative ores present in your instance of MC to blend better with its surroundings, if you prefer you can disable this selectively using these flags; Its important to note, that some if these items even if enabled may not be craftable in game because other items are overriding their recipes." );
 		final Property p = this.get( "OreCamouflage", mt.name(), true );
-		p.comment = "OreDictionary Names: " + mt.getOreName();
+		p.setComment( "OreDictionary Names: " + mt.getOreName() );
 
 		return !p.getBoolean( true );
 	}

@@ -24,7 +24,7 @@ import java.util.List;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemMeshDefinition;
-import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -82,6 +82,7 @@ public class ItemPaintBall extends AEBaseItem
 		return ( is.getItemDamage() >= DAMAGE_THRESHOLD ? GuiText.Lumen.getLocal() + ' ' : "" ) + this.getColor( is );
 	}
 
+	//TODO 1.9.4 - Move to IItemColor
 	@Override
 	public int getColorFromItemStack( final ItemStack stack, final int renderPass )
 	{

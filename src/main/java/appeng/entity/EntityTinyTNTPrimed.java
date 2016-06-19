@@ -28,11 +28,13 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.item.EntityTNTPrimed;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
@@ -104,7 +106,7 @@ public final class EntityTinyTNTPrimed extends EntityTNTPrimed implements IEntit
 			}
 		}
 
-		if( this.fuse <= 0 )
+		if( this.getFuse() <= 0 )
 		{
 			this.setDead();
 
@@ -117,24 +119,24 @@ public final class EntityTinyTNTPrimed extends EntityTNTPrimed implements IEntit
 		{
 			this.worldObj.spawnParticle( EnumParticleTypes.SMOKE_NORMAL, this.posX, this.posY, this.posZ, 0.0D, 0.0D, 0.0D );
 		}
-		this.fuse--;
+		this.setFuse( getFuse() - 1 );
 	}
 
 	// override :P
 	void explode()
 	{
-		this.worldObj.playSoundEffect( this.posX, this.posY, this.posZ, "random.explode", 4.0F, ( 1.0F + ( this.worldObj.rand.nextFloat() - this.worldObj.rand.nextFloat() ) * 0.2F ) * 32.9F );
+		this.worldObj.playSound( null, this.posX, this.posY, this.posZ, SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.BLOCKS, 4.0F, ( 1.0F + ( this.worldObj.rand.nextFloat() - this.worldObj.rand.nextFloat() ) * 0.2F ) * 32.9F );
 
 		if( this.isInWater() )
 		{
 			return;
 		}
 
-		for( final Object e : this.worldObj.getEntitiesWithinAABBExcludingEntity( this, AxisAlignedBB.fromBounds( this.posX - 1.5, this.posY - 1.5f, this.posZ - 1.5, this.posX + 1.5, this.posY + 1.5, this.posZ + 1.5 ) ) )
+		for( final Object e : this.worldObj.getEntitiesWithinAABBExcludingEntity( this, new AxisAlignedBB( this.posX - 1.5, this.posY - 1.5f, this.posZ - 1.5, this.posX + 1.5, this.posY + 1.5, this.posZ + 1.5 ) ) )
 		{
 			if( e instanceof Entity )
 			{
-				( (Entity) e ).attackEntityFrom( DamageSource.setExplosionSource( null ), 6 );
+				( (Entity) e ).attackEntityFrom( DamageSource.causeExplosionDamage( (Explosion) null ), 6 );
 			}
 		}
 
@@ -152,7 +154,7 @@ public final class EntityTinyTNTPrimed extends EntityTNTPrimed implements IEntit
 						final BlockPos point = new BlockPos( x, y, z );
 						final IBlockState state = this.worldObj.getBlockState( point );
 						final Block block = state.getBlock();
-						if( block != null && !block.isAir( this.worldObj, point ) )
+						if( block != null && !block.isAir( state, this.worldObj, point ) )
 						{
 							float strength = (float) ( 2.3f - ( ( ( x + 0.5f ) - this.posX ) * ( ( x + 0.5f ) - this.posX ) + ( ( y + 0.5f ) - this.posY ) * ( ( y + 0.5f ) - this.posY ) + ( ( z + 0.5f ) - this.posZ ) * ( ( z + 0.5f ) - this.posZ ) ) );
 
@@ -161,7 +163,7 @@ public final class EntityTinyTNTPrimed extends EntityTNTPrimed implements IEntit
 
 							if( strength > 0.01 )
 							{
-								if( block.getMaterial() != Material.air )
+								if( block.getMaterial(state) != Material.AIR )
 								{
 									if( block.canDropFromExplosion( ex ) )
 									{
@@ -183,12 +185,12 @@ public final class EntityTinyTNTPrimed extends EntityTNTPrimed implements IEntit
 	@Override
 	public void writeSpawnData( final ByteBuf data )
 	{
-		data.writeByte( this.fuse );
+		data.writeByte( this.getFuse() );
 	}
 
 	@Override
 	public void readSpawnData( final ByteBuf data )
 	{
-		this.fuse = data.readByte();
+		this.setFuse( data.readByte() );;
 	}
 }

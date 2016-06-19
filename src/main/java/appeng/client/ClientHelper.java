@@ -33,19 +33,20 @@ import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemMeshDefinition;
 import net.minecraft.client.renderer.ItemModelMesher;
+import net.minecraft.client.renderer.block.model.ModelBakery;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.DefaultStateMapper;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.client.resources.model.ModelBakery;
-import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.MouseEvent;
@@ -55,7 +56,6 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.fml.common.registry.GameRegistry.UniqueIdentifier;
 
 import appeng.api.parts.CableRenderMode;
 import appeng.api.parts.IPartItem;
@@ -200,7 +200,7 @@ public class ClientHelper extends ServerHelper
 					this.spawnLightning( worldObj, posX, posY, posZ );
 					return;
 				case LightningArc:
-					this.spawnLightningArc( worldObj, posX, posY, posZ, (Vec3) o );
+					this.spawnLightningArc( worldObj, posX, posY, posZ, (Vec3d) o );
 					return;
 				default:
 			}
@@ -223,7 +223,7 @@ public class ClientHelper extends ServerHelper
 	}
 
 	@Override
-	public MovingObjectPosition getMOP()
+	public RayTraceResult getRTR()
 	{
 		return Minecraft.getMinecraft().objectMouseOver;
 	}
@@ -311,7 +311,7 @@ public class ClientHelper extends ServerHelper
 		final String MODID = AppEng.MOD_ID + ":";
 		for( final List<IconReg> reg : this.iconRegistrations.values() )
 		{
-			final String[] names = new String[reg.size()];
+			final ResourceLocation[] names = new ResourceLocation[reg.size()];
 
 			Item it = null;
 
@@ -325,10 +325,10 @@ public class ClientHelper extends ServerHelper
 					mesher.register( (Item) r.item, r.meta, r.loc );
 				}
 
-				names[offset++] = MODID + r.name;
+				names[offset++] = new ResourceLocation( MODID, r.name );
 			}
 
-			ModelBakery.addVariantName( it, names );
+			ModelBakery.registerItemVariants( it, names );
 		}
 	}
 
@@ -409,7 +409,7 @@ public class ClientHelper extends ServerHelper
 	@SubscribeEvent
 	public void postPlayerRender( final RenderLivingEvent.Pre p )
 	{
-		final PlayerColor player = TickHandler.INSTANCE.getPlayerColors().get( p.entity.getEntityId() );
+		final PlayerColor player = TickHandler.INSTANCE.getPlayerColors().get( p.getEntity().getEntityId() );
 		if( player != null )
 		{
 			final AEColor col = player.myColor;
@@ -448,11 +448,11 @@ public class ClientHelper extends ServerHelper
 		final float y = (float) ( ( ( Platform.getRandomInt() % 100 ) * 0.01 ) - 0.5 ) * 0.7f;
 		final float z = (float) ( ( ( Platform.getRandomInt() % 100 ) * 0.01 ) - 0.5 ) * 0.7f;
 
-		final CraftingFx fx = new CraftingFx( w, posX + x, posY + y, posZ + z, Items.diamond );
+		final CraftingFx fx = new CraftingFx( w, posX + x, posY + y, posZ + z, Items.DIAMOND );
 
-		fx.motionX = -x * 0.2;
-		fx.motionY = -y * 0.2;
-		fx.motionZ = -z * 0.2;
+		fx.setMotionX( -x * 0.2f );
+		fx.setMotionY( -y * 0.2f );
+		fx.setMotionZ( -z * 0.2f );
 
 		Minecraft.getMinecraft().effectRenderer.addEffect( fx );
 	}
@@ -463,11 +463,11 @@ public class ClientHelper extends ServerHelper
 		final float y = (float) ( ( ( Platform.getRandomInt() % 100 ) * 0.01 ) - 0.5 ) * 0.7f;
 		final float z = (float) ( ( ( Platform.getRandomInt() % 100 ) * 0.01 ) - 0.5 ) * 0.7f;
 
-		final EnergyFx fx = new EnergyFx( w, posX + x, posY + y, posZ + z, Items.diamond );
+		final EnergyFx fx = new EnergyFx( w, posX + x, posY + y, posZ + z, Items.DIAMOND );
 
-		fx.motionX = -x * 0.1;
-		fx.motionY = -y * 0.1;
-		fx.motionZ = -z * 0.1;
+		fx.setMotionX( -x * 0.1f );
+		fx.setMotionY( -y * 0.1f );
+		fx.setMotionZ( -z * 0.1f );
 
 		Minecraft.getMinecraft().effectRenderer.addEffect( fx );
 	}
@@ -478,7 +478,7 @@ public class ClientHelper extends ServerHelper
 		Minecraft.getMinecraft().effectRenderer.addEffect( fx );
 	}
 
-	private void spawnLightningArc( final World worldObj, final double posX, final double posY, final double posZ, final Vec3 second )
+	private void spawnLightningArc( final World worldObj, final double posX, final double posY, final double posZ, final Vec3d second )
 	{
 		final LightningFX fx = new LightningArcFX( worldObj, posX, posY, posZ, second.xCoord, second.yCoord, second.zCoord, 0.0f, 0.0f, 0.0f );
 		Minecraft.getMinecraft().effectRenderer.addEffect( fx );
@@ -489,14 +489,15 @@ public class ClientHelper extends ServerHelper
 	{
 		// inventory renderer
 		final SmartModel buses = new SmartModel( new BlockRenderInfo( ( new RendererCableBus() ) ) );
-		event.modelRegistry.putObject( this.partRenderer, buses );
+		event.getModelRegistry().putObject( this.partRenderer, buses );
 
 		for( final IconReg reg : this.iconTmp )
 		{
 			if( reg.item instanceof IPartItem || reg.item instanceof IFacadeItem )
 			{
+				//TODO 1.9.4 - UniqueIdentifier => ?
 				final UniqueIdentifier i = GameRegistry.findUniqueIdentifierFor( (Item) reg.item );
-				event.modelRegistry.putObject( new ModelResourceLocation( new ResourceLocation( i.modId, i.name ), "inventory" ), buses );
+				event.getModelRegistry().putObject( new ModelResourceLocation( new ResourceLocation( i.modId, i.name ), "inventory" ), buses );
 			}
 
 			if( reg.item instanceof AEBaseBlock )
@@ -508,13 +509,13 @@ public class ClientHelper extends ServerHelper
 				}
 
 				final SmartModel sm = new SmartModel( renderer );
-				event.modelRegistry.putObject( renderer.getRendererInstance().getResourcePath(), sm );
+				event.getModelRegistry().putObject( renderer.getRendererInstance().getResourcePath(), sm );
 
 				final Map data = new DefaultStateMapper().putStateModelLocations( (Block) reg.item );
 				for( final Object Loc : data.values() )
 				{
 					final ModelResourceLocation res = (ModelResourceLocation) Loc;
-					event.modelRegistry.putObject( res, sm );
+					event.getModelRegistry().putObject( res, sm );
 				}
 			}
 		}
@@ -523,20 +524,21 @@ public class ClientHelper extends ServerHelper
 	@SubscribeEvent
 	public void wheelEvent( final MouseEvent me )
 	{
-		if( me.isCanceled() || me.dwheel == 0 )
+		if( me.isCanceled() || me.getDwheel() == 0 )
 		{
 			return;
 		}
 
 		final Minecraft mc = Minecraft.getMinecraft();
 		final EntityPlayer player = mc.thePlayer;
-		final ItemStack is = player.getHeldItem();
+		//TODO 1.9.4 - 2 hands. Just do something!
+		final ItemStack is = player.getItemStackFromSlot( EntityEquipmentSlot.MAINHAND );
 
 		if( is != null && is.getItem() instanceof IMouseWheelItem && player.isSneaking() )
 		{
 			try
 			{
-				NetworkHandler.instance.sendToServer( new PacketValueConfig( "Item", me.dwheel > 0 ? "WheelUp" : "WheelDown" ) );
+				NetworkHandler.instance.sendToServer( new PacketValueConfig( "Item", me.getDwheel() > 0 ? "WheelUp" : "WheelDown" ) );
 				me.setCanceled( true );
 			}
 			catch( final IOException e )
@@ -553,7 +555,7 @@ public class ClientHelper extends ServerHelper
 		{
 			if( reg.item instanceof AEBaseItem )
 			{
-				( (AEBaseItem) reg.item ).registerCustomIcon( ev.map );
+				( (AEBaseItem) reg.item ).registerCustomIcon( ev.getMap() );
 			}
 			else if( reg.item instanceof AEBaseBlock )
 			{
@@ -563,17 +565,17 @@ public class ClientHelper extends ServerHelper
 					continue;
 				}
 
-				( (AEBaseBlock) reg.item ).registerBlockIcons( ev.map, reg.name );
+				( (AEBaseBlock) reg.item ).registerBlockIcons( ev.getMap(), reg.name );
 			}
 		}
 
-		this.extraIcons.forEach( ev.map::registerSprite );
+		this.extraIcons.forEach( ev.getMap()::registerSprite );
 
 		// if( ev.map.getTextureType() == ITEM_RENDERER )
 		{
 			for( final ExtraItemTextures et : ExtraItemTextures.values() )
 			{
-				et.registerIcon( ev.map );
+				et.registerIcon( ev.getMap() );
 			}
 		}
 
@@ -581,12 +583,12 @@ public class ClientHelper extends ServerHelper
 		{
 			for( final ExtraBlockTextures et : ExtraBlockTextures.values() )
 			{
-				et.registerIcon( ev.map );
+				et.registerIcon( ev.getMap() );
 			}
 
 			for( final CableBusTextures cb : CableBusTextures.values() )
 			{
-				cb.registerIcon( ev.map );
+				cb.registerIcon( ev.getMap() );
 			}
 		}
 	}

@@ -29,10 +29,10 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 import appeng.api.networking.IGridNode;
@@ -294,7 +294,7 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	}
 
 	@Override
-	public SelectedPart selectPart( final Vec3 pos )
+	public SelectedPart selectPart( final Vec3d pos )
 	{
 		return this.getCableBus().selectPart( pos );
 	}
@@ -349,7 +349,7 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	{
 		for( final AxisAlignedBB bx : this.getSelectedBoundingBoxesFromPool( w, pos, e, false ) )
 		{
-			out.add( AxisAlignedBB.fromBounds( bx.minX, bx.minY, bx.minZ, bx.maxX, bx.maxY, bx.maxZ ) );
+			out.add( new AxisAlignedBB( bx.minX, bx.minY, bx.minZ, bx.maxX, bx.maxY, bx.maxZ ) );
 		}
 	}
 

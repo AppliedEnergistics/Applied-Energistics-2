@@ -38,7 +38,7 @@ public class BlockChunkloader extends AEBaseTileBlock implements LoadingCallback
 
 	public BlockChunkloader()
 	{
-		super( Material.iron );
+		super( Material.IRON );
 		this.setTileEntity( TileChunkLoader.class );
 		ForgeChunkManager.setForcedChunkLoadingCallback( AppEng.instance(), this );
 		this.setFeature( EnumSet.of( AEFeature.UnsupportedDeveloperTools, AEFeature.Creative ) );

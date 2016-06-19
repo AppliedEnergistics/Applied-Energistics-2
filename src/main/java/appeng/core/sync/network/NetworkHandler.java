@@ -82,7 +82,7 @@ public class NetworkHandler
 	@SubscribeEvent
 	public void newConnection( final ServerConnectionFromClientEvent ev )
 	{
-		WorldData.instance().dimensionData().sendToPlayer( ev.manager );
+		WorldData.instance().dimensionData().sendToPlayer( ev.getManager() );
 	}
 
 	@SubscribeEvent
@@ -97,12 +97,12 @@ public class NetworkHandler
 	@SubscribeEvent
 	public void serverPacket( final ServerCustomPacketEvent ev )
 	{
-		final NetHandlerPlayServer srv = (NetHandlerPlayServer) ev.packet.handler();
+		final NetHandlerPlayServer srv = (NetHandlerPlayServer) ev.getPacket().handler();
 		if( this.serveHandler != null )
 		{
 			try
 			{
-				this.serveHandler.onPacketData( null, ev.handler, ev.packet, srv.playerEntity );
+				this.serveHandler.onPacketData( null, ev.getHandler(), ev.getPacket(), srv.playerEntity );
 			}
 			catch( final ThreadQuickExitException ignored )
 			{
@@ -118,7 +118,7 @@ public class NetworkHandler
 		{
 			try
 			{
-				this.clientHandler.onPacketData( null, ev.handler, ev.packet, null );
+				this.clientHandler.onPacketData( null, ev.getHandler(), ev.getPacket(), null );
 			}
 			catch( final ThreadQuickExitException ignored )
 			{

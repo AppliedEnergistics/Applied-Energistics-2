@@ -258,7 +258,7 @@ public class SlotRestrictedInput extends AppEngSlot
 
 	public static boolean isMetalIngot( final ItemStack i )
 	{
-		if( Platform.isSameItemPrecise( i, new ItemStack( Items.iron_ingot ) ) )
+		if( Platform.isSameItemPrecise( i, new ItemStack( Items.IRON_INGOT ) ) )
 		{
 			return true;
 		}

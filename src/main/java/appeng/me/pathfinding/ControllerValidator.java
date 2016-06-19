@@ -19,7 +19,7 @@
 package appeng.me.pathfinding;
 
 
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;

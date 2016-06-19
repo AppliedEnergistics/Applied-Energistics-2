@@ -56,7 +56,7 @@ public final class AECommand extends CommandBase
 	}
 
 	@Override
-	public void processCommand( final ICommandSender sender, final String[] args ) throws CommandException
+	public void execute( final MinecraftServer server, final ICommandSender sender, final String[] args ) throws CommandException
 	{
 		if( args.length == 0 )
 		{

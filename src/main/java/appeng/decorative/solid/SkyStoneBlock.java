@@ -25,8 +25,9 @@ import com.google.common.base.Optional;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -41,13 +42,13 @@ import appeng.util.Platform;
 public class SkyStoneBlock extends AEBaseBlock
 {
 	private static final float BLOCK_RESISTANCE = 150.0f;
-	private static final double BREAK_SPEAK_SCALAR = 0.1;
+	private static final float BREAK_SPEAK_SCALAR = 0.1f;
 	private static final double BREAK_SPEAK_THRESHOLD = 7.0;
 	private final SkystoneType type;
 
 	public SkyStoneBlock( final SkystoneType type )
 	{
-		super( Material.rock, Optional.of( type.name() ) );
+		super( Material.ROCK, Optional.of( type.name() ) );
 		this.setHardness( 50 );
 		this.setHasSubtypes( true );
 		this.blockResistance = BLOCK_RESISTANCE;
@@ -65,9 +66,9 @@ public class SkyStoneBlock extends AEBaseBlock
 	@SubscribeEvent
 	public void breakFaster( final PlayerEvent.BreakSpeed event )
 	{
-		if( event.state.getBlock() == this && event.entityPlayer != null )
+		if( event.getState().getBlock() == this && event.getEntityPlayer() != null )
 		{
-			final ItemStack is = event.entityPlayer.inventory.getCurrentItem();
+			final ItemStack is = event.getEntityPlayer().getItemStackFromSlot( EntityEquipmentSlot.MAINHAND );
 			int level = -1;
 
 			if( is != null && is.getItem() != null )
@@ -75,9 +76,9 @@ public class SkyStoneBlock extends AEBaseBlock
 				level = is.getItem().getHarvestLevel( is, "pickaxe" );
 			}
 
-			if( this.type != SkystoneType.STONE || level >= 3 || event.originalSpeed > BREAK_SPEAK_THRESHOLD )
+			if( this.type != SkystoneType.STONE || level >= 3 || event.getOriginalSpeed() > BREAK_SPEAK_THRESHOLD )
 			{
-				event.newSpeed /= BREAK_SPEAK_SCALAR;
+				event.setNewSpeed( event.getNewSpeed() / BREAK_SPEAK_SCALAR );
 			}
 		}
 	}

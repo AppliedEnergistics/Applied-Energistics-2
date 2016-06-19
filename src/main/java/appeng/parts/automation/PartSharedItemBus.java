@@ -22,7 +22,7 @@ package appeng.parts.automation;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import appeng.api.config.RedstoneMode;
@@ -115,7 +115,7 @@ public abstract class PartSharedItemBus extends PartUpgradeable implements IGrid
 	{
 		final World w = self.getWorld();
 
-		if( w.getChunkProvider().chunkExists( pos.getX() >> 4, pos.getZ() >> 4 ) )
+		if( w.getChunkProvider().getLoadedChunk( pos.getX() >> 4, pos.getZ() >> 4 ) != null )
 		{
 			return w.getTileEntity( pos );
 		}
@@ -161,7 +161,7 @@ public abstract class PartSharedItemBus extends PartUpgradeable implements IGrid
 		final int zCoordinate = selfPos.getZ();
 		final World world = self.getWorld();
 
-		return world != null && world.getChunkProvider().chunkExists( xCoordinate >> 4, zCoordinate >> 4 );
+		return world != null && world.getChunkProvider().getLoadedChunk( xCoordinate >> 4, zCoordinate >> 4 ) != null;
 	}
 
 	private void updateState()

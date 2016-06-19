@@ -22,8 +22,8 @@ package appeng.client.render.blocks;
 import java.util.EnumSet;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 
 import appeng.api.util.IAESprite;
@@ -64,7 +64,7 @@ public class RenderBlockPaint extends BaseBlockRender<BlockPaint, TilePaint>
 
 			final IAESprite[] icoSet = { imb.getIcon( EnumFacing.UP, imb.getDefaultState() ), ExtraBlockTextures.BlockPaint2.getIcon(), ExtraBlockTextures.BlockPaint3.getIcon() };
 
-			final int brightness = imb.getMixedBrightnessForBlock( world, pos );
+			final int brightness = imb.getLightValue( world.getBlockState( pos ), world, pos );
 
 			final EnumSet<EnumFacing> validSides = EnumSet.noneOf( EnumFacing.class );
 

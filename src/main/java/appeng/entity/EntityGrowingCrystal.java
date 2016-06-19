@@ -19,14 +19,14 @@
 package appeng.entity;
 
 
-import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
 import appeng.api.implementations.items.IGrowableCrystal;
@@ -73,11 +73,11 @@ public final class EntityGrowingCrystal extends EntityItem
 			final int i = MathHelper.floor_double( this.posY );
 			final int k = MathHelper.floor_double( this.posZ );
 
-			final Block blk = this.worldObj.getBlockState( new BlockPos( j, i, k ) ).getBlock();
-			final Material mat = blk.getMaterial();
+			final IBlockState state = this.worldObj.getBlockState( new BlockPos( j, i, k ) );
+			final Material mat = state.getMaterial();
 			final IGrowableCrystal cry = (IGrowableCrystal) is.getItem();
 
-			final float multiplier = cry.getMultiplier( blk, mat );
+			final float multiplier = cry.getMultiplier( state.getBlock(), mat );
 			final int speed = (int) Math.max( 1, this.getSpeed( j, i, k ) * multiplier );
 
 			final boolean isClient = Platform.isClient();

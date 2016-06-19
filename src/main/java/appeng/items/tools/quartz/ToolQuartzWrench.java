@@ -26,8 +26,11 @@ import com.google.common.base.Optional;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import appeng.api.implementations.items.IAEWrench;
@@ -52,28 +55,28 @@ public class ToolQuartzWrench extends AEBaseItem implements IAEWrench /* , ITool
 	}
 
 	@Override
-	public boolean onItemUseFirst( final ItemStack stack, final EntityPlayer player, final World world, final BlockPos pos, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
+	public EnumActionResult onItemUseFirst( final ItemStack stack, final EntityPlayer player, final World world, final BlockPos pos, final EnumFacing side, final float hitX, final float hitY, final float hitZ, final EnumHand hand )
 	{
 		final Block b = world.getBlockState( pos ).getBlock();
 		if( b != null && !player.isSneaking() && Platform.hasPermissions( new DimensionalCoord( world, pos ), player ) )
 		{
 			if( Platform.isClient() )
 			{
-				return !world.isRemote;
+				return !world.isRemote ? EnumActionResult.SUCCESS : EnumActionResult.FAIL;
 			}
 
 			if( b.rotateBlock( world, pos, side ) )
 			{
-				b.onNeighborBlockChange( world, pos, Platform.AIR_BLOCK.getDefaultState(), Platform.AIR_BLOCK );
-				player.swingItem();
-				return !world.isRemote;
+				b.neighborChanged( Platform.AIR_BLOCK.getDefaultState(), world, pos, Platform.AIR_BLOCK );
+				player.swingArm( hand );
+				return !world.isRemote ? EnumActionResult.SUCCESS : EnumActionResult.FAIL;
 			}
 		}
-		return false;
+		return EnumActionResult.PASS;
 	}
 
 	@Override
-	public boolean doesSneakBypassUse( final World world, final BlockPos pos, final EntityPlayer player )
+	public boolean doesSneakBypassUse( final ItemStack itemstack, final IBlockAccess world, final BlockPos pos, final EntityPlayer player )
 	{
 		return true;
 	}

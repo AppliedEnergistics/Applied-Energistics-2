@@ -21,7 +21,7 @@ package appeng.container.implementations;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.ICrafting;
+import net.minecraft.inventory.IContainerListener;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 
@@ -124,12 +124,12 @@ public class ContainerSecurity extends ContainerMEMonitorable implements IAEAppE
 
 		if( this.wirelessIn.getHasStack() )
 		{
-			player.dropPlayerItemWithRandomChoice( this.wirelessIn.getStack(), false );
+			player.dropItem( this.wirelessIn.getStack(), false );
 		}
 
 		if( this.wirelessOut.getHasStack() )
 		{
-			player.dropPlayerItemWithRandomChoice( this.wirelessOut.getStack(), false );
+			player.dropItem( this.wirelessOut.getStack(), false );
 		}
 	}
 
@@ -168,11 +168,11 @@ public class ContainerSecurity extends ContainerMEMonitorable implements IAEAppE
 					this.wirelessOut.putStack( term );
 
 					// update the two slots in question...
-					for( final Object crafter : this.crafters )
+					for( final Object crafter : this.listeners )
 					{
-						final ICrafting icrafting = (ICrafting) crafter;
-						icrafting.sendSlotContents( this, this.wirelessIn.slotNumber, this.wirelessIn.getStack() );
-						icrafting.sendSlotContents( this, this.wirelessOut.slotNumber, this.wirelessOut.getStack() );
+						final IContainerListener IContainerListener = (IContainerListener) crafter;
+						IContainerListener.sendSlotContents( this, this.wirelessIn.slotNumber, this.wirelessIn.getStack() );
+						IContainerListener.sendSlotContents( this, this.wirelessOut.slotNumber, this.wirelessOut.getStack() );
 					}
 				}
 			}

@@ -24,7 +24,7 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
 
@@ -102,7 +102,7 @@ public class ContainerQuartzKnife extends AEBaseContainer implements IAEAppEngIn
 	{
 		if( this.inSlot.getStackInSlot( 0 ) != null )
 		{
-			par1EntityPlayer.dropPlayerItemWithRandomChoice( this.inSlot.getStackInSlot( 0 ), false );
+			par1EntityPlayer.dropItem( this.inSlot.getStackInSlot( 0 ), false );
 		}
 	}
 
@@ -174,6 +174,7 @@ public class ContainerQuartzKnife extends AEBaseContainer implements IAEAppEngIn
 			if( item.stackSize == 0 )
 			{
 				this.getPlayerInv().mainInventory[this.getPlayerInv().currentItem] = null;
+				//TODO 1.9.4 - 2 hands. Just do something!
 				MinecraftForge.EVENT_BUS.post( new PlayerDestroyItemEvent( this.getPlayerInv().player, item ) );
 			}
 
@@ -246,7 +247,7 @@ public class ContainerQuartzKnife extends AEBaseContainer implements IAEAppEngIn
 	}
 
 	@Override
-	public IChatComponent getDisplayName()
+	public ITextComponent getDisplayName()
 	{
 		return null;
 	}

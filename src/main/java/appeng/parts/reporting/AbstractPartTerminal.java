@@ -25,7 +25,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.Vec3d;
 
 import appeng.api.config.Settings;
 import appeng.api.config.SortDir;
@@ -110,7 +110,7 @@ public abstract class AbstractPartTerminal extends AbstractPartDisplay implement
 	}
 
 	@Override
-	public boolean onPartActivate( final EntityPlayer player, final Vec3 pos )
+	public boolean onPartActivate( final EntityPlayer player, final Vec3d pos )
 	{
 		if( !super.onPartActivate( player, pos ) )
 		{

@@ -26,7 +26,7 @@ import net.minecraft.block.material.Material;
 public class AEGlassMaterial extends Material
 {
 
-	public static final AEGlassMaterial INSTANCE = ( new AEGlassMaterial( MapColor.airColor ) );
+	public static final AEGlassMaterial INSTANCE = ( new AEGlassMaterial( MapColor.AIR ) );
 
 	public AEGlassMaterial( final MapColor color )
 	{

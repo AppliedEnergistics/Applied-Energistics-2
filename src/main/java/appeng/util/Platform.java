@@ -58,18 +58,19 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.network.Packet;
-import net.minecraft.network.play.server.S21PacketChunkData;
-import net.minecraft.server.management.PlayerManager;
+import net.minecraft.network.play.server.SPacketChunkData;
+import net.minecraft.server.management.PlayerChunkMap;
 import net.minecraft.stats.Achievement;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityChest;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.StatCollector;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.registry.RegistryNamespaced;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.ILockableContainer;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
@@ -149,7 +150,7 @@ import appeng.util.prioitylist.IPartitionList;
 public class Platform
 {
 
-	public static final Block AIR_BLOCK = Blocks.air;
+	public static final Block AIR_BLOCK = Blocks.AIR;
 
 	public static final int DEF_OFFSET = 16;
 
@@ -423,7 +424,7 @@ public class Platform
 	{
 		try
 		{
-			return w.getBlockState( pos ).getBlock().isAir( w, pos );
+			return w.getBlockState( pos ).getBlock().isAir( w.getBlockState( pos ), w, pos );
 		}
 		catch( final Throwable e )
 		{
@@ -1124,6 +1125,18 @@ public class Platform
 		return -1;
 	}
 
+	public static int findEmpty( final RegistryNamespaced registry, final int minId, final int maxId )
+	{
+		for( int x = minId; x < maxId; x++ )
+		{
+			if( registry.getObjectById( x ) == null )
+			{
+				return x;
+			}
+		}
+		return -1;
+	}
+	
 	public static int findEmpty( final Object[] l )
 	{
 		for( int x = 0; x < l.length; x++ )
@@ -1365,7 +1378,7 @@ public class Platform
 	@SideOnly( Side.CLIENT )
 	public static String gui_localize( final String string )
 	{
-		return StatCollector.translateToLocal( string );
+		return I18n.translateToLocal( string );
 	}
 
 	public static boolean isSameItemPrecise( @Nullable final ItemStack is, @Nullable final ItemStack filter )
@@ -1485,16 +1498,16 @@ public class Platform
 
 		if( playerIn instanceof EntityPlayerMP )
 		{
-			reachDistance = ( (EntityPlayerMP) playerIn ).theItemInWorldManager.getBlockReachDistance();
+			reachDistance = ( (EntityPlayerMP) playerIn ).interactionManager.getBlockReachDistance();
 		}
 
-		final Vec3 from = new Vec3( x, y, z );
-		final Vec3 to = from.addVector( eyeRayX * reachDistance, eyeRayY * reachDistance, eyeRayZ * reachDistance );
+		final Vec3d from = new Vec3d( x, y, z );
+		final Vec3d to = from.addVector( eyeRayX * reachDistance, eyeRayY * reachDistance, eyeRayZ * reachDistance );
 
 		return new LookDirection( from, to );
 	}
 
-	public static MovingObjectPosition rayTrace( final EntityPlayer p, final boolean hitBlocks, final boolean hitEntities )
+	public static RayTraceResult rayTrace( final EntityPlayer p, final boolean hitBlocks, final boolean hitEntities )
 	{
 		final World w = p.getEntityWorld();
 
@@ -1504,7 +1517,7 @@ public class Platform
 		final double d0 = p.prevPosX + ( p.posX - p.prevPosX ) * f;
 		final double d1 = p.prevPosY + ( p.posY - p.prevPosY ) * f + 1.62D - p.getYOffset();
 		final double d2 = p.prevPosZ + ( p.posZ - p.prevPosZ ) * f;
-		final Vec3 vec3 = new Vec3( d0, d1, d2 );
+		final Vec3d vec3 = new Vec3d( d0, d1, d2 );
 		final float f3 = MathHelper.cos( -f2 * 0.017453292F - (float) Math.PI );
 		final float f4 = MathHelper.sin( -f2 * 0.017453292F - (float) Math.PI );
 		final float f5 = -MathHelper.cos( -f1 * 0.017453292F );
@@ -1513,9 +1526,9 @@ public class Platform
 		final float f8 = f3 * f5;
 		final double d3 = 32.0D;
 
-		final Vec3 vec31 = vec3.addVector( f7 * d3, f6 * d3, f8 * d3 );
+		final Vec3d vec31 = vec3.addVector( f7 * d3, f6 * d3, f8 * d3 );
 
-		final AxisAlignedBB bb = AxisAlignedBB.fromBounds( Math.min( vec3.xCoord, vec31.xCoord ), Math.min( vec3.yCoord, vec31.yCoord ), Math.min( vec3.zCoord, vec31.zCoord ), Math.max( vec3.xCoord, vec31.xCoord ), Math.max( vec3.yCoord, vec31.yCoord ), Math.max( vec3.zCoord, vec31.zCoord ) ).expand( 16, 16, 16 );
+		final AxisAlignedBB bb = new AxisAlignedBB( Math.min( vec3.xCoord, vec31.xCoord ), Math.min( vec3.yCoord, vec31.yCoord ), Math.min( vec3.zCoord, vec31.zCoord ), Math.max( vec3.xCoord, vec31.xCoord ), Math.max( vec3.yCoord, vec31.yCoord ), Math.max( vec3.zCoord, vec31.zCoord ) ).expand( 16, 16, 16 );
 
 		Entity entity = null;
 		double closest = 9999999.0D;
@@ -1532,18 +1545,18 @@ public class Platform
 					if( entity1.isEntityAlive() )
 					{
 						// prevent killing / flying of mounts.
-						if( entity1.riddenByEntity == p )
+						if( entity1.isRidingOrBeingRiddenBy( p ) )
 						{
 							continue;
 						}
 
 						f1 = 0.3F;
 						final AxisAlignedBB boundingBox = entity1.getEntityBoundingBox().expand( f1, f1, f1 );
-						final MovingObjectPosition movingObjectPosition = boundingBox.calculateIntercept( vec3, vec31 );
+						final RayTraceResult RayTraceResult = boundingBox.calculateIntercept( vec3, vec31 );
 
-						if( movingObjectPosition != null )
+						if( RayTraceResult != null )
 						{
-							final double nd = vec3.squareDistanceTo( movingObjectPosition.hitVec );
+							final double nd = vec3.squareDistanceTo( RayTraceResult.hitVec );
 
 							if( nd < closest )
 							{
@@ -1556,22 +1569,22 @@ public class Platform
 			}
 		}
 
-		MovingObjectPosition pos = null;
-		Vec3 vec = null;
+		RayTraceResult pos = null;
+		Vec3d vec = null;
 
 		if( hitBlocks )
 		{
-			vec = new Vec3( d0, d1, d2 );
+			vec = new Vec3d( d0, d1, d2 );
 			pos = w.rayTraceBlocks( vec3, vec31, true );
 		}
 
 		if( entity != null && pos != null && pos.hitVec.squareDistanceTo( vec ) > closest )
 		{
-			pos = new MovingObjectPosition( entity );
+			pos = new RayTraceResult( entity );
 		}
 		else if( entity != null && pos == null )
 		{
-			pos = new MovingObjectPosition( entity );
+			pos = new RayTraceResult( entity );
 		}
 
 		return pos;
@@ -2080,7 +2093,7 @@ public class Platform
 
 		if( type == AEFeature.NetherQuartzTools )
 		{
-			return Items.quartz == b.getItem();
+			return Items.QUARTZ == b.getItem();
 		}
 
 		return false;
@@ -2116,16 +2129,17 @@ public class Platform
 		return is;
 	}
 
+	//TODO 1.9.4 - What do we want to do with this? Seriously, it wont work now, so JUST DO SOMETHING!
 	public static void sendChunk( final Chunk c, final int verticalBits )
 	{
 		try
 		{
 			final WorldServer ws = (WorldServer) c.getWorld();
-			final PlayerManager pm = ws.getPlayerManager();
+			final PlayerChunkMap pm = ws.getPlayerChunkMap();
 
 			if( getOrCreateChunkWatcher == null )
 			{
-				getOrCreateChunkWatcher = ReflectionHelper.findMethod( PlayerManager.class, pm, new String[] { "getOrCreateChunkWatcher", "func_72690_a" }, int.class, int.class, boolean.class );
+				getOrCreateChunkWatcher = ReflectionHelper.findMethod( PlayerChunkMap.class, pm, new String[] { "getOrCreateChunkWatcher", "func_72690_a" }, int.class, int.class, boolean.class );
 			}
 
 			if( getOrCreateChunkWatcher != null )
@@ -2142,7 +2156,7 @@ public class Platform
 
 					if( sendToAllPlayersWatchingChunk != null )
 					{
-						sendToAllPlayersWatchingChunk.invoke( playerInstance, new S21PacketChunkData( c, false, verticalBits ) );
+						sendToAllPlayersWatchingChunk.invoke( playerInstance, new SPacketChunkData( c, verticalBits ) );
 					}
 				}
 			}
@@ -2158,21 +2172,21 @@ public class Platform
 		switch( side )
 		{
 			case DOWN:
-				return AxisAlignedBB.fromBounds( 0.0, 0.0, 0.0, 1.0, ( facadeThickness ) / 16.0, 1.0 );
+				return new AxisAlignedBB( 0.0, 0.0, 0.0, 1.0, ( facadeThickness ) / 16.0, 1.0 );
 			case EAST:
-				return AxisAlignedBB.fromBounds( ( 16.0 - facadeThickness ) / 16.0, 0.0, 0.0, 1.0, 1.0, 1.0 );
+				return new AxisAlignedBB( ( 16.0 - facadeThickness ) / 16.0, 0.0, 0.0, 1.0, 1.0, 1.0 );
 			case NORTH:
-				return AxisAlignedBB.fromBounds( 0.0, 0.0, 0.0, 1.0, 1.0, ( facadeThickness ) / 16.0 );
+				return new AxisAlignedBB( 0.0, 0.0, 0.0, 1.0, 1.0, ( facadeThickness ) / 16.0 );
 			case SOUTH:
-				return AxisAlignedBB.fromBounds( 0.0, 0.0, ( 16.0 - facadeThickness ) / 16.0, 1.0, 1.0, 1.0 );
+				return new AxisAlignedBB( 0.0, 0.0, ( 16.0 - facadeThickness ) / 16.0, 1.0, 1.0, 1.0 );
 			case UP:
-				return AxisAlignedBB.fromBounds( 0.0, ( 16.0 - facadeThickness ) / 16.0, 0.0, 1.0, 1.0, 1.0 );
+				return new AxisAlignedBB( 0.0, ( 16.0 - facadeThickness ) / 16.0, 0.0, 1.0, 1.0, 1.0 );
 			case WEST:
-				return AxisAlignedBB.fromBounds( 0.0, 0.0, 0.0, ( facadeThickness ) / 16.0, 1.0, 1.0 );
+				return new AxisAlignedBB( 0.0, 0.0, 0.0, ( facadeThickness ) / 16.0, 1.0, 1.0 );
 			default:
 				break;
 		}
-		return AxisAlignedBB.fromBounds( 0, 0, 0, 1, 1, 1 );
+		return new AxisAlignedBB( 0, 0, 0, 1, 1, 1 );
 	}
 
 	public static float getEyeOffset( final EntityPlayer player )

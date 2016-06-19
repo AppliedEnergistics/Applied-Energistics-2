@@ -38,7 +38,7 @@ public class MatterCannonAmmoRegistry implements IOreListener, IMatterCannonAmmo
 	public MatterCannonAmmoRegistry()
 	{
 		OreDictionaryHandler.INSTANCE.observe( this );
-		this.registerAmmo( new ItemStack( Items.gold_nugget ), 196.96655 );
+		this.registerAmmo( new ItemStack( Items.GOLD_NUGGET ), 196.96655 );
 	}
 
 	@Override

@@ -25,18 +25,20 @@ import java.util.List;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemFirework;
-import net.minecraft.item.ItemReed;
 import net.minecraft.item.ItemSkull;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.Chunk;
@@ -347,7 +349,7 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 	}
 
 	@Override
-	public boolean onPartActivate( final EntityPlayer player, final Vec3 pos )
+	public boolean onPartActivate( final EntityPlayer player, final Vec3d pos )
 	{
 		if( !player.isSneaking() )
 		{
@@ -408,6 +410,9 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 	@Override
 	public IAEItemStack injectItems( final IAEItemStack input, final Actionable type, final BaseActionSource src )
 	{
+		//TODO 1.9.4 - 2 hands! Just do something!
+		final EnumHand hand = EnumHand.MAIN_HAND;
+		
 		if( this.blocked || input == null || input.getStackSize() <= 0 )
 		{
 			return input;
@@ -429,7 +434,7 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 
 		if( w.getBlockState( tePos ).getBlock().isReplaceable( w, tePos ) )
 		{
-			if( placeBlock == YesNo.YES && ( i instanceof ItemBlock || i instanceof IPlantable || i instanceof ItemSkull || i instanceof ItemFirework || i instanceof IPartItem || i instanceof ItemReed ) )
+			if( placeBlock == YesNo.YES && ( i instanceof ItemBlock || i instanceof IPlantable || i instanceof ItemSkull || i instanceof ItemFirework || i instanceof IPartItem || i == Item.getItemFromBlock( Blocks.REEDS ) ) )
 			{
 				final EntityPlayer player = Platform.getPlayer( (WorldServer) w );
 				Platform.configurePlayer( player, side, this.getTile() );
@@ -455,35 +460,35 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 				worked = true;
 				if( type == Actionable.MODULATE )
 				{
-					if( i instanceof IPlantable || i instanceof ItemSkull || i instanceof ItemReed )
+					if( i instanceof IPlantable || i instanceof ItemSkull || i == Item.getItemFromBlock( Blocks.REEDS ) )
 					{
 						boolean Worked = false;
 
 						if( side.xOffset == 0 && side.zOffset == 0 )
 						{
-							Worked = i.onItemUse( is, player, w, tePos.offset( side.getFacing() ), side.getFacing().getOpposite(), side.xOffset, side.yOffset, side.zOffset );
+							Worked = i.onItemUse( is, player, w, tePos.offset( side.getFacing() ), hand, side.getFacing().getOpposite(), side.xOffset, side.yOffset, side.zOffset ) == EnumActionResult.SUCCESS;
 						}
 
 						if( !Worked && side.xOffset == 0 && side.zOffset == 0 )
 						{
-							Worked = i.onItemUse( is, player, w, tePos.offset( side.getFacing().getOpposite() ), side.getFacing(), side.xOffset, side.yOffset, side.zOffset );
+							Worked = i.onItemUse( is, player, w, tePos.offset( side.getFacing().getOpposite() ), hand, side.getFacing(), side.xOffset, side.yOffset, side.zOffset ) == EnumActionResult.SUCCESS;
 						}
 
 						if( !Worked && side.yOffset == 0 )
 						{
-							Worked = i.onItemUse( is, player, w, tePos.offset( EnumFacing.DOWN ), EnumFacing.UP, side.xOffset, side.yOffset, side.zOffset );
+							Worked = i.onItemUse( is, player, w, tePos.offset( EnumFacing.DOWN ), hand, EnumFacing.UP, side.xOffset, side.yOffset, side.zOffset ) == EnumActionResult.SUCCESS;
 						}
 
 						if( !Worked )
 						{
-							i.onItemUse( is, player, w, tePos, side.getFacing().getOpposite(), side.xOffset, side.yOffset, side.zOffset );
+							i.onItemUse( is, player, w, tePos, hand, side.getFacing().getOpposite(), side.xOffset, side.yOffset, side.zOffset );
 						}
 
 						maxStorage -= is.stackSize;
 					}
 					else
 					{
-						i.onItemUse( is, player, w, tePos, side.getFacing().getOpposite(), side.xOffset, side.yOffset, side.zOffset );
+						i.onItemUse( is, player, w, tePos, hand, side.getFacing().getOpposite(), side.xOffset, side.yOffset, side.zOffset );
 						maxStorage -= is.stackSize;
 					}
 				}

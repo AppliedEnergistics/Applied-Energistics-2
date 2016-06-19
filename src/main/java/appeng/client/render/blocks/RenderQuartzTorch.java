@@ -23,7 +23,7 @@ import java.util.EnumSet;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 
 import appeng.api.util.AEPartLocation;
@@ -68,7 +68,7 @@ public class RenderQuartzTorch extends BaseBlockRender<AEBaseBlock, AEBaseTile>
 
 		this.renderInvBlock( EnumSet.allOf( AEPartLocation.class ), blk, is, 0xffffff, renderer );
 
-		blk.getRendererInstance().setTemporaryRenderIcon( renderer.getIcon( Blocks.hopper.getDefaultState() )[0] );
+		blk.getRendererInstance().setTemporaryRenderIcon( renderer.getIcon( Blocks.HOPPER.getDefaultState() )[0] );
 		renderer.setRenderAllFaces( true );
 
 		final float top = 8.0f / 16.0f;
@@ -135,7 +135,7 @@ public class RenderQuartzTorch extends BaseBlockRender<AEBaseBlock, AEBaseTile>
 			super.renderInWorld( block, world, pos, renderer );
 		}
 
-		block.getRendererInstance().setTemporaryRenderIcon( renderer.getIcon( Blocks.hopper.getDefaultState() )[0] );
+		block.getRendererInstance().setTemporaryRenderIcon( renderer.getIcon( Blocks.HOPPER.getDefaultState() )[0] );
 
 		final float top = 8.0f / 16.0f;
 		final float bottom = 7.0f / 16.0f;

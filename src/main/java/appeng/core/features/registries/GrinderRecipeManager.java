@@ -53,24 +53,24 @@ public final class GrinderRecipeManager implements IGrinderRegistry, IOreListene
 		this.ingots = new HashMap<ItemStack, String>();
 		this.dusts = new HashMap<String, ItemStack>();
 
-		this.addOre( "Coal", new ItemStack( Items.coal ) );
-		this.addOre( "Charcoal", new ItemStack( Items.coal, 1, 1 ) );
+		this.addOre( "Coal", new ItemStack( Items.COAL ) );
+		this.addOre( "Charcoal", new ItemStack( Items.COAL, 1, 1 ) );
 
-		this.addOre( "NetherQuartz", new ItemStack( Blocks.quartz_ore ) );
-		this.addIngot( "NetherQuartz", new ItemStack( Items.quartz ) );
+		this.addOre( "NetherQuartz", new ItemStack( Blocks.QUARTZ_ORE ) );
+		this.addIngot( "NetherQuartz", new ItemStack( Items.QUARTZ ) );
 
-		this.addOre( "Gold", new ItemStack( Blocks.gold_ore ) );
-		this.addIngot( "Gold", new ItemStack( Items.gold_ingot ) );
+		this.addOre( "Gold", new ItemStack( Blocks.GOLD_ORE ) );
+		this.addIngot( "Gold", new ItemStack( Items.GOLD_INGOT ) );
 
-		this.addOre( "Iron", new ItemStack( Blocks.iron_ore ) );
-		this.addIngot( "Iron", new ItemStack( Items.iron_ingot ) );
+		this.addOre( "Iron", new ItemStack( Blocks.IRON_ORE ) );
+		this.addIngot( "Iron", new ItemStack( Items.IRON_INGOT ) );
 
-		this.addOre( "Obsidian", new ItemStack( Blocks.obsidian ) );
+		this.addOre( "Obsidian", new ItemStack( Blocks.OBSIDIAN ) );
 
-		this.addIngot( "Ender", new ItemStack( Items.ender_pearl ) );
-		this.addIngot( "EnderPearl", new ItemStack( Items.ender_pearl ) );
+		this.addIngot( "Ender", new ItemStack( Items.ENDER_PEARL ) );
+		this.addIngot( "EnderPearl", new ItemStack( Items.ENDER_PEARL ) );
 
-		this.addIngot( "Wheat", new ItemStack( Items.wheat ) );
+		this.addIngot( "Wheat", new ItemStack( Items.WHEAT ) );
 
 		OreDictionaryHandler.INSTANCE.observe( this );
 	}

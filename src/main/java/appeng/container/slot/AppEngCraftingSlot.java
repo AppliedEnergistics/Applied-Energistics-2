@@ -88,54 +88,54 @@ public class AppEngCraftingSlot extends AppEngSlot
 		par1ItemStack.onCrafting( this.thePlayer.worldObj, this.thePlayer, this.amountCrafted );
 		this.amountCrafted = 0;
 
-		if( par1ItemStack.getItem() == Item.getItemFromBlock( Blocks.crafting_table ) )
+		if( par1ItemStack.getItem() == Item.getItemFromBlock( Blocks.CRAFTING_TABLE ) )
 		{
-			this.thePlayer.addStat( AchievementList.buildWorkBench, 1 );
+			this.thePlayer.addStat( AchievementList.BUILD_WORK_BENCH, 1 );
 		}
 
 		if( par1ItemStack.getItem() instanceof ItemPickaxe )
 		{
-			this.thePlayer.addStat( AchievementList.buildPickaxe, 1 );
+			this.thePlayer.addStat( AchievementList.BUILD_PICKAXE, 1 );
 		}
 
-		if( par1ItemStack.getItem() == Item.getItemFromBlock( Blocks.furnace ) )
+		if( par1ItemStack.getItem() == Item.getItemFromBlock( Blocks.FURNACE ) )
 		{
-			this.thePlayer.addStat( AchievementList.buildFurnace, 1 );
+			this.thePlayer.addStat( AchievementList.BUILD_FURNACE, 1 );
 		}
 
 		if( par1ItemStack.getItem() instanceof ItemHoe )
 		{
-			this.thePlayer.addStat( AchievementList.buildHoe, 1 );
+			this.thePlayer.addStat( AchievementList.BUILD_HOE, 1 );
 		}
 
-		if( par1ItemStack.getItem() == Items.bread )
+		if( par1ItemStack.getItem() == Items.BREAD )
 		{
-			this.thePlayer.addStat( AchievementList.makeBread, 1 );
+			this.thePlayer.addStat( AchievementList.MAKE_BREAD, 1 );
 		}
 
-		if( par1ItemStack.getItem() == Items.cake )
+		if( par1ItemStack.getItem() == Items.CAKE )
 		{
-			this.thePlayer.addStat( AchievementList.bakeCake, 1 );
+			this.thePlayer.addStat( AchievementList.BAKE_CAKE, 1 );
 		}
 
 		if( par1ItemStack.getItem() instanceof ItemPickaxe && ( (ItemTool) par1ItemStack.getItem() ).getToolMaterial() != Item.ToolMaterial.WOOD )
 		{
-			this.thePlayer.addStat( AchievementList.buildBetterPickaxe, 1 );
+			this.thePlayer.addStat( AchievementList.BUILD_BETTER_PICKAXE, 1 );
 		}
 
 		if( par1ItemStack.getItem() instanceof ItemSword )
 		{
-			this.thePlayer.addStat( AchievementList.buildSword, 1 );
+			this.thePlayer.addStat( AchievementList.BUILD_SWORD, 1 );
 		}
 
-		if( par1ItemStack.getItem() == Item.getItemFromBlock( Blocks.enchanting_table ) )
+		if( par1ItemStack.getItem() == Item.getItemFromBlock( Blocks.ENCHANTING_TABLE ) )
 		{
-			this.thePlayer.addStat( AchievementList.enchantments, 1 );
+			this.thePlayer.addStat( AchievementList.ENCHANTMENTS, 1 );
 		}
 
-		if( par1ItemStack.getItem() == Item.getItemFromBlock( Blocks.bookshelf ) )
+		if( par1ItemStack.getItem() == Item.getItemFromBlock( Blocks.BOOKSHELF ) )
 		{
-			this.thePlayer.addStat( AchievementList.bookcase, 1 );
+			this.thePlayer.addStat( AchievementList.BOOKCASE, 1 );
 		}
 	}
 
@@ -152,7 +152,7 @@ public class AppEngCraftingSlot extends AppEngSlot
 			ic.setInventorySlotContents( x, this.craftMatrix.getStackInSlot( x ) );
 		}
 
-		final ItemStack[] aitemstack = CraftingManager.getInstance().func_180303_b( ic, playerIn.worldObj );
+		final ItemStack[] aitemstack = CraftingManager.getInstance().getRemainingItems( ic, playerIn.worldObj );
 
 		for( int x = 0; x < this.craftMatrix.getSizeInventory(); x++ )
 		{
@@ -179,7 +179,7 @@ public class AppEngCraftingSlot extends AppEngSlot
 				}
 				else if( !this.thePlayer.inventory.addItemStackToInventory( itemstack2 ) )
 				{
-					this.thePlayer.dropPlayerItemWithRandomChoice( itemstack2, false );
+					this.thePlayer.dropItem( itemstack2, false );
 				}
 			}
 		}

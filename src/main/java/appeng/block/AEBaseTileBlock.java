@@ -41,8 +41,9 @@ import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
@@ -214,7 +215,7 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements IAEFeature,
 	}
 
 	@Override
-	public int getComparatorInputOverride( final World w, final BlockPos pos )
+	public int getComparatorInputOverride( IBlockState state, final World w, final BlockPos pos )
 	{
 		final TileEntity te = this.getTileEntity( w, pos );
 		if( te instanceof IInventory )
@@ -224,8 +225,9 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements IAEFeature,
 		return 0;
 	}
 
+	//TODO 1.9.4 - Move to IBlockState
 	@Override
-	public boolean onBlockEventReceived( final World worldIn, final BlockPos pos, final IBlockState state, final int eventID, final int eventParam )
+	public boolean onBlockAdded( final World worldIn, final BlockPos pos, final IBlockState state, final int eventID, final int eventParam )
 	{
 		super.onBlockEventReceived( worldIn, pos, state, eventID, eventParam );
 		final TileEntity tileentity = worldIn.getTileEntity( pos );
@@ -246,16 +248,16 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements IAEFeature,
 	}
 
 	@Override
-	public boolean onBlockActivated( final World w, final BlockPos pos, final IBlockState state, final EntityPlayer player, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
+	public boolean onBlockActivated( final World w, final BlockPos pos, final IBlockState state, final EntityPlayer player, final EnumHand hand, final @Nullable ItemStack heldItem, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
 	{
 		if( player != null )
 		{
-			final ItemStack is = player.inventory.getCurrentItem();
-			if( is != null )
+			if( heldItem != null )
 			{
-				if( Platform.isWrench( player, is, pos ) && player.isSneaking() )
+				if( Platform.isWrench( player, heldItem, pos ) && player.isSneaking() )
 				{
-					final Block id = w.getBlockState( pos ).getBlock();
+					final IBlockState ids = w.getBlockState( pos ); 
+					final Block id = ids.getBlock();
 					if( id != null )
 					{
 						final AEBaseTile tile = this.getTileEntity( w, pos );
@@ -284,7 +286,7 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements IAEFeature,
 							}
 						}
 
-						if( id.removedByPlayer( w, pos, player, false ) )
+						if( id.removedByPlayer( ids, w, pos, player, false ) )
 						{
 							final List<ItemStack> l = Lists.newArrayList( drops );
 							Platform.spawnDrops( w, pos, l );
@@ -294,9 +296,9 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements IAEFeature,
 					return false;
 				}
 
-				if( is.getItem() instanceof IMemoryCard && !( this instanceof BlockCableBus ) )
+				if( heldItem.getItem() instanceof IMemoryCard && !( this instanceof BlockCableBus ) )
 				{
-					final IMemoryCard memoryCard = (IMemoryCard) is.getItem();
+					final IMemoryCard memoryCard = (IMemoryCard) heldItem.getItem();
 					if( player.isSneaking() )
 					{
 						final AEBaseTile t = this.getTileEntity( w, pos );
@@ -306,7 +308,7 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements IAEFeature,
 							final NBTTagCompound data = t.downloadSettings( SettingsFrom.MEMORY_CARD );
 							if( data != null )
 							{
-								memoryCard.setMemoryCardContents( is, name, data );
+								memoryCard.setMemoryCardContents( heldItem, name, data );
 								memoryCard.notifyUser( player, MemoryCardMessages.SETTINGS_SAVED );
 								return true;
 							}
@@ -314,8 +316,8 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements IAEFeature,
 					}
 					else
 					{
-						final String name = memoryCard.getSettingsName( is );
-						final NBTTagCompound data = memoryCard.getData( is );
+						final String name = memoryCard.getSettingsName( heldItem );
+						final NBTTagCompound data = memoryCard.getData( heldItem );
 						if( this.getUnlocalizedName().equals( name ) )
 						{
 							final AEBaseTile t = this.getTileEntity( w, pos );
@@ -332,7 +334,7 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements IAEFeature,
 			}
 		}
 
-		return this.onActivated( w, pos, player, side, hitX, hitY, hitZ );
+		return this.onActivated( w, pos, player, hand, heldItem, side, hitX, hitY, hitZ );
 	}
 
 	@Override

@@ -25,8 +25,11 @@ import com.google.common.base.Optional;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import appeng.api.implementations.guiobjects.IGuiItem;
@@ -54,24 +57,24 @@ public class ToolQuartzCuttingKnife extends AEBaseItem implements IGuiItem
 	}
 
 	@Override
-	public boolean onItemUse( final ItemStack stack, final EntityPlayer p, final World worldIn, final BlockPos pos, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
+	public EnumActionResult onItemUse( final ItemStack stack, final EntityPlayer p, final World worldIn, final BlockPos pos, final EnumHand hand, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
 	{
 		if( Platform.isServer() )
 		{
 			Platform.openGUI( p, null, AEPartLocation.INTERNAL, GuiBridge.GUI_QUARTZ_KNIFE );
 		}
-		return true;
+		return EnumActionResult.SUCCESS;
 	}
 
 	@Override
-	public ItemStack onItemRightClick( final ItemStack it, final World w, final EntityPlayer p )
+	public ActionResult<ItemStack> onItemRightClick( final ItemStack it, final World w, final EntityPlayer p, final EnumHand hand )
 	{
 		if( Platform.isServer() )
 		{
 			Platform.openGUI( p, null, AEPartLocation.INTERNAL, GuiBridge.GUI_QUARTZ_KNIFE );
 		}
-		p.swingItem();
-		return it;
+		p.swingArm( hand );
+		return new ActionResult<ItemStack>( EnumActionResult.SUCCESS, it );
 	}
 
 	@Override

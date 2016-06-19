@@ -19,12 +19,12 @@
 package appeng.client.render.effects;
 
 
-import net.minecraft.client.particle.EntityBreakingFX;
-import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.particle.ParticleBreaking;
+import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -34,7 +34,7 @@ import appeng.client.texture.ExtraBlockTextures;
 
 
 @SideOnly( Side.CLIENT )
-public class CraftingFx extends EntityBreakingFX
+public class CraftingFx extends ParticleBreaking
 {
 
 	private final TextureAtlasSprite particleTextureIndex;
@@ -59,6 +59,7 @@ public class CraftingFx extends EntityBreakingFX
 		this.startBlkY = MathHelper.floor_double( this.posY );
 		this.startBlkZ = MathHelper.floor_double( this.posZ );
 
+		//TODO 1.9.4 - noClip => ?
 		this.noClip = true;
 	}
 
@@ -69,7 +70,7 @@ public class CraftingFx extends EntityBreakingFX
 	}
 
 	@Override
-	public void renderParticle( final WorldRenderer par1Tessellator, final Entity p_180434_2_, final float partialTick, final float x, final float y, final float z, final float rx, final float rz )
+	public void renderParticle( final VertexBuffer par1Tessellator, final Entity p_180434_2_, final float partialTick, final float x, final float y, final float z, final float rx, final float rz )
 	{
 		if( partialTick < 0 || partialTick > 1 )
 		{
@@ -118,5 +119,20 @@ public class CraftingFx extends EntityBreakingFX
 		super.onUpdate();
 		this.particleScale *= 0.51f;
 		this.particleAlpha *= 0.51f;
+	}
+
+	public void setMotionX( float motionX )
+	{
+		this.motionX = motionX;
+	}
+
+	public void setMotionY( float motionY )
+	{
+		this.motionY = motionY;
+	}
+
+	public void setMotionZ( float motionZ )
+	{
+		this.motionZ = motionZ;
 	}
 }

@@ -30,9 +30,9 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
@@ -51,7 +51,7 @@ public class BlockLightDetector extends AEBaseTileBlock implements IOrientableBl
 
 	public BlockLightDetector()
 	{
-		super( Material.circuits );
+		super( Material.CIRCUITS );
 
 		this.setLightOpacity( 0 );
 		this.setFullSize( false );
@@ -80,7 +80,7 @@ public class BlockLightDetector extends AEBaseTileBlock implements IOrientableBl
 	}
 
 	@Override
-	public int getWeakPower( final IBlockAccess w, final BlockPos pos, final IBlockState state, final EnumFacing side )
+	public int getWeakPower( final IBlockState state, final IBlockAccess w, final BlockPos pos, final EnumFacing side )
 	{
 		if( w instanceof World && ( (TileLightDetector) this.getTileEntity( w, pos ) ).isReady() )
 		{
@@ -103,7 +103,7 @@ public class BlockLightDetector extends AEBaseTileBlock implements IOrientableBl
 	}
 
 	@Override
-	public void randomDisplayTick( final World worldIn, final BlockPos pos, final IBlockState state, final Random rand )
+	public void randomDisplayTick( final IBlockState state, final World worldIn, final BlockPos pos, final Random rand )
 	{
 		// cancel out lightning
 	}
@@ -132,7 +132,7 @@ public class BlockLightDetector extends AEBaseTileBlock implements IOrientableBl
 		final double xOff = -0.3 * up.getFrontOffsetX();
 		final double yOff = -0.3 * up.getFrontOffsetY();
 		final double zOff = -0.3 * up.getFrontOffsetZ();
-		return Collections.singletonList( AxisAlignedBB.fromBounds( xOff + 0.3, yOff + 0.3, zOff + 0.3, xOff + 0.7, yOff + 0.7, zOff + 0.7 ) );
+		return Collections.singletonList( new AxisAlignedBB( xOff + 0.3, yOff + 0.3, zOff + 0.3, xOff + 0.7, yOff + 0.7, zOff + 0.7 ) );
 	}
 
 	@Override
@@ -145,20 +145,21 @@ public class BlockLightDetector extends AEBaseTileBlock implements IOrientableBl
 	 * + 0.85, yOff + (double) y + 0.85, zOff + (double) z + 0.85 ) );
 	 */
 	}
-
+	
 	@Override
-	public void onNeighborBlockChange( final World w, final BlockPos pos, final IBlockState state, final Block neighborBlock )
+	public void neighborChanged( IBlockState state, World w, BlockPos pos, Block blockIn )
 	{
 		final EnumFacing up = this.getOrientable( w, pos ).getUp();
-		if( !this.canPlaceAt( w, pos, up.getOpposite() ) )
+		if( !this.canPlaceAt( (World) w, pos, up.getOpposite() ) )
 		{
-			this.dropTorch( w, pos );
+			this.dropTorch( (World) w, pos );
 		}
 	}
 
 	private void dropTorch( final World w, final BlockPos pos )
 	{
 		w.destroyBlock( pos, true );
+		//TODO 1.9.4 - markBlockForUpdate => ?
 		w.markBlockForUpdate( pos );
 	}
 

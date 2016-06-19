@@ -22,7 +22,7 @@ package appeng.helpers;
 import io.netty.buffer.ByteBuf;
 
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.Vec3d;
 
 import appeng.api.util.AEColor;
 
@@ -35,7 +35,7 @@ public class Splotch
 	private final AEColor color;
 	private final int pos;
 
-	public Splotch( final AEColor col, final boolean lit, final EnumFacing side, final Vec3 position )
+	public Splotch( final AEColor col, final boolean lit, final EnumFacing side, final Vec3d position )
 	{
 		this.color = col;
 		this.lumen = lit;

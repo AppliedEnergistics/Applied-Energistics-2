@@ -18,20 +18,14 @@
 
 package appeng.spatial;
 
+import net.minecraft.world.biome.Biome;
 
-import net.minecraft.world.biome.BiomeGenBase;
-
-
-public class BiomeGenStorage extends BiomeGenBase
+public class BiomeGenStorage extends Biome
 {
 
-	public BiomeGenStorage( final int id )
+	public BiomeGenStorage()
 	{
-		super( id );
-		this.setBiomeName( "Storage Cell" );
-
-		this.setDisableRain();
-		this.temperature = -100;
+		super(new BiomeProperties( "Storage Cell" ).setRainDisabled().setTemperature( -100 ));
 
 		this.theBiomeDecorator.treesPerChunk = 0;
 		this.theBiomeDecorator.flowersPerChunk = 0;

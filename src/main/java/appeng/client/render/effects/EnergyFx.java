@@ -19,12 +19,12 @@
 package appeng.client.render.effects;
 
 
-import net.minecraft.client.particle.EntityBreakingFX;
-import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.particle.ParticleBreaking;
+import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -34,7 +34,7 @@ import appeng.client.texture.ExtraBlockTextures;
 
 
 @SideOnly( Side.CLIENT )
-public class EnergyFx extends EntityBreakingFX
+public class EnergyFx extends ParticleBreaking
 {
 
 	private final TextureAtlasSprite particleTextureIndex;
@@ -58,6 +58,7 @@ public class EnergyFx extends EntityBreakingFX
 		this.startBlkY = MathHelper.floor_double( this.posY );
 		this.startBlkZ = MathHelper.floor_double( this.posZ );
 
+		//TODO 1.9.4 - noClip => ?
 		this.noClip = true;
 	}
 
@@ -68,7 +69,7 @@ public class EnergyFx extends EntityBreakingFX
 	}
 
 	@Override
-	public void renderParticle( final WorldRenderer par1Tessellator, final Entity p_180434_2_, final float par2, final float par3, final float par4, final float par5, final float par6, final float par7 )
+	public void renderParticle( final VertexBuffer par1Tessellator, final Entity p_180434_2_, final float par2, final float par3, final float par4, final float par5, final float par6, final float par7 )
 	{
 		final float f6 = this.particleTextureIndex.getMinU();
 		final float f7 = this.particleTextureIndex.getMaxU();
@@ -108,5 +109,20 @@ public class EnergyFx extends EntityBreakingFX
 		super.onUpdate();
 		this.particleScale *= 0.89f;
 		this.particleAlpha *= 0.89f;
+	}
+
+	public void setMotionX( float motionX )
+	{
+		this.motionX = motionX;
+	}
+
+	public void setMotionY( float motionY )
+	{
+		this.motionY = motionY;
+	}
+
+	public void setMotionZ( float motionZ )
+	{
+		this.motionZ = motionZ;
 	}
 }

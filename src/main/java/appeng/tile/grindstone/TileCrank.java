@@ -27,10 +27,10 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import appeng.api.implementations.tiles.ICrankable;
@@ -108,7 +108,7 @@ public class TileCrank extends AEBaseTile implements ICustomCollision, ITickable
 	{
 		super.setOrientation( inForward, inUp );
 		final IBlockState state = this.worldObj.getBlockState( this.pos );
-		this.getBlockType().onNeighborBlockChange( this.worldObj, this.pos, state, state.getBlock() );
+		this.getBlockType().neighborChanged( state, this.worldObj, this.pos, state.getBlock() );
 	}
 
 	@Override
@@ -159,7 +159,7 @@ public class TileCrank extends AEBaseTile implements ICustomCollision, ITickable
 		final double xOff = -0.15 * this.getUp().getFrontOffsetX();
 		final double yOff = -0.15 * this.getUp().getFrontOffsetY();
 		final double zOff = -0.15 * this.getUp().getFrontOffsetZ();
-		return Collections.singletonList( AxisAlignedBB.fromBounds( xOff + 0.15, yOff + 0.15, zOff + 0.15, xOff + 0.85, yOff + 0.85, zOff + 0.85 ) );
+		return Collections.singletonList( new AxisAlignedBB( xOff + 0.15, yOff + 0.15, zOff + 0.15, xOff + 0.85, yOff + 0.85, zOff + 0.85 ) );
 	}
 
 	@Override
@@ -168,7 +168,7 @@ public class TileCrank extends AEBaseTile implements ICustomCollision, ITickable
 		final double xOff = -0.15 * this.getUp().getFrontOffsetX();
 		final double yOff = -0.15 * this.getUp().getFrontOffsetY();
 		final double zOff = -0.15 * this.getUp().getFrontOffsetZ();
-		out.add( AxisAlignedBB.fromBounds( xOff + 0.15, yOff + 0.15, zOff + 0.15,// ahh
+		out.add( new AxisAlignedBB( xOff + 0.15, yOff + 0.15, zOff + 0.15,// ahh
 				xOff + 0.85, yOff + 0.85, zOff + 0.85 ) );
 	}
 

@@ -43,7 +43,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.fml.common.registry.FMLControlledNamespacedRegistry;
 
 import appeng.core.AELog;
@@ -171,7 +171,7 @@ final class MinecraftItemCSVExporter implements Exporter
 				final Item item = input.getItem();
 				final String unlocalizedItem = input.getUnlocalizedName();
 				final Block block = Block.getBlockFromItem( item );
-				final boolean isBlock = !block.equals( Blocks.air );
+				final boolean isBlock = !block.equals( Blocks.AIR );
 				final Class<? extends ItemStack> stackClass = input.getClass();
 				final String stackClassName = stackClass.getName();
 
@@ -193,7 +193,7 @@ final class MinecraftItemCSVExporter implements Exporter
 	private static final class ItemRowExtractFunction implements Function<Item, String>
 	{
 		/**
-		 * this extension is required to apply the {@link StatCollector}
+		 * this extension is required to apply the {@link I18n}
 		 */
 		private static final String LOCALIZATION_NAME_EXTENSION = ".name";
 		private static final String EXPORTING_NOTHING_MESSAGE = "Exporting nothing";
@@ -266,7 +266,7 @@ final class MinecraftItemCSVExporter implements Exporter
 
 			final List<String> joinedBlockAttributes = Lists.newArrayListWithCapacity( 5 );
 			final String unlocalizedItem = input.getUnlocalizedName();
-			final String localization = StatCollector.translateToLocal( unlocalizedItem + LOCALIZATION_NAME_EXTENSION );
+			final String localization = I18n.translateToLocal( unlocalizedItem + LOCALIZATION_NAME_EXTENSION );
 
 			joinedBlockAttributes.add( itemName );
 			joinedBlockAttributes.add( localization );
@@ -274,7 +274,7 @@ final class MinecraftItemCSVExporter implements Exporter
 			if( this.mode == ExportMode.VERBOSE )
 			{
 				final Block block = Block.getBlockFromItem( input );
-				final boolean isBlock = !block.equals( Blocks.air );
+				final boolean isBlock = !block.equals( Blocks.AIR );
 				final Class<? extends Item> itemClass = input.getClass();
 				final String itemClassName = itemClass.getName();
 

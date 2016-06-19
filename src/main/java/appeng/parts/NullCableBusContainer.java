@@ -25,9 +25,9 @@ import java.util.Random;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 import appeng.api.parts.SelectedPart;
@@ -62,7 +62,7 @@ public class NullCableBusContainer implements ICableBusContainer
 	}
 
 	@Override
-	public boolean activate( final EntityPlayer player, final Vec3 vecFromPool )
+	public boolean activate( final EntityPlayer player, final Vec3d vecFromPool )
 	{
 		return false;
 	}
@@ -86,7 +86,7 @@ public class NullCableBusContainer implements ICableBusContainer
 	}
 
 	@Override
-	public SelectedPart selectPart( final Vec3 v3 )
+	public SelectedPart selectPart( final Vec3d v3 )
 	{
 		return new SelectedPart();
 	}

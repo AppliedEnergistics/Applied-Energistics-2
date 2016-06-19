@@ -27,10 +27,10 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 
 import appeng.block.AEBaseBlock;
 import appeng.tile.events.TileEventType;
@@ -202,13 +202,13 @@ public abstract class AEBaseInvTile extends AEBaseTile implements ISidedInventor
 	}
 
 	@Override
-	public IChatComponent getDisplayName()
+	public ITextComponent getDisplayName()
 	{
 		if( this.hasCustomName() )
 		{
-			return new ChatComponentText( this.getCustomName() );
+			return new TextComponentString( this.getCustomName() );
 		}
-		return new ChatComponentTranslation( this.getBlockType().getUnlocalizedName() );
+		return new TextComponentTranslation( this.getBlockType().getUnlocalizedName() );
 	}
 
 	public abstract int[] getAccessibleSlotsBySide( EnumFacing whichSide );

@@ -23,9 +23,9 @@ import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ITickable;
-import net.minecraft.world.ChunkCoordIntPair;
+import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.ForgeChunkManager.Ticket;
 import net.minecraftforge.common.ForgeChunkManager.Type;
@@ -69,17 +69,17 @@ public class TileChunkLoader extends AEBaseTile implements ITickable
 			final MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
 			if( server != null )
 			{
-				final List<EntityPlayerMP> pl = server.getConfigurationManager().playerEntityList;
+				final List<EntityPlayerMP> pl = server.getPlayerList().getPlayerList();
 				for( final EntityPlayerMP p : pl )
 				{
-					p.addChatMessage( new ChatComponentText( "Can't chunk load.." ) );
+					p.addChatMessage( new TextComponentString( "Can't chunk load.." ) );
 				}
 			}
 			return;
 		}
 
 		AELog.info( "New Ticket " + this.ct.toString() );
-		ForgeChunkManager.forceChunk( this.ct, new ChunkCoordIntPair( this.pos.getX() >> 4, this.pos.getZ() >> 4 ) );
+		ForgeChunkManager.forceChunk( this.ct, new ChunkPos( this.pos.getX() >> 4, this.pos.getZ() >> 4 ) );
 	}
 
 	@Override

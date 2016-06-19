@@ -27,7 +27,10 @@ import com.google.common.base.Optional;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -58,10 +61,10 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 	}
 
 	@Override
-	public ItemStack onItemRightClick( final ItemStack item, final World w, final EntityPlayer player )
+	public ActionResult<ItemStack> onItemRightClick( final ItemStack item, final World w, final EntityPlayer player, final EnumHand hand )
 	{
 		AEApi.instance().registries().wireless().openWirelessTerminalGui( item, w, player );
-		return item;
+		return new ActionResult<ItemStack>( EnumActionResult.SUCCESS, item );
 	}
 
 	@SideOnly( Side.CLIENT )
@@ -95,7 +98,7 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 		}
 		else
 		{
-			lines.add( StatCollector.translateToLocal( "AppEng.GuiITooltip.Unlinked" ) );
+			lines.add( I18n.translateToLocal( "AppEng.GuiITooltip.Unlinked" ) );
 		}
 	}
 

@@ -23,9 +23,9 @@ import java.util.EnumSet;
 
 import net.minecraft.block.Block;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumWorldBlockLayer;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.MinecraftForgeClient;
 
@@ -104,7 +104,7 @@ public class RenderBlockCraftingCPU<B extends BlockCraftingUnit, T extends TileC
 			final BusRenderHelper i = BusRenderHelper.INSTANCE;
 
 			renderer.setBlockAccess( w );
-			i.setPass( MinecraftForgeClient.getRenderLayer() == EnumWorldBlockLayer.TRANSLUCENT ? 1 : 0 );
+			i.setPass( MinecraftForgeClient.getRenderLayer() == BlockRenderLayer.TRANSLUCENT ? 1 : 0 );
 			i.setOrientation( EnumFacing.EAST, EnumFacing.UP, EnumFacing.SOUTH );
 
 			final float highX = this.isConnected( w, pos, EnumFacing.EAST ) ? 16 : 13.01f;

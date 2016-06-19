@@ -22,11 +22,11 @@ package appeng.client.render.blocks;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 
 import appeng.api.parts.IFacadePart;
@@ -137,7 +137,7 @@ public class RendererCableBus extends BaseBlockRender<BlockCableBus, TileCableBu
 	}
 
 	@Override
-	public void renderTile( final BlockCableBus block, final TileCableBus cableBus, final WorldRenderer tess, final double x, final double y, final double z, final float f, final ModelGenerator renderer )
+	public void renderTile( final BlockCableBus block, final TileCableBus cableBus, final VertexBuffer tess, final double x, final double y, final double z, final float f, final ModelGenerator renderer )
 	{
 		if( cableBus != null )
 		{

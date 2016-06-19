@@ -25,9 +25,12 @@ import java.util.List;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.translation.I18n;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import appeng.api.implementations.items.IMemoryCard;
@@ -55,7 +58,7 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 		final NBTTagCompound data = this.getData( stack );
 		if( data.hasKey( "tooltip" ) )
 		{
-			lines.add( StatCollector.translateToLocal( this.getLocalizedName( data.getString( "tooltip" ) + ".name", data.getString( "tooltip" ) ) ) );
+			lines.add( I18n.translateToLocal( this.getLocalizedName( data.getString( "tooltip" ) + ".name", data.getString( "tooltip" ) ) ) );
 		}
 	}
 
@@ -70,7 +73,7 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 	{
 		for( final String n : name )
 		{
-			final String l = StatCollector.translateToLocal( n );
+			final String l = I18n.translateToLocal( n );
 			if( !l.equals( n ) )
 			{
 				return l;
@@ -140,23 +143,23 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 	}
 
 	@Override
-	public boolean onItemUse( final ItemStack is, final EntityPlayer player, final World w, final BlockPos pos, final EnumFacing side, final float hx, final float hy, final float hz )
+	public EnumActionResult onItemUse( final ItemStack is, final EntityPlayer player, final World w, final BlockPos pos, final EnumHand hand, final EnumFacing side, final float hx, final float hy, final float hz )
 	{
 		if( player.isSneaking() && !w.isRemote )
 		{
 			final IMemoryCard mem = (IMemoryCard) is.getItem();
 			mem.notifyUser( player, MemoryCardMessages.SETTINGS_CLEARED );
 			is.setTagCompound( null );
-			return true;
+			return EnumActionResult.SUCCESS;
 		}
 		else
 		{
-			return super.onItemUse( is, player, w, pos, side, hx, hy, hz );
+			return super.onItemUse( is, player, w, pos, hand, side, hx, hy, hz );
 		}
 	}
-
+	
 	@Override
-	public boolean doesSneakBypassUse( final World world, final BlockPos pos, final EntityPlayer player )
+	public boolean doesSneakBypassUse( final ItemStack itemstack, final IBlockAccess world, final BlockPos pos, final EntityPlayer player )
 	{
 		return true;
 	}

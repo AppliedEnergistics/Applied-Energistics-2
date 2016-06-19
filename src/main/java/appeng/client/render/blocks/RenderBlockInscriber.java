@@ -28,12 +28,12 @@ import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 
 import appeng.api.features.IInscriberRecipe;
@@ -149,7 +149,7 @@ public class RenderBlockInscriber extends BaseBlockRender<BlockInscriber, TileIn
 	}
 
 	@Override
-	public void renderTile( final BlockInscriber block, final TileInscriber tile, final WorldRenderer tess, final double x, final double y, final double z, final float f, final ModelGenerator renderer )
+	public void renderTile( final BlockInscriber block, final TileInscriber tile, final VertexBuffer tess, final double x, final double y, final double z, final float f, final ModelGenerator renderer )
 	{
 		GL11.glPushMatrix();
 		this.applyTESRRotation( x, y, z, tile.getForward(), tile.getUp() );
@@ -160,7 +160,7 @@ public class RenderBlockInscriber extends BaseBlockRender<BlockInscriber, TileIn
 		GL11.glCullFace( GL11.GL_FRONT );
 
 		final Minecraft mc = Minecraft.getMinecraft();
-		mc.renderEngine.bindTexture( TextureMap.locationBlocksTexture );
+		mc.renderEngine.bindTexture( TextureMap.LOCATION_BLOCKS_TEXTURE );
 
 		// << 20 | light << 4;
 		final int br = tile.getWorld().getCombinedLight( tile.getPos(), 0 );
@@ -263,7 +263,7 @@ public class RenderBlockInscriber extends BaseBlockRender<BlockInscriber, TileIn
 		}
 	}
 
-	private void renderItem( ItemStack sis, final float o, final AEBaseBlock block, final AEBaseTile tile, final WorldRenderer tess, final double x, final double y, final double z, final float f, final ModelGenerator renderer )
+	private void renderItem( ItemStack sis, final float o, final AEBaseBlock block, final AEBaseTile tile, final VertexBuffer tess, final double x, final double y, final double z, final float f, final ModelGenerator renderer )
 	{
 		if( sis != null )
 		{

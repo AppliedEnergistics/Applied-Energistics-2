@@ -33,7 +33,7 @@ import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 
 import appeng.api.util.WorldCoord;
-import appeng.core.AEConfig;
+import appeng.core.AppEng;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketNewStorageDimension;
 import appeng.hooks.TickHandler;
@@ -88,7 +88,7 @@ final class DimensionData implements IWorldDimensionData, IOnWorldStartable, IOn
 	{
 		for( final Integer storageCellDimID : this.storageCellDimensionIDs )
 		{
-			DimensionManager.registerDimension( storageCellDimID, AEConfig.instance.storageProviderID );
+			DimensionManager.registerDimension( storageCellDimID, AppEng.instance().getRegistration().getStorageDimensionType() );
 		}
 
 		this.config.save();
@@ -111,7 +111,7 @@ final class DimensionData implements IWorldDimensionData, IOnWorldStartable, IOn
 	public void addStorageCell( final int newStorageCellID )
 	{
 		this.storageCellDimensionIDs.add( newStorageCellID );
-		DimensionManager.registerDimension( newStorageCellID, AEConfig.instance.storageProviderID );
+		DimensionManager.registerDimension( newStorageCellID, AppEng.instance().getRegistration().getStorageDimensionType() );
 
 		NetworkHandler.instance.sendToAll( new PacketNewStorageDimension( newStorageCellID ) );
 

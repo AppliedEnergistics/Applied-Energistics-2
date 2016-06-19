@@ -36,7 +36,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.fml.common.registry.GameRegistry.UniqueIdentifier;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -218,7 +217,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 		/*
 		 * if ( id != null && id instanceof NBTTagShort ) ((NBTTagShort) id).data = (short) this.def.item.itemID; else
 		 */
-		i.setShort( "id", (short) Item.itemRegistry.getIDForObject( this.getDefinition().getItem() ) );
+		i.setShort( "id", (short) Item.REGISTRY.getIDForObject( this.getDefinition().getItem() ) );
 
 		/*
 		 * if ( Count != null && Count instanceof NBTTagByte ) ((NBTTagByte) Count).data = (byte) 0; else
@@ -591,7 +590,8 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 
 		return this.getDefinition().getDisplayName();
 	}
-
+	
+	//TODO 1.9.4 - UniqueIdentifier => ResourceLocation ?
 	@SideOnly( Side.CLIENT )
 	public String getModID()
 	{
@@ -707,7 +707,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 	@Override
 	void writeIdentity( final ByteBuf i ) throws IOException
 	{
-		i.writeShort( Item.itemRegistry.getIDForObject( this.getDefinition().getItem() ) );
+		i.writeShort( Item.REGISTRY.getIDForObject( this.getDefinition().getItem() ) );
 		i.writeShort( this.getItemDamage() );
 	}
 

@@ -29,7 +29,7 @@ public class FalloutSand extends FalloutCopy
 	{
 		if( a > GLASS_THRESHOLD )
 		{
-			this.putter.put( w, x, y, z, Blocks.glass );
+			this.putter.put( w, x, y, z, Blocks.GLASS );
 		}
 	}
 }

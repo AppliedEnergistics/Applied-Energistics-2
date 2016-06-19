@@ -58,7 +58,7 @@ public final class AppEngServerPacketHandler extends AppEngPacketHandlerBase imp
 			};
 
 			pack.setCallParam( callState );
-			PacketThreadUtil.checkThreadAndEnqueue( pack, handler, ( (EntityPlayerMP) player ).getServerForPlayer() );
+			PacketThreadUtil.checkThreadAndEnqueue( pack, handler, ( (EntityPlayerMP) player ).getServer() );
 			callState.call( pack );
 		}
 		catch( final InstantiationException e )

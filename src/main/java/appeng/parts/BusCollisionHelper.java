@@ -22,8 +22,8 @@ package appeng.parts;
 import java.util.List;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.AxisAlignedBB;
 
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.util.AEPartLocation;
@@ -149,7 +149,7 @@ public class BusCollisionHelper implements IPartCollisionHelper
 		maxY = Math.max( aY, bY );
 		maxZ = Math.max( aZ, bZ );
 
-		this.boxes.add( AxisAlignedBB.fromBounds( minX, minY, minZ, maxX, maxY, maxZ ) );
+		this.boxes.add( new AxisAlignedBB( minX, minY, minZ, maxX, maxY, maxZ ) );
 	}
 
 	@Override

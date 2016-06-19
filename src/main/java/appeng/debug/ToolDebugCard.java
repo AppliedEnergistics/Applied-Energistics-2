@@ -27,9 +27,11 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 
 import appeng.api.networking.IGridConnection;
@@ -62,11 +64,11 @@ public class ToolDebugCard extends AEBaseItem
 	}
 
 	@Override
-	public boolean onItemUseFirst( final ItemStack stack, final EntityPlayer player, final World world, final BlockPos pos, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
+	public EnumActionResult onItemUseFirst( final ItemStack heldItem, final EntityPlayer player, final World world, final BlockPos pos, final EnumFacing side, final float hitX, final float hitY, final float hitZ, final EnumHand hand )
 	{
 		if( Platform.isClient() )
 		{
-			return false;
+			return EnumActionResult.PASS;
 		}
 
 		if( player.isSneaking() )
@@ -208,12 +210,12 @@ public class ToolDebugCard extends AEBaseItem
 				}
 			}
 		}
-		return true;
+		return EnumActionResult.SUCCESS;
 	}
 
 	private void outputMsg( final ICommandSender player, final String string )
 	{
-		player.addChatMessage( new ChatComponentText( string ) );
+		player.addChatMessage( new TextComponentString( string ) );
 	}
 
 	private String timeMeasurement( final long nanos )

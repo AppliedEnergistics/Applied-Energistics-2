@@ -22,7 +22,7 @@ package appeng.client.render.blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 
 import appeng.api.util.ModelGenerator;
@@ -44,7 +44,7 @@ public class RenderTinyTNT extends BaseBlockRender<BlockTinyTNT, AEBaseTile>
 	@Override
 	public void renderInventory( final BlockTinyTNT block, final ItemStack is, final ModelGenerator renderer, final ItemRenderType type, final Object[] obj )
 	{
-		renderer.setOverrideBlockTexture( new FullIcon( Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getTexture( Blocks.tnt.getDefaultState() ) ) );
+		renderer.setOverrideBlockTexture( new FullIcon( Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getTexture( Blocks.TNT.getDefaultState() ) ) );
 		renderer.setRenderBounds( 0.25f, 0.0f, 0.25f, 0.75f, 0.5f, 0.75f );
 		super.renderInventory( block, is, renderer, type, obj );
 	}
@@ -52,7 +52,7 @@ public class RenderTinyTNT extends BaseBlockRender<BlockTinyTNT, AEBaseTile>
 	@Override
 	public boolean renderInWorld( final BlockTinyTNT imb, final IBlockAccess world, final BlockPos pos, final ModelGenerator renderer )
 	{
-		renderer.setOverrideBlockTexture( new FullIcon( Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getTexture( Blocks.tnt.getDefaultState() ) ) );
+		renderer.setOverrideBlockTexture( new FullIcon( Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getTexture( Blocks.TNT.getDefaultState() ) ) );
 		renderer.setRenderAllFaces( true );
 		renderer.setRenderBounds( 0.25f, 0.0f, 0.25f, 0.75f, 0.5f, 0.75f );
 		final boolean out = super.renderInWorld( imb, world, pos, renderer );

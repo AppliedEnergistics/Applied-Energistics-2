@@ -21,6 +21,7 @@ package appeng.client.render;
 
 import java.nio.FloatBuffer;
 import java.util.EnumSet;
+
 import javax.annotation.Nullable;
 
 import org.lwjgl.BufferUtils;
@@ -28,15 +29,15 @@ import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -666,7 +667,7 @@ public class BaseBlockRender<B extends AEBaseBlock, T extends AEBaseTile>
 		return ( 16.0 - uv ) / 16.0;
 	}
 
-	public void renderTile( final B block, final T tile, final WorldRenderer tess, final double x, final double y, final double z, final float f, final ModelGenerator renderer )
+	public void renderTile( final B block, final T tile, final VertexBuffer tess, final double x, final double y, final double z, final float f, final ModelGenerator renderer )
 	{
 
 		renderer.setUvRotateBottom( renderer.setUvRotateTop( renderer.setUvRotateEast( renderer.setUvRotateWest( renderer.setUvRotateNorth( renderer.setUvRotateSouth( 0 ) ) ) ) ) );
@@ -675,7 +676,7 @@ public class BaseBlockRender<B extends AEBaseBlock, T extends AEBaseTile>
 		final AEPartLocation forward = AEPartLocation.SOUTH;
 		this.applyTESRRotation( x, y, z, forward.getFacing(), up.getFacing() );
 
-		Minecraft.getMinecraft().getTextureManager().bindTexture( TextureMap.locationBlocksTexture );
+		Minecraft.getMinecraft().getTextureManager().bindTexture( TextureMap.LOCATION_BLOCKS_TEXTURE );
 		RenderHelper.disableStandardItemLighting();
 
 		if( Minecraft.isAmbientOcclusionEnabled() )
@@ -753,7 +754,7 @@ public class BaseBlockRender<B extends AEBaseBlock, T extends AEBaseTile>
 			GL11.glTranslatef( 0, -0.14F, 0 );
 
 			// RenderItem.renderInFrame = true;
-			Minecraft.getMinecraft().getRenderManager().renderEntityWithPosYaw( entityitem, 0.0D, 0.0D, 0.0D, 0.0F, 0.0F );
+			Minecraft.getMinecraft().getRenderManager().doRenderEntity( entityitem, 0.0D, 0.0D, 0.0D, 0.0F, 0.0F, true );
 			// RenderItem.renderInFrame = false;
 
 			GL11.glPopMatrix();

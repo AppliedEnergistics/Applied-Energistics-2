@@ -68,7 +68,7 @@ public class QuantumCluster implements ILocatable, IAECluster
 	@SubscribeEvent
 	public void onUnload( final WorldEvent.Unload e )
 	{
-		if( this.center.getWorld() == e.world )
+		if( this.center.getWorld() == e.getWorld() )
 		{
 			this.setUpdateStatus( false );
 			this.destroy();
@@ -194,7 +194,7 @@ public class QuantumCluster implements ILocatable, IAECluster
 				final Chunk c = theWorld.getChunkFromBlockCoords( qc.center.getPos() );
 				if( c.isLoaded() )
 				{
-					final int id = theWorld.provider.getDimensionId();
+					final int id = theWorld.provider.getDimension();
 					final World cur = DimensionManager.getWorld( id );
 
 					final TileEntity te = theWorld.getTileEntity( qc.center.getPos() );

@@ -158,7 +158,7 @@ public enum ExtraBlockTextures
 	@SideOnly( Side.CLIENT )
 	public static IAESprite getMissing()
 	{
-		return new BaseIcon( ( (TextureMap) Minecraft.getMinecraft().getTextureManager().getTexture( TextureMap.locationBlocksTexture ) ).getAtlasSprite( "missingno" ) );
+		return new BaseIcon( ( (TextureMap) Minecraft.getMinecraft().getTextureManager().getTexture( TextureMap.LOCATION_BLOCKS_TEXTURE ) ).getAtlasSprite( "missingno" ) );
 	}
 
 	public String getName()

@@ -25,10 +25,10 @@ import org.lwjgl.opengl.GL12;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelChest;
-import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 
 import appeng.api.util.ModelGenerator;
@@ -84,7 +84,7 @@ public class RenderBlockSkyChest extends BaseBlockRender<BlockSkyChest, TileSkyC
 	}
 
 	@Override
-	public void renderTile( final BlockSkyChest block, final TileSkyChest skyChest, final WorldRenderer tess, final double x, final double y, final double z, final float partialTick, final ModelGenerator renderer )
+	public void renderTile( final BlockSkyChest block, final TileSkyChest skyChest, final VertexBuffer tess, final double x, final double y, final double z, final float partialTick, final ModelGenerator renderer )
 	{
 		if( skyChest == null )
 		{

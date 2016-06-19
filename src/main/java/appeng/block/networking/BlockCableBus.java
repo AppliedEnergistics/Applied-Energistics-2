@@ -23,9 +23,11 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Random;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.particle.EffectRenderer;
+import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -34,11 +36,12 @@ import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumWorldBlockLayer;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.GameRegistry;
@@ -104,7 +107,7 @@ public class BlockCableBus extends AEBaseTileBlock // implements
 	}
 
 	@Override
-	public void randomDisplayTick( final World worldIn, final BlockPos pos, final IBlockState state, final Random rand )
+	public void randomDisplayTick( final IBlockState state, final World worldIn, final BlockPos pos, final Random rand )
 	{
 		this.cb( worldIn, pos ).randomDisplayTick( worldIn, pos, rand );
 	}
@@ -122,7 +125,7 @@ public class BlockCableBus extends AEBaseTileBlock // implements
 	}
 
 	@Override
-	public int getWeakPower( final IBlockAccess w, final BlockPos pos, final IBlockState state, final EnumFacing side )
+	public int getWeakPower( final IBlockState state, final IBlockAccess w, final BlockPos pos, final EnumFacing side )
 	{
 		return this.cb( w, pos ).isProvidingWeakPower( side.getOpposite() ); // TODO:
 		// IS
@@ -130,7 +133,7 @@ public class BlockCableBus extends AEBaseTileBlock // implements
 	}
 
 	@Override
-	public boolean canProvidePower()
+	public boolean canProvidePower( final IBlockState state )
 	{
 		return true;
 	}
@@ -142,7 +145,7 @@ public class BlockCableBus extends AEBaseTileBlock // implements
 	}
 
 	@Override
-	public int getStrongPower( final IBlockAccess w, final BlockPos pos, final IBlockState state, final EnumFacing side )
+	public int getStrongPower( final IBlockState state, final IBlockAccess w, final BlockPos pos, final EnumFacing side )
 	{
 		return this.cb( w, pos ).isProvidingStrongPower( side.getOpposite() ); // TODO:
 																				// IS
@@ -150,14 +153,13 @@ public class BlockCableBus extends AEBaseTileBlock // implements
 	}
 
 	@Override
-	public int getLightValue( final IBlockAccess world, final BlockPos pos )
+	public int getLightValue( final IBlockState state, final IBlockAccess world, final BlockPos pos )
 	{
-		final IBlockState block = world.getBlockState( pos );
-		if( block != null && block.getBlock() != this )
+		if( state != null && state.getBlock() != this )
 		{
-			return block.getBlock().getLightValue( world, pos );
+			return state.getBlock().getLightValue( state, world, pos );
 		}
-		if( block == null )
+		if( state == null )
 		{
 			return 0;
 		}
@@ -165,25 +167,25 @@ public class BlockCableBus extends AEBaseTileBlock // implements
 	}
 
 	@Override
-	public boolean isLadder( final IBlockAccess world, final BlockPos pos, final EntityLivingBase entity )
+	public boolean isLadder( final IBlockState state, final IBlockAccess world, final BlockPos pos, final EntityLivingBase entity )
 	{
 		return this.cb( world, pos ).isLadder( entity );
 	}
 
 	@Override
-	public boolean isSideSolid( final IBlockAccess w, final BlockPos pos, final EnumFacing side )
+	public boolean isSideSolid( final IBlockState state, final IBlockAccess w, final BlockPos pos, final EnumFacing side )
 	{
 		return this.cb( w, pos ).isSolidOnSide( side );
 	}
 
 	@Override
-	public boolean isReplaceable( final World w, final BlockPos pos )
+	public boolean isReplaceable( final IBlockAccess w, final BlockPos pos )
 	{
 		return this.cb( w, pos ).isEmpty();
 	}
 
 	@Override
-	public boolean removedByPlayer( final World world, final BlockPos pos, final EntityPlayer player, final boolean willHarvest )
+	public boolean removedByPlayer( final IBlockState state, final World world, final BlockPos pos, final EntityPlayer player, final boolean willHarvest )
 	{
 		if( player.capabilities.isCreativeMode )
 		{
@@ -194,11 +196,11 @@ public class BlockCableBus extends AEBaseTileBlock // implements
 			}
 			// maybe ray trace?
 		}
-		return super.removedByPlayer( world, pos, player, willHarvest );
+		return super.removedByPlayer( state, world, pos, player, willHarvest );
 	}
 
 	@Override
-	public boolean canConnectRedstone( final IBlockAccess w, final BlockPos pos, EnumFacing side )
+	public boolean canConnectRedstone( final IBlockState state, final IBlockAccess w, final BlockPos pos, EnumFacing side )
 	{
 		if( side == null )
 		{
@@ -209,20 +211,20 @@ public class BlockCableBus extends AEBaseTileBlock // implements
 	}
 
 	@Override
-	public boolean canRenderInLayer( final EnumWorldBlockLayer layer )
+	public boolean canRenderInLayer( final BlockRenderLayer layer )
 	{
 		if( AEConfig.instance.isFeatureEnabled( AEFeature.AlphaPass ) )
 		{
-			return layer == EnumWorldBlockLayer.CUTOUT || layer == EnumWorldBlockLayer.TRANSLUCENT;
+			return layer == BlockRenderLayer.CUTOUT || layer == BlockRenderLayer.TRANSLUCENT;
 		}
 
-		return layer == EnumWorldBlockLayer.CUTOUT;
+		return layer == BlockRenderLayer.CUTOUT;
 	}
 
 	@Override
-	public ItemStack getPickBlock( final MovingObjectPosition target, final World world, final BlockPos pos )
+	public ItemStack getPickBlock( final IBlockState state, final RayTraceResult target, final World world, final BlockPos pos, final EntityPlayer player )
 	{
-		final Vec3 v3 = target.hitVec.subtract( pos.getX(), pos.getY(), pos.getZ() );
+		final Vec3d v3 = target.hitVec.subtract( pos.getX(), pos.getY(), pos.getZ() );
 		final SelectedPart sp = this.cb( world, pos ).selectPart( v3 );
 
 		if( sp.part != null )
@@ -236,10 +238,10 @@ public class BlockCableBus extends AEBaseTileBlock // implements
 
 		return null;
 	}
-
+	
 	@Override
 	@SideOnly( Side.CLIENT )
-	public boolean addHitEffects( final World world, final MovingObjectPosition target, final EffectRenderer effectRenderer )
+	public boolean addHitEffects( final IBlockState state, final World world, final RayTraceResult target, final ParticleManager effectRenderer )
 	{
 		final Object object = this.cb( world, target.getBlockPos() );
 		if( object instanceof IPartHost )
@@ -270,7 +272,7 @@ public class BlockCableBus extends AEBaseTileBlock // implements
 	}
 
 	@Override
-	public boolean addDestroyEffects( final World world, final BlockPos pos, final EffectRenderer effectRenderer )
+	public boolean addDestroyEffects( final World world, final BlockPos pos, final ParticleManager effectRenderer )
 	{
 		final Object object = this.cb( world, pos );
 		if( object instanceof IPartHost )
@@ -296,7 +298,7 @@ public class BlockCableBus extends AEBaseTileBlock // implements
 	}
 
 	@Override
-	public void onNeighborBlockChange( final World w, final BlockPos pos, final IBlockState state, final Block neighborBlock )
+	public void neighborChanged( final IBlockState state, final World w, final BlockPos pos, final Block neighborBlock )
 	{
 		if( Platform.isServer() )
 		{
@@ -328,9 +330,9 @@ public class BlockCableBus extends AEBaseTileBlock // implements
 	}
 
 	@Override
-	public boolean onActivated( final World w, final BlockPos pos, final EntityPlayer player, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
+	public boolean onActivated( final World w, final BlockPos pos, final EntityPlayer player, final EnumHand hand, final @Nullable ItemStack heldItem, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
 	{
-		return this.cb( w, pos ).activate( player, new Vec3( hitX, hitY, hitZ ) );
+		return this.cb( w, pos ).activate( player, new Vec3d( hitX, hitY, hitZ ) );
 	}
 
 	@Override

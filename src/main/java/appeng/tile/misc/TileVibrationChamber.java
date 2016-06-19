@@ -145,7 +145,7 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 	@Override
 	public boolean canExtractItem( final int slotIndex, final ItemStack extractedItem, final EnumFacing side )
 	{
-		return extractedItem.getItem() == Items.bucket;
+		return extractedItem.getItem() == Items.BUCKET;
 	}
 
 	@Override

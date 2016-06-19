@@ -19,14 +19,14 @@
 package appeng.client.render.effects;
 
 
-import net.minecraft.client.particle.EntityFX;
+import net.minecraft.client.particle.Particle;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 
 @SideOnly( Side.CLIENT )
-public class VibrantFX extends EntityFX
+public class VibrantFX extends Particle
 {
 
 	public VibrantFX( final World par1World, final double x, final double y, final double z, final double par8, final double par10, final double par12 )
@@ -46,13 +46,14 @@ public class VibrantFX extends EntityFX
 		this.prevPosY = this.posY;
 		this.prevPosZ = this.posZ;
 		this.particleMaxAge = (int) ( 20.0D / ( Math.random() * 0.8D + 0.1D ) );
+		//TODO 1.9.4 - noClip => ?
 		this.noClip = true;
 	}
 
 	@Override
-	public float getBrightness( final float par1 )
+	public int getBrightnessForRender( final float par1 )
 	{
-		return 1.0f;
+		return 1;
 	}
 
 	/**
@@ -69,7 +70,7 @@ public class VibrantFX extends EntityFX
 
 		if( this.particleMaxAge <= 0 || this.particleScale < 0.1 )
 		{
-			this.setDead();
+			this.setExpired();
 		}
 		this.particleMaxAge--;
 	}

@@ -24,8 +24,8 @@ import java.util.List;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import appeng.tile.qnb.TileQuantumBridge;
@@ -36,7 +36,7 @@ public class BlockQuantumRing extends BlockQuantumBase
 
 	public BlockQuantumRing()
 	{
-		super( Material.iron );
+		super( Material.IRON );
 	}
 
 	@Override
@@ -52,7 +52,7 @@ public class BlockQuantumRing extends BlockQuantumBase
 		{
 			onePixel = 1.0 / 16.0;
 		}
-		return Collections.singletonList( AxisAlignedBB.fromBounds( onePixel, onePixel, onePixel, 1.0 - onePixel, 1.0 - onePixel, 1.0 - onePixel ) );
+		return Collections.singletonList( new AxisAlignedBB( onePixel, onePixel, onePixel, 1.0 - onePixel, 1.0 - onePixel, 1.0 - onePixel ) );
 	}
 
 	@Override
@@ -68,6 +68,6 @@ public class BlockQuantumRing extends BlockQuantumBase
 		{
 			onePixel = 1.0 / 16.0;
 		}
-		out.add( AxisAlignedBB.fromBounds( onePixel, onePixel, onePixel, 1.0 - onePixel, 1.0 - onePixel, 1.0 - onePixel ) );
+		out.add( new AxisAlignedBB( onePixel, onePixel, onePixel, 1.0 - onePixel, 1.0 - onePixel, 1.0 - onePixel ) );
 	}
 }

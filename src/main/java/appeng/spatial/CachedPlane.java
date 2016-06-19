@@ -27,7 +27,7 @@ import java.util.Map.Entry;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.NextTickListEntry;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
@@ -137,7 +137,7 @@ public class CachedPlane
 							final Block blk = (Block) details[0];
 
 							// don't skip air, just let the code replace it...
-							if( blk != null && blk.isAir( c.getWorld(), tePOS ) && blk.isReplaceable( c.getWorld(), tePOS ) )
+							if( blk != null && blk.isAir( c.getWorld().getBlockState( tePOS ), c.getWorld(), tePOS ) && blk.isReplaceable( c.getWorld(), tePOS ) )
 							{
 								c.getWorld().setBlockToAir( tePOS );
 							}
@@ -312,6 +312,7 @@ public class CachedPlane
 					if( c.c.isLoaded() )
 					{
 						this.world.addTileEntity( te );
+						//TODO 1.9.4 - markBlockForUpdate => ?
 						this.world.markBlockForUpdate( pos );
 					}
 				}
@@ -428,7 +429,7 @@ public class CachedPlane
 		private boolean doNotSkip( final int y )
 		{
 			final ExtendedBlockStorage extendedblockstorage = this.storage[y >> 4];
-			if( CachedPlane.this.reg.isBlacklisted( extendedblockstorage.getBlockByExtId( this.x, y & 15, this.z ) ) )
+			if( CachedPlane.this.reg.isBlacklisted( extendedblockstorage.get( this.x, y & 15, this.z ).getBlock() ) )
 			{
 				return false;
 			}

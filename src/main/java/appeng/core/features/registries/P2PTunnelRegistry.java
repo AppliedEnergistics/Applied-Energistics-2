@@ -54,23 +54,23 @@ public final class P2PTunnelRegistry implements IP2PTunnelRegistry
 		/**
 		 * light!
 		 */
-		this.addNewAttunement( new ItemStack( Blocks.torch ), TunnelType.LIGHT );
-		this.addNewAttunement( new ItemStack( Blocks.glowstone ), TunnelType.LIGHT );
+		this.addNewAttunement( new ItemStack( Blocks.TORCH ), TunnelType.LIGHT );
+		this.addNewAttunement( new ItemStack( Blocks.GLOWSTONE ), TunnelType.LIGHT );
 
 		/**
 		 * attune based on most redstone base items.
 		 */
-		this.addNewAttunement( new ItemStack( Items.redstone ), TunnelType.REDSTONE );
-		this.addNewAttunement( new ItemStack( Items.repeater ), TunnelType.REDSTONE );
-		this.addNewAttunement( new ItemStack( Blocks.redstone_lamp ), TunnelType.REDSTONE );
-		this.addNewAttunement( new ItemStack( Blocks.unpowered_comparator ), TunnelType.REDSTONE );
-		this.addNewAttunement( new ItemStack( Blocks.powered_comparator ), TunnelType.REDSTONE );
-		this.addNewAttunement( new ItemStack( Blocks.powered_repeater ), TunnelType.REDSTONE );
-		this.addNewAttunement( new ItemStack( Blocks.unpowered_repeater ), TunnelType.REDSTONE );
-		this.addNewAttunement( new ItemStack( Blocks.daylight_detector ), TunnelType.REDSTONE );
-		this.addNewAttunement( new ItemStack( Blocks.redstone_wire ), TunnelType.REDSTONE );
-		this.addNewAttunement( new ItemStack( Blocks.redstone_block ), TunnelType.REDSTONE );
-		this.addNewAttunement( new ItemStack( Blocks.lever ), TunnelType.REDSTONE );
+		this.addNewAttunement( new ItemStack( Items.REDSTONE ), TunnelType.REDSTONE );
+		this.addNewAttunement( new ItemStack( Items.REPEATER ), TunnelType.REDSTONE );
+		this.addNewAttunement( new ItemStack( Blocks.REDSTONE_LAMP ), TunnelType.REDSTONE );
+		this.addNewAttunement( new ItemStack( Blocks.UNPOWERED_COMPARATOR ), TunnelType.REDSTONE );
+		this.addNewAttunement( new ItemStack( Blocks.POWERED_COMPARATOR ), TunnelType.REDSTONE );
+		this.addNewAttunement( new ItemStack( Blocks.POWERED_REPEATER ), TunnelType.REDSTONE );
+		this.addNewAttunement( new ItemStack( Blocks.UNPOWERED_REPEATER ), TunnelType.REDSTONE );
+		this.addNewAttunement( new ItemStack( Blocks.DAYLIGHT_DETECTOR ), TunnelType.REDSTONE );
+		this.addNewAttunement( new ItemStack( Blocks.REDSTONE_WIRE ), TunnelType.REDSTONE );
+		this.addNewAttunement( new ItemStack( Blocks.REDSTONE_BLOCK ), TunnelType.REDSTONE );
+		this.addNewAttunement( new ItemStack( Blocks.LEVER ), TunnelType.REDSTONE );
 		this.addNewAttunement( this.getModItem( "EnderIO", "itemRedstoneConduit", OreDictionary.WILDCARD_VALUE ), TunnelType.REDSTONE );
 
 		/**
@@ -86,9 +86,9 @@ public final class P2PTunnelRegistry implements IP2PTunnelRegistry
 		this.addNewAttunement( parts.importBus(), TunnelType.ITEM );
 		this.addNewAttunement( parts.exportBus(), TunnelType.ITEM );
 
-		this.addNewAttunement( new ItemStack( Blocks.hopper ), TunnelType.ITEM );
-		this.addNewAttunement( new ItemStack( Blocks.chest ), TunnelType.ITEM );
-		this.addNewAttunement( new ItemStack( Blocks.trapped_chest ), TunnelType.ITEM );
+		this.addNewAttunement( new ItemStack( Blocks.HOPPER ), TunnelType.ITEM );
+		this.addNewAttunement( new ItemStack( Blocks.CHEST ), TunnelType.ITEM );
+		this.addNewAttunement( new ItemStack( Blocks.TRAPPED_CHEST ), TunnelType.ITEM );
 		this.addNewAttunement( this.getModItem( "ExtraUtilities", "extractor_base", 0 ), TunnelType.ITEM );
 		this.addNewAttunement( this.getModItem( "Mekanism", "PartTransmitter", 9 ), TunnelType.ITEM );
 		this.addNewAttunement( this.getModItem( "EnderIO", "itemItemConduit", OreDictionary.WILDCARD_VALUE ), TunnelType.ITEM );
@@ -97,10 +97,10 @@ public final class P2PTunnelRegistry implements IP2PTunnelRegistry
 		/**
 		 * attune based on lots of random item related stuff
 		 */
-		this.addNewAttunement( new ItemStack( Items.bucket ), TunnelType.FLUID );
-		this.addNewAttunement( new ItemStack( Items.lava_bucket ), TunnelType.FLUID );
-		this.addNewAttunement( new ItemStack( Items.milk_bucket ), TunnelType.FLUID );
-		this.addNewAttunement( new ItemStack( Items.water_bucket ), TunnelType.FLUID );
+		this.addNewAttunement( new ItemStack( Items.BUCKET ), TunnelType.FLUID );
+		this.addNewAttunement( new ItemStack( Items.LAVA_BUCKET ), TunnelType.FLUID );
+		this.addNewAttunement( new ItemStack( Items.MILK_BUCKET ), TunnelType.FLUID );
+		this.addNewAttunement( new ItemStack( Items.WATER_BUCKET ), TunnelType.FLUID );
 		this.addNewAttunement( this.getModItem( "Mekanism", "MachineBlock2", 11 ), TunnelType.FLUID );
 		this.addNewAttunement( this.getModItem( "Mekanism", "PartTransmitter", 4 ), TunnelType.FLUID );
 		this.addNewAttunement( this.getModItem( "ExtraUtilities", "extractor_base", 6 ), TunnelType.FLUID );

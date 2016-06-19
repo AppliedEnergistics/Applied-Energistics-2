@@ -43,9 +43,11 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -298,7 +300,7 @@ public final class MultiItem extends AEBaseItem implements IStorageComponent, IU
 	}
 
 	@Override
-	public boolean onItemUseFirst( final ItemStack is, final EntityPlayer player, final World world, final BlockPos pos, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
+	public EnumActionResult onItemUseFirst( final ItemStack is, final EntityPlayer player, final World world, final BlockPos pos, final EnumFacing side, final float hitX, final float hitY, final float hitZ, final EnumHand hand )
 	{
 		if( player.isSneaking() )
 		{
@@ -307,7 +309,7 @@ public final class MultiItem extends AEBaseItem implements IStorageComponent, IU
 
 			if( te instanceof IPartHost )
 			{
-				final SelectedPart sp = ( (IPartHost) te ).selectPart( new Vec3( hitX, hitY, hitZ ) );
+				final SelectedPart sp = ( (IPartHost) te ).selectPart( new Vec3d( hitX, hitY, hitZ ) );
 				if( sp.part instanceof IUpgradeableHost )
 				{
 					upgrades = ( (ISegmentedInventory) sp.part ).getInventoryByName( "upgrades" );
@@ -330,17 +332,17 @@ public final class MultiItem extends AEBaseItem implements IStorageComponent, IU
 					{
 						if( player.worldObj.isRemote )
 						{
-							return false;
+							return EnumActionResult.PASS;
 						}
 
 						player.inventory.setInventorySlotContents( player.inventory.currentItem, ad.addItems( is ) );
-						return true;
+						return EnumActionResult.SUCCESS;
 					}
 				}
 			}
 		}
 
-		return super.onItemUseFirst( is, player, world, pos, side, hitX, hitY, hitZ );
+		return super.onItemUseFirst( is, player, world, pos, side, hitX, hitY, hitZ, hand );
 	}
 
 	@Override

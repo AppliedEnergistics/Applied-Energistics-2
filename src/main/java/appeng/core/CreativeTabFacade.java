@@ -60,6 +60,6 @@ public final class CreativeTabFacade extends CreativeTabs
 			return ( (ItemFacade) maybeFacade.get() ).getCreativeTabIcon();
 		}
 
-		return new ItemStack( Blocks.planks );
+		return new ItemStack( Blocks.PLANKS );
 	}
 }

@@ -24,12 +24,13 @@ import javax.annotation.Nonnull;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldRenderer;
-import net.minecraft.client.renderer.entity.RenderItem;
+import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.block.model.ModelManager;
+import net.minecraft.client.renderer.color.ItemColors;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.resources.model.ModelManager;
 import net.minecraft.item.ItemStack;
 
 import appeng.api.storage.data.IAEItemStack;
@@ -48,9 +49,9 @@ import appeng.util.ReadableNumberConverter;
  */
 public class AppEngRenderItem extends RenderItem
 {
-	public AppEngRenderItem( final TextureManager textureManager, final ModelManager modelManager )
+	public AppEngRenderItem( final TextureManager textureManager, final ModelManager modelManager, final ItemColors itemColors )
 	{
-		super( textureManager, modelManager );
+		super( textureManager, modelManager, itemColors );
 	}
 
 	private static final ISlimReadableNumberConverter SLIM_CONVERTER = ReadableNumberConverter.INSTANCE;
@@ -81,7 +82,7 @@ public class AppEngRenderItem extends RenderItem
 				GL11.glDisable( GL11.GL_ALPHA_TEST );
 				GL11.glDisable( GL11.GL_BLEND );
 				final Tessellator tessellator = Tessellator.getInstance();
-				final WorldRenderer wr = tessellator.getWorldRenderer();
+				final VertexBuffer wr = tessellator.getBuffer();
 				final int l = 255 - k << 16 | k << 8;
 				final int i1 = ( 255 - k ) / 4 << 16 | 16128;
 				this.renderQuad( tessellator, xPos + 2, yPos + 13, 13, 2, 0 );
@@ -132,7 +133,7 @@ public class AppEngRenderItem extends RenderItem
 
 	private void renderQuad( final Tessellator par1Tessellator, final int par2, final int par3, final int par4, final int par5, final int par6 )
 	{
-		final WorldRenderer wr = par1Tessellator.getWorldRenderer();
+		final VertexBuffer wr = par1Tessellator.getBuffer();
 
 		wr.begin( GL11.GL_QUADS, DefaultVertexFormats.ITEM );
 

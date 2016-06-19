@@ -24,8 +24,8 @@ import java.util.EnumSet;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.EnumWorldBlockLayer;
+import net.minecraft.util.BlockRenderLayer;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import appeng.block.AEBaseTileBlock;
@@ -43,6 +43,7 @@ public abstract class BlockQuantumBase extends AEBaseTileBlock implements ICusto
 		super( mat );
 		this.setTileEntity( TileQuantumBridge.class );
 		final float shave = 2.0f / 16.0f;
+		//TODO 1.9.4 - setBlockBounds => ?
 		this.setBlockBounds( shave, shave, shave, 1.0f - shave, 1.0f - shave, 1.0f - shave );
 		this.setLightOpacity( 0 );
 		this.setFullSize( this.setOpaque( false ) );
@@ -50,13 +51,13 @@ public abstract class BlockQuantumBase extends AEBaseTileBlock implements ICusto
 	}
 
 	@Override
-	public EnumWorldBlockLayer getBlockLayer()
+	public BlockRenderLayer getBlockLayer()
 	{
-		return EnumWorldBlockLayer.CUTOUT;
+		return BlockRenderLayer.CUTOUT;
 	}
 
 	@Override
-	public void onNeighborBlockChange( final World w, final BlockPos pos, final IBlockState state, final Block neighborBlock )
+	public void neighborChanged( final IBlockState state, final World w, final BlockPos pos, final Block neighborBlock )
 	{
 		final TileQuantumBridge bridge = this.getTileEntity( w, pos );
 		if( bridge != null )

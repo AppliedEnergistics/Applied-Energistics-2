@@ -25,7 +25,7 @@ import java.util.List;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.ICrafting;
+import net.minecraft.inventory.IContainerListener;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.inventory.Slot;
@@ -423,7 +423,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 
 					if( failed != null )
 					{
-						p.dropPlayerItemWithRandomChoice( failed, false );
+						p.dropItem( failed, false );
 					}
 				}
 
@@ -481,19 +481,19 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 	{
 		if( s == this.patternSlotOUT && Platform.isServer() )
 		{
-			for( final Object crafter : this.crafters )
+			for( final Object crafter : this.listeners )
 			{
-				final ICrafting icrafting = (ICrafting) crafter;
+				final IContainerListener IContainerListener = (IContainerListener) crafter;
 
 				for( final Object g : this.inventorySlots )
 				{
 					if( g instanceof OptionalSlotFake || g instanceof SlotFakeCraftingMatrix )
 					{
 						final Slot sri = (Slot) g;
-						icrafting.sendSlotContents( this, sri.slotNumber, sri.getStack() );
+						IContainerListener.sendSlotContents( this, sri.slotNumber, sri.getStack() );
 					}
 				}
-				( (EntityPlayerMP) icrafting ).isChangingQuantityOnly = false;
+				( (EntityPlayerMP) IContainerListener ).isChangingQuantityOnly = false;
 			}
 			this.detectAndSendChanges();
 		}

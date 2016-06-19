@@ -30,8 +30,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -149,7 +149,7 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 		}
 		else
 		{
-			return renderer.getIcon( new ItemStack( Blocks.quartz_block ) );
+			return renderer.getIcon( new ItemStack( Blocks.QUARTZ_BLOCK ) );
 		}
 	}
 
@@ -227,7 +227,7 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 	}
 
 	@Override
-	public boolean onPartActivate( final EntityPlayer player, final Vec3 pos )
+	public boolean onPartActivate( final EntityPlayer player, final Vec3d pos )
 	{
 		final ItemStack is = player.inventory.getCurrentItem();
 
@@ -394,7 +394,7 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 	}
 
 	@Override
-	public boolean onPartShiftActivate( final EntityPlayer player, final Vec3 pos )
+	public boolean onPartShiftActivate( final EntityPlayer player, final Vec3d pos )
 	{
 		final ItemStack is = player.inventory.getCurrentItem();
 		if( is != null && is.getItem() instanceof IMemoryCard )

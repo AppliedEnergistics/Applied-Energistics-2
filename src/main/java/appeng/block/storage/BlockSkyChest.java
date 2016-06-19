@@ -23,14 +23,18 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import com.google.common.base.Optional;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import appeng.api.util.AEPartLocation;
@@ -56,7 +60,7 @@ public class BlockSkyChest extends AEBaseTileBlock implements ICustomCollision
 
 	public BlockSkyChest( final SkyChestType type )
 	{
-		super( Material.rock, Optional.of( type.name() ) );
+		super( Material.ROCK, Optional.of( type.name() ) );
 		this.setTileEntity( TileSkyChest.class );
 		this.setOpaque( this.setFullSize( false ) );
 		this.lightOpacity = 0;
@@ -74,7 +78,7 @@ public class BlockSkyChest extends AEBaseTileBlock implements ICustomCollision
 	}
 
 	@Override
-	public boolean onActivated( final World w, final BlockPos pos, final EntityPlayer player, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
+	public boolean onActivated( final World w, final BlockPos pos, final EntityPlayer player, final EnumHand hand, final @Nullable ItemStack heldItem, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
 	{
 		if( Platform.isServer() )
 		{
@@ -100,12 +104,12 @@ public class BlockSkyChest extends AEBaseTileBlock implements ICustomCollision
 		final double offsetZ = o.getFrontOffsetZ() == 0 ? 0.06 : 0.0;
 
 		final double sc = 0.06;
-		return Collections.singletonList( AxisAlignedBB.fromBounds( Math.max( 0.0, offsetX - o.getFrontOffsetX() * sc ), Math.max( 0.0, offsetY - o.getFrontOffsetY() * sc ), Math.max( 0.0, offsetZ - o.getFrontOffsetZ() * sc ), Math.min( 1.0, ( 1.0 - offsetX ) - o.getFrontOffsetX() * sc ), Math.min( 1.0, ( 1.0 - offsetY ) - o.getFrontOffsetY() * sc ), Math.min( 1.0, ( 1.0 - offsetZ ) - o.getFrontOffsetZ() * sc ) ) );
+		return Collections.singletonList( new AxisAlignedBB( Math.max( 0.0, offsetX - o.getFrontOffsetX() * sc ), Math.max( 0.0, offsetY - o.getFrontOffsetY() * sc ), Math.max( 0.0, offsetZ - o.getFrontOffsetZ() * sc ), Math.min( 1.0, ( 1.0 - offsetX ) - o.getFrontOffsetX() * sc ), Math.min( 1.0, ( 1.0 - offsetY ) - o.getFrontOffsetY() * sc ), Math.min( 1.0, ( 1.0 - offsetZ ) - o.getFrontOffsetZ() * sc ) ) );
 	}
 
 	@Override
 	public void addCollidingBlockToList( final World w, final BlockPos pos, final AxisAlignedBB bb, final List<AxisAlignedBB> out, final Entity e )
 	{
-		out.add( AxisAlignedBB.fromBounds( 0.05, 0.05, 0.05, 0.95, 0.95, 0.95 ) );
+		out.add( new AxisAlignedBB( 0.05, 0.05, 0.05, 0.95, 0.95, 0.95 ) );
 	}
 }

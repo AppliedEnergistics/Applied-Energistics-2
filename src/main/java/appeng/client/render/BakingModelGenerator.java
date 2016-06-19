@@ -14,18 +14,18 @@ import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.BlockFaceUV;
 import net.minecraft.client.renderer.block.model.BlockPartFace;
 import net.minecraft.client.renderer.block.model.FaceBakery;
+import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.block.model.ItemOverrideList;
+import net.minecraft.client.renderer.block.model.ModelRotation;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.IBakedModel;
-import net.minecraft.client.resources.model.ModelRotation;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumWorldBlockLayer;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.MinecraftForgeClient;
-import net.minecraftforge.client.model.IColoredBakedQuad;
 
 import appeng.api.util.IAESprite;
 import appeng.api.util.ModelGenerator;
@@ -35,17 +35,15 @@ import appeng.client.texture.MissingIcon;
 import appeng.items.AEBaseItem;
 import appeng.items.parts.ItemMultiPart;
 
-
+//TODO 1.9.4 - Just all
 public class BakingModelGenerator implements ModelGenerator
 {
 	private static final class CachedModel implements IBakedModel
 	{
 		private final List<BakedQuad>[] faces = new List[6];
-		private final List<BakedQuad> general;
 
 		public CachedModel()
 		{
-			this.general = new ArrayList<BakedQuad>();
 			for( final EnumFacing f : EnumFacing.VALUES )
 			{
 				this.faces[f.ordinal()] = new ArrayList<BakedQuad>();
@@ -83,15 +81,15 @@ public class BakingModelGenerator implements ModelGenerator
 		}
 
 		@Override
-		public List getGeneralQuads()
+		public List<BakedQuad> getQuads( IBlockState state, EnumFacing side, long rand )
 		{
-			return this.general;
+			return this.faces[side.ordinal()];
 		}
 
 		@Override
-		public List getFaceQuads( final EnumFacing p_177551_1_ )
+		public ItemOverrideList getOverrides()
 		{
-			return this.faces[p_177551_1_.ordinal()];
+			return null;
 		}
 	}
 
@@ -364,7 +362,7 @@ public class BakingModelGenerator implements ModelGenerator
 
 	public boolean isAlphaPass()
 	{
-		return MinecraftForgeClient.getRenderLayer() == EnumWorldBlockLayer.TRANSLUCENT;
+		return MinecraftForgeClient.getRenderLayer() == BlockRenderLayer.TRANSLUCENT;
 	}
 
 	private float[] getFaceUvs( final EnumFacing face, final Vector3f to_16, final Vector3f from_16 )

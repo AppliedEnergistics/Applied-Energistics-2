@@ -43,16 +43,16 @@ public class OreDictionaryHandler
 	@SubscribeEvent
 	public void onOreDictionaryRegister( final OreDictionary.OreRegisterEvent event )
 	{
-		if( event.Name == null || event.Ore == null )
+		if( event.getName() == null || event.getOre() == null )
 		{
 			return;
 		}
 
-		if( this.shouldCare( event.Name ) )
+		if( this.shouldCare( event.getName() ) )
 		{
 			for( final IOreListener v : this.oreListeners )
 			{
-				v.oreRegistered( event.Name, event.Ore );
+				v.oreRegistered( event.getName(), event.getOre() );
 			}
 		}
 

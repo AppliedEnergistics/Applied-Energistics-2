@@ -96,8 +96,8 @@ public final class WorldGenRegistry implements IWorldGen
 		}
 
 		final boolean isBadProvider = this.types[type.ordinal()].badProviders.contains( w.provider.getClass() );
-		final boolean isBadDimension = this.types[type.ordinal()].badDimensions.contains( w.provider.getDimensionId() );
-		final boolean isGoodDimension = this.types[type.ordinal()].enabledDimensions.contains( w.provider.getDimensionId() );
+		final boolean isBadDimension = this.types[type.ordinal()].badDimensions.contains( w.provider.getDimension() );
+		final boolean isGoodDimension = this.types[type.ordinal()].enabledDimensions.contains( w.provider.getDimension() );
 
 		if( isBadProvider || isBadDimension )
 		{

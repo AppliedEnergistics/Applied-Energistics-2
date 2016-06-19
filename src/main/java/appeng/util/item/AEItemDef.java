@@ -24,7 +24,6 @@ import java.util.List;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.common.registry.GameRegistry.UniqueIdentifier;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -49,6 +48,7 @@ public class AEItemDef
 	private String displayName;
 	@SideOnly( Side.CLIENT )
 	private List tooltip;
+	//TODO 1.9.4 - UniqueIdentifier => ?
 	@SideOnly( Side.CLIENT )
 	private UniqueIdentifier uniqueID;
 	private OreReference isOre;
@@ -110,7 +110,7 @@ public class AEItemDef
 
 	int getDamageValueHack( final ItemStack is )
 	{
-		return Items.blaze_rod.getDamage( is );
+		return Items.BLAZE_ROD.getDamage( is );
 	}
 
 	void reHash()

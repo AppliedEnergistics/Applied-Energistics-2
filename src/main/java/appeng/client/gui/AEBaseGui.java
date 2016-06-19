@@ -42,11 +42,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldRenderer;
-import net.minecraft.client.renderer.entity.RenderItem;
+import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -380,14 +381,15 @@ public abstract class AEBaseGui extends GuiContainer
 		}
 	}
 
+	//TODO 1.9.4 - Whole ClickType thing and 1.8.9 conversion, to be checked
 	@Override
-	protected void handleMouseClick( final Slot slot, final int slotIdx, final int ctrlDown, final int key )
+	protected void handleMouseClick( final Slot slot, final int slotIdx, final int key, final ClickType clickType )
 	{
 		final EntityPlayer player = Minecraft.getMinecraft().thePlayer;
 
 		if( slot instanceof SlotFake )
 		{
-			final InventoryAction action = ctrlDown == 1 ? InventoryAction.SPLIT_OR_PLACE_SINGLE : InventoryAction.PICKUP_OR_SET_DOWN;
+			final InventoryAction action = isCtrlKeyDown() ? InventoryAction.SPLIT_OR_PLACE_SINGLE : InventoryAction.PICKUP_OR_SET_DOWN;
 
 			if( this.drag_click.size() > 1 )
 			{
@@ -430,7 +432,7 @@ public abstract class AEBaseGui extends GuiContainer
 			}
 			else
 			{
-				action = ctrlDown == 1 ? InventoryAction.CRAFT_STACK : InventoryAction.CRAFT_ITEM;
+				action = isCtrlKeyDown() ? InventoryAction.CRAFT_STACK : InventoryAction.CRAFT_ITEM;
 			}
 
 			final PacketInventoryAction p = new PacketInventoryAction( action, slotIdx, 0 );
@@ -470,10 +472,10 @@ public abstract class AEBaseGui extends GuiContainer
 			switch( key )
 			{
 				case 0: // pickup / set-down.
-					action = ctrlDown == 1 ? InventoryAction.SPLIT_OR_PLACE_SINGLE : InventoryAction.PICKUP_OR_SET_DOWN;
+					action = isCtrlKeyDown() ? InventoryAction.SPLIT_OR_PLACE_SINGLE : InventoryAction.PICKUP_OR_SET_DOWN;
 					break;
 				case 1:
-					action = ctrlDown == 1 ? InventoryAction.PICKUP_SINGLE : InventoryAction.SHIFT_CLICK;
+					action = isCtrlKeyDown() ? InventoryAction.PICKUP_SINGLE : InventoryAction.SHIFT_CLICK;
 					break;
 
 				case 3: // creative dupe:
@@ -507,7 +509,7 @@ public abstract class AEBaseGui extends GuiContainer
 			switch( key )
 			{
 				case 0: // pickup / set-down.
-					action = ctrlDown == 1 ? InventoryAction.SPLIT_OR_PLACE_SINGLE : InventoryAction.PICKUP_OR_SET_DOWN;
+					action = isCtrlKeyDown() ? InventoryAction.SPLIT_OR_PLACE_SINGLE : InventoryAction.PICKUP_OR_SET_DOWN;
 					stack = ( (SlotME) slot ).getAEStack();
 
 					if( stack != null && action == InventoryAction.PICKUP_OR_SET_DOWN && stack.getStackSize() == 0 && player.inventory.getItemStack() == null )
@@ -517,7 +519,7 @@ public abstract class AEBaseGui extends GuiContainer
 
 					break;
 				case 1:
-					action = ctrlDown == 1 ? InventoryAction.PICKUP_SINGLE : InventoryAction.SHIFT_CLICK;
+					action = isCtrlKeyDown() ? InventoryAction.PICKUP_SINGLE : InventoryAction.SHIFT_CLICK;
 					stack = ( (SlotME) slot ).getAEStack();
 					break;
 
@@ -580,7 +582,7 @@ public abstract class AEBaseGui extends GuiContainer
 				{
 					if( inventorySlot != null && inventorySlot.canTakeStack( this.mc.thePlayer ) && inventorySlot.getHasStack() && inventorySlot.inventory == slot.inventory && Container.canAddItemToSlot( inventorySlot, this.dbl_whichItem, true ) )
 					{
-						this.handleMouseClick( inventorySlot, inventorySlot.slotNumber, ctrlDown, 1 );
+						this.handleMouseClick( inventorySlot, inventorySlot.slotNumber, 1, clickType );
 					}
 				}
 			}
@@ -588,7 +590,7 @@ public abstract class AEBaseGui extends GuiContainer
 			this.disableShiftClick = false;
 		}
 
-		super.handleMouseClick( slot, slotIdx, ctrlDown, key );
+		super.handleMouseClick( slot, slotIdx, key, clickType );
 	}
 
 	@Override
@@ -625,7 +627,7 @@ public abstract class AEBaseGui extends GuiContainer
 
 					if( theSlot.getSlotStackLimit() == 64 )
 					{
-						this.handleMouseClick( theSlot, theSlot.slotNumber, j, 2 );
+						this.handleMouseClick( theSlot, theSlot.slotNumber, j, ClickType.SWAP );
 						return true;
 					}
 					else
@@ -816,18 +818,18 @@ public abstract class AEBaseGui extends GuiContainer
 							final float par4 = uv_y * 16;
 
 							final Tessellator tessellator = Tessellator.getInstance();
-							final WorldRenderer worldrenderer = tessellator.getWorldRenderer();
+							final VertexBuffer VertexBuffer = tessellator.getBuffer();
 
-							worldrenderer.begin( GL11.GL_QUADS, DefaultVertexFormats.ITEM );
+							VertexBuffer.begin( GL11.GL_QUADS, DefaultVertexFormats.ITEM );
 							;
 							final float f1 = 0.00390625F;
 							final float f = 0.00390625F;
 							final float par6 = 16;
-							worldrenderer.color( 1.0f, 1.0f, 1.0f, aes.getOpacityOfIcon() ).pos( par1 + 0, par2 + par6, this.zLevel ).tex( ( par3 + 0 ) * f, ( par4 + par6 ) * f1 ).endVertex();
+							VertexBuffer.color( 1.0f, 1.0f, 1.0f, aes.getOpacityOfIcon() ).pos( par1 + 0, par2 + par6, this.zLevel ).tex( ( par3 + 0 ) * f, ( par4 + par6 ) * f1 ).endVertex();
 							final float par5 = 16;
-							worldrenderer.color( 1.0f, 1.0f, 1.0f, aes.getOpacityOfIcon() ).pos( par1 + par5, par2 + par6, this.zLevel ).tex( ( par3 + par5 ) * f, ( par4 + par6 ) * f1 ).endVertex();
-							worldrenderer.color( 1.0f, 1.0f, 1.0f, aes.getOpacityOfIcon() ).pos( par1 + par5, par2 + 0, this.zLevel ).tex( ( par3 + par5 ) * f, ( par4 + 0 ) * f1 ).endVertex();
-							worldrenderer.color( 1.0f, 1.0f, 1.0f, aes.getOpacityOfIcon() ).pos( par1 + 0, par2 + 0, this.zLevel ).tex( ( par3 + 0 ) * f, ( par4 + 0 ) * f1 ).endVertex();
+							VertexBuffer.color( 1.0f, 1.0f, 1.0f, aes.getOpacityOfIcon() ).pos( par1 + par5, par2 + par6, this.zLevel ).tex( ( par3 + par5 ) * f, ( par4 + par6 ) * f1 ).endVertex();
+							VertexBuffer.color( 1.0f, 1.0f, 1.0f, aes.getOpacityOfIcon() ).pos( par1 + par5, par2 + 0, this.zLevel ).tex( ( par3 + par5 ) * f, ( par4 + 0 ) * f1 ).endVertex();
+							VertexBuffer.color( 1.0f, 1.0f, 1.0f, aes.getOpacityOfIcon() ).pos( par1 + 0, par2 + 0, this.zLevel ).tex( ( par3 + 0 ) * f, ( par4 + 0 ) * f1 ).endVertex();
 							tessellator.draw();
 						}
 						catch( final Exception err )

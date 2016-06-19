@@ -24,8 +24,8 @@ import net.minecraft.block.BlockRedstoneWire;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import appeng.api.networking.events.MENetworkBootingStatusChange;
@@ -152,8 +152,8 @@ public class PartP2PRedstone extends PartP2PTunnel<PartP2PRedstone>
 					srcSide = EnumFacing.UP;
 				}
 
-				this.power = b.getWeakPower( this.getTile().getWorld(), target, state, srcSide );
-				this.power = Math.max( this.power, b.getWeakPower( this.getTile().getWorld(), target, state, srcSide ) );
+				this.power = b.getWeakPower( state, this.getTile().getWorld(), target, srcSide );
+				this.power = Math.max( this.power, b.getWeakPower( state, this.getTile().getWorld(), target, srcSide ) );
 				this.sendToOutput( this.power );
 			}
 			else

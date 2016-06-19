@@ -55,7 +55,7 @@ import appeng.util.Platform;
 import appeng.util.ReadableNumberConverter;
 
 
-public class GuiCraftingCPU extends AEBaseGui implements ISortSource
+public class GuICraftingCPU extends AEBaseGui implements ISortSource
 {
 	private static final int GUI_HEIGHT = 184;
 	private static final int GUI_WIDTH = 238;
@@ -92,12 +92,12 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 	private GuiButton cancel;
 	private int tooltip = -1;
 
-	public GuiCraftingCPU( final InventoryPlayer inventoryPlayer, final Object te )
+	public GuICraftingCPU( final InventoryPlayer inventoryPlayer, final Object te )
 	{
 		this( new ContainerCraftingCPU( inventoryPlayer, te ) );
 	}
 
-	protected GuiCraftingCPU( final ContainerCraftingCPU container )
+	protected GuICraftingCPU( final ContainerCraftingCPU container )
 	{
 		super( container );
 		this.craftingCpu = container;

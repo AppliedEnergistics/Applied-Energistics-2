@@ -27,7 +27,7 @@ import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.translation.I18n;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.ActionItems;
@@ -289,8 +289,8 @@ public class GuiImgButton extends GuiButton implements ITooltip
 
 		if( displayName != null )
 		{
-			String name = StatCollector.translateToLocal( displayName );
-			String value = StatCollector.translateToLocal( displayValue );
+			String name = I18n.translateToLocal( displayName );
+			String value = I18n.translateToLocal( displayValue );
 
 			if( name == null || name.isEmpty() )
 			{

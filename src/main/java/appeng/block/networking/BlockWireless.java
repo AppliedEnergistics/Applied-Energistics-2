@@ -23,13 +23,17 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumWorldBlockLayer;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import appeng.api.util.AEPartLocation;
@@ -64,13 +68,13 @@ public class BlockWireless extends AEBaseTileBlock implements ICustomCollision
 	}
 
 	@Override
-	public EnumWorldBlockLayer getBlockLayer()
+	public BlockRenderLayer getBlockLayer()
 	{
-		return EnumWorldBlockLayer.CUTOUT;
+		return BlockRenderLayer.CUTOUT;
 	}
 
 	@Override
-	public boolean onBlockActivated( final World w, final BlockPos pos, final IBlockState state, final EntityPlayer player, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
+	public boolean onBlockActivated( final World w, final BlockPos pos, final IBlockState state, final EntityPlayer player, final EnumHand hand, final @Nullable ItemStack heldItem, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
 	{
 		if( player.isSneaking() )
 		{
@@ -146,9 +150,9 @@ public class BlockWireless extends AEBaseTileBlock implements ICustomCollision
 					break;
 			}
 
-			return Collections.singletonList( AxisAlignedBB.fromBounds( minX, minY, minZ, maxX, maxY, maxZ ) );
+			return Collections.singletonList( new AxisAlignedBB( minX, minY, minZ, maxX, maxY, maxZ ) );
 		}
-		return Collections.singletonList( AxisAlignedBB.fromBounds( 0.0, 0, 0.0, 1.0, 1.0, 1.0 ) );
+		return Collections.singletonList( new AxisAlignedBB( 0.0, 0, 0.0, 1.0, 1.0, 1.0 ) );
 	}
 
 	@Override
@@ -208,11 +212,11 @@ public class BlockWireless extends AEBaseTileBlock implements ICustomCollision
 					break;
 			}
 
-			out.add( AxisAlignedBB.fromBounds( minX, minY, minZ, maxX, maxY, maxZ ) );
+			out.add( new AxisAlignedBB( minX, minY, minZ, maxX, maxY, maxZ ) );
 		}
 		else
 		{
-			out.add( AxisAlignedBB.fromBounds( 0.0, 0.0, 0.0, 1.0, 1.0, 1.0 ) );
+			out.add( new AxisAlignedBB( 0.0, 0.0, 0.0, 1.0, 1.0, 1.0 ) );
 		}
 	}
 }

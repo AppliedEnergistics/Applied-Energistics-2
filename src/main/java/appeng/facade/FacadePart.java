@@ -20,19 +20,21 @@ package appeng.facade;
 
 
 import java.util.EnumSet;
+
 import javax.annotation.Nullable;
 
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumWorldBlockLayer;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -170,7 +172,7 @@ public class FacadePart implements IFacadePart, IBoxProvider
 						}
 						else
 						{
-							if( blk.canRenderInLayer( EnumWorldBlockLayer.TRANSLUCENT ) )
+							if( blk.canRenderInLayer( BlockRenderLayer.TRANSLUCENT ) )
 							{
 								instance.renderForPass( 1 );
 							}
@@ -178,7 +180,7 @@ public class FacadePart implements IFacadePart, IBoxProvider
 
 						try
 						{
-							final int color = ib.getColorFromItemStack( randomItem, 0 );
+							final int color = Minecraft.getMinecraft().getItemColors().getColorFromItemstack( randomItem, 0 );
 						}
 						catch( final Throwable ignored )
 						{
@@ -374,7 +376,7 @@ public class FacadePart implements IFacadePart, IBoxProvider
 
 						try
 						{
-							final int color = ib.getColorFromItemStack( randomItem, 0 );
+							final int color = Minecraft.getMinecraft().getItemColors().getColorFromItemstack( randomItem, 0 );
 							instance.setInvColor( color );
 						}
 						catch( final Throwable error )
@@ -457,7 +459,7 @@ public class FacadePart implements IFacadePart, IBoxProvider
 		final ItemStack is = this.getTexture();
 		final Block blk = Block.getBlockFromItem( is.getItem() );
 
-		return !blk.isOpaqueCube();
+		return !blk.isOpaqueCube(blk.getDefaultState());
 	}
 
 	@Nullable

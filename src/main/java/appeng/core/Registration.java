@@ -28,9 +28,8 @@ import com.google.common.base.Preconditions;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.WeightedRandomChestContent;
-import net.minecraft.world.biome.BiomeGenBase;
-import net.minecraftforge.common.ChestGenHooks;
+import net.minecraft.world.DimensionType;
+import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -117,16 +116,22 @@ import appeng.worldgen.QuartzWorldGen;
 public final class Registration
 {
 	private final RecipeHandler recipeHandler;
-	private BiomeGenBase storageBiome;
+	private DimensionType storageDimensionType;
+	private Biome storageBiome;
 
 	Registration()
 	{
 		this.recipeHandler = new RecipeHandler();
 	}
 
-	public BiomeGenBase getStorageBiome()
+	public Biome getStorageBiome()
 	{
 		return this.storageBiome;
+	}
+
+	public DimensionType getStorageDimensionType()
+	{
+		return storageDimensionType;
 	}
 
 	void preInitialize( final FMLPreInitializationEvent event )
@@ -170,35 +175,38 @@ public final class Registration
 		{
 			if( force && config.storageBiomeID == -1 )
 			{
-				config.storageBiomeID = Platform.findEmpty( BiomeGenBase.getBiomeGenArray() );
+				config.storageBiomeID = Platform.findEmpty( Biome.REGISTRY, 0, 256 );
 				if( config.storageBiomeID == -1 )
 				{
 					throw new IllegalStateException( "Biome Array is full, please free up some Biome ID's or disable spatial." );
 				}
 
-				this.storageBiome = new BiomeGenStorage( config.storageBiomeID );
+				this.storageBiome = new BiomeGenStorage();
 				config.save();
 			}
 
 			if( !force && config.storageBiomeID != -1 )
 			{
-				this.storageBiome = new BiomeGenStorage( config.storageBiomeID );
+				this.storageBiome = new BiomeGenStorage();
 			}
 		}
 
 		if( config.storageProviderID != -1 )
 		{
-			DimensionManager.registerProviderType( config.storageProviderID, StorageWorldProvider.class, false );
+			storageDimensionType = DimensionType.register( "Storage Cell", "_cell", config.storageProviderID, StorageWorldProvider.class, false );
 		}
 
 		if( config.storageProviderID == -1 && force )
 		{
 			config.storageProviderID = -11;
 
-			while( !DimensionManager.registerProviderType( config.storageProviderID, StorageWorldProvider.class, false ) )
+			//TODO 1.9.4 - Storage provider ids aren't stored anywhere, so no way to find free one. Do something with this!
+			while( DimensionManager.isDimensionRegistered( config.storageProviderID ) )
 			{
 				config.storageProviderID--;
 			}
+			
+			storageDimensionType = DimensionType.register( "Storage Cell", "_cell", config.storageProviderID, StorageWorldProvider.class, false );
 
 			config.save();
 		}
@@ -411,6 +419,7 @@ public final class Registration
 
 		if( AEConfig.instance.isFeatureEnabled( AEFeature.ChestLoot ) )
 		{
+			//TODO 1.9.4 - Chest Gen => Loot Tables
 			final ChestGenHooks d = ChestGenHooks.getInfo( ChestGenHooks.MINESHAFT_CORRIDOR );
 
 			final IMaterials materials = definitions.materials();
@@ -447,7 +456,7 @@ public final class Registration
 		/**
 		 * You can't move bed rock.
 		 */
-		mr.blacklistBlock( net.minecraft.init.Blocks.bedrock );
+		mr.blacklistBlock( net.minecraft.init.Blocks.BEDROCK );
 
 		/*
 		 * White List Vanilla...

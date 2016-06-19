@@ -30,19 +30,19 @@ public class Fallout
 		final double a = Math.random();
 		if( a > 0.9 )
 		{
-			this.putter.put( w, x, y, z, Blocks.stone );
+			this.putter.put( w, x, y, z, Blocks.STONE );
 		}
 		else if( a > 0.8 )
 		{
-			this.putter.put( w, x, y, z, Blocks.cobblestone );
+			this.putter.put( w, x, y, z, Blocks.COBBLESTONE );
 		}
 		else if( a > 0.7 )
 		{
-			this.putter.put( w, x, y, z, Blocks.dirt );
+			this.putter.put( w, x, y, z, Blocks.DIRT );
 		}
 		else
 		{
-			this.putter.put( w, x, y, z, Blocks.gravel );
+			this.putter.put( w, x, y, z, Blocks.GRAVEL );
 		}
 	}
 
@@ -51,15 +51,15 @@ public class Fallout
 		final double a = Math.random();
 		if( a > 0.9 )
 		{
-			this.putter.put( w, x, y, z, Blocks.cobblestone );
+			this.putter.put( w, x, y, z, Blocks.COBBLESTONE );
 		}
 		else if( a > 0.8 )
 		{
-			this.putter.put( w, x, y, z, Blocks.stone );
+			this.putter.put( w, x, y, z, Blocks.STONE );
 		}
 		else if( a > 0.7 )
 		{
-			this.putter.put( w, x, y, z, Blocks.grass );
+			this.putter.put( w, x, y, z, Blocks.GRASS );
 		}
 		else if( a > 0.6 )
 		{
@@ -70,7 +70,7 @@ public class Fallout
 		}
 		else if( a > 0.5 )
 		{
-			this.putter.put( w, x, y, z, Blocks.gravel );
+			this.putter.put( w, x, y, z, Blocks.GRAVEL );
 		}
 		else
 		{

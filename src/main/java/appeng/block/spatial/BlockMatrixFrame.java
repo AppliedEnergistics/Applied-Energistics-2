@@ -24,12 +24,13 @@ import java.util.EnumSet;
 import java.util.List;
 
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -48,7 +49,7 @@ public class BlockMatrixFrame extends AEBaseBlock implements ICustomCollision
 
 	public BlockMatrixFrame()
 	{
-		super( Material.anvil );
+		super( Material.ANVIL );
 		this.setResistance( 6000000.0F );
 		this.setBlockUnbreakable();
 		this.setLightOpacity( 0 );
@@ -79,7 +80,7 @@ public class BlockMatrixFrame extends AEBaseBlock implements ICustomCollision
 	@Override
 	public void addCollidingBlockToList( final World w, final BlockPos pos, final AxisAlignedBB bb, final List<AxisAlignedBB> out, final Entity e )
 	{
-		out.add( AxisAlignedBB.fromBounds( 0.0, 0.0, 0.0, 1.0, 1.0, 1.0 ) );
+		out.add( new AxisAlignedBB( 0.0, 0.0, 0.0, 1.0, 1.0, 1.0 ) );
 	}
 
 	@Override
@@ -95,7 +96,7 @@ public class BlockMatrixFrame extends AEBaseBlock implements ICustomCollision
 	}
 
 	@Override
-	public boolean canEntityDestroy( final IBlockAccess world, final BlockPos pos, final Entity entity )
+	public boolean canEntityDestroy( final IBlockState state, final IBlockAccess world, final BlockPos pos, final Entity entity )
 	{
 		return false;
 	}

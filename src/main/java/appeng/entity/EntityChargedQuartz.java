@@ -22,13 +22,14 @@ package appeng.entity;
 import java.util.List;
 
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
 import appeng.api.AEApi;
@@ -79,7 +80,8 @@ public final class EntityChargedQuartz extends AEBaseEntityItem
 		final int i = MathHelper.floor_double( this.posY );
 		final int k = MathHelper.floor_double( this.posZ );
 
-		final Material mat = this.worldObj.getBlockState( new BlockPos( j, i, k ) ).getBlock().getMaterial();
+		IBlockState state = this.worldObj.getBlockState( new BlockPos( j, i, k ) );
+		final Material mat = state.getBlock().getMaterial( state );
 		if( Platform.isServer() && mat.isLiquid() )
 		{
 			this.transformTime++;
@@ -104,7 +106,7 @@ public final class EntityChargedQuartz extends AEBaseEntityItem
 
 		if( materials.certusQuartzCrystalCharged().isSameAs( item ) )
 		{
-			final AxisAlignedBB region = AxisAlignedBB.fromBounds( this.posX - 1, this.posY - 1, this.posZ - 1, this.posX + 1, this.posY + 1, this.posZ + 1 );
+			final AxisAlignedBB region = new AxisAlignedBB( this.posX - 1, this.posY - 1, this.posZ - 1, this.posX + 1, this.posY + 1, this.posZ + 1 );
 			final List<Entity> l = this.getCheckedEntitiesWithinAABBExcludingEntity( region );
 
 			EntityItem redstone = null;
@@ -117,12 +119,12 @@ public final class EntityChargedQuartz extends AEBaseEntityItem
 					final ItemStack other = ( (EntityItem) e ).getEntityItem();
 					if( other != null && other.stackSize > 0 )
 					{
-						if( Platform.isSameItem( other, new ItemStack( Items.redstone ) ) )
+						if( Platform.isSameItem( other, new ItemStack( Items.REDSTONE ) ) )
 						{
 							redstone = (EntityItem) e;
 						}
 
-						if( Platform.isSameItem( other, new ItemStack( Items.quartz ) ) )
+						if( Platform.isSameItem( other, new ItemStack( Items.QUARTZ ) ) )
 						{
 							netherQuartz = (EntityItem) e;
 						}

@@ -26,7 +26,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.Vec3d;
 
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.PlayerSource;
@@ -54,8 +55,11 @@ public class PartConversionMonitor extends AbstractPartMonitor
 	}
 
 	@Override
-	public boolean onPartShiftActivate( final EntityPlayer player, final Vec3 pos )
+	public boolean onPartShiftActivate( final EntityPlayer player, final Vec3d pos )
 	{
+		//TODO 1.9.4 - 2 hands! Just do something!
+		final EnumHand hand = EnumHand.MAIN_HAND;
+		
 		if( Platform.isClient() )
 		{
 			return true;
@@ -73,7 +77,7 @@ public class PartConversionMonitor extends AbstractPartMonitor
 
 		boolean ModeB = false;
 
-		ItemStack item = player.getCurrentEquippedItem();
+		ItemStack item = player.getHeldItem( hand );
 		if( item == null && this.getDisplayed() != null )
 		{
 			ModeB = true;

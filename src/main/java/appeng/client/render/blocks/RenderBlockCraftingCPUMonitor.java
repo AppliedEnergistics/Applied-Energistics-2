@@ -26,7 +26,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 
@@ -57,7 +57,7 @@ public class RenderBlockCraftingCPUMonitor extends RenderBlockCraftingCPU<BlockC
 	}
 
 	@Override
-	public void renderTile( final BlockCraftingMonitor block, final TileCraftingMonitorTile tile, final WorldRenderer tess, final double x, final double y, final double z, final float f, final ModelGenerator renderer )
+	public void renderTile( final BlockCraftingMonitor block, final TileCraftingMonitorTile tile, final VertexBuffer tess, final double x, final double y, final double z, final float f, final ModelGenerator renderer )
 	{
 		if( tile != null )
 		{
@@ -91,7 +91,7 @@ public class RenderBlockCraftingCPUMonitor extends RenderBlockCraftingCPU<BlockC
 		}
 	}
 
-	private void tesrRenderScreen( final WorldRenderer tess, final TileCraftingMonitorTile cmt, final IAEItemStack ais )
+	private void tesrRenderScreen( final VertexBuffer tess, final TileCraftingMonitorTile cmt, final IAEItemStack ais )
 	{
 		final EnumFacing side = cmt.getForward();
 

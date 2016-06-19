@@ -21,7 +21,7 @@ package appeng.server.subcommands;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -40,7 +40,7 @@ public class ChunkLogger implements ISubCommand
 	@SubscribeEvent
 	public void onChunkLoadEvent( final ChunkEvent.Load event )
 	{
-		if( !event.world.isRemote )
+		if( !event.getWorld().isRemote )
 		{
 			AELog.info( "Chunk Loaded:   " + event.getChunk().xPosition + ", " + event.getChunk().zPosition );
 			this.displayStack();
@@ -69,7 +69,7 @@ public class ChunkLogger implements ISubCommand
 	@SubscribeEvent
 	public void onChunkUnloadEvent( final ChunkEvent.Unload unload )
 	{
-		if( !unload.world.isRemote )
+		if( !unload.getWorld().isRemote )
 		{
 			AELog.info( "Chunk Unloaded: " + unload.getChunk().xPosition + ", " + unload.getChunk().zPosition );
 			this.displayStack();
@@ -90,12 +90,12 @@ public class ChunkLogger implements ISubCommand
 		if( this.enabled )
 		{
 			MinecraftForge.EVENT_BUS.register( this );
-			sender.addChatMessage( new ChatComponentTranslation( "commands.ae2.ChunkLoggerOn" ) );
+			sender.addChatMessage( new TextComponentTranslation( "commands.ae2.ChunkLoggerOn" ) );
 		}
 		else
 		{
 			MinecraftForge.EVENT_BUS.unregister( this );
-			sender.addChatMessage( new ChatComponentTranslation( "commands.ae2.ChunkLoggerOff" ) );
+			sender.addChatMessage( new TextComponentTranslation( "commands.ae2.ChunkLoggerOff" ) );
 		}
 	}
 }

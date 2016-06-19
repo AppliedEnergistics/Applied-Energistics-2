@@ -23,11 +23,11 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 
 import appeng.api.util.ModelGenerator;
@@ -178,7 +178,7 @@ public class RenderBlockSkyCompass extends BaseBlockRender<BlockSkyCompass, Tile
 	}
 
 	@Override
-	public void renderTile( final BlockSkyCompass block, final TileSkyCompass skyCompass, final WorldRenderer tess, final double x, final double y, final double z, final float partialTick, final ModelGenerator renderer )
+	public void renderTile( final BlockSkyCompass block, final TileSkyCompass skyCompass, final VertexBuffer tess, final double x, final double y, final double z, final float partialTick, final ModelGenerator renderer )
 	{
 		if( skyCompass == null )
 		{

@@ -62,9 +62,9 @@ public class RenderTinyTNTPrimed extends Render
 		GlStateManager.translate( (float) x, (float) y + 0.5F, (float) z );
 		float f2;
 
-		if( tnt.fuse - life + 1.0F < 10.0F )
+		if( tnt.getFuse() - life + 1.0F < 10.0F )
 		{
-			f2 = 1.0F - ( tnt.fuse - life + 1.0F ) / 10.0F;
+			f2 = 1.0F - ( tnt.getFuse() - life + 1.0F ) / 10.0F;
 
 			if( f2 < 0.0F )
 			{
@@ -83,13 +83,13 @@ public class RenderTinyTNTPrimed extends Render
 		}
 
 		GL11.glScalef( 0.5f, 0.5f, 0.5f );
-		f2 = ( 1.0F - ( tnt.fuse - life + 1.0F ) / 100.0F ) * 0.8F;
+		f2 = ( 1.0F - ( tnt.getFuse() - life + 1.0F ) / 100.0F ) * 0.8F;
 		this.bindEntityTexture( tnt );
 		GlStateManager.translate( -0.5F, -0.5F, 0.5F );
-		blockrendererdispatcher.renderBlockBrightness( Blocks.tnt.getDefaultState(), tnt.getBrightness( life ) );
+		blockrendererdispatcher.renderBlockBrightness( Blocks.TNT.getDefaultState(), tnt.getBrightness( life ) );
 		GlStateManager.translate( 0.0F, 0.0F, 1.0F );
 
-		if( tnt.fuse / 5 % 2 == 0 )
+		if( tnt.getFuse() / 5 % 2 == 0 )
 		{
 			GlStateManager.disableTexture2D();
 			GlStateManager.disableLighting();
@@ -98,7 +98,7 @@ public class RenderTinyTNTPrimed extends Render
 			GlStateManager.color( 1.0F, 1.0F, 1.0F, f2 );
 			GlStateManager.doPolygonOffset( -3.0F, -3.0F );
 			GlStateManager.enablePolygonOffset();
-			blockrendererdispatcher.renderBlockBrightness( Blocks.tnt.getDefaultState(), 1.0F );
+			blockrendererdispatcher.renderBlockBrightness( Blocks.TNT.getDefaultState(), 1.0F );
 			GlStateManager.doPolygonOffset( 0.0F, 0.0F );
 			GlStateManager.disablePolygonOffset();
 			GlStateManager.color( 1.0F, 1.0F, 1.0F, 1.0F );
@@ -114,6 +114,6 @@ public class RenderTinyTNTPrimed extends Render
 	@Override
 	protected ResourceLocation getEntityTexture( final Entity entity )
 	{
-		return TextureMap.locationBlocksTexture;
+		return TextureMap.LOCATION_BLOCKS_TEXTURE;
 	}
 }

@@ -33,9 +33,9 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.oredict.OreDictionary;
 
 import appeng.api.AEApi;
@@ -78,41 +78,41 @@ public final class MeteoritePlacer
 		this.skyChestDefinition = blocks.skyChest();
 		this.skyStoneDefinition = blocks.skyStone();
 
-		this.validSpawn.add( Blocks.stone );
-		this.validSpawn.add( Blocks.cobblestone );
-		this.validSpawn.add( Blocks.grass );
-		this.validSpawn.add( Blocks.sand );
-		this.validSpawn.add( Blocks.dirt );
-		this.validSpawn.add( Blocks.gravel );
-		this.validSpawn.add( Blocks.netherrack );
-		this.validSpawn.add( Blocks.iron_ore );
-		this.validSpawn.add( Blocks.gold_ore );
-		this.validSpawn.add( Blocks.diamond_ore );
-		this.validSpawn.add( Blocks.redstone_ore );
-		this.validSpawn.add( Blocks.hardened_clay );
-		this.validSpawn.add( Blocks.ice );
-		this.validSpawn.add( Blocks.snow );
-		this.validSpawn.add( Blocks.stained_hardened_clay );
+		this.validSpawn.add( Blocks.STONE );
+		this.validSpawn.add( Blocks.COBBLESTONE );
+		this.validSpawn.add( Blocks.GRASS );
+		this.validSpawn.add( Blocks.SAND );
+		this.validSpawn.add( Blocks.DIRT );
+		this.validSpawn.add( Blocks.GRAVEL );
+		this.validSpawn.add( Blocks.NETHERRACK );
+		this.validSpawn.add( Blocks.IRON_ORE );
+		this.validSpawn.add( Blocks.GOLD_ORE );
+		this.validSpawn.add( Blocks.DIAMOND_ORE );
+		this.validSpawn.add( Blocks.REDSTONE_ORE );
+		this.validSpawn.add( Blocks.HARDENED_CLAY );
+		this.validSpawn.add( Blocks.ICE );
+		this.validSpawn.add( Blocks.SNOW );
+		this.validSpawn.add( Blocks.STAINED_HARDENED_CLAY );
 
 		for( final Block skyStoneBlock : this.skyStoneDefinition.maybeBlock().asSet() )
 		{
 			this.invalidSpawn.add( skyStoneBlock );
 		}
-		this.invalidSpawn.add( Blocks.planks );
-		this.invalidSpawn.add( Blocks.iron_door );
-		this.invalidSpawn.add( Blocks.iron_bars );
-		this.invalidSpawn.add( Blocks.oak_door );
-		this.invalidSpawn.add( Blocks.acacia_door );
-		this.invalidSpawn.add( Blocks.birch_door );
-		this.invalidSpawn.add( Blocks.dark_oak_door );
-		this.invalidSpawn.add( Blocks.iron_door );
-		this.invalidSpawn.add( Blocks.jungle_door );
-		this.invalidSpawn.add( Blocks.spruce_door );
-		this.invalidSpawn.add( Blocks.brick_block );
-		this.invalidSpawn.add( Blocks.clay );
-		this.invalidSpawn.add( Blocks.water );
-		this.invalidSpawn.add( Blocks.log );
-		this.invalidSpawn.add( Blocks.log2 );
+		this.invalidSpawn.add( Blocks.PLANKS );
+		this.invalidSpawn.add( Blocks.IRON_DOOR );
+		this.invalidSpawn.add( Blocks.IRON_BARS );
+		this.invalidSpawn.add( Blocks.OAK_DOOR );
+		this.invalidSpawn.add( Blocks.ACACIA_DOOR );
+		this.invalidSpawn.add( Blocks.BIRCH_DOOR );
+		this.invalidSpawn.add( Blocks.DARK_OAK_DOOR );
+		this.invalidSpawn.add( Blocks.IRON_DOOR );
+		this.invalidSpawn.add( Blocks.JUNGLE_DOOR );
+		this.invalidSpawn.add( Blocks.SPRUCE_DOOR );
+		this.invalidSpawn.add( Blocks.BRICK_BLOCK );
+		this.invalidSpawn.add( Blocks.CLAY );
+		this.invalidSpawn.add( Blocks.WATER );
+		this.invalidSpawn.add( Blocks.LOG );
+		this.invalidSpawn.add( Blocks.LOG2 );
 
 		this.type = new Fallout( this.putter, this.skyStoneDefinition );
 	}
@@ -132,15 +132,15 @@ public final class MeteoritePlacer
 
 		final Block blk = Block.getBlockById( this.settings.getInteger( "blk" ) );
 
-		if( blk == Blocks.sand )
+		if( blk == Blocks.SAND )
 		{
 			this.type = new FalloutSand( w, x, y, z, this.putter, this.skyStoneDefinition );
 		}
-		else if( blk == Blocks.hardened_clay )
+		else if( blk == Blocks.HARDENED_CLAY )
 		{
 			this.type = new FalloutCopy( w, x, y, z, this.putter, this.skyStoneDefinition );
 		}
-		else if( blk == Blocks.ice || blk == Blocks.snow )
+		else if( blk == Blocks.ICE || blk == Blocks.SNOW )
 		{
 			this.type = new FalloutSnow( w, x, y, z, this.putter, this.skyStoneDefinition );
 		}
@@ -195,7 +195,7 @@ public final class MeteoritePlacer
 						{
 							if( j > h + distanceFrom * 0.02 )
 							{
-								this.putter.put( w, i, j, k, Blocks.lava );
+								this.putter.put( w, i, j, k, Blocks.LAVA );
 							}
 						}
 						else
@@ -207,7 +207,7 @@ public final class MeteoritePlacer
 			}
 		}
 
-		for( final Object o : w.getWorld().getEntitiesWithinAABB( EntityItem.class, AxisAlignedBB.fromBounds( w.minX( x - 30 ), y - 5, w.minZ( z - 30 ), w.maxX( x + 30 ), y + 30, w.maxZ( z + 30 ) ) ) )
+		for( final Object o : w.getWorld().getEntitiesWithinAABB( EntityItem.class, new AxisAlignedBB( w.minX( x - 30 ), y - 5, w.minZ( z - 30 ), w.maxX( x + 30 ), y + 30, w.maxZ( z + 30 ) ) ) )
 		{
 			final Entity e = (Entity) o;
 			e.setDead();
@@ -350,7 +350,7 @@ public final class MeteoritePlacer
 							possibles.addAll( OreDictionary.getOres( "nuggetNickel" ) );
 							possibles.addAll( OreDictionary.getOres( "nuggetAluminium" ) );
 							possibles.addAll( OreDictionary.getOres( "nuggetElectrum" ) );
-							possibles.add( new ItemStack( net.minecraft.init.Items.gold_nugget ) );
+							possibles.add( new ItemStack( net.minecraft.init.Items.GOLD_NUGGET ) );
 
 							ItemStack nugget = Platform.pickRandom( possibles );
 							if( nugget != null )
@@ -382,7 +382,7 @@ public final class MeteoritePlacer
 				for( int j = y - 9; j < y + 30; j++ )
 				{
 					Block blk = w.getBlock( i, j, k );
-					if( blk == Blocks.lava )
+					if( blk == Blocks.LAVA )
 					{
 						continue;
 					}
@@ -478,15 +478,15 @@ public final class MeteoritePlacer
 
 		this.settings.setBoolean( "lava", Math.random() > 0.9 );
 
-		if( blk == Blocks.sand )
+		if( blk == Blocks.SAND )
 		{
 			this.type = new FalloutSand( w, x, y, z, this.putter, this.skyStoneDefinition );
 		}
-		else if( blk == Blocks.hardened_clay )
+		else if( blk == Blocks.HARDENED_CLAY )
 		{
 			this.type = new FalloutCopy( w, x, y, z, this.putter, this.skyStoneDefinition );
 		}
-		else if( blk == Blocks.ice || blk == Blocks.snow )
+		else if( blk == Blocks.ICE || blk == Blocks.SNOW )
 		{
 			this.type = new FalloutSnow( w, x, y, z, this.putter, this.skyStoneDefinition );
 		}
@@ -580,7 +580,7 @@ public final class MeteoritePlacer
 			this.settings.setInteger( "skyMode", skyMode );
 			w.done();
 
-			WorldData.instance().spawnData().addNearByMeteorites( w.getWorld().provider.getDimensionId(), x >> 4, z >> 4, this.settings );
+			WorldData.instance().spawnData().addNearByMeteorites( w.getWorld().provider.getDimension(), x >> 4, z >> 4, this.settings );
 			return true;
 		}
 		return false;

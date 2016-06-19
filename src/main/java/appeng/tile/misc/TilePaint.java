@@ -32,9 +32,9 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.EnumSkyBlock;
 
 import appeng.api.util.AEColor;
@@ -150,7 +150,7 @@ public class TilePaint extends AEBaseTile
 		return true;
 	}
 
-	public void onNeighborBlockChange()
+	public void neighborChanged()
 	{
 		if( this.dots == null )
 		{
@@ -172,7 +172,7 @@ public class TilePaint extends AEBaseTile
 	{
 		final BlockPos p = this.pos.offset( side );
 		final IBlockState blk = this.worldObj.getBlockState( p );
-		return blk.getBlock().isSideSolid( this.worldObj, p, side.getOpposite() );
+		return blk.getBlock().isSideSolid( this.worldObj.getBlockState( p ), this.worldObj, p, side.getOpposite() );
 	}
 
 	private void removeSide( final EnumFacing side )
@@ -232,12 +232,12 @@ public class TilePaint extends AEBaseTile
 		return this.isLit;
 	}
 
-	public void addBlot( final ItemStack type, final EnumFacing side, final Vec3 hitVec )
+	public void addBlot( final ItemStack type, final EnumFacing side, final Vec3d hitVec )
 	{
 		final BlockPos p = this.pos.offset( side );
 
 		final IBlockState blk = this.worldObj.getBlockState( p );
-		if( blk.getBlock().isSideSolid( this.worldObj, p, side.getOpposite() ) )
+		if( blk.getBlock().isSideSolid( this.worldObj.getBlockState( p ), this.worldObj, p, side.getOpposite() ) )
 		{
 			final ItemPaintBall ipb = (ItemPaintBall) type.getItem();
 

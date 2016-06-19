@@ -22,12 +22,12 @@ package appeng.block.misc;
 import java.util.EnumSet;
 import java.util.Random;
 
-import net.minecraft.block.Block;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import appeng.block.AEBaseTileBlock;
@@ -45,8 +45,8 @@ public class BlockQuartzGrowthAccelerator extends AEBaseTileBlock
 {
 	public BlockQuartzGrowthAccelerator()
 	{
-		super( Material.rock );
-		this.setStepSound( Block.soundTypeMetal );
+		super( Material.ROCK );
+		this.setSoundType( SoundType.METAL );
 		this.setTileEntity( TileQuartzGrowthAccelerator.class );
 		this.setFeature( EnumSet.of( AEFeature.Core ) );
 	}
@@ -58,7 +58,7 @@ public class BlockQuartzGrowthAccelerator extends AEBaseTileBlock
 	}
 
 	@Override
-	public void randomDisplayTick( final World w, final BlockPos pos, final IBlockState state, final Random r )
+	public void randomDisplayTick( final IBlockState state, final World w, final BlockPos pos, final Random r )
 	{
 		if( !AEConfig.instance.enableEffects )
 		{
@@ -120,7 +120,7 @@ public class BlockQuartzGrowthAccelerator extends AEBaseTileBlock
 					break;
 			}
 
-			if( !w.getBlockState( pt ).getBlock().isAir( w, pt ) )
+			if( !w.getBlockState( pt ).getBlock().isAir( w.getBlockState( pt ), w, pt ) )
 			{
 				return;
 			}

@@ -23,7 +23,7 @@ import java.util.EnumSet;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
@@ -46,24 +46,24 @@ public class BlockSpatialPylon extends AEBaseTileBlock
 	}
 
 	@Override
-	public void onNeighborBlockChange( final World w, final BlockPos pos, final IBlockState state, final Block neighborBlock )
+	public void neighborChanged( final IBlockState state, final World w, final BlockPos pos, final Block neighborBlock )
 	{
 		final TileSpatialPylon tsp = this.getTileEntity( w, pos );
 		if( tsp != null )
 		{
-			tsp.onNeighborBlockChange();
+			tsp.neighborChanged();
 		}
 	}
 
 	@Override
-	public int getLightValue( final IBlockAccess w, final BlockPos pos )
+	public int getLightValue( final IBlockState state, final IBlockAccess w, final BlockPos pos )
 	{
 		final TileSpatialPylon tsp = this.getTileEntity( w, pos );
 		if( tsp != null )
 		{
 			return tsp.getLightValue();
 		}
-		return super.getLightValue( w, pos );
+		return super.getLightValue( state, w, pos );
 	}
 
 	@Override

@@ -13,7 +13,7 @@ public class MeteoriteBlockPutter
 	{
 		final Block original = w.getBlock( i, j, k );
 
-		if( original == Blocks.bedrock || original == blk )
+		if( original == Blocks.BEDROCK || original == blk )
 		{
 			return false;
 		}
@@ -24,7 +24,7 @@ public class MeteoriteBlockPutter
 
 	void put( final IMeteoriteWorld w, final int i, final int j, final int k, final IBlockState state, final int meta )
 	{
-		if( w.getBlock( i, j, k ) == Blocks.bedrock )
+		if( w.getBlock( i, j, k ) == Blocks.BEDROCK )
 		{
 			return;
 		}

@@ -19,8 +19,8 @@
 package appeng.client.render.effects;
 
 
-import net.minecraft.client.particle.EntityFX;
-import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.particle.Particle;
+import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
 
@@ -30,7 +30,7 @@ import appeng.core.CommonHelper;
 import appeng.entity.EntityFloatingItem;
 
 
-public class AssemblerFX extends EntityFX
+public class AssemblerFX extends Particle
 {
 
 	private final EntityFloatingItem fi;
@@ -47,6 +47,7 @@ public class AssemblerFX extends EntityFX
 		this.fi = new EntityFloatingItem( this, w, x, y, z, is.getItemStack() );
 		w.spawnEntityInWorld( this.fi );
 		this.particleMaxAge = (int) Math.ceil( Math.max( 1, 100.0f / speed ) ) + 2;
+		//TODO 1.9.4 - noClip => ?
 		this.noClip = true;
 	}
 
@@ -62,7 +63,7 @@ public class AssemblerFX extends EntityFX
 	{
 		super.onUpdate();
 
-		if( this.isDead )
+		if( this.isExpired )
 		{
 			this.fi.setDead();
 		}
@@ -74,7 +75,7 @@ public class AssemblerFX extends EntityFX
 	}
 
 	@Override
-	public void renderParticle( final WorldRenderer par1Tessellator, final Entity p_180434_2_, final float l, final float rX, final float rY, final float rZ, final float rYZ, final float rXY )
+	public void renderParticle( final VertexBuffer par1Tessellator, final Entity p_180434_2_, final float l, final float rX, final float rY, final float rZ, final float rYZ, final float rXY )
 	{
 		this.time += l;
 		if( this.time > 4.0 )

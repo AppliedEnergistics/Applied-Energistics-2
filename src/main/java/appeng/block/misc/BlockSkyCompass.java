@@ -27,9 +27,9 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import appeng.block.AEBaseTileBlock;
@@ -45,7 +45,7 @@ public class BlockSkyCompass extends AEBaseTileBlock implements ICustomCollision
 
 	public BlockSkyCompass()
 	{
-		super( Material.iron );
+		super( Material.IRON );
 		this.setTileEntity( TileSkyCompass.class );
 		this.setOpaque( this.setFullSize( false ) );
 		this.lightOpacity = 0;
@@ -75,7 +75,7 @@ public class BlockSkyCompass extends AEBaseTileBlock implements ICustomCollision
 	}
 
 	@Override
-	public void onNeighborBlockChange( final World w, final BlockPos pos, final IBlockState state, final Block neighborBlock )
+	public void neighborChanged( final IBlockState state, final World w, final BlockPos pos, final Block neighborBlock )
 	{
 		final TileSkyCompass sc = this.getTileEntity( w, pos );
 		final EnumFacing up = sc.getForward();
@@ -88,6 +88,7 @@ public class BlockSkyCompass extends AEBaseTileBlock implements ICustomCollision
 	private void dropTorch( final World w, final BlockPos pos )
 	{
 		w.destroyBlock( pos, true );
+		//TODO 1.9.4 - markBlockForUpdate => ?
 		w.markBlockForUpdate( pos );
 	}
 
@@ -161,9 +162,9 @@ public class BlockSkyCompass extends AEBaseTileBlock implements ICustomCollision
 					break;
 			}
 
-			return Collections.singletonList( AxisAlignedBB.fromBounds( minX, minY, minZ, maxX, maxY, maxZ ) );
+			return Collections.singletonList( new AxisAlignedBB( minX, minY, minZ, maxX, maxY, maxZ ) );
 		}
-		return Collections.singletonList( AxisAlignedBB.fromBounds( 0.0, 0, 0.0, 1.0, 1.0, 1.0 ) );
+		return Collections.singletonList( new AxisAlignedBB( 0.0, 0, 0.0, 1.0, 1.0, 1.0 ) );
 	}
 
 	@Override

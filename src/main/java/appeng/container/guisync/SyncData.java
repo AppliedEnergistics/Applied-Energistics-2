@@ -24,7 +24,7 @@ import java.lang.reflect.Field;
 import java.util.EnumSet;
 
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.inventory.ICrafting;
+import net.minecraft.inventory.IContainerListener;
 
 import appeng.container.AEBaseContainer;
 import appeng.core.AELog;
@@ -54,7 +54,7 @@ public class SyncData
 		return this.channel;
 	}
 
-	public void tick( final ICrafting c )
+	public void tick( final IContainerListener c )
 	{
 		try
 		{
@@ -82,7 +82,7 @@ public class SyncData
 		}
 	}
 
-	private void send( final ICrafting o, final Object val ) throws IOException
+	private void send( final IContainerListener o, final Object val ) throws IOException
 	{
 		if( val instanceof String )
 		{

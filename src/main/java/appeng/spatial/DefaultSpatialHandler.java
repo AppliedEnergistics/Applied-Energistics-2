@@ -20,7 +20,7 @@ package appeng.spatial;
 
 
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 
@@ -55,6 +55,7 @@ public class DefaultSpatialHandler implements IMovableHandler
 		if( c.isLoaded() )
 		{
 			w.addTileEntity( te );
+			//TODO 1.9.4 - markBlockForUpdate => ?
 			w.markBlockForUpdate( newPosition );
 		}
 	}

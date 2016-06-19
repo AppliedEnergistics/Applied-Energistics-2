@@ -23,6 +23,7 @@ import java.util.Random;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.IChunkGenerator;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraftforge.fml.common.IWorldGenerator;
 
@@ -39,7 +40,7 @@ import appeng.worldgen.meteorite.ChunkOnly;
 public final class MeteoriteWorldGen implements IWorldGenerator
 {
 	@Override
-	public void generate( final Random r, final int chunkX, final int chunkZ, final World w, final IChunkProvider chunkGenerator, final IChunkProvider chunkProvider )
+	public void generate( final Random r, final int chunkX, final int chunkZ, final World w, final IChunkGenerator chunkGenerator, final IChunkProvider chunkProvider )
 	{
 		if( WorldGenRegistry.INSTANCE.isWorldGenEnabled( WorldGenType.Meteorites, w ) )
 		{
@@ -78,14 +79,14 @@ public final class MeteoriteWorldGen implements IWorldGenerator
 				{
 					for( int cz = pz - 6; cz < pz + 6; cz++ )
 					{
-						if( w.getChunkProvider().chunkExists( cx, cz ) )
+						if( w.getChunkProvider().getLoadedChunk( cx, cz ) != null)
 						{
 							if( px == cx && pz == cz )
 							{
 								continue;
 							}
 
-							if( WorldData.instance().spawnData().hasGenerated( w.provider.getDimensionId(), cx, cz ) )
+							if( WorldData.instance().spawnData().hasGenerated( w.provider.getDimension(), cx, cz ) )
 							{
 								final MeteoritePlacer mp2 = new MeteoritePlacer();
 								mp2.spawnMeteorite( new ChunkOnly( w, cx, cz ), mp.getSettings() );
@@ -109,7 +110,7 @@ public final class MeteoriteWorldGen implements IWorldGenerator
 
 	private Iterable<NBTTagCompound> getNearByMeteorites( final World w, final int chunkX, final int chunkZ )
 	{
-		return WorldData.instance().spawnData().getNearByMeteorites( w.provider.getDimensionId(), chunkX, chunkZ );
+		return WorldData.instance().spawnData().getNearByMeteorites( w.provider.getDimension(), chunkX, chunkZ );
 	}
 
 	private class MeteoriteSpawn implements IWorldCallable<Object>
@@ -150,7 +151,7 @@ public final class MeteoriteWorldGen implements IWorldGenerator
 				MeteoriteWorldGen.this.tryMeteorite( world, this.depth, this.x, this.z );
 			}
 
-			WorldData.instance().spawnData().setGenerated( world.provider.getDimensionId(), chunkX, chunkZ );
+			WorldData.instance().spawnData().setGenerated( world.provider.getDimension(), chunkX, chunkZ );
 			WorldData.instance().compassData().service().updateArea( world, chunkX, chunkZ );
 
 			return null;

@@ -28,7 +28,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.util.text.ITextComponent;
 
 import appeng.tile.AEBaseTile;
 
@@ -42,7 +42,7 @@ public class TileItemGen extends AEBaseTile implements IInventory
 	{
 		if( POSSIBLE_ITEMS.isEmpty() )
 		{
-			for( final Object obj : Item.itemRegistry )
+			for( final Object obj : Item.REGISTRY )
 			{
 				final Item mi = (Item) obj;
 				if( mi != null )
@@ -147,7 +147,7 @@ public class TileItemGen extends AEBaseTile implements IInventory
 	}
 
 	@Override
-	public IChatComponent getDisplayName()
+	public ITextComponent getDisplayName()
 	{
 		return null;
 	}

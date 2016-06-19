@@ -27,8 +27,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -92,16 +92,16 @@ public class PacketTransitionEffect extends AppEngPacket
 		{
 			if( CommonHelper.proxy.shouldAddParticles( Platform.getRandom() ) )
 			{
-				final EnergyFx fx = new EnergyFx( world, this.x + ( this.mode ? ( Platform.getRandomInt() % 100 ) * 0.01 : ( Platform.getRandomInt() % 100 ) * 0.005 - 0.25 ), this.y + ( this.mode ? ( Platform.getRandomInt() % 100 ) * 0.01 : ( Platform.getRandomInt() % 100 ) * 0.005 - 0.25 ), this.z + ( this.mode ? ( Platform.getRandomInt() % 100 ) * 0.01 : ( Platform.getRandomInt() % 100 ) * 0.005 - 0.25 ), Items.diamond );
+				final EnergyFx fx = new EnergyFx( world, this.x + ( this.mode ? ( Platform.getRandomInt() % 100 ) * 0.01 : ( Platform.getRandomInt() % 100 ) * 0.005 - 0.25 ), this.y + ( this.mode ? ( Platform.getRandomInt() % 100 ) * 0.01 : ( Platform.getRandomInt() % 100 ) * 0.005 - 0.25 ), this.z + ( this.mode ? ( Platform.getRandomInt() % 100 ) * 0.01 : ( Platform.getRandomInt() % 100 ) * 0.005 - 0.25 ), Items.DIAMOND );
 
 				if( !this.mode )
 				{
 					fx.fromItem( this.d );
 				}
 
-				fx.motionX = -0.1 * this.d.xOffset;
-				fx.motionY = -0.1 * this.d.yOffset;
-				fx.motionZ = -0.1 * this.d.zOffset;
+				fx.setMotionX( -0.1f * this.d.xOffset);
+				fx.setMotionY( -0.1f * this.d.yOffset);
+				fx.setMotionZ( -0.1f * this.d.zOffset);
 
 				Minecraft.getMinecraft().effectRenderer.addEffect( fx );
 			}
@@ -111,7 +111,7 @@ public class PacketTransitionEffect extends AppEngPacket
 		{
 			final Block block = world.getBlockState( new BlockPos( (int) this.x, (int) this.y, (int) this.z ) ).getBlock();
 
-			Minecraft.getMinecraft().getSoundHandler().playSound( new PositionedSoundRecord( new ResourceLocation( block.stepSound.getBreakSound() ), ( block.stepSound.getVolume() + 1.0F ) / 2.0F, block.stepSound.getFrequency() * 0.8F, (float) this.x + 0.5F, (float) this.y + 0.5F, (float) this.z + 0.5F ) );
+			Minecraft.getMinecraft().getSoundHandler().playSound( new PositionedSoundRecord( block.getSoundType().getBreakSound(), SoundCategory.BLOCKS, ( block.getSoundType().getVolume() + 1.0F ) / 2.0F, block.getSoundType().getPitch() * 0.8F, (float) this.x + 0.5F, (float) this.y + 0.5F, (float) this.z + 0.5F ) );
 		}
 	}
 }

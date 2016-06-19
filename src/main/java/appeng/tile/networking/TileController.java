@@ -23,8 +23,8 @@ import java.util.EnumSet;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.GridFlags;
@@ -219,7 +219,7 @@ public class TileController extends AENetworkPowerTile
 	private boolean checkController( final BlockPos pos )
 	{
 		final BlockPos ownPos = this.getPos();
-		if( this.worldObj.getChunkProvider().chunkExists( ownPos.getX() >> 4, ownPos.getZ() >> 4 ) )
+		if( this.worldObj.getChunkProvider().getLoadedChunk( ownPos.getX() >> 4, ownPos.getZ() >> 4 ) != null )
 		{
 			return this.worldObj.getTileEntity( pos ) instanceof TileController;
 		}

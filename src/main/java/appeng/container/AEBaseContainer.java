@@ -33,7 +33,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
-import net.minecraft.inventory.ICrafting;
+import net.minecraft.inventory.IContainerListener;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -438,13 +438,13 @@ public abstract class AEBaseContainer extends Container
 
 		if( Platform.isServer() )
 		{
-			for( final Object crafter : this.crafters )
+			for( final Object crafter : this.listeners )
 			{
-				final ICrafting icrafting = (ICrafting) crafter;
+				final IContainerListener IContainerListener = (IContainerListener) crafter;
 
 				for( final SyncData sd : this.syncData.values() )
 				{
-					sd.tick( icrafting );
+					sd.tick( IContainerListener );
 				}
 			}
 		}

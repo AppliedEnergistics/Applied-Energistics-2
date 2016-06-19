@@ -27,9 +27,9 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityHanging;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.Teleporter;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
@@ -88,16 +88,18 @@ public class StorageHelper
 			return entity;
 		}
 
+		//TODO 1.9.4 - Multiple passangers & cell transfers. Take a look at portals.
+		
 		// Is something riding? Handle it first.
-		if( entity.riddenByEntity != null )
+		if( entity.isBeingRidden() )
 		{
 			return this.teleportEntity( entity.riddenByEntity, link );
 		}
 		// Are we riding something? Dismount and tell the mount to go first.
-		Entity cart = entity.ridingEntity;
+		Entity cart = entity.getRidingEntity();
 		if( cart != null )
 		{
-			entity.mountEntity( null );
+			entity.dismountRidingEntity();
 			cart = this.teleportEntity( cart, link );
 			// We keep track of both so we can remount them on the other side.
 		}
@@ -115,10 +117,11 @@ public class StorageHelper
 					Achievements.SpatialIOExplorer.addToPlayer( player );
 				}
 
-				player.mcServer.getConfigurationManager().transferPlayerToDimension( player, link.dim.provider.getDimensionId(), new METeleporter( newWorld, link ) );
+				player.mcServer.getPlayerList().transferPlayerToDimension( player, link.dim.provider.getDimension(), new METeleporter( newWorld, link ) );
 			}
 			else
 			{
+				//TODO 1.9.4 - Whole entity transfer part, we now have changeDimension method. Evaluate it and remove this s...
 				final int entX = entity.chunkCoordX;
 				final int entZ = entity.chunkCoordZ;
 
@@ -142,7 +145,7 @@ public class StorageHelper
 					}
 
 					newEntity.copyDataFromOld( entity );
-					newEntity.dimension = newWorld.provider.getDimensionId();
+					newEntity.dimension = newWorld.provider.getDimension();
 					newEntity.forceSpawn = true;
 
 					entity.isDead = true;
@@ -169,7 +172,7 @@ public class StorageHelper
 				entity.worldObj.updateEntityWithOptionalForce( entity, true );
 			}
 
-			entity.mountEntity( cart );
+			entity.startRiding( cart, false );
 		}
 
 		return entity;
@@ -214,9 +217,9 @@ public class StorageHelper
 			this.transverseEdges( i - 1, j - 1, k - 1, i + scaleX + 1, j + scaleY + 1, k + scaleZ + 1, new WrapInMatrixFrame( matrixFrameBlock.getDefaultState(), dst ) );
 		}
 
-		final AxisAlignedBB srcBox = AxisAlignedBB.fromBounds( x, y, z, x + scaleX + 1, y + scaleY + 1, z + scaleZ + 1 );
+		final AxisAlignedBB srcBox = new AxisAlignedBB( x, y, z, x + scaleX + 1, y + scaleY + 1, z + scaleZ + 1 );
 
-		final AxisAlignedBB dstBox = AxisAlignedBB.fromBounds( i, j, k, i + scaleX + 1, j + scaleY + 1, k + scaleZ + 1 );
+		final AxisAlignedBB dstBox = new AxisAlignedBB( i, j, k, i + scaleX + 1, j + scaleY + 1, k + scaleZ + 1 );
 
 		final CachedPlane cDst = new CachedPlane( dst, i, j, k, i + scaleX, j + scaleY, k + scaleZ );
 		final CachedPlane cSrc = new CachedPlane( src, x, y, z, x + scaleX, y + scaleY, z + scaleZ );
@@ -276,7 +279,7 @@ public class StorageHelper
 		public void visit( final BlockPos pos )
 		{
 			final Block blk = this.dst.getBlockState( pos ).getBlock();
-			blk.onNeighborBlockChange( this.dst, pos, Platform.AIR_BLOCK.getDefaultState(), Platform.AIR_BLOCK );
+			blk.neighborChanged( Platform.AIR_BLOCK.getDefaultState(), this.dst, pos, Platform.AIR_BLOCK );
 		}
 	}
 

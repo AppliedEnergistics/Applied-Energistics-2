@@ -35,7 +35,7 @@ public class SharedSearchObject
 
 	public SharedSearchObject( final Item itemID, final int damageValue, final NBTTagCompound tagCompound )
 	{
-		this.def = ( damageValue << Platform.DEF_OFFSET ) | Item.itemRegistry.getIDForObject( itemID );
+		this.def = ( damageValue << Platform.DEF_OFFSET ) | Item.REGISTRY.getIDForObject( itemID );
 		this.hash = Platform.NBTOrderlessHash( tagCompound );
 		this.setCompound( tagCompound );
 	}

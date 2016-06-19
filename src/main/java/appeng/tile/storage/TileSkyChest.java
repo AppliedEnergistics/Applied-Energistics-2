@@ -22,9 +22,11 @@ package appeng.tile.storage;
 import io.netty.buffer.ByteBuf;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.SoundCategory;
 
 import appeng.tile.AEBaseInvTile;
 import appeng.tile.TileEvent;
@@ -89,7 +91,7 @@ public class TileSkyChest extends AEBaseInvTile
 
 		if( this.getPlayerOpen() == 1 )
 		{
-			this.getWorld().playSoundEffect( this.pos.getX() + 0.5D, this.pos.getY() + 0.5D, this.pos.getZ() + 0.5D, "random.chestopen", 0.5F, this.getWorld().rand.nextFloat() * 0.1F + 0.9F );
+			this.getWorld().playSound( player, this.pos.getX() + 0.5D, this.pos.getY() + 0.5D, this.pos.getZ() + 0.5D, SoundEvents.BLOCK_CHEST_OPEN, SoundCategory.BLOCKS, 0.5F, this.getWorld().rand.nextFloat() * 0.1F + 0.9F );
 			this.markForUpdate();
 		}
 	}
@@ -111,7 +113,7 @@ public class TileSkyChest extends AEBaseInvTile
 
 		if( this.getPlayerOpen() == 0 )
 		{
-			this.getWorld().playSoundEffect( this.pos.getX() + 0.5D, this.pos.getY() + 0.5D, this.pos.getZ() + 0.5D, "random.chestclosed", 0.5F, this.getWorld().rand.nextFloat() * 0.1F + 0.9F );
+			this.getWorld().playSound( player, this.pos.getX() + 0.5D, this.pos.getY() + 0.5D, this.pos.getZ() + 0.5D, SoundEvents.BLOCK_CHEST_CLOSE, SoundCategory.BLOCKS, 0.5F, this.getWorld().rand.nextFloat() * 0.1F + 0.9F );
 			this.markForUpdate();
 		}
 	}

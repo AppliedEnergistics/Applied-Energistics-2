@@ -35,10 +35,10 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -401,7 +401,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 	}
 
 	@Override
-	public SelectedPart selectPart( final Vec3 pos )
+	public SelectedPart selectPart( final Vec3d pos )
 	{
 		for( final AEPartLocation side : AEPartLocation.values() )
 		{
@@ -802,7 +802,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 	}
 
 	@Override
-	public boolean activate( final EntityPlayer player, final Vec3 pos )
+	public boolean activate( final EntityPlayer player, final Vec3d pos )
 	{
 		final SelectedPart p = this.selectPart( pos );
 		if( p != null && p.part != null )

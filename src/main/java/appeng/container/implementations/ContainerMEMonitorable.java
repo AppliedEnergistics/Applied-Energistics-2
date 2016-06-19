@@ -27,7 +27,7 @@ import javax.annotation.Nonnull;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.ICrafting;
+import net.minecraft.inventory.IContainerListener;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 
@@ -186,7 +186,7 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 				if( sideLocal != sideRemote )
 				{
 					this.clientCM.putSetting( set, sideLocal );
-					for( final Object crafter : this.crafters )
+					for( final Object crafter : this.listeners )
 					{
 						try
 						{
@@ -226,7 +226,7 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 					{
 						this.items.resetStatus();
 
-						for( final Object c : this.crafters )
+						for( final Object c : this.listeners )
 						{
 							if( c instanceof EntityPlayer )
 							{
@@ -300,15 +300,16 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 		super.onUpdate( field, oldValue, newValue );
 	}
 
+	//TODO 1.9.4 - onCraftGuiOpened => ?
 	@Override
-	public void onCraftGuiOpened( final ICrafting c )
+	public void onCraftGuiOpened( final IContainerListener c )
 	{
 		super.onCraftGuiOpened( c );
 
 		this.queueInventory( c );
 	}
 
-	private void queueInventory( final ICrafting c )
+	private void queueInventory( final IContainerListener c )
 	{
 		if( Platform.isServer() && c instanceof EntityPlayer && this.monitor != null )
 		{
@@ -340,13 +341,13 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 			}
 		}
 	}
-
+	
 	@Override
-	public void removeCraftingFromCrafters( final ICrafting c )
+	public void removeListener( final IContainerListener c )
 	{
-		super.removeCraftingFromCrafters( c );
+		super.removeListener( c );
 
-		if( this.crafters.isEmpty() && this.monitor != null )
+		if( this.listeners.isEmpty() && this.monitor != null )
 		{
 			this.monitor.removeListener( this );
 		}
@@ -380,13 +381,9 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 	@Override
 	public void onListUpdate()
 	{
-		for( final Object c : this.crafters )
+		for( final IContainerListener c : this.listeners )
 		{
-			if( c instanceof ICrafting )
-			{
-				final ICrafting cr = (ICrafting) c;
-				this.queueInventory( cr );
-			}
+			this.queueInventory( c );
 		}
 	}
 

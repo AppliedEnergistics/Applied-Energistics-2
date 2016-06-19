@@ -25,8 +25,8 @@ import java.util.Random;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.SidedProxy;
 
@@ -58,7 +58,7 @@ public abstract class CommonHelper
 
 	public abstract boolean shouldAddParticles( Random r );
 
-	public abstract MovingObjectPosition getMOP();
+	public abstract RayTraceResult getRTR();
 
 	public abstract void doRenderItem( ItemStack itemstack, World w );
 

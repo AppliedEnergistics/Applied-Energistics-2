@@ -73,6 +73,6 @@ public final class CreativeTab extends CreativeTabs
 			}
 		}
 
-		return new ItemStack( Blocks.chest );
+		return new ItemStack( Blocks.CHEST );
 	}
 }

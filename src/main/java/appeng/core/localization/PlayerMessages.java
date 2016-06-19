@@ -19,8 +19,8 @@
 package appeng.core.localization;
 
 
-import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentTranslation;
 
 
 public enum PlayerMessages
@@ -42,9 +42,9 @@ public enum PlayerMessages
 	StationCanNotBeLocated,
 	SettingCleared, ;
 
-	public IChatComponent get()
+	public ITextComponent get()
 	{
-		return new ChatComponentTranslation( this.getName() );
+		return new TextComponentTranslation( this.getName() );
 	}
 
 	String getName()

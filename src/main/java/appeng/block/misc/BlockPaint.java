@@ -30,9 +30,9 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.EnumWorldBlockLayer;
+import net.minecraft.util.BlockRenderLayer;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -51,7 +51,7 @@ public class BlockPaint extends AEBaseTileBlock
 
 	public BlockPaint()
 	{
-		super( new MaterialLiquid( MapColor.airColor ) );
+		super( new MaterialLiquid( MapColor.AIR ) );
 
 		this.setTileEntity( TilePaint.class );
 		this.setLightOpacity( 0 );
@@ -61,9 +61,9 @@ public class BlockPaint extends AEBaseTileBlock
 	}
 
 	@Override
-	public EnumWorldBlockLayer getBlockLayer()
+	public BlockRenderLayer getBlockLayer()
 	{
-		return EnumWorldBlockLayer.CUTOUT;
+		return BlockRenderLayer.CUTOUT;
 	}
 
 	@Override
@@ -80,7 +80,7 @@ public class BlockPaint extends AEBaseTileBlock
 	}
 
 	@Override
-	public AxisAlignedBB getCollisionBoundingBox( final World worldIn, final BlockPos pos, final IBlockState state )
+	public AxisAlignedBB getCollisionBoundingBox( final IBlockState state, final World worldIn, final BlockPos pos )
 	{
 		return null;
 	}
@@ -92,13 +92,13 @@ public class BlockPaint extends AEBaseTileBlock
 	}
 
 	@Override
-	public void onNeighborBlockChange( final World w, final BlockPos pos, final IBlockState state, final Block neighborBlock )
+	public void neighborChanged( final IBlockState state, final World w, final BlockPos pos, final Block neighborBlock )
 	{
 		final TilePaint tp = this.getTileEntity( w, pos );
 
 		if( tp != null )
 		{
-			tp.onNeighborBlockChange();
+			tp.neighborChanged();
 		}
 	}
 
@@ -124,7 +124,7 @@ public class BlockPaint extends AEBaseTileBlock
 	}
 
 	@Override
-	public int getLightValue( final IBlockAccess w, final BlockPos pos )
+	public int getLightValue( final IBlockState state, final IBlockAccess w, final BlockPos pos )
 	{
 		final TilePaint tp = this.getTileEntity( w, pos );
 
@@ -137,13 +137,13 @@ public class BlockPaint extends AEBaseTileBlock
 	}
 
 	@Override
-	public boolean isAir( final IBlockAccess world, final BlockPos pos )
+	public boolean isAir( final IBlockState state, final IBlockAccess world, final BlockPos pos )
 	{
 		return true;
 	}
 
 	@Override
-	public boolean isReplaceable( final World worldIn, final BlockPos pos )
+	public boolean isReplaceable( final IBlockAccess worldIn, final BlockPos pos )
 	{
 		return true;
 	}

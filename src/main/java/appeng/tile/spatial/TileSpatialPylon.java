@@ -84,7 +84,7 @@ public class TileSpatialPylon extends AENetworkTile implements IAEMultiBlock
 	public void onReady()
 	{
 		super.onReady();
-		this.onNeighborBlockChange();
+		this.neighborChanged();
 	}
 
 	@Override
@@ -94,7 +94,7 @@ public class TileSpatialPylon extends AENetworkTile implements IAEMultiBlock
 		super.invalidate();
 	}
 
-	public void onNeighborBlockChange()
+	public void neighborChanged()
 	{
 		this.calc.calculateMultiblock( this.worldObj, this.getLocation() );
 	}

@@ -27,8 +27,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 
 import appeng.api.implementations.IPowerChannelState;
 import appeng.api.implementations.parts.IPartMonitor;
@@ -189,7 +189,7 @@ public abstract class AbstractPartReporting extends AEBasePart implements IPartM
 	}
 
 	@Override
-	public boolean onPartActivate( final EntityPlayer player, final Vec3 pos )
+	public boolean onPartActivate( final EntityPlayer player, final Vec3d pos )
 	{
 		final TileEntity te = this.getTile();
 

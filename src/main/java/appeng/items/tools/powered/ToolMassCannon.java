@@ -26,6 +26,7 @@ import com.google.common.base.Optional;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDispenser;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
@@ -34,13 +35,15 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.MovingObjectPosition.MovingObjectType;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 import appeng.api.AEApi;
@@ -92,7 +95,7 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 	public void postInit()
 	{
 		super.postInit();
-		BlockDispenser.dispenseBehaviorRegistry.putObject( this, new DispenserMatterCannon() );
+		BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject( this, new DispenserMatterCannon() );
 	}
 
 	@Override
@@ -114,7 +117,7 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 	}
 
 	@Override
-	public ItemStack onItemRightClick( final ItemStack item, final World w, final EntityPlayer p )
+	public ActionResult<ItemStack> onItemRightClick( final ItemStack item, final World w, final EntityPlayer p, final EnumHand hand )
 	{
 		if( this.getAECurrentPower( item ) > 1600 )
 		{
@@ -140,33 +143,33 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 
 						if( Platform.isClient() )
 						{
-							return item;
+							return new ActionResult<ItemStack>( EnumActionResult.SUCCESS, item );
 						}
 
 						aeAmmo.setStackSize( 1 );
 						final ItemStack ammo = ( (IAEItemStack) aeAmmo ).getItemStack();
 						if( ammo == null )
 						{
-							return item;
+							return new ActionResult<ItemStack>( EnumActionResult.SUCCESS, item );
 						}
 
 						ammo.stackSize = 1;
 						aeAmmo = inv.extractItems( aeAmmo, Actionable.MODULATE, new PlayerSource( p, null ) );
 						if( aeAmmo == null )
 						{
-							return item;
+							return new ActionResult<ItemStack>( EnumActionResult.SUCCESS, item );
 						}
 
 						final LookDirection dir = Platform.getPlayerRay( p, p.getEyeHeight() );
 
-						final Vec3 vec3 = dir.getA();
-						final Vec3 vec31 = dir.getB();
-						final Vec3 direction = vec31.subtract( vec3 );
+						final Vec3d Vec3d = dir.getA();
+						final Vec3d Vec3d1 = dir.getB();
+						final Vec3d direction = Vec3d1.subtract( Vec3d );
 						direction.normalize();
 
-						final double d0 = vec3.xCoord;
-						final double d1 = vec3.yCoord;
-						final double d2 = vec3.zCoord;
+						final double d0 = Vec3d.xCoord;
+						final double d1 = Vec3d.yCoord;
+						final double d2 = Vec3d.zCoord;
 
 						final float penetration = AEApi.instance().registries().matterCannon().getPenetration( ammo ); // 196.96655f;
 						if( penetration <= 0 )
@@ -174,13 +177,13 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 							final ItemStack type = ( (IAEItemStack) aeAmmo ).getItemStack();
 							if( type.getItem() instanceof ItemPaintBall )
 							{
-								this.shootPaintBalls( type, w, p, vec3, vec31, direction, d0, d1, d2 );
+								this.shootPaintBalls( type, w, p, Vec3d, Vec3d1, direction, d0, d1, d2 );
 							}
-							return item;
+							return new ActionResult<ItemStack>( EnumActionResult.SUCCESS, item );
 						}
 						else
 						{
-							this.standardAmmo( penetration, w, p, vec3, vec31, direction, d0, d1, d2 );
+							this.standardAmmo( penetration, w, p, Vec3d, Vec3d1, direction, d0, d1, d2 );
 						}
 					}
 				}
@@ -190,16 +193,16 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 					{
 						p.addChatMessage( PlayerMessages.AmmoDepleted.get() );
 					}
-					return item;
+					return new ActionResult<ItemStack>( EnumActionResult.SUCCESS, item );
 				}
 			}
 		}
-		return item;
+		return new ActionResult<ItemStack>( EnumActionResult.FAIL, item );
 	}
 
-	private void shootPaintBalls( final ItemStack type, final World w, final EntityPlayer p, final Vec3 vec3, final Vec3 vec31, final Vec3 direction, final double d0, final double d1, final double d2 )
+	private void shootPaintBalls( final ItemStack type, final World w, final EntityPlayer p, final Vec3d Vec3d, final Vec3d Vec3d1, final Vec3d direction, final double d0, final double d1, final double d2 )
 	{
-		final AxisAlignedBB bb = AxisAlignedBB.fromBounds( Math.min( vec3.xCoord, vec31.xCoord ), Math.min( vec3.yCoord, vec31.yCoord ), Math.min( vec3.zCoord, vec31.zCoord ), Math.max( vec3.xCoord, vec31.xCoord ), Math.max( vec3.yCoord, vec31.yCoord ), Math.max( vec3.zCoord, vec31.zCoord ) ).expand( 16, 16, 16 );
+		final AxisAlignedBB bb = new AxisAlignedBB( Math.min( Vec3d.xCoord, Vec3d1.xCoord ), Math.min( Vec3d.yCoord, Vec3d1.yCoord ), Math.min( Vec3d.zCoord, Vec3d1.zCoord ), Math.max( Vec3d.xCoord, Vec3d1.xCoord ), Math.max( Vec3d.yCoord, Vec3d1.yCoord ), Math.max( Vec3d.zCoord, Vec3d1.zCoord ) ).expand( 16, 16, 16 );
 
 		Entity entity = null;
 		final List list = w.getEntitiesWithinAABBExcludingEntity( p, bb );
@@ -214,7 +217,7 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 				if( entity1.isEntityAlive() )
 				{
 					// prevent killing / flying of mounts.
-					if( entity1.riddenByEntity == p )
+					if( entity1.isRidingOrBeingRiddenBy( p ) )
 					{
 						continue;
 					}
@@ -222,11 +225,11 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 					final float f1 = 0.3F;
 
 					final AxisAlignedBB boundingBox = entity1.getEntityBoundingBox().expand( f1, f1, f1 );
-					final MovingObjectPosition movingObjectPosition = boundingBox.calculateIntercept( vec3, vec31 );
+					final RayTraceResult RayTraceResult = boundingBox.calculateIntercept( Vec3d, Vec3d1 );
 
-					if( movingObjectPosition != null )
+					if( RayTraceResult != null )
 					{
-						final double nd = vec3.squareDistanceTo( movingObjectPosition.hitVec );
+						final double nd = Vec3d.squareDistanceTo( RayTraceResult.hitVec );
 
 						if( nd < closest )
 						{
@@ -238,16 +241,16 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 			}
 		}
 
-		MovingObjectPosition pos = w.rayTraceBlocks( vec3, vec31, false );
+		RayTraceResult pos = w.rayTraceBlocks( Vec3d, Vec3d1, false );
 
-		final Vec3 vec = new Vec3( d0, d1, d2 );
+		final Vec3d vec = new Vec3d( d0, d1, d2 );
 		if( entity != null && pos != null && pos.hitVec.squareDistanceTo( vec ) > closest )
 		{
-			pos = new MovingObjectPosition( entity );
+			pos = new RayTraceResult( entity );
 		}
 		else if( entity != null && pos == null )
 		{
-			pos = new MovingObjectPosition( entity );
+			pos = new RayTraceResult( entity );
 		}
 
 		try
@@ -266,7 +269,7 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 			final AEColor col = ipb.getColor( type );
 			// boolean lit = ipb.isLumen( type );
 
-			if( pos.typeOfHit == MovingObjectType.ENTITY )
+			if( pos.typeOfHit == RayTraceResult.Type.ENTITY )
 			{
 				final int id = pos.entityHit.getEntityId();
 				final PlayerColor marker = new PlayerColor( id, col, 20 * 30 );
@@ -281,7 +284,7 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 				pos.entityHit.attackEntityFrom( DamageSource.causePlayerDamage( p ), 0 );
 				NetworkHandler.instance.sendToAll( marker.getPacket() );
 			}
-			else if( pos.typeOfHit == MovingObjectType.BLOCK )
+			else if( pos.typeOfHit == RayTraceResult.Type.BLOCK )
 			{
 				final EnumFacing side = pos.sideHit;
 				final BlockPos hitPos = pos.getBlockPos().offset( side );
@@ -303,21 +306,21 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 				final TileEntity te = w.getTileEntity( hitPos );
 				if( te instanceof TilePaint )
 				{
-					final Vec3 hp = pos.hitVec.subtract( hitPos.getX(), hitPos.getY(), hitPos.getZ() );
+					final Vec3d hp = pos.hitVec.subtract( hitPos.getX(), hitPos.getY(), hitPos.getZ() );
 					( (TilePaint) te ).addBlot( type, side.getOpposite(), hp );
 				}
 			}
 		}
 	}
 
-	private void standardAmmo( float penetration, final World w, final EntityPlayer p, final Vec3 vec3, final Vec3 vec31, final Vec3 direction, final double d0, final double d1, final double d2 )
+	private void standardAmmo( float penetration, final World w, final EntityPlayer p, final Vec3d Vec3d, final Vec3d Vec3d1, final Vec3d direction, final double d0, final double d1, final double d2 )
 	{
 		boolean hasDestroyed = true;
 		while( penetration > 0 && hasDestroyed )
 		{
 			hasDestroyed = false;
 
-			final AxisAlignedBB bb = AxisAlignedBB.fromBounds( Math.min( vec3.xCoord, vec31.xCoord ), Math.min( vec3.yCoord, vec31.yCoord ), Math.min( vec3.zCoord, vec31.zCoord ), Math.max( vec3.xCoord, vec31.xCoord ), Math.max( vec3.yCoord, vec31.yCoord ), Math.max( vec3.zCoord, vec31.zCoord ) ).expand( 16, 16, 16 );
+			final AxisAlignedBB bb = new AxisAlignedBB( Math.min( Vec3d.xCoord, Vec3d1.xCoord ), Math.min( Vec3d.yCoord, Vec3d1.yCoord ), Math.min( Vec3d.zCoord, Vec3d1.zCoord ), Math.max( Vec3d.xCoord, Vec3d1.xCoord ), Math.max( Vec3d.yCoord, Vec3d1.yCoord ), Math.max( Vec3d.zCoord, Vec3d1.zCoord ) ).expand( 16, 16, 16 );
 
 			Entity entity = null;
 			final List list = w.getEntitiesWithinAABBExcludingEntity( p, bb );
@@ -332,7 +335,7 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 					if( entity1.isEntityAlive() )
 					{
 						// prevent killing / flying of mounts.
-						if( entity1.riddenByEntity == p )
+						if( entity1.isRidingOrBeingRiddenBy( p ) )
 						{
 							continue;
 						}
@@ -340,11 +343,11 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 						final float f1 = 0.3F;
 
 						final AxisAlignedBB boundingBox = entity1.getEntityBoundingBox().expand( f1, f1, f1 );
-						final MovingObjectPosition movingObjectPosition = boundingBox.calculateIntercept( vec3, vec31 );
+						final RayTraceResult RayTraceResult = boundingBox.calculateIntercept( Vec3d, Vec3d1 );
 
-						if( movingObjectPosition != null )
+						if( RayTraceResult != null )
 						{
-							final double nd = vec3.squareDistanceTo( movingObjectPosition.hitVec );
+							final double nd = Vec3d.squareDistanceTo( RayTraceResult.hitVec );
 
 							if( nd < closest )
 							{
@@ -356,15 +359,15 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 				}
 			}
 
-			final Vec3 vec = new Vec3( d0, d1, d2 );
-			MovingObjectPosition pos = w.rayTraceBlocks( vec3, vec31, true );
+			final Vec3d vec = new Vec3d( d0, d1, d2 );
+			RayTraceResult pos = w.rayTraceBlocks( Vec3d, Vec3d1, true );
 			if( entity != null && pos != null && pos.hitVec.squareDistanceTo( vec ) > closest )
 			{
-				pos = new MovingObjectPosition( entity );
+				pos = new RayTraceResult( entity );
 			}
 			else if( entity != null && pos == null )
 			{
-				pos = new MovingObjectPosition( entity );
+				pos = new RayTraceResult( entity );
 			}
 
 			try
@@ -381,7 +384,7 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 				final DamageSource dmgSrc = DamageSource.causePlayerDamage( p );
 				dmgSrc.damageType = "masscannon";
 
-				if( pos.typeOfHit == MovingObjectType.ENTITY )
+				if( pos.typeOfHit == RayTraceResult.Type.ENTITY )
 				{
 					final int dmg = (int) Math.ceil( penetration / 20.0f );
 					if( pos.entityHit instanceof EntityLivingBase )
@@ -389,8 +392,8 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 						final EntityLivingBase el = (EntityLivingBase) pos.entityHit;
 						penetration -= dmg;
 						el.knockBack( p, 0, -direction.xCoord, -direction.zCoord );
-						// el.knockBack( p, 0, vec3.xCoord,
-						// vec3.zCoord );
+						// el.knockBack( p, 0, Vec3d.xCoord,
+						// Vec3d.zCoord );
 						el.attackEntityFrom( dmgSrc, dmg );
 						if( !el.isEntityAlive() )
 						{
@@ -407,7 +410,7 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 						hasDestroyed = true;
 					}
 				}
-				else if( pos.typeOfHit == MovingObjectType.BLOCK )
+				else if( pos.typeOfHit == RayTraceResult.Type.BLOCK )
 				{
 					if( !AEConfig.instance.isFeatureEnabled( AEFeature.MassCannonBlockDamage ) )
 					{
@@ -415,11 +418,11 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 					}
 					else
 					{
-						final Block b = w.getBlockState( pos.getBlockPos() ).getBlock();
+						final IBlockState bs = w.getBlockState( pos.getBlockPos() );
 						// int meta = w.getBlockMetadata(
 						// pos.blockX, pos.blockY, pos.blockZ );
 
-						final float hardness = b.getBlockHardness( w, pos.getBlockPos() ) * 9.0f;
+						final float hardness = bs.getBlockHardness( w, pos.getBlockPos() ) * 9.0f;
 						if( hardness >= 0.0 )
 						{
 							if( penetration > hardness && Platform.hasPermissions( new DimensionalCoord( w, pos.getBlockPos() ), p ) )

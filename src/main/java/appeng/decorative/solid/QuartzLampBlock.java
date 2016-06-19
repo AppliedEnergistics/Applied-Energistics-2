@@ -24,7 +24,7 @@ import java.util.Random;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import appeng.client.render.effects.VibrantFX;
@@ -44,7 +44,7 @@ public class QuartzLampBlock extends QuartzGlassBlock
 	}
 
 	@Override
-	public void randomDisplayTick( final World w, final BlockPos pos, final IBlockState state, final Random r )
+	public void randomDisplayTick( final IBlockState state, final World w, final BlockPos pos, final Random r )
 	{
 		if( !AEConfig.instance.enableEffects )
 		{

@@ -40,11 +40,10 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.network.Packet;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import appeng.api.implementations.tiles.ISegmentedInventory;
@@ -160,7 +159,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 
 	@Override
 	// NOTE: WAS FINAL, changed for Immibis
-	public final void writeToNBT( final NBTTagCompound data )
+	public final NBTTagCompound writeToNBT( final NBTTagCompound data )
 	{
 		super.writeToNBT( data );
 
@@ -179,6 +178,8 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 		{
 			h.writeToNBT( this, data );
 		}
+
+		return data;
 	}
 
 	public final void update()
@@ -188,9 +189,9 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 			h.tick( this );
 		}
 	}
-
+	
 	@Override
-	public Packet getDescriptionPacket()
+	public SPacketUpdateTileEntity getUpdatePacket()
 	{
 		final NBTTagCompound data = new NBTTagCompound();
 
@@ -211,7 +212,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 
 		stream.capacity( stream.readableBytes() );
 		data.setByteArray( "X", stream.array() );
-		return new S35PacketUpdateTileEntity( this.pos, 64, data );
+		return new SPacketUpdateTileEntity( this.pos, 64, data );
 	}
 
 	private boolean hasHandlerFor( final TileEventType type )
@@ -222,7 +223,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	}
 
 	@Override
-	public void onDataPacket( final NetworkManager net, final S35PacketUpdateTileEntity pkt )
+	public void onDataPacket( final NetworkManager net, final SPacketUpdateTileEntity pkt )
 	{
 		// / pkt.actionType
 		if( pkt.getTileEntityType() == 64 )
@@ -298,6 +299,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 			if( this.worldObj != null )
 			{
 				AELog.blockUpdate( this.pos, this );
+				//TODO 1.9.4 - markBlockForUpdate => ?
 				this.worldObj.markBlockForUpdate( this.pos );
 			}
 		}

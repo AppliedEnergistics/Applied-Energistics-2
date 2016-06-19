@@ -26,9 +26,9 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.EnumWorldBlockLayer;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.BlockRenderLayer;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
@@ -49,7 +49,7 @@ public class QuartzOreBlock extends AEBaseBlock
 
 	public QuartzOreBlock()
 	{
-		super( Material.rock );
+		super( Material.ROCK );
 		this.setHardness( 3.0F );
 		this.setResistance( 5.0F );
 		this.boostBrightnessLow = 0;
@@ -59,9 +59,9 @@ public class QuartzOreBlock extends AEBaseBlock
 	}
 
 	@Override
-	public EnumWorldBlockLayer getBlockLayer()
+	public BlockRenderLayer getBlockLayer()
 	{
-		return EnumWorldBlockLayer.CUTOUT;
+		return BlockRenderLayer.CUTOUT;
 	}
 
 	@Override
@@ -77,9 +77,9 @@ public class QuartzOreBlock extends AEBaseBlock
 	}
 
 	@Override
-	public int getMixedBrightnessForBlock( final IBlockAccess worldIn, final BlockPos pos )
+	public int getLightValue( final IBlockState state, final IBlockAccess worldIn, final BlockPos pos )
 	{
-		int j1 = super.getMixedBrightnessForBlock( worldIn, pos );
+		int j1 = super.getLightValue( state, worldIn, pos );
 		if( this.enhanceBrightness )
 		{
 			j1 = Math.max( j1 >> 20, j1 >> 4 );

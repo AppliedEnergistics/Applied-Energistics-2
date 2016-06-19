@@ -29,6 +29,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTUtil;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
 
 import appeng.api.config.SecurityPermissions;
@@ -56,29 +59,29 @@ public class ToolBiometricCard extends AEBaseItem implements IBiometricCard
 	}
 
 	@Override
-	public ItemStack onItemRightClick( final ItemStack is, final World w, final EntityPlayer p )
+	public ActionResult<ItemStack> onItemRightClick( final ItemStack is, final World w, final EntityPlayer p, final EnumHand hand )
 	{
 		if( p.isSneaking() )
 		{
 			this.encode( is, p );
-			p.swingItem();
-			return is;
+			p.swingArm( hand );
+			return new ActionResult<ItemStack>( EnumActionResult.SUCCESS, is );
 		}
 
-		return is;
+		return new ActionResult<ItemStack>( EnumActionResult.PASS, is );
 	}
-
+	
 	@Override
-	public boolean itemInteractionForEntity( ItemStack is, final EntityPlayer par2EntityPlayer, final EntityLivingBase target )
+	public boolean itemInteractionForEntity( ItemStack is, final EntityPlayer player, final EntityLivingBase target, final EnumHand hand )
 	{
-		if( target instanceof EntityPlayer && !par2EntityPlayer.isSneaking() )
+		if( target instanceof EntityPlayer && !player.isSneaking() )
 		{
-			if( par2EntityPlayer.capabilities.isCreativeMode )
+			if( player.capabilities.isCreativeMode )
 			{
-				is = par2EntityPlayer.getCurrentEquippedItem();
+				is = player.getHeldItem( hand );
 			}
 			this.encode( is, (EntityPlayer) target );
-			par2EntityPlayer.swingItem();
+			player.swingArm( hand );
 			return true;
 		}
 		return false;

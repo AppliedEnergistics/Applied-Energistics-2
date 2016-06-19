@@ -26,8 +26,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
 
@@ -85,7 +85,7 @@ public final class EntitySingularity extends AEBaseEntityItem
 
 		if( materials.singularity().isSameAs( item ) )
 		{
-			final AxisAlignedBB region = AxisAlignedBB.fromBounds( this.posX - 4, this.posY - 4, this.posZ - 4, this.posX + 4, this.posY + 4, this.posZ + 4 );
+			final AxisAlignedBB region = new AxisAlignedBB( this.posX - 4, this.posY - 4, this.posZ - 4, this.posX + 4, this.posY + 4, this.posZ + 4 );
 			final List<Entity> l = this.getCheckedEntitiesWithinAABBExcludingEntity( region );
 
 			for( final Entity e : l )

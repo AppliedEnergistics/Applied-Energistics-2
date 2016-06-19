@@ -44,8 +44,8 @@ import net.minecraft.item.ItemSnowball;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
 
@@ -117,7 +117,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 	public void postInit()
 	{
 		super.postInit();
-		BlockDispenser.dispenseBehaviorRegistry.putObject( this, new DispenserBlockTool() );
+		BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject( this, new DispenserBlockTool() );
 	}
 
 	@Override
@@ -371,12 +371,12 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 			return w.setBlockState( pos, state.withProperty( BlockColored.COLOR, newColor.dye ) );
 		}
 
-		if( blk == Blocks.glass )
+		if( blk == Blocks.GLASS )
 		{
-			return w.setBlockState( pos, Blocks.stained_glass.getDefaultState().withProperty( BlockStainedGlass.COLOR, newColor.dye ) );
+			return w.setBlockState( pos, Blocks.STAINED_GLASS.getDefaultState().withProperty( BlockStainedGlass.COLOR, newColor.dye ) );
 		}
 
-		if( blk == Blocks.stained_glass )
+		if( blk == Blocks.STAINED_GLASS )
 		{
 			final EnumDyeColor color = (EnumDyeColor) state.getValue( BlockStainedGlass.COLOR );
 
@@ -388,12 +388,12 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 			return w.setBlockState( pos, state.withProperty( BlockStainedGlass.COLOR, newColor.dye ) );
 		}
 
-		if( blk == Blocks.glass_pane )
+		if( blk == Blocks.GLASS_PANE )
 		{
-			return w.setBlockState( pos, Blocks.stained_glass_pane.getDefaultState().withProperty( BlockStainedGlassPane.COLOR, newColor.dye ) );
+			return w.setBlockState( pos, Blocks.STAINED_GLASS_PANE.getDefaultState().withProperty( BlockStainedGlassPane.COLOR, newColor.dye ) );
 		}
 
-		if( blk == Blocks.stained_glass_pane )
+		if( blk == Blocks.STAINED_GLASS_PANE )
 		{
 			final EnumDyeColor color = (EnumDyeColor) state.getValue( BlockStainedGlassPane.COLOR );
 
@@ -405,9 +405,9 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 			return w.setBlockState( pos, state.withProperty( BlockStainedGlassPane.COLOR, newColor.dye ) );
 		}
 
-		if( blk == Blocks.hardened_clay )
+		if( blk == Blocks.HARDENED_CLAY )
 		{
-			return w.setBlockState( pos, Blocks.stained_hardened_clay.getDefaultState().withProperty( BlockColored.COLOR, newColor.dye ) );
+			return w.setBlockState( pos, Blocks.STAINED_HARDENED_CLAY.getDefaultState().withProperty( BlockColored.COLOR, newColor.dye ) );
 		}
 
 		if( blk instanceof BlockCableBus )

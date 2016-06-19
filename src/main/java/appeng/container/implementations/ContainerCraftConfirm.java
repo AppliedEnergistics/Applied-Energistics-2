@@ -31,9 +31,9 @@ import com.google.common.collect.ImmutableSet;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.ICrafting;
+import net.minecraft.inventory.IContainerListener;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 
 import appeng.api.AEApi;
@@ -259,7 +259,7 @@ public class ContainerCraftConfirm extends AEBaseContainer
 						}
 					}
 
-					for( final Object g : this.crafters )
+					for( final Object g : this.listeners )
 					{
 						if( g instanceof EntityPlayer )
 						{
@@ -279,7 +279,7 @@ public class ContainerCraftConfirm extends AEBaseContainer
 			}
 			catch( final Throwable e )
 			{
-				this.getPlayerInv().player.addChatMessage( new ChatComponentText( "Error: " + e.toString() ) );
+				this.getPlayerInv().player.addChatMessage( new TextComponentString( "Error: " + e.toString() ) );
 				AELog.debug( e );
 				this.setValidContainer( false );
 				this.result = null;
@@ -365,8 +365,9 @@ public class ContainerCraftConfirm extends AEBaseContainer
 		return new PlayerSource( this.getPlayerInv().player, (IActionHost) this.getTarget() );
 	}
 
+	//TODO 1.9.4 - removeCraftingFromCrafters => ?
 	@Override
-	public void removeCraftingFromCrafters( final ICrafting c )
+	public void removeCraftingFromCrafters( final IContainerListener c )
 	{
 		super.removeCraftingFromCrafters( c );
 		if( this.getJob() != null )

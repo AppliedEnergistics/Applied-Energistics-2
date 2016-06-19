@@ -30,8 +30,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
@@ -83,7 +83,7 @@ public class ServerHelper extends CommonHelper
 
 			if( server != null )
 			{
-				return (List) server.getConfigurationManager().playerEntityList;
+				return (List) server.getPlayerList().getPlayerList();
 			}
 		}
 
@@ -129,7 +129,7 @@ public class ServerHelper extends CommonHelper
 	}
 
 	@Override
-	public MovingObjectPosition getMOP()
+	public RayTraceResult getRTR()
 	{
 		return null;
 	}

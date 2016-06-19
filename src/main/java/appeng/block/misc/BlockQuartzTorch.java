@@ -31,9 +31,9 @@ import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -56,7 +56,7 @@ public class BlockQuartzTorch extends AEBaseBlock implements IOrientableBlock, I
 {
 	public BlockQuartzTorch()
 	{
-		super( Material.circuits );
+		super( Material.CIRCUITS );
 
 		this.setFeature( EnumSet.of( AEFeature.DecorativeLights ) );
 		this.setLightLevel( 0.9375F );
@@ -108,7 +108,7 @@ public class BlockQuartzTorch extends AEBaseBlock implements IOrientableBlock, I
 		final double xOff = -0.3 * up.getFrontOffsetX();
 		final double yOff = -0.3 * up.getFrontOffsetY();
 		final double zOff = -0.3 * up.getFrontOffsetZ();
-		return Collections.singletonList( AxisAlignedBB.fromBounds( xOff + 0.3, yOff + 0.3, zOff + 0.3, xOff + 0.7, yOff + 0.7, zOff + 0.7 ) );
+		return Collections.singletonList( new AxisAlignedBB( xOff + 0.3, yOff + 0.3, zOff + 0.3, xOff + 0.7, yOff + 0.7, zOff + 0.7 ) );
 	}
 
 	@Override
@@ -122,7 +122,7 @@ public class BlockQuartzTorch extends AEBaseBlock implements IOrientableBlock, I
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void randomDisplayTick( final World w, final BlockPos pos, final IBlockState state, final Random r )
+	public void randomDisplayTick( final IBlockState state, final World w, final BlockPos pos, final Random r )
 	{
 		if( !AEConfig.instance.enableEffects )
 		{
@@ -150,7 +150,7 @@ public class BlockQuartzTorch extends AEBaseBlock implements IOrientableBlock, I
 	}
 
 	@Override
-	public void onNeighborBlockChange( final World w, final BlockPos pos, final IBlockState state, final Block neighborBlock )
+	public void neighborChanged( final IBlockState state, final World w, final BlockPos pos,final Block neighborBlock )
 	{
 		final EnumFacing up = this.getOrientable( w, pos ).getUp();
 		if( !this.canPlaceAt( w, pos, up.getOpposite() ) )
@@ -162,6 +162,7 @@ public class BlockQuartzTorch extends AEBaseBlock implements IOrientableBlock, I
 	private void dropTorch( final World w, final BlockPos pos )
 	{
 		w.destroyBlock( pos, true );
+		//TODO 1.9.4 - markBlockForUpdate => ?
 		w.markBlockForUpdate( pos );
 	}
 

@@ -23,7 +23,7 @@ import com.google.common.base.Joiner;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.text.TextComponentString;
 
 import appeng.server.ISubCommand;
 
@@ -41,6 +41,6 @@ public class Supporters implements ISubCommand
 	public void call( final MinecraftServer srv, final String[] data, final ICommandSender sender )
 	{
 		final String[] who = { "Stig Halvorsen", "Josh Ricker", "Jenny \"Othlon\" Sutherland", "Hristo Bogdanov", "BevoLJ" };
-		sender.addChatMessage( new ChatComponentText( "Special thanks to " + Joiner.on( ", " ).join( who ) ) );
+		sender.addChatMessage( new TextComponentString( "Special thanks to " + Joiner.on( ", " ).join( who ) ) );
 	}
 }

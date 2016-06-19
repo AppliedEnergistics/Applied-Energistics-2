@@ -26,10 +26,10 @@ import org.lwjgl.opengl.GL12;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 
 import appeng.api.util.AEPartLocation;
@@ -122,7 +122,7 @@ public class RenderBlockCharger extends BaseBlockRender<BlockCharger, TileCharge
 	}
 
 	@Override
-	public void renderTile( final BlockCharger block, final TileCharger tile, final WorldRenderer tess, final double x, final double y, final double z, final float f, final ModelGenerator renderer )
+	public void renderTile( final BlockCharger block, final TileCharger tile, final VertexBuffer tess, final double x, final double y, final double z, final float f, final ModelGenerator renderer )
 	{
 		final ItemStack sis = tile.getStackInSlot( 0 );
 

@@ -22,12 +22,16 @@ package appeng.block.misc;
 import java.util.EnumSet;
 import java.util.Random;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.BlockPos;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
@@ -48,7 +52,7 @@ public final class BlockVibrationChamber extends AEBaseTileBlock
 
 	public BlockVibrationChamber()
 	{
-		super( Material.iron );
+		super( Material.IRON );
 		this.setTileEntity( TileVibrationChamber.class );
 		this.setHardness( 4.2F );
 		this.setFeature( EnumSet.of( AEFeature.PowerGen ) );
@@ -69,7 +73,7 @@ public final class BlockVibrationChamber extends AEBaseTileBlock
 	}
 
 	@Override
-	public boolean onActivated( final World w, final BlockPos pos, final EntityPlayer player, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
+	public boolean onActivated( final World w, final BlockPos pos, final EntityPlayer player, final EnumHand hand, final @Nullable ItemStack heldItem, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
 	{
 		if( player.isSneaking() )
 		{
@@ -88,9 +92,9 @@ public final class BlockVibrationChamber extends AEBaseTileBlock
 
 		return true;
 	}
-
+	
 	@Override
-	public void randomDisplayTick( final World w, final BlockPos pos, final IBlockState state, final Random r )
+	public void randomDisplayTick( final IBlockState state, final World w, final BlockPos pos, final Random r )
 	{
 		if( !AEConfig.instance.enableEffects )
 		{

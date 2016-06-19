@@ -24,7 +24,7 @@ import java.io.IOException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.ICrafting;
+import net.minecraft.inventory.IContainerListener;
 
 import appeng.api.AEApi;
 import appeng.api.networking.IGrid;
@@ -111,7 +111,7 @@ public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorH
 			this.getMonitor().removeListener( this );
 		}
 
-		for( final Object g : this.crafters )
+		for( final Object g : this.listeners )
 		{
 			if( g instanceof EntityPlayer )
 			{
@@ -152,12 +152,13 @@ public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorH
 		this.setEstimatedTime( -1 );
 	}
 
+	//TODO 1.9.4 - removeCraftingFromCrafters => ?
 	@Override
-	public void removeCraftingFromCrafters( final ICrafting c )
+	public void removeCraftingFromCrafters( final IContainerListener c )
 	{
 		super.removeCraftingFromCrafters( c );
 
-		if( this.crafters.isEmpty() && this.getMonitor() != null )
+		if( this.listeners.isEmpty() && this.getMonitor() != null )
 		{
 			this.getMonitor().removeListener( this );
 		}
@@ -202,7 +203,7 @@ public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorH
 
 				this.list.resetStatus();
 
-				for( final Object g : this.crafters )
+				for( final Object g : this.listeners )
 				{
 					if( g instanceof EntityPlayer )
 					{

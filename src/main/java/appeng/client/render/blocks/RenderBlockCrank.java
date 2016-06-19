@@ -23,12 +23,12 @@ import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.WorldRenderer;
-import net.minecraft.client.renderer.entity.RenderItem;
+import net.minecraft.client.renderer.RenderItem;
+import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 
 import appeng.api.util.ModelGenerator;
@@ -67,14 +67,14 @@ public class RenderBlockCrank extends BaseBlockRender<BlockCrank, TileCrank>
 	}
 
 	@Override
-	public void renderTile( final BlockCrank blk, final TileCrank tile, final WorldRenderer tess, final double x, final double y, final double z, final float f, final ModelGenerator renderBlocks )
+	public void renderTile( final BlockCrank blk, final TileCrank tile, final VertexBuffer tess, final double x, final double y, final double z, final float f, final ModelGenerator renderBlocks )
 	{
 		if( tile.getUp() == null )
 		{
 			return;
 		}
 
-		Minecraft.getMinecraft().getTextureManager().bindTexture( TextureMap.locationBlocksTexture );
+		Minecraft.getMinecraft().getTextureManager().bindTexture( TextureMap.LOCATION_BLOCKS_TEXTURE );
 		RenderHelper.disableStandardItemLighting();
 
 		if( Minecraft.isAmbientOcclusionEnabled() )

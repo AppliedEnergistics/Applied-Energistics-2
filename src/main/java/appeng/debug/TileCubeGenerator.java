@@ -22,10 +22,11 @@ package appeng.debug;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
 
 import appeng.core.CommonHelper;
 import appeng.tile.AEBaseTile;
@@ -53,7 +54,7 @@ public class TileCubeGenerator extends AEBaseTile implements ITickable
 			{
 				for( final EntityPlayer e : CommonHelper.proxy.getPlayers() )
 				{
-					e.addChatMessage( new ChatComponentText( "Spawning in... " + ( this.countdown / 20 ) ) );
+					e.addChatMessage( new TextComponentString( "Spawning in... " + ( this.countdown / 20 ) ) );
 				}
 			}
 
@@ -80,7 +81,7 @@ public class TileCubeGenerator extends AEBaseTile implements ITickable
 				for( int z = -half; z < half; z++ )
 				{
 					final BlockPos p = this.pos.add( x, y - 1, z );
-					i.onItemUse( this.is.copy(), this.who, this.worldObj, p, side, 0.5f, 0.0f, 0.5f );
+					i.onItemUse( this.is.copy(), this.who, this.worldObj, p, EnumHand.MAIN_HAND, side, 0.5f, 0.0f, 0.5f );
 				}
 			}
 		}
@@ -115,7 +116,7 @@ public class TileCubeGenerator extends AEBaseTile implements ITickable
 					this.size = 64;
 				}
 
-				player.addChatMessage( new ChatComponentText( "Size: " + this.size ) );
+				player.addChatMessage( new TextComponentString( "Size: " + this.size ) );
 			}
 			else
 			{

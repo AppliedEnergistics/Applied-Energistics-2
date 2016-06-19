@@ -26,13 +26,16 @@ import java.util.WeakHashMap;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemMeshDefinition;
-import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -101,17 +104,17 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 	}
 
 	@Override
-	public ItemStack onItemRightClick( final ItemStack stack, final World w, final EntityPlayer player )
+	public ActionResult<ItemStack> onItemRightClick( final ItemStack stack, final World w, final EntityPlayer player, final EnumHand hand )
 	{
 		this.clearPattern( stack, player );
 
-		return stack;
+		return new ActionResult<ItemStack>( EnumActionResult.SUCCESS, stack );
 	}
 
 	@Override
-	public boolean onItemUseFirst( final ItemStack stack, final EntityPlayer player, final World world, final BlockPos pos, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
+	public EnumActionResult onItemUseFirst( final ItemStack stack, final EntityPlayer player, final World world, final BlockPos pos, final EnumFacing side, final float hitX, final float hitY, final float hitZ, final EnumHand hand )
 	{
-		return this.clearPattern( stack, player );
+		return this.clearPattern( stack, player ) ? EnumActionResult.SUCCESS : EnumActionResult.FAIL;
 	}
 
 	private boolean clearPattern( final ItemStack stack, final EntityPlayer player )
@@ -149,7 +152,7 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 
 		if( details == null )
 		{
-			lines.add( EnumChatFormatting.RED + GuiText.InvalidPattern.getLocal() );
+			lines.add( TextFormatting.RED + GuiText.InvalidPattern.getLocal() );
 			return;
 		}
 

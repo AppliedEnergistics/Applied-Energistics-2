@@ -19,7 +19,7 @@
 package appeng.integration.abstraction;
 
 
-import net.minecraft.client.renderer.entity.RenderItem;
+import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.inventory.Slot;
 
 

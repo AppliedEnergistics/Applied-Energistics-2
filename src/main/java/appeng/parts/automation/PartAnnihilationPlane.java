@@ -23,16 +23,16 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.relauncher.Side;
@@ -483,11 +483,11 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 	 */
 	private boolean canHandleBlock( final WorldServer w, final BlockPos pos )
 	{
-		final Block block = w.getBlockState( pos ).getBlock();
-		final Material material = block.getMaterial();
-		final float hardness = block.getBlockHardness( w, pos );
-		final boolean ignoreMaterials = material == Material.air || material == Material.lava || material == Material.water || material.isLiquid();
-		final boolean ignoreBlocks = block == Blocks.bedrock || block == Blocks.end_portal || block == Blocks.end_portal_frame || block == Blocks.command_block;
+		final IBlockState state = w.getBlockState( pos );
+		final Material material = state.getMaterial();
+		final float hardness = state.getBlockHardness( w, pos );
+		final boolean ignoreMaterials = material == Material.AIR || material == Material.LAVA || material == Material.WATER || material.isLiquid();
+		final boolean ignoreBlocks = state.getBlock() == Blocks.BEDROCK || state.getBlock() == Blocks.END_PORTAL || state.getBlock() == Blocks.END_PORTAL_FRAME || state.getBlock() == Blocks.COMMAND_BLOCK;
 
 		return !ignoreMaterials && !ignoreBlocks && !w.isAirBlock( pos ) && w.isBlockLoaded( pos ) && w.canMineBlockBody( Platform.getPlayer( w ), pos ) && hardness >= 0f;
 	}
@@ -503,8 +503,8 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 	 */
 	protected float calculateEnergyUsage( final WorldServer w, final BlockPos pos, final List<ItemStack> items )
 	{
-		final Block block = w.getBlockState( pos ).getBlock();
-		final float hardness = block.getBlockHardness( w, pos );
+		final IBlockState state = w.getBlockState( pos );
+		final float hardness = state.getBlockHardness( w, pos );
 
 		float requiredEnergy = 1 + hardness;
 		for( final ItemStack is : items )
@@ -555,7 +555,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 	{
 		w.setBlockToAir( pos );
 
-		final AxisAlignedBB box = AxisAlignedBB.fromBounds( pos.getX() - 0.2, pos.getY() - 0.2, pos.getZ() - 0.2, pos.getX() + 1.2, pos.getY() + 1.2, pos.getZ() + 1.2 );
+		final AxisAlignedBB box = new AxisAlignedBB( pos.getX() - 0.2, pos.getY() - 0.2, pos.getZ() - 0.2, pos.getX() + 1.2, pos.getY() + 1.2, pos.getZ() + 1.2 );
 		for( final Object ei : w.getEntitiesWithinAABB( EntityItem.class, box ) )
 		{
 			if( ei instanceof EntityItem )

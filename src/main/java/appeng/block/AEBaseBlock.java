@@ -23,13 +23,16 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import com.google.common.base.Optional;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyEnum;
-import net.minecraft.block.state.BlockState;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureMap;
@@ -39,12 +42,13 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.property.ExtendedBlockState;
@@ -72,7 +76,7 @@ import appeng.helpers.ICustomCollision;
 import appeng.util.LookDirection;
 import appeng.util.Platform;
 
-
+//TODO 1.9.4 - setBlockBounds => ?
 public abstract class AEBaseBlock extends Block implements IAEFeature
 {
 	public static final PropertyEnum AXIS_ORIENTATION = PropertyEnum.create( "axis", EnumFacing.Axis.class );
@@ -107,21 +111,21 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 	{
 		super( mat );
 
-		if( mat == AEGlassMaterial.INSTANCE || mat == Material.glass )
+		if( mat == AEGlassMaterial.INSTANCE || mat == Material.GLASS )
 		{
-			this.setStepSound( Block.soundTypeGlass );
+			this.setSoundType( SoundType.GLASS );
 		}
-		else if( mat == Material.rock )
+		else if( mat == Material.ROCK )
 		{
-			this.setStepSound( Block.soundTypeStone );
+			this.setSoundType( SoundType.STONE );
 		}
-		else if( mat == Material.wood )
+		else if( mat == Material.WOOD )
 		{
-			this.setStepSound( Block.soundTypeWood );
+			this.setSoundType( SoundType.WOOD );
 		}
 		else
 		{
-			this.setStepSound( Block.soundTypeMetal );
+			this.setSoundType( SoundType.METAL );
 		}
 
 		this.featureFullName = new FeatureNameExtractor( this.getClass(), subName ).get();
@@ -138,7 +142,7 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 	public static final UnlistedBlockAccess AE_BLOCK_ACCESS = new UnlistedBlockAccess();
 
 	@Override
-	protected final BlockState createBlockState()
+	protected final BlockStateContainer createBlockState()
 	{
 		return new ExtendedBlockState( this, this.getAEStates(), new IUnlistedProperty[] { AE_BLOCK_POS, AE_BLOCK_ACCESS } );
 	}
@@ -184,6 +188,7 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 		}
 	}
 
+	//TODO 1.9.4 - Move to IBlockColor
 	@Override
 	public int colorMultiplier( final IBlockAccess worldIn, final BlockPos pos, final int colorTint )
 	{
@@ -225,7 +230,7 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 	}
 
 	@Override
-	public boolean isNormalCube()
+	public boolean isNormalCube(IBlockState state)
 	{
 		return this.isFullSize() && this.isOpaque();
 	}
@@ -260,7 +265,7 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 	}
 
 	@Override
-	public void addCollisionBoxesToList( final World w, final BlockPos pos, final IBlockState state, final AxisAlignedBB bb, final List out, final Entity e )
+	public void addCollisionBoxToList( final IBlockState state, final World w, final BlockPos pos, final AxisAlignedBB bb, final List<AxisAlignedBB> out, final Entity e )
 	{
 		final ICustomCollision collisionHandler = this.getCustomCollision( w, pos );
 
@@ -279,13 +284,13 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 		}
 		else
 		{
-			super.addCollisionBoxesToList( w, pos, state, bb, out, e );
+			super.addCollisionBoxToList( state, w, pos, bb, out, e );
 		}
 	}
-
+	
 	@Override
 	@SideOnly( Side.CLIENT )
-	public AxisAlignedBB getSelectedBoundingBox( final World w, final BlockPos pos )
+	public AxisAlignedBB getSelectedBoundingBox( IBlockState state, final World w, final BlockPos pos )
 	{
 		final ICustomCollision collisionHandler = this.getCustomCollision( w, pos );
 
@@ -305,7 +310,7 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 				{
 					this.setBlockBounds( (float) bb.minX, (float) bb.minY, (float) bb.minZ, (float) bb.maxX, (float) bb.maxY, (float) bb.maxZ );
 
-					final MovingObjectPosition r = super.collisionRayTrace( w, pos, ld.getA(), ld.getB() );
+					final RayTraceResult r = super.collisionRayTrace( state, w, pos, ld.getA(), ld.getB() );
 
 					this.setBlockBounds( 0, 0, 0, 1, 1, 1 );
 
@@ -327,7 +332,7 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 
 				if( br != null )
 				{
-					br = AxisAlignedBB.fromBounds( br.minX + pos.getX(), br.minY + pos.getY(), br.minZ + pos.getZ(), br.maxX + pos.getX(), br.maxY + pos.getY(), br.maxZ + pos.getZ() );
+					br = new AxisAlignedBB( br.minX + pos.getX(), br.minY + pos.getY(), br.minZ + pos.getZ(), br.maxX + pos.getX(), br.maxY + pos.getY(), br.maxZ + pos.getZ() );
 					return br;
 				}
 			}
@@ -349,7 +354,7 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 				final double maxY = Math.max( b.maxY, bx.maxY );
 				final double maxZ = Math.max( b.maxZ, bx.maxZ );
 
-				b = AxisAlignedBB.fromBounds( minX, minY, minZ, maxX, maxY, maxZ );
+				b = new AxisAlignedBB( minX, minY, minZ, maxX, maxY, maxZ );
 			}
 
 			if( b == null )
@@ -358,30 +363,30 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 			}
 			else
 			{
-				b = AxisAlignedBB.fromBounds( b.minX + pos.getX(), b.minY + pos.getY(), b.minZ + pos.getZ(), b.maxX + pos.getX(), b.maxY + pos.getY(), b.maxZ + pos.getZ() );
+				b = new AxisAlignedBB( b.minX + pos.getX(), b.minY + pos.getY(), b.minZ + pos.getZ(), b.maxX + pos.getX(), b.maxY + pos.getY(), b.maxZ + pos.getZ() );
 			}
 
 			return b;
 		}
 
-		return super.getSelectedBoundingBox( w, pos );
+		return super.getSelectedBoundingBox( state, w, pos );
 	}
 
 	@Override
-	public final boolean isOpaqueCube()
+	public final boolean isOpaqueCube(IBlockState state)
 	{
 		return this.isOpaque();
 	}
 
 	@Override
-	public MovingObjectPosition collisionRayTrace( final World w, final BlockPos pos, final Vec3 a, final Vec3 b )
+	public RayTraceResult collisionRayTrace( final IBlockState state, final World w, final BlockPos pos, final Vec3d a, final Vec3d b )
 	{
 		final ICustomCollision collisionHandler = this.getCustomCollision( w, pos );
 
 		if( collisionHandler != null )
 		{
 			final Iterable<AxisAlignedBB> bbs = collisionHandler.getSelectedBoundingBoxesFromPool( w, pos, null, true );
-			MovingObjectPosition br = null;
+			RayTraceResult br = null;
 
 			double lastDist = 0;
 
@@ -389,7 +394,7 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 			{
 				this.setBlockBounds( (float) bb.minX, (float) bb.minY, (float) bb.minZ, (float) bb.maxX, (float) bb.maxY, (float) bb.maxZ );
 
-				final MovingObjectPosition r = super.collisionRayTrace( w, pos, a, b );
+				final RayTraceResult r = super.collisionRayTrace( state, w, pos, a, b );
 
 				this.setBlockBounds( 0, 0, 0, 1, 1, 1 );
 
@@ -417,10 +422,10 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 		}
 
 		this.setBlockBounds( 0, 0, 0, 1, 1, 1 );
-		return super.collisionRayTrace( w, pos, a, b );
+		return super.collisionRayTrace( state, w, pos, a, b );
 	}
 
-	public boolean onActivated( final World w, final BlockPos pos, final EntityPlayer player, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
+	public boolean onActivated( final World w, final BlockPos pos, final EntityPlayer player, final EnumHand hand, final @Nullable ItemStack heldItem, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
 	{
 		return false;
 	}
@@ -434,19 +439,19 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 	}
 
 	@Override
-	public boolean hasComparatorInputOverride()
+	public boolean hasComparatorInputOverride(IBlockState state)
 	{
 		return this.isInventory();
 	}
 
 	@Override
-	public int getComparatorInputOverride( final World worldIn, final BlockPos pos )
+	public int getComparatorInputOverride( IBlockState state, final World worldIn, final BlockPos pos )
 	{
 		return 0;
 	}
 
 	@Override
-	public boolean isNormalCube( final IBlockAccess world, final BlockPos pos )
+	public boolean isNormalCube( IBlockState state, final IBlockAccess world, final BlockPos pos )
 	{
 		return this.isFullSize();
 	}

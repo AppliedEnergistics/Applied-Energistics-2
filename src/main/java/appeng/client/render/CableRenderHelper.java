@@ -24,9 +24,9 @@ import java.util.List;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumWorldBlockLayer;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.client.MinecraftForgeClient;
 
 import appeng.api.parts.IFacadeContainer;
@@ -60,7 +60,7 @@ public class CableRenderHelper
 		}
 		else
 		{
-			BusRenderHelper.INSTANCE.setPass( MinecraftForgeClient.getRenderLayer() == EnumWorldBlockLayer.TRANSLUCENT ? 1 : 0 );
+			BusRenderHelper.INSTANCE.setPass( MinecraftForgeClient.getRenderLayer() == BlockRenderLayer.TRANSLUCENT ? 1 : 0 );
 		}
 
 		if( renderer.getBlockAccess() == null )

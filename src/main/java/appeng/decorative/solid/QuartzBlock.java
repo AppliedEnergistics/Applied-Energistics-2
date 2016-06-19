@@ -31,7 +31,7 @@ public final class QuartzBlock extends AEDecorativeBlock
 {
 	public QuartzBlock()
 	{
-		super( Material.rock );
+		super( Material.ROCK );
 
 		this.setFeature( EnumSet.of( AEFeature.DecorativeQuartzBlocks ) );
 	}

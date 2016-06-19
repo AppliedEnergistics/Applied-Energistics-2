@@ -36,12 +36,12 @@ import appeng.core.sync.packets.PacketInventoryAction;
 import appeng.helpers.InventoryAction;
 
 
-public class GuiCraftingTerm extends GuiMEMonitorable
+public class GuIContainerListenerTerm extends GuiMEMonitorable
 {
 
 	private GuiImgButton clearBtn;
 
-	public GuiCraftingTerm( final InventoryPlayer inventoryPlayer, final ITerminalHost te )
+	public GuIContainerListenerTerm( final InventoryPlayer inventoryPlayer, final ITerminalHost te )
 	{
 		super( inventoryPlayer, te, new ContainerCraftingTerm( inventoryPlayer, te ) );
 		this.setReservedSpace( 73 );

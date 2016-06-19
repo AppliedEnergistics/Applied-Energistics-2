@@ -27,10 +27,14 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import appeng.api.implementations.guiobjects.IGuiItem;
@@ -75,32 +79,32 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench /
 	}
 
 	@Override
-	public ItemStack onItemRightClick( final ItemStack it, final World w, final EntityPlayer p )
+	public ActionResult<ItemStack> onItemRightClick( final ItemStack it, final World w, final EntityPlayer p, final EnumHand hand )
 	{
 		if( Platform.isClient() )
 		{
-			final MovingObjectPosition mop = ClientHelper.proxy.getMOP();
+			final RayTraceResult mop = ClientHelper.proxy.getRTR();
 
 			if( mop == null )
 			{
-				this.onItemUseFirst( it, p, w, new BlockPos( 0, 0, 0 ), null, 0, 0, 0 ); // eh?
+				this.onItemUseFirst( it, p, w, new BlockPos( 0, 0, 0 ), null, 0, 0, 0, hand ); // eh?
 			}
 			else
 			{
-				if( w.getBlockState( mop.getBlockPos() ).getBlock().isAir( w, mop.getBlockPos() ) )
+				if( w.getBlockState( mop.getBlockPos() ).getBlock().isAir( w.getBlockState( mop.getBlockPos() ), w, mop.getBlockPos() ) )
 				{
-					this.onItemUseFirst( it, p, w, new BlockPos( 0, 0, 0 ), null, 0, 0, 0 ); // eh?
+					this.onItemUseFirst( it, p, w, new BlockPos( 0, 0, 0 ), null, 0, 0, 0, hand ); // eh?
 				}
 			}
 		}
 
-		return it;
+		return new ActionResult<ItemStack>( EnumActionResult.SUCCESS, it );
 	}
 
 	@Override
-	public boolean onItemUseFirst( final ItemStack stack, final EntityPlayer player, final World world, final BlockPos pos, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
+	public EnumActionResult onItemUseFirst( final ItemStack stack, final EntityPlayer player, final World world, final BlockPos pos, final EnumFacing side, final float hitX, final float hitY, final float hitZ, final EnumHand hand )
 	{
-		final MovingObjectPosition mop = new MovingObjectPosition( new Vec3( hitX, hitY, hitZ ), side, pos );
+		final RayTraceResult mop = new RayTraceResult( new Vec3d( hitX, hitY, hitZ ), side, pos );
 		final TileEntity te = world.getTileEntity( pos );
 		if( te instanceof IPartHost )
 		{
@@ -109,24 +113,24 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench /
 			{
 				if( part.part instanceof INetworkToolAgent && !( (INetworkToolAgent) part.part ).showNetworkInfo( mop ) )
 				{
-					return false;
+					return EnumActionResult.FAIL;
 				}
 			}
 		}
 		else if( te instanceof INetworkToolAgent && !( (INetworkToolAgent) te ).showNetworkInfo( mop ) )
 		{
-			return false;
+			return EnumActionResult.FAIL;
 		}
 
 		if( Platform.isClient() )
 		{
 			NetworkHandler.instance.sendToServer( new PacketClick( pos, side, hitX, hitY, hitZ ) );
 		}
-		return true;
+		return EnumActionResult.SUCCESS;
 	}
 
 	@Override
-	public boolean doesSneakBypassUse( final World world, final BlockPos pos, final EntityPlayer player )
+	public boolean doesSneakBypassUse( final ItemStack itemstack, final IBlockAccess world, final BlockPos pos, final EntityPlayer player )
 	{
 		return true;
 	}
@@ -135,6 +139,8 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench /
 	{
 		if( side != null )
 		{
+			//TODO 1.9.4 - 2 hands! Just do something!
+			final EnumHand hand = EnumHand.MAIN_HAND;
 			if( !Platform.hasPermissions( new DimensionalCoord( w, pos ), p ) )
 			{
 				return false;
@@ -148,8 +154,8 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench /
 				{
 					if( b.rotateBlock( w, pos, side ) )
 					{
-						b.onNeighborBlockChange( w, pos, Platform.AIR_BLOCK.getDefaultState(), Platform.AIR_BLOCK );
-						p.swingItem();
+						b.neighborChanged( Platform.AIR_BLOCK.getDefaultState(), w, pos, Platform.AIR_BLOCK );
+						p.swingArm( hand );
 						return !w.isRemote;
 					}
 				}
@@ -177,7 +183,7 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench /
 			}
 			else
 			{
-				b.onBlockActivated( w, pos, w.getBlockState( pos ), p, side, hitX, hitY, hitZ );
+				b.onBlockActivated( w, pos, w.getBlockState( pos ), p, hand, is, side, hitX, hitY, hitZ );
 			}
 		}
 		else

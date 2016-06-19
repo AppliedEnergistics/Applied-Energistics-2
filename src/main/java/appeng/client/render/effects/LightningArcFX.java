@@ -35,6 +35,7 @@ public class LightningArcFX extends LightningFX
 	public LightningArcFX( final World w, final double x, final double y, final double z, final double ex, final double ey, final double ez, final double r, final double g, final double b )
 	{
 		super( w, x, y, z, r, g, b, 6 );
+		//TODO 1.9.4 - noClip => ?
 		this.noClip = true;
 
 		this.rx = ex - x;

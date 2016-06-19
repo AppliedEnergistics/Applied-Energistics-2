@@ -152,7 +152,7 @@ public class TickHandler
 			{
 				for( final IGridNode n : g.getNodes() )
 				{
-					if( n.getWorld() == ev.world )
+					if( n.getWorld() == ev.getWorld() )
 					{
 						toDestroy.add( n );
 					}

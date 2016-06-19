@@ -30,11 +30,11 @@ public class FalloutSnow extends FalloutCopy
 	{
 		if( a > SNOW_THRESHOLD )
 		{
-			this.putter.put( w, x, y, z, Blocks.snow );
+			this.putter.put( w, x, y, z, Blocks.SNOW );
 		}
 		else if( a > ICE_THRESHOLD )
 		{
-			this.putter.put( w, x, y, z, Blocks.ice );
+			this.putter.put( w, x, y, z, Blocks.ICE );
 		}
 	}
 }

@@ -24,8 +24,8 @@ import io.netty.buffer.Unpooled;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 
 import appeng.core.CommonHelper;
 import appeng.core.sync.AppEngPacket;
@@ -73,6 +73,7 @@ public class PacketPartPlacement extends AppEngPacket
 		final EntityPlayerMP sender = (EntityPlayerMP) player;
 		CommonHelper.proxy.updateRenderMode( sender );
 		PartPlacement.setEyeHeight( this.eyeHeight );
+		//TODO 1.9.4 - 2 hands! Just do something!
 		PartPlacement.place( sender.getHeldItem(), new BlockPos( this.x, this.y, this.z ), EnumFacing.VALUES[this.face], sender, sender.worldObj, PartPlacement.PlaceType.INTERACT_FIRST_PASS, 0 );
 		CommonHelper.proxy.updateRenderMode( null );
 	}

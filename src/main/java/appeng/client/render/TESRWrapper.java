@@ -69,7 +69,7 @@ public class TESRWrapper extends TileEntitySpecialRenderer
 					GL11.glPushMatrix();
 
 					this.renderBlocksInstance.setBlockAccess( te.getWorld() );
-					this.blkRender.renderTile( (AEBaseBlock) b, (AEBaseTile) te, tess.getWorldRenderer(), x, y, z, f, this.renderBlocksInstance );
+					this.blkRender.renderTile( (AEBaseBlock) b, (AEBaseTile) te, tess.getBuffer(), x, y, z, f, this.renderBlocksInstance );
 
 					GL11.glPopMatrix();
 				}

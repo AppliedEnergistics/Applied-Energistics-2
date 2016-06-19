@@ -38,7 +38,7 @@ import appeng.api.config.FuzzyMode;
 import appeng.api.config.Settings;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
-import appeng.client.gui.implementations.GuiCraftingCPU;
+import appeng.client.gui.implementations.GuICraftingCPU;
 import appeng.container.AEBaseContainer;
 import appeng.container.implementations.ContainerCellWorkbench;
 import appeng.container.implementations.ContainerCraftConfirm;
@@ -97,6 +97,7 @@ public class PacketValueConfig extends AppEngPacket
 	{
 		final Container c = player.openContainer;
 
+		//TODO 1.9.4 - 2 hands! Just do something!
 		if( this.Name.equals( "Item" ) && player.getHeldItem() != null && player.getHeldItem().getItem() instanceof IMouseWheelItem )
 		{
 			final ItemStack is = player.getHeldItem();
@@ -249,9 +250,9 @@ public class PacketValueConfig extends AppEngPacket
 		else if( this.Name.equals( "CraftingStatus" ) && this.Value.equals( "Clear" ) )
 		{
 			final GuiScreen gs = Minecraft.getMinecraft().currentScreen;
-			if( gs instanceof GuiCraftingCPU )
+			if( gs instanceof GuICraftingCPU )
 			{
-				( (GuiCraftingCPU) gs ).clearItems();
+				( (GuICraftingCPU) gs ).clearItems();
 			}
 		}
 		else if( c instanceof IConfigurableObject )

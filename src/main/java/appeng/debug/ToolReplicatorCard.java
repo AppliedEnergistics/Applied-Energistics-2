@@ -28,9 +28,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 
@@ -51,13 +53,13 @@ public class ToolReplicatorCard extends AEBaseItem
 	{
 		this.setFeature( EnumSet.of( AEFeature.UnsupportedDeveloperTools, AEFeature.Creative ) );
 	}
-
+	
 	@Override
-	public boolean onItemUseFirst( final ItemStack stack, final EntityPlayer player, final World world, final BlockPos pos, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
+	public EnumActionResult onItemUseFirst( final ItemStack heldItem, final EntityPlayer player, final World world, final BlockPos pos, final EnumFacing side, final float hitX, final float hitY, final float hitZ, final EnumHand hand )
 	{
 		if( Platform.isClient() )
 		{
-			return false;
+			return EnumActionResult.PASS;
 		}
 
 		int x = pos.getX();
@@ -73,8 +75,8 @@ public class ToolReplicatorCard extends AEBaseItem
 				tag.setInteger( "y", y );
 				tag.setInteger( "z", z );
 				tag.setInteger( "side", side.ordinal() );
-				tag.setInteger( "dimid", world.provider.getDimensionId() );
-				stack.setTagCompound( tag );
+				tag.setInteger( "dimid", world.provider.getDimension() );
+				heldItem.setTagCompound( tag );
 			}
 			else
 			{
@@ -83,7 +85,7 @@ public class ToolReplicatorCard extends AEBaseItem
 		}
 		else
 		{
-			final NBTTagCompound ish = stack.getTagCompound();
+			final NBTTagCompound ish = heldItem.getTagCompound();
 			if( ish != null )
 			{
 				final int src_x = ish.getInteger( "x" );
@@ -148,6 +150,7 @@ public class ToolReplicatorCard extends AEBaseItem
 												nte.readFromNBT( (NBTTagCompound) data.copy() );
 												world.setTileEntity( d, nte );
 											}
+											//TODO 1.9.4 - markBlockForUpdate => ?
 											world.markBlockForUpdate( d );
 										}
 									}
@@ -178,11 +181,11 @@ public class ToolReplicatorCard extends AEBaseItem
 				this.outputMsg( player, "No Source Defined" );
 			}
 		}
-		return true;
+		return EnumActionResult.SUCCESS;
 	}
 
 	private void outputMsg( final ICommandSender player, final String string )
 	{
-		player.addChatMessage( new ChatComponentText( string ) );
+		player.addChatMessage( new TextComponentString( string ) );
 	}
 }

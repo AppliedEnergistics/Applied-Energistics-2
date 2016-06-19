@@ -27,7 +27,6 @@ import java.util.regex.Pattern;
 import net.minecraft.block.Block;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.fml.common.registry.GameRegistry.UniqueIdentifier;
 
 
 public class FacadeConfig extends Configuration
@@ -49,6 +48,7 @@ public class FacadeConfig extends Configuration
 			return false;
 		}
 
+		//TODO 1.9.4 - UniqueIdentifier => ResourceLocation ???
 		final UniqueIdentifier blk = GameRegistry.findUniqueIdentifierFor( id );
 		if( blk == null )
 		{

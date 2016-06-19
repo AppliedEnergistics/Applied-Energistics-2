@@ -20,7 +20,7 @@ package appeng.client.render.blocks;
 
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 
 import appeng.api.implementations.items.IAEItemPowerStorage;

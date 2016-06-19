@@ -29,8 +29,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import appeng.api.AEApi;
@@ -217,10 +220,10 @@ public final class ItemBasicStorageCell extends AEBaseItem implements IStorageCe
 	}
 
 	@Override
-	public ItemStack onItemRightClick( final ItemStack stack, final World world, final EntityPlayer player )
+	public ActionResult<ItemStack> onItemRightClick( final ItemStack stack, final World world, final EntityPlayer player, final EnumHand hand )
 	{
 		this.disassembleDrive( stack, world, player );
-		return stack;
+		return new ActionResult<ItemStack>( EnumActionResult.SUCCESS, stack );
 	}
 
 	private boolean disassembleDrive( final ItemStack stack, final World world, final EntityPlayer player )
@@ -246,7 +249,7 @@ public final class ItemBasicStorageCell extends AEBaseItem implements IStorageCe
 					final ItemStack extraB = ia.addItems( this.component.stack( 1 ) );
 					if( extraB != null )
 					{
-						player.dropPlayerItemWithRandomChoice( extraB, false );
+						player.dropItem( extraB, false );
 					}
 
 					// drop upgrades
@@ -257,7 +260,7 @@ public final class ItemBasicStorageCell extends AEBaseItem implements IStorageCe
 						final ItemStack leftStack = ia.addItems( upgradeStack );
 						if( leftStack != null && upgradeStack.getItem() instanceof IUpgradeModule )
 						{
-							player.dropPlayerItemWithRandomChoice( upgradeStack, false );
+							player.dropItem( upgradeStack, false );
 						}
 					}
 
@@ -267,7 +270,7 @@ public final class ItemBasicStorageCell extends AEBaseItem implements IStorageCe
 						final ItemStack extraA = ia.addItems( storageCellStack );
 						if( extraA != null )
 						{
-							player.dropPlayerItemWithRandomChoice( extraA, false );
+							player.dropItem( extraA, false );
 						}
 					}
 
@@ -284,9 +287,9 @@ public final class ItemBasicStorageCell extends AEBaseItem implements IStorageCe
 	}
 
 	@Override
-	public boolean onItemUseFirst( final ItemStack stack, final EntityPlayer player, final World world, final BlockPos pos, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
+	public EnumActionResult onItemUseFirst( final ItemStack stack, final EntityPlayer player, final World world, final BlockPos pos, final EnumFacing side, final float hitX, final float hitY, final float hitZ, final EnumHand hand )
 	{
-		return this.disassembleDrive( stack, world, player );
+		return this.disassembleDrive( stack, world, player ) ? EnumActionResult.SUCCESS : EnumActionResult.FAIL;
 	}
 
 	@Override

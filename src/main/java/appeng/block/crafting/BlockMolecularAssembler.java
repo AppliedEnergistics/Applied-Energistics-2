@@ -21,12 +21,16 @@ package appeng.block.crafting;
 
 import java.util.EnumSet;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.BlockPos;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumWorldBlockLayer;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -46,7 +50,7 @@ public class BlockMolecularAssembler extends AEBaseTileBlock
 
 	public BlockMolecularAssembler()
 	{
-		super( Material.iron );
+		super( Material.IRON );
 
 		this.setTileEntity( TileMolecularAssembler.class );
 		this.setOpaque( false );
@@ -55,9 +59,9 @@ public class BlockMolecularAssembler extends AEBaseTileBlock
 	}
 
 	@Override
-	public boolean canRenderInLayer( final net.minecraft.util.EnumWorldBlockLayer layer )
+	public boolean canRenderInLayer( final IBlockState state, final BlockRenderLayer layer )
 	{
-		return layer == EnumWorldBlockLayer.CUTOUT_MIPPED;
+		return layer == BlockRenderLayer.CUTOUT_MIPPED;
 	}
 
 	@Override
@@ -68,7 +72,7 @@ public class BlockMolecularAssembler extends AEBaseTileBlock
 	}
 
 	@Override
-	public boolean onBlockActivated( final World w, final BlockPos pos, final IBlockState state, final EntityPlayer p, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
+	public boolean onBlockActivated( final World w, final BlockPos pos, final IBlockState state, final EntityPlayer p, final EnumHand hand, final @Nullable ItemStack heldItem, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
 	{
 		final TileMolecularAssembler tg = this.getTileEntity( w, pos );
 		if( tg != null && !p.isSneaking() )

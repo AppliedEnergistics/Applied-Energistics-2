@@ -24,17 +24,16 @@ import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.EnumCreatureType;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.chunk.IChunkProvider;
-import net.minecraft.world.gen.ChunkProviderGenerate;
+import net.minecraft.world.gen.ChunkProviderOverworld;
 
 import appeng.api.AEApi;
 import appeng.core.AEConfig;
 
 
-public class StorageChunkProvider extends ChunkProviderGenerate
+public class StorageChunkProvider extends ChunkProviderOverworld
 {
 	private static final int SQUARE_CHUNK_SIZE = 256;
 	private static final Block[] BLOCKS;
@@ -83,15 +82,9 @@ public class StorageChunkProvider extends ChunkProviderGenerate
 	}
 
 	@Override
-	public void populate( final IChunkProvider par1iChunkProvider, final int par2, final int par3 )
+	public void populate( final int par2, final int par3 )
 	{
 
-	}
-
-	@Override
-	public boolean unloadQueuedChunks()
-	{
-		return true;
 	}
 
 	@Override

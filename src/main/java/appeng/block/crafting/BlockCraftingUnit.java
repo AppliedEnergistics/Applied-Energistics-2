@@ -22,6 +22,8 @@ package appeng.block.crafting;
 import java.util.EnumSet;
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import com.google.common.base.Optional;
 
 import net.minecraft.block.Block;
@@ -33,9 +35,10 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumWorldBlockLayer;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -64,7 +67,7 @@ public class BlockCraftingUnit extends AEBaseTileBlock
 
 	public BlockCraftingUnit( final CraftingUnitType type )
 	{
-		super( Material.iron, Optional.of( type.name() ) );
+		super( Material.IRON, Optional.of( type.name() ) );
 
 		this.type = type;
 		this.setTileEntity( TileCraftingTile.class );
@@ -86,7 +89,7 @@ public class BlockCraftingUnit extends AEBaseTileBlock
 	}
 
 	@Override
-	public void onNeighborBlockChange( final World worldIn, final BlockPos pos, final IBlockState state, final Block neighborBlock )
+	public void neighborChanged( final IBlockState state, final World worldIn, final BlockPos pos, final Block neighborBlock )
 	{
 		final TileCraftingTile cp = this.getTileEntity( worldIn, pos );
 		if( cp != null )
@@ -96,9 +99,9 @@ public class BlockCraftingUnit extends AEBaseTileBlock
 	}
 
 	@Override
-	public EnumWorldBlockLayer getBlockLayer()
+	public BlockRenderLayer getBlockLayer()
 	{
-		return EnumWorldBlockLayer.CUTOUT;
+		return BlockRenderLayer.CUTOUT;
 	}
 
 	@Override
@@ -114,7 +117,7 @@ public class BlockCraftingUnit extends AEBaseTileBlock
 	}
 
 	@Override
-	public boolean onBlockActivated( final World w, final BlockPos pos, final IBlockState state, final EntityPlayer p, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
+	public boolean onBlockActivated( final World w, final BlockPos pos, final IBlockState state, final EntityPlayer p, final EnumHand hand, final @Nullable ItemStack heldItem, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
 	{
 		final TileCraftingTile tg = this.getTileEntity( w, pos );
 		if( tg != null && !p.isSneaking() && tg.isFormed() && tg.isActive() )

@@ -29,8 +29,8 @@ import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -509,7 +509,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 
 				try
 				{
-					final TargetPoint where = new TargetPoint( this.worldObj.provider.getDimensionId(), this.pos.getX(), this.pos.getY(), this.pos.getZ(), 32 );
+					final TargetPoint where = new TargetPoint( this.worldObj.provider.getDimension(), this.pos.getX(), this.pos.getY(), this.pos.getZ(), 32 );
 					final IAEItemStack item = AEItemStack.create( output );
 					NetworkHandler.instance.sendToAllAround( new PacketAssemblerAnimation( this.pos, (byte) speed, item ), where );
 				}

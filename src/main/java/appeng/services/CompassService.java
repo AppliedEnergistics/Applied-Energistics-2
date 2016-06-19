@@ -82,9 +82,9 @@ public final class CompassService
 	@SubscribeEvent
 	public void unloadWorld( final WorldEvent.Unload event )
 	{
-		if( Platform.isServer() && this.worldSet.containsKey( event.world ) )
+		if( Platform.isServer() && this.worldSet.containsKey( event.getWorld() ) )
 		{
-			final CompassReader compassReader = this.worldSet.remove( event.world );
+			final CompassReader compassReader = this.worldSet.remove( event.getWorld() );
 
 			compassReader.close();
 		}
@@ -141,7 +141,7 @@ public final class CompassService
 				{
 					for( int k = low_y; k < hi_y; k++ )
 					{
-						final Block blk = c.getBlock( i, k, j );
+						final Block blk = c.getBlockState( i, k, j ).getBlock();
 						if( blk == skyStoneBlock )
 						{
 							return this.executor.submit( new CMUpdatePost( w, cx, cz, cdy, true ) );
@@ -182,7 +182,7 @@ public final class CompassService
 
 		if( cr == null )
 		{
-			cr = new CompassReader( w.provider.getDimensionId(), this.worldCompassFolder );
+			cr = new CompassReader( w.provider.getDimension(), this.worldCompassFolder );
 			this.worldSet.put( w, cr );
 		}
 

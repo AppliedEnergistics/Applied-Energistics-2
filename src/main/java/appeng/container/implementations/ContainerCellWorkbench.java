@@ -24,10 +24,10 @@ import java.util.Iterator;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.ICrafting;
+import net.minecraft.inventory.IContainerListener;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.util.text.ITextComponent;
 
 import appeng.api.AEApi;
 import appeng.api.config.CopyMode;
@@ -151,9 +151,9 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 				this.setValidContainer( false );
 			}
 
-			for( final Object crafter : this.crafters )
+			for( final Object crafter : this.listeners )
 			{
-				final ICrafting icrafting = (ICrafting) crafter;
+				final IContainerListener IContainerListener = (IContainerListener) crafter;
 
 				if( this.prevStack != is )
 				{
@@ -163,10 +163,10 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 						if( s instanceof OptionalSlotRestrictedInput )
 						{
 							final OptionalSlotRestrictedInput sri = (OptionalSlotRestrictedInput) s;
-							icrafting.sendSlotContents( this, sri.slotNumber, sri.getStack() );
+							IContainerListener.sendSlotContents( this, sri.slotNumber, sri.getStack() );
 						}
 					}
-					( (EntityPlayerMP) icrafting ).isChangingQuantityOnly = false;
+					( (EntityPlayerMP) IContainerListener ).isChangingQuantityOnly = false;
 				}
 			}
 
@@ -352,7 +352,7 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 		}
 
 		@Override
-		public IChatComponent getDisplayName()
+		public ITextComponent getDisplayName()
 		{
 			return null;
 		}

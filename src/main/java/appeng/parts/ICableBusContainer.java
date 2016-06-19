@@ -25,9 +25,9 @@ import java.util.Random;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -47,7 +47,7 @@ public interface ICableBusContainer
 
 	void onEntityCollision( Entity e );
 
-	boolean activate( EntityPlayer player, Vec3 vecFromPool );
+	boolean activate( EntityPlayer player, Vec3d vecFromPool );
 
 	void onNeighborChanged();
 
@@ -55,7 +55,7 @@ public interface ICableBusContainer
 
 	boolean isEmpty();
 
-	SelectedPart selectPart( Vec3 v3 );
+	SelectedPart selectPart( Vec3d v3 );
 
 	boolean recolourBlock( EnumFacing side, AEColor colour, EntityPlayer who );
 

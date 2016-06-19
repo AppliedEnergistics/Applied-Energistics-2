@@ -24,7 +24,7 @@ import java.util.EnumSet;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 
 import appeng.api.util.IOrientable;
@@ -40,7 +40,7 @@ public class QuartzPillarBlock extends AEBaseBlock implements IOrientableBlock
 
 	public QuartzPillarBlock()
 	{
-		super( Material.rock );
+		super( Material.ROCK );
 		this.setFeature( EnumSet.of( AEFeature.DecorativeQuartzBlocks ) );
 	}
 

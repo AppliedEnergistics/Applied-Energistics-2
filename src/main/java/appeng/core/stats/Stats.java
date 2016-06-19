@@ -21,7 +21,7 @@ package appeng.core.stats;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.stats.StatBasic;
-import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.text.TextComponentTranslation;
 
 
 public enum Stats
@@ -51,7 +51,7 @@ public enum Stats
 	{
 		if( this.stat == null )
 		{
-			this.stat = new StatBasic( "stat.ae2." + this.name(), new ChatComponentTranslation( "stat.ae2." + this.name() ) );
+			this.stat = new StatBasic( "stat.ae2." + this.name(), new TextComponentTranslation( "stat.ae2." + this.name() ) );
 			this.stat.registerStat();
 		}
 

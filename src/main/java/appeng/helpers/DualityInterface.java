@@ -29,6 +29,7 @@ import java.util.List;
 import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.inventory.InventoryCrafting;
@@ -37,10 +38,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 import appeng.api.AEApi;
@@ -1186,19 +1187,20 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 					}
 				}
 
-				final Block directedBlock = hostWorld.getBlockState( targ ).getBlock();
-				ItemStack what = new ItemStack( directedBlock, 1, directedBlock.getDamageValue( hostWorld, targ ) );
+				final IBlockState directedBlockState = hostWorld.getBlockState( targ );
+				final Block directedBlock = directedBlockState.getBlock();
+				ItemStack what = new ItemStack( directedBlock, 1, directedBlock.getMetaFromState( directedBlockState ) );
 				try
 				{
-					Vec3 from = new Vec3( hostTile.getPos().getX() + 0.5, hostTile.getPos().getY() + 0.5, hostTile.getPos().getZ() + 0.5 );
+					Vec3d from = new Vec3d( hostTile.getPos().getX() + 0.5, hostTile.getPos().getY() + 0.5, hostTile.getPos().getZ() + 0.5 );
 					from = from.addVector( direction.getFrontOffsetX() * 0.501, direction.getFrontOffsetY() * 0.501, direction.getFrontOffsetZ() * 0.501 );
-					final Vec3 to = from.addVector( direction.getFrontOffsetX(), direction.getFrontOffsetY(), direction.getFrontOffsetZ() );
-					final MovingObjectPosition mop = hostWorld.rayTraceBlocks( from, to, true );
+					final Vec3d to = from.addVector( direction.getFrontOffsetX(), direction.getFrontOffsetY(), direction.getFrontOffsetZ() );
+					final RayTraceResult mop = hostWorld.rayTraceBlocks( from, to, true );
 					if( mop != null && !BAD_BLOCKS.contains( directedBlock ) )
 					{
 						if( mop.getBlockPos().equals( directedTile.getPos() ) )
 						{
-							final ItemStack g = directedBlock.getPickBlock( mop, hostWorld, directedTile.getPos() );
+							final ItemStack g = directedBlock.getPickBlock( directedBlockState, mop, hostWorld, directedTile.getPos(), null );
 							if( g != null )
 							{
 								what = g;

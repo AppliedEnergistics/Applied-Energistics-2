@@ -25,7 +25,7 @@ import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.translation.I18n;
 
 import appeng.client.texture.ExtraBlockTextures;
 
@@ -89,8 +89,8 @@ public class GuiToggleButton extends GuiButton implements ITooltip
 	{
 		if( this.displayName != null )
 		{
-			String name = StatCollector.translateToLocal( this.displayName );
-			String value = StatCollector.translateToLocal( this.displayHint );
+			String name = I18n.translateToLocal( this.displayName );
+			String value = I18n.translateToLocal( this.displayHint );
 
 			if( name == null || name.isEmpty() )
 			{

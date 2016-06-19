@@ -29,7 +29,7 @@ import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraftforge.client.IRenderHandler;
 
@@ -77,7 +77,7 @@ public class SpatialSkyRender extends IRenderHandler
 		GL11.glDepthMask( false );
 		GL11.glColor4f( 0.0f, 0.0f, 0.0f, 1.0f );
 		final Tessellator tessellator = Tessellator.getInstance();
-		final WorldRenderer worldrenderer = tessellator.getWorldRenderer();
+		final VertexBuffer VertexBuffer = tessellator.getBuffer();
 
 		for( int i = 0; i < 6; ++i )
 		{
@@ -108,11 +108,11 @@ public class SpatialSkyRender extends IRenderHandler
 				GL11.glRotatef( -90.0F, 0.0F, 0.0F, 1.0F );
 			}
 
-			worldrenderer.begin( GL11.GL_QUADS, DefaultVertexFormats.ITEM );
-			worldrenderer.color( 0f, 0f, 0f, 1f ).pos( -100.0D, -100.0D, -100.0D ).tex( 0.0D, 0.0D ).endVertex();
-			worldrenderer.color( 0f, 0f, 0f, 1f ).pos( -100.0D, -100.0D, 100.0D ).tex( 0.0D, 16.0D ).endVertex();
-			worldrenderer.color( 0f, 0f, 0f, 1f ).pos( 100.0D, -100.0D, 100.0D ).tex( 16.0D, 16.0D ).endVertex();
-			worldrenderer.color( 0f, 0f, 0f, 1f ).pos( 100.0D, -100.0D, -100.0D ).tex( 16.0D, 0.0D ).endVertex();
+			VertexBuffer.begin( GL11.GL_QUADS, DefaultVertexFormats.ITEM );
+			VertexBuffer.color( 0f, 0f, 0f, 1f ).pos( -100.0D, -100.0D, -100.0D ).tex( 0.0D, 0.0D ).endVertex();
+			VertexBuffer.color( 0f, 0f, 0f, 1f ).pos( -100.0D, -100.0D, 100.0D ).tex( 0.0D, 16.0D ).endVertex();
+			VertexBuffer.color( 0f, 0f, 0f, 1f ).pos( 100.0D, -100.0D, 100.0D ).tex( 16.0D, 16.0D ).endVertex();
+			VertexBuffer.color( 0f, 0f, 0f, 1f ).pos( 100.0D, -100.0D, -100.0D ).tex( 16.0D, 0.0D ).endVertex();
 			tessellator.draw();
 			GL11.glPopMatrix();
 		}
@@ -145,8 +145,8 @@ public class SpatialSkyRender extends IRenderHandler
 	private void renderTwinkles()
 	{
 		final Tessellator tessellator = Tessellator.getInstance();
-		final WorldRenderer worldrenderer = tessellator.getWorldRenderer();
-		worldrenderer.begin( GL11.GL_QUADS, DefaultVertexFormats.ITEM );
+		final VertexBuffer VertexBuffer = tessellator.getBuffer();
+		VertexBuffer.begin( GL11.GL_QUADS, DefaultVertexFormats.ITEM );
 
 		for( int i = 0; i < 50; ++i )
 		{
@@ -186,7 +186,7 @@ public class SpatialSkyRender extends IRenderHandler
 					final double d23 = d17 * d12 - d20 * d13;
 					final double d24 = d23 * d9 - d21 * d10;
 					final double d25 = d21 * d9 + d23 * d10;
-					worldrenderer.pos( x + d24, y + d22, z + d25 ).endVertex();
+					VertexBuffer.pos( x + d24, y + d22, z + d25 ).endVertex();
 				}
 			}
 		}

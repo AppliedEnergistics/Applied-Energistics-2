@@ -49,7 +49,7 @@ import appeng.parts.reporting.PartPatternTerminal;
 import appeng.parts.reporting.PartTerminal;
 
 
-public class GuiCraftingStatus extends GuiCraftingCPU
+public class GuIContainerListenerStatus extends GuICraftingCPU
 {
 
 	private final ContainerCraftingStatus status;
@@ -59,7 +59,7 @@ public class GuiCraftingStatus extends GuiCraftingCPU
 	private GuiBridge originalGui;
 	private ItemStack myIcon = null;
 
-	public GuiCraftingStatus( final InventoryPlayer inventoryPlayer, final ITerminalHost te )
+	public GuIContainerListenerStatus( final InventoryPlayer inventoryPlayer, final ITerminalHost te )
 	{
 		super( new ContainerCraftingStatus( inventoryPlayer, te ) );
 

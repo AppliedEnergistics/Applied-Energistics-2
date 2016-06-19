@@ -19,8 +19,8 @@
 package appeng.client.render.effects;
 
 
-import net.minecraft.client.particle.EntityBreakingFX;
-import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.particle.ParticleBreaking;
+import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
@@ -30,7 +30,7 @@ import appeng.api.util.AEPartLocation;
 import appeng.client.texture.ExtraBlockTextures;
 
 
-public class MatterCannonFX extends EntityBreakingFX
+public class MatterCannonFX extends ParticleBreaking
 {
 
 	private final TextureAtlasSprite particleTextureIndex;
@@ -48,6 +48,7 @@ public class MatterCannonFX extends EntityBreakingFX
 		this.motionY = 0.0f;
 		this.motionZ = 0.0f;
 		this.particleTextureIndex = ExtraBlockTextures.BlockMatterCannonParticle.getIcon().getAtlas();
+		//TODO 1.9.4 - noClip => ?
 		this.noClip = true;
 	}
 
@@ -71,7 +72,7 @@ public class MatterCannonFX extends EntityBreakingFX
 	}
 
 	@Override
-	public void renderParticle( final WorldRenderer par1Tessellator, final Entity p_180434_2_, final float par2, final float par3, final float par4, final float par5, final float par6, final float par7 )
+	public void renderParticle( final VertexBuffer par1Tessellator, final Entity p_180434_2_, final float par2, final float par3, final float par4, final float par5, final float par6, final float par7 )
 	{
 		final float f6 = this.particleTextureIndex.getMinU();
 		final float f7 = this.particleTextureIndex.getMaxU();

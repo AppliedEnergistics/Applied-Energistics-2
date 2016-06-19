@@ -31,13 +31,14 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -159,8 +160,11 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 	}
 
 	@Override
-	public boolean onPartActivate( final EntityPlayer player, final Vec3 pos )
+	public boolean onPartActivate( final EntityPlayer player, final Vec3d pos )
 	{
+		//TODO 1.9.4 - 2 hands! Just do something!
+		final EnumHand hand = EnumHand.MAIN_HAND;
+		
 		if( Platform.isClient() )
 		{
 			return true;
@@ -177,7 +181,7 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 		}
 
 		final TileEntity te = this.getTile();
-		final ItemStack eq = player.getCurrentEquippedItem();
+		final ItemStack eq = player.getHeldItem( hand );
 
 		if( Platform.isWrench( player, eq, te.getPos() ) )
 		{
@@ -268,7 +272,7 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 		}
 
 		final Tessellator tess = Tessellator.getInstance();
-		final WorldRenderer wr = tess.getWorldRenderer();
+		final VertexBuffer wr = tess.getBuffer();
 
 		if( ( this.getClientFlags() & ( PartPanel.POWERED_FLAG | PartPanel.CHANNEL_FLAG ) ) != ( PartPanel.POWERED_FLAG | PartPanel.CHANNEL_FLAG ) )
 		{
@@ -310,7 +314,7 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 		return this.configuredItem;
 	}
 
-	private void tesrRenderScreen( final WorldRenderer wr, final IAEItemStack ais )
+	private void tesrRenderScreen( final VertexBuffer wr, final IAEItemStack ais )
 	{
 		// GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS );
 
@@ -435,7 +439,7 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 	}
 
 	@Override
-	public boolean showNetworkInfo( final MovingObjectPosition where )
+	public boolean showNetworkInfo( final RayTraceResult where )
 	{
 		return false;
 	}

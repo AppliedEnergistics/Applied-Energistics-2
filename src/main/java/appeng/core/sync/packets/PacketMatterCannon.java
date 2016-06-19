@@ -96,7 +96,7 @@ public class PacketMatterCannon extends AppEngPacket
 			final World world = FMLClientHandler.instance().getClient().theWorld;
 			for( int a = 1; a < this.len; a++ )
 			{
-				final MatterCannonFX fx = new MatterCannonFX( world, this.x + this.dx * a, this.y + this.dy * a, this.z + this.dz * a, Items.diamond );
+				final MatterCannonFX fx = new MatterCannonFX( world, this.x + this.dx * a, this.y + this.dy * a, this.z + this.dz * a, Items.DIAMOND );
 
 				Minecraft.getMinecraft().effectRenderer.addEffect( fx );
 			}

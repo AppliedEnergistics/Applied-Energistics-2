@@ -21,10 +21,14 @@ package appeng.block.misc;
 
 import java.util.EnumSet;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.BlockPos;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import appeng.api.util.AEPartLocation;
@@ -40,14 +44,14 @@ public class BlockCondenser extends AEBaseTileBlock
 
 	public BlockCondenser()
 	{
-		super( Material.iron );
+		super( Material.IRON );
 
 		this.setTileEntity( TileCondenser.class );
 		this.setFeature( EnumSet.of( AEFeature.Core ) );
 	}
 
 	@Override
-	public boolean onActivated( final World w, final BlockPos pos, final EntityPlayer player, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
+	public boolean onActivated( final World w, final BlockPos pos, final EntityPlayer player, final EnumHand hand, final @Nullable ItemStack heldItem, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
 	{
 		if( player.isSneaking() )
 		{

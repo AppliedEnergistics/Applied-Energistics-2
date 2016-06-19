@@ -21,7 +21,7 @@ package appeng.parts.reporting;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.Vec3d;
 
 import appeng.client.texture.CableBusTextures;
 import appeng.core.sync.GuiBridge;
@@ -40,7 +40,7 @@ public class PartInterfaceTerminal extends AbstractPartDisplay
 	}
 
 	@Override
-	public boolean onPartActivate( final EntityPlayer player, final Vec3 pos )
+	public boolean onPartActivate( final EntityPlayer player, final Vec3d pos )
 	{
 		if( !super.onPartActivate( player, pos ) )
 		{

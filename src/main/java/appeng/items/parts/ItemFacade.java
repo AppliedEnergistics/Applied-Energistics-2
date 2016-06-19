@@ -34,13 +34,14 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.BlockRenderLayer;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumWorldBlockLayer;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.fml.common.registry.GameRegistry.UniqueIdentifier;
 
 import appeng.api.AEApi;
 import appeng.api.exceptions.MissingDefinition;
@@ -68,9 +69,9 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 	}
 
 	@Override
-	public boolean onItemUseFirst( final ItemStack is, final EntityPlayer player, final World world, final BlockPos pos, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
+	public EnumActionResult onItemUseFirst( final ItemStack is, final EntityPlayer player, final World world, final BlockPos pos, final EnumFacing side, final float hitX, final float hitY, final float hitZ, final EnumHand hand )
 	{
-		return AEApi.instance().partHelper().placeBus( is, pos, side, player, world );
+		return AEApi.instance().partHelper().placeBus( is, pos, side, player, world ) ? EnumActionResult.SUCCESS : EnumActionResult.FAIL;
 	}
 
 	@Override
@@ -104,7 +105,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 		if( this.subTypes == null )
 		{
 			this.subTypes = new ArrayList<ItemStack>( 1000 );
-			for( final Object blk : Block.blockRegistry )
+			for( final Object blk : Block.REGISTRY )
 			{
 				final Block b = (Block) blk;
 				try
@@ -154,7 +155,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 		final boolean enableGlass = b instanceof BlockGlass || b instanceof BlockStainedGlass;
 		final boolean disableOre = b instanceof QuartzOreBlock;
 
-		final boolean defaultValue = ( b.isOpaqueCube() && !b.getTickRandomly() && !hasTile && !disableOre ) || enableGlass;
+		final boolean defaultValue = ( b.isOpaqueCube(b.getDefaultState()) && !b.getTickRandomly() && !hasTile && !disableOre ) || enableGlass;
 		if( FacadeConfig.instance.checkEnabled( b, metadata, defaultValue ) )
 		{
 			if( returnItem )
@@ -168,6 +169,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 			ds[0] = Item.getIdFromItem( l.getItem() );
 			ds[1] = metadata;
 			data.setIntArray( "x", ds );
+			//TODO 1.9.4 - UniqueIdentifier => ResourceLocation ???
 			final UniqueIdentifier ui = GameRegistry.findUniqueIdentifierFor( l.getItem() );
 			data.setString( "modid", ui.modId );
 			data.setString( "itemname", ui.name );
@@ -238,7 +240,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 				}
 			}
 		}
-		return Blocks.glass;
+		return Blocks.GLASS;
 	}
 
 	public List<ItemStack> getFacades()
@@ -252,7 +254,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 		this.calculateSubTypes();
 		if( this.subTypes.isEmpty() )
 		{
-			return new ItemStack( Items.cake );
+			return new ItemStack( Items.CAKE );
 		}
 		return this.subTypes.get( 0 );
 	}
@@ -282,7 +284,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 		}
 
 		final Block blk = Block.getBlockFromItem( out.getItem() );
-		if( blk != null && blk.canRenderInLayer( EnumWorldBlockLayer.TRANSLUCENT ) )
+		if( blk != null && blk.canRenderInLayer( BlockRenderLayer.TRANSLUCENT ) )
 		{
 			return true;
 		}
