@@ -34,7 +34,7 @@ public final class FeatureRegistry
 		this.registry.add( feature );
 	}
 
-	Set<IAEFeature> getRegisteredFeatures()
+	public Set<IAEFeature> getRegisteredFeatures()
 	{
 		return this.registry;
 	}

@@ -58,7 +58,7 @@ public final class ApiDefinitions implements IDefinitions
 		return this.handlers;
 	}
 
-	FeatureRegistry getFeatureRegistry()
+	public FeatureRegistry getFeatureRegistry()
 	{
 		return this.features;
 	}

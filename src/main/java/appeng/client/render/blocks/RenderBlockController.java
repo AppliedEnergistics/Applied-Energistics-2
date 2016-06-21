@@ -49,8 +49,8 @@ public class RenderBlockController extends BaseBlockRender<BlockController, Tile
 		final boolean zz = this.getTileEntity( world, pos.offset( EnumFacing.SOUTH ) ) instanceof TileController && this.getTileEntity( world, pos.offset( EnumFacing.NORTH ) ) instanceof TileController;
 
 		final BlockController.ControllerBlockState meta = (ControllerBlockState) world.getBlockState( pos ).getValue( BlockController.CONTROLLER_STATE );
-		final boolean hasPower = meta != BlockController.ControllerBlockState.OFFLINE;
-		final boolean isConflict = meta == BlockController.ControllerBlockState.CONFLICTED;
+		final boolean hasPower = meta != BlockController.ControllerBlockState.offline;
+		final boolean isConflict = meta == BlockController.ControllerBlockState.conflicted;
 
 		ExtraBlockTextures lights = null;
 

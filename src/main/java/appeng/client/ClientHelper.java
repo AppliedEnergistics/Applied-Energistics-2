@@ -30,24 +30,28 @@ import java.util.Random;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemMeshDefinition;
 import net.minecraft.client.renderer.ItemModelMesher;
 import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.DefaultStateMapper;
+import net.minecraft.client.renderer.color.IBlockColor;
+import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
-import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.MouseEvent;
@@ -76,8 +80,10 @@ import appeng.client.texture.ExtraBlockTextures;
 import appeng.client.texture.ExtraItemTextures;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
+import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.CommonHelper;
+import appeng.core.features.IAEFeature;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketAssemblerAnimation;
 import appeng.core.sync.packets.PacketValueConfig;
@@ -90,6 +96,7 @@ import appeng.helpers.IMouseWheelItem;
 import appeng.hooks.TickHandler;
 import appeng.hooks.TickHandler.PlayerColor;
 import appeng.items.AEBaseItem;
+import appeng.items.misc.ItemPaintBall;
 import appeng.server.ServerHelper;
 import appeng.transformer.MissingCoreMod;
 import appeng.util.Platform;
@@ -137,6 +144,15 @@ public class ClientHelper extends ServerHelper
 		// AELog.info( "Registering with %s with unlocalized %s", item, item.getUnlocalizedName() );
 		// mesher.register( item, DEFAULT_ITEM_SUBTYPE, fluixStairModel );
 		// }
+		for( IAEFeature feature : Api.INSTANCE.definitions().getFeatureRegistry().getRegisteredFeatures() )
+		{
+			if( feature instanceof AEBaseBlock )
+			{
+				Minecraft.getMinecraft().getBlockColors().registerBlockColorHandler( new AEBaseBlockColor(), ( Block ) feature );
+			}
+		}
+
+		Minecraft.getMinecraft().getItemColors().registerItemColorHandler( new ItemPaintBallColor(), Api.INSTANCE.definitions().items().paintBall().maybeItem().get() );
 	}
 
 	@Override
@@ -626,5 +642,43 @@ public class ClientHelper extends ServerHelper
 			this.item = item2;
 			this.loc = res;
 		}
+	}
+
+	public static class AEBaseBlockColor implements IBlockColor
+	{
+
+		@Override
+		public int colorMultiplier( IBlockState state, IBlockAccess worldIn, BlockPos pos, int tintIndex )
+		{
+			return tintIndex;
+		}
+
+	}
+
+	public class ItemPaintBallColor implements IItemColor
+	{
+
+		@Override
+		public int getColorFromItemstack( ItemStack stack, int tintIndex )
+		{
+			final AEColor col = ( ( ItemPaintBall ) stack.getItem() ).getColor( stack );
+
+			final int colorValue = stack.getItemDamage() >= 20 ? col.mediumVariant : col.mediumVariant;
+			final int r = ( colorValue >> 16 ) & 0xff;
+			final int g = ( colorValue >> 8 ) & 0xff;
+			final int b = ( colorValue ) & 0xff;
+
+			if( stack.getItemDamage() >= 20 )
+			{
+				final float fail = 0.7f;
+				final int full = (int) ( 255 * 0.3 );
+				return (int) ( full + r * fail ) << 16 | (int) ( full + g * fail ) << 8 | (int) ( full + b * fail ) | 0xff << 24;
+			}
+			else
+			{
+				return r << 16 | g << 8 | b | 0xff << 24;
+			}
+		}
+
 	}
 }

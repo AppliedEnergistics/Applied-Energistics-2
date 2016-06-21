@@ -176,8 +176,8 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 
 		if( this.canBeRotated() )
 		{
-			data.setString( "forward", this.forward.name() );
-			data.setString( "up", this.up.name() );
+			data.setString( "forward", this.getForward().name() );
+			data.setString( "up", this.getUp().name() );
 		}
 
 		if( this.customName != null )

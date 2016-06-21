@@ -928,12 +928,6 @@ public abstract class AEBaseGui extends GuiContainer
 		final ResourceLocation loc = new ResourceLocation( "appliedenergistics2", "textures/" + file );
 		this.mc.getTextureManager().bindTexture( loc );
 	}
-
-	public void func_146977_a( final Slot s )
-	{
-		this.drawSlot( s );
-	}
-
 	protected GuiScrollbar getScrollBar()
 	{
 		return this.myScrollBar;

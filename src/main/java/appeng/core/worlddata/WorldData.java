@@ -29,6 +29,7 @@ import javax.annotation.Nullable;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 
+import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.config.Configuration;
 
@@ -121,10 +122,15 @@ public final class WorldData implements IWorldData
 	 * Requires to start up from external from here
 	 *
 	 * drawback of the singleton build style
+	 * @param server  
 	 */
-	public static void onServerAboutToStart()
+	public static void onServerAboutToStart( MinecraftServer server )
 	{
-		final File worldDirectory = DimensionManager.getCurrentSaveRootDirectory();
+		File worldDirectory = DimensionManager.getCurrentSaveRootDirectory();
+		if( worldDirectory == null )
+		{
+			worldDirectory = server.getActiveAnvilConverter().getSaveLoader( server.getFolderName(), false ).getWorldDirectory();
+		}
 		final WorldData newInstance = new WorldData( worldDirectory );
 
 		instance = newInstance;

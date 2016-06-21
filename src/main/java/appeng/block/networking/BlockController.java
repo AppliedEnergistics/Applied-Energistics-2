@@ -43,7 +43,7 @@ public class BlockController extends AEBaseTileBlock
 
 	public static enum ControllerBlockState implements IStringSerializable
 	{
-		OFFLINE, ONLINE, CONFLICTED;
+		offline, online, conflicted;
 
 		@Override
 		public String getName()
@@ -70,7 +70,7 @@ public class BlockController extends AEBaseTileBlock
 	@Override
 	public IBlockState getStateFromMeta( final int meta )
 	{
-		return this.getDefaultState().withProperty( CONTROLLER_STATE, ControllerBlockState.OFFLINE );
+		return this.getDefaultState().withProperty( CONTROLLER_STATE, ControllerBlockState.offline );
 	}
 
 	@Override

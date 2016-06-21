@@ -231,7 +231,7 @@ public final class AppEng
 	@EventHandler
 	private void serverAboutToStart( final FMLServerAboutToStartEvent evt )
 	{
-		WorldData.onServerAboutToStart();
+		WorldData.onServerAboutToStart( evt.getServer() );
 	}
 
 	@EventHandler

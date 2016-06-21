@@ -55,7 +55,6 @@ public class StorageHelper
 		return instance;
 	}
 
-	//TODO 1.9.4 aftermath - Check that this still works.
 	/**
 	 * Mostly from dimensional doors.. which mostly got it form X-Comp.
 	 *
@@ -125,7 +124,7 @@ public class StorageHelper
 			}
 			else
 			{
-				entity.changeDimension( newWorld.provider.getDimension() );
+				entity.getServer().getPlayerList().transferEntityToWorld( entity, entity.dimension, entity.getServer().worldServerForDimension( entity.dimension ), (WorldServer) link.dim, new METeleporter( newWorld, link ) );
 			}
 		}
 

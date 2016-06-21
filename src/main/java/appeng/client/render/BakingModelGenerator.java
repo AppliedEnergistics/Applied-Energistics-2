@@ -7,11 +7,13 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Vector3f;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.BlockFaceUV;
 import net.minecraft.client.renderer.block.model.BlockPartFace;
@@ -23,7 +25,6 @@ import net.minecraft.client.renderer.block.model.ModelRotation;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockRenderLayer;
@@ -45,10 +46,12 @@ public class BakingModelGenerator implements ModelGenerator
 {
 	private static final class CachedModel implements IBakedModel
 	{
+		private final List<BakedQuad> general;
 		private final List<BakedQuad>[] faces = new List[6];
 
 		public CachedModel()
 		{
+			this.general = new ArrayList<BakedQuad>();
 			for( final EnumFacing f : EnumFacing.VALUES )
 			{
 				this.faces[f.ordinal()] = new ArrayList<BakedQuad>();
@@ -88,7 +91,7 @@ public class BakingModelGenerator implements ModelGenerator
 		@Override
 		public List<BakedQuad> getQuads( IBlockState state, EnumFacing side, long rand )
 		{
-			return this.faces[side.ordinal()];
+			return side == null ? general : this.faces[side.ordinal()];
 		}
 
 		@Override
@@ -132,9 +135,10 @@ public class BakingModelGenerator implements ModelGenerator
 	private boolean flipTexture = false;
 	private final List<SMFace> faces = new ArrayList();
 
-	private int point = 0;
+	//	private int point = 0;
 	private int brightness = -1;
-	private final float[][] points = new float[4][];
+	private VertexBuffer vertexBuffer;
+	//private final float[][] points = new float[4][];
 	private EnumFacing currentFace = EnumFacing.UP;
 	private int color = -1;
 
@@ -154,6 +158,7 @@ public class BakingModelGenerator implements ModelGenerator
 		{
 			boundingBox = Block.FULL_BLOCK_AABB;
 		}
+
 		this.setRenderMinX( boundingBox.minX );
 		this.setRenderMinY( boundingBox.minY );
 		this.setRenderMinZ( boundingBox.minZ );
@@ -303,19 +308,25 @@ public class BakingModelGenerator implements ModelGenerator
 		return this.getIcon( state );
 	}
 
-	//TODO 1.9.4 aftermath - Check that this shit still works.
+	//TODO 1.9.4 aftermath - Check that this shit still works. VertexBuffer
 	public void addVertexWithUV( final EnumFacing face, final double x, final double y, final double z, final double u, final double v )
 	{
-		this.points[this.point++] = new float[] { (float) x + this.tx, (float) y + this.ty, (float) z + this.tz, (float) u, (float) v };
-
-		if( this.point == 4 )
+		//this.points[this.point++] = new float[] { (float) x + this.tx, (float) y + this.ty, (float) z + this.tz, (float) u, (float) v };
+		if( vertexBuffer == null )
 		{
-			this.brightness = -1;
+			vertexBuffer = new VertexBuffer( 4 );
+			vertexBuffer.begin( GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+		}
+		vertexBuffer.pos( x, y, z ).tex( u, v ).endVertex();
+		//		if( this.point == 4 )
+		if( vertexBuffer.getVertexCount() == 4)
+		{
+			/*this.brightness = -1;
 			final int[] vertData = {
 					Float.floatToRawIntBits( this.points[0][0] ),
 					Float.floatToRawIntBits( this.points[0][1] ),
 					Float.floatToRawIntBits( this.points[0][2] ),
-					//				this.brightness,
+					this.brightness,
 					Float.floatToRawIntBits( this.points[0][3] ),
 					Float.floatToRawIntBits( this.points[0][4] ),
 					//				0,
@@ -323,7 +334,7 @@ public class BakingModelGenerator implements ModelGenerator
 					Float.floatToRawIntBits( this.points[1][0] ),
 					Float.floatToRawIntBits( this.points[1][1] ),
 					Float.floatToRawIntBits( this.points[1][2] ),
-					//				this.brightness,
+					this.brightness,
 					Float.floatToRawIntBits( this.points[1][3] ),
 					Float.floatToRawIntBits( this.points[1][4] ),
 					//				0,
@@ -331,7 +342,7 @@ public class BakingModelGenerator implements ModelGenerator
 					Float.floatToRawIntBits( this.points[2][0] ),
 					Float.floatToRawIntBits( this.points[2][1] ),
 					Float.floatToRawIntBits( this.points[2][2] ),
-					//				this.brightness,
+					this.brightness,
 					Float.floatToRawIntBits( this.points[2][3] ),
 					Float.floatToRawIntBits( this.points[2][4] ),
 					//				0,
@@ -339,18 +350,28 @@ public class BakingModelGenerator implements ModelGenerator
 					Float.floatToRawIntBits( this.points[3][0] ),
 					Float.floatToRawIntBits( this.points[3][1] ),
 					Float.floatToRawIntBits( this.points[3][2] ),
-					//				this.brightness,
+					this.brightness,
 					Float.floatToRawIntBits( this.points[3][3] ),
 					Float.floatToRawIntBits( this.points[3][4] ),
 					//				0,
 			};
 
+			this.generatedModel.general.add( new BakedQuad( vertData, this.color, face, Minecraft.getMinecraft().getTextureMapBlocks().getTextureExtry( TextureMap.LOCATION_BLOCKS_TEXTURE.toString() ), true, DefaultVertexFormats.POSITION_TEX ) );
 			for( List<BakedQuad> list : this.generatedModel.faces )
 			{
 				list.add( new BakedQuad( vertData, this.color, face, Minecraft.getMinecraft().getTextureMapBlocks().getTextureExtry( TextureMap.LOCATION_BLOCKS_TEXTURE.toString() ), true, DefaultVertexFormats.POSITION_TEX ) );
 			}
 
-			this.point = 0;
+			this.point = 0;*/
+			
+			vertexBuffer.finishDrawing();
+			final VertexBuffer.State state = vertexBuffer.getVertexState();
+			this.generatedModel.general.add( new BakedQuad( state.getRawBuffer(), this.color, face, Minecraft.getMinecraft().getTextureMapBlocks().getTextureExtry( TextureMap.LOCATION_BLOCKS_TEXTURE.toString() ), true, state.getVertexFormat() ) );
+			for( List<BakedQuad> list : this.generatedModel.faces )
+			{
+				list.add( new BakedQuad( state.getRawBuffer(), this.color, face, Minecraft.getMinecraft().getTextureMapBlocks().getTextureExtry( TextureMap.LOCATION_BLOCKS_TEXTURE.toString() ), true, state.getVertexFormat() ) );
+			}
+			vertexBuffer = null;
 		}
 	}
 
@@ -582,6 +603,7 @@ public class BakingModelGenerator implements ModelGenerator
 			}
 			else
 			{
+				this.generatedModel.general.add( bf );
 				for( List<BakedQuad> list : this.generatedModel.faces )
 				{
 					list.add( bf );

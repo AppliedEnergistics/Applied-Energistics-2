@@ -35,7 +35,6 @@ import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.color.IBlockColor;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.resources.IResource;
 import net.minecraft.creativetab.CreativeTabs;
@@ -62,7 +61,6 @@ import appeng.api.util.AEPartLocation;
 import appeng.api.util.IAESprite;
 import appeng.api.util.IOrientable;
 import appeng.api.util.IOrientableBlock;
-import appeng.block.AEBaseBlock.AEBaseBlockColor;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.BlockRenderInfo;
 import appeng.client.texture.BaseIcon;
@@ -94,7 +92,7 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 	private BlockRenderInfo renderInfo;
 	private String textureName;
 	
-	protected AxisAlignedBB boundingBox;
+	protected AxisAlignedBB boundingBox = FULL_BLOCK_AABB;
 
 	@Override
 	public boolean isVisuallyOpaque()
@@ -109,11 +107,6 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 		this.setLightLevel( 0 );
 		this.setHardness( 2.2F );
 		this.setHarvestLevel( "pickaxe", 0 );
-		
-		if( Platform.isClient() )
-		{
-			Minecraft.getMinecraft().getBlockColors().registerBlockColorHandler( new AEBaseBlockColor(), this );
-		}
 	}
 
 	protected AEBaseBlock( final Material mat, final Optional<String> subName )
@@ -718,17 +711,5 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 	public void setHasSubtypes( final boolean hasSubtypes )
 	{
 		this.hasSubtypes = hasSubtypes;
-	}
-
-	@SideOnly( Side.CLIENT )
-	public class AEBaseBlockColor implements IBlockColor
-	{
-
-		@Override
-		public int colorMultiplier( IBlockState state, IBlockAccess worldIn, BlockPos pos, int tintIndex )
-		{
-			return tintIndex;
-		}
-
 	}
 }

@@ -109,23 +109,23 @@ public class TileController extends AENetworkPowerTile
 			return;
 		}
 
-		ControllerBlockState metaState = ControllerBlockState.OFFLINE;
+		ControllerBlockState metaState = ControllerBlockState.offline;
 
 		try
 		{
 			if( this.getProxy().getEnergy().isNetworkPowered() )
 			{
-				metaState = ControllerBlockState.ONLINE;
+				metaState = ControllerBlockState.online;
 
 				if( this.getProxy().getPath().getControllerState() == ControllerState.CONTROLLER_CONFLICT )
 				{
-					metaState = ControllerBlockState.CONFLICTED;
+					metaState = ControllerBlockState.conflicted;
 				}
 			}
 		}
 		catch( final GridAccessException e )
 		{
-			metaState = ControllerBlockState.OFFLINE;
+			metaState = ControllerBlockState.offline;
 		}
 
 		if( this.checkController( this.pos ) && this.worldObj.getBlockState( this.pos ).getValue( BlockController.CONTROLLER_STATE ) != metaState )

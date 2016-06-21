@@ -92,4 +92,22 @@ public class StorageChunkProvider extends ChunkProviderOverworld
 	{
 		return new ArrayList();
 	}
+
+	@Override
+	public boolean generateStructures( Chunk chunkIn, int x, int z )
+	{
+		return false;
+	}
+
+	@Override
+	public BlockPos getStrongholdGen( World worldIn, String structureName, BlockPos position )
+	{
+		return null;
+	}
+
+	@Override
+	public void recreateStructures( Chunk chunkIn, int x, int z )
+	{
+		
+	}
 }

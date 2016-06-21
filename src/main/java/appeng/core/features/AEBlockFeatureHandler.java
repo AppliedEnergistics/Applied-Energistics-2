@@ -23,12 +23,13 @@ import java.util.EnumSet;
 
 import com.google.common.base.Optional;
 
-import net.minecraftforge.fml.common.registry.GameData;
+import net.minecraft.item.Item;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 
 import appeng.api.definitions.IBlockDefinition;
 import appeng.block.AEBaseBlock;
+import appeng.core.AppEng;
 import appeng.core.CommonHelper;
 import appeng.core.CreativeTab;
 
@@ -69,18 +70,19 @@ public final class AEBlockFeatureHandler implements IFeatureHandler
 		if( this.enabled )
 		{
 			final String name = this.extractor.get();
+			this.featured.setRegistryName( AppEng.MOD_ID, name );
 			this.featured.setCreativeTab( CreativeTab.instance );
 			this.featured.setUnlocalizedName( "appliedenergistics2." + name );
 			this.featured.setBlockTextureName( name );
 
-			// Bypass the forge magic with null to register our own itemblock later.
-			GameRegistry.registerBlock( this.featured, null, name );
-			GameRegistry.registerItem( this.definition.maybeItem().get(), name );
+			GameRegistry.register( this.featured );
 
 			// register the block/item conversion...
 			if( this.definition.maybeItem().isPresent() )
 			{
-				GameData.getBlockItemMap().put( this.featured, this.definition.maybeItem().get() );
+				final Item featuredItem = this.definition.maybeItem().get();
+				featuredItem.setRegistryName( AppEng.MOD_ID, name );
+				GameRegistry.register( featuredItem );
 			}
 
 			if( side == Side.CLIENT )

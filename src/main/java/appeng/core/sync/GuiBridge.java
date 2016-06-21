@@ -54,6 +54,7 @@ import appeng.api.parts.IPartHost;
 import appeng.api.storage.ITerminalHost;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
+import appeng.client.gui.AEBaseGui;
 import appeng.client.gui.GuiNull;
 import appeng.container.AEBaseContainer;
 import appeng.container.ContainerNull;
@@ -220,6 +221,8 @@ public enum GuiBridge implements IGuiHandler
 	{
 		if( Platform.isClient() )
 		{
+			AEBaseGui.class.getName();
+
 			final String start = this.containerClass.getName();
 			final String guiClass = start.replaceFirst( "container.", "client.gui." ).replace( ".Container", ".Gui" );
 

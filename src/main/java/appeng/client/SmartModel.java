@@ -95,7 +95,7 @@ public class SmartModel implements IBakedModel
 			{
 				final ModelGenerator helper = new BakingModelGenerator();
 				final Block blk = Block.getBlockFromItem( stack.getItem() );
-				helper.setRenderBoundsFromBlock( blk.getDefaultState(), null );
+				helper.setRenderBoundsFromBlock( blk != null ? blk.getDefaultState() : null, null );
 				aeRenderer.getRendererInstance().renderInventory( blk instanceof AEBaseBlock ? (AEBaseBlock) blk : null, stack, helper, ItemRenderType.INVENTORY, null );
 				helper.finalizeModel( true );
 				return helper.getOutput();
