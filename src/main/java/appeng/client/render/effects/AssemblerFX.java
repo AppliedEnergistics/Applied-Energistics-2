@@ -28,9 +28,10 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.client.EffectType;
 import appeng.core.CommonHelper;
 import appeng.entity.EntityFloatingItem;
+import appeng.entity.ICanDie;
 
 
-public class AssemblerFX extends Particle
+public class AssemblerFX extends Particle implements ICanDie
 {
 
 	private final EntityFloatingItem fi;
@@ -47,8 +48,12 @@ public class AssemblerFX extends Particle
 		this.fi = new EntityFloatingItem( this, w, x, y, z, is.getItemStack() );
 		w.spawnEntityInWorld( this.fi );
 		this.particleMaxAge = (int) Math.ceil( Math.max( 1, 100.0f / speed ) ) + 2;
-		//TODO 1.9.4 - noClip => ?
-		this.noClip = true;
+	}
+
+	@Override
+	public boolean isDead()
+	{
+		return isExpired;
 	}
 
 	@Override
@@ -61,7 +66,20 @@ public class AssemblerFX extends Particle
 	@Override
 	public void onUpdate()
 	{
-		super.onUpdate();
+		this.prevPosX = this.posX;
+        this.prevPosY = this.posY;
+        this.prevPosZ = this.posZ;
+
+        if (this.particleAge++ >= this.particleMaxAge)
+        {
+            this.setExpired();
+        }
+
+        this.motionY -= 0.04D * (double)this.particleGravity;
+        this.moveEntity(this.motionX, this.motionY, this.motionZ);
+        this.motionX *= 0.9800000190734863D;
+        this.motionY *= 0.9800000190734863D;
+        this.motionZ *= 0.9800000190734863D;
 
 		if( this.isExpired )
 		{

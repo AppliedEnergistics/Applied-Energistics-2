@@ -33,6 +33,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
@@ -200,7 +201,7 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISto
 	}
 
 	@Override
-	public boolean onPartActivate( final EntityPlayer p, final Vec3d pos )
+	public boolean onPartActivate( final EntityPlayer p, final EnumHand hand, final Vec3d pos )
 	{
 		if( p.isSneaking() )
 		{

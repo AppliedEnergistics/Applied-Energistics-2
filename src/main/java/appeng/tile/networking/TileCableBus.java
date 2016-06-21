@@ -30,6 +30,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -240,9 +241,9 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	}
 
 	@Override
-	public AEPartLocation addPart( final ItemStack is, final AEPartLocation side, final EntityPlayer player )
+	public AEPartLocation addPart( final ItemStack is, final AEPartLocation side, final EntityPlayer player, final EnumHand hand )
 	{
-		return this.getCableBus().addPart( is, side, player );
+		return this.getCableBus().addPart( is, side, player, hand );
 	}
 
 	@Override

@@ -26,6 +26,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
+import javax.annotation.Nullable;
+
 import io.netty.buffer.ByteBuf;
 
 import net.minecraft.entity.Entity;
@@ -36,6 +38,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -178,7 +181,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 	}
 
 	@Override
-	public AEPartLocation addPart( ItemStack is, final AEPartLocation side, final EntityPlayer player )
+	public AEPartLocation addPart( ItemStack is, final AEPartLocation side, final @Nullable EntityPlayer player, final @Nullable EnumHand hand  )
 	{
 		if( this.canAddPart( is, side ) )
 		{
@@ -216,7 +219,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 
 					if( player != null )
 					{
-						bp.onPlacement( player, is, side );
+						bp.onPlacement( player, hand, is, side );
 					}
 
 					if( this.inWorld )
@@ -271,7 +274,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 
 					if( player != null )
 					{
-						bp.onPlacement( player, is, side );
+						bp.onPlacement( player, hand, is, side );
 					}
 
 					if( this.inWorld )
@@ -802,12 +805,12 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 	}
 
 	@Override
-	public boolean activate( final EntityPlayer player, final Vec3d pos )
+	public boolean activate( final EntityPlayer player, final EnumHand hand, final Vec3d pos )
 	{
 		final SelectedPart p = this.selectPart( pos );
 		if( p != null && p.part != null )
 		{
-			return p.part.onActivate( player, pos );
+			return p.part.onActivate( player, hand, pos );
 		}
 		return false;
 	}
@@ -972,7 +975,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 				else
 				{
 					this.removePart( side, false );
-					side = this.addPart( new ItemStack( myItem, 1, dmgValue ), side, null );
+					side = this.addPart( new ItemStack( myItem, 1, dmgValue ), side, null, null );
 					if( side != null )
 					{
 						p = this.getPart( side );
@@ -1073,7 +1076,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 				else
 				{
 					this.removePart( side, true );
-					side = this.addPart( iss, side, null );
+					side = this.addPart( iss, side, null, null );
 					if( side != null )
 					{
 						p = this.getPart( side );

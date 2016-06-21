@@ -145,7 +145,7 @@ public class PartCable extends AEBasePart implements IPartCable
 				}
 
 				this.getHost().removePart( AEPartLocation.INTERNAL, true );
-				this.getHost().addPart( newPart, AEPartLocation.INTERNAL, who );
+				this.getHost().addPart( newPart, AEPartLocation.INTERNAL, who, null );
 				return true;
 			}
 		}

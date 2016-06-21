@@ -35,6 +35,7 @@ import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.color.IBlockColor;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.resources.IResource;
 import net.minecraft.creativetab.CreativeTabs;
@@ -61,6 +62,7 @@ import appeng.api.util.AEPartLocation;
 import appeng.api.util.IAESprite;
 import appeng.api.util.IOrientable;
 import appeng.api.util.IOrientableBlock;
+import appeng.block.AEBaseBlock.AEBaseBlockColor;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.BlockRenderInfo;
 import appeng.client.texture.BaseIcon;
@@ -76,9 +78,9 @@ import appeng.helpers.ICustomCollision;
 import appeng.util.LookDirection;
 import appeng.util.Platform;
 
-//TODO 1.9.4 - setBlockBounds => ?
 public abstract class AEBaseBlock extends Block implements IAEFeature
 {
+
 	public static final PropertyEnum AXIS_ORIENTATION = PropertyEnum.create( "axis", EnumFacing.Axis.class );
 
 	private final String featureFullName;
@@ -91,6 +93,8 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 	@SideOnly( Side.CLIENT )
 	private BlockRenderInfo renderInfo;
 	private String textureName;
+	
+	protected AxisAlignedBB boundingBox;
 
 	@Override
 	public boolean isVisuallyOpaque()
@@ -105,6 +109,11 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 		this.setLightLevel( 0 );
 		this.setHardness( 2.2F );
 		this.setHarvestLevel( "pickaxe", 0 );
+		
+		if( Platform.isClient() )
+		{
+			Minecraft.getMinecraft().getBlockColors().registerBlockColorHandler( new AEBaseBlockColor(), this );
+		}
 	}
 
 	protected AEBaseBlock( final Material mat, final Optional<String> subName )
@@ -188,13 +197,6 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 		}
 	}
 
-	//TODO 1.9.4 - Move to IBlockColor
-	@Override
-	public int colorMultiplier( final IBlockAccess worldIn, final BlockPos pos, final int colorTint )
-	{
-		return colorTint;
-	}
-
 	@SideOnly( Side.CLIENT )
 	protected Class<? extends BaseBlockRender> getRenderer()
 	{
@@ -265,6 +267,12 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 	}
 
 	@Override
+	public AxisAlignedBB getBoundingBox( IBlockState state, IBlockAccess source, BlockPos pos )
+	{
+		return boundingBox;
+	}
+	
+	@Override
 	public void addCollisionBoxToList( final IBlockState state, final World w, final BlockPos pos, final AxisAlignedBB bb, final List<AxisAlignedBB> out, final Entity e )
 	{
 		final ICustomCollision collisionHandler = this.getCustomCollision( w, pos );
@@ -308,11 +316,11 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 
 				for( final AxisAlignedBB bb : bbs )
 				{
-					this.setBlockBounds( (float) bb.minX, (float) bb.minY, (float) bb.minZ, (float) bb.maxX, (float) bb.maxY, (float) bb.maxZ );
+					this.boundingBox = bb;
 
 					final RayTraceResult r = super.collisionRayTrace( state, w, pos, ld.getA(), ld.getB() );
 
-					this.setBlockBounds( 0, 0, 0, 1, 1, 1 );
+					this.boundingBox = FULL_BLOCK_AABB;
 
 					if( r != null )
 					{
@@ -392,11 +400,11 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 
 			for( final AxisAlignedBB bb : bbs )
 			{
-				this.setBlockBounds( (float) bb.minX, (float) bb.minY, (float) bb.minZ, (float) bb.maxX, (float) bb.maxY, (float) bb.maxZ );
+				this.boundingBox = bb;
 
 				final RayTraceResult r = super.collisionRayTrace( state, w, pos, a, b );
 
-				this.setBlockBounds( 0, 0, 0, 1, 1, 1 );
+				this.boundingBox = FULL_BLOCK_AABB;
 
 				if( r != null )
 				{
@@ -421,7 +429,7 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 			return null;
 		}
 
-		this.setBlockBounds( 0, 0, 0, 1, 1, 1 );
+		this.boundingBox = FULL_BLOCK_AABB;
 		return super.collisionRayTrace( state, w, pos, a, b );
 	}
 
@@ -712,4 +720,15 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 		this.hasSubtypes = hasSubtypes;
 	}
 
+	@SideOnly( Side.CLIENT )
+	public class AEBaseBlockColor implements IBlockColor
+	{
+
+		@Override
+		public int colorMultiplier( IBlockState state, IBlockAccess worldIn, BlockPos pos, int tintIndex )
+		{
+			return tintIndex;
+		}
+
+	}
 }

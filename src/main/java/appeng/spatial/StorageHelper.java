@@ -19,6 +19,7 @@
 package appeng.spatial;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.block.Block;
@@ -54,6 +55,7 @@ public class StorageHelper
 		return instance;
 	}
 
+	//TODO 1.9.4 aftermath - Check that this still works.
 	/**
 	 * Mostly from dimensional doors.. which mostly got it form X-Comp.
 	 *
@@ -87,28 +89,30 @@ public class StorageHelper
 		{
 			return entity;
 		}
-
-		//TODO 1.9.4 - Multiple passangers & cell transfers. Take a look at portals.
 		
-		// Is something riding? Handle it first.
-		if( entity.isBeingRidden() )
+		// Are we riding something? Teleport it instead.
+		if( entity.isRiding() )
 		{
-			return this.teleportEntity( entity.riddenByEntity, link );
+			return this.teleportEntity( entity.getRidingEntity(), link );
 		}
-		// Are we riding something? Dismount and tell the mount to go first.
-		Entity cart = entity.getRidingEntity();
-		if( cart != null )
+		
+		// Is something riding us? Handle it first.
+		final List<Entity> passangers = entity.getPassengers();
+		final List<Entity> passangersOnOtherSide = new ArrayList<>();
+		if( !passangers.isEmpty() )
 		{
-			entity.dismountRidingEntity();
-			cart = this.teleportEntity( cart, link );
-			// We keep track of both so we can remount them on the other side.
+			for( Entity passanger : passangers )
+			{
+				passanger.dismountRidingEntity();
+				passangersOnOtherSide.add( teleportEntity( passanger, link ) );
+			}
+			// We keep track of all so we can remount them on the other side.
 		}
 
 		// load the chunk!
-		WorldServer.class.cast( newWorld ).getChunkProvider().provideChunk( MathHelper.floor_double( link.x ) >> 4, MathHelper.floor_double( link.z ) >> 4 );
+		newWorld.getChunkProvider().provideChunk( MathHelper.floor_double( link.x ) >> 4, MathHelper.floor_double( link.z ) >> 4 );
 
-		final boolean diffDestination = newWorld != oldWorld;
-		if( diffDestination )
+		if( newWorld != oldWorld )
 		{
 			if( player != null )
 			{
@@ -121,58 +125,21 @@ public class StorageHelper
 			}
 			else
 			{
-				//TODO 1.9.4 - Whole entity transfer part, we now have changeDimension method. Evaluate it and remove this s...
-				final int entX = entity.chunkCoordX;
-				final int entZ = entity.chunkCoordZ;
-
-				if( ( entity.addedToChunk ) && ( oldWorld.getChunkProvider().chunkExists( entX, entZ ) ) )
-				{
-					oldWorld.getChunkFromChunkCoords( entX, entZ ).removeEntity( entity );
-					oldWorld.getChunkFromChunkCoords( entX, entZ ).setModified( true );
-				}
-
-				final Entity newEntity = EntityList.createEntityByName( EntityList.getEntityString( entity ), newWorld );
-				if( newEntity != null )
-				{
-					entity.lastTickPosX = entity.prevPosX = entity.posX = link.x;
-					entity.lastTickPosY = entity.prevPosY = entity.posY = link.y;
-					entity.lastTickPosZ = entity.prevPosZ = entity.posZ = link.z;
-
-					if( entity instanceof EntityHanging )
-					{
-						final EntityHanging h = (EntityHanging) entity;
-						h.setPosition( link.x, link.y, link.z ); // TODO: VERIFIY THIS WORKS
-					}
-
-					newEntity.copyDataFromOld( entity );
-					newEntity.dimension = newWorld.provider.getDimension();
-					newEntity.forceSpawn = true;
-
-					entity.isDead = true;
-					entity = newEntity;
-				}
-				else
-				{
-					return null;
-				}
-
-				// myChunk.addEntity( entity );
-				// newWorld.loadedEntityList.add( entity );
-				// newWorld.onEntityAdded( entity );
-				newWorld.spawnEntityInWorld( entity );
+				entity.changeDimension( newWorld.provider.getDimension() );
 			}
 		}
 
-		entity.worldObj.updateEntityWithOptionalForce( entity, false );
-
-		if( cart != null )
+		if( !passangersOnOtherSide.isEmpty() )
 		{
 			if( player != null )
 			{
 				entity.worldObj.updateEntityWithOptionalForce( entity, true );
 			}
 
-			entity.startRiding( cart, false );
+			for( Entity passanger : passangersOnOtherSide )
+			{
+				passanger.startRiding( entity, true );
+			}
 		}
 
 		return entity;

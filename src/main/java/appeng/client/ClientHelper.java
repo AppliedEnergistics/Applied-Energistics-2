@@ -44,6 +44,7 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
@@ -55,7 +56,6 @@ import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 
 import appeng.api.parts.CableRenderMode;
 import appeng.api.parts.IPartItem;
@@ -495,9 +495,8 @@ public class ClientHelper extends ServerHelper
 		{
 			if( reg.item instanceof IPartItem || reg.item instanceof IFacadeItem )
 			{
-				//TODO 1.9.4 - UniqueIdentifier => ?
-				final UniqueIdentifier i = GameRegistry.findUniqueIdentifierFor( (Item) reg.item );
-				event.getModelRegistry().putObject( new ModelResourceLocation( new ResourceLocation( i.modId, i.name ), "inventory" ), buses );
+				final ResourceLocation i = Item.REGISTRY.getNameForObject( (Item) reg.item );
+				event.getModelRegistry().putObject( new ModelResourceLocation( new ResourceLocation( i.getResourceDomain(), i.getResourcePath() ), "inventory" ), buses );
 			}
 
 			if( reg.item instanceof AEBaseBlock )
@@ -531,11 +530,23 @@ public class ClientHelper extends ServerHelper
 
 		final Minecraft mc = Minecraft.getMinecraft();
 		final EntityPlayer player = mc.thePlayer;
-		//TODO 1.9.4 - 2 hands. Just do something!
-		final ItemStack is = player.getItemStackFromSlot( EntityEquipmentSlot.MAINHAND );
-
-		if( is != null && is.getItem() instanceof IMouseWheelItem && player.isSneaking() )
+		if( player.isSneaking() )
 		{
+			final EnumHand hand;
+			if( player.getHeldItem( EnumHand.MAIN_HAND ) != null && player.getHeldItem( EnumHand.MAIN_HAND ).getItem() instanceof IMouseWheelItem )
+			{
+				hand = EnumHand.MAIN_HAND;
+			}
+			else if( player.getHeldItem( EnumHand.OFF_HAND ) != null && player.getHeldItem( EnumHand.OFF_HAND ).getItem() instanceof IMouseWheelItem )
+			{
+				hand = EnumHand.OFF_HAND;
+			}
+			else
+			{
+				return;
+			}
+
+			final ItemStack is = player.getHeldItem( hand );
 			try
 			{
 				NetworkHandler.instance.sendToServer( new PacketValueConfig( "Item", me.getDwheel() > 0 ? "WheelUp" : "WheelDown" ) );

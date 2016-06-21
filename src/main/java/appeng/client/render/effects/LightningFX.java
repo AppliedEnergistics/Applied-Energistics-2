@@ -55,8 +55,6 @@ public class LightningFX extends Particle
 		this.motionY = 0;
 		this.motionZ = 0;
 		this.particleMaxAge = maxAge;
-		//TODO 1.9.4 - noClip => ?
-		this.noClip = true;
 	}
 
 	protected void regen()
@@ -82,6 +80,25 @@ public class LightningFX extends Particle
 	{
 		final int j1 = 13;
 		return j1 << 20 | j1 << 4;
+	}
+	
+	@Override
+	public void onUpdate()
+	{
+		this.prevPosX = this.posX;
+        this.prevPosY = this.posY;
+        this.prevPosZ = this.posZ;
+
+        if (this.particleAge++ >= this.particleMaxAge)
+        {
+            this.setExpired();
+        }
+
+        this.motionY -= 0.04D * (double)this.particleGravity;
+        this.moveEntity(this.motionX, this.motionY, this.motionZ);
+        this.motionX *= 0.9800000190734863D;
+        this.motionY *= 0.9800000190734863D;
+        this.motionZ *= 0.9800000190734863D;
 	}
 
 	@Override

@@ -60,6 +60,7 @@ import net.minecraft.nbt.NBTTagString;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.SPacketChunkData;
 import net.minecraft.server.management.PlayerChunkMap;
+import net.minecraft.server.management.PlayerChunkMapEntry;
 import net.minecraft.stats.Achievement;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityChest;
@@ -160,9 +161,7 @@ public class Platform
 	private static final Random RANDOM_GENERATOR = new Random();
 	private static final WeakHashMap<World, EntityPlayer> FAKE_PLAYERS = new WeakHashMap<World, EntityPlayer>();
 	private static Field tagList;
-	private static Class playerInstance;
-	private static Method getOrCreateChunkWatcher;
-	private static Method sendToAllPlayersWatchingChunk;
+	private static Method getEntry;
 
 	public static Random getRandom()
 	{
@@ -2129,7 +2128,6 @@ public class Platform
 		return is;
 	}
 
-	//TODO 1.9.4 - What do we want to do with this? Seriously, it wont work now, so JUST DO SOMETHING!
 	public static void sendChunk( final Chunk c, final int verticalBits )
 	{
 		try
@@ -2137,27 +2135,17 @@ public class Platform
 			final WorldServer ws = (WorldServer) c.getWorld();
 			final PlayerChunkMap pm = ws.getPlayerChunkMap();
 
-			if( getOrCreateChunkWatcher == null )
+			if( getEntry == null )
 			{
-				getOrCreateChunkWatcher = ReflectionHelper.findMethod( PlayerChunkMap.class, pm, new String[] { "getOrCreateChunkWatcher", "func_72690_a" }, int.class, int.class, boolean.class );
+				getEntry = ReflectionHelper.findMethod( PlayerChunkMap.class, pm, new String[] { "getEntry", "func_187301_b" }, int.class, int.class );
 			}
 
-			if( getOrCreateChunkWatcher != null )
+			if( getEntry != null )
 			{
-				final Object playerInstance = getOrCreateChunkWatcher.invoke( pm, c.xPosition, c.zPosition, false );
+				final PlayerChunkMapEntry playerInstance = (PlayerChunkMapEntry) getEntry.invoke( pm, c.xPosition, c.zPosition );
 				if( playerInstance != null )
 				{
-					Platform.playerInstance = playerInstance.getClass();
-
-					if( sendToAllPlayersWatchingChunk == null )
-					{
-						sendToAllPlayersWatchingChunk = ReflectionHelper.findMethod( Platform.playerInstance, playerInstance, new String[] { "sendToAllPlayersWatchingChunk", "func_151251_a" }, Packet.class );
-					}
-
-					if( sendToAllPlayersWatchingChunk != null )
-					{
-						sendToAllPlayersWatchingChunk.invoke( playerInstance, new SPacketChunkData( c, verticalBits ) );
-					}
+					playerInstance.sendPacket( new SPacketChunkData( c, verticalBits ) );
 				}
 			}
 		}

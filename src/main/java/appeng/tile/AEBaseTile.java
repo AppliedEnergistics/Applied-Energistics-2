@@ -74,6 +74,8 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	private EnumFacing forward = null;
 	private EnumFacing up = null;
 
+	private IBlockState state;
+
 	@Override
 	public boolean shouldRefresh( final World world, final BlockPos pos, final IBlockState oldState, final IBlockState newSate )
 	{
@@ -113,6 +115,15 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 		return src.stack( 1 );
 	}
 
+	@Nonnull
+	public IBlockState getBlockState(){
+		if( state == null )
+		{
+			state = worldObj.getBlockState( getPos() );
+		}
+		return state;
+	}
+	
 	/**
 	 * for dormant chunk cache.
 	 */
@@ -299,8 +310,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 			if( this.worldObj != null )
 			{
 				AELog.blockUpdate( this.pos, this );
-				//TODO 1.9.4 - markBlockForUpdate => ?
-				this.worldObj.markBlockForUpdate( this.pos );
+				this.worldObj.notifyBlockUpdate( this.pos, getBlockState(), getBlockState(), 3 );
 			}
 		}
 	}

@@ -3,6 +3,8 @@ package appeng.api.util;
 
 import java.util.EnumSet;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.IBakedModel;
@@ -49,7 +51,7 @@ public interface ModelGenerator
 
 	void setFlipTexture( boolean b );
 
-	void setRenderBoundsFromBlock( Block block );
+	void setRenderBoundsFromBlock( IBlockState state, @Nullable BlockPos pos );
 
 	void setRenderBounds( double v, double v1, double v2, double v3, double v4, double v5 );
 

@@ -30,6 +30,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -226,9 +227,9 @@ public class PartToggleBus extends PartBasicState
 	}
 
 	@Override
-	public void onPlacement( final EntityPlayer player, final ItemStack held, final AEPartLocation side )
+	public void onPlacement( final EntityPlayer player, final EnumHand hand, final ItemStack held, final AEPartLocation side )
 	{
-		super.onPlacement( player, held, side );
+		super.onPlacement( player, hand, held, side );
 		this.getOuterProxy().setOwner( player );
 	}
 

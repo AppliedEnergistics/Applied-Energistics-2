@@ -27,6 +27,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
@@ -189,7 +190,7 @@ public abstract class AbstractPartReporting extends AEBasePart implements IPartM
 	}
 
 	@Override
-	public boolean onPartActivate( final EntityPlayer player, final Vec3d pos )
+	public boolean onPartActivate( final EntityPlayer player, final EnumHand hand, final Vec3d pos )
 	{
 		final TileEntity te = this.getTile();
 
@@ -225,14 +226,14 @@ public abstract class AbstractPartReporting extends AEBasePart implements IPartM
 		}
 		else
 		{
-			return super.onPartActivate( player, pos );
+			return super.onPartActivate( player, hand, pos );
 		}
 	}
 
 	@Override
-	public final void onPlacement( final EntityPlayer player, final ItemStack held, final AEPartLocation side )
+	public final void onPlacement( final EntityPlayer player, final EnumHand hand, final ItemStack held, final AEPartLocation side )
 	{
-		super.onPlacement( player, held, side );
+		super.onPlacement( player, hand, held, side );
 
 		final byte rotation = (byte) ( MathHelper.floor_double( ( player.rotationYaw * 4F ) / 360F + 2.5D ) & 3 );
 		if( side == AEPartLocation.UP )

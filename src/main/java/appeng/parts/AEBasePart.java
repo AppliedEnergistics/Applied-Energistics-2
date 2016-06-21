@@ -39,6 +39,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -493,39 +494,39 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 	}
 
 	@Override
-	public final boolean onActivate( final EntityPlayer player, final Vec3d pos )
+	public final boolean onActivate( final EntityPlayer player, final EnumHand hand, final Vec3d pos )
 	{
 		if( this.useMemoryCard( player ) )
 		{
 			return true;
 		}
 
-		return this.onPartActivate( player, pos );
+		return this.onPartActivate( player, hand, pos );
 	}
 
 	@Override
-	public final boolean onShiftActivate( final EntityPlayer player, final Vec3d pos )
+	public final boolean onShiftActivate( final EntityPlayer player, final EnumHand hand, final Vec3d pos )
 	{
 		if( this.useMemoryCard( player ) )
 		{
 			return true;
 		}
 
-		return this.onPartShiftActivate( player, pos );
+		return this.onPartShiftActivate( player, hand, pos );
 	}
 
-	public boolean onPartActivate( final EntityPlayer player, final Vec3d pos )
+	public boolean onPartActivate( final EntityPlayer player, final EnumHand hand, final Vec3d pos )
 	{
 		return false;
 	}
 
-	public boolean onPartShiftActivate( final EntityPlayer player, final Vec3d pos )
+	public boolean onPartShiftActivate( final EntityPlayer player, final EnumHand hand, final Vec3d pos )
 	{
 		return false;
 	}
 
 	@Override
-	public void onPlacement( final EntityPlayer player, final ItemStack held, final AEPartLocation side )
+	public void onPlacement( final EntityPlayer player, final EnumHand hand, final ItemStack held, final AEPartLocation side )
 	{
 		this.proxy.setOwner( player );
 	}

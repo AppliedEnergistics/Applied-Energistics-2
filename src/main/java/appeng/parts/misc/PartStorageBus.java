@@ -28,6 +28,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.relauncher.Side;
@@ -317,7 +318,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	}
 
 	@Override
-	public boolean onPartActivate( final EntityPlayer player, final Vec3d pos )
+	public boolean onPartActivate( final EntityPlayer player, final EnumHand hand, final Vec3d pos )
 	{
 		if( !player.isSneaking() )
 		{

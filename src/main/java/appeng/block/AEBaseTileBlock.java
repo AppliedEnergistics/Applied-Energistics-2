@@ -225,11 +225,10 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements IAEFeature,
 		return 0;
 	}
 
-	//TODO 1.9.4 - Move to IBlockState
 	@Override
-	public boolean onBlockAdded( final World worldIn, final BlockPos pos, final IBlockState state, final int eventID, final int eventParam )
+	public boolean eventReceived( final IBlockState state, final World worldIn, final BlockPos pos, final int eventID, final int eventParam )
 	{
-		super.onBlockEventReceived( worldIn, pos, state, eventID, eventParam );
+		super.eventReceived( state, worldIn, pos, eventID, eventParam );
 		final TileEntity tileentity = worldIn.getTileEntity( pos );
 		return tileentity != null ? tileentity.receiveClientEvent( eventID, eventParam ) : false;
 	}

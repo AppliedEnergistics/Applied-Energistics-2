@@ -71,7 +71,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 	@Override
 	public EnumActionResult onItemUseFirst( final ItemStack is, final EntityPlayer player, final World world, final BlockPos pos, final EnumFacing side, final float hitX, final float hitY, final float hitZ, final EnumHand hand )
 	{
-		return AEApi.instance().partHelper().placeBus( is, pos, side, player, world ) ? EnumActionResult.SUCCESS : EnumActionResult.FAIL;
+		return AEApi.instance().partHelper().placeBus( is, pos, side, player, hand, world ) ? EnumActionResult.SUCCESS : EnumActionResult.FAIL;
 	}
 
 	@Override
@@ -169,10 +169,9 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 			ds[0] = Item.getIdFromItem( l.getItem() );
 			ds[1] = metadata;
 			data.setIntArray( "x", ds );
-			//TODO 1.9.4 - UniqueIdentifier => ResourceLocation ???
-			final UniqueIdentifier ui = GameRegistry.findUniqueIdentifierFor( l.getItem() );
-			data.setString( "modid", ui.modId );
-			data.setString( "itemname", ui.name );
+			final ResourceLocation ui = Item.REGISTRY.getNameForObject( l.getItem() );
+			data.setString( "modid", ui.getResourceDomain() );
+			data.setString( "itemname", ui.getResourcePath() );
 			is.setTagCompound( data );
 			return is;
 		}

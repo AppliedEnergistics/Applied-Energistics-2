@@ -152,11 +152,10 @@ public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorH
 		this.setEstimatedTime( -1 );
 	}
 
-	//TODO 1.9.4 - removeCraftingFromCrafters => ?
 	@Override
-	public void removeCraftingFromCrafters( final IContainerListener c )
+	public void removeListener( final IContainerListener c )
 	{
-		super.removeCraftingFromCrafters( c );
+		super.removeListener( c );
 
 		if( this.listeners.isEmpty() && this.getMonitor() != null )
 		{

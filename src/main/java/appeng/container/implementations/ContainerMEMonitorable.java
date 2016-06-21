@@ -300,11 +300,10 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 		super.onUpdate( field, oldValue, newValue );
 	}
 
-	//TODO 1.9.4 - onCraftGuiOpened => ?
 	@Override
-	public void onCraftGuiOpened( final IContainerListener c )
+	public void addListener( final IContainerListener c )
 	{
-		super.onCraftGuiOpened( c );
+		super.addListener( c );
 
 		this.queueInventory( c );
 	}

@@ -349,7 +349,7 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 	}
 
 	@Override
-	public boolean onPartActivate( final EntityPlayer player, final Vec3d pos )
+	public boolean onPartActivate( final EntityPlayer player, final EnumHand hand, final Vec3d pos )
 	{
 		if( !player.isSneaking() )
 		{
@@ -410,9 +410,6 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 	@Override
 	public IAEItemStack injectItems( final IAEItemStack input, final Actionable type, final BaseActionSource src )
 	{
-		//TODO 1.9.4 - 2 hands! Just do something!
-		final EnumHand hand = EnumHand.MAIN_HAND;
-		
 		if( this.blocked || input == null || input.getStackSize() <= 0 )
 		{
 			return input;
@@ -466,29 +463,29 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 
 						if( side.xOffset == 0 && side.zOffset == 0 )
 						{
-							Worked = i.onItemUse( is, player, w, tePos.offset( side.getFacing() ), hand, side.getFacing().getOpposite(), side.xOffset, side.yOffset, side.zOffset ) == EnumActionResult.SUCCESS;
+							Worked = i.onItemUse( is, player, w, tePos.offset( side.getFacing() ), null, side.getFacing().getOpposite(), side.xOffset, side.yOffset, side.zOffset ) == EnumActionResult.SUCCESS;
 						}
 
 						if( !Worked && side.xOffset == 0 && side.zOffset == 0 )
 						{
-							Worked = i.onItemUse( is, player, w, tePos.offset( side.getFacing().getOpposite() ), hand, side.getFacing(), side.xOffset, side.yOffset, side.zOffset ) == EnumActionResult.SUCCESS;
+							Worked = i.onItemUse( is, player, w, tePos.offset( side.getFacing().getOpposite() ), null, side.getFacing(), side.xOffset, side.yOffset, side.zOffset ) == EnumActionResult.SUCCESS;
 						}
 
 						if( !Worked && side.yOffset == 0 )
 						{
-							Worked = i.onItemUse( is, player, w, tePos.offset( EnumFacing.DOWN ), hand, EnumFacing.UP, side.xOffset, side.yOffset, side.zOffset ) == EnumActionResult.SUCCESS;
+							Worked = i.onItemUse( is, player, w, tePos.offset( EnumFacing.DOWN ), null, EnumFacing.UP, side.xOffset, side.yOffset, side.zOffset ) == EnumActionResult.SUCCESS;
 						}
 
 						if( !Worked )
 						{
-							i.onItemUse( is, player, w, tePos, hand, side.getFacing().getOpposite(), side.xOffset, side.yOffset, side.zOffset );
+							i.onItemUse( is, player, w, tePos, null, side.getFacing().getOpposite(), side.xOffset, side.yOffset, side.zOffset );
 						}
 
 						maxStorage -= is.stackSize;
 					}
 					else
 					{
-						i.onItemUse( is, player, w, tePos, hand, side.getFacing().getOpposite(), side.xOffset, side.yOffset, side.zOffset );
+						i.onItemUse( is, player, w, tePos, null, side.getFacing().getOpposite(), side.xOffset, side.yOffset, side.zOffset );
 						maxStorage -= is.stackSize;
 					}
 				}

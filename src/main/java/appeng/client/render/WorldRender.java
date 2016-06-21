@@ -62,7 +62,7 @@ public final class WorldRender implements ISimpleBlockRenderingHandler
 	public boolean renderWorldBlock( final IBlockAccess world, final BlockPos pos, final Block block, final int modelId, final ModelGenerator renderer )
 	{
 		final AEBaseBlock blk = (AEBaseBlock) block;
-		renderer.setRenderBoundsFromBlock( block );
+		renderer.setRenderBoundsFromBlock( world.getBlockState( pos ), pos );
 		return this.getRender( blk ).renderInWorld( blk, world, pos, renderer );
 	}
 
@@ -77,7 +77,7 @@ public final class WorldRender implements ISimpleBlockRenderingHandler
 		if( blk instanceof AEBaseBlock )
 		{
 			final AEBaseBlock block = (AEBaseBlock) blk;
-			this.renderer.setRenderBoundsFromBlock( block );
+			this.renderer.setRenderBoundsFromBlock( block.getDefaultState(), null );
 
 			this.renderer.setUvRotateBottom( this.renderer.setUvRotateEast( this.renderer.setUvRotateNorth( this.renderer.setUvRotateSouth( this.renderer.setUvRotateTop( this.renderer.setUvRotateWest( 0 ) ) ) ) ) );
 			this.getRender( block ).renderInventory( block, item, this.renderer, type, data );

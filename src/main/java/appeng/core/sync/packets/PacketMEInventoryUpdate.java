@@ -41,8 +41,8 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import appeng.api.storage.data.IAEItemStack;
-import appeng.client.gui.implementations.GuICraftingCPU;
 import appeng.client.gui.implementations.GuiCraftConfirm;
+import appeng.client.gui.implementations.GuiCraftingCPU;
 import appeng.client.gui.implementations.GuiMEMonitorable;
 import appeng.client.gui.implementations.GuiNetworkStatus;
 import appeng.core.AELog;
@@ -154,9 +154,9 @@ public class PacketMEInventoryUpdate extends AppEngPacket
 			( (GuiCraftConfirm) gs ).postUpdate( this.list, this.ref );
 		}
 
-		if( gs instanceof GuICraftingCPU )
+		if( gs instanceof GuiCraftingCPU )
 		{
-			( (GuICraftingCPU) gs ).postUpdate( this.list, this.ref );
+			( (GuiCraftingCPU) gs ).postUpdate( this.list, this.ref );
 		}
 
 		if( gs instanceof GuiMEMonitorable )

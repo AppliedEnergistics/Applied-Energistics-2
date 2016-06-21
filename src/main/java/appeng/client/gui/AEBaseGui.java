@@ -89,7 +89,7 @@ public abstract class AEBaseGui extends GuiContainer
 	private final List<InternalSlotME> meSlots = new LinkedList<InternalSlotME>();
 	// drag y
 	private final Set<Slot> drag_click = new HashSet<Slot>();
-	private final AppEngRenderItem aeRenderItem = new AppEngRenderItem( Minecraft.getMinecraft().renderEngine, Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getModelManager() );
+	private final AppEngRenderItem aeRenderItem = new AppEngRenderItem( Minecraft.getMinecraft().renderEngine, Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getModelManager(), Minecraft.getMinecraft().getItemColors() );
 	private GuiScrollbar myScrollBar = null;
 	private boolean disableShiftClick = false;
 	private Stopwatch dbl_clickTimer = Stopwatch.createStarted();
@@ -381,7 +381,7 @@ public abstract class AEBaseGui extends GuiContainer
 		}
 	}
 
-	//TODO 1.9.4 - Whole ClickType thing and 1.8.9 conversion, to be checked
+	//TODO 1.9.4 aftermath - Whole ClickType thing, to be checked.
 	@Override
 	protected void handleMouseClick( final Slot slot, final int slotIdx, final int key, final ClickType clickType )
 	{

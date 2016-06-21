@@ -26,6 +26,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -62,7 +63,7 @@ public class NullCableBusContainer implements ICableBusContainer
 	}
 
 	@Override
-	public boolean activate( final EntityPlayer player, final Vec3d vecFromPool )
+	public boolean activate( final EntityPlayer player, final EnumHand hand, final Vec3d vecFromPool )
 	{
 		return false;
 	}

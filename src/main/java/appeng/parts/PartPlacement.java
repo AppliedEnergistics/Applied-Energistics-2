@@ -75,10 +75,8 @@ public class PartPlacement
 	private final ThreadLocal<Object> placing = new ThreadLocal<Object>();
 	private boolean wasCanceled = false;
 
-	public static boolean place( final ItemStack held, final BlockPos pos, EnumFacing side, final EntityPlayer player, final World world, PlaceType pass, final int depth )
+	public static boolean place( final ItemStack held, final BlockPos pos, EnumFacing side, final EntityPlayer player, final EnumHand hand, final World world, PlaceType pass, final int depth )
 	{
-		//TODO 1.9.4 - 2 hands! Just do something!
-		final EnumHand hand = EnumHand.MAIN_HAND;
 		if( depth > 3 )
 		{
 			return false;
@@ -140,7 +138,7 @@ public class PartPlacement
 				else
 				{
 					player.swingArm( hand );
-					NetworkHandler.instance.sendToServer( new PacketPartPlacement( pos, side, getEyeOffset( player ) ) );
+					NetworkHandler.instance.sendToServer( new PacketPartPlacement( pos, side, getEyeOffset( player ), hand ) );
 				}
 				return true;
 			}
@@ -191,7 +189,7 @@ public class PartPlacement
 					else
 					{
 						player.swingArm( hand );
-						NetworkHandler.instance.sendToServer( new PacketPartPlacement( pos, side, getEyeOffset( player ) ) );
+						NetworkHandler.instance.sendToServer( new PacketPartPlacement( pos, side, getEyeOffset( player ), hand ) );
 						return true;
 					}
 				}
@@ -229,11 +227,11 @@ public class PartPlacement
 					final SelectedPart sPart = selectPart( player, host, mop.hitVec );
 					if( sPart != null && sPart.part != null )
 					{
-						if( sPart.part.onShiftActivate( player, mop.hitVec ) )
+						if( sPart.part.onShiftActivate( player, hand, mop.hitVec ) )
 						{
 							if( world.isRemote )
 							{
-								NetworkHandler.instance.sendToServer( new PacketPartPlacement( pos, side, getEyeOffset( player ) ) );
+								NetworkHandler.instance.sendToServer( new PacketPartPlacement( pos, side, getEyeOffset( player ), hand ) );
 							}
 							return true;
 						}
@@ -313,7 +311,7 @@ public class PartPlacement
 				else
 				{
 					player.swingArm( hand );
-					NetworkHandler.instance.sendToServer( new PacketPartPlacement( pos, side, getEyeOffset( player ) ) );
+					NetworkHandler.instance.sendToServer( new PacketPartPlacement( pos, side, getEyeOffset( player ), hand ) );
 					return true;
 				}
 			}
@@ -346,7 +344,7 @@ public class PartPlacement
 																								// AEPartLocation.INTERNAL
 																								// )
 				{
-					return place( held, te_pos, side.getOpposite(), player, world, pass == PlaceType.INTERACT_FIRST_PASS ? PlaceType.INTERACT_SECOND_PASS : PlaceType.PLACE_ITEM, depth + 1 );
+					return place( held, te_pos, side.getOpposite(), player, hand, world, pass == PlaceType.INTERACT_FIRST_PASS ? PlaceType.INTERACT_SECOND_PASS : PlaceType.PLACE_ITEM, depth + 1 );
 				}
 			}
 			return false;
@@ -364,7 +362,7 @@ public class PartPlacement
 
 				if( sp.part != null )
 				{
-					if( !player.isSneaking() && sp.part.onActivate( player, mop.hitVec ) )
+					if( !player.isSneaking() && sp.part.onActivate( player, hand, mop.hitVec ) )
 					{
 						return false;
 					}
@@ -377,7 +375,7 @@ public class PartPlacement
 				return false;
 			}
 
-			final AEPartLocation mySide = host.addPart( held, AEPartLocation.fromFacing( side ), player );
+			final AEPartLocation mySide = host.addPart( held, AEPartLocation.fromFacing( side ), player, hand );
 			if( mySide != null )
 			{
 				for( final Block multiPartBlock : multiPart.maybeBlock().asSet() )
@@ -401,7 +399,7 @@ public class PartPlacement
 		else
 		{
 			player.swingArm( hand );
-			NetworkHandler.instance.sendToServer( new PacketPartPlacement( pos, side, getEyeOffset( player ) ) );
+			NetworkHandler.instance.sendToServer( new PacketPartPlacement( pos, side, getEyeOffset( player ), hand ) );
 		}
 		return true;
 	}
@@ -482,7 +480,7 @@ public class PartPlacement
 
 				if( event.getEntityPlayer().isSneaking() && held != null && supportedItem )
 				{
-					NetworkHandler.instance.sendToServer( new PacketClick( event.getPos(), event.getFace(), 0, 0, 0 ) );
+					NetworkHandler.instance.sendToServer( new PacketClick( event.getPos(), event.getFace(), 0, 0, 0, event.getHand() ) );
 				}
 			}
 		}
@@ -496,7 +494,7 @@ public class PartPlacement
 			this.placing.set( event );
 
 			final ItemStack held = event.getEntityPlayer().getHeldItem( event.getHand() );
-			if( place( held, event.getPos(), event.getFace(), event.getEntityPlayer(), event.getEntityPlayer().worldObj, PlaceType.INTERACT_FIRST_PASS, 0 ) )
+			if( place( held, event.getPos(), event.getFace(), event.getEntityPlayer(), event.getHand(), event.getEntityPlayer().worldObj, PlaceType.INTERACT_FIRST_PASS, 0 ) )
 			{
 				event.setCanceled( true );
 				this.wasCanceled = true;

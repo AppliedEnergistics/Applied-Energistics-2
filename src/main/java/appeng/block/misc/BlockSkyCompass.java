@@ -87,9 +87,9 @@ public class BlockSkyCompass extends AEBaseTileBlock implements ICustomCollision
 
 	private void dropTorch( final World w, final BlockPos pos )
 	{
+		final IBlockState prev = w.getBlockState( pos );
 		w.destroyBlock( pos, true );
-		//TODO 1.9.4 - markBlockForUpdate => ?
-		w.markBlockForUpdate( pos );
+		w.notifyBlockUpdate( pos, prev, w.getBlockState( pos ), 3 );
 	}
 
 	@Override

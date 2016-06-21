@@ -46,8 +46,6 @@ public class VibrantFX extends Particle
 		this.prevPosY = this.posY;
 		this.prevPosZ = this.posZ;
 		this.particleMaxAge = (int) ( 20.0D / ( Math.random() * 0.8D + 0.1D ) );
-		//TODO 1.9.4 - noClip => ?
-		this.noClip = true;
 	}
 
 	@Override

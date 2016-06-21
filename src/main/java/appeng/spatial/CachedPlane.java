@@ -312,8 +312,7 @@ public class CachedPlane
 					if( c.c.isLoaded() )
 					{
 						this.world.addTileEntity( te );
-						//TODO 1.9.4 - markBlockForUpdate => ?
-						this.world.markBlockForUpdate( pos );
+						this.world.notifyBlockUpdate( pos, this.world.getBlockState( pos ), this.world.getBlockState( pos ), z );
 					}
 				}
 

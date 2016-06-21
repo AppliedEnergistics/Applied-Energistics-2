@@ -35,7 +35,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -591,7 +591,6 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 		return this.getDefinition().getDisplayName();
 	}
 	
-	//TODO 1.9.4 - UniqueIdentifier => ResourceLocation ?
 	@SideOnly( Side.CLIENT )
 	public String getModID()
 	{
@@ -600,17 +599,17 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 			return this.getModName( this.getDefinition().getUniqueID() );
 		}
 
-		return this.getModName( this.getDefinition().setUniqueID( GameRegistry.findUniqueIdentifierFor( this.getDefinition().getItem() ) ) );
+		return this.getModName( this.getDefinition().setUniqueID( Item.REGISTRY.getNameForObject( this.getDefinition().getItem() ) ) );
 	}
 
-	private String getModName( final UniqueIdentifier uniqueIdentifier )
+	private String getModName( final ResourceLocation uniqueIdentifier )
 	{
 		if( uniqueIdentifier == null )
 		{
 			return "** Null";
 		}
 
-		return uniqueIdentifier.modId == null ? "** Null" : uniqueIdentifier.modId;
+		return uniqueIdentifier.getResourceDomain() == null ? "** Null" : uniqueIdentifier.getResourceDomain();
 	}
 
 	IAEItemStack getLow( final FuzzyMode fuzzy, final boolean ignoreMeta )

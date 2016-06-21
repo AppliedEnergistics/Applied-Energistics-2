@@ -22,6 +22,8 @@ package appeng.items.tools.powered;
 import java.util.EnumSet;
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import com.google.common.base.Optional;
 
 import net.minecraft.block.Block;
@@ -117,7 +119,7 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 	}
 
 	@Override
-	public ActionResult<ItemStack> onItemRightClick( final ItemStack item, final World w, final EntityPlayer p, final EnumHand hand )
+	public ActionResult<ItemStack> onItemRightClick( final ItemStack item, final World w, final EntityPlayer p, final @Nullable EnumHand hand )
 	{
 		if( this.getAECurrentPower( item ) > 1600 )
 		{

@@ -139,6 +139,7 @@ public class ToolReplicatorCard extends AEBaseItem
 											final BlockPos d = new BlockPos( i + rel_x, j + rel_y, k + rel_z );
 											final IBlockState state = src_w.getBlockState( p );
 											final Block blk = state.getBlock();
+											final IBlockState prev = world.getBlockState( d );
 
 											world.setBlockState( d, state );
 											if( blk != null && blk.hasTileEntity( state ) )
@@ -150,8 +151,7 @@ public class ToolReplicatorCard extends AEBaseItem
 												nte.readFromNBT( (NBTTagCompound) data.copy() );
 												world.setTileEntity( d, nte );
 											}
-											//TODO 1.9.4 - markBlockForUpdate => ?
-											world.markBlockForUpdate( d );
+											world.notifyBlockUpdate( d, prev, state, 3 );
 										}
 									}
 								}

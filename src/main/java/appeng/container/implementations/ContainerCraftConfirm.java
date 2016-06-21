@@ -365,11 +365,10 @@ public class ContainerCraftConfirm extends AEBaseContainer
 		return new PlayerSource( this.getPlayerInv().player, (IActionHost) this.getTarget() );
 	}
 
-	//TODO 1.9.4 - removeCraftingFromCrafters => ?
 	@Override
-	public void removeCraftingFromCrafters( final IContainerListener c )
+	public void removeListener( final IContainerListener c )
 	{
-		super.removeCraftingFromCrafters( c );
+		super.removeListener( c );
 		if( this.getJob() != null )
 		{
 			this.getJob().cancel( true );

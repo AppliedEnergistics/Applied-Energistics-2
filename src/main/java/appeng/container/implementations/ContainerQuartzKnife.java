@@ -24,6 +24,7 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
@@ -174,8 +175,7 @@ public class ContainerQuartzKnife extends AEBaseContainer implements IAEAppEngIn
 			if( item.stackSize == 0 )
 			{
 				this.getPlayerInv().mainInventory[this.getPlayerInv().currentItem] = null;
-				//TODO 1.9.4 - 2 hands. Just do something!
-				MinecraftForge.EVENT_BUS.post( new PlayerDestroyItemEvent( this.getPlayerInv().player, item ) );
+				MinecraftForge.EVENT_BUS.post( new PlayerDestroyItemEvent( this.getPlayerInv().player, item, null ) );
 			}
 
 			return true;

@@ -30,6 +30,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.relauncher.Side;
@@ -227,7 +228,7 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 	}
 
 	@Override
-	public boolean onPartActivate( final EntityPlayer player, final Vec3d pos )
+	public boolean onPartActivate( final EntityPlayer player, final EnumHand hand, final Vec3d pos )
 	{
 		final ItemStack is = player.inventory.getCurrentItem();
 
@@ -251,7 +252,7 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 					if( testPart instanceof PartP2PTunnel )
 					{
 						this.getHost().removePart( this.getSide(), true );
-						final AEPartLocation dir = this.getHost().addPart( newType, this.getSide(), player );
+						final AEPartLocation dir = this.getHost().addPart( newType, this.getSide(), player, hand );
 						final IPart newBus = this.getHost().getPart( dir );
 
 						if( newBus instanceof PartP2PTunnel )
@@ -365,7 +366,7 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 				final long myFreq = this.getFrequency();
 
 				this.getHost().removePart( this.getSide(), false );
-				final AEPartLocation dir = this.getHost().addPart( newType, this.getSide(), player );
+				final AEPartLocation dir = this.getHost().addPart( newType, this.getSide(), player, hand );
 				final IPart newBus = this.getHost().getPart( dir );
 
 				if( newBus instanceof PartP2PTunnel )
@@ -394,7 +395,7 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 	}
 
 	@Override
-	public boolean onPartShiftActivate( final EntityPlayer player, final Vec3d pos )
+	public boolean onPartShiftActivate( final EntityPlayer player, final EnumHand hand, final Vec3d pos )
 	{
 		final ItemStack is = player.inventory.getCurrentItem();
 		if( is != null && is.getItem() instanceof IMemoryCard )

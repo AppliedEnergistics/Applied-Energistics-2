@@ -24,6 +24,7 @@ import java.util.List;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -48,9 +49,8 @@ public class AEItemDef
 	private String displayName;
 	@SideOnly( Side.CLIENT )
 	private List tooltip;
-	//TODO 1.9.4 - UniqueIdentifier => ?
 	@SideOnly( Side.CLIENT )
-	private UniqueIdentifier uniqueID;
+	private ResourceLocation uniqueID;
 	private OreReference isOre;
 
 	public AEItemDef( final Item it )
@@ -176,12 +176,12 @@ public class AEItemDef
 		return tooltip;
 	}
 
-	UniqueIdentifier getUniqueID()
+	ResourceLocation getUniqueID()
 	{
 		return this.uniqueID;
 	}
 
-	UniqueIdentifier setUniqueID( final UniqueIdentifier uniqueID )
+	ResourceLocation setUniqueID( final ResourceLocation uniqueID )
 	{
 		this.uniqueID = uniqueID;
 		return uniqueID;

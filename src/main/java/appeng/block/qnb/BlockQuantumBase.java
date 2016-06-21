@@ -25,6 +25,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.BlockRenderLayer;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -43,8 +44,7 @@ public abstract class BlockQuantumBase extends AEBaseTileBlock implements ICusto
 		super( mat );
 		this.setTileEntity( TileQuantumBridge.class );
 		final float shave = 2.0f / 16.0f;
-		//TODO 1.9.4 - setBlockBounds => ?
-		this.setBlockBounds( shave, shave, shave, 1.0f - shave, 1.0f - shave, 1.0f - shave );
+		this.boundingBox = new AxisAlignedBB( shave, shave, shave, 1.0f - shave, 1.0f - shave, 1.0f - shave );
 		this.setLightOpacity( 0 );
 		this.setFullSize( this.setOpaque( false ) );
 		this.setFeature( EnumSet.of( AEFeature.QuantumNetworkBridge ) );

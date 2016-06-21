@@ -55,8 +55,7 @@ public class DefaultSpatialHandler implements IMovableHandler
 		if( c.isLoaded() )
 		{
 			w.addTileEntity( te );
-			//TODO 1.9.4 - markBlockForUpdate => ?
-			w.markBlockForUpdate( newPosition );
+			w.notifyBlockUpdate( newPosition, w.getBlockState( newPosition ), w.getBlockState( newPosition ), 0 );
 		}
 	}
 }

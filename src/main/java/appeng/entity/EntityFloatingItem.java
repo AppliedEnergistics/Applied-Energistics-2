@@ -28,11 +28,11 @@ import net.minecraft.world.World;
 public final class EntityFloatingItem extends EntityItem
 {
 
-	private final Entity parent;
+	private final ICanDie parent;
 	private int superDeath = 0;
 	private float progress = 0;
 
-	public EntityFloatingItem( final Entity parent, final World world, final double x, final double y, final double z, final ItemStack stack )
+	public EntityFloatingItem( final ICanDie parent, final World world, final double x, final double y, final double z, final ItemStack stack )
 	{
 		super( world, x, y, z, stack );
 		this.motionX = this.motionY = this.motionZ = 0.0d;
@@ -46,7 +46,7 @@ public final class EntityFloatingItem extends EntityItem
 	@Override
 	public void onUpdate()
 	{
-		if( !this.isDead && this.parent.isDead )
+		if( !this.isDead && this.parent.isDead() )
 		{
 			this.setDead();
 		}

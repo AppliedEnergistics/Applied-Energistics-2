@@ -332,7 +332,7 @@ public class BlockCableBus extends AEBaseTileBlock // implements
 	@Override
 	public boolean onActivated( final World w, final BlockPos pos, final EntityPlayer player, final EnumHand hand, final @Nullable ItemStack heldItem, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
 	{
-		return this.cb( w, pos ).activate( player, new Vec3d( hitX, hitY, hitZ ) );
+		return this.cb( w, pos ).activate( player, hand, new Vec3d( hitX, hitY, hitZ ) );
 	}
 
 	@Override

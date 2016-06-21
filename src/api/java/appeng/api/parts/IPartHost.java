@@ -30,6 +30,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.Vec3d;
 
 import appeng.api.util.AEColor;
@@ -71,7 +72,7 @@ public interface IPartHost
 	 * @return null if the item failed to add, the side it was placed on other wise ( may different for cables,
 	 * {@link AEPartLocation}.UNKNOWN )
 	 */
-	AEPartLocation addPart( ItemStack is, AEPartLocation side, EntityPlayer owner );
+	AEPartLocation addPart( ItemStack is, AEPartLocation side, EntityPlayer owner, EnumHand hand  );
 
 	/**
 	 * Get part by side ( center is {@link AEPartLocation}.UNKNOWN )

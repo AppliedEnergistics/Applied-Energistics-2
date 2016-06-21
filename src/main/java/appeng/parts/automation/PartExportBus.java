@@ -25,6 +25,7 @@ import com.google.common.collect.ImmutableSet;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.relauncher.Side;
@@ -234,7 +235,7 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 	}
 
 	@Override
-	public boolean onPartActivate( final EntityPlayer player, final Vec3d pos )
+	public boolean onPartActivate( final EntityPlayer player, final EnumHand hand, final Vec3d pos )
 	{
 		if( !player.isSneaking() )
 		{

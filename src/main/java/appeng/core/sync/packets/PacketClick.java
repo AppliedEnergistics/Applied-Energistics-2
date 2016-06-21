@@ -25,6 +25,7 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 
 import appeng.api.AEApi;
@@ -44,10 +45,11 @@ public class PacketClick extends AppEngPacket
 	private final int x;
 	private final int y;
 	private final int z;
-	private final int side;
+	private EnumFacing side;
 	private final float hitX;
 	private final float hitY;
 	private final float hitZ;
+	private EnumHand hand;
 
 	// automatic.
 	public PacketClick( final ByteBuf stream )
@@ -55,14 +57,15 @@ public class PacketClick extends AppEngPacket
 		this.x = stream.readInt();
 		this.y = stream.readInt();
 		this.z = stream.readInt();
-		this.side = stream.readInt();
+		this.side = EnumFacing.values()[ stream.readByte() ];
 		this.hitX = stream.readFloat();
 		this.hitY = stream.readFloat();
 		this.hitZ = stream.readFloat();
+		this.hand = EnumHand.values()[ stream.readByte() ];
 	}
 
 	// api
-	public PacketClick( final BlockPos pos, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
+	public PacketClick( final BlockPos pos, final EnumFacing side, final float hitX, final float hitY, final float hitZ, final EnumHand hand )
 	{
 
 		final ByteBuf data = Unpooled.buffer();
@@ -71,10 +74,11 @@ public class PacketClick extends AppEngPacket
 		data.writeInt( this.x = pos.getX() );
 		data.writeInt( this.y = pos.getY() );
 		data.writeInt( this.z = pos.getZ() );
-		data.writeInt( this.side = side.ordinal() );
+		data.writeByte( side.ordinal() );
 		data.writeFloat( this.hitX = hitX );
 		data.writeFloat( this.hitY = hitY );
 		data.writeFloat( this.hitZ = hitZ );
+		data.writeByte( hand.ordinal() );
 
 		this.configureWrite( data );
 	}
@@ -92,7 +96,7 @@ public class PacketClick extends AppEngPacket
 			if( is.getItem() instanceof ToolNetworkTool )
 			{
 				final ToolNetworkTool tnt = (ToolNetworkTool) is.getItem();
-				tnt.serverSideToolLogic( is, player, player.worldObj, new BlockPos( this.x, this.y, this.z ), EnumFacing.VALUES[this.side], this.hitX, this.hitY, this.hitZ );
+				tnt.serverSideToolLogic( is, player, this.hand, player.worldObj, new BlockPos( this.x, this.y, this.z ), this.side, this.hitX, this.hitY, this.hitZ );
 			}
 
 			else if( maybeMemoryCard.isSameAs( is ) )

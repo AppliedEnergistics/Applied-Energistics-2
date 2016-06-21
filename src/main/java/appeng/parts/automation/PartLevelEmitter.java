@@ -22,6 +22,7 @@ package appeng.parts.automation;
 import java.util.Collection;
 import java.util.Random;
 
+import net.minecraft.client.renderer.BlockModelRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -30,6 +31,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -595,8 +597,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 
 		renderer.setRenderAllFaces( true );
 
-		//TODO 1.9.4 - getMixedBrightnessForBlock => ?
-		renderer.setBrightness( rh.getBlock().getMixedBrightnessForBlock( this.getHost().getTile().getWorld(), pos ) );
+		renderer.setBrightness( rh.getBlock().getPackedLightmapCoords( this.getHost().getTile().getWorld().getBlockState( pos ), this.getHost().getTile().getWorld(), pos ) );
 		renderer.setColorOpaque_F( 1.0F, 1.0F, 1.0F );
 
 		this.renderTorchAtAngle( pos.getX(), pos.getY(), pos.getZ(), renderer );
@@ -643,7 +644,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 	}
 
 	@Override
-	public boolean onPartActivate( final EntityPlayer player, final Vec3d pos )
+	public boolean onPartActivate( final EntityPlayer player, final EnumHand hand, final Vec3d pos )
 	{
 		if( !player.isSneaking() )
 		{

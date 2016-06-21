@@ -78,7 +78,7 @@ public class SmartModel implements IBakedModel
 		final BlockPos pos = ( (IExtendedBlockState) state ).getValue( AEBaseBlock.AE_BLOCK_POS );
 		final IBlockAccess world = ( (IExtendedBlockState) state ).getValue( AEBaseBlock.AE_BLOCK_ACCESS );
 		helper.setTranslation( -pos.getX(), -pos.getY(), -pos.getZ() );
-		helper.setRenderBoundsFromBlock( blk );
+		helper.setRenderBoundsFromBlock( state, pos );
 		helper.setBlockAccess( world );
 		this.aeRenderer.getRendererInstance().renderInWorld( blk instanceof AEBaseBlock ? (AEBaseBlock) blk : null, world, pos, helper );
 		helper.finalizeModel( false );
@@ -95,7 +95,7 @@ public class SmartModel implements IBakedModel
 			{
 				final ModelGenerator helper = new BakingModelGenerator();
 				final Block blk = Block.getBlockFromItem( stack.getItem() );
-				helper.setRenderBoundsFromBlock( blk );
+				helper.setRenderBoundsFromBlock( blk.getDefaultState(), null );
 				aeRenderer.getRendererInstance().renderInventory( blk instanceof AEBaseBlock ? (AEBaseBlock) blk : null, stack, helper, ItemRenderType.INVENTORY, null );
 				helper.finalizeModel( true );
 				return helper.getOutput();

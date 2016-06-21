@@ -57,9 +57,6 @@ public class EnergyFx extends ParticleBreaking
 		this.startBlkX = MathHelper.floor_double( this.posX );
 		this.startBlkY = MathHelper.floor_double( this.posY );
 		this.startBlkZ = MathHelper.floor_double( this.posZ );
-
-		//TODO 1.9.4 - noClip => ?
-		this.noClip = true;
 	}
 
 	@Override
@@ -106,9 +103,23 @@ public class EnergyFx extends ParticleBreaking
 	@Override
 	public void onUpdate()
 	{
-		super.onUpdate();
-		this.particleScale *= 0.89f;
-		this.particleAlpha *= 0.89f;
+		this.prevPosX = this.posX;
+        this.prevPosY = this.posY;
+        this.prevPosZ = this.posZ;
+
+        if (this.particleAge++ >= this.particleMaxAge)
+        {
+            this.setExpired();
+        }
+
+        this.motionY -= 0.04D * (double)this.particleGravity;
+        this.moveEntity(this.motionX, this.motionY, this.motionZ);
+        this.motionX *= 0.9800000190734863D;
+        this.motionY *= 0.9800000190734863D;
+        this.motionZ *= 0.9800000190734863D;
+
+        this.particleScale *= 0.89f;
+        this.particleAlpha *= 0.89f;
 	}
 
 	public void setMotionX( float motionX )

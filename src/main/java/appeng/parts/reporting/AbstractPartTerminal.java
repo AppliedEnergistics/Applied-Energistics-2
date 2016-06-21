@@ -25,6 +25,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.Vec3d;
 
 import appeng.api.config.Settings;
@@ -110,9 +111,9 @@ public abstract class AbstractPartTerminal extends AbstractPartDisplay implement
 	}
 
 	@Override
-	public boolean onPartActivate( final EntityPlayer player, final Vec3d pos )
+	public boolean onPartActivate( final EntityPlayer player, final EnumHand hand, final Vec3d pos )
 	{
-		if( !super.onPartActivate( player, pos ) )
+		if( !super.onPartActivate( player, hand, pos ) )
 		{
 			if( !player.isSneaking() )
 			{

@@ -160,11 +160,8 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 	}
 
 	@Override
-	public boolean onPartActivate( final EntityPlayer player, final Vec3d pos )
-	{
-		//TODO 1.9.4 - 2 hands! Just do something!
-		final EnumHand hand = EnumHand.MAIN_HAND;
-		
+	public boolean onPartActivate( final EntityPlayer player, final EnumHand hand, final Vec3d pos )
+	{		
 		if( Platform.isClient() )
 		{
 			return true;

@@ -694,7 +694,7 @@ public class BaseBlockRender<B extends AEBaseBlock, T extends AEBaseTile>
 		renderer.setTranslation( -pos.getX(), -pos.getY(), -pos.getZ() );
 
 		// note that this is a terrible approach...
-		renderer.setRenderBoundsFromBlock( block );
+		renderer.setRenderBoundsFromBlock( block.getDefaultState(), pos );
 		renderer.renderStandardBlock( block, pos );
 
 		renderer.setTranslation( 0, 0, 0 );

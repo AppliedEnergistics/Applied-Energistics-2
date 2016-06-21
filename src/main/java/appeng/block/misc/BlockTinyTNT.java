@@ -35,10 +35,12 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.init.Items;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Explosion;
@@ -62,8 +64,7 @@ public class BlockTinyTNT extends AEBaseBlock implements ICustomCollision
 	{
 		super( Material.TNT );
 		this.setLightOpacity( 1 );
-		//TODO 1.9.4 - setBlockBounds => ?
-		this.setBlockBounds( 0.25f, 0.0f, 0.25f, 0.75f, 0.5f, 0.75f );
+		this.boundingBox = new AxisAlignedBB( 0.25f, 0.0f, 0.25f, 0.75f, 0.5f, 0.75f );
 		this.setFullSize( this.setOpaque( false ) );
 		this.setSoundType( SoundType.GROUND );
 		this.setHardness( 0F );
@@ -107,8 +108,7 @@ public class BlockTinyTNT extends AEBaseBlock implements ICustomCollision
 		{
 			final EntityTinyTNTPrimed primedTinyTNTEntity = new EntityTinyTNTPrimed( w, pos.getX() + 0.5F, pos.getY() + 0.5F, pos.getZ() + 0.5F, igniter );
 			w.spawnEntityInWorld( primedTinyTNTEntity );
-			//TODO 1.9.4 - playSoundAtEntity => ?
-			w.playSoundAtEntity( primedTinyTNTEntity, "game.tnt.primed", 1.0F, 1.0F );
+			w.playSound( null, primedTinyTNTEntity.posX, primedTinyTNTEntity.posY, primedTinyTNTEntity.posZ, SoundEvents.ENTITY_TNT_PRIMED, SoundCategory.BLOCKS, 1, 1 );
 		}
 	}
 

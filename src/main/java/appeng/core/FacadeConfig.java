@@ -25,8 +25,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.minecraft.block.Block;
+import net.minecraft.item.Item;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 
 
 public class FacadeConfig extends Configuration
@@ -48,8 +49,7 @@ public class FacadeConfig extends Configuration
 			return false;
 		}
 
-		//TODO 1.9.4 - UniqueIdentifier => ResourceLocation ???
-		final UniqueIdentifier blk = GameRegistry.findUniqueIdentifierFor( id );
+		final ResourceLocation blk = Item.REGISTRY.getNameForObject( Item.getItemFromBlock( id ) );
 		if( blk == null )
 		{
 			for( final Field f : Block.class.getFields() )
@@ -69,8 +69,8 @@ public class FacadeConfig extends Configuration
 		}
 		else
 		{
-			final Matcher mod = this.replacementPattern.matcher( blk.modId );
-			final Matcher name = this.replacementPattern.matcher( blk.name );
+			final Matcher mod = this.replacementPattern.matcher( blk.getResourceDomain() );
+			final Matcher name = this.replacementPattern.matcher( blk.getResourcePath() );
 			return this.get( mod.replaceAll( "" ), name.replaceAll( "" ) + ( metadata == 0 ? "" : "." + metadata ), automatic ).getBoolean( automatic );
 		}
 

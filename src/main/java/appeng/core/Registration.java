@@ -20,6 +20,8 @@ package appeng.core;
 
 
 import java.io.File;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.annotation.Nonnull;
 
@@ -46,7 +48,6 @@ import appeng.api.config.Upgrades;
 import appeng.api.definitions.IBlocks;
 import appeng.api.definitions.IDefinitions;
 import appeng.api.definitions.IItems;
-import appeng.api.definitions.IMaterials;
 import appeng.api.definitions.IParts;
 import appeng.api.features.IRecipeHandlerRegistry;
 import appeng.api.features.IRegistryContainer;
@@ -74,6 +75,7 @@ import appeng.core.localization.PlayerMessages;
 import appeng.core.stats.PlayerStatsRegistration;
 import appeng.hooks.TickHandler;
 import appeng.items.materials.MultiItem;
+import appeng.loot.ChestLoot;
 import appeng.me.cache.CraftingGridCache;
 import appeng.me.cache.EnergyGridCache;
 import appeng.me.cache.GridStorageCache;
@@ -198,14 +200,19 @@ public final class Registration
 
 		if( config.storageProviderID == -1 && force )
 		{
+			final Set<Integer> ids = new HashSet<>();
+			for( DimensionType type : DimensionType.values() )
+			{
+				ids.add( type.getId() );
+			}
+
 			config.storageProviderID = -11;
 
-			//TODO 1.9.4 - Storage provider ids aren't stored anywhere, so no way to find free one. Do something with this!
-			while( DimensionManager.isDimensionRegistered( config.storageProviderID ) )
+			while( ids.contains( config.storageProviderID ) )
 			{
 				config.storageProviderID--;
 			}
-			
+
 			storageDimensionType = DimensionType.register( "Storage Cell", "_cell", config.storageProviderID, StorageWorldProvider.class, false );
 
 			config.save();
@@ -278,9 +285,13 @@ public final class Registration
 		FMLCommonHandler.instance().bus().register( TickHandler.INSTANCE );
 		MinecraftForge.EVENT_BUS.register( TickHandler.INSTANCE );
 
-		final PartPlacement pp = new PartPlacement();
-		MinecraftForge.EVENT_BUS.register( pp );
-		FMLCommonHandler.instance().bus().register( pp );
+
+		MinecraftForge.EVENT_BUS.register( new PartPlacement() );
+
+		if( AEConfig.instance.isFeatureEnabled( AEFeature.ChestLoot ) )
+		{
+			MinecraftForge.EVENT_BUS.register( new ChestLoot() );
+		}
 
 		final IGridCacheRegistry gcr = registries.gridCache();
 		gcr.registerGridCache( ITickManager.class, TickManagerCache.class );
@@ -415,23 +426,6 @@ public final class Registration
 		for( final Item wirelessTerminalItem : items.wirelessTerminal().maybeItem().asSet() )
 		{
 			registries.wireless().registerWirelessHandler( (IWirelessTermHandler) wirelessTerminalItem );
-		}
-
-		if( AEConfig.instance.isFeatureEnabled( AEFeature.ChestLoot ) )
-		{
-			//TODO 1.9.4 - Chest Gen => Loot Tables
-			final ChestGenHooks d = ChestGenHooks.getInfo( ChestGenHooks.MINESHAFT_CORRIDOR );
-
-			final IMaterials materials = definitions.materials();
-
-			for( final ItemStack crystal : materials.certusQuartzCrystal().maybeStack( 1 ).asSet() )
-			{
-				d.addItem( new WeightedRandomChestContent( crystal, 1, 4, 2 ) );
-			}
-			for( final ItemStack dust : materials.certusQuartzDust().maybeStack( 1 ).asSet() )
-			{
-				d.addItem( new WeightedRandomChestContent( dust, 1, 4, 2 ) );
-			}
 		}
 
 		// add villager trading to black smiths for a few basic materials

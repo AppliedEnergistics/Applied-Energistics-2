@@ -124,7 +124,7 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench /
 
 		if( Platform.isClient() )
 		{
-			NetworkHandler.instance.sendToServer( new PacketClick( pos, side, hitX, hitY, hitZ ) );
+			NetworkHandler.instance.sendToServer( new PacketClick( pos, side, hitX, hitY, hitZ, hand ) );
 		}
 		return EnumActionResult.SUCCESS;
 	}
@@ -135,12 +135,10 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench /
 		return true;
 	}
 
-	public boolean serverSideToolLogic( final ItemStack is, final EntityPlayer p, final World w, final BlockPos pos, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
+	public boolean serverSideToolLogic( final ItemStack is, final EntityPlayer p, final EnumHand hand, final World w, final BlockPos pos, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
 	{
 		if( side != null )
 		{
-			//TODO 1.9.4 - 2 hands! Just do something!
-			final EnumHand hand = EnumHand.MAIN_HAND;
 			if( !Platform.hasPermissions( new DimensionalCoord( w, pos ), p ) )
 			{
 				return false;

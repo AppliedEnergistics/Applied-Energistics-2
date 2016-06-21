@@ -186,7 +186,7 @@ public final class ItemMultiPart extends AEBaseItem implements IPartItem, IItemG
 			return EnumActionResult.PASS;
 		}
 
-		return AEApi.instance().partHelper().placeBus( is, pos, side, player, w ) ? EnumActionResult.SUCCESS : EnumActionResult.FAIL;
+		return AEApi.instance().partHelper().placeBus( is, pos, side, player, hand, w ) ? EnumActionResult.SUCCESS : EnumActionResult.FAIL;
 	}
 
 	@Override

@@ -55,11 +55,8 @@ public class PartConversionMonitor extends AbstractPartMonitor
 	}
 
 	@Override
-	public boolean onPartShiftActivate( final EntityPlayer player, final Vec3d pos )
+	public boolean onPartShiftActivate( final EntityPlayer player, final EnumHand hand, final Vec3d pos )
 	{
-		//TODO 1.9.4 - 2 hands! Just do something!
-		final EnumHand hand = EnumHand.MAIN_HAND;
-		
 		if( Platform.isClient() )
 		{
 			return true;

@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import org.lwjgl.util.vector.Vector3f;
 
 import net.minecraft.block.Block;
@@ -19,10 +21,14 @@ import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.block.model.ItemOverrideList;
 import net.minecraft.client.renderer.block.model.ModelRotation;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.MinecraftForgeClient;
@@ -35,7 +41,6 @@ import appeng.client.texture.MissingIcon;
 import appeng.items.AEBaseItem;
 import appeng.items.parts.ItemMultiPart;
 
-//TODO 1.9.4 - Just all
 public class BakingModelGenerator implements ModelGenerator
 {
 	private static final class CachedModel implements IBakedModel
@@ -133,19 +138,28 @@ public class BakingModelGenerator implements ModelGenerator
 	private EnumFacing currentFace = EnumFacing.UP;
 	private int color = -1;
 
-	public void setRenderBoundsFromBlock( final Block block )
+	public void setRenderBoundsFromBlock( final IBlockState state, final @Nullable BlockPos pos )
 	{
-		if( block == null )
+		if( state == null )
 		{
 			return;
 		}
 
-		this.setRenderMinX( block.getBlockBoundsMinX() );
-		this.setRenderMinY( block.getBlockBoundsMinY() );
-		this.setRenderMinZ( block.getBlockBoundsMinZ() );
-		this.setRenderMaxX( block.getBlockBoundsMaxX() );
-		this.setRenderMaxY( block.getBlockBoundsMaxY() );
-		this.setRenderMaxZ( block.getBlockBoundsMaxZ() );
+		AxisAlignedBB boundingBox;
+		try
+		{
+			boundingBox = state.getBoundingBox( getBlockAccess(), pos );
+		}
+		catch( NullPointerException e )
+		{
+			boundingBox = Block.FULL_BLOCK_AABB;
+		}
+		this.setRenderMinX( boundingBox.minX );
+		this.setRenderMinY( boundingBox.minY );
+		this.setRenderMinZ( boundingBox.minZ );
+		this.setRenderMaxX( boundingBox.maxX );
+		this.setRenderMaxY( boundingBox.maxY );
+		this.setRenderMaxZ( boundingBox.maxZ );
 	}
 
 	public void setRenderBounds( final double d, final double e, final double f, final double g, final double h, final double i )
@@ -289,6 +303,7 @@ public class BakingModelGenerator implements ModelGenerator
 		return this.getIcon( state );
 	}
 
+	//TODO 1.9.4 aftermath - Check that this shit still works.
 	public void addVertexWithUV( final EnumFacing face, final double x, final double y, final double z, final double u, final double v )
 	{
 		this.points[this.point++] = new float[] { (float) x + this.tx, (float) y + this.ty, (float) z + this.tz, (float) u, (float) v };
@@ -297,40 +312,43 @@ public class BakingModelGenerator implements ModelGenerator
 		{
 			this.brightness = -1;
 			final int[] vertData = {
-				Float.floatToRawIntBits( this.points[0][0] ),
-				Float.floatToRawIntBits( this.points[0][1] ),
-				Float.floatToRawIntBits( this.points[0][2] ),
-				this.brightness,
-				Float.floatToRawIntBits( this.points[0][3] ),
-				Float.floatToRawIntBits( this.points[0][4] ),
-				0,
+					Float.floatToRawIntBits( this.points[0][0] ),
+					Float.floatToRawIntBits( this.points[0][1] ),
+					Float.floatToRawIntBits( this.points[0][2] ),
+					//				this.brightness,
+					Float.floatToRawIntBits( this.points[0][3] ),
+					Float.floatToRawIntBits( this.points[0][4] ),
+					//				0,
 
-				Float.floatToRawIntBits( this.points[1][0] ),
-				Float.floatToRawIntBits( this.points[1][1] ),
-				Float.floatToRawIntBits( this.points[1][2] ),
-				this.brightness,
-				Float.floatToRawIntBits( this.points[1][3] ),
-				Float.floatToRawIntBits( this.points[1][4] ),
-				0,
+					Float.floatToRawIntBits( this.points[1][0] ),
+					Float.floatToRawIntBits( this.points[1][1] ),
+					Float.floatToRawIntBits( this.points[1][2] ),
+					//				this.brightness,
+					Float.floatToRawIntBits( this.points[1][3] ),
+					Float.floatToRawIntBits( this.points[1][4] ),
+					//				0,
 
-				Float.floatToRawIntBits( this.points[2][0] ),
-				Float.floatToRawIntBits( this.points[2][1] ),
-				Float.floatToRawIntBits( this.points[2][2] ),
-				this.brightness,
-				Float.floatToRawIntBits( this.points[2][3] ),
-				Float.floatToRawIntBits( this.points[2][4] ),
-				0,
+					Float.floatToRawIntBits( this.points[2][0] ),
+					Float.floatToRawIntBits( this.points[2][1] ),
+					Float.floatToRawIntBits( this.points[2][2] ),
+					//				this.brightness,
+					Float.floatToRawIntBits( this.points[2][3] ),
+					Float.floatToRawIntBits( this.points[2][4] ),
+					//				0,
 
-				Float.floatToRawIntBits( this.points[3][0] ),
-				Float.floatToRawIntBits( this.points[3][1] ),
-				Float.floatToRawIntBits( this.points[3][2] ),
-				this.brightness,
-				Float.floatToRawIntBits( this.points[3][3] ),
-				Float.floatToRawIntBits( this.points[3][4] ),
-				0,
-				};
+					Float.floatToRawIntBits( this.points[3][0] ),
+					Float.floatToRawIntBits( this.points[3][1] ),
+					Float.floatToRawIntBits( this.points[3][2] ),
+					//				this.brightness,
+					Float.floatToRawIntBits( this.points[3][3] ),
+					Float.floatToRawIntBits( this.points[3][4] ),
+					//				0,
+			};
 
-			this.generatedModel.general.add( new IColoredBakedQuad.ColoredBakedQuad( vertData, this.color, face ) );
+			for( List<BakedQuad> list : this.generatedModel.faces )
+			{
+				list.add( new BakedQuad( vertData, this.color, face, Minecraft.getMinecraft().getTextureMapBlocks().getTextureExtry( TextureMap.LOCATION_BLOCKS_TEXTURE.toString() ), true, DefaultVertexFormats.POSITION_TEX ) );
+			}
 
 			this.point = 0;
 		}
@@ -556,15 +574,18 @@ public class BakingModelGenerator implements ModelGenerator
 			final BlockPartFace bpf = new BlockPartFace( myFace, face.getColor(), "", uv );
 
 			BakedQuad bf = this.faceBakery.makeBakedQuad( face.getTo(), face.getFrom(), bpf, face.getSpite(), myFace, mr, null, true, true );
-			bf = new IColoredBakedQuad.ColoredBakedQuad( bf.getVertexData(), face.getColor(), bf.getFace() );
+			bf = new BakedQuad( bf.getVertexData(), face.getColor(), bf.getFace(), Minecraft.getMinecraft().getTextureMapBlocks().getTextureExtry( TextureMap.LOCATION_BLOCKS_TEXTURE.toString() ), true, DefaultVertexFormats.POSITION_TEX );
 
 			if( face.isEdge() )
 			{
-				this.generatedModel.getFaceQuads( myFace ).add( bf );
+				this.generatedModel.faces[myFace.ordinal()].add( bf );
 			}
 			else
 			{
-				this.generatedModel.getGeneralQuads().add( bf );
+				for( List<BakedQuad> list : this.generatedModel.faces )
+				{
+					list.add( bf );
+				}
 			}
 		}
 	}

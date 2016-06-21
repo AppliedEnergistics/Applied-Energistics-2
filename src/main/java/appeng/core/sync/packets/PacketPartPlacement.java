@@ -25,6 +25,7 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 
 import appeng.core.CommonHelper;
@@ -41,6 +42,7 @@ public class PacketPartPlacement extends AppEngPacket
 	private int z;
 	private int face;
 	private float eyeHeight;
+	private EnumHand hand;
 
 	// automatic.
 	public PacketPartPlacement( final ByteBuf stream )
@@ -50,10 +52,11 @@ public class PacketPartPlacement extends AppEngPacket
 		this.z = stream.readInt();
 		this.face = stream.readByte();
 		this.eyeHeight = stream.readFloat();
+		this.hand = EnumHand.values()[ stream.readByte() ];
 	}
 
 	// api
-	public PacketPartPlacement( final BlockPos pos, final EnumFacing face, final float eyeHeight )
+	public PacketPartPlacement( final BlockPos pos, final EnumFacing face, final float eyeHeight, final EnumHand hand )
 	{
 		final ByteBuf data = Unpooled.buffer();
 
@@ -63,6 +66,7 @@ public class PacketPartPlacement extends AppEngPacket
 		data.writeInt( pos.getZ() );
 		data.writeByte( face.ordinal() );
 		data.writeFloat( eyeHeight );
+		data.writeByte( hand.ordinal() );
 
 		this.configureWrite( data );
 	}
@@ -73,8 +77,7 @@ public class PacketPartPlacement extends AppEngPacket
 		final EntityPlayerMP sender = (EntityPlayerMP) player;
 		CommonHelper.proxy.updateRenderMode( sender );
 		PartPlacement.setEyeHeight( this.eyeHeight );
-		//TODO 1.9.4 - 2 hands! Just do something!
-		PartPlacement.place( sender.getHeldItem(), new BlockPos( this.x, this.y, this.z ), EnumFacing.VALUES[this.face], sender, sender.worldObj, PartPlacement.PlaceType.INTERACT_FIRST_PASS, 0 );
+		PartPlacement.place( sender.getHeldItem( hand ), new BlockPos( this.x, this.y, this.z ), EnumFacing.VALUES[this.face], sender, hand, sender.worldObj, PartPlacement.PlaceType.INTERACT_FIRST_PASS, 0 );
 		CommonHelper.proxy.updateRenderMode( null );
 	}
 }

@@ -37,6 +37,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -241,7 +242,7 @@ public interface IPart extends IBoxProvider
 	 *
 	 * @return if your activate method performed something.
 	 */
-	boolean onActivate( EntityPlayer player, Vec3d pos );
+	boolean onActivate( EntityPlayer player, EnumHand hand, Vec3d pos );
 
 	/**
 	 * Called when you right click the part, very similar to Block.onActivateBlock
@@ -251,7 +252,7 @@ public interface IPart extends IBoxProvider
 	 *
 	 * @return if your activate method performed something, you should use false unless you really need it.
 	 */
-	boolean onShiftActivate( EntityPlayer player, Vec3d pos );
+	boolean onShiftActivate( EntityPlayer player, EnumHand hand, Vec3d pos );
 
 	/**
 	 * Add drops to the items being dropped into the world, if your item stores its contents when wrenched use the
@@ -283,7 +284,7 @@ public interface IPart extends IBoxProvider
 	 * @param held held item
 	 * @param side placing side
 	 */
-	void onPlacement( EntityPlayer player, ItemStack held, AEPartLocation side );
+	void onPlacement( EntityPlayer player, EnumHand hand, ItemStack held, AEPartLocation side );
 
 	/**
 	 * Used to determine which parts can be placed on what cables.

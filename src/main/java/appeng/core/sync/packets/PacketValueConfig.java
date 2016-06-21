@@ -33,12 +33,13 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumHand;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.Settings;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
-import appeng.client.gui.implementations.GuICraftingCPU;
+import appeng.client.gui.implementations.GuiCraftingCPU;
 import appeng.container.AEBaseContainer;
 import appeng.container.implementations.ContainerCellWorkbench;
 import appeng.container.implementations.ContainerCraftConfirm;
@@ -97,10 +98,23 @@ public class PacketValueConfig extends AppEngPacket
 	{
 		final Container c = player.openContainer;
 
-		//TODO 1.9.4 - 2 hands! Just do something!
-		if( this.Name.equals( "Item" ) && player.getHeldItem() != null && player.getHeldItem().getItem() instanceof IMouseWheelItem )
+		if( this.Name.equals( "Item" ) && ( ( player.getHeldItem( EnumHand.MAIN_HAND ) != null && player.getHeldItem(EnumHand.MAIN_HAND).getItem() instanceof IMouseWheelItem ) || ( player.getHeldItem( EnumHand.OFF_HAND ) != null && player.getHeldItem(EnumHand.OFF_HAND).getItem() instanceof IMouseWheelItem ) ) )
 		{
-			final ItemStack is = player.getHeldItem();
+			final EnumHand hand;
+			if( player.getHeldItem( EnumHand.MAIN_HAND ) != null && player.getHeldItem( EnumHand.MAIN_HAND ).getItem() instanceof IMouseWheelItem )
+			{
+				hand = EnumHand.MAIN_HAND;
+			}
+			else if( player.getHeldItem( EnumHand.OFF_HAND ) != null && player.getHeldItem( EnumHand.OFF_HAND ).getItem() instanceof IMouseWheelItem )
+			{
+				hand = EnumHand.OFF_HAND;
+			}
+			else
+			{
+				return;
+			}
+
+			final ItemStack is = player.getHeldItem( hand );
 			final IMouseWheelItem si = (IMouseWheelItem) is.getItem();
 			si.onWheel( is, this.Value.equals( "WheelUp" ) );
 		}
@@ -250,9 +264,9 @@ public class PacketValueConfig extends AppEngPacket
 		else if( this.Name.equals( "CraftingStatus" ) && this.Value.equals( "Clear" ) )
 		{
 			final GuiScreen gs = Minecraft.getMinecraft().currentScreen;
-			if( gs instanceof GuICraftingCPU )
+			if( gs instanceof GuiCraftingCPU )
 			{
-				( (GuICraftingCPU) gs ).clearItems();
+				( (GuiCraftingCPU) gs ).clearItems();
 			}
 		}
 		else if( c instanceof IConfigurableObject )

@@ -32,6 +32,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -232,13 +233,13 @@ public class PartCableAnchor implements IPart
 	}
 
 	@Override
-	public boolean onActivate( final EntityPlayer player, final Vec3d pos )
+	public boolean onActivate( final EntityPlayer player, final EnumHand hand, final Vec3d pos )
 	{
 		return false;
 	}
 
 	@Override
-	public boolean onShiftActivate( final EntityPlayer player, final Vec3d pos )
+	public boolean onShiftActivate( final EntityPlayer player, final EnumHand hand, final Vec3d pos )
 	{
 		return false;
 	}
@@ -262,7 +263,7 @@ public class PartCableAnchor implements IPart
 	}
 
 	@Override
-	public void onPlacement( final EntityPlayer player, final ItemStack held, final AEPartLocation side )
+	public void onPlacement( final EntityPlayer player, final EnumHand hand, final ItemStack held, final AEPartLocation side )
 	{
 
 	}

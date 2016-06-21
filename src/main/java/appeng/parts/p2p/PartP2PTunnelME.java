@@ -27,6 +27,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumHand;
 
 import appeng.api.AEApi;
 import appeng.api.exceptions.FailedConnection;
@@ -125,9 +126,9 @@ public class PartP2PTunnelME extends PartP2PTunnel<PartP2PTunnelME> implements I
 	}
 
 	@Override
-	public void onPlacement( final EntityPlayer player, final ItemStack held, final AEPartLocation side )
+	public void onPlacement( final EntityPlayer player, final EnumHand hand, final ItemStack held, final AEPartLocation side )
 	{
-		super.onPlacement( player, held, side );
+		super.onPlacement( player, hand, held, side );
 		this.outerProxy.setOwner( player );
 	}
 

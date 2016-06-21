@@ -44,6 +44,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -338,9 +339,9 @@ public class ApiPart implements IPartHelper
 	}
 
 	@Override
-	public boolean placeBus( final ItemStack is, final BlockPos pos, final EnumFacing side, final EntityPlayer player, final World w )
+	public boolean placeBus( final ItemStack is, final BlockPos pos, final EnumFacing side, final EntityPlayer player, final EnumHand hand, final World w )
 	{
-		return PartPlacement.place( is, pos, side, player, w, PartPlacement.PlaceType.PLACE_ITEM, 0 );
+		return PartPlacement.place( is, pos, side, player, hand, w, PartPlacement.PlaceType.PLACE_ITEM, 0 );
 	}
 
 	@Override

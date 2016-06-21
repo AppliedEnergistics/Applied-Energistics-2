@@ -40,8 +40,8 @@ import com.google.common.collect.HashMultimap;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.LoaderState;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 
 import appeng.api.AEApi;
 import appeng.api.definitions.IBlocks;
@@ -118,11 +118,10 @@ public class RecipeHandler implements IRecipeHandler
 	{
 		Preconditions.checkNotNull( is );
 
-		//TODO 1.9.4 - UniqueIdentifier => ResourceLocation
-		final UniqueIdentifier id = GameRegistry.findUniqueIdentifierFor( is.getItem() );
-		String realName = id.modId + ':' + id.name;
+		final ResourceLocation id = Item.REGISTRY.getNameForObject( is.getItem() );
+		String realName = id.toString();
 
-		if( !id.modId.equals( AppEng.MOD_ID ) && !id.modId.equals( "minecraft" ) )
+		if( !id.getResourceDomain().equals( AppEng.MOD_ID ) && !id.getResourceDomain().equals( "minecraft" ) )
 		{
 			throw new RecipeError( "Not applicable for website" );
 		}
