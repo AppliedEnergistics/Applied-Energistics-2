@@ -40,7 +40,7 @@ public final class DispenserBlockTool extends BehaviorDefaultDispenseItem
 		final Item i = dispensedItem.getItem();
 		if( i instanceof IBlockTool )
 		{
-			final EnumFacing enumfacing = BlockDispenser.getFacing( dispenser.getBlockMetadata() );
+			final EnumFacing enumfacing = dispenser.func_189992_e().getValue( BlockDispenser.FACING );
 			final IBlockTool tm = (IBlockTool) i;
 
 			final World w = dispenser.getWorld();

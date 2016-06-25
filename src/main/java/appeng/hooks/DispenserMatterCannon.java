@@ -43,7 +43,7 @@ public final class DispenserMatterCannon extends BehaviorDefaultDispenseItem
 		final Item i = dispensedItem.getItem();
 		if( i instanceof ToolMassCannon )
 		{
-			final EnumFacing enumfacing = BlockDispenser.getFacing( dispenser.getBlockMetadata() );
+			final EnumFacing enumfacing = dispenser.func_189992_e().getValue( BlockDispenser.FACING );
 			AEPartLocation dir = AEPartLocation.INTERNAL;
 			for( final AEPartLocation d : AEPartLocation.SIDE_LOCATIONS )
 			{

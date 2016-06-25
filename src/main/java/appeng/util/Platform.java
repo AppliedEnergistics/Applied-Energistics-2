@@ -54,10 +54,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTPrimitive;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
-import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.SPacketChunkData;
 import net.minecraft.server.management.PlayerChunkMap;
 import net.minecraft.server.management.PlayerChunkMapEntry;
@@ -553,22 +553,22 @@ public class Platform
 				}
 
 				case 1: // ( A instanceof NBTTagByte )
-					return ( (NBTBase.NBTPrimitive) left ).getByte() == ( (NBTBase.NBTPrimitive) right ).getByte();
+					return ( (NBTPrimitive) left ).getByte() == ( (NBTPrimitive) right ).getByte();
 
 				case 4: // else if ( A instanceof NBTTagLong )
-					return ( (NBTBase.NBTPrimitive) left ).getLong() == ( (NBTBase.NBTPrimitive) right ).getLong();
+					return ( (NBTPrimitive) left ).getLong() == ( (NBTPrimitive) right ).getLong();
 
 				case 8: // else if ( A instanceof NBTTagString )
 					return ( (NBTTagString) left ).getString().equals( ( (NBTTagString) right ).getString() ) || ( (NBTTagString) left ).getString().equals( ( (NBTTagString) right ).getString() );
 
 				case 6: // else if ( A instanceof NBTTagDouble )
-					return ( (NBTBase.NBTPrimitive) left ).getDouble() == ( (NBTBase.NBTPrimitive) right ).getDouble();
+					return ( (NBTPrimitive) left ).getDouble() == ( (NBTPrimitive) right ).getDouble();
 
 				case 5: // else if ( A instanceof NBTTagFloat )
-					return ( (NBTBase.NBTPrimitive) left ).getFloat() == ( (NBTBase.NBTPrimitive) right ).getFloat();
+					return ( (NBTPrimitive) left ).getFloat() == ( (NBTPrimitive) right ).getFloat();
 
 				case 3: // else if ( A instanceof NBTTagInt )
-					return ( (NBTBase.NBTPrimitive) left ).getInt() == ( (NBTBase.NBTPrimitive) right ).getInt();
+					return ( (NBTPrimitive) left ).getInt() == ( (NBTPrimitive) right ).getInt();
 
 				default:
 					return left.equals( right );
@@ -654,22 +654,22 @@ public class Platform
 			}
 
 			case 1: // ( A instanceof NBTTagByte )
-				return hash + ( (NBTBase.NBTPrimitive) nbt ).getByte();
+				return hash + ( (NBTPrimitive) nbt ).getByte();
 
 			case 4: // else if ( A instanceof NBTTagLong )
-				return hash + (int) ( (NBTBase.NBTPrimitive) nbt ).getLong();
+				return hash + (int) ( (NBTPrimitive) nbt ).getLong();
 
 			case 8: // else if ( A instanceof NBTTagString )
 				return hash + ( (NBTTagString) nbt ).getString().hashCode();
 
 			case 6: // else if ( A instanceof NBTTagDouble )
-				return hash + (int) ( (NBTBase.NBTPrimitive) nbt ).getDouble();
+				return hash + (int) ( (NBTPrimitive) nbt ).getDouble();
 
 			case 5: // else if ( A instanceof NBTTagFloat )
-				return hash + (int) ( (NBTBase.NBTPrimitive) nbt ).getFloat();
+				return hash + (int) ( (NBTPrimitive) nbt ).getFloat();
 
 			case 3: // else if ( A instanceof NBTTagInt )
-				return hash + ( (NBTBase.NBTPrimitive) nbt ).getInt();
+				return hash + ( (NBTPrimitive) nbt ).getInt();
 
 			default:
 				return hash;
