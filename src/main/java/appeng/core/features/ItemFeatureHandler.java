@@ -23,13 +23,16 @@ import java.util.EnumSet;
 
 import com.google.common.base.Optional;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.block.model.ModelBakery;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 
 import appeng.api.definitions.IItemDefinition;
 import appeng.core.AppEng;
-import appeng.core.CommonHelper;
 import appeng.core.CreativeTab;
 import appeng.core.CreativeTabFacade;
 import appeng.items.parts.ItemFacade;
@@ -41,6 +44,8 @@ public final class ItemFeatureHandler implements IFeatureHandler
 	private final FeatureNameExtractor extractor;
 	private final boolean enabled;
 	private final ItemDefinition definition;
+
+	private ResourceLocation registryName;
 
 	public ItemFeatureHandler( final EnumSet<AEFeature> features, final Item item, final IAEFeature featured, final Optional<String> subName )
 	{
@@ -93,12 +98,19 @@ public final class ItemFeatureHandler implements IFeatureHandler
 				name = "ItemMultiPart";
 			}
 
-			// "item." +
-			GameRegistry.register( this.item.setRegistryName( AppEng.MOD_ID, name ) );
+			registryName = new ResourceLocation( AppEng.MOD_ID, name );
+			GameRegistry.register( this.item.setRegistryName( registryName ) );
+
+			if( side == Side.CLIENT )
+			{
+				ModelBakery.registerItemVariants( item, registryName );
+			}
 		}
 	}
 
-	private void configureIcon( final Item item, final int meta, final String name )
+	@Override
+	public void registerModel()
 	{
+		Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register( item, 0, new ModelResourceLocation( registryName, "inventory" ) );
 	}
 }

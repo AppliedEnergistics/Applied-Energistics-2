@@ -23,14 +23,16 @@ import java.util.EnumSet;
 
 import com.google.common.base.Optional;
 
-import net.minecraft.item.Item;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.block.model.ModelBakery;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 
 import appeng.api.definitions.IBlockDefinition;
 import appeng.block.AEBaseBlock;
 import appeng.core.AppEng;
-import appeng.core.CommonHelper;
 import appeng.core.CreativeTab;
 
 
@@ -40,6 +42,8 @@ public final class AEBlockFeatureHandler implements IFeatureHandler
 	private final FeatureNameExtractor extractor;
 	private final boolean enabled;
 	private final BlockDefinition definition;
+
+	private ResourceLocation registryName;
 
 	public AEBlockFeatureHandler( final EnumSet<AEFeature> features, final AEBaseBlock featured, final Optional<String> subName )
 	{
@@ -70,20 +74,29 @@ public final class AEBlockFeatureHandler implements IFeatureHandler
 		if( this.enabled )
 		{
 			final String name = this.extractor.get();
-			this.featured.setRegistryName( AppEng.MOD_ID, name );
 			this.featured.setCreativeTab( CreativeTab.instance );
 			this.featured.setUnlocalizedName( "appliedenergistics2." + name );
 			this.featured.setBlockTextureName( name );
 
-			GameRegistry.register( this.featured );
+			registryName = new ResourceLocation( AppEng.MOD_ID, name );
+			GameRegistry.register( this.featured.setRegistryName( registryName ) );
 
 			// register the block/item conversion...
 			if( this.definition.maybeItem().isPresent() )
 			{
-				final Item featuredItem = this.definition.maybeItem().get();
-				featuredItem.setRegistryName( AppEng.MOD_ID, name );
-				GameRegistry.register( featuredItem );
+				GameRegistry.register( this.definition.maybeItem().get().setRegistryName( registryName ) );
+			}
+
+			if( side == Side.CLIENT )
+			{
+				ModelBakery.registerItemVariants( this.definition.maybeItem().get(), registryName );
 			}
 		}
+	}
+
+	@Override
+	public void registerModel()
+	{
+		Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register( this.definition.maybeItem().get(), 0, new ModelResourceLocation( registryName, "normal" ) );
 	}
 }

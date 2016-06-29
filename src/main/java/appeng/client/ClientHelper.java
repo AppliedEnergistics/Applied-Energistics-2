@@ -115,6 +115,7 @@ public class ClientHelper extends ServerHelper
 		// }
 		for( IAEFeature feature : Api.INSTANCE.definitions().getFeatureRegistry().getRegisteredFeatures() )
 		{
+			feature.handler().registerModel();
 			if( feature instanceof AEBaseBlock )
 			{
 				Minecraft.getMinecraft().getBlockColors().registerBlockColorHandler( new AEBaseBlockColor(), (Block) feature );

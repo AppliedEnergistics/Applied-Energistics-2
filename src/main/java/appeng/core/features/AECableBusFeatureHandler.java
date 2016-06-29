@@ -23,14 +23,18 @@ import java.util.EnumSet;
 
 import com.google.common.base.Optional;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.block.model.ModelBakery;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.fml.common.registry.GameData;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 
 import appeng.api.definitions.ITileDefinition;
 import appeng.block.AEBaseTileBlock;
 import appeng.block.networking.BlockCableBus;
+import appeng.core.AppEng;
 import appeng.core.CommonHelper;
 import appeng.core.CreativeTab;
 import appeng.util.Platform;
@@ -42,6 +46,8 @@ public final class AECableBusFeatureHandler implements IFeatureHandler
 	private final FeatureNameExtractor extractor;
 	private final boolean enabled;
 	private final TileDefinition definition;
+
+	private ResourceLocation registryName;
 
 	public AECableBusFeatureHandler( final EnumSet<AEFeature> features, final BlockCableBus featured, final Optional<String> subName )
 	{
@@ -83,17 +89,22 @@ public final class AECableBusFeatureHandler implements IFeatureHandler
 				CommonHelper.proxy.bindTileEntitySpecialRenderer( this.featured.getTileEntityClass(), this.featured );
 			}
 
-			final String registryName = "tile." + name;
+			registryName = new ResourceLocation( AppEng.MOD_ID, "tile." + name );
 
 			// Bypass the forge magic with null to register our own itemblock later.
-			GameRegistry.registerBlock( this.featured, null, registryName );
-			GameRegistry.registerItem( this.definition.maybeItem().get(), registryName );
+			GameRegistry.register( this.featured.setRegistryName( registryName ) );
+			GameRegistry.register( this.definition.maybeItem().get().setRegistryName( registryName ) );
 
-			// register the block/item conversion...
-			if( this.featured != null && this.definition.maybeItem().isPresent() )
+			if( side == Side.CLIENT )
 			{
-				GameData.getBlockItemMap().put( this.featured, this.definition.maybeItem().get() );
+				ModelBakery.registerItemVariants( this.definition.maybeItem().get(), registryName );
 			}
 		}
+	}
+
+	@Override
+	public void registerModel()
+	{
+		Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register( this.definition.maybeItem().get(), 0, new ModelResourceLocation( registryName, "normal" ) );
 	}
 }

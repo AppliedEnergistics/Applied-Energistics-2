@@ -24,14 +24,17 @@ import java.util.EnumSet;
 import com.google.common.base.Optional;
 
 import net.minecraft.block.BlockStairs;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.block.model.ModelBakery;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 
 import appeng.api.definitions.IBlockDefinition;
 import appeng.core.AppEng;
-import appeng.core.CommonHelper;
 import appeng.core.CreativeTab;
 
 
@@ -41,6 +44,8 @@ public class StairBlockFeatureHandler implements IFeatureHandler
 	private final FeatureNameExtractor extractor;
 	private final boolean enabled;
 	private final BlockDefinition definition;
+
+	private ResourceLocation registryName;
 
 	public StairBlockFeatureHandler( final EnumSet<AEFeature> features, final BlockStairs stairs, final Optional<String> subName )
 	{
@@ -73,7 +78,21 @@ public class StairBlockFeatureHandler implements IFeatureHandler
 			this.stairs.setCreativeTab( CreativeTab.instance );
 			this.stairs.setUnlocalizedName( "appliedenergistics2." + name );
 
-			GameRegistry.register( this.stairs.setRegistryName( AppEng.MOD_ID, name ) );
+			registryName = new ResourceLocation( AppEng.MOD_ID, name );
+			Item item;
+			GameRegistry.register( this.stairs.setRegistryName( registryName ) );
+			GameRegistry.register( item = new ItemBlock( stairs ).setRegistryName( registryName ) );
+
+			if( side == Side.CLIENT )
+			{
+				ModelBakery.registerItemVariants( item, registryName );
+			}
 		}
+	}
+
+	@Override
+	public void registerModel()
+	{
+		Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register( this.definition.maybeItem().get(), 0, new ModelResourceLocation( registryName, "inventory" ) );
 	}
 }
