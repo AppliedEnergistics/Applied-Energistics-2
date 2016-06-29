@@ -27,6 +27,7 @@ import net.minecraft.item.Item;
 import net.minecraft.world.World;
 
 import appeng.api.util.AEPartLocation;
+import appeng.client.render.textures.ParticleTextures;
 
 
 public class MatterCannonFX extends ParticleBreaking
@@ -46,8 +47,7 @@ public class MatterCannonFX extends ParticleBreaking
 		this.motionX = 0.0f;
 		this.motionY = 0.0f;
 		this.motionZ = 0.0f;
-		//TODO 1.10-R - Find exact atlas it was holding and replace this broken code with the atlas.
-		this.particleTextureIndex = ExtraBlockTextures.BlockMatterCannonParticle.getIcon().getAtlas();
+		this.particleTextureIndex = ParticleTextures.BlockMatterCannonParticle;
 	}
 
 	public void fromItem( final AEPartLocation d )
@@ -62,13 +62,13 @@ public class MatterCannonFX extends ParticleBreaking
 		this.prevPosY = this.posY;
 		this.prevPosZ = this.posZ;
 
-		if (this.particleAge++ >= this.particleMaxAge)
+		if( this.particleAge++ >= this.particleMaxAge )
 		{
 			this.setExpired();
 		}
 
-		this.motionY -= 0.04D * (double)this.particleGravity;
-		this.moveEntity(this.motionX, this.motionY, this.motionZ);
+		this.motionY -= 0.04D * (double) this.particleGravity;
+		this.moveEntity( this.motionX, this.motionY, this.motionZ );
 		this.motionX *= 0.9800000190734863D;
 		this.motionY *= 0.9800000190734863D;
 		this.motionZ *= 0.9800000190734863D;

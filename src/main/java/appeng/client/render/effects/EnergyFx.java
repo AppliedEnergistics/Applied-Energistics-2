@@ -30,6 +30,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import appeng.api.util.AEPartLocation;
+import appeng.client.render.textures.ParticleTextures;
 
 
 @SideOnly( Side.CLIENT )
@@ -51,8 +52,7 @@ public class EnergyFx extends ParticleBreaking
 		this.particleRed = 255;
 		this.particleAlpha = 1.4f;
 		this.particleScale = 3.5f;
-		//TODO 1.10-R - Find exact atlas it was holding and replace this broken code with the atlas.	
-		this.particleTextureIndex = ExtraBlockTextures.BlockEnergyParticle.getIcon().getAtlas();
+		this.particleTextureIndex = ParticleTextures.BlockEnergyParticle;
 
 		this.startBlkX = MathHelper.floor_double( this.posX );
 		this.startBlkY = MathHelper.floor_double( this.posY );
@@ -104,22 +104,22 @@ public class EnergyFx extends ParticleBreaking
 	public void onUpdate()
 	{
 		this.prevPosX = this.posX;
-        this.prevPosY = this.posY;
-        this.prevPosZ = this.posZ;
+		this.prevPosY = this.posY;
+		this.prevPosZ = this.posZ;
 
-        if (this.particleAge++ >= this.particleMaxAge)
-        {
-            this.setExpired();
-        }
+		if( this.particleAge++ >= this.particleMaxAge )
+		{
+			this.setExpired();
+		}
 
-        this.motionY -= 0.04D * (double)this.particleGravity;
-        this.moveEntity(this.motionX, this.motionY, this.motionZ);
-        this.motionX *= 0.9800000190734863D;
-        this.motionY *= 0.9800000190734863D;
-        this.motionZ *= 0.9800000190734863D;
+		this.motionY -= 0.04D * (double) this.particleGravity;
+		this.moveEntity( this.motionX, this.motionY, this.motionZ );
+		this.motionX *= 0.9800000190734863D;
+		this.motionY *= 0.9800000190734863D;
+		this.motionZ *= 0.9800000190734863D;
 
-        this.particleScale *= 0.89f;
-        this.particleAlpha *= 0.89f;
+		this.particleScale *= 0.89f;
+		this.particleAlpha *= 0.89f;
 	}
 
 	public void setMotionX( float motionX )
