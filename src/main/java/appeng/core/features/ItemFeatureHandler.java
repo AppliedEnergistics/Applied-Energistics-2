@@ -28,6 +28,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 
 import appeng.api.definitions.IItemDefinition;
+import appeng.core.AppEng;
 import appeng.core.CommonHelper;
 import appeng.core.CreativeTab;
 import appeng.core.CreativeTabFacade;
@@ -93,7 +94,7 @@ public final class ItemFeatureHandler implements IFeatureHandler
 			}
 
 			// "item." +
-			GameRegistry.registerItem( this.item, name );
+			GameRegistry.register( this.item.setRegistryName( AppEng.MOD_ID, name ) );
 		}
 	}
 

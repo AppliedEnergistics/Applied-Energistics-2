@@ -30,6 +30,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 
 import appeng.api.definitions.IBlockDefinition;
+import appeng.core.AppEng;
 import appeng.core.CommonHelper;
 import appeng.core.CreativeTab;
 
@@ -72,7 +73,7 @@ public class StairBlockFeatureHandler implements IFeatureHandler
 			this.stairs.setCreativeTab( CreativeTab.instance );
 			this.stairs.setUnlocalizedName( "appliedenergistics2." + name );
 
-			GameRegistry.registerBlock( this.stairs, name );
+			GameRegistry.register( this.stairs.setRegistryName( AppEng.MOD_ID, name ) );
 		}
 	}
 }

@@ -23,12 +23,14 @@ import java.util.EnumSet;
 
 import com.google.common.base.Optional;
 
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.GameData;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 
 import appeng.api.definitions.ITileDefinition;
 import appeng.block.AEBaseTileBlock;
+import appeng.core.AppEng;
 import appeng.core.CommonHelper;
 import appeng.core.CreativeTab;
 import appeng.tile.AEBaseTile;
@@ -79,11 +81,11 @@ public final class AETileBlockFeatureHandler implements IFeatureHandler
 				CommonHelper.proxy.bindTileEntitySpecialRenderer( this.featured.getTileEntityClass(), this.featured );
 			}
 
-			final String registryName = "tile." + name;
+			final ResourceLocation registryName = new ResourceLocation( AppEng.MOD_ID, "tile." + name );
 
 			// Bypass the forge magic with null to register our own itemblock later.
-			GameRegistry.registerBlock( this.featured, null, registryName );
-			GameRegistry.registerItem( this.definition.maybeItem().get(), registryName );
+			GameRegistry.register( this.featured.setRegistryName( registryName ) );
+			GameRegistry.register( this.definition.maybeItem().get().setRegistryName( registryName ) );
 			AEBaseTile.registerTileItem( this.featured.getTileEntityClass(), new BlockStackSrc( this.featured, 0, ActivityState.from( this.isFeatureAvailable() ) ) );
 
 			// register the block/item conversion...
