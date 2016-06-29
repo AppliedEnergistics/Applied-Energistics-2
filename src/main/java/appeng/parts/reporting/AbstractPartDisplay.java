@@ -20,15 +20,6 @@ package appeng.parts.reporting;
 
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-
-import appeng.api.parts.IPartRenderHelper;
-import appeng.api.util.IAESprite;
-import appeng.api.util.ModelGenerator;
-import appeng.client.texture.CableBusTextures;
 
 
 /**
@@ -48,98 +39,6 @@ public abstract class AbstractPartDisplay extends AbstractPartReporting
 	public AbstractPartDisplay( final ItemStack is )
 	{
 		super( is, true );
-	}
-
-	@Override
-	@SideOnly( Side.CLIENT )
-	public void renderInventory( final IPartRenderHelper rh, final ModelGenerator renderer )
-	{
-		rh.setBounds( 2, 2, 14, 14, 14, 16 );
-
-		final IAESprite sideTexture = CableBusTextures.PartMonitorSides.getIcon();
-		final IAESprite backTexture = CableBusTextures.PartMonitorBack.getIcon();
-
-		rh.setTexture( sideTexture, sideTexture, backTexture, renderer.getIcon( this.getItemStack() ), sideTexture, sideTexture );
-		rh.renderInventoryBox( renderer );
-
-		rh.setInvColor( this.getColor().whiteVariant );
-		rh.renderInventoryFace( this.getFrontBright().getIcon(), EnumFacing.SOUTH, renderer );
-
-		rh.setInvColor( this.getColor().mediumVariant );
-		rh.renderInventoryFace( this.getFrontDark().getIcon(), EnumFacing.SOUTH, renderer );
-
-		rh.setInvColor( this.getColor().blackVariant );
-		rh.renderInventoryFace( this.getFrontColored().getIcon(), EnumFacing.SOUTH, renderer );
-
-		rh.setBounds( 4, 4, 13, 12, 12, 14 );
-		rh.renderInventoryBox( renderer );
-	}
-
-	@Override
-	@SideOnly( Side.CLIENT )
-	public void renderStatic( final BlockPos pos, final IPartRenderHelper rh, final ModelGenerator renderer )
-	{
-		final IAESprite sideTexture = CableBusTextures.PartMonitorSides.getIcon();
-		final IAESprite backTexture = CableBusTextures.PartMonitorBack.getIcon();
-
-		rh.setTexture( sideTexture, sideTexture, backTexture, renderer.getIcon( this.getItemStack() ), sideTexture, sideTexture );
-
-		rh.setBounds( 2, 2, 14, 14, 14, 16 );
-		rh.renderBlock( pos, renderer );
-
-		if( this.getLightLevel() > 0 )
-		{
-			final int l = 13;
-			renderer.setBrightness( l << 20 | l << 4 );
-		}
-
-		renderer.setUvRotateBottom( renderer.setUvRotateEast( renderer.setUvRotateNorth( renderer.setUvRotateSouth( renderer.setUvRotateTop( renderer.setUvRotateWest( this.getSpin() ) ) ) ) ) );
-
-		renderer.setColorOpaque_I( this.getColor().whiteVariant );
-		rh.renderFace( pos, this.getFrontBright().getIcon(), EnumFacing.SOUTH, renderer );
-
-		renderer.setColorOpaque_I( this.getColor().mediumVariant );
-		rh.renderFace( pos, this.getFrontDark().getIcon(), EnumFacing.SOUTH, renderer );
-
-		renderer.setColorOpaque_I( this.getColor().blackVariant );
-		rh.renderFace( pos, this.getFrontColored().getIcon(), EnumFacing.SOUTH, renderer );
-
-		renderer.setUvRotateBottom( renderer.setUvRotateEast( renderer.setUvRotateNorth( renderer.setUvRotateSouth( renderer.setUvRotateTop( renderer.setUvRotateWest( 0 ) ) ) ) ) );
-
-		final IAESprite sideStatusTexture = CableBusTextures.PartMonitorSidesStatus.getIcon();
-
-		rh.setTexture( sideStatusTexture, sideStatusTexture, backTexture, renderer.getIcon( this.getItemStack() ), sideStatusTexture, sideStatusTexture );
-
-		rh.setBounds( 4, 4, 13, 12, 12, 14 );
-		rh.renderBlock( pos, renderer );
-
-		final boolean hasChan = ( this.getClientFlags() & ( PartPanel.POWERED_FLAG | PartPanel.CHANNEL_FLAG ) ) == ( PartPanel.POWERED_FLAG | PartPanel.CHANNEL_FLAG );
-		final boolean hasPower = ( this.getClientFlags() & PartPanel.POWERED_FLAG ) == PartPanel.POWERED_FLAG;
-
-		if( hasChan )
-		{
-			final int l = 14;
-			renderer.setBrightness( l << 20 | l << 4 );
-			renderer.setColorOpaque_I( this.getColor().blackVariant );
-		}
-		else if( hasPower )
-		{
-			final int l = 9;
-			renderer.setBrightness( l << 20 | l << 4 );
-			renderer.setColorOpaque_I( this.getColor().whiteVariant );
-		}
-		else
-		{
-			renderer.setBrightness( 0 );
-			renderer.setColorOpaque_I( 0x000000 );
-		}
-
-		final IAESprite sideStatusLightTexture = CableBusTextures.PartMonitorSidesStatusLights.getIcon();
-
-		rh.renderFace( pos, sideStatusLightTexture, EnumFacing.EAST, renderer );
-		rh.renderFace( pos, sideStatusLightTexture, EnumFacing.WEST, renderer );
-		rh.renderFace( pos, sideStatusLightTexture, EnumFacing.UP, renderer );
-		rh.renderFace( pos, sideStatusLightTexture, EnumFacing.DOWN, renderer );
 	}
 
 	@Override

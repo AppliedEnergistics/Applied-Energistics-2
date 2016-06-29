@@ -175,19 +175,6 @@ public class ServerHelper extends CommonHelper
 		throw new IllegalStateException( "Unable to Load Core Mod, please verify that AE2 is properly install in the mods folder, with a .jar extension." );
 	}
 
-	@Override
-	public void configureIcon( final Object item, final String name )
-	{
-
-	}
-
-	@Override
-	public ResourceLocation addIcon( final String string )
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	protected CableRenderMode renderModeForPlayer( final EntityPlayer player )
 	{
 		if( player != null )

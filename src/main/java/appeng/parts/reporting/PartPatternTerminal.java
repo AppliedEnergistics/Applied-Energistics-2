@@ -29,7 +29,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import appeng.api.implementations.ICraftingPatternItem;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.client.texture.CableBusTextures;
 import appeng.core.sync.GuiBridge;
 import appeng.helpers.Reflected;
 import appeng.tile.inventory.AppEngInternalInventory;
@@ -38,10 +37,6 @@ import appeng.tile.inventory.InvOperation;
 
 public class PartPatternTerminal extends AbstractPartTerminal
 {
-	private static final CableBusTextures FRONT_BRIGHT_ICON = CableBusTextures.PartPatternTerm_Bright;
-	private static final CableBusTextures FRONT_DARK_ICON = CableBusTextures.PartPatternTerm_Dark;
-	private static final CableBusTextures FRONT_COLORED_ICON = CableBusTextures.PartPatternTerm_Colored;
-
 	private final AppEngInternalInventory crafting = new AppEngInternalInventory( this, 9 );
 	private final AppEngInternalInventory output = new AppEngInternalInventory( this, 3 );
 	private final AppEngInternalInventory pattern = new AppEngInternalInventory( this, 2 );
@@ -201,23 +196,5 @@ public class PartPatternTerminal extends AbstractPartTerminal
 		}
 
 		return super.getInventoryByName( name );
-	}
-
-	@Override
-	public CableBusTextures getFrontBright()
-	{
-		return FRONT_BRIGHT_ICON;
-	}
-
-	@Override
-	public CableBusTextures getFrontColored()
-	{
-		return FRONT_COLORED_ICON;
-	}
-
-	@Override
-	public CableBusTextures getFrontDark()
-	{
-		return FRONT_DARK_ICON;
 	}
 }

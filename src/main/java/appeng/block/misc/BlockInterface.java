@@ -34,8 +34,6 @@ import net.minecraft.world.World;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.IOrientable;
 import appeng.block.AEBaseTileBlock;
-import appeng.client.render.BaseBlockRender;
-import appeng.client.render.blocks.RenderBlockInterface;
 import appeng.core.features.AEFeature;
 import appeng.core.sync.GuiBridge;
 import appeng.tile.misc.TileInterface;
@@ -51,12 +49,6 @@ public class BlockInterface extends AEBaseTileBlock
 
 		this.setTileEntity( TileInterface.class );
 		this.setFeature( EnumSet.of( AEFeature.Core ) );
-	}
-
-	@Override
-	protected Class<? extends BaseBlockRender> getRenderer()
-	{
-		return RenderBlockInterface.class;
 	}
 
 	@Override

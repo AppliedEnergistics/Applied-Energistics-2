@@ -26,7 +26,6 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
-import appeng.client.texture.CableBusTextures;
 import appeng.core.sync.GuiBridge;
 import appeng.helpers.Reflected;
 import appeng.tile.inventory.AppEngInternalInventory;
@@ -34,10 +33,6 @@ import appeng.tile.inventory.AppEngInternalInventory;
 
 public class PartCraftingTerminal extends AbstractPartTerminal
 {
-	private static final CableBusTextures FRONT_BRIGHT_ICON = CableBusTextures.PartCraftingTerm_Bright;
-	private static final CableBusTextures FRONT_DARK_ICON = CableBusTextures.PartCraftingTerm_Dark;
-	private static final CableBusTextures FRONT_COLORED_ICON = CableBusTextures.PartCraftingTerm_Colored;
-
 	private final AppEngInternalInventory craftingGrid = new AppEngInternalInventory( this, 9 );
 
 	@Reflected
@@ -102,23 +97,5 @@ public class PartCraftingTerminal extends AbstractPartTerminal
 			return this.craftingGrid;
 		}
 		return super.getInventoryByName( name );
-	}
-
-	@Override
-	public CableBusTextures getFrontBright()
-	{
-		return FRONT_BRIGHT_ICON;
-	}
-
-	@Override
-	public CableBusTextures getFrontColored()
-	{
-		return FRONT_COLORED_ICON;
-	}
-
-	@Override
-	public CableBusTextures getFrontDark()
-	{
-		return FRONT_DARK_ICON;
 	}
 }

@@ -40,7 +40,6 @@ import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -50,7 +49,6 @@ import net.minecraft.world.World;
 
 import appeng.api.parts.CableRenderMode;
 import appeng.api.parts.IPartHelper;
-import appeng.api.parts.IPartItem;
 import appeng.api.parts.LayerBase;
 import appeng.core.AELog;
 import appeng.core.CommonHelper;
@@ -59,7 +57,6 @@ import appeng.integration.IntegrationType;
 import appeng.integration.abstraction.IFMP;
 import appeng.parts.PartPlacement;
 import appeng.tile.networking.TileCableBus;
-import appeng.util.Platform;
 
 
 public class ApiPart implements IPartHelper
@@ -326,16 +323,6 @@ public class ApiPart implements IPartHelper
 		}
 
 		return false;
-	}
-
-	@Override
-	public void setItemBusRenderer( final IPartItem i )
-	{
-		if( Platform.isClient() && i instanceof Item )
-		{
-			CommonHelper.proxy.configureIcon( i, null );
-			// MinecraftForgeClient.registerItemRenderer( (Item) i, BusRenderer.INSTANCE );
-		}
 	}
 
 	@Override

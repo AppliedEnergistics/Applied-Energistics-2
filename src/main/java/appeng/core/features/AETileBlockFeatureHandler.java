@@ -93,11 +93,6 @@ public final class AETileBlockFeatureHandler implements IFeatureHandler
 			}
 
 			GameRegistry.registerTileEntity( this.featured.getTileEntityClass(), this.featured.toString() );
-
-			if( side == Side.CLIENT )
-			{
-				CommonHelper.proxy.configureIcon( this.featured, name );
-			}
 		}
 	}
 }

@@ -30,7 +30,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import appeng.api.util.AEPartLocation;
-import appeng.client.texture.ExtraBlockTextures;
 
 
 @SideOnly( Side.CLIENT )
@@ -52,6 +51,7 @@ public class EnergyFx extends ParticleBreaking
 		this.particleRed = 255;
 		this.particleAlpha = 1.4f;
 		this.particleScale = 3.5f;
+		//TODO 1.10-R - Find exact atlas it was holding and replace this broken code with the atlas.	
 		this.particleTextureIndex = ExtraBlockTextures.BlockEnergyParticle.getIcon().getAtlas();
 
 		this.startBlkX = MathHelper.floor_double( this.posX );

@@ -35,8 +35,6 @@ import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.client.resources.IResource;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -44,7 +42,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -57,15 +54,8 @@ import net.minecraftforge.common.property.IUnlistedProperty;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import appeng.api.util.AEPartLocation;
-import appeng.api.util.IAESprite;
 import appeng.api.util.IOrientable;
 import appeng.api.util.IOrientableBlock;
-import appeng.client.render.BaseBlockRender;
-import appeng.client.render.BlockRenderInfo;
-import appeng.client.texture.BaseIcon;
-import appeng.client.texture.FlippableIcon;
-import appeng.core.AppEng;
 import appeng.core.features.AEBlockFeatureHandler;
 import appeng.core.features.AEFeature;
 import appeng.core.features.FeatureNameExtractor;
@@ -88,8 +78,6 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 	private boolean hasSubtypes = false;
 	private boolean isInventory = false;
 	private IFeatureHandler handler;
-	@SideOnly( Side.CLIENT )
-	private BlockRenderInfo renderInfo;
 	private String textureName;
 	
 	protected AxisAlignedBB boundingBox = FULL_BLOCK_AABB;
@@ -160,42 +148,6 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 		return new IProperty[0];
 	}
 
-	@SideOnly( Side.CLIENT )
-	public BlockRenderInfo getRendererInstance()
-	{
-		if( this.renderInfo != null )
-		{
-			return this.renderInfo;
-		}
-
-		try
-		{
-			final Class<? extends BaseBlockRender> re = this.getRenderer();
-			if( re == null )
-			{
-				return null; // use 1.8 models.
-			}
-			final BaseBlockRender renderer = re.newInstance();
-			this.renderInfo = new BlockRenderInfo( renderer );
-
-			return this.renderInfo;
-		}
-		catch( final InstantiationException e )
-		{
-			throw new IllegalStateException( "Failed to create a new instance of an illegal class " + this.getRenderer(), e );
-		}
-		catch( final IllegalAccessException e )
-		{
-			throw new IllegalStateException( "Failed to create a new instance of " + this.getRenderer() + " because of permissions.", e );
-		}
-	}
-
-	@SideOnly( Side.CLIENT )
-	protected Class<? extends BaseBlockRender> getRenderer()
-	{
-		return BaseBlockRender.class;
-	}
-
 	protected void setFeature( final EnumSet<AEFeature> f )
 	{
 		final AEBlockFeatureHandler featureHandler = new AEBlockFeatureHandler( f, this, this.getFeatureSubName() );
@@ -237,26 +189,6 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 			return (ICustomCollision) this;
 		}
 		return null;
-	}
-
-	@SideOnly( Side.CLIENT )
-	public IAESprite getIcon( final IBlockAccess w, final BlockPos pos, final EnumFacing side )
-	{
-		final IBlockState state = w.getBlockState( pos );
-		final IOrientable ori = this.getOrientable( w, pos );
-
-		if( ori == null )
-		{
-			return this.getIcon( side, state );
-		}
-
-		return this.getIcon( this.mapRotation( ori, side ), state );
-	}
-
-	@SideOnly( Side.CLIENT )
-	public IAESprite getIcon( final EnumFacing side, final IBlockState state )
-	{
-		return this.getRendererInstance().getTexture( AEPartLocation.fromFacing( side ) );
 	}
 
 	@Override
@@ -616,54 +548,6 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 		}
 
 		return null;
-	}
-
-	@SideOnly( Side.CLIENT )
-	public void registerBlockIcons( final TextureMap clientHelper, final String name )
-	{
-		final BlockRenderInfo info = this.getRendererInstance();
-		final FlippableIcon topIcon;
-
-		final FlippableIcon blockIcon = topIcon = this.optionalIcon( clientHelper, this.getTextureName(), null );
-		final FlippableIcon bottomIcon = this.optionalIcon( clientHelper, this.getTextureName() + "Bottom", topIcon );
-		final FlippableIcon sideIcon = this.optionalIcon( clientHelper, this.getTextureName() + "Side", topIcon );
-		final FlippableIcon eastIcon = this.optionalIcon( clientHelper, this.getTextureName() + "East", sideIcon );
-		final FlippableIcon westIcon = this.optionalIcon( clientHelper, this.getTextureName() + "West", sideIcon );
-		final FlippableIcon southIcon = this.optionalIcon( clientHelper, this.getTextureName() + "Front", sideIcon );
-		final FlippableIcon northIcon = this.optionalIcon( clientHelper, this.getTextureName() + "Back", sideIcon );
-
-		info.updateIcons( bottomIcon, topIcon, northIcon, southIcon, eastIcon, westIcon );
-	}
-
-	@SideOnly( Side.CLIENT )
-	private FlippableIcon optionalIcon( final TextureMap ir, final String name, IAESprite substitute )
-	{
-		// if the input is an flippable IAESprite find the original.
-		while( substitute instanceof FlippableIcon )
-		{
-			substitute = ( (FlippableIcon) substitute ).getOriginal();
-		}
-
-		if( substitute != null )
-		{
-			try
-			{
-				final ResourceLocation resLoc = new ResourceLocation( AppEng.MOD_ID, String.format( "%s/%s%s", "textures/blocks", name, ".png" ) );
-
-				final IResource res = Minecraft.getMinecraft().getResourceManager().getResource( resLoc );
-				if( res != null )
-				{
-					return new FlippableIcon( new BaseIcon( ir.registerSprite( new ResourceLocation( AppEng.MOD_ID, "blocks/" + name ) ) ) );
-				}
-			}
-			catch( final Throwable e )
-			{
-				return new FlippableIcon( substitute );
-			}
-		}
-
-		final ResourceLocation resLoc = new ResourceLocation( AppEng.MOD_ID, "blocks/" + name );
-		return new FlippableIcon( new BaseIcon( ir.registerSprite( resLoc ) ) );
 	}
 
 	public void setBlockTextureName( final String texture )

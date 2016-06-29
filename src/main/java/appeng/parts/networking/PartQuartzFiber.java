@@ -22,16 +22,11 @@ package appeng.parts.networking;
 import java.util.EnumSet;
 import java.util.Set;
 
-import org.lwjgl.opengl.GL11;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.GridFlags;
@@ -40,11 +35,8 @@ import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.energy.IEnergyGridProvider;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartHost;
-import appeng.api.parts.IPartRenderHelper;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
-import appeng.api.util.IAESprite;
-import appeng.api.util.ModelGenerator;
 import appeng.me.GridAccessException;
 import appeng.me.helpers.AENetworkProxy;
 import appeng.parts.AEBasePart;
@@ -74,29 +66,6 @@ public class PartQuartzFiber extends AEBasePart implements IEnergyGridProvider
 	public void getBoxes( final IPartCollisionHelper bch )
 	{
 		bch.addBox( 6, 6, 10, 10, 10, 16 );
-	}
-
-	@Override
-	@SideOnly( Side.CLIENT )
-	public void renderInventory( final IPartRenderHelper rh, final ModelGenerator renderer )
-	{
-		GL11.glTranslated( -0.2, -0.3, 0.0 );
-
-		rh.setTexture( renderer.getIcon( this.getItemStack() ) );
-		rh.setBounds( 6.0f, 6.0f, 5.0f, 10.0f, 10.0f, 11.0f );
-		rh.renderInventoryBox( renderer );
-		rh.setTexture( null );
-	}
-
-	@Override
-	@SideOnly( Side.CLIENT )
-	public void renderStatic( final BlockPos pos, final IPartRenderHelper rh, final ModelGenerator renderer )
-	{
-		final IAESprite myIcon = renderer.getIcon( this.getItemStack() );
-		rh.setTexture( myIcon );
-		rh.setBounds( 6, 6, 10, 10, 10, 16 );
-		rh.renderBlock( pos, renderer );
-		rh.setTexture( null );
 	}
 
 	@Override

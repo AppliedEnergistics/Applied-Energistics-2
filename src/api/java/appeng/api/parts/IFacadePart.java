@@ -28,12 +28,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import appeng.api.util.AEPartLocation;
-import appeng.api.util.ModelGenerator;
 
 
 /**
@@ -56,28 +52,6 @@ public interface IFacadePart
 	 * @param e colliding entity
 	 */
 	void getBoxes( IPartCollisionHelper ch, Entity e );
-
-	/**
-	 * render the part.
-	 *
-	 * @param pos pos of part
-	 * @param instance render helper
-	 * @param renderer renderer
-	 * @param fc face container
-	 * @param busBounds bounding box
-	 * @param renderStilt if to render stilt
-	 */
-	@SideOnly( Side.CLIENT )
-	void renderStatic( BlockPos pos, IPartRenderHelper instance, ModelGenerator renderer, IFacadeContainer fc, AxisAlignedBB busBounds, boolean renderStilt );
-
-	/**
-	 * render the part in inventory.
-	 *
-	 * @param instance render helper
-	 * @param renderer renderer
-	 */
-	@SideOnly( Side.CLIENT )
-	void renderInventory( IPartRenderHelper instance, ModelGenerator renderer );
 
 	/**
 	 * @return side the facade is in

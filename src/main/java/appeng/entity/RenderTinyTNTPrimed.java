@@ -33,15 +33,10 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import appeng.api.util.ModelGenerator;
-import appeng.client.render.BakingModelGenerator;
-
 
 @SideOnly( Side.CLIENT )
 public class RenderTinyTNTPrimed extends Render
 {
-
-	private final ModelGenerator blockRenderer = new BakingModelGenerator();
 
 	public RenderTinyTNTPrimed( final RenderManager p_i46134_1_ )
 	{

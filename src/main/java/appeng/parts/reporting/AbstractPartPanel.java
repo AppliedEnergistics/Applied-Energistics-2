@@ -20,16 +20,8 @@ package appeng.parts.reporting;
 
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
-import appeng.api.parts.IPartRenderHelper;
 import appeng.api.util.AEColor;
-import appeng.api.util.IAESprite;
-import appeng.api.util.ModelGenerator;
-import appeng.client.texture.CableBusTextures;
 
 
 /**
@@ -44,81 +36,15 @@ import appeng.client.texture.CableBusTextures;
  */
 public abstract class AbstractPartPanel extends AbstractPartReporting
 {
-	private static final CableBusTextures FRONT_BRIGHT_ICON = CableBusTextures.PartMonitor_Bright;
-	private static final CableBusTextures FRONT_DARK_ICON = CableBusTextures.PartMonitor_Colored;
-	private static final CableBusTextures FRONT_COLORED_ICON = CableBusTextures.PartMonitor_Colored;
-
 	public AbstractPartPanel( final ItemStack is )
 	{
 		super( is, false );
 	}
 
 	@Override
-	public CableBusTextures getFrontBright()
-	{
-		return FRONT_BRIGHT_ICON;
-	}
-
-	@Override
-	public CableBusTextures getFrontColored()
-	{
-		return FRONT_COLORED_ICON;
-	}
-
-	@Override
-	public CableBusTextures getFrontDark()
-	{
-		return FRONT_DARK_ICON;
-	}
-
-	@Override
 	public boolean isLightSource()
 	{
 		return true;
-	}
-
-	@Override
-	@SideOnly( Side.CLIENT )
-	public void renderInventory( final IPartRenderHelper rh, final ModelGenerator renderer )
-	{
-		rh.setBounds( 2, 2, 14, 14, 14, 16 );
-
-		final IAESprite sideTexture = CableBusTextures.PartMonitorSides.getIcon();
-		final IAESprite backTexture = CableBusTextures.PartMonitorBack.getIcon();
-
-		rh.setTexture( sideTexture, sideTexture, backTexture, renderer.getIcon( this.getItemStack() ), sideTexture, sideTexture );
-		rh.renderInventoryBox( renderer );
-
-		rh.setInvColor( this.getBrightnessColor() );
-		rh.renderInventoryFace( this.getFrontBright().getIcon(), EnumFacing.SOUTH, renderer );
-
-		rh.setBounds( 4, 4, 13, 12, 12, 14 );
-		rh.renderInventoryBox( renderer );
-	}
-
-	@Override
-	@SideOnly( Side.CLIENT )
-	public void renderStatic( final BlockPos pos, final IPartRenderHelper rh, final ModelGenerator renderer )
-	{
-		final IAESprite sideTexture = CableBusTextures.PartMonitorSides.getIcon();
-		final IAESprite backTexture = CableBusTextures.PartMonitorBack.getIcon();
-
-		rh.setTexture( sideTexture, sideTexture, backTexture, renderer.getIcon( this.getItemStack() ), sideTexture, sideTexture );
-
-		rh.setBounds( 2, 2, 14, 14, 14, 16 );
-		rh.renderBlock( pos, renderer );
-
-		if( this.getLightLevel() > 0 )
-		{
-			final int l = 13;
-			renderer.setBrightness( l << 20 | l << 4 );
-		}
-
-		renderer.setColorOpaque_I( this.getBrightnessColor() );
-		rh.renderFace( pos, this.getFrontBright().getIcon(), EnumFacing.SOUTH, renderer );
-
-		rh.setBounds( 4, 4, 13, 12, 12, 14 );
-		rh.renderBlock( pos, renderer );
 	}
 
 	/**

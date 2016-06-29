@@ -29,7 +29,6 @@ import net.minecraft.util.EnumFacing;
 
 import appeng.api.parts.IFacadePart;
 import appeng.api.util.AEPartLocation;
-import appeng.api.util.IAESprite;
 
 
 /**
@@ -83,13 +82,6 @@ public interface IBuildCraftTransport
 	 */
 	@Nullable
 	ItemStack getTextureForFacade( @Nonnull ItemStack facade );
-
-	/**
-	 * @return texture of buildcraft cobblestone structure pipe or null if something bad happens
-	 * //
-	 */
-	@Nullable
-	IAESprite getCobbleStructurePipeTexture();
 
 	/**
 	 * @param te the to be checked {@link TileEntity}

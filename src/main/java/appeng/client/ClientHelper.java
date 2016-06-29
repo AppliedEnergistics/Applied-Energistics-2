@@ -21,10 +21,7 @@ package appeng.client;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 
 import org.lwjgl.opengl.GL11;
@@ -32,11 +29,7 @@ import org.lwjgl.opengl.GL11;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.ItemMeshDefinition;
-import net.minecraft.client.renderer.ItemModelMesher;
-import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
-import net.minecraft.client.renderer.block.statemap.DefaultStateMapper;
 import net.minecraft.client.renderer.color.IBlockColor;
 import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -47,7 +40,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
@@ -56,32 +48,21 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.MouseEvent;
 import net.minecraftforge.client.event.RenderLivingEvent;
-import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import appeng.api.parts.CableRenderMode;
-import appeng.api.parts.IPartItem;
 import appeng.api.util.AEColor;
 import appeng.block.AEBaseBlock;
-import appeng.client.render.BaseBlockRender;
-import appeng.client.render.BlockRenderInfo;
-import appeng.client.render.TESRWrapper;
-import appeng.client.render.blocks.RendererCableBus;
 import appeng.client.render.effects.AssemblerFX;
 import appeng.client.render.effects.CraftingFx;
 import appeng.client.render.effects.EnergyFx;
 import appeng.client.render.effects.LightningArcFX;
 import appeng.client.render.effects.LightningFX;
 import appeng.client.render.effects.VibrantFX;
-import appeng.client.texture.CableBusTextures;
-import appeng.client.texture.ExtraBlockTextures;
-import appeng.client.texture.ExtraItemTextures;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.Api;
-import appeng.core.AppEng;
 import appeng.core.CommonHelper;
 import appeng.core.features.IAEFeature;
 import appeng.core.sync.network.NetworkHandler;
@@ -91,11 +72,9 @@ import appeng.entity.EntityFloatingItem;
 import appeng.entity.EntityTinyTNTPrimed;
 import appeng.entity.RenderFloatingItem;
 import appeng.entity.RenderTinyTNTPrimed;
-import appeng.facade.IFacadeItem;
 import appeng.helpers.IMouseWheelItem;
 import appeng.hooks.TickHandler;
 import appeng.hooks.TickHandler.PlayerColor;
-import appeng.items.AEBaseItem;
 import appeng.items.misc.ItemPaintBall;
 import appeng.server.ServerHelper;
 import appeng.transformer.MissingCoreMod;
@@ -104,18 +83,6 @@ import appeng.util.Platform;
 
 public class ClientHelper extends ServerHelper
 {
-
-	private final ModelResourceLocation partRenderer = new ModelResourceLocation( new ResourceLocation( AppEng.MOD_ID, "DynamicPartRenderer" ), "inventory" );
-
-	private final Map<Object, List<IconReg>> iconRegistrations = new HashMap<>();
-	private final List<IconReg> iconTmp = new ArrayList<>();
-	private final List<ResourceLocation> extraIcons = new ArrayList<>();
-
-	@Override
-	public void configureIcon( final Object item, final String name )
-	{
-		this.iconTmp.add( new IconReg( item, 0, name ) );
-	}
 
 	@Override
 	public void preinit()
@@ -171,11 +138,7 @@ public class ClientHelper extends ServerHelper
 	@Override
 	public void bindTileEntitySpecialRenderer( final Class<? extends TileEntity> tile, final AEBaseBlock blk )
 	{
-		final BaseBlockRender bbr = blk.getRendererInstance().getRendererInstance();
-		if( bbr.hasTESR() && tile != null )
-		{
-			ClientRegistry.bindTileEntitySpecialRenderer( tile, new TESRWrapper( bbr ) );
-		}
+		
 	}
 
 	@Override
@@ -276,76 +239,6 @@ public class ClientHelper extends ServerHelper
 
 		inst.entityRenderMap.put( EntityTinyTNTPrimed.class, new RenderTinyTNTPrimed( inst ) );
 		inst.entityRenderMap.put( EntityFloatingItem.class, new RenderFloatingItem( inst ) );
-
-		final ItemModelMesher mesher = Minecraft.getMinecraft().getRenderItem().getItemModelMesher();
-		final ItemMeshDefinition imd = new ItemMeshDefinition(){
-
-			@Override
-			public ModelResourceLocation getModelLocation( final ItemStack stack )
-			{
-				return ClientHelper.this.partRenderer;
-			}
-		};
-
-		for( final IconReg reg : this.iconTmp )
-		{
-			if( reg.item instanceof IPartItem || reg.item instanceof IFacadeItem )
-			{
-				mesher.register( reg.item instanceof Item ? (Item) reg.item : Item.getItemFromBlock( (Block) reg.item ), imd );
-				continue;
-			}
-
-			if( reg.item instanceof AEBaseBlock )
-			{
-				final BlockRenderInfo renderer = ( (AEBaseBlock) reg.item ).getRendererInstance();
-				if( renderer == null )
-				{
-					continue;
-				}
-
-				this.addIcon( reg.name );
-
-				mesher.register( reg.item instanceof Item ? (Item) reg.item : Item.getItemFromBlock( (Block) reg.item ), stack -> renderer.getRendererInstance().getResourcePath() );
-				continue;
-			}
-
-			if( reg.name == null )
-			{
-				continue;
-			}
-
-			if( reg.item instanceof AEBaseItem )
-			{
-				( (AEBaseItem) reg.item ).registerIcons( this, reg.name );
-			}
-			else if( reg.item instanceof Item )
-			{
-				this.setIcon( (Item) reg.item, 0, reg.name );
-			}
-		}
-
-		final String MODID = AppEng.MOD_ID + ":";
-		for( final List<IconReg> reg : this.iconRegistrations.values() )
-		{
-			final ResourceLocation[] names = new ResourceLocation[reg.size()];
-
-			Item it = null;
-
-			int offset = 0;
-			for( final IconReg r : reg )
-			{
-				it = (Item) r.item;
-
-				if( r.meta >= 0 )
-				{
-					mesher.register( (Item) r.item, r.meta, r.loc );
-				}
-
-				names[offset++] = new ResourceLocation( MODID, r.name );
-			}
-
-			ModelBakery.registerItemVariants( it, names );
-		}
 	}
 
 	@Override
@@ -386,40 +279,6 @@ public class ClientHelper extends ServerHelper
 	public void missingCoreMod()
 	{
 		throw new MissingCoreMod();
-	}
-
-	@Override
-	public ResourceLocation addIcon( final String string )
-	{
-		final ModelResourceLocation n = new ModelResourceLocation( new ResourceLocation( AppEng.MOD_ID, string ), "inventory" );
-		this.extraIcons.add( n );
-		return n;
-	}
-
-	public ModelResourceLocation setIcon( final Item item, final String name )
-	{
-		List<IconReg> reg = this.iconRegistrations.get( item );
-		if( reg == null )
-		{
-			this.iconRegistrations.put( item, reg = new LinkedList<>() );
-		}
-
-		final ModelResourceLocation res = new ModelResourceLocation( new ResourceLocation( AppEng.MOD_ID, name ), "inventory" );
-		reg.add( new IconReg( item, -1, name, res ) );
-		return res;
-	}
-
-	public ModelResourceLocation setIcon( final Item item, final int meta, final String name )
-	{
-		List<IconReg> reg = this.iconRegistrations.get( item );
-		if( reg == null )
-		{
-			this.iconRegistrations.put( item, reg = new LinkedList<>() );
-		}
-
-		final ModelResourceLocation res = new ModelResourceLocation( new ResourceLocation( AppEng.MOD_ID, name ), "inventory" );
-		reg.add( new IconReg( item, meta, name, res ) );
-		return res;
 	}
 
 	@SubscribeEvent
@@ -503,37 +362,7 @@ public class ClientHelper extends ServerHelper
 	@SubscribeEvent
 	public void onModelBakeEvent( final ModelBakeEvent event )
 	{
-		// inventory renderer
-		final SmartModel buses = new SmartModel( new BlockRenderInfo( ( new RendererCableBus() ) ) );
-		event.getModelRegistry().putObject( this.partRenderer, buses );
 
-		for( final IconReg reg : this.iconTmp )
-		{
-			if( reg.item instanceof IPartItem || reg.item instanceof IFacadeItem )
-			{
-				final ResourceLocation i = Item.REGISTRY.getNameForObject( (Item) reg.item );
-				event.getModelRegistry().putObject( new ModelResourceLocation( new ResourceLocation( i.getResourceDomain(), i.getResourcePath() ), "inventory" ), buses );
-			}
-
-			if( reg.item instanceof AEBaseBlock )
-			{
-				final BlockRenderInfo renderer = ( (AEBaseBlock) reg.item ).getRendererInstance();
-				if( renderer == null )
-				{
-					continue;
-				}
-
-				final SmartModel sm = new SmartModel( renderer );
-				event.getModelRegistry().putObject( renderer.getRendererInstance().getResourcePath(), sm );
-
-				final Map data = new DefaultStateMapper().putStateModelLocations( (Block) reg.item );
-				for( final Object Loc : data.values() )
-				{
-					final ModelResourceLocation res = (ModelResourceLocation) Loc;
-					event.getModelRegistry().putObject( res, sm );
-				}
-			}
-		}
 	}
 
 	@SubscribeEvent
@@ -571,51 +400,6 @@ public class ClientHelper extends ServerHelper
 			catch( final IOException e )
 			{
 				AELog.debug( e );
-			}
-		}
-	}
-
-	@SubscribeEvent
-	public void updateTextureSheet( final TextureStitchEvent.Pre ev )
-	{
-		for( final IconReg reg : this.iconTmp )
-		{
-			if( reg.item instanceof AEBaseItem )
-			{
-				( (AEBaseItem) reg.item ).registerCustomIcon( ev.getMap() );
-			}
-			else if( reg.item instanceof AEBaseBlock )
-			{
-				final BlockRenderInfo renderer = ( (AEBaseBlock) reg.item ).getRendererInstance();
-				if( renderer == null )
-				{
-					continue;
-				}
-
-				( (AEBaseBlock) reg.item ).registerBlockIcons( ev.getMap(), reg.name );
-			}
-		}
-
-		this.extraIcons.forEach( ev.getMap()::registerSprite );
-
-		// if( ev.map.getTextureType() == ITEM_RENDERER )
-		{
-			for( final ExtraItemTextures et : ExtraItemTextures.values() )
-			{
-				et.registerIcon( ev.getMap() );
-			}
-		}
-
-		// if( ev.map. == BLOCK_RENDERER )
-		{
-			for( final ExtraBlockTextures et : ExtraBlockTextures.values() )
-			{
-				et.registerIcon( ev.getMap() );
-			}
-
-			for( final CableBusTextures cb : CableBusTextures.values() )
-			{
-				cb.registerIcon( ev.getMap() );
 			}
 		}
 	}

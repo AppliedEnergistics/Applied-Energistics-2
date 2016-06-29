@@ -30,8 +30,6 @@ import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.ISaveProvider;
 import appeng.api.storage.StorageChannel;
 import appeng.api.util.AEPartLocation;
-import appeng.api.util.IAESprite;
-import appeng.client.texture.ExtraBlockTextures;
 import appeng.core.sync.GuiBridge;
 import appeng.items.storage.ItemCreativeStorageCell;
 import appeng.me.storage.CreativeCellInventory;
@@ -55,24 +53,6 @@ public class CreativeCellHandler implements ICellHandler
 			return CreativeCellInventory.getCell( is );
 		}
 		return null;
-	}
-
-	@Override
-	public IAESprite getTopTexture_Light()
-	{
-		return ExtraBlockTextures.BlockMEChestItems_Light.getIcon();
-	}
-
-	@Override
-	public IAESprite getTopTexture_Medium()
-	{
-		return ExtraBlockTextures.BlockMEChestItems_Medium.getIcon();
-	}
-
-	@Override
-	public IAESprite getTopTexture_Dark()
-	{
-		return ExtraBlockTextures.BlockMEChestItems_Dark.getIcon();
 	}
 
 	@Override

@@ -29,10 +29,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
@@ -55,7 +52,6 @@ import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartHost;
-import appeng.api.parts.IPartRenderHelper;
 import appeng.api.storage.ICellContainer;
 import appeng.api.storage.IExternalStorageHandler;
 import appeng.api.storage.IMEInventory;
@@ -67,8 +63,6 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.IConfigManager;
-import appeng.api.util.ModelGenerator;
-import appeng.client.texture.CableBusTextures;
 import appeng.core.settings.TickRates;
 import appeng.core.stats.Achievements;
 import appeng.core.sync.GuiBridge;
@@ -262,47 +256,6 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 		bch.addBox( 3, 3, 15, 13, 13, 16 );
 		bch.addBox( 2, 2, 14, 14, 14, 15 );
 		bch.addBox( 5, 5, 12, 11, 11, 14 );
-	}
-
-	@Override
-	@SideOnly( Side.CLIENT )
-	public void renderInventory( final IPartRenderHelper rh, final ModelGenerator renderer )
-	{
-		rh.setTexture( CableBusTextures.PartStorageSides.getIcon(), CableBusTextures.PartStorageSides.getIcon(), CableBusTextures.PartStorageBack.getIcon(), renderer.getIcon( this.getItemStack() ), CableBusTextures.PartStorageSides.getIcon(), CableBusTextures.PartStorageSides.getIcon() );
-
-		rh.setBounds( 3, 3, 15, 13, 13, 16 );
-		rh.renderInventoryBox( renderer );
-
-		rh.setBounds( 2, 2, 14, 14, 14, 15 );
-		rh.renderInventoryBox( renderer );
-
-		rh.setBounds( 5, 5, 12, 11, 11, 14 );
-		rh.renderInventoryBox( renderer );
-	}
-
-	@Override
-	@SideOnly( Side.CLIENT )
-	public void renderStatic( final BlockPos pos, final IPartRenderHelper rh, final ModelGenerator renderer )
-	{
-		rh.setTexture( CableBusTextures.PartStorageSides.getIcon(), CableBusTextures.PartStorageSides.getIcon(), CableBusTextures.PartStorageBack.getIcon(), renderer.getIcon( this.getItemStack() ), CableBusTextures.PartStorageSides.getIcon(), CableBusTextures.PartStorageSides.getIcon() );
-
-		rh.setBounds( 3, 3, 15, 13, 13, 16 );
-		rh.renderBlock( pos, renderer );
-
-		rh.setBounds( 2, 2, 14, 14, 14, 15 );
-		rh.renderBlock( pos, renderer );
-
-		rh.setTexture( CableBusTextures.PartStorageSides.getIcon(), CableBusTextures.PartStorageSides.getIcon(), CableBusTextures.PartStorageBack.getIcon(), renderer.getIcon( this.getItemStack() ), CableBusTextures.PartStorageSides.getIcon(), CableBusTextures.PartStorageSides.getIcon() );
-
-		rh.setBounds( 5, 5, 12, 11, 11, 13 );
-		rh.renderBlock( pos, renderer );
-
-		rh.setTexture( CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartMonitorBack.getIcon(), renderer.getIcon( this.getItemStack() ), CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartMonitorSidesStatus.getIcon() );
-
-		rh.setBounds( 5, 5, 13, 11, 11, 14 );
-		rh.renderBlock( pos, renderer );
-
-		this.renderLights( pos, rh, renderer );
 	}
 
 	@Override

@@ -28,8 +28,6 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import appeng.block.AEBaseTileBlock;
-import appeng.client.render.BaseBlockRender;
-import appeng.client.render.blocks.RenderSpatialPylon;
 import appeng.core.features.AEFeature;
 import appeng.helpers.AEGlassMaterial;
 import appeng.tile.spatial.TileSpatialPylon;
@@ -64,11 +62,5 @@ public class BlockSpatialPylon extends AEBaseTileBlock
 			return tsp.getLightValue();
 		}
 		return super.getLightValue( state, w, pos );
-	}
-
-	@Override
-	protected Class<? extends BaseBlockRender> getRenderer()
-	{
-		return RenderSpatialPylon.class;
 	}
 }

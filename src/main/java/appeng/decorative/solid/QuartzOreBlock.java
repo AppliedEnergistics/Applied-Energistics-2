@@ -36,8 +36,6 @@ import net.minecraftforge.oredict.OreDictionary;
 import appeng.api.AEApi;
 import appeng.api.exceptions.MissingDefinition;
 import appeng.block.AEBaseBlock;
-import appeng.client.render.BaseBlockRender;
-import appeng.client.render.blocks.RenderQuartzOre;
 import appeng.core.features.AEFeature;
 
 
@@ -62,12 +60,6 @@ public class QuartzOreBlock extends AEBaseBlock
 	public BlockRenderLayer getBlockLayer()
 	{
 		return BlockRenderLayer.CUTOUT;
-	}
-
-	@Override
-	protected Class<? extends BaseBlockRender> getRenderer()
-	{
-		return RenderQuartzOre.class;
 	}
 
 	@Override

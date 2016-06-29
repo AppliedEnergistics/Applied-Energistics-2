@@ -53,8 +53,6 @@ import appeng.api.parts.PartItemStack;
 import appeng.api.parts.SelectedPart;
 import appeng.api.util.AEColor;
 import appeng.block.AEBaseTileBlock;
-import appeng.client.render.BaseBlockRender;
-import appeng.client.render.blocks.RendererCableBus;
 import appeng.core.AEConfig;
 import appeng.core.Api;
 import appeng.core.CommonHelper;
@@ -321,12 +319,6 @@ public class BlockCableBus extends AEBaseTileBlock // implements
 		}
 
 		return out == null ? NULL_CABLE_BUS : out;
-	}
-
-	@Override
-	protected Class<? extends BaseBlockRender> getRenderer()
-	{
-		return RendererCableBus.class;
 	}
 
 	@Override

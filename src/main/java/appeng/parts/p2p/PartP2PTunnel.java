@@ -24,14 +24,11 @@ import java.util.Collection;
 
 import com.google.common.base.Optional;
 
-import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -47,12 +44,8 @@ import appeng.api.implementations.items.MemoryCardMessages;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartItem;
-import appeng.api.parts.IPartRenderHelper;
 import appeng.api.parts.PartItemStack;
 import appeng.api.util.AEPartLocation;
-import appeng.api.util.IAESprite;
-import appeng.api.util.ModelGenerator;
-import appeng.client.texture.CableBusTextures;
 import appeng.core.AEConfig;
 import appeng.me.GridAccessException;
 import appeng.me.cache.P2PCache;
@@ -120,66 +113,6 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 		bch.addBox( 5, 5, 12, 11, 11, 13 );
 		bch.addBox( 3, 3, 13, 13, 13, 14 );
 		bch.addBox( 2, 2, 14, 14, 14, 16 );
-	}
-
-	@Override
-	@SideOnly( Side.CLIENT )
-	public void renderInventory( final IPartRenderHelper rh, final ModelGenerator renderer )
-	{
-		rh.setTexture( this.getTypeTexture( renderer ) );
-
-		rh.setBounds( 2, 2, 14, 14, 14, 16 );
-		rh.renderInventoryBox( renderer );
-
-		rh.setTexture( CableBusTextures.PartTunnelSides.getIcon(), CableBusTextures.PartTunnelSides.getIcon(), CableBusTextures.BlockP2PTunnel2.getIcon(), renderer.getIcon( this.getItemStack() ), CableBusTextures.PartTunnelSides.getIcon(), CableBusTextures.PartTunnelSides.getIcon() );
-
-		rh.setBounds( 2, 2, 14, 14, 14, 16 );
-		rh.renderInventoryBox( renderer );
-	}
-
-	/**
-	 * @param renderer
-	 * @return If enabled it returns the icon of an AE quartz block, else vanilla quartz block icon
-	 */
-	protected IAESprite getTypeTexture( final ModelGenerator renderer )
-	{
-		final Optional<Block> maybeBlock = AEApi.instance().definitions().blocks().quartz().maybeBlock();
-		if( maybeBlock.isPresent() )
-		{
-			return renderer.getIcon( new ItemStack( maybeBlock.get() ) );
-		}
-		else
-		{
-			return renderer.getIcon( new ItemStack( Blocks.QUARTZ_BLOCK ) );
-		}
-	}
-
-	@Override
-	@SideOnly( Side.CLIENT )
-	public void renderStatic( final BlockPos pos, final IPartRenderHelper rh, final ModelGenerator renderer )
-	{
-		rh.setTexture( this.getTypeTexture( renderer ) );
-
-		rh.setBounds( 2, 2, 14, 14, 14, 16 );
-		rh.renderBlock( pos, renderer );
-
-		rh.setTexture( CableBusTextures.PartTunnelSides.getIcon(), CableBusTextures.PartTunnelSides.getIcon(), CableBusTextures.BlockP2PTunnel2.getIcon(), renderer.getIcon( this.getItemStack() ), CableBusTextures.PartTunnelSides.getIcon(), CableBusTextures.PartTunnelSides.getIcon() );
-
-		rh.setBounds( 2, 2, 14, 14, 14, 16 );
-		rh.renderBlock( pos, renderer );
-
-		rh.setBounds( 3, 3, 13, 13, 13, 14 );
-		rh.renderBlock( pos, renderer );
-
-		rh.setTexture( CableBusTextures.BlockP2PTunnel3.getIcon() );
-
-		rh.setBounds( 6, 5, 12, 10, 11, 13 );
-		rh.renderBlock( pos, renderer );
-
-		rh.setBounds( 5, 6, 12, 11, 10, 13 );
-		rh.renderBlock( pos, renderer );
-
-		this.renderLights( pos, rh, renderer );
 	}
 
 	@Override
@@ -443,13 +376,6 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 	public void onTunnelNetworkChange()
 	{
 
-	}
-
-	@Override
-	@SideOnly( Side.CLIENT )
-	public TextureAtlasSprite getBreakingTexture( final ModelGenerator renderer )
-	{
-		return CableBusTextures.BlockP2PTunnel2.getIcon().getAtlas();
 	}
 
 	protected void queueTunnelDrain( final PowerUnits unit, final double f )

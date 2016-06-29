@@ -35,8 +35,6 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
@@ -54,12 +52,8 @@ import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartHost;
-import appeng.api.parts.IPartRenderHelper;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AEPartLocation;
-import appeng.api.util.IAESprite;
-import appeng.api.util.ModelGenerator;
-import appeng.client.texture.CableBusTextures;
 import appeng.core.settings.TickRates;
 import appeng.core.sync.packets.PacketTransitionEffect;
 import appeng.hooks.TickHandler;
@@ -73,10 +67,6 @@ import appeng.util.item.AEItemStack;
 
 public class PartAnnihilationPlane extends PartBasicState implements IGridTickable, IWorldCallable<TickRateModulation>
 {
-	private static final IAESprite SIDE_ICON = CableBusTextures.PartPlaneSides.getIcon();
-	private static final IAESprite BACK_ICON = CableBusTextures.PartTransitionPlaneBack.getIcon();
-	private static final IAESprite STATUS_ICON = CableBusTextures.PartMonitorSidesStatus.getIcon();
-	private static final IAESprite ACTIVE_ICON = CableBusTextures.BlockAnnihilationPlaneOn.getIcon();
 
 	private final BaseActionSource mySrc = new MachineSource( this );
 	private boolean isAccepting = true;
@@ -135,72 +125,6 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 
 		bch.addBox( 5, 5, 14, 11, 11, 15 );
 		bch.addBox( minX, minY, 15, maxX, maxY, bch.isBBCollision() ? 15 : 16 );
-	}
-
-	@Override
-	@SideOnly( Side.CLIENT )
-	public void renderInventory( final IPartRenderHelper rh, final ModelGenerator renderer )
-	{
-		rh.setTexture( SIDE_ICON, SIDE_ICON, BACK_ICON, renderer.getIcon( this.getItemStack() ), SIDE_ICON, SIDE_ICON );
-
-		rh.setBounds( 1, 1, 15, 15, 15, 16 );
-		rh.renderInventoryBox( renderer );
-
-		rh.setBounds( 5, 5, 14, 11, 11, 15 );
-		rh.renderInventoryBox( renderer );
-	}
-
-	@Override
-	@SideOnly( Side.CLIENT )
-	public void renderStatic( final BlockPos pos, final IPartRenderHelper rh, final ModelGenerator renderer )
-	{
-		this.renderStaticWithIcon( pos, rh, renderer, ACTIVE_ICON );
-	}
-
-	protected void renderStaticWithIcon( final BlockPos opos, final IPartRenderHelper rh, final ModelGenerator renderer, final IAESprite activeIcon )
-	{
-		int minX = 1;
-
-		final EnumFacing e = rh.getWorldX();
-		final EnumFacing u = rh.getWorldY();
-
-		final TileEntity te = this.getHost().getTile();
-		final BlockPos pos = te.getPos();
-
-		if( this.isAnnihilationPlane( te.getWorld().getTileEntity( pos.offset( e.getOpposite() ) ), this.getSide() ) )
-		{
-			minX = 0;
-		}
-
-		int maxX = 15;
-		if( this.isAnnihilationPlane( te.getWorld().getTileEntity( pos.offset( e ) ), this.getSide() ) )
-		{
-			maxX = 16;
-		}
-
-		int minY = 1;
-		if( this.isAnnihilationPlane( te.getWorld().getTileEntity( pos.offset( u.getOpposite() ) ), this.getSide() ) )
-		{
-			minY = 0;
-		}
-
-		int maxY = 15;
-		if( this.isAnnihilationPlane( te.getWorld().getTileEntity( pos.offset( e ) ), this.getSide() ) )
-		{
-			maxY = 16;
-		}
-
-		final boolean isActive = ( this.getClientFlags() & ( PartBasicState.POWERED_FLAG | PartBasicState.CHANNEL_FLAG ) ) == ( PartBasicState.POWERED_FLAG | PartBasicState.CHANNEL_FLAG );
-
-		rh.setTexture( SIDE_ICON, SIDE_ICON, BACK_ICON, isActive ? activeIcon : renderer.getIcon( this.getItemStack() ), SIDE_ICON, SIDE_ICON );
-		rh.setBounds( minX, minY, 15, maxX, maxY, 16 );
-		rh.renderBlock( opos, renderer );
-
-		rh.setTexture( STATUS_ICON, STATUS_ICON, BACK_ICON, isActive ? activeIcon : renderer.getIcon( this.getItemStack() ), STATUS_ICON, STATUS_ICON );
-		rh.setBounds( 5, 5, 14, 11, 11, 15 );
-		rh.renderBlock( opos, renderer );
-
-		this.renderLights( opos, rh, renderer );
 	}
 
 	@Override

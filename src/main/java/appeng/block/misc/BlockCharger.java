@@ -43,8 +43,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import appeng.api.AEApi;
 import appeng.api.util.AEAxisAlignedBB;
 import appeng.block.AEBaseTileBlock;
-import appeng.client.render.BaseBlockRender;
-import appeng.client.render.blocks.RenderBlockCharger;
 import appeng.client.render.effects.LightningFX;
 import appeng.core.AEConfig;
 import appeng.core.CommonHelper;
@@ -66,12 +64,6 @@ public class BlockCharger extends AEBaseTileBlock implements ICustomCollision
 		this.setLightOpacity( 2 );
 		this.setFullSize( this.setOpaque( false ) );
 		this.setFeature( EnumSet.of( AEFeature.Core ) );
-	}
-
-	@Override
-	protected Class<? extends BaseBlockRender> getRenderer()
-	{
-		return RenderBlockCharger.class;
 	}
 
 	@Override

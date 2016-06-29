@@ -32,7 +32,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import appeng.api.util.IAESprite;
 import appeng.client.ClientHelper;
 import appeng.core.features.AEFeature;
 import appeng.core.features.FeatureNameExtractor;
@@ -108,24 +107,7 @@ public abstract class AEBaseItem extends Item implements IAEFeature
 	}
 
 	@SideOnly( Side.CLIENT )
-	protected IAESprite myIcon = null;
-
-	@SideOnly( Side.CLIENT )
-	public void registerIcons( final ClientHelper proxy, final String name )
-	{
-		proxy.setIcon( this, 0, name );
-	}
-
-	public IAESprite getIcon( final ItemStack is )
-	{
-		return this.myIcon;
-	}
-
-	@SideOnly( Side.CLIENT )
-	public void registerCustomIcon( final TextureMap map )
-	{
-
-	}
+	public void registerCustomIcon( final TextureMap map ){}
 
 	protected void getCheckedSubItems( final Item sameItem, final CreativeTabs creativeTab, final List<ItemStack> itemStacks )
 	{

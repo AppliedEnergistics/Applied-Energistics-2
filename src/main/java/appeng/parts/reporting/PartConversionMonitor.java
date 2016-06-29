@@ -33,7 +33,6 @@ import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.PlayerSource;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.client.texture.CableBusTextures;
 import appeng.helpers.Reflected;
 import appeng.me.GridAccessException;
 import appeng.util.InventoryAdaptor;
@@ -43,11 +42,6 @@ import appeng.util.item.AEItemStack;
 
 public class PartConversionMonitor extends AbstractPartMonitor
 {
-	private static final CableBusTextures FRONT_BRIGHT_ICON = CableBusTextures.PartConversionMonitor_Bright;
-	private static final CableBusTextures FRONT_DARK_ICON = CableBusTextures.PartConversionMonitor_Dark;
-	private static final CableBusTextures FRONT_DARK_ICON_LOCKED = CableBusTextures.PartConversionMonitor_Dark_Locked;
-	private static final CableBusTextures FRONT_COLORED_ICON = CableBusTextures.PartConversionMonitor_Colored;
-
 	@Reflected
 	public PartConversionMonitor( final ItemStack is )
 	{
@@ -165,23 +159,5 @@ public class PartConversionMonitor extends AbstractPartMonitor
 				// :P
 			}
 		}
-	}
-
-	@Override
-	public CableBusTextures getFrontBright()
-	{
-		return FRONT_BRIGHT_ICON;
-	}
-
-	@Override
-	public CableBusTextures getFrontColored()
-	{
-		return FRONT_COLORED_ICON;
-	}
-
-	@Override
-	public CableBusTextures getFrontDark()
-	{
-		return this.isLocked() ? FRONT_DARK_ICON_LOCKED : FRONT_DARK_ICON;
 	}
 }

@@ -58,14 +58,12 @@ import appeng.api.parts.BusSupport;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartHost;
-import appeng.api.parts.IPartRenderHelper;
 import appeng.api.parts.PartItemStack;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
-import appeng.api.util.ModelGenerator;
 import appeng.helpers.ICustomNameObject;
 import appeng.helpers.IPriorityHost;
 import appeng.me.helpers.AENetworkProxy;
@@ -146,17 +144,6 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 	}
 
 	@Override
-	@SideOnly( Side.CLIENT )
-	public void renderInventory( final IPartRenderHelper rh, final ModelGenerator renderer )
-	{
-		rh.setBounds( 1, 1, 1, 15, 15, 15 );
-		rh.renderInventoryBox( renderer );
-
-		rh.setBounds( 1, 1, 1, 15, 15, 15 );
-		rh.renderInventoryBox( renderer );
-	}
-
-	@Override
 	public TileEntity getTile()
 	{
 		return this.tile;
@@ -198,14 +185,6 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 	}
 
 	@Override
-	@SideOnly( Side.CLIENT )
-	public void renderStatic( final BlockPos pos, final IPartRenderHelper rh, final ModelGenerator renderer )
-	{
-		rh.setBounds( 1, 1, 1, 15, 15, 15 );
-		rh.renderBlock( pos, renderer );
-	}
-
-	@Override
 	public boolean hasCustomName()
 	{
 		return this.getItemStack().hasDisplayName();
@@ -214,13 +193,6 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 	public void addEntityCrashInfo( final CrashReportCategory crashreportcategory )
 	{
 		crashreportcategory.addCrashSection( "Part Side", this.getSide() );
-	}
-
-	@Override
-	@SideOnly( Side.CLIENT )
-	public void renderDynamic( final double x, final double y, final double z, final IPartRenderHelper rh, final ModelGenerator renderer )
-	{
-
 	}
 
 	@Override
@@ -541,13 +513,6 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 	public boolean requireDynamicRender()
 	{
 		return false;
-	}
-
-	@Override
-	@SideOnly( Side.CLIENT )
-	public TextureAtlasSprite getBreakingTexture( final ModelGenerator renderer )
-	{
-		return null;
 	}
 
 	public AEPartLocation getSide()

@@ -39,7 +39,6 @@ import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.util.AEPartLocation;
-import appeng.client.texture.CableBusTextures;
 import appeng.me.GridAccessException;
 import appeng.parts.AEBasePart;
 import appeng.util.Platform;
@@ -299,27 +298,6 @@ public abstract class AbstractPartReporting extends AEBasePart implements IPartM
 	{
 		return this.spin;
 	}
-
-	/**
-	 * The texture used for the bright front layer.
-	 *
-	 * The final texture can overlap any of the the texture in no particular order.
-	 */
-	public abstract CableBusTextures getFrontBright();
-
-	/**
-	 * The texture used for the colored (medium) front layer.
-	 *
-	 * The final texture can overlap any of the the texture in no particular order.
-	 */
-	public abstract CableBusTextures getFrontColored();
-
-	/**
-	 * The texture used for the dark front layer.
-	 *
-	 * The final texture can overlap any of the the texture in no particular order.
-	 */
-	public abstract CableBusTextures getFrontDark();
 
 	/**
 	 * Should the part emit light. This actually only affects the light level, light source use a level of 15 and non

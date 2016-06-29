@@ -27,8 +27,7 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.item.ItemStack;
-
-import appeng.client.texture.ExtraBlockTextures;
+import net.minecraft.util.ResourceLocation;
 
 
 public class GuiTabButton extends GuiButton implements ITooltip
@@ -79,7 +78,7 @@ public class GuiTabButton extends GuiButton implements ITooltip
 		if( this.visible )
 		{
 			GL11.glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
-			minecraft.renderEngine.bindTexture( ExtraBlockTextures.GuiTexture( "guis/states.png" ) );
+			minecraft.renderEngine.bindTexture( new ResourceLocation( "appliedenergistics2", "textures/guis/states.png" ) );
 			this.hovered = x >= this.xPosition && y >= this.yPosition && x < this.xPosition + this.width && y < this.yPosition + this.height;
 
 			int uv_x = ( this.hideEdge > 0 ? 11 : 13 );

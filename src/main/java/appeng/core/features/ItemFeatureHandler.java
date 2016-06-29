@@ -94,11 +94,6 @@ public final class ItemFeatureHandler implements IFeatureHandler
 
 			// "item." +
 			GameRegistry.registerItem( this.item, name );
-
-			if( side == Side.CLIENT )
-			{
-				CommonHelper.proxy.configureIcon( this.item, itemPhysicalName );
-			}
 		}
 	}
 

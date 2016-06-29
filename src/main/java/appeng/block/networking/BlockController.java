@@ -32,8 +32,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import appeng.block.AEBaseTileBlock;
-import appeng.client.render.BaseBlockRender;
-import appeng.client.render.blocks.RenderBlockController;
 import appeng.core.features.AEFeature;
 import appeng.tile.networking.TileController;
 
@@ -95,11 +93,5 @@ public class BlockController extends AEBaseTileBlock
 		{
 			tc.onNeighborChange( false );
 		}
-	}
-
-	@Override
-	protected Class<? extends BaseBlockRender> getRenderer()
-	{
-		return RenderBlockController.class;
 	}
 }

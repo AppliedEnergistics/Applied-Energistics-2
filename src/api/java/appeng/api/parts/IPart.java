@@ -30,7 +30,6 @@ import java.util.Random;
 
 import io.netty.buffer.ByteBuf;
 
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -41,12 +40,9 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import appeng.api.networking.IGridNode;
 import appeng.api.util.AEPartLocation;
-import appeng.api.util.ModelGenerator;
 
 
 public interface IPart extends IBoxProvider
@@ -65,50 +61,6 @@ public interface IPart extends IBoxProvider
 	 * @return item of part
 	 */
 	ItemStack getItemStack( PartItemStack type );
-
-	/**
-	 * render item form for inventory, or entity.
-	 *
-	 * GL Available
-	 *
-	 * @param rh helper
-	 * @param renderer renderer
-	 */
-	@SideOnly( Side.CLIENT )
-	void renderInventory( IPartRenderHelper rh, ModelGenerator renderer );
-
-	/**
-	 * render world renderer ( preferred )
-	 *
-	 * GL is NOT Available
-	 *
-	 * @param pos pos of block
-	 * @param rh helper
-	 * @param renderer renderer
-	 */
-	@SideOnly( Side.CLIENT )
-	void renderStatic( BlockPos pos, IPartRenderHelper rh, ModelGenerator renderer );
-
-	/**
-	 * render TESR.
-	 *
-	 * GL Available
-	 *
-	 * @param x x coord
-	 * @param y y coord
-	 * @param z z coord
-	 * @param rh helper
-	 * @param renderer renderer
-	 */
-	@SideOnly( Side.CLIENT )
-	void renderDynamic( double x, double y, double z, IPartRenderHelper rh, ModelGenerator renderer );
-
-	/**
-	 * @return the Block sheet icon used when rendering the breaking particles, return null to use the ItemStack
-	 * texture.
-	 */
-	@SideOnly( Side.CLIENT )
-	TextureAtlasSprite getBreakingTexture( ModelGenerator renderer );
 
 	/**
 	 * return true only if your part require dynamic rendering, must be consistent.

@@ -32,13 +32,9 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import appeng.api.util.IAESprite;
 import appeng.block.AEBaseItemBlock;
 import appeng.block.AEBaseItemBlockChargeable;
 import appeng.block.AEBaseTileBlock;
-import appeng.client.render.BaseBlockRender;
-import appeng.client.render.blocks.RenderBlockEnergyCube;
-import appeng.client.texture.ExtraBlockTextures;
 import appeng.core.features.AEFeature;
 import appeng.helpers.AEGlassMaterial;
 import appeng.tile.networking.TileEnergyCell;
@@ -68,37 +64,6 @@ public class BlockEnergyCell extends AEBaseTileBlock
 
 		this.setTileEntity( TileEnergyCell.class );
 		this.setFeature( EnumSet.of( AEFeature.Core ) );
-	}
-
-	@Override
-	protected Class<? extends BaseBlockRender> getRenderer()
-	{
-		return RenderBlockEnergyCube.class;
-	}
-
-	@Override
-	public IAESprite getIcon( final net.minecraft.util.EnumFacing side, final IBlockState state )
-	{
-		switch( (int) state.getValue( ENERGY_STORAGE ) )
-		{
-			default:
-			case 0:
-				return ExtraBlockTextures.MEEnergyCell0.getIcon();
-			case 1:
-				return ExtraBlockTextures.MEEnergyCell1.getIcon();
-			case 2:
-				return ExtraBlockTextures.MEEnergyCell2.getIcon();
-			case 3:
-				return ExtraBlockTextures.MEEnergyCell3.getIcon();
-			case 4:
-				return ExtraBlockTextures.MEEnergyCell4.getIcon();
-			case 5:
-				return ExtraBlockTextures.MEEnergyCell5.getIcon();
-			case 6:
-				return ExtraBlockTextures.MEEnergyCell6.getIcon();
-			case 7:
-				return ExtraBlockTextures.MEEnergyCell7.getIcon();
-		}
 	}
 
 	@Override

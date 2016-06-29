@@ -43,8 +43,6 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.IPlantable;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
@@ -63,7 +61,6 @@ import appeng.api.parts.IPart;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartItem;
-import appeng.api.parts.IPartRenderHelper;
 import appeng.api.storage.ICellContainer;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEInventoryHandler;
@@ -72,14 +69,11 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.IConfigManager;
-import appeng.api.util.ModelGenerator;
-import appeng.client.texture.CableBusTextures;
 import appeng.core.AEConfig;
 import appeng.core.sync.GuiBridge;
 import appeng.helpers.IPriorityHost;
 import appeng.me.GridAccessException;
 import appeng.me.storage.MEInventoryHandler;
-import appeng.parts.PartBasicState;
 import appeng.tile.inventory.AppEngInternalAEInventory;
 import appeng.tile.inventory.InvOperation;
 import appeng.util.Platform;
@@ -265,69 +259,6 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 
 		bch.addBox( 5, 5, 14, 11, 11, 15 );
 		bch.addBox( minX, minY, 15, maxX, maxY, 16 );
-	}
-
-	@Override
-	@SideOnly( Side.CLIENT )
-	public void renderInventory( final IPartRenderHelper rh, final ModelGenerator renderer )
-	{
-		rh.setTexture( CableBusTextures.PartPlaneSides.getIcon(), CableBusTextures.PartPlaneSides.getIcon(), CableBusTextures.PartTransitionPlaneBack.getIcon(), renderer.getIcon( this.getItemStack() ), CableBusTextures.PartPlaneSides.getIcon(), CableBusTextures.PartPlaneSides.getIcon() );
-
-		rh.setBounds( 1, 1, 15, 15, 15, 16 );
-		rh.renderInventoryBox( renderer );
-
-		rh.setBounds( 5, 5, 14, 11, 11, 15 );
-		rh.renderInventoryBox( renderer );
-	}
-
-	@Override
-	@SideOnly( Side.CLIENT )
-	public void renderStatic( final BlockPos opos, final IPartRenderHelper rh, final ModelGenerator renderer )
-	{
-		int minX = 1;
-
-		final EnumFacing e = rh.getWorldX();
-		final EnumFacing u = rh.getWorldY();
-
-		final TileEntity te = this.getHost().getTile();
-		final BlockPos pos = te.getPos();
-
-		if( this.isTransitionPlane( te.getWorld().getTileEntity( pos.offset( e.getOpposite() ) ), this.getSide() ) )
-		{
-			minX = 0;
-		}
-
-		int maxX = 15;
-		if( this.isTransitionPlane( te.getWorld().getTileEntity( pos.offset( e ) ), this.getSide() ) )
-		{
-			maxX = 16;
-		}
-
-		int minY = 1;
-		if( this.isTransitionPlane( te.getWorld().getTileEntity( pos.offset( u.getOpposite() ) ), this.getSide() ) )
-		{
-			minY = 0;
-		}
-
-		int maxY = 15;
-		if( this.isTransitionPlane( te.getWorld().getTileEntity( pos.offset( u ) ), this.getSide() ) )
-		{
-			maxY = 16;
-		}
-
-		final boolean isActive = ( this.getClientFlags() & ( PartBasicState.POWERED_FLAG | PartBasicState.CHANNEL_FLAG ) ) == ( PartBasicState.POWERED_FLAG | PartBasicState.CHANNEL_FLAG );
-
-		rh.setTexture( CableBusTextures.PartPlaneSides.getIcon(), CableBusTextures.PartPlaneSides.getIcon(), CableBusTextures.PartTransitionPlaneBack.getIcon(), isActive ? CableBusTextures.BlockFormPlaneOn.getIcon() : renderer.getIcon( this.getItemStack() ), CableBusTextures.PartPlaneSides.getIcon(), CableBusTextures.PartPlaneSides.getIcon() );
-
-		rh.setBounds( minX, minY, 15, maxX, maxY, 16 );
-		rh.renderBlock( opos, renderer );
-
-		rh.setTexture( CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartTransitionPlaneBack.getIcon(), isActive ? CableBusTextures.BlockFormPlaneOn.getIcon() : renderer.getIcon( this.getItemStack() ), CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartMonitorSidesStatus.getIcon() );
-
-		rh.setBounds( 5, 5, 14, 11, 11, 15 );
-		rh.renderBlock( opos, renderer );
-
-		this.renderLights( opos, rh, renderer );
 	}
 
 	@Override

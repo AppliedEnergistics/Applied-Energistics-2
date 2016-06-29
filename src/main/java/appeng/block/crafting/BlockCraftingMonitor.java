@@ -21,20 +21,12 @@ package appeng.block.crafting;
 
 import java.util.List;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import appeng.api.AEApi;
-import appeng.api.util.IAESprite;
-import appeng.client.render.BaseBlockRender;
-import appeng.client.render.blocks.RenderBlockCraftingCPUMonitor;
-import appeng.client.texture.ExtraBlockTextures;
 import appeng.tile.crafting.TileCraftingMonitorTile;
 
 
@@ -44,26 +36,6 @@ public class BlockCraftingMonitor extends BlockCraftingUnit
 	{
 		super( CraftingUnitType.MONITOR );
 		this.setTileEntity( TileCraftingMonitorTile.class );
-	}
-
-	@Override
-	protected Class<? extends BaseBlockRender> getRenderer()
-	{
-		return RenderBlockCraftingCPUMonitor.class;
-	}
-
-	@Override
-	public IAESprite getIcon( final EnumFacing side, final IBlockState state )
-	{
-		if( side != EnumFacing.SOUTH )
-		{
-			for( final Block craftingUnitBlock : AEApi.instance().definitions().blocks().craftingUnit().maybeBlock().asSet() )
-			{
-				return ( (BlockCraftingUnit) craftingUnitBlock ).getIcon( side, state );
-			}
-		}
-
-		return ExtraBlockTextures.BlockCraftingMonitorFit_Light.getIcon();
 	}
 
 	@Override

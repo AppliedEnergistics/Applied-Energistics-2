@@ -26,11 +26,8 @@ package appeng.api.storage;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import appeng.api.implementations.tiles.IChestOrDrive;
-import appeng.api.util.IAESprite;
 
 
 /**
@@ -60,30 +57,6 @@ public interface ICellHandler
 	 * @return a new IMEHandler for the provided item
 	 */
 	IMEInventoryHandler getCellInventory( ItemStack is, ISaveProvider host, StorageChannel channel );
-
-	/**
-	 * @return the ME Chest texture for light pixels this storage cell type, should be 10x10 with 3px of transparent
-	 * padding on a 16x16 texture, null is valid if your cell cannot be used in the ME Chest. refer to the
-	 * assets for examples.
-	 */
-	@SideOnly( Side.CLIENT )
-	IAESprite getTopTexture_Light();
-
-	/**
-	 * @return the ME Chest texture for medium pixels this storage cell type, should be 10x10 with 3px of transparent
-	 * padding on a 16x16 texture, null is valid if your cell cannot be used in the ME Chest. refer to the
-	 * assets for examples.
-	 */
-	@SideOnly( Side.CLIENT )
-	IAESprite getTopTexture_Medium();
-
-	/**
-	 * @return the ME Chest texture for dark pixels this storage cell type, should be 10x10 with 3px of transparent
-	 * padding on a 16x16 texture, null is valid if your cell cannot be used in the ME Chest. refer to the
-	 * assets for examples.
-	 */
-	@SideOnly( Side.CLIENT )
-	IAESprite getTopTexture_Dark();
 
 	/**
 	 * Called when the storage cell is planed in an ME Chest and the user tries to open the terminal side, if your item

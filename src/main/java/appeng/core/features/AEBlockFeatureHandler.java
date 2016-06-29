@@ -84,11 +84,6 @@ public final class AEBlockFeatureHandler implements IFeatureHandler
 				featuredItem.setRegistryName( AppEng.MOD_ID, name );
 				GameRegistry.register( featuredItem );
 			}
-
-			if( side == Side.CLIENT )
-			{
-				CommonHelper.proxy.configureIcon( this.featured, name );
-			}
 		}
 	}
 }

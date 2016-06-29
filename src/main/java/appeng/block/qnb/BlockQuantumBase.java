@@ -30,7 +30,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import appeng.block.AEBaseTileBlock;
-import appeng.client.render.blocks.RenderQNB;
 import appeng.core.features.AEFeature;
 import appeng.helpers.ICustomCollision;
 import appeng.tile.qnb.TileQuantumBridge;
@@ -76,12 +75,6 @@ public abstract class BlockQuantumBase extends AEBaseTileBlock implements ICusto
 		}
 
 		super.breakBlock( w, pos, state );
-	}
-
-	@Override
-	protected Class<? extends RenderQNB> getRenderer()
-	{
-		return RenderQNB.class;
 	}
 
 }

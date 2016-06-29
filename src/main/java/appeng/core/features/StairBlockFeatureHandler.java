@@ -73,12 +73,6 @@ public class StairBlockFeatureHandler implements IFeatureHandler
 			this.stairs.setUnlocalizedName( "appliedenergistics2." + name );
 
 			GameRegistry.registerBlock( this.stairs, name );
-
-			if( side == Side.CLIENT )
-			{
-				final Item item = ItemBlock.getItemFromBlock( this.stairs );
-				CommonHelper.proxy.configureIcon( item, name );
-			}
 		}
 	}
 }

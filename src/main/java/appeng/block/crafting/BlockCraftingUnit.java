@@ -44,11 +44,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import appeng.api.util.AEPartLocation;
-import appeng.api.util.IAESprite;
 import appeng.block.AEBaseTileBlock;
-import appeng.client.render.BaseBlockRender;
-import appeng.client.render.blocks.RenderBlockCraftingCPU;
-import appeng.client.texture.ExtraBlockTextures;
 import appeng.core.features.AEFeature;
 import appeng.core.sync.GuiBridge;
 import appeng.tile.crafting.TileCraftingTile;
@@ -143,33 +139,6 @@ public class BlockCraftingUnit extends AEBaseTileBlock
 	protected IProperty[] getAEStates()
 	{
 		return new IProperty[] { POWERED, FORMED };
-	}
-
-	@Override
-	protected Class<? extends BaseBlockRender> getRenderer()
-	{
-		return RenderBlockCraftingCPU.class;
-	}
-
-	@Override
-	public IAESprite getIcon( final EnumFacing side, final IBlockState state )
-	{
-		if( this.type == CraftingUnitType.ACCELERATOR )
-		{
-			if( (boolean) state.getValue( FORMED ) )
-			{
-				return ExtraBlockTextures.BlockCraftingAcceleratorFit.getIcon();
-			}
-
-			return ExtraBlockTextures.BlockCraftingAccelerator.getIcon();
-		}
-
-		if( (boolean) state.getValue( FORMED ) )
-		{
-			return ExtraBlockTextures.BlockCraftingUnitFit.getIcon();
-		}
-
-		return super.getIcon( side, state );
 	}
 
 	@Override

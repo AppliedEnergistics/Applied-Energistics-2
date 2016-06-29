@@ -39,8 +39,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import appeng.block.AEBaseTileBlock;
-import appeng.client.render.BaseBlockRender;
-import appeng.client.render.blocks.RenderBlockPaint;
 import appeng.core.features.AEFeature;
 import appeng.tile.misc.TilePaint;
 import appeng.util.Platform;
@@ -64,12 +62,6 @@ public class BlockPaint extends AEBaseTileBlock
 	public BlockRenderLayer getBlockLayer()
 	{
 		return BlockRenderLayer.CUTOUT;
-	}
-
-	@Override
-	protected Class<? extends BaseBlockRender> getRenderer()
-	{
-		return RenderBlockPaint.class;
 	}
 
 	@Override

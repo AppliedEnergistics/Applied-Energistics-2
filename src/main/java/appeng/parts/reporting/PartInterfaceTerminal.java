@@ -24,17 +24,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.Vec3d;
 
-import appeng.client.texture.CableBusTextures;
 import appeng.core.sync.GuiBridge;
 import appeng.util.Platform;
 
 
 public class PartInterfaceTerminal extends AbstractPartDisplay
 {
-	private static final CableBusTextures FRONT_BRIGHT_ICON = CableBusTextures.PartInterfaceTerm_Bright;
-	private static final CableBusTextures FRONT_DARK_ICON = CableBusTextures.PartInterfaceTerm_Dark;
-	private static final CableBusTextures FRONT_COLORED_ICON = CableBusTextures.PartInterfaceTerm_Colored;
-
 	public PartInterfaceTerminal( final ItemStack is )
 	{
 		super( is );
@@ -59,23 +54,5 @@ public class PartInterfaceTerminal extends AbstractPartDisplay
 		}
 
 		return false;
-	}
-
-	@Override
-	public CableBusTextures getFrontBright()
-	{
-		return FRONT_BRIGHT_ICON;
-	}
-
-	@Override
-	public CableBusTextures getFrontColored()
-	{
-		return FRONT_COLORED_ICON;
-	}
-
-	@Override
-	public CableBusTextures getFrontDark()
-	{
-		return FRONT_DARK_ICON;
 	}
 }

@@ -141,19 +141,6 @@ public final class MultiItem extends AEBaseItem implements IStorageComponent, IU
 		}
 	}
 
-	@Override
-	@SideOnly( Side.CLIENT )
-	public void registerIcons( final ClientHelper proxy, final String name )
-	{
-		for( final MaterialType type : MaterialType.values() )
-		{
-			if( type != MaterialType.InvalidType )
-			{
-				proxy.setIcon( this, type.getDamageValue(), name + "." + type.name() );
-			}
-		}
-	}
-
 	public MaterialType getTypeByStack( final ItemStack is )
 	{
 		if( this.dmgToMaterial.containsKey( is.getItemDamage() ) )

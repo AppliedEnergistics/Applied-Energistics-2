@@ -26,7 +26,6 @@ import java.util.List;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockGlass;
 import net.minecraft.block.BlockStainedGlass;
-import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -47,8 +46,6 @@ import appeng.api.AEApi;
 import appeng.api.exceptions.MissingDefinition;
 import appeng.api.parts.IAlphaPassItem;
 import appeng.api.util.AEPartLocation;
-import appeng.client.texture.BaseIcon;
-import appeng.core.AppEng;
 import appeng.core.FacadeConfig;
 import appeng.core.features.AEFeature;
 import appeng.decorative.solid.QuartzOreBlock;
@@ -289,11 +286,5 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 		}
 
 		return false;
-	}
-
-	@Override
-	public void registerCustomIcon( final TextureMap map )
-	{
-		this.myIcon = new BaseIcon( map.registerSprite( new ResourceLocation( AppEng.MOD_ID, "blocks/ItemFacade" ) ) );
 	}
 }

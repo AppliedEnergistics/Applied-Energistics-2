@@ -22,22 +22,17 @@ package appeng.parts.automation;
 import java.util.Collection;
 import java.util.Random;
 
-import net.minecraft.client.renderer.BlockModelRenderer;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.LevelType;
@@ -63,7 +58,6 @@ import appeng.api.networking.storage.IBaseMonitor;
 import appeng.api.networking.storage.IStackWatcher;
 import appeng.api.networking.storage.IStackWatcherHost;
 import appeng.api.parts.IPartCollisionHelper;
-import appeng.api.parts.IPartRenderHelper;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorHandlerReceiver;
 import appeng.api.storage.StorageChannel;
@@ -72,10 +66,7 @@ import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
-import appeng.api.util.IAESprite;
 import appeng.api.util.IConfigManager;
-import appeng.api.util.ModelGenerator;
-import appeng.client.texture.CableBusTextures;
 import appeng.core.sync.GuiBridge;
 import appeng.helpers.Reflected;
 import appeng.me.GridAccessException;
@@ -191,12 +182,6 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 	protected int populateFlags( final int cf )
 	{
 		return cf | ( this.prevState ? FLAG_ON : 0 );
-	}
-
-	@Override
-	public TextureAtlasSprite getBreakingTexture( final ModelGenerator renderer )
-	{
-		return renderer.getIcon( this.getItemStack() ).getAtlas();
 	}
 
 	@Override
@@ -410,204 +395,6 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 	public void getBoxes( final IPartCollisionHelper bch )
 	{
 		bch.addBox( 7, 7, 11, 9, 9, 16 );
-	}
-
-	@Override
-	@SideOnly( Side.CLIENT )
-	public void renderInventory( final IPartRenderHelper rh, final ModelGenerator renderer )
-	{
-		rh.setTexture( renderer.getIcon( this.getItemStack() ) );
-		this.renderTorchAtAngle( 0, -0.5, 0, renderer );
-	}
-
-	public void renderTorchAtAngle( double baseX, double baseY, double baseZ, final ModelGenerator renderer )
-	{
-		final boolean isOn = this.isLevelEmitterOn();
-		final IAESprite offTexture = renderer.getIcon( this.getItemStack() );
-		final IAESprite IIcon = ( isOn ? CableBusTextures.LevelEmitterTorchOn.getIcon() : offTexture );
-		//
-		this.centerX = baseX + 0.5;
-		this.centerY = baseY + 0.5;
-		this.centerZ = baseZ + 0.5;
-
-		baseY += 7.0 / 16.0;
-
-		// double par11 = 0;
-
-		/*
-		 * double d5 = (double)TextureAtlasSprite.func_94209_e(); double d6 = (double)TextureAtlasSprite.func_94206_g();
-		 * double d7 =
-		 * (double)TextureAtlasSprite.func_94212_f(); double d8 = (double)TextureAtlasSprite.func_94210_h(); double d9 =
-		 * (double)TextureAtlasSprite.func_94214_a(7.0D); double d10 = (double)TextureAtlasSprite.func_94207_b(6.0D);
-		 * double d11 =
-		 * (double)TextureAtlasSprite.func_94214_a(9.0D); double d12 = (double)TextureAtlasSprite.func_94207_b(8.0D);
-		 * double d13 =
-		 * (double)TextureAtlasSprite.func_94214_a(7.0D); double d14 = (double)TextureAtlasSprite.func_94207_b(13.0D);
-		 * double d15 =
-		 * (double)TextureAtlasSprite.func_94214_a(9.0D); double d16 = (double)TextureAtlasSprite.func_94207_b(15.0D);
-		 */
-
-		final float var16 = IIcon.getMinU();
-		final float var17 = IIcon.getMaxU();
-		final float var18 = IIcon.getMinV();
-		final float var19 = IIcon.getMaxV();
-		/*
-		 * float var16 = (float)var14 / 256.0F; float var17 = ((float)var14 + 15.99F) / 256.0F; float var18 =
-		 * (float)var15 / 256.0F; float var19 = ((float)var15 + 15.99F) / 256.0F;
-		 */
-		final double var20b = offTexture.getInterpolatedU( 7.0D );
-		final double var24b = offTexture.getInterpolatedU( 9.0D );
-
-		final double var20 = IIcon.getInterpolatedU( 7.0D );
-		final double var24 = IIcon.getInterpolatedU( 9.0D );
-		final double var22 = IIcon.getInterpolatedV( 6.0D + ( isOn ? 0 : 1.0D ) );
-		final double var26 = IIcon.getInterpolatedV( 8.0D + ( isOn ? 0 : 1.0D ) );
-		final double var28 = IIcon.getInterpolatedU( 7.0D );
-		final double var30 = IIcon.getInterpolatedV( 13.0D );
-		final double var32 = IIcon.getInterpolatedU( 9.0D );
-		final double var34 = IIcon.getInterpolatedV( 15.0D );
-
-		final double var22b = IIcon.getInterpolatedV( 9.0D );
-		final double var26b = IIcon.getInterpolatedV( 11.0D );
-
-		baseX += 0.5D;
-		baseZ += 0.5D;
-		final double var36 = baseX - 0.5D;
-		final double var38 = baseX + 0.5D;
-		final double var40 = baseZ - 0.5D;
-		final double var42 = baseZ + 0.5D;
-
-		double toff = 0.0d;
-
-		if( !isOn )
-		{
-			toff = 1.0d / 16.0d;
-		}
-
-		if( isOn )
-		{
-			renderer.setColorOpaque_F( 1.0F, 1.0F, 1.0F );
-			renderer.setBrightness( 11 << 20 | 11 << 4 );
-		}
-
-		final EnumFacing t = EnumFacing.UP;
-
-		final double TorchLen = 0.625D;
-		final double var44 = 0.0625D;
-		final double Zero = 0;
-		final double par10 = 0;
-		this.addVertexWithUV( t, renderer, baseX + Zero * ( 1.0D - TorchLen ) - var44, baseY + TorchLen - toff, baseZ + par10 * ( 1.0D - TorchLen ) - var44, var20, var22 );
-		this.addVertexWithUV( t, renderer, baseX + Zero * ( 1.0D - TorchLen ) - var44, baseY + TorchLen - toff, baseZ + par10 * ( 1.0D - TorchLen ) + var44, var20, var26 );
-		this.addVertexWithUV( t, renderer, baseX + Zero * ( 1.0D - TorchLen ) + var44, baseY + TorchLen - toff, baseZ + par10 * ( 1.0D - TorchLen ) + var44, var24, var26 );
-		this.addVertexWithUV( t, renderer, baseX + Zero * ( 1.0D - TorchLen ) + var44, baseY + TorchLen - toff, baseZ + par10 * ( 1.0D - TorchLen ) - var44, var24, var22 );
-
-		final double var422 = 0.1915D + 1.0 / 16.0;
-		this.addVertexWithUV( t, renderer, baseX + Zero * ( 1.0D - TorchLen ) + var44, baseY + var422, baseZ + par10 * ( 1.0D - TorchLen ) - var44, var24b, var22b );
-		this.addVertexWithUV( t, renderer, baseX + Zero * ( 1.0D - TorchLen ) + var44, baseY + var422, baseZ + par10 * ( 1.0D - TorchLen ) + var44, var24b, var26b );
-		this.addVertexWithUV( t, renderer, baseX + Zero * ( 1.0D - TorchLen ) - var44, baseY + var422, baseZ + par10 * ( 1.0D - TorchLen ) + var44, var20b, var26b );
-		this.addVertexWithUV( t, renderer, baseX + Zero * ( 1.0D - TorchLen ) - var44, baseY + var422, baseZ + par10 * ( 1.0D - TorchLen ) - var44, var20b, var22b );
-
-		this.addVertexWithUV( t, renderer, baseX + var44 + Zero, baseY, baseZ - var44 + par10, var32, var30 );
-		this.addVertexWithUV( t, renderer, baseX + var44 + Zero, baseY, baseZ + var44 + par10, var32, var34 );
-		this.addVertexWithUV( t, renderer, baseX - var44 + Zero, baseY, baseZ + var44 + par10, var28, var34 );
-		this.addVertexWithUV( t, renderer, baseX - var44 + Zero, baseY, baseZ - var44 + par10, var28, var30 );
-
-		this.addVertexWithUV( t, renderer, baseX - var44, baseY + 1.0D, var40, var16, var18 );
-		this.addVertexWithUV( t, renderer, baseX - var44 + Zero, baseY + 0.0D, var40 + par10, var16, var19 );
-		this.addVertexWithUV( t, renderer, baseX - var44 + Zero, baseY + 0.0D, var42 + par10, var17, var19 );
-		this.addVertexWithUV( t, renderer, baseX - var44, baseY + 1.0D, var42, var17, var18 );
-
-		this.addVertexWithUV( t, renderer, baseX + var44, baseY + 1.0D, var42, var16, var18 );
-		this.addVertexWithUV( t, renderer, baseX + Zero + var44, baseY + 0.0D, var42 + par10, var16, var19 );
-		this.addVertexWithUV( t, renderer, baseX + Zero + var44, baseY + 0.0D, var40 + par10, var17, var19 );
-		this.addVertexWithUV( t, renderer, baseX + var44, baseY + 1.0D, var40, var17, var18 );
-
-		this.addVertexWithUV( t, renderer, var36, baseY + 1.0D, baseZ + var44, var16, var18 );
-		this.addVertexWithUV( t, renderer, var36 + Zero, baseY + 0.0D, baseZ + var44 + par10, var16, var19 );
-		this.addVertexWithUV( t, renderer, var38 + Zero, baseY + 0.0D, baseZ + var44 + par10, var17, var19 );
-		this.addVertexWithUV( t, renderer, var38, baseY + 1.0D, baseZ + var44, var17, var18 );
-
-		this.addVertexWithUV( t, renderer, var38, baseY + 1.0D, baseZ - var44, var16, var18 );
-		this.addVertexWithUV( t, renderer, var38 + Zero, baseY + 0.0D, baseZ - var44 + par10, var16, var19 );
-		this.addVertexWithUV( t, renderer, var36 + Zero, baseY + 0.0D, baseZ - var44 + par10, var17, var19 );
-		this.addVertexWithUV( t, renderer, var36, baseY + 1.0D, baseZ - var44, var17, var18 );
-	}
-
-	private void addVertexWithUV( final EnumFacing face, final ModelGenerator renderer, double x, double y, double z, final double u, final double v )
-	{
-		x -= this.centerX;
-		y -= this.centerY;
-		z -= this.centerZ;
-
-		if( this.getSide() == AEPartLocation.DOWN )
-		{
-			y = -y;
-			z = -z;
-		}
-
-		if( this.getSide() == AEPartLocation.EAST )
-		{
-			final double m = x;
-			x = y;
-			y = m;
-			y = -y;
-		}
-
-		if( this.getSide() == AEPartLocation.WEST )
-		{
-			final double m = x;
-			x = -y;
-			y = m;
-		}
-
-		if( this.getSide() == AEPartLocation.SOUTH )
-		{
-			final double m = z;
-			z = y;
-			y = m;
-			y = -y;
-		}
-
-		if( this.getSide() == AEPartLocation.NORTH )
-		{
-			final double m = z;
-			z = -y;
-			y = m;
-		}
-
-		x += this.centerX;// + orientation.offsetX * 0.4;
-		y += this.centerY;// + orientation.offsetY * 0.4;
-		z += this.centerZ;// + orientation.offsetZ * 0.4;
-
-		renderer.addVertexWithUV( face, x, y, z, u, v );
-	}
-
-	@Override
-	@SideOnly( Side.CLIENT )
-	public void renderStatic( final BlockPos pos, final IPartRenderHelper rh, final ModelGenerator renderer )
-	{
-		rh.setTexture( renderer.getIcon( this.getItemStack() ) );
-		// rh.setTexture( CableBusTextures.ItemPartLevelEmitterOn.getIcon() );
-
-		// rh.setBounds( 2, 2, 14, 14, 14, 16 );
-		// rh.renderBlock( x, y, z, renderer );
-
-		// rh.setBounds( 7, 7, 10, 9, 9, 15 );
-		// rh.renderBlock( x, y, z, renderer );
-
-		renderer.setRenderAllFaces( true );
-
-		renderer.setBrightness( rh.getBlock().getPackedLightmapCoords( this.getHost().getTile().getWorld().getBlockState( pos ), this.getHost().getTile().getWorld(), pos ) );
-		renderer.setColorOpaque_F( 1.0F, 1.0F, 1.0F );
-
-		this.renderTorchAtAngle( pos.getX(), pos.getY(), pos.getZ(), renderer );
-
-		renderer.setRenderAllFaces( false );
-
-		rh.setBounds( 7, 7, 11, 9, 9, 12 );
-		this.renderLights( pos, rh, renderer );
-
-		// super.renderWorldBlock( world, x, y, z, block, modelId, renderer );
 	}
 
 	@Override

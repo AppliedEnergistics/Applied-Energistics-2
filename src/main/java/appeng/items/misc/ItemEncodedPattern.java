@@ -58,49 +58,10 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 	// rather simple client side caching.
 	private static final Map<ItemStack, ItemStack> SIMPLE_CACHE = new WeakHashMap<ItemStack, ItemStack>();
 
-	@SideOnly( Side.CLIENT )
-	private ModelResourceLocation res;
-
-	@SideOnly( Side.CLIENT )
-	private ModelResourceLocation encodedPatternModel; // TODO: make encoded pattern model!
-
 	public ItemEncodedPattern()
 	{
 		this.setFeature( EnumSet.of( AEFeature.Patterns ) );
 		this.setMaxStackSize( 1 );
-	}
-
-	@Override
-	public void registerIcons( final ClientHelper proxy, final String name )
-	{
-		this.encodedPatternModel = this.res = proxy.setIcon( this, name );
-
-		Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register( this, new ItemMeshDefinition(){
-
-			boolean recursive = false;
-
-			@Override
-			public ModelResourceLocation getModelLocation( final ItemStack stack )
-			{
-				if( this.recursive == false )
-				{
-					this.recursive = true;
-
-					final ItemEncodedPattern iep = (ItemEncodedPattern) stack.getItem();
-
-					final ItemStack is = iep.getOutput( stack );
-					if( Minecraft.getMinecraft().thePlayer.isSneaking() )
-					{
-						return ItemEncodedPattern.this.encodedPatternModel;
-					}
-
-					this.recursive = false;
-				}
-
-				return ItemEncodedPattern.this.res;
-			}
-		} );
-
 	}
 
 	@Override

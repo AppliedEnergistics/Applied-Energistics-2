@@ -25,7 +25,6 @@ import java.util.Random;
 
 import io.netty.buffer.ByteBuf;
 
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -36,19 +35,14 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import appeng.api.networking.IGridNode;
 import appeng.api.parts.BusSupport;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartHost;
-import appeng.api.parts.IPartRenderHelper;
 import appeng.api.parts.PartItemStack;
 import appeng.api.util.AEPartLocation;
-import appeng.api.util.IAESprite;
-import appeng.api.util.ModelGenerator;
 
 
 public class PartCableAnchor implements IPart
@@ -80,47 +74,6 @@ public class PartCableAnchor implements IPart
 	public ItemStack getItemStack( final PartItemStack wrenched )
 	{
 		return this.is;
-	}
-
-	@Override
-	@SideOnly( Side.CLIENT )
-	public void renderInventory( final IPartRenderHelper instance, final ModelGenerator renderer )
-	{
-		instance.setTexture( renderer.getIcon( this.is ) );
-		instance.setBounds( 7, 7, 4, 9, 9, 14 );
-		instance.renderInventoryBox( renderer );
-		instance.setTexture( null );
-	}
-
-	@Override
-	@SideOnly( Side.CLIENT )
-	public void renderStatic( final BlockPos pos, final IPartRenderHelper rh, final ModelGenerator renderer )
-	{
-		final IAESprite myIcon = renderer.getIcon( this.is );
-		rh.setTexture( myIcon );
-		if( this.host != null && this.host.getFacadeContainer().getFacade( this.mySide ) != null )
-		{
-			rh.setBounds( 7, 7, 10, 9, 9, 14 );
-		}
-		else
-		{
-			rh.setBounds( 7, 7, 10, 9, 9, 16 );
-		}
-		rh.renderBlock( pos, renderer );
-		rh.setTexture( null );
-	}
-
-	@Override
-	@SideOnly( Side.CLIENT )
-	public void renderDynamic( final double x, final double y, final double z, final IPartRenderHelper rh, final ModelGenerator renderer )
-	{
-
-	}
-
-	@Override
-	public TextureAtlasSprite getBreakingTexture( final ModelGenerator renderer )
-	{
-		return null;
 	}
 
 	@Override

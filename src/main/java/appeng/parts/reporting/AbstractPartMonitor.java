@@ -30,7 +30,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -46,14 +45,12 @@ import appeng.api.implementations.parts.IPartStorageMonitor;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.storage.IStackWatcher;
 import appeng.api.networking.storage.IStackWatcherHost;
-import appeng.api.parts.IPartRenderHelper;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.api.util.AEPartLocation;
-import appeng.api.util.ModelGenerator;
 import appeng.client.ClientHelper;
 import appeng.core.AELog;
 import appeng.core.localization.PlayerMessages;
@@ -256,46 +253,6 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 		if( this.dspList != null )
 		{
 			GLAllocation.deleteDisplayLists( this.dspList );
-		}
-	}
-
-	@Override
-	@SideOnly( Side.CLIENT )
-	public void renderDynamic( final double x, final double y, final double z, final IPartRenderHelper rh, final ModelGenerator renderer )
-	{
-		if( this.dspList == null )
-		{
-			this.dspList = GLAllocation.generateDisplayLists( 1 );
-		}
-
-		final Tessellator tess = Tessellator.getInstance();
-		final VertexBuffer wr = tess.getBuffer();
-
-		if( ( this.getClientFlags() & ( PartPanel.POWERED_FLAG | PartPanel.CHANNEL_FLAG ) ) != ( PartPanel.POWERED_FLAG | PartPanel.CHANNEL_FLAG ) )
-		{
-			return;
-		}
-
-		final IAEItemStack ais = (IAEItemStack) this.getDisplayed();
-
-		if( ais != null )
-		{
-			GL11.glPushMatrix();
-			GL11.glTranslated( x + 0.5, y + 0.5, z + 0.5 );
-
-			if( this.updateList )
-			{
-				this.updateList = false;
-				GL11.glNewList( this.dspList, GL11.GL_COMPILE_AND_EXECUTE );
-				this.tesrRenderScreen( wr, ais );
-				GL11.glEndList();
-			}
-			else
-			{
-				GL11.glCallList( this.dspList );
-			}
-
-			GL11.glPopMatrix();
 		}
 	}
 

@@ -33,8 +33,6 @@ import net.minecraft.world.World;
 
 import appeng.api.util.AEPartLocation;
 import appeng.block.AEBaseTileBlock;
-import appeng.client.render.BaseBlockRender;
-import appeng.client.render.blocks.RenderBlockInscriber;
 import appeng.core.features.AEFeature;
 import appeng.core.sync.GuiBridge;
 import appeng.tile.misc.TileInscriber;
@@ -52,12 +50,6 @@ public class BlockInscriber extends AEBaseTileBlock
 		this.setLightOpacity( 2 );
 		this.setFullSize( this.setOpaque( false ) );
 		this.setFeature( EnumSet.of( AEFeature.Inscriber ) );
-	}
-
-	@Override
-	protected Class<? extends BaseBlockRender> getRenderer()
-	{
-		return RenderBlockInscriber.class;
 	}
 
 	@Override

@@ -48,7 +48,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 
 import appeng.block.AEBaseBlock;
-import appeng.client.render.BaseBlockRender;
 import appeng.core.AppEng;
 import appeng.core.features.AEFeature;
 import appeng.entity.EntityIds;
@@ -71,12 +70,6 @@ public class BlockTinyTNT extends AEBaseBlock implements ICustomCollision
 		this.setFeature( EnumSet.of( AEFeature.TinyTNT ) );
 
 		EntityRegistry.registerModEntity( EntityTinyTNTPrimed.class, "EntityTinyTNTPrimed", EntityIds.get( EntityTinyTNTPrimed.class ), AppEng.instance(), 16, 4, true );
-	}
-
-	@Override
-	protected Class<? extends BaseBlockRender> getRenderer()
-	{
-		return null;
 	}
 
 	@Override

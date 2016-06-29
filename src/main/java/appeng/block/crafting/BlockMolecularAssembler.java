@@ -32,13 +32,9 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import appeng.api.util.AEPartLocation;
 import appeng.block.AEBaseTileBlock;
-import appeng.client.render.BaseBlockRender;
-import appeng.client.render.blocks.RenderBlockAssembler;
 import appeng.core.features.AEFeature;
 import appeng.core.sync.GuiBridge;
 import appeng.tile.crafting.TileMolecularAssembler;
@@ -62,13 +58,6 @@ public class BlockMolecularAssembler extends AEBaseTileBlock
 	public boolean canRenderInLayer( final IBlockState state, final BlockRenderLayer layer )
 	{
 		return layer == BlockRenderLayer.CUTOUT_MIPPED;
-	}
-
-	@Override
-	@SideOnly( Side.CLIENT )
-	public Class<? extends BaseBlockRender> getRenderer()
-	{
-		return RenderBlockAssembler.class;
 	}
 
 	@Override

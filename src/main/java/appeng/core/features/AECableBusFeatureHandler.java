@@ -94,11 +94,6 @@ public final class AECableBusFeatureHandler implements IFeatureHandler
 			{
 				GameData.getBlockItemMap().put( this.featured, this.definition.maybeItem().get() );
 			}
-
-			if( side == Side.CLIENT )
-			{
-				CommonHelper.proxy.configureIcon( this.featured, name );
-			}
 		}
 	}
 }

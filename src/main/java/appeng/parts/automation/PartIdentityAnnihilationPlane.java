@@ -30,34 +30,20 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.FakePlayerFactory;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
-import appeng.api.parts.IPartRenderHelper;
 import appeng.api.util.AEPartLocation;
-import appeng.api.util.IAESprite;
-import appeng.api.util.ModelGenerator;
-import appeng.client.texture.CableBusTextures;
 
 
 public class PartIdentityAnnihilationPlane extends PartAnnihilationPlane
 {
-	private static final IAESprite ACTIVE_ICON = CableBusTextures.BlockIdentityAnnihilationPlaneOn.getIcon();
 
 	private static final float SILK_TOUCH_FACTOR = 16;
 
 	public PartIdentityAnnihilationPlane( final ItemStack is )
 	{
 		super( is );
-	}
-
-	@Override
-	@SideOnly( Side.CLIENT )
-	public void renderStatic( final BlockPos pos, final IPartRenderHelper rh, final ModelGenerator renderer )
-	{
-		this.renderStaticWithIcon( pos, rh, renderer, ACTIVE_ICON );
 	}
 
 	@Override

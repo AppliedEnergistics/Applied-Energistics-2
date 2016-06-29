@@ -38,8 +38,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import appeng.block.AEBaseBlock;
-import appeng.client.render.BaseBlockRender;
-import appeng.client.render.blocks.RenderNull;
 import appeng.core.features.AEFeature;
 import appeng.helpers.ICustomCollision;
 
@@ -55,12 +53,6 @@ public class BlockMatrixFrame extends AEBaseBlock implements ICustomCollision
 		this.setLightOpacity( 0 );
 		this.setOpaque( false );
 		this.setFeature( EnumSet.of( AEFeature.SpatialIO ) );
-	}
-
-	@Override
-	protected Class<? extends BaseBlockRender> getRenderer()
-	{
-		return RenderNull.class;
 	}
 
 	@Override

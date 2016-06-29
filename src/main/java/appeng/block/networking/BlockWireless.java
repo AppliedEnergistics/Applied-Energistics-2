@@ -38,8 +38,6 @@ import net.minecraft.world.World;
 
 import appeng.api.util.AEPartLocation;
 import appeng.block.AEBaseTileBlock;
-import appeng.client.render.BaseBlockRender;
-import appeng.client.render.blocks.RenderBlockWireless;
 import appeng.core.features.AEFeature;
 import appeng.core.sync.GuiBridge;
 import appeng.helpers.AEGlassMaterial;
@@ -59,12 +57,6 @@ public class BlockWireless extends AEBaseTileBlock implements ICustomCollision
 		this.setFullSize( false );
 		this.setOpaque( false );
 		this.setFeature( EnumSet.of( AEFeature.Core, AEFeature.WirelessAccessTerminal ) );
-	}
-
-	@Override
-	protected Class<? extends BaseBlockRender> getRenderer()
-	{
-		return RenderBlockWireless.class;
 	}
 
 	@Override

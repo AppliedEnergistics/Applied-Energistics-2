@@ -25,7 +25,6 @@ import java.util.List;
 
 import org.lwjgl.opengl.GL11;
 
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -41,11 +40,8 @@ import appeng.api.networking.IGridConnection;
 import appeng.api.networking.IGridNode;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartHost;
-import appeng.api.parts.IPartRenderHelper;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
-import appeng.api.util.ModelGenerator;
-import appeng.client.texture.CableBusTextures;
 import appeng.helpers.Reflected;
 import appeng.me.helpers.AENetworkProxy;
 import appeng.parts.PartBasicState;
@@ -71,13 +67,6 @@ public class PartToggleBus extends PartBasicState
 	}
 
 	@Override
-	public void setColors( final ModelGenerator renderer, final boolean hasChan, final boolean hasPower )
-	{
-		this.hasRedstone = ( this.getClientFlags() & REDSTONE_FLAG ) == REDSTONE_FLAG;
-		super.setColors( renderer, hasChan && this.hasRedstone, hasPower && this.hasRedstone );
-	}
-
-	@Override
 	protected int populateFlags( final int cf )
 	{
 		return cf | ( this.getIntention() ? REDSTONE_FLAG : 0 );
@@ -86,12 +75,6 @@ public class PartToggleBus extends PartBasicState
 	protected boolean getIntention()
 	{
 		return this.getHost().hasRedstone( this.getSide() );
-	}
-
-	@Override
-	public TextureAtlasSprite getBreakingTexture( final ModelGenerator renderer )
-	{
-		return renderer.getIcon( this.getItemStack() ).getAtlas();
 	}
 
 	@Override
@@ -117,51 +100,6 @@ public class PartToggleBus extends PartBasicState
 	public void getBoxes( final IPartCollisionHelper bch )
 	{
 		bch.addBox( 6, 6, 11, 10, 10, 16 );
-	}
-
-	@Override
-	@SideOnly( Side.CLIENT )
-	public void renderInventory( final IPartRenderHelper rh, final ModelGenerator renderer )
-	{
-		GL11.glTranslated( -0.2, -0.3, 0.0 );
-
-		rh.setTexture( renderer.getIcon( this.getItemStack() ) );
-		rh.setBounds( 6, 6, 14 - 4, 10, 10, 16 - 4 );
-		rh.renderInventoryBox( renderer );
-
-		rh.setBounds( 6, 6, 11 - 4, 10, 10, 13 - 4 );
-		rh.renderInventoryBox( renderer );
-
-		rh.setBounds( 6, 6, 13 - 4, 10, 10, 14 - 4 );
-		rh.setTexture( CableBusTextures.PartMonitorSidesStatus.getIcon() );
-		rh.renderInventoryBox( renderer );
-
-		rh.setTexture( CableBusTextures.PartMonitorSidesStatusLights.getIcon() );
-		rh.setInvColor( 0x000000 );
-		rh.renderInventoryBox( renderer );
-		rh.setInvColor( 0xffffff );
-
-		rh.setTexture( null );
-	}
-
-	@Override
-	@SideOnly( Side.CLIENT )
-	public void renderStatic( final BlockPos pos, final IPartRenderHelper rh, final ModelGenerator renderer )
-	{
-		rh.setTexture( renderer.getIcon( this.getItemStack() ) );
-
-		rh.setBounds( 6, 6, 14, 10, 10, 16 );
-		rh.renderBlock( pos, renderer );
-
-		rh.setBounds( 6, 6, 11, 10, 10, 13 );
-		rh.renderBlock( pos, renderer );
-
-		rh.setTexture( CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartMonitorBack.getIcon(), renderer.getIcon( this.getItemStack() ), CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartMonitorSidesStatus.getIcon() );
-
-		rh.setBounds( 6, 6, 13, 10, 10, 14 );
-		rh.renderBlock( pos, renderer );
-
-		this.renderLights( pos, rh, renderer );
 	}
 
 	@Override

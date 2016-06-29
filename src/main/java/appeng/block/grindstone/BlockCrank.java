@@ -38,8 +38,6 @@ import net.minecraftforge.common.util.FakePlayer;
 
 import appeng.api.implementations.tiles.ICrankable;
 import appeng.block.AEBaseTileBlock;
-import appeng.client.render.BaseBlockRender;
-import appeng.client.render.blocks.RenderBlockCrank;
 import appeng.core.features.AEFeature;
 import appeng.core.stats.Stats;
 import appeng.tile.AEBaseTile;
@@ -58,12 +56,6 @@ public class BlockCrank extends AEBaseTileBlock
 		this.setHarvestLevel( "axe", 0 );
 		this.setFullSize( this.setOpaque( false ) );
 		this.setFeature( EnumSet.of( AEFeature.GrindStone ) );
-	}
-
-	@Override
-	public Class<? extends BaseBlockRender> getRenderer()
-	{
-		return RenderBlockCrank.class;
 	}
 
 	@Override

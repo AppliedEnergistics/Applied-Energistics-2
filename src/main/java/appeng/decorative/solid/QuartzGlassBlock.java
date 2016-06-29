@@ -27,12 +27,8 @@ import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import appeng.block.AEBaseBlock;
-import appeng.client.render.BaseBlockRender;
-import appeng.client.render.blocks.RenderQuartzGlass;
 import appeng.core.features.AEFeature;
 import appeng.helpers.AEGlassMaterial;
 
@@ -51,13 +47,6 @@ public class QuartzGlassBlock extends AEBaseBlock
 	public BlockRenderLayer getBlockLayer()
 	{
 		return BlockRenderLayer.CUTOUT;
-	}
-
-	@Override
-	@SideOnly( Side.CLIENT )
-	public Class<? extends BaseBlockRender> getRenderer()
-	{
-		return RenderQuartzGlass.class;
 	}
 
 	@Override

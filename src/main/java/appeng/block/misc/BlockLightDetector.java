@@ -39,7 +39,6 @@ import net.minecraft.world.World;
 import appeng.api.util.IOrientable;
 import appeng.api.util.IOrientableBlock;
 import appeng.block.AEBaseTileBlock;
-import appeng.client.render.blocks.RenderQuartzTorch;
 import appeng.core.features.AEFeature;
 import appeng.helpers.ICustomCollision;
 import appeng.helpers.MetaRotation;
@@ -106,12 +105,6 @@ public class BlockLightDetector extends AEBaseTileBlock implements IOrientableBl
 	public void randomDisplayTick( final IBlockState state, final World worldIn, final BlockPos pos, final Random rand )
 	{
 		// cancel out lightning
-	}
-
-	@Override
-	protected Class<? extends RenderQuartzTorch> getRenderer()
-	{
-		return RenderQuartzTorch.class;
 	}
 
 	@Override

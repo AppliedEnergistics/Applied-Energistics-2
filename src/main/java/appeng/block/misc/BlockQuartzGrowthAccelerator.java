@@ -31,8 +31,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import appeng.block.AEBaseTileBlock;
-import appeng.client.render.BaseBlockRender;
-import appeng.client.render.blocks.RenderBlockQuartzAccelerator;
 import appeng.client.render.effects.LightningFX;
 import appeng.core.AEConfig;
 import appeng.core.CommonHelper;
@@ -49,12 +47,6 @@ public class BlockQuartzGrowthAccelerator extends AEBaseTileBlock
 		this.setSoundType( SoundType.METAL );
 		this.setTileEntity( TileQuartzGrowthAccelerator.class );
 		this.setFeature( EnumSet.of( AEFeature.Core ) );
-	}
-
-	@Override
-	protected Class<? extends BaseBlockRender> getRenderer()
-	{
-		return RenderBlockQuartzAccelerator.class;
 	}
 
 	@Override

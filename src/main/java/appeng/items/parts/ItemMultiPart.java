@@ -35,7 +35,6 @@ import javax.annotation.Nullable;
 
 import com.google.common.base.Preconditions;
 
-import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -43,11 +42,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import appeng.api.AEApi;
 import appeng.api.implementations.items.IItemGroup;
@@ -55,11 +51,7 @@ import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHelper;
 import appeng.api.parts.IPartItem;
 import appeng.api.util.AEColor;
-import appeng.api.util.IAESprite;
-import appeng.client.texture.BaseIcon;
-import appeng.client.texture.MissingIcon;
 import appeng.core.AEConfig;
-import appeng.core.AppEng;
 import appeng.core.features.AEFeature;
 import appeng.core.features.ActivityState;
 import appeng.core.features.ItemStackSrc;
@@ -84,7 +76,6 @@ public final class ItemMultiPart extends AEBaseItem implements IPartItem, IItemG
 		this.registered = new HashMap<Integer, PartTypeWithVariant>( INITIAL_REGISTERED_CAPACITY );
 
 		this.setFeature( EnumSet.of( AEFeature.Core ) );
-		partHelper.setItemBusRenderer( this );
 		this.setHasSubtypes( true );
 
 		instance = this;
@@ -193,29 +184,6 @@ public final class ItemMultiPart extends AEBaseItem implements IPartItem, IItemG
 	public String getUnlocalizedName( final ItemStack is )
 	{
 		return "item.appliedenergistics2." + this.getName( is );
-	}
-
-	@Override
-	@SideOnly( Side.CLIENT )
-	public void registerCustomIcon( final TextureMap map )
-	{
-		for( final Entry<Integer, PartTypeWithVariant> part : this.registered.entrySet() )
-		{
-			part.getValue().texture = new BaseIcon( map.registerSprite( new ResourceLocation( AppEng.MOD_ID, "blocks/" + this.getName( new ItemStack( this, 1, part.getKey() ) ) ) ) );
-		}
-	}
-
-	@Override
-	public IAESprite getIcon( final ItemStack is )
-	{
-		final int dmg = is.getMetadata();
-		final PartTypeWithVariant registeredType = this.registered.get( dmg );
-		if( registeredType != null )
-		{
-			return registeredType.texture;
-		}
-
-		return new MissingIcon( this );
 	}
 
 	@Override
@@ -376,9 +344,6 @@ public final class ItemMultiPart extends AEBaseItem implements IPartItem, IItemG
 	{
 		private final PartType part;
 		private final int variant;
-
-		@SideOnly( Side.CLIENT )
-		public IAESprite texture = null;
 
 		private PartTypeWithVariant( final PartType part, final int variant )
 		{

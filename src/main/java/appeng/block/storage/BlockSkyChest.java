@@ -39,8 +39,6 @@ import net.minecraft.world.World;
 
 import appeng.api.util.AEPartLocation;
 import appeng.block.AEBaseTileBlock;
-import appeng.client.render.BaseBlockRender;
-import appeng.client.render.blocks.RenderBlockSkyChest;
 import appeng.core.features.AEFeature;
 import appeng.core.sync.GuiBridge;
 import appeng.helpers.ICustomCollision;
@@ -69,12 +67,6 @@ public class BlockSkyChest extends AEBaseTileBlock implements ICustomCollision
 		this.blockResistance = 150.0f;
 		this.type = type;
 		this.setFeature( EnumSet.of( AEFeature.Core, AEFeature.SkyStoneChests ) );
-	}
-
-	@Override
-	protected Class<? extends BaseBlockRender> getRenderer()
-	{
-		return RenderBlockSkyChest.class;
 	}
 
 	@Override

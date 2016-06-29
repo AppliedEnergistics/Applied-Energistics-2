@@ -43,8 +43,6 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import appeng.api.AEApi;
 import appeng.api.config.YesNo;
@@ -65,7 +63,6 @@ import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
-import appeng.client.render.CableRenderHelper;
 import appeng.core.AELog;
 import appeng.facade.FacadeContainer;
 import appeng.helpers.AEMultiTile;
@@ -901,18 +898,6 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 		}
 
 		return light;
-	}
-
-	@SideOnly( Side.CLIENT )
-	public void renderStatic()
-	{
-		CableRenderHelper.getInstance().renderStatic( this, this.getFacadeContainer() );
-	}
-
-	@SideOnly( Side.CLIENT )
-	public void renderDynamic( final double x, final double y, final double z )
-	{
-		CableRenderHelper.getInstance().renderDynamic( this, x, y, z );
 	}
 
 	public void writeToStream( final ByteBuf data ) throws IOException

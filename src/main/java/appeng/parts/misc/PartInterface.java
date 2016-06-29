@@ -24,7 +24,6 @@ import java.util.List;
 
 import com.google.common.collect.ImmutableSet;
 
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
@@ -34,11 +33,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.Upgrades;
@@ -55,14 +51,11 @@ import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPartCollisionHelper;
-import appeng.api.parts.IPartRenderHelper;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IStorageMonitorable;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.IConfigManager;
-import appeng.api.util.ModelGenerator;
-import appeng.client.texture.CableBusTextures;
 import appeng.core.sync.GuiBridge;
 import appeng.helpers.DualityInterface;
 import appeng.helpers.IInterfaceHost;
@@ -112,47 +105,9 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISto
 	}
 
 	@Override
-	@SideOnly( Side.CLIENT )
-	public void renderInventory( final IPartRenderHelper rh, final ModelGenerator renderer )
-	{
-		rh.setTexture( CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorBack.getIcon(), renderer.getIcon( this.getItemStack() ), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon() );
-
-		rh.setBounds( 2, 2, 14, 14, 14, 16 );
-		rh.renderInventoryBox( renderer );
-
-		rh.setBounds( 5, 5, 12, 11, 11, 13 );
-		rh.renderInventoryBox( renderer );
-
-		rh.setBounds( 5, 5, 13, 11, 11, 14 );
-		rh.renderInventoryBox( renderer );
-	}
-
-	@Override
 	public void gridChanged()
 	{
 		this.duality.gridChanged();
-	}
-
-	@Override
-	@SideOnly( Side.CLIENT )
-	public void renderStatic( final BlockPos pos, final IPartRenderHelper rh, final ModelGenerator renderer )
-	{
-		rh.setTexture( CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorBack.getIcon(), renderer.getIcon( this.getItemStack() ), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon() );
-
-		rh.setBounds( 2, 2, 14, 14, 14, 16 );
-		rh.renderBlock( pos, renderer );
-
-		rh.setTexture( CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorBack.getIcon(), renderer.getIcon( this.getItemStack() ), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon() );
-
-		rh.setBounds( 5, 5, 12, 11, 11, 13 );
-		rh.renderBlock( pos, renderer );
-
-		rh.setTexture( CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartMonitorBack.getIcon(), renderer.getIcon( this.getItemStack() ), CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartMonitorSidesStatus.getIcon() );
-
-		rh.setBounds( 5, 5, 13, 11, 11, 14 );
-		rh.renderBlock( pos, renderer );
-
-		this.renderLights( pos, rh, renderer );
 	}
 
 	@Override
@@ -214,12 +169,6 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISto
 		}
 
 		return true;
-	}
-
-	@Override
-	public TextureAtlasSprite getBreakingTexture( final ModelGenerator renderer )
-	{
-		return renderer.getIcon( this.getItemStack() ).getAtlas();
 	}
 
 	@Override

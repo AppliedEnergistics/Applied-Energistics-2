@@ -25,9 +25,8 @@ import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.translation.I18n;
-
-import appeng.client.texture.ExtraBlockTextures;
 
 
 public class GuiToggleButton extends GuiButton implements ITooltip
@@ -67,7 +66,7 @@ public class GuiToggleButton extends GuiButton implements ITooltip
 			final int iconIndex = this.getIconIndex();
 
 			GL11.glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
-			par1Minecraft.renderEngine.bindTexture( ExtraBlockTextures.GuiTexture( "guis/states.png" ) );
+			par1Minecraft.renderEngine.bindTexture( new ResourceLocation( "appliedenergistics2", "textures/guis/states.png" ) );
 			this.hovered = par2 >= this.xPosition && par3 >= this.yPosition && par2 < this.xPosition + this.width && par3 < this.yPosition + this.height;
 
 			final int uv_y = (int) Math.floor( iconIndex / 16 );

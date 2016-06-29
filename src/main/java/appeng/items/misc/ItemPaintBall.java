@@ -56,28 +56,6 @@ public class ItemPaintBall extends AEBaseItem
 	}
 
 	@Override
-	@SideOnly( Side.CLIENT )
-	public void registerIcons( final ClientHelper ir, final String name )
-	{
-		final ModelResourceLocation sloc = ir.setIcon( this, name + "Shimmer" );
-		final ModelResourceLocation loc = ir.setIcon( this, name );
-
-		Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register( this, new ItemMeshDefinition(){
-
-			@Override
-			public ModelResourceLocation getModelLocation( final ItemStack stack )
-			{
-				if( ItemPaintBall.this.isLumen( stack ) )
-				{
-					return sloc;
-				}
-
-				return loc;
-			}
-		} );
-	}
-
-	@Override
 	public String getItemStackDisplayName( final ItemStack is )
 	{
 		return super.getItemStackDisplayName( is ) + " - " + this.getExtraName( is );

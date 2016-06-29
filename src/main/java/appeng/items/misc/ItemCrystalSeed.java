@@ -66,80 +66,12 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 	public static final int FLUIX = SINGLE_OFFSET * 2;
 	public static final int FINAL_STAGE = SINGLE_OFFSET * 3;
 
-	private final ModelResourceLocation[] certus = new ModelResourceLocation[3];
-	private final ModelResourceLocation[] fluix = new ModelResourceLocation[3];
-	private final ModelResourceLocation[] nether = new ModelResourceLocation[3];
-
 	public ItemCrystalSeed()
 	{
 		this.setHasSubtypes( true );
 		this.setFeature( EnumSet.of( AEFeature.Core ) );
 
 		EntityRegistry.registerModEntity( EntityGrowingCrystal.class, EntityGrowingCrystal.class.getSimpleName(), EntityIds.get( EntityGrowingCrystal.class ), AppEng.instance(), 16, 4, true );
-	}
-
-	@Override
-	@SideOnly( Side.CLIENT )
-	public void registerIcons( final ClientHelper ir, final String name )
-	{
-		final String preFix = name + ".";
-
-		this.certus[0] = ir.setIcon( this, preFix + "Certus" );
-		this.certus[1] = ir.setIcon( this, preFix + "Certus2" );
-		this.certus[2] = ir.setIcon( this, preFix + "Certus3" );
-
-		this.nether[0] = ir.setIcon( this, preFix + "Nether" );
-		this.nether[1] = ir.setIcon( this, preFix + "Nether2" );
-		this.nether[2] = ir.setIcon( this, preFix + "Nether3" );
-
-		this.fluix[0] = ir.setIcon( this, preFix + "Fluix" );
-		this.fluix[1] = ir.setIcon( this, preFix + "Fluix2" );
-		this.fluix[2] = ir.setIcon( this, preFix + "Fluix3" );
-
-		Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register( this, new ItemMeshDefinition(){
-
-			@Override
-			public ModelResourceLocation getModelLocation( final ItemStack stack )
-			{
-				ModelResourceLocation[] list = null;
-
-				int damage = ItemCrystalSeed.this.getProgress( stack );
-
-				if( damage < CERTUS + SINGLE_OFFSET )
-				{
-					list = ItemCrystalSeed.this.certus;
-				}
-				else if( damage < NETHER + SINGLE_OFFSET )
-				{
-					damage -= NETHER;
-					list = ItemCrystalSeed.this.nether;
-				}
-
-				else if( damage < FLUIX + SINGLE_OFFSET )
-				{
-					damage -= FLUIX;
-					list = ItemCrystalSeed.this.fluix;
-				}
-
-				if( list == null )
-				{
-					return new ModelResourceLocation( "diamond" );
-				}
-
-				if( damage < LEVEL_OFFSET )
-				{
-					return list[0];
-				}
-				else if( damage < LEVEL_OFFSET * 2 )
-				{
-					return list[1];
-				}
-				else
-				{
-					return list[2];
-				}
-			}
-		} );
 	}
 
 	@Nullable

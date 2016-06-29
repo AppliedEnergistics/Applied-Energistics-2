@@ -27,7 +27,6 @@ import net.minecraft.item.Item;
 import net.minecraft.world.World;
 
 import appeng.api.util.AEPartLocation;
-import appeng.client.texture.ExtraBlockTextures;
 
 
 public class MatterCannonFX extends ParticleBreaking
@@ -47,6 +46,7 @@ public class MatterCannonFX extends ParticleBreaking
 		this.motionX = 0.0f;
 		this.motionY = 0.0f;
 		this.motionZ = 0.0f;
+		//TODO 1.10-R - Find exact atlas it was holding and replace this broken code with the atlas.
 		this.particleTextureIndex = ExtraBlockTextures.BlockMatterCannonParticle.getIcon().getAtlas();
 	}
 

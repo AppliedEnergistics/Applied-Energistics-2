@@ -33,8 +33,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import appeng.block.AEBaseTileBlock;
-import appeng.client.render.BaseBlockRender;
-import appeng.client.render.blocks.RenderBlockSkyCompass;
 import appeng.core.features.AEFeature;
 import appeng.helpers.ICustomCollision;
 import appeng.tile.misc.TileSkyCompass;
@@ -50,12 +48,6 @@ public class BlockSkyCompass extends AEBaseTileBlock implements ICustomCollision
 		this.setOpaque( this.setFullSize( false ) );
 		this.lightOpacity = 0;
 		this.setFeature( EnumSet.of( AEFeature.MeteoriteCompass ) );
-	}
-
-	@Override
-	protected Class<? extends BaseBlockRender> getRenderer()
-	{
-		return RenderBlockSkyCompass.class;
 	}
 
 	@Override

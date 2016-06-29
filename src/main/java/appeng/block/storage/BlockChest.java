@@ -36,8 +36,6 @@ import appeng.api.AEApi;
 import appeng.api.storage.ICellHandler;
 import appeng.api.util.AEPartLocation;
 import appeng.block.AEBaseTileBlock;
-import appeng.client.render.BaseBlockRender;
-import appeng.client.render.blocks.RenderMEChest;
 import appeng.core.features.AEFeature;
 import appeng.core.localization.PlayerMessages;
 import appeng.core.sync.GuiBridge;
@@ -59,12 +57,6 @@ public class BlockChest extends AEBaseTileBlock
 	public BlockRenderLayer getBlockLayer()
 	{
 		return BlockRenderLayer.CUTOUT;
-	}
-
-	@Override
-	protected Class<? extends BaseBlockRender> getRenderer()
-	{
-		return RenderMEChest.class;
 	}
 
 	@Override

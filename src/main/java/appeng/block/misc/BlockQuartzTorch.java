@@ -42,8 +42,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import appeng.api.util.IOrientable;
 import appeng.api.util.IOrientableBlock;
 import appeng.block.AEBaseBlock;
-import appeng.client.render.BaseBlockRender;
-import appeng.client.render.blocks.RenderQuartzTorch;
 import appeng.client.render.effects.LightningFX;
 import appeng.core.AEConfig;
 import appeng.core.CommonHelper;
@@ -81,12 +79,6 @@ public class BlockQuartzTorch extends AEBaseBlock implements IOrientableBlock, I
 	protected IProperty[] getAEStates()
 	{
 		return new IProperty[] { BlockTorch.FACING };
-	}
-
-	@Override
-	protected Class<? extends BaseBlockRender> getRenderer()
-	{
-		return RenderQuartzTorch.class;
 	}
 
 	@Override

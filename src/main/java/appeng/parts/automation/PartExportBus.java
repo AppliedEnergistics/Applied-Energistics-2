@@ -26,10 +26,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
@@ -49,12 +46,9 @@ import appeng.api.networking.security.MachineSource;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPartCollisionHelper;
-import appeng.api.parts.IPartRenderHelper;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.api.util.ModelGenerator;
-import appeng.client.texture.CableBusTextures;
 import appeng.core.AELog;
 import appeng.core.settings.TickRates;
 import appeng.core.sync.GuiBridge;
@@ -187,45 +181,6 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 		bch.addBox( 5, 5, 14, 11, 11, 15 );
 		bch.addBox( 6, 6, 15, 10, 10, 16 );
 		bch.addBox( 6, 6, 11, 10, 10, 12 );
-	}
-
-	@Override
-	@SideOnly( Side.CLIENT )
-	public void renderInventory( final IPartRenderHelper rh, final ModelGenerator renderer )
-	{
-		rh.setTexture( CableBusTextures.PartExportSides.getIcon(), CableBusTextures.PartExportSides.getIcon(), CableBusTextures.PartMonitorBack.getIcon(), renderer.getIcon( this.getItemStack() ), CableBusTextures.PartExportSides.getIcon(), CableBusTextures.PartExportSides.getIcon() );
-
-		rh.setBounds( 4, 4, 12, 12, 12, 14 );
-		rh.renderInventoryBox( renderer );
-
-		rh.setBounds( 5, 5, 14, 11, 11, 15 );
-		rh.renderInventoryBox( renderer );
-
-		rh.setBounds( 6, 6, 15, 10, 10, 16 );
-		rh.renderInventoryBox( renderer );
-	}
-
-	@Override
-	@SideOnly( Side.CLIENT )
-	public void renderStatic( final BlockPos pos, final IPartRenderHelper rh, final ModelGenerator renderer )
-	{
-		rh.setTexture( CableBusTextures.PartExportSides.getIcon(), CableBusTextures.PartExportSides.getIcon(), CableBusTextures.PartMonitorBack.getIcon(), renderer.getIcon( this.getItemStack() ), CableBusTextures.PartExportSides.getIcon(), CableBusTextures.PartExportSides.getIcon() );
-
-		rh.setBounds( 4, 4, 12, 12, 12, 14 );
-		rh.renderBlock( pos, renderer );
-
-		rh.setBounds( 5, 5, 14, 11, 11, 15 );
-		rh.renderBlock( pos, renderer );
-
-		rh.setBounds( 6, 6, 15, 10, 10, 16 );
-		rh.renderBlock( pos, renderer );
-
-		rh.setTexture( CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartMonitorBack.getIcon(), renderer.getIcon( this.getItemStack() ), CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartMonitorSidesStatus.getIcon() );
-
-		rh.setBounds( 6, 6, 11, 10, 10, 12 );
-		rh.renderBlock( pos, renderer );
-
-		this.renderLights( pos, rh, renderer );
 	}
 
 	@Override

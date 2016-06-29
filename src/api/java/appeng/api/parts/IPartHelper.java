@@ -62,11 +62,6 @@ public interface IPartHelper
 	boolean registerNewLayer( String string, String layerInterface );
 
 	/**
-	 * Register IBusItem with renderer
-	 */
-	void setItemBusRenderer( IPartItem i );
-
-	/**
 	 * use in use item, to try and place a IBusItem
 	 *
 	 * @param is ItemStack of an item which implements {@link IPartItem}
