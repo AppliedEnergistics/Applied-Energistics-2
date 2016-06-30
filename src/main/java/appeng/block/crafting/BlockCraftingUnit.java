@@ -138,7 +138,7 @@ public class BlockCraftingUnit extends AEBaseTileBlock
 	@Override
 	protected IProperty[] getAEStates()
 	{
-		return new IProperty[] { POWERED, FORMED };
+		return new IProperty[] { AE_BLOCK_FORWARD, AE_BLOCK_UP, POWERED, FORMED };
 	}
 
 	@Override

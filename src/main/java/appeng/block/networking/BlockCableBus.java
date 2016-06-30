@@ -78,8 +78,8 @@ public class BlockCableBus extends AEBaseTileBlock // implements
 {
 
 	private static final ICableBusContainer NULL_CABLE_BUS = new NullCableBusContainer();
-	private static Class<? extends TileEntity> noTesrTile;
-	private static Class<? extends TileEntity> tesrTile;
+	private static Class<? extends AEBaseTile> noTesrTile;
+	private static Class<? extends AEBaseTile> tesrTile;
 
 	/**
 	 * Immibis MB Support.
@@ -390,12 +390,12 @@ public class BlockCableBus extends AEBaseTileBlock // implements
 		}
 	}
 
-	public static Class<? extends TileEntity> getTesrTile()
+	public static Class<? extends AEBaseTile> getTesrTile()
 	{
 		return tesrTile;
 	}
 
-	public static Class<? extends TileEntity> getNoTesrTile()
+	public static Class<? extends AEBaseTile> getNoTesrTile()
 	{
 		return noTesrTile;
 	}

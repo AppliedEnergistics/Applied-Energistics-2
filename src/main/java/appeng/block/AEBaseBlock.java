@@ -128,19 +128,10 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 		return this.featureFullName;
 	}
 
-	public static final UnlistedBlockPos AE_BLOCK_POS = new UnlistedBlockPos();
-	public static final UnlistedBlockAccess AE_BLOCK_ACCESS = new UnlistedBlockAccess();
-
 	@Override
-	protected final BlockStateContainer createBlockState()
+	protected BlockStateContainer createBlockState()
 	{
-		return new ExtendedBlockState( this, this.getAEStates(), new IUnlistedProperty[] { AE_BLOCK_POS, AE_BLOCK_ACCESS } );
-	}
-
-	@Override
-	public final IBlockState getExtendedState( final IBlockState state, final IBlockAccess world, final BlockPos pos )
-	{
-		return ( (IExtendedBlockState) super.getExtendedState( state, world, pos ) ).withProperty( AE_BLOCK_POS, pos ).withProperty( AE_BLOCK_ACCESS, world );
+		return new ExtendedBlockState( this, this.getAEStates(), new IUnlistedProperty[] {} );
 	}
 
 	protected IProperty[] getAEStates()

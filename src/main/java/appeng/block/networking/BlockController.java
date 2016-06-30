@@ -56,7 +56,7 @@ public class BlockController extends AEBaseTileBlock
 	@Override
 	protected IProperty[] getAEStates()
 	{
-		return new IProperty[] { CONTROLLER_STATE };
+		return new IProperty[] { AE_BLOCK_FORWARD, AE_BLOCK_UP, CONTROLLER_STATE };
 	}
 
 	@Override

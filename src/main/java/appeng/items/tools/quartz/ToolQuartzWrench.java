@@ -62,7 +62,8 @@ public class ToolQuartzWrench extends AEBaseItem implements IAEWrench /* , ITool
 		{
 			if( Platform.isClient() )
 			{
-				return !world.isRemote ? EnumActionResult.SUCCESS : EnumActionResult.FAIL;
+				//TODO 1.10-R - if we return FAIL on client, action will not be sent to server. Fix that in all Block#onItemUseFirst overrides.
+				return !world.isRemote ? EnumActionResult.SUCCESS : EnumActionResult.PASS;
 			}
 
 			if( b.rotateBlock( world, pos, side ) )

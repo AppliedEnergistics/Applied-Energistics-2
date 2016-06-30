@@ -32,6 +32,9 @@ import com.google.common.collect.Lists;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.properties.PropertyDirection;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -46,6 +49,9 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.property.ExtendedBlockState;
+import net.minecraftforge.common.property.IExtendedBlockState;
+import net.minecraftforge.common.property.IUnlistedProperty;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 import appeng.api.implementations.items.IMemoryCard;
@@ -69,7 +75,7 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements IAEFeature,
 {
 
 	@Nonnull
-	private Class<? extends TileEntity> tileEntityType;
+	private Class<? extends AEBaseTile> tileEntityType;
 
 	public AEBaseTileBlock( final Material mat )
 	{
@@ -80,7 +86,29 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements IAEFeature,
 	{
 		super( mat, subName );
 	}
-
+	
+	public static final PropertyDirection AE_BLOCK_FORWARD = PropertyDirection.create( "forward" );
+	public static final PropertyDirection AE_BLOCK_UP = PropertyDirection.create( "up" );
+	
+	@Override
+	protected IProperty[] getAEStates()
+	{
+		return new IProperty[] { AE_BLOCK_FORWARD, AE_BLOCK_UP };
+	}
+	
+	@Override
+	public IBlockState getActualState( IBlockState state, IBlockAccess world, BlockPos pos )
+	{
+		AEBaseTile tile = (AEBaseTile) world.getTileEntity( pos );
+		return super.getActualState( state, world, pos ).withProperty( AE_BLOCK_FORWARD, tile.getForward()).withProperty( AE_BLOCK_UP, tile.getUp() );
+	}
+	
+	@Override
+	public int getMetaFromState( IBlockState state )
+	{
+		return 0;
+	}
+	
 	@Override
 	protected void setFeature( final EnumSet<AEFeature> f )
 	{
@@ -88,7 +116,7 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements IAEFeature,
 		this.setHandler( featureHandler );
 	}
 
-	protected void setTileEntity( final Class<? extends TileEntity> c )
+	protected void setTileEntity( final Class<? extends AEBaseTile> c )
 	{
 		this.tileEntityType = c;
 		this.setInventory( IInventory.class.isAssignableFrom( c ) );

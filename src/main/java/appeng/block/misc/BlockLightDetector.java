@@ -75,7 +75,8 @@ public class BlockLightDetector extends AEBaseTileBlock implements IOrientableBl
 	@Override
 	protected IProperty[] getAEStates()
 	{
-		return new IProperty[] { BlockTorch.FACING };
+		//TODO 1.10-R - wtf?
+		return new IProperty[] { AE_BLOCK_FORWARD, AE_BLOCK_UP, BlockTorch.FACING };
 	}
 
 	@Override
