@@ -49,19 +49,21 @@ import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.MouseEvent;
 import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
+import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import appeng.api.parts.CableRenderMode;
 import appeng.api.util.AEColor;
 import appeng.block.AEBaseBlock;
-import appeng.client.render.textures.ParticleTextures;
 import appeng.client.render.effects.AssemblerFX;
 import appeng.client.render.effects.CraftingFx;
 import appeng.client.render.effects.EnergyFx;
 import appeng.client.render.effects.LightningArcFX;
 import appeng.client.render.effects.LightningFX;
 import appeng.client.render.effects.VibrantFX;
+import appeng.client.render.model.UVLModelLoader;
+import appeng.client.render.textures.ParticleTextures;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.Api;
@@ -90,6 +92,7 @@ public class ClientHelper extends ServerHelper
 	public void preinit()
 	{
 		MinecraftForge.EVENT_BUS.register( this );
+		ModelLoaderRegistry.registerLoader( UVLModelLoader.INSTANCE );
 	}
 
 	@Override
@@ -284,6 +287,12 @@ public class ClientHelper extends ServerHelper
 		throw new MissingCoreMod();
 	}
 
+	@SubscribeEvent
+	public void modelsBake( ModelBakeEvent event )
+	{
+		UVLModelLoader.INSTANCE.setLoader( event.getModelLoader() );
+	}
+	
 	@SubscribeEvent
 	public void postPlayerRender( final RenderLivingEvent.Pre p )
 	{
