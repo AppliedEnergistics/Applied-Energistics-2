@@ -93,6 +93,10 @@ public class ClientHelper extends ServerHelper
 	{
 		MinecraftForge.EVENT_BUS.register( this );
 		ModelLoaderRegistry.registerLoader( UVLModelLoader.INSTANCE );
+		for( IAEFeature feature : Api.INSTANCE.definitions().getFeatureRegistry().getRegisteredFeatures() )
+		{
+			feature.handler().registerStateMapper();
+		}
 	}
 
 	@Override

@@ -26,12 +26,15 @@ import com.google.common.base.Optional;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 
 import appeng.api.definitions.ITileDefinition;
 import appeng.block.AEBaseTileBlock;
+import appeng.client.render.model.AEIgnoringStateMapper;
 import appeng.core.AppEng;
 import appeng.core.CommonHelper;
 import appeng.core.CreativeTab;
@@ -104,5 +107,13 @@ public final class AETileBlockFeatureHandler implements IFeatureHandler
 	public void registerModel()
 	{
 		Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register( this.definition.maybeItem().get(), 0, new ModelResourceLocation( registryName, "normal" ) );
+	}
+
+	@Override
+	public void registerStateMapper()
+	{
+		AEIgnoringStateMapper mapper = new AEIgnoringStateMapper( registryName );
+		ModelLoader.setCustomStateMapper( this.featured, mapper );
+		( (IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager() ).registerReloadListener( mapper );
 	}
 }

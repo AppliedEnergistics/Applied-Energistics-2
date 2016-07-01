@@ -113,4 +113,10 @@ public final class ItemFeatureHandler implements IFeatureHandler
 	{
 		Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register( item, 0, new ModelResourceLocation( registryName, "inventory" ) );
 	}
+
+	@Override
+	public void registerStateMapper()
+	{
+
+	}
 }

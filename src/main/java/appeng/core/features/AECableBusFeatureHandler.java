@@ -107,4 +107,10 @@ public final class AECableBusFeatureHandler implements IFeatureHandler
 	{
 		Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register( this.definition.maybeItem().get(), 0, new ModelResourceLocation( registryName, "normal" ) );
 	}
+
+	@Override
+	public void registerStateMapper()
+	{
+
+	}
 }

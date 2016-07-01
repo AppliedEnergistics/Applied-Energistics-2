@@ -153,12 +153,12 @@ public final class AppEng
 			CreativeTabFacade.init();
 		}
 
+		this.registration.preInitialize( event );
+
 		if( Platform.isClient() )
 		{
 			CommonHelper.proxy.preinit();
 		}
-
-		this.registration.preInitialize( event );
 
 		if( versionCheckerConfig.isVersionCheckingEnabled() )
 		{

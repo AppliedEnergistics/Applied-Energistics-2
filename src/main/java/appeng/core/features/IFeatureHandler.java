@@ -35,4 +35,7 @@ public interface IFeatureHandler
 
 	@SideOnly( Side.CLIENT )
 	void registerModel();
+
+	@SideOnly( Side.CLIENT )
+	void registerStateMapper();
 }

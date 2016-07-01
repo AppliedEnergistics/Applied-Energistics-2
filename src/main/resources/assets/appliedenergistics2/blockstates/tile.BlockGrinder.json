@@ -1,8 +1,8 @@
 {
     "variants": {
-        "forward=north,up=up": { "model": "appliedenergistics2:tile.BlockGrinder" },
-        "forward=south,up=up": { "model": "appliedenergistics2:tile.BlockGrinder", "y": 180 },
-        "forward=west,up=up":  { "model": "appliedenergistics2:tile.BlockGrinder", "y": 270 },
-        "forward=east,up=up":  { "model": "appliedenergistics2:tile.BlockGrinder", "y": 90 }
+        "forward=north": { "model": "appliedenergistics2:tile.BlockGrinder" },
+        "forward=south": { "model": "appliedenergistics2:tile.BlockGrinder", "y": 180 },
+        "forward=west":  { "model": "appliedenergistics2:tile.BlockGrinder", "y": 270 },
+        "forward=east":  { "model": "appliedenergistics2:tile.BlockGrinder", "y": 90 }
     }
 }
