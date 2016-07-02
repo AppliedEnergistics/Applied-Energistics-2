@@ -1,8 +1,0 @@
-{
-  "parent": "block/inner_stairs",
-  "textures": {
-    "bottom": "appliedenergistics2:blocks/fluix",
-    "top": "appliedenergistics2:blocks/fluix",
-    "side": "appliedenergistics2:blocks/fluix"
-  }
-}

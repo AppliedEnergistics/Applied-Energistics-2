@@ -1,0 +1,8 @@
+{
+    "variants": {
+        "axis=y": { "model": "appliedenergistics2:QuartzPillarBlock" },
+        "axis=z": { "model": "appliedenergistics2:QuartzPillarBlock", "x": 90 },
+        "axis=x": { "model": "appliedenergistics2:QuartzPillarBlock", "x": 90, "y": 90 }
+    }
+}
+

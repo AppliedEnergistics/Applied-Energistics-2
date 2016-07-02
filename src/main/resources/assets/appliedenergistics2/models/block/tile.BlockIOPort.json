@@ -1,0 +1,8 @@
+{
+    "parent": "block/cube_bottom_top",
+    "textures": {
+        "side": "appliedenergistics2:blocks/BlockIOPortSide",
+        "bottom": "appliedenergistics2:blocks/BlockIOPortBottom",
+        "top": "appliedenergistics2:blocks/BlockIOPort"
+    }
+}

@@ -1,0 +1,8 @@
+{
+    "variants": {
+        "forward=north": { "model": "appliedenergistics2:tile.BlockCharger", "y": 180 },
+		"forward=south": { "model": "appliedenergistics2:tile.BlockCharger", "y": 0 },
+		"forward=east": { "model": "appliedenergistics2:tile.BlockCharger", "y": 90 },
+		"forward=west": { "model": "appliedenergistics2:tile.BlockCharger", "y": 270 }
+    }
+}

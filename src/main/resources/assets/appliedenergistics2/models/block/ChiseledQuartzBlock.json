@@ -1,0 +1,7 @@
+{
+    "parent": "block/cube_column",
+    "textures": {
+        "end": "appliedenergistics2:blocks/ChiseledQuartzBlockTop",
+        "side": "appliedenergistics2:blocks/ChiseledQuartzBlockSide"
+    }
+}

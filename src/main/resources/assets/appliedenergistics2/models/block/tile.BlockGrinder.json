@@ -1,8 +1,10 @@
 {
-    "parent": "block/orientable",
+    "parent": "appliedenergistics2:block/cube_machine",
     "textures": {
-        "top": "blocks/furnace_top",
-        "front": "blocks/furnace_front_off",
-        "side": "blocks/furnace_side"
+        "top": "appliedenergistics2:blocks/BlockGrinder",
+		"bottom": "appliedenergistics2:blocks/BlockGrinderBottom",
+        "front": "appliedenergistics2:blocks/BlockGrinderFront",
+        "side": "appliedenergistics2:blocks/BlockGrinderSide"
+		
     }
 }
