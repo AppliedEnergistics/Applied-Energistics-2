@@ -19,6 +19,9 @@
 package appeng.core.features;
 
 
+import net.minecraft.client.renderer.block.model.IBakedModel;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.util.registry.IRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -38,4 +41,7 @@ public interface IFeatureHandler
 
 	@SideOnly( Side.CLIENT )
 	void registerStateMapper();
+
+	@SideOnly( Side.CLIENT )
+	void registerCustomModelOverride( IRegistry<ModelResourceLocation, IBakedModel> modelRegistry );
 }

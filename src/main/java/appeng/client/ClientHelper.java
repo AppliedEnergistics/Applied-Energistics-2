@@ -378,7 +378,10 @@ public class ClientHelper extends ServerHelper
 	@SubscribeEvent
 	public void onModelBakeEvent( final ModelBakeEvent event )
 	{
-
+		for( IAEFeature feature : Api.INSTANCE.definitions().getFeatureRegistry().getRegisteredFeatures() )
+		{
+			feature.handler().registerCustomModelOverride(event.getModelRegistry());
+		}
 	}
 
 	@SubscribeEvent

@@ -1,8 +1,5 @@
 {
     "variants": {
-        "forward=north": { "model": "appliedenergistics2:tile.BlockGrinder" },
-        "forward=south": { "model": "appliedenergistics2:tile.BlockGrinder", "y": 180 },
-        "forward=west":  { "model": "appliedenergistics2:tile.BlockGrinder", "y": 270 },
-        "forward=east":  { "model": "appliedenergistics2:tile.BlockGrinder", "y": 90 }
+        "normal": { "model": "appliedenergistics2:tile.BlockGrinder"}
     }
 }

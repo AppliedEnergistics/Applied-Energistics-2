@@ -308,7 +308,7 @@ public enum UVLModelLoader implements ICustomModelLoader
 
 					};
 					trans.setParent( builder );
-					LightUtil.putBakedQuad( trans, quad );
+					quad.pipe( trans );
 					return builder.build();
 				}
 				else

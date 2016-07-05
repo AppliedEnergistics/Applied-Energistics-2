@@ -20,14 +20,18 @@ package appeng.core.features;
 
 
 import java.util.EnumSet;
+import java.util.Set;
 
 import com.google.common.base.Optional;
+import com.google.common.collect.Sets;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.registry.IRegistry;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
@@ -35,6 +39,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import appeng.api.definitions.ITileDefinition;
 import appeng.block.AEBaseTileBlock;
 import appeng.client.render.model.AEIgnoringStateMapper;
+import appeng.client.render.model.CachingRotatingBakedModel;
 import appeng.core.AppEng;
 import appeng.core.CommonHelper;
 import appeng.core.CreativeTab;
@@ -115,5 +120,18 @@ public final class AETileBlockFeatureHandler implements IFeatureHandler
 		AEIgnoringStateMapper mapper = new AEIgnoringStateMapper( registryName );
 		ModelLoader.setCustomStateMapper( this.featured, mapper );
 		( (IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager() ).registerReloadListener( mapper );
+	}
+
+	@Override
+	public void registerCustomModelOverride( IRegistry<ModelResourceLocation, IBakedModel> modelRegistry )
+	{
+		Set<ModelResourceLocation> keys = Sets.newHashSet( modelRegistry.getKeys() );
+		for( ModelResourceLocation model : keys )
+		{
+			if( model.getResourcePath().equals( registryName.getResourcePath() ) )
+			{
+				modelRegistry.putObject( model, new CachingRotatingBakedModel( modelRegistry.getObject( model ) ) );
+			}
+		}
 	}
 }
